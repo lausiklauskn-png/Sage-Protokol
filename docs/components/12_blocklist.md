@@ -22,8 +22,20 @@ einen bekannten bösen Peer dauerhaft zu sperren — unabhängig von Reputation
 - Themen-Verschmutzung (rechtlich, ethisch, praktisch),
 - Spam-Wellen, die Reputation zu langsam abfedert.
 
-Die Blocklist ist die letzte Verteidigungslinie — explizit, manuell,
-unwiderruflich (bis zum manuellen Eintragen in eine Allowlist).
+**Wichtig:** Die emergente Misstrauensliste aus dem Quorum-Vermächtnis-
+Modell (Modul 07 + Heterokaryose, Paper Kap. 16-17) ist die biologische
+Hauptvariante. Wenn `QUORUM_RATIO = 0.15` der aktiven Topologie ein
+Vermächtnis gegen einen `suspected_node_id` gesendet hat, bildet sich
+automatisch eine Misstrauensliste — ohne dass jemand manuell eingreifen
+muss.
+
+Modul 12 ist also nicht der Blocking-Mechanismus selbst, sondern die
+**manuelle Override-Schicht**: explizite Sperren durch den Betreiber für
+Fälle, in denen die Quorum-Schwelle noch nicht erreicht ist (zu kleines
+Netz), oder in denen der Block aus nicht-technischen Gründen erforderlich
+ist (rechtliche Anweisung, persönliche Entscheidung). Die Blocklist ist
+die letzte Verteidigungslinie — explizit, manuell, unwiderruflich (bis
+zum manuellen Eintragen in eine Allowlist).
 
 ---
 

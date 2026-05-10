@@ -109,6 +109,17 @@ sichtbar und verlinkt direkt auf die Stubs.
   Voraussetzung für 02, 05, 07, 12.
 - Parallel Spec-Sitzung Modul 03 (Embedding) — unabhängig.
 
+**Nachzug 2026-05-10:**
+- Eigenschutz-Karte 13 von 4 auf 6 Sektionen erweitert: zusätzlich
+  **Vermächtnis-Markierung** (Paper Kap. 16, signiertes Vermächtnis +
+  Quorum aus §17) und **Strukturelle Schutzschicht** (Paper §1.4 — kein
+  Angreifer-Anreiz, "Mycel frisst nur totes Mycel").
+- Stubs Modul 10 (Reputation) und Modul 12 (Blocklist) angepasst: der
+  biologische Hauptmechanismus liegt in Modul 07 (Vermächtnis) +
+  Heterokaryose-Quorum. Die Stubs sind nicht "der Mechanismus", sondern
+  formal-quantitative bzw. manuelle Override-Ergänzungen. Lücken sind
+  dadurch kleiner als zunächst angenommen.
+
 ---
 
 ### 2026-05-10 · Hauptsitzung · Skelett-Anlage

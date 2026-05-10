@@ -947,6 +947,22 @@
             </div>
 
             <div class="schutz-item">
+              <div class="schutz-icon">📜</div>
+              <div class="schutz-body">
+                <h5>Vermächtnis-Markierung · Modul 07 erweitert</h5>
+                <p>Eine Spore ist im Schläfer-Modus inaktiv. Wird sie durch einen
+                  destruktiven Auslöser aktiviert, erzeugt sie beim Sterben ein
+                  signiertes <em>Vermächtnis</em> mit dem Fingerabdruck des
+                  Angreifers. Der private Schlüssel wird überschrieben, das
+                  Dokument verbreitet sich über Heterokaryose. Mehrere ähnliche
+                  Vermächtnisse → Quorum (Paper §17, <code>QUORUM_RATIO = 0.15</code>)
+                  → emergente Misstrauensliste. <strong>Der Angreifer trägt seine
+                  Identität selbst weiter.</strong></p>
+                <div class="schutz-against">Schutz gegen: gezielte Übernahme, Mycel-Vergiftung. Forensische Kette ohne zentrale Instanz.</div>
+              </div>
+            </div>
+
+            <div class="schutz-item">
               <div class="schutz-icon">🕸️</div>
               <div class="schutz-body">
                 <h5>Dezentralität</h5>
@@ -967,14 +983,28 @@
                 <div class="schutz-against">Schutz gegen: Off-Topic-Spam, Resource-Verschwendung</div>
               </div>
             </div>
+
+            <div class="schutz-item">
+              <div class="schutz-icon">🌲</div>
+              <div class="schutz-body">
+                <h5>Strukturelle Schutzschicht — kein Angreifer-Anreiz</h5>
+                <p>Es wird andere Pilze im Wald geben, die eigenes Mycel aufbauen.
+                  Aber jeder bleibt auf seinem Platz. Fremde Knoten haben kein
+                  Interesse an Plätzen ohne Nahrung. <strong>Mycel frisst nur
+                  totes Mycel.</strong> Es gibt keinen ökonomischen Anreiz für
+                  Übernahmen, weil SBKIM weder Werbung, Provisionen noch
+                  Plattform-Macht generiert (Paper §1.4 — "Welt ohne Riesen").</p>
+                <div class="schutz-against">Schutz durch: Designhaltung. Was nicht zu erbeuten ist, wird nicht angegriffen.</div>
+              </div>
+            </div>
           </div>
 
           <div class="schutz-backlog">
-            <strong>Offene Punkte (spec ausstehend, Stubs angelegt):</strong>
+            <strong>Offene Punkte (spec ausstehend, durch Vermächtnis-Modell teil-abgedeckt):</strong>
             <ul>
-              <li><a href="docs/components/10_reputation.md">Modul 10 — Reputation</a></li>
-              <li><a href="docs/components/11_rate_limit.md">Modul 11 — Rate-Limit &amp; TTL</a></li>
-              <li><a href="docs/components/12_blocklist.md">Modul 12 — Blocklist</a></li>
+              <li><a href="docs/components/10_reputation.md">Modul 10 — Reputation</a> · der biologische Mechanismus liegt schon in Modul 07 (Vermächtnis); Modul 10 wäre die formal-quantitative Ergänzung</li>
+              <li><a href="docs/components/11_rate_limit.md">Modul 11 — Rate-Limit &amp; TTL</a> · operativer Schutz, weiter eigenständig nötig</li>
+              <li><a href="docs/components/12_blocklist.md">Modul 12 — Blocklist</a> · Quorum-Misstrauensliste aus Vermächtnissen ist die emergente Variante; Modul 12 wäre die manuelle Override-Schicht</li>
             </ul>
             Priorität niedrig, solange das Netz klein ist. Werden gezogen, sobald
             spürbares Wachstum messbar wird.

@@ -18,11 +18,28 @@ nicht nur per Apoptose lokal vergessen werden, sondern aktiv abgewertet
 werden, bevor das Mycel sie aus der Spore-Liste eines neu andockenden
 Knotens propagiert.
 
-Apoptose (Modul 07) löscht passiv. Reputation soll **propagierbar** sein:
-Wenn Knoten A bemerkt, dass Knoten X durchgängig Müll liefert, soll diese
-Bewertung — vorsichtig, signiert, mit Decay — Heterokaryose-tauglich
-weitergegeben werden, damit Knoten C nicht denselben Müllweg erst selbst
-durchlaufen muss.
+**Wichtig:** Der biologische Hauptmechanismus liegt bereits in Modul 07
+(Apoptose mit signiertem Vermächtnis, Paper Kap. 16). Eine kompromittierte
+oder bösartig erkannte Spore erzeugt vor dem Sterben ein signiertes
+Vermächtnis mit `suspected_node_id`. Diese Vermächtnisse verbreiten sich
+über Heterokaryose. Mehrere ähnliche Vermächtnisse → Quorum (Paper §17,
+`QUORUM_RATIO = 0.15`) → emergente Misstrauensliste. Forensische Kette
+ohne zentrale Instanz.
+
+Modul 10 ist also nicht der Reputations-Mechanismus selbst, sondern eine
+**formal-quantitative Ergänzung**: numerische Scores statt binärer
+Misstrauensliste, Decay-Funktion, optionales Gossip ohne Apoptose-
+Auslöser. Es schließt die Lücke zwischen "alles gut" und "Knoten muss
+sterben" — die Grauzone, in der ein Peer schlechter wird, aber noch
+nicht bösartig genug ist, um sich selbst aufzulösen.
+
+Apoptose (Modul 07) löscht passiv lokal und meldet bei Kompromittierung.
+Heterokaryose (Modul 06) verbreitet Vermächtnisse. Reputation (Modul 10)
+soll dazwischen **kontinuierlich abgestuft** sein: Wenn Knoten A bemerkt,
+dass Knoten X durchgängig schwache Treffer liefert (aber nicht bösartig
+ist), soll diese Bewertung — vorsichtig, signiert, mit Decay —
+Heterokaryose-tauglich weitergegeben werden, damit Knoten C nicht
+denselben Müllweg erst selbst durchlaufen muss.
 
 ---
 
