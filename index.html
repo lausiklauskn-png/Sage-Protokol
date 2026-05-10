@@ -1118,6 +1118,51 @@
     padding-top: 1.4rem;
     border-top: 1px solid var(--line);
   }
+
+  /* Sage / SBKIM-Glossar (Modal + Hero) */
+  .name-glossar {
+    margin: 0 0 1.4rem;
+    padding: 0.95rem 1.05rem 1rem;
+    background: rgba(99, 102, 241, 0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  }
+  .name-glossar dt {
+    font-weight: 600;
+    color: var(--gold);
+    font-size: 0.98rem;
+    margin-top: 0.7rem;
+  }
+  .name-glossar dt:first-of-type { margin-top: 0; }
+  .name-glossar dd {
+    margin: 0.22rem 0 0;
+    color: var(--text);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .name-glossar dd em { color: var(--gold); font-style: normal; font-weight: 500; }
+  .name-glossar .lautschrift {
+    font-family: "Space Mono", monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 0.35rem;
+    letter-spacing: 0.02em;
+  }
+  .name-glossar-fuss {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0 0 1.4rem;
+    padding: 0 0.4rem;
+  }
+  .name-glossar-fuss strong { color: var(--gold); font-weight: 600; }
+
+  /* Hero-Variante (kompakter, zentriert) */
+  .name-glossar-hero {
+    max-width: 640px;
+    margin: 0 auto 1.4rem;
+    text-align: left;
+  }
   </style>
 </head>
 <body>
@@ -1761,6 +1806,18 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           Eine kleine Tour durch das, was Sage anders macht — ohne
           Fremdwörter, mit echten Beispielen aus dem Alltag.
         </p>
+        <dl class="name-glossar name-glossar-hero">
+          <dt>Sage <span class="lautschrift">[SAH-ge]</span></dt>
+          <dd>Wie eine Sage. Etwas, das von Mund zu Mund weitergeht. Hier:
+            ein kleines Wissensnetz, das sich gegenseitig erzählt, was es weiß.</dd>
+          <dt>Protokol</dt>
+          <dd>Die Spielregel, nach der Knoten sich finden und reden. Bewusst
+            mit einem L — kein Verwaltungs-Protokoll, ein Gesprächsangebot.</dd>
+          <dt>SBKIM <span class="lautschrift">[Es-Be-Ka-I-Em]</span></dt>
+          <dd>Der technische Name dahinter: <em>Semantisch-Biologisch
+            Koordiniertes Inter-Knoten-Mycel</em>. Sage ist der Name, SBKIM ist
+            die Architektur darunter.</dd>
+        </dl>
         <div class="warum-scroll-hint" aria-hidden="true">↓ Weiterscrollen</div>
       </section>
 
@@ -2034,6 +2091,29 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         <h2 id="ueber-title">Was bringt mir das?</h2>
       </header>
       <div class="ueber-body">
+        <dl class="name-glossar">
+          <dt>Sage <span class="lautschrift">[SAH-ge]</span></dt>
+          <dd>Wie eine Sage — etwas, das von Mund zu Mund weitergeht.
+            Hier: ein kleines, lebendes Wissensnetz, in dem sich Webseiten
+            gegenseitig erzählen, was sie wissen. Ohne Zentrale.</dd>
+
+          <dt>Protokol</dt>
+          <dd>Die Spielregel, nach der Knoten sich finden und miteinander
+            reden. Bewusst mit einem L geschrieben — kein steifes
+            Verwaltungs-Protokoll, sondern ein Gesprächsangebot.</dd>
+
+          <dt>SBKIM <span class="lautschrift">[Es-Be-Ka-I-Em]</span></dt>
+          <dd>Der technische Name darunter: <em>Semantisch-Biologisch
+            Koordiniertes Inter-Knoten-Mycel</em>. Sagt in einem Wort:
+            nach Bedeutung suchen (semantisch), vom Pilz gelernt (biologisch),
+            zwischen kleinen Webseiten (Inter-Knoten-Mycel).</dd>
+        </dl>
+        <p class="name-glossar-fuss">
+          <strong>Sage</strong> ist der Name. <strong>SBKIM</strong> ist die
+          Architektur darunter. <strong>Sage-Protokol</strong> heißt das,
+          was die kleinen Webseiten nutzen, um teil davon zu werden.
+        </p>
+
         <p class="ueber-lede">
           Sage ist eine Suche, die zwischen kleinen, eigenen Webseiten passiert.
           Du fragst etwas, und nur die Seiten, die wirklich etwas zu deiner
