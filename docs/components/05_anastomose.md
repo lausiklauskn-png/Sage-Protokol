@@ -1,8 +1,48 @@
-# Modul 05 — Anastomose (Handshake zwischen Knoten)
+# Modul 05 — Anastomose
 
-**Status:** Schablone (Spec ausstehend)
-**Datei (Code):** `src/modules/05_anastomose.js`
-**Abhängigkeiten:** Modul 02 (Spore), Modul 04 (Match), Modul 01 (Storage)
+> **Status:** 🟫 Schablone  ·  **Schicht:** Netzwerk  ·  **Anker:** Sage-Page → Karte 4, Eintrag 05
+> **Datei (Code):** `src/modules/05_anastomose.js`
+>
+> _Handshake zwischen Knoten — die Hyphenfusion: zwei passende Knoten
+> erkennen einander semantisch und verschmelzen zu Geschwistern._
+
+---
+
+## Im Mycel-Bild
+
+Anastomose ist die **Hyphenfusion** des Mycels: zwei Pilzfäden, die
+einander berühren und passen, verschmelzen zu einem gemeinsamen Strom.
+Im Sage-Protokoll: zwei Knoten, deren Domänen-Vektoren sich nahe genug
+sind, führen einen Handshake durch und nehmen einander in die
+Geschwister-Liste auf. Die Verbindung ist **bedeutungs-basiert**, nicht
+adress-basiert: ein Knoten antwortet **nur**, wenn die Anfrage
+semantisch zu seiner Domäne passt — sonst Schweigen. Schweigen ist
+Routing.
+
+---
+
+## Visualisierung
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant A as Knoten A<br/>(Suchender)
+  participant B as Knoten B<br/>(Anbieter)
+  participant SA as Storage A
+  participant SB as Storage B
+
+  A->>B: HELLO + Spore A + Query-Vektor
+  B->>B: matchAgainstDomain()<br/>Score > 0.55?
+  alt passt
+    B->>A: WELCOME + Spore B + Antwort-Pointer
+    A->>A: verifyForeignSpore(B)
+    A->>B: ANCHORED + Nonce-Sig
+    B->>SB: sbkim_siblings.put(A)
+    A->>SA: sbkim_siblings.put(B)
+  else passt nicht
+    B--)A: (schweigt)
+  end
+```
 
 ---
 
@@ -21,7 +61,7 @@ Domäne passt — sonst Schweigen.
 
 ---
 
-## Verantwortung
+## Verantwortlichkeiten
 
 **Macht:**
 - HTTP-POST an `/sbkim/query` eines Zielknotens
@@ -42,9 +82,7 @@ Domäne passt — sonst Schweigen.
 
 ## Schnittstelle
 
-*(noch zu spezifizieren)*
-
-Skizze:
+*(noch zu spezifizieren)* — Skizze:
 
 ```
 init({ ownSpore: SporeJson }) → Promise<void>
@@ -68,9 +106,7 @@ initiateAnastomosis(siblingSpore: SporeJson) → Promise<HandshakeResult>
 listSiblings() → Promise<Array<{nodeId, domain, since}>>
 ```
 
----
-
-## Datenformate (in INTERFACES.md spiegeln, sobald spezifiziert)
+### Datenformate (in INTERFACES.md spiegeln, sobald spezifiziert)
 
 - IncomingQuery: { embedding, queryText?, fromNodeId, fromSpore? ... }
 - ResponsePayload: { score, pointers, responderNodeId, signature }
@@ -92,7 +128,7 @@ listSiblings() → Promise<Array<{nodeId, domain, since}>>
 
 ---
 
-## Risiken / Edge Cases
+## Risiken & offene Punkte
 
 - CORS: Browser-zu-Browser-POST geht nur, wenn der Zielserver CORS-
   Header setzt oder ein Service-Worker dazwischen liegt. → Spec klärt
@@ -105,19 +141,24 @@ listSiblings() → Promise<Array<{nodeId, domain, since}>>
 
 ---
 
-## Querverweise
-
-- `sbkim_integration.md` §6 (eingehende Anfragen)
-- `sbkim_paper.pdf` Kapitel 14 (Handshake)
-
----
-
 ## Bauzustand
 
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
+| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Sequence-Diagramm, Querverweise |
 | Spec gefüllt | — | — | — |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
+
+---
+
+**Querverweise**
+
+- **Abhängigkeiten:** Modul 02 (Spore) · Modul 04 (Match) · Modul 01 (Storage)
+- **Wird genutzt von:** Modul 06 (Heterokaryose) · Modul 07 (Apoptose) für Vermächtnis-Verteilung · Modul 11 (Rate-Limit) als Querschnitt
+- **Site-Karte:** [Karte 4 · Module-Bento](../../index.html#screen-overview), Eintrag 05 · [Karte 11 · Wanderung](../../index.html#screen-overview)
+- **Glossar:** [Anastomose](../GLOSSAR.md), [Geschwister](../GLOSSAR.md), [Schweigen als Routing](../GLOSSAR.md)
+- **Integration:** `sbkim_integration.md` §6 (eingehende Anfragen)
+- **Paper:** Kapitel 14 (Handshake)

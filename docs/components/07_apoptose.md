@@ -1,8 +1,46 @@
-# Modul 07 — Apoptose (Selbstlöschung + Vermächtnis)
+# Modul 07 — Apoptose
 
-**Status:** Schablone (Spec ausstehend)
-**Datei (Code):** `src/modules/07_apoptose.js`
-**Abhängigkeiten:** Modul 02 (Spore), Modul 01 (Storage), Modul 05 (Anastomose)
+> **Status:** 🟫 Schablone  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 13 (Eigenschutz)
+> **Datei (Code):** `src/modules/07_apoptose.js`
+>
+> _Selbstlöschung des Knotens mit signiertem Vermächtnis — der saubere
+> Tod, der das Mycel warnt, statt es zu vergiften._
+
+---
+
+## Im Mycel-Bild
+
+Apoptose ist im Pilz der **gerichtete, saubere Zelltod**. Wenn eine
+Fusionszelle erkennt, dass etwas nicht stimmt — fremdes Material in der
+Anastomose, ein kompromittierter Schlüssel — stirbt sie, **bevor** sich
+der Schaden ausbreitet. Beim Sterben hinterlässt sie ein **Vermächtnis**:
+einen signierten letzten Atemzug, der durch das Mycel weiterwandert. Die
+Geschwister erfahren so vom Vorfall und entfernen den Knoten aus ihren
+Listen. Das Mycel reinigt sich selbst, ohne Polizei.
+
+---
+
+## Visualisierung
+
+```mermaid
+flowchart LR
+  A[aktive Spore<br/>im Atemkreis] -->|Trigger| B{Auslöser?}
+  B -->|Quorum| C[Vermächtnis<br/>erzeugen]
+  B -->|manuell| C
+  B -->|Schlüssel kompromittiert| C
+  B -->|Domäne aus| C
+  C --> D[signieren mit<br/>Privat-Schlüssel]
+  D --> E[an Geschwister<br/>verteilen]
+  E --> F[sbkim_*-Stores<br/>löschen]
+  F --> G[Knoten = tot<br/>kein Auto-Restart]
+
+  classDef trigger fill:#92400E,color:#fff,stroke:#fff
+  classDef act fill:#EA580C,color:#fff,stroke:#fff
+  classDef done fill:#16A34A,color:#fff,stroke:#fff
+  class A trigger
+  class B,C,D,E,F act
+  class G done
+```
 
 ---
 
@@ -21,7 +59,7 @@ Nach Apoptose startet der Knoten **nicht** automatisch neu.
 
 ---
 
-## Verantwortung
+## Verantwortlichkeiten
 
 **Macht:**
 - Auslöser registrieren (vier Wege siehe oben)
@@ -56,13 +94,9 @@ isAlive() → boolean
 getLegacyMessage() → LegacyMessage | null
 ```
 
----
+### Datenformat: LegacyMessage
 
-## Datenformat: LegacyMessage
-
-*(noch zu spezifizieren)*
-
-Skizze:
+*(noch zu spezifizieren)* — Skizze:
 
 ```jsonc
 {
@@ -76,9 +110,7 @@ Skizze:
 }
 ```
 
----
-
-## Konfiguration
+### Konfiguration
 
 ```
 APOPTOSIS = {
@@ -103,7 +135,7 @@ QUORUM_MISTRUST_RATIO = 0.5     // 50% der Geschwister → Apoptose (Default, Sp
 
 ---
 
-## Risiken / Edge Cases
+## Risiken & offene Punkte
 
 - Versehentliche Auslösung durch Betreiber → manuelle Auslösung mit
   Doppel-Bestätigung absichern (UI in Modul 08).
@@ -114,19 +146,24 @@ QUORUM_MISTRUST_RATIO = 0.5     // 50% der Geschwister → Apoptose (Default, Sp
 
 ---
 
-## Querverweise
-
-- `sbkim_integration.md` §8 (Apoptose-Verhalten)
-- `sbkim_paper.pdf` Kapitel 16 (Vermächtnis), Kapitel 17 (Quorum)
-
----
-
 ## Bauzustand
 
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
+| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid, Querverweise |
 | Spec gefüllt | — | — | — |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
+
+---
+
+**Querverweise**
+
+- **Abhängigkeiten:** Modul 02 (Spore) · Modul 01 (Storage) · Modul 05 (Anastomose)
+- **Wird genutzt von:** Modul 06 (Heterokaryose) — beim Trennen von Geschwistern · Modul 10 (Reputation) — Vermächtnis fließt in Reputations-Decay ein · Modul 12 (Blocklist) — Vermächtnis kann manuelle Sperrung anstoßen
+- **Site-Karte:** [Eigenschutz · Karte 13](../../index.html#screen-overview) (Penicillin-Schicht, Vermächtnis-Markierung)
+- **Glossar:** [Apoptose](../GLOSSAR.md), [Vermächtnis](../GLOSSAR.md), [Quorum](../GLOSSAR.md)
+- **Paper:** Kapitel 16 (Vermächtnis) · Kapitel 17 (Quorum)
+- **Integration:** `sbkim_integration.md` §8

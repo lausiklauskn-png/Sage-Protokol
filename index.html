@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Beobachtungsstation des Sage-Protokolls — semantisch-empfangendes, bidirektionales KI-Matching auf Mycel-Modell. Status, Module, Andocken.">
   <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -27,6 +29,14 @@
     --r: 18px;
     --r-sm: 12px;
     --max: 1240px;
+
+    /* Status-Reife-Gradient — Quelle: docs/INTERFACES.md §5 */
+    --status-schablone: #92400E;
+    --status-werkstatt: #EA580C;
+    --status-spec:      #CA8A04;
+    --status-stub:      #2563EB;
+    --status-fertig:    #16A34A;
+    --status-nextup:    #F59E0B;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -541,6 +551,124 @@
     z-index: 50; pointer-events: none;
     max-width: 320px; line-height: 1.45;
   }
+
+  /* Brand-Icon (Steinpilz) in der Topbar */
+  .brand {
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .brand-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    flex: 0 0 36px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  /* Bau-Puls-Karte */
+  .baupuls-grid {
+    display: grid; gap: 0.55rem;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    margin-top: 0.6rem;
+  }
+  .bp-cell {
+    position: relative;
+    border-radius: var(--r-sm);
+    padding: 0.65rem 0.8rem;
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--status-schablone);
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    text-decoration: none; color: inherit;
+    display: flex; flex-direction: column; gap: 0.25rem;
+    min-height: 78px;
+  }
+  .bp-cell:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.04);
+    text-decoration: none;
+  }
+  .bp-cell.s-schablone { border-left-color: var(--status-schablone); }
+  .bp-cell.s-werkstatt { border-left-color: var(--status-werkstatt); }
+  .bp-cell.s-spec      { border-left-color: var(--status-spec); }
+  .bp-cell.s-stub      { border-left-color: var(--status-stub); }
+  .bp-cell.s-fertig    { border-left-color: var(--status-fertig); }
+  .bp-cell.s-nextup {
+    border: 2px solid var(--status-nextup);
+    border-left-width: 4px;
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55);
+    animation: bp-glow 2.6s ease-in-out infinite;
+  }
+  @keyframes bp-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); }
+    50%      { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+  }
+  .bp-cell.s-backlog { opacity: 0.62; }
+  .bp-head {
+    display: flex; align-items: baseline; gap: 0.5rem;
+  }
+  .bp-num {
+    font-family: "Space Mono", monospace;
+    font-size: 0.78rem; font-weight: 700;
+    color: var(--dim);
+  }
+  .bp-name { font-weight: 600; font-size: 0.95rem; }
+  .bp-status {
+    font-size: 0.72rem; letter-spacing: 0.05em;
+    color: var(--muted); margin-top: auto;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .bp-status::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--c);
+  }
+  .bp-nextup-badge {
+    position: absolute; top: 6px; right: 8px;
+    font-size: 0.72rem;
+    color: var(--status-nextup);
+    font-weight: 700;
+  }
+  .bp-pie-wrap {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1.2rem; flex-wrap: wrap;
+    margin-top: 0.8rem;
+  }
+  .bp-pie {
+    width: 140px; height: 140px;
+    flex: 0 0 140px;
+  }
+  .bp-legend {
+    display: grid; gap: 0.3rem;
+    font-size: 0.78rem;
+    grid-template-columns: 1fr;
+  }
+  .bp-legend-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    color: var(--muted);
+  }
+  .bp-legend-item::before {
+    content: ""; width: 11px; height: 11px; border-radius: 3px;
+    background: var(--c, var(--dim));
+  }
+  .bp-legend-item .count {
+    margin-left: auto;
+    color: var(--text);
+    font-family: "Space Mono", monospace;
+    font-weight: 700;
+  }
+  .bp-tagline {
+    color: var(--muted);
+    font-size: 0.86rem;
+    margin: 0.2rem 0 0;
+  }
+  .bp-divider {
+    grid-column: 1 / -1;
+    margin-top: 0.4rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--dim);
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--line);
+  }
   </style>
 </head>
 <body>
@@ -553,7 +681,10 @@
 
   <div class="wrap">
     <header class="topbar">
-      <div class="wordmark">SAGE<span class="dot">·</span>OBSERVATORIUM</div>
+      <div class="brand">
+        <img class="brand-icon" src="assets/icon.svg" alt="" aria-hidden="true">
+        <div class="wordmark">SAGE<span class="dot">·</span>OBSERVATORIUM</div>
+      </div>
       <div class="meta mono" id="topbar-meta">— · Branch: claude/…</div>
     </header>
 
@@ -1016,9 +1147,26 @@
           </div>
         </section>
 
+        <!-- Karte 14: Bau-Puls -->
+        <section class="glass span-12">
+          <div class="card-title">Bau-Puls · Wo das Mycel gerade wächst</div>
+          <p class="bp-tagline">
+            Live-Stand aus <code>status.json</code>. Goldene Outline ✨ = bereit
+            zum Anpacken (alle Vorbedingungen erfüllt). Klick öffnet die
+            jeweilige Komponenten-Karte.
+          </p>
+          <div class="bp-pie-wrap">
+            <svg class="bp-pie" viewBox="0 0 100 100" id="bp-pie" aria-label="Modul-Status-Verteilung"></svg>
+            <div class="bp-legend" id="bp-legend"></div>
+          </div>
+          <div class="baupuls-grid" id="baupuls-grid">
+            <!-- gerendert via JS -->
+          </div>
+        </section>
+
       </div>
 
-      <!-- Karte 14: Pulse-Footer -->
+      <!-- Karte 15: Pulse-Footer -->
       <footer class="footer">
         <div class="meta-grid">
           <div class="meta-cell"><span class="k">Branch</span><span class="v" id="ft-branch">—</span></div>
@@ -1216,6 +1364,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     renderFooter(s);
     computeScore(s);
     renderBars(s);
+    renderBauPuls(s);
   }
 
   function renderTopbar(s) {
@@ -1306,6 +1455,143 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         <span class="pill">Noch nicht angeschlossen</span>
       `;
       grid.appendChild(div);
+    });
+  }
+
+  // ============================================================
+  // BAU-PULS — Live-Karte aus status.json
+  // ============================================================
+  const STATUS_META = {
+    schablone: { label: 'Schablone',    color: '#92400E', emoji: '🟫' },
+    werkstatt: { label: 'In Werkstatt', color: '#EA580C', emoji: '🟧' },
+    spec:      { label: 'Spec fertig',  color: '#CA8A04', emoji: '🟨' },
+    stub:      { label: 'Code-Stub',    color: '#2563EB', emoji: '🟦' },
+    fertig:    { label: 'Fertig',       color: '#16A34A', emoji: '🟩' }
+  };
+  const BACKLOG_IDS = new Set(['10', '11', '12']);
+
+  function isNextUp(m, byId) {
+    if (m.score === 'fertig') return false;
+    if (BACKLOG_IDS.has(m.id)) return false;
+    const deps = m.abhaengig || [];
+    return deps.every(d => (byId[d] && byId[d].score === 'fertig'));
+  }
+
+  function renderBauPuls(s) {
+    const grid = document.getElementById('baupuls-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const allMods = [...(s.modules || []), ...(s.schutzBacklog || [])];
+    const byId = {};
+    allMods.forEach(m => { byId[m.id] = m; });
+
+    (s.modules || []).forEach(m => grid.appendChild(buildBPCell(m, byId, false)));
+
+    if (s.schutzBacklog && s.schutzBacklog.length) {
+      const div = document.createElement('div');
+      div.className = 'bp-divider';
+      div.textContent = 'Schutz-Backlog · Priorität niedrig';
+      grid.appendChild(div);
+      s.schutzBacklog.forEach(m => grid.appendChild(buildBPCell(m, byId, true)));
+    }
+
+    renderBauPulsPie(s);
+  }
+
+  function buildBPCell(m, byId, backlog) {
+    const score = m.score || 'schablone';
+    const meta = STATUS_META[score] || STATUS_META.schablone;
+    const nextup = !backlog && isNextUp(m, byId);
+    const slug = SLUG_MAP[m.id] || m.name.toLowerCase().replace(/\W+/g, '_');
+    const href = `docs/components/${m.id}_${slug}.md`;
+
+    const a = document.createElement('a');
+    a.className = 'bp-cell s-' + score + (nextup ? ' s-nextup' : '') + (backlog ? ' s-backlog' : '');
+    a.href = href;
+    a.style.setProperty('--c', meta.color);
+    a.target = '_self';
+    a.innerHTML = `
+      ${nextup ? '<span class="bp-nextup-badge" title="alle Vorbedingungen erfüllt">✨</span>' : ''}
+      <div class="bp-head">
+        <span class="bp-num">${m.id}</span>
+        <span class="bp-name">${m.name}</span>
+      </div>
+      <div class="bp-status">${meta.label}</div>
+    `;
+    return a;
+  }
+
+  const SLUG_MAP = {
+    '00': 'doku_fenster', '01': 'storage', '02': 'spore', '03': 'embedding',
+    '04': 'match', '05': 'anastomose', '06': 'heterokaryose', '07': 'apoptose',
+    '08': 'ui_demo', '09': 'einbau_pwa',
+    '10': 'reputation', '11': 'rate_limit', '12': 'blocklist'
+  };
+
+  function renderBauPulsPie(s) {
+    const all = [...(s.modules || []), ...(s.schutzBacklog || [])];
+    const counts = { schablone: 0, werkstatt: 0, spec: 0, stub: 0, fertig: 0 };
+    all.forEach(m => {
+      const sc = m.score || 'schablone';
+      if (counts[sc] != null) counts[sc]++;
+    });
+    const total = all.length || 1;
+
+    const svg = document.getElementById('bp-pie');
+    svg.innerHTML = '';
+    const cx = 50, cy = 50, r = 42;
+    let acc = 0;
+    const order = ['fertig', 'stub', 'spec', 'werkstatt', 'schablone'];
+    order.forEach(key => {
+      const n = counts[key];
+      if (n <= 0) return;
+      const frac = n / total;
+      // Vollkreis-Sonderfall
+      if (frac >= 0.999) {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+        c.setAttribute('fill', STATUS_META[key].color);
+        svg.appendChild(c);
+        acc += frac;
+        return;
+      }
+      const a0 = acc * Math.PI * 2 - Math.PI / 2;
+      const a1 = (acc + frac) * Math.PI * 2 - Math.PI / 2;
+      const x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0);
+      const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+      const large = frac > 0.5 ? 1 : 0;
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1} Z`);
+      path.setAttribute('fill', STATUS_META[key].color);
+      svg.appendChild(path);
+      acc += frac;
+    });
+    // Inner-Hole (Donut-Effekt)
+    const hole = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    hole.setAttribute('cx', cx); hole.setAttribute('cy', cy); hole.setAttribute('r', r * 0.45);
+    hole.setAttribute('fill', '#0B0B1F');
+    svg.appendChild(hole);
+    // Center-Text: Gesamtzahl
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', cx); txt.setAttribute('y', cy + 4);
+    txt.setAttribute('text-anchor', 'middle');
+    txt.setAttribute('font-size', '11');
+    txt.setAttribute('font-family', 'Space Mono, monospace');
+    txt.setAttribute('fill', '#EEEEFF');
+    txt.textContent = total;
+    svg.appendChild(txt);
+
+    // Legende
+    const legend = document.getElementById('bp-legend');
+    legend.innerHTML = '';
+    order.slice().reverse().forEach(key => {
+      const meta = STATUS_META[key];
+      const item = document.createElement('div');
+      item.className = 'bp-legend-item';
+      item.style.setProperty('--c', meta.color);
+      item.innerHTML = `<span>${meta.label}</span><span class="count">${counts[key]}</span>`;
+      legend.appendChild(item);
     });
   }
 

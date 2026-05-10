@@ -218,8 +218,51 @@ durch einen Service-Worker abgefangen. Details in Modul 05.
 
 ---
 
-## 5. Änderungsprotokoll
+## 5. Status-Farb-Mapping (gemeinsame Referenz)
+
+Diese Tabelle ist die **eine Quelle** für Modul-Status-Farben. Sie wird
+identisch verwendet in den Markdown-Karten (Hero-Block-Badge), in den
+Mermaid-Diagrammen (`classDef`), in `PULS.md` (Pie-Chart) und in der
+Sage-Page `index.html` (CSS-Variablen + Bau-Puls-Karte).
+
+| Status | Emoji | Farbe (hex) | Markdown-Badge | Site-CSS-Var |
+|---|---|---|---|---|
+| schablone | 🟫 | `#92400E` braun | `🟫 Schablone` | `--status-schablone` |
+| werkstatt | 🟧 | `#EA580C` orange | `🟧 In Werkstatt` | `--status-werkstatt` |
+| spec | 🟨 | `#CA8A04` gelb | `🟨 Spec fertig` | `--status-spec` |
+| stub | 🟦 | `#2563EB` blau | `🟦 Code-Stub` | `--status-stub` |
+| fertig | 🟩 | `#16A34A` grün | `🟩 Fertig` | `--status-fertig` |
+
+Zusätzlich der abgeleitete Sonderzustand `nextup` (kein eigener Score,
+nur visuelle Hervorhebung):
+
+| Sonderzustand | Emoji | Farbe (hex) | Bedeutung |
+|---|---|---|---|
+| nextup | ✨ | `#F59E0B` Gold (Outline) | alle Abhängigkeiten `fertig`, selbst noch nicht `fertig`, nicht im Schutz-Backlog |
+
+**`nextup`-Logik** (Pseudocode):
+```
+isNextUp(modul, alleModule) =
+  modul.score != "fertig" &&
+  modul.id ∉ {"10","11","12"} &&
+  alle(d ∈ modul.abhaengig: alleModule[d].score == "fertig")
+```
+
+Ergebnis: das Mycel zeigt von selbst, wo der nächste Wachstumspunkt
+sitzt. Wer in den Bau-DAG (`ARCHITEKTUR.md`) oder die Bau-Puls-Karte
+(Sage-Page) schaut, sieht goldene Kanten/Outlines genau dort, wo eine
+Sitzung sinnvoll loslegen könnte.
+
+**Reife-Gradient**: braun (im Boden) → orange (Werkstatt-Hitze) →
+gelb (Lichtblick) → blau (kühler Code-Stub) → grün (lebendig). Bewusst
+kein Site-Akzent (Indigo/Violett/Teal), weil die Site-Akzente keinen
+Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
+
+---
+
+## 6. Änderungsprotokoll
 
 | Datum | Sitzung | Änderung |
 |---|---|---|
 | 2026-05-10 | Hauptsitzung Skelett | Datei angelegt, alle Module als Schablonen |
+| 2026-05-10 | Hauptsitzung Site-Echo | Status-Farb-Mapping (§5) als gemeinsame Referenz ergänzt |

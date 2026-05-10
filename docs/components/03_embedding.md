@@ -1,8 +1,42 @@
-# Modul 03 — Embedding (Text → semantischer Vektor)
+# Modul 03 — Embedding
 
-**Status:** Schablone (Spec ausstehend)
-**Datei (Code):** `src/modules/03_embedding.js`
-**Abhängigkeiten:** keine (lädt eigenes Modell von HuggingFace bei init)
+> **Status:** 🟫 Schablone  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 03
+> **Datei (Code):** `src/modules/03_embedding.js`
+>
+> _Text → 384-dimensionaler Vektor via `Xenova/multilingual-e5-small`.
+> Die Übersetzung von Bedeutung in Geometrie._
+
+---
+
+## Im Mycel-Bild
+
+Embedding ist die **Bedeutungs-Übersetzung**: Text wird in einen
+384-dim-Vektor verwandelt, der die semantische Position im Mycel-Raum
+markiert. Zwei ähnliche Sätze landen geometrisch nahe beieinander —
+"Käsekuchen mit Quark" und "Käsetorte" zeigen in fast dieselbe Richtung,
+"Auspuffrohr" weit weg. Das ist die Grundlage, auf der das Mycel
+**inhaltlich** statt adressbasiert findet.
+
+---
+
+## Visualisierung
+
+```mermaid
+flowchart LR
+  T["Text<br/>'Käsekuchen mit Quark'"] --> P[Tokenizer]
+  P --> E[Xenova/<br/>multilingual-e5-small]
+  E --> POOL[Mean-Pooling]
+  POOL --> V["Float32Array(384)<br/>[0.12, -0.04, ...]"]
+  V --> N[L2-Norm]
+  N --> R[bereit für<br/>Cosine-Sim]
+
+  classDef start fill:#92400E,color:#fff,stroke:#fff
+  classDef proc fill:#EA580C,color:#fff,stroke:#fff
+  classDef out fill:#16A34A,color:#fff,stroke:#fff
+  class T start
+  class P,E,POOL proc
+  class V,N,R out
+```
 
 ---
 
@@ -17,7 +51,7 @@ Modell: `Xenova/multilingual-e5-small` (mehrsprachig, kompakt,
 
 ---
 
-## Verantwortung
+## Verantwortlichkeiten
 
 **Macht:**
 - Lazy-Init des Modells beim ersten `embedText()`-Aufruf
@@ -34,9 +68,7 @@ Modell: `Xenova/multilingual-e5-small` (mehrsprachig, kompakt,
 
 ## Schnittstelle
 
-*(noch zu spezifizieren)*
-
-Skizze:
+*(noch zu spezifizieren)* — Skizze:
 
 ```
 init() → Promise<void>
@@ -48,9 +80,7 @@ embedText(text: string) → Promise<Float32Array>  // Länge 384
 embedBatch(texts: string[]) → Promise<Float32Array[]>
 ```
 
----
-
-## Konfigurationswerte
+### Konfigurationswerte
 
 ```
 EMBEDDING_MODEL = "Xenova/multilingual-e5-small"
@@ -73,7 +103,7 @@ EMBEDDING_DIM   = 384
 
 ---
 
-## Risiken / Edge Cases
+## Risiken & offene Punkte
 
 - Erster Lauf benötigt Internet zum Modelldownload. Offline danach OK.
 - Speicherbedarf des Modells: ~30 MB im Browser-Cache.
@@ -84,19 +114,24 @@ EMBEDDING_DIM   = 384
 
 ---
 
-## Querverweise
-
-- `sbkim_integration.md` §4.1 (Default-Modell)
-- transformers.js Dokumentation (extern)
-
----
-
 ## Bauzustand
 
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
+| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid-Flow, Querverweise |
 | Spec gefüllt | — | — | — |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
+
+---
+
+**Querverweise**
+
+- **Abhängigkeiten:** keine (lädt eigenes Modell beim init von HuggingFace)
+- **Wird genutzt von:** Modul 04 (Match) · Modul 05 (Anastomose, indirekt über 04)
+- **Site-Karte:** [Karte 4 · Module-Bento](../../index.html#screen-overview), Eintrag 03
+- **Glossar:** [Embedding](../GLOSSAR.md), [Vektor](../GLOSSAR.md), [multilingual-e5-small](../GLOSSAR.md)
+- **Integration:** `sbkim_integration.md` §4.1 (Default-Modell)
+- **Extern:** [transformers.js Dokumentation](https://huggingface.co/docs/transformers.js)

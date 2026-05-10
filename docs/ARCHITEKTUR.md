@@ -6,6 +6,82 @@ und gehört in die Hauptsitzung.
 
 ---
 
+## 0. Bau-DAG (Modul-Abhängigkeiten + Status)
+
+Der Modul-Abhängigkeitsgraph mit Status-Farben. Goldene Outline =
+**next-up** (alle Vorbedingungen erfüllt, selbst noch nicht fertig).
+Farb-Mapping siehe [`INTERFACES.md` §5](INTERFACES.md). Quelle der
+Status-Werte: [`../status.json`](../status.json).
+
+```mermaid
+flowchart TB
+  subgraph kern [Kern-Schicht]
+    direction TB
+    M01[01 Storage]
+    M02[02 Spore]
+    M03[03 Embedding]
+    M04[04 Match]
+    M07[07 Apoptose]
+  end
+  subgraph netz [Netzwerk-Schicht]
+    direction TB
+    M05[05 Anastomose]
+    M06[06 Heterokaryose]
+  end
+  subgraph ui [UI / Anleitung]
+    direction TB
+    M00[00 Doku-Fenster]
+    M08[08 UI-Demo]
+    M09[09 Einbau-PWA]
+  end
+  subgraph backlog [Schutz-Backlog · Priorität niedrig]
+    direction TB
+    M10[10 Reputation]
+    M11[11 Rate-Limit]
+    M12[12 Blocklist]
+  end
+
+  M01 --> M02
+  M03 --> M04
+  M02 --> M05
+  M04 --> M05
+  M01 --> M05
+  M05 --> M06
+  M02 --> M07
+  M01 --> M07
+  M01 --> M12
+  M06 -.-> M10
+  M02 -.-> M10
+  M05 -.-> M11
+  M06 -.-> M11
+  M00 -.-> M12
+  M07 -.-> M10
+
+  classDef schablone fill:#92400E,color:#fff,stroke:#fff,stroke-width:1px
+  classDef werkstatt fill:#EA580C,color:#fff,stroke:#fff,stroke-width:1px
+  classDef spec      fill:#CA8A04,color:#fff,stroke:#fff,stroke-width:1px
+  classDef stub      fill:#2563EB,color:#fff,stroke:#fff,stroke-width:1px
+  classDef fertig    fill:#16A34A,color:#fff,stroke:#fff,stroke-width:1px
+  classDef nextup    fill:#92400E,color:#fff,stroke:#F59E0B,stroke-width:3px
+  classDef nextupw   fill:#EA580C,color:#fff,stroke:#F59E0B,stroke-width:3px
+
+  class M02,M04,M05,M06,M07,M10,M11,M12 schablone
+  class M00,M01,M03,M09 nextup
+  class M08 nextupw
+```
+
+Lesart: 🟫 = Schablone, 🟧 = In Werkstatt, 🟨 = Spec fertig, 🟦 = Code-Stub,
+🟩 = Fertig. Goldene Outline ✨ = bereit zum Anpacken (alle
+Abhängigkeiten fertig). Gestrichelte Pfeile = lockere Abhängigkeiten
+(Schutz-Backlog setzt auf bestehende Module auf, ist aber selbst
+optional).
+
+Stand 2026-05-10: 00, 01, 03, 09 sind als Schablonen ohne
+Abhängigkeiten **strukturell next-up** — eine Spec-Sitzung kann sie
+sofort anpacken. 08 (UI-Demo) ist bereits in Werkstatt.
+
+---
+
 ## 1. Das Gesamtbild
 
 ```

@@ -7,6 +7,39 @@
 
 ---
 
+## Modulstand heute
+
+```mermaid
+pie showData
+  title Modulstand 2026-05-10 (13 Module)
+  "🟫 Schablone" : 12
+  "🟧 In Werkstatt" : 1
+  "🟨 Spec fertig" : 0
+  "🟦 Code-Stub" : 0
+  "🟩 Fertig" : 0
+```
+
+Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
+auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
+
+## Als nächstes ✨
+
+Module ohne offene Abhängigkeiten, bereit zum Anpacken:
+
+- ✨ **[00 Doku-Fenster](components/00_doku_fenster.md)** — keine Abh., 5-Klick-UI in Endknoten
+- ✨ **[01 Storage](components/01_storage.md)** — keine Abh., **Voraussetzung für 02, 05, 07, 12**
+- ✨ **[03 Embedding](components/03_embedding.md)** — keine Abh., **Voraussetzung für 04**
+- ✨ **[09 Einbau-PWA](components/09_einbau_pwa.md)** — keine Abh., reine Anleitung
+
+In Arbeit (fortsetzen, nicht neu starten):
+
+- 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
+
+Empfehlung Hauptsitzung: zwei parallele Spec-Sitzungen 01 + 03 starten.
+Sie blockieren am meisten Folgemodule.
+
+---
+
 ## Schnellüberblick
 
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
@@ -66,6 +99,76 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-10 · Hauptsitzung · Site-Echo + Bau-Puls + Brand-Icon
+
+**Getan:**
+- **Status-Farb-Mapping** als gemeinsame Quelle in `docs/INTERFACES.md` §5
+  ergänzt: 5 Status (schablone/werkstatt/spec/stub/fertig) +
+  Sonderzustand `nextup`. Reife-Gradient braun → orange → gelb → blau →
+  grün; goldene Outline für `nextup`. Wird identisch in Markdown-Badges,
+  Mermaid-`classDef`, PULS-Pie und Site-CSS-Variablen verwendet.
+- **Alle 13 Komponenten-Karten** (`docs/components/00..12`) ans
+  Site-Layout angeglichen: Hero-Block mit Status-Badge + Schicht +
+  Site-Karten-Anker, Bio-Metapher-Block ("Im Mycel-Bild"),
+  Visualisierung pro Modul (Mermaid für 00, 01, 03, 05, 06, 08, 09, 11,
+  12 · Inline-SVG für 02, 04, 07, 10), Querverweise-Footer mit
+  Abhängigkeiten/genutzt-von/Site-Karte/Glossar/Paper/Verwandt.
+  Bestehender Inhalt bleibt erhalten, nur Strukturwechsel.
+- **`docs/ARCHITEKTUR.md`** um neuen §0 Bau-DAG erweitert: Mermaid-
+  Flowchart der Modul-Abhängigkeiten mit `classDef` pro Status, goldene
+  Outline für `next-up`. Bestehende ASCII-Diagramme bleiben.
+- **`docs/PULS.md`** um Pie-Chart "Modulstand heute" + "Als nächstes ✨"-
+  Liste oben erweitert. Pie ist Mermaid-`pie showData`. Liste der
+  next-up-Module (00, 01, 03, 09 + 08 in Werkstatt) verlinkt direkt auf
+  die Komponenten-Karten.
+- **Brand-Icon `assets/icon.svg`** angelegt: Steinpilz weiß auf
+  hellgrün → dunkelgrün Verlauf, schwarzer Schlagschatten (Word-Style)
+  via SVG-`feDropShadow` für 3D-Wirkung. Single-File, kein PNG-Fallback
+  (Konverter fehlten in der Sitzung; SVG-Favicon wird von allen modernen
+  Browsern unterstützt).
+- **Sage-Page `index.html`** erweitert:
+  1. Favicon-Links im `<head>` (SVG + Apple-Touch).
+  2. Brand-Icon (36×36) in der Topbar neben "SAGE·OBSERVATORIUM".
+  3. CSS-Variablen `--status-*` aus dem Mapping (gemeinsame Quelle).
+  4. Neue Karte 14 "Bau-Puls" zwischen Eigenschutz und Pulse-Footer:
+     Bento-Grid mit allen 13 Modulen, Status-Farbe als linker Balken,
+     pulsierender Glow um next-up-Karten, Pie-Chart-Donut mit Legende,
+     Klick öffnet jeweilige `docs/components/NN_*.md`.
+  5. JS: `renderBauPuls(s)` + `isNextUp(m, byId)` + `STATUS_META` +
+     `SLUG_MAP`. Eingehängt in den bestehenden `renderAll()`-Pfad,
+     liest dieselbe `status.json` wie der Rest der Page.
+- **Verifikation lokal:** Python-Server, `curl` auf `/`, `/status.json`,
+  `/assets/icon.svg`, drei Markdown-Pfade → alle HTTP 200. JS-Syntax mit
+  `node --check` grün. Alle 38 vom JS gesuchten DOM-IDs im HTML
+  vorhanden. next-up-Logik in Python gegen `status.json` simuliert →
+  liefert 00, 01, 03, 08, 09 wie erwartet.
+
+**Offen:**
+- **`favicon.ico`-Bitmap-Fallback** nicht erzeugt (kein ImageMagick /
+  rsvg-convert / Inkscape im Sitzungs-Image). Moderne Browser nutzen
+  ohnehin SVG-Favicon; ältere Browser zeigen ein Default-Icon. Bei
+  Bedarf separat nachziehen via Online-Konverter oder einer Sitzung mit
+  installiertem Konverter.
+- **GLOSSAR.md** noch nicht alle neuen Begriffe enthält (z.B.
+  "Atemkreis", "Werkstatt", "Hop-TTL", "Override"). Die Querverweis-
+  Footer der Komponenten-Karten linken auf Glossar-Anker, die teilweise
+  noch zu ergänzen sind. Reine Doku-Aufgabe für eine Spec-Sitzung.
+- **PULS-Pie-Chart** muss bei Status-Wechseln manuell mit-aktualisiert
+  werden — Mermaid kann `status.json` nicht lesen. Pflichtteil der
+  Sitzung, die einen Status ändert (steht ohnehin im Pflicht-Workflow).
+
+**Nächster sinnvoller Schritt:**
+- Visuelle Sichtprüfung der Sage-Page durch Klaus im Browser:
+  Favicon im Tab? Brand-Icon in der Topbar? Bau-Puls-Karte rendert?
+  Goldenes Pulsieren auf 00/01/03/08/09? Klicks öffnen die richtigen
+  Markdown-Dateien? Mobile-Layout passt?
+- Spec-Sitzung **Modul 01 (Storage)** starten — die meiste Folge-
+  Blockade. Parallel **Modul 03 (Embedding)** Spec-Sitzung — unabhängig.
+- GLOSSAR.md in einer eigenen kleinen Sitzung um die fehlenden Anker
+  vervollständigen.
+
+---
 
 ### 2026-05-10 · Hauptsitzung · Sage·Observatorium (Landing Page)
 

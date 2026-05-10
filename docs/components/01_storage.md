@@ -1,8 +1,65 @@
-# Modul 01 — Storage (IndexedDB-Wrapper)
+# Modul 01 — Storage
 
-**Status:** Schablone (Spec ausstehend)
-**Datei (Code):** `src/modules/01_storage.js`
-**Abhängigkeiten:** keine
+> **Status:** 🟫 Schablone  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 01
+> **Datei (Code):** `src/modules/01_storage.js`
+>
+> _IndexedDB-Wrapper für alle SBKIM-Stores — die Erde, in der das Mycel
+> wurzelt. Strikt getrennt vom Endknoten-App-Storage._
+
+---
+
+## Im Mycel-Bild
+
+Storage ist der **Boden**, in dem das Mycel verankert ist. Schlüssel,
+Spore, Geschwisterliste, Vermächtnisse — alles, was zwischen zwei Atem-
+Zyklen erhalten bleiben muss, liegt hier. Der Boden ist sortenrein
+(`sbkim_*`-Präfix): nichts vermischt sich mit den Inhaltsdaten der
+Endknoten-PWA, keine Rezepte versickern in Geschwisterlisten und keine
+Schlüssel in die Suchhistorie.
+
+---
+
+## Visualisierung
+
+```mermaid
+erDiagram
+  SBKIM_KEYS ||--|| SBKIM_SPORE : "signiert mit"
+  SBKIM_SPORE ||--o{ SBKIM_SIBLINGS : "ist Eintrag in"
+  SBKIM_SIBLINGS ||--o{ SBKIM_ANASTOMOSIS_LOG : "Handshake-Spuren"
+  SBKIM_SIBLINGS ||--o{ SBKIM_LEGACY_INBOX : "Vermächtnis von"
+  SBKIM_DOKU_META ||--|| SBKIM_KEYS : "kennt Knoten-ID aus"
+
+  SBKIM_KEYS {
+    string keyId
+    JsonWebKey privateKey
+    JsonWebKey publicKey
+  }
+  SBKIM_SPORE {
+    string nodeId
+    JsonObject sporeJson
+    string signature
+  }
+  SBKIM_SIBLINGS {
+    string nodeId
+    string domain
+    string since
+  }
+  SBKIM_ANASTOMOSIS_LOG {
+    string ts
+    string peerId
+    string outcome
+  }
+  SBKIM_LEGACY_INBOX {
+    string fromNodeId
+    string reason
+    string signature
+  }
+  SBKIM_DOKU_META {
+    string moduleId
+    string lastSighttest
+    string status
+  }
+```
 
 ---
 
@@ -15,7 +72,7 @@ SBKIM-Daten **getrennt** vom Endknoten-Anwendungs-Storage liegen
 
 ---
 
-## Verantwortung
+## Verantwortlichkeiten
 
 **Macht:**
 - Datenbank `sbkim` öffnen, Versionen verwalten
@@ -60,9 +117,7 @@ Stores (vorläufige Liste, in Spec zu finalisieren):
 | `sbkim_legacy_inbox` | empfangene Vermächtnisse | 07 |
 | `sbkim_doku_meta` | Letzter Sichttest pro Modul | 00 |
 
----
-
-## Konfigurationswerte
+### Konfigurationswerte
 
 ```
 SBKIM_STORE_PREFIX = "sbkim_"
@@ -80,7 +135,7 @@ SBKIM_STORE_PREFIX = "sbkim_"
 
 ---
 
-## Risiken / Edge Cases
+## Risiken & offene Punkte
 
 - Privatmodus / inkognito: IDB kann unzugänglich sein → init muss sauber
   scheitern (return rejected Promise mit verständlicher Meldung), darf
@@ -91,19 +146,23 @@ SBKIM_STORE_PREFIX = "sbkim_"
 
 ---
 
-## Querverweise
-
-- `sbkim_integration.md` §4.2 (Schlüsselablage)
-- `sbkim_integration.md` §9 ("Keine Vermischung mit Hauptanwendungs-Storage")
-
----
-
 ## Bauzustand
 
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
+| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, ER-Diagramm, Querverweise |
 | Spec gefüllt | — | — | — |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
+
+---
+
+**Querverweise**
+
+- **Abhängigkeiten:** keine (Wurzel der Mycel-Erde)
+- **Wird genutzt von:** Modul 02 (Spore) · Modul 05 (Anastomose) · Modul 07 (Apoptose) · Modul 12 (Blocklist) · Modul 00 (Doku-Meta)
+- **Site-Karte:** [Karte 4 · Module-Bento](../../index.html#screen-overview), Eintrag 01
+- **Glossar:** [IndexedDB-Speicher](../GLOSSAR.md)
+- **Integration:** `sbkim_integration.md` §4.2 (Schlüsselablage), §9 (keine Vermischung mit Hauptanwendungs-Storage)

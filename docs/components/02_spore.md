@@ -1,8 +1,58 @@
-# Modul 02 — Spore (Identität, Schlüssel, Visitenkarte)
+# Modul 02 — Spore
 
-**Status:** Schablone (Spec ausstehend)
-**Datei (Code):** `src/modules/02_spore.js`
-**Abhängigkeiten:** Modul 01 (Storage)
+> **Status:** 🟫 Schablone  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 02
+> **Datei (Code):** `src/modules/02_spore.js`
+>
+> _Ed25519-Identität, signierte Visitenkarte, abgeworfen unter
+> `/.well-known/sbkim/spore.json` — die Knoten-Ich-Erklärung des
+> Mycels._
+
+---
+
+## Im Mycel-Bild
+
+Die Spore ist die **signierte Visitenkarte** des Knotens. Sie trägt
+Identität (Ed25519-Schlüsselpaar), Domäne und Endpunkt-Adressen — alles
+zusammengefasst in einer kleinen JSON-Datei mit Signatur. Ein Knoten,
+der seine Spore verliert, ist gestorben: ein Pilz wächst nicht aus dem
+Nichts wieder, er beginnt mit einer neuen Spore und ist damit ein neuer
+Knoten. Das ist konsequent: Identität bedeutet, den eigenen Schlüssel
+zu halten.
+
+---
+
+## Visualisierung
+
+```svg
+<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sporeBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="sporeShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <rect x="20" y="20" width="440" height="200" rx="14" fill="url(#sporeBg)" stroke="#6366F1" stroke-width="1.5" filter="url(#sporeShadow)"/>
+  <text x="40" y="56" font-family="ui-monospace,monospace" font-size="13" fill="#F59E0B">protocolVersion</text>
+  <text x="200" y="56" font-family="ui-monospace,monospace" font-size="13" fill="#EEEEFF">"0.1"</text>
+  <text x="40" y="84" font-family="ui-monospace,monospace" font-size="13" fill="#F59E0B">nodeId</text>
+  <text x="200" y="84" font-family="ui-monospace,monospace" font-size="13" fill="#EEEEFF">sha256(publicKey)</text>
+  <text x="40" y="112" font-family="ui-monospace,monospace" font-size="13" fill="#F59E0B">domain</text>
+  <text x="200" y="112" font-family="ui-monospace,monospace" font-size="13" fill="#EEEEFF">"rezeptbuch.example"</text>
+  <text x="40" y="140" font-family="ui-monospace,monospace" font-size="13" fill="#F59E0B">domainKeywords</text>
+  <text x="200" y="140" font-family="ui-monospace,monospace" font-size="13" fill="#EEEEFF">["Backen","Saucen",...]</text>
+  <text x="40" y="168" font-family="ui-monospace,monospace" font-size="13" fill="#F59E0B">endpointPaths</text>
+  <text x="200" y="168" font-family="ui-monospace,monospace" font-size="13" fill="#EEEEFF">{ spore, query, ... }</text>
+  <g transform="translate(380,140)">
+    <circle r="32" fill="none" stroke="#16A34A" stroke-width="2"/>
+    <text x="0" y="-4" text-anchor="middle" font-size="11" fill="#16A34A">Ed25519</text>
+    <text x="0" y="12" text-anchor="middle" font-size="11" fill="#16A34A">Signatur</text>
+  </g>
+  <text x="40" y="200" font-family="ui-monospace,monospace" font-size="11" fill="#94A3B8">— Spore wird unter /.well-known/sbkim/spore.json abgelegt —</text>
+</svg>
+```
 
 ---
 
@@ -20,7 +70,7 @@ Aufbau erzeugt einen neuen Knoten. Konsistent mit dem Pilz-Modell.
 
 ---
 
-## Verantwortung
+## Verantwortlichkeiten
 
 **Macht:**
 - Schlüsselpaar erzeugen (WebCrypto Ed25519)
@@ -38,9 +88,7 @@ Aufbau erzeugt einen neuen Knoten. Konsistent mit dem Pilz-Modell.
 
 ## Schnittstelle
 
-*(noch zu spezifizieren)*
-
-Vorgeschlagene Skizze:
+*(noch zu spezifizieren)* — Vorgeschlagene Skizze:
 
 ```
 init() → Promise<void>
@@ -64,9 +112,7 @@ verifyForeignSpore(spore: SporeJson) → Promise<{
 }>
 ```
 
----
-
-## Datenformat: SporeJson
+### Datenformat: SporeJson
 
 *(noch zu spezifizieren — Pflichtfelder im Detail)*
 
@@ -89,9 +135,7 @@ Skizze (siehe Paper Kapitel 13, sobald verfügbar):
 }
 ```
 
----
-
-## Storage
+### Storage
 
 Stores: `sbkim_keys`, `sbkim_spore`.
 
@@ -109,7 +153,7 @@ Stores: `sbkim_keys`, `sbkim_spore`.
 
 ---
 
-## Risiken / Edge Cases
+## Risiken & offene Punkte
 
 - WebCrypto unterstützt Ed25519 erst ab modernen Browsern. Bei
   ungeeignetem Browser: init scheitert, Endknoten-App läuft trotzdem.
@@ -120,20 +164,24 @@ Stores: `sbkim_keys`, `sbkim_spore`.
 
 ---
 
-## Querverweise
-
-- `sbkim_integration.md` §4.2 (Schlüsselgenerierung)
-- `sbkim_integration.md` §4.3 (Spore deployen)
-- `sbkim_integration.md` §7 (Versionierung)
-
----
-
 ## Bauzustand
 
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
+| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Spore-SVG, Querverweise |
 | Spec gefüllt | — | — | — |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
+
+---
+
+**Querverweise**
+
+- **Abhängigkeiten:** Modul 01 (Storage)
+- **Wird genutzt von:** Modul 05 (Anastomose) · Modul 07 (Apoptose) · Modul 06 (Heterokaryose) · Modul 10 (Reputation)
+- **Site-Karte:** [Karte 4 · Module-Bento](../../index.html#screen-overview), Eintrag 02 · [Karte 10 · Andocken](../../index.html#screen-overview) (Live-Generator)
+- **Glossar:** [Spore](../GLOSSAR.md), [Knoten-ID](../GLOSSAR.md), [Ed25519](../GLOSSAR.md)
+- **Integration:** `sbkim_integration.md` §4.2 (Schlüsselgenerierung), §4.3 (Spore deployen), §7 (Versionierung)
+- **Paper:** Kapitel 13 (Spore-Format)
