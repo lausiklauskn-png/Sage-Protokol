@@ -745,18 +745,78 @@
   }
   .ueber-close:hover { color: var(--text); border-color: var(--accent); background: rgba(99,102,241,0.18); }
   .ueber-head {
+    position: relative;
     display: flex; align-items: center; gap: 1rem;
-    margin: 0 0 1rem;
-    padding-right: 2.4rem;
+    margin: 0 -1.7rem 1rem;
+    padding: 0.8rem 1.7rem 0.8rem;
+    padding-right: 3rem;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .ueber-myzel-bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+  .ueber-mark-wrap {
+    position: relative;
+    width: 56px; height: 56px; flex: 0 0 56px;
   }
   .ueber-mark {
-    width: 56px; height: 56px; flex: 0 0 56px;
-    filter: drop-shadow(0 0 12px rgba(245,158,11,0.25));
+    width: 100%; height: 100%;
+    position: relative; z-index: 2;
+    filter: drop-shadow(0 0 12px rgba(245,158,11,0.35));
+  }
+  .ueber-mark-pulse {
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+  }
+  .ueber-modal:not([hidden]) .ueber-mark-pulse {
+    animation: ueber-mark-pulse 1.4s ease-out 0.1s 1;
+  }
+  @keyframes ueber-mark-pulse {
+    0%   { transform: scale(0.7); opacity: 0.85; }
+    100% { transform: scale(1.9); opacity: 0; }
   }
   .ueber-head h2 {
+    position: relative; z-index: 2;
     margin: 0;
     font-weight: 600; font-size: 1.5rem; letter-spacing: -0.01em;
   }
+  .ueber-modal:not([hidden]) .ueber-body ul li {
+    animation: ueber-li-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  }
+  .ueber-modal:not([hidden]) .ueber-body ul li:nth-child(1) { animation-delay: 0.12s; }
+  .ueber-modal:not([hidden]) .ueber-body ul li:nth-child(2) { animation-delay: 0.20s; }
+  .ueber-modal:not([hidden]) .ueber-body ul li:nth-child(3) { animation-delay: 0.28s; }
+  .ueber-modal:not([hidden]) .ueber-body ul li:nth-child(4) { animation-delay: 0.36s; }
+  @keyframes ueber-li-in {
+    from { opacity: 0; transform: translateX(-14px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .ueber-cta {
+    margin-top: 1.6rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line);
+    display: flex; gap: 0.6rem; flex-wrap: wrap;
+    align-items: center;
+  }
+  .ueber-tour-btn {
+    flex: 1 1 auto;
+    min-width: 220px;
+    background: linear-gradient(135deg, var(--gold), #f97316);
+    border-color: transparent;
+    color: #1a0d00;
+    font-weight: 600;
+    padding: 0.7rem 1.1rem;
+    box-shadow: 0 4px 18px rgba(245, 158, 11, 0.28);
+  }
+  .ueber-tour-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
   .ueber-lede {
     font-size: 1.05rem; line-height: 1.6;
     color: var(--text);
@@ -798,6 +858,266 @@
     line-height: 1.55;
   }
   .ueber-foot strong { color: var(--gold); }
+
+  /* ============================================================
+     SCREEN: WARUM (Vollbild-Tour)
+     ============================================================ */
+  #screen-warum { padding-bottom: 4rem; }
+
+  /* Hero */
+  .warum-hero {
+    text-align: center;
+    padding: 2.6rem 1rem 3.2rem;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 2.4rem;
+  }
+  .warum-hero-mark {
+    position: relative;
+    width: 140px; height: 140px;
+    margin: 0 auto 1.5rem;
+    display: inline-block;
+  }
+  .warum-hero-mark img {
+    position: relative; z-index: 5;
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 28px rgba(245,158,11,0.45));
+  }
+  .warum-pulse {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    pointer-events: none;
+    opacity: 0;
+    animation: warum-pulse 3s ease-out infinite;
+  }
+  .warum-pulse-1 { animation-delay: 0s; }
+  .warum-pulse-2 { animation-delay: 1s; }
+  .warum-pulse-3 { animation-delay: 2s; }
+  @keyframes warum-pulse {
+    0%   { transform: scale(0.7); opacity: 0; }
+    20%  { opacity: 0.7; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  .warum-h1 {
+    font-size: 2.2rem;
+    font-weight: 600; letter-spacing: -0.02em;
+    margin: 0 0 0.8rem;
+  }
+  .warum-lede {
+    max-width: 580px;
+    margin: 0 auto 1.6rem;
+    font-size: 1.05rem; line-height: 1.6;
+    color: var(--muted);
+  }
+  .warum-scroll-hint {
+    font-size: 0.72rem;
+    color: var(--gold);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    animation: warum-bounce 1.8s ease-in-out infinite;
+  }
+  @keyframes warum-bounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(6px); }
+  }
+
+  /* Sektionen */
+  .warum-section {
+    max-width: 980px;
+    margin: 0 auto 3.2rem;
+    padding: 0 0.4rem;
+  }
+  .warum-section-head {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 0.4rem;
+  }
+  .warum-num {
+    font-family: "Space Mono", monospace;
+    font-size: 0.92rem; font-weight: 700;
+    color: var(--gold);
+    background: rgba(245, 158, 11, 0.12);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+  }
+  .warum-section h2 {
+    margin: 0;
+    font-size: 1.55rem; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .warum-sub {
+    color: var(--muted);
+    font-size: 0.98rem;
+    margin: 0 0 1.4rem;
+    line-height: 1.55;
+  }
+
+  /* Vergleich Vorher/Nachher (1) */
+  .vergleich-row {
+    display: grid;
+    grid-template-columns: 1fr 50px 1fr;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  @media (max-width: 760px) {
+    .vergleich-row { grid-template-columns: 1fr; }
+    .vergleich-pfeil { display: none; }
+  }
+  .vergleich-col {
+    background: rgba(0,0,0,0.22);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 1.1rem 1.1rem 1.2rem;
+    display: flex; flex-direction: column;
+  }
+  .vergleich-vorher  { border-color: rgba(244, 63, 94, 0.25); }
+  .vergleich-nachher { border-color: rgba(20, 184, 166, 0.30); }
+  .vergleich-tag {
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.6rem;
+  }
+  .vergleich-vorher  .vergleich-tag { color: var(--rose); }
+  .vergleich-nachher .vergleich-tag { color: var(--teal); }
+  .vergleich-svg {
+    width: 100%; height: auto; max-height: 220px;
+    margin-bottom: 0.8rem;
+  }
+  .vergleich-text { line-height: 1.55; color: var(--text); margin: 0; font-size: 0.94rem; }
+  .vergleich-text em { color: var(--gold); font-style: normal; font-weight: 600; }
+  .vergleich-pfeil {
+    align-self: center; justify-self: center;
+    font-size: 2.2rem; color: var(--gold);
+    font-family: "Space Mono", monospace; font-weight: 300;
+  }
+
+  /* Live-Demo (2) */
+  .demo-questions {
+    display: flex; gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .demo-q-btn { font-size: 0.86rem; padding: 0.5rem 0.85rem; }
+  .demo-q-btn.active {
+    background: rgba(245, 158, 11, 0.18);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .demo-stage {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.2rem;
+    background: rgba(0,0,0,0.22);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 1.2rem;
+  }
+  @media (max-width: 760px) {
+    .demo-stage { grid-template-columns: 1fr; }
+  }
+  .demo-svg { width: 100%; height: auto; }
+  .demo-node circle { transition: fill 0.4s, stroke 0.4s, opacity 0.4s; }
+  .demo-node.active circle { fill: #16A34A !important; stroke: #4ADE80 !important; }
+  .demo-node.silent { opacity: 0.38; }
+  .demo-result {
+    display: flex; flex-direction: column; justify-content: center;
+    font-size: 0.92rem; line-height: 1.55;
+    min-height: 120px;
+  }
+  .demo-result-empty { color: var(--dim); text-align: center; }
+  .demo-result-q {
+    color: var(--gold);
+    font-family: "Space Mono", monospace;
+    font-size: 0.88rem;
+    margin-bottom: 0.4rem;
+  }
+  .demo-result-answer { color: var(--text); margin-bottom: 0.4rem; }
+  .demo-result-tag {
+    display: inline-block;
+    font-family: "Space Mono", monospace;
+    font-size: 0.74rem;
+    background: rgba(22, 163, 74, 0.18);
+    color: #4ADE80;
+    padding: 0.18rem 0.5rem;
+    border-radius: 4px;
+    margin: 0 0.15rem;
+  }
+  .demo-result-silent {
+    color: var(--rose);
+    font-style: italic;
+    margin-bottom: 0.4rem;
+  }
+  .demo-result-explain { color: var(--muted); }
+
+  /* Mycel-Wachstum (3) */
+  .wachstum-stage {
+    position: relative;
+    background: rgba(0,0,0,0.22);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 1.4rem 1.2rem 1.2rem;
+    text-align: center;
+  }
+  .wachstum-svg { width: 100%; height: auto; max-height: 360px; }
+  .wachstum-counter {
+    position: absolute; top: 0.8rem; right: 1rem;
+    font-family: "Space Mono", monospace;
+    font-size: 0.84rem;
+    color: var(--gold);
+    background: rgba(245, 158, 11, 0.12);
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+  }
+  .wachstum-replay { margin-top: 0.4rem; font-size: 0.86rem; }
+
+  /* Drei Versprechen (4) */
+  .versprechen-grid {
+    display: grid; gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 760px) {
+    .versprechen-grid { grid-template-columns: 1fr; }
+  }
+  .versprechen-card {
+    background: rgba(0,0,0,0.22);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 1.4rem 1.1rem;
+  }
+  .versprechen-icon { width: 48px; height: 48px; margin-bottom: 0.7rem; }
+  .versprechen-icon svg { width: 100%; height: 100%; }
+  .versprechen-card h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem; font-weight: 600;
+  }
+  .versprechen-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem; line-height: 1.55;
+  }
+
+  /* Zukunft (5) */
+  .zukunft-liste { list-style: none; padding: 0; margin: 0 0 1.6rem; }
+  .zukunft-liste li {
+    position: relative;
+    padding: 0.85rem 0.9rem 0.85rem 2.1rem;
+    border-left: 3px solid var(--gold);
+    background: rgba(245, 158, 11, 0.05);
+    margin-bottom: 0.6rem;
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    line-height: 1.55;
+    font-size: 0.96rem;
+  }
+  .zukunft-liste li::before {
+    content: "→";
+    position: absolute; left: 0.8rem; top: 0.85rem;
+    color: var(--gold);
+    font-family: "Space Mono", monospace; font-weight: 700;
+  }
+  .zukunft-liste strong { color: var(--gold); font-weight: 600; }
+  .warum-cta {
+    display: flex; gap: 0.6rem; flex-wrap: wrap;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
   </style>
 </head>
 <body>
@@ -1422,6 +1742,265 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       </section>
     </main>
 
+    <!-- ====================================================== -->
+    <!-- SCREEN: WARUM (Vollbild-Tour mit Live-Demo) -->
+    <!-- ====================================================== -->
+    <main id="screen-warum" class="screen">
+      <button class="screen-back" onclick="goScreen('overview', 'warum')">← Zurück</button>
+
+      <!-- Hero -->
+      <section class="warum-hero">
+        <div class="warum-hero-mark" aria-hidden="true">
+          <span class="warum-pulse warum-pulse-1"></span>
+          <span class="warum-pulse warum-pulse-2"></span>
+          <span class="warum-pulse warum-pulse-3"></span>
+          <img src="assets/mark.svg" alt="">
+        </div>
+        <h1 class="warum-h1">Sage in fünf Bildern.</h1>
+        <p class="warum-lede">
+          Eine kleine Tour durch das, was Sage anders macht — ohne
+          Fremdwörter, mit echten Beispielen aus dem Alltag.
+        </p>
+        <div class="warum-scroll-hint" aria-hidden="true">↓ Weiterscrollen</div>
+      </section>
+
+      <!-- Sektion 1: Vorher/Nachher -->
+      <section class="warum-section warum-vergleich">
+        <div class="warum-section-head">
+          <span class="warum-num">01</span>
+          <h2>Bedeutung statt Adresse</h2>
+        </div>
+        <p class="warum-sub">
+          Heute fließt fast alles durch eine Stelle: Google. Sage geht den
+          umgekehrten Weg — jeder Knoten weiß seins.
+        </p>
+        <div class="vergleich-row">
+
+          <div class="vergleich-col vergleich-vorher">
+            <div class="vergleich-tag">Heute</div>
+            <svg viewBox="0 0 280 220" class="vergleich-svg" aria-hidden="true">
+              <defs>
+                <radialGradient id="g-zentr" cx="50%" cy="35%">
+                  <stop offset="0%" stop-color="#F43F5E" stop-opacity="0.95"/>
+                  <stop offset="100%" stop-color="#7F1D1D" stop-opacity="0.4"/>
+                </radialGradient>
+              </defs>
+              <line x1="140" y1="80" x2="40"  y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
+              <line x1="140" y1="80" x2="100" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
+              <line x1="140" y1="80" x2="180" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
+              <line x1="140" y1="80" x2="240" y2="190" stroke="#F43F5E" stroke-opacity="0.45" stroke-width="1"/>
+              <circle cx="140" cy="80" r="32" fill="url(#g-zentr)"/>
+              <text x="140" y="86" text-anchor="middle" font-size="11" font-family="Space Mono, monospace" fill="#FFF">Index</text>
+              <circle cx="40"  cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
+              <circle cx="100" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
+              <circle cx="180" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
+              <circle cx="240" cy="190" r="10" fill="#94A3B8" fill-opacity="0.55"/>
+              <text x="140" y="215" text-anchor="middle" font-size="9" font-family="Space Mono, monospace" fill="#94A3B8">Webseiten</text>
+            </svg>
+            <p class="vergleich-text">
+              Du musst die Adresse wissen oder den Index fragen. Die kleinen
+              Webseiten gehen unter, weil der Index entscheidet, wer zählt.
+            </p>
+          </div>
+
+          <div class="vergleich-pfeil" aria-hidden="true">→</div>
+
+          <div class="vergleich-col vergleich-nachher">
+            <div class="vergleich-tag">Mit Sage</div>
+            <svg viewBox="0 0 280 220" class="vergleich-svg" aria-hidden="true">
+              <line x1="60"  y1="110" x2="140" y2="60"  stroke="#14B8A6" stroke-opacity="0.6" stroke-width="1.4"/>
+              <line x1="140" y1="60"  x2="220" y2="110" stroke="#14B8A6" stroke-opacity="0.6" stroke-width="1.4"/>
+              <line x1="60"  y1="110" x2="100" y2="180" stroke="#6366F1" stroke-opacity="0.55" stroke-width="1.2"/>
+              <line x1="220" y1="110" x2="180" y2="180" stroke="#6366F1" stroke-opacity="0.55" stroke-width="1.2"/>
+              <line x1="100" y1="180" x2="180" y2="180" stroke="#F59E0B" stroke-opacity="0.45" stroke-width="1.2"/>
+              <line x1="60"  y1="110" x2="220" y2="110" stroke="#8B5CF6" stroke-opacity="0.35" stroke-width="1"/>
+              <circle cx="60"  cy="110" r="14" fill="#14B8A6">
+                <animate attributeName="r" values="13;15;13" dur="3.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="140" cy="60"  r="14" fill="#F59E0B">
+                <animate attributeName="r" values="13;15;13" dur="3s" repeatCount="indefinite" begin="0.4s"/>
+              </circle>
+              <circle cx="220" cy="110" r="14" fill="#6366F1">
+                <animate attributeName="r" values="13;15;13" dur="3.6s" repeatCount="indefinite" begin="0.8s"/>
+              </circle>
+              <circle cx="100" cy="180" r="12" fill="#8B5CF6">
+                <animate attributeName="r" values="11;13;11" dur="3.2s" repeatCount="indefinite" begin="1.2s"/>
+              </circle>
+              <circle cx="180" cy="180" r="12" fill="#14B8A6" fill-opacity="0.8">
+                <animate attributeName="r" values="11;13;11" dur="3.8s" repeatCount="indefinite" begin="1.6s"/>
+              </circle>
+            </svg>
+            <p class="vergleich-text">
+              Du fragst nach dem <em>was</em>, nicht nach dem <em>wo</em>.
+              Knoten, die das Thema kennen, antworten. Die anderen schweigen
+              höflich. Niemand entscheidet zentral, wer zählt.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Sektion 2: Live-Frage-Demo -->
+      <section class="warum-section warum-demo">
+        <div class="warum-section-head">
+          <span class="warum-num">02</span>
+          <h2>Probier es aus</h2>
+        </div>
+        <p class="warum-sub">
+          Klick auf eine Frage. Schau, wer antwortet — und wer höflich
+          schweigt, weil er nicht zuständig ist.
+        </p>
+        <div class="demo-questions" id="demo-questions">
+          <button type="button" class="demo-q-btn" data-q="cocktail">"Cocktail mit Tequila ohne Limette"</button>
+          <button type="button" class="demo-q-btn" data-q="hefeteig">"Hefeteig für Pizza"</button>
+          <button type="button" class="demo-q-btn" data-q="honig">"Honig im Hefeteig"</button>
+          <button type="button" class="demo-q-btn" data-q="schach">"Schacheröffnung mit Bauern­opfer"</button>
+          <button type="button" class="demo-q-btn" data-q="dach">"Dachschindeln verlegen"</button>
+        </div>
+        <div class="demo-stage">
+          <svg viewBox="0 0 600 300" class="demo-svg" id="demo-svg" aria-label="Mycel-Knoten-Geflecht für Live-Demo">
+            <!-- Verbindungslinien (statisch) -->
+            <g class="demo-links" stroke-opacity="0.35" stroke-width="1.2">
+              <line x1="120" y1="80"  x2="300" y2="60"  stroke="#8B5CF6"/>
+              <line x1="300" y1="60"  x2="480" y2="80"  stroke="#8B5CF6"/>
+              <line x1="120" y1="220" x2="300" y2="240" stroke="#8B5CF6"/>
+              <line x1="300" y1="240" x2="480" y2="220" stroke="#8B5CF6"/>
+              <line x1="120" y1="80"  x2="120" y2="220" stroke="#8B5CF6"/>
+              <line x1="480" y1="80"  x2="480" y2="220" stroke="#8B5CF6"/>
+              <line x1="300" y1="60"  x2="300" y2="240" stroke="#8B5CF6"/>
+            </g>
+            <!-- Sender-Knoten (links, du) -->
+            <g class="demo-sender" id="demo-sender">
+              <circle cx="40" cy="150" r="22" fill="#F59E0B"/>
+              <text x="40" y="154" text-anchor="middle" font-size="10" font-family="Space Mono, monospace" fill="#1a0d00" font-weight="700">DU</text>
+            </g>
+            <!-- Particle-Slot, JS füllt -->
+            <g id="demo-particle"></g>
+            <!-- Knoten -->
+            <g class="demo-node" data-domain="rezeptbuch" transform="translate(120 80)">
+              <circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+              <text y="-2"  text-anchor="middle" font-size="10" font-family="Space Mono, monospace" fill="#EEEEFF" font-weight="700">REZEPT</text>
+              <text y="11"  text-anchor="middle" font-size="9"  font-family="Space Mono, monospace" fill="#94A3B8">Kuchen, Brot</text>
+            </g>
+            <g class="demo-node" data-domain="mixarium" transform="translate(300 60)">
+              <circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+              <text y="-2"  text-anchor="middle" font-size="10" font-family="Space Mono, monospace" fill="#EEEEFF" font-weight="700">MIXARIUM</text>
+              <text y="11"  text-anchor="middle" font-size="9"  font-family="Space Mono, monospace" fill="#94A3B8">Cocktails</text>
+            </g>
+            <g class="demo-node" data-domain="imker" transform="translate(480 80)">
+              <circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+              <text y="-2"  text-anchor="middle" font-size="10" font-family="Space Mono, monospace" fill="#EEEEFF" font-weight="700">IMKER</text>
+              <text y="11"  text-anchor="middle" font-size="9"  font-family="Space Mono, monospace" fill="#94A3B8">Honig, Bienen</text>
+            </g>
+            <g class="demo-node" data-domain="schach" transform="translate(120 220)">
+              <circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+              <text y="-2"  text-anchor="middle" font-size="10" font-family="Space Mono, monospace" fill="#EEEEFF" font-weight="700">SCHACH</text>
+              <text y="11"  text-anchor="middle" font-size="9"  font-family="Space Mono, monospace" fill="#94A3B8">Eröffnungen</text>
+            </g>
+            <g class="demo-node" data-domain="lehrer" transform="translate(300 240)">
+              <circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+              <text y="-2"  text-anchor="middle" font-size="10" font-family="Space Mono, monospace" fill="#EEEEFF" font-weight="700">LEHRER</text>
+              <text y="11"  text-anchor="middle" font-size="9"  font-family="Space Mono, monospace" fill="#94A3B8">Schulrätsel</text>
+            </g>
+            <g class="demo-node" data-domain="wandern" transform="translate(480 220)">
+              <circle r="26" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+              <text y="-2"  text-anchor="middle" font-size="10" font-family="Space Mono, monospace" fill="#EEEEFF" font-weight="700">WANDERN</text>
+              <text y="11"  text-anchor="middle" font-size="9"  font-family="Space Mono, monospace" fill="#94A3B8">Touren, Karten</text>
+            </g>
+          </svg>
+          <div class="demo-result" id="demo-result">
+            <div class="demo-result-empty">↑ Klick auf eine Frage oben.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sektion 3: Mycel-Wachstum -->
+      <section class="warum-section warum-wachstum">
+        <div class="warum-section-head">
+          <span class="warum-num">03</span>
+          <h2>Wie das Mycel wächst</h2>
+        </div>
+        <p class="warum-sub">
+          Es fängt klein an. Eine PWA. Dann zwei. Dann mehr. Niemand zwingt
+          jemanden — wer mitmacht, wird gefunden. Wer geht, fehlt, ohne dass
+          das Geflecht zerreißt.
+        </p>
+        <div class="wachstum-stage">
+          <svg viewBox="0 0 600 320" class="wachstum-svg" id="wachstum-svg" aria-label="Mycel-Wachstum-Animation"></svg>
+          <div class="wachstum-counter" id="wachstum-counter">1 Knoten</div>
+          <button type="button" class="wachstum-replay" onclick="restartWachstum()">↻ Wiederholen</button>
+        </div>
+      </section>
+
+      <!-- Sektion 4: Drei Versprechen -->
+      <section class="warum-section warum-versprechen">
+        <div class="warum-section-head">
+          <span class="warum-num">04</span>
+          <h2>Drei Versprechen</h2>
+        </div>
+        <div class="versprechen-grid">
+          <div class="versprechen-card">
+            <div class="versprechen-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M14 22V16a10 10 0 0 1 20 0v6h2a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4h2zm4 0h12V16a6 6 0 0 0-12 0v6z" fill="#F59E0B"/></svg>
+            </div>
+            <h3>Inhalte bleiben bei dir</h3>
+            <p>Niemand kopiert deine Seite. Andere verweisen nur auf deine
+              Adresse. Löschst du etwas, ist es weg — überall.</p>
+          </div>
+          <div class="versprechen-card">
+            <div class="versprechen-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="#14B8A6" stroke-width="3"/><path d="M14 24l8 8 14-16" fill="none" stroke="#14B8A6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Du musst niemandem vertrauen</h3>
+            <p>Es läuft im Browser des Besuchers. Kein Google, kein Cloud,
+              kein Konto. Stecker raus, alles weg — sauber.</p>
+          </div>
+          <div class="versprechen-card">
+            <div class="versprechen-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M24 4l16 8v12c0 10-7 18-16 20-9-2-16-10-16-20V12l16-8z" fill="none" stroke="#6366F1" stroke-width="3" stroke-linejoin="round"/><path d="M16 24l6 6 12-12" fill="none" stroke="#6366F1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Spam ist eingebaut gebremst</h3>
+            <p>Ein Knoten antwortet nur bei passender Frage. Massenanfragen
+              landen ins Leere. Aufmerksamkeit ist geschützt.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sektion 5: Was möglich wird -->
+      <section class="warum-section warum-zukunft">
+        <div class="warum-section-head">
+          <span class="warum-num">05</span>
+          <h2>Was möglich wird</h2>
+        </div>
+        <ul class="zukunft-liste">
+          <li>
+            <strong>Hobbyisten dock'n an.</strong> Wandern, Schach, Imkerei,
+            Modellbau — wer eine Seite hat, baut die Sage-Schicht ein und
+            wird findbar. Ohne Anmeldung, ohne Werbung.
+          </li>
+          <li>
+            <strong>Frage über Themengrenzen hinweg.</strong> "Honig im
+            Hefeteig" → das Rezeptbuch antwortet zum Hefeteig, ein Imker-
+            Knoten ergänzt zum Honig. Beides aus echten Quellen.
+          </li>
+          <li>
+            <strong>Eine Suche, die Big Tech nicht braucht.</strong> Wenn
+            Google sich noch weiter zurückzieht oder Geld verlangt, läuft
+            Sage trotzdem.
+          </li>
+          <li>
+            <strong>Wissen, das vergehen darf.</strong> Großmutters Rezepte,
+            ein altes Wanderbuch, ein Schul-Rätselheft — sie leben, solange
+            jemand sie pflegt. Niemand hortet sie, niemand verkauft sie.
+          </li>
+        </ul>
+        <div class="warum-cta">
+          <button type="button" class="primary" onclick="goScreen('overview', 'warum')">→ Zurück zur Sage</button>
+          <button type="button" onclick="goScreen('cycle')">Lebenszyklus ansehen</button>
+        </div>
+      </section>
+    </main>
+
   </div>
 
   <!-- "Was bringt mir das?"-Modal -->
@@ -1430,7 +2009,28 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     <div class="ueber-card">
       <button class="ueber-close" type="button" onclick="closeUeberModal()" aria-label="Schließen">×</button>
       <header class="ueber-head">
-        <img class="ueber-mark" src="assets/mark.svg" alt="" aria-hidden="true">
+        <svg class="ueber-myzel-bg" viewBox="0 0 360 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <line x1="50"  y1="80" x2="180" y2="40" stroke="#8B5CF6" stroke-opacity="0.5" stroke-width="1.2"/>
+          <line x1="180" y1="40" x2="310" y2="70" stroke="#6366F1" stroke-opacity="0.5" stroke-width="1.2"/>
+          <line x1="180" y1="40" x2="180" y2="100" stroke="#14B8A6" stroke-opacity="0.45" stroke-width="1.2"/>
+          <line x1="50"  y1="80" x2="180" y2="100" stroke="#F59E0B" stroke-opacity="0.35" stroke-width="1"/>
+          <circle cx="50"  cy="80"  r="4.5" fill="#6366F1">
+            <animate attributeName="r" values="3.5;5.5;3.5" dur="3.6s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="180" cy="40"  r="5.5" fill="#F59E0B">
+            <animate attributeName="r" values="4.5;6.5;4.5" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="310" cy="70"  r="4.5" fill="#14B8A6">
+            <animate attributeName="r" values="3.5;5.5;3.5" dur="3.4s" repeatCount="indefinite" begin="0.8s"/>
+          </circle>
+          <circle cx="180" cy="100" r="3.5" fill="#8B5CF6" fill-opacity="0.75">
+            <animate attributeName="r" values="2.5;4.5;2.5" dur="3.2s" repeatCount="indefinite" begin="1.4s"/>
+          </circle>
+        </svg>
+        <div class="ueber-mark-wrap">
+          <span class="ueber-mark-pulse" aria-hidden="true"></span>
+          <img class="ueber-mark" src="assets/mark.svg" alt="" aria-hidden="true">
+        </div>
         <h2 id="ueber-title">Was bringt mir das?</h2>
       </header>
       <div class="ueber-body">
@@ -1458,19 +2058,33 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
             Das spart allen Zeit, Bandbreite und Aufmerksamkeit.</li>
         </ul>
 
+        <h3>Wie sieht das im Alltag aus?</h3>
+        <ul>
+          <li><strong>Großmutters Rezeptbuch aus den 50ern.</strong> Du tippst
+            sie ab, sie sind in deinem Knoten. Jemand mit ähnlicher Frage
+            findet sie, ohne dass Google sie je gesehen hat.</li>
+          <li><strong>Ein Imker mit Notizen zu seltenen Trachten.</strong> Sein
+            kleiner Hobby-Blog wird gefunden, wenn bei dir jemand nach "Honig
+            zu Pfingsten" fragt — auch wenn er sonst nicht in den Suchindexen
+            steht.</li>
+          <li><strong>Allergie-Filter, die wirklich verstehen.</strong> "Cocktail
+            ohne Limette" oder "Brot ohne Hefe" trifft nur das, was wirklich
+            passt — nicht alles mit dem Wort drin.</li>
+          <li><strong>Eine Lehrerin teilt Schulrätsel.</strong> Ihr Knoten ist
+            findbar, ohne dass sie sich auf Instagram, Pinterest oder einen
+            Newsletter verlassen muss.</li>
+        </ul>
+
         <h3>Was möglich wird, wenn es größer wird</h3>
         <ul>
           <li><strong>Andere schließen ihr Hobby an.</strong> Wer eine kleine
-            Seite zu Wandern, Imkerei, Schach oder Bonsai betreibt, baut die
+            Seite zu Wandern, Schach, Modellbau oder Bonsai betreibt, baut die
             Sage-Schicht ein und ist plötzlich findbar — ohne Werbung, ohne
             Verzeichnis, ohne Anmeldung.</li>
           <li><strong>Eine Suche, die Big Tech nicht braucht.</strong> Google
             ignoriert kleine private Seiten zunehmend. Sage ist ein Weg, der
             nicht von einem Konzern abhängt und auch dann weiterläuft, wenn
             sich Suchmaschinen-Regeln ändern.</li>
-          <li><strong>Ein lebendes Wissensnetz statt eines Marktplatzes.</strong>
-            Dein Rezeptbuch wird Teil eines kleinen, organisch wachsenden
-            Geflechts — nicht eines Unternehmens, das daraus Geld macht.</li>
           <li><strong>Frage über Themengrenzen hinweg.</strong> "Honig im
             Hefeteig" → das Rezeptbuch antwortet zum Hefeteig, ein Imker-
             Knoten ergänzt zum Honig. Das Mycel verbindet die Antworten ohne
@@ -1485,17 +2099,18 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           Die Antwort kommt von dem, der wirklich etwas weiß — nicht von dem,
           der zuerst da war oder am meisten bezahlt hat.
         </p>
-        <p>
-          Und das System ist freundlich gegenüber dem Vergessen. Schaltest du
-          deinen Knoten ab, sterben deine Daten mit. Niemand zwingt dich zu
-          bleiben. Niemand profitiert davon, dass du da bist.
-        </p>
 
         <div class="ueber-foot">
           <strong>Kurz gesagt:</strong> Sage gibt kleinen, ehrlichen Webseiten
           eine Chance, wieder gefunden zu werden — ohne dass sie sich an einen
-          Konzern verkaufen müssen. Jetzt für dein Rezeptbuch und dein
-          Mixarium. Später für jede andere kleine Seite, die mitmachen will.
+          Konzern verkaufen müssen.
+        </div>
+
+        <div class="ueber-cta">
+          <button type="button" class="ueber-tour-btn" onclick="goWarum()">
+            Vollständige Tour mit Live-Demo →
+          </button>
+          <button type="button" onclick="closeUeberModal()">Schließen</button>
         </div>
       </div>
     </div>
@@ -1530,7 +2145,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (m && !m.hidden) closeUeberModal();
   });
 
-  const SCREENS = ['overview', 'cycle', 'module', 'data'];
+  const SCREENS = ['overview', 'cycle', 'module', 'data', 'warum'];
   let currentScreen = 'overview';
   let lastBentoCardId = null;
 
@@ -1553,6 +2168,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     }
     if (id === 'cycle') startTour();
     else stopTour();
+    if (id === 'warum') startWarum();
+    else stopWarum();
+  }
+
+  function goWarum() {
+    closeUeberModal();
+    goScreen('warum');
   }
 
   // ============================================================
@@ -2196,6 +2818,221 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   document.getElementById('node-sleep').addEventListener('click', function () {
     this.classList.remove('sleep');
     setTimeout(() => this.classList.add('sleep'), 2200);
+  });
+
+  // ============================================================
+  // SCREEN: WARUM — Live-Demo + Mycel-Wachstum
+  // ============================================================
+  const DEMO_QUESTIONS = {
+    cocktail:  { text: '"Cocktail mit Tequila ohne Limette"', answers: ['mixarium'],            explain: 'Mixarium versteht „ohne Limette" als Filter und liefert nur passende Drinks. Die anderen schweigen — Cocktails sind nicht ihr Thema. Das ist nicht Höflichkeit, das ist die Funktion.' },
+    hefeteig:  { text: '"Hefeteig für Pizza"',                answers: ['rezeptbuch'],          explain: 'Rezeptbuch kennt Hefeteig. Der Imker hat zwar Honig, aber keine Teig-Anleitungen. Er antwortet nicht — und genau deshalb gibt es kein Rauschen.' },
+    honig:     { text: '"Honig im Hefeteig"',                 answers: ['rezeptbuch', 'imker'], explain: 'Querfrage zwischen zwei Themen. Rezeptbuch antwortet zum Teig, Imker ergänzt zum Honig. Beides aus echten Quellen, ohne dass jemand zentral koordiniert.' },
+    schach:    { text: '"Schacheröffnung mit Bauernopfer"',   answers: ['schach'],              explain: 'Schach-Knoten antwortet. Der Lehrer hat Schulrätsel — anderes Thema, schweigt. Ähnliche Worte, andere Bedeutung — das System unterscheidet das.' },
+    dach:      { text: '"Dachschindeln verlegen"',            answers: [],                      explain: 'Niemand passt. Alle schweigen. Das ist kein Bug — das ist der Punkt: keine Falsch-Treffer, keine Werbung, keine "könnte interessant sein". Nur echte Antworten oder Stille.' }
+  };
+  const NODE_COORDS = {
+    rezeptbuch: [120, 80],
+    mixarium:   [300, 60],
+    imker:      [480, 80],
+    schach:     [120, 220],
+    lehrer:     [300, 240],
+    wandern:    [480, 220]
+  };
+
+  function runDemo(qKey) {
+    const q = DEMO_QUESTIONS[qKey];
+    if (!q) return;
+    const svg = document.getElementById('demo-svg');
+    const particle = document.getElementById('demo-particle');
+    const result = document.getElementById('demo-result');
+    if (!svg || !particle || !result) return;
+
+    document.querySelectorAll('.demo-q-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.q === qKey);
+    });
+    svg.querySelectorAll('.demo-node').forEach(n => n.classList.remove('active', 'silent'));
+    particle.innerHTML = '';
+    result.innerHTML = '';
+
+    q.answers.forEach((domain, i) => setTimeout(() => firePartikel(domain), i * 220));
+
+    const settleAt = q.answers.length * 220 + 720;
+    setTimeout(() => {
+      svg.querySelectorAll('.demo-node').forEach(n => {
+        if (q.answers.includes(n.dataset.domain)) n.classList.add('active');
+        else n.classList.add('silent');
+      });
+    }, settleAt);
+
+    setTimeout(() => {
+      let html = '<div class="demo-result-q">' + escapeHtml(q.text) + '</div>';
+      if (q.answers.length === 0) {
+        html += '<div class="demo-result-silent">Schweigen ist Routing.</div>';
+      } else {
+        html += '<div class="demo-result-answer"><strong>' + q.answers.length +
+          ' Antwort' + (q.answers.length === 1 ? '' : 'en') + ':</strong> ' +
+          q.answers.map(d => '<span class="demo-result-tag">' + d.toUpperCase() + '</span>').join(' + ') +
+          '</div>';
+      }
+      html += '<div class="demo-result-explain">' + escapeHtml(q.explain) + '</div>';
+      result.innerHTML = html;
+    }, settleAt + 200);
+  }
+
+  function firePartikel(domain) {
+    const coords = NODE_COORDS[domain];
+    if (!coords) return;
+    const [tx, ty] = coords;
+    const particle = document.getElementById('demo-particle');
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', '6');
+    c.setAttribute('fill', '#F59E0B');
+    c.setAttribute('cx', '40');
+    c.setAttribute('cy', '150');
+    c.setAttribute('opacity', '0.95');
+    c.style.filter = 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.8))';
+    particle.appendChild(c);
+    const start = performance.now();
+    const dur = 680;
+    function step(t) {
+      const p = Math.min(1, (t - start) / dur);
+      const ease = 1 - Math.pow(1 - p, 3);
+      c.setAttribute('cx', 40 + (tx - 40) * ease);
+      c.setAttribute('cy', 150 + (ty - 150) * ease);
+      if (p < 1) requestAnimationFrame(step);
+      else {
+        // Aufpeitschen am Ziel-Knoten
+        const start2 = performance.now();
+        const dur2 = 360;
+        function fade(t) {
+          const p2 = Math.min(1, (t - start2) / dur2);
+          c.setAttribute('r', 6 + 12 * p2);
+          c.setAttribute('opacity', 0.95 * (1 - p2));
+          if (p2 < 1) requestAnimationFrame(fade);
+          else c.remove();
+        }
+        requestAnimationFrame(fade);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  // Wachstum
+  const WACHSTUM_NODES = [
+    { id: 'rezept', label: 'Rezeptbuch', x: 100, y: 165, color: '#F59E0B' },
+    { id: 'mix',    label: 'Mixarium',   x: 220, y: 100, color: '#14B8A6' },
+    { id: 'oma',    label: 'Oma-Rezepte',x: 200, y: 240, color: '#F59E0B' },
+    { id: 'imker',  label: 'Imker',      x: 340, y: 60,  color: '#6366F1' },
+    { id: 'lehrer', label: 'Lehrerin',   x: 340, y: 260, color: '#F43F5E' },
+    { id: 'schach', label: 'Schach',     x: 460, y: 110, color: '#8B5CF6' },
+    { id: 'wander', label: 'Wandern',    x: 480, y: 220, color: '#14B8A6' }
+  ];
+  const WACHSTUM_LINKS = [
+    ['rezept', 'mix'],
+    ['rezept', 'oma'],
+    ['mix', 'imker'],
+    ['rezept', 'lehrer'],
+    ['mix', 'schach'],
+    ['mix', 'wander'],
+    ['imker', 'schach']
+  ];
+  let wachstumTimer = null;
+
+  function startWachstum() {
+    stopWachstum();
+    const svg = document.getElementById('wachstum-svg');
+    if (!svg) return;
+    svg.innerHTML = '';
+    const counter = document.getElementById('wachstum-counter');
+    const placed = new Set();
+    let i = 0;
+
+    function addNext() {
+      if (i >= WACHSTUM_NODES.length) {
+        wachstumTimer = setTimeout(() => startWachstum(), 4500);
+        return;
+      }
+      const node = WACHSTUM_NODES[i];
+
+      WACHSTUM_LINKS.forEach(([a, b]) => {
+        if (a !== node.id && b !== node.id) return;
+        const otherId = a === node.id ? b : a;
+        if (!placed.has(otherId)) return;
+        const other = WACHSTUM_NODES.find(n => n.id === otherId);
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', other.x); line.setAttribute('y1', other.y);
+        line.setAttribute('x2', node.x);  line.setAttribute('y2', node.y);
+        line.setAttribute('stroke', '#8B5CF6');
+        line.setAttribute('stroke-opacity', '0');
+        line.setAttribute('stroke-width', '1.5');
+        svg.appendChild(line);
+        line.style.transition = 'stroke-opacity 0.7s ease';
+        requestAnimationFrame(() => line.setAttribute('stroke-opacity', '0.45'));
+      });
+
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('transform', `translate(${node.x} ${node.y})`);
+      g.style.opacity = 0;
+      g.style.transition = 'opacity 0.55s ease';
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('r', 18);
+      c.setAttribute('fill', node.color);
+      c.setAttribute('opacity', '0.92');
+      g.appendChild(c);
+      const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      ring.setAttribute('r', 18); ring.setAttribute('fill', 'none');
+      ring.setAttribute('stroke', node.color); ring.setAttribute('stroke-width', '2');
+      ring.setAttribute('opacity', '0.6');
+      const a = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+      a.setAttribute('attributeName', 'r');
+      a.setAttribute('values', '18;30;18');
+      a.setAttribute('dur', '3s');
+      a.setAttribute('repeatCount', 'indefinite');
+      ring.appendChild(a);
+      const a2 = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+      a2.setAttribute('attributeName', 'opacity');
+      a2.setAttribute('values', '0.6;0;0.6');
+      a2.setAttribute('dur', '3s');
+      a2.setAttribute('repeatCount', 'indefinite');
+      ring.appendChild(a2);
+      g.appendChild(ring);
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('y', 38);
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('font-size', '11');
+      t.setAttribute('font-family', 'Space Grotesk, sans-serif');
+      t.setAttribute('fill', '#EEEEFF');
+      t.textContent = node.label;
+      g.appendChild(t);
+      svg.appendChild(g);
+      requestAnimationFrame(() => g.style.opacity = 1);
+
+      placed.add(node.id);
+      i++;
+      if (counter) counter.textContent = i + (i === 1 ? ' Knoten' : ' Knoten');
+      wachstumTimer = setTimeout(addNext, 1200);
+    }
+    addNext();
+  }
+  function stopWachstum() {
+    if (wachstumTimer) { clearTimeout(wachstumTimer); wachstumTimer = null; }
+  }
+  function restartWachstum() {
+    stopWachstum();
+    startWachstum();
+  }
+
+  function startWarum() { startWachstum(); }
+  function stopWarum()  { stopWachstum(); }
+
+  // Frage-Buttons binden
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.demo-q-btn');
+    if (btn && btn.dataset.q) runDemo(btn.dataset.q);
   });
 
   // ============================================================
