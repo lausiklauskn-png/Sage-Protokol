@@ -1,13 +1,47 @@
 # Modul 11 — Rate-Limit & TTL
 
-**Status:** Stub (spec ausstehend)
-**Priorität:** niedrig — wird gezogen, sobald spürbares Wachstum messbar wird
-**Datei (Code):** `src/modules/11_rate_limit.js` (existiert noch nicht)
-**Abhängigkeiten:** Querschnitt — wirkt auf 05 (Anastomose), 06 (Heterokaryose)
+> **Status:** 🟫 Schablone · Schutz-Backlog · Priorität niedrig  ·  **Schicht:** Querschnitt (wirkt auf 05, 06)  ·  **Anker:** Sage-Page → Karte 13 (Eigenschutz)
+> **Datei (Code):** `src/modules/11_rate_limit.js` (existiert noch nicht)
+>
+> _Pro-Peer Rate-Limit + Hop-TTL gegen Flooding und endlose
+> Anastomose-Ketten. Querschnitts-Mechanik._
 
-**Anker:** Diese Karte ist Teil des Schutz-Backlogs, sichtbar in der
-Eigenschutz-Karte (Karte 13) der Observatorium-Page. Siehe auch
-`docs/PULS.md` Abschnitt "Schutz-Backlog".
+---
+
+## Im Mycel-Bild
+
+Rate-Limit ist die **Atemfrequenz-Bremse** des Knotens: niemand darf
+schneller anfragen als der Atemkreis es zulässt. TTL ist die
+**Hop-Ermüdung** einer Anfrage: nach vier Mycel-Schritten erlischt sie
+von selbst, statt endlos im Geflecht zu kreisen. Beides zusammen schützt
+das Mycel vor Erschöpfung — vor einem einzelnen lauten Peer und vor
+Schleifen, die sich selbst verstärken. Querschnitts-Modul: greift in
+Anastomose und Heterokaryose, sitzt aber als eigene Logik daneben.
+
+---
+
+## Visualisierung
+
+```mermaid
+stateDiagram-v2
+  [*] --> Idle
+  Idle --> Tokens: incoming Query<br/>von Peer P
+  Tokens --> CheckBucket
+  CheckBucket --> Allow: Tokens > 0
+  CheckBucket --> Drop: Tokens = 0<br/>(silent drop)
+  Allow --> ConsumeOne: process()<br/>bucket--
+  ConsumeOne --> Refill: Refill-Tick<br/>(Rate/Min)
+  Refill --> Idle
+  Drop --> Idle
+  note right of CheckBucket
+    QUERY_RATE_PER_PEER_PER_MIN = 30
+    QUERY_BURST = 10
+  end note
+  note right of Allow
+    TTL- -; if TTL=0 stop
+    ANASTOMOSE_TTL_MAX_HOPS = 4
+  end note
+```
 
 ---
 
@@ -20,6 +54,23 @@ Suchen. Verhindert, dass:
 - ein einzelner Peer durch hohe Anfragefrequenz Ressourcen frisst,
 - eine Anfrage endlos im Mycel kreist (Anastomose-Loop),
 - ein Angreifer das Netz mit teuren Embedding-Berechnungen lähmt.
+
+---
+
+## Verantwortlichkeiten (Skizze)
+
+**Macht (geplant):**
+- Pro-Peer-Counter in IndexedDB führen (Sliding-Window oder Token-Bucket)
+- Beim Eingang einer Query: prüfen, ob Peer im Limit, sonst Drop
+- Beim Weiterreichen einer Query: TTL inkrementieren / dekrementieren,
+  bei TTL=0 Stop
+- Pro-Knoten-Gesamtlast überwachen (CPU/Memory grob)
+
+**Macht nicht (geplant):**
+- Kein Reputations-Update (das ist Modul 10)
+- Keine harten Sperren (das ist Modul 12)
+- Kein User-Rate-Limit innerhalb des Endknotens (das ist Sache der
+  Endknoten-PWA selbst, nicht des SBKIM-Moduls)
 
 ---
 
@@ -45,23 +96,6 @@ Suchen. Verhindert, dass:
 
 ---
 
-## Verantwortung (Skizze)
-
-**Macht (geplant):**
-- Pro-Peer-Counter in IndexedDB führen (Sliding-Window oder Token-Bucket)
-- Beim Eingang einer Query: prüfen, ob Peer im Limit, sonst Drop
-- Beim Weiterreichen einer Query: TTL inkrementieren / dekrementieren,
-  bei TTL=0 Stop
-- Pro-Knoten-Gesamtlast überwachen (CPU/Memory grob)
-
-**Macht nicht (geplant):**
-- Kein Reputations-Update (das ist Modul 10)
-- Keine harten Sperren (das ist Modul 12)
-- Kein User-Rate-Limit innerhalb des Endknotens (das ist Sache der
-  Endknoten-PWA selbst, nicht des SBKIM-Moduls)
-
----
-
 ## Beispiel-Default (vorläufig, kann sich ändern)
 
 ```
@@ -74,12 +108,9 @@ LOCAL_CPU_THRESHOLD_PERCENT  = 80   # ab hier Drop ohne Antwort
 
 ---
 
-## Querverweise
+## Manueller Test
 
-- `sbkim_paper.pdf` Kap. 22 (Sicherheitsmodell, Skalierungsanalyse)
-- `docs/INTERFACES.md` Abschnitt 0 (`QUERY_TIMEOUT_MS`)
-- `docs/components/05_anastomose.md` (Hop-Logik)
-- `docs/components/10_reputation.md` (überlappt bei Sybil-Erkennung)
+*(später, sobald Modul 05 + 06 stehen)*
 
 ---
 
@@ -88,7 +119,20 @@ LOCAL_CPU_THRESHOLD_PERCENT  = 80   # ab hier Drop ohne Antwort
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Stub angelegt | 2026-05-10 | Observatorium | Schutz-Backlog, Anker zu Karte 13 |
+| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Stateflow, Querverweise |
 | Spec gefüllt | — | — | — |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
+
+---
+
+**Querverweise**
+
+- **Abhängigkeiten:** Querschnitt — wirkt auf Modul 05 (Anastomose) und Modul 06 (Heterokaryose) · nutzt Modul 01 (Storage) für persistente Counter
+- **Wird genutzt von:** alle Module, die externe Anfragen entgegennehmen
+- **Site-Karte:** [Karte 13 · Eigenschutz](../../index.html#screen-overview) (Penicillin-Schicht)
+- **Glossar:** [Token-Bucket](../GLOSSAR.md), [Hop-TTL](../GLOSSAR.md), [Atemkreis](../GLOSSAR.md)
+- **Paper:** Kap. 22 (Sicherheitsmodell, Skalierungsanalyse)
+- **Schnittstellen:** [INTERFACES.md §0](../INTERFACES.md) (`QUERY_TIMEOUT_MS`)
+- **Verwandt:** [Modul 05](05_anastomose.md) · [Modul 10](10_reputation.md) (überlappt bei Sybil-Erkennung)

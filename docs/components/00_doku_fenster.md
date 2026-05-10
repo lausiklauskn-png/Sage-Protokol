@@ -1,8 +1,45 @@
-# Modul 00 — Doku-Fenster ("5-Klick versteckte Funktion")
+# Modul 00 — Doku-Fenster
 
-**Status:** Schablone (Spec ausstehend)
-**Datei (Code):** `src/modules/00_doku_fenster.js`
-**Abhängigkeiten:** keine (kann jederzeit gebaut werden)
+> **Status:** 🟫 Schablone  ·  **Schicht:** UI  ·  **Anker:** Sage-Page → Karte 4 (Module-Bento), Eintrag 00
+> **Datei (Code):** `src/modules/00_doku_fenster.js`
+>
+> _Versteckte 5-Klick-Geste am Such-Symbol enthüllt den Lauf-Zustand des
+> Knotens — kein Datenexport, nur ein Atemkreis-Schnappschuss für den
+> Eingeweihten._
+
+---
+
+## Im Mycel-Bild
+
+Das Doku-Fenster ist die **Mycel-Lupe** — eine versteckte Klappe am
+Knoten, die den eigenen Atemkreis sichtbar macht: wer sind meine
+Geschwister, welche Module atmen, wann war der letzte Sichttest? Sie
+zeigt den **Lauf-Puls** des laufenden Knotens, nicht den Bau-Puls des
+Repos. Letzterer lebt auf der Sage-Page (Karte "Bau-Puls"), damit beide
+Pulse getrennt bleiben und nicht durcheinander geraten.
+
+---
+
+## Visualisierung
+
+```mermaid
+flowchart LR
+  T[Such-Symbol<br/>der PWA] -->|Klick 1..4| C[(Klickzähler)]
+  C -->|Klick 5| W[Doku-Fenster<br/>öffnet]
+  W --> N[Knoten-ID]
+  W --> M[Aktive Module]
+  W --> G[Geschwister-Anzahl]
+  W --> S[Letzter Sichttest]
+
+  classDef trig fill:#92400E,color:#fff,stroke:#fff
+  classDef cnt fill:#EA580C,color:#fff,stroke:#fff
+  classDef win fill:#16A34A,color:#fff,stroke:#fff
+  classDef leaf fill:#2563EB,color:#fff,stroke:#fff
+  class T trig
+  class C cnt
+  class W win
+  class N,M,G,S leaf
+```
 
 ---
 
@@ -26,7 +63,7 @@ Das Fenster ist **kein Datenexport**. Es zeigt nur:
 
 ---
 
-## Verantwortung
+## Verantwortlichkeiten
 
 **Macht:**
 - Klickzähler auf das vorhandene Such-Symbol/Icon (kein neues Element)
@@ -58,9 +95,7 @@ renderStatus() → HTMLElement
   // baut das Status-Fenster aus aktuellem Knotenzustand
 ```
 
----
-
-## Konfigurationswerte (zentral)
+### Konfigurationswerte (zentral)
 
 ```
 DOKU_REVEAL_CLICKS = 5     // siehe ARCHITEKTUR.md §7
@@ -68,7 +103,7 @@ DOKU_REVEAL_CLICKS = 5     // siehe ARCHITEKTUR.md §7
 
 ---
 
-## Manueller Test (gehört in tests/manual_check.html)
+## Manueller Test
 
 1. Test-PWA mit eingebautem Modul 00 öffnen.
 2. Such-Symbol fünfmal anklicken.
@@ -79,7 +114,7 @@ DOKU_REVEAL_CLICKS = 5     // siehe ARCHITEKTUR.md §7
 
 ---
 
-## Risiken / Edge Cases
+## Risiken & offene Punkte
 
 - Such-Symbol existiert in jedem Endknoten unter anderem Selektor →
   `searchIconSelector` muss konfigurierbar bleiben.
@@ -89,21 +124,24 @@ DOKU_REVEAL_CLICKS = 5     // siehe ARCHITEKTUR.md §7
 
 ---
 
-## Querverweise
-
-- `docs/ARCHITEKTUR.md` §7 (Konfigurationswerte)
-- `sbkim_integration.md` — kein direkter Bezug, dieses Modul ist
-  Sage-Protokol-Eigenleistung
-- Andere Module: liest Status, ändert nichts
-
----
-
 ## Bauzustand
 
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
+| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid, Querverweise |
 | Spec gefüllt | — | — | — |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
+
+---
+
+**Querverweise**
+
+- **Abhängigkeiten:** keine (kann jederzeit gebaut werden)
+- **Wird genutzt von:** alle Module — liest nur Status, ändert nichts · Modul 12 (Blocklist) — mögliches UI-Ziel für Sperrlisten-Verwaltung
+- **Site-Karte:** [Karte 4 · Module-Bento](../../index.html#screen-overview), Eintrag 00
+- **Glossar:** [Atemkreis](../GLOSSAR.md), [Sichttest](../GLOSSAR.md)
+- **Architektur:** [ARCHITEKTUR.md §7](../ARCHITEKTUR.md) (Konfigurationswerte)
+- **Eigenleistung:** kein direkter Bezug zu `sbkim_integration.md` — Sage-Protokol-Eigenleistung
