@@ -185,13 +185,46 @@
     position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center;
+    gap: 0.1rem;
   }
   .ring-num .big {
-    font-size: 3rem; font-weight: 600; letter-spacing: -0.02em;
+    font-size: 1.55rem; font-weight: 600; letter-spacing: -0.01em;
+    line-height: 1;
   }
   .ring-num .lbl {
-    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--muted); margin-top: 0.15rem;
+    font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-top: 0.05rem;
+  }
+  .ring-pilz {
+    background: none; border: none; padding: 0; margin: 0 0 0.3rem;
+    cursor: pointer;
+    width: 76px; height: 76px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    border-radius: 50%;
+  }
+  .ring-pilz img {
+    width: 100%; height: 100%;
+    pointer-events: none;
+    filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.18));
+  }
+  .ring-pilz:hover {
+    transform: scale(1.07);
+  }
+  .ring-pilz:hover img {
+    filter: drop-shadow(0 0 18px rgba(245, 158, 11, 0.35));
+  }
+  .ring-pilz:active { transform: scale(0.98); }
+  .ring-pilz:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+  }
+  .ring-pilz-caption {
+    font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 0.05rem;
+    pointer-events: none;
+    opacity: 0.85;
   }
   .ring-side { flex: 1; min-width: 220px; }
   .ring-side h3 { margin: 0 0 0.4rem; font-size: 1.1rem; }
@@ -669,6 +702,102 @@
     padding-top: 0.6rem;
     border-top: 1px dashed var(--line);
   }
+
+  /* "Was bringt mir das?"-Modal */
+  .ueber-modal[hidden] { display: none; }
+  .ueber-modal {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.4rem;
+  }
+  .ueber-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(5, 5, 15, 0.78);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+  }
+  .ueber-card {
+    position: relative;
+    max-width: 720px; width: 100%;
+    max-height: calc(100vh - 2.8rem);
+    overflow-y: auto;
+    background: linear-gradient(180deg, rgba(20, 20, 38, 0.96), rgba(8, 8, 22, 0.96));
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r);
+    padding: 2rem 1.7rem 2.2rem;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    animation: ueber-pop 0.32s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  @keyframes ueber-pop {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+  .ueber-close {
+    position: absolute; top: 0.6rem; right: 0.6rem;
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 1.4rem; line-height: 1;
+    color: var(--muted);
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ueber-close:hover { color: var(--text); border-color: var(--accent); background: rgba(99,102,241,0.18); }
+  .ueber-head {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 0 0 1rem;
+    padding-right: 2.4rem;
+  }
+  .ueber-mark {
+    width: 56px; height: 56px; flex: 0 0 56px;
+    filter: drop-shadow(0 0 12px rgba(245,158,11,0.25));
+  }
+  .ueber-head h2 {
+    margin: 0;
+    font-weight: 600; font-size: 1.5rem; letter-spacing: -0.01em;
+  }
+  .ueber-lede {
+    font-size: 1.05rem; line-height: 1.6;
+    color: var(--text);
+    margin: 0 0 1.4rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .ueber-body h3 {
+    margin: 1.4rem 0 0.6rem;
+    font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .ueber-body ul {
+    margin: 0 0 1rem; padding-left: 1.1rem;
+    list-style: none;
+  }
+  .ueber-body ul li {
+    position: relative;
+    margin-bottom: 0.7rem;
+    line-height: 1.55;
+    padding-left: 0.4rem;
+    color: var(--text);
+  }
+  .ueber-body ul li::before {
+    content: "→"; position: absolute; left: -1.05rem;
+    color: var(--gold);
+    font-family: "Space Mono", monospace;
+    font-weight: 700;
+  }
+  .ueber-body p { line-height: 1.6; margin: 0.6rem 0; color: var(--text); }
+  .ueber-body em { color: var(--gold); font-style: normal; }
+  .ueber-body strong { color: var(--text); font-weight: 600; }
+  .ueber-foot {
+    margin-top: 1.4rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.86rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .ueber-foot strong { color: var(--gold); }
   </style>
 </head>
 <body>
@@ -723,6 +852,10 @@
                 <circle id="demo-ring" class="ring-fg" cx="100" cy="100" r="90" stroke-width="14"/>
               </svg>
               <div class="ring-num">
+                <button class="ring-pilz" type="button" onclick="openUeberModal()" aria-label="Was bringt mir das? — Erklärung in einfachen Worten">
+                  <img src="assets/mark.svg" alt="">
+                </button>
+                <div class="ring-pilz-caption">Was bringt mir das? →</div>
                 <div class="big mono" id="demo-num">0%</div>
                 <div class="lbl">Demo-Anteil</div>
               </div>
@@ -1291,11 +1424,111 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
   </div>
 
+  <!-- "Was bringt mir das?"-Modal -->
+  <div class="ueber-modal" id="ueber-modal" role="dialog" aria-modal="true" aria-labelledby="ueber-title" hidden>
+    <div class="ueber-backdrop" onclick="closeUeberModal()"></div>
+    <div class="ueber-card">
+      <button class="ueber-close" type="button" onclick="closeUeberModal()" aria-label="Schließen">×</button>
+      <header class="ueber-head">
+        <img class="ueber-mark" src="assets/mark.svg" alt="" aria-hidden="true">
+        <h2 id="ueber-title">Was bringt mir das?</h2>
+      </header>
+      <div class="ueber-body">
+        <p class="ueber-lede">
+          Sage ist eine Suche, die zwischen kleinen, eigenen Webseiten passiert.
+          Du fragst etwas, und nur die Seiten, die wirklich etwas zu deiner
+          Frage wissen, antworten. Es gibt keinen zentralen Server, keine
+          Werbung, kein Tracking, kein Konto.
+        </p>
+
+        <h3>Was es dir jetzt schon bringt</h3>
+        <ul>
+          <li><strong>Deine Seiten finden sich gegenseitig.</strong> Wenn ein
+            Besucher im Rezeptbuch nach einem Cocktail sucht, leitet das System
+            still ans Mixarium weiter — und umgekehrt. Du brauchst dafür keinen
+            Server, keine Datenbank, kein Login.</li>
+          <li><strong>Deine Inhalte bleiben bei dir.</strong> Niemand kopiert
+            deine Seite, niemand legt sie in einer fremden Datenbank ab. Andere
+            verweisen nur auf deine Adresse. Löschst du etwas, ist es weg.</li>
+          <li><strong>Du musst niemandem vertrauen.</strong> Es läuft komplett
+            im Browser des Besuchers. Kein Google, kein Cloud-Anbieter im
+            Spiel. Wenn du den Stecker ziehst, ist alles weg — sauber.</li>
+          <li><strong>Spam ist eingebaut gebremst.</strong> Ein Knoten antwortet
+            nur, wenn die Frage zu seinem Thema passt — sonst schweigt er.
+            Das spart allen Zeit, Bandbreite und Aufmerksamkeit.</li>
+        </ul>
+
+        <h3>Was möglich wird, wenn es größer wird</h3>
+        <ul>
+          <li><strong>Andere schließen ihr Hobby an.</strong> Wer eine kleine
+            Seite zu Wandern, Imkerei, Schach oder Bonsai betreibt, baut die
+            Sage-Schicht ein und ist plötzlich findbar — ohne Werbung, ohne
+            Verzeichnis, ohne Anmeldung.</li>
+          <li><strong>Eine Suche, die Big Tech nicht braucht.</strong> Google
+            ignoriert kleine private Seiten zunehmend. Sage ist ein Weg, der
+            nicht von einem Konzern abhängt und auch dann weiterläuft, wenn
+            sich Suchmaschinen-Regeln ändern.</li>
+          <li><strong>Ein lebendes Wissensnetz statt eines Marktplatzes.</strong>
+            Dein Rezeptbuch wird Teil eines kleinen, organisch wachsenden
+            Geflechts — nicht eines Unternehmens, das daraus Geld macht.</li>
+          <li><strong>Frage über Themengrenzen hinweg.</strong> "Honig im
+            Hefeteig" → das Rezeptbuch antwortet zum Hefeteig, ein Imker-
+            Knoten ergänzt zum Honig. Das Mycel verbindet die Antworten ohne
+            Vermittler.</li>
+        </ul>
+
+        <h3>Was Sage besonders macht</h3>
+        <p>
+          Die meisten Suchsysteme suchen nach <em>Adressen</em> — "Wo liegt
+          diese Datei?". Sage sucht nach <em>Bedeutung</em> — "Wer weiß was
+          zu meiner Frage?". Das klingt klein, ist aber ein anderes Spiel:
+          Die Antwort kommt von dem, der wirklich etwas weiß — nicht von dem,
+          der zuerst da war oder am meisten bezahlt hat.
+        </p>
+        <p>
+          Und das System ist freundlich gegenüber dem Vergessen. Schaltest du
+          deinen Knoten ab, sterben deine Daten mit. Niemand zwingt dich zu
+          bleiben. Niemand profitiert davon, dass du da bist.
+        </p>
+
+        <div class="ueber-foot">
+          <strong>Kurz gesagt:</strong> Sage gibt kleinen, ehrlichen Webseiten
+          eine Chance, wieder gefunden zu werden — ohne dass sie sich an einen
+          Konzern verkaufen müssen. Jetzt für dein Rezeptbuch und dein
+          Mixarium. Später für jede andere kleine Seite, die mitmachen will.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
   // ============================================================
   // STATE
   // ============================================================
   const STATE = { status: null, demoPercent: 91 };
+
+  // ============================================================
+  // "Was bringt mir das?"-Modal
+  // ============================================================
+  function openUeberModal() {
+    const m = document.getElementById('ueber-modal');
+    if (!m) return;
+    m.hidden = false;
+    document.body.style.overflow = 'hidden';
+    const close = m.querySelector('.ueber-close');
+    if (close) close.focus();
+  }
+  function closeUeberModal() {
+    const m = document.getElementById('ueber-modal');
+    if (!m) return;
+    m.hidden = true;
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const m = document.getElementById('ueber-modal');
+    if (m && !m.hidden) closeUeberModal();
+  });
 
   const SCREENS = ['overview', 'cycle', 'module', 'data'];
   let currentScreen = 'overview';
