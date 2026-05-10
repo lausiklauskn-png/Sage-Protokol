@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Sage-Protokol — manueller Sichttest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: ui-sans-serif, system-ui, sans-serif;
+           max-width: 900px; margin: 1.2rem auto; padding: 0 1rem;
+           color: #222; }
+    h1 { font-size: 1.4rem; margin-bottom: 0.2rem; }
+    .sub { color: #666; margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .panel { border: 1px solid #ddd; border-radius: 6px;
+             margin-bottom: 1rem; padding: 0.8rem 1rem; }
+    .panel h2 { font-size: 1rem; margin: 0 0 0.5rem 0; }
+    .status { display: inline-block; padding: 0.05rem 0.5rem;
+              border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem; }
+    .status.ok   { background: #dff6dd; color: #1a5e1a; }
+    .status.warn { background: #fff3cd; color: #6b5500; }
+    .status.err  { background: #f8d7da; color: #842029; }
+    .status.idle { background: #eee; color: #555; }
+    .controls button { margin: 0 0.4rem 0.4rem 0; }
+    pre.log { background: #fafafa; border: 1px solid #eee;
+              padding: 0.6rem; border-radius: 4px; max-height: 240px;
+              overflow: auto; font-size: 0.8rem;
+              white-space: pre-wrap; word-break: break-word; }
+    .hint { font-size: 0.85rem; color: #666; }
+    .hint code { background: #f0f0f0; padding: 0 0.3em; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>Sage-Protokol — manueller Sichttest</h1>
+  <p class="sub">
+    Diese Seite ist die Werkstatt-Oberfläche. Pro Modul ein Panel mit Knöpfen.
+    Sie ersetzt kein automatisches Test-Framework — der Mensch klickt, der
+    Mensch bewertet. Hinweis: Service-Worker (Modul 05) brauchen
+    <code>localhost</code> oder <code>https</code>; unter <code>file://</code>
+    nicht testbar.
+  </p>
+
+  <!-- Skelett: pro Modul ein Panel. Knöpfe ergänzt die jeweilige Bau-Sitzung. -->
+
+  <section class="panel" data-module="01_storage">
+    <h2>01 Storage <span class="status idle">noch nicht gebaut</span></h2>
+    <div class="controls"><!-- Knöpfe hier --></div>
+    <pre class="log">— noch keine Ausgabe —</pre>
+  </section>
+
+  <section class="panel" data-module="02_spore">
+    <h2>02 Spore <span class="status idle">noch nicht gebaut</span></h2>
+    <div class="controls"></div>
+    <pre class="log">— noch keine Ausgabe —</pre>
+  </section>
+
+  <section class="panel" data-module="03_embedding">
+    <h2>03 Embedding <span class="status idle">noch nicht gebaut</span></h2>
+    <div class="controls"></div>
+    <pre class="log">— noch keine Ausgabe —</pre>
+  </section>
+
+  <section class="panel" data-module="04_match">
+    <h2>04 Match <span class="status idle">noch nicht gebaut</span></h2>
+    <div class="controls"></div>
+    <pre class="log">— noch keine Ausgabe —</pre>
+  </section>
+
+  <section class="panel" data-module="05_anastomose">
+    <h2>05 Anastomose <span class="status idle">noch nicht gebaut</span></h2>
+    <div class="controls"></div>
+    <pre class="log">— noch keine Ausgabe —</pre>
+  </section>
+
+  <section class="panel" data-module="06_heterokaryose">
+    <h2>06 Heterokaryose <span class="status idle">noch nicht gebaut</span></h2>
+    <div class="controls"></div>
+    <pre class="log">— noch keine Ausgabe —</pre>
+  </section>
+
+  <section class="panel" data-module="07_apoptose">
+    <h2>07 Apoptose <span class="status idle">noch nicht gebaut</span></h2>
+    <div class="controls"></div>
+    <pre class="log">— noch keine Ausgabe —</pre>
+  </section>
+
+  <section class="panel" data-module="00_doku_fenster">
+    <h2>00 Doku-Fenster (5-Klick) <span class="status idle">noch nicht gebaut</span></h2>
+    <div class="controls"></div>
+    <pre class="log">— noch keine Ausgabe —</pre>
+  </section>
+
+  <section class="panel" data-module="08_ui_demo">
+    <h2>08 UI-Demo <span class="status idle">in dieser Datei selbst</span></h2>
+    <div class="controls"></div>
+    <pre class="log">Diese Seite ist Modul 08.</pre>
+  </section>
+
+  <script>
+    // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
+    window.SbkimUI = {
+      panel(module) {
+        return document.querySelector(`section.panel[data-module="${module}"]`);
+      },
+      addButton(module, label, action) {
+        const p = this.panel(module);
+        if (!p) return;
+        const btn = document.createElement("button");
+        btn.textContent = label;
+        btn.addEventListener("click", async () => {
+          this.log(module, `▶ ${label} ...`);
+          try { const out = await action(); if (out !== undefined) this.log(module, JSON.stringify(out, null, 2)); }
+          catch (err) { this.setStatus(module, "err", "Fehler"); this.log(module, "✗ " + (err && err.message || err)); }
+        });
+        p.querySelector(".controls").appendChild(btn);
+      },
+      log(module, line) {
+        const pre = this.panel(module)?.querySelector("pre.log");
+        if (!pre) return;
+        if (pre.textContent.startsWith("— noch keine Ausgabe —")) pre.textContent = "";
+        pre.textContent += line + "\n";
+        pre.scrollTop = pre.scrollHeight;
+      },
+      setStatus(module, kind, text) {
+        const s = this.panel(module)?.querySelector(".status");
+        if (!s) return;
+        s.className = "status " + kind;
+        s.textContent = text;
+      },
+    };
+  </script>
+
+  <!--
+    Bau-Sitzungen ergänzen unten ihre Modul-Skripte, z.B.:
+    <script type="module" src="../src/modules/01_storage.js"></script>
+    und registrieren ihre Knöpfe via SbkimUI.addButton("01_storage", "init", ...).
+  -->
+</body>
+</html>
