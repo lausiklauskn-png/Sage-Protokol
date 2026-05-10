@@ -1163,6 +1163,23 @@
     margin: 0 auto 1.4rem;
     text-align: left;
   }
+  .name-glossar-key {
+    margin: 0 0 1rem;
+    padding: 0.95rem 1.1rem;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: var(--gold);
+    font-style: italic;
+    background: linear-gradient(90deg, rgba(245,158,11,0.10), rgba(245,158,11,0.02));
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  }
+  .name-glossar-key strong { font-style: normal; font-weight: 700; color: var(--gold); }
+  .name-glossar-key.is-hero {
+    max-width: 640px;
+    margin-left: auto; margin-right: auto;
+    text-align: left;
+  }
   </style>
 </head>
 <body>
@@ -1807,17 +1824,22 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           Fremdwörter, mit echten Beispielen aus dem Alltag.
         </p>
         <dl class="name-glossar name-glossar-hero">
-          <dt>Sage <span class="lautschrift">[SAH-ge]</span></dt>
-          <dd>Wie eine Sage. Etwas, das von Mund zu Mund weitergeht. Hier:
-            ein kleines Wissensnetz, das sich gegenseitig erzählt, was es weiß.</dd>
+          <dt>Sage <span class="lautschrift">[seydsch]</span></dt>
+          <dd>Englisch <em>der Weise</em>, botanisch der <em>Salbei</em>.
+            Beides Bilder fürs aktive Verarbeiten — etwas, das filtert und
+            klärt, nicht nur speichert.</dd>
           <dt>Protokol</dt>
           <dd>Die Spielregel, nach der Knoten sich finden und reden. Bewusst
             mit einem L — kein Verwaltungs-Protokoll, ein Gesprächsangebot.</dd>
           <dt>SBKIM <span class="lautschrift">[Es-Be-Ka-I-Em]</span></dt>
-          <dd>Der technische Name dahinter: <em>Semantisch-Biologisch
-            Koordiniertes Inter-Knoten-Mycel</em>. Sage ist der Name, SBKIM ist
-            die Architektur darunter.</dd>
+          <dd>Der technische Name des Geflechts: <em>Semantisch-Biologisch
+            Koordiniertes Inter-Knoten-Mycel</em>. Die Architektur, dem Pilz
+            nachempfunden.</dd>
         </dl>
+        <blockquote class="name-glossar-key is-hero">
+          „Der Pilz hat Mycel. Dieses Netz hat <strong>Sage</strong>
+          als Signalsprache."
+        </blockquote>
         <div class="warum-scroll-hint" aria-hidden="true">↓ Weiterscrollen</div>
       </section>
 
@@ -2092,10 +2114,12 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       </header>
       <div class="ueber-body">
         <dl class="name-glossar">
-          <dt>Sage <span class="lautschrift">[SAH-ge]</span></dt>
-          <dd>Wie eine Sage — etwas, das von Mund zu Mund weitergeht.
-            Hier: ein kleines, lebendes Wissensnetz, in dem sich Webseiten
-            gegenseitig erzählen, was sie wissen. Ohne Zentrale.</dd>
+          <dt>Sage <span class="lautschrift">[seydsch]</span></dt>
+          <dd>Englisch <em>der Weise</em> — jemand, der Wissen sammelt,
+            filtert und weitergibt. Botanisch der <em>Salbei</em> — die
+            Pflanze, mit der seit jeher gereinigt und geklärt wird.
+            Beides zusammen meint: etwas, das aktiv verarbeitet —
+            nicht nur speichert oder weiterreicht.</dd>
 
           <dt>Protokol</dt>
           <dd>Die Spielregel, nach der Knoten sich finden und miteinander
@@ -2103,15 +2127,23 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
             Verwaltungs-Protokoll, sondern ein Gesprächsangebot.</dd>
 
           <dt>SBKIM <span class="lautschrift">[Es-Be-Ka-I-Em]</span></dt>
-          <dd>Der technische Name darunter: <em>Semantisch-Biologisch
-            Koordiniertes Inter-Knoten-Mycel</em>. Sagt in einem Wort:
-            nach Bedeutung suchen (semantisch), vom Pilz gelernt (biologisch),
-            zwischen kleinen Webseiten (Inter-Knoten-Mycel).</dd>
+          <dd>Der technische Name des Geflechts darunter:
+            <em>Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel</em>.
+            Beschreibt die Architektur — dem Pilz nachempfunden.</dd>
         </dl>
+
+        <blockquote class="name-glossar-key">
+          „Der Pilz hat Mycel. Dieses Netz hat <strong>Sage</strong>
+          als Signalsprache."
+        </blockquote>
+
         <p class="name-glossar-fuss">
-          <strong>Sage</strong> ist der Name. <strong>SBKIM</strong> ist die
-          Architektur darunter. <strong>Sage-Protokol</strong> heißt das,
-          was die kleinen Webseiten nutzen, um teil davon zu werden.
+          Zwischen den Knoten fließen keine rohen Daten, sondern Bedeutung —
+          gefiltert, bewertet, zur Frage passend.
+          <strong>SBKIM</strong> ist die Architektur,
+          <strong>Sage</strong> ist die Sprache,
+          <strong>Sage-Protokol</strong> ist die Spielregel, nach der
+          gesprochen wird.
         </p>
 
         <p class="ueber-lede">
