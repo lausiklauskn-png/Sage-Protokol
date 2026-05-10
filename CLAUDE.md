@@ -77,7 +77,7 @@ Bevor du `END` machst:
   Siehe `sbkim_paper.pdf` und `docs/components/*` — der Knoten ist
   Empfangsmodus mit Antwortrecht.
 
-## Die acht Module
+## Die zehn Module + Schutz-Backlog 10-12
 
 | # | Datei | Status (siehe PULS.md für Details) |
 |---|---|---|
@@ -91,10 +91,19 @@ Bevor du `END` machst:
 | 07 | `docs/components/07_apoptose.md` | spec ausstehend |
 | 08 | `docs/components/08_ui_demo.md` | spec ausstehend |
 | 09 | `docs/components/09_einbau_pwa.md` | spec ausstehend |
+| 10 | `docs/components/10_reputation.md` | Schutz-Backlog · Stub, Priorität niedrig |
+| 11 | `docs/components/11_rate_limit.md` | Schutz-Backlog · Stub, Priorität niedrig |
+| 12 | `docs/components/12_blocklist.md` | Schutz-Backlog · Stub, Priorität niedrig |
 
 Modul 00 (Doku-Fenster) ist die "5-Klick versteckte Funktion" in den
 Suchleisten der Endknoten-PWAs. Modul 09 beschreibt, wie ein fertiges Modul
 in Rezeptbuch / Mixarium eingebaut wird.
+
+Module 10-12 sind reaktive Schutz-Module (Reputation, Rate-Limit, manuelle
+Blocklist) — sie werden erst gebaut, wenn das Netz groß genug ist, dass
+Apoptose und Match-Filter allein nicht mehr reichen. Stubs liegen schon, damit
+keine Sitzung sie übersieht. Sichtbar gemacht in der Eigenschutz-Karte (Karte
+13) der Sage-Page.
 
 ## Wenn du blockiert bist
 

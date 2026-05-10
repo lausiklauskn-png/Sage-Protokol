@@ -1,0 +1,84 @@
+{
+  "$schema": "https://sage-protokol.example/schemas/status.v1.json",
+  "name": "Sage-Protokol",
+  "fullName": "Semantisch-Empfangendes Bidirektionales KI-Matching — Hub",
+  "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Kein Endknoten.",
+  "protocolVersion": "0.1",
+  "schemaVersion": "1",
+  "lastUpdated": "2026-05-10",
+  "branch": "claude/semantic-agent-network-Y03Vg",
+
+  "endknoten": [
+    {
+      "name": "Rezeptbuch",
+      "domain": "Kochrezepte",
+      "integrated": false,
+      "url": null
+    },
+    {
+      "name": "Mixarium",
+      "domain": "Cocktails / Drinks",
+      "integrated": false,
+      "url": null
+    }
+  ],
+
+  "modules": [
+    { "id": "00", "name": "Doku-Fenster",  "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": [],         "kurz": "5-Klick versteckte Statusanzeige im Such-Symbol" },
+    { "id": "01", "name": "Storage",        "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": [],         "kurz": "IndexedDB-Wrapper für sbkim_*-Stores" },
+    { "id": "02", "name": "Spore",          "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["01"],     "kurz": "Ed25519-Identität, signierte Visitenkarte" },
+    { "id": "03", "name": "Embedding",      "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": [],         "kurz": "Text → 384-dim Vektor (Xenova multilingual-e5-small)" },
+    { "id": "04", "name": "Match",          "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["03"],     "kurz": "Cosine-Sim, Domänen-Vektor" },
+    { "id": "05", "name": "Anastomose",     "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["02","04"],"kurz": "Handshake zwischen Knoten" },
+    { "id": "06", "name": "Heterokaryose",  "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["05"],     "kurz": "Datenaustausch unter Geschwistern (Opt-In)" },
+    { "id": "07", "name": "Apoptose",       "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["02","01"],"kurz": "Selbstlöschung + signiertes Vermächtnis" },
+    { "id": "08", "name": "UI-Demo",        "score": "werkstatt", "siegel": "in Werkstatt",      "abhaengig": [],         "kurz": "tests/manual_check.html — Werkstatt-Sichtprüfung" },
+    { "id": "09", "name": "Einbau-PWA",     "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": [],         "kurz": "Anleitung zum Einbau in Endknoten-PWAs" }
+  ],
+
+  "schutzBacklog": [
+    { "id": "10", "name": "Reputation",     "score": "schablone", "siegel": "spec ausstehend, Priorität niedrig", "kurz": "Knoten-Reputation gegen Sybil-Vergiftung" },
+    { "id": "11", "name": "Rate-Limit & TTL","score": "schablone", "siegel": "spec ausstehend, Priorität niedrig", "kurz": "Pro-Peer Rate-Limit und Hop-Limit gegen Flooding" },
+    { "id": "12", "name": "Blocklist",      "score": "schablone", "siegel": "spec ausstehend, Priorität niedrig", "kurz": "Manuelle Sperrliste für gezielte Angreifer" }
+  ],
+
+  "nodeTypes": {
+    "schablone": 0,
+    "werkstatt": 3,
+    "spec":      5,
+    "stub":      7,
+    "fertig":    10
+  },
+
+  "scoreModel": {
+    "formula":          "100 * (1 - realScore / maxScore)",
+    "hubLiveBonus":     10,
+    "modulePerStep":    "siehe nodeTypes",
+    "endknotenIntegrated":      8,
+    "endknotenIntegratedAndPing": 15,
+    "maxScoreNote":     "Hub(10) + 10 Module × 10 + 2 Endknoten × 15 = 140. Schutz-Backlog (10-12) zählt nicht mit, da reaktiv-zukünftig."
+  },
+
+  "config": {
+    "PROTOCOL_VERSION":       "0.1",
+    "NODE_TYPE_DEFAULT":      "hybrid",
+    "EMBEDDING_MODEL":        "Xenova/multilingual-e5-small",
+    "EMBEDDING_DIM":          384,
+    "PROVIDER_MIN_MATCH":     0.55,
+    "LOCAL_RESULT_THRESHOLD": 3,
+    "QUERY_TIMEOUT_MS":       4000,
+    "SBKIM_STORE_PREFIX":     "sbkim_",
+    "DOKU_REVEAL_CLICKS":     5
+  },
+
+  "endpoints": {
+    "spore":          "/.well-known/sbkim/spore.json",
+    "sporeAlias":     "/sbkim/spore.json",
+    "query":          "/sbkim/query",
+    "anastomosis":    "/sbkim/anastomosis",
+    "heterokaryosis": "/sbkim/heterokaryosis",
+    "legacy":         "/sbkim/legacy"
+  },
+
+  "datenquelleHinweis": "Diese Datei ist die maschinenlesbare Quelle der Landing Page. Andere Repos können sie via fetch() abrufen (CORS erlaubt durch GitHub Pages). Format-Versionierung über schemaVersion. Erweiterungen nur additiv, kein Brechen bestehender Felder."
+}
