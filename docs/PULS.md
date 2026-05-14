@@ -16,10 +16,10 @@
 ```mermaid
 pie showData
   title Modulstand 2026-05-14 (13 Module)
-  "🟫 Schablone" : 10
+  "🟫 Schablone" : 9
   "🟧 In Werkstatt" : 1
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 2
+  "🟦 Code-Stub" : 3
   "🟩 Fertig" : 0
 ```
 
@@ -32,6 +32,7 @@ Module mit Code-Stub, brauchen Sichttest im Browser:
 
 - 🟦 **[01 Storage](components/01_storage.md)** — Code 2026-05-14, Sichttest steht aus (Klaus klickt in `tests/manual_check.html`)
 - 🟦 **[03 Embedding](components/03_embedding.md)** — Code 2026-05-14, Sichttest steht aus (Modell-Download beim ersten Klick, dauert 5–15 s)
+- 🟦 **[04 Match](components/04_match.md)** — Spec + Code 2026-05-14, Sichttest steht aus (sechs Knöpfe in Panel 04, hängt am 03-Modell-Cache)
 
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
@@ -42,12 +43,12 @@ In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: Klaus klickt 01 + 03 im Browser durch
-(`tests/manual_check.html`). Danach **Spec-Sitzung Modul 04 Match**
-starten — beide Vorbedingungen (03 + indirekt 01) sind als Code-Stub
-vorhanden, und Modul 04 soll laut Plan-Sitzung gleichzeitig die
-A1–B3-Notations-Synthese leisten. Parallel anbietbar: Spec-Sitzung
-Modul 09 (Einbau-PWA).
+Empfehlung Hauptsitzung: Klaus klickt 01 + 03 + 04 im Browser durch
+(`tests/manual_check.html`). Danach **Spec-Sitzung Modul 02 Spore**
+(blockiert sonst 05 Anastomose) oder **Spec-Sitzung Modul 05
+Anastomose** (alle Vorbedingungen außer 02 stehen als Stub). Parallel
+anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder Modul 09
+(Einbau-PWA) — beide ohne Abhängigkeiten.
 
 ---
 
@@ -59,7 +60,7 @@ Modul 09 (Einbau-PWA).
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | IndexedDB-Wrapper |
 | 02 spore | leere Schablone | — | — | Ed25519-Identität |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | semantischer Vektor |
-| 04 match | leere Schablone | — | — | Vektorvergleich |
+| 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Vektorvergleich, modus-frei |
 | 05 anastomose | leere Schablone | — | — | Handshake |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
 | 07 apoptose | leere Schablone | — | — | Selbstlöschung |
@@ -93,17 +94,17 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   KI-Matching". Das Observatorium (`index.html`, `status.json`) übernimmt
   die Paper-Variante. CLAUDE.md sollte in einer separaten Sitzung
   nachgezogen werden.
-- **A1–B3-Notations-Überlappung Sage ↔ Mixarium** (Plan-Sitzung
-  2026-05-14): Die Sage-Landingpage Karte 11 „Wanderung" verwendet
-  exakt die Buchstaben A1/A2/A3 und B1/B2/B3/B4 — als Knoten-Hops in
-  zwei parallelen Such-Pfaden (Pfad A erfolgreich, Pfad B endet in
-  Apoptose). Die Mixarium-`SBKIM_AGENTS.md` verwendet dieselben
-  Buchstaben für Agenten-Rollen (A1 Curator, A2 Auditor, A3 Devil's
-  Advocate · B1 Interviewer, B2 Matcher, B3 Critic). Plausible Synthese:
-  die Hops *tragen* die Funktionen — die Anbieter-Seite verfeinert die
-  Antwort (Pfad A), die Anfrage-Seite verfeinert die Frage (Pfad B), im
-  Negativ-Fall stirbt der Strang. Spec-Sitzung **Modul 04 Match** muss
-  diese Synthese leisten (kein eigenes Mapping-Dokument davor).
+- ~~**A1–B3-Notations-Überlappung Sage ↔ Mixarium**~~ — **gelöst
+  2026-05-14 in Spec+Bau-Sitzung Modul 04.** Die Synthese „Hops tragen
+  die Funktionen" steht jetzt verbindlich in
+  [`docs/components/04_match.md` § A1–B3-Synthese](components/04_match.md):
+  Pfad A = Curator → Auditor → Devil's Advocate (Anbieter-Seite
+  verfeinert die Antwort); Pfad B = Interviewer → Matcher → Critic
+  (Anfrage-Seite verfeinert die Frage), mit Apoptose bei B4 im
+  Negativ-Fall. Sage zeigt die *Geometrie* der Hop-Position, Mixarium
+  zeigt die *Rolle* — beide Notationen bleiben gültig, sie beschreiben
+  dieselbe Wanderung aus zwei Winkeln. Kein eigenes Mapping-Dokument
+  nötig.
 
 ## Schutz-Backlog (aus Sage-Page Karte 13, 2026-05-10)
 
@@ -121,6 +122,78 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Spec+Bau-Sitzung · Modul 04 Match (Spec + Code-Stub)
+
+**Getan:**
+- **Komponenten-Karte 04 (Match) vollständig gefüllt** (statt der alten
+  Site-Echo-Skizze mit `matchAgainstDomain`/`getDomainVector`): API
+  reduziert auf zwei öffentliche Funktionen + eine Konstante —
+  `match(queryVec, passageVec) → number` (modus-frei, Skalarprodukt
+  zweier L2-normalisierter Float32Array(384)) und
+  `isAboveProviderThreshold(score) → boolean`. Konstante
+  `PROVIDER_MIN_MATCH = 0.55` aus INTERFACES.md §0 wird nur
+  weitergespiegelt, nicht neu definiert.
+- **Domänen-Vektor-Verwaltung explizit gestrichen** — sie gehört in
+  den Andock-Schritt (Modul 02 Spore / Modul 09 Einbau-PWA), nicht in
+  Modul 04. Match nimmt zwei beliebige Vektoren entgegen und ist
+  zustandslos.
+- **A1–B3-Notations-Synthese in Karte 04 § A1–B3-Synthese gelöst:**
+  „Die Hops tragen die Funktionen" — Pfad A = Curator → Auditor →
+  Devil's Advocate (Anbieter-Seite verfeinert die Antwort), Pfad B =
+  Interviewer → Matcher → Critic (Anfrage-Seite verfeinert die Frage),
+  bei B4 Apoptose. Sage zeigt die *Geometrie* der Hop-Position,
+  Mixarium zeigt die *Rolle*. Modul 04 sitzt an Position 2 in beiden
+  Pfaden. Querschnitts-Frage in PULS oben als gelöst gestrichen
+  (Strikethrough + Verweis), kein eigenes Mapping-Dokument nötig.
+- **`src/modules/04_match.js` geschrieben:** IIFE wie 01, klassisches
+  `<script>`-Tag, `window.SbkimMatch`. Selbstcheck synchron beim Skript-
+  Laden (kein async Init):
+  `console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.55")`.
+  Zwei benannte Error-Typen: `InvalidVectorError` (kein
+  `Float32Array`) und `ShapeMismatchError` (Länge ≠ 384 oder Längen-
+  Differenz). Norm-Prüfung im Hot-Path bewusst weggelassen (Vertrauen
+  auf Modul 03, jeder zusätzliche `Math.sqrt` würde in Schleifen
+  bremsen).
+- **`tests/manual_check.html` Panel 04 von „noch nicht gebaut" auf
+  „Code-Stub"** gestellt. Sechs echte Knöpfe via `SbkimUI.addButton`:
+  *Ähnlich Käsekuchen/Käsetorte (> 0.70)* · *Fern Käsekuchen/Auspuffrohr
+  (< 0.40)* · *Schwelle positiv (Hefeteig vs. Kochrezepte)* · *Schwelle
+  negativ (Tarantino vs. Kochrezepte)* · *Form-Fehler ShapeMismatchError*
+  · *Selbstcheck Konsole prüfen*. Voraussetzung: Modul 03 wird beim
+  ersten Klick mitgeladen.
+- **`INTERFACES.md` Modul 04 auf Status `entwurf`** gesetzt, volle
+  Vertrag-Sektion mit Signaturen, Fehlerverhalten und Garantien für
+  Modul 05/07. Änderungsprotokoll fortgeschrieben.
+- **`status.json`: Modul 04 auf `score: "stub"`.** Pie via
+  `scripts/update_puls_pie.py` regeneriert
+  (Schablone 9 / Werkstatt 1 / Spec 0 / Stub 3).
+- **JS-Syntax mit `node --check` validiert** (grün). Im Browser noch
+  nicht geklickt — Sitzung headless.
+- **Karte 04 Bauzustand-Tabelle** mit Zeilen *Spec gefüllt* + *Code
+  geschrieben* + *Sichttest (ungeprüft, weil Sitzung headless — Klaus
+  klickt im Browser)* ergänzt. Hero-Badge auf 🟦 Code-Stub.
+
+**Offen:**
+- **Sichttest im Browser** durch Klaus: `tests/manual_check.html`
+  öffnen, sechs Knöpfe in Panel 04 klicken. Erwartungen:
+  Käsekuchen/Käsetorte > 0.70 (semantisch nah, vermutlich 0.80–0.90),
+  Käsekuchen/Auspuffrohr < 0.40 (semantisch fern), positiver Schwelle-
+  Test über 0.55, negativer unter 0.55, Form-Fehler liefert
+  `ShapeMismatchError`. Konsolen-Selbstcheck beim Laden prüfen.
+- **Sichttest 01 + 03** ebenfalls weiter offen (kommt im selben
+  Browser-Klick-Durchlauf wie 04, weil 04-Panels Modul 03 mit-laden).
+
+**Nächster sinnvoller Schritt:**
+- Klaus klickt 01, 03 und 04 im Browser durch und trägt die Sichttest-
+  Zeilen in den drei Karten nach.
+- Danach: **Spec-Sitzung Modul 02 Spore** (blockiert sonst 05
+  Anastomose und 07 Apoptose) oder **Spec-Sitzung Modul 05 Anastomose**
+  (drei von vier Vorbedingungen — 01, 03, 04 — stehen als Stub; nur 02
+  fehlt). Parallel anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder
+  Modul 09 (Einbau-PWA) — beide ohne Abhängigkeiten.
+
+---
 
 ### 2026-05-14 · Bau-Sitzung · Modul 03 Embedding (Code-Stub)
 

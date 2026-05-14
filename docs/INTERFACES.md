@@ -189,13 +189,50 @@ Geprüft: 2026-05-14 (Spec-Sitzung 01+03)
 ---
 
 ### Modul: 04_match
-Status: schablone
+Status: entwurf
 Datei:  src/modules/04_match.js
 
-Bietet:
-  *(noch zu spezifizieren — Cosine-Sim, Domänen-Vektor)*
+Bietet (öffentlich):
+  match(queryVec: Float32Array, passageVec: Float32Array) → number     // sync; [-1, 1] für L2-norm. Eingaben
+  isAboveProviderThreshold(score: number)                  → boolean   // sync; score >= PROVIDER_MIN_MATCH (0.55)
+  PROVIDER_MIN_MATCH                                       : number    // 0.55, aus §0 hierher gespiegelt
 
-Geprüft: ungeprüft
+  KEIN mode-Parameter. Skalarprodukt ist symmetrisch; die Parameter-
+  Namen sind reine Lese-Hilfe für den Aufrufer. Reine Funktion, kein
+  Promise, kein async.
+
+Nutzt:
+  (keine SBKIM-Module zur Laufzeit — vertraut auf die L2-Norm-Garantie
+   von Modul 03. Domänen-Vektor entsteht im Andock-Schritt (Modul 02
+   Spore / Modul 09 Einbau-PWA), nicht in Modul 04.)
+
+Storage:
+  (kein eigener Store — Match ist zustandslos.)
+
+Events:
+  (keine)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, sofort beim <script>-Tag-Auswerten):
+    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.55");
+  Wie Modul 01 — Modul 04 hat keinen asynchronen Lade-Schritt.
+
+Fehlerverhalten:
+  - Eingabe ist nicht Float32Array            → InvalidVectorError  (sync throw)
+  - Längen-Differenz zwischen den Vektoren    → ShapeMismatchError  (sync throw)
+  - Länge ≠ EMBEDDING_DIM (384)               → ShapeMismatchError  (sync throw)
+  - NaN/Infinity in der Eingabe               → kein expliziter Check; Ergebnis ist NaN/Infinity
+  - Norm ≠ 1.0                                → kein Fehler. Ergebnis liegt evtl. außerhalb [-1, 1]
+                                                (Modul 04 vertraut auf die Norm-Garantie von Modul 03;
+                                                 jede Norm-Prüfung im Hot-Path wäre Verschwendung).
+
+Garantien für Modul 05 / 07:
+  - match() ist deterministisch und reproduzierbar (kein RNG, kein Zeit-Effekt).
+  - Bei korrekt L2-normalisierten Eingaben liegt der Rückgabewert in [-1, 1].
+  - isAboveProviderThreshold(score) liefert exakt score >= 0.55, ohne
+    Toleranz-Spielraum. Wer Hysterese will, baut sie eine Schicht höher.
+
+Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04)
 
 ---
 
@@ -351,3 +388,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-14 | Spec-Sitzung 01+03 | Erste Vertrag-Sektionen gefüllt: Modul 01 (Storage) und Modul 03 (Embedding) auf Status `spec`. Modul 03 mit 4-Funktionen-API (`embedQuery`/`embedPassage` + Batch-Varianten) statt `mode`-Parameter. Selbstcheck-Format `MODUL XX <NAME> bereit, Funktionen: ...` für alle Module festgelegt. |
 | 2026-05-14 | Bau-Sitzung 01 | Modul 01 Code geschrieben (`src/modules/01_storage.js`), Status auf `entwurf`. IIFE mit `window.SbkimStorage`, Selbstcheck beim Skript-Laden. |
 | 2026-05-14 | Bau-Sitzung 03 | Modul 03 Code geschrieben (`src/modules/03_embedding.js`), Status auf `entwurf`. IIFE mit `window.SbkimEmbedding`, dynamischer Import transformers.js@2.17.2, Selbstcheck nach `init()`. |
+| 2026-05-14 | Spec+Bau-Sitzung 04 | Modul 04 spezifiziert und gebaut. Modus-freie API `match(queryVec, passageVec) → number` + `isAboveProviderThreshold` + Konstante `PROVIDER_MIN_MATCH`. Vertraut auf L2-Norm-Garantie aus Modul 03 (kein Norm-Check im Hot-Path). Status auf `entwurf`. A1–B3-Notations-Synthese in `docs/components/04_match.md` gelöst (Hops tragen Funktionen). |
