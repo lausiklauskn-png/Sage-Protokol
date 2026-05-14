@@ -41,9 +41,13 @@
   <!-- Skelett: pro Modul ein Panel. Knöpfe ergänzt die jeweilige Bau-Sitzung. -->
 
   <section class="panel" data-module="01_storage">
-    <h2>01 Storage <span class="status idle">noch nicht gebaut</span></h2>
-    <div class="controls"><!-- Knöpfe hier --></div>
-    <pre class="log">— noch keine Ausgabe —</pre>
+    <h2>01 Storage <span class="status warn">Spec fertig, Code ausstehend</span></h2>
+    <div class="controls">
+      <button data-stub="01" data-action="init">Storage init</button>
+      <button data-stub="01" data-action="roundtrip">Storage round-trip</button>
+      <button data-stub="01" data-action="selfcheck">Selbstcheck Konsole prüfen</button>
+    </div>
+    <pre class="log">— Stub-Knöpfe (Spec 2026-05-14). Bau-Sitzung Modul 01 ersetzt die Handler durch echte Aufrufe. —</pre>
   </section>
 
   <section class="panel" data-module="02_spore">
@@ -53,9 +57,14 @@
   </section>
 
   <section class="panel" data-module="03_embedding">
-    <h2>03 Embedding <span class="status idle">noch nicht gebaut</span></h2>
-    <div class="controls"></div>
-    <pre class="log">— noch keine Ausgabe —</pre>
+    <h2>03 Embedding <span class="status warn">Spec fertig, Code ausstehend</span></h2>
+    <div class="controls">
+      <button data-stub="03" data-action="init">Embedding init</button>
+      <button data-stub="03" data-action="roundtrip">Embedding round-trip</button>
+      <button data-stub="03" data-action="query-vs-passage">Vergleich Query vs. Passage</button>
+      <button data-stub="03" data-action="selfcheck">Selbstcheck Konsole prüfen</button>
+    </div>
+    <pre class="log">— Stub-Knöpfe (Spec 2026-05-14). Bau-Sitzung Modul 03 ersetzt die Handler durch echte Aufrufe. —</pre>
   </section>
 
   <section class="panel" data-module="04_match">
@@ -128,10 +137,45 @@
     };
   </script>
 
+  <script>
+    // Stub-Handler: solange noch kein Modul-Code in src/ liegt, schreiben
+    // die Spec-Stub-Knöpfe einen Hinweistext ins Log und (für die
+    // Selbstcheck-Knöpfe) eine Anleitung, wonach in der DevTools-Konsole
+    // zu suchen ist. Bau-Sitzung ersetzt diese Knöpfe durch echte
+    // SbkimUI.addButton(...)-Aufrufe aus den Modul-Dateien.
+    document.querySelectorAll("button[data-stub]").forEach(btn => {
+      const moduleId = btn.dataset.stub;
+      const action = btn.dataset.action;
+      const moduleKey =
+        moduleId === "01" ? "01_storage" :
+        moduleId === "03" ? "03_embedding" : null;
+      if (!moduleKey) return;
+      btn.addEventListener("click", () => {
+        if (action === "selfcheck") {
+          const expected =
+            moduleId === "01"
+              ? 'MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear'
+              : 'MODUL 03 EMBEDDING bereit, Funktionen: init/isReady/embedQuery/embedPassage/embedQueryBatch/embedPassageBatch, Modell: Xenova/multilingual-e5-small, Dim: 384';
+          SbkimUI.log(moduleKey, "ℹ Selbstcheck-Hinweis:");
+          SbkimUI.log(moduleKey, "  DevTools → Konsole öffnen und nach folgender Zeile suchen:");
+          SbkimUI.log(moduleKey, "  " + expected);
+          SbkimUI.log(moduleKey, "  (erscheint erst, wenn das Modul tatsächlich geladen ist — aktuell noch Stub.)");
+        } else {
+          SbkimUI.log(moduleKey,
+            `▶ Stub-Knopf "${action}" — Modul ${moduleId} ist spezifiziert, aber noch nicht implementiert.`);
+          SbkimUI.log(moduleKey,
+            `  Bau-Sitzung Modul ${moduleId} ersetzt diesen Handler durch den echten Aufruf.`);
+        }
+      });
+    });
+  </script>
+
   <!--
     Bau-Sitzungen ergänzen unten ihre Modul-Skripte, z.B.:
     <script type="module" src="../src/modules/01_storage.js"></script>
     und registrieren ihre Knöpfe via SbkimUI.addButton("01_storage", "init", ...).
+    Die Spec-Stub-Knöpfe oben können dann entfernt werden, sobald die echten
+    Knöpfe registriert sind.
   -->
 </body>
 </html>

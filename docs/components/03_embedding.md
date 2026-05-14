@@ -1,6 +1,6 @@
 # Modul 03 — Embedding
 
-> **Status:** 🟫 Schablone  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 03
+> **Status:** 🟨 Spec fertig  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 03
 > **Datei (Code):** `src/modules/03_embedding.js`
 >
 > _Text → 384-dimensionaler Vektor via `Xenova/multilingual-e5-small`.
@@ -17,100 +17,212 @@ markiert. Zwei ähnliche Sätze landen geometrisch nahe beieinander —
 "Auspuffrohr" weit weg. Das ist die Grundlage, auf der das Mycel
 **inhaltlich** statt adressbasiert findet.
 
+Das e5-Modell verlangt eine **Rollen-Markierung** für jeden Text:
+„query: ..." für die Frage, „passage: ..." für den durchsuchten Inhalt.
+Diese Rolle ist nicht dekorativ — sie verschiebt den Vektor messbar.
+SBKIM macht das Markieren API-strukturell unvermeidlich: es gibt keine
+generische `embedText()`-Funktion, sondern getrennte Funktionen pro Rolle.
+
 ---
 
 ## Visualisierung
 
 ```mermaid
 flowchart LR
-  T["Text<br/>'Käsekuchen mit Quark'"] --> P[Tokenizer]
-  P --> E[Xenova/<br/>multilingual-e5-small]
+  T["Text<br/>'Käsekuchen mit Quark'"] --> R{Rolle?}
+  R -->|Frage| Q["query: Käsekuchen mit Quark"]
+  R -->|Inhalt| P["passage: Käsekuchen mit Quark"]
+  Q --> TOK[Tokenizer]
+  P --> TOK
+  TOK --> E[Xenova/<br/>multilingual-e5-small]
   E --> POOL[Mean-Pooling]
-  POOL --> V["Float32Array(384)<br/>[0.12, -0.04, ...]"]
+  POOL --> V["Float32Array(384)"]
   V --> N[L2-Norm]
-  N --> R[bereit für<br/>Cosine-Sim]
+  N --> READY[bereit für<br/>Cosine-Sim als<br/>Skalarprodukt]
 
   classDef start fill:#92400E,color:#fff,stroke:#fff
   classDef proc fill:#EA580C,color:#fff,stroke:#fff
   classDef out fill:#16A34A,color:#fff,stroke:#fff
-  class T start
-  class P,E,POOL proc
-  class V,N,R out
+  class T,R start
+  class Q,P,TOK,E,POOL proc
+  class V,N,READY out
 ```
 
 ---
 
 ## Zweck
 
-Wandelt Texte in 384-dimensionale Vektoren (Float32Array). Ähnlich
-bedeutende Texte erzeugen ähnliche Vektoren — die Grundlage des
-semantischen Matchings.
+Wandelt Texte in 384-dimensionale, L2-normalisierte Vektoren
+(Float32Array). Ähnlich bedeutende Texte erzeugen ähnliche Vektoren —
+die Grundlage des semantischen Matchings (Modul 04).
 
 Modell: `Xenova/multilingual-e5-small` (mehrsprachig, kompakt,
 ~30 MB Download, läuft im Browser via transformers.js / WebAssembly).
+Mehrsprachig deckt deutsch + englisch in einem Vektorraum ab — wichtig
+für die Endknoten-Domänen (Kochrezepte / Cocktails).
 
 ---
 
 ## Verantwortlichkeiten
 
 **Macht:**
-- Lazy-Init des Modells beim ersten `embedText()`-Aufruf
-- Tokenisierung + Mean-Pooling (nach Konvention von e5-small)
-- Float32Array(384) zurückgeben
-- Modell-Cache nutzen, damit zweite Sitzung nicht neu lädt
+- Lazy-Init des Modells beim ersten `embedQuery`/`embedPassage`-Aufruf
+  (oder explizit via `init()`)
+- Tokenisierung + Mean-Pooling (e5-Konvention)
+- Rollen-Prefix `"query: "` bzw. `"passage: "` intern voranstellen
+- L2-Norm anwenden, damit Modul 04 Cosinus als simples Skalarprodukt
+  rechnen kann
+- Truncate auf 512 Token (e5-small-Limit), still abschneiden +
+  einmaliger `console.warn` pro Sitzung
+- Selbstcheck-Meldung in der DevTools-Konsole nach erfolgreichem `init()`
 
 **Macht nicht:**
-- Kein eigenes Storage (das Modell-Cache verwaltet transformers.js selbst)
-- Keine Sprachenerkennung (das Modell ist mehrsprachig)
+- Kein eigenes Storage (`transformers.js` verwaltet seinen Modell-Cache
+  im Browser-Cache selbst)
+- Keine Sprachenerkennung (Modell ist mehrsprachig — Eingabe in jeder
+  Sprache erlaubt)
 - Keine Klassifikation (nur Encoding)
+- Keine Ähnlichkeitsberechnung (das ist Modul 04)
+- Keine Modus-Verwechslung möglich: es gibt keinen `mode`-Parameter
+  (API-Design statt Laufzeit-Check, siehe „Im Mycel-Bild" oben)
 
 ---
 
 ## Schnittstelle
 
-*(noch zu spezifizieren)* — Skizze:
+Modul 03 exportiert **sechs** öffentliche Funktionen. Jede Embed-
+Funktion liefert ein `Promise` auf eine bereits L2-normalisierte
+`Float32Array(384)`.
 
 ```
 init() → Promise<void>
-  // lädt das Modell ggf. herunter, setzt isReady=true
+  // Lädt das Modell ggf. herunter (erster Lauf, ~30 MB), setzt
+  // den Modell-Status auf "ready" und emittiert den Selbstcheck.
+  // Idempotent: mehrfacher Aufruf gibt sofort zurück.
 
 isReady() → boolean
+  // true, sobald init() erfolgreich war. False vorher.
+  // Synchron, kein Promise.
 
-embedText(text: string) → Promise<Float32Array>  // Länge 384
-embedBatch(texts: string[]) → Promise<Float32Array[]>
+embedQuery(text: string) → Promise<Float32Array>     // Länge 384, L2-normalisiert
+  // Wandelt einen Anfrage-Text in den Suche-Vektor.
+  // Intern: "query: " + text.
+  // Aufruf vor init() löst Lazy-Init aus.
+
+embedPassage(text: string) → Promise<Float32Array>   // Länge 384, L2-normalisiert
+  // Wandelt einen Inhalts-Text (Rezeptbeschreibung, Domänen-Stichwort,
+  // Spore-Selbstbeschreibung) in den Inhalts-Vektor.
+  // Intern: "passage: " + text.
+
+embedQueryBatch(texts: string[]) → Promise<Float32Array[]>
+  // Mehrere Anfragen in einem Modell-Pass. Reihenfolge bleibt erhalten.
+  // Leeres Array → Promise<[]>, kein Fehler.
+
+embedPassageBatch(texts: string[]) → Promise<Float32Array[]>
+  // Mehrere Inhalte in einem Modell-Pass. Reihenfolge bleibt erhalten.
 ```
+
+### Warum vier Funktionen statt eines `mode`-Parameters
+
+Die e5-Familie verlangt den Rollen-Prefix. Ein gemeinsames `embedText
+(text, mode)` würde drei Probleme erzeugen:
+
+1. Modul 04 (Match) müsste prüfen, ob Query- und Passage-Vektor
+   tatsächlich mit unterschiedlichen Modi erzeugt wurden — Laufzeit-
+   Annahme, schwer zu testen.
+2. Bauender könnte den `mode`-Parameter vergessen oder vertauschen.
+   Vektoren wären leicht abdriftend (cosinus ~0.95 statt 1.0 für
+   identische Sätze), Match-Schwellen würden schleichend ungenau.
+3. Code-Review-Last: jedes Embedding-Aufrufstelle müsste den Modus
+   explizit zeigen.
+
+Lösung: API-Design erzwingt die richtige Rolle. Modul 04 signiert
+`match(queryVec, passageVec)` — die Parameter-Namen geben die
+Reihenfolge vor, kein Mode-Flag mehr durchzureichen.
+
+### Selbstcheck
+
+Nach erfolgreichem `init()` (Modell tatsächlich geladen, Tokenizer
+bereit) emittiert Modul 03 **einmalig**:
+
+```
+console.info("MODUL 03 EMBEDDING bereit, Funktionen: init/isReady/embedQuery/embedPassage/embedQueryBatch/embedPassageBatch, Modell: Xenova/multilingual-e5-small, Dim: 384");
+```
+
+Wichtig: Embedding meldet sich **nicht** beim Skript-Laden (anders als
+Modul 01), weil der asynchrone Modell-Download das „bereit" verfälschen
+würde. Erst wenn das Modell aufrufbar ist, ist die Konsolen-Meldung
+ehrlich.
 
 ### Konfigurationswerte
 
 ```
-EMBEDDING_MODEL = "Xenova/multilingual-e5-small"
-EMBEDDING_DIM   = 384
+EMBEDDING_MODEL      = "Xenova/multilingual-e5-small"   // INTERFACES.md §0
+EMBEDDING_DIM        = 384
+EMBEDDING_MAX_TOKENS = 512                              // e5-small Hard-Limit
+EMBEDDING_QUERY_PREFIX   = "query: "
+EMBEDDING_PASSAGE_PREFIX = "passage: "
 ```
+
+---
+
+## Fehlerverhalten
+
+| Lage | Reaktion |
+|---|---|
+| Modell-Download scheitert (Offline beim ersten Lauf, Netz-Fehler) | rejects mit `ModelLoadError`, deutschsprachige Message; Aufrufer entscheidet (Retry / Nutzer-Hinweis „bitte einmal online sein"). |
+| Modell läuft, aber Tokenizer wirft (sehr seltene Glyph-Probleme) | rejects mit `EmbeddingError`, Original-Error in `.cause`. |
+| Leerer Text oder reine Whitespaces | rejects mit `EmptyInputError`. Das ist absichtlich streng — Modul 04 darf nie einen Null-Vektor sehen. |
+| Text > 512 Tokens nach Prefix | **kein Fehler.** Text wird still abgeschnitten. Beim ersten Truncate pro Sitzung loggt das Modul `console.warn("MODUL 03 EMBEDDING: Eingabe > 512 Tokens, abgeschnitten")`, danach Schweige-Modus (kein Log-Spam in Batch-Pipelines). |
+| Batch-Funktion mit leerem Array | `Promise<[]>`, kein Fehler. |
 
 ---
 
 ## Manueller Test
 
-1. `tests/manual_check.html`: Knopf "Embedding init".
-   Erwartung: nach erstem Lauf "Modell geladen" + Cache-Hinweis.
-2. Knopf "Embedding round-trip": Text "Käsekuchen mit Quark" → Array
-   der Länge 384, alle Werte Float32.
-3. Knopf "Cosine zwischen 'Käsekuchen' und 'Käsetorte'": > 0.7.
-4. Knopf "Cosine zwischen 'Käsekuchen' und 'Auspuffrohr'": < 0.4.
+In `tests/manual_check.html`, Panel **03 Embedding**, vier Stub-Knöpfe
+(Bau-Sitzung füllt die Handler):
 
-(Schritt 3+4 nutzt Modul 04 — gehört in dessen manuellen Test, sobald
-04 existiert.)
+1. **Embedding init** — `await init()`. Erwartung: erster Lauf braucht
+   Netz und ~5–15 s, zweite Sitzung lädt aus dem Browser-Cache (<1 s).
+2. **Embedding round-trip** — `await embedQuery("Käsekuchen mit Quark")`,
+   prüfe Länge 384 und L2-Norm ≈ 1.0 (toleranz ±0.001).
+3. **Vergleich Query vs. Passage** — beide Funktionen auf identischen
+   Text anwenden, Skalarprodukt anzeigen. Erwartung: zwischen 0.85 und
+   0.95 (gleicher Inhalt, unterschiedliche Rolle → ähnlich, aber nicht
+   identisch). Bewertung: zeigt, dass die Prefix-Trennung im Vektorraum
+   sichtbar ist.
+4. **Selbstcheck Konsole prüfen** — Hinweisknopf ohne Aktion: weist den
+   Tester an, DevTools → Konsole zu öffnen und die Zeile
+   `MODUL 03 EMBEDDING bereit, Funktionen: ..., Modell: ..., Dim: 384`
+   zu suchen (erscheint **nach** dem ersten init).
+
+Sinn-Vergleiche („Käsekuchen" vs. „Käsetorte" vs. „Auspuffrohr") gehören
+in den manuellen Test von Modul 04 — nicht hierher, weil sie eine
+Cosinus-Funktion brauchen.
 
 ---
 
 ## Risiken & offene Punkte
 
-- Erster Lauf benötigt Internet zum Modelldownload. Offline danach OK.
-- Speicherbedarf des Modells: ~30 MB im Browser-Cache.
-- Sehr lange Texte: bei e5-small Input-Limit ca. 512 Tokens. Längere
-  Texte abschneiden (Spec entscheidet, ob warnen oder still abschneiden).
-- Vektor-Norm: e5-Modelle benötigen Prefix `"query: "` bzw. `"passage: "`
-  für besten Match. → Spec klärt, ob wir das anwenden.
+- **Erster Lauf braucht Internet** zum Modell-Download (~30 MB). Offline-
+  Andocken eines neuen Endknotens ist beim allerersten Aufruf nicht
+  möglich. Nach dem ersten Lauf cached der Browser; spätere Sitzungen
+  laufen offline.
+- **Speicherbedarf:** ~30 MB im Browser-Cache + ~80 MB RAM für die
+  Inference. Auf alten Mobil-Browsern (iOS Safari < 14) eventuell zu
+  schwer; Endknoten-PWA muss eine Fallback-Erklärung anzeigen, wenn
+  `ModelLoadError`.
+- **e5-Prefix-Drift:** durch API-Design strukturell ausgeschlossen
+  (vier Funktionen, kein `mode`-Parameter). Diese Spec-Entscheidung
+  ist verbindlich; ein späteres Zusammenfassen zu `embedText(text, mode)`
+  müsste die Plan-Sitzung 2026-05-14 explizit widerrufen.
+- **Truncate-Strategie:** still abschneiden mit einmaliger `console.warn`-
+  Warnung pro Sitzung. Diskutiert wurde „abbrechen mit Fehler", aber
+  Suche darf nicht an einer langen Antwort scheitern. Wer harte
+  Längenkontrolle braucht, kürzt vor dem Aufruf selbst.
+- **L2-Norm:** das Modul liefert **immer** normalisiert. Modul 04 darf
+  sich darauf verlassen und Cosinus als Skalarprodukt rechnen.
 
 ---
 
@@ -120,7 +232,7 @@ EMBEDDING_DIM   = 384
 |---|---|---|---|
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid-Flow, Querverweise |
-| Spec gefüllt | — | — | — |
+| Spec gefüllt | 2026-05-14 | Spec 01+03 | 4-Funktionen-API, L2-Norm-Garantie, Selbstcheck-Format, Truncate-Regel |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
@@ -135,3 +247,4 @@ EMBEDDING_DIM   = 384
 - **Glossar:** [Embedding](../GLOSSAR.md), [Vektor](../GLOSSAR.md), [multilingual-e5-small](../GLOSSAR.md)
 - **Integration:** `sbkim_integration.md` §4.1 (Default-Modell)
 - **Extern:** [transformers.js Dokumentation](https://huggingface.co/docs/transformers.js)
+- **Interfaces:** [`INTERFACES.md` §1 → Modul 03_embedding](../INTERFACES.md)
