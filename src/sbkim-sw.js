@@ -3,14 +3,18 @@
  *
  * Variante A · Page-Hosted via MessageChannel.
  *
- * Fängt eingehende POST /sbkim/anastomosis ab und leitet den Body via
- * postMessage an die aktive Page weiter. Die Page hält die Krypto und
- * den State (window.SbkimAnastomose); der SW bleibt dünn und blind.
+ * Fängt eingehende POST /sbkim/anastomosis (Modul 05) und POST
+ * /sbkim/legacy (Modul 07) ab und leitet den Body via postMessage an
+ * die aktive Page weiter. Die Page hält die Krypto und den State
+ * (window.SbkimAnastomose, window.SbkimApoptose); der SW bleibt dünn
+ * und blind. Beide Pfade nutzen denselben fetch-Listener (gemeinsamer
+ * Einstieg, leichter erweiterbar für Modul 06 / 11).
  *
  * Vertrag (siehe INTERFACES.md §3, docs/components/05_anastomose.md
- * § "Service-Worker-Hinweis"):
+ * § "Service-Worker-Hinweis" und docs/components/07_apoptose.md):
  *
- *   - POST /sbkim/anastomosis
+ *   - POST /sbkim/anastomosis  → SBKIM_ANASTOMOSIS_REQUEST
+ *   - POST /sbkim/legacy       → SBKIM_LEGACY_REQUEST
  *   - Content-Type: application/json
  *   - Body ≤ 64 KiB
  *   - andere Methode → 405
@@ -26,7 +30,7 @@
  *
  * Bewusst weggelassen (für eine Folge-Pflege-Sitzung):
  *   - Caching/Offline-Strategien: der SW dient hier ausschließlich der
- *     Anastomose-Brücke, nicht der App-Performance.
+ *     SBKIM-Brücke, nicht der App-Performance.
  *   - Wake-Lock / Auto-Tab-Öffnen: "Wer nicht da ist, schweigt" ist
  *     Teil der Spec.
  *   - Replay-Cache (nonce-Wiederholungserkennung) — Modul 11.
@@ -34,9 +38,11 @@
 "use strict";
 
 const ANASTOMOSIS_PATH = "/sbkim/anastomosis";
+const LEGACY_PATH = "/sbkim/legacy";
 const MAX_BODY_BYTES = 64 * 1024;
 const PAGE_TIMEOUT_MS = 4000;
-const SBKIM_REQUEST_TYPE = "SBKIM_ANASTOMOSIS_REQUEST";
+const ANASTOMOSIS_REQUEST_TYPE = "SBKIM_ANASTOMOSIS_REQUEST";
+const LEGACY_REQUEST_TYPE = "SBKIM_LEGACY_REQUEST";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(self.skipWaiting());
@@ -46,20 +52,30 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());
 });
 
+// Ein gemeinsamer fetch-Listener für alle SBKIM-Endpunkte. Neue Pfade
+// (z.B. /sbkim/heterokaryosis für Modul 06) reihen sich hier ein, statt
+// einen eigenen Listener anzulegen.
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
-  if (!isAnastomosisPath(url.pathname)) return;
-  event.respondWith(handleAnastomosis(event.request, event.clientId));
+  if (isPathSuffix(url.pathname, ANASTOMOSIS_PATH)) {
+    event.respondWith(handleBridge(event.request, event.clientId, ANASTOMOSIS_REQUEST_TYPE));
+    return;
+  }
+  if (isPathSuffix(url.pathname, LEGACY_PATH)) {
+    event.respondWith(handleBridge(event.request, event.clientId, LEGACY_REQUEST_TYPE));
+    return;
+  }
+  // sonst: nicht unsere Sache — Default-Network-Pfad lassen.
 });
 
-function isAnastomosisPath(pathname) {
-  // Erlaubt sowohl exakt /sbkim/anastomosis als auch <scope>/sbkim/anastomosis
-  // (z.B. /rezeptbuch/sbkim/anastomosis bei GitHub-Pages-Project-Sites).
-  if (pathname === ANASTOMOSIS_PATH) return true;
-  return pathname.endsWith(ANASTOMOSIS_PATH);
+function isPathSuffix(pathname, endpointPath) {
+  // Erlaubt sowohl exakt /sbkim/<endpoint> als auch <scope>/sbkim/<endpoint>
+  // (z.B. /rezeptbuch/sbkim/legacy bei GitHub-Pages-Project-Sites).
+  if (pathname === endpointPath) return true;
+  return pathname.endsWith(endpointPath);
 }
 
-async function handleAnastomosis(request, originatingClientId) {
+async function handleBridge(request, originatingClientId, messageType) {
   if (request.method !== "POST") {
     return jsonError(405, "Method Not Allowed", { Allow: "POST" });
   }
@@ -100,7 +116,7 @@ async function handleAnastomosis(request, originatingClientId) {
 
   let pageResponse;
   try {
-    pageResponse = await askPage(target, parsed);
+    pageResponse = await askPage(target, parsed, messageType);
   } catch (err) {
     return jsonError(503, "Service Unavailable — Page hat nicht geantwortet (" + (err && err.message ? err.message : err) + ").");
   }
@@ -111,7 +127,7 @@ async function handleAnastomosis(request, originatingClientId) {
   });
 }
 
-function askPage(client, sbkimRequest) {
+function askPage(client, sbkimRequest, messageType) {
   return new Promise((resolve, reject) => {
     const channel = new MessageChannel();
     const timeoutId = setTimeout(() => {
@@ -127,7 +143,7 @@ function askPage(client, sbkimRequest) {
 
     try {
       client.postMessage(
-        { type: SBKIM_REQUEST_TYPE, request: sbkimRequest },
+        { type: messageType, request: sbkimRequest },
         [channel.port2],
       );
     } catch (err) {
