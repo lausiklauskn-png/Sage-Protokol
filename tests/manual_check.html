@@ -41,13 +41,9 @@
   <!-- Skelett: pro Modul ein Panel. Knöpfe ergänzt die jeweilige Bau-Sitzung. -->
 
   <section class="panel" data-module="01_storage">
-    <h2>01 Storage <span class="status warn">Spec fertig, Code ausstehend</span></h2>
-    <div class="controls">
-      <button data-stub="01" data-action="init">Storage init</button>
-      <button data-stub="01" data-action="roundtrip">Storage round-trip</button>
-      <button data-stub="01" data-action="selfcheck">Selbstcheck Konsole prüfen</button>
-    </div>
-    <pre class="log">— Stub-Knöpfe (Spec 2026-05-14). Bau-Sitzung Modul 01 ersetzt die Handler durch echte Aufrufe. —</pre>
+    <h2>01 Storage <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Knöpfe oben anklicken. —</pre>
   </section>
 
   <section class="panel" data-module="02_spore">
@@ -170,12 +166,57 @@
     });
   </script>
 
+  <!-- Modul 01 — Storage (Bau-Sitzung 2026-05-14) -->
+  <script src="../src/modules/01_storage.js"></script>
+  <script>
+    (function () {
+      SbkimUI.addButton("01_storage", "Storage init", async function () {
+        await SbkimStorage.init();
+        SbkimUI.setStatus("01_storage", "ok", "init OK");
+        return { dbName: SbkimStorage._meta.dbName, version: SbkimStorage._meta.dbVersion, stores: SbkimStorage._meta.knownStores };
+      });
+
+      SbkimUI.addButton("01_storage", "Storage round-trip", async function () {
+        var key = "01";
+        var value = { moduleId: "01", lastSighttest: new Date().toISOString(), status: "ok" };
+        await SbkimStorage.put("sbkim_doku_meta", key, value);
+        var got = await SbkimStorage.get("sbkim_doku_meta", key);
+        await SbkimStorage.del("sbkim_doku_meta", key);
+        var afterDel = await SbkimStorage.get("sbkim_doku_meta", key);
+        SbkimUI.setStatus("01_storage", "ok", "round-trip OK");
+        return {
+          schritt1_put: "ok",
+          schritt2_get: got,
+          schritt3_del: "ok",
+          schritt4_get_nach_del: afterDel === undefined ? "undefined (korrekt)" : afterDel,
+        };
+      });
+
+      SbkimUI.addButton("01_storage", "Unknown Store (Fehler erwartet)", async function () {
+        try {
+          await SbkimStorage.get("sbkim_nicht_existent", "x");
+          throw new Error("Erwartete einen Fehler, kam keiner.");
+        } catch (err) {
+          if (err && err.name === "UnknownStoreError") {
+            return { erwartet: "UnknownStoreError", erhalten: err.name, message: err.message };
+          }
+          throw err;
+        }
+      });
+
+      SbkimUI.addButton("01_storage", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("01_storage",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("01_storage",
+          "  MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear");
+      });
+    })();
+  </script>
+
   <!--
-    Bau-Sitzungen ergänzen unten ihre Modul-Skripte, z.B.:
-    <script type="module" src="../src/modules/01_storage.js"></script>
-    und registrieren ihre Knöpfe via SbkimUI.addButton("01_storage", "init", ...).
-    Die Spec-Stub-Knöpfe oben können dann entfernt werden, sobald die echten
-    Knöpfe registriert sind.
+    Weitere Bau-Sitzungen ergänzen hier ihre Modul-Skripte, z.B.:
+    <script src="../src/modules/03_embedding.js"></script>
+    und registrieren ihre Knöpfe via SbkimUI.addButton("03_embedding", ...).
   -->
 </body>
 </html>

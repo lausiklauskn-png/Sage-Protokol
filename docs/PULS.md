@@ -18,8 +18,8 @@ pie showData
   title Modulstand 2026-05-14 (13 Module)
   "🟫 Schablone" : 10
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 2
-  "🟦 Code-Stub" : 0
+  "🟨 Spec fertig" : 1
+  "🟦 Code-Stub" : 1
   "🟩 Fertig" : 0
 ```
 
@@ -28,9 +28,12 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 ## Als nächstes ✨
 
+Module mit Code-Stub, brauchen Sichttest im Browser:
+
+- 🟦 **[01 Storage](components/01_storage.md)** — Code 2026-05-14, Sichttest steht aus (Klaus klickt in `tests/manual_check.html`)
+
 Module mit fertiger Spec, bereit für die Bau-Sitzung:
 
-- 🟨 **[01 Storage](components/01_storage.md)** — Spec 2026-05-14, **Voraussetzung für 02, 05, 06, 07, 12**
 - 🟨 **[03 Embedding](components/03_embedding.md)** — Spec 2026-05-14, **Voraussetzung für 04**
 
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
@@ -42,10 +45,9 @@ In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: zwei parallele **Bau-Sitzungen** 01 + 03
-starten (Specs sind unabhängig voneinander). Parallel dazu Spec-Sitzung
-Modul 09 (Einbau-PWA) — dependenz-frei und blockiert sonst die
-spätere Endknoten-Übernahme.
+Empfehlung Hauptsitzung: **Bau-Sitzung Modul 03** als nächste Sitzung
+(Modul 04 wartet darauf). Parallel anbietbar: Spec-Sitzung Modul 09
+(Einbau-PWA) — dependenz-frei.
 
 ---
 
@@ -54,7 +56,7 @@ spätere Endknoten-Übernahme.
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
 | 00 doku_fenster | leere Schablone | — | — | "5-Klick versteckte Doku" in Suchleiste |
-| 01 storage | Spec fertig (2026-05-14) | — | — | IndexedDB-Wrapper |
+| 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | IndexedDB-Wrapper |
 | 02 spore | leere Schablone | — | — | Ed25519-Identität |
 | 03 embedding | Spec fertig (2026-05-14) | — | — | semantischer Vektor |
 | 04 match | leere Schablone | — | — | Vektorvergleich |
@@ -119,6 +121,51 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Bau-Sitzung · Modul 01 Storage (Code-Stub)
+
+**Getan:**
+- `src/modules/01_storage.js` geschrieben: IIFE, klassisches Skript-Tag
+  (kein ESM-Import — PWA-Single-File-Style). Exportiert
+  `window.SbkimStorage` mit allen sieben Funktionen aus der Spec
+  (`init/getStore/get/put/del/all/clear`). Promise-basiert. Selbstcheck
+  `console.info("MODUL 01 STORAGE bereit, Funktionen: ...")` wird beim
+  Skript-Laden emittiert (synchron, vor `init`).
+- Fünf benannte Error-Typen implementiert wie in der Spec
+  (`StorageUnavailableError`, `UnknownStoreError`, `QuotaExceededError`,
+  `DataCloneError`, `StorageOpenError`) mit deutschsprachigen Messages.
+- Versionsmigration `applyMigration(db, v)` additiv aufgebaut: für
+  `v=1` werden alle sechs Stores angelegt, künftige Versionen ergänzen
+  case-by-case. Niemals `deleteObjectStore` ohne Spec-Update.
+- `tests/manual_check.html`: Panel 01 von „Spec fertig, Code ausstehend"
+  auf „Code-Stub" gestellt, Stub-Knöpfe ersetzt durch echte
+  `SbkimUI.addButton`-Aufrufe mit vier Knöpfen:
+  *Storage init* / *Storage round-trip* / *Unknown Store (Fehler
+  erwartet)* / *Selbstcheck Konsole prüfen*.
+- JS-Syntax mit `node --check` validiert (grün). Im Browser noch nicht
+  geklickt — Sitzung headless. Sichttest steht Klaus aus.
+- Karte 01 Bauzustand-Zeilen *Code geschrieben* + *Sichttest
+  (ungeprüft, weil ...)* ergänzt. Hero-Badge auf 🟦 Code-Stub.
+- `INTERFACES.md` Modul 01 auf `Status: entwurf`. Änderungsprotokoll
+  fortgeschrieben.
+- `status.json`: 01 auf `score: "stub"`. Pie via
+  `scripts/update_puls_pie.py` regeneriert
+  (Schablone 10 / Werkstatt 1 / Spec 1 / Stub 1).
+
+**Offen:**
+- **Sichttest im Browser** durch Klaus: `tests/manual_check.html`
+  öffnen, vier Knöpfe in Panel 01 klicken, DevTools → Application →
+  IndexedDB prüfen (DB `sbkim` mit sechs Stores), Konsolen-Selbstcheck
+  prüfen. Ergebnis in die Bauzustand-Tabelle der Karte 01 nachtragen.
+- **Bau-Sitzung Modul 03** folgt direkt im Anschluss in derselben
+  Klaus-Sitzung.
+
+**Nächster sinnvoller Schritt:**
+- Bau-Sitzung Modul 03 starten (jetzt in dieser Sitzung).
+- Danach: Klaus klickt 01 und 03 im Browser durch, trägt die
+  Sichttest-Zeilen in den Karten nach.
+
+---
 
 ### 2026-05-14 · Spec-Sitzung · Modul 01 Storage + Modul 03 Embedding
 
