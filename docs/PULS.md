@@ -16,9 +16,9 @@
 ```mermaid
 pie showData
   title Modulstand 2026-05-14 (13 Module)
-  "🟫 Schablone" : 5
+  "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 1
+  "🟨 Spec fertig" : 2
   "🟦 Code-Stub" : 6
   "🟩 Fertig" : 0
 ```
@@ -43,28 +43,26 @@ Code-Stub frisch aus der Bau-Sitzung 2026-05-14, **Sichttest ausstehend:**
 - 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/05_anastomose.js` + `src/sbkim-sw.js` (Variante A · Page-Hosted), Panel 05 mit acht Knöpfen (Setup + sieben Test-Punkte aus Karte 05 § Manueller Test); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
 - 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/07_apoptose.js` als IIFE mit `window.SbkimApoptose`, sechs Funktionen, fünf Error-Klassen (`ApoptoseDependenciesError`, `InvalidApoptoseTokenError`, `ApoptoseAlreadyExecutedError`, `InvalidTtlError`, `LegacyTimeoutError`/`LegacyNetworkError`); kanonischer Sign/Verify-Pfad **bewusst aus Modul 02/05 dritter Pfad dupliziert** (Single-File-PWA-Stil); `src/sbkim-sw.js` um `/sbkim/legacy` erweitert (gemeinsamer `fetch`-Listener mit `/sbkim/anastomosis`, Variante a — leichter erweiterbar für Modul 06/11); Panel 07 mit zehn Knöpfen (Setup + 8 Test-Punkte aus Karte 07 § Manueller Test + Selbstcheck-Hinweis); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
 
-Spec frisch aus der Spec-Sitzung 2026-05-14, **Bau ausstehend** (Anleitung — kein JS-Modul):
+Spec frisch aus den Spec-Sitzungen 2026-05-14, **Bau ausstehend**:
 
-- 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung); Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, JS-Module inline oder unter `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` verbindlich, SW-Scope-Falle dokumentiert, `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
-
-Module ohne offene Abhängigkeiten, Spec noch ausstehend:
-
-- ✨ **[00 Doku-Fenster](components/00_doku_fenster.md)** — keine Abh., 5-Klick-UI in Endknoten
+- 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul); Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, JS-Module inline oder unter `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` verbindlich, SW-Scope-Falle dokumentiert, `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
+- 🟨 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung); reines Lese-/Trigger-Modul, Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), alleiniger Schreiber von `sbkim_doku_meta`, Lese-Quellen Spore + Anastomose-Geschwister + Apoptose-Inbox + `navigator.storage.estimate()` (alle fail-soft, Pflicht nur `SbkimStorage`); drei Pflichtfragen entschieden — **5 Klicks auf Such-Symbol in 3 s** (neue §0-Konstante `DOKU_REVEAL_WINDOW_MS`), **Quota-Doppel-Schwelle 80% + 50 MiB** (neue §0-Konstanten `DOKU_QUOTA_WARN_RATIO` + `DOKU_QUOTA_WARN_BYTES`), **Sichtbarkeit session-only** (kein `visible`-Feld); TTL-Sweep-Knopf nutzt `SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` ohne API-Erweiterung; Self-Apoptose bewusst NICHT in 00
 
 In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus
-am Live-Andock-Versuch** (Spec liegt vor, Andock-Anleitung verbindlich;
-nächster Schritt ist der erste echte Andock-Klick im Browser an Rezeptbuch
-und/oder Mixarium — Module 05 und 07 sind jetzt beide Code-Stub und
-können live mit-andocken). Parallel anbietbar: **Spec-Sitzung Modul 00
-(Doku-Fenster)** — dependenz-frei, 5-Klick-UI in der Endknoten-PWA,
-natürliche Anker-Stelle für die Vermächtnis-Inbox-Anzeige aus Modul 07
-und den TTL-Sweep-Knopf (Folge-Pflege-Sitzung Karte 09 Schritt 9).
-Sichttests Karte 05 (acht Knöpfe) und Karte 07 (zehn Knöpfe) gehören in
-einen kurzen Browser-Klick-Durchlauf, idealerweise vor dem Live-Andocken.
+Empfehlung Hauptsitzung: **Bau-Sitzung Modul 00 Doku-Fenster** —
+Spec ist frisch und verbindlich, das Modul ist dependenz-frei (Pflicht
+nur `SbkimStorage`), und es liefert sofort Mehrwert für jeden
+weiteren Andock-Schritt (Sichtkontrolle der Module 01–07 in einer
+Klick-Geste). Parallel anbietbar — und vermutlich die produktiv
+größere Wirkung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am
+Live-Andock-Versuch** (Module 05 und 07 sind beide Code-Stub und
+können live mit-andocken; Modul 00 als frische Spec ist als Schritt 9
+im Andock-Pfad bereits vorbereitet). Sichttests Karte 05 (acht
+Knöpfe) und Karte 07 (zehn Knöpfe) gehören in einen kurzen Browser-
+Klick-Durchlauf, idealerweise vor dem Live-Andocken.
 
 ---
 
@@ -72,7 +70,7 @@ einen kurzen Browser-Klick-Durchlauf, idealerweise vor dem Live-Andocken.
 
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
-| 00 doku_fenster | leere Schablone | — | — | "5-Klick versteckte Doku" in Suchleiste |
+| 00 doku_fenster | Spec fertig (2026-05-14) | — | — | Sechs-Funktionen-API, reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Quota-Doppel-Schwelle (80% / 50 MiB) in §0, Sichtbarkeit session-only, Self-Apoptose bewusst NICHT in 00 |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | IndexedDB-Wrapper |
 | 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
@@ -126,26 +124,40 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   dieselbe Wanderung aus zwei Winkeln. Kein eigenes Mapping-Dokument
   nötig.
 - **Spore-Persistenz-Strategie verteilt** (offen, eingetragen
-  2026-05-14 nach Bau-Sitzung 07). „Stille Löschung ohne Vermächtnis"
+  2026-05-14 nach Bau-Sitzung 07; **teilweise gelöst 2026-05-14
+  durch Spec-Sitzung 00**). „Stille Löschung ohne Vermächtnis"
   (Karte 07 § Risiken) ist nicht in einem einzelnen Modul lösbar —
   vier Stellen müssen beim Bauen zusammenpassen:
   - **Modul 01 Storage:** `navigator.storage.persist()` beim `init()`
-    + `navigator.storage.estimate()` für Quota-Frühwarnung.
+    + `navigator.storage.estimate()` für Quota-Frühwarnung —
+    **offen**.
   - **Modul 02 Spore:** Backup-Export (passwort-verschlüsselt) als
-    Recovery-Pfad für Browser-Wechsel und manuelles Löschen.
+    Recovery-Pfad für Browser-Wechsel und manuelles Löschen —
+    **offen**.
   - **Modul 00 Doku-Fenster:** stille Frühwarnung bei < X% Speicher
-    (X als gemeinsame Konstante in §0).
+    (X als gemeinsame Konstante in §0) — **gelöst 2026-05-14 durch
+    Spec-Sitzung 00:** `DOKU_QUOTA_WARN_RATIO = 0.80` UND
+    `DOKU_QUOTA_WARN_BYTES = 52428800` (50 MiB) verbindlich in §0
+    eingetragen (Doppel-Schwelle; Warnzeile bei Überschreitung einer
+    der beiden). Konsistenter Schwellwert-Anker für Modul 01 und
+    Modul 02. Modul 00 ist der erste Andocker, der die §0-Konstanten
+    konkret nutzt — `navigator.storage.estimate()` beim `open()`,
+    Vergleich gegen beide Schwellen, passive Warnzeile im
+    Statusfenster. Verbleibender Schritt für eine Folge-Pflege-
+    Sitzung „Persistenz-Strategie verbinden": Modul 01 verankert
+    `navigator.storage.persist()` als Persist-Mechanismus, Modul 02
+    spezifiziert das Backup-Format (vermutlich neu in §2).
   - **Modul 07 Apoptose:** Risiko-Vermerk „stille Löschung" (steht
     jetzt in Karte 07 § Risiken).
 
   Beim Bauen darauf achten, dass die vier Stellen konsistent bleiben:
-  **Quota-Schwellwert** (eine Zahl, vermutlich neu in §0), **Backup-
-  Format** (eine JSON-Struktur, vermutlich neu in §2), **Warntext**
-  (deutsch, einmal formuliert). Aufhänger für eine Pflege-Sitzung
-  „Persistenz-Strategie verbinden" sobald 00, 02-Backup und 01-Quota
-  spruchreif sind. Bis dahin bleibt die Verteilung dokumentiert, aber
-  nicht implementiert. Drei Module + das Doku-Fenster tragen das
-  Thema gemeinsam.
+  **Quota-Schwellwert** (jetzt gelöst — zwei Zahlen in §0), **Backup-
+  Format** (eine JSON-Struktur, vermutlich neu in §2 — offen),
+  **Warntext** (deutsch, einmal formuliert — offen). Aufhänger für
+  eine Pflege-Sitzung „Persistenz-Strategie verbinden", sobald
+  02-Backup und 01-Quota spruchreif sind. Modul 00 hat seinen Teil
+  verankert; die Frage bleibt offen, weil 01/02 noch nicht spruchreif
+  sind.
 
 ## Schutz-Backlog (aus Sage-Page Karte 13, 2026-05-10)
 
@@ -163,6 +175,206 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Spec-Sitzung · Modul 00 Doku-Fenster (Spec fertig)
+
+**Getan:**
+
+- **`docs/components/00_doku_fenster.md` von 🟫 Schablone auf 🟨
+  Spec fertig gehoben** (~480 Zeilen, Stil 02/04/05/07/09). Alle
+  Pflichtblöcke gefüllt: Hero · Im Mycel-Bild · Visualisierung
+  (Mermaid Flowchart 5-Klick-Pfad mit Inbox/TTL/Quota-Knöpfen) ·
+  Zweck · Verantwortlichkeiten („Macht" 8 Punkte / „Macht nicht"
+  9 Punkte mit explizitem Self-Apoptose-Ausschluss) ·
+  Pflichtfragen-Entscheidungen · Schnittstelle (Sechs-Funktionen-API
+  + Selbstcheck + Konfigurationswerte + Datenformate) · 5-Klick-Pfad
+  Schritt-für-Schritt · Sichtbarkeits-Verhalten · Fehlertabelle (15
+  Einträge + vier benannte Error-Klassen) · Manueller Test
+  (Sechs-Knopf-Skizze für Panel 00 in Bau-Sitzung) · Risiken & offene
+  Punkte · Bauzustand · Querverweise.
+- **Drei Pflichtfragen verbindlich entschieden:**
+  - **Frage 1 · 5-Klick-Mechanik + Zeitfenster — Variante (a).**
+    5 Klicks auf das Such-Symbol innerhalb 3 Sekunden. Neue §0-
+    Konstante `DOKU_REVEAL_WINDOW_MS = 3000`. Klick 1 startet den
+    Timer (für alle 5 Klicks, nicht pro Klick); wenn der Timer
+    abläuft, geht der Zähler zurück auf 0. Such-Symbol behält
+    seine Original-Funktion (kein `preventDefault`). Begründung
+    in 4 Punkten in Karte 00 — klassische Doku-Geste, 3 s ist
+    menschlich, Mobile-tauglich (keine Tastatur-Geste), Konflikt-
+    frei mit normaler Such-Funktion.
+  - **Frage 2 · Quota-Schwellwerte — Variante (a)+(c) gemeinsam,
+    in §0.** Doppel-Schwelle: `DOKU_QUOTA_WARN_RATIO = 0.80`
+    (80%-relative Schwelle) UND `DOKU_QUOTA_WARN_BYTES = 52428800`
+    (50 MiB absolute Schwelle). Warnzeile bei Überschreitung einer
+    der beiden. Beide additiv in §0 — kein Hauptversions-Sprung.
+    Konsistent zum Querschnitts-Anker „Spore-Persistenz-Strategie
+    verteilt": Modul 01 (Persist) und Modul 02 (Backup) lesen
+    später dieselben §0-Werte. `status.json.config` zieht mit.
+    Begründung in 3 Punkten in Karte 00 — Doppel-Schwelle deckt
+    sowohl große Geräte (80% von 10 GiB = viel Spielraum) als auch
+    alte Geräte mit 200 MiB sauber ab.
+  - **Frage 3 · Sichtbarkeits-Persistenz — Variante (a) Session-
+    only.** Beim Tab-Schließen ist das Fenster weg; beim nächsten
+    Mal startet es versteckt; 5-Klick-Geste jedes Mal neu.
+    `sbkim_doku_meta["meta"]` hat KEIN `visible`-Feld; nur
+    `lastOpenedAt` als Anzeige-Hilfe. Begründung in 3 Punkten in
+    Karte 00 — „versteckte Doku" bleibt versteckt, Klaus-Komfort
+    asymmetrisch zum Verstecken, Spec-Klarheit. Folge-Pflege-
+    Sitzung könnte Variante (b) oder (c) additiv einführen, ohne
+    Hauptversions-Sprung.
+- **Schnittstelle:** Sechs-Funktionen-API
+  (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`).
+  - `init({searchIconSelector, revealClicks?, revealWindowMs?,
+    windowTitle?, mountTarget?})` — Pflicht-Option ist
+    `searchIconSelector`; alle anderen haben Defaults aus §0.
+    Idempotent; Re-Mount beim `DOMContentLoaded` falls Selektor
+    aktuell kein Element matcht.
+  - `open()` — Snapshot bauen, Fenster rendern, `lastOpenedAt`
+    aktualisieren.
+  - `close()` — Sync, idempotent, Klickzähler zurück auf 0.
+  - `isOpen()` — Sync-Status.
+  - `getStatusSnapshot()` → `DokuStatus` (reines JSON, siehe
+    Karte 00 § Datenformate) — fail-soft, optionale Lese-Quellen
+    landen als `null` bzw. `errors[]`-Eintrag.
+  - `recordSighttest(moduleId, "ok"|"fail")` — Schreiber-Helfer für
+    Bau-Sitzungen.
+- **Modul 00 ist alleiniger Schreiber von `sbkim_doku_meta`.** Karte
+  01 Vertrag hatte das schon vorgesehen (Schreiber 00). Schlüssel:
+  `"meta"` (Modul-Meta-Eintrag: `lastOpenedAt`, `schemaVersion`) und
+  `"<modulId>"` (Sichttest-Spur pro Modul). Andere Module dürfen
+  lesen, schreiben aber nicht.
+- **Drei Anker sauber angedockt ohne API-Erweiterung an 01/02/05/07:**
+  - **Vermächtnis-Inbox-Anzeige** über `SbkimApoptose.listLegacy()`
+    (existiert in Karte 07 § Schnittstelle).
+  - **TTL-Sweep-Knopf** ruft `SbkimApoptose.forgetExpiredSiblings(
+    SIBLING_MAX_AGE_MS)` (existiert in Karte 07; SIBLING_MAX_AGE_MS
+    aus §0). Schließt die offene Frage „Karte 09 Schritt 9:
+    TTL-Sweep-Aufruf" aus Spec-Sitzung 07 zur **Hälfte** — manueller
+    Trigger ja, Andocker-Automatik (nach jedem Handshake) bleibt
+    offen für eine Folge-Pflege-Sitzung Karte 09.
+  - **Quota-Frühwarnung** über `navigator.storage.estimate()` und
+    die zwei §0-Schwellen — Browser-API-Aufruf, kein Netz.
+- **Self-Apoptose-Knopf bewusst NICHT in Modul 00.** Karte 07 hat
+  Self-Apoptose als zweistufig + irreversibel spezifiziert; ein
+  einzelner Klick im versteckten Doku-Fenster wäre zu schwach.
+  Self-Apoptose gehört in Modul 08 (UI-Demo) oder einen separaten
+  Endknoten-PWA-Knopf außerhalb Modul 00. In § Verantwortlichkeiten
+  „Macht nicht" explizit dokumentiert.
+- **§0 INTERFACES.md** um drei Konstanten erweitert
+  (`DOKU_REVEAL_WINDOW_MS`, `DOKU_QUOTA_WARN_RATIO`,
+  `DOKU_QUOTA_WARN_BYTES`); additiv, kein Hauptversions-Sprung.
+- **§1 Modul 00 INTERFACES.md** von Status `schablone` auf `entwurf`
+  mit voller Vertrag-Sektion: API + Nutzt + Storage (Schreib- und
+  Lese-Rollen sauber getrennt) + Selbstcheck + Versionierungs- und
+  Sichtbarkeits-Vertrag + Fehlerverhalten (Modul-spezifische
+  Tabelle) + Garantien für Modul 08 / 12.
+- **§6 Änderungsprotokoll** um Zeile „Spec-Sitzung 00" am unteren
+  Ende der Tabelle (neueste unten) erweitert.
+- **`status.json` Modul 00** von `score:"schablone"` /
+  `siegel:"noch nicht gebaut"` /
+  `kurz:"5-Klick versteckte Statusanzeige im Such-Symbol"` auf
+  `score:"spec"` / `siegel:"Spec fertig"` / aktualisiertem
+  `kurz`-Feld gehoben. `status.json.config` um die drei §0-
+  Konstanten erweitert. `python3 scripts/update_puls_pie.py`
+  gelaufen, Pie regeneriert: Schablone 5→**4**, Werkstatt 1→1,
+  Spec fertig 1→**2**, Code-Stub 6→6, Fertig 0→0 — genau wie
+  das Briefing vorgibt.
+- **Querschnitts-Frage „Spore-Persistenz-Strategie verteilt"** als
+  **teilweise gelöst** markiert: Modul 00 hat seinen Anteil
+  (Quota-Frühwarnung-Schwellen) verbindlich in §0 verankert. Die
+  Frage bleibt offen, weil Modul 01 (Persist) und Modul 02
+  (Backup) noch nicht spruchreif sind.
+
+**Frischer-Kopf-Befund:**
+
+- **Keine API-Korrektur an 01/02/05/07 nötig.** Beim Lesen der
+  Karten 01 (Storage), 02 (Spore), 05 (Anastomose) und 07 (Apoptose)
+  ist keine fehlende Helfer-Funktion aufgefallen, die Modul 00 in
+  der Bau-Phase blockieren würde. `SbkimStorage.{init,get,put,all}`,
+  `SbkimSpore.{getNodeId,getOwnSpore,getPublicKeyJwk}`,
+  `SbkimAnastomose.listSiblings`, `SbkimApoptose.{listLegacy,
+  forgetExpiredSiblings}`, plus `navigator.storage.estimate()` —
+  alle vorhanden. Lücke-Negativ-Befund in Karte 00 § Risiken &
+  offene Punkte dokumentiert.
+- **Karte 01 Storage-Vertrag (sbkim_doku_meta, Schreiber 00) trägt
+  ohne Änderung.** Modul 00 als Schreiber des Stores war in der
+  Spec-Sitzung 01 schon vorgesehen — diese Sitzung füllt die
+  Schreib-Form (`"meta"` + `"<modulId>"`) konkret aus, ohne den
+  Karte-01-Vertrag zu modifizieren.
+- **Karte 07 Schnittstelle (`listLegacy` + `forgetExpiredSiblings`)
+  passt exakt.** `listLegacy()` liefert
+  `Array<{fromNodeId, reason, receivedAt}>` ohne `signature` —
+  genau die Form, die Modul 00 für die Inbox-Anzeige braucht.
+  `forgetExpiredSiblings(maxAgeMs)` nimmt einen Pflicht-Parameter,
+  Modul 00 übergibt `SIBLING_MAX_AGE_MS` aus §0 — kein API-Eingriff
+  an 07.
+- **Eine kleine Beobachtung zum Skript-Reihenfolge-Vertrag:** Karte
+  00 erwartet beim Bau die Reihenfolge im Endknoten 01 → 02 → 03 →
+  04 → 05 → 07 → **00**, weil 00 die anderen Module beim `init()`
+  liest. Karte 09 § Andock-Schritt-Pfad Schritt 2 (`<script>`-Tags)
+  schreibt aktuell nur die Reihenfolge 01 → 02 → 03 → 04 → 05 vor —
+  Modul 07 und Modul 00 sind in Karte 09 noch nicht im Andock-Pfad.
+  Das ist Folge-Pflege-Sitzungs-Stoff für Karte 09 („Schritt 9: 07
+  + 00 nachziehen" — siehe Karte 00 § Querverweise + Karte 07
+  Spec-Sitzungs-Hinweis).
+
+**Was offen blieb:**
+
+- **Bau-Sitzung Modul 00 Doku-Fenster** — diese Spec-Sitzung liefert
+  die volle API + Datenformate + Test-Plan. Eine Bau-Sitzung schreibt
+  `src/modules/00_doku_fenster.js` als IIFE (Muster wie 01/02/04/05/
+  07), füllt Panel 00 in `tests/manual_check.html` mit den sechs
+  Knöpfen aus Karte 00 § Manueller Test, exportiert die vier
+  Error-Klassen und die fünf Test-Brücken (`_dispatchClick`,
+  `_resetClickCounter`, `_advanceRevealClock`, `_setQuotaForTest`,
+  `_clearQuotaForTest`). Headless-Sitzung kann das voll bauen;
+  Sichttest dann durch Klaus im Browser.
+- **Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul 00
+  einbauen".** Karte 09 sollte um zwei Schritte (oder einen
+  Sammel-Schritt) erweitert werden: (a) `SbkimApoptose.init()`
+  und `SbkimDoku.init({searchIconSelector: "..."})` nach
+  `SbkimAnastomose.init()` registrieren; (b) den TTL-Sweep im
+  Andocker nach jedem erfolgreichen Handshake aufrufen (oder als
+  Reine-Klaus-Triggers-Pfad weiterhin im Doku-Fenster lassen —
+  Modul 00 hat den Knopf jetzt). Diese Spec-Sitzung markiert das
+  als offen; sie liefert die API-Bausteine.
+- **Folge-Pflege-Sitzung „Persistenz-Strategie verbinden".** Modul
+  00 hat seinen Anteil (Quota-Schwellen in §0) verankert. Wenn
+  Modul 01 (Persist) und Modul 02 (Backup) spruchreif sind, kann
+  eine Pflege-Sitzung die drei Stränge zusammenführen: §0-Schwellen
+  (jetzt da), §2-Backup-Format (noch zu spec'en), Warntext-Form
+  (jetzt da: Karte 00 § Datenformate `quota.warningLevel`).
+- **Folge-Pflege-Sitzung „Sichtbarkeits-Persistenz später"
+  (optional).** Diese Sitzung hat Variante (a) Session-only
+  gewählt. Wenn Klaus später Komfort wünscht, kann eine
+  Pflege-Sitzung Variante (b) oder (c) additiv einführen:
+  `sbkim_doku_meta["meta"].visible:true` plus `expiresAt`-Feld,
+  `schemaVersion: 1 → 2`, Migration in `init()`. Diese Sitzung
+  schließt das *nicht* aus; sie wählt nur die einfachste Variante
+  für das aktuelle Netz.
+- **Sichttest Modul 00 durch Klaus** kommt erst nach der Bau-Sitzung.
+  Diese Spec-Sitzung schreibt nur die Test-Plan-Skizze (Sechs-Knopf-
+  Panel-Plan).
+
+**Nächster sinnvoller Schritt:**
+
+1. **Bau-Sitzung Modul 00 Doku-Fenster** (headless möglich, Sichttest
+   danach durch Klaus im Browser). Liefert `src/modules/00_doku_fenster.js`
+   als IIFE mit `window.SbkimDoku`, Panel 00 mit sechs Knöpfen, vier
+   Error-Klassen, fünf Test-Brücken. Vorbedingung: keine — Modul 00
+   hängt nur an Modul 01 (Storage, Code-Stub schon da) und ist
+   sonst fail-soft.
+2. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Browser** (parallel
+   anbietbar) — der erste echte Andock-Klick zwischen Rezeptbuch
+   und Mixarium. Modul 00 als frische Spec ist im Andock-Pfad
+   bereits vorbereitet (Karte 09 Folge-Pflege-Sitzung „Schritt 9").
+3. **Sichttests Karte 05 + Karte 07** durch Klaus (Panel 05 acht
+   Knöpfe, Panel 07 zehn Knöpfe) — sollte vor Schritt 2 stattfinden.
+4. **Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul 00
+   im Andock-Pfad"** — kompakte Pflege-Sitzung, sobald Modul 00
+   Code-Stub ist.
+
+---
 
 ### 2026-05-14 · Bau-Sitzung · Modul 07 Apoptose (Code-Stub)
 
