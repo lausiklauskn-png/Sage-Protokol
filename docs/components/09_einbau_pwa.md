@@ -44,24 +44,28 @@ verschiedene Schlüsselpaare. Das ist Spec-Wille, kein Bug.
 
 ```mermaid
 flowchart TB
-  A1[1 · Dateien kopieren<br/>5 Module + SW]
-  A2[2 · script-Tags<br/>in index.html<br/>01 → 02 → 03 → 04 → 05]
+  A1[1 · Dateien kopieren<br/>7 Module + SW]
+  A2[2 · script-Tags<br/>in index.html<br/>01→02→03→04→05→07→00]
   A3[3 · SW registrieren<br/>navigator.serviceWorker<br/>.register]
   A4[4 · init aufrufen<br/>SbkimAnastomose.init]
   A5[5 · domainVector erzeugen<br/>embedPassage<br/>über Stichwörter]
   A6[6 · Spore erzeugen<br/>generateOwnSpore<br/>mit domainVector]
   A7[7 · Spore deployen<br/>sbkim/spore.json<br/>commit + push]
   A8[8 · Ersten Handshake<br/>handshake peer, vec]
+  A9[9 · Apoptose+Doku<br/>SbkimApoptose.init<br/>+SbkimDoku.init<br/>+TTL-Sweep]
 
-  A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7 --> A8
+  A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7 --> A8 --> A9
 
   classDef step fill:#CA8A04,color:#fff,stroke:#fff,stroke-width:1px
-  class A1,A2,A3,A4,A5,A6,A7,A8 step
+  class A1,A2,A3,A4,A5,A6,A7,A8,A9 step
 ```
 
-Die acht Schritte sind **linear** und einmalig pro Endknoten. Schritte
+Die neun Schritte sind **linear** und einmalig pro Endknoten. Schritte
 1–4 sind Einbau (Code), Schritte 5–7 sind Identitäts- und Spore-Aufbau
-(Daten), Schritt 8 ist der erste Live-Test gegen ein Geschwister.
+(Daten), Schritt 8 ist der erste Live-Test gegen ein Geschwister,
+**Schritt 9 schaltet Vermächtnis-Empfang (Apoptose) und das versteckte
+5-Klick-Doku-Fenster scharf** (Pflege-Sitzung 2026-05-15, jetzt
+verbindlich im Andock-Pfad).
 
 ---
 
@@ -90,8 +94,9 @@ bereit, die Anastomose ist als Variante A · Page-Hosted gebaut.
 ## Verantwortlichkeiten
 
 **Macht:**
-- Module 01/02/03/04/05 als `<script>`-Tags in den Endknoten einbauen
-  (Reihenfolge verbindlich).
+- Module 01/02/03/04/05/07/00 als `<script>`-Tags in den Endknoten
+  einbauen (Reihenfolge verbindlich; Modul 00 zuletzt, weil es die
+  anderen fail-soft als optionale Lese-Quellen prüft).
 - Service-Worker `sbkim-sw.js` im Endknoten-Root deployen und mit
   korrektem Scope registrieren.
 - Domänen-Stichwörter sammeln, `domainVector` einmalig mit
@@ -150,7 +155,7 @@ Pages, kein Build-Schritt). Die Konvention ist:
 
 ```
 <endknoten-repo>/
-├── index.html                ← bestehende PWA, fünf SBKIM-Module als <script>-Blöcke eingebettet
+├── index.html                ← bestehende PWA, sieben SBKIM-Module als <script>-Blöcke eingebettet
 ├── sbkim-sw.js               ← Service-Worker (Variante A · Page-Hosted), separate Datei (technisch nötig)
 └── sbkim/
     └── spore.json            ← deployt, eine statische Datei mit dem Spore-JSON
@@ -167,7 +172,7 @@ Pages, kein Build-Schritt). Die Konvention ist:
   funktioniert für Anastomose, blockiert aber spätere Schutz-Module
   (11/12), die unterhalb des Repo-Roots ohne `/sbkim/`-Präfix
   abfangen wollen.
-- **Die fünf JS-Module werden als Inline-`<script>`-Blöcke in
+- **Die sieben JS-Module werden als Inline-`<script>`-Blöcke in
   `index.html` eingebaut**, weil Klaus' Stil Single-File-PWA ist.
   Wenn ein Endknoten später aus mehreren Dateien wächst und Inline-
   Einbettung unübersichtlich wird, ist eine alternative Layout
@@ -188,7 +193,7 @@ mehr ab. **Verbindliche Konvention: SW immer im Repo-Root.**
 
 ---
 
-## Andock-Schritt-Pfad (acht Schritte)
+## Andock-Schritt-Pfad (neun Schritte)
 
 Die Schritte sind nummeriert. Klaus geht sie in dieser Reihenfolge
 durch. Jeder Schritt nennt **was zu tun ist**, **was im DevTools-
@@ -227,30 +232,44 @@ In der bestehenden `index.html` vor `</body>` einfügen. Reihenfolge
 <script src="sbkim/03_embedding.js"></script>
 <script src="sbkim/04_match.js"></script>
 <script src="sbkim/05_anastomose.js"></script>
+<script src="sbkim/07_apoptose.js"></script>     <!-- Vermächtnis-Empfang + TTL-Sweep -->
+<script src="sbkim/00_doku_fenster.js"></script> <!-- 5-Klick-Statusfenster -->
 ```
 
 Alternativ (Inline-Single-File-Stil, Klaus-Default für kleine
-Endknoten): den Inhalt der fünf JS-Dateien direkt in fünf
+Endknoten): den Inhalt der sieben JS-Dateien direkt in sieben
 `<script>`-Blöcke kopieren — keine `src`-Attribute, in derselben
 Reihenfolge.
 
+**Reihenfolge-Begründung:** Modul 07 nutzt 01/02/05 (Storage,
+Spore-Identität, Geschwister-Liste); Modul 00 nutzt 01 (Pflicht)
+und liest 02/05/07 fail-soft. **Modul 00 zuletzt**, weil es die
+anderen Module beim `init()` und `getStatusSnapshot()` als
+optionale Lese-Quellen prüft — fehlen sie auf `window`, zeigt das
+Doku-Fenster „Modul nicht geladen" und bleibt benutzbar.
+
 **Sichtkontrolle:** Beim ersten Laden der App in DevTools → Konsole
-müssen fünf Zeilen erscheinen (eine pro Modul, beim Skript-Laden):
+müssen sieben Zeilen erscheinen (eine pro Modul, beim Skript-Laden;
+03 erst nach dem `init()`-Aufruf in Schritt 5):
 
 ```
 MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear
-MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore
+MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache
 MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.80
 MODUL 05 ANASTOMOSE bereit, Funktionen: init/handshake/receiveHandshake/listSiblings/forgetSibling
+MODUL 07 APOPTOSE bereit, Funktionen: init/prepareSelfApoptose/confirmSelfApoptose/receiveLegacy/listLegacy/forgetExpiredSiblings
+MODUL 00 DOKU-FENSTER bereit, Funktionen: init/open/close/isOpen/getStatusSnapshot/recordSighttest
 ```
 
 Modul 03 (Embedding) meldet sich **nach** `init()` (Schritt 5), nicht
 beim Skript-Laden — der asynchrone Modell-Download würde die "bereit"-
 Meldung verfälschen.
 
-**Häufiger Fehler:** Reihenfolge vertauscht (z.B. 05 vor 02). Folge:
-`AnastomoseDependenciesError` beim `init()`-Aufruf in Schritt 4. Tags
-in korrekte Reihenfolge bringen.
+**Häufiger Fehler:** Reihenfolge vertauscht (z.B. 05 vor 02, oder 00
+vor 07). Folge: `AnastomoseDependenciesError` beim `init()`-Aufruf
+in Schritt 4 bzw. „SbkimApoptose nicht geladen"-Tooltip am
+TTL-Sweep-Knopf im Doku-Fenster aus Schritt 9. Tags in korrekte
+Reihenfolge bringen.
 
 ### Schritt 3 — Service-Worker registrieren
 
@@ -514,6 +533,98 @@ peer-nodeId und Wert `{nodeId, domain, endpoint, pubKey, since}`. In
   Worker antwortet mit 503, Modul 05 wirft Timeout. Lösung: Peer-
   Endknoten im Browser öffnen, dann erneut handshaken.
 
+### Schritt 9 — Apoptose + Doku-Fenster scharf schalten
+
+Nach dem ersten erfolgreichen Handshake aus Schritt 8 ist der
+Endknoten **andockbar**, aber zwei sichtbare Pflege-Funktionen
+fehlen noch: **Vermächtnis-Empfang** (eingehende
+„Domain stillgelegt"-Botschaften gestorbener Geschwister) und das
+**versteckte 5-Klick-Doku-Fenster** für Klaus' Sichtkontrolle.
+
+```html
+<script>
+  (async function () {
+    // 9a. Apoptose-Modul scharf schalten — Vermächtnis-Empfang.
+    // Modul 07 setzt einen MessageChannel-Listener auf den
+    // Service-Worker, damit eingehende /sbkim/legacy-POSTs in
+    // sbkim_legacy_inbox landen. Ohne init() kommen Vermächtnisse
+    // nicht in der Inbox an.
+    await SbkimApoptose.init();
+    console.info("SBKIM-Apoptose grün — Vermächtnis-Empfang aktiv.");
+
+    // 9b. Doku-Fenster anschalten — versteckte 5-Klick-Geste am
+    // Such-Symbol der PWA. Klaus klickt das Such-Symbol fünfmal
+    // binnen 3 Sekunden, das modale Statusfenster geht auf.
+    // searchIconSelector ist der CSS-Selektor des Such-Symbols
+    // im Endknoten — pro PWA verschieden.
+    await SbkimDoku.init({
+      searchIconSelector: "#search-icon",   // Rezeptbuch: anpassen
+      // Optional: revealClicks (Default 5), revealWindowMs (Default 3000),
+      // windowTitle (Default "SBKIM-Knotenstand"), mountTarget (Default body).
+    });
+    console.info("SBKIM-Doku grün — 5-Klick-Geste am Such-Symbol aktiv.");
+
+    // 9c (optional, empfohlen). TTL-Sweep nach jedem Handshake.
+    // Modul 07 macht keinen Selbst-Sweep (kein setInterval, keine
+    // Pulsation). Der Andocker ruft forgetExpiredSiblings explizit —
+    // entweder hier nach jedem ersterHandshake() oder als manueller
+    // Klick im Doku-Fenster (Modul 00 hat den Knopf eingebaut).
+    // Empfehlung für statische Endknoten: nach jedem Handshake.
+    var SIBLING_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;  // §0
+    var removed = await SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS);
+    if (removed.length > 0) {
+      console.info("TTL-Sweep: stille Geschwister vergessen:", removed);
+    }
+  })();
+</script>
+```
+
+**Sichtkontrolle:**
+
+- Konsolen-Zeilen `SBKIM-Apoptose grün — Vermächtnis-Empfang aktiv.`
+  und `SBKIM-Doku grün — 5-Klick-Geste am Such-Symbol aktiv.`.
+- In DevTools → Application → IndexedDB → `sbkim` → `sbkim_doku_meta`
+  ein Eintrag mit Schlüssel `"meta"`, Wert
+  `{moduleId:"meta", schemaVersion:1, lastOpenedAt:null}`.
+- Klaus klickt das Such-Symbol fünfmal binnen 3 s — das modale
+  Doku-Fenster (Backdrop + zentrierter Window-Box) geht auf,
+  zeigt Knoten-ID, Domäne, Geschwister-Liste, Vermächtnis-Inbox,
+  Speicher-Stand, drei Aktion-Knöpfe (Stille Geschwister vergessen
+  / Inbox aktualisieren / Schließen). Klick auf den Backdrop oder
+  Esc-Taste schließt.
+- Nach `lastOpenedAt`-Update (beim ersten Öffnen des Fensters) hat
+  `sbkim_doku_meta["meta"].lastOpenedAt` einen ISO-8601-String,
+  nicht mehr `null`.
+
+**Häufiger Fehler:** `searchIconSelector` matcht kein DOM-Element
+(z.B. weil das Such-Symbol erst dynamisch nachgeladen wird oder
+einen anderen Selektor hat). Modul 00 macht `console.warn` und
+versucht via `MutationObserver` einen Re-Mount, gibt nach 10 s
+auf. Fix: korrekten Selektor in `init()`-Aufruf setzen, Tab neu
+laden.
+
+**Häufiger Fehler 2:** TTL-Sweep wird nie gerufen, weil der
+Andocker Schritt 9c überspringt **und** Klaus das Doku-Fenster
+nie öffnet. Folge: stille Geschwister bleiben monatelang in
+`sbkim_siblings`, deren Domain ist längst tot, ihre Antworten
+laufen in `HandshakeTimeoutError`. Fix: entweder 9c einbauen oder
+sich angewöhnen, das Doku-Fenster regelmäßig zu öffnen + den
+TTL-Sweep-Knopf zu klicken.
+
+**Was Schritt 9 NICHT macht:**
+
+- **Kein Self-Apoptose-Knopf.** Self-Apoptose (`prepareSelfApoptose`
+  / `confirmSelfApoptose`) ist irreversibel und gehört in einen
+  separaten Service-Pfad (z.B. eine versteckte Service-Seite), nicht
+  in den Standard-Andock-Pfad und auch nicht ins Doku-Fenster.
+  Karte 07 § Schnittstelle dokumentiert die Zwei-Stufen-API; Klaus
+  ruft sie bei tatsächlicher Domain-Stilllegung händisch in der
+  DevTools-Konsole.
+- **Keine `SbkimAnastomose.handshake`-Automatik.** Schritt 8
+  bleibt ein expliziter Klaus-Trigger (oder ein Endknoten-eigener
+  „Andocken"-Knopf). Modul 09 macht keinen Background-Handshake.
+- **Kein Heterokaryose-Pfad** (Modul 06 ist späte Phase, Schablone).
+
 ---
 
 ## Sichtkontrolle nach dem Andocken (Pflicht)
@@ -521,24 +632,41 @@ peer-nodeId und Wert `{nodeId, domain, endpoint, pubKey, since}`. In
 Drei Dinge müssen sichtbar werden, sonst ist der Endknoten **nicht**
 fertig andockend:
 
-1. **In DevTools → Konsole** beim Laden der PWA fünf Selbstcheck-Zeilen
-   `MODUL XX … bereit, Funktionen: …` (01, 02, 04, 05 beim Skript-Laden;
-   03 nach `init()`). Außerdem `SBKIM-SW registriert, Scope: …` und
-   `SBKIM-Init grün — …`.
+1. **In DevTools → Konsole** beim Laden der PWA sieben Selbstcheck-
+   Zeilen `MODUL XX … bereit, Funktionen: …` (01, 02, 04, 05, 07, 00
+   beim Skript-Laden; 03 nach `init()`). Außerdem `SBKIM-SW
+   registriert, Scope: …`, `SBKIM-Init grün — …`,
+   `SBKIM-Apoptose grün — Vermächtnis-Empfang aktiv.` und
+   `SBKIM-Doku grün — 5-Klick-Geste am Such-Symbol aktiv.`.
 
 2. **In DevTools → Application → IndexedDB → `sbkim`** sechs Stores:
    `sbkim_keys` (Schlüssel `"main"` mit Keypair), `sbkim_spore`
    (Schlüssel `"main"` mit der signierten Spore inkl. `domainVector`),
    `sbkim_siblings` (anfangs leer, nach Schritt 8 mit dem ersten Peer
    gefüllt), `sbkim_anastomosis_log` (nach Schritt 8 mit `established`-
-   Eintrag), `sbkim_legacy_inbox` (leer), `sbkim_doku_meta` (leer).
+   Eintrag), `sbkim_legacy_inbox` (leer; nach eingehendem Vermächtnis
+   eine Zeile pro gestorbenem Geschwister), `sbkim_doku_meta`
+   (Schlüssel `"meta"` aus Schritt 9; nach erstem Doku-Fenster-Öffnen
+   ist `lastOpenedAt` ein ISO-8601-String statt `null`).
 
 3. **Im Browser** Klartext-Spore unter
    `https://klaus.github.io/<repo>/sbkim/spore.json` — `id`, `domain`,
    `endpoint`, `domainVector` (384 Zahlen), `signature`. Wer
    `https://klaus.github.io/<repo>/sbkim/anastomosis` per GET aufruft,
    bekommt 405 (Method Not Allowed) — bestätigt, dass der Service-
-   Worker den Pfad abfängt.
+   Worker den Pfad abfängt. **`https://klaus.github.io/<repo>/sbkim/legacy`**
+   per GET liefert ebenfalls 405 (gemeinsamer Service-Worker-`fetch`-
+   Listener mit `/sbkim/anastomosis` seit Bau-Sitzung 07).
+
+4. **Klaus klickt das Such-Symbol fünfmal binnen 3 Sekunden** —
+   das modale Doku-Fenster (Backdrop + zentrierter Window-Box,
+   `position:fixed;inset:0;background:rgba(0,0,0,0.55)`) geht auf,
+   zeigt Knoten-ID-Kurzform, Domäne, Knotentyp, Geschwister-Liste
+   (nach Schritt 8 mindestens ein Eintrag), Vermächtnis-Inbox,
+   Speicher-Stand mit Quota-Warnzeile bei > 80% oder < 50 MiB frei,
+   drei Aktion-Knöpfe (Stille Geschwister vergessen / Inbox
+   aktualisieren / Schließen). Esc oder Klick auf den Backdrop
+   schließt.
 
 ---
 
@@ -785,6 +913,7 @@ unverändert.
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Schritt-Flow, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 09 | Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Repo-Root, JS-Module inline oder `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` (Alias verbindlich), SW-Scope-Falle dokumentiert, Sichtkontrolle (3 Pflicht-Punkte: Konsolen-Selbstchecks · IndexedDB-Stores · live-Spore-URL), Service-Worker-Hinweis mit Lebenszyklus, Risiken-Block (CORS · Scope-Falle · 30 MB Modell · Spore-Drift · domainVector-Live-Update · Lücke-Befund · forgetSibling), `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** mit fünf Begründungen |
+| Pflege Schritt 9 + 07/00 | 2026-05-15 | Pflege 09-Schritt-9-Doku-TTL | Karte 09 § Andock-Schritt-Pfad von **acht** auf **neun** Schritte erweitert. Schritt 2 (`<script>`-Tags) zieht Modul 07 (Apoptose) und Modul 00 (Doku-Fenster) in der verbindlichen Reihenfolge nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block in Schritt 2 zeigt jetzt sechs Selbstcheck-Zeilen statt vier (03 weiterhin nach `init()`). **Neuer Schritt 9 „Apoptose + Doku-Fenster scharf schalten"** mit drei Sub-Punkten: 9a `await SbkimApoptose.init()` (Vermächtnis-Empfang über MessageChannel-Listener auf Service-Worker), 9b `await SbkimDoku.init({searchIconSelector:"#search-icon"})` (5-Klick-Geste am PWA-Such-Symbol; per Endknoten anpassen), 9c (optional, empfohlen) `await SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` als Andocker-Automatik nach jedem Handshake — schließt offene Frage aus Spec-Sitzung 07 (Karte 09 Schritt 9 TTL-Sweep-Aufruf). Sichtkontroll-Block § Sichtkontrolle nachgezogen: jetzt vier Pflicht-Punkte (statt drei) — sieben Selbstcheck-Zeilen in DevTools-Konsole + sechs IndexedDB-Stores (mit `sbkim_doku_meta["meta"]` schon nach Schritt 9 gefüllt) + zwei live-Endpunkte (`/sbkim/spore.json` GET 200 + `/sbkim/anastomosis` und neu `/sbkim/legacy` GET 405) + 5-Klick-Geste am Such-Symbol öffnet das Modal. Zwei „Häufiger Fehler"-Diagnosen in Schritt 9 (searchIconSelector matcht nichts → MutationObserver-Re-Mount mit 10s-Safety; TTL-Sweep nie gerufen → stille Geschwister bleiben in `sbkim_siblings`). Visualisierungs-Mermaid-Flowchart von acht auf neun Knoten erweitert (A1–A9). Karte 09 § Datei-Pfad-Konvention von „fünf JS-Module" auf „sieben JS-Module" nachgezogen. Karte 09 § Verantwortlichkeiten Macht-Block ergänzt um Modul 07 + 00 mit Hinweis „Modul 00 zuletzt, fail-soft als optionale Lese-Quellen". Self-Apoptose-Knopf bewusst NICHT in Schritt 9 — Karte 07 hat ihn als zweistufig+irreversibel spezifiziert, gehört in einen separaten Service-Pfad. Modul 06 Heterokaryose ebenfalls bewusst NICHT in Schritt 9 (Karte 06 ist Schablone, Spec späte Phase). INTERFACES.md §6 Änderungsprotokoll-Zeile (neueste unten); Karte 09 status.json unverändert (bleibt `score:"spec"` / `siegel:"Spec fertig"` — die Erweiterung ist additiv im Andock-Pfad, kein Modul-Bau). |
 | Werte für Rezeptbuch eingetragen | — | — | TBD — Klaus trägt nach |
 | Werte für Mixarium eingetragen | — | — | TBD — Klaus trägt nach |
 | Erstmaliger Einbau Rezeptbuch | — | — | — |

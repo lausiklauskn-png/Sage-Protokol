@@ -46,7 +46,7 @@ Code-Stub frisch aus den Bau-Sitzungen 2026-05-14, **Sichttest ausstehend bzw. t
 
 Spec frisch aus den Spec-Sitzungen 2026-05-14, **Bau ausstehend**:
 
-- 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul); Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, JS-Module inline oder unter `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` verbindlich, SW-Scope-Falle dokumentiert, `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
+- 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul), **Pflege-Sitzung 2026-05-15 erweitert auf neun Schritte** (Schritt 9 neu: `SbkimApoptose.init()` + `SbkimDoku.init({searchIconSelector:...})` + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge in Schritt 2 zieht 07 + 00 nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block jetzt vier Pflicht-Punkte (sieben Selbstcheck-Zeilen + sechs IndexedDB-Stores + zwei live-Endpunkte + 5-Klick-Geste am Such-Symbol); Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, sieben JS-Module inline oder unter `sbkim/`); Spore-Endpunkt `/sbkim/spore.json` verbindlich; SW-Scope-Falle dokumentiert; `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
 
 In Arbeit (fortsetzen, nicht neu starten):
 
@@ -54,18 +54,19 @@ In Arbeit (fortsetzen, nicht neu starten):
 
 Empfehlung Hauptsitzung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus
 am Live-Andock-Versuch** — Module 00, 05 und 07 sind alle drei
-Code-Stub; Modul 00 hat den TTL-Sweep-Knopf und die Quota-Frühwarnung
-direkt im Doku-Fenster eingebaut, also liefert ein Live-Andock-Versuch
-sofort einen Sichttest für alle drei. Parallel anbietbar:
-**Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul 00 im
-Andock-Pfad"** (jetzt spruchreif, weil Modul 00 Code-Stub ist) —
-Karte 09 § Andock-Schritt-Pfad Schritt 2 muss um Modul 07 und 00 in
-der `<script>`-Reihenfolge ergänzt werden und ein Schritt 9 für
-`SbkimDoku.init({searchIconSelector:...})` plus optionalen
-`SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` nach jedem
-Handshake angehängt werden. Sichttests Karten 00 / 05 / 07 (sechs +
-acht + zehn Knöpfe) gehören in einen kurzen Browser-Klick-Durchlauf,
-idealerweise vor dem Live-Andocken.
+Code-Stub und sichtgeprüft; Karte 09 ist ab Pflege-Sitzung
+2026-05-15 auf neun Schritte erweitert (Schritt 9 zieht 07 + 00
+in den Andock-Pfad nach). Module 00 hat den TTL-Sweep-Knopf und
+die Quota-Frühwarnung direkt im Doku-Fenster eingebaut; Modul 02's
+`resetIdentityCache` aus der vorigen Pflege-Sitzung bleibt im
+Andock-Pfad **unsichtbar** — er greift nur bei Self-Apoptose, die
+Schritt 9 bewusst nicht in den Andock-Pfad einbaut. Live-Andock-
+Versuch liefert deshalb einen vollständigen Sichttest für die
+sieben angedockten Module (01/02/03/04/05/07/00) plus den
+Service-Worker. Klaus' Re-Sichttest Panel 07 Test 6 (Self-
+Apoptose) bleibt eine kompakte Bestätigung **vor** dem Live-
+Andock — nach dem Cache-Invalidate-Pflege wird
+`getNodeId_wirft_NoIdentityError:true` erwartet.
 
 ---
 
@@ -82,7 +83,7 @@ idealerweise vor dem Live-Andocken.
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — 7/8 Tests grün; **Test 6 (Self-Apoptose) deckte echten Modul-Bug auf** (Modul 02's identityCache wurde nicht durch externes storage.clear invalidiert) → Pflege-Sitzung 2026-05-15 ergänzte Modul 02 um `resetIdentityCache()` und Modul 07's Cleanup ruft sie. Klaus klickt Test 6 erneut für vollen grünen Sichttest | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
-| 09 einbau_pwa | Spec fertig (2026-05-14) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — 8 Schritte; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt |
+| 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
@@ -178,6 +179,208 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Pflege-Sitzung · Karte 09 Schritt 9 — Doku-Fenster + Apoptose im Andock-Pfad
+
+**Getan:**
+
+- **Karte 09 § Andock-Schritt-Pfad** von **acht** auf **neun**
+  Schritte erweitert. Folge-Pflege aus zwei offenen Punkten der
+  Spec-Sitzungen 07 und 00 (beide vom 2026-05-14):
+  - Spec-Sitzung 07 hatte „Karte 09 Schritt 9: TTL-Sweep-Aufruf"
+    als offen vermerkt (Andocker-Automatik nach jedem Handshake).
+  - Spec-Sitzung 00 hatte „Karte 09 Folge-Pflege-Sitzung Modul 00
+    im Andock-Pfad" als offen vermerkt (`SbkimDoku.init({
+    searchIconSelector:...})` als Schritt 9).
+  Beide Punkte sind jetzt verbindlich in Karte 09 verankert.
+- **Schritt 2 (`<script>`-Tags)** zieht Modul 07 (Apoptose) und
+  Modul 00 (Doku-Fenster) in der verbindlichen Reihenfolge nach:
+  `01 → 02 → 03 → 04 → 05 → 07 → 00`. **Modul 00 zuletzt**, weil
+  es die anderen Module fail-soft als optionale Lese-Quellen prüft.
+  Sichtkontroll-Block in Schritt 2 zeigt jetzt sechs Selbstcheck-
+  Zeilen (statt vier; Modul 03 weiterhin nach `init()`); inkl.
+  der durch Pflege-Sitzung 02+07-Cache-Invalidate erweiterten
+  Modul-02-Selbstcheck-Zeile (sieben Funktionen).
+- **Neuer Schritt 9 „Apoptose + Doku-Fenster scharf schalten"**
+  mit drei Sub-Punkten:
+  - **9a** `await SbkimApoptose.init()` — setzt MessageChannel-
+    Listener auf den Service-Worker, damit eingehende
+    `/sbkim/legacy`-POSTs in `sbkim_legacy_inbox` landen. Ohne
+    `init()` kommen Vermächtnisse nicht in der Inbox an.
+    Konsolen-Zeile `SBKIM-Apoptose grün — Vermächtnis-Empfang
+    aktiv.`
+  - **9b** `await SbkimDoku.init({searchIconSelector:"#search-icon"})`
+    — 5-Klick-Geste am PWA-Such-Symbol. Selektor pro Endknoten
+    anpassen. MutationObserver-Re-Mount mit 10-s-Safety-Timeout
+    falls Selektor zur init-Zeit kein Element matcht (aus
+    Bau-Sitzung 00 Frage 2). Konsolen-Zeile `SBKIM-Doku grün —
+    5-Klick-Geste am Such-Symbol aktiv.`
+  - **9c** (optional, empfohlen) `await SbkimApoptose.forgetExpiredSiblings(
+    SIBLING_MAX_AGE_MS)` als Andocker-Automatik nach jedem
+    Handshake — schließt offene Frage aus Spec-Sitzung 07
+    (Andocker-Automatik). Modul 00 hat den manuellen Trigger
+    schon im Doku-Fenster eingebaut; 9c ist die zweite Hälfte
+    (zusammen geben sie sowohl Klaus' händischen Klick als auch
+    den automatischen Sweep nach jedem `handshake()`).
+- **§ Sichtkontrolle nach dem Andocken** von drei auf vier
+  Pflicht-Punkte erweitert:
+  1. Sieben Selbstcheck-Zeilen in DevTools-Konsole (alle Module
+     beim Skript-Laden, 03 nach `init()`) plus vier Andock-
+     Konsolen-Zeilen (`SBKIM-SW registriert, …`, `SBKIM-Init
+     grün — …`, `SBKIM-Apoptose grün — …`, `SBKIM-Doku grün — …`).
+  2. Sechs IndexedDB-Stores; `sbkim_doku_meta["meta"]` ist nach
+     Schritt 9 schon gefüllt (Schlüssel `"meta"`, Wert
+     `{moduleId:"meta", schemaVersion:1, lastOpenedAt:null}`).
+  3. Live-Endpunkte: `/sbkim/spore.json` GET 200, `/sbkim/anastomosis`
+     GET 405, `/sbkim/legacy` GET 405 (gemeinsamer SW-`fetch`-
+     Listener seit Bau-Sitzung 07).
+  4. **5-Klick-Geste am Such-Symbol** öffnet das modale Doku-
+     Fenster mit allen Sektionen (Knoten · Sichttest · Geschwister
+     · Vermächtnis-Inbox · Speicher · drei Aktion-Knöpfe).
+- **Zwei „Häufiger Fehler"-Diagnosen** in Schritt 9:
+  - `searchIconSelector` matcht kein DOM-Element (z.B. weil das
+    Such-Symbol erst dynamisch nachgeladen wird oder einen
+    anderen Selektor hat) → Modul 00 macht `console.warn`,
+    versucht via `MutationObserver` einen Re-Mount, gibt nach
+    10 s auf. Fix: korrekten Selektor in `init()`-Aufruf setzen,
+    Tab neu laden.
+  - TTL-Sweep wird nie gerufen → stille Geschwister bleiben
+    monatelang in `sbkim_siblings`, Antworten laufen in
+    `HandshakeTimeoutError`. Fix: entweder 9c einbauen oder das
+    Doku-Fenster regelmäßig öffnen + den TTL-Sweep-Knopf klicken.
+- **„Was Schritt 9 NICHT macht"** explizit dokumentiert:
+  - **Kein Self-Apoptose-Knopf.** Karte 07 hat
+    `prepareSelfApoptose` / `confirmSelfApoptose` als zweistufig
+    + irreversibel spezifiziert. Self-Apoptose gehört in einen
+    separaten Service-Pfad (z.B. eine versteckte Service-Seite),
+    nicht in den Andock-Pfad und auch nicht ins Doku-Fenster.
+    Klaus ruft sie bei tatsächlicher Domain-Stilllegung händisch
+    in der DevTools-Konsole.
+  - **Keine Handshake-Automatik.** Schritt 8 bleibt expliziter
+    Klaus-Trigger (oder ein Endknoten-eigener „Andocken"-Knopf);
+    Modul 09 macht keinen Background-Handshake.
+  - **Kein Heterokaryose-Pfad.** Modul 06 ist Schablone, späte
+    Phase — gehört nicht in den ersten Andock-Pfad.
+- **Visualisierungs-Mermaid-Flowchart** von acht auf neun Knoten
+  erweitert (A1–A9; A9 mit „Apoptose+Doku · SbkimApoptose.init +
+  SbkimDoku.init + TTL-Sweep").
+- **§ Datei-Pfad-Konvention** von „fünf JS-Module" auf „sieben
+  JS-Module" nachgezogen.
+- **§ Verantwortlichkeiten** Macht-Block ergänzt um Modul 07 + 00
+  mit Hinweis „Modul 00 zuletzt, fail-soft als optionale Lese-
+  Quellen".
+- **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende
+  (neueste Zeile unten, Konventions-Stil wie die anderen
+  Pflege-Sitzungen 2026-05-15). §1 Modul 09 unverändert (Modul
+  09 ist Anleitung-Vertrag — die Erweiterung ist additiv im
+  Andock-Pfad).
+- **Karte 09 Bauzustand-Tabelle** um „Pflege Schritt 9 + 07/00"-
+  Zeile erweitert mit ausführlicher Anmerkung.
+- **PULS-Schnellüberblicks-Zeile Modul 09** auf „Spec fertig
+  (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15)" gehoben mit
+  „**9 Schritte**"-Vermerk; „Als nächstes ✨"-Block Modul 09
+  ausführlich mit Sichtkontroll-Erweiterung und Empfehlungs-
+  Aktualisierung („Module 00/05/07 alle Code-Stub + sichtgeprüft;
+  Karte 09 ab Pflege-Sitzung 2026-05-15 auf neun Schritte
+  erweitert").
+
+**Was nicht geändert wurde (bewusst):**
+
+- **Keine Code-Änderung in irgendeinem Modul.** Karte 09 ist
+  Anleitung — sie verändert nur die Andock-Sequenz, nicht die
+  Modul-APIs. Module 00/02/05/07/Storage/Embedding/Match
+  unverändert.
+- **`status.json` Modul 09 unverändert** (`score:"spec"` /
+  `siegel:"Spec fertig"`); Pie nicht regeneriert (keine Score-
+  Änderung). Modul 09 ist Anleitung; Status-Hochstufung kommt
+  erst nach erstem Live-Andock-Versuch durch Klaus
+  (= „erstmaliger Einbau Rezeptbuch/Mixarium"-Bauzustand-Zeilen).
+- **INTERFACES.md §1 Modul 09 unverändert** (Vertrag-Sektion);
+  nur §6 Änderungsprotokoll-Zeile ergänzt.
+- **Kein Self-Apoptose-Knopf in Schritt 9.** Bewusst — Karte 07
+  hat ihn als zweistufig+irreversibel spezifiziert; gehört in
+  separaten Service-Pfad.
+- **Modul 06 Heterokaryose nicht im Andock-Pfad.** Spec ist
+  Schablone (späte Phase); 06 vor erstem PWA-Einbau wäre
+  Spekulation.
+
+**Frischer-Kopf-Befund: Karte 09 ist jetzt vollständig**
+
+Alle Folge-Pflege-Punkte aus den Spec- und Bau-Sitzungen sind in
+Karte 09 verankert:
+
+- Spec-Sitzung 07 → „Karte 09 Schritt 9: TTL-Sweep-Aufruf"
+  → **9c eingebaut** (Andocker-Automatik nach jedem Handshake).
+- Spec-Sitzung 00 → „Karte 09 Folge-Pflege-Sitzung Modul 00 im
+  Andock-Pfad" → **9b eingebaut** (`SbkimDoku.init`).
+- Bau-Sitzung 07 → „Cleanup-Reihenfolge zieht in INTERFACES.md
+  §1 Modul 07" — schon in Pflege 02+07-Cache-Invalidate erledigt
+  (Schritt 6 `SbkimSpore.resetIdentityCache()`); für Schritt 9
+  irrelevant, weil Schritt 9 keine Self-Apoptose vorsieht.
+- Bau-Sitzung 00 → „Frage 2 MutationObserver-Re-Mount" — in
+  Karte 09 Schritt 9b als Fehler-Diagnose dokumentiert (10-s-
+  Safety-Timeout).
+
+**Karte 09 ist jetzt der vollständige Andock-Vertrag** für die
+ersten Endknoten (Rezeptbuch + Mixarium). Klaus kann mit Karte 09
+in der Hand alle neun Schritte durchgehen, ohne in andere Karten
+springen zu müssen — die spezifischen Details stehen in den
+Modul-Karten, aber der Andock-Pfad ist linear und vollständig
+in Karte 09.
+
+**Folge-Sitzung „Bau-Sitzung Modul 09 Live-Andock":** ist jetzt
+spruchreif. Klaus braucht im Browser:
+1. Rezeptbuch und Mixarium als zwei Endknoten-PWA-Repos auf
+   GitHub Pages (`https://klaus.github.io/rezeptbuch/` und
+   `https://klaus.github.io/mixarium/`).
+2. Beide Repos: die sieben SBKIM-Module + `sbkim-sw.js` aus dem
+   Sage-Protokoll-Repo kopiert (Schritt 1).
+3. `index.html` jeweils um die `<script>`-Tag-Liste in der
+   verbindlichen Reihenfolge ergänzt (Schritt 2).
+4. Beide PWAs einmal im Browser gestartet, alle Schritte 3–9
+   durchgespielt.
+5. Erster Cross-Repo-Handshake (Schritt 8) zwischen Rezeptbuch
+   und Mixarium.
+6. Doku-Fenster in beiden öffnen (5-Klick-Geste am Such-Symbol),
+   Geschwister-Liste prüfen.
+
+**Was offen blieb:**
+
+- **Klaus' Re-Sichttest Panel 07 Test 6** (kompakt, im Browser)
+  zur Bestätigung der Pflege-Sitzung 02+07-Cache-Invalidate.
+  Erwartung: `getNodeId_wirft_NoIdentityError:true`.
+- **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Live-Andock-
+  Versuch** ist jetzt der nächste produktive Schritt.
+- **Modul 06 Heterokaryose Spec-Sitzung** kommt erst nach dem
+  ersten Live-Andock — Klaus weiß dann, welche Daten überhaupt
+  austauschenswert sind.
+- **Karte 04 Match-Kalibrierungs-Beleg** könnte in einer
+  späteren Mini-Pflege um Klaus' Trias-Werte aus Pflege 05-Test-2
+  erweitert werden (Klaus hat das bewusst auf später verschoben).
+- **Folge-Pflege-Sitzung „Embedding-Baseline"** bleibt offen —
+  alle drei Trias-Werte lagen sehr nah an der 0.80-Schwelle
+  (0.79–0.82), was die Embedding-Baseline-Drift bestätigt;
+  PROVIDER_MIN_MATCH-Anhebung oder Vektor-Familien-Wechsel wären
+  die zwei Optionen.
+- **Folge-Pflege-Sitzung „Persistenz-Strategie verbinden"**
+  bleibt offen, bis Modul 01 (Persist) und Modul 02 (Backup)
+  spruchreif sind.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Klaus' Re-Sichttest Panel 07 Test 6** (kompakt, im Browser)
+   — Bestätigung der Cache-Invalidate-Pflege.
+2. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Live-Andock-
+   Versuch** zwischen Rezeptbuch und Mixarium. Karte 09 ist jetzt
+   vollständig (neun Schritte); Klaus hat alle nötigen Details
+   in einer Karte.
+3. Nach dem Live-Andock: **Spec-Sitzung Modul 06 Heterokaryose**,
+   sobald Klaus aus dem echten Endknoten-Betrieb weiß, welche
+   Daten ausgetauscht werden sollen.
+4. Optional: **Folge-Pflege-Sitzung „Embedding-Baseline"**, falls
+   die Schwelle bei realen Knoten-Paaren auch zu nah liegt.
+
+---
 
 ### 2026-05-15 · Pflege-Sitzung · Modul 02 + Modul 07 Cache-Invalidate
 
