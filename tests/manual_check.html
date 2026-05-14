@@ -83,9 +83,17 @@
   </section>
 
   <section class="panel" data-module="00_doku_fenster">
-    <h2>00 Doku-Fenster (5-Klick) <span class="status idle">noch nicht gebaut</span></h2>
-    <div class="controls"></div>
-    <pre class="log">— noch keine Ausgabe —</pre>
+    <h2>00 Doku-Fenster (5-Klick) <span class="status ok">Code-Stub</span></h2>
+    <p class="hint" style="margin: 0 0 0.4rem 0;">
+      Fake-Such-Symbol als DOM-Anker für die 5-Klick-Geste — Klaus klickt es im
+      Sichttest 5× von Hand binnen 3 s; <code>_dispatchClick()</code> simuliert
+      automatisch (Test 2 / Test 3).
+    </p>
+    <p style="margin: 0 0 0.6rem 0;">
+      <button id="panel-00-fake-search" type="button" style="background:#92400E;color:#fff;border:none;border-radius:4px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.9rem;">🔍 Such-Symbol (5× klicken)</button>
+    </p>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Voraussetzung: Module 01/02/05/07 sind beim Skript-Laden mitgekommen; Setup-Knopf hängt das Fenster an SbkimStorage. Modul 02/05/07 sind optionale Lese-Quellen — wenn sie fehlen, zeigt das Fenster „Modul nicht geladen" und das Modul-00-Selbstcheck bleibt grün. —</pre>
   </section>
 
   <section class="panel" data-module="08_ui_demo">
@@ -1038,6 +1046,205 @@
           "ℹ Bei prepareSelfApoptose erscheint zusätzlich:");
         SbkimUI.log("07_apoptose",
           "  SELF-APOPTOSE VORBEREITET — irreversibel, Token gültig 60s");
+      });
+    })();
+  </script>
+
+  <!-- Modul 00 — Doku-Fenster (Bau-Sitzung 2026-05-14) -->
+  <script src="../src/modules/00_doku_fenster.js"></script>
+  <script>
+    (function () {
+      // Panel 00 — Doku-Fenster
+      //
+      // Spec-Vorgabe (Karte 00 § Manueller Test): sechs Knöpfe (Setup,
+      // 5-Klick-Simulation, 4-Klick + Timeout, Quota-Warnzeile, TTL-Sweep,
+      // Selbstcheck-Hinweis) plus das Fake-Such-Symbol als sichtbarer
+      // Klick-Anker.
+      //
+      // Bau-Sitzungs-Frage 3 Variante (a): Fake-Such-Symbol als eigenes
+      // <button> im Markup — Klaus klickt es bei Sichttest selbst,
+      // _dispatchClick() simuliert für Test 2 die volle Geste.
+
+      var SIBLING_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+      var FAKE_SEARCH_SELECTOR = "#panel-00-fake-search";
+      var setupDone = false;
+
+      // Pseudo-Geschwister für Test 5 (TTL-Sweep). Bewusst echte Einträge in
+      // sbkim_siblings — SbkimApoptose.forgetExpiredSiblings liest aus dem
+      // Storage-Pfad, nicht aus dem _addPseudoSibling-Override (das ist
+      // Versand-Pfad-only). Karte 00 § Manueller Test Punkt 5 erwähnt
+      // _addPseudoSibling als Setup; im Bau ist der Storage-Pfad der
+      // einzige, der den Sweep tatsächlich auslöst. Vermerkt im
+      // Übergabeprotokoll der Bau-Sitzung 00.
+      var TTL_OLD_ID = "DOKU-TTL-OLD-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+      var TTL_OLD_ID_2 = "DOKU-TTL-OLD-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+
+      async function ensureSetup() {
+        if (setupDone) return;
+        await SbkimStorage.init();
+        await SbkimDoku.init({ searchIconSelector: FAKE_SEARCH_SELECTOR });
+        // Optionale Lese-Quellen fail-soft. Wir versuchen, sie zu wecken,
+        // damit der Snapshot für die Sicht-Knöpfe etwas Echtes zeigt.
+        if (typeof SbkimSpore !== "undefined" && typeof SbkimSpore.init === "function") {
+          try { await SbkimSpore.init(); } catch (e) { /* fail-soft */ }
+          try { await SbkimSpore.getOrCreateIdentity(); } catch (e) { /* fail-soft */ }
+          try {
+            await SbkimSpore.generateOwnSpore({
+              domain: "rezeptbuch.example.org",
+              nodeType: "hybrid",
+              endpoint: "https://klaus.github.io/rezeptbuch/",
+              nodeName: "Rezeptbuch (Doku-Test)",
+              domainDescription: "Hausgemachte Kochrezepte — Doku-Sichttest.",
+              domainKeywords: ["Backen", "Saucen", "Hauptgang"],
+            });
+          } catch (e) { /* fail-soft */ }
+        }
+        if (typeof SbkimAnastomose !== "undefined" && typeof SbkimAnastomose.init === "function") {
+          try { await SbkimAnastomose.init(); } catch (e) { /* fail-soft */ }
+        }
+        if (typeof SbkimApoptose !== "undefined" && typeof SbkimApoptose.init === "function") {
+          try { await SbkimApoptose.init(); } catch (e) { /* fail-soft */ }
+        }
+        setupDone = true;
+      }
+
+      SbkimUI.addButton("00_doku_fenster", "Setup: Storage + Doku.init", async function () {
+        await ensureSetup();
+        var meta = await SbkimStorage.get("sbkim_doku_meta", "meta");
+        SbkimUI.setStatus("00_doku_fenster", "ok", "init OK");
+        return {
+          dokuReady: typeof SbkimDoku.open === "function",
+          metaPresent: !!meta,
+          lastOpenedAt: meta && meta.lastOpenedAt ? meta.lastOpenedAt : null,
+          hinweis: "Fenster ist versteckt — 5× das Such-Symbol klicken oder Test 2 drücken.",
+        };
+      });
+
+      SbkimUI.addButton("00_doku_fenster", "Test 2: 5 Klicks im Zeitfenster (öffnet Fenster)", async function () {
+        await ensureSetup();
+        SbkimDoku._resetClickCounter();
+        for (var i = 0; i < 5; i++) {
+          SbkimDoku._dispatchClick();
+          await new Promise(function (r) { setTimeout(r, 50); });
+        }
+        // open() ist async — kurz warten, bis das Fenster im DOM hängt.
+        await new Promise(function (r) { setTimeout(r, 80); });
+        var open = SbkimDoku.isOpen();
+        var snap = await SbkimDoku.getStatusSnapshot();
+        SbkimUI.setStatus("00_doku_fenster", open ? "ok" : "err", open ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          fenster_offen: open,
+          nodeIdShort: snap.nodeIdShort,
+          domain: snap.domain,
+          siblingCount: snap.siblingCount,
+          legacyCount: snap.legacyCount,
+          quota: snap.quota ? {
+            ratio: Number(snap.quota.ratio.toFixed(4)),
+            warnRatio: snap.quota.warnRatio,
+            warnBytes: snap.quota.warnBytes,
+            warningLevel: snap.quota.warningLevel,
+          } : null,
+          errors_anzahl: snap.errors.length,
+          erwartung: "isOpen=true, Snapshot hat nodeIdShort+domain+siblingCount+legacyCount+quota",
+        };
+      });
+
+      SbkimUI.addButton("00_doku_fenster", "Test 3: 4 Klicks + Timeout (Fenster bleibt zu)", async function () {
+        await ensureSetup();
+        if (SbkimDoku.isOpen()) SbkimDoku.close();
+        SbkimDoku._resetClickCounter();
+        for (var i = 0; i < 4; i++) {
+          SbkimDoku._dispatchClick();
+          await new Promise(function (r) { setTimeout(r, 20); });
+        }
+        // Zeit simulieren statt zu warten.
+        SbkimDoku._advanceRevealClock(4000);
+        SbkimDoku._dispatchClick();
+        await new Promise(function (r) { setTimeout(r, 50); });
+        var open = SbkimDoku.isOpen();
+        var pass = !open;
+        SbkimUI.setStatus("00_doku_fenster", pass ? "ok" : "err", pass ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          fenster_offen: open,
+          erwartung: "Zähler war zurückgesetzt → fünfter Klick öffnet das Fenster NICHT.",
+          notiz: "Zähler war zurückgesetzt, Fenster bleibt zu.",
+        };
+      });
+
+      SbkimUI.addButton("00_doku_fenster", "Test 4: Quota-Warnzeile (81/100)", async function () {
+        await ensureSetup();
+        if (SbkimDoku.isOpen()) SbkimDoku.close();
+        SbkimDoku._setQuotaForTest({ usage: 81, quota: 100 });
+        await SbkimDoku.open();
+        var snap = await SbkimDoku.getStatusSnapshot();
+        // Warn-Block sollte im DOM auftauchen.
+        var warnEl = document.querySelector(".sbkim-doku-warn");
+        var pass = !!snap.quota && snap.quota.warnRatio === true &&
+                   snap.quota.warningLevel === "ratio" && !!warnEl;
+        // Fenster schließen + Override entfernen, damit folgende Tests sauber starten.
+        SbkimDoku.close();
+        SbkimDoku._clearQuotaForTest();
+        SbkimUI.setStatus("00_doku_fenster", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          ratio: Number(snap.quota.ratio.toFixed(4)),
+          warnRatio: snap.quota.warnRatio,
+          warnBytes: snap.quota.warnBytes,
+          warningLevel: snap.quota.warningLevel,
+          warn_dom_sichtbar: !!warnEl,
+          erwartung: "{ratio:0.81, warnRatio:true, warningLevel:\"ratio\", DOM-Warnblock sichtbar}",
+        };
+      });
+
+      SbkimUI.addButton("00_doku_fenster", "Test 5: TTL-Sweep (forgetExpiredSiblings via Modul 07)", async function () {
+        await ensureSetup();
+        if (typeof SbkimApoptose === "undefined") {
+          SbkimUI.setStatus("00_doku_fenster", "warn", "Test 5 übersprungen");
+          return { uebersprungen: "SbkimApoptose nicht geladen" };
+        }
+        // Zwei echte Geschwister-Einträge in sbkim_siblings (mit >30 Tage altem
+        // since) — der Sweep liest aus dem Store, nicht aus pseudoSiblings.
+        var oldIso = new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString();
+        await SbkimStorage.put("sbkim_siblings", TTL_OLD_ID, {
+          nodeId: TTL_OLD_ID, domain: "doku-old-1.invalid",
+          endpoint: "http://127.0.0.1:1/doku-old-1/", pubKey: null, since: oldIso,
+        });
+        await SbkimStorage.put("sbkim_siblings", TTL_OLD_ID_2, {
+          nodeId: TTL_OLD_ID_2, domain: "doku-old-2.invalid",
+          endpoint: "http://127.0.0.1:1/doku-old-2/", pubKey: null, since: oldIso,
+        });
+
+        var removed = await SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS);
+        var nodeIdsRemoved = removed.map(function (r) { return r.nodeId; });
+        var twoOldRemoved = nodeIdsRemoved.indexOf(TTL_OLD_ID) !== -1 &&
+                            nodeIdsRemoved.indexOf(TTL_OLD_ID_2) !== -1;
+
+        // Re-Open des Fensters: Snapshot sollte beide Geschwister nicht mehr listen.
+        if (SbkimDoku.isOpen()) SbkimDoku.close();
+        await SbkimDoku.open();
+        var snap = await SbkimDoku.getStatusSnapshot();
+        var stillThere = snap.siblings.some(function (s) {
+          return s.nodeId === TTL_OLD_ID || s.nodeId === TTL_OLD_ID_2;
+        });
+        SbkimDoku.close();
+
+        var pass = twoOldRemoved && !stillThere;
+        SbkimUI.setStatus("00_doku_fenster", pass ? "ok" : "err", pass ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          entfernt_anzahl: removed.length,
+          beide_alten_entfernt: twoOldRemoved,
+          snapshot_listet_sie_noch: stillThere,
+          siblings_im_snapshot: snap.siblingCount,
+          erwartung: "Rückgabe-Array enthält beide alten IDs, Snapshot listet sie nicht mehr.",
+        };
+      });
+
+      SbkimUI.addButton("00_doku_fenster", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("00_doku_fenster",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("00_doku_fenster",
+          "  MODUL 00 DOKU-FENSTER bereit, Funktionen: init/open/close/isOpen/getStatusSnapshot/recordSighttest");
+        SbkimUI.log("00_doku_fenster",
+          "ℹ Hinweis: Reveal-Schwelle / Quota-Schwellen stehen in §0, NICHT in der Selbstcheck-Zeile.");
       });
     })();
   </script>

@@ -1,6 +1,6 @@
 # Modul 00 — Doku-Fenster
 
-> **Status:** 🟨 Spec fertig  ·  **Schicht:** UI  ·  **Anker:** Sage-Page → Karte 4 (Module-Bento), Eintrag 00
+> **Status:** 🟦 Code-Stub  ·  **Schicht:** UI  ·  **Anker:** Sage-Page → Karte 4 (Module-Bento), Eintrag 00
 > **Datei (Code):** `src/modules/00_doku_fenster.js`
 >
 > _Versteckte 5-Klick-Geste am Such-Symbol enthüllt den Lauf-Zustand des
@@ -587,12 +587,17 @@ Knöpfe:
    quota: 100})` setzt Pseudo-Werte; Fenster neu öffnen. Erwartung:
    `warnRatio: true`, Warnzeile sichtbar im Fenster, Text enthält
    „Speicher knapp · 80%-Schwelle".
-5. **TTL-Sweep-Knopf** — Setup-Knopf legt zwei In-Memory-Pseudo-
-   Geschwister an (via `SbkimApoptose._addPseudoSibling` aus
-   Bau-Sitzung 07), beide mit `since` > 30 Tage in der
-   Vergangenheit. TTL-Sweep-Knopf drücken. Erwartung:
-   Rückgabe-Array zeigt beide gelöschte Geschwister; `siblingCount`
-   im erneut geöffneten Fenster ist 0.
+5. **TTL-Sweep-Knopf** — Test-Knopf legt zwei Geschwister-Einträge
+   **direkt in `sbkim_siblings`** an (`SbkimStorage.put` mit
+   `since` > 30 Tage in der Vergangenheit), weil
+   `SbkimApoptose.forgetExpiredSiblings` aus dem realen Store liest
+   — `_addPseudoSibling` ist ein Versand-Pfad-Override für
+   `prepareSelfApoptose.listSiblingsForBroadcast()`, nicht für
+   den TTL-Sweep. Test-Knopf drückt anschließend
+   `SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)`.
+   Erwartung: Rückgabe-Array zeigt beide gelöschte Geschwister;
+   `siblingCount` im erneut geöffneten Fenster ist 0.
+   (Korrektur vermerkt in Bau-Sitzung 00, 2026-05-14.)
 6. **Selbstcheck-Hinweis** — Hinweis-Knopf zeigt in der Konsole
    die erwartete Selbstcheck-Zeile (analog Panel 01 / 02 / 04 / 05 / 07).
 
@@ -688,8 +693,8 @@ Self-Apoptose. Panel 00 hat keinen Knopf für `prepareSelfApoptose` /
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 00 | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`); drei verbindliche Pflichtfragen entschieden — Frage 1 Variante (a) 5 Klicks auf Such-Symbol + Zeitfenster 3 s (`DOKU_REVEAL_WINDOW_MS = 3000`), Frage 2 Doppel-Schwelle (`DOKU_QUOTA_WARN_RATIO = 0.80` UND `DOKU_QUOTA_WARN_BYTES = 50 MiB`) in §0, Frage 3 Variante (a) Session-only-Sichtbarkeit (kein `visible`-Feld); drei §0-Konstanten neu (additiv, kein Hauptversions-Sprung); `sbkim_doku_meta` als alleiniger Schreib-Store von 00 (Schlüssel `"meta"` für Modul-Meta + `"<modulId>"` für Sichttest-Spur); Lese-Quellen `SbkimSpore`, `SbkimAnastomose.listSiblings`, `SbkimApoptose.listLegacy`, `navigator.storage.estimate()` — alle fail-soft, optionale Pflicht nur für `SbkimStorage`; TTL-Sweep-Knopf nutzt `SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` ohne API-Erweiterung; Self-Apoptose bewusst NICHT in Modul 00 (Karte 07 Begründung). INTERFACES.md §0 + §1 Modul 00 + §6, `status.json` Modul 00 von `schablone` auf `spec`, Pie regeneriert (Schablone 5→4, Spec fertig 1→2). |
-| Code geschrieben | — | — | — |
-| Sichttest | — | — | — |
+| Code geschrieben | 2026-05-14 | Bau 00 | `src/modules/00_doku_fenster.js` als IIFE mit `window.SbkimDoku`, sechs öffentliche Funktionen, vier benannte Error-Klassen (`InvalidDokuOptionsError`, `DokuDependenciesError`, `InvalidSighttestResultError`, `StorageQuotaError` — letztere als Sammel-Klasse mit `.cause`), fünf Test-Brücken (`_dispatchClick`, `_resetClickCounter`, `_advanceRevealClock`, `_setQuotaForTest`, `_clearQuotaForTest`); drei Bau-Pflichtfragen entschieden — **Frage 1 Variante (a)** Modal mit halb-transparentem Backdrop (`position:fixed;inset:0;background:rgba(0,0,0,0.55)`), Klassenpräfix `sbkim-doku-*`, Klick-auf-Backdrop schließt; **Frage 2 Variante (a)** späte DOM-Mount-Strategie via `MutationObserver` auf `document.body` mit Auto-Disconnect bei Match und 10-s-Safety-Timeout (`console.warn` + Selbst-Disconnect, kein Throw); **Frage 3 Variante (a)** Panel-00-Fake-Such-Symbol als eigenes `<button id="panel-00-fake-search">` im Markup, `_dispatchClick()` synthetisiert für Test 2 / 3 reale `MouseEvent("click")`-Dispatches auf das Element; 5-Klick-Geste: Klick 1 startet `setTimeout(reset, revealWindowMs)` und merkt sich `revealStartedAt`, Klicks 2–4 zählen ohne Timer-Reset, Klick 5 cancelt Timer und ruft `open()` async; `close()` synchron, idempotent, setzt Klickzähler auf 0; Esc-Listener global registriert, feuert nur bei offenem Fenster; Modul-Closure-State `clickCount` / `revealTimer` / `windowEl` / `searchEl` / `options` / `mountObserver` / `quotaOverride`; `_advanceRevealClock(ms)` cancelt + Reset wenn `elapsed >= revealWindowMs`, sonst Timer mit Restzeit neu setzen; `getStatusSnapshot()` sammelt fail-soft via einzelne try/catch (jeder Lese-Quellen-Fehler landet in `errors[]`, kein Throw); `recordSighttest(moduleId, "ok"|"fail")` schreibt `sbkim_doku_meta[moduleId]`; Persistenz **strikt über `SbkimStorage`** (kein `indexedDB.open` in 00); Modul 00 als alleiniger Schreiber von `sbkim_doku_meta`; synchroner Selbstcheck beim Skript-Laden (`MODUL 00 DOKU-FENSTER bereit, Funktionen: …`). Panel 00 in `tests/manual_check.html` von „noch nicht gebaut" auf 🟦 Code-Stub mit sechs Knöpfen (Setup, Test 2 5-Klick-Simulation, Test 3 4-Klick + `_advanceRevealClock(4000)`, Test 4 Quota-Warnzeile via `_setQuotaForTest({usage:81,quota:100})`, Test 5 TTL-Sweep via direkten `SbkimStorage.put` auf `sbkim_siblings` mit `since > 30 Tage`, Selbstcheck-Hinweis) plus sichtbarem Fake-Such-Symbol-Element (Klaus kann es auch von Hand klicken); `node --check` für `00_doku_fenster.js` und alle Inline-`<script>`-Blöcke grün; INTERFACES.md §1 Modul 00 bleibt `entwurf` (Spec-Vertrag unverändert), §6 Änderungsprotokoll-Zeile für Bau-Sitzung 00 ergänzt; `status.json` Modul 00 von `score:"spec"` auf `score:"stub"` mit `siegel:"Code-Stub"`, Pie regeneriert (Spec fertig 2→1, Code-Stub 6→7). Spec-Korrektur-Befund: Karte 00 § Manueller Test Punkt 5 erwähnte `SbkimApoptose._addPseudoSibling` als TTL-Sweep-Setup, das ist aber der Versand-Pfad-Override — `forgetExpiredSiblings` liest ausschließlich aus `sbkim_siblings` im Storage. Panel 00 Test 5 nutzt deshalb direkten `SbkimStorage.put`; Karte 00 § Manueller Test Punkt 5 entsprechend leicht angepasst. |
+| Sichttest | 2026-05-14 | Bau 00 | ungeprüft, weil Sitzung headless — Klaus klickt im Browser (Panel 00: Fake-Such-Symbol 5× anklicken, alle sechs Knöpfe durchgehen, Selbstcheck-Zeile in DevTools-Konsole prüfen, Quota-Test-Knopf zeigt Warnzeile im Modal). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
