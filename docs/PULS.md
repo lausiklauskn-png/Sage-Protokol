@@ -18,8 +18,8 @@ pie showData
   title Modulstand 2026-05-14 (13 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 2
-  "🟦 Code-Stub" : 6
+  "🟨 Spec fertig" : 1
+  "🟦 Code-Stub" : 7
   "🟩 Fertig" : 0
 ```
 
@@ -38,31 +38,34 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 - 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
 - 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert
 
-Code-Stub frisch aus der Bau-Sitzung 2026-05-14, **Sichttest ausstehend:**
+Code-Stub frisch aus den Bau-Sitzungen 2026-05-14, **Sichttest ausstehend:**
 
 - 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/05_anastomose.js` + `src/sbkim-sw.js` (Variante A · Page-Hosted), Panel 05 mit acht Knöpfen (Setup + sieben Test-Punkte aus Karte 05 § Manueller Test); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
 - 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/07_apoptose.js` als IIFE mit `window.SbkimApoptose`, sechs Funktionen, fünf Error-Klassen (`ApoptoseDependenciesError`, `InvalidApoptoseTokenError`, `ApoptoseAlreadyExecutedError`, `InvalidTtlError`, `LegacyTimeoutError`/`LegacyNetworkError`); kanonischer Sign/Verify-Pfad **bewusst aus Modul 02/05 dritter Pfad dupliziert** (Single-File-PWA-Stil); `src/sbkim-sw.js` um `/sbkim/legacy` erweitert (gemeinsamer `fetch`-Listener mit `/sbkim/anastomosis`, Variante a — leichter erweiterbar für Modul 06/11); Panel 07 mit zehn Knöpfen (Setup + 8 Test-Punkte aus Karte 07 § Manueller Test + Selbstcheck-Hinweis); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
+- 🟦 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/00_doku_fenster.js` als IIFE mit `window.SbkimDoku`, sechs Funktionen, vier benannte Error-Klassen (`InvalidDokuOptionsError`, `DokuDependenciesError`, `InvalidSighttestResultError`, `StorageQuotaError` als Sammel-Klasse mit `.cause`), fünf Test-Brücken (`_dispatchClick`, `_resetClickCounter`, `_advanceRevealClock`, `_setQuotaForTest`, `_clearQuotaForTest`); drei Bau-Pflichtfragen entschieden — Modal mit halb-transparentem Backdrop und `sbkim-doku-*`-Klassenpräfix (Frage 1 Variante a), MutationObserver auf `document.body` mit Auto-Disconnect und 10-s-Safety-Timeout (Frage 2 Variante a), Fake-Such-Symbol als eigenes `<button id="panel-00-fake-search">` im Panel-Markup (Frage 3 Variante a); Panel 00 mit sechs Knöpfen (Setup + Test 2 5-Klick-Simulation + Test 3 4-Klick + Timeout + Test 4 Quota-Warnzeile + Test 5 TTL-Sweep + Selbstcheck-Hinweis); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
 
 Spec frisch aus den Spec-Sitzungen 2026-05-14, **Bau ausstehend**:
 
 - 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul); Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, JS-Module inline oder unter `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` verbindlich, SW-Scope-Falle dokumentiert, `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
-- 🟨 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung); reines Lese-/Trigger-Modul, Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), alleiniger Schreiber von `sbkim_doku_meta`, Lese-Quellen Spore + Anastomose-Geschwister + Apoptose-Inbox + `navigator.storage.estimate()` (alle fail-soft, Pflicht nur `SbkimStorage`); drei Pflichtfragen entschieden — **5 Klicks auf Such-Symbol in 3 s** (neue §0-Konstante `DOKU_REVEAL_WINDOW_MS`), **Quota-Doppel-Schwelle 80% + 50 MiB** (neue §0-Konstanten `DOKU_QUOTA_WARN_RATIO` + `DOKU_QUOTA_WARN_BYTES`), **Sichtbarkeit session-only** (kein `visible`-Feld); TTL-Sweep-Knopf nutzt `SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` ohne API-Erweiterung; Self-Apoptose bewusst NICHT in 00
 
 In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: **Bau-Sitzung Modul 00 Doku-Fenster** —
-Spec ist frisch und verbindlich, das Modul ist dependenz-frei (Pflicht
-nur `SbkimStorage`), und es liefert sofort Mehrwert für jeden
-weiteren Andock-Schritt (Sichtkontrolle der Module 01–07 in einer
-Klick-Geste). Parallel anbietbar — und vermutlich die produktiv
-größere Wirkung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am
-Live-Andock-Versuch** (Module 05 und 07 sind beide Code-Stub und
-können live mit-andocken; Modul 00 als frische Spec ist als Schritt 9
-im Andock-Pfad bereits vorbereitet). Sichttests Karte 05 (acht
-Knöpfe) und Karte 07 (zehn Knöpfe) gehören in einen kurzen Browser-
-Klick-Durchlauf, idealerweise vor dem Live-Andocken.
+Empfehlung Hauptsitzung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus
+am Live-Andock-Versuch** — Module 00, 05 und 07 sind alle drei
+Code-Stub; Modul 00 hat den TTL-Sweep-Knopf und die Quota-Frühwarnung
+direkt im Doku-Fenster eingebaut, also liefert ein Live-Andock-Versuch
+sofort einen Sichttest für alle drei. Parallel anbietbar:
+**Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul 00 im
+Andock-Pfad"** (jetzt spruchreif, weil Modul 00 Code-Stub ist) —
+Karte 09 § Andock-Schritt-Pfad Schritt 2 muss um Modul 07 und 00 in
+der `<script>`-Reihenfolge ergänzt werden und ein Schritt 9 für
+`SbkimDoku.init({searchIconSelector:...})` plus optionalen
+`SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` nach jedem
+Handshake angehängt werden. Sichttests Karten 00 / 05 / 07 (sechs +
+acht + zehn Knöpfe) gehören in einen kurzen Browser-Klick-Durchlauf,
+idealerweise vor dem Live-Andocken.
 
 ---
 
@@ -70,7 +73,7 @@ Klick-Durchlauf, idealerweise vor dem Live-Andocken.
 
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
-| 00 doku_fenster | Spec fertig (2026-05-14) | — | — | Sechs-Funktionen-API, reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Quota-Doppel-Schwelle (80% / 50 MiB) in §0, Sichtbarkeit session-only, Self-Apoptose bewusst NICHT in 00 |
+| 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00 |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | IndexedDB-Wrapper |
 | 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
@@ -175,6 +178,200 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Bau-Sitzung · Modul 00 Doku-Fenster (Code-Stub)
+
+**Getan:**
+
+- **`src/modules/00_doku_fenster.js` geschrieben** (~750 Zeilen, Stil
+  01/02/04/05/07). IIFE mit `window.SbkimDoku`, sechs öffentliche
+  Funktionen (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`),
+  vier benannte Error-Klassen (`InvalidDokuOptionsError`,
+  `DokuDependenciesError`, `InvalidSighttestResultError`,
+  `StorageQuotaError` — letztere als Sammel-Klasse mit `.cause`),
+  fünf Test-Brücken (`_dispatchClick`, `_resetClickCounter`,
+  `_advanceRevealClock`, `_setQuotaForTest`, `_clearQuotaForTest`).
+  Synchroner Selbstcheck beim Skript-Laden
+  (`MODUL 00 DOKU-FENSTER bereit, Funktionen: …`).
+- **Drei Bau-Pflichtfragen verbindlich entschieden:**
+  - **Frage 1 · Fenster-Render-Stil — Variante (a).** Modal mit
+    halb-transparentem Backdrop (`position:fixed;inset:0;
+    background:rgba(0,0,0,0.55);z-index:2147483646`), zentriertem
+    Fenster-DOM, Klick-auf-Backdrop schließt, Esc schließt;
+    Klassenpräfix `sbkim-doku-*` zur Kollisionsvermeidung mit
+    Endknoten-CSS. Begründung: Klaus' Single-File-Stil, kein
+    Risiko des Vertauschens mit App-Inhalt, additive spätere
+    Migration auf Webcomponent möglich ohne API-Bruch.
+  - **Frage 2 · Späte DOM-Mount-Strategie — Variante (a).**
+    `MutationObserver` auf `document.body` mit Auto-Disconnect
+    sobald der Selektor matcht, plus 10-s-Safety-Timeout
+    (`console.warn` + Selbst-Disconnect, kein Throw). Wenn
+    `document.body` selbst noch nicht da ist, wird auf
+    `DOMContentLoaded` gewartet und dann erneut `tryMountSearchEl()`
+    aufgerufen. Begründung: dem Spec-Wortlaut treu, kein Polling
+    (keine Pulsation-Anmutung), deterministisches Auto-Disconnect.
+  - **Frage 3 · Panel-00-Test-Pragmatismus — Variante (a).** Panel 00
+    hat ein eigenes `<button id="panel-00-fake-search">🔍 Such-Symbol
+    (5× klicken)</button>` im Markup, sichtbar gestaltet — Klaus
+    klickt es bei Sichttest auch von Hand. `_dispatchClick()`
+    synthetisiert für Test 2 / Test 3 reale `MouseEvent("click")`-
+    Dispatches auf dieses Element. Begründung: Klaus' Sichttest
+    wird sichtbar, der Klickzähler wächst real beobachtbar.
+- **5-Klick-Mechanik strikt nach Spec:** Klick 1 startet
+  `setTimeout(resetClicks, revealWindowMs)` und merkt sich
+  `revealStartedAt = nowMs()`; Klicks 2–4 erhöhen `clickCount`,
+  **ohne** den Timer neu zu starten (3 s gilt **insgesamt** für
+  alle 5 Klicks); Klick 5 vor Timer-Ablauf cancelt Timer und ruft
+  `open()` async; Klick-Zähler wird genullt bei (a) Erreichen der
+  Schwelle, (b) `close()`, (c) Timer-Ablauf. Weitere Klicks bei
+  offenem Fenster werden ignoriert.
+- **`_advanceRevealClock(ms)` zeit-virtuell:** verschiebt
+  `revealStartedAt` zurück, rechnet `elapsed` aus, cancelt Timer
+  und ruft `resetClicks()` wenn `elapsed >= revealWindowMs`, sonst
+  setzt Timer mit Restzeit neu. Damit kommt Panel-Test 3 (4 Klicks
+  + simulierte 4 s) ohne realen Zeit-Verlauf aus.
+- **`open()` async + idempotent:** prüft `windowEl`, baut
+  `getStatusSnapshot()`, aktualisiert `sbkim_doku_meta["meta"].
+  lastOpenedAt` (Storage-Fehler hier → `StorageQuotaError` mit
+  `.cause`, Fenster öffnet sich dann nicht — Spec-Wille), rendert
+  Modal über `mountTarget` (Default `document.body`).
+- **`getStatusSnapshot()` fail-soft:** jede optionale Lese-Quelle
+  (`SbkimSpore.getNodeId`, `SbkimSpore.getOwnSpore`,
+  `SbkimAnastomose.listSiblings`, `SbkimApoptose.listLegacy`,
+  `navigator.storage.estimate`) hat eigenen try/catch — Fehler
+  landen als `{source, reason}` in `errors[]`, kein Throw.
+  Pflicht-Quelle `sbkim_doku_meta` wird unverändert durchgereicht.
+  `nodeIdShort` / `fromNodeIdShort` schneidet auf
+  `NODE_ID_SHORT_LEN = 12` Zeichen mit Ellipsis.
+  `quota.warningLevel` aus `warnRatio`/`warnBytes` abgeleitet
+  (`none`/`ratio`/`bytes`/`both`).
+- **`recordSighttest(moduleId, result)` sync-prüft `result` ∈
+  `{"ok","fail"}`** und `moduleId` nicht-leer; schreibt
+  `sbkim_doku_meta[moduleId] = {moduleId, lastSighttest, status}`.
+  Persistenz **strikt über `SbkimStorage`** — kein `indexedDB.open`
+  in Modul 00. Modul 00 bleibt alleiniger Schreiber des Stores.
+- **TTL-Sweep-Knopf im Fenster:** deaktiviert mit Tooltip „SbkimApoptose
+  nicht geladen", wenn `window.SbkimApoptose` fehlt; sonst Klick →
+  `await SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)`,
+  ruhige Inline-Liste der entfernten Geschwister.
+- **„Inbox aktualisieren"-Knopf:** lädt nur die Legacy-Sektion neu
+  (nicht den ganzen Snapshot — Spec-Wille). Schließen-Knopf und
+  globaler Esc-Listener schließen das Fenster.
+- **Panel 00 in `tests/manual_check.html` verdrahtet:** Hero-Badge
+  von „noch nicht gebaut" auf 🟦 Code-Stub. Sichtbares
+  Fake-Such-Symbol-Element vor den Test-Knöpfen. Sechs Knöpfe:
+  - **Setup** — `SbkimStorage.init() + SbkimDoku.init({
+    searchIconSelector:"#panel-00-fake-search"})` plus fail-soft
+    Init von `SbkimSpore`/`SbkimAnastomose`/`SbkimApoptose` damit
+    der Snapshot etwas Echtes zeigt. Idempotent.
+  - **Test 2 · 5 Klicks im Zeitfenster** — `_resetClickCounter()`
+    + fünfmal `_dispatchClick()` mit 50 ms zwischen den Klicks
+    (= 250 ms Gesamt). Erwartung: `isOpen() === true`, Snapshot-
+    Auszug im Log.
+  - **Test 3 · 4 Klicks + Timeout** — vier Klicks dispatchen,
+    `_advanceRevealClock(4000)`, fünfter Klick. Erwartung:
+    `isOpen() === false`, „Zähler war zurückgesetzt, Fenster
+    bleibt zu".
+  - **Test 4 · Quota-Warnzeile** —
+    `_setQuotaForTest({usage:81,quota:100})`, `await open()`,
+    Snapshot prüfen, DOM-Warnblock (`.sbkim-doku-warn`)-Sichtbarkeit
+    verifizieren. Knopf schließt das Fenster und ruft
+    `_clearQuotaForTest()` am Ende.
+  - **Test 5 · TTL-Sweep** — legt zwei echte Geschwister-Einträge
+    in `sbkim_siblings` an (`SbkimStorage.put` mit `since` 31 Tage
+    in der Vergangenheit) und ruft
+    `SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)`.
+    Erwartung: beide entfernt, im Re-Open-Snapshot nicht mehr
+    gelistet. (Spec-Karte 00 Punkt 5 nannte `_addPseudoSibling`,
+    das ist aber der Versand-Pfad-Override — `forgetExpiredSiblings`
+    liest aus dem Storage. Karte 00 entsprechend leicht
+    angepasst; siehe Frischer-Kopf-Befund.)
+  - **Selbstcheck-Hinweis** — gibt im Log die erwartete Konsolen-
+    Zeile aus.
+- **INTERFACES.md §6 Änderungsprotokoll-Zeile** für „Bau-Sitzung 00"
+  am unteren Ende der Tabelle ergänzt (neueste Zeile unten,
+  Konventions-Stil wie Bau-Sitzung 05 / 07). §1 Modul 00 bleibt
+  auf `entwurf` (Spec-Vertrag unverändert).
+- **`status.json` Modul 00** von `score:"spec"` /
+  `siegel:"Spec fertig"` auf `score:"stub"` / `siegel:"Code-Stub"`
+  mit aktualisiertem `kurz`-Feld. `python3 scripts/update_puls_pie.py`
+  gelaufen, Pie regeneriert: Spec fertig 2→**1**, Code-Stub
+  6→**7**, alle anderen Module unverändert — genau wie im Briefing.
+- **`node --check`** für `src/modules/00_doku_fenster.js` grün; alle
+  acht Inline-`<script>`-Blöcke in `tests/manual_check.html`
+  einzeln syntaktisch validiert (jeder Block extrahiert + via
+  `node --check` geprüft) — alle grün.
+
+**Frischer-Kopf-Befund:**
+
+- **Eine kleine Spec-Korrektur in Karte 00 § Manueller Test
+  Punkt 5.** Die Spec-Sitzung 00 hatte als Setup für den
+  TTL-Sweep-Knopf-Test `SbkimApoptose._addPseudoSibling`
+  vorgeschlagen (analog Panel 07). Das funktioniert dort *nicht*,
+  weil `_addPseudoSibling` nur den Versand-Pfad
+  (`listSiblingsForBroadcast` in `prepareSelfApoptose`)
+  überschreibt — `forgetExpiredSiblings` liest aber **ausschließlich**
+  aus dem realen `sbkim_siblings`-Store in IndexedDB. Panel 00
+  Test 5 nutzt deshalb direkten `SbkimStorage.put` (analog Panel
+  07 Test 4 TTL-Cleanup). Karte 00 Punkt 5 entsprechend
+  präzisiert; die API-Verträge sind unverändert. Kein API-Eingriff
+  an Modul 07.
+- **Keine weiteren API-Korrekturen an 01/02/05/07 nötig.** Beim
+  Bau ist nichts aufgefallen, was eine Schnittstelle ändern
+  müsste. `SbkimStorage.{init,get,put,all}`,
+  `SbkimSpore.{getNodeId,getOwnSpore}`, `SbkimAnastomose.listSiblings`,
+  `SbkimApoptose.{listLegacy,forgetExpiredSiblings}` — alle
+  vorhanden und genügen.
+- **Beobachtung zur Skript-Reihenfolge in `manual_check.html`:**
+  Modul 00 wird **nach** 01/03/04/02/05/07 eingebunden (am Ende
+  der Datei, analog Bau-Sitzung 07). Im Endknoten gilt die in
+  Karte 00 § 5-Klick-Pfad Schritt 1 spezifizierte Reihenfolge
+  (01 → 02 → 03 → 04 → 05 → 07 → 00). Folge-Pflege-Sitzung
+  Karte 09 muss den Andock-Pfad Schritt 2 (`<script>`-Tags) um
+  07 und 00 ergänzen — diese Folge-Sitzung ist jetzt spruchreif,
+  weil 00 Code-Stub ist.
+- **`open()` ist async** — der erste Pfad zum Snapshot ruft
+  fünf optionale Lese-Quellen sequenziell ab (zwecks Lesbarkeit;
+  `Promise.allSettled` wäre eine spätere additive Optimierung
+  ohne API-Bruch).
+
+**Was offen blieb:**
+
+- **Sichttest Modul 00 durch Klaus im Browser.** Sitzung war
+  headless. Klaus klickt Panel 00 durch (Fake-Such-Symbol 5×,
+  alle sechs Test-Knöpfe, Selbstcheck-Zeile in DevTools-Konsole
+  prüfen, Quota-Warnzeile im Modal sichtbar). Falls eine
+  Beobachtung daneben liegt, kleine Pflege-Sitzung.
+- **Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul
+  00 im Andock-Pfad"** ist jetzt spruchreif. Karte 09
+  § Andock-Schritt-Pfad Schritt 2 (`<script>`-Tags) muss um
+  Modul 07 und Modul 00 ergänzt werden; ein Schritt 9 für
+  `SbkimDoku.init({searchIconSelector:...})` plus optionalen
+  `SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)`-Aufruf
+  nach jedem Handshake angehängt.
+- **Folge-Pflege-Sitzung „Persistenz-Strategie verbinden"**
+  bleibt offen, bis Modul 01 (Persist) und Modul 02 (Backup)
+  spruchreif sind. Modul 00 hat seinen Anteil verankert
+  (Quota-Schwellen).
+- **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Browser** —
+  jetzt produktivste Folge-Sitzung, weil Module 00/05/07 alle
+  drei Code-Stub sind und im Live-Andock-Versuch zusammen
+  sichtgeprüft werden können.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Sichttest Karte 00 + Karte 05 + Karte 07** durch Klaus im
+   Browser (Panel 00 sechs Knöpfe + Fake-Such-Symbol von Hand,
+   Panel 05 acht Knöpfe, Panel 07 zehn Knöpfe). Idealerweise
+   vor Schritt 2.
+2. **Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul
+   00 im Andock-Pfad"** — kompakte Pflege-Sitzung, jetzt
+   spruchreif (Modul 00 ist Code-Stub).
+3. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Browser** —
+   der erste echte Andock-Klick zwischen Rezeptbuch und Mixarium.
+   Module 00/05/07 sind alle Code-Stub und können mit-andocken.
+
+---
 
 ### 2026-05-14 · Spec-Sitzung · Modul 00 Doku-Fenster (Spec fertig)
 
