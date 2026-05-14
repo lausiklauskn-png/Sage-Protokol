@@ -1381,7 +1381,7 @@
             <div><dt>Heterokaryose</dt><dd>Listen-Tausch zwischen verbundenen Knoten — Wachstum.</dd></div>
             <div><dt>Apoptose</dt><dd>Selektive Selbstlöschung unbenutzter Sporen — Selbstreinigung.</dd></div>
             <div><dt>Embedding</dt><dd>Text → 384-dim Vektor (Xenova multilingual-e5-small).</dd></div>
-            <div><dt>Match</dt><dd>Cosine-Sim ≥ 0.55 → potenzieller Treffer, sonst verwerfen.</dd></div>
+            <div><dt>Match</dt><dd>Cosine-Sim ≥ 0.80 → potenzieller Treffer, sonst verwerfen.</dd></div>
             <div><dt>Hub</dt><dd>Dieses Repo. Wurzelverzeichnis, kein Endknoten.</dd></div>
             <div><dt>Endknoten</dt><dd>Eine PWA, die SBKIM-Module integriert hat (Rezeptbuch, Mixarium).</dd></div>
             <div><dt>Schläfer-Spore</dt><dd>Lokal liegende, inaktive Spore — wartet auf Trigger-Event.</dd></div>
@@ -2832,7 +2832,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     {
       h: 'Phase 2 · Anfrage wird eingebettet',
       bio: 'Der suchende Knoten übersetzt seine Anfrage in einen Vektor — wie der Pilz mit Pheromonen kommuniziert: einheitliche chemische Sprache, in der unterschiedliche Inhalte vergleichbar werden.',
-      mech: 'Text → Float32Array(384) via multilingual-e5-small. Cosine-Threshold 0.55.',
+      mech: 'Text → Float32Array(384) via multilingual-e5-small. Cosine-Threshold 0.80.',
       modules: ['03', '04'],
       code: '// Modul 03: Embedding via Xenova\nconst pipe = await pipeline("feature-extraction",\n  "Xenova/multilingual-e5-small");\nconst v = await pipe(text, { pooling: "mean", normalize: true });'
     },
