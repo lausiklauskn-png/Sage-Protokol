@@ -53,14 +53,9 @@
   </section>
 
   <section class="panel" data-module="03_embedding">
-    <h2>03 Embedding <span class="status warn">Spec fertig, Code ausstehend</span></h2>
-    <div class="controls">
-      <button data-stub="03" data-action="init">Embedding init</button>
-      <button data-stub="03" data-action="roundtrip">Embedding round-trip</button>
-      <button data-stub="03" data-action="query-vs-passage">Vergleich Query vs. Passage</button>
-      <button data-stub="03" data-action="selfcheck">Selbstcheck Konsole prüfen</button>
-    </div>
-    <pre class="log">— Stub-Knöpfe (Spec 2026-05-14). Bau-Sitzung Modul 03 ersetzt die Handler durch echte Aufrufe. —</pre>
+    <h2>03 Embedding <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Erste Knopf-Aktion lädt das Modell (~30 MB), das dauert beim allerersten Mal 5–15 s. —</pre>
   </section>
 
   <section class="panel" data-module="04_match">
@@ -133,39 +128,6 @@
     };
   </script>
 
-  <script>
-    // Stub-Handler: solange noch kein Modul-Code in src/ liegt, schreiben
-    // die Spec-Stub-Knöpfe einen Hinweistext ins Log und (für die
-    // Selbstcheck-Knöpfe) eine Anleitung, wonach in der DevTools-Konsole
-    // zu suchen ist. Bau-Sitzung ersetzt diese Knöpfe durch echte
-    // SbkimUI.addButton(...)-Aufrufe aus den Modul-Dateien.
-    document.querySelectorAll("button[data-stub]").forEach(btn => {
-      const moduleId = btn.dataset.stub;
-      const action = btn.dataset.action;
-      const moduleKey =
-        moduleId === "01" ? "01_storage" :
-        moduleId === "03" ? "03_embedding" : null;
-      if (!moduleKey) return;
-      btn.addEventListener("click", () => {
-        if (action === "selfcheck") {
-          const expected =
-            moduleId === "01"
-              ? 'MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear'
-              : 'MODUL 03 EMBEDDING bereit, Funktionen: init/isReady/embedQuery/embedPassage/embedQueryBatch/embedPassageBatch, Modell: Xenova/multilingual-e5-small, Dim: 384';
-          SbkimUI.log(moduleKey, "ℹ Selbstcheck-Hinweis:");
-          SbkimUI.log(moduleKey, "  DevTools → Konsole öffnen und nach folgender Zeile suchen:");
-          SbkimUI.log(moduleKey, "  " + expected);
-          SbkimUI.log(moduleKey, "  (erscheint erst, wenn das Modul tatsächlich geladen ist — aktuell noch Stub.)");
-        } else {
-          SbkimUI.log(moduleKey,
-            `▶ Stub-Knopf "${action}" — Modul ${moduleId} ist spezifiziert, aber noch nicht implementiert.`);
-          SbkimUI.log(moduleKey,
-            `  Bau-Sitzung Modul ${moduleId} ersetzt diesen Handler durch den echten Aufruf.`);
-        }
-      });
-    });
-  </script>
-
   <!-- Modul 01 — Storage (Bau-Sitzung 2026-05-14) -->
   <script src="../src/modules/01_storage.js"></script>
   <script>
@@ -213,10 +175,82 @@
     })();
   </script>
 
+  <!-- Modul 03 — Embedding (Bau-Sitzung 2026-05-14) -->
+  <script src="../src/modules/03_embedding.js"></script>
+  <script>
+    (function () {
+      function dot(a, b) {
+        var s = 0;
+        for (var i = 0; i < a.length; i++) s += a[i] * b[i];
+        return s;
+      }
+      function norm(a) {
+        return Math.sqrt(dot(a, a));
+      }
+      function preview(vec) {
+        return Array.from(vec.slice(0, 4)).map(function (x) { return x.toFixed(4); });
+      }
+
+      SbkimUI.addButton("03_embedding", "Embedding init", async function () {
+        SbkimUI.log("03_embedding", "  (erster Lauf lädt ~30 MB Modell; etwas Geduld …)");
+        await SbkimEmbedding.init();
+        SbkimUI.setStatus("03_embedding", "ok", "init OK");
+        return {
+          model: SbkimEmbedding._meta.model,
+          dim: SbkimEmbedding._meta.dim,
+          isReady: SbkimEmbedding.isReady(),
+        };
+      });
+
+      SbkimUI.addButton("03_embedding", "Embedding round-trip", async function () {
+        var v = await SbkimEmbedding.embedQuery("Käsekuchen mit Quark");
+        var n = norm(v);
+        SbkimUI.setStatus("03_embedding", "ok", "round-trip OK");
+        return {
+          laenge: v.length,
+          norm_l2: Number(n.toFixed(6)),
+          erste_4_werte: preview(v),
+        };
+      });
+
+      SbkimUI.addButton("03_embedding", "Vergleich Query vs. Passage", async function () {
+        var text = "Käsekuchen mit Quark";
+        var q = await SbkimEmbedding.embedQuery(text);
+        var p = await SbkimEmbedding.embedPassage(text);
+        var sim = dot(q, p);
+        return {
+          text: text,
+          cosine_query_passage: Number(sim.toFixed(4)),
+          hinweis: "erwartet zwischen 0.85 und 0.95 (gleicher Inhalt, unterschiedliche Rolle)",
+        };
+      });
+
+      SbkimUI.addButton("03_embedding", "Batch (2 Inhalte)", async function () {
+        var texts = ["Käsekuchen mit Quark", "Auspuffrohr aus Edelstahl"];
+        var vecs = await SbkimEmbedding.embedPassageBatch(texts);
+        return {
+          n: vecs.length,
+          jeweils_laenge: vecs.map(function (v) { return v.length; }),
+          erste_werte_0: preview(vecs[0]),
+          erste_werte_1: preview(vecs[1]),
+          inter_cosine_0_vs_1: Number(dot(vecs[0], vecs[1]).toFixed(4)),
+          hinweis: "weit unterschiedliche Themen → niedriger Wert erwartet",
+        };
+      });
+
+      SbkimUI.addButton("03_embedding", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("03_embedding",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (erscheint nach erfolgreichem init):");
+        SbkimUI.log("03_embedding",
+          "  MODUL 03 EMBEDDING bereit, Funktionen: init/isReady/embedQuery/embedPassage/embedQueryBatch/embedPassageBatch, Modell: Xenova/multilingual-e5-small, Dim: 384");
+      });
+    })();
+  </script>
+
   <!--
     Weitere Bau-Sitzungen ergänzen hier ihre Modul-Skripte, z.B.:
-    <script src="../src/modules/03_embedding.js"></script>
-    und registrieren ihre Knöpfe via SbkimUI.addButton("03_embedding", ...).
+    <script src="../src/modules/04_match.js"></script>
+    und registrieren ihre Knöpfe via SbkimUI.addButton("04_match", ...).
   -->
 </body>
 </html>

@@ -18,8 +18,8 @@ pie showData
   title Modulstand 2026-05-14 (13 Module)
   "🟫 Schablone" : 10
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 1
-  "🟦 Code-Stub" : 1
+  "🟨 Spec fertig" : 0
+  "🟦 Code-Stub" : 2
   "🟩 Fertig" : 0
 ```
 
@@ -31,10 +31,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 Module mit Code-Stub, brauchen Sichttest im Browser:
 
 - 🟦 **[01 Storage](components/01_storage.md)** — Code 2026-05-14, Sichttest steht aus (Klaus klickt in `tests/manual_check.html`)
-
-Module mit fertiger Spec, bereit für die Bau-Sitzung:
-
-- 🟨 **[03 Embedding](components/03_embedding.md)** — Spec 2026-05-14, **Voraussetzung für 04**
+- 🟦 **[03 Embedding](components/03_embedding.md)** — Code 2026-05-14, Sichttest steht aus (Modell-Download beim ersten Klick, dauert 5–15 s)
 
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
@@ -45,9 +42,12 @@ In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: **Bau-Sitzung Modul 03** als nächste Sitzung
-(Modul 04 wartet darauf). Parallel anbietbar: Spec-Sitzung Modul 09
-(Einbau-PWA) — dependenz-frei.
+Empfehlung Hauptsitzung: Klaus klickt 01 + 03 im Browser durch
+(`tests/manual_check.html`). Danach **Spec-Sitzung Modul 04 Match**
+starten — beide Vorbedingungen (03 + indirekt 01) sind als Code-Stub
+vorhanden, und Modul 04 soll laut Plan-Sitzung gleichzeitig die
+A1–B3-Notations-Synthese leisten. Parallel anbietbar: Spec-Sitzung
+Modul 09 (Einbau-PWA).
 
 ---
 
@@ -58,7 +58,7 @@ Empfehlung Hauptsitzung: **Bau-Sitzung Modul 03** als nächste Sitzung
 | 00 doku_fenster | leere Schablone | — | — | "5-Klick versteckte Doku" in Suchleiste |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | IndexedDB-Wrapper |
 | 02 spore | leere Schablone | — | — | Ed25519-Identität |
-| 03 embedding | Spec fertig (2026-05-14) | — | — | semantischer Vektor |
+| 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | semantischer Vektor |
 | 04 match | leere Schablone | — | — | Vektorvergleich |
 | 05 anastomose | leere Schablone | — | — | Handshake |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
@@ -121,6 +121,78 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Bau-Sitzung · Modul 03 Embedding (Code-Stub)
+
+**Getan:**
+- `src/modules/03_embedding.js` geschrieben: IIFE-Modul wie 01,
+  klassisches `<script>`-Tag. Exportiert `window.SbkimEmbedding` mit
+  den sechs Funktionen aus der Spec
+  (`init/isReady/embedQuery/embedPassage/embedQueryBatch/embedPassageBatch`).
+  **Kein** `mode`-Parameter — der e5-Rollen-Prefix
+  (`"query: "` / `"passage: "`) wird intern angewandt.
+- **Modell-Lade-Strategie:** dynamischer `await import(...)` aus dem
+  CDN `https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2`.
+  Version explizit fixiert, damit das Verhalten reproduzierbar bleibt.
+  `pipeline("feature-extraction", "Xenova/multilingual-e5-small")`
+  läuft via WebAssembly im Browser. Erster Lauf braucht Internet
+  (~30 MB), spätere Sitzungen laufen aus dem Browser-Cache.
+- **L2-Norm-Garantie:** Pipeline mit
+  `{ pooling: "mean", normalize: true }` aufgerufen — die zurückgegebenen
+  Vektoren sind bereits L2-normalisiert. Modul 04 kann Cosinus als
+  reines Skalarprodukt rechnen.
+- **Lazy-Init:** wenn `embedQuery`/`embedPassage` vor `init()` aufgerufen
+  wird, ruft das Modul intern `init()` auf.
+- **Truncate-Erkennung:** `pipe.tokenizer(prefixedText)` wird vor jedem
+  Embed-Call ausgewertet, `input_ids.dims[1] > 512` triggert
+  `console.warn("MODUL 03 EMBEDDING: Eingabe > 512 Tokens, abgeschnitten")`
+  einmalig pro Sitzung. Bei Tokenizer-Surface-Änderung in
+  transformers.js-Updates fällt der Check still aus (best-effort,
+  Trunkation bleibt durch die Pipeline garantiert).
+- **Drei benannte Error-Typen** wie in der Spec:
+  `ModelLoadError` / `EmbeddingError` / `EmptyInputError`. Bei
+  `ModelLoadError` wird `pipePromise` zurückgesetzt, damit ein Retry
+  möglich ist.
+- **Selbstcheck nach `init()`:**
+  `console.info("MODUL 03 EMBEDDING bereit, Funktionen: init/isReady/embedQuery/embedPassage/embedQueryBatch/embedPassageBatch, Modell: Xenova/multilingual-e5-small, Dim: 384")`.
+  Nicht beim Skript-Laden (das wäre eine unehrliche Bereit-Meldung
+  wegen des asynchronen Modell-Downloads).
+- `tests/manual_check.html`: Panel 03 von „Spec fertig" auf „Code-Stub"
+  gestellt. Fünf echte Knöpfe registriert:
+  *Embedding init* / *Embedding round-trip* / *Vergleich Query vs.
+  Passage* / *Batch (2 Inhalte)* / *Selbstcheck Konsole prüfen*.
+  Vorbereitende Stub-Handler-Schleife entfernt (jetzt ohne Funktion,
+  weil keine `data-stub`-Knöpfe mehr existieren).
+- JS-Syntax mit `node --check` validiert (grün). Im Browser noch
+  nicht geklickt — Sitzung headless, Modell-Download braucht
+  Browser-Netz.
+- Karte 03 Bauzustand-Zeilen *Code geschrieben* + *Sichttest
+  (ungeprüft, weil ...)* ergänzt. Hero-Badge auf 🟦 Code-Stub.
+- `INTERFACES.md` Modul 03 auf `Status: entwurf`. Änderungsprotokoll
+  fortgeschrieben.
+- `status.json`: 03 auf `score: "stub"`. Pie via
+  `scripts/update_puls_pie.py` regeneriert
+  (Schablone 10 / Werkstatt 1 / Spec 0 / Stub 2).
+
+**Offen:**
+- **Sichttest im Browser** durch Klaus: `tests/manual_check.html`
+  öffnen, fünf Knöpfe in Panel 03 klicken (Modell-Download dauert
+  beim ersten Mal). Konsolen-Selbstcheck nach `init` prüfen. Cosinus
+  zwischen Query- und Passage-Variante desselben Texts sollte
+  zwischen 0.85 und 0.95 liegen, zwischen „Käsekuchen" und
+  „Auspuffrohr" deutlich darunter.
+- **Bau-Sitzung Modul 01 Sichttest** ebenfalls offen — gleiche
+  Sitzungs-Klick-Liste für Klaus.
+
+**Nächster sinnvoller Schritt:**
+- Klaus klickt 01 und 03 im Browser durch und trägt die Sichttest-
+  Zeilen in den Karten nach.
+- Danach: **Spec-Sitzung Modul 04 Match** starten (`match(queryVec,
+  passageVec)`, A1–B3-Notations-Synthese als zweite Aufgabe der
+  Sitzung — siehe Querschnitts-Fragen oben).
+- Parallel anbietbar: Spec-Sitzung Modul 09 (Einbau-PWA).
+
+---
 
 ### 2026-05-14 · Bau-Sitzung · Modul 01 Storage (Code-Stub)
 
