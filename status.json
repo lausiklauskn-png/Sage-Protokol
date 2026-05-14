@@ -28,7 +28,7 @@
     { "id": "01", "name": "Storage",        "score": "stub",      "siegel": "Code-Stub",         "abhaengig": [],         "kurz": "IndexedDB-Wrapper für sbkim_*-Stores" },
     { "id": "02", "name": "Spore",          "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["01"],     "kurz": "Ed25519-Identität, signierte Visitenkarte" },
     { "id": "03", "name": "Embedding",      "score": "stub",      "siegel": "Code-Stub",         "abhaengig": [],         "kurz": "Text → 384-dim Vektor (Xenova multilingual-e5-small)" },
-    { "id": "04", "name": "Match",          "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["03"],     "kurz": "Cosine-Sim, Domänen-Vektor" },
+    { "id": "04", "name": "Match",          "score": "stub",      "siegel": "Code-Stub",         "abhaengig": ["03"],     "kurz": "Cosine-Sim als Skalarprodukt (modus-frei)" },
     { "id": "05", "name": "Anastomose",     "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["02","04"],"kurz": "Handshake zwischen Knoten" },
     { "id": "06", "name": "Heterokaryose",  "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["05"],     "kurz": "Datenaustausch unter Geschwistern (Opt-In)" },
     { "id": "07", "name": "Apoptose",       "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["02","01"],"kurz": "Selbstlöschung + signiertes Vermächtnis" },

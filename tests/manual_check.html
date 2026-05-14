@@ -59,9 +59,9 @@
   </section>
 
   <section class="panel" data-module="04_match">
-    <h2>04 Match <span class="status idle">noch nicht gebaut</span></h2>
-    <div class="controls"></div>
-    <pre class="log">— noch keine Ausgabe —</pre>
+    <h2>04 Match <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Voraussetzung: Modul 03 wird beim ersten Klick mitgeladen (~5–15 s beim ersten Mal). —</pre>
   </section>
 
   <section class="panel" data-module="05_anastomose">
@@ -247,10 +247,87 @@
     })();
   </script>
 
-  <!--
-    Weitere Bau-Sitzungen ergänzen hier ihre Modul-Skripte, z.B.:
-    <script src="../src/modules/04_match.js"></script>
-    und registrieren ihre Knöpfe via SbkimUI.addButton("04_match", ...).
-  -->
+  <!-- Modul 04 — Match (Spec+Bau-Sitzung 2026-05-14) -->
+  <script src="../src/modules/04_match.js"></script>
+  <script>
+    (function () {
+      SbkimUI.addButton("04_match", "Ähnlich: Käsekuchen vs. Käsetorte (> 0.70)", async function () {
+        var vecs = await SbkimEmbedding.embedPassageBatch(["Käsekuchen", "Käsetorte"]);
+        var score = SbkimMatch.match(vecs[0], vecs[1]);
+        var pass = score > 0.70;
+        SbkimUI.setStatus("04_match", pass ? "ok" : "warn", pass ? "ähnlich OK" : "unter Erwartung");
+        return {
+          a: "Käsekuchen",
+          b: "Käsetorte",
+          score: Number(score.toFixed(4)),
+          erwartung: "> 0.70",
+          bewertung: pass ? "✓ semantisch nah, wie erwartet" : "✗ unter Erwartung — Modell-Drift?",
+        };
+      });
+
+      SbkimUI.addButton("04_match", "Fern: Käsekuchen vs. Auspuffrohr (< 0.40)", async function () {
+        var vecs = await SbkimEmbedding.embedPassageBatch(["Käsekuchen", "Auspuffrohr"]);
+        var score = SbkimMatch.match(vecs[0], vecs[1]);
+        var pass = score < 0.40;
+        SbkimUI.setStatus("04_match", pass ? "ok" : "warn", pass ? "fern OK" : "ungewöhnlich nah");
+        return {
+          a: "Käsekuchen",
+          b: "Auspuffrohr",
+          score: Number(score.toFixed(4)),
+          erwartung: "< 0.40",
+          bewertung: pass ? "✓ semantisch weit, wie erwartet" : "✗ ungewöhnlich nah — bitte prüfen",
+        };
+      });
+
+      SbkimUI.addButton("04_match", "Schwelle positiv: Hefeteig vs. Kochrezepte (> 0.55)", async function () {
+        var q = await SbkimEmbedding.embedQuery("Hefeteig kneten");
+        var p = await SbkimEmbedding.embedPassage("Kochrezepte: Backen, Kuchen, Brot");
+        var score = SbkimMatch.match(q, p);
+        var above = SbkimMatch.isAboveProviderThreshold(score);
+        return {
+          query: "Hefeteig kneten",
+          passage: "Kochrezepte: Backen, Kuchen, Brot",
+          score: Number(score.toFixed(4)),
+          schwelle: SbkimMatch.PROVIDER_MIN_MATCH,
+          ueberSchwelle: above,
+          bewertung: above ? "✓ Anbieter antwortet" : "✗ Anbieter schweigt (unerwartet)",
+        };
+      });
+
+      SbkimUI.addButton("04_match", "Schwelle negativ: Tarantino vs. Kochrezepte (< 0.55)", async function () {
+        var q = await SbkimEmbedding.embedQuery("Drehbuch von Tarantino");
+        var p = await SbkimEmbedding.embedPassage("Kochrezepte: Backen, Kuchen, Brot");
+        var score = SbkimMatch.match(q, p);
+        var above = SbkimMatch.isAboveProviderThreshold(score);
+        return {
+          query: "Drehbuch von Tarantino",
+          passage: "Kochrezepte: Backen, Kuchen, Brot",
+          score: Number(score.toFixed(4)),
+          schwelle: SbkimMatch.PROVIDER_MIN_MATCH,
+          ueberSchwelle: above,
+          bewertung: above ? "✗ ungewollt: Anbieter antwortet" : "✓ Apoptose-Trigger: Anbieter schweigt",
+        };
+      });
+
+      SbkimUI.addButton("04_match", "Form-Fehler: Längen-Differenz (ShapeMismatchError erwartet)", async function () {
+        try {
+          SbkimMatch.match(new Float32Array(384), new Float32Array(256));
+          throw new Error("Erwartete einen Fehler, kam keiner.");
+        } catch (err) {
+          if (err && err.name === "ShapeMismatchError") {
+            return { erwartet: "ShapeMismatchError", erhalten: err.name, message: err.message };
+          }
+          throw err;
+        }
+      });
+
+      SbkimUI.addButton("04_match", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("04_match",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("04_match",
+          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.55");
+      });
+    })();
+  </script>
 </body>
 </html>
