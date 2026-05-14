@@ -57,6 +57,10 @@ Bevor du `END` machst:
 
 1. **`docs/PULS.md` aktualisieren.** Mindestens: Datum, was du getan hast,
    was offen blieb, was als nächstes ansteht.
+   - **Wenn du `status.json` geändert hast:** vorher
+     `python3 scripts/update_puls_pie.py` ausführen — das zieht den
+     Mermaid-Pie-Block oben in PULS.md automatisch aus `status.json`
+     nach. Niemals den Pie-Block in PULS.md von Hand bearbeiten.
 2. **Übergabeprotokoll** in `docs/sessions/archiv/YYYY-MM-DD_<thema>.md`
    anlegen. Format: siehe `docs/sessions/BRIEFING_TEMPLATE.md`.
 3. Wenn du Code geändert hast: **manuell prüfen**, dass

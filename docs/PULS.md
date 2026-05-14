@@ -9,6 +9,10 @@
 
 ## Modulstand heute
 
+<!-- Pie-Block ab hier wird automatisch aus status.json generiert.
+     Nicht von Hand bearbeiten. Erzeugen mit:
+     python3 scripts/update_puls_pie.py
+     Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
   title Modulstand 2026-05-10 (13 Module)
