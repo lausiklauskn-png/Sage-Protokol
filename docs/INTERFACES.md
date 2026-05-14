@@ -122,13 +122,83 @@ Geprüft: 2026-05-14 (Spec-Sitzung 01+03)
 ---
 
 ### Modul: 02_spore
-Status: schablone
+Status: entwurf
 Datei:  src/modules/02_spore.js
 
-Bietet:
-  *(noch zu spezifizieren — Ed25519-Schlüssel, node_id, Spore-JSON)*
+Bietet (öffentlich):
+  init()                              → Promise<void>
+  getOrCreateIdentity()               → Promise<{ nodeId: string, publicKeyJwk: JsonWebKey }>
+  getNodeId()                         → Promise<string>          // base64url(sha256(rawPub)), ohne Padding
+  getPublicKeyJwk()                   → Promise<JsonWebKey>      // OKP / Ed25519
+  generateOwnSpore(meta)              → Promise<SporeJson>       // signiert + persistiert
+  getOwnSpore()                       → Promise<SporeJson | null>
+  verifyForeignSpore(spore)           → Promise<{ valid: boolean, reason?: string }>
 
-Geprüft: ungeprüft
+  Singleton-Identität pro PWA: in beiden Stores (sbkim_keys und
+  sbkim_spore) wird der feste Schlüssel "main" benutzt. Eine zweite
+  Identität ist nicht Sache von Modul 02 — wer das will, legt eine
+  neue PWA an.
+
+  Schlüssel-Erzeugung ist lazy: passiert beim ersten
+  getOrCreateIdentity()-Aufruf, nicht beim Skript-Laden.
+
+Nutzt:
+  SbkimStorage.init / get / put       (sbkim_keys["main"], sbkim_spore["main"])
+  WebCrypto:
+    crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign","verify"])
+    crypto.subtle.exportKey("raw" | "jwk", key)
+    crypto.subtle.importKey("jwk", jwk, { name: "Ed25519" }, true, ["verify"])
+    crypto.subtle.digest("SHA-256", bytes)
+    crypto.subtle.sign({ name: "Ed25519" }, privateKey, bytes)
+    crypto.subtle.verify({ name: "Ed25519" }, publicKey, sig, bytes)
+
+Storage:
+  Stores: sbkim_keys, sbkim_spore (beide aus Modul 01).
+  Schreib-Keys: ausschließlich "main" (Singleton).
+  Werteform sbkim_keys["main"]:  { keyId: string, privateKey: JsonWebKey, publicKey: JsonWebKey }
+  Werteform sbkim_spore["main"]: { nodeId: string, sporeJson: SporeJson, signature: string }
+    sporeJson enthält die Signatur bereits im Feld "signature"; auf der
+    Wrapper-Ebene wird sie redundant gehalten, damit Modul 05 ohne
+    Re-Parse darauf zugreifen kann.
+
+Events:
+  (keine — keine Pub/Sub. Andere Module rufen die Funktionen direkt.)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore");
+  Wie Modul 01 — die Meldung signalisiert "Modul geladen", nicht
+  "Identität existiert".
+
+node_id-Ableitung (verbindlich, von anderen Knoten nachrechenbar):
+  rawPub  = await crypto.subtle.exportKey("raw", publicKey)   // 32 bytes
+  hash    = await crypto.subtle.digest("SHA-256", rawPub)     // 32 bytes
+  nodeId  = base64url(hash) ohne Padding                      // 43 chars
+
+Kanonische Signatur (für sign + verify):
+  1. Spore-Objekt ohne signature-Feld bauen.
+  2. JSON.stringify mit rekursiv sortierten Object-Keys (lexikographisch).
+  3. UTF-8 → Uint8Array.
+  4. crypto.subtle.sign({ name: "Ed25519" }, privateKey, bytes).
+  5. base64url ohne Padding → spore.signature.
+
+Fehlerverhalten:
+  - WebCrypto / Ed25519 nicht verfügbar  → init() rejects mit CryptoUnavailableError (kein Polyfill)
+  - Storage nicht verfügbar              → StorageUnavailableError aus Modul 01 unverändert durchgereicht
+  - getNodeId / getPublicKeyJwk vor Identität → NoIdentityError
+  - generateOwnSpore mit fehlendem Pflichtfeld in meta → InvalidSporeMetaError
+  - verifyForeignSpore: Pflichtfeld fehlt / id ≠ sha256(rawPub) / Signatur falsch / Hauptversion inkompatibel
+                                          → { valid: false, reason: "<deutsch>" } (wirft niemals)
+
+Garantien für Modul 05 / 06 / 07:
+  - Singleton: getNodeId liefert über die gesamte Lebenszeit derselben
+    PWA denselben String (solange IndexedDB-Speicher erhalten bleibt).
+  - Verifikation eines fremden Spore-Strings ist seitenfrei rekonstruier-
+    bar — kein Zustand außerhalb des übergebenen JSON-Blocks nötig.
+  - Spore-Format ist additiv versioniert: neue Pflichtfelder erscheinen
+    erst mit einem Hauptversions-Sprung in protocolVersion.
+
+Geprüft: 2026-05-14 (Spec+Bau-Sitzung 02)
 
 ---
 
@@ -296,7 +366,54 @@ Geprüft: ungeprüft
 
 ### Spore-JSON
 
-*(noch zu spezifizieren — siehe Modul 02 und Kapitel 13 des Papers)*
+Verbindliches Schema, festgelegt in der Spec+Bau-Sitzung 02 vom
+2026-05-14. Kanonische Reihenfolge der Keys ist **alphabetisch**
+(rekursiv); jede abweichende Serialisierung bricht die Signatur.
+
+**Pflichtfelder** (jede Spore muss alle haben):
+
+```
+createdAt        : string   ISO-8601 mit Millisekunden, UTC ("Z")
+                            Beispiel: "2026-05-14T07:00:00.000Z"
+domain           : string   DNS-Domain ohne Schema, z.B. "rezeptbuch.example.org"
+embeddingModel   : string   Default "Xenova/multilingual-e5-small" (aus §0)
+endpoint         : string   Basis-URL des Knotens, mit Schema, mit trailing "/"
+                            Beispiel: "https://klaus.github.io/rezeptbuch/"
+id               : string   = nodeId = base64url(sha256(rawPublicKey)), ohne Padding
+nodeType         : string   "provider" | "seeker" | "hybrid"
+protocolVersion  : string   semver-artig, z.Z. "0.1" (aus §0)
+publicKey        : object   JsonWebKey, kty:"OKP", crv:"Ed25519", x:<base64url>
+signature        : string   base64url ohne Padding, Ed25519 über kanonisches JSON ohne signature
+```
+
+**Optionale Felder** (wenn vorhanden, sind sie Teil der Signatur):
+
+```
+nodeName            : string                  z.B. "Rezeptbuch Klaus"
+domainDescription   : string                  Freitext über die Domäne
+domainKeywords      : string[]                z.B. ["Backen", "Saucen"]
+domainVector        : number[]                384 floats, vorab-berechneter Domänen-Vektor
+endpointPaths       : object                  Override für §3, falls Hoster ohne .well-known
+```
+
+**Versionierungs-Regel:**
+- Pflichtfelder dürfen ab Status `entwurf` nur noch additiv erweitert
+  werden. Das Hinzufügen eines Pflichtfelds erfordert den Schritt von
+  `protocolVersion: "0.x"` auf `"1.0"`.
+- Hauptversionen (1.x ↔ 2.x) sind inkompatibel — siehe §4.
+- Optional → Pflicht ist ein Hauptversions-Sprung.
+- Streichen ist immer ein Hauptversions-Sprung.
+- Unbekannte zusätzliche Felder werden bei `verifyForeignSpore` **nicht**
+  abgewiesen, sind aber Teil der Signatur (jeder Knoten signiert das,
+  was er ausliefert).
+
+**Verifikations-Pfad** (kurz; Details in `docs/components/02_spore.md`):
+1. Pflichtfelder vollzählig? → sonst ungültig.
+2. Hauptversion in `protocolVersion` kompatibel? → sonst ungültig.
+3. `id === base64url(sha256(rawPublicKey))` aus dem mitgelieferten
+   `publicKey`? → sonst ungültig.
+4. Signatur über die kanonisch serialisierte Spore (ohne `signature`)
+   gegen den `publicKey` verifiziert? → sonst ungültig.
 
 ### Anfrage (Query)
 
@@ -389,3 +506,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-14 | Bau-Sitzung 01 | Modul 01 Code geschrieben (`src/modules/01_storage.js`), Status auf `entwurf`. IIFE mit `window.SbkimStorage`, Selbstcheck beim Skript-Laden. |
 | 2026-05-14 | Bau-Sitzung 03 | Modul 03 Code geschrieben (`src/modules/03_embedding.js`), Status auf `entwurf`. IIFE mit `window.SbkimEmbedding`, dynamischer Import transformers.js@2.17.2, Selbstcheck nach `init()`. |
 | 2026-05-14 | Spec+Bau-Sitzung 04 | Modul 04 spezifiziert und gebaut. Modus-freie API `match(queryVec, passageVec) → number` + `isAboveProviderThreshold` + Konstante `PROVIDER_MIN_MATCH`. Vertraut auf L2-Norm-Garantie aus Modul 03 (kein Norm-Check im Hot-Path). Status auf `entwurf`. A1–B3-Notations-Synthese in `docs/components/04_match.md` gelöst (Hops tragen Funktionen). |
+| 2026-05-14 | Spec+Bau-Sitzung 02 | Modul 02 spezifiziert und gebaut. Singleton-Identität (`"main"` in `sbkim_keys` und `sbkim_spore`), Sieben-Funktionen-API (init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore), WebCrypto Ed25519 ohne Polyfill (`CryptoUnavailableError` bei Fehlen). `node_id = base64url(sha256(rawPublicKey))` ohne Padding, von anderen Knoten nachrechenbar. Persistenz strikt über `SbkimStorage`. §2 „Spore-JSON" mit verbindlichem Schema gefüllt: neun Pflichtfelder (createdAt/domain/embeddingModel/endpoint/id/nodeType/protocolVersion/publicKey/signature) + fünf optionale, kanonische Serialisierung mit alphabetisch sortierten Keys, Versionierungs-Regel auf §4 verwiesen. |
