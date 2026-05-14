@@ -22,6 +22,7 @@ LOCAL_RESULT_THRESHOLD = 3
 QUERY_TIMEOUT_MS       = 4000
 SBKIM_STORE_PREFIX     = "sbkim_"
 DOKU_REVEAL_CLICKS     = 5
+SIBLING_MAX_AGE_MS     = 2592000000     // 30 Tage; TTL für Modul 07 forgetExpiredSiblings
 ```
 
 ---
@@ -445,13 +446,153 @@ Geprüft: ungeprüft
 ---
 
 ### Modul: 07_apoptose
-Status: schablone
+Status: entwurf
 Datei:  src/modules/07_apoptose.js
 
-Bietet:
-  *(noch zu spezifizieren — Selbstlöschung, Vermächtnis-Nachricht)*
+Bietet (öffentlich):
+  init()                                                           → Promise<void>
+  prepareSelfApoptose(reason: string)
+                                                                   → Promise<{ confirmationToken: string, expiresAt: string, recipientCount: number }>
+  confirmSelfApoptose(token: string, reason: string)
+                                                                   → Promise<{ outcome: "completed", recipientsNotified: string[], recipientsFailed: Array<{ nodeId, reason }> }>
+  receiveLegacy(incomingLegacy: LegacyMessage)                     → Promise<LegacyResponse>
+  listLegacy()                                                     → Promise<Array<{ fromNodeId, reason, receivedAt }>>
+  forgetExpiredSiblings(maxAgeMs: number)                          → Promise<Array<{ nodeId, lastSeen }>>
 
-Geprüft: ungeprüft
+  Apoptose ist die *zweite Komposition* (nach Modul 05) aus 01/02. Modul
+  07 rechnet nicht selbst — es liest `sbkim_siblings` als Quelle der
+  Vermächtnis-Empfänger und für TTL-Sweeps, signiert kanonisch mit dem
+  Ed25519-Schlüssel aus `sbkim_keys["main"]`, und schreibt empfangene
+  Vermächtnisse in `sbkim_legacy_inbox`. Modul 07 ruft
+  `SbkimAnastomose.handshake` **NICHT** auf — der Vermächtnis-Versand
+  ist ein eigener HTTP-POST gegen ENDPOINT.legacy (= "/sbkim/legacy"
+  aus §3).
+
+  Self-Apoptose ist **irreversibel** und **zweistufig**:
+  `prepareSelfApoptose` liefert einen einmal verwendbaren Token mit
+  60 s Gültigkeit (APOPTOSE_TOKEN_TTL_MS = 60_000, Modul-lokal);
+  erst `confirmSelfApoptose(token, reason)` versendet das Vermächtnis
+  und löscht die SBKIM-Stores. Nach Self-Apoptose haben
+  SbkimSpore.getNodeId / getOwnSpore keine Identität mehr (werfen
+  NoIdentityError).
+
+Nutzt:
+  SbkimStorage.init / get / put / del / all / clear
+                                                 (sbkim_legacy_inbox als Schreiber;
+                                                  sbkim_siblings als Leser + Löscher für TTL und Empfangs-Cleanup;
+                                                  sbkim_keys / sbkim_spore / sbkim_anastomosis_log / sbkim_legacy_inbox als Löscher beim Self-Apoptose-Cleanup)
+  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk
+                                                 (eigene Identität + Spore für Signatur)
+  SbkimSpore.verifyForeignSpore                  (eingehende Sender-Spore prüfen — Signatur, id-Konsistenz, Hauptversion)
+  WebCrypto via Modul 02:
+    crypto.subtle.sign({ name: "Ed25519" }, privateKey, bytes)   (LegacyMessage / LegacyResponse signieren)
+    crypto.subtle.verify({ name: "Ed25519" }, publicKey, sig, bytes)  (eingehende Vermächtnis-Signatur prüfen)
+  fetch (POST) gegen sibling.endpoint + ENDPOINT.legacy ("/sbkim/legacy").
+    AbortController(QUERY_TIMEOUT_MS = 4000) pro Empfänger.
+    Versand parallel via Promise.allSettled.
+
+Storage:
+  Stores (alle aus Modul 01):
+    sbkim_legacy_inbox     (Schlüssel: fromNodeId;
+                            Wert: { fromNodeId, reason, signature, receivedAt })
+                            — Schreiber 07, Leser 07/00/08
+    sbkim_siblings         (Schlüssel: peerNodeId; Schreiber 05)
+                            — Modul 07 ist hier LÖSCHER:
+                              - bei receiveLegacy(C) → sbkim_siblings.del(C)
+                              - bei forgetExpiredSiblings(maxAgeMs) → sbkim_siblings.del(älter als maxAgeMs)
+                            Schreibrecht hat WEITERHIN nur Modul 05.
+    sbkim_anastomosis_log  (Schlüssel: ts; Schreiber 05)
+                            — Modul 07 ist hier LESER:
+                              max(ts) mit outcome ∈ {"established","re-handshake"} pro peerId
+                              = lastActivity für TTL-Vergleich.
+    sbkim_keys             (Schreiber 02) — Modul 07 löscht den "main"-Eintrag beim Self-Apoptose-Cleanup.
+    sbkim_spore            (Schreiber 02) — dito.
+
+  Reihenfolge des Self-Apoptose-Cleanup (sequenziell):
+    1. sbkim_siblings        clear
+    2. sbkim_anastomosis_log clear
+    3. sbkim_legacy_inbox    clear
+    4. sbkim_spore           clear
+    5. sbkim_keys            clear   ← zuletzt; Identität ist die letzte Bastion
+  sbkim_doku_meta bleibt unangetastet (Schreiber 00).
+
+Events:
+  (keine — Service-Worker liefert eingehende /sbkim/legacy-Bodies via
+   MessageChannel an receiveLegacy weiter, analog Modul 05.)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 07 APOPTOSE bereit, Funktionen: init/prepareSelfApoptose/confirmSelfApoptose/receiveLegacy/listLegacy/forgetExpiredSiblings");
+  Wie Modul 01/02/04/05 — keine Schwelle/Konstante in der Selbstcheck-
+  Zeile. Die irreversible Natur der Self-Apoptose wird beim Aufruf
+  von prepareSelfApoptose als console.warn nachgereicht, nicht beim
+  Skript-Laden.
+
+Versionierungs- und Vermächtnis-Vertrag:
+  - Hauptversion-Mismatch zwischen lokaler PROTOCOL_VERSION und
+    `incomingLegacy.protocolVersion`: receiveLegacy antwortet
+    LegacyResponse{outcome:"rejected",
+    reason:"Inkompatible Hauptversion: <x.y>"}. Siehe §4.
+  - Beim Self-Apoptose-Versand bricht Modul 07 NICHT pro Empfänger ab,
+    wenn dessen Antwort Hauptversion-inkompatibel ist — der Empfänger
+    landet als "rejected" in recipientsFailed.
+  - Vermächtnis ist eine direkte Eins-zu-eins-Nachricht; Modul 07
+    leitet empfangene Vermächtnisse NICHT an seine eigenen
+    Geschwister weiter.
+  - Kein Quorum, keine Misstrauensvoten. Quorum-Verfahren gehört
+    in Modul 10 (Reputation, Schutz-Backlog) — Spec-Sitzung 07
+    hat das bewusst aus dieser Spec gestrichen (anders als die
+    ursprüngliche Schablone aus 2026-05-10 nahelegt).
+
+Fehlerverhalten:
+  - init(): Abhängigkeit fehlt (SbkimStorage/SbkimSpore nicht auf window)
+        → ApoptoseDependenciesError
+  - prepareSelfApoptose(): keine Identität → NoIdentityError aus Modul 02 unverändert durchgereicht
+  - confirmSelfApoptose(): Token unbekannt/abgelaufen/reason weicht ab
+        → InvalidApoptoseTokenError; kein Versand, kein Cleanup
+  - confirmSelfApoptose(): Identität fehlt (schon ausgeführt)
+        → ApoptoseAlreadyExecutedError
+  - confirmSelfApoptose(): einzelner Empfänger antwortet mit Timeout/Netz/Sig-Fehler/rejected
+        → KEIN Throw; Empfänger landet in recipientsFailed; Versand an andere läuft weiter
+  - confirmSelfApoptose(): Storage-Fehler beim Cleanup
+        → unverändert durchgereicht; Knoten ist inkonsistent (siehe Karte 07 Risiken)
+  - receiveLegacy(): jegliche Form-/Spore-/Versions-/Signatur-Verletzung
+        → WIRFT NIEMALS; LegacyResponse{outcome:"rejected", reason:"<deutsch>"}
+          (analog Modul 02 verifyForeignSpore und Modul 05 receiveHandshake)
+  - receiveLegacy(): Storage-Fehler beim put/del
+        → WIRFT NIEMALS nach außen; Response outcome:"rejected",
+          reason:"interner Speicherfehler"; Original-Error in console.error
+  - listLegacy(): Storage-Fehler → unverändert durchgereicht
+  - forgetExpiredSiblings(): maxAgeMs fehlt / ≤ 0 → InvalidTtlError (kein Sweep)
+  - forgetExpiredSiblings(): Storage-Fehler → unverändert durchgereicht
+
+TTL-Trigger (Spec-Sitzung 07, 2026-05-14):
+  Variante (c) — explizit durch den Andocker. Modul 07 hat KEIN
+  setInterval, KEINEN Selbst-Sweep im init() und KEINE Pulsation.
+  Empfehlung für Karte 09 (Folge-Pflege-Sitzung): forgetExpiredSiblings
+  nach jedem erfolgreichen Handshake aufrufen, oder auf einem
+  versteckten Modul-00-Doku-Fenster-Knopf.
+
+`SIBLING_MAX_AGE_MS`-Ort-Entscheidung (Spec-Sitzung 07, 2026-05-14):
+  Variante A — global in §0. Konsistenz mit PROVIDER_MIN_MATCH /
+  QUERY_TIMEOUT_MS / PROTOCOL_VERSION; additive Änderung an §0, KEIN
+  Hauptversions-Sprung. `status.json.config` zieht den Wert mit.
+
+Garantien für Modul 06 / 10 / 11:
+  - sbkim_legacy_inbox ist Einzige Quelle für „empfangene Vermächtnisse";
+    Modul 10 / 12 dürfen davon ausgehen, dass jeder Eintrag eine valide
+    Signatur durchlaufen hat (oder gar nicht angelegt wurde).
+  - Modul 07 löscht sbkim_siblings-Einträge zwei Wege:
+      (a) auf Vermächtnis-Empfang (sender wird vergessen),
+      (b) auf TTL-Sweep (stille Geschwister).
+    Modul 06 (Heterokaryose) iteriert sbkim_siblings und darf davon
+    ausgehen, dass abgelaufene Geschwister verschwinden, sobald der
+    Andocker forgetExpiredSiblings regelmäßig ruft.
+  - Modul 07 erzeugt keine eigenen Listen, keine Pulsation, keine
+    Eigenanfragen — der einzige Netz-Aufruf ist der parallele
+    Vermächtnis-Versand beim Self-Apoptose-Confirm.
+
+Geprüft: 2026-05-14 (Spec-Sitzung 07)
 
 ---
 
@@ -688,7 +829,101 @@ liegt in `docs/components/05_anastomose.md` § „Anastomose-Pfad".
 
 ### Vermächtnis (Legacy)
 
-*(noch zu spezifizieren — siehe Modul 07)*
+Verbindliches Schema des Apoptose-Vermächtnisses, festgelegt in der
+Spec-Sitzung 07 vom 2026-05-14. Vermächtnis = `LegacyMessage`, das vom
+sterbenden Knoten A an `sibling.endpoint + ENDPOINT.legacy` (= dem
+`/sbkim/legacy`-Pfad aus §3) **POST** geschickt wird, mit `Content-Type:
+application/json`. Antwort = `LegacyResponse` (unten). Beide JSON-
+Objekte sind **kanonisch** serialisiert (alphabetisch sortierte Keys,
+rekursiv); die Signatur deckt die Form **ohne** das `signature`-Feld.
+Sign-/Verify-Pfad **identisch** zu Spore (Modul 02) und HandshakeRequest
+(Modul 05).
+
+#### LegacyMessage — Pflichtfelder
+
+```
+fromNodeId       : string   = nodeId des sterbenden Senders A (= base64url(sha256(rawPub)), ohne Padding)
+nonce            : string   16 zufällige Bytes, base64url ohne Padding (Replay-Marker; Modul 07
+                            prüft in der Erst-Spec noch nicht aktiv auf Wiederholung — aktiver
+                            Replay-Schutz gehört in Modul 11, vgl. Karte 07 Risiken-Block).
+protocolVersion  : string   semver-artig, z.Z. "0.1" (aus §0). Hauptversions-Mismatch zwischen
+                            incomingLegacy.protocolVersion und lokaler PROTOCOL_VERSION → outcome:
+                            "rejected", reason:"Inkompatible Hauptversion: <x.y>". Siehe §4.
+reason           : string   deutschsprachiger Klartext, der erklärt, warum der Knoten stirbt
+                            (z.B. "Domain stillgelegt", "Schlüssel kompromittiert",
+                            "Betreiber-Wechsel"). Pflicht; leerer String ist ungültig.
+senderSpore      : object   vollständige SporeJson des Senders, vom Sender mit Ed25519 signiert
+                            (siehe oben „Spore-JSON"). Empfänger verifiziert über
+                            SbkimSpore.verifyForeignSpore.
+signature        : string   base64url ohne Padding, Ed25519 über kanonisches JSON ohne signature.
+                            Schlüssel: privateKey des Senders (Modul 02). Empfänger verifiziert
+                            gegen senderSpore.publicKey.
+timestamp        : string   ISO-8601 mit Millisekunden, UTC ("Z"). Vom Sender beim Bauen gesetzt.
+```
+
+#### LegacyResponse — Pflichtfelder
+
+```
+fromNodeId       : string   nodeId des Empfängers B
+nonceEcho        : string   identisch zu incomingLegacy.nonce (Replay-Verkettung; in Erst-Spec
+                            rein informativ, in einer Folge-Spec für aktiven Replay-Schutz nutzbar)
+outcome          : string   "accepted" | "rejected"
+protocolVersion  : string   "0.1"
+receiverSpore    : object   vollständige SporeJson des Empfängers B (signiert)
+signature        : string   Ed25519-Signatur über kanonisches JSON ohne signature, mit dem
+                            privateKey des Empfängers.
+timestamp        : string   ISO-8601 UTC, Empfänger beim Bauen
+toNodeId         : string   nodeId des Senders (= incomingLegacy.fromNodeId)
+```
+
+#### LegacyResponse — Optionale Felder
+
+```
+reason           : string   deutschsprachiger Klartext, Pflicht bei outcome="rejected",
+                            sonst weggelassen.
+                            Beispiele: "Form ungültig", "Spore ungültig: <inner reason>",
+                            "Inkompatible Hauptversion: 1.0", "Signatur ungültig",
+                            "interner Speicherfehler".
+```
+
+#### Versionierungs-Regel
+
+- Pflichtfelder dürfen ab Status `entwurf` nur additiv erweitert
+  werden. Das Hinzufügen eines Pflichtfelds erfordert den Schritt von
+  `protocolVersion: "0.x"` auf `"1.0"`.
+- Hauptversionen (1.x ↔ 2.x): inkompatibel. Empfänger lehnt
+  Hauptversion-Mismatch mit `outcome:"rejected", reason:"Inkompatible
+  Hauptversion: <x.y>"` ab — siehe §4 und Modul 07 Vertrag.
+- Streichen oder Optional→Pflicht ist immer ein Hauptversions-Sprung.
+- Unbekannte zusätzliche Felder werden bei `receiveLegacy` **nicht**
+  abgewiesen — sie sind aber Teil der Signatur (jeder Knoten signiert,
+  was er ausliefert).
+
+#### Verifikations-Pfad (Empfänger, Reihenfolge verbindlich)
+
+1. Pflichtfelder vollzählig in der LegacyMessage? → sonst
+   `outcome:"rejected", reason:"Form ungültig"`.
+2. `SbkimSpore.verifyForeignSpore(senderSpore)` valid? → sonst
+   `outcome:"rejected", reason:"<deutsch>"` (reason aus dem
+   verifyForeignSpore-Ergebnis durchgereicht).
+3. Hauptversion `incomingLegacy.protocolVersion` kompatibel mit
+   lokalem `PROTOCOL_VERSION`? → sonst `outcome:"rejected",
+   reason:"Inkompatible Hauptversion: <x.y>"`.
+4. LegacyMessage-Signatur über die kanonisch serialisierte Form ohne
+   `signature` gegen `senderSpore.publicKey` verifiziert? → sonst
+   `outcome:"rejected", reason:"Signatur ungültig"`.
+5. `sbkim_legacy_inbox.put(fromNodeId, {fromNodeId, reason, signature,
+   receivedAt: now()})` — der Eintrag landet im Inbox-Store, auch wenn
+   der Sender kein bekanntes Geschwister war.
+6. `sbkim_siblings.del(fromNodeId)` — Sender wird vergessen. Idempotent:
+   bei unbekanntem Sender ohne Fehler.
+7. Response `{outcome:"accepted", …}` mit Signatur kanonisch über die
+   Form ohne `signature` gegen den eigenen Ed25519-Privat-Schlüssel.
+
+Detail-Erklärung der Sender-Seite (Self-Apoptose, parallelisierter
+Versand via `Promise.allSettled`, sequenzieller lokaler Cleanup) und
+die Schritt-für-Schritt-Ebene liegen in
+`docs/components/07_apoptose.md` § „Apoptose-Pfad".
 
 ---
 
@@ -773,3 +1008,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-14 | Pflege-Sitzung Match-Kalibrierung | `PROVIDER_MIN_MATCH` in §0 von `0.55` auf `0.80` angehoben (Vertrag-Sektion Modul 04 mitgezogen). Beleg: Klaus-Sichttest im Browser ergab fünf reproduzierbare Cosinus-Messwerte (Käsekuchen/Käsetorte 0.9507, Käsekuchen/Auspuffrohr 0.8967, Hefeteig/Kochrezepte 0.8312, Tarantino/Kochrezepte 0.7737, gleicher Inhalt ~0.95). 0.80 trennt empirisch sauber zwischen „relevant" (0.83) und „irrelevant" (0.77); das Paper-Original 0.55 hätte alles durchgelassen. Modul-Status bleibt `entwurf`. |
 | 2026-05-14 | Spec-Sitzung 05 | Modul 05 (Anastomose) spezifiziert. Fünf-Funktionen-API (`init/handshake/receiveHandshake/listSiblings/forgetSibling`), bidirektionale Eintragung nur bei beidseitigem Match, semantische Ablehnung ist Outcome (kein Throw), Protokoll-/Netz-/Krypto-Fehler werfen. Stores `sbkim_siblings` (peerNodeId → {nodeId, domain, endpoint, pubKey, since}) und `sbkim_anastomosis_log` (ts → {ts, peerId, outcome}) — anonymisiert. Reentry idempotent: `since` bleibt beim ersten Anklopf, Log bekommt `outcome:"re-handshake"`. Schwellwert wird ausschließlich über `SbkimMatch.isAboveProviderThreshold` gelesen (kein literales 0.80 in 05). §2 „Anfrage (Query)" verbindlich mit HandshakeRequest/HandshakeResponse-Schema gefüllt (kanonische Signatur, Pflicht-/Optional-Felder, Versionierungs-Regel auf §4 verwiesen, Verifikations-Pfad in sieben Schritten). Service-Worker-Vertrag für statisch gehostete Endknoten (POST `/sbkim/anastomosis`, JSON, ≤ 64 KiB, 503 wenn keine Page-Instanz aktiv); Wahl Page-Hosted vs. SW-Hosted vertagt auf Bau-Sitzung 05. Status auf `entwurf`. |
 | 2026-05-14 | Spec-Sitzung 09 | Modul 09 (Einbau-PWA) spezifiziert. Karte 09 vollständig gefüllt — acht-Schritt Andock-Pfad mit konkreten Konsolen-Befehlen für Klaus (kein-Programmierer-Andocker), Datei-Pfad-Konvention verbindlich (SW im Endknoten-Repo-Root, fünf JS-Module inline in `index.html` oder unter `<endknoten>/sbkim/`), Spore-Endpunkt verbindlich `/sbkim/spore.json` (Alias aus §3 statt `.well-known/`, weil GitHub-Pages-Project-Sites Jekyll-Dot-Ordner-Falle haben), Service-Worker-Registrierungs-Konvention `navigator.serviceWorker.register("sbkim-sw.js")` aus dem Repo-Root mit automatischem Scope `/<repo>/`, Scope-Falle bei Ablage unter `sbkim/` dokumentiert. Sichtkontrolle (3 Pflicht-Punkte: Konsolen-Selbstchecks · IndexedDB-Stores · live-Spore-URL). `domainVector`-Pflicht-Frage aus Spec-Sitzung 05 verbindlich entschieden: **Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — `domainVector` bleibt in §2 OPTIONAL, Karte 09 macht ihn Andock-Pflicht; §0 `PROTOCOL_VERSION` bleibt `"0.1"`. Begründung in Karte 09 § Risiken & offene Punkte. Status Modul 09 auf `entwurf` (Anleitung-Marker; Karten-Statuscodes formal für JS-Module). |
+| 2026-05-14 | Spec-Sitzung 07 | Modul 07 (Apoptose) spezifiziert. Sechs-Funktionen-API (`init/prepareSelfApoptose/confirmSelfApoptose/receiveLegacy/listLegacy/forgetExpiredSiblings`); Self-Apoptose **irreversibel** und **zweistufig** mit 60s-Confirmation-Token (`APOPTOSE_TOKEN_TTL_MS = 60_000`, Modul-lokal) gegen versehentliches Auslösen, plus `console.warn` beim `prepare`-Aufruf; Quorum-Verfahren und Misstrauensvoten aus der ursprünglichen Schablone bewusst gestrichen — gehören in Modul 10 (Reputation, Schutz-Backlog). `receiveLegacy` wirft **niemals** (Outcome statt Throw, analog `verifyForeignSpore` und `receiveHandshake`). Vermächtnis-Versand parallel via `Promise.allSettled` mit `AbortController(QUERY_TIMEOUT_MS)` pro Empfänger — Trennung `recipientsNotified` (Empfänger antwortete `outcome:"accepted"`) und `recipientsFailed` (Timeout, Netz, ungültige Signatur, `rejected`). Lokaler Self-Apoptose-Cleanup sequenziell: siblings → log → inbox → spore → keys (Identität zuletzt); `sbkim_doku_meta` bleibt. §2 „Vermächtnis (Legacy)" verbindlich mit `LegacyMessage` (7 Pflichtfelder) und `LegacyResponse` (8 Pflichtfelder + `reason` als optionales `rejected`-Begleitfeld) gefüllt, kanonische Ed25519-Signatur identisch zu Spore / HandshakeRequest, Verifikations-Pfad in sieben Schritten. **§0 um `SIBLING_MAX_AGE_MS = 2592000000` (30 Tage) ergänzt** — Spec-Sitzung-7-Entscheidung Variante A (global statt modul-lokal, additiv, kein Hauptversions-Sprung; konsistent mit `PROVIDER_MIN_MATCH` / `QUERY_TIMEOUT_MS` / `PROTOCOL_VERSION`). TTL-Trigger Variante (c) — explizit durch den Andocker (z.B. nach jedem erfolgreichen Handshake oder auf einem Modul-00-Doku-Fenster-Knopf); **kein `setInterval`, kein Selbst-Sweep im `init()`**, keine Pulsation. Karte 09 Folge-Pflege-Sitzung „Schritt 9: TTL-Sweep-Aufruf" als offen vermerkt. `sbkim_legacy_inbox` als Schreib-Store; `sbkim_siblings` als Löscher-Store (Schreibrecht bleibt bei 05); `sbkim_anastomosis_log` als Leser-Store für die `lastActivity`-Berechnung pro Geschwister (max `ts` mit `outcome ∈ {"established","re-handshake"}`, Fallback `sbkim_siblings.since`). Status Modul 07 auf `entwurf`. |
