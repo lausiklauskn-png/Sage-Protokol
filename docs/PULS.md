@@ -38,11 +38,11 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 - 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
 - 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert
 
-Code-Stub frisch aus den Bau-Sitzungen 2026-05-14, **Sichttest ausstehend:**
+Code-Stub frisch aus den Bau-Sitzungen 2026-05-14, **Sichttest ausstehend bzw. teilweise erledigt:**
 
 - 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/05_anastomose.js` + `src/sbkim-sw.js` (Variante A · Page-Hosted), Panel 05 mit acht Knöpfen (Setup + sieben Test-Punkte aus Karte 05 § Manueller Test); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
 - 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/07_apoptose.js` als IIFE mit `window.SbkimApoptose`, sechs Funktionen, fünf Error-Klassen (`ApoptoseDependenciesError`, `InvalidApoptoseTokenError`, `ApoptoseAlreadyExecutedError`, `InvalidTtlError`, `LegacyTimeoutError`/`LegacyNetworkError`); kanonischer Sign/Verify-Pfad **bewusst aus Modul 02/05 dritter Pfad dupliziert** (Single-File-PWA-Stil); `src/sbkim-sw.js` um `/sbkim/legacy` erweitert (gemeinsamer `fetch`-Listener mit `/sbkim/anastomosis`, Variante a — leichter erweiterbar für Modul 06/11); Panel 07 mit zehn Knöpfen (Setup + 8 Test-Punkte aus Karte 07 § Manueller Test + Selbstcheck-Hinweis); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
-- 🟦 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/00_doku_fenster.js` als IIFE mit `window.SbkimDoku`, sechs Funktionen, vier benannte Error-Klassen (`InvalidDokuOptionsError`, `DokuDependenciesError`, `InvalidSighttestResultError`, `StorageQuotaError` als Sammel-Klasse mit `.cause`), fünf Test-Brücken (`_dispatchClick`, `_resetClickCounter`, `_advanceRevealClock`, `_setQuotaForTest`, `_clearQuotaForTest`); drei Bau-Pflichtfragen entschieden — Modal mit halb-transparentem Backdrop und `sbkim-doku-*`-Klassenpräfix (Frage 1 Variante a), MutationObserver auf `document.body` mit Auto-Disconnect und 10-s-Safety-Timeout (Frage 2 Variante a), Fake-Such-Symbol als eigenes `<button id="panel-00-fake-search">` im Panel-Markup (Frage 3 Variante a); Panel 00 mit sechs Knöpfen (Setup + Test 2 5-Klick-Simulation + Test 3 4-Klick + Timeout + Test 4 Quota-Warnzeile + Test 5 TTL-Sweep + Selbstcheck-Hinweis); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
+- 🟦 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 5 von 6 Tests grün im ersten Lauf (Setup, Test 2 5-Klick-Simulation, Test 3 4-Klick + Timeout, Test 5 TTL-Sweep, Selbstcheck-Hinweis); **Test 4 Test-Bug** mit Mini-Werten 81/100 (freeBytes=19 Bytes ist trivial < 50 MiB → `warningLevel:"both"` statt erwartetem `"ratio"`) → **Pflege-Sitzung 2026-05-15** repariert mit GiB-Skalierung (`usage:8.1 GiB, quota:10 GiB` → freeBytes ≈ 1.9 GiB → `warningLevel:"ratio"` sauber); Modul-Vertrag und INTERFACES.md unangetastet
 
 Spec frisch aus den Spec-Sitzungen 2026-05-14, **Bau ausstehend**:
 
@@ -73,7 +73,7 @@ idealerweise vor dem Live-Andocken.
 
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
-| 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00 |
+| 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00 |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | IndexedDB-Wrapper |
 | 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
@@ -178,6 +178,116 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Pflege-Sitzung · Modul 00 Test 4 Quota-Werte (GiB-Skalierung)
+
+**Getan:**
+
+- **Klaus' Sichttest 2026-05-15 ergab fünf von sechs Tests grün im
+  ersten Lauf** (Panel 00 in `tests/manual_check.html`): Setup OK ·
+  Test 2 (5-Klick-Simulation) öffnet das Modal sauber
+  (`nodeIdShort:"3DT6lS0QT9Zp…"`, `domain:"rezeptbuch.example.org"`,
+  `siblingCount:1`, `legacyCount:0`, `errors:0`) · Test 3 (4-Klick
+  + `_advanceRevealClock(4000)` + 5. Klick) hält das Fenster zu ·
+  Test 5 (TTL-Sweep) entfernt beide alten Geschwister
+  (`entfernt_anzahl:2`, Re-Open-Snapshot listet sie nicht mehr) ·
+  Modal-Rendering vollständig (Knoten-Sektion · Geschwister-Liste ·
+  Vermächtnis-Inbox „Keine" · Speicher 6.4% von 10.69 GiB · drei
+  Aktion-Knöpfe sichtbar) · Selbstcheck-Zeile
+  (`MODUL 00 DOKU-FENSTER bereit, Funktionen: …`) in DevTools-
+  Konsole gefunden.
+- **Test 4 zeigte Test-Bug** (nicht Modul-Bug): Panel-Test-Werte
+  `_setQuotaForTest({usage:81, quota:100})` produzierten
+  `warningLevel:"both"` (freeBytes=19 Bytes ist trivial unter
+  50 MiB), Panel-Erwartung war aber `warningLevel:"ratio"`
+  hartcodiert → „Test 4 fehlgeschlagen". **Modul-Logik korrekt** —
+  Doppel-Schwelle aus §0 greift wie spezifiziert; nur die
+  Test-Werte waren zu klein, um die beiden Schwellen sauber zu
+  trennen.
+- **`tests/manual_check.html` Test 4 mit GiB-Skalierung repariert.**
+  Neue Werte: `usage = Math.round(8.1 * GiB) ≈ 8.7 GB`,
+  `quota = 10 * GiB`, freeBytes ≈ 1.9 GiB (deutlich > 50 MiB →
+  `warnBytes:false`), ratio ≈ 0.81 (> 0.80 → `warnRatio:true`,
+  `warningLevel:"ratio"`). Pass-Check erweitert um
+  `warnBytes === false` für saubere Schwellen-Trennung. Erwartungs-
+  Text präzisiert auf `"Speicher knapp · 80%-Schwelle"`.
+- **Karte 00 § Manueller Test Punkt 4** entsprechend nachgezogen
+  (GiB-skalierte Test-Werte, Begründung als kursiver Block:
+  „*Bau-Sitzung 00 nutzte ursprünglich Mini-Werte 81/100; bei
+  denen ist freeBytes=19 Bytes automatisch < 50 MiB und
+  `warningLevel` wird `"both"` statt `"ratio"` — Test 4 ist seit
+  Pflege-Sitzung 2026-05-15 auf realistische GiB-Werte umgestellt,
+  damit die beiden Schwellen sauber getrennt prüfbar sind.*").
+- **Karte 00 Bauzustand-Sichttest-Zeile** von „ungeprüft, weil
+  Sitzung headless" auf „geprüft 2026-05-15 (Klaus, im Browser):
+  5 von 6 Tests grün, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15
+  mit GiB-Skalierung repariert" gehoben — mit ausführlicher
+  Befund-Notiz (Snapshot-Inhalt aus Test 2, TTL-Sweep-Output aus
+  Test 5, Modal-Rendering-Beobachtung aus Screenshot).
+- **Schnellüberblicks-Zeile Modul 00** auf „geprüft 2026-05-15
+  (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in
+  Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert" gehoben.
+  „Als nächstes ✨"-Block Modul 00 in der Code-Stub-Liste
+  entsprechend aktualisiert.
+- **`node --check` für alle acht Inline-`<script>`-Blöcke** in
+  `manual_check.html` grün.
+
+**Was nicht geändert wurde (bewusst):**
+
+- **Modul-Vertrag und INTERFACES.md unangetastet.** §0-Schwellen
+  (`DOKU_QUOTA_WARN_RATIO`, `DOKU_QUOTA_WARN_BYTES`) sind
+  verbindlich richtig — Klaus' Sichttest hat **bestätigt**, dass
+  die Doppel-Schwelle greift. Nur die Panel-Test-Werte waren
+  schlecht gewählt.
+- **`status.json` unverändert** (Modul 00 bleibt `score:"stub"` /
+  `siegel:"Code-Stub"`; keine Hochstufung in dieser Sitzung — der
+  Sichttest war vor Pflege nur teilweise grün, jetzt ist der
+  Test-Bug behoben, aber der Status bleibt „Code-Stub mit erstem
+  Sichttest"). Pie nicht regeneriert (keine Score-Änderung).
+- **`src/modules/00_doku_fenster.js` unverändert.** Modul-Code
+  und Vertrag sind korrekt; der Bug war in der Test-Datei.
+- **Karte 00 Hero-Badge** bleibt 🟦 Code-Stub.
+
+**Frischer-Kopf-Befund: Modul-Vertrag bestätigt sich, kleiner Test-Bug**
+
+Klaus' Sichttest hat die zentralen Modul-Vertrag-Eigenschaften
+**bestätigt**:
+
+- **5-Klick-Mechanik** mit 3-s-Zeitfenster funktioniert
+  reproduzierbar (Test 2 öffnet, Test 3 hält zu).
+- **`_advanceRevealClock(ms)`-Brücke** verschiebt die Reset-Zeit
+  ohne realen Zeit-Verlauf (Test 3 in 4 s Sekunden Browser-Zeit).
+- **Snapshot fail-soft** zeigt Erwartetes (`siblingCount:1` aus
+  Setup-Spore, `legacyCount:0` ohne Vermächtnisse, `errors:0`).
+- **Modal-Render** stimmt mit Frage-1-Entscheidung überein (Modal
+  mit Backdrop, drei Aktion-Knöpfe, alle Sektionen sichtbar).
+- **TTL-Sweep** über `SbkimApoptose.forgetExpiredSiblings`
+  entfernt zwei alte `sbkim_siblings`-Einträge wie spezifiziert.
+- **Selbstcheck-Format** stimmt (`MODUL 00 DOKU-FENSTER bereit,
+  Funktionen: …` ohne Konstanten — wie in §1 Modul 00 verankert).
+
+**Was offen blieb:**
+
+- **Sichttest Karte 05 + Karte 07** durch Klaus (Panel 05 acht
+  Knöpfe, Panel 07 zehn Knöpfe) stehen weiterhin aus.
+- **Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul
+  00 im Andock-Pfad"** bleibt der nächste sinnvolle Schritt
+  (jetzt mit Modul 00 sichtgeprüft).
+- **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Live-Andock-
+  Versuch** bleibt die produktivste Folge-Sitzung — Module
+  00/05/07 sind alle drei Code-Stub.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Sichttests Karte 05 + Karte 07** durch Klaus (Panel 05 acht
+   Knöpfe, Panel 07 zehn Knöpfe). Idealerweise vor Schritt 2/3.
+2. **Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul
+   00 im Andock-Pfad"** — kompakte Pflege, jetzt spruchreif.
+3. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Live-Andock-
+   Versuch** — der erste echte Andock-Klick zwischen Rezeptbuch
+   und Mixarium.
+
+---
 
 ### 2026-05-14 · Bau-Sitzung · Modul 00 Doku-Fenster (Code-Stub)
 

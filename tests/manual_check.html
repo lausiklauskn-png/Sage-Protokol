@@ -1171,27 +1171,38 @@
         };
       });
 
-      SbkimUI.addButton("00_doku_fenster", "Test 4: Quota-Warnzeile (81/100)", async function () {
+      SbkimUI.addButton("00_doku_fenster", "Test 4: Quota-Warnzeile (8.1 GiB / 10 GiB)", async function () {
         await ensureSetup();
         if (SbkimDoku.isOpen()) SbkimDoku.close();
-        SbkimDoku._setQuotaForTest({ usage: 81, quota: 100 });
+        // GiB-skalierte Werte: freeBytes ≈ 1.9 GiB > 50 MiB, also nur ratio-
+        // Schwelle greift. (Frühere Mini-Werte 81/100 produzierten freeBytes=19
+        // → automatisch < 50 MiB → warningLevel="both" und passten nicht zur
+        // Spec-Punkt-4-Erwartung „Speicher knapp · 80%-Schwelle". Pflege-
+        // Sitzung 2026-05-15.)
+        var GiB = 1024 * 1024 * 1024;
+        var usage = Math.round(8.1 * GiB);
+        var quota = 10 * GiB;
+        SbkimDoku._setQuotaForTest({ usage: usage, quota: quota });
         await SbkimDoku.open();
         var snap = await SbkimDoku.getStatusSnapshot();
         // Warn-Block sollte im DOM auftauchen.
         var warnEl = document.querySelector(".sbkim-doku-warn");
         var pass = !!snap.quota && snap.quota.warnRatio === true &&
+                   snap.quota.warnBytes === false &&
                    snap.quota.warningLevel === "ratio" && !!warnEl;
         // Fenster schließen + Override entfernen, damit folgende Tests sauber starten.
         SbkimDoku.close();
         SbkimDoku._clearQuotaForTest();
         SbkimUI.setStatus("00_doku_fenster", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
         return {
+          usage_gib: Number((usage / GiB).toFixed(2)),
+          quota_gib: Number((quota / GiB).toFixed(2)),
           ratio: Number(snap.quota.ratio.toFixed(4)),
           warnRatio: snap.quota.warnRatio,
           warnBytes: snap.quota.warnBytes,
           warningLevel: snap.quota.warningLevel,
           warn_dom_sichtbar: !!warnEl,
-          erwartung: "{ratio:0.81, warnRatio:true, warningLevel:\"ratio\", DOM-Warnblock sichtbar}",
+          erwartung: "{ratio:~0.81, warnRatio:true, warnBytes:false, warningLevel:\"ratio\", DOM-Warnblock sichtbar mit Text \"Speicher knapp · 80%-Schwelle\"}",
         };
       });
 
