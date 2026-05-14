@@ -16,9 +16,9 @@
 ```mermaid
 pie showData
   title Modulstand 2026-05-14 (13 Module)
-  "🟫 Schablone" : 6
+  "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 1
+  "🟨 Spec fertig" : 2
   "🟦 Code-Stub" : 5
   "🟩 Fertig" : 0
 ```
@@ -46,6 +46,10 @@ Spec frisch aus der Spec-Sitzung 2026-05-14, **Bau ausstehend** (Anleitung — k
 
 - 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung); Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, JS-Module inline oder unter `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` verbindlich, SW-Scope-Falle dokumentiert, `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
 
+Spec frisch aus der Spec-Sitzung 2026-05-14, **Bau ausstehend** (JS-Modul):
+
+- 🟨 **[07 Apoptose](components/07_apoptose.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung); Sechs-Funktionen-API mit **zweistufiger Self-Apoptose** (`prepareSelfApoptose` → `confirmSelfApoptose`, Token gültig 60 s), Vermächtnis-Versand parallel via `Promise.allSettled` an alle Geschwister, `receiveLegacy` wirft niemals (Outcome statt Throw, analog `verifyForeignSpore`/`receiveHandshake`), TTL-Trigger **explizit durch den Andocker** (Variante c — kein `setInterval`, kein Selbst-Sweep im `init()`), `SIBLING_MAX_AGE_MS = 30 Tage` **global in §0** (Variante A — additiv, kein Hauptversions-Sprung), `status.json.config` nachgezogen; §2 „Vermächtnis (Legacy)" verbindlich mit `LegacyMessage` (7 Pflichtfelder) und `LegacyResponse` (8 Pflicht + `reason` optional) gefüllt, kanonische Ed25519-Signatur identisch zu Spore / HandshakeRequest
+
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
 - ✨ **[00 Doku-Fenster](components/00_doku_fenster.md)** — keine Abh., 5-Klick-UI in Endknoten
@@ -57,9 +61,9 @@ In Arbeit (fortsetzen, nicht neu starten):
 Empfehlung Hauptsitzung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus
 am Live-Andock-Versuch** (Spec liegt vor, Andock-Anleitung verbindlich;
 nächster Schritt ist der erste echte Andock-Klick im Browser an Rezeptbuch
-und/oder Mixarium) **oder** **Spec-Sitzung Modul 07 Apoptose**
-(Vorbedingungen 01 + 02 erfüllt, signiertes Vermächtnis braucht den
-Ed25519-Schlüssel aus 02). Parallel anbietbar: Spec-Sitzung Modul 00
+und/oder Mixarium) **oder** **Bau-Sitzung Modul 07 Apoptose**
+(Spec liegt jetzt vor, sechs Funktionen, keine Netz-Abhängigkeit über
+01/02 hinaus). Parallel anbietbar: Spec-Sitzung Modul 00
 (Doku-Fenster). Sichttest Karte 05 (acht Knöpfe in Panel 05) gehört in
 einen kurzen Browser-Klick-Durchlauf, idealerweise vor dem Live-Andocken
 (Modul 05 wird im Andock-Workflow ausgeführt).
@@ -77,7 +81,7 @@ einen kurzen Browser-Klick-Durchlauf, idealerweise vor dem Live-Andocken
 | 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80 |
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
-| 07 apoptose | leere Schablone | — | — | Selbstlöschung |
+| 07 apoptose | Spec fertig (2026-05-14) | — | — | Selbstlöschung mit signiertem Vermächtnis — zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; `SIBLING_MAX_AGE_MS` neu in §0 |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
 | 09 einbau_pwa | Spec fertig (2026-05-14) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — 8 Schritte; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
@@ -140,6 +144,155 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Spec-Sitzung · Modul 07 Apoptose (Spec fertig)
+
+**Getan:**
+
+- **`docs/components/07_apoptose.md` vollständig gefüllt** — Karte vom
+  Schablonen-Stand (Quorum-Skizze von 2026-05-10) auf 🟨 Spec fertig
+  gehoben (~480 Zeilen, Stil 02/04/05/09). Inhalt: Hero · Im Mycel-Bild
+  (Apoptose als sauberer Zelltod mit chemischem Vermächtnis, bidirektional
+  asymmetrisch: einmal versenden — einseitig empfangen + vergessen) ·
+  Visualisierung (Mermaid-Sequenz mit zwei `alt`-Pfaden: Self-Apoptose
+  und Fremd-Vermächtnis-Empfang) · Zweck (drei Funktions-Stränge:
+  Self-Apoptose, Fremd-Vermächtnis empfangen, TTL-Vergessen) ·
+  Verantwortlichkeiten (Macht/Macht nicht je 7+ Punkte) · Schnittstelle
+  (Sechs-Funktionen-API) · Selbstcheck · Konfigurationswerte mit
+  Variante-A-Begründung · Datenformate · Apoptose-Pfad in 11 Schritten
+  (Sender 1–6, Empfänger 7–11) · TTL-Verhalten · Fehlertabelle (10 Lagen)
+  · Manueller Test (9 Punkte) · Risiken (7 Punkte) · Bauzustand ·
+  Querverweise.
+- **Drei offene Pflichtfragen verbindlich entschieden:**
+  - **Frage 1 · TTL-Ort: Variante A — `SIBLING_MAX_AGE_MS = 30 Tage`
+    global in §0 INTERFACES.md.** Konsistenz mit `PROVIDER_MIN_MATCH` /
+    `QUERY_TIMEOUT_MS` / `PROTOCOL_VERSION`; additive Änderung an §0,
+    **kein Hauptversions-Sprung**. `status.json.config` zieht den Wert
+    mit (`SIBLING_MAX_AGE_MS: 2592000000`). Querschnitts-Anschluss
+    für Modul 06 / 11 — sie sollen denselben „aktiv"-Begriff teilen.
+  - **Frage 2 · TTL-Trigger: Variante (c) — explizit durch den Andocker.**
+    Kein `setInterval`, kein Selbst-Sweep im `init()`, keine Pulsation
+    (folgt der Anti-Pulsations-Regel aus Modul 05). Empfehlung für Karte
+    09: nach jedem erfolgreichen `handshake` oder auf einem versteckten
+    Modul-00-Doku-Fenster-Knopf. **Folge-Pflege-Sitzung „Karte 09
+    Schritt 9: TTL-Sweep-Aufruf"** als offen vermerkt.
+  - **Frage 3 · Vermächtnis-Empfänger-Kreis: alle Geschwister parallel.**
+    Best-Effort via `Promise.allSettled`, `AbortController(QUERY_TIMEOUT_MS)`
+    pro Empfänger. Trennung `recipientsNotified` (Empfänger antwortete
+    `outcome:"accepted"`) und `recipientsFailed` (Timeout/Netz/
+    Sig-invalid/`rejected`). Kein Quote-System.
+- **Self-Apoptose-Irreversibilität: zweistufiges Verfahren mit Token.**
+  `prepareSelfApoptose(reason)` liefert einen einmal verwendbaren
+  Confirmation-Token (16 zufällige Bytes, base64url) mit 60 s Gültigkeit
+  (`APOPTOSE_TOKEN_TTL_MS = 60_000`, Modul-lokal). Erst
+  `confirmSelfApoptose(token, reason)` führt die irreversible Operation
+  aus. Beim `prepare`-Aufruf erscheint zusätzlich
+  `console.warn("SELF-APOPTOSE VORBEREITET — irreversibel.")`.
+  Begründung: ein versehentlicher einzelner API-Aufruf darf die
+  Identität nicht löschen.
+- **Sechs-Funktionen-API** (eine mehr als das Briefing skizziert, weil
+  Self-Apoptose zweistufig wird): `init`, `prepareSelfApoptose`,
+  `confirmSelfApoptose`, `receiveLegacy`, `listLegacy`,
+  `forgetExpiredSiblings`. `receiveLegacy` wirft **niemals** (analog
+  `verifyForeignSpore` und `receiveHandshake`).
+- **Quorum / Misstrauensvoten aus der ursprünglichen Schablone (2026-05-10)
+  bewusst gestrichen** — sie gehören in Modul 10 (Reputation,
+  Schutz-Backlog). Apoptose 07 ist freiwilliger Selbsttod, nicht
+  fremder Zwangstod.
+- **`INTERFACES.md` §1 Modul 07 auf `entwurf`** mit voller Vertrag-Sektion
+  (Bietet, Nutzt, Storage mit Schreib-/Lese-/Lösch-Rollen,
+  Selbstcheck, Versionierungs-Vertrag, Fehlertabelle, TTL-Trigger-
+  Entscheidung, `SIBLING_MAX_AGE_MS`-Ort-Entscheidung, Garantien für
+  Modul 06 / 10 / 11). §2 „Vermächtnis (Legacy)" verbindlich
+  ausgefüllt: `LegacyMessage` (7 Pflichtfelder), `LegacyResponse`
+  (8 Pflichtfelder + `reason` optional bei `rejected`), kanonische
+  Ed25519-Signatur identisch zu Spore / HandshakeRequest,
+  Versionierungs-Regel auf §4 verwiesen, Verifikations-Pfad in
+  sieben Schritten. §0 um `SIBLING_MAX_AGE_MS = 2592000000`
+  ergänzt. §6 Änderungsprotokoll-Zeile am unteren Ende.
+- **`sbkim_legacy_inbox`-Wert verbindlich:** `{fromNodeId, reason,
+  signature, receivedAt}` — die `senderSpore` aus der LegacyMessage
+  wird **nicht** im Storage aufbewahrt (sie wurde bei `receiveLegacy`
+  einmal verifiziert; die Signatur reicht als Audit-Spur). Hält den
+  Store schlank.
+- **Cleanup-Reihenfolge sequenziell:** `sbkim_siblings` →
+  `sbkim_anastomosis_log` → `sbkim_legacy_inbox` → `sbkim_spore` →
+  `sbkim_keys` (Identität zuletzt). `sbkim_doku_meta` bleibt
+  unangetastet. Inkonsistenter Zwischen-Zustand bei
+  Storage-Cleanup-Fehler als Risiko dokumentiert.
+- **`status.json` Modul 07** von `score:"schablone"` /
+  `siegel:"noch nicht gebaut"` auf `score:"spec"` /
+  `siegel:"Spec fertig"` mit erweitertem `kurz`-Feld; `config` um
+  `SIBLING_MAX_AGE_MS: 2592000000` ergänzt.
+- **`python3 scripts/update_puls_pie.py`** ausgeführt: Schablone 6→5,
+  Spec fertig 1→2 (Code-Stub bleibt 5, Werkstatt bleibt 1).
+
+**Frischer-Kopf-Befund:**
+
+- **Keine API-Korrektur an 01–05 nötig.** Modul 07 braucht:
+  `SbkimStorage.{init/get/put/del/all/clear}` (alle da),
+  `SbkimSpore.{getOrCreateIdentity/getOwnSpore/getPublicKeyJwk/
+  verifyForeignSpore/getNodeId}` (alle da), den kanonischen Sign-Pfad
+  aus 02/05 (in 05 bewusst dupliziert — Modul 07 spiegelt das). Kein
+  Modul-übergreifender „clear all sbkim_*"-Helfer; Modul 07 ruft
+  `clear` fünfmal sequenziell. Lücke-Befund als Risiko-Punkt in der
+  Karte 07 dokumentiert.
+- **Sechste Funktion** (`confirmSelfApoptose` zusätzlich zu
+  `prepareSelfApoptose`) ist die einzige Abweichung vom
+  Briefing-Skizzen-API — sie ist explizit durch Pflichtpunkt (d) des
+  Briefings gedeckt („Self-Apoptose als irreversible Operation klar
+  kennzeichnen … zweistufiges Verfahren?").
+- **Quorum-Streichung** (gegenüber 2026-05-10-Schablone) verdient die
+  Notiz: die ursprüngliche `recordMistrustVote`/`QUORUM_MISTRUST_RATIO`-
+  Skizze hat im Erst-Spec-Aufbau keinen Platz, weil sie Modul 10
+  (Reputation, Schutz-Backlog) ist — Apoptose im engeren Sinn ist
+  *freiwilliger Selbstmord*.
+
+**Was offen blieb:**
+
+- **Bau-Sitzung Modul 07 Apoptose** — `src/modules/07_apoptose.js` als
+  IIFE schreiben (gleiche Bauart wie 01/02/04/05), kanonischen
+  Sign/Verify-Pfad aus 02/05 spiegeln (oder via
+  `window.SbkimSpore._canonicalize`-Export teilen — Bau-Sitzung
+  entscheidet), Panel 07 in `tests/manual_check.html` mit acht
+  Test-Knöpfen (gemäß Karte 07 § Manueller Test), Service-Worker-
+  Erweiterung in `src/sbkim-sw.js` um den `/sbkim/legacy`-Pfad
+  (analog `/sbkim/anastomosis`).
+- **Folge-Pflege-Sitzung „Karte 09 Schritt 9: TTL-Sweep-Aufruf"** —
+  Karte 09 um den Schritt ergänzen, der den Andocker zum
+  `forgetExpiredSiblings(SIBLING_MAX_AGE_MS)`-Aufruf nach jedem
+  erfolgreichen Handshake (oder auf einem versteckten Modul-00-Doku-
+  Fenster-Knopf) anleitet. Ohne diesen Schritt bleibt
+  `forgetExpiredSiblings` *bereit, aber ungenutzt* — bei Klaus' Netz
+  unkritisch.
+- **Spec-Sitzung Modul 00 (Doku-Fenster)** — bleibt anbietbar
+  (dependenz-frei, ✨-Marker). Karte 07 markiert Modul 00 als
+  natürliche Anker-Stelle für „Vermächtnis-Inbox anzeigen" und
+  „Stille Geschwister vergessen"-Knopf.
+- **Folge-Pflege-Sitzung „Vermächtnis-Reaktivierung"** (anbietbar bei
+  größerem Netz) — wenn ein Knoten nach Vermächtnis-Empfang die gleiche
+  `fromNodeId` wieder handshakt, soll der alte Inbox-Eintrag automatisch
+  bereinigt werden. Erst bei größerem Netz nötig; bei Klaus' aktuellem
+  Netz unkritisch.
+- **PULS.md Zeilen-Längen-Schwellwert.** CLAUDE.md sagt 400 Zeilen
+  Maximum, jetzt deutlich darüber. Auslager-Sitzung für eine eigene
+  Pflege-Phase — nicht Teil dieser Spec-Sitzung. Die letzten sechs
+  Sitzungen sind genauso vorgegangen.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Bau-Sitzung Modul 07 Apoptose** — Code schreiben, Panel 07 füllen,
+   Service-Worker um `/sbkim/legacy` erweitern. Modul 07 ist nach 05
+   die *zweite* Komposition aus mehreren Modulen.
+2. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Browser** — die acht
+   Schritte aus Karte 09 *live* durchlaufen an Rezeptbuch und/oder
+   Mixarium (erfordert Klaus' Werte-Sammlung und Sichttest Karte 05
+   vorher).
+3. Parallel anbietbar: **Spec-Sitzung Modul 00 (Doku-Fenster)** —
+   dependenz-frei, 5-Klick-UI in der Endknoten-PWA, und natürliche
+   Anker-Stelle für die Vermächtnis-Inbox-Anzeige aus Modul 07.
+
+---
 
 ### 2026-05-14 · Spec-Sitzung · Modul 09 Einbau-PWA (Spec fertig)
 
