@@ -29,7 +29,7 @@
     { "id": "02", "name": "Spore",          "score": "stub",      "siegel": "Code-Stub",         "abhaengig": ["01"],     "kurz": "Ed25519-Identität, Singleton, base64url(sha256(rawPub))" },
     { "id": "03", "name": "Embedding",      "score": "stub",      "siegel": "Code-Stub",         "abhaengig": [],         "kurz": "Text → 384-dim Vektor (Xenova multilingual-e5-small)" },
     { "id": "04", "name": "Match",          "score": "stub",      "siegel": "Code-Stub",         "abhaengig": ["03"],     "kurz": "Cosine-Sim als Skalarprodukt (modus-frei)" },
-    { "id": "05", "name": "Anastomose",     "score": "spec",      "siegel": "Spec fertig",       "abhaengig": ["02","04"],"kurz": "Handshake zwischen Knoten — kanonisch signiert, bidirektional, Schwelle aus Modul 04" },
+    { "id": "05", "name": "Anastomose",     "score": "stub",      "siegel": "Code-Stub",         "abhaengig": ["02","04"],"kurz": "Handshake zwischen Knoten — kanonisch signiert, bidirektional, Schwelle aus Modul 04" },
     { "id": "06", "name": "Heterokaryose",  "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["05"],     "kurz": "Datenaustausch unter Geschwistern (Opt-In)" },
     { "id": "07", "name": "Apoptose",       "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["02","01"],"kurz": "Selbstlöschung + signiertes Vermächtnis" },
     { "id": "08", "name": "UI-Demo",        "score": "werkstatt", "siegel": "in Werkstatt",      "abhaengig": [],         "kurz": "tests/manual_check.html — Werkstatt-Sichtprüfung" },

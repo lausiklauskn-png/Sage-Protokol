@@ -1,6 +1,6 @@
 # Modul 05 — Anastomose
 
-> **Status:** 🟨 Spec fertig  ·  **Schicht:** Netzwerk  ·  **Anker:** Sage-Page → Karte 4, Eintrag 05
+> **Status:** 🟦 Code-Stub  ·  **Schicht:** Netzwerk  ·  **Anker:** Sage-Page → Karte 4, Eintrag 05
 > **Datei (Code):** `src/modules/05_anastomose.js`
 >
 > _Handshake zwischen zwei Knoten — Hyphenfusion. Die erste Sitzung,
@@ -405,6 +405,29 @@ Modul 05 selbst (also `src/modules/05_anastomose.js`) bleibt in beiden
 Varianten *gleich* — es exportiert `receiveHandshake`, und wer es
 aufruft (Page oder SW) ist Sache der Bau-Sitzung.
 
+**Entscheidung Bau-Sitzung 05 (2026-05-14): Variante A (Page-Hosted).**
+`src/sbkim-sw.js` ist dünn (keine Krypto, kein State), die ganze
+Anastomose-Logik bleibt in der Page. Beweggründe:
+
+- Modul 03 (`transformers.js`) ist im SW-Scope nicht ohne erheblichen
+  Mehraufwand ladbar (kein DOM, anderes Import-Modell). SW-Hosted
+  bräuchte für jeden Handshake einen Embedding-Vergleich oder eine
+  Out-of-Band-Spore mit fertigem `domainVector` — Komplexität, die
+  hier nicht abgegolten werden muss.
+- Single-File-PWA-Stil bedeutet: ein Code-Pfad, ein State, eine
+  IndexedDB-Verbindung. Variante B würde zwei Kopien des Codes
+  pflegen (Page + SW) und zwei Schichten Cache-Invalidierung.
+- "503, wenn keine Page aktiv ist" steht so in der Spec
+  (Variante A führt direkt dort hin — Variante B müsste den
+  Wake-Lock explizit ablehnen).
+- Modul 11 (Rate-Limit, Schutz-Backlog) kann später dünn auf den
+  SW gelegt werden, ohne dass die Page-Logik mitwächst.
+
+Page-seitige Brücke: Modul 05's `init()` registriert einen
+`navigator.serviceWorker.message`-Listener, der eingehende
+`SBKIM_ANASTOMOSIS_REQUEST`-Messages an `receiveHandshake` weiterleitet
+und das Ergebnis über `MessagePort` zurückschickt.
+
 ---
 
 ## Fehlerverhalten
@@ -547,8 +570,8 @@ Test gehört in den Einbau in Rezeptbuch + Mixarium (Modul 09).
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Sequence-Diagramm (alte Schwelle 0.55), Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 05 | Fünf-Funktionen-API (`init/handshake/receiveHandshake/listSiblings/forgetSibling`), HandshakeRequest/Response-Schema mit kanonischer Signatur, Anastomose-Pfad in 14 Schritten, Service-Worker-Vertrag, A1–B3-Synthese auf Hop B3/A3 fortgeschrieben, bidirektionale Eintragung, Reentry-Idempotenz, Schwelle aus Modul 04 / §0 ohne Hartcode |
-| Code geschrieben | — | — | — |
-| Sichttest | — | — | — |
+| Code geschrieben | 2026-05-14 | Bau 05 | `src/modules/05_anastomose.js` als IIFE mit `window.SbkimAnastomose`, fünf öffentliche Funktionen, sechs benannte Error-Klassen (`AnastomoseDependenciesError`, `InvalidPeerSporeError`, `ProtocolVersionMismatchError`, `HandshakeTimeoutError`, `HandshakeNetworkError`, `HandshakeSignatureInvalidError`), kanonischer Sign/Verify-Pfad (Envelope-Form ohne signature, Ed25519, base64url ohne Padding) bewusst aus Modul 02 dupliziert; Service-Worker-Variante **A (Page-Hosted via MessageChannel)** in `src/sbkim-sw.js`; Test-Brücken `_invokeDirect`/`_buildSignedRequest`/`_verifyResponseSignature`/`_setOwnDomainVector` für den lokalen Zwei-Knoten-Test ohne Netz; `node --check` grün |
+| Sichttest | — | — | ungeprüft, weil Sitzung headless — Klaus klickt im Browser (Panel 05 mit acht Knöpfen inkl. einmaligem Setup, dann sieben Test-Punkte aus Karte 05 § Manueller Test) |
 | In Endknoten eingebaut | — | — | — |
 
 ---
