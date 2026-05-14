@@ -226,16 +226,19 @@ und einem deutschsprachigen `message`-Feld für Logs.
 
 ## Manueller Test
 
-In `tests/manual_check.html`, Panel **01 Storage**, drei Stub-Knöpfe
-(Bau-Sitzung füllt die Handler):
+In `tests/manual_check.html`, Panel **01 Storage**, vier Knöpfe
+(seit Bau-Sitzung 2026-05-14 mit echten Aufrufen verdrahtet):
 
 1. **Storage init** — ruft `init()` auf, erwartet erfolgreich.
    Sichtprüfung: DevTools → Application → IndexedDB → `sbkim` muss
    vorhanden sein, alle sechs Stores aus der Tabelle angelegt.
 2. **Storage round-trip** — `put("sbkim_doku_meta", "01", {moduleId:"01", lastSighttest:"<now>", status:"ok"})`
-   → `get(...)` → `del(...)`. Erwartung: kein Fehler, Wert nach `del`
-   weg.
-3. **Selbstcheck Konsole prüfen** — Hinweisknopf ohne Aktion: weist
+   → `get(...)` → `del(...)` → `get(...)`. Erwartung: kein Fehler,
+   letzter `get` liefert `undefined`.
+3. **Unknown Store (Fehler erwartet)** — versucht
+   `get("sbkim_nicht_existent", "x")` und erwartet einen
+   `UnknownStoreError`. Erfolgsfall = Fehler kam wie erwartet.
+4. **Selbstcheck Konsole prüfen** — Hinweisknopf ohne Aktion: weist
    den Tester an, DevTools → Konsole zu öffnen und die `console.info`-
    Zeile `MODUL 01 STORAGE bereit, Funktionen: ...` zu suchen.
 
