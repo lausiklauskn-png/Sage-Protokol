@@ -47,9 +47,9 @@
   </section>
 
   <section class="panel" data-module="02_spore">
-    <h2>02 Spore <span class="status idle">noch nicht gebaut</span></h2>
-    <div class="controls"></div>
-    <pre class="log">— noch keine Ausgabe —</pre>
+    <h2>02 Spore <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Voraussetzung: Modul 01 (Storage) ist über das Skript-Tag mitgeladen. WebCrypto Ed25519 nötig (Chrome ≥ 113, Firefox ≥ 130, Safari ≥ 17). —</pre>
   </section>
 
   <section class="panel" data-module="03_embedding">
@@ -326,6 +326,77 @@
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("04_match",
           "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.55");
+      });
+    })();
+  </script>
+
+  <!-- Modul 02 — Spore (Spec+Bau-Sitzung 2026-05-14) -->
+  <script src="../src/modules/02_spore.js"></script>
+  <script>
+    (function () {
+      var demoMeta = {
+        domain: "rezeptbuch.example.org",
+        nodeType: "hybrid",
+        endpoint: "https://klaus.github.io/rezeptbuch/",
+        nodeName: "Rezeptbuch (Demo)",
+        domainDescription: "Hausgemachte Kochrezepte, vom Hefeteig bis zur Sauce.",
+        domainKeywords: ["Backen", "Saucen", "Hauptgang"],
+      };
+
+      SbkimUI.addButton("02_spore", "Identität erzeugen oder laden", async function () {
+        await SbkimSpore.init();
+        var ident = await SbkimSpore.getOrCreateIdentity();
+        SbkimUI.setStatus("02_spore", "ok", "Identität OK");
+        return {
+          nodeId: ident.nodeId,
+          publicKey_kty: ident.publicKeyJwk.kty,
+          publicKey_crv: ident.publicKeyJwk.crv,
+          hinweis: "Zweite Ausführung muss dieselbe nodeId liefern.",
+        };
+      });
+
+      SbkimUI.addButton("02_spore", "Eigene Spore generieren", async function () {
+        var spore = await SbkimSpore.generateOwnSpore(demoMeta);
+        SbkimUI.setStatus("02_spore", "ok", "Spore OK");
+        return spore;
+      });
+
+      SbkimUI.addButton("02_spore", "Sign + Verify round-trip", async function () {
+        var spore = await SbkimSpore.getOwnSpore();
+        if (!spore) {
+          spore = await SbkimSpore.generateOwnSpore(demoMeta);
+        }
+        var result = await SbkimSpore.verifyForeignSpore(spore);
+        SbkimUI.setStatus("02_spore", result.valid ? "ok" : "err", result.valid ? "round-trip OK" : "Verify failed");
+        return {
+          nodeId: spore.id,
+          verify: result,
+          erwartung: "{ valid: true }",
+        };
+      });
+
+      SbkimUI.addButton("02_spore", "Verify mit manipulierter Spore", async function () {
+        var spore = await SbkimSpore.getOwnSpore();
+        if (!spore) {
+          spore = await SbkimSpore.generateOwnSpore(demoMeta);
+        }
+        var tampered = JSON.parse(JSON.stringify(spore));
+        tampered.domain = "eindringling.example.com";
+        var result = await SbkimSpore.verifyForeignSpore(tampered);
+        var pass = !result.valid;
+        SbkimUI.setStatus("02_spore", pass ? "ok" : "err", pass ? "Manipulation erkannt" : "Manipulation übersehen");
+        return {
+          manipulation: "domain auf 'eindringling.example.com' geändert",
+          verify: result,
+          erwartung: "{ valid: false, reason: 'Signatur ungültig' }",
+        };
+      });
+
+      SbkimUI.addButton("02_spore", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("02_spore",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("02_spore",
+          "  MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore");
       });
     })();
   </script>

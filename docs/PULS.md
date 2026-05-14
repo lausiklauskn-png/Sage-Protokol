@@ -16,10 +16,10 @@
 ```mermaid
 pie showData
   title Modulstand 2026-05-14 (13 Module)
-  "🟫 Schablone" : 9
+  "🟫 Schablone" : 8
   "🟧 In Werkstatt" : 1
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 3
+  "🟦 Code-Stub" : 4
   "🟩 Fertig" : 0
 ```
 
@@ -31,6 +31,7 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 Module mit Code-Stub, brauchen Sichttest im Browser:
 
 - 🟦 **[01 Storage](components/01_storage.md)** — Code 2026-05-14, Sichttest steht aus (Klaus klickt in `tests/manual_check.html`)
+- 🟦 **[02 Spore](components/02_spore.md)** — Spec + Code 2026-05-14, Sichttest steht aus (fünf Knöpfe in Panel 02, WebCrypto Ed25519 nötig — Chrome ≥ 113 / Firefox ≥ 130 / Safari ≥ 17)
 - 🟦 **[03 Embedding](components/03_embedding.md)** — Code 2026-05-14, Sichttest steht aus (Modell-Download beim ersten Klick, dauert 5–15 s)
 - 🟦 **[04 Match](components/04_match.md)** — Spec + Code 2026-05-14, Sichttest steht aus (sechs Knöpfe in Panel 04, hängt am 03-Modell-Cache)
 
@@ -43,10 +44,11 @@ In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: Klaus klickt 01 + 03 + 04 im Browser durch
-(`tests/manual_check.html`). Danach **Spec-Sitzung Modul 02 Spore**
-(blockiert sonst 05 Anastomose) oder **Spec-Sitzung Modul 05
-Anastomose** (alle Vorbedingungen außer 02 stehen als Stub). Parallel
+Empfehlung Hauptsitzung: Klaus klickt 01 + 02 + 03 + 04 im Browser
+durch (`tests/manual_check.html`). Danach **Spec-Sitzung Modul 05
+Anastomose** — alle vier Vorbedingungen (01, 02, 03, 04) stehen jetzt
+als Stub. Alternativ **Spec-Sitzung Modul 07 Apoptose** (Vorbedingungen
+01 + 02 erfüllt, signiertes Vermächtnis braucht 02). Parallel
 anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder Modul 09
 (Einbau-PWA) — beide ohne Abhängigkeiten.
 
@@ -58,7 +60,7 @@ anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder Modul 09
 |---|---|---|---|---|
 | 00 doku_fenster | leere Schablone | — | — | "5-Klick versteckte Doku" in Suchleiste |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | IndexedDB-Wrapper |
-| 02 spore | leere Schablone | — | — | Ed25519-Identität |
+| 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | semantischer Vektor |
 | 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Vektorvergleich, modus-frei |
 | 05 anastomose | leere Schablone | — | — | Handshake |
@@ -122,6 +124,127 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Spec+Bau-Sitzung · Modul 02 Spore (Spec + Code-Stub)
+
+**Getan:**
+
+*Phase A — Spec:*
+- **Komponenten-Karte 02 (Spore) vollständig gefüllt:** Singleton-
+  Identität pro PWA verbindlich festgeschrieben (Schlüssel `"main"` in
+  beiden Stores `sbkim_keys` und `sbkim_spore` — entspricht der
+  Stores-Tabelle aus Karte 01). Sieben-Funktionen-API
+  (`init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore`).
+  WebCrypto Ed25519 als einzige Krypto-Quelle, **kein Polyfill** —
+  fehlt die Implementierung, scheitert das Modul laut mit
+  `CryptoUnavailableError` (benannte Spec-Anforderung). Persistenz
+  **strikt** über `window.SbkimStorage` — kein direkter
+  `indexedDB.open` aus 02, sonst zerreißt der Vertrag aus 01.
+- **`node_id`-Ableitung verbindlich dokumentiert:** SHA-256 über den
+  rohen Public Key (`exportKey("raw", publicKey)`, 32 Bytes), Ergebnis
+  als `base64url ohne Padding` (43 Zeichen). Andere Knoten können die
+  ID aus dem mitgelieferten `publicKey` nachrechnen — kanonisches
+  Verifikations-Prozedere mit vier Schritten in der Karte.
+- **Spore-JSON-Schema final festgelegt** (siehe Phase A Punkt 3 unten):
+  neun Pflichtfelder (`createdAt`, `domain`, `embeddingModel`,
+  `endpoint`, `id`, `nodeType`, `protocolVersion`, `publicKey`,
+  `signature`), fünf optionale (`nodeName`, `domainDescription`,
+  `domainKeywords`, `domainVector`, `endpointPaths`). Kanonische
+  Serialisierung mit alphabetisch sortierten Keys, Signatur über JSON
+  ohne `signature`-Feld, `base64url ohne Padding`.
+- **`INTERFACES.md` Modul 02 auf Status `entwurf`** mit voller
+  Vertrag-Sektion: API-Signaturen, Storage-Schreib-Form, WebCrypto-
+  Aufrufe, node_id-Pseudocode, kanonische Signatur-Regeln,
+  Fehlertabelle, „Garantien für Modul 05/06/07".
+- **`INTERFACES.md` §2 Spore-JSON ausgefüllt:** Pflicht-/Optional-
+  Trennung, Versionierungs-Regel auf §4 verwiesen, Verifikations-Pfad
+  in vier Schritten dokumentiert.
+- **Karte-Größe vermerkt:** 364 Zeilen — über der konservativen
+  150-Zeilen-Schwelle aus dem Briefing, aber im Bereich der bisherigen
+  Karten 01 (295) und 04 (~340). Kein Abbruch nach Phase A
+  ausgelöst, weil alle Entscheidungen sauber getroffen waren und der
+  Code-Plan klar — Phase B konnte direkt anschließen.
+
+*Phase B — Bau:*
+- **`src/modules/02_spore.js` geschrieben:** IIFE wie 01/03/04,
+  klassisches `<script>`-Tag, `window.SbkimSpore`. WebCrypto-Aufrufe
+  (`generateKey({name:"Ed25519"}, true, ["sign","verify"])`,
+  `exportKey("raw"|"jwk")`, `importKey("jwk", ...)`,
+  `digest("SHA-256")`, `sign/verify({name:"Ed25519"})`). Zustand
+  in einem Modul-internen `identityCache` — JWK aus Storage wird beim
+  Laden re-importiert, weil `CryptoKey`-Instanzen nicht
+  strukturklon-fähig sind (JWK schon).
+- **Persistenz nur über `SbkimStorage`** — `put/get` auf
+  `sbkim_keys["main"]` und `sbkim_spore["main"]`. Kein direkter
+  IndexedDB-Aufruf.
+- **Kanonische Serialisierung implementiert:** `canonicalize()`
+  rekursiv, lexikographisch sortierte Keys, danach `JSON.stringify`.
+  Sign + Verify nutzen denselben Pfad — Reihenfolge ist die einzige
+  Garantie, dass dieselbe Spore zwischen Browsern dieselbe Signatur
+  ergibt.
+- **`base64url`-Helfer ohne Padding** als kleine eigene Helfer
+  (`base64urlEncode/Decode`), keine externe Library.
+- **Vier benannte Error-Typen:** `CryptoUnavailableError`,
+  `StorageUnavailableError` (vom Modul 01 unverändert durchgereicht
+  bzw. eigener Wurf bei fehlendem `SbkimStorage`), `NoIdentityError`,
+  `InvalidSporeMetaError`. `verifyForeignSpore` wirft niemals —
+  Verifikations-Probleme kommen als `{valid:false, reason:"<deutsch>"}`
+  zurück, inklusive Fehler beim publicKey-Import.
+- **Selbstcheck synchron beim Skript-Laden** (wie 01, anders als 03 —
+  Identitäts-Erzeugung ist lazy, das Skript-Laden selbst ist
+  zustandslos):
+  `console.info("MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore")`.
+- **`tests/manual_check.html` Panel 02 von „noch nicht gebaut" auf
+  „Code-Stub"** gestellt. Fünf echte Knöpfe via `SbkimUI.addButton`:
+  *Identität erzeugen oder laden* / *Eigene Spore generieren* /
+  *Sign + Verify round-trip* / *Verify mit manipulierter Spore* /
+  *Selbstcheck Konsole prüfen*. Demo-Meta („Rezeptbuch", Domain
+  `rezeptbuch.example.org`) inline im Skript.
+- **JS-Syntax mit `node --check src/modules/02_spore.js` validiert**
+  (grün). Im Browser noch nicht geklickt — Sitzung headless,
+  WebCrypto-Ed25519 braucht echten Browser.
+- **`status.json` Modul 02 auf `score: "stub"`,** `siegel: "Code-Stub"`,
+  `kurz` auf „Ed25519-Identität, Singleton, base64url(sha256(rawPub))".
+  `python3 scripts/update_puls_pie.py` lief, Pie regeneriert
+  (Schablone 8 / Werkstatt 1 / Spec 0 / Stub 4).
+- **Karte 02 Bauzustand-Tabelle** mit Zeilen *Spec gefüllt* + *Code
+  geschrieben* + *Sichttest (ungeprüft, weil Sitzung headless — Klaus
+  klickt im Browser)* ergänzt. Hero-Badge auf 🟦 Code-Stub.
+- **PULS-Schnellüberblick + „Als nächstes ✨"** aktualisiert: 02 in
+  Code-Stub-Liste aufgenommen, Empfehlungs-Text auf „Klaus klickt
+  01+02+03+04 im Browser durch, danach Spec-Sitzung Modul 05
+  Anastomose oder Modul 07 Apoptose" umgestellt.
+- **WEGWEISER-Stand-Block-Zeile** unten ergänzt (Wanderung — neueste
+  unten).
+
+**Offen:**
+- **Sichttest im Browser** durch Klaus — fünf Knöpfe in Panel 02.
+  Voraussetzung: WebCrypto Ed25519 (Chrome ≥ 113, Firefox ≥ 130,
+  Safari ≥ 17). Erwartungen: erste *Identität*-Klick erzeugt das
+  Schlüsselpaar, zweite Klick liefert dieselbe `nodeId`; *Spore
+  generieren* zeigt vollständiges JSON mit alphabetisch sortierten
+  Keys; *Sign + Verify round-trip* liefert `{valid:true}`; *Verify
+  mit manipulierter Spore* liefert `{valid:false, reason:"Signatur
+  ungültig"}`; Selbstcheck-Zeile beim Laden in der Konsole sichtbar.
+  In DevTools → Application → IndexedDB → `sbkim` müssen
+  `sbkim_keys["main"]` und `sbkim_spore["main"]` gefüllt sein.
+- **Sichttests 01 + 03 + 04** weiterhin offen, kommen im selben
+  Browser-Klick-Durchlauf mit.
+
+**Nächster sinnvoller Schritt:**
+- Klaus klickt 01, 02, 03 und 04 im Browser durch und trägt die
+  Sichttest-Zeilen in den vier Karten nach.
+- Danach: **Spec-Sitzung Modul 05 Anastomose** — alle vier
+  Vorbedingungen (01, 02, 03, 04) stehen jetzt als Stub. Modul 05 ist
+  der Handshake zwischen Knoten und braucht alle vier Bausteine
+  zusammen.
+- Alternativ: **Spec-Sitzung Modul 07 Apoptose** (Vorbedingungen 01 +
+  02 erfüllt, signiertes Vermächtnis braucht den Ed25519-Schlüssel
+  aus 02).
+- Parallel anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder
+  Modul 09 (Einbau-PWA) — beide ohne Abhängigkeiten.
+
+---
 
 ### 2026-05-14 · Spec+Bau-Sitzung · Modul 04 Match (Spec + Code-Stub)
 
