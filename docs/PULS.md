@@ -18,8 +18,8 @@ pie showData
   title Modulstand 2026-05-14 (13 Module)
   "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 1
-  "🟦 Code-Stub" : 4
+  "🟨 Spec fertig" : 0
+  "🟦 Code-Stub" : 5
   "🟩 Fertig" : 0
 ```
 
@@ -38,9 +38,9 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 - 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
 - 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert
 
-Mit Spec fertig, Code ausstehend:
+Code-Stub frisch aus der Bau-Sitzung 2026-05-14, **Sichttest ausstehend:**
 
-- 🟨 **[05 Anastomose](components/05_anastomose.md)** — Spec gefüllt 2026-05-14; Fünf-Funktionen-API, HandshakeRequest/Response-Schema in INTERFACES.md §2, Service-Worker-Vertrag, bidirektionale Eintragung — wartet auf **Bau-Sitzung 05**
+- 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/05_anastomose.js` + `src/sbkim-sw.js` (Variante A · Page-Hosted), Panel 05 mit acht Knöpfen (Setup + sieben Test-Punkte aus Karte 05 § Manueller Test); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
 
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
@@ -51,14 +51,14 @@ In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: jetzt **Bau-Sitzung Modul 05 Anastomose** —
-Spec liegt vollständig vor (Karte 05, INTERFACES.md §1 Modul 05 + §2
-Anfrage). Service-Worker-Variante (Page-Hosted vs. SW-Hosted)
-entscheidet die Bau-Sitzung selbst. Alternativ **Spec-Sitzung Modul 07
-Apoptose** (Vorbedingungen 01 + 02 erfüllt, signiertes Vermächtnis
-braucht 02; läuft parallel zur Bau-Sitzung 05, weil die Module unabhängig
-sind). Parallel anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder
-Modul 09 (Einbau-PWA) — beide ohne Abhängigkeiten.
+Empfehlung Hauptsitzung: **Spec-Sitzung Modul 07 Apoptose** (Vor-
+bedingungen 01 + 02 erfüllt, signiertes Vermächtnis braucht den
+Ed25519-Schlüssel aus 02) **oder** **Spec-Sitzung Modul 09 Einbau-PWA**
+(mit der offenen `domainVector`-Pflicht-Frage aus der Anastomose-Spec —
+soll der Vektor Pflicht in der Spore werden? Wenn ja, ist das ein
+Hauptversions-Sprung `0.1 → 1.0`). Parallel anbietbar: Spec-Sitzung
+Modul 00 (Doku-Fenster). Sichttest Karte 05 (acht Knöpfe in Panel 05)
+gehört in einen kurzen Browser-Klick-Durchlauf.
 
 ---
 
@@ -71,7 +71,7 @@ Modul 09 (Einbau-PWA) — beide ohne Abhängigkeiten.
 | 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
 | 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80 |
-| 05 anastomose | Spec fertig (2026-05-14) | — | — | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04 |
+| 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
 | 07 apoptose | leere Schablone | — | — | Selbstlöschung |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
@@ -132,6 +132,186 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Bau-Sitzung · Modul 05 Anastomose (Code-Stub)
+
+**Getan:**
+
+- **`src/modules/05_anastomose.js` geschrieben** (IIFE wie 01/02/04,
+  `window.SbkimAnastomose`, synchroner Selbstcheck beim Skript-Laden,
+  `node --check` grün). Fünf öffentliche Funktionen mit exakten
+  Signaturen aus INTERFACES.md §1 Modul 05:
+  `init / handshake / receiveHandshake / listSiblings / forgetSibling`.
+  Sechs benannte Error-Klassen (deutschsprachig):
+  `AnastomoseDependenciesError`, `InvalidPeerSporeError`,
+  `ProtocolVersionMismatchError`, `HandshakeTimeoutError`,
+  `HandshakeNetworkError`, `HandshakeSignatureInvalidError`.
+- **Krypto-Pfad bewusst aus Modul 02 dupliziert** (canonicalize,
+  base64url, Envelope-Sign/Verify) — Single-File-PWA-Stil, keine
+  geteilte Library. Wer das stört, hebt eine Pflege-Sitzung. Der
+  privateKey wird über `SbkimStorage.get("sbkim_keys", "main")`
+  geladen und via `crypto.subtle.importKey("jwk", …, ["sign"])`
+  re-importiert; Verify-Pfad nutzt `senderSpore.publicKey` bzw.
+  `receiverSpore.publicKey`.
+- **Match-Schwelle strikt über
+  `SbkimMatch.isAboveProviderThreshold`** — keine `0.80`-Literale in
+  Modul 05. Spore-Verify strikt über `SbkimSpore.verifyForeignSpore`.
+  Persistenz strikt über `SbkimStorage` — kein einziger
+  `indexedDB.open` in 05.
+- **`receiveHandshake` wirft niemals** — alle Fehlpfade als
+  `HandshakeResponse{outcome:"rejected", reason:"<deutsch>"}`. Bei
+  totalem Empfänger-Ausfall (Storage tot, Spore fehlt) wird der
+  Sicherheits-Pfad eine *unsignierte* Notbremse zurückgeben — die der
+  Sender über `verifyEnvelope` korrekt ablehnt.
+- **Reentry-Idempotenz:** `upsertSibling` prüft auf bestehenden
+  Eintrag und gibt `true` zurück, wenn das Sibling schon existiert —
+  `since` bleibt eingefroren, Log bekommt `outcome:"re-handshake"`.
+  `forgetSibling` auf unbekannten nodeId wirft nicht (idempotent).
+- **Log-Schlüssel-Eindeutigkeit:** Re-Handshakes in derselben
+  Millisekunde haben sonst identische ISO-Timestamps und würden den
+  vorigen Log-Eintrag überschreiben. Modul-interner Sub-Counter
+  hängt `+N` an den Key (z.B. `2026-05-14T07:00:00.450Z+1`); das
+  `ts`-Feld im Wert bleibt die reine ISO-Zeit. Sortierreihenfolge
+  bleibt lexikographisch korrekt.
+- **Service-Worker-Variante entschieden: A (Page-Hosted via
+  MessageChannel)**. `src/sbkim-sw.js` ist dünn (keine Krypto, kein
+  State, ~120 Zeilen): fängt POST `/sbkim/anastomosis` ab, prüft
+  Methode (405) / Content-Type (415) / Body-Länge ≤ 64 KiB (413),
+  parst JSON, schickt `SBKIM_ANASTOMOSIS_REQUEST` per
+  `client.postMessage` an den vom Request ausgelösten Tab (Fallback:
+  irgendein offener Tab), wartet maximal 4 s auf Antwort über
+  `MessagePort`, 503 wenn keine Page-Instanz aktiv oder nicht
+  rechtzeitig antwortet. Modul 05's `init()` registriert den
+  korrespondierenden `navigator.serviceWorker.message`-Listener.
+  Begründung: Modul 03 (`transformers.js`) ist im SW-Scope schwierig
+  zu laden, ein Code-Pfad in der Page ist sauberer, "503 wenn Tab
+  zu" deckt sich mit der Spec-Aussage „Wer nicht da ist, schweigt".
+  Karte 05 § „Service-Worker-Hinweis" wurde mit der Entscheidung und
+  vier Beweggründen fortgeschrieben.
+- **`tests/manual_check.html` Panel 05** von „noch nicht gebaut" auf
+  „Code-Stub" gestellt mit acht Knöpfen:
+  1. *Setup* — einmalig Embedding init (~30 MB), zwei Knoten
+     vorbereiten: Main in IndexedDB (Singleton aus Modul 02) +
+     Alt rein im Speicher (eigenes Ed25519-Keypair, eigene
+     Spore, kein IndexedDB-Eintrag — Singleton-Spec von 02 bleibt
+     unangetastet);
+  2. *Test 1 · Lokaler Zwei-Knoten-Handshake (passt)* — Alt → Main
+     via `_invokeDirect`, Response-Signatur über
+     `_verifyResponseSignature` geprüft, sibling-Liste durchgezählt;
+  3. *Test 2 · Domain-Mismatch* — ein zweiter In-Memory-Alt-Knoten
+     mit Filmkritik-Vektor (Tarantino), erwartet
+     `outcome:"rejected", reason ~ /score/`;
+  4. *Test 3 · Versions-Mismatch* — Alt-Spore mit
+     `protocolVersion: "1.0"`; `verifyForeignSpore` lehnt mit
+     `"Inkompatible Hauptversion: …"` ab, reason wird in Response
+     durchgereicht;
+  5. *Test 4 · Signatur manipuliert* — Request nach Signieren im
+     `fromNodeId` verändert, erwartet `reason ~ /Signatur/`;
+  6. *Test 5 · Re-Handshake* — zweimal nacheinander; `since`
+     unverändert, sibling-Eintrag nur einmal, letzter Log-Eintrag
+     `outcome:"re-handshake"`;
+  7. *Test 6 · forgetSibling* — entfernt Eintrag, Log bleibt;
+     `forgetSibling` auf unbekannte ID idempotent;
+  8. *Test 7 · listSiblings* — nach zwei Handshakes beide Einträge
+     mit `{nodeId, domain, since, pubKey}` sichtbar;
+  9. *Selbstcheck Konsole prüfen* — Hinweisknopf ohne Aktion.
+
+  Die acht Knöpfe sind in der Reihenfolge: Setup + Tests 1–7 +
+  Selbstcheck = 9 Klicks. Die Spec-Vorgabe „acht Test-Punkte" ist
+  abgedeckt (Setup ist kein Test-Punkt, Selbstcheck ist Punkt 8).
+- **Inoffizielle Test-Brücken in `window.SbkimAnastomose`** (Präfix
+  `_`, nur für Panel 05):
+  `_invokeDirect(request)` = Alias auf `receiveHandshake`;
+  `_buildSignedRequest(privKey, spore, vec, toNodeId?)` baut + signiert
+  einen Request für In-Memory-Sender;
+  `_verifyResponseSignature(response, jwk)` verifiziert eine
+  Response gegen einen externen Public-Key;
+  `_setOwnDomainVector(vec)` als Empfänger-Vektor-Override (Test);
+  plus die Krypto-Primitive `_canonicalize / _base64urlEncode /
+  _base64urlDecode / _signEnvelope / _verifyEnvelope` und
+  `_meta`-Inspektion.
+- **`status.json` Modul 05** von `score:"spec"` /
+  `siegel:"Spec fertig"` auf `score:"stub"` / `siegel:"Code-Stub"`.
+  `python3 scripts/update_puls_pie.py` lief, Pie regeneriert: Spec
+  fertig 1 → 0, Code-Stub 4 → 5 (Schablone 7, Werkstatt 1, Fertig 0
+  unverändert).
+- **Karte 05 Hero-Badge** von 🟨 Spec fertig auf 🟦 Code-Stub.
+  Bauzustand-Tabelle: Zeile *Code geschrieben* (Bau 05) + *Sichttest*
+  („ungeprüft, weil Sitzung headless — Klaus klickt im Browser")
+  eingefügt.
+- **Karte 05 § „Service-Worker-Hinweis"** mit der getroffenen
+  Variante-A-Entscheidung und vier Begründungen fortgeschrieben.
+
+**Frischer-Kopf-Befund (keine Spec-Korrektur, aber zwei Designs):**
+
+- **Kein Bedarf, Modul 02 zu erweitern.** Die Spec-Aussage „Krypto-
+  Operationen über `SbkimSpore`" deutete auf einen Sign-Helfer in
+  Modul 02 hin, den Modul 02 bisher nicht exportiert. Pragmatische
+  Lesart: Modul 05 lädt den privateKey über
+  `SbkimStorage.get("sbkim_keys", "main")` und importiert ihn via
+  `crypto.subtle.importKey` selbst. `SbkimStorage` ist die offizielle
+  Single Source, der Krypto-Pfad ist ohnehin aus Modul 02 dupliziert
+  (gleicher canonicalize/base64url-Pfad). Eine Erweiterung der
+  Modul-02-Oberfläche um `signBytes/verifyBytes` wäre die saubere
+  Alternative gewesen — aber das wäre eine Querschnitts-Änderung
+  (INTERFACES.md §1 Modul 02 + Karte 02 + Code), die diese Sitzung
+  nicht trägt. Bei der Refactor-Sitzung 02⇄05 (oder beim
+  Modul-06-Bau) kann das in einer eigenen Sitzung gehoben werden.
+- **In-Memory-Pseudo-Knoten statt Multi-Identity.** Briefing schlug
+  zwei Optionen: Identity-Switcher in Modul 02 erweitern oder
+  In-Memory-Pseudo-Knoten. Letzteres gewählt, weil Multi-Identity in
+  02 die Singleton-Spec brechen würde. Konsequenz: das Panel testet
+  bidirektional nur die Empfänger-Seite (Main hat Alt in
+  `sbkim_siblings`). Die zweite Hälfte (Alt hat Main in seiner
+  „siblings"-Liste) ist im Panel nicht abgedeckt, weil Alt keine
+  IndexedDB hat. Den vollen bidirektionalen Pfad muss Modul 09
+  (Einbau-PWA) mit zwei tatsächlichen Tabs/Geräten testen.
+
+**Offen:**
+
+- **Sichttest Karte 05** durch Klaus — neun Knöpfe in Panel 05 (Setup
+  + sieben Tests + Selbstcheck). Voraussetzung: WebCrypto Ed25519 +
+  Modul 03 lädt einmalig ~30 MB. Erwartungen:
+  - *Setup*: zwei Knoten mit verschiedenen Domain-Vektoren, Vorschau
+    der ersten vier Float-Werte ungleich.
+  - *Test 1*: `outcome:"established"`, `score > 0.80`,
+    Response-Signatur ok, `sbkim_siblings` enthält Alt.
+  - *Test 2*: `outcome:"rejected"`, `reason ~ /score/`, `score < 0.80`.
+  - *Test 3*: `outcome:"rejected"`, `reason ~ /Hauptversion/`.
+  - *Test 4*: `outcome:"rejected"`, `reason ~ /Signatur/`.
+  - *Test 5*: `since` unverändert, sibling-Eintrag einmal, letzter
+    Log `outcome:"re-handshake"`.
+  - *Test 6*: Alt aus `sbkim_siblings` entfernt, Log unverändert.
+  - *Test 7*: zwei Einträge mit korrekter Form.
+  - *Selbstcheck*: Konsolen-Zeile vorhanden.
+- **`domainVector` in der Spore — Pflicht oder optional?** Aus der
+  Anastomose-Spec mitgenommen. Aufhänger für die Spec-Sitzung
+  Modul 09 (Einbau-PWA): wenn der Andock-Workflow `domainVector`
+  pflicht-macht, ist das ein Hauptversions-Sprung `0.1 → 1.0` in §2 + §4.
+- **Echter Netz-Pfad (Service-Worker + fetch zwischen zwei Origins)**
+  ist im Panel 05 bewusst nicht abgedeckt — gehört in Modul 09 mit
+  zwei tatsächlichen Endknoten.
+- **Modul 02 ⇄ 05 Krypto-Refactor** — in einer eigenen Pflege-
+  Sitzung optional zusammenführbar (sign/verify-Helfer in 02
+  exportieren, in 05 dann nutzen statt duplizieren).
+
+**Nächster sinnvoller Schritt:**
+
+- **Spec-Sitzung Modul 07 Apoptose** — Vorbedingungen 01 + 02 erfüllt,
+  signiertes Vermächtnis braucht den Ed25519-Schlüssel aus 02.
+  Parallel zur Anastomose lauffähig (Module unabhängig).
+- **Spec-Sitzung Modul 09 Einbau-PWA** — mit der offenen
+  `domainVector`-Pflicht-Frage aus der Anastomose-Spec. Anastomose
+  ist jetzt Code-Stub; der nächste Schritt ist die Andock-Anleitung,
+  über die Rezeptbuch/Mixarium tatsächlich einen `domainVector` in
+  ihre Spore bekommen.
+- Parallel anbietbar: **Spec-Sitzung Modul 00 (Doku-Fenster)** —
+  dependenz-frei, 5-Klick-UI in der Endknoten-PWA.
+- Sichttest Karte 05 in den nächsten Browser-Klick-Durchlauf packen
+  (zusammen mit 01/02/03/04, die bereits geprüft sind — Panel 05
+  selbst hat in Test 1–7 schon die anderen Module mit drin).
+
+---
 
 ### 2026-05-14 · Spec-Sitzung · Modul 05 Anastomose (Spec fertig)
 

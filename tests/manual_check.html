@@ -65,9 +65,9 @@
   </section>
 
   <section class="panel" data-module="05_anastomose">
-    <h2>05 Anastomose <span class="status idle">noch nicht gebaut</span></h2>
-    <div class="controls"></div>
-    <pre class="log">— noch keine Ausgabe —</pre>
+    <h2>05 Anastomose <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Voraussetzung: Module 01/02/03/04 sind beim Skript-Laden mitgekommen. Erster Klick auf „Setup" lädt Modul 03 (~30 MB) und legt zwei Knoten an: „Main" in IndexedDB, „Alt" rein im Speicher. Der echte Netz-Pfad (Service-Worker + fetch) ist hier nicht abgedeckt — der gehört in Modul 09 (Einbau in Rezeptbuch/Mixarium). —</pre>
   </section>
 
   <section class="panel" data-module="06_heterokaryose">
@@ -397,6 +397,306 @@
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("02_spore",
           "  MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore");
+      });
+    })();
+  </script>
+
+  <!-- Modul 05 — Anastomose (Bau-Sitzung 2026-05-14) -->
+  <script src="../src/modules/05_anastomose.js"></script>
+  <script>
+    (function () {
+      // Zwei Knoten, ein Tab:
+      //  - "Main"  liegt in IndexedDB (Singleton aus Modul 02, sbkim_keys["main"]).
+      //  - "Alt"   ist ein In-Memory-Pseudo-Knoten — eigenes Keypair, eigene
+      //            Spore, *kein* IndexedDB-Eintrag. Damit bleibt die
+      //            Singleton-Spec aus Modul 02 unangetastet.
+      // Die echte bidirektionale Eintragung läuft am Empfänger Main (in
+      // IndexedDB). Auf Alt-Seite haben wir keinen Storage — den
+      // verifizierten Response prüfen wir nur per Signatur. Den vollen
+      // bidirektionalen Test gegen zwei echte Tabs gibt's erst in Modul 09.
+
+      var MAIN_META = {
+        domain: "rezeptbuch.example.org",
+        nodeType: "hybrid",
+        endpoint: "https://klaus.github.io/rezeptbuch/",
+        nodeName: "Rezeptbuch (Main)",
+        domainDescription: "Hausgemachte Kochrezepte für Backwaren, Saucen, Hauptgerichte.",
+        domainKeywords: ["Backen", "Saucen", "Hauptgang"],
+      };
+      var ALT_META = {
+        domain: "mixarium.example.org",
+        nodeType: "hybrid",
+        endpoint: "https://klaus.github.io/mixarium/",
+        nodeName: "Mixarium (Alt, In-Memory)",
+        domainDescription: "Cocktails und Drinks mit Spirituosen, Sirupen, Bittern.",
+        domainKeywords: ["Cocktail", "Drink", "Spirituose"],
+      };
+      var FREMD_TEXT = "Tarantino Drehbuch Filmkritik Western";  // Domain-Mismatch-Vektor
+
+      var mainSpore = null;
+      var alt = null;          // { keyPair, publicKeyJwk, nodeId, spore }
+      var mainVec = null;      // Float32Array
+      var altVec  = null;      // Float32Array (Drink-Domäne)
+      var fremdVec = null;     // Float32Array (Filmkritik)
+
+      function preview(vec) {
+        return Array.from(vec.slice(0, 4)).map(function (x) { return Number(x.toFixed(3)); });
+      }
+
+      // Baut eine in-memory Pseudo-Spore mit Ed25519-Identität. Kanonisch
+      // signiert (gleicher Pfad wie Modul 02 in generateOwnSpore).
+      async function bakeAlt(domainVec, protocolVersionOverride) {
+        var keyPair = await crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]);
+        var rawPub = await crypto.subtle.exportKey("raw", keyPair.publicKey);
+        var sha = await crypto.subtle.digest("SHA-256", rawPub);
+        var nodeId = SbkimAnastomose._base64urlEncode(sha);
+        var publicKeyJwk = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
+
+        var unsigned = {
+          createdAt: new Date().toISOString(),
+          domain: ALT_META.domain,
+          domainDescription: ALT_META.domainDescription,
+          domainKeywords: ALT_META.domainKeywords.slice(),
+          domainVector: Array.from(domainVec),
+          embeddingModel: "Xenova/multilingual-e5-small",
+          endpoint: ALT_META.endpoint,
+          id: nodeId,
+          nodeName: ALT_META.nodeName,
+          nodeType: ALT_META.nodeType,
+          protocolVersion: typeof protocolVersionOverride === "string" ? protocolVersionOverride : "0.1",
+          publicKey: publicKeyJwk,
+        };
+        var sig = await SbkimAnastomose._signEnvelope(unsigned, keyPair.privateKey);
+        var signed = Object.assign({}, unsigned, { signature: sig });
+        return {
+          keyPair: keyPair,
+          privateKey: keyPair.privateKey,
+          publicKeyJwk: publicKeyJwk,
+          nodeId: nodeId,
+          spore: SbkimAnastomose._canonicalize(signed),
+        };
+      }
+
+      async function ensureSetup() {
+        if (mainSpore && alt && mainVec && altVec && fremdVec) return;
+        await SbkimAnastomose.init();
+        await SbkimEmbedding.init();
+
+        // Domain-Vektoren — Embedding ist gefragt, weil 05 nicht selbst
+        // embedded. Wir nehmen Passage-Embeddings (= "Inhalt"), damit
+        // Sender- und Empfänger-Vektor symmetrisch laufen.
+        mainVec  = await SbkimEmbedding.embedPassage(MAIN_META.domainKeywords.join(", "));
+        altVec   = await SbkimEmbedding.embedPassage(ALT_META.domainKeywords.join(", "));
+        fremdVec = await SbkimEmbedding.embedPassage(FREMD_TEXT);
+
+        // Main-Spore mit domainVector neu erzeugen — die alte Demo-Spore
+        // aus Panel 02 hatte keinen Vektor; ohne den kann der Empfänger
+        // nicht matchen.
+        mainSpore = await SbkimSpore.generateOwnSpore(Object.assign({}, MAIN_META, {
+          domainVector: Array.from(mainVec),
+        }));
+
+        // Sicherheitsnetz: Override für den Empfänger-Vektor. Eigentlich
+        // liest Modul 05 ihn aus mainSpore.domainVector — das Override ist
+        // nur Test-Brücke und gleicht im Zweifel mainVec ab.
+        SbkimAnastomose._setOwnDomainVector(mainVec);
+
+        alt = await bakeAlt(altVec);
+      }
+
+      SbkimUI.addButton("05_anastomose", "Setup: Embedding + 2 Knoten (einmalig)", async function () {
+        SbkimUI.log("05_anastomose", "  (erster Lauf lädt Modul 03 ~30 MB; danach schnell)");
+        await ensureSetup();
+        SbkimUI.setStatus("05_anastomose", "ok", "Setup OK");
+        var mainNodeId = await SbkimSpore.getNodeId();
+        return {
+          main: { nodeId: mainNodeId, domain: MAIN_META.domain, vektor_vorschau: preview(mainVec) },
+          alt:  { nodeId: alt.nodeId, domain: ALT_META.domain, vektor_vorschau: preview(altVec) },
+          fremd_vektor_vorschau: preview(fremdVec),
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 1: Lokaler Zwei-Knoten-Handshake (passt)", async function () {
+        await ensureSetup();
+        var mainNodeId = await SbkimSpore.getNodeId();
+        var request = await SbkimAnastomose._buildSignedRequest(alt.privateKey, alt.spore, altVec, mainNodeId);
+        var response = await SbkimAnastomose._invokeDirect(request);
+        var respValid = await SbkimAnastomose._verifyResponseSignature(response, mainSpore.publicKey);
+        var siblings = await SbkimAnastomose.listSiblings();
+        var pass = response.outcome === "established" && respValid;
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 1 OK" : "Test 1 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_score: response.score,
+          response_reason: response.reason,
+          response_signatur_ok: respValid,
+          erwartung: "outcome=established, score > 0.80, Response-Signatur ok",
+          siblings_nach_test: siblings.map(function (s) { return { nodeId: s.nodeId, domain: s.domain, since: s.since }; }),
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 2: Domain-Mismatch (Tarantino-Vektor)", async function () {
+        await ensureSetup();
+        // Wir bauen einen Alt-Knoten mit dem fremdVec (Filmkritik), während
+        // Main mit Backen-Vektor sitzt. Score sollte unter 0.80 fallen.
+        var fremdAlt = await bakeAlt(fremdVec);
+        var mainNodeId = await SbkimSpore.getNodeId();
+        var request = await SbkimAnastomose._buildSignedRequest(fremdAlt.privateKey, fremdAlt.spore, fremdVec, mainNodeId);
+        var response = await SbkimAnastomose._invokeDirect(request);
+        var respValid = await SbkimAnastomose._verifyResponseSignature(response, mainSpore.publicKey);
+        var pass = response.outcome === "rejected" && /score/i.test(response.reason || "");
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          response_score: response.score,
+          response_signatur_ok: respValid,
+          erwartung: "outcome=rejected, reason enthält 'score', score < 0.80, Signatur ok",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 3: Versions-Mismatch (Spore 1.0)", async function () {
+        await ensureSetup();
+        // Alt-Spore mit protocolVersion "1.0" — Hauptversion-Mismatch zu lokalem "0.1".
+        var v1Alt = await bakeAlt(altVec, "1.0");
+        var mainNodeId = await SbkimSpore.getNodeId();
+        var request = await SbkimAnastomose._buildSignedRequest(v1Alt.privateKey, v1Alt.spore, altVec, mainNodeId);
+        // ABER: der Request selbst hat protocolVersion "0.1" (aus Modul 05's _buildSignedRequest).
+        // Wir nehmen das v1-Element bewusst aus der senderSpore — verifyForeignSpore wird die Spore
+        // wegen Hauptversion-Mismatch ablehnen. Das ist der erste Tor-Stop.
+        var response = await SbkimAnastomose._invokeDirect(request);
+        var pass = response.outcome === "rejected" && /Hauptversion/i.test(response.reason || "");
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          erwartung: "outcome=rejected, reason enthält 'Hauptversion'",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 4: Signatur manipuliert", async function () {
+        await ensureSetup();
+        var mainNodeId = await SbkimSpore.getNodeId();
+        var request = await SbkimAnastomose._buildSignedRequest(alt.privateKey, alt.spore, altVec, mainNodeId);
+        // Feld NACH dem Signieren ändern → Request-Signatur wird beim Verify scheitern.
+        var tampered = Object.assign({}, request, { fromNodeId: request.fromNodeId.replace(/.$/, "A") });
+        var response = await SbkimAnastomose._invokeDirect(tampered);
+        var pass = response.outcome === "rejected" && /Signatur/i.test(response.reason || "");
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          manipulation: "fromNodeId letztes Zeichen auf 'A' geändert",
+          erwartung: "outcome=rejected, reason enthält 'Signatur'",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 5: Re-Handshake (zweimal nacheinander)", async function () {
+        await ensureSetup();
+        var mainNodeId = await SbkimSpore.getNodeId();
+
+        var req1 = await SbkimAnastomose._buildSignedRequest(alt.privateKey, alt.spore, altVec, mainNodeId);
+        var resp1 = await SbkimAnastomose._invokeDirect(req1);
+
+        // Eintrag in sbkim_siblings vor dem zweiten Lauf festhalten.
+        var siblingsRaw = await SbkimAnastomose.listSiblings();
+        var entryBefore = siblingsRaw.filter(function (s) { return s.nodeId === alt.nodeId; })[0];
+
+        var req2 = await SbkimAnastomose._buildSignedRequest(alt.privateKey, alt.spore, altVec, mainNodeId);
+        var resp2 = await SbkimAnastomose._invokeDirect(req2);
+
+        var siblingsAfter = await SbkimAnastomose.listSiblings();
+        var entryAfter = siblingsAfter.filter(function (s) { return s.nodeId === alt.nodeId; })[0];
+
+        var sameSince = entryBefore && entryAfter && entryBefore.since === entryAfter.since;
+        var einmal = siblingsAfter.filter(function (s) { return s.nodeId === alt.nodeId; }).length === 1;
+
+        // Log nachschauen: letzte Zeile sollte "re-handshake" sein.
+        var allLogs = await SbkimStorage.all("sbkim_anastomosis_log");
+        var letzte = allLogs.length > 0 ? allLogs[allLogs.length - 1].value : null;
+
+        var pass = resp1.outcome === "established" && resp2.outcome === "established" && sameSince && einmal;
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          erste_response: resp1.outcome,
+          zweite_response: resp2.outcome,
+          since_vor: entryBefore && entryBefore.since,
+          since_nach: entryAfter && entryAfter.since,
+          since_unverändert: !!sameSince,
+          sibling_einmal_gespeichert: einmal,
+          letzter_log_eintrag: letzte,
+          erwartung: "beide established, since unverändert, sibling-Eintrag nur einmal, letzter Log outcome='re-handshake'",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 6: forgetSibling (entfernt Eintrag, Log bleibt)", async function () {
+        await ensureSetup();
+        var siblingsVor = await SbkimAnastomose.listSiblings();
+        var logVor = await SbkimStorage.all("sbkim_anastomosis_log");
+
+        await SbkimAnastomose.forgetSibling(alt.nodeId);
+        // unbekannte nodeId — sollte nicht werfen
+        await SbkimAnastomose.forgetSibling("nicht-existent-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        var siblingsNach = await SbkimAnastomose.listSiblings();
+        var logNach = await SbkimStorage.all("sbkim_anastomosis_log");
+
+        var altWeg = siblingsNach.filter(function (s) { return s.nodeId === alt.nodeId; }).length === 0;
+        var logBleibt = logNach.length === logVor.length;
+
+        var pass = altWeg && logBleibt;
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 6 OK" : "Test 6 fehlgeschlagen");
+        return {
+          siblings_vor: siblingsVor.length,
+          siblings_nach: siblingsNach.length,
+          alt_entfernt: altWeg,
+          log_eintraege_vor: logVor.length,
+          log_eintraege_nach: logNach.length,
+          log_bleibt_unangetastet: logBleibt,
+          forget_unbekannt_wirft_nicht: true,
+          erwartung: "alt aus siblings entfernt, Log unverändert, forgetSibling auf unbekannt idempotent",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 7: listSiblings nach zwei Handshakes", async function () {
+        await ensureSetup();
+        var mainNodeId = await SbkimSpore.getNodeId();
+
+        // Zwei verschiedene Alt-Knoten anlegen, beide mit passendem Vektor.
+        var alt1 = await bakeAlt(altVec);
+        var alt2 = await bakeAlt(altVec);
+
+        var r1 = await SbkimAnastomose._invokeDirect(
+          await SbkimAnastomose._buildSignedRequest(alt1.privateKey, alt1.spore, altVec, mainNodeId),
+        );
+        var r2 = await SbkimAnastomose._invokeDirect(
+          await SbkimAnastomose._buildSignedRequest(alt2.privateKey, alt2.spore, altVec, mainNodeId),
+        );
+
+        var siblings = await SbkimAnastomose.listSiblings();
+        var hasAlt1 = siblings.some(function (s) { return s.nodeId === alt1.nodeId; });
+        var hasAlt2 = siblings.some(function (s) { return s.nodeId === alt2.nodeId; });
+        var pass = r1.outcome === "established" && r2.outcome === "established" && hasAlt1 && hasAlt2;
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 7 OK" : "Test 7 fehlgeschlagen");
+        return {
+          erste_response: r1.outcome,
+          zweite_response: r2.outcome,
+          alt1_in_liste: hasAlt1,
+          alt2_in_liste: hasAlt2,
+          siblings_form_korrekt: siblings.every(function (s) {
+            return typeof s.nodeId === "string" && typeof s.domain === "string" &&
+                   typeof s.since === "string" && s.pubKey && typeof s.pubKey === "object";
+          }),
+          gesamtzahl: siblings.length,
+          erwartung: "beide alt-Knoten in listSiblings, jeder mit {nodeId, domain, since, pubKey}",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("05_anastomose",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("05_anastomose",
+          "  MODUL 05 ANASTOMOSE bereit, Funktionen: init/handshake/receiveHandshake/listSiblings/forgetSibling");
       });
     })();
   </script>
