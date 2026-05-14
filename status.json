@@ -33,7 +33,7 @@
     { "id": "06", "name": "Heterokaryose",  "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["05"],     "kurz": "Datenaustausch unter Geschwistern (Opt-In)" },
     { "id": "07", "name": "Apoptose",       "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["02","01"],"kurz": "Selbstlöschung + signiertes Vermächtnis" },
     { "id": "08", "name": "UI-Demo",        "score": "werkstatt", "siegel": "in Werkstatt",      "abhaengig": [],         "kurz": "tests/manual_check.html — Werkstatt-Sichtprüfung" },
-    { "id": "09", "name": "Einbau-PWA",     "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": [],         "kurz": "Anleitung zum Einbau in Endknoten-PWAs" }
+    { "id": "09", "name": "Einbau-PWA",     "score": "spec",      "siegel": "Spec fertig",       "abhaengig": [],         "kurz": "Andock-Anleitung für Endknoten — Module kopieren, Spore mit domainVector erzeugen, Service-Worker registrieren" }
   ],
 
   "schutzBacklog": [

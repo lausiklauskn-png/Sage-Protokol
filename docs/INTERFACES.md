@@ -467,14 +467,56 @@ Geprüft: ungeprüft
 ---
 
 ### Modul: 09_einbau_pwa
-Status: schablone
+Status: entwurf  (Anleitung, kein JS-Modul — Statuscodes sind formal
+                  für JS-Module; 09 ist die Bündel-Anleitung und nutzt
+                  „entwurf" als Marker für „Spec fertig, Inhalt
+                  verbindlich".)
 Datei:  docs/components/09_einbau_pwa.md (Anleitung, kein JS-Modul)
 
 Bietet:
-  *(Anleitung, wie ein fertiges Modul in Rezeptbuch / Mixarium
-   eingebaut wird — keine JS-Schnittstelle)*
+  Schritt-für-Schritt Andock-Anleitung für Endknoten-PWAs (Rezeptbuch,
+  Mixarium und künftige). Acht nummerierte Schritte vom Kopieren der
+  Modul-Dateien bis zum ersten erfolgreichen Handshake. Trifft drei
+  Andock-Konventionen verbindlich:
+    1. Datei-Pfad-Konvention: Service-Worker `sbkim-sw.js` liegt im
+       Endknoten-Repo-Root (Scope `/<repo>/`); die fünf JS-Module
+       werden als Inline-`<script>`-Blöcke in `index.html` eingebaut
+       (Klaus' Single-File-Stil) oder alternativ unter `<endknoten>/
+       sbkim/` als externe `.js`-Dateien. Reihenfolge verbindlich:
+       01 → 02 → 03 → 04 → 05.
+    2. Spore-Endpunkt-Konvention: `/sbkim/spore.json` (§3-Alias) ist
+       der verbindliche Andock-Default, weil GitHub-Pages-Project-Sites
+       mit `.well-known/` (Jekyll-Default-Ausschluss von Dot-Ordnern)
+       Probleme haben können.
+    3. Service-Worker-Registrierungs-Konvention: SW im Endknoten-Repo-
+       Root als `sbkim-sw.js`, registriert mit
+       `navigator.serviceWorker.register("sbkim-sw.js")` (relativer
+       Pfad, automatischer Scope `/<repo>/`). Scope-Falle bei Ablage
+       unter `<endknoten>/sbkim/sbkim-sw.js` ist dokumentiert
+       (engerer Scope `/<repo>/sbkim/` blockiert spätere Schutz-
+       Module).
 
-Geprüft: ungeprüft
+Nutzt-von:
+  Endknoten-Repos Rezeptbuch + Mixarium (siehe `endknoten` in
+  `status.json`). Nicht intern im Sage-Protokoll-Repo.
+
+Abhängigkeiten:
+  Keine im Bau-DAG (Karte 09 hängt formal an gar nichts und ist auch
+  von gar nichts abhängig). Inhaltlich setzt sie alle fünf Code-Module
+  + den Service-Worker voraus:
+    Modul 01 (Storage), Modul 02 (Spore), Modul 03 (Embedding),
+    Modul 04 (Match), Modul 05 (Anastomose), `src/sbkim-sw.js`.
+
+`domainVector`-Pflicht-Entscheidung (Spec-Sitzung 09, 2026-05-14):
+  Soft-Pflicht im Andock-Workflow — `domainVector` bleibt im §2-
+  Spore-Schema OPTIONAL (kein Hauptversions-Sprung). Karte 09 macht
+  es im Andock-Workflow zur verbindlichen Pflicht (Schritte 5–7
+  erzeugen und deployen den Vektor). Modul 05 lehnt unverändert ab
+  mit `outcome:"rejected", reason:"kein domainVector verfügbar"`,
+  wenn jemand trotzdem eine Spore ohne Vektor publiziert. Begründung
+  in Karte 09 § Risiken & offene Punkte.
+
+Geprüft: 2026-05-14 (Spec-Sitzung 09)
 
 ---
 
@@ -730,3 +772,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-14 | Spec+Bau-Sitzung 02 | Modul 02 spezifiziert und gebaut. Singleton-Identität (`"main"` in `sbkim_keys` und `sbkim_spore`), Sieben-Funktionen-API (init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore), WebCrypto Ed25519 ohne Polyfill (`CryptoUnavailableError` bei Fehlen). `node_id = base64url(sha256(rawPublicKey))` ohne Padding, von anderen Knoten nachrechenbar. Persistenz strikt über `SbkimStorage`. §2 „Spore-JSON" mit verbindlichem Schema gefüllt: neun Pflichtfelder (createdAt/domain/embeddingModel/endpoint/id/nodeType/protocolVersion/publicKey/signature) + fünf optionale, kanonische Serialisierung mit alphabetisch sortierten Keys, Versionierungs-Regel auf §4 verwiesen. |
 | 2026-05-14 | Pflege-Sitzung Match-Kalibrierung | `PROVIDER_MIN_MATCH` in §0 von `0.55` auf `0.80` angehoben (Vertrag-Sektion Modul 04 mitgezogen). Beleg: Klaus-Sichttest im Browser ergab fünf reproduzierbare Cosinus-Messwerte (Käsekuchen/Käsetorte 0.9507, Käsekuchen/Auspuffrohr 0.8967, Hefeteig/Kochrezepte 0.8312, Tarantino/Kochrezepte 0.7737, gleicher Inhalt ~0.95). 0.80 trennt empirisch sauber zwischen „relevant" (0.83) und „irrelevant" (0.77); das Paper-Original 0.55 hätte alles durchgelassen. Modul-Status bleibt `entwurf`. |
 | 2026-05-14 | Spec-Sitzung 05 | Modul 05 (Anastomose) spezifiziert. Fünf-Funktionen-API (`init/handshake/receiveHandshake/listSiblings/forgetSibling`), bidirektionale Eintragung nur bei beidseitigem Match, semantische Ablehnung ist Outcome (kein Throw), Protokoll-/Netz-/Krypto-Fehler werfen. Stores `sbkim_siblings` (peerNodeId → {nodeId, domain, endpoint, pubKey, since}) und `sbkim_anastomosis_log` (ts → {ts, peerId, outcome}) — anonymisiert. Reentry idempotent: `since` bleibt beim ersten Anklopf, Log bekommt `outcome:"re-handshake"`. Schwellwert wird ausschließlich über `SbkimMatch.isAboveProviderThreshold` gelesen (kein literales 0.80 in 05). §2 „Anfrage (Query)" verbindlich mit HandshakeRequest/HandshakeResponse-Schema gefüllt (kanonische Signatur, Pflicht-/Optional-Felder, Versionierungs-Regel auf §4 verwiesen, Verifikations-Pfad in sieben Schritten). Service-Worker-Vertrag für statisch gehostete Endknoten (POST `/sbkim/anastomosis`, JSON, ≤ 64 KiB, 503 wenn keine Page-Instanz aktiv); Wahl Page-Hosted vs. SW-Hosted vertagt auf Bau-Sitzung 05. Status auf `entwurf`. |
+| 2026-05-14 | Spec-Sitzung 09 | Modul 09 (Einbau-PWA) spezifiziert. Karte 09 vollständig gefüllt — acht-Schritt Andock-Pfad mit konkreten Konsolen-Befehlen für Klaus (kein-Programmierer-Andocker), Datei-Pfad-Konvention verbindlich (SW im Endknoten-Repo-Root, fünf JS-Module inline in `index.html` oder unter `<endknoten>/sbkim/`), Spore-Endpunkt verbindlich `/sbkim/spore.json` (Alias aus §3 statt `.well-known/`, weil GitHub-Pages-Project-Sites Jekyll-Dot-Ordner-Falle haben), Service-Worker-Registrierungs-Konvention `navigator.serviceWorker.register("sbkim-sw.js")` aus dem Repo-Root mit automatischem Scope `/<repo>/`, Scope-Falle bei Ablage unter `sbkim/` dokumentiert. Sichtkontrolle (3 Pflicht-Punkte: Konsolen-Selbstchecks · IndexedDB-Stores · live-Spore-URL). `domainVector`-Pflicht-Frage aus Spec-Sitzung 05 verbindlich entschieden: **Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — `domainVector` bleibt in §2 OPTIONAL, Karte 09 macht ihn Andock-Pflicht; §0 `PROTOCOL_VERSION` bleibt `"0.1"`. Begründung in Karte 09 § Risiken & offene Punkte. Status Modul 09 auf `entwurf` (Anleitung-Marker; Karten-Statuscodes formal für JS-Module). |

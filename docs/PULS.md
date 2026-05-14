@@ -16,9 +16,9 @@
 ```mermaid
 pie showData
   title Modulstand 2026-05-14 (13 Module)
-  "🟫 Schablone" : 7
+  "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 0
+  "🟨 Spec fertig" : 1
   "🟦 Code-Stub" : 5
   "🟩 Fertig" : 0
 ```
@@ -42,23 +42,27 @@ Code-Stub frisch aus der Bau-Sitzung 2026-05-14, **Sichttest ausstehend:**
 
 - 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/05_anastomose.js` + `src/sbkim-sw.js` (Variante A · Page-Hosted), Panel 05 mit acht Knöpfen (Setup + sieben Test-Punkte aus Karte 05 § Manueller Test); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
 
+Spec frisch aus der Spec-Sitzung 2026-05-14, **Bau ausstehend** (Anleitung — kein JS-Modul):
+
+- 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung); Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, JS-Module inline oder unter `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` verbindlich, SW-Scope-Falle dokumentiert, `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
+
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
 - ✨ **[00 Doku-Fenster](components/00_doku_fenster.md)** — keine Abh., 5-Klick-UI in Endknoten
-- ✨ **[09 Einbau-PWA](components/09_einbau_pwa.md)** — keine Abh., reine Anleitung
 
 In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: **Spec-Sitzung Modul 07 Apoptose** (Vor-
-bedingungen 01 + 02 erfüllt, signiertes Vermächtnis braucht den
-Ed25519-Schlüssel aus 02) **oder** **Spec-Sitzung Modul 09 Einbau-PWA**
-(mit der offenen `domainVector`-Pflicht-Frage aus der Anastomose-Spec —
-soll der Vektor Pflicht in der Spore werden? Wenn ja, ist das ein
-Hauptversions-Sprung `0.1 → 1.0`). Parallel anbietbar: Spec-Sitzung
-Modul 00 (Doku-Fenster). Sichttest Karte 05 (acht Knöpfe in Panel 05)
-gehört in einen kurzen Browser-Klick-Durchlauf.
+Empfehlung Hauptsitzung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus
+am Live-Andock-Versuch** (Spec liegt vor, Andock-Anleitung verbindlich;
+nächster Schritt ist der erste echte Andock-Klick im Browser an Rezeptbuch
+und/oder Mixarium) **oder** **Spec-Sitzung Modul 07 Apoptose**
+(Vorbedingungen 01 + 02 erfüllt, signiertes Vermächtnis braucht den
+Ed25519-Schlüssel aus 02). Parallel anbietbar: Spec-Sitzung Modul 00
+(Doku-Fenster). Sichttest Karte 05 (acht Knöpfe in Panel 05) gehört in
+einen kurzen Browser-Klick-Durchlauf, idealerweise vor dem Live-Andocken
+(Modul 05 wird im Andock-Workflow ausgeführt).
 
 ---
 
@@ -75,7 +79,7 @@ gehört in einen kurzen Browser-Klick-Durchlauf.
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
 | 07 apoptose | leere Schablone | — | — | Selbstlöschung |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
-| 09 einbau_pwa | leere Schablone | — | — | Anleitung Rezeptbuch/Mixarium |
+| 09 einbau_pwa | Spec fertig (2026-05-14) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — 8 Schritte; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
@@ -95,9 +99,13 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   oder nur lokal in deren `index.html`? → Entscheidung steht aus.
 - Embedding-Modell: bleibt es bei Default `Xenova/multilingual-e5-small`?
   → ja, bis Gegenargument. Quelle: `sbkim_integration.md` §4.1.
-- Speicherort der Spore bei GitHub Pages: `/.well-known/sbkim/spore.json`
-  oder Alias `/sbkim/spore.json`? → siehe `docs/components/02_spore.md`
-  und `docs/components/09_einbau_pwa.md`, sobald die geschrieben sind.
+- ~~Speicherort der Spore bei GitHub Pages: `/.well-known/sbkim/spore.json`
+  oder Alias `/sbkim/spore.json`?~~ — **gelöst 2026-05-14 in Spec-Sitzung
+  09:** verbindlicher Andock-Default ist `/sbkim/spore.json` (Alias aus
+  §3 INTERFACES). Begründung in `docs/components/09_einbau_pwa.md`
+  Schritt 7: GitHub-Pages-Project-Sites haben mit `.well-known/` die
+  Jekyll-Dot-Ordner-Falle, `/sbkim/spore.json` bündelt zudem alle
+  SBKIM-Pfade unter `/sbkim/` (semantisch sauber).
 - **Wording-Diskrepanz**: `CLAUDE.md` führt SBKIM als
   "Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel" — das Paper
   (Kap. 1.2) führt es als "Semantisch-Empfangendes Bidirektionales
@@ -132,6 +140,133 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Spec-Sitzung · Modul 09 Einbau-PWA (Spec fertig)
+
+**Getan:**
+
+- **`docs/components/09_einbau_pwa.md` vollständig gefüllt** — Karte
+  vom Schablonen-Stand auf 🟨 Spec fertig gehoben. Inhalt: Hero · Im
+  Mycel-Bild (Andocken als Initiations-Phase, vier Pflichten:
+  Singleton-Identität, Domain-Vektor, Spore publizieren, Empfangsmund) ·
+  Visualisierung (Mermaid-Flowchart mit acht nummerierten Schritten) ·
+  Zweck · Verantwortlichkeiten (Macht / Macht nicht je 6+ Punkte) ·
+  Vor dem Einbau zu klärende Werte (Tabelle mit `<DOMAIN>`, `<ENDPOINT>`,
+  `<DOMÄNEN-STICHWORTE>`, `<REPO-NAME>`, `<PEER-SPORE-URL>` für
+  Rezeptbuch + Mixarium) · Datei-Pfad-Konvention im Endknoten · Andock-
+  Schritt-Pfad in acht Schritten · Sichtkontrolle nach dem Andocken
+  (drei Pflicht-Punkte) · Service-Worker-Hinweis (Pfad, Browser-
+  Voraussetzungen, Lebenszyklus, Vertrag, Update-Verhalten) · Nach
+  dem Einbau zu pflegen · Was nicht in den Endknoten gehört · Risiken
+  & offene Punkte (sieben Punkte) · Bauzustand · Querverweise.
+- **`domainVector`-Pflicht-Frage verbindlich entschieden — Variante A
+  (Soft-Pflicht im Andock-Workflow).** Begründung in fünf Punkten
+  in Karte 09 § Risiken & offene Punkte. Konsequenz: `domainVector`
+  bleibt in §2 INTERFACES *optional*, Karte 09 macht ihn im Andock-
+  Workflow zur **verbindlichen Pflicht** (Schritte 5–7 erzeugen und
+  deployen den Vektor). Modul 02 `generateOwnSpore`/`verifyForeignSpore`
+  ändern sich **nicht**. Modul 05 `receiveHandshake` lehnt unverändert
+  mit `outcome:"rejected", reason:"kein domainVector verfügbar"` ab,
+  wenn jemand trotzdem eine Spore ohne Vektor publiziert. **Kein
+  Hauptversions-Sprung 0.1 → 1.0.** Begründungs-Kern: Klaus' Netz ist
+  klein (3 Nutzer, 2 Endknoten desselben Betreibers); Karte 09 ist
+  die *eine* Stelle, die der Andocker garantiert liest; Variante B
+  (Schema-Pflicht) würde alle bestehenden Spores inkompatibel machen
+  (auch die provisorischen aus Karte 10 Live-Generator) und kostet
+  fünf Stellen Folgesitzungs-Arbeit. Variante B bleibt für eine
+  spätere Pflege-Sitzung anbietbar, wenn das Netz wächst (drei+
+  Betreiber, Cross-Betreiber-Anastomose).
+- **Datei-Pfad-Konvention im Endknoten verbindlich:** Service-Worker
+  `sbkim-sw.js` im Endknoten-Repo-Root (neben `index.html`); die fünf
+  JS-Module 01/02/03/04/05 als Inline-`<script>`-Blöcke in `index.html`
+  (Klaus' Single-File-Stil) — alternativ unter `<endknoten>/sbkim/` als
+  externe Dateien. Reihenfolge verbindlich: 01 → 02 → 03 → 04 → 05.
+- **Spore-Endpunkt-Konvention verbindlich:** `/sbkim/spore.json`
+  (Alias aus §3 INTERFACES) als Andock-Default, weil GitHub-Pages-
+  Project-Sites mit `.well-known/` Jekyll-Dot-Ordner-Falle haben können
+  und das Alias zudem semantisch alle SBKIM-Pfade unter `/sbkim/`
+  bündelt. Offene Querschnitts-Frage in PULS „Speicherort der Spore"
+  damit gelöst.
+- **Service-Worker-Registrierungs-Konvention verbindlich:** SW im
+  Endknoten-Repo-Root, Registrierung mit
+  `navigator.serviceWorker.register("sbkim-sw.js")` (relativer Pfad,
+  automatischer Scope `/<repo>/`). Scope-Falle bei Ablage unter
+  `<endknoten>/sbkim/sbkim-sw.js` (engerer Scope `/<repo>/sbkim/`
+  blockiert spätere Schutz-Module 11/12) ausdrücklich dokumentiert.
+- **`INTERFACES.md` §1 Modul 09** auf Status `entwurf` (mit Erläuterung,
+  dass Status-Codes formal für JS-Module sind und 09 als Anleitung
+  „entwurf" als Marker für „Spec fertig, Inhalt verbindlich" nutzt).
+  Vertrag-Sektion mit Datei-, Spore-Endpunkt- und SW-Registrierungs-
+  Konventionen + `domainVector`-Pflicht-Entscheidung. §6
+  Änderungsprotokoll-Zeile am unteren Ende ergänzt.
+- **`status.json` Modul 09** von `score:"schablone"`/`siegel:"noch nicht
+  gebaut"` auf `score:"spec"`/`siegel:"Spec fertig"` mit aktualisiertem
+  `kurz`-Feld. `python3 scripts/update_puls_pie.py` gelaufen, Pie
+  regeneriert: Schablone 7→6, Spec fertig 0→1 (Code-Stub bleibt 5,
+  Werkstatt bleibt 1).
+- **Frischer-Kopf-Befund:** beim Durchgehen der Code-Module 01–05
+  wurde **keine fehlende Helfer-Funktion** identifiziert, die einen
+  Andocker blockieren würde. Alle benötigten Surface-Einträge sind
+  exportiert (Storage/Spore/Embedding/Match/Anastomose, jeweils mit
+  passender API für den Andock-Workflow). Hinweis in Karte 09 § Risiken
+  & offene Punkte ans Ende geschrieben.
+
+**Frischer-Kopf-Befund — drei Konventionen, eine Pflicht-Entscheidung,
+keine API-Korrektur:** Die drei Konventionen (Datei-Pfad, Spore-Endpunkt,
+SW-Registrierung) waren im Briefing als „Sitzung entscheidet"
+gekennzeichnet — entschieden. Die `domainVector`-Pflicht-Frage war als
+„verbindlich entscheiden, keine Verschiebung" gekennzeichnet — Variante
+A gewählt mit Begründungs-Block, keine §0/§2/§4-Folgearbeit nötig. Keine
+API-Korrektur an Modul 01–05 nötig — der Andock-Workflow funktioniert
+mit der vorhandenen Surface.
+
+**Was offen blieb:**
+
+- **Live-Andock-Versuch durch Klaus.** Karte 09 beschreibt die acht
+  Schritte verbindlich; der erste echte Andock-Klick an Rezeptbuch
+  und/oder Mixarium ist die Bau-Phase dieser Anleitung. Sinnvoller
+  Sitzungs-Typ: Bau-Sitzung Modul 09 mit Klaus' Mitarbeit am Browser.
+  Voraussetzung: Klaus hat die Werte `<DOMAIN>`, `<ENDPOINT>`,
+  `<DOMÄNEN-STICHWORTE>` etc. für beide Endknoten gesammelt (siehe
+  Tabelle in Karte 09 § Vor dem Einbau zu klärende Werte).
+- **Sichttest Karte 05 durch Klaus.** Panel 05 mit acht Knöpfen
+  (Setup + sieben Test-Punkte) wartet auf einen kurzen Browser-Klick-
+  Durchlauf. Sollte idealerweise *vor* dem Live-Andocken laufen — Modul
+  05 wird im Andock-Workflow ausgeführt; wenn dort ein Fehler auftritt,
+  ist der Sichttest die schnellere Diagnose-Ebene.
+- **`forgetSibling`-UI-Pfad im Endknoten.** Karte 09 erwähnt, dass der
+  Andocker dem Betreiber eine Möglichkeit anbieten sollte, ein
+  Geschwister manuell zu vergessen (bis Modul 07 Apoptose den TTL-Pfad
+  liefert). Konkrete UI-Empfehlung gehört in Bau-Sitzung 09 oder eine
+  spätere Pflege-Sitzung — diese Spec-Sitzung markiert es nur als
+  „offen".
+- **Cross-Betreiber-CORS.** Rezeptbuch ↔ Mixarium funktionieren ohne
+  CORS-Probleme (gleicher Origin `klaus.github.io`). Andocken an einen
+  Endknoten anderen Betreibers braucht CORS-Header beim Empfänger —
+  GitHub Pages liefert das nicht automatisch. Eine Folge-Pflege-Sitzung
+  „CORS-Pfad für fremde Origins" ist anbietbar, sobald ein zweiter
+  Betreiber andockt.
+- **PULS.md Zeilen-Längen-Schwellwert.** CLAUDE.md sagt 400 Zeilen
+  Maximum, jetzt deutlich darüber. Älteres in `docs/sessions/archiv/`
+  umzuziehen ist Querschnitts-Aufräum-Arbeit für eine eigene Sitzung —
+  nicht Teil dieser Spec-Sitzung. Die letzten fünf Sitzungen sind
+  genauso vorgegangen.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Browser** — die acht
+   Schritte aus Karte 09 *live* durchlaufen an Rezeptbuch und/oder
+   Mixarium. Liefert den ersten echten Handshake und füllt die
+   Bauzustand-Tabelle Zeile *Erstmaliger Einbau Rezeptbuch* / *Mixarium*.
+2. **Sichttest Karte 05 durch Klaus** — Panel 05 mit acht Knöpfen
+   (idealerweise vor Punkt 1, weil Modul 05 im Andock-Workflow läuft).
+3. **Spec-Sitzung Modul 07 Apoptose** — Vorbedingungen 01 + 02 erfüllt,
+   signiertes Vermächtnis braucht den Ed25519-Schlüssel aus 02. Liefert
+   den TTL-Pfad, der `forgetSibling` ergänzt.
+4. Parallel anbietbar: **Spec-Sitzung Modul 00 (Doku-Fenster)** —
+   dependenz-frei, 5-Klick-UI in der Endknoten-PWA.
+
+---
 
 ### 2026-05-14 · Bau-Sitzung · Modul 05 Anastomose (Code-Stub)
 
