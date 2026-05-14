@@ -156,6 +156,19 @@ verifyForeignSpore(spore) → Promise<{ valid: boolean, reason?: string }>
   // Prüft Signatur und nodeId-Konsistenz einer beliebigen Spore.
   // Liefert { valid: true } oder { valid: false, reason: "<deutsch>" }.
   // Wirft niemals — Verifikations-Fehler werden als reason zurückgegeben.
+
+resetIdentityCache() → void
+  // Sync, idempotent. Leert den In-Memory-identityCache des Moduls,
+  // ohne den Storage anzufassen — das ist Aufgabe von Modul 01.
+  // Pflicht-Aufruf für Module, die sbkim_keys/sbkim_spore von außen
+  // leeren (Modul 07 confirmSelfApoptose, ggf. Modul 12 Blocklist
+  // später). Ohne diesen Aufruf liefern getNodeId / getPublicKeyJwk
+  // weiter die alte Identität aus dem Cache, trotz leerem Storage,
+  // und ein storage-direkter Lookup (z.B. SbkimApoptose.loadOwnPrivateKey)
+  // wirft NoIdentityError trotz „frischer" Identität-Erwartung.
+  // Modul 02 erkennt Storage-Cleanup nicht selbst und vertraut auf den
+  // expliziten Aufruf. Pflege-Sitzung 2026-05-15 (Klaus' Sichttest-
+  // Befund Modul 07 Test 6).
 ```
 
 ### Selbstcheck
@@ -163,7 +176,7 @@ verifyForeignSpore(spore) → Promise<{ valid: boolean, reason?: string }>
 Beim **Skript-Laden** (synchron, vor jeglichem Aufruf):
 
 ```
-console.info("MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore");
+console.info("MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache");
 ```
 
 Wie Modul 01 — die Selbstcheck-Meldung signalisiert „Modul geladen",
@@ -349,6 +362,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Spec gefüllt | 2026-05-14 | Spec+Bau 02 | Singleton-Identität, sieben-Funktionen-API, node_id-Ableitung verbindlich, Spore-JSON-Pflichtfelder, kanonische Signatur, Fehlertabelle, manueller Test |
 | Code geschrieben | 2026-05-14 | Spec+Bau 02 | `src/modules/02_spore.js`, IIFE mit `window.SbkimSpore`, WebCrypto Ed25519, Persistenz nur über `SbkimStorage`, JS-Syntax via `node --check` grün |
 | Sichttest | 2026-05-14 | Spec+Bau 02 | geprüft 2026-05-14 (Klaus, im Browser): Identität deterministisch, Spore vollständig + sortiert, Sign+Verify round-trip valid, Manipulation erkannt. |
+| Pflege Cache-Invalidate | 2026-05-15 | Pflege 02+07-Cache-Invalidate | Klaus' Sichttest 2026-05-15 Modul 07 Test 6 ergab `getNodeId_wirft_NoIdentityError:false` trotz `stores_alle_leer:true` — Modul 02's `identityCache` wurde nicht durch externes `storage.clear` invalidiert. **Fix**: neue öffentliche Funktion `resetIdentityCache() → void` (sync, idempotent, leert nur den Closure-Cache, kein Storage-Eingriff); Vertrag in INTERFACES.md §1 Modul 02 Bietet-Block + Selbstcheck-Format-Zeile (sieben Funktionen) + Garantien-Block für 05/06/07 (neuer Punkt „Cache-Konsistenz nach externem Storage-Cleanup"). Modul 07 ruft die Funktion als Schritt 6 nach den fünf `storage.clear`-Aufrufen. **Sauberere Lösung von vier Optionen** — Vertrag-Trennung (Modul 02 kennt keine Apoptose, bietet aber den Hook), performance-neutral (Cache bleibt schnell für Modul 04/05/00), additiv (kein Hauptversions-Sprung). `node --check` grün. status.json unverändert (kein Score-Wechsel). |
 | In Endknoten eingebaut | — | — | — |
 
 ---

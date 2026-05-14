@@ -399,6 +399,18 @@
     }
   }
 
+  // Sync, idempotent. Leert den In-Memory-identityCache, ohne den
+  // Storage anzufassen. Pflicht-Aufruf für Module, die sbkim_keys/
+  // sbkim_spore von außen leeren (z.B. Modul 07 confirmSelfApoptose).
+  // Ohne diesen Aufruf liefert getNodeId/getPublicKeyJwk weiter die
+  // alte Identität aus dem Cache, trotz leerem Storage.
+  // Pflege-Sitzung 2026-05-15 (Klaus' Sichttest-Befund Modul 07
+  // Test 6: getNodeId_wirft_NoIdentityError war false trotz
+  // stores_alle_leer:true).
+  function resetIdentityCache() {
+    identityCache = null;
+  }
+
   var SbkimSpore = {
     init: init,
     getOrCreateIdentity: getOrCreateIdentity,
@@ -407,6 +419,7 @@
     generateOwnSpore: generateOwnSpore,
     getOwnSpore: getOwnSpore,
     verifyForeignSpore: verifyForeignSpore,
+    resetIdentityCache: resetIdentityCache,
     _meta: {
       protocolVersion: PROTOCOL_VERSION,
       identityKey: IDENTITY_KEY,
@@ -423,7 +436,7 @@
   if (typeof console !== "undefined" && console.info) {
     console.info(
       "MODUL 02 SPORE bereit, Funktionen: " +
-        "init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore",
+        "init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache",
     );
   }
 })(typeof window !== "undefined" ? window : globalThis);
