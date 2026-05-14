@@ -15,10 +15,10 @@
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-10 (13 Module)
-  "🟫 Schablone" : 12
+  title Modulstand 2026-05-14 (13 Module)
+  "🟫 Schablone" : 10
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 0
+  "🟨 Spec fertig" : 2
   "🟦 Code-Stub" : 0
   "🟩 Fertig" : 0
 ```
@@ -28,19 +28,24 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 ## Als nächstes ✨
 
-Module ohne offene Abhängigkeiten, bereit zum Anpacken:
+Module mit fertiger Spec, bereit für die Bau-Sitzung:
+
+- 🟨 **[01 Storage](components/01_storage.md)** — Spec 2026-05-14, **Voraussetzung für 02, 05, 06, 07, 12**
+- 🟨 **[03 Embedding](components/03_embedding.md)** — Spec 2026-05-14, **Voraussetzung für 04**
+
+Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
 - ✨ **[00 Doku-Fenster](components/00_doku_fenster.md)** — keine Abh., 5-Klick-UI in Endknoten
-- ✨ **[01 Storage](components/01_storage.md)** — keine Abh., **Voraussetzung für 02, 05, 07, 12**
-- ✨ **[03 Embedding](components/03_embedding.md)** — keine Abh., **Voraussetzung für 04**
 - ✨ **[09 Einbau-PWA](components/09_einbau_pwa.md)** — keine Abh., reine Anleitung
 
 In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: zwei parallele Spec-Sitzungen 01 + 03 starten.
-Sie blockieren am meisten Folgemodule.
+Empfehlung Hauptsitzung: zwei parallele **Bau-Sitzungen** 01 + 03
+starten (Specs sind unabhängig voneinander). Parallel dazu Spec-Sitzung
+Modul 09 (Einbau-PWA) — dependenz-frei und blockiert sonst die
+spätere Endknoten-Übernahme.
 
 ---
 
@@ -49,9 +54,9 @@ Sie blockieren am meisten Folgemodule.
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
 | 00 doku_fenster | leere Schablone | — | — | "5-Klick versteckte Doku" in Suchleiste |
-| 01 storage | leere Schablone | — | — | IndexedDB-Wrapper |
+| 01 storage | Spec fertig (2026-05-14) | — | — | IndexedDB-Wrapper |
 | 02 spore | leere Schablone | — | — | Ed25519-Identität |
-| 03 embedding | leere Schablone | — | — | semantischer Vektor |
+| 03 embedding | Spec fertig (2026-05-14) | — | — | semantischer Vektor |
 | 04 match | leere Schablone | — | — | Vektorvergleich |
 | 05 anastomose | leere Schablone | — | — | Handshake |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
@@ -114,6 +119,65 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Spec-Sitzung · Modul 01 Storage + Modul 03 Embedding
+
+**Getan:**
+- **Komponenten-Karte 01 (Storage) gefüllt:** API mit sieben Funktionen
+  (`init/getStore/get/put/del/all/clear`), verbindliche Stores-Tabelle
+  (sechs Stores mit Schlüsseltyp + Wert-Form + Schreiber/Leser),
+  Versionsmigrations-Regel (additiv, `DB_VERSION` hochziehen pro
+  Spec-Änderung), Fehlertabelle mit fünf benannten Error-Typen,
+  Selbstcheck-Format. Plan-offene Frage „Suchhistorie / Embedding-Cache"
+  bewusst negativ entschieden (personenbezogen → CLAUDE.md-Verbot;
+  `transformers.js` cached selbst).
+- **Komponenten-Karte 03 (Embedding) gefüllt:** Vier Embed-Funktionen
+  (`embedQuery`, `embedPassage`, `embedQueryBatch`, `embedPassageBatch`)
+  + `init` + `isReady`, **kein** `mode`-Parameter (e5-Prefix-Drift per
+  API-Design ausgeschlossen). L2-Norm-Garantie gegen Modul 04 dokumentiert
+  (Cosinus = Skalarprodukt). Truncate-Strategie: still abschneiden auf
+  512 Tokens mit einmaligem `console.warn` pro Sitzung. Selbstcheck nach
+  erfolgreichem `init()` (nicht beim Skript-Laden).
+- **INTERFACES.md — erstmals Vertrag-Sektionen gefüllt:** Modul 01 und
+  Modul 03 stehen jetzt mit vollen Signaturen, Stores, Events,
+  Selbstcheck und Fehlerverhalten dort. Änderungsprotokoll fortgeschrieben.
+  Status beider Module auf `spec`.
+- **status.json:** 01 und 03 auf `spec`. `lastUpdated` auf 2026-05-14.
+  `python3 scripts/update_puls_pie.py` lief, Pie regeneriert
+  (Schablone 10 / Werkstatt 1 / Spec 2).
+- **`docs/WEGWEISER.md` neu angelegt** (aus Plan-Brief Punkt 8):
+  Einstiegs-Anleitung mit neun nummerierten Checkbox-Schritten,
+  Mini-Glossar in einfacher Sprache, Stand-Block am Ende. Erster Stand-
+  Eintrag von dieser Sitzung.
+- **`tests/manual_check.html` erweitert:** Stub-Knöpfe für Panel 01
+  (init / round-trip / Selbstcheck) und Panel 03 (init / round-trip /
+  Vergleich Query vs. Passage / Selbstcheck) mit minimalem Hinweis-
+  Handler. Bau-Sitzung ersetzt die Handler durch echte Aufrufe.
+- **PULS.md angepasst:** „Als nächstes ✨" auf Bau-Sitzungen für 01 + 03
+  umgestellt, Schnellüberblicks-Tabelle für 01 und 03 auf „Spec fertig",
+  neuer Sitzungs-Eintrag (dieser).
+
+**Offen:**
+- **Bau-Sitzung 01** und **Bau-Sitzung 03** stehen aus. Können parallel
+  laufen (unabhängig, jede Sitzung kennt nur ihre Karte).
+- **Spec-Sitzung Modul 09 (Einbau-PWA)** weiterhin als parallel
+  anbietbare dritte Sitzung empfohlen — dependenz-frei.
+- **A1–B3-Synthese** als Querschnitts-Frage bleibt ungeklärt, Auflösung
+  in Spec-Sitzung Modul 04 (siehe Querschnitts-Fragen oben).
+- **Glossar-Anker:** WEGWEISER hat ein Mini-Glossar in einfacher
+  Sprache; das Voll-Glossar (`docs/GLOSSAR.md`) braucht laut Site-Echo-
+  Sitzung noch Ergänzungen (Atemkreis, Werkstatt, Hop-TTL, Override).
+  Reine Doku-Aufgabe, eigene Sitzung.
+
+**Nächster sinnvoller Schritt:**
+- **Bau-Sitzung Modul 01** starten (`src/modules/01_storage.js`,
+  Knopf-Handler in `manual_check.html` ersetzen, Selbstcheck-`console.info`
+  beim Skript-Laden, manueller Sichttest).
+- Parallel **Bau-Sitzung Modul 03** (`src/modules/03_embedding.js`,
+  Lazy-Init, L2-Norm, Selbstcheck-`console.info` nach `init`).
+- Parallel anbietbar: **Spec-Sitzung Modul 09 Einbau-PWA**.
+
+---
 
 ### 2026-05-14 · Plan-Sitzung · Spec-Brief 01 Storage + 03 Embedding
 

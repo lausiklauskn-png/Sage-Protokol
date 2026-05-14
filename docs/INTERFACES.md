@@ -74,13 +74,50 @@ Geprüft: ungeprüft
 ---
 
 ### Modul: 01_storage
-Status: schablone
+Status: spec
 Datei:  src/modules/01_storage.js
 
-Bietet:
-  *(noch zu spezifizieren — IndexedDB-Wrapper für SBKIM-Stores)*
+Bietet (öffentlich):
+  init()                                 → Promise<void>
+  getStore(storeName: string)            → StoreHandle           // sync; wirft UnknownStoreError
+  get(storeName, key: string)            → Promise<any | undefined>
+  put(storeName, key: string, value)     → Promise<void>
+  del(storeName, key: string)            → Promise<void>
+  all(storeName)                         → Promise<Array<{key: string, value: any}>>
+  clear(storeName)                       → Promise<void>
 
-Geprüft: ungeprüft
+Nutzt:
+  (keine — Wurzelmodul, IndexedDB direkt)
+
+Storage:
+  DB-Name:    "sbkim"
+  DB-Version: 1
+  Stores:
+    sbkim_keys              (Schlüssel "main";  Wert: {keyId, privateKey, publicKey})              — Schreiber 02
+    sbkim_spore             (Schlüssel "main";  Wert: {nodeId, sporeJson, signature})              — Schreiber 02
+    sbkim_siblings          (Schlüssel nodeId;  Wert: {nodeId, domain, since, pubKey})             — Schreiber 05
+    sbkim_anastomosis_log   (Schlüssel ts;      Wert: {ts, peerId, outcome})                       — Schreiber 05
+    sbkim_legacy_inbox      (Schlüssel fromId;  Wert: {fromNodeId, reason, signature, receivedAt}) — Schreiber 07
+    sbkim_doku_meta         (Schlüssel modId;   Wert: {moduleId, lastSighttest, status})           — Schreiber 00
+  Alle Store-Namen mit SBKIM_STORE_PREFIX ("sbkim_"). Versionsmigrationen
+  sind additiv; jede neue Spec, die einen Store hinzufügt, erhöht
+  DB-Version um 1.
+
+Events:
+  (keine — reine Datenzugriffsschicht, keine Pub/Sub)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, nicht in init):
+    console.info("MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear");
+
+Fehlerverhalten:
+  - Privatmodus / IDB nicht verfügbar  → init() rejects mit StorageUnavailableError
+  - Unbekannter Store                  → UnknownStoreError (synchron bei getStore, async sonst)
+  - Quota überschritten                → QuotaExceededError (vom Browser durchgereicht)
+  - Nicht-klonbarer Wert               → DataCloneError
+  - DB-Open scheitert                  → StorageOpenError (keine Auto-Reparatur)
+
+Geprüft: 2026-05-14 (Spec-Sitzung 01+03)
 
 ---
 
@@ -96,13 +133,58 @@ Geprüft: ungeprüft
 ---
 
 ### Modul: 03_embedding
-Status: schablone
+Status: spec
 Datei:  src/modules/03_embedding.js
 
-Bietet:
-  *(noch zu spezifizieren — Text → Float32Array(384) via Xenova)*
+Bietet (öffentlich):
+  init()                                  → Promise<void>
+  isReady()                               → boolean                    // sync
+  embedQuery(text: string)                → Promise<Float32Array(384)>  // L2-normalisiert
+  embedPassage(text: string)              → Promise<Float32Array(384)>  // L2-normalisiert
+  embedQueryBatch(texts: string[])        → Promise<Float32Array[]>    // Reihenfolge erhalten
+  embedPassageBatch(texts: string[])      → Promise<Float32Array[]>    // Reihenfolge erhalten
 
-Geprüft: ungeprüft
+  KEIN mode-Parameter. e5-Rollen-Prefix wird intern angewandt:
+    embedQuery   → "query: "   + text
+    embedPassage → "passage: " + text
+  Modul 04 nimmt match(queryVec, passageVec) und ist damit modus-frei
+  (die Parameternamen erzwingen die richtige Vektor-Kombination).
+
+Nutzt:
+  (keine SBKIM-Module — lädt eigenes Modell via transformers.js)
+
+Storage:
+  (kein SBKIM-Store — transformers.js verwaltet den Modell-Cache im
+   Browser-Cache selbst. Kein sbkim_embedding_cache in dieser Spec.)
+
+Events:
+  (keine)
+
+Selbstcheck:
+  Nach erfolgreichem init() (Modell tatsächlich geladen), einmalig:
+    console.info(
+      "MODUL 03 EMBEDDING bereit, Funktionen: " +
+      "init/isReady/embedQuery/embedPassage/embedQueryBatch/embedPassageBatch, " +
+      "Modell: Xenova/multilingual-e5-small, Dim: 384"
+    );
+  NICHT beim Skript-Laden — der asynchrone Modell-Download würde sonst
+  die "bereit"-Meldung verfälschen.
+
+Fehlerverhalten:
+  - Modell-Download scheitert  → ModelLoadError (deutschsprachige Message)
+  - Tokenizer-Crash            → EmbeddingError (Original-Error in .cause)
+  - Leerer/whitespace-Text     → EmptyInputError (Modul 04 darf nie Null-Vektor sehen)
+  - Text > 512 Token nach Prefix → KEIN Fehler. Stilles Truncate.
+    Beim ersten Truncate pro Sitzung: console.warn("MODUL 03 EMBEDDING:
+    Eingabe > 512 Tokens, abgeschnitten"). Danach Schweige-Modus.
+  - Leeres Batch-Array         → Promise<[]>, kein Fehler.
+
+Garantien für Modul 04:
+  - Alle Vektoren sind Float32Array der Länge 384.
+  - Alle Vektoren sind L2-normalisiert (Norm ≈ 1.0 ± 0.001).
+  - Cosinus-Ähnlichkeit reduziert sich auf das Skalarprodukt.
+
+Geprüft: 2026-05-14 (Spec-Sitzung 01+03)
 
 ---
 
@@ -266,3 +348,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 |---|---|---|
 | 2026-05-10 | Hauptsitzung Skelett | Datei angelegt, alle Module als Schablonen |
 | 2026-05-10 | Hauptsitzung Site-Echo | Status-Farb-Mapping (§5) als gemeinsame Referenz ergänzt |
+| 2026-05-14 | Spec-Sitzung 01+03 | Erste Vertrag-Sektionen gefüllt: Modul 01 (Storage) und Modul 03 (Embedding) auf Status `spec`. Modul 03 mit 4-Funktionen-API (`embedQuery`/`embedPassage` + Batch-Varianten) statt `mode`-Parameter. Selbstcheck-Format `MODUL XX <NAME> bereit, Funktionen: ...` für alle Module festgelegt. |

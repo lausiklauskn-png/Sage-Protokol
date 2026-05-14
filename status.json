@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Kein Endknoten.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-05-10",
+  "lastUpdated": "2026-05-14",
   "branch": "claude/semantic-agent-network-Y03Vg",
 
   "endknoten": [
@@ -25,9 +25,9 @@
 
   "modules": [
     { "id": "00", "name": "Doku-Fenster",  "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": [],         "kurz": "5-Klick versteckte Statusanzeige im Such-Symbol" },
-    { "id": "01", "name": "Storage",        "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": [],         "kurz": "IndexedDB-Wrapper für sbkim_*-Stores" },
+    { "id": "01", "name": "Storage",        "score": "spec",      "siegel": "Spec fertig",       "abhaengig": [],         "kurz": "IndexedDB-Wrapper für sbkim_*-Stores" },
     { "id": "02", "name": "Spore",          "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["01"],     "kurz": "Ed25519-Identität, signierte Visitenkarte" },
-    { "id": "03", "name": "Embedding",      "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": [],         "kurz": "Text → 384-dim Vektor (Xenova multilingual-e5-small)" },
+    { "id": "03", "name": "Embedding",      "score": "spec",      "siegel": "Spec fertig",       "abhaengig": [],         "kurz": "Text → 384-dim Vektor (Xenova multilingual-e5-small)" },
     { "id": "04", "name": "Match",          "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["03"],     "kurz": "Cosine-Sim, Domänen-Vektor" },
     { "id": "05", "name": "Anastomose",     "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["02","04"],"kurz": "Handshake zwischen Knoten" },
     { "id": "06", "name": "Heterokaryose",  "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["05"],     "kurz": "Datenaustausch unter Geschwistern (Opt-In)" },
