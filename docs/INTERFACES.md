@@ -307,13 +307,129 @@ Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04)
 ---
 
 ### Modul: 05_anastomose
-Status: schablone
+Status: entwurf
 Datei:  src/modules/05_anastomose.js
 
-Bietet:
-  *(noch zu spezifizieren — Handshake mit fremdem Knoten)*
+Bietet (öffentlich):
+  init()                                                       → Promise<void>
+  handshake(targetSpore: SporeJson, ownDomainVector: Float32Array(384))
+                                                               → Promise<HandshakeResult>
+  receiveHandshake(incomingRequest: HandshakeRequest)          → Promise<HandshakeResponse>
+  listSiblings()                                               → Promise<Array<{ nodeId, domain, since, pubKey }>>
+  forgetSibling(nodeId: string)                                → Promise<void>
 
-Geprüft: ungeprüft
+  Anastomose ist die *Komposition* aus 01/02/04. Modul 05 rechnet nicht
+  selbst, sondern ruft `SbkimSpore.verifyForeignSpore`,
+  `SbkimMatch.match` + `SbkimMatch.isAboveProviderThreshold` und
+  `SbkimStorage.put/get/del` auf. Auslöser ist ausschließlich der
+  Aufrufer (Modul 08 UI-Demo / Modul 09 Einbau-PWA) — kein Auto-
+  Handshake beim Spore-Empfang, keine Pulsation, keine Eigenanfragen
+  ins offene Netz.
+
+Nutzt:
+  SbkimStorage.init / get / put / del / all     (sbkim_siblings, sbkim_anastomosis_log)
+  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk
+                                                 (eigene Identität, kanonisches Sign)
+  SbkimSpore.verifyForeignSpore                  (fremde Spore prüfen — Signatur, id-Konsistenz, Hauptversion)
+  SbkimMatch.match                               (Cosinus zweier domainVector)
+  SbkimMatch.isAboveProviderThreshold            (Schwelle ≥ PROVIDER_MIN_MATCH (0.80) aus §0)
+  WebCrypto via Modul 02:
+    crypto.subtle.sign({ name: "Ed25519" }, privateKey, bytes)   (Request/Response signieren)
+    crypto.subtle.verify({ name: "Ed25519" }, publicKey, sig, bytes)  (Gegen-Signatur prüfen)
+  fetch (POST) gegen targetSpore.endpoint + ENDPOINT.anastomosis ("/sbkim/anastomosis").
+    AbortController(QUERY_TIMEOUT_MS = 4000) für ausgehende Anfragen.
+
+Storage:
+  Stores (beide aus Modul 01):
+    sbkim_siblings         (Schlüssel: peerNodeId; Wert: { nodeId, domain, endpoint, pubKey, since })
+    sbkim_anastomosis_log  (Schlüssel: ISO-Timestamp; Wert: { ts, peerId, outcome })
+  outcome ∈ { "established", "rejected", "re-handshake", "timeout" }.
+  Log ist anonymisiert: kein domainVector, kein Score-Profil, kein
+  Anfrage-Inhalt; nur Begegnung + Ausgang. `since` bleibt beim ersten
+  Anklopf-Zeitpunkt eingefroren (Reentry-Idempotenz).
+
+Events:
+  (keine — keine Pub/Sub. Modul 09 / 08 rufen handshake() bzw.
+   der Service-Worker ruft receiveHandshake() direkt auf.)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 05 ANASTOMOSE bereit, Funktionen: init/handshake/receiveHandshake/listSiblings/forgetSibling");
+  Wie Modul 01/02/04 — die Meldung signalisiert "Modul geladen", nicht
+  "Identität existiert" oder "Geschwister da". Schwelle / Endpunkt /
+  Version werden in der Selbstcheck-Zeile bewusst nicht wiederholt
+  (stehen verbindlich in §0 / §3 / Modul 04).
+
+Versionierungs- und Match-Vertrag:
+  - Hauptversion-Mismatch zwischen lokaler PROTOCOL_VERSION und
+    `targetSpore.protocolVersion` (bzw. `request.protocolVersion`):
+    sofortiger Abbruch (ausgehend: ProtocolVersionMismatchError;
+    eingehend: HandshakeResponse{outcome:"rejected",
+    reason:"Inkompatible Hauptversion: <x.y>"}). Siehe §4.
+  - Schwellwert kommt ausschließlich aus
+    SbkimMatch.isAboveProviderThreshold — niemals literal 0.80 in
+    Modul 05. Wer den Wert ändert, ändert §0 + Modul 04; Modul 05
+    zieht ohne Code-Änderung nach.
+  - Bidirektionalität: sbkim_siblings wird auf beiden Seiten genau
+    dann gefüllt, wenn beide Match-Schwellen passieren. Einseitiger
+    Match → kein Geschwister-Eintrag; in sbkim_anastomosis_log
+    erscheint auf beiden Seiten eine "rejected"-Zeile.
+
+Fehlerverhalten:
+  - Abhängigkeit fehlt (Storage/Spore/Match nicht auf window) → init() rejects mit AnastomoseDependenciesError
+  - handshake(): verifyForeignSpore(targetSpore) liefert {valid:false} → InvalidPeerSporeError (cause: reason)
+  - handshake(): Hauptversion inkompatibel → ProtocolVersionMismatchError (kein Netz-Aufruf)
+  - handshake(): lokaler Vor-Check unter Schwelle (wenn targetSpore.domainVector vorhanden)
+                                                          → KEIN Throw. return {outcome:"rejected-local", score},
+                                                            Log "abgelehnt: lokal".
+  - handshake(): fetch-Timeout > QUERY_TIMEOUT_MS         → HandshakeTimeoutError, Log "timeout"
+  - handshake(): Netz-/CORS-/DNS-Fehler                   → HandshakeNetworkError (cause: Original-Error)
+  - handshake(): Response-Signatur ungültig                → HandshakeSignatureInvalidError, Log "abgelehnt: invalid-peer"
+  - handshake(): outcome "rejected" vom Peer               → KEIN Throw. return {outcome:"rejected", reason, score?},
+                                                            Log "abgelehnt: peer".
+  - receiveHandshake(): jegliche Form-/Signatur-/Version-/Schwellen-Verletzung
+                                                          → WIRFT NIEMALS. Alles als
+                                                            HandshakeResponse{outcome:"rejected", reason:"<deutsch>"}
+                                                            (analog Modul 02 verifyForeignSpore).
+  - listSiblings() / forgetSibling(): Storage-Fehler aus Modul 01    → unverändert durchgereicht
+
+Reentry-Verhalten:
+  Wenn dieselbe peerNodeId (mit derselben Spore-id) zweimal anklopft:
+  sbkim_siblings-Eintrag wird NICHT überschrieben, `since` bleibt
+  beim ersten Anklopf-Zeitpunkt. Log-Zeile bekommt outcome
+  "re-handshake". forgetSibling auf einen unbekannten nodeId wirft
+  NICHT (idempotent).
+
+Service-Worker-Vertrag (für statisch gehostete Endknoten):
+  - Pfad: ENDPOINT.anastomosis ("/sbkim/anastomosis"), POST,
+    Content-Type application/json, Body ≤ 64 KiB. Andere Methode → 405,
+    falscher Content-Type → 415, zu groß → 413.
+  - SW liest JSON-Body, ruft `SbkimAnastomose.receiveHandshake(body)`
+    auf der aktiven PWA-Instanz auf, antwortet mit dem zurückgegebenen
+    HandshakeResponse als JSON (200).
+  - Wenn keine PWA-Instanz aktiv: 503 Service Unavailable, kein Auto-
+    Start, kein Wake-Lock.
+  - Variante Page-Hosted vs. SW-Hosted: Entscheidung in Bau-Sitzung 05.
+    Beide Varianten rufen dieselbe `receiveHandshake`-Signatur.
+
+Datenformate:
+  HandshakeRequest / HandshakeResponse → §2 dieser Datei.
+  sbkim_siblings-Wert / sbkim_anastomosis_log-Wert → Karte 05 Block
+  "Datenformate".
+
+Garantien für Modul 06 / 07:
+  - sbkim_siblings ist die Einzige Quelle für „verbundene Geschwister".
+    Modul 06 (Heterokaryose) iteriert nur über diese Liste und legt
+    keine eigenen Listen an.
+  - Modul 05 vergisst Geschwister NICHT von selbst (kein TTL, keine
+    Apoptose). Vergessen ist Aufgabe von Modul 07 (Apoptose) bzw.
+    manuell über forgetSibling.
+  - Anastomose ist die kleinste Einheit eines Schlucks: ein
+    Handshake = eine Aktion + ein Log-Eintrag. Wer mehrfach handshakt,
+    erzeugt mehrfach Logs — aber pro Peer nur einen Geschwister-
+    Eintrag.
+
+Geprüft: 2026-05-14 (Spec-Sitzung 05)
 
 ---
 
@@ -417,7 +533,112 @@ endpointPaths       : object                  Override für §3, falls Hoster oh
 
 ### Anfrage (Query)
 
-*(noch zu spezifizieren — siehe Modul 05)*
+Verbindliches Schema des Anastomose-Handshakes, festgelegt in der
+Spec-Sitzung 05 vom 2026-05-14. Anfrage = `HandshakeRequest`, der vom
+Initiator A an `targetSpore.endpoint + ENDPOINT.anastomosis` (= dem
+`/sbkim/anastomosis`-Pfad aus §3) **POST** geschickt wird, mit
+`Content-Type: application/json`. Antwort = `HandshakeResponse`
+(unten). Beide JSON-Objekte sind **kanonisch** serialisiert
+(alphabetisch sortierte Keys, rekursiv); die Signatur deckt die Form
+**ohne** das `signature`-Feld.
+
+#### HandshakeRequest — Pflichtfelder
+
+```
+fromNodeId       : string   = nodeId des Senders A (= base64url(sha256(rawPub)), ohne Padding)
+nonce            : string   16 zufällige Bytes, base64url ohne Padding (Replay-Marker; Modul 05
+                            prüft in der Erst-Spec noch nicht aktiv auf Wiederholung, vgl. Karte
+                            05 Risiken-Block)
+protocolVersion  : string   semver-artig, z.Z. "0.1" (aus §0). Hauptversions-Mismatch zwischen
+                            request.protocolVersion und PROTOCOL_VERSION → Abbruch, siehe §4.
+senderSpore      : object   vollständige SporeJson des Senders, vom Sender mit Ed25519 signiert
+                            (siehe oben „Spore-JSON"). Empfänger verifiziert über
+                            SbkimSpore.verifyForeignSpore.
+signature        : string   base64url ohne Padding, Ed25519 über kanonisches JSON ohne signature.
+                            Schlüssel: privateKey des Senders (Modul 02). Empfänger verifiziert
+                            gegen senderSpore.publicKey.
+timestamp        : string   ISO-8601 mit Millisekunden, UTC ("Z"). Vom Sender beim Bauen gesetzt.
+```
+
+#### HandshakeRequest — Optionale Felder (signaturpflichtig, wenn vorhanden)
+
+```
+domainVector     : number[]   384 floats, L2-normalisiert. Wenn nicht in senderSpore.domainVector
+                              gesetzt: hier nachreichen. Empfänger kann ohne einen der beiden
+                              Vektoren nicht matchen — siehe Karte 05 Risiken-Block.
+toNodeId         : string     erwartete nodeId des Empfängers, falls dem Sender bekannt. Empfänger
+                              prüft (wenn vorhanden) Übereinstimmung mit getNodeId(); Mismatch →
+                              outcome:"rejected", reason:"toNodeId stimmt nicht zum Empfänger".
+```
+
+#### HandshakeResponse — Pflichtfelder
+
+```
+fromNodeId       : string   nodeId des Empfängers B
+nonceEcho        : string   identisch zu request.nonce (Replay-Verkettung; in Erst-Spec rein
+                            informativ, in einer Folge-Spec für aktiven Replay-Schutz nutzbar)
+outcome          : string   "established" | "rejected"
+protocolVersion  : string   "0.1"
+receiverSpore    : object   vollständige SporeJson des Empfängers B (signiert)
+signature        : string   Ed25519-Signatur über kanonisches JSON ohne signature, mit dem
+                            privateKey des Empfängers.
+timestamp        : string   ISO-8601 UTC, Empfänger beim Bauen
+toNodeId         : string   nodeId des Senders (= request.fromNodeId)
+```
+
+#### HandshakeResponse — Optionale Felder
+
+```
+reason           : string   deutschsprachiger Klartext, Pflicht bei outcome="rejected", sonst weggelassen.
+                            Beispiele: "Pflichtfeld fehlt: <name>", "Inkompatible Hauptversion: 1.0",
+                            "Signatur ungültig", "score unterhalb Schwelle", "kein domainVector verfügbar".
+score            : number   Cosinus-Ergebnis aus SbkimMatch.match auf der Empfängerseite. Wird bei
+                            outcome:"established" und bei outcome:"rejected" mit Grund "score
+                            unterhalb Schwelle" mitgeschickt. Bei anderen Ablehnungs-Gründen
+                            (Form, Versions-Mismatch, Signatur ungültig) weggelassen.
+```
+
+#### Versionierungs-Regel
+
+- Pflichtfelder dürfen ab Status `entwurf` nur additiv erweitert
+  werden. Das Hinzufügen eines Pflichtfelds erfordert den Schritt von
+  `protocolVersion: "0.x"` auf `"1.0"`.
+- Hauptversionen (1.x ↔ 2.x): inkompatibel. Empfänger und Sender
+  brechen den Handshake bei Hauptversion-Mismatch ab — siehe §4 und
+  Modul 05 Vertrag (`ProtocolVersionMismatchError` ausgehend,
+  `outcome:"rejected"` mit reason eingehend).
+- Streichen oder Optional→Pflicht ist immer ein Hauptversions-Sprung.
+- Unbekannte zusätzliche Felder werden bei `receiveHandshake` **nicht**
+  abgewiesen — sie sind aber Teil der Signatur (jeder Knoten signiert,
+  was er ausliefert).
+
+#### Verifikations-Pfad (Empfänger, Reihenfolge verbindlich)
+
+1. Pflichtfelder vollzählig im HandshakeRequest? → sonst
+   `outcome:"rejected", reason:"Form ungültig"`.
+2. `SbkimSpore.verifyForeignSpore(senderSpore)` valid? → sonst
+   `outcome:"rejected", reason:"<deutsch>"` (reason aus dem
+   verifyForeignSpore-Ergebnis durchgereicht).
+3. Hauptversion `request.protocolVersion` kompatibel mit lokalem
+   `PROTOCOL_VERSION`? → sonst `outcome:"rejected",
+   reason:"Inkompatible Hauptversion: <x.y>"`.
+4. Request-Signatur über die kanonisch serialisierte Form ohne
+   `signature` gegen `senderSpore.publicKey` verifiziert? → sonst
+   `outcome:"rejected", reason:"Request-Signatur ungültig"`.
+5. `domainVector` verfügbar (aus `request.domainVector` oder
+   `senderSpore.domainVector`)? → sonst `outcome:"rejected",
+   reason:"kein domainVector verfügbar"`.
+6. `score = SbkimMatch.match(ownDomainVector, peerDomainVector)`;
+   `SbkimMatch.isAboveProviderThreshold(score)` true? → sonst
+   `outcome:"rejected", reason:"score unterhalb Schwelle"` (score
+   mit-melden).
+7. Sonst: `sbkim_siblings.put({nodeId, domain, endpoint, pubKey,
+   since: now()})` (nur wenn neu — Reentry hält `since` fest),
+   `sbkim_anastomosis_log.put({ts, peerId, outcome:"established"})`,
+   Response `{outcome:"established", score, …}` mit Signatur.
+
+Detail-Erklärung der Sender-Seite und der Schritt-für-Schritt-Ebene
+liegt in `docs/components/05_anastomose.md` § „Anastomose-Pfad".
 
 ### Antwort (Response)
 
@@ -508,3 +729,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-14 | Spec+Bau-Sitzung 04 | Modul 04 spezifiziert und gebaut. Modus-freie API `match(queryVec, passageVec) → number` + `isAboveProviderThreshold` + Konstante `PROVIDER_MIN_MATCH`. Vertraut auf L2-Norm-Garantie aus Modul 03 (kein Norm-Check im Hot-Path). Status auf `entwurf`. A1–B3-Notations-Synthese in `docs/components/04_match.md` gelöst (Hops tragen Funktionen). |
 | 2026-05-14 | Spec+Bau-Sitzung 02 | Modul 02 spezifiziert und gebaut. Singleton-Identität (`"main"` in `sbkim_keys` und `sbkim_spore`), Sieben-Funktionen-API (init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore), WebCrypto Ed25519 ohne Polyfill (`CryptoUnavailableError` bei Fehlen). `node_id = base64url(sha256(rawPublicKey))` ohne Padding, von anderen Knoten nachrechenbar. Persistenz strikt über `SbkimStorage`. §2 „Spore-JSON" mit verbindlichem Schema gefüllt: neun Pflichtfelder (createdAt/domain/embeddingModel/endpoint/id/nodeType/protocolVersion/publicKey/signature) + fünf optionale, kanonische Serialisierung mit alphabetisch sortierten Keys, Versionierungs-Regel auf §4 verwiesen. |
 | 2026-05-14 | Pflege-Sitzung Match-Kalibrierung | `PROVIDER_MIN_MATCH` in §0 von `0.55` auf `0.80` angehoben (Vertrag-Sektion Modul 04 mitgezogen). Beleg: Klaus-Sichttest im Browser ergab fünf reproduzierbare Cosinus-Messwerte (Käsekuchen/Käsetorte 0.9507, Käsekuchen/Auspuffrohr 0.8967, Hefeteig/Kochrezepte 0.8312, Tarantino/Kochrezepte 0.7737, gleicher Inhalt ~0.95). 0.80 trennt empirisch sauber zwischen „relevant" (0.83) und „irrelevant" (0.77); das Paper-Original 0.55 hätte alles durchgelassen. Modul-Status bleibt `entwurf`. |
+| 2026-05-14 | Spec-Sitzung 05 | Modul 05 (Anastomose) spezifiziert. Fünf-Funktionen-API (`init/handshake/receiveHandshake/listSiblings/forgetSibling`), bidirektionale Eintragung nur bei beidseitigem Match, semantische Ablehnung ist Outcome (kein Throw), Protokoll-/Netz-/Krypto-Fehler werfen. Stores `sbkim_siblings` (peerNodeId → {nodeId, domain, endpoint, pubKey, since}) und `sbkim_anastomosis_log` (ts → {ts, peerId, outcome}) — anonymisiert. Reentry idempotent: `since` bleibt beim ersten Anklopf, Log bekommt `outcome:"re-handshake"`. Schwellwert wird ausschließlich über `SbkimMatch.isAboveProviderThreshold` gelesen (kein literales 0.80 in 05). §2 „Anfrage (Query)" verbindlich mit HandshakeRequest/HandshakeResponse-Schema gefüllt (kanonische Signatur, Pflicht-/Optional-Felder, Versionierungs-Regel auf §4 verwiesen, Verifikations-Pfad in sieben Schritten). Service-Worker-Vertrag für statisch gehostete Endknoten (POST `/sbkim/anastomosis`, JSON, ≤ 64 KiB, 503 wenn keine Page-Instanz aktiv); Wahl Page-Hosted vs. SW-Hosted vertagt auf Bau-Sitzung 05. Status auf `entwurf`. |
