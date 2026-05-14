@@ -1,6 +1,6 @@
 # Modul 01 — Storage
 
-> **Status:** 🟨 Spec fertig  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 01
+> **Status:** 🟦 Code-Stub  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 01
 > **Datei (Code):** `src/modules/01_storage.js`
 >
 > _IndexedDB-Wrapper für alle SBKIM-Stores — die Erde, in der das Mycel
@@ -275,8 +275,8 @@ Block dieser Karte (Zeile „Sichttest").
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, ER-Diagramm, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 01+03 | API, Stores-Liste, Migrations-Regel, Selbstcheck-Format |
-| Code geschrieben | — | — | — |
-| Sichttest | — | — | — |
+| Code geschrieben | 2026-05-14 | Bau 01 | `src/modules/01_storage.js`, IIFE mit `window.SbkimStorage`, vier Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
+| Sichttest | 2026-05-14 | Bau 01 | ungeprüft im Browser (Sitzung headless) — Klaus klickt die vier Knöpfe in `manual_check.html` und trägt Ergebnis hier nach |
 | In Endknoten eingebaut | — | — | — |
 
 ---
