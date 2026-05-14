@@ -1,6 +1,6 @@
 # Modul 03 — Embedding
 
-> **Status:** 🟨 Spec fertig  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 03
+> **Status:** 🟦 Code-Stub  ·  **Schicht:** Kern  ·  **Anker:** Sage-Page → Karte 4, Eintrag 03
 > **Datei (Code):** `src/modules/03_embedding.js`
 >
 > _Text → 384-dimensionaler Vektor via `Xenova/multilingual-e5-small`.
@@ -233,8 +233,8 @@ Cosinus-Funktion brauchen.
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid-Flow, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 01+03 | 4-Funktionen-API, L2-Norm-Garantie, Selbstcheck-Format, Truncate-Regel |
-| Code geschrieben | — | — | — |
-| Sichttest | — | — | — |
+| Code geschrieben | 2026-05-14 | Bau 03 | `src/modules/03_embedding.js`, IIFE mit `window.SbkimEmbedding`, dynamischer Import von transformers.js@2.17.2 vom CDN, fünf Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
+| Sichttest | 2026-05-14 | Bau 03 | ungeprüft im Browser (Sitzung headless, Modell-Download braucht Netz im Browser) — Klaus klickt die fünf Knöpfe und trägt Ergebnis hier nach |
 | In Endknoten eingebaut | — | — | — |
 
 ---
