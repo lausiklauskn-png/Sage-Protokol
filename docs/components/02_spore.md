@@ -348,7 +348,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Spore-SVG, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec+Bau 02 | Singleton-Identität, sieben-Funktionen-API, node_id-Ableitung verbindlich, Spore-JSON-Pflichtfelder, kanonische Signatur, Fehlertabelle, manueller Test |
 | Code geschrieben | 2026-05-14 | Spec+Bau 02 | `src/modules/02_spore.js`, IIFE mit `window.SbkimSpore`, WebCrypto Ed25519, Persistenz nur über `SbkimStorage`, JS-Syntax via `node --check` grün |
-| Sichttest | 2026-05-14 | Spec+Bau 02 | ungeprüft im Browser (Sitzung headless) — Klaus klickt die fünf Knöpfe in `manual_check.html` Panel 02 und trägt Ergebnis hier nach |
+| Sichttest | 2026-05-14 | Spec+Bau 02 | geprüft 2026-05-14 (Klaus, im Browser): Identität deterministisch, Spore vollständig + sortiert, Sign+Verify round-trip valid, Manipulation erkannt. |
 | In Endknoten eingebaut | — | — | — |
 
 ---

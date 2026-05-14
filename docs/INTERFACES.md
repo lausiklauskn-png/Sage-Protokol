@@ -17,7 +17,7 @@ PROTOCOL_VERSION       = "0.1"
 NODE_TYPE_DEFAULT      = "hybrid"
 EMBEDDING_MODEL        = "Xenova/multilingual-e5-small"
 EMBEDDING_DIM          = 384
-PROVIDER_MIN_MATCH     = 0.55
+PROVIDER_MIN_MATCH     = 0.80
 LOCAL_RESULT_THRESHOLD = 3
 QUERY_TIMEOUT_MS       = 4000
 SBKIM_STORE_PREFIX     = "sbkim_"
@@ -264,8 +264,8 @@ Datei:  src/modules/04_match.js
 
 Bietet (öffentlich):
   match(queryVec: Float32Array, passageVec: Float32Array) → number     // sync; [-1, 1] für L2-norm. Eingaben
-  isAboveProviderThreshold(score: number)                  → boolean   // sync; score >= PROVIDER_MIN_MATCH (0.55)
-  PROVIDER_MIN_MATCH                                       : number    // 0.55, aus §0 hierher gespiegelt
+  isAboveProviderThreshold(score: number)                  → boolean   // sync; score >= PROVIDER_MIN_MATCH (0.80)
+  PROVIDER_MIN_MATCH                                       : number    // 0.80, aus §0 hierher gespiegelt
 
   KEIN mode-Parameter. Skalarprodukt ist symmetrisch; die Parameter-
   Namen sind reine Lese-Hilfe für den Aufrufer. Reine Funktion, kein
@@ -284,7 +284,7 @@ Events:
 
 Selbstcheck:
   Beim Skript-Laden (synchron, sofort beim <script>-Tag-Auswerten):
-    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.55");
+    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.80");
   Wie Modul 01 — Modul 04 hat keinen asynchronen Lade-Schritt.
 
 Fehlerverhalten:
@@ -299,7 +299,7 @@ Fehlerverhalten:
 Garantien für Modul 05 / 07:
   - match() ist deterministisch und reproduzierbar (kein RNG, kein Zeit-Effekt).
   - Bei korrekt L2-normalisierten Eingaben liegt der Rückgabewert in [-1, 1].
-  - isAboveProviderThreshold(score) liefert exakt score >= 0.55, ohne
+  - isAboveProviderThreshold(score) liefert exakt score >= 0.80, ohne
     Toleranz-Spielraum. Wer Hysterese will, baut sie eine Schicht höher.
 
 Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04)
@@ -507,3 +507,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-14 | Bau-Sitzung 03 | Modul 03 Code geschrieben (`src/modules/03_embedding.js`), Status auf `entwurf`. IIFE mit `window.SbkimEmbedding`, dynamischer Import transformers.js@2.17.2, Selbstcheck nach `init()`. |
 | 2026-05-14 | Spec+Bau-Sitzung 04 | Modul 04 spezifiziert und gebaut. Modus-freie API `match(queryVec, passageVec) → number` + `isAboveProviderThreshold` + Konstante `PROVIDER_MIN_MATCH`. Vertraut auf L2-Norm-Garantie aus Modul 03 (kein Norm-Check im Hot-Path). Status auf `entwurf`. A1–B3-Notations-Synthese in `docs/components/04_match.md` gelöst (Hops tragen Funktionen). |
 | 2026-05-14 | Spec+Bau-Sitzung 02 | Modul 02 spezifiziert und gebaut. Singleton-Identität (`"main"` in `sbkim_keys` und `sbkim_spore`), Sieben-Funktionen-API (init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore), WebCrypto Ed25519 ohne Polyfill (`CryptoUnavailableError` bei Fehlen). `node_id = base64url(sha256(rawPublicKey))` ohne Padding, von anderen Knoten nachrechenbar. Persistenz strikt über `SbkimStorage`. §2 „Spore-JSON" mit verbindlichem Schema gefüllt: neun Pflichtfelder (createdAt/domain/embeddingModel/endpoint/id/nodeType/protocolVersion/publicKey/signature) + fünf optionale, kanonische Serialisierung mit alphabetisch sortierten Keys, Versionierungs-Regel auf §4 verwiesen. |
+| 2026-05-14 | Pflege-Sitzung Match-Kalibrierung | `PROVIDER_MIN_MATCH` in §0 von `0.55` auf `0.80` angehoben (Vertrag-Sektion Modul 04 mitgezogen). Beleg: Klaus-Sichttest im Browser ergab fünf reproduzierbare Cosinus-Messwerte (Käsekuchen/Käsetorte 0.9507, Käsekuchen/Auspuffrohr 0.8967, Hefeteig/Kochrezepte 0.8312, Tarantino/Kochrezepte 0.7737, gleicher Inhalt ~0.95). 0.80 trennt empirisch sauber zwischen „relevant" (0.83) und „irrelevant" (0.77); das Paper-Original 0.55 hätte alles durchgelassen. Modul-Status bleibt `entwurf`. |

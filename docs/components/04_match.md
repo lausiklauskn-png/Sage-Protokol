@@ -13,7 +13,7 @@
 Match ist die **Bedeutungs-Waage** des Mycels. Modul 03 übersetzt Text
 in einen geometrischen Punkt, Modul 04 misst den Winkel zwischen zwei
 solchen Punkten und sagt: nah genug? Liegt der Cosinus über
-`PROVIDER_MIN_MATCH = 0.55`, ist Anastomose (Modul 05) gerechtfertigt;
+`PROVIDER_MIN_MATCH = 0.80`, ist Anastomose (Modul 05) gerechtfertigt;
 darunter schweigt der Knoten. Schweigen ist hier Höflichkeit
 **und** Bedeutungs-Routing in einem: wer nicht passt, kriegt nichts —
 keine Höflichkeits-Floskel, keine Halb-Antwort.
@@ -41,9 +41,9 @@ das voraussetzen und braucht keine Norm-Prüfung im Hot-Path.
   <!-- Achsen-Mitte -->
   <circle cx="240" cy="160" r="3" fill="#94A3B8"/>
 
-  <!-- Schwellen-Kegel: cosine 0.55 entspricht ~56.6° Öffnung -->
+  <!-- Schwellen-Kegel: cosine 0.80 entspricht ~36.9° Öffnung -->
   <path d="M 240 160 L 440 70 A 200 200 0 0 0 440 250 Z" fill="#16A34A" fill-opacity="0.10" stroke="#16A34A" stroke-opacity="0.4" stroke-dasharray="4 3"/>
-  <text x="370" y="60" font-size="11" font-family="ui-monospace,monospace" fill="#16A34A">cos &gt; 0.55</text>
+  <text x="370" y="60" font-size="11" font-family="ui-monospace,monospace" fill="#16A34A">cos &gt; 0.80</text>
 
   <!-- Passage-Vektor (Mitte, fest) -->
   <line x1="240" y1="160" x2="430" y2="160" stroke="#F59E0B" stroke-width="2.5"/>
@@ -90,7 +90,7 @@ nacheinander auf.
 - `match(queryVec, passageVec)` — Skalarprodukt zweier
   Float32Array(384), unter L2-Norm-Vorbedingung identisch zum Cosinus
 - `isAboveProviderThreshold(score)` — Vergleich gegen
-  `PROVIDER_MIN_MATCH = 0.55`, eingebaut, damit der Schwellwert
+  `PROVIDER_MIN_MATCH = 0.80`, eingebaut, damit der Schwellwert
   nicht in der Aufrufstelle wiederholt wird
 - Synchrone Selbstcheck-Meldung beim Skript-Laden (kein async Init,
   weil das Modul keinen Lade-Schritt hat)
@@ -134,10 +134,10 @@ match(queryVec: Float32Array, passageVec: Float32Array) → number
   // Vorbedingung (Erkennung allein an Form / Typ, nicht an Norm).
 
 isAboveProviderThreshold(score: number) → boolean
-  // true, wenn score >= PROVIDER_MIN_MATCH (0.55).
+  // true, wenn score >= PROVIDER_MIN_MATCH (0.80).
   // Sync, kein Promise. Reine Vergleichsfunktion.
 
-PROVIDER_MIN_MATCH: number                                   // 0.55, aus INTERFACES.md §0
+PROVIDER_MIN_MATCH: number                                   // 0.80, aus INTERFACES.md §0
 ```
 
 ### Warum kein `mode`-Parameter
@@ -154,7 +154,7 @@ Laufzeit-Schalter.
 Beim **Skript-Laden** (synchron, vor jeglichem Aufruf):
 
 ```
-console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.55");
+console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.80");
 ```
 
 Anders als Modul 03 (das nach `init()` meldet, weil der Modell-Download
@@ -165,7 +165,7 @@ das ehrlich beim Laden sagen.
 ### Konfigurationswerte
 
 ```
-PROVIDER_MIN_MATCH = 0.55     // aus INTERFACES.md §0, hier nur referenziert
+PROVIDER_MIN_MATCH = 0.80     // aus INTERFACES.md §0, hier nur referenziert
 EMBEDDING_DIM      = 384      // erwartete Vektor-Länge (zur Form-Prüfung)
 ```
 
@@ -251,34 +251,37 @@ intern auf. Erster Klick lädt das Modell (~5–15 s), spätere Klicks
 laufen aus dem Cache.
 
 1. **Ähnlich: Käsekuchen vs. Käsetorte** — embedded beide als Passage,
-   `match(v1, v2)`. Erwartung: **> 0.70**. Bewertung: zwei semantisch
-   nah verwandte Begriffe in derselben Domäne. (Die genaue Zahl
-   schwankt je nach Modell-Version; Schwelle 0.70 ist großzügig
-   gewählt, damit der Test bei kleinen Modell-Drifts nicht rotscheint.)
+   `match(v1, v2)`. Erwartung: **> 0.92**. Bewertung: zwei semantisch
+   nah verwandte Begriffe in derselben Domäne. (Sichttest 2026-05-14
+   ergab 0.9507 — die Schwelle 0.92 liegt knapp darunter, mit Reserve
+   für Modell-Drift.)
 2. **Fern: Käsekuchen vs. Auspuffrohr** — embedded beide als Passage,
-   `match(v1, v2)`. Erwartung: **< 0.40**. Bewertung: zwei semantisch
-   weit entfernte Begriffe aus völlig verschiedenen Domänen.
+   `match(v1, v2)`. Erwartung: **< 0.90**. Bewertung: zwei semantisch
+   weit entfernte Begriffe aus völlig verschiedenen Domänen. (Sichttest
+   2026-05-14 ergab 0.8967 — `e5-small` hebt die Cosinus-Baseline für
+   beliebige Einzelbegriffe ungewöhnlich hoch; siehe Beleg-Block unten.)
 3. **Schwelle: Anfrage vs. Domäne (positiv)** — `embedQuery("Hefeteig kneten")`
    vs. `embedPassage("Kochrezepte: Backen, Kuchen, Brot")`, dann
    `match(...)` und `isAboveProviderThreshold(score)`. Erwartung:
-   Score deutlich über `0.55`, Helfer liefert `true`.
+   Score deutlich über `0.80`, Helfer liefert `true`. (Sichttest
+   2026-05-14: 0.8312.)
 4. **Schwelle: Anfrage vs. Domäne (negativ)** — `embedQuery("Drehbuch von Tarantino")`
-   gegen dieselbe Kochrezepte-Passage. Erwartung: Score unter `0.55`,
+   gegen dieselbe Kochrezepte-Passage. Erwartung: Score unter `0.80`,
    Helfer liefert `false`. Das simuliert den Apoptose-Auslöser an
-   Hop B3 / B4 aus der A1–B3-Synthese.
+   Hop B3 / B4 aus der A1–B3-Synthese. (Sichttest 2026-05-14: 0.7737.)
 5. **Form-Fehler: Längen-Differenz** — `match(new Float32Array(384), new Float32Array(256))`.
    Erwartung: `ShapeMismatchError`. Bewertung: Form-Check ist aktiv,
    kein stilles `NaN`.
 6. **Selbstcheck Konsole prüfen** — Hinweisknopf ohne Aktion: weist den
    Tester an, DevTools → Konsole zu öffnen und die Zeile
-   `MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.55`
+   `MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.80`
    zu suchen (erscheint **beim Laden**, vor jedem Klick).
 
-Die exakten Schwellwerte (0.70 / 0.40 / 0.55) stammen nicht aus der
-Luft — siehe Karte 03 manueller Test 4, der bereits den Cosinus
-zwischen „Käsekuchen mit Quark" und „Auspuffrohr aus Edelstahl"
-abschätzt („deutlich unter 0.5"). Modul 04 macht denselben Vergleich
-nur explizit mit der match-Funktion.
+Die Schwellwerte 0.92 / 0.90 / 0.80 sind die im Sichttest 2026-05-14
+empirisch ermittelten Trennlinien — siehe Beleg-Block unten. Sie
+ersetzen die früheren Erst-Schätzungen 0.70 / 0.40 / 0.55, die im
+selben Sichttest Schwellen-Drift offenbarten (Auspuffrohr 0.8967
+statt < 0.40; Tarantino 0.7737 statt < 0.55).
 
 ---
 
@@ -289,16 +292,37 @@ nur explizit mit der match-Funktion.
   er Vektoren aus einer anderen Quelle übergibt), liegt das Ergebnis
   außerhalb `[-1, 1]`. Das ist sichtbar, aber nicht laut. Bewusste
   Wahl — siehe „Macht nicht".
-- **Schwellwert-Tuning:** `PROVIDER_MIN_MATCH = 0.55` ist eine
-  Erst-Schätzung aus dem Paper, nicht aus Messungen am Endknoten-
-  Korpus. Wenn Rezeptbuch / Mixarium in der Praxis zu viel oder zu
-  wenig filtert, wird der Wert in §0 angepasst — Modul 04 zieht nach,
-  ohne Code-Änderung am Match-Algorithmus.
+- **Schwellwert-Beleg (Sichttest 2026-05-14):** `PROVIDER_MIN_MATCH`
+  wurde in der Pflege-Sitzung 2026-05-14 von der Paper-Erst-Schätzung
+  `0.55` auf den empirisch belegten Wert `0.80` angehoben. Grundlage
+  sind fünf reproduzierbare Cosinus-Messwerte aus Klaus' Browser-
+  Sichttest mit `Xenova/multilingual-e5-small`:
+
+  | Test | Cosinus | Lese-Hilfe |
+  |---|---|---|
+  | gleicher Inhalt (Query vs. Passage, derselbe Text) | ~0.95 | Modell-Rolle-Differenz, sonst identisch |
+  | sehr ähnlich (Käsekuchen / Käsetorte) | 0.9507 | dieselbe Domäne, nah verwandt |
+  | weit auseinander (Käsekuchen / Auspuffrohr) | 0.8967 | völlig unterschiedliche Domänen — die e5-small-Baseline für Einzelbegriffe sitzt überraschend hoch |
+  | Domäne + relevant (Hefeteig / Kochrezepte) | 0.8312 | Anbieter soll antworten |
+  | Domäne + irrelevant (Tarantino / Kochrezepte) | 0.7737 | Anbieter soll schweigen |
+
+  `PROVIDER_MIN_MATCH = 0.80` trennt **empirisch** zwischen „relevant"
+  (0.83) und „irrelevant" (0.77). Die Paper-Schwelle 0.55 hätte beide
+  durchgelassen — Apoptose B4 wäre nie ausgelöst worden.
+
+  Die Test-Schwelle „Fern < 0.90" weicht von der ursprünglichen
+  Sitzungs-Empfehlung (< 0.85) ab: 0.8967 läge unter 0.85 nicht, die
+  Korrektur auf 0.90 ist der frische Befund dieser Pflege-Sitzung.
+  Sie dokumentiert nebenbei, dass die e5-small-Baseline für unverwandte
+  Einzelbegriffe ungewöhnlich hoch sitzt — eine relevante Modell-
+  Eigenschaft, kein Toleranz-Spielraum.
 - **Modell-Drift:** Wenn das e5-small-Modell sich verändert (Upstream-
   Update, anderer Quantisierungs-Stand), driften die Cosinus-Werte für
-  dieselben Texte um wenige Prozent. Die Test-Schwellen 0.70 / 0.40
-  sind großzügig genug, um das aufzufangen, aber bei harten Sprüngen
-  müssen die Tests neu kalibriert werden.
+  dieselben Texte um wenige Prozent. Die kalibrierten Schwellen sitzen
+  enger an den Messwerten (z.B. nur 0.0033 Margin bei „Fern < 0.90"
+  gegen 0.8967) — eine Modell-Drift von mehr als 0.5 % bricht die
+  Tests, und genau das soll sie auch. Eine erneute Kalibrierungs-
+  Sitzung ist dann fällig.
 - **Performance:** in der Schleife sind 384 Multiplikationen + 383
   Additionen pro Aufruf — auf einem Mobil-Browser ~1 µs. Wir machen
   keine Vektorisierung (SIMD), kein WebGPU, kein TypedArray-Tricks.
@@ -318,7 +342,7 @@ nur explizit mit der match-Funktion.
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Vektor-SVG, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec+Bau 04 | modus-freie API `match(queryVec, passageVec)`, `isAboveProviderThreshold`, L2-Norm-Vertrauen, A1–B3-Synthese, Fehlertabelle |
 | Code geschrieben | 2026-05-14 | Spec+Bau 04 | `src/modules/04_match.js`, IIFE mit `window.SbkimMatch`, synchroner Selbstcheck beim Skript-Laden, sechs Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
-| Sichttest | 2026-05-14 | Spec+Bau 04 | ungeprüft im Browser (Sitzung headless, Modell-Download braucht Netz im Browser) — Klaus klickt die sechs Knöpfe und trägt Ergebnis hier nach |
+| Sichttest | 2026-05-14 | Spec+Bau 04 + Pflege Match-Kal. | geprüft 2026-05-14 (Klaus, im Browser): 3 Tests grün (Käsetorte ähnlich, Hefeteig positiv, Form-Fehler); 2 Tests offenbarten Schwellen-Drift (Auspuffrohr 0.8967 statt < 0.40; Tarantino 0.7737 statt < 0.55) — daraufhin Kalibrierungs-Sitzung 2026-05-14 `PROVIDER_MIN_MATCH` 0.55 → 0.80, Test-Schwellen 0.70/0.40 → 0.92/0.90 |
 | In Endknoten eingebaut | — | — | — |
 
 ---

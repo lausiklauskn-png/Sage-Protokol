@@ -28,12 +28,15 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
 ## Als nächstes ✨
 
-Module mit Code-Stub, brauchen Sichttest im Browser:
+Module mit Code-Stub, **Sichttest durch Klaus 2026-05-14 erledigt** —
+ergab fünf reproduzierbare Cosinus-Messwerte (siehe Karte 04 Beleg-
+Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
+0.55 → 0.80 geführt haben:
 
-- 🟦 **[01 Storage](components/01_storage.md)** — Code 2026-05-14, Sichttest steht aus (Klaus klickt in `tests/manual_check.html`)
-- 🟦 **[02 Spore](components/02_spore.md)** — Spec + Code 2026-05-14, Sichttest steht aus (fünf Knöpfe in Panel 02, WebCrypto Ed25519 nötig — Chrome ≥ 113 / Firefox ≥ 130 / Safari ≥ 17)
-- 🟦 **[03 Embedding](components/03_embedding.md)** — Code 2026-05-14, Sichttest steht aus (Modell-Download beim ersten Klick, dauert 5–15 s)
-- 🟦 **[04 Match](components/04_match.md)** — Spec + Code 2026-05-14, Sichttest steht aus (sechs Knöpfe in Panel 04, hängt am 03-Modell-Cache)
+- 🟦 **[01 Storage](components/01_storage.md)** — geprüft 2026-05-14 (Klaus, im Browser); init/round-trip/Unknown-Store sauber, sechs Stores in DevTools sichtbar
+- 🟦 **[02 Spore](components/02_spore.md)** — geprüft 2026-05-14 (Klaus, im Browser); Identität deterministisch, Spore sortiert, Sign+Verify valide, Manipulation erkannt
+- 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
+- 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert
 
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
@@ -44,10 +47,9 @@ In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: Klaus klickt 01 + 02 + 03 + 04 im Browser
-durch (`tests/manual_check.html`). Danach **Spec-Sitzung Modul 05
-Anastomose** — alle vier Vorbedingungen (01, 02, 03, 04) stehen jetzt
-als Stub. Alternativ **Spec-Sitzung Modul 07 Apoptose** (Vorbedingungen
+Empfehlung Hauptsitzung: jetzt **Spec-Sitzung Modul 05 Anastomose** —
+alle vier Vorbedingungen (01, 02, 03, 04) stehen sichtgeprüft als
+Stub. Alternativ **Spec-Sitzung Modul 07 Apoptose** (Vorbedingungen
 01 + 02 erfüllt, signiertes Vermächtnis braucht 02). Parallel
 anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder Modul 09
 (Einbau-PWA) — beide ohne Abhängigkeiten.
@@ -59,10 +61,10 @@ anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder Modul 09
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
 | 00 doku_fenster | leere Schablone | — | — | "5-Klick versteckte Doku" in Suchleiste |
-| 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | IndexedDB-Wrapper |
-| 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
-| 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Bau-Sitzung headless) | semantischer Vektor |
-| 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Vektorvergleich, modus-frei |
+| 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | IndexedDB-Wrapper |
+| 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
+| 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
+| 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80 |
 | 05 anastomose | leere Schablone | — | — | Handshake |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
 | 07 apoptose | leere Schablone | — | — | Selbstlöschung |
@@ -124,6 +126,94 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Pflege-Sitzung · Match-Kalibrierung (PROVIDER_MIN_MATCH 0.55 → 0.80)
+
+**Getan:**
+
+- **Klaus' Sichttest 2026-05-14 nachgezogen** — die Zeilen „Sichttest"
+  in den Bauzustand-Tabellen der Karten 01/02/03/04 auf „geprüft
+  2026-05-14 (Klaus, im Browser)" gesetzt, mit kurzem Befund. Karte 01:
+  init/round-trip/Unknown-Store sauber, DB `sbkim` mit sechs Stores
+  sichtbar. Karte 02: Identität deterministisch, Spore vollständig +
+  sortiert, Sign+Verify round-trip valid, Manipulation erkannt. Karte
+  03: Modell lädt, L2-Norm exakt 1.0, Query/Passage gleicher Inhalt
+  ≈0.95, Batch zwischen verschiedenen Themen 0.90 (überraschend hoch).
+  Karte 04: 3 Tests grün, 2 zeigten Schwellen-Drift → Anlass dieser
+  Pflege-Sitzung.
+- **Fünf reproduzierbare Cosinus-Messwerte aus Klaus' Sichttest**
+  protokolliert (Karte 04 Beleg-Block, INTERFACES.md §6
+  Änderungsprotokoll):
+  - gleicher Inhalt (Query vs. Passage, derselbe Text): ~0.95
+  - sehr ähnlich (Käsekuchen/Käsetorte): 0.9507
+  - weit auseinander (Käsekuchen/Auspuffrohr): 0.8967
+  - Domäne + relevant (Hefeteig/Kochrezepte): 0.8312
+  - Domäne + irrelevant (Tarantino/Kochrezepte): 0.7737
+- **`PROVIDER_MIN_MATCH` 0.55 → 0.80** in
+  `docs/INTERFACES.md` §0, in der Vertrag-Sektion Modul 04 (Schwelle,
+  Selbstcheck-Format, Garantie-Block), in `docs/ARCHITEKTUR.md` §7,
+  im `status.json`-Feld `config.PROVIDER_MIN_MATCH`, im Code-Konstanten-
+  Eintrag in `src/modules/04_match.js` (Header-Kommentar + Literal +
+  Selbstcheck-String) sowie in zwei hardgecodeten Sage-Page-Strings in
+  `index.html` (Glossar-Eintrag Match, Wanderungs-Phase 2).
+  Begründung: 0.80 trennt empirisch zwischen „relevant" (0.83) und
+  „irrelevant" (0.77); die Paper-Erst-Schätzung 0.55 hätte beides
+  durchgelassen — Apoptose B4 wäre nie ausgelöst worden.
+- **Test-Schwellen in Karte 04 und Panel 04 angehoben:** „Ähnlich"
+  von `> 0.70` auf `> 0.92` (passt 0.9507 mit Reserve), „Fern" von
+  `< 0.40` auf **`< 0.90`** (passt 0.8967 mit knapper Reserve),
+  Schwelle-Tests laufen auf `PROVIDER_MIN_MATCH = 0.80`. **Abweichung
+  vom Sitzungs-Briefing:** dort war „Fern < 0.85" vorgeschlagen, das
+  hätte den gemessenen Wert 0.8967 falsch klassifiziert; auf < 0.90
+  korrigiert mit Begründung im Beleg-Block (e5-small-Baseline für
+  unverwandte Einzelbegriffe sitzt ungewöhnlich hoch — eine relevante
+  Modell-Eigenschaft, kein Toleranz-Spielraum).
+- **Risiken-Block „Schwellwert-Tuning" zum Beleg-Block umgebaut:** vom
+  spekulativen Risiko-Hinweis auf einen empirischen Befund mit
+  Messwert-Tabelle und Begründung der 0.80-Wahl. „Modell-Drift"-Block
+  enger an die neuen Schwellen angepasst (0.5 %-Drift bricht die Tests
+  jetzt — beabsichtigt).
+- **`tests/manual_check.html` Panel 04** Knopf-Labels und
+  `pass`-Konstanten im JS angepasst, Selbstcheck-Hinweisknopf mit der
+  neuen Schwelle (0.80) abgeglichen.
+- **`src/modules/04_match.js`** Code-Konstante `PROVIDER_MIN_MATCH`
+  0.55 → 0.80, Header-Kommentar und Selbstcheck-String mit-aktualisiert.
+  JS-Syntax mit `node --check` validiert (grün).
+- **`status.json`:** KEINE Modul-Score-Änderung (Pflege-Charakter —
+  diese Sitzung befördert kein Modul auf „fertig"). Pie wurde **nicht**
+  regeneriert, weil sich nichts an den Status-Counts ändert (4× stub /
+  1× werkstatt / 8× schablone). Nur das Konfig-Feld
+  `config.PROVIDER_MIN_MATCH` mit-aktualisiert.
+
+**Offen:**
+
+- **Modul 05 Anastomose** verwendet in seiner Schablone noch die alte
+  Schwelle 0.55 (`docs/components/05_anastomose.md` Mermaid-Block und
+  manueller Test). Wird in der nächsten Spec-Sitzung Modul 05
+  ohnehin umgeschrieben (die Schablone ist die ganze Karte) — keine
+  Pflege-Aktion dafür nötig.
+- **Sage-Page (`index.html`)** zieht den Schwellwert aus zwei Stellen:
+  status.json (Konfig, jetzt 0.80) und zwei hardgecodete Strings (jetzt
+  beide 0.80). Wer künftig Werte aus §0 in den Page-Code zieht, sollte
+  beide auf die Datenquelle zurückführen — kleiner Aufräum-Auftrag für
+  eine UI-Sitzung.
+- **`tests/manual_check.html`** kein Modul-05-Panel-Refresh nötig (das
+  Panel ist noch „noch nicht gebaut").
+
+**Nächster sinnvoller Schritt:**
+
+- **Spec-Sitzung Modul 05 Anastomose** — alle vier Vorbedingungen
+  (01, 02, 03, 04) stehen jetzt sichtgeprüft als Stub. Anastomose ist
+  der Handshake zwischen zwei Knoten und braucht alle vier Bausteine:
+  IDs aus 02, Embedding aus 03, Match aus 04 (mit kalibrierter
+  Schwelle), Persistenz für Geschwisterliste aus 01.
+- Alternativ: **Spec-Sitzung Modul 07 Apoptose** (Vorbedingungen
+  01 + 02 erfüllt; signiertes Vermächtnis braucht den Ed25519-
+  Schlüssel aus 02).
+- Parallel anbietbar: **Spec-Sitzung Modul 00 (Doku-Fenster)** oder
+  **Modul 09 (Einbau-PWA)** — beide ohne Abhängigkeiten.
+
+---
 
 ### 2026-05-14 · Spec+Bau-Sitzung · Modul 02 Spore (Spec + Code-Stub)
 

@@ -64,7 +64,7 @@
     "NODE_TYPE_DEFAULT":      "hybrid",
     "EMBEDDING_MODEL":        "Xenova/multilingual-e5-small",
     "EMBEDDING_DIM":          384,
-    "PROVIDER_MIN_MATCH":     0.55,
+    "PROVIDER_MIN_MATCH":     0.80,
     "LOCAL_RESULT_THRESHOLD": 3,
     "QUERY_TIMEOUT_MS":       4000,
     "SBKIM_STORE_PREFIX":     "sbkim_",

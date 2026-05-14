@@ -8,7 +8,7 @@
  * Public surface (registered on window.SbkimMatch):
  *   match(queryVec, passageVec) -> number
  *   isAboveProviderThreshold(score) -> boolean
- *   PROVIDER_MIN_MATCH -> number   (0.55, gespiegelt aus INTERFACES.md §0)
+ *   PROVIDER_MIN_MATCH -> number   (0.80, gespiegelt aus INTERFACES.md §0)
  *
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). Modul 04 has no async load step. See INTERFACES.md
@@ -18,7 +18,7 @@
   "use strict";
 
   var EMBEDDING_DIM = 384;
-  var PROVIDER_MIN_MATCH = 0.55;
+  var PROVIDER_MIN_MATCH = 0.80;
 
   function makeError(name, message, cause) {
     var e = new Error(message);

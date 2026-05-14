@@ -279,7 +279,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, ER-Diagramm, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 01+03 | API, Stores-Liste, Migrations-Regel, Selbstcheck-Format |
 | Code geschrieben | 2026-05-14 | Bau 01 | `src/modules/01_storage.js`, IIFE mit `window.SbkimStorage`, vier Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
-| Sichttest | 2026-05-14 | Bau 01 | ungeprüft im Browser (Sitzung headless) — Klaus klickt die vier Knöpfe in `manual_check.html` und trägt Ergebnis hier nach |
+| Sichttest | 2026-05-14 | Bau 01 | geprüft 2026-05-14 (Klaus, im Browser): init/round-trip/Unknown-Store sauber. DB `sbkim` mit sechs Stores in DevTools sichtbar. |
 | In Endknoten eingebaut | — | — | — |
 
 ---

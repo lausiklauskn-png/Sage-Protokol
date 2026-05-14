@@ -240,7 +240,7 @@ Plausibilitäts-Anker hier sichtbar, ist aber kein Match-Test.
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid-Flow, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 01+03 | 4-Funktionen-API, L2-Norm-Garantie, Selbstcheck-Format, Truncate-Regel |
 | Code geschrieben | 2026-05-14 | Bau 03 | `src/modules/03_embedding.js`, IIFE mit `window.SbkimEmbedding`, dynamischer Import von transformers.js@2.17.2 vom CDN, fünf Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
-| Sichttest | 2026-05-14 | Bau 03 | ungeprüft im Browser (Sitzung headless, Modell-Download braucht Netz im Browser) — Klaus klickt die fünf Knöpfe und trägt Ergebnis hier nach |
+| Sichttest | 2026-05-14 | Bau 03 | geprüft 2026-05-14 (Klaus, im Browser): Modell lädt, L2-Norm exakt 1.0, Query/Passage gleicher Inhalt ≈0.95, Batch zwischen verschiedenen Themen 0.90 (überraschend hoch — Anlass für Match-Kalibrierung). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
