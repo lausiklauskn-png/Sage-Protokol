@@ -700,6 +700,28 @@ Mixarium (Bau-Sitzung 09 mit aktivem Apoptose-Knopf in der UI-Demo).
   bewusst kein neuer Helfer in 01, weil Modul 07 die *einzige* Stelle
   ist, die das braucht. Wenn eine spätere Sitzung (Pflege „Reset")
   denselben Bedarf hat, kann der Helfer dort gehoben werden.
+- **Stille Löschung ohne Vermächtnis.** Wenn der Nutzer im Browser
+  „Site-Daten löschen" wählt oder der Browser bei Speicherdruck die
+  IndexedDB ungefragt räumt, läuft die Apoptose-Routine **nicht** —
+  sie braucht einen aktiven Knoten, um das signierte Vermächtnis zu
+  schreiben und an Geschwister zu senden. Der Knoten verschwindet
+  still. Geschwister merken es erst am ablaufenden TTL (Modul 11)
+  oder am ausbleibenden Anastomose-Atemkreis. **Gegenmaßnahmen
+  (außerhalb von Modul 07):**
+  - **Modul 01 Storage:** `navigator.storage.persist()` beim `init()`
+    — schützt vor ungefragter Quota-Eviction.
+  - **Modul 02 Spore:** Backup-Export (passwort-verschlüsselt) —
+    schützt vor manuellem Löschen und Browser-Wechsel.
+  - **Modul 00 Doku-Fenster:** stille Frühwarnung bei knapper Quota.
+
+  Diese drei Maßnahmen senken das Risiko, lösen es aber nicht
+  vollständig. Das Paper akzeptiert die stille Löschung als
+  realistische Schwäche — das Mycel hat keine Hooks gegen einen
+  bewusst löschenden Nutzer. **Querschnitts-Anmerkung:** Drei Module
+  plus das Doku-Fenster tragen das Persistenz-Thema gemeinsam; die
+  vier Stellen müssen beim Bauen konsistent bleiben (Quota-
+  Schwellwert, Backup-Format, Warntext). Siehe PULS-Eintrag
+  „Querschnitts-Fragen — Spore-Persistenz-Strategie verteilt".
 
 ---
 

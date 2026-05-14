@@ -125,6 +125,27 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   zeigt die *Rolle* — beide Notationen bleiben gültig, sie beschreiben
   dieselbe Wanderung aus zwei Winkeln. Kein eigenes Mapping-Dokument
   nötig.
+- **Spore-Persistenz-Strategie verteilt** (offen, eingetragen
+  2026-05-14 nach Bau-Sitzung 07). „Stille Löschung ohne Vermächtnis"
+  (Karte 07 § Risiken) ist nicht in einem einzelnen Modul lösbar —
+  vier Stellen müssen beim Bauen zusammenpassen:
+  - **Modul 01 Storage:** `navigator.storage.persist()` beim `init()`
+    + `navigator.storage.estimate()` für Quota-Frühwarnung.
+  - **Modul 02 Spore:** Backup-Export (passwort-verschlüsselt) als
+    Recovery-Pfad für Browser-Wechsel und manuelles Löschen.
+  - **Modul 00 Doku-Fenster:** stille Frühwarnung bei < X% Speicher
+    (X als gemeinsame Konstante in §0).
+  - **Modul 07 Apoptose:** Risiko-Vermerk „stille Löschung" (steht
+    jetzt in Karte 07 § Risiken).
+
+  Beim Bauen darauf achten, dass die vier Stellen konsistent bleiben:
+  **Quota-Schwellwert** (eine Zahl, vermutlich neu in §0), **Backup-
+  Format** (eine JSON-Struktur, vermutlich neu in §2), **Warntext**
+  (deutsch, einmal formuliert). Aufhänger für eine Pflege-Sitzung
+  „Persistenz-Strategie verbinden" sobald 00, 02-Backup und 01-Quota
+  spruchreif sind. Bis dahin bleibt die Verteilung dokumentiert, aber
+  nicht implementiert. Drei Module + das Doku-Fenster tragen das
+  Thema gemeinsam.
 
 ## Schutz-Backlog (aus Sage-Page Karte 13, 2026-05-10)
 
