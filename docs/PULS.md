@@ -82,6 +82,17 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   KI-Matching". Das Observatorium (`index.html`, `status.json`) übernimmt
   die Paper-Variante. CLAUDE.md sollte in einer separaten Sitzung
   nachgezogen werden.
+- **A1–B3-Notations-Überlappung Sage ↔ Mixarium** (Plan-Sitzung
+  2026-05-14): Die Sage-Landingpage Karte 11 „Wanderung" verwendet
+  exakt die Buchstaben A1/A2/A3 und B1/B2/B3/B4 — als Knoten-Hops in
+  zwei parallelen Such-Pfaden (Pfad A erfolgreich, Pfad B endet in
+  Apoptose). Die Mixarium-`SBKIM_AGENTS.md` verwendet dieselben
+  Buchstaben für Agenten-Rollen (A1 Curator, A2 Auditor, A3 Devil's
+  Advocate · B1 Interviewer, B2 Matcher, B3 Critic). Plausible Synthese:
+  die Hops *tragen* die Funktionen — die Anbieter-Seite verfeinert die
+  Antwort (Pfad A), die Anfrage-Seite verfeinert die Frage (Pfad B), im
+  Negativ-Fall stirbt der Strang. Spec-Sitzung **Modul 04 Match** muss
+  diese Synthese leisten (kein eigenes Mapping-Dokument davor).
 
 ## Schutz-Backlog (aus Sage-Page Karte 13, 2026-05-10)
 
@@ -99,6 +110,49 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Plan-Sitzung · Spec-Brief 01 Storage + 03 Embedding
+
+**Getan:**
+- **Recherche A1–B3-Notation:** Sage-Landingpage Karte 11 „Wanderung"
+  (`index.html` Z. 2741–2819) verwendet A1/A2/A3 + B1/B2/B3/B4 als
+  Hop-Stationen in zwei Such-Pfaden. Mixarium-`SBKIM_AGENTS.md` benutzt
+  dieselben Buchstaben für Agenten-Rollen (Curator/Auditor/Devil's
+  Advocate · Interviewer/Matcher/Critic). Notation kongruent, Bedeutung
+  unterschiedlich — Synthese als Querschnitts-Frage festgehalten,
+  Lösung gehört in Spec-Sitzung Modul 04 Match.
+- **Plan-File angelegt** unter `/root/.claude/plans/1-es-soll-sage-resilient-crane.md`
+  (Claude-Code-Plan-Mode-File, außerhalb des Repos). Plan beschreibt
+  Spec-Sitzung 01+03 als nächste Bausitzung mit 8 Liefer-Artefakten:
+  Karten 01 + 03, INTERFACES.md, status.json, PULS, manual_check.html,
+  Sitzungs-Archiv, **neue `docs/WEGWEISER.md`** (Einstiegs-Anleitung für
+  neue Sitzungen mit Checkbox-Schritten + Stand-Block).
+- **Entscheidung Modus-Drift (e5-Prefix):** Embedding-API wird in **vier**
+  Funktionen aufgeteilt — `embedQuery` / `embedPassage` /
+  `embedQueryBatch` / `embedPassageBatch`. Modul 04 Match bleibt
+  modus-frei mit `match(queryVec, passageVec)`. Vergessen ist
+  API-strukturell ausgeschlossen.
+- **Entscheidung Selbstcheck:** beide Module emittieren beim ersten
+  `init()`-Erfolg eine `console.info("MODUL XX … bereit, Funktionen: …")`-
+  Meldung (Klaus-Notiz: Andocken-Verifikation in DevTools).
+- **Empfehlung Modul 09 (Einbau-PWA)** als parallel anbietbare Spec-
+  Sitzung mit aufgenommen — 5-Schritte-Andock-Workflow ist dependenz-
+  frei und blockiert sonst die Bau-Sitzungen.
+
+**Offen:**
+- Spec-Sitzung 01+03 noch nicht ausgeführt — diese Plan-Sitzung erstellt
+  nur den Auftrag, nicht die Spec selbst (CLAUDE.md: Plan ≠ Bausitzung).
+- A1–B3-Synthese ist als Querschnitts-Frage in PULS notiert, wartet auf
+  Spec-Sitzung Modul 04.
+
+**Nächster sinnvoller Schritt:**
+- Frische **Spec-Sitzung 01 + 03** starten. Briefing aus dem Plan-File
+  (Pfad oben), Format aus `docs/sessions/BRIEFING_TEMPLATE.md` §B.
+  Alternativ zwei parallele Sitzungen, je eine pro Modul (Token-
+  Sparsamkeit, CLAUDE.md-empfohlen).
+- Parallel anbietbar: Spec-Sitzung Modul 09 Einbau-PWA.
+
+---
 
 ### 2026-05-10 · Hauptsitzung · Site-Echo + Bau-Puls + Brand-Icon
 
