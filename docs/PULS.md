@@ -41,7 +41,7 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 Code-Stub frisch aus den Bau-Sitzungen 2026-05-14, **Sichttest ausstehend bzw. teilweise erledigt:**
 
 - 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6 von 7 Tests grün im ersten Lauf (Setup, Test 1 passendes Match score=0.888, Test 3 Versions-Mismatch, Test 4 Signatur-Manipulation, Test 5 Re-Handshake, Test 6 forgetSibling, Test 7 listSiblings); **Test 2 (Domain-Mismatch / Tarantino-Vektor) Test-Bug** — score=0.854 statt erwartetem <0.80 (Tarantino-Filme spielen oft in Bars → zu nah am Mixarium-Cocktail-Vektor); Modul-Logik korrekt, `PROVIDER_MIN_MATCH=0.80` greift wie spezifiziert. **Pflege-Sitzung 2026-05-15** baut Panel 05 Test 2 auf **Vektor-Trias** um (Steuerrecht und Bilanzierung / Eisenbahnsignalanlagen / Quantenfeldtheorie), Pass-Check „mindestens einer der drei rejected mit score < 0.80"; Tarantino-Vergleichswert wird parallel als reiner Cosinus protokolliert; Karte 05 § Manueller Test Punkt 2 zieht mit. Klaus' zweiter Sichttest-Lauf nach Pflege folgt; falls alle drei Trias-Kandidaten über 0.80 liegen, eigene Folge-Pflege-Sitzung „Embedding-Baseline"
-- 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/07_apoptose.js` als IIFE mit `window.SbkimApoptose`, sechs Funktionen, fünf Error-Klassen (`ApoptoseDependenciesError`, `InvalidApoptoseTokenError`, `ApoptoseAlreadyExecutedError`, `InvalidTtlError`, `LegacyTimeoutError`/`LegacyNetworkError`); kanonischer Sign/Verify-Pfad **bewusst aus Modul 02/05 dritter Pfad dupliziert** (Single-File-PWA-Stil); `src/sbkim-sw.js` um `/sbkim/legacy` erweitert (gemeinsamer `fetch`-Listener mit `/sbkim/anastomosis`, Variante a — leichter erweiterbar für Modul 06/11); Panel 07 mit zehn Knöpfen (Setup + 8 Test-Punkte aus Karte 07 § Manueller Test + Selbstcheck-Hinweis); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
+- 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 7 von 8 Tests grün im ersten Lauf (Setup + Tests 1/2/3/4/5/7 + Selbstcheck); **Test 6 (Self-Apoptose) deckte echten Modul-Bug auf**: nach Cleanup `getNodeId_wirft_NoIdentityError:false` trotz `stores_alle_leer:true` — Modul 02's In-Memory-`identityCache` wurde nicht durch externes `storage.clear` invalidiert (Modul 07 wusste nichts vom Modul-02-Cache). Folgeschaden: Tests 1/2/3/8 nach Test 6 mit „Keine Identität in sbkim_keys[main]". **Pflege-Sitzung 2026-05-15** ergänzt Modul 02 um öffentliche `resetIdentityCache() → void` (sync, idempotent, leert nur Closure-Cache, kein Storage-Eingriff) und Modul 07's Cleanup ruft sie als Schritt 6 nach den fünf `storage.clear`-Aufrufen — heilige Tafeln (INTERFACES.md §1 Modul 02 + §1 Modul 07 + §6 + Karten 02 + 07) ziehen mit. Klaus klickt Test 6 erneut für vollen grünen Sichttest.
 - 🟦 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 5 von 6 Tests grün im ersten Lauf (Setup, Test 2 5-Klick-Simulation, Test 3 4-Klick + Timeout, Test 5 TTL-Sweep, Selbstcheck-Hinweis); **Test 4 Test-Bug** mit Mini-Werten 81/100 (freeBytes=19 Bytes ist trivial < 50 MiB → `warningLevel:"both"` statt erwartetem `"ratio"`) → **Pflege-Sitzung 2026-05-15** repariert mit GiB-Skalierung (`usage:8.1 GiB, quota:10 GiB` → freeBytes ≈ 1.9 GiB → `warningLevel:"ratio"` sauber); Modul-Vertrag und INTERFACES.md unangetastet
 
 Spec frisch aus den Spec-Sitzungen 2026-05-14, **Bau ausstehend**:
@@ -75,12 +75,12 @@ idealerweise vor dem Live-Andocken.
 |---|---|---|---|---|
 | 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00 |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | IndexedDB-Wrapper |
-| 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
+| 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) | Ed25519-Identität, Singleton, base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup) |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
 | 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80 |
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
-| 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen |
+| 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — 7/8 Tests grün; **Test 6 (Self-Apoptose) deckte echten Modul-Bug auf** (Modul 02's identityCache wurde nicht durch externes storage.clear invalidiert) → Pflege-Sitzung 2026-05-15 ergänzte Modul 02 um `resetIdentityCache()` und Modul 07's Cleanup ruft sie. Klaus klickt Test 6 erneut für vollen grünen Sichttest | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
 | 09 einbau_pwa | Spec fertig (2026-05-14) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — 8 Schritte; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
@@ -178,6 +178,177 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Pflege-Sitzung · Modul 02 + Modul 07 Cache-Invalidate
+
+**Getan:**
+
+- **Klaus' Sichttest 2026-05-15 ergab sieben von acht Tests grün im
+  ersten Lauf** (Panel 07 in `tests/manual_check.html`):
+  Setup OK · Test 1 (Vermächtnis-Round-Trip) `outcome:accepted,
+  inbox_hat_eintrag:true, sender_aus_siblings_entfernt:true` ·
+  Test 2 (Signatur-Manipulation) `outcome:rejected,
+  reason:"Signatur ungültig"` · Test 3 (Versions-Mismatch)
+  `reason:"Inkompatible Hauptversion: 1.0"` · Test 4 (TTL-Cleanup)
+  altOld entfernt, altYoung bleibt · Test 5 (listLegacy) signature
+  weggelassen, Form korrekt · Test 7 (Token-Ablauf)
+  `InvalidApoptoseTokenError, Identität bleibt` · Selbstcheck-Zeile
+  in DevTools-Konsole.
+- **Test 6 (Self-Apoptose) deckte echten Modul-Bug auf**:
+  `outcome:completed, recipientsFailed.length:2, stores_alle_leer:true`,
+  ABER `getNodeId_wirft_NoIdentityError:false`. Folgeschaden: Tests
+  1/2/3/8 nach Test 6 schlugen fehl mit „Keine Identität in
+  sbkim_keys[main]". Test 7 lief noch grün (braucht keinen private
+  Key bei abgelaufenem Token, der Token-Check kommt zuerst).
+- **Diagnose:** Modul 02's `identityCache` (Closure-Variable in
+  `02_spore.js` Zeile 140, Performance-Optimierung) wird nicht
+  durch externes `storage.clear` invalidiert. Modul 07 löscht zwar
+  alle SBKIM-Stores sequenziell und invalidiert seine **eigenen**
+  Caches (`ownPrivateKeyCache = null; pseudoSiblings = null`), weiß
+  aber nichts von Modul 02's Cache. Konsequenz:
+  - `getNodeId()` checkt `identityCache` zuerst → liefert die alte
+    nodeId statt `NoIdentityError` zu werfen.
+  - `ensureSetup()` im Panel-07-Test ruft `getOrCreateIdentity` →
+    `loadIdentity` findet den Cache → kein neuer Key wird erzeugt
+    → kein neuer `sbkim_keys`-Eintrag.
+  - Beim nächsten Sign-Versuch (Modul 07's `loadOwnPrivateKey`,
+    storage-direkt) findet sich kein Key → `NoIdentityError`.
+- **Vier Lösungs-Optionen analysiert:**
+  - **(a) Öffentliche `resetIdentityCache()` in Modul 02, Modul 07
+    ruft sie** — saubere Vertrag-Trennung, performance-neutral,
+    additiv, keine Tricks. ✓
+  - (b) Modul 02 Cache-Trust abschalten — Performance-Kosten bei
+    jedem `getNodeId`-Aufruf, Modul 04/05/00 zahlen mit.
+  - (c) `init({forceReload:true})` — Trick (init-Idempotenz wird
+    gebrochen).
+  - (d) Pass-Check in Test 6 lockern — Symptom-Pflege, Modul-
+    Vertrag bleibt gebrochen.
+- **Klaus wählte „Ich entscheide": Option (a)** mit ausdrücklicher
+  Bitte „perfekt, keine Tricks". Begründung in vier Punkten in der
+  Antwort dokumentiert.
+- **Heilige Tafeln zuerst** (CLAUDE.md § Heilige Tafeln):
+  - **INTERFACES.md §1 Modul 02 — Bietet** ergänzt um
+    `resetIdentityCache() → void` mit ausführlichem Kommentar-Block.
+  - **INTERFACES.md §1 Modul 02 — Selbstcheck-Format** auf sieben
+    Funktionen erweitert.
+  - **INTERFACES.md §1 Modul 02 — Garantien für 05/06/07** um
+    neuen Punkt „Cache-Konsistenz nach externem Storage-Cleanup"
+    erweitert (Vertrag: wer sbkim_keys/sbkim_spore von außen
+    leert, MUSS resetIdentityCache rufen).
+  - **INTERFACES.md §1 Modul 07 — Nutzt** ergänzt um
+    `SbkimSpore.resetIdentityCache` mit Pflicht-Aufruf-Hinweis.
+  - **INTERFACES.md §1 Modul 07 — Self-Apoptose-Cleanup-Reihenfolge**
+    um Schritt 6 `SbkimSpore.resetIdentityCache()` ergänzt.
+  - **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende
+    (neueste Zeile unten, Konventions-Stil).
+  - **Karte 02 § Schnittstelle** ergänzt um neue Funktion mit
+    ausführlichem Kommentar.
+  - **Karte 02 § Selbstcheck** auf sieben Funktionen erweitert.
+  - **Karte 07 § Schnittstelle (`confirmSelfApoptose`-Block)** um
+    Schritt-3-Cleanup-Reihenfolge mit `resetIdentityCache()`
+    aktualisiert.
+  - **Karte 07 § Apoptose-Pfad Schritt 5** um Cleanup-Schritt 6
+    ergänzt.
+- **Code danach:**
+  - **`src/modules/02_spore.js`**: neue Funktion `resetIdentityCache()`
+    (eine Zeile `identityCache = null;`), exportiert auf
+    `window.SbkimSpore`, Selbstcheck-Zeile auf sieben Funktionen
+    erweitert. `node --check` grün.
+  - **`src/modules/07_apoptose.js`**: nach den fünf
+    `storage.clear`-Aufrufen + den eigenen Cache-Invalidations
+    (`ownPrivateKeyCache = null; pseudoSiblings = null;`) wird
+    `getSpore().resetIdentityCache()` als Schritt 6 gerufen, mit
+    `typeof`-Guard für Rückwärts-Lauffähigkeit (falls Modul 02
+    noch alte Version geladen ist). Cleanup-Kommentar präzisiert.
+    `node --check` grün.
+- **Karten 02 + 07 Bauzustand-Tabellen** um „Pflege Cache-Invalidate
+  | 2026-05-15 | Pflege 02+07-Cache-Invalidate | …"-Zeilen ergänzt.
+  Karte 07 Sichttest-Zeile zusätzlich von „ungeprüft" auf
+  „geprüft 2026-05-15 (Klaus + Pflege 02+07-Cache-Invalidate)"
+  gehoben mit ausführlicher Befund-Notiz.
+- **PULS-Schnellüberblicks-Zeilen Modul 02 + Modul 07** und
+  „Als nächstes ✨" Block für Modul 07 entsprechend aktualisiert.
+- **`status.json` unverändert.** Beide Module bleiben `score:"stub"` /
+  `siegel:"Code-Stub"`. Pie nicht regeneriert (keine Score-Änderung).
+- **Test-Datei nicht geändert.** Test 6 wird beim Re-Sichttest
+  durch den Code-Fix grün — `getNodeId_wirft_NoIdentityError:true`
+  ist die direkte Folge des Cache-Resets.
+
+**Was nicht geändert wurde (bewusst):**
+
+- **Keine Test-Datei-Änderung.** Test 6's Pass-Check bleibt streng;
+  der Code-Fix erfüllt ihn jetzt.
+- **`status.json` unverändert** — Modul 02 und Modul 07 bleiben
+  `Code-Stub`; Pie nicht regeneriert.
+- **Karte 02 § Datenformate / § Fehlertabelle / § Manueller Test
+  unverändert.** Karte 07 § Datenformate / § Fehlertabelle /
+  § Manueller Test unverändert.
+- **`PROTOCOL_VERSION` unverändert.** Die Erweiterung ist additiv
+  (eine neue Funktion in Modul 02), kein Hauptversions-Sprung.
+
+**Frischer-Kopf-Befund: heilige Tafeln zuerst, Code danach**
+
+Diese Pflege-Sitzung ist die erste, die einen **echten Modul-Bug**
+(nicht Test-Bug) repariert seit Bau-Beginn. Die CLAUDE.md-
+Konvention „Heilige Tafeln zuerst, dann Code" wurde streng
+eingehalten:
+
+1. INTERFACES.md §1 Modul 02 + §1 Modul 07 + §6 wurden vor jeder
+   Code-Zeile aktualisiert.
+2. Karten 02 + 07 § Schnittstelle wurden vor jeder Code-Zeile
+   aktualisiert.
+3. Erst dann wurde der Code in beiden Modulen ergänzt.
+
+**Sauberere Lösungs-Wahl** (Option a): Modul 02 weiß nichts von
+Apoptose, bietet aber den expliziten Reset-Hook. Modul 07's
+Cleanup-Vertrag ist explizit erweitert um den neuen Schritt 6.
+Andere Module (04/05/00) sind nicht betroffen — sie nutzen den
+Cache weiterhin transparent.
+
+**Performance-Erwägung**: der Cache bleibt aktiv für alle
+nicht-Cleanup-Pfade. Modul 04/05/00 rufen `getNodeId` häufig
+(beim Snapshot, beim Handshake, beim Sign), und die zahlen
+nichts für den Reset-Mechanismus.
+
+**Spec-Disziplin**: Option (b) Cache-Trust-Abschalten wäre
+robuster gewesen (Modul 02 würde Cache-Inkonsistenzen selbst
+erkennen), aber Performance-teuer. Option (c) `init({forceReload})`
+hätte die Idempotenz-Garantie von `init()` gebrochen — Trick.
+Option (d) Pass-Check-Lockern wäre Symptom-Pflege.
+
+**Was offen blieb:**
+
+- **Klaus klickt Test 6 erneut im Browser.** Erwartung jetzt:
+  `getNodeId_wirft_NoIdentityError:true`, alle anderen Test-6-
+  Outputs unverändert. Folge-Tests 1/2/3/8 nach Setup-Reset
+  funktionieren wieder.
+- **Klaus' Trias-Sichttest Modul 05** (Pflege-Sitzung 05 Test-2)
+  hat bereits gezeigt: Eisenbahnsignalanlagen 0.7910,
+  Quantenfeldtheorie 0.7968, Steuerrecht 0.8184, Tarantino 0.8544.
+  Test 2 grün (2/3 unter Schwelle). Beleg-Eintrag in Karte 05
+  wurde von Klaus bewusst auf später verschoben („weiter ohne
+  Beleg, direkt zu Modul 07").
+- **Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul
+  00 im Andock-Pfad"** bleibt der nächste sinnvolle Schritt
+  (jetzt mit Modul 00, 05, 07 alle sichtgeprüft).
+- **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Live-Andock-
+  Versuch** bleibt die produktivste Folge-Sitzung — Module
+  00/05/07 sind alle Code-Stub und können mit-andocken.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Klaus klickt Panel 07 Test 6 (Self-Apoptose) erneut im
+   Browser** und schickt den Output. Erwartung:
+   `getNodeId_wirft_NoIdentityError:true`. Wenn ja: Modul 07
+   Sichttest vollständig grün; Karte 07 Bauzustand-Sichttest-
+   Zeile kann „voll grün"-Vermerk bekommen.
+2. **Folge-Pflege-Sitzung Karte 09 „Schritt 9: TTL-Sweep + Modul
+   00 im Andock-Pfad"** — kompakte Pflege, jetzt spruchreif.
+3. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Live-Andock-
+   Versuch** — der erste echte Andock-Klick zwischen Rezeptbuch
+   und Mixarium.
+
+---
 
 ### 2026-05-15 · Pflege-Sitzung · Modul 05 Test 2 Vektor-Trias
 

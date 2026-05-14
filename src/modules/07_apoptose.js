@@ -444,7 +444,7 @@
     }
 
     // 3. Lokaler Cleanup, sequenziell. Reihenfolge verbindlich:
-    //    siblings → log → inbox → spore → keys.
+    //    siblings → log → inbox → spore → keys → SbkimSpore.resetIdentityCache().
     //    sbkim_doku_meta bleibt unangetastet (Schreiber 00).
     var storage = getStorage();
     for (var k = 0; k < CLEANUP_ORDER.length; k++) {
@@ -455,6 +455,19 @@
     // die alte Identität noch sehen.
     ownPrivateKeyCache = null;
     pseudoSiblings = null;
+
+    // Modul 02 hält einen In-Memory-identityCache (Performance-Optimierung).
+    // Wer sbkim_keys/sbkim_spore von außen leert, MUSS resetIdentityCache
+    // aufrufen — sonst liefert SbkimSpore.getNodeId weiter die alte
+    // Identität, und der nächste storage-direkte Lookup (z.B. ein erneuter
+    // confirmSelfApoptose nach Re-Setup) findet keinen Key und wirft
+    // NoIdentityError trotz "frischer" Identität-Erwartung.
+    // Vertrag: INTERFACES.md §1 Modul 02 § Garantien für 05/06/07,
+    // Modul 07 § Self-Apoptose-Cleanup-Reihenfolge Schritt 6.
+    // Pflege-Sitzung 2026-05-15 (Klaus' Sichttest-Befund Modul 07 Test 6).
+    if (typeof getSpore().resetIdentityCache === "function") {
+      getSpore().resetIdentityCache();
+    }
 
     return {
       outcome: "completed",
