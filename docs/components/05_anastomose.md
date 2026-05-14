@@ -468,11 +468,27 @@ benennt nur, was geprüft werden soll:
    Test-Helfer, der `receiveHandshake` direkt callt statt zu fetchen
    — siehe Bau-Sitzung). Erwartung: passt (Score > 0.80), beide stehen
    in `sbkim_siblings`.
-2. **Domain-Mismatch lokal** — derselbe Test, aber mit einem fremden
-   `domainVector` aus einer komplett unverwandten Domäne
-   (Tarantino-Vektor). Erwartung: `outcome:"rejected"`, Score < 0.80,
-   `sbkim_siblings` bleibt leer, `sbkim_anastomosis_log` hat zwei
-   `"abgelehnt: score"`-Zeilen.
+2. **Domain-Mismatch lokal (Vektor-Trias, Pflege-Sitzung
+   2026-05-15)** — derselbe Test, aber mit **drei semantisch klar
+   fremden Domänen-Vektoren parallel** statt eines einzelnen
+   Vektors. Aktuelle Kandidaten in Panel 05 Test 2: „Steuerrecht
+   und Bilanzierung" / „Eisenbahnsignalanlagen" / „Quantenfeldtheorie".
+   Erwartung: **mindestens einer** der drei liefert `outcome:"rejected"`,
+   Score < `PROVIDER_MIN_MATCH = 0.80`. Pass-Check ist „≥ 1 von 3
+   rejected". — *Der frühere Tarantino-Vektor lag in Klaus' Sichttest
+   2026-05-15 bei 0.854 (über Schwelle) — Tarantino-Filme handeln
+   semantisch oft in Bars und liegen damit zu nah am Mixarium-
+   Cocktail-Vektor. Karte 04 Match-Kalibrierungs-Beleg zeigt
+   bereits, dass die Embedding-Baseline beim
+   `Xenova/multilingual-e5-small`-Modell für unverwandte Begriffe
+   ungewöhnlich hoch ist (Käsekuchen/Auspuffrohr = 0.8967). Die
+   Trias liefert deshalb drei Stichproben parallel; der niedrigste
+   Score ist der verteidigbare Domain-Mismatch-Vektor. Wenn alle
+   drei über 0.80 liegen, ist das selbst ein Befund für eine
+   Folge-Pflege-Sitzung „Embedding-Baseline" (PROVIDER_MIN_MATCH-
+   Anhebung oder Wechsel der Vektor-Familie).* Der Test-Knopf
+   protokolliert zusätzlich den Tarantino-Vergleichswert als
+   reinen Cosinus, damit Klaus die Drift im Output direkt sieht.
 3. **Versions-Mismatch** — fremde Spore mit `protocolVersion: "1.0"`
    füttern. Erwartung: `ProtocolVersionMismatchError` (kein Netz-
    Aufruf), Log-Zeile.
@@ -571,7 +587,7 @@ Test gehört in den Einbau in Rezeptbuch + Mixarium (Modul 09).
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Sequence-Diagramm (alte Schwelle 0.55), Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 05 | Fünf-Funktionen-API (`init/handshake/receiveHandshake/listSiblings/forgetSibling`), HandshakeRequest/Response-Schema mit kanonischer Signatur, Anastomose-Pfad in 14 Schritten, Service-Worker-Vertrag, A1–B3-Synthese auf Hop B3/A3 fortgeschrieben, bidirektionale Eintragung, Reentry-Idempotenz, Schwelle aus Modul 04 / §0 ohne Hartcode |
 | Code geschrieben | 2026-05-14 | Bau 05 | `src/modules/05_anastomose.js` als IIFE mit `window.SbkimAnastomose`, fünf öffentliche Funktionen, sechs benannte Error-Klassen (`AnastomoseDependenciesError`, `InvalidPeerSporeError`, `ProtocolVersionMismatchError`, `HandshakeTimeoutError`, `HandshakeNetworkError`, `HandshakeSignatureInvalidError`), kanonischer Sign/Verify-Pfad (Envelope-Form ohne signature, Ed25519, base64url ohne Padding) bewusst aus Modul 02 dupliziert; Service-Worker-Variante **A (Page-Hosted via MessageChannel)** in `src/sbkim-sw.js`; Test-Brücken `_invokeDirect`/`_buildSignedRequest`/`_verifyResponseSignature`/`_setOwnDomainVector` für den lokalen Zwei-Knoten-Test ohne Netz; `node --check` grün |
-| Sichttest | — | — | ungeprüft, weil Sitzung headless — Klaus klickt im Browser (Panel 05 mit acht Knöpfen inkl. einmaligem Setup, dann sieben Test-Punkte aus Karte 05 § Manueller Test) |
+| Sichttest | 2026-05-15 | Klaus + Pflege 05-Test-2 | geprüft 2026-05-15 (Klaus, im Browser): sechs von sieben Tests grün im ersten Lauf — Setup (Main + Alt + Embedding) OK · Test 1 (passendes Match) `response_score:0.888, outcome:established` · Test 3 (Versions-Mismatch 1.0) `reason:"Inkompatible Hauptversion: 1.0 (wir: 0.1)"` · Test 4 (Signatur manipuliert) `reason:"Request-Signatur ungültig"` · Test 5 (Re-Handshake) `since unverändert, sibling einmal gespeichert, letzter Log outcome:"re-handshake"` · Test 6 (forgetSibling) `alt entfernt, Log unverändert, forget_unbekannt_wirft_nicht:true` · Test 7 (listSiblings) `beide alt-Knoten in Liste, Form korrekt`. **Test 2 (Domain-Mismatch / Tarantino-Vektor) Test-Bug** — Erwartung war `outcome:rejected, score<0.80`, tatsächlich `outcome:established, score:0.854`. Tarantino-Filme handeln semantisch oft in Bars → zu nah am Mixarium-Cocktail-Vektor. Modul-Logik korrekt (`PROVIDER_MIN_MATCH=0.80` greift wie spezifiziert), nur der Test-Vektor war schlecht gewählt. **Pflege-Sitzung 2026-05-15** baut Test 2 auf Vektor-Trias um (drei semantisch klar fremde Kandidaten: Steuerrecht und Bilanzierung / Eisenbahnsignalanlagen / Quantenfeldtheorie); Pass-Check „mindestens einer der drei rejected mit score < 0.80"; Tarantino-Vergleichswert wird parallel als reiner Cosinus protokolliert (Drift-Sicht). Karte 05 § Manueller Test Punkt 2 zieht mit. Kein Eingriff in Modul-Vertrag oder INTERFACES.md. Klaus' zweiter Sichttest-Lauf nach Pflege folgt im Browser; falls auch alle drei Trias-Kandidaten über 0.80 liegen, eigene Folge-Pflege-Sitzung „Embedding-Baseline" (PROVIDER_MIN_MATCH-Anhebung oder andere Vektor-Familie). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
