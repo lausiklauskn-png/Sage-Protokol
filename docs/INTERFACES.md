@@ -22,6 +22,9 @@ LOCAL_RESULT_THRESHOLD = 3
 QUERY_TIMEOUT_MS       = 4000
 SBKIM_STORE_PREFIX     = "sbkim_"
 DOKU_REVEAL_CLICKS     = 5
+DOKU_REVEAL_WINDOW_MS  = 3000           // 3 Sekunden Zeitfenster für alle 5 Klicks; Modul 00, Spec-Sitzung 00
+DOKU_QUOTA_WARN_RATIO  = 0.80           // Quota-Frühwarnung relativ; Modul 00, Spec-Sitzung 00 (auch Modul 01/02 Querschnitt „Spore-Persistenz")
+DOKU_QUOTA_WARN_BYTES  = 52428800       // 50 MiB freier Speicher als zweite Quota-Frühwarnung absolut; Modul 00, Spec-Sitzung 00
 SIBLING_MAX_AGE_MS     = 2592000000     // 30 Tage; TTL für Modul 07 forgetExpiredSiblings
 ```
 
@@ -63,14 +66,129 @@ SIBLING_MAX_AGE_MS     = 2592000000     // 30 Tage; TTL für Modul 07 forgetExpi
 ---
 
 ### Modul: 00_doku_fenster
-Status: schablone
+Status: entwurf
 Datei:  src/modules/00_doku_fenster.js
 
-Bietet:
-  *(noch zu spezifizieren — Modul 00 enthüllt nach 5 Klicks auf das
-   Such-Symbol ein Statusfenster mit Knoten-Entwicklungsstand)*
+Bietet (öffentlich):
+  init(options)                              → Promise<void>
+  open()                                     → Promise<void>
+  close()                                    → void
+  isOpen()                                   → boolean
+  getStatusSnapshot()                        → Promise<DokuStatus>
+  recordSighttest(moduleId, result)          → Promise<void>
 
-Geprüft: ungeprüft
+  options-Form: { searchIconSelector: string,
+                  revealClicks?: number,
+                  revealWindowMs?: number,
+                  windowTitle?: string,
+                  mountTarget?: HTMLElement }
+
+  Modul 00 ist ein **reines Lese-/Trigger-Modul** im Endknoten:
+  versteckte 5-Klick-Geste auf das Such-Symbol enthüllt ein modales
+  Statusfenster mit dem Lauf-Zustand des Knotens. Kein Datenexport,
+  kein Netz-Aufruf außerhalb dessen, was `SbkimApoptose` ohnehin
+  auslöst (TTL-Sweep-Knopf ruft `SbkimApoptose.forgetExpiredSiblings`,
+  das selbst kein Netz nutzt). Kein Self-Apoptose-Knopf — der gehört
+  in Modul 08 (UI-Demo), nicht ins versteckte Doku-Fenster (Karte 07
+  Begründung).
+
+  Schlüssel-Schreib-Rolle: Modul 00 ist **alleiniger Schreiber** von
+  `sbkim_doku_meta` (Karte 01 Vertrag).
+
+Nutzt:
+  SbkimStorage.init / get / put / all          (sbkim_doku_meta — Schreib- und Lese-Quelle)
+                                                Pflicht-Abhängigkeit.
+  SbkimSpore.getNodeId / getOwnSpore / getPublicKeyJwk
+                                                Optional. Fail-soft: wenn das Modul nicht auf window
+                                                ist oder NoIdentityError wirft, landet
+                                                `nodeId:null`/`ownSporePresent:false` im Snapshot,
+                                                kein Throw.
+  SbkimAnastomose.listSiblings                  Optional, fail-soft (siblings:[], errors[]-Eintrag).
+  SbkimApoptose.listLegacy                      Optional, fail-soft (legacy:[], errors[]-Eintrag).
+  SbkimApoptose.forgetExpiredSiblings           Optional. Wird vom TTL-Sweep-Knopf aufgerufen mit
+                                                SIBLING_MAX_AGE_MS aus §0. Knopf ist deaktiviert,
+                                                wenn SbkimApoptose fehlt.
+  Browser-API: navigator.storage.estimate()     Quota-Frühwarnung. Wenn API nicht verfügbar,
+                                                quota:null im Snapshot, kein Fehler.
+  DOM:
+    document.querySelector(options.searchIconSelector)   click-Listener-Anker
+    document.addEventListener("keydown")                 Esc → close()
+
+Storage:
+  Store: sbkim_doku_meta (aus Modul 01).
+  Schreib-Schlüssel:
+    "meta"             → { moduleId:"meta", schemaVersion:1, lastOpenedAt: ISO-8601 | null }
+    "<modulId>"        → { moduleId: "01"|"02"|"03"|"04"|"05"|"07"|...,
+                           lastSighttest: ISO-8601, status: "ok"|"fail" }
+  Modul 00 schreibt ausschließlich diese beiden Schlüsselformen. Andere
+  Module schreiben sbkim_doku_meta NICHT (Karte 01: "Schreiber 00").
+  Lese-Rechte für sbkim_doku_meta: jedes Modul darf lesen (z.B. Modul
+  08 für die UI-Werkstatt). Modul 00 hat keine Lese-Sperre.
+
+Events:
+  (keine — DOM-Click-Listener und Keyboard-Esc-Listener werden in
+   init() registriert, ein Custom-Event-Pub/Sub gibt es nicht.)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 00 DOKU-FENSTER bereit, Funktionen: init/open/close/isOpen/getStatusSnapshot/recordSighttest");
+  Wie Modul 01 / 02 / 04 / 05 / 07 — keine Konstante in der Selbstcheck-
+  Zeile. Reveal-Schwelle / Quota-Schwellen stehen in §0; sie werden in
+  der Selbstcheck-Zeile bewusst nicht wiederholt.
+
+Versionierungs- und Sichtbarkeits-Vertrag:
+  - Modul 00 ist nicht protokoll-aktiv (kein Netz, keine Spore-
+    Signatur, kein Vermächtnis). Es gibt keinen Hauptversions-Check
+    in 00 — die §0-Konstanten werden beim Skript-Laden gelesen und
+    in den Snapshot gespiegelt.
+  - Sichtbarkeits-Persistenz: SESSION-ONLY (Entscheidung Spec-Sitzung
+    00, Frage 3 Variante (a)). sbkim_doku_meta["meta"] hat KEIN
+    visible-Feld; beim Tab-Schließen verliert Modul 00 seinen
+    in-memory-Zustand; 5-Klick-Geste muss bei jedem PWA-Start neu
+    ausgeführt werden.
+  - `sbkim_doku_meta` ist additiv versioniert: das schemaVersion-
+    Feld in `["meta"]` ist aktuell `1`. Eine Folge-Pflege-Sitzung
+    (z.B. zur Einführung persistenter Sichtbarkeit nach Variante (b)
+    oder (c)) darf das Feld zu `2` heben und neue Felder ergänzen.
+    Modul 00 muss dann ältere Schemata akzeptieren (Migration im
+    init()).
+
+Fehlerverhalten:
+  - init(): options.searchIconSelector fehlt / leerer String → InvalidDokuOptionsError (sync, vor DB)
+  - init(): SbkimStorage nicht auf window                     → DokuDependenciesError
+  - init(): SbkimStorage.init() wirft                         → unverändert durchgereicht
+  - init(): searchIconSelector matcht aktuell kein Element    → console.warn, kein Throw; Re-Mount beim DOMContentLoaded
+  - init(): zweimaliger Aufruf                                → idempotent (kein Doppel-Listener, keine Doppel-Meta-Anlage)
+  - open(): Fenster bereits offen                             → idempotent, kein Re-Render
+  - open(): SbkimStorage.put(sbkim_doku_meta,"meta",…) wirft → StorageQuotaError (Sammel-Klasse, Original in .cause)
+  - open(): Spore/Anastomose/Apoptose-Lesefehler              → fail-soft (siehe Karte 00 § Fehlertabelle); Eintrag in DokuStatus.errors[]
+  - open(): navigator.storage.estimate() nicht verfügbar      → quota:null im Snapshot, kein Throw
+  - close(): Fenster nicht offen                              → idempotent, kein Fehler
+  - getStatusSnapshot(): optionale Lese-Quelle wirft          → fail-soft (errors[]-Eintrag), kein Throw
+  - getStatusSnapshot(): SbkimStorage-Lesefehler              → unverändert durchgereicht (Pflicht-Quelle)
+  - recordSighttest(): result nicht "ok"/"fail"               → InvalidSighttestResultError (sync throw)
+  - recordSighttest(): unbekannte moduleId                    → additiv, kein Fehler
+
+  Vier benannte Error-Klassen (exportiert auf window.SbkimDoku.*):
+    InvalidDokuOptionsError, DokuDependenciesError,
+    InvalidSighttestResultError, StorageQuotaError
+
+Garantien für Modul 08 / 12 und alle Bau-Sitzungen:
+  - Schreibrecht auf `sbkim_doku_meta` liegt ausschließlich bei
+    Modul 00. Wer in einer Bau-Sitzung Sichttests dort persistieren
+    will, ruft `SbkimDoku.recordSighttest(moduleId, "ok"|"fail")` —
+    keine direkten Storage.put-Aufrufe in den Store.
+  - `DokuStatus` ist eine reine JSON-Form (keine Methoden, keine
+    Closures). Module 08 (UI-Demo) und Modul 12 (Blocklist, später)
+    dürfen die Form direkt rendern.
+  - Modul 00 macht keine Netz-Aufrufe. `navigator.storage.estimate()`
+    ist Browser-lokal; ein Crawler-Risiko besteht nicht.
+  - Self-Apoptose-Knopf liegt NICHT in Modul 00 (bewusst). Wer in
+    Modul 08 einen Self-Apoptose-Pfad anbieten will, muss das selbst
+    bauen (Karte 07 § Schnittstelle: prepareSelfApoptose →
+    confirmSelfApoptose mit 60 s Token).
+
+Geprüft: 2026-05-14 (Spec-Sitzung 00)
 
 ---
 
@@ -1009,3 +1127,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-14 | Spec-Sitzung 05 | Modul 05 (Anastomose) spezifiziert. Fünf-Funktionen-API (`init/handshake/receiveHandshake/listSiblings/forgetSibling`), bidirektionale Eintragung nur bei beidseitigem Match, semantische Ablehnung ist Outcome (kein Throw), Protokoll-/Netz-/Krypto-Fehler werfen. Stores `sbkim_siblings` (peerNodeId → {nodeId, domain, endpoint, pubKey, since}) und `sbkim_anastomosis_log` (ts → {ts, peerId, outcome}) — anonymisiert. Reentry idempotent: `since` bleibt beim ersten Anklopf, Log bekommt `outcome:"re-handshake"`. Schwellwert wird ausschließlich über `SbkimMatch.isAboveProviderThreshold` gelesen (kein literales 0.80 in 05). §2 „Anfrage (Query)" verbindlich mit HandshakeRequest/HandshakeResponse-Schema gefüllt (kanonische Signatur, Pflicht-/Optional-Felder, Versionierungs-Regel auf §4 verwiesen, Verifikations-Pfad in sieben Schritten). Service-Worker-Vertrag für statisch gehostete Endknoten (POST `/sbkim/anastomosis`, JSON, ≤ 64 KiB, 503 wenn keine Page-Instanz aktiv); Wahl Page-Hosted vs. SW-Hosted vertagt auf Bau-Sitzung 05. Status auf `entwurf`. |
 | 2026-05-14 | Spec-Sitzung 09 | Modul 09 (Einbau-PWA) spezifiziert. Karte 09 vollständig gefüllt — acht-Schritt Andock-Pfad mit konkreten Konsolen-Befehlen für Klaus (kein-Programmierer-Andocker), Datei-Pfad-Konvention verbindlich (SW im Endknoten-Repo-Root, fünf JS-Module inline in `index.html` oder unter `<endknoten>/sbkim/`), Spore-Endpunkt verbindlich `/sbkim/spore.json` (Alias aus §3 statt `.well-known/`, weil GitHub-Pages-Project-Sites Jekyll-Dot-Ordner-Falle haben), Service-Worker-Registrierungs-Konvention `navigator.serviceWorker.register("sbkim-sw.js")` aus dem Repo-Root mit automatischem Scope `/<repo>/`, Scope-Falle bei Ablage unter `sbkim/` dokumentiert. Sichtkontrolle (3 Pflicht-Punkte: Konsolen-Selbstchecks · IndexedDB-Stores · live-Spore-URL). `domainVector`-Pflicht-Frage aus Spec-Sitzung 05 verbindlich entschieden: **Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — `domainVector` bleibt in §2 OPTIONAL, Karte 09 macht ihn Andock-Pflicht; §0 `PROTOCOL_VERSION` bleibt `"0.1"`. Begründung in Karte 09 § Risiken & offene Punkte. Status Modul 09 auf `entwurf` (Anleitung-Marker; Karten-Statuscodes formal für JS-Module). |
 | 2026-05-14 | Spec-Sitzung 07 | Modul 07 (Apoptose) spezifiziert. Sechs-Funktionen-API (`init/prepareSelfApoptose/confirmSelfApoptose/receiveLegacy/listLegacy/forgetExpiredSiblings`); Self-Apoptose **irreversibel** und **zweistufig** mit 60s-Confirmation-Token (`APOPTOSE_TOKEN_TTL_MS = 60_000`, Modul-lokal) gegen versehentliches Auslösen, plus `console.warn` beim `prepare`-Aufruf; Quorum-Verfahren und Misstrauensvoten aus der ursprünglichen Schablone bewusst gestrichen — gehören in Modul 10 (Reputation, Schutz-Backlog). `receiveLegacy` wirft **niemals** (Outcome statt Throw, analog `verifyForeignSpore` und `receiveHandshake`). Vermächtnis-Versand parallel via `Promise.allSettled` mit `AbortController(QUERY_TIMEOUT_MS)` pro Empfänger — Trennung `recipientsNotified` (Empfänger antwortete `outcome:"accepted"`) und `recipientsFailed` (Timeout, Netz, ungültige Signatur, `rejected`). Lokaler Self-Apoptose-Cleanup sequenziell: siblings → log → inbox → spore → keys (Identität zuletzt); `sbkim_doku_meta` bleibt. §2 „Vermächtnis (Legacy)" verbindlich mit `LegacyMessage` (7 Pflichtfelder) und `LegacyResponse` (8 Pflichtfelder + `reason` als optionales `rejected`-Begleitfeld) gefüllt, kanonische Ed25519-Signatur identisch zu Spore / HandshakeRequest, Verifikations-Pfad in sieben Schritten. **§0 um `SIBLING_MAX_AGE_MS = 2592000000` (30 Tage) ergänzt** — Spec-Sitzung-7-Entscheidung Variante A (global statt modul-lokal, additiv, kein Hauptversions-Sprung; konsistent mit `PROVIDER_MIN_MATCH` / `QUERY_TIMEOUT_MS` / `PROTOCOL_VERSION`). TTL-Trigger Variante (c) — explizit durch den Andocker (z.B. nach jedem erfolgreichen Handshake oder auf einem Modul-00-Doku-Fenster-Knopf); **kein `setInterval`, kein Selbst-Sweep im `init()`**, keine Pulsation. Karte 09 Folge-Pflege-Sitzung „Schritt 9: TTL-Sweep-Aufruf" als offen vermerkt. `sbkim_legacy_inbox` als Schreib-Store; `sbkim_siblings` als Löscher-Store (Schreibrecht bleibt bei 05); `sbkim_anastomosis_log` als Leser-Store für die `lastActivity`-Berechnung pro Geschwister (max `ts` mit `outcome ∈ {"established","re-handshake"}`, Fallback `sbkim_siblings.since`). Status Modul 07 auf `entwurf`. |
+| 2026-05-14 | Spec-Sitzung 00 | Modul 00 (Doku-Fenster) spezifiziert. Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`); reines Lese-/Trigger-Modul im Endknoten — alleiniger Schreiber von `sbkim_doku_meta` (Schlüssel `"meta"` für Modul-Meta + `"<modulId>"` für Sichttest-Spur pro Modul); Lese-Quellen `SbkimSpore.{getNodeId,getOwnSpore,getPublicKeyJwk}`, `SbkimAnastomose.listSiblings`, `SbkimApoptose.listLegacy`, plus `navigator.storage.estimate()` für die Quota-Frühwarnung — alle optional, fail-soft (`errors[]`-Eintrag im Snapshot statt Throw); Pflicht-Abhängigkeit nur `SbkimStorage`. **Drei Pflichtfragen verbindlich entschieden:** Frage 1 Variante (a) **5 Klicks auf Such-Symbol innerhalb 3 s Zeitfenster** (neue §0-Konstante `DOKU_REVEAL_WINDOW_MS = 3000`); Frage 2 Doppel-Schwelle **`DOKU_QUOTA_WARN_RATIO = 0.80` UND `DOKU_QUOTA_WARN_BYTES = 52428800` (50 MiB)** in §0 (additiv, kein Hauptversions-Sprung — konsistent zum Querschnitts-Anker „Spore-Persistenz-Strategie verteilt"); Frage 3 Variante (a) **Sichtbarkeits-Session-only** (kein `visible`-Feld in `sbkim_doku_meta`, 5-Klick-Geste bei jedem PWA-Start neu). **§0 um drei Konstanten erweitert** (`DOKU_REVEAL_WINDOW_MS`, `DOKU_QUOTA_WARN_RATIO`, `DOKU_QUOTA_WARN_BYTES`; `status.json.config` zieht mit). TTL-Sweep-Knopf nutzt `SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` ohne API-Erweiterung — schließt offene Frage aus Spec-Sitzung 07 (Karte 09 Schritt 9 TTL-Sweep) zur **Hälfte** (manueller Trigger ja, Andocker-Automatik bleibt offen). Vermächtnis-Inbox-Anzeige nutzt `SbkimApoptose.listLegacy()` (Karte 07 Schnittstelle) — keine Detail-View, keine `signature`-Anzeige (Spec-Wille). **Self-Apoptose-Knopf bewusst NICHT in Modul 00** — Karte 07 hat Self-Apoptose als zweistufig+irreversibel spezifiziert; gehört in Modul 08 (UI-Demo) oder einen separaten Endknoten-Pfad. Datenform `DokuStatus` reines JSON (kein Methoden-Objekt) — Schlüsselfelder: `nodeId`/`nodeIdShort`, `ownSporePresent`, `domain`, `nodeType`, `siblings[]`/`siblingCount`, `legacy[]`/`legacyCount`, `modules{}` (Sichttest-Map), `quota{usage,quota,ratio,freeBytes,warnRatio,warnBytes,warningLevel}`, `openedAt`/`lastOpenedAt`, `errors[]`. Vier benannte Error-Klassen (`InvalidDokuOptionsError`, `DokuDependenciesError`, `InvalidSighttestResultError`, `StorageQuotaError`). Karte 09 Folge-Pflege-Sitzung muss Modul 00 in den Andock-Pfad als Schritt 9 ergänzen (Andocker ruft `SbkimDoku.init({searchIconSelector:...})`); Spec-Sitzung 00 stellt die API bereit. Status Modul 00 auf `entwurf`. |
