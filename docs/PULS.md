@@ -16,9 +16,9 @@
 ```mermaid
 pie showData
   title Modulstand 2026-05-14 (13 Module)
-  "🟫 Schablone" : 8
+  "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 0
+  "🟨 Spec fertig" : 1
   "🟦 Code-Stub" : 4
   "🟩 Fertig" : 0
 ```
@@ -38,6 +38,10 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 - 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
 - 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert
 
+Mit Spec fertig, Code ausstehend:
+
+- 🟨 **[05 Anastomose](components/05_anastomose.md)** — Spec gefüllt 2026-05-14; Fünf-Funktionen-API, HandshakeRequest/Response-Schema in INTERFACES.md §2, Service-Worker-Vertrag, bidirektionale Eintragung — wartet auf **Bau-Sitzung 05**
+
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
 - ✨ **[00 Doku-Fenster](components/00_doku_fenster.md)** — keine Abh., 5-Klick-UI in Endknoten
@@ -47,12 +51,14 @@ In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: jetzt **Spec-Sitzung Modul 05 Anastomose** —
-alle vier Vorbedingungen (01, 02, 03, 04) stehen sichtgeprüft als
-Stub. Alternativ **Spec-Sitzung Modul 07 Apoptose** (Vorbedingungen
-01 + 02 erfüllt, signiertes Vermächtnis braucht 02). Parallel
-anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder Modul 09
-(Einbau-PWA) — beide ohne Abhängigkeiten.
+Empfehlung Hauptsitzung: jetzt **Bau-Sitzung Modul 05 Anastomose** —
+Spec liegt vollständig vor (Karte 05, INTERFACES.md §1 Modul 05 + §2
+Anfrage). Service-Worker-Variante (Page-Hosted vs. SW-Hosted)
+entscheidet die Bau-Sitzung selbst. Alternativ **Spec-Sitzung Modul 07
+Apoptose** (Vorbedingungen 01 + 02 erfüllt, signiertes Vermächtnis
+braucht 02; läuft parallel zur Bau-Sitzung 05, weil die Module unabhängig
+sind). Parallel anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder
+Modul 09 (Einbau-PWA) — beide ohne Abhängigkeiten.
 
 ---
 
@@ -65,7 +71,7 @@ anbietbar: Spec-Sitzung Modul 00 (Doku-Fenster) oder Modul 09
 | 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Ed25519-Identität, Singleton, base64url-sha256-rawpub |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
 | 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80 |
-| 05 anastomose | leere Schablone | — | — | Handshake |
+| 05 anastomose | Spec fertig (2026-05-14) | — | — | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04 |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
 | 07 apoptose | leere Schablone | — | — | Selbstlöschung |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
@@ -126,6 +132,112 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Spec-Sitzung · Modul 05 Anastomose (Spec fertig)
+
+**Getan:**
+
+- **Komponenten-Karte 05 (Anastomose) vollständig gefüllt** — die
+  alte Schablone mit veralteter Schwelle `0.55` und gestrichenem
+  `matchAgainstDomain` (siehe Pflege-Eintrag unten als offen markiert)
+  wurde durchgängig ersetzt. Karte 05 ist 564 Zeilen — länger als
+  02 (364) und 04 (357), weil Anastomose die erste *Komposition* aus
+  vier Modulen ist und einen vollen Schritt-für-Schritt-Pfad braucht.
+- **Fünf-Funktionen-API:** `init / handshake / receiveHandshake /
+  listSiblings / forgetSibling`. `forgetSibling` ist gegenüber der
+  ursprünglichen Schablonen-Skizze (`initiateAnastomosis / listSiblings`)
+  neu — ohne sie hätte der Betreiber kein händisches Aufräumen, und
+  TTL/Auto-Vergessen ist explizit Modul 07.
+- **Bidirektionalität:** `sbkim_siblings` wird nur dann auf beiden
+  Seiten gefüllt, wenn beide Match-Schwellen passieren. Einseitiger
+  Match → kein Geschwister-Eintrag; `sbkim_anastomosis_log` bekommt
+  beidseitig eine `"rejected"`-Zeile (anonymisiert: `{ts, peerId,
+  outcome}`, kein domainVector / kein Inhalt).
+- **Reentry-Idempotenz:** dieselbe peerNodeId zweimal → kein
+  Überschreiben, `since` bleibt eingefroren, Log bekommt
+  `outcome:"re-handshake"`.
+- **Schwelle ohne Hartcode:** Modul 05 ruft
+  `SbkimMatch.isAboveProviderThreshold(score)` — niemals `0.80`
+  literal. Wer §0 ändert, ändert Modul 04 mit, Modul 05 spürt es
+  automatisch. Bei Hauptversions-Mismatch sofortiger Abbruch
+  (`ProtocolVersionMismatchError` ausgehend; eingehend Response
+  `outcome:"rejected", reason:"Inkompatible Hauptversion: <x.y>"`).
+- **Fehler-Disziplin:** semantische Ablehnung (Score zu niedrig, Peer
+  schweigt) ist **Outcome**, nicht Throw. Protokoll- / Netz- / Krypto-
+  Fehler werfen (`InvalidPeerSporeError`, `ProtocolVersionMismatchError`,
+  `HandshakeTimeoutError`, `HandshakeNetworkError`,
+  `HandshakeSignatureInvalidError`, `AnastomoseDependenciesError`).
+  `receiveHandshake` wirft **niemals** — alles als
+  `HandshakeResponse{outcome:"rejected", reason:"<deutsch>"}` analog
+  `verifyForeignSpore` aus Modul 02.
+- **A1–B3-Synthese fortgeschrieben:** Modul 04 (Match) sitzt an Hop
+  B2/A2 (reine Zahl), **Modul 05 sitzt an Hop B3/A3** als
+  Entscheidungs- und Verbindungs-Stelle — `isAboveProviderThreshold`
+  ist der Schalter „verwerfen oder verbinden", Apoptose B4 bleibt
+  Aufgabe von Modul 07.
+- **INTERFACES.md §1 Modul 05 auf `entwurf`** mit voller Vertrag-
+  Sektion: API-Signaturen, Modul-Nutzungen (01/02/04), Stores
+  (`sbkim_siblings`, `sbkim_anastomosis_log`), Selbstcheck-Format,
+  Service-Worker-Vertrag (Pfad, Body-Limit 64 KiB, 405/415/413,
+  Page-Hosted vs. SW-Hosted offen), Fehlertabelle, Reentry-Regel,
+  Garantien für Modul 06/07.
+- **INTERFACES.md §2 „Anfrage (Query)" ausgefüllt:** HandshakeRequest
+  (5 Pflicht + 2 optional) + HandshakeResponse (8 Pflicht + 2
+  optional) mit kanonischer Signatur, Versionierungs-Regel auf §4
+  verwiesen, Verifikations-Pfad in sieben Schritten. Pflichtfelder
+  ab Status `entwurf` nur additiv (vgl. §4).
+- **§6 Änderungsprotokoll** mit Spec-Sitzung-05-Zeile fortgeschrieben.
+- **`status.json` Modul 05** von `score: "schablone"` /
+  `siegel: "noch nicht gebaut"` auf `score: "spec"` /
+  `siegel: "Spec fertig"`, `kurz` auf „Handshake zwischen Knoten —
+  kanonisch signiert, bidirektional, Schwelle aus Modul 04".
+- **`python3 scripts/update_puls_pie.py` lief**, Pie regeneriert:
+  Schablone 8 → 7, Spec fertig 0 → 1 (Werkstatt 1, Stub 4, Fertig 0
+  unverändert).
+- **Frischer-Kopf-Befund (in Karte 05 Risiken-Block dokumentiert):**
+  die im Briefing skizzierte API-Surface stand sauber, keine
+  Korrektur nötig. Die `domainVector`-Optional-Stellung in der Spore
+  (laut Karte 02 / §2 optional) ist eine schwache Stelle: ein Peer
+  ohne `domainVector` kann nicht matchen → der Empfänger antwortet
+  `outcome:"rejected", reason:"kein domainVector verfügbar"`. Anlass
+  für eine Folge-Sitzung in Modul 09 (Einbau-PWA: domainVector im
+  Andock-Workflow pflicht-machen, *bevor* die Spore deployt wird).
+
+**Offen:**
+
+- **Bau-Sitzung Modul 05** — Code `src/modules/05_anastomose.js`
+  schreiben, Panel 05 in `tests/manual_check.html` verdrahten (acht
+  Knöpfe, siehe Karte 05 Manueller-Test-Block), Service-Worker-Code
+  (Variante A oder B entscheiden), JS-Syntax mit `node --check`
+  grün, `status.json` Modul 05 auf `stub` + Pie regenerieren.
+- **Modul 09 Einbau-PWA (Spec-Sitzung):** offene Frage aus der
+  Anastomose-Spec — soll `domainVector` in der Spore Pflicht werden?
+  Wenn ja, ist das ein Hauptversions-Sprung (`0.1 → 1.0`) und muss
+  in §2 + §4 nachgezogen werden. Wenn nein, bleibt die schwache
+  Stelle stehen und Modul 05 antwortet halt mit `"kein domainVector
+  verfügbar"`.
+- **Manueller Sichttest** Karte 05 — kein Panel-Refresh nötig
+  (Panel 05 ist noch „noch nicht gebaut"). Der Sichttest gehört in
+  die Bau-Sitzung 05.
+
+**Nächster sinnvoller Schritt:**
+
+- **Bau-Sitzung Modul 05 Anastomose** — Spec liegt vollständig vor
+  (Karte 05 + INTERFACES.md §1 + §2). Die Sitzung schreibt
+  `src/modules/05_anastomose.js` als IIFE mit `window.SbkimAnastomose`,
+  Selbstcheck synchron beim Skript-Laden, Persistenz strikt über
+  `SbkimStorage`, Match strikt über `SbkimMatch`, Spore-Verify strikt
+  über `SbkimSpore`. Entscheidung Service-Worker-Variante (Page-
+  Hosted vs. SW-Hosted) trifft die Bau-Sitzung.
+- Alternativ: **Spec-Sitzung Modul 07 Apoptose** (Vorbedingungen
+  01 + 02 erfüllt; signiertes Vermächtnis braucht den Ed25519-
+  Schlüssel aus 02). Läuft parallel zur Bau-Sitzung 05.
+- Parallel anbietbar: **Spec-Sitzung Modul 00 (Doku-Fenster)** oder
+  **Modul 09 (Einbau-PWA)** — beide ohne Abhängigkeiten; Modul 09
+  hat den zusätzlichen Aufhänger „domainVector-Pflicht-Frage" aus
+  dieser Sitzung mitzunehmen.
+
+---
 
 ### 2026-05-14 · Pflege-Sitzung · Match-Kalibrierung (PROVIDER_MIN_MATCH 0.55 → 0.80)
 
