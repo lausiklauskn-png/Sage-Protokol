@@ -18,8 +18,8 @@ pie showData
   title Modulstand 2026-05-14 (13 Module)
   "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 2
-  "🟦 Code-Stub" : 5
+  "🟨 Spec fertig" : 1
+  "🟦 Code-Stub" : 6
   "🟩 Fertig" : 0
 ```
 
@@ -41,14 +41,11 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 Code-Stub frisch aus der Bau-Sitzung 2026-05-14, **Sichttest ausstehend:**
 
 - 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/05_anastomose.js` + `src/sbkim-sw.js` (Variante A · Page-Hosted), Panel 05 mit acht Knöpfen (Setup + sieben Test-Punkte aus Karte 05 § Manueller Test); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
+- 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung); `src/modules/07_apoptose.js` als IIFE mit `window.SbkimApoptose`, sechs Funktionen, fünf Error-Klassen (`ApoptoseDependenciesError`, `InvalidApoptoseTokenError`, `ApoptoseAlreadyExecutedError`, `InvalidTtlError`, `LegacyTimeoutError`/`LegacyNetworkError`); kanonischer Sign/Verify-Pfad **bewusst aus Modul 02/05 dritter Pfad dupliziert** (Single-File-PWA-Stil); `src/sbkim-sw.js` um `/sbkim/legacy` erweitert (gemeinsamer `fetch`-Listener mit `/sbkim/anastomosis`, Variante a — leichter erweiterbar für Modul 06/11); Panel 07 mit zehn Knöpfen (Setup + 8 Test-Punkte aus Karte 07 § Manueller Test + Selbstcheck-Hinweis); ungeprüft, weil Sitzung headless — Klaus klickt im Browser
 
 Spec frisch aus der Spec-Sitzung 2026-05-14, **Bau ausstehend** (Anleitung — kein JS-Modul):
 
 - 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung); Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, JS-Module inline oder unter `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` verbindlich, SW-Scope-Falle dokumentiert, `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
-
-Spec frisch aus der Spec-Sitzung 2026-05-14, **Bau ausstehend** (JS-Modul):
-
-- 🟨 **[07 Apoptose](components/07_apoptose.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung); Sechs-Funktionen-API mit **zweistufiger Self-Apoptose** (`prepareSelfApoptose` → `confirmSelfApoptose`, Token gültig 60 s), Vermächtnis-Versand parallel via `Promise.allSettled` an alle Geschwister, `receiveLegacy` wirft niemals (Outcome statt Throw, analog `verifyForeignSpore`/`receiveHandshake`), TTL-Trigger **explizit durch den Andocker** (Variante c — kein `setInterval`, kein Selbst-Sweep im `init()`), `SIBLING_MAX_AGE_MS = 30 Tage` **global in §0** (Variante A — additiv, kein Hauptversions-Sprung), `status.json.config` nachgezogen; §2 „Vermächtnis (Legacy)" verbindlich mit `LegacyMessage` (7 Pflichtfelder) und `LegacyResponse` (8 Pflicht + `reason` optional) gefüllt, kanonische Ed25519-Signatur identisch zu Spore / HandshakeRequest
 
 Module ohne offene Abhängigkeiten, Spec noch ausstehend:
 
@@ -61,12 +58,13 @@ In Arbeit (fortsetzen, nicht neu starten):
 Empfehlung Hauptsitzung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus
 am Live-Andock-Versuch** (Spec liegt vor, Andock-Anleitung verbindlich;
 nächster Schritt ist der erste echte Andock-Klick im Browser an Rezeptbuch
-und/oder Mixarium) **oder** **Bau-Sitzung Modul 07 Apoptose**
-(Spec liegt jetzt vor, sechs Funktionen, keine Netz-Abhängigkeit über
-01/02 hinaus). Parallel anbietbar: Spec-Sitzung Modul 00
-(Doku-Fenster). Sichttest Karte 05 (acht Knöpfe in Panel 05) gehört in
-einen kurzen Browser-Klick-Durchlauf, idealerweise vor dem Live-Andocken
-(Modul 05 wird im Andock-Workflow ausgeführt).
+und/oder Mixarium — Module 05 und 07 sind jetzt beide Code-Stub und
+können live mit-andocken). Parallel anbietbar: **Spec-Sitzung Modul 00
+(Doku-Fenster)** — dependenz-frei, 5-Klick-UI in der Endknoten-PWA,
+natürliche Anker-Stelle für die Vermächtnis-Inbox-Anzeige aus Modul 07
+und den TTL-Sweep-Knopf (Folge-Pflege-Sitzung Karte 09 Schritt 9).
+Sichttests Karte 05 (acht Knöpfe) und Karte 07 (zehn Knöpfe) gehören in
+einen kurzen Browser-Klick-Durchlauf, idealerweise vor dem Live-Andocken.
 
 ---
 
@@ -81,7 +79,7 @@ einen kurzen Browser-Klick-Durchlauf, idealerweise vor dem Live-Andocken
 | 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80 |
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
-| 07 apoptose | Spec fertig (2026-05-14) | — | — | Selbstlöschung mit signiertem Vermächtnis — zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; `SIBLING_MAX_AGE_MS` neu in §0 |
+| 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | ungeprüft (Sitzung headless) | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
 | 09 einbau_pwa | Spec fertig (2026-05-14) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — 8 Schritte; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
@@ -144,6 +142,181 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-14 · Bau-Sitzung · Modul 07 Apoptose (Code-Stub)
+
+**Getan:**
+
+- **`src/modules/07_apoptose.js` geschrieben.** IIFE-Modul wie 01/02/04/05,
+  klassisches `<script>`-Tag, kein ESM-Import, exportiert
+  `window.SbkimApoptose` mit den sechs öffentlichen Funktionen aus
+  INTERFACES.md §1 Modul 07: `init`, `prepareSelfApoptose`,
+  `confirmSelfApoptose`, `receiveLegacy`, `listLegacy`,
+  `forgetExpiredSiblings`. Fünf benannte Error-Klassen
+  (`ApoptoseDependenciesError`, `InvalidApoptoseTokenError`,
+  `ApoptoseAlreadyExecutedError`, `InvalidTtlError`, plus
+  `LegacyTimeoutError`/`LegacyNetworkError` für einzelne Versand-Versuche
+  — letztere landen in `recipientsFailed` und werden nicht nach außen
+  geworfen); `NoIdentityError` aus Modul 02 unverändert durchgereicht.
+- **Frage 1 (Kanonisierungs-Helfer-Lokation) entschieden — Variante (a):
+  dritte Duplizierung in Modul 07.** Kanonischer Sign/Verify-Pfad
+  (`canonicalize`, `base64urlEncode/Decode`, `signEnvelope`,
+  `verifyEnvelope`, `canonicalJsonBytesWithoutSignature`) **bewusst aus
+  Modul 02 + 05 dupliziert**, ohne Eingriff in 02 oder 05. Begründung:
+  gleiche Linie wie Bau-Sitzung 05 (Single-File-PWA-Stil, drei separate
+  `<script>`-Blöcke deployen, keine Verkopplung). Ein späterer Refactor
+  (gemeinsame Library) bleibt Pflege-Sitzungs-Stoff.
+- **Frage 2 (Test-Brücken-Surface) entschieden** —
+  `_invokeReceiveLegacyDirect` (Alias auf `receiveLegacy`),
+  `_buildSignedLegacyMessage(reason)` (Build + Sign ohne Versand),
+  `_addPseudoSibling({nodeId, domain, endpoint, pubKey, since})` (In-
+  Memory-Override für die Geschwister-Liste, analog Modul 05's
+  `_setOwnDomainVector`), `_clearPseudoSiblings()`, plus
+  `_advanceTokenClock(ms)` für den Token-Ablauf-Test (Panel-Test 7,
+  ohne 61 s Realzeit zu warten). Krypto-Helfer
+  `_canonicalize`/`_base64urlEncode`/`_base64urlDecode`/`_signEnvelope`/
+  `_verifyEnvelope` als Inspektions-Surface (analog Modul 05).
+- **Frage 3 (Service-Worker-Listener-Struktur) entschieden — Variante (a):
+  ein gemeinsamer `fetch`-Listener.** `src/sbkim-sw.js` hat jetzt eine
+  einzige `addEventListener("fetch", …)`-Schleife mit
+  `if isPathSuffix(…, ANASTOMOSIS_PATH)` und `else if isPathSuffix(…,
+  LEGACY_PATH)`. Begründung: leichter erweiterbar für Modul 06 / 11
+  (Heterokaryose, Rate-Limit), eine Stelle für alle SBKIM-Endpunkte.
+  Message-Typ heißt `SBKIM_LEGACY_REQUEST` (analog
+  `SBKIM_ANASTOMOSIS_REQUEST`).
+- **Self-Apoptose-Token im Modul-Closure** (nicht in IndexedDB) — 16
+  zufällige Bytes via `crypto.getRandomValues`, base64url ohne Padding,
+  60 s TTL (`APOPTOSE_TOKEN_TTL_MS = 60_000`, Modul-lokal).
+  `prepareSelfApoptose` erzeugt den Token und stößt
+  `console.warn("SELF-APOPTOSE VORBEREITET — irreversibel, Token gültig
+  60s")` an; `confirmSelfApoptose` prüft Vorhandensein, Ablauf
+  (`Date.now() > expiresAt`) und Identität von `reason`. Token wird mit
+  Beginn der irreversiblen Operation verbraucht (zwischen Build und
+  Versand auf `null` gesetzt), damit ein paralleler Confirm-Aufruf nicht
+  doppelt versendet.
+- **Cleanup-Reihenfolge sequenziell und verbindlich:**
+  `sbkim_siblings` → `sbkim_anastomosis_log` → `sbkim_legacy_inbox` →
+  `sbkim_spore` → `sbkim_keys` (Identität zuletzt — die letzte Bastion).
+  `sbkim_doku_meta` bleibt unangetastet. Caches im Modul-Closure
+  (`ownPrivateKeyCache`, `pseudoSiblings`) werden nach Cleanup explizit
+  invalidiert, sonst würde ein Folge-Aufruf die alte Identität noch sehen.
+- **`receiveLegacy` wirft niemals.** Form-Check, Spore-Verify,
+  Hauptversions-Check, Signatur-Verify und Storage-`put`/`del` sind in
+  einen äußeren `try/catch` eingewickelt. Selbst Storage-Fehler (z.B.
+  `QuotaExceededError` beim Inbox-Schreib) werden gefangen — der
+  Original-Error landet in `console.error`, die Response ist
+  `outcome:"rejected", reason:"interner Speicherfehler"`. Bei totalem
+  Empfänger-Ausfall (auch `buildLegacyResponse` scheitert) geht eine
+  *unsignierte* Notbremse zurück — der Sender lehnt sie über
+  `verifyEnvelope` korrekt ab.
+- **`forgetExpiredSiblings(maxAgeMs)` mit Pflicht-Parameter.** Ohne
+  Wert, mit `NaN`/`Infinity` oder `≤ 0` wirft `InvalidTtlError`. Liest
+  `sbkim_siblings` + `sbkim_anastomosis_log`, berechnet pro Geschwister
+  `lastActivity = max(log.ts mit outcome ∈ {"established","re-handshake"}
+  und peerId == sibling.nodeId)`, Fallback `sibling.since`. Geschwister
+  mit `(now - lastActivity) > maxAgeMs` werden gelöscht; Rückgabe
+  `Array<{nodeId, lastSeen}>`.
+- **`src/sbkim-sw.js` erweitert.** Konstanten `LEGACY_PATH =
+  "/sbkim/legacy"`, `ANASTOMOSIS_REQUEST_TYPE` und `LEGACY_REQUEST_TYPE`.
+  Helfer `isPathSuffix(pathname, endpointPath)` ersetzt das alte
+  `isAnastomosisPath`. `handleBridge(request, originatingClientId,
+  messageType)` ersetzt `handleAnastomosis` — beide Pfade gehen durch
+  denselben Code-Pfad (Body-Größen-Check, 405/415/413/503,
+  MessageChannel-Brücke). `askPage` nimmt jetzt `messageType` als
+  drittes Argument. Vertrag aus INTERFACES.md §3 + Karte 05 § „Service-
+  Worker-Hinweis" + Karte 07 unverändert eingehalten.
+- **`tests/manual_check.html` Panel 07 mit zehn Knöpfen verdrahtet.**
+  Setup-Knopf (einmalig: Identität, Spore, zwei In-Memory-Pseudo-
+  Geschwister über `_addPseudoSibling`, idempotent — baut nach Test 6
+  Self-Apoptose eine neue Identität) + acht Test-Punkte aus Karte 07 §
+  Manueller Test (Lokaler Round-Trip, Signatur-Manipulation, Versions-
+  Mismatch, TTL-Cleanup, `listLegacy`, Self-Apoptose, Token-Ablauf,
+  unbekannter Sender) + Selbstcheck-Hinweisknopf mit erwartetem Konsolen-
+  Output. Skript-Tag-Einbindung als
+  `<script src="../src/modules/07_apoptose.js"></script>` am Ende der
+  Datei (nach 01/02/03/04/05). Inline-Script-Syntax über `node --check`
+  validiert.
+- **Test-Pragmatismus dokumentiert:** wie in Bau-Sitzung 05 hat das
+  Panel nur EINE Identität pro Page — Test 1 (Lokaler Round-Trip)
+  empfängt die selbst-gebaute Vermächtnis-Nachricht über
+  `_invokeReceiveLegacyDirect`. Test 6 (Self-Apoptose) sendet an zwei
+  Pseudo-Geschwister mit absichtlich unerreichbaren Endpoints (`http://
+  127.0.0.1:1/…`) — beide landen in `recipientsFailed`. Der lokale
+  Cleanup-Pfad wird geprüft (alle SBKIM-Stores leer, `getNodeId` wirft
+  `NoIdentityError`). Der volle bidirektionale Pfad gehört in Modul 09
+  mit zwei tatsächlichen Tabs.
+- **Karte 07 Bauzustand-Tabelle** ergänzt: Zeile *Code geschrieben* mit
+  Datum + Sitzungsnamen + ausführlicher Anmerkung; Zeile *Sichttest*
+  mit „ungeprüft, weil Sitzung headless — Klaus klickt im Browser".
+  Hero-Badge von 🟨 Spec fertig auf 🟦 Code-Stub.
+- **`status.json` Modul 07** von `score:"spec"` / `siegel:"Spec fertig"`
+  auf `score:"stub"` / `siegel:"Code-Stub"`; `kurz`-Feld aktualisiert.
+  `python3 scripts/update_puls_pie.py` gelaufen, Pie regeneriert:
+  Schablone 5→5, Werkstatt 1→1, Spec fertig 2→1, **Code-Stub 5→6**,
+  Fertig 0→0. Genau wie das Briefing vorgibt. `SIBLING_MAX_AGE_MS` in
+  `status.json.config` unverändert (2592000000 — Spec-Sitzung 07 hat
+  den Wert dort schon gesetzt).
+- **`node --check`** grün für `src/modules/07_apoptose.js` und
+  `src/sbkim-sw.js`; alle sieben Inline-`<script>`-Blöcke in
+  `tests/manual_check.html` syntaktisch validiert.
+
+**Frischer-Kopf-Befund:**
+
+- Spec aus Karte 07 + INTERFACES.md §1/§2 trägt sauber. Beim Lesen
+  keine API-Korrektur an 01–05 nötig (Spec-Sitzung 07 hat das schon
+  geprüft); auch die Bau-Sitzung-Lese-Runde sieht keine Lücke. Modul
+  07 hängt im Bau-DAG nur an 01 und 02 — die kanonischen Pfade kommen
+  aus Modul 02 / 05 als Vorlage.
+- **Eine kleine Beobachtung zur Spec, keine Korrektur:** Karte 07 §
+  Schnittstelle nennt `Promise<{outcome:"completed", recipientsNotified,
+  recipientsFailed}>` als Rückgabe von `confirmSelfApoptose`. Im Code
+  steht jetzt genau dieser Pfad (kein `"failed"`-Outcome); auch wenn alle
+  Empfänger in `recipientsFailed` landen, ist der Outcome semantisch
+  „abgeschlossen" — der LOKALE Cleanup ist gelungen, der Versand ist
+  Best-Effort. Das deckt sich mit Karte 07 § Apoptose-Pfad Schritt 6
+  („Folge-Aufrufe werfen").
+
+**Was offen blieb:**
+
+- **Sichttest Karte 07** durch Klaus — Panel 07 mit zehn Knöpfen
+  (Setup + 8 Tests + Selbstcheck-Hinweis). Voraussetzung: WebCrypto
+  Ed25519, Modul 01/02 laden mit. Erwartungen pro Knopf sind im
+  Knopf-Text als Rückgabe-Feld dokumentiert.
+- **Folge-Pflege-Sitzung „Karte 09 Schritt 9: TTL-Sweep-Aufruf"** —
+  Karte 09 um den Schritt ergänzen, der den Andocker zum
+  `forgetExpiredSiblings(SIBLING_MAX_AGE_MS)`-Aufruf anleitet. Aus der
+  Spec-Sitzung 07 als offen vermerkt; Bau-Sitzung 07 implementiert den
+  Sweep, aber Karte 09 verlangt ihn noch nicht explizit vom Andocker.
+- **Folge-Pflege-Sitzung „Vermächtnis-Reaktivierung"** (anbietbar bei
+  größerem Netz) — siehe Spec-Sitzung 07 Übergabeprotokoll.
+- **Folge-Pflege-Sitzung „Transaktionaler Cleanup für 07"** —
+  sequenzieller `clear`-Pfad in `confirmSelfApoptose` ist anfällig für
+  inkonsistente Zwischen-Zustände bei Storage-Fehlern. IndexedDB-
+  Transaktion wäre Modul-01-Aufgabe.
+- **Folge-Pflege-Sitzung „Vermächtnis-Versand in Chunks"** — bei
+  Klaus' Netz unkritisch, Aufhänger für größere Netze.
+- **Folge-Pflege-Sitzung Modul 02/05/07 Krypto-Refactor** — drei
+  identische `canonicalize`/`base64url`/`signEnvelope`/`verifyEnvelope`-
+  Pfade existieren jetzt (Modul 02, 05, 07). Eine geteilte Helfer-
+  Library wäre sauberer, aber ist Pflege-Sitzungs-Stoff (nicht Teil
+  dieser Bau-Sitzung). Single-File-PWA-Stil bevorzugt aktuell Lokalität.
+- **PULS.md Zeilen-Längen-Schwellwert.** CLAUDE.md sagt 400 Zeilen
+  Maximum, jetzt deutlich darüber. Auslager-Sitzung für eine eigene
+  Pflege-Phase — nicht Teil dieser Bau-Sitzung.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Sichttest Karte 05 + Karte 07** durch Klaus — Panel 05 mit acht
+   Knöpfen, Panel 07 mit zehn Knöpfen. Beide ohne Netz-Pfad (der gehört
+   in Modul 09).
+2. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Browser** — die acht
+   Schritte aus Karte 09 *live* durchlaufen an Rezeptbuch und/oder
+   Mixarium. Module 05 und 07 sind beide Code-Stub; der erste echte
+   Andock-Klick kann mit-andocken.
+3. Parallel anbietbar: **Spec-Sitzung Modul 00 (Doku-Fenster)** —
+   dependenz-frei, 5-Klick-UI in der Endknoten-PWA, natürliche Anker-
+   Stelle für die Vermächtnis-Inbox-Anzeige aus Modul 07 und den
+   TTL-Sweep-Knopf (Folge-Pflege-Sitzung Karte 09 Schritt 9).
 
 ### 2026-05-14 · Spec-Sitzung · Modul 07 Apoptose (Spec fertig)
 

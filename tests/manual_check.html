@@ -77,9 +77,9 @@
   </section>
 
   <section class="panel" data-module="07_apoptose">
-    <h2>07 Apoptose <span class="status idle">noch nicht gebaut</span></h2>
-    <div class="controls"></div>
-    <pre class="log">— noch keine Ausgabe —</pre>
+    <h2>07 Apoptose <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Voraussetzung: Module 01/02 sind beim Skript-Laden mitgekommen. „Setup" stellt eine Identität sicher, erzeugt eine Spore und registriert zwei In-Memory-Pseudo-Geschwister über die Test-Brücke. Der echte Netz-Pfad (Service-Worker + fetch /sbkim/legacy) ist hier nicht abgedeckt — der gehört in Modul 09 (Einbau in Rezeptbuch/Mixarium). Achtung: Test 6 (Self-Apoptose) ist irreversibel — er löscht die lokale Identität; ein erneutes „Setup" baut danach eine NEUE Identität auf. —</pre>
   </section>
 
   <section class="panel" data-module="00_doku_fenster">
@@ -697,6 +697,347 @@
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("05_anastomose",
           "  MODUL 05 ANASTOMOSE bereit, Funktionen: init/handshake/receiveHandshake/listSiblings/forgetSibling");
+      });
+    })();
+  </script>
+
+  <!-- Modul 07 — Apoptose (Bau-Sitzung 2026-05-14) -->
+  <script src="../src/modules/07_apoptose.js"></script>
+  <script>
+    (function () {
+      // Panel 07 — Apoptose
+      //
+      // Spec-Vorgabe (Karte 07 § Manueller Test): zwei In-Memory-Pseudo-
+      // Geschwister, lokaler Vermächtnis-Round-Trip, Signatur-Manipulation,
+      // Versions-Mismatch, TTL-Cleanup, listLegacy, Self-Apoptose,
+      // Token-Ablauf, unbekannter Sender, Selbstcheck.
+      //
+      // Wichtig: Modul 07 hat in dieser Page genau EINE Identität (Singleton
+      // aus Modul 02). Tests, die ein „Fremd-Vermächtnis" simulieren, lassen
+      // den lokalen Knoten faktisch sich selbst empfangen — receiveLegacy
+      // prüft Spore + Signatur unverändert. Das deckt den vollen
+      // Verifikations-Pfad ab, ist aber semantisch eine Vereinfachung
+      // (echter Sender ≠ Empfänger gibt's erst im Modul-09-Einbau mit zwei
+      // Tabs).
+
+      var MAIN_META = {
+        domain: "rezeptbuch.example.org",
+        nodeType: "hybrid",
+        endpoint: "https://klaus.github.io/rezeptbuch/",
+        nodeName: "Rezeptbuch (Apoptose-Test)",
+        domainDescription: "Hausgemachte Kochrezepte — Apoptose-Sichttest.",
+        domainKeywords: ["Backen", "Saucen", "Hauptgang"],
+      };
+
+      var setupDone = false;
+      var pseudoOne = null;   // { nodeId, endpoint }
+      var pseudoTwo = null;
+
+      async function ensureSetup() {
+        if (setupDone && pseudoOne && pseudoTwo) {
+          // Falls Self-Apoptose Test 6 die Identität gelöscht hat, baue neu.
+          var ownSpore = null;
+          try { ownSpore = await SbkimSpore.getOwnSpore(); } catch (err) { /* keine Identität */ }
+          if (ownSpore) return;
+          setupDone = false;
+          SbkimApoptose._clearPseudoSiblings();
+          pseudoOne = null;
+          pseudoTwo = null;
+        }
+
+        await SbkimApoptose.init();
+        await SbkimSpore.init();
+        await SbkimSpore.getOrCreateIdentity();
+        await SbkimSpore.generateOwnSpore(MAIN_META);
+
+        // Zwei in-memory Pseudo-Geschwister registrieren — nur in
+        // sbkim_siblings für den Versand-Pfad würden wir „echte"
+        // Einträge brauchen; hier reicht der Modul-07-Override, weil
+        // der Test-Pfad listSiblingsForBroadcast() darüber lesen lässt.
+        // Endpoint zeigt absichtlich ins Leere — der fetch im Self-
+        // Apoptose-Test scheitert, beide landen in recipientsFailed.
+        pseudoOne = {
+          nodeId: "PSEUDO-ONE-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          domain: "alt-eins.invalid",
+          endpoint: "http://127.0.0.1:1/alt-eins/",
+          pubKey: null,
+          since: new Date(Date.now() - 1000).toISOString(),
+        };
+        pseudoTwo = {
+          nodeId: "PSEUDO-TWO-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          domain: "alt-zwei.invalid",
+          endpoint: "http://127.0.0.1:1/alt-zwei/",
+          pubKey: null,
+          since: new Date(Date.now() - 2000).toISOString(),
+        };
+        SbkimApoptose._clearPseudoSiblings();
+        SbkimApoptose._addPseudoSibling(pseudoOne);
+        SbkimApoptose._addPseudoSibling(pseudoTwo);
+
+        setupDone = true;
+      }
+
+      SbkimUI.addButton("07_apoptose", "Setup: Identität + 2 Pseudo-Geschwister (einmalig)", async function () {
+        await ensureSetup();
+        var nodeId = await SbkimSpore.getNodeId();
+        SbkimUI.setStatus("07_apoptose", "ok", "Setup OK");
+        return {
+          eigene_node_id: nodeId,
+          pseudo_eins: { nodeId: pseudoOne.nodeId, endpoint: pseudoOne.endpoint },
+          pseudo_zwei: { nodeId: pseudoTwo.nodeId, endpoint: pseudoTwo.endpoint },
+          inbox_store: "sbkim_legacy_inbox",
+          hinweis: "Pseudo-Endpunkte führen ins Leere — Test 6 (Self-Apoptose) landet in recipientsFailed, lokaler Cleanup läuft trotzdem.",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Test 1: Lokaler Vermächtnis-Round-Trip (ohne Netz)", async function () {
+        await ensureSetup();
+        // Wir bauen eine signierte LegacyMessage mit unserer Identität und
+        // empfangen sie wieder (Singleton ≈ Selbst-Sender). Damit der
+        // Sibling-del-Pfad nicht ins Leere greift, hängen wir uns kurz als
+        // Geschwister in sbkim_siblings.
+        var nodeId = await SbkimSpore.getNodeId();
+        var ownSpore = await SbkimSpore.getOwnSpore();
+        await SbkimStorage.put("sbkim_siblings", nodeId, {
+          nodeId: nodeId, domain: MAIN_META.domain, endpoint: MAIN_META.endpoint,
+          pubKey: ownSpore.publicKey, since: new Date().toISOString(),
+        });
+
+        var legacy = await SbkimApoptose._buildSignedLegacyMessage("Domain stillgelegt");
+        var response = await SbkimApoptose._invokeReceiveLegacyDirect(legacy);
+
+        var inbox = await SbkimApoptose.listLegacy();
+        var inboxHit = inbox.some(function (e) { return e.fromNodeId === nodeId; });
+        var siblingsAfter = await SbkimAnastomose.listSiblings();
+        var siblingGone = !siblingsAfter.some(function (s) { return s.nodeId === nodeId; });
+        var pass = response.outcome === "accepted" && inboxHit && siblingGone;
+
+        SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 1 OK" : "Test 1 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          inbox_hat_eintrag: inboxHit,
+          sender_aus_siblings_entfernt: siblingGone,
+          inbox_inhalt: inbox,
+          erwartung: "outcome=accepted, Inbox hat fromNodeId, sibling-Eintrag weg",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Test 2: Signatur-Manipulation (reason nachträglich ändern)", async function () {
+        await ensureSetup();
+        var legacy = await SbkimApoptose._buildSignedLegacyMessage("Domain stillgelegt");
+        // reason nach dem Signieren ändern → Signatur wird ungültig.
+        var tampered = Object.assign({}, legacy, { reason: legacy.reason + " (manipuliert)" });
+        var response = await SbkimApoptose._invokeReceiveLegacyDirect(tampered);
+        var pass = response.outcome === "rejected" && /Signatur/i.test(response.reason || "");
+        SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          manipulation: "reason nach dem Signieren um ' (manipuliert)' erweitert",
+          erwartung: "outcome=rejected, reason enthält 'Signatur'",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Test 3: Versions-Mismatch (protocolVersion '1.0')", async function () {
+        await ensureSetup();
+        // Wir bauen eine LegacyMessage mit unserer Identität und ersetzen
+        // dann protocolVersion auf "1.0". Damit verifyForeignSpore die
+        // Sender-Spore akzeptiert (sie ist lokal signiert mit "0.1"),
+        // ändern wir die Hauptversion nur OBEN in der LegacyMessage —
+        // genau der Pfad, den der Hauptversion-Check abfängt (Schritt 3
+        // im Verifikations-Pfad, INTERFACES.md §2).
+        var legacy = await SbkimApoptose._buildSignedLegacyMessage("Domain stillgelegt");
+        var v1 = Object.assign({}, legacy, { protocolVersion: "1.0" });
+        var response = await SbkimApoptose._invokeReceiveLegacyDirect(v1);
+        var pass = response.outcome === "rejected" && /Hauptversion/i.test(response.reason || "");
+        SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          erwartung: "outcome=rejected, reason enthält 'Hauptversion'",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Test 4: TTL-Cleanup (forgetExpiredSiblings)", async function () {
+        await ensureSetup();
+        // Zwei Geschwister direkt in IndexedDB hineinmanövrieren — Modul
+        // 07 forgetExpiredSiblings liest aus sbkim_siblings (kein Pseudo-
+        // Override hier, weil der Sweep über den echten Store läuft).
+        var altOldId  = "TTL-OLD-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        var altYoungId = "TTL-YOUNG-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+        var altOld = {
+          nodeId: altOldId, domain: "alt-old.invalid", endpoint: "http://127.0.0.1:1/old/",
+          pubKey: null, since: new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString(),
+        };
+        var altYoung = {
+          nodeId: altYoungId, domain: "alt-young.invalid", endpoint: "http://127.0.0.1:1/young/",
+          pubKey: null, since: new Date().toISOString(),
+        };
+        await SbkimStorage.put("sbkim_siblings", altOldId, altOld);
+        await SbkimStorage.put("sbkim_siblings", altYoungId, altYoung);
+
+        var maxAge = 30 * 24 * 60 * 60 * 1000;
+        var removed = await SbkimApoptose.forgetExpiredSiblings(maxAge);
+        var siblingsAfter = await SbkimStorage.all("sbkim_siblings");
+        var oldGone   = !siblingsAfter.some(function (r) { return r.key === altOldId; });
+        var youngBleibt = siblingsAfter.some(function (r) { return r.key === altYoungId; });
+
+        // Aufräumen, damit Test 6 nicht über die Reste stolpert.
+        try { await SbkimStorage.del("sbkim_siblings", altYoungId); } catch (e) { /* nb */ }
+
+        var pass = oldGone && youngBleibt && removed.length === 1 && removed[0].nodeId === altOldId;
+        SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          rueckgabe_entfernt: removed,
+          alt_old_weg: oldGone,
+          alt_young_bleibt: youngBleibt,
+          erwartung: "altOld entfernt, altYoung bleibt, Rückgabe enthält genau einen Eintrag",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Test 5: listLegacy (signature wird weggelassen)", async function () {
+        await ensureSetup();
+        // Drei Einträge direkt in den Inbox-Store schieben (ohne den
+        // vollen receiveLegacy-Pfad, weil Test 1 das schon abdeckt).
+        var nodeId = await SbkimSpore.getNodeId();
+        var ids = [
+          nodeId + "-x", nodeId + "-y", nodeId + "-z",
+        ];
+        for (var i = 0; i < ids.length; i++) {
+          await SbkimStorage.put("sbkim_legacy_inbox", ids[i], {
+            fromNodeId: ids[i],
+            reason: "Test-Grund " + (i + 1),
+            signature: "DEMO-SIGNATURE-NUR-FUER-PANEL",
+            receivedAt: new Date().toISOString(),
+          });
+        }
+        var entries = await SbkimApoptose.listLegacy();
+        var allKnown = ids.every(function (id) {
+          return entries.some(function (e) { return e.fromNodeId === id; });
+        });
+        var formOk = entries.every(function (e) {
+          return typeof e.fromNodeId === "string" && typeof e.reason === "string" &&
+                 typeof e.receivedAt === "string" && e.signature === undefined;
+        });
+        // Aufräumen — die Demo-Einträge nicht in IndexedDB liegen lassen.
+        for (var j = 0; j < ids.length; j++) {
+          try { await SbkimStorage.del("sbkim_legacy_inbox", ids[j]); } catch (e) { /* nb */ }
+        }
+        var pass = allKnown && formOk;
+        SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          eintraege_anzahl: entries.length,
+          alle_drei_demo_eintraege_da: allKnown,
+          form_korrekt: formOk,
+          signature_weggelassen: entries.every(function (e) { return e.signature === undefined; }),
+          erwartung: "alle drei Demo-Einträge mit {fromNodeId, reason, receivedAt} — kein signature-Feld in der UI-Antwort",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Test 6: Self-Apoptose (zweistufig — IRREVERSIBEL)", async function () {
+        await ensureSetup();
+        // recipientsFailed.length === 2 erwartet (Pseudo-Endpoints führen
+        // ins Leere); recipientsNotified.length === 0. Lokaler Cleanup
+        // läuft trotzdem — wir prüfen Stores nach.
+        var nodeIdVorher = await SbkimSpore.getNodeId();
+
+        var prep = await SbkimApoptose.prepareSelfApoptose("Sichttest Bau-Sitzung 07");
+        if (typeof prep.confirmationToken !== "string" || prep.confirmationToken.length < 16) {
+          SbkimUI.setStatus("07_apoptose", "err", "Test 6 fehlgeschlagen (kein Token)");
+          return { fehler: "prepareSelfApoptose lieferte keinen gültigen Token", prep: prep };
+        }
+
+        var result = await SbkimApoptose.confirmSelfApoptose(prep.confirmationToken, "Sichttest Bau-Sitzung 07");
+
+        // Stores prüfen
+        var keys     = await SbkimStorage.all("sbkim_keys");
+        var sporeR   = await SbkimStorage.all("sbkim_spore");
+        var siblingsR = await SbkimStorage.all("sbkim_siblings");
+        var logR     = await SbkimStorage.all("sbkim_anastomosis_log");
+        var inboxR   = await SbkimStorage.all("sbkim_legacy_inbox");
+        var allEmpty = (keys.length + sporeR.length + siblingsR.length + logR.length + inboxR.length) === 0;
+
+        // Folge-Aufruf muss NoIdentityError werfen
+        var noIdentityThrown = false;
+        try { await SbkimSpore.getNodeId(); }
+        catch (e) { noIdentityThrown = (e && e.name === "NoIdentityError"); }
+
+        var pass = result.outcome === "completed" && allEmpty && noIdentityThrown &&
+                   result.recipientsFailed.length === 2 && result.recipientsNotified.length === 0;
+
+        // Setup-Flag invalidieren, damit ein erneuter Setup-Knopf eine
+        // neue Identität erzeugt.
+        setupDone = false;
+        pseudoOne = null; pseudoTwo = null;
+
+        SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 6 OK" : "Test 6 fehlgeschlagen");
+        return {
+          eigene_node_id_vorher: nodeIdVorher,
+          confirm_outcome: result.outcome,
+          recipients_notified: result.recipientsNotified,
+          recipients_failed: result.recipientsFailed,
+          stores_alle_leer: allEmpty,
+          getNodeId_wirft_NoIdentityError: noIdentityThrown,
+          erwartung: "outcome=completed, beide Empfänger in recipientsFailed (Pseudo-Endpoints), lokal alle Stores leer, getNodeId wirft NoIdentityError. Für weitere Tests erneut auf Setup klicken.",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Test 7: Token-Ablauf (Bridge _advanceTokenClock)", async function () {
+        await ensureSetup();
+        var prep = await SbkimApoptose.prepareSelfApoptose("Ablauf-Probe");
+        // Token in die Vergangenheit verschieben (61 s) statt zu warten.
+        SbkimApoptose._advanceTokenClock(61 * 1000);
+        var thrown = null;
+        try {
+          await SbkimApoptose.confirmSelfApoptose(prep.confirmationToken, "Ablauf-Probe");
+        } catch (err) { thrown = err; }
+        var nodeIdNoch = null;
+        try { nodeIdNoch = await SbkimSpore.getNodeId(); } catch (e) { /* nb */ }
+        var pass = thrown && thrown.name === "InvalidApoptoseTokenError" && typeof nodeIdNoch === "string";
+        SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 7 OK" : "Test 7 fehlgeschlagen");
+        return {
+          confirm_fehler_name: thrown && thrown.name,
+          confirm_fehler_message: thrown && thrown.message,
+          identitaet_bleibt: typeof nodeIdNoch === "string",
+          erwartung: "InvalidApoptoseTokenError, Identität bleibt",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Test 8: receiveLegacy mit unbekanntem Sender", async function () {
+        await ensureSetup();
+        // Stelle sicher, dass keine vorigen Test-Sibling-Reste die Antwort
+        // verzerren.
+        var nodeId = await SbkimSpore.getNodeId();
+        try { await SbkimStorage.del("sbkim_siblings", nodeId); } catch (e) { /* nb */ }
+        try { await SbkimStorage.del("sbkim_legacy_inbox", nodeId); } catch (e) { /* nb */ }
+
+        var siblingsVor = (await SbkimAnastomose.listSiblings()).length;
+        var legacy = await SbkimApoptose._buildSignedLegacyMessage("Domain stillgelegt");
+        var response = await SbkimApoptose._invokeReceiveLegacyDirect(legacy);
+        var inbox = await SbkimApoptose.listLegacy();
+        var inboxHit = inbox.some(function (e) { return e.fromNodeId === nodeId; });
+        var siblingsNach = (await SbkimAnastomose.listSiblings()).length;
+        var pass = response.outcome === "accepted" && inboxHit && siblingsNach === siblingsVor;
+        SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 8 OK" : "Test 8 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          siblings_vor: siblingsVor,
+          siblings_nach: siblingsNach,
+          inbox_hat_eintrag: inboxHit,
+          erwartung: "outcome=accepted, Inbox-Eintrag angelegt, kein Throw bei sibling.del auf unbekannte ID",
+        };
+      });
+
+      SbkimUI.addButton("07_apoptose", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("07_apoptose",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("07_apoptose",
+          "  MODUL 07 APOPTOSE bereit, Funktionen: init/prepareSelfApoptose/confirmSelfApoptose/receiveLegacy/listLegacy/forgetExpiredSiblings");
+        SbkimUI.log("07_apoptose",
+          "ℹ Bei prepareSelfApoptose erscheint zusätzlich:");
+        SbkimUI.log("07_apoptose",
+          "  SELF-APOPTOSE VORBEREITET — irreversibel, Token gültig 60s");
       });
     })();
   </script>
