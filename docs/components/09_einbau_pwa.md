@@ -157,9 +157,19 @@ Pages, kein Build-Schritt). Die Konvention ist:
 <endknoten-repo>/
 ├── index.html                ← bestehende PWA, sieben SBKIM-Module als <script>-Blöcke eingebettet
 ├── sbkim-sw.js               ← Service-Worker (Variante A · Page-Hosted), separate Datei (technisch nötig)
+├── app-sw.js                 ← OPTIONAL: bestehender App-SW des Endknotens (Variante 3b)
 └── sbkim/
     └── spore.json            ← deployt, eine statische Datei mit dem Spore-JSON
 ```
+
+**Variante 3b (App-SW-Koexistenz):** falls die Endknoten-PWA schon einen
+eigenen Service-Worker betreibt (`app-sw.js` o.ä.), liegt dieser
+**ebenfalls im Repo-Root** — nicht im `sbkim/`-Ordner. Nur dann ist
+`importScripts('./sbkim-sw.js')` aus dem App-SW heraus ein relativer
+Geschwister-Pfad und löst korrekt auf. Liegt `app-sw.js` z.B. unter
+`/<repo>/js/app-sw.js` und `sbkim-sw.js` im Root, lautet der korrekte
+Import-Pfad `importScripts('../sbkim-sw.js')` — sauberer ist, beide SW-
+Dateien im Repo-Root nebeneinander zu führen.
 
 **Warum so:**
 
@@ -271,7 +281,39 @@ in Schritt 4 bzw. „SbkimApoptose nicht geladen"-Tooltip am
 TTL-Sweep-Knopf im Doku-Fenster aus Schritt 9. Tags in korrekte
 Reihenfolge bringen.
 
-### Schritt 3 — Service-Worker registrieren
+### Schritt 3 — Service-Worker einbinden
+
+Vor dem `init()`-Aufruf aus Schritt 4 muss `sbkim-sw.js` im
+Endknoten-Scope laufen. **Wie** sie dort hinkommt, hängt davon ab,
+ob die Endknoten-PWA schon einen eigenen Service-Worker betreibt
+(typisch: App-Offline-Cache, Push-Benachrichtigungen). Karte 09
+verzweigt deshalb in **Pre-Flight-Check → 3a oder 3b**.
+
+#### Pre-Flight-Check — App-SW erkennen
+
+Vor jedem Andock-Versuch genau einmal aufrufen, **bevor** Variante
+3a oder 3b gewählt wird:
+
+```js
+const existing = await navigator.serviceWorker.getRegistration("./");
+if (existing && existing.active) {
+  // App-SW erkannt → Variante 3b
+} else {
+  // kein App-SW → Variante 3a (bisheriges Verhalten)
+}
+```
+
+Der Check liefert ein **klares Verzweigungs-Ergebnis**: gibt es im
+aktuellen Scope (`./` = Repo-Root, identisch zum Scope, den
+`register('sbkim-sw.js')` belegen würde) bereits eine aktive
+Registrierung, dann nimmt der Andocker **Variante 3b**. Andernfalls
+**Variante 3a**.
+
+**Wichtig:** Die Karte sagt nur, **welcher Fall welche Variante
+triggert** — die Entscheidung trifft der Andocker einmal beim Einbau,
+nicht zur Laufzeit jeder PWA-Sitzung.
+
+#### Schritt 3a — Variante „PWA ohne eigenen SW"
 
 In einem `<script>`-Block in `index.html`, **vor** dem `init()`-Aufruf
 aus Schritt 4:
@@ -290,17 +332,96 @@ aus Schritt 4:
 </script>
 ```
 
+`sbkim-sw.js` läuft alleinstehend: `SBKIM_SW_STANDALONE = true`
+(Default, siehe § Service-Worker-Hinweis), `skipWaiting` /
+`clients.claim` greifen → offene Tabs kommen sofort unter SW-
+Kontrolle.
+
 **Sichtkontrolle:** Konsolen-Zeile `SBKIM-SW registriert, Scope:
 https://klaus.github.io/<repo>/`. Der Scope-String **muss** mit dem
 Repo-Pfad enden, sonst ist die Scope-Falle aktiv.
 
 **Sichtprüfung in DevTools:** Application → Service Workers → Status
-"activated and is running", Scope = `/<repo>/`.
+"activated and is running", Scope = `/<repo>/`, Source =
+`sbkim-sw.js`.
 
 **Häufiger Fehler:** SW unter `file://` oder `http://` getestet. Browser
 verweigern die Registrierung dann. Lösung: lokal mit `python3 -m
 http.server` oder über GitHub Pages testen (HTTPS oder `localhost` sind
 die einzigen zulässigen Origins für Service-Worker).
+
+#### Schritt 3b — Variante „PWA mit eigenem App-SW"
+
+Hat der Pre-Flight-Check einen aktiven App-SW gefunden (`app-sw.js`
+o.ä.), darf der Endknoten **keinen zweiten `register`-Aufruf**
+absetzen — das würde den App-SW im selben Scope ersetzen und den
+App-Offline-Cache + Push-Pfade verlieren (siehe § Risiken & offene
+Punkte „App-SW-Überschreibung").
+
+Statt dessen ergänzt der Endknoten in seinem bestehenden `app-sw.js`
+**zwei Zeilen ganz oben**, vor dem bestehenden Code:
+
+```js
+// in app-sw.js, ganz oben, vor dem bestehenden Code:
+self.SBKIM_SW_STANDALONE = false;
+importScripts('./sbkim-sw.js');
+```
+
+Im Endknoten-`index.html` reicht dann der **bestehende**
+`register('./app-sw.js')`-Aufruf — **kein** zusätzlicher SBKIM-
+Register-Aufruf. Der fetch-Listener für `/sbkim/anastomosis` und
+`/sbkim/legacy` wird durch `importScripts` im selben SW-Kontext
+mit-registriert; alle anderen Pfade fallen durch in den App-SW-Cache-
+/Routing-Code (siehe fetch-Listener-Reihenfolge im § Service-Worker-
+Hinweis).
+
+`self.SBKIM_SW_STANDALONE = false` ist die einzige verbindliche
+Konfiguration: dadurch verzichten die `install`/`activate`-Handler
+in `sbkim-sw.js` auf `skipWaiting` / `clients.claim`, und der App-SW
+behält die Steuerung seines eigenen Lebenszyklus.
+
+**Sichtkontrolle:** Konsolen-Zeile `SBKIM-SW geladen via importScripts
+(Variante 3b)`. Die Zeile loggt `sbkim-sw.js` nicht selbst (die Datei
+hat keinen Top-Level-`console.info`); der Andocker setzt sie in
+`app-sw.js` **direkt nach** dem `importScripts`-Aufruf:
+
+```js
+// in app-sw.js, direkt nach importScripts:
+console.info("SBKIM-SW geladen via importScripts (Variante 3b)");
+```
+
+**Sichtprüfung in DevTools:** Application → Service Workers zeigt
+**eine** Registrierung (Source = `app-sw.js`), Status "activated and
+is running", Scope = `/<repo>/`. Nicht zwei Worker und nicht
+`sbkim-sw.js` als Source — das wäre die App-SW-Überschreibung
+(siehe § Risiken).
+
+**Häufige Fehler:**
+
+- **App-SW erkannt, aber Variante 3a benutzt.** Der Andocker hat den
+  Pre-Flight-Check übersprungen und `register('sbkim-sw.js')` trotzdem
+  gerufen — der App-SW wird im selben Scope ersetzt, App-Offline-Cache
+  und Push-Pfade verschwinden. Siehe § Risiken & offene Punkte
+  „App-SW-Überschreibung". Fix: zur Variante 3b zurückkehren, App-SW
+  einmal neu deployen (oder beim Andocker im Browser unter Application
+  → Service Workers den falschen Worker entregistrieren und Tab neu
+  laden).
+- **`importScripts` wirft `NetworkError`.** Pfad falsch oder Datei
+  nicht im Repo-Root deployt. `importScripts('./sbkim-sw.js')` ist
+  relativ zum App-SW selbst — Voraussetzung: `app-sw.js` und
+  `sbkim-sw.js` liegen **beide** im Endknoten-Repo-Root (siehe §
+  Datei-Pfad-Konvention). Fix: SW-Datei dorthin verschieben, Tab neu
+  laden.
+- **App-SW hat `event.respondWith` ohne Pass-Through.** Wenn die
+  bestehenden App-SW-`fetch`-Listener jedes Event mit
+  `event.respondWith()` beantworten (statt für unbekannte Pfade
+  durchzufallen), kommt der sbkim-sw.js-Listener bei SBKIM-Pfaden
+  nie zum Zug. Siehe fetch-Listener-Reihenfolge im § Service-Worker-
+  Hinweis. Fix: `importScripts('./sbkim-sw.js')` **vor** allen
+  App-SW-`addEventListener('fetch', …)`-Aufrufen platzieren (Browser
+  ruft Listener in Registrier-Reihenfolge auf — wer zuerst
+  `respondWith` aufruft, gewinnt) **und** App-SW-Listener so
+  schreiben, dass sie SBKIM-Pfade explizit nicht anfassen.
 
 ### Schritt 4 — `SbkimAnastomose.init()`
 
@@ -668,15 +789,35 @@ fertig andockend:
    aktualisieren / Schließen). Esc oder Klick auf den Backdrop
    schließt.
 
+5. **(Nur Variante 3b)** Zwei-Browser-Test der App-SW-Koexistenz —
+   wartet auf Klaus' nächsten Live-Andock-Versuch (Bau-Sitzung 09
+   zweite Iteration):
+   - Konsolen-Zeile `SBKIM-SW geladen via importScripts (Variante 3b)`
+     (vom Andocker in `app-sw.js` direkt nach `importScripts`-Aufruf
+     gesetzt), **nicht** `SBKIM-SW registriert, Scope: …` (das wäre
+     Variante 3a und würde den App-SW überschreiben).
+   - DevTools → Application → Service Workers zeigt **genau eine**
+     Registrierung mit Source = `app-sw.js`, Status "activated and is
+     running", Scope = `/<repo>/`.
+   - `POST /sbkim/anastomosis` aus einem zweiten Tab liefert 200
+     (App-SW lässt durch, weil er für SBKIM-Pfade kein `respondWith`
+     aufruft; sbkim-sw.js-Listener antwortet).
+   - App-Offline-Pfade des App-SW funktionieren unverändert (z.B.
+     bestehender Cache-First-Routing-Code im App-SW wird beim
+     Reload-im-Flugmodus weiterhin bedient).
+
 ---
 
 ## Service-Worker-Hinweis
 
 **Pfad-Konvention:**
-`<endknoten>/sbkim-sw.js` im Repo-Root, neben `index.html`.
-Registrierung mit relativem Pfad
-`navigator.serviceWorker.register("sbkim-sw.js")` ergibt automatisch
-den korrekten Scope `/<repo>/` (bei GitHub-Pages-Project-Sites).
+`<endknoten>/sbkim-sw.js` im Repo-Root, neben `index.html`. Bei
+Variante 3a (Schritt 3a) registriert der relative Pfad
+`navigator.serviceWorker.register("sbkim-sw.js")` automatisch den
+korrekten Scope `/<repo>/` (bei GitHub-Pages-Project-Sites). Bei
+Variante 3b (Schritt 3b) liegt zusätzlich `app-sw.js` im Repo-Root,
+und `importScripts('./sbkim-sw.js')` zieht den SBKIM-Listener-Code
+in den App-SW-Kontext (siehe § Datei-Pfad-Konvention).
 
 **Browser-Voraussetzungen:**
 - HTTPS oder `localhost` — Service-Worker funktionieren **nicht** unter
@@ -686,14 +827,41 @@ den korrekten Scope `/<repo>/` (bei GitHub-Pages-Project-Sites).
   ≥ 17). Ältere Browser scheitern in Schritt 4 mit
   `CryptoUnavailableError`.
 
-**Lebenszyklus:**
-- `install`: `self.skipWaiting()` — neue SW-Version übernimmt sofort,
-  keine Wartephase.
-- `activate`: `self.clients.claim()` — bereits offene Tabs kommen
-  sofort unter SW-Kontrolle (sonst erst beim nächsten Reload).
-- `fetch`: nur Pfade, die auf `/sbkim/anastomosis` enden, werden
-  abgefangen. Andere Anfragen (App-Assets, Bilder, JS) gehen
-  unverändert ans Netz — der SW ist **kein Cache-Layer**.
+**Lebenszyklus (`SBKIM_SW_STANDALONE`-gesteuert):**
+- **Default `SBKIM_SW_STANDALONE = true` (Variante 3a):**
+  - `install`: `self.skipWaiting()` — neue SW-Version übernimmt sofort,
+    keine Wartephase.
+  - `activate`: `self.clients.claim()` — bereits offene Tabs kommen
+    sofort unter SW-Kontrolle (sonst erst beim nächsten Reload).
+- **`SBKIM_SW_STANDALONE = false` (Variante 3b, App-SW-Koexistenz):**
+  - `install` / `activate` rufen weder `skipWaiting` noch
+    `clients.claim` — der bestehende App-SW behält die volle
+    Lebenszyklus-Steuerung (sein `skipWaiting`/`clients.claim` greifen
+    nach wie vor, App-Offline-Cache und Push-Pfade bleiben
+    unangetastet). Der Andocker setzt `self.SBKIM_SW_STANDALONE = false`
+    in `app-sw.js` **vor** `importScripts('./sbkim-sw.js')`, siehe
+    Schritt 3b.
+- **`fetch` (beide Varianten gleich):** nur Pfade, die auf
+  `/sbkim/anastomosis` oder `/sbkim/legacy` enden, werden abgefangen.
+  Andere Anfragen (App-Assets, Bilder, JS) gehen unverändert ans Netz
+  bzw. an den App-SW-Listener weiter — der SBKIM-SW ist **kein Cache-
+  Layer**.
+
+**fetch-Listener-Reihenfolge (wichtig für Variante 3b):**
+
+- `importScripts` lädt den `fetch`-Listener aus `sbkim-sw.js` **vor**
+  den App-SW-`fetch`-Listenern, sofern der `importScripts`-Aufruf in
+  `app-sw.js` ganz oben steht (vor den App-SW-`addEventListener('fetch',
+  …)`-Zeilen).
+- Der Browser ruft `fetch`-Listener **in Registrier-Reihenfolge** auf.
+  Der erste Listener, der `event.respondWith()` aufruft, gewinnt — die
+  anderen werden für dieses Event übersprungen.
+- `sbkim-sw.js` ruft `event.respondWith()` **ausschließlich** für die
+  SBKIM-Pfade (`/sbkim/anastomosis`, `/sbkim/legacy`, später ggf.
+  `/sbkim/heterokaryosis` für Modul 06) auf. Für jeden anderen Pfad
+  fasst sbkim-sw.js das Event **nicht** an, damit der App-SW-Listener
+  drankommt und seinen Cache-/Routing-Code anwenden kann. Diese
+  Konvention macht App-SW-Koexistenz erst möglich.
 
 **Vertrag (siehe Karte 05 § Service-Worker-Hinweis + INTERFACES.md §3):**
 - POST + `Content-Type: application/json` + Body ≤ 64 KiB.
@@ -843,6 +1011,30 @@ unverändert.
   Wer es trotzdem anders macht, hat ein latentes Blocker-Risiko bei
   späterem Modul-Einbau.
 
+- **App-SW-Überschreibung.** Schritt 3 (vor Pflege App-SW-Koexistenz
+  2026-05-15: unkonditional `register('sbkim-sw.js')`) ersetzt einen
+  bestehenden App-SW im selben Scope, weil `sbkim-sw.js` historisch
+  `skipWaiting`/`clients.claim` unconditional gerufen hat. Folge: der
+  App-SW eines Endknotens mit Offline-Cache und/oder Push-Pfaden
+  verschwindet beim ersten Andock-Versuch **stillschweigend** — Klaus
+  bemerkt es erst, wenn die App offline nicht mehr lädt oder Push-
+  Benachrichtigungen ausbleiben. **Erkennung:** DevTools → Application
+  → Service Workers zeigt nach dem Andock `sbkim-sw.js` als aktiven
+  Worker (statt `app-sw.js`); in der Konsole steht
+  `SBKIM-SW registriert, Scope: /<repo>/` — aber die `app-sw.js`-
+  Selbstcheck-Zeile fehlt. **Lösung:** Variante 3b
+  (`importScripts('./sbkim-sw.js')` im bestehenden App-SW) plus
+  `self.SBKIM_SW_STANDALONE = false` davor. `sbkim-sw.js` ist seit
+  Pflege App-SW-Koexistenz so geschrieben, dass `skipWaiting` /
+  `clients.claim` nur unter `SBKIM_SW_STANDALONE === true` (Default)
+  greifen — Variante 3b setzt das Flag auf `false`, der App-SW behält
+  seinen Lebenszyklus. **Konvention:** vor Schritt 3 **immer** den
+  Pre-Flight-Check
+  (`navigator.serviceWorker.getRegistration('./')`) laufen lassen; bei
+  vorhandenem aktiven App-SW **immer** Variante 3b. Variante 3a darf
+  nur laufen, wenn der Pre-Flight-Check `null` (oder eine inaktive
+  Registrierung) liefert.
+
 - **Embedding-Modell-Lade-Zeit beim ersten Andock.** Modul 03 lädt
   `Xenova/multilingual-e5-small` einmalig pro Browser-Profil
   (~30 MB, transformers.js-CDN). Das dauert je nach Verbindung
@@ -914,6 +1106,7 @@ unverändert.
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Schritt-Flow, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 09 | Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Repo-Root, JS-Module inline oder `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` (Alias verbindlich), SW-Scope-Falle dokumentiert, Sichtkontrolle (3 Pflicht-Punkte: Konsolen-Selbstchecks · IndexedDB-Stores · live-Spore-URL), Service-Worker-Hinweis mit Lebenszyklus, Risiken-Block (CORS · Scope-Falle · 30 MB Modell · Spore-Drift · domainVector-Live-Update · Lücke-Befund · forgetSibling), `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** mit fünf Begründungen |
 | Pflege Schritt 9 + 07/00 | 2026-05-15 | Pflege 09-Schritt-9-Doku-TTL | Karte 09 § Andock-Schritt-Pfad von **acht** auf **neun** Schritte erweitert. Schritt 2 (`<script>`-Tags) zieht Modul 07 (Apoptose) und Modul 00 (Doku-Fenster) in der verbindlichen Reihenfolge nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block in Schritt 2 zeigt jetzt sechs Selbstcheck-Zeilen statt vier (03 weiterhin nach `init()`). **Neuer Schritt 9 „Apoptose + Doku-Fenster scharf schalten"** mit drei Sub-Punkten: 9a `await SbkimApoptose.init()` (Vermächtnis-Empfang über MessageChannel-Listener auf Service-Worker), 9b `await SbkimDoku.init({searchIconSelector:"#search-icon"})` (5-Klick-Geste am PWA-Such-Symbol; per Endknoten anpassen), 9c (optional, empfohlen) `await SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` als Andocker-Automatik nach jedem Handshake — schließt offene Frage aus Spec-Sitzung 07 (Karte 09 Schritt 9 TTL-Sweep-Aufruf). Sichtkontroll-Block § Sichtkontrolle nachgezogen: jetzt vier Pflicht-Punkte (statt drei) — sieben Selbstcheck-Zeilen in DevTools-Konsole + sechs IndexedDB-Stores (mit `sbkim_doku_meta["meta"]` schon nach Schritt 9 gefüllt) + zwei live-Endpunkte (`/sbkim/spore.json` GET 200 + `/sbkim/anastomosis` und neu `/sbkim/legacy` GET 405) + 5-Klick-Geste am Such-Symbol öffnet das Modal. Zwei „Häufiger Fehler"-Diagnosen in Schritt 9 (searchIconSelector matcht nichts → MutationObserver-Re-Mount mit 10s-Safety; TTL-Sweep nie gerufen → stille Geschwister bleiben in `sbkim_siblings`). Visualisierungs-Mermaid-Flowchart von acht auf neun Knoten erweitert (A1–A9). Karte 09 § Datei-Pfad-Konvention von „fünf JS-Module" auf „sieben JS-Module" nachgezogen. Karte 09 § Verantwortlichkeiten Macht-Block ergänzt um Modul 07 + 00 mit Hinweis „Modul 00 zuletzt, fail-soft als optionale Lese-Quellen". Self-Apoptose-Knopf bewusst NICHT in Schritt 9 — Karte 07 hat ihn als zweistufig+irreversibel spezifiziert, gehört in einen separaten Service-Pfad. Modul 06 Heterokaryose ebenfalls bewusst NICHT in Schritt 9 (Karte 06 ist Schablone, Spec späte Phase). INTERFACES.md §6 Änderungsprotokoll-Zeile (neueste unten); Karte 09 status.json unverändert (bleibt `score:"spec"` / `siegel:"Spec fertig"` — die Erweiterung ist additiv im Andock-Pfad, kein Modul-Bau). |
+| Pflege App-SW-Koexistenz | 2026-05-15 | Pflege 09-App-SW-Koexistenz | Karte 09 § Andock-Schritt-Pfad **Schritt 3 in 3a/3b aufgesplittet** plus neuer **Pre-Flight-Check** als Einleitungs-Block (`navigator.serviceWorker.getRegistration('./')` — Verzweigungs-Ergebnis ist die Auswahl 3a oder 3b). **Variante 3a (PWA ohne eigenen SW):** unverändert bisheriges Schritt-3-Verhalten (`register('sbkim-sw.js')` + Konsolen-Zeile `SBKIM-SW registriert, Scope: …`). **Variante 3b (PWA mit eigenem App-SW):** Endknoten setzt in `app-sw.js` ganz oben `self.SBKIM_SW_STANDALONE = false; importScripts('./sbkim-sw.js');` — **kein** zweiter `register`-Aufruf, der bestehende `register('./app-sw.js')` reicht. Konsolen-Zeile `SBKIM-SW geladen via importScripts (Variante 3b)`, DevTools zeigt **eine** Registrierung (App-SW), nicht zwei. **Achtes Risiko „App-SW-Überschreibung"** in § Risiken & offene Punkte ergänzt: Beschreibung (Schritt-3-`register` ersetzt bestehenden App-SW im selben Scope wegen unbedingtem `skipWaiting`/`clients.claim` in `sbkim-sw.js`), Erkennung (DevTools zeigt `sbkim-sw.js` statt `app-sw.js` als aktiven Worker), Lösung (Variante 3b + `SBKIM_SW_STANDALONE=false`), Konvention (Pre-Flight-Check vor Schritt 3 ist Pflicht). **§ Service-Worker-Hinweis** `install`/`activate`-Vertragsblock erweitert — `skipWaiting`/`clients.claim` jetzt unter `SBKIM_SW_STANDALONE`-Schalter (Default `true` → Variante 3a bisher; `false` → Variante 3b lässt App-SW seinen Lebenszyklus); fetch-Listener-Reihenfolge dokumentiert (Browser ruft Listener in Registrier-Reihenfolge, erster `respondWith` gewinnt — sbkim-sw.js fasst nur `/sbkim/*`-Pfade an, alle anderen Events fallen an den App-SW-Listener durch). **§ Datei-Pfad-Konvention** um optionalen Block `app-sw.js` im Repo-Root ergänzt (sauberer relativer `importScripts('./sbkim-sw.js')`-Pfad nur dann garantiert). **§ Sichtkontrolle nach dem Andocken** um fünften (variantenspezifischen) Pflicht-Punkt erweitert: Variante-3b-Zwei-Browser-Test (eine Registrierung im DevTools, Konsolen-Zeile, `POST /sbkim/anastomosis` liefert 200, App-Offline-Pfade unverändert) — wartet auf Klaus' nächsten Live-Andock-Versuch. **`src/sbkim-sw.js` umgebaut** — `SBKIM_SW_STANDALONE`-Flag am Modul-Anfang (Default `true`, rückwärtskompatibel); `install`/`activate`-Handler rufen `skipWaiting`/`clients.claim` nur unter `SBKIM_SW_STANDALONE === true`; fetch-Listener-Pfad für `/sbkim/anastomosis` und `/sbkim/legacy` unverändert; Header-Kommentar erweitert um beide Lade-Pfade. **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende (neueste unten, Konventions-Stil); keine §1-Vertragsänderung (das Flag ist SW-intern, kein öffentlicher Funktions-Export wandert). **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07** (deren Code unverändert). **`status.json` Modul 09 unverändert** (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — die Pflege ist additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). |
 | Werte für Rezeptbuch eingetragen | — | — | TBD — Klaus trägt nach |
 | Werte für Mixarium eingetragen | — | — | TBD — Klaus trägt nach |
 | Erstmaliger Einbau Rezeptbuch | — | — | — |

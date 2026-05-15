@@ -23,10 +23,24 @@
  *   - keine Page-Instanz aktiv → 503
  *   - Page antwortet nicht binnen QUERY_TIMEOUT_MS → 503
  *
- * Diese Datei ist KEIN ES-Modul — sie wird mit
- *   navigator.serviceWorker.register("/sbkim-sw.js")
- * registriert (Pfad im jeweiligen Endknoten-Repo passend setzen). Der
- * Einbau-Schritt in eine Endknoten-PWA gehört in Modul 09.
+ * Diese Datei ist KEIN ES-Modul — sie wird auf zwei Wegen geladen
+ * (siehe Karte 09 § Andock-Schritt-Pfad Schritt 3):
+ *
+ *   Variante 3a (PWA ohne eigenen SW, Default):
+ *     navigator.serviceWorker.register("sbkim-sw.js")
+ *     → sbkim-sw.js läuft alleinstehend, übernimmt offene Tabs sofort
+ *       (`skipWaiting`/`clients.claim` aktiv).
+ *
+ *   Variante 3b (PWA mit eigenem App-SW):
+ *     In app-sw.js, ganz oben:
+ *       self.SBKIM_SW_STANDALONE = false;
+ *       importScripts('./sbkim-sw.js');
+ *     → sbkim-sw.js hängt sich nur als zusätzlicher fetch-Listener
+ *       in den bestehenden App-SW-Kontext ein. `skipWaiting`/
+ *       `clients.claim` bleiben dem App-SW überlassen (App-Offline-
+ *       Cache + Push-Pfade unangetastet).
+ *
+ * Der Einbau-Schritt in eine Endknoten-PWA gehört in Modul 09.
  *
  * Bewusst weggelassen (für eine Folge-Pflege-Sitzung):
  *   - Caching/Offline-Strategien: der SW dient hier ausschließlich der
@@ -44,17 +58,41 @@ const PAGE_TIMEOUT_MS = 4000;
 const ANASTOMOSIS_REQUEST_TYPE = "SBKIM_ANASTOMOSIS_REQUEST";
 const LEGACY_REQUEST_TYPE = "SBKIM_LEGACY_REQUEST";
 
+// Lebenszyklus-Schalter (App-SW-Koexistenz, Karte 09 § Service-Worker-
+// Hinweis). Default `true` → Variante 3a (alleinstehend): SBKIM-SW wird
+// per `register('sbkim-sw.js')` registriert und übernimmt aktive Tabs
+// sofort. Variante 3b (Endknoten hat schon einen App-SW) setzt
+// `self.SBKIM_SW_STANDALONE = false` vor `importScripts('./sbkim-sw.js')`,
+// damit der App-SW seinen Lebenszyklus behält; sbkim-sw.js hängt sich
+// dann nur als zusätzlicher fetch-Listener für `/sbkim/*`-Pfade in den
+// bestehenden SW-Kontext ein.
+const SBKIM_SW_STANDALONE = (typeof self.SBKIM_SW_STANDALONE !== "undefined")
+  ? self.SBKIM_SW_STANDALONE
+  : true;
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(self.skipWaiting());
+  if (SBKIM_SW_STANDALONE) {
+    event.waitUntil(self.skipWaiting());
+  }
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  if (SBKIM_SW_STANDALONE) {
+    event.waitUntil(self.clients.claim());
+  }
 });
 
 // Ein gemeinsamer fetch-Listener für alle SBKIM-Endpunkte. Neue Pfade
 // (z.B. /sbkim/heterokaryosis für Modul 06) reihen sich hier ein, statt
 // einen eigenen Listener anzulegen.
+//
+// fetch-Konvention für Variante 3b (App-SW-Koexistenz): wir rufen
+// `event.respondWith()` AUSSCHLIESSLICH für die SBKIM-Pfade auf. Andere
+// Requests werden NICHT angefasst — Browser ruft die `fetch`-Listener in
+// Registrier-Reihenfolge auf, und `importScripts('./sbkim-sw.js')` läuft
+// im App-SW VOR den App-SW-Listenern. Erster Listener, der respondWith
+// aufruft, gewinnt; ohne respondWith fällt das Event an den nächsten
+// Listener (App-SW-Cache-/Routing-Code) durch.
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (isPathSuffix(url.pathname, ANASTOMOSIS_PATH)) {
@@ -65,7 +103,9 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(handleBridge(event.request, event.clientId, LEGACY_REQUEST_TYPE));
     return;
   }
-  // sonst: nicht unsere Sache — Default-Network-Pfad lassen.
+  // sonst: nicht unsere Sache — kein respondWith, Event fällt an den
+  // App-SW-Listener (Variante 3b) bzw. an den Default-Network-Pfad
+  // (Variante 3a) durch.
 });
 
 function isPathSuffix(pathname, endpointPath) {
