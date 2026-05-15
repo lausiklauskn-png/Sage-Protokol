@@ -53,22 +53,29 @@ Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest geprüft 2026-05-15:**
 
 - 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. **Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün** (Pflege-Sitzung Sichttest-Resultate 2026-05-15).
 
-Empfehlung Hauptsitzung: **Pflege-Sitzung Karte 09 — „App-SW-Koexistenz
-+ Tablet-Sichtkontrolle"**. Bau-Sitzung 09 am 2026-05-15 ist vor
-Schritt 1 sauber abgebrochen worden, weil Klaus' beide Endknoten
-(`Mein-Rezeptbuch` Z. 10453 und `Mein-Mixarium` Z. 12543) einen
-aktiven `register('./app-sw.js')`-App-Cache-SW im Repo-Root haben
-und Karte 09 diesen Normalfall nicht antizipiert. Außerdem ist
-Klaus' Setup (Samsung Galaxy Tab S6 + DeX, Android-Chrome) ohne
-Desktop-DevTools — Karte 09 § Sichtkontrolle implizit auf
-Desktop-DevTools gemünzt. **Vor erneuter Bau-Sitzung 09** muss
-Karte 09 zwei Sub-Pfade verbindlich beschreiben: **Option α**
-(SBKIM-Logik in bestehenden `app-sw.js` patchen statt zweiten
-SW registrieren — Empfehlung) plus **Eruda-Pfad** als Tablet-
-DevTools-Ersatz. Details und Optionen β/γ siehe
-[Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
-Modul-Code (00/01/02/03/04/05/07) bleibt vollständig unberührt — die Lücke
-sitzt in der Andock-Anleitung, nicht in den Modulen.
+Empfehlung Hauptsitzung: **Spec-Sitzung „Stamm/Gast-Felder in
+Spore-JSON" (additiv, kein Hauptversions-Sprung)** + danach **Bau-
+Sitzung 09 Iteration 3** mit Klaus am Live-Andock-Versuch. Die
+Sitzung *Live Andock Iteration 2 — Eruda + Stamm/Gast* (2026-05-15)
+hat zwei Dinge geliefert: (a) Eruda als Tablet-DevTools-Polyfill ist
+in beide Endknoten-PWAs (`Mein-Mixarium` + `Mein-Rezeptbuch`) auf
+`main` eingebaut — Sichtkontrolle ist damit ohne Desktop-DevTools
+möglich (Variante aus Karte 09 § Tablet-Sichtkontrolle bewährt sich
+live). (b) Aus der ersten Mixarium-Sichtkontrolle ergab sich die
+Erkenntnis, dass Endknoten gewichtete Domänen führen, nicht
+scharfe — Klaus' UI-Begriff „Überraschungs-Plus" deckt sich mit der
+Würth-Analogie (Schrauben = Stamm, Werkzeug = Gast). Konzept-
+Eintrag in [`docs/ARCHITEKTUR.md` § 8](ARCHITEKTUR.md#8-stamm--und-gast-kategorien-domänen-schichtung)
+mit Konsequenzen für Module 02/03/04 und vier offenen Fragen für die
+Spec-Sitzung. **Reihenfolge:** zuerst die Spec-Sitzung (klärt
+Spore-Feldnamen, Match-Dämpfungsfaktor, Embedding-Vektor-Aufteilung),
+dann die Bau-Sitzung 09 Iteration 3 — sonst landen die ersten echten
+Spore-JSONs ohne Stamm/Gast-Felder im Netz und müssen nachsigniert
+werden. **Endknoten-seitige Mini-Pflege „Sushi-Kategorie sichtbar
+machen"** in Mein-Mixarium ist davon entkoppelt und kann Klaus
+parallel anstoßen (sie betrifft nur die Mixarium-`index.html`, kein
+Sage-Modul). Modul-Code (00/01/02/03/04/05/07) bleibt unberührt.
+Details im [Übergabeprotokoll 2026-05-15 Live Andock Iteration 2 — Eruda + Stamm/Gast](sessions/archiv/2026-05-15_live-andock-eruda-stamm-gast.md).
 
 ---
 
@@ -97,8 +104,8 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 
 | App | URL | Domäne | SBKIM-Stand |
 |---|---|---|---|
-| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte | nicht integriert (Bau-Sitzung 09 blockiert 2026-05-15, App-SW-Konflikt) |
-| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks | nicht integriert (Bau-Sitzung 09 blockiert 2026-05-15, App-SW-Konflikt) |
+| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm) — Begleitgetränke / später Weinkarte (Gast) | nicht integriert · **Eruda eingebaut 2026-05-15** auf `main` (zwei Zeilen nach `<head>`, jsdelivr `eruda@3`); Sicht-Vorbereitung für Bau-09 Iteration 3. |
+| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm) — Knabbereien / Fingerfood (Gast) | nicht integriert · **Eruda eingebaut 2026-05-15** auf `main` (zwei Zeilen nach `<head>`, jsdelivr `eruda@3`); erste Sichtprüfung lieferte 6 Sushi-Einträge mit verwaister Kategorie-ID `fid_17763323516422` (Snacks/Fingerfood, im Rezeptbuch parallel vorhanden) — Anlass für Stamm/Gast-Konzept (ARCHITEKTUR.md § 8). Mini-Pflege „Sushi-Kategorie sichtbar machen" entkoppelt offen. |
 
 ## Offene Querschnitts-Fragen
 
@@ -290,113 +297,91 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
-### 2026-05-15 · Pflege-Sitzung · Karte 09 App-SW-Koexistenz + Tablet-Sichtkontrolle
+### 2026-05-15 · Live Andock Iteration 2 — Eruda + Stamm/Gast
 
-**Sitzungs-Rolle:** Pflege-Sitzung Karte 09, headless, EINE Phase.
-Datei-Scope: ausschließlich `docs/components/09_einbau_pwa.md` plus
-PULS-Eintrag plus Übergabeprotokoll. **Keine** Änderung an
-`src/modules/*`, `tests/manual_check.html`, `docs/INTERFACES.md`
-(Karte 09 ist Anleitung, kein Modul-Vertrag — §1/§3/§6 unverändert),
-`status.json` (Modul 09 bleibt `spec`), `index.html`, anderen Karten,
-Pie.
-
-**Anlass:** Bau-Sitzung Modul 09 (2026-05-15) war vor Schritt 1
-sauber abgebrochen, weil beide Endknoten-PWAs einen aktiven App-SW
-im Repo-Root haben (`Mein-Mixarium` Z. 12543, `Mein-Rezeptbuch`
-Z. 10453, identische Update-Banner-Logik). Pflege App-SW-Koexistenz
-(PR #31) hat den Hauptteil gelöst: Schritt-3 in 3a/3b verzweigt mit
-Pre-Flight-Check, `SBKIM_SW_STANDALONE`-Flag in `src/sbkim-sw.js`,
-achtes Risiko „App-SW-Überschreibung". Diese Pflege schließt drei
-Rest-Stränge.
+**Sitzungs-Rolle:** Bau-Sitzung Modul 09 (Live-Andock, zweite Iteration),
+mit Klaus am Tablet, **nicht headless**. Branch
+`claude/bau-09-live-andock-iteration-2-31ml4`. Scope: Eruda-Einbau in
+beide Endknoten + Architektur-Konzept Stamm/Gast (aus der ersten
+Sichtkontrolle herausgewachsen). Schritte 1–9 aus Karte 09 absichtlich
+**noch nicht** ausgeführt; kommen in Iteration 3 nach der Stamm/Gast-
+Spec-Sitzung.
 
 **Getan:**
 
-- **Karte 09 § Datei-Pfad-Konvention** um **dritte Variante 3c**
-  ergänzt (SBKIM-SW unter `<endknoten>/sbkim/sbkim-sw.js` mit Scope
-  `/<repo>/sbkim/`, disjunkt zum App-SW-Scope); neue Tabelle
-  **„Wann welche Variante?"** mit drei Zeilen (Pre-Flight →
-  Eigenschaften → Empfehlung ⭐ bei 3a/3b, β-Markierung bei 3c als
-  nachrangig, Übergangslösung mit Migrations-Pflicht auf 3b).
-- **Karte 09 § Schritt 3c** als neuer Sub-Block nach 3b: Code-Block
-  (`register("sbkim/sbkim-sw.js", { scope: "sbkim/" })`,
-  `SBKIM_SW_STANDALONE=true` bleibt), Vor-/Nachteil-Vergleich
-  (App-SW unangetastet ↔ Schutz-Module 11/12 später blockiert),
-  Sichtkontrolle „zwei Registrierungen mit disjunkten Scopes",
-  Fehler-Vermerk „nur als bewusste Übergangs-Entscheidung".
-- **Karte 09 § Sichtkontrolle § Tablet-Variante (Eruda)** als neuer
-  Sub-Block nach den vier Pflicht-Punkten: Script-Tag-Snippet
-  `<script src="https://cdn.jsdelivr.net/npm/eruda@3">` + `eruda.init()`,
-  Major-Version gepinnt (SRI nicht erforderlich, Sichttest-Modus);
-  Mapping der vier Pflicht-Punkte auf Eruda-Tabs (Console / Resources
-  → IndexedDB / Network / 5-Klick-Geste); verbindlicher Hinweis
-  „nach Sichtkontrolle wieder entfernen — kein Produktiv-Einbau,
-  kein SBKIM-Modul, kein Datenschutz-Stein".
-- **Karte 09 § Bauzustand** Zeile „Pflege App-SW-Koexistenz +
-  Tablet-Sichtkontrolle (Eruda) | 2026-05-15" als nächster freier
-  Eintrag vor den TBD-Einbau-Zeilen, mit drei Strängen referenziert.
-- **§ Offene Querschnitts-Fragen** beide Karten-Lücke-Einträge mit
-  `~~strikethrough~~` als gelöst markiert (Verweise auf das
-  Übergabeprotokoll dieser Sitzung).
-- **§ Sitzungs-Einträge** durch die Format-Konvention rotiert —
-  bisheriger Sitzungs-Eintrag „Pflege Sichttest-Resultate" als
-  Index-Zeile in den Archiv-Index.
+- **Eruda in beiden Endknoten auf `main` eingebaut** (zwei Zeilen
+  nach `<head>`, jsdelivr `eruda@3`). Mixarium-Commit `60b04a4`
+  → Push `1a7fdaf..b792576`. Rezeptbuch frisch via
+  `gh repo clone` geholt, Erstkonfig `user.email` auf GitHub-
+  Noreply-Adresse + `user.name=lausiklauskn-png` global, Commit
+  `d92929ec` → Push `7396026..d9292ec`. Beide via Termux statt
+  github.dev (github.dev-Save hängte auf DeX).
+- **Sichtprüfung Mixarium-PWA:** Eruda-Button live, Console spuckte
+  bei Reload `[Mixarium] 6 Orphan-Drink(s) — haben Namen aber keine
+  bekannte Kategorie`. Alle sechs mit `cat:"fid_17763323516422"`
+  und Sushi-/Tempura-Namen (Salmon Sushi Roll, Crispy Sushi Roll,
+  Sushi Roll mit Tempura, Ebi Tempura, Sushi Platte, Sushi Tempura).
+  Klaus' Bestätigung: Items im Rezeptbuch eh schon parallel
+  vorhanden; ehemalige Mixarium-Sushi-Kategorie war gelöscht worden.
+- **Konzept-Diskussion** mit Klaus über Trennen vs. gewichtete
+  Domänen. Klaus' Vorschlag „Essen im Rezeptbuch favorisieren,
+  Getränke im Mixarium favorisieren, der Rest ist Überraschungs-
+  Plus" — validiert mit Würth-Analogie (Schrauben = Stamm, Werkzeug
+  = Gast, aber kein Kinderspielzeug). Wortwahl iteriert von „Wirt"
+  (Biologie-Konnotation Parasit) auf **„Stamm"** (Stammkunde,
+  Stammgeschäft, Pilzstamm — Mycel-Resonanz). UI-Begriff
+  **„Überraschungs-Plus"** für die App-UI verbindlich, technisch
+  heißt es `gast`.
+- **`docs/ARCHITEKTUR.md` § 8 „Stamm- und Gast-Kategorien"
+  angelegt:** Konzept-Begründung, Konsequenzen-Tabelle für Module
+  02/03/04/05/00/08/09, sekundäre Konsequenzen für 06/07/14, vier
+  offene Fragen für die Folge-Spec-Sitzung (Feldnamen deutsch vs.
+  englisch / Match-Dämpfungsfaktor / einzelner vs. separate Stamm-
+  /Gast-Vektoren / UI-Label-Verbindlichkeit). § 1 Gesamtbild
+  bekommt einen Querverweis-Absatz auf § 8.
+- **`docs/INTERFACES.md` § 6** Änderungsprotokoll-Zeile am Ende
+  (Konvention neueste unten). **§ 1 und § 2 unverändert** —
+  optionale Spore-Felder kommen additiv in einer Folge-Spec-Sitzung
+  ohne Hauptversions-Sprung.
+- **PULS § Endknoten-Tabelle, § Empfehlung, § Archiv-Index** und
+  diesen Sitzungs-Eintrag nachgezogen.
 
-**Was bewusst nicht geändert wurde:**
+**Bewusst nicht angefasst:** Karte 09, alle Modul-Karten,
+`src/modules/*`, `tests/manual_check.html`, `index.html`,
+`status.json`. **`update_puls_pie.py` nicht aufgerufen** (keine
+Score-Änderung). **`PROTOCOL_VERSION`** bleibt `"0.1"`.
 
-- **Pre-Flight-Check, `SBKIM_SW_STANDALONE`-Flag, `src/sbkim-sw.js`**
-  aus Pflege App-SW-Koexistenz (PR #31) **unverändert** — der
-  bestehende `getRegistration('./')`-Block ist für GitHub-Pages-
-  Project-Site-Konstellation präzise. Brief empfahl alternativ
-  `getRegistrations()` (Array-Variante), aber das wäre Umbau, nicht
-  Lückenschluss — diese Pflege ist „nur der fehlende Rest".
-- **`docs/INTERFACES.md`** unverändert — Karte 09 ist Anleitung,
-  kein Modul-Vertrag. §1/§3/§6 bleiben.
-- **`status.json`** unverändert — Modul 09 bleibt `score:"spec"` /
-  `siegel:"Spec fertig"`, `update_puls_pie.py` nicht aufgerufen
-  (additiv im Andock-Pfad, kein Score-Wechsel).
-- **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07.**
-- **`tests/manual_check.html`**, **`index.html`** unverändert.
-- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
-- **Keine andere Karte angefasst** als 09.
-
-**Validierung:**
-
-- **Karten-Querverweise sichtgeprüft** — 3c-Sub-Block und Eruda-
-  Block verweisen nur auf interne Karten-09-Anker (§ Risiken,
-  § Schritt 3, § Sichtkontrolle); externe Karten-Links
-  (`01_storage.md`, `05_anastomose.md`, `07_apoptose.md`) im
-  § Querverweise unverändert.
-- **Code-Block-Syntax visuell sauber** — `register(..., {scope:
-  "sbkim/"})` und Eruda-Script-Tag (kein `node --check` für Markdown
-  möglich).
-- **PULS-Rotation** durchgezogen — bisheriger oberster Eintrag in
-  Archiv-Index mit Link, neuer Eintrag oben ausführlich; PULS bleibt
-  unter 430 Zeilen.
+**Validierung:** Eruda-Buttons live in beiden PWAs sichtbar,
+Mixarium-Console hat als Beleg die Orphan-Drink-Warnung sofort
+ausgegeben. Beide `main`-Pushes konflikt-frei nach `pull --rebase`.
+Karte-09-Hinweis „nach Sichtkontrolle wieder entfernen" steht für
+einen späteren Eruda-Rückbau.
 
 **Was offen blieb:**
 
-- **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-Andock-
-  Versuch** — Karte 09 ist jetzt vollständig: neun Schritte,
-  Schritt-3 a/b/c mit Pre-Flight und Tabelle, achtes Risiko „App-SW-
-  Überschreibung", § Sichtkontrolle mit Eruda-Tablet-Variante.
-- **Folge-Pflege „App-SW-Koexistenz Sicht-Validierung"** möglich,
-  falls Live-Versuch unter Eruda offene Fragen aufwirft (DevTools-
-  Resources-Layout, POST-Trigger auf Tablet).
+- **Spec-Sitzung „Stamm/Gast-Felder in Spore-JSON"** — vier offene
+  Fragen aus ARCHITEKTUR.md § 8 sind Eingaben. Spec-Sitzung
+  erweitert INTERFACES.md §2 Spore-JSON additiv und ergänzt Karte
+  04 um den Match-Dämpfungs-Pfad.
+- **Bau-Sitzung 09 Iteration 3** — nach der Spec-Sitzung; trägt
+  Stamm-/Gast-Kategorien in die ersten realen
+  `/sbkim/spore.json` der Endknoten ein (Karte 09 Variante 3b,
+  `importScripts('./sbkim-sw.js')` im App-SW).
+- **Endknoten-Mini-Pflege „Sushi-Kategorie sichtbar machen"** in
+  Mein-Mixarium (entkoppelt; Klaus kann reaktivieren oder löschen,
+  weil im Rezeptbuch parallel).
+- **Eruda-Rückbau** — zwei Zeilen aus beiden `index.html` zurück,
+  sobald die Sicht-Phase rum ist (ein `sed`-Befehl pro Repo).
 
-**Nächster sinnvoller Schritt (mehrere gleichberechtigt):**
+**Nächster sinnvoller Schritt:**
 
-1. **Bau-Sitzung Modul 09 zweite Iteration** mit Klaus am Live-
-   Andock-Versuch (Rezeptbuch ↔ Mixarium). *Nicht headless.*
-   Variante 3b mit Pre-Flight + `importScripts` ist Default für
-   beide Endknoten.
-2. **Klaus' Sichttest Panel 06** (Heterokaryose, 14 Knöpfe).
-   *Nicht headless.*
-3. **Mini-Pflege Panel 07 Test 6** (`allEmpty`-Check um
-   `sbkim_hetero_inbox` erweitern). *Headless möglich.* Niedrige
-   Dringlichkeit.
-4. **Mini-Pflege Karte 08 § Bauzustand** „Sichttest geprüft
-   2026-05-15" ergänzen (optional). *Headless möglich.* Niedrige
-   Dringlichkeit.
+1. **Spec-Sitzung „Stamm/Gast-Felder in Spore-JSON"** — *headless
+   möglich*. Klärt die vier offenen Fragen aus ARCHITEKTUR.md § 8.
+2. **Bau-Sitzung 09 Iteration 3** mit Klaus am Live-Andock-Versuch,
+   nach Schritt 1.
+3. **Endknoten-Mini-Pflege „Sushi-Kategorie sichtbar machen"** —
+   parallel zu Schritt 1 möglich.
+4. **Klaus' Sichttest Panel 06** (Heterokaryose), weiterhin offen.
 
 ---
 
@@ -407,6 +392,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-15 | Pflege · Karte 09 App-SW-Koexistenz + Tablet-Sichtkontrolle (Variante 3c + Eruda-Block) | [→ Archiv](sessions/archiv/2026-05-15_pflege-karte-09-app-sw-tablet.md) |
 | 2026-05-15 | Pflege · Sichttest-Resultate (Sage-Page mehrschichtig + Panel 08 — beide grün) | [→ Archiv](sessions/archiv/2026-05-15_pflege-sichttest-resultate.md) |
 | 2026-05-15 | Pflege · PULS-Archivierung (4758 → 426 Zeilen, Sitzungs-Einträge in Archiv-Index, Konvention für Folgesitzungen) | [→ Archiv](sessions/archiv/2026-05-15_pflege-puls-archivierung.md) |
 | 2026-05-15 | Pflege · Sage-Page Lebenszyklus mehrschichtig (Phase-4-Fix + Schicht „Knoten-Leben" + Klick-Lernpfad + reichere Animationen) | [→ Archiv](sessions/archiv/2026-05-15_pflege-sage-page-lebenszyklus-mehrschichtig.md) |
