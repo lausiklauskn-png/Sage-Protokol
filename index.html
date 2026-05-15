@@ -1322,7 +1322,7 @@
 
         <!-- Karte 4: Module-Bento -->
         <section class="glass span-8">
-          <div class="card-title">Module · 10 Haupt + 3 Schutz-Backlog</div>
+          <div class="card-title">Module · 10 Haupt + 3 Schutz + 1 Diffusion (Backlog)</div>
           <div class="module-grid" id="module-grid">
             <!-- gerendert via JS -->
           </div>
@@ -1646,7 +1646,7 @@
           </div>
 
           <div class="schutz-backlog">
-            <strong>Offene Punkte (spec ausstehend, durch Vermächtnis-Modell teil-abgedeckt):</strong>
+            <strong>Schutz-Backlog · reaktiv (spec ausstehend, durch Vermächtnis-Modell teil-abgedeckt):</strong>
             <ul>
               <li><a href="docs/components/10_reputation.md">Modul 10 — Reputation</a> · der biologische Mechanismus liegt schon in Modul 07 (Vermächtnis); Modul 10 wäre die formal-quantitative Ergänzung</li>
               <li><a href="docs/components/11_rate_limit.md">Modul 11 — Rate-Limit &amp; TTL</a> · operativer Schutz, weiter eigenständig nötig</li>
@@ -1656,9 +1656,23 @@
             spürbares Wachstum messbar wird.
           </div>
 
+          <div class="schutz-backlog">
+            <strong>Diffusion-Backlog · proaktiv (Wuchs durch Empfehlung, drehbuchkonform):</strong>
+            <ul>
+              <li><a href="docs/components/14_diffusion.md">Modul 14 — Diffusion</a> · konsensuell-empfehlende Spore-Diffusion über Handshake-Erweiterung (Pfad 2 verbindlich gewählt); Pfad 1 (passiv via <code>/sbkim/spore.json</code>) bleibt Default parallel, Pfad 3 (parasitär) verworfen wegen Empfangsmodus-Prinzip</li>
+            </ul>
+            Gegenstück zum Schutz-Backlog: Schutz wehrt ab, wenn das Netz groß
+            genug ist, dass Apoptose und Match-Filter allein nicht mehr reichen;
+            Diffusion beschleunigt das Wachstum durch geteilte Erinnerung an
+            gemeinsame Berührungen. Wird gezogen ab Netz ≥ 10 aktive Geschwister
+            ODER erstem erfolgreichen Live-Andock + spürbarem Wachstums-Bedürfnis.
+          </div>
+
           <div class="schutz-pilz">
             Das Vorbild ist der Pilz: Er schützt sich nicht durch Mauern, sondern
             durch Stoffwechsel-Selektion. Was nicht passt, überlebt nicht.
+            Und er wächst, indem er Notizen über Nachbarn weitergibt — nicht,
+            indem er ins Leere pulst.
           </div>
         </section>
 
@@ -1780,7 +1794,8 @@
     <span class="key">"abhaengig"</span>: [],
     <span class="key">"kurz"</span>: <span class="str">"…"</span>
   }],
-  <span class="key">"schutzBacklog"</span>: [<span class="com">// Module 10-12, zählen NICHT in Score</span>],
+  <span class="key">"schutzBacklog"</span>: [<span class="com">// Module 10-12 (reaktiv), zählen NICHT in Score</span>],
+  <span class="key">"diffusionBacklog"</span>: [<span class="com">// Modul 14 (proaktiv), zählt NICHT in Score</span>],
   <span class="key">"nodeTypes"</span>: { <span class="key">"schablone"</span>: 0, <span class="key">"werkstatt"</span>: 3, <span class="key">"spec"</span>: 5, <span class="key">"stub"</span>: 7, <span class="key">"fertig"</span>: 10 },
   <span class="key">"config"</span>: { <span class="com">/* PROTOCOL_VERSION, EMBEDDING_MODEL, … */</span> },
   <span class="key">"endpoints"</span>: { <span class="com">/* spore, query, anastomosis, … */</span> }
@@ -2316,6 +2331,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       { id:'00', name:'Doku-Fenster', score:'schablone', siegel:'noch nicht gebaut', kurz:'…', abhaengig:[] }
     ],
     schutzBacklog: [],
+    diffusionBacklog: [],
     nodeTypes: { schablone:0, werkstatt:3, spec:5, stub:7, fertig:10 },
     config: { EMBEDDING_DIM: 384, EMBEDDING_MODEL: 'Xenova/multilingual-e5-small' }
   };
@@ -2353,9 +2369,16 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (s.schutzBacklog && s.schutzBacklog.length) {
       const div = document.createElement('div');
       div.className = 'backlog-divider';
-      div.textContent = 'Schutz-Backlog · spec ausstehend, Priorität niedrig';
+      div.textContent = 'Schutz-Backlog · reaktiv · spec ausstehend, Priorität niedrig';
       grid.appendChild(div);
       s.schutzBacklog.forEach(m => grid.appendChild(buildModCard(m, true)));
+    }
+    if (s.diffusionBacklog && s.diffusionBacklog.length) {
+      const div = document.createElement('div');
+      div.className = 'backlog-divider';
+      div.textContent = 'Diffusion-Backlog · proaktiv · spec ausstehend, Priorität niedrig';
+      grid.appendChild(div);
+      s.diffusionBacklog.forEach(m => grid.appendChild(buildModCard(m, true)));
     }
   }
 
@@ -2404,7 +2427,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       '00': 'doku_fenster', '01': 'storage', '02': 'spore', '03': 'embedding',
       '04': 'match', '05': 'anastomose', '06': 'heterokaryose', '07': 'apoptose',
       '08': 'ui_demo', '09': 'einbau_pwa',
-      '10': 'reputation', '11': 'rate_limit', '12': 'blocklist'
+      '10': 'reputation', '11': 'rate_limit', '12': 'blocklist',
+      '14': 'diffusion'
     };
     return map[id] || 'unknown';
   }
@@ -2435,7 +2459,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     stub:      { label: 'Code-Stub',    color: '#2563EB', emoji: '🟦' },
     fertig:    { label: 'Fertig',       color: '#16A34A', emoji: '🟩' }
   };
-  const BACKLOG_IDS = new Set(['10', '11', '12']);
+  const BACKLOG_IDS = new Set(['10', '11', '12', '14']);
 
   function isNextUp(m, byId) {
     if (m.score === 'fertig') return false;
@@ -2449,7 +2473,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (!grid) return;
     grid.innerHTML = '';
 
-    const allMods = [...(s.modules || []), ...(s.schutzBacklog || [])];
+    const allMods = [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || [])];
     const byId = {};
     allMods.forEach(m => { byId[m.id] = m; });
 
@@ -2458,9 +2482,17 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (s.schutzBacklog && s.schutzBacklog.length) {
       const div = document.createElement('div');
       div.className = 'bp-divider';
-      div.textContent = 'Schutz-Backlog · Priorität niedrig';
+      div.textContent = 'Schutz-Backlog · reaktiv · Priorität niedrig';
       grid.appendChild(div);
       s.schutzBacklog.forEach(m => grid.appendChild(buildBPCell(m, byId, true)));
+    }
+
+    if (s.diffusionBacklog && s.diffusionBacklog.length) {
+      const div = document.createElement('div');
+      div.className = 'bp-divider';
+      div.textContent = 'Diffusion-Backlog · proaktiv · Priorität niedrig';
+      grid.appendChild(div);
+      s.diffusionBacklog.forEach(m => grid.appendChild(buildBPCell(m, byId, true)));
     }
 
     renderBauPulsPie(s);
@@ -2493,11 +2525,12 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     '00': 'doku_fenster', '01': 'storage', '02': 'spore', '03': 'embedding',
     '04': 'match', '05': 'anastomose', '06': 'heterokaryose', '07': 'apoptose',
     '08': 'ui_demo', '09': 'einbau_pwa',
-    '10': 'reputation', '11': 'rate_limit', '12': 'blocklist'
+    '10': 'reputation', '11': 'rate_limit', '12': 'blocklist',
+    '14': 'diffusion'
   };
 
   function renderBauPulsPie(s) {
-    const all = [...(s.modules || []), ...(s.schutzBacklog || [])];
+    const all = [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || [])];
     const counts = { schablone: 0, werkstatt: 0, spec: 0, stub: 0, fertig: 0 };
     all.forEach(m => {
       const sc = m.score || 'schablone';
