@@ -3,18 +3,21 @@
  *
  * Variante A · Page-Hosted via MessageChannel.
  *
- * Fängt eingehende POST /sbkim/anastomosis (Modul 05) und POST
- * /sbkim/legacy (Modul 07) ab und leitet den Body via postMessage an
- * die aktive Page weiter. Die Page hält die Krypto und den State
- * (window.SbkimAnastomose, window.SbkimApoptose); der SW bleibt dünn
- * und blind. Beide Pfade nutzen denselben fetch-Listener (gemeinsamer
- * Einstieg, leichter erweiterbar für Modul 06 / 11).
+ * Fängt eingehende POST /sbkim/anastomosis (Modul 05), POST
+ * /sbkim/legacy (Modul 07) und POST /sbkim/heterokaryosis (Modul 06)
+ * ab und leitet den Body via postMessage an die aktive Page weiter.
+ * Die Page hält die Krypto und den State (window.SbkimAnastomose,
+ * window.SbkimApoptose, window.SbkimHeterokaryose); der SW bleibt
+ * dünn und blind. Alle drei Pfade nutzen denselben fetch-Listener
+ * (gemeinsamer Einstieg, leichter erweiterbar für Modul 11).
  *
  * Vertrag (siehe INTERFACES.md §3, docs/components/05_anastomose.md
- * § "Service-Worker-Hinweis" und docs/components/07_apoptose.md):
+ * § "Service-Worker-Hinweis", docs/components/07_apoptose.md und
+ * docs/components/06_heterokaryose.md):
  *
- *   - POST /sbkim/anastomosis  → SBKIM_ANASTOMOSIS_REQUEST
- *   - POST /sbkim/legacy       → SBKIM_LEGACY_REQUEST
+ *   - POST /sbkim/anastomosis     → SBKIM_ANASTOMOSIS_REQUEST
+ *   - POST /sbkim/legacy          → SBKIM_LEGACY_REQUEST
+ *   - POST /sbkim/heterokaryosis  → SBKIM_HETEROKARYOSIS_REQUEST
  *   - Content-Type: application/json
  *   - Body ≤ 64 KiB
  *   - andere Methode → 405
@@ -53,10 +56,12 @@
 
 const ANASTOMOSIS_PATH = "/sbkim/anastomosis";
 const LEGACY_PATH = "/sbkim/legacy";
+const HETEROKARYOSIS_PATH = "/sbkim/heterokaryosis";
 const MAX_BODY_BYTES = 64 * 1024;
 const PAGE_TIMEOUT_MS = 4000;
 const ANASTOMOSIS_REQUEST_TYPE = "SBKIM_ANASTOMOSIS_REQUEST";
 const LEGACY_REQUEST_TYPE = "SBKIM_LEGACY_REQUEST";
+const HETEROKARYOSIS_REQUEST_TYPE = "SBKIM_HETEROKARYOSIS_REQUEST";
 
 // Lebenszyklus-Schalter (App-SW-Koexistenz, Karte 09 § Service-Worker-
 // Hinweis). Default `true` → Variante 3a (alleinstehend): SBKIM-SW wird
@@ -83,7 +88,7 @@ self.addEventListener("activate", (event) => {
 });
 
 // Ein gemeinsamer fetch-Listener für alle SBKIM-Endpunkte. Neue Pfade
-// (z.B. /sbkim/heterokaryosis für Modul 06) reihen sich hier ein, statt
+// (z.B. /sbkim/* für künftige Module wie 11) reihen sich hier ein, statt
 // einen eigenen Listener anzulegen.
 //
 // fetch-Konvention für Variante 3b (App-SW-Koexistenz): wir rufen
@@ -101,6 +106,10 @@ self.addEventListener("fetch", (event) => {
   }
   if (isPathSuffix(url.pathname, LEGACY_PATH)) {
     event.respondWith(handleBridge(event.request, event.clientId, LEGACY_REQUEST_TYPE));
+    return;
+  }
+  if (isPathSuffix(url.pathname, HETEROKARYOSIS_PATH)) {
+    event.respondWith(handleBridge(event.request, event.clientId, HETEROKARYOSIS_REQUEST_TYPE));
     return;
   }
   // sonst: nicht unsere Sache — kein respondWith, Event fällt an den

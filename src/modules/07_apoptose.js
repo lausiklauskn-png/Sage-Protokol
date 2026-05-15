@@ -57,6 +57,7 @@
   var SIBLINGS_STORE = "sbkim_siblings";
   var LOG_STORE = "sbkim_anastomosis_log";
   var INBOX_STORE = "sbkim_legacy_inbox";
+  var HETERO_INBOX_STORE = "sbkim_hetero_inbox";
   var SPORE_STORE = "sbkim_spore";
   var KEYS_STORE = "sbkim_keys";
   var IDENTITY_KEY = "main";
@@ -64,10 +65,14 @@
   // Sequenz des Self-Apoptose-Cleanup — verbindlich aus Karte 07 §
   // Apoptose-Pfad Schritt 5 und INTERFACES.md §1 Modul 07 § Storage.
   // Identität (Keys) zuletzt: sie ist die letzte Bastion.
+  // Bau-Sitzung 06 (2026-05-15) ergänzt sbkim_hetero_inbox additiv
+  // zwischen sbkim_legacy_inbox und sbkim_spore (vor der Identitäts-
+  // Schicht).
   var CLEANUP_ORDER = [
     SIBLINGS_STORE,
     LOG_STORE,
     INBOX_STORE,
+    HETERO_INBOX_STORE,
     SPORE_STORE,
     KEYS_STORE,
   ];

@@ -2,7 +2,8 @@
  * SBKIM — Modul 01 — Storage
  *
  * IndexedDB wrapper for all sbkim_* stores. Promise-based API, no
- * callbacks. Database name: "sbkim", current version: 1.
+ * callbacks. Database name: "sbkim", current version: 2 (additive
+ * migration in Bau-Sitzung 06: `sbkim_hetero_inbox`).
  *
  * Public surface (registered on window.SbkimStorage):
  *   init() -> Promise<void>
@@ -20,10 +21,11 @@
   "use strict";
 
   var DB_NAME = "sbkim";
-  var DB_VERSION = 1;
+  var DB_VERSION = 2;
   var SBKIM_STORE_PREFIX = "sbkim_";
 
-  var KNOWN_STORES = [
+  // Stores, die der initiale Migration-Pfad (v=1) anlegt.
+  var STORES_V1 = [
     "sbkim_keys",
     "sbkim_spore",
     "sbkim_siblings",
@@ -31,6 +33,13 @@
     "sbkim_legacy_inbox",
     "sbkim_doku_meta",
   ];
+
+  // Stores, die in v=2 additiv hinzukommen (Bau-Sitzung 06).
+  var STORES_V2 = [
+    "sbkim_hetero_inbox",
+  ];
+
+  var KNOWN_STORES = STORES_V1.concat(STORES_V2);
 
   function makeError(name, message, cause) {
     var e = new Error(message);
@@ -50,10 +59,21 @@
 
   function applyMigration(db, version) {
     if (version === 1) {
-      for (var i = 0; i < KNOWN_STORES.length; i++) {
-        var name = KNOWN_STORES[i];
+      for (var i = 0; i < STORES_V1.length; i++) {
+        var name = STORES_V1[i];
         if (!db.objectStoreNames.contains(name)) {
           db.createObjectStore(name);
+        }
+      }
+      return;
+    }
+    if (version === 2) {
+      // Bau-Sitzung 06: sbkim_hetero_inbox additiv.
+      // Schlüssel-Form: "<peerNodeId>|<ts>" (Komposit, Drift-Spur).
+      for (var j = 0; j < STORES_V2.length; j++) {
+        var name2 = STORES_V2[j];
+        if (!db.objectStoreNames.contains(name2)) {
+          db.createObjectStore(name2);
         }
       }
       return;

@@ -71,9 +71,9 @@
   </section>
 
   <section class="panel" data-module="06_heterokaryose">
-    <h2>06 Heterokaryose <span class="status idle">noch nicht gebaut</span></h2>
-    <div class="controls"></div>
-    <pre class="log">— noch keine Ausgabe —</pre>
+    <h2>06 Heterokaryose <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Voraussetzung: Module 01/02 sind beim Skript-Laden mitgekommen. „Setup" stellt eine Identität sicher, erzeugt eine Spore (mit domainVector) und schreibt drei In-Memory-Pseudo-Geschwister direkt in sbkim_siblings — zwei mit heterokaryosisOptIn:true, einer mit Flag fehlend. Der echte Netz-Pfad (Service-Worker + fetch /sbkim/heterokaryosis) ist hier nicht abgedeckt; er gehört in Modul 09 zweite Iteration (Live-Andock). Anker-Quelle in dieser Bau-Iteration: ausschließlich der Spore-Single-Anker-Fallback („domain"-Label, 384-Float-Vektor aus der eigenen Spore). HETERO_MAX_ANCHORS-Begrenzungs-Test ist deshalb nur teil-abgedeckt — siehe Karte 06 § Manueller Test Punkt 9. —</pre>
   </section>
 
   <section class="panel" data-module="07_apoptose">
@@ -1085,6 +1085,418 @@
           "ℹ Bei prepareSelfApoptose erscheint zusätzlich:");
         SbkimUI.log("07_apoptose",
           "  SELF-APOPTOSE VORBEREITET — irreversibel, Token gültig 60s");
+      });
+    })();
+  </script>
+
+  <!-- Modul 06 — Heterokaryose (Bau-Sitzung 2026-05-15) -->
+  <script src="../src/modules/06_heterokaryose.js"></script>
+  <script>
+    (function () {
+      // Panel 06 — Heterokaryose
+      //
+      // Spec-Vorgabe (Karte 06 § Manueller Test): zwei In-Memory-Pseudo-
+      // Geschwister mit heterokaryosisOptIn:true, plus ein dritter
+      // Pseudo-Knoten ohne Flag (Opt-Out-Pfad). Lokaler Pull-Round-Trip
+      // ohne Netz (Singleton ≈ Selbst-Sender), Opt-Out-Pfade, Sibling-
+      // Filter, toNodeId-Mismatch, Versions-Mismatch, Signatur-Mani-
+      // pulation, listHeterokaryosis, forgetHeterokaryosis, 404 →
+      // endpoint_unsupported, Selbstcheck.
+      //
+      // Anker-Quelle in dieser Bau-Iteration: ausschließlich der Spore-
+      // Single-Anker-Fallback (Karte 06 § Anker-Quelle, Bau-Sitzungs-
+      // Pflicht-Entscheidung 7). Wenn die eigene Spore ein domainVector
+      // hat, kommt EIN Anker zurück; sonst leeres anchors:[]. Der
+      // HETERO_MAX_ANCHORS-Test (Punkt 9) ist deshalb teilweise abgedeckt
+      // — die Anzahl-Begrenzung selbst (5) lässt sich erst mit
+      // sbkim_hetero_outbox-Befüllung testen (Spec-Sitzung 08).
+
+      var MAIN_META = {
+        domain: "rezeptbuch.example.org",
+        nodeType: "hybrid",
+        endpoint: "https://klaus.github.io/rezeptbuch/",
+        nodeName: "Rezeptbuch (Heterokaryose-Test)",
+        domainDescription: "Hausgemachte Kochrezepte — Heterokaryose-Sichttest.",
+        domainKeywords: ["Backen", "Saucen", "Hauptgang"],
+        // Dummy-domainVector (384 floats), nur damit Modul 06 einen
+        // Single-Anker liefern kann. Reine Test-Daten, kein echtes
+        // Embedding — Modul 03 spielt hier keine Rolle.
+        domainVector: (function () {
+          var v = new Array(384);
+          for (var i = 0; i < 384; i++) v[i] = ((i % 7) - 3) / 7;
+          return v;
+        })(),
+      };
+
+      // Pseudo-Sibling-IDs (Komposit 43 Zeichen reicht nicht — wir nutzen
+      // ein paar willkürliche-base64url-Strings, die Modul 06 als
+      // peerNodeId akzeptiert).
+      var PSEUDO_OPT_IN  = "PSEUDO06-OPTIN-aaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+      var PSEUDO_OPT_OUT = "PSEUDO06-OPTOUT-bbbbbbbbbbbbbbbbbbbbbbbbbb";
+      var PSEUDO_OTHER   = "PSEUDO06-OTHER-cccccccccccccccccccccccccccc";
+
+      var setupDone = false;
+
+      async function ensureSetup() {
+        await SbkimStorage.init();
+        await SbkimHeterokaryose.init();
+        await SbkimSpore.init();
+        await SbkimSpore.getOrCreateIdentity();
+        var ownSpore = null;
+        try { ownSpore = await SbkimSpore.getOwnSpore(); } catch (e) { /* nb */ }
+        if (!ownSpore) {
+          await SbkimSpore.generateOwnSpore(MAIN_META);
+        }
+
+        // Pseudo-Geschwister sauber neu setzen (idempotent über _addPseudoSibling)
+        await SbkimHeterokaryose._clearPseudoSiblings();
+        await SbkimHeterokaryose._addPseudoSibling({
+          nodeId: PSEUDO_OPT_IN,
+          domain: "pseudo-optin.invalid",
+          endpoint: "http://127.0.0.1:1/pseudo-optin/",
+          pubKey: null,
+          since: new Date(Date.now() - 1000).toISOString(),
+          heterokaryosisOptIn: true,
+        });
+        await SbkimHeterokaryose._addPseudoSibling({
+          nodeId: PSEUDO_OPT_OUT,
+          domain: "pseudo-optout.invalid",
+          endpoint: "http://127.0.0.1:1/pseudo-optout/",
+          pubKey: null,
+          since: new Date(Date.now() - 2000).toISOString(),
+          heterokaryosisOptIn: false,
+        });
+        setupDone = true;
+      }
+
+      SbkimUI.addButton("06_heterokaryose", "Setup: Identität + 2 Pseudo-Geschwister (einmalig)", async function () {
+        await ensureSetup();
+        var nodeId = await SbkimSpore.getNodeId();
+        SbkimUI.setStatus("06_heterokaryose", "ok", "Setup OK");
+        return {
+          eigene_node_id: nodeId,
+          pseudo_optin:  { nodeId: PSEUDO_OPT_IN,  heterokaryosisOptIn: true },
+          pseudo_optout: { nodeId: PSEUDO_OPT_OUT, heterokaryosisOptIn: false },
+          inbox_store: "sbkim_hetero_inbox",
+          anker_quelle: "Spore-Single-Anker-Fallback (domainVector aus eigener Spore)",
+          hinweis: "Pseudo-Endpunkte führen ins Leere — Tests nutzen _invokeReceiveHeterokaryosisDirect statt echtem fetch; nur Test 12 nutzt den fetch-Pfad via _setReceiverHttpStatus(404).",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 1: Lokaler Pull-Round-Trip (Singleton ≈ Selbst-Sender)", async function () {
+        await ensureSetup();
+        // Wir registrieren die eigene Identität als opt-in-Geschwister,
+        // damit der Empfänger-Pfad uns als Geschwister erkennt; bauen
+        // einen signierten Request, empfangen ihn direkt — outcome:"shared".
+        var nodeId = await SbkimSpore.getNodeId();
+        var ownSpore = await SbkimSpore.getOwnSpore();
+        await SbkimHeterokaryose._addPseudoSibling({
+          nodeId: nodeId,
+          domain: MAIN_META.domain,
+          endpoint: MAIN_META.endpoint,
+          pubKey: ownSpore.publicKey,
+          since: new Date().toISOString(),
+          heterokaryosisOptIn: true,
+        });
+
+        var request = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest(nodeId);
+        var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(request);
+
+        // Sig prüfen (Sender-Sicht)
+        var sigOk = await SbkimHeterokaryose._verifyResponseSignature(response, response.receiverSpore.publicKey);
+
+        // Inbox-Schreiben simulieren wie consumeResponse: Tests gehen
+        // bewusst über _invokeReceiveHeterokaryosisDirect, weil der echte
+        // requestHeterokaryosis-Pfad einen fetch braucht. Wir schreiben
+        // den Eintrag manuell, um den listHeterokaryosis-Pfad zu testen.
+        var ts = response.timestamp;
+        await SbkimStorage.put("sbkim_hetero_inbox", nodeId + "|" + ts, {
+          peerNodeId: nodeId,
+          ts: ts,
+          anchors: response.anchors || [],
+          signature: response.signature,
+          receivedAt: new Date().toISOString(),
+        });
+
+        var inbox = await SbkimHeterokaryose.listHeterokaryosis();
+        var inboxHit = inbox.some(function (e) { return e.peerNodeId === nodeId && e.ts === ts; });
+
+        var pass = response.outcome === "shared" && sigOk && inboxHit &&
+                   Array.isArray(response.anchors) && response.anchors.length >= 1;
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 1 OK" : "Test 1 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          anchor_count: Array.isArray(response.anchors) ? response.anchors.length : 0,
+          anchor_label: Array.isArray(response.anchors) && response.anchors[0] ? response.anchors[0].label : null,
+          response_signatur_valide: sigOk,
+          inbox_hat_eintrag: inboxHit,
+          erwartung: "outcome=shared, anchors enthält mindestens einen Anker mit label=\"(domain)\", Inbox hat den Eintrag",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 2: Opt-Out beim Empfänger (Sibling.heterokaryosisOptIn=false)", async function () {
+        await ensureSetup();
+        // Eigene Identität als sibling mit Flag=false eintragen → der
+        // Empfänger-Pfad antwortet opt-out.
+        var nodeId = await SbkimSpore.getNodeId();
+        var ownSpore = await SbkimSpore.getOwnSpore();
+        await SbkimHeterokaryose._addPseudoSibling({
+          nodeId: nodeId,
+          domain: MAIN_META.domain,
+          endpoint: MAIN_META.endpoint,
+          pubKey: ownSpore.publicKey,
+          since: new Date().toISOString(),
+          heterokaryosisOptIn: false,
+        });
+        var request = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest(nodeId);
+        var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(request);
+        var pass = response.outcome === "opt-out" && response.reason === undefined;
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          erwartung: "outcome=opt-out, kein reason-Feld (minimale Antwort)",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 3: Opt-Out lokal (requestHeterokaryosis)", async function () {
+        await ensureSetup();
+        // PSEUDO_OPT_OUT hat das Flag explizit false → lokale Vorprüfung
+        // muss outcome:"opt-out-local" liefern, OHNE fetch-Aufruf.
+        // Wir setzen sicherheitshalber den fetch-Override auf -1, um zu
+        // verifizieren, dass kein Netz-Pfad betreten wird (-1 ist kein
+        // Standard-Status; würde fetch laufen, käme ok=false).
+        SbkimHeterokaryose._setReceiverHttpStatus(null);
+        var result = await SbkimHeterokaryose.requestHeterokaryosis(PSEUDO_OPT_OUT);
+        var pass = result.outcome === "opt-out-local";
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          result_outcome: result.outcome,
+          erwartung: "outcome=opt-out-local (lokale Vorprüfung greift, kein Netz-Aufruf, kein Throw)",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 4: Unbekannter Sibling (UnknownSiblingError)", async function () {
+        await ensureSetup();
+        var thrown = null;
+        try {
+          await SbkimHeterokaryose.requestHeterokaryosis("UNBEKANNT-XYZ-1234567890");
+        } catch (err) { thrown = err; }
+        var pass = thrown && thrown.name === "UnknownSiblingError";
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          fehler_name: thrown && thrown.name,
+          fehler_message: thrown && thrown.message,
+          erwartung: "UnknownSiblingError (synchroner Throw, kein Netz-Aufruf)",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 5: Sender ist kein Geschwister (Empfänger-Seite)", async function () {
+        await ensureSetup();
+        // Wir bauen einen valide signierten Request mit unserer Identität,
+        // entfernen aber den eigenen Eintrag aus sbkim_siblings → der
+        // Sibling-Filter beim Empfänger schlägt zu.
+        var nodeId = await SbkimSpore.getNodeId();
+        try { await SbkimStorage.del("sbkim_siblings", nodeId); } catch (e) { /* nb */ }
+        var request = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest(nodeId);
+        var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(request);
+        var pass = response.outcome === "rejected" && /Geschwister/i.test(response.reason || "");
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          erwartung: "outcome=rejected, reason enthält 'Geschwister'",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 6: toNodeId-Mismatch", async function () {
+        await ensureSetup();
+        // Request mit absichtlich falschem toNodeId.
+        var nodeId = await SbkimSpore.getNodeId();
+        var ownSpore = await SbkimSpore.getOwnSpore();
+        // Re-Add eigener Eintrag, damit Sibling-Filter Test 6 nicht
+        // vorher abfängt.
+        await SbkimHeterokaryose._addPseudoSibling({
+          nodeId: nodeId,
+          domain: MAIN_META.domain,
+          endpoint: MAIN_META.endpoint,
+          pubKey: ownSpore.publicKey,
+          since: new Date().toISOString(),
+          heterokaryosisOptIn: true,
+        });
+        // Wir bauen Request mit korrektem toNodeId, manipulieren toNodeId
+        // nach dem Signieren — Signatur ist dann ungültig (deckt Test 8
+        // ab). Für reinen toNodeId-Mismatch ohne Sig-Bruch nutzen wir
+        // _buildSignedHeterokaryosisRequest mit fremder toNodeId direkt.
+        var requestMismatch = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest("ANDERER-NODE-XYZ-1234567890ab");
+        var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(requestMismatch);
+        var pass = response.outcome === "rejected" && /toNodeId/i.test(response.reason || "");
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 6 OK" : "Test 6 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          erwartung: "outcome=rejected, reason enthält 'toNodeId'",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 7: Versions-Mismatch (protocolVersion '1.0')", async function () {
+        await ensureSetup();
+        var nodeId = await SbkimSpore.getNodeId();
+        var request = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest(nodeId);
+        var v1 = Object.assign({}, request, { protocolVersion: "1.0" });
+        var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(v1);
+        var pass = response.outcome === "rejected" && /Hauptversion/i.test(response.reason || "");
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 7 OK" : "Test 7 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          erwartung: "outcome=rejected, reason enthält 'Hauptversion'",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 8: Signatur-Manipulation (nonce nachträglich)", async function () {
+        await ensureSetup();
+        var nodeId = await SbkimSpore.getNodeId();
+        var request = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest(nodeId);
+        // nonce nach dem Signieren ändern → Signatur wird ungültig.
+        var tampered = Object.assign({}, request, { nonce: "MANIPULIERTE-NONCE-aaaaaa" });
+        var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(tampered);
+        var pass = response.outcome === "rejected" && /Signatur/i.test(response.reason || "");
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 8 OK" : "Test 8 fehlgeschlagen");
+        return {
+          response_outcome: response.outcome,
+          response_reason: response.reason,
+          manipulation: "nonce nach dem Signieren überschrieben",
+          erwartung: "outcome=rejected, reason enthält 'Signatur'",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 9: HETERO_MAX_ANCHORS-Begrenzung (teil-abgedeckt)", async function () {
+        await ensureSetup();
+        // In dieser Bau-Iteration liefert die Anker-Quelle maximal EINEN
+        // Anker (Spore-Single-Anker-Fallback). Die volle Begrenzungs-
+        // Logik testet erst Spec-Sitzung 08 / Pflege Modul 02 mit
+        // sbkim_hetero_outbox-Befüllung. Wir prüfen hier nur, dass
+        // anchors.length <= HETERO_MAX_ANCHORS (= 5) ist und dass das
+        // Schema {label, vector[384]} eingehalten wird.
+        var nodeId = await SbkimSpore.getNodeId();
+        var ownSpore = await SbkimSpore.getOwnSpore();
+        await SbkimHeterokaryose._addPseudoSibling({
+          nodeId: nodeId, domain: MAIN_META.domain, endpoint: MAIN_META.endpoint,
+          pubKey: ownSpore.publicKey, since: new Date().toISOString(),
+          heterokaryosisOptIn: true,
+        });
+        var request = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest(nodeId);
+        var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(request);
+        var anchors = response.anchors || [];
+        var schemaOk = anchors.every(function (a) {
+          return a && typeof a.label === "string" && a.label.length <= 64 &&
+                 Array.isArray(a.vector) && a.vector.length === 384;
+        });
+        var underLimit = anchors.length <= 5;
+        var pass = underLimit && schemaOk;
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 9 OK (teil-abgedeckt)" : "Test 9 fehlgeschlagen");
+        return {
+          anchor_count: anchors.length,
+          unter_max: underLimit,
+          schema_ok: schemaOk,
+          anker_labels: anchors.map(function (a) { return a.label; }),
+          erwartung: "anchors.length ≤ 5, jeder Anker {label, vector[384]}; voller Begrenzungs-Test braucht sbkim_hetero_outbox (Spec 08)",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 10: listHeterokaryosis (anchors-Inhalte weggelassen)", async function () {
+        await ensureSetup();
+        // Drei Inbox-Einträge direkt einsetzen (zwei Pulls vom gleichen Peer
+        // mit unterschiedlichem ts, ein Pull von einem anderen Peer).
+        var entries = [
+          { peerNodeId: PSEUDO_OPT_IN,  ts: "2026-05-15T07:00:00.000Z" },
+          { peerNodeId: PSEUDO_OPT_IN,  ts: "2026-05-15T08:00:00.000Z" },
+          { peerNodeId: PSEUDO_OTHER,   ts: "2026-05-15T09:00:00.000Z" },
+        ];
+        for (var i = 0; i < entries.length; i++) {
+          await SbkimStorage.put("sbkim_hetero_inbox", entries[i].peerNodeId + "|" + entries[i].ts, {
+            peerNodeId: entries[i].peerNodeId,
+            ts: entries[i].ts,
+            anchors: [{ label: "(domain)", vector: new Array(384).fill(0.1) }],
+            signature: "DEMO-SIGNATURE-NUR-FUER-PANEL",
+            receivedAt: entries[i].ts,
+          });
+        }
+        var list = await SbkimHeterokaryose.listHeterokaryosis();
+        var alleDa = entries.every(function (e) {
+          return list.some(function (l) { return l.peerNodeId === e.peerNodeId && l.ts === e.ts; });
+        });
+        var formOk = list.every(function (l) {
+          return typeof l.peerNodeId === "string" && typeof l.ts === "string" &&
+                 typeof l.anchorCount === "number" && typeof l.receivedAt === "string" &&
+                 l.anchors === undefined && l.signature === undefined;
+        });
+        // Aufräumen
+        for (var j = 0; j < entries.length; j++) {
+          try { await SbkimStorage.del("sbkim_hetero_inbox", entries[j].peerNodeId + "|" + entries[j].ts); } catch (e) { /* nb */ }
+        }
+        var pass = alleDa && formOk;
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 10 OK" : "Test 10 fehlgeschlagen");
+        return {
+          eintraege_anzahl: list.length,
+          alle_drei_demo_eintraege_da: alleDa,
+          form_korrekt: formOk,
+          anchors_weggelassen: list.every(function (l) { return l.anchors === undefined; }),
+          erwartung: "drei Einträge, jede mit {peerNodeId, ts, anchorCount, receivedAt} — kein anchors/signature in der UI-Antwort",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 11: forgetHeterokaryosis (idempotent)", async function () {
+        await ensureSetup();
+        var ts1 = "2026-05-15T10:00:00.000Z";
+        await SbkimStorage.put("sbkim_hetero_inbox", PSEUDO_OPT_IN + "|" + ts1, {
+          peerNodeId: PSEUDO_OPT_IN, ts: ts1, anchors: [], signature: "DEMO", receivedAt: ts1,
+        });
+        var beforeForget = (await SbkimHeterokaryose.listHeterokaryosis()).filter(function (l) {
+          return l.peerNodeId === PSEUDO_OPT_IN && l.ts === ts1;
+        });
+        await SbkimHeterokaryose.forgetHeterokaryosis(PSEUDO_OPT_IN, ts1);
+        var afterForget = (await SbkimHeterokaryose.listHeterokaryosis()).filter(function (l) {
+          return l.peerNodeId === PSEUDO_OPT_IN && l.ts === ts1;
+        });
+        // Zweiter Aufruf darf NICHT werfen.
+        var secondThrew = false;
+        try { await SbkimHeterokaryose.forgetHeterokaryosis(PSEUDO_OPT_IN, ts1); }
+        catch (e) { secondThrew = true; }
+
+        var pass = beforeForget.length === 1 && afterForget.length === 0 && !secondThrew;
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 11 OK" : "Test 11 fehlgeschlagen");
+        return {
+          vor_forget: beforeForget.length,
+          nach_forget: afterForget.length,
+          zweiter_aufruf_warf: secondThrew,
+          erwartung: "Eintrag vor forget da, danach weg; zweiter Aufruf wirft nicht (idempotent)",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Test 12: endpoint_unsupported (HTTP 404 via Test-Bridge)", async function () {
+        await ensureSetup();
+        // PSEUDO_OPT_IN hat opt-in:true → lokale Vorprüfung passiert; der
+        // fetch-Pfad würde scheitern, also setzen wir den Override auf 404,
+        // damit der Sender den Pfad outcome:"endpoint_unsupported" trifft.
+        SbkimHeterokaryose._setReceiverHttpStatus(404);
+        var result = await SbkimHeterokaryose.requestHeterokaryosis(PSEUDO_OPT_IN);
+        var pass = result.outcome === "endpoint_unsupported";
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 12 OK" : "Test 12 fehlgeschlagen");
+        return {
+          result_outcome: result.outcome,
+          erwartung: "outcome=endpoint_unsupported (kein Throw, Log-Eintrag hetero-endpoint-unsupported)",
+        };
+      });
+
+      SbkimUI.addButton("06_heterokaryose", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("06_heterokaryose",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("06_heterokaryose",
+          "  MODUL 06 HETEROKARYOSE bereit, Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis");
+        SbkimUI.log("06_heterokaryose",
+          "ℹ Hinweis: HETERO_MAX_ANCHORS (5), QUERY_TIMEOUT_MS (4000), Endpunkt-Konstante stehen in §0 / §3, NICHT in der Selbstcheck-Zeile.");
       });
     })();
   </script>
