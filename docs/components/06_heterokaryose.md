@@ -1,10 +1,15 @@
 # Modul 06 — Heterokaryose
 
-> **Status:** 🟫 Schablone (späte Phase)  ·  **Schicht:** Netzwerk  ·  **Anker:** Sage-Page → Karte 4, Eintrag 06
-> **Datei (Code):** `src/modules/06_heterokaryose.js`
+> **Status:** 🟨 Spec fertig  ·  **Schicht:** Netzwerk  ·  **Anker:** Sage-Page → Karte 4, Eintrag 06
+> **Datei (Code):** `src/modules/06_heterokaryose.js` (Bau-Sitzung 06 ausstehend)
 >
-> _Datenaustausch zwischen verbundenen Geschwistern — Opt-In,
-> kontrolliert, ohne personenbezogene Daten. Nährstoff-Tausch im Mycel._
+> _Datenaustausch zwischen bereits-verheirateten Geschwistern — der
+> semantische Schritt nach der Anastomose. Pull-basiert, Opt-In auf
+> beiden Seiten, signiert, kanonisch. Heterokaryose tauscht **Domain-
+> Anker** (signierte Stichwort-Vektor-Paare aus der eigenen Domäne) —
+> sie reichern den anderen Knoten mit semantisch reicheren Daten an als
+> die einzelne Domain-Vektor-Spore aus Modul 02. Nährstoff-Tausch im
+> Mycel._
 
 ---
 
@@ -13,108 +18,779 @@
 Heterokaryose ist im Pilz die **Phase nach der Anastomose**: zwei
 verschmolzene Hyphen tauschen Nährstoffe und Erfahrung — Wissen über
 gute Erden, gefährliche Stellen, knappe Ressourcen. Im Sage-Protokoll
-sind es kleine, signierte Datensätze: aktualisierte Domänen-Stichworte,
-anonymisierte Anfrage-Statistik, Vermächtnisse Dritter. Strikt
-**Opt-In**: Heterokaryose passiert nur, wenn der Betreiber sie aktiviert.
-Default: **aus**.
+sind das kleine, signierte Datensätze, die der eine Knoten dem anderen
+mitteilt: „so klingt meine Domäne im Detail, das hier sind typische
+Stichworte mit ihren Embedding-Vektoren — du kannst sie nutzen, um
+meine Domäne genauer einzuschätzen als nur den einen Domain-Vektor aus
+meiner Spore."
+
+Strikt **Opt-In auf beiden Seiten**: Heterokaryose passiert nur, wenn
+der Betreiber bei seinem Geschwister-Eintrag das `heterokaryosisOptIn`-
+Flag gesetzt hat (sowohl der Initiator als auch der Angefragte). Der
+Default ist **aus** — ein frisch angelegter Geschwister-Eintrag aus
+Modul 05 hat `heterokaryosisOptIn` *nicht* gesetzt; das Feld wird in
+einer Folge-Sitzung im Endknoten-UI (Modul 00 Doku-Fenster oder Modul
+08 UI-Demo) gesetzt, wenn Klaus dem Geschwister explizit „erweiterter
+Datenaustausch ok" gibt.
+
+Strikt **Pull-basiert**: der Initiator fragt, der Angefragte
+antwortet. Es gibt **kein** Push, **keine** Pulsation, **keine**
+Eigenanfrage ins offene Netz — Heterokaryose ist Empfangsmodus mit
+Antwortrecht, wie das ganze SBKIM-Drehbuch. Wer nicht passt, schweigt.
 
 ---
 
 ## Visualisierung
 
 ```mermaid
-flowchart LR
-  A[Knoten A<br/>signiert<br/>Datensatz] -->|HeterokaryosisPayload| B[Knoten B<br/>validiert<br/>Signatur + Schema]
-  B -->|akzeptiert| BS[(Storage B<br/>übernimmt)]
-  B -->|abgelehnt| X[Drop ohne Antwort]
-  BS -.->|optional weiter| C[Knoten C]
+sequenceDiagram
+  autonumber
+  participant A as Knoten A (Initiator)
+  participant B as Knoten B (Angefragter)
+  participant SI as sbkim_siblings (B)
+  participant SP as SbkimSpore (B)
+  participant IB as sbkim_hetero_inbox (A)
+  participant LO as sbkim_anastomosis_log (A+B)
 
-  classDef src fill:#92400E,color:#fff,stroke:#fff
-  classDef peer fill:#EA580C,color:#fff,stroke:#fff
-  classDef ok fill:#16A34A,color:#fff,stroke:#fff
-  classDef no fill:#92400E,color:#fff,stroke:#fff
-  class A src
-  class B peer
-  class BS,C ok
-  class X no
+  Note over A: Klaus hat siblings[B].heterokaryosisOptIn = true gesetzt.
+  A->>A: requestHeterokaryosis(B.nodeId)
+  A->>A: lokale Vorprüfung: B ∈ siblings ∧ siblings[B].heterokaryosisOptIn === true
+  A->>A: getOwnSpore() · canonical sign(HeterokaryosisRequest)
+  A->>B: POST /sbkim/heterokaryosis<br/>HeterokaryosisRequest
+  B->>SP: verifyForeignSpore(senderSpore)
+  alt Spore valid + Hauptversion kompatibel + Signatur valid
+    B->>SI: get(siblings[A.nodeId])
+    alt A ∉ siblings ODER siblings[A].heterokaryosisOptIn !== true
+      B->>LO: put("hetero-opt-out")
+      B-->>A: HeterokaryosisResponse{outcome:"opt-out"}
+    else opt-in beidseits
+      B->>B: baue Antwort: max. HETERO_MAX_ANCHORS Domain-Anker<br/>aus eigener Domäne, kanonisch signiert
+      B->>LO: put("hetero-served")
+      B-->>A: HeterokaryosisResponse{outcome:"shared", anchors:[…]}
+    end
+  else Spore ungültig / Versions-Mismatch / Signatur ungültig
+    B->>LO: put("hetero-rejected")
+    B-->>A: HeterokaryosisResponse{outcome:"rejected", reason}
+  end
+  A->>SP: verifyForeignSpore(receiverSpore) · verify(response.signature)
+  alt outcome === "shared"
+    A->>IB: put({peerNodeId|ts, anchors, signature, receivedAt})
+    A->>LO: put("hetero-pulled")
+  else outcome ∈ {"opt-out", "rejected", "endpoint_unsupported"}
+    A->>LO: put("hetero-<outcome>")
+  end
 ```
 
 ---
 
 ## Zweck
 
-Erlaubt verbundenen Geschwisterknoten, kontrolliert Erfahrungswerte
-auszutauschen — etwa neu hinzugekommene Domänen-Stichworte oder
-anonymisierte Anfrage-Statistik. Biologische Analogie: Nährstoffaustausch
-zwischen verschmolzenen Pilzfäden.
+Erlaubt verbundenen Geschwister-Knoten, kontrolliert **semantisch
+reichere Daten** auszutauschen als die einzelne Spore es kann. Die
+Spore aus Modul 02 trägt nur **einen** Domain-Vektor (`domainVector` —
+384 floats) plus optional eine Stichwort-Liste (`domainKeywords`); der
+Empfänger kann damit nur einen einzigen Cosinus berechnen.
+
+Heterokaryose ergänzt das um eine kleine Anzahl **signierter Domain-
+Anker**: pro Anker ein **Label** (deutscher Stichwort-Text) und der
+zugehörige **Embedding-Vektor** (384 floats). Der Empfänger kann
+damit:
+
+- die Domäne des Senders **feinkörniger** einschätzen (statt einem
+  einzigen Vektor stehen drei bis fünf zur Verfügung),
+- bei Sub-Domain-Lookups (z.B. „erkennen ob eine eingehende Frage zu
+  ‚Hefeteig'-Stichwort eines Rezeptbuch-Knotens passt") den passenden
+  Anker direkt vergleichen, ohne neu zu embedden,
+- Domain-Drift in Geschwistern erkennen (Anker-Sätze verändern sich
+  über die Zeit; ein erneuter Pull zeigt den aktuellen Stand).
+
+**Wichtig**: Heterokaryose teilt **keine** Inhaltsdaten (Rezepte,
+Cocktails), **keine** Anfrage-Statistik, **keine** personenbezogenen
+Daten. Nur abstrakte Domain-Anker, deren Inhalt der Sender bewusst zum
+Teilen freigegeben hat.
+
+Heterokaryose ist die *Komposition* — Modul 06 rechnet nicht selbst,
+sondern ruft `SbkimSpore.verifyForeignSpore`, `SbkimStorage`,
+WebCrypto-Sign-/Verify-Pfade (analog 02/05/07) und liest
+`sbkim_siblings` aus Modul 05. Es ruft Modul 04 (Match) **nicht** —
+der Empfänger entscheidet allein, was er aus den Ankern macht.
 
 ---
 
 ## Verantwortlichkeiten
 
 **Macht:**
-- Aktiv angefragten Datensatz an einen Geschwisterknoten senden
-- Eingehenden Heterokaryose-Datensatz validieren (Signatur, Schema)
-- Inhalte in lokalem Speicher übernehmen, **nur** wenn der Betreiber
-  das in der Konfiguration freigegeben hat (Default: aus)
-- Datensätze sind klein, signiert, ohne personenbezogene Daten
+
+- Heterokaryose-Pull initiieren (`requestHeterokaryosis(peerNodeId)`),
+  ausschließlich gegen Geschwister aus `sbkim_siblings` mit
+  `heterokaryosisOptIn === true`.
+- Eingehenden Heterokaryose-Pull annehmen oder ablehnen
+  (`receiveHeterokaryosis(incomingRequest)`) — analog Modul 05's
+  `receiveHandshake`.
+- HeterokaryosisRequest/Response **kanonisch** serialisieren und mit
+  dem eigenen Ed25519-Schlüssel signieren (gleicher Pfad wie Modul 02
+  / 05 / 07).
+- HeterokaryosisResponse beim Empfänger gegen den `publicKey` aus der
+  mitgelieferten Spore verifizieren.
+- Bei `outcome === "shared"`: empfangene Domain-Anker in
+  `sbkim_hetero_inbox` ablegen (pro Pull ein Eintrag, Schlüssel
+  `peerNodeId|ts`).
+- Jede Begegnung in `sbkim_anastomosis_log` mitschreiben:
+  `hetero-pulled`, `hetero-served`, `hetero-opt-out`, `hetero-
+  rejected`, `hetero-timeout`, `hetero-endpoint-unsupported`. Log
+  bleibt anonymisiert (kein Anker-Inhalt).
+- Inbox-Liste lesen (`listHeterokaryosis()` für UI / Doku-Fenster).
+- Inbox-Eintrag manuell vergessen (`forgetHeterokaryosis(peerNodeId,
+  ts)`) — Andocker-Trigger.
 
 **Macht nicht:**
-- Keine automatische Übernahme ohne Freigabe
-- Kein Sync-Protokoll, keine Konsistenzgarantien
-- Keine Inhaltsdaten der Endknoten-App (keine Rezepte, keine Cocktails)
+
+- **Kein Match.** Modul 06 berührt `SbkimMatch` nicht. Der Empfänger
+  entscheidet später selbst, was er aus den Ankern rechnet (z.B. in
+  Modul 04-basierten Lookups). Modul 06 transportiert nur.
+- **Kein Embedding.** Kein `SbkimEmbedding`-Aufruf in 06. Die Anker-
+  Vektoren werden beim Andocken (Modul 02 Spore-Generierung / Modul 09
+  Einbau-PWA) schon berechnet und in einem späteren Schritt in die
+  Anker-Quelle des Knotens eingespeist (Spec-Sitzung 08 oder Folge-
+  Pflege Modul 02 entscheidet das später; Modul 06 *liest* sie nur).
+- **Kein Handshake.** Modul 06 ruft `SbkimAnastomose.handshake`
+  **nicht** auf. Heterokaryose setzt einen erfolgreichen Handshake
+  voraus — sie schickt keine Spore-Verifikation auf neue Geschwister,
+  sondern arbeitet ausschließlich gegen bekannte Geschwister.
+- **Kein direkter `indexedDB.open`.** Persistenz strikt über
+  `SbkimStorage.{init, get, put, del, all}`. Wer in Modul 06
+  IndexedDB direkt anfasst, hat den Vertrag aus Modul 01 zerrissen.
+- **Keine Pulsation, keine periodischen Eigenanfragen.** Pulls
+  laufen ausschließlich auf expliziten Andocker-Trigger
+  (Klaus-Klick im UI, oder ein Endknoten-internes Skript) — niemals
+  via `setInterval`, niemals automatisch bei `init()`.
+- **Kein Push.** Modul 06 schickt **nie** unaufgefordert Anker an
+  Geschwister. Wer Anker bekommen will, fragt sie aktiv ab.
+- **Kein automatisches Vergessen.** TTL für Inbox-Einträge ist
+  Aufgabe von Modul 07 (eigene Folge-Pflege zieht
+  `sbkim_hetero_inbox` in den Cleanup-Reigen). Modul 06 stellt nur
+  `forgetHeterokaryosis(peerNodeId, ts)` als manuelle Operation
+  bereit.
+- **Kein Anker-Weiterleiten.** Wenn A Anker von B bekommt, schickt A
+  sie **nicht** an seine anderen Geschwister weiter. Anker sind
+  direkte Eins-zu-eins-Daten zwischen den beiden Geschwistern.
+- **Kein Schreibrecht auf `sbkim_siblings`.** Schreiber bleibt Modul
+  05 (Karte 01 Vertrag); Modul 06 liest nur, mit fail-soft-Lese-Recht
+  auf das optional-additive Feld `heterokaryosisOptIn` (default
+  `false`, wenn das Feld fehlt).
+- **Keine Modifikation des `heterokaryosisOptIn`-Flags.** Das setzt
+  Klaus über das Endknoten-UI (Modul 00 Doku-Fenster oder Modul 08
+  UI-Demo). Modul 06 *liest* nur.
+- **Kein Quorum, keine Misstrauensvoten.** Trust-basierte Filterung
+  von Anker-Quellen gehört in Modul 10 (Reputation, Schutz-Backlog).
 
 ---
 
 ## Schnittstelle
 
-*(noch zu spezifizieren)*
+Modul 06 exportiert **fünf** öffentliche Funktionen. Alle DB-
+Operationen laufen über `window.SbkimStorage`, alle Krypto-
+Operationen über `window.SbkimSpore` / WebCrypto-Pfad (analog Modul 02
+/ 05 / 07) — Modul 06 ist die *Komposition*, nicht die *Mechanik*.
 
 ```
-init({ enabled: boolean }) → Promise<void>
+init() → Promise<void>
+  // Prüft Verfügbarkeit von SbkimStorage und SbkimSpore und ruft sie
+  // der Reihe nach mit init() auf. Registriert den `message`-Listener
+  // für eingehende SBKIM_HETEROKARYOSIS_REQUEST-Nachrichten vom
+  // Service-Worker (analog Modul 05 / 07 Page-Hosted-Variante).
+  // Wirft HeterokaryoseDependenciesError, wenn ein Modul fehlt.
+  // Idempotent.
 
-shareWith(siblingNodeId: string, payload: HeterokaryosisPayload)
-  → Promise<{ accepted: boolean }>
+requestHeterokaryosis(peerNodeId) → Promise<HeterokaryoseResult>
+  // Initiiert einen ausgehenden Heterokaryose-Pull gegen den
+  // Geschwister peerNodeId.
+  // 1. sibling = SbkimStorage.get(sbkim_siblings, peerNodeId).
+  //    Wenn nicht vorhanden → wirft UnknownSiblingError. Kein Netz.
+  // 2. Lokale Vorprüfung: sibling.heterokaryosisOptIn === true?
+  //    Sonst → KEIN Throw. Log-Zeile "hetero-opt-out-local",
+  //    return {outcome:"opt-out-local"}.
+  // 3. Hauptversions-Check (sibling.pubKey- und sibling.endpoint-
+  //    Anker reichen — die ursprüngliche Spore aus Modul 05 ist nicht
+  //    mehr im Storage, aber der Sender hat denselben Hauptversions-
+  //    Kontext gehabt). Versions-Drift fängt der Empfänger ab; Modul
+  //    06 schickt mit lokaler PROTOCOL_VERSION.
+  // 4. Bau HeterokaryosisRequest (siehe Datenformat), kanonisch
+  //    signiert mit eigenem Ed25519-Schlüssel.
+  // 5. POST an sibling.endpoint + "/sbkim/heterokaryosis", Timeout
+  //    QUERY_TIMEOUT_MS (4000 ms aus §0). Bei Timeout wirft
+  //    HeterokaryoseTimeoutError, Log "hetero-timeout".
+  //    Bei Netz-Fehler HeterokaryoseNetworkError.
+  //    Bei HTTP 404 (Geschwister hat den Endpunkt nicht) → KEIN
+  //    Throw, Log "hetero-endpoint-unsupported", return
+  //    {outcome:"endpoint_unsupported"}.
+  // 6. Antwort parsen, receiverSpore via verifyForeignSpore prüfen,
+  //    Response-Signatur gegen receiverSpore.publicKey verifizieren.
+  //    Signatur-Fehler → wirft HeterokaryoseSignatureInvalidError,
+  //    Log "hetero-rejected".
+  // 7. outcome-Verzweigung:
+  //    "shared"   → sbkim_hetero_inbox.put({peerNodeId|ts, anchors,
+  //                  signature, receivedAt}), Log "hetero-pulled",
+  //                  return {outcome:"shared", anchorCount,
+  //                          peerNodeId, ts}.
+  //    "opt-out"  → KEIN Inbox-Eintrag, Log "hetero-opt-out",
+  //                  return {outcome:"opt-out"}.
+  //    "rejected" → KEIN Inbox-Eintrag, Log "hetero-rejected",
+  //                  return {outcome:"rejected", reason}.
+  // Wirft niemals bei rein semantischer Ablehnung — das ist Outcome,
+  // kein Error. Wirft nur bei Protokoll-, Netz- oder Krypto-Fehlern
+  // (und bei unbekanntem Sibling als sofortiger Vorprüfungs-Fehler).
 
-onIncoming(handler: (payload: HeterokaryosisPayload) → "accept"|"reject")
+receiveHeterokaryosis(incomingRequest) → Promise<HeterokaryosisResponse>
+  // Wird vom Service-Worker (Page-Hosted-Variante via MessageChannel)
+  // aufgerufen, sobald ein /sbkim/heterokaryosis POST eingegangen
+  // ist. incomingRequest ist das geparste JSON-Body-Objekt.
+  //   1. Form-Check (Pflichtfelder), sonst Response
+  //      outcome:"rejected", reason:"Form ungültig".
+  //   2. verifyForeignSpore(senderSpore) → {valid:false} ⇒
+  //      Response outcome:"rejected", reason:<deutsch>.
+  //   3. Hauptversions-Check → Mismatch ⇒ Response
+  //      outcome:"rejected",
+  //      reason:"Inkompatible Hauptversion: <x.y>".
+  //   4. Request-Signatur gegen senderSpore.publicKey verifizieren ⇒
+  //      bei Fehler Response outcome:"rejected",
+  //      reason:"Request-Signatur ungültig".
+  //   5. Filter: ist senderSpore.id in sbkim_siblings?
+  //      Sonst Response outcome:"rejected",
+  //      reason:"Sender ist kein Geschwister". (Modul 06 antwortet
+  //      ausschließlich auf bekannte Geschwister — Spore-Signatur
+  //      allein reicht NICHT.)
+  //   6. Filter: sbkim_siblings[senderId].heterokaryosisOptIn ===
+  //      true? Sonst Response outcome:"opt-out", Log
+  //      "hetero-opt-out". (KEIN reason-Detail beim opt-out — das
+  //      hält die Antwort minimal.)
+  //   7. Sonst: Anker-Quelle lesen (siehe § Anker-Quelle unten),
+  //      max. HETERO_MAX_ANCHORS Einträge, baue Response
+  //      outcome:"shared" mit anchors[] und receiverSpore. Signatur
+  //      kanonisch über die Form ohne signature. Log "hetero-served".
+  //   Wirft NIEMALS — alle Fehlpfade werden als
+  //   HeterokaryosisResponse{outcome:"rejected"|"opt-out", reason?}
+  //   zurückgegeben (analog Modul 02 verifyForeignSpore und Modul 05
+  //   receiveHandshake und Modul 07 receiveLegacy).
+
+listHeterokaryosis() → Promise<Array<{peerNodeId, ts, anchorCount, receivedAt}>>
+  // Lädt alle Einträge aus sbkim_hetero_inbox. Reihenfolge:
+  // Storage-natürlich (nach Schlüssel = peerNodeId|ts). Anker-
+  // Inhalte (label, vector) werden bewusst weggelassen — Lese-
+  // Helfer für UI / Modul 00 / Modul 08; eine echte Detail-View
+  // (mit Ankern) gehört in Modul 08 und nutzt SbkimStorage direkt.
+
+forgetHeterokaryosis(peerNodeId, ts) → Promise<void>
+  // Entfernt den Inbox-Eintrag mit Schlüssel `peerNodeId|ts`. Der
+  // sbkim_anastomosis_log-Eintrag bleibt (Audit-Spur). Idempotent:
+  // unbekannter Schlüssel wirft NICHT.
 ```
 
-### Datenformat: HeterokaryosisPayload
+### Selbstcheck
 
-*(noch zu spezifizieren)* — Skizze:
+Beim **Skript-Laden** (synchron, vor jeglichem Aufruf):
+
+```
+console.info("MODUL 06 HETEROKARYOSE bereit, Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis");
+```
+
+Wie Modul 01 / 02 / 04 / 05 / 07 — die Meldung signalisiert „Modul
+geladen", nicht „Anker da" oder „Geschwister opt-in". Endpunkt und
+Versions-Konstante werden in der Selbstcheck-Zeile bewusst **nicht**
+wiederholt (stehen verbindlich in §0 / §3).
+
+### Konfigurationswerte
+
+```
+PROTOCOL_VERSION         = "0.1"                          // aus INTERFACES.md §0, Hauptversions-Check
+QUERY_TIMEOUT_MS         = 4000                           // aus INTERFACES.md §0, Timeout für outgoing POST
+HETERO_MAX_ANCHORS       = 5                              // aus INTERFACES.md §0 (additiv neu), max. Anker-Anzahl pro Response
+ENDPOINT.heterokaryosis  = "/sbkim/heterokaryosis"        // aus INTERFACES.md §3
+```
+
+`HETERO_MAX_ANCHORS` ist die einzige neue Konstante dieser Spec —
+additiv in §0 (analog `SIBLING_MAX_AGE_MS` aus Spec-Sitzung 07,
+`DOKU_REVEAL_WINDOW_MS` aus Spec-Sitzung 00). **Kein Hauptversions-
+Sprung.** `status.json.config` zieht den Wert mit. Begründung in vier
+Punkten (analog Karte 07 § `SIBLING_MAX_AGE_MS`-Ort-Entscheidung):
+
+1. **Konsistenz** mit `PROVIDER_MIN_MATCH`, `QUERY_TIMEOUT_MS`,
+   `SIBLING_MAX_AGE_MS`. §0 ist die *eine Quelle* aller protokoll-
+   relevanten Konstanten.
+2. **Querschnitts-Anschluss für Modul 11.** Ein zukünftiges Rate-
+   Limit-Modul kann `HETERO_MAX_ANCHORS` als Pro-Pull-Bandbreiten-
+   Anker nutzen, ohne dass Modul 06 angefasst wird.
+3. **Additive Änderung — kein Hauptversions-Sprung.** §0 erlaubt
+   additive Erweiterung um Konstanten.
+4. **`status.json.config` zieht nach.** Die Sage-Page liest §0 aus
+   `status.json.config`; additive Konstanten landen dort automatisch
+   mit.
+
+### Anker-Quelle (Spec-Wille — was der Sender liest)
+
+Modul 06 produziert Anker für die ausgehende Response. **Wo kommen die
+Anker her?** Diese Spec entscheidet:
+
+- **Default-Anker-Quelle:** der Sender liest seine eigene
+  `SporeJson` aus Modul 02 (`getOwnSpore()`). Wenn die Spore das
+  optionale Feld `domainKeywords: string[]` (max. 10 Einträge, siehe
+  §2 Spore) und das optionale Feld `domainVector: number[384]` hat,
+  baut Modul 06 *einen* Anker mit `label: "(domain)"` und dem
+  `domainVector`. Das ist der **minimale, immer verfügbare** Anker.
+- **Erweiterte Anker-Quelle (späte Phase):** ein neuer Storage-Store
+  `sbkim_hetero_outbox` mit Schreib-Recht durch Modul 08 (UI-Demo)
+  oder Klaus' Endknoten-UI. Klaus kann pro Anker ein Label + den
+  durch Modul 03 (Embedding) berechneten Vektor reinlegen. Modul 06
+  liest aus dem Outbox-Store, sortiert (z.B. nach `addedAt`), und
+  liefert die ersten `HETERO_MAX_ANCHORS` Einträge.
+- **Spec-Wille:** Modul 06 prüft beim Bau der Response zuerst
+  `sbkim_hetero_outbox` — wenn der Store existiert und nicht leer ist,
+  nutzt 06 ihn. Sonst Fallback auf den Spore-Single-Anker. **Wer den
+  Outbox-Store füllt, ist NICHT Aufgabe von Modul 06.** Modul 08
+  (UI-Demo) oder eine spätere Spec-Sitzung 08 spezifiziert das. Bis
+  dahin liefert jeder Knoten genau **einen** Anker (den Domain-
+  Vektor aus seiner Spore) und Heterokaryose ist primär ein
+  **Domain-Drift-Erkenner** — beim erneuten Pull sieht der Empfänger,
+  ob der Domain-Vektor sich geändert hat.
+
+Diese Schicht-Trennung hält Modul 06 frei von Embedding und UI: 06
+liest fertige Anker, signiert die Antwort, sendet zurück.
+
+### Datenformate
+
+**HeterokaryosisRequest** (kanonisches JSON; alphabetisch sortierte
+Keys, Signatur über die Form **ohne** `signature`-Feld):
 
 ```jsonc
 {
-  "fromNodeId": "...",
-  "type":       "domainKeywordsUpdate" | "anonStats" | "...",
-  "data":       { /* type-spezifisch */ },
-  "createdAt":  "...",
-  "signature":  "..."
+  "fromNodeId":      "<base64url-sha256-rawpub des Senders>",
+  "nonce":           "<base64url, 16 zufällige Bytes>",
+  "protocolVersion": "0.1",
+  "senderSpore":     { /* SporeJson, vom Sender signiert (Modul 02) */ },
+  "signature":       "<base64url-ed25519-sig über kanonisches JSON ohne signature>",
+  "timestamp":       "2026-05-15T07:00:00.000Z",          // ISO-8601 UTC, Sender beim Bauen
+  "toNodeId":        "<base64url-sha256-rawpub des Empfängers>"
 }
 ```
 
-### Konfiguration
+`toNodeId` ist hier **Pflicht** (anders als bei `HandshakeRequest` aus
+Modul 05, wo es optional ist). Begründung: Heterokaryose richtet sich
+explizit an einen bekannten Geschwister; ohne `toNodeId` kann der
+Empfänger die `sbkim_siblings`-Vorprüfung nicht durchführen. Wenn
+`toNodeId` nicht zur eigenen `nodeId` passt → Response
+`outcome:"rejected", reason:"toNodeId stimmt nicht zum Empfänger"`.
 
-Default: **aus**. Heterokaryose ist Opt-In durch den Betreiber.
+**HeterokaryosisResponse** (kanonisches JSON; alphabetisch sortiert):
+
+```jsonc
+{
+  "anchors":         [ /* Anker-Array, Pflicht bei outcome="shared", sonst weggelassen.
+                          Max. HETERO_MAX_ANCHORS Einträge.
+                          Jeder Anker: {label: string, vector: number[384]} —
+                          Reihenfolge bedeutsam (Sender ordnet sinnvoll). */ ],
+  "fromNodeId":      "<Empfänger-nodeId>",
+  "nonceEcho":       "<gleiches nonce wie im Request>",
+  "outcome":         "shared",        // oder "opt-out" oder "rejected"
+  "protocolVersion": "0.1",
+  "reason":          "<deutscher Klartext, Pflicht bei rejected, sonst weggelassen>",
+  "receiverSpore":   { /* SporeJson, vom Empfänger signiert */ },
+  "signature":       "<base64url-ed25519-sig über kanonisches JSON ohne signature>",
+  "timestamp":       "2026-05-15T07:00:00.450Z",
+  "toNodeId":        "<Sender-nodeId>"
+}
+```
+
+**Anker-Form** (innerhalb des `anchors`-Arrays):
+
+```jsonc
+{
+  "label":   "Hefeteig",                                  // deutscher Stichwort-Text, ≤ 64 Zeichen
+  "vector":  [/* 384 floats, L2-normalisiert */]          // Embedding aus Modul 03
+}
+```
+
+Die Anker tragen **keine eigene Signatur** — die `signature` des
+`HeterokaryosisResponse` deckt das ganze JSON inklusive `anchors`.
+Versionierung der Anker-Form folgt §4.
+
+**`sbkim_hetero_inbox["<peerNodeId>|<ts>"]`** (Storage-Wert pro
+empfangenem Pull — Schreiber 06, Form aus Karte 01 zu spiegeln):
+
+```jsonc
+{
+  "peerNodeId":  "<base64url-sha256-rawpub des Senders der Anker>",
+  "ts":          "2026-05-15T07:00:00.450Z",             // ISO-8601 UTC, Empfänger beim Schreiben
+  "anchors":     [ /* wie oben, max. HETERO_MAX_ANCHORS */ ],
+  "signature":   "<base64url-ed25519-sig der ursprünglichen Response>",
+  "receivedAt":  "2026-05-15T07:00:00.460Z"              // ISO-8601 UTC, dieselbe wie ts
+}
+```
+
+Schlüssel-Format `peerNodeId|ts` (Pipe-getrennt) ist ein komposit-
+Schlüssel — pro Geschwister können mehrere Pulls über die Zeit als
+Drift-Spur akkumulieren. `receivedAt` und `ts` sind in der Erst-Spec
+identisch; eine spätere Spec könnte sie trennen, wenn z.B. Versand-/
+Empfangs-Zeitstempel divergieren sollen.
+
+`senderSpore` wird im Storage **nicht** aufbewahrt — sie wurde bei
+`requestHeterokaryosis` einmal verifiziert; die Signatur reicht als
+Audit-Spur, weil sie über das Anker-JSON inklusive `peerNodeId`
+legitimiert ist (analog Modul 07's `sbkim_legacy_inbox` Schema).
+
+**`sbkim_siblings[peerNodeId]` — additives Feld**:
+
+```jsonc
+{
+  "nodeId":               "<base64url-sha256-rawpub>",
+  "domain":               "rezeptbuch.example.org",
+  "endpoint":             "https://klaus.github.io/rezeptbuch/",
+  "pubKey":               { "kty": "OKP", "crv": "Ed25519", "x": "<base64url>" },
+  "since":                "2026-05-14T07:00:00.000Z",
+  "heterokaryosisOptIn":  true                            // OPTIONAL, additiv aus Spec-Sitzung 06
+  //  Modul 05 setzt das Feld NICHT (additive Schema-Erweiterung).
+  //  Modul 06 liest fail-soft: fehlendes Feld → default false.
+  //  Klaus setzt das Feld pro Geschwister im Endknoten-UI
+  //  (Modul 00 Doku-Fenster oder Modul 08 UI-Demo, eigene Folge-
+  //  Pflege).
+}
+```
+
+**`sbkim_anastomosis_log["<timestamp>"]`** — Erweitertes outcome-
+Vokabular (additiv aus Spec-Sitzung 06):
+
+```jsonc
+{
+  "ts":      "2026-05-15T07:00:00.450Z",
+  "peerId":  "<base64url-sha256-rawpub>",
+  "outcome": "hetero-pulled"
+  //  Neue outcome-Werte (additiv):
+  //    "hetero-pulled"              — A hat erfolgreich Anker empfangen
+  //    "hetero-served"              — B hat erfolgreich Anker ausgeliefert
+  //    "hetero-opt-out"             — B hat opt-out-Antwort gegeben
+  //    "hetero-opt-out-local"       — A hat lokale Vorprüfung gestoppt (kein Netz)
+  //    "hetero-rejected"            — Spore-/Versions-/Signatur-Fehler
+  //    "hetero-timeout"             — fetch-Timeout
+  //    "hetero-endpoint-unsupported" — HTTP 404 (Peer hat den Endpunkt nicht)
+  //  Modul 07's TTL-Sweep bleibt unverändert (es liest nur
+  //  "established"/"re-handshake"-Einträge für die lastActivity-
+  //  Berechnung — siehe Karte 07 § TTL-Verhalten).
+}
+```
+
+**Kein neuer Log-Store**: Modul 06 nutzt `sbkim_anastomosis_log`
+weiter — Heterokaryose-Begegnungen sind semantisch parallel zu
+Anastomose-Begegnungen (Geschwister-Kontakt mit Outcome). Ein
+zweiter Log-Store wäre Verdopplung ohne Mehrwert. Schreiber bleiben
+Modul 05 (Anastomose-Outcomes) und Modul 06 (Hetero-Outcomes); Modul
+07 ist Leser für TTL und löscht den Store beim Self-Apoptose-Cleanup.
+
+Versionierungs-Regel: HeterokaryosisRequest und HeterokaryosisResponse
+folgen [INTERFACES.md §4](../INTERFACES.md). Pflichtfelder dürfen ab
+Status `entwurf` nur additiv erweitert werden; das Hinzufügen eines
+Pflichtfelds erfordert den Schritt von `protocolVersion: "0.x"` auf
+`"1.0"`.
+
+---
+
+## Heterokaryose-Pfad (Schritt-für-Schritt, JSON-Ebene)
+
+Schritte 1–6 sind Knoten A (Initiator), 7–11 sind Knoten B
+(Angefragter), 12–14 sind wieder A (Verarbeitung der Response).
 
 ```
-HETEROKARYOSIS_ENABLED = false
+ 1. A.init()                                                                                            // SbkimStorage + Spore
+ 2. A.requestHeterokaryosis(B.nodeId):
+      - sibling = SbkimStorage.get(sbkim_siblings, B.nodeId)
+      - sibling vorhanden? sonst UnknownSiblingError.
+      - sibling.heterokaryosisOptIn === true? sonst Log "hetero-opt-out-local",
+        return {outcome:"opt-out-local"}.
+ 3. A.getOrCreateIdentity() → {nodeId, publicKeyJwk}
+    A.getOwnSpore()         → SporeJson(A)
+ 4. baue HeterokaryosisRequest:
+      { fromNodeId, nonce, protocolVersion, senderSpore: SporeJson(A),
+        timestamp, toNodeId: B.nodeId, signature }
+      Signatur kanonisch über Form ohne signature, Ed25519 mit eigenem privateKey.
+ 5. fetch POST sibling.endpoint + "/sbkim/heterokaryosis", AbortController(QUERY_TIMEOUT_MS)
+      - HTTP 404? Log "hetero-endpoint-unsupported", return {outcome:"endpoint_unsupported"}.
+      - Timeout?  HeterokaryoseTimeoutError, Log "hetero-timeout".
+      - Netz-Fehler? HeterokaryoseNetworkError.
+ 6. Response parsen, weiter ab Schritt 12.
+
+ 7. B.receiveHeterokaryosis(body):
+      Form-Check (Pflichtfelder), sonst Response rejected.
+ 8. verifyForeignSpore(senderSpore) → invalid? Response rejected, reason aus verifyForeignSpore.
+ 9. Hauptversion-Check (body.protocolVersion gegen lokale PROTOCOL_VERSION)
+      → Mismatch? Response rejected, reason: "Inkompatible Hauptversion: <x.y>".
+10. Request-Signatur prüfen — kanonische Form ohne signature gegen body.senderSpore.publicKey
+      → ungültig? Response rejected, reason: "Request-Signatur ungültig".
+11. body.toNodeId === eigene getNodeId()? sonst Response rejected,
+      reason: "toNodeId stimmt nicht zum Empfänger".
+    senderId = body.senderSpore.id; siblingEntry = SbkimStorage.get(sbkim_siblings, senderId).
+      siblingEntry vorhanden? sonst Response rejected, reason: "Sender ist kein Geschwister".
+    siblingEntry.heterokaryosisOptIn === true? sonst Response {outcome:"opt-out"} (KEIN reason).
+      Log "hetero-opt-out".
+    Sonst: anchors = read_anker_quelle(max HETERO_MAX_ANCHORS).
+      Baue Response {outcome:"shared", anchors, receiverSpore, timestamp, signature,
+                     fromNodeId, nonceEcho, protocolVersion, toNodeId}.
+      Signatur kanonisch. Log "hetero-served". Response 200 JSON.
+
+12. A: verifyForeignSpore(response.receiverSpore) → invalid? HeterokaryoseSignatureInvalidError, Log "hetero-rejected".
+13. Response-Signatur gegen receiverSpore.publicKey prüfen → ungültig? HeterokaryoseSignatureInvalidError, Log "hetero-rejected".
+14. outcome-Verzweigung:
+      "shared":    SbkimStorage.put(sbkim_hetero_inbox, peerNodeId|ts,
+                     {peerNodeId, ts, anchors, signature, receivedAt: now()}).
+                   Log "hetero-pulled". return {outcome:"shared", anchorCount, peerNodeId, ts}.
+      "opt-out":   Log "hetero-opt-out". return {outcome:"opt-out"}.
+      "rejected":  Log "hetero-rejected". return {outcome:"rejected", reason}.
 ```
+
+Reihenfolge **verbindlich**: Spore vor Hauptversion vor Signatur vor
+`toNodeId`-Check vor Sibling-Filter vor Opt-In-Filter. Wer Spore- oder
+Versions-Mismatch hat, soll keinen Sibling-Lookup auslösen.
+
+---
+
+## Service-Worker-Hinweis für statisch gehostete PWAs
+
+Endknoten (Rezeptbuch / Mixarium) laufen auf GitHub Pages ohne
+Backend. Eingehende `/sbkim/heterokaryosis`-POSTs müssen daher im
+Browser abgefangen werden — über den **gemeinsamen Service-Worker**
+aus `src/sbkim-sw.js` (existiert seit Bau-Sitzung 05 mit fetch-
+Listener für `/sbkim/anastomosis`, erweitert um `/sbkim/legacy` in
+Bau-Sitzung 07). Die Bau-Sitzung Modul 06 erweitert den `fetch`-
+Listener um den dritten Pfad analog zu den ersten beiden:
+
+- **Pfad:** `POST /sbkim/heterokaryosis` (relativ zum PWA-Scope).
+  Andere Methode → 405. POST mit `Content-Type` anders als
+  `application/json` → 415. Body > 64 KiB → 413 (analog 05/07).
+- **Request-Body:** JSON, Form gemäß `HeterokaryosisRequest` oben.
+- **Vom SW an die Page:** der SW liest den JSON-Body, ruft
+  `SbkimHeterokaryose.receiveHeterokaryosis(body)` auf der aktiven
+  PWA-Instanz auf (`postMessage` an `clients.matchAll()` mit einem
+  `MessageChannel`-Port und Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`;
+  die Page antwortet asynchron mit dem `HeterokaryosisResponse`-JSON).
+- **Vom SW zurück:** `Response(JSON.stringify(heterokaryosisResponse),
+  { status: 200, headers: {"Content-Type":"application/json"} })`.
+- **Fallback:** wenn keine PWA-Instanz aktiv ist (Tab geschlossen),
+  antwortet der SW mit `503 Service Unavailable` (analog 05/07) —
+  *kein* Auto-Start, keine Wake-Lock.
+
+**Variante A (Page-Hosted)** ist verbindlich, analog zur Entscheidung
+aus Bau-Sitzung 05 — Modul 06 lebt in der Page, der SW ist nur
+fetch-Brücke. Begründung wie bei 05/07: ein Code-Pfad in der Page,
+keine Krypto im Worker-Scope, keine Doppel-Pflege.
+
+**Service-Worker-Konsolen-Zeile beim Andocken (Schritt 9 Karte 09 +
+spätere Pflege):** beim ersten `init()`-Aufruf von Modul 06 darf eine
+Zeile wie `SBKIM-Heterokaryose grün — Pull-Empfang aktiv.` erscheinen
+(analog `SBKIM-Apoptose grün — Vermächtnis-Empfang aktiv.` aus Modul
+07). Die exakte Wort-Wahl entscheidet die Bau-Sitzung 06.
+
+---
+
+## Fehlerverhalten
+
+| Lage | Reaktion |
+|---|---|
+| `init()`: ein Abhängigkeits-Modul fehlt (`SbkimStorage` / `SbkimSpore` nicht auf `window`) | wirft `HeterokaryoseDependenciesError` mit Liste der fehlenden Module. |
+| `requestHeterokaryosis()`: `peerNodeId` nicht in `sbkim_siblings` | wirft `UnknownSiblingError`. Kein Netz-Aufruf. |
+| `requestHeterokaryosis()`: `sibling.heterokaryosisOptIn !== true` | **kein** Throw. Log-Zeile `"hetero-opt-out-local"`, return `{outcome:"opt-out-local"}`. Kein Netz-Aufruf. |
+| `requestHeterokaryosis()`: `fetch` bricht über `QUERY_TIMEOUT_MS` ab | wirft `HeterokaryoseTimeoutError`. Log-Zeile `"hetero-timeout"`. |
+| `requestHeterokaryosis()`: HTTP 404 (Peer hat den Endpunkt nicht) | **kein** Throw. Log-Zeile `"hetero-endpoint-unsupported"`, return `{outcome:"endpoint_unsupported"}`. (Peer mit älterem Protokoll-Stand, der `/sbkim/heterokaryosis` nicht serviert.) |
+| `requestHeterokaryosis()`: Netz-/CORS-/DNS-Fehler | wirft `HeterokaryoseNetworkError` mit Original-Error in `cause`. |
+| `requestHeterokaryosis()`: Response-Signatur gegen `receiverSpore.publicKey` ungültig | wirft `HeterokaryoseSignatureInvalidError`. Log-Zeile `"hetero-rejected"`. |
+| `requestHeterokaryosis()`: Antwort kommt mit `outcome:"opt-out"` zurück | **kein** Throw. Log-Zeile `"hetero-opt-out"`, return `{outcome:"opt-out"}`. |
+| `requestHeterokaryosis()`: Antwort kommt mit `outcome:"rejected"` zurück | **kein** Throw. Log-Zeile `"hetero-rejected"`, return `{outcome:"rejected", reason}`. |
+| `receiveHeterokaryosis()`: jegliche Form-/ Signatur-/ Versions-/ Spore-/ `toNodeId`- / Sibling-Filter- / Opt-In-Verletzung | **wirft niemals**. Alles als `HeterokaryosisResponse{outcome:"rejected"|"opt-out", reason?}` zurück (analog `verifyForeignSpore`, `receiveHandshake`, `receiveLegacy`). |
+| `receiveHeterokaryosis()`: Storage-Fehler beim Lesen `sbkim_siblings` oder Schreiben Log | **wirft niemals nach außen**. Response `outcome:"rejected", reason:"interner Speicherfehler"`; der Original-Storage-Fehler landet in `console.error` für Debugging. |
+| `listHeterokaryosis()` / `forgetHeterokaryosis()`: Storage-Fehler aus Modul 01 | unverändert durchgereicht (z.B. `StorageUnavailableError`). |
+
+Alle SBKIM-Fehler sind `Error`-Instanzen mit sprechendem `name` und
+deutschsprachigem `message`. **Wichtig:** semantische Ablehnung
+(opt-out, opt-out-local, endpoint_unsupported) ist **kein** Throw —
+sie ist *Outcome*. Das hält den Pfad parallel zu `receiveHandshake`
+(Modul 05) und `receiveLegacy` (Modul 07).
 
 ---
 
 ## Manueller Test
 
-*(später, sobald 05 steht)*
+Skizze für ein späteres Panel 06 in `tests/manual_check.html`. Die
+Knöpfe entstehen in der Bau-Sitzung Modul 06 — diese Spec-Sitzung
+benennt nur, was geprüft werden soll:
+
+1. **Lokaler Pull-Round-Trip ohne Netz** — zwei In-Memory-Identitäten
+   in derselben PWA (analog zur Setup-Logik in Panel 05 / 07), beide
+   als Geschwister in den jeweils anderen `sbkim_siblings` einsetzen
+   (Test-Brücke `_addPseudoSibling` analog Bau-Sitzung 07), beide mit
+   `heterokaryosisOptIn: true` markiert. A baut einen
+   HeterokaryosisRequest, B führt `_invokeReceiveHeterokaryosisDirect`
+   aus (Test-Brücke der Bau-Sitzung, analog `_invokeDirect` in Modul
+   05). Erwartung: `outcome:"shared"`, A hat einen Inbox-Eintrag mit
+   `anchorCount >= 1`, beide haben einen Log-Eintrag mit
+   `"hetero-pulled"` bzw. `"hetero-served"`.
+2. **Opt-Out (Empfänger-Seite)** — gleicher Setup, aber bei B den
+   Geschwister-Eintrag mit `heterokaryosisOptIn: false` (oder Feld
+   fehlend, fail-soft). Erwartung: `outcome:"opt-out"`, **kein**
+   Inbox-Eintrag, Log-Zeile `"hetero-opt-out"`.
+3. **Opt-Out (Sender-Seite — lokale Vorprüfung)** — bei A den
+   Geschwister-Eintrag mit `heterokaryosisOptIn: false`. Erwartung:
+   `requestHeterokaryosis` returns `{outcome:"opt-out-local"}` **ohne
+   Netz-Aufruf** (Test-Brücke prüft, dass `_invokeReceiveHetero...`
+   nicht gerufen wurde), Log-Zeile `"hetero-opt-out-local"`.
+4. **Unbekannter Sibling (Sender-Seite)** — `requestHeterokaryosis`
+   mit einer `peerNodeId`, die nicht in `sbkim_siblings` steht.
+   Erwartung: `UnknownSiblingError` (synchroner Throw, kein Netz).
+5. **Sender ist kein Geschwister (Empfänger-Seite)** — B's
+   `sbkim_siblings` ist leer; A baut trotzdem einen valide signierten
+   Request (Test-Brücke). Erwartung: `outcome:"rejected", reason:
+   "Sender ist kein Geschwister"`, **kein** Inbox-Eintrag bei A.
+6. **`toNodeId`-Mismatch** — Request mit einem `toNodeId`, der nicht
+   zu B's eigener `nodeId` passt (z.B. einen dritten Pseudo-Knoten
+   einsetzen). Erwartung: `outcome:"rejected", reason:"toNodeId
+   stimmt nicht zum Empfänger"`.
+7. **Versions-Mismatch** — Request mit `protocolVersion: "1.0"`
+   füttern. Erwartung: `outcome:"rejected", reason:"Inkompatible
+   Hauptversion: 1.0"`. Kein Inbox-Eintrag.
+8. **Signatur-Manipulation** — Request nach dem Signieren ein Feld
+   ändern (z.B. `nonce` neu setzen). Erwartung: `receiveHetero...`
+   antwortet `outcome:"rejected", reason:"Request-Signatur ungültig"`,
+   `sbkim_hetero_inbox` bleibt unverändert.
+9. **`HETERO_MAX_ANCHORS`-Begrenzung (Sender-Seite)** — B hat **mehr
+   als 5** Anker in seinem Outbox-Store (Test-Brücke
+   `_setHeteroOutbox` mit 7 Pseudo-Ankern). Erwartung: Response
+   liefert genau 5 Anker; A's Inbox-Eintrag hat `anchorCount === 5`.
+10. **`listHeterokaryosis`** — nach drei Pulls von zwei verschiedenen
+    Geschwistern prüfen, dass alle drei Einträge mit
+    `{peerNodeId, ts, anchorCount, receivedAt}` erscheinen und die
+    `anchors`-Inhalte (label, vector) in der Lese-Antwort *nicht*
+    auftauchen.
+11. **`forgetHeterokaryosis`** — Inbox-Eintrag manuell löschen
+    (`forgetHeterokaryosis(peerNodeId, ts)`). Erwartung:
+    `listHeterokaryosis()` liefert ihn nicht mehr; Log-Zeile vom
+    ursprünglichen Pull bleibt stehen (Audit-Spur). Idempotenz: ein
+    zweiter `forgetHeterokaryosis`-Aufruf wirft nicht.
+12. **`endpoint_unsupported`** — Test-Brücke `_setReceiverHttpStatus
+    (404)` simuliert einen Empfänger ohne Endpunkt. Erwartung:
+    `requestHeterokaryosis` returns `{outcome:"endpoint_unsupported"}`,
+    Log-Zeile `"hetero-endpoint-unsupported"`, **kein** Throw.
+13. **Selbstcheck Konsole prüfen** — Hinweisknopf ohne Aktion:
+    `MODUL 06 HETEROKARYOSE bereit, Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`
+    muss beim Laden in der Konsole stehen.
+
+Voraussetzungen für das spätere Panel: Modul 01, 02 müssen geladen
+sein (Skript-Tag-Reihenfolge). Modul 05 wird **nicht** gebraucht —
+Heterokaryose setzt Geschwister voraus, lädt aber Modul 05 nicht;
+`sbkim_siblings` wird per Test-Brücke direkt befüllt. Der Netz-Pfad
+(Service-Worker + fetch) ist im manuellen Test bewusst **nicht**
+abgedeckt — der echte Netz-Test gehört in den Einbau in Rezeptbuch +
+Mixarium (Bau-Sitzung 09 zweite Iteration mit aktivem Modul-06-
+Endpunkt im SW).
+
+---
+
+## Hinweis für Karte 07 (Apoptose-Cleanup, eigene Folge-Pflege)
+
+Karte 07 § Self-Apoptose-Cleanup-Reihenfolge listet aktuell **fünf**
+Stores als sequentielles `clear` (sbkim_siblings →
+sbkim_anastomosis_log → sbkim_legacy_inbox → sbkim_spore → sbkim_keys,
+plus `SbkimSpore.resetIdentityCache()`). Mit Modul 06 kommt ein
+sechster Store hinzu:
+
+- **`sbkim_hetero_inbox`** — empfangene Heterokaryose-Anker.
+
+Die saubere Cleanup-Reihenfolge wäre:
+
+```
+1. sbkim_siblings
+2. sbkim_anastomosis_log
+3. sbkim_legacy_inbox
+4. sbkim_hetero_inbox          ← neu, vor sbkim_spore (Identitäts-Schicht)
+5. sbkim_spore
+6. sbkim_keys
+7. SbkimSpore.resetIdentityCache()
+```
+
+**Wichtig: Diese Spec-Sitzung 06 ändert Karte 07 NICHT.** Die
+Cleanup-Erweiterung gehört in eine eigene Folge-Pflege-Sitzung Karte
+07 (oder in die Bau-Sitzung 06, sobald Modul 06 implementiert ist und
+ein Re-Sichttest 07 fällig wird). Bis dahin bleibt
+`sbkim_hetero_inbox` nach einer Self-Apoptose im IndexedDB stehen —
+das ist tolerabel (keine Identität mehr, keine Geschwister, der Store
+ist ohne diese Kontextdaten leer-funktional).
 
 ---
 
 ## Risiken & offene Punkte
 
-- Vergiftung: ein bösartiger Knoten könnte falsche Stichworte streuen
-  → Quorum-Mechanik (Modul 07 / Apoptose) als Gegengewicht.
-- Datenschutz: anonymisierte Anfrage-Statistik darf keine
-  Re-Identifikation erlauben (k-Anonymität, in Spec festlegen).
+- **Anker-Vergiftung.** Ein bösartiger Geschwister könnte Anker mit
+  irreführenden Labels und manipulierten Vektoren ausliefern (z.B.
+  Label „Hefeteig" mit einem Tarantino-Filme-Vektor). Mitigation:
+  Empfänger entscheidet selbst, was er aus den Ankern macht — Modul
+  06 transportiert nur, **Modul 04 (Match)** oder eine spätere Spec-
+  Sitzung Modul 06.2 entscheidet, ob/wie Anker in lokale Lookups
+  einfließen. Trust-Gewichtung gehört in **Modul 10 (Reputation,
+  Schutz-Backlog)**. Bis Modul 10 da ist: Anker landen ungewichtet
+  in der Inbox, der Endknoten-Code kann sie filtern oder ignorieren.
+- **Privacy-Leak via Anker-Quelle.** Wenn ein Knoten seinen
+  Outbox-Store mit sehr spezifischen Ankern füllt (z.B. „seltene
+  Drinks für die Galanacht 12.7.2026"), verrät er Klaus'
+  Inhaltsfokus an Geschwister. Mitigation: der Outbox-Store ist
+  **opt-in beim Sender** — Klaus entscheidet, was reingeht. Modul
+  06 hat keinen Auto-Befüller. Spec-Sitzung 08 (UI-Demo) muss diesen
+  Aspekt aufgreifen, wenn sie das Outbox-UI entwirft.
+- **Replay-Schutz.** Das `nonce`-Feld in `HeterokaryosisRequest` ist
+  im Schema, aber Modul 06 prüft in der ersten Spec *nicht* auf
+  Wiederholungen — wer denselben (signierten) Request zweimal
+  sendet, löst zweimal denselben Pfad aus. Idempotenz hilft: zweiter
+  Pull legt einen zweiten Inbox-Eintrag an (anderer `ts`-Anker,
+  anderer Schlüssel `peerNodeId|ts`). Das ist okay als Drift-Spur,
+  aber kein echter Replay-Schutz — gehört in **Modul 11 (Rate-Limit,
+  Schutz-Backlog)** mit nonce-Cache pro Sender (analog Modul 05/07
+  Risiken-Block).
+- **Rate-Limit / Anti-Flood — Modul 11 (Schutz-Backlog).** Ein
+  bösartiger Geschwister könnte einen Knoten mit Pulls überfluten.
+  Mitigation: maximal N Heterokaryose-Pulls pro Geschwister pro Tag
+  als Limit in **Modul 11**. Bis Modul 11 da ist: jede valide
+  Pull-Anfrage wird beantwortet (was lokal nur Outbox-Lese-Last
+  bedeutet, kein Identitätsschaden).
+- **Blocklist — Modul 12 (Schutz-Backlog).** Geblockte Geschwister
+  dürfen weder pullen noch gepullt werden. Spec hier ist
+  vorbereitet: Modul 06's Sibling-Filter (Schritt 11 §
+  Heterokaryose-Pfad) prüft `sbkim_siblings` — wenn Modul 12 später
+  geblockte Knoten aus `sbkim_siblings` entfernt oder mit einer
+  Markierung versieht, hat Modul 06 automatisch den Schutz. **Keine
+  Implementierung** in dieser Spec.
+- **Domain-Drift-Erkennung als Feature, nicht als Bug.** Wenn ein
+  Geschwister seine Domäne wesentlich verändert (z.B. Mixarium
+  erweitert sich von Cocktails auf Mocktails und Mocktails-Trends),
+  liefert ein zweiter Heterokaryose-Pull andere Anker — der Empfänger
+  hat eine Drift-Spur in der Inbox (`peerNodeId|ts`-Schlüssel
+  akkumuliert). Das ist gewollt; eine spätere Spec-Sitzung könnte
+  hier eine Differenz-Visualisierung in Modul 08 (UI-Demo) bauen.
+- **`heterokaryosisOptIn` als sibling-Schema-Erweiterung.** Modul 05
+  bleibt unangetastet (Spec-Disziplin); Modul 06 liest das Feld
+  fail-soft (fehlend → false). Das ist **additive Schema-
+  Erweiterung** im Storage-Vertrag, kein Hauptversions-Sprung und
+  keine §0-Konstante. Wenn eine spätere Spec-Sitzung 12 (Blocklist)
+  ein zweites optionales Sibling-Feld einführt (z.B. `blocked:
+  boolean`), läuft das genauso.
+- **Anker-Quelle in der Erst-Spec minimal.** Default ist *ein* Anker
+  aus der Spore (`domainVector` mit Label `"(domain)"`). Der
+  Outbox-Store-Pfad ist spec-mäßig vorbereitet, aber implementations-
+  technisch erst Spec-Sitzung 08 oder eine eigene Pflege-Sitzung
+  Modul 02. Konsequenz für Klaus' aktuelles Netz: Heterokaryose
+  liefert in der Erst-Bau-Iteration genau einen Anker pro Pull —
+  primärer Nutzen ist Drift-Erkennung beim Domain-Vektor.
+- **Self-Apoptose-Cleanup-Reihenfolge** muss in Karte 07 nachgezogen
+  werden (siehe § „Hinweis für Karte 07" oben). Eigene Folge-Pflege.
+- **Wartet auf Live-Andock.** Modul 06 ist primär dann nützlich,
+  wenn Modul 09 (Einbau-PWA) erfolgreich war und Rezeptbuch +
+  Mixarium als Geschwister leben. In der Bau-Sitzung 06 muss
+  Heterokaryose lokal getestet werden (Panel 06 mit Pseudo-
+  Geschwistern, analog Bau-Sitzung 05/07); der echte Live-Test
+  gehört in Bau-Sitzung 09 zweite Iteration oder eine eigene
+  Einbau-Sitzung-06.
 
 ---
 
@@ -123,8 +799,8 @@ HETEROKARYOSIS_ENABLED = false
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Karte angelegt | 2026-05-10 | Skelett | leere Schablone |
-| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid-Flow, Querverweise |
-| Spec gefüllt | — | — | — |
+| Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid-Flow (alte Skizze ohne Pull-Pattern), Querverweise |
+| Spec gefüllt | 2026-05-15 | Spec 06 | Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`); Pull-Pattern verbindlich (kein Push); beidseitiger Opt-In via additivem `heterokaryosisOptIn`-Feld auf `sbkim_siblings`-Einträgen (fail-soft, default `false`); HeterokaryosisRequest/Response-Schema mit kanonischer Ed25519-Signatur (Pfad gespiegelt aus Modul 02/05/07); Anker-Form `{label, vector[384]}` ohne Eigen-Signatur (Response-Signatur deckt das ganze JSON); Anker-Quelle Spec-Wille: Default-Pfad Spore-Single-Anker, erweiterte Quelle `sbkim_hetero_outbox` für Spec-Sitzung 08 oder Folge-Pflege; neuer Store `sbkim_hetero_inbox` (Schlüssel `peerNodeId|ts`, Drift-Spur über Zeit); `sbkim_anastomosis_log` outcome-Vokabular additiv erweitert (`hetero-pulled`/`-served`/`-opt-out`/`-opt-out-local`/`-rejected`/`-timeout`/`-endpoint-unsupported`) — kein neuer Log-Store; Heterokaryose-Pfad in 14 Schritten (Sender 1–6, Empfänger 7–11, Sender 12–14); Service-Worker-Vertrag (POST `/sbkim/heterokaryosis`, JSON, ≤ 64 KiB, 405/415/413/503, 404 → `endpoint_unsupported`); Variante A (Page-Hosted) verbindlich; **§0 um `HETERO_MAX_ANCHORS = 5` ergänzt** (additiv, kein Hauptversions-Sprung); Fehlertabelle mit zwölf Lagen (Outcome vs. Throw klar getrennt); Manueller Test mit dreizehn Punkten; Risiken-Block mit acht Punkten (Anker-Vergiftung → Modul 10, Privacy-Leak via Outbox, Replay → Modul 11, Rate-Limit → Modul 11, Blocklist → Modul 12, Drift als Feature, Sibling-Schema-Erweiterung additiv, Anker-Quelle minimal in Erst-Spec); Hinweis an Karte 07 für Cleanup-Erweiterung (eigene Folge-Pflege, nicht in dieser Spec-Sitzung) |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
 | In Endknoten eingebaut | — | — | — |
@@ -133,9 +809,10 @@ HETEROKARYOSIS_ENABLED = false
 
 **Querverweise**
 
-- **Abhängigkeiten:** Modul 05 (Anastomose) · Modul 02 (Spore)
-- **Wird genutzt von:** Modul 07 (Apoptose) für Vermächtnis-Verbreitung · Modul 10 (Reputation) für Score-Gossip · Modul 12 (Blocklist) optional für Sync zwischen Geschwister-Endknoten
+- **Abhängigkeiten:** Modul 01 (Storage — `sbkim_hetero_inbox`, `sbkim_siblings` lesen, `sbkim_anastomosis_log` schreiben) · Modul 02 (Spore — kanonischer Signatur-Pfad, Identitäts-Singleton, `verifyForeignSpore`) · Modul 05 (Anastomose — `sbkim_siblings` als Pflicht-Quelle für „verbundene Geschwister"; Modul 06 ruft `SbkimAnastomose` **nicht** auf, nutzt nur den Storage-Vertrag)
+- **Wird genutzt von:** Modul 00 (Doku-Fenster — eigene Folge-Pflege: Inbox-Anzeige + Opt-In-Schalter pro Geschwister) · Modul 08 (UI-Demo — Panel 06 + Outbox-Befüller, Spec-Sitzung 08) · Modul 09 (Einbau-PWA — zweite Iteration mit aktivem Hetero-Endpunkt im SW) · Modul 10 (Reputation, Schutz-Backlog — Trust-Gewicht für Anker-Quellen) · Modul 11 (Rate-Limit, Schutz-Backlog — Pull-Quote pro Geschwister) · Modul 12 (Blocklist, Schutz-Backlog — Filter beidseits) · Modul 14 (Diffusion-Backlog — Modul 06 ist Lead-Pool-Konsument „ein Geschwister-Hop weiter")
 - **Site-Karte:** [Karte 4 · Module-Bento](../../index.html#screen-overview), Eintrag 06
-- **Glossar:** [Heterokaryose](../GLOSSAR.md), [Vermächtnis](../GLOSSAR.md), [Quorum](../GLOSSAR.md)
-- **Integration:** `sbkim_integration.md` §9 (keine personenbezogenen Daten)
-- **Paper:** Kapitel 15 (Datenaustausch)
+- **Glossar:** [Heterokaryose](../GLOSSAR.md), [Geschwister](../GLOSSAR.md), [Schweigen als Routing](../GLOSSAR.md), [Vermächtnis](../GLOSSAR.md) (konzeptuelle Nachbarschaft zu Modul 07)
+- **Integration:** `sbkim_integration.md` §9 (keine personenbezogenen Daten; Modul 06 transportiert nur abstrakte Domain-Anker)
+- **Paper:** Kapitel 15 (Datenaustausch im Mycel) · Kapitel 14 (Empfangsmodus mit Antwortrecht — Pull-Pattern bricht das nicht)
+- **Interfaces:** [`INTERFACES.md` §0 (`HETERO_MAX_ANCHORS`)](../INTERFACES.md) · [`§1 → Modul 06_heterokaryose`](../INTERFACES.md) · [`§2 Heterokaryose (Pull)`](../INTERFACES.md) · [`§3 Endpunkt-Pfade (heterokaryosis: /sbkim/heterokaryosis)`](../INTERFACES.md) · [`§4 Versionierungs-Regeln`](../INTERFACES.md)

@@ -16,9 +16,9 @@
 ```mermaid
 pie showData
   title Modulstand 2026-05-15 (14 Module)
-  "🟫 Schablone" : 5
+  "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 1
-  "🟨 Spec fertig" : 1
+  "🟨 Spec fertig" : 2
   "🟦 Code-Stub" : 7
   "🟩 Fertig" : 0
 ```
@@ -44,9 +44,10 @@ Code-Stub frisch aus den Bau-Sitzungen 2026-05-14, **Sichttest ausstehend bzw. t
 - 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 7 von 8 Tests grün im ersten Lauf (Setup + Tests 1/2/3/4/5/7 + Selbstcheck); **Test 6 (Self-Apoptose) deckte echten Modul-Bug auf**: nach Cleanup `getNodeId_wirft_NoIdentityError:false` trotz `stores_alle_leer:true` — Modul 02's In-Memory-`identityCache` wurde nicht durch externes `storage.clear` invalidiert (Modul 07 wusste nichts vom Modul-02-Cache). Folgeschaden: Tests 1/2/3/8 nach Test 6 mit „Keine Identität in sbkim_keys[main]". **Pflege-Sitzung 2026-05-15** ergänzt Modul 02 um öffentliche `resetIdentityCache() → void` (sync, idempotent, leert nur Closure-Cache, kein Storage-Eingriff) und Modul 07's Cleanup ruft sie als Schritt 6 nach den fünf `storage.clear`-Aufrufen — heilige Tafeln (INTERFACES.md §1 Modul 02 + §1 Modul 07 + §6 + Karten 02 + 07) ziehen mit. Re-Sichttest 2026-05-15 bestätigte den Cache-Fix: `getNodeId_wirft_NoIdentityError:true`. Modul 07 Sichttest 8/8 grün.
 - 🟦 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 5 von 6 Tests grün im ersten Lauf (Setup, Test 2 5-Klick-Simulation, Test 3 4-Klick + Timeout, Test 5 TTL-Sweep, Selbstcheck-Hinweis); **Test 4 Test-Bug** mit Mini-Werten 81/100 (freeBytes=19 Bytes ist trivial < 50 MiB → `warningLevel:"both"` statt erwartetem `"ratio"`) → **Pflege-Sitzung 2026-05-15** repariert mit GiB-Skalierung (`usage:8.1 GiB, quota:10 GiB` → freeBytes ≈ 1.9 GiB → `warningLevel:"ratio"` sauber); Modul-Vertrag und INTERFACES.md unangetastet
 
-Spec frisch aus den Spec-Sitzungen 2026-05-14, **Bau ausstehend**:
+Spec frisch, **Bau ausstehend**:
 
 - 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul), **Pflege-Sitzung 2026-05-15 erweitert auf neun Schritte** (Schritt 9 neu: `SbkimApoptose.init()` + `SbkimDoku.init({searchIconSelector:...})` + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge in Schritt 2 zieht 07 + 00 nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block jetzt vier Pflicht-Punkte (sieben Selbstcheck-Zeilen + sechs IndexedDB-Stores + zwei live-Endpunkte + 5-Klick-Geste am Such-Symbol); Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, sieben JS-Module inline oder unter `sbkim/`); Spore-Endpunkt `/sbkim/spore.json` verbindlich; SW-Scope-Falle dokumentiert; `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert. **Bau-Sitzung 2026-05-15 vor Schritt 1 sauber abgebrochen** (Befund-Sitzung): beide Endknoten haben aktiven `app-sw.js` im Repo-Root (Mein-Mixarium Z. 12543, Mein-Rezeptbuch Z. 10453), Karte 09 antizipiert diesen Fall nicht; zusätzlich Karte 09 § Sichtkontrolle implizit auf Desktop-DevTools gemünzt — Klaus' Tablet (Galaxy Tab S6 + DeX) braucht Eruda-Pfad. **Vor erneuter Bau-Sitzung 09** zwei Karten-Lücken in einer Pflege-Sitzung Karte 09 zu schließen (Empfehlung Option α: Patch in bestehenden `app-sw.js`; plus Eruda-Pfad für Tablet-Sichtkontrolle). Details in [Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
+- 🟨 **[06 Heterokaryose](components/06_heterokaryose.md)** — Karte vollständig 2026-05-15 (Spec-Sitzung 06; siebte gefüllte unter den zehn Hauptmodulen). Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern verbindlich (kein Push), beidseitiger Opt-In via additivem `heterokaryosisOptIn`-Feld auf `sbkim_siblings` (fail-soft default `false`, Karte 05 unangetastet), max. 5 signierte Anker pro Pull (`HETERO_MAX_ANCHORS` neu in §0), kanonisch wie 05/07, neuer Store `sbkim_hetero_inbox`, `sbkim_anastomosis_log` outcome-Vokabular additiv erweitert (`hetero-pulled/-served/-opt-out/-opt-out-local/-rejected/-timeout/-endpoint-unsupported`). Bau-Sitzung 06 implementiert `src/modules/06_heterokaryose.js`, erweitert `src/sbkim-sw.js` um `/sbkim/heterokaryosis`-Pfad, baut Panel 06 in `tests/manual_check.html` mit ~13 Knöpfen, ergänzt Karte 01 Store-Vertrag um `sbkim_hetero_inbox`. **Headless-möglich** (lokale Pseudo-Geschwister analog Panel 05/07).
 
 In Arbeit (fortsetzen, nicht neu starten):
 
@@ -81,7 +82,7 @@ sitzt in der Andock-Anleitung, nicht in den Modulen.
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
 | 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80 |
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
-| 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
+| 06 heterokaryose | Spec fertig (2026-05-15) | — | — | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern verbindlich (kein Push), beidseitiger Opt-In via additivem `heterokaryosisOptIn`-Feld auf `sbkim_siblings` (fail-soft, default `false`), max. 5 signierte Anker pro Pull (`HETERO_MAX_ANCHORS` neu in §0), kanonisch wie 05/07, neuer Store `sbkim_hetero_inbox` (Schlüssel `peerNodeId|ts`, Drift-Spur); SW Variante A (Page-Hosted) — gemeinsamer fetch-Listener mit `/sbkim/anastomosis` und `/sbkim/legacy`; HTTP 404 → `outcome:"endpoint_unsupported"` ohne Throw |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
 | 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15, Pflege App-SW-Koexistenz 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt — plus Pflege App-SW-Koexistenz (2026-05-15): Schritt 3 a/b-Verzweigung (Pre-Flight-Check → 3a `register('sbkim-sw.js')` für PWA ohne eigenen SW, 3b `importScripts('./sbkim-sw.js')` im bestehenden App-SW für PWA mit eigenem SW), achtes Risiko „App-SW-Überschreibung", `sbkim-sw.js` `SBKIM_SW_STANDALONE`-Flag rückwärtskompatibel (Default `true`, `false` für Variante 3b) |
@@ -287,6 +288,248 @@ Kategorien jetzt mit.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Spec-Sitzung · Modul 06 Heterokaryose gefüllt
+
+**Getan:**
+
+- **`docs/components/06_heterokaryose.md` vollständig gefüllt** (Stil
+  analog Spec-Sitzungen 05 + 07): Status-Block 🟨 Spec fertig, Im-
+  Mycel-Bild, Visualisierung (Mermaid-Sequenz-Diagramm Pull-Pattern
+  mit alt/else für drei Outcomes — shared/opt-out/rejected), Zweck
+  („Domain-Anker statt einzelner Domain-Vektor" als Spec-Wille),
+  Verantwortlichkeiten (Macht / Macht nicht), Schnittstelle (fünf
+  Funktionen), Selbstcheck, Konfigurationswerte, Anker-Quelle-Block,
+  Datenformate (HeterokaryosisRequest 7 Pflichtfelder inkl. `toNodeId`
+  als Pflicht; HeterokaryosisResponse 8+2 Felder mit `anchors` als
+  optionalem Pflicht-bei-shared-Feld; `sbkim_hetero_inbox`-Wert mit
+  Komposit-Schlüssel `peerNodeId|ts` als Drift-Spur; additives
+  `heterokaryosisOptIn`-Feld auf `sbkim_siblings`; additive
+  outcome-Werte in `sbkim_anastomosis_log`), Heterokaryose-Pfad in 14
+  Schritten (Sender 1–6, Empfänger 7–11, Sender 12–14), Service-
+  Worker-Hinweis (Variante A Page-Hosted verbindlich, gleicher
+  fetch-Listener wie 05/07, MessageChannel-Brücke), Fehlertabelle mit
+  12 Lagen (Outcome vs. Throw klar getrennt), Hinweis an Karte 07
+  für Self-Apoptose-Cleanup (eigene Folge-Pflege), Manueller Test mit
+  13 Punkten (lokaler Pull-Round-Trip · opt-out Empfänger · opt-out
+  lokal · unbekannter Sibling · Sender-kein-Geschwister · `toNodeId`-
+  Mismatch · Versions-Mismatch · Signatur-Manipulation ·
+  `HETERO_MAX_ANCHORS`-Begrenzung · `listHeterokaryosis` ·
+  `forgetHeterokaryosis` · `endpoint_unsupported` · Selbstcheck),
+  Risiken-Block mit 8 Punkten (Anker-Vergiftung → 10, Privacy-Leak
+  via Outbox, Replay → 11, Rate-Limit → 11, Blocklist → 12, Drift
+  als Feature, Sibling-Schema-Erweiterung additiv, Anker-Quelle
+  minimal in Erst-Spec), Bauzustand-Tabelle (Spec gefüllt 2026-05-15
+  als erste neue Zeile), Querverweise.
+- **`docs/INTERFACES.md` §1 Modul 06 gespiegelt** auf Status
+  `entwurf`: Bietet-Block (Fünf-Funktionen-API), Nutzt-Block
+  (`SbkimStorage` für drei Stores, `SbkimSpore` für Identität und
+  Verifikation, WebCrypto via Modul 02, fetch + AbortController),
+  Storage-Block (`sbkim_hetero_inbox` als angekündigter Store für
+  Karte 01-Pflege in Bau-Sitzung 06; `sbkim_siblings` als Leser
+  mit additiver `heterokaryosisOptIn`-Schema-Erweiterung;
+  `sbkim_anastomosis_log` mit additivem outcome-Vokabular), Events
+  (keine — MessageChannel `SBKIM_HETEROKARYOSIS_REQUEST`),
+  Selbstcheck-Format-Zeile, Versionierungs- und Heterokaryose-
+  Vertrag mit sechs Punkten (Hauptversion-Abbruch, HTTP-404 ohne
+  Throw, Sibling-Filter, Opt-In beidseits, Anker-Anzahl, keine
+  Weiterleitung), Fehlerverhalten-Liste mit 14 Lagen, Datenformate-
+  Verweis auf §2, Service-Worker-Vertrag (Variante A verbindlich),
+  Garantien für 07/08/10/11/12/14 (sechs Punkte). **§0 um
+  `HETERO_MAX_ANCHORS = 5` ergänzt** (additiv, kein
+  Hauptversions-Sprung; konsistent mit `SIBLING_MAX_AGE_MS` aus
+  Spec-Sitzung 07). **§2 „Heterokaryose (Pull)" neuer Sub-Abschnitt**
+  mit HeterokaryosisRequest (7 Pflichtfelder), HeterokaryosisResponse
+  (8 Pflichtfelder + 2 optionale `anchors`/`reason`), Anker-Form
+  (`{label, vector[384]}` ohne Eigen-Signatur), Versionierungs-Regel
+  (additiv, neue `outcome`-Werte additiv), Verifikations-Pfad in 8
+  Schritten (Form → Spore → Hauptversion → Signatur → `toNodeId` →
+  Sibling-Filter → Opt-In-Filter → Antwort). **§3 unangetastet**
+  (`heterokaryosis: /sbkim/heterokaryosis` ist seit Hauptsitzung
+  Site-Echo eingetragen — Vertrag wurde jetzt gefüllt). **§6
+  Änderungsprotokoll-Zeile am Ende** ergänzt.
+- **`status.json` Modul 06** von `score:"schablone"` /
+  `siegel:"noch nicht gebaut"` auf `score:"spec"` /
+  `siegel:"Spec fertig"`. `kurz` aktualisiert. `config.
+  HETERO_MAX_ANCHORS = 5` neu (am Ende, konsistent mit
+  Reihenfolge in §0).
+- **`scripts/update_puls_pie.py` aufgerufen** (Pflicht, weil
+  `status.json.modules` sich geändert hat). Pie regeneriert:
+  **Schablone 5 → 4**, Werkstatt 1 → 1, **Spec fertig 1 → 2**,
+  Code-Stub 7 → 7, Fertig 0 → 0; 14 Module gesamt unverändert.
+- **PULS-Schnellüberblicks-Zeile Modul 06** vom „leere Schablone"-
+  Eintrag auf den vollen Spec-Eintrag umgestellt (Pull-Pattern,
+  Opt-In beidseits, fünf Funktionen, neuer Store, kanonisch wie
+  05/07).
+- **PULS § Als nächstes ✨ „Spec frisch, Bau ausstehend"-Bucket**
+  um Modul 06 erweitert (parallel zu Modul 09). Headless-Markierung
+  klargestellt — Bau-Sitzung 06 läuft mit lokalen Pseudo-
+  Geschwistern in Panel 06 (analog Bau-Sitzung 05/07).
+- **Übergabeprotokoll**
+  `docs/sessions/archiv/2026-05-15_spec-06-heterokaryose.md`
+  angelegt (Format wie `2026-05-14_spec-05-anastomose.md`).
+
+**Was nicht geändert wurde (bewusst):**
+
+- **Kein JS-Code in `src/`.** `src/modules/06_heterokaryose.js`
+  existiert nicht und bleibt nicht-existent bis zur Bau-Sitzung 06.
+- **Karte 05 (Anastomose) unangetastet.** `heterokaryosisOptIn` als
+  additives Feld auf `sbkim_siblings`-Einträgen ist eine
+  Storage-Schema-Erweiterung — Modul 05 muss das Feld nicht setzen,
+  Modul 06 liest fail-soft. Karte 05 § Schnittstelle bleibt
+  fünf-funktional, `HandshakeRequest`/`HandshakeResponse` unverändert.
+- **Karte 07 (Apoptose) unangetastet.** Self-Apoptose-Cleanup-
+  Reihenfolge muss um `sbkim_hetero_inbox` erweitert werden, aber
+  das ist eine eigene Folge-Pflege-Sitzung Karte 07 (oder Teil der
+  Bau-Sitzung 06, sobald Re-Sichttest 07 fällig wird). Karte 06
+  dokumentiert den Hinweis als § „Hinweis für Karte 07".
+- **Karten 10/11/12 unangetastet.** Schutz-Backlog-Stubs werden nur
+  als Hook-Punkte in Karte 06 § Risiken erwähnt.
+- **Karte 14 (Diffusion) unangetastet.** Modul 06 ist als Lead-Pool-
+  Konsument in Karte 14 § Verbindung zu anderen Karten schon
+  dokumentiert; Modul 06 erwähnt umgekehrt Modul 14 nur als
+  Querverweis.
+- **Karte 01 (Storage) unangetastet.** Der neue Store
+  `sbkim_hetero_inbox` ist in Karte 06 + §1 Modul 06 als
+  „angekündigt" markiert; die Aufnahme in Karte 01's Store-Vertrag
+  und in §1 Modul 01 (mit `Schreiber 06`-Vermerk) macht die
+  Bau-Sitzung 06 als additive Erweiterung (DB-Version 1 → 2 in
+  Modul 01, falls die Bau-Sitzung 06 das so umsetzt).
+- **`tests/manual_check.html` unangetastet.** Panel 06 entsteht
+  in der Bau-Sitzung 06.
+- **Sage-Page (`index.html`) unangetastet.** Karte 4 (Module-Bento),
+  Karte 14 (Bau-Puls) und Pie-Center-Zahl sind datengetrieben —
+  die `status.json`-Hochstufung Modul 06 → `spec` reflektiert sich
+  automatisch beim nächsten Reload (gelbe Zelle, Spec-fertig-
+  Legende +1).
+- **Kein Hauptversions-Sprung.** `HETERO_MAX_ANCHORS` ist additiv
+  in §0; `heterokaryosisOptIn` ist additiv im Storage-Schema;
+  `HeterokaryosisRequest`/`Response` sind neu (kein
+  Optional→Pflicht-Wandel); neue `outcome`-Werte in
+  `sbkim_anastomosis_log` sind additiv. `PROTOCOL_VERSION` bleibt
+  `"0.1"`.
+- **Kein `HETERO_PULL_TIMEOUT_MS` als eigene Konstante.** Modul 06
+  nutzt `QUERY_TIMEOUT_MS` aus §0 (= 4000) — konsistent mit Modul
+  05 und 07. Eine eigene Konstante wäre Duplikation ohne
+  Mehrwert.
+- **Kein `HETERO_MAX_PAYLOAD_BYTES` als eigene Konstante.** Die
+  64 KiB-Body-Grenze aus 05/07 ist Service-Worker-Konvention, in
+  Karte 06 § Service-Worker-Hinweis durch Querverweis abgedeckt.
+- **Kein separater `sbkim_hetero_log`-Store.** Hetero-Outcomes
+  landen additiv in `sbkim_anastomosis_log` — ein zweiter Log-Store
+  wäre Verdopplung ohne Mehrwert; Modul 07's TTL-Sweep bleibt
+  unangetastet, weil er nur `"established"`/`"re-handshake"`-
+  outcomes liest.
+
+**Frischer-Kopf-Befund: die acht Pflicht-Fragen alle entscheidbar**
+
+Das Briefing nannte acht Pflicht-Fragen, von denen jede potenziell
+eine Blockade-Klausel hätte auslösen können („`HeterokaryosisPayload`-
+Inhalt ist ohne Klaus' Endknoten-Praxis nicht entscheidbar"). Beim
+Durchgehen kein solcher Punkt — alle acht sind im Spec-Rahmen
+entscheidbar:
+
+1. **Was tauschen Geschwister?** **Domain-Anker**
+   (`{label, vector[384]}`-Paare, max. 5). Begründung in vier
+   Punkten: (a) semantisch reicher als der einzelne `domainVector`
+   aus der Spore, (b) ermöglicht Sub-Domain-Lookups beim Empfänger,
+   (c) erlaubt Drift-Erkennung über Zeit, (d) trägt keine
+   personenbezogenen Daten und keine Inhaltsdaten (Rezepte/
+   Cocktails). Alternativen (Anfrage-Statistiken / Spore-Aliase /
+   k-anonymisierte Aggregate) sind entweder Privacy-belastet oder
+   gehören in Modul 14 (Diffusion-Backlog).
+2. **Push oder Pull?** **Pull**, drehbuchkonform.
+3. **Endpunkt-Vertrag?** POST `/sbkim/heterokaryosis`, kanonisch
+   signiert, JSON, ≤ 64 KiB. 405/415/413/503-Konvention analog
+   05/07. HTTP 404 → `outcome:"endpoint_unsupported"` (Peer mit
+   älterem Protokoll-Stand).
+4. **Opt-In-Mechanik?** Additives Feld
+   `sbkim_siblings[peerNodeId].heterokaryosisOptIn: boolean`,
+   default `false`, fail-soft. Modul 05 setzt nicht, Klaus setzt
+   im Endknoten-UI. Beidseits geprüft: Sender lokal,
+   Empfänger serverseitig.
+5. **Storage-Stores?** Neuer Store `sbkim_hetero_inbox`
+   (Komposit-Schlüssel `peerNodeId|ts`, Drift-Spur). Logs additiv
+   in `sbkim_anastomosis_log` (kein neuer Log-Store). Anker-
+   Quelle `sbkim_hetero_outbox` als Spec-Wille vorbereitet,
+   Implementierung Spec-Sitzung 08 oder Pflege Modul 02 — bis
+   dahin Fallback Spore-Single-Anker.
+6. **API-Form?** Fünf Funktionen (`init/requestHeterokaryosis/
+   receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`),
+   `receiveHeterokaryosis` mit sync-Outcome wie 05/07 (kein Throw
+   nach außen). Self-Apoptose-Cleanup-Hinweis in Karte 06, keine
+   Karte-07-Änderung in dieser Sitzung (Spec-Disziplin).
+7. **Versions-Vertrag?** Additiv, `protocolVersion: "0.1"` bleibt.
+   404 → `outcome:"endpoint_unsupported"`. Neue outcome-Werte
+   additiv.
+8. **Sicherheits-/Drehbuch-Anker?** Empfangsmodus mit Antwortrecht
+   strikt eingehalten. Modul 11 (Rate-Limit) als Hook-Punkt
+   genannt, Modul 12 (Blocklist) als Filter-Hook — keine
+   Implementierung, nur Verweise.
+
+Die einzige nicht-triviale Entscheidung war Punkt 1 (was tauschen?).
+Domain-Anker setzen sich gegen die Alternativen durch, weil sie das
+einzige Datum sind, das **schon im Andock-Workflow erzeugt wird**
+(Embedding-Vektor pro Stichwort) und ohne neue Embedding-Aufrufe
+zur Verfügung steht. Anfrage-Statistiken bräuchten einen neuen Logger
+im Endknoten; Spore-Aliase gehören in Modul 14; k-anonymisierte
+Aggregate sind ein eigenes Feld.
+
+**Was offen blieb:**
+
+- **Bau-Sitzung Modul 06** steht aus. Spec liegt vollständig vor
+  (Karte 06 + INTERFACES.md §1 Modul 06 + §2 Heterokaryose
+  + §0 `HETERO_MAX_ANCHORS`). Die Bau-Sitzung muss zusätzlich:
+  - Karte 01 § Stores um `sbkim_hetero_inbox` ergänzen (Schreiber
+    06, Komposit-Schlüssel `peerNodeId|ts`), DB-Version 1 → 2
+    falls ein additiver Migrations-Schritt nötig ist;
+  - §1 Modul 01 § Storage-Block dito;
+  - `src/sbkim-sw.js` um `/sbkim/heterokaryosis`-fetch-Listener
+    erweitern (analog dem `/sbkim/legacy`-Pfad aus Bau-Sitzung 07);
+  - Karte 07 § Self-Apoptose-Cleanup-Reihenfolge um
+    `sbkim_hetero_inbox` zwischen Schritt 3 und 4 erweitern
+    (eigene Mini-Pflege oder Teil der Bau-Sitzung 06);
+  - Panel 06 in `tests/manual_check.html` mit ~13 Knöpfen
+    (Setup + 12 Test-Punkte + Selbstcheck-Hinweis).
+- **Anker-Quelle `sbkim_hetero_outbox`** spec-mäßig vorbereitet,
+  aber implementations-technisch erst Spec-Sitzung 08 oder eine
+  Pflege Modul 02. Bis dahin liefert jeder Knoten genau einen
+  Anker pro Pull (Spore-Single-Anker mit Label `"(domain)"`) —
+  primärer Nutzen ist Drift-Erkennung beim Domain-Vektor. Klaus
+  kann das in der Bau-Sitzung 06 sichtprüfen.
+- **Karte 07 Self-Apoptose-Cleanup-Erweiterung** als
+  Mini-Folge-Pflege notiert. Wird beim ersten echten Re-Sichttest
+  von Panel 07 nach Modul-06-Einbau spürbar (sonst tolerabel —
+  `sbkim_hetero_inbox` ist ohne Identität leer-funktional).
+- **`heterokaryosisOptIn`-Setter im Endknoten-UI** als Folge-
+  Aufgabe für Modul 00 (Doku-Fenster) oder Modul 08 (UI-Demo).
+  Modul 06 liest nur. Klaus markiert pro Geschwister im UI, mit
+  wem er erweiterten Datenaustausch erlaubt.
+- **Karte 14 Status-Zeile-Mini-Pflege** und **PULS-400-Zeilen-
+  Konvention** weiter offen (überfällig). Diese Spec-Sitzung
+  löst sie nicht.
+- **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-
+  Andock-Versuch** bleibt der empfohlene Haupt-Pfad (Karte 09 ist
+  vollständig: neun Schritte + Pre-Flight + 3a/3b, `sbkim-sw.js`
+  hat den `SBKIM_SW_STANDALONE`-Schalter; Modul 06 ist
+  unabhängig).
+
+**Nächster sinnvoller Schritt:**
+
+1. **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-
+   Andock-Versuch** (Empfehlung: bei Tablet-Zeit). **Nicht
+   headless.** Hauptpfad bleibt unverändert.
+2. Headless-Alternativen (in fallender Priorität):
+   - **Bau-Sitzung Modul 06 Heterokaryose** — Spec liegt
+     vollständig vor; lokaler Zwei-Knoten-Test im Panel 06
+     analog 05/07; erweitert Karte 01 (Store) + Karte 07
+     (Cleanup) + `src/sbkim-sw.js` (fetch-Listener) additiv.
+   - **Mini-Folge-Pflege „Karte 14 Status-Zeile nachziehen"**
+     — zwei Zeilen, *headless möglich*.
+   - **Pflege „PULS-Archivierung"** — überfällig, *headless
+     möglich*.
+   - **Spec-Sitzung Modul 08 UI-Demo** — Werkstatt-Stub füllen,
+     *headless möglich*; ergänzt den Outbox-Pfad für Modul 06.
 
 ### 2026-05-15 · Pflege-Sitzung · Sage-Page Modul 14 Sichtbarmachung
 

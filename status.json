@@ -30,7 +30,7 @@
     { "id": "03", "name": "Embedding",      "score": "stub",      "siegel": "Code-Stub",         "abhaengig": [],         "kurz": "Text → 384-dim Vektor (Xenova multilingual-e5-small)" },
     { "id": "04", "name": "Match",          "score": "stub",      "siegel": "Code-Stub",         "abhaengig": ["03"],     "kurz": "Cosine-Sim als Skalarprodukt (modus-frei)" },
     { "id": "05", "name": "Anastomose",     "score": "stub",      "siegel": "Code-Stub",         "abhaengig": ["02","04"],"kurz": "Handshake zwischen Knoten — kanonisch signiert, bidirektional, Schwelle aus Modul 04" },
-    { "id": "06", "name": "Heterokaryose",  "score": "schablone", "siegel": "noch nicht gebaut", "abhaengig": ["05"],     "kurz": "Datenaustausch unter Geschwistern (Opt-In)" },
+    { "id": "06", "name": "Heterokaryose",  "score": "spec",      "siegel": "Spec fertig",       "abhaengig": ["05"],     "kurz": "Datenaustausch unter Geschwistern (Pull, Opt-In beidseits) — Fünf-Funktionen-API, signierte Anker (max 5), kanonisch wie 05/07, neuer Store sbkim_hetero_inbox" },
     { "id": "07", "name": "Apoptose",       "score": "stub",      "siegel": "Code-Stub",         "abhaengig": ["02","01"],"kurz": "Selbstlöschung mit signiertem Vermächtnis — Code-Stub, sechs Funktionen (zweistufige Self-Apoptose mit 60s-Token, Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker), Service-Worker erweitert um /sbkim/legacy" },
     { "id": "08", "name": "UI-Demo",        "score": "werkstatt", "siegel": "in Werkstatt",      "abhaengig": [],         "kurz": "tests/manual_check.html — Werkstatt-Sichtprüfung" },
     { "id": "09", "name": "Einbau-PWA",     "score": "spec",      "siegel": "Spec fertig",       "abhaengig": [],         "kurz": "Andock-Anleitung für Endknoten — Module kopieren, Spore mit domainVector erzeugen, Service-Worker registrieren" }
@@ -76,7 +76,8 @@
     "DOKU_REVEAL_WINDOW_MS":  3000,
     "DOKU_QUOTA_WARN_RATIO":  0.80,
     "DOKU_QUOTA_WARN_BYTES":  52428800,
-    "SIBLING_MAX_AGE_MS":     2592000000
+    "SIBLING_MAX_AGE_MS":     2592000000,
+    "HETERO_MAX_ANCHORS":     5
   },
 
   "endpoints": {

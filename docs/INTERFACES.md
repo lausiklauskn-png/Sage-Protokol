@@ -26,6 +26,7 @@ DOKU_REVEAL_WINDOW_MS  = 3000           // 3 Sekunden Zeitfenster für alle 5 Kl
 DOKU_QUOTA_WARN_RATIO  = 0.80           // Quota-Frühwarnung relativ; Modul 00, Spec-Sitzung 00 (auch Modul 01/02 Querschnitt „Spore-Persistenz")
 DOKU_QUOTA_WARN_BYTES  = 52428800       // 50 MiB freier Speicher als zweite Quota-Frühwarnung absolut; Modul 00, Spec-Sitzung 00
 SIBLING_MAX_AGE_MS     = 2592000000     // 30 Tage; TTL für Modul 07 forgetExpiredSiblings
+HETERO_MAX_ANCHORS     = 5              // max. Anker pro Heterokaryose-Response; Modul 06, Spec-Sitzung 06
 ```
 
 ---
@@ -567,13 +568,197 @@ Geprüft: 2026-05-14 (Spec-Sitzung 05)
 ---
 
 ### Modul: 06_heterokaryose
-Status: schablone
+Status: entwurf
 Datei:  src/modules/06_heterokaryose.js
 
-Bietet:
-  *(noch zu spezifizieren — Datenaustausch zwischen verbundenen Knoten)*
+Bietet (öffentlich):
+  init()                                                       → Promise<void>
+  requestHeterokaryosis(peerNodeId: string)                    → Promise<HeterokaryoseResult>
+  receiveHeterokaryosis(incomingRequest: HeterokaryosisRequest)
+                                                               → Promise<HeterokaryosisResponse>
+  listHeterokaryosis()                                         → Promise<Array<{ peerNodeId, ts, anchorCount, receivedAt }>>
+  forgetHeterokaryosis(peerNodeId: string, ts: string)         → Promise<void>
 
-Geprüft: ungeprüft
+  Heterokaryose ist die *dritte Komposition* (nach Modul 05 und 07) aus
+  01/02. Modul 06 rechnet nicht selbst — es liest `sbkim_siblings` als
+  Quelle für „verbundene Geschwister" und für den additiven
+  Opt-In-Filter, signiert kanonisch mit dem Ed25519-Schlüssel aus
+  `sbkim_keys["main"]`, und schreibt empfangene Anker in
+  `sbkim_hetero_inbox`. Modul 06 ruft `SbkimAnastomose.handshake`
+  **NICHT** auf — der Heterokaryose-Pull ist ein eigener HTTP-POST
+  gegen ENDPOINT.heterokaryosis (= "/sbkim/heterokaryosis" aus §3).
+
+  Pull-Pattern verbindlich: der Initiator fragt, der Angefragte
+  antwortet. Kein Push, keine Pulsation, keine Eigenanfrage ins offene
+  Netz. Auslöser ist ausschließlich der Aufrufer (Modul 08 UI-Demo /
+  Modul 00 Doku-Fenster später / Modul 09 Einbau-PWA in einer
+  Folge-Sitzung).
+
+  Beidseitiger Opt-In über das additive Feld
+  `sbkim_siblings[peerNodeId].heterokaryosisOptIn: boolean` (default
+  `false`, fail-soft wenn das Feld fehlt). Modul 05 setzt das Feld
+  NICHT — Klaus setzt es pro Geschwister im Endknoten-UI (Modul 00
+  Doku-Fenster oder Modul 08 UI-Demo, eigene Folge-Pflege). Sender
+  prüft lokal vor Versand; Empfänger prüft serverseitig.
+
+Nutzt:
+  SbkimStorage.init / get / put / del / all     (sbkim_hetero_inbox als Schreiber;
+                                                 sbkim_siblings als Leser für Opt-In-Filter und Sender-Lookup;
+                                                 sbkim_anastomosis_log als Schreiber für hetero-* outcomes)
+  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk
+                                                 (eigene Identität + Spore für Signatur)
+  SbkimSpore.verifyForeignSpore                  (eingehende Sender-Spore prüfen — Signatur, id-Konsistenz, Hauptversion)
+  WebCrypto via Modul 02:
+    crypto.subtle.sign({ name: "Ed25519" }, privateKey, bytes)   (HeterokaryosisRequest / HeterokaryosisResponse signieren)
+    crypto.subtle.verify({ name: "Ed25519" }, publicKey, sig, bytes)  (eingehende Signatur prüfen)
+  fetch (POST) gegen sibling.endpoint + ENDPOINT.heterokaryosis ("/sbkim/heterokaryosis").
+    AbortController(QUERY_TIMEOUT_MS = 4000) pro Pull.
+
+Storage:
+  Stores (alle aus Modul 01 — `sbkim_hetero_inbox` ist ein neuer Store
+  und muss in der Bau-Sitzung 06 in Karte 01's Store-Vertrag ergänzt
+  werden; bis dahin ist er ein **angekündigter Store** in dieser Spec):
+    sbkim_hetero_inbox     (Schlüssel: `<peerNodeId>|<ts>`;
+                            Wert: { peerNodeId, ts, anchors, signature, receivedAt })
+                            — Schreiber 06, Leser 06/00/08
+    sbkim_siblings         (Schlüssel: peerNodeId; Schreiber 05)
+                            — Modul 06 ist hier LESER für:
+                              - vorhanden? (Sibling-Filter beim Empfangen)
+                              - heterokaryosisOptIn === true? (Opt-In-Filter
+                                beidseits, fail-soft wenn Feld fehlt)
+                            Schreibrecht hat WEITERHIN nur Modul 05.
+                            Schema-Erweiterung um optionales Feld
+                            `heterokaryosisOptIn: boolean` ist additiv;
+                            Modul 05 setzt das Feld nicht, Modul 12
+                            (Blocklist, Schutz-Backlog) wird es in
+                            einer eigenen Spec-Sitzung berühren dürfen.
+    sbkim_anastomosis_log  (Schlüssel: ts; Schreiber 05+06)
+                            — Modul 06 schreibt zusätzliche outcome-Werte
+                              (additiv zum bisherigen Vokabular aus Karte 05):
+                                "hetero-pulled"              — A hat erfolgreich Anker empfangen
+                                "hetero-served"              — B hat erfolgreich Anker ausgeliefert
+                                "hetero-opt-out"             — B hat opt-out-Antwort gegeben
+                                "hetero-opt-out-local"       — A hat lokale Vorprüfung gestoppt (kein Netz)
+                                "hetero-rejected"            — Spore-/Versions-/Signatur-Fehler
+                                "hetero-timeout"             — fetch-Timeout
+                                "hetero-endpoint-unsupported" — HTTP 404 (Peer hat den Endpunkt nicht)
+                              Modul 07's TTL-Sweep bleibt unverändert (es
+                              liest nur "established"/"re-handshake"-Einträge
+                              für die lastActivity-Berechnung). Modul 12 darf
+                              die neuen outcome-Werte später konsumieren
+                              (Anker-Vergiftungs-Detektion).
+    sbkim_hetero_outbox    (Anker-Quelle; Spec-Wille Modul 06: vorbereitet
+                            für Modul 08 / spätere Spec-Sitzung 02-Pflege,
+                            **noch nicht spezifiziert**. Falls vorhanden,
+                            liest Modul 06 ihn; sonst Fallback auf
+                            Spore-Single-Anker mit Label "(domain)".)
+
+  Vermerk an Karte 07 (Apoptose-Cleanup): Self-Apoptose-Cleanup-
+  Reihenfolge muss in einer eigenen Folge-Pflege-Sitzung um
+  `sbkim_hetero_inbox` ergänzt werden (vor `sbkim_spore`). Diese
+  Spec-Sitzung 06 ändert Karte 07 NICHT.
+
+Events:
+  (keine — Service-Worker liefert eingehende /sbkim/heterokaryosis-
+   Bodies via MessageChannel an receiveHeterokaryosis weiter, analog
+   Modul 05 und Modul 07. Message-Typ: SBKIM_HETEROKARYOSIS_REQUEST.)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 06 HETEROKARYOSE bereit, Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis");
+  Wie Modul 01/02/04/05/07 — keine Schwelle/Konstante in der Selbstcheck-
+  Zeile. HETERO_MAX_ANCHORS / ENDPOINT.heterokaryosis / Versions-Konstante
+  stehen verbindlich in §0 / §3.
+
+Versionierungs- und Heterokaryose-Vertrag:
+  - Hauptversion-Mismatch zwischen lokaler PROTOCOL_VERSION und
+    `incomingRequest.protocolVersion`: receiveHeterokaryosis antwortet
+    HeterokaryosisResponse{outcome:"rejected",
+    reason:"Inkompatible Hauptversion: <x.y>"}. Siehe §4.
+  - HTTP 404 vom Empfänger → KEIN Throw beim Sender; landet als
+    `outcome:"endpoint_unsupported"`. Drehbuchkonform für Geschwister
+    mit älterem Protokoll-Stand.
+  - Sibling-Filter: nur Geschwister aus `sbkim_siblings` werden bedient.
+    Spore-Signatur allein reicht NICHT.
+  - Opt-In-Filter beidseits: `heterokaryosisOptIn === true` muss auf
+    BEIDEN Seiten gesetzt sein. Sender prüft lokal vor Versand,
+    Empfänger prüft serverseitig.
+  - Anker-Anzahl: max. HETERO_MAX_ANCHORS (= 5) pro Response.
+  - Heterokaryose ist eine direkte Eins-zu-eins-Operation; Modul 06
+    leitet empfangene Anker NICHT an seine eigenen Geschwister weiter.
+
+Fehlerverhalten:
+  - init(): Abhängigkeit fehlt (SbkimStorage/SbkimSpore nicht auf window)
+        → HeterokaryoseDependenciesError
+  - requestHeterokaryosis(): peerNodeId nicht in sbkim_siblings
+        → UnknownSiblingError (kein Netz-Aufruf)
+  - requestHeterokaryosis(): sibling.heterokaryosisOptIn !== true
+        → KEIN Throw. Log "hetero-opt-out-local",
+          return {outcome:"opt-out-local"}.
+  - requestHeterokaryosis(): fetch-Timeout > QUERY_TIMEOUT_MS
+        → HeterokaryoseTimeoutError, Log "hetero-timeout"
+  - requestHeterokaryosis(): HTTP 404 vom Peer
+        → KEIN Throw. Log "hetero-endpoint-unsupported",
+          return {outcome:"endpoint_unsupported"}.
+  - requestHeterokaryosis(): Netz-/CORS-/DNS-Fehler
+        → HeterokaryoseNetworkError (cause: Original-Error)
+  - requestHeterokaryosis(): Response-Signatur ungültig
+        → HeterokaryoseSignatureInvalidError, Log "hetero-rejected"
+  - requestHeterokaryosis(): outcome "opt-out" vom Peer
+        → KEIN Throw. Log "hetero-opt-out",
+          return {outcome:"opt-out"}.
+  - requestHeterokaryosis(): outcome "rejected" vom Peer
+        → KEIN Throw. Log "hetero-rejected",
+          return {outcome:"rejected", reason}.
+  - receiveHeterokaryosis(): jegliche Form-/Spore-/Versions-/Signatur-/
+                             toNodeId-/Sibling-Filter-/Opt-In-Verletzung
+        → WIRFT NIEMALS; HeterokaryosisResponse{outcome:"rejected"|"opt-out",
+          reason?} (analog verifyForeignSpore, receiveHandshake,
+          receiveLegacy).
+  - receiveHeterokaryosis(): Storage-Fehler beim Lesen/Schreiben
+        → WIRFT NIEMALS nach außen; Response outcome:"rejected",
+          reason:"interner Speicherfehler"; Original-Error in
+          console.error.
+  - listHeterokaryosis() / forgetHeterokaryosis(): Storage-Fehler
+        → unverändert durchgereicht.
+  - forgetHeterokaryosis(): unbekannter Schlüssel
+        → idempotent, wirft nicht.
+
+Datenformate:
+  HeterokaryosisRequest / HeterokaryosisResponse → §2 dieser Datei.
+  sbkim_hetero_inbox-Wert → Karte 06 Block "Datenformate".
+  Anker-Form {label: string, vector: number[384]} → Karte 06.
+  sbkim_siblings[peerNodeId].heterokaryosisOptIn → Karte 06
+  (additiv aus Spec-Sitzung 06).
+
+Service-Worker-Vertrag (für statisch gehostete Endknoten):
+  - Pfad: ENDPOINT.heterokaryosis ("/sbkim/heterokaryosis"), POST,
+    Content-Type application/json, Body ≤ 64 KiB. Andere Methode → 405,
+    falscher Content-Type → 415, zu groß → 413.
+  - SW liest JSON-Body, ruft `SbkimHeterokaryose.receiveHeterokaryosis(body)`
+    auf der aktiven PWA-Instanz auf, antwortet mit dem zurückgegebenen
+    HeterokaryosisResponse als JSON (200).
+  - Wenn keine PWA-Instanz aktiv: 503 Service Unavailable, kein Auto-
+    Start, kein Wake-Lock.
+  - Variante A (Page-Hosted) verbindlich, analog 05/07.
+
+Garantien für Modul 07 / 08 / 10 / 11 / 12 / 14:
+  - sbkim_hetero_inbox ist Einzige Quelle für „empfangene
+    Heterokaryose-Anker"; Modul 08 / 10 / 12 dürfen davon ausgehen,
+    dass jeder Eintrag eine valide Signatur durchlaufen hat (oder gar
+    nicht angelegt wurde).
+  - Modul 06 erzeugt keine eigenen Sibling-Listen, keine Pulsation,
+    keine Eigenanfragen — der einzige Netz-Aufruf ist der
+    explizite Pull bei `requestHeterokaryosis`.
+  - Modul 06 schreibt sbkim_siblings NICHT — Schreibrecht bleibt bei
+    Modul 05.
+  - Modul 14 (Diffusion, Backlog) darf Modul 06 als Lead-Pool-
+    Konsument betrachten: ein bekannter Geschwister-Hop liefert
+    Anker, die einen späteren Lead-Match feinkörniger machen können
+    (Spec-Sitzung 14 entscheidet die genaue Form, wenn die Schwelle
+    erreicht ist).
+
+Geprüft: 2026-05-15 (Spec-Sitzung 06)
 
 ---
 
@@ -1069,6 +1254,125 @@ Versand via `Promise.allSettled`, sequenzieller lokaler Cleanup) und
 die Schritt-für-Schritt-Ebene liegen in
 `docs/components/07_apoptose.md` § „Apoptose-Pfad".
 
+### Heterokaryose (Pull)
+
+Verbindliches Schema des Heterokaryose-Pulls, festgelegt in der
+Spec-Sitzung 06 vom 2026-05-15. Heterokaryose ist **Pull-basiert**: der
+Initiator A schickt `HeterokaryosisRequest` an einen bereits
+verbundenen Geschwister-Knoten B (POST gegen
+`sibling.endpoint + ENDPOINT.heterokaryosis` (= dem
+`/sbkim/heterokaryosis`-Pfad aus §3), `Content-Type: application/json`).
+Antwort = `HeterokaryosisResponse` (unten). Beide JSON-Objekte sind
+**kanonisch** serialisiert (alphabetisch sortierte Keys, rekursiv); die
+Signatur deckt die Form **ohne** das `signature`-Feld. Sign-/Verify-Pfad
+**identisch** zu Spore (Modul 02), HandshakeRequest (Modul 05) und
+LegacyMessage (Modul 07).
+
+#### HeterokaryosisRequest — Pflichtfelder
+
+```
+fromNodeId       : string   = nodeId des Senders A (= base64url(sha256(rawPub)), ohne Padding)
+nonce            : string   16 zufällige Bytes, base64url ohne Padding (Replay-Marker; Modul 06
+                            prüft in der Erst-Spec noch nicht aktiv auf Wiederholung — aktiver
+                            Replay-Schutz gehört in Modul 11, vgl. Karte 06 Risiken-Block).
+protocolVersion  : string   semver-artig, z.Z. "0.1" (aus §0). Hauptversions-Mismatch zwischen
+                            incomingRequest.protocolVersion und lokaler PROTOCOL_VERSION → outcome:
+                            "rejected", reason:"Inkompatible Hauptversion: <x.y>". Siehe §4.
+senderSpore      : object   vollständige SporeJson des Senders, vom Sender mit Ed25519 signiert
+                            (siehe oben „Spore-JSON"). Empfänger verifiziert über
+                            SbkimSpore.verifyForeignSpore.
+signature        : string   base64url ohne Padding, Ed25519 über kanonisches JSON ohne signature.
+                            Schlüssel: privateKey des Senders (Modul 02). Empfänger verifiziert
+                            gegen senderSpore.publicKey.
+timestamp        : string   ISO-8601 mit Millisekunden, UTC ("Z"). Vom Sender beim Bauen gesetzt.
+toNodeId         : string   = nodeId des erwarteten Empfängers B. PFLICHT (anders als bei
+                            HandshakeRequest, wo es optional ist). Ohne toNodeId kann der
+                            Empfänger den sbkim_siblings-Lookup nicht durchführen.
+                            Mismatch zu getNodeId() → outcome:"rejected",
+                            reason:"toNodeId stimmt nicht zum Empfänger".
+```
+
+#### HeterokaryosisResponse — Pflichtfelder
+
+```
+fromNodeId       : string   nodeId des Empfängers B
+nonceEcho        : string   identisch zu incomingRequest.nonce (Replay-Verkettung; in Erst-Spec
+                            rein informativ, in einer Folge-Spec für aktiven Replay-Schutz nutzbar)
+outcome          : string   "shared" | "opt-out" | "rejected"
+protocolVersion  : string   "0.1"
+receiverSpore    : object   vollständige SporeJson des Empfängers B (signiert)
+signature        : string   Ed25519-Signatur über kanonisches JSON ohne signature, mit dem
+                            privateKey des Empfängers.
+timestamp        : string   ISO-8601 UTC, Empfänger beim Bauen
+toNodeId         : string   nodeId des Senders (= incomingRequest.fromNodeId)
+```
+
+#### HeterokaryosisResponse — Optionale Felder
+
+```
+anchors          : Anchor[]   Pflicht bei outcome="shared", sonst weggelassen.
+                              Max. HETERO_MAX_ANCHORS Einträge (= 5 aus §0).
+                              Jeder Anchor: {label: string (≤ 64 Zeichen),
+                                             vector: number[384] (L2-normalisiert)}.
+                              Reihenfolge bedeutsam (Sender ordnet sinnvoll, z.B. nach
+                              Relevanz oder addedAt). Anker tragen keine Eigen-Signatur —
+                              die Response-Signatur deckt das ganze JSON inklusive anchors.
+reason           : string     Pflicht bei outcome="rejected", sonst weggelassen.
+                              Bei outcome="opt-out" weggelassen (minimale Antwort).
+                              Beispiele: "Form ungültig", "Spore ungültig: <inner reason>",
+                              "Inkompatible Hauptversion: 1.0", "Request-Signatur ungültig",
+                              "toNodeId stimmt nicht zum Empfänger",
+                              "Sender ist kein Geschwister", "interner Speicherfehler".
+```
+
+#### Versionierungs-Regel
+
+- Pflichtfelder dürfen ab Status `entwurf` nur additiv erweitert
+  werden. Das Hinzufügen eines Pflichtfelds erfordert den Schritt von
+  `protocolVersion: "0.x"` auf `"1.0"`.
+- Hauptversionen (1.x ↔ 2.x): inkompatibel. Empfänger lehnt
+  Hauptversion-Mismatch mit `outcome:"rejected", reason:"Inkompatible
+  Hauptversion: <x.y>"` ab — siehe §4 und Modul 06 Vertrag.
+- Streichen oder Optional→Pflicht ist immer ein Hauptversions-Sprung.
+- Unbekannte zusätzliche Felder werden bei `receiveHeterokaryosis`
+  **nicht** abgewiesen — sie sind aber Teil der Signatur (jeder Knoten
+  signiert, was er ausliefert).
+- Hinzufügen eines neuen `outcome`-Wertes (z.B. `"throttled"` für Modul
+  11) ist additiv, kein Hauptversions-Sprung — Konsumenten, die den
+  neuen Wert nicht kennen, behandeln ihn wie `"rejected"` (Default-
+  Fallback).
+
+#### Verifikations-Pfad (Empfänger, Reihenfolge verbindlich)
+
+1. Pflichtfelder vollzählig im HeterokaryosisRequest? → sonst
+   `outcome:"rejected", reason:"Form ungültig"`.
+2. `SbkimSpore.verifyForeignSpore(senderSpore)` valid? → sonst
+   `outcome:"rejected", reason:"<deutsch>"` (reason aus dem
+   verifyForeignSpore-Ergebnis durchgereicht).
+3. Hauptversion `incomingRequest.protocolVersion` kompatibel mit
+   lokalem `PROTOCOL_VERSION`? → sonst `outcome:"rejected",
+   reason:"Inkompatible Hauptversion: <x.y>"`.
+4. Request-Signatur über die kanonisch serialisierte Form ohne
+   `signature` gegen `senderSpore.publicKey` verifiziert? → sonst
+   `outcome:"rejected", reason:"Request-Signatur ungültig"`.
+5. `incomingRequest.toNodeId === getNodeId()` (eigene nodeId)? → sonst
+   `outcome:"rejected", reason:"toNodeId stimmt nicht zum Empfänger"`.
+6. `senderId = senderSpore.id; siblingEntry =
+   sbkim_siblings.get(senderId)`. Wenn `siblingEntry` fehlt → sonst
+   `outcome:"rejected", reason:"Sender ist kein Geschwister"`.
+7. `siblingEntry.heterokaryosisOptIn === true` (fail-soft: fehlend →
+   false)? → sonst `outcome:"opt-out"` (KEIN `reason`-Detail —
+   minimale Antwort), Log `"hetero-opt-out"`.
+8. Sonst: Anker-Quelle lesen (siehe Karte 06 § Anker-Quelle, max.
+   HETERO_MAX_ANCHORS Einträge), Response
+   `{outcome:"shared", anchors, receiverSpore, …}` mit Signatur
+   kanonisch über die Form ohne `signature`. Log `"hetero-served"`.
+
+Detail-Erklärung der Sender-Seite (Pull-Initiierung, lokale Vorprüfung,
+fetch mit AbortController, Outcome-Verarbeitung, Inbox-Persistenz) und
+die Schritt-für-Schritt-Ebene liegen in
+`docs/components/06_heterokaryose.md` § „Heterokaryose-Pfad".
+
 ---
 
 ## 3. Endpunkt-Pfade
@@ -1161,3 +1465,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-15 | Hauptsitzung 14-Diffusion-Stub | **Modul 14 „Diffusion" als reiner Backlog-Stub angelegt** (Format analog Schutz-Module 10/11/12). Anlass: in der abgebrochenen Bau-Sitzung Modul 09 (2026-05-15, parallele Pflege-Sitzung Karte 09 „App-SW-Koexistenz" auf eigenem Branch) ist die Frage zur Spore-Verbreitung aufgekommen. Drei Diffusionspfade dokumentiert mit verbindlicher Auswahl: **Pfad 1 (passiv, `/sbkim/spore.json`)** bleibt Default-Mechanismus parallel; **Pfad 2 (konsensuell-empfehlend, `recommendedPeers: SporeRef[]` als optionales Feld in `HandshakeResponse`, max. 2 Einträge, Empfänger speichert als Lead mit TTL in neuem Store `sbkim_diffusion_leads`, opt-in pro Empfehlung)** verbindlich gewählt — drehbuchkonform, weil jede Übergabe im Konsens beim Handshake; **Pfad 3 (parasitär-mitreisend)** explizit verworfen, weil er das Empfangsmodus-Prinzip aus `CLAUDE.md` + `sbkim_paper.pdf` („Kein Crawler, keine Pulsation, keine Eigenanfragen ins offene Netz") bricht. **`docs/components/14_diffusion.md`** mit Status-Block (🟫 Schablone · Diffusion-Backlog · Priorität niedrig), Im-Mycel-Bild (Pilz-Hyphen tauschen Notizen über andere Pilze in der Nachbarschaft — Wuchs durch Empfehlung, nicht durch Senden), Mermaid-Flowchart (Handshake A↔B mit `recommendedPeers`, Lead-Store, Opt-in), drei Pfaden, sechs Anker-Punkten für die spätere Spec-Sitzung (a Handshake-Erweiterung Karte 05 · b Empfehlungs-Quelle aus `sbkim_siblings` · c Lead-Store mit TTL · d Trust-Hook Karte 10 · e Rate-Limit-Hook Karte 11 · f Anti-Vergiftung tiefer Trust-Tier), Schwellwert „Wann ziehen" (Netz ≥ 10 aktive Geschwister ODER Bau-Sitzung 09 abgeschlossen + Wachstums-Bedürfnis), Verbindungen zu Karten 05/06/10/11/12 (alle nur als Verweis, nicht implementiert), vier Risiken (Echo-Kammer · Diffusion-Sybil · Trust-Inflation · Privacy-Leak), sechs offenen Fragen für die spätere Spec, Bauzustand-Tabelle nur mit Zeile „Stub angelegt 2026-05-15". **`status.json` erweitert** um neues Feld `diffusionBacklog[]` parallel zu `schutzBacklog[]` (bewusste Architektur-Entscheidung: Schutz reaktiv, Diffusion proaktiv); Eintrag Modul 14 (`score:"schablone"`, `siegel:"Stub (Backlog), Priorität niedrig"`); `lastUpdated` auf `2026-05-15`; `scoreModel.maxScoreNote` **unangetastet** (Backlog zählt nicht zum maxScore, analog 10/11/12). **`scripts/update_puls_pie.py` erweitert** um Lesen von `diffusionBacklog` zusätzlich zu `modules` + `schutzBacklog`; Skript gelaufen: **13 → 14 Module, Schablonen 4 → 5**, andere Score-Verteilungen unverändert. **PULS.md erweitert**: Schnellüberblicks-Zeile „14 diffusion · Stub (Diffusion-Backlog) · …", Offene-Querschnitts-Frage „Spore-Diffusion Pfad 1/2/3" als gelöst markiert (durchgestrichen + Verweis auf Karte 14), neue offene Frage „Sage-Page sichtbar machen für Modul 14" angelegt (`index.html` rendert aktuell nur `modules[]` + `schutzBacklog[]`, nicht `diffusionBacklog[]` — Folge-Pflege-Sitzung zieht nach), neuer Sub-Abschnitt „Diffusion-Backlog" unter dem Schutz-Backlog mit Begründung „proaktiv vs. reaktiv" und Schwellwert-Verweis, Sitzungs-Eintrag oben. **§1 unangetastet** — Stub hat keine Schnittstelle; Schnittstellen-Spiegelung kommt erst in der späteren Spec-Sitzung 14 zusammen mit einer Pflege-Sitzung Karte 05 (`recommendedPeers: SporeRef[]` additiv in `HandshakeResponse` einbauen). **Karten 05/10/11/12 unangetastet** (Hook-Punkte nur als Verweis in Karte 14 dokumentiert, nicht implementiert). **Kein JS-Code** in `src/`. **Sage-Page `index.html` und Test-Datei `tests/manual_check.html` unangetastet** (Sichtbarmachung in der Bau-Puls-Karte und ggf. Eigenschutz-Karte 13 ist Folge-Pflege-Sitzung). Übergabeprotokoll `docs/sessions/archiv/2026-05-15_haupt-14-diffusion-stub.md` angelegt. |
 | 2026-05-15 | Pflege-Sitzung 09-App-SW-Koexistenz | Karte 09 § Andock-Schritt-Pfad **Schritt 3 in 3a/3b aufgesplittet** plus neuer **Pre-Flight-Check** als Einleitungs-Block (`navigator.serviceWorker.getRegistration('./')` — Verzweigungs-Ergebnis ist die Auswahl 3a oder 3b). Variante 3a (PWA ohne eigenen SW) unverändert bisheriges Schritt-3-Verhalten (`register('sbkim-sw.js')`). Variante 3b (PWA mit eigenem App-SW) setzt in `app-sw.js` ganz oben `self.SBKIM_SW_STANDALONE = false; importScripts('./sbkim-sw.js');` — **kein** zweiter `register`-Aufruf, der bestehende `register('./app-sw.js')` reicht; fetch-Listener für `/sbkim/anastomosis` und `/sbkim/legacy` werden im selben SW-Kontext mit-registriert, alle anderen Pfade fallen durch in den App-SW-Cache-/Routing-Code. **Achtes Risiko „App-SW-Überschreibung"** in Karte 09 § Risiken & offene Punkte ergänzt (Schritt-3-`register` ersetzt bestehenden App-SW im selben Scope wegen unbedingtem `skipWaiting`/`clients.claim` in `sbkim-sw.js` → App-Offline-Cache + Push-Pfade weg; Erkennung über DevTools-Source = `sbkim-sw.js`; Lösung Variante 3b + `SBKIM_SW_STANDALONE=false`; Konvention Pre-Flight-Check vor Schritt 3 ist Pflicht). **`src/sbkim-sw.js` umgebaut** — `SBKIM_SW_STANDALONE`-Flag am Modul-Anfang (Default `true`, rückwärtskompatibel; `(typeof self.SBKIM_SW_STANDALONE !== "undefined") ? self.SBKIM_SW_STANDALONE : true`); `install`/`activate`-Handler rufen `skipWaiting`/`clients.claim` nur unter `SBKIM_SW_STANDALONE === true`; fetch-Listener-Pfad für `/sbkim/anastomosis` + `/sbkim/legacy` unverändert; Header-Kommentar erweitert um beide Lade-Pfade; fetch-Konvention dokumentiert (`event.respondWith` nur für SBKIM-Pfade, alle anderen Events durchfallen lassen). Karte 09 § Service-Worker-Hinweis `install`/`activate`-Vertragsblock und fetch-Listener-Reihenfolge entsprechend nachgezogen. Karte 09 § Datei-Pfad-Konvention um optionalen Block `app-sw.js` im Repo-Root ergänzt. Karte 09 § Sichtkontrolle um fünften (variantenspezifischen) Pflicht-Punkt erweitert (Variante-3b-Zwei-Browser-Test). **Keine §1-Vertragsänderung** — das Flag ist SW-intern, kein öffentlicher Funktions-Export wandert, additiv und rückwärtskompatibel. **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07** (deren Code unverändert). Karte 09 Bauzustand-Tabelle „Pflege App-SW-Koexistenz"-Zeile ergänzt; `status.json` Modul 09 unverändert (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — die Pflege ist additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). |
 | 2026-05-15 | Pflege-Sitzung Sage-Page-Modul-14 | **`index.html` (Sage-Page) um `diffusionBacklog[]`-Rendering erweitert**, parallel zur bestehenden `schutzBacklog[]`-Darstellung. Schließt die offene Querschnitts-Frage „Sage-Page sichtbar machen für Modul 14" aus der Hauptsitzung 14-Diffusion-Stub (gleicher Tag). Render-Änderungen in drei datengetriebenen Karten plus einer hardgecodeten Karte: **Karte 4 Module-Bento** bekommt einen parallelen Divider „Diffusion-Backlog · proaktiv · spec ausstehend, Priorität niedrig" nach dem bestehenden Schutz-Backlog-Divider plus eine `buildModCard(m, true)`-Zelle für Modul 14 (Pfad: `docs/components/14_diffusion.md` über bestehende `m.name.toLowerCase()`-Konvention im backlog-Pfad); Karten-Titel von „Module · 10 Haupt + 3 Schutz-Backlog" auf „Module · 10 Haupt + 3 Schutz + 1 Diffusion (Backlog)" angehoben. **Karte 14 Bau-Puls** analog: `renderBauPuls(s)` `allMods` enthält jetzt auch `diffusionBacklog`, Divider „Diffusion-Backlog · proaktiv · Priorität niedrig" plus `buildBPCell(m, byId, true)`-Zelle; `BACKLOG_IDS` Set von `{'10','11','12'}` auf `{'10','11','12','14'}` erweitert (Modul 14 bekommt kein „Bereit-Symbol ✨"); `SLUG_MAP` und `slugForId(id)`-Map um `'14': 'diffusion'` ergänzt. `renderBauPulsPie(s)` `all`-Array enthält jetzt auch `diffusionBacklog` → Pie-Center-Zahl zeigt **14** (vorher 13), Legende zeigt Schablonen-Count **5** (vorher 4); andere Score-Verteilungen unverändert. **Karte 13 Eigenschutz** bekommt einen zweiten parallelen `<div class="schutz-backlog">`-Block direkt nach dem bestehenden (sprachlich „reaktiv" vs. „proaktiv", Schutz wehrt ab / Diffusion beschleunigt durch geteilte Erinnerung); `.schutz-pilz`-Schlussspruch um die Diffusion-Zeile erweitert. **Karte 7 Datenquelle Schema-Beispiel** zeigt jetzt `"diffusionBacklog": [/* Modul 14 (proaktiv), zählt NICHT in Score */]` parallel zum bestehenden `"schutzBacklog"`-Kommentar. **`FALLBACK_STATUS` um `diffusionBacklog: []` ergänzt** (Fail-Soft bei `status.json`-Lade-Fehler). **`status.json` unverändert** (PR-Daten aus Hauptsitzung 14-Diffusion-Stub bleiben unangetastet); `scripts/update_puls_pie.py` **NICHT** aufgerufen (keine Modul-Daten-Änderung). **Keine §1-Vertragsänderung** — Sage-Page ist Observatorium, keine Modul-Schnittstelle. **Keine Karten-Änderung 10/11/12/14** (Stubs unangetastet; Status-Zeile „Sage-Page → noch nicht sichtbar" in Karte 14 wartet auf eine Mini-Folge-Pflege oder die spätere Spec-Sitzung 14). **Kein JS-Code in `src/`** (Sage-Page ist Sage-Page-spezifisch, kein Endknoten-Modul). PULS: offene Querschnitts-Frage „Sage-Page sichtbar machen für Modul 14" als gelöst markiert (durchgestrichen + Verweis auf diese Pflege), Schnellüberblicks-Zeile Modul 14 um „plus Sage-Page-Sichtbarmachung 2026-05-15" erweitert, neuer Sitzungs-Eintrag oben mit Getan/Variante-Begründung/Was-nicht-geändert/Frischer-Kopf-Befund/Offene-Punkte/Nächster-Schritt. Übergabeprotokoll `docs/sessions/archiv/2026-05-15_pflege-sage-page-modul-14.md` angelegt. |
+| 2026-05-15 | Spec-Sitzung 06 | Modul 06 (Heterokaryose) spezifiziert. Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`); **Pull-Pattern verbindlich** (kein Push, keine Pulsation, drehbuchkonform); **beidseitiger Opt-In** über additives Feld `sbkim_siblings[peerNodeId].heterokaryosisOptIn: boolean` (default `false`, fail-soft wenn das Feld fehlt — Modul 05 setzt es nicht, Klaus setzt es im Endknoten-UI als eigene Folge-Pflege); HeterokaryosisRequest (7 Pflichtfelder inkl. `toNodeId` als Pflicht, anders als HandshakeRequest) und HeterokaryosisResponse (8 Pflichtfelder + 2 optionale: `anchors` Pflicht-bei-shared / `reason` Pflicht-bei-rejected); Anker-Form `{label: string ≤ 64 Zeichen, vector: number[384] L2-normalisiert}` ohne Eigen-Signatur (Response-Signatur deckt das ganze JSON); max. `HETERO_MAX_ANCHORS` (= 5) pro Response. Kanonischer Sign/Verify-Pfad **identisch zu Spore (Modul 02), HandshakeRequest (Modul 05) und LegacyMessage (Modul 07)** — alphabetisch sortierte Keys, Form ohne `signature`, Ed25519, base64url ohne Padding. Anker-Quelle Spec-Wille: Default-Pfad ein Anker aus der eigenen Spore (Label `"(domain)"`, Vektor = `senderSpore.domainVector`); erweiterte Quelle `sbkim_hetero_outbox` für spätere Spec-Sitzung 08 oder Folge-Pflege Modul 02 (Modul 06 liest fail-soft, kein eigener Schreiber). **Neuer Store `sbkim_hetero_inbox`** (Schlüssel-Komposit `<peerNodeId>|<ts>`, Drift-Spur über Zeit) — muss in Bau-Sitzung 06 in Karte 01's Store-Vertrag ergänzt werden, in §1 Modul 06 als angekündigter Store. **`sbkim_anastomosis_log` outcome-Vokabular additiv erweitert** (`hetero-pulled`/`-served`/`-opt-out`/`-opt-out-local`/`-rejected`/`-timeout`/`-endpoint-unsupported`) — kein neuer Log-Store; Modul 07's TTL-Sweep bleibt unverändert (es liest nur `"established"`/`"re-handshake"`-Einträge). Heterokaryose-Pfad in 14 Schritten (Sender 1–6, Empfänger 7–11, Sender 12–14); Verifikations-Pfad beim Empfänger in 8 Schritten (Form → Spore → Hauptversion → Signatur → toNodeId → Sibling-Filter → Opt-In-Filter → Antwort). Service-Worker-Vertrag (POST `/sbkim/heterokaryosis`, JSON, ≤ 64 KiB, 405/415/413/503, HTTP 404 → `outcome:"endpoint_unsupported"` ohne Throw); Variante A (Page-Hosted) verbindlich, analog 05/07; MessageChannel-Brücke mit Typ `SBKIM_HETEROKARYOSIS_REQUEST`. **§0 um `HETERO_MAX_ANCHORS = 5` ergänzt** (additiv, kein Hauptversions-Sprung; konsistent mit `SIBLING_MAX_AGE_MS` aus Spec-Sitzung 07). **§3 Endpunkt-Pfad `heterokaryosis: /sbkim/heterokaryosis` ist bereits seit Hauptsitzung Site-Echo eingetragen** — Spec-Sitzung 06 füllt jetzt den Vertrag. Fehlertabelle mit zwölf Lagen (Outcome vs. Throw klar getrennt: opt-out / opt-out-local / endpoint_unsupported sind Outcome, Form-/Spore-/Versions-/Signatur-/Sibling-/OptIn-Verletzungen sind Outcome beim Empfänger; Timeout/Netz/Krypto-Fehler werfen beim Sender). Manueller Test mit dreizehn Punkten (lokaler Pull-Round-Trip, opt-out Empfänger-Seite, opt-out lokal, unbekannter Sibling, Sender kein Geschwister, toNodeId-Mismatch, Versions-Mismatch, Signatur-Manipulation, HETERO_MAX_ANCHORS-Begrenzung, listHeterokaryosis, forgetHeterokaryosis, endpoint_unsupported, Selbstcheck). Risiken-Block mit acht Punkten (Anker-Vergiftung → Modul 10, Privacy-Leak via Outbox, Replay → Modul 11, Rate-Limit → Modul 11, Blocklist → Modul 12, Drift-Erkennung als Feature, sibling-Schema-Erweiterung additiv, Anker-Quelle minimal in Erst-Spec). **Hinweis an Karte 07** für Self-Apoptose-Cleanup-Reihenfolge: `sbkim_hetero_inbox` muss in einer eigenen Folge-Pflege-Sitzung zwischen Schritt 3 und 4 (zwischen `sbkim_legacy_inbox` und `sbkim_spore`) eingefügt werden — Spec-Sitzung 06 ändert Karte 07 NICHT (Spec-Disziplin). **Keine §2 HandshakeRequest-/HandshakeResponse-Änderung** (Modul 05 unangetastet — die `heterokaryosisOptIn`-Schema-Erweiterung ist eine additive Sibling-Schema-Erweiterung im Storage-Vertrag, kein neues Handshake-Feld). **Keine Modul-10/11/12/14-Karten-Änderung** (Backlog-Stubs unangetastet — nur als Hook-Punkte erwähnt). **Kein JS-Code in `src/`** (Bau-Sitzung 06 ist eigene Phase). Status Modul 06 auf `entwurf`. |
