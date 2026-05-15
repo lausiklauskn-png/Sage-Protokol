@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Kein Endknoten.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-05-14",
+  "lastUpdated": "2026-05-15",
   "branch": "claude/semantic-agent-network-Y03Vg",
 
   "endknoten": [
@@ -13,13 +13,13 @@
       "name": "Rezeptbuch",
       "domain": "Kochrezepte",
       "integrated": false,
-      "url": null
+      "url": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/"
     },
     {
       "name": "Mixarium",
       "domain": "Cocktails / Drinks",
       "integrated": false,
-      "url": null
+      "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
     }
   ],
 
