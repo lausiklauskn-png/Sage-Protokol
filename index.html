@@ -266,6 +266,8 @@
     background: rgba(0,0,0,0.18);
     cursor: pointer; transition: border-color 0.18s ease, background 0.18s ease;
     display: flex; flex-direction: column; gap: 0.25rem;
+    overflow-wrap: anywhere; word-break: break-word;
+    min-width: 0;
   }
   .mod:hover { border-color: var(--accent); background: rgba(99,102,241,0.07); }
   .mod-head { display: flex; align-items: center; gap: 0.5rem; }
@@ -274,7 +276,11 @@
     font-size: 0.78rem; font-weight: 700;
   }
   .mod-name { font-weight: 600; font-size: 0.95rem; }
-  .mod-kurz { font-size: 0.82rem; color: var(--muted); }
+  .mod-kurz {
+    font-size: 0.82rem; color: var(--muted);
+    overflow-wrap: anywhere; word-break: break-word;
+    hyphens: auto; line-height: 1.45;
+  }
   .badge {
     display: inline-flex; align-items: center; gap: 0.3rem;
     font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 999px;
@@ -1262,59 +1268,59 @@
             <svg viewBox="0 0 600 280" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <radialGradient id="hub-grad">
-                  <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.9"/>
-                  <stop offset="100%" stop-color="#6366F1" stop-opacity="0.2"/>
+                  <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#6366F1" stop-opacity="0.15"/>
                 </radialGradient>
                 <radialGradient id="end-grad">
                   <stop offset="0%" stop-color="#14B8A6" stop-opacity="0.8"/>
                   <stop offset="100%" stop-color="#14B8A6" stop-opacity="0.1"/>
                 </radialGradient>
               </defs>
-              <!-- Sonar-Pulses -->
-              <circle cx="300" cy="140" r="40" fill="none" stroke="#8B5CF6" stroke-opacity="0.5">
-                <animate attributeName="r" from="40" to="120" dur="3s" repeatCount="indefinite"/>
-                <animate attributeName="stroke-opacity" from="0.5" to="0" dur="3s" repeatCount="indefinite"/>
+              <!-- Sonar-Pulses Hub (gedämpft — Hub ist Bootstrap, nicht Vermittler) -->
+              <circle cx="300" cy="140" r="36" fill="none" stroke="#8B5CF6" stroke-opacity="0.25">
+                <animate attributeName="r" from="36" to="90" dur="4s" repeatCount="indefinite"/>
+                <animate attributeName="stroke-opacity" from="0.25" to="0" dur="4s" repeatCount="indefinite"/>
               </circle>
-              <circle cx="300" cy="140" r="40" fill="none" stroke="#8B5CF6" stroke-opacity="0.5">
-                <animate attributeName="r" from="40" to="120" dur="3s" begin="1.5s" repeatCount="indefinite"/>
-                <animate attributeName="stroke-opacity" from="0.5" to="0" dur="3s" begin="1.5s" repeatCount="indefinite"/>
-              </circle>
-              <!-- Hub -->
-              <circle cx="300" cy="140" r="34" fill="url(#hub-grad)" stroke="#8B5CF6" stroke-width="2"/>
-              <text x="300" y="145" text-anchor="middle" fill="#fff" font-size="11" font-family="Space Mono">HUB</text>
-              <!-- Endknoten links -->
-              <circle cx="80" cy="80" r="22" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <!-- Hub (Wurzelverzeichnis · kann ausfallen) -->
+              <circle cx="300" cy="140" r="28" fill="url(#hub-grad)" stroke="#8B5CF6" stroke-width="1.5" stroke-opacity="0.7"/>
+              <text x="300" y="143" text-anchor="middle" fill="#fff" font-size="10" font-family="Space Mono">HUB</text>
+              <text x="300" y="176" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="8" font-family="Space Grotesk" letter-spacing="0.5">Bootstrap · kann ausfallen</text>
+              <!-- Endknoten links (Rezept) -->
+              <circle cx="80" cy="80" r="22" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1.5"/>
               <text x="80" y="84" text-anchor="middle" fill="#fff" font-size="9" font-family="Space Grotesk">Rezept</text>
-              <!-- Endknoten rechts -->
-              <circle cx="520" cy="80" r="22" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <!-- Endknoten rechts (Mixar) -->
+              <circle cx="520" cy="80" r="22" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1.5"/>
               <text x="520" y="84" text-anchor="middle" fill="#fff" font-size="9" font-family="Space Grotesk">Mixar</text>
-              <!-- Endknoten unten -->
+              <!-- Endknoten unten (weitere Geschwister, gestrichelt = noch nicht angedockt) -->
               <circle cx="80" cy="220" r="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 4"/>
               <circle cx="520" cy="220" r="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 4"/>
-              <!-- Verbindungen -->
-              <line x1="100" y1="92" x2="270" y2="130" stroke="rgba(99,102,241,0.4)" stroke-width="1" stroke-dasharray="2 4"/>
-              <line x1="500" y1="92" x2="330" y2="130" stroke="rgba(99,102,241,0.4)" stroke-width="1" stroke-dasharray="2 4"/>
-              <!-- Particle-Streams -->
-              <circle r="3" fill="#6366F1">
-                <animateMotion dur="4s" repeatCount="indefinite" path="M 100,92 Q 200,40 270,130"/>
+              <!-- Bootstrap-Linien zum Hub (dünn, gestrichelt — nur Erstkontakt) -->
+              <line x1="100" y1="92" x2="276" y2="130" stroke="rgba(139,92,246,0.3)" stroke-width="0.8" stroke-dasharray="2 5"/>
+              <line x1="500" y1="92" x2="324" y2="130" stroke="rgba(139,92,246,0.3)" stroke-width="0.8" stroke-dasharray="2 5"/>
+              <!-- Direkte Mycel-Verbindung Rezept↔Mixar (durchgezogen, atmend — nach Anastomose) -->
+              <path d="M 102,80 Q 300,30 498,80" fill="none" stroke="#14B8A6" stroke-width="1.8" opacity="0.7">
+                <animate attributeName="opacity" values="0.45;0.85;0.45" dur="3.4s" repeatCount="indefinite"/>
+              </path>
+              <!-- Particle-Stream: Direktfluss Rezept→Mixar (Anfrage fließt hin) -->
+              <circle r="3.5" fill="#F59E0B">
+                <animateMotion dur="4.6s" repeatCount="indefinite" path="M 102,80 Q 300,30 498,80"/>
               </circle>
-              <circle r="3" fill="#F59E0B">
-                <animateMotion dur="4s" begin="2s" repeatCount="indefinite" path="M 500,92 Q 400,40 330,130"/>
-              </circle>
-              <circle r="2.5" fill="#14B8A6">
-                <animateMotion dur="4s" begin="2s" repeatCount="indefinite" path="M 270,130 Q 200,40 100,92"/>
-              </circle>
-              <circle r="2.5" fill="#14B8A6">
-                <animateMotion dur="4s" begin="0s" repeatCount="indefinite" path="M 330,130 Q 400,40 500,92"/>
+              <!-- Particle-Stream: Direktfluss Mixar→Rezept (Antwort fließt zurück) -->
+              <circle r="3.5" fill="#14B8A6">
+                <animateMotion dur="4.6s" begin="2.3s" repeatCount="indefinite" path="M 498,80 Q 300,30 102,80"/>
               </circle>
             </svg>
           </div>
           <div class="phase-strip">
             <div class="phase-pill active" data-phase="0">1 · Spore aussenden</div>
             <div class="phase-pill" data-phase="1">2 · Anfrage einbetten</div>
-            <div class="phase-pill" data-phase="2">3 · Anastomose</div>
-            <div class="phase-pill" data-phase="3">4 · Antwort fließt zurück</div>
+            <div class="phase-pill" data-phase="2">3 · Anastomose · Direktfaden entsteht</div>
+            <div class="phase-pill" data-phase="3">4 · Antwort fließt direkt zurück</div>
           </div>
+          <p class="card-sub" style="margin-top: 0.55rem; font-size: 0.78rem; color: var(--dim);">
+            Der Hub ist nur Bootstrap (Erstkontakt). Sobald die Anastomose steht, läuft
+            der Fluss <strong>direkt zwischen den Knoten</strong> — Hub kann ausfallen, das Mycel lebt weiter.
+          </p>
           <div class="cycle-cta">
             <button onclick="goScreen('cycle')">Schritte erklären →</button>
           </div>
@@ -1382,7 +1388,7 @@
             <div><dt>Apoptose</dt><dd>Selektive Selbstlöschung unbenutzter Sporen — Selbstreinigung.</dd></div>
             <div><dt>Embedding</dt><dd>Text → 384-dim Vektor (Xenova multilingual-e5-small).</dd></div>
             <div><dt>Match</dt><dd>Cosine-Sim ≥ 0.80 → potenzieller Treffer, sonst verwerfen.</dd></div>
-            <div><dt>Hub</dt><dd>Dieses Repo. Wurzelverzeichnis, kein Endknoten.</dd></div>
+            <div><dt>Hub</dt><dd>Dieses Repo. Wurzelverzeichnis für den Erstkontakt — kein Endknoten, kein Vermittler. Sobald zwei Knoten sich kennen, läuft der Fluss direkt zwischen ihnen; der Hub kann ausfallen.</dd></div>
             <div><dt>Endknoten</dt><dd>Eine PWA, die SBKIM-Module integriert hat (Rezeptbuch, Mixarium).</dd></div>
             <div><dt>Schläfer-Spore</dt><dd>Lokal liegende, inaktive Spore — wartet auf Trigger-Event.</dd></div>
           </dl>
@@ -1515,41 +1521,43 @@
         <section class="glass span-4">
           <div class="card-title">Initialstart · Wie das Mycel beginnt</div>
           <div class="cold-box">
-            <svg id="cold-svg" viewBox="0 0 320 240" preserveAspectRatio="xMidYMid meet">
+            <svg id="cold-svg" viewBox="0 0 360 260" preserveAspectRatio="xMidYMid meet">
               <!-- Hintergrund-Frage-Sprites -->
-              <text x="40" y="40" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
-              <text x="270" y="60" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
-              <text x="160" y="220" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
+              <text x="50" y="50" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
+              <text x="300" y="70" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
+              <text x="180" y="240" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
 
               <!-- Hub oben -->
-              <circle cx="160" cy="60" r="26" fill="rgba(245,158,11,0.18)" stroke="#F59E0B" stroke-width="2"/>
-              <text x="160" y="64" text-anchor="middle" fill="#F59E0B" font-size="10" font-family="Space Mono">HUB</text>
-              <text x="160" y="100" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="Space Grotesk">Wurzelverzeichnis</text>
+              <circle cx="180" cy="60" r="26" fill="rgba(245,158,11,0.18)" stroke="#F59E0B" stroke-width="2"/>
+              <text x="180" y="64" text-anchor="middle" fill="#F59E0B" font-size="10" font-family="Space Mono">HUB</text>
+              <text x="180" y="100" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="Space Grotesk">Wurzelverzeichnis</text>
+              <text x="180" y="113" text-anchor="middle" fill="rgba(255,255,255,0.32)" font-size="7" font-family="Space Grotesk" letter-spacing="0.6">nur Bootstrap</text>
 
               <!-- Mixarium -->
-              <circle cx="60" cy="180" r="22" fill="rgba(20,184,166,0.18)" stroke="#14B8A6" stroke-width="2"/>
-              <text x="60" y="184" text-anchor="middle" fill="#14B8A6" font-size="9" font-family="Space Grotesk">Mixarium</text>
+              <circle cx="78" cy="190" r="22" fill="rgba(20,184,166,0.18)" stroke="#14B8A6" stroke-width="2"/>
+              <text x="78" y="194" text-anchor="middle" fill="#14B8A6" font-size="9" font-family="Space Grotesk">Mixarium</text>
 
               <!-- Rezeptbuch -->
-              <circle cx="260" cy="180" r="22" fill="rgba(20,184,166,0.18)" stroke="#14B8A6" stroke-width="2"/>
-              <text x="260" y="184" text-anchor="middle" fill="#14B8A6" font-size="9" font-family="Space Grotesk">Rezept</text>
+              <circle cx="282" cy="190" r="22" fill="rgba(20,184,166,0.18)" stroke="#14B8A6" stroke-width="2"/>
+              <text x="282" y="194" text-anchor="middle" fill="#14B8A6" font-size="9" font-family="Space Grotesk">Rezept</text>
 
-              <!-- Andock-Linien (gestrichelt) -->
-              <line x1="148" y1="80" x2="78" y2="160" stroke="rgba(245,158,11,0.5)" stroke-width="1.2" stroke-dasharray="4 3"/>
-              <line x1="172" y1="80" x2="242" y2="160" stroke="rgba(245,158,11,0.5)" stroke-width="1.2" stroke-dasharray="4 3"/>
+              <!-- Andock-Linien (gestrichelt, nur Erstkontakt) -->
+              <line x1="166" y1="80" x2="94" y2="170" stroke="rgba(245,158,11,0.45)" stroke-width="1.1" stroke-dasharray="4 3"/>
+              <line x1="194" y1="80" x2="266" y2="170" stroke="rgba(245,158,11,0.45)" stroke-width="1.1" stroke-dasharray="4 3"/>
 
-              <!-- Mycel-Faden zwischen Endknoten (atmend) -->
-              <line x1="82" y1="180" x2="238" y2="180" stroke="#14B8A6" stroke-width="2" opacity="0.7">
+              <!-- Mycel-Faden direkt zwischen den Endknoten (atmend, durchgezogen — nach Anastomose) -->
+              <line x1="100" y1="190" x2="260" y2="190" stroke="#14B8A6" stroke-width="2" opacity="0.7">
                 <animate attributeName="opacity" values="0.4;0.85;0.4" dur="3.4s" repeatCount="indefinite"/>
               </line>
             </svg>
           </div>
           <div class="cold-foot">
             <ol>
-              <li>Erste Reise braucht erste Peers. Der Hub ist die Wurzel — wer
-                andockt, ist dort gelistet.</li>
+              <li>Erste Reise braucht erste Peers. Der Hub ist die Wurzel —
+                Wurzelverzeichnis, an dem ein neuer Knoten sich einmal listet.</li>
               <li>Du bist dein eigenes Mini-Mycel: Mixarium und Rezeptbuch sehen
-                einander, sobald beide angedockt sind.</li>
+                einander direkt, sobald beide angedockt sind — der Hub ist
+                danach nicht mehr im Pfad.</li>
               <li>Wachstum ist langsam und gewollt. Empfangsmodus heißt: das Netz
                 wartet auf echte Andocker.</li>
             </ol>
@@ -2870,18 +2878,18 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       code: '// Modul 03: Embedding via Xenova\nconst pipe = await pipeline("feature-extraction",\n  "Xenova/multilingual-e5-small");\nconst v = await pipe(text, { pooling: "mean", normalize: true });'
     },
     {
-      h: 'Phase 3 · Anastomose · Hyphenfusion',
-      bio: 'Zwei Knoten erkennen Verwandtschaft und verbinden sich. Im Pilz ist das die Verschmelzung von Hyphen — beide Seiten geben Identität preis und teilen ab jetzt Topologie.',
-      mech: 'Handshake: Spore-Tausch + Pubkey-Verifikation + Domain-Match.',
+      h: 'Phase 3 · Anastomose · Hyphenfusion (Direktfaden)',
+      bio: 'Zwei Knoten erkennen Verwandtschaft und verbinden sich. Im Pilz ist das die Verschmelzung von Hyphen — beide Seiten geben Identität preis und teilen ab jetzt Topologie. Ab hier kennen sich beide direkt; der Hub wird für diese Beziehung nicht mehr gebraucht.',
+      mech: 'Handshake direkt zwischen den Endknoten: Spore-Tausch + Pubkey-Verifikation + Domain-Match. Der Hub vermittelt nur den Erstkontakt (Wurzelverzeichnis); danach ist er austauschbar — er kann ausfallen, ohne dass die Anastomose stirbt.',
       modules: ['05', '02', '04'],
-      code: '// Modul 05: Anastomose-Handshake\nawait POST(`${peer.endpoint}sbkim/anastomosis`, {\n  spore: ourSpore, query: queryEmbedding\n});'
+      code: '// Modul 05: Anastomose-Handshake — POST geht\n// direkt an peer.endpoint, NICHT über den Hub\nawait POST(`${peer.endpoint}sbkim/anastomosis`, {\n  spore: ourSpore, query: queryEmbedding\n});'
     },
     {
-      h: 'Phase 4 · Antwort fließt zurück',
-      bio: 'Der treffende Knoten liefert. Über das frisch gebildete Mycel reist die Antwort zurück, plus die Sporen aller Hops dazwischen — Wachstum als Nebeneffekt.',
-      mech: 'Response: { matches[], collectedSpores[] }. Lokale Heterokaryose folgt.',
+      h: 'Phase 4 · Antwort fließt direkt zurück',
+      bio: 'Der treffende Knoten liefert. Über das frisch gebildete Mycel reist die Antwort zurück, plus die Sporen aller Hops dazwischen — Wachstum als Nebeneffekt. Der Fluss läuft jetzt zwischen den Endknoten; der Hub ist nur noch eine von vielen Adress-Quellen, nicht der Pfad.',
+      mech: 'Response: { matches[], collectedSpores[] }. Lokale Heterokaryose folgt. Kein Single Point of Failure: jeder Knoten hält seine eigene Geschwister-Liste in IndexedDB, Direktverbindungen leben weiter, auch wenn der Hub offline geht.',
       modules: ['05', '06', '07'],
-      code: '// Antwort-Empfang im Suchenden\nresponse.collectedSpores.forEach(s =>\n  storage.put("sbkim_siblings", s.id, s));\n// Apoptose: Unbenutzte fallen später raus'
+      code: '// Antwort-Empfang im Suchenden — Verbindung\n// bleibt zwischen den Endknoten, Hub nicht im Pfad\nresponse.collectedSpores.forEach(s =>\n  storage.put("sbkim_siblings", s.id, s));\n// Apoptose: Unbenutzte fallen später raus'
     }
   ];
   let tourIdx = 0;
