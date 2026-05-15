@@ -84,7 +84,7 @@ sitzt in der Andock-Anleitung, nicht in den Modulen.
 | 06 heterokaryose | leere Schablone | — | — | Datenaustausch |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
 | 08 ui_demo | leere Schablone | — | — | Test-Oberfläche |
-| 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt |
+| 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15, Pflege App-SW-Koexistenz 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt — plus Pflege App-SW-Koexistenz (2026-05-15): Schritt 3 a/b-Verzweigung (Pre-Flight-Check → 3a `register('sbkim-sw.js')` für PWA ohne eigenen SW, 3b `importScripts('./sbkim-sw.js')` im bestehenden App-SW für PWA mit eigenem SW), achtes Risiko „App-SW-Überschreibung", `sbkim-sw.js` `SBKIM_SW_STANDALONE`-Flag rückwärtskompatibel (Default `true`, `false` für Variante 3b) |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
@@ -279,6 +279,218 @@ Kategorien jetzt mit.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Pflege-Sitzung · Karte 09 App-SW-Koexistenz
+
+**Getan:**
+
+- **Karte 09 § Andock-Schritt-Pfad Schritt 3 aufgesplittet** in einen
+  **Pre-Flight-Check** als Einleitungs-Block + **Variante 3a** (PWA
+  ohne eigenen SW, bisheriges Verhalten unverändert: `register('sbkim-
+  sw.js')` + Konsolen-Zeile `SBKIM-SW registriert, Scope: …`) +
+  **Variante 3b** (PWA mit eigenem App-SW: `self.SBKIM_SW_STANDALONE
+  = false; importScripts('./sbkim-sw.js');` in `app-sw.js` ganz oben,
+  **kein** zweiter `register`-Aufruf — der bestehende
+  `register('./app-sw.js')` reicht). Pre-Flight-Check:
+  `await navigator.serviceWorker.getRegistration('./')`; ist eine
+  aktive Registrierung vorhanden → 3b, sonst → 3a. Verzweigungs-
+  Entscheidung trifft der Andocker einmal beim Einbau (nicht zur
+  Laufzeit).
+- **`src/sbkim-sw.js` umgebaut.** Neuer Modul-Anfangs-Schalter:
+
+  ```js
+  const SBKIM_SW_STANDALONE = (typeof self.SBKIM_SW_STANDALONE !== "undefined")
+    ? self.SBKIM_SW_STANDALONE
+    : true; // Default: Variante 3a
+  ```
+
+  `install`- und `activate`-Handler rufen `skipWaiting` /
+  `clients.claim` jetzt **nur** unter `SBKIM_SW_STANDALONE === true`.
+  Default `true` garantiert: bestehende Endknoten ohne eigenen App-SW
+  verhalten sich **genau wie bisher** (rückwärtskompatibel; eine
+  bestehende Live-PWA, die Schritt 3 schon ausgeführt hat, ändert
+  nichts). Variante 3b setzt das Flag auf `false`, sbkim-sw.js
+  übernimmt dann nicht — der App-SW behält seinen Lebenszyklus,
+  App-Offline-Cache und Push-Pfade bleiben unangetastet. fetch-
+  Listener-Pfad für `/sbkim/anastomosis` und `/sbkim/legacy`
+  **unverändert** (kein Modul-Bau, nur SW-Lebenszyklus-Pflege).
+  Header-Kommentar erweitert um beide Lade-Pfade (3a `register`,
+  3b `importScripts`). fetch-Konvention dokumentiert: `event.
+  respondWith()` ausschließlich für SBKIM-Pfade — alle anderen
+  Events fallen durch (Variante 3b: an den App-SW-Listener; Variante
+  3a: an den Default-Network-Pfad). `node --check` grün.
+- **Achtes Risiko „App-SW-Überschreibung"** in Karte 09 § Risiken
+  & offene Punkte ergänzt (Stil analog Service-Worker-Scope-Falle):
+  - **Beschreibung:** Karte-09-Schritt-3 mit `register('sbkim-sw.js')`
+    ersetzt einen bestehenden App-SW im selben Scope, weil
+    `skipWaiting` / `clients.claim` historisch unbedingt griffen.
+    Folge: App-Cache, Offline-Funktion, Push-Pfade des Endknotens
+    verschwinden **stillschweigend** — bemerkt erst, wenn die App
+    offline nicht mehr lädt oder Push ausbleibt.
+  - **Erkennung:** DevTools → Application → Service Workers zeigt
+    nach dem Andock `sbkim-sw.js` als aktiven Worker (statt
+    `app-sw.js`); Konsolen-Zeile `SBKIM-SW registriert, Scope: …`
+    erscheint, aber die App-SW-Selbstcheck-Zeile fehlt.
+  - **Lösung:** Variante 3b (`importScripts('./sbkim-sw.js')` im
+    bestehenden App-SW) plus `self.SBKIM_SW_STANDALONE = false`
+    davor.
+  - **Konvention:** vor Schritt 3 **immer** den Pre-Flight-Check
+    laufen lassen; bei vorhandenem aktiven App-SW **immer** Variante
+    3b. Variante 3a darf nur laufen, wenn der Pre-Flight-Check
+    `null` (oder eine inaktive Registrierung) liefert.
+- **Karte 09 § Service-Worker-Hinweis** nachgezogen:
+  - `install` / `activate`-Vertragsblock zeigt jetzt **beide**
+    Lebenszyklus-Modi explizit (Default `SBKIM_SW_STANDALONE = true`
+    → `skipWaiting` + `clients.claim`; `false` → keiner von beiden,
+    App-SW behält Steuerung).
+  - Pfad-Konvention um Variante-3b-Hinweis ergänzt (`importScripts
+    ('./sbkim-sw.js')` zieht den SBKIM-Listener-Code in den App-SW-
+    Kontext).
+  - **fetch-Listener-Reihenfolge** als eigener Block dokumentiert:
+    Browser ruft Listener in Registrier-Reihenfolge auf, erster
+    `respondWith` gewinnt; `importScripts` muss in `app-sw.js` ganz
+    oben stehen (vor App-SW-`addEventListener('fetch', …)`), damit
+    der SBKIM-fetch-Listener zuerst registriert wird; sbkim-sw.js
+    fasst nur `/sbkim/*`-Pfade an, alle anderen Events fallen an
+    den App-SW-Listener durch.
+- **Karte 09 § Datei-Pfad-Konvention** um optionalen Block
+  `app-sw.js` im Repo-Root ergänzt (Variante 3b). Sauberer relativer
+  `importScripts('./sbkim-sw.js')`-Pfad ist nur dann garantiert,
+  wenn beide SW-Dateien im Repo-Root nebeneinander liegen — liegt
+  `app-sw.js` z.B. unter `js/app-sw.js`, dann `importScripts
+  ('../sbkim-sw.js')`. Konvention der Karte: beide im Repo-Root.
+- **Karte 09 § Sichtkontrolle nach dem Andocken** um fünften
+  (variantenspezifischen) Pflicht-Punkt erweitert: Variante-3b-Zwei-
+  Browser-Test (eine Registrierung im DevTools mit Source `app-sw.js`
+  + Konsolen-Zeile `SBKIM-SW geladen via importScripts (Variante 3b)`
+  + `POST /sbkim/anastomosis` liefert 200 + App-Offline-Pfade
+  unverändert). Wartet auf Klaus' nächsten Live-Andock-Versuch
+  (Bau-Sitzung 09 zweite Iteration).
+- **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende
+  ergänzt (Konventions-Stil; neueste unten). **Keine §1-
+  Vertragsänderung** — das Flag ist SW-intern, kein öffentlicher
+  Funktions-Export wandert.
+- **Karte 09 Bauzustand-Tabelle** „Pflege App-SW-Koexistenz"-Zeile
+  am Ende der Pflege-Zeilen ergänzt (vor den TBD-Einbau-Zeilen).
+- **PULS-Schnellüberblicks-Zeile Modul 09** Anmerkungs-Spalte
+  um „plus Pflege App-SW-Koexistenz (2026-05-15): Schritt 3
+  a/b-Verzweigung, achtes Risiko ‚App-SW-Überschreibung',
+  `sbkim-sw.js` `SBKIM_SW_STANDALONE`-Flag rückwärtskompatibel"
+  erweitert.
+
+**Was nicht geändert wurde (bewusst):**
+
+- **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07.** Diese
+  Pflege betrifft ausschließlich den Service-Worker-Lebenszyklus
+  (`src/sbkim-sw.js`) und Karte 09. Modul-APIs bleiben unangetastet.
+- **Kein neuer Scope.** Variante 3b ist `importScripts` im
+  **bestehenden** App-SW, kein zweiter `register`-Aufruf und kein
+  zweiter SW. Die Service-Worker-Scope-Falle (siebtes Risiko)
+  bleibt verbindlich.
+- **Kein Vertrags-Verlust für Variante 3a.** Default
+  `SBKIM_SW_STANDALONE = true` ist äquivalent zum bisherigen
+  Verhalten — eine bestehende Endknoten-PWA, die `sbkim-sw.js`
+  schon einsetzt, ändert nichts und braucht keine Migration.
+- **`status.json` Modul 09 unverändert.** Bleibt `score:"spec"` /
+  `siegel:"Spec fertig"`; Pie nicht regeneriert. `update_puls_pie.py`
+  **nicht** aufgerufen (keine Score-Änderung — die Pflege ist
+  additiv im Andock-Pfad, kein Modul-Bau).
+- **Keine INTERFACES.md §1-Vertragsänderung.** Das Flag ist
+  SW-intern, kein neuer öffentlicher Funktions-Export. Nur §6
+  Änderungsprotokoll-Zeile ergänzt.
+- **Kein `self.skipWaiting()` / `self.clients.claim()` entfernt** —
+  sie bleiben im Code, nur jetzt unter `SBKIM_SW_STANDALONE`-
+  Schalter. Default-Verhalten unverändert.
+- **Kein fetch-Listener-Pfad geändert.** Modul 07's
+  `/sbkim/legacy`-Brücke und Modul 05's `/sbkim/anastomosis`-Brücke
+  bleiben Wort-für-Wort wie sie sind.
+- **Sage-Page (`index.html`) nicht angefasst.** Diese Pflege
+  betrifft Endknoten-Andock-Pfad, nicht das Observatorium.
+
+**Frischer-Kopf-Befund: stillstes Andock-Risiko geschlossen**
+
+Diese Pflege schließt das **stillste** Andock-Risiko, das es im
+Karte-09-Pfad gab: bestehender App-SW + Karte-09-Schritt-3 =
+schweigende Überschreibung des App-SW. Klaus hat in seinen
+Endknoten (Rezeptbuch + Mixarium) sehr wahrscheinlich schon einen
+App-SW (Offline-Cache, Add-to-Home-Screen-PWA-Konventionen), und
+der bisherige Schritt 3 hätte ihn beim ersten Andock-Versuch ohne
+Vorwarnung kassiert.
+
+Die Lösung ist **additiv und rückwärtskompatibel**: der Default
+`SBKIM_SW_STANDALONE = true` ist exakt das bisherige Verhalten;
+Variante 3a-Andocker müssen nichts ändern. Variante 3b ist eine
+**zwei-Zeilen-Ergänzung** in `app-sw.js` (`SBKIM_SW_STANDALONE =
+false` + `importScripts`), kein zweites `register`, kein zweiter
+Scope, keine Migration.
+
+Der Pflege-Stil (Pflege Schritt 9 vom 2026-05-15 als Vorbild) ist
+weitgehend eingehalten: Karte 09 ist Anleitung, `status.json`
+bleibt `score:"spec"`, Pie nicht regeneriert, INTERFACES.md §1
+unverändert. Der einzige Unterschied: Pflege Schritt 9 war reine
+Anleitungs-Erweiterung, diese hier ergänzt auch einen
+**SW-Code-Eingriff** (`src/sbkim-sw.js`). Das ist der Auftrag —
+„Pflege, kein Modul-Bau, aber gezielter Eingriff in `sbkim-sw.js`,
+weil der bestehende Andock-Pfad einen bisher unsichtbaren Blocker
+hat".
+
+**Was offen blieb:**
+
+- **Klaus' Live-Andock-Versuch (Bau-Sitzung 09 zweite Iteration)**
+  bleibt der nächste produktive Schritt. Die Variante-3b-
+  Sichtkontrolle (fünfter Pflicht-Punkt) wartet auf den realen
+  Browser-Test. Headless ist `node --check src/sbkim-sw.js` grün
+  und syntaktisch trägt der `SBKIM_SW_STANDALONE`-Schalter; ob
+  Klaus' App-SW + `importScripts`-Pfad-Auflösung auf
+  GitHub-Pages-Project-Sites genau wie erwartet aufgehen, kann
+  erst der Live-Versuch zeigen.
+- **`SBKIM_SW_STANDALONE`-Default `true` oder `false`** als
+  Konventions-Frage: Klaus' Endknoten haben sehr wahrscheinlich
+  beide einen App-SW (siehe Hintergrund-Frage im Briefing). Default
+  `true` wurde gewählt, weil:
+  1. **Rückwärtskompatibilität.** Eine bestehende Live-PWA, die
+     `sbkim-sw.js` aus Variante 3a einsetzt (sofern es schon eine
+     gibt — aktuell nicht), ändert nichts.
+  2. **Wenig-Schritte-Prinzip für Variante 3a.** Wer keinen
+     App-SW hat, soll ohne Flag-Konfiguration loslegen können.
+  3. **Variante 3b ist explizit aktiviert** — der Andocker muss
+     `SBKIM_SW_STANDALONE = false` setzen, ein bewusster Schritt
+     statt Default-Magie.
+  Falls Klaus' Live-Andock-Versuch zeigt, dass `false` der
+  bessere Default ist (z.B. weil beide Endknoten App-SWs haben
+  und niemand sonst Variante 3a nutzt), kann eine Folge-Mini-
+  Pflege „App-SW-Koexistenz Default-Umkehr" das in zwei Zeilen
+  erledigen.
+- **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-
+  Andock-Versuch** bleibt empfohlener Haupt-Pfad. Karte 09 ist
+  jetzt vollständig: neun Schritte (Pflege Schritt 9) + Schritt-3-
+  Verzweigung mit Pre-Flight-Check (diese Pflege). Klaus' nächste
+  Sitzung kann die ganze Anleitung mit App-SW-Erkennung
+  durchgehen.
+- **Folge-Pflege „App-SW-Koexistenz Sicht-Validierung"** kann
+  laufen, falls die Live-Sicht (5. Pflicht-Punkt im Sichtkontroll-
+  Block) ergibt, dass z.B. die Konsolen-Zeile in `app-sw.js`
+  anders heißen soll oder DevTools tatsächlich zwei Worker zeigt
+  trotz `importScripts`.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-
+   Andock-Versuch** zwischen Rezeptbuch und Mixarium. Erstmals
+   beide Andock-Varianten im Browser durchspielen; insbesondere
+   Variante 3b mit dem Pre-Flight-Check und der `importScripts`-
+   Konvention.
+2. Optional: **Folge-Pflege „App-SW-Koexistenz Sicht-Validierung"**,
+   falls der Live-Versuch eine offene Frage aufwirft.
+3. Headless-Alternativen (in fallender Priorität):
+   - **Hauptsitzung Modul 14 Diffusion-Stub** (entblockt die
+     Pflege-Sitzung Sage-Page-Modul-14, eigener Branch).
+   - **Spec-Sitzung Modul 06 Heterokaryose** (06 ist Schablone
+     und Lead-Pool-Konsument).
+
+---
+
+---
 
 ### 2026-05-15 · Hauptsitzung · Modul 14 Diffusion — Backlog-Stub angelegt
 
@@ -542,7 +754,6 @@ Bau-Arbeit — gehört in die nächste Sitzung).
 **Nächster sinnvoller Schritt:** Pflege-Sitzung Karte 09 mit den
 zwei Sub-Pfaden. Details und Code-Patch-Skizze siehe
 [Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
-
 ### 2026-05-15 · Pflege-Sitzung · Karte 09 Schritt 9 — Doku-Fenster + Apoptose im Andock-Pfad
 
 **Getan:**
