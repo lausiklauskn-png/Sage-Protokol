@@ -49,9 +49,9 @@ Spec frisch, **Bau ausstehend**:
 
 - 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul), **Pflege-Sitzung 2026-05-15 erweitert auf neun Schritte** (Schritt 9 neu: `SbkimApoptose.init()` + `SbkimDoku.init({searchIconSelector:...})` + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge in Schritt 2 zieht 07 + 00 nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block jetzt vier Pflicht-Punkte (sieben Selbstcheck-Zeilen + sechs IndexedDB-Stores + zwei live-Endpunkte + 5-Klick-Geste am Such-Symbol); Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, sieben JS-Module inline oder unter `sbkim/`); Spore-Endpunkt `/sbkim/spore.json` verbindlich; SW-Scope-Falle dokumentiert; `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert. **Bau-Sitzung 2026-05-15 vor Schritt 1 sauber abgebrochen** (Befund-Sitzung): beide Endknoten haben aktiven `app-sw.js` im Repo-Root (Mein-Mixarium Z. 12543, Mein-Rezeptbuch Z. 10453), Karte 09 antizipiert diesen Fall nicht; zusätzlich Karte 09 § Sichtkontrolle implizit auf Desktop-DevTools gemünzt — Klaus' Tablet (Galaxy Tab S6 + DeX) braucht Eruda-Pfad. **Vor erneuter Bau-Sitzung 09** zwei Karten-Lücken in einer Pflege-Sitzung Karte 09 zu schließen (Empfehlung Option α: Patch in bestehenden `app-sw.js`; plus Eruda-Pfad für Tablet-Sichtkontrolle). Details in [Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
 
-Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest ausstehend:**
+Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest geprüft 2026-05-15:**
 
-- 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser — sechs Outbox-/Opt-In-Test-Punkte durchklicken).
+- 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. **Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün** (Pflege-Sitzung Sichttest-Resultate 2026-05-15).
 
 Empfehlung Hauptsitzung: **Pflege-Sitzung Karte 09 — „App-SW-Koexistenz
 + Tablet-Sichtkontrolle"**. Bau-Sitzung 09 am 2026-05-15 ist vor
@@ -84,7 +84,7 @@ sitzt in der Andock-Anleitung, nicht in den Modulen.
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
 | 06 heterokaryose | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15) | — | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
-| 08 ui_demo | Spec fertig (2026-05-15) | Code-Stub (2026-05-15) | — | Endknoten-Pflege-UI für `sbkim_hetero_outbox` und `sbkim_siblings.heterokaryosisOptIn`; Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00 (`UiDemoDependenciesError` / `InvalidAnchorLabelError` / `InvalidAnchorVectorError` / `OutboxFullError` / `UnknownSiblingError` / `InvalidOptInArgError`), drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`). Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox` (v=3-Store aus Pflege Bau 06.1, Schlüssel `label`, max. `HETERO_OUTBOX_MAX_ENTRIES`=5, absteigend nach `addedAt`, Überschreiben statt Verdrängen) und Co-Schreiber für `sbkim_siblings.heterokaryosisOptIn` (Modul 05 unangetastet, Karte-01-Vertragserweiterung). **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign({}, sibling, {heterokaryosisOptIn})`. Self-Apoptose-Knopf bewusst NICHT in Panel 08 (Spec-Sitzung 08-Entscheidung respektiert). Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser). |
+| 08 ui_demo | Spec fertig (2026-05-15) | Code-Stub (2026-05-15) | geprüft 2026-05-15 (Klaus) — 6/6 Test-Punkte grün | Endknoten-Pflege-UI für `sbkim_hetero_outbox` und `sbkim_siblings.heterokaryosisOptIn`; Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00 (`UiDemoDependenciesError` / `InvalidAnchorLabelError` / `InvalidAnchorVectorError` / `OutboxFullError` / `UnknownSiblingError` / `InvalidOptInArgError`), drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`). Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox` (v=3-Store aus Pflege Bau 06.1, Schlüssel `label`, max. `HETERO_OUTBOX_MAX_ENTRIES`=5, absteigend nach `addedAt`, Überschreiben statt Verdrängen) und Co-Schreiber für `sbkim_siblings.heterokaryosisOptIn` (Modul 05 unangetastet, Karte-01-Vertragserweiterung). **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign({}, sibling, {heterokaryosisOptIn})`. Self-Apoptose-Knopf bewusst NICHT in Panel 08 (Spec-Sitzung 08-Entscheidung respektiert). Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Sichttest geprüft 2026-05-15 (Klaus): 6/6 Test-Punkte grün im ersten Lauf** (Pflege-Sitzung Sichttest-Resultate 2026-05-15). |
 | 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15, Pflege App-SW-Koexistenz 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt — plus Pflege App-SW-Koexistenz (2026-05-15): Schritt 3 a/b-Verzweigung (Pre-Flight-Check → 3a `register('sbkim-sw.js')` für PWA ohne eigenen SW, 3b `importScripts('./sbkim-sw.js')` im bestehenden App-SW für PWA mit eigenem SW), achtes Risiko „App-SW-Überschreibung", `sbkim-sw.js` `SBKIM_SW_STANDALONE`-Flag rückwärtskompatibel (Default `true`, `false` für Variante 3b) |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
@@ -296,75 +296,80 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
-### 2026-05-15 · Pflege-Sitzung · PULS-Archivierung
+### 2026-05-15 · Pflege-Sitzung · Sichttest-Resultate (Sage-Page mehrschichtig + Panel 08)
 
-**Sitzungs-Rolle:** Pflege-Sitzung Token-Budget, headless, EINE
-Phase. Datei-Scope: ausschließlich `docs/PULS.md` (§ Sitzungs-
-Einträge) plus ein nachträglich angelegtes Übergabeprotokoll für die
-2026-05-10-Skelett-Anlage-Sitzung, die als einzige kein Archiv-
-Übergabeprotokoll hatte. **Keine** Änderung an `src/modules/*`,
+**Sitzungs-Rolle:** Pflege-Sitzung Resultate-Vermerk, headless,
+EINE Phase. Datei-Scope: ausschließlich `docs/PULS.md` (§ Als
+nächstes Modul 08, § Schnellüberblick Modul 08, § Sitzungs-Einträge
++ Archiv-Index). **Keine** Änderung an `src/modules/*`,
 `tests/manual_check.html`, `docs/INTERFACES.md`, `status.json`,
 `index.html`, Komponenten-Karten, Pie.
 
-**Anlass:** PULS.md war auf 4758 Zeilen angewachsen — gegen das harte
-CLAUDE.md-Limit von 400 Zeilen. Jede Sitzung seit 2026-05-10 trug
-einen ausführlichen Eintrag (60-240 Zeilen) in PULS ein, parallel zu
-einem Übergabeprotokoll im Archiv. Die Doppel-Buchführung kostet
-Token-Budget in jeder neuen Sitzung beim Pflichtleseliste-Lesen,
-ohne zusätzlichen Nutzen — das Archiv ist die kanonische Quelle.
+**Anlass:** Klaus' zwei ausstehende Sichttests aus den vorherigen
+Pflege- und Bau-Sitzungen sind 2026-05-15 im Tablet-Browser
+abgeschlossen — beide **grün, keine Befunde, keine Folge-Pflege
+nötig**:
+
+1. **Sage-Page Lebenszyklus mehrschichtig** (Pflege 2026-05-15,
+   PR #41) — Phase-4-Richtung korrekt (Tropfen B → A statt
+   A → B), Schicht-Tabs „Anfrage-Reise" / „Knoten-Leben"
+   funktionieren, Klick-Lernpfad bis zur Gesamt-Sequenz läuft,
+   Tropfen-mit-Schweif und Funken-Blitz visuell sichtbar.
+2. **Panel 08 UI-Demo** (Bau-Sitzung 08 2026-05-15, PR #40) —
+   sechs Outbox-/Opt-In-Test-Punkte durchgeklickt, alle grün im
+   ersten Lauf.
 
 **Getan:**
 
-- **`docs/PULS.md` § Sitzungs-Einträge umgebaut.** Alle 32
-  Sitzungs-Einträge (2026-05-10 bis 2026-05-15) durch eine kompakte
-  Index-Tabelle ersetzt (Datum, Sitzung, Archiv-Link). Der jüngste
-  Eintrag (diese Pflege-Sitzung) bleibt ausführlich oben — als
-  Anker für die nächste Sitzung, die ihre Pflichtleseliste durchgeht.
-- **`docs/sessions/archiv/2026-05-10_skelett-anlage.md` neu angelegt.**
-  Die initiale Hauptsitzung vom 2026-05-10 hatte als einzige kein
-  eigenes Übergabeprotokoll im Archiv. Inhalt 1:1 aus dem damaligen
-  PULS-Eintrag rekonstruiert, keine Re-Interpretation; mit Hinweis-
-  Block am Ende, dass die Datei nachträglich (2026-05-15) angelegt
-  wurde.
-- **`docs/PULS.md` Zeilen 1–289 unverändert.** §§ Modulstand heute,
-  Als nächstes, Schnellüberblick, Endknoten, Offene Querschnitts-
-  Fragen, Schutz-Backlog, Diffusion-Backlog bleiben — sie sind
-  lebende Information, keine archivierbare Sitzungs-Historie.
-  Wenn diese Sektionen selbst über Zeit-Limit wachsen, ist das eine
-  eigene Pflege-Sitzung wert.
+- **§ Als nächstes Modul 08-Eintrag** aktualisiert: „Sichttest
+  ausstehend (headless gebaut, wartet auf Klaus' Browser — sechs
+  Outbox-/Opt-In-Test-Punkte durchklicken)" → „Sichttest geprüft
+  2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün". Header
+  „**Sichttest ausstehend:**" → „**Sichttest geprüft 2026-05-15:**".
+- **§ Schnellüberblick Modul 08-Zeile** Spalte „Manueller
+  Sichttest" von „—" auf „geprüft 2026-05-15 (Klaus) — 6/6
+  Test-Punkte grün" gesetzt; letzter Satz im Anmerkungs-Feld
+  von „Sichttest ausstehend (headless gebaut, wartet auf Klaus'
+  Browser)" auf „**Sichttest geprüft 2026-05-15 (Klaus): 6/6
+  Test-Punkte grün im ersten Lauf**" geändert.
+- **§ Sitzungs-Einträge** durch die Format-Konvention rotiert
+  (Pflege PULS-Archivierung 2026-05-15) — bisheriger Sitzungs-
+  Eintrag „PULS-Archivierung" als Index-Zeile in den Archiv-Index
+  verschoben, dieser neue Eintrag steht ausführlich oben. PULS-
+  Zeilenzahl bleibt unter 400.
 
 **Was bewusst nicht geändert wurde:**
 
-- **§ Offene Querschnitts-Fragen** unverändert, obwohl ~141 Zeilen
-  lang. Sie dokumentieren historische Entscheidungen mit
-  `~~strikethrough~~` für Gelöstes. Eine spätere Pflege kann das
-  Gelöste in ein separates Glossar-Dokument auslagern; in dieser
-  Pflege bleiben alle Quellen-Belege drin.
-- **§ Schnellüberblick** unverändert — die Tabelle ist eine
-  20-Zeilen-Übersicht der Modul-Stände, die jede Sitzung in 30
-  Sekunden lesen können soll.
-- **`src/modules/*`**, **`status.json`**, **`docs/INTERFACES.md`**,
-  **`index.html`**, **Komponenten-Karten**, **Pie** — alles
-  unangetastet.
-- **Pflichtleseliste-Hinweise in CLAUDE.md** unverändert. Die Regel
-  „PULS.md lesen" bleibt; nach dieser Pflege ist sie billiger.
+- **Sage-Page-Sichttest** hat keine eigene Modul-Zeile im
+  § Schnellüberblick (Sage-Page ist nicht protokoll-aktiv). Der
+  Sichttest-Vermerk steht hier im Sitzungs-Eintrag — Modul 08
+  ist der einzige § Schnellüberblick-Eintrag, der angefasst wird.
+- **`status.json`** unverändert — Modul 08 bleibt `score:"stub"`,
+  `siegel:"Code-Stub"`. Ein Sichttest-Erfolg ist kein automatischer
+  Wechsel auf `fertig` — diese Schwelle wäre die Live-Andock-
+  Integration in einer der Endknoten-PWAs (Modul 09 zweite
+  Iteration), nicht der manuelle Panel-Sichttest.
+- **Keine Pie-Regeneration** — kein Score-Wechsel.
+- **`src/modules/*`**, **`docs/INTERFACES.md`**, **`index.html`**,
+  **`tests/manual_check.html`**, **alle Komponenten-Karten**
+  unverändert.
 
 **Validierung:**
 
-- **Vorher:** PULS.md 4758 Zeilen.
-- **Nachher:** PULS.md ≈ 400 Zeilen (Ziel).
-- **Archiv-Index-Abdeckung:** alle 33 vorigen Sitzungs-Einträge
-  haben einen Archiv-Link; das einzige fehlende Übergabeprotokoll
-  (Skelett-Anlage) wurde in dieser Pflege angelegt.
-- **Markdown-Syntax** der neuen Tabelle stichprobenhaft geprüft.
-- **Keine Änderung an heiligen Tafeln** (INTERFACES.md, status.json).
+- **PULS-Zeilenzahl** nach Rotation: ~400 Zeilen Ziel; tatsächlich
+  durch das Verschieben der Bisherigen-Sitzung in den Index
+  niedriger als die 426 nach der Archivierung.
+- **Modul-08-Sichttest-Status** in zwei Quellen konsistent (§ Als
+  nächstes + § Schnellüberblick).
+- **Konvention durchgezogen:** PULS-Archivierung-Eintrag von ~85
+  ausführlichen Zeilen oben in eine Index-Tabellen-Zeile mit
+  Archiv-Link — die im Vorspann von § Sitzungs-Einträge
+  festgehaltene Format-Konvention funktioniert in der Praxis.
 
 **Was offen blieb:**
 
-- **Keine Modul-Lücke.** Diese Pflege ist reine Token-Hygiene.
-- **Folge-Pflege „Offene Querschnitts-Fragen kürzen"** möglich,
-  sobald sie selbst aus dem Rahmen läuft (heute 141 Zeilen, noch
-  unter Schmerzgrenze).
+- **Keine Modul-Lücke.** Beide Sichttests grün; kein Folge-Test,
+  keine Folge-Pflege.
 
 **Nächster sinnvoller Schritt (mehrere gleichberechtigt):**
 
@@ -373,11 +378,7 @@ ohne zusätzlichen Nutzen — das Archiv ist die kanonische Quelle.
    Iteration. *Headless möglich.*
 2. **Bau-Sitzung Modul 09 zweite Iteration** mit Klaus am Live-
    Andock-Versuch. *Nicht headless.* Wartet auf Pflege Karte 09.
-3. **Klaus' Sichttest Sage-Page Lebenszyklus mehrschichtig** im
-   Tablet-Browser (offen seit Pflege 2026-05-15). *Nicht headless.*
-4. **Klaus' Sichttest Panel 08** im Browser (offen seit Bau 08,
-   2026-05-15). *Nicht headless.*
-5. **Mini-Pflege Panel 07 Test 6** (`allEmpty`-Check um
+3. **Mini-Pflege Panel 07 Test 6** (`allEmpty`-Check um
    `sbkim_hetero_inbox` erweitern). *Headless möglich.* Niedrige
    Dringlichkeit.
 
@@ -385,11 +386,12 @@ ohne zusätzlichen Nutzen — das Archiv ist die kanonische Quelle.
 
 ## Archiv-Index (Sitzungen vor dieser Pflege)
 
-Alle Sitzungen bis einschließlich Pflege Sage-Page Lebenszyklus
-mehrschichtig (2026-05-15) sind ausgelagert. Neueste oben.
+Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
+(2026-05-15) sind ausgelagert. Neueste oben.
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-15 | Pflege · PULS-Archivierung (4758 → 426 Zeilen, Sitzungs-Einträge in Archiv-Index, Konvention für Folgesitzungen) | [→ Archiv](sessions/archiv/2026-05-15_pflege-puls-archivierung.md) |
 | 2026-05-15 | Pflege · Sage-Page Lebenszyklus mehrschichtig (Phase-4-Fix + Schicht „Knoten-Leben" + Klick-Lernpfad + reichere Animationen) | [→ Archiv](sessions/archiv/2026-05-15_pflege-sage-page-lebenszyklus-mehrschichtig.md) |
 | 2026-05-15 | Bau 08 · Modul 08 UI-Demo (Endknoten-Pflege-UI für `sbkim_hetero_outbox` + `heterokaryosisOptIn`) | [→ Archiv](sessions/archiv/2026-05-15_bau-08-ui-demo.md) |
 | 2026-05-15 | Pflege · Bau 06.1 Outbox-Lese-Pfad in Modul 06 + DB-Version 2 → 3 | [→ Archiv](sessions/archiv/2026-05-15_pflege-bau-06.1-outbox-lese-pfad.md) |
