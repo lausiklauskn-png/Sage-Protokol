@@ -38,7 +38,12 @@ PIE_RE = re.compile(
 
 def count_statuses(status):
     counts = {key: 0 for key, _ in STATUS_ORDER}
-    for module in status.get("modules", []) + status.get("schutzBacklog", []):
+    pool = (
+        status.get("modules", [])
+        + status.get("schutzBacklog", [])
+        + status.get("diffusionBacklog", [])
+    )
+    for module in pool:
         score = module.get("score")
         if score not in counts:
             raise SystemExit(

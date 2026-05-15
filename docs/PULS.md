@@ -15,8 +15,8 @@
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-15 (13 Module)
-  "🟫 Schablone" : 4
+  title Modulstand 2026-05-15 (14 Module)
+  "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 1
   "🟨 Spec fertig" : 1
   "🟦 Code-Stub" : 7
@@ -88,6 +88,7 @@ sitzt in der Andock-Anleitung, nicht in den Modulen.
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
+| 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -204,6 +205,34 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   02-Backup und 01-Quota spruchreif sind. Modul 00 hat seinen Teil
   verankert; die Frage bleibt offen, weil 01/02 noch nicht spruchreif
   sind.
+- ~~**Spore-Diffusion: passiv (Pfad 1) vs. konsensuell-empfehlend
+  (Pfad 2) vs. parasitär-mitreisend (Pfad 3)?**~~ — **gelöst
+  2026-05-15 in Hauptsitzung 14-Diffusion-Stub durch Anlage
+  [`docs/components/14_diffusion.md`](components/14_diffusion.md)**.
+  Frage entstand in der abgebrochenen Bau-Sitzung Modul 09 vom
+  2026-05-15 (siehe parallele Pflege-Sitzung Karte 09 „App-SW-
+  Koexistenz" auf eigenem Branch). Verbindliche Auswahl: **Pfad 2
+  (konsensuell-empfehlend)** über `recommendedPeers: SporeRef[]` als
+  optionales Handshake-Antwort-Feld (max. 2 Einträge), Empfänger
+  speichert als Lead mit TTL, opt-in pro Empfehlung — drehbuchkonform,
+  weil jede Übergabe im Konsens. **Pfad 1 (passiv via
+  `/sbkim/spore.json`)** bleibt Default-Mechanismus parallel.
+  **Pfad 3 (parasitär-mitreisend)** explizit verworfen, weil er das
+  Empfangsmodus-Prinzip aus `CLAUDE.md` und `sbkim_paper.pdf`
+  („Kein Crawler, keine Pulsation, keine Eigenanfragen ins offene
+  Netz") bricht. Modul 14 bleibt Stub bis Netz wächst (Schwelle siehe
+  Diffusion-Backlog unten); Karte 05 wird in der Stub-Sitzung
+  NICHT angefasst.
+- **Sage-Page sichtbar machen für Modul 14** (offen, eingetragen
+  2026-05-15 nach Hauptsitzung 14-Diffusion-Stub). `index.html`
+  rendert aktuell `modules[]` und `schutzBacklog[]`; das neue
+  `diffusionBacklog[]` wird nicht angezeigt. Modul 14 muss in der
+  Bau-Puls-Karte und (analog zu 10/11/12 in Karte 13 Eigenschutz)
+  ggf. in einer eigenen Karte „Wuchs-Mechanik" oder als Sub-
+  Sektion neben dem Schutz-Backlog sichtbar werden. **Folge-Pflege-
+  Sitzung „Sage-Page für Modul 14"** — diese Hauptsitzung berührt
+  den Anker nur in `status.json` + Karte + PULS, nicht die
+  Sage-Page selbst.
 
 ## Schutz-Backlog (aus Sage-Page Karte 13, 2026-05-10)
 
@@ -218,9 +247,212 @@ ab spürbarem Wachstum:
 Eigenschutz-Karte der Sage-Page macht das Backlog für jeden Besucher
 sichtbar und verlinkt direkt auf die Stubs.
 
+### Diffusion-Backlog (aus Hauptsitzung 14-Diffusion-Stub, 2026-05-15)
+
+Schutz und Diffusion sind zwei verschiedene Backlog-Kategorien. Der
+Schutz-Backlog (10/11/12) ist **reaktiv** — er wehrt Schaden ab, wenn
+das Netz groß genug ist, dass Apoptose und Match-Filter allein nicht
+mehr reichen. Der Diffusion-Backlog ist **proaktiv** — er beschleunigt
+das Wachstum durch konsensuelle Empfehlung beim Handshake, ohne das
+Empfangsmodus-Prinzip zu brechen.
+
+- `docs/components/14_diffusion.md` — konsensuell-empfehlende Spore-
+  Diffusion via Handshake-Erweiterung (`recommendedPeers: SporeRef[]`
+  als optionales Feld in der `HandshakeResponse`, max. 2 Einträge,
+  Empfänger speichert als Lead mit TTL, opt-in pro Empfehlung)
+
+Pfad-Auswahl verbindlich Pfad 2 (konsensuell-empfehlend);
+Pfad 1 (passiv via `/sbkim/spore.json`) bleibt Default-Mechanismus
+parallel; Pfad 3 (parasitär-mitreisend) verworfen wegen
+Empfangsmodus-Prinzip aus `CLAUDE.md` + `sbkim_paper.pdf`.
+
+Modul 14 wird gezogen, sobald **Netz ≥ 10 aktive Geschwister ODER
+Bau-Sitzung Modul 09 erfolgreich abgeschlossen UND spürbares
+Wachstums-Bedürfnis** — parallel zur 10/11/12-Logik.
+
+`status.json` führt Modul 14 als eigenes Feld `diffusionBacklog[]`
+parallel zu `schutzBacklog[]` (proaktiv vs. reaktiv); `scoreModel.
+maxScoreNote` bleibt unangetastet (Backlog zählt nicht zum maxScore).
+Das Pie-Skript `scripts/update_puls_pie.py` zählt beide Backlog-
+Kategorien jetzt mit.
+
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Hauptsitzung · Modul 14 Diffusion — Backlog-Stub angelegt
+
+**Getan:**
+
+- **`docs/components/14_diffusion.md` angelegt** als reiner
+  Backlog-Stub im Format der Schutz-Module 10/11/12. Status-Block
+  🟫 Schablone · Diffusion-Backlog · Priorität niedrig · Spec
+  ausstehend. **Kein Spec-Detail** (keine Funktions-Signaturen,
+  keine Datenformate, keine Konfigurationswerte, keine Tests),
+  **kein JS-Code** in `src/`. Reiner Anker mit drei dokumentierten
+  Diffusionspfaden, verbindlicher Auswahl, Hook-Verweisen zu
+  10/11/12 und Schwellwert für späteres Ziehen.
+- **Drei Diffusionspfade** dokumentiert (entstanden in der
+  abgebrochenen Bau-Sitzung Modul 09 vom 2026-05-15, siehe
+  parallele Pflege-Sitzung Karte 09 „App-SW-Koexistenz" auf
+  eigenem Branch):
+  - **Pfad 1 — passiv (Status quo):** `/sbkim/spore.json` wird
+    gefunden, langsam — bleibt **Default-Mechanismus** parallel.
+  - **Pfad 2 — konsensuell-empfehlend** ✅ **verbindlich
+    gewählt:** zwei Knoten tauschen beim Handshake (Karte 05) je
+    1–2 Empfehlungs-Spores anderer Geschwister. Drehbuchkonform,
+    weil jede Übergabe im Konsens.
+  - **Pfad 3 — parasitär-mitreisend** ❌ **verworfen:** bricht
+    das Empfangsmodus-Prinzip aus `CLAUDE.md` und
+    `sbkim_paper.pdf` („Kein Crawler, keine Pulsation, keine
+    Eigenanfragen ins offene Netz") — nicht weiterverfolgt, auch
+    nicht als Option.
+- **Was eine spätere Spec-Sitzung füllen müsste** (sechs Anker
+  ohne Detail-Festlegung):
+  - (a) Handshake-Erweiterung Karte 05: Feld
+    `recommendedPeers: SporeRef[]` in der Anastomose-Antwort,
+    max. zwei Einträge — **eigene Pflege-Sitzung Karte 05** wenn
+    Modul 14 spec-spruchreif ist.
+  - (b) Empfehlungs-Quelle aus eigenem `sbkim_siblings`-Bestand,
+    gefiltert nach Vertrauenswert.
+  - (c) Empfangsseite: **opt-in pro Empfehlung**, kein
+    Auto-Anastomose, Empfänger speichert als Lead in einem neuen
+    Store `sbkim_diffusion_leads` mit TTL.
+  - (d) Trust-Hook auf Karte 10 Reputation
+    (Empfehlungs-Quellen werden gewichtet).
+  - (e) Rate-Limit-Hook auf Karte 11
+    (Empfehlungs-Limit pro Handshake, Anti-Flood).
+  - (f) Anti-Vergiftung: Empfehlungs-Spores haben weniger
+    Vertrauen als selbst-gefundene Spores.
+- **Schwellwert „Wann ziehen"** dokumentiert: Netz ≥ 10 aktive
+  Geschwister **ODER** Bau-Sitzung Modul 09 erfolgreich
+  abgeschlossen **UND** spürbares Wachstums-Bedürfnis (parallel
+  zur 10/11/12-Logik).
+- **Verbindungen zu anderen Karten** als reine Verweise (nicht
+  implementiert): Karte 05 (Handshake-Erweiterung), Karte 06
+  (Lead-Pool für Heterokaryose), Karte 10 (Trust-Gewicht), Karte 11
+  (Anti-Flood-Quote), Karte 12 (Filter beidseits — geblockte
+  Knoten dürfen weder empfehlen noch empfohlen werden).
+- **Risiken** benannt: Echo-Kammer · Diffusion-Sybil · Trust-
+  Inflation · Privacy-Leak (Empfehlung verrät dem Empfänger, dass
+  der Empfehlende den Empfohlenen kennt).
+- **`status.json` erweitert** um neues Feld `diffusionBacklog[]`
+  parallel zu `schutzBacklog[]` (proaktiv vs. reaktiv — bewusste
+  Architektur-Entscheidung). Eintrag Modul 14:
+  `{"id":"14","name":"Diffusion","score":"schablone","siegel":
+  "Stub (Backlog), Priorität niedrig","kurz":"…Pfad 2
+  (drehbuchkonform)…"}`. `lastUpdated` auf `2026-05-15`. `scoreModel.
+  maxScoreNote` **unangetastet** (Backlog zählt nicht zum maxScore,
+  analog 10/11/12).
+- **`scripts/update_puls_pie.py` erweitert** um Lesen von
+  `diffusionBacklog` (zusätzlich zu `modules` + `schutzBacklog`),
+  damit der Pie-Block Module 14 als Schablone mitzählt. Skript
+  gelaufen: **13 → 14 Module, Schablonen 4 → 5**, andere
+  Score-Verteilungen unverändert.
+- **PULS.md erweitert:** (1) Schnellüberblicks-Tabelle um neue
+  Zeile „14 diffusion" analog 10/11/12; (2) Offene
+  Querschnitts-Fragen: Diffusion-Frage als gelöst markiert
+  (durchgestrichen plus Verweis auf Karte 14) und neue offene
+  Frage „Sage-Page sichtbar machen für Modul 14" angelegt; (3)
+  neuer Sub-Abschnitt „Diffusion-Backlog" unter dem Schutz-
+  Backlog mit Begründung „proaktiv vs. reaktiv" und Schwellwert-
+  Verweis; (4) dieser Sitzungs-Eintrag oben.
+- **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende
+  ergänzt (neueste unten, Konventions-Stil wie die anderen
+  2026-05-15-Sitzungen). **§1 unangetastet** — Stub hat keine
+  Schnittstelle; Schnittstellen-Spiegelung kommt erst in der
+  späteren Spec-Sitzung.
+- **Übergabeprotokoll** unter
+  `docs/sessions/archiv/2026-05-15_haupt-14-diffusion-stub.md`
+  angelegt (Format wie
+  `2026-05-15_pflege-09-schritt-9-doku-ttl.md`).
+
+**Was nicht geändert wurde (bewusst):**
+
+- **Kein Spec-Detail für Modul 14.** Keine Funktions-Signaturen,
+  keine Datenformate (`SporeRef`-Form bleibt offen), keine
+  Konfigurationswerte (TTL-Wert bleibt offen), keine Tests, keine
+  Manual-Check-Knöpfe. Das ist Spec-Sitzungs-Arbeit später, wenn
+  die Schwelle erreicht ist.
+- **Keine Änderung an Karte 05 Anastomose.** Die Handshake-
+  Erweiterung um `recommendedPeers: SporeRef[]` gehört in eine
+  eigene Pflege-Sitzung Karte 05, sobald Modul 14 spec-
+  spruchreif ist. Karte 05 § Schnittstelle bleibt verbindlich
+  fünf-funktional.
+- **Keine Änderung an Karte 10/11/12.** Die Hook-Punkte werden
+  in Karte 14 nur als Verweis dokumentiert, nicht implementiert.
+  Stubs 10/11/12 bleiben unangetastet.
+- **Kein JS-Code in `src/`.** `src/modules/14_diffusion.js`
+  existiert nicht und entsteht erst nach Spec-Sitzung 14.
+- **INTERFACES.md §1** unangetastet — Stub hat keine
+  Schnittstelle, keine `kurz`-Zeile, keinen Bietet-Block. Nur §6
+  bekommt eine Änderungsprotokoll-Zeile.
+- **Sage-Page (`index.html`) und Observatorium nicht berührt.**
+  Modul 14 ist in Bau-Puls-Karte und Eigenschutz-Karte 13 noch
+  nicht sichtbar — `index.html` rendert aktuell `modules[]` und
+  `schutzBacklog[]`, nicht `diffusionBacklog[]`. Als offene
+  Querschnitts-Frage „Sage-Page sichtbar machen für Modul 14"
+  in PULS notiert; Folge-Pflege-Sitzung zieht nach. Diese
+  Hauptsitzung berührt nur den Anker.
+- **Kein Anfassen der parallel offenen Pflege-Sitzung Karte 09
+  „App-SW-Koexistenz"** — die läuft auf eigenem Branch und ist
+  unabhängig. Befund-Kontext aus der dort entstandenen
+  Diffusion-Frage wurde nur als Anker-Hinweis in Karte 14 und
+  als Verweis in den Querschnitts-Fragen eingetragen.
+
+**Frischer-Kopf-Befund: Backlog-Schema erweitert (proaktiv vs. reaktiv)**
+
+Die Architektur-Entscheidung `diffusionBacklog[]` parallel zu
+`schutzBacklog[]` (statt: einen Eintrag in `schutzBacklog`
+ergänzen) ist die saubere Trennung: **Schutz ist reaktiv**, der
+Stub wird gezogen, wenn das Netz angegriffen wird oder zu groß
+für Apoptose-allein wird. **Diffusion ist proaktiv**, der Stub
+wird gezogen, wenn das Netz zu klein bleibt und konsensuelles
+Wachstum gewünscht ist. Beide haben dieselbe Eigenschaft
+(„zählen nicht zum maxScore, weil zukunftsgewandt"), aber
+unterschiedliche Auslöser. Konsequenz: das Pie-Skript zählt
+beide Backlog-Kategorien mit, `scoreModel.maxScoreNote` bleibt
+unangetastet, Sage-Page-Folge-Pflege-Sitzung wird nachziehen.
+
+**Was offen blieb:**
+
+- **Sage-Page (`index.html`) sichtbar machen für Modul 14** —
+  Folge-Pflege-Sitzung „Sage-Page für Modul 14" zieht den
+  Anker in der Bau-Puls-Karte und ggf. in der Eigenschutz-
+  Karte 13 nach (siehe neue Querschnitts-Frage oben).
+- **Modul 06 Heterokaryose Spec-Sitzung** kommt weiterhin
+  erst nach dem ersten Live-Andock; Modul 14 ergibt eine
+  semantisch nahe Schwester (Lead-Pool für Heterokaryose-
+  Vorschläge), wartet aber genauso auf das Netz.
+- **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Live-Andock-
+  Versuch** bleibt der nächste produktive Schritt im Haupt-
+  Pfad (siehe Pflege-Sitzung Karte 09 Schritt 9-Eintrag unten).
+- **Spec-Sitzung 14** wird gezogen, sobald die Schwelle
+  erreicht ist (Netz ≥ 10 aktive Geschwister ODER Bau-Sitzung
+  09 abgeschlossen + Wachstums-Bedürfnis). Aufhänger für eine
+  Pflege-Sitzung Karte 05 sobald Modul 14 spec-spruchreif ist
+  (`recommendedPeers: SporeRef[]` in `HandshakeResponse`
+  einbauen, additiv).
+
+**Nächster sinnvoller Schritt:**
+
+1. **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus am Live-Andock-
+   Versuch** zwischen Rezeptbuch und Mixarium (Karte 09
+   vollständig auf neun Schritten, Module 00/05/07 alle
+   Code-Stub + sichtgeprüft). Nicht headless ausführbar.
+2. **Folge-Pflege-Sitzung „Sage-Page für Modul 14"** —
+   `index.html` (Bau-Puls + ggf. Eigenschutz-Karte 13) um
+   `diffusionBacklog[]` erweitern, damit Modul 14 sichtbar wird.
+   Klein, headless ausführbar, parallel zu Bau-Sitzung 09
+   möglich.
+3. Nach dem Live-Andock: **Spec-Sitzung Modul 06
+   Heterokaryose** (Klaus weiß dann aus echtem Endknoten-
+   Betrieb, welche Daten austauschenswert sind).
+4. Spec-Sitzung Modul 14 erst bei Erreichen des Schwellwerts
+   (Netz ≥ 10 oder erfolgreicher Live-Andock + Wachstums-
+   Bedürfnis).
+
+---
 
 ### 2026-05-15 · Bau-Sitzung Modul 09 — BLOCKIERT vor Schritt 1 (App-SW-Konflikt in beiden Endknoten)
 
