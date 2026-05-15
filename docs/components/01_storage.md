@@ -154,10 +154,11 @@ Erst `await init()` öffnet die IndexedDB.
 |---|---|---|---|---|
 | `sbkim_keys` | `"main"` (fest) | `{ keyId, privateKey, publicKey }` | 02 | 02, 07 |
 | `sbkim_spore` | `"main"` (fest) | `{ nodeId, sporeJson, signature }` | 02 | 02, 05 |
-| `sbkim_siblings` | `nodeId` | `{ nodeId, domain, endpoint, pubKey, since, heterokaryosisOptIn? }` | 05 | 04, 05, 06, 07 |
+| `sbkim_siblings` | `nodeId` | `{ nodeId, domain, endpoint, pubKey, since, heterokaryosisOptIn? }` | 05 (Haupt), 08 (Co, nur Feld `heterokaryosisOptIn`) | 04, 05, 06, 07, 08 |
 | `sbkim_anastomosis_log` | `ts` (ISO-String) | `{ ts, peerId, outcome }` | 05, 06 | 05, 07 |
 | `sbkim_legacy_inbox` | `fromNodeId` | `{ fromNodeId, reason, signature, receivedAt }` | 07 | 07 |
 | `sbkim_hetero_inbox` | `<peerNodeId>\|<ts>` (Komposit) | `{ peerNodeId, ts, anchors, signature, receivedAt }` | 06 | 06, 00, 08 |
+| `sbkim_hetero_outbox` | `label` (string ≤ 64 Zeichen) | `{ label, vector, addedAt }` | 08 | 06, 08 |
 | `sbkim_doku_meta` | `moduleId` | `{ moduleId, lastSighttest, status }` | 00 | 00 |
 
 Alle Store-Namen beginnen mit `sbkim_` (Konstante `SBKIM_STORE_PREFIX`).
@@ -169,14 +170,34 @@ Versionsmigration).
 Schema-Hinweise:
 
 - `sbkim_siblings.heterokaryosisOptIn` ist **additiv und optional** (aus
-  Spec-Sitzung 06). Modul 05 setzt das Feld NICHT — Klaus setzt es pro
-  Geschwister im Endknoten-UI (Modul 00 / Modul 08, eigene Folge-
-  Pflege). Modul 06 liest fail-soft (fehlend → default `false`).
+  Spec-Sitzung 06). Modul 05 setzt das Feld NICHT. Klaus setzt es pro
+  Geschwister im Endknoten-UI über Modul 08 (Spec-Sitzung 08).
+  **Co-Schreiber-Konvention seit Spec-Sitzung 08:** Modul 08 darf
+  AUSSCHLIESSLICH dieses eine Feld setzen, wenn der Eintrag bereits
+  existiert (`SbkimUiDemo.setSiblingHeteroOptIn(peerNodeId, optIn)` —
+  liest den Eintrag, ändert nur das eine Feld, schreibt zurück; sonst
+  `UnknownSiblingError`). Haupt-Schreiber des Stores (alle anderen
+  Felder) bleibt Modul 05. Modul 06 liest fail-soft (fehlend → default
+  `false`).
 - `sbkim_hetero_inbox` nutzt einen **Komposit-Schlüssel** `<peerNodeId>|<ts>`
   (Pipe-getrennt). Damit akkumulieren mehrere Pulls über die Zeit als
   Drift-Spur, ohne ältere Einträge zu überschreiben. Schreiber 06; Leser
   06 (`listHeterokaryosis`/`forgetHeterokaryosis`), 00 (Doku-Fenster
   Inbox-Anzeige als Folge-Pflege), 08 (UI-Demo, Spec-Sitzung 08).
+- `sbkim_hetero_outbox` (Spec-Sitzung 08) nutzt `label` als Schlüssel
+  (string ≤ 64 Zeichen, eindeutig pro Knoten — siehe Anker-Form aus
+  Karte 06). Doppelte `addOutboxAnchor`-Aufrufe mit gleichem Label
+  überschreiben den Eintrag und aktualisieren `addedAt`. Max.
+  `HETERO_OUTBOX_MAX_ENTRIES` Einträge (= 5, §0); ein sechster Anker
+  mit neuem Label wirft `OutboxFullError` (kein automatisches
+  Verdrängen — Klaus muss manuell `removeOutboxAnchor` rufen).
+  Reihenfolge in `listOutbox`: **absteigend nach `addedAt`** (neueste
+  zuerst), damit die UI das gerade Gepflegte oben zeigt und Modul 06
+  beim Pull die frischesten Anker liefert. Modul 06 ist Leser
+  (fail-soft: Store leer / nicht vorhanden → Fallback auf Spore-
+  Single-Anker mit Label `"(domain)"`). Der Outbox-Lese-Pfad in
+  `src/modules/06_heterokaryose.js` folgt in einer Folge-Pflege Bau
+  06.1 nach Spec-Sitzung 08.
 - `sbkim_anastomosis_log` hat ab Spec-Sitzung 06 **zwei Schreiber**
   (05 für Anastomose-Outcomes, 06 für `hetero-*`-Outcomes); das outcome-
   Vokabular ist additiv erweitert. Modul 07's TTL-Sweep bleibt
@@ -193,7 +214,7 @@ Schema-Hinweise:
 
 ```
 DB_NAME    = "sbkim"
-DB_VERSION = 2        // Stand 2026-05-15, Bau-Sitzung 06 (additive Migration)
+DB_VERSION = 3        // Stand 2026-05-15, Spec-Sitzung 08 (additive Migration v=3)
 ```
 
 Migrations-Logik in `onupgradeneeded`:
@@ -214,20 +235,23 @@ Stores werden **nie** überschrieben oder gelöscht.
 |---|---|---|
 | `v=1` | `sbkim_keys`, `sbkim_spore`, `sbkim_siblings`, `sbkim_anastomosis_log`, `sbkim_legacy_inbox`, `sbkim_doku_meta` | Spec+Bau 01 (2026-05-14) |
 | `v=2` | `sbkim_hetero_inbox` | Bau 06 (2026-05-15) |
+| `v=3` | `sbkim_hetero_outbox` | Spec 08 (2026-05-15) |
 
 Künftige Migrationen erhöhen `DB_VERSION` um genau 1 pro Spec-Sitzung,
 die etwas an der Tabelle ändert. Migrations-Schritte sind additiv;
 Drop-Operationen brauchen einen eigenen Spec-Eintrag mit dokumentiertem
-Datenverlust-Pfad. Bestehende Klaus-PWAs mit DB-Version 1 bekommen den
-neuen Store beim nächsten Lade durch den `onupgradeneeded`-Pfad — kein
-Datenverlust, additive Erweiterung.
+Datenverlust-Pfad. Bestehende Klaus-PWAs mit DB-Version 1 oder 2
+bekommen den jeweils fehlenden Store beim nächsten Lade durch den
+`onupgradeneeded`-Pfad — kein Datenverlust, additive Erweiterung. Eine
+PWA mit `v=1` läuft beim nächsten Lade durch `applyMigration(db, 2)`
+*und* `applyMigration(db, 3)` (Loop `for v = oldVersion+1 … newVersion`).
 
 ### Konfigurationswerte
 
 ```
 SBKIM_STORE_PREFIX = "sbkim_"   // INTERFACES.md §0
 DB_NAME            = "sbkim"
-DB_VERSION         = 2
+DB_VERSION         = 3
 ```
 
 ---
@@ -304,6 +328,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Code geschrieben | 2026-05-14 | Bau 01 | `src/modules/01_storage.js`, IIFE mit `window.SbkimStorage`, vier Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
 | Sichttest | 2026-05-14 | Bau 01 | geprüft 2026-05-14 (Klaus, im Browser): init/round-trip/Unknown-Store sauber. DB `sbkim` mit sechs Stores in DevTools sichtbar. |
 | Pflege Bau 06 Store-Anmeldung | 2026-05-15 | Bau 06 + Cleanup-Pflege 07 | `DB_VERSION` 1 → 2 (additive Migration); `STORE_NAMES`/`KNOWN_STORES` um `sbkim_hetero_inbox` erweitert (Schlüssel-Komposit `<peerNodeId>\|<ts>`, Schreiber 06, Leser 06/00/08); `onupgradeneeded`-Pfad um `v=2`-Block ergänzt — bestehende PWAs mit DB-Version 1 bekommen den neuen Store beim nächsten Lade additiv, kein Datenverlust. `sbkim_siblings`-Wert-Form-Zeile um optionales `heterokaryosisOptIn`-Feld ergänzt (Schreiber bleibt 05, Modul 05 setzt das Feld NICHT, Modul 06 liest fail-soft); `sbkim_anastomosis_log`-Schreiber-Zeile um Modul 06 erweitert (additive `hetero-*`-outcome-Werte). `node --check src/modules/01_storage.js` grün. |
+| Pflege Spec 08 Outbox-Anmeldung | 2026-05-15 | Spec 08 | `DB_VERSION` 2 → 3 (additive Migration v=3) in § Konfigurationswerte und Versionsmigrations-Tabelle nachgezogen. § Stores um neuen Store `sbkim_hetero_outbox` erweitert (Schlüssel `label` string ≤ 64 Zeichen, Wert `{label, vector, addedAt}`, Schreiber 08, Leser 06/08). `sbkim_siblings`-Schreiber-Spalte um Co-Schreiber-Hinweis „08 (Co, nur Feld `heterokaryosisOptIn`)" erweitert; Leser-Spalte um 08 ergänzt. Schema-Hinweis-Block um Co-Schreiber-Konvention (Modul 08 darf AUSSCHLIESSLICH das eine additive Feld setzen, wenn der Eintrag bereits existiert — sonst `UnknownSiblingError`; Haupt-Schreiber bleibt 05, Karte 05 unangetastet) und um `sbkim_hetero_outbox`-Verhalten (Reihenfolge absteigend nach `addedAt` in `listOutbox`, Überschreib-Verhalten bei doppeltem Label, `OutboxFullError` ohne automatisches Verdrängen, fail-soft-Lese-Recht für Modul 06; Outbox-Lese-Pfad in `src/modules/06_heterokaryose.js` als Folge-Pflege Bau 06.1 notiert) erweitert. **Keine JS-Code-Änderung** in `src/modules/01_storage.js` (`DB_VERSION` und `STORES_V3` zieht Bau-Sitzung 08 nach — Spec-Sitzung 08 spezifiziert nur den Vertrag). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
