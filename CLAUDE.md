@@ -69,6 +69,30 @@ Bevor du `END` machst:
 4. Commit + Push auf `claude/semantic-agent-network-Y03Vg`. Ein Commit pro
    abgegrenzter Aufgabe, sprechende Message.
 
+## Vor dem nächsten Sitzungs-Brief (`Befehl schreiben`)
+
+Wenn der Betreiber am Sitzungs-Ende `Befehl schreiben` tippt, prüfst du
+**vor** dem Formulieren des Briefes den PR-Status — sonst startet die
+nächste Sitzung auf falscher Grundlage und sucht Spuren, die nur in
+ungemergten Branches lebten.
+
+1. **Offene PRs auflisten** (`gh pr list --state open` bzw. das
+   entsprechende MCP-Tool). Eigener Sitzungs-PR + alle parallelen.
+2. **Pro PR eine Einordnung** abgeben: mergen / schließen / lassen,
+   mit Konflikt-Risiko-Hinweis. Wo Konflikte zwischen mehreren PRs
+   wahrscheinlich sind (gleiche Dateien, typisch PULS.md /
+   INTERFACES.md), die Reihenfolge vorschlagen.
+3. **Den Brief gegen den `main`-Stand schreiben**, nicht gegen die
+   eigene Branch-Erwartung. Wenn der Brief Voraussetzungen aus einem
+   ungemergten PR macht, das **explizit** nennen
+   („setzt voraus, dass PR #X gemerged ist") **oder** den Merge zuerst
+   anstoßen.
+4. **Bei mehreren offenen PRs** dem Betreiber eine kurze Merge-
+   Empfehlung vor dem Brief vorlegen (welche Reihenfolge, welche
+   Methode, wer löst Konflikte). Der Brief kommt erst, wenn der
+   Betreiber die Merge-Strategie bestätigt oder explizit „Brief auf
+   aktuellem Stand, keine Merges" sagt.
+
 ## Was du nicht tust
 
 - **Kein Modul-Code ohne Auftrag.** Eine Sitzung, die "nur orientieren"
