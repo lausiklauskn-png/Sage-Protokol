@@ -53,29 +53,25 @@ Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest geprüft 2026-05-15:**
 
 - 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. **Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün** (Pflege-Sitzung Sichttest-Resultate 2026-05-15).
 
-Empfehlung Hauptsitzung: **Spec-Sitzung „Stamm/Gast-Felder in
-Spore-JSON" (additiv, kein Hauptversions-Sprung)** + danach **Bau-
-Sitzung 09 Iteration 3** mit Klaus am Live-Andock-Versuch. Die
-Sitzung *Live Andock Iteration 2 — Eruda + Stamm/Gast* (2026-05-15)
-hat zwei Dinge geliefert: (a) Eruda als Tablet-DevTools-Polyfill ist
-in beide Endknoten-PWAs (`Mein-Mixarium` + `Mein-Rezeptbuch`) auf
-`main` eingebaut — Sichtkontrolle ist damit ohne Desktop-DevTools
-möglich (Variante aus Karte 09 § Tablet-Sichtkontrolle bewährt sich
-live). (b) Aus der ersten Mixarium-Sichtkontrolle ergab sich die
-Erkenntnis, dass Endknoten gewichtete Domänen führen, nicht
-scharfe — Klaus' UI-Begriff „Überraschungs-Plus" deckt sich mit der
-Würth-Analogie (Schrauben = Stamm, Werkzeug = Gast). Konzept-
-Eintrag in [`docs/ARCHITEKTUR.md` § 8](ARCHITEKTUR.md#8-stamm--und-gast-kategorien-domänen-schichtung)
-mit Konsequenzen für Module 02/03/04 und vier offenen Fragen für die
-Spec-Sitzung. **Reihenfolge:** zuerst die Spec-Sitzung (klärt
-Spore-Feldnamen, Match-Dämpfungsfaktor, Embedding-Vektor-Aufteilung),
-dann die Bau-Sitzung 09 Iteration 3 — sonst landen die ersten echten
-Spore-JSONs ohne Stamm/Gast-Felder im Netz und müssen nachsigniert
-werden. **Endknoten-seitige Mini-Pflege „Sushi-Kategorie sichtbar
-machen"** in Mein-Mixarium ist davon entkoppelt und kann Klaus
-parallel anstoßen (sie betrifft nur die Mixarium-`index.html`, kein
-Sage-Modul). Modul-Code (00/01/02/03/04/05/07) bleibt unberührt.
-Details im [Übergabeprotokoll 2026-05-15 Live Andock Iteration 2 — Eruda + Stamm/Gast](sessions/archiv/2026-05-15_live-andock-eruda-stamm-gast.md).
+Empfehlung Hauptsitzung: **Bau-Sitzung 09 Iteration 3** mit Klaus am
+Live-Andock-Versuch (Rezeptbuch + Mixarium). Spec-Sitzung „Stamm/Gast-
+Felder in Spore-JSON" (2026-05-15) hat die Voraussetzung geliefert:
+INTERFACES.md §2 Spore-JSON um zwei optionale Felder
+`stammCategories: string[]` und `guestCategories: string[]` additiv
+erweitert (kein Hauptversions-Sprung, `PROTOCOL_VERSION` bleibt
+`"0.1"`); Karten 02/04 nachgezogen. Modul 04 Match bleibt
+**unverändert** (Stamm/Gast ist Klassifikations-Schicht, kein
+Vektor-Math). Damit kann Iteration 3 die ersten echten
+`/sbkim/spore.json` mit Stamm- und Gast-Kategorien für beide
+Endknoten anlegen. **Endknoten-seitige Mini-Pflege „Sushi-Kategorie
+sichtbar machen"** in Mein-Mixarium ist davon entkoppelt und kann
+Klaus parallel anstoßen. **Tabellen-Bug in INTERFACES.md §6
+Änderungsprotokoll** (Bau-Sitzung 08 + Live Andock Iteration 2
+verschmolzen in einer Tabellenzeile durch Squash-Merge-Artefakt)
+sollte irgendwann durch eine kleine Pflege-Sitzung aufgeräumt
+werden — nicht dringend, beeinträchtigt nur die Lesbarkeit.
+Modul-Code (00/01/02/03/04/05/07) bleibt unberührt. Details im
+[Übergabeprotokoll 2026-05-15 Spec Stamm/Gast Spore-Felder](sessions/archiv/2026-05-15_spec-stamm-gast-spore-felder.md).
 
 ---
 
@@ -85,9 +81,9 @@ Details im [Übergabeprotokoll 2026-05-15 Live Andock Iteration 2 — Eruda + St
 |---|---|---|---|---|
 | 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00 |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | IndexedDB-Wrapper |
-| 02 spore | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) | Ed25519-Identität, Singleton, base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup) |
+| 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) | Ed25519-Identität, Singleton, base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
-| 04 match | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80 |
+| 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80. **Karte 04 § Stamm/Gast-Hinweis 2026-05-15** (Spec-Sitzung Stamm/Gast): Match bleibt unverändert; Stamm/Gast ist Klassifikations-Schicht auf Daten-Ebene, kein Vektor-Math; explizit kein Dämpfungsfaktor, keine zweite Schwelle. |
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
 | 06 heterokaryose | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15) | — | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
@@ -297,88 +293,89 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
-### 2026-05-15 · Live Andock Iteration 2 — Eruda + Stamm/Gast
+### 2026-05-15 · Spec-Sitzung — Stamm/Gast-Felder in Spore-JSON
 
-**Sitzungs-Rolle:** Bau-Sitzung Modul 09 (Live-Andock, zweite Iteration),
-mit Klaus am Tablet, **nicht headless**. Branch
-`claude/bau-09-live-andock-iteration-2-31ml4`. Scope: Eruda-Einbau in
-beide Endknoten + Architektur-Konzept Stamm/Gast (aus der ersten
-Sichtkontrolle herausgewachsen). Schritte 1–9 aus Karte 09 absichtlich
-**noch nicht** ausgeführt; kommen in Iteration 3 nach der Stamm/Gast-
-Spec-Sitzung.
+**Sitzungs-Rolle:** Spec-Sitzung, headless, EINE Phase. Branch
+`claude/spec-stamm-gast-spore-felder`. Scope: die vier offenen Fragen
+aus `docs/ARCHITEKTUR.md` §8 lösen, INTERFACES.md §2 Spore-JSON additiv
+erweitern, Karten 02 und 04 nachziehen.
+
+**Vier Entscheidungen:**
+
+1. **Feldnamen:** `stammCategories: string[]` und `guestCategories:
+   string[]`. Mixed-Convention konsistent mit Sage-Fachvokabular
+   (Spore, Anastomose, Heterokaryose, Apoptose sind ebenfalls deutsch
+   im sonst englischen Schema).
+2. **Match-Eingriff:** **verworfen.** Stamm/Gast ist Klassifikations-
+   Schicht auf Daten-Ebene (UI/Sortier), nicht Vektor-Math. Modul 04
+   bleibt modus-frei mit einer Schwelle. Karte 04 mit explizitem
+   Hinweis dazu ergänzt — verhindert, dass eine spätere Bau-Sitzung
+   einen Dämpfungsfaktor einbaut „weil er hier mal stand".
+3. **`domainVector`:** bleibt **single** in der Erst-Iteration (über
+   alle Kategorien gemittelt). Separate `stammVector` / `guestVector`
+   in einer Folge-Pflege-Sitzung, sobald empirische Match-Verteilung
+   die Trennung motiviert.
+4. **UI-Label:** **„Überraschungs-Plus"** verbindlich für die
+   Endknoten-App-UI (Mixarium / Rezeptbuch). Sage-Page-Doku und
+   technischer Begriff im Sage-Protokol verwenden „Gast-Kategorie".
 
 **Getan:**
 
-- **Eruda in beiden Endknoten auf `main` eingebaut** (zwei Zeilen
-  nach `<head>`, jsdelivr `eruda@3`). Mixarium-Commit `60b04a4`
-  → Push `1a7fdaf..b792576`. Rezeptbuch frisch via
-  `gh repo clone` geholt, Erstkonfig `user.email` auf GitHub-
-  Noreply-Adresse + `user.name=lausiklauskn-png` global, Commit
-  `d92929ec` → Push `7396026..d9292ec`. Beide via Termux statt
-  github.dev (github.dev-Save hängte auf DeX).
-- **Sichtprüfung Mixarium-PWA:** Eruda-Button live, Console spuckte
-  bei Reload `[Mixarium] 6 Orphan-Drink(s) — haben Namen aber keine
-  bekannte Kategorie`. Alle sechs mit `cat:"fid_17763323516422"`
-  und Sushi-/Tempura-Namen (Salmon Sushi Roll, Crispy Sushi Roll,
-  Sushi Roll mit Tempura, Ebi Tempura, Sushi Platte, Sushi Tempura).
-  Klaus' Bestätigung: Items im Rezeptbuch eh schon parallel
-  vorhanden; ehemalige Mixarium-Sushi-Kategorie war gelöscht worden.
-- **Konzept-Diskussion** mit Klaus über Trennen vs. gewichtete
-  Domänen. Klaus' Vorschlag „Essen im Rezeptbuch favorisieren,
-  Getränke im Mixarium favorisieren, der Rest ist Überraschungs-
-  Plus" — validiert mit Würth-Analogie (Schrauben = Stamm, Werkzeug
-  = Gast, aber kein Kinderspielzeug). Wortwahl iteriert von „Wirt"
-  (Biologie-Konnotation Parasit) auf **„Stamm"** (Stammkunde,
-  Stammgeschäft, Pilzstamm — Mycel-Resonanz). UI-Begriff
-  **„Überraschungs-Plus"** für die App-UI verbindlich, technisch
-  heißt es `gast`.
-- **`docs/ARCHITEKTUR.md` § 8 „Stamm- und Gast-Kategorien"
-  angelegt:** Konzept-Begründung, Konsequenzen-Tabelle für Module
-  02/03/04/05/00/08/09, sekundäre Konsequenzen für 06/07/14, vier
-  offene Fragen für die Folge-Spec-Sitzung (Feldnamen deutsch vs.
-  englisch / Match-Dämpfungsfaktor / einzelner vs. separate Stamm-
-  /Gast-Vektoren / UI-Label-Verbindlichkeit). § 1 Gesamtbild
-  bekommt einen Querverweis-Absatz auf § 8.
-- **`docs/INTERFACES.md` § 6** Änderungsprotokoll-Zeile am Ende
-  (Konvention neueste unten). **§ 1 und § 2 unverändert** —
-  optionale Spore-Felder kommen additiv in einer Folge-Spec-Sitzung
-  ohne Hauptversions-Sprung.
-- **PULS § Endknoten-Tabelle, § Empfehlung, § Archiv-Index** und
-  diesen Sitzungs-Eintrag nachgezogen.
+- **`docs/INTERFACES.md` §2 Spore-JSON Optionale Felder** um
+  `stammCategories` + `guestCategories` erweitert (signaturpflichtig
+  wenn vorhanden; Disjunktheit als Hosting-Pflicht, kein
+  Verify-Abbruch).
+- **`docs/INTERFACES.md` §6 Änderungsprotokoll** Zeile am Ende.
+- **`docs/components/02_spore.md` § Datenformat Optionale Felder**
+  Block um die zwei neuen Zeilen ergänzt + Sign-/Verify-Hinweis
+  (kanonische JSON sortiert nur Object-Keys, Array-Reihenfolge
+  unverändert).
+- **`docs/components/04_match.md` § Konfigurationswerte** um
+  Sub-Block „Stamm/Gast-Klassifikation berührt Modul 04 nicht"
+  erweitert.
+- **`docs/ARCHITEKTUR.md` §8** Status auf „Spec festgelegt"
+  hochgestuft; Konsequenzen-Tabelle für Modul 04 von
+  „Dämpfungsfaktor" auf „unverändert" korrigiert; vier offene
+  Fragen mit `~~strikethrough~~` als gelöst markiert + Antworten.
+- **PULS §Empfehlung, §Sitzungs-Einträge, §Archiv-Index** dieser
+  Eintrag nachgezogen.
 
-**Bewusst nicht angefasst:** Karte 09, alle Modul-Karten,
-`src/modules/*`, `tests/manual_check.html`, `index.html`,
-`status.json`. **`update_puls_pie.py` nicht aufgerufen** (keine
-Score-Änderung). **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+**Bewusst nicht angefasst:** §0 (keine neue Konstante),
+§1-Modul-Verträge (Karten-Pflege ist kein API-Eingriff), §3 / §4
+/ §5, `src/modules/*`, `tests/manual_check.html`,
+`status.json`, `index.html`. **`update_puls_pie.py` nicht
+aufgerufen.** **`PROTOCOL_VERSION` bleibt `"0.1"`.**
 
-**Validierung:** Eruda-Buttons live in beiden PWAs sichtbar,
-Mixarium-Console hat als Beleg die Orphan-Drink-Warnung sofort
-ausgegeben. Beide `main`-Pushes konflikt-frei nach `pull --rebase`.
-Karte-09-Hinweis „nach Sichtkontrolle wieder entfernen" steht für
-einen späteren Eruda-Rückbau.
+**Validierung:** Drei Markdown-Files (ARCHITEKTUR / INTERFACES /
+02_spore / 04_match) Cross-Reading durchgezogen — keine
+widersprüchlichen Angaben zwischen ARCHITEKTUR.md §8 (Konsequenzen-
+Tabelle Modul 04 „unverändert") und Karte 04 (eigener Hinweis-Block
+„berührt Modul 04 nicht") und INTERFACES.md §2 (zwei neue
+Optionalen) und Karte 02 (gleiche zwei neuen Optionalen).
 
 **Was offen blieb:**
 
-- **Spec-Sitzung „Stamm/Gast-Felder in Spore-JSON"** — vier offene
-  Fragen aus ARCHITEKTUR.md § 8 sind Eingaben. Spec-Sitzung
-  erweitert INTERFACES.md §2 Spore-JSON additiv und ergänzt Karte
-  04 um den Match-Dämpfungs-Pfad.
-- **Bau-Sitzung 09 Iteration 3** — nach der Spec-Sitzung; trägt
-  Stamm-/Gast-Kategorien in die ersten realen
-  `/sbkim/spore.json` der Endknoten ein (Karte 09 Variante 3b,
-  `importScripts('./sbkim-sw.js')` im App-SW).
+- **Bau-Sitzung 09 Iteration 3** mit Klaus am Live-Andock-Versuch
+  — kann jetzt loslegen. Spore-JSON-Form ist mit Stamm/Gast-Feldern
+  vollständig spezifiziert.
+- **INTERFACES.md §6 Änderungsprotokoll-Tabellen-Bug**: zwei
+  Sitzungs-Einträge (Bau-Sitzung 08 + Live Andock Iteration 2) sind
+  durch einen Squash-Merge-Artefakt in einer Tabellenzeile
+  verschmolzen. Beeinträchtigt nur Lesbarkeit, nicht den Vertrag.
+  Eigene kleine Pflege-Sitzung.
 - **Endknoten-Mini-Pflege „Sushi-Kategorie sichtbar machen"** in
-  Mein-Mixarium (entkoppelt; Klaus kann reaktivieren oder löschen,
-  weil im Rezeptbuch parallel).
-- **Eruda-Rückbau** — zwei Zeilen aus beiden `index.html` zurück,
-  sobald die Sicht-Phase rum ist (ein `sed`-Befehl pro Repo).
+  Mein-Mixarium (entkoppelt).
+- **Eruda-Rückbau** in beiden Endknoten nach erfolgreichem Andock.
 
 **Nächster sinnvoller Schritt:**
 
-1. **Spec-Sitzung „Stamm/Gast-Felder in Spore-JSON"** — *headless
-   möglich*. Klärt die vier offenen Fragen aus ARCHITEKTUR.md § 8.
-2. **Bau-Sitzung 09 Iteration 3** mit Klaus am Live-Andock-Versuch,
-   nach Schritt 1.
+1. **Bau-Sitzung 09 Iteration 3** mit Klaus am Live-Andock-Versuch
+   (Mixarium + Rezeptbuch). *Nicht headless.* Variante 3b mit
+   Pre-Flight + `importScripts` ist Default für beide Endknoten.
+   Stamm/Gast-Kategorien werden direkt in die ersten
+   `/sbkim/spore.json` eingetragen.
+2. **Mini-Pflege INTERFACES.md §6 Tabellen-Bug** — *headless
+   möglich*, niedrige Dringlichkeit.
 3. **Endknoten-Mini-Pflege „Sushi-Kategorie sichtbar machen"** —
    parallel zu Schritt 1 möglich.
 4. **Klaus' Sichttest Panel 06** (Heterokaryose), weiterhin offen.
@@ -392,6 +389,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-15 | Bau · Live Andock Iteration 2 — Eruda in beiden Endknoten + Architektur-Konzept Stamm/Gast | [→ Archiv](sessions/archiv/2026-05-15_live-andock-eruda-stamm-gast.md) |
 | 2026-05-15 | Pflege · Karte 09 App-SW-Koexistenz + Tablet-Sichtkontrolle (Variante 3c + Eruda-Block) | [→ Archiv](sessions/archiv/2026-05-15_pflege-karte-09-app-sw-tablet.md) |
 | 2026-05-15 | Pflege · Sichttest-Resultate (Sage-Page mehrschichtig + Panel 08 — beide grün) | [→ Archiv](sessions/archiv/2026-05-15_pflege-sichttest-resultate.md) |
 | 2026-05-15 | Pflege · PULS-Archivierung (4758 → 426 Zeilen, Sitzungs-Einträge in Archiv-Index, Konvention für Folgesitzungen) | [→ Archiv](sessions/archiv/2026-05-15_pflege-puls-archivierung.md) |

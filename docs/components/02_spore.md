@@ -227,9 +227,20 @@ ein und sind damit signaturpflichtig):
   "domainDescription": "Hausgemachte Kochrezepte, vom Hefeteig bis zur Sauce.",
   "domainKeywords":    ["Backen", "Saucen", "Hauptgang"],
   "domainVector":      [/* 384 floats, optional bei kleinen Spores */],
-  "endpointPaths":     { /* override für INTERFACES.md §3, falls Hoster ohne .well-known */ }
+  "endpointPaths":     { /* override für INTERFACES.md §3, falls Hoster ohne .well-known */ },
+  "stammCategories":   ["Vorspeisen", "Fleisch", "Fisch", "Vegetarisch"],   // Kerngebiet (ARCHITEKTUR.md §8)
+  "guestCategories":   ["Begleitgetränke", "Weinkarte"]                     // UI-Label: "Überraschungs-Plus"
 }
 ```
+
+Stamm- und Gast-Kategorien sind reine **String-Listen** — sie werden
+beim Sign- und Verify-Pfad unverändert mitgereicht und gehen normal in
+die kanonische JSON-Serialisierung ein (Object-Keys werden alphabetisch
+sortiert, Array-Elemente bleiben in der vom Knoten geschriebenen
+Reihenfolge — die ist Teil der Signatur). Disjunktheit (kein Element
+in beiden Listen) ist Hosting-Pflicht des Knotens, **kein**
+`verifyForeignSpore`-Abbruch-Grund — Empfänger nehmen die Listen so an,
+wie sie kommen.
 
 Unbekannte zusätzliche Felder werden bei `verifyForeignSpore`
 **nicht** abgewiesen, sind aber Teil der Signatur (jeder Knoten

@@ -174,6 +174,35 @@ aus INTERFACES.md §0 übernommen und auf `window.SbkimMatch.PROVIDER_MIN_MATCH`
 sichtbar gemacht. Wer den Wert ändern möchte, ändert ihn in §0 — Modul
 04 zieht nach.
 
+### Stamm/Gast-Klassifikation berührt Modul 04 nicht
+
+Spec-Sitzung 2026-05-15 „Stamm/Gast-Felder in Spore-JSON" hat eine
+Designentscheidung getroffen, die hier festgehalten gehört, damit
+sie nicht in einer späteren Bau-Sitzung als Anlass für einen
+Zusatzparameter missverstanden wird:
+
+**Stamm- und Gast-Kategorien aus dem Spore-JSON (siehe `02_spore.md`
+und INTERFACES.md §2) sind eine reine Klassifikations-Schicht auf
+der Daten-Ebene. Sie ändern Modul 04 nicht.**
+
+- `match(queryVec, passageVec)` bleibt reine Cosinus-Mathematik.
+- `isAboveProviderThreshold(score)` bleibt eine einzige Schwelle.
+- **Kein** `relation`-Parameter, **kein** Dämpfungsfaktor,
+  **keine** zweite Schwelle für Stamm↔Gast.
+
+Begründung: zwei Knoten verbinden sich (Anastomose) anhand der
+Vektor-Ähnlichkeit ihrer Domäne als Ganzes — nicht anhand der
+Schicht-Zugehörigkeit. Stamm/Gast ist eine **UI- und Sortier-
+Eigenschaft** auf der Ebene des Endknotens (Modul 08 / 09): bei
+Suchergebnissen werden Treffer aus `stammCategories` prominent
+gezeigt, aus `guestCategories` als „Überraschungs-Plus". Die
+Vektor-Ähnlichkeit selbst bleibt skalar und unklassifiziert.
+
+Sollte eine spätere Empirik zeigen, dass Stamm↔Gast-Matches
+systematisch andere Cosinus-Verteilungen haben als Stamm↔Stamm-
+Matches, ist eine eigene Pflege-Sitzung der Ort dafür — nicht
+diese Karte.
+
 ---
 
 ## A1–B3-Synthese: die Hops *tragen* die Funktionen

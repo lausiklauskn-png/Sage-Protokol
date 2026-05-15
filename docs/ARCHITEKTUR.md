@@ -269,12 +269,17 @@ DOKU_REVEAL_CLICKS     = 5     # Modul 00: 5 Klicks auf Such-Symbol
 
 ## 8. Stamm- und Gast-Kategorien (Domänen-Schichtung)
 
-**Status:** Konzept, festgelegt 2026-05-15 in der Sitzung *Live Andock
+**Status:** Konzept festgelegt 2026-05-15 in der Sitzung *Live Andock
 Iteration 2 — Eruda + Stamm/Gast* (Übergabeprotokoll:
 `docs/sessions/archiv/2026-05-15_live-andock-eruda-stamm-gast.md`).
-Verbindliche Spec-Sitzung *„Stamm/Gast-Felder in Spore-JSON"* steht
-noch aus — die Spore-Felder in `INTERFACES.md` §2 sind dann additiv,
-ohne Hauptversions-Sprung, weil sie als **optional** geführt werden.
+**Spec festgelegt 2026-05-15 in der Spec-Sitzung „Stamm/Gast-Felder
+in Spore-JSON"** (Übergabeprotokoll:
+`docs/sessions/archiv/2026-05-15_spec-stamm-gast-spore-felder.md`) —
+INTERFACES.md §2 Spore-JSON um zwei optionale Felder
+(`stammCategories: string[]`, `guestCategories: string[]`) erweitert,
+additiv, ohne Hauptversions-Sprung. Karte 02 nachgezogen; Karte 04
+mit dem Hinweis ergänzt, dass Stamm/Gast Modul 04 nicht berührt
+(keine Match-Dämpfung, keine zweite Schwelle).
 
 ### Worum es geht
 
@@ -303,15 +308,15 @@ Schrauben (Stamm) und Werkzeug (Gast), aber **kein** Spielzeug.
 Mixarium hat Drinks (Stamm) und Knabbereien dazu (Gast), aber **kein**
 komplettes Hauptgerichte-Repertoire — dafür gibt es das Rezeptbuch.
 
-### Konsequenz für die Module
+### Konsequenz für die Module (nach Spec-Sitzung 2026-05-15)
 
 | Modul | Konsequenz |
 |---|---|
-| **02 Spore** | Spore-JSON bekommt zwei **optionale** Felder: `stammCategories: string[]` und `guestCategories: string[]` (Namen final in Spec-Sitzung; siehe Offene Frage 1). Verbindlichkeit: signaturpflichtig, wenn vorhanden — wie die übrigen Optionalen aus §2 Spore-JSON. **Kein** Hauptversions-Sprung. |
-| **03 Embedding** | Stamm und Gast werden **getrennt** vektorisiert; ein Knoten kann sowohl `domainVector` (Default, alle Kategorien) als auch `stammVector` / `guestVector` mitliefern. Wie genau gewichtet wird, ist Sache der Spec-Sitzung (siehe Offene Frage 2). |
-| **04 Match** | Wirt-Treffer (Stamm ↔ Stamm zwischen zwei Knoten) bekommen den vollen Cosinus-Score. Gast-Treffer (Stamm ↔ Gast, also „Drink-Frage an Rezeptbuch") werden mit einem **Dämpfungsfaktor** zurückgereicht (Default-Vorschlag: `0.5`, finale Zahl in Spec-Sitzung). Damit bleibt `PROVIDER_MIN_MATCH=0.80` als Schwelle stabil — ein guter Gast-Treffer ist seltener so präzise wie ein guter Stamm-Treffer, das spiegelt sich im Score. |
-| **05 Anastomose** | Handshake-Pfad ändert sich **nicht**. Zwei Knoten dürfen sich verbinden, auch wenn der Match nur über Gast-Kategorien zustande kommt — sie sind dann „Stamm-Nachbarn" bzw. „Gast-Nachbarn", ohne dass die Verbindung selbst zwei Klassen kennt. Klassifizierung passiert in Modul 04. |
-| **00 / 08 / 09** | UI-seitig: Endknoten zeigt Stamm-Kategorien prominent (Hauptfilter oben), Gast-Kategorien sichtbar aber sekundär (z.B. eigener Tab „+ überraschend dazu"). Karte 09 Schritt 6 (`smartSearch`-Verdrahtung) bekommt einen Hinweis: bei lokal nur Gast-Treffern darf der Schwellwert für SBKIM-Anfrage anders sein als bei Stamm-Treffern (Detail in Spec-Sitzung). |
+| **02 Spore** | Spore-JSON bekommt zwei **optionale** Felder: `stammCategories: string[]` und `guestCategories: string[]`. Verbindlichkeit: signaturpflichtig, wenn vorhanden — wie die übrigen Optionalen aus §2 Spore-JSON. **Kein** Hauptversions-Sprung. **Disjunktheit** (kein Element in beiden Listen) ist Hosting-Pflicht des Knotens, **kein** Verify-Abbruch-Grund. Karte 02 nachgezogen 2026-05-15. |
+| **03 Embedding** | **Erst-Iteration unverändert** — ein einziger `domainVector` (Default, gemittelt über alle Kategorien) reicht. Separate `stammVector` / `guestVector` sind eine Folge-Pflege-Sitzung, sobald empirisch nachgewiesen ist, dass getrennte Vektoren den Match-Score erkennbar verbessern. |
+| **04 Match** | **Unverändert.** `match()` bleibt reine Cosinus-Mathematik, `isAboveProviderThreshold()` bleibt eine einzige Schwelle. Stamm/Gast ist Klassifikations-Schicht (UI, Modul 08/09), nicht Vektor-Math. Karte 04 mit explizitem Hinweis dazu ergänzt 2026-05-15 (verhindert, dass eine spätere Bau-Sitzung einen Dämpfungsfaktor einbaut „weil er hier mal stand"). |
+| **05 Anastomose** | Handshake-Pfad **unverändert**. Zwei Knoten verbinden sich anhand der Vektor-Ähnlichkeit ihrer Domäne als Ganzes — die Schicht-Zugehörigkeit ist nicht Teil des Handshakes. |
+| **00 / 08 / 09** | UI-seitig: Endknoten zeigt Stamm-Kategorien prominent (Hauptfilter oben), Gast-Kategorien sichtbar als „Überraschungs-Plus"-Sub-Tab oder analog. Konkrete UI-Verdrahtung in Karte 09 Schritt 6 (`smartSearch`-Wrapper): bei Treffern in `guestCategories` Label `[+]` voranstellen oder analoge UI-Markierung. Spec für die UI-Verdrahtung steht in einer Folge-Pflege-Sitzung (UI ist nicht Sache dieser Spec-Sitzung). |
 
 ### Konsequenz für andere Knoten (Diffusion / Heterokaryose / Apoptose)
 
@@ -327,30 +332,32 @@ komplettes Hauptgerichte-Repertoire — dafür gibt es das Rezeptbuch.
   einen Peer, der mein Gast-Thema als Stamm hat"). Stub-Block; in
   Modul 14 erstmal nur als offene Frage notieren.
 
-### Offene Fragen (für eine Folge-Spec-Sitzung)
+### Offene Fragen (gelöst in der Spec-Sitzung 2026-05-15)
 
-1. **Feld-Benennung in Spore-JSON:** `stammCategories` /
-   `guestCategories` (deutsch, im Stil von `domainKeywords`) oder
-   englischer `coreCategories` / `guestCategories`? Deutsche
-   Variante ist konsistent mit „Wirt" → „Stamm" als
-   Übersetzungs-Erkenntnis aus dieser Sitzung; englische Variante
-   wäre konsistent mit dem Rest des Schemas (`createdAt`,
-   `nodeType`, `domainVector`). Kein Show-Stopper, Spec-Sitzung
-   entscheidet.
-2. **Gewichtung in Match:** Dämpfungsfaktor für Stamm↔Gast-Matches
-   verbindlich festlegen. Default-Vorschlag `0.5` (also Score wird
-   halbiert, bevor er gegen `PROVIDER_MIN_MATCH=0.80` geprüft
-   wird) ist plausibel, aber empirisch zu prüfen wenn die ersten
-   echten Stamm/Gast-Vektoren vorliegen.
-3. **`domainVector` als Gesamt-Vektor vs. zwei separate Vektoren:**
-   reicht ein einziger `domainVector` (über alle Kategorien
-   gemittelt) plus die zwei String-Listen für UI-Logik, oder
-   braucht es separate `stammVector` / `guestVector`? Match-
-   Modul-Performance-Frage.
-4. **UI-Label:** Klaus' Begriff „Überraschungs-Plus" bleibt
-   verbindlich für die App-UI (Mixarium / Rezeptbuch), oder weicht
-   beim Live-Einbau für etwas Knapperes („Plus"), sobald die UI-
-   Werkstatt das tatsächlich zeichnet?
+1. ~~**Feld-Benennung in Spore-JSON:**~~ — **gelöst:**
+   `stammCategories` / `guestCategories`. Mixed-Convention konsistent
+   mit dem Rest des Sage-Vokabulars: die SBKIM-Fachbegriffe (Spore,
+   Anastomose, Heterokaryose, Apoptose) sind deutsch und werden nicht
+   anglisiert; das umgebende Schema bleibt englisch (`createdAt`,
+   `nodeType`, `domainVector`). „Stamm" und „Gast" sind feststehende
+   Sage-Begriffe, also gehen sie in den Feldnamen mit ein.
+2. ~~**Gewichtung in Match:**~~ — **gelöst durch Entscheidung
+   „kein Match-Eingriff":** Stamm/Gast ist eine Klassifikations-
+   Schicht auf Daten-Ebene, nicht Vektor-Math. Modul 04 bleibt
+   modus-frei mit einer Schwelle (`PROVIDER_MIN_MATCH=0.80`). Begründung
+   in Karte 04 § „Stamm/Gast-Klassifikation berührt Modul 04 nicht".
+   Sollte spätere Empirik einen Match-Eingriff motivieren, ist das
+   Anlass für eine eigene Pflege-Sitzung.
+3. ~~**`domainVector` als Gesamt-Vektor vs. zwei separate Vektoren:**~~
+   — **gelöst für Erst-Iteration:** ein einziger `domainVector` (über
+   alle Kategorien gemittelt) bleibt der Default. Separate
+   `stammVector` / `guestVector` werden additiv in einer Folge-
+   Pflege-Sitzung aufgenommen, sobald Klaus' Live-Andock die
+   Match-Verteilung empirisch zeigt.
+4. ~~**UI-Label:**~~ — **gelöst:** Klaus' Begriff **„Überraschungs-Plus"**
+   bleibt verbindlich für die Endknoten-App-UI (Mixarium / Rezeptbuch).
+   Sage-Page-Doku und Sage-Protokol-Spec verwenden den technischen
+   Begriff „Gast-Kategorie".
 
 ### UI-Begriff vs. technischer Begriff
 
