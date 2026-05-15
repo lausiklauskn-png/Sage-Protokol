@@ -102,41 +102,35 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 
 ## Offene Querschnitts-Fragen
 
-- **Karten-Lücke Karte 09 / Tablet-Sichtkontrolle** (offen, eingetragen
-  2026-05-15 nach abgebrochener Bau-Sitzung 09). Karte 09 § Sichtkontrolle
-  setzt implizit Desktop-DevTools voraus (Konsolen-Selbstchecks +
-  Anwendung→IndexedDB). Klaus arbeitet auf Samsung Galaxy Tab S6 + DeX —
-  Android-Chrome ohne diese DevTools. Pragmatischer Ersatz: **Eruda**
-  (in-Page-DevTools-Polyfill, touch-bedienbar, nur für Andock-
-  Sichtkontrolle, danach wieder entfernen). Karte 09 muss in einer
-  Pflege-Sitzung um diesen Pfad erweitert werden. Eintrag in
-  Übergabeprotokoll
-  [2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md)
-  § Karten-Lücke 1.
-- **Karten-Lücke Karte 09 / Andocken in PWA mit bestehendem
-  Service-Worker** (offen, eingetragen 2026-05-15 nach abgebrochener
-  Bau-Sitzung 09 — *gravierender*). Beide Endknoten haben
-  `register('./app-sw.js')` im Repo-Root (Mein-Mixarium Z. 12543,
-  Mein-Rezeptbuch Z. 10453) mit voller App-Update-Banner-Logik. Karte 09
-  § Datei-Pfad-Konvention (Z. 192) verlangt SBKIM-SW im Repo-Root —
-  ein Browser erlaubt aber nur **einen** SW pro Scope, der neue ersetzt
-  den alten. Karte 09 § Risiken (Z. 837–842) dokumentiert die SW-Scope-
-  Falle nur in eine Richtung; der häufige Normalfall „bestehender
-  App-SW im Root blockiert SBKIM" ist **nicht antizipiert**. Drei
-  Optionen für die Pflege-Sitzung Karte 09:
-  - **α (Empfehlung) — Patch in bestehenden `app-sw.js`:**
-    `addEventListener('fetch',...)` für `/sbkim/anastomosis` und
-    `/sbkim/legacy` als zusätzliche Listener anhängen, MessageChannel-
-    Brücke unverändert, App-Update-Banner bleibt unangetastet,
-    SBKIM-Endpunkte **nicht cachen** (Spore-Drift).
-  - **β — SBKIM-SW unter `/<repo>/sbkim/sbkim-sw.js`** (Scope-
-    Einschränkung, in § Risiken schon als suboptimal markiert).
-  - **γ — bestehenden App-SW deaktivieren** und durch einen einzigen
-    vereinheitlichten SW ersetzen (sauberste Architektur, höchster
-    Aufwand).
-  Eintrag in Übergabeprotokoll
-  [2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md)
-  § Karten-Lücke 2.
+- ~~**Karten-Lücke Karte 09 / Tablet-Sichtkontrolle**~~ — **gelöst
+  2026-05-15 durch Pflege-Sitzung Karte 09 „App-SW-Koexistenz +
+  Tablet-Sichtkontrolle" (diese Sitzung).** Karte 09 § Sichtkontrolle
+  hat jetzt einen § Tablet-Variante-Sub-Block mit Eruda-Pfad
+  (in-Page-DevTools-Polyfill, gepinnt auf `eruda@3`, jsdelivr-CDN,
+  touch-bedienbar). Mapping der vier Pflicht-Punkte auf Eruda-Tabs
+  (Console / Resources→IndexedDB / Network / 5-Klick-Geste).
+  Verbindlicher Hinweis „nach Sichtkontrolle wieder entfernen —
+  kein Produktiv-Einbau, kein SBKIM-Modul, kein Datenschutz-Stein".
+  Details im Übergabeprotokoll
+  [2026-05-15 Pflege Karte 09 App-SW + Tablet](sessions/archiv/2026-05-15_pflege-karte-09-app-sw-tablet.md).
+- ~~**Karten-Lücke Karte 09 / Andocken in PWA mit bestehendem
+  Service-Worker**~~ — **gelöst in zwei Pflege-Sitzungen 2026-05-15:**
+  (a) Pflege App-SW-Koexistenz (PR #31, 2026-05-15) hat Schritt 3
+  in 3a/3b verzweigt mit Pre-Flight-Check
+  (`navigator.serviceWorker.getRegistration('./')`),
+  Variante 3b = `importScripts('./sbkim-sw.js')` in bestehendem
+  App-SW (= Option α), `SBKIM_SW_STANDALONE`-Flag in
+  `src/sbkim-sw.js` (Default `true`, `false` für 3b), achtes
+  Risiko „App-SW-Überschreibung" in § Risiken; (b) Pflege Karte 09
+  „App-SW-Koexistenz + Tablet-Sichtkontrolle" (diese Sitzung,
+  2026-05-15) hat zusätzlich **Variante 3c** als nachrangige
+  Übergangslösung dokumentiert (SBKIM-SW unter `/sbkim/` mit Scope-
+  Einschränkung = Option β; Option γ „App-SW ersetzen" entspricht
+  der heutigen falschen Anwendung von Variante 3a auf eine PWA mit
+  App-SW und ist als achtes Risiko bereits dokumentiert) plus eine
+  Tabelle „Wann welche Variante?" als Andock-Entscheidungshilfe.
+  Details im Übergabeprotokoll
+  [2026-05-15 Pflege Karte 09 App-SW + Tablet](sessions/archiv/2026-05-15_pflege-karte-09-app-sw-tablet.md).
 - ~~Werden Domain-URLs der Endknoten-Apps in `docs/PULS.md` /
   `status.json` aufgenommen oder nur lokal in deren `index.html`?~~ —
   **teilweise gelöst 2026-05-15** in abgebrochener Bau-Sitzung 09:
@@ -296,90 +290,112 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
-### 2026-05-15 · Pflege-Sitzung · Sichttest-Resultate (Sage-Page mehrschichtig + Panel 08)
+### 2026-05-15 · Pflege-Sitzung · Karte 09 App-SW-Koexistenz + Tablet-Sichtkontrolle
 
-**Sitzungs-Rolle:** Pflege-Sitzung Resultate-Vermerk, headless,
-EINE Phase. Datei-Scope: ausschließlich `docs/PULS.md` (§ Als
-nächstes Modul 08, § Schnellüberblick Modul 08, § Sitzungs-Einträge
-+ Archiv-Index). **Keine** Änderung an `src/modules/*`,
-`tests/manual_check.html`, `docs/INTERFACES.md`, `status.json`,
-`index.html`, Komponenten-Karten, Pie.
+**Sitzungs-Rolle:** Pflege-Sitzung Karte 09, headless, EINE Phase.
+Datei-Scope: ausschließlich `docs/components/09_einbau_pwa.md` plus
+PULS-Eintrag plus Übergabeprotokoll. **Keine** Änderung an
+`src/modules/*`, `tests/manual_check.html`, `docs/INTERFACES.md`
+(Karte 09 ist Anleitung, kein Modul-Vertrag — §1/§3/§6 unverändert),
+`status.json` (Modul 09 bleibt `spec`), `index.html`, anderen Karten,
+Pie.
 
-**Anlass:** Klaus' zwei ausstehende Sichttests aus den vorherigen
-Pflege- und Bau-Sitzungen sind 2026-05-15 im Tablet-Browser
-abgeschlossen — beide **grün, keine Befunde, keine Folge-Pflege
-nötig**:
-
-1. **Sage-Page Lebenszyklus mehrschichtig** (Pflege 2026-05-15,
-   PR #41) — Phase-4-Richtung korrekt (Tropfen B → A statt
-   A → B), Schicht-Tabs „Anfrage-Reise" / „Knoten-Leben"
-   funktionieren, Klick-Lernpfad bis zur Gesamt-Sequenz läuft,
-   Tropfen-mit-Schweif und Funken-Blitz visuell sichtbar.
-2. **Panel 08 UI-Demo** (Bau-Sitzung 08 2026-05-15, PR #40) —
-   sechs Outbox-/Opt-In-Test-Punkte durchgeklickt, alle grün im
-   ersten Lauf.
+**Anlass:** Bau-Sitzung Modul 09 (2026-05-15) war vor Schritt 1
+sauber abgebrochen, weil beide Endknoten-PWAs einen aktiven App-SW
+im Repo-Root haben (`Mein-Mixarium` Z. 12543, `Mein-Rezeptbuch`
+Z. 10453, identische Update-Banner-Logik). Pflege App-SW-Koexistenz
+(PR #31) hat den Hauptteil gelöst: Schritt-3 in 3a/3b verzweigt mit
+Pre-Flight-Check, `SBKIM_SW_STANDALONE`-Flag in `src/sbkim-sw.js`,
+achtes Risiko „App-SW-Überschreibung". Diese Pflege schließt drei
+Rest-Stränge.
 
 **Getan:**
 
-- **§ Als nächstes Modul 08-Eintrag** aktualisiert: „Sichttest
-  ausstehend (headless gebaut, wartet auf Klaus' Browser — sechs
-  Outbox-/Opt-In-Test-Punkte durchklicken)" → „Sichttest geprüft
-  2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün". Header
-  „**Sichttest ausstehend:**" → „**Sichttest geprüft 2026-05-15:**".
-- **§ Schnellüberblick Modul 08-Zeile** Spalte „Manueller
-  Sichttest" von „—" auf „geprüft 2026-05-15 (Klaus) — 6/6
-  Test-Punkte grün" gesetzt; letzter Satz im Anmerkungs-Feld
-  von „Sichttest ausstehend (headless gebaut, wartet auf Klaus'
-  Browser)" auf „**Sichttest geprüft 2026-05-15 (Klaus): 6/6
-  Test-Punkte grün im ersten Lauf**" geändert.
-- **§ Sitzungs-Einträge** durch die Format-Konvention rotiert
-  (Pflege PULS-Archivierung 2026-05-15) — bisheriger Sitzungs-
-  Eintrag „PULS-Archivierung" als Index-Zeile in den Archiv-Index
-  verschoben, dieser neue Eintrag steht ausführlich oben. PULS-
-  Zeilenzahl bleibt unter 400.
+- **Karte 09 § Datei-Pfad-Konvention** um **dritte Variante 3c**
+  ergänzt (SBKIM-SW unter `<endknoten>/sbkim/sbkim-sw.js` mit Scope
+  `/<repo>/sbkim/`, disjunkt zum App-SW-Scope); neue Tabelle
+  **„Wann welche Variante?"** mit drei Zeilen (Pre-Flight →
+  Eigenschaften → Empfehlung ⭐ bei 3a/3b, β-Markierung bei 3c als
+  nachrangig, Übergangslösung mit Migrations-Pflicht auf 3b).
+- **Karte 09 § Schritt 3c** als neuer Sub-Block nach 3b: Code-Block
+  (`register("sbkim/sbkim-sw.js", { scope: "sbkim/" })`,
+  `SBKIM_SW_STANDALONE=true` bleibt), Vor-/Nachteil-Vergleich
+  (App-SW unangetastet ↔ Schutz-Module 11/12 später blockiert),
+  Sichtkontrolle „zwei Registrierungen mit disjunkten Scopes",
+  Fehler-Vermerk „nur als bewusste Übergangs-Entscheidung".
+- **Karte 09 § Sichtkontrolle § Tablet-Variante (Eruda)** als neuer
+  Sub-Block nach den vier Pflicht-Punkten: Script-Tag-Snippet
+  `<script src="https://cdn.jsdelivr.net/npm/eruda@3">` + `eruda.init()`,
+  Major-Version gepinnt (SRI nicht erforderlich, Sichttest-Modus);
+  Mapping der vier Pflicht-Punkte auf Eruda-Tabs (Console / Resources
+  → IndexedDB / Network / 5-Klick-Geste); verbindlicher Hinweis
+  „nach Sichtkontrolle wieder entfernen — kein Produktiv-Einbau,
+  kein SBKIM-Modul, kein Datenschutz-Stein".
+- **Karte 09 § Bauzustand** Zeile „Pflege App-SW-Koexistenz +
+  Tablet-Sichtkontrolle (Eruda) | 2026-05-15" als nächster freier
+  Eintrag vor den TBD-Einbau-Zeilen, mit drei Strängen referenziert.
+- **§ Offene Querschnitts-Fragen** beide Karten-Lücke-Einträge mit
+  `~~strikethrough~~` als gelöst markiert (Verweise auf das
+  Übergabeprotokoll dieser Sitzung).
+- **§ Sitzungs-Einträge** durch die Format-Konvention rotiert —
+  bisheriger Sitzungs-Eintrag „Pflege Sichttest-Resultate" als
+  Index-Zeile in den Archiv-Index.
 
 **Was bewusst nicht geändert wurde:**
 
-- **Sage-Page-Sichttest** hat keine eigene Modul-Zeile im
-  § Schnellüberblick (Sage-Page ist nicht protokoll-aktiv). Der
-  Sichttest-Vermerk steht hier im Sitzungs-Eintrag — Modul 08
-  ist der einzige § Schnellüberblick-Eintrag, der angefasst wird.
-- **`status.json`** unverändert — Modul 08 bleibt `score:"stub"`,
-  `siegel:"Code-Stub"`. Ein Sichttest-Erfolg ist kein automatischer
-  Wechsel auf `fertig` — diese Schwelle wäre die Live-Andock-
-  Integration in einer der Endknoten-PWAs (Modul 09 zweite
-  Iteration), nicht der manuelle Panel-Sichttest.
-- **Keine Pie-Regeneration** — kein Score-Wechsel.
-- **`src/modules/*`**, **`docs/INTERFACES.md`**, **`index.html`**,
-  **`tests/manual_check.html`**, **alle Komponenten-Karten**
-  unverändert.
+- **Pre-Flight-Check, `SBKIM_SW_STANDALONE`-Flag, `src/sbkim-sw.js`**
+  aus Pflege App-SW-Koexistenz (PR #31) **unverändert** — der
+  bestehende `getRegistration('./')`-Block ist für GitHub-Pages-
+  Project-Site-Konstellation präzise. Brief empfahl alternativ
+  `getRegistrations()` (Array-Variante), aber das wäre Umbau, nicht
+  Lückenschluss — diese Pflege ist „nur der fehlende Rest".
+- **`docs/INTERFACES.md`** unverändert — Karte 09 ist Anleitung,
+  kein Modul-Vertrag. §1/§3/§6 bleiben.
+- **`status.json`** unverändert — Modul 09 bleibt `score:"spec"` /
+  `siegel:"Spec fertig"`, `update_puls_pie.py` nicht aufgerufen
+  (additiv im Andock-Pfad, kein Score-Wechsel).
+- **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07.**
+- **`tests/manual_check.html`**, **`index.html`** unverändert.
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+- **Keine andere Karte angefasst** als 09.
 
 **Validierung:**
 
-- **PULS-Zeilenzahl** nach Rotation: ~400 Zeilen Ziel; tatsächlich
-  durch das Verschieben der Bisherigen-Sitzung in den Index
-  niedriger als die 426 nach der Archivierung.
-- **Modul-08-Sichttest-Status** in zwei Quellen konsistent (§ Als
-  nächstes + § Schnellüberblick).
-- **Konvention durchgezogen:** PULS-Archivierung-Eintrag von ~85
-  ausführlichen Zeilen oben in eine Index-Tabellen-Zeile mit
-  Archiv-Link — die im Vorspann von § Sitzungs-Einträge
-  festgehaltene Format-Konvention funktioniert in der Praxis.
+- **Karten-Querverweise sichtgeprüft** — 3c-Sub-Block und Eruda-
+  Block verweisen nur auf interne Karten-09-Anker (§ Risiken,
+  § Schritt 3, § Sichtkontrolle); externe Karten-Links
+  (`01_storage.md`, `05_anastomose.md`, `07_apoptose.md`) im
+  § Querverweise unverändert.
+- **Code-Block-Syntax visuell sauber** — `register(..., {scope:
+  "sbkim/"})` und Eruda-Script-Tag (kein `node --check` für Markdown
+  möglich).
+- **PULS-Rotation** durchgezogen — bisheriger oberster Eintrag in
+  Archiv-Index mit Link, neuer Eintrag oben ausführlich; PULS bleibt
+  unter 430 Zeilen.
 
 **Was offen blieb:**
 
-- **Keine Modul-Lücke.** Beide Sichttests grün; kein Folge-Test,
-  keine Folge-Pflege.
+- **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-Andock-
+  Versuch** — Karte 09 ist jetzt vollständig: neun Schritte,
+  Schritt-3 a/b/c mit Pre-Flight und Tabelle, achtes Risiko „App-SW-
+  Überschreibung", § Sichtkontrolle mit Eruda-Tablet-Variante.
+- **Folge-Pflege „App-SW-Koexistenz Sicht-Validierung"** möglich,
+  falls Live-Versuch unter Eruda offene Fragen aufwirft (DevTools-
+  Resources-Layout, POST-Trigger auf Tablet).
 
 **Nächster sinnvoller Schritt (mehrere gleichberechtigt):**
 
-1. **Pflege-Sitzung Karte 09 „App-SW-Koexistenz + Tablet-
-   Sichtkontrolle"** — Voraussetzung für Bau-Sitzung 09 zweite
-   Iteration. *Headless möglich.*
-2. **Bau-Sitzung Modul 09 zweite Iteration** mit Klaus am Live-
-   Andock-Versuch. *Nicht headless.* Wartet auf Pflege Karte 09.
+1. **Bau-Sitzung Modul 09 zweite Iteration** mit Klaus am Live-
+   Andock-Versuch (Rezeptbuch ↔ Mixarium). *Nicht headless.*
+   Variante 3b mit Pre-Flight + `importScripts` ist Default für
+   beide Endknoten.
+2. **Klaus' Sichttest Panel 06** (Heterokaryose, 14 Knöpfe).
+   *Nicht headless.*
 3. **Mini-Pflege Panel 07 Test 6** (`allEmpty`-Check um
    `sbkim_hetero_inbox` erweitern). *Headless möglich.* Niedrige
+   Dringlichkeit.
+4. **Mini-Pflege Karte 08 § Bauzustand** „Sichttest geprüft
+   2026-05-15" ergänzen (optional). *Headless möglich.* Niedrige
    Dringlichkeit.
 
 ---
@@ -391,6 +407,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-15 | Pflege · Sichttest-Resultate (Sage-Page mehrschichtig + Panel 08 — beide grün) | [→ Archiv](sessions/archiv/2026-05-15_pflege-sichttest-resultate.md) |
 | 2026-05-15 | Pflege · PULS-Archivierung (4758 → 426 Zeilen, Sitzungs-Einträge in Archiv-Index, Konvention für Folgesitzungen) | [→ Archiv](sessions/archiv/2026-05-15_pflege-puls-archivierung.md) |
 | 2026-05-15 | Pflege · Sage-Page Lebenszyklus mehrschichtig (Phase-4-Fix + Schicht „Knoten-Leben" + Klick-Lernpfad + reichere Animationen) | [→ Archiv](sessions/archiv/2026-05-15_pflege-sage-page-lebenszyklus-mehrschichtig.md) |
 | 2026-05-15 | Bau 08 · Modul 08 UI-Demo (Endknoten-Pflege-UI für `sbkim_hetero_outbox` + `heterokaryosisOptIn`) | [→ Archiv](sessions/archiv/2026-05-15_bau-08-ui-demo.md) |

@@ -171,6 +171,31 @@ Geschwister-Pfad und löst korrekt auf. Liegt `app-sw.js` z.B. unter
 Import-Pfad `importScripts('../sbkim-sw.js')` — sauberer ist, beide SW-
 Dateien im Repo-Root nebeneinander zu führen.
 
+**Variante 3c (nachrangig, Übergangslösung):** SBKIM-SW unter
+`<endknoten>/sbkim/sbkim-sw.js` registrieren mit Scope-Einschränkung
+`/<repo>/sbkim/`. Verträgt sich neben einem bestehenden `app-sw.js`
+im Repo-Root, weil die beiden Scopes disjunkt sind (App-SW deckt
+`/<repo>/`, SBKIM-SW nur `/<repo>/sbkim/`). **Nicht empfohlen** —
+spätere Schutz-Module (11 Rate-Limit, 12 Blocklist) wollen Pfade
+unterhalb von `/<repo>/` ohne `/sbkim/`-Präfix abfangen und können
+das in dieser Variante nicht. Details und Code-Block in § Schritt 3c.
+
+### Wann welche Variante?
+
+Der Pre-Flight-Check aus § Schritt 3 liefert das Verzweigungs-Ergebnis;
+diese Tabelle macht die Auswahl auf einen Blick sichtbar:
+
+| Variante | Pre-Flight-Ergebnis | Eigenschaften | Empfehlung |
+|---|---|---|---|
+| **3a** Standalone-SBKIM-SW im Repo-Root | `getRegistration('./')` → `null` (kein aktiver App-SW) | Frischer SW, Scope `/<repo>/`, `SBKIM_SW_STANDALONE=true` (`skipWaiting`/`clients.claim` greifen), ein einziger SW-Eintrag in DevTools | ⭐ Default, sofern kein App-SW existiert |
+| **3b** `importScripts('./sbkim-sw.js')` in bestehendem App-SW | `getRegistration('./')` → aktive Registrierung mit Scope `/<repo>/` (typisch `app-sw.js`) | Ein SW-Eintrag (App-SW), beide fetch-Listener-Reihen im selben Worker, `SBKIM_SW_STANDALONE=false`, App-Update-Banner unangetastet, additiver Patch (zwei Zeilen in `app-sw.js`) | ⭐ Default, sofern App-SW existiert (Option α aus Befund 2026-05-15) |
+| **3c** SBKIM-SW unter `/sbkim/sbkim-sw.js` mit Scope `/<repo>/sbkim/` | App-SW im Root vorhanden, Patch in `app-sw.js` aus Variante 3b aber unerwünscht (z.B. fremder Pflege-Hoheit) | Zwei separate SW-Einträge, disjunkte Scopes; Schutz-Module 11/12 werden später unter `/<repo>/sbkim/` nicht abfangen können | nachrangig (β) — nur Übergangslösung |
+
+**Variante 3a und 3b sind die zwei produktiven Pfade.** Variante 3c ist
+dokumentiert für Sonderfälle (App-SW darf nicht modifiziert werden,
+Eilig-Andock unter Zeitdruck), bleibt aber Übergangslösung — ein
+späterer Wechsel auf 3b ist Pflicht, sobald Schutz-Module 11/12 ziehen.
+
 **Warum so:**
 
 - **`sbkim-sw.js` muss eine separate Datei sein.** Browser registrieren
@@ -422,6 +447,62 @@ is running", Scope = `/<repo>/`. Nicht zwei Worker und nicht
   ruft Listener in Registrier-Reihenfolge auf — wer zuerst
   `respondWith` aufruft, gewinnt) **und** App-SW-Listener so
   schreiben, dass sie SBKIM-Pfade explizit nicht anfassen.
+
+#### Schritt 3c — Variante „nachrangig: SBKIM-SW unter /sbkim/ mit Scope-Einschränkung"
+
+Nur wählen, wenn **weder** Variante 3a noch 3b passen — etwa weil der
+bestehende `app-sw.js` aus Pflege-Hoheitsgründen nicht modifiziert
+werden darf, oder ein Eilig-Andock unter Zeitdruck ohne SW-Patch
+nötig ist. **Diese Variante bricht die Service-Worker-Scope-Konvention
+aus § Risiken bewusst** und ist als Übergangslösung markiert.
+
+`sbkim-sw.js` liegt in dieser Variante **nicht** im Repo-Root, sondern
+unter `<endknoten>/sbkim/sbkim-sw.js`. In `index.html`:
+
+```html
+<script>
+  if ("serviceWorker" in navigator) {
+    // Pfad relativ zu index.html — landet als /<repo>/sbkim/sbkim-sw.js
+    // mit Scope /<repo>/sbkim/ (disjunkt zum App-SW-Scope /<repo>/).
+    navigator.serviceWorker.register("sbkim/sbkim-sw.js", { scope: "sbkim/" })
+      .then(function (reg) {
+        console.info("SBKIM-SW (Variante 3c) registriert, Scope:", reg.scope);
+      })
+      .catch(function (err) {
+        console.error("SBKIM-SW (3c) Registrierung fehlgeschlagen:", err);
+      });
+  }
+</script>
+```
+
+`SBKIM_SW_STANDALONE` bleibt `true` (Default) — der Standalone-Worker
+verwaltet seinen eigenen Lebenszyklus, der App-SW im Root unverändert
+daneben. Beide SWs koexistieren mit disjunkten Scopes.
+
+**Vor- und Nachteile:**
+
+- **Vorteil:** `app-sw.js` bleibt vollständig unangetastet (keine
+  fremde Editier-Hoheit, kein zwei-Zeilen-Patch, kein Re-Deploy nötig).
+- **Nachteil:** Spätere Schutz-Module (11 Rate-Limit, 12 Blocklist)
+  fangen Pfade unterhalb des Repo-Roots ohne `/sbkim/`-Präfix ab —
+  unter Scope `/<repo>/sbkim/` ist das unmöglich.
+- **Nachteil:** Klaus muss `sbkim-sw.js` ins Unterverzeichnis kopieren
+  (entgegen der § Schritt 1 Konvention). Spore-Endpunkt
+  `/sbkim/spore.json` ist davon unberührt — der ist eine statische
+  Datei, der SW-Scope ist davon unabhängig.
+- **Nachteil:** Migration zurück auf 3b kostet eine Folge-Pflege —
+  alten 3c-SW unregistrieren, App-SW patchen, Tab neu laden.
+
+**Sichtkontrolle:** DevTools → Application → Service Workers zeigt
+**zwei** Registrierungen — `app-sw.js` (Scope `/<repo>/`) und
+`sbkim/sbkim-sw.js` (Scope `/<repo>/sbkim/`). Konsolen-Zeile
+`SBKIM-SW (Variante 3c) registriert, Scope:
+https://klaus.github.io/<repo>/sbkim/`.
+
+**Häufiger Fehler:** Variante 3c gewählt, obwohl App-SW patchbar wäre.
+Spätere Pflege-Sitzung muss die Migration auf 3b nachholen. Klaus
+sollte 3c nur als bewusste Übergangs-Entscheidung wählen, nicht aus
+Bequemlichkeit.
 
 ### Schritt 4 — `SbkimAnastomose.init()`
 
@@ -789,6 +870,61 @@ fertig andockend:
    aktualisieren / Schließen). Esc oder Klick auf den Backdrop
    schließt.
 
+### Tablet-Variante — Eruda als in-Page-DevTools
+
+Die vier Pflicht-Punkte setzen Desktop-DevTools voraus (Konsole +
+Anwendung → IndexedDB + Netzwerk). Klaus arbeitet auf einem **Samsung
+Galaxy Tab S6 + DeX** im Android-Chrome — dort gibt es weder
+`Strg+Shift+I` noch ein „Entwicklertools"-Menü, und Remote-USB-
+Debugging über einen zweiten Rechner fällt aus. Für die Andock-
+Sichtkontrolle ist **Eruda** (in-Page-DevTools-Polyfill) der
+pragmatische Pfad: ein einzelnes Script-Tag im `<head>` der Endknoten-
+PWA, danach erscheint ein kleiner Floating-Button im Tab, der per
+Antippen Console + Resources/IndexedDB + Network touch-bedienbar
+einblendet.
+
+```html
+<!-- in index.html, nur während der Andock-Sichtkontrolle -->
+<script src="https://cdn.jsdelivr.net/npm/eruda@3"></script>
+<script>eruda.init();</script>
+```
+
+Eruda ist auf Major-Version `eruda@3` **gepinnt**, damit der Sichttest
+reproduzierbar bleibt; ein späterer Sprung auf `@4` darf nur in einer
+eigenen Pflege-Sitzung passieren. Subresource Integrity (SRI) ist
+nicht erforderlich — Eruda läuft nur im Sichttest-Modus, ist nach
+Andock wieder zu entfernen, und der Endknoten ist im Sichttest ohnehin
+unter Klaus' direkter Beobachtung.
+
+**Mapping der vier Pflicht-Punkte auf Eruda:**
+
+1. **Sieben Selbstcheck-Zeilen** → Eruda-Tab **Console** öffnen. Die
+   `MODUL XX … bereit, …`-Zeilen plus `SBKIM-SW …` / `SBKIM-Init grün …`
+   / `SBKIM-Apoptose grün …` / `SBKIM-Doku grün …` erscheinen dort
+   genau wie in Desktop-DevTools.
+2. **Sechs IndexedDB-Stores** → Eruda-Tab **Resources** → **IndexedDB**
+   → `sbkim` aufklappen. `sbkim_keys`, `sbkim_spore`, `sbkim_siblings`,
+   `sbkim_anastomosis_log`, `sbkim_legacy_inbox`, `sbkim_doku_meta`
+   müssen sichtbar sein, mit jeweils Schlüsseln und Einträgen wie in
+   den vier Pflicht-Punkten beschrieben.
+3. **Zwei live-Endpunkte** → Eruda-Tab **Network** öffnen, dann in
+   einem zweiten Browser-Tab `https://klaus.github.io/<repo>/sbkim/
+   anastomosis` per GET ansteuern (z.B. via Adress-Leiste). Eintrag
+   im Network-Tab muss Status `405` zeigen; analog für
+   `/sbkim/legacy`. Spore-GET über `/sbkim/spore.json` liefert `200`.
+4. **5-Klick-Geste** → das Doku-Fenster öffnet sich auch unter Eruda
+   regulär. Eruda und das Doku-Fenster sind zwei separate Overlays,
+   sie kollidieren nicht (Eruda ist `z-index` über allem, das Doku-
+   Fenster liegt darunter, beide bleiben benutzbar).
+
+**Nach erfolgreichem Andock entfernen.** Die zwei Eruda-Script-Tags
+werden aus `index.html` wieder herausgenommen, bevor die Produktiv-
+PWA deployt wird. Eruda ist **kein** Produktiv-Bestandteil, **kein**
+SBKIM-Modul und **kein** Datenschutz-Stein — es ist ein temporäres
+Sichttest-Werkzeug für den Endknoten-Andocker, vergleichbar mit
+einem aufgehängten Putzgerüst. Dauerhafter Eruda-Einbau gehört in
+keine produktive PWA.
+
 5. **(Nur Variante 3b)** Zwei-Browser-Test der App-SW-Koexistenz —
    wartet auf Klaus' nächsten Live-Andock-Versuch (Bau-Sitzung 09
    zweite Iteration):
@@ -1106,6 +1242,7 @@ unverändert.
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Schritt-Flow, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 09 | Acht-Schritt-Andock-Pfad mit konkreten Konsolen-Befehlen, Datei-Pfad-Konvention (SW im Repo-Root, JS-Module inline oder `sbkim/`), Spore-Endpunkt `/sbkim/spore.json` (Alias verbindlich), SW-Scope-Falle dokumentiert, Sichtkontrolle (3 Pflicht-Punkte: Konsolen-Selbstchecks · IndexedDB-Stores · live-Spore-URL), Service-Worker-Hinweis mit Lebenszyklus, Risiken-Block (CORS · Scope-Falle · 30 MB Modell · Spore-Drift · domainVector-Live-Update · Lücke-Befund · forgetSibling), `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** mit fünf Begründungen |
 | Pflege Schritt 9 + 07/00 | 2026-05-15 | Pflege 09-Schritt-9-Doku-TTL | Karte 09 § Andock-Schritt-Pfad von **acht** auf **neun** Schritte erweitert. Schritt 2 (`<script>`-Tags) zieht Modul 07 (Apoptose) und Modul 00 (Doku-Fenster) in der verbindlichen Reihenfolge nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block in Schritt 2 zeigt jetzt sechs Selbstcheck-Zeilen statt vier (03 weiterhin nach `init()`). **Neuer Schritt 9 „Apoptose + Doku-Fenster scharf schalten"** mit drei Sub-Punkten: 9a `await SbkimApoptose.init()` (Vermächtnis-Empfang über MessageChannel-Listener auf Service-Worker), 9b `await SbkimDoku.init({searchIconSelector:"#search-icon"})` (5-Klick-Geste am PWA-Such-Symbol; per Endknoten anpassen), 9c (optional, empfohlen) `await SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` als Andocker-Automatik nach jedem Handshake — schließt offene Frage aus Spec-Sitzung 07 (Karte 09 Schritt 9 TTL-Sweep-Aufruf). Sichtkontroll-Block § Sichtkontrolle nachgezogen: jetzt vier Pflicht-Punkte (statt drei) — sieben Selbstcheck-Zeilen in DevTools-Konsole + sechs IndexedDB-Stores (mit `sbkim_doku_meta["meta"]` schon nach Schritt 9 gefüllt) + zwei live-Endpunkte (`/sbkim/spore.json` GET 200 + `/sbkim/anastomosis` und neu `/sbkim/legacy` GET 405) + 5-Klick-Geste am Such-Symbol öffnet das Modal. Zwei „Häufiger Fehler"-Diagnosen in Schritt 9 (searchIconSelector matcht nichts → MutationObserver-Re-Mount mit 10s-Safety; TTL-Sweep nie gerufen → stille Geschwister bleiben in `sbkim_siblings`). Visualisierungs-Mermaid-Flowchart von acht auf neun Knoten erweitert (A1–A9). Karte 09 § Datei-Pfad-Konvention von „fünf JS-Module" auf „sieben JS-Module" nachgezogen. Karte 09 § Verantwortlichkeiten Macht-Block ergänzt um Modul 07 + 00 mit Hinweis „Modul 00 zuletzt, fail-soft als optionale Lese-Quellen". Self-Apoptose-Knopf bewusst NICHT in Schritt 9 — Karte 07 hat ihn als zweistufig+irreversibel spezifiziert, gehört in einen separaten Service-Pfad. Modul 06 Heterokaryose ebenfalls bewusst NICHT in Schritt 9 (Karte 06 ist Schablone, Spec späte Phase). INTERFACES.md §6 Änderungsprotokoll-Zeile (neueste unten); Karte 09 status.json unverändert (bleibt `score:"spec"` / `siegel:"Spec fertig"` — die Erweiterung ist additiv im Andock-Pfad, kein Modul-Bau). |
+| Pflege App-SW-Koexistenz + Tablet-Sichtkontrolle (Eruda) | 2026-05-15 | Pflege 09-App-SW-Koexistenz-Tablet | Drei Stränge ergänzt, **kein Modul-Eingriff**: (1) **§ Datei-Pfad-Konvention** um **dritte Variante 3c** (SBKIM-SW unter `sbkim/sbkim-sw.js` mit Scope `/<repo>/sbkim/`) als nachrangige Übergangslösung erweitert; neue Tabelle „Wann welche Variante?" mit drei Zeilen (Pre-Flight-Ergebnis → Eigenschaften → Empfehlung-Stern bei 3a/3b, β-Hinweis bei 3c). (2) **§ Schritt 3c** als neuer Sub-Block nach 3b: Code-Block (`register("sbkim/sbkim-sw.js", { scope: "sbkim/" })`), Vor-/Nachteil-Vergleich (App-SW unangetastet ↔ Schutz-Module 11/12 später blockiert), Sichtkontrolle-Hinweis (zwei SW-Registrierungen mit disjunkten Scopes), expliziter „nur Übergangslösung"-Vermerk inkl. späterer Migrations-Pflicht auf 3b. (3) **§ Sichtkontrolle § Tablet-Variante (Eruda)** als neuer Sub-Block nach den vier Pflicht-Punkten: Eruda-Script-Tag `eruda@3` gepinnt (CDN jsdelivr, SRI nicht erforderlich, Sichttest-Modus); Mapping der vier Pflicht-Punkte auf Eruda-Tabs (Console / Resources→IndexedDB / Network / 5-Klick-Geste); Verbot „nach Sichtkontrolle wieder entfernen — kein Produktiv-Einbau, kein SBKIM-Modul, kein Datenschutz-Stein". Pre-Flight-Check, `SBKIM_SW_STANDALONE`-Flag und `src/sbkim-sw.js` aus Pflege App-SW-Koexistenz **unverändert** (PR #31 funktional korrekt). **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07.** **Keine Änderung an `docs/INTERFACES.md`** (Karte 09 ist Anleitung, kein Modul-Vertrag — §1/§3/§6 unverändert). **`status.json` Modul 09 unverändert** (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — die Pflege ist additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). **Schließt die zwei Karten-Lücken aus der abgebrochenen Bau-Sitzung 09 vom 2026-05-15** und entblockt die zweite Bau-Iteration mit Klaus am Live-Andock. |
 | Pflege App-SW-Koexistenz | 2026-05-15 | Pflege 09-App-SW-Koexistenz | Karte 09 § Andock-Schritt-Pfad **Schritt 3 in 3a/3b aufgesplittet** plus neuer **Pre-Flight-Check** als Einleitungs-Block (`navigator.serviceWorker.getRegistration('./')` — Verzweigungs-Ergebnis ist die Auswahl 3a oder 3b). **Variante 3a (PWA ohne eigenen SW):** unverändert bisheriges Schritt-3-Verhalten (`register('sbkim-sw.js')` + Konsolen-Zeile `SBKIM-SW registriert, Scope: …`). **Variante 3b (PWA mit eigenem App-SW):** Endknoten setzt in `app-sw.js` ganz oben `self.SBKIM_SW_STANDALONE = false; importScripts('./sbkim-sw.js');` — **kein** zweiter `register`-Aufruf, der bestehende `register('./app-sw.js')` reicht. Konsolen-Zeile `SBKIM-SW geladen via importScripts (Variante 3b)`, DevTools zeigt **eine** Registrierung (App-SW), nicht zwei. **Achtes Risiko „App-SW-Überschreibung"** in § Risiken & offene Punkte ergänzt: Beschreibung (Schritt-3-`register` ersetzt bestehenden App-SW im selben Scope wegen unbedingtem `skipWaiting`/`clients.claim` in `sbkim-sw.js`), Erkennung (DevTools zeigt `sbkim-sw.js` statt `app-sw.js` als aktiven Worker), Lösung (Variante 3b + `SBKIM_SW_STANDALONE=false`), Konvention (Pre-Flight-Check vor Schritt 3 ist Pflicht). **§ Service-Worker-Hinweis** `install`/`activate`-Vertragsblock erweitert — `skipWaiting`/`clients.claim` jetzt unter `SBKIM_SW_STANDALONE`-Schalter (Default `true` → Variante 3a bisher; `false` → Variante 3b lässt App-SW seinen Lebenszyklus); fetch-Listener-Reihenfolge dokumentiert (Browser ruft Listener in Registrier-Reihenfolge, erster `respondWith` gewinnt — sbkim-sw.js fasst nur `/sbkim/*`-Pfade an, alle anderen Events fallen an den App-SW-Listener durch). **§ Datei-Pfad-Konvention** um optionalen Block `app-sw.js` im Repo-Root ergänzt (sauberer relativer `importScripts('./sbkim-sw.js')`-Pfad nur dann garantiert). **§ Sichtkontrolle nach dem Andocken** um fünften (variantenspezifischen) Pflicht-Punkt erweitert: Variante-3b-Zwei-Browser-Test (eine Registrierung im DevTools, Konsolen-Zeile, `POST /sbkim/anastomosis` liefert 200, App-Offline-Pfade unverändert) — wartet auf Klaus' nächsten Live-Andock-Versuch. **`src/sbkim-sw.js` umgebaut** — `SBKIM_SW_STANDALONE`-Flag am Modul-Anfang (Default `true`, rückwärtskompatibel); `install`/`activate`-Handler rufen `skipWaiting`/`clients.claim` nur unter `SBKIM_SW_STANDALONE === true`; fetch-Listener-Pfad für `/sbkim/anastomosis` und `/sbkim/legacy` unverändert; Header-Kommentar erweitert um beide Lade-Pfade. **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende (neueste unten, Konventions-Stil); keine §1-Vertragsänderung (das Flag ist SW-intern, kein öffentlicher Funktions-Export wandert). **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07** (deren Code unverändert). **`status.json` Modul 09 unverändert** (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — die Pflege ist additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). |
 | Werte für Rezeptbuch eingetragen | — | — | TBD — Klaus trägt nach |
 | Werte für Mixarium eingetragen | — | — | TBD — Klaus trägt nach |
