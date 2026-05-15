@@ -42,6 +42,10 @@
     { "id": "12", "name": "Blocklist",      "score": "schablone", "siegel": "spec ausstehend, Priorität niedrig", "kurz": "Manuelle Sperrliste für gezielte Angreifer" }
   ],
 
+  "diffusionBacklog": [
+    { "id": "14", "name": "Diffusion",      "score": "schablone", "siegel": "Stub (Backlog), Priorität niedrig", "kurz": "Konsensuell-empfehlende Spore-Diffusion über Handshake-Erweiterung — Pfad 2 (drehbuchkonform), Pfade 1 (passiv) und 3 (parasitär) dokumentiert; Spec ausstehend bis Netz wächst" }
+  ],
+
   "nodeTypes": {
     "schablone": 0,
     "werkstatt": 3,
