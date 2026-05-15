@@ -88,7 +88,7 @@ sitzt in der Andock-Anleitung, nicht in den Modulen.
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
-| 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig |
+| 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -223,16 +223,24 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   Netz") bricht. Modul 14 bleibt Stub bis Netz wächst (Schwelle siehe
   Diffusion-Backlog unten); Karte 05 wird in der Stub-Sitzung
   NICHT angefasst.
-- **Sage-Page sichtbar machen für Modul 14** (offen, eingetragen
-  2026-05-15 nach Hauptsitzung 14-Diffusion-Stub). `index.html`
-  rendert aktuell `modules[]` und `schutzBacklog[]`; das neue
-  `diffusionBacklog[]` wird nicht angezeigt. Modul 14 muss in der
-  Bau-Puls-Karte und (analog zu 10/11/12 in Karte 13 Eigenschutz)
-  ggf. in einer eigenen Karte „Wuchs-Mechanik" oder als Sub-
-  Sektion neben dem Schutz-Backlog sichtbar werden. **Folge-Pflege-
-  Sitzung „Sage-Page für Modul 14"** — diese Hauptsitzung berührt
-  den Anker nur in `status.json` + Karte + PULS, nicht die
-  Sage-Page selbst.
+- ~~**Sage-Page sichtbar machen für Modul 14**~~ — **gelöst
+  2026-05-15 durch Pflege-Sitzung Sage-Page Modul 14.**
+  `index.html` rendert jetzt `diffusionBacklog[]` parallel zu
+  `schutzBacklog[]` in zwei datengetriebenen Karten (Karte 4
+  Module-Bento, Karte 14 Bau-Puls jeweils mit parallelem Divider
+  „Diffusion-Backlog · proaktiv · Priorität niedrig"), Pie zählt
+  jetzt 14 Module mit 5 Schablonen. Zusätzlich bekommt Karte 13
+  Eigenschutz einen zweiten parallelen `schutz-backlog`-Block
+  „Diffusion-Backlog · proaktiv (Wuchs durch Empfehlung)"
+  sprachlich klar abgegrenzt vom Schutz-Backlog-Block („reaktiv");
+  `schutz-pilz`-Schlussspruch um die Diffusion-Zeile erweitert
+  („wächst, indem er Notizen über Nachbarn weitergibt, nicht ins
+  Leere pulst"). Schema-Beispiel in Karte 7 zeigt jetzt
+  `diffusionBacklog: []` parallel zum `schutzBacklog: []`-Kommentar.
+  `status.json` unverändert (PR #29 hatte die Daten schon geliefert).
+  `update_puls_pie.py` NICHT erneut aufgerufen (keine Modul-Daten-
+  Änderung). Details im Übergabeprotokoll
+  [2026-05-15 Pflege Sage-Page Modul 14](sessions/archiv/2026-05-15_pflege-sage-page-modul-14.md).
 
 ## Schutz-Backlog (aus Sage-Page Karte 13, 2026-05-10)
 
@@ -279,6 +287,169 @@ Kategorien jetzt mit.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Pflege-Sitzung · Sage-Page Modul 14 Sichtbarmachung
+
+**Getan:**
+
+- **`index.html` um `diffusionBacklog[]`-Rendering erweitert**,
+  parallel zur bestehenden `schutzBacklog[]`-Darstellung. Modul 14
+  ist damit auf der Sage-Page sichtbar — sowohl in der **Karte 4
+  Module-Bento** als auch in der **Karte 14 Bau-Puls** und in der
+  **Karte 13 Eigenschutz**.
+- **Gewählte Render-Variante: kombiniert (c) erweitert + (a)
+  sekundär** — die drei Karten teilen sich die Sichtbarmachung
+  semantisch sauber. **Begründung:** `schutzBacklog` und
+  `diffusionBacklog` sind Geschwister-Felder in `status.json`;
+  beide datengetriebenen Karten (Karte 4 + Karte 14) müssen beide
+  Backlogs spiegeln, sonst zeigt der Pie 14 Module aber die Zellen
+  nur 13. Eigenschutz-Karte 13 hat hardgecodete Inhalte — dort wird
+  ein zweiter parallel-stilisierter Block für „Diffusion-Backlog
+  (proaktiv)" eingefügt, sprachlich klar vom Schutz-Backlog-Block
+  („reaktiv") getrennt. **Reine Variante (a)** wäre nicht
+  ausreichend gewesen, weil sie nur Karte 13 erweitert hätte und
+  die zwei datengetriebenen Karten weiter veraltete Zählung gezeigt
+  hätten. **Reine Variante (b)** (eigene Karte 15) hätte den Bento
+  ohne klaren Mehrwert um eine Karte aufgebläht, wo der Eintrag
+  heute genau **ein** Modul ist.
+- **Render-Code-Änderungen in `index.html`:**
+  - `FALLBACK_STATUS` um `diffusionBacklog: []` ergänzt (Fail-Soft,
+    falls `status.json` nicht lädt).
+  - `renderModules(s)` parallel-Pfad zu `schutzBacklog`: Divider
+    „Diffusion-Backlog · proaktiv · spec ausstehend, Priorität
+    niedrig" plus `buildModCard(m, true)` pro Eintrag.
+  - `renderBauPuls(s)` analog: `allMods` inkludiert
+    `diffusionBacklog`, Divider „Diffusion-Backlog · proaktiv ·
+    Priorität niedrig" plus `buildBPCell(m, byId, true)` pro
+    Eintrag.
+  - `renderBauPulsPie(s)` `all`-Array um `diffusionBacklog`
+    erweitert → Pie zählt jetzt **14** Module mit **5** Schablonen
+    (vorher 13/4). Center-Zahl `total` und Legende ziehen
+    automatisch nach (kein Hardcoding).
+  - `BACKLOG_IDS` Set von `{'10','11','12'}` auf
+    `{'10','11','12','14'}` erweitert — `isNextUp(m, byId)` liefert
+    für Modul 14 jetzt `false` (Backlog-Module bekommen kein
+    Goldene-Outline-Bereit-Symbol).
+  - `SLUG_MAP` und `slugForId(id)`-Map um `'14': 'diffusion'`
+    ergänzt → Klick auf Modul 14 in Karte 14 öffnet
+    `docs/components/14_diffusion.md` (Pfad analog 10/11/12).
+    `openModuleDetail`-Backlog-Pfad nutzt `m.name.toLowerCase()` →
+    `"diffusion"` matcht den Dateinamen ebenfalls (rückwärts-
+    kompatibel mit dem Schutz-Backlog-Pfad).
+- **HTML-Änderungen in `index.html`:**
+  - **Karte 4 Module-Bento-Titel** von „Module · 10 Haupt + 3
+    Schutz-Backlog" auf „Module · 10 Haupt + 3 Schutz + 1 Diffusion
+    (Backlog)" angehoben.
+  - **Karte 13 Eigenschutz** bekommt einen zweiten parallelen
+    `<div class="schutz-backlog">`-Block direkt nach dem
+    bestehenden Schutz-Backlog-Block. Sprache: „Diffusion-Backlog
+    · proaktiv (Wuchs durch Empfehlung, drehbuchkonform)" mit
+    einem Listeneintrag (Modul 14 Link + Pfad-Kurzbeschreibung)
+    und einer drei-zeiligen Erklärung „Schutz wehrt ab,
+    Diffusion beschleunigt — Wuchs durch geteilte Erinnerung an
+    gemeinsame Berührungen". Zusätzlich der bestehende Schutz-
+    Backlog-Strong-Header explizit als „Schutz-Backlog · reaktiv"
+    gekennzeichnet (sprachliche Parallelität).
+  - **`.schutz-pilz`-Schlussspruch** um eine zweite Zeile
+    erweitert: „Und er wächst, indem er Notizen über Nachbarn
+    weitergibt — nicht, indem er ins Leere pulst."
+  - **Karte 7 Datenquelle Schema-Beispiel** zeigt jetzt
+    `"diffusionBacklog": [/* Modul 14 (proaktiv), zählt NICHT in
+    Score */]` parallel zum bestehenden `"schutzBacklog"` (additiver
+    Kommentar, kein neues Feld in der `status.json`-Wahrheit — die
+    Daten stehen schon).
+- **`status.json` unverändert.** PR #29 hatte das `diffusionBacklog`-
+  Feld inkl. Modul-14-Eintrag schon angelegt; diese Pflege liest
+  nur. `scripts/update_puls_pie.py` **NICHT aufgerufen** (keine
+  Modul-Daten-Änderung).
+- **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende
+  ergänzt (Konventions-Stil; neueste unten). **Keine §1-
+  Vertragsänderung** — die Sage-Page ist Observatorium, keine
+  Modul-Schnittstelle. Modul 14 bleibt Stub ohne öffentliche
+  Funktions-Exports.
+- **`docs/components/14_diffusion.md` unverändert** (Stub bleibt
+  Stub; Status-Block § sagt zwar „Sage-Page → noch nicht sichtbar
+  (Folge-Pflege)", aber das Update dieser Zeile gehört in eine
+  Mini-Folge-Pflege oder in die spätere Spec-Sitzung 14 — siehe
+  „Was offen blieb").
+
+**Was nicht geändert wurde (bewusst):**
+
+- **Keine `status.json`-Änderung.** Die Daten sind aus PR #29
+  fertig.
+- **Keine Karten-10/11/12/14-Änderung.** Backlog-Karten unangetastet.
+- **Keine `scripts/update_puls_pie.py`-Änderung.** Pie ist
+  konsistent mit 14 Modulen / 5 Schablonen.
+- **Keine §1-Vertragsänderung in INTERFACES.md.** Sage-Page ist
+  kein Vertrag.
+- **Kein JS-Code in `src/`.** Sage-Page ist Sage-Page-spezifisch,
+  kein Endknoten-Modul.
+- **Keine Karten-05-Eingriffe.** Die `recommendedPeers`-
+  Handshake-Erweiterung ist eine eigene spätere Spec-/Pflege-
+  Sitzung — Modul 14 ist noch Schablone.
+- **Keine Bento-Architektur-Umbau.** Bestehende Karten-Reihenfolge
+  unverändert, keine neue Karte 15 „Diffusions-Backlog" eingefügt.
+- **Kein neuer visueller Stil.** Diffusion-Block in Karte 13 nutzt
+  exakt die `schutz-backlog`-CSS-Klasse (gleiche Borders, gleiche
+  Schriftgröße, gleiche Dim-Farbe).
+
+**Frischer-Kopf-Befund:** Die Sage-Page-Diskrepanz war ein reiner
+Anzeige-Effekt — Pie sagte „14 Module" (aus PULS.md, regeneriert von
+`update_puls_pie.py`), aber die `index.html`-Bau-Puls-Karte zeigte
+nur 13 Zellen. Das hätte einen Besucher der Sage-Page leicht
+verwirrt („wo ist das 14.?"). Mit dieser Pflege sind PULS-Pie,
+Sage-Page-Pie und Sage-Page-Zellen wieder im Gleichschritt.
+Architektur-wichtig: `schutzBacklog` und `diffusionBacklog` sind in
+`status.json` bewusst getrennt (reaktiv vs. proaktiv) — diese
+Trennung spiegelt sich jetzt sprachlich in beiden Karten 4/13/14
+wider, ohne dass `scoreModel.maxScoreNote` angefasst werden muss
+(Backlog zählt weiter nicht zum maxScore).
+
+**Was offen blieb:**
+
+- **Karte 14 § Status-Zeile** sagt noch „Sage-Page → noch nicht
+  sichtbar (Folge-Pflege)". Diese Zeile darf jetzt auf „Sage-Page
+  → sichtbar in Karten 4/13/14 (Pflege 2026-05-15)" angehoben
+  werden. Aus Scope-Disziplin lassen wir die Karte 14 in **dieser**
+  Pflege unangetastet (Briefing-Verbot: „Keine Änderung an
+  Komponenten-Karten 10/11/12 oder 14") — die Folge-Mini-Pflege
+  „Karte 14 Status-Zeile nachziehen" kann das in zwei Zeilen
+  erledigen. Alternativ kann die spätere Spec-Sitzung 14 das mit
+  erledigen.
+- **Sichttest Sage-Page in Klaus' Browser.** Diese Pflege ist
+  headless gelaufen; Code-Lesen verifiziert das Render-Verhalten,
+  aber die visuelle Balance der drei Karten (Karte 4 mit Diffusion-
+  Divider, Karte 13 mit zwei `schutz-backlog`-Blöcken, Karte 14
+  Bau-Puls mit zwei Backlog-Dividern unter den Hauptzellen) wartet
+  auf Klaus' nächsten Sage-Page-Reload. Falls die Karte 13
+  optisch zu „schwer" wird (zwei Backlog-Blöcke + Schlussspruch +
+  sechs Schutz-Items), könnte eine Mini-Pflege die Karte 13
+  visuell entzerren.
+- **PULS-400-Zeilen-Konvention** weiter offen. PULS.md überschreitet
+  die 400-Zeilen-Konvention seit längerem deutlich (vor diesem
+  Eintrag ca. 3170 Zeilen, nach diesem Eintrag mehr). Eine
+  separate Pflege „PULS archivieren" bleibt fällig.
+- **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-
+  Andock-Versuch** bleibt der empfohlene Haupt-Pfad (Karte 09 ist
+  vollständig: neun Schritte + Pre-Flight + 3a/3b, `sbkim-sw.js`
+  hat den `SBKIM_SW_STANDALONE`-Schalter, Klaus' Endknoten haben
+  App-SWs → Variante 3b). **Nicht headless** — Klaus klickt am
+  Browser, kopiert Konsolen-Ausgaben.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-
+   Andock-Versuch** (Empfehlung: bei Tablet-Zeit). Nicht headless.
+2. Headless-Alternativen (in fallender Priorität):
+   - **Spec-Sitzung Modul 06 Heterokaryose** (Schablone, Lead-
+     Pool-Konsument von Modul 14).
+   - **Mini-Folge-Pflege „Karte 14 Status-Zeile nachziehen"** —
+     zwei Zeilen, headless.
+   - **Pflege „PULS archivieren"** — niedrige Dringlichkeit,
+     headless, aber überfällig.
+3. Bei Sage-Page-Sichtprüfung-Befund (Klaus' Browser): optional
+   **Mini-Pflege „Karte 13 visuelle Entzerrung"** falls die zwei
+   parallelen Backlog-Blöcke optisch unbalanciert wirken.
 
 ### 2026-05-15 · Pflege-Sitzung · Karte 09 App-SW-Koexistenz
 
