@@ -2,8 +2,10 @@
  * SBKIM — Modul 01 — Storage
  *
  * IndexedDB wrapper for all sbkim_* stores. Promise-based API, no
- * callbacks. Database name: "sbkim", current version: 2 (additive
- * migration in Bau-Sitzung 06: `sbkim_hetero_inbox`).
+ * callbacks. Database name: "sbkim", current version: 3 (additive
+ * migrations: v=2 Bau-Sitzung 06 added `sbkim_hetero_inbox`,
+ * v=3 Pflege Bau 06.1 added `sbkim_hetero_outbox` — Spec-Sitzung 08
+ * specified the store; Pflege Bau 06.1 follows up the code anmelden).
  *
  * Public surface (registered on window.SbkimStorage):
  *   init() -> Promise<void>
@@ -21,7 +23,7 @@
   "use strict";
 
   var DB_NAME = "sbkim";
-  var DB_VERSION = 2;
+  var DB_VERSION = 3;
   var SBKIM_STORE_PREFIX = "sbkim_";
 
   // Stores, die der initiale Migration-Pfad (v=1) anlegt.
@@ -39,7 +41,14 @@
     "sbkim_hetero_inbox",
   ];
 
-  var KNOWN_STORES = STORES_V1.concat(STORES_V2);
+  // Stores, die in v=3 additiv hinzukommen (Spec-Sitzung 08 spezifiziert,
+  // Pflege Bau 06.1 meldet den Store im Code an — Modul 08 ist Schreiber,
+  // Modul 06 ist Leser über den Outbox-Lese-Pfad).
+  var STORES_V3 = [
+    "sbkim_hetero_outbox",
+  ];
+
+  var KNOWN_STORES = STORES_V1.concat(STORES_V2).concat(STORES_V3);
 
   function makeError(name, message, cause) {
     var e = new Error(message);
@@ -74,6 +83,18 @@
         var name2 = STORES_V2[j];
         if (!db.objectStoreNames.contains(name2)) {
           db.createObjectStore(name2);
+        }
+      }
+      return;
+    }
+    if (version === 3) {
+      // Pflege Bau 06.1 (2026-05-15): sbkim_hetero_outbox additiv.
+      // Schlüssel-Form: `label` (string ≤ 64 Zeichen).
+      // Schreiber: Modul 08 (UI-Demo). Leser: Modul 06 (Heterokaryose).
+      for (var k = 0; k < STORES_V3.length; k++) {
+        var name3 = STORES_V3[k];
+        if (!db.objectStoreNames.contains(name3)) {
+          db.createObjectStore(name3);
         }
       }
       return;

@@ -356,6 +356,21 @@ Anker her?** Diese Spec entscheidet:
 Diese Schicht-Trennung hält Modul 06 frei von Embedding und UI: 06
 liest fertige Anker, signiert die Antwort, sendet zurück.
 
+**Pflege Bau 06.1 (2026-05-15) — voller Outbox-Lese-Pfad implementiert.**
+Spec-Sitzung 08 hat `sbkim_hetero_outbox` als v=3-Store spezifiziert
+(Schlüssel `label`, Wert `{label, vector, addedAt}`, Schreiber Modul
+08, Reihenfolge absteigend nach `addedAt`); Pflege Bau 06.1 zieht den
+Code in `src/modules/06_heterokaryose.js` nach. Der Lese-Pfad ist
+fail-soft: `SbkimStorage.all("sbkim_hetero_outbox")` in try/catch; wenn
+leer, fehlend oder werfend → Fallback auf den Spore-Single-Anker.
+Wenn Einträge da sind, sortiert Modul 06 absteigend nach `addedAt` und
+mappt die ersten `HETERO_MAX_ANCHORS` (= 5, §0) auf die Anker-Form
+`{label, vector}` (das outbox-interne `addedAt` gehört nicht in die
+Anker-Form, siehe § Anker-Form unten). Die Erst-Bau-Iteration 06
+(2026-05-15) hatte ausschließlich den Spore-Single-Anker-Fallback
+(Degraded-Modus) implementiert; Pflege Bau 06.1 schließt den
+Lese-Pfad, der Fallback bleibt für leere/fehlende Outbox bestehen.
+
 ### Datenformate
 
 **HeterokaryosisRequest** (kanonisches JSON; alphabetisch sortierte
@@ -656,18 +671,22 @@ benennt nur, was geprüft werden soll:
    ändern (z.B. `nonce` neu setzen). Erwartung: `receiveHetero...`
    antwortet `outcome:"rejected", reason:"Request-Signatur ungültig"`,
    `sbkim_hetero_inbox` bleibt unverändert.
-9. **`HETERO_MAX_ANCHORS`-Begrenzung (Sender-Seite)** — B hat **mehr
-   als 5** Anker in seinem Outbox-Store (Test-Brücke
-   `_setHeteroOutbox` mit 7 Pseudo-Ankern). Erwartung: Response
-   liefert genau 5 Anker; A's Inbox-Eintrag hat `anchorCount === 5`.
-   **Hinweis Bau-Sitzung 06 (2026-05-15):** in der Erst-Bau-Iteration
-   nur **teil-abgedeckt**, weil die Anker-Quelle ausschließlich der
-   Spore-Single-Anker-Fallback ist (Degraded-Modus, max. 1 Anker pro
-   Pull). Panel 06 Test 9 prüft deshalb nur Schema-Konformität
-   (`{label, vector[384]}`, `length ≤ 5`) — der echte Begrenzungs-Test
-   (5 von 7) folgt mit Spec-Sitzung 08 (UI-Demo, Outbox-Befüller) oder
-   einer eigenen Pflege Modul 02 (`domainVector` als Backup-Anker mit
-   mehreren Einträgen).
+9. **`HETERO_MAX_ANCHORS`-Begrenzung (Sender-Seite) — voll abgedeckt
+   nach Pflege Bau 06.1 (2026-05-15).** Setup-Schritt schreibt sechs
+   Einträge in `sbkim_hetero_outbox` direkt via `SbkimStorage.put`
+   (Schlüssel `label`, Wert `{label, vector, addedAt}`; sechs sinnvoll
+   gestaffelte `addedAt`-Werte über eine Minute pro Eintrag, kein
+   `SbkimUiDemo`-Aufruf — Modul 08 ist eigene Bau-Sitzung,
+   Test-Konvention seit Panel 06 ist direkter Storage-Zugriff analog
+   `_addPseudoSibling`). Lokaler Pull-Round-Trip mit dem Pseudo-
+   Empfänger (eigene Identität als Opt-In-Geschwister) liefert eine
+   Response; Erwartung: `response.anchors.length === 5` (die sechste
+   älteste Eintragung wird aussortiert), `anchors[0].label` ist das
+   zuletzt eingetragene Label (Reihenfolge absteigend nach `addedAt`),
+   jeder Anker hält das Schema `{label, vector[384]}` ein. Nach dem
+   Test räumt Panel 06 die sechs Outbox-Einträge wieder weg, damit
+   andere Test-Knöpfe (z.B. Test 1) wieder den Spore-Single-Anker-
+   Fallback sehen.
 10. **`listHeterokaryosis`** — nach drei Pulls von zwei verschiedenen
     Geschwistern prüfen, dass alle drei Einträge mit
     `{peerNodeId, ts, anchorCount, receivedAt}` erscheinen und die
@@ -810,7 +829,8 @@ ist ohne diese Kontextdaten leer-funktional).
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid-Flow (alte Skizze ohne Pull-Pattern), Querverweise |
 | Spec gefüllt | 2026-05-15 | Spec 06 | Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`); Pull-Pattern verbindlich (kein Push); beidseitiger Opt-In via additivem `heterokaryosisOptIn`-Feld auf `sbkim_siblings`-Einträgen (fail-soft, default `false`); HeterokaryosisRequest/Response-Schema mit kanonischer Ed25519-Signatur (Pfad gespiegelt aus Modul 02/05/07); Anker-Form `{label, vector[384]}` ohne Eigen-Signatur (Response-Signatur deckt das ganze JSON); Anker-Quelle Spec-Wille: Default-Pfad Spore-Single-Anker, erweiterte Quelle `sbkim_hetero_outbox` für Spec-Sitzung 08 oder Folge-Pflege; neuer Store `sbkim_hetero_inbox` (Schlüssel `peerNodeId|ts`, Drift-Spur über Zeit); `sbkim_anastomosis_log` outcome-Vokabular additiv erweitert (`hetero-pulled`/`-served`/`-opt-out`/`-opt-out-local`/`-rejected`/`-timeout`/`-endpoint-unsupported`) — kein neuer Log-Store; Heterokaryose-Pfad in 14 Schritten (Sender 1–6, Empfänger 7–11, Sender 12–14); Service-Worker-Vertrag (POST `/sbkim/heterokaryosis`, JSON, ≤ 64 KiB, 405/415/413/503, 404 → `endpoint_unsupported`); Variante A (Page-Hosted) verbindlich; **§0 um `HETERO_MAX_ANCHORS = 5` ergänzt** (additiv, kein Hauptversions-Sprung); Fehlertabelle mit zwölf Lagen (Outcome vs. Throw klar getrennt); Manueller Test mit dreizehn Punkten; Risiken-Block mit acht Punkten (Anker-Vergiftung → Modul 10, Privacy-Leak via Outbox, Replay → Modul 11, Rate-Limit → Modul 11, Blocklist → Modul 12, Drift als Feature, Sibling-Schema-Erweiterung additiv, Anker-Quelle minimal in Erst-Spec); Hinweis an Karte 07 für Cleanup-Erweiterung (eigene Folge-Pflege, nicht in dieser Spec-Sitzung) |
 | Code geschrieben | 2026-05-15 | Bau 06 | `src/modules/06_heterokaryose.js` als IIFE mit `window.SbkimHeterokaryose`, fünf öffentliche Funktionen (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`); fünf benannte Error-Klassen (`HeterokaryoseDependenciesError`, `UnknownSiblingError`, `HeterokaryoseTimeoutError`, `HeterokaryoseNetworkError`, `HeterokaryoseSignatureInvalidError`); `NoIdentityError` aus Modul 02 unverändert durchgereicht. **Bau-Pflicht-Entscheidung 1:** kanonischer Sign/Verify-Pfad (canonicalize/base64url/signEnvelope/verifyEnvelope) **bewusst aus Modul 02/05/07 vierter Pfad dupliziert** — Single-File-PWA-Stil, kein Eingriff in 02/05/07 (Konvention seit Bau-Sitzung 07). **Bau-Pflicht-Entscheidung 2:** Test-Brücken-Surface = `_invokeReceiveHeterokaryosisDirect`, `_buildSignedHeterokaryosisRequest`, `_verifyResponseSignature`, `_addPseudoSibling` (mit `heterokaryosisOptIn`-Flag-Argument — schreibt direkt in `sbkim_siblings`, weil Modul 06 Storage-basiert liest; nicht in-memory wie Modul 07), `_clearPseudoSiblings`, `_setReceiverHttpStatus(status|null)` (fetch-Override für 404-Test ohne Netz), plus `_canonicalize`/`_base64urlEncode`/`_base64urlDecode`/`_signEnvelope`/`_verifyEnvelope`. **Bau-Pflicht-Entscheidung 3:** Service-Worker-Pfad in `src/sbkim-sw.js` als dritter fetch-Listener-Pfad parallel zu `/sbkim/anastomosis` + `/sbkim/legacy`; gleicher Body-Schutz (405/415/413/503); Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`; `SBKIM_SW_STANDALONE`-Schalter aus Pflege App-SW-Koexistenz unangetastet. **Bau-Pflicht-Entscheidung 4:** `src/modules/01_storage.js` `DB_VERSION` 1 → 2 (additive Migration); `STORES_V2 = ["sbkim_hetero_inbox"]` neuer Block in `applyMigration`; bestehende PWAs mit Version 1 bekommen den Store beim nächsten Lade additiv, kein Datenverlust. **Bau-Pflicht-Entscheidung 5:** `src/modules/07_apoptose.js` `CLEANUP_ORDER` um `HETERO_INBOX_STORE` zwischen `INBOX_STORE` und `SPORE_STORE` erweitert (zwischen Schritt 3 und 4 der Spec-Reihenfolge). `confirmSelfApoptose` löscht jetzt sechs Stores statt fünf, vor `resetIdentityCache()`. **Bau-Pflicht-Entscheidung 6:** Synchroner Selbstcheck-Konsolen-Hinweis beim Skript-Laden (`MODUL 06 HETEROKARYOSE bereit, Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`). **Bau-Pflicht-Entscheidung 7 (Anker-Quelle):** in dieser Bau-Iteration ausschließlich der **Spore-Single-Anker-Fallback** — `getOwnSpore()` lesen, wenn `domainVector` vorhanden (Array mit Länge 384) → `anchors:[{label:"(domain)", vector: domainVector}]`; sonst `anchors:[]` mit `outcome:"shared"` (**Degraded-Modus**, weil Sibling-/Opt-In-Filter passiert wurde — der Empfänger bekommt eine signierte Antwort ohne Ankerdaten). **Kein** `sbkim_hetero_outbox`-Lese-Code, **kein** Stub-Anlegen, **kein** Store-Register; das ist Spec-Sitzung 08-Arbeit. Folgen für Panel 06 Test 9 (HETERO_MAX_ANCHORS-Begrenzung): nur teil-abgedeckt — die Anzahl-Begrenzung selbst (5) lässt sich erst mit Outbox-Befüllung testen; Panel 06 prüft Schema-Konformität (`{label, vector[384]}`, `length ≤ 5`) und Single-Anker-Output. **Bau-Pflicht-Entscheidung 8:** Panel 06 in `tests/manual_check.html` mit 14 Knöpfen (Setup + 12 Test-Punkte aus § Manueller Test + Selbstcheck-Hinweis); Knopf-Stil exakt wie Panel 07 (`SbkimUI.addButton`-Pattern, `output.textContent =`-via `JSON.stringify`, Pass-Check-Markierung über `SbkimUI.setStatus`). `node --check src/modules/06_heterokaryose.js` und `node --check src/sbkim-sw.js` grün; alle Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert (9 Blöcke). `status.json` Modul 06 auf `score:"stub"` / `siegel:"Code-Stub"`, Pie regeneriert (Spec fertig 2 → 1, Code-Stub 7 → 8). |
-| Sichttest | — | — | headless gebaut (Node-Validation), Sichttest folgt mit Klaus im Browser — Panel 06 mit 14 Knöpfen, Test 9 nur teil-abgedeckt wegen Spore-Single-Anker-Fallback |
+| Pflege Bau 06.1 Outbox-Lese-Pfad | 2026-05-15 | Pflege Bau 06.1 | `src/modules/06_heterokaryose.js` § Anker-Quelle voll implementiert: neuer `OUTBOX_STORE = "sbkim_hetero_outbox"`-Konstante; `readOwnAnchors()` ruft zuerst `readOutboxAnchors()` (try/catch um `SbkimStorage.all("sbkim_hetero_outbox")`; bei Wurf, leerem oder fehlendem Store → `null` als Fallback-Signal mit `console.info`-Hinweis), sortiert nicht-leere Einträge absteigend nach `addedAt`, mappt die ersten `HETERO_MAX_ANCHORS` (= 5) auf Anker-Form `{label, vector}` (outbox-internes `addedAt` bleibt im Store); bei `null` Fallback auf `readSporeFallbackAnchors()` (= bisheriger Spore-Single-Anker-Fallback). **Fail-soft auf Store-Fehler** ist Spec-Wille: ältere Klaus-PWAs mit DB-Version 1/2 ohne v=3-Store werfen `UnknownStoreError` aus Modul 01, Modul 06 fällt sauber zurück. `src/modules/01_storage.js`: `DB_VERSION` 2 → 3 (additiv), neuer `STORES_V3 = ["sbkim_hetero_outbox"]`-Block in `applyMigration(db, 3)`; bestehende PWAs bekommen den Store beim nächsten Lade additiv ohne Datenverlust (Loop `for v = oldVersion+1 … newVersion` zieht die fehlenden Migrations-Schritte nach). Panel 06 Test 9 in `tests/manual_check.html` von „teil-abgedeckt" auf **vollen Begrenzungs-Test (5 von 6)** gehoben: Setup-Schritt schreibt sechs Outbox-Einträge direkt via `SbkimStorage.put` (Schlüssel `label`, Wert `{label, vector[384], addedAt}`; sechs `addedAt`-Werte über je eine Minute gestaffelt; **kein** `SbkimUiDemo`-Aufruf — Bau-Sitzung 08 ist eigene Phase, Test-Konvention seit Bau 06 ist direkter Storage-Zugriff analog `_addPseudoSibling`); Pass-Check `response.anchors.length === 5`, `anchors[0].label === "Nachtisch"` (neuestes Label, Reihenfolge-Check), `"Hefeteig"` (ältestes Label) aussortiert, jeder Anker hält Schema `{label, vector[384]}` ein. Nach dem Test räumt Panel 06 die sechs Outbox-Einträge wieder weg, damit andere Test-Knöpfe (z.B. Test 1) wieder den Spore-Single-Anker-Fallback sehen. Panel-06-Hinweis (`<pre class="log">`) entsprechend nachgezogen (zwei Anker-Quellen, Test 9 voller Begrenzungs-Test). **Keine §1-Modul-06-Vertrags-Änderung** in INTERFACES.md (das fail-soft-Lese-Recht steht seit Spec-Sitzung 06; Pflege Bau 06.1 zieht nur die Implementation nach). **Keine `src/modules/08_ui_demo.js`-Datei angelegt** (Bau-Sitzung 08 ist eigene Phase). `node --check src/modules/01_storage.js` und `node --check src/modules/06_heterokaryose.js` grün; alle 9 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert. **`status.json` unverändert** — Modul 06 bleibt `score:"stub"` (Code-Stub), die Pflege ist additiv im Code, kein Score-Wechsel; Pie nicht regeneriert. Karte 06 § Anker-Quelle (Pflege-Hinweis-Block), § Manueller Test Punkt 9 (von „teil-abgedeckt" auf „voll abgedeckt") und § Bauzustand-Zeile + Karte 01 § Bauzustand-Zeile + INTERFACES.md §6 nachgezogen. |
+| Sichttest | — | — | headless gebaut (Node-Validation), Sichttest folgt mit Klaus im Browser — Panel 06 mit 14 Knöpfen, Test 9 nach Pflege Bau 06.1 voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst) |
 | In Endknoten eingebaut | — | — | — |
 
 ---
