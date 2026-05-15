@@ -240,6 +240,12 @@
   /* Lebenszyklus-Animation */
   .cycle-box { position: relative; aspect-ratio: 16 / 8; min-height: 240px; }
   .cycle-box svg { width: 100%; height: 100%; display: block; }
+  /* Phasen-spezifische Animationen: nur die aktive Phase ist sichtbar */
+  .cycle-box .phase-fx { opacity: 0; transition: opacity 0.6s ease; pointer-events: none; }
+  .cycle-box[data-phase="0"] .phase-fx[data-phase="0"],
+  .cycle-box[data-phase="1"] .phase-fx[data-phase="1"],
+  .cycle-box[data-phase="2"] .phase-fx[data-phase="2"],
+  .cycle-box[data-phase="3"] .phase-fx[data-phase="3"] { opacity: 1; }
   .phase-strip {
     display: flex; gap: 0.5rem; flex-wrap: wrap;
     margin-top: 0.9rem; align-items: center;
@@ -444,6 +450,22 @@
     line-height: 1.55;
   }
   .wander-foot p { margin: 0.3rem 0; }
+  .wander-legend {
+    margin-top: 0.7rem; padding: 0.55rem 0.75rem;
+    border: 1px solid var(--line); border-radius: var(--r-sm);
+    background: rgba(0,0,0,0.18);
+    font-size: 0.78rem; color: var(--muted); line-height: 1.85;
+    display: flex; flex-wrap: wrap; gap: 0.25rem 0.85rem;
+  }
+  .wander-legend em { font-style: normal; color: var(--text); }
+  .wander-legend .leg {
+    font-size: 1rem; vertical-align: -1px; margin-right: 0.15rem;
+  }
+  .wander-legend .leg.gold   { color: #F59E0B; }
+  .wander-legend .leg.pink   { color: #F43F5E; }
+  .wander-legend .leg.violet { color: #8B5CF6; }
+  .wander-legend .leg.teal   { color: #14B8A6; }
+  .wander-legend .leg.reject { color: #F43F5E; font-weight: 700; }
 
   /* Cold-Start (12) */
   .cold-box { aspect-ratio: 16 / 9; min-height: 240px; }
@@ -1264,55 +1286,189 @@
         <!-- Karte 3: Lebenszyklus-Animation -->
         <section class="glass span-6">
           <div class="card-title">Lebenszyklus · Loop</div>
-          <div class="cycle-box" id="cycle-box">
+          <div class="cycle-box" id="cycle-box" data-phase="0">
             <svg viewBox="0 0 600 280" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <radialGradient id="hub-grad">
-                  <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.6"/>
-                  <stop offset="100%" stop-color="#6366F1" stop-opacity="0.15"/>
+                  <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="#6366F1" stop-opacity="0.1"/>
                 </radialGradient>
                 <radialGradient id="end-grad">
-                  <stop offset="0%" stop-color="#14B8A6" stop-opacity="0.8"/>
+                  <stop offset="0%" stop-color="#14B8A6" stop-opacity="0.75"/>
                   <stop offset="100%" stop-color="#14B8A6" stop-opacity="0.1"/>
                 </radialGradient>
+                <radialGradient id="heim-grad">
+                  <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.9"/>
+                  <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.15"/>
+                </radialGradient>
               </defs>
-              <!-- Sonar-Pulses Hub (gedämpft — Hub ist Bootstrap, nicht Vermittler) -->
-              <circle cx="300" cy="140" r="36" fill="none" stroke="#8B5CF6" stroke-opacity="0.25">
-                <animate attributeName="r" from="36" to="90" dur="4s" repeatCount="indefinite"/>
-                <animate attributeName="stroke-opacity" from="0.25" to="0" dur="4s" repeatCount="indefinite"/>
-              </circle>
-              <!-- Hub (Wurzelverzeichnis · kann ausfallen) -->
-              <circle cx="300" cy="140" r="28" fill="url(#hub-grad)" stroke="#8B5CF6" stroke-width="1.5" stroke-opacity="0.7"/>
-              <text x="300" y="143" text-anchor="middle" fill="#fff" font-size="10" font-family="Space Mono">HUB</text>
-              <text x="300" y="176" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="8" font-family="Space Grotesk" letter-spacing="0.5">Bootstrap · kann ausfallen</text>
-              <!-- Endknoten links (Rezept) -->
-              <circle cx="80" cy="80" r="22" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1.5"/>
-              <text x="80" y="84" text-anchor="middle" fill="#fff" font-size="9" font-family="Space Grotesk">Rezept</text>
-              <!-- Endknoten rechts (Mixar) -->
-              <circle cx="520" cy="80" r="22" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1.5"/>
-              <text x="520" y="84" text-anchor="middle" fill="#fff" font-size="9" font-family="Space Grotesk">Mixar</text>
-              <!-- Endknoten unten (weitere Geschwister, gestrichelt = noch nicht angedockt) -->
-              <circle cx="80" cy="220" r="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 4"/>
-              <circle cx="520" cy="220" r="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 4"/>
-              <!-- Bootstrap-Linien zum Hub (dünn, gestrichelt — nur Erstkontakt) -->
-              <line x1="100" y1="92" x2="276" y2="130" stroke="rgba(139,92,246,0.3)" stroke-width="0.8" stroke-dasharray="2 5"/>
-              <line x1="500" y1="92" x2="324" y2="130" stroke="rgba(139,92,246,0.3)" stroke-width="0.8" stroke-dasharray="2 5"/>
-              <!-- Direkte Mycel-Verbindung Rezept↔Mixar (durchgezogen, atmend — nach Anastomose) -->
-              <path d="M 102,80 Q 300,30 498,80" fill="none" stroke="#14B8A6" stroke-width="1.8" opacity="0.7">
-                <animate attributeName="opacity" values="0.45;0.85;0.45" dur="3.4s" repeatCount="indefinite"/>
-              </path>
-              <!-- Particle-Stream: Direktfluss Rezept→Mixar (Anfrage fließt hin) -->
-              <circle r="3.5" fill="#F59E0B">
-                <animateMotion dur="4.6s" repeatCount="indefinite" path="M 102,80 Q 300,30 498,80"/>
-              </circle>
-              <!-- Particle-Stream: Direktfluss Mixar→Rezept (Antwort fließt zurück) -->
-              <circle r="3.5" fill="#14B8A6">
-                <animateMotion dur="4.6s" begin="2.3s" repeatCount="indefinite" path="M 498,80 Q 300,30 102,80"/>
-              </circle>
+
+              <!-- Grundnetz: bestehendes Mycel zwischen schon verbundenen Knoten -->
+              <g class="mycel-base" opacity="0.4">
+                <path d="M 100,90 Q 170,30 230,55" stroke="#14B8A6" stroke-width="1.2" fill="none"/>
+                <path d="M 230,55 Q 340,30 460,75" stroke="#14B8A6" stroke-width="1.2" fill="none"/>
+                <path d="M 460,75 Q 510,140 540,200" stroke="#14B8A6" stroke-width="1.1" fill="none"/>
+                <path d="M 100,90 Q 130,180 220,235" stroke="#14B8A6" stroke-width="1.0" fill="none"/>
+                <path d="M 220,235 Q 310,250 400,245" stroke="#14B8A6" stroke-width="1.0" fill="none"/>
+                <path d="M 400,245 Q 480,225 540,200" stroke="#14B8A6" stroke-width="1.0" fill="none"/>
+                <path d="M 230,55 Q 240,140 220,235" stroke="#14B8A6" stroke-width="0.9" fill="none"/>
+              </g>
+
+              <!-- Bootstrap-Linien zum Hub (immer dünn, gestrichelt — nur Erstkontakt) -->
+              <g class="hub-bootstrap" opacity="0.35">
+                <line x1="100" y1="90" x2="290" y2="148" stroke="#8B5CF6" stroke-width="0.7" stroke-dasharray="2 5"/>
+                <line x1="230" y1="55" x2="296" y2="135" stroke="#8B5CF6" stroke-width="0.7" stroke-dasharray="2 5"/>
+                <line x1="460" y1="75" x2="312" y2="138" stroke="#8B5CF6" stroke-width="0.7" stroke-dasharray="2 5"/>
+              </g>
+
+              <!-- Hub (klein, gedämpft — ein Knoten unter vielen, kein Vermittler) -->
+              <circle cx="305" cy="155" r="17" fill="url(#hub-grad)" stroke="#8B5CF6" stroke-width="1" stroke-opacity="0.6"/>
+              <text x="305" y="158" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Space Mono">HUB</text>
+              <text x="305" y="180" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="7" font-family="Space Grotesk" letter-spacing="0.4">Bootstrap · kann ausfallen</text>
+
+              <!-- Knoten: Heim (Initiator, gold) -->
+              <circle cx="100" cy="90" r="20" fill="url(#heim-grad)" stroke="#F59E0B" stroke-width="1.5"/>
+              <text x="100" y="93" text-anchor="middle" fill="#fff" font-size="9" font-family="Space Grotesk">Heim</text>
+
+              <!-- Geschwister-Knoten (unregelmäßig verteilt, verschiedene Größen) -->
+              <circle cx="230" cy="55" r="14" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1"/>
+              <text x="230" y="58" text-anchor="middle" fill="#fff" font-size="7" font-family="Space Grotesk">Rezept</text>
+
+              <circle cx="460" cy="75" r="15" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1"/>
+              <text x="460" y="78" text-anchor="middle" fill="#fff" font-size="7" font-family="Space Grotesk">Mixar</text>
+
+              <circle cx="540" cy="200" r="13" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1"/>
+              <text x="540" y="203" text-anchor="middle" fill="#fff" font-size="7" font-family="Space Grotesk">Buch</text>
+
+              <circle cx="220" cy="235" r="12" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1"/>
+              <text x="220" y="238" text-anchor="middle" fill="#fff" font-size="7" font-family="Space Grotesk">Notiz</text>
+
+              <circle cx="400" cy="245" r="12" fill="url(#end-grad)" stroke="#14B8A6" stroke-width="1"/>
+              <text x="400" y="248" text-anchor="middle" fill="#fff" font-size="7" font-family="Space Grotesk">Foto</text>
+
+              <!-- Leerer Knoten (frischer Boden — wartet auf passive Impfung in Phase 1) -->
+              <circle id="seed-soil" cx="370" cy="170" r="11" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.22)" stroke-width="1" stroke-dasharray="3 3"/>
+              <text x="370" y="173" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="6" font-family="Space Grotesk">Boden</text>
+
+              <!-- ============================================== -->
+              <!-- Phase 0 · Spore aussenden + landen (zwei Varianten) -->
+              <!-- ============================================== -->
+              <g class="phase-fx" data-phase="0">
+                <!-- Variante A: aktiv aussenden — Heim pulst Sonar -->
+                <circle cx="100" cy="90" r="22" fill="none" stroke="#F59E0B" stroke-opacity="0.55">
+                  <animate attributeName="r" from="22" to="70" dur="2.4s" repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" from="0.55" to="0" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Diffundierende Spore-Particles von Heim in drei Richtungen -->
+                <circle r="2.6" fill="#F59E0B">
+                  <animateMotion dur="2.4s" repeatCount="indefinite" path="M 100,90 Q 170,30 230,55"/>
+                  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="2.6" fill="#F59E0B">
+                  <animateMotion dur="2.6s" begin="0.3s" repeatCount="indefinite" path="M 100,90 Q 130,180 220,235"/>
+                  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="2.6s" begin="0.3s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="2.6" fill="#F59E0B">
+                  <animateMotion dur="2.8s" begin="0.6s" repeatCount="indefinite" path="M 100,90 Q 250,150 370,170"/>
+                  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="2.8s" begin="0.6s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Variante B: passiv impfen lassen — der leere Boden empfängt eine fremde Spore -->
+                <circle r="2.4" fill="#14B8A6">
+                  <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite" path="M 540,200 Q 460,190 370,170"/>
+                  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Boden-Knoten pulsiert bei Empfang -->
+                <circle cx="370" cy="170" r="11" fill="none" stroke="#14B8A6" stroke-opacity="0.7">
+                  <animate attributeName="r" values="11;18;11" dur="2.4s" begin="2.0s" repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" values="0.7;0;0.7" dur="2.4s" begin="2.0s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Beschriftung: aktiv vs. passiv -->
+                <text x="100" y="130" text-anchor="middle" fill="rgba(245,158,11,0.75)" font-size="7" font-family="Space Mono">aktiv impfen</text>
+                <text x="370" y="200" text-anchor="middle" fill="rgba(20,184,166,0.75)" font-size="7" font-family="Space Mono">impfen lassen</text>
+              </g>
+
+              <!-- ============================================== -->
+              <!-- Phase 1 · Anfrage einbetten — Vektor entsteht am Heim -->
+              <!-- ============================================== -->
+              <g class="phase-fx" data-phase="1">
+                <!-- Vektor-Punkte arrangieren sich um Heim (Embedding-Visualisierung) -->
+                <circle cx="100" cy="90" r="22" fill="none" stroke="#F59E0B" stroke-opacity="0.4" stroke-dasharray="2 3">
+                  <animateTransform attributeName="transform" type="rotate" from="0 100 90" to="360 100 90" dur="3.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="75" cy="70" r="1.8" fill="#F59E0B">
+                  <animate attributeName="cy" values="70;72;70" dur="1.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="80" cy="115" r="1.8" fill="#F59E0B">
+                  <animate attributeName="cx" values="80;82;80" dur="1.4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="125" cy="110" r="1.8" fill="#F59E0B">
+                  <animate attributeName="cy" values="110;108;110" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="120" cy="68" r="1.8" fill="#F59E0B">
+                  <animate attributeName="cx" values="120;118;120" dur="1.7s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="95" cy="60" r="1.6" fill="#F59E0B">
+                  <animate attributeName="cy" values="60;58;60" dur="1.3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="65" cy="95" r="1.6" fill="#F59E0B">
+                  <animate attributeName="cx" values="65;63;65" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+                <text x="100" y="140" text-anchor="middle" fill="rgba(245,158,11,0.85)" font-size="7" font-family="Space Mono">text → vec[384]</text>
+                <text x="100" y="152" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="6" font-family="Space Grotesk">L2-normalisiert</text>
+              </g>
+
+              <!-- ============================================== -->
+              <!-- Phase 2 · Anastomose · Direktfaden wächst (zwei Varianten) -->
+              <!-- ============================================== -->
+              <g class="phase-fx" data-phase="2">
+                <!-- Variante A: ganz neuer Faden Heim→Mixar (zuvor unverbunden) -->
+                <path d="M 118,82 Q 270,30 446,72" stroke="#14B8A6" stroke-width="2.4" fill="none" opacity="0.95"
+                      stroke-dasharray="420" stroke-dashoffset="420">
+                  <animate attributeName="stroke-dashoffset" from="420" to="0" dur="1.8s" repeatCount="indefinite"/>
+                </path>
+                <!-- Variante B: bestehender Faden Heim↔Notiz wird wiederbelebt (Re-Handshake) -->
+                <path d="M 100,90 Q 130,180 220,235" stroke="#14B8A6" stroke-width="2.2" fill="none" opacity="0">
+                  <animate attributeName="opacity" values="0;0.9;0.4;0.9" dur="1.8s" repeatCount="indefinite"/>
+                </path>
+                <!-- Beide Endpunkte pulsieren synchron — Verbindung etabliert -->
+                <circle cx="100" cy="90" r="20" fill="none" stroke="#14B8A6">
+                  <animate attributeName="r" values="20;26;20" dur="1.2s" repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" values="0.9;0.15;0.9" dur="1.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="460" cy="75" r="15" fill="none" stroke="#14B8A6">
+                  <animate attributeName="r" values="15;21;15" dur="1.2s" repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" values="0.9;0.15;0.9" dur="1.2s" repeatCount="indefinite"/>
+                </circle>
+                <text x="282" y="20" text-anchor="middle" fill="rgba(20,184,166,0.85)" font-size="7" font-family="Space Mono">neuer Faden — direkt, ohne Hub</text>
+                <text x="160" y="155" text-anchor="middle" fill="rgba(20,184,166,0.65)" font-size="6" font-family="Space Mono">+ Re-Handshake auf altem Faden</text>
+              </g>
+
+              <!-- ============================================== -->
+              <!-- Phase 3 · Antwort fließt zurück (zwei Varianten: direkt + über Hops) -->
+              <!-- ============================================== -->
+              <g class="phase-fx" data-phase="3">
+                <!-- Variante A: direkter Pfad Mixar → Heim auf dem frisch gebildeten Faden -->
+                <path d="M 118,82 Q 270,30 446,72" stroke="#14B8A6" stroke-width="1.8" fill="none" opacity="0.8"/>
+                <circle r="4" fill="#14B8A6">
+                  <animateMotion dur="2.2s" repeatCount="indefinite" path="M 446,72 Q 270,30 118,82"/>
+                </circle>
+                <!-- Variante B: Mehr-Hops über das bestehende Netz (Mixar → Buch → Foto → Notiz → Heim) -->
+                <circle r="3" fill="#6366F1" opacity="0.85">
+                  <animateMotion dur="4.4s" repeatCount="indefinite"
+                                 path="M 460,75 Q 510,140 540,200 Q 480,225 400,245 Q 310,250 220,235 Q 130,180 100,90"/>
+                </circle>
+                <!-- Antwort-Pulse am Ziel-Heim -->
+                <circle cx="100" cy="90" r="20" fill="none" stroke="#14B8A6" stroke-opacity="0.7">
+                  <animate attributeName="r" values="20;32;20" dur="2.2s" repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" values="0.7;0;0.7" dur="2.2s" repeatCount="indefinite"/>
+                </circle>
+                <text x="300" y="20" text-anchor="middle" fill="rgba(20,184,166,0.85)" font-size="7" font-family="Space Mono">direkt zurück</text>
+                <text x="380" y="265" text-anchor="middle" fill="rgba(99,102,241,0.85)" font-size="7" font-family="Space Mono">oder über mehrere Hops</text>
+              </g>
             </svg>
           </div>
           <div class="phase-strip">
-            <div class="phase-pill active" data-phase="0">1 · Spore aussenden</div>
+            <div class="phase-pill active" data-phase="0">1 · Spore aussenden / landen</div>
             <div class="phase-pill" data-phase="1">2 · Anfrage einbetten</div>
             <div class="phase-pill" data-phase="2">3 · Anastomose · Direktfaden entsteht</div>
             <div class="phase-pill" data-phase="3">4 · Antwort fließt direkt zurück</div>
@@ -1510,10 +1666,25 @@
             <div class="phase-pill" data-phase="2">3 · Anastomose</div>
             <div class="phase-pill" data-phase="3">4 · Heterokaryose &amp; Apoptose</div>
           </div>
+          <div class="wander-legend" aria-label="Legende der Particle-Pfade">
+            <span class="leg gold">●</span> <em>Anfrage + Match-Treffer</em> (Erfolgs-Pfad, schließt zurück)
+            <span class="leg pink">●</span> <em>Apoptose</em> (erfolgloser Pfad, fadet aus)
+            <span class="leg violet">●</span> <em>Heterokaryose-Frage</em> (»woher kommst du, hast du neues?«)
+            <span class="leg teal">●</span> <em>Heterokaryose-Antwort</em> (Spore-Sammlung teilen)
+            <span class="leg reject">✗</span> <em>Abwehr</em> (böse Spore — ungültige Signatur, Schwellwert verfehlt, rejected)
+          </div>
           <div class="wander-foot">
             <p>Kein Crawler. Sporen reisen nur, wenn echte Nutzer suchen.</p>
             <p>Erfolgreiche Wege werden kürzer. Erfolglose vergessen das Netz.</p>
-            <p style="color:var(--dim);font-size:0.8rem">Mechanik aktiv ab Modul 04 (Match) bis 07 (Apoptose). Heute: Konzept-Visualisierung.</p>
+            <p style="color:var(--dim);font-size:0.8rem">
+              <strong>Heute Konzept-Visualisierung</strong>, keine Live-Demo —
+              die Mechanik existiert in den Modulen 04 (Match) + 05 (Anastomose)
+              + 06 (Heterokaryose) + 07 (Apoptose) als Code-Stub, und die
+              Abwehr-Module 10–12 sind im Backlog. Sobald die erste
+              Endknoten-PWA live andockt (Modul 09), kann diese Karte zur
+              echten Live-Demo mitwachsen — Folge-Pflege-Sitzung
+              „Wanderung-Live-Stand" nach erstem Andock-Erfolg.
+            </p>
           </div>
         </section>
 
@@ -1521,32 +1692,32 @@
         <section class="glass span-4">
           <div class="card-title">Initialstart · Wie das Mycel beginnt</div>
           <div class="cold-box">
-            <svg id="cold-svg" viewBox="0 0 360 260" preserveAspectRatio="xMidYMid meet">
+            <svg id="cold-svg" viewBox="0 0 480 270" preserveAspectRatio="xMidYMid meet">
               <!-- Hintergrund-Frage-Sprites -->
-              <text x="50" y="50" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
-              <text x="300" y="70" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
-              <text x="180" y="240" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
+              <text x="70" y="55" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
+              <text x="395" y="80" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
+              <text x="240" y="252" fill="rgba(255,255,255,0.08)" font-size="32" font-family="Space Grotesk">?</text>
 
-              <!-- Hub oben -->
-              <circle cx="180" cy="60" r="26" fill="rgba(245,158,11,0.18)" stroke="#F59E0B" stroke-width="2"/>
-              <text x="180" y="64" text-anchor="middle" fill="#F59E0B" font-size="10" font-family="Space Mono">HUB</text>
-              <text x="180" y="100" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="Space Grotesk">Wurzelverzeichnis</text>
-              <text x="180" y="113" text-anchor="middle" fill="rgba(255,255,255,0.32)" font-size="7" font-family="Space Grotesk" letter-spacing="0.6">nur Bootstrap</text>
+              <!-- Hub oben mittig -->
+              <circle cx="240" cy="62" r="26" fill="rgba(245,158,11,0.18)" stroke="#F59E0B" stroke-width="2"/>
+              <text x="240" y="66" text-anchor="middle" fill="#F59E0B" font-size="10" font-family="Space Mono">HUB</text>
+              <text x="240" y="102" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="Space Grotesk">Wurzelverzeichnis</text>
+              <text x="240" y="115" text-anchor="middle" fill="rgba(255,255,255,0.32)" font-size="7" font-family="Space Grotesk" letter-spacing="0.6">nur Bootstrap</text>
 
-              <!-- Mixarium -->
-              <circle cx="78" cy="190" r="22" fill="rgba(20,184,166,0.18)" stroke="#14B8A6" stroke-width="2"/>
-              <text x="78" y="194" text-anchor="middle" fill="#14B8A6" font-size="9" font-family="Space Grotesk">Mixarium</text>
+              <!-- Mixarium unten links (symmetrisch zur viewBox-Mitte 240) -->
+              <circle cx="138" cy="195" r="22" fill="rgba(20,184,166,0.18)" stroke="#14B8A6" stroke-width="2"/>
+              <text x="138" y="199" text-anchor="middle" fill="#14B8A6" font-size="9" font-family="Space Grotesk">Mixarium</text>
 
-              <!-- Rezeptbuch -->
-              <circle cx="282" cy="190" r="22" fill="rgba(20,184,166,0.18)" stroke="#14B8A6" stroke-width="2"/>
-              <text x="282" y="194" text-anchor="middle" fill="#14B8A6" font-size="9" font-family="Space Grotesk">Rezept</text>
+              <!-- Rezeptbuch unten rechts -->
+              <circle cx="342" cy="195" r="22" fill="rgba(20,184,166,0.18)" stroke="#14B8A6" stroke-width="2"/>
+              <text x="342" y="199" text-anchor="middle" fill="#14B8A6" font-size="9" font-family="Space Grotesk">Rezept</text>
 
               <!-- Andock-Linien (gestrichelt, nur Erstkontakt) -->
-              <line x1="166" y1="80" x2="94" y2="170" stroke="rgba(245,158,11,0.45)" stroke-width="1.1" stroke-dasharray="4 3"/>
-              <line x1="194" y1="80" x2="266" y2="170" stroke="rgba(245,158,11,0.45)" stroke-width="1.1" stroke-dasharray="4 3"/>
+              <line x1="226" y1="82" x2="154" y2="175" stroke="rgba(245,158,11,0.45)" stroke-width="1.1" stroke-dasharray="4 3"/>
+              <line x1="254" y1="82" x2="326" y2="175" stroke="rgba(245,158,11,0.45)" stroke-width="1.1" stroke-dasharray="4 3"/>
 
               <!-- Mycel-Faden direkt zwischen den Endknoten (atmend, durchgezogen — nach Anastomose) -->
-              <line x1="100" y1="190" x2="260" y2="190" stroke="#14B8A6" stroke-width="2" opacity="0.7">
+              <line x1="160" y1="195" x2="320" y2="195" stroke="#14B8A6" stroke-width="2" opacity="0.7">
                 <animate attributeName="opacity" values="0.4;0.85;0.4" dur="3.4s" repeatCount="indefinite"/>
               </line>
             </svg>
@@ -2771,21 +2942,31 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   const PHASES = ['0', '1', '2', '3'];
   let phaseIdx = 0;
   function tickPhase() {
+    const cycleBox = document.getElementById('cycle-box');
+    if (cycleBox) cycleBox.dataset.phase = String(phaseIdx);
     document.querySelectorAll('#bento .phase-pill').forEach(p => {
       p.classList.toggle('active', p.dataset.phase === String(phaseIdx));
     });
     phaseIdx = (phaseIdx + 1) % PHASES.length;
   }
-  setInterval(tickPhase, 2400);
+  setInterval(tickPhase, 3200);
 
   // ============================================================
-  // WANDERUNGS-SVG
+  // WANDERUNGS-SVG (phasenspezifisch, synchron zu den Phase-Pills)
   // ============================================================
   function buildWander() {
     const svg = document.getElementById('wander-svg');
     const nodes = document.getElementById('wander-nodes');
     const paths = document.getElementById('wander-paths');
+    const wanderBox = document.querySelector('.wander-box');
     nodes.innerHTML = ''; paths.innerHTML = '';
+
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const mk = (tag, attrs) => {
+      const el = document.createElementNS(SVG_NS, tag);
+      for (const k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    };
 
     const pos = {
       home: { x: 60, y: 160, label: 'Heim', color: '#F59E0B' },
@@ -2798,65 +2979,205 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       n7:   { x: 540, y: 200, label: 'B4' }
     };
     Object.entries(pos).forEach(([k, p]) => {
-      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', 14);
-      c.setAttribute('fill', 'rgba(255,255,255,0.05)');
-      c.setAttribute('stroke', p.color || 'rgba(255,255,255,0.4)');
-      c.setAttribute('stroke-width', '1.5');
-      c.setAttribute('stroke-dasharray', '3 2');
-      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t.setAttribute('x', p.x); t.setAttribute('y', p.y + 4);
-      t.setAttribute('text-anchor', 'middle');
-      t.setAttribute('fill', 'rgba(255,255,255,0.7)');
-      t.setAttribute('font-size', '9');
-      t.setAttribute('font-family', 'Space Mono');
+      const g = mk('g', {});
+      g.appendChild(mk('circle', {
+        cx: p.x, cy: p.y, r: 14,
+        fill: 'rgba(255,255,255,0.05)',
+        stroke: p.color || 'rgba(255,255,255,0.4)',
+        'stroke-width': 1.5,
+        'stroke-dasharray': '3 2'
+      }));
+      const t = mk('text', {
+        x: p.x, y: p.y + 4, 'text-anchor': 'middle',
+        fill: 'rgba(255,255,255,0.7)', 'font-size': 9,
+        'font-family': 'Space Mono'
+      });
       t.textContent = p.label;
-      g.appendChild(c); g.appendChild(t);
+      g.appendChild(t);
       nodes.appendChild(g);
     });
 
-    // Mycel-Faden A (persistent nach Match)
-    const mycel = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    mycel.setAttribute('d', `M ${pos.home.x},${pos.home.y} Q ${(pos.home.x + pos.n5.x) / 2},${pos.home.y - 80} ${pos.n5.x},${pos.n5.y}`);
-    mycel.setAttribute('fill', 'none');
-    mycel.setAttribute('stroke', '#14B8A6');
-    mycel.setAttribute('stroke-width', '1.5');
-    mycel.setAttribute('opacity', '0.5');
-    mycel.style.animation = 'mycelDraw 12s ease-in-out infinite';
+    // Persistenter Mycel-Faden Heim↔A3 (immer sichtbar als Hintergrund, leicht atmend)
+    const mycel = mk('path', {
+      d: `M ${pos.home.x},${pos.home.y} Q ${(pos.home.x + pos.n5.x) / 2},${pos.home.y - 80} ${pos.n5.x},${pos.n5.y}`,
+      fill: 'none', stroke: '#14B8A6', 'stroke-width': 1.2, opacity: 0.35
+    });
     paths.appendChild(mycel);
 
-    // Particle Pfad A (erfolgreich, golden + grün)
-    const pA = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    pA.setAttribute('r', '4'); pA.setAttribute('fill', '#F59E0B');
-    const motA = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
-    motA.setAttribute('dur', '12s'); motA.setAttribute('repeatCount', 'indefinite');
-    motA.setAttribute('path', `M ${pos.home.x},${pos.home.y} L ${pos.n1.x},${pos.n1.y} L ${pos.n2.x},${pos.n2.y} L ${pos.n5.x},${pos.n5.y} L ${pos.home.x},${pos.home.y}`);
-    pA.appendChild(motA);
-    paths.appendChild(pA);
+    // Helper: erstellt eine Phase-FX-Gruppe
+    const mkPhase = (idx) => {
+      const g = mk('g', { class: 'phase-fx', 'data-phase': String(idx) });
+      paths.appendChild(g);
+      return g;
+    };
 
-    // Particle Pfad B (Apoptose, fadet aus)
-    const pB = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    pB.setAttribute('r', '4'); pB.setAttribute('fill', '#F43F5E');
-    const motB = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
-    motB.setAttribute('dur', '12s'); motB.setAttribute('repeatCount', 'indefinite');
-    motB.setAttribute('path', `M ${pos.home.x},${pos.home.y} L ${pos.n3.x},${pos.n3.y} L ${pos.n4.x},${pos.n4.y} L ${pos.n6.x},${pos.n6.y} L ${pos.n7.x},${pos.n7.y}`);
-    pB.appendChild(motB);
-    const opB = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-    opB.setAttribute('attributeName', 'opacity');
-    opB.setAttribute('values', '1;0.8;0.5;0.2;0');
-    opB.setAttribute('dur', '12s'); opB.setAttribute('repeatCount', 'indefinite');
-    pB.appendChild(opB);
-    paths.appendChild(pB);
+    // === Phase 0 · Anstoß — Heim sendet Anfrage aus ===
+    const p0 = mkPhase(0);
+    // Heim-Pulse (Sonar)
+    const sonar = mk('circle', {
+      cx: pos.home.x, cy: pos.home.y, r: 18,
+      fill: 'none', stroke: '#F59E0B', 'stroke-opacity': 0.5
+    });
+    sonar.appendChild(mk('animate', {
+      attributeName: 'r', from: 18, to: 55, dur: '1.6s', repeatCount: 'indefinite'
+    }));
+    sonar.appendChild(mk('animate', {
+      attributeName: 'stroke-opacity', from: 0.5, to: 0, dur: '1.6s', repeatCount: 'indefinite'
+    }));
+    p0.appendChild(sonar);
+    // Drei Anfrage-Particles starten von Heim in verschiedene Richtungen
+    [pos.n1, pos.n3, pos.n2].forEach((target, i) => {
+      const part = mk('circle', { r: 3, fill: '#F59E0B' });
+      part.appendChild(mk('animateMotion', {
+        dur: '1.8s', begin: `${i * 0.25}s`, repeatCount: 'indefinite',
+        path: `M ${pos.home.x},${pos.home.y} L ${target.x},${target.y}`
+      }));
+      const op = mk('animate', {
+        attributeName: 'opacity',
+        values: '0;1;1;0', keyTimes: '0;0.15;0.7;1',
+        dur: '1.8s', begin: `${i * 0.25}s`, repeatCount: 'indefinite'
+      });
+      part.appendChild(op);
+      p0.appendChild(part);
+    });
+    const lab0 = mk('text', {
+      x: 110, y: 200, 'text-anchor': 'start',
+      fill: 'rgba(245,158,11,0.85)', 'font-size': 8, 'font-family': 'Space Mono'
+    });
+    lab0.textContent = 'Anfrage sucht Richtung';
+    p0.appendChild(lab0);
 
-    // Wander-Phase-Loop
+    // === Phase 1 · Match — Erfolgs-Pfad findet A3, Apoptose-Pfad geht weiter ===
+    const p1 = mkPhase(1);
+    // Gold-Particle reist durch A1→A2→A3
+    const pMatch = mk('circle', { r: 4, fill: '#F59E0B' });
+    pMatch.appendChild(mk('animateMotion', {
+      dur: '2.6s', repeatCount: 'indefinite',
+      path: `M ${pos.home.x},${pos.home.y} L ${pos.n1.x},${pos.n1.y} L ${pos.n2.x},${pos.n2.y} L ${pos.n5.x},${pos.n5.y}`
+    }));
+    p1.appendChild(pMatch);
+    // Pink-Particle reist durch B1→B2 (Apoptose-Vorform)
+    const pNoMatch = mk('circle', { r: 4, fill: '#F43F5E', opacity: 0.7 });
+    pNoMatch.appendChild(mk('animateMotion', {
+      dur: '2.6s', repeatCount: 'indefinite',
+      path: `M ${pos.home.x},${pos.home.y} L ${pos.n3.x},${pos.n3.y} L ${pos.n4.x},${pos.n4.y}`
+    }));
+    p1.appendChild(pNoMatch);
+    // A3 pulst (Match!)
+    const matchPulse = mk('circle', {
+      cx: pos.n5.x, cy: pos.n5.y, r: 14,
+      fill: 'none', stroke: '#14B8A6'
+    });
+    matchPulse.appendChild(mk('animate', {
+      attributeName: 'r', values: '14;26;14', dur: '1.4s', begin: '1.6s', repeatCount: 'indefinite'
+    }));
+    matchPulse.appendChild(mk('animate', {
+      attributeName: 'stroke-opacity', values: '0.9;0.1;0.9', dur: '1.4s', begin: '1.6s', repeatCount: 'indefinite'
+    }));
+    p1.appendChild(matchPulse);
+    const lab1 = mk('text', {
+      x: pos.n5.x, y: pos.n5.y - 26, 'text-anchor': 'middle',
+      fill: 'rgba(20,184,166,0.85)', 'font-size': 8, 'font-family': 'Space Mono'
+    });
+    lab1.textContent = 'Match ≥ 0.80';
+    p1.appendChild(lab1);
+
+    // === Phase 2 · Anastomose — Mycel-Faden wächst Heim↔A3, persistent ===
+    const p2 = mkPhase(2);
+    // Wachsender Faden via stroke-dashoffset
+    const myAna = mk('path', {
+      d: `M ${pos.home.x},${pos.home.y} Q ${(pos.home.x + pos.n5.x) / 2},${pos.home.y - 80} ${pos.n5.x},${pos.n5.y}`,
+      fill: 'none', stroke: '#14B8A6', 'stroke-width': 2.4,
+      'stroke-dasharray': '400', 'stroke-dashoffset': 400, opacity: 0.95
+    });
+    myAna.appendChild(mk('animate', {
+      attributeName: 'stroke-dashoffset', from: 400, to: 0, dur: '2.4s', repeatCount: 'indefinite'
+    }));
+    p2.appendChild(myAna);
+    // Beide Endpunkte (Heim + A3) pulsieren synchron
+    const aH = mk('circle', { cx: pos.home.x, cy: pos.home.y, r: 14, fill: 'none', stroke: '#F59E0B' });
+    aH.appendChild(mk('animate', { attributeName: 'r', values: '14;22;14', dur: '1.4s', repeatCount: 'indefinite' }));
+    aH.appendChild(mk('animate', { attributeName: 'stroke-opacity', values: '0.9;0.1;0.9', dur: '1.4s', repeatCount: 'indefinite' }));
+    p2.appendChild(aH);
+    const aA = mk('circle', { cx: pos.n5.x, cy: pos.n5.y, r: 14, fill: 'none', stroke: '#14B8A6' });
+    aA.appendChild(mk('animate', { attributeName: 'r', values: '14;22;14', dur: '1.4s', repeatCount: 'indefinite' }));
+    aA.appendChild(mk('animate', { attributeName: 'stroke-opacity', values: '0.9;0.1;0.9', dur: '1.4s', repeatCount: 'indefinite' }));
+    p2.appendChild(aA);
+    const lab2 = mk('text', {
+      x: (pos.home.x + pos.n5.x) / 2, y: pos.home.y - 90, 'text-anchor': 'middle',
+      fill: 'rgba(20,184,166,0.85)', 'font-size': 8, 'font-family': 'Space Mono'
+    });
+    lab2.textContent = 'persistenter Faden — kein Hub im Pfad';
+    p2.appendChild(lab2);
+
+    // === Phase 3 · Heterokaryose & Apoptose & Abwehr (drei Varianten) ===
+    const p3 = mkPhase(3);
+    // Heterokaryose-Frage Heim → A3 (violet)
+    const pHetA = mk('circle', { r: 3, fill: '#8B5CF6' });
+    pHetA.appendChild(mk('animateMotion', {
+      dur: '2.2s', repeatCount: 'indefinite',
+      path: `M ${pos.home.x},${pos.home.y} Q ${(pos.home.x + pos.n5.x) / 2},${pos.home.y - 80} ${pos.n5.x},${pos.n5.y}`
+    }));
+    p3.appendChild(pHetA);
+    // Heterokaryose-Antwort A3 → Heim (teal)
+    const pHetB = mk('circle', { r: 3, fill: '#14B8A6' });
+    pHetB.appendChild(mk('animateMotion', {
+      dur: '2.2s', begin: '1.1s', repeatCount: 'indefinite',
+      path: `M ${pos.n5.x},${pos.n5.y} Q ${(pos.home.x + pos.n5.x) / 2},${pos.home.y - 80} ${pos.home.x},${pos.home.y}`
+    }));
+    p3.appendChild(pHetB);
+    // Apoptose-Pfad fadet aus (B-Pfad)
+    const pApop = mk('circle', { r: 4, fill: '#F43F5E' });
+    pApop.appendChild(mk('animateMotion', {
+      dur: '3.2s', repeatCount: 'indefinite',
+      path: `M ${pos.n3.x},${pos.n3.y} L ${pos.n4.x},${pos.n4.y} L ${pos.n6.x},${pos.n6.y} L ${pos.n7.x},${pos.n7.y}`
+    }));
+    pApop.appendChild(mk('animate', {
+      attributeName: 'opacity', values: '1;0.7;0.3;0', dur: '3.2s', repeatCount: 'indefinite'
+    }));
+    p3.appendChild(pApop);
+    // Abwehr: böse Spore von außen, prallt am Heim ab (✗-Symbol)
+    const intruderStartX = 560, intruderStartY = 30;
+    const reject = mk('circle', { r: 3.5, fill: '#F43F5E' });
+    reject.appendChild(mk('animateMotion', {
+      dur: '2.8s', begin: '1.4s', repeatCount: 'indefinite',
+      path: `M ${intruderStartX},${intruderStartY} L ${pos.home.x + 30},${pos.home.y - 30} L ${intruderStartX + 20},${intruderStartY + 50}`
+    }));
+    reject.appendChild(mk('animate', {
+      attributeName: 'opacity',
+      values: '0.9;0.9;0.6;0.2;0', keyTimes: '0;0.4;0.55;0.75;1',
+      dur: '2.8s', begin: '1.4s', repeatCount: 'indefinite'
+    }));
+    p3.appendChild(reject);
+    const rejectX = mk('text', {
+      x: pos.home.x + 30, y: pos.home.y - 27,
+      'text-anchor': 'middle', fill: '#F43F5E',
+      'font-size': 14, 'font-family': 'Space Mono', 'font-weight': 700
+    });
+    rejectX.textContent = '✗';
+    rejectX.appendChild(mk('animate', {
+      attributeName: 'opacity',
+      values: '0;0;1;0', keyTimes: '0;0.45;0.55;0.7',
+      dur: '2.8s', begin: '1.4s', repeatCount: 'indefinite'
+    }));
+    p3.appendChild(rejectX);
+    const lab3 = mk('text', {
+      x: 300, y: 305, 'text-anchor': 'middle',
+      fill: 'rgba(255,255,255,0.7)', 'font-size': 8, 'font-family': 'Space Mono'
+    });
+    lab3.textContent = 'Heterokaryose · Apoptose · Abwehr böser Sporen';
+    p3.appendChild(lab3);
+
+    // Wander-Phase-Loop — synchron zu Lebenszyklus-Karte (3200 ms pro Phase)
+    if (wanderBox) wanderBox.dataset.phase = '0';
     let wpi = 0;
     setInterval(() => {
+      wpi = (wpi + 1) % 4;
+      if (wanderBox) wanderBox.dataset.phase = String(wpi);
       document.querySelectorAll('#wander-phases .phase-pill').forEach(p => {
         p.classList.toggle('active', p.dataset.phase === String(wpi));
       });
-      wpi = (wpi + 1) % 4;
-    }, 3000);
+    }, 3200);
   }
 
   // ============================================================
