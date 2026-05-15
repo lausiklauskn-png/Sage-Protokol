@@ -163,6 +163,19 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   verankert; die Frage bleibt offen, weil 01/02 noch nicht spruchreif
   sind.
 
+- **Hauptsitzung „Modul 14 Diffusion-Stub" fehlt** (eingetragen
+  2026-05-15 durch Pflege-Sitzung Sage-Page-Modul-14, die als Blockade
+  endete). Eine Pflege-Sitzung sollte die Sage-Page um Rendering eines
+  zweiten Backlog-Felds `diffusionBacklog[]` erweitern (Modul 14 als
+  proaktiv-zukunftsgewandte Wuchs-Mechanik, parallel zum reaktiv-
+  zukünftigen Schutz-Backlog 10/11/12). Voraussetzung-Hauptsitzung
+  hat diese Vorarbeit nicht angelegt: weder `status.json`-Feld
+  `diffusionBacklog[]`, noch `docs/components/14_diffusion.md`, noch
+  PULS-Schnellüberblicks-Zeile, noch Anker-Sitzungs-Datei. Schritte für
+  die Hauptsitzung siehe Sitzungs-Eintrag „2026-05-15 · Pflege-Sitzung
+  Sage-Page Modul 14 Diffusion (Blockade)" und der Diffusion-Backlog-
+  Block weiter oben in dieser Datei.
+
 ## Schutz-Backlog (aus Sage-Page Karte 13, 2026-05-10)
 
 Drei strukturelle Lücken im Schutz-Modell sind beim Aufbau des
@@ -176,9 +189,107 @@ ab spürbarem Wachstum:
 Eigenschutz-Karte der Sage-Page macht das Backlog für jeden Besucher
 sichtbar und verlinkt direkt auf die Stubs.
 
+## Diffusion-Backlog (geplante zweite Backlog-Kategorie)
+
+**Status:** Vorgesehen, aber **nicht angelegt** (Stand 2026-05-15). Eine
+geplante Hauptsitzung „Modul 14 Diffusion-Stub" sollte parallel zum
+Schutz-Backlog (10/11/12) eine zweite, semantisch verschiedene
+Backlog-Kategorie eröffnen: **proaktive Wuchs-Mechanik** statt reaktiver
+Schutz. Diese Hauptsitzung hat **bisher nicht stattgefunden** — die
+Pflege-Sitzung Sage-Page-Modul-14 vom 2026-05-15 hat das beim
+Lesen der Pflichtleseliste festgestellt und sauber als Blockade beendet
+(siehe Sitzungs-Eintrag unten und offene Querschnitts-Frage „Hauptsitzung
+14-Diffusion-Stub fehlt").
+
+Vorgesehene Voraussetzungen, bevor eine Sage-Page-Pflege-Sitzung
+„diffusionBacklog sichtbar machen" laufen kann:
+
+- `status.json` additiv um `diffusionBacklog: [{ id:"14", … }]`
+  erweitert (parallel zu `schutzBacklog`); `scoreModel.maxScoreNote`
+  bleibt unangetastet.
+- `docs/components/14_diffusion.md` als Backlog-Stub angelegt
+  (Format analog 10/11/12).
+- PULS-Schnellüberblick um Zeile Modul 14, Modulstand-Pie
+  aktualisiert via `python3 scripts/update_puls_pie.py`.
+- Übergabeprotokoll der Hauptsitzung in
+  `docs/sessions/archiv/YYYY-MM-DD_haupt-14-diffusion-stub.md`.
+
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Pflege-Sitzung · Sage-Page Modul 14 Diffusion (Blockade)
+
+**Getan:**
+
+- Sitzungs-Briefing erhalten: „Sage-Page (`index.html`) und Observatorium
+  um `diffusionBacklog[]`-Rendering erweitern, sodass Modul 14
+  Diffusion in Karte 4 Module und in der Bau-Puls-Karte sichtbar wird —
+  analog zu Schutz-Backlog 10/11/12". Branch
+  `claude/sage-page-module-14-diffusion-j8KbI` schon angelegt.
+- Pflichtleseliste abgearbeitet — bei Punkt 2/3/8 (PULS-Eintrag
+  „Hauptsitzung Modul 14 Diffusion — Backlog-Stub angelegt" UND
+  `docs/components/14_diffusion.md` UND Anker-Sitzungs-Datei
+  `docs/sessions/archiv/2026-05-15_haupt-14-diffusion-stub.md`) auf
+  fehlende Vorarbeit gestoßen.
+- Systematisch geprüft, ob die Vorarbeit irgendwo existiert:
+  - `git log --all --oneline | grep -iE "diffusion|14"` → kein Treffer
+    (außer dem irrelevanten PR #14 Spore).
+  - `grep -rn diffusionBacklog .` → kein Treffer in status.json,
+    PULS.md, index.html oder Komponenten-Karten.
+  - `docs/components/14_diffusion.md` existiert nicht.
+  - `docs/sessions/archiv/2026-05-15_haupt-14-diffusion-stub.md`
+    existiert nicht.
+  - `status.json` Felder geprüft: nur `modules[]` und
+    `schutzBacklog[]`, kein `diffusionBacklog[]`.
+  - PULS.md geprüft: weder offene Querschnitts-Frage „Sage-Page
+    sichtbar machen für Modul 14" noch ein Modul-14-Eintrag im
+    Schnellüberblick.
+- Folgerung: Die Pflege-Sitzung kann ihren Auftrag nicht ausführen,
+  ohne genau die Verbote zu brechen, die im Briefing explizit gesetzt
+  sind („keine Änderung an `status.json`", „keine Modul-Karten
+  anfassen", „keine Spec-Detail-Arbeit für Modul 14", „kein
+  eigenmächtiger Karten-Architektur-Eingriff").
+- Blockade-Klausel gezogen: PULS um Diffusion-Backlog-Block plus offene
+  Querschnitts-Frage ergänzt, Sitzungs-Eintrag (dieser) verfasst,
+  Übergabeprotokoll
+  `docs/sessions/archiv/2026-05-15_pflege-sage-page-modul-14-blockade.md`
+  angelegt. **Keine Änderung an `index.html`, `status.json`,
+  Komponenten-Karten oder `INTERFACES.md` §6.**
+
+**Offen:**
+
+- Hauptsitzung „Modul 14 Diffusion-Stub" muss zuerst laufen
+  (Vorarbeit-Pflicht analog zur Hauptsitzung Sage-Observatorium vom
+  2026-05-10, die Module 10/11/12 als Schutz-Backlog angelegt hat).
+  Sie muss liefern:
+  1. `status.json` additiv um `diffusionBacklog: [{ id:"14",
+     name:"Diffusion", … }]` erweitern.
+  2. `docs/components/14_diffusion.md` als Backlog-Stub anlegen
+     (Format analog 10/11/12, Zweck/Mechanismus/Risiken/Anker).
+  3. PULS-Schnellüberblick um Zeile Modul 14 ergänzen, Modulstand-Pie
+     via `python3 scripts/update_puls_pie.py` nachziehen, neue offene
+     Querschnitts-Frage „Sage-Page sichtbar machen für Modul 14"
+     anlegen.
+  4. Übergabeprotokoll
+     `docs/sessions/archiv/YYYY-MM-DD_haupt-14-diffusion-stub.md`.
+- **Erst danach** kann eine Folge-Pflege-Sitzung Sage-Page-Modul-14
+  laufen — dann mit dem exakten Schritt-Plan aus diesem Briefing
+  (STATE-Fallback · `renderModules` · `renderBauPuls` ·
+  `renderBauPulsPie` · `isNextUp` mit `BACKLOG_IDS = ['10','11','12','14']`
+  · `SLUG_MAP`/`slugForId` · Karte-4-Titel `+ 1 Diffusion`).
+
+**Nächster sinnvoller Schritt:**
+
+- **Hauptsitzung „Modul 14 Diffusion-Stub anlegen"** (headless möglich).
+  Briefing-Block in
+  `docs/sessions/archiv/2026-05-15_pflege-sage-page-modul-14-blockade.md`
+  § „Nächster Brief für die fehlende Hauptsitzung".
+- Diese Sage-Page-Pflege-Sitzung wird **danach** als zweite Iteration
+  wieder gestartet (Briefing wiederverwendbar — die Schritte 1–8
+  bleiben so wie sie sind, sobald die Daten existieren).
+
+---
 
 ### 2026-05-15 · Pflege-Sitzung · Karte 09 Schritt 9 — Doku-Fenster + Apoptose im Andock-Pfad
 
