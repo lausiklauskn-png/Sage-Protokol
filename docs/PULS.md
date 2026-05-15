@@ -286,6 +286,142 @@ Kategorien jetzt mit.
 
 ## Sitzungs-Einträge
 
+### 2026-05-15 · Pflege-Sitzung · Sage-Page Design-Fix (Modul-Bento-Wrap, Lebenszyklus-Hub-Bootstrap, Initialstart-viewBox)
+
+**Getan (rein visuell — keine Funktions-/Schnittstellen-Änderung,
+keine `status.json`-Änderung, kein Pie-Regenerate):**
+
+- **`index.html` Karte 4 (Module-Bento) Wort-Umbruch-Fix.** Lange
+  Funktionslisten ohne Trennzeichen
+  (z.B. `init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`
+  in Modul 06, analog Modul 00) brachen vor der Pflege nicht und
+  liefen in die Nachbar-Karte (Modul 07 / 08), siehe Klaus' Tablet-
+  Screenshots vom 2026-05-15 19:29. CSS-Fix: `.mod` und `.mod-kurz`
+  bekommen `overflow-wrap: anywhere` + `word-break: break-word`
+  (Karte selbst zusätzlich `min-width: 0` für saubere Flex-/Grid-
+  Reduktion). Modul 06 + 00 brechen jetzt mitten im Funktionsnamen,
+  überlaufen nicht mehr. Keine Module-Bento-Höhen-Vereinheitlichung
+  (Bento-typisch unterschiedliche Karten-Höhen bleiben).
+- **`index.html` Karte 3 (Lebenszyklus · Loop) Hub-Rolle korrigiert.**
+  Vor der Pflege wirkte der Hub wie ein zwingender Mediator zwischen
+  Rezept und Mixarium (Particle-Streams Rezept→Hub→Mixarium und
+  zurück, keine Direktverbindung). Das widerspricht dem
+  CLAUDE.md-/Paper-Mycel-Modell (Eigenschutz-Karte 13:
+  „Selbst wenn der Hub ausfällt, leben Direktverbindungen weiter"
+  · Mini-Glossar: „Hub: Dieses Repo. Wurzelverzeichnis, kein
+  Endknoten"). SVG-Fix:
+  - Hub-Größe reduziert (`r=34 → 28`), Hub-Gradient gedämpft
+    (`stop-opacity: 0.9 → 0.6`), Sonar-Pulses gedämpft.
+  - Untertitel „Bootstrap · kann ausfallen" unter dem Hub-Kreis.
+  - Bisherige Hub-Linien dünner und gestrichelter (`stroke-width:
+    1 → 0.8`, `stroke-dasharray: 2 4 → 2 5`, Farbe von blau auf
+    violett mit niedrigerer Opacity) — nur noch Bootstrap-Hinweis.
+  - **Neue durchgezogene Direktverbindung Rezept↔Mixarium** (teal,
+    `stroke-width: 1.8`, atmende Opacity 0.45..0.85 wie bei
+    Initialstart-Karte 5).
+  - Particle-Streams: zwei Particles auf dem Direktpfad —
+    `#F59E0B` Rezept→Mixar (Anfrage) und `#14B8A6` Mixar→Rezept
+    (Antwort, begin 2.3s versetzt für sichtbaren Rückfluss). Die
+    bisherigen vier Particles über den Hub sind entfernt — der
+    Fluss läuft jetzt direkt, parallel zur Spec-Aussage.
+  - Phase-Pill-3-Text „Anastomose" → „Anastomose · Direktfaden
+    entsteht"; Phase-Pill-4 „Antwort fließt zurück" →
+    „Antwort fließt direkt zurück". Neue Untertitel-Zeile unter
+    den Pills: „Der Hub ist nur Bootstrap (Erstkontakt). Sobald
+    die Anastomose steht, läuft der Fluss direkt zwischen den
+    Knoten — Hub kann ausfallen, das Mycel lebt weiter."
+- **`index.html` Karte 11 (Detail-Tour, `#screen-cycle`) Phase 3 + 4
+  Erklärungen angepasst.** Phase 3 (Anastomose): bio-Block erweitert
+  („Ab hier kennen sich beide direkt; der Hub wird für diese
+  Beziehung nicht mehr gebraucht"); mech-Block erweitert
+  („Handshake direkt zwischen den Endknoten … der Hub vermittelt
+  nur den Erstkontakt … er kann ausfallen, ohne dass die Anastomose
+  stirbt"); code-Kommentar „POST geht direkt an peer.endpoint,
+  NICHT über den Hub". Phase 4 (Antwort): bio-Block erweitert
+  („Der Fluss läuft jetzt zwischen den Endknoten; der Hub ist nur
+  noch eine von vielen Adress-Quellen, nicht der Pfad"); mech-Block
+  erweitert („Kein Single Point of Failure … Direktverbindungen
+  leben weiter, auch wenn der Hub offline geht").
+- **`index.html` Karte 5 (Initialstart · Wie das Mycel beginnt)
+  viewBox erweitert** von `0 0 320 240` auf `0 0 360 260` und alle
+  Element-Positionen entsprechend nach innen verlagert (Hub-cx
+  160 → 180; Mixarium-cx 60 → 78; Rezept-cx 260 → 282;
+  Endknoten-cy 180 → 190). Vor der Pflege wurden „Mixarium" und
+  „Rezept" am Karten-Rand angeschnitten (Klaus' Screenshot
+  2026-05-15 19:30). Außerdem Hub-Untertitel „nur Bootstrap"
+  ergänzt (Zeile unter „Wurzelverzeichnis"). § Cold-Foot-Text
+  Punkt 1 + 2 leicht überarbeitet: „Der Hub ist die Wurzel —
+  Wurzelverzeichnis, an dem ein neuer Knoten sich einmal listet"
+  (statt nur „wer andockt, ist dort gelistet"); Punkt 2
+  „Mixarium und Rezeptbuch sehen einander **direkt**, sobald
+  beide angedockt sind — der Hub ist danach nicht mehr im Pfad".
+- **`index.html` Karte 8 (Mini-Glossar) Eintrag „Hub" präzisiert:**
+  „Dieses Repo. Wurzelverzeichnis für den Erstkontakt — kein
+  Endknoten, kein Vermittler. Sobald zwei Knoten sich kennen,
+  läuft der Fluss direkt zwischen ihnen; der Hub kann ausfallen."
+
+**Was bewusst nicht geändert wurde (Spec-Disziplin):**
+
+- **Keine JS-Funktions-Änderung.** Phase-Pill-Loop (`tickPhase`),
+  Wanderungs-SVG-Build (`buildWander`), Detail-Tour-Loop (`tourIdx`),
+  Module-Grid-Rendering, Bau-Puls-Rendering, status.json-Fetch, alle
+  Handler unverändert. SVG-Markup-Änderungen sind reine Geometrie/
+  Beschriftung/Animation-Pfade — kein Code-Logik-Eingriff.
+- **Keine `status.json`-Änderung.** `lastUpdated` bleibt
+  2026-05-15 (war gleichen Tag bereits gesetzt durch Spec-Sitzung
+  08); Pie nicht regeneriert (keine Modul-Daten-Änderung).
+- **Keine Modul-Karten-/INTERFACES.md-Änderung.** Reine Page-Pflege.
+- **Keine `tests/manual_check.html`-Änderung.**
+- **Keine Karte-3-Phase-Pill-Animation-Logik-Änderung.** Das JS
+  `setInterval(tickPhase, 2400)` bleibt unverändert; die Pills
+  laufen weiter zyklisch durch alle vier Phasen. SVG-Particles
+  laufen unabhängig in eigenem Takt (war vorher auch so).
+- **Keine Lebenszyklus-Hub-Entfernung.** Der Hub bleibt im SVG
+  zentral sichtbar — er ist *real* der Bootstrap-Punkt. Die
+  Pflege macht nur klar, dass er **nicht** der Vermittler ist.
+- **Wanderungs-Karte 12 unangetastet.** Dort ist der Particle-Pfad
+  schon korrekt (Pfad A `home → n1 → n2 → n5 → home` schließt
+  zurück — Rückfluss vorhanden; Pfad B fadet aus = Apoptose, gewollt
+  einseitig).
+
+**Frischer-Kopf-Befund:**
+
+Klaus' Beobachtung „der Fluss geht immer nur in eine Richtung" war
+nur teilweise zutreffend — das Lebenszyklus-Loop-SVG hatte
+**vorher schon** Rückfluss-Particles (`#14B8A6` Hub→Rezept und
+Hub→Mixar, begin 2s versetzt). Aber: alle vier Pfade liefen
+*durch den Hub*, was den Eindruck eines zwingenden Mediators
+erzeugt hat. Die echte Spec-Aussage ist: **nach Anastomose direkt
+zwischen den Knoten** (Karte 13 § Dezentralität, Karte 05 § Pfad-
+Detail, Paper §1.4 „Welt ohne Riesen"). Die Pflege löst beides:
+sichtbarer Direktfluss + Rückfluss + Hub als Bootstrap markiert.
+
+**Was offen blieb:**
+
+- **Folge-Pflege Bau 06.1 (Outbox-Lese-Pfad in
+  `src/modules/06_heterokaryose.js`)** weiter offen — siehe
+  Sitzungs-Eintrag Spec 08.
+- **Bau-Sitzung Modul 08, Bau-Sitzung Modul 09 zweite Iteration,
+  Klaus' Sichttest Panel 06** weiter offen.
+- **PULS-400-Zeilen-Konvention** weiter überfällig.
+- **Klaus' Re-Sichttest der Page nach diesem Fix** ausstehend
+  (Tablet-Sichtkontrolle). Sollte zeigen: kein Text-Overlap in
+  Karte 4, direkte Mycel-Linie + Bootstrap-Untertitel in Karte 3,
+  „Mixarium"/„Rezept" nicht mehr abgeschnitten in Karte 5.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Folge-Pflege Bau 06.1** (Outbox-Lese-Pfad in
+   `06_heterokaryose.js`) — *headless möglich*, kleine Pflege.
+2. **Klaus' Sichttest der Page** im Browser nach dem Design-Fix.
+   *Nicht headless* — wartet auf Tablet-Zeit.
+3. **Bau-Sitzung Modul 08** — Endknoten-Code für `SbkimUiDemo`.
+   *Headless möglich.*
+4. **Bau-Sitzung Modul 09 zweite Iteration** mit Klaus am Live-
+   Andock-Versuch. *Nicht headless.*
+
+---
+
 ### 2026-05-15 · Spec-Sitzung · Modul 08 UI-Demo gefüllt
 
 **Getan:**
