@@ -73,7 +73,7 @@
   <section class="panel" data-module="06_heterokaryose">
     <h2>06 Heterokaryose <span class="status ok">Code-Stub</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
-    <pre class="log">— bereit. Voraussetzung: Module 01/02 sind beim Skript-Laden mitgekommen. „Setup" stellt eine Identität sicher, erzeugt eine Spore (mit domainVector) und schreibt drei In-Memory-Pseudo-Geschwister direkt in sbkim_siblings — zwei mit heterokaryosisOptIn:true, einer mit Flag fehlend. Der echte Netz-Pfad (Service-Worker + fetch /sbkim/heterokaryosis) ist hier nicht abgedeckt; er gehört in Modul 09 zweite Iteration (Live-Andock). Anker-Quelle in dieser Bau-Iteration: ausschließlich der Spore-Single-Anker-Fallback („domain"-Label, 384-Float-Vektor aus der eigenen Spore). HETERO_MAX_ANCHORS-Begrenzungs-Test ist deshalb nur teil-abgedeckt — siehe Karte 06 § Manueller Test Punkt 9. —</pre>
+    <pre class="log">— bereit. Voraussetzung: Module 01/02 sind beim Skript-Laden mitgekommen. „Setup" stellt eine Identität sicher, erzeugt eine Spore (mit domainVector) und schreibt drei In-Memory-Pseudo-Geschwister direkt in sbkim_siblings — zwei mit heterokaryosisOptIn:true, einer mit Flag fehlend. Der echte Netz-Pfad (Service-Worker + fetch /sbkim/heterokaryosis) ist hier nicht abgedeckt; er gehört in Modul 09 zweite Iteration (Live-Andock). Anker-Quelle nach Pflege Bau 06.1: zuerst sbkim_hetero_outbox (Schreiber Modul 08, Spec-Sitzung 08), fail-soft Fallback auf den Spore-Single-Anker („domain"-Label, 384-Float-Vektor aus der eigenen Spore). Test 9 prüft die HETERO_MAX_ANCHORS-Begrenzung jetzt voll (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). —</pre>
   </section>
 
   <section class="panel" data-module="07_apoptose">
@@ -1371,14 +1371,14 @@
         };
       });
 
-      SbkimUI.addButton("06_heterokaryose", "Test 9: HETERO_MAX_ANCHORS-Begrenzung (teil-abgedeckt)", async function () {
+      SbkimUI.addButton("06_heterokaryose", "Test 9: HETERO_MAX_ANCHORS-Begrenzung (voll)", async function () {
         await ensureSetup();
-        // In dieser Bau-Iteration liefert die Anker-Quelle maximal EINEN
-        // Anker (Spore-Single-Anker-Fallback). Die volle Begrenzungs-
-        // Logik testet erst Spec-Sitzung 08 / Pflege Modul 02 mit
-        // sbkim_hetero_outbox-Befüllung. Wir prüfen hier nur, dass
-        // anchors.length <= HETERO_MAX_ANCHORS (= 5) ist und dass das
-        // Schema {label, vector[384]} eingehalten wird.
+        // Pflege Bau 06.1: voller Begrenzungs-Test (5 von 6). Wir
+        // schreiben sechs Outbox-Einträge direkt via SbkimStorage.put
+        // (Modul 08 ist eigene Bau-Sitzung; Test-Setup nutzt direkten
+        // Storage-Zugriff, analog _addPseudoSibling). addedAt absteigend
+        // gestaffelt; der zuletzt eingetragene Anker (NEUESTE) muss
+        // anchors[0] sein, und der älteste muss aussortiert werden.
         var nodeId = await SbkimSpore.getNodeId();
         var ownSpore = await SbkimSpore.getOwnSpore();
         await SbkimHeterokaryose._addPseudoSibling({
@@ -1386,6 +1386,29 @@
           pubKey: ownSpore.publicKey, since: new Date().toISOString(),
           heterokaryosisOptIn: true,
         });
+
+        // Outbox-Vorbereitung: alte Einträge löschen, sechs neue setzen.
+        var bestand = await SbkimStorage.all("sbkim_hetero_outbox");
+        for (var b = 0; b < bestand.length; b++) {
+          await SbkimStorage.del("sbkim_hetero_outbox", bestand[b].key);
+        }
+        function makeVector(seed) {
+          var v = new Array(384);
+          for (var i = 0; i < 384; i++) v[i] = ((i + seed) % 11 - 5) / 11;
+          return v;
+        }
+        var labels = ["Hefeteig", "Saucen", "Brot", "Backen", "Hauptgang", "Nachtisch"];
+        var baseMs = Date.parse("2026-05-15T07:00:00.000Z");
+        for (var i = 0; i < labels.length; i++) {
+          await SbkimStorage.put("sbkim_hetero_outbox", labels[i], {
+            label: labels[i],
+            vector: makeVector(i),
+            addedAt: new Date(baseMs + i * 60000).toISOString(),
+          });
+        }
+        var newestLabel = labels[labels.length - 1];
+        var oldestLabel = labels[0];
+
         var request = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest(nodeId);
         var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(request);
         var anchors = response.anchors || [];
@@ -1393,15 +1416,27 @@
           return a && typeof a.label === "string" && a.label.length <= 64 &&
                  Array.isArray(a.vector) && a.vector.length === 384;
         });
-        var underLimit = anchors.length <= 5;
-        var pass = underLimit && schemaOk;
-        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 9 OK (teil-abgedeckt)" : "Test 9 fehlgeschlagen");
+        var lengthExact = anchors.length === 5;
+        var labelsOut = anchors.map(function (a) { return a.label; });
+        var newestFirst = anchors.length > 0 && anchors[0].label === newestLabel;
+        var oldestDropped = labelsOut.indexOf(oldestLabel) === -1;
+        var pass = lengthExact && schemaOk && newestFirst && oldestDropped;
+
+        // Outbox wieder leeren, damit nachfolgende Klicks (z.B. Test 1)
+        // den Spore-Single-Anker-Fallback sehen.
+        for (var c = 0; c < labels.length; c++) {
+          await SbkimStorage.del("sbkim_hetero_outbox", labels[c]);
+        }
+
+        SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 9 OK (Begrenzung greift)" : "Test 9 fehlgeschlagen");
         return {
+          outbox_eingetragen: labels.length,
           anchor_count: anchors.length,
-          unter_max: underLimit,
+          anker_labels: labelsOut,
+          neueste_zuerst: newestFirst,
+          aelteste_aussortiert: oldestDropped,
           schema_ok: schemaOk,
-          anker_labels: anchors.map(function (a) { return a.label; }),
-          erwartung: "anchors.length ≤ 5, jeder Anker {label, vector[384]}; voller Begrenzungs-Test braucht sbkim_hetero_outbox (Spec 08)",
+          erwartung: "anchors.length === 5, anchors[0].label === \"" + newestLabel + "\" (neueste), \"" + oldestLabel + "\" (älteste) aussortiert",
         };
       });
 

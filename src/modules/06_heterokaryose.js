@@ -49,13 +49,15 @@
  * Library, kein Eingriff in 02/05/07. Wer das zusammenführen will,
  * hebt eine Pflege-Sitzung.
  *
- * Anker-Quelle in dieser Bau-Iteration: ausschließlich Spore-Single-
- * Anker-Fallback. Wenn die eigene Spore ein domainVector-Feld hat, wird
- * EIN Anker mit label="(domain)" zurückgegeben; sonst ein leeres
- * anchors:[]-Array (Degraded-Modus, outcome:"shared" bleibt). Der
- * spec-vorgesehene sbkim_hetero_outbox-Store wird in dieser Iteration
- * NICHT implementiert — das gehört in Spec-Sitzung 08 oder eine Pflege
- * Modul 02.
+ * Anker-Quelle (Pflege Bau 06.1, 2026-05-15): zuerst der durch Modul 08
+ * gepflegte sbkim_hetero_outbox-Store (Spec-Sitzung 08). Modul 06 liest
+ * fail-soft alle Einträge, sortiert absteigend nach addedAt (neueste
+ * zuerst) und nimmt bis zu HETERO_MAX_ANCHORS Einträge in der Anker-Form
+ * {label, vector}. Wenn der Store leer ist, fehlt oder das Lesen wirft
+ * (z.B. UnknownStoreError auf einer Klaus-PWA mit alter DB-Version),
+ * fällt Modul 06 auf den Spore-Single-Anker-Fallback zurück (Label
+ * "(domain)", Vektor = senderSpore.domainVector, oder leeres Array,
+ * wenn auch das fehlt — Degraded-Modus).
  */
 (function (global) {
   "use strict";
@@ -71,6 +73,7 @@
   var SIBLINGS_STORE = "sbkim_siblings";
   var LOG_STORE = "sbkim_anastomosis_log";
   var INBOX_STORE = "sbkim_hetero_inbox";
+  var OUTBOX_STORE = "sbkim_hetero_outbox";
 
   var REQUEST_REQUIRED_FIELDS = [
     "fromNodeId",
@@ -345,21 +348,65 @@
     return await fetch(url, options);
   }
 
-  // ---- Anker-Quelle (Spore-Single-Anker-Fallback) ----
+  // ---- Anker-Quelle (Outbox-Lese-Pfad, fail-soft auf Spore-Single-Anker) ----
   //
-  // Bau-Iteration 06: ausschließlich der Spore-Single-Anker. Wenn die
-  // eigene Spore ein domainVector-Feld hat, ein Anker; sonst leeres
-  // Array (Degraded-Modus). Der spec-vorgesehene sbkim_hetero_outbox-
-  // Store wird hier NICHT gelesen — das ist Spec-Sitzung 08.
+  // Pflege Bau 06.1: zuerst sbkim_hetero_outbox (Schreiber Modul 08,
+  // Spec-Sitzung 08) lesen. Wenn der Store Einträge hat, absteigend nach
+  // addedAt sortieren und bis zu HETERO_MAX_ANCHORS auf {label, vector}
+  // mappen (addedAt ist outbox-intern und gehört nicht in die Anker-Form).
+  // Wenn der Store leer ist, fehlt oder das Lesen wirft (z.B. ältere
+  // PWA-DB-Version ohne v=3), fällt Modul 06 fail-soft auf den Spore-
+  // Single-Anker-Fallback zurück.
 
-  async function readOwnAnchors() {
+  async function readOutboxAnchors() {
+    var rows;
+    try {
+      rows = await getStorage().all(OUTBOX_STORE);
+    } catch (err) {
+      if (typeof console !== "undefined" && console.info) {
+        console.info(
+          "MODUL 06 HETEROKARYOSE: Outbox-Lese-Pfad fail-soft (" +
+            (err && err.name ? err.name : "?") + ") — Fallback auf Spore-Single-Anker.",
+        );
+      }
+      return null;
+    }
+    if (!Array.isArray(rows) || rows.length === 0) return null;
+    var entries = [];
+    for (var i = 0; i < rows.length; i++) {
+      var v = rows[i] && rows[i].value;
+      if (!v || typeof v.label !== "string" || !Array.isArray(v.vector)) continue;
+      entries.push(v);
+    }
+    if (entries.length === 0) return null;
+    entries.sort(function (a, b) {
+      var ta = typeof a.addedAt === "string" ? a.addedAt : "";
+      var tb = typeof b.addedAt === "string" ? b.addedAt : "";
+      if (ta < tb) return 1;
+      if (ta > tb) return -1;
+      return 0;
+    });
+    var take = entries.length > HETERO_MAX_ANCHORS ? HETERO_MAX_ANCHORS : entries.length;
+    var anchors = new Array(take);
+    for (var j = 0; j < take; j++) {
+      anchors[j] = { label: entries[j].label, vector: entries[j].vector.slice() };
+    }
+    return anchors;
+  }
+
+  async function readSporeFallbackAnchors() {
     var ownSpore = await getSpore().getOwnSpore();
     if (!ownSpore) return [];
     if (!Array.isArray(ownSpore.domainVector) || ownSpore.domainVector.length === 0) {
       return [];
     }
-    var anchor = { label: "(domain)", vector: ownSpore.domainVector.slice() };
-    return [anchor];
+    return [{ label: "(domain)", vector: ownSpore.domainVector.slice() }];
+  }
+
+  async function readOwnAnchors() {
+    var outbox = await readOutboxAnchors();
+    if (outbox !== null) return outbox;
+    return await readSporeFallbackAnchors();
   }
 
   // ---- requestHeterokaryosis() ----
@@ -856,6 +903,7 @@
       heteroMaxAnchors: HETERO_MAX_ANCHORS,
       endpointHeterokaryosis: ENDPOINT_HETEROKARYOSIS,
       inboxStore: INBOX_STORE,
+      outboxStore: OUTBOX_STORE,
       siblingsStore: SIBLINGS_STORE,
       logStore: LOG_STORE,
       requestRequiredFields: REQUEST_REQUIRED_FIELDS.slice(),
