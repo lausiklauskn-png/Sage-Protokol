@@ -15,7 +15,7 @@
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-14 (13 Module)
+  title Modulstand 2026-05-15 (13 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 1
   "🟨 Spec fertig" : 1
@@ -46,27 +46,28 @@ Code-Stub frisch aus den Bau-Sitzungen 2026-05-14, **Sichttest ausstehend bzw. t
 
 Spec frisch aus den Spec-Sitzungen 2026-05-14, **Bau ausstehend**:
 
-- 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul), **Pflege-Sitzung 2026-05-15 erweitert auf neun Schritte** (Schritt 9 neu: `SbkimApoptose.init()` + `SbkimDoku.init({searchIconSelector:...})` + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge in Schritt 2 zieht 07 + 00 nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block jetzt vier Pflicht-Punkte (sieben Selbstcheck-Zeilen + sechs IndexedDB-Stores + zwei live-Endpunkte + 5-Klick-Geste am Such-Symbol); Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, sieben JS-Module inline oder unter `sbkim/`); Spore-Endpunkt `/sbkim/spore.json` verbindlich; SW-Scope-Falle dokumentiert; `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert
+- 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul), **Pflege-Sitzung 2026-05-15 erweitert auf neun Schritte** (Schritt 9 neu: `SbkimApoptose.init()` + `SbkimDoku.init({searchIconSelector:...})` + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge in Schritt 2 zieht 07 + 00 nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block jetzt vier Pflicht-Punkte (sieben Selbstcheck-Zeilen + sechs IndexedDB-Stores + zwei live-Endpunkte + 5-Klick-Geste am Such-Symbol); Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, sieben JS-Module inline oder unter `sbkim/`); Spore-Endpunkt `/sbkim/spore.json` verbindlich; SW-Scope-Falle dokumentiert; `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert. **Bau-Sitzung 2026-05-15 vor Schritt 1 sauber abgebrochen** (Befund-Sitzung): beide Endknoten haben aktiven `app-sw.js` im Repo-Root (Mein-Mixarium Z. 12543, Mein-Rezeptbuch Z. 10453), Karte 09 antizipiert diesen Fall nicht; zusätzlich Karte 09 § Sichtkontrolle implizit auf Desktop-DevTools gemünzt — Klaus' Tablet (Galaxy Tab S6 + DeX) braucht Eruda-Pfad. **Vor erneuter Bau-Sitzung 09** zwei Karten-Lücken in einer Pflege-Sitzung Karte 09 zu schließen (Empfehlung Option α: Patch in bestehenden `app-sw.js`; plus Eruda-Pfad für Tablet-Sichtkontrolle). Details in [Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
 
 In Arbeit (fortsetzen, nicht neu starten):
 
 - 🟧 **[08 UI-Demo](components/08_ui_demo.md)** — Werkstatt-Stub vorhanden, Spec füllen
 
-Empfehlung Hauptsitzung: **Bau-Sitzung Modul 09 Einbau-PWA mit Klaus
-am Live-Andock-Versuch** — Module 00, 05 und 07 sind alle drei
-Code-Stub und sichtgeprüft; Karte 09 ist ab Pflege-Sitzung
-2026-05-15 auf neun Schritte erweitert (Schritt 9 zieht 07 + 00
-in den Andock-Pfad nach). Module 00 hat den TTL-Sweep-Knopf und
-die Quota-Frühwarnung direkt im Doku-Fenster eingebaut; Modul 02's
-`resetIdentityCache` aus der vorigen Pflege-Sitzung bleibt im
-Andock-Pfad **unsichtbar** — er greift nur bei Self-Apoptose, die
-Schritt 9 bewusst nicht in den Andock-Pfad einbaut. Live-Andock-
-Versuch liefert deshalb einen vollständigen Sichttest für die
-sieben angedockten Module (01/02/03/04/05/07/00) plus den
-Service-Worker. Klaus' Re-Sichttest Panel 07 Test 6 (Self-
-Apoptose) bleibt eine kompakte Bestätigung **vor** dem Live-
-Andock — nach dem Cache-Invalidate-Pflege wird
-`getNodeId_wirft_NoIdentityError:true` erwartet.
+Empfehlung Hauptsitzung: **Pflege-Sitzung Karte 09 — „App-SW-Koexistenz
++ Tablet-Sichtkontrolle"**. Bau-Sitzung 09 am 2026-05-15 ist vor
+Schritt 1 sauber abgebrochen worden, weil Klaus' beide Endknoten
+(`Mein-Rezeptbuch` Z. 10453 und `Mein-Mixarium` Z. 12543) einen
+aktiven `register('./app-sw.js')`-App-Cache-SW im Repo-Root haben
+und Karte 09 diesen Normalfall nicht antizipiert. Außerdem ist
+Klaus' Setup (Samsung Galaxy Tab S6 + DeX, Android-Chrome) ohne
+Desktop-DevTools — Karte 09 § Sichtkontrolle implizit auf
+Desktop-DevTools gemünzt. **Vor erneuter Bau-Sitzung 09** muss
+Karte 09 zwei Sub-Pfade verbindlich beschreiben: **Option α**
+(SBKIM-Logik in bestehenden `app-sw.js` patchen statt zweiten
+SW registrieren — Empfehlung) plus **Eruda-Pfad** als Tablet-
+DevTools-Ersatz. Details und Optionen β/γ siehe
+[Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
+Modul-Code (00/01/02/03/04/05/07) bleibt vollständig unberührt — die Lücke
+sitzt in der Andock-Anleitung, nicht in den Modulen.
 
 ---
 
@@ -92,13 +93,54 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 
 ## Endknoten (externe Repos des Betreibers)
 
-| App | Domain | Domäne | SBKIM-Stand |
+| App | URL | Domäne | SBKIM-Stand |
 |---|---|---|---|
-| Rezeptbuch | (TBD) | Kochrezepte | nicht integriert |
-| Mixarium | (TBD) | Cocktails / Drinks | nicht integriert |
+| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte | nicht integriert (Bau-Sitzung 09 blockiert 2026-05-15, App-SW-Konflikt) |
+| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks | nicht integriert (Bau-Sitzung 09 blockiert 2026-05-15, App-SW-Konflikt) |
 
 ## Offene Querschnitts-Fragen
 
+- **Karten-Lücke Karte 09 / Tablet-Sichtkontrolle** (offen, eingetragen
+  2026-05-15 nach abgebrochener Bau-Sitzung 09). Karte 09 § Sichtkontrolle
+  setzt implizit Desktop-DevTools voraus (Konsolen-Selbstchecks +
+  Anwendung→IndexedDB). Klaus arbeitet auf Samsung Galaxy Tab S6 + DeX —
+  Android-Chrome ohne diese DevTools. Pragmatischer Ersatz: **Eruda**
+  (in-Page-DevTools-Polyfill, touch-bedienbar, nur für Andock-
+  Sichtkontrolle, danach wieder entfernen). Karte 09 muss in einer
+  Pflege-Sitzung um diesen Pfad erweitert werden. Eintrag in
+  Übergabeprotokoll
+  [2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md)
+  § Karten-Lücke 1.
+- **Karten-Lücke Karte 09 / Andocken in PWA mit bestehendem
+  Service-Worker** (offen, eingetragen 2026-05-15 nach abgebrochener
+  Bau-Sitzung 09 — *gravierender*). Beide Endknoten haben
+  `register('./app-sw.js')` im Repo-Root (Mein-Mixarium Z. 12543,
+  Mein-Rezeptbuch Z. 10453) mit voller App-Update-Banner-Logik. Karte 09
+  § Datei-Pfad-Konvention (Z. 192) verlangt SBKIM-SW im Repo-Root —
+  ein Browser erlaubt aber nur **einen** SW pro Scope, der neue ersetzt
+  den alten. Karte 09 § Risiken (Z. 837–842) dokumentiert die SW-Scope-
+  Falle nur in eine Richtung; der häufige Normalfall „bestehender
+  App-SW im Root blockiert SBKIM" ist **nicht antizipiert**. Drei
+  Optionen für die Pflege-Sitzung Karte 09:
+  - **α (Empfehlung) — Patch in bestehenden `app-sw.js`:**
+    `addEventListener('fetch',...)` für `/sbkim/anastomosis` und
+    `/sbkim/legacy` als zusätzliche Listener anhängen, MessageChannel-
+    Brücke unverändert, App-Update-Banner bleibt unangetastet,
+    SBKIM-Endpunkte **nicht cachen** (Spore-Drift).
+  - **β — SBKIM-SW unter `/<repo>/sbkim/sbkim-sw.js`** (Scope-
+    Einschränkung, in § Risiken schon als suboptimal markiert).
+  - **γ — bestehenden App-SW deaktivieren** und durch einen einzigen
+    vereinheitlichten SW ersetzen (sauberste Architektur, höchster
+    Aufwand).
+  Eintrag in Übergabeprotokoll
+  [2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md)
+  § Karten-Lücke 2.
+- ~~Werden Domain-URLs der Endknoten-Apps in `docs/PULS.md` /
+  `status.json` aufgenommen oder nur lokal in deren `index.html`?~~ —
+  **teilweise gelöst 2026-05-15** in abgebrochener Bau-Sitzung 09:
+  Pages-URLs in PULS-Tabelle „Endknoten" und `status.json`
+  `endknoten[*].url` eingetragen (`integrated:false` bleibt — Andock
+  nicht erfolgt). Eintrag in `docs/INTERFACES.md` weiterhin offen.
 - Werden Domain-URLs der Endknoten-Apps in `docs/INTERFACES.md` aufgenommen
   oder nur lokal in deren `index.html`? → Entscheidung steht aus.
 - Embedding-Modell: bleibt es bei Default `Xenova/multilingual-e5-small`?
@@ -179,6 +221,95 @@ sichtbar und verlinkt direkt auf die Stubs.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Bau-Sitzung Modul 09 — BLOCKIERT vor Schritt 1 (App-SW-Konflikt in beiden Endknoten)
+
+**Sitzungs-Rolle:** Bau-Sitzung (Modul 09 Live-Andock, Branch
+`claude/bau-09-live-andock-QF4Ry`), sauber abgebrochen als
+**Befund-Sitzung**. Kein Modul-Code in `src/` angefasst, kein
+Endknoten-Code in `Mein-Rezeptbuch` oder `Mein-Mixarium`
+angefasst. Karte 09 selbst nicht ergänzt (Pflege-Arbeit, nicht
+Bau-Arbeit — gehört in die nächste Sitzung).
+
+**Getan:**
+
+- **Vor-Klärung 1 — Tablet-Realität.** Klaus arbeitet auf Samsung
+  Galaxy Tab S6 + DeX an Monitor. Trotz Desktop-Look ist der
+  Browser Android-Chrome ohne Desktop-DevTools. Karte 09
+  § Sichtkontrolle setzt implizit Desktop-DevTools voraus
+  (Konsolen-Selbstchecks + Anwendung→IndexedDB). Pragmatischer
+  Tablet-Pfad wäre **Eruda** (in-Page-DevTools-Polyfill,
+  Floating-Button, touch-bedienbar) — nur für die Andock-
+  Sichtkontrolle, nach Andock entfernen. Karte 09 antizipiert
+  diesen Pfad nicht → **Karten-Lücke 1**.
+- **Vor-Klärung 2 — Pages-URLs konkret.** Klaus hat in dieser
+  Sitzung mitgeteilt: Rezeptbuch unter
+  `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/`,
+  Mixarium unter
+  `https://lausiklauskn-png.github.io/Mein-Mixarium/`. PULS-
+  Tabelle „Endknoten" und `status.json` `endknoten[*].url`
+  in dieser Sitzung nachgezogen (`integrated:false` bleibt
+  unverändert — Andock nicht erfolgt).
+- **Vor-Klärung 3 (Show-Stopper) — beide Endknoten haben aktiven
+  App-Cache-SW im Repo-Root.** Stichprobe per github.dev-Suche
+  `.register(` in `index.html`:
+  - `Mein-Mixarium/index.html` Z. 12543:
+    `navigator.serviceWorker.register('./app-sw.js').then(reg=>{`
+    plus voller Update-Banner-Block (`updatefound`,
+    `controllerchange`, Reload-Hook).
+  - `Mein-Rezeptbuch/index.html` Z. 10453: identischer Block,
+    identisches `register('./app-sw.js')`.
+  Karte 09 § Datei-Pfad-Konvention (Z. 192) verlangt: „**SW
+  immer im Repo-Root.**" SBKIM-SW (`sbkim-sw.js`) und
+  bestehender `app-sw.js` würden im selben Scope `/<repo>/`
+  konkurrieren — der Browser erlaubt nur **einen** SW pro Scope,
+  der neue ersetzt den alten. Klaus' App-Update-Banner und
+  Cache-Strategie würden stillschweigend abgeschaltet. Karte 09
+  § Risiken (Z. 837–842) dokumentiert die SW-Scope-Falle nur in
+  eine Richtung („SBKIM-SW falsch platziert"); der umgekehrte
+  Fall ist **nicht antizipiert** → **Karten-Lücke 2 (gravierender)**.
+- **Konsequenz:** Bau-Sitzung 09 sauber abgebrochen vor Schritt 1
+  gemäß CLAUDE.md § „Wenn du blockiert bist: ende die Sitzung
+  sauber, dokumentiere im PULS". Keine Modul-Code-Änderung,
+  keine Endknoten-Code-Änderung, keine Karten-Pflege in dieser
+  Bau-Sitzung. PULS-Eintrag, Übergabeprotokoll, `status.json`-
+  URLs-Aktualisierung, Commit, Draft-PR (kein Merge — Befund
+  statt Bau).
+
+**Offen — Aufträge für die nächste Sitzung:**
+
+1. **Pflege-Sitzung Karte 09 „App-SW-Koexistenz + Tablet-
+   Sichtkontrolle"** (eine Phase, ein Karten-Anker, kein
+   Modul-Eingriff):
+   - **Karten-Lücke 1 schließen:** Karte 09 § Sichtkontrolle um
+     Eruda-Pfad als gleichwertigen Tablet-DevTools-Ersatz
+     ergänzen (Script-Snippet, drei Tab-Pfade Console/IndexedDB/
+     Network, Hinweis „nach erfolgreichem Andock entfernen").
+   - **Karten-Lücke 2 schließen:** Karte 09 § Datei-Pfad-
+     Konvention + § Schritt 3 + § Risiken um drei dokumentierte
+     Optionen erweitern:
+     - **α (Empfehlung) — Patch in bestehenden `app-sw.js`:**
+       `addEventListener('fetch',...)` für `/sbkim/anastomosis`
+       + `/sbkim/legacy` als zusätzliche Listener anhängen,
+       MessageChannel-Brücke unverändert. App-Update-Banner-
+       Logik bleibt unangetastet. Pflichthinweis: SBKIM-
+       Endpunkte **nicht cachen** (sonst Spore-Drift).
+     - **β (Übergang) — SBKIM-SW unter `/<repo>/sbkim/sbkim-sw.js`**
+       mit Scope `/<repo>/sbkim/`. Karte 09 § Risiken hat das
+       schon als suboptimal markiert.
+     - **γ (Architektur) — bestehenden App-SW deaktivieren** und
+       durch einen einzigen, vereinheitlichten SW ersetzen.
+       Höchster Bau-Aufwand, sauberste Architektur.
+   - INTERFACES.md §6 Änderungsprotokoll-Zeile nachziehen.
+   - `status.json` Modul 09 unverändert (additive Karten-
+     Erweiterung, kein Score-Sprung).
+2. **Bau-Sitzung 09 erneut** sobald Pflege durch ist. Briefing
+   nimmt Option α als Default; Klaus' Endknoten-Stand
+   (App-SW + Update-Banner) bleibt funktional erhalten.
+
+**Nächster sinnvoller Schritt:** Pflege-Sitzung Karte 09 mit den
+zwei Sub-Pfaden. Details und Code-Patch-Skizze siehe
+[Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
 
 ### 2026-05-15 · Pflege-Sitzung · Karte 09 Schritt 9 — Doku-Fenster + Apoptose im Andock-Pfad
 
