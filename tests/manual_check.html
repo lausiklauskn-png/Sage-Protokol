@@ -97,9 +97,9 @@
   </section>
 
   <section class="panel" data-module="08_ui_demo">
-    <h2>08 UI-Demo <span class="status idle">in dieser Datei selbst</span></h2>
-    <div class="controls"></div>
-    <pre class="log">Diese Seite ist Modul 08.</pre>
+    <h2>08 UI-Demo <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Voraussetzung: Modul 01 (Storage) ist über das Skript-Tag mitgeladen. Modul 08 ist Storage-only — kein Netz, kein Embedding, keine Signatur, kein Heterokaryose-Pull. „Setup" leert sbkim_hetero_outbox und löscht die Pseudo-Sibling-Einträge der Test-Brücke, damit jeder Test-Knopf bei null startet. Vektor-Erzeugung ist Aufrufer-Pflicht — die Panel-08-Tests nutzen fertige Pseudo-Vektoren statt SbkimEmbedding (Modul 08 ist Embedding-frei). Self-Apoptose-Knopf bewusst NICHT in diesem Panel (Spec-Sitzung 08-Entscheidung; siehe Karte 08 § Risiken). —</pre>
   </section>
 
   <script>
@@ -1532,6 +1532,284 @@
           "  MODUL 06 HETEROKARYOSE bereit, Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis");
         SbkimUI.log("06_heterokaryose",
           "ℹ Hinweis: HETERO_MAX_ANCHORS (5), QUERY_TIMEOUT_MS (4000), Endpunkt-Konstante stehen in §0 / §3, NICHT in der Selbstcheck-Zeile.");
+      });
+    })();
+  </script>
+
+  <!-- Modul 08 — UI-Demo (Bau-Sitzung 2026-05-15) -->
+  <script src="../src/modules/08_ui_demo.js"></script>
+  <script>
+    (function () {
+      // Panel 08 — UI-Demo
+      //
+      // Spec-Vorgabe (Karte 08 § Manueller Test): sieben Test-Punkte
+      // (Setup, Outbox add+list, Outbox remove idempotent, Outbox
+      // überschreiben, HETERO_OUTBOX_MAX_ENTRIES-Überschreitung, Opt-In
+      // setzen, Selbstcheck) — Modul 08 ist Storage-only, kein Embedding,
+      // kein Netz. Pseudo-Vektoren werden lokal erzeugt (Embedding ist
+      // Aufrufer-Pflicht; Panel 08 spielt den Aufrufer).
+      //
+      // Test-Brücken (alle auf window.SbkimUiDemo): _clearOutbox,
+      // _addPseudoSibling (analog Modul 06, aber ohne
+      // heterokaryosisOptIn-Flag — das Feld setzt Modul 08 selbst über
+      // setSiblingHeteroOptIn), _clearPseudoSiblings.
+
+      var PSEUDO_SIB_A = "PSEUDO08-SIB-A-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+      function makeVector(seed) {
+        // Deterministischer 384-Float-Vektor; Werte zwischen ~-0.5 und ~0.5.
+        // Modul 08 prüft nur Form + Number.isFinite — kein L2-Norm-Check.
+        var v = new Array(384);
+        for (var i = 0; i < 384; i++) v[i] = ((i + seed) % 13 - 6) / 13;
+        return v;
+      }
+
+      async function ensureSetup() {
+        await SbkimStorage.init();
+        await SbkimUiDemo.init();
+        await SbkimUiDemo._clearOutbox();
+        await SbkimUiDemo._clearPseudoSiblings();
+      }
+
+      SbkimUI.addButton("08_ui_demo", "Setup: Outbox leeren + Pseudo-Sibling-Spur räumen", async function () {
+        await ensureSetup();
+        SbkimUI.setStatus("08_ui_demo", "ok", "Setup OK");
+        return {
+          outbox_store: "sbkim_hetero_outbox",
+          db_version: SbkimStorage._meta.dbVersion,
+          max_entries: SbkimUiDemo._meta.heteroOutboxMaxEntries,
+          label_max_len: SbkimUiDemo._meta.outboxLabelMaxLen,
+          embedding_dim: SbkimUiDemo._meta.embeddingDim,
+          hinweis: "Modul 08 ist Storage-only — Vektor-Erzeugung ist Aufrufer-Pflicht. Panel 08 nutzt deterministische Pseudo-Vektoren statt SbkimEmbedding.",
+        };
+      });
+
+      SbkimUI.addButton("08_ui_demo", "Test 1: Outbox add + list (drei Anker, absteigend nach addedAt)", async function () {
+        await ensureSetup();
+        // Drei Anker mit künstlich gestaffeltem addedAt — wir können
+        // addedAt nicht direkt setzen (Modul 08 setzt nowIso()), aber
+        // sequenzielle await-Aufrufe garantieren Reihenfolge. Beim
+        // schnellen Lauf könnte addedAt sub-millisekundengleich sein;
+        // wir warten daher 5 ms zwischen den Aufrufen, damit die ISO-
+        // Strings sich unterscheiden.
+        async function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+        await SbkimUiDemo.addOutboxAnchor("Hefeteig", makeVector(1));
+        await sleep(5);
+        await SbkimUiDemo.addOutboxAnchor("Schwarzwald-Torte", makeVector(2));
+        await sleep(5);
+        await SbkimUiDemo.addOutboxAnchor("Sauerteig", makeVector(3));
+
+        var list = await SbkimUiDemo.listOutbox();
+        var lengthOk = list.length === 3;
+        var schemaOk = list.every(function (e) {
+          return typeof e.label === "string" && typeof e.addedAt === "string" &&
+                 e.vector === undefined; // listOutbox liefert KEINEN Vektor
+        });
+        var sortedOk = list.length >= 2 && list[0].addedAt >= list[1].addedAt &&
+                       (list.length < 3 || list[1].addedAt >= list[2].addedAt);
+        var newestFirst = list[0] && list[0].label === "Sauerteig";
+
+        var pass = lengthOk && schemaOk && sortedOk && newestFirst;
+        SbkimUI.setStatus("08_ui_demo", pass ? "ok" : "err", pass ? "Test 1 OK" : "Test 1 fehlgeschlagen");
+        return {
+          eintraege_anzahl: list.length,
+          reihenfolge: list.map(function (e) { return e.label; }),
+          neueste_zuerst: newestFirst,
+          schema_ok: schemaOk,
+          vektoren_in_list: list.some(function (e) { return e.vector !== undefined; }),
+          erwartung: "drei Einträge {label, addedAt}, neueste zuerst (Sauerteig), keine Vektoren in der Ausgabe",
+        };
+      });
+
+      SbkimUI.addButton("08_ui_demo", "Test 2: Outbox remove (idempotent)", async function () {
+        await ensureSetup();
+        await SbkimUiDemo.addOutboxAnchor("Hefeteig", makeVector(1));
+        await SbkimUiDemo.addOutboxAnchor("Schwarzwald-Torte", makeVector(2));
+        await SbkimUiDemo.removeOutboxAnchor("Schwarzwald-Torte");
+        var afterFirst = await SbkimUiDemo.listOutbox();
+        var firstOk = afterFirst.length === 1 && afterFirst[0].label === "Hefeteig";
+        // Zweiter Aufruf darf NICHT werfen (idempotent).
+        var secondThrew = false;
+        try { await SbkimUiDemo.removeOutboxAnchor("Schwarzwald-Torte"); }
+        catch (e) { secondThrew = true; }
+        var afterSecond = await SbkimUiDemo.listOutbox();
+        var pass = firstOk && !secondThrew && afterSecond.length === 1;
+        SbkimUI.setStatus("08_ui_demo", pass ? "ok" : "err", pass ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          nach_erstem_remove: afterFirst.length,
+          zweiter_remove_warf: secondThrew,
+          nach_zweitem_remove: afterSecond.length,
+          erwartung: "nach erstem remove ein Eintrag, zweiter remove desselben Labels wirft nicht (idempotent)",
+        };
+      });
+
+      SbkimUI.addButton("08_ui_demo", "Test 3: Outbox überschreiben (Label-Update aktualisiert addedAt)", async function () {
+        await ensureSetup();
+        async function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+        await SbkimUiDemo.addOutboxAnchor("Hefeteig", makeVector(1));
+        await sleep(5);
+        await SbkimUiDemo.addOutboxAnchor("Sauerteig", makeVector(2));
+        var listBefore = await SbkimUiDemo.listOutbox();
+        var hefeteigBefore = listBefore.find(function (e) { return e.label === "Hefeteig"; });
+        await sleep(5);
+        // Überschreiben mit NEUEM Vektor (anderer Seed) — addedAt wird frisch.
+        await SbkimUiDemo.addOutboxAnchor("Hefeteig", makeVector(42));
+        var listAfter = await SbkimUiDemo.listOutbox();
+        var hefeteigAfter = listAfter.find(function (e) { return e.label === "Hefeteig"; });
+        var countUnchanged = listAfter.length === 2;
+        var newAddedAtNewer = hefeteigBefore && hefeteigAfter &&
+                              hefeteigAfter.addedAt > hefeteigBefore.addedAt;
+        var hefeteigNowFirst = listAfter[0] && listAfter[0].label === "Hefeteig";
+        var pass = countUnchanged && newAddedAtNewer && hefeteigNowFirst;
+        SbkimUI.setStatus("08_ui_demo", pass ? "ok" : "err", pass ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          anzahl_vor: listBefore.length,
+          anzahl_nach: listAfter.length,
+          addedAt_vor:  hefeteigBefore && hefeteigBefore.addedAt,
+          addedAt_nach: hefeteigAfter  && hefeteigAfter.addedAt,
+          hefeteig_jetzt_oben: hefeteigNowFirst,
+          erwartung: "Anzahl unverändert (2), Hefeteig-addedAt frisch, Hefeteig steht jetzt oben in listOutbox",
+        };
+      });
+
+      SbkimUI.addButton("08_ui_demo", "Test 4: HETERO_OUTBOX_MAX_ENTRIES-Überschreitung (OutboxFullError)", async function () {
+        await ensureSetup();
+        // Fünf Anker eintragen, sechster NEUER muss werfen.
+        var labels5 = ["Hefeteig", "Saucen", "Brot", "Backen", "Hauptgang"];
+        for (var i = 0; i < labels5.length; i++) {
+          await SbkimUiDemo.addOutboxAnchor(labels5[i], makeVector(i + 1));
+        }
+        var fullList = await SbkimUiDemo.listOutbox();
+        var fullOk = fullList.length === 5;
+
+        var sixthThrew = null;
+        try {
+          await SbkimUiDemo.addOutboxAnchor("Nachtisch", makeVector(99));
+        } catch (err) { sixthThrew = err; }
+        var sixthOk = sixthThrew && sixthThrew.name === "OutboxFullError";
+
+        // Bestehendes Label überschreiben darf trotz Voll-Status NICHT werfen.
+        var overwriteThrew = null;
+        try {
+          await SbkimUiDemo.addOutboxAnchor("Hefeteig", makeVector(11));
+        } catch (err) { overwriteThrew = err; }
+        var overwriteOk = overwriteThrew === null;
+        var afterOverwriteCount = (await SbkimUiDemo.listOutbox()).length;
+
+        // Nach removeOutboxAnchor passt ein NEUER Anker durch.
+        await SbkimUiDemo.removeOutboxAnchor("Brot");
+        await SbkimUiDemo.addOutboxAnchor("Nachtisch", makeVector(99));
+        var afterFreeUp = await SbkimUiDemo.listOutbox();
+        var freeUpOk = afterFreeUp.length === 5 &&
+                       afterFreeUp.some(function (e) { return e.label === "Nachtisch"; });
+
+        var pass = fullOk && sixthOk && overwriteOk && afterOverwriteCount === 5 && freeUpOk;
+        SbkimUI.setStatus("08_ui_demo", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          voll_anzahl: fullList.length,
+          sechster_fehler_name: sixthThrew && sixthThrew.name,
+          sechster_fehler_message: sixthThrew && sixthThrew.message,
+          ueberschreiben_warf: overwriteThrew !== null,
+          anzahl_nach_ueberschreiben: afterOverwriteCount,
+          neuer_eintrag_nach_remove_da: freeUpOk,
+          erwartung: "fünf Einträge → sechster NEUER wirft OutboxFullError; Überschreiben eines bekannten Labels wirft nicht; nach remove passt ein neuer durch",
+        };
+      });
+
+      SbkimUI.addButton("08_ui_demo", "Test 5: addOutboxAnchor-Validierung (Label / Vektor)", async function () {
+        await ensureSetup();
+        var checks = [];
+        async function expectThrow(name, fn) {
+          var thrown = null;
+          try { await fn(); } catch (err) { thrown = err; }
+          checks.push({ fall: name, fehler: thrown && thrown.name, message: thrown && thrown.message });
+          return thrown && thrown.name === name;
+        }
+        var longLabel = "x".repeat(65);
+        var labelEmptyOk     = await expectThrow("InvalidAnchorLabelError",  function () { return SbkimUiDemo.addOutboxAnchor("", makeVector(1)); });
+        var labelNonStringOk = await expectThrow("InvalidAnchorLabelError",  function () { return SbkimUiDemo.addOutboxAnchor(123, makeVector(1)); });
+        var labelTooLongOk   = await expectThrow("InvalidAnchorLabelError",  function () { return SbkimUiDemo.addOutboxAnchor(longLabel, makeVector(1)); });
+        var vectorNonArrayOk = await expectThrow("InvalidAnchorVectorError", function () { return SbkimUiDemo.addOutboxAnchor("Hefeteig", "kein-array"); });
+        var vectorWrongLen   = await expectThrow("InvalidAnchorVectorError", function () { return SbkimUiDemo.addOutboxAnchor("Hefeteig", new Array(383).fill(0.1)); });
+        var nanVec = makeVector(1); nanVec[7] = NaN;
+        var vectorNaNOk      = await expectThrow("InvalidAnchorVectorError", function () { return SbkimUiDemo.addOutboxAnchor("Hefeteig", nanVec); });
+        // Outbox muss leer geblieben sein — kein sync-Check hat geschrieben.
+        var stillEmpty = (await SbkimUiDemo.listOutbox()).length === 0;
+        var pass = labelEmptyOk && labelNonStringOk && labelTooLongOk &&
+                   vectorNonArrayOk && vectorWrongLen && vectorNaNOk && stillEmpty;
+        SbkimUI.setStatus("08_ui_demo", pass ? "ok" : "err", pass ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          checks: checks,
+          outbox_unveraendert: stillEmpty,
+          erwartung: "alle sechs Fälle werfen den passenden Error-Namen; Outbox bleibt leer (sync-Wurf vor jedem Schreib-Versuch)",
+        };
+      });
+
+      SbkimUI.addButton("08_ui_demo", "Test 6: setSiblingHeteroOptIn (Co-Schreiber + Argument-Strenge)", async function () {
+        await ensureSetup();
+        // Pseudo-Sibling anlegen — analog Modul 06, aber OHNE
+        // heterokaryosisOptIn-Flag (Modul 08 setzt das selbst).
+        await SbkimUiDemo._addPseudoSibling({
+          nodeId: PSEUDO_SIB_A,
+          domain: "pseudo-optin.invalid",
+          endpoint: "http://127.0.0.1:1/pseudo-optin/",
+          pubKey: null,
+          since: new Date(Date.now() - 1000).toISOString(),
+        });
+
+        // 1. Opt-In auf true setzen
+        await SbkimUiDemo.setSiblingHeteroOptIn(PSEUDO_SIB_A, true);
+        var afterTrue = await SbkimStorage.get("sbkim_siblings", PSEUDO_SIB_A);
+        var trueOk = afterTrue && afterTrue.heterokaryosisOptIn === true &&
+                     afterTrue.nodeId === PSEUDO_SIB_A &&
+                     afterTrue.domain === "pseudo-optin.invalid" &&
+                     afterTrue.endpoint === "http://127.0.0.1:1/pseudo-optin/";
+
+        // 2. Opt-In auf false setzen — andere Felder bleiben unverändert
+        await SbkimUiDemo.setSiblingHeteroOptIn(PSEUDO_SIB_A, false);
+        var afterFalse = await SbkimStorage.get("sbkim_siblings", PSEUDO_SIB_A);
+        var falseOk = afterFalse && afterFalse.heterokaryosisOptIn === false &&
+                      afterFalse.domain === "pseudo-optin.invalid";
+
+        // 3. Unbekannter Sibling → UnknownSiblingError
+        var unknownThrew = null;
+        try { await SbkimUiDemo.setSiblingHeteroOptIn("UNBEKANNT-XYZ-1234567890ab", true); }
+        catch (err) { unknownThrew = err; }
+        var unknownOk = unknownThrew && unknownThrew.name === "UnknownSiblingError";
+
+        // 4. Argument-Strenge — kein truthy/falsy-Cast
+        var truthyThrew = null;
+        try { await SbkimUiDemo.setSiblingHeteroOptIn(PSEUDO_SIB_A, 1); }
+        catch (err) { truthyThrew = err; }
+        var truthyOk = truthyThrew && truthyThrew.name === "InvalidOptInArgError";
+        var stringThrew = null;
+        try { await SbkimUiDemo.setSiblingHeteroOptIn(PSEUDO_SIB_A, "true"); }
+        catch (err) { stringThrew = err; }
+        var stringOk = stringThrew && stringThrew.name === "InvalidOptInArgError";
+        // Nach den Strenge-Würfen muss das Flag unverändert auf false stehen.
+        var afterStrict = await SbkimStorage.get("sbkim_siblings", PSEUDO_SIB_A);
+        var unchangedOk = afterStrict && afterStrict.heterokaryosisOptIn === false;
+
+        var pass = trueOk && falseOk && unknownOk && truthyOk && stringOk && unchangedOk;
+        SbkimUI.setStatus("08_ui_demo", pass ? "ok" : "err", pass ? "Test 6 OK" : "Test 6 fehlgeschlagen");
+        return {
+          nach_true:  { optIn: afterTrue  && afterTrue.heterokaryosisOptIn,  domain: afterTrue  && afterTrue.domain },
+          nach_false: { optIn: afterFalse && afterFalse.heterokaryosisOptIn, domain: afterFalse && afterFalse.domain },
+          unbekannter_sibling_fehler: unknownThrew && unknownThrew.name,
+          truthy_int_fehler:    truthyThrew && truthyThrew.name,
+          truthy_string_fehler: stringThrew && stringThrew.name,
+          flag_nach_strenge: afterStrict && afterStrict.heterokaryosisOptIn,
+          erwartung: "Opt-In schaltet zwischen true/false, andere Felder bleiben; unbekannter Sibling wirft UnknownSiblingError; 1 / \"true\" werfen InvalidOptInArgError (strikt boolean)",
+        };
+      });
+
+      SbkimUI.addButton("08_ui_demo", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("08_ui_demo",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("08_ui_demo",
+          "  MODUL 08 UI-DEMO bereit, Funktionen: init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn");
+        SbkimUI.log("08_ui_demo",
+          "ℹ Hinweis: HETERO_OUTBOX_MAX_ENTRIES (5), EMBEDDING_DIM (384), OUTBOX_LABEL_MAX_LEN (64) stehen in §0 bzw. modul-lokal, NICHT in der Selbstcheck-Zeile.");
       });
     })();
   </script>

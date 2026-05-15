@@ -18,8 +18,8 @@ pie showData
   title Modulstand 2026-05-15 (14 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
-  "🟨 Spec fertig" : 2
-  "🟦 Code-Stub" : 8
+  "🟨 Spec fertig" : 1
+  "🟦 Code-Stub" : 9
   "🟩 Fertig" : 0
 ```
 
@@ -48,7 +48,10 @@ Code-Stub frisch aus den Bau-Sitzungen 2026-05-14/15, **Sichttest ausstehend bzw
 Spec frisch, **Bau ausstehend**:
 
 - 🟨 **[09 Einbau-PWA](components/09_einbau_pwa.md)** — Karte vollständig 2026-05-14 (Spec-Sitzung; Anleitung, kein JS-Modul), **Pflege-Sitzung 2026-05-15 erweitert auf neun Schritte** (Schritt 9 neu: `SbkimApoptose.init()` + `SbkimDoku.init({searchIconSelector:...})` + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge in Schritt 2 zieht 07 + 00 nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block jetzt vier Pflicht-Punkte (sieben Selbstcheck-Zeilen + sechs IndexedDB-Stores + zwei live-Endpunkte + 5-Klick-Geste am Such-Symbol); Datei-Pfad-Konvention (SW im Endknoten-Repo-Root, sieben JS-Module inline oder unter `sbkim/`); Spore-Endpunkt `/sbkim/spore.json` verbindlich; SW-Scope-Falle dokumentiert; `domainVector`-Pflicht-Frage **entschieden Variante A (Soft-Pflicht im Andock-Workflow, kein Hauptversions-Sprung)** — Modul 02 / §0 / §2 bleiben unverändert. **Bau-Sitzung 2026-05-15 vor Schritt 1 sauber abgebrochen** (Befund-Sitzung): beide Endknoten haben aktiven `app-sw.js` im Repo-Root (Mein-Mixarium Z. 12543, Mein-Rezeptbuch Z. 10453), Karte 09 antizipiert diesen Fall nicht; zusätzlich Karte 09 § Sichtkontrolle implizit auf Desktop-DevTools gemünzt — Klaus' Tablet (Galaxy Tab S6 + DeX) braucht Eruda-Pfad. **Vor erneuter Bau-Sitzung 09** zwei Karten-Lücken in einer Pflege-Sitzung Karte 09 zu schließen (Empfehlung Option α: Patch in bestehenden `app-sw.js`; plus Eruda-Pfad für Tablet-Sichtkontrolle). Details in [Übergabeprotokoll 2026-05-15 Bau-09-blockiert](sessions/archiv/2026-05-15_bau-09-blockiert-app-sw.md).
-- 🟨 **[08 UI-Demo](components/08_ui_demo.md)** — Karte vollständig 2026-05-15 (Spec-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`); Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox` (neuer v=3-Store) und **Co-Schreiber** für `sbkim_siblings.heterokaryosisOptIn` (Karte-01-Vertragserweiterung, Karte 05 unangetastet). `HETERO_OUTBOX_MAX_ENTRIES = 5` neu in §0 (konsistent mit `HETERO_MAX_ANCHORS`). Self-Apoptose-Knopf bewusst NICHT in dieser Erst-Spec; DOM-Form liegt beim Endknoten; Embedding-frei. **Folge-Pflege Bau 06.1** (Outbox-Lese-Pfad in `06_heterokaryose.js`) **erledigt 2026-05-15** — Modul 06 liest `sbkim_hetero_outbox` jetzt fail-soft mit absteigender `addedAt`-Sortierung und `HETERO_MAX_ANCHORS=5`-Begrenzung; Panel 06 Test 9 voll testbar. Nächster Schritt: Bau-Sitzung 08 (Endknoten-Code für `SbkimUiDemo` + Panel 08, *headless möglich*).
+
+Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest ausstehend:**
+
+- 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser — sechs Outbox-/Opt-In-Test-Punkte durchklicken).
 
 Empfehlung Hauptsitzung: **Pflege-Sitzung Karte 09 — „App-SW-Koexistenz
 + Tablet-Sichtkontrolle"**. Bau-Sitzung 09 am 2026-05-15 ist vor
@@ -81,7 +84,7 @@ sitzt in der Andock-Anleitung, nicht in den Modulen.
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
 | 06 heterokaryose | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15) | — | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
-| 08 ui_demo | Spec fertig (2026-05-15) | — | — | Endknoten-Pflege-UI für `sbkim_hetero_outbox` und `sbkim_siblings.heterokaryosisOptIn`; Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox` (neuer v=3-Store, Schlüssel `label`, max. `HETERO_OUTBOX_MAX_ENTRIES`=5, absteigend nach `addedAt`, Überschreiben statt Verdrängen) und Co-Schreiber für `sbkim_siblings.heterokaryosisOptIn` (Modul 05 unangetastet, Karte-01-Vertragserweiterung). Modul-08-Rollenwahl Variante (b) verbindlich (Endknoten-JS-Modul `SbkimUiDemo`, nicht `tests/manual_check.html` — das bleibt unbenannte Werkstatt). Self-Apoptose-Knopf bewusst NICHT in dieser Erst-Spec (Risiko ohne Sicherheitsgewinn); DOM-Form liegt beim Endknoten; Embedding-frei (Aufrufer ruft `SbkimEmbedding` selbst). `HETERO_OUTBOX_MAX_ENTRIES = 5` neu in §0 (additiv, konsistent mit `HETERO_MAX_ANCHORS`). Folge-Pflege Bau 06.1 (Outbox-Lese-Pfad in `06_heterokaryose.js`) als offener Punkt nach Spec 08 — NICHT Teil dieser Spec-Sitzung |
+| 08 ui_demo | Spec fertig (2026-05-15) | Code-Stub (2026-05-15) | — | Endknoten-Pflege-UI für `sbkim_hetero_outbox` und `sbkim_siblings.heterokaryosisOptIn`; Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00 (`UiDemoDependenciesError` / `InvalidAnchorLabelError` / `InvalidAnchorVectorError` / `OutboxFullError` / `UnknownSiblingError` / `InvalidOptInArgError`), drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`). Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox` (v=3-Store aus Pflege Bau 06.1, Schlüssel `label`, max. `HETERO_OUTBOX_MAX_ENTRIES`=5, absteigend nach `addedAt`, Überschreiben statt Verdrängen) und Co-Schreiber für `sbkim_siblings.heterokaryosisOptIn` (Modul 05 unangetastet, Karte-01-Vertragserweiterung). **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign({}, sibling, {heterokaryosisOptIn})`. Self-Apoptose-Knopf bewusst NICHT in Panel 08 (Spec-Sitzung 08-Entscheidung respektiert). Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser). |
 | 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15, Pflege App-SW-Koexistenz 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt — plus Pflege App-SW-Koexistenz (2026-05-15): Schritt 3 a/b-Verzweigung (Pre-Flight-Check → 3a `register('sbkim-sw.js')` für PWA ohne eigenen SW, 3b `importScripts('./sbkim-sw.js')` im bestehenden App-SW für PWA mit eigenem SW), achtes Risiko „App-SW-Überschreibung", `sbkim-sw.js` `SBKIM_SW_STANDALONE`-Flag rückwärtskompatibel (Default `true`, `false` für Variante 3b) |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
@@ -285,6 +288,175 @@ Kategorien jetzt mit.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-15 · Bau-Sitzung 08 · Modul 08 UI-Demo (Endknoten-Pflege-UI für sbkim_hetero_outbox + heterokaryosisOptIn)
+
+**Sitzungs-Rolle:** Bau-Sitzung 08, headless, EINE Phase. Letzte
+offene Bau-Sitzung aus dem Spec-Sitzung-08-Block (2026-05-15);
+schließt die Reihe Spec 08 → Pflege Bau 06.1 → Bau 08 sauber ab.
+
+**Getan:**
+
+- **`src/modules/08_ui_demo.js` neu angelegt** — IIFE mit
+  `window.SbkimUiDemo`, fünf öffentliche Funktionen (`init/list
+  Outbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`),
+  sechs benannte Error-Klassen im Factory-Stil analog Modul 00
+  (`UiDemoDependenciesError`, `InvalidAnchorLabelError`,
+  `InvalidAnchorVectorError`, `OutboxFullError`,
+  `UnknownSiblingError`, `InvalidOptInArgError` — alle auf
+  `SbkimUiDemo.<Error>` exportiert für `err.name`-Vergleiche /
+  `instanceof Error`-Checks), drei Test-Brücken (`_clearOutbox`,
+  `_addPseudoSibling` ohne `heterokaryosisOptIn`-Flag,
+  `_clearPseudoSiblings`), synchroner Selbstcheck `MODUL 08 UI-DEMO
+  bereit, Funktionen: init/listOutbox/addOutboxAnchor/removeOutbox
+  Anchor/setSiblingHeteroOptIn` beim Skript-Laden (vor jeglichem
+  Aufruf, nicht in `init()`). Modul 08 ist **nicht protokoll-aktiv**:
+  kein `fetch`, kein Service-Worker-Hook, kein `SbkimEmbedding`-
+  Aufruf, keine Signatur, kein Heterokaryose-Pull. Vektor-Erzeugung
+  ist Aufrufer-Pflicht (typisch `SbkimEmbedding.embedPassage` im
+  Endknoten-UI-Code, bevor `addOutboxAnchor` gerufen wird).
+
+- **Bau-Pflicht-Entscheidung 1:** Reihenfolge der Checks in
+  `addOutboxAnchor` — (1) `label`-Typ + Länge sync →
+  `InvalidAnchorLabelError`, (2) `vector`-Form sync (Array, Länge
+  `EMBEDDING_DIM = 384`, alle Werte `Number.isFinite`) →
+  `InvalidAnchorVectorError`, (3) async-Existenz-Check
+  (`SbkimStorage.get`) + Voll-Check (`SbkimStorage.all` → `length
+  >= HETERO_OUTBOX_MAX_ENTRIES`) → `OutboxFullError` **nur wenn das
+  Label NEU ist**. Überschreiben eines bekannten Labels bleibt
+  trotz Voll-Status erlaubt (kein Verdrängen, Anzahl unverändert);
+  `addedAt` wird auf `nowIso()` aktualisiert.
+
+- **Bau-Pflicht-Entscheidung 2:** `init()` idempotent über internen
+  `ready`-Flag; `options`-Werte werden bei jedem Aufruf aktualisiert
+  (sodass spätere Aufrufer die Konfiguration anpassen können), aber
+  `SbkimStorage.init()` läuft nur einmal effektiv und der Selbstcheck
+  steht synchron im IIFE-Body — er wird also genau einmal beim
+  Skript-Laden geloggt, nicht pro `init()`.
+
+- **Bau-Pflicht-Entscheidung 3:** `setSiblingHeteroOptIn` strikt
+  boolean — `optIn !== true && optIn !== false` wirft
+  `InvalidOptInArgError` (kein truthy/falsy-Cast; `1`, `null`,
+  `undefined`, `"true"` werden alle abgelehnt). Co-Schreiber-
+  Disziplin via `Object.assign({}, sibling, {heterokaryosisOptIn:
+  optIn})` — alle anderen Felder (`nodeId`, `domain`, `endpoint`,
+  `pubKey`, `since`) bleiben unverändert. Wenn `peerNodeId` nicht
+  in `sbkim_siblings` → `UnknownSiblingError` (Modul 08 legt
+  KEINEN neuen Sibling-Eintrag an — Modul 05 bleibt Haupt-
+  Schreiber).
+
+- **Bau-Pflicht-Entscheidung 4:** `_addPseudoSibling`-Test-Brücke
+  schreibt **KEIN** `heterokaryosisOptIn`-Feld (anders als Modul 06's
+  `_addPseudoSibling`, das das Flag mit-akzeptiert). Begründung:
+  Panel-08-Test 6 muss den **Co-Schreiber-Pfad** prüfen — d.h.
+  Modul 08's `setSiblingHeteroOptIn` muss das Feld auf einen
+  bestehenden Sibling-Eintrag SETZEN. Würde die Test-Brücke das Feld
+  schon mitschreiben, wäre der Co-Schreiber-Pfad nicht getestet.
+
+- **Bau-Pflicht-Entscheidung 5:** Panel 08 in
+  `tests/manual_check.html` ersetzt den vorherigen Werkstatt-Stub
+  (Status-Chip `idle "in dieser Datei selbst"` mit Text „Diese Seite
+  ist Modul 08.") durch ein vollwertiges Panel mit Status-Chip
+  `ok "Code-Stub"` und Hinweis-Block (Storage-only, Embedding-frei,
+  Self-Apoptose-Knopf bewusst nicht hier). Das löst die alte
+  Werkstatt-Doppelbedeutung sauber auf: nach Spec-Sitzung 08 §
+  Modul-08-Rollenwahl ist `tests/manual_check.html` ausdrücklich
+  KEIN Modul-08-Code (Variante b verbindlich) — Panel 08 ist jetzt
+  eine **Test-Oberfläche für Modul 08**, kein Eigen-Modul. Acht
+  Knöpfe: Setup (`_clearOutbox` + `_clearPseudoSiblings`), Test 1
+  (Outbox add + list, drei Anker, absteigend nach `addedAt`,
+  Vektoren NICHT in der UI-Antwort), Test 2 (Remove idempotent),
+  Test 3 (Überschreiben — `addedAt` frisch, Anzahl unverändert),
+  Test 4 (`OutboxFullError` bei NEUEM Label, Überschreiben +
+  Free-Up-Pfad), Test 5 (sechs Validierungs-Würfe synchron, Outbox
+  bleibt leer), Test 6 (`setSiblingHeteroOptIn` true/false +
+  `UnknownSiblingError` + `InvalidOptInArgError` für `1` und
+  `"true"`), Selbstcheck-Hinweis. `<script src=
+  "../src/modules/08_ui_demo.js"></script>` zwischen Modul 06 und
+  Modul 00 eingehängt (Reihenfolge im File: 01 → 03 → 04 → 02 → 05
+  → 07 → 06 → 08 → 00 — Modul 08 hat nur eine Pflicht-Abhängigkeit
+  auf `SbkimStorage` und ist unabhängig von Modul 06).
+
+- **Karte 08 § Bauzustand-Zeile „Code geschrieben | 2026-05-15 | Bau 08"**
+  ausführlich ergänzt (analog Bau-Sitzung 06 in Karte 06):
+  Bau-Pflicht-Entscheidungen 1-5 mit Begründung, Verbote-Liste,
+  Validierungs-Ergebnisse, Pie-Bewegung.
+
+- **INTERFACES.md §6 Änderungsprotokoll-Zeile** „Bau-Sitzung 08"
+  am Ende ergänzt (nach Pflege Bau 06.1) — §1 Modul 08 unverändert
+  (Vertrag steht seit Spec-Sitzung 08).
+
+- **`status.json` Modul 08** von `score:"spec"` / `siegel:"Spec
+  fertig"` auf `score:"stub"` / `siegel:"Code-Stub"` hochgestuft;
+  `kurz` um Bauzustand-Hinweis erweitert (sechs Error-Klassen,
+  Storage-only-Charakter, v=3-Store-Bezug auf Pflege Bau 06.1);
+  `lastUpdated` auf `2026-05-15`.
+
+- **Pie regeneriert** via `python3 scripts/update_puls_pie.py`:
+  Schablone 4 → 4, Werkstatt 0 → 0, **Spec fertig 2 → 1**,
+  **Code-Stub 8 → 9**, Fertig 0 → 0 (14 Module gesamt unverändert).
+  Die `Spec fertig`-Zeile zählt jetzt nur noch Modul 09 (das wartet
+  auf die Pflege-Sitzung Karte 09 „App-SW-Koexistenz + Tablet-
+  Sichtkontrolle" vor der zweiten Bau-Iteration).
+
+**Was nicht geändert wurde (Briefing-Verbote eingehalten):**
+
+- **Kein Eingriff in `src/modules/01_storage.js`** — DB-Version 3
+  und `sbkim_hetero_outbox`-Store-Anmeldung sind bereits aus Pflege
+  Bau 06.1 da; Modul 08 nutzt nur `SbkimStorage.{init, get, put, del,
+  all}`.
+- **Kein Eingriff in `src/modules/05_anastomose.js`** — Modul 05
+  ist seit Spec-Sitzung 06 unangetastet (`heterokaryosisOptIn` ist
+  Karte-01-Co-Schreiber-Konvention, nicht Karte-05-API).
+- **Kein Eingriff in `src/modules/06_heterokaryose.js`** — der
+  Outbox-Lese-Pfad ist bereits aus Pflege Bau 06.1 da.
+- **Kein Netz-Aufruf, kein `fetch`, kein Service-Worker-Hook** in
+  `08_ui_demo.js` — Modul 08 ist nicht protokoll-aktiv.
+- **Kein `SbkimEmbedding`-Import oder -Aufruf** — Vektor-Erzeugung
+  ist Aufrufer-Pflicht (Karte 08 § Verantwortlichkeiten).
+- **Kein Self-Apoptose-Knopf in Panel 08** (Spec-Sitzung 08-
+  Entscheidung; eigene Spec-Sitzung 08.2 darf das später nachholen).
+- **Keine §0-/§1-Modul-01/05/06/07/09-/§2-/§3-/§4-/§5-Änderung** in
+  INTERFACES.md — §1 Modul 08 bleibt der Spec-Sitzung-08-Vertrag.
+- **Keine Karte-01-/-05-/-06-/-07-/-09-/-10-/-11-/-12-/-14-Änderung.**
+- **Kein Hauptversions-Sprung** (PROTOCOL_VERSION bleibt "0.1";
+  `sbkim_hetero_outbox`-Schema additiv aus Spec-Sitzung 08).
+- **Keine Sage-Page-(`index.html`)-Änderung** — datengetrieben aus
+  `status.json` (Karte 4 Module-Bento + Karte 14 Bau-Puls + Pie
+  ziehen automatisch nach).
+
+**Validierung:**
+
+- `node --check src/modules/08_ui_demo.js` grün.
+- Alle 10 Inline-`<script>`-Blöcke in `tests/manual_check.html`
+  syntaktisch validiert (Panel 08 als 10. Block).
+
+**Offene Punkte / nächster Schritt:**
+
+- **Klaus' Sichttest Panel 08 im Browser** (nicht headless), sobald
+  Tablet-Zeit da ist — sechs Outbox-/Opt-In-Test-Punkte durchklicken
+  + Selbstcheck-Konsolen-Zeile prüfen. Sichttest ist Voraussetzung
+  für den späteren Karte-08-Bauzustand „Sichttest"-Eintrag.
+- **Klaus' Sichttest Panel 06 im Browser** (offen seit Pflege Bau
+  06.1) — jetzt mit vollem Outbox-Begrenzungs-Test (Test 9).
+- **Pflege-Sitzung Karte 09 „App-SW-Koexistenz + Tablet-
+  Sichtkontrolle"** — Voraussetzung für die zweite Bau-Iteration 09
+  mit Klaus am Live-Andock-Versuch. *Headless möglich.*
+- **Bau-Sitzung Modul 09 zweite Iteration mit Klaus am Live-
+  Andock-Versuch** — Haupt-Pfad, **nicht headless**, wartet auf die
+  Pflege Karte 09.
+- **Mini-Pflege Panel 07 Test 6** (`allEmpty`-Check um
+  `sbkim_hetero_inbox` erweitern + `sbkim_doku_meta` und
+  `sbkim_hetero_outbox` als bewusst-nicht-geleerte Stores
+  dokumentieren). Winzig, *headless möglich*, niedrige
+  Dringlichkeit.
+- **Pflege-Sitzung „PULS-Archivierung"** — überfällig, *headless
+  möglich*, niedrige Dringlichkeit.
+
+Übergabeprotokoll:
+[2026-05-15 Bau-Sitzung 08 UI-Demo](sessions/archiv/2026-05-15_bau-08-ui-demo.md).
+
+---
 
 ### 2026-05-15 · Pflege-Sitzung · Bau 06.1 Outbox-Lese-Pfad in Modul 06 + DB-Version 2 → 3
 
