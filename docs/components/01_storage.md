@@ -154,9 +154,10 @@ Erst `await init()` öffnet die IndexedDB.
 |---|---|---|---|---|
 | `sbkim_keys` | `"main"` (fest) | `{ keyId, privateKey, publicKey }` | 02 | 02, 07 |
 | `sbkim_spore` | `"main"` (fest) | `{ nodeId, sporeJson, signature }` | 02 | 02, 05 |
-| `sbkim_siblings` | `nodeId` | `{ nodeId, domain, since, pubKey }` | 05 | 04, 05, 06, 07 |
-| `sbkim_anastomosis_log` | `ts` (ISO-String) | `{ ts, peerId, outcome }` | 05 | 05 |
+| `sbkim_siblings` | `nodeId` | `{ nodeId, domain, endpoint, pubKey, since, heterokaryosisOptIn? }` | 05 | 04, 05, 06, 07 |
+| `sbkim_anastomosis_log` | `ts` (ISO-String) | `{ ts, peerId, outcome }` | 05, 06 | 05, 07 |
 | `sbkim_legacy_inbox` | `fromNodeId` | `{ fromNodeId, reason, signature, receivedAt }` | 07 | 07 |
+| `sbkim_hetero_inbox` | `<peerNodeId>\|<ts>` (Komposit) | `{ peerNodeId, ts, anchors, signature, receivedAt }` | 06 | 06, 00, 08 |
 | `sbkim_doku_meta` | `moduleId` | `{ moduleId, lastSighttest, status }` | 00 | 00 |
 
 Alle Store-Namen beginnen mit `sbkim_` (Konstante `SBKIM_STORE_PREFIX`).
@@ -164,6 +165,22 @@ Keine anderen Stores werden von Modul 01 angelegt. Wenn ein späteres
 Modul einen neuen Store braucht, geht das nur über eine Spec-Sitzung,
 die die Tabelle hier ergänzt **und** die DB-Version hochzieht (siehe
 Versionsmigration).
+
+Schema-Hinweise:
+
+- `sbkim_siblings.heterokaryosisOptIn` ist **additiv und optional** (aus
+  Spec-Sitzung 06). Modul 05 setzt das Feld NICHT — Klaus setzt es pro
+  Geschwister im Endknoten-UI (Modul 00 / Modul 08, eigene Folge-
+  Pflege). Modul 06 liest fail-soft (fehlend → default `false`).
+- `sbkim_hetero_inbox` nutzt einen **Komposit-Schlüssel** `<peerNodeId>|<ts>`
+  (Pipe-getrennt). Damit akkumulieren mehrere Pulls über die Zeit als
+  Drift-Spur, ohne ältere Einträge zu überschreiben. Schreiber 06; Leser
+  06 (`listHeterokaryosis`/`forgetHeterokaryosis`), 00 (Doku-Fenster
+  Inbox-Anzeige als Folge-Pflege), 08 (UI-Demo, Spec-Sitzung 08).
+- `sbkim_anastomosis_log` hat ab Spec-Sitzung 06 **zwei Schreiber**
+  (05 für Anastomose-Outcomes, 06 für `hetero-*`-Outcomes); das outcome-
+  Vokabular ist additiv erweitert. Modul 07's TTL-Sweep bleibt
+  unverändert — er liest nur `"established"`/`"re-handshake"`.
 
 **Bewusst nicht aufgenommen:**
 - `sbkim_search_history` — personenbezogen, in CLAUDE.md verboten.
@@ -176,7 +193,7 @@ Versionsmigration).
 
 ```
 DB_NAME    = "sbkim"
-DB_VERSION = 1        // Stand 2026-05-14, dieser Spec
+DB_VERSION = 2        // Stand 2026-05-15, Bau-Sitzung 06 (additive Migration)
 ```
 
 Migrations-Logik in `onupgradeneeded`:
@@ -191,20 +208,26 @@ for (v = oldVersion + 1; v <= newVersion; v++) {
 
 `applyMigration(db, v)` legt für jede neue Version nur die in dieser
 Version hinzukommenden Stores an (`createObjectStore`). Vorhandene
-Stores werden **nie** überschrieben oder gelöscht. Alle sechs Stores
-der Tabelle oben sind Migration `v=1`.
+Stores werden **nie** überschrieben oder gelöscht.
+
+| Version | Hinzukommende Stores | Sitzung |
+|---|---|---|
+| `v=1` | `sbkim_keys`, `sbkim_spore`, `sbkim_siblings`, `sbkim_anastomosis_log`, `sbkim_legacy_inbox`, `sbkim_doku_meta` | Spec+Bau 01 (2026-05-14) |
+| `v=2` | `sbkim_hetero_inbox` | Bau 06 (2026-05-15) |
 
 Künftige Migrationen erhöhen `DB_VERSION` um genau 1 pro Spec-Sitzung,
 die etwas an der Tabelle ändert. Migrations-Schritte sind additiv;
 Drop-Operationen brauchen einen eigenen Spec-Eintrag mit dokumentiertem
-Datenverlust-Pfad.
+Datenverlust-Pfad. Bestehende Klaus-PWAs mit DB-Version 1 bekommen den
+neuen Store beim nächsten Lade durch den `onupgradeneeded`-Pfad — kein
+Datenverlust, additive Erweiterung.
 
 ### Konfigurationswerte
 
 ```
 SBKIM_STORE_PREFIX = "sbkim_"   // INTERFACES.md §0
 DB_NAME            = "sbkim"
-DB_VERSION         = 1
+DB_VERSION         = 2
 ```
 
 ---
@@ -280,6 +303,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Spec gefüllt | 2026-05-14 | Spec 01+03 | API, Stores-Liste, Migrations-Regel, Selbstcheck-Format |
 | Code geschrieben | 2026-05-14 | Bau 01 | `src/modules/01_storage.js`, IIFE mit `window.SbkimStorage`, vier Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
 | Sichttest | 2026-05-14 | Bau 01 | geprüft 2026-05-14 (Klaus, im Browser): init/round-trip/Unknown-Store sauber. DB `sbkim` mit sechs Stores in DevTools sichtbar. |
+| Pflege Bau 06 Store-Anmeldung | 2026-05-15 | Bau 06 + Cleanup-Pflege 07 | `DB_VERSION` 1 → 2 (additive Migration); `STORE_NAMES`/`KNOWN_STORES` um `sbkim_hetero_inbox` erweitert (Schlüssel-Komposit `<peerNodeId>\|<ts>`, Schreiber 06, Leser 06/00/08); `onupgradeneeded`-Pfad um `v=2`-Block ergänzt — bestehende PWAs mit DB-Version 1 bekommen den neuen Store beim nächsten Lade additiv, kein Datenverlust. `sbkim_siblings`-Wert-Form-Zeile um optionales `heterokaryosisOptIn`-Feld ergänzt (Schreiber bleibt 05, Modul 05 setzt das Feld NICHT, Modul 06 liest fail-soft); `sbkim_anastomosis_log`-Schreiber-Zeile um Modul 06 erweitert (additive `hetero-*`-outcome-Werte). `node --check src/modules/01_storage.js` grün. |
 | In Endknoten eingebaut | — | — | — |
 
 ---
