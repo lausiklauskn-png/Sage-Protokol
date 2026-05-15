@@ -582,6 +582,50 @@
     margin-left: auto; font-size: 0.85rem; color: var(--muted);
     display: flex; align-items: center; gap: 0.4rem;
   }
+  /* Schicht-Umschalter über der Tour-Bühne */
+  .tour-tabs {
+    display: flex; gap: 0.45rem; flex-wrap: wrap;
+    margin-bottom: 0.9rem;
+  }
+  .tour-tab {
+    padding: 0.5rem 1.1rem; font-size: 0.9rem;
+    background: rgba(0,0,0,0.25); color: var(--muted);
+    border: 1px solid var(--line); border-radius: var(--r-sm);
+    cursor: pointer; transition: all 0.22s ease;
+  }
+  .tour-tab:hover { color: var(--text); border-color: var(--line-strong); }
+  .tour-tab.active {
+    background: rgba(139,92,246,0.18); color: var(--text);
+    border-color: var(--violet);
+  }
+  /* Klick-Lernpfad — Phase-Pills unter den Steuer-Knöpfen */
+  .tour-phases {
+    display: flex; gap: 0.4rem; flex-wrap: wrap;
+    margin: 0.4rem 0 0.5rem;
+  }
+  .tour-phase-pill {
+    font-size: 0.82rem; padding: 0.4rem 0.85rem;
+    border-radius: 999px; border: 1px solid var(--line);
+    background: rgba(0,0,0,0.25); color: var(--muted);
+    cursor: pointer; transition: all 0.25s ease;
+  }
+  .tour-phase-pill:hover { color: var(--text); border-color: var(--line-strong); }
+  .tour-phase-pill.active {
+    border-color: var(--gold); color: var(--text);
+    background: rgba(245,158,11,0.15);
+  }
+  .tour-phase-pill.visited {
+    border-color: rgba(99,102,241,0.55); color: var(--text);
+    background: rgba(99,102,241,0.10);
+  }
+  .tour-phase-pill.visited.active {
+    border-color: var(--gold);
+    background: rgba(245,158,11,0.18);
+  }
+  .tour-learnpath-hint {
+    font-size: 0.78rem; color: var(--muted);
+    margin: 0 0 0.8rem; min-height: 1.2em;
+  }
 
   /* Modul-Detail-Screen */
   .modul-detail dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1rem; }
@@ -1896,8 +1940,14 @@
     <main id="screen-cycle" class="screen">
       <button class="screen-back" onclick="goScreen('overview', 'cycle')">← Zurück</button>
       <h2>Lebenszyklus · Detail-Tour</h2>
-      <p class="intro">Vier Phasen, jede einzeln erklärt. Steuerung mit
-        ◀ ⏸ ▶ ↺ oder Tastatur (← → Space).</p>
+      <p class="intro">Zwei Schichten, jede Phase einzeln erklärt. Klick auf
+        eine Phase zeigt nur diese — alle einmal angeklickt, läuft die ganze
+        Sequenz im Lehrtakt ab. Auto-Knopf läuft parallel.</p>
+
+      <div class="tour-tabs" role="tablist" aria-label="Lebenszyklus-Schicht wählen">
+        <button class="tour-tab active" id="tour-tab-layer1" data-layer="layer1" role="tab" aria-selected="true" onclick="setTourLayer('layer1')">Anfrage-Reise</button>
+        <button class="tour-tab" id="tour-tab-layer2" data-layer="layer2" role="tab" aria-selected="false" onclick="setTourLayer('layer2')">Knoten-Leben</button>
+      </div>
 
       <div class="tour-stage" id="tour-stage">
         <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet" id="tour-svg">
@@ -1914,6 +1964,11 @@
           <input type="checkbox" id="tour-auto" checked> Auto
         </label>
       </div>
+
+      <div class="tour-phases" id="tour-phases" aria-label="Klick-Lernpfad — jede Phase einzeln">
+        <!-- per JS gefüllt -->
+      </div>
+      <p class="tour-learnpath-hint" id="tour-learnpath-hint">&nbsp;</p>
 
       <div class="tour-info" id="tour-info">
         <h3 id="tour-h">—</h3>
@@ -3181,41 +3236,91 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   }
 
   // ============================================================
-  // DETAIL-TOUR (#screen-cycle)
+  // DETAIL-TOUR (#screen-cycle) — zwei Schichten, Klick-Lernpfad
   // ============================================================
-  const TOUR = [
-    {
-      h: 'Phase 1 · Spore wird ausgesendet',
-      bio: 'Wie ein junger Pilz seine ersten Sporen freisetzt: passiv, mit langer Lebensdauer, ohne aktive Suche. Die Spore trägt nur die Identität, nicht das ganze Wissen.',
-      mech: 'Spore = { id, domain, nodeType, endpoint, embeddingModel, signature }',
-      modules: ['02', '01'],
-      code: '// Modul 02: Ed25519-Schlüsselpaar erzeugen\nconst kp = await window.crypto.subtle.generateKey(\n  { name: "Ed25519" }, true, ["sign", "verify"]);\nconst spore = await sign(kp.privateKey, sporePayload);'
+  const LAYERS = {
+    layer1: {
+      label: 'Anfrage-Reise',
+      phases: [
+        {
+          h: 'Phase 1 · Spore wird ausgesendet',
+          bio: 'Wie ein junger Pilz seine ersten Sporen freisetzt: passiv, mit langer Lebensdauer, ohne aktive Suche. Die Spore trägt nur die Identität, nicht das ganze Wissen.',
+          mech: 'Spore = { id, domain, nodeType, endpoint, embeddingModel, signature }',
+          modules: ['02', '01'],
+          code: '// Modul 02: Ed25519-Schlüsselpaar erzeugen\nconst kp = await window.crypto.subtle.generateKey(\n  { name: "Ed25519" }, true, ["sign", "verify"]);\nconst spore = await sign(kp.privateKey, sporePayload);'
+        },
+        {
+          h: 'Phase 2 · Anfrage wird eingebettet',
+          bio: 'Der suchende Knoten übersetzt seine Anfrage in einen Vektor — wie der Pilz mit Pheromonen kommuniziert: einheitliche chemische Sprache, in der unterschiedliche Inhalte vergleichbar werden.',
+          mech: 'Text → Float32Array(384) via multilingual-e5-small. Cosine-Threshold 0.80.',
+          modules: ['03', '04'],
+          code: '// Modul 03: Embedding via Xenova\nconst pipe = await pipeline("feature-extraction",\n  "Xenova/multilingual-e5-small");\nconst v = await pipe(text, { pooling: "mean", normalize: true });'
+        },
+        {
+          h: 'Phase 3 · Anastomose · Hyphenfusion (Direktfaden)',
+          bio: 'Zwei Knoten erkennen Verwandtschaft und verbinden sich. Im Pilz ist das die Verschmelzung von Hyphen — beide Seiten geben Identität preis und teilen ab jetzt Topologie. Ab hier kennen sich beide direkt; der Hub wird für diese Beziehung nicht mehr gebraucht.',
+          mech: 'Handshake direkt zwischen den Endknoten: Spore-Tausch + Pubkey-Verifikation + Domain-Match. Der Hub vermittelt nur den Erstkontakt (Wurzelverzeichnis); danach ist er austauschbar — er kann ausfallen, ohne dass die Anastomose stirbt.',
+          modules: ['05', '02', '04'],
+          code: '// Modul 05: Anastomose-Handshake — POST geht\n// direkt an peer.endpoint, NICHT über den Hub\nawait POST(`${peer.endpoint}sbkim/anastomosis`, {\n  spore: ourSpore, query: queryEmbedding\n});'
+        },
+        {
+          h: 'Phase 4 · Antwort fließt direkt zurück',
+          bio: 'Der treffende Knoten liefert. Über das frisch gebildete Mycel reist die Antwort zurück, plus die Sporen aller Hops dazwischen — Wachstum als Nebeneffekt. Der Fluss läuft jetzt zwischen den Endknoten; der Hub ist nur noch eine von vielen Adress-Quellen, nicht der Pfad.',
+          mech: 'Response: { matches[], collectedSpores[] }. Lokale Heterokaryose folgt. Kein Single Point of Failure: jeder Knoten hält seine eigene Geschwister-Liste in IndexedDB, Direktverbindungen leben weiter, auch wenn der Hub offline geht.',
+          modules: ['05', '06', '07'],
+          code: '// Antwort-Empfang im Suchenden — Verbindung\n// bleibt zwischen den Endknoten, Hub nicht im Pfad\nresponse.collectedSpores.forEach(s =>\n  storage.put("sbkim_siblings", s.id, s));\n// Apoptose: Unbenutzte fallen später raus'
+        }
+      ]
     },
-    {
-      h: 'Phase 2 · Anfrage wird eingebettet',
-      bio: 'Der suchende Knoten übersetzt seine Anfrage in einen Vektor — wie der Pilz mit Pheromonen kommuniziert: einheitliche chemische Sprache, in der unterschiedliche Inhalte vergleichbar werden.',
-      mech: 'Text → Float32Array(384) via multilingual-e5-small. Cosine-Threshold 0.80.',
-      modules: ['03', '04'],
-      code: '// Modul 03: Embedding via Xenova\nconst pipe = await pipeline("feature-extraction",\n  "Xenova/multilingual-e5-small");\nconst v = await pipe(text, { pooling: "mean", normalize: true });'
-    },
-    {
-      h: 'Phase 3 · Anastomose · Hyphenfusion (Direktfaden)',
-      bio: 'Zwei Knoten erkennen Verwandtschaft und verbinden sich. Im Pilz ist das die Verschmelzung von Hyphen — beide Seiten geben Identität preis und teilen ab jetzt Topologie. Ab hier kennen sich beide direkt; der Hub wird für diese Beziehung nicht mehr gebraucht.',
-      mech: 'Handshake direkt zwischen den Endknoten: Spore-Tausch + Pubkey-Verifikation + Domain-Match. Der Hub vermittelt nur den Erstkontakt (Wurzelverzeichnis); danach ist er austauschbar — er kann ausfallen, ohne dass die Anastomose stirbt.',
-      modules: ['05', '02', '04'],
-      code: '// Modul 05: Anastomose-Handshake — POST geht\n// direkt an peer.endpoint, NICHT über den Hub\nawait POST(`${peer.endpoint}sbkim/anastomosis`, {\n  spore: ourSpore, query: queryEmbedding\n});'
-    },
-    {
-      h: 'Phase 4 · Antwort fließt direkt zurück',
-      bio: 'Der treffende Knoten liefert. Über das frisch gebildete Mycel reist die Antwort zurück, plus die Sporen aller Hops dazwischen — Wachstum als Nebeneffekt. Der Fluss läuft jetzt zwischen den Endknoten; der Hub ist nur noch eine von vielen Adress-Quellen, nicht der Pfad.',
-      mech: 'Response: { matches[], collectedSpores[] }. Lokale Heterokaryose folgt. Kein Single Point of Failure: jeder Knoten hält seine eigene Geschwister-Liste in IndexedDB, Direktverbindungen leben weiter, auch wenn der Hub offline geht.',
-      modules: ['05', '06', '07'],
-      code: '// Antwort-Empfang im Suchenden — Verbindung\n// bleibt zwischen den Endknoten, Hub nicht im Pfad\nresponse.collectedSpores.forEach(s =>\n  storage.put("sbkim_siblings", s.id, s));\n// Apoptose: Unbenutzte fallen später raus'
+    layer2: {
+      label: 'Knoten-Leben',
+      phases: [
+        {
+          h: 'Phase 1 · Knoten entsteht',
+          bio: 'Ein neuer Knoten taucht auf. Er erzeugt sich selbst seine Ed25519-Identität (Modul 02), bettet seine Domain als 384-Vektor ein (Modul 03) und legt sich in IndexedDB an (Modul 01). Erst danach existiert er als ansprechbarer Adressat.',
+          mech: 'Identität = base64url(sha256(rawPubKey)), Singleton. domainVector wird einmalig aus dem Domain-Text gebildet und mit der Spore signiert.',
+          modules: ['02', '03', '01'],
+          code: '// Modul 02 + 03: Knoten kommt zur Welt\nconst kp = await SbkimSpore.init();\nconst dv = await SbkimEmbedding.embed(domainText);\nconst spore = await SbkimSpore.sign({ domainVector: dv });'
+        },
+        {
+          h: 'Phase 2 · Andocken (Anastomose)',
+          bio: 'Zwei Knoten finden sich, signieren beide einen Handshake und prüfen das Domain-Match (Cosine ≥ 0.80). Klappt es, kennen sie sich ab jetzt direkt — der Hub war nur die Adress-Quelle.',
+          mech: 'Handshake-Antwort enthält Spore + signiertes Token; lokale Verifikation; sibling-Eintrag in sbkim_siblings.',
+          modules: ['05', '04', '02'],
+          code: '// Modul 05: Handshake (kanonisch signiert)\nawait POST(`${peer.endpoint}sbkim/anastomosis`, {\n  spore: ourSpore, signature: sigToken\n});\n// Modul 04 prüft cos(dvA, dvB) ≥ PROVIDER_MIN_MATCH'
+        },
+        {
+          h: 'Phase 3 · Austauschen (Heterokaryose)',
+          bio: 'Geschwister mit beidseitigem Opt-In ziehen Anker voneinander — kleine Vektor-Marker zu Themen, die der andere kennt. Pull, kein Push, keine Pulsation. Inbox füllt sich, ohne dass jemand das Netz flutet.',
+          mech: 'requestHeterokaryosis(peer): Pull über /sbkim/heterokaryosis; max. HETERO_MAX_ANCHORS=5 pro Antwort, neueste zuerst.',
+          modules: ['06', '08'],
+          code: '// Modul 06: Pull-Pattern, Opt-In beidseits\nconst res = await SbkimHetero.requestHeterokaryosis(peer);\n// res.anchors: Array<{label, vector}>, max 5\n// landet in sbkim_hetero_inbox'
+        },
+        {
+          h: 'Phase 4 · Empfehlen (Diffusion)',
+          bio: 'Beim Handshake kann ein Knoten bis zu zwei Geschwister mitempfehlen — Modul 14, Pfad 2 (konsensuell). Der Empfänger entscheidet, ob er die Empfehlung als Lead aufnimmt. Wachstum durch Konsens, nicht durch Crawlen.',
+          mech: 'Handshake-Antwort-Erweiterung: recommendedPeers: SporeRef[] (max. 2). Pfad 1 (passiv via /sbkim/spore.json) bleibt Default parallel.',
+          modules: ['14', '05'],
+          code: '// Modul 14 (Backlog): Diffusion-Stub\nresponse.recommendedPeers = pickSiblings(2, {\n  domainMatch: true, recentHandshake: true\n});'
+        },
+        {
+          h: 'Phase 5 · Vergessen (Apoptose)',
+          bio: 'Was zu lange ungebraucht bleibt, fällt raus — TTL-Sweep bei den Geschwistern oder Self-Apoptose mit zweistufigem Token. Was geht, hinterlässt ein signiertes Vermächtnis in der Inbox der noch lebenden Andocker.',
+          mech: 'SIBLING_MAX_AGE_MS = 2592000000 (30 d). Self-Apoptose: Token (60 s) + signiertes Vermächtnis → /sbkim/legacy.',
+          modules: ['07', '01'],
+          code: '// Modul 07: Self-Apoptose (zweistufig)\nconst token = await SbkimApoptose.requestSelfApoptosis();\n// ... innerhalb 60 s ...\nawait SbkimApoptose.confirmSelfApoptosis(token);\n// → Vermächtnis an alle Andocker, Stores cleared'
+        }
+      ]
     }
-  ];
+  };
+
+  // Klick-Lernpfad-State (In-Memory, keine Persistenz)
+  let currentLayer = 'layer1';
   let tourIdx = 0;
   let tourTimer = null;
   let tourPaused = false;
+  const clickedPerLayer = { layer1: new Set(), layer2: new Set() };
+  let learnSequenceTimer = null;
 
   function startTour() {
     tourIdx = 0;
@@ -3225,16 +3330,81 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       tourTimer = setInterval(() => { if (!tourPaused) tourNext(); }, 6000);
     }
   }
-  function stopTour() { if (tourTimer) { clearInterval(tourTimer); tourTimer = null; } }
-  function tourNext() { tourIdx = (tourIdx + 1) % TOUR.length; renderTour(); }
-  function tourPrev() { tourIdx = (tourIdx - 1 + TOUR.length) % TOUR.length; renderTour(); }
+  function stopTour() {
+    if (tourTimer) { clearInterval(tourTimer); tourTimer = null; }
+    if (learnSequenceTimer) { clearInterval(learnSequenceTimer); learnSequenceTimer = null; }
+  }
+  function currentPhases() { return LAYERS[currentLayer].phases; }
+  function tourNext() { tourIdx = (tourIdx + 1) % currentPhases().length; renderTour(); }
+  function tourPrev() { tourIdx = (tourIdx - 1 + currentPhases().length) % currentPhases().length; renderTour(); }
   function tourTogglePause() {
     tourPaused = !tourPaused;
     document.getElementById('tour-pause-btn').textContent = tourPaused ? '▶' : '⏸';
   }
   function tourReplay() { tourIdx = 0; renderTour(); }
+
+  function setTourLayer(layer) {
+    if (!LAYERS[layer] || layer === currentLayer) return;
+    currentLayer = layer;
+    tourIdx = 0;
+    // Schicht-Wechsel: Klick-Lernpfad in neuer Schicht startet bei null
+    clickedPerLayer[layer].clear();
+    if (learnSequenceTimer) { clearInterval(learnSequenceTimer); learnSequenceTimer = null; }
+    document.querySelectorAll('.tour-tab').forEach(t => {
+      const active = t.dataset.layer === layer;
+      t.classList.toggle('active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    renderTour();
+  }
+
+  function onPhasePillClick(idx) {
+    // Manuelles Lernen — Auto-Loop stoppen, damit der Klick wirkt
+    if (tourTimer) { clearInterval(tourTimer); tourTimer = null; }
+    const autoBox = document.getElementById('tour-auto');
+    if (autoBox && autoBox.checked) autoBox.checked = false;
+    // Falls die Gesamt-Sequenz gerade läuft: abbrechen und Klick-Set zurücksetzen
+    const wasInSequence = learnSequenceTimer !== null;
+    if (learnSequenceTimer) { clearInterval(learnSequenceTimer); learnSequenceTimer = null; }
+    if (wasInSequence) clickedPerLayer[currentLayer].clear();
+    const before = clickedPerLayer[currentLayer].size;
+    clickedPerLayer[currentLayer].add(idx);
+    tourIdx = idx;
+    renderTour();
+    // Gesamt-Sequenz nur starten, wenn dieser Klick gerade die letzte fehlende Phase war
+    const total = currentPhases().length;
+    if (!wasInSequence && before < total && clickedPerLayer[currentLayer].size === total) {
+      playFullSequence();
+    }
+  }
+
+  function playFullSequence() {
+    const layerAtStart = currentLayer;
+    let seqIdx = 0;
+    tourIdx = 0;
+    renderTour();
+    const hint = document.getElementById('tour-learnpath-hint');
+    if (hint) hint.textContent = 'Gesamt-Sequenz läuft — alle Phasen einmal in Reihenfolge.';
+    if (learnSequenceTimer) clearInterval(learnSequenceTimer);
+    learnSequenceTimer = setInterval(() => {
+      if (currentLayer !== layerAtStart) {
+        clearInterval(learnSequenceTimer); learnSequenceTimer = null; return;
+      }
+      seqIdx++;
+      if (seqIdx >= currentPhases().length) {
+        clearInterval(learnSequenceTimer); learnSequenceTimer = null;
+        clickedPerLayer[layerAtStart].clear();
+        renderTour();
+        return;
+      }
+      tourIdx = seqIdx;
+      renderTour();
+    }, 3200);
+  }
+
   function renderTour() {
-    const t = TOUR[tourIdx];
+    const phases = currentPhases();
+    const t = phases[tourIdx];
     document.getElementById('tour-h').textContent = t.h;
     document.getElementById('tour-bio').textContent = t.bio;
     document.getElementById('tour-mech').textContent = t.mech;
@@ -3242,42 +3412,306 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     const chips = document.getElementById('tour-chips');
     chips.innerHTML = '';
     t.modules.forEach(id => {
+      const m = STATE.status && STATE.status.modules
+        ? STATE.status.modules.find(mm => mm.id === id) : null;
       const c = document.createElement('span');
       c.className = 'modul-chip';
-      c.textContent = `${id} · ${(STATE.status.modules.find(m => m.id === id) || { name: '?' }).name}`;
-      c.addEventListener('click', () => {
-        const m = STATE.status.modules.find(mm => mm.id === id);
-        if (m) openModuleDetail(m, false);
-      });
+      c.textContent = `${id} · ${(m || { name: '?' }).name}`;
+      c.addEventListener('click', () => { if (m) openModuleDetail(m, false); });
       chips.appendChild(c);
     });
-    drawTourSvg(tourIdx);
+    renderTourPhasePills();
+    drawTourSvg(currentLayer, tourIdx);
   }
 
-  function drawTourSvg(idx) {
+  function renderTourPhasePills() {
+    const host = document.getElementById('tour-phases');
+    if (!host) return;
+    const phases = currentPhases();
+    const clicked = clickedPerLayer[currentLayer];
+    host.innerHTML = '';
+    phases.forEach((p, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tour-phase-pill';
+      if (clicked.has(i)) b.classList.add('visited');
+      if (i === tourIdx) b.classList.add('active');
+      const num = i + 1;
+      const title = p.h.replace(/^Phase \d+ · /, '');
+      b.textContent = `${num} · ${title}`;
+      b.addEventListener('click', () => onPhasePillClick(i));
+      host.appendChild(b);
+    });
+    const hint = document.getElementById('tour-learnpath-hint');
+    if (hint && !learnSequenceTimer) {
+      const remaining = phases.length - clicked.size;
+      if (clicked.size === 0) {
+        hint.textContent = 'Lernpfad: jede Phase einzeln anklicken — am Ende läuft die Gesamt-Sequenz von alleine.';
+      } else if (remaining === 0) {
+        hint.textContent = '';
+      } else {
+        hint.textContent = `Noch ${remaining} Phase${remaining === 1 ? '' : 'n'} bis zur Gesamt-Sequenz.`;
+      }
+    }
+  }
+
+  // ---------- SVG-Primitive für reichere Animationen ----------
+  // Tropfen mit Schweif: ein Punkt entlang einer Linie + ein animierter Schweif (stroke-dasharray)
+  function dropletWithTrail(fromX, fromY, toX, toY, color, durSec, dropRadius, beginSec) {
+    const dur = durSec || 2.4;
+    const begin = beginSec || 0;
+    const r = dropRadius || 5;
+    const len = Math.hypot(toX - fromX, toY - fromY);
+    const trailLen = Math.min(70, len * 0.35);
+    return `
+      <path d="M ${fromX},${fromY} L ${toX},${toY}"
+            stroke="${color}" stroke-width="2.2" fill="none"
+            opacity="0.55" stroke-linecap="round"
+            stroke-dasharray="${trailLen} ${len + trailLen}"
+            stroke-dashoffset="${trailLen}">
+        <animate attributeName="stroke-dashoffset"
+                 from="${trailLen}" to="${-len}"
+                 dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/>
+      </path>
+      <circle r="${r}" fill="${color}" filter="url(#tour-glow)">
+        <animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite"
+                       path="M ${fromX},${fromY} L ${toX},${toY}"/>
+        <animate attributeName="opacity" values="0;1;1;0"
+                 keyTimes="0;0.08;0.92;1"
+                 dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/>
+      </circle>
+    `;
+  }
+  // Funken-Blitz: zwei kurze, leicht versetzte Striche, die im Sekundentakt aufzucken
+  function sparkBolt(ax, ay, bx, by, color, periodSec) {
+    const per = periodSec || 2.0;
+    return `
+      <line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}"
+            stroke="${color}" stroke-width="3" opacity="0" stroke-linecap="round">
+        <animate attributeName="opacity"
+                 values="0;1;0.15;0.9;0;0" keyTimes="0;0.04;0.10;0.16;0.22;1"
+                 dur="${per}s" repeatCount="indefinite"/>
+      </line>
+      <line x1="${ax}" y1="${ay + 5}" x2="${bx}" y2="${by - 5}"
+            stroke="${color}" stroke-width="1.5" opacity="0" stroke-linecap="round">
+        <animate attributeName="opacity"
+                 values="0;0.8;0;0.55;0;0" keyTimes="0;0.06;0.12;0.19;0.26;1"
+                 dur="${per}s" repeatCount="indefinite"/>
+      </line>
+    `;
+  }
+  // Knoten-Puls (Ring expandiert + fadet aus) — Hervorhebung beim Eintreffen
+  function nodePulse(cx, cy, fromR, toR, color, durSec, beginSec) {
+    const dur = durSec || 1.6;
+    const begin = beginSec || 0;
+    return `
+      <circle cx="${cx}" cy="${cy}" r="${fromR}" fill="none" stroke="${color}" stroke-opacity="0.55">
+        <animate attributeName="r" from="${fromR}" to="${toR}"
+                 dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/>
+        <animate attributeName="stroke-opacity" from="0.55" to="0"
+                 dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/>
+      </circle>
+    `;
+  }
+
+  function drawTourSvg(layer, idx) {
     const svg = document.getElementById('tour-svg');
-    svg.innerHTML = '';
-    const colors = ['#F59E0B', '#6366F1', '#8B5CF6', '#14B8A6'];
-    const c = colors[idx];
-    // Großer Knoten links + großer rechts, Pulse dazwischen
-    svg.innerHTML = `
+    if (!svg) return;
+    // Phasen-Farbe — gold für Spore/Anfrage, indigo für Embedding, violet für Handshake, teal für Antwort/Austausch, rose für Apoptose
+    const colorsL1 = ['#F59E0B', '#6366F1', '#8B5CF6', '#14B8A6'];
+    const colorsL2 = ['#F59E0B', '#8B5CF6', '#14B8A6', '#6366F1', '#F43F5E'];
+    const c = (layer === 'layer2' ? colorsL2 : colorsL1)[idx] || '#6366F1';
+    const ax = 200, ay = 200, bx = 600, by = 200, rNode = 60;
+    const phaseLabel = `Phase ${idx + 1}`;
+
+    const defs = `
       <defs>
         <radialGradient id="grad-l"><stop offset="0%" stop-color="${c}" stop-opacity="0.9"/><stop offset="100%" stop-color="${c}" stop-opacity="0.1"/></radialGradient>
+        <radialGradient id="grad-soft"><stop offset="0%" stop-color="${c}" stop-opacity="0.45"/><stop offset="100%" stop-color="${c}" stop-opacity="0.05"/></radialGradient>
+        <filter id="tour-glow"><feGaussianBlur stdDeviation="3"/></filter>
       </defs>
-      <circle cx="200" cy="200" r="60" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
-      <circle cx="600" cy="200" r="60" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
-      <circle cx="200" cy="200" r="60" fill="none" stroke="${c}" stroke-opacity="0.5">
-        <animate attributeName="r" from="60" to="180" dur="4s" repeatCount="indefinite"/>
-        <animate attributeName="stroke-opacity" from="0.5" to="0" dur="4s" repeatCount="indefinite"/>
-      </circle>
-      <line x1="260" y1="200" x2="540" y2="200" stroke="${c}" stroke-width="1.5" stroke-dasharray="5 4"/>
-      <circle r="5" fill="${c}">
-        <animateMotion dur="3s" repeatCount="indefinite" path="M 260,200 L 540,200"/>
-      </circle>
-      <text x="200" y="285" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="13" font-family="Space Grotesk">Knoten A</text>
-      <text x="600" y="285" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="13" font-family="Space Grotesk">Knoten B</text>
-      <text x="400" y="180" text-anchor="middle" fill="${c}" font-size="14" font-family="Space Mono">Phase ${idx + 1}</text>
     `;
+    const labelA = `<text x="${ax}" y="${ay + 85}" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="13" font-family="Space Grotesk">Knoten A</text>`;
+    const labelB = `<text x="${bx}" y="${by + 85}" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="13" font-family="Space Grotesk">Knoten B</text>`;
+    const phaseText = `<text x="400" y="${ay - 20}" text-anchor="middle" fill="${c}" font-size="14" font-family="Space Mono">${phaseLabel}</text>`;
+
+    let body = '';
+
+    if (layer === 'layer1') {
+      if (idx === 0) {
+        // Spore wird ausgesendet — Knoten A pulst Sonar, drei Sporen-Tropfen wandern auseinander, B materialisiert spät
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          ${nodePulse(ax, ay, rNode, rNode + 90, c, 2.4, 0)}
+          ${nodePulse(ax, ay, rNode, rNode + 60, c, 2.4, 0.8)}
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-soft)" stroke="${c}" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.55"/>
+          ${dropletWithTrail(ax + 50, ay - 20, 540, 140, c, 2.6, 5, 0)}
+          ${dropletWithTrail(ax + 55, ay, bx - 60, by, c, 2.4, 4, 0.5)}
+          ${dropletWithTrail(ax + 45, ay + 25, 540, 270, c, 2.8, 4, 1.0)}
+        `;
+      } else if (idx === 1) {
+        // Anfrage einbetten — Knoten A mit orbitierendem Embedding-Ring, sechs Vektor-Punkte
+        const orbR = rNode + 18;
+        let dots = '';
+        for (let k = 0; k < 6; k++) {
+          const ang = (k / 6) * Math.PI * 2;
+          const dx = ax + Math.cos(ang) * orbR;
+          const dy = ay + Math.sin(ang) * orbR;
+          dots += `<circle cx="${dx}" cy="${dy}" r="2.2" fill="${c}">
+            <animate attributeName="r" values="2.2;3.4;2.2" dur="${1.4 + k * 0.12}s" repeatCount="indefinite"/>
+          </circle>`;
+        }
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <circle cx="${ax}" cy="${ay}" r="${orbR}" fill="none" stroke="${c}" stroke-opacity="0.5" stroke-dasharray="3 4">
+            <animateTransform attributeName="transform" type="rotate" from="0 ${ax} ${ay}" to="360 ${ax} ${ay}" dur="6s" repeatCount="indefinite"/>
+          </circle>
+          ${dots}
+          <text x="${ax}" y="${ay + 5}" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="11" font-family="Space Mono">vec[384]</text>
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-soft)" stroke="${c}" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+        `;
+      } else if (idx === 2) {
+        // Anastomose · Hyphenfusion — Funken-Blitz + wachsender Mycel-Faden, beide Knoten pulsieren synchron
+        const mycelLen = bx - ax - 2 * rNode;
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <path d="M ${ax + rNode},${ay} L ${bx - rNode},${by}"
+                stroke="${c}" stroke-width="2.6" fill="none"
+                stroke-dasharray="${mycelLen}" stroke-dashoffset="${mycelLen}">
+            <animate attributeName="stroke-dashoffset" from="${mycelLen}" to="0" dur="1.6s" repeatCount="indefinite"/>
+          </path>
+          ${sparkBolt(ax + rNode + 6, ay - 4, bx - rNode - 6, by + 4, c, 2.0)}
+          ${nodePulse(ax, ay, rNode, rNode + 24, c, 1.2, 0)}
+          ${nodePulse(bx, by, rNode, rNode + 24, c, 1.2, 0)}
+          <text x="400" y="${ay + 30}" text-anchor="middle" fill="${c}" font-size="11" font-family="Space Mono">cos(dvA, dvB) ≥ 0.80</text>
+        `;
+      } else {
+        // Phase 4 BUG-FIX: Antwort fließt direkt zurück — Punkt von B nach A, Knoten A pulst beim Eintreffen
+        const mycelLen = bx - ax - 2 * rNode;
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <line x1="${ax + rNode}" y1="${ay}" x2="${bx - rNode}" y2="${by}"
+                stroke="${c}" stroke-width="1.6" stroke-dasharray="5 4" opacity="0.55"/>
+          ${dropletWithTrail(bx - rNode - 4, by, ax + rNode + 4, ay, c, 2.4, 5.5, 0)}
+          <!-- Knoten A pulst beim Eintreffen (delay ≈ Tropfen-Ankunft) -->
+          ${nodePulse(ax, ay, rNode, rNode + 36, c, 1.4, 2.2)}
+          ${nodePulse(ax, ay, rNode, rNode + 22, c, 0.9, 2.3)}
+          <text x="400" y="${ay + 30}" text-anchor="middle" fill="${c}" font-size="11" font-family="Space Mono">Mixar → Heim · plus Hops-Sporen</text>
+        `;
+      }
+    } else {
+      // ============= LAYER 2: Knoten-Leben =============
+      if (idx === 0) {
+        // Knoten entsteht — A materialisiert sich aus dem Nichts, Identity-Ring rotiert, Vektor-Punkte orbitieren
+        const orbR = rNode + 22;
+        let dots = '';
+        for (let k = 0; k < 6; k++) {
+          const ang = (k / 6) * Math.PI * 2;
+          const dx = ax + Math.cos(ang) * orbR;
+          const dy = ay + Math.sin(ang) * orbR;
+          dots += `<circle cx="${dx}" cy="${dy}" r="2.2" fill="${c}">
+            <animate attributeName="opacity" values="0;0.95;0.95;0.2" keyTimes="0;0.4;0.85;1" dur="3s" repeatCount="indefinite"/>
+          </circle>`;
+        }
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2">
+            <animate attributeName="opacity" values="0;1;1" keyTimes="0;0.3;1" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="${ax}" cy="${ay}" r="${orbR}" fill="none" stroke="${c}" stroke-opacity="0.5" stroke-dasharray="2 5">
+            <animateTransform attributeName="transform" type="rotate" from="0 ${ax} ${ay}" to="360 ${ax} ${ay}" dur="5s" repeatCount="indefinite"/>
+          </circle>
+          ${dots}
+          <text x="${ax}" y="${ay - rNode - 18}" text-anchor="middle" fill="${c}" font-size="11" font-family="Space Mono">ed25519 · domainVector</text>
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-soft)" stroke="${c}" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.5"/>
+          <text x="${bx}" y="${by + 5}" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="Space Mono">(noch unbekannt)</text>
+        `;
+      } else if (idx === 1) {
+        // Andocken — Funken-Blitz Handshake, beide Knoten leuchten auf, Match-Score-Text
+        const mycelLen = bx - ax - 2 * rNode;
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          ${sparkBolt(ax + rNode + 6, ay, bx - rNode - 6, by, c, 1.8)}
+          ${sparkBolt(ax + rNode + 6, ay - 12, bx - rNode - 6, by + 12, c, 2.2)}
+          ${nodePulse(ax, ay, rNode, rNode + 20, c, 1.0, 0)}
+          ${nodePulse(bx, by, rNode, rNode + 20, c, 1.0, 0.3)}
+          <path d="M ${ax + rNode},${ay} L ${bx - rNode},${by}"
+                stroke="${c}" stroke-width="2" fill="none" opacity="0.6"
+                stroke-dasharray="${mycelLen}" stroke-dashoffset="${mycelLen}">
+            <animate attributeName="stroke-dashoffset" from="${mycelLen}" to="0" dur="1.8s" repeatCount="indefinite"/>
+          </path>
+          <text x="400" y="${ay + 30}" text-anchor="middle" fill="${c}" font-size="11" font-family="Space Mono">handshake · signiert · Match ≥ 0.80</text>
+        `;
+      } else if (idx === 2) {
+        // Austauschen — beidseitige Tropfen-mit-Schweif (Pull-Antwort), Anker-Stapel füllt Inbox bei A
+        let inbox = '';
+        for (let i = 0; i < 5; i++) {
+          inbox += `<rect x="${ax - 38 + i * 14}" y="${ay + rNode + 22}" width="10" height="4" fill="${c}" opacity="0.0">
+            <animate attributeName="opacity" values="0;0.85;0.85" keyTimes="0;${0.45 + i * 0.08};1" dur="3.2s" repeatCount="indefinite"/>
+          </rect>`;
+        }
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <line x1="${ax + rNode}" y1="${ay}" x2="${bx - rNode}" y2="${by}"
+                stroke="${c}" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+          <!-- Request A → B -->
+          ${dropletWithTrail(ax + rNode + 4, ay - 18, bx - rNode - 4, by - 18, '#F59E0B', 2.4, 4, 0)}
+          <!-- Antwort mit Ankern B → A (5 Tropfen versetzt) -->
+          ${dropletWithTrail(bx - rNode - 4, by + 4, ax + rNode + 4, ay + 4, c, 2.4, 4.5, 1.2)}
+          ${inbox}
+          <text x="${ax}" y="${ay + rNode + 18}" text-anchor="middle" fill="${c}" font-size="10" font-family="Space Mono">inbox · ≤ ${5} anchors</text>
+          <text x="400" y="${ay - 20}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="Space Mono">pull · opt-in beidseits</text>
+        `;
+      } else if (idx === 3) {
+        // Empfehlen — kleines drittes Knoten-Symbol (C) oben mitte, dünne empfohlene Faden A → C, B → C
+        const cx = 400, cy = 80, rC = 22;
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <line x1="${ax + rNode}" y1="${ay}" x2="${bx - rNode}" y2="${by}"
+                stroke="${c}" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+          <!-- Knoten C taucht als Empfehlung auf -->
+          <circle cx="${cx}" cy="${cy}" r="${rC}" fill="url(#grad-soft)" stroke="${c}" stroke-width="1.6" stroke-dasharray="3 3">
+            <animate attributeName="opacity" values="0;0.85;0.85" keyTimes="0;0.5;1" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <text x="${cx}" y="${cy + 4}" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10" font-family="Space Mono">C ?</text>
+          <text x="${cx}" y="${cy - rC - 8}" text-anchor="middle" fill="${c}" font-size="10" font-family="Space Mono">recommendedPeers</text>
+          <!-- Empfehlung als kleiner Tropfen im Handshake-Rückkanal B → A, dann Lead A → C entsteht -->
+          ${dropletWithTrail(bx - rNode - 4, by, ax + rNode + 4, ay, c, 2.4, 4, 0)}
+          <path d="M ${ax + rNode - 4},${ay - 20} Q ${(ax + cx) / 2},${(ay + cy) / 2 - 30} ${cx - rC + 4},${cy + 6}"
+                stroke="${c}" stroke-width="1.4" fill="none" stroke-dasharray="3 5" opacity="0">
+            <animate attributeName="opacity" values="0;0;0.85;0.85" keyTimes="0;0.55;0.75;1" dur="3s" repeatCount="indefinite"/>
+          </path>
+        `;
+      } else {
+        // Vergessen — Knoten B verblasst, TTL-Sanduhr blinkt, Vermächtnis-Marker bleibt
+        body = `
+          <circle cx="${ax}" cy="${ay}" r="${rNode}" fill="url(#grad-l)" stroke="${c}" stroke-width="2"/>
+          <circle cx="${bx}" cy="${by}" r="${rNode}" fill="url(#grad-soft)" stroke="${c}" stroke-width="1.6" stroke-dasharray="3 4">
+            <animate attributeName="opacity" values="1;0.55;0.18;0.18" keyTimes="0;0.5;0.85;1" dur="3.4s" repeatCount="indefinite"/>
+          </circle>
+          <line x1="${ax + rNode}" y1="${ay}" x2="${bx - rNode}" y2="${by}"
+                stroke="${c}" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5">
+            <animate attributeName="opacity" values="0.5;0.5;0.1;0.1" keyTimes="0;0.5;0.85;1" dur="3.4s" repeatCount="indefinite"/>
+          </line>
+          <!-- Sanduhr-Marker oben über B -->
+          <g transform="translate(${bx - 8}, ${by - rNode - 30})">
+            <path d="M 0,0 L 16,0 L 8,8 L 16,16 L 0,16 L 8,8 Z" fill="none" stroke="${c}" stroke-width="1.4">
+              <animate attributeName="opacity" values="0.4;1;0.4" dur="1.8s" repeatCount="indefinite"/>
+            </path>
+          </g>
+          <text x="${bx}" y="${by - rNode - 38}" text-anchor="middle" fill="${c}" font-size="10" font-family="Space Mono">TTL · 30 d</text>
+          <!-- Vermächtnis-Tropfen B → A vor dem Verlöschen -->
+          ${dropletWithTrail(bx - rNode - 4, by + 8, ax + rNode + 4, ay + 8, '#F43F5E', 2.6, 4, 0.4)}
+          <text x="${ax}" y="${ay + rNode + 28}" text-anchor="middle" fill="#F43F5E" font-size="10" font-family="Space Mono">legacy · signiert</text>
+        `;
+      }
+    }
+
+    svg.innerHTML = defs + body + labelA + labelB + phaseText;
   }
 
   // Keyboard für Tour

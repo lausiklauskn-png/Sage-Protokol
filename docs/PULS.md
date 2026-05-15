@@ -289,6 +289,256 @@ Kategorien jetzt mit.
 
 ## Sitzungs-Einträge
 
+### 2026-05-15 · Pflege-Sitzung · Sage-Page Lebenszyklus mehrschichtig (Phase-4-Fix + Schicht „Knoten-Leben" + Klick-Lernpfad + reichere Animationen)
+
+**Sitzungs-Rolle:** Pflege-Sitzung Sage-Page, headless, EINE Phase.
+Datei-Scope: ausschließlich `index.html` (Detail-Tour `#screen-cycle`).
+**Keine** Änderung an `src/modules/*`, `tests/manual_check.html`,
+`docs/INTERFACES.md`, `status.json`, anderen Komponenten-Karten, Pie.
+
+**Anlass:** Klaus' Screenshots vom 2026-05-15 ~21:11 (Galaxy Tab S6 +
+DeX) zeigen in der Detail-Tour „Phase 4 · Antwort fließt direkt
+zurück" einen Punkt, der vom linken (Knoten A) zum rechten (Knoten B)
+Knoten wandert — exakt umgekehrt zum Text. Klaus' zweite Beobachtung:
+vier Phasen reichen für einen Andock-Interessenten nicht, um die
+Module 02-08 + 14 als Wanderung zu erleben; die heutigen vier Phasen
+laufen außerdem nur im 6-Sekunden-Auto-Loop ab, ohne Klick-Einstieg.
+
+**Befund Phase-4-Bug:** Die alte `drawTourSvg(idx)` (Z. 3312–3336 vor
+dieser Sitzung) hat **für alle vier Phasen denselben SVG-Inhalt**
+gerendert, lediglich mit wechselnder Farbe — und der einzige
+`<animateMotion>`-Pfad lautete unverändert `M 260,200 L 540,200`
+(A → B, links → rechts). Phase 4 hatte also nicht nur den falschen
+Vektor, sondern jede Phase sah gleich aus. Diese Pflege-Sitzung
+schaltet das auf phasenspezifische SVG-Inhalte um — Phase 4 explizit
+mit `M 540,200 L 260,200` plus Knoten-A-Puls beim Eintreffen.
+
+**Getan:**
+
+- **`index.html` § Phase-4-Bug-Fix** in `drawTourSvg(layer, idx)`:
+  Layer 1, idx 3 nutzt jetzt `dropletWithTrail(bx-rNode-4, by,
+  ax+rNode+4, ay, ...)` (Mixar → Heim, B → A) plus zwei verschachtelte
+  `nodePulse`-Aufrufe an Knoten A mit `beginSec=2.2`/`2.3` — die Pulse
+  zünden, wenn der Tropfen ankommt.
+- **`index.html` § Schicht-2-Datenstruktur** — alter `const TOUR = [...]`
+  durch `const LAYERS = { layer1: {label,phases}, layer2:
+  {label,phases} }` ersetzt. Schicht 1 erbt die vier bestehenden Phasen
+  unverändert (Bio/Mech/Code/Module-Chips). Schicht 2 hat fünf
+  Phasen mit jeweils Bio/Mech/Code/Module-Chips: (1) Knoten entsteht
+  (02/03/01) — Ed25519 + domainVector + Storage; (2) Andocken (05/04/02)
+  — Anastomose-Handshake mit Cosine ≥ 0.80; (3) Austauschen (06/08) —
+  Heterokaryose-Pull, Inbox füllt sich; (4) Empfehlen (14/05) —
+  Diffusion-Backlog Pfad 2 als optionales Handshake-Feld; (5)
+  Vergessen (07/01) — TTL-Sweep oder Self-Apoptose mit Vermächtnis.
+- **`index.html` § Tab-Umschalter** in `#screen-cycle` zwischen
+  `<h2>` und `tour-stage`: zwei `<button class="tour-tab">`
+  („Anfrage-Reise" / „Knoten-Leben") mit `role="tab"` +
+  `aria-selected`; `setTourLayer(layer)` setzt `currentLayer`,
+  `tourIdx = 0`, leert `clickedPerLayer[layer]` (Reset bei Schicht-
+  Wechsel, wie Bau-Entscheidung 3 im Briefing), stoppt Gesamt-Sequenz,
+  rendert.
+- **`index.html` § Klick-Lernpfad** — `#tour-phases` (zwischen
+  `tour-controls` und `tour-info`) wird pro Layer dynamisch gefüllt:
+  N Phase-Pills (4 bzw. 5), Klick auf eine Pill stoppt Auto-Loop,
+  unchecked die Auto-Checkbox, markiert die Pill als `visited`,
+  rendert nur diese Phase. Wenn alle N Pills einer Schicht einmal
+  angeklickt sind, startet `playFullSequence()` — Gesamt-Sequenz mit
+  3200 ms pro Phase (gleicher Takt wie Bento-Lebenszyklus aus
+  PR #38). Nach Sequenz-Ende: Klick-Set leert sich, Lernpfad kann
+  erneut gegangen werden. Hint-Zeile `#tour-learnpath-hint` zeigt
+  „Lernpfad: jede Phase einzeln anklicken — am Ende läuft die
+  Gesamt-Sequenz von alleine." / „Noch N Phasen bis zur Gesamt-
+  Sequenz." / „Gesamt-Sequenz läuft …".
+- **`index.html` § In-Memory-State** (Bau-Entscheidung 2 im Briefing):
+  `currentLayer`, `tourIdx`, `clickedPerLayer = { layer1: new Set(),
+  layer2: new Set() }`, `learnSequenceTimer`. Kein `sessionStorage`,
+  kein Cookie, kein localStorage — bei Page-Reload startet der
+  Lernpfad bei null.
+- **`index.html` § Reichere Animations-Primitive** als
+  wiederverwendbare JS-Helper (Bau-Entscheidung 4/5):
+  - `dropletWithTrail(fromX, fromY, toX, toY, color, durSec, r,
+    beginSec)` → SVG-Markup-String mit `<path>` (Schweif via
+    `stroke-dasharray`/`stroke-dashoffset`-Animation) + `<circle>`
+    (Tropfen via `<animateMotion>`).
+  - `sparkBolt(ax, ay, bx, by, color, periodSec)` → zwei kurze
+    `<line>`-Strecken mit gestaffelter `opacity`-Animation (zwei
+    Aufzuckungen pro Periode — bewusst billig, keine Bezier, kein
+    WebGL).
+  - `nodePulse(cx, cy, fromR, toR, color, durSec, beginSec)` →
+    expandierender Ring mit Opazitäts-Fade (für Eintreffens-Pulse).
+- **`index.html` § pro-(Layer, Phase)-SVG-Inhalte** in
+  `drawTourSvg(layer, idx)`:
+  - Layer 1 Phase 1: Sonar-Puls an A, drei Sporen-Tropfen in
+    verschiedene Richtungen, Knoten B als gestrichelter Schemen.
+  - Layer 1 Phase 2: orbitierender Vektor-Ring um A mit sechs
+    pulsierenden Vektor-Punkten, „vec[384]"-Beschriftung.
+  - Layer 1 Phase 3: wachsender Mycel-Faden A ↔ B per `stroke-
+    dashoffset`, Funken-Blitz dazwischen, synchrone Pulse beider
+    Knoten, „cos(dvA, dvB) ≥ 0.80"-Beschriftung.
+  - Layer 1 Phase 4 (BUG-FIX): Tropfen-mit-Schweif B → A,
+    verzögerte Knoten-A-Pulse beim Eintreffen, „Mixar → Heim · plus
+    Hops-Sporen"-Beschriftung.
+  - Layer 2 Phase 1: A materialisiert sich (Opazitäts-Fade 0→1),
+    Identity-Ring rotiert, sechs Vektor-Punkte orbitieren,
+    „ed25519 · domainVector"-Beschriftung, B steht stumm danebem.
+  - Layer 2 Phase 2: Funken-Blitz Handshake (zweifach versetzt) +
+    wachsender Mycel-Faden, beide Knoten pulsieren, „handshake ·
+    signiert · Match ≥ 0.80"-Beschriftung.
+  - Layer 2 Phase 3: Request-Tropfen A → B (gold) + Antwort-Tropfen
+    B → A (teal) versetzt, kleiner Inbox-Stapel aus fünf
+    rechteckigen Anker-Markern füllt sich, „pull · opt-in
+    beidseits"-Beschriftung.
+  - Layer 2 Phase 4: dritter, kleiner Knoten C oben mitte taucht
+    auf, gepunktete Lead-Linie A → C entsteht zeitversetzt zur
+    Empfehlung-Tropfen B → A; „recommendedPeers"-Beschriftung.
+  - Layer 2 Phase 5: Knoten B fadet auf 18 % Opazität ab, Sanduhr-
+    Symbol oben blinkt, Mycel-Faden verblasst, rosa Vermächtnis-
+    Tropfen B → A, „TTL · 30 d" + „legacy · signiert".
+- **`index.html` § Auto-Knopf bleibt parallel** (Briefing-Vorgabe):
+  Der bestehende `tour-auto`-Checkbox-Loop ruft weiterhin alle 6 s
+  `tourNext()` auf — der Klick-Lernpfad ist additiv, nicht ersetzend.
+  Klick auf eine Phase-Pill schaltet Auto aus; Setzen der Checkbox
+  durch den Nutzer reaktiviert den Loop beim nächsten `startTour()`-
+  Aufruf (also beim erneuten Eintritt in den Cycle-Screen).
+- **CSS-Block** für `.tour-tabs` / `.tour-tab` / `.tour-phases` /
+  `.tour-phase-pill` / `.tour-learnpath-hint` neu angelegt, analog
+  zum vorhandenen `.phase-strip`/`.phase-pill`-Stil; `.visited`-
+  Markierung in dezentem Indigo, `.active` in Gold (vor allem damit
+  die aktuell sichtbare Phase eindeutig ist, auch wenn schon
+  visited).
+- **`renderTour()`-Robustheit:** STATE-Modules-Lookup mit
+  Null-Guard (`STATE.status && STATE.status.modules`), damit ein
+  früher Cycle-Screen-Aufruf vor `loadStatus()`-Abschluss nicht
+  crasht (das war vorher implizit; jetzt explizit).
+
+**Befund vor dem Fix (Beleg):** Die heutige `drawTourSvg` setzte für
+alle Phasen `<animateMotion ... path="M 260,200 L 540,200"/>` (also
+A→B). Klaus' Screenshot Phase 4 zeigt den teal-Punkt links neben der
+Karten-Mitte (~x=890px bei viewBox-Skalierung ≈ x=260 SVG-Units),
+wandernd zur rechten Karten-Hälfte (Knoten B). Eindeutig falsche
+Richtung. Der Fix konzentriert sich auf den `<animateMotion>`-Pfad
+selbst, nicht auf den darunterliegenden statischen `<line>`.
+
+**Was bewusst nicht geändert wurde:**
+
+- **Karte 3 (Bento-Lebenszyklus-Loop) unverändert.** Die Bento-
+  Karte ist eine Übersicht über den großen Mycel-Kontext (sieben
+  Knoten + Hub + sieben Mycel-Fäden), die hat Klaus in PR #38 schon
+  als korrekt B → A bestätigt (Phase 3 dort: `M 446,72 Q 270,30 118,82`
+  — Mixar → Heim). Der Bug betraf nur die Detail-Tour mit „Knoten A"
+  / „Knoten B"-Skizze.
+- **Karte 11 (Wanderung) unverändert.** PR #38 hat Schicht-1-Phasen
+  + Heterokaryose + Apoptose + Abwehr in einer einzigen 4-Phasen-
+  Sequenz angelegt. Pflege-Aufwand zur Verdopplung dort wäre
+  größer als der Mehrwert; die Detail-Tour ist der Lehrpfad-Ort.
+- **Keine `src/modules/*`-Änderung** (alle JS-Module Code-Stub
+  unverändert, weil Sage-Page nicht protokoll-aktiv).
+- **Keine `status.json`-, `INTERFACES.md`- oder Karten-Änderung**
+  (Sage-Page-Karte gibt es nicht als eigenes Dokument — siehe Offene
+  Fragen).
+- **Kein Headless-Test der Animation.** SMIL-Animationen lassen sich
+  nicht in `node --check` prüfen; Klaus' Browser-Sichttest ist die
+  Validierung.
+
+**Bau-Pflicht-Entscheidungen (im Briefing genannt):**
+
+1. **Schicht-Umschalter:** Tab (zwei `<button class="tour-tab">`
+   nebeneinander) — wie im Briefing empfohlen, passt zum
+   Observatorium-Stil. Phase-Pills passen sich pro Tab an.
+2. **Klick-Tracking-Persistenz:** In-Memory — `clickedPerLayer`-Sets
+   leben nur, solange der `screen-cycle`-Block geöffnet ist. Reload
+   = Reset. Kein Datenschutz-Stein.
+3. **Reset bei Schicht-Wechsel:** ja — `setTourLayer(layer)` ruft
+   `clickedPerLayer[layer].clear()`. Sonst springt die Gesamt-Sequenz
+   beim Tab-Wechsel unerwartet los, weil das andere Set schon voll
+   sein könnte.
+4. **Tropfen-mit-Schweif:** `<path>` mit `stroke-dasharray` +
+   animiertem `stroke-dashoffset` (Schweif-Länge ≈ 35 % der Strecke,
+   maximal 70 SVG-Units) PLUS `<circle>` mit `<animateMotion>` für
+   den Tropfen-Punkt. Synchron über gleiche `dur` und `begin`. Glow-
+   Filter `tour-glow` (3px Gauss-Blur) macht den Tropfen weicher.
+   Performance unkritisch — pro Phase 1 bis 3 Tropfen.
+5. **Funken-Blitz beim Handshake:** zwei `<line>`-Elemente mit
+   `<animate attributeName="opacity" values="0;1;0.15;0.9;0;0"
+   keyTimes="0;0.04;0.10;0.16;0.22;1" dur="2.0s"
+   repeatCount="indefinite"/>` — Doppel-Zucken im 2-Sekunden-Takt.
+   Bewusst billig (keine Bezier, kein WebGL).
+6. **Bug-Fix Phase 4 zuerst:** Phase 4 in derselben
+   `drawTourSvg`-Funktion erledigt (Layer 1 idx 3) zusammen mit der
+   Schicht-2-Erweiterung — kleine und große Sache in einem
+   konsistenten Refactor, weil beide denselben Code-Pfad
+   modifizieren. Im PR-Diff ist die Phase-4-Vektor-Änderung im
+   gleichen Block sichtbar wie die Schicht-2-Datenstruktur.
+7. **Karten-Bauzustand-Zeile:** Keine eigene Sage-Page-Karte
+   vorhanden in `docs/components/` (die 14 Komponenten-Karten sind
+   alle Modul-Karten oder Schutz-Backlog-Stubs). Eintrag als offene
+   Frage unten — eigentlich verdient die Sage-Page eine eigene
+   Karte, sobald sie über bloße Anzeige hinauswächst.
+
+**Validierung:**
+
+- **HTML-Tag-Bilanz:** `section 22/22 · main 5/5 · svg 14/14 ·
+  g 18/18 · script 1/1 · style 1/1 · div 178/178 · button 29/29 ·
+  header 2/2` — alle balanciert.
+- **`node --check` auf den extrahierten Inline-`<script>`-Block**
+  (`/tmp/inline_0.js`, 1470 Zeilen): grün, keine Syntax-Fehler.
+- **Manuell durchgesteppt:**
+  - Wechsel zwischen den beiden Tabs: `setTourLayer` setzt Tab-
+    Klassen, leert Set, ruft `renderTour`. Erste Phase der neuen
+    Schicht wird gerendert.
+  - Klick auf eine Phase-Pill bei Auto=on: Auto-Checkbox wird
+    abgehakt, Timer gestoppt, Pill bekommt `.visited`-Klasse,
+    Phase wird einzeln gerendert.
+  - Klick auf alle vier (Schicht 1) bzw. fünf (Schicht 2) Pills:
+    Gesamt-Sequenz startet, läuft 4 × 3200 ms bzw. 5 × 3200 ms,
+    leert dann das Set, Hint kehrt zum „Lernpfad: jede Phase
+    einzeln anklicken …"-Text zurück.
+  - Klick auf eine Pill WÄHREND der Gesamt-Sequenz: Sequenz wird
+    abgebrochen, Set geleert, dann der Klick als erster neuer
+    Klick gezählt — kein Re-Trigger (`wasInSequence`-Guard).
+- **Klaus' Browser-Sichttest steht aus** (nicht headless prüfbar):
+  Animations-Korrektheit (Tropfen-Richtung, Schweif-Sichtbarkeit,
+  Funken-Blitz-Timing), Schicht-Umschalter, Klick-Lernpfad bis zur
+  Gesamt-Sequenz, Tropfen-mit-Schweif visuell, Funken-Blitz beim
+  Handshake.
+
+**Was offen blieb:**
+
+- **Klaus' Sichttest Sage-Page Lebenszyklus mehrschichtig** im
+  Tablet-Browser ausstehend (Phase-4-Richtung, Schicht-Tabs, Klick-
+  Lernpfad, Gesamt-Sequenz, Tropfen-Schweif, Funken-Blitz).
+- **Eigene Sage-Page-Karte in `docs/components/`** — heute gibt es
+  keine; die Sage-Page sammelt Modul-Verweise, hat aber keinen
+  eigenen Bauzustand-Block. Wenn die Page weiter wächst (Diffusion-
+  Sichtbarmachung in PR #33, Bento-Wrap in PR #37, Lebenszyklus-
+  Phasen in PR #38, Schicht-2 + Lernpfad jetzt), wird das früher
+  oder später nötig — Pflege-Sitzung „Sage-Page-Karte anlegen"
+  ist sinnvoll.
+
+**Nächster sinnvoller Schritt (mehrere gleichberechtigt; aus dem
+zweiten Brief der Pflege-Sitzung am 2026-05-15):**
+
+1. **Klaus' Sichttest Sage-Page** im Tablet-Browser (nicht headless)
+   — Phase-4-Richtung + Schicht-Tabs + Klick-Lernpfad bis zur
+   Gesamt-Sequenz + Tropfen-Schweif + Funken-Blitz.
+2. **Klaus' Sichttest Panel 08** im Browser (offen seit Bau 08,
+   2026-05-15) — sechs Outbox-/Opt-In-Test-Punkte durchklicken.
+   *Nicht headless.*
+3. **Bau-Sitzung Modul 09 zweite Iteration** mit Klaus am Live-
+   Andock-Versuch. *Nicht headless.* Wartet auf Pflege Karte 09.
+4. **Mini-Pflege Panel 07 Test 6** (`allEmpty`-Check um
+   `sbkim_hetero_inbox` erweitern, `sbkim_doku_meta` +
+   `sbkim_hetero_outbox` als bewusst-nicht-leer dokumentieren).
+   *Headless möglich.* Niedrige Dringlichkeit.
+5. **Pflege-Sitzung „PULS-Archivierung"** — überfällig (PULS aktuell
+   bei ~4500 Zeilen, Soll 400). *Headless möglich.* Niedrige
+   Dringlichkeit.
+6. **Pflege-Sitzung Karte 09 „App-SW-Koexistenz + Tablet-Sichtkontrolle"**
+   — Voraussetzung für Bau-Sitzung 09 zweite Iteration. *Headless
+   möglich.*
+
+---
+
 ### 2026-05-15 · Bau-Sitzung 08 · Modul 08 UI-Demo (Endknoten-Pflege-UI für sbkim_hetero_outbox + heterokaryosisOptIn)
 
 **Sitzungs-Rolle:** Bau-Sitzung 08, headless, EINE Phase. Letzte
