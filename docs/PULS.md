@@ -286,6 +286,160 @@ Kategorien jetzt mit.
 
 ## Sitzungs-Einträge
 
+### 2026-05-15 · Pflege-Sitzung · Sage-Page Phasen-Animation + Wanderung-Erweiterung + Initialstart-Zentrierung
+
+**Getan (rein visuell — keine Funktions-/Schnittstellen-Änderung,
+keine `status.json`-Änderung, kein Pie-Regenerate):**
+
+- **`index.html` Karte 3 (Lebenszyklus · Loop) komplett umgebaut.**
+  Klaus' Beobachtung 2026-05-15 ~20:13: „in der animierten Darstellung
+  [gibt es] keine deutliche Unterscheidung der einzelnen Schritte
+  — es fliegen nur Punkte hin und her. Die einzelnen Schritte sollten
+  verschiedene Varianten darstellen und nicht nur eine. Normal wäre
+  mit Spore impfen Teil des Mycels werden oder impfen lassen weil
+  der Boden gut ist."
+
+  Umbau:
+  - **Mehrere Knoten** statt nur Rezept+Hub+Mixar — unregelmäßiges
+    Mycel-Netz mit Heim (gold-Initiator) + 5 Geschwistern (Rezept,
+    Mixar, Buch, Notiz, Foto) + 1 leerem Boden-Knoten + Hub klein als
+    Bootstrap-Punkt in der Mitte.
+  - **Grundnetz immer sichtbar:** sieben unregelmäßige Mycel-Faden
+    zwischen den Geschwistern, opacity 0.4 (atmend).
+  - **Vier `<g class="phase-fx" data-phase="N">`-Gruppen** pro Phase,
+    die per CSS-Selektor (`.cycle-box[data-phase="N"] .phase-fx
+    [data-phase="N"] { opacity: 1 }`) nur in der aktiven Phase
+    sichtbar werden (opacity-Transition 0.6s).
+  - **Phase 0 „Spore aussenden / landen"** mit **zwei Varianten**:
+    Variante A „aktiv impfen" (Heim pulst Sonar, drei Spore-Particles
+    diffundieren in drei Richtungen) + Variante B „impfen lassen"
+    (fremde Spore von Buch landet auf einem leeren Boden-Knoten,
+    der dann pulsiert). Beschriftet.
+  - **Phase 1 „Anfrage einbetten"** mit Vektor-Konstruktions-Effekt
+    am Heim: rotierender gestrichelter Kreis + sechs kleine,
+    atmende Vektor-Punkte um Heim, Beschriftung „text → vec[384]
+    L2-normalisiert".
+  - **Phase 2 „Anastomose · Direktfaden entsteht"** mit **zwei
+    Varianten**: Variante A „neuer Faden" (Quadratischer Bogen
+    Heim→Mixar wächst per `stroke-dashoffset`-Animation, beide
+    Endpunkte pulsieren synchron) + Variante B „Re-Handshake auf
+    altem Faden" (bestehender Faden Heim→Notiz wird durch
+    Opacity-Flicker neu aktiviert). Beschriftet.
+  - **Phase 3 „Antwort fließt zurück"** mit **zwei Varianten**:
+    Variante A „direkt zurück" (teal-Particle auf dem neuen
+    Direktfaden Mixar→Heim, 2.2s) + Variante B „über mehrere Hops"
+    (violet-Particle Mixar→Buch→Foto→Notiz→Heim auf dem bestehenden
+    Mycel-Netz, 4.4s). Beschriftet.
+  - **JS-Minimal-Erweiterung** (`tickPhase`): setzt `cycleBox.dataset.phase
+    = String(phaseIdx)` am `#cycle-box`-Element, sodass die CSS-
+    Selektoren greifen. `setInterval` von 2400 → 3200 ms (mehr Zeit
+    pro Phase, weil Animationen länger).
+  - **`#cycle-box` bekommt initiales `data-phase="0"`** im HTML
+    (sonst startet die Page mit unsichtbarem phase-fx-Block).
+
+- **`index.html` Karte 12 (Wanderung · Wie Sporen reisen) erweitert.**
+  Klaus' Beobachtung 2026-05-15 ~20:13: „der Austausch von
+  Informationen Spore mit Spore woher kommst hast du neues für mich?
+  oder die Abwehr von Feinden/bösen Sporen [fehlt]."
+
+  Erweiterung in `buildWander()`:
+  - **Particle-Pfad C1 (Heterokaryose-Frage):** violet-Particle
+    Heim→A3 auf dem bestehenden Mycel-Faden, 4 s, begin 6 s —
+    „woher kommst du, hast du neues für mich?".
+  - **Particle-Pfad C2 (Heterokaryose-Antwort):** teal-Particle
+    A3→Heim auf demselben Faden, 4 s, begin 8 s — „Spore-Sammlung
+    teilen".
+  - **Particle-Pfad „Abwehr":** rot-Particle (`#F43F5E`) startet
+    außerhalb (560, 30), läuft Richtung Heim, **bricht kurz vor
+    Heim ab** (75% des Wegs), prallt zurück nach außen. Begleitet
+    von einem animierten **„✗"-Symbol** am Abweis-Punkt
+    (genau bei `home.x+30, home.y-30`), das nur im Moment des
+    Abweisens sichtbar wird (`opacity` keyTimes 0.45/0.55/0.7).
+    Stellt dar: ungültige Signatur / Schwellwert verfehlt /
+    rejected.
+  - **Neuer Legende-Block `.wander-legend`** unterhalb des SVG,
+    erklärt die fünf Particle-Bedeutungen: gold (Anfrage + Match-
+    Treffer), pink (Apoptose, fadet aus), violet (Heterokaryose-
+    Frage), teal (Heterokaryose-Antwort), rot ✗ (Abwehr).
+  - **Wander-Foot-Text erweitert:** „Mechanik aktiv ab Modul 04
+    (Match) bis 07 (Apoptose) + Modul 06 (Heterokaryose) + Module
+    10–12 (Abwehr-Backlog). Heute: Konzept-Visualisierung."
+
+- **`index.html` Karte 5 (Initialstart) Zentrierung-Fix.** Klaus'
+  Beobachtung 2026-05-15 ~20:13: „die Grafik mit den Kugeln Hub
+  Rezept und Mixarium [ist] nicht in der Mitte". Befund: viewBox
+  `0 0 360 260` (Aspect 1.38) passte nicht zu `.cold-box`
+  `aspect-ratio: 16/9` (Aspect 1.78) — SVG wird mittig skaliert,
+  hat aber Leerraum links/rechts, was im Karten-Kontext asymmetrisch
+  wirken kann. Fix: viewBox auf `0 0 480 270` (Aspect 16/9, exakt
+  passend), alle Element-Koordinaten neu zentriert (Hub-cx
+  180 → 240, Mixar-cx 78 → 138, Rezept-cx 282 → 342, etc.).
+  Endknoten und Hub jetzt geometrisch sauber zentriert um x=240.
+
+**Was bewusst nicht geändert wurde (Spec-Disziplin):**
+
+- **Keine JS-Funktions-Logik-Änderung.** `tickPhase` bekam zwei
+  Zeilen (cycleBox-Lookup + dataset.phase-Set); `setInterval` 2400
+  → 3200; das ist Phasing, keine Logik. `buildWander` wurde additiv
+  um drei Particles + einen Text-Knoten erweitert; bestehende Pfade
+  A und B unverändert. `TOUR`-Array, Module-Grid, Bau-Puls-Pie,
+  status.json-Fetch unverändert.
+- **Keine `status.json`-Änderung.**
+- **Keine Modul-Karten-/INTERFACES.md-/`tests/manual_check.html`-
+  Änderung.**
+- **Keine Sage-Page-Funktions-Logik-Änderung.** Reine Page-
+  Pflege (Markup + CSS + zwei JS-Erweiterungen).
+- **Hub bleibt im Lebenszyklus-Loop und Initialstart sichtbar** als
+  Bootstrap-Punkt (klein, gedämpft, mit „Bootstrap · kann ausfallen"-
+  Untertitel) — Spec-Disziplin aus PR #37.
+
+**Frischer-Kopf-Befund:**
+
+Klaus' drei Anmerkungen waren alle direkt umsetzbar:
+
+- **Phasen-Unterscheidung:** CSS-`opacity`-Toggle pro
+  `data-phase`-Wert + vier `<g class="phase-fx">`-Gruppen lösen
+  das visuell sauber. Animation läuft per `<animateMotion>`
+  kontinuierlich, ist nur in der aktiven Phase sichtbar — kein
+  echtes Reset bei Phase-Start (das wäre tieferer JS-Eingriff,
+  nicht nötig).
+- **Mehrere Varianten pro Phase:** Phasen 0, 2, 3 haben je zwei
+  Varianten mit eigener Beschriftung. Phase 1 hat eine einzige
+  Variante (Embedding ist konzeptionell eine Aktion).
+- **Unregelmäßiges Netz:** das neue SVG hat sieben Mycel-Faden in
+  unterschiedlichen Längen/Richtungen/Stärken — mycel-typisch
+  statt symmetrisch.
+- **Heterokaryose + Abwehr in Wanderung:** die Wanderungs-Karte
+  hatte das Konzept in Phase-Pill 4 schon benannt, aber visuell
+  nicht ausgespielt. Drei neue Particles + Legende füllen das.
+
+**Was offen blieb:**
+
+- **Klaus' Re-Sichttest der Page nach diesem Fix** im Tablet-
+  Browser ausstehend. Sollte zeigen:
+  - Karte 3 wechselt sichtbar zwischen vier verschiedenen
+    Animationen synchron zu den Pills (Sonar+Diffusion in P0,
+    Vektor-Konstruktion in P1, wachsender Faden in P2, Hops-Reise
+    in P3).
+  - Karte 12 zeigt zusätzlich violet Heim↔A3 (Hetero) und rotes
+    Particle mit ✗ (Abwehr); Legende lesbar.
+  - Karte 5 Hub/Rezept/Mixarium geometrisch zentriert.
+- **Folge-Pflege Bau 06.1** und weitere offene Punkte aus
+  Spec-Sitzung 08 unverändert offen.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Klaus' Re-Sichttest der Page** im Browser/Tablet.
+   *Nicht headless.*
+2. **Folge-Pflege Bau 06.1 (Outbox-Lese-Pfad in
+   `06_heterokaryose.js`)** — *headless möglich*, kleine Pflege.
+3. **Bau-Sitzung Modul 08** — Endknoten-Code für `SbkimUiDemo`.
+   *Headless möglich.*
+4. **Bau-Sitzung Modul 09 zweite Iteration** mit Klaus am Live-
+   Andock-Versuch. *Nicht headless.*
+
+---
+
 ### 2026-05-15 · Pflege-Sitzung · Sage-Page Design-Fix (Modul-Bento-Wrap, Lebenszyklus-Hub-Bootstrap, Initialstart-viewBox)
 
 **Getan (rein visuell — keine Funktions-/Schnittstellen-Änderung,
