@@ -34,14 +34,14 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 0.55 → 0.80 geführt haben:
 
 - 🟦 **[01 Storage](components/01_storage.md)** — geprüft 2026-05-14 (Klaus, im Browser); init/round-trip/Unknown-Store sauber, sechs Stores in DevTools sichtbar
-- 🟦 **[02 Spore](components/02_spore.md)** — geprüft 2026-05-14 (Klaus, im Browser); Identität deterministisch, Spore sortiert, Sign+Verify valide, Manipulation erkannt
+- 🟦 **[02 Spore](components/02_spore.md)** — geprüft 2026-05-14 + 2026-05-16 (Klaus, im Browser); Identität deterministisch, Spore sortiert, Sign+Verify valide, Manipulation erkannt; **Bau 02.X Backup-Export Sichttest 2026-05-16 grün** — Knöpfe 6/7/7b alle drei Hauptpfade ohne Modul-Bug (Wrapper-Format `version:1` / `iterations:600000` / AES-GCM-256, `BackupOverwriteError`-Schutzpfad greift, force-Pfad funktioniert; siehe Karte 02 § Bauzustand-Zeile „Sichttest (Bau 02.X)"). Test-Panel-UX-Befund pendingBackup-Stash-Reset in Knopf 7 ist Folge-Mini-Pflege, kein Modul-Bug.
 - 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
 - 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert
+- 🟦 **[06 Heterokaryose](components/06_heterokaryose.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 06) + **Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15** (`sbkim_hetero_outbox` als Anker-Quelle nach Spec-Sitzung 08, fail-soft Fallback bleibt); **Sichttest 2026-05-16 rasch grob durchgeklickt** (Klaus, Chrome auf Galaxy Tab S6 + DeX): Panel 06 mit 14 Knöpfen — alle Selbstchecks grün, Hauptpfade ohne Modul-Bug; voller Test-1–9-Lauf inkl. Test 9 `HETERO_MAX_ANCHORS`-Begrenzung folgt bei Bedarf. Fünf-Funktionen-API, kanonischer Sign/Verify-Pfad als **vierter Pfad bewusst dupliziert** (Single-File-PWA-Stil), neuer Store `sbkim_hetero_inbox` (DB-Version 1→2 additiv, Bau 06), Service-Worker dritter fetch-Listener-Pfad `/sbkim/heterokaryosis`; Anker-Quelle nach Pflege Bau 06.1 = `sbkim_hetero_outbox` fail-soft mit Spore-Single-Anker-Fallback. **Test 6 in Panel 07 muss in einem Folge-Sichttest neu durchgespielt werden** (Cleanup löscht jetzt sechs Stores statt fünf).
 
 Code-Stub frisch aus den Bau-Sitzungen 2026-05-14/15, **Sichttest ausstehend bzw. teilweise erledigt:**
 
 - 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6 von 7 Tests grün im ersten Lauf (Setup, Test 1 passendes Match score=0.888, Test 3 Versions-Mismatch, Test 4 Signatur-Manipulation, Test 5 Re-Handshake, Test 6 forgetSibling, Test 7 listSiblings); **Test 2 (Domain-Mismatch / Tarantino-Vektor) Test-Bug** — score=0.854 statt erwartetem <0.80 (Tarantino-Filme spielen oft in Bars → zu nah am Mixarium-Cocktail-Vektor); Modul-Logik korrekt, `PROVIDER_MIN_MATCH=0.80` greift wie spezifiziert. **Pflege-Sitzung 2026-05-15** baut Panel 05 Test 2 auf **Vektor-Trias** um (Steuerrecht und Bilanzierung / Eisenbahnsignalanlagen / Quantenfeldtheorie), Pass-Check „mindestens einer der drei rejected mit score < 0.80"; Tarantino-Vergleichswert wird parallel als reiner Cosinus protokolliert; Karte 05 § Manueller Test Punkt 2 zieht mit. Klaus' zweiter Sichttest-Lauf nach Pflege folgt; falls alle drei Trias-Kandidaten über 0.80 liegen, eigene Folge-Pflege-Sitzung „Embedding-Baseline"
-- 🟦 **[06 Heterokaryose](components/06_heterokaryose.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 06) + **Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15** (`sbkim_hetero_outbox` als Anker-Quelle nach Spec-Sitzung 08, fail-soft Fallback bleibt). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser). Fünf-Funktionen-API, kanonischer Sign/Verify-Pfad als **vierter Pfad bewusst dupliziert** (Single-File-PWA-Stil), neuer Store `sbkim_hetero_inbox` (DB-Version 1→2 additiv, Bau 06), Service-Worker dritter fetch-Listener-Pfad `/sbkim/heterokaryosis`, Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`), Karte 01/06/07 + INTERFACES.md §1 Modul 01/06/07 + §6 nachgezogen. **Anker-Quelle nach Pflege Bau 06.1: voller Outbox-Lese-Pfad** — Modul 06 liest `sbkim_hetero_outbox` (v=3-Store aus Spec-Sitzung 08, `DB_VERSION` 2 → 3 additive Migration in `01_storage.js`) fail-soft (try/catch um `SbkimStorage.all`; bei leerem/fehlenden Store / Wurf wie `UnknownStoreError` → Fallback), sortiert absteigend nach `addedAt`, mappt die ersten `HETERO_MAX_ANCHORS` (= 5) auf Anker-Form `{label, vector}`. Wenn die Outbox leer ist (oder eine ältere Klaus-PWA mit DB-Version 1/2 sie noch nicht hat), bleibt der Spore-Single-Anker-Fallback aus der Erst-Bau-Iteration bestehen (Label `"(domain)"`, Vektor = `senderSpore.domainVector`; `anchors:[]` als Degraded-Modus, wenn auch das fehlt). Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) jetzt **voll abgedeckt** (sechs Outbox-Einträge direkt via `SbkimStorage.put` — kein `SbkimUiDemo`-Aufruf, Bau 08 ist eigene Phase — → Response liefert genau fünf, neueste zuerst). `node --check src/modules/01_storage.js` + `node --check src/modules/06_heterokaryose.js` + alle 9 Inline-Scripts grün. `status.json` unverändert (Modul 06 bleibt `score:"stub"`, Pflege ist additiv). **Test 6 in Panel 07 muss in einem Folge-Sichttest neu durchgespielt werden** (Cleanup löscht jetzt sechs Stores statt fünf — die Anzahl der zu prüfenden leeren Stores ist um eins gestiegen).
 - 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 7 von 8 Tests grün im ersten Lauf (Setup + Tests 1/2/3/4/5/7 + Selbstcheck); **Test 6 (Self-Apoptose) deckte echten Modul-Bug auf**: nach Cleanup `getNodeId_wirft_NoIdentityError:false` trotz `stores_alle_leer:true` — Modul 02's In-Memory-`identityCache` wurde nicht durch externes `storage.clear` invalidiert (Modul 07 wusste nichts vom Modul-02-Cache). Folgeschaden: Tests 1/2/3/8 nach Test 6 mit „Keine Identität in sbkim_keys[main]". **Pflege-Sitzung 2026-05-15** ergänzt Modul 02 um öffentliche `resetIdentityCache() → void` (sync, idempotent, leert nur Closure-Cache, kein Storage-Eingriff) und Modul 07's Cleanup ruft sie als letzten Schritt nach den `storage.clear`-Aufrufen — heilige Tafeln (INTERFACES.md §1 Modul 02 + §1 Modul 07 + §6 + Karten 02 + 07) ziehen mit. Re-Sichttest 2026-05-15 bestätigte den Cache-Fix: `getNodeId_wirft_NoIdentityError:true`. Modul 07 Sichttest 8/8 grün. **Pflege Cleanup-Reihenfolge Bau 06 (2026-05-15)** erweitert `CLEANUP_ORDER` additiv um `sbkim_hetero_inbox` (Position 4 zwischen `sbkim_legacy_inbox` und `sbkim_spore`); Test 6 muss in einem Folge-Sichttest neu durchgespielt werden (jetzt 6 statt 5 Stores zu prüfen).
 - 🟦 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 5 von 6 Tests grün im ersten Lauf (Setup, Test 2 5-Klick-Simulation, Test 3 4-Klick + Timeout, Test 5 TTL-Sweep, Selbstcheck-Hinweis); **Test 4 Test-Bug** mit Mini-Werten 81/100 (freeBytes=19 Bytes ist trivial < 50 MiB → `warningLevel:"both"` statt erwartetem `"ratio"`) → **Pflege-Sitzung 2026-05-15** repariert mit GiB-Skalierung (`usage:8.1 GiB, quota:10 GiB` → freeBytes ≈ 1.9 GiB → `warningLevel:"ratio"` sauber); Modul-Vertrag und INTERFACES.md unangetastet
 
@@ -89,12 +89,12 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
 | 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Persistenz-Strategie verbinden 2026-05-16) | geprüft 2026-05-15 (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert; Pflege Persistenz-Strategie verbinden 2026-05-16 ungeprüft (headless gebaut — wartet auf Klaus' Browser-Lauf für Test 7 Drei-Setup-Probe) | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00. **Pflege Persistenz-Strategie verbinden 2026-05-16** (additiv, kein Refactoring): `getStatusSnapshot()` um Feld `storagePersisted: boolean \| null` erweitert (Spiegelung Modul-01-Getter fail-soft); Modal zeigt zusätzliche „Backup empfohlen"-Tipp-Zeile (`DOKU_BACKUP_TIP_TEXT` modul-lokal), wenn `storagePersisted === false` ODER `quota.warningLevel !== "none"`. Hinweis-only, kein Direkt-Aufruf von `SbkimSpore.exportBackup` aus Modul 00 (Aufrufer-Pflicht-Trennung). |
-| 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | IndexedDB-Wrapper |
-| 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15, Pflege Spec Backup-Export Stufe 2 2026-05-16) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Stamm/Gast-Durchreichung 2026-05-15, Bau 02.X Backup-Export 2026-05-16) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07); Bau 02.X Backup-Export Sichttest ungeprüft (headless gebaut — wartet auf Klaus' Browser-Lauf) | Ed25519-Identität, Singleton, base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. **`generateOwnSpore` Code-Allow-List nachgezogen** 2026-05-15 (Bau 02 Stamm/Gast): zwei Zeilen analog zu `domainKeywords` — ohne diese Pflege würden Stamm/Gast-Felder beim Andock still ignoriert. **Spec Backup-Export Stufe 2 2026-05-16** (Identitäts-Persistenz Stufe 2): zwei neue Funktionen `exportBackup(password) → Promise<SbkimBackupBlob>` + `importBackup(blob, password, options?)` (PBKDF2-SHA256 600 000 + AES-GCM-256, Klartext-Payload = Identität + Geschwister, defensiv per Default — `BackupOverwriteError`); drei §0-Konstanten verankert (`BACKUP_FORMAT_VERSION=1` / `BACKUP_KDF_ITERATIONS=600000` / `BACKUP_PASSWORD_MIN_LEN=8`); fünf neue Error-Klassen (`InvalidBackupPasswordError` / `BackupDecryptError` / `BackupVersionMismatchError` / `BackupSchemaError` / `BackupOverwriteError`). KEIN Spore-Feld dazu (Backup-Schicht separat, `PROTOCOL_VERSION` bleibt `"0.1"`). **Bau-Sitzung 02.X ausstehend**, KEIN Code in `src/modules/02_spore.js`. |
+| 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege PWA-Suffix + Pflege Storage-Persist 2026-05-16) | geprüft 2026-05-14 + 2026-05-16 (Klaus) — fünfter Knopf „Persist-Status zeigen" liefert `_meta.storagePersisted: true` (Chrome auto-bei-PWA) | IndexedDB-Wrapper |
+| 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15, Pflege Spec Backup-Export Stufe 2 2026-05-16) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Stamm/Gast-Durchreichung 2026-05-15, Bau 02.X Backup-Export 2026-05-16) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) + 2026-05-16 (Klaus, Bau 02.X Backup-Export Knöpfe 6/7/7b alle drei grün; Test-Panel-UX-Befund Knopf 7 pendingBackup-Stash-Reset offen als Mini-Pflege) | Ed25519-Identität, Singleton, base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. **`generateOwnSpore` Code-Allow-List nachgezogen** 2026-05-15 (Bau 02 Stamm/Gast): zwei Zeilen analog zu `domainKeywords` — ohne diese Pflege würden Stamm/Gast-Felder beim Andock still ignoriert. **Spec Backup-Export Stufe 2 2026-05-16** (Identitäts-Persistenz Stufe 2): zwei neue Funktionen `exportBackup(password) → Promise<SbkimBackupBlob>` + `importBackup(blob, password, options?)` (PBKDF2-SHA256 600 000 + AES-GCM-256, Klartext-Payload = Identität + Geschwister, defensiv per Default — `BackupOverwriteError`); drei §0-Konstanten verankert (`BACKUP_FORMAT_VERSION=1` / `BACKUP_KDF_ITERATIONS=600000` / `BACKUP_PASSWORD_MIN_LEN=8`); fünf neue Error-Klassen (`InvalidBackupPasswordError` / `BackupDecryptError` / `BackupVersionMismatchError` / `BackupSchemaError` / `BackupOverwriteError`). KEIN Spore-Feld dazu (Backup-Schicht separat, `PROTOCOL_VERSION` bleibt `"0.1"`). **Bau-Sitzung 02.X ausstehend**, KEIN Code in `src/modules/02_spore.js`. |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
 | 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80. **Karte 04 § Stamm/Gast-Hinweis 2026-05-15** (Spec-Sitzung Stamm/Gast): Match bleibt unverändert; Stamm/Gast ist Klassifikations-Schicht auf Daten-Ebene, kein Vektor-Math; explizit kein Dämpfungsfaktor, keine zweite Schwelle. |
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
-| 06 heterokaryose | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15) | — | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
+| 06 heterokaryose | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15) | rasch grob durchgeklickt 2026-05-16 (Klaus, Tab S6 + DeX) — Panel 06 14 Knöpfe Selbstchecks + Hauptpfade grün; voller Test-1–9-Lauf folgt bei Bedarf | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
 | 08 ui_demo | Spec fertig (2026-05-15) | Code-Stub (2026-05-15) | geprüft 2026-05-15 (Klaus) — 6/6 Test-Punkte grün | Endknoten-Pflege-UI für `sbkim_hetero_outbox` und `sbkim_siblings.heterokaryosisOptIn`; Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00 (`UiDemoDependenciesError` / `InvalidAnchorLabelError` / `InvalidAnchorVectorError` / `OutboxFullError` / `UnknownSiblingError` / `InvalidOptInArgError`), drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`). Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox` (v=3-Store aus Pflege Bau 06.1, Schlüssel `label`, max. `HETERO_OUTBOX_MAX_ENTRIES`=5, absteigend nach `addedAt`, Überschreiben statt Verdrängen) und Co-Schreiber für `sbkim_siblings.heterokaryosisOptIn` (Modul 05 unangetastet, Karte-01-Vertragserweiterung). **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign({}, sibling, {heterokaryosisOptIn})`. Self-Apoptose-Knopf bewusst NICHT in Panel 08 (Spec-Sitzung 08-Entscheidung respektiert). Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Sichttest geprüft 2026-05-15 (Klaus): 6/6 Test-Punkte grün im ersten Lauf** (Pflege-Sitzung Sichttest-Resultate 2026-05-15). |
 | 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15, Pflege App-SW-Koexistenz 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt — plus Pflege App-SW-Koexistenz (2026-05-15): Schritt 3 a/b-Verzweigung (Pre-Flight-Check → 3a `register('sbkim-sw.js')` für PWA ohne eigenen SW, 3b `importScripts('./sbkim-sw.js')` im bestehenden App-SW für PWA mit eigenem SW), achtes Risiko „App-SW-Überschreibung", `sbkim-sw.js` `SBKIM_SW_STANDALONE`-Flag rückwärtskompatibel (Default `true`, `false` für Variante 3b) |
@@ -434,191 +434,151 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
-### 2026-05-16 · Pflege-Sitzung — Persistenz-Strategie verbinden (Stufe 3)
+### 2026-05-16 · Pflege-Sitzung — Phase-1 Sichttest-Resultate Karten 02/06/01
 
-**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
-`claude/pflege-persistenz-strategie-verbinden-shnqf`. Folge-Pflege
-direkt zu Bau 02.X Backup-Export vom selben Tag (PR #54 gemerged);
-schließt Stufe (3) der drei-stufigen Identitäts-Persistenz-Architektur
-final ab — alle drei Stufen damit gelöst, der Querschnitts-Eintrag
-„Identitäts-Persistenz" und der parallele Eintrag „Spore-Persistenz-
-Strategie verteilt" sind beide mit ~~strikethrough~~ markiert.
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase (nur Doku).
+Branch `claude/pflege-phase1-sichttest-resultate-2026-05-16`. Folge-
+Pflege nach Klaus' Sichttest 2026-05-16 (Chrome auf Galaxy Tab S6 +
+DeX) und nach Merge von PR #56 „Pflege Persistenz-Strategie
+verbinden" — der Phase 2 (Modul 00 Backup-Tipp-Zeile) parallel in
+main gehoben hat. Diese Sitzung zieht **Phase 1** nach: die drei
+Sichttest-Resultate in den Karten-Bauzustand-Tabellen, die PR #56
+nicht angefasst hatte.
 
-**Auftrag:** Modul 00 Doku-Fenster textlich an Stufen (1) + (2)
-ankoppeln. Spec und Code für Stufe (1) Storage-Persist + Stufe (2)
-Backup-Export sind in `main` — was fehlte, war nur die deutschsprachige
-„Backup empfohlen"-Hinweis-Zeile im Modal, die erscheint, wenn der
-Knoten weiß, dass seine Persistenz wackelt (Stufe (1) verweigert oder
-Stufe (3) Quota greift).
+**Hintergrund:** Mein vorheriger Branch
+`claude/pflege-persistenz-strategie-rb6pb` (PR #57) hatte Phase 1
+und Phase 2 in einer Sitzung gebaut. Während ich arbeitete, hat
+Klaus parallel PR #56 gemerged, der Phase 2 inhaltlich identisch
+löst. PR #57 schloss ich ohne Merge (Konflikt-Lage, doppelte
+Arbeit für Phase 2); diese Folge-Pflege rettet die Phase-1-Doku-
+Aktualisierungen sauber auf main.
+
+**Auftrag:** Klaus' Sichttest-Befunde 2026-05-16 in die heiligen
+Tafeln nachziehen, ohne Code-Änderung:
+
+1. **Karte 02** § Bauzustand-Zeile „Sichttest (Bau 02.X)" von
+   „ungeprüft, weil headless gebaut" auf „geprüft 2026-05-16" mit
+   den dokumentierten Befunden:
+   - Knopf 6 (Backup exportieren) → valides Wrapper-Format
+     (`version:1` / `iterations:600000` / AES-GCM-256 /
+     `payload-schema-version:1`).
+   - Knopf 7 (Backup einlesen ohne force) → `BackupOverwriteError`
+     mit Warnzeile + Status-Chip „Bestehende Identität" (Schutz-
+     Pfad, erwartet).
+   - Knopf 7b (Identität ersetzen — unwiderruflich) → force-Pfad
+     im Normalfall.
+   - **Test-Panel-UX-Befund** dokumentiert (kein Modul-Bug):
+     `pendingBackup`-Stash-Reset in Knopf 7 beim zweiten Klick →
+     Folge-Mini-Pflege offen.
+2. **Karte 06** § Bauzustand-Sichttest-Zeile von „—" auf „geprüft
+   2026-05-16 (rasch grob durchgeklickt)": Panel 06 mit 14 Knöpfen
+   im kombinierten Panel-01–08-Lauf, alle Selbstchecks grün, keine
+   Auffälligkeit; voller Test-1–9-Lauf folgt bei Bedarf. Ehrliche
+   „rasch grob"-Variante (Briefing-Vorgabe — kein Fake-Pass für
+   nicht im Detail durchgespielte Pfade).
+3. **Karte 01** § Bauzustand neue Zeile „Sichttest Knopf 5
+   Persist-Status (Pflege Storage-Persist)": geprüft 2026-05-16,
+   `_meta.storagePersisted: true` (Chrome auto-bei-PWA bestätigt
+   — Stufe (1) der Identitäts-Persistenz wirkt plattformkonform).
+4. **PULS § Schnellüberblick-Tabelle** Modul 02 / 06 / 01
+   Sichttest-Spalten mit „2026-05-16 (Klaus)"-Datum aktualisiert;
+   Modul 01 Code-Spalte um Pflege-PWA-Suffix + Pflege-Storage-
+   Persist-Verweis erweitert.
+5. **PULS § „Als nächstes ✨"** Modul 02 oberer Eintrag um
+   Bau-02.X-Sichttest-Vermerk; Modul 06 aus „Sichttest ausstehend
+   bzw. teilweise erledigt"-Liste in obere geprüft-Liste
+   verschoben.
+
+KEIN Code, KEINE INTERFACES.md-Änderung, KEIN
+`update_puls_pie.py` (kein Score-Wechsel; Modul 02 / 06 / 01
+bleiben `score:"stub"`).
 
 **Getan:**
 
-- **`src/modules/00_doku_fenster.js`** additiv erweitert (kein
-  Refactoring der bestehenden sechs Funktionen):
-  - **Neue modul-lokale Konstante** `DOKU_BACKUP_TIP_TEXT` mit dem
-    deutschsprachigen Hinweis-Text (drei Sätze, einmal formuliert,
-    verweist auf Panel 02 „Backup exportieren" und nennt
-    passwort-verschlüsselte .json-Datei + Browser-Wechsel-Szenario
-    als Anlass). Unicode-Anführungszeichen `„…"` zur Vermeidung von
-    ASCII-Quote-Konflikten im JS-String-Literal.
-  - **`getStatusSnapshot()`** um Feld `storagePersisted: boolean | null`
-    erweitert (Live-Lesen aus `SbkimStorage._meta.storagePersisted`
-    via `getStorage()._meta?.storagePersisted`-äquivalentem
-    `typeof`-Check, fail-soft try/catch). `null` und `true` triggern
-    nicht (kein Warn-Zustand bei API-Verweigerung); nur explizites
-    `false` triggert.
-  - **Neuer Modal-Render-Sub-Block:** Prädikat
-    `isBackupTipActive(snapshot)` (Closure-lokal) prüft
-    `snapshot.storagePersisted === false` ODER
-    `snapshot.quota.warningLevel !== "none"`; `renderBackupTip()`
-    rendert ein `<div class="sbkim-doku-backup-tip">` in hell-blauer
-    Hinweis-Farbe (`background:#e0f2fe;color:#075985;border:1px solid
-    #7dd3fc`) mit dem Text aus `DOKU_BACKUP_TIP_TEXT`. Position:
-    direkt nach dem Knoten-Block und der optionalen
-    Quota-Warnzeile, vor dem Sichttest-pro-Modul-Block. Beide Zeilen
-    (Quota-Warn gelb-bernstein + Backup-Tipp hell-blau) können
-    gleichzeitig erscheinen.
-  - **`_meta`** um zwei neue Felder erweitert: `dokuBackupTipText`
-    (Wortlaut-Zugriff für Test-Brücken) und `backupTipActive()`
-    (async Test-Helper, zieht frischen Snapshot via
-    `getStatusSnapshot()` und liefert das Prädikat-Ergebnis als
-    Boolean).
-  - **Modul-Kopfkommentar** um Pflege-Block „Pflege Persistenz-
-    Strategie verbinden (2026-05-16) — Stufe (3)" am Ende der
-    Bau-Sitzungs-Kommentar-Zeile erweitert.
-- **`docs/components/00_doku_fenster.md`** Karte 00 nachgezogen:
-  - **§ Datenformate `DokuStatus`** um Zeile `storagePersisted:
-    boolean | null` erweitert; nachfolgender Absatz erklärt die
-    Drei-Werte-Form und die Null-/True-gleich-Konvention.
-  - **Neuer § Modal-Render-Pfad — Backup-Tipp-Zeile** zwischen
-    § Datenformate und § 5-Klick-Pfad: Trigger-Bedingung
-    (`storagePersisted === false` ODER `quota.warningLevel !==
-    "none"`), Wortlaut als Blockquote, Position im Modal,
-    Hinweis-only-Klarstellung (kein Knopf, kein Direkt-Aufruf von
-    `SbkimSpore.exportBackup`), Test-Helper-Verweis.
-  - **§ Konfigurationswerte** modul-lokale Zeile
-    `DOKU_BACKUP_TIP_TEXT = "Tipp: Speicher-Schutz …"` ergänzt.
-  - **§ Risiken** neuer Punkt „Backup-Tipp ist textlich, keine
-    Selbstheilung" mit Aufrufer-Pflicht-Trennung-Begründung
-    (Modul 00 reines Lese-/Trigger-Modul, Klaus klickt Panel 02
-    selbst).
-  - **§ Manueller Test** neuer Punkt 7 „Backup-Tipp-Zeile" mit
-    Drei-Setup-Probe: (a) Persist-Trigger via Stub auf
-    `_meta.storagePersisted = false` → Tipp erscheint; (b)
-    Quota-Trigger via `_setQuotaForTest({usage:8.1*1024**3,
-    quota:10*1024**3})` → Quota-Warnung + Tipp erscheinen
-    gleichzeitig; (c) Negativ-Fall (`_clearQuotaForTest()` +
-    storagePersisted `true` / `null`) → weder noch. Verweis auf
-    `SbkimDoku._meta.backupTipActive()` als Test-Helper.
-  - **§ Bauzustand** neue Zeile „Pflege Persistenz-Strategie
-    verbinden" vor der bestehenden „Sichttest 2026-05-15"-Zeile.
-- **`docs/INTERFACES.md` §1 Modul 00:**
-  - **Bietet-Block** erweitert: neuer Absatz unter `options-Form`
-    spezifiziert die `DokuStatus`-Form inklusive des neuen Felds
-    `storagePersisted: boolean | null` mit Spiegelungs-Hinweis und
-    Trigger-Konvention.
-  - **Nutzt-Block** neue Zeile `SbkimStorage._meta.storagePersisted`
-    (Live-Lesen mit `typeof`-Check, fail-soft).
-  - **Geprüft-Zeile** um „2026-05-16 (Pflege Persistenz-Strategie
-    verbinden — Stufe 3)" erweitert.
-  - **§6 Änderungsprotokoll** neue Zeile am unteren Ende — Code-
-    Befund mit modul-lokaler Konstante, Snapshot-Feld, Modal-Render-
-    Sub-Block und Aufrufer-Pflicht-Trennung dokumentiert.
-- **PULS**:
-  - **§ Offene Querschnitts-Fragen „Identitäts-Persistenz"** Stufe
-    (3) mit ~~strikethrough~~ markiert + Verweis aufs Übergabe-
-    protokoll; **ganzer Querschnitts-Eintrag** „Identitäts-
-    Persistenz" mit ~~strikethrough~~ in der Überschriften-Zeile —
-    final gelöst, alle drei Stufen geschlossen.
-  - **§ Spore-Persistenz-Strategie verteilt** Modul-00-Punkt um
-    Pflege-Vermerk ergänzt (Tipp-Zeile, Snapshot-Feld, Aufrufer-
-    Pflicht-Trennung); **ganzer Querschnitts-Eintrag** mit
-    ~~strikethrough~~ — Quota-Schwellwert (Modul 00) + Backup-
-    Format (Modul 02) + Warntext (Modul 00) sind alle drei
-    verankert.
-  - **Schnellüberblick-Tabelle** Modul 00 Code-Spalte um
-    „Pflege Persistenz-Strategie verbinden 2026-05-16" erweitert;
-    Sichttest-Spalte um „ungeprüft (headless)"-Hinweis für Test 7.
-  - **§ Sitzungs-Einträge** rotiert: dieser Eintrag oben mit vollem
-    Text; Bau 02.X-Backup-Export-Eintrag in den Archiv-Index
-    verschoben.
-  - **§ Archiv-Index** neue Zeile oben (diese Pflege-Sitzung); die
-    Bau 02.X-Zeile bleibt — sie war schon im Archiv-Index aus PR #54.
-- **`status.json`** nicht angefasst — Modul 00 bleibt `score:"stub"`,
-  additive Code-Erweiterung, kein Score-Wechsel.
-  `update_puls_pie.py` NICHT aufgerufen (CLAUDE.md-Konvention).
-- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-16_pflege-persistenz-strategie-verbinden.md`
-  angelegt.
+- `docs/components/02_spore.md` § Bauzustand-Zeile „Sichttest (Bau
+  02.X)" auf „geprüft 2026-05-16 (Klaus, Chrome auf Galaxy Tab S6
+  + DeX)" gestellt; volle drei Knopf-Befunde + Test-Panel-UX-
+  Befund pendingBackup-Stash dokumentiert.
+- `docs/components/06_heterokaryose.md` § Bauzustand-Sichttest-
+  Zeile auf „geprüft 2026-05-16 (rasch grob durchgeklickt)".
+- `docs/components/01_storage.md` § Bauzustand neue Zeile
+  „Sichttest Knopf 5 Persist-Status" zwischen „Pflege Storage-
+  Persist" und „In Endknoten eingebaut".
+- `docs/PULS.md` § Schnellüberblick-Tabelle Modul 02 / 06 / 01
+  Sichttest-Spalten + Code-Spalten nachgezogen.
+- `docs/PULS.md` § „Als nächstes ✨" Modul 02-Eintrag erweitert;
+  Modul 06 aus „Sichttest ausstehend"-Liste verschoben.
+- `docs/PULS.md` § Sitzungs-Einträge rotiert (dieser Eintrag oben,
+  Pflege Persistenz-Strategie verbinden geht ins Archiv).
+- `docs/PULS.md` § Archiv-Index neue Zeile oben.
+- `docs/sessions/archiv/2026-05-16_pflege-phase1-sichttest-karten-02-06-01.md`
+  als Übergabeprotokoll angelegt.
 
 **Bewusst nicht angefasst:**
 
-- **`src/modules/01_storage.js` / `02_spore.js` / `03_embedding.js`
-  / `04_match.js` / `05_anastomose.js` / `06_heterokaryose.js` /
-  `07_apoptose.js` / `08_ui_demo.js`** unverändert. Modul 01
-  `_meta.storagePersisted` nur gelesen, nicht geändert. Modul 02
-  `exportBackup` nur im Tipp-Text erwähnt, nicht aufgerufen.
-- **INTERFACES.md §0** keine neue Konstante (DOKU_BACKUP_TIP_TEXT ist
-  modul-lokal in Karte 00, kein §0-Anker).
-- **INTERFACES.md §2 / §3 / §4 / §5** unverändert.
-- **`PROTOCOL_VERSION`** bleibt `"0.1"`; **`DB_VERSION`** bleibt
-  `3`; **`BACKUP_FORMAT_VERSION`** bleibt `1`. Keine Hauptversions-
-  Erhöhung, kein neuer Store, keine DB-Schema-Migration.
-- **Karten 14 / 10 / 11 / 12** unangetastet.
-- **Sage-Page (`index.html`)** unverändert (datengetrieben aus
-  `status.json`, das nicht angefasst wurde).
-- **Bestehende sechs Funktionen** unverändert (additiv: eine
-  Konstante, ein Snapshot-Feld, zwei Render-Helper, zwei `_meta`-
-  Einträge).
+- **Modul 00 Backup-Tipp-Zeile** unverändert (Phase 2 ist seit PR
+  #56 in main; diese Pflege fasst sie nicht an).
+- **Modul 00 / 01 / 02 / 03 / 04 / 05 / 06 / 07 / 08 Code**
+  unverändert.
+- **INTERFACES.md** unverändert.
+- **`status.json`** unverändert (keine Score-Wechsel).
+- **`update_puls_pie.py`** NICHT aufgerufen.
+- **Test-Panel-UX-Fix Knopf-7-pendingBackup-Reset** in dieser
+  Sitzung NICHT gemacht — eigene Folge-Mini-Pflege. Karte 02 §
+  Bauzustand dokumentiert nur den Befund, keine Lösung.
+- **Hauptversions-Sprung** — keiner (`PROTOCOL_VERSION` bleibt
+  `"0.1"`, `DB_VERSION` bleibt `3`, `BACKUP_FORMAT_VERSION` bleibt
+  `1`).
+- **Sage-Page-(`index.html`)-Änderung** — keine.
 
 **Validierung:**
 
-- `node --check src/modules/00_doku_fenster.js` grün.
-- Mini-Smoke-Test der Trigger-Logik in einem VM-Kontext: vier
-  Setups (`storagePersisted = true / null / false / undefined`)
-  alle erwartungsgemäß; Quota-Override-Trigger (`warningLevel =
-  "ratio"`) bei `storagePersisted = true` auch grün.
-- Cross-Reading Karte 00 ↔ INTERFACES.md §1 Modul 00 ↔ PULS auf
-  Konsistenz durchgezogen (Trigger-Bedingung, Wortlaut, Aufrufer-
-  Pflicht-Trennung, Drei-Werte-Konvention konsistent).
-- CLAUDE.md-Vorgaben respektiert: Pflege-Sitzung schreibt nur in
-  Modul 00 + Karte 00 + INTERFACES.md §1 Modul 00 + §6 + PULS +
-  Übergabeprotokoll; INTERFACES.md zuerst nachgezogen, dann Code;
-  `update_puls_pie.py` nicht aufgerufen; Antworten auf Deutsch,
-  ruhig + präzise.
+- Reine Doku-Pflege — keine Code-Validierung nötig (kein Modul-
+  Code angefasst).
+- Cross-Reading Karten 02/06/01 ↔ PULS Schnellüberblick ↔ PULS
+  „Als nächstes" konsistent (gleiche Datums-Formate, gleiche
+  Knopf-/Test-Begriffe, gleiche Klaus-Zitate).
 
 **Was offen blieb:**
 
-- **Klaus' Sichttest Panel 00 Test 7** (Drei-Setup-Probe für die
-  Backup-Tipp-Zeile) — headless gebaut, wartet auf Klaus' Browser.
-  Bei grünem Lauf: § Bauzustand-Zeile „Pflege Persistenz-Strategie
-  verbinden" auf „geprüft <Datum>" stellen.
-- **Klaus' Sichttest Panel 02** Knöpfe 6/7/7b (Bau 02.X) bleibt
-  unverändert offen.
+- **Klaus' Sichttest Panel 00 Backup-Tipp-Zeile** im Browser
+  (Phase 2 Folge-Sichttest nach PR #56 — Karte 00 § Bauzustand-
+  Zeile „Sichttest (Pflege Persistenz)" steht in main auf
+  „ungeprüft, weil headless gebaut"). Bei grünem Lauf: Karte 00 §
+  Bauzustand-Zeile auf „geprüft <Datum>" stellen.
+- **Test-Panel-UX-Fix Knopf-7-pendingBackup-Reset** offen (eigene
+  Folge-Mini-Pflege, ≤ 15 Min headless).
 - **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
-  PWA-Suffix (Pflege 2026-05-16) bleibt unverändert offen, wartet
-  auf Klaus am Termux.
-- **Cross-Knoten-Handshake** nach Re-Andock.
-- **`status.json` `pingStatus`-Update** nach erstem Cross-Handshake
-  (`"blocked-origin-collision"` → `"live"`).
-- **Eruda-Rückbau** nach erstem erfolgreichen Cross-Handshake.
-- **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-Mixarium
-  (entkoppelt).
-- **INTERFACES.md §6 Tabellen-Bug** aus PR #45 Squash-Merge.
-- **Klaus' Sichttest Panel 06** (Heterokaryose).
-- **Klaus' Sichttest Panel 01 fünfter Knopf** „Persist-Status zeigen".
+  PWA-Suffix (unverändert offen, wartet auf Klaus am Termux).
+- **Cross-Knoten-Handshake** zwischen beiden Endknoten nach
+  Re-Andock.
+- **`status.json` `pingStatus`** für beide Endknoten von
+  `"blocked-origin-collision"` auf `"live"` nach Cross-Handshake.
+- Übrige offene Punkte (Sushi-Kategorie, INTERFACES.md §6
+  Tabellen-Bug, Eruda-Rückbau, voller Panel-06-Test-1–9-Lauf bei
+  Bedarf) unverändert offen.
 
-**Nächster sinnvoller Schritt:**
+**Vorgeschlagene nächste Schritte:**
 
-1. **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
-   PWA-Suffix aus Pflege 2026-05-16 (wartet auf Klaus am Termux —
-   nicht headless).
-2. **Cross-Knoten-Handshake** nach Re-Andock.
-3. **Klaus' Sichttest Panel 02 + Panel 00** in einem Lauf — Panel
-   02 Knöpfe 6/7/7b (Backup-Export), Panel 00 Test 7 Drei-Setup-
-   Probe (Backup-Tipp-Zeile). Bei grünen Läufen: § Bauzustand-
-   Zeilen in Karten 02 + 00 auf „geprüft <Datum>" stellen.
-4. **`status.json` `pingStatus`-Update** + Folge-Pflege-Sitzung
-   nach Re-Andock und erstem Cross-Handshake.
+1. **Klaus' Sichttest Panel 00 Backup-Tipp-Zeile** im Browser
+   (Phase-2-Folge-Sichttest zu PR #56). **Nicht headless — wartet
+   auf Klaus.** Drei Mini-Setups (Quota-Trigger / Persist-Trigger
+   / Negativ-Fall) in Karte 00 § Manueller Test Punkt 7
+   beschrieben. Bei grünem Lauf: Karte 00 § Bauzustand-Zeile
+   „Sichttest (Pflege Persistenz)" auf „geprüft <Datum>" stellen.
+2. **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
+   PWA-Suffix aus Pflege 2026-05-16 (unverändert offen, wartet auf
+   Klaus am Termux). Blockiert Cross-Knoten-Handshake.
+3. **Cross-Knoten-Handshake** zwischen Mein-Rezeptbuch und
+   Mein-Mixarium nach Re-Andock — setzt Schritt 2 voraus.
+4. **Mini-Pflege Test-Panel Knopf 7 pendingBackup-Reset**
+   (`tests/manual_check.html` Panel 02 Knopf 7 — Reset nach
+   erfolgreicher Datei-Wahl statt am Anfang). Headless möglich,
+   ≤ 15 Min, kein Modul-Code-Eingriff. Niedrig priorisiert
+   (Klaus' realer Sichttest-Pfad funktioniert; der Befund tritt
+   nur beim doppelten Klick ohne File-Wahl auf).
+
+---
 
 ---
 
@@ -629,6 +589,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-16 | Pflege · Phase-1 Sichttest-Resultate Karten 02/06/01 (Klaus' Sichttest 2026-05-16: Bau-02.X-Knöpfe 6/7/7b grün + Panel 06 rasch grob + Panel 01 Knopf 5 `_meta.storagePersisted: true` in Karten 02/06/01 § Bauzustand + PULS Schnellüberblick nachgezogen; Test-Panel-UX-Befund Knopf 7 pendingBackup-Stash-Reset offen als Mini-Pflege) | [→ Archiv](sessions/archiv/2026-05-16_pflege-phase1-sichttest-karten-02-06-01.md) |
 | 2026-05-16 | Pflege · Persistenz-Strategie verbinden (Identitäts-Persistenz Stufe 3 — Modul 00 „Backup empfohlen"-Tipp-Zeile bei `storagePersisted === false` ODER Quota-Warn; `getStatusSnapshot()` um `storagePersisted` erweitert, kein Direkt-Aufruf von Modul 02; alle drei Stufen final gelöst) | [→ Archiv](sessions/archiv/2026-05-16_pflege-persistenz-strategie-verbinden.md) |
 | 2026-05-16 | Bau · Modul 02 Backup-Export Code-Stub (Bau 02.X — `exportBackup`/`importBackup` additiv in `src/modules/02_spore.js`, fünf Error-Klassen, drei Helper-Reuse-Entscheidungen, drei Panel-02-Knöpfe; Identitäts-Persistenz Stufe (2) damit gelöst) | [→ Archiv](sessions/archiv/2026-05-16_bau-02x-backup-export.md) |
 | 2026-05-16 | Spec · Modul 02 Backup-Export (Identitäts-Persistenz Stufe 2 — `exportBackup`/`importBackup` passwort-verschlüsselt, PBKDF2 600 k + AES-GCM-256, drei §0-Konstanten, fünf neue Error-Klassen; Bau-Sitzung 02.X folgt) | [→ Archiv](sessions/archiv/2026-05-16_spec-02-backup-export.md) |
