@@ -1,12 +1,22 @@
 # Sage-Page · Pflege-Konvention
 
-**Stand:** 2026-05-16 (Pflege-Sitzung Sage-Page Redesign)
-**Datei:** `index.html` (Single-File-PWA, kein Build-Step)
-**Zielgruppe:** jede Folge-Sitzung, die `index.html` anfasst.
+**Stand:** 2026-05-16 (Pflege-Sitzung Sage-Page Redesign + Paper-Render-Sub-Seite)
+**Dateien:**
+- `index.html` (Single-File-PWA, kein Build-Step)
+- `paper.html` (druckfertige Sub-Seite, lädt `docs/PAPER_NUTZEN_UND_INTEGRATION.md` live und rendert es per inline-Markdown-Parser; eigener „Als PDF drucken"-Pfad statt separat hinterlegter PDF-Datei)
+
+**Zielgruppe:** jede Folge-Sitzung, die `index.html` oder `paper.html` anfasst.
 
 Diese Datei ist die Lebensader für die Sage-Page-Pflege. Ohne sie
-ist jeder Vollumbau eine Falle. **Lies sie zuerst, bevor du etwas
-in `index.html` änderst.**
+ist jeder Vollumbau eine Falle. **Lies sie zuerst, bevor du
+`index.html` oder `paper.html` änderst.**
+
+## Pflege-Hinweis Paper-Render-Sub-Seite (`paper.html`)
+
+- Lädt `docs/PAPER_NUTZEN_UND_INTEGRATION.md` per `fetch()`. Wenn das Paper umbenannt wird, in `paper.html` den Fetch-Pfad nachziehen.
+- Eigener inline-Markdown-Parser (~150 Zeilen). Kann: H1–H4, Absätze, Listen (auch einfache Mehrzeilen-Items), Blockquotes, GFM-Tabellen, Code-Blöcke, HR, Bold/Italic, Inline-Code, Links. **Kann NICHT:** verschachtelte Listen tiefer als 1 Ebene, Bilder, Fußnoten, Definition-Listen. Falls das Paper diese Features nutzt, Parser erweitern oder Paper umschreiben.
+- Druck-Stylesheet (`@media print`) verbergt Topbar + Druckknopf, setzt schwarze Schrift auf weiß, Seitenrand 22 mm oben/unten + 18 mm links/rechts, `page-break-after: avoid` auf Headings.
+- Geist + Geist Mono + Source Serif 4 (Source Serif als Paper-Fließtext-Serif). Wenn Geist nicht lädt, `system-ui`-Fallback greift.
 
 ---
 

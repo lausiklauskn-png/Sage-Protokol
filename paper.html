@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Sage-Protokol · Paper — Nutzen, Automatisierung und Integration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Begleit-Paper zum SBKIM-Protokoll. Praktischer Nutzen, Anwendungsfälle, Integrations-Werkzeuge, mögliche Geschäftsmodelle. Druckfertige Ansicht.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --bg: #08081A;
+    --bg-2: #10102A;
+    --paper-bg: #F8F7F2;
+    --paper-text: #1B1B22;
+    --paper-muted: #54545E;
+    --paper-line: rgba(27,27,34,0.12);
+    --paper-line-strong: rgba(27,27,34,0.22);
+    --accent: #6EE7D3;
+    --accent-2: #8B5CF6;
+    --gold: #F4B435;
+    --text: #F5F5FF;
+    --muted: rgba(245,245,255,0.62);
+    --dim: rgba(245,245,255,0.36);
+    --line: rgba(255,255,255,0.08);
+    --line-strong: rgba(255,255,255,0.18);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --r: 16px; --r-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Geist", system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  /* Bildschirm-Hintergrund */
+  .bg {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(110,231,211,0.10), transparent 70%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  }
+
+  /* Action-Bar (sticky, nur im Bildschirm) */
+  .actionbar {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(8,8,26,0.78);
+    backdrop-filter: saturate(1.6) blur(14px);
+    -webkit-backdrop-filter: saturate(1.6) blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .actionbar-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0.85rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--text); font-weight: 600; letter-spacing: -0.01em; }
+  .brand img { width: 24px; height: 24px; }
+  .brand-mark { font-size: 0.95rem; }
+  .brand-mark .dot { color: var(--accent); margin: 0 0.18em; }
+  .actionbar-spacer { flex: 1; }
+  .meta { color: var(--dim); font-family: "Geist Mono", monospace; font-size: 0.72rem; }
+  .back-link {
+    color: var(--muted);
+    font-size: 0.86rem;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    transition: color .2s, border-color .2s;
+  }
+  .back-link:hover { color: var(--text); border-color: var(--accent); }
+  .print-btn {
+    font: inherit; color: #0A0A1A; cursor: pointer;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 0.6rem 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    box-shadow: 0 8px 22px rgba(110,231,211,0.18);
+    transition: filter .2s, transform .2s var(--ease-spring);
+  }
+  .print-btn:hover { filter: brightness(1.08); }
+  .print-btn:active { transform: translateY(1px) scale(0.98); }
+  .print-hint {
+    color: var(--dim);
+    font-family: "Geist Mono", monospace;
+    font-size: 0.7rem;
+    display: block;
+    margin-top: 0.2rem;
+    text-align: right;
+  }
+
+  /* Paper-Container (Bildschirm: dunkel, druckähnlich; Druck: weiß) */
+  .paper-wrap { max-width: 880px; margin: 2.5rem auto; padding: 0 1.5rem 4rem; }
+  .paper-sheet {
+    background: var(--paper-bg);
+    color: var(--paper-text);
+    border-radius: var(--r);
+    padding: 4rem 4.5rem 3rem;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px;
+    line-height: 1.62;
+  }
+  @media (max-width: 720px) {
+    .paper-sheet { padding: 2.4rem 1.8rem 2.4rem; font-size: 15px; }
+  }
+
+  /* Typografie auf dem Paper */
+  .paper-sheet h1, .paper-sheet h2, .paper-sheet h3, .paper-sheet h4 {
+    font-family: "Geist", system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    color: var(--paper-text);
+    line-height: 1.18;
+  }
+  .paper-sheet h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .paper-sheet h2 {
+    font-size: 1.36rem;
+    font-weight: 600;
+    margin: 2.2rem 0 0.7rem;
+  }
+  .paper-sheet h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1.6rem 0 0.45rem;
+  }
+  .paper-sheet h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 1.2rem 0 0.4rem;
+    color: var(--paper-muted);
+  }
+  .paper-sheet p { margin: 0.55rem 0 0.9rem; }
+  .paper-sheet ul, .paper-sheet ol { margin: 0.5rem 0 1rem; padding-left: 1.4rem; }
+  .paper-sheet li { margin: 0.28rem 0; }
+  .paper-sheet strong { font-weight: 600; }
+  .paper-sheet em { font-style: italic; }
+  .paper-sheet code {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    background: rgba(0,0,0,0.06);
+    border: 1px solid var(--paper-line);
+    padding: 0.06em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+  .paper-sheet pre {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    background: #1B1B22;
+    color: #F0F0F5;
+    border-radius: var(--r-sm);
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    font-size: 0.84rem;
+    line-height: 1.55;
+    margin: 0.8rem 0 1.2rem;
+  }
+  .paper-sheet pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+  .paper-sheet blockquote {
+    margin: 1rem 0 1.4rem;
+    padding: 0.6rem 1.1rem;
+    border-left: 3px solid var(--accent-2);
+    background: rgba(139,92,246,0.05);
+    color: var(--paper-muted);
+    font-size: 0.95rem;
+  }
+  .paper-sheet blockquote p { margin: 0.25rem 0; }
+  .paper-sheet blockquote strong { color: var(--paper-text); }
+  .paper-sheet hr {
+    border: none;
+    height: 1px;
+    background: var(--paper-line);
+    margin: 2rem 0;
+  }
+  .paper-sheet a {
+    color: var(--accent-2);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+  .paper-sheet a:hover { color: #6D28D9; }
+  .paper-sheet table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8rem 0 1.2rem;
+    font-size: 0.92rem;
+  }
+  .paper-sheet th, .paper-sheet td {
+    padding: 0.55rem 0.7rem;
+    text-align: left;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .paper-sheet th {
+    font-family: "Geist", system-ui, sans-serif;
+    font-weight: 600;
+    border-bottom: 2px solid var(--paper-line-strong);
+  }
+
+  /* Loading / Error states */
+  .paper-state {
+    background: var(--paper-bg);
+    color: var(--paper-text);
+    border-radius: var(--r);
+    padding: 3rem;
+    text-align: center;
+    font-family: "Geist", system-ui, sans-serif;
+  }
+  .paper-state.error { color: #B91C1C; }
+  .paper-state .hint { color: var(--paper-muted); font-size: 0.9rem; margin-top: 0.5rem; }
+
+  /* Druck-Stylesheet */
+  @media print {
+    @page {
+      size: A4;
+      margin: 22mm 18mm 22mm 18mm;
+    }
+    body {
+      background: white !important;
+      color: black !important;
+    }
+    .bg, .actionbar { display: none !important; }
+    .paper-wrap { max-width: 100%; margin: 0; padding: 0; }
+    .paper-sheet {
+      background: white !important;
+      color: black !important;
+      box-shadow: none !important;
+      border-radius: 0;
+      padding: 0;
+      font-size: 11pt;
+      line-height: 1.5;
+    }
+    .paper-sheet h1, .paper-sheet h2, .paper-sheet h3, .paper-sheet h4 {
+      color: black !important;
+      page-break-after: avoid;
+      break-after: avoid-page;
+    }
+    .paper-sheet h1 { font-size: 18pt; border-bottom-color: #aaa !important; }
+    .paper-sheet h2 { font-size: 13pt; margin-top: 1rem; }
+    .paper-sheet h3 { font-size: 11pt; }
+    .paper-sheet p, .paper-sheet li, .paper-sheet td, .paper-sheet th { color: black !important; }
+    .paper-sheet pre {
+      background: #f3f3f3 !important;
+      color: #111 !important;
+      border: 1px solid #ccc;
+      page-break-inside: avoid;
+      break-inside: avoid-page;
+    }
+    .paper-sheet pre code { color: #111 !important; }
+    .paper-sheet code {
+      background: #f0f0f0 !important;
+      color: #111 !important;
+      border-color: #ccc !important;
+    }
+    .paper-sheet blockquote {
+      border-left-color: #888 !important;
+      background: #f5f5f5 !important;
+      color: #333 !important;
+      page-break-inside: avoid;
+      break-inside: avoid-page;
+    }
+    .paper-sheet a { color: #5b21b6 !important; }
+    .paper-sheet table { page-break-inside: avoid; break-inside: avoid-page; }
+    .paper-sheet hr { background: #ccc !important; }
+  }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <header class="actionbar">
+    <div class="actionbar-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/icon.svg" alt="" aria-hidden="true">
+        <span class="brand-mark">SAGE<span class="dot">·</span>PROTOKOL</span>
+      </a>
+      <div class="actionbar-spacer"></div>
+      <a class="back-link" href="index.html">← Zur Sage-Page</a>
+      <div>
+        <button class="print-btn" type="button" onclick="window.print()">Als PDF drucken</button>
+        <span class="print-hint">Strg / ⌘ + P · Ziel „Als PDF speichern"</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="paper-wrap">
+    <article class="paper-sheet" id="paper">
+      <div class="paper-state" id="paper-loading">
+        <strong>Lade Paper …</strong>
+        <div class="hint">docs/PAPER_NUTZEN_UND_INTEGRATION.md</div>
+      </div>
+    </article>
+  </main>
+
+  <script>
+  // =========================================================
+  // Minimaler Markdown-Renderer
+  // Unterstützt: H1-H4, Absätze, Listen (ungeordnet + nummeriert,
+  // einfache Verschachtelung), Blockquotes, Code-Blöcke (```),
+  // Tabellen (GFM), HR (---), Bold (**…**), Italic (*…* / _…_),
+  // Inline-Code (`…`), Links ([text](url)).
+  // Bewusst klein gehalten — kein externer Parser, Single-File-Prinzip.
+  // =========================================================
+
+  function escHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function inline(s) {
+    s = escHtml(s);
+    // Inline-Code zuerst (so dass kein ** drinnen verarbeitet wird)
+    const codes = [];
+    s = s.replace(/`([^`]+)`/g, (_, c) => {
+      codes.push(c);
+      return ' ' + (codes.length - 1) + ' ';
+    });
+    // Bold
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    // Italic (* oder _) — _ nur wenn nicht-Wort-Grenze, sonst nervt es bei snake_case
+    s = s.replace(/(^|\s)\*([^*\s][^*]*?)\*(?=\s|[.,;:!?)]|$)/g, '$1<em>$2</em>');
+    s = s.replace(/(^|\s)_([^_\s][^_]*?)_(?=\s|[.,;:!?)]|$)/g, '$1<em>$2</em>');
+    // Links
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    // Inline-Code zurück
+    s = s.replace(/ (\d+) /g, (_, i) => '<code>' + escHtml(codes[+i]) + '</code>');
+    return s;
+  }
+
+  function renderMarkdown(md) {
+    const lines = md.replace(/\r\n?/g, '\n').split('\n');
+    let html = '';
+    let i = 0;
+
+    function flushParagraph(buf) {
+      const t = buf.join(' ').trim();
+      if (t) html += '<p>' + inline(t) + '</p>\n';
+    }
+
+    while (i < lines.length) {
+      const line = lines[i];
+
+      // Code fence
+      if (/^```/.test(line)) {
+        const lang = line.replace(/^```/, '').trim();
+        i++;
+        let buf = [];
+        while (i < lines.length && !/^```/.test(lines[i])) {
+          buf.push(lines[i]);
+          i++;
+        }
+        i++; // closing fence
+        html += '<pre><code' + (lang ? ' class="lang-' + escHtml(lang) + '"' : '') + '>' + escHtml(buf.join('\n')) + '</code></pre>\n';
+        continue;
+      }
+
+      // Heading
+      const hm = line.match(/^(#{1,4})\s+(.*)$/);
+      if (hm) {
+        const level = hm[1].length;
+        html += '<h' + level + '>' + inline(hm[2].trim()) + '</h' + level + '>\n';
+        i++;
+        continue;
+      }
+
+      // Horizontal rule
+      if (/^---+\s*$/.test(line)) {
+        html += '<hr>\n';
+        i++;
+        continue;
+      }
+
+      // Blockquote (mehrzeilig)
+      if (/^>\s?/.test(line)) {
+        let buf = [];
+        while (i < lines.length && /^>\s?/.test(lines[i])) {
+          buf.push(lines[i].replace(/^>\s?/, ''));
+          i++;
+        }
+        html += '<blockquote>\n' + renderMarkdown(buf.join('\n')) + '</blockquote>\n';
+        continue;
+      }
+
+      // Table (GFM): zwei Zeilen — header, separator
+      if (/^\|.+\|$/.test(line) && i + 1 < lines.length && /^\|[\s:|-]+\|$/.test(lines[i + 1])) {
+        const cells = (s) => s.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+        const header = cells(line);
+        i += 2;
+        let rows = [];
+        while (i < lines.length && /^\|.+\|$/.test(lines[i])) {
+          rows.push(cells(lines[i]));
+          i++;
+        }
+        html += '<table><thead><tr>';
+        header.forEach(h => { html += '<th>' + inline(h) + '</th>'; });
+        html += '</tr></thead><tbody>';
+        rows.forEach(r => {
+          html += '<tr>';
+          r.forEach(c => { html += '<td>' + inline(c) + '</td>'; });
+          html += '</tr>';
+        });
+        html += '</tbody></table>\n';
+        continue;
+      }
+
+      // Unordered list
+      if (/^\s*[-*]\s+/.test(line)) {
+        let buf = [];
+        while (i < lines.length && (/^\s*[-*]\s+/.test(lines[i]) || (buf.length && /^\s{2,}\S/.test(lines[i])))) {
+          if (/^\s*[-*]\s+/.test(lines[i])) {
+            buf.push([lines[i].replace(/^\s*[-*]\s+/, '')]);
+          } else {
+            // Continuation line of last item
+            buf[buf.length - 1].push(lines[i].trim());
+          }
+          i++;
+        }
+        html += '<ul>';
+        buf.forEach(item => { html += '<li>' + inline(item.join(' ').trim()) + '</li>'; });
+        html += '</ul>\n';
+        continue;
+      }
+
+      // Ordered list
+      if (/^\s*\d+\.\s+/.test(line)) {
+        let buf = [];
+        while (i < lines.length && (/^\s*\d+\.\s+/.test(lines[i]) || (buf.length && /^\s{2,}\S/.test(lines[i])))) {
+          if (/^\s*\d+\.\s+/.test(lines[i])) {
+            buf.push([lines[i].replace(/^\s*\d+\.\s+/, '')]);
+          } else {
+            buf[buf.length - 1].push(lines[i].trim());
+          }
+          i++;
+        }
+        html += '<ol>';
+        buf.forEach(item => { html += '<li>' + inline(item.join(' ').trim()) + '</li>'; });
+        html += '</ol>\n';
+        continue;
+      }
+
+      // Empty line → paragraph boundary
+      if (!line.trim()) { i++; continue; }
+
+      // Default: paragraph (sammle bis zur nächsten Leerzeile / Block-Konstrukt)
+      let buf = [line];
+      i++;
+      while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|>|\s*[-*]\s|\s*\d+\.\s|---+\s*$|```|\|.+\|$)/.test(lines[i])) {
+        buf.push(lines[i]);
+        i++;
+      }
+      flushParagraph(buf);
+    }
+    return html;
+  }
+
+  async function loadPaper() {
+    const target = document.getElementById('paper');
+    try {
+      const r = await fetch('docs/PAPER_NUTZEN_UND_INTEGRATION.md', { cache: 'no-cache' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const md = await r.text();
+      target.innerHTML = renderMarkdown(md);
+      document.title = 'Sage-Protokol · Paper — Nutzen, Automatisierung und Integration';
+    } catch (err) {
+      target.innerHTML = '<div class="paper-state error"><strong>Paper konnte nicht geladen werden.</strong><div class="hint">' + (err && err.message ? err.message : err) + '</div><div class="hint" style="margin-top:1rem">Fallback: <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/PAPER_NUTZEN_UND_INTEGRATION.md" target="_blank" rel="noopener">Auf GitHub anzeigen →</a></div></div>';
+    }
+  }
+  document.addEventListener('DOMContentLoaded', loadPaper);
+  </script>
+</body>
+</html>
