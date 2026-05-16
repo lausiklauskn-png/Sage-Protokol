@@ -15,7 +15,7 @@
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-15 (14 Module)
+  title Modulstand 2026-05-16 (14 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 1
@@ -53,25 +53,27 @@ Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest geprüft 2026-05-15:**
 
 - 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. **Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün** (Pflege-Sitzung Sichttest-Resultate 2026-05-15).
 
-Empfehlung Hauptsitzung: **Bau-Sitzung 09 Iteration 3** mit Klaus am
-Live-Andock-Versuch (Rezeptbuch + Mixarium). Spec-Sitzung „Stamm/Gast-
-Felder in Spore-JSON" (2026-05-15) hat die Voraussetzung geliefert:
-INTERFACES.md §2 Spore-JSON um zwei optionale Felder
-`stammCategories: string[]` und `guestCategories: string[]` additiv
-erweitert (kein Hauptversions-Sprung, `PROTOCOL_VERSION` bleibt
-`"0.1"`); Karten 02/04 nachgezogen. Modul 04 Match bleibt
-**unverändert** (Stamm/Gast ist Klassifikations-Schicht, kein
-Vektor-Math). Damit kann Iteration 3 die ersten echten
-`/sbkim/spore.json` mit Stamm- und Gast-Kategorien für beide
-Endknoten anlegen. **Endknoten-seitige Mini-Pflege „Sushi-Kategorie
-sichtbar machen"** in Mein-Mixarium ist davon entkoppelt und kann
-Klaus parallel anstoßen. **Tabellen-Bug in INTERFACES.md §6
-Änderungsprotokoll** (Bau-Sitzung 08 + Live Andock Iteration 2
-verschmolzen in einer Tabellenzeile durch Squash-Merge-Artefakt)
-sollte irgendwann durch eine kleine Pflege-Sitzung aufgeräumt
-werden — nicht dringend, beeinträchtigt nur die Lesbarkeit.
-Modul-Code (00/01/02/03/04/05/07) bleibt unberührt. Details im
-[Übergabeprotokoll 2026-05-15 Spec Stamm/Gast Spore-Felder](sessions/archiv/2026-05-15_spec-stamm-gast-spore-felder.md).
+Empfehlung Hauptsitzung: **Andock Mein-Rezeptbuch** (Folge zur
+Bau-Sitzung 09 Iteration 3). Mein-Mixarium ist seit 2026-05-16
+**live integriert** (nodeId `1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0`,
+Spore-URL `https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/
+spore.json`, App-SW Variante 3b, alle sieben Modul-Selbstchecks plus
+drei `sbkim-init.js`-Init-Zeilen grün in Eruda). Spore enthält
+Stamm[8] und Gast[2] sowie domainVector[384]. Mein-Rezeptbuch geht
+denselben Pfad analog (Karte 09 1–7, mit Stamm = Rezeptbuch-Speisen-
+Ordner und Gast = Begleitgetränke / später Weinkarte). Voraussichtlich
+~45–60 Min, weil Klaus den Pfad schon kennt. **Karte 09 Schritt 8
+(Cross-Knoten-Handshake)** folgt nach Andock Rezeptbuch — erst dann
+sind beide Endknoten produktiv-verbunden, `pingStatus: "pending-peer"`
+wird auf `"live"` umgestellt, und der **Eruda-Rückbau** in beiden
+Endknoten ist sinnvoll. Endknoten-seitige Mini-Pflege „Sushi-
+Kategorie sichtbar machen" in Mein-Mixarium bleibt entkoppelt offen.
+**Tabellen-Bug in INTERFACES.md §6** (Bau-Sitzung 08 + Live Andock
+Iteration 2 verschmolzen in einer Tabellenzeile durch Squash-Merge-
+Artefakt) ist nicht-dringend, kann in eigener kleiner Pflege-Sitzung
+aufgeräumt werden. Modul-Code (00/01/02/03/04/05/07) bleibt
+unberührt. Details im [Übergabeprotokoll 2026-05-16 Andock Mein-
+Mixarium](sessions/archiv/2026-05-16_andock-mein-mixarium-iteration-3-live.md).
 
 ---
 
@@ -101,7 +103,7 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | App | URL | Domäne | SBKIM-Stand |
 |---|---|---|---|
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm) — Begleitgetränke / später Weinkarte (Gast) | nicht integriert · **Eruda eingebaut 2026-05-15** auf `main` (zwei Zeilen nach `<head>`, jsdelivr `eruda@3`); Sicht-Vorbereitung für Bau-09 Iteration 3. |
-| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm) — Knabbereien / Fingerfood (Gast) | nicht integriert · **Eruda eingebaut 2026-05-15** auf `main` (zwei Zeilen nach `<head>`, jsdelivr `eruda@3`); erste Sichtprüfung lieferte 6 Sushi-Einträge mit verwaister Kategorie-ID `fid_17763323516422` (Snacks/Fingerfood, im Rezeptbuch parallel vorhanden) — Anlass für Stamm/Gast-Konzept (ARCHITEKTUR.md § 8). Mini-Pflege „Sushi-Kategorie sichtbar machen" entkoppelt offen. |
+| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm) — Knabbereien / Fingerfood (Gast) | **integriert 2026-05-16** (Bau-Sitzung 09 Iteration 3, mit Klaus am Termux) · nodeId `1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0` · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json mit allen Pflicht- und optionalen Feldern inkl. `stammCategories[8]` + `guestCategories[2]` + `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus drei `sbkim-init.js`-Init-Zeilen grün · Handshake gegen Mein-Rezeptbuch **ausstehend** (Rezeptbuch noch nicht integriert, `pingStatus: pending-peer`). Eruda-Rückbau steht nach erfolgreichem ersten Cross-Knoten-Handshake. |
 
 ## Offene Querschnitts-Fragen
 
@@ -293,6 +295,153 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
+### 2026-05-16 · Bau-Sitzung 09 Iteration 3 — Mein-Mixarium live angedockt
+
+**Sitzungs-Rolle:** Bau-Sitzung Modul 09 (Live-Andock-Versuch, dritte
+Iteration), mit Klaus am Tablet via Termux, **nicht headless**. Branch
+`claude/andock-mein-mixarium-iteration-3-live`. Erster Endknoten (Mein-
+Mixarium) folgt erstmals der vollständigen Karte-09-Anleitung. Mein-
+Rezeptbuch ist bewusst auf eine Folge-Sitzung verschoben (Zeit-Budget).
+
+**Getan:**
+
+- **Sage-Protokol-Repo lokal in Klaus' Termux geklont** (gh repo clone).
+- **Schritt 1 — Module kopiert** (`mkdir -p ~/Mein-Mixarium/sbkim`, dann
+  `cp` der sieben Modul-Dateien `00/01/02/03/04/05/07` ins `sbkim/`-
+  Unterverzeichnis, plus `sbkim-sw.js` in den Repo-Root). Sichtprüfung
+  via `ls`.
+- **Schritt 2 — `<script>`-Tags in `index.html`** via `awk` vor das
+  **letzte** `</body>` eingefügt (Mein-Mixarium hat 5 Vorkommen von
+  `</body>`, daher zwei-Pass-awk statt einfachem sed). Sichtprüfung
+  via `grep -c 'src="sbkim/'` → 7. Plus achter Tag für `sbkim-init.js`
+  in Schritt 4.
+- **Schritt 3 — App-SW Variante 3b**: drei Zeilen oben in
+  `app-sw.js` per `printf | cat`-Konkatenation (`self.SBKIM_SW_STANDALONE
+  = false`, `importScripts("./sbkim-sw.js")`, `console.info(...)`).
+- **Schritt 4 — `sbkim-init.js` angelegt** im `sbkim/`-Ordner (via
+  Heredoc `cat > FILE << 'EOF'`): Auto-Init für Schritt 4 + 9a (Anastomose
+  + Apoptose), plus globaler Trigger `window.__sbkimErzeugeSpore()` für
+  Schritt 5 + 6 (Embedding-Init + Vektor + Spore-Erzeugung). Stamm/Gast-
+  Kategorien hartkodiert nach Klaus' realer Mixarium-Ordnerstruktur
+  (Stamm = 8 Drinks-Kategorien, Gast = `Knabbereien` + `Fingerfood`).
+  Achter `<script src="sbkim/sbkim-init.js">`-Tag direkt nach
+  `00_doku_fenster.js` via awk eingefügt.
+- **Commit + Push** auf `main`: 11 Dateien geändert, Commit `dbbee2f`,
+  Push `b792576..dbbee2f main -> main`. Sauber, kein Konflikt.
+- **Pages-Build + Sichtprüfung in der Live-PWA:** Eruda-Konsole zeigte
+  alle sieben Modul-Selbstchecks (`MODUL 01/02/03/04/05/07/00 ...
+  bereit, Funktionen: ...`) plus die drei `sbkim-init.js`-Init-Zeilen
+  (`SBKIM-Init grün`, `SBKIM-Apoptose grün`, `SBKIM-Andock bereit`).
+  Modul 03 (Embedding) meldete sich nach `__sbkimErzeugeSpore()`-Aufruf
+  mit `Modell: Xenova/multilingual-e5-small, Dim: 384` und
+  `Domain-Vektor erzeugt: 384 Floats`.
+- **Schritt 5 + 6 — Spore erzeugen:** in Eruda-Konsole
+  `__sbkimErzeugeSpore()` getriggert, Embedding-Modell heruntergeladen
+  (~30 MB, einmalig), Domain-Vektor über `stammCategories +
+  guestCategories + domainKeywords` als Embedding-Text erzeugt
+  (`embedPassage`), Spore via `SbkimSpore.generateOwnSpore({...})`
+  signiert. **Ergebnis:** nodeId
+  `1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0`, Signatur-Länge 86.
+- **Schritt 7 — Spore deployen:** in Eruda One-Liner zur Erzeugung
+  eines Browser-Downloads ausgelöst, `spore.json` in Klaus' Android-
+  Download-Ordner gelandet. Termux per `termux-setup-storage` +
+  Android-`MANAGE_EXTERNAL_STORAGE`-Permission (einmalig durch Klaus'
+  System-Settings-Toggle) auf den Download-Ordner berechtigt. Datei
+  per `mv ~/storage/downloads/spore.json ~/Mein-Mixarium/sbkim/`
+  verschoben. Commit + Push als zweiter Commit `d8dd3b3`
+  (`dbbee2f..d8dd3b3 main -> main`).
+- **Live-URL `https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/
+  spore.json`** ist als Klartext-JSON sichtbar mit allen Pflichtfeldern
+  (`createdAt`, `domain`, `embeddingModel`, `endpoint`, `id`,
+  `nodeType`, `protocolVersion`, `publicKey`, `signature`) UND allen
+  Optionalen aus dieser Iteration (`nodeName`, `domainDescription`,
+  `domainKeywords`, `domainVector`[384], `stammCategories`[8],
+  `guestCategories`[2]). Felder kanonisch alphabetisch.
+- **`status.json` Endknoten[Mixarium] auf `integrated: true`
+  hochgestuft**, plus additive Felder `integratedAt: "2026-05-16"`,
+  `nodeId`, `sporeUrl`, `stammCategories`, `guestCategories`,
+  `pingStatus: "pending-peer"`. `lastUpdated` auf `2026-05-16`
+  gezogen. `update_puls_pie.py` ausgeführt (Pie-Inhalt unverändert,
+  weil keine Modul-Score-Änderung; nur das Datum im Titel-String).
+- **PULS § Endknoten-Tabelle** Mein-Mixarium-Zeile auf „integriert
+  2026-05-16" mit nodeId / spore-URL / Stamm/Gast-Kategorien-Counts
+  und `pending-peer` Vermerk umgestellt.
+- **PULS § Sitzungs-Einträge** rotiert, dieser Eintrag oben.
+
+**Was bewusst nicht angefasst wurde:**
+
+- **Mein-Rezeptbuch** unverändert (`integrated: false`). Wird in einer
+  Folge-Sitzung andockt. Karte 09 vollständig anwendbar, dieselben
+  Schritte mit `domain`/`endpoint`/`stammCategories`/`guestCategories`
+  angepasst auf Rezeptbuch-Werte.
+- **Schritt 8 (Erster Handshake)** aus Karte 09 noch nicht ausgeführt
+  — setzt voraus, dass Mein-Rezeptbuch auch ein
+  `/sbkim/spore.json` deployed hat. Kommt in der Rezeptbuch-Andock-
+  Sitzung als letzter Schritt von beiden Knoten gemeinsam.
+- **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-Mixarium
+  bleibt entkoppelt offen — Stamm/Gast-Felder in der Spore sind das
+  Sage-Protokol-relevante Stück; die App-UI in Mixarium ist Klaus'
+  eigene Sache, kommt wann er Zeit hat.
+- **Eruda-Rückbau** in beiden Endknoten bleibt offen, sinnvoll **nach**
+  dem ersten erfolgreichen Cross-Knoten-Handshake.
+- **`src/modules/*`, `tests/manual_check.html`** in Sage-Protokol
+  unverändert.
+- **Karte 09** unverändert (die Karte hat sich live bewährt, keine
+  Lücken aufgetaucht).
+- **`docs/INTERFACES.md` § 6** Änderungsprotokoll diesmal
+  **nicht** angefasst — das ist eine Andock-Sitzung in einem
+  externen Endknoten-Repo, kein Vertrags-Eingriff.
+
+**Validierung:**
+
+- **`status.json` valid JSON** (`python3 -c "import json; json.load(...)"`).
+- **Pie-Skript ausgeführt** (kein Datenverlust; Pie-Inhalt unverändert,
+  nur Datum auf 2026-05-16).
+- **Spore-JSON live-erreichbar** auf der Pages-URL, kanonisch
+  alphabetisch sortiert (`createdAt` zuerst, `stammCategories` als
+  vorletztes, `signature` zwischen `publicKey` und `stammCategories` —
+  alphabetisch korrekt).
+- **`pingStatus: "pending-peer"`** drückt aus, dass der zweite
+  Pages-Knoten noch fehlt für einen Live-Cross-Handshake. Schema-
+  Erweiterung; falls Sage-Page das nicht rendert, ist es harmlos.
+
+**Was offen blieb:**
+
+- **Bau-Sitzung Mein-Rezeptbuch (Andock-Iteration „3.5")** — gleicher
+  Pfad, andere Stamm/Gast-Werte:
+  - Stamm: `["Vorspeisen", "Suppen", "Fleisch", "Fisch", "Vegetarisch"]`
+    plus Klaus' tatsächliche Rezeptbuch-Ordner (Bild aus der ersten
+    Sichtkontrolle in Live Andock Iteration 2 zeigte schon 5 Stamm-
+    Ordner; vor dem Andock noch genau sichten).
+  - Gast: `["Begleitgetränke"]` (später Weinkarte).
+  - domain: `lausiklauskn-png.github.io`.
+  - endpoint: `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/`.
+  - nodeName: `Rezeptbuch Klaus`.
+  - Sonst: identische Andock-Pfade. Termux-Setup
+    (`termux-setup-storage`, Modul-Files kopieren, App-SW patchen,
+    `sbkim-init.js` analog, Schritte 1–7 wie hier) ist schon eingespielt.
+- **Cross-Knoten-Handshake** (Karte 09 Schritt 8) zwischen Mixarium
+  und Rezeptbuch — nach Andock von Rezeptbuch. Erfolgreicher Handshake
+  schaltet `pingStatus: "live"` und ist die Voraussetzung, um Eruda
+  endgültig wieder rauszubauen.
+- **Eruda-Rückbau** in beiden Endknoten — nach dem ersten Live-Cross-
+  Handshake.
+- **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-Mixarium
+  (entkoppelt).
+- **Mini-Pflege INTERFACES.md §6 Tabellen-Bug** (aus PR #46 Squash-Merge).
+- **Klaus' Sichttest Panel 06** (Heterokaryose), weiterhin offen.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Andock Mein-Rezeptbuch** mit Klaus am Termux. *Nicht headless.*
+   Analoger Pfad, ~45–60 Min weil Klaus den Pfad schon kennt.
+2. **Cross-Knoten-Handshake** (Karte 09 Schritt 8) zwischen den zwei
+   Endknoten, nach Schritt 1.
+3. **Eruda-Rückbau** in beiden Endknoten nach erfolgreichem Handshake.
+4. **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-Mixarium.
+
+---
+
 ### 2026-05-15 · Bau 02 — Stamm/Gast-Durchreichung in `generateOwnSpore`
 
 **Sitzungs-Rolle:** Bau-Sitzung Modul 02, headless, EINE Phase. Branch
@@ -432,6 +581,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-15 | Bau · Stamm/Gast-Durchreichung in `generateOwnSpore` (Folge-Bau, Modul 02) | [→ Archiv](sessions/archiv/2026-05-15_bau-02-stamm-gast-felder-durchreichung.md) |
 | 2026-05-15 | Spec · Stamm/Gast-Felder in Spore-JSON (additiv, kein Hauptversions-Sprung) | [→ Archiv](sessions/archiv/2026-05-15_spec-stamm-gast-spore-felder.md) |
 | 2026-05-15 | Bau · Live Andock Iteration 2 — Eruda in beiden Endknoten + Architektur-Konzept Stamm/Gast | [→ Archiv](sessions/archiv/2026-05-15_live-andock-eruda-stamm-gast.md) |
 | 2026-05-15 | Pflege · Karte 09 App-SW-Koexistenz + Tablet-Sichtkontrolle (Variante 3c + Eruda-Block) | [→ Archiv](sessions/archiv/2026-05-15_pflege-karte-09-app-sw-tablet.md) |
