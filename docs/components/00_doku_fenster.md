@@ -374,6 +374,7 @@ SIBLING_MAX_AGE_MS      = 2592000000                 // aus §0, an SbkimApoptos
 ```
 WINDOW_TITLE_DEFAULT    = "SBKIM-Knotenstand"        // optional via options.windowTitle übersteuerbar
 NODE_ID_SHORT_LEN       = 12                         // Länge der Kurzform-Anzeige der nodeId
+DOKU_BACKUP_TIP_TEXT    = "Tipp: Speicher-Schutz …"  // Pflege Persistenz-Strategie verbinden 2026-05-16; Wortlaut der Backup-Tipp-Zeile (siehe § Modal-Render-Pfad)
 ```
 
 `NODE_ID_SHORT_LEN` ist eine reine UI-Anzeige-Konstante (Ellipsis-
@@ -443,6 +444,7 @@ keine Methoden, alphabetisch sortierbar:
     "warnBytes":      false,                          // freeBytes < DOKU_QUOTA_WARN_BYTES (50 MiB)
     "warningLevel":   "none"                          // "none" | "ratio" | "bytes" | "both"
   } | null,
+  "storagePersisted": true | false | null,            // gespiegelt aus SbkimStorage._meta.storagePersisted (Pflege Persistenz-Strategie verbinden 2026-05-16)
   "openedAt":         "2026-05-14T07:00:00.000Z",
   "lastOpenedAt":     "2026-05-13T19:42:11.123Z" | null,
   "errors": [                                          // fail-soft-Liste; leer bei Vollständigkeit
@@ -451,6 +453,66 @@ keine Methoden, alphabetisch sortierbar:
   ]
 }
 ```
+
+`storagePersisted` ist die Live-Spiegelung des Modul-01-Getters
+`SbkimStorage._meta.storagePersisted` (Pflege Storage-Persist
+2026-05-16). Drei Werte: `true` (Browser hat IndexedDB als persistent
+markiert), `false` (Browser hat persist verweigert), `null` (API nicht
+verfügbar, persist warf synchron, persist-Promise rejected, oder
+Modul 01 nicht geladen — fail-soft). Modul 00 liest **rein lesend**
+und behandelt `null` und `true` gleich (= kein Backup-Tipp-Trigger).
+Nur explizites `false` triggert die Tipp-Zeile im Modal-Render-Pfad.
+
+---
+
+## Modal-Render-Pfad — Backup-Tipp-Zeile
+
+**Pflege Persistenz-Strategie verbinden (2026-05-16) — Stufe (3) der
+drei-stufigen Identitäts-Persistenz-Architektur.** Das Modal zeigt im
+Render-Pfad zusätzlich eine Backup-Tipp-Zeile (Klassenpräfix
+`sbkim-doku-backup-tip`), wenn **eine der folgenden Bedingungen** beim
+Snapshot-Bauzeitpunkt erfüllt ist:
+
+1. `snapshot.storagePersisted === false` — Browser hat Stufe (1)
+   Persist-Schutz explizit verweigert.
+2. `snapshot.quota.warningLevel !== "none"` — Stufe (3) Quota-
+   Frühwarnung greift (eine der beiden §0-Schwellen
+   `DOKU_QUOTA_WARN_RATIO` / `_BYTES` ist überschritten).
+
+`null` und `true` bei `storagePersisted` triggern **nicht** —
+fail-soft-Konvention aus Modul 01 (API-fehlt / persist-warf-synchron /
+persist-rejected → kein Warnzustand, sondern Unbekannt).
+
+**Wortlaut** (modul-lokale Konstante `DOKU_BACKUP_TIP_TEXT`,
+einmal formuliert):
+
+> Tipp: Speicher-Schutz für diesen Knoten ist nicht bestätigt. Lege
+> ein Backup an (Panel 02, „Backup exportieren" — passwort-
+> verschlüsselte .json-Datei), damit die Identität einen Browser-
+> Wechsel oder ein Aufräumen des Browserspeichers überlebt.
+
+**Position im Modal:** direkt nach dem Knoten-Block und der optionalen
+Quota-Warnzeile, vor dem Sichttest-pro-Modul-Block. Beide Zeilen
+(Quota-Warnzeile + Backup-Tipp) können gleichzeitig erscheinen —
+Quota oben (Warn-Farbe, gelb-bernstein), Backup-Tipp darunter
+(Hinweis-Farbe, hell-blau).
+
+**Hinweis-only, kein Knopf.** Karte 00 § Verantwortlichkeiten trennt
+Lese-/Trigger-Modul (Modul 00) vom Backup-erzeugenden Modul (Modul 02).
+Das Doku-Fenster ruft `SbkimSpore.exportBackup` **nicht** automatisch
+auf — Klaus klickt den „Backup exportieren"-Knopf in Panel 02 selbst.
+Diese Trennung ist Spec-Wille (Aufrufer-Pflicht-Trennung); ein
+Direkt-Aufruf aus Modul 00 würde den Vertrag „Modul 00 ist reines
+Lese-/Trigger-Modul mit `sbkim_doku_meta` als einzigem Schreib-Store"
+brechen.
+
+**Test-Helper:** `SbkimDoku._meta.backupTipActive()` →
+`Promise<boolean>` — zieht einen frischen Snapshot via
+`getStatusSnapshot()` und liefert `true`, wenn die Tipp-Zeile beim
+nächsten `open()` gerendert würde. Optional; eigene Test-Brücke
+`_setQuotaForTest` plus ein Stub auf
+`SbkimStorage._meta.storagePersisted` (z.B. via Object-Property-
+Override) genügen, um den Trigger gezielt zu erzeugen.
 
 `signature` aus `sbkim_legacy_inbox` wird im Snapshot **bewusst
 weggelassen** (analog Karte 07 § `listLegacy` — reiner Lese-Helfer
@@ -607,6 +669,32 @@ Knöpfe:
    (Korrektur vermerkt in Bau-Sitzung 00, 2026-05-14.)
 6. **Selbstcheck-Hinweis** — Hinweis-Knopf zeigt in der Konsole
    die erwartete Selbstcheck-Zeile (analog Panel 01 / 02 / 04 / 05 / 07).
+7. **Backup-Tipp-Zeile** (Pflege Persistenz-Strategie verbinden,
+   2026-05-16). Drei Mini-Setups, jeweils Fenster schließen vor dem
+   nächsten Lauf:
+   - **(a) Persist-Trigger:** Vor Setup einen Stub legen, z.B.
+     `Object.defineProperty(SbkimStorage._meta, "storagePersisted",
+     {get:()=>false, configurable:true})` (oder mockend
+     `navigator.storage.persist`, sodass `_meta.storagePersisted` nach
+     `init()` `false` ist). Fenster öffnen. Erwartung: zwischen Knoten-
+     Block und Sichttest-pro-Modul-Block erscheint die hell-blaue
+     Tipp-Zeile mit dem Text aus `DOKU_BACKUP_TIP_TEXT` (siehe
+     § Modal-Render-Pfad). Quota-Warnzeile gibt es in diesem Setup
+     nicht.
+   - **(b) Quota-Trigger:** `_setQuotaForTest({usage:8.1*1024**3,
+     quota:10*1024**3})`. Fenster öffnen. Erwartung: **beide** Zeilen
+     erscheinen — oben gelb-bernsteine Quota-Warnung
+     („Speicher knapp · 80%-Schwelle"), darunter die hell-blaue
+     Backup-Tipp-Zeile. (Stub aus (a) ggf. zurücksetzen, falls noch
+     aktiv — sonst ist (b) nicht klar gegen (c) abgegrenzt.)
+   - **(c) Negativ-Fall:** `_clearQuotaForTest()` und
+     `storagePersisted` auf `true` oder `null` (Stub aus (a)
+     zurücksetzen). Fenster öffnen. Erwartung: **keine** Backup-
+     Tipp-Zeile, **keine** Quota-Warnung. Modal nur mit den
+     üblichen Sektionen.
+   Test-Helper: `await SbkimDoku._meta.backupTipActive()` liefert
+   `true` in (a) und (b), `false` in (c) — kann ohne Fenster-Öffnen
+   geprüft werden.
 
 Zusätzlich **Esc-Test** (im Browser von Hand): Fenster öffnen, `Esc`
 drücken — Fenster schließt sich. **Re-Open-Test:** Fenster
@@ -682,6 +770,17 @@ Self-Apoptose. Panel 00 hat keinen Knopf für `prepareSelfApoptose` /
   der nur die Inbox-Spalte neu lädt). Das ist Spec-Wille — ein
   Auto-Refresh wäre Modul 00 nahe an einer Pulsation, und die ist
   verboten.
+- **Backup-Tipp ist textlich, keine Selbstheilung** (Pflege
+  Persistenz-Strategie verbinden, 2026-05-16). Wenn Stufe (1) Persist
+  verweigert wurde oder Stufe (3) Quota greift, zeigt das Doku-
+  Fenster die Backup-Tipp-Zeile mit Verweis auf Panel 02 „Backup
+  exportieren". Modul 00 ruft `SbkimSpore.exportBackup` **nicht**
+  automatisch auf — Klaus muss den Tipp lesen und den Panel-02-Knopf
+  selbst anklicken. Trennung Lese-/Trigger-Modul (00) vs. Backup-
+  erzeugendes Modul (02) ist Spec-Wille (§ Verantwortlichkeiten,
+  „Macht nicht": Kein Daten-Export). Wer eine echte Auto-Heilung
+  baut, baut sie außerhalb von Modul 00 — und dann nicht im
+  Doku-Fenster, sondern im Andocker (Modul 09).
 - **Lücke-Befund:** beim Durchgehen der Karten 01/02/05/07 ist keine
   fehlende Helfer-Funktion aufgefallen, die Modul 00 in der
   Bau-Phase blockieren würde. `SbkimSpore.{getNodeId, getOwnSpore,
@@ -701,6 +800,8 @@ Self-Apoptose. Panel 00 hat keinen Knopf für `prepareSelfApoptose` /
 | Site-Echo | 2026-05-10 | Site-Echo | Hero, Bio-Metapher, Mermaid, Querverweise |
 | Spec gefüllt | 2026-05-14 | Spec 00 | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`); drei verbindliche Pflichtfragen entschieden — Frage 1 Variante (a) 5 Klicks auf Such-Symbol + Zeitfenster 3 s (`DOKU_REVEAL_WINDOW_MS = 3000`), Frage 2 Doppel-Schwelle (`DOKU_QUOTA_WARN_RATIO = 0.80` UND `DOKU_QUOTA_WARN_BYTES = 50 MiB`) in §0, Frage 3 Variante (a) Session-only-Sichtbarkeit (kein `visible`-Feld); drei §0-Konstanten neu (additiv, kein Hauptversions-Sprung); `sbkim_doku_meta` als alleiniger Schreib-Store von 00 (Schlüssel `"meta"` für Modul-Meta + `"<modulId>"` für Sichttest-Spur); Lese-Quellen `SbkimSpore`, `SbkimAnastomose.listSiblings`, `SbkimApoptose.listLegacy`, `navigator.storage.estimate()` — alle fail-soft, optionale Pflicht nur für `SbkimStorage`; TTL-Sweep-Knopf nutzt `SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` ohne API-Erweiterung; Self-Apoptose bewusst NICHT in Modul 00 (Karte 07 Begründung). INTERFACES.md §0 + §1 Modul 00 + §6, `status.json` Modul 00 von `schablone` auf `spec`, Pie regeneriert (Schablone 5→4, Spec fertig 1→2). |
 | Code geschrieben | 2026-05-14 | Bau 00 | `src/modules/00_doku_fenster.js` als IIFE mit `window.SbkimDoku`, sechs öffentliche Funktionen, vier benannte Error-Klassen (`InvalidDokuOptionsError`, `DokuDependenciesError`, `InvalidSighttestResultError`, `StorageQuotaError` — letztere als Sammel-Klasse mit `.cause`), fünf Test-Brücken (`_dispatchClick`, `_resetClickCounter`, `_advanceRevealClock`, `_setQuotaForTest`, `_clearQuotaForTest`); drei Bau-Pflichtfragen entschieden — **Frage 1 Variante (a)** Modal mit halb-transparentem Backdrop (`position:fixed;inset:0;background:rgba(0,0,0,0.55)`), Klassenpräfix `sbkim-doku-*`, Klick-auf-Backdrop schließt; **Frage 2 Variante (a)** späte DOM-Mount-Strategie via `MutationObserver` auf `document.body` mit Auto-Disconnect bei Match und 10-s-Safety-Timeout (`console.warn` + Selbst-Disconnect, kein Throw); **Frage 3 Variante (a)** Panel-00-Fake-Such-Symbol als eigenes `<button id="panel-00-fake-search">` im Markup, `_dispatchClick()` synthetisiert für Test 2 / 3 reale `MouseEvent("click")`-Dispatches auf das Element; 5-Klick-Geste: Klick 1 startet `setTimeout(reset, revealWindowMs)` und merkt sich `revealStartedAt`, Klicks 2–4 zählen ohne Timer-Reset, Klick 5 cancelt Timer und ruft `open()` async; `close()` synchron, idempotent, setzt Klickzähler auf 0; Esc-Listener global registriert, feuert nur bei offenem Fenster; Modul-Closure-State `clickCount` / `revealTimer` / `windowEl` / `searchEl` / `options` / `mountObserver` / `quotaOverride`; `_advanceRevealClock(ms)` cancelt + Reset wenn `elapsed >= revealWindowMs`, sonst Timer mit Restzeit neu setzen; `getStatusSnapshot()` sammelt fail-soft via einzelne try/catch (jeder Lese-Quellen-Fehler landet in `errors[]`, kein Throw); `recordSighttest(moduleId, "ok"|"fail")` schreibt `sbkim_doku_meta[moduleId]`; Persistenz **strikt über `SbkimStorage`** (kein `indexedDB.open` in 00); Modul 00 als alleiniger Schreiber von `sbkim_doku_meta`; synchroner Selbstcheck beim Skript-Laden (`MODUL 00 DOKU-FENSTER bereit, Funktionen: …`). Panel 00 in `tests/manual_check.html` von „noch nicht gebaut" auf 🟦 Code-Stub mit sechs Knöpfen (Setup, Test 2 5-Klick-Simulation, Test 3 4-Klick + `_advanceRevealClock(4000)`, Test 4 Quota-Warnzeile via `_setQuotaForTest({usage:81,quota:100})`, Test 5 TTL-Sweep via direkten `SbkimStorage.put` auf `sbkim_siblings` mit `since > 30 Tage`, Selbstcheck-Hinweis) plus sichtbarem Fake-Such-Symbol-Element (Klaus kann es auch von Hand klicken); `node --check` für `00_doku_fenster.js` und alle Inline-`<script>`-Blöcke grün; INTERFACES.md §1 Modul 00 bleibt `entwurf` (Spec-Vertrag unverändert), §6 Änderungsprotokoll-Zeile für Bau-Sitzung 00 ergänzt; `status.json` Modul 00 von `score:"spec"` auf `score:"stub"` mit `siegel:"Code-Stub"`, Pie regeneriert (Spec fertig 2→1, Code-Stub 6→7). Spec-Korrektur-Befund: Karte 00 § Manueller Test Punkt 5 erwähnte `SbkimApoptose._addPseudoSibling` als TTL-Sweep-Setup, das ist aber der Versand-Pfad-Override — `forgetExpiredSiblings` liest ausschließlich aus `sbkim_siblings` im Storage. Panel 00 Test 5 nutzt deshalb direkten `SbkimStorage.put`; Karte 00 § Manueller Test Punkt 5 entsprechend leicht angepasst. |
+| Pflege Persistenz-Strategie verbinden | 2026-05-16 | Pflege | Stufe (3) der drei-stufigen Identitäts-Persistenz-Architektur (PULS § Offene Querschnitts-Fragen „Identitäts-Persistenz"). **Additiv** in `src/modules/00_doku_fenster.js`: (1) neue modul-lokale Konstante `DOKU_BACKUP_TIP_TEXT` mit dem deutschsprachigen Hinweis-Text (Modul 02 Panel-02-Knopf „Backup exportieren" als Aktion-Verweis); (2) `getStatusSnapshot()` um Feld `storagePersisted: boolean | null` erweitert — liest `SbkimStorage._meta.storagePersisted` fail-soft mit `typeof`-Check (`null` und `true` triggern nicht, nur explizites `false`); (3) neuer Modal-Render-Sub-Block `renderBackupTip()` + Prädikat `isBackupTipActive(snapshot)` — die Tipp-Zeile (Klassenpräfix `sbkim-doku-backup-tip`, hell-blaue Hinweis-Farbe) erscheint zwischen Knoten-Block und Sichttest-pro-Modul-Block, wenn `snapshot.storagePersisted === false` ODER `snapshot.quota.warningLevel !== "none"`; (4) `_meta.backupTipActive()` als Test-Helper (zieht frischen Snapshot, gibt Boolean zurück); (5) `_meta.dokuBackupTipText` für Test-Brücken-Zugriff auf den Wortlaut. **KEIN Refactoring** der bestehenden sechs Funktionen, KEIN Storage-Eingriff (Modul 00 bleibt alleiniger Schreiber von `sbkim_doku_meta`, schreibt aber bei dieser Pflege gar nichts); KEIN automatischer `SbkimSpore.exportBackup`-Aufruf (Aufrufer-Pflicht-Trennung — Hinweis-only, Klaus klickt den Knopf in Panel 02 selbst). § Datenformat / § Modal-Render-Pfad / § Konfigurationswerte / § Risiken / § Manueller Test (Punkt 7) entsprechend nachgezogen. INTERFACES.md §1 Modul 00 Bietet/Nutzt/Geprüft + §6 ergänzt. PULS Querschnitts-Fragen „Identitäts-Persistenz" und „Spore-Persistenz-Strategie verteilt" final mit ~~strikethrough~~ — alle drei Stufen gelöst. `node --check src/modules/00_doku_fenster.js` grün. `status.json` unverändert (Modul 00 bleibt `score:"stub"`, additive Code-Erweiterung, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). |
+| Sichttest (Pflege Persistenz) | 2026-05-16 | Klaus | geprüft 2026-05-16 (Klaus, im Browser) — Drei-Setup-Probe aus § Manueller Test Punkt 7 grün: (a) Persist-Trigger via `_meta.storagePersisted = false`-Stub → Backup-Tipp-Zeile erscheint; (b) Quota-Trigger via `_setQuotaForTest({usage:8.1*1024**3, quota:10*1024**3})` → Tipp-Zeile erscheint zusammen mit Quota-Warn; (c) Negativ-Fall (Stub zurücksetzen + `_clearQuotaForTest()`) → Tipp-Zeile fehlt. Trigger-Bedingung `storagePersisted === false` ODER `quota.warningLevel !== "none"` funktioniert plattformkonform; Modul-Vertrag unangetastet. Knapp-Befund „Sichttest OK" von Klaus, alle drei Hauptpfade ohne Auffälligkeit. |
 | Sichttest | 2026-05-15 | Klaus + Pflege 00-Test-4 | geprüft 2026-05-15 (Klaus, im Browser): fünf von sechs Tests grün im ersten Lauf — Setup OK · Test 2 öffnet Modal sauber (`nodeIdShort:"3DT6lS0QT9Zp…"`, `domain:"rezeptbuch.example.org"`, `siblingCount:1`, `errors:0`) · Test 3 hält das Fenster zu nach `_advanceRevealClock(4000)` · Test 5 entfernt beide alten Geschwister (`entfernt_anzahl:2`, Re-Open-Snapshot listet sie nicht mehr) · Modal-Rendering vollständig (Knoten-Sektion, Geschwister-Liste, Vermächtnis-Inbox „Keine", Speicher 6.4% von 10.69 GiB, drei Aktion-Knöpfe sichtbar) · Selbstcheck-Zeile in DevTools-Konsole gefunden. **Test 4 zeigte Test-Bug** — Mini-Werte `_setQuotaForTest({usage:81, quota:100})` produzierten `warningLevel:"both"` (freeBytes=19 Bytes ist trivial < 50 MiB), Panel-Erwartung war aber `warningLevel:"ratio"` hartcodiert → „Test 4 fehlgeschlagen". Modul-Logik war korrekt (Doppel-Schwelle aus §0 greift wie spezifiziert). **Pflege-Sitzung 2026-05-15** repariert Test 4 mit GiB-skalierten Werten (`usage:8.1 GiB, quota:10 GiB` → freeBytes ≈ 1.9 GiB → `warningLevel:"ratio"` sauber); Karte 00 Punkt 4 zieht mit. Kein Eingriff in Modul-Vertrag oder INTERFACES.md. |
 | In Endknoten eingebaut | — | — | — |
 

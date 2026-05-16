@@ -467,15 +467,20 @@
         }
       });
 
-      // Knopf 7 — Backup einlesen (Bau 02.X, 2026-05-16)
+      // Knopf 7 — Backup einlesen (Bau 02.X, 2026-05-16;
+      // Mini-Pflege pendingBackup-Reset 2026-05-16)
       // Erster Klick versucht ohne force; bei BackupOverwriteError
       // erscheint ein zweiter Knopf „Identität ersetzen — unwiderruflich",
       // der mit {force:true} ersetzt. Die neue nodeId steht erst nach
       // erfolgreichem Decrypt fest (Klartext-Payload ist verschlüsselt),
       // deshalb zeigt die Bestätigung nur die ALTE nodeId + Warntext.
+      // pendingBackup-Reset bewusst NICHT am Handler-Anfang: ein zweiter
+      // Klick auf „Backup einlesen" ohne File-Wahl (Picker-Cancel) würde
+      // sonst den Stash aus einem vorherigen BackupOverwriteError-Lauf
+      // verlieren und Knopf 7b inert machen. Reset passiert daher erst
+      // direkt vor dem importBackup-Aufruf (nach erfolgreicher File-Wahl).
       var pendingBackup = null; // { blob, password }
       SbkimUI.addButton("02_spore", "Backup einlesen", async function () {
-        pendingBackup = null;
         var fileInput = document.createElement("input");
         fileInput.type = "file";
         fileInput.accept = ".json,application/json";
@@ -502,6 +507,7 @@
           return;
         }
         try {
+          pendingBackup = null;
           var result = await SbkimSpore.importBackup(blob, password);
           SbkimUI.setStatus("02_spore", "ok", "Restore OK");
           SbkimUI.log("02_spore", "▶ Restore-Ergebnis: " + JSON.stringify(result));
