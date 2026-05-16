@@ -68,6 +68,15 @@ Bevor du `END` machst:
    begründet markieren "ungeprüft, weil ...").
 4. Commit + Push auf `claude/semantic-agent-network-Y03Vg`. Ein Commit pro
    abgegrenzter Aufgabe, sprechende Message.
+5. **„Vorgeschlagene nächste Schritte"-Block in der Chat-Antwort am
+   Sitzungs-Ende.** NICHT nur im Übergabeprotokoll — Klaus liest die
+   Chat-Antwort am Tab; das Übergabeprotokoll sieht er erst in einer
+   Folge-Sitzung. 2–4 priorisierte Schritte als Markdown-Liste, jede
+   mit ein-Satz-Begründung + Reihenfolge-Hinweis (z.B. „setzt PR #X
+   voraus", „nicht headless — wartet auf Klaus", „blockiert durch
+   Befund Z"). Auch wenn dasselbe im Übergabeprotokoll
+   § „Nächster sinnvoller Schritt" steht: hier doppeln. Das ist
+   Klaus' Übersichts-Anker am Tab, ohne Datei-Öffnen.
 
 ## Vor dem nächsten Sitzungs-Brief (`Befehl schreiben`)
 
