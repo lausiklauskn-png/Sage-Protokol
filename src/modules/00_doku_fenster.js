@@ -34,6 +34,13 @@
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). See INTERFACES.md §0 / §1 Modul 00 und
  * docs/components/00_doku_fenster.md für den verbindlichen Vertrag.
+ *
+ * Pflege Persistenz-Strategie verbinden (2026-05-16) — Stufe (3) der
+ * drei-stufigen Identitäts-Persistenz-Architektur. getStatusSnapshot
+ * liest SbkimStorage._meta.storagePersisted fail-soft; Modal rendert
+ * eine textliche „Backup empfohlen"-Hinweis-Zeile (DOKU_BACKUP_TIP_TEXT),
+ * wenn storagePersisted === false ODER quota.warningLevel !== "none".
+ * Kein Modul-02-Aufruf — Aufrufer-Pflicht-Trennung.
  */
 (function (global) {
   "use strict";
@@ -45,6 +52,17 @@
   var DOKU_QUOTA_WARN_RATIO = 0.80;
   var DOKU_QUOTA_WARN_BYTES = 50 * 1024 * 1024; // 52428800
   var SIBLING_MAX_AGE_MS = 2592000000;          // 30 Tage
+
+  // Pflege Persistenz-Strategie verbinden (2026-05-16): textlicher Hinweis
+  // im Modal, wenn Persistenz wackelt (storagePersisted === false) ODER die
+  // Quota-Frühwarnung greift. Hinweis-only — kein Knopf, kein Modul-02-Aufruf
+  // (Aufrufer-Pflicht-Trennung; Karte 00 § Verantwortlichkeiten „Macht nicht").
+  var DOKU_BACKUP_TIP_TEXT =
+    "Tipp: Speicher-Schutz für diesen Knoten ist nicht " +
+    "bestätigt. Lege ein Backup an (Panel 02 „Backup " +
+    "exportieren“ — passwort-verschlüsselte .json-Datei), " +
+    "damit die Identität einen Browser-Wechsel oder ein " +
+    "Aufräumen des Browserspeichers überlebt.";
 
   var WINDOW_TITLE_DEFAULT = "SBKIM-Knotenstand";
   var NODE_ID_SHORT_LEN = 12;
@@ -469,6 +487,23 @@
       errors.push({ source: "navigator.storage.estimate", reason: "API nicht verfügbar" });
     }
 
+    // ---- Storage-Persist-Status (Modul 01 _meta-Getter, fail-soft) ----
+    // Pflege Persistenz-Strategie verbinden (2026-05-16): Modul 00 liest
+    // SbkimStorage._meta.storagePersisted live; null bedeutet „Modul 01
+    // nicht geladen, API nicht verfügbar, persist warf synchron oder
+    // rejected" — Modul 00 behandelt null und true gleich (kein Warn-
+    // Trigger); nur explizites false triggert die Backup-Tipp-Zeile.
+    var storagePersisted = null;
+    try {
+      var storage = getStorage();
+      if (storage && storage._meta &&
+          typeof storage._meta.storagePersisted !== "undefined") {
+        storagePersisted = storage._meta.storagePersisted;
+      }
+    } catch (err) {
+      storagePersisted = null;
+    }
+
     return {
       nodeId: nodeId,
       nodeIdShort: nodeIdShort,
@@ -482,6 +517,7 @@
       legacyCount: legacy.length,
       modules: modules,
       quota: quota,
+      storagePersisted: storagePersisted,
       openedAt: null,         // wird in open() überschrieben
       lastOpenedAt: lastOpenedAt,
       errors: errors,
@@ -609,6 +645,9 @@
     if (snapshot.quota && snapshot.quota.warningLevel !== "none") {
       box.appendChild(renderQuotaWarning(snapshot.quota));
     }
+    if (shouldShowBackupTip(snapshot)) {
+      box.appendChild(renderBackupTip());
+    }
     box.appendChild(renderModuleSection(snapshot));
     box.appendChild(renderSiblingSection(snapshot));
     box.appendChild(renderLegacySection(snapshot));
@@ -694,6 +733,26 @@
         "background:#fff3cd;color:#6b5500;border:1px solid #f0c36d;" +
         "border-radius:4px;padding:0.4rem 0.6rem;margin-bottom:0.6rem;font-size:0.9rem;",
       "text": "⚠ " + note,
+    });
+  }
+
+  // Pflege Persistenz-Strategie verbinden (2026-05-16): textliche Brücke
+  // zu Modul 02 (Backup-Export). Trigger-Bedingung: explizit false bei
+  // storagePersisted (Stufe 1 Persist-Verweigerung) ODER greifende Quota-
+  // Frühwarnung (Stufe 3). null/true bei storagePersisted = kein Trigger.
+  function shouldShowBackupTip(snapshot) {
+    if (snapshot.storagePersisted === false) return true;
+    if (snapshot.quota && snapshot.quota.warningLevel !== "none") return true;
+    return false;
+  }
+
+  function renderBackupTip() {
+    return el("div", {
+      "class": "sbkim-doku-backup-tip",
+      "style":
+        "background:#e7f1ff;color:#1a3a6e;border:1px solid #9cbfee;" +
+        "border-radius:4px;padding:0.4rem 0.6rem;margin-bottom:0.6rem;font-size:0.9rem;",
+      "text": "ℹ " + DOKU_BACKUP_TIP_TEXT,
     });
   }
 
@@ -1018,6 +1077,7 @@
       dokuRevealWindowMs: DOKU_REVEAL_WINDOW_MS,
       dokuQuotaWarnRatio: DOKU_QUOTA_WARN_RATIO,
       dokuQuotaWarnBytes: DOKU_QUOTA_WARN_BYTES,
+      dokuBackupTipText: DOKU_BACKUP_TIP_TEXT,
       siblingMaxAgeMs: SIBLING_MAX_AGE_MS,
       windowTitleDefault: WINDOW_TITLE_DEFAULT,
       nodeIdShortLen: NODE_ID_SHORT_LEN,
