@@ -498,6 +498,77 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
+### 2026-05-17 · Mini-Pflege Rechtschreibung — „Protokoll" mit zwei L
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase (reine
+Text-Korrektur). Branch `claude/pflege-rechtschreibung-protokoll`.
+Klaus' Bitte: das deutsche Wort „Protokoll" überall mit zwei L
+schreiben.
+
+**Regel (Klaus' Klarstellung):**
+
+- **„Sage-Protokol"** (mit einem L) ist der **englische Eigenname**
+  des Repos / Projekts → **BLEIBT** mit einem L. Gilt auch in
+  Repo-URLs (`github.com/lausiklauskn-png/Sage-Protokol/...`),
+  Sage-Page-Title (`Sage·Protokol`), status.json `"name"`,
+  JS-Kommentaren.
+- **„Mycel-Protokoll"** ist deutsch (Mycel = deutsches Wort) → wird
+  mit zwei L geschrieben.
+- **Generisches „Protokoll"** (Footer-Label, Card-Tag, dt-Label,
+  Markdown-Fließtext) → wird mit zwei L geschrieben.
+- **Englische Variable `protocolVersion`** und ähnliche API-Identifier
+  bleiben mit einem L (englisch, korrekt).
+
+**Getan:**
+
+- Zwei-Pass-`sed` durch `*.md`, `*.html`, `*.json`, `*.js` im Repo:
+  1. Pass: alle `\bProtokol\b` → `Protokoll`.
+  2. Pass: `Sage-Protokoll` / `Sage·Protokoll` / `Sage Protokoll` /
+     `Sage_Protokoll` zurück zu `Sage-/·/ /_Protokol` (Eigenname).
+- 7 Dateien geändert: `index.html`, `docs/INTERFACES.md`,
+  `docs/PAPER_NUTZEN_UND_INTEGRATION.md`, `docs/components/06_heterokaryose.md`,
+  `docs/components/09_einbau_pwa.md`, zwei Übergabeprotokolle aus
+  2026-05-14/15.
+- Validierung: `status.json` valid JSON, `index.html` Parse OK,
+  Inline-JS-Block via `node --check` OK.
+
+**Bewusst nicht angefasst:**
+
+- **GitHub-Repo-Name `lausiklauskn-png/Sage-Protokol`** unverändert
+  (Klaus' Entscheidung — der Eigenname bleibt englisch).
+- **Repo-URLs in Markdown/HTML** unverändert
+  (`github.com/.../Sage-Protokol/...`) — sonst 404.
+- **`protocolVersion`-Konstante** und `PROTOCOL_VERSION` in §0
+  unverändert (englisch).
+- **SBKIM-Verbindung** ist null betroffen — Endknoten Mein-Mixarium
+  und Mein-Rezeptbuch hängen technisch nicht vom Sage-Repo-Namen
+  oder seinen Doku-Texten ab; die Cross-Knoten-Verbindung läuft
+  direkt zwischen den Endknoten.
+- **`status.json`**: nur `"name"` Feld behält Eigenname „Sage-Protokol";
+  Modul-`kurz`-Texte u.ä. enthalten kein generisches „Protokol".
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+- **`update_puls_pie.py`** NICHT aufgerufen.
+- **Modul-Code** unverändert (außer JS-Kommentare in 02_spore.js
+  fallen unter Pass 1, dort steht aber nur „Sage-Protokol" als
+  Eigenname → bleibt).
+
+**Was offen blieb:**
+
+- Restliche offene Punkte aus Cross-Knoten-Handshake-Sitzung +
+  Sage-Page-Live-Status-Pflege unverändert
+  (Tablet-Neustart-Sichttest, Modul-15-Spec, `domainKeywords`-
+  Hartkodierung).
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Sichttest der Sage-Page** im Browser — Hero-Titel
+   sollte „Mycel-Protokoll" zeigen, Footer-Label „Protokoll", aber
+   Tab-Titel und Header-Logo weiter „Sage·Protokol".
+2. **Tablet-Neustart-Sichttest** für SW-Bridge-Phantom-Cache.
+3. **Spec-Sitzung Modul 15 Sichtbarkeits-Lampen + Events-Strom**.
+
+---
+
 ### 2026-05-17 · Mini-Pflege Sage-Page — Live-Status für Topologie + Lebenszyklus
 
 **Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
@@ -1023,6 +1094,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Mini-Pflege · Rechtschreibung „Protokoll" mit zwei L (deutsches Wort) — Eigenname „Sage-Protokol" (englisch) bleibt; `Mycel-Protokoll` + generisches `Protokoll` (Footer-Label, Card-Tag, Markdown) korrigiert; 7 Dateien; Repo-URLs unverändert; KEIN Modul-Code-Eingriff | [→ Archiv](sessions/archiv/2026-05-17_pflege-rechtschreibung-protokoll.md) |
 | 2026-05-17 | Mini-Pflege · Sage-Page Live-Status für Topologie + Lebenszyklus (`isNextUp()`-Vakuum-Falle gefixt — nur Module mit `score:"spec"\|"werkstatt"` zählen als nextup; neue `renderCyclePhases()`-Funktion bindet Phase-Pills an Modul-02/03/05/04-Live-Status; automatisch sichtbar bei künftigen Modul-Status-Änderungen in `status.json`) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sage-page-live-status.md) |
 | 2026-05-16 | Live-Andock · Cross-Knoten-Handshake etabliert (`outcome:"established"` zwischen Mein-Mixarium `7xf0tt33_…` und Mein-Rezeptbuch `RHhposP0…`; Origin-Kollision via dbSuffix aufgelöst; Modul 01 in Endknoten nachgezogen; PR #238-Schaden in Mein-Rezeptbuch-`index.html` repariert; Match-Score Cocktails↔Kochrezepte ≥ 0.8; SW-Bridge-Phantom-Cache-Bug umgangen via direktem `receiveHandshake`-Aufruf, Folge-Pflege offen) | [→ Archiv](sessions/archiv/2026-05-16_cross-knoten-handshake-etabliert.md) |
 | 2026-05-16 | Pflege · Sage-Page Vollumbau / Redesign (Geist-Typografie, Force-Graph-Topologie ersetzt Pie-Doppelung, Lesematerial-Karte, Sichtbarkeits-Lampen-Demo-Anker, scroll-aware Lebenszyklus, neue Pflege-Konvention `docs/sage_page_pflege.md`) | [→ Archiv](sessions/archiv/2026-05-16_pflege-sage-page-redesign.md) |

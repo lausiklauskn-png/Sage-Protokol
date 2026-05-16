@@ -75,7 +75,7 @@ gehoben (~470 Zeilen). Alle Pflichtblöcke vorhanden:
   Schritten in Reihe — Schritte 1–4 sind Einbau (Code), Schritte 5–7
   sind Identitäts- und Spore-Aufbau (Daten), Schritt 8 ist der erste
   Live-Test gegen ein Geschwister.
-- **Zweck** — pragmatisch: aus dem Sage-Protokoll-Hub wird eine
+- **Zweck** — pragmatisch: aus dem Sage-Protokol-Hub wird eine
   produktiv andockende Endknoten-PWA. Keine Vermischung mit dem Bau
   der Module selbst (Karten 01–05).
 - **Verantwortlichkeiten** — „Macht" (6 Punkte) und „Macht nicht"

@@ -17,7 +17,7 @@
 
 Heterokaryose ist im Pilz die **Phase nach der Anastomose**: zwei
 verschmolzene Hyphen tauschen Nährstoffe und Erfahrung — Wissen über
-gute Erden, gefährliche Stellen, knappe Ressourcen. Im Sage-Protokoll
+gute Erden, gefährliche Stellen, knappe Ressourcen. Im Sage-Protokol
 sind das kleine, signierte Datensätze, die der eine Knoten dem anderen
 mitteilt: „so klingt meine Domäne im Detail, das hier sind typische
 Stichworte mit ihren Embedding-Vektoren — du kannst sie nutzen, um
