@@ -262,7 +262,9 @@
   .ring-wrap { position: relative; width: 180px; height: 180px; margin: 0 auto; }
   .ring-wrap svg { width: 100%; height: 100%; display: block; transform: rotate(-90deg); }
   .ring-bg { fill: none; stroke: rgba(255,255,255,0.08); }
-  .ring-fg { fill: none; stroke: url(#ring-grad); stroke-linecap: round; stroke-dasharray: 565.48; stroke-dashoffset: 565.48; transition: stroke-dashoffset 1.4s var(--ease-out-quart); }
+  .ring-fg-real { fill: none; stroke: url(#ring-real-grad); stroke-linecap: round; stroke-dasharray: 0 565.48; stroke-dashoffset: 0; transition: stroke-dasharray 1.4s var(--ease-out-quart), stroke-dashoffset 1.4s var(--ease-out-quart); animation: ring-real-shimmer 3.6s ease-in-out infinite; }
+  .ring-fg { fill: none; stroke: url(#ring-grad); stroke-linecap: round; stroke-dasharray: 0 565.48; stroke-dashoffset: 0; transition: stroke-dasharray 1.4s var(--ease-out-quart), stroke-dashoffset 1.4s var(--ease-out-quart); }
+  @keyframes ring-real-shimmer { 0%, 100% { opacity: 0.78; } 50% { opacity: 1; } }
   .ring-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem; text-align: center; }
   .ring-pilz { background: transparent; border: none; padding: 0; cursor: pointer; width: 38px; height: 38px; }
   .ring-pilz img { width: 100%; height: 100%; transition: transform .2s var(--ease-spring); }
@@ -555,8 +557,18 @@
                     <stop offset="50%" stop-color="#8B5CF6"/>
                     <stop offset="100%" stop-color="#F4B435"/>
                   </linearGradient>
+                  <linearGradient id="ring-real-grad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#34D399"/>
+                    <stop offset="50%" stop-color="#10B981" stop-opacity="0.95"/>
+                    <stop offset="100%" stop-color="#16A34A"/>
+                  </linearGradient>
+                  <filter id="ring-real-glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2.4" result="b"/>
+                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
                 </defs>
                 <circle class="ring-bg" cx="100" cy="100" r="90" stroke-width="14"/>
+                <circle id="demo-ring-real" class="ring-fg-real" cx="100" cy="100" r="90" stroke-width="14" filter="url(#ring-real-glow)"/>
                 <circle id="demo-ring" class="ring-fg" cx="100" cy="100" r="90" stroke-width="14"/>
               </svg>
               <div class="ring-num">
@@ -1091,25 +1103,51 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     });
   }
 
-  // ====== DEMO-ANTEIL (Ring) ======
+  // ====== REAL-ANTEIL (Ring) ======
+  // Berechnet wie viel Anteil schon „real" ist (Module-Codes + Endknoten).
+  // pingStatus zählt mit: integriert + live (= "live" oder "live-direct")
+  // gibt den vollen Endknoten-Bonus (15 statt 8). Damit wirkt sich der
+  // erfolgte Cross-Knoten-Handshake (2026-05-16) im Demo-Anteil aus.
   function computeScore(s) {
     const types = s.nodeTypes || {};
     const modules = s.modules || [];
     let real = 0;
     real += 10; // Hub live (diese Page läuft)
     modules.forEach(m => { real += types[m.score] || 0; });
-    (s.endknoten || []).forEach(e => { real += e.integrated ? 8 : 0; });
+    (s.endknoten || []).forEach(e => {
+      if (!e.integrated) return;
+      const live = e.pingStatus === 'live' || e.pingStatus === 'live-direct';
+      real += live ? 15 : 8;
+    });
     const max = 10 + (modules.length * 10) + ((s.endknoten || []).length * 15);
-    const demo = Math.max(0, Math.min(100, Math.round(100 * (1 - real / max))));
-    animateRing(demo);
+    const realPct = Math.max(0, Math.min(100, Math.round(100 * real / max)));
+    const demo = 100 - realPct;
+    animateRing(realPct, demo);
   }
-  function animateRing(pct) {
-    const ring = document.getElementById('demo-ring');
+  // Zwei Bögen am selben Kreis-Radius:
+  //   #demo-ring-real (grün, schimmernd) wächst von 0 auf realPct
+  //   #demo-ring      (bunt, gold/violett/teal) zeigt den verbleibenden
+  //                   Demo-Anteil — startet wo der grüne aufhört
+  // Damit ergibt grün + bunt zusammen den vollen Kreis. Mit jedem
+  // weiteren Modul/Endknoten-Update wächst der grüne Bogen, der bunte
+  // schrumpft — visuell: vom Konzept zur Realität.
+  function animateRing(realPct, demoPct) {
+    const ringReal = document.getElementById('demo-ring-real');
+    const ringDemo = document.getElementById('demo-ring');
     const num = document.getElementById('demo-num');
-    if (!ring || !num) return;
+    if (!ringReal || !ringDemo || !num) return;
     const C = 2 * Math.PI * 90;
-    requestAnimationFrame(() => { ring.style.strokeDashoffset = C * (1 - pct / 100); });
-    countUp(num, pct, '%', 1400);
+    // Grüner Bogen: stroke-dasharray = pct%, Rest unsichtbar.
+    // Bunter Bogen: stroke-dasharray = demo%, mit dash-offset = -realPct (rotiert hinter Grün).
+    const realLen = C * realPct / 100;
+    const demoLen = C * demoPct / 100;
+    requestAnimationFrame(() => {
+      ringReal.style.strokeDasharray = realLen + ' ' + (C - realLen);
+      ringReal.style.strokeDashoffset = '0';
+      ringDemo.style.strokeDasharray = demoLen + ' ' + (C - demoLen);
+      ringDemo.style.strokeDashoffset = (-realLen).toString();
+    });
+    countUp(num, demoPct, '%', 1400);
   }
   function countUp(el, target, suffix, dur) {
     const start = performance.now();

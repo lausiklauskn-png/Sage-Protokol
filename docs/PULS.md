@@ -15,12 +15,12 @@
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-16 (14 Module)
+  title Modulstand 2026-05-17 (14 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
-  "🟨 Spec fertig" : 1
-  "🟦 Code-Stub" : 9
-  "🟩 Fertig" : 0
+  "🟨 Spec fertig" : 0
+  "🟦 Code-Stub" : 7
+  "🟩 Fertig" : 3
 ```
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
@@ -497,6 +497,96 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
+
+### 2026-05-17 · Mini-Pflege Score-Realität — Module 03/05/09 auf fertig, Endknoten-pingStatus-Bonus, Ring-Inversion
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/pflege-score-realitaet`. Klaus' Beobachtung zur Sage-Page:
+„Demo-Anteil 33 % zeigt zu wenig Realität an — 09 Einbau-PWA ist
+nachweislich an zwei Endknoten vollzogen, 03 Embedding und 05
+Anastomose haben im Cross-Knoten-Handshake live gewirkt." Plus
+Wunsch zur Ring-Visualisierung: grüner schimmernder Bogen wächst,
+bunter Bogen schrumpft.
+
+**Klaus' Bild:** „Wenn künstliche Befruchtung die Fortpflanzung einer
+Art bewiesen hat, ist die Methode bewiesen — auch wenn nicht jedes
+Detail des Embryos perfekt ist." → Live-Beweis 2026-05-16 reicht für
+`score: "fertig"` bei 03, 05, 09. SW-Bridge-Phantom-Cache ist ein
+nebensächlicher Fehler im Empfänger-Pfad, kein Hauptbeweis-Bruch.
+
+**Getan:**
+
+- **`status.json`** Score-Anhebungen mit Begründung im `siegel`:
+  - **03 Embedding:** `stub` → `fertig` (Siegel „Live im
+    Cross-Knoten-Handshake 2026-05-16").
+  - **05 Anastomose:** `stub` → `fertig` (Siegel „Cross-Knoten-
+    Handshake live 2026-05-16").
+  - **09 Einbau-PWA:** `spec` → `fertig` (Siegel „Live bei zwei
+    Endknoten 2026-05-16").
+  - **`lastUpdated`** auf `2026-05-17`.
+
+- **`scripts/update_puls_pie.py`** ausgeführt. Neue Verteilung:
+  4 Schablone (Backlog 10/11/12/14), 0 Werkstatt, 0 Spec, 7 Stub
+  (00/01/02/04/06/07/08), 3 Fertig (03/05/09). PULS § Modulstand-
+  Pie-Block automatisch nachgezogen.
+
+- **`index.html` `computeScore()` erweitert:** Endknoten mit
+  `pingStatus === "live"` oder `"live-direct"` zählen jetzt 15 statt
+  8 (= im `scoreModel` schon vorgesehene `endknotenIntegratedAndPing`).
+  Beide Endknoten haben `pingStatus: "live-direct"` → je 15 Punkte.
+  Plus 03/05/09 als `fertig` (Wert 10) ergibt: realScore = Hub(10) +
+  Module(79) + Endknoten(30) = 119; maxScore = 140; **Demo-Anteil
+  ≈ 15 %** (vorher 33 %).
+
+- **Ring-Visualisierung inverted und zweigeteilt:**
+  - Neuer SVG-Bogen `#demo-ring-real` mit grün-schimmerndem Gradient
+    (`#34D399` → `#10B981` → `#16A34A`) und SVG-Glow-Filter; wächst
+    von 0 auf `realPct` (heute 85 %).
+  - Alter bunter Bogen `#demo-ring` zeigt jetzt nur `demoPct`-Anteil
+    (heute 15 %), gesetzt mit `stroke-dashoffset = -realLen` so dass
+    er hinter dem grünen anschließt.
+  - Beide Bögen zusammen = voller Kreis.
+  - Schimmer-Animation `@keyframes ring-real-shimmer` (opacity
+    0.78 ↔ 1.0, 3.6 s ease-in-out).
+  - `animateRing(realPct, demoPct)` jetzt zwei Parameter; Demo-Zahl
+    in der Mitte zeigt weiterhin den Theater-Anteil.
+
+**Bewusst nicht angefasst:**
+
+- **Modul 06 Heterokaryose** bleibt `stub` (nur rasch grob
+  durchgeklickt, kein Live-Beweis).
+- **Modul 00/01/02/04/07/08** bleiben `stub`.
+- **`scoreModel`-Formel** im JSON unverändert.
+- **INTERFACES.md** unverändert (Score-Bewertung ist UI-Frage, kein
+  Modul-Vertrag).
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+- **Modul-Code** in `src/modules/*` unverändert.
+- **Endknoten-Repos** unverändert.
+
+**Validierung:**
+
+- `status.json` valides JSON.
+- `update_puls_pie.py` erfolgreich.
+- HTML-Parse OK, Inline-JS via `node --check` (Zeile 980–1906) OK.
+- Manuelle Score-Berechnung in Python ergibt **15 %** Demo-Anteil
+  (matched Klaus' Prognose).
+
+**Was offen blieb:**
+
+- Klaus' Browser-Sichttest dieser Pflege — Demo-Ring zwei Bögen,
+  Topologie drei Grün-Knoten.
+- Tablet-Neustart-Sichttest für SW-Bridge-Phantom-Cache unverändert.
+- Spec-Sitzung Modul 15 Sichtbarkeits-Lampen + Events-Strom.
+- `domainKeywords`-Hartkodierung in Endknoten unverändert offen.
+- Modul 06 voller Test-1–9-Lauf wartet auf Klaus' Tablet-Sitzung.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Browser-Sichttest** dieser Pflege.
+2. **Tablet-Neustart-Sichttest** für SW-Bridge-Phantom-Cache.
+3. **Spec-Sitzung Modul 15 Sichtbarkeits-Lampen + Events-Strom**.
+
+---
 
 ### 2026-05-17 · Mini-Pflege Rechtschreibung — „Protokoll" mit zwei L
 
@@ -1094,6 +1184,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Mini-Pflege · Score-Realität — Module 03/05/09 auf `fertig` hochgestuft (Live-Beweis Cross-Knoten-Handshake 2026-05-16); Endknoten-`pingStatus`-Bonus aktiviert (`live-direct` zählt 15 statt 8); Demo-Ring auf zwei Bögen umgestellt (grün-schimmernd wächst auf 85 %, bunt schrumpft auf 15 %); update_puls_pie.py aufgerufen | [→ Archiv](sessions/archiv/2026-05-17_pflege-score-realitaet.md) |
 | 2026-05-17 | Mini-Pflege · Rechtschreibung „Protokoll" mit zwei L (deutsches Wort) — Eigenname „Sage-Protokol" (englisch) bleibt; `Mycel-Protokoll` + generisches `Protokoll` (Footer-Label, Card-Tag, Markdown) korrigiert; 7 Dateien; Repo-URLs unverändert; KEIN Modul-Code-Eingriff | [→ Archiv](sessions/archiv/2026-05-17_pflege-rechtschreibung-protokoll.md) |
 | 2026-05-17 | Mini-Pflege · Sage-Page Live-Status für Topologie + Lebenszyklus (`isNextUp()`-Vakuum-Falle gefixt — nur Module mit `score:"spec"\|"werkstatt"` zählen als nextup; neue `renderCyclePhases()`-Funktion bindet Phase-Pills an Modul-02/03/05/04-Live-Status; automatisch sichtbar bei künftigen Modul-Status-Änderungen in `status.json`) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sage-page-live-status.md) |
 | 2026-05-16 | Live-Andock · Cross-Knoten-Handshake etabliert (`outcome:"established"` zwischen Mein-Mixarium `7xf0tt33_…` und Mein-Rezeptbuch `RHhposP0…`; Origin-Kollision via dbSuffix aufgelöst; Modul 01 in Endknoten nachgezogen; PR #238-Schaden in Mein-Rezeptbuch-`index.html` repariert; Match-Score Cocktails↔Kochrezepte ≥ 0.8; SW-Bridge-Phantom-Cache-Bug umgangen via direktem `receiveHandshake`-Aufruf, Folge-Pflege offen) | [→ Archiv](sessions/archiv/2026-05-16_cross-knoten-handshake-etabliert.md) |
