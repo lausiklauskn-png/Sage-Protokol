@@ -12,7 +12,13 @@
     {
       "name": "Rezeptbuch",
       "domain": "Kochrezepte",
-      "integrated": false,
+      "integrated": true,
+      "integratedAt": "2026-05-16",
+      "nodeId": "1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json",
+      "stammCategories": ["Vorspeisen", "Suppen", "Fleisch", "Fisch", "Vegetarisch", "Kuchen", "Desserts"],
+      "guestCategories": ["Getränke", "Smoothies & Shakes", "Mocktails", "Alkfr. Cocktails", "Limonaden", "Tees & Kaffees", "Cocktails", "Bowlen", "Sirup & Basis", "Knabbereien", "Fingerfood"],
+      "pingStatus": "blocked-origin-collision",
       "url": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/"
     },
     {
@@ -24,7 +30,7 @@
       "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json",
       "stammCategories": ["Cocktails", "Mocktails", "Alkfr. Cocktails", "Smoothies & Shakes", "Limonaden", "Tees & Kaffees", "Bowlen", "Sirup & Basis"],
       "guestCategories": ["Knabbereien", "Fingerfood"],
-      "pingStatus": "pending-peer",
+      "pingStatus": "blocked-origin-collision",
       "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
     }
   ],
