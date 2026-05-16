@@ -34,7 +34,7 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 0.55 → 0.80 geführt haben:
 
 - 🟦 **[01 Storage](components/01_storage.md)** — geprüft 2026-05-14 (Klaus, im Browser); init/round-trip/Unknown-Store sauber, sechs Stores in DevTools sichtbar
-- 🟦 **[02 Spore](components/02_spore.md)** — geprüft 2026-05-14 + 2026-05-16 (Klaus, im Browser); Identität deterministisch, Spore sortiert, Sign+Verify valide, Manipulation erkannt; **Bau 02.X Backup-Export Sichttest 2026-05-16 grün** — Knöpfe 6/7/7b alle drei Hauptpfade ohne Modul-Bug (Wrapper-Format `version:1` / `iterations:600000` / AES-GCM-256, `BackupOverwriteError`-Schutzpfad greift, force-Pfad funktioniert; siehe Karte 02 § Bauzustand-Zeile „Sichttest (Bau 02.X)"). Test-Panel-UX-Befund pendingBackup-Stash-Reset in Knopf 7 ist Folge-Mini-Pflege, kein Modul-Bug.
+- 🟦 **[02 Spore](components/02_spore.md)** — geprüft 2026-05-14 + 2026-05-16 (Klaus, im Browser); Identität deterministisch, Spore sortiert, Sign+Verify valide, Manipulation erkannt; **Bau 02.X Backup-Export Sichttest 2026-05-16 grün** — Knöpfe 6/7/7b alle drei Hauptpfade ohne Modul-Bug (Wrapper-Format `version:1` / `iterations:600000` / AES-GCM-256, `BackupOverwriteError`-Schutzpfad greift, force-Pfad funktioniert; siehe Karte 02 § Bauzustand-Zeile „Sichttest (Bau 02.X)"). Test-Panel-UX-Befund pendingBackup-Stash-Reset in Knopf 7 wurde in Folge-Mini-Pflege 2026-05-16 gefixt (Reset jetzt erst direkt vor `importBackup` statt am Handler-Anfang; Sichttest des Fix-Pfads ungeprüft, weil headless gebaut, wartet auf Klaus' Browser-Lauf).
 - 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
 - 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert
 - 🟦 **[06 Heterokaryose](components/06_heterokaryose.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 06) + **Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15** (`sbkim_hetero_outbox` als Anker-Quelle nach Spec-Sitzung 08, fail-soft Fallback bleibt); **Sichttest 2026-05-16 rasch grob durchgeklickt** (Klaus, Chrome auf Galaxy Tab S6 + DeX): Panel 06 mit 14 Knöpfen — alle Selbstchecks grün, Hauptpfade ohne Modul-Bug; voller Test-1–9-Lauf inkl. Test 9 `HETERO_MAX_ANCHORS`-Begrenzung folgt bei Bedarf. Fünf-Funktionen-API, kanonischer Sign/Verify-Pfad als **vierter Pfad bewusst dupliziert** (Single-File-PWA-Stil), neuer Store `sbkim_hetero_inbox` (DB-Version 1→2 additiv, Bau 06), Service-Worker dritter fetch-Listener-Pfad `/sbkim/heterokaryosis`; Anker-Quelle nach Pflege Bau 06.1 = `sbkim_hetero_outbox` fail-soft mit Spore-Single-Anker-Fallback. **Test 6 in Panel 07 muss in einem Folge-Sichttest neu durchgespielt werden** (Cleanup löscht jetzt sechs Stores statt fünf).
@@ -435,146 +435,139 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
-### 2026-05-16 · Pflege-Sitzung — Phase-1 Sichttest-Resultate Karten 02/06/01
+### 2026-05-16 · Mini-Pflege Test-Panel — Knopf-7-pendingBackup-Reset
 
-**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase (nur Doku).
-Branch `claude/pflege-phase1-sichttest-resultate-2026-05-16`. Folge-
-Pflege nach Klaus' Sichttest 2026-05-16 (Chrome auf Galaxy Tab S6 +
-DeX) und nach Merge von PR #56 „Pflege Persistenz-Strategie
-verbinden" — der Phase 2 (Modul 00 Backup-Tipp-Zeile) parallel in
-main gehoben hat. Diese Sitzung zieht **Phase 1** nach: die drei
-Sichttest-Resultate in den Karten-Bauzustand-Tabellen, die PR #56
-nicht angefasst hatte.
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase (reine
+Test-Panel-UX). Branch `claude/fix-test-panel-button-7-Iwf1E`.
+Folge-Mini-Pflege zum Test-Panel-UX-Befund aus Pflege Phase-1
+Sichttest-Resultate (selbiger Tag, archiviert): `pendingBackup`-
+Stash in Panel 02 Knopf 7 wurde beim zweiten Klick auf „Backup
+einlesen" überschrieben — wenn Klaus zweimal auf Knopf 7 klickte
+ohne im File-Picker eine Datei zu wählen, ging der Stash aus
+einem vorherigen `BackupOverwriteError`-Lauf verloren und Knopf
+7b zeigte „Kein Backup zum Ersetzen vorgemerkt".
 
-**Hintergrund:** Mein vorheriger Branch
-`claude/pflege-persistenz-strategie-rb6pb` (PR #57) hatte Phase 1
-und Phase 2 in einer Sitzung gebaut. Während ich arbeitete, hat
-Klaus parallel PR #56 gemerged, der Phase 2 inhaltlich identisch
-löst. PR #57 schloss ich ohne Merge (Konflikt-Lage, doppelte
-Arbeit für Phase 2); diese Folge-Pflege rettet die Phase-1-Doku-
-Aktualisierungen sauber auf main.
-
-**Auftrag:** Klaus' Sichttest-Befunde 2026-05-16 in die heiligen
-Tafeln nachziehen, ohne Code-Änderung:
-
-1. **Karte 02** § Bauzustand-Zeile „Sichttest (Bau 02.X)" von
-   „ungeprüft, weil headless gebaut" auf „geprüft 2026-05-16" mit
-   den dokumentierten Befunden:
-   - Knopf 6 (Backup exportieren) → valides Wrapper-Format
-     (`version:1` / `iterations:600000` / AES-GCM-256 /
-     `payload-schema-version:1`).
-   - Knopf 7 (Backup einlesen ohne force) → `BackupOverwriteError`
-     mit Warnzeile + Status-Chip „Bestehende Identität" (Schutz-
-     Pfad, erwartet).
-   - Knopf 7b (Identität ersetzen — unwiderruflich) → force-Pfad
-     im Normalfall.
-   - **Test-Panel-UX-Befund** dokumentiert (kein Modul-Bug):
-     `pendingBackup`-Stash-Reset in Knopf 7 beim zweiten Klick →
-     Folge-Mini-Pflege offen.
-2. **Karte 06** § Bauzustand-Sichttest-Zeile von „—" auf „geprüft
-   2026-05-16 (rasch grob durchgeklickt)": Panel 06 mit 14 Knöpfen
-   im kombinierten Panel-01–08-Lauf, alle Selbstchecks grün, keine
-   Auffälligkeit; voller Test-1–9-Lauf folgt bei Bedarf. Ehrliche
-   „rasch grob"-Variante (Briefing-Vorgabe — kein Fake-Pass für
-   nicht im Detail durchgespielte Pfade).
-3. **Karte 01** § Bauzustand neue Zeile „Sichttest Knopf 5
-   Persist-Status (Pflege Storage-Persist)": geprüft 2026-05-16,
-   `_meta.storagePersisted: true` (Chrome auto-bei-PWA bestätigt
-   — Stufe (1) der Identitäts-Persistenz wirkt plattformkonform).
-4. **PULS § Schnellüberblick-Tabelle** Modul 02 / 06 / 01
-   Sichttest-Spalten mit „2026-05-16 (Klaus)"-Datum aktualisiert;
-   Modul 01 Code-Spalte um Pflege-PWA-Suffix + Pflege-Storage-
-   Persist-Verweis erweitert.
-5. **PULS § „Als nächstes ✨"** Modul 02 oberer Eintrag um
-   Bau-02.X-Sichttest-Vermerk; Modul 06 aus „Sichttest ausstehend
-   bzw. teilweise erledigt"-Liste in obere geprüft-Liste
-   verschoben.
-
-KEIN Code, KEINE INTERFACES.md-Änderung, KEIN
-`update_puls_pie.py` (kein Score-Wechsel; Modul 02 / 06 / 01
-bleiben `score:"stub"`).
+**Auftrag:** Knopf-7-Handler in `tests/manual_check.html` so
+umbauen, dass `pendingBackup = null` NICHT beim Klick auf Knopf
+7 zurückgesetzt wird, sondern erst NACH erfolgreicher Datei-Wahl
+im File-Picker-`change`-Listener und VOR dem `importBackup`-
+Aufruf. Damit überlebt der Stash File-Picker-Cancel und doppelte
+Knopf-7-Klicks ohne File-Wahl. KEIN Modul-Code-Eingriff, KEIN
+INTERFACES.md-Eingriff, KEIN `status.json`-/`update_puls_pie.py`-
+Wechsel.
 
 **Getan:**
 
-- `docs/components/02_spore.md` § Bauzustand-Zeile „Sichttest (Bau
-  02.X)" auf „geprüft 2026-05-16 (Klaus, Chrome auf Galaxy Tab S6
-  + DeX)" gestellt; volle drei Knopf-Befunde + Test-Panel-UX-
-  Befund pendingBackup-Stash dokumentiert.
-- `docs/components/06_heterokaryose.md` § Bauzustand-Sichttest-
-  Zeile auf „geprüft 2026-05-16 (rasch grob durchgeklickt)".
-- `docs/components/01_storage.md` § Bauzustand neue Zeile
-  „Sichttest Knopf 5 Persist-Status" zwischen „Pflege Storage-
-  Persist" und „In Endknoten eingebaut".
-- `docs/PULS.md` § Schnellüberblick-Tabelle Modul 02 / 06 / 01
-  Sichttest-Spalten + Code-Spalten nachgezogen.
-- `docs/PULS.md` § „Als nächstes ✨" Modul 02-Eintrag erweitert;
-  Modul 06 aus „Sichttest ausstehend"-Liste verschoben.
-- `docs/PULS.md` § Sitzungs-Einträge rotiert (dieser Eintrag oben,
-  Pflege Persistenz-Strategie verbinden geht ins Archiv).
+- `tests/manual_check.html` Panel 02 Knopf 7 „Backup einlesen"-
+  Handler refaktoriert: Zeile `pendingBackup = null;` aus dem
+  Handler-Anfang entfernt, stattdessen direkt vor dem
+  `var result = await SbkimSpore.importBackup(blob, password);`-
+  Aufruf eingesetzt (innerhalb des try-Blocks, nach JSON-Parse-
+  Erfolg). Inline-Kommentar erweitert um die Begründung
+  (File-Picker-Cancel-Pfad). Bestehende Pfade unverändert:
+  Erfolgsfall → `pendingBackup` bleibt null, Knopf 7b inert.
+  `BackupOverwriteError`-Pfad → `pendingBackup` wird mit
+  gelesenem Blob+Passwort gefüllt, Knopf 7b scharf. Knopf 7b
+  force-Pfad unverändert (verbraucht und nullt den Stash beim
+  Klick).
+- `docs/components/02_spore.md` § Bauzustand-Zeile „Sichttest
+  (Bau 02.X)" Test-Panel-UX-Befund-Satz so umformuliert, dass er
+  den Fix der Folge-Mini-Pflege beschreibt (Sichttest-Status für
+  Modul 02 selbst bleibt „geprüft 2026-05-16" — nur der UX-
+  Befund-Nachsatz zeigt jetzt die Lösung statt der offenen
+  Forderung).
+- `docs/PULS.md` § „Als nächstes ✨" Modul 02-Eintrag UX-Befund-
+  Vermerk auf „in Folge-Mini-Pflege 2026-05-16 gefixt" gestellt.
+- `docs/PULS.md` § obersten Sitzungs-Eintrag (Phase-1) „Was offen
+  blieb"-Punkt „Test-Panel-UX-Fix" mit ~~strikethrough~~ als
+  gelöst markiert (Phase-1-Eintrag wandert in dieser Sitzung
+  vollständig ins Archiv — er war bereits im Archiv-Index, der
+  visible Block wird ersetzt).
+- `docs/PULS.md` § Sitzungs-Einträge rotiert (dieser Mini-Pflege-
+  Eintrag oben; Phase-1-Eintrag fällt aus dem visible Block, ist
+  schon im Archiv-Index unter selbiger Datums-Zeile).
 - `docs/PULS.md` § Archiv-Index neue Zeile oben.
-- `docs/sessions/archiv/2026-05-16_pflege-phase1-sichttest-karten-02-06-01.md`
+- `docs/sessions/archiv/2026-05-16_pflege-test-panel-knopf-7-pendingBackup.md`
   als Übergabeprotokoll angelegt.
 
 **Bewusst nicht angefasst:**
 
-- **Modul 00 Backup-Tipp-Zeile** unverändert (Phase 2 ist seit PR
-  #56 in main; diese Pflege fasst sie nicht an).
-- **Modul 00 / 01 / 02 / 03 / 04 / 05 / 06 / 07 / 08 Code**
-  unverändert.
-- **INTERFACES.md** unverändert.
-- **`status.json`** unverändert (keine Score-Wechsel).
-- **`update_puls_pie.py`** NICHT aufgerufen.
-- **Test-Panel-UX-Fix Knopf-7-pendingBackup-Reset** in dieser
-  Sitzung NICHT gemacht — eigene Folge-Mini-Pflege. Karte 02 §
-  Bauzustand dokumentiert nur den Befund, keine Lösung.
-- **Hauptversions-Sprung** — keiner (`PROTOCOL_VERSION` bleibt
-  `"0.1"`, `DB_VERSION` bleibt `3`, `BACKUP_FORMAT_VERSION` bleibt
-  `1`).
+- **`src/modules/00–08`** unverändert (Test-Panel ist nicht
+  Modul-Code).
+- **INTERFACES.md** unverändert (Test-Panel ist nicht Vertrags-
+  Bestandteil; §0/§1/§2/§3/§4/§5/§6 nicht angetastet).
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`, **`DB_VERSION`** bleibt
+  `3`, **`BACKUP_FORMAT_VERSION`** bleibt `1`.
+- **`update_puls_pie.py`** NICHT aufgerufen (kein Score-Wechsel,
+  Modul 02 bleibt `score:"stub"` — Test-Panel ist nicht Modul-
+  Code).
+- **`status.json`** unverändert.
 - **Sage-Page-(`index.html`)-Änderung** — keine.
+- **Karten 14 / 10 / 11 / 12** unangetastet.
+- **`docs/PAPER_NUTZEN_UND_INTEGRATION.md`** unangetastet
+  (gehört zur parallelen Hauptsitzung „Page-Neugestaltung mit
+  Paper-Integration").
+- **Endknoten-Sichtkontrolle / Klaus-Sichttest-Erzwingung**
+  während dieser Sitzung — Klaus hat den Original-Befund
+  2026-05-16 schon dokumentiert geliefert.
 
 **Validierung:**
 
-- Reine Doku-Pflege — keine Code-Validierung nötig (kein Modul-
-  Code angefasst).
-- Cross-Reading Karten 02/06/01 ↔ PULS Schnellüberblick ↔ PULS
-  „Als nächstes" konsistent (gleiche Datums-Formate, gleiche
-  Knopf-/Test-Begriffe, gleiche Klaus-Zitate).
+- Python-Splitter + `node --check` pro Inline-`<script>`-Block in
+  `tests/manual_check.html`: alle 10 Blöcke grün (1318 + 2962 +
+  2723 + 3679 + 9292 + 17664 + 17384 + 23090 + 15498 + 10258
+  Zeichen).
+- Cross-Reading Karte 02 § Bauzustand-Zeile ↔ PULS § „Als
+  nächstes" Modul 02 ↔ PULS § Sitzungs-Eintrag konsistent
+  (gleiche Datums-Formate, gleiche Fix-Beschreibung).
+- CLAUDE.md-Pflichten: deutsche Doku, YYYY-MM-DD-Datum, kein
+  `PROTOCOL_VERSION`-Sprung, keine personenbezogenen Daten,
+  KEIN Modul-Code-Eingriff (Test-Panel ist nicht
+  `src/modules/`).
 
 **Was offen blieb:**
 
-- ~~**Klaus' Sichttest Panel 00 Backup-Tipp-Zeile** im Browser~~ —
-  **geprüft 2026-05-16 (Klaus, „Sichttest OK")** in Mini-Pflege
-  selbiger Tag nachgezogen: Karte 00 § Bauzustand-Zeile „Sichttest
-  (Pflege Persistenz)" auf „geprüft" + PULS Schnellüberblick
-  Modul-00-Sichttest-Spalte aktualisiert. Drei-Setup-Probe aus
-  Karte 00 § Manueller Test Punkt 7 alle drei Pfade grün.
-- **Test-Panel-UX-Fix Knopf-7-pendingBackup-Reset** offen (eigene
-  Folge-Mini-Pflege, ≤ 15 Min headless).
+- **Sichttest des Fix-Pfads im Browser** ungeprüft, weil
+  headless gebaut — wartet auf Klaus' Browser-Lauf. Konkreter
+  Test-Pfad: (a) Knopf 6 „Backup exportieren" → Demo-Backup-
+  Datei erzeugen. (b) Knopf 7 klicken, File-Picker öffnen,
+  ABBRECHEN — Erwartung: kein State-Wechsel, Knopf 7b inert.
+  (c) Knopf 7 erneut klicken, Datei aus (a) wählen, Passwort
+  eingeben → `BackupOverwriteError`, Warnzeile mit alter
+  nodeId, Knopf 7b scharf. (d) Knopf 7 dritter Klick UND im
+  File-Picker ABBRECHEN — Erwartung: `pendingBackup` bleibt
+  gesetzt, Knopf 7b bleibt scharf (das ist der Fix). (e)
+  Knopf 7b → `{restored:true}`, neue nodeId stimmt mit alter
+  überein.
 - **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
   PWA-Suffix (unverändert offen, wartet auf Klaus am Termux).
+  Blockiert Cross-Knoten-Handshake.
 - **Cross-Knoten-Handshake** zwischen beiden Endknoten nach
   Re-Andock.
 - **`status.json` `pingStatus`** für beide Endknoten von
   `"blocked-origin-collision"` auf `"live"` nach Cross-Handshake.
+- **Voller Panel-06-Test-1–9-Lauf** (Modul 06 Heterokaryose) —
+  niedrig priorisiert; ehrlich „rasch grob"-Variante aus 2026-
+  05-16-Sichttest hat alle Selbstchecks grün gezeigt.
 - Übrige offene Punkte (Sushi-Kategorie, INTERFACES.md §6
-  Tabellen-Bug, Eruda-Rückbau, voller Panel-06-Test-1–9-Lauf bei
-  Bedarf) unverändert offen.
+  Tabellen-Bug, Eruda-Rückbau) unverändert offen.
 
 **Vorgeschlagene nächste Schritte:**
 
 1. **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
-   PWA-Suffix aus Pflege 2026-05-16 (unverändert offen, wartet auf
-   Klaus am Termux). Blockiert Cross-Knoten-Handshake.
+   PWA-Suffix (unverändert offen, wartet auf Klaus am Termux).
+   *Nicht headless.* Blockiert Cross-Knoten-Handshake.
 2. **Cross-Knoten-Handshake** zwischen Mein-Rezeptbuch und
    Mein-Mixarium nach Re-Andock — setzt Schritt 1 voraus.
-3. **Mini-Pflege Test-Panel Knopf 7 pendingBackup-Reset**
-   (`tests/manual_check.html` Panel 02 Knopf 7 — Reset nach
-   erfolgreicher Datei-Wahl statt am Anfang). Headless möglich,
-   ≤ 15 Min, kein Modul-Code-Eingriff. Niedrig priorisiert
-   (Klaus' realer Sichttest-Pfad funktioniert; der Befund tritt
-   nur beim doppelten Klick ohne File-Wahl auf).
-
----
+   *Nicht headless.*
+3. **Klaus' Sichttest des Fix-Pfads** im Browser (Panel 02
+   Knopf 7 Test-Pfad a→e oben). Niedrig priorisiert — der
+   reale Sichttest-Pfad funktioniert weiterhin; der Fix
+   schützt nur den doppelten Klick ohne File-Wahl. *Nicht
+   headless.*
+4. **Voller Panel-06-Test-1–9-Lauf** mit Klaus (Heterokaryose-
+   Sichttest-Vertiefung). *Nicht headless.* Niedrig
+   priorisiert.
 
 ---
 
@@ -585,6 +578,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-16 | Mini-Pflege · Test-Panel Knopf-7-pendingBackup-Reset (Reset-Zeile aus Handler-Anfang in `tests/manual_check.html` entfernt, `pendingBackup = null` jetzt direkt vor `importBackup`-Aufruf nach erfolgreicher File-Wahl; File-Picker-Cancel löst keine State-Änderung mehr aus, Stash überlebt doppelten Knopf-7-Klick ohne File-Wahl; KEIN Modul-Code-Eingriff, KEIN INTERFACES.md-Eingriff, KEIN Score-Wechsel) | [→ Archiv](sessions/archiv/2026-05-16_pflege-test-panel-knopf-7-pendingBackup.md) |
 | 2026-05-16 | Pflege · Phase-1 Sichttest-Resultate Karten 02/06/01 (Klaus' Sichttest 2026-05-16: Bau-02.X-Knöpfe 6/7/7b grün + Panel 06 rasch grob + Panel 01 Knopf 5 `_meta.storagePersisted: true` in Karten 02/06/01 § Bauzustand + PULS Schnellüberblick nachgezogen; Test-Panel-UX-Befund Knopf 7 pendingBackup-Stash-Reset offen als Mini-Pflege) | [→ Archiv](sessions/archiv/2026-05-16_pflege-phase1-sichttest-karten-02-06-01.md) |
 | 2026-05-16 | Pflege · Persistenz-Strategie verbinden (Identitäts-Persistenz Stufe 3 — Modul 00 „Backup empfohlen"-Tipp-Zeile bei `storagePersisted === false` ODER Quota-Warn; `getStatusSnapshot()` um `storagePersisted` erweitert, kein Direkt-Aufruf von Modul 02; alle drei Stufen final gelöst) | [→ Archiv](sessions/archiv/2026-05-16_pflege-persistenz-strategie-verbinden.md) |
 | 2026-05-16 | Bau · Modul 02 Backup-Export Code-Stub (Bau 02.X — `exportBackup`/`importBackup` additiv in `src/modules/02_spore.js`, fünf Error-Klassen, drei Helper-Reuse-Entscheidungen, drei Panel-02-Knöpfe; Identitäts-Persistenz Stufe (2) damit gelöst) | [→ Archiv](sessions/archiv/2026-05-16_bau-02x-backup-export.md) |
