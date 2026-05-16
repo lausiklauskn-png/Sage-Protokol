@@ -114,6 +114,13 @@ init(options?) → Promise<void>
   // rufen, vor irgendeinem Modul, das Storage.init() intern selbst nachzieht
   // (Modul 05, 06, 07, 00). Ein abweichender dbSuffix bei einem späteren
   // init-Aufruf wirft InvalidDbSuffixError (kein stilles Ignorieren).
+  //
+  // Pflege Storage-Persist (2026-05-16): nach erfolgreichem DB-Open
+  // (onsuccess) fordert Modul 01 navigator.storage.persist() an
+  // (fail-soft). Bei Erfolg gibt _meta.storagePersisted true|false zurück;
+  // wenn die API fehlt oder das Promise rejectet, bleibt der Wert null.
+  // Persist-Verweigerung ist KEIN SBKIM-Bruchgrund — der Knoten läuft
+  // weiter (Chrome auto-bei-PWA, Firefox prompt, Safari restriktiv).
 
 getStore(storeName: string) → StoreHandle
   // Interner Helfer für Module, die mehrere Operationen in einer
@@ -375,6 +382,18 @@ Block dieser Karte (Zeile „Sichttest").
   Service-Worker-Scope zugänglich. Storage muss dort genauso funktionieren
   wie im Fenster-Scope — die Spec macht keine Annahme über den Aufrufer-
   Kontext.
+- **Persist-Verweigerung:** `navigator.storage.persist()` ist eine Bitte
+  an den Browser, IndexedDB beim normalen Aufräumen nicht zu löschen —
+  keine Garantie. Chrome gewährt es bei installierten PWAs automatisch
+  (per [Web-Plattform-Heuristik](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API#storage_quotas_and_eviction_criteria)),
+  Firefox fragt den Nutzer (Prompt), Safari ist restriktiv und sagt
+  meist `false`. Modul 01 reagiert fail-soft: bei `false` oder `null`
+  läuft der Endknoten unverändert weiter, Klaus bekommt aber im Doku-
+  Fenster bzw. in der Konsole sichtbar, dass tiefes Browserspeicher-
+  Löschen die nodeId töten kann. Stufe (2) Backup-Export (Modul 02) und
+  Stufe (3) Quota-Frühwarnung (Modul 00, schon spec) decken die übrigen
+  Verlust-Pfade ab — siehe PULS § Offene Querschnitts-Fragen
+  „Identitäts-Persistenz".
 
 ---
 
@@ -391,6 +410,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Pflege Spec 08 Outbox-Anmeldung | 2026-05-15 | Spec 08 | `DB_VERSION` 2 → 3 (additive Migration v=3) in § Konfigurationswerte und Versionsmigrations-Tabelle nachgezogen. § Stores um neuen Store `sbkim_hetero_outbox` erweitert (Schlüssel `label` string ≤ 64 Zeichen, Wert `{label, vector, addedAt}`, Schreiber 08, Leser 06/08). `sbkim_siblings`-Schreiber-Spalte um Co-Schreiber-Hinweis „08 (Co, nur Feld `heterokaryosisOptIn`)" erweitert; Leser-Spalte um 08 ergänzt. Schema-Hinweis-Block um Co-Schreiber-Konvention (Modul 08 darf AUSSCHLIESSLICH das eine additive Feld setzen, wenn der Eintrag bereits existiert — sonst `UnknownSiblingError`; Haupt-Schreiber bleibt 05, Karte 05 unangetastet) und um `sbkim_hetero_outbox`-Verhalten (Reihenfolge absteigend nach `addedAt` in `listOutbox`, Überschreib-Verhalten bei doppeltem Label, `OutboxFullError` ohne automatisches Verdrängen, fail-soft-Lese-Recht für Modul 06; Outbox-Lese-Pfad in `src/modules/06_heterokaryose.js` als Folge-Pflege Bau 06.1 notiert) erweitert. **Keine JS-Code-Änderung** in `src/modules/01_storage.js` (`DB_VERSION` und `STORES_V3` zieht Bau-Sitzung 08 nach — Spec-Sitzung 08 spezifiziert nur den Vertrag). |
 | Pflege Bau 06.1 Code-DB-Version 2 → 3 | 2026-05-15 | Pflege Bau 06.1 | `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3); neuer `STORES_V3 = ["sbkim_hetero_outbox"]`-Block in `applyMigration(db, 3)`; `KNOWN_STORES` um den Outbox-Store erweitert. Bestehende PWAs mit DB-Version 1 oder 2 bekommen den Store beim nächsten Lade additiv (`for v = oldVersion+1 … newVersion`-Loop zieht beide Migrations-Schritte v=2 + v=3 nach), kein Datenverlust. Code-Anmeldung des Stores, den Spec-Sitzung 08 schon im Vertrag spezifiziert hatte — Karte 01 § Konfigurationswerte und § Versionsmigration sind seit Spec-Sitzung 08 auf `v=3` und werden hier nur im Code nachgezogen. **Keine Vertragsänderung** in Karte 01 oder INTERFACES.md §1 Modul 01 (Spec 08 hatte den Vertrag schon gespiegelt; Pflege Bau 06.1 hebt den Code-Status nach). `node --check src/modules/01_storage.js` grün. |
 | Pflege PWA-Suffix | 2026-05-16 | Pflege PWA-Suffix Karten 01+09 | Folge-Pflege nach Live-Andock-Sitzung 2026-05-16 (Mein-Mixarium + Mein-Rezeptbuch live SBKIM-integriert, aber identische `nodeId` wegen IndexedDB-Origin-Kollision auf GitHub-Pages-Project-Sites — siehe Übergabeprotokoll 2026-05-16 Andock Mein-Rezeptbuch). § Schnittstelle `init()` → `init(options?)` mit optionalem `dbSuffix: string` (Pattern `^[a-z0-9_-]+$`, sonst synchroner `InvalidDbSuffixError`); ohne Suffix bleibt der Default-DB-Name `sbkim` aktiv (rückwärtskompatibel, keine Klaus-PWA und keine Sage-Werkstatt muss umgestellt werden). § Stores: neuer Unter-Block „DB-Namen-Konvention (PWA-Suffix)" als ZWEITER Block in § Schnittstelle (vor § Stores) — drei-Zeilen-Tabelle (`init()` → `sbkim`, `init({dbSuffix:"mixarium"})` → `sbkim_mixarium`, `init({dbSuffix:"rezeptbuch"})` → `sbkim_rezeptbuch`) plus vier Konventions-Punkte (Andocker-Pflicht; Pattern-Validierung sync; Suffix beim ERSTEN init-Aufruf; Modul 02 bleibt unangetastet, IDENTITY_KEY weiterhin `"main"` innerhalb der jeweiligen DB). § Konfigurationswerte `DB_NAME` → `DB_NAME_DEFAULT` + neue Konstante `DB_SUFFIX_PATTERN`. § Fehlerverhalten zwei Zeilen ergänzt (`InvalidDbSuffixError` synchron bei ungültigem Suffix, async bei zweitem init mit abweichendem Suffix). **Code:** `src/modules/01_storage.js` `init(options)` Allow-List + Validierung + `dbNameInUse`-State (idempotent: zweiter init mit gleichem Suffix → gleiches dbPromise; abweichender Suffix → `InvalidDbSuffixError`); `_meta.dbName` als Getter (zeigt Live-Zustand statt Build-Konstante). **Modul 02 bleibt unangetastet** (`IDENTITY_KEY = "main"`; Identität ist DB-lokal, Pfade brechen nicht). **Keine Hauptversions-Erhöhung** (`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`). `node --check src/modules/01_storage.js` grün. |
+| Pflege Storage-Persist | 2026-05-16 | Pflege Storage-Persist | Stufe (1) der drei-stufigen Identitäts-Persistenz-Architektur (PULS § Offene Querschnitts-Fragen „Identitäts-Persistenz"). § Schnittstelle `init(options?)`-Doc-Block um Hinweis erweitert: nach erfolgreichem DB-Open ruft Modul 01 `navigator.storage.persist()` an (fail-soft); bei Erfolg setzt es `_meta.storagePersisted = true \| false` und gibt `console.info("Storage persist-Status: …")` aus, bei fehlender API oder Promise-Rejection bleibt der Wert `null` (kein Throw, kein Reject — Knoten bleibt lauffähig). § Risiken neuer Punkt „Persist-Verweigerung" (Chrome auto-bei-PWA, Firefox prompt, Safari restriktiv; Verlust-Pfade Stufe 2 Backup-Export Modul 02 + Stufe 3 Quota-Frühwarnung Modul 00 decken die übrigen Fälle ab). **Code:** `src/modules/01_storage.js` `requestStoragePersist()`-Hilfsfunktion zwischen Migrations- und init-Block; Aufruf im `req.onsuccess` vor dem `resolve(db)`; neuer Modul-Closure-State `storagePersisted` (null \| true \| false); `_meta.storagePersisted` als Getter (Live-Zustand statt Build-Konstante; Default `null` vor `init()`). Idempotenz beim Re-Init: dbPromise-Cache deckt das ab — persist() wird automatisch nur einmal pro Tab-Session gerufen. Smoke-Test mit Node + stub-`navigator.storage.persist` (vier Fälle: resolved true, resolved false, API fehlt, persist rejected — alle grün; Resultate als Tabelle im Übergabeprotokoll). **Keine Vertrags-Erweiterung** in INTERFACES.md §0 (keine neue Konstante; persist ist Browser-API ohne Schwelle). **Modul 02 / 05 / 06 / 07 / 08 / 00 unangetastet** (persist greift transparent unter ihren `Storage.init()`-Pfaden). **Modul 00 Quota-Frühwarnung** (`DOKU_QUOTA_WARN_RATIO` / `DOKU_QUOTA_WARN_BYTES` aus §0) bleibt eigene Stufe und wird hier zitiert, nicht aufgebrochen. **Keine Hauptversions-Erhöhung** (`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`). `node --check src/modules/01_storage.js` grün. |
 | In Endknoten eingebaut | — | — | — |
 
 ---

@@ -180,6 +180,23 @@
         SbkimUI.log("01_storage",
           "  MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear");
       });
+
+      // Pflege Storage-Persist 2026-05-16: Stufe (1) der Identitäts-Persistenz.
+      // Reine Lese-Operation — kein Idempotenz-Konflikt zum Setup-Knopf.
+      SbkimUI.addButton("01_storage", "Persist-Status zeigen", async function () {
+        await SbkimStorage.init();
+        var persisted = SbkimStorage._meta.storagePersisted;
+        var deutung;
+        if (persisted === true) {
+          deutung = "Browser hat IndexedDB als persistent markiert (Chrome auto-bei-PWA / Firefox akzeptiert / Klaus hat zugestimmt).";
+        } else if (persisted === false) {
+          deutung = "Browser hat persist verweigert (Safari restriktiv / Firefox abgelehnt). Knoten läuft trotzdem — Stufen (2) Backup + (3) Quota-Frühwarnung decken Verlust-Pfade ab.";
+        } else {
+          deutung = "navigator.storage.persist nicht verfügbar oder Promise rejected — fail-soft (null). Knoten läuft normal weiter.";
+        }
+        SbkimUI.setStatus("01_storage", "ok", "Persist-Status gelesen");
+        return { storagePersisted: persisted, deutung: deutung };
+      });
     })();
   </script>
 
