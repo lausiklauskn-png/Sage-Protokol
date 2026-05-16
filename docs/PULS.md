@@ -109,10 +109,73 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 
 | App | URL | Domäne | SBKIM-Stand |
 |---|---|---|---|
-| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16** (Bau-Sitzung 09 Iteration 3, mit Klaus am Termux) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` mit `stammCategories[7]` + `guestCategories[11]` + `domainVector[384]` · App-SW Variante 3b · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus drei `sbkim-init.js`-Init-Zeilen grün. **nodeId identisch zu Mein-Mixarium** (`1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0`) wegen **IndexedDB-Origin-Kollision** auf GitHub Pages Project-Sites (beide PWAs unter Origin `lausiklauskn-png.github.io` teilen `sbkim_keys["main"]`). Cross-Knoten-Handshake zwischen Mein-Rezeptbuch und Mein-Mixarium **technisch nicht möglich** (`pingStatus: "blocked-origin-collision"`). Architektur-Erweiterung in Karten 01 + 09 in Folge-Pflege-Sitzung notwendig. |
-| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16** (Bau-Sitzung 09 Iteration 3, mit Klaus am Termux) · nodeId `1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0` · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json mit allen Pflicht- und optionalen Feldern inkl. `stammCategories[8]` + `guestCategories[2]` + `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus drei `sbkim-init.js`-Init-Zeilen grün. **nodeId identisch zu Mein-Rezeptbuch** wegen IndexedDB-Origin-Kollision (siehe nächste Zeile). Cross-Knoten-Handshake gegen Mein-Rezeptbuch **technisch nicht möglich** (`pingStatus: "blocked-origin-collision"` von beiden Seiten). Architektur-Erweiterung in Karten 01 + 09 in Folge-Pflege-Sitzung notwendig. |
+| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16** (Live-Andock-Sitzung Cross-Knoten-Handshake) · `nodeId: RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI` (eigener Ed25519-Schlüssel in eigener IndexedDB `sbkim_rezeptbuch`) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` mit `stammCategories[7]` + `guestCategories[11]` + `domainVector[384]` · App-SW Variante 3b · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus `sbkim-init.js`-Init-Zeilen grün. **Origin-Kollision aufgelöst** durch `SbkimStorage.init({dbSuffix:"rezeptbuch"})` (Modul-01-Pflege PWA-Suffix). **Cross-Knoten-Handshake mit Mein-Mixarium 2026-05-16 etabliert** (`outcome:"established"`), Match-Score über `PROVIDER_MIN_MATCH=0.8`, bewiesen via direktem `SbkimAnastomose.receiveHandshake`-Aufruf (SW-Bridge-Phantom-Cache-Bug umgangen — siehe § Offene Querschnitts-Fragen). `pingStatus: "live-direct"`. |
+| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16** (Live-Andock-Sitzung Cross-Knoten-Handshake) · `nodeId: 7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4` (eigener Ed25519-Schlüssel in eigener IndexedDB `sbkim_mixarium`) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json mit allen Pflicht- und optionalen Feldern inkl. `stammCategories[8]` + `guestCategories[2]` + `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus `sbkim-init.js`-Init-Zeilen grün. **Origin-Kollision aufgelöst** durch `SbkimStorage.init({dbSuffix:"mixarium"})`. **Match-Score Cocktails ↔ Kochrezepte über `PROVIDER_MIN_MATCH=0.8`** — Embedding-Vektor robust gegen Domain-Unterschiede, beide Knoten als „semantisch passend" akzeptiert; Klaus' Hypothese „Cocktails und Kochrezepte vielleicht zu unterschiedlich" hat sich nicht bestätigt. `pingStatus: "live-direct"`. |
 
 ## Offene Querschnitts-Fragen
+
+- **SW-Bridge-Phantom-Cache-Bug in Modul 05** (eingetragen 2026-05-16,
+  Live-Andock-Sitzung Cross-Knoten-Handshake). Beim Cross-Knoten-
+  Handshake via `SbkimAnastomose.handshake(peerSpore, ownVec)` schickt
+  Modul 05 einen POST an `peer.endpoint + "/sbkim/anastomosis"`.
+  Mein-Mixariums Service-Worker fängt den Request, sucht aktive Page-
+  Clients mit `self.clients.matchAll({ type:"window",
+  includeUncontrolled:true })` und leitet via MessageChannel weiter.
+  **Problem:** der Client-Pool enthält manchmal eine geisterhafte
+  Page-Instance (vermutlich bfcache-Restbestand oder vergessene PWA-
+  Window-Variante), die eine ALTE Modul-02-Identity gecacht hat. Die
+  Phantom-Page antwortet mit `outcome:"rejected", reason:"toNodeId
+  stimmt nicht zum Empfänger"`, obwohl der aktive Tab konsistent
+  `SbkimSpore.getNodeId() === <korrekte-nodeId>` hat. **Workaround
+  (heute bewiesen):** HandshakeRequest via localStorage in
+  Mein-Mixarium-Tab übertragen und dort `SbkimAnastomose.
+  receiveHandshake(request)` DIREKT aufrufen — `outcome:"established"`.
+  **Lösungs-Vorschlag:** in `src/sbkim-sw.js` `clients.matchAll` mit
+  `includeUncontrolled:false` aufrufen (eventuell hinter einem
+  `SBKIM_SW_STRICT_CLIENTS`-Opt-in-Flag, um Variante-3b-Endknoten nicht
+  zu brechen). **Voraussetzung für die Folge-Pflege:** erst Klaus'
+  Tablet-Neustart-Sichttest abwarten — falls ein voller Reboot den
+  Phantom-Cache räumt, ist der Bug temporär und braucht keine Code-
+  Änderung; falls nicht, ist die Modul-05-SW-Pflege fällig. Status:
+  Folge-Pflege ausstehend, Tablet-Neustart-Test ausstehend.
+
+- **`domainKeywords`-Hartkodierung in Endknoten-`sbkim-init.js`**
+  (eingetragen 2026-05-16). Klaus' Mein-Mixarium-`sbkim-init.js` hat
+  `domainKeywords = ["Cocktail", "Drink", "Mocktail", "Limonade",
+  "Smoothie", "Aperitif", "Sake"]` hartkodiert — die echten App-
+  Kategorien sind aber `stammCategories = ["Cocktails", "Mocktails",
+  "Alkfr. Cocktails", "Smoothies & Shakes", "Limonaden", "Tees &
+  Kaffees", "Bowlen", "Sirup & Basis"]`. „Aperitif" und „Sake" sind
+  in den `domainKeywords` aber nicht als App-Ordner präsent. Klaus'
+  Beobachtung (Live-Andock-Sitzung) deckt eine Inkonsistenz auf:
+  `domainKeywords` sollte aus den echten App-Kategorien abgeleitet
+  werden, nicht aus einer alten Zwischen-Sitzung hartkodiert. Folge-
+  Pflege Mein-Mixarium-/Mein-Rezeptbuch-`sbkim-init.js`: `domainKeywords`
+  aus `stammCategories`/`guestCategories` zur Init-Zeit generieren
+  (z.B. via App-DB-Lookup oder mindestens als konsistente Liste).
+  **Konsequenz heute:** der semantische Embedding-Vektor ist robust
+  genug, dass der Cross-Knoten-Handshake trotz Inkonsistenz mit
+  `outcome:"established"` läuft — aber für saubere Match-Scores in
+  einem wachsenden Netz wäre die Bereinigung wertvoll. Status:
+  Folge-Pflege ausstehend, niedrig priorisiert.
+
+- **Endknoten-Repo-Hygiene gegen parallele Auto-PRs** (eingetragen
+  2026-05-16). Während der Live-Andock-Sitzung lief eine PARALLELE
+  Claude-Sitzung mit Branch `claude/add-recipe-remove-scramble-5xx9Y`
+  und hat PR #238 „Buchstabensalat-Fix im Rezept-hinzufügen-Button"
+  in Mein-Rezeptbuch gemerged. Dieser PR hatte aber eine ältere
+  Basis-Version der `index.html` genommen und dabei **alle 8 SBKIM-
+  `<script>`-Tags + Eruda** still entfernt. Das hat den Handshake-
+  Test in Mein-Rezeptbuch ~1 h lang blockiert (SBKIM-Module gar nicht
+  geladen). Nachgepflegt durch Wieder-Einfügen vor `</body>` an Zeile
+  14802. **Schutz-Vorschlag (Folge-Pflege):** SBKIM-Sentinel-File in
+  jedem Endknoten-Repo (z.B. `sbkim/.sentinel`) und/oder GitHub-Action
+  in beiden Endknoten-Repos, die prüft: (a) `grep -c "sbkim/" index.html
+  >= 8`, (b) `sbkim/sbkim-init.js` enthält `SbkimStorage.init` UND
+  `SbkimAnastomose.init`, (c) `sbkim/01_storage.js` enthält `dbSuffix`.
+  Soll künftige Auto-PRs auf Endknoten verhindern, die die SBKIM-
+  Andock-Schicht still wegfegen. Status: Folge-Pflege-Vorschlag,
+  niedrig priorisiert.
 
 - **Sichtbarkeits-Lampen in der Endknoten-PWA** (eingetragen
   2026-05-16, Klaus-Vorschlag nach Pflege PWA-Suffix). Idee von
@@ -435,10 +498,161 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
-### 2026-05-16 · Pflege-Sitzung — Sage-Page Vollumbau / Redesign
+### 2026-05-16 · Live-Andock-Sitzung — Cross-Knoten-Handshake etabliert
 
-**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
-`claude/pflege-sage-page-redesign-NelH8`. Klaus' explizite Vorgabe:
+**Sitzungs-Rolle:** Live-Andock-Sitzung, NICHT headless (Klaus am Tablet
++ Termux, ca. 4 h zusammen). Branch
+`claude/cross-knoten-handshake-etabliert`. Folge-Sitzung zur Pflege
+PWA-Suffix (2026-05-16, PR #45): die dort spezifizierte Architektur-
+Erweiterung jetzt live in beiden Endknoten-Repos durchgezogen UND
+durch erfolgreichen Cross-Knoten-Handshake bewiesen.
+
+**Ergebnis (Highlight):**
+
+- **Mein-Mixarium nodeId:** `7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4`
+- **Mein-Rezeptbuch nodeId:** `RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI`
+- **Cross-Knoten-Handshake `outcome: "established"`** — der erste
+  echte SBKIM-Handshake im Mycel. Match-Score Cocktails ↔ Kochrezepte
+  über `PROVIDER_MIN_MATCH=0.8` — Embedding-Vektor robust gegen
+  Domain-Unterschiede.
+
+**Auftrag:** In beiden Endknoten-Repos (Mein-Mixarium, Mein-Rezeptbuch)
+`sbkim/sbkim-init.js` um `await SbkimStorage.init({dbSuffix:…})` vor
+`SbkimAnastomose.init()` erweitern; `__sbkimErzeugeSpore()` triggern
+für neue, getrennte nodeIds; neue Spore-Datei deployen; Cross-Knoten-
+Handshake testen.
+
+**Getan (chronologisch):**
+
+1. **Phase A — `sbkim-init.js`-Patch:** in beiden Endknoten-Repos eine
+   Zeile vor `SbkimAnastomose.init()` eingefügt: Mixarium →
+   `SbkimStorage.init({dbSuffix:"mixarium"})`, Rezeptbuch →
+   `SbkimStorage.init({dbSuffix:"rezeptbuch"})`. Pushes durch
+   (Mein-Mixarium `703cae3`, Mein-Rezeptbuch `9b77bcd`).
+2. **Phase B — Modul 01 nachziehen:** Befund: `sbkim/01_storage.js`
+   in beiden Endknoten-Repos war noch die alte Version OHNE
+   dbSuffix-Support (vor PR #45-Merge). Aus Sage-Protokol `main` die
+   neue Version (15747 Bytes, 11 dbSuffix-Treffer) in beide Endknoten
+   kopiert + gepusht.
+3. **Phase C — PR #238-Aufräumen (Mein-Rezeptbuch):** ein paralleler
+   Claude-Commit (Branch `claude/add-recipe-remove-scramble-5xx9Y`,
+   PR #238 „Buchstabensalat-Fix") hatte **alle 8 SBKIM-`<script>`-Tags
+   UND Eruda** aus `Mein-Rezeptbuch/index.html` rausgewaschen, weil
+   die andere Sitzung eine sehr alte Basis-Version genommen hatte.
+   Nachgepflegt: SBKIM-Scripts in Karte-09-Reihenfolge wieder
+   eingefügt (vor `</body>` an Zeile 14802), Eruda wieder eingebaut.
+   **Wichtige Doku-Pflege-Lehre:** SBKIM-Andock-Code in Endknoten ist
+   verletzlich gegen Pflege-Sitzungen, die ältere Basis-Versionen
+   merge'n. (Folge-Pflege-Vorschlag: SBKIM-Sentinel-Datei oder
+   GitHub-Action, die SBKIM-Scripts-Präsenz prüft, siehe §
+   „Offene Querschnitts-Fragen".)
+4. **Phase D — Worst-Case-Reset (Klaus' Vorschlag):** in Chrome alle
+   Site-Daten für `lausiklauskn-png.github.io` gelöscht (Klaus'
+   pragmatischer Wunsch nach Vollverlust-Test). Beide PWAs frisch
+   geöffnet → frische Identitäten in den jeweiligen `sbkim_<suffix>`-
+   DBs erzeugt → Spore-Erzeugung mit korrigierter Identität →
+   spore.json in beide Repos deployed.
+5. **Phase E — Identity-Persistenz-Stabilisierung:** Mein-Mixariums
+   Identität verlor sich beim ersten Tab-Reload („IndexedDB war nicht
+   wirklich persistent obwohl `storage.persist()=true`"); nach
+   erneutem `__sbkimErzeugeSpore()` neue Identität `7xf0tt33_…`,
+   diesmal stabil — vermutlich nach SW-Reset + Reload-Cycle. Spore
+   nachgepushed.
+6. **Phase F — Cross-Knoten-Handshake:** zwei Versuche via
+   Service-Worker-Bridge gescheitert mit `outcome: "rejected",
+   reason: "toNodeId stimmt nicht zum Empfänger"`, obwohl
+   `SbkimSpore.getNodeId()` im Mein-Mixarium-Tab die richtige nodeId
+   zurückgab. Diagnose: **SW-Bridge-Phantom-Cache-Bug** —
+   `self.clients.matchAll({includeUncontrolled:true})` lieferte eine
+   geisterhafte Page-Instance (vermutlich bfcache-erhaltener Tab oder
+   installierte PWA-Window) mit ALTER Identity zurück. Auch nach
+   Deinstallation der installierten PWAs blieb der Bug. **Direkter
+   Bypass:** HandshakeRequest aus Mein-Rezeptbuch via localStorage
+   in Mein-Mixarium-Tab übertragen und dort
+   `SbkimAnastomose.receiveHandshake(request)` DIREKT aufgerufen,
+   ohne SW-Bridge — Ergebnis `outcome: "established"`. **Damit
+   technisch und semantisch bewiesen:** das Mycel lebt; die SW-
+   Bridge-Frage ist eine eigene Folge-Pflege (siehe § Offene
+   Querschnitts-Fragen).
+
+**Getan (im Sage-Protokol-Repo):**
+
+- `status.json` § endknoten[*] beide `nodeId` auf neue Werte
+  aktualisiert, `pingStatus` von `"blocked-origin-collision"` auf
+  `"live-direct"` umgestellt (Handshake direkt etabliert, SW-Bridge
+  weiterhin via Phantom-Cache verstopft — kein „live" pur).
+- `docs/PULS.md` § Endknoten-Tabelle beide Zeilen kpl. neu (eigene
+  nodeIds, Origin-Kollision aufgelöst, Match-Score-Verifikation).
+- `docs/sessions/archiv/2026-05-16_cross-knoten-handshake-etabliert.md`
+  als Übergabeprotokoll angelegt mit den Phasen A–F oben + Code-
+  Snippets + Diagnose-Trace.
+
+**Bewusst nicht angefasst:**
+
+- **Modul-Code** unverändert (`src/modules/01–08`). Diese Sitzung
+  war reine Endknoten-Andock + Diagnose, kein Modul-Patch.
+- **INTERFACES.md** unverändert.
+- **`PROTOCOL_VERSION` bleibt `"0.1"`.**
+- **`update_puls_pie.py`** NICHT aufgerufen — kein Modul-Score-
+  Wechsel.
+- **`sbkim-sw.js`-Patch** für `includeUncontrolled:false` — Folge-
+  Pflege, nicht jetzt (würde Modul-05-Vertrag berühren).
+- **`domainKeywords`-Hartkodierung in `sbkim-init.js`** der
+  Endknoten — Klaus' Hinweis dass „Aperitif" und „Sake" gar nicht
+  zu den App-Kategorien gehören. Eigene Folge-Pflege.
+
+**Was offen blieb:**
+
+- **SW-Bridge-Phantom-Cache-Bug** (siehe § Offene Querschnitts-
+  Fragen, neuer Eintrag) — der Handshake funktioniert technisch und
+  semantisch, aber Mein-Mixariums Service-Worker leitet
+  HandshakeRequests an eine geisterhafte Page-Instance mit alter
+  Identity statt an den aktiven Tab. Workaround: direkter
+  `receiveHandshake`-Aufruf via localStorage-Bridge (heute bewiesen).
+  Fix-Vorschlag: in `sbkim-sw.js` `clients.matchAll` mit
+  `includeUncontrolled:false` (eventuell als opt-in-Flag) — eigene
+  Folge-Pflege Modul 05/SW.
+- **`domainKeywords`-Hartkodierung** in beiden Endknoten-`sbkim-init.js`
+  — die Werte (z.B. „Aperitif", „Sake" bei Mixarium) entsprechen
+  nicht den echten App-Kategorien. Folge-Pflege: aus den Endknoten-
+  App-Ordnern ableiten statt hartkodieren.
+- **Tablet-Neustart-Test:** ob ein voller Tablet-Reboot den
+  Phantom-Cache räumt — nicht heute, eigene Folge-Sichttest-Sitzung.
+
+**Validierung:**
+
+- Klaus' Mein-Mixarium-Tab in Eruda: `SbkimSpore.getNodeId() ===
+  "7xf0tt33_…"` UND `(await SbkimSpore.getOwnSpore()).id ===
+  "7xf0tt33_…"` (Identität-Konsistenz Key vs. Spore).
+- Klaus' Mein-Rezeptbuch-Tab Eruda: analog für `RHhposP0…`.
+- Direkter `receiveHandshake`-Aufruf in Mein-Mixarium-Tab mit
+  Mein-Rezeptbuch-Request: `outcome: "established"`, valider
+  `receiverSpore`, `nonceEcho` durchgereicht — Signaturen und
+  Match-Score grün.
+- Pages-Build beider Endknoten-Repos durch, LIVE-spore.json mit
+  korrekter nodeId via curl bestätigt (während der Sitzung).
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Tablet-Neustart-Sichttest** (NICHT headless) — ob ein voller
+   Reboot den SW-Bridge-Phantom-Cache räumt und der normale
+   `SbkimAnastomose.handshake`-Pfad (via SW) `outcome:"established"`
+   liefert. Wenn ja → Phantom-Cache ist nur eine bfcache-Frage,
+   kein dauerhafter Bug. Wenn nein → Folge-Pflege Modul-05-SW
+   nötig.
+2. **Pflege `sbkim-sw.js` mit `clients.matchAll(includeUncontrolled:false)`**
+   (headless möglich, ~30 Min) — als opt-in-Flag oder Default-
+   Änderung, um Phantom-Pages aus dem Client-Pool zu entfernen.
+   Setzt Tablet-Neustart-Test voraus (falls Reboot reicht, ist die
+   Pflege unnötig).
+3. **Pflege Endknoten-`sbkim-init.js`** — `domainKeywords` aus den
+   echten App-Kategorien ableiten statt hartkodieren. *NICHT
+   headless* (Klaus muss die App-Kategorien-Quelle in
+   `Mein-Mixarium`/`Mein-Rezeptbuch` zeigen), aber kleinteilig.
+4. **Pflege Endknoten-Repo-Hygiene** — SBKIM-Sentinel-Datei oder
+   GitHub-Action, die SBKIM-`<script>`-Tags und sbkim-init.js
+   prüft, damit künftige Auto-PRs (wie PR #238) nicht still die
+   Andock-Schicht wegfegen.
 Awwwards-/FWA-Niveau-Anspruch; „Design soll zeigen, dass jemand mit
 Ahnung dahintersteht". Reine UI-Pflege, keine Modul-Score- oder
 INTERFACES-Änderung.
@@ -709,6 +923,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-16 | Live-Andock · Cross-Knoten-Handshake etabliert (`outcome:"established"` zwischen Mein-Mixarium `7xf0tt33_…` und Mein-Rezeptbuch `RHhposP0…`; Origin-Kollision via dbSuffix aufgelöst; Modul 01 in Endknoten nachgezogen; PR #238-Schaden in Mein-Rezeptbuch-`index.html` repariert; Match-Score Cocktails↔Kochrezepte ≥ 0.8; SW-Bridge-Phantom-Cache-Bug umgangen via direktem `receiveHandshake`-Aufruf, Folge-Pflege offen) | [→ Archiv](sessions/archiv/2026-05-16_cross-knoten-handshake-etabliert.md) |
 | 2026-05-16 | Pflege · Sage-Page Vollumbau / Redesign (Geist-Typografie, Force-Graph-Topologie ersetzt Pie-Doppelung, Lesematerial-Karte, Sichtbarkeits-Lampen-Demo-Anker, scroll-aware Lebenszyklus, neue Pflege-Konvention `docs/sage_page_pflege.md`) | [→ Archiv](sessions/archiv/2026-05-16_pflege-sage-page-redesign.md) |
 | 2026-05-16 | Mini-Pflege · Test-Panel Knopf-7-pendingBackup-Reset (Reset-Zeile aus Handler-Anfang in `tests/manual_check.html` entfernt, `pendingBackup = null` jetzt direkt vor `importBackup`-Aufruf nach erfolgreicher File-Wahl; File-Picker-Cancel löst keine State-Änderung mehr aus, Stash überlebt doppelten Knopf-7-Klick ohne File-Wahl; KEIN Modul-Code-Eingriff, KEIN INTERFACES.md-Eingriff, KEIN Score-Wechsel) | [→ Archiv](sessions/archiv/2026-05-16_pflege-test-panel-knopf-7-pendingBackup.md) |
 | 2026-05-16 | Pflege · Phase-1 Sichttest-Resultate Karten 02/06/01 (Klaus' Sichttest 2026-05-16: Bau-02.X-Knöpfe 6/7/7b grün + Panel 06 rasch grob + Panel 01 Knopf 5 `_meta.storagePersisted: true` in Karten 02/06/01 § Bauzustand + PULS Schnellüberblick nachgezogen; Test-Panel-UX-Befund Knopf 7 pendingBackup-Stash-Reset offen als Mini-Pflege) | [→ Archiv](sessions/archiv/2026-05-16_pflege-phase1-sichttest-karten-02-06-01.md) |
