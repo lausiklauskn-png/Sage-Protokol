@@ -421,7 +421,131 @@
         SbkimUI.log("02_spore",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("02_spore",
-          "  MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore");
+          "  MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache/exportBackup/importBackup");
+      });
+
+      // Knopf 6 — Backup exportieren (Bau 02.X, 2026-05-16)
+      SbkimUI.addButton("02_spore", "Backup exportieren", async function () {
+        var password = window.prompt("Passwort für Backup (mindestens 8 Zeichen):");
+        if (password === null) {
+          SbkimUI.log("02_spore", "ℹ Abgebrochen.");
+          return;
+        }
+        await SbkimSpore.init();
+        await SbkimSpore.getOrCreateIdentity();
+        // Eine Spore generieren, falls noch keine existiert — sonst
+        // wäre payload.spore null und der Re-Import würde am Schema-
+        // Check scheitern. Demo-Meta wie in Knopf 2.
+        var existing = await SbkimSpore.getOwnSpore();
+        if (!existing) {
+          await SbkimSpore.generateOwnSpore(demoMeta);
+        }
+        var blob;
+        try {
+          blob = await SbkimSpore.exportBackup(password);
+        } catch (err) {
+          SbkimUI.setStatus("02_spore", "err", err.name || "Fehler");
+          SbkimUI.log("02_spore", "✗ " + (err.name || "Error") + ": " + (err.message || err));
+          return;
+        }
+        SbkimUI.setStatus("02_spore", "ok", "Backup OK");
+        SbkimUI.log("02_spore", "▶ Backup-Blob:");
+        SbkimUI.log("02_spore", JSON.stringify(blob, null, 2));
+        try {
+          var json = JSON.stringify(blob);
+          var fileBlob = new Blob([json], { type: "application/json" });
+          var url = URL.createObjectURL(fileBlob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "sbkim-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+          a.textContent = "📦 Backup-Datei herunterladen (" + json.length + " Bytes)";
+          a.style.cssText = "display:inline-block;margin:0.4rem 0;padding:0.3rem 0.6rem;background:#1E40AF;color:#fff;text-decoration:none;border-radius:4px;";
+          var panel = SbkimUI.panel("02_spore");
+          if (panel) panel.querySelector(".controls").appendChild(a);
+        } catch (e) {
+          SbkimUI.log("02_spore", "ℹ Download-Link konnte nicht erzeugt werden: " + (e && e.message || e));
+        }
+      });
+
+      // Knopf 7 — Backup einlesen (Bau 02.X, 2026-05-16)
+      // Erster Klick versucht ohne force; bei BackupOverwriteError
+      // erscheint ein zweiter Knopf „Identität ersetzen — unwiderruflich",
+      // der mit {force:true} ersetzt. Die neue nodeId steht erst nach
+      // erfolgreichem Decrypt fest (Klartext-Payload ist verschlüsselt),
+      // deshalb zeigt die Bestätigung nur die ALTE nodeId + Warntext.
+      var pendingBackup = null; // { blob, password }
+      SbkimUI.addButton("02_spore", "Backup einlesen", async function () {
+        pendingBackup = null;
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = ".json,application/json";
+        var picked = await new Promise(function (resolve) {
+          fileInput.addEventListener("change", function () { resolve(fileInput.files[0] || null); });
+          fileInput.click();
+        });
+        if (!picked) {
+          SbkimUI.log("02_spore", "ℹ Keine Datei gewählt.");
+          return;
+        }
+        var password = window.prompt("Passwort für Backup:");
+        if (password === null) {
+          SbkimUI.log("02_spore", "ℹ Abgebrochen.");
+          return;
+        }
+        var text = await picked.text();
+        var blob;
+        try {
+          blob = JSON.parse(text);
+        } catch (err) {
+          SbkimUI.setStatus("02_spore", "err", "JSON-Parse");
+          SbkimUI.log("02_spore", "✗ Datei ist kein gültiges JSON: " + (err.message || err));
+          return;
+        }
+        try {
+          var result = await SbkimSpore.importBackup(blob, password);
+          SbkimUI.setStatus("02_spore", "ok", "Restore OK");
+          SbkimUI.log("02_spore", "▶ Restore-Ergebnis: " + JSON.stringify(result));
+          var nid = await SbkimSpore.getNodeId();
+          SbkimUI.log("02_spore", "▶ Neue nodeId nach Restore: " + nid);
+          return;
+        } catch (err) {
+          if (err.name === "BackupOverwriteError") {
+            var oldNodeId;
+            try { oldNodeId = await SbkimSpore.getNodeId(); }
+            catch (e) { oldNodeId = "<unbekannt>"; }
+            SbkimUI.setStatus("02_spore", "err", "Bestehende Identität");
+            SbkimUI.log("02_spore",
+              "⚠ Bestehende Identität in dieser PWA. Aktuelle nodeId: " + oldNodeId + ".\n" +
+              "Mit dem zweiten Klick wirst du sie durch die nodeId aus der Backup-Datei ersetzen — " +
+              "unwiderruflich. Geschwister, die den aktuellen Knoten kennen, behandeln ihn danach " +
+              "als unbekannt.");
+            pendingBackup = { blob: blob, password: password };
+            return;
+          }
+          SbkimUI.setStatus("02_spore", "err", err.name || "Fehler");
+          SbkimUI.log("02_spore", "✗ " + (err.name || "Error") + ": " + (err.message || err));
+        }
+      });
+
+      // Zweiter Knopf für den force-Pfad. Steht parallel zum Einlese-
+      // Knopf bereit; tut nur etwas, wenn pendingBackup gesetzt ist.
+      SbkimUI.addButton("02_spore", "Identität ersetzen — unwiderruflich", async function () {
+        if (!pendingBackup) {
+          SbkimUI.log("02_spore", "ℹ Kein Backup zum Ersetzen vorgemerkt — erst „Backup einlesen“ klicken.");
+          return;
+        }
+        var stash = pendingBackup;
+        pendingBackup = null;
+        try {
+          var result = await SbkimSpore.importBackup(stash.blob, stash.password, { force: true });
+          SbkimUI.setStatus("02_spore", "ok", "Restore (force) OK");
+          SbkimUI.log("02_spore", "▶ Restore-Ergebnis: " + JSON.stringify(result));
+          var nid = await SbkimSpore.getNodeId();
+          SbkimUI.log("02_spore", "▶ Neue nodeId nach Restore: " + nid);
+        } catch (err) {
+          SbkimUI.setStatus("02_spore", "err", err.name || "Fehler");
+          SbkimUI.log("02_spore", "✗ " + (err.name || "Error") + ": " + (err.message || err));
+        }
       });
     })();
   </script>

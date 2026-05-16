@@ -15,11 +15,27 @@
  *   generateOwnSpore(meta) -> Promise<SporeJson>
  *   getOwnSpore() -> Promise<SporeJson | null>
  *   verifyForeignSpore(spore) -> Promise<{ valid, reason? }>
+ *   resetIdentityCache() -> void
+ *   exportBackup(password) -> Promise<SbkimBackupBlob>
+ *   importBackup(blob, password, options?) -> Promise<{ restored, reason? }>
  *
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). Key generation is lazy and happens on the first
  * getOrCreateIdentity() call. See INTERFACES.md and
  * docs/components/02_spore.md for the binding spec.
+ *
+ * Bau 02.X Backup-Export (2026-05-16): additive Erweiterung um
+ * passwort-verschlüsseltes Snapshot-Format (PBKDF2-SHA256 + AES-GCM-256).
+ * Code-Folge zur Spec-Sitzung Backup-Export Stufe 2 (PR #52); drei
+ * Pflicht-Fragen verbindlich entschieden: Backup-Inhalt = Identität +
+ * Geschwister (Variante b), Iterations = 600 000 (OWASP 2023+),
+ * Import-Überschreibung defensiv per Default (Variante a). Bestehende
+ * sieben + resetIdentityCache-Funktionen unverändert; die kanonische
+ * Sort-Disziplin (canonicalize/canonicalJsonBytes) und der base64url-
+ * Pfad werden für die Backup-Schicht wiederverwendet. Fünf neue
+ * Error-Klassen, drei modul-lokale Konstanten + drei §0-Konstanten
+ * gespiegelt, drei Helper (canonicalJsonBytes/base64url* reuse +
+ * derivePbkdf2AesGcmKey neu).
  */
 (function (global) {
   "use strict";
@@ -29,6 +45,7 @@
   var IDENTITY_KEY = "main";
   var KEYS_STORE = "sbkim_keys";
   var SPORE_STORE = "sbkim_spore";
+  var SIBLINGS_STORE = "sbkim_siblings";
   var VALID_NODE_TYPES = ["provider", "seeker", "hybrid"];
   var REQUIRED_SPORE_FIELDS = [
     "createdAt",
@@ -42,12 +59,35 @@
     "signature",
   ];
 
+  // §0-Konstanten, hier gespiegelt (Sage-Protokol hat noch kein
+  // konfig-Modul-System — INTERFACES.md §0 trägt den „sobald
+  // angelegt"-Hinweis; Spec-Sitzung Backup-Export Stufe 2 hat diesen
+  // Konvention-Kompromiss respektiert).
+  var BACKUP_FORMAT_VERSION = 1;
+  var BACKUP_KDF_ITERATIONS = 600000;
+  var BACKUP_PASSWORD_MIN_LEN = 8;
+
+  // Modul-lokale Backup-Konstanten (Karte 02 § Konfigurationswerte,
+  // WebCrypto-Konventionen ohne Querschnitts-Relevanz).
+  var BACKUP_PAYLOAD_SCHEMA_VERSION = 1;
+  var BACKUP_KDF_SALT_BYTES = 16;
+  var BACKUP_CIPHER_IV_BYTES = 12;
+
   function makeError(name, message, cause) {
     var e = new Error(message);
     e.name = name;
     if (cause !== undefined) e.cause = cause;
     return e;
   }
+
+  // Fünf benannte Error-Klassen für den Backup-Pfad (Factory-Stil wie
+  // Modul 00 / 08). Auf window.SbkimSpore.<Error> exportiert; intern
+  // bevorzugt makeError("Name", ...) für sprechende cause-Pfade.
+  function InvalidBackupPasswordError(message) { return makeError("InvalidBackupPasswordError", message); }
+  function BackupDecryptError(message, cause) { return makeError("BackupDecryptError", message, cause); }
+  function BackupVersionMismatchError(message) { return makeError("BackupVersionMismatchError", message); }
+  function BackupSchemaError(message) { return makeError("BackupSchemaError", message); }
+  function BackupOverwriteError(message) { return makeError("BackupOverwriteError", message); }
 
   function getSubtle() {
     var c = global.crypto || (typeof crypto !== "undefined" ? crypto : null);
@@ -92,6 +132,28 @@
 
   function utf8Encode(str) {
     return new TextEncoder().encode(str);
+  }
+
+  // Backup-Pfad: leitet den AES-GCM-Key aus dem Passwort ab. KDF-Pfad
+  // verbindlich aus Karte 02 § Datenformat „Backup-Format" — PBKDF2-
+  // SHA-256 mit BACKUP_KDF_ITERATIONS Runden gegen einen 16-Byte-Salt.
+  async function derivePbkdf2AesGcmKey(password, salt, iterations) {
+    var subtle = getSubtle();
+    var material = utf8Encode(password);
+    var baseKey = await subtle.importKey(
+      "raw",
+      material,
+      { name: "PBKDF2" },
+      false,
+      ["deriveKey"],
+    );
+    return await subtle.deriveKey(
+      { name: "PBKDF2", salt: salt, iterations: iterations, hash: "SHA-256" },
+      baseKey,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt", "decrypt"],
+    );
   }
 
   // Recursive lexicographic key sort. Returns a new object so the
@@ -413,6 +475,225 @@
     identityCache = null;
   }
 
+  // ---- Backup-Pfad (Bau 02.X, 2026-05-16) ----
+  //
+  // exportBackup: liest sbkim_keys["main"] + sbkim_spore["main"] direkt
+  // aus dem Storage (Roh-JWK-Form), liest sbkim_siblings fail-soft,
+  // baut den Klartext-Payload kanonisch, verschlüsselt mit PBKDF2 +
+  // AES-GCM-256 und liefert die SbkimBackupBlob-Wrapper-Form. Die
+  // §0-Konstante BACKUP_KDF_ITERATIONS wird beim Export verwendet; der
+  // Wert wandert in den Blob (kdf.iterations), damit später erhöhte
+  // §0-Konstanten alte Backups weiter importieren können (Spec-Sitzung
+  // Backup-Export Stufe 2, Pflicht-Frage 2 „Hinweis zur Kompatibilität").
+
+  async function exportBackup(password) {
+    if (typeof password !== "string" || password.length < BACKUP_PASSWORD_MIN_LEN) {
+      throw makeError(
+        "InvalidBackupPasswordError",
+        "Passwort muss mindestens " + BACKUP_PASSWORD_MIN_LEN + " Zeichen lang sein.",
+      );
+    }
+
+    // Sicherstellen, dass eine Identität existiert. getOrCreateIdentity
+    // wirft NoIdentityError nicht — es legt fehlende Identität an. Das
+    // ist hier OK: Klaus' UI ruft exportBackup nach einem manuellen
+    // Setup-Schritt, ein frisches Backup einer frisch erzeugten
+    // Identität ist gültiger Use-Case.
+    var identity = await getOrCreateIdentity();
+
+    var storage = getStorage();
+    var keys = await storage.get(KEYS_STORE, IDENTITY_KEY);
+    var sporeWrap = await storage.get(SPORE_STORE, IDENTITY_KEY);
+    if (!keys || !sporeWrap) {
+      // Defensive: getOrCreateIdentity hat oben sbkim_keys garantiert,
+      // sbkim_spore kann fehlen (generateOwnSpore ist eigener Schritt).
+      // Karte 02 § Schnittstelle: exportBackup wirft NoIdentityError
+      // im Identitäts-Pfad; eine fehlende Spore ist hier kein Backup-
+      // Verbot — wir backuppen die Schlüssel ohne Spore-Block, wenn
+      // das überhaupt vorkommen sollte. Behandlung: spore = null,
+      // payload.spore wird leer-Objekt; der Import-Schema-Check würde
+      // das später fangen. Praktisch: getOrCreateIdentity legt nur
+      // sbkim_keys an, sbkim_spore wird erst beim ersten
+      // generateOwnSpore geschrieben.
+      if (!keys) {
+        throw makeError(
+          "NoIdentityError",
+          "Es existiert noch keine Identität. Erst getOrCreateIdentity() aufrufen.",
+        );
+      }
+    }
+
+    var siblingValues = [];
+    try {
+      var rows = await storage.all(SIBLINGS_STORE);
+      if (Array.isArray(rows)) {
+        siblingValues = rows.map(function (r) { return r.value; });
+      }
+    } catch (e) {
+      // Fail-soft: UnknownStoreError oder Cursor-Fehler. Karte 02
+      // § Storage „Backup-Inhalt" — siblings ist fail-soft beim Export.
+      siblingValues = [];
+    }
+
+    var payload = {
+      createdAt: new Date().toISOString(),
+      keys: {
+        keyId: "main",
+        privateKey: keys.privateKey,
+        publicKey: keys.publicKey,
+      },
+      nodeId: identity.nodeId,
+      siblings: siblingValues,
+      spore: sporeWrap && sporeWrap.sporeJson ? sporeWrap.sporeJson : null,
+    };
+
+    var subtle = getSubtle();
+    var plaintext = canonicalJsonBytes(payload);
+    var salt = global.crypto.getRandomValues(new Uint8Array(BACKUP_KDF_SALT_BYTES));
+    var iv = global.crypto.getRandomValues(new Uint8Array(BACKUP_CIPHER_IV_BYTES));
+    var aesKey = await derivePbkdf2AesGcmKey(password, salt, BACKUP_KDF_ITERATIONS);
+    var cipherBuf = await subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, plaintext);
+
+    return {
+      version: BACKUP_FORMAT_VERSION,
+      kdf: {
+        algorithm: "PBKDF2",
+        hash: "SHA-256",
+        iterations: BACKUP_KDF_ITERATIONS,
+        salt: base64urlEncode(salt),
+      },
+      cipher: {
+        algorithm: "AES-GCM-256",
+        iv: base64urlEncode(iv),
+      },
+      ciphertext: base64urlEncode(new Uint8Array(cipherBuf)),
+      "payload-schema-version": BACKUP_PAYLOAD_SCHEMA_VERSION,
+    };
+  }
+
+  // importBackup: defensiv per Default (Pflicht-Frage 3 Variante a).
+  // Vor-Checks (Mindest-Länge, Wrapper-Version, Force-Schwelle) laufen
+  // VOR dem teuren Crypto-Aufruf. iterations wird aus blob.kdf.iterations
+  // gelesen, NICHT aus §0 — damit ältere Backups mit niedrigeren
+  // Iterations weiter funktionieren (Pflicht-Frage 2 „Hinweis zur
+  // Kompatibilität"). Nach erfolgreichem Schreiben ruft die Funktion
+  // resetIdentityCache(), sonst liefert getNodeId weiter den alten
+  // Cache trotz frisch geschriebener Identität.
+  async function importBackup(blob, password, options) {
+    var opts = options || {};
+    var force = opts.force === true;
+
+    if (typeof password !== "string" || password.length < BACKUP_PASSWORD_MIN_LEN) {
+      throw makeError(
+        "InvalidBackupPasswordError",
+        "Passwort muss mindestens " + BACKUP_PASSWORD_MIN_LEN + " Zeichen lang sein.",
+      );
+    }
+    if (!blob || typeof blob !== "object") {
+      throw makeError("BackupSchemaError", "Backup-Blob fehlt oder ist kein Objekt.");
+    }
+    if (blob.version !== BACKUP_FORMAT_VERSION) {
+      throw makeError(
+        "BackupVersionMismatchError",
+        "Backup-Hauptversion " + blob.version + " unbekannt (Modul 02 versteht " +
+          BACKUP_FORMAT_VERSION + ").",
+      );
+    }
+    if (!blob.kdf || !blob.cipher || typeof blob.ciphertext !== "string") {
+      throw makeError(
+        "BackupSchemaError",
+        "Backup-Pflichtfeld fehlt im Wrapper: kdf / cipher / ciphertext.",
+      );
+    }
+
+    await ensureReady();
+    var storage = getStorage();
+
+    var existingKeys = await storage.get(KEYS_STORE, IDENTITY_KEY);
+    if (existingKeys && !force) {
+      throw makeError(
+        "BackupOverwriteError",
+        "Bestehende Identität in sbkim_keys[main]. {force:true} setzen, um sie bewusst zu " +
+          "ersetzen — die alte nodeId wird damit verworfen, Geschwister behandeln den Knoten " +
+          "danach als unbekannt.",
+      );
+    }
+
+    var iterations = blob.kdf.iterations;
+    if (typeof iterations !== "number" || !(iterations > 0)) {
+      throw makeError("BackupSchemaError", "Backup-kdf.iterations ungültig.");
+    }
+
+    var payload;
+    try {
+      var salt = base64urlDecode(blob.kdf.salt);
+      var iv = base64urlDecode(blob.cipher.iv);
+      var ct = base64urlDecode(blob.ciphertext);
+      var aesKey = await derivePbkdf2AesGcmKey(password, salt, iterations);
+      var subtle = getSubtle();
+      var plainBuf = await subtle.decrypt({ name: "AES-GCM", iv: iv }, aesKey, ct);
+      var plainText = new TextDecoder().decode(plainBuf);
+      payload = JSON.parse(plainText);
+    } catch (e) {
+      // Sammel-Klasse — Karte 02 § Fehlerverhalten: Modul 02 verrät
+      // bewusst nicht, ob Passwort falsch oder Datei beschädigt
+      // (kein Oracle für Angreifer).
+      throw makeError(
+        "BackupDecryptError",
+        "Falsches Passwort oder korruptes Backup.",
+        e,
+      );
+    }
+
+    var payloadSchemaVersion = blob["payload-schema-version"];
+    if (typeof payloadSchemaVersion === "number" && payloadSchemaVersion > BACKUP_PAYLOAD_SCHEMA_VERSION) {
+      throw makeError(
+        "BackupSchemaError",
+        "Payload-Schema-Version " + payloadSchemaVersion + " ist neuer als Modul 02 kennt (" +
+          BACKUP_PAYLOAD_SCHEMA_VERSION + ").",
+      );
+    }
+    if (!payload || typeof payload !== "object") {
+      throw makeError("BackupSchemaError", "Backup-Klartext-Payload ist kein Objekt.");
+    }
+    if (typeof payload.nodeId !== "string" || payload.nodeId.length === 0) {
+      throw makeError("BackupSchemaError", "Payload-Pflichtfeld fehlt: nodeId.");
+    }
+    if (!payload.keys || typeof payload.keys !== "object") {
+      throw makeError("BackupSchemaError", "Payload-Pflichtfeld fehlt: keys.");
+    }
+    if (!payload.keys.privateKey || typeof payload.keys.privateKey !== "object") {
+      throw makeError("BackupSchemaError", "Payload-Pflichtfeld fehlt: keys.privateKey.");
+    }
+    if (!payload.keys.publicKey || typeof payload.keys.publicKey !== "object") {
+      throw makeError("BackupSchemaError", "Payload-Pflichtfeld fehlt: keys.publicKey.");
+    }
+    if (!payload.spore || typeof payload.spore !== "object") {
+      throw makeError("BackupSchemaError", "Payload-Pflichtfeld fehlt: spore.");
+    }
+
+    await storage.put(KEYS_STORE, IDENTITY_KEY, {
+      keyId: "main",
+      privateKey: payload.keys.privateKey,
+      publicKey: payload.keys.publicKey,
+    });
+    await storage.put(SPORE_STORE, IDENTITY_KEY, {
+      nodeId: payload.nodeId,
+      sporeJson: payload.spore,
+      signature: payload.spore.signature,
+    });
+
+    var siblings = Array.isArray(payload.siblings) ? payload.siblings : [];
+    for (var i = 0; i < siblings.length; i++) {
+      var s = siblings[i];
+      if (!s || typeof s !== "object" || typeof s.nodeId !== "string" || s.nodeId.length === 0) continue;
+      await storage.put(SIBLINGS_STORE, s.nodeId, s);
+    }
+
+    resetIdentityCache();
+    return { restored: true };
+  }
+
   var SbkimSpore = {
     init: init,
     getOrCreateIdentity: getOrCreateIdentity,
@@ -422,12 +703,24 @@
     getOwnSpore: getOwnSpore,
     verifyForeignSpore: verifyForeignSpore,
     resetIdentityCache: resetIdentityCache,
+    exportBackup: exportBackup,
+    importBackup: importBackup,
+    InvalidBackupPasswordError: InvalidBackupPasswordError,
+    BackupDecryptError: BackupDecryptError,
+    BackupVersionMismatchError: BackupVersionMismatchError,
+    BackupSchemaError: BackupSchemaError,
+    BackupOverwriteError: BackupOverwriteError,
     _meta: {
       protocolVersion: PROTOCOL_VERSION,
       identityKey: IDENTITY_KEY,
       keysStore: KEYS_STORE,
       sporeStore: SPORE_STORE,
+      siblingsStore: SIBLINGS_STORE,
       requiredSporeFields: REQUIRED_SPORE_FIELDS.slice(),
+      backupFormatVersion: BACKUP_FORMAT_VERSION,
+      backupKdfIterations: BACKUP_KDF_ITERATIONS,
+      backupPasswordMinLen: BACKUP_PASSWORD_MIN_LEN,
+      backupPayloadSchemaVersion: BACKUP_PAYLOAD_SCHEMA_VERSION,
     },
   };
 
@@ -438,7 +731,7 @@
   if (typeof console !== "undefined" && console.info) {
     console.info(
       "MODUL 02 SPORE bereit, Funktionen: " +
-        "init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache",
+        "init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache/exportBackup/importBackup",
     );
   }
 })(typeof window !== "undefined" ? window : globalThis);
