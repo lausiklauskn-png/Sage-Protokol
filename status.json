@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Kein Endknoten.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-05-15",
+  "lastUpdated": "2026-05-16",
   "branch": "claude/semantic-agent-network-Y03Vg",
 
   "endknoten": [
@@ -18,7 +18,13 @@
     {
       "name": "Mixarium",
       "domain": "Cocktails / Drinks",
-      "integrated": false,
+      "integrated": true,
+      "integratedAt": "2026-05-16",
+      "nodeId": "1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json",
+      "stammCategories": ["Cocktails", "Mocktails", "Alkfr. Cocktails", "Smoothies & Shakes", "Limonaden", "Tees & Kaffees", "Bowlen", "Sirup & Basis"],
+      "guestCategories": ["Knabbereien", "Fingerfood"],
+      "pingStatus": "pending-peer",
       "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
     }
   ],
