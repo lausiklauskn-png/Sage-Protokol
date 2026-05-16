@@ -97,10 +97,23 @@ Modul 01 exportiert **sieben** öffentliche Funktionen. Alle DB-Operationen
 liefern ein `Promise`. Es gibt **keine** Callback-Variante.
 
 ```
-init() → Promise<void>
-  // Öffnet die DB sbkim, führt ggf. Versionsmigration aus, legt fehlende
-  // Stores an. Idempotent: mehrfacher Aufruf ist erlaubt und kostet
-  // nichts (gibt dieselbe interne IDBDatabase wieder zurück).
+init(options?) → Promise<void>
+  // Öffnet die DB (Default `sbkim`, oder `sbkim_<dbSuffix>` bei Bedarf —
+  // siehe § DB-Namen-Konvention), führt ggf. Versionsmigration aus, legt
+  // fehlende Stores an. Idempotent: mehrfacher Aufruf ist erlaubt und
+  // kostet nichts (gibt dieselbe interne IDBDatabase wieder zurück).
+  //
+  // options-Form: { dbSuffix?: string }
+  //   dbSuffix muss dem Pattern ^[a-z0-9_-]+$ entsprechen (Kleinbuchstaben,
+  //   Ziffern, '_' und '-'). Verstösse werfen InvalidDbSuffixError SYNCHRON
+  //   vor jedem Promise-Aufbau. Ohne dbSuffix bleibt der Default `sbkim`
+  //   aktiv — bestehende Sage-Werkstatt und Klaus-PWAs ohne Suffix-Konfig
+  //   funktionieren unverändert weiter (rückwärtskompatibel).
+  //
+  // Wer im Endknoten einen Suffix setzen will, muss init({dbSuffix:…}) ZUERST
+  // rufen, vor irgendeinem Modul, das Storage.init() intern selbst nachzieht
+  // (Modul 05, 06, 07, 00). Ein abweichender dbSuffix bei einem späteren
+  // init-Aufruf wirft InvalidDbSuffixError (kein stilles Ignorieren).
 
 getStore(storeName: string) → StoreHandle
   // Interner Helfer für Module, die mehrere Operationen in einer
@@ -147,6 +160,46 @@ Funktionen: ...`).
 
 Hinweis: Selbstcheck signalisiert **Modul geladen**, nicht **DB offen**.
 Erst `await init()` öffnet die IndexedDB.
+
+### DB-Namen-Konvention (PWA-Suffix)
+
+Standardname der IndexedDB ist `sbkim`. Wer mehrere SBKIM-Endknoten unter
+demselben Browser-**Origin** betreibt (häufiger Fall: GitHub-Pages-
+Project-Sites, alle PWAs unter `https://<benutzer>.github.io/`), teilt
+sich pro Origin **eine** IndexedDB. Modul 02 schreibt die Identität unter
+`sbkim_keys["main"]` — zwei Endknoten unter derselben Origin würden sich
+also denselben Ed25519-Schlüssel und damit dieselbe `nodeId` teilen
+(beobachtet 2026-05-16 bei `Mein-Mixarium` + `Mein-Rezeptbuch` unter
+`lausiklauskn-png.github.io`).
+
+Für solche Fälle nimmt `init({ dbSuffix: "<wert>" })` einen PWA-Suffix
+entgegen und öffnet stattdessen die DB unter dem Namen `sbkim_<wert>`.
+Jede so eröffnete DB bekommt ihre eigenen `sbkim_keys`, `sbkim_spore`,
+`sbkim_siblings`-Stores — also pro PWA eine eigene Identität.
+
+| Aufruf | Effektiver DB-Name | Wann |
+|---|---|---|
+| `init()` | `sbkim` | Default; ein Endknoten pro Origin, lokale Sage-Werkstatt |
+| `init({ dbSuffix: "mixarium" })` | `sbkim_mixarium` | Mein-Mixarium auf `lausiklauskn-png.github.io` |
+| `init({ dbSuffix: "rezeptbuch" })` | `sbkim_rezeptbuch` | Mein-Rezeptbuch auf `lausiklauskn-png.github.io` |
+
+Konvention:
+
+- `dbSuffix` ist eine **Aufrufer-Pflicht** im Andocker. Modul 01 inferiert
+  ihn nicht aus `location.pathname` oder ähnlichem — der Andocker weiss am
+  besten, welche PWA-Identität er gerade aufbaut (vgl. Karte 09 § Vor dem
+  Einbau zu klärende Werte).
+- Pattern `^[a-z0-9_-]+$`: Kleinbuchstaben, Ziffern, `_` und `-`. Verstösse
+  werfen `InvalidDbSuffixError` **synchron** beim `init`-Aufruf (vor jeder
+  Promise-Auswertung).
+- Suffix muss beim **ersten** `init`-Aufruf gesetzt werden. Modul 05, 06,
+  07, 00 rufen `Storage.init()` intern selbst nach — wer Suffix setzen
+  will, muss `SbkimStorage.init({dbSuffix:…})` ZUERST aufrufen. Ein
+  späterer init-Aufruf mit abweichendem Suffix wirft
+  `InvalidDbSuffixError` (kein stilles Ignorieren).
+- Modul 02 (`02_spore.js`) bleibt unverändert: `IDENTITY_KEY = "main"`
+  ist weiter der Singleton-Schlüssel innerhalb der jeweiligen DB. Die
+  Trennung passiert eine Schicht tiefer, auf DB-Namen-Ebene.
 
 ### Stores (verbindliche Liste)
 
@@ -250,9 +303,14 @@ PWA mit `v=1` läuft beim nächsten Lade durch `applyMigration(db, 2)`
 
 ```
 SBKIM_STORE_PREFIX = "sbkim_"   // INTERFACES.md §0
-DB_NAME            = "sbkim"
+DB_NAME_DEFAULT    = "sbkim"
+DB_SUFFIX_PATTERN  = /^[a-z0-9_-]+$/
 DB_VERSION         = 3
 ```
+
+`DB_NAME_DEFAULT` ist der DB-Name ohne Suffix. Wird beim `init`-Aufruf
+ein gültiger `dbSuffix` mitgegeben, ist der effektive DB-Name
+`SBKIM_STORE_PREFIX + dbSuffix` (also `sbkim_<dbSuffix>`).
 
 ---
 
@@ -260,6 +318,8 @@ DB_VERSION         = 3
 
 | Lage | Reaktion |
 |---|---|
+| `init({dbSuffix})` mit ungültigem Suffix | **synchroner** Wurf von `InvalidDbSuffixError` (vor jedem Promise-Aufbau). Pattern: `^[a-z0-9_-]+$`. |
+| `init({dbSuffix})` nach erstem `init` mit abweichendem Suffix | rejects mit `InvalidDbSuffixError`; Modul 01 ignoriert den Folge-Suffix nicht stillschweigend. |
 | Privatmodus / inkognito (IDB blockiert) | `init()` rejects mit `StorageUnavailableError` — verständliche Meldung; Hauptanwendung darf weiterlaufen, SBKIM-Funktionen sind dann deaktiviert. |
 | Unbekannter Store-Name | rejects mit `UnknownStoreError`; bei `getStore()` synchron geworfen. |
 | Quota überschritten beim `put()` | rejects mit `QuotaExceededError`, kein Silent-Fail. Aufrufer entscheidet (Aufräumen / Nutzer-Hinweis). |
@@ -330,6 +390,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Pflege Bau 06 Store-Anmeldung | 2026-05-15 | Bau 06 + Cleanup-Pflege 07 | `DB_VERSION` 1 → 2 (additive Migration); `STORE_NAMES`/`KNOWN_STORES` um `sbkim_hetero_inbox` erweitert (Schlüssel-Komposit `<peerNodeId>\|<ts>`, Schreiber 06, Leser 06/00/08); `onupgradeneeded`-Pfad um `v=2`-Block ergänzt — bestehende PWAs mit DB-Version 1 bekommen den neuen Store beim nächsten Lade additiv, kein Datenverlust. `sbkim_siblings`-Wert-Form-Zeile um optionales `heterokaryosisOptIn`-Feld ergänzt (Schreiber bleibt 05, Modul 05 setzt das Feld NICHT, Modul 06 liest fail-soft); `sbkim_anastomosis_log`-Schreiber-Zeile um Modul 06 erweitert (additive `hetero-*`-outcome-Werte). `node --check src/modules/01_storage.js` grün. |
 | Pflege Spec 08 Outbox-Anmeldung | 2026-05-15 | Spec 08 | `DB_VERSION` 2 → 3 (additive Migration v=3) in § Konfigurationswerte und Versionsmigrations-Tabelle nachgezogen. § Stores um neuen Store `sbkim_hetero_outbox` erweitert (Schlüssel `label` string ≤ 64 Zeichen, Wert `{label, vector, addedAt}`, Schreiber 08, Leser 06/08). `sbkim_siblings`-Schreiber-Spalte um Co-Schreiber-Hinweis „08 (Co, nur Feld `heterokaryosisOptIn`)" erweitert; Leser-Spalte um 08 ergänzt. Schema-Hinweis-Block um Co-Schreiber-Konvention (Modul 08 darf AUSSCHLIESSLICH das eine additive Feld setzen, wenn der Eintrag bereits existiert — sonst `UnknownSiblingError`; Haupt-Schreiber bleibt 05, Karte 05 unangetastet) und um `sbkim_hetero_outbox`-Verhalten (Reihenfolge absteigend nach `addedAt` in `listOutbox`, Überschreib-Verhalten bei doppeltem Label, `OutboxFullError` ohne automatisches Verdrängen, fail-soft-Lese-Recht für Modul 06; Outbox-Lese-Pfad in `src/modules/06_heterokaryose.js` als Folge-Pflege Bau 06.1 notiert) erweitert. **Keine JS-Code-Änderung** in `src/modules/01_storage.js` (`DB_VERSION` und `STORES_V3` zieht Bau-Sitzung 08 nach — Spec-Sitzung 08 spezifiziert nur den Vertrag). |
 | Pflege Bau 06.1 Code-DB-Version 2 → 3 | 2026-05-15 | Pflege Bau 06.1 | `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3); neuer `STORES_V3 = ["sbkim_hetero_outbox"]`-Block in `applyMigration(db, 3)`; `KNOWN_STORES` um den Outbox-Store erweitert. Bestehende PWAs mit DB-Version 1 oder 2 bekommen den Store beim nächsten Lade additiv (`for v = oldVersion+1 … newVersion`-Loop zieht beide Migrations-Schritte v=2 + v=3 nach), kein Datenverlust. Code-Anmeldung des Stores, den Spec-Sitzung 08 schon im Vertrag spezifiziert hatte — Karte 01 § Konfigurationswerte und § Versionsmigration sind seit Spec-Sitzung 08 auf `v=3` und werden hier nur im Code nachgezogen. **Keine Vertragsänderung** in Karte 01 oder INTERFACES.md §1 Modul 01 (Spec 08 hatte den Vertrag schon gespiegelt; Pflege Bau 06.1 hebt den Code-Status nach). `node --check src/modules/01_storage.js` grün. |
+| Pflege PWA-Suffix | 2026-05-16 | Pflege PWA-Suffix Karten 01+09 | Folge-Pflege nach Live-Andock-Sitzung 2026-05-16 (Mein-Mixarium + Mein-Rezeptbuch live SBKIM-integriert, aber identische `nodeId` wegen IndexedDB-Origin-Kollision auf GitHub-Pages-Project-Sites — siehe Übergabeprotokoll 2026-05-16 Andock Mein-Rezeptbuch). § Schnittstelle `init()` → `init(options?)` mit optionalem `dbSuffix: string` (Pattern `^[a-z0-9_-]+$`, sonst synchroner `InvalidDbSuffixError`); ohne Suffix bleibt der Default-DB-Name `sbkim` aktiv (rückwärtskompatibel, keine Klaus-PWA und keine Sage-Werkstatt muss umgestellt werden). § Stores: neuer Unter-Block „DB-Namen-Konvention (PWA-Suffix)" als ZWEITER Block in § Schnittstelle (vor § Stores) — drei-Zeilen-Tabelle (`init()` → `sbkim`, `init({dbSuffix:"mixarium"})` → `sbkim_mixarium`, `init({dbSuffix:"rezeptbuch"})` → `sbkim_rezeptbuch`) plus vier Konventions-Punkte (Andocker-Pflicht; Pattern-Validierung sync; Suffix beim ERSTEN init-Aufruf; Modul 02 bleibt unangetastet, IDENTITY_KEY weiterhin `"main"` innerhalb der jeweiligen DB). § Konfigurationswerte `DB_NAME` → `DB_NAME_DEFAULT` + neue Konstante `DB_SUFFIX_PATTERN`. § Fehlerverhalten zwei Zeilen ergänzt (`InvalidDbSuffixError` synchron bei ungültigem Suffix, async bei zweitem init mit abweichendem Suffix). **Code:** `src/modules/01_storage.js` `init(options)` Allow-List + Validierung + `dbNameInUse`-State (idempotent: zweiter init mit gleichem Suffix → gleiches dbPromise; abweichender Suffix → `InvalidDbSuffixError`); `_meta.dbName` als Getter (zeigt Live-Zustand statt Build-Konstante). **Modul 02 bleibt unangetastet** (`IDENTITY_KEY = "main"`; Identität ist DB-lokal, Pfade brechen nicht). **Keine Hauptversions-Erhöhung** (`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`). `node --check src/modules/01_storage.js` grün. |
 | In Endknoten eingebaut | — | — | — |
 
 ---
