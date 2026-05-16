@@ -189,6 +189,14 @@
   .phase-pill { flex: 1 1 180px; padding: 0.55rem 0.8rem; background: rgba(0,0,0,0.4); border: 1px solid var(--line); border-radius: var(--r-sm); font-family: "Geist Mono", monospace; font-size: 0.78rem; color: var(--muted); cursor: pointer; transition: border-color .2s, color .2s, background .2s, transform .2s var(--ease-spring); }
   .phase-pill:hover { color: var(--text); border-color: var(--line-strong); }
   .phase-pill.active { color: var(--bg); background: var(--accent); border-color: var(--accent); box-shadow: 0 6px 22px rgba(110,231,211,0.18); }
+  .phase-mod-badge { display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.55rem; padding: 0.1rem 0.45rem; border-radius: 999px; font-size: 0.66rem; font-family: "Geist Mono", monospace; letter-spacing: 0.02em; background: rgba(0,0,0,0.5); border: 1px solid var(--line); color: var(--muted); }
+  .phase-pill.active .phase-mod-badge { background: rgba(0,0,0,0.35); color: var(--bg); border-color: rgba(0,0,0,0.25); }
+  .phase-mod-badge::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 999px; background: var(--status-stub); }
+  .phase-mod-badge[data-mod-score="schablone"]::before { background: var(--status-schablone); }
+  .phase-mod-badge[data-mod-score="werkstatt"]::before { background: var(--status-werkstatt); }
+  .phase-mod-badge[data-mod-score="spec"]::before { background: var(--status-spec); }
+  .phase-mod-badge[data-mod-score="stub"]::before { background: var(--status-stub); }
+  .phase-mod-badge[data-mod-score="fertig"]::before { background: var(--status-fertig); }
   .lifecycle-hint { color: var(--dim); font-size: 0.82rem; margin-top: 0.8rem; font-style: italic; }
   .cycle-box[data-phase] .phase-fx { opacity: 0; transition: opacity 0.55s var(--ease-out-quart); }
   .cycle-box[data-phase="0"] .phase-fx[data-phase="0"],
@@ -1052,9 +1060,35 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     renderFooter(s);
     renderTopology(s);
     renderModuleList(s);
+    renderCyclePhases(s);
     renderEndknoten(s);
     computeScore(s);
     renderBars(s);
+  }
+
+  // ====== LEBENSZYKLUS-PHASEN ↔ MODUL-STATUS (live aus status.json) ======
+  // Phase-Mapping: Phase 0 Spore → Modul 02, Phase 1 Einbettung → 03,
+  // Phase 2 Anastomose → 05, Phase 3 Antwort → 04 (Match liefert Antwort).
+  // Render fügt pro Phase-Pill einen Mini-Badge mit Modul-ID + Status-Farbe
+  // ein. Schiebt das ganze Lebenszyklus-Stage von Demo zu Live.
+  const CYCLE_PHASE_MOD = { '0': '02', '1': '03', '2': '05', '3': '04' };
+  function renderCyclePhases(s) {
+    const modById = {};
+    (s.modules || []).forEach(m => { modById[m.id] = m; });
+    document.querySelectorAll('.phase-pill[data-phase]').forEach(pill => {
+      const phase = pill.getAttribute('data-phase');
+      const modId = CYCLE_PHASE_MOD[phase];
+      const mod = modId && modById[modId];
+      // bestehenden Badge wegräumen (idempotent bei Re-Renders)
+      pill.querySelectorAll('.phase-mod-badge').forEach(b => b.remove());
+      if (!mod) return;
+      const badge = document.createElement('span');
+      badge.className = 'phase-mod-badge';
+      badge.setAttribute('data-mod-score', mod.score);
+      badge.title = mod.id + ' · ' + (mod.name || '') + ' · ' + (mod.siegel || mod.score);
+      badge.textContent = mod.id + ' · ' + (mod.score || '?');
+      pill.appendChild(badge);
+    });
   }
 
   // ====== DEMO-ANTEIL (Ring) ======
@@ -1134,10 +1168,19 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   };
 
   function isNextUp(m, byId) {
-    if (m.score === 'fertig') return false;
+    // nextup = bereit für den NÄCHSTEN Bau-Schritt.
+    //   Schablone    → spec ausstehend     → nicht nextup (im Backlog-Filter)
+    //   Werkstatt    → spec im Entwurf      → nextup (Spec-Sitzung an der Reihe)
+    //   Spec fertig  → Bau ausstehend       → nextup (Bau-Sitzung an der Reihe)
+    //   Code-Stub    → Sichttest/Pflege     → NICHT mehr "bereit zum Bau"
+    //   Fertig       → nichts ausstehend    → nicht nextup
+    // Plus: Abhängigkeiten müssen mindestens als "stub" (= API gebaut, aufrufbar)
+    // vorliegen, nicht erst als "fertig" — sonst wäre niemals etwas nextup,
+    // solange noch kein Modul "fertig" ist (Vakuum-truthy-Falle bei deps=[]).
+    if (m.score !== 'spec' && m.score !== 'werkstatt') return false;
     if (BACKLOG_IDS.has(m.id)) return false;
     const deps = m.abhaengig || [];
-    return deps.every(d => (byId[d] && byId[d].score === 'fertig'));
+    return deps.every(d => (byId[d] && (byId[d].score === 'fertig' || byId[d].score === 'stub')));
   }
 
   function renderTopology(s) {

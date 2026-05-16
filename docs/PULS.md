@@ -498,6 +498,106 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
+### 2026-05-17 · Mini-Pflege Sage-Page — Live-Status für Topologie + Lebenszyklus
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/pflege-sage-page-live-status`. Folge-Pflege zur Live-Andock-
+Sitzung Cross-Knoten-Handshake (PR #65): Klaus' Beobachtung „Modul-
+Topologie sollte Live sein" + „PWAs in Animation noch gelb".
+
+**Befund:** Die Modul-Topologie und die Modul-Liste lesen schon live
+aus `status.json` — aber die `isNextUp()`-Heuristik hat eine
+vakuum-truthy-Falle: Module mit `abhaengig: []` werden immer als
+„bereit zum Bau" markiert (`[].every(...) === true`), auch wenn
+sie längst `score: "stub"` haben. Dadurch erscheinen 00, 01, 03 in der
+Topologie und Modul-Liste mit Gold-Ring, obwohl nur 09 (`score: "spec"`)
+echt noch nextup ist. Zusätzlich war die Lebenszyklus-Animation
+(Spore→Einbettung→Anastomose→Antwort) bisher eine reine Demo-
+Choreographie ohne Bezug zum echten Modul-Status — Klaus' Wunsch:
+diese Animation soll den Live-Stand der korrespondierenden Module
+sichtbar machen.
+
+**Getan:**
+
+- **`isNextUp()` präzisiert** in `index.html` (Zeile 1136):
+  - Vorher: `m.score === 'fertig'` rausfiltern, dann `deps.every(d =>
+    byId[d].score === 'fertig')` → Vakuum-Falle bei leerem `deps`.
+  - Nachher: nur Module mit `score === 'spec'` oder `'werkstatt'`
+    sind nextup; Abhängigkeiten müssen mindestens `'stub'` sein
+    (= API gebaut, aufrufbar). Code-Stub-Module werden NICHT mehr
+    als nextup markiert.
+  - **Effekt sofort sichtbar:** in Topologie + Modul-Liste ist nur
+    noch Modul 09 mit Gold-Ring markiert. Header-Zahl wechselt von
+    „4 bereit zum Bau" auf „1 bereit zum Bau".
+
+- **Lebenszyklus-Phase-Pills mit Live-Modul-Status erweitert:**
+  Neue Render-Funktion `renderCyclePhases(s)` in `renderAll()` ruft
+  vor jedem Render die aktuellen Modul-Status aus `status.json` ab
+  und schreibt pro Phase-Pill einen Mini-Badge mit Modul-ID + Status-
+  Farbe (Status-Punkt links neben dem Modul-ID-Text):
+  - Phase 0 „1 · Spore" → Modul 02 Spore
+  - Phase 1 „2 · Einbettung" → Modul 03 Embedding
+  - Phase 2 „3 · Anastomose" → Modul 05 Anastomose
+  - Phase 3 „4 · Antwort" → Modul 04 Match (Match liefert die Antwort)
+  CSS-Klasse `.phase-mod-badge` mit `data-mod-score`-Attribute,
+  Status-Punkt-Farbe aus `--status-{schablone,werkstatt,spec,stub,
+  fertig}`. Mapping verbindlich im Konstanten-Objekt
+  `CYCLE_PHASE_MOD` (Zeile ~1058).
+
+- **Automatik für künftige Module:** sobald Modul 02/03/04/05 in
+  `status.json` einen neuen Score bekommt (z.B. von `stub` auf
+  `fertig` hochgestuft), aktualisiert sich der Phase-Pill-Badge
+  automatisch beim nächsten Page-Load. Kein Sage-Page-Code-Eingriff
+  nötig.
+
+**Bewusst nicht angefasst:**
+
+- **SVG-Animations-Knoten** (Heim/Rezept/Mixar/Buch + Phase-Pulse-
+  Wellen) unverändert. Das ist hartkodiertes Design — die SVG-
+  Farben von Demo-Wellen (gelb/gold) bleiben symbolisch
+  (Spore-Wurf, semantische Berechnung). Phase-Modul-Bezug zeigt
+  sich jetzt im Pill-Badge unten, nicht in der SVG selbst.
+- **Sichtbarkeits-Lampen Demo-Anker** (Topbar `lamp-alive` /
+  `lamp-traffic`) unverändert — eigene Modul-15-Spec.
+- **`status.json`** unverändert.
+- **Modul-Code** unverändert (reine UI-Pflege).
+- **INTERFACES.md** unverändert.
+- **`PROTOCOL_VERSION` bleibt `"0.1"`.**
+- **`update_puls_pie.py`** NICHT aufgerufen (kein Modul-Score-Wechsel).
+
+**Validierung:**
+
+- HTML-Parse via Python `html.parser`: OK
+- JS-Syntax via `node --check` auf den extrahierten Inline-`<script>`-
+  Block (Zeile 968–1868): OK
+- Idempotenter Re-Render: `renderCyclePhases()` entfernt zuerst alle
+  bestehenden `.phase-mod-badge`-Elemente, dann setzt neu — keine
+  Duplikate bei wiederholtem `renderAll()`-Aufruf.
+- Browser-Sichttest ungeprüft, weil headless — wartet auf Klaus.
+
+**Was offen blieb:**
+
+- **Tablet-Neustart-Sichttest** für SW-Bridge-Phantom-Cache (aus
+  Cross-Knoten-Handshake-Sitzung) — unverändert offen.
+- **Modul-15-Spec Sichtbarkeits-Lampen + Events-Strom** — die nächste
+  echte Live-Erweiterung. Diese Sage-Page-Pflege hat sichtbar
+  gemacht, dass Topologie + Modul-Liste schon live sind; Modul 15
+  würde Events-Live-Strom dazubringen.
+- **`domainKeywords`-Hartkodierung** in Endknoten-`sbkim-init.js`
+  unverändert offen.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Sichttest dieser Sage-Page-Pflege** (nicht headless,
+   im Browser) — Topologie sollte nur noch Modul 09 als
+   Gold-Ring zeigen, Phase-Pills mit Modul-ID-Badges in der
+   richtigen Status-Farbe.
+2. **Spec-Sitzung Modul 15 Sichtbarkeits-Lampen + Events-Strom**
+   (~60 Min headless). Jetzt klar, was zu specifizieren ist.
+3. **Tablet-Neustart-Sichttest** für SW-Bridge-Phantom-Cache.
+
+---
+
 ### 2026-05-16 · Live-Andock-Sitzung — Cross-Knoten-Handshake etabliert
 
 **Sitzungs-Rolle:** Live-Andock-Sitzung, NICHT headless (Klaus am Tablet
@@ -923,6 +1023,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Mini-Pflege · Sage-Page Live-Status für Topologie + Lebenszyklus (`isNextUp()`-Vakuum-Falle gefixt — nur Module mit `score:"spec"\|"werkstatt"` zählen als nextup; neue `renderCyclePhases()`-Funktion bindet Phase-Pills an Modul-02/03/05/04-Live-Status; automatisch sichtbar bei künftigen Modul-Status-Änderungen in `status.json`) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sage-page-live-status.md) |
 | 2026-05-16 | Live-Andock · Cross-Knoten-Handshake etabliert (`outcome:"established"` zwischen Mein-Mixarium `7xf0tt33_…` und Mein-Rezeptbuch `RHhposP0…`; Origin-Kollision via dbSuffix aufgelöst; Modul 01 in Endknoten nachgezogen; PR #238-Schaden in Mein-Rezeptbuch-`index.html` repariert; Match-Score Cocktails↔Kochrezepte ≥ 0.8; SW-Bridge-Phantom-Cache-Bug umgangen via direktem `receiveHandshake`-Aufruf, Folge-Pflege offen) | [→ Archiv](sessions/archiv/2026-05-16_cross-knoten-handshake-etabliert.md) |
 | 2026-05-16 | Pflege · Sage-Page Vollumbau / Redesign (Geist-Typografie, Force-Graph-Topologie ersetzt Pie-Doppelung, Lesematerial-Karte, Sichtbarkeits-Lampen-Demo-Anker, scroll-aware Lebenszyklus, neue Pflege-Konvention `docs/sage_page_pflege.md`) | [→ Archiv](sessions/archiv/2026-05-16_pflege-sage-page-redesign.md) |
 | 2026-05-16 | Mini-Pflege · Test-Panel Knopf-7-pendingBackup-Reset (Reset-Zeile aus Handler-Anfang in `tests/manual_check.html` entfernt, `pendingBackup = null` jetzt direkt vor `importBackup`-Aufruf nach erfolgreicher File-Wahl; File-Picker-Cancel löst keine State-Änderung mehr aus, Stash überlebt doppelten Knopf-7-Klick ohne File-Wahl; KEIN Modul-Code-Eingriff, KEIN INTERFACES.md-Eingriff, KEIN Score-Wechsel) | [→ Archiv](sessions/archiv/2026-05-16_pflege-test-panel-knopf-7-pendingBackup.md) |
