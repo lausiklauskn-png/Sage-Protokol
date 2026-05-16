@@ -88,7 +88,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
-| 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Persistenz-Strategie verbinden 2026-05-16) | geprüft 2026-05-15 (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert; Pflege Persistenz-Strategie verbinden 2026-05-16 ungeprüft (headless gebaut — wartet auf Klaus' Browser-Lauf für Test 7 Drei-Setup-Probe) | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00. **Pflege Persistenz-Strategie verbinden 2026-05-16** (additiv, kein Refactoring): `getStatusSnapshot()` um Feld `storagePersisted: boolean \| null` erweitert (Spiegelung Modul-01-Getter fail-soft); Modal zeigt zusätzliche „Backup empfohlen"-Tipp-Zeile (`DOKU_BACKUP_TIP_TEXT` modul-lokal), wenn `storagePersisted === false` ODER `quota.warningLevel !== "none"`. Hinweis-only, kein Direkt-Aufruf von `SbkimSpore.exportBackup` aus Modul 00 (Aufrufer-Pflicht-Trennung). |
+| 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Persistenz-Strategie verbinden 2026-05-16) | geprüft 2026-05-15 (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert; **Pflege Persistenz-Strategie verbinden Sichttest 2026-05-16 grün** (Klaus, im Browser) — Drei-Setup-Probe aus § Manueller Test Punkt 7 alle drei Pfade ohne Auffälligkeit: Persist-Trigger-Stub, Quota-Trigger, Negativ-Fall | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00. **Pflege Persistenz-Strategie verbinden 2026-05-16** (additiv, kein Refactoring): `getStatusSnapshot()` um Feld `storagePersisted: boolean \| null` erweitert (Spiegelung Modul-01-Getter fail-soft); Modal zeigt zusätzliche „Backup empfohlen"-Tipp-Zeile (`DOKU_BACKUP_TIP_TEXT` modul-lokal), wenn `storagePersisted === false` ODER `quota.warningLevel !== "none"`. Hinweis-only, kein Direkt-Aufruf von `SbkimSpore.exportBackup` aus Modul 00 (Aufrufer-Pflicht-Trennung). |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege PWA-Suffix + Pflege Storage-Persist 2026-05-16) | geprüft 2026-05-14 + 2026-05-16 (Klaus) — fünfter Knopf „Persist-Status zeigen" liefert `_meta.storagePersisted: true` (Chrome auto-bei-PWA) | IndexedDB-Wrapper |
 | 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15, Pflege Spec Backup-Export Stufe 2 2026-05-16) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Stamm/Gast-Durchreichung 2026-05-15, Bau 02.X Backup-Export 2026-05-16) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) + 2026-05-16 (Klaus, Bau 02.X Backup-Export Knöpfe 6/7/7b alle drei grün; Test-Panel-UX-Befund Knopf 7 pendingBackup-Stash-Reset offen als Mini-Pflege) | Ed25519-Identität, Singleton, base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. **`generateOwnSpore` Code-Allow-List nachgezogen** 2026-05-15 (Bau 02 Stamm/Gast): zwei Zeilen analog zu `domainKeywords` — ohne diese Pflege würden Stamm/Gast-Felder beim Andock still ignoriert. **Spec Backup-Export Stufe 2 2026-05-16** (Identitäts-Persistenz Stufe 2): zwei neue Funktionen `exportBackup(password) → Promise<SbkimBackupBlob>` + `importBackup(blob, password, options?)` (PBKDF2-SHA256 600 000 + AES-GCM-256, Klartext-Payload = Identität + Geschwister, defensiv per Default — `BackupOverwriteError`); drei §0-Konstanten verankert (`BACKUP_FORMAT_VERSION=1` / `BACKUP_KDF_ITERATIONS=600000` / `BACKUP_PASSWORD_MIN_LEN=8`); fünf neue Error-Klassen (`InvalidBackupPasswordError` / `BackupDecryptError` / `BackupVersionMismatchError` / `BackupSchemaError` / `BackupOverwriteError`). KEIN Spore-Feld dazu (Backup-Schicht separat, `PROTOCOL_VERSION` bleibt `"0.1"`). **Bau-Sitzung 02.X ausstehend**, KEIN Code in `src/modules/02_spore.js`. |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
@@ -192,9 +192,10 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   `typeof`-Check; `null` und `true` triggern nicht, nur explizites
   `false`). Hinweis-only, kein Direkt-Aufruf von
   `SbkimSpore.exportBackup` aus Modul 00 — Aufrufer-Pflicht-Trennung
-  (Modul 00 bleibt reines Lese-/Trigger-Modul). Sichttest ungeprüft
-  (headless gebaut — wartet auf Klaus' Browser-Lauf, Drei-Setup-Probe
-  aus Karte 00 § Manueller Test Punkt 7). Details im
+  (Modul 00 bleibt reines Lese-/Trigger-Modul). **Sichttest geprüft
+  2026-05-16** (Klaus, im Browser) — Drei-Setup-Probe aus Karte 00 §
+  Manueller Test Punkt 7 alle drei Pfade grün (Persist-Trigger,
+  Quota-Trigger, Negativ-Fall). Details im
   [Übergabeprotokoll 2026-05-16 Pflege Persistenz-Strategie
   verbinden](sessions/archiv/2026-05-16_pflege-persistenz-strategie-verbinden.md).
   **Architektur-Anmerkung:** *Nicht* als Selbst-Heilung über
@@ -541,11 +542,12 @@ bleiben `score:"stub"`).
 
 **Was offen blieb:**
 
-- **Klaus' Sichttest Panel 00 Backup-Tipp-Zeile** im Browser
-  (Phase 2 Folge-Sichttest nach PR #56 — Karte 00 § Bauzustand-
-  Zeile „Sichttest (Pflege Persistenz)" steht in main auf
-  „ungeprüft, weil headless gebaut"). Bei grünem Lauf: Karte 00 §
-  Bauzustand-Zeile auf „geprüft <Datum>" stellen.
+- ~~**Klaus' Sichttest Panel 00 Backup-Tipp-Zeile** im Browser~~ —
+  **geprüft 2026-05-16 (Klaus, „Sichttest OK")** in Mini-Pflege
+  selbiger Tag nachgezogen: Karte 00 § Bauzustand-Zeile „Sichttest
+  (Pflege Persistenz)" auf „geprüft" + PULS Schnellüberblick
+  Modul-00-Sichttest-Spalte aktualisiert. Drei-Setup-Probe aus
+  Karte 00 § Manueller Test Punkt 7 alle drei Pfade grün.
 - **Test-Panel-UX-Fix Knopf-7-pendingBackup-Reset** offen (eigene
   Folge-Mini-Pflege, ≤ 15 Min headless).
 - **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
@@ -560,18 +562,12 @@ bleiben `score:"stub"`).
 
 **Vorgeschlagene nächste Schritte:**
 
-1. **Klaus' Sichttest Panel 00 Backup-Tipp-Zeile** im Browser
-   (Phase-2-Folge-Sichttest zu PR #56). **Nicht headless — wartet
-   auf Klaus.** Drei Mini-Setups (Quota-Trigger / Persist-Trigger
-   / Negativ-Fall) in Karte 00 § Manueller Test Punkt 7
-   beschrieben. Bei grünem Lauf: Karte 00 § Bauzustand-Zeile
-   „Sichttest (Pflege Persistenz)" auf „geprüft <Datum>" stellen.
-2. **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
+1. **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
    PWA-Suffix aus Pflege 2026-05-16 (unverändert offen, wartet auf
    Klaus am Termux). Blockiert Cross-Knoten-Handshake.
-3. **Cross-Knoten-Handshake** zwischen Mein-Rezeptbuch und
-   Mein-Mixarium nach Re-Andock — setzt Schritt 2 voraus.
-4. **Mini-Pflege Test-Panel Knopf 7 pendingBackup-Reset**
+2. **Cross-Knoten-Handshake** zwischen Mein-Rezeptbuch und
+   Mein-Mixarium nach Re-Andock — setzt Schritt 1 voraus.
+3. **Mini-Pflege Test-Panel Knopf 7 pendingBackup-Reset**
    (`tests/manual_check.html` Panel 02 Knopf 7 — Reset nach
    erfolgreicher Datei-Wahl statt am Anfang). Headless möglich,
    ≤ 15 Min, kein Modul-Code-Eingriff. Niedrig priorisiert
