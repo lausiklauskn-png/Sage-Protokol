@@ -2,9 +2,9 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title>Sage·Protokol — Das Mycel-Protokoll für kleine Apps</title>
+  <title>Sage·Protokol — Das Mycel-Protokol für kleine Apps</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="SBKIM — Semantisch-Empfangendes Bidirektionales KI-Matching. Spec- und Bau-Hub für ein peer-to-peer Mycel-Protokoll, das kleine PWAs miteinander reden lässt — ohne zentralen Index.">
+  <meta name="description" content="SBKIM — Semantisch-Empfangendes Bidirektionales KI-Matching. Spec- und Bau-Hub für ein peer-to-peer Mycel-Protokol, das kleine PWAs miteinander reden lässt — ohne zentralen Index.">
   <meta name="color-scheme" content="dark">
   <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
   <link rel="apple-touch-icon" href="assets/icon.svg">
@@ -140,7 +140,7 @@
   .topology-sub { color: var(--muted); font-size: 0.88rem; margin-top: 0.18rem; }
   .topology-counts { font-family: "Geist Mono", monospace; font-size: 0.78rem; color: var(--dim); letter-spacing: 0.04em; }
   .topology-counts strong { color: var(--text); font-weight: 500; }
-  #topology-svg { width: 100%; height: clamp(360px, 44vw, 520px); display: block; position: relative; z-index: 1; }
+  #topology-svg { width: 100%; height: clamp(420px, 50vw, 580px); display: block; position: relative; z-index: 1; }
   #topology-svg .topo-link { stroke: rgba(255,255,255,0.13); stroke-width: 1.1; fill: none; transition: stroke .25s, stroke-width .25s; }
   #topology-svg .topo-link.active { stroke: var(--accent); stroke-width: 1.8; }
   #topology-svg .topo-node-bg { fill: rgba(255,255,255,0.04); stroke: rgba(255,255,255,0.18); stroke-width: 1.1; cursor: pointer; transition: stroke .2s, fill .2s; }
@@ -196,12 +196,12 @@
   .cycle-box[data-phase="2"] .phase-fx[data-phase="2"],
   .cycle-box[data-phase="3"] .phase-fx[data-phase="3"] { opacity: 1; }
   .module-list { margin-top: 1rem; display: grid; gap: 0.45rem; }
-  .mod-row { display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 0.9rem; padding: 0.75rem 0.95rem; background: rgba(0,0,0,0.32); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; transition: background .2s, border-color .2s, transform .2s var(--ease-spring); }
+  .mod-row { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 0.8rem; padding: 0.75rem 1.1rem 0.75rem 0.95rem; background: rgba(0,0,0,0.32); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; transition: background .2s, border-color .2s, transform .2s var(--ease-spring); }
   .mod-row:hover { background: rgba(0,0,0,0.55); border-color: var(--line-strong); transform: translateX(2px); }
   .mod-row .mod-num { font-family: "Geist Mono", monospace; font-size: 0.84rem; color: var(--dim); }
   .mod-row .mod-name { font-weight: 500; font-size: 0.97rem; }
   .mod-row .mod-kurz { color: var(--muted); font-size: 0.82rem; margin-top: 0.18rem; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-  .badge { display: inline-flex; align-items: center; gap: 0.45rem; font-family: "Geist Mono", monospace; font-size: 0.72rem; padding: 0.28rem 0.65rem; border-radius: 999px; background: rgba(0,0,0,0.5); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .badge { display: inline-flex; align-items: center; gap: 0.45rem; font-family: "Geist Mono", monospace; font-size: 0.72rem; padding: 0.28rem 0.65rem; border-radius: 999px; background: rgba(0,0,0,0.5); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; flex-shrink: 0; }
   .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
   .badge.schablone { color: var(--status-schablone); }
   .badge.werkstatt { color: var(--status-werkstatt); }
@@ -248,6 +248,31 @@
   .backup-hint { padding: 1rem 1.2rem; background: rgba(0,0,0,0.36); border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: var(--r-sm); margin-top: 1rem; }
   .backup-hint h4 { margin: 0 0 0.3rem; font-size: 0.95rem; font-weight: 500; color: var(--gold); }
   .backup-hint p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+  /* DEMO-ANTEIL + SCHICHTEN-FORTSCHRITT */
+  .demoanteil-inner { display: grid; grid-template-columns: 1fr; gap: 1rem; align-items: center; margin-top: 1rem; }
+  @media (min-width: 520px) { .demoanteil-inner { grid-template-columns: 180px 1fr; } }
+  .ring-wrap { position: relative; width: 180px; height: 180px; margin: 0 auto; }
+  .ring-wrap svg { width: 100%; height: 100%; display: block; transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: rgba(255,255,255,0.08); }
+  .ring-fg { fill: none; stroke: url(#ring-grad); stroke-linecap: round; stroke-dasharray: 565.48; stroke-dashoffset: 565.48; transition: stroke-dashoffset 1.4s var(--ease-out-quart); }
+  .ring-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem; text-align: center; }
+  .ring-pilz { background: transparent; border: none; padding: 0; cursor: pointer; width: 38px; height: 38px; }
+  .ring-pilz img { width: 100%; height: 100%; transition: transform .2s var(--ease-spring); }
+  .ring-pilz:hover img { transform: scale(1.12); }
+  .ring-pilz-caption { font-family: "Geist Mono", monospace; font-size: 0.62rem; color: var(--gold); letter-spacing: 0.04em; margin-top: -0.2rem; }
+  .ring-num .big { font-family: "Geist Mono", monospace; font-size: 2.4rem; font-weight: 500; color: var(--text); line-height: 1; }
+  .ring-num .lbl { font-family: "Geist Mono", monospace; font-size: 0.65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; }
+  .ring-formula { font-family: "Geist Mono", monospace; font-size: 0.78rem; color: var(--muted); margin-top: 0.8rem; padding: 0.6rem 0.8rem; background: rgba(0,0,0,0.4); border: 1px solid var(--line); border-radius: var(--r-sm); }
+  .ring-formula .sub { color: var(--dim); display: block; margin-top: 0.2rem; font-size: 0.72rem; }
+  .bars { margin-top: 1rem; display: grid; gap: 0.85rem; }
+  .bar-row { }
+  .bar-label { display: flex; justify-content: space-between; font-family: "Geist Mono", monospace; font-size: 0.78rem; margin-bottom: 0.3rem; }
+  .bar-label .pct { color: var(--accent); font-weight: 500; }
+  .bar-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; }
+  .bar-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%); transition: width 1.2s var(--ease-out-quart); }
+  .bar-fill.teal { background: linear-gradient(90deg, var(--accent) 0%, #34D399 100%); }
+  .bar-fill.gold { background: linear-gradient(90deg, var(--gold) 0%, #FB923C 100%); }
+  .bars-legend { font-family: "Geist Mono", monospace; font-size: 0.72rem; color: var(--dim); margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
   .meta-footer { margin-top: 4rem; padding: 1.6rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid var(--line); border-radius: var(--r); display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
   .meta-cell .k { font-family: "Geist Mono", monospace; font-size: 0.68rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 0.25rem; }
   .meta-cell .v { font-family: "Geist Mono", monospace; font-size: 0.84rem; color: var(--text); word-break: break-all; }
@@ -389,7 +414,7 @@
     <main id="screen-overview" class="screen active">
       <section class="hero">
         <div class="hero-eyebrow"><span class="dot"></span>Bau-Hub · Spec-Werkstatt · keine Endknoten-PWA</div>
-        <h1 class="hero-title">Das <span class="accent">Mycel-Protokoll</span><br>für kleine Apps.</h1>
+        <h1 class="hero-title">Das <span class="accent">Mycel-Protokol</span><br>für kleine Apps.</h1>
         <p class="hero-claim">
           <strong>SBKIM</strong> — Semantisch-Empfangendes Bidirektionales KI-Matching.
           Eine peer-to-peer Schicht, die kleine PWAs einander finden lässt — ohne
@@ -413,7 +438,7 @@
             </div>
             <div class="topology-counts" id="topology-counts">—</div>
           </div>
-          <svg id="topology-svg" viewBox="0 0 1000 460" preserveAspectRatio="xMidYMid meet" aria-label="Modul-Topologie als Force-Graph"></svg>
+          <svg id="topology-svg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet" aria-label="Modul-Topologie als Force-Graph"></svg>
           <div class="topology-legend" id="topology-legend"></div>
         </div>
       </section>
@@ -509,9 +534,63 @@
           <p>Die echten PWAs des Betreibers. Sage ist kein Endknoten — nur Vermittlungsstelle.</p>
           <div class="endknoten-grid" id="endknoten-grid"></div>
         </article>
+        <article class="card span-7" data-back-anchor="demoanteil">
+          <span class="card-tag">Demo-Anteil · live aus status.json</span>
+          <h3>Wie viel ist Theater, wie viel ist real?</h3>
+          <p>Aktuell überwiegt das Konzept. Mit jedem fertigen Modul, jedem angedockten Endknoten und jedem erfolgreichen Live-Ping sinkt der Wert beim nächsten Reload.</p>
+          <div class="demoanteil-inner">
+            <div class="ring-wrap" data-tip="Hub(10) + Σ Module + Σ Endknoten / max 140">
+              <svg viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#6EE7D3"/>
+                    <stop offset="50%" stop-color="#8B5CF6"/>
+                    <stop offset="100%" stop-color="#F4B435"/>
+                  </linearGradient>
+                </defs>
+                <circle class="ring-bg" cx="100" cy="100" r="90" stroke-width="14"/>
+                <circle id="demo-ring" class="ring-fg" cx="100" cy="100" r="90" stroke-width="14"/>
+              </svg>
+              <div class="ring-num">
+                <button class="ring-pilz" type="button" onclick="openUeberModal()" aria-label="Was bringt mir das?">
+                  <img src="assets/mark.svg" alt="">
+                </button>
+                <div class="ring-pilz-caption">Was bringt mir das? →</div>
+                <div class="big" id="demo-num">0%</div>
+                <div class="lbl">Demo-Anteil</div>
+              </div>
+            </div>
+            <div>
+              <div class="ring-formula">
+                100 × (1 − realScore / 140)
+                <span class="sub">realScore = Hub(10) + Σ Module(0..10) + Σ Endknoten(0..15)</span>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="card span-5" data-back-anchor="schichten">
+          <span class="card-tag">Schichten · Fortschritt</span>
+          <h3>Pro Schicht statt pro Modul</h3>
+          <p>UI, Netzwerk, Kern — drei Schichten, jede mit ihrem eigenen Bau-Stand. Aggregat über die Module einer Schicht.</p>
+          <div class="bars">
+            <div class="bar-row">
+              <div class="bar-label"><span>UI</span><span class="pct" id="bar-ui-pct">0 %</span></div>
+              <div class="bar-track"><div class="bar-fill" id="bar-ui"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label"><span>Netzwerk</span><span class="pct" id="bar-net-pct">0 %</span></div>
+              <div class="bar-track"><div class="bar-fill teal" id="bar-net"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label"><span>Kern</span><span class="pct" id="bar-core-pct">0 %</span></div>
+              <div class="bar-track"><div class="bar-fill gold" id="bar-core"></div></div>
+            </div>
+          </div>
+          <div class="bars-legend">UI: 00, 08 · Netzwerk: 05, 06 · Kern: 01–04, 07</div>
+        </article>
         <article class="card reading span-12" data-back-anchor="reading">
-          <span class="card-tag">Über das Protokoll · Lesematerial</span>
-          <h3>Tieflese — wer das Konzept verstehen will</h3>
+          <span class="card-tag">Über das Protokol · Lesematerial</span>
+          <h3>Einblicke — wer das Konzept verstehen will</h3>
           <p>Zwei Texte: das Begleit-Paper für Nutzen und Geschäftsmodelle (laienverständlich), das technische Hauptpaper für Architektur und Algorithmen.</p>
           <div class="reading-grid">
             <a class="paper" href="./docs/PAPER_NUTZEN_UND_INTEGRATION.md">
@@ -577,7 +656,7 @@
         </article>
         <div class="meta-footer">
           <div class="meta-cell"><span class="k">Branch</span><span class="v" id="ft-branch">—</span></div>
-          <div class="meta-cell"><span class="k">Protokoll</span><span class="v" id="ft-proto">—</span></div>
+          <div class="meta-cell"><span class="k">Protokol</span><span class="v" id="ft-proto">—</span></div>
           <div class="meta-cell"><span class="k">Schema</span><span class="v" id="ft-schema">—</span></div>
           <div class="meta-cell"><span class="k">Update</span><span class="v" id="ft-update">—</span></div>
         </div>
@@ -790,7 +869,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </div>
       </section>
       <section class="warum-section">
-        <div class="warum-section-head"><span class="warum-num">04</span><h2>Drei Versprechen</h2></div>
+        <div class="warum-section-head"><span class="warum-num">04</span><h2>Drei Tatsachen</h2></div>
         <div class="versprechen-grid">
           <div class="versprechen-card">
             <div class="versprechen-icon"><svg viewBox="0 0 48 48"><path d="M14 22V16a10 10 0 0 1 20 0v6h2a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4h2zm4 0h12V16a6 6 0 0 0-12 0v6z" fill="#F4B435"/></svg></div>
@@ -974,6 +1053,64 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     renderTopology(s);
     renderModuleList(s);
     renderEndknoten(s);
+    computeScore(s);
+    renderBars(s);
+  }
+
+  // ====== DEMO-ANTEIL (Ring) ======
+  function computeScore(s) {
+    const types = s.nodeTypes || {};
+    const modules = s.modules || [];
+    let real = 0;
+    real += 10; // Hub live (diese Page läuft)
+    modules.forEach(m => { real += types[m.score] || 0; });
+    (s.endknoten || []).forEach(e => { real += e.integrated ? 8 : 0; });
+    const max = 10 + (modules.length * 10) + ((s.endknoten || []).length * 15);
+    const demo = Math.max(0, Math.min(100, Math.round(100 * (1 - real / max))));
+    animateRing(demo);
+  }
+  function animateRing(pct) {
+    const ring = document.getElementById('demo-ring');
+    const num = document.getElementById('demo-num');
+    if (!ring || !num) return;
+    const C = 2 * Math.PI * 90;
+    requestAnimationFrame(() => { ring.style.strokeDashoffset = C * (1 - pct / 100); });
+    countUp(num, pct, '%', 1400);
+  }
+  function countUp(el, target, suffix, dur) {
+    const start = performance.now();
+    function tick(t) {
+      const p = Math.min(1, (t - start) / dur);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * ease) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ====== SCHICHTEN-FORTSCHRITT (Bars) ======
+  function renderBars(s) {
+    const types = s.nodeTypes || {};
+    const groups = {
+      ui:   ['00', '08'],
+      net:  ['05', '06'],
+      core: ['01', '02', '03', '04', '07']
+    };
+    const modById = {};
+    (s.modules || []).forEach(m => modById[m.id] = m);
+    function pct(ids) {
+      const real = ids.reduce((a, id) => a + (types[(modById[id] || {}).score] || 0), 0);
+      return Math.round(100 * real / (ids.length * 10));
+    }
+    setBar('ui',   pct(groups.ui));
+    setBar('net',  pct(groups.net));
+    setBar('core', pct(groups.core));
+  }
+  function setBar(name, p) {
+    const fill = document.getElementById('bar-' + name);
+    const lbl = document.getElementById('bar-' + name + '-pct');
+    if (fill) fill.style.width = p + '%';
+    if (lbl) lbl.textContent = p + ' %';
   }
 
   function renderTopbar(s) {
@@ -1013,7 +1150,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
     const colX = [180, 410, 640, 870];
     const rowY = [80, 175, 270, 365];
-    const backlogY = 410;
+    const backlogY = 480;
 
     const labels = [
       { x: colX[0], y: 38, t: 'foundation' },
@@ -1030,7 +1167,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       svg.appendChild(t);
     });
     const backLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    backLabel.setAttribute('x', 90); backLabel.setAttribute('y', backlogY - 12);
+    backLabel.setAttribute('x', colX[0]); backLabel.setAttribute('y', backlogY - 38);
+    backLabel.setAttribute('text-anchor', 'middle');
     backLabel.setAttribute('class', 'topo-cluster-label');
     backLabel.textContent = 'backlog · reaktiv (schutz) + proaktiv (diffusion)';
     svg.appendChild(backLabel);
