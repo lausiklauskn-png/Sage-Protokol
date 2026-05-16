@@ -152,19 +152,27 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   Persistenz-Strategie verteilt"). Klaus' Befürchtung: tiefes
   Browserspeicher-Löschen tötet die nodeId. Drei Stufen, die
   zusammen die echte „Spur stirbt nicht"-Architektur ergeben:
-  (1) **`navigator.storage.persist()`** beim `Storage.init` — bittet
+  (1) ~~**`navigator.storage.persist()`** beim `Storage.init` — bittet
   den Browser, IndexedDB von normalem Aufräumen auszunehmen.
-  Modul-01-Folge-Pflege, headless möglich, ~30 Min.
+  Modul-01-Folge-Pflege, headless möglich, ~30 Min.~~ — **gelöst
+  2026-05-16 durch Pflege-Sitzung „Storage-Persist".** Modul 01
+  ruft nach erfolgreichem DB-Open `navigator.storage.persist()` an
+  (fail-soft); `_meta.storagePersisted` zeigt `true`/`false`/`null`
+  als Live-Zustand. Details im [Übergabeprotokoll 2026-05-16 Pflege
+  Storage-Persist](sessions/archiv/2026-05-16_pflege-01-storage-persist.md).
   (2) **Backup-Export passwort-verschlüsselt** in Modul 02 — Klaus
   speichert eine `*.sbkim-backup.json` woanders und kann sie bei
   Browser-Wechsel zurückimportieren. Modul-02-Folge-Spec, ~60 Min.
+  Bleibt offen.
   (3) **Quota-Frühwarnung im Doku-Fenster** — schon spezifiziert
   (Modul 00, `DOKU_QUOTA_WARN_RATIO=0.80` / `…_BYTES=50 MiB`); zeigt
   Warnzeile, bevor der Browser aufräumt. **Nicht** als Selbst-
   Heilung über hartcodierten Schlüssel (Sicherheits-Bruch — jeder
   Repo-Forker hätte die Identität). `getOrCreateIdentity` legt bei
   leerem Storage eine **neue** Identität an (neue nodeId), erhalten
-  bleibt der alte Knoten nur über Backup-Restore.
+  bleibt der alte Knoten nur über Backup-Restore. Modul 00 hat das
+  Stück schon im Code; bleibt als Punkt (3) im Querschnitt stehen,
+  bis Stufe (2) angeschlossen ist.
 
 - ~~**IndexedDB-Origin-Kollision bei GitHub-Pages-Project-Sites**~~ —
   **gelöst 2026-05-16 durch Pflege-Sitzung „Karten 01 + 09 PWA-
@@ -378,313 +386,127 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
-### 2026-05-16 · Pflege-Sitzung — Karten 01 + 09 PWA-Suffix (IndexedDB-Origin-Kollision gelöst)
+### 2026-05-16 · Pflege-Sitzung — Storage-Persist (Identitäts-Persistenz Stufe 1)
 
 **Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
-`claude/pflege-pwa-suffix-EDj8D`. Folge-Pflege direkt nach der Live-
-Andock-Sitzung 2026-05-16 (Mein-Mixarium + Mein-Rezeptbuch live
-SBKIM-integriert, aber identische `nodeId` wegen IndexedDB-Origin-
-Kollision auf GitHub-Pages-Project-Sites — siehe Übergabeprotokoll
-„Andock Mein-Rezeptbuch", § ARCHITEKTUR-LÜCKE).
+`claude/pflege-01-storage-persist-BAVOp`. Folge-Pflege direkt nach der
+Pflege PWA-Suffix 2026-05-16 (PR #?, gleicher Tag), greift Stufe (1)
+der drei-stufigen Identitäts-Persistenz-Architektur aus § Offene
+Querschnitts-Fragen „Identitäts-Persistenz".
 
-**Auftrag:** Variante (a) aus dem Andock-Übergabeprotokoll umsetzen
-— PWA-Suffix in Modul 01 DB-Name, additiv und ohne Hauptversions-
-Sprung; Modul 02 unangetastet. Beide Endknoten teilen Origin
-`lausiklauskn-png.github.io` und damit die Default-DB `sbkim`; mit
-Suffix können sie eigene Identitäten bekommen.
+**Auftrag:** `navigator.storage.persist()`-Aufruf im Init-Pfad von
+Modul 01, fail-soft. Klaus' Sorge: tiefes Browserspeicher-Löschen
+tötet die nodeId. `persist()` bittet den Browser, IndexedDB von
+normalem Aufräumen auszunehmen (Chrome auto-bei-PWA, Firefox
+prompt, Safari restriktiv). Endknoten bleibt auch bei Verweigerung
+lauffähig — Stufe (2) Backup-Export und Stufe (3) Quota-Frühwarnung
+decken die übrigen Verlust-Pfade ab.
 
 **Getan:**
 
-- **`src/modules/01_storage.js`** patched. `init()` → `init(options)`
-  mit optionalem `options.dbSuffix: string`. Validierung
-  **synchron** vor dem Promise-Aufbau: Pattern `^[a-z0-9_-]+$`,
-  sonst Wurf `InvalidDbSuffixError` (Kleinbuchstaben, Ziffern, `_`,
-  `-`). Ohne Suffix bleibt der Default-DB-Name `sbkim`
-  (rückwärtskompatibel — Sage-Werkstatt und alle bestehenden Klaus-
-  PWAs ohne Suffix-Konfig laufen unverändert weiter). Effektiver
-  DB-Name bei gesetztem Suffix: `sbkim_<dbSuffix>` (z.B.
-  `sbkim_mixarium`). Neue Konstanten `DB_NAME_DEFAULT = "sbkim"` und
-  `DB_SUFFIX_PATTERN = /^[a-z0-9_-]+$/`. Idempotenz erweitert:
-  zweiter `init()`-Aufruf mit **abweichendem** Suffix wirft
-  `InvalidDbSuffixError` (kein stilles Ignorieren — Klaus' Andocker
-  muss `SbkimStorage.init({dbSuffix})` ZUERST aufrufen, bevor
-  Module 05/06/07/00 ihre internen `Storage.init()`-Aufrufe
-  nachziehen). `_meta.dbName` jetzt als Getter (Live-Zustand statt
-  Build-Konstante). `node --check src/modules/01_storage.js` grün.
+- **`src/modules/01_storage.js`** patched. Neue Closure-Helper-
+  Funktion `requestStoragePersist()` (zwischen Migrations- und init-
+  Block), aufgerufen im `req.onsuccess` vor dem `resolve(db)`. Setzt
+  neuen Modul-Closure-State `storagePersisted`:
+  - `navigator.storage` / `persist` fehlt → `null` +
+    `console.info("Storage persist-Status: navigator.storage.persist
+    nicht verfuegbar, fail-soft (null).")`.
+  - persist() resolved `true` / `false` → entsprechender Bool +
+    `console.info("Storage persist-Status: " + ergebnis)`.
+  - persist() rejected oder synchron geworfen → `null` +
+    `console.info`-Hinweis (kein Throw, kein Reject — Persist-
+    Verweigerung ist kein SBKIM-Bruchgrund).
+  `_meta.storagePersisted` ist neuer Getter (Live-Zustand; Default
+  `null` vor `init()`). Idempotenz beim Re-Init: `dbPromise`-Cache
+  deckt das ab — persist() wird automatisch nur einmal pro Tab-
+  Session gerufen. `node --check src/modules/01_storage.js` grün.
 - **Karte 01** (`docs/components/01_storage.md`) nachgezogen.
-  § Schnittstelle: `init(options?)` mit dbSuffix-Block. Neuer
-  Unter-Block § DB-Namen-Konvention (PWA-Suffix) zwischen
-  § Schnittstelle und § Stores: drei-Zeilen-Tabelle (Default,
-  mixarium, rezeptbuch), vier Konventions-Punkte (Aufrufer-Pflicht,
-  Pattern-Validierung sync, ERSTER init-Aufruf, Modul 02
-  unangetastet). § Konfigurationswerte `DB_NAME` → `DB_NAME_DEFAULT`
-  + neue Konstante `DB_SUFFIX_PATTERN`. § Fehlerverhalten zwei
-  Zeilen ergänzt. § Bauzustand neue Zeile „Pflege PWA-Suffix".
-- **Karte 09** (`docs/components/09_einbau_pwa.md`) nachgezogen.
-  § Vor dem Einbau zu klärende Werte neue Zeile `<DB_SUFFIX>`
-  (Beispiele: `rezeptbuch` / `mixarium`); Erklärungsblock direkt
-  darunter zur IndexedDB-Origin-Kollision. § Schritt 4 umbenannt
-  auf „`SbkimStorage.init({dbSuffix})` + `SbkimAnastomose.init()`",
-  Code-Block mit zwei sequenziellen `await`-Aufrufen (Storage
-  zuerst mit `dbSuffix`, dann Anastomose); Erklärungs-Absatz „Warum
-  zwei Aufrufe statt einem?"; Sichtkontrolle-Hinweis auf DB-Namen
-  `sbkim_<DB_SUFFIX>`; „Häufiger Fehler"-Block um
-  `InvalidDbSuffixError` ergänzt. § Bauzustand neue Zeile „Pflege
-  PWA-Suffix".
-- **`docs/INTERFACES.md` §1 Modul 01** init-Signatur auf
-  `init(options?)` erweitert, options-Form dokumentiert, DB-Name-
-  Zeile auf „`sbkim` (Default) / `sbkim_<dbSuffix>`" umgestellt,
-  Fehlerverhalten-Block um zwei `InvalidDbSuffixError`-Zeilen
-  ergänzt, Geprüft-Zeile um 2026-05-16 erweitert. **§6
-  Änderungsprotokoll** Zeile am unteren Ende (neueste unten).
-- **PULS** § Empfehlung umformuliert auf „Klaus' Re-Andock beider
-  Endknoten mit PWA-Suffix"; § Offene Querschnitts-Fragen
-  IndexedDB-Origin-Kollision mit `~~strikethrough~~` als gelöst
-  markiert + Verweis auf dieses Übergabeprotokoll;
-  § Sitzungs-Einträge rotiert (dieser Eintrag oben, Bau 02
-  Stamm/Gast Eintrag entfernt — bleibt im Archiv-Index, war schon
-  ausgelagert seit PR #47).
+  § Schnittstelle `init(options?)`-Doc-Block um Persist-Hinweis
+  ergänzt; § Risiken neuer Punkt „Persist-Verweigerung" (Chrome
+  auto-bei-PWA, Firefox prompt, Safari restriktiv; Verlust-Pfade
+  Stufe 2 + Stufe 3 verweisen aufs Querschnitts-Anker);
+  § Bauzustand neue Zeile „Pflege Storage-Persist".
+- **`docs/INTERFACES.md` §1 Modul 01** Nutzt-Block um Browser-API
+  `navigator.storage.persist()` (fail-soft-Note) erweitert; Geprüft-
+  Zeile um 2026-05-16 (Pflege Storage-Persist Stufe 1) erweitert.
+  **§6 Änderungsprotokoll** Zeile am unteren Ende.
+- **PULS** § Offene Querschnitts-Fragen „Identitäts-Persistenz"
+  Stufe (1) mit ~~strikethrough~~ als gelöst markiert + Verweis
+  aufs Übergabeprotokoll; Stufen (2) Backup-Export und (3) Quota-
+  Frühwarnung bleiben offen. § Sitzungs-Einträge rotiert (dieser
+  Eintrag oben, Pflege PWA-Suffix in Archiv-Index).
+- **`tests/manual_check.html`** Panel 01 fünfter Knopf „Persist-
+  Status zeigen" (gibt `_meta.storagePersisted` aus). Klein und
+  sinnvoll: keine Idempotenz-Stör-Wirkung, weil reine Lese-
+  Operation (im Gegensatz zum bewusst weggelassenen „DB mit Suffix
+  öffnen"-Knopf aus Pflege PWA-Suffix).
 - **Übergabeprotokoll**
-  `docs/sessions/archiv/2026-05-16_pflege-pwa-suffix-karten-01-09.md`
+  `docs/sessions/archiv/2026-05-16_pflege-01-storage-persist.md`
   angelegt.
 
 **Bewusst nicht angefasst:**
 
-- **`src/modules/02_spore.js`** unverändert. `IDENTITY_KEY = "main"`
-  bleibt — durch den umbenannten DB-Namen ist die Identität jetzt
-  PWA-spezifisch, ohne dass Modul 02 davon weiß. Karte 02 + §1
-  Modul 02 in INTERFACES.md unangetastet.
-- **`src/modules/05_anastomose.js`** unverändert.
-  `SbkimAnastomose.init()` weiterhin ohne Optionen — Idempotenz
-  von `Storage.init` macht den zwei-Aufruf-Pfad im Andocker sauber
-  (Storage zuerst mit Suffix, dann Anastomose; Modul 05 ruft
-  `Storage.init()` intern nach und bekommt dasselbe dbPromise).
-  Keine Vertrags-Ausweitung in §1 Modul 05.
-- **`src/modules/00/03/04/06/07/08*`** unverändert.
-- **`tests/manual_check.html`** — optionaler „DB mit Suffix
-  öffnen"-Test-Knopf bewusst weggelassen. Begründung: Panel 01
-  „Storage init" greift in `init()` idempotent; ein zweiter
-  Test-Knopf mit abweichendem Suffix würde nach einem normalen
-  Setup-Lauf `InvalidDbSuffixError` werfen und das Panel
-  durcheinanderbringen. Wer den Suffix-Pfad sichten will, testet
-  ihn in einer Endknoten-PWA (Karte 09 Schritt 4) — das ist die
-  echte Bühne.
-- **`status.json`** unverändert. Klaus' Re-Andock danach erzeugt
-  frische nodeIds — `pingStatus` + `nodeId` werden in einer
-  Folge-Sitzung aktualisiert, sobald beide Endknoten neue
-  Spore-Files unter ihren Pages-URLs deployed haben.
+- **Modul 00 / 02 / 03 / 04 / 05 / 06 / 07 / 08 Code** unverändert.
+  Persist greift transparent unter ihren internen
+  `Storage.init()`-Pfaden. Modul 00 Quota-Frühwarnung (§0-Konstanten
+  `DOKU_QUOTA_WARN_RATIO` / `_BYTES`) wird in Karte 01 § Risiken
+  zitiert, aber nicht aufgebrochen — Modul 00 bleibt unangetastet.
+- **`docs/INTERFACES.md` §0** keine neue Konstante (persist ist
+  Browser-API ohne Schwelle).
+- **`status.json`** unverändert (Modul 01 bleibt `score:"stub"`;
+  additive Code-Erweiterung, kein Score-Wechsel).
 - **`update_puls_pie.py`** nicht aufgerufen (kein Modul-Score-
-  Wechsel; Modul 01 bleibt Code-Stub, Pie-Inhalt unverändert).
-- **`index.html` (Sage-Page)** unverändert.
+  Wechsel).
+- **`index.html`** (Sage-Page) unverändert.
 - **`PROTOCOL_VERSION`** bleibt `"0.1"`.
-- **`DB_VERSION`** bleibt `3`.
+- **`DB_VERSION`** bleibt `3` (keine Schema-Änderung).
 
 **Validierung:**
 
 - **`node --check src/modules/01_storage.js`** grün.
-- **Karte 01 + Karte 09 Cross-Reading** durchgezogen: drei
-  Beispielwerte (`mixarium`, `rezeptbuch`, Default ohne Suffix)
-  konsistent in beiden Karten und in INTERFACES.md §1 Modul 01.
-- **Smoke-Test des `init(options)`-Pfads** in Node mit stub-
-  `indexedDB.open`-Promise — sieben Fälle alle grün:
-  (1) `init()` default → `dbName === "sbkim"`;
-  (2) `init({dbSuffix:"mixarium"})` → `"sbkim_mixarium"`;
-  (3) `init()` NACH `init({dbSuffix:"rezeptbuch"})` — kein Wurf,
-  `dbName` bleibt `"sbkim_rezeptbuch"` (kritischer Idempotenz-Pfad
-  für den zweiten Storage-Init in `SbkimAnastomose.init`);
-  (4) `init({dbSuffix:"rezeptbuch"})` NACH
-  `init({dbSuffix:"mixarium"})` → rejects mit
-  `InvalidDbSuffixError`;
-  (5) `init({dbSuffix:"BAD"})` → SYNCHRONER `InvalidDbSuffixError`
-  (Pattern-Verletzung Großbuchstabe);
-  (6) `init({dbSuffix:""})` → SYNCHRONER `InvalidDbSuffixError`
-  (Pattern verlangt ≥ 1 Zeichen);
-  (7) `init({dbSuffix: null})` → behandelt wie keine Optionen,
-  `dbName === "sbkim"`.
-- **Erster Implementierungs-Wurf hatte einen Idempotenz-Bug**: der
-  Konflikt-Check verglich `requestedName` (Default `"sbkim"` ohne
-  Optionen) mit `dbNameInUse` (gesetzt durch ersten Aufruf mit
-  Suffix, z.B. `"sbkim_rezeptbuch"`) — Modul 05's interner
-  `Storage.init()`-Aufruf nach dem Andocker-Setup hätte
-  `InvalidDbSuffixError` geworfen. Behoben im selben Sitzungs-
-  Commit: Konflikt-Check feuert nur, wenn `options.dbSuffix`
-  EXPLIZIT gesetzt UND abweichend ist. Smoke-Test 3 deckt genau
-  diesen Pfad ab und ist grün.
+- **Smoke-Test in Node mit stub-`navigator.storage.persist`**
+  (selbst-zerstörendes `/tmp/`-Script, **nicht** ins Repo
+  eingecheckt) — vier Fälle alle grün:
+
+  | # | Stub | Erwartung `_meta.storagePersisted` | Resultat | Konsolen-Zeile |
+  |---|---|---|---|---|
+  | A | `persist: () => Promise.resolve(true)` | `true` | PASS | `Storage persist-Status: true` |
+  | B | `persist: () => Promise.resolve(false)` | `false` | PASS | `Storage persist-Status: false` |
+  | C | `navigator.storage` fehlt komplett | `null` | PASS | `Storage persist-Status: navigator.storage.persist nicht verfuegbar, fail-soft (null).` |
+  | D | `persist: () => Promise.reject(...)` | `null` | PASS | `Storage persist-Status: persist-Promise rejected, fail-soft (null).` |
+
+  Fall (D) ist über die Brief-Mindestanforderung hinaus aufgenommen,
+  weil Firefox-Prompt-Pfade in der Praxis als Rejection auftreten
+  können — die fail-soft-Konvention deckt das ab.
 
 **Was offen blieb:**
 
-- **Klaus' Re-Andock beider Endknoten** mit `dbSuffix:"mixarium"` /
-  `"rezeptbuch"` in `sbkim-init.js`. Nicht headless — wartet auf
-  Klaus am Termux.
-- **`status.json` `pingStatus`-Update** nach Re-Andock — wechselt
-  von `"blocked-origin-collision"` auf zunächst `"pending-peer"`
-  (frische, getrennte Identitäten ohne Cross-Handshake) bzw.
-  `"live"` nach erstem erfolgreichen Cross-Knoten-Handshake.
-- **Cross-Knoten-Handshake** (Karte 09 Schritt 8) — nach Re-Andock
-  möglich.
-- **Eruda-Rückbau** in beiden Endknoten — nach erstem
-  erfolgreichen Cross-Knoten-Handshake.
-- **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-
-  Mixarium (entkoppelt) und **INTERFACES.md §6 Tabellen-Bug** aus
-  PR #45 Squash-Merge bleiben weiterhin offen.
-- **Klaus' Sichttest Panel 06** (Heterokaryose) weiterhin offen
-  aus früheren Sitzungen.
+- **Stufe (2) Backup-Export** (Modul 02, `*.sbkim-backup.json`
+  passwort-verschlüsselt) — eigene Folge-Spec-Sitzung, ~60 Min
+  headless.
+- **Stufe (3) Quota-Frühwarnung** — schon spec (Modul 00,
+  `DOKU_QUOTA_WARN_RATIO`/`_BYTES`); Sichttest hat sie 2026-05-15
+  als grün bestätigt. Bleibt im Querschnitts-Anker, bis Stufe (2)
+  angeschlossen ist.
+- **Klaus' Sichttest Panel 01 fünfter Knopf** (Persist-Status
+  zeigen) — Klaus' Browser-Lauf bringt erst die echte Plattform-
+  Antwort (Chrome auf Android vs. Desktop, Safari auf iPad usw.).
+- Übrige offene Punkte aus Pflege PWA-Suffix (Klaus' Re-Andock,
+  `status.json`-Folge-Sitzung, Cross-Knoten-Handshake, Eruda-
+  Rückbau, Sushi-Kategorie, INTERFACES.md §6 Tabellen-Bug,
+  Panel 06 Sichttest) unverändert offen.
 
 **Nächster sinnvoller Schritt:**
 
-1. **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** —
-   `sbkim-init.js` in beiden Endknoten-Repos um
-   `SbkimStorage.init({dbSuffix})` erweitern, `__sbkimErzeugeSpore()`
-   in Eruda triggern, neue Spore deployen. *Nicht headless* — wartet
-   auf Klaus am Termux.
-2. **`status.json`-Folge-Sitzung** nach Re-Andock — `pingStatus`
-   und `nodeId`-Werte aktualisieren.
-3. **Cross-Knoten-Handshake** zwischen beiden Endknoten.
-4. **Eruda-Rückbau** nach erstem erfolgreichen Handshake.
-
----
-
-### 2026-05-16 · Bau-Sitzung 09 Iteration 3 — Mein-Rezeptbuch live angedockt (+ Architektur-Lücke entdeckt)
-
-**Sitzungs-Rolle:** Bau-Sitzung Modul 09 (Live-Andock-Versuch, dritte
-Iteration, zweiter Endknoten), mit Klaus am Tablet via Termux,
-**nicht headless**. Branch
-`claude/andock-mein-rezeptbuch-iteration-3-live`. Direkt nach
-Mein-Mixarium-Andock in derselben Klaus-Sitzung.
-
-**Getan:**
-
-- **`gh repo clone`** (Sage-Protokol war lokal schon da, aber neu
-  gepullt um PR #47 + #48 zu holen) + `cp` der sieben Modul-Files
-  + `sbkim-sw.js` in `~/Mein-Rezeptbuch/sbkim/` bzw. Repo-Root.
-- **Schritt 2** awk: 7 SBKIM-Script-Tags vor letztem `</body>`
-  (`grep -c 'src="sbkim/'` → 7).
-- **Schritt 3** App-SW Variante 3b: drei Zeilen oben in
-  `app-sw.js` (Rezeptbuch-App-SW `mrz-v11` ab Zeile 4).
-- **Schritt 4** `sbkim-init.js` (45 Zeilen) mit Rezeptbuch-
-  spezifischen Werten:
-  - `stammCategories` (7): Vorspeisen, Suppen, Fleisch, Fisch,
-    Vegetarisch, Kuchen, Desserts.
-  - `guestCategories` (11): Getränke, Smoothies & Shakes,
-    Mocktails, Alkfr. Cocktails, Limonaden, Tees & Kaffees,
-    Cocktails, Bowlen, Sirup & Basis, Knabbereien, Fingerfood.
-  - `domainKeywords` (7): Rezept, Kochen, Essen, Hauptgang,
-    Beilage, Backen, Saucen.
-  - `nodeName: "Rezeptbuch Klaus"`, `endpoint:
-    "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/"`.
-- **Commit + Push** der Module + Patches (`2c8e141`).
-- **Live-Reload** in Chrome — App war frisch deinstalliert vom
-  Home-Screen, neu via URL aufgerufen. App-SW wurde neu installiert
-  (Variante 3b aktiv). Eruda-Konsole zeigt alle sieben Modul-
-  Selbstchecks plus drei `sbkim-init.js`-Init-Zeilen grün.
-- **`__sbkimErzeugeSpore()`** in Eruda. Embedding-Modell-Cache war
-  aus Mixarium-Sitzung im Browser-Cache, kein Re-Download.
-  Modul 03 EMBEDDING bereit, Domain-Vektor erzeugt, Spore signiert.
-- **Spore-Download via Eruda-One-Liner** → `/storage/emulated/0/
-  Download/spore.json` (Chrome überschreibt bei gleichem
-  Dateinamen — Mixarium-Spore war eh schon nach
-  `~/Mein-Mixarium/sbkim/` verschoben, also keine Kollision lokal).
-  `mv ~/storage/downloads/spore.json ~/Mein-Rezeptbuch/sbkim/
-  spore.json` + Commit + Push (`04ac4c2`).
-- **Live-Spore-URL** `https://lausiklauskn-png.github.io/Mein-
-  Rezeptbuch/sbkim/spore.json` deployt nach Pages-Build.
-
-**ARCHITEKTUR-LÜCKE entdeckt — IndexedDB-Origin-Kollision:**
-
-Klaus' aufmerksame Beobachtung: die **nodeId in der Rezeptbuch-
-Spore ist identisch zu Mixarium** (`1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0`).
-Klaus hat die App **deinstalliert** (nicht nur vom Home-Screen
-entfernt), und trotzdem dieselbe Identität bekommen.
-
-**Ursache:** GitHub-Pages-Project-Sites teilen denselben Origin
-(`lausiklauskn-png.github.io`); nur der Pfad differenziert sie.
-IndexedDB ist im Browser pro Origin, nicht pro Pfad. Modul 01
-öffnet die DB unter dem festen Namen `sbkim` und Modul 02 speichert
-die Identität unter `sbkim_keys["main"]`. Konsequenz: beide PWAs
-greifen auf dieselbe DB, dieselbe Identität, denselben Ed25519-
-Schlüssel.
-
-**Konsequenzen für die zwei deployten Spore-Files:**
-
-- Beide haben dieselbe `id` und denselben `publicKey`.
-- Aber unterschiedliche `endpoint`, `nodeName`, `domain` (wobei
-  `domain` für beide auch identisch ist `lausiklauskn-png.github.io`),
-  `domainDescription`, `domainKeywords`, `stammCategories`,
-  `guestCategories`, `domainVector`.
-- IndexedDB enthält nur die zuletzt erzeugte Spore (Rezeptbuch hat
-  Mixarium's `sbkim_spore["main"]` überschrieben). Die deployten
-  Pages-Spore-Files sind aber unabhängig vom IndexedDB-Stand.
-- **Cross-Knoten-Handshake technisch unmöglich** (`A.id === B.id`
-  → ein Knoten kann sich nicht selbst kennenlernen).
-
-**Sage-Protokol-Sicht-Stand nachgezogen:**
-
-- **`status.json`** Endknoten[Rezeptbuch] auf `integrated: true`
-  hochgestuft mit allen additiven Feldern; beide Endknoten zeigen
-  `pingStatus: "blocked-origin-collision"` (war vorher
-  `"pending-peer"` bei Mixarium).
-- **PULS § Offene Querschnitts-Fragen** neue Frage „IndexedDB-Origin-
-  Kollision bei GitHub-Pages-Project-Sites" oben eingetragen, mit
-  zwei Fix-Optionen für eine Folge-Pflege-Sitzung.
-- **PULS § Endknoten-Tabelle** beide Zeilen erweitert (Rezeptbuch
-  jetzt integriert; Mixarium-Zeile vermerkt die geteilte nodeId).
-- **PULS § Empfehlung Hauptsitzung** umformuliert auf „Karten 01 +
-  09 erweitern um PWA-Suffix" als nächsten Schritt.
-- **PULS § Sitzungs-Einträge** rotiert.
-
-**Bewusst nicht angefasst:**
-
-- **`src/modules/*`** unverändert. Modul 01 + 02 brauchen die
-  Erweiterung um PWA-spezifische Schlüssel-Namen, aber das ist
-  Folge-Pflege, nicht diese Sitzung.
-- **Karten 01 + 09** unverändert. Erweiterung kommt in
-  Folge-Pflege-Sitzung „Karten 01 + 09 PWA-Suffix" — additiv,
-  ohne Hauptversions-Sprung.
-- **`tests/manual_check.html`**, **`index.html`**, **`docs/INTERFACES.md`**
-  unverändert.
-- **`update_puls_pie.py`** nicht aufgerufen (kein Modul-Score-
-  Wechsel).
-- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
-
-**Validierung:**
-
-- **`status.json` valid JSON** (`python3 -c "import json;
-  json.load(...)"`); beide Endknoten als `integrated: true` mit
-  `pingStatus: "blocked-origin-collision"`.
-- **Spore-JSONs live-erreichbar** für beide Endknoten.
-- **Eruda zeigt alle sieben Modul-Selbstchecks** plus drei Init-
-  Zeilen in beiden PWAs grün.
-
-**Was offen blieb:**
-
-- **Folge-Pflege „Karten 01 + 09 PWA-Suffix"** — Architektur-
-  Erweiterung. Modul 01 öffnet die DB unter PWA-spezifischem Namen
-  (z.B. `sbkim_<endknotenName>` aus Karte-09-Konfig oder aus
-  `location.pathname`); Modul 02 nutzt entsprechend
-  `IDENTITY_KEY` pro PWA. Karten 01 + 09 + ggf. Karte 02 ziehen
-  nach. Additiv, kein Hauptversions-Sprung. Folge: nodeId und
-  Spore werden für jede PWA neu erzeugt; alte Pages-Spores werden
-  überschrieben.
-- **Cross-Knoten-Handshake** (Karte 09 § 8) zwischen Mixarium und
-  Rezeptbuch — erst möglich, wenn die Architektur-Erweiterung
-  durch ist und beide Endknoten frische, unabhängige Identitäten
-  haben.
-- **Eruda-Rückbau** in beiden Endknoten — sinnvoll nach
-  erfolgreichem ersten Cross-Handshake (also nach Architektur-Fix).
-- **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in
-  Mein-Mixarium (entkoppelt).
-- **Mini-Pflege INTERFACES.md §6 Tabellen-Bug** (aus Squash-Merge
-  PR #45).
-
-**Nächster sinnvoller Schritt:**
-
-1. **Folge-Pflege „Karten 01 + 09 PWA-Suffix"** — *headless
-   möglich*. Karten erweitern + Modul 01 + 02 Code-Patch +
-   Sichtprüfung via `tests/manual_check.html`. Geschätzt ~45–60 Min.
-2. **Klaus' Re-Andock beider Endknoten** mit frischen Identitäten,
-   nach Schritt 1.
-3. **Cross-Knoten-Handshake** nach Schritt 2.
-4. **Eruda-Rückbau** nach Schritt 3.
+1. **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** mit
+   PWA-Suffix aus Pflege 2026-05-16 — danach laufen die Endknoten
+   mit getrennten DBs und persist() greift pro PWA. *Nicht
+   headless* — wartet auf Klaus am Termux.
+2. **Folge-Spec „Modul 02 Backup-Export"** (Stufe 2 der
+   Identitäts-Persistenz) — *headless möglich*. Geschätzt ~60 Min.
+3. **Cross-Knoten-Handshake** nach Re-Andock (Karte 09 Schritt 8).
+4. **Eruda-Rückbau** in beiden Endknoten nach erstem
+   erfolgreichen Handshake.
 
 ---
 
@@ -695,6 +517,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-16 | Pflege · Storage-Persist (Identitäts-Persistenz Stufe 1, `navigator.storage.persist()` fail-soft im Init-Pfad von Modul 01) | [→ Archiv](sessions/archiv/2026-05-16_pflege-01-storage-persist.md) |
 | 2026-05-16 | Pflege · Karten 01 + 09 PWA-Suffix (IndexedDB-Origin-Kollision gelöst durch `SbkimStorage.init({dbSuffix})`) | [→ Archiv](sessions/archiv/2026-05-16_pflege-pwa-suffix-karten-01-09.md) |
 | 2026-05-16 | Bau · 09 Iteration 3 — Mein-Rezeptbuch live angedockt + Architektur-Lücke entdeckt | [→ Archiv](sessions/archiv/2026-05-16_andock-mein-rezeptbuch-iteration-3-live.md) |
 | 2026-05-16 | Bau · 09 Iteration 3 — Mein-Mixarium live angedockt (status.json + PULS) | [→ Archiv](sessions/archiv/2026-05-16_andock-mein-mixarium-iteration-3-live.md) |
