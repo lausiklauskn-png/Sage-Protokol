@@ -141,10 +141,26 @@ bereit, die Anastomose ist als Variante A · Page-Hosted gebaut.
 | `<DOMÄNEN-STICHWORTE>` (Spore-Feld `domainKeywords`, 5–15 Begriffe) | (TBD — z.B. `["Backen", "Saucen", "Hauptgang", "Hefeteig", "Kuchen", …]`) | (TBD — z.B. `["Gin", "Whisky", "Shaker", "Sour", "Tonic", …]`) |
 | `<INDEX-DATEI>` | `index.html` | `index.html` |
 | `<REPO-NAME>` (Project-Site-Pfad) | `rezeptbuch` | `mixarium` |
+| `<DB_SUFFIX>` (PWA-Suffix für `SbkimStorage.init`, Pattern `^[a-z0-9_-]+$`) | `rezeptbuch` | `mixarium` |
 | `<PEER-SPORE-URL>` (Geschwister beim ersten Handshake) | URL der Mixarium-Spore | URL der Rezeptbuch-Spore |
 
 Die Werte sammelt der Betreiber **vor** Schritt 5 (Spore-Erzeugung).
 Ohne sie schlägt `generateOwnSpore` mit `InvalidSporeMetaError` fehl.
+
+**`<DB_SUFFIX>` (Pflege PWA-Suffix 2026-05-16):** GitHub-Pages-Project-
+Sites teilen denselben **Origin** (`https://<benutzer>.github.io/`) —
+IndexedDB ist im Browser pro Origin, nicht pro Pfad. Ohne PWA-Suffix
+teilen sich `Mein-Mixarium` und `Mein-Rezeptbuch` unter
+`lausiklauskn-png.github.io` dieselbe `sbkim`-Datenbank und damit
+dieselbe `nodeId` — Cross-Knoten-Handshake ist dann technisch unmöglich
+(beobachtet 2026-05-16 nach erstem Live-Andock, siehe Karte 01 §
+DB-Namen-Konvention und PULS § Empfehlung Hauptsitzung). Der Suffix
+wird in Schritt 4 an `SbkimStorage.init` weitergegeben und öffnet die
+DB unter dem Namen `sbkim_<DB_SUFFIX>` — eigene Identität pro PWA.
+Erlaubte Zeichen: Kleinbuchstaben, Ziffern, `_` und `-`. Wer den Suffix
+weglässt (Default `init()` ohne Optionen), bleibt auf der Default-DB
+`sbkim` — sinnvoll für **eine** PWA pro Origin (eigene Subdomain,
+Custom-Domain, lokales Sage-Werkstatt-Repo).
 
 ---
 
@@ -504,33 +520,58 @@ Spätere Pflege-Sitzung muss die Migration auf 3b nachholen. Klaus
 sollte 3c nur als bewusste Übergangs-Entscheidung wählen, nicht aus
 Bequemlichkeit.
 
-### Schritt 4 — `SbkimAnastomose.init()`
+### Schritt 4 — `SbkimStorage.init({dbSuffix})` + `SbkimAnastomose.init()`
 
 Im selben Script-Block oder direkt danach:
 
 ```html
 <script>
   (async function () {
+    // (1) PWA-Suffix VOR Anastomose.init setzen — sonst öffnet Modul 01
+    // intern die Default-DB "sbkim", die auf GitHub-Pages-Project-Sites
+    // mit anderen Endknoten unter demselben Origin kollidiert (siehe
+    // § Vor dem Einbau zu klärende Werte).
+    await SbkimStorage.init({ dbSuffix: "<DB_SUFFIX>" });
+
+    // (2) Anastomose-Init zieht Storage/Spore/Identität intern nach.
+    // SbkimStorage.init ist idempotent: Modul 05 ruft es selbst nochmal,
+    // bekommt aber dasselbe dbPromise zurück (also dieselbe PWA-DB).
     await SbkimAnastomose.init();
     console.info("SBKIM-Init grün — Storage, Spore, Match bereit.");
   })();
 </script>
 ```
 
-`init()` ruft intern `SbkimStorage.init()`, `SbkimSpore.init()`,
-prüft `SbkimMatch` auf `window`, stellt via
+`SbkimAnastomose.init()` ruft intern `SbkimStorage.init()`,
+`SbkimSpore.init()`, prüft `SbkimMatch` auf `window`, stellt via
 `SbkimSpore.getOrCreateIdentity()` die Singleton-Identität sicher und
 registriert den `navigator.serviceWorker.addEventListener("message",
 …)`-Listener für die Page-Brücke des Service-Workers.
 
-**Sichtkontrolle:** Konsolen-Zeile `SBKIM-Init grün — Storage, Spore,
-Match bereit.` Außerdem in DevTools → Application → IndexedDB → `sbkim`
-muss der Store `sbkim_keys` existieren mit Eintrag `"main"` (das
-Singleton-Keypair).
+**Warum zwei Aufrufe statt einem?** Modul 01 ist die einzige Stelle, die
+den DB-Namen kennt. Wer dort einen Suffix setzen will, ruft
+`SbkimStorage.init({dbSuffix:…})` **zuerst** — bevor Modul 05 (und
+später 06/07/00) den internen `SbkimStorage.init()`-Aufruf nachzieht.
+Idempotenz garantiert, dass alle Folge-Aufrufe dieselbe DB benutzen.
+Ein abweichender Suffix bei einem späteren init-Aufruf wirft
+`InvalidDbSuffixError` (kein stilles Ignorieren — Karte 01 §
+DB-Namen-Konvention). Wer **keine** PWA-Suffix-Trennung braucht (eine
+PWA pro Origin, eigene Subdomain), ruft `SbkimAnastomose.init()` ohne
+vorherigen Storage-Aufruf und bleibt auf der Default-DB `sbkim`.
 
-**Häufiger Fehler:** `AnastomoseDependenciesError` mit Liste fehlender
+**Sichtkontrolle:** Konsolen-Zeile `SBKIM-Init grün — Storage, Spore,
+Match bereit.` Außerdem in DevTools → Application → IndexedDB →
+`sbkim_<DB_SUFFIX>` (z.B. `sbkim_mixarium` bzw. `sbkim_rezeptbuch`)
+muss der Store `sbkim_keys` existieren mit Eintrag `"main"` (das
+Singleton-Keypair). Wer ohne Suffix andockt, sieht die DB unter dem
+Namen `sbkim`.
+
+**Häufiger Fehler:** `InvalidDbSuffixError` — `<DB_SUFFIX>` enthält
+Zeichen außerhalb `^[a-z0-9_-]+$` (Großbuchstaben, Punkt, Umlaut, …)
+oder ist leer. Eintrag in § Vor dem Einbau zu klärende Werte
+korrigieren. — `AnastomoseDependenciesError` mit Liste fehlender
 Module → Reihenfolge der `<script>`-Tags in Schritt 2 korrigieren.
-`CryptoUnavailableError` → Browser zu alt für WebCrypto Ed25519
+— `CryptoUnavailableError` → Browser zu alt für WebCrypto Ed25519
 (Chrome < 113, Firefox < 130, Safari < 17). Endknoten-PWA bleibt
 lauffähig, aber SBKIM-Funktionen sind dann deaktiviert.
 
@@ -1244,6 +1285,7 @@ unverändert.
 | Pflege Schritt 9 + 07/00 | 2026-05-15 | Pflege 09-Schritt-9-Doku-TTL | Karte 09 § Andock-Schritt-Pfad von **acht** auf **neun** Schritte erweitert. Schritt 2 (`<script>`-Tags) zieht Modul 07 (Apoptose) und Modul 00 (Doku-Fenster) in der verbindlichen Reihenfolge nach (`01 → 02 → 03 → 04 → 05 → 07 → 00`); Sichtkontroll-Block in Schritt 2 zeigt jetzt sechs Selbstcheck-Zeilen statt vier (03 weiterhin nach `init()`). **Neuer Schritt 9 „Apoptose + Doku-Fenster scharf schalten"** mit drei Sub-Punkten: 9a `await SbkimApoptose.init()` (Vermächtnis-Empfang über MessageChannel-Listener auf Service-Worker), 9b `await SbkimDoku.init({searchIconSelector:"#search-icon"})` (5-Klick-Geste am PWA-Such-Symbol; per Endknoten anpassen), 9c (optional, empfohlen) `await SbkimApoptose.forgetExpiredSiblings(SIBLING_MAX_AGE_MS)` als Andocker-Automatik nach jedem Handshake — schließt offene Frage aus Spec-Sitzung 07 (Karte 09 Schritt 9 TTL-Sweep-Aufruf). Sichtkontroll-Block § Sichtkontrolle nachgezogen: jetzt vier Pflicht-Punkte (statt drei) — sieben Selbstcheck-Zeilen in DevTools-Konsole + sechs IndexedDB-Stores (mit `sbkim_doku_meta["meta"]` schon nach Schritt 9 gefüllt) + zwei live-Endpunkte (`/sbkim/spore.json` GET 200 + `/sbkim/anastomosis` und neu `/sbkim/legacy` GET 405) + 5-Klick-Geste am Such-Symbol öffnet das Modal. Zwei „Häufiger Fehler"-Diagnosen in Schritt 9 (searchIconSelector matcht nichts → MutationObserver-Re-Mount mit 10s-Safety; TTL-Sweep nie gerufen → stille Geschwister bleiben in `sbkim_siblings`). Visualisierungs-Mermaid-Flowchart von acht auf neun Knoten erweitert (A1–A9). Karte 09 § Datei-Pfad-Konvention von „fünf JS-Module" auf „sieben JS-Module" nachgezogen. Karte 09 § Verantwortlichkeiten Macht-Block ergänzt um Modul 07 + 00 mit Hinweis „Modul 00 zuletzt, fail-soft als optionale Lese-Quellen". Self-Apoptose-Knopf bewusst NICHT in Schritt 9 — Karte 07 hat ihn als zweistufig+irreversibel spezifiziert, gehört in einen separaten Service-Pfad. Modul 06 Heterokaryose ebenfalls bewusst NICHT in Schritt 9 (Karte 06 ist Schablone, Spec späte Phase). INTERFACES.md §6 Änderungsprotokoll-Zeile (neueste unten); Karte 09 status.json unverändert (bleibt `score:"spec"` / `siegel:"Spec fertig"` — die Erweiterung ist additiv im Andock-Pfad, kein Modul-Bau). |
 | Pflege App-SW-Koexistenz + Tablet-Sichtkontrolle (Eruda) | 2026-05-15 | Pflege 09-App-SW-Koexistenz-Tablet | Drei Stränge ergänzt, **kein Modul-Eingriff**: (1) **§ Datei-Pfad-Konvention** um **dritte Variante 3c** (SBKIM-SW unter `sbkim/sbkim-sw.js` mit Scope `/<repo>/sbkim/`) als nachrangige Übergangslösung erweitert; neue Tabelle „Wann welche Variante?" mit drei Zeilen (Pre-Flight-Ergebnis → Eigenschaften → Empfehlung-Stern bei 3a/3b, β-Hinweis bei 3c). (2) **§ Schritt 3c** als neuer Sub-Block nach 3b: Code-Block (`register("sbkim/sbkim-sw.js", { scope: "sbkim/" })`), Vor-/Nachteil-Vergleich (App-SW unangetastet ↔ Schutz-Module 11/12 später blockiert), Sichtkontrolle-Hinweis (zwei SW-Registrierungen mit disjunkten Scopes), expliziter „nur Übergangslösung"-Vermerk inkl. späterer Migrations-Pflicht auf 3b. (3) **§ Sichtkontrolle § Tablet-Variante (Eruda)** als neuer Sub-Block nach den vier Pflicht-Punkten: Eruda-Script-Tag `eruda@3` gepinnt (CDN jsdelivr, SRI nicht erforderlich, Sichttest-Modus); Mapping der vier Pflicht-Punkte auf Eruda-Tabs (Console / Resources→IndexedDB / Network / 5-Klick-Geste); Verbot „nach Sichtkontrolle wieder entfernen — kein Produktiv-Einbau, kein SBKIM-Modul, kein Datenschutz-Stein". Pre-Flight-Check, `SBKIM_SW_STANDALONE`-Flag und `src/sbkim-sw.js` aus Pflege App-SW-Koexistenz **unverändert** (PR #31 funktional korrekt). **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07.** **Keine Änderung an `docs/INTERFACES.md`** (Karte 09 ist Anleitung, kein Modul-Vertrag — §1/§3/§6 unverändert). **`status.json` Modul 09 unverändert** (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — die Pflege ist additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). **Schließt die zwei Karten-Lücken aus der abgebrochenen Bau-Sitzung 09 vom 2026-05-15** und entblockt die zweite Bau-Iteration mit Klaus am Live-Andock. |
 | Pflege App-SW-Koexistenz | 2026-05-15 | Pflege 09-App-SW-Koexistenz | Karte 09 § Andock-Schritt-Pfad **Schritt 3 in 3a/3b aufgesplittet** plus neuer **Pre-Flight-Check** als Einleitungs-Block (`navigator.serviceWorker.getRegistration('./')` — Verzweigungs-Ergebnis ist die Auswahl 3a oder 3b). **Variante 3a (PWA ohne eigenen SW):** unverändert bisheriges Schritt-3-Verhalten (`register('sbkim-sw.js')` + Konsolen-Zeile `SBKIM-SW registriert, Scope: …`). **Variante 3b (PWA mit eigenem App-SW):** Endknoten setzt in `app-sw.js` ganz oben `self.SBKIM_SW_STANDALONE = false; importScripts('./sbkim-sw.js');` — **kein** zweiter `register`-Aufruf, der bestehende `register('./app-sw.js')` reicht. Konsolen-Zeile `SBKIM-SW geladen via importScripts (Variante 3b)`, DevTools zeigt **eine** Registrierung (App-SW), nicht zwei. **Achtes Risiko „App-SW-Überschreibung"** in § Risiken & offene Punkte ergänzt: Beschreibung (Schritt-3-`register` ersetzt bestehenden App-SW im selben Scope wegen unbedingtem `skipWaiting`/`clients.claim` in `sbkim-sw.js`), Erkennung (DevTools zeigt `sbkim-sw.js` statt `app-sw.js` als aktiven Worker), Lösung (Variante 3b + `SBKIM_SW_STANDALONE=false`), Konvention (Pre-Flight-Check vor Schritt 3 ist Pflicht). **§ Service-Worker-Hinweis** `install`/`activate`-Vertragsblock erweitert — `skipWaiting`/`clients.claim` jetzt unter `SBKIM_SW_STANDALONE`-Schalter (Default `true` → Variante 3a bisher; `false` → Variante 3b lässt App-SW seinen Lebenszyklus); fetch-Listener-Reihenfolge dokumentiert (Browser ruft Listener in Registrier-Reihenfolge, erster `respondWith` gewinnt — sbkim-sw.js fasst nur `/sbkim/*`-Pfade an, alle anderen Events fallen an den App-SW-Listener durch). **§ Datei-Pfad-Konvention** um optionalen Block `app-sw.js` im Repo-Root ergänzt (sauberer relativer `importScripts('./sbkim-sw.js')`-Pfad nur dann garantiert). **§ Sichtkontrolle nach dem Andocken** um fünften (variantenspezifischen) Pflicht-Punkt erweitert: Variante-3b-Zwei-Browser-Test (eine Registrierung im DevTools, Konsolen-Zeile, `POST /sbkim/anastomosis` liefert 200, App-Offline-Pfade unverändert) — wartet auf Klaus' nächsten Live-Andock-Versuch. **`src/sbkim-sw.js` umgebaut** — `SBKIM_SW_STANDALONE`-Flag am Modul-Anfang (Default `true`, rückwärtskompatibel); `install`/`activate`-Handler rufen `skipWaiting`/`clients.claim` nur unter `SBKIM_SW_STANDALONE === true`; fetch-Listener-Pfad für `/sbkim/anastomosis` und `/sbkim/legacy` unverändert; Header-Kommentar erweitert um beide Lade-Pfade. **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende (neueste unten, Konventions-Stil); keine §1-Vertragsänderung (das Flag ist SW-intern, kein öffentlicher Funktions-Export wandert). **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07** (deren Code unverändert). **`status.json` Modul 09 unverändert** (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — die Pflege ist additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). |
+| Pflege PWA-Suffix | 2026-05-16 | Pflege PWA-Suffix Karten 01+09 | Folge-Pflege nach Live-Andock-Sitzung 2026-05-16 (Mein-Mixarium + Mein-Rezeptbuch live SBKIM-integriert, aber identische `nodeId` wegen IndexedDB-Origin-Kollision auf GitHub-Pages-Project-Sites — beide Endknoten unter `lausiklauskn-png.github.io`, IndexedDB ist im Browser pro Origin, nicht pro Pfad). **§ Vor dem Einbau zu klärende Werte** um neue Zeile `<DB_SUFFIX>` erweitert (Beispielwerte: `rezeptbuch` / `mixarium`); Erklärungs-Block direkt darunter zur IndexedDB-Origin-Kollision und zur Default-Variante (ohne Suffix, eine PWA pro Origin). **§ Schritt 4** umbenannt von „`SbkimAnastomose.init()`" auf „`SbkimStorage.init({dbSuffix})` + `SbkimAnastomose.init()`", Code-Block jetzt mit zwei sequenziellen `await`-Aufrufen (Storage zuerst mit `dbSuffix`, dann Anastomose); neue Erklärungs-Absätze („Warum zwei Aufrufe statt einem?" und Sichtkontrolle-Hinweis auf DB-Namen `sbkim_<DB_SUFFIX>`); „Häufiger Fehler"-Block um `InvalidDbSuffixError` ergänzt. Begründung: Modul 01 ist die einzige Stelle, die den DB-Namen kennt — wer Suffix setzen will, muss `SbkimStorage.init` ZUERST aufrufen; Idempotenz garantiert, dass der interne `Storage.init()`-Aufruf in `SbkimAnastomose.init` dasselbe `dbPromise` benutzt. **Modul 05 bleibt unangetastet** (`SbkimAnastomose.init()` weiterhin ohne Optionen — keine Vertrags-Ausweitung in INTERFACES.md §1 Modul 05). **Keine Hauptversions-Erhöhung** (`PROTOCOL_VERSION` bleibt `"0.1"`). Hinweis für Klaus' Re-Andock: in beiden Endknoten-Repos muss `sbkim-init.js` um den `SbkimStorage.init({dbSuffix:…})`-Aufruf erweitert werden (vor dem bestehenden `SbkimAnastomose.init`), DANN `__sbkimErzeugeSpore` neu triggern — neue nodeIds entstehen pro PWA, alte Pages-Spores werden überschrieben. |
 | Werte für Rezeptbuch eingetragen | — | — | TBD — Klaus trägt nach |
 | Werte für Mixarium eingetragen | — | — | TBD — Klaus trägt nach |
 | Erstmaliger Einbau Rezeptbuch | — | — | — |

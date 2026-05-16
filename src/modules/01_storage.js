@@ -2,13 +2,24 @@
  * SBKIM — Modul 01 — Storage
  *
  * IndexedDB wrapper for all sbkim_* stores. Promise-based API, no
- * callbacks. Database name: "sbkim", current version: 3 (additive
- * migrations: v=2 Bau-Sitzung 06 added `sbkim_hetero_inbox`,
+ * callbacks. Default database name: "sbkim", current version: 3
+ * (additive migrations: v=2 Bau-Sitzung 06 added `sbkim_hetero_inbox`,
  * v=3 Pflege Bau 06.1 added `sbkim_hetero_outbox` — Spec-Sitzung 08
  * specified the store; Pflege Bau 06.1 follows up the code anmelden).
  *
+ * Pflege PWA-Suffix (2026-05-16) — additive Konfig im init-Pfad:
+ *   init({ dbSuffix }) öffnet die DB als "sbkim_<dbSuffix>" statt der
+ *   Default-DB "sbkim". Pflicht-Anwendungsfall: GitHub-Pages-Project-
+ *   Sites teilen Origin und damit IndexedDB; ohne Suffix kollidieren
+ *   zwei Endknoten unter `lausiklauskn-png.github.io` auf der DB
+ *   `sbkim` und teilen sich die Identität (siehe Übergabeprotokoll
+ *   2026-05-16 Andock Mein-Rezeptbuch). Aufruf-Pflicht VOR dem ersten
+ *   anderen init()-Aufruf (Modul 05, 06, 07, 00 rufen Storage.init()
+ *   intern; idempotent — wer dbSuffix setzen will, muss zuerst).
+ *
  * Public surface (registered on window.SbkimStorage):
- *   init() -> Promise<void>
+ *   init(options?) -> Promise<void>
+ *     options-Form: { dbSuffix?: string }   (^[a-z0-9_-]+$, sonst InvalidDbSuffixError sync)
  *   getStore(name) -> StoreHandle   (sync; throws UnknownStoreError)
  *   get(name, key) -> Promise<any | undefined>
  *   put(name, key, value) -> Promise<void>
@@ -22,9 +33,10 @@
 (function (global) {
   "use strict";
 
-  var DB_NAME = "sbkim";
+  var DB_NAME_DEFAULT = "sbkim";
   var DB_VERSION = 3;
   var SBKIM_STORE_PREFIX = "sbkim_";
+  var DB_SUFFIX_PATTERN = /^[a-z0-9_-]+$/;
 
   // Stores, die der initiale Migration-Pfad (v=1) anlegt.
   var STORES_V1 = [
@@ -104,9 +116,41 @@
   }
 
   var dbPromise = null;
+  var dbNameInUse = DB_NAME_DEFAULT;
 
-  function init() {
-    if (dbPromise) return dbPromise;
+  function init(options) {
+    // dbSuffix muss synchron, VOR dem Promise-Aufbau geprüft werden — sonst
+    // verschluckt das Promise einen Programmier-Fehler bis zur ersten
+    // `await SbkimStorage.init(...)`-Auswertung.
+    var explicitSuffix = null;
+    if (options && options.dbSuffix !== undefined && options.dbSuffix !== null) {
+      var suffix = options.dbSuffix;
+      if (typeof suffix !== "string" || !DB_SUFFIX_PATTERN.test(suffix)) {
+        throw makeError(
+          "InvalidDbSuffixError",
+          "Ungueltiger dbSuffix: '" + suffix + "'. Erlaubt sind nur Kleinbuchstaben, Ziffern, '_' und '-' (Pattern ^[a-z0-9_-]+$).",
+        );
+      }
+      explicitSuffix = SBKIM_STORE_PREFIX + suffix;
+    }
+    if (dbPromise) {
+      // Idempotenz: zweite init()-Aufrufe geben die gleiche DB-Promise zurück.
+      // Konflikt-Wurf nur, wenn der Folge-Aufruf EXPLIZIT einen abweichenden
+      // dbSuffix mitgibt — sonst (ohne Optionen, Module 05/06/07/00 rufen so
+      // intern nach) bleibt der zuerst gesetzte DB-Name aktiv. Wer den
+      // PWA-Suffix setzen will, muss zuerst kommen — das ist genau der
+      // Andocker-Pfad in Karte 09 Schritt 4.
+      if (explicitSuffix !== null && explicitSuffix !== dbNameInUse) {
+        return Promise.reject(makeError(
+          "InvalidDbSuffixError",
+          "Storage.init bereits mit DB-Namen '" + dbNameInUse +
+            "' geoeffnet — Folgeaufruf mit '" + explicitSuffix +
+            "' wuerde stillschweigend ignoriert. dbSuffix muss beim ERSTEN init-Aufruf gesetzt werden.",
+        ));
+      }
+      return dbPromise;
+    }
+    dbNameInUse = explicitSuffix !== null ? explicitSuffix : DB_NAME_DEFAULT;
     dbPromise = new Promise(function (resolve, reject) {
       if (typeof indexedDB === "undefined" || indexedDB === null) {
         reject(makeError(
@@ -117,7 +161,7 @@
       }
       var req;
       try {
-        req = indexedDB.open(DB_NAME, DB_VERSION);
+        req = indexedDB.open(dbNameInUse, DB_VERSION);
       } catch (err) {
         reject(makeError(
           "StorageOpenError",
@@ -286,7 +330,11 @@
     all: all,
     clear: clear,
     _meta: {
-      dbName: DB_NAME,
+      // dbName: Live-Zustand. Vor dem ersten init()-Aufruf identisch mit
+      // dem Default; nach init({dbSuffix}) zeigt das Getter den effektiv
+      // verwendeten Namen ("sbkim_<dbSuffix>").
+      get dbName() { return dbNameInUse; },
+      dbNameDefault: DB_NAME_DEFAULT,
       dbVersion: DB_VERSION,
       storePrefix: SBKIM_STORE_PREFIX,
       knownStores: KNOWN_STORES.slice(),

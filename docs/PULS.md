@@ -53,27 +53,33 @@ Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest geprüft 2026-05-15:**
 
 - 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. **Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün** (Pflege-Sitzung Sichttest-Resultate 2026-05-15).
 
-Empfehlung Hauptsitzung: **Folge-Pflege „Karten 01 + 09 PWA-Suffix"**.
-Beide Endknoten (Mein-Mixarium + Mein-Rezeptbuch) sind seit
-2026-05-16 **live SBKIM-integriert** — Spore-Files unter
-`https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json`
-und `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json`
-mit jeweils signierten Spores, allen Pflichtfeldern und Stamm/Gast-
-Kategorien (Mixarium Stamm 8 + Gast 2; Rezeptbuch Stamm 7 + Gast 11).
-**Aber: beide haben dieselbe nodeId** (`1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0`)
-wegen **IndexedDB-Origin-Kollision** auf GitHub-Pages-Project-Sites
-(beide PWAs teilen Origin `lausiklauskn-png.github.io` → teilen
-IndexedDB → teilen `sbkim_keys["main"]`). Karten 01 + 09 müssen
-um **PWA-Suffix** in Storage-DB-Namen erweitert werden, damit jeder
-Endknoten eine eigene Identität bekommen kann. Erst dann ist
-Cross-Knoten-Handshake möglich (`pingStatus` beider Endknoten
-würde von `"blocked-origin-collision"` auf `"live"` wechseln),
-und der Eruda-Rückbau wird sinnvoll. Andere offene Punkte (Mini-
-Pflege „Sushi-Kategorie sichtbar machen" in Mein-Mixarium,
-INTERFACES.md §6 Tabellen-Bug) sind unverändert offen. Modul-Code
-(00/01/02/03/04/05/07) bleibt bis zur Pflege unverändert; die
-Pflege erweitert Modul 01 + 02 additiv. Details im
-[Übergabeprotokoll 2026-05-16 Andock Mein-Rezeptbuch](sessions/archiv/2026-05-16_andock-mein-rezeptbuch-iteration-3-live.md)
+Empfehlung Hauptsitzung: **Klaus' Re-Andock beider Endknoten mit
+PWA-Suffix**. Die Pflege-Sitzung 2026-05-16 „Karten 01 + 09 PWA-
+Suffix" hat die Architektur-Erweiterung abgeschlossen (Modul 01 hat
+jetzt `init({dbSuffix})`, Karten 01 + 09 und INTERFACES.md §1 Modul 01
+sind nachgezogen, `PROTOCOL_VERSION` bleibt `"0.1"`, Modul 02 unangetastet).
+Nächster Schritt liegt **in Klaus' Endknoten-Repos**:
+
+1. In **beiden** Endknoten-Repos (`Mein-Mixarium`, `Mein-Rezeptbuch`)
+   muss `sbkim/sbkim-init.js` erweitert werden: vor dem bestehenden
+   `await SbkimAnastomose.init()` einen Aufruf
+   `await SbkimStorage.init({ dbSuffix: "mixarium" })` (bzw.
+   `"rezeptbuch"`) hinzufügen.
+2. In beiden Tab-Sessions `__sbkimErzeugeSpore()` erneut triggern
+   (Klaus in der jeweiligen Eruda-Konsole) → neue, getrennte nodeIds
+   pro PWA.
+3. Neue `spore.json` jeweils nach `~/<Endknoten>/sbkim/spore.json`
+   verschieben + Commit + Push (überschreibt die alte Pages-Spore).
+4. Erst nach Re-Andock kann eine Folge-Sitzung `status.json`
+   `pingStatus` von `"blocked-origin-collision"` auf `"live"`
+   wechseln (sobald Klaus den ersten Cross-Knoten-Handshake gefahren
+   hat) und die `nodeId`-Werte in der Endknoten-Tabelle aktualisieren.
+
+Andere offene Punkte (Mini-Pflege „Sushi-Kategorie sichtbar machen"
+in Mein-Mixarium, INTERFACES.md §6 Tabellen-Bug) sind unverändert
+offen. Details im [Übergabeprotokoll 2026-05-16 Pflege PWA-Suffix](sessions/archiv/2026-05-16_pflege-pwa-suffix-karten-01-09.md),
+zur Andock-Hintergrund [Übergabeprotokoll 2026-05-16 Andock
+Mein-Rezeptbuch](sessions/archiv/2026-05-16_andock-mein-rezeptbuch-iteration-3-live.md)
 und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_andock-mein-mixarium-iteration-3-live.md).
 
 ---
@@ -108,28 +114,81 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 
 ## Offene Querschnitts-Fragen
 
-- **IndexedDB-Origin-Kollision bei GitHub-Pages-Project-Sites**
-  (eingetragen 2026-05-16 nach Bau-Sitzung 09 Iteration 3 für
-  Rezeptbuch). Beim Live-Andock beider Endknoten ist sichtbar
-  geworden, dass `Mein-Mixarium` und `Mein-Rezeptbuch` als
-  Pages-Project-Sites denselben **Origin** `lausiklauskn-png.github.io`
-  haben — nur der Pfad unterscheidet sie. IndexedDB ist im Browser
-  pro Origin, nicht pro Pfad. Modul 01 öffnet die DB unter dem
-  festen Namen `sbkim` und Modul 02 speichert die Identität unter
-  `sbkim_keys["main"]`. Konsequenz: beide PWAs greifen auf dieselbe
-  DB zu, teilen sich Schlüssel und Spore-Store, und produzieren
-  **identische nodeIds** (`1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0`
-  in beiden Spore-Files). Cross-Knoten-Handshake zwischen ihnen ist
-  **technisch unmöglich** (ein Knoten kann sich nicht selbst
-  kennenlernen) — `status.json` zeigt deshalb `pingStatus:
-  "blocked-origin-collision"` für beide Endknoten. **Fix-Optionen
-  für Folge-Pflege-Sitzung:** (a) Karten 01 + 09 erweitern um
-  PWA-Suffix in DB-Name oder Schlüssel-Stores (`sbkim_mixarium` vs.
-  `sbkim_rezeptbuch` oder `IDENTITY_KEY` als PWA-spezifisch); (b)
-  jeden Endknoten unter eigener Subdomain hosten (Pages
-  Project-Sites unterstützen das nicht direkt, braucht Custom
-  Domain mit DNS-Trickserei). Variante (a) ist deutlich einfacher.
-  Details und Reproduktion im
+- **Sichtbarkeits-Lampen in der Endknoten-PWA** (eingetragen
+  2026-05-16, Klaus-Vorschlag nach Pflege PWA-Suffix). Idee von
+  Klaus: zwei kleine Lampen oben rechts in der PWA, eine zeigt
+  „Knoten lebt" (Identität geladen, Storage offen, Module geladen),
+  die zweite blinkt kurz bei jedem Anastomose- oder Heterokaryose-
+  Verkehr („gerade kommuniziert"). Soll für Endknoten-Nutzer und im
+  Observatorium **sichtbar** machen, dass das Netz lebt — viel
+  zugänglicher als das 5-Klick-Doku-Fenster oder Eruda. Setzt
+  Modul 00 (Doku-Fenster) als Datenquelle voraus und braucht zwei
+  bis drei CustomEvents in Modul 05/06 (`sbkim:handshake-start`/
+  `sbkim:handshake-end`/`sbkim:hetero-pull-start`/…). **Status:**
+  Spec ausstehend; eigene kleine Karte (vermutlich Karte 15 oder
+  ein additiver Block in Karte 00). Spec-Sitzung sinnvoll, **nach**
+  dem ersten erfolgreichen Cross-Knoten-Handshake — dann ist klar,
+  was die zweite Lampe tatsächlich anzeigen soll. Geschätzt ~60 Min
+  headless für Spec, ähnlich für Bau-Stub.
+
+- **Andock-Bundle (`sbkim-bundle.js`)** als künftiger Ein-Datei-
+  Andock-Pfad (eingetragen 2026-05-16, Klaus-Vorschlag nach
+  Pflege PWA-Suffix). Heutiger Karte-09-Pfad (9 Schritte mit awk,
+  Termux, Eruda, Spore-mv) ist Pionier-Tanz — funktioniert für
+  Klaus, aber kein Nicht-Programmierer würde das nachmachen. Vision:
+  Endknoten-Betreiber kopiert **eine** Datei (`sbkim-bundle.js`) +
+  fügt **einen** `<script>`-Tag ein. Das Bundle erzeugt beim ersten
+  Laden Identität, Domain-Vektor, Spore, klinkt sich beim Service-
+  Worker ein und macht den Status sichtbar (s. Lampen oben). **Setzt
+  voraus:** drei oder mehr Endknoten im Netz, damit der Aufwand
+  spürbar wird (heute mit zwei reicht der Direkt-Pfad mit Klaus).
+  **Status:** Spec ausstehend; eigene Karte (vermutlich Karte 16 oder
+  09.2). Ist eine echte Architektur-Frage (Bundling-Strategie,
+  Versions-Update-Pfad, wie liefert der Bundle die Andock-Konfig),
+  keine reine Pflege.
+
+- **Identitäts-Persistenz** (eingetragen 2026-05-16 als gebündelte
+  Erinnerung; einzelne Stücke schon offen, s. unten „Spore-
+  Persistenz-Strategie verteilt"). Klaus' Befürchtung: tiefes
+  Browserspeicher-Löschen tötet die nodeId. Drei Stufen, die
+  zusammen die echte „Spur stirbt nicht"-Architektur ergeben:
+  (1) **`navigator.storage.persist()`** beim `Storage.init` — bittet
+  den Browser, IndexedDB von normalem Aufräumen auszunehmen.
+  Modul-01-Folge-Pflege, headless möglich, ~30 Min.
+  (2) **Backup-Export passwort-verschlüsselt** in Modul 02 — Klaus
+  speichert eine `*.sbkim-backup.json` woanders und kann sie bei
+  Browser-Wechsel zurückimportieren. Modul-02-Folge-Spec, ~60 Min.
+  (3) **Quota-Frühwarnung im Doku-Fenster** — schon spezifiziert
+  (Modul 00, `DOKU_QUOTA_WARN_RATIO=0.80` / `…_BYTES=50 MiB`); zeigt
+  Warnzeile, bevor der Browser aufräumt. **Nicht** als Selbst-
+  Heilung über hartcodierten Schlüssel (Sicherheits-Bruch — jeder
+  Repo-Forker hätte die Identität). `getOrCreateIdentity` legt bei
+  leerem Storage eine **neue** Identität an (neue nodeId), erhalten
+  bleibt der alte Knoten nur über Backup-Restore.
+
+- ~~**IndexedDB-Origin-Kollision bei GitHub-Pages-Project-Sites**~~ —
+  **gelöst 2026-05-16 durch Pflege-Sitzung „Karten 01 + 09 PWA-
+  Suffix".** Variante (a) aus dem ursprünglichen Eintrag (PWA-Suffix
+  in Storage-DB-Name) umgesetzt: Modul 01 akzeptiert jetzt optional
+  `init({ dbSuffix: "<wert>" })` und öffnet die DB unter dem Namen
+  `sbkim_<dbSuffix>` statt der Default-DB `sbkim`. Pattern für
+  Suffix: `^[a-z0-9_-]+$` (sonst synchroner `InvalidDbSuffixError`).
+  Modul 02 unangetastet (`IDENTITY_KEY = "main"` weiterhin Singleton-
+  Schlüssel innerhalb der jeweiligen DB — Trennung passiert eine
+  Schicht tiefer, auf DB-Namen-Ebene). Modul 05 unangetastet
+  (`SbkimAnastomose.init()` weiterhin ohne Optionen; Idempotenz von
+  `Storage.init` macht den zwei-Aufruf-Pfad sauber). Karten 01 + 09
+  + INTERFACES.md §1 Modul 01 + §6 nachgezogen. `PROTOCOL_VERSION`
+  bleibt `"0.1"`. Klaus' Re-Andock beider Endknoten (in beiden
+  `sbkim-init.js` `SbkimStorage.init({dbSuffix})` vor
+  `SbkimAnastomose.init()` einfügen + `__sbkimErzeugeSpore()`
+  triggern + neue Spore deployen) steht aus — danach wechselt
+  `status.json` `pingStatus` von `"blocked-origin-collision"` auf
+  `"live"` für beide Endknoten in einer Folge-Sitzung. Variante
+  (b) (eigene Subdomain mit Custom Domain) bleibt als langfristige
+  Option dokumentiert. Details im
+  [Übergabeprotokoll 2026-05-16 Pflege PWA-Suffix](sessions/archiv/2026-05-16_pflege-pwa-suffix-karten-01-09.md);
+  Reproduktion der ursprünglichen Kollision im
   [Übergabeprotokoll 2026-05-16 Andock Mein-Rezeptbuch](sessions/archiv/2026-05-16_andock-mein-rezeptbuch-iteration-3-live.md).
 - ~~**Karten-Lücke Karte 09 / Tablet-Sichtkontrolle**~~ — **gelöst
   2026-05-15 durch Pflege-Sitzung Karte 09 „App-SW-Koexistenz +
@@ -319,6 +378,172 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
+### 2026-05-16 · Pflege-Sitzung — Karten 01 + 09 PWA-Suffix (IndexedDB-Origin-Kollision gelöst)
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/pflege-pwa-suffix-EDj8D`. Folge-Pflege direkt nach der Live-
+Andock-Sitzung 2026-05-16 (Mein-Mixarium + Mein-Rezeptbuch live
+SBKIM-integriert, aber identische `nodeId` wegen IndexedDB-Origin-
+Kollision auf GitHub-Pages-Project-Sites — siehe Übergabeprotokoll
+„Andock Mein-Rezeptbuch", § ARCHITEKTUR-LÜCKE).
+
+**Auftrag:** Variante (a) aus dem Andock-Übergabeprotokoll umsetzen
+— PWA-Suffix in Modul 01 DB-Name, additiv und ohne Hauptversions-
+Sprung; Modul 02 unangetastet. Beide Endknoten teilen Origin
+`lausiklauskn-png.github.io` und damit die Default-DB `sbkim`; mit
+Suffix können sie eigene Identitäten bekommen.
+
+**Getan:**
+
+- **`src/modules/01_storage.js`** patched. `init()` → `init(options)`
+  mit optionalem `options.dbSuffix: string`. Validierung
+  **synchron** vor dem Promise-Aufbau: Pattern `^[a-z0-9_-]+$`,
+  sonst Wurf `InvalidDbSuffixError` (Kleinbuchstaben, Ziffern, `_`,
+  `-`). Ohne Suffix bleibt der Default-DB-Name `sbkim`
+  (rückwärtskompatibel — Sage-Werkstatt und alle bestehenden Klaus-
+  PWAs ohne Suffix-Konfig laufen unverändert weiter). Effektiver
+  DB-Name bei gesetztem Suffix: `sbkim_<dbSuffix>` (z.B.
+  `sbkim_mixarium`). Neue Konstanten `DB_NAME_DEFAULT = "sbkim"` und
+  `DB_SUFFIX_PATTERN = /^[a-z0-9_-]+$/`. Idempotenz erweitert:
+  zweiter `init()`-Aufruf mit **abweichendem** Suffix wirft
+  `InvalidDbSuffixError` (kein stilles Ignorieren — Klaus' Andocker
+  muss `SbkimStorage.init({dbSuffix})` ZUERST aufrufen, bevor
+  Module 05/06/07/00 ihre internen `Storage.init()`-Aufrufe
+  nachziehen). `_meta.dbName` jetzt als Getter (Live-Zustand statt
+  Build-Konstante). `node --check src/modules/01_storage.js` grün.
+- **Karte 01** (`docs/components/01_storage.md`) nachgezogen.
+  § Schnittstelle: `init(options?)` mit dbSuffix-Block. Neuer
+  Unter-Block § DB-Namen-Konvention (PWA-Suffix) zwischen
+  § Schnittstelle und § Stores: drei-Zeilen-Tabelle (Default,
+  mixarium, rezeptbuch), vier Konventions-Punkte (Aufrufer-Pflicht,
+  Pattern-Validierung sync, ERSTER init-Aufruf, Modul 02
+  unangetastet). § Konfigurationswerte `DB_NAME` → `DB_NAME_DEFAULT`
+  + neue Konstante `DB_SUFFIX_PATTERN`. § Fehlerverhalten zwei
+  Zeilen ergänzt. § Bauzustand neue Zeile „Pflege PWA-Suffix".
+- **Karte 09** (`docs/components/09_einbau_pwa.md`) nachgezogen.
+  § Vor dem Einbau zu klärende Werte neue Zeile `<DB_SUFFIX>`
+  (Beispiele: `rezeptbuch` / `mixarium`); Erklärungsblock direkt
+  darunter zur IndexedDB-Origin-Kollision. § Schritt 4 umbenannt
+  auf „`SbkimStorage.init({dbSuffix})` + `SbkimAnastomose.init()`",
+  Code-Block mit zwei sequenziellen `await`-Aufrufen (Storage
+  zuerst mit `dbSuffix`, dann Anastomose); Erklärungs-Absatz „Warum
+  zwei Aufrufe statt einem?"; Sichtkontrolle-Hinweis auf DB-Namen
+  `sbkim_<DB_SUFFIX>`; „Häufiger Fehler"-Block um
+  `InvalidDbSuffixError` ergänzt. § Bauzustand neue Zeile „Pflege
+  PWA-Suffix".
+- **`docs/INTERFACES.md` §1 Modul 01** init-Signatur auf
+  `init(options?)` erweitert, options-Form dokumentiert, DB-Name-
+  Zeile auf „`sbkim` (Default) / `sbkim_<dbSuffix>`" umgestellt,
+  Fehlerverhalten-Block um zwei `InvalidDbSuffixError`-Zeilen
+  ergänzt, Geprüft-Zeile um 2026-05-16 erweitert. **§6
+  Änderungsprotokoll** Zeile am unteren Ende (neueste unten).
+- **PULS** § Empfehlung umformuliert auf „Klaus' Re-Andock beider
+  Endknoten mit PWA-Suffix"; § Offene Querschnitts-Fragen
+  IndexedDB-Origin-Kollision mit `~~strikethrough~~` als gelöst
+  markiert + Verweis auf dieses Übergabeprotokoll;
+  § Sitzungs-Einträge rotiert (dieser Eintrag oben, Bau 02
+  Stamm/Gast Eintrag entfernt — bleibt im Archiv-Index, war schon
+  ausgelagert seit PR #47).
+- **Übergabeprotokoll**
+  `docs/sessions/archiv/2026-05-16_pflege-pwa-suffix-karten-01-09.md`
+  angelegt.
+
+**Bewusst nicht angefasst:**
+
+- **`src/modules/02_spore.js`** unverändert. `IDENTITY_KEY = "main"`
+  bleibt — durch den umbenannten DB-Namen ist die Identität jetzt
+  PWA-spezifisch, ohne dass Modul 02 davon weiß. Karte 02 + §1
+  Modul 02 in INTERFACES.md unangetastet.
+- **`src/modules/05_anastomose.js`** unverändert.
+  `SbkimAnastomose.init()` weiterhin ohne Optionen — Idempotenz
+  von `Storage.init` macht den zwei-Aufruf-Pfad im Andocker sauber
+  (Storage zuerst mit Suffix, dann Anastomose; Modul 05 ruft
+  `Storage.init()` intern nach und bekommt dasselbe dbPromise).
+  Keine Vertrags-Ausweitung in §1 Modul 05.
+- **`src/modules/00/03/04/06/07/08*`** unverändert.
+- **`tests/manual_check.html`** — optionaler „DB mit Suffix
+  öffnen"-Test-Knopf bewusst weggelassen. Begründung: Panel 01
+  „Storage init" greift in `init()` idempotent; ein zweiter
+  Test-Knopf mit abweichendem Suffix würde nach einem normalen
+  Setup-Lauf `InvalidDbSuffixError` werfen und das Panel
+  durcheinanderbringen. Wer den Suffix-Pfad sichten will, testet
+  ihn in einer Endknoten-PWA (Karte 09 Schritt 4) — das ist die
+  echte Bühne.
+- **`status.json`** unverändert. Klaus' Re-Andock danach erzeugt
+  frische nodeIds — `pingStatus` + `nodeId` werden in einer
+  Folge-Sitzung aktualisiert, sobald beide Endknoten neue
+  Spore-Files unter ihren Pages-URLs deployed haben.
+- **`update_puls_pie.py`** nicht aufgerufen (kein Modul-Score-
+  Wechsel; Modul 01 bleibt Code-Stub, Pie-Inhalt unverändert).
+- **`index.html` (Sage-Page)** unverändert.
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+- **`DB_VERSION`** bleibt `3`.
+
+**Validierung:**
+
+- **`node --check src/modules/01_storage.js`** grün.
+- **Karte 01 + Karte 09 Cross-Reading** durchgezogen: drei
+  Beispielwerte (`mixarium`, `rezeptbuch`, Default ohne Suffix)
+  konsistent in beiden Karten und in INTERFACES.md §1 Modul 01.
+- **Smoke-Test des `init(options)`-Pfads** in Node mit stub-
+  `indexedDB.open`-Promise — sieben Fälle alle grün:
+  (1) `init()` default → `dbName === "sbkim"`;
+  (2) `init({dbSuffix:"mixarium"})` → `"sbkim_mixarium"`;
+  (3) `init()` NACH `init({dbSuffix:"rezeptbuch"})` — kein Wurf,
+  `dbName` bleibt `"sbkim_rezeptbuch"` (kritischer Idempotenz-Pfad
+  für den zweiten Storage-Init in `SbkimAnastomose.init`);
+  (4) `init({dbSuffix:"rezeptbuch"})` NACH
+  `init({dbSuffix:"mixarium"})` → rejects mit
+  `InvalidDbSuffixError`;
+  (5) `init({dbSuffix:"BAD"})` → SYNCHRONER `InvalidDbSuffixError`
+  (Pattern-Verletzung Großbuchstabe);
+  (6) `init({dbSuffix:""})` → SYNCHRONER `InvalidDbSuffixError`
+  (Pattern verlangt ≥ 1 Zeichen);
+  (7) `init({dbSuffix: null})` → behandelt wie keine Optionen,
+  `dbName === "sbkim"`.
+- **Erster Implementierungs-Wurf hatte einen Idempotenz-Bug**: der
+  Konflikt-Check verglich `requestedName` (Default `"sbkim"` ohne
+  Optionen) mit `dbNameInUse` (gesetzt durch ersten Aufruf mit
+  Suffix, z.B. `"sbkim_rezeptbuch"`) — Modul 05's interner
+  `Storage.init()`-Aufruf nach dem Andocker-Setup hätte
+  `InvalidDbSuffixError` geworfen. Behoben im selben Sitzungs-
+  Commit: Konflikt-Check feuert nur, wenn `options.dbSuffix`
+  EXPLIZIT gesetzt UND abweichend ist. Smoke-Test 3 deckt genau
+  diesen Pfad ab und ist grün.
+
+**Was offen blieb:**
+
+- **Klaus' Re-Andock beider Endknoten** mit `dbSuffix:"mixarium"` /
+  `"rezeptbuch"` in `sbkim-init.js`. Nicht headless — wartet auf
+  Klaus am Termux.
+- **`status.json` `pingStatus`-Update** nach Re-Andock — wechselt
+  von `"blocked-origin-collision"` auf zunächst `"pending-peer"`
+  (frische, getrennte Identitäten ohne Cross-Handshake) bzw.
+  `"live"` nach erstem erfolgreichen Cross-Knoten-Handshake.
+- **Cross-Knoten-Handshake** (Karte 09 Schritt 8) — nach Re-Andock
+  möglich.
+- **Eruda-Rückbau** in beiden Endknoten — nach erstem
+  erfolgreichen Cross-Knoten-Handshake.
+- **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-
+  Mixarium (entkoppelt) und **INTERFACES.md §6 Tabellen-Bug** aus
+  PR #45 Squash-Merge bleiben weiterhin offen.
+- **Klaus' Sichttest Panel 06** (Heterokaryose) weiterhin offen
+  aus früheren Sitzungen.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Klaus' Re-Andock Mein-Mixarium + Mein-Rezeptbuch** —
+   `sbkim-init.js` in beiden Endknoten-Repos um
+   `SbkimStorage.init({dbSuffix})` erweitern, `__sbkimErzeugeSpore()`
+   in Eruda triggern, neue Spore deployen. *Nicht headless* — wartet
+   auf Klaus am Termux.
+2. **`status.json`-Folge-Sitzung** nach Re-Andock — `pingStatus`
+   und `nodeId`-Werte aktualisieren.
+3. **Cross-Knoten-Handshake** zwischen beiden Endknoten.
+4. **Eruda-Rückbau** nach erstem erfolgreichen Handshake.
+
+---
+
 ### 2026-05-16 · Bau-Sitzung 09 Iteration 3 — Mein-Rezeptbuch live angedockt (+ Architektur-Lücke entdeckt)
 
 **Sitzungs-Rolle:** Bau-Sitzung Modul 09 (Live-Andock-Versuch, dritte
@@ -463,285 +688,6 @@ Schlüssel.
 
 ---
 
-### 2026-05-16 · Bau-Sitzung 09 Iteration 3 — Mein-Mixarium live angedockt
-
-**Sitzungs-Rolle:** Bau-Sitzung Modul 09 (Live-Andock-Versuch, dritte
-Iteration), mit Klaus am Tablet via Termux, **nicht headless**. Branch
-`claude/andock-mein-mixarium-iteration-3-live`. Erster Endknoten (Mein-
-Mixarium) folgt erstmals der vollständigen Karte-09-Anleitung. Mein-
-Rezeptbuch ist bewusst auf eine Folge-Sitzung verschoben (Zeit-Budget).
-
-**Getan:**
-
-- **Sage-Protokol-Repo lokal in Klaus' Termux geklont** (gh repo clone).
-- **Schritt 1 — Module kopiert** (`mkdir -p ~/Mein-Mixarium/sbkim`, dann
-  `cp` der sieben Modul-Dateien `00/01/02/03/04/05/07` ins `sbkim/`-
-  Unterverzeichnis, plus `sbkim-sw.js` in den Repo-Root). Sichtprüfung
-  via `ls`.
-- **Schritt 2 — `<script>`-Tags in `index.html`** via `awk` vor das
-  **letzte** `</body>` eingefügt (Mein-Mixarium hat 5 Vorkommen von
-  `</body>`, daher zwei-Pass-awk statt einfachem sed). Sichtprüfung
-  via `grep -c 'src="sbkim/'` → 7. Plus achter Tag für `sbkim-init.js`
-  in Schritt 4.
-- **Schritt 3 — App-SW Variante 3b**: drei Zeilen oben in
-  `app-sw.js` per `printf | cat`-Konkatenation (`self.SBKIM_SW_STANDALONE
-  = false`, `importScripts("./sbkim-sw.js")`, `console.info(...)`).
-- **Schritt 4 — `sbkim-init.js` angelegt** im `sbkim/`-Ordner (via
-  Heredoc `cat > FILE << 'EOF'`): Auto-Init für Schritt 4 + 9a (Anastomose
-  + Apoptose), plus globaler Trigger `window.__sbkimErzeugeSpore()` für
-  Schritt 5 + 6 (Embedding-Init + Vektor + Spore-Erzeugung). Stamm/Gast-
-  Kategorien hartkodiert nach Klaus' realer Mixarium-Ordnerstruktur
-  (Stamm = 8 Drinks-Kategorien, Gast = `Knabbereien` + `Fingerfood`).
-  Achter `<script src="sbkim/sbkim-init.js">`-Tag direkt nach
-  `00_doku_fenster.js` via awk eingefügt.
-- **Commit + Push** auf `main`: 11 Dateien geändert, Commit `dbbee2f`,
-  Push `b792576..dbbee2f main -> main`. Sauber, kein Konflikt.
-- **Pages-Build + Sichtprüfung in der Live-PWA:** Eruda-Konsole zeigte
-  alle sieben Modul-Selbstchecks (`MODUL 01/02/03/04/05/07/00 ...
-  bereit, Funktionen: ...`) plus die drei `sbkim-init.js`-Init-Zeilen
-  (`SBKIM-Init grün`, `SBKIM-Apoptose grün`, `SBKIM-Andock bereit`).
-  Modul 03 (Embedding) meldete sich nach `__sbkimErzeugeSpore()`-Aufruf
-  mit `Modell: Xenova/multilingual-e5-small, Dim: 384` und
-  `Domain-Vektor erzeugt: 384 Floats`.
-- **Schritt 5 + 6 — Spore erzeugen:** in Eruda-Konsole
-  `__sbkimErzeugeSpore()` getriggert, Embedding-Modell heruntergeladen
-  (~30 MB, einmalig), Domain-Vektor über `stammCategories +
-  guestCategories + domainKeywords` als Embedding-Text erzeugt
-  (`embedPassage`), Spore via `SbkimSpore.generateOwnSpore({...})`
-  signiert. **Ergebnis:** nodeId
-  `1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0`, Signatur-Länge 86.
-- **Schritt 7 — Spore deployen:** in Eruda One-Liner zur Erzeugung
-  eines Browser-Downloads ausgelöst, `spore.json` in Klaus' Android-
-  Download-Ordner gelandet. Termux per `termux-setup-storage` +
-  Android-`MANAGE_EXTERNAL_STORAGE`-Permission (einmalig durch Klaus'
-  System-Settings-Toggle) auf den Download-Ordner berechtigt. Datei
-  per `mv ~/storage/downloads/spore.json ~/Mein-Mixarium/sbkim/`
-  verschoben. Commit + Push als zweiter Commit `d8dd3b3`
-  (`dbbee2f..d8dd3b3 main -> main`).
-- **Live-URL `https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/
-  spore.json`** ist als Klartext-JSON sichtbar mit allen Pflichtfeldern
-  (`createdAt`, `domain`, `embeddingModel`, `endpoint`, `id`,
-  `nodeType`, `protocolVersion`, `publicKey`, `signature`) UND allen
-  Optionalen aus dieser Iteration (`nodeName`, `domainDescription`,
-  `domainKeywords`, `domainVector`[384], `stammCategories`[8],
-  `guestCategories`[2]). Felder kanonisch alphabetisch.
-- **`status.json` Endknoten[Mixarium] auf `integrated: true`
-  hochgestuft**, plus additive Felder `integratedAt: "2026-05-16"`,
-  `nodeId`, `sporeUrl`, `stammCategories`, `guestCategories`,
-  `pingStatus: "pending-peer"`. `lastUpdated` auf `2026-05-16`
-  gezogen. `update_puls_pie.py` ausgeführt (Pie-Inhalt unverändert,
-  weil keine Modul-Score-Änderung; nur das Datum im Titel-String).
-- **PULS § Endknoten-Tabelle** Mein-Mixarium-Zeile auf „integriert
-  2026-05-16" mit nodeId / spore-URL / Stamm/Gast-Kategorien-Counts
-  und `pending-peer` Vermerk umgestellt.
-- **PULS § Sitzungs-Einträge** rotiert, dieser Eintrag oben.
-
-**Was bewusst nicht angefasst wurde:**
-
-- **Mein-Rezeptbuch** unverändert (`integrated: false`). Wird in einer
-  Folge-Sitzung andockt. Karte 09 vollständig anwendbar, dieselben
-  Schritte mit `domain`/`endpoint`/`stammCategories`/`guestCategories`
-  angepasst auf Rezeptbuch-Werte.
-- **Schritt 8 (Erster Handshake)** aus Karte 09 noch nicht ausgeführt
-  — setzt voraus, dass Mein-Rezeptbuch auch ein
-  `/sbkim/spore.json` deployed hat. Kommt in der Rezeptbuch-Andock-
-  Sitzung als letzter Schritt von beiden Knoten gemeinsam.
-- **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-Mixarium
-  bleibt entkoppelt offen — Stamm/Gast-Felder in der Spore sind das
-  Sage-Protokol-relevante Stück; die App-UI in Mixarium ist Klaus'
-  eigene Sache, kommt wann er Zeit hat.
-- **Eruda-Rückbau** in beiden Endknoten bleibt offen, sinnvoll **nach**
-  dem ersten erfolgreichen Cross-Knoten-Handshake.
-- **`src/modules/*`, `tests/manual_check.html`** in Sage-Protokol
-  unverändert.
-- **Karte 09** unverändert (die Karte hat sich live bewährt, keine
-  Lücken aufgetaucht).
-- **`docs/INTERFACES.md` § 6** Änderungsprotokoll diesmal
-  **nicht** angefasst — das ist eine Andock-Sitzung in einem
-  externen Endknoten-Repo, kein Vertrags-Eingriff.
-
-**Validierung:**
-
-- **`status.json` valid JSON** (`python3 -c "import json; json.load(...)"`).
-- **Pie-Skript ausgeführt** (kein Datenverlust; Pie-Inhalt unverändert,
-  nur Datum auf 2026-05-16).
-- **Spore-JSON live-erreichbar** auf der Pages-URL, kanonisch
-  alphabetisch sortiert (`createdAt` zuerst, `stammCategories` als
-  vorletztes, `signature` zwischen `publicKey` und `stammCategories` —
-  alphabetisch korrekt).
-- **`pingStatus: "pending-peer"`** drückt aus, dass der zweite
-  Pages-Knoten noch fehlt für einen Live-Cross-Handshake. Schema-
-  Erweiterung; falls Sage-Page das nicht rendert, ist es harmlos.
-
-**Was offen blieb:**
-
-- **Bau-Sitzung Mein-Rezeptbuch (Andock-Iteration „3.5")** — gleicher
-  Pfad, andere Stamm/Gast-Werte:
-  - Stamm: `["Vorspeisen", "Suppen", "Fleisch", "Fisch", "Vegetarisch"]`
-    plus Klaus' tatsächliche Rezeptbuch-Ordner (Bild aus der ersten
-    Sichtkontrolle in Live Andock Iteration 2 zeigte schon 5 Stamm-
-    Ordner; vor dem Andock noch genau sichten).
-  - Gast: `["Begleitgetränke"]` (später Weinkarte).
-  - domain: `lausiklauskn-png.github.io`.
-  - endpoint: `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/`.
-  - nodeName: `Rezeptbuch Klaus`.
-  - Sonst: identische Andock-Pfade. Termux-Setup
-    (`termux-setup-storage`, Modul-Files kopieren, App-SW patchen,
-    `sbkim-init.js` analog, Schritte 1–7 wie hier) ist schon eingespielt.
-- **Cross-Knoten-Handshake** (Karte 09 Schritt 8) zwischen Mixarium
-  und Rezeptbuch — nach Andock von Rezeptbuch. Erfolgreicher Handshake
-  schaltet `pingStatus: "live"` und ist die Voraussetzung, um Eruda
-  endgültig wieder rauszubauen.
-- **Eruda-Rückbau** in beiden Endknoten — nach dem ersten Live-Cross-
-  Handshake.
-- **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-Mixarium
-  (entkoppelt).
-- **Mini-Pflege INTERFACES.md §6 Tabellen-Bug** (aus PR #46 Squash-Merge).
-- **Klaus' Sichttest Panel 06** (Heterokaryose), weiterhin offen.
-
-**Nächster sinnvoller Schritt:**
-
-1. **Andock Mein-Rezeptbuch** mit Klaus am Termux. *Nicht headless.*
-   Analoger Pfad, ~45–60 Min weil Klaus den Pfad schon kennt.
-2. **Cross-Knoten-Handshake** (Karte 09 Schritt 8) zwischen den zwei
-   Endknoten, nach Schritt 1.
-3. **Eruda-Rückbau** in beiden Endknoten nach erfolgreichem Handshake.
-4. **Mini-Pflege „Sushi-Kategorie sichtbar machen"** in Mein-Mixarium.
-
----
-
-### 2026-05-15 · Bau 02 — Stamm/Gast-Durchreichung in `generateOwnSpore`
-
-**Sitzungs-Rolle:** Bau-Sitzung Modul 02, headless, EINE Phase. Branch
-`claude/bau-02-stamm-gast-felder-durchreichung`. Folge-Bau direkt nach
-der Spec-Sitzung „Stamm/Gast-Felder in Spore-JSON" (selbiger Tag,
-PR #46) — diese Spec hatte heilige Tafeln + Karten 02/04 nachgezogen,
-aber den Modul-02-Code nicht. Ohne den Code-Eingriff würden die neuen
-optionalen Felder bei `generateOwnSpore({stammCategories,
-guestCategories, …})` still ignoriert.
-
-**Getan:**
-
-- **`src/modules/02_spore.js`** `generateOwnSpore` Allow-List um zwei
-  Zeilen erweitert (direkt nach der `domainVector`-Zeile):
-  ```
-  if (Array.isArray(meta.stammCategories)) unsigned.stammCategories = meta.stammCategories.slice();
-  if (Array.isArray(meta.guestCategories)) unsigned.guestCategories = meta.guestCategories.slice();
-  ```
-  Gleiche Allow-List-Konvention wie alle anderen Optionalen.
-  `node --check` grün.
-- **Karte 02 § Bauzustand** Zeile „Pflege Stamm/Gast-Durchreichung"
-  ergänzt.
-- **INTERFACES.md §6** Änderungsprotokoll-Zeile.
-- **PULS § Schnellüberblick** Modul-02-Zeile erweitert + diesen
-  Sitzungs-Eintrag + Archiv-Index-Rotation.
-
-**Bewusst nicht angefasst:** `validateSporeMeta` (Felder bleiben
-optional, non-Array still ignoriert), Disjunktheits-Prüfung
-(Hosting-Pflicht), `verifyForeignSpore` (kanonisch über alles
-inkl. neuer Felder, ohne Sonderbehandlung), INTERFACES.md §0/§1/§2/§3/§4/§5, `tests/manual_check.html`, `status.json`,
-`index.html`. **`update_puls_pie.py` nicht aufgerufen.**
-**`PROTOCOL_VERSION` bleibt `"0.1"`.**
-
-**Was offen blieb:** Bau-Sitzung 09 Iteration 3 mit Klaus am
-Live-Andock-Versuch (jetzt vollständig vorbereitet — Spec da, Code
-da, Eruda in beiden Endknoten live).
-
-**Nächster sinnvoller Schritt:** **Bau-Sitzung 09 Iteration 3** mit
-Klaus am Live-Andock-Versuch (Mein-Mixarium zuerst, dann Mein-
-Rezeptbuch), nach diesem PR.
-
----
-
-### 2026-05-15 · Spec-Sitzung — Stamm/Gast-Felder in Spore-JSON
-
-**Sitzungs-Rolle:** Spec-Sitzung, headless, EINE Phase. Branch
-`claude/spec-stamm-gast-spore-felder`. Scope: die vier offenen Fragen
-aus `docs/ARCHITEKTUR.md` §8 lösen, INTERFACES.md §2 Spore-JSON additiv
-erweitern, Karten 02 und 04 nachziehen.
-
-**Vier Entscheidungen:**
-
-1. **Feldnamen:** `stammCategories: string[]` und `guestCategories:
-   string[]`. Mixed-Convention konsistent mit Sage-Fachvokabular
-   (Spore, Anastomose, Heterokaryose, Apoptose sind ebenfalls deutsch
-   im sonst englischen Schema).
-2. **Match-Eingriff:** **verworfen.** Stamm/Gast ist Klassifikations-
-   Schicht auf Daten-Ebene (UI/Sortier), nicht Vektor-Math. Modul 04
-   bleibt modus-frei mit einer Schwelle. Karte 04 mit explizitem
-   Hinweis dazu ergänzt — verhindert, dass eine spätere Bau-Sitzung
-   einen Dämpfungsfaktor einbaut „weil er hier mal stand".
-3. **`domainVector`:** bleibt **single** in der Erst-Iteration (über
-   alle Kategorien gemittelt). Separate `stammVector` / `guestVector`
-   in einer Folge-Pflege-Sitzung, sobald empirische Match-Verteilung
-   die Trennung motiviert.
-4. **UI-Label:** **„Überraschungs-Plus"** verbindlich für die
-   Endknoten-App-UI (Mixarium / Rezeptbuch). Sage-Page-Doku und
-   technischer Begriff im Sage-Protokol verwenden „Gast-Kategorie".
-
-**Getan:**
-
-- **`docs/INTERFACES.md` §2 Spore-JSON Optionale Felder** um
-  `stammCategories` + `guestCategories` erweitert (signaturpflichtig
-  wenn vorhanden; Disjunktheit als Hosting-Pflicht, kein
-  Verify-Abbruch).
-- **`docs/INTERFACES.md` §6 Änderungsprotokoll** Zeile am Ende.
-- **`docs/components/02_spore.md` § Datenformat Optionale Felder**
-  Block um die zwei neuen Zeilen ergänzt + Sign-/Verify-Hinweis
-  (kanonische JSON sortiert nur Object-Keys, Array-Reihenfolge
-  unverändert).
-- **`docs/components/04_match.md` § Konfigurationswerte** um
-  Sub-Block „Stamm/Gast-Klassifikation berührt Modul 04 nicht"
-  erweitert.
-- **`docs/ARCHITEKTUR.md` §8** Status auf „Spec festgelegt"
-  hochgestuft; Konsequenzen-Tabelle für Modul 04 von
-  „Dämpfungsfaktor" auf „unverändert" korrigiert; vier offene
-  Fragen mit `~~strikethrough~~` als gelöst markiert + Antworten.
-- **PULS §Empfehlung, §Sitzungs-Einträge, §Archiv-Index** dieser
-  Eintrag nachgezogen.
-
-**Bewusst nicht angefasst:** §0 (keine neue Konstante),
-§1-Modul-Verträge (Karten-Pflege ist kein API-Eingriff), §3 / §4
-/ §5, `src/modules/*`, `tests/manual_check.html`,
-`status.json`, `index.html`. **`update_puls_pie.py` nicht
-aufgerufen.** **`PROTOCOL_VERSION` bleibt `"0.1"`.**
-
-**Validierung:** Drei Markdown-Files (ARCHITEKTUR / INTERFACES /
-02_spore / 04_match) Cross-Reading durchgezogen — keine
-widersprüchlichen Angaben zwischen ARCHITEKTUR.md §8 (Konsequenzen-
-Tabelle Modul 04 „unverändert") und Karte 04 (eigener Hinweis-Block
-„berührt Modul 04 nicht") und INTERFACES.md §2 (zwei neue
-Optionalen) und Karte 02 (gleiche zwei neuen Optionalen).
-
-**Was offen blieb:**
-
-- **Bau-Sitzung 09 Iteration 3** mit Klaus am Live-Andock-Versuch
-  — kann jetzt loslegen. Spore-JSON-Form ist mit Stamm/Gast-Feldern
-  vollständig spezifiziert.
-- **INTERFACES.md §6 Änderungsprotokoll-Tabellen-Bug**: zwei
-  Sitzungs-Einträge (Bau-Sitzung 08 + Live Andock Iteration 2) sind
-  durch einen Squash-Merge-Artefakt in einer Tabellenzeile
-  verschmolzen. Beeinträchtigt nur Lesbarkeit, nicht den Vertrag.
-  Eigene kleine Pflege-Sitzung.
-- **Endknoten-Mini-Pflege „Sushi-Kategorie sichtbar machen"** in
-  Mein-Mixarium (entkoppelt).
-- **Eruda-Rückbau** in beiden Endknoten nach erfolgreichem Andock.
-
-**Nächster sinnvoller Schritt:**
-
-1. **Bau-Sitzung 09 Iteration 3** mit Klaus am Live-Andock-Versuch
-   (Mixarium + Rezeptbuch). *Nicht headless.* Variante 3b mit
-   Pre-Flight + `importScripts` ist Default für beide Endknoten.
-   Stamm/Gast-Kategorien werden direkt in die ersten
-   `/sbkim/spore.json` eingetragen.
-2. **Mini-Pflege INTERFACES.md §6 Tabellen-Bug** — *headless
-   möglich*, niedrige Dringlichkeit.
-3. **Endknoten-Mini-Pflege „Sushi-Kategorie sichtbar machen"** —
-   parallel zu Schritt 1 möglich.
-4. **Klaus' Sichttest Panel 06** (Heterokaryose), weiterhin offen.
-
----
-
 ## Archiv-Index (Sitzungen vor dieser Pflege)
 
 Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
@@ -749,6 +695,8 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-16 | Pflege · Karten 01 + 09 PWA-Suffix (IndexedDB-Origin-Kollision gelöst durch `SbkimStorage.init({dbSuffix})`) | [→ Archiv](sessions/archiv/2026-05-16_pflege-pwa-suffix-karten-01-09.md) |
+| 2026-05-16 | Bau · 09 Iteration 3 — Mein-Rezeptbuch live angedockt + Architektur-Lücke entdeckt | [→ Archiv](sessions/archiv/2026-05-16_andock-mein-rezeptbuch-iteration-3-live.md) |
 | 2026-05-16 | Bau · 09 Iteration 3 — Mein-Mixarium live angedockt (status.json + PULS) | [→ Archiv](sessions/archiv/2026-05-16_andock-mein-mixarium-iteration-3-live.md) |
 | 2026-05-15 | Bau · Stamm/Gast-Durchreichung in `generateOwnSpore` (Folge-Bau, Modul 02) | [→ Archiv](sessions/archiv/2026-05-15_bau-02-stamm-gast-felder-durchreichung.md) |
 | 2026-05-15 | Spec · Stamm/Gast-Felder in Spore-JSON (additiv, kein Hauptversions-Sprung) | [→ Archiv](sessions/archiv/2026-05-15_spec-stamm-gast-spore-felder.md) |
