@@ -66,6 +66,21 @@ aber zeigt nur Fallback-/Leerstand-Daten.
 |-------------------|--------------------------------------|---------------------|
 | `endknoten-grid`  | `endknoten[]`                        | `renderEndknoten()`  |
 
+### 2.4a Demo-Anteil + Schichten-Fortschritt (zurückgekehrt 2026-05-16 Folge-Pflege)
+
+| ID                | Datenfeld                                                | Schreiber           |
+|-------------------|----------------------------------------------------------|---------------------|
+| `demo-ring`       | abgeleitet aus `modules[].score` + `nodeTypes` + `endknoten[].integrated` | `computeScore()` → `animateRing()` |
+| `demo-num`        | gleicher Score in Prozent                                | `countUp()` (Anim)  |
+| `bar-ui` / `bar-ui-pct`   | Aggregat über Module 00, 08 (Schicht UI)        | `renderBars()` / `setBar('ui',…)` |
+| `bar-net` / `bar-net-pct` | Aggregat über Module 05, 06 (Schicht Netzwerk)  | `renderBars()` / `setBar('net',…)` |
+| `bar-core` / `bar-core-pct` | Aggregat über Module 01–04, 07 (Schicht Kern) | `renderBars()` / `setBar('core',…)` |
+
+Schicht-Gruppen-Definition steht in `renderBars()` als Konstante `groups`.
+Wenn ein neues Modul (NN > 14) zu einer Schicht gehört, die `groups`-
+Konstante ergänzen — sonst fließt das Modul nicht in den Schichten-
+Fortschritt ein.
+
 ### 2.5 Andock-Generator (Live-Spore-Vorlage)
 
 | ID                | Lese-Feld aus `status.json`          | Notiz               |
