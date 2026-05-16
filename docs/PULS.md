@@ -114,6 +114,58 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 
 ## Offene Querschnitts-Fragen
 
+- **Sichtbarkeits-Lampen in der Endknoten-PWA** (eingetragen
+  2026-05-16, Klaus-Vorschlag nach Pflege PWA-Suffix). Idee von
+  Klaus: zwei kleine Lampen oben rechts in der PWA, eine zeigt
+  „Knoten lebt" (Identität geladen, Storage offen, Module geladen),
+  die zweite blinkt kurz bei jedem Anastomose- oder Heterokaryose-
+  Verkehr („gerade kommuniziert"). Soll für Endknoten-Nutzer und im
+  Observatorium **sichtbar** machen, dass das Netz lebt — viel
+  zugänglicher als das 5-Klick-Doku-Fenster oder Eruda. Setzt
+  Modul 00 (Doku-Fenster) als Datenquelle voraus und braucht zwei
+  bis drei CustomEvents in Modul 05/06 (`sbkim:handshake-start`/
+  `sbkim:handshake-end`/`sbkim:hetero-pull-start`/…). **Status:**
+  Spec ausstehend; eigene kleine Karte (vermutlich Karte 15 oder
+  ein additiver Block in Karte 00). Spec-Sitzung sinnvoll, **nach**
+  dem ersten erfolgreichen Cross-Knoten-Handshake — dann ist klar,
+  was die zweite Lampe tatsächlich anzeigen soll. Geschätzt ~60 Min
+  headless für Spec, ähnlich für Bau-Stub.
+
+- **Andock-Bundle (`sbkim-bundle.js`)** als künftiger Ein-Datei-
+  Andock-Pfad (eingetragen 2026-05-16, Klaus-Vorschlag nach
+  Pflege PWA-Suffix). Heutiger Karte-09-Pfad (9 Schritte mit awk,
+  Termux, Eruda, Spore-mv) ist Pionier-Tanz — funktioniert für
+  Klaus, aber kein Nicht-Programmierer würde das nachmachen. Vision:
+  Endknoten-Betreiber kopiert **eine** Datei (`sbkim-bundle.js`) +
+  fügt **einen** `<script>`-Tag ein. Das Bundle erzeugt beim ersten
+  Laden Identität, Domain-Vektor, Spore, klinkt sich beim Service-
+  Worker ein und macht den Status sichtbar (s. Lampen oben). **Setzt
+  voraus:** drei oder mehr Endknoten im Netz, damit der Aufwand
+  spürbar wird (heute mit zwei reicht der Direkt-Pfad mit Klaus).
+  **Status:** Spec ausstehend; eigene Karte (vermutlich Karte 16 oder
+  09.2). Ist eine echte Architektur-Frage (Bundling-Strategie,
+  Versions-Update-Pfad, wie liefert der Bundle die Andock-Konfig),
+  keine reine Pflege.
+
+- **Identitäts-Persistenz** (eingetragen 2026-05-16 als gebündelte
+  Erinnerung; einzelne Stücke schon offen, s. unten „Spore-
+  Persistenz-Strategie verteilt"). Klaus' Befürchtung: tiefes
+  Browserspeicher-Löschen tötet die nodeId. Drei Stufen, die
+  zusammen die echte „Spur stirbt nicht"-Architektur ergeben:
+  (1) **`navigator.storage.persist()`** beim `Storage.init` — bittet
+  den Browser, IndexedDB von normalem Aufräumen auszunehmen.
+  Modul-01-Folge-Pflege, headless möglich, ~30 Min.
+  (2) **Backup-Export passwort-verschlüsselt** in Modul 02 — Klaus
+  speichert eine `*.sbkim-backup.json` woanders und kann sie bei
+  Browser-Wechsel zurückimportieren. Modul-02-Folge-Spec, ~60 Min.
+  (3) **Quota-Frühwarnung im Doku-Fenster** — schon spezifiziert
+  (Modul 00, `DOKU_QUOTA_WARN_RATIO=0.80` / `…_BYTES=50 MiB`); zeigt
+  Warnzeile, bevor der Browser aufräumt. **Nicht** als Selbst-
+  Heilung über hartcodierten Schlüssel (Sicherheits-Bruch — jeder
+  Repo-Forker hätte die Identität). `getOrCreateIdentity` legt bei
+  leerem Storage eine **neue** Identität an (neue nodeId), erhalten
+  bleibt der alte Knoten nur über Backup-Restore.
+
 - ~~**IndexedDB-Origin-Kollision bei GitHub-Pages-Project-Sites**~~ —
   **gelöst 2026-05-16 durch Pflege-Sitzung „Karten 01 + 09 PWA-
   Suffix".** Variante (a) aus dem ursprünglichen Eintrag (PWA-Suffix
