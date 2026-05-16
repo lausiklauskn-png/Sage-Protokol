@@ -169,6 +169,59 @@ resetIdentityCache() → void
   // Modul 02 erkennt Storage-Cleanup nicht selbst und vertraut auf den
   // expliziten Aufruf. Pflege-Sitzung 2026-05-15 (Klaus' Sichttest-
   // Befund Modul 07 Test 6).
+
+exportBackup(password: string) → Promise<SbkimBackupBlob>
+  // Erzeugt eine passwort-verschlüsselte Snapshot-Datei der eigenen
+  // Identität + bekannten Geschwister (Backup-Inhalt-Block unten,
+  // Pflicht-Frage 1 Variante b).
+  // Pflicht-Parameter:
+  //   password (string): Mindestlänge BACKUP_PASSWORD_MIN_LEN
+  //     (§0, Spec-Sitzung Backup-Export Stufe 2 = 8). Aufrufer-
+  //     verantwortet. Modul 02 prüft NUR die Mindestlänge, keine
+  //     Entropie-Schätzung (siehe § Risiken „Passwort-Schwäche").
+  // Rückgabe-Pflichtfelder (SbkimBackupBlob, siehe § Datenformat):
+  //   version, kdf, cipher, ciphertext, payload-schema-version.
+  // Wirft InvalidBackupPasswordError synchron bei leerem/zu kurzem
+  // Passwort. NoIdentityError, wenn noch keine Identität existiert.
+  // Wirft NIE bei korruptem Storage-Inhalt — Module 02 nimmt was
+  // sbkim_keys["main"] und sbkim_spore["main"] liefern, ohne zu
+  // re-validieren (die Identität ist beim Erzeugen schon geprüft
+  // worden). sbkim_siblings wird fail-soft gelesen (leere Liste,
+  // wenn der Store leer oder nicht vorhanden ist).
+
+importBackup(blob: SbkimBackupBlob, password: string,
+             options?: { force?: boolean })
+  → Promise<{ restored: boolean, reason?: string }>
+  // Stellt einen Backup-Snapshot wieder her — entschlüsselt mit
+  // dem mitgegebenen Passwort, prüft Schema, schreibt Identität +
+  // Geschwister zurück.
+  // Pflicht-Parameter:
+  //   blob (SbkimBackupBlob): die Form aus exportBackup, JSON-parsed.
+  //   password (string): wie exportBackup. Falsches Passwort →
+  //     BackupDecryptError (nicht stiller Restore-false).
+  // Optional-Parameter:
+  //   options.force (boolean, Default false): bei vorhandener
+  //     Identität in sbkim_keys["main"] wirft Modul 02 per Default
+  //     BackupOverwriteError (Pflicht-Frage 3 Variante a — defensiv).
+  //     Aufrufer setzt force:true, um die bestehende Identität
+  //     bewusst zu ersetzen.
+  // Rückgabe-Pflichtfeld:
+  //   restored (boolean): true wenn Identität + Geschwister erfolgreich
+  //     geschrieben wurden, false wenn ein Vor-Check verboten hat
+  //     (z.B. force-Schwelle ohne force, oder Schema-Inkompatibilität
+  //     — siehe Error-Klassen unten).
+  // Rückgabe-Optional-Feld:
+  //   reason (string, deutschsprachig): bei restored=false der Grund.
+  // Wirft synchron InvalidBackupPasswordError (Mindest-Länge),
+  // BackupVersionMismatchError (blob.version unbekannte
+  // Hauptversion), BackupSchemaError (payload-schema-version ist
+  // höher als das Modul kennt). Wirft asynchron BackupDecryptError
+  // (falsches Passwort, korruptes Format, AES-GCM-Auth-Fail) und
+  // BackupOverwriteError (bestehende Identität, force=false).
+  // Nach erfolgreichem restored=true ruft Modul 02 intern
+  // resetIdentityCache() — der Cache muss sich nach Storage-
+  // Überschreibung neu aufbauen, sonst liefert getNodeId weiter
+  // die alte Identität.
 ```
 
 ### Selbstcheck
@@ -176,7 +229,7 @@ resetIdentityCache() → void
 Beim **Skript-Laden** (synchron, vor jeglichem Aufruf):
 
 ```
-console.info("MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache");
+console.info("MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache/exportBackup/importBackup");
 ```
 
 Wie Modul 01 — die Selbstcheck-Meldung signalisiert „Modul geladen",
@@ -264,6 +317,98 @@ verifizieren. Reihenfolge ist verbindlich, weil JSON-Stringify ohne
 Sortierung Implementierungs-abhängig ist und die Signatur sonst
 brechen würde.
 
+### Datenformat: Backup-Format (SbkimBackupBlob)
+
+Verbindliches Schema für `exportBackup` / `importBackup`, festgelegt
+in der Spec-Sitzung Backup-Export Stufe 2 (2026-05-16). Wrapper-Form
+mit getrennten `kdf`- / `cipher`- / `ciphertext`-Schichten; der
+Klartext-Payload (vor Verschlüsselung) ist in einem eigenen
+`payload-schema-version`-Feld versioniert (additiv, lessons-learned-
+Pfad — siehe § Risiken „Backup-Aktualität").
+
+```jsonc
+{
+  "version":               1,                    // = BACKUP_FORMAT_VERSION (§0)
+                                                  // Hauptversion. Modul 02 versteht nur
+                                                  // den eigenen Wert (sonst BackupVersionMismatchError).
+  "kdf": {
+    "algorithm":           "PBKDF2",
+    "hash":                "SHA-256",
+    "iterations":          600000,              // = BACKUP_KDF_ITERATIONS (§0)
+    "salt":                "<base64url-16Bytes>" // crypto.getRandomValues, ohne Padding
+  },
+  "cipher": {
+    "algorithm":           "AES-GCM-256",
+    "iv":                  "<base64url-12Bytes>" // crypto.getRandomValues, ohne Padding
+  },
+  "ciphertext":            "<base64url>",       // AES-GCM-Ausgang (inkl. 16-Byte-Auth-Tag),
+                                                  // base64url ohne Padding.
+  "payload-schema-version": 1                   // Schema-Version DES KLARTEXT-Inhalts (siehe unten).
+                                                  // Additiv versioniert. Modul 02 erlaubt
+                                                  // payload-schema-version <= eigene Konstante;
+                                                  // höhere Werte werfen BackupSchemaError.
+}
+```
+
+Der **Klartext-Payload** (Inhalt VOR der AES-GCM-Verschlüsselung) ist
+eine kanonisch-JSON-serialisierte UTF-8-Bytefolge (alphabetisch
+sortierte Object-Keys, rekursiv — dieselbe Disziplin wie Spore-
+Signatur). Schema bei `payload-schema-version: 1` (Spec-Sitzung
+Backup-Export Stufe 2, Pflicht-Frage 1 Variante b — Identität +
+Geschwister):
+
+```jsonc
+{
+  "createdAt":  "2026-05-16T07:00:00.000Z",    // ISO-8601 UTC
+  "nodeId":     "<base64url-sha256-rawpub>",    // = spore.id, Plausibilitäts-Anker
+  "keys": {
+    "keyId":      "main",
+    "privateKey": { /* JsonWebKey, kty:"OKP", crv:"Ed25519", d:..., x:... */ },
+    "publicKey":  { /* JsonWebKey, kty:"OKP", crv:"Ed25519",       x:... */ }
+  },
+  "spore":      { /* vollständige SporeJson inkl. signature, wie in sbkim_spore["main"] */ },
+  "siblings": [
+    {
+      "nodeId":               "<peerNodeId>",
+      "domain":               "...",
+      "endpoint":             "...",
+      "pubKey":               { /* JsonWebKey */ },
+      "since":                "<ISO-8601>",
+      "heterokaryosisOptIn":  true             // optional, additiv (Modul 05/06/08)
+    }
+    // ... weitere Geschwister, Reihenfolge: nach since aufsteigend
+  ]
+}
+```
+
+**KDF-Pfad (verbindlich):**
+```
+salt        = crypto.getRandomValues(16 Bytes)
+material    = utf8(password)
+baseKey     = crypto.subtle.importKey("raw", material, {name:"PBKDF2"}, false, ["deriveKey"])
+aesKey      = crypto.subtle.deriveKey(
+                { name:"PBKDF2", salt, iterations: BACKUP_KDF_ITERATIONS, hash:"SHA-256" },
+                baseKey,
+                { name:"AES-GCM", length: 256 },
+                false,
+                ["encrypt","decrypt"])
+```
+
+**Encrypt-Pfad (verbindlich):**
+```
+iv          = crypto.getRandomValues(12 Bytes)
+plaintext   = utf8(canonical-JSON-stringify(payload))
+ciphertext  = crypto.subtle.encrypt({name:"AES-GCM", iv}, aesKey, plaintext)
+              // crypto.subtle.encrypt liefert Cipher + 128-Bit-Auth-Tag in einem ArrayBuffer
+blob.ciphertext = base64url(ciphertext) ohne Padding
+```
+
+**Decrypt-Pfad ist die Umkehrung.** Falsches Passwort schlägt am
+AES-GCM-Auth-Tag fehl — die Implementierung fängt das, klassifiziert
+es als `BackupDecryptError` (deutschsprachige Message „Falsches
+Passwort oder korruptes Backup") und löst die Promise NICHT mit
+`{restored:false}`, sondern als rejected.
+
 ### Storage
 
 Stores: `sbkim_keys` (Schlüssel `"main"`, Wert
@@ -273,6 +418,54 @@ wobei `sporeJson` das vollständige Spore-Objekt inkl. Signatur ist —
 das `signature`-Feld auf der Wrapper-Ebene wird redundant gehalten,
 damit Modul 05 ohne Re-Parse darauf zugreifen kann). JWK ist
 strukturell-klonbar, IndexedDB akzeptiert es ohne Wrapper.
+
+**Backup-Inhalt** (Pflicht-Frage 1 Variante b der Spec-Sitzung
+Backup-Export Stufe 2): `exportBackup` liest aus drei SBKIM-Stores
+und schreibt sie in den Klartext-Payload (oben):
+
+| Store | Modul 02 als | Backup-Inhalt |
+|---|---|---|
+| `sbkim_keys["main"]` | Leser (eigener Store) | Pflicht — `keys`-Block (privateKey + publicKey JWK + keyId) |
+| `sbkim_spore["main"]` | Leser (eigener Store) | Pflicht — `spore`-Block (vollständige SporeJson inkl. Signatur) |
+| `sbkim_siblings` | Leser (fremder Store, Schreiber Modul 05) | Fail-soft — `siblings`-Array (alle Einträge, leer wenn Store leer/fehlt). `heterokaryosisOptIn`-Feld bleibt erhalten (additiv, Spec-Sitzung 06/08). |
+
+Bewusst **nicht** im Backup (vgl. § Risiken „Backup-Aktualität"):
+`sbkim_anastomosis_log`, `sbkim_legacy_inbox`, `sbkim_hetero_inbox`,
+`sbkim_hetero_outbox`, `sbkim_doku_meta`. Vermächtnis-Inbox und Log
+sind transient/audit; Heterokaryose-Inbox/Outbox und Doku-Meta
+gehören in eigene PWA-Pflege-Pfade (Klaus pflegt sie im Endknoten,
+Apoptose räumt sie beim Self-Apoptose auf — Karte 07). Der Backup-
+Restore stellt **Identität + Netzwerk-Mitgliedschaft** wieder her, nicht
+die Anker-Vorräte oder Aktivitäts-Spuren.
+
+`importBackup` schreibt nach erfolgreichem Decrypt + Schema-Check
+genau diese drei Stores zurück (sbkim_keys["main"] + sbkim_spore["main"]
+overwrite; sbkim_siblings put-pro-Eintrag, additiv — bestehende
+Sibling-Einträge mit gleicher nodeId werden überschrieben, andere
+bleiben). Modul 02 ruft anschließend einmal `resetIdentityCache()`,
+damit der nächste `getNodeId`-Aufruf die frisch geschriebene Identität
+liefert, nicht den alten Cache.
+
+### Konfigurationswerte
+
+Backup-spezifische Konstanten (Spec-Sitzung Backup-Export Stufe 2,
+2026-05-16). Gespiegelt in `INTERFACES.md §0`; Modul 02 liest sie
+beim Skript-Laden.
+
+| Konstante | Wert | Bedeutung |
+|---|---|---|
+| `BACKUP_FORMAT_VERSION` | `1` | Hauptversion des Wrapper-Schemas (`SbkimBackupBlob.version`). Eigene additive Versionierung, getrennt von `PROTOCOL_VERSION` und `DB_VERSION`. Höhere Werte beim Import → `BackupVersionMismatchError`. |
+| `BACKUP_KDF_ITERATIONS` | `600000` | PBKDF2-Iterations für die Schlüssel-Ableitung. OWASP-Empfehlung 2023+ für PBKDF2-SHA256 (Pflicht-Frage 2 Variante b). Aufruf-Zeit auf low-end Android ~1–2 s, auf Desktop < 0,5 s. |
+| `BACKUP_PASSWORD_MIN_LEN` | `8` | Mindest-Länge des Passwort-Strings. Untere Validierungs-Schwelle — keine Entropie-Schätzung, keine Komplexitäts-Pflicht. Aufrufer-Pflicht, etwas Sinnvolles zu wählen. |
+| `BACKUP_PAYLOAD_SCHEMA_VERSION` | `1` | Schema-Version des Klartext-Payloads. Additiv versioniert. Modul 02 erlaubt Import von `<= BACKUP_PAYLOAD_SCHEMA_VERSION`; höhere Werte → `BackupSchemaError`. Erhöhung erst nötig, wenn der Klartext-Payload Pflichtfelder hinzubekommt. |
+| `BACKUP_KDF_SALT_BYTES` | `16` | Salt-Länge für PBKDF2 (Konvention). |
+| `BACKUP_CIPHER_IV_BYTES` | `12` | IV-Länge für AES-GCM (Standard 96 bit). |
+
+`BACKUP_FORMAT_VERSION`, `BACKUP_KDF_ITERATIONS` und
+`BACKUP_PASSWORD_MIN_LEN` sind in §0 verankert (Querschnitts-
+Konstanten, falls Modul 12 Blocklist später ein eigenes Backup-Format
+spezifiziert). Die salt-/iv-Längen-Konventionen sind modul-lokal
+(WebCrypto-Standard, nicht §0-würdig).
 
 ---
 
@@ -289,10 +482,19 @@ strukturell-klonbar, IndexedDB akzeptiert es ohne Wrapper.
 | `verifyForeignSpore`: `id` ≠ `base64url(sha256(rawPub))` | `{ valid: false, reason: "nodeId stimmt nicht zum Public Key" }` |
 | `verifyForeignSpore`: Signatur falsch oder Spore manipuliert | `{ valid: false, reason: "Signatur ungültig" }` |
 | `verifyForeignSpore`: protocolVersion-Hauptversion ≠ unsere | `{ valid: false, reason: "Inkompatible Hauptversion: <x.y>" }` |
+| `exportBackup` / `importBackup` mit Passwort kürzer als `BACKUP_PASSWORD_MIN_LEN` (8) oder leerem String | wirft `InvalidBackupPasswordError` synchron, deutschsprachige Message. Kein Crypto-Aufruf. |
+| `importBackup`: AES-GCM-Auth-Tag schlägt fehl (falsches Passwort) oder Blob-Form ist korrupt (kein valides base64url, Längen falsch, JSON-Parse scheitert auf dem Klartext) | rejected mit `BackupDecryptError`. Eine Sammel-Klasse — Modul 02 verrät bewusst nicht, ob Passwort falsch oder Datei beschädigt (kein Oracle für Angreifer). |
+| `importBackup`: `blob.version` ≠ `BACKUP_FORMAT_VERSION` | rejected mit `BackupVersionMismatchError`. Wrapper-Hauptversion mismatch; Backup aus zukünftiger oder unbekannter Modul-Version. Kein Decrypt-Versuch. |
+| `importBackup`: `blob.payload-schema-version` > `BACKUP_PAYLOAD_SCHEMA_VERSION` (nach erfolgreichem Decrypt) oder Klartext-Payload-Pflichtfeld fehlt (`nodeId`, `keys.privateKey`, `keys.publicKey`, `spore`) | rejected mit `BackupSchemaError`, deutschsprachige Message mit Hinweis, welches Feld fehlt / welche Schema-Version unbekannt ist. |
+| `importBackup`: `sbkim_keys["main"]` existiert bereits UND `options.force !== true` | rejected mit `BackupOverwriteError` (Pflicht-Frage 3 Variante a). Kein Decrypt-Versuch (Vor-Check vor Crypto). Aufrufer entscheidet bewusst per `{force:true}`, ob die bestehende Identität ersetzt werden darf. |
+| `exportBackup`: keine Identität vorhanden | rejected mit `NoIdentityError` aus dem `getOrCreateIdentity`-Pfad (wird unverändert durchgereicht). Aufrufer muss erst `getOrCreateIdentity()` rufen. |
 
 Alle SBKIM-Fehler sind `Error`-Instanzen mit sprechendem `name` und
 deutschsprachigem `message`-Feld. `verifyForeignSpore` wirft niemals —
-Verifikations-Probleme kommen als `reason`-String zurück.
+Verifikations-Probleme kommen als `reason`-String zurück. **Backup-
+Fehler werfen** (sind keine `{valid:false}`-Form-Antworten): Backup-
+Restore ist eine Identitäts-mutierende Operation, ein stilles
+„nichts passiert" ist gefährlicher als ein lauter Fehler.
 
 ---
 
@@ -361,6 +563,46 @@ Block dieser Karte (Zeile „Sichttest").
   dürfen ab Status `entwurf` nur noch additiv erweitert werden —
   Streichungen brauchen einen Hauptversions-Sprung
   (`protocolVersion: "1.x"`).
+- **Passwort-Schwäche (Backup-Export):** das Backup-Passwort kommt
+  vom Aufrufer (Klaus, im Endknoten-UI). Modul 02 validiert
+  **ausschliesslich** die Mindest-Länge (`BACKUP_PASSWORD_MIN_LEN = 8`,
+  §0). Kein Entropie-Check, keine Wörterbuch-Prüfung, keine
+  Komplexitäts-Pflicht. Begründung: Selbst-Heilung über einen
+  hartcodierten Schlüssel ist ausgeschlossen (PULS § Offene
+  Querschnitts-Fragen „Identitäts-Persistenz" Stufe 2 — jeder
+  Repo-Forker hätte die Identität); ein Komplexitäts-Theater am
+  Validator gibt eine Scheinsicherheit, die der echte Schutz —
+  PBKDF2 mit `BACKUP_KDF_ITERATIONS = 600 000` Iterationen
+  (Pflicht-Frage 2 Variante b, OWASP 2023+) — nicht braucht.
+  Aufrufer-Pflicht, ein sinnvolles Passwort zu wählen; Klaus' Risiko,
+  wenn er ein schlechtes wählt.
+- **Sicherheits-Schwelle bei Import-Überschreibung
+  (`BackupOverwriteError`):** `importBackup` wirft per Default
+  (Pflicht-Frage 3 Variante a), wenn `sbkim_keys["main"]` bereits
+  belegt ist. Aufrufer setzt `{force: true}`, um eine bestehende
+  Identität bewusst zu ersetzen. Begründung: Identitäts-
+  Überschreibung wechselt die `nodeId` der laufenden PWA. Geschwister,
+  die die alte `nodeId` kennen, behandeln den Knoten ab dann als
+  unbekannt (Apoptose-Pfad statt Reentry — siehe Karte 07 § TTL-
+  Sweep). Ein versehentlicher Import (falsche Datei, falsches
+  Geschwister) tötet den laufenden Knoten ohne Vermächtnis — das
+  ist destruktiver als Self-Apoptose. Recovery-Pfad nach
+  Browserspeicher-Löschen funktioniert trotzdem **ohne** `force`,
+  weil dort die Identität fehlt; nur bei aktiver Identität greift
+  die Schwelle.
+- **Backup-Aktualität:** ein Backup ist eine Snapshot-Datei; je
+  älter, desto stärker driftet sie vom aktuellen Knoten-Zustand ab.
+  `siblings`-Block veraltet schneller als `keys`/`spore` (neue
+  Geschwister kommen, alte gehen). Restore eines alten Backups stellt
+  ältere Geschwister-Liste wieder her — Modul 06/07-Pfade (Apoptose-
+  TTL, Anastomose-Reentry) korrigieren das selbständig im laufenden
+  Betrieb. **Keine** Backup-Aktualität-Erzwingung durch das Modul;
+  Klaus wird im Doku-Fenster (Modul 00) über die Stufe-3-
+  Quota-Frühwarnung indirekt erinnert, dass ein neues Backup fällig
+  ist. Heterokaryose-Anker, Vermächtnis-Inbox, Logs sind bewusst
+  **nicht** im Backup (siehe § Storage „Backup-Inhalt") — der
+  Backup-Inhalt ist auf das beschränkt, was ohne Backup nicht
+  selbst-heilen kann (= Identität + Sibling-Mitgliedschaft).
 
 ---
 
@@ -375,6 +617,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Sichttest | 2026-05-14 | Spec+Bau 02 | geprüft 2026-05-14 (Klaus, im Browser): Identität deterministisch, Spore vollständig + sortiert, Sign+Verify round-trip valid, Manipulation erkannt. |
 | Pflege Cache-Invalidate | 2026-05-15 | Pflege 02+07-Cache-Invalidate | Klaus' Sichttest 2026-05-15 Modul 07 Test 6 ergab `getNodeId_wirft_NoIdentityError:false` trotz `stores_alle_leer:true` — Modul 02's `identityCache` wurde nicht durch externes `storage.clear` invalidiert. **Fix**: neue öffentliche Funktion `resetIdentityCache() → void` (sync, idempotent, leert nur den Closure-Cache, kein Storage-Eingriff); Vertrag in INTERFACES.md §1 Modul 02 Bietet-Block + Selbstcheck-Format-Zeile (sieben Funktionen) + Garantien-Block für 05/06/07 (neuer Punkt „Cache-Konsistenz nach externem Storage-Cleanup"). Modul 07 ruft die Funktion als Schritt 6 nach den fünf `storage.clear`-Aufrufen. **Sauberere Lösung von vier Optionen** — Vertrag-Trennung (Modul 02 kennt keine Apoptose, bietet aber den Hook), performance-neutral (Cache bleibt schnell für Modul 04/05/00), additiv (kein Hauptversions-Sprung). `node --check` grün. status.json unverändert (kein Score-Wechsel). |
 | Pflege Stamm/Gast-Durchreichung | 2026-05-15 | Bau 02 Stamm/Gast-Felder | Folge-Bau nach Spec-Sitzung „Stamm/Gast-Felder in Spore-JSON" (2026-05-15): `generateOwnSpore` Allow-List um zwei Zeilen erweitert (analog zu `domainKeywords`): `if (Array.isArray(meta.stammCategories)) unsigned.stammCategories = meta.stammCategories.slice();` + `if (Array.isArray(meta.guestCategories)) unsigned.guestCategories = meta.guestCategories.slice();` direkt nach der `domainVector`-Zeile, vor `endpointPaths`. Damit landen die neuen optionalen Felder aus INTERFACES.md §2 tatsächlich im signierten Spore-JSON, wenn der Aufrufer sie übergibt. **Validierung in `validateSporeMeta` unverändert** — die Felder sind optional, non-Array-Werte werden stillschweigend ignoriert (gleiche Konvention wie `domainKeywords`). **Disjunktheit** (kein Element in beiden Listen) bleibt Hosting-Pflicht des Knotens, kein Modul-02-Eingriff. `node --check src/modules/02_spore.js` grün. `status.json` unverändert (kein Score-Wechsel). |
+| Spec Backup-Export Stufe 2 | 2026-05-16 | Spec Backup-Export | Stufe (2) der drei-stufigen Identitäts-Persistenz-Architektur (PULS § Offene Querschnitts-Fragen „Identitäts-Persistenz"). Karte 02 additiv erweitert: § Schnittstelle um `exportBackup(password) → Promise<SbkimBackupBlob>` und `importBackup(blob, password, options?) → Promise<{restored, reason?}>`; Selbstcheck-Funktionsliste um die zwei neuen Namen (zehn Funktionen statt acht); § Datenformat um neuen Sub-Block „Backup-Format (SbkimBackupBlob)" mit Wrapper-Schema (`version`, `kdf`-Block PBKDF2/SHA-256, `cipher`-Block AES-GCM-256, `ciphertext`, `payload-schema-version`) + Klartext-Payload-Schema (nodeId-Anker + `keys` + `spore` + `siblings`-Array) + KDF-/Encrypt-Pfad verbindlich; § Storage um Hinweis-Block „Backup-Inhalt" (drei Stores `sbkim_keys`/`sbkim_spore`/`sbkim_siblings`, fail-soft beim Siblings-Lesen, bewusst nicht im Backup: Log/Inbox/Outbox/Doku-Meta — Pflicht-Frage 1 Variante b); neue § Konfigurationswerte mit sechs Konstanten (drei in §0 verankert: `BACKUP_FORMAT_VERSION=1`, `BACKUP_KDF_ITERATIONS=600000`, `BACKUP_PASSWORD_MIN_LEN=8`; drei modul-lokal: `BACKUP_PAYLOAD_SCHEMA_VERSION=1`, `BACKUP_KDF_SALT_BYTES=16`, `BACKUP_CIPHER_IV_BYTES=12`); § Fehlerverhalten um sechs neue Zeilen (`InvalidBackupPasswordError`, `BackupDecryptError` als Sammel-Klasse ohne Oracle, `BackupVersionMismatchError`, `BackupSchemaError`, `BackupOverwriteError` aus Pflicht-Frage 3 Variante a, `NoIdentityError`-Durchreichung); § Risiken um drei neue Punkte (Passwort-Schwäche, Sicherheits-Schwelle Import-Überschreibung, Backup-Aktualität). **INTERFACES.md** §0 um drei Konstanten + §1 Modul 02 (Bietet/Nutzt/Fehlerverhalten/Geprüft) + §2 Spore-JSON Hinweis-Block + §6 Änderungsprotokoll nachgezogen. **`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`** (Backup-Format ist eigene additive Versionierung, kein Spore-Feld, kein Storage-Schema-Eingriff). Spec ist additiv; **kein Code in `src/modules/02_spore.js`** — Bau-Sitzung 02.X folgt als eigene Phase. `status.json` unverändert (Modul 02 bleibt `score:"stub"`, Spec-Erweiterung im Karten-Vertrag, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
