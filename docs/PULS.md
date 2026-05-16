@@ -81,7 +81,7 @@ Modul-Code (00/01/02/03/04/05/07) bleibt unberührt. Details im
 |---|---|---|---|---|
 | 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00 |
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | IndexedDB-Wrapper |
-| 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) | Ed25519-Identität, Singleton, base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. |
+| 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Stamm/Gast-Durchreichung 2026-05-15) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) | Ed25519-Identität, Singleton, base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. **`generateOwnSpore` Code-Allow-List nachgezogen** 2026-05-15 (Bau 02 Stamm/Gast): zwei Zeilen analog zu `domainKeywords` — ohne diese Pflege würden Stamm/Gast-Felder beim Andock still ignoriert. |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
 | 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80. **Karte 04 § Stamm/Gast-Hinweis 2026-05-15** (Spec-Sitzung Stamm/Gast): Match bleibt unverändert; Stamm/Gast ist Klassifikations-Schicht auf Daten-Ebene, kein Vektor-Math; explizit kein Dämpfungsfaktor, keine zweite Schwelle. |
 | 05 anastomose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) |
@@ -293,6 +293,49 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
+### 2026-05-15 · Bau 02 — Stamm/Gast-Durchreichung in `generateOwnSpore`
+
+**Sitzungs-Rolle:** Bau-Sitzung Modul 02, headless, EINE Phase. Branch
+`claude/bau-02-stamm-gast-felder-durchreichung`. Folge-Bau direkt nach
+der Spec-Sitzung „Stamm/Gast-Felder in Spore-JSON" (selbiger Tag,
+PR #46) — diese Spec hatte heilige Tafeln + Karten 02/04 nachgezogen,
+aber den Modul-02-Code nicht. Ohne den Code-Eingriff würden die neuen
+optionalen Felder bei `generateOwnSpore({stammCategories,
+guestCategories, …})` still ignoriert.
+
+**Getan:**
+
+- **`src/modules/02_spore.js`** `generateOwnSpore` Allow-List um zwei
+  Zeilen erweitert (direkt nach der `domainVector`-Zeile):
+  ```
+  if (Array.isArray(meta.stammCategories)) unsigned.stammCategories = meta.stammCategories.slice();
+  if (Array.isArray(meta.guestCategories)) unsigned.guestCategories = meta.guestCategories.slice();
+  ```
+  Gleiche Allow-List-Konvention wie alle anderen Optionalen.
+  `node --check` grün.
+- **Karte 02 § Bauzustand** Zeile „Pflege Stamm/Gast-Durchreichung"
+  ergänzt.
+- **INTERFACES.md §6** Änderungsprotokoll-Zeile.
+- **PULS § Schnellüberblick** Modul-02-Zeile erweitert + diesen
+  Sitzungs-Eintrag + Archiv-Index-Rotation.
+
+**Bewusst nicht angefasst:** `validateSporeMeta` (Felder bleiben
+optional, non-Array still ignoriert), Disjunktheits-Prüfung
+(Hosting-Pflicht), `verifyForeignSpore` (kanonisch über alles
+inkl. neuer Felder, ohne Sonderbehandlung), INTERFACES.md §0/§1/§2/§3/§4/§5, `tests/manual_check.html`, `status.json`,
+`index.html`. **`update_puls_pie.py` nicht aufgerufen.**
+**`PROTOCOL_VERSION` bleibt `"0.1"`.**
+
+**Was offen blieb:** Bau-Sitzung 09 Iteration 3 mit Klaus am
+Live-Andock-Versuch (jetzt vollständig vorbereitet — Spec da, Code
+da, Eruda in beiden Endknoten live).
+
+**Nächster sinnvoller Schritt:** **Bau-Sitzung 09 Iteration 3** mit
+Klaus am Live-Andock-Versuch (Mein-Mixarium zuerst, dann Mein-
+Rezeptbuch), nach diesem PR.
+
+---
+
 ### 2026-05-15 · Spec-Sitzung — Stamm/Gast-Felder in Spore-JSON
 
 **Sitzungs-Rolle:** Spec-Sitzung, headless, EINE Phase. Branch
@@ -389,6 +432,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-15 | Spec · Stamm/Gast-Felder in Spore-JSON (additiv, kein Hauptversions-Sprung) | [→ Archiv](sessions/archiv/2026-05-15_spec-stamm-gast-spore-felder.md) |
 | 2026-05-15 | Bau · Live Andock Iteration 2 — Eruda in beiden Endknoten + Architektur-Konzept Stamm/Gast | [→ Archiv](sessions/archiv/2026-05-15_live-andock-eruda-stamm-gast.md) |
 | 2026-05-15 | Pflege · Karte 09 App-SW-Koexistenz + Tablet-Sichtkontrolle (Variante 3c + Eruda-Block) | [→ Archiv](sessions/archiv/2026-05-15_pflege-karte-09-app-sw-tablet.md) |
 | 2026-05-15 | Pflege · Sichttest-Resultate (Sage-Page mehrschichtig + Panel 08 — beide grün) | [→ Archiv](sessions/archiv/2026-05-15_pflege-sichttest-resultate.md) |

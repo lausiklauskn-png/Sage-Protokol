@@ -290,6 +290,8 @@
     if (typeof meta.domainDescription === "string") unsigned.domainDescription = meta.domainDescription;
     if (Array.isArray(meta.domainKeywords)) unsigned.domainKeywords = meta.domainKeywords.slice();
     if (Array.isArray(meta.domainVector)) unsigned.domainVector = meta.domainVector.slice();
+    if (Array.isArray(meta.stammCategories)) unsigned.stammCategories = meta.stammCategories.slice();
+    if (Array.isArray(meta.guestCategories)) unsigned.guestCategories = meta.guestCategories.slice();
     if (meta.endpointPaths && typeof meta.endpointPaths === "object") {
       unsigned.endpointPaths = meta.endpointPaths;
     }
