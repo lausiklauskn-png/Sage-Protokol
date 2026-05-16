@@ -415,6 +415,137 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
+### 2026-05-16 · Pflege-Sitzung — Sage-Page Vollumbau / Redesign
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/pflege-sage-page-redesign-NelH8`. Klaus' explizite Vorgabe:
+Awwwards-/FWA-Niveau-Anspruch; „Design soll zeigen, dass jemand mit
+Ahnung dahintersteht". Reine UI-Pflege, keine Modul-Score- oder
+INTERFACES-Änderung.
+
+**Drei Pflicht-Frage-Entscheidungen (im Übergabeprotokoll ausführlich begründet):**
+
+- **Pflicht-Frage 1 (Typografie):** **Variante (b) Geist + Geist Mono
+  via Google Fonts CDN.** Premium-Tech-Look, Vercel-Hausschrift, seit
+  2025 über Google Fonts verfügbar; Awwwards-tauglich. Variante (a)
+  Inter zu „sicher", Variante (c) System-Font erfüllt den
+  Designer-Anspruch nicht.
+- **Pflicht-Frage 2 (Modul-Visualisierung):** **Variante (a) Force-
+  Graph-Topologie ersetzt alle anderen Modul-Visualisierungen.**
+  Klaus' explizite Anweisung „Doppelungen entfernen" — alte Page
+  hatte den Modulstand dreifach (Demo-Score-Ring, Module-Bento,
+  Bau-Puls mit Mini-Pie). Eine Topologie kombiniert Status UND
+  Abhängigkeiten in einer Sicht. Pie ist raus, Aggregat-Count wandert
+  in die Topologie-Legende.
+- **Pflicht-Frage 3 (Storytelling):** **Variante (a) Hub-First.**
+  Hero → Topologie → Lebenszyklus → Modul-Liste + Endknoten →
+  Lesematerial → Andock → Meta-Footer. SBKIM ist Neuland; erst
+  zeigen was es ist, dann zur Aktion einladen.
+
+**Getan:**
+
+- **`index.html` komplett neu aufgebaut** (3955 → 1690 Zeilen):
+  - **Neue Typografie:** Geist + Geist Mono via Google Fonts mit
+    `preconnect`-Optimierung.
+  - **Neue 5-Farben-Palette** als `:root`-Tokens (`--bg`, `--glass`,
+    `--accent` teal, `--accent-2` violett, `--gold`). §5-Status-Farben
+    separat, nur in Topologie und Modul-Badges.
+  - **Neuer Hero**: riesiger Display-Titel mit Gradient-Text-Wash,
+    Eyebrow-Pill mit Lebendigkeits-Punkt; einziges Motiv unter dem
+    Titel ist die Modul-Topologie.
+  - **Mycel-Topologie** als zentrale lebende Visualisierung — Force-
+    Graph mit 4 Cluster-Spalten (foundation / identity·vector /
+    network / data-exchange) + 1 Backlog-Reihe; SVG-SMIL-Atmen-
+    Animation der Status-Dots; Gold-Ring um nextup-Module; Klick
+    öffnet Modul-Detail.
+  - **Bento-Karten reduziert von 15 auf 6** (asymmetrisch 12-Spalten-
+    Grid). Entfernt: Demo-Score-Ring, separate Bau-Puls-Pie, separate
+    Eigenschutz-Karte (Backlog ist jetzt Teil der Topologie + der
+    Modul-Liste).
+  - **Lebenszyklus-Karte scroll-aware** (IntersectionObserver Threshold
+    0.35) — Auto-Loop pausiert außerhalb des Viewports, spart CPU;
+    manueller Phase-Pill-Klick überschreibt Auto-Loop für 9 s.
+  - **Lesematerial-Karte (NEU)** mit Links auf `./docs/PAPER_NUTZEN_UND_INTEGRATION.md`
+    (PR #55, funktional erst nach Merge) und `./sbkim_paper.pdf`.
+    Eingebauter Backup-Hinweis-Sub-Block (Gold-Border-Left) zu Modul
+    02 Backup-Export Stufe 2.
+  - **Sichtbarkeits-Lampen-Demo-Anker** in der Topbar: zwei Lampen
+    „lebt | verkehr" als visueller Anker für Modul 15. KLAR ALS DEMO
+    MARKIERT (im `title`-Attribut), keine echte Modul-15-Implementierung.
+  - **Andock-Generator** als letzte Karte (Storytelling-Reihenfolge),
+    optisch neu mit 3-Spalten-Input-Grid und nummerierten Output-Schritten.
+  - **5 Screens funktional erhalten:** overview, cycle (Detail-Tour
+    mit Klick-Lernpfad + 2 Schichten), module (Modul-Detail), data
+    (status.json-Schema), warum (5 Sektionen mit Live-Demo +
+    Wachstum). Navigation und JS-Logik intakt.
+  - **Live-Daten-Verträge erhalten:** `loadStatus()` fetcht `status.json`
+    unverändert; alle Renderer schreiben in dokumentierte IDs (siehe
+    `docs/sage_page_pflege.md`).
+  - **Pfad-Korrektur in `pingEndknoten`:** vorher `/.well-known/sbkim/spore.json`,
+    jetzt `/sbkim/spore.json` (konsistent mit Spec-Sitzung 09 /
+    Modul 09 Schritt 7).
+- **`docs/sage_page_pflege.md` neu angelegt** als Pflege-Konvention
+  für Folgesitzungen: ID-Vertrag-Tabelle (Vertrag-IDs vs. frei
+  umbenennbare IDs), §0-Konstanten-Spiegelungs-Tabelle, Anleitungen
+  „neues `status.json`-Feld" / „neues Modul (NN > 14)" / „Modul-15-
+  Lampen-Spec kommt", Animations-Konstanten-Tabelle, Konsistenz-
+  Regel mit Modul 02 § Spore-JSON (Live-Generator-Pflicht-Felder),
+  Dokumentation der drei Pflicht-Frage-Entscheidungen.
+
+**Material-Block — übernommene Vorbild-Patterns:** Geist-Schrift
+(Vercel) · Gradient-Text-Wash über Display-Titel (Linear) · Eyebrow-
+Pill mit Lebendigkeits-Punkt (Stripe / Resend) · Asymmetrisches Bento-
+Grid 12-Spalten (Apple Vision Pro Marketing) · Spring-Easing
+`cubic-bezier(0.34, 1.56, 0.64, 1)` (Framer-Motion-Default) · Sticky-
+Topbar mit Backdrop-Filter (Pitch / Linear) · Demo-Badge-Pill in Hero
+(Vercel-Status-Page) · Visibility-Lampen (RunwayML / Status-Page-Apps)
+· Code-Block-Syntax-Färbung (Resend / Stripe Docs) · Hover-Card-
+Animation `translateY(-2px)` (Linear-Hover-States). **Bewusst NICHT
+übernommen:** Three.js-Hero-Animationen (Single-File-PWA-Philosophie),
+Cursor-Trailing-Effekte (kein Erkenntnis-Gewinn), Marquee-Logo-Strips
+(keine Customer-Logos).
+
+**Validierung:** HTML-Parse via Python `html.parser` grün; `<script>`-
+Block via `node --check` grün; Live-Daten-Renderer-IDs gegen
+Vorgänger-Code abgeglichen. Browser-Sichttest **ausstehend** (headless
+gebaut, wartet auf Klaus am Tab S6 + DeX + Eruda).
+
+**Bewusst nicht angefasst:** `status.json` unverändert (reine UI-
+Pflege); `update_puls_pie.py` NICHT aufgerufen (CLAUDE.md-Konvention,
+kein Score-Wechsel); INTERFACES.md unangetastet; Modul-Karten 00–14
+inhaltlich unverändert; Modul 15 NICHT als echte Karte angelegt;
+`PROTOCOL_VERSION` bleibt `"0.1"`.
+
+**Was offen blieb:**
+
+- **Klaus' Sichttest der Sage-Page** im Browser steht aus.
+- **PR #55 (Paper Nutzen + Integration) mergen** — Lesematerial-
+  Karte verlinkt auf `./docs/PAPER_NUTZEN_UND_INTEGRATION.md`,
+  liefert 404 bis Merge.
+- **Modul 15 (Sichtbarkeits-Lampen) Spec-Sitzung** bleibt im
+  Querschnitt offen; gezogen nach erstem Cross-Knoten-Handshake.
+- Andere offene Punkte (Klaus' Re-Andock mit PWA-Suffix, Sichttest
+  Backup-Export Panel 02, Cross-Knoten-Handshake, Eruda-Rückbau,
+  Sushi-Kategorie, INTERFACES.md §6 Tabellen-Bug, Panel 06 Sichttest,
+  Panel 01 fünfter Knopf) unverändert offen.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Klaus' Sichttest der Sage-Page** im Browser (Tab S6 + DeX + Eruda).
+2. **PR #55 mergen**, damit Lesematerial-Karte vollständig funktional.
+3. **Spec-Sitzung Modul 15 Sichtbarkeits-Lampen** (~60 Min headless),
+   nachdem erster Cross-Knoten-Handshake live (dann ist klar, was die
+   zweite Lampe anzeigt).
+4. **`docs/sage_page_pflege.md`** ist Pflicht-Lektüre für jede
+   Folge-Sitzung, die `index.html` anfasst.
+
+**Übergabeprotokoll:**
+`docs/sessions/archiv/2026-05-16_pflege-sage-page-redesign.md` — drei
+Pflicht-Frage-Antworten ausführlich begründet, Material-Block mit
+allen übernommenen Vorbild-Patterns + bewusst Verworfenes.
+
+---
+
 ### 2026-05-16 · Bau-Sitzung — Modul 02 Backup-Export Code-Stub (Bau 02.X)
 
 **Sitzungs-Rolle:** Bau-Sitzung, headless, EINE Phase. Branch
@@ -608,6 +739,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-16 | Pflege · Sage-Page Vollumbau / Redesign (Geist-Typografie, Force-Graph-Topologie ersetzt Pie-Doppelung, Lesematerial-Karte, Sichtbarkeits-Lampen-Demo-Anker, scroll-aware Lebenszyklus, neue Pflege-Konvention `docs/sage_page_pflege.md`) | [→ Archiv](sessions/archiv/2026-05-16_pflege-sage-page-redesign.md) |
 | 2026-05-16 | Bau · Modul 02 Backup-Export Code-Stub (Bau 02.X — `exportBackup`/`importBackup` additiv in `src/modules/02_spore.js`, fünf Error-Klassen, drei Helper-Reuse-Entscheidungen, drei Panel-02-Knöpfe; Identitäts-Persistenz Stufe (2) damit gelöst) | [→ Archiv](sessions/archiv/2026-05-16_bau-02x-backup-export.md) |
 | 2026-05-16 | Spec · Modul 02 Backup-Export (Identitäts-Persistenz Stufe 2 — `exportBackup`/`importBackup` passwort-verschlüsselt, PBKDF2 600 k + AES-GCM-256, drei §0-Konstanten, fünf neue Error-Klassen; Bau-Sitzung 02.X folgt) | [→ Archiv](sessions/archiv/2026-05-16_spec-02-backup-export.md) |
 | 2026-05-16 | Pflege · Storage-Persist (Identitäts-Persistenz Stufe 1, `navigator.storage.persist()` fail-soft im Init-Pfad von Modul 01) | [→ Archiv](sessions/archiv/2026-05-16_pflege-01-storage-persist.md) |
