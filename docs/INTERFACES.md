@@ -1284,7 +1284,7 @@ Bietet:
 
 Nutzt-von:
   Endknoten-Repos Rezeptbuch + Mixarium (siehe `endknoten` in
-  `status.json`). Nicht intern im Sage-Protokoll-Repo.
+  `status.json`). Nicht intern im Sage-Protokol-Repo.
 
 Abhängigkeiten:
   Keine im Bau-DAG (Karte 09 hängt formal an gar nichts und ist auch
