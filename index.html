@@ -441,7 +441,9 @@
   .observatorium-screen { position: relative; min-height: 100vh; padding: 0; background: #02020c; color: #f2f0ff; overflow: hidden; }
   .observatorium-back { position: fixed; top: 1.2rem; left: 1.2rem; z-index: 90; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.18); color: #f2f0ff; padding: 0.55rem 1rem; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .2s, border-color .2s; }
   .observatorium-back:hover { background: rgba(0,0,0,0.85); border-color: rgba(255,255,255,0.4); }
-  .observatorium-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; cursor: crosshair; }
+  .observatorium-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; cursor: none; }
+  .observatorium-stage * { cursor: none; }
+  .universe-galaxy { cursor: none !important; }
 
   /* Hintergrund-Nebel (Hubble-Realfarben, dominant) */
   .universe-nebula { position: absolute; pointer-events: none; mix-blend-mode: screen; opacity: 0.55; filter: blur(40px); will-change: transform; }
@@ -2212,7 +2214,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   let universeInited = false;
   let universeRAF = 0;
   let universeStars = [];
-  let universeMouse = { x: -9999, y: -9999, active: false };
+  let universeMouse = { x: -9999, y: -9999, active: false, lastMoveT: 0 };
+  let universeTrail = []; // Komet-Schweif: {x, y, age, speed}
   let universeGalaxyEls = [];
 
   function setupObservatoriumUniverse() {
@@ -2272,20 +2275,31 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       });
     }
 
-    // 3. Maus-Tracking (Schweif-Glow)
-    stage.addEventListener('mousemove', e => {
+    // 3. Maus-Tracking (Schweif-Glow + Komet-Schweif)
+    function trackPointer(clientX, clientY) {
       const rect = stage.getBoundingClientRect();
-      universeMouse.x = e.clientX - rect.left;
-      universeMouse.y = e.clientY - rect.top;
+      const nx = clientX - rect.left;
+      const ny = clientY - rect.top;
+      const last = universeTrail[universeTrail.length - 1];
+      let speed = 0;
+      if (last) {
+        const dx = nx - last.x;
+        const dy = ny - last.y;
+        speed = Math.sqrt(dx * dx + dy * dy);
+      }
+      universeMouse.x = nx;
+      universeMouse.y = ny;
       universeMouse.active = true;
-    });
+      universeMouse.lastMoveT = performance.now();
+      universeTrail.push({ x: nx, y: ny, age: 0, speed: speed });
+      // Hard-Cap: max 220 Punkte (genug für sehr schnellen Schweif)
+      if (universeTrail.length > 220) universeTrail.shift();
+    }
+    stage.addEventListener('mousemove', e => trackPointer(e.clientX, e.clientY));
     stage.addEventListener('mouseleave', () => { universeMouse.active = false; });
     stage.addEventListener('touchmove', e => {
       if (!e.touches[0]) return;
-      const rect = stage.getBoundingClientRect();
-      universeMouse.x = e.touches[0].clientX - rect.left;
-      universeMouse.y = e.touches[0].clientY - rect.top;
-      universeMouse.active = true;
+      trackPointer(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
 
     // 4. Render-Loop (Galaxien-Position + Star-Glow)
@@ -2352,6 +2366,60 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         ctx.fillStyle = 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
         ctx.fill();
       }
+
+      // Komet-Schweif: alle Trail-Punkte altern lassen + zeichnen
+      const AGE_RATE = 0.022; // pro Frame; voll verfallen nach ~45 Frames (~0.75s @60fps)
+      const newTrail = [];
+      for (let i = 0; i < universeTrail.length; i++) {
+        const p = universeTrail[i];
+        p.age += AGE_RATE;
+        if (p.age < 1) newTrail.push(p);
+      }
+      universeTrail = newTrail;
+
+      // Trail-Punkte: ältere zuerst (für additive Blending-Wirkung)
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < universeTrail.length; i++) {
+        const p = universeTrail[i];
+        const fade = Math.pow(1 - p.age, 1.8);
+        // Geschwindigkeits-Boost: schnellere Bewegung = größere/hellere Spur
+        const speedBoost = Math.min(1.5, p.speed / 30);
+        const baseR = 2 + speedBoost * 3.5;
+        const r = baseR * fade;
+        if (r < 0.2) continue;
+        // Innerer Kern (warm-gold)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,230,180,' + (fade * 0.55).toFixed(3) + ')';
+        ctx.fill();
+        // Äußerer Glow (kühles Blau-Weiß)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,210,255,' + (fade * 0.18).toFixed(3) + ')';
+        ctx.fill();
+      }
+
+      // Komet-Kopf an der aktuellen Mausposition (heller, größer)
+      const timeSinceMove = now - universeMouse.lastMoveT;
+      const headIntensity = universeMouse.active ? Math.max(0.25, 1 - timeSinceMove / 600) : 0;
+      if (headIntensity > 0.01) {
+        // Heller Kern
+        ctx.beginPath();
+        ctx.arc(mx, my, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,250,230,' + (headIntensity * 0.95).toFixed(3) + ')';
+        ctx.fill();
+        // Erster Glow-Ring
+        ctx.beginPath();
+        ctx.arc(mx, my, 10, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,220,170,' + (headIntensity * 0.35).toFixed(3) + ')';
+        ctx.fill();
+        // Weiter Glow
+        ctx.beginPath();
+        ctx.arc(mx, my, 22, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,210,255,' + (headIntensity * 0.14).toFixed(3) + ')';
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
 
       universeRAF = requestAnimationFrame(frame);
     }
