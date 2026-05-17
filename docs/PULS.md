@@ -152,12 +152,16 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   BroadcastChannel-Bridge als Fallback-Pfad — Sender postet Request
   auf `BroadcastChannel('sbkim')`, Receiver lauscht. Brief-Skelett
   im Übergabeprotokoll [2026-05-17 Pflege Scope-Fix](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fix.md)
-  § 7. **Offen:** Klaus muss `sbkim-sw.js` mit Cache-Bust
-  (File-Rename + SW_VERSION-Bump) in beide Endknoten nachziehen und
-  Distinguishing-Test laufen lassen — erwartet HTTP 404 vom
-  Cross-Scope-Pfad. Details in Pflege-Protokoll § 4. Bis dahin
-  bleibt der Workaround per direktem `receiveHandshake`-Aufruf
-  gültig.
+  § 7. **Erledigt (Klaus-Sichttest 2026-05-17 nachmittags):**
+  Endknoten-Pflege mit File-Rename in beiden Repos (Mein-Rezeptbuch
+  `cbc2531` → `sbkim-sw-v2.js`, Mein-Mixarium `9b32dc7` →
+  `sbkim-sw-v24.js` + SW_VERSION-Bump); Distinguishing-Test im
+  Mein-Rezeptbuch-Tab lieferte **POST → HTTP 405** und **GET → HTTP
+  404** direkt von GitHub Pages (nginx-Antworten, kein Bridge-JSON
+  mehr). Architektur-Grenze von beiden Seiten bestätigt. Bypass per
+  direktem `receiveHandshake`-Aufruf bleibt der einzige Pfad zu
+  `outcome:"established"`, bis BroadcastChannel-Bridge spezifiziert
+  und gebaut ist.
 
 - **`domainKeywords`-Hartkodierung in Endknoten-`sbkim-init.js`**
   (eingetragen 2026-05-16). Klaus' Mein-Mixarium-`sbkim-init.js` hat
@@ -584,6 +588,45 @@ nachziehen, dabei sicheren Cache-Bust wählen (File-Rename + SW_VERSION-
 Bump in Mein-Mixarium, File-Rename in Mein-Rezeptbuch). Danach
 Distinguishing-Test — erwartet HTTP 404 vom Cross-Scope-Pfad. Details
 im Übergabeprotokoll § 4.
+
+**Klaus-Sichttest 2026-05-17 nachmittags grün** (Galaxy Tab S6, Chrome
+nach Tief-Wipe, Termux + Eruda). Verlauf wesentlich aufschlussreicher
+als erwartet — die Endknoten-Repos hatten neben dem klebrigen
+SW-Bytecode-Cache aus gestern eine zweite Falle: in **beiden**
+Endknoten lag `sbkim-sw.js` doppelt (`./sbkim-sw.js` im Repo-Root
+ALT + `./sbkim/sbkim-sw.js` im Unterverzeichnis NEU), und `app-sw.js`
+importierte nur die Root-Datei. Der gestrige `cp …/sbkim-sw.js
+~/Mein-{Mixarium,Rezeptbuch}/sbkim/sbkim-sw.js` hatte also nur die
+NICHT-geladene Kopie aktualisiert. Korrektur in dieser Sitzung:
+- **Mein-Rezeptbuch** (`cbc2531`): Root-`sbkim-sw.js` als
+  `sbkim-sw-v2.js` neu angelegt, alte Root-Datei `git rm`, `app-sw.js`
+  importScripts auf neue Datei nachgezogen.
+- **Mein-Mixarium** (`9b32dc7`): analog mit `sbkim-sw-v24.js`,
+  SW_VERSION-Bump v23 → v24 im `app-sw.js`.
+
+Distinguishing-Test im Mein-Rezeptbuch-Tab nach komplettem App-Kill +
+Neustart:
+- `POST /Mein-Mixarium/sbkim/anastomosis` → **HTTP 405 Method Not
+  Allowed** (nginx-HTML, kein Bridge-JSON) ✓
+- `GET  /Mein-Mixarium/sbkim/anastomosis` → **HTTP 404 Not Found** ✓
+
+Beide Antworten kommen direkt von GitHub Pages — der Sender-SW
+(Mein-Rezeptbuchs `sbkim-sw-v2.js`) lässt Cross-Scope-Pfade sauber
+durchfallen. Die Architektur-Grenze ist damit von zwei Seiten
+bestätigt: same-origin Cross-PWA via SW-Bridge dauerhaft unmöglich,
+sauber per Network-Standard-Antwort sichtbar.
+
+**Bekannte Folgen, nicht in dieser Sitzung gelöst:**
+- `navigator.storage.persist()` liefert `false`, weil die PWA aktuell
+  nicht als App installiert ist (Klaus hat sie heute Vormittag
+  deinstalliert). Künftige Identitäten sind eviction-anfällig, bis
+  Klaus die PWA via Chrome-Menü „Zum Startbildschirm hinzufügen"
+  reinstalliert. Kein Code-Eingriff nötig.
+- Same-origin Cross-PWA Handshake bleibt konzeptuell unmöglich via
+  HTTP/SW-Bridge. Nächster Bau-Schritt ist die **Spec-Sitzung Modul 05
+  BroadcastChannel-Bridge** (Brief-Skelett im Übergabeprotokoll § 7);
+  erst danach kann der erste echte `outcome:"established"`-Handshake
+  ohne localStorage-Bypass laufen.
 
 **Übergabeprotokoll:** [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fix.md)
 
