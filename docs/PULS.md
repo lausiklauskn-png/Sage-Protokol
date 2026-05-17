@@ -114,15 +114,36 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 
 | App | URL | Domäne | SBKIM-Stand |
 |---|---|---|---|
-| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16** (Live-Andock-Sitzung Cross-Knoten-Handshake) · `nodeId: RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI` (eigener Ed25519-Schlüssel in eigener IndexedDB `sbkim_rezeptbuch`) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` mit `stammCategories[7]` + `guestCategories[11]` + `domainVector[384]` · App-SW Variante 3b · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus `sbkim-init.js`-Init-Zeilen grün. **Origin-Kollision aufgelöst** durch `SbkimStorage.init({dbSuffix:"rezeptbuch"})` (Modul-01-Pflege PWA-Suffix). **Cross-Knoten-Handshake mit Mein-Mixarium 2026-05-16 etabliert** (`outcome:"established"`), Match-Score über `PROVIDER_MIN_MATCH=0.8`, bewiesen via direktem `SbkimAnastomose.receiveHandshake`-Aufruf (SW-Bridge-Phantom-Cache-Bug umgangen — siehe § Offene Querschnitts-Fragen). `pingStatus: "live-direct"`. |
-| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16** (Live-Andock-Sitzung Cross-Knoten-Handshake) · `nodeId: 7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4` (eigener Ed25519-Schlüssel in eigener IndexedDB `sbkim_mixarium`) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json mit allen Pflicht- und optionalen Feldern inkl. `stammCategories[8]` + `guestCategories[2]` + `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus `sbkim-init.js`-Init-Zeilen grün. **Origin-Kollision aufgelöst** durch `SbkimStorage.init({dbSuffix:"mixarium"})`. **Match-Score Cocktails ↔ Kochrezepte über `PROVIDER_MIN_MATCH=0.8`** — Embedding-Vektor robust gegen Domain-Unterschiede, beide Knoten als „semantisch passend" akzeptiert; Klaus' Hypothese „Cocktails und Kochrezepte vielleicht zu unterschiedlich" hat sich nicht bestätigt. `pingStatus: "live-direct"`. |
+| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
+| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
 ## Offene Querschnitts-Fragen
 
+- **DeX-Chrome vs. Tablet-Chrome — zwei getrennte Browser-Instanzen**
+  (eingetragen 2026-05-17, Mini-Pflege „Live-Channel-Handshake"). Auf
+  Klaus' Galaxy Tab S6 mit Samsung DeX laufen Chrome am externen
+  Monitor und Chrome am Tablet-Display als **faktisch zwei getrennte
+  Browser-Instanzen** — eigene IndexedDB, eigene Service-Worker, eigene
+  PWA-Liste. Eine in DeX angedockte Spore-Identität ist im Tablet-Modus
+  nicht da; eine im Tablet installierte PWA bleibt nach DeX-
+  Deinstallation weiter da. **Konsequenz für BroadcastChannel:** Channel-
+  Bridge funktioniert nur, wenn beide Tabs in **derselben** Instanz
+  laufen. Klaus' Endknoten-IndexedDB war am 2026-05-17 verloren
+  (Ursache nicht abschließend geklärt — vermutlich Chrome-Update,
+  versehentliches „Site-Daten löschen", oder Storage-Quota), beide
+  Endknoten wurden in DeX-Chrome neu angedockt mit neuen nodeIds
+  (`BSWxXm…` Rezeptbuch + `JOlHK3…` Mixarium). **Generalisierung:**
+  dasselbe Phänomen tritt auf bei Chrome-Profil-Wechsel, Inkognito-
+  Modus, Standalone-PWA vs. Tab-Modus. Tech-Note für Andocker /
+  Programmierer in [`docs/OBSERVATORIUM_BROWSER.md`](OBSERVATORIUM_BROWSER.md)
+  § Lehre 1. **Status:** dokumentiert, kein Code-Eingriff nötig —
+  Workaround ist Single-Instance-Disziplin oder Backup-Import.
+
 - **SW-Bridge-Phantom-Cache-Bug in Modul 05** (eingetragen 2026-05-16,
-  Live-Andock-Sitzung Cross-Knoten-Handshake; **in zwei Pflegen am
-  2026-05-17 aufgelöst — Status: Architektur-Grenze sauber benannt,
-  Code-Eingriffe abgeschlossen, Klaus-Endknoten-Pflege offen**). Beim
+  Live-Andock-Sitzung Cross-Knoten-Handshake; **2026-05-17 vollständig
+  aufgelöst — Status: Architektur-Grenze sauber benannt, Code-Eingriffe
+  abgeschlossen, Endknoten-Pflege erledigt, Live-Cross-Knoten-Handshake
+  via BroadcastChannel-Pfad bewiesen**). Beim
   Cross-Knoten-Handshake via `SbkimAnastomose.handshake(peerSpore,
   ownVec)` schickt Modul 05 einen POST an `peer.endpoint +
   "/sbkim/anastomosis"`. Der Phantom-Effekt — `outcome:"rejected",
@@ -158,10 +179,19 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
   `sbkim-sw-v24.js` + SW_VERSION-Bump); Distinguishing-Test im
   Mein-Rezeptbuch-Tab lieferte **POST → HTTP 405** und **GET → HTTP
   404** direkt von GitHub Pages (nginx-Antworten, kein Bridge-JSON
-  mehr). Architektur-Grenze von beiden Seiten bestätigt. Bypass per
-  direktem `receiveHandshake`-Aufruf bleibt der einzige Pfad zu
-  `outcome:"established"`, bis BroadcastChannel-Bridge spezifiziert
-  und gebaut ist.
+  mehr). Architektur-Grenze von beiden Seiten bestätigt.
+  **Vollständig erledigt 2026-05-17 abends (Mini-Pflege „Live-Channel-
+  Handshake"):** Klaus hat in DeX-Chrome beide Endknoten neu angedockt
+  und neue spore.json gepusht (Mein-Rezeptbuch `3bcc453` nodeId
+  `BSWxXm…`, Mein-Mixarium `e9d0a45` nodeId `JOlHK3…`). Erster regulärer
+  `SbkimAnastomose.handshake(peerSpore, ownVec)`-Aufruf zwischen den
+  beiden Endknoten via Eruda — **`outcome:"established"`, score 0.9544
+  in beide Richtungen, `sbkim_siblings` bidirektional gefüllt, kein
+  localStorage-Bypass mehr nötig.** HTTP-Pfad scheitert weiterhin mit
+  405/404 von Pages, Auto-Fallback in `handshake()` greift,
+  Channel-Bridge routet zwischen den beiden DeX-Chrome-Tabs derselben
+  Origin. Pflege-Kette PR #65 → #70 → #71 → #72 → #73 → #74 → #75 →
+  #76 → diese Mini-Pflege vollständig geschlossen.
 
 - **`domainKeywords`-Hartkodierung in Endknoten-`sbkim-init.js`**
   (eingetragen 2026-05-16). Klaus' Mein-Mixarium-`sbkim-init.js` hat
@@ -521,6 +551,140 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-17 · Mini-Pflege — Live-Channel-Handshake + Browser-Observatorium
+
+**Sitzungs-Rolle:** Mini-Pflege (Folge zur Bau-Sitzung
+BroadcastChannel-Bridge, PR #75 `b8c8f41`, und Mini-Pflege Bau-
+Sichttest, PR #76 `8801896`). Branch
+`claude/pflege-live-channel-handshake-observatorium`. Klaus hat
+**den ersten regulären Cross-Knoten-Handshake im SBKIM-Netz ohne
+localStorage-Bypass** über Eruda gefahren — das Ziel der gesamten
+Sitzungskette PR #65 → #70 → #71 → #72 → #73 → #74 → #75 → #76 ist
+erreicht.
+
+**Ablauf (Klaus, Galaxy Tab S6 + Samsung DeX, Termux 0.118):**
+
+1. **Endknoten-Pflege:** `src/modules/05_anastomose.js` aus
+   Sage-Protokol-main (Commit `8801896`, mit BroadcastChannel-Bridge
+   aus PR #75) in beide Endknoten kopiert als `sbkim/05_anastomose-v2.js`
+   (File-Rename als Cache-Bust, Konvention aus PR #73). `<script>`-
+   Referenz in `index.html` via `sed` umgestellt. Commits:
+   Mein-Rezeptbuch `a1b9ded`, Mein-Mixarium `9d2f127`.
+2. **Sichttest Stufe 1 (Bau-Tests im Browser):** Klaus hatte vorher
+   `tests/manual_check.html` aus dem Sage-Protokol-Clone über lokalen
+   `python3 -m http.server 8000` (Termux) im Tablet-Chrome aufgerufen
+   und Panel 05 Knöpfe 9 / 9a / 9b / 9c durchgeklickt — vier von vier
+   grün (siehe Mini-Pflege „Bau-Sichttest BroadcastChannel-Bridge grün"
+   in PR #76).
+3. **IndexedDB-Verlust-Befund:** beim Live-Test in DeX-Chrome zeigten
+   beide Endknoten-Tabs „SBKIM-Andock bereit. Spore erzeugen mit
+   `__sbkimErzeugeSpore()`" — die alten 2026-05-16-Identitäten waren
+   weg. Ursache nicht abschließend geklärt: vermutlich Chrome-Update
+   / Site-Daten-Löschung / Storage-Quota / PWA-Re-Install zwischen
+   2026-05-16 und 2026-05-17.
+4. **Re-Andock in DeX-Chrome:** in beiden Tabs `__sbkimErzeugeSpore()`
+   ausgeführt, Embedding-Modell (~30 MB) erstmals vom CDN gezogen,
+   Spore-JSON via Blob-Download nach `~/storage/downloads/`,
+   `cp`-Befehl in Termux nach `~/Mein-{Rezeptbuch,Mixarium}/sbkim/
+   spore.json`, Commit + Push. Neue nodeIds: Mein-Rezeptbuch
+   `BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY` (Commit `3bcc453`),
+   Mein-Mixarium `JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`
+   (Commit `e9d0a45`). Pages-Deploy abgewartet + via
+   `curl ...?$(date +%s)` verifiziert (beide neue IDs live).
+5. **Live-Handshake-Test:** in Mein-Rezeptbuch-Tab (DeX-Chrome,
+   Multi-Window mit Mein-Mixarium nebeneinander) regulärer
+   `SbkimAnastomose.handshake(peerSpore, ownVec)`-Aufruf via Eruda
+   (kein expliziter `transport`-Override → Default `"auto"`).
+   HTTP-POST gegen `Mein-Mixarium/sbkim/anastomosis` scheitert mit
+   405 (Pages), Auto-Fallback greift, Channel-Pfad routet via
+   `BroadcastChannel('sbkim')` zum Mein-Mixarium-Tab, Receiver
+   filtert + ruft `receiveHandshake`, signiert Response kanonisch.
+   **Resultat:**
+   ```json
+   {
+     "outcome": "established",
+     "peerNodeId": "JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY",
+     "peerDomain": "lausiklauskn-png.github.io",
+     "score": 0.9544261159927087
+   }
+   ```
+6. **Gegenrichtung verifiziert:** im Mein-Mixarium-Tab denselben
+   `handshake()` mit Rezeptbuch als Peer → `outcome:"established"`,
+   `peerNodeId: BSWxXmXvxF8FUR_…`, identischer Score 0.9544
+   (cosine ist symmetrisch, gleicher domainVector-Vergleich).
+7. **Sibling-Persistenz:** `SbkimAnastomose.listSiblings()` in
+   Mein-Rezeptbuch zeigt Mein-Mixarium als Geschwister-Eintrag in
+   IndexedDB — Bidirektionalität bewiesen.
+
+**Score-Beobachtung 0.9544:** Kochrezepte- und Cocktail-Domain liegen
+semantisch sehr eng — weit über `PROVIDER_MIN_MATCH = 0.80`. Klaus'
+Hypothese „Cocktails und Kochrezepte vielleicht zu unterschiedlich"
+(aus 2026-05-16) ist nun zum zweiten Mal widerlegt.
+
+**Browser-Observatorium-Lehren (Tech-Note für Andocker/Programmierer):**
+
+Klaus' Auftrag „Vermerk im Observatorium über die Abgründe und Tiefen
+eines Browsers" wurde umgesetzt:
+
+- **Neue Doku-Datei** [`docs/OBSERVATORIUM_BROWSER.md`](OBSERVATORIUM_BROWSER.md)
+  mit sieben Lehren aus dem 2026-05-17-Live-Betrieb: Browser-Instanzen-
+  Trennung (DeX vs. Tablet), IndexedDB-Persistenz-Risiken,
+  BroadcastChannel-Bedingungen, Service-Worker-Cache-Strategien,
+  Eruda ≠ Chrome-DevTools, Termux + Android-Storage als Brücke, DeX
+  als Test-Plattform. Pro Lehre Beobachtung + Phänomenologie +
+  Konsequenz für SBKIM + Workarounds + Vorteile. Lebende Sammlung,
+  Pflege-Konvention dokumentiert.
+- **Sage-Page (`index.html`) neue Karte „Browser-Observatorium ·
+  Anziehung ins Detail"** am Ende des Overview-Screens — ein
+  simuliertes schwarzes Loch mit rotierendem Akkretionsscheiben-
+  Gradient, schwarzem Ereignishorizont und einem verschwommenen
+  Chrome-Icon, das durch CSS-Keyframes in Endlos-Schleife in den
+  Kern gezogen wird. Hover beschleunigt die Animation und zieht
+  die Szene leicht zum Cursor (subtile Sog-Geste via
+  `requestAnimationFrame`, keine echte Cursor-Manipulation — die
+  unterbindet der Browser aus Sicherheitsgründen). Klick öffnet die
+  neue Doku-md auf GitHub. Tagline „Browser sind wie schwarze
+  Löcher, neugierig?" (Klaus' Wortlaut). `prefers-reduced-motion`
+  respektiert (keine Animation bei aktivierter Einstellung).
+
+**`pingStatus`-Update:** Endknoten-Tabelle in PULS § Endknoten —
+Mein-Rezeptbuch und Mein-Mixarium von `"live-direct"` (manueller
+Bypass) auf `"live-channel"` (regulärer Handshake via Channel-Pfad).
+Alte 2026-05-16-nodeIds (`RHhposP0…` / `7xf0tt33_…`) als
+Historie-Vermerk in der Tabelle erwähnt; aktive nodeIds sind
+`BSWxXm…` / `JOlHK3…`.
+
+**Karte 05 § Bauzustand:** neue Zeile „In Endknoten eingebaut |
+2026-05-17 | Klaus + Mini-Pflege Live-Channel-Handshake" mit Score-
+Beleg und Verweis auf diesen Sitzungs-Eintrag.
+
+**§ Offene Querschnitts-Fragen aktualisiert:**
+
+- SW-Bridge-Phantom-Cache-Bug-Eintrag von „Architektur-Grenze sauber
+  benannt, Klaus-Endknoten-Pflege offen" auf **vollständig erledigt**
+  umgestellt — Pflege-Kette von PR #65 bis zu dieser Mini-Pflege
+  zugeklappt.
+- Neuer Eintrag **„DeX-Chrome vs. Tablet-Chrome — zwei getrennte
+  Browser-Instanzen"** als Nebenbei-Befund mit Verweis auf das
+  Observatorium § Lehre 1. Kein Code-Eingriff nötig — Workaround
+  ist Single-Instance-Disziplin oder Backup-Import via Modul 02.
+
+**Validierung headless:**
+
+- Sage-Page `index.html` JS-Block per `node --check` validiert — grün.
+- Markdown-Doku `OBSERVATORIUM_BROWSER.md` formal sauber (Header,
+  sieben Lehren, Querverweise, Pflege-Konvention).
+- PULS unter 3000-Zeilen-Schutz (aktuell ~2100).
+- **Browser-Sichttest der Schwarz-Loch-Karte ausstehend** — Klaus
+  prüft die Animation visuell beim nächsten Sage-Page-Aufruf. Falls
+  Performance-/Layout-Probleme auf Mobile-Chrome auftreten, eigene
+  Mini-Folge-Pflege.
+
+**`status.json` nicht geändert** — keine Score-Bewegung
+(Live-Test-Bestätigung). `update_puls_pie.py` nicht aufgerufen.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_live-channel-handshake.md](sessions/archiv/2026-05-17_live-channel-handshake.md).
 
 ### 2026-05-17 · Mini-Pflege — Bau-Sichttest BroadcastChannel-Bridge grün
 
