@@ -343,6 +343,72 @@ Window-System. Für SBKIM-Bau-Sichttests besser als Mobile-Touch-Modus.
 
 ---
 
+## Lehre 8 — DeX-Cursor-Overlay ist nicht überschreibbar
+
+**Beobachtung 2026-05-17 (Klaus, beim Universum-Bau-Sichttest auf
+Galaxy Tab S6 + Samsung DeX):** Beim Bau des
+Browser-Observatorium-Universums sollte der System-Mauszeiger über der
+Sage-Page-Universum-Fläche verschwinden, damit der selbst gezeichnete
+Komet-Schweif die einzige visuelle Geste der Maus ist. Versucht wurden
+**alle bekannten Web-Workarounds:**
+
+| Versuch | Ergebnis in DeX-Chrome |
+|---|---|
+| `cursor: none` | Ignoriert — System-Pfeil bleibt. |
+| `cursor: crosshair` | Ignoriert; nur die `pointer`-Hand-Logik für `<button>` wird unterdrückt. |
+| `cursor: url('1x1.svg') 0 0, none` (Custom-SVG-Cursor) | Ignoriert. |
+| `cursor: url('1x1.png') 0 0, none` (Custom-PNG-Cursor, base64) | Ignoriert. |
+| `cursor: url('32x32-transparent.png') 16 16, none` | Ignoriert. |
+| `cursor: pointer` (für klickbare Elemente) | **Wird respektiert** — Hand-Cursor wird gezeigt. |
+
+### Befund
+
+DeX-Android zeichnet einen **System-Cursor-Overlay** über jeden
+Web-Inhalt. Im Gegensatz zu Desktop-Chrome, das CSS-`cursor`-Werte
+strikt respektiert, scheint DeX-Chrome nur **semantisch sinnvolle
+Interaktions-Cursors** zu akzeptieren (`pointer` für klickbare
+Elemente). Alle anderen Werte werden vom darüberliegenden System-
+Pointer überschrieben.
+
+### Konsequenzen
+
+- **Custom-Cursor-Designs (Komet-Schweif, Sternen-Cursor, etc.)**
+  funktionieren auf Desktop-Browsern, aber nicht auf DeX-Chrome /
+  manchen Android-Browsern. Sie müssen **zusätzlich** zum System-Cursor
+  gezeichnet werden — die System-Maus bleibt sichtbar, die eigene
+  visuelle Geste liegt oben drauf.
+- **Cursor-Verstecken via `pointer-events: none`** ist keine Lösung,
+  weil es zugleich Klicks deaktiviert.
+- **Pointer Lock API** wäre die einzige technische Möglichkeit, den
+  System-Cursor wirklich zu verstecken — aber sie fängt die Maus
+  regelrecht ein (Esc-Taste zum Lösen, intrusive Permission-Modal),
+  und ist UX-mäßig ungeeignet für eine simple Web-Navigation.
+
+### Workarounds (pragmatisch)
+
+- **Komet-Schweif via Canvas** (siehe `setupObservatoriumUniverse()`
+  in `index.html`): zeichnet eine eigene visuelle Spur, die der Maus
+  folgt. Die schönere Geste liegt zusätzlich zur System-Maus.
+- **Akzeptieren:** auf DeX bleibt der System-Pointer sichtbar. Auf
+  Desktop ist er unsichtbar (`cursor: none` wird respektiert). Beide
+  Welten leben mit der jeweiligen Begrenzung.
+- **Lehre 8 ist im Universum eine taumelnde Disk-Galaxie** —
+  zyklisches rotieren um die eigene Achse, dabei wird sie flacher und
+  runder wie eine Frisbee in Sicht-Drehung. Visuelle Erinnerung daran,
+  dass nicht alles, was man festhalten will, sich festhalten lässt.
+
+### Vorteile
+
+- **Die eigene Geste gewinnt trotzdem.** Der Komet-Schweif ist
+  schöner als jeder System-Cursor. Klaus' visueller Eindruck im
+  Sichttest: „Komet und Schweif ist sehr gut" — auch mit darüberliegender
+  System-Maus.
+- **Konsistenz-Befund über mehrere Browser-Plattformen** macht die
+  Architektur ehrlicher: man entwirft visuelle Geste nicht als Ersatz
+  des System-Cursors, sondern als **Addition** zu ihm.
+
+---
+
 ## Pflege-Konvention für diese Datei
 
 Neue Lehren bekommen einen eigenen `## Lehre N — Titel`-Block. Pflicht-

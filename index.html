@@ -485,6 +485,16 @@
   .galaxy-quasar .galaxy-body { background: radial-gradient(circle at center, rgba(255,255,255,1) 0%, rgba(200,240,255,0.85) 8%, rgba(110,231,211,0.6) 22%, rgba(80,80,255,0.45) 45%, transparent 75%); filter: blur(1px); }
   .galaxy-quasar .galaxy-body::before { content: ""; position: absolute; left: 50%; top: 50%; width: 230%; height: 4%; background: linear-gradient(90deg, transparent 0%, rgba(200,240,255,0.85) 30%, rgba(200,240,255,0.85) 70%, transparent 100%); transform: translate(-50%, -50%) rotate(0deg); filter: blur(2px); }
   .galaxy-quasar .galaxy-body::after { content: ""; position: absolute; left: 50%; top: 50%; width: 230%; height: 4%; background: linear-gradient(90deg, transparent 0%, rgba(200,240,255,0.85) 30%, rgba(200,240,255,0.85) 70%, transparent 100%); transform: translate(-50%, -50%) rotate(90deg); filter: blur(2px); }
+  /* Disk-Galaxy mit Präzession (Lehre 8): rotiert um Eigenachse UND
+     kippt periodisch — wirkt zyklisch flacher/ovaler wie eine Frisbee. */
+  .galaxy-edgeon .galaxy-body { background: radial-gradient(ellipse 80% 60% at center, rgba(200,240,255,0.95) 0%, rgba(110,200,231,0.75) 25%, rgba(80,140,220,0.4) 55%, transparent 80%); filter: blur(1.4px) saturate(1.15); animation: galaxy-precess 15s ease-in-out infinite !important; }
+  @keyframes galaxy-precess {
+    0%   { transform: perspective(220px) rotateX(8deg)  rotate(0deg); }
+    25%  { transform: perspective(220px) rotateX(74deg) rotate(90deg); }
+    50%  { transform: perspective(220px) rotateX(8deg)  rotate(180deg); }
+    75%  { transform: perspective(220px) rotateX(74deg) rotate(270deg); }
+    100% { transform: perspective(220px) rotateX(8deg)  rotate(360deg); }
+  }
 
   /* Größen-Klassen */
   .universe-galaxy.small  { width: 90px;  height: 90px; }
@@ -2143,7 +2153,9 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     { n: 6, name: 'Termux-Brücke', shape: 'galaxy-lenticular', size: 'small',
       kurz: 'Termux ist vollwertiges Linux-Userland auf Android. Mit `termux-setup-storage` werden Symlinks zu `/storage/emulated/0/Download/` und Co. angelegt — Eruda-Downloads sind dann direkt in der Shell verfügbar.|**Folge:** kompletter Single-Device-Multi-PWA-Andock-Workflow am Tablet ohne PC, Browser + Termux als Brücke.' },
     { n: 7, name: 'DeX als Plattform', shape: 'galaxy-quasar', size: 'large',
-      kurz: 'DeX-Desktop-Chrome ist eine **separate Browser-Instanz**, aber zugleich eine ernsthafte Test-Plattform: weniger aggressive Hintergrund-Tab-Suspendierung als Mobile-Chrome, Multi-Window-Modus erlaubt parallele PWA-Tabs gleichzeitig sichtbar.|**Konsequenz:** Channel-Bridge-Setup ohne Mobile-Suspend-Risiko, Maus + Tastatur für Eruda-Komfort, Desktop-Hard-Reload via `Strg+Shift+R`.' }
+      kurz: 'DeX-Desktop-Chrome ist eine **separate Browser-Instanz**, aber zugleich eine ernsthafte Test-Plattform: weniger aggressive Hintergrund-Tab-Suspendierung als Mobile-Chrome, Multi-Window-Modus erlaubt parallele PWA-Tabs gleichzeitig sichtbar.|**Konsequenz:** Channel-Bridge-Setup ohne Mobile-Suspend-Risiko, Maus + Tastatur für Eruda-Komfort, Desktop-Hard-Reload via `Strg+Shift+R`.' },
+    { n: 8, name: 'DeX-Cursor-Overlay', shape: 'galaxy-edgeon', size: 'medium',
+      kurz: 'DeX-Android zeichnet einen **System-Cursor-Overlay** über jeden Web-Inhalt, der durch keine CSS-`cursor`-Property überschrieben werden kann. Versucht wurden `none`, `crosshair`, 1×1- und 32×32-transparente PNG/SVG-Custom-Cursors — alle ignoriert. Nur `cursor: pointer` (Browser-Default für klickbare Buttons) wird respektiert.|**Workaround:** keine technische Lösung; eigene Cursor-Effekte (Komet-Schweif via Canvas) müssen **zusätzlich** zum System-Cursor gezeichnet werden. Die Maus bleibt sichtbar, aber das Universum bekommt eine schönere visuelle Geste oben drauf — diese Galaxie taumelt zur Erinnerung, dass nicht alles, was man festhalten will, sich festhalten lässt.' }
   ];
 
   // Logarithmische Spiralgalaxie als SVG generieren — drei Arme, einstellbare

@@ -704,6 +704,49 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-17 · Mini-Pflege — Observatorium-Lehre 8 + 8. Galaxie
+
+**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
+`claude/pflege-observatorium-lehre-8`. Folge zur Bau-Sitzung
+Browser-Observatorium-Universum (PR #79 `d9ac013`).
+
+Klaus' Befund beim Universum-Sichttest auf Galaxy Tab S6 + Samsung
+DeX: **DeX-Android zeichnet einen System-Cursor-Overlay**, der durch
+keine CSS-`cursor`-Property überschreiben werden kann. Wir haben sieben
+Cursor-Workaround-Varianten durchprobiert (`none`, `crosshair`, SVG-
+Custom-Cursor, PNG-Custom-Cursor 1×1 und 32×32, …) — alle ignoriert. Nur
+`cursor: pointer` für klickbare `<button>`-Elemente wird respektiert.
+
+**Was eingetragen:**
+
+- **`docs/OBSERVATORIUM_BROWSER.md`** um **Lehre 8 „DeX-Cursor-Overlay
+  ist nicht überschreibbar"** erweitert (Beobachtung, Tabelle der sieben
+  versuchten Workarounds, Konsequenzen, pragmatische Workarounds,
+  Vorteile-Vermerk). Folgt der Pflege-Konvention dieser Datei (lebende
+  Sammlung, neue Lehren bekommen eigenen Block).
+- **`index.html`** um **achte Galaxie** im Universum erweitert:
+  Shape `galaxy-edgeon`, eine taumelnde Disk-Galaxie. CSS-Keyframe
+  `@keyframes galaxy-precess` rotiert sie um die eigene Achse (15s
+  ease-in-out) und kippt sie zyklisch zwischen 8° und 74°
+  `rotateX` — sie wirkt zyklisch flacher und runder wie eine Frisbee
+  in Sicht-Drehung. Klaus' visuelle Erinnerung daran, dass nicht
+  alles, was man festhalten will, sich festhalten lässt.
+- Modal-Kurzfassung zur Galaxie 8 enthält die Workaround-Tabelle als
+  knappe Variante + den philosophisch-poetischen Schlusssatz.
+
+**Was NICHT angefasst:**
+
+- Modul-Code, INTERFACES.md, status.json.
+- Andere Galaxien des Universums (Phase 1 aus PR #79 final).
+- IndexedDB-Persist-Schutz (`navigator.storage.persist()` in
+  `SbkimStorage.init()`) — bleibt offene Folge-Mini-Pflege „Storage-
+  Persist-Schutz", weil das ein Modul-01-Eingriff ist und nicht zum
+  Observatorium-Bau gehört.
+
+**`status.json`** unverändert. PULS unter 3000-Zeilen-Schutz.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-observatorium-lehre-8.md](sessions/archiv/2026-05-17_mini-pflege-observatorium-lehre-8.md).
+
 ### 2026-05-17 · Mini-Pflege — Vision-Anker (V1 / V3 / Universum)
 
 **Sitzungs-Rolle:** Mini-Pflege, headless. Branch
