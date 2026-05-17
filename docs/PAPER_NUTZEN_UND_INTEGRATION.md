@@ -1,4 +1,4 @@
-# Sage-Protokoll / SBKIM: Nutzen, Automatisierung und Integration
+# Sage-Protokol / SBKIM: Nutzen, Automatisierung und Integration
 
 > **Status:** Begleit-Dokument zum technischen Paper (`sbkim_paper.pdf`).
 >
@@ -6,7 +6,7 @@
 > kleiner Automatisierungs-Werkzeuge, an Datensouveränität interessierte
 > Nutzer, Vereine und kleine Unternehmen ohne eigene IT-Abteilung.
 >
-> **Autor:** Klaus (Sage-Protokoll-Betreiber, Mai 2026), mit Bau-Hilfe
+> **Autor:** Klaus (Sage-Protokol-Betreiber, Mai 2026), mit Bau-Hilfe
 > der Claude-Sitzungen.
 >
 > **Sprache:** Deutsch.
@@ -16,7 +16,7 @@
 ## Zusammenfassung (Abstract)
 
 Das **SBKIM-Protokoll** (Semantisch-Empfangendes Bidirektionales
-KI-Matching) und seine Referenz-Implementierung **Sage-Protokoll**
+KI-Matching) und seine Referenz-Implementierung **Sage-Protokol**
 beschreiben einen dezentralen Ansatz, mit dem kleine Web-Anwendungen
 (typischerweise PWAs) einander **semantisch finden, signiert
 verbinden und kontrolliert Daten austauschen** können — ohne
@@ -71,7 +71,7 @@ Es fehlt eine vierte Option: **mehrere kleine Apps reden direkt
 miteinander, semantisch, ohne dass jemand das Verbindungs-Schaltbild
 vorher gezeichnet hat.**
 
-Sage-Protokoll schlägt für diese vierte Option ein konkretes,
+Sage-Protokol schlägt für diese vierte Option ein konkretes,
 minimales Format vor: die **Spore** als selbstbeschreibender,
 signierter Steckbrief, **Anastomose** als signierter Handshake nach
 semantischem Match, **Heterokaryose** als kontrollierter Anker-
@@ -157,7 +157,7 @@ Es fehlt ein Protokoll, das **alle drei Ebenen** kombiniert:
 - **leichtgewichtige Discovery** (wie mDNS / `.well-known`-Pfade),
 
 und das gleichzeitig **klein genug** ist, um in eine Single-File-PWA
-zu passen. Sage-Protokoll schließt diese Lücke.
+zu passen. Sage-Protokol schließt diese Lücke.
 
 ---
 
@@ -403,7 +403,7 @@ Es ist wichtig, ehrlich zu sagen, was SBKIM **nicht** automatisiert:
 
 ### 7.1 Das Protokoll selbst bleibt frei
 
-SBKIM und Sage-Protokoll sind als offen-spezifiziertes Protokoll
+SBKIM und Sage-Protokol sind als offen-spezifiziertes Protokoll
 gedacht. Jeder kann eine eigene Implementierung bauen, jeder kann
 eigene Knoten betreiben, niemand muss eine Lizenz bezahlen.
 
@@ -522,7 +522,7 @@ gleichzeitige eingehende Pulls bearbeiten soll? Spec-Sitzung 05 sagt
 „Single-PWA, Single-Thread". Für 10 Geschwister reicht das; für
 1 000 wahrscheinlich nicht. **Antwort vermutlich:** Bei dieser
 Größenordnung ist eine Cloud-Variante (eigener Server) sinnvoller —
-und das Protokoll selbst hindert nicht daran. Sage-Protokoll-PWA ist
+und das Protokoll selbst hindert nicht daran. Sage-Protokol-PWA ist
 ein Einstieg, kein Endzustand.
 
 ### 8.2 Bootstrap-Problem
@@ -569,7 +569,7 @@ ersten zwei Jahre sind Lehr- und Werkzeug-Phase, nicht Umsatz-Phase.
 
 ## 9. Schlussfolgerung
 
-Sage-Protokoll und SBKIM sind **kein revolutionärer Bruch** mit dem
+Sage-Protokol und SBKIM sind **kein revolutionärer Bruch** mit dem
 heutigen Web. Sie sind eine **bewusst minimale Synthese** bekannter
 Bausteine (Ed25519, JSON, Embedding-Vektoren, Service-Worker,
 `.well-known`-Pfade) zu einem zusammenhängenden Protokoll, das
@@ -586,7 +586,7 @@ Der Nutzen liegt nicht in technischer Neuheit, sondern in
   verschlossen wird.
 
 Klaus, Mai 2026: zwei Endknoten (Rezeptbuch, Mixarium), drei
-Nutzer. Sage-Protokoll als Spezifikations- und Bau-Hub, beide
+Nutzer. Sage-Protokol als Spezifikations- und Bau-Hub, beide
 Endknoten live mit SBKIM integriert. Die nächsten zwei Jahre
 entscheiden, ob das Mycel wächst — und ob die Geschäftsmodelle aus
 § 7 tragen.
@@ -639,10 +639,10 @@ Das ist ein leiser Anfang. Genau so soll es sein.
 
 ---
 
-**Lizenz:** Dieses Dokument folgt der Lizenz des Sage-Protokoll-Repos
+**Lizenz:** Dieses Dokument folgt der Lizenz des Sage-Protokol-Repos
 (siehe `LICENSE`-Datei). Verbreitung und Anpassung sind ausdrücklich
 erwünscht — das Protokoll lebt vom Mit-Aufbau.
 
-**Kontakt:** Klaus, Sage-Protokoll-Betreiber. Erreichbar über die
+**Kontakt:** Klaus, Sage-Protokol-Betreiber. Erreichbar über die
 Endknoten Mein-Rezeptbuch und Mein-Mixarium (siehe Tabelle
 „Endknoten" in `docs/PULS.md`).

@@ -284,7 +284,7 @@ Bauzustand-Zeilen, die Klaus dann nachträgt).
   Spekulation.
 - **Test-Datei nicht geändert.** Tests/manual_check.html bleibt
   unangetastet — Karte 09 ist Andock-Anleitung für Endknoten,
-  nicht Teil der Sage-Protokoll-Test-Werkstatt.
+  nicht Teil der Sage-Protokol-Test-Werkstatt.
 
 ---
 
@@ -318,7 +318,7 @@ Andock braucht Klaus aktiv im Browser:
 1. Rezeptbuch und Mixarium als zwei Endknoten-PWA-Repos auf
    GitHub Pages.
 2. Beide Repos: die sieben SBKIM-Module + `sbkim-sw.js` aus dem
-   Sage-Protokoll-Repo kopiert (Schritt 1).
+   Sage-Protokol-Repo kopiert (Schritt 1).
 3. `index.html` jeweils um die `<script>`-Tag-Liste in der
    verbindlichen Reihenfolge ergänzt (Schritt 2).
 4. Beide PWAs einmal im Browser gestartet, alle Schritte 3–9

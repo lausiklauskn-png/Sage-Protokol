@@ -15,12 +15,12 @@
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-16 (14 Module)
+  title Modulstand 2026-05-17 (14 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
-  "🟨 Spec fertig" : 1
-  "🟦 Code-Stub" : 9
-  "🟩 Fertig" : 0
+  "🟨 Spec fertig" : 0
+  "🟦 Code-Stub" : 7
+  "🟩 Fertig" : 3
 ```
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
@@ -109,10 +109,73 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 
 | App | URL | Domäne | SBKIM-Stand |
 |---|---|---|---|
-| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16** (Bau-Sitzung 09 Iteration 3, mit Klaus am Termux) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` mit `stammCategories[7]` + `guestCategories[11]` + `domainVector[384]` · App-SW Variante 3b · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus drei `sbkim-init.js`-Init-Zeilen grün. **nodeId identisch zu Mein-Mixarium** (`1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0`) wegen **IndexedDB-Origin-Kollision** auf GitHub Pages Project-Sites (beide PWAs unter Origin `lausiklauskn-png.github.io` teilen `sbkim_keys["main"]`). Cross-Knoten-Handshake zwischen Mein-Rezeptbuch und Mein-Mixarium **technisch nicht möglich** (`pingStatus: "blocked-origin-collision"`). Architektur-Erweiterung in Karten 01 + 09 in Folge-Pflege-Sitzung notwendig. |
-| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16** (Bau-Sitzung 09 Iteration 3, mit Klaus am Termux) · nodeId `1h5OPqqq3lPJPPxdXIyAjkzdHgYCfkuHx5ZEjZguOq0` · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json mit allen Pflicht- und optionalen Feldern inkl. `stammCategories[8]` + `guestCategories[2]` + `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus drei `sbkim-init.js`-Init-Zeilen grün. **nodeId identisch zu Mein-Rezeptbuch** wegen IndexedDB-Origin-Kollision (siehe nächste Zeile). Cross-Knoten-Handshake gegen Mein-Rezeptbuch **technisch nicht möglich** (`pingStatus: "blocked-origin-collision"` von beiden Seiten). Architektur-Erweiterung in Karten 01 + 09 in Folge-Pflege-Sitzung notwendig. |
+| Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16** (Live-Andock-Sitzung Cross-Knoten-Handshake) · `nodeId: RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI` (eigener Ed25519-Schlüssel in eigener IndexedDB `sbkim_rezeptbuch`) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` mit `stammCategories[7]` + `guestCategories[11]` + `domainVector[384]` · App-SW Variante 3b · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus `sbkim-init.js`-Init-Zeilen grün. **Origin-Kollision aufgelöst** durch `SbkimStorage.init({dbSuffix:"rezeptbuch"})` (Modul-01-Pflege PWA-Suffix). **Cross-Knoten-Handshake mit Mein-Mixarium 2026-05-16 etabliert** (`outcome:"established"`), Match-Score über `PROVIDER_MIN_MATCH=0.8`, bewiesen via direktem `SbkimAnastomose.receiveHandshake`-Aufruf (SW-Bridge-Phantom-Cache-Bug umgangen — siehe § Offene Querschnitts-Fragen). `pingStatus: "live-direct"`. |
+| Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16** (Live-Andock-Sitzung Cross-Knoten-Handshake) · `nodeId: 7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4` (eigener Ed25519-Schlüssel in eigener IndexedDB `sbkim_mixarium`) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json mit allen Pflicht- und optionalen Feldern inkl. `stammCategories[8]` + `guestCategories[2]` + `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Eruda-Konsole zeigt alle sieben Modul-Selbstchecks plus `sbkim-init.js`-Init-Zeilen grün. **Origin-Kollision aufgelöst** durch `SbkimStorage.init({dbSuffix:"mixarium"})`. **Match-Score Cocktails ↔ Kochrezepte über `PROVIDER_MIN_MATCH=0.8`** — Embedding-Vektor robust gegen Domain-Unterschiede, beide Knoten als „semantisch passend" akzeptiert; Klaus' Hypothese „Cocktails und Kochrezepte vielleicht zu unterschiedlich" hat sich nicht bestätigt. `pingStatus: "live-direct"`. |
 
 ## Offene Querschnitts-Fragen
+
+- **SW-Bridge-Phantom-Cache-Bug in Modul 05** (eingetragen 2026-05-16,
+  Live-Andock-Sitzung Cross-Knoten-Handshake). Beim Cross-Knoten-
+  Handshake via `SbkimAnastomose.handshake(peerSpore, ownVec)` schickt
+  Modul 05 einen POST an `peer.endpoint + "/sbkim/anastomosis"`.
+  Mein-Mixariums Service-Worker fängt den Request, sucht aktive Page-
+  Clients mit `self.clients.matchAll({ type:"window",
+  includeUncontrolled:true })` und leitet via MessageChannel weiter.
+  **Problem:** der Client-Pool enthält manchmal eine geisterhafte
+  Page-Instance (vermutlich bfcache-Restbestand oder vergessene PWA-
+  Window-Variante), die eine ALTE Modul-02-Identity gecacht hat. Die
+  Phantom-Page antwortet mit `outcome:"rejected", reason:"toNodeId
+  stimmt nicht zum Empfänger"`, obwohl der aktive Tab konsistent
+  `SbkimSpore.getNodeId() === <korrekte-nodeId>` hat. **Workaround
+  (heute bewiesen):** HandshakeRequest via localStorage in
+  Mein-Mixarium-Tab übertragen und dort `SbkimAnastomose.
+  receiveHandshake(request)` DIREKT aufrufen — `outcome:"established"`.
+  **Lösungs-Vorschlag:** in `src/sbkim-sw.js` `clients.matchAll` mit
+  `includeUncontrolled:false` aufrufen (eventuell hinter einem
+  `SBKIM_SW_STRICT_CLIENTS`-Opt-in-Flag, um Variante-3b-Endknoten nicht
+  zu brechen). **Voraussetzung für die Folge-Pflege:** erst Klaus'
+  Tablet-Neustart-Sichttest abwarten — falls ein voller Reboot den
+  Phantom-Cache räumt, ist der Bug temporär und braucht keine Code-
+  Änderung; falls nicht, ist die Modul-05-SW-Pflege fällig. Status:
+  Folge-Pflege ausstehend, Tablet-Neustart-Test ausstehend.
+
+- **`domainKeywords`-Hartkodierung in Endknoten-`sbkim-init.js`**
+  (eingetragen 2026-05-16). Klaus' Mein-Mixarium-`sbkim-init.js` hat
+  `domainKeywords = ["Cocktail", "Drink", "Mocktail", "Limonade",
+  "Smoothie", "Aperitif", "Sake"]` hartkodiert — die echten App-
+  Kategorien sind aber `stammCategories = ["Cocktails", "Mocktails",
+  "Alkfr. Cocktails", "Smoothies & Shakes", "Limonaden", "Tees &
+  Kaffees", "Bowlen", "Sirup & Basis"]`. „Aperitif" und „Sake" sind
+  in den `domainKeywords` aber nicht als App-Ordner präsent. Klaus'
+  Beobachtung (Live-Andock-Sitzung) deckt eine Inkonsistenz auf:
+  `domainKeywords` sollte aus den echten App-Kategorien abgeleitet
+  werden, nicht aus einer alten Zwischen-Sitzung hartkodiert. Folge-
+  Pflege Mein-Mixarium-/Mein-Rezeptbuch-`sbkim-init.js`: `domainKeywords`
+  aus `stammCategories`/`guestCategories` zur Init-Zeit generieren
+  (z.B. via App-DB-Lookup oder mindestens als konsistente Liste).
+  **Konsequenz heute:** der semantische Embedding-Vektor ist robust
+  genug, dass der Cross-Knoten-Handshake trotz Inkonsistenz mit
+  `outcome:"established"` läuft — aber für saubere Match-Scores in
+  einem wachsenden Netz wäre die Bereinigung wertvoll. Status:
+  Folge-Pflege ausstehend, niedrig priorisiert.
+
+- **Endknoten-Repo-Hygiene gegen parallele Auto-PRs** (eingetragen
+  2026-05-16). Während der Live-Andock-Sitzung lief eine PARALLELE
+  Claude-Sitzung mit Branch `claude/add-recipe-remove-scramble-5xx9Y`
+  und hat PR #238 „Buchstabensalat-Fix im Rezept-hinzufügen-Button"
+  in Mein-Rezeptbuch gemerged. Dieser PR hatte aber eine ältere
+  Basis-Version der `index.html` genommen und dabei **alle 8 SBKIM-
+  `<script>`-Tags + Eruda** still entfernt. Das hat den Handshake-
+  Test in Mein-Rezeptbuch ~1 h lang blockiert (SBKIM-Module gar nicht
+  geladen). Nachgepflegt durch Wieder-Einfügen vor `</body>` an Zeile
+  14802. **Schutz-Vorschlag (Folge-Pflege):** SBKIM-Sentinel-File in
+  jedem Endknoten-Repo (z.B. `sbkim/.sentinel`) und/oder GitHub-Action
+  in beiden Endknoten-Repos, die prüft: (a) `grep -c "sbkim/" index.html
+  >= 8`, (b) `sbkim/sbkim-init.js` enthält `SbkimStorage.init` UND
+  `SbkimAnastomose.init`, (c) `sbkim/01_storage.js` enthält `dbSuffix`.
+  Soll künftige Auto-PRs auf Endknoten verhindern, die die SBKIM-
+  Andock-Schicht still wegfegen. Status: Folge-Pflege-Vorschlag,
+  niedrig priorisiert.
 
 - **Sichtbarkeits-Lampen in der Endknoten-PWA** (eingetragen
   2026-05-16, Klaus-Vorschlag nach Pflege PWA-Suffix). Idee von
@@ -435,6 +498,677 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
+### 2026-05-17 · Pflege Modul 05/SW — Phantom-Clients-Fix in `sbkim-sw.js`
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/pflege-sw-phantom-clients-fix`. Folge-Pflege zum SW-Bridge-
+Phantom-Cache-Bug aus Cross-Knoten-Handshake-Sitzung (PR #65) und
+Klaus' Tablet-Neustart-Sichttest 2026-05-17.
+
+**Klaus' Befund (Tablet-Reboot-Test 2026-05-17):**
+
+1. **Identitäten überleben Stromaus** (gestriges Persist-Flag-
+   Versprechen gehalten): Mein-Mixarium `7xf0tt33_…` und
+   Mein-Rezeptbuch `RHhposP0…` sind nach Tablet-Aus/An weiter da.
+2. **DBs sauber**: keine Phantom-`sbkim` (ohne Suffix), nur die
+   vier erwarteten (`MeinMxBackup1`, `MeinRzBackup1`,
+   `sbkim_mixarium`, `sbkim_rezeptbuch`).
+3. **PWAs als Apps deinstalliert**, Sage-Protokol-Test-Panel-Tab
+   geschlossen — also alle gestern verdächtigen Phantom-Quellen
+   eliminiert.
+4. **Trotzdem:** Cross-Knoten-Handshake via normalem
+   `SbkimAnastomose.handshake()`-Pfad liefert weiterhin
+   `outcome:"rejected", reason:"toNodeId stimmt nicht zum Empfänger"`.
+
+**Diagnose:** der Bug ist nicht in zwischenzeitlichen Browser-Caches,
+sondern direkt in `src/sbkim-sw.js`'s Client-Auswahl-Logik:
+
+```js
+// VORHER (Phantom-Bug):
+const clientList = await self.clients.matchAll({
+  type: "window",
+  includeUncontrolled: true,   // ← findet auch Pages, die SW nicht kontrolliert
+});
+const target = clientList.find(c => c.id === originatingClientId) || clientList[0];
+```
+
+`includeUncontrolled: true` findet alle Window-Clients der Origin, auch
+solche, die diesen SW NICHT als Controller haben (z.B. Tabs anderer
+Pfade derselben Origin, andere PWA-Pages mit eigenem SW). Diese
+„Phantom-Pages" haben oft alte Modul-02-Identitäten oder gar keine
+SBKIM-Module geladen und antworten mit
+`reason:"toNodeId stimmt nicht zum Empfänger"`.
+
+**Fix:**
+
+```js
+// NACHHER:
+const clientList = await self.clients.matchAll({
+  type: "window",
+  includeUncontrolled: false,   // ← nur Tabs, die diesen SW kontrollieren
+});
+// Plus: bei mehreren Clients alle der Reihe nach probieren —
+// wenn einer mit "toNodeId stimmt nicht" antwortet, nächsten versuchen.
+// Erster, der was anderes sagt (established / accepted / score-reject /
+// andere reason), gewinnt.
+```
+
+`includeUncontrolled: false` schließt alle Pages aus, die nicht
+explizit von diesem SW kontrolliert werden — Phantom-Pages
+verschwinden aus dem Client-Pool. Plus die neue „alle der Reihe nach
+versuchen, bis einer nicht ‚toNodeId stimmt nicht‘ sagt"-Logik macht
+den SW robuster bei mehreren Tabs mit unterschiedlichen Identitäten
+(z.B. wenn ein alter Tab-Cache-State noch eine Closure-Version der
+nodeId hält).
+
+**Getan:**
+
+- `src/sbkim-sw.js` Zeile 158–164 ersetzt durch die neue
+  Client-Auswahl-Logik (51 statt 21 Zeilen, ausführliche Kommentare).
+- `node --check src/sbkim-sw.js` grün.
+- Datei wächst von 212 auf 251 Zeilen.
+
+**Bewusst nicht angefasst:**
+
+- **`SBKIM_SW_STANDALONE`-Flag** unverändert (Variante 3a/3b
+  Koexistenz bleibt).
+- **`includeUncontrolled`-Verhalten** ist jetzt hardcoded `false`
+  (kein Opt-in-Flag) — Begründung: das alte Verhalten war ein Bug,
+  kein Feature. Falls künftig spezielle Endknoten ein opt-in
+  brauchen, kann ein Flag analog zu `SBKIM_SW_STANDALONE` ergänzt
+  werden.
+- **Karte 05 (Anastomose)** und **Karte 09 (Einbau-PWA)**
+  unverändert — die SW-interne Logik ist kein API-Vertrag.
+- **INTERFACES.md** unverändert (kein §1-Modul-Vertrags-Eingriff).
+- **Modul-05-Code** (`src/modules/05_anastomose.js`) unverändert
+  (Sender-Side und `receiveHandshake` blieben gleich).
+- **status.json** unverändert.
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+- **`update_puls_pie.py`** NICHT aufgerufen (kein Score-Wechsel).
+
+**Was offen blieb (Klaus' Pflicht in Endknoten-Repos):**
+
+Nach Merge dieses PRs muss Klaus die neue `src/sbkim-sw.js` in beide
+Endknoten-Repos kopieren:
+
+```bash
+cp ~/Sage-Protokol/src/sbkim-sw.js ~/Mein-Mixarium/sbkim/sbkim-sw.js
+cd ~/Mein-Mixarium && git add sbkim/sbkim-sw.js && git commit -m "sbkim-sw.js: Phantom-Clients-Fix nachgezogen" && git push
+
+cp ~/Sage-Protokol/src/sbkim-sw.js ~/Mein-Rezeptbuch/sbkim/sbkim-sw.js
+cd ~/Mein-Rezeptbuch && git add sbkim/sbkim-sw.js && git commit -m "sbkim-sw.js: Phantom-Clients-Fix nachgezogen" && git push
+```
+
+Plus: beide PWA-Tabs nach Pages-Build schließen + neu öffnen, damit
+der neue SW per Activate-Cycle aktiv wird. Dann erneut den Handshake-
+Test ausführen. Erwartung: diesmal `outcome:"established"` ohne
+localStorage-Bypass.
+
+**Validierung:**
+
+- `node --check src/sbkim-sw.js` grün.
+- Manuell durchgespielt: bei nur einem controlled Client wird er
+  direkt gewählt; bei mehreren wird der Reihe nach probiert; bei
+  null Clients kommt sauberes 503.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Termux-Pflege:** neue `sbkim-sw.js` in beide Endknoten-
+   Repos kopieren + pushen (Befehle oben).
+2. **Klaus' Browser-Test:** PWA-Tabs neu starten, Handshake erneut
+   versuchen. Erwartung `outcome:"established"` via SW-Pfad ohne
+   Bypass.
+3. **Falls erfolgreich:** `status.json` `pingStatus` von
+   `"live-direct"` auf `"live"` umstellen (in Folge-Pflege),
+   PULS-Endknoten-Tabelle nachziehen.
+4. **Klaus' Browser-Daten-Lösch-Test** (Phase 3 vom Resilienz-Test)
+   kann danach durchgeführt werden.
+
+---
+
+### 2026-05-17 · Mini-Pflege Score-Realität — Module 03/05/09 auf fertig, Endknoten-pingStatus-Bonus, Ring-Inversion
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/pflege-score-realitaet`. Klaus' Beobachtung zur Sage-Page:
+„Demo-Anteil 33 % zeigt zu wenig Realität an — 09 Einbau-PWA ist
+nachweislich an zwei Endknoten vollzogen, 03 Embedding und 05
+Anastomose haben im Cross-Knoten-Handshake live gewirkt." Plus
+Wunsch zur Ring-Visualisierung: grüner schimmernder Bogen wächst,
+bunter Bogen schrumpft.
+
+**Klaus' Bild:** „Wenn künstliche Befruchtung die Fortpflanzung einer
+Art bewiesen hat, ist die Methode bewiesen — auch wenn nicht jedes
+Detail des Embryos perfekt ist." → Live-Beweis 2026-05-16 reicht für
+`score: "fertig"` bei 03, 05, 09. SW-Bridge-Phantom-Cache ist ein
+nebensächlicher Fehler im Empfänger-Pfad, kein Hauptbeweis-Bruch.
+
+**Getan:**
+
+- **`status.json`** Score-Anhebungen mit Begründung im `siegel`:
+  - **03 Embedding:** `stub` → `fertig` (Siegel „Live im
+    Cross-Knoten-Handshake 2026-05-16").
+  - **05 Anastomose:** `stub` → `fertig` (Siegel „Cross-Knoten-
+    Handshake live 2026-05-16").
+  - **09 Einbau-PWA:** `spec` → `fertig` (Siegel „Live bei zwei
+    Endknoten 2026-05-16").
+  - **`lastUpdated`** auf `2026-05-17`.
+
+- **`scripts/update_puls_pie.py`** ausgeführt. Neue Verteilung:
+  4 Schablone (Backlog 10/11/12/14), 0 Werkstatt, 0 Spec, 7 Stub
+  (00/01/02/04/06/07/08), 3 Fertig (03/05/09). PULS § Modulstand-
+  Pie-Block automatisch nachgezogen.
+
+- **`index.html` `computeScore()` erweitert:** Endknoten mit
+  `pingStatus === "live"` oder `"live-direct"` zählen jetzt 15 statt
+  8 (= im `scoreModel` schon vorgesehene `endknotenIntegratedAndPing`).
+  Beide Endknoten haben `pingStatus: "live-direct"` → je 15 Punkte.
+  Plus 03/05/09 als `fertig` (Wert 10) ergibt: realScore = Hub(10) +
+  Module(79) + Endknoten(30) = 119; maxScore = 140; **Demo-Anteil
+  ≈ 15 %** (vorher 33 %).
+
+- **Ring-Visualisierung inverted und zweigeteilt:**
+  - Neuer SVG-Bogen `#demo-ring-real` mit grün-schimmerndem Gradient
+    (`#34D399` → `#10B981` → `#16A34A`) und SVG-Glow-Filter; wächst
+    von 0 auf `realPct` (heute 85 %).
+  - Alter bunter Bogen `#demo-ring` zeigt jetzt nur `demoPct`-Anteil
+    (heute 15 %), gesetzt mit `stroke-dashoffset = -realLen` so dass
+    er hinter dem grünen anschließt.
+  - Beide Bögen zusammen = voller Kreis.
+  - Schimmer-Animation `@keyframes ring-real-shimmer` (opacity
+    0.78 ↔ 1.0, 3.6 s ease-in-out).
+  - `animateRing(realPct, demoPct)` jetzt zwei Parameter; Demo-Zahl
+    in der Mitte zeigt weiterhin den Theater-Anteil.
+
+**Bewusst nicht angefasst:**
+
+- **Modul 06 Heterokaryose** bleibt `stub` (nur rasch grob
+  durchgeklickt, kein Live-Beweis).
+- **Modul 00/01/02/04/07/08** bleiben `stub`.
+- **`scoreModel`-Formel** im JSON unverändert.
+- **INTERFACES.md** unverändert (Score-Bewertung ist UI-Frage, kein
+  Modul-Vertrag).
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+- **Modul-Code** in `src/modules/*` unverändert.
+- **Endknoten-Repos** unverändert.
+
+**Validierung:**
+
+- `status.json` valides JSON.
+- `update_puls_pie.py` erfolgreich.
+- HTML-Parse OK, Inline-JS via `node --check` (Zeile 980–1906) OK.
+- Manuelle Score-Berechnung in Python ergibt **15 %** Demo-Anteil
+  (matched Klaus' Prognose).
+
+**Was offen blieb:**
+
+- Klaus' Browser-Sichttest dieser Pflege — Demo-Ring zwei Bögen,
+  Topologie drei Grün-Knoten.
+- Tablet-Neustart-Sichttest für SW-Bridge-Phantom-Cache unverändert.
+- Spec-Sitzung Modul 15 Sichtbarkeits-Lampen + Events-Strom.
+- `domainKeywords`-Hartkodierung in Endknoten unverändert offen.
+- Modul 06 voller Test-1–9-Lauf wartet auf Klaus' Tablet-Sitzung.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Browser-Sichttest** dieser Pflege.
+2. **Tablet-Neustart-Sichttest** für SW-Bridge-Phantom-Cache.
+3. **Spec-Sitzung Modul 15 Sichtbarkeits-Lampen + Events-Strom**.
+
+---
+
+### 2026-05-17 · Mini-Pflege Rechtschreibung — „Protokoll" mit zwei L
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase (reine
+Text-Korrektur). Branch `claude/pflege-rechtschreibung-protokoll`.
+Klaus' Bitte: das deutsche Wort „Protokoll" überall mit zwei L
+schreiben.
+
+**Regel (Klaus' Klarstellung):**
+
+- **„Sage-Protokol"** (mit einem L) ist der **englische Eigenname**
+  des Repos / Projekts → **BLEIBT** mit einem L. Gilt auch in
+  Repo-URLs (`github.com/lausiklauskn-png/Sage-Protokol/...`),
+  Sage-Page-Title (`Sage·Protokol`), status.json `"name"`,
+  JS-Kommentaren.
+- **„Mycel-Protokoll"** ist deutsch (Mycel = deutsches Wort) → wird
+  mit zwei L geschrieben.
+- **Generisches „Protokoll"** (Footer-Label, Card-Tag, dt-Label,
+  Markdown-Fließtext) → wird mit zwei L geschrieben.
+- **Englische Variable `protocolVersion`** und ähnliche API-Identifier
+  bleiben mit einem L (englisch, korrekt).
+
+**Getan:**
+
+- Zwei-Pass-`sed` durch `*.md`, `*.html`, `*.json`, `*.js` im Repo:
+  1. Pass: alle `\bProtokol\b` → `Protokoll`.
+  2. Pass: `Sage-Protokoll` / `Sage·Protokoll` / `Sage Protokoll` /
+     `Sage_Protokoll` zurück zu `Sage-/·/ /_Protokol` (Eigenname).
+- 7 Dateien geändert: `index.html`, `docs/INTERFACES.md`,
+  `docs/PAPER_NUTZEN_UND_INTEGRATION.md`, `docs/components/06_heterokaryose.md`,
+  `docs/components/09_einbau_pwa.md`, zwei Übergabeprotokolle aus
+  2026-05-14/15.
+- Validierung: `status.json` valid JSON, `index.html` Parse OK,
+  Inline-JS-Block via `node --check` OK.
+
+**Bewusst nicht angefasst:**
+
+- **GitHub-Repo-Name `lausiklauskn-png/Sage-Protokol`** unverändert
+  (Klaus' Entscheidung — der Eigenname bleibt englisch).
+- **Repo-URLs in Markdown/HTML** unverändert
+  (`github.com/.../Sage-Protokol/...`) — sonst 404.
+- **`protocolVersion`-Konstante** und `PROTOCOL_VERSION` in §0
+  unverändert (englisch).
+- **SBKIM-Verbindung** ist null betroffen — Endknoten Mein-Mixarium
+  und Mein-Rezeptbuch hängen technisch nicht vom Sage-Repo-Namen
+  oder seinen Doku-Texten ab; die Cross-Knoten-Verbindung läuft
+  direkt zwischen den Endknoten.
+- **`status.json`**: nur `"name"` Feld behält Eigenname „Sage-Protokol";
+  Modul-`kurz`-Texte u.ä. enthalten kein generisches „Protokol".
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+- **`update_puls_pie.py`** NICHT aufgerufen.
+- **Modul-Code** unverändert (außer JS-Kommentare in 02_spore.js
+  fallen unter Pass 1, dort steht aber nur „Sage-Protokol" als
+  Eigenname → bleibt).
+
+**Was offen blieb:**
+
+- Restliche offene Punkte aus Cross-Knoten-Handshake-Sitzung +
+  Sage-Page-Live-Status-Pflege unverändert
+  (Tablet-Neustart-Sichttest, Modul-15-Spec, `domainKeywords`-
+  Hartkodierung).
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Sichttest der Sage-Page** im Browser — Hero-Titel
+   sollte „Mycel-Protokoll" zeigen, Footer-Label „Protokoll", aber
+   Tab-Titel und Header-Logo weiter „Sage·Protokol".
+2. **Tablet-Neustart-Sichttest** für SW-Bridge-Phantom-Cache.
+3. **Spec-Sitzung Modul 15 Sichtbarkeits-Lampen + Events-Strom**.
+
+---
+
+### 2026-05-17 · Mini-Pflege Sage-Page — Live-Status für Topologie + Lebenszyklus
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/pflege-sage-page-live-status`. Folge-Pflege zur Live-Andock-
+Sitzung Cross-Knoten-Handshake (PR #65): Klaus' Beobachtung „Modul-
+Topologie sollte Live sein" + „PWAs in Animation noch gelb".
+
+**Befund:** Die Modul-Topologie und die Modul-Liste lesen schon live
+aus `status.json` — aber die `isNextUp()`-Heuristik hat eine
+vakuum-truthy-Falle: Module mit `abhaengig: []` werden immer als
+„bereit zum Bau" markiert (`[].every(...) === true`), auch wenn
+sie längst `score: "stub"` haben. Dadurch erscheinen 00, 01, 03 in der
+Topologie und Modul-Liste mit Gold-Ring, obwohl nur 09 (`score: "spec"`)
+echt noch nextup ist. Zusätzlich war die Lebenszyklus-Animation
+(Spore→Einbettung→Anastomose→Antwort) bisher eine reine Demo-
+Choreographie ohne Bezug zum echten Modul-Status — Klaus' Wunsch:
+diese Animation soll den Live-Stand der korrespondierenden Module
+sichtbar machen.
+
+**Getan:**
+
+- **`isNextUp()` präzisiert** in `index.html` (Zeile 1136):
+  - Vorher: `m.score === 'fertig'` rausfiltern, dann `deps.every(d =>
+    byId[d].score === 'fertig')` → Vakuum-Falle bei leerem `deps`.
+  - Nachher: nur Module mit `score === 'spec'` oder `'werkstatt'`
+    sind nextup; Abhängigkeiten müssen mindestens `'stub'` sein
+    (= API gebaut, aufrufbar). Code-Stub-Module werden NICHT mehr
+    als nextup markiert.
+  - **Effekt sofort sichtbar:** in Topologie + Modul-Liste ist nur
+    noch Modul 09 mit Gold-Ring markiert. Header-Zahl wechselt von
+    „4 bereit zum Bau" auf „1 bereit zum Bau".
+
+- **Lebenszyklus-Phase-Pills mit Live-Modul-Status erweitert:**
+  Neue Render-Funktion `renderCyclePhases(s)` in `renderAll()` ruft
+  vor jedem Render die aktuellen Modul-Status aus `status.json` ab
+  und schreibt pro Phase-Pill einen Mini-Badge mit Modul-ID + Status-
+  Farbe (Status-Punkt links neben dem Modul-ID-Text):
+  - Phase 0 „1 · Spore" → Modul 02 Spore
+  - Phase 1 „2 · Einbettung" → Modul 03 Embedding
+  - Phase 2 „3 · Anastomose" → Modul 05 Anastomose
+  - Phase 3 „4 · Antwort" → Modul 04 Match (Match liefert die Antwort)
+  CSS-Klasse `.phase-mod-badge` mit `data-mod-score`-Attribute,
+  Status-Punkt-Farbe aus `--status-{schablone,werkstatt,spec,stub,
+  fertig}`. Mapping verbindlich im Konstanten-Objekt
+  `CYCLE_PHASE_MOD` (Zeile ~1058).
+
+- **Automatik für künftige Module:** sobald Modul 02/03/04/05 in
+  `status.json` einen neuen Score bekommt (z.B. von `stub` auf
+  `fertig` hochgestuft), aktualisiert sich der Phase-Pill-Badge
+  automatisch beim nächsten Page-Load. Kein Sage-Page-Code-Eingriff
+  nötig.
+
+**Bewusst nicht angefasst:**
+
+- **SVG-Animations-Knoten** (Heim/Rezept/Mixar/Buch + Phase-Pulse-
+  Wellen) unverändert. Das ist hartkodiertes Design — die SVG-
+  Farben von Demo-Wellen (gelb/gold) bleiben symbolisch
+  (Spore-Wurf, semantische Berechnung). Phase-Modul-Bezug zeigt
+  sich jetzt im Pill-Badge unten, nicht in der SVG selbst.
+- **Sichtbarkeits-Lampen Demo-Anker** (Topbar `lamp-alive` /
+  `lamp-traffic`) unverändert — eigene Modul-15-Spec.
+- **`status.json`** unverändert.
+- **Modul-Code** unverändert (reine UI-Pflege).
+- **INTERFACES.md** unverändert.
+- **`PROTOCOL_VERSION` bleibt `"0.1"`.**
+- **`update_puls_pie.py`** NICHT aufgerufen (kein Modul-Score-Wechsel).
+
+**Validierung:**
+
+- HTML-Parse via Python `html.parser`: OK
+- JS-Syntax via `node --check` auf den extrahierten Inline-`<script>`-
+  Block (Zeile 968–1868): OK
+- Idempotenter Re-Render: `renderCyclePhases()` entfernt zuerst alle
+  bestehenden `.phase-mod-badge`-Elemente, dann setzt neu — keine
+  Duplikate bei wiederholtem `renderAll()`-Aufruf.
+- Browser-Sichttest ungeprüft, weil headless — wartet auf Klaus.
+
+**Was offen blieb:**
+
+- **Tablet-Neustart-Sichttest** für SW-Bridge-Phantom-Cache (aus
+  Cross-Knoten-Handshake-Sitzung) — unverändert offen.
+- **Modul-15-Spec Sichtbarkeits-Lampen + Events-Strom** — die nächste
+  echte Live-Erweiterung. Diese Sage-Page-Pflege hat sichtbar
+  gemacht, dass Topologie + Modul-Liste schon live sind; Modul 15
+  würde Events-Live-Strom dazubringen.
+- **`domainKeywords`-Hartkodierung** in Endknoten-`sbkim-init.js`
+  unverändert offen.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Sichttest dieser Sage-Page-Pflege** (nicht headless,
+   im Browser) — Topologie sollte nur noch Modul 09 als
+   Gold-Ring zeigen, Phase-Pills mit Modul-ID-Badges in der
+   richtigen Status-Farbe.
+2. **Spec-Sitzung Modul 15 Sichtbarkeits-Lampen + Events-Strom**
+   (~60 Min headless). Jetzt klar, was zu specifizieren ist.
+3. **Tablet-Neustart-Sichttest** für SW-Bridge-Phantom-Cache.
+
+---
+
+### 2026-05-16 · Live-Andock-Sitzung — Cross-Knoten-Handshake etabliert
+
+**Sitzungs-Rolle:** Live-Andock-Sitzung, NICHT headless (Klaus am Tablet
++ Termux, ca. 4 h zusammen). Branch
+`claude/cross-knoten-handshake-etabliert`. Folge-Sitzung zur Pflege
+PWA-Suffix (2026-05-16, PR #45): die dort spezifizierte Architektur-
+Erweiterung jetzt live in beiden Endknoten-Repos durchgezogen UND
+durch erfolgreichen Cross-Knoten-Handshake bewiesen.
+
+**Ergebnis (Highlight):**
+
+- **Mein-Mixarium nodeId:** `7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4`
+- **Mein-Rezeptbuch nodeId:** `RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI`
+- **Cross-Knoten-Handshake `outcome: "established"`** — der erste
+  echte SBKIM-Handshake im Mycel. Match-Score Cocktails ↔ Kochrezepte
+  über `PROVIDER_MIN_MATCH=0.8` — Embedding-Vektor robust gegen
+  Domain-Unterschiede.
+
+**Auftrag:** In beiden Endknoten-Repos (Mein-Mixarium, Mein-Rezeptbuch)
+`sbkim/sbkim-init.js` um `await SbkimStorage.init({dbSuffix:…})` vor
+`SbkimAnastomose.init()` erweitern; `__sbkimErzeugeSpore()` triggern
+für neue, getrennte nodeIds; neue Spore-Datei deployen; Cross-Knoten-
+Handshake testen.
+
+**Getan (chronologisch):**
+
+1. **Phase A — `sbkim-init.js`-Patch:** in beiden Endknoten-Repos eine
+   Zeile vor `SbkimAnastomose.init()` eingefügt: Mixarium →
+   `SbkimStorage.init({dbSuffix:"mixarium"})`, Rezeptbuch →
+   `SbkimStorage.init({dbSuffix:"rezeptbuch"})`. Pushes durch
+   (Mein-Mixarium `703cae3`, Mein-Rezeptbuch `9b77bcd`).
+2. **Phase B — Modul 01 nachziehen:** Befund: `sbkim/01_storage.js`
+   in beiden Endknoten-Repos war noch die alte Version OHNE
+   dbSuffix-Support (vor PR #45-Merge). Aus Sage-Protokol `main` die
+   neue Version (15747 Bytes, 11 dbSuffix-Treffer) in beide Endknoten
+   kopiert + gepusht.
+3. **Phase C — PR #238-Aufräumen (Mein-Rezeptbuch):** ein paralleler
+   Claude-Commit (Branch `claude/add-recipe-remove-scramble-5xx9Y`,
+   PR #238 „Buchstabensalat-Fix") hatte **alle 8 SBKIM-`<script>`-Tags
+   UND Eruda** aus `Mein-Rezeptbuch/index.html` rausgewaschen, weil
+   die andere Sitzung eine sehr alte Basis-Version genommen hatte.
+   Nachgepflegt: SBKIM-Scripts in Karte-09-Reihenfolge wieder
+   eingefügt (vor `</body>` an Zeile 14802), Eruda wieder eingebaut.
+   **Wichtige Doku-Pflege-Lehre:** SBKIM-Andock-Code in Endknoten ist
+   verletzlich gegen Pflege-Sitzungen, die ältere Basis-Versionen
+   merge'n. (Folge-Pflege-Vorschlag: SBKIM-Sentinel-Datei oder
+   GitHub-Action, die SBKIM-Scripts-Präsenz prüft, siehe §
+   „Offene Querschnitts-Fragen".)
+4. **Phase D — Worst-Case-Reset (Klaus' Vorschlag):** in Chrome alle
+   Site-Daten für `lausiklauskn-png.github.io` gelöscht (Klaus'
+   pragmatischer Wunsch nach Vollverlust-Test). Beide PWAs frisch
+   geöffnet → frische Identitäten in den jeweiligen `sbkim_<suffix>`-
+   DBs erzeugt → Spore-Erzeugung mit korrigierter Identität →
+   spore.json in beide Repos deployed.
+5. **Phase E — Identity-Persistenz-Stabilisierung:** Mein-Mixariums
+   Identität verlor sich beim ersten Tab-Reload („IndexedDB war nicht
+   wirklich persistent obwohl `storage.persist()=true`"); nach
+   erneutem `__sbkimErzeugeSpore()` neue Identität `7xf0tt33_…`,
+   diesmal stabil — vermutlich nach SW-Reset + Reload-Cycle. Spore
+   nachgepushed.
+6. **Phase F — Cross-Knoten-Handshake:** zwei Versuche via
+   Service-Worker-Bridge gescheitert mit `outcome: "rejected",
+   reason: "toNodeId stimmt nicht zum Empfänger"`, obwohl
+   `SbkimSpore.getNodeId()` im Mein-Mixarium-Tab die richtige nodeId
+   zurückgab. Diagnose: **SW-Bridge-Phantom-Cache-Bug** —
+   `self.clients.matchAll({includeUncontrolled:true})` lieferte eine
+   geisterhafte Page-Instance (vermutlich bfcache-erhaltener Tab oder
+   installierte PWA-Window) mit ALTER Identity zurück. Auch nach
+   Deinstallation der installierten PWAs blieb der Bug. **Direkter
+   Bypass:** HandshakeRequest aus Mein-Rezeptbuch via localStorage
+   in Mein-Mixarium-Tab übertragen und dort
+   `SbkimAnastomose.receiveHandshake(request)` DIREKT aufgerufen,
+   ohne SW-Bridge — Ergebnis `outcome: "established"`. **Damit
+   technisch und semantisch bewiesen:** das Mycel lebt; die SW-
+   Bridge-Frage ist eine eigene Folge-Pflege (siehe § Offene
+   Querschnitts-Fragen).
+
+**Getan (im Sage-Protokol-Repo):**
+
+- `status.json` § endknoten[*] beide `nodeId` auf neue Werte
+  aktualisiert, `pingStatus` von `"blocked-origin-collision"` auf
+  `"live-direct"` umgestellt (Handshake direkt etabliert, SW-Bridge
+  weiterhin via Phantom-Cache verstopft — kein „live" pur).
+- `docs/PULS.md` § Endknoten-Tabelle beide Zeilen kpl. neu (eigene
+  nodeIds, Origin-Kollision aufgelöst, Match-Score-Verifikation).
+- `docs/sessions/archiv/2026-05-16_cross-knoten-handshake-etabliert.md`
+  als Übergabeprotokoll angelegt mit den Phasen A–F oben + Code-
+  Snippets + Diagnose-Trace.
+
+**Bewusst nicht angefasst:**
+
+- **Modul-Code** unverändert (`src/modules/01–08`). Diese Sitzung
+  war reine Endknoten-Andock + Diagnose, kein Modul-Patch.
+- **INTERFACES.md** unverändert.
+- **`PROTOCOL_VERSION` bleibt `"0.1"`.**
+- **`update_puls_pie.py`** NICHT aufgerufen — kein Modul-Score-
+  Wechsel.
+- **`sbkim-sw.js`-Patch** für `includeUncontrolled:false` — Folge-
+  Pflege, nicht jetzt (würde Modul-05-Vertrag berühren).
+- **`domainKeywords`-Hartkodierung in `sbkim-init.js`** der
+  Endknoten — Klaus' Hinweis dass „Aperitif" und „Sake" gar nicht
+  zu den App-Kategorien gehören. Eigene Folge-Pflege.
+
+**Was offen blieb:**
+
+- **SW-Bridge-Phantom-Cache-Bug** (siehe § Offene Querschnitts-
+  Fragen, neuer Eintrag) — der Handshake funktioniert technisch und
+  semantisch, aber Mein-Mixariums Service-Worker leitet
+  HandshakeRequests an eine geisterhafte Page-Instance mit alter
+  Identity statt an den aktiven Tab. Workaround: direkter
+  `receiveHandshake`-Aufruf via localStorage-Bridge (heute bewiesen).
+  Fix-Vorschlag: in `sbkim-sw.js` `clients.matchAll` mit
+  `includeUncontrolled:false` (eventuell als opt-in-Flag) — eigene
+  Folge-Pflege Modul 05/SW.
+- **`domainKeywords`-Hartkodierung** in beiden Endknoten-`sbkim-init.js`
+  — die Werte (z.B. „Aperitif", „Sake" bei Mixarium) entsprechen
+  nicht den echten App-Kategorien. Folge-Pflege: aus den Endknoten-
+  App-Ordnern ableiten statt hartkodieren.
+- **Tablet-Neustart-Test:** ob ein voller Tablet-Reboot den
+  Phantom-Cache räumt — nicht heute, eigene Folge-Sichttest-Sitzung.
+
+**Validierung:**
+
+- Klaus' Mein-Mixarium-Tab in Eruda: `SbkimSpore.getNodeId() ===
+  "7xf0tt33_…"` UND `(await SbkimSpore.getOwnSpore()).id ===
+  "7xf0tt33_…"` (Identität-Konsistenz Key vs. Spore).
+- Klaus' Mein-Rezeptbuch-Tab Eruda: analog für `RHhposP0…`.
+- Direkter `receiveHandshake`-Aufruf in Mein-Mixarium-Tab mit
+  Mein-Rezeptbuch-Request: `outcome: "established"`, valider
+  `receiverSpore`, `nonceEcho` durchgereicht — Signaturen und
+  Match-Score grün.
+- Pages-Build beider Endknoten-Repos durch, LIVE-spore.json mit
+  korrekter nodeId via curl bestätigt (während der Sitzung).
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Tablet-Neustart-Sichttest** (NICHT headless) — ob ein voller
+   Reboot den SW-Bridge-Phantom-Cache räumt und der normale
+   `SbkimAnastomose.handshake`-Pfad (via SW) `outcome:"established"`
+   liefert. Wenn ja → Phantom-Cache ist nur eine bfcache-Frage,
+   kein dauerhafter Bug. Wenn nein → Folge-Pflege Modul-05-SW
+   nötig.
+2. **Pflege `sbkim-sw.js` mit `clients.matchAll(includeUncontrolled:false)`**
+   (headless möglich, ~30 Min) — als opt-in-Flag oder Default-
+   Änderung, um Phantom-Pages aus dem Client-Pool zu entfernen.
+   Setzt Tablet-Neustart-Test voraus (falls Reboot reicht, ist die
+   Pflege unnötig).
+3. **Pflege Endknoten-`sbkim-init.js`** — `domainKeywords` aus den
+   echten App-Kategorien ableiten statt hartkodieren. *NICHT
+   headless* (Klaus muss die App-Kategorien-Quelle in
+   `Mein-Mixarium`/`Mein-Rezeptbuch` zeigen), aber kleinteilig.
+4. **Pflege Endknoten-Repo-Hygiene** — SBKIM-Sentinel-Datei oder
+   GitHub-Action, die SBKIM-`<script>`-Tags und sbkim-init.js
+   prüft, damit künftige Auto-PRs (wie PR #238) nicht still die
+   Andock-Schicht wegfegen.
+Awwwards-/FWA-Niveau-Anspruch; „Design soll zeigen, dass jemand mit
+Ahnung dahintersteht". Reine UI-Pflege, keine Modul-Score- oder
+INTERFACES-Änderung.
+
+**Drei Pflicht-Frage-Entscheidungen (im Übergabeprotokoll ausführlich begründet):**
+
+- **Pflicht-Frage 1 (Typografie):** **Variante (b) Geist + Geist Mono
+  via Google Fonts CDN.** Premium-Tech-Look, Vercel-Hausschrift, seit
+  2025 über Google Fonts verfügbar; Awwwards-tauglich. Variante (a)
+  Inter zu „sicher", Variante (c) System-Font erfüllt den
+  Designer-Anspruch nicht.
+- **Pflicht-Frage 2 (Modul-Visualisierung):** **Variante (a) Force-
+  Graph-Topologie ersetzt alle anderen Modul-Visualisierungen.**
+  Klaus' explizite Anweisung „Doppelungen entfernen" — alte Page
+  hatte den Modulstand dreifach (Demo-Score-Ring, Module-Bento,
+  Bau-Puls mit Mini-Pie). Eine Topologie kombiniert Status UND
+  Abhängigkeiten in einer Sicht. Pie ist raus, Aggregat-Count wandert
+  in die Topologie-Legende.
+- **Pflicht-Frage 3 (Storytelling):** **Variante (a) Hub-First.**
+  Hero → Topologie → Lebenszyklus → Modul-Liste + Endknoten →
+  Lesematerial → Andock → Meta-Footer. SBKIM ist Neuland; erst
+  zeigen was es ist, dann zur Aktion einladen.
+
+**Getan:**
+
+- **`index.html` komplett neu aufgebaut** (3955 → 1690 Zeilen):
+  - **Neue Typografie:** Geist + Geist Mono via Google Fonts mit
+    `preconnect`-Optimierung.
+  - **Neue 5-Farben-Palette** als `:root`-Tokens (`--bg`, `--glass`,
+    `--accent` teal, `--accent-2` violett, `--gold`). §5-Status-Farben
+    separat, nur in Topologie und Modul-Badges.
+  - **Neuer Hero**: riesiger Display-Titel mit Gradient-Text-Wash,
+    Eyebrow-Pill mit Lebendigkeits-Punkt; einziges Motiv unter dem
+    Titel ist die Modul-Topologie.
+  - **Mycel-Topologie** als zentrale lebende Visualisierung — Force-
+    Graph mit 4 Cluster-Spalten (foundation / identity·vector /
+    network / data-exchange) + 1 Backlog-Reihe; SVG-SMIL-Atmen-
+    Animation der Status-Dots; Gold-Ring um nextup-Module; Klick
+    öffnet Modul-Detail.
+  - **Bento-Karten reduziert von 15 auf 6** (asymmetrisch 12-Spalten-
+    Grid). Entfernt: Demo-Score-Ring, separate Bau-Puls-Pie, separate
+    Eigenschutz-Karte (Backlog ist jetzt Teil der Topologie + der
+    Modul-Liste).
+  - **Lebenszyklus-Karte scroll-aware** (IntersectionObserver Threshold
+    0.35) — Auto-Loop pausiert außerhalb des Viewports, spart CPU;
+    manueller Phase-Pill-Klick überschreibt Auto-Loop für 9 s.
+  - **Lesematerial-Karte (NEU)** mit Links auf `./docs/PAPER_NUTZEN_UND_INTEGRATION.md`
+    (PR #55, funktional erst nach Merge) und `./sbkim_paper.pdf`.
+    Eingebauter Backup-Hinweis-Sub-Block (Gold-Border-Left) zu Modul
+    02 Backup-Export Stufe 2.
+  - **Sichtbarkeits-Lampen-Demo-Anker** in der Topbar: zwei Lampen
+    „lebt | verkehr" als visueller Anker für Modul 15. KLAR ALS DEMO
+    MARKIERT (im `title`-Attribut), keine echte Modul-15-Implementierung.
+  - **Andock-Generator** als letzte Karte (Storytelling-Reihenfolge),
+    optisch neu mit 3-Spalten-Input-Grid und nummerierten Output-Schritten.
+  - **5 Screens funktional erhalten:** overview, cycle (Detail-Tour
+    mit Klick-Lernpfad + 2 Schichten), module (Modul-Detail), data
+    (status.json-Schema), warum (5 Sektionen mit Live-Demo +
+    Wachstum). Navigation und JS-Logik intakt.
+  - **Live-Daten-Verträge erhalten:** `loadStatus()` fetcht `status.json`
+    unverändert; alle Renderer schreiben in dokumentierte IDs (siehe
+    `docs/sage_page_pflege.md`).
+  - **Pfad-Korrektur in `pingEndknoten`:** vorher `/.well-known/sbkim/spore.json`,
+    jetzt `/sbkim/spore.json` (konsistent mit Spec-Sitzung 09 /
+    Modul 09 Schritt 7).
+- **`docs/sage_page_pflege.md` neu angelegt** als Pflege-Konvention
+  für Folgesitzungen: ID-Vertrag-Tabelle (Vertrag-IDs vs. frei
+  umbenennbare IDs), §0-Konstanten-Spiegelungs-Tabelle, Anleitungen
+  „neues `status.json`-Feld" / „neues Modul (NN > 14)" / „Modul-15-
+  Lampen-Spec kommt", Animations-Konstanten-Tabelle, Konsistenz-
+  Regel mit Modul 02 § Spore-JSON (Live-Generator-Pflicht-Felder),
+  Dokumentation der drei Pflicht-Frage-Entscheidungen.
+
+**Material-Block — übernommene Vorbild-Patterns:** Geist-Schrift
+(Vercel) · Gradient-Text-Wash über Display-Titel (Linear) · Eyebrow-
+Pill mit Lebendigkeits-Punkt (Stripe / Resend) · Asymmetrisches Bento-
+Grid 12-Spalten (Apple Vision Pro Marketing) · Spring-Easing
+`cubic-bezier(0.34, 1.56, 0.64, 1)` (Framer-Motion-Default) · Sticky-
+Topbar mit Backdrop-Filter (Pitch / Linear) · Demo-Badge-Pill in Hero
+(Vercel-Status-Page) · Visibility-Lampen (RunwayML / Status-Page-Apps)
+· Code-Block-Syntax-Färbung (Resend / Stripe Docs) · Hover-Card-
+Animation `translateY(-2px)` (Linear-Hover-States). **Bewusst NICHT
+übernommen:** Three.js-Hero-Animationen (Single-File-PWA-Philosophie),
+Cursor-Trailing-Effekte (kein Erkenntnis-Gewinn), Marquee-Logo-Strips
+(keine Customer-Logos).
+
+**Validierung:** HTML-Parse via Python `html.parser` grün; `<script>`-
+Block via `node --check` grün; Live-Daten-Renderer-IDs gegen
+Vorgänger-Code abgeglichen. Browser-Sichttest **ausstehend** (headless
+gebaut, wartet auf Klaus am Tab S6 + DeX + Eruda).
+
+**Bewusst nicht angefasst:** `status.json` unverändert (reine UI-
+Pflege); `update_puls_pie.py` NICHT aufgerufen (CLAUDE.md-Konvention,
+kein Score-Wechsel); INTERFACES.md unangetastet; Modul-Karten 00–14
+inhaltlich unverändert; Modul 15 NICHT als echte Karte angelegt;
+`PROTOCOL_VERSION` bleibt `"0.1"`.
+
+**Was offen blieb:**
+
+- **Klaus' Sichttest der Sage-Page** im Browser steht aus.
+- **PR #55 (Paper Nutzen + Integration) mergen** — Lesematerial-
+  Karte verlinkt auf `./docs/PAPER_NUTZEN_UND_INTEGRATION.md`,
+  liefert 404 bis Merge.
+- **Modul 15 (Sichtbarkeits-Lampen) Spec-Sitzung** bleibt im
+  Querschnitt offen; gezogen nach erstem Cross-Knoten-Handshake.
+- Andere offene Punkte (Klaus' Re-Andock mit PWA-Suffix, Sichttest
+  Backup-Export Panel 02, Cross-Knoten-Handshake, Eruda-Rückbau,
+  Sushi-Kategorie, INTERFACES.md §6 Tabellen-Bug, Panel 06 Sichttest,
+  Panel 01 fünfter Knopf) unverändert offen.
+
+**Nächster sinnvoller Schritt:**
+
+1. **Klaus' Sichttest der Sage-Page** im Browser (Tab S6 + DeX + Eruda).
+2. **PR #55 mergen**, damit Lesematerial-Karte vollständig funktional.
+3. **Spec-Sitzung Modul 15 Sichtbarkeits-Lampen** (~60 Min headless),
+   nachdem erster Cross-Knoten-Handshake live (dann ist klar, was die
+   zweite Lampe anzeigt).
+4. **`docs/sage_page_pflege.md`** ist Pflicht-Lektüre für jede
+   Folge-Sitzung, die `index.html` anfasst.
+
+**Übergabeprotokoll:**
+`docs/sessions/archiv/2026-05-16_pflege-sage-page-redesign.md` — drei
+Pflicht-Frage-Antworten ausführlich begründet, Material-Block mit
+allen übernommenen Vorbild-Patterns + bewusst Verworfenes.
+
+---
+
 ### 2026-05-16 · Mini-Pflege Test-Panel — Knopf-7-pendingBackup-Reset
 
 **Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase (reine
@@ -578,6 +1312,12 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Pflege · Modul 05/SW Phantom-Clients-Fix (`sbkim-sw.js` `clients.matchAll` von `includeUncontrolled:true` auf `false` umgestellt + neue Loop-Logik „alle controlled Clients der Reihe nach, erster der nicht ‚toNodeId stimmt nicht‘ sagt gewinnt"; behebt den SW-Bridge-Phantom-Cache-Bug aus Cross-Knoten-Handshake-Sitzung; Klaus muss neue `sbkim-sw.js` in beide Endknoten-Repos kopieren + pushen) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-phantom-clients-fix.md) |
+| 2026-05-17 | Mini-Pflege · Score-Realität — Module 03/05/09 auf `fertig` hochgestuft (Live-Beweis Cross-Knoten-Handshake 2026-05-16); Endknoten-`pingStatus`-Bonus aktiviert (`live-direct` zählt 15 statt 8); Demo-Ring auf zwei Bögen umgestellt (grün-schimmernd wächst auf 85 %, bunt schrumpft auf 15 %); update_puls_pie.py aufgerufen | [→ Archiv](sessions/archiv/2026-05-17_pflege-score-realitaet.md) |
+| 2026-05-17 | Mini-Pflege · Rechtschreibung „Protokoll" mit zwei L (deutsches Wort) — Eigenname „Sage-Protokol" (englisch) bleibt; `Mycel-Protokoll` + generisches `Protokoll` (Footer-Label, Card-Tag, Markdown) korrigiert; 7 Dateien; Repo-URLs unverändert; KEIN Modul-Code-Eingriff | [→ Archiv](sessions/archiv/2026-05-17_pflege-rechtschreibung-protokoll.md) |
+| 2026-05-17 | Mini-Pflege · Sage-Page Live-Status für Topologie + Lebenszyklus (`isNextUp()`-Vakuum-Falle gefixt — nur Module mit `score:"spec"\|"werkstatt"` zählen als nextup; neue `renderCyclePhases()`-Funktion bindet Phase-Pills an Modul-02/03/05/04-Live-Status; automatisch sichtbar bei künftigen Modul-Status-Änderungen in `status.json`) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sage-page-live-status.md) |
+| 2026-05-16 | Live-Andock · Cross-Knoten-Handshake etabliert (`outcome:"established"` zwischen Mein-Mixarium `7xf0tt33_…` und Mein-Rezeptbuch `RHhposP0…`; Origin-Kollision via dbSuffix aufgelöst; Modul 01 in Endknoten nachgezogen; PR #238-Schaden in Mein-Rezeptbuch-`index.html` repariert; Match-Score Cocktails↔Kochrezepte ≥ 0.8; SW-Bridge-Phantom-Cache-Bug umgangen via direktem `receiveHandshake`-Aufruf, Folge-Pflege offen) | [→ Archiv](sessions/archiv/2026-05-16_cross-knoten-handshake-etabliert.md) |
+| 2026-05-16 | Pflege · Sage-Page Vollumbau / Redesign (Geist-Typografie, Force-Graph-Topologie ersetzt Pie-Doppelung, Lesematerial-Karte, Sichtbarkeits-Lampen-Demo-Anker, scroll-aware Lebenszyklus, neue Pflege-Konvention `docs/sage_page_pflege.md`) | [→ Archiv](sessions/archiv/2026-05-16_pflege-sage-page-redesign.md) |
 | 2026-05-16 | Mini-Pflege · Test-Panel Knopf-7-pendingBackup-Reset (Reset-Zeile aus Handler-Anfang in `tests/manual_check.html` entfernt, `pendingBackup = null` jetzt direkt vor `importBackup`-Aufruf nach erfolgreicher File-Wahl; File-Picker-Cancel löst keine State-Änderung mehr aus, Stash überlebt doppelten Knopf-7-Klick ohne File-Wahl; KEIN Modul-Code-Eingriff, KEIN INTERFACES.md-Eingriff, KEIN Score-Wechsel) | [→ Archiv](sessions/archiv/2026-05-16_pflege-test-panel-knopf-7-pendingBackup.md) |
 | 2026-05-16 | Pflege · Phase-1 Sichttest-Resultate Karten 02/06/01 (Klaus' Sichttest 2026-05-16: Bau-02.X-Knöpfe 6/7/7b grün + Panel 06 rasch grob + Panel 01 Knopf 5 `_meta.storagePersisted: true` in Karten 02/06/01 § Bauzustand + PULS Schnellüberblick nachgezogen; Test-Panel-UX-Befund Knopf 7 pendingBackup-Stash-Reset offen als Mini-Pflege) | [→ Archiv](sessions/archiv/2026-05-16_pflege-phase1-sichttest-karten-02-06-01.md) |
 | 2026-05-16 | Pflege · Persistenz-Strategie verbinden (Identitäts-Persistenz Stufe 3 — Modul 00 „Backup empfohlen"-Tipp-Zeile bei `storagePersisted === false` ODER Quota-Warn; `getStatusSnapshot()` um `storagePersisted` erweitert, kein Direkt-Aufruf von Modul 02; alle drei Stufen final gelöst) | [→ Archiv](sessions/archiv/2026-05-16_pflege-persistenz-strategie-verbinden.md) |

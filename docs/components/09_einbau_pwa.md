@@ -3,7 +3,7 @@
 > **Status:** 🟨 Spec fertig  ·  **Schicht:** Anleitung (kein JS-Modul)  ·  **Anker:** Sage-Page → Karte 4, Eintrag 09 · Karte 10 (Andocken)
 > **Datei:** diese Karte *ist* die Anleitung — kein JS unter `src/`
 >
-> _Wie aus dem Sage-Protokoll-Hub (Spec + Code-Stubs) ein produktiv
+> _Wie aus dem Sage-Protokol-Hub (Spec + Code-Stubs) ein produktiv
 > andockendes Rezeptbuch oder Mixarium wird. Module kopieren, Spore mit
 > `domainVector` erzeugen, Service-Worker registrieren, ersten
 > Handshake auslösen._
@@ -78,7 +78,7 @@ sind die Endknoten-Apps des Betreibers:
 - **Rezeptbuch** (Domäne: Kochrezepte)
 - **Mixarium** (Domäne: Cocktails / Drinks)
 
-Anders gesagt: hier steht, wie aus dem Sage-Protokoll-Hub (Spec +
+Anders gesagt: hier steht, wie aus dem Sage-Protokol-Hub (Spec +
 Code-Stubs) eine produktiv andockende Endknoten-PWA wird. Die Anleitung
 orientiert sich an `sbkim_integration.md`, ist aber auf den Reife- und
 Bauzustand dieses Repos abgestimmt — die Code-Module 01/02/03/04/05
@@ -111,7 +111,7 @@ bereit, die Anastomose ist als Variante A · Page-Hosted gebaut.
 **Macht nicht:**
 - **Keine Modul-Änderungen.** Karte 09 baut nur ein, modifiziert nicht.
   Wer einen Bug in Modul 01–05 findet, hebt eine Bau-Sitzung im
-  Sage-Protokoll-Repo, nicht im Endknoten-Repo.
+  Sage-Protokol-Repo, nicht im Endknoten-Repo.
 - **Kein Singleton-Bruch.** Eine PWA = eine Identität. Wer eine zweite
   Identität braucht, legt eine zweite PWA an (anderer Origin).
 - **Keine Eigenanfragen ins offene Netz.** Der erste Handshake (Schritt
@@ -121,7 +121,7 @@ bereit, die Anastomose ist als Variante A · Page-Hosted gebaut.
   der Andocker eine neue Spore manuell — kein automatisches
   Re-Publishing.
 - **Keine Test-Knöpfe in der Produktiv-App.** `tests/manual_check.html`
-  bleibt im Sage-Protokoll-Repo.
+  bleibt im Sage-Protokol-Repo.
 - **Keine `info`-Logs für Match-Treffer.** Nur Fehler. Selbstcheck-
   Zeilen beim Modul-Laden sind okay (passieren einmalig).
 - **Kein Auto-Reveal der Doku.** Die 5-Klick-Geste aus Modul 00 ist
@@ -253,7 +253,7 @@ typischerweise auftritt**.
 
 ### Schritt 1 — Dateien kopieren
 
-Aus dem Sage-Protokoll-Repo in den Endknoten-Repo:
+Aus dem Sage-Protokol-Repo in den Endknoten-Repo:
 
 ```
 sage-protokol/src/modules/01_storage.js       → <endknoten>/sbkim/01_storage.js  (oder inline, siehe Schritt 2)
@@ -1068,15 +1068,15 @@ beim nächsten Klick automatisch idempotent.
 
 ## Nach dem Einbau zu pflegen
 
-- **`docs/PULS.md` im Sage-Protokoll-Repo:** Endknoten-Tabelle
+- **`docs/PULS.md` im Sage-Protokol-Repo:** Endknoten-Tabelle
   aktualisieren ("integriert: ja, Stand 2026-MM-DD").
-- **`status.json` im Sage-Protokoll-Repo:** `endknoten[].integrated →
+- **`status.json` im Sage-Protokol-Repo:** `endknoten[].integrated →
   true`, `url` füllen.
 - **Bei Domain- oder Domänenwechsel:** Spore neu generieren (Schritt
   5–6 wiederholen mit neuen Werten) und neu deployen (Schritt 7).
   Identität (`nodeId`, `publicKey`) bleibt — nur die Meta-Felder ändern
   sich.
-- **Bei Protokoll-Versions-Update im Sage-Protokoll-Repo:** Endknoten
+- **Bei Protokoll-Versions-Update im Sage-Protokol-Repo:** Endknoten
   nachziehen, indem die fünf Modul-Dateien + `sbkim-sw.js` erneut
   kopiert werden. Wenn der Sprung von Nebenversion (z.B. `0.1 → 0.2`)
   bleibt, ist das kompatibel — Spore muss nicht neu deployt werden.
@@ -1096,7 +1096,7 @@ beim nächsten Klick automatisch idempotent.
 ## Was nicht in den Endknoten gehört
 
 - **Keine Test-Knöpfe** aus `tests/manual_check.html` in die
-  Produktiv-App übernehmen — die gehören ins Sage-Protokoll-Repo.
+  Produktiv-App übernehmen — die gehören ins Sage-Protokol-Repo.
 - **Keine `console.info`-Logs** für jeden Match-Treffer im Betrieb.
   Selbstcheck-Zeilen beim Modul-Laden sind okay (einmalig pro
   PWA-Start), `info`-Logs für jede Anastomose nicht. Nur Fehler
@@ -1299,7 +1299,7 @@ unverändert.
   nichts und ist auch von gar nichts abhängig. Inhaltlich ist sie die
   Bündel-Anleitung für 01/02/03/04/05 + den Service-Worker.
 - **Wird genutzt von:** Endknoten-Repos (Rezeptbuch, Mixarium) — nicht
-  intern im Sage-Protokoll-Repo. Auch von Modul 07 (Apoptose),
+  intern im Sage-Protokol-Repo. Auch von Modul 07 (Apoptose),
   sobald spezifiziert — Vermächtnis-Deploy folgt einem ähnlichen
   Schritt-Pfad wie Spore-Deploy.
 - **Setzt voraus (inhaltlich):**
