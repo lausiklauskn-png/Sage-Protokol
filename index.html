@@ -457,7 +457,7 @@
 
   /* Galaxien-Schicht */
   .universe-galaxies { position: absolute; inset: 0; pointer-events: none; }
-  .universe-galaxy { position: absolute; width: 110px; height: 110px; pointer-events: auto; cursor: pointer; transform-origin: center; transition: filter 0.5s ease, transform 0.5s ease; will-change: transform, filter; }
+  .universe-galaxy { position: absolute; width: 110px; height: 110px; pointer-events: auto; cursor: pointer; transform-origin: center; transition: filter 0.5s ease, transform 0.5s ease; will-change: transform, filter; background: transparent; border: 0; padding: 0; outline: none; }
   .universe-galaxy .galaxy-body { position: absolute; inset: 0; border-radius: 50%; animation: galaxy-spin 24s linear infinite; }
   .universe-galaxy.medium .galaxy-body { animation-duration: 32s; }
   .universe-galaxy.large .galaxy-body { animation-duration: 40s; }
@@ -467,7 +467,9 @@
   @keyframes galaxy-spin { to { transform: rotate(360deg); } }
 
   /* Galaxie-Formen: Spirale, elliptisch, irregulär, Sombrero, ... */
-  .galaxy-spiral .galaxy-body { background: conic-gradient(from 0deg, rgba(255,170,80,0.0) 0%, rgba(255,180,100,0.85) 15%, rgba(255,90,160,0.7) 30%, rgba(180,80,255,0.5) 50%, rgba(100,180,255,0.6) 70%, rgba(255,180,100,0.85) 90%, rgba(255,170,80,0.0) 100%); filter: blur(2px) saturate(1.2); -webkit-mask: radial-gradient(circle at center, #000 0%, #000 18%, transparent 65%); mask: radial-gradient(circle at center, #000 0%, #000 18%, transparent 65%); }
+  .universe-galaxy .galaxy-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: saturate(1.15); }
+  .galaxy-spiral .galaxy-body, .galaxy-andromeda .galaxy-body { background: transparent; -webkit-mask: none; mask: none; }
+  .galaxy-andromeda .galaxy-svg { transform: rotateX(62deg) rotate(-18deg); transform-style: preserve-3d; }
   .galaxy-elliptical .galaxy-body { background: radial-gradient(ellipse at center, rgba(255,220,180,0.95) 0%, rgba(255,180,120,0.7) 25%, rgba(220,140,90,0.4) 55%, transparent 80%); transform: rotate(-25deg) scaleY(0.55); filter: blur(1.5px); }
   .galaxy-irregular .galaxy-body { background: radial-gradient(circle at 35% 45%, rgba(160,255,220,0.85) 0%, rgba(100,200,255,0.55) 30%, rgba(180,90,255,0.4) 55%, transparent 80%), radial-gradient(circle at 70% 60%, rgba(255,130,200,0.7) 0%, rgba(180,80,255,0.4) 35%, transparent 70%); filter: blur(3px); }
   .galaxy-sombrero .galaxy-body { background: radial-gradient(ellipse at 50% 50%, rgba(255,230,180,0.95) 0%, rgba(200,150,90,0.5) 30%, transparent 60%); transform: rotate(-12deg); }
@@ -2122,7 +2124,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   // mehr will, nimmt die md).
 
   const OBSERVATORIUM_LEHREN = [
-    { n: 1, name: 'Browser-Instanzen-Trennung', shape: 'galaxy-spiral', size: 'large',
+    { n: 1, name: 'Browser-Instanzen-Trennung', shape: 'galaxy-andromeda', size: 'large',
       kurz: 'Samsung DeX-Chrome und Tablet-Chrome auf demselben Gerät sind faktisch **zwei getrennte Browser** — eigene IndexedDB, eigene Service-Worker, eigene PWA-Liste. Eine in DeX angedockte Spore ist im Tablet-Modus nicht da. Gilt generalisiert für Chrome-Profile und Inkognito-Modus.|**Konsequenz für SBKIM:** BroadcastChannel-Bridge funktioniert nur, wenn beide Tabs in derselben Browser-Instanz laufen.' },
     { n: 2, name: 'IndexedDB-Persistenz', shape: 'galaxy-sombrero', size: 'large',
       kurz: 'IndexedDB ist persistent — bis Chrome reklamiert. „Cookies und Sitedaten löschen" für diese Site killt die SBKIM-Identität vollständig. Auch Storage-Quota-Druck kann „best effort"-Daten reklamieren. `navigator.storage.persist()` schützt nur teilweise.|**Schutz:** regelmäßiges Backup mit Modul 02 `exportBackup(password)`.' },
@@ -2130,13 +2132,83 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       kurz: 'Channel-Bridge trägt nur, wenn beide Tabs in **derselben Browser-Instanz** laufen — same-origin reicht nicht. Mobile-Chrome suspendiert Hintergrund-Tabs aggressiv, dann verstummt der Receiver-Listener und der Sender erntet `HandshakeTimeoutError`.|**Workaround:** DeX-Multi-Window oder zwei sichtbare Fenster nebeneinander.' },
     { n: 4, name: 'SW-Cache + File-Rename', shape: 'galaxy-irregular', size: 'medium',
       kurz: 'Browser-HTTP-Cache, App-Service-Worker-Cache und GitHub-Pages-CDN cachen jeweils. Modul-Updates kommen nur durch, wenn man File-Rename als Cache-Bust nutzt (`05_anastomose.js` → `05_anastomose-v2.js`). Query-Parameter sind halbverlässlich.|**Notfall:** SW unregistrieren + Reload — bricht App-Offline-Pfade kurz, aber heilt Cache-Hänger.' },
-    { n: 5, name: 'Eruda ≠ Chrome-DevTools', shape: 'galaxy-elliptical', size: 'small',
+    { n: 5, name: 'Eruda ≠ Chrome-DevTools', shape: 'galaxy-spiral', size: 'medium',
       kurz: 'Eruda ist Tablet-Lifesaver, aber: kein top-level `await` (nutzt `.then()` statt), `copy()` mobile-blockiert (Blob-Download als Workaround), Output bei großen Arrays abgeschnitten.|**Spore-Export-Trick:** `Blob` + `<a download>` lädt eine `spore.json` ins Android-Downloads — Termux greift via `~/storage/downloads/` direkt darauf zu.' },
     { n: 6, name: 'Termux-Brücke', shape: 'galaxy-lenticular', size: 'small',
       kurz: 'Termux ist vollwertiges Linux-Userland auf Android. Mit `termux-setup-storage` werden Symlinks zu `/storage/emulated/0/Download/` und Co. angelegt — Eruda-Downloads sind dann direkt in der Shell verfügbar.|**Folge:** kompletter Single-Device-Multi-PWA-Andock-Workflow am Tablet ohne PC, Browser + Termux als Brücke.' },
     { n: 7, name: 'DeX als Plattform', shape: 'galaxy-quasar', size: 'large',
       kurz: 'DeX-Desktop-Chrome ist eine **separate Browser-Instanz**, aber zugleich eine ernsthafte Test-Plattform: weniger aggressive Hintergrund-Tab-Suspendierung als Mobile-Chrome, Multi-Window-Modus erlaubt parallele PWA-Tabs gleichzeitig sichtbar.|**Konsequenz:** Channel-Bridge-Setup ohne Mobile-Suspend-Risiko, Maus + Tastatur für Eruda-Komfort, Desktop-Hard-Reload via `Strg+Shift+R`.' }
   ];
+
+  // Logarithmische Spiralgalaxie als SVG generieren — drei Arme, einstellbare
+  // Anzahl Umdrehungen, Farbpalette. Verwendet für galaxy-spiral und
+  // galaxy-andromeda (letzteres wird per CSS perspektivisch gekippt).
+  function makeSpiralGalaxySVG(opts) {
+    const arms = opts.arms || 3;
+    const turns = opts.turns || 1.55;
+    const b = opts.tightness || 0.22;
+    const start = opts.startScale || 7;
+    const palette = opts.palette || ['#ffd095', '#ffa885', '#ffbab0'];
+    const dustColor = opts.dust || 'rgba(80,40,80,0.55)';
+    const uid = 'sp' + Math.random().toString(36).slice(2, 8);
+    const steps = 56;
+    const armPaths = [];
+    const armPathsBright = [];
+    const dots = [];
+    for (let arm = 0; arm < arms; arm++) {
+      const startAngle = (arm / arms) * Math.PI * 2;
+      let d = '';
+      for (let i = 0; i <= steps; i++) {
+        const t = (i / steps) * turns * Math.PI * 2;
+        const r = start * Math.exp(b * t);
+        if (r > 95) break;
+        const x = r * Math.cos(t + startAngle);
+        const y = r * Math.sin(t + startAngle);
+        d += (i === 0 ? 'M' : 'L') + ' ' + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+      }
+      const c = palette[arm % palette.length];
+      armPaths.push('<path d="' + d + '" stroke="' + c + '" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.42"/>');
+      armPathsBright.push('<path d="' + d + '" stroke="' + c + '" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85"/>');
+      // Sterne als helle Punkte entlang des Arms
+      for (let j = 1; j < 10; j++) {
+        const t = (j / 10) * turns * Math.PI * 2;
+        const r = start * Math.exp(b * t);
+        if (r > 92) continue;
+        const jitter = (Math.random() - 0.5) * 8;
+        const ang = t + startAngle + (Math.random() - 0.5) * 0.18;
+        const x = r * Math.cos(ang) + jitter * 0.3;
+        const y = r * Math.sin(ang) + jitter * 0.3;
+        const sr = (0.6 + Math.random() * 1.2) * (1 - r / 110);
+        dots.push('<circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="' + sr.toFixed(2) + '" fill="#fff" opacity="' + (0.55 + Math.random() * 0.4).toFixed(2) + '"/>');
+      }
+    }
+    // Dunkelnebel-Streifen (subtle dust lane)
+    return '<svg viewBox="-100 -100 200 200" class="galaxy-svg">' +
+      '<defs>' +
+        '<radialGradient id="bg' + uid + '" cx="50%" cy="50%" r="42%">' +
+          '<stop offset="0%" stop-color="rgba(255,255,235,0.98)"/>' +
+          '<stop offset="22%" stop-color="rgba(255,215,150,0.82)"/>' +
+          '<stop offset="55%" stop-color="rgba(230,140,90,0.32)"/>' +
+          '<stop offset="100%" stop-color="rgba(180,80,60,0)"/>' +
+        '</radialGradient>' +
+        '<filter id="bl' + uid + '" x="-20%" y="-20%" width="140%" height="140%">' +
+          '<feGaussianBlur stdDeviation="1.4"/>' +
+        '</filter>' +
+        '<filter id="bl2' + uid + '" x="-20%" y="-20%" width="140%" height="140%">' +
+          '<feGaussianBlur stdDeviation="0.6"/>' +
+        '</filter>' +
+      '</defs>' +
+      '<g filter="url(#bl' + uid + ')">' +
+        armPaths.join('') +
+      '</g>' +
+      '<g filter="url(#bl2' + uid + ')" opacity="0.9">' +
+        armPathsBright.join('') +
+      '</g>' +
+      '<circle cx="0" cy="0" r="42" fill="url(#bg' + uid + ')" filter="url(#bl' + uid + ')"/>' +
+      '<circle cx="0" cy="0" r="9" fill="#ffffff"/>' +
+      dots.join('') +
+    '</svg>';
+  }
 
   let universeInited = false;
   let universeRAF = 0;
@@ -2160,7 +2232,15 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       el.type = 'button';
       el.setAttribute('aria-label', 'Lehre ' + lehre.n + ' — ' + lehre.name + ' öffnen');
       el.dataset.idx = i;
-      el.innerHTML = '<div class="galaxy-body"></div><div class="galaxy-label">Lehre ' + lehre.n + ' · ' + lehre.name + '</div>';
+      let inner;
+      if (lehre.shape === 'galaxy-spiral') {
+        inner = makeSpiralGalaxySVG({ arms: 3, turns: 1.6, tightness: 0.22, palette: ['#ffd095', '#ffae80', '#ffc0a8'] });
+      } else if (lehre.shape === 'galaxy-andromeda') {
+        inner = makeSpiralGalaxySVG({ arms: 2, turns: 1.4, tightness: 0.26, palette: ['#ffbf85', '#ff9b6c', '#ffd0a5'] });
+      } else {
+        inner = '<div class="galaxy-body"></div>';
+      }
+      el.innerHTML = inner + '<div class="galaxy-label">Lehre ' + lehre.n + ' · ' + lehre.name + '</div>';
       el.addEventListener('click', () => openUniverseModal(i));
       galaxiesEl.appendChild(el);
 
