@@ -693,6 +693,187 @@ nötig — visueller Eindruck zeigt sich erst beim Testen.
 **Status:** Reif für eigene Bau-Sitzung, jederzeit zwischen V1
 und V3-Bau einschiebbar.
 
+### 2026-05-17 · Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister
+
+**Eingetragen:** Mini-Pflege „Vision-Anker Königin-Relay" 2026-05-17
+(Folge zu Bau Browser-Observatorium-Universum, PR #79 + Lehre 8,
+PR #80 + Cursor-Variante PR #81). Klaus' fundamentale Architektur-
+Frage nach den Pages-Live-Tests: **„Was, wenn ich einmal Browser A
+nehme und ein andermal Browser B? Ist die Spore nur zu finden, wenn
+der Browser offen ist? Ist sie empfangsbereit, wenn der Browser
+nicht geöffnet ist?"**
+
+Ehrliche Antwort: aktuelle SBKIM-Architektur sagt **„Wer nicht da
+ist, schweigt"** (Empfangsmodus-Prinzip aus dem SBKIM-Paper). Browser-
+PWAs sind nicht für dauerhaft laufende Dienste gebaut — Pages leben
+nur solange die Tabs offen sind, Service-Worker werden nach Stunden
+suspendiert. Browser-Wechsel = neue Identität (IndexedDB ist pro
+Browser-Instanz). Das ist konzeptuell sauber für ein peer-to-peer
+Mycel, aber eine harte Grenze für Verbreitung.
+
+Klaus' Bild: **Königin wie bei Bienen.** Eine Königin ist Bezugspunkt,
+nicht Daten-Eigentümer. Übertragen auf SBKIM könnte das ein
+**„Königin-Relay" als optionales neues Modul (13?)** sein.
+
+### Modell
+
+- Eine Königin ist eine **Mailbox** für Geschwister.
+- Sie speichert **nicht** private Schlüssel — nur **verschlüsselte
+  Handshake-Envelopes** (Public-Key-Verschlüsselung mit dem
+  Empfänger-publicKey, sodass nur dieser sie öffnen kann).
+- Wenn Knoten A handshaken will mit B, und B ist offline → A schickt
+  verschlüsselten Envelope an die Königin → Königin hält ihn fest →
+  B kommt nächstes Mal online → fragt bei der Königin „Post für
+  mich?" → bekommt den Envelope → entschlüsselt mit eigenem privaten
+  Schlüssel → antwortet.
+- **Privacy gewahrt:** Königin sieht nur verschlüsselte Daten,
+  nicht den Inhalt.
+- **Optional:** Knoten ohne Königin-Anbindung funktionieren wie
+  bisher (direkter Channel-Bridge, same-instance). Königin ist
+  „kann", nicht „muss".
+- **Mehrere Königinnen möglich** → kein Single Point of Failure.
+  Knoten registriert sich bei `N` Königinnen seines Vertrauens.
+- **Analogie:** E-Mail-Relay, Matrix-Server, Bluesky-Relay — alle
+  privacy-wahrend, alle Mailbox-Buffer-Modelle.
+
+### Implementations-Optionen
+
+1. **Server-Königin:** Node.js / Python / Go-Server, klassische
+   Backend-Architektur. Wer hostet? Klaus selbst auf einem Raspi,
+   ein Verein, ein Hoster. Geld + Vertrauen erforderlich.
+2. **PWA-Königin mit Push-API:** browserseitige Königin, läuft im
+   Service-Worker mit WebPush-Notifications. Komplexer, aber
+   serverlos auf manchen Hostern. Push-Triggers können den
+   Receiver-Tab automatisch öffnen.
+3. **Eigenes-Gerät-Königin:** Klaus' Raspi zuhause mit immer-online
+   Status. Selbst-souverän, aber technisch anspruchsvoll.
+
+### Anknüpfung an V1 (Sage als Hybrid)
+
+V1 macht Sage zu einem Knoten — das ist ein **erster Schritt in
+Königin-Richtung.** Wenn Sage selbst Mailbox-Funktion bekäme, wäre
+sie die erste Königin. Aber Sage liegt auf GitHub Pages — statisch,
+kann nicht aktiv empfangen. Eine echte Königin braucht einen aktiv
+laufenden Prozess. V1 ist daher Vorbereitung, nicht selbst Königin.
+
+### Was Königin-Relay LÖST
+
+- Empfang ohne offene Tabs (Mailbox puffert)
+- Browser-Wechsel-Problem (Identität bleibt portabel über `exportBackup`,
+  Königin-Verbindung über die Identität)
+- Reputation / Schutz-Backlog (Module 10/11/12) könnten am Königin-
+  Layer leben
+
+### Was Königin-Relay BEDINGT (Trade-offs)
+
+- **Privacy-Annahmen:** Königin kann Metadaten sammeln (wer schreibt
+  wann an wen). Kein perfektes Privacy-Modell, aber besser als zentraler
+  Server mit Klartext.
+- **Hosting-Frage:** wer betreibt Königin-Knoten? Vertrauen + Geld.
+- **Single Point of Failure** nur wenn jemand sich auf nur eine
+  Königin verlässt. Mit `N`-Königin-Strategie vermieden.
+- **Implementations-Aufwand:** signifikant, vermutlich >50 Stunden
+  für initiale Spec + Bau + Königin-Implementierung.
+
+### Status
+
+**Reif für Spec-Sitzung-Diskussion**, aber NICHT für sofortige
+Spec-Sitzung. Wartezeit empfohlen, damit:
+
+- V1 (Sage als Hybrid) erst spezifiziert + gebaut wird → Sage-als-
+  Knoten-Erfahrung sammeln
+- IndexedDB-Persist-Schutz (Mini-Pflege offen) ergibt Praxis-Daten
+  über Identitäts-Stabilität
+- Klaus' Klarheit über Königin-Vertrauen-Modell reift (wer betreibt?
+  Wer vertraut wem? Mehrere Hosts oder einzeln?)
+
+Spec-Sitzung-Aufgabe **nach** der V1-Sage-Hybrid-Spec, NICHT
+parallel.
+
+### 2026-05-17 · Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser
+
+**Eingetragen:** Mini-Pflege „Vision-Anker Königin-Relay" 2026-05-17,
+Folge-Frage Klaus: „und die mitgeführte eigene Mini-Browser-Version
+geht wirklich nicht effektiv, oder sowas wie ein Rucksack oder Safe
+oder Chipkarte mit der ich mich beim Aufwachen oder Anmelden neu
+identifiziere?"
+
+Die Antwort hat **vier Konzept-Pfade**, die SBKIM in unterschiedlichen
+Tiefen erweitern könnten:
+
+1. **Rucksack/Safe (Datei) — schon implementiert.** Modul 02 hat
+   `SbkimSpore.exportBackup(password)` + `importBackup(blob, password)`
+   seit Bau 02.X (PR mit dem Identitäts-Backup-Stufe-2-Modul). Der
+   Backup-Blob ist eine `.json`-Datei, PBKDF2-SHA256-600.000-Runden +
+   AES-GCM-256-verschlüsselt. Was fehlt: **UX-Konzept eines
+   „Identitäts-Containers"** — der Backup-Blob als „digitaler
+   Reisepass", den Klaus auf USB / Cloud / lokal trägt. Beim Anmelden
+   in einem neuen Browser: Datei rein, Klaus ist wieder er selbst.
+   **Mini-Pflege „Identitäts-Container-UX"** könnte das polieren:
+   sprechender Dateiname (z.B. `klaus-spore-2026-05-17.json`),
+   Hinweis-Pfad im Doku-Fenster („Backup machst du regelmäßig"), Datei-
+   Schloss-Visualisierung.
+
+2. **Chipkarte / Hardware-Wallet — Hardware-basiert.** WebAuthn /
+   FIDO2 ist der Browser-Standard für Hardware-/Biometrie-basierte
+   Authentifizierung. Der private Schlüssel liegt im Sicherheits-
+   Modul des Geräts (Smartphone-Secure-Enclave, YubiKey, Trezor) und
+   verlässt es nie. SBKIM-Identität könnte WebAuthn-basiert sein
+   statt IndexedDB-basiert — Identität ist an Hardware gebunden,
+   nicht an Browser. Aber: WebAuthn ist primär für Login-Auth, nicht
+   für signierte Mycel-Nachrichten. Anpassung nötig. **Größere
+   Spec-Initiative**, vermutlich Modul 14 oder höher.
+
+3. **Mini-Browser (Variante III aus bestehendem Vision-Anker).**
+   Native App-Wrapper (Tauri / Electron / Capacitor) mit
+   eingebakkener Identität. App läuft im Hintergrund, persistent,
+   empfängt auch bei „aufgewachtem" Gerät ohne offene Tabs. **Schon
+   als Vision-Anker drin (Variante III-Ausbau, dritter Pfad).** Diese
+   Frage bestärkt: Mini-Browser ist nicht nur Onboarding-Hilfe,
+   sondern auch **Hintergrund-Empfänger** und **Identitäts-Container.**
+
+4. **Passkey-Sync (modern).** Apple iCloud-Keychain, Google Password
+   Manager, 1Password synchronisieren Passkeys plattformübergreifend.
+   Wer in einem Browser angemeldet ist, hat dort automatisch Zugriff
+   auf seine Identitäten. Wäre eine **plattform-abhängige** Lösung
+   (Apple ↔ Apple, Google ↔ Google), kein peer-to-peer, aber sehr
+   pragmatisch für die meisten Nutzer.
+
+### Verbindung zu Königin-Relay (Anker oben)
+
+Königin-Relay und Identitäts-Container lösen unterschiedliche
+Probleme:
+
+- **Königin-Relay:** **„Wie empfange ich, wenn der Browser nicht
+  offen ist?"** → Mailbox-Modell, ein Knoten irgendwo ist online
+  und puffert verschlüsselte Envelopes
+- **Identitäts-Container:** **„Wie nehme ich meine Identität von
+  Browser A zu Browser B mit?"** → Datei / Hardware / Sync
+
+Sie können kombiniert werden: Klaus' Identität liegt als Backup-Datei
+(Rucksack), er importiert sie bei jedem neuen Browser-Anmeldung, und
+seine Königin (verschlüsselte Mailbox) hat die ausstehenden Handshakes
+für ihn parat.
+
+### Status
+
+Pfad 1 (Rucksack-UX): **Mini-Pflege möglich** ohne große Architektur-
+Änderung. Sinnvoller Folge-Schritt nach Storage-Persist-Schutz.
+
+Pfade 2/3/4: **Spec-Sitzungs-Diskussionen**, jeweils signifikanter
+Aufwand. Reihenfolge:
+- Pfad 3 (Mini-Browser) zuerst — schon als V3-Ausbau-Vision drin,
+  kombiniert mit dem Onboarding-Wizard.
+- Pfad 4 (Passkey-Sync) als pragmatische Brücke — vermutlich
+  zwischen V3-Mini-Browser-Spec und Königin-Relay-Spec.
+- Pfad 2 (Hardware-Wallet) als ferne Vision — nur falls SBKIM in
+  einem sicherheits-kritischen Kontext eingesetzt würde.
+
+**Status:** Reif für Vor-Diskussion, **nicht** für Spec. Wartet auf:
+- V1-Sage-Hybrid-Erfahrung
+- Storage-Persist-Schutz-Praxis (Mini-Pflege offen)
+- Klaus' Bauchgefühl, welcher Pfad sich am stimmigsten anfühlt
+
 ---
 
 ## Sitzungs-Einträge
@@ -703,6 +884,68 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-17 · Mini-Pflege — Vision-Anker Königin-Relay (Modul 13?)
+
+**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
+`claude/pflege-vision-anker-koenigin-relay`. Folge zur Cursor-Variante
+(PR #81 `047294b`) und allen Universum-Sitzungen heute.
+
+Klaus' fundamentale Architektur-Frage spät am Abend: **„Was, wenn ich
+einmal einen Browser nehme und ein andermal einen anderen? Ist die
+Spore nur zu finden, wenn der Browser offen ist? Ist sie empfangsbereit,
+wenn der Browser nicht geöffnet ist?"**
+
+Die ehrliche Antwort berührt das **Empfangsmodus-Prinzip des SBKIM-
+Papers** („Wer nicht da ist, schweigt"). Browser-PWAs sind nicht für
+dauerhaft laufende Dienste gebaut — Pages leben nur solange die Tabs
+offen sind, Service-Worker werden nach Stunden suspendiert, IndexedDB
+ist pro Browser-Instanz. Das ist konzeptuell sauber für ein peer-to-
+peer Mycel, aber eine harte Grenze für Verbreitung außerhalb des
+Klaus-Kreises.
+
+Klaus' Bild als Mittelweg: **Königin wie bei Bienen** — Bezugspunkt,
+nicht Daten-Eigentümer. Ein **„Königin-Relay" als optionales neues
+Modul** (möglicherweise Modul 13). Privacy-wahrend (nur verschlüsselte
+Envelopes, nicht private Schlüssel). Optional anbindbar (peer-to-peer-
+Default bleibt). Mehrere Königinnen möglich (kein Single Point of
+Failure).
+
+**Was eingetragen:**
+
+- **PULS.md § Vision-Anker** um vierten Anker erweitert:
+  „Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister" mit
+  Modell-Beschreibung, drei Implementations-Optionen (Server / PWA-
+  mit-Push / Eigenes-Gerät), Anknüpfung an V1 (Sage als erster Schritt
+  in Königin-Richtung), Trade-offs (Privacy-Annahmen, Hosting-Frage,
+  Implementations-Aufwand), Status (reif für Spec-Diskussion **nach**
+  V1).
+- **PULS.md § Sitzungs-Einträge** neuer Top-Eintrag (dieser).
+- **Übergabeprotokoll:** `docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md`.
+
+**Reihenfolge der Visionen jetzt:**
+
+1. **V1 — Sage als Hybrid-Knoten** (Klaus' explizite nächste Spec-
+   Wahl, eingetragen 2026-05-17 Vision-Anker-Pflege PR #78)
+2. **V3-Ausbau — Niedrigeres Onboarding** (langfristiger Plan)
+3. **Universum-Vision — Bildlich-animiertes Mini-Universum** (umgesetzt
+   in PR #79 + Lehre 8 in #80)
+4. **Königin-Relay (Modul 13?)** — neuer Anker (dieses), wartet auf
+   V1-Erfahrung + IndexedDB-Persist-Schutz-Praxis
+5. **Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser**
+   — fünfter Anker (dieses), vier Konzept-Pfade (Datei-Backup-UX schon
+   teilweise da, Hardware-Wallet/WebAuthn als Fern-Vision, Passkey-
+   Sync als pragmatische Brücke, Mini-Browser kombiniert mit V3)
+
+**Was NICHT angefasst:** Modul-Karten, INTERFACES.md, status.json,
+Sage-Page (Vision lebt rein in PULS, kein Code-Eingriff).
+`update_puls_pie.py` NICHT aufgerufen.
+
+**Nächster sinnvoller Schritt:** Pause / Schlaf. Klaus hatte einen
+Marathon-Tag (PR #75 → #76 → #77 → #78 → #79 → #80 → #81 → #82).
+Diese Vision verdient frischen Kopf.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md](sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md).
 
 ### 2026-05-17 · Mini-Pflege — Observatorium-Lehre 8 + 8. Galaxie
 
