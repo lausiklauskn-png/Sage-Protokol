@@ -2460,11 +2460,19 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   }
 
   // ====== INIT ======
+  function applyHashScreen() {
+    const h = (location.hash || '').replace(/^#/, '');
+    if (h && SCREENS.indexOf(h) !== -1) {
+      goScreen(h, h === 'observatorium' ? 'blackhole' : null);
+    }
+  }
   document.addEventListener('DOMContentLoaded', () => {
     loadStatus();
     setupLifecycleObserver();
     setupBlackholeAnziehung();
+    applyHashScreen();
   });
+  window.addEventListener('hashchange', applyHashScreen);
   </script>
 </body>
 </html>
