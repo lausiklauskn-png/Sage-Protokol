@@ -543,6 +543,158 @@ Kategorien jetzt mit.
 
 ---
 
+## Vision-Anker (langfristig, kein Bau-Auftrag)
+
+**Was ist das?** Visionen, die in Sitzungen aufgekommen sind und
+nicht verloren gehen sollen, ohne dass sie sofort Spec oder Bau
+auslösen. Sie warten auf eine Reifezeit oder einen passenden
+Auslöser. Pflege-Disziplin: Vision wird hier festgehalten, mit
+Datum + Sitzungs-Bezug + ungefährer Größenordnung. Wer sie ziehen
+will, formuliert daraus einen Spec-Sitzungs-Brief.
+
+### 2026-05-17 · Sage als Hybrid-Knoten (Variante I)
+
+**Eingetragen:** Mini-Pflege „Vision-Anker" 2026-05-17 (Folge zu
+Live-Channel-Handshake, PR #77 `7c08b88`). Klaus' Bild: die
+Ameisenkönigin bleibt eine Ameise, auch wenn sie sich nicht vom
+Fleck bewegt. Sage-Protokol kann Hub bleiben **und** zugleich ein
+vollwertiger Endknoten werden — selbstreferenziell wie ein Mycel,
+das seine eigene Karte ist.
+
+**Was sich ändert (Spec-Sitzungs-Aufgabe, nicht jetzt umsetzen):**
+
+- **CLAUDE.md** umschreiben — Satz „Es ist kein Endknoten" fällt;
+  Sage wird als „Hub und Knoten zugleich" neu eingeführt.
+- **INTERFACES.md § Endknoten-Liste** nimmt Sage als dritten Knoten
+  auf, neben Mein-Rezeptbuch und Mein-Mixarium.
+- **`status.json` § endknoten** bekommt einen `sage`-Eintrag mit
+  eigener Domäne, nodeId (nach erstem Andocken), `pingStatus`.
+- **Sage-Page (`index.html`)** muss alle SBKIM-Module mit voller
+  `init()`-Kette laden (aktuell vermutlich nur Doku-Render). Modul
+  03 Embedding (~30 MB) lädt erst beim ersten Andocken — UX-
+  Vorwarnung in der Andock-Geste.
+- **Sage's Domäne klären:** `domain` / `domainDescription` /
+  `domainKeywords` / `domainVector`. Vorschläge im Spec-Brief:
+  „Mycel-Bibliothek" / „SBKIM-Glossar" / „Sage-Observatorium".
+  Stamm-/Gast-Kategorien? Brieferer Vorschlag: Stamm = Protokoll-
+  Doku / Mycel-Vokabular; Gast = Glossar-Wartung / Schwesternetz-
+  Beobachtungen.
+- **IndexedDB-Suffix `sbkim_sage`** (analog `sbkim_rezeptbuch` /
+  `sbkim_mixarium`).
+- **App-SW-Variante 3a** (Standalone `sbkim-sw.js` im Sage-Page-
+  Root, weil aktuell kein App-SW existiert).
+- **Schwarz-Loch-Karte:** Klick könnte zukünftig nicht nur die
+  Doku-md öffnen, sondern auch einen Andock-Wizard für Sage's
+  Spore-Erzeugung anbieten (Hand in Hand mit Variante III unten).
+- **Karte 09 § Schritt 1** wird neu eingefügt: „Sage-Observatorium
+  selbst ist auch ein Endknoten — wer sich am Sage-Mycel andockt,
+  bekommt es als Geschwister."
+
+**Größenordnung:** Spec-Sitzung erster Aufgabe ~3-4 Stunden für
+gründliche Klärung (kein Bau-Code, nur Verträge); danach Bau-
+Sitzung ~2-3 Stunden für Sage-Page-Refactor + SW-Anlage + Andock-
+Geste.
+
+**Status:** Reif für Spec-Sitzung. Nächste Phase nach Klaus' Wahl.
+
+### 2026-05-17 · Niedrigeres Onboarding (Variante III-Ausbau)
+
+**Eingetragen:** Mini-Pflege „Vision-Anker" 2026-05-17. Klaus'
+Kritik trifft hart und stimmt: **Karte 09's 9 Schritte schrecken
+ab.** Wer SBKIM ausprobieren will, ohne Klaus-Niveau zu haben,
+scheitert vermutlich an Schritt 3 (Service-Worker) oder Schritt 5
+(Embedding-Setup). Verbreitung steht im Konflikt mit Andock-Hürde.
+
+**Drei Ausbau-Pfade als langfristiger Plan:**
+
+1. **Andock-Wizard als Standalone-PWA.** Eine eigene Page (z.B.
+   `https://lausiklauskn-png.github.io/Sage-Protokol/andock/`)
+   führt durch alle 9 Schritte als geführte UI, mit Pre-Flight-
+   Checks und Auto-Generierung der Endknoten-Repo-Dateien.
+   Klaus' Worte: „klick hier und da, dann bekommst du Spore und
+   Knoten".
+2. **SBKIM-PWA-Distribution mit GitHub-Identität als Geschenk-
+   Paket.** Eine GitHub-Action erzeugt für einen Nutzer
+   automatisch ein Endknoten-Repo (Fork eines Templates), inkl.
+   konfigurierter Spore-Identität, gebrandet auf den GitHub-User-
+   Namen als Identitäts-Brücke. Wer „SBKIM-Knoten werden"
+   klickt, hat 30 Sekunden später eine eigene Pages-PWA live.
+3. **Eigener Browser-Wrapper (Fern-Vision).** Eine Electron- /
+   Tauri- / Capacitor-PWA mit SBKIM eingebacken — eigener
+   „agressiverer" Browser (Klaus' Wortwahl), der die Browser-
+   Eigenheiten aus § Browser-Observatorium umgeht (keine
+   IndexedDB-Reklamation, kein DeX/Tablet-Split, keine SW-
+   Cache-Verwirrung). Sehr ambitioniert, vermutlich nur nach
+   Variante 2-Reifezeit denkbar.
+
+**Verhältnis zu Modul 10/11/12:** Sobald SBKIM-Distribution für
+Nicht-Klaus-Kreise relevant wird, werden die Schutz-Backlog-
+Module **akut** (Reputation, Rate-Limit, Blocklist) — heute
+schlummern sie als Stubs, weil das Netz klein und vertrauenswürdig
+ist. Wer SBKIM in die Welt entlässt, muss diese drei vorher bauen.
+
+**Größenordnung:** Variante 1 wäre ~10-15 Stunden (UX + Code +
+Test). Variante 2 ~15-25 Stunden (GitHub-Action-Template + Repo-
+Generator + Onboarding-Flow). Variante 3 ist eine eigene Bau-
+Saison, nicht in Stunden messbar.
+
+**Status:** Reif für Vor-Diskussion, aber nicht für Spec.
+
+### 2026-05-17 · Browser-Observatorium-Universum (visuelle Variante)
+
+**Eingetragen:** Mini-Pflege „Vision-Anker" 2026-05-17. Aus dem
+Stil-Sitzungs-Gespräch zur Schwarz-Loch-Karte (PR #77): das
+Browser-Observatorium kann nicht nur als Markdown-Doku in
+`docs/OBSERVATORIUM_BROWSER.md` leben, sondern als **bildlich-
+animiertes Mini-Universum** in der Sage-Page direkt.
+
+**Konzept-Skizze:**
+
+- **Eigener Screen `screen-observatorium`** in der Sage-Page,
+  analog zu `screen-cycle`, `screen-module`, `screen-data`,
+  `screen-warum`. Erreichbar durch Klick auf die Schwarz-Loch-
+  Karte (anstelle der direkten GitHub-Navigation).
+- **Sieben Sterne / Galaxien** für die sieben Lehren — jeder mit
+  zartem Twinkling (CSS-Keyframes mit `opacity`-Pulse + leichter
+  `box-shadow`-Atmung) und Parallax bei Maus-Bewegung
+  (`requestAnimationFrame`-geglättet, Tiefen-Ebenen ähnlich wie
+  in Mac-/Linux-Desktop-Hintergründen). Galaxien für die
+  größeren Lehren (Browser-Instanzen, IndexedDB), Sterne für die
+  schmaleren (Eruda, Termux). Label-Tags beim Hover.
+- **Nebel-Hintergründe** als gestapelte `radial-gradient`s mit
+  `mix-blend-mode: screen`, Sage-Theme-Farben (Cyan + Lila +
+  Gold). Drift-Animation ~120 s, wirkt lebendig ohne Hektik.
+- **Klick auf einen Stern** öffnet ein Lehre-Modal — gerenderter
+  Text aus der `OBSERVATORIUM_BROWSER.md`, eingebettet in einen
+  kleineren Nebel (Teleskop-Zoom-Effekt). Esc / Klick außerhalb
+  schließt zurück zum Universum.
+- **„Reiner Text"-Link** in einer Ecke des Universum-Screens als
+  Wahl für Programmierer-Direktzugriff zur md.
+- **Tablet-/Touch-tauglich:** Sterne klickbar, Parallax via
+  `DeviceOrientationEvent` auf Mobile (subtile Neigungs-
+  Sensitivität). `prefers-reduced-motion: reduce` respektiert.
+- **Wahrheits-Quelle bleibt die md.** Universum liest die md
+  clientseitig mit minimalem md-Parser (~80 Zeilen JS, keine
+  externe Bibliothek wie `marked.js` — Single-File-PWA-Stil ist
+  Konvention). Pflege geht in der md; jede neue Lehre dort wird
+  automatisch zu einem neuen Stern.
+
+**Pädagogischer Hintergrund:** Klaus' Beobachtung — komplexe
+Themen durch Bilder zugänglich machen, ohne den Text-Pfad zu
+verlieren. Spricht jüngere Leser und Bilder-Menschen an, die
+sich von reinen Tech-Notes abschrecken lassen würden. Pflegt sich
+automatisch, sobald die md-Quelle gepflegt wird.
+
+**Größenordnung:** Eigene Bau-Sitzung „Browser-Observatorium-
+Universum", ~6-10 Stunden für den initialen Bau (Layout + sieben
+Sterne + Modal + minimaler md-Parser + Touch-Anpassung). Iteration
+nötig — visueller Eindruck zeigt sich erst beim Testen.
+
+**Status:** Reif für eigene Bau-Sitzung, jederzeit zwischen V1
+und V3-Bau einschiebbar.
+
+---
+
 ## Sitzungs-Einträge
 
 **Format:** Der jüngste Eintrag steht ausführlich oben. Alle älteren
@@ -551,6 +703,56 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-17 · Mini-Pflege — Vision-Anker (V1 / V3 / Universum)
+
+**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
+`claude/pflege-vision-anker`. Folge zu Live-Channel-Handshake
+(PR #77 `7c08b88`).
+
+Klaus hat nach erfolgreichem Live-Cross-Knoten-Handshake drei
+langfristige Visionen geäußert, die nicht verloren gehen sollen
+ohne sofort Spec oder Bau auszulösen. Diese Pflege legt einen
+neuen PULS-Block **§ Vision-Anker** an (parallel zu § Schutz-
+Backlog und § Diffusion-Backlog) und trägt drei Visionen ein:
+
+1. **Sage als Hybrid-Knoten (Variante I)** — Klaus' Ameisenkönigin-
+   Bild: Sage kann Hub bleiben **und** zugleich vollwertiger
+   Endknoten werden. CLAUDE.md / INTERFACES.md / status.json /
+   Sage-Page müssen nachgezogen werden. Sage's Domäne ist offen
+   (Mycel-Bibliothek / SBKIM-Glossar / Sage-Observatorium).
+   **Status: reif für Spec-Sitzung, Klaus' nächste Wahl.**
+2. **Niedrigeres Onboarding (Variante III-Ausbau)** — Karte 09's
+   9 Schritte schrecken ab. Drei Pfade als langfristiger Plan:
+   Andock-Wizard als Standalone-PWA, SBKIM-PWA-Distribution mit
+   GitHub-Identität als Geschenk-Paket, eigener Browser-Wrapper
+   (Electron/Tauri/Capacitor) als Fern-Vision. Verbreitung
+   außerhalb Klaus-Kreis macht Schutz-Backlog-Module 10/11/12
+   akut. **Status: reif für Vor-Diskussion, nicht für Spec.**
+3. **Browser-Observatorium-Universum (visuelle Variante)** — die
+   sieben Lehren der `OBSERVATORIUM_BROWSER.md` als animiertes
+   Mini-Universum in der Sage-Page, jeder Stern eine Lehre, Klick
+   öffnet Modal mit gerendertem md-Text. md bleibt Wahrheits-
+   Quelle, Universum liest sie clientseitig (minimaler md-Parser
+   ohne externe Library). **Status: reif für eigene Bau-Sitzung,
+   jederzeit zwischen V1- und V3-Bau einschiebbar.**
+
+**Was eingetragen:** PULS.md neuer Block § Vision-Anker (~120
+Zeilen) mit drei Vision-Ankern in voller Tiefe. PULS § Sitzungs-
+Einträge neuer Top-Eintrag (dieser). Übergabeprotokoll
+`docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker.md`.
+
+**Was NICHT angefasst:** Modul-Karten, INTERFACES.md, `src/`-Code,
+Sage-Page `index.html`. `status.json` unverändert — Visionen sind
+keine Modul-Stände. `update_puls_pie.py` nicht aufgerufen.
+
+**Nächster sinnvoller Schritt:** Spec-Sitzung „Sage als Hybrid-
+Knoten (Variante I)" als nächste Phase. Eigener Brief, eigener
+Branch. Klärt CLAUDE.md-Umschreibung, INTERFACES.md-Aufnahme,
+Sage's Domäne, Module-Lade-Strategie, App-SW-Variante. **Kein
+Bau-Code in der Spec-Sitzung** — nur Verträge.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker.md](sessions/archiv/2026-05-17_mini-pflege-vision-anker.md).
 
 ### 2026-05-17 · Mini-Pflege — Live-Channel-Handshake + Browser-Observatorium
 
