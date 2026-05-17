@@ -120,29 +120,44 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 ## Offene Querschnitts-Fragen
 
 - **SW-Bridge-Phantom-Cache-Bug in Modul 05** (eingetragen 2026-05-16,
-  Live-Andock-Sitzung Cross-Knoten-Handshake). Beim Cross-Knoten-
-  Handshake via `SbkimAnastomose.handshake(peerSpore, ownVec)` schickt
-  Modul 05 einen POST an `peer.endpoint + "/sbkim/anastomosis"`.
-  Mein-Mixariums Service-Worker fängt den Request, sucht aktive Page-
-  Clients mit `self.clients.matchAll({ type:"window",
-  includeUncontrolled:true })` und leitet via MessageChannel weiter.
-  **Problem:** der Client-Pool enthält manchmal eine geisterhafte
-  Page-Instance (vermutlich bfcache-Restbestand oder vergessene PWA-
-  Window-Variante), die eine ALTE Modul-02-Identity gecacht hat. Die
-  Phantom-Page antwortet mit `outcome:"rejected", reason:"toNodeId
-  stimmt nicht zum Empfänger"`, obwohl der aktive Tab konsistent
-  `SbkimSpore.getNodeId() === <korrekte-nodeId>` hat. **Workaround
-  (heute bewiesen):** HandshakeRequest via localStorage in
-  Mein-Mixarium-Tab übertragen und dort `SbkimAnastomose.
-  receiveHandshake(request)` DIREKT aufrufen — `outcome:"established"`.
-  **Lösungs-Vorschlag:** in `src/sbkim-sw.js` `clients.matchAll` mit
-  `includeUncontrolled:false` aufrufen (eventuell hinter einem
-  `SBKIM_SW_STRICT_CLIENTS`-Opt-in-Flag, um Variante-3b-Endknoten nicht
-  zu brechen). **Voraussetzung für die Folge-Pflege:** erst Klaus'
-  Tablet-Neustart-Sichttest abwarten — falls ein voller Reboot den
-  Phantom-Cache räumt, ist der Bug temporär und braucht keine Code-
-  Änderung; falls nicht, ist die Modul-05-SW-Pflege fällig. Status:
-  Folge-Pflege ausstehend, Tablet-Neustart-Test ausstehend.
+  Live-Andock-Sitzung Cross-Knoten-Handshake; **in zwei Pflegen am
+  2026-05-17 aufgelöst — Status: Architektur-Grenze sauber benannt,
+  Code-Eingriffe abgeschlossen, Klaus-Endknoten-Pflege offen**). Beim
+  Cross-Knoten-Handshake via `SbkimAnastomose.handshake(peerSpore,
+  ownVec)` schickt Modul 05 einen POST an `peer.endpoint +
+  "/sbkim/anastomosis"`. Der Phantom-Effekt — `outcome:"rejected",
+  reason:"toNodeId stimmt nicht zum Empfänger"` trotz korrekter
+  Identität im aktiven Tab — hatte **zwei Wurzeln**:
+  1. **`clients.matchAll({includeUncontrolled:true})`** lieferte
+     Pages, die der SW nicht kontrolliert (Phantom-Cache aus
+     anderen Pfaden derselben Origin). → **gefixt in PR #70
+     (2026-05-17 morgens, `bd895d3`)**: `includeUncontrolled:false`
+     + Loop-Logik „alle controlled Clients der Reihe nach".
+  2. **`isPathSuffix` scope-unbewusst** — fing JEDEN Pfad ab, der
+     auf `/sbkim/<endpoint>` endet, also auch Cross-Scope-Pfade,
+     wo ein Mein-Rezeptbuch-Tab `fetch('/Mein-Mixarium/sbkim/
+     anastomosis')` macht und Mein-Rezeptbuchs SW (als Controller
+     des Senders) abfängt statt durchzulassen. → **gefixt in
+     Pflege 2026-05-17 (dieser Eintrag, Branch
+     `claude/fix-sw-scope-paths-I70qE`)**: `isOwnEndpoint(...)`
+     leitet erwarteten Pfad aus `self.registration.scope` ab,
+     strikte Gleichheit; Cross-Scope-Fetches fallen durch
+     (→ Network → 404).
+  **Spec-Klarheit (Architektur-Grenze, kein Bug):** same-origin
+  cross-PWA Handshake via SW-Bridge bleibt damit **konzeptuell
+  unmöglich** — Subresource-Fetches gehen durch den SW des Senders,
+  nicht des Empfängers. Für Klaus' heutiges Test-Setup (beide PWAs
+  auf `lausiklauskn-png.github.io`) braucht es eine andere
+  Architektur. **Empfehlung für Folge-Spec-Sitzung Modul 05:**
+  BroadcastChannel-Bridge als Fallback-Pfad — Sender postet Request
+  auf `BroadcastChannel('sbkim')`, Receiver lauscht. Brief-Skelett
+  im Übergabeprotokoll [2026-05-17 Pflege Scope-Fix](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fix.md)
+  § 7. **Offen:** Klaus muss `sbkim-sw.js` mit Cache-Bust
+  (File-Rename + SW_VERSION-Bump) in beide Endknoten nachziehen und
+  Distinguishing-Test laufen lassen — erwartet HTTP 404 vom
+  Cross-Scope-Pfad. Details in Pflege-Protokoll § 4. Bis dahin
+  bleibt der Workaround per direktem `receiveHandshake`-Aufruf
+  gültig.
 
 - **`domainKeywords`-Hartkodierung in Endknoten-`sbkim-init.js`**
   (eingetragen 2026-05-16). Klaus' Mein-Mixarium-`sbkim-init.js` hat
@@ -502,6 +517,77 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-17 · Pflege Modul 05/SW — Scope-Fix `isOwnEndpoint` in `sbkim-sw.js`
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/fix-sw-scope-paths-I70qE`. Folge-Pflege zur Test-Erkenntnis-
+Sitzung 2026-05-17 nachmittags (Architekturfund `isPathSuffix`
+scope-unbewusst, weiter unten).
+
+**Was geändert:** `isPathSuffix(pathname, endpointPath)` ersetzt durch
+`isOwnEndpoint(pathname, endpointPath)`. Die neue Funktion leitet den
+erwarteten URL-Pfad aus `self.registration.scope` ab und prüft strikt
+auf Gleichheit:
+
+```js
+function isOwnEndpoint(pathname, endpointPath) {
+  const scopePath = new URL(self.registration.scope).pathname;
+  const expected = (scopePath === "/")
+    ? endpointPath
+    : scopePath.replace(/\/$/, "") + endpointPath;
+  return pathname === expected;
+}
+```
+
+Aufrufe für `ANASTOMOSIS_PATH`, `LEGACY_PATH`, `HETEROKARYOSIS_PATH`
+sind im fetch-Listener von `isPathSuffix` auf `isOwnEndpoint`
+umgestellt. Ein ausführlicher Kommentar-Block über der Funktion erklärt
+die Scope-Hygiene und nennt die Variante-3c-Begrenzung explizit.
+
+**Manuell durchgespielt (Pseudo-Trace):**
+
+| Konstellation | scopePath | endpointPath | erwarteter Pfad | Anfrage-Pfad | Ergebnis |
+|---|---|---|---|---|---|
+| In-Scope-Anfrage | `/Mein-Mixarium/` | `/sbkim/anastomosis` | `/Mein-Mixarium/sbkim/anastomosis` | `/Mein-Mixarium/sbkim/anastomosis` | `true` → `handleBridge` ✓ |
+| Cross-Scope-Anfrage (Bug-Fall) | `/Mein-Rezeptbuch/` | `/sbkim/anastomosis` | `/Mein-Rezeptbuch/sbkim/anastomosis` | `/Mein-Mixarium/sbkim/anastomosis` | `false` → kein respondWith → Network → 404 ✓ |
+| Root-Scope (Custom-Domain) | `/` | `/sbkim/anastomosis` | `/sbkim/anastomosis` | `/sbkim/anastomosis` | `true` → `handleBridge` ✓ |
+
+**Variante-3c-Begrenzung (bewusst nicht abgedeckt):** In Variante 3c
+(Karte 09 § Wann welche Variante, „nachrangig / Übergangslösung") liegt
+der SBKIM-SW unter `<repo>/sbkim/sbkim-sw.js` mit Scope
+`/<repo>/sbkim/`. Dort wäre der erwartete Pfad
+`scopePath + tail-of-endpoint`, nicht `scopePath + endpoint` — die neue
+`isOwnEndpoint` würde dort still durchfallen. Klaus' beide Endknoten
+nutzen Variante 3b; 3c-Support gehört in eine eigene Spec-Sitzung.
+
+**Was NICHT angefasst:**
+- `clients.matchAll`-Logik (PR #70's Fix bleibt — korrekt für sein
+  Szenario).
+- `SBKIM_SW_STANDALONE`-Flag, `src/modules/05_anastomose.js`,
+  `docs/INTERFACES.md`, `docs/components/09_einbau_pwa.md`.
+- `status.json` (kein Score-Wechsel). `update_puls_pie.py` NICHT
+  aufgerufen. `PROTOCOL_VERSION` bleibt `"0.1"`.
+
+**Validierung:** `node --check src/sbkim-sw.js` grün. Datei wächst von
+251 auf 274 Zeilen (reine SW-Logik + Kommentar). `tests/manual_check.html`
+nutzt keinen SW und bleibt unverändert.
+
+**Was diesen Fix NICHT löst:** Same-origin cross-PWA Handshake via
+SW-Bridge bleibt konzeptuell unmöglich (Spec: Sender-SW intercepted,
+nicht Receiver-SW). Empfehlung für Folge-Spec-Sitzung Modul 05:
+BroadcastChannel-Bridge als Fallback-Pfad — siehe Brief im
+Übergabeprotokoll § 7.
+
+**Klaus' Pflicht nach Merge:** Neue `sbkim-sw.js` in beide Endknoten
+nachziehen, dabei sicheren Cache-Bust wählen (File-Rename + SW_VERSION-
+Bump in Mein-Mixarium, File-Rename in Mein-Rezeptbuch). Danach
+Distinguishing-Test — erwartet HTTP 404 vom Cross-Scope-Pfad. Details
+im Übergabeprotokoll § 4.
+
+**Übergabeprotokoll:** [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fix.md)
+
+---
 
 ### 2026-05-17 · Test-Erkenntnis — A/B-Test PR #70 + Architekturfund `isPathSuffix` scope-unbewusst
 
@@ -1388,6 +1474,8 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Pflege · Modul 05/SW Scope-Fix `isOwnEndpoint` (`sbkim-sw.js` `isPathSuffix` durch scope-bewusste `isOwnEndpoint` ersetzt — leitet erwarteten Pfad aus `self.registration.scope` ab, strikte Gleichheit; behebt falsch-positiven Cross-Scope-Intercept; Variante 3c bewusst nicht abgedeckt; Same-origin cross-PWA via SW-Bridge bleibt konzeptuell unmöglich, Folge-Spec Modul 05 BroadcastChannel-Bridge empfohlen; Klaus muss `sbkim-sw.js` mit Cache-Bust in beide Endknoten nachziehen) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fix.md) |
+| 2026-05-17 | Test-Erkenntnis · A/B-Test PR #70 + Architekturfund `isPathSuffix` scope-unbewusst (kein PR; Befund: PR #70's `includeUncontrolled:false`-Fix korrekt für sein Szenario, aber irrelevant für same-origin cross-PWA, weil Sender-SW vor Receiver-SW intercepted; voller Cache-Eskalations-Trace inkl. File-Rename + chrome://serviceworker-internals/) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fund.md) |
 | 2026-05-17 | Pflege · Modul 05/SW Phantom-Clients-Fix (`sbkim-sw.js` `clients.matchAll` von `includeUncontrolled:true` auf `false` umgestellt + neue Loop-Logik „alle controlled Clients der Reihe nach, erster der nicht ‚toNodeId stimmt nicht‘ sagt gewinnt"; behebt den SW-Bridge-Phantom-Cache-Bug aus Cross-Knoten-Handshake-Sitzung; Klaus muss neue `sbkim-sw.js` in beide Endknoten-Repos kopieren + pushen) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-phantom-clients-fix.md) |
 | 2026-05-17 | Mini-Pflege · Score-Realität — Module 03/05/09 auf `fertig` hochgestuft (Live-Beweis Cross-Knoten-Handshake 2026-05-16); Endknoten-`pingStatus`-Bonus aktiviert (`live-direct` zählt 15 statt 8); Demo-Ring auf zwei Bögen umgestellt (grün-schimmernd wächst auf 85 %, bunt schrumpft auf 15 %); update_puls_pie.py aufgerufen | [→ Archiv](sessions/archiv/2026-05-17_pflege-score-realitaet.md) |
 | 2026-05-17 | Mini-Pflege · Rechtschreibung „Protokoll" mit zwei L (deutsches Wort) — Eigenname „Sage-Protokol" (englisch) bleibt; `Mycel-Protokoll` + generisches `Protokoll` (Footer-Label, Card-Tag, Markdown) korrigiert; 7 Dateien; Repo-URLs unverändert; KEIN Modul-Code-Eingriff | [→ Archiv](sessions/archiv/2026-05-17_pflege-rechtschreibung-protokoll.md) |
