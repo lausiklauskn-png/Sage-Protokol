@@ -498,6 +498,134 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
 Zeilen (CLAUDE.md § Format).
 
+### 2026-05-17 · Pflege Modul 05/SW — Phantom-Clients-Fix in `sbkim-sw.js`
+
+**Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
+`claude/pflege-sw-phantom-clients-fix`. Folge-Pflege zum SW-Bridge-
+Phantom-Cache-Bug aus Cross-Knoten-Handshake-Sitzung (PR #65) und
+Klaus' Tablet-Neustart-Sichttest 2026-05-17.
+
+**Klaus' Befund (Tablet-Reboot-Test 2026-05-17):**
+
+1. **Identitäten überleben Stromaus** (gestriges Persist-Flag-
+   Versprechen gehalten): Mein-Mixarium `7xf0tt33_…` und
+   Mein-Rezeptbuch `RHhposP0…` sind nach Tablet-Aus/An weiter da.
+2. **DBs sauber**: keine Phantom-`sbkim` (ohne Suffix), nur die
+   vier erwarteten (`MeinMxBackup1`, `MeinRzBackup1`,
+   `sbkim_mixarium`, `sbkim_rezeptbuch`).
+3. **PWAs als Apps deinstalliert**, Sage-Protokol-Test-Panel-Tab
+   geschlossen — also alle gestern verdächtigen Phantom-Quellen
+   eliminiert.
+4. **Trotzdem:** Cross-Knoten-Handshake via normalem
+   `SbkimAnastomose.handshake()`-Pfad liefert weiterhin
+   `outcome:"rejected", reason:"toNodeId stimmt nicht zum Empfänger"`.
+
+**Diagnose:** der Bug ist nicht in zwischenzeitlichen Browser-Caches,
+sondern direkt in `src/sbkim-sw.js`'s Client-Auswahl-Logik:
+
+```js
+// VORHER (Phantom-Bug):
+const clientList = await self.clients.matchAll({
+  type: "window",
+  includeUncontrolled: true,   // ← findet auch Pages, die SW nicht kontrolliert
+});
+const target = clientList.find(c => c.id === originatingClientId) || clientList[0];
+```
+
+`includeUncontrolled: true` findet alle Window-Clients der Origin, auch
+solche, die diesen SW NICHT als Controller haben (z.B. Tabs anderer
+Pfade derselben Origin, andere PWA-Pages mit eigenem SW). Diese
+„Phantom-Pages" haben oft alte Modul-02-Identitäten oder gar keine
+SBKIM-Module geladen und antworten mit
+`reason:"toNodeId stimmt nicht zum Empfänger"`.
+
+**Fix:**
+
+```js
+// NACHHER:
+const clientList = await self.clients.matchAll({
+  type: "window",
+  includeUncontrolled: false,   // ← nur Tabs, die diesen SW kontrollieren
+});
+// Plus: bei mehreren Clients alle der Reihe nach probieren —
+// wenn einer mit "toNodeId stimmt nicht" antwortet, nächsten versuchen.
+// Erster, der was anderes sagt (established / accepted / score-reject /
+// andere reason), gewinnt.
+```
+
+`includeUncontrolled: false` schließt alle Pages aus, die nicht
+explizit von diesem SW kontrolliert werden — Phantom-Pages
+verschwinden aus dem Client-Pool. Plus die neue „alle der Reihe nach
+versuchen, bis einer nicht ‚toNodeId stimmt nicht‘ sagt"-Logik macht
+den SW robuster bei mehreren Tabs mit unterschiedlichen Identitäten
+(z.B. wenn ein alter Tab-Cache-State noch eine Closure-Version der
+nodeId hält).
+
+**Getan:**
+
+- `src/sbkim-sw.js` Zeile 158–164 ersetzt durch die neue
+  Client-Auswahl-Logik (51 statt 21 Zeilen, ausführliche Kommentare).
+- `node --check src/sbkim-sw.js` grün.
+- Datei wächst von 212 auf 251 Zeilen.
+
+**Bewusst nicht angefasst:**
+
+- **`SBKIM_SW_STANDALONE`-Flag** unverändert (Variante 3a/3b
+  Koexistenz bleibt).
+- **`includeUncontrolled`-Verhalten** ist jetzt hardcoded `false`
+  (kein Opt-in-Flag) — Begründung: das alte Verhalten war ein Bug,
+  kein Feature. Falls künftig spezielle Endknoten ein opt-in
+  brauchen, kann ein Flag analog zu `SBKIM_SW_STANDALONE` ergänzt
+  werden.
+- **Karte 05 (Anastomose)** und **Karte 09 (Einbau-PWA)**
+  unverändert — die SW-interne Logik ist kein API-Vertrag.
+- **INTERFACES.md** unverändert (kein §1-Modul-Vertrags-Eingriff).
+- **Modul-05-Code** (`src/modules/05_anastomose.js`) unverändert
+  (Sender-Side und `receiveHandshake` blieben gleich).
+- **status.json** unverändert.
+- **`PROTOCOL_VERSION`** bleibt `"0.1"`.
+- **`update_puls_pie.py`** NICHT aufgerufen (kein Score-Wechsel).
+
+**Was offen blieb (Klaus' Pflicht in Endknoten-Repos):**
+
+Nach Merge dieses PRs muss Klaus die neue `src/sbkim-sw.js` in beide
+Endknoten-Repos kopieren:
+
+```bash
+cp ~/Sage-Protokol/src/sbkim-sw.js ~/Mein-Mixarium/sbkim/sbkim-sw.js
+cd ~/Mein-Mixarium && git add sbkim/sbkim-sw.js && git commit -m "sbkim-sw.js: Phantom-Clients-Fix nachgezogen" && git push
+
+cp ~/Sage-Protokol/src/sbkim-sw.js ~/Mein-Rezeptbuch/sbkim/sbkim-sw.js
+cd ~/Mein-Rezeptbuch && git add sbkim/sbkim-sw.js && git commit -m "sbkim-sw.js: Phantom-Clients-Fix nachgezogen" && git push
+```
+
+Plus: beide PWA-Tabs nach Pages-Build schließen + neu öffnen, damit
+der neue SW per Activate-Cycle aktiv wird. Dann erneut den Handshake-
+Test ausführen. Erwartung: diesmal `outcome:"established"` ohne
+localStorage-Bypass.
+
+**Validierung:**
+
+- `node --check src/sbkim-sw.js` grün.
+- Manuell durchgespielt: bei nur einem controlled Client wird er
+  direkt gewählt; bei mehreren wird der Reihe nach probiert; bei
+  null Clients kommt sauberes 503.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Termux-Pflege:** neue `sbkim-sw.js` in beide Endknoten-
+   Repos kopieren + pushen (Befehle oben).
+2. **Klaus' Browser-Test:** PWA-Tabs neu starten, Handshake erneut
+   versuchen. Erwartung `outcome:"established"` via SW-Pfad ohne
+   Bypass.
+3. **Falls erfolgreich:** `status.json` `pingStatus` von
+   `"live-direct"` auf `"live"` umstellen (in Folge-Pflege),
+   PULS-Endknoten-Tabelle nachziehen.
+4. **Klaus' Browser-Daten-Lösch-Test** (Phase 3 vom Resilienz-Test)
+   kann danach durchgeführt werden.
+
+---
+
 ### 2026-05-17 · Mini-Pflege Score-Realität — Module 03/05/09 auf fertig, Endknoten-pingStatus-Bonus, Ring-Inversion
 
 **Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
@@ -1184,6 +1312,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Pflege · Modul 05/SW Phantom-Clients-Fix (`sbkim-sw.js` `clients.matchAll` von `includeUncontrolled:true` auf `false` umgestellt + neue Loop-Logik „alle controlled Clients der Reihe nach, erster der nicht ‚toNodeId stimmt nicht‘ sagt gewinnt"; behebt den SW-Bridge-Phantom-Cache-Bug aus Cross-Knoten-Handshake-Sitzung; Klaus muss neue `sbkim-sw.js` in beide Endknoten-Repos kopieren + pushen) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-phantom-clients-fix.md) |
 | 2026-05-17 | Mini-Pflege · Score-Realität — Module 03/05/09 auf `fertig` hochgestuft (Live-Beweis Cross-Knoten-Handshake 2026-05-16); Endknoten-`pingStatus`-Bonus aktiviert (`live-direct` zählt 15 statt 8); Demo-Ring auf zwei Bögen umgestellt (grün-schimmernd wächst auf 85 %, bunt schrumpft auf 15 %); update_puls_pie.py aufgerufen | [→ Archiv](sessions/archiv/2026-05-17_pflege-score-realitaet.md) |
 | 2026-05-17 | Mini-Pflege · Rechtschreibung „Protokoll" mit zwei L (deutsches Wort) — Eigenname „Sage-Protokol" (englisch) bleibt; `Mycel-Protokoll` + generisches `Protokoll` (Footer-Label, Card-Tag, Markdown) korrigiert; 7 Dateien; Repo-URLs unverändert; KEIN Modul-Code-Eingriff | [→ Archiv](sessions/archiv/2026-05-17_pflege-rechtschreibung-protokoll.md) |
 | 2026-05-17 | Mini-Pflege · Sage-Page Live-Status für Topologie + Lebenszyklus (`isNextUp()`-Vakuum-Falle gefixt — nur Module mit `score:"spec"\|"werkstatt"` zählen als nextup; neue `renderCyclePhases()`-Funktion bindet Phase-Pills an Modul-02/03/05/04-Live-Status; automatisch sichtbar bei künftigen Modul-Status-Änderungen in `status.json`) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sage-page-live-status.md) |
