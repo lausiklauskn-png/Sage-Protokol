@@ -595,11 +595,24 @@ Datei:  src/modules/05_anastomose.js
 
 Bietet (öffentlich):
   init()                                                       → Promise<void>
-  handshake(targetSpore: SporeJson, ownDomainVector: Float32Array(384))
+  handshake(targetSpore: SporeJson, ownDomainVector: Float32Array(384),
+            options?: { transport?: "auto"|"http"|"channel" })
                                                                → Promise<HandshakeResult>
   receiveHandshake(incomingRequest: HandshakeRequest)          → Promise<HandshakeResponse>
   listSiblings()                                               → Promise<Array<{ nodeId, domain, since, pubKey }>>
   forgetSibling(nodeId: string)                                → Promise<void>
+
+  `options.transport` (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17):
+    "auto"    (Default) — HTTP zuerst; bei klaren Signalen (HTTP 4xx/5xx,
+              non-JSON-Antwort, JSON ohne Pflichtfelder des HandshakeResponse,
+              `outcome` außerhalb { "established", "rejected" }) **einmaliger**
+              Fallback auf BroadcastChannel('sbkim'). Cross-domain bleibt
+              unverändert HTTP-only — siehe Karte 05 § BroadcastChannel-Bridge.
+    "http"    nur HTTP-Pfad (bestehendes Verhalten, kein Fallback).
+    "channel" nur BroadcastChannel-Pfad (kein HTTP-Versuch; für same-origin-
+              Test-Setups, in denen HTTP-Bridge konzeptuell nicht trägt).
+  HandshakeRequest/HandshakeResponse-Schema bleibt **unverändert** —
+  BroadcastChannel ist eine Transport-Schicht, kein zweites Datenformat.
 
   Anastomose ist die *Komposition* aus 01/02/04. Modul 05 rechnet nicht
   selbst, sondern ruft `SbkimSpore.verifyForeignSpore`,
@@ -621,6 +634,14 @@ Nutzt:
     crypto.subtle.verify({ name: "Ed25519" }, publicKey, sig, bytes)  (Gegen-Signatur prüfen)
   fetch (POST) gegen targetSpore.endpoint + ENDPOINT.anastomosis ("/sbkim/anastomosis").
     AbortController(QUERY_TIMEOUT_MS = 4000) für ausgehende Anfragen.
+  BroadcastChannel('sbkim')                       (Fallback-Transport, same-origin,
+                                                   Spec-Sitzung BroadcastChannel-Bridge 2026-05-17).
+    Receiver-Channel wird in init() geöffnet und lebt über die Tab-Lebensdauer.
+    Sender öffnet pro Handshake einen Reply-Channel `BroadcastChannel("sbkim:reply:" + nonce)`,
+    hört dort mit Timeout QUERY_TIMEOUT_MS (4000 ms) auf den Empfänger-Reply und
+    schließt den Reply-Channel im finally-Block. Wenn options.transport != "http"
+    und (Auto-Fallback-Bedingung erfüllt ODER transport === "channel"): Channel-Pfad.
+    Same-origin-only (Browser-Standard); cross-domain läuft weiterhin nur über HTTP.
 
 Storage:
   Stores (beide aus Modul 01):
@@ -640,8 +661,9 @@ Selbstcheck:
     console.info("MODUL 05 ANASTOMOSE bereit, Funktionen: init/handshake/receiveHandshake/listSiblings/forgetSibling");
   Wie Modul 01/02/04 — die Meldung signalisiert "Modul geladen", nicht
   "Identität existiert" oder "Geschwister da". Schwelle / Endpunkt /
-  Version werden in der Selbstcheck-Zeile bewusst nicht wiederholt
-  (stehen verbindlich in §0 / §3 / Modul 04).
+  Version / Transport werden in der Selbstcheck-Zeile bewusst nicht
+  wiederholt (stehen verbindlich in §0 / §3 / Modul 04 / Karte 05
+  § BroadcastChannel-Bridge).
 
 Versionierungs- und Match-Vertrag:
   - Hauptversion-Mismatch zwischen lokaler PROTOCOL_VERSION und
@@ -667,6 +689,12 @@ Fehlerverhalten:
                                                             Log "abgelehnt: lokal".
   - handshake(): fetch-Timeout > QUERY_TIMEOUT_MS         → HandshakeTimeoutError, Log "timeout"
   - handshake(): Netz-/CORS-/DNS-Fehler                   → HandshakeNetworkError (cause: Original-Error)
+  - handshake(): Channel-Timeout > QUERY_TIMEOUT_MS       → HandshakeTimeoutError, Log "timeout-channel"
+                                                            (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17;
+                                                             bei transport:"auto" wird der vorher gesammelte
+                                                             HTTP-Fehler als cause durchgereicht — Auto-Fallback
+                                                             scheitert nur, wenn BEIDE Pfade scheitern).
+  - handshake(): Channel-Reply-Signatur ungültig          → HandshakeSignatureInvalidError, Log "abgelehnt: invalid-peer"
   - handshake(): Response-Signatur ungültig                → HandshakeSignatureInvalidError, Log "abgelehnt: invalid-peer"
   - handshake(): outcome "rejected" vom Peer               → KEIN Throw. return {outcome:"rejected", reason, score?},
                                                             Log "abgelehnt: peer".
@@ -694,6 +722,59 @@ Service-Worker-Vertrag (für statisch gehostete Endknoten):
     Start, kein Wake-Lock.
   - Variante Page-Hosted vs. SW-Hosted: Entscheidung in Bau-Sitzung 05.
     Beide Varianten rufen dieselbe `receiveHandshake`-Signatur.
+  - Architektur-Grenze (Pflege Scope-Fix 2026-05-17, PR #72): Same-origin
+    cross-PWA Handshake via SW-Bridge ist konzeptuell unmöglich, weil
+    Subresource-Fetches durch den SW des **Senders** gehen, nicht den
+    des Empfängers. Für same-origin-Setups (z.B. zwei PWAs auf
+    `<user>.github.io`) ist der BroadcastChannel-Fallback unten der
+    einzige Weg zu `outcome:"established"` ohne localStorage-Bypass.
+
+BroadcastChannel-Bridge (same-origin Fallback,
+Spec-Sitzung BroadcastChannel-Bridge 2026-05-17):
+  - Channel-Name: BroadcastChannel('sbkim') — ein gemeinsamer Channel für
+    alle SBKIM-Knoten in der Origin; Receiver filtert via
+    `payload.toNodeId === own.nodeId`. Versionierung läuft über
+    `payload.payload.protocolVersion` (= request.protocolVersion), nicht
+    über den Channel-Namen.
+  - Envelope-Schema (NICHT signiert; signiert ist nur das innere
+    HandshakeRequest/HandshakeResponse wie im HTTP-Pfad):
+      Request-Envelope:
+        { type: "SBKIM_ANASTOMOSE_REQUEST",
+          payload: <HandshakeRequest>,
+          replyChannelName: "sbkim:reply:" + payload.nonce }
+      Response-Envelope:
+        { type: "SBKIM_ANASTOMOSE_RESPONSE",
+          payload: <HandshakeResponse> }
+  - Receiver-Pflicht: `init()` öffnet BroadcastChannel('sbkim') eager und
+    registriert einen message-Listener. Empfangen, filtern
+    (`type === "SBKIM_ANASTOMOSE_REQUEST"`,
+    `payload.toNodeId === own.nodeId`, `payload.fromNodeId !== own.nodeId`),
+    `receiveHandshake(payload)` aufrufen, Response-Envelope auf einen
+    **dediziert geöffneten** `BroadcastChannel(replyChannelName)` posten,
+    diesen Reply-Channel sofort schließen.
+  - Sender-Pfad: für den Request den Reply-Channel
+    `BroadcastChannel(replyChannelName)` **vor** dem Posten öffnen, dann
+    auf dem Main-Channel posten, mit Timeout `QUERY_TIMEOUT_MS` (4000 ms)
+    auf die Reply lauschen. Im finally-Block den Reply-Channel schließen.
+    Doppelt-Bindung gegen Cross-Talk: Sender prüft zusätzlich
+    `response.nonceEcho === request.nonce` (gleicher Replay-Marker wie
+    im HTTP-Pfad).
+  - `toNodeId` ist im Channel-Pfad **Pflicht** (im HTTP-Pfad optional;
+    Karte 05 § BroadcastChannel-Bridge § Pflichtfeld-Schärfung). Ohne
+    `toNodeId` kein Receiver-Filter möglich → Sender wirft synchron
+    `MissingToNodeIdError` vor dem Posten.
+  - Self-Hit-Schutz: Receiver ignoriert Nachrichten mit
+    `payload.fromNodeId === own.nodeId` (Sender im selben Tab darf sich
+    nicht selbst antworten). Replay-Schutz bleibt wie im HTTP-Pfad
+    nonce-basiert (Modul 11 Schutz-Backlog für aktiven Cache).
+  - Cleanup: Main-Channel (`BroadcastChannel('sbkim')`) lebt über
+    Tab-Lebensdauer (Browser räumt bei Tab-Close auf). Reply-Channels
+    werden pro Handshake erzeugt und in finally geschlossen — sowohl auf
+    Sender- als auch auf Receiver-Seite.
+  - Wer-nicht-da-ist-schweigt: Wenn kein Tab same-origin den Main-Channel
+    abonniert hat (Receiver-PWA-Tab geschlossen), kommt keine Reply →
+    Sender-Timeout → HandshakeTimeoutError. Kein Wake-Lock, kein
+    Auto-Start. Konsistent zur SW-Pfad-Linie „503, wenn keine Page aktiv".
 
 Datenformate:
   HandshakeRequest / HandshakeResponse → §2 dieser Datei.
@@ -712,7 +793,7 @@ Garantien für Modul 06 / 07:
     erzeugt mehrfach Logs — aber pro Peer nur einen Geschwister-
     Eintrag.
 
-Geprüft: 2026-05-14 (Spec-Sitzung 05)
+Geprüft: 2026-05-14 (Spec-Sitzung 05), 2026-05-17 (Spec-Sitzung BroadcastChannel-Bridge — additiver Fallback-Transport, Schema unverändert)
 
 ---
 
@@ -1716,6 +1797,8 @@ die Schritt-für-Schritt-Ebene liegen in
 
 ## 3. Endpunkt-Pfade
 
+HTTP-Pfade (Default-Transport, alle Transporte ausgehend POST):
+
 ```
 spore           : /.well-known/sbkim/spore.json   (Default)
 spore-alias     : /sbkim/spore.json               (für Hoster ohne .well-known)
@@ -1725,8 +1808,22 @@ heterokaryosis  : /sbkim/heterokaryosis           (POST)
 legacy          : /sbkim/legacy                   (POST/GET)
 ```
 
-Bei statisch gehosteten PWAs ohne Backend werden eingehende Endpunkte
-durch einen Service-Worker abgefangen. Details in Modul 05.
+Bei statisch gehosteten PWAs ohne Backend werden eingehende HTTP-
+Endpunkte durch einen Service-Worker abgefangen. Details in Modul 05.
+
+Same-origin Fallback-Transport für Modul 05 (Spec-Sitzung
+BroadcastChannel-Bridge 2026-05-17):
+
+```
+channel-bridge  : BroadcastChannel('sbkim')       (Anastomose-Fallback, same-origin)
+reply-channel   : BroadcastChannel('sbkim:reply:' + nonce)
+                                                  (pro Handshake, lebt nur bis Reply/Timeout)
+```
+
+Verwendung verbindlich nur für Modul 05 (Anastomose). Heterokaryose
+(Modul 06) und Legacy (Modul 07) nutzen ausschließlich den HTTP-Pfad
+— BroadcastChannel ist in dieser Spec auf den Handshake-Pfad begrenzt
+(Begründung in Karte 05 § BroadcastChannel-Bridge).
 
 ---
 
@@ -1818,3 +1915,4 @@ Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
 | 2026-05-16 | Spec-Sitzung Backup-Export Stufe 2 | Folge-Spec direkt nach Pflege Storage-Persist (selbiger Tag): Stufe (2) der drei-stufigen Identitäts-Persistenz-Architektur (PULS § Offene Querschnitts-Fragen „Identitäts-Persistenz"; § Spore-Persistenz-Strategie verteilt Modul-02-Punkt „Backup-Export"). **§0** drei neue Konstanten verankert: `BACKUP_FORMAT_VERSION = 1`, `BACKUP_KDF_ITERATIONS = 600000` (Pflicht-Frage 2 Variante b — OWASP 2023+), `BACKUP_PASSWORD_MIN_LEN = 8`. **§1 Modul 02 Bietet-Block** um zwei neue Funktionen erweitert: `exportBackup(password) → Promise<SbkimBackupBlob>` und `importBackup(blob, password, options?) → Promise<{restored, reason?}>` (options-Form `{force?: boolean}`); Selbstcheck-Format-Zeile auf zehn Funktionen erweitert. **§1 Modul 02 Nutzt-Block** um `SbkimStorage.all` (sbkim_siblings fail-soft beim Export), WebCrypto `crypto.subtle.importKey("raw", …, PBKDF2)` + `crypto.subtle.deriveKey(PBKDF2 → AES-GCM-256)` + `crypto.subtle.encrypt(AES-GCM)` + `crypto.subtle.decrypt(AES-GCM)` + `crypto.getRandomValues` (salt 16 Bytes + iv 12 Bytes) erweitert. **§1 Modul 02 Fehlerverhalten** um sechs Zeilen erweitert: `InvalidBackupPasswordError` (synchron), `NoIdentityError`-Durchreichung, `BackupDecryptError` (Sammel-Klasse — kein Oracle, unterscheidet absichtlich nicht zwischen falschem Passwort und korrupter Datei), `BackupVersionMismatchError`, `BackupSchemaError`, `BackupOverwriteError` (Pflicht-Frage 3 Variante a — defensiv, Vor-Check vor Crypto; Recovery in leerer PWA greift ohne force). **§1 Modul 02 Geprüft-Zeile** um 2026-05-16 (Spec-Sitzung Backup-Export Stufe 2) erweitert. **§2 Spore-JSON** Hinweis-Block am Ende des Verifikations-Pfads: „Backup-Format ist separat — Spore und Backup teilen nur den Identitäts-Schlüssel-Inhalt, das Wrapper-Schema lebt auf eigener Schicht; KEINE Spore-Feld-Erweiterung, `PROTOCOL_VERSION` bleibt `0.1`". **Karte 02** § Schnittstelle (zwei neue Funktionen API-Doc), neuer § Datenformat-Sub-Block „Backup-Format (SbkimBackupBlob)" (Wrapper-Schema PBKDF2/AES-GCM + Klartext-Payload-Schema `payload-schema-version=1` mit `nodeId`-Anker + `keys` + `spore` + `siblings`-Array + KDF-/Encrypt-Pfad verbindlich), § Storage Hinweis-Block „Backup-Inhalt" (Pflicht-Frage 1 Variante b — drei Stores, bewusst nicht im Backup: Log/Inbox/Outbox/Doku-Meta), neue § Konfigurationswerte (sechs Konstanten — drei in §0, drei modul-lokal: `BACKUP_PAYLOAD_SCHEMA_VERSION=1`, `BACKUP_KDF_SALT_BYTES=16`, `BACKUP_CIPHER_IV_BYTES=12`), § Fehlerverhalten (sechs neue Zeilen), § Risiken (drei neue Punkte: Passwort-Schwäche, Sicherheits-Schwelle Import-Überschreibung, Backup-Aktualität), § Bauzustand-Zeile „Spec Backup-Export Stufe 2". **PULS** § Offene Querschnitts-Fragen „Identitäts-Persistenz" Stufe (2)-Hinweis um „Spec fertig 2026-05-16" erweitert (bleibt offen, weil Bau noch aussteht — nicht mit strikethrough markiert); § Spore-Persistenz-Strategie verteilt Modul-02-Punkt „Backup-Export" mit Spec-Vermerk + Bauauftrag-Hinweis; Schnellüberblick-Tabelle Modul 02 Spec-Spalte erweitert; § Sitzungs-Einträge rotiert; § Archiv-Index neue Zeile oben. **KEIN Code** in `src/modules/02_spore.js` — Bau-Sitzung 02.X folgt als eigene Phase. **`PROTOCOL_VERSION` bleibt `"0.1"`** (Backup-Format ist eigene additive Versionierung, kein Spore-Feld); **`DB_VERSION` bleibt `3`** (kein Storage-Schema-Eingriff). **`status.json` unverändert** (Modul 02 bleibt `score:"stub"`, Spec-Erweiterung im Karten-Vertrag, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). Übergabeprotokoll `docs/sessions/archiv/2026-05-16_spec-02-backup-export.md` angelegt, drei Pflicht-Fragen ausführlich begründet. |
 | 2026-05-16 | Bau 02.X Backup-Export | Folge-Bau zur Spec-Sitzung Backup-Export Stufe 2 (PR #52 gemerged), selbiger Tag. **Code in `src/modules/02_spore.js` additiv** (kein Refactoring der bestehenden sieben + `resetIdentityCache`-Funktionen): fünf benannte Error-Klassen im Factory-Stil analog Modul 00/08 (`InvalidBackupPasswordError` / `BackupDecryptError` Sammel-Klasse ohne Oracle / `BackupVersionMismatchError` / `BackupSchemaError` / `BackupOverwriteError`) — auf `window.SbkimSpore.<Error>` exportiert; drei §0-Konstanten modul-lokal gespiegelt (`BACKUP_FORMAT_VERSION=1` / `BACKUP_KDF_ITERATIONS=600000` / `BACKUP_PASSWORD_MIN_LEN=8`) + drei modul-lokale Konstanten aus Karte 02 § Konfigurationswerte (`BACKUP_PAYLOAD_SCHEMA_VERSION=1` / `BACKUP_KDF_SALT_BYTES=16` / `BACKUP_CIPHER_IV_BYTES=12`); neuer Closure-Helper `derivePbkdf2AesGcmKey(password, salt, iterations)` (PBKDF2-SHA-256 → AES-GCM-256 deriveKey, beide non-extractable, `["encrypt","decrypt"]` usages). **Helper-Reuse-Entscheidung 1 (canonical-JSON-stringify):** bestehender `canonicalize`/`canonicalJsonBytes`-Closure-Helper aus dem Spore-Sign-Pfad wird für die Backup-Payload-Serialisierung wiederverwendet — KEINE zweite Implementation, weil zwei kanonische Sort-Funktionen ein Spec-Bruch wären (Drift-Risiko bei Spore-Feld-Erweiterungen). **Helper-Reuse-Entscheidung 2 (base64url):** bestehende `base64urlEncode`/`base64urlDecode` aus dem nodeId-/Signatur-Pfad werden für salt/iv/ciphertext wiederverwendet, KEIN Refactoring. **Helper-Reuse-Entscheidung 3 (Identity-Cache-Reset):** `resetIdentityCache()` (Pflege-Sitzung 2026-05-15) wird als letzter Schritt vor `return {restored:true}` aufgerufen — KEIN neuer Cache-Reset-Pfad, der bestehende Hook deckt den Fall exakt ab. `exportBackup(password)` liest sbkim_keys["main"] + sbkim_spore["main"] direkt aus dem Storage (Roh-JWK-Form, NICHT über identityCache, weil dort nur die importierten CryptoKeys liegen, nicht die persistierten JWKs), liest sbkim_siblings fail-soft via try/catch um `SbkimStorage.all` (bei `UnknownStoreError` oder Cursor-Fehler → leeres Array), baut den Klartext-Payload mit `createdAt`/`keys`/`nodeId`/`siblings`/`spore`, verschlüsselt mit PBKDF2 + AES-GCM-256 und liefert den Wrapper-Blob. `importBackup(blob, password, options?)` macht alle Vor-Checks (Mindest-Länge sync, Wrapper-Version sync, Force-Schwelle async vor Crypto) VOR dem teuren PBKDF2-Aufruf; `iterations` wird aus `blob.kdf.iterations` gelesen — NICHT aus der §0-Konstante (Spec-Pflicht-Frage 2 „Hinweis zur Kompatibilität": ältere Backups mit niedrigeren Iterations müssen weiter importierbar bleiben, wenn die §0-Konstante später erhöht wird); Decrypt + JSON-Parse in einem try/catch-Block sammelt auf `BackupDecryptError` (Sammel-Klasse ohne Oracle); Schema-Check (payload-schema-version + Pflichtfelder `nodeId`/`keys.privateKey`/`keys.publicKey`/`spore`) wirft `BackupSchemaError` mit konkret-feld-Hinweis; Sibling-Loop additiv (put pro Eintrag, key=`s.nodeId`). Selbstcheck-Zeile auf zehn Funktionen erweitert: `init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache/exportBackup/importBackup`. **Modul-Kopfkommentar** um Pflege-Block „Bau 02.X Backup-Export (2026-05-16)" am Ende erweitert. **`_meta`** um vier Backup-Werte ergänzt (`backupFormatVersion`, `backupKdfIterations`, `backupPasswordMinLen`, `backupPayloadSchemaVersion`) + `siblingsStore`-Name. **Panel 02 in `tests/manual_check.html`** um drei Knöpfe erweitert: „Backup exportieren" (Knopf 6 — Passwort-Prompt, Blob-Log, Download-Link `sbkim-backup-YYYY-MM-DD.json` als `Blob`-URL; falls noch keine Spore existiert, wird `demoMeta` vor dem Export angelegt — sonst würde der Re-Import am Schema-Check scheitern), „Backup einlesen" (Knopf 7 — File-Picker + Passwort-Prompt; erster Versuch ohne `force`; bei `BackupOverwriteError` Bestätigungs-Zeile mit ALTER nodeId und Warntext, neue nodeId steht erst nach erfolgreichem Decrypt fest, deshalb nur die alte zum Vergleich; `pendingBackup`-Stash für den zweiten Knopf), „Identität ersetzen — unwiderruflich" (Knopf 7b — force-Pfad, scharf nur wenn `pendingBackup` gesetzt; nach Erfolg neue nodeId via `getNodeId()` geloggt). **Modul 00 / 01 / 03 / 04 / 05 / 06 / 07 / 08 unangetastet** (sbkim_siblings nur gelesen + geschrieben, kein Storage-Schema-Eingriff; Modul 01 § `SbkimStorage.all`-Signatur nur gelesen, nicht geändert). **Keine §0-Erweiterung** (die drei Konstanten standen schon aus Spec-Sitzung Backup-Export Stufe 2). **Keine §1-Modul-02-Vertrags-Änderung** (Vertrag steht seit der Spec-Sitzung, dieser Bau zieht nur die Implementation nach; nur Geprüft-Zeile um 2026-05-16 Bau 02.X erweitert). **Keine §2-/§3-/§4-/§5-Änderung.** **Keine Karte-00-/-01-/-03-/-04-/-05-/-06-/-07-/-08-/-09-/-14-Änderung.** **Kein Hauptversions-Sprung** (`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`, `BACKUP_FORMAT_VERSION` bleibt `1`; Backup ist Aufrufer-extern, geht in keinen SBKIM-Store). **Keine Sage-Page-(`index.html`)-Änderung.** `node --check src/modules/02_spore.js` grün; alle 10 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert. **`status.json` unverändert** (Modul 02 bleibt `score:"stub"`, additive Code-Erweiterung, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Sichttest ungeprüft** (headless gebaut — wartet auf Klaus' Browser-Lauf: PBKDF2-600 000-Aufruf-Zeit auf Galaxy Tab S6 ≤ 2 s, AES-GCM-Verhalten in Safari iOS). Übergabeprotokoll `docs/sessions/archiv/2026-05-16_bau-02x-backup-export.md` angelegt, drei Helper-Reuse-Entscheidungen mit Begründung dokumentiert. |
 | 2026-05-16 | Pflege Persistenz-Strategie verbinden | Stufe (3) der drei-stufigen Identitäts-Persistenz-Architektur (PULS § Offene Querschnitts-Fragen „Identitäts-Persistenz" — Stufen 1 und 2 schon gelöst; § Spore-Persistenz-Strategie verteilt Modul-00-Punkt „Warntext"). Folge-Pflege zu Bau 02.X Backup-Export (selbiger Tag, PR #54): die textliche Brücke zwischen Stufe (1) Storage-Persist und Stufe (2) Backup-Export. **§1 Modul 00 Bietet-Block** um Hinweis auf neues `DokuStatus`-Feld erweitert (`storagePersisted: boolean \| null` — Spiegelung des Modul-01-Getters, fail-soft). **§1 Modul 00 Nutzt-Block** um neue Zeile `SbkimStorage._meta.storagePersisted` erweitert (Lese-Pfad mit `typeof`-Check, fail-soft; `null` und `true` triggern nicht, nur explizites `false`). **§1 Modul 00 Geprüft-Zeile** um 2026-05-16 (Pflege Persistenz-Strategie verbinden — Stufe 3) erweitert. **Code in `src/modules/00_doku_fenster.js` additiv** (kein Refactoring der bestehenden sechs Funktionen): neue modul-lokale Konstante `DOKU_BACKUP_TIP_TEXT` mit deutschsprachigem Hinweis-Text (Verweis auf Modul 02 Panel-02-Knopf „Backup exportieren"); `getStatusSnapshot()` um Feld `storagePersisted: boolean \| null` erweitert (liest `SbkimStorage._meta.storagePersisted` fail-soft); neuer Modal-Render-Sub-Block `renderBackupTip()` + Prädikat `isBackupTipActive(snapshot)` — die Backup-Tipp-Zeile (Klassenpräfix `sbkim-doku-backup-tip`, hell-blaue Hinweis-Farbe) erscheint zwischen Knoten-Block und Sichttest-pro-Modul-Block, wenn `snapshot.storagePersisted === false` ODER `snapshot.quota.warningLevel !== "none"`; `_meta.backupTipActive()` als Test-Helper (zieht frischen Snapshot, gibt Boolean zurück); `_meta.dokuBackupTipText` für Test-Brücken-Zugriff. **Karte 00** § Datenformate (`DokuStatus`-Feld erweitert mit Drei-Werte-Hinweis und Null-/True-gleich-Konvention), neuer § Modal-Render-Pfad-Block „Backup-Tipp-Zeile" mit Trigger-Bedingung und Wortlaut, § Konfigurationswerte modul-lokale Zeile `DOKU_BACKUP_TIP_TEXT`, § Risiken neuer Punkt „Backup-Tipp ist textlich, keine Selbstheilung" (Aufrufer-Pflicht-Trennung — Klaus klickt Panel 02 selbst), § Manueller Test neuer Punkt 7 (Drei-Setup-Probe: Persist-Stub-`false` / Quota-Trigger / Negativ-Fall), § Bauzustand-Zeile „Pflege Persistenz-Strategie verbinden". **Aufrufer-Pflicht-Trennung verbindlich:** Modul 00 ruft `SbkimSpore.exportBackup` NICHT automatisch — Hinweis-only, Klaus klickt den Panel-02-Knopf selbst (Karte 00 § Verantwortlichkeiten „Macht nicht"). **Modul 01 / 02 / 03 / 04 / 05 / 06 / 07 / 08 unangetastet** (Modul 01 `_meta.storagePersisted` nur gelesen, Modul 02 `exportBackup` nur im Tipp-Text erwähnt). **Keine §0-Erweiterung** (keine neue Konstante; `DOKU_BACKUP_TIP_TEXT` ist modul-lokal). **Keine Spore-Feld-Erweiterung. Keine §2-/§3-/§4-/§5-Änderung.** **Kein Hauptversions-Sprung** (`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`, `BACKUP_FORMAT_VERSION` bleibt `1`). **`status.json` unverändert** (Modul 00 bleibt `score:"stub"`, additive Code-Erweiterung, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Sichttest ungeprüft** (headless gebaut — wartet auf Klaus' Browser-Lauf, Drei-Setup-Probe aus Karte 00 § Manueller Test Punkt 7). `node --check src/modules/00_doku_fenster.js` grün; Mini-Smoke-Test der Trigger-Logik in einem VM-Kontext (Persist-true/null/false × Quota-warn/none, vier Fälle alle grün). Damit ist der Querschnitts-Eintrag „Identitäts-Persistenz" final gelöst (alle drei Stufen) und „Spore-Persistenz-Strategie verteilt" ebenfalls (Quota-Schwellwert + Backup-Format + Warntext alle drei verankert). Übergabeprotokoll `docs/sessions/archiv/2026-05-16_pflege-persistenz-strategie-verbinden.md` angelegt. |
+| 2026-05-17 | Spec-Sitzung BroadcastChannel-Bridge | Folge-Spec zur Pflege Scope-Fix 2026-05-17 (PR #72/#73). Architektur-Grenze ehrlich gemacht: same-origin cross-PWA Handshake via SW-Bridge ist konzeptuell unmöglich (Sender-SW intercepted, nicht Receiver-SW). Lösung: **BroadcastChannel als additiver Fallback-Transport in Modul 05**, HandshakeRequest/HandshakeResponse-Schema **unverändert**. **§1 Modul 05 Bietet-Block** erweitert um optionalen dritten Parameter `options?: { transport?: "auto"\|"http"\|"channel" }` (Default `"auto"`). **§1 Modul 05 Nutzt-Block** um `BroadcastChannel('sbkim')` + Reply-Channel-Pfad ergänzt; Timeout aus QUERY_TIMEOUT_MS (kein neuer Wert). **§1 Modul 05 Fehlerverhalten** um zwei Zeilen erweitert (Channel-Timeout → `HandshakeTimeoutError` mit Log "timeout-channel", Channel-Reply-Signatur ungültig → `HandshakeSignatureInvalidError`). **§1 Modul 05 SW-Vertrag** um Architektur-Grenze-Hinweis erweitert (Spec-Klarheit, kein Bug — Auflösung in PR #72/#73 bestätigt). **§1 Modul 05 neuer Sub-Block „BroadcastChannel-Bridge"** mit Channel-Name, Envelope-Schema (Request/Response-Wrapper, NICHT signiert; nur das innere HandshakeRequest/Response wird signiert wie bisher), Receiver-Pflicht (eager in `init()`, Filter `toNodeId`/`fromNodeId`), Sender-Pfad (Reply-Channel pro Handshake, Timeout, finally-Cleanup, `nonceEcho`-Doppelt-Bindung), `toNodeId` als **Pflichtfeld** im Channel-Pfad (im HTTP-Pfad bleibt optional), Self-Hit-Schutz, Cleanup, „Wer-nicht-da-ist-schweigt"-Konvention. **§3 Endpunkt-Pfade** zweiter Sub-Block für Anastomose-Fallback-Transport: `channel-bridge: BroadcastChannel('sbkim')` + `reply-channel: BroadcastChannel('sbkim:reply:' + nonce)`. **Verbindlich nur für Modul 05** (Anastomose) — Heterokaryose (Modul 06) und Legacy (Modul 07) bleiben HTTP-only. **§1 Modul 05 Geprüft-Zeile** um 2026-05-17 erweitert. **Karte 05** § Schnittstelle (handshake-Signatur), neue Hauptsektion „BroadcastChannel-Bridge (same-origin Fallback)" mit Entscheidungs-Tabelle E1–E7 und Begründungen, § Datenformate (Envelope-Schema), § Manueller Test neuer Punkt 9 (Channel-Pfad), § Risiken neuer Punkt „Receiver-Tab-Pflicht", § Bauzustand-Zeile „Spec BroadcastChannel-Bridge". **PROTOCOL_VERSION bleibt `"0.1"`** (additive Transport-Erweiterung, kein Schema-Eingriff). **Kein Code** in `src/modules/05_anastomose.js` (Spec, kein Bau — Bau-Sitzung folgt). **Kein Eingriff** in `src/sbkim-sw.js` (SW-Pfad ist mit `isOwnEndpoint` aus PR #72 abgeschlossen). **Kein Eingriff** in Karte 09 (Andock-Hinweis „Beide Tabs offen halten" folgt in Bau-Sitzung). **`status.json` unverändert** — Modul 05 bleibt `score:"fertig"` (additive Spec-Erweiterung am Vertrag, keine Funktionalitäts-Regression; Bau erst danach setzt den Fallback live; `update_puls_pie.py` NICHT aufgerufen). Übergabeprotokoll `docs/sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md` angelegt. |

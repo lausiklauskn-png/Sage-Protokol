@@ -522,6 +522,135 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-17 · Spec-Sitzung Modul 05 — BroadcastChannel-Bridge als same-origin Fallback
+
+**Sitzungs-Rolle:** Spec-Sitzung, headless, EINE Phase. Branch
+`claude/spec-broadcastchannel-bridge-3HUAH`. Folge-Sitzung zur Pflege
+Scope-Fix (PR #72 + Endknoten-Sichttest PR #73). Schließt die
+Architektur-Lücke same-origin cross-PWA: die SW-Bridge ist dort
+konzeptuell unmöglich (Sender-SW intercepted vor Receiver-SW),
+deshalb braucht der Handshake einen alternativen Transport.
+
+**Was geändert (additiv, kein Code in `src/`):**
+
+- **`docs/INTERFACES.md` §1 Modul 05 Vertrag erweitert:**
+  - Bietet-Block um optionalen dritten Parameter
+    `options?: { transport?: "auto"|"http"|"channel" }` (Default `"auto"`).
+    HandshakeRequest/Response-Schema **unverändert** — Channel ist
+    Transport-Schicht.
+  - Nutzt-Block um `BroadcastChannel('sbkim')` + Reply-Channel-Pfad
+    ergänzt; Timeout aus bestehendem `QUERY_TIMEOUT_MS` (4000 ms),
+    keine neue Konstante.
+  - Fehlerverhalten um zwei Zeilen erweitert
+    (`HandshakeTimeoutError` mit Log `"timeout-channel"` und Auto-
+    Fallback-`cause`; Channel-Reply-Signatur ungültig →
+    `HandshakeSignatureInvalidError`).
+  - SW-Vertrag-Block um Architektur-Grenze-Hinweis ergänzt (Spec-
+    Klarheit aus PR #72/#73: same-origin via SW-Bridge konzeptuell
+    unmöglich).
+  - Neuer Sub-Block „BroadcastChannel-Bridge" mit Channel-Name,
+    Envelope-Schema, Receiver-Pflicht, Sender-Pfad,
+    `toNodeId`-Pflichtschärfung, Self-Hit-Schutz, Cleanup,
+    „Wer-nicht-da-ist-schweigt"-Konvention.
+  - Geprüft-Zeile um 2026-05-17 (Spec-Sitzung BroadcastChannel-Bridge)
+    erweitert.
+- **`docs/INTERFACES.md` §3 Endpunkt-Pfade** um zweiten Sub-Block
+  „Same-origin Fallback-Transport für Modul 05":
+  - `channel-bridge: BroadcastChannel('sbkim')`
+  - `reply-channel: BroadcastChannel('sbkim:reply:' + nonce)`
+  - Verbindlich **nur** für Modul 05 — Heterokaryose (06) und Legacy
+    (07) bleiben HTTP-only.
+- **`docs/INTERFACES.md` §6 Änderungsprotokoll** neue Zeile am Ende.
+- **`docs/components/05_anastomose.md`:**
+  - § Schnittstelle: `handshake`-Signatur und Schritt-für-Schritt-
+    Doc um Channel-Pfad + Auto-Fallback-Trigger erweitert.
+  - § SW-Worker-Hinweis um Architektur-Grenze-Block (PR #72/#73-
+    Beleg, Distinguishing-Test 405/404).
+  - **Neue Hauptsektion „BroadcastChannel-Bridge (same-origin
+    Fallback)"** mit Motivation, Vertrag, Auto-Fallback-Logik,
+    E1–E7-Entscheidungstabelle (jede mit Begründung) und „Was
+    diese Spec NICHT regelt"-Block.
+  - § Fehlerverhalten um drei Zeilen (Channel-Timeout + Auto-
+    Fallback-`cause`, `nonceEcho`-Mismatch, synchrones
+    `MissingToNodeIdError`).
+  - § Manueller Test um Punkt 9 (Channel-Pfad, Sub-Tests 9a/9b/9c
+    inkl. Auto-Fallback-Beweis).
+  - § Risiken um Receiver-Tab-Pflicht.
+  - § Bauzustand-Zeile „Spec BroadcastChannel-Bridge".
+
+**Sieben Entscheidungen (E1–E7), verbindlich:**
+
+- **E1 Channel-Name:** `BroadcastChannel('sbkim')` — ein gemeinsamer
+  Channel pro Origin, Filtern via `toNodeId`. Versionierung läuft
+  über `payload.protocolVersion` (analog HTTP-Pfad), nicht über den
+  Channel-Namen.
+- **E2 Auto-Fallback:** α (Default `transport:"auto"`). HTTP zuerst,
+  bei klaren Signalen (4xx/5xx, non-JSON, fehlende Pflichtfelder)
+  Channel-Fallback. Cross-domain bleibt unverändert HTTP-only.
+  Override `transport:"http"|"channel"` für Test/Diagnose.
+- **E3 Receiver-Init:** Eager in `init()`. Konsistent zur SW-Bridge-
+  Init und Karte-09-Andock-Pflicht.
+- **E4 Timeout & Failure:** `QUERY_TIMEOUT_MS` (4000 ms) als Timeout,
+  bei Timeout `HandshakeTimeoutError` (Throw, kein semantisches
+  Outcome). Log-Zeile `"timeout-channel"`. Bei Auto-Fallback HTTP-
+  Fehler als `cause`.
+- **E5 Message-Format:** Wrapper-Envelope mit `replyChannelName` aus
+  nonce; HandshakeRequest/Response-Schema **unverändert**. Envelope
+  selbst NICHT signiert (nur das innere Schema, wie HTTP-Pfad).
+- **E6 Cleanup:** Main-Channel über Tab-Lebensdauer; Reply-Channels
+  pro Handshake, Close in `finally` (Sender + Receiver).
+- **E7 Replay/Self-Hit:** `toNodeId` Pflicht im Channel-Pfad
+  (HTTP-Pfad bleibt optional); Receiver-Filter `toNodeId === own.nodeId`
+  + `fromNodeId !== own.nodeId`. Aktiver Replay-Schutz bleibt
+  Schutz-Backlog Modul 11.
+
+**Was NICHT angefasst:**
+
+- `src/modules/05_anastomose.js` (Bau-Sitzung folgt).
+- `src/sbkim-sw.js` (SW-Pfad ist mit `isOwnEndpoint` aus PR #72
+  abgeschlossen).
+- `receiveHandshake`-Signatur (Channel-Receiver ruft denselben am
+  Ende auf).
+- Andere Module (00/01/02/03/04/06/07/08/09).
+- `docs/components/09_einbau_pwa.md` (Andock-Hinweis „Beide Tabs
+  offen halten" folgt in Bau-Sitzung 05 — die Spec ohne Code zu
+  paaren wäre verwirrend für den Andocker).
+- `PROTOCOL_VERSION` bleibt `"0.1"`.
+- `status.json` unverändert — Modul 05 bleibt `score:"fertig"`
+  (additive Spec-Erweiterung am Vertrag, keine Funktionalitäts-
+  Regression; Bau erst danach setzt den Fallback live). `update_puls_pie.py`
+  NICHT aufgerufen.
+
+**Validierung:**
+
+- `docs/INTERFACES.md` und `docs/components/05_anastomose.md`
+  manuell gegen das Schema gegengelesen — HandshakeRequest/Response-
+  Pflichtfelder unverändert, nur Transport-Schicht additiv.
+- Karte 05 § Manueller Test § Voraussetzungen explizit auf
+  „zwei Tabs offen" erweitert (Sub-Test 9 Live-Pfad). Pseudo-Knoten-
+  Variante für einen Tab dokumentiert.
+- E1–E7-Entscheidungen alle mit ein-Satz-Begründung versehen, damit
+  die Bau-Sitzung ohne Rückfrage starten kann.
+
+**Was diesen Schritt NICHT löst:**
+
+- Tatsächlicher Cross-Knoten-Handshake mit `outcome:"established"`
+  ohne localStorage-Bypass — das ist Ziel der **nachfolgenden Bau-
+  Sitzung Modul 05** (additiver Channel-Pfad in
+  `src/modules/05_anastomose.js`) + Klaus' Sichttest.
+- Karte 09 Andock-Hinweis — folgt in der Bau-Sitzung (gemeinsam mit
+  dem Code-Eingriff, damit der Andocker nur einen vollständigen
+  Schritt liest).
+
+**Klaus' Pflicht nach Merge:** Keine Endknoten-Pflege nötig (Spec
+ist kein Endknoten-Eingriff). Der Spec-Stand muss vor der nachfolgenden
+Bau-Sitzung gemerged sein, damit die Bau-Sitzung gegen `main`
+arbeiten kann.
+
+**Übergabeprotokoll:** [→ Archiv](sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md)
+
+---
+
 ### 2026-05-17 · Pflege Modul 05/SW — Scope-Fix `isOwnEndpoint` in `sbkim-sw.js`
 
 **Sitzungs-Rolle:** Pflege-Sitzung, headless, EINE Phase. Branch
@@ -1517,6 +1646,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Spec · Modul 05 BroadcastChannel-Bridge als same-origin Fallback (additiver Transport additiv zum HTTP-Pfad; `handshake(...)` um optionalen `options.transport`-Parameter erweitert mit Default `"auto"`; Wrapper-Envelope mit `replyChannelName` aus nonce; `BroadcastChannel('sbkim')` als gemeinsamer Channel pro Origin; `toNodeId` Pflicht im Channel-Pfad; Receiver-Tab muss offen sein, kein Wake-Lock; E1–E7-Entscheidungstabelle mit Begründungen; HandshakeRequest/Response-Schema unverändert; `PROTOCOL_VERSION` bleibt `"0.1"`; KEIN Code, KEIN Eingriff in Karte 09 — Bau-Sitzung folgt) | [→ Archiv](sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md) |
 | 2026-05-17 | Pflege · Modul 05/SW Scope-Fix `isOwnEndpoint` (`sbkim-sw.js` `isPathSuffix` durch scope-bewusste `isOwnEndpoint` ersetzt — leitet erwarteten Pfad aus `self.registration.scope` ab, strikte Gleichheit; behebt falsch-positiven Cross-Scope-Intercept; Variante 3c bewusst nicht abgedeckt; Same-origin cross-PWA via SW-Bridge bleibt konzeptuell unmöglich, Folge-Spec Modul 05 BroadcastChannel-Bridge empfohlen; Klaus muss `sbkim-sw.js` mit Cache-Bust in beide Endknoten nachziehen) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fix.md) |
 | 2026-05-17 | Test-Erkenntnis · A/B-Test PR #70 + Architekturfund `isPathSuffix` scope-unbewusst (kein PR; Befund: PR #70's `includeUncontrolled:false`-Fix korrekt für sein Szenario, aber irrelevant für same-origin cross-PWA, weil Sender-SW vor Receiver-SW intercepted; voller Cache-Eskalations-Trace inkl. File-Rename + chrome://serviceworker-internals/) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fund.md) |
 | 2026-05-17 | Pflege · Modul 05/SW Phantom-Clients-Fix (`sbkim-sw.js` `clients.matchAll` von `includeUncontrolled:true` auf `false` umgestellt + neue Loop-Logik „alle controlled Clients der Reihe nach, erster der nicht ‚toNodeId stimmt nicht‘ sagt gewinnt"; behebt den SW-Bridge-Phantom-Cache-Bug aus Cross-Knoten-Handshake-Sitzung; Klaus muss neue `sbkim-sw.js` in beide Endknoten-Repos kopieren + pushen) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-phantom-clients-fix.md) |
