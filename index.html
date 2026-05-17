@@ -436,6 +436,89 @@
     .bh-disk, .bh-disk-2, .bh-chrome { animation: none; }
     .bh-chrome { opacity: 0.45; filter: blur(2.8px) brightness(0.55); transform: translate(60%, -30%) scale(0.9); }
   }
+
+  /* === Browser-Observatorium-Universum (eigener Screen) === */
+  .observatorium-screen { position: relative; min-height: 100vh; padding: 0; background: #02020c; color: #f2f0ff; overflow: hidden; }
+  .observatorium-back { position: fixed; top: 1.2rem; left: 1.2rem; z-index: 90; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.18); color: #f2f0ff; padding: 0.55rem 1rem; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .2s, border-color .2s; }
+  .observatorium-back:hover { background: rgba(0,0,0,0.85); border-color: rgba(255,255,255,0.4); }
+  .observatorium-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; cursor: crosshair; }
+
+  /* Hintergrund-Nebel (Hubble-Realfarben, dominant) */
+  .universe-nebula { position: absolute; pointer-events: none; mix-blend-mode: screen; opacity: 0.55; filter: blur(40px); will-change: transform; }
+  .universe-nebula-1 { top: -10%; left: -8%;  width: 65%; height: 65%; background: radial-gradient(ellipse at 30% 40%, rgba(255,70,180,0.55) 0%, rgba(220,60,200,0.32) 30%, rgba(110,80,255,0.18) 55%, transparent 75%); animation: nebula-drift-1 140s ease-in-out infinite alternate; }
+  .universe-nebula-2 { top: 18%; right: -10%; width: 72%; height: 72%; background: radial-gradient(ellipse at 60% 50%, rgba(60,210,255,0.5) 0%, rgba(110,231,211,0.32) 28%, rgba(80,80,255,0.2) 55%, transparent 78%); animation: nebula-drift-2 165s ease-in-out infinite alternate; }
+  .universe-nebula-3 { bottom: -15%; left: 18%; width: 78%; height: 60%; background: radial-gradient(ellipse at 45% 60%, rgba(244,180,53,0.32) 0%, rgba(255,120,140,0.25) 25%, rgba(140,80,220,0.18) 55%, transparent 80%); animation: nebula-drift-3 180s ease-in-out infinite alternate; }
+  @keyframes nebula-drift-1 { 0% { transform: translate(0,0) scale(1) rotate(0deg); } 50% { transform: translate(8%, 6%) scale(1.1) rotate(40deg); } 100% { transform: translate(-4%, 10%) scale(1.05) rotate(-25deg); } }
+  @keyframes nebula-drift-2 { 0% { transform: translate(0,0) scale(1) rotate(0deg); } 50% { transform: translate(-9%, -6%) scale(1.08) rotate(-30deg); } 100% { transform: translate(5%, -10%) scale(1.12) rotate(20deg); } }
+  @keyframes nebula-drift-3 { 0% { transform: translate(0,0) scale(1) rotate(0deg); } 50% { transform: translate(7%, -8%) scale(1.06) rotate(25deg); } 100% { transform: translate(-6%, 5%) scale(1.1) rotate(-15deg); } }
+
+  /* Hintergrund-Sterne via Canvas (Maus-Schweif-Glow) */
+  .universe-stars { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  /* Galaxien-Schicht */
+  .universe-galaxies { position: absolute; inset: 0; pointer-events: none; }
+  .universe-galaxy { position: absolute; width: 110px; height: 110px; pointer-events: auto; cursor: pointer; transform-origin: center; transition: filter 0.5s ease, transform 0.5s ease; will-change: transform, filter; }
+  .universe-galaxy .galaxy-body { position: absolute; inset: 0; border-radius: 50%; animation: galaxy-spin 24s linear infinite; }
+  .universe-galaxy.medium .galaxy-body { animation-duration: 32s; }
+  .universe-galaxy.large .galaxy-body { animation-duration: 40s; }
+  .universe-galaxy .galaxy-label { position: absolute; top: 100%; left: 50%; transform: translate(-50%, 0.6rem); white-space: nowrap; font-size: 0.78rem; letter-spacing: 0.04em; color: #fff; text-shadow: 0 0 12px rgba(0,0,0,0.95); opacity: 0; filter: blur(10px); transition: opacity 0.6s ease, filter 0.7s ease, transform 0.4s ease; pointer-events: none; padding: 0.25rem 0.65rem; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.15); border-radius: 999px; backdrop-filter: blur(4px); }
+  .universe-galaxy:hover, .universe-galaxy.awake { filter: brightness(1.25) saturate(1.2) drop-shadow(0 0 18px rgba(244,180,53,0.45)); transform: scale(1.12); }
+  .universe-galaxy:hover .galaxy-label, .universe-galaxy.awake .galaxy-label { opacity: 1; filter: blur(0); transform: translate(-50%, 0.85rem); }
+  @keyframes galaxy-spin { to { transform: rotate(360deg); } }
+
+  /* Galaxie-Formen: Spirale, elliptisch, irregulär, Sombrero, ... */
+  .galaxy-spiral .galaxy-body { background: conic-gradient(from 0deg, rgba(255,170,80,0.0) 0%, rgba(255,180,100,0.85) 15%, rgba(255,90,160,0.7) 30%, rgba(180,80,255,0.5) 50%, rgba(100,180,255,0.6) 70%, rgba(255,180,100,0.85) 90%, rgba(255,170,80,0.0) 100%); filter: blur(2px) saturate(1.2); -webkit-mask: radial-gradient(circle at center, #000 0%, #000 18%, transparent 65%); mask: radial-gradient(circle at center, #000 0%, #000 18%, transparent 65%); }
+  .galaxy-elliptical .galaxy-body { background: radial-gradient(ellipse at center, rgba(255,220,180,0.95) 0%, rgba(255,180,120,0.7) 25%, rgba(220,140,90,0.4) 55%, transparent 80%); transform: rotate(-25deg) scaleY(0.55); filter: blur(1.5px); }
+  .galaxy-irregular .galaxy-body { background: radial-gradient(circle at 35% 45%, rgba(160,255,220,0.85) 0%, rgba(100,200,255,0.55) 30%, rgba(180,90,255,0.4) 55%, transparent 80%), radial-gradient(circle at 70% 60%, rgba(255,130,200,0.7) 0%, rgba(180,80,255,0.4) 35%, transparent 70%); filter: blur(3px); }
+  .galaxy-sombrero .galaxy-body { background: radial-gradient(ellipse at 50% 50%, rgba(255,230,180,0.95) 0%, rgba(200,150,90,0.5) 30%, transparent 60%); transform: rotate(-12deg); }
+  .galaxy-sombrero .galaxy-body::after { content: ""; position: absolute; inset: 35% 0; background: linear-gradient(180deg, transparent 0%, rgba(20,10,40,0.75) 35%, rgba(20,10,40,0.75) 65%, transparent 100%); border-radius: 50%; filter: blur(2px); }
+  .galaxy-ring .galaxy-body { background: radial-gradient(circle at center, transparent 0%, transparent 28%, rgba(255,180,100,0.7) 38%, rgba(255,130,80,0.6) 50%, rgba(180,80,200,0.4) 65%, transparent 80%); filter: blur(1.8px); }
+  .galaxy-lenticular .galaxy-body { background: radial-gradient(ellipse at center, rgba(220,200,255,0.85) 0%, rgba(160,140,255,0.5) 30%, rgba(120,90,200,0.3) 55%, transparent 80%); transform: rotate(35deg) scaleY(0.4); filter: blur(2px); }
+  .galaxy-quasar .galaxy-body { background: radial-gradient(circle at center, rgba(255,255,255,1) 0%, rgba(200,240,255,0.85) 8%, rgba(110,231,211,0.6) 22%, rgba(80,80,255,0.45) 45%, transparent 75%); filter: blur(1px); }
+  .galaxy-quasar .galaxy-body::before { content: ""; position: absolute; left: 50%; top: 50%; width: 230%; height: 4%; background: linear-gradient(90deg, transparent 0%, rgba(200,240,255,0.85) 30%, rgba(200,240,255,0.85) 70%, transparent 100%); transform: translate(-50%, -50%) rotate(0deg); filter: blur(2px); }
+  .galaxy-quasar .galaxy-body::after { content: ""; position: absolute; left: 50%; top: 50%; width: 230%; height: 4%; background: linear-gradient(90deg, transparent 0%, rgba(200,240,255,0.85) 30%, rgba(200,240,255,0.85) 70%, transparent 100%); transform: translate(-50%, -50%) rotate(90deg); filter: blur(2px); }
+
+  /* Größen-Klassen */
+  .universe-galaxy.small  { width: 90px;  height: 90px; }
+  .universe-galaxy.medium { width: 130px; height: 130px; }
+  .universe-galaxy.large  { width: 170px; height: 170px; }
+
+  /* Hint-Bar unten */
+  .universe-hint { position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%); z-index: 90; display: inline-flex; align-items: center; gap: 1rem; padding: 0.55rem 1.1rem; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #d8d8e8; font-size: 0.88rem; }
+  .universe-hint .universe-md-link { color: var(--gold); border-left: 1px solid rgba(255,255,255,0.18); padding-left: 1rem; font-weight: 500; }
+
+  /* Modal (Lehre-Detailansicht) */
+  .universe-modal { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 1.5rem; }
+  .universe-modal[hidden] { display: none; }
+  .universe-modal-backdrop { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(40,10,60,0.55) 0%, rgba(0,0,0,0.85) 70%); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .universe-modal-card { position: relative; z-index: 1; max-width: 620px; width: 100%; padding: 2rem 2rem 1.5rem; background: linear-gradient(160deg, rgba(30,15,55,0.88) 0%, rgba(10,8,32,0.92) 100%); border: 1px solid rgba(255,255,255,0.18); border-radius: 22px; color: #f0f0ff; box-shadow: 0 28px 60px rgba(0,0,0,0.6), inset 0 0 80px rgba(140,90,255,0.12); animation: modal-zoom .45s cubic-bezier(0.2,0.7,0.2,1); }
+  @keyframes modal-zoom { from { opacity: 0; transform: scale(0.85) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .universe-modal-close { position: absolute; top: 0.9rem; right: 1rem; width: 32px; height: 32px; padding: 0; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 50%; color: #f0f0ff; font-size: 1rem; line-height: 1; cursor: pointer; }
+  .universe-modal-close:hover { background: rgba(255,255,255,0.15); }
+  .universe-modal-tag { display: inline-block; font-size: 0.78rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .universe-modal-head h2 { margin: 0 0 1rem; font-size: 1.35rem; letter-spacing: -0.005em; color: #fff; }
+  .universe-modal-body { line-height: 1.65; color: #d8d8e8; font-size: 0.96rem; }
+  .universe-modal-body p { margin: 0 0 0.85rem; }
+  .universe-modal-body p:last-child { margin-bottom: 0; }
+  .universe-modal-body strong { color: #fff; }
+  .universe-modal-body .universe-modal-link { display: inline-block; margin-top: 0.6rem; color: rgba(244,180,53,0.62); font-size: 0.82rem; font-weight: 400; opacity: 0.7; letter-spacing: 0.01em; }
+  .universe-modal-body .universe-modal-link:hover { color: var(--gold); opacity: 1; }
+
+  @media (max-width: 720px) {
+    .observatorium-back { top: 0.6rem; left: 0.6rem; padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    .universe-galaxy.small  { width: 70px;  height: 70px; }
+    .universe-galaxy.medium { width: 100px; height: 100px; }
+    .universe-galaxy.large  { width: 130px; height: 130px; }
+    .universe-galaxy .galaxy-label { font-size: 0.7rem; padding: 0.2rem 0.5rem; }
+    .universe-hint { font-size: 0.78rem; padding: 0.4rem 0.8rem; }
+    .universe-modal { padding: 0.8rem; }
+    .universe-modal-card { padding: 1.4rem 1.3rem 1rem; }
+    .universe-modal-head h2 { font-size: 1.15rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .universe-nebula, .universe-galaxy .galaxy-body { animation: none; }
+    .universe-modal-card { animation: none; }
+  }
   </style>
 </head>
 <body>
@@ -714,9 +797,9 @@
         <article class="card span-12 blackhole-card" data-back-anchor="blackhole">
           <span class="card-tag">Browser-Observatorium · Anziehung ins Detail</span>
           <a class="blackhole-stage"
-             href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/OBSERVATORIUM_BROWSER.md"
-             target="_blank" rel="noopener"
-             aria-label="Browser-Observatorium öffnen — Tech-Note für Andocker und Programmierer">
+             href="#observatorium"
+             onclick="goScreen('observatorium', 'blackhole'); return false;"
+             aria-label="Browser-Observatorium öffnen — wandernde Galaxien-Konstellation">
             <div class="blackhole-scene" aria-hidden="true">
               <div class="bh-disk"></div>
               <div class="bh-disk bh-disk-2"></div>
@@ -991,6 +1074,31 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </div>
       </section>
     </main>
+    <!-- ============= OBSERVATORIUM-UNIVERSUM ============= -->
+    <main id="screen-observatorium" class="screen observatorium-screen">
+      <button class="screen-back observatorium-back" onclick="goScreen('overview', 'blackhole')">← Zurück zum Mycel</button>
+      <div class="observatorium-stage" id="observatorium-stage">
+        <canvas id="universe-stars" class="universe-stars" aria-hidden="true"></canvas>
+        <div class="universe-nebula universe-nebula-1" aria-hidden="true"></div>
+        <div class="universe-nebula universe-nebula-2" aria-hidden="true"></div>
+        <div class="universe-nebula universe-nebula-3" aria-hidden="true"></div>
+        <div class="universe-galaxies" id="universe-galaxies" aria-label="Sieben wandernde Galaxien — eine pro Lehre"></div>
+        <div class="universe-hint" id="universe-hint">
+          <span>Sieben Galaxien · sieben Lehren · tippe an, was dich neugierig macht.</span>
+        </div>
+      </div>
+      <div class="universe-modal" id="universe-modal" role="dialog" aria-modal="true" aria-labelledby="universe-modal-title" hidden>
+        <div class="universe-modal-backdrop" onclick="closeUniverseModal()"></div>
+        <article class="universe-modal-card">
+          <button class="universe-modal-close" onclick="closeUniverseModal()" aria-label="Lehre schließen">✕</button>
+          <header class="universe-modal-head">
+            <span class="universe-modal-tag" id="universe-modal-tag">Galaxie ·</span>
+            <h2 id="universe-modal-title">Lehre</h2>
+          </header>
+          <div class="universe-modal-body" id="universe-modal-body"></div>
+        </article>
+      </div>
+    </main>
   </div>
   <!-- ============= ÜBER-MODAL ============= -->
   <div class="ueber-modal" id="ueber-modal" role="dialog" aria-modal="true" aria-labelledby="ueber-title" hidden>
@@ -1048,7 +1156,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script>
   // ====== STATE ======
   const STATE = { status: null };
-  const SCREENS = ['overview', 'cycle', 'module', 'data', 'warum'];
+  const SCREENS = ['overview', 'cycle', 'module', 'data', 'warum', 'observatorium'];
   let currentScreen = 'overview';
   let lastBentoCardId = null;
 
@@ -1112,6 +1220,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     }
     if (id === 'cycle') startTour(); else stopTour();
     if (id === 'warum') startWarum(); else stopWarum();
+    if (id === 'observatorium') setupObservatoriumUniverse();
   }
   function goWarum() { closeUeberModal(); goScreen('warum'); }
 
@@ -1999,6 +2108,216 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       cancelAnimationFrame(raf);
       scene.style.transform = '';
     });
+  }
+
+  // ====== Browser-Observatorium-Universum (eigener Screen) ======
+  //
+  // Sieben Galaxien für sieben Lehren der Browser-Observatorium-Doku.
+  // Jede Galaxie wandert auf einer eigenen Lissajous-artigen Bahn um ein
+  // gemeinsames Zentrum, eigene Frequenzen + Phasen → spiralartiges
+  // Memory-Feld. Maus-Bewegung erzeugt einen lokalen Glow auf den
+  // Hintergrund-Sternen (Canvas), Galaxie-Hover zeigt das Lehre-Label
+  // scharf (sonst verschwommen — Memory-Logik), Klick öffnet ein Modal
+  // mit Kurzfassung + Link zur md-Doku (Klaus' Wunsch: Modal kurz, wer
+  // mehr will, nimmt die md).
+
+  const OBSERVATORIUM_LEHREN = [
+    { n: 1, name: 'Browser-Instanzen-Trennung', shape: 'galaxy-spiral', size: 'large',
+      kurz: 'Samsung DeX-Chrome und Tablet-Chrome auf demselben Gerät sind faktisch **zwei getrennte Browser** — eigene IndexedDB, eigene Service-Worker, eigene PWA-Liste. Eine in DeX angedockte Spore ist im Tablet-Modus nicht da. Gilt generalisiert für Chrome-Profile und Inkognito-Modus.|**Konsequenz für SBKIM:** BroadcastChannel-Bridge funktioniert nur, wenn beide Tabs in derselben Browser-Instanz laufen.' },
+    { n: 2, name: 'IndexedDB-Persistenz', shape: 'galaxy-sombrero', size: 'large',
+      kurz: 'IndexedDB ist persistent — bis Chrome reklamiert. „Cookies und Sitedaten löschen" für diese Site killt die SBKIM-Identität vollständig. Auch Storage-Quota-Druck kann „best effort"-Daten reklamieren. `navigator.storage.persist()` schützt nur teilweise.|**Schutz:** regelmäßiges Backup mit Modul 02 `exportBackup(password)`.' },
+    { n: 3, name: 'BroadcastChannel-Räume', shape: 'galaxy-ring', size: 'medium',
+      kurz: 'Channel-Bridge trägt nur, wenn beide Tabs in **derselben Browser-Instanz** laufen — same-origin reicht nicht. Mobile-Chrome suspendiert Hintergrund-Tabs aggressiv, dann verstummt der Receiver-Listener und der Sender erntet `HandshakeTimeoutError`.|**Workaround:** DeX-Multi-Window oder zwei sichtbare Fenster nebeneinander.' },
+    { n: 4, name: 'SW-Cache + File-Rename', shape: 'galaxy-irregular', size: 'medium',
+      kurz: 'Browser-HTTP-Cache, App-Service-Worker-Cache und GitHub-Pages-CDN cachen jeweils. Modul-Updates kommen nur durch, wenn man File-Rename als Cache-Bust nutzt (`05_anastomose.js` → `05_anastomose-v2.js`). Query-Parameter sind halbverlässlich.|**Notfall:** SW unregistrieren + Reload — bricht App-Offline-Pfade kurz, aber heilt Cache-Hänger.' },
+    { n: 5, name: 'Eruda ≠ Chrome-DevTools', shape: 'galaxy-elliptical', size: 'small',
+      kurz: 'Eruda ist Tablet-Lifesaver, aber: kein top-level `await` (nutzt `.then()` statt), `copy()` mobile-blockiert (Blob-Download als Workaround), Output bei großen Arrays abgeschnitten.|**Spore-Export-Trick:** `Blob` + `<a download>` lädt eine `spore.json` ins Android-Downloads — Termux greift via `~/storage/downloads/` direkt darauf zu.' },
+    { n: 6, name: 'Termux-Brücke', shape: 'galaxy-lenticular', size: 'small',
+      kurz: 'Termux ist vollwertiges Linux-Userland auf Android. Mit `termux-setup-storage` werden Symlinks zu `/storage/emulated/0/Download/` und Co. angelegt — Eruda-Downloads sind dann direkt in der Shell verfügbar.|**Folge:** kompletter Single-Device-Multi-PWA-Andock-Workflow am Tablet ohne PC, Browser + Termux als Brücke.' },
+    { n: 7, name: 'DeX als Plattform', shape: 'galaxy-quasar', size: 'large',
+      kurz: 'DeX-Desktop-Chrome ist eine **separate Browser-Instanz**, aber zugleich eine ernsthafte Test-Plattform: weniger aggressive Hintergrund-Tab-Suspendierung als Mobile-Chrome, Multi-Window-Modus erlaubt parallele PWA-Tabs gleichzeitig sichtbar.|**Konsequenz:** Channel-Bridge-Setup ohne Mobile-Suspend-Risiko, Maus + Tastatur für Eruda-Komfort, Desktop-Hard-Reload via `Strg+Shift+R`.' }
+  ];
+
+  let universeInited = false;
+  let universeRAF = 0;
+  let universeStars = [];
+  let universeMouse = { x: -9999, y: -9999, active: false };
+  let universeGalaxyEls = [];
+
+  function setupObservatoriumUniverse() {
+    if (universeInited) return;
+    universeInited = true;
+
+    const stage = document.getElementById('observatorium-stage');
+    const galaxiesEl = document.getElementById('universe-galaxies');
+    const canvas = document.getElementById('universe-stars');
+    if (!stage || !galaxiesEl || !canvas) return;
+
+    // 1. Galaxien als DOM-Elemente erzeugen
+    OBSERVATORIUM_LEHREN.forEach((lehre, i) => {
+      const el = document.createElement('button');
+      el.className = 'universe-galaxy ' + lehre.shape + ' ' + lehre.size;
+      el.type = 'button';
+      el.setAttribute('aria-label', 'Lehre ' + lehre.n + ' — ' + lehre.name + ' öffnen');
+      el.dataset.idx = i;
+      el.innerHTML = '<div class="galaxy-body"></div><div class="galaxy-label">Lehre ' + lehre.n + ' · ' + lehre.name + '</div>';
+      el.addEventListener('click', () => openUniverseModal(i));
+      galaxiesEl.appendChild(el);
+
+      // Orbit-Parameter pro Galaxie (Lissajous-artig)
+      const angle = (i / OBSERVATORIUM_LEHREN.length) * Math.PI * 2;
+      el._orbit = {
+        cx: 50 + Math.cos(angle) * 8,         // Zentrum in vw
+        cy: 50 + Math.sin(angle) * 6,         // Zentrum in vh
+        rx: 22 + Math.random() * 14,          // Radius x in vw
+        ry: 18 + Math.random() * 10,          // Radius y in vh
+        fx: 0.045 + Math.random() * 0.04,     // Frequenz x (rad/s)
+        fy: 0.038 + Math.random() * 0.05,     // Frequenz y (rad/s)
+        px: Math.random() * Math.PI * 2,      // Phase x
+        py: Math.random() * Math.PI * 2,      // Phase y
+        wakeBoost: 0                          // 0..1, vergrößert sich bei Nähe
+      };
+      universeGalaxyEls.push(el);
+    });
+
+    // 2. Canvas-Sterne erzeugen
+    function resizeCanvas() {
+      canvas.width = stage.clientWidth;
+      canvas.height = stage.clientHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const STAR_COUNT = window.innerWidth < 720 ? 180 : 320;
+    universeStars = [];
+    for (let i = 0; i < STAR_COUNT; i++) {
+      universeStars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: 0.4 + Math.random() * 1.4,
+        base: 0.15 + Math.random() * 0.45,
+        twinkleSpeed: 0.4 + Math.random() * 1.6,
+        twinklePhase: Math.random() * Math.PI * 2
+      });
+    }
+
+    // 3. Maus-Tracking (Schweif-Glow)
+    stage.addEventListener('mousemove', e => {
+      const rect = stage.getBoundingClientRect();
+      universeMouse.x = e.clientX - rect.left;
+      universeMouse.y = e.clientY - rect.top;
+      universeMouse.active = true;
+    });
+    stage.addEventListener('mouseleave', () => { universeMouse.active = false; });
+    stage.addEventListener('touchmove', e => {
+      if (!e.touches[0]) return;
+      const rect = stage.getBoundingClientRect();
+      universeMouse.x = e.touches[0].clientX - rect.left;
+      universeMouse.y = e.touches[0].clientY - rect.top;
+      universeMouse.active = true;
+    }, { passive: true });
+
+    // 4. Render-Loop (Galaxien-Position + Star-Glow)
+    const ctx = canvas.getContext('2d');
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let lastT = performance.now();
+
+    function frame(now) {
+      const dt = Math.min(48, now - lastT);
+      lastT = now;
+      const t = now / 1000;
+
+      // Galaxien bewegen
+      const vw = canvas.width;
+      const vh = canvas.height;
+      universeGalaxyEls.forEach((el, i) => {
+        const o = el._orbit;
+        const speed = reduced ? 0 : 1;
+        const tt = t * speed;
+        const x01 = (o.cx + Math.cos(tt * o.fx + o.px) * o.rx) / 100;
+        const y01 = (o.cy + Math.sin(tt * o.fy + o.py) * o.ry) / 100;
+        const px = x01 * vw;
+        const py = y01 * vh;
+        el.style.transform = 'translate(' + (px - el.offsetWidth / 2) + 'px, ' + (py - el.offsetHeight / 2) + 'px)';
+
+        // Nähe-Detection für Wake-Effekt
+        if (universeMouse.active) {
+          const dx = universeMouse.x - px;
+          const dy = universeMouse.y - py;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const wakeRadius = 200;
+          const target = Math.max(0, 1 - dist / wakeRadius);
+          o.wakeBoost += (target - o.wakeBoost) * 0.12;
+          if (o.wakeBoost > 0.45) el.classList.add('awake');
+          else el.classList.remove('awake');
+        } else {
+          o.wakeBoost *= 0.95;
+          if (o.wakeBoost < 0.05) el.classList.remove('awake');
+        }
+      });
+
+      // Sterne zeichnen mit Maus-Schweif
+      ctx.clearRect(0, 0, vw, vh);
+      const mx = universeMouse.x;
+      const my = universeMouse.y;
+      const trailRadius = 160;
+      for (let i = 0; i < universeStars.length; i++) {
+        const s = universeStars[i];
+        const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * s.twinkleSpeed + s.twinklePhase));
+        let alpha = s.base * tw;
+        let r = s.r;
+        if (universeMouse.active) {
+          const dx = s.x - mx;
+          const dy = s.y - my;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < trailRadius) {
+            const glow = Math.pow(1 - dist / trailRadius, 1.4);
+            alpha = Math.min(1, alpha + glow * 0.85);
+            r = s.r * (1 + glow * 1.6);
+          }
+        }
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
+        ctx.fill();
+      }
+
+      universeRAF = requestAnimationFrame(frame);
+    }
+    universeRAF = requestAnimationFrame(frame);
+
+    // 5. Esc schließt Modal
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeUniverseModal();
+    });
+  }
+
+  function openUniverseModal(idx) {
+    const lehre = OBSERVATORIUM_LEHREN[idx];
+    if (!lehre) return;
+    const modal = document.getElementById('universe-modal');
+    const title = document.getElementById('universe-modal-title');
+    const tag = document.getElementById('universe-modal-tag');
+    const body = document.getElementById('universe-modal-body');
+    if (!modal || !title || !body || !tag) return;
+    tag.textContent = 'Lehre ' + lehre.n + ' · Galaxie';
+    title.textContent = lehre.name;
+    // Kurzfassung mit | als Absatz-Trenner, **fett**-Markdown, `code`
+    const paragraphs = lehre.kurz.split('|').map(p => p.trim()).filter(Boolean);
+    const html = paragraphs.map(p => {
+      const safe = p.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const formatted = safe
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/„([^"]+)"/g, '„<em>$1</em>"');
+      return '<p>' + formatted + '</p>';
+    }).join('') + '<a class="universe-modal-link" href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/OBSERVATORIUM_BROWSER.md" target="_blank" rel="noopener">Tiefer eintauchen →</a>';
+    body.innerHTML = html;
+    modal.hidden = false;
+  }
+  function closeUniverseModal() {
+    const modal = document.getElementById('universe-modal');
+    if (modal) modal.hidden = true;
   }
 
   // ====== INIT ======
