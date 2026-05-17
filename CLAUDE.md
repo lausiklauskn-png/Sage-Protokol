@@ -61,6 +61,10 @@ Bevor du `END` machst:
      `python3 scripts/update_puls_pie.py` ausführen — das zieht den
      Mermaid-Pie-Block oben in PULS.md automatisch aus `status.json`
      nach. Niemals den Pie-Block in PULS.md von Hand bearbeiten.
+   - **Zeilen-Begrenzung:** PULS.md hat eine Schutz-Klausel (Header der
+     Datei, 2026-05-17): Grenze 3000 Zeilen, NICHT herabsetzen. Bei
+     drohendem Überschreiten Sitzungen ins Archiv auslagern, nicht
+     kürzen.
 2. **Übergabeprotokoll** in `docs/sessions/archiv/YYYY-MM-DD_<thema>.md`
    anlegen. Format: siehe `docs/sessions/BRIEFING_TEMPLATE.md`.
 3. Wenn du Code geändert hast: **manuell prüfen**, dass

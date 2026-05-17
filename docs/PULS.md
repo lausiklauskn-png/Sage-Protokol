@@ -2,8 +2,13 @@
 
 **Format:** Jede Sitzung trägt unten einen Eintrag ein (neueste oben).
 **Pflichtfelder pro Eintrag:** Datum · Sitzungs-Rolle · was getan · was offen · nächster sinnvoller Schritt.
-**Begrenzung:** Diese Datei darf 400 Zeilen nicht überschreiten. Älteres ins
+**Begrenzung:** Diese Datei darf 3000 Zeilen nicht überschreiten. Älteres ins
 `docs/sessions/archiv/`-Verzeichnis als Übergabeprotokoll auslagern.
+**Schutz-Klausel (2026-05-17):** Die 3000-Zeilen-Grenze wurde bewusst hochgesetzt
+(vorher 400) — Pflege-Sitzungen werden umfangreicher dokumentiert, weil
+Architekturfunde und Diagnose-Routinen Platz brauchen. **Diese Grenze NICHT
+wieder herabsetzen, auch nicht zum Token-Sparen.** Wenn 3000 Zeilen nahen,
+auslagern statt kürzen.
 
 ---
 
@@ -495,8 +500,79 @@ Kategorien jetzt mit.
 Sitzungen sind in `docs/sessions/archiv/` abgelegt — der Index
 darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
-vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 400
-Zeilen (CLAUDE.md § Format).
+vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
+Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-17 · Test-Erkenntnis — A/B-Test PR #70 + Architekturfund `isPathSuffix` scope-unbewusst
+
+**Sitzungs-Rolle:** Folge-Sitzung zur Phantom-Clients-Pflege (PR #70, weiter unten). Klaus + Bausitzung führten A/B-Test der gemergten Fix-Version durch. Befund: PR #70 fixt einen echten Phantom-Bug, aber **nicht** den, der den eigentlichen Handshake-Test scheitern lässt. **KEIN PR aus dieser Sitzung** — nur Befund + Übergabe für Folge-Spec/Pflege.
+
+**A-Test (alter SW) bestätigt Phantom-Symptom (Beweis-Routine ✓):**
+
+Mit beiden Endknoten-Tabs offen + altem SW (vor Endknoten-Update):
+- Mein-Mixarium nodeId `1kpcdq_heJnlJXMFCZAhGbKg5KRl2YcBJXZhZrspXnM` (live in IDB + Pages)
+- Mein-Rezeptbuch nodeId `ktlJBO3W_oGbY4hlj9KW-JDYkvEfYAVves62XDbm_AM` (live in IDB + Pages)
+- Match IDB↔Pages: true in beiden Tabs
+- Handshake im Rezeptbuch-Tab Eruda: `outcome:"rejected", reason:"toNodeId stimmt nicht zum Empfänger"`
+
+→ Phantom reproduziert, Bug-Existenz im SW-Layer bestätigt.
+
+**B-Test (neuer SW v23 nach Cache-Eskalation) zeigt: PR #70 reicht nicht:**
+
+PR #70 gemerged → `sbkim-sw.js` in beide Endknoten kopiert → Chrome detektierte den importScripts-Bytes-Change NICHT als SW-Update. Eskalations-Reihenfolge (alle dokumentiert):
+1. SW_VERSION-Bump v20→v21 → kein Effekt (importScripts-Inhalt bleibt im Bytecode-Cache).
+2. Cache-Bust-Querystring `?v=v22` am importScripts → kein Effekt.
+3. File-Rename `sbkim-sw.js` → `sbkim-sw-v23.js` → zwang Chrome zum Re-Install (Bytes 9876, „Hat Fix: true" verifiziert auf Pages).
+4. chrome://serviceworker-internals/ Unregister + Force-Stop Chrome + Restart → SW v23 aktiviert (Active state: activated, Controller gesetzt, SW_VERSION: mixarium-sw-v23, importScripts: `"./sbkim-sw-v23.js"`).
+
+**Trotzdem** im Distinguishing-Test (Mein-Mixarium-Tab geschlossen, Probe-Fetch aus Rezeptbuch-Tab): Antwort `HTTP 200` mit `fromNodeId:"ktlJBO3W_…", receiverSpore:{Klaus Rezeptbuch …}` — also Rezeptbuch-Tab antwortete, nicht Mein-Mixarium.
+
+**Architekturfund (eigentliche Wurzel):**
+
+`isPathSuffix(pathname, endpointPath)` in `src/sbkim-sw.js` (Zeilen 120-125) ist scope-unbewusst:
+
+```js
+function isPathSuffix(pathname, endpointPath) {
+  if (pathname === endpointPath) return true;
+  return pathname.endsWith(endpointPath);   // ← zu permissiv
+}
+```
+
+Folge: `isPathSuffix("/Mein-Mixarium/sbkim/anastomosis", "/sbkim/anastomosis")` → `true`, weil Path auf `/sbkim/anastomosis` endet. Damit fängt JEDER SBKIM-SW JEDEN Path ab, der auf `/sbkim/<endpoint>` endet, unabhängig vom Subpfad-Prefix.
+
+**Spec-Klarheit (heute nachgezogen, vorher missverstanden):** Subresource-Fetches von einem controlled client gehen durch dessen **kontrollierenden** SW — NICHT durch den SW, dessen Scope die URL trifft. Bedeutet konkret:
+- Rezeptbuch-Tab macht `fetch('/Mein-Mixarium/sbkim/anastomosis')`.
+- Rezeptbuchs SW fängt ab (er kontrolliert den Tab), nicht Mein-Mixariums SW.
+- Mein-Rezeptbuchs `app-sw.js` filtert POST raus (GET-only), Event fällt durch zu `sbkim-sw.js`.
+- `isPathSuffix` matcht trotz cross-scope-Path → `handleBridge` startet.
+- `clients.matchAll(false)` findet Rezeptbuch-Tab (einziger Controlled Client) → sendet Nachricht an ihn → `receiveHandshake` prüft toNodeId vs. own id → Mismatch → Rejection.
+
+PR #70's Fix (`includeUncontrolled:false` + Loop) ist **korrekt für sein Szenario** (Multi-Client innerhalb DERSELBEN PWA, echt-cross-origin Cross-Knoten-Handshake), aber **irrelevant für same-origin cross-PWA**, weil schon der falsche SW abfängt.
+
+**Klaus' Repo-Stand am Sitzungsende:**
+
+- Mein-Mixarium main: `sbkim/sbkim-sw.js` + `sbkim/sbkim-sw-v23.js` (Kopie) + `app-sw.js` mit SW_VERSION `'mixarium-sw-v23'` und `importScripts("./sbkim-sw-v23.js")`. SW manuell deregistriert via chrome://serviceworker-internals/ am Sitzungsende.
+- Mein-Rezeptbuch main: `sbkim/sbkim-sw.js` aus PR #70 nachgezogen (hat Fix); `app-sw.js` 1215 Bytes, ohne SW_VERSION-Konvention, GET-only fetch-Listener. SW lebt aktiv.
+- IDBs intakt in beiden Endknoten, `Storage persist-Status: true`, Identitäten stabil.
+
+**Aufgaben für Folge-Sitzung** (Brief `claude/pflege-sw-isPathSuffix-scope-fix`):
+
+1. `isPathSuffix` ersetzen durch scope-bewusste Variante — jeder SW fängt nur Pfade ab, die mit `self.registration.scope`-Path beginnen.
+2. Erwartung danach: Cross-Scope-Fetches fallen durch (kein `respondWith`) → Browser geht zu Network → HTTP 404 (richtiges Verhalten für statische Pages-Endknoten).
+3. Cross-PWA Handshake auf same-origin bleibt damit **konzeptuell nicht möglich** via SW-Bridge. Folge-Spec-Sitzung (Modul 05): BroadcastChannel-Bridge oder direkter `receiveHandshake`-Aufruf als alternative Architektur.
+
+**Pflege-Lektionen für Folge-Sitzungen (Pflichtlektüre, nicht ins Raten verfallen):**
+
+- Chrome's SW-Script-Cache ist sehr klebrig. Bytes-Änderung in importScripts-Target wird **nicht zuverlässig** als SW-Update detektiert. Einziger sicherer Cache-Bypass: **Dateiname ändern**.
+- Distinguishing-Test als Standard-Diagnose-Tool: Receiver-Tab schließen + Probe-Fetch ausführen.
+  - Alter SW antwortet mit Phantom-Rejection (`toNodeId stimmt nicht`)
+  - Neuer SW antwortet mit `HTTP 503 — keine aktive controlled Page-Instanz`
+- chrome://serviceworker-internals/ erlaubt manuelles Unregister bei Schwer-zu-killenden SWs.
+- Bei „unklarem Symptom" zuerst alle 6 Diagnose-Schritte aus dem Übergabeprotokoll durchlaufen, DANN Code anfassen.
+
+**Übergabeprotokoll mit voller Diagnose-Geschichte + Folge-Sitzungs-Brief:** [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fund.md)
+
+---
 
 ### 2026-05-17 · Pflege Modul 05/SW — Phantom-Clients-Fix in `sbkim-sw.js`
 
