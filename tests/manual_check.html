@@ -892,6 +892,215 @@
         SbkimUI.log("05_anastomose",
           "  MODUL 05 ANASTOMOSE bereit, Funktionen: init/handshake/receiveHandshake/listSiblings/forgetSibling");
       });
+
+      // ----------------------------------------------------------------
+      // Test 9 / 9a / 9b / 9c — BroadcastChannel-Bridge
+      // (Bau-Sitzung BroadcastChannel-Bridge 2026-05-17)
+      //
+      // Test 9   : Channel-Pfad established (alt → main intra-tab via
+      //            BroadcastChannel('sbkim')).
+      // Test 9a  : toNodeId-Mismatch → Timeout, Log "timeout-channel".
+      // Test 9b  : MissingToNodeIdError synchron, vor dem Posten.
+      // Test 9c  : Auto-Fallback bei HTTP-404 same-origin — Pseudo-Peer-
+      //            Echo simuliert alt's Receiver, damit der Channel-
+      //            Fallback in established landet.
+      // ----------------------------------------------------------------
+
+      // Mini-Helfer: startet einen kurzlebigen Peer-Receiver, der so tut,
+      // als wäre er peerNodeId (peer.nodeId). Antwortet kanonisch
+      // signiert auf eingehende Channel-Requests, schließt sich nach
+      // einem Round-Trip selbst (oder per stop()).
+      function startPeerEcho(peer) {
+        var chan = new BroadcastChannel("sbkim");
+        var stopped = false;
+        async function onMessage(event) {
+          if (stopped) return;
+          if (!event || !event.data) return;
+          if (event.data.type !== "SBKIM_ANASTOMOSE_REQUEST") return;
+          var payload = event.data.payload;
+          if (!payload || typeof payload !== "object") return;
+          if (payload.toNodeId !== peer.nodeId) return;
+          var senderVec = Array.isArray(payload.domainVector)
+            ? new Float32Array(payload.domainVector)
+            : null;
+          var score = senderVec ? SbkimMatch.match(peer.vec, senderVec) : null;
+          var unsigned = {
+            fromNodeId: peer.nodeId,
+            nonceEcho: payload.nonce,
+            outcome: "established",
+            protocolVersion: "0.1",
+            receiverSpore: peer.spore,
+            timestamp: new Date().toISOString(),
+            toNodeId: payload.fromNodeId,
+          };
+          if (typeof score === "number") unsigned.score = score;
+          var sig = await SbkimAnastomose._signEnvelope(unsigned, peer.privateKey);
+          var signed = Object.assign({}, unsigned, { signature: sig });
+          var canon = SbkimAnastomose._canonicalize(signed);
+          var reply = new BroadcastChannel(event.data.replyChannelName);
+          try {
+            reply.postMessage({ type: "SBKIM_ANASTOMOSE_RESPONSE", payload: canon });
+          } finally {
+            setTimeout(function () { try { reply.close(); } catch (e) {} }, 250);
+          }
+        }
+        chan.addEventListener("message", onMessage);
+        return {
+          stop: function () { stopped = true; try { chan.close(); } catch (e) {} },
+        };
+      }
+
+      SbkimUI.addButton("05_anastomose", "Test 9: Channel-Pfad established (alt → main, intra-tab)", async function () {
+        await ensureSetup();
+        var mainNodeId = await SbkimSpore.getNodeId();
+        // alt baut den signierten Request an main. _postChannelEnvelope
+        // postet ihn auf BroadcastChannel('sbkim'); mains Receiver-
+        // Listener (eager in init() registriert) filtert via toNodeId,
+        // ruft receiveHandshake, signiert die Response.
+        var request = await SbkimAnastomose._buildSignedRequest(alt.privateKey, alt.spore, altVec, mainNodeId);
+        var payload = await SbkimAnastomose._postChannelEnvelope(request);
+        var respValid = await SbkimAnastomose._verifyResponseSignature(payload, mainSpore.publicKey);
+        var siblings = await SbkimAnastomose.listSiblings();
+        var altIsSibling = siblings.some(function (s) { return s.nodeId === alt.nodeId; });
+        var pass = payload.outcome === "established" && respValid && altIsSibling;
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 9 OK" : "Test 9 fehlgeschlagen");
+        return {
+          response_outcome: payload.outcome,
+          response_score: payload.score,
+          response_signatur_ok: respValid,
+          alt_als_sibling_eingetragen: altIsSibling,
+          erwartung: "outcome=established, score > 0.80, Response-Signatur ok, alt als sibling",
+          transport_pfad: "BroadcastChannel('sbkim') intra-tab, kein Netz",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 9a: Channel-Pfad — toNodeId-Mismatch-Timeout", async function () {
+        await ensureSetup();
+        // toNodeId zeigt auf einen nodeId, für den kein Receiver in
+        // diesem Tab registriert ist (weder main noch ein Peer-Echo).
+        // mains Receiver filtert via toNodeId raus, kein Reply.
+        var fremdNodeId = "fremd-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        var request = await SbkimAnastomose._buildSignedRequest(alt.privateKey, alt.spore, altVec, fremdNodeId);
+        var logsBefore = await SbkimStorage.all("sbkim_anastomosis_log");
+        var t0 = Date.now();
+        var fehler = null;
+        try {
+          await SbkimAnastomose._postChannelEnvelope(request);
+        } catch (err) {
+          fehler = err;
+        }
+        var dt = Date.now() - t0;
+        var logsAfter = await SbkimStorage.all("sbkim_anastomosis_log");
+        var pass = fehler !== null && fehler.name === "HandshakeTimeoutError" && dt >= 3500;
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 9a OK" : "Test 9a fehlgeschlagen");
+        return {
+          fehler_name: fehler && fehler.name,
+          fehler_message: fehler && fehler.message,
+          timeout_ms: dt,
+          log_eintraege_vor: logsBefore.length,
+          log_eintraege_nach: logsAfter.length,
+          erwartung: "HandshakeTimeoutError nach ~4000 ms — KEIN 'timeout-channel'-Log, weil _postChannelEnvelope den Log selbst nicht schreibt (das tut sendViaChannel im handshake-Pfad).",
+          hinweis: "Im echten handshake({transport:'channel'})-Pfad würde sendViaChannel zusätzlich 'timeout-channel' in sbkim_anastomosis_log schreiben.",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 9b: Channel-Pfad — MissingToNodeIdError synchron", async function () {
+        await ensureSetup();
+        // Test-Brücke: Request OHNE toNodeId bauen (vierter Arg
+        // undefined → _buildSignedRequest lässt das Feld weg).
+        var request = await SbkimAnastomose._buildSignedRequest(alt.privateKey, alt.spore, altVec, undefined);
+        var hatNochToNodeId = Object.prototype.hasOwnProperty.call(request, "toNodeId");
+        var fehler = null;
+        try {
+          await SbkimAnastomose._postChannelEnvelope(request);
+        } catch (err) {
+          fehler = err;
+        }
+        var pass = fehler !== null && fehler.name === "MissingToNodeIdError" && !hatNochToNodeId;
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 9b OK" : "Test 9b fehlgeschlagen");
+        return {
+          request_hat_toNodeId: hatNochToNodeId,
+          fehler_name: fehler && fehler.name,
+          fehler_message: fehler && fehler.message,
+          erwartung: "MissingToNodeIdError vor jeglichem BroadcastChannel-Bau",
+        };
+      });
+
+      SbkimUI.addButton("05_anastomose", "Test 9c: Auto-Fallback-Beweis (HTTP 404 → Channel etabliert)", async function () {
+        await ensureSetup();
+        // Pseudo-Peer-Echo für alt.nodeId starten, sodass der Channel-
+        // Fallback einen Reply bekommt. Im echten Klaus-Setup übernimmt
+        // diese Rolle das zweite PWA-Tab (Mein-Rezeptbuch / Mein-Mixarium).
+        var peerEcho = startPeerEcho({
+          nodeId: alt.nodeId,
+          spore: alt.spore,
+          privateKey: alt.privateKey,
+          vec: altVec,
+        });
+        // alt-Spore mit endpoint, der same-origin existiert aber 404
+        // liefert. Wir patchen die Spore-Kopie und re-signieren NICHT,
+        // weil verifyForeignSpore auf id+pubKey schaut, nicht auf endpoint.
+        // ABER: die Signatur ist über das gesamte Objekt — endpoint-Patch
+        // bricht sie. Saubere Lösung: alt mit gepatchtem endpoint neu
+        // backen.
+        var ALT_404 = Object.assign({}, ALT_META, {
+          endpoint: location.origin + "/nicht-vorhanden-fuer-test-9c/",
+        });
+        var alt404KeyPair = await crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]);
+        var rawPub = await crypto.subtle.exportKey("raw", alt404KeyPair.publicKey);
+        var sha = await crypto.subtle.digest("SHA-256", rawPub);
+        var alt404NodeId = SbkimAnastomose._base64urlEncode(sha);
+        var alt404Jwk = await crypto.subtle.exportKey("jwk", alt404KeyPair.publicKey);
+        var unsignedSpore = {
+          createdAt: new Date().toISOString(),
+          domain: ALT_404.domain,
+          domainDescription: ALT_404.domainDescription,
+          domainKeywords: ALT_404.domainKeywords.slice(),
+          domainVector: Array.from(altVec),
+          embeddingModel: "Xenova/multilingual-e5-small",
+          endpoint: ALT_404.endpoint,
+          id: alt404NodeId,
+          nodeName: ALT_404.nodeName,
+          nodeType: ALT_404.nodeType,
+          protocolVersion: "0.1",
+          publicKey: alt404Jwk,
+        };
+        var sporeSig = await SbkimAnastomose._signEnvelope(unsignedSpore, alt404KeyPair.privateKey);
+        var alt404Spore = SbkimAnastomose._canonicalize(Object.assign({}, unsignedSpore, { signature: sporeSig }));
+
+        // Pseudo-Echo auf neuen alt404NodeId umschalten.
+        peerEcho.stop();
+        peerEcho = startPeerEcho({
+          nodeId: alt404NodeId,
+          spore: alt404Spore,
+          privateKey: alt404KeyPair.privateKey,
+          vec: altVec,
+        });
+
+        var ergebnis;
+        var fehler = null;
+        try {
+          // transport "auto": HTTP zuerst (→ 404 vom Pages/dev-server),
+          // Auto-Fallback auf Channel → Pseudo-Echo antwortet.
+          ergebnis = await SbkimAnastomose.handshake(alt404Spore, mainVec, { transport: "auto" });
+        } catch (err) {
+          fehler = err;
+        } finally {
+          peerEcho.stop();
+        }
+
+        var pass = !fehler && ergebnis && ergebnis.outcome === "established" && ergebnis.peerNodeId === alt404NodeId;
+        SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 9c OK" : "Test 9c fehlgeschlagen");
+        return {
+          ergebnis: ergebnis,
+          fehler_name: fehler && fehler.name,
+          fehler_message: fehler && fehler.message,
+          fehler_cause: fehler && fehler.cause && (fehler.cause.message || fehler.cause),
+          target_endpoint: ALT_404.endpoint,
+          erwartung: "HTTP-POST → 404 (oder ähnlich), dann Channel-Fallback → outcome=established über Pseudo-Peer-Echo",
+          hinweis: "Pseudo-Peer-Echo ist nur Test-Helfer — im echten Klaus-Setup ist das die zweite Endknoten-PWA in einem zweiten Tab.",
+        };
+      });
     })();
   </script>
 
