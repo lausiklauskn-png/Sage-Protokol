@@ -566,6 +566,38 @@ muss der Store `sbkim_keys` existieren mit Eintrag `"main"` (das
 Singleton-Keypair). Wer ohne Suffix andockt, sieht die DB unter dem
 Namen `sbkim`.
 
+**Same-origin Cross-PWA-Handshake — Andock-Hinweis (Bau-Sitzung
+BroadcastChannel-Bridge 2026-05-17).** `SbkimAnastomose.init()`
+registriert nicht nur die Service-Worker-Page-Brücke, sondern (eager,
+ab dieser Bau-Sitzung) auch einen Receiver auf
+`BroadcastChannel('sbkim')` — den **same-origin Fallback-Transport**
+für den Fall, dass zwei SBKIM-PWAs auf derselben Origin laufen (z.B.
+`<user>.github.io/Mein-Rezeptbuch/` + `<user>.github.io/Mein-Mixarium/`
+auf GitHub Pages). Konsequenz für die Andock-Bedienung:
+
+- **Beide PWA-Tabs müssen offen sein**, wenn der Handshake über den
+  Channel-Pfad laufen soll. Geschlossener Receiver-Tab → kein Listener
+  auf `BroadcastChannel('sbkim')` → Sender-Timeout nach 4 s
+  (`HandshakeTimeoutError`, Log-Zeile `"timeout-channel"`). Kein
+  Wake-Lock, kein Auto-Start — konsistent zur SW-Pfad-Linie „503, wenn
+  keine Page aktiv".
+- **HTTP-Pfad bleibt der Standard.** `SbkimAnastomose.handshake(peer,
+  ownVec)` versucht zuerst den regulären POST gegen
+  `peer.endpoint + "/sbkim/anastomosis"`. Erst wenn der HTTP-Pfad
+  klare Defekt-Signale liefert (4xx/5xx, non-JSON-Antwort, Antwort
+  ohne HandshakeResponse-Pflichtfelder, `outcome` außerhalb
+  `{"established","rejected"}`), fällt der Aufruf **einmalig** auf den
+  Channel-Pfad zurück. Cross-domain (verschiedene Origins) bleibt
+  unverändert HTTP-only.
+- **Architektur-Hintergrund:** GitHub-Pages-same-origin Handshake via
+  SW-Bridge ist konzeptuell unmöglich (Subresource-Fetches gehen
+  durch den SW des Senders, nicht des Empfängers — siehe Karte 05
+  § Service-Worker-Hinweis § Architektur-Grenze). Der Channel-Pfad
+  ist die single-tab-vermeidende Lösung.
+
+Details und E1–E7-Entscheidungstabelle: Karte 05 § BroadcastChannel-
+Bridge.
+
 **Häufiger Fehler:** `InvalidDbSuffixError` — `<DB_SUFFIX>` enthält
 Zeichen außerhalb `^[a-z0-9_-]+$` (Großbuchstaben, Punkt, Umlaut, …)
 oder ist leer. Eintrag in § Vor dem Einbau zu klärende Werte
@@ -982,6 +1014,27 @@ keine produktive PWA.
    - App-Offline-Pfade des App-SW funktionieren unverändert (z.B.
      bestehender Cache-First-Routing-Code im App-SW wird beim
      Reload-im-Flugmodus weiterhin bedient).
+
+6. **(Nur same-origin Test-Setup)** BroadcastChannel-Bridge-Sichttest
+   — wenn zwei SBKIM-PWAs auf derselben Origin laufen (z.B.
+   `<user>.github.io/Mein-Rezeptbuch/` + `<user>.github.io/Mein-Mixarium/`
+   bei Klaus' aktuellem GitHub-Pages-Setup):
+   - **Beide PWA-Tabs offen halten.** Geschlossener Receiver-Tab →
+     kein Channel-Listener → Sender-Timeout nach 4 s. Begründung in
+     Karte 05 § BroadcastChannel-Bridge § Wer-nicht-da-ist-schweigt.
+   - In jedem Tab den **BroadcastChannel-Selbstcheck-Knopf** klicken
+     (siehe Panel 05 in `tests/manual_check.html` Knöpfe 9 / 9a / 9b /
+     9c im Sage-Protokol-Repo; im Endknoten-Eruda manuell via Console:
+     `await SbkimAnastomose.handshake(peerSpore, ownVec, {transport:"channel"})`
+     mit der Spore des **anderen** Endknoten-Tabs).
+   - **Erwartung im Erfolgsfall:** `outcome:"established"` zurück und
+     im DevTools-IndexedDB beider Tabs steht der jeweils andere
+     `nodeId` als sibling. Im Log-Store `sbkim_anastomosis_log` eine
+     `"established"`-Zeile.
+   - **Erwartung im Tab-zu-Standalone-Fall:** Wenn nur ein Tab offen
+     ist, läuft der Channel-Pfad in einen `HandshakeTimeoutError`
+     (Log `"timeout-channel"`). Das ist kein Bug, sondern die
+     dokumentierte „Wer nicht da ist, schweigt"-Disziplin.
 
 ---
 

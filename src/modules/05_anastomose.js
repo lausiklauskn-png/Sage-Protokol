@@ -8,7 +8,11 @@
  *
  * Public surface (registered on window.SbkimAnastomose):
  *   init() -> Promise<void>
- *   handshake(targetSpore, ownDomainVector) -> Promise<HandshakeResult>
+ *   handshake(targetSpore, ownDomainVector, options?) -> Promise<HandshakeResult>
+ *     options.transport ∈ {"auto","http","channel"}, Default "auto"
+ *     (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17 — additiv, der
+ *      bestehende HTTP-Pfad bleibt unverändert; same-origin-Fallback auf
+ *      BroadcastChannel('sbkim') bei klaren HTTP-Defekt-Signalen.)
  *   receiveHandshake(request) -> Promise<HandshakeResponse>
  *   listSiblings() -> Promise<Array<{nodeId, domain, since, pubKey}>>
  *   forgetSibling(nodeId) -> Promise<void>
@@ -18,6 +22,12 @@
  *   _setOwnDomainVector(vec|null)     -> setzt Empfänger-Vektor-Override
  *                                        (umgeht das domainVector-Feld
  *                                        in der eigenen Spore)
+ *   _setTransport(t)                  -> forciert Default-Transport
+ *                                        ("auto"|"http"|"channel"|null)
+ *   _clearChannelState()              -> setzt Default-Transport zurück
+ *                                        auf "auto"
+ *   _postChannelEnvelope(request)     -> roher Channel-Sender für Panel
+ *                                        (kein consume, kein sibling-put)
  *   _buildSignedRequest(...)          -> Test-Brücke für In-Memory-Peer
  *   _verifyResponseSignature(...)     -> Test-Brücke für Bidirektion
  *   _canonicalize / _base64urlEncode  -> Krypto-Helfer (Panel)
@@ -55,6 +65,25 @@
     "signature",
     "timestamp",
   ];
+
+  // Pflichtfelder einer regulären HandshakeResponse — für Auto-Fallback-
+  // Erkennung (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17, Karte 05
+  // § Auto-Fallback-Logik). Eine Antwort, der eines dieser Felder fehlt,
+  // löst (bei transport:"auto") den Channel-Fallback aus.
+  var RESPONSE_REQUIRED_FIELDS = [
+    "fromNodeId",
+    "nonceEcho",
+    "outcome",
+    "protocolVersion",
+    "receiverSpore",
+    "signature",
+    "timestamp",
+    "toNodeId",
+  ];
+
+  var ALLOWED_TRANSPORTS = ["auto", "http", "channel"];
+  var BROADCAST_CHANNEL_NAME = "sbkim";
+  var REPLY_CHANNEL_PREFIX = "sbkim:reply:";
 
   // ---- Fehler-Erzeugung ----
 
@@ -202,6 +231,8 @@
   var ownPrivateKeyCache = null;       // CryptoKey, re-importiert aus sbkim_keys["main"].privateKey (JWK)
   var ownDomainVectorOverride = null;  // Float32Array, nur Tests
   var bridgeRegistered = false;
+  var channelBridgeRegistered = false; // BroadcastChannel-Receiver (Spec-Sitzung 2026-05-17)
+  var transportDefault = "auto";       // ohne options.transport, von _setTransport überschreibbar
 
   // Re-entry-friendly log key: ein Counter pro Millisekunde, damit
   // zwei schnell nacheinander geschriebene Log-Zeilen einander nicht
@@ -234,6 +265,7 @@
     // Modul 02 ist beim ersten Aufruf lazy.
     await getSpore().getOrCreateIdentity();
     setupServiceWorkerBridge();
+    setupBroadcastChannelBridge();
     ready = true;
   }
 
@@ -306,6 +338,192 @@
     }
   }
 
+  // ---- BroadcastChannel-Bridge (same-origin Fallback, Spec 2026-05-17) ----
+  //
+  // Receiver-Seite: ein einziger Main-Channel-Listener pro Tab, eager in
+  // init() registriert (Karte 05 § BroadcastChannel-Bridge, E3). Akzeptiert
+  // nur Requests, die explizit an die eigene nodeId adressiert sind, und
+  // antwortet auf einem dedizierten Reply-Channel, dessen Name aus der
+  // request-nonce abgeleitet ist. Self-Hit-Schutz blockt Sender-im-selben-
+  // Tab (E7). Wer-nicht-da-ist-schweigt: kein Wake-Lock, kein Auto-Start.
+
+  function setupBroadcastChannelBridge() {
+    if (channelBridgeRegistered) return;
+    if (typeof BroadcastChannel === "undefined") return;
+    try {
+      var chan = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
+      chan.addEventListener("message", async function (event) {
+        if (!event || !event.data) return;
+        if (event.data.type !== "SBKIM_ANASTOMOSE_REQUEST") return;
+        var payload = event.data.payload;
+        if (!payload || typeof payload !== "object") return;
+        var reply = event.data.replyChannelName;
+        if (typeof reply !== "string" || reply.indexOf(REPLY_CHANNEL_PREFIX) !== 0) return;
+        var ownId;
+        try { ownId = await getSpore().getNodeId(); } catch (e1) { return; }
+        if (payload.toNodeId !== ownId) return;       // an wen anders gerichtet
+        if (payload.fromNodeId === ownId) return;     // Self-Hit-Schutz (E7)
+        var response;
+        try {
+          response = await receiveHandshake(payload);
+        } catch (err) {
+          response = { outcome: "rejected", reason: "Interner Fehler: " + (err && err.message ? err.message : err) };
+        }
+        var replyChan = null;
+        try {
+          replyChan = new BroadcastChannel(reply);
+          replyChan.postMessage({ type: "SBKIM_ANASTOMOSE_RESPONSE", payload: response });
+        } catch (e2) {
+          // wer-nicht-da-ist-schweigt — kein Log-Spam.
+        } finally {
+          if (replyChan) { try { replyChan.close(); } catch (e3) {} }
+        }
+      });
+      channelBridgeRegistered = true;
+    } catch (err) {
+      channelBridgeRegistered = false;
+    }
+  }
+
+  // Sender-Seite: postet ein Request-Envelope auf dem Main-Channel und
+  // wartet mit Timeout auf das Reply auf dem dedizierten Reply-Channel.
+  // Wirft synchron MissingToNodeIdError vor jedem Channel-Bau, wenn der
+  // Request keine toNodeId trägt (Channel-Pfad kann ohne den Filter
+  // nicht antworten — Karte 05 § Pflichtfeld-Schärfung).
+  //
+  // Liefert das rohe HandshakeResponse-Payload zurück; consume/verify ist
+  // Sache des Aufrufers (consumeResponse für den regulären Handshake-Pfad).
+
+  async function postChannelEnvelope(request) {
+    if (!request || typeof request !== "object") {
+      throw makeError("HandshakeNetworkError", "request fehlt für Channel-Pfad.");
+    }
+    if (typeof request.toNodeId !== "string" || request.toNodeId.length === 0) {
+      throw makeError(
+        "MissingToNodeIdError",
+        "Channel-Pfad erfordert request.toNodeId — ohne ihn kann der Receiver " +
+          "den Request nicht filtern (Karte 05 § Pflichtfeld-Schärfung).",
+      );
+    }
+    if (typeof request.nonce !== "string" || request.nonce.length === 0) {
+      throw makeError(
+        "HandshakeNetworkError",
+        "request.nonce fehlt — Reply-Channel-Name nicht ableitbar.",
+      );
+    }
+    if (typeof BroadcastChannel === "undefined") {
+      throw makeError(
+        "HandshakeNetworkError",
+        "BroadcastChannel-API in dieser Umgebung nicht verfügbar.",
+      );
+    }
+
+    var replyChannelName = REPLY_CHANNEL_PREFIX + request.nonce;
+    var replyChan = new BroadcastChannel(replyChannelName);
+    var settled = false;
+
+    var responsePromise = new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        try { replyChan.close(); } catch (e) {}
+        reject(makeError(
+          "HandshakeTimeoutError",
+          "Channel-Reply > " + QUERY_TIMEOUT_MS + " ms ausgeblieben.",
+        ));
+      }, QUERY_TIMEOUT_MS);
+
+      replyChan.addEventListener("message", function (event) {
+        if (settled) return;
+        if (!event || !event.data) return;
+        if (event.data.type !== "SBKIM_ANASTOMOSE_RESPONSE") return;
+        var payload = event.data.payload;
+        if (!payload || typeof payload !== "object") return;
+        if (payload.nonceEcho !== request.nonce) {
+          settled = true;
+          clearTimeout(timer);
+          try { replyChan.close(); } catch (e) {}
+          reject(makeError(
+            "HandshakeSignatureInvalidError",
+            "Channel-Reply nonceEcho weicht ab.",
+          ));
+          return;
+        }
+        settled = true;
+        clearTimeout(timer);
+        try { replyChan.close(); } catch (e) {}
+        resolve(payload);
+      });
+    });
+
+    var mainChan = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
+    try {
+      mainChan.postMessage({
+        type: "SBKIM_ANASTOMOSE_REQUEST",
+        payload: request,
+        replyChannelName: replyChannelName,
+      });
+    } finally {
+      try { mainChan.close(); } catch (e) {}
+    }
+
+    return await responsePromise;
+  }
+
+  // Vollständiger Channel-Sender für handshake(): postet, wartet, loggt
+  // im Timeout-Fall, hängt einen optionalen HTTP-cause an die Fehler-
+  // Kette (Auto-Fallback) und konsumiert die Response wie der HTTP-Pfad.
+
+  async function sendViaChannel(targetSpore, request, preScore, httpCause) {
+    var responseJson;
+    try {
+      responseJson = await postChannelEnvelope(request);
+    } catch (err) {
+      if (err.name === "HandshakeTimeoutError") {
+        try { await logEntry(targetSpore.id, "timeout-channel"); } catch (e) {}
+      }
+      if (httpCause && err.cause === undefined) err.cause = httpCause;
+      throw err;
+    }
+    return await consumeResponse(targetSpore, responseJson, preScore);
+  }
+
+  function parseTransport(options) {
+    if (options === undefined || options === null) return transportDefault;
+    if (typeof options !== "object" || Array.isArray(options)) {
+      throw makeError(
+        "InvalidTransportError",
+        "handshake options muss ein Objekt sein, war: " +
+          (Array.isArray(options) ? "Array" : typeof options),
+      );
+    }
+    if (options.transport === undefined) return transportDefault;
+    if (typeof options.transport !== "string" ||
+        ALLOWED_TRANSPORTS.indexOf(options.transport) === -1) {
+      throw makeError(
+        "InvalidTransportError",
+        "handshake options.transport unbekannt: '" + options.transport +
+          "'. Erlaubt: 'auto' | 'http' | 'channel'.",
+      );
+    }
+    return options.transport;
+  }
+
+  function shouldAutoFallback(httpResponse, parsedJson) {
+    if (!httpResponse) return false;                     // Netz-/DNS-/Abort-Fehler → kein Channel
+    if (httpResponse.status >= 400) return true;         // 4xx/5xx
+    var ct = "";
+    try { ct = httpResponse.headers.get("Content-Type") || ""; } catch (e) {}
+    if (ct.indexOf("application/json") === -1) return true;
+    if (!parsedJson || typeof parsedJson !== "object") return true;
+    for (var i = 0; i < RESPONSE_REQUIRED_FIELDS.length; i++) {
+      var f = RESPONSE_REQUIRED_FIELDS[i];
+      if (parsedJson[f] === undefined || parsedJson[f] === null) return true;
+    }
+    if (parsedJson.outcome !== "established" && parsedJson.outcome !== "rejected") return true;
+    return false;
+  }
+
   // ---- Storage-Helfer ----
 
   async function upsertSibling(entry) {
@@ -337,8 +555,9 @@
 
   // ---- handshake() ----
 
-  async function handshake(targetSpore, ownDomainVector) {
+  async function handshake(targetSpore, ownDomainVector, options) {
     await ensureReady();
+    var transport = parseTransport(options);     // wirft InvalidTransportError bei bad value
     var spore = getSpore();
     var match = getMatch();
 
@@ -390,7 +609,8 @@
     var privKey = await loadOwnPrivateKey();
     var ownNodeId = await spore.getNodeId();
 
-    // 5. HandshakeRequest bauen
+    // 5. HandshakeRequest bauen (kanonisch, signiert) — derselbe Request
+    //    wird sowohl im HTTP- als auch im Channel-Pfad weitergereicht.
     var unsigned = {
       domainVector: Array.from(ownDomainVector),
       fromNodeId: ownNodeId,
@@ -407,11 +627,17 @@
     signedUnsorted.signature = sig;
     var request = canonicalize(signedUnsorted);
 
-    // 6. POST mit Abort-Timeout
+    // 5b. transport === "channel": HTTP-Pfad überspringen, direkt zum Channel.
+    if (transport === "channel") {
+      return await sendViaChannel(targetSpore, request, preScore, null);
+    }
+
+    // 6. POST mit Abort-Timeout (transport ∈ {"http", "auto"})
     var url = String(targetSpore.endpoint).replace(/\/$/, "") + ENDPOINT_ANASTOMOSIS;
     var controller = new AbortController();
     var timeoutId = setTimeout(function () { controller.abort(); }, QUERY_TIMEOUT_MS);
-    var response;
+    var response = null;
+    var fetchErr = null;
     try {
       response = await fetch(url, {
         method: "POST",
@@ -420,41 +646,67 @@
         signal: controller.signal,
       });
     } catch (err) {
-      clearTimeout(timeoutId);
-      if (err && err.name === "AbortError") {
+      fetchErr = err;
+    }
+    clearTimeout(timeoutId);
+
+    // 6a. Netz-/DNS-/Abort-Fehler ohne HTTP-Status — KEIN Auto-Fallback
+    //     (Karte 05 § Auto-Fallback-Logik Punkt 3: bei DNS-Fehler ist
+    //     Channel chancenlos, sofort werfen). Auch bei transport:"http".
+    if (fetchErr) {
+      if (fetchErr.name === "AbortError") {
         await logEntry(targetSpore.id, "timeout");
         throw makeError(
           "HandshakeTimeoutError",
           "Anfrage an " + url + " > " + QUERY_TIMEOUT_MS + " ms abgebrochen.",
-          err,
+          fetchErr,
         );
       }
       throw makeError(
         "HandshakeNetworkError",
-        "Netz-Fehler bei " + url + ": " + (err && err.message ? err.message : err),
-        err,
+        "Netz-Fehler bei " + url + ": " + (fetchErr && fetchErr.message ? fetchErr.message : fetchErr),
+        fetchErr,
       );
     }
-    clearTimeout(timeoutId);
 
+    // 6b. Body als JSON parsen (für Schema-Check). Bei Parse-Fehler bleibt
+    //     httpJson null — shouldAutoFallback erkennt das als „non-JSON".
+    var httpJson = null;
+    try {
+      httpJson = await response.json();
+    } catch (e) {
+      httpJson = null;
+    }
+
+    // 6c. Auto-Fallback-Entscheidung (nur bei transport:"auto").
+    if (transport === "auto" && shouldAutoFallback(response, httpJson)) {
+      var ctHeader = "";
+      try { ctHeader = response.headers.get("Content-Type") || "(kein)"; } catch (e2) {}
+      var httpCause = makeError(
+        "HandshakeNetworkError",
+        "HTTP-Antwort nicht verwertbar (Status " + response.status +
+          ", Content-Type " + ctHeader + ") — Auto-Fallback auf BroadcastChannel-Pfad.",
+      );
+      return await sendViaChannel(targetSpore, request, preScore, httpCause);
+    }
+
+    // 6d. transport === "http": altes Verhalten — bei 4xx/5xx oder
+    //     defektem Body werfen.
     if (!response.ok) {
       throw makeError(
         "HandshakeNetworkError",
         "HTTP " + response.status + " " + response.statusText + " bei " + url + ".",
       );
     }
-
-    var responseJson;
-    try {
-      responseJson = await response.json();
-    } catch (err) {
+    if (!httpJson) {
       throw makeError(
         "HandshakeNetworkError",
-        "Antwort kein gültiges JSON: " + (err && err.message ? err.message : err),
-        err,
+        "Antwort kein gültiges JSON bei " + url + ".",
       );
     }
-    return await consumeResponse(targetSpore, responseJson, preScore);
+
+    // 7. Antwort konsumieren (Verify, sibling-put, Log).
+    return await consumeResponse(targetSpore, httpJson, preScore);
   }
 
   async function consumeResponse(targetSpore, responseJson, preScore) {
@@ -741,6 +993,33 @@
     ownDomainVectorOverride = vec;
   }
 
+  // Setzt den Default-Transport für handshake()-Aufrufe ohne explizite
+  // options.transport. Nur Tests — Panel 05 forciert damit den
+  // Channel-Pfad oder den reinen HTTP-Pfad ohne API-Eingriff am
+  // handshake-Aufruf selbst.
+  function _setTransport(t) {
+    if (t === null || t === undefined) {
+      transportDefault = "auto";
+      return;
+    }
+    if (typeof t !== "string" || ALLOWED_TRANSPORTS.indexOf(t) === -1) {
+      throw makeError(
+        "InvalidTransportError",
+        "_setTransport: '" + t + "' ist kein erlaubter Transport. " +
+          "Erlaubt: 'auto' | 'http' | 'channel'.",
+      );
+    }
+    transportDefault = t;
+  }
+
+  // Setzt den Default-Transport auf "auto" zurück. Reine Test-Cleanup-
+  // Hilfe (z.B. nach Test 9a/9b/9c, damit Folge-Tests nicht still im
+  // Channel-Pfad hängen). Der Main-Channel-Listener bleibt bestehen —
+  // BroadcastChannel-Receiver-Disziplin lebt über die Tab-Lebensdauer.
+  function _clearChannelState() {
+    transportDefault = "auto";
+  }
+
   // ---- public surface ----
 
   var SbkimAnastomose = {
@@ -755,6 +1034,9 @@
     _buildSignedRequest: _buildSignedRequest,
     _verifyResponseSignature: _verifyResponseSignature,
     _setOwnDomainVector: _setOwnDomainVector,
+    _setTransport: _setTransport,
+    _clearChannelState: _clearChannelState,
+    _postChannelEnvelope: postChannelEnvelope,
     _canonicalize: canonicalize,
     _base64urlEncode: base64urlEncode,
     _base64urlDecode: base64urlDecode,
@@ -769,6 +1051,10 @@
       siblingsStore: SIBLINGS_STORE,
       logStore: LOG_STORE,
       requestRequiredFields: REQUEST_REQUIRED_FIELDS.slice(),
+      responseRequiredFields: RESPONSE_REQUIRED_FIELDS.slice(),
+      allowedTransports: ALLOWED_TRANSPORTS.slice(),
+      broadcastChannelName: BROADCAST_CHANNEL_NAME,
+      replyChannelPrefix: REPLY_CHANNEL_PREFIX,
     },
   };
 
