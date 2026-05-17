@@ -441,9 +441,13 @@
   .observatorium-screen { position: relative; min-height: 100vh; padding: 0; background: #02020c; color: #f2f0ff; overflow: hidden; }
   .observatorium-back { position: fixed; top: 1.2rem; left: 1.2rem; z-index: 90; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.18); color: #f2f0ff; padding: 0.55rem 1rem; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .2s, border-color .2s; }
   .observatorium-back:hover { background: rgba(0,0,0,0.85); border-color: rgba(255,255,255,0.4); }
-  .observatorium-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; cursor: none; }
-  .observatorium-stage * { cursor: none; }
-  .universe-galaxy { cursor: none !important; }
+  .observatorium-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; }
+  /* Invisible Custom-Cursor (1x1 transparent SVG) — DeX-Chrome ignoriert plain cursor:none manchmal */
+  .observatorium-screen, .observatorium-screen *, .observatorium-stage, .observatorium-stage *, .universe-galaxy { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'></svg>") 0 0, none !important; }
+  /* Ausnahmen: Back-Button und Modal bleiben klickbar erkennbar */
+  .observatorium-back, .observatorium-back * { cursor: pointer !important; }
+  .universe-modal, .universe-modal *, .universe-modal-close, .universe-modal-link { cursor: auto !important; }
+  .universe-modal button, .universe-modal-link { cursor: pointer !important; }
 
   /* Hintergrund-Nebel (Hubble-Realfarben, dominant) */
   .universe-nebula { position: absolute; pointer-events: none; mix-blend-mode: screen; opacity: 0.55; filter: blur(40px); will-change: transform; }
