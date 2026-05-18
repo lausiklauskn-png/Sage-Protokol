@@ -1080,7 +1080,9 @@ Beide können denselben Modul-13-Status-Bridge nutzen.
 nach einer Konsolidierungsphase der Marathon-Resultate. Komplementär
 zu Anker 8 (Mini-Browser): Extension bedient Browser-Nutzer,
 Mini-Browser bedient dedizierte Knoten — beide nutzen denselben
-Modul-13-Bridge.
+Modul-13-Bridge. Anschluss auch an Anker 9 (M04-Erweiterung): die
+drei Match-Schichten + Brücke werden im Lampen-Popup-Detail sichtbar
+gemacht, sobald Stufe B vorliegt.
 
 ### 2026-05-18 · Eigener Mini-Browser — Tauri-App als dedizierter Knoten
 
@@ -1218,9 +1220,141 @@ Pfad-3-Notiz verweist auf Anker 8 für die Tiefe.
 Bau-Hürde als Extension (Rust-Stack neu, Code-Signing-Kosten), aber
 **langfristig stabilster Endknoten-Pfad** — strukturelle Antwort auf
 Lehre 1, Spore-Verlust 2026-05-17 und Anker 4 Königin-Frage „wer
-empfängt, wenn der Tab zu ist". Acht Vision-Anker stehen jetzt
-parallel im Repo — V1 bleibt Klaus' nächste Spec-Wahl, alle anderen
-reifen im Hintergrund.
+empfängt, wenn der Tab zu ist". Anschluss an Anker 9 (M04-Erweiterung):
+Tray-Modus + User-API-Key-Pattern (aus der Plattform-Demo `index.html`)
+machen den Mini-Browser zum natürlichen Träger der LLM-Stufe-B-Calls.
+Neun Vision-Anker stehen jetzt parallel im Repo — V1 bleibt Klaus'
+nächste Spec-Wahl, alle anderen reifen im Hintergrund.
+
+### 2026-05-18 · M04-Erweiterung — drei Schichten + Brücke + doppelte Spore
+
+**Eingetragen:** Mini-Pflege „Vision-Anker M04-Erweiterung" 2026-05-18,
+am selben Tag wie Anker 7 + 8. Klaus' Brainstorming hat die **Brücke
+zwischen SBKIM-Paper (Plattform-Form, Mai 2026) und Mycel-Form**
+sichtbar gemacht: die strukturierten Match-Felder aus dem Paper sind
+nie verworfen worden, sondern leben im Mycel-Sage in vereinfachter Form
+weiter — Modul 04 matcht heute aber nur **einseitig per Cosinus** über
+ein einzelnes Spore-Embedding, die drei Dimensionen + Brücke + volle
+Bidirektionalität fehlen noch.
+
+### Konzept
+
+Modul 04 hat heute eine schlanke API:
+
+```
+match(queryVec, passageVec) -> number   // Cosinus-Ähnlichkeit
+isAboveProviderThreshold(score) -> bool // PROVIDER_MIN_MATCH=0.80
+```
+
+Eine Spore (Modul 02) trägt **ein** Embedding. Das ist eine ehrliche
+Vorauswahl, aber strukturarm: kein Aufschluss, warum etwas matcht,
+keine Brücken-Vorschläge, kein Gegenseitigkeits-Test.
+
+Die Erweiterung übernimmt drei Bausteine aus dem ursprünglichen
+SBKIM-Paper für die Mycel-Form:
+
+1. **Drei-Schichten-Bewertung** (statt Single-Score):
+   - **Fachlich** (Domain) — was kannst du / was suchst du inhaltlich?
+   - **Prozess** — wie arbeitest du? (Rhythmus, Methodik, Verbindlichkeit)
+   - **Skalierung** — auf welcher Größenebene? (einzelner Knoten,
+     Cluster, Netz)
+   Die drei Schichten sind orthogonal; jede liefert einen eigenen Score
+   plus Begründung.
+
+2. **Brücken-Feld** — nicht nur „match oder nicht", sondern „was würde
+   es vollständig machen". Wenn Knoten A in zwei Schichten matcht, in
+   der dritten aber eine Lücke hat, schlägt das System einen
+   **Brücken-Knoten C** vor (Anknüpfung an Modul 06 Heterokaryose:
+   Brücken-Feld kann aktive Vermittlung anstoßen).
+
+3. **Doppelte Spore** — `capabilities` **und** `needs` auf beiden Seiten.
+   Modul 02 bekommt einen zweiten Embedding-Slot, Modul 04 prüft beide
+   Richtungen (A-cap × B-needs und A-needs × B-cap). Volle Bidirektionalität
+   war schon im ersten Paper-Pitch Kern, in Mycel heute noch reduziert.
+
+### Match-Pipeline (Vision)
+
+- **Stufe A — lokal, kostenlos** (heute schon da, leicht erweitert):
+  WebGPU-Embedding → Cosinus-Vergleich. Score < `PROVIDER_MIN_MATCH` →
+  Apoptose. Aufschlüsselung pro Schicht: `match()` läuft dreimal, je
+  Spore-Achse, gibt `{ fachlich, prozess, skalierung }`-Vektor zurück
+  statt einer Zahl.
+
+- **Stufe B — optional, LLM, User-eigener API-Key** (neu): bei
+  `Score ≥ Schwelle` läuft ein zweiter Pass über einen Claude-API-Call,
+  der die drei Schichten **erklärt** und einen **Brücken-Vorschlag**
+  liefert. Pattern übernimmt die Layer-1-Demo der SBKIM-Plattform-
+  `index.html` (claude-sonnet-4, `max_tokens` ~1024, JSON-only-Output,
+  strenge Validation). Stufe B ist **opt-in pro Knoten** — wer keinen
+  Key hinterlegt, bleibt bei Stufe A.
+
+### Architektur-Skizze
+
+- **Modul 02 Spore-Schema:** zweites Embedding-Feld (`embeddingNeeds`
+  parallel zu `embedding`). Additiv — alte Sporen bleiben gültig, alter
+  Slot heißt dann implizit `embeddingCapabilities`. `PROTOCOL_VERSION`
+  bleibt `0.1` solange das alte Feld weiter akzeptiert wird; sonst
+  Minor-Bump.
+- **Modul 04 API-Erweiterung:**
+  - `match(query, passage) -> number` bleibt erhalten (alte Aufrufer)
+  - `matchDimensions(queryCap, queryNeeds, passageCap, passageNeeds)
+    -> { fachlich, prozess, skalierung, overall }` neu, additiv
+  - `explainMatchLLM({…}, apiKey) -> Promise<{ schichten, bruecke,
+    erklaerung }>` — Stufe B, optional, fehlertolerant
+- **Sage-Page-Erweiterung:** Match-Karte zeigt drei Schicht-Lampen
+  statt eines Scores; Brücken-Vorschlag-Slot, falls vorhanden.
+- **Anti-Missbrauch:** Brücken-Vorschlag ist **lokal**, nicht im Netz
+  geteilt — vermeidet Spore-Leakage auf Drittknoten.
+
+### Verbindung zu anderen Vision-Ankern
+
+- **V1 (Sage als Hybrid-Knoten):** die drei Schichten + Brücke gehören
+  als integraler Teil in die V1-Spec, nicht als separate spätere
+  Erweiterung. Hybrid-Knoten ist der natürliche Ort, an dem Stufe-B
+  überhaupt aufgesetzt wird (Endknoten + Spec-Hub gleichzeitig).
+- **V4 (Königin-Relay, Modul 13?):** der Brücken-Vorschlag könnte
+  einen Knoten C **vermitteln** — Königin-Mailbox als Transport.
+- **V5 (Identitäts-Container):** API-Key gehört in den verschlüsselten
+  Container, nicht in plain IndexedDB.
+- **V6 (Multi-Identität):** doppelte Spore (cap + needs) **pro Persona** —
+  jede Persona hat eigene Schichten, eigene Schwelle, eigenen Key.
+- **V7 (Extension):** Match-Details (drei Schichten + Brücke) im
+  Popup-Detailfenster — Lampe färbt sich pro Schicht.
+- **V8 (Mini-Browser):** natürlicher Träger der LLM-Stufe-B-Calls —
+  Tray-Modus kann längere Match-Pässe im Hintergrund fahren, User-Key
+  liegt in App-Daten-Verzeichnis (kein Browser-Reklamations-Risiko).
+- **Modul 06 (Heterokaryose):** Brücken-Feld ist der Anlass für aktive
+  Verbindungs-Vermittlung — heterokaryose-outbox bekommt einen neuen
+  Eintrags-Typ „Brücken-Vorschlag".
+
+### Historie — Paper ↔ Mycel
+
+Der ursprüngliche SBKIM-Pitch (Frühjahr 2026, Plattform-Form) trug die
+drei Schichten und das Brücken-Feld als **Kern-Innovation** (Paper
+Section 3.3 „Bidirektionales Matching mit drei Dimensionen"). Beim
+Pivot zur Mycel-Form (Mai 2026, Beginn dieses Repos) wurde Modul 04
+bewusst **minimal** angelegt — einfacher Cosinus, eine Schwelle —, um
+zuerst die Infrastruktur (Storage, Spore, Embedding, Anastomose,
+Apoptose) tragfähig zu bekommen. Die strukturierte Tiefe blieb als
+**implizite Vision** im Paper; Anker 9 macht sie explizit und nennt
+sie als Bau-Ziel der V1-Sammelspec.
+
+### Größenordnung
+
+- Spec ~3-5 Stunden (Schema-Erweiterung Modul 02, API Modul 04,
+  Stufe-B-Prompt-Design)
+- Bau Stufe A erweitert (dimensions-Aufschlüsselung): ~2-3 Stunden
+- Bau Stufe B (LLM-Call + JSON-Validation + Fehlerbehandlung): ~5-8 Stunden
+- Sage-Page-Karten 04 + Match-Demo Erweiterung: ~3-5 Stunden
+- Migrations-Pflege Spore-Schema (alte Sporen anpassen): ~2 Stunden
+
+### Status
+
+**Reif für Spec-Diskussion, integraler Teil von V1-Sammelspec.** Kein
+eigenständiger Bau-Auftrag — Anker 9 lebt im V1-Brief mit. Stufe A
+erweitert kann auch ohne V1 als Mini-Pflege gezogen werden, falls
+Klaus das vorziehen will. Stufe B wartet auf V1 (Hybrid-Knoten als
+Auflage, Identitäts-Container für Key-Speicher).
 
 ---
 
@@ -1233,80 +1367,96 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-18 · Mini-Pflege — Vision-Anker Mini-Browser (Tauri-App) als achter Anker
+### 2026-05-18 · Mini-Pflege — Vision-Anker M04-Erweiterung als neunter Anker
 
 **Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/pflege-vision-anker-mini-browser`. Folge-Pflege am selben
-Tag nach PR #84 (Anker 7 Extension). Klaus hat seine ursprüngliche
-Entscheidung „Mini-Browser bleibt Notiz an Anker 2 Pfad 3" am selben
-Nachmittag revidiert: Mini-Browser bekommt **eigenen achten Vision-
-Anker**, parallel zur Extension.
+`claude/pflege-vision-anker-m04-erweiterung`. Brainstorming-Sitzung
+mit zwei Strängen — Klaus hat die **Brücke zwischen SBKIM-Paper
+(Plattform-Form) und Mycel-Form** sichtbar gemacht und parallel die
+Sorge ums spätere Freigeben thematisiert.
 
-**Kern:** Anker 8 hebt Klaus' Mini-Browser-Vision aus der Pfad-3-
-Notiz auf eigene Anker-Ebene — Plattform-Architektur (Tauri-Stack),
-Verbindungen zu V4 (Königin-Hintergrund-Empfang), V5 (Backup-Datei-
-System-Zugriff), V6 (Identitäts-Wechsler im Tray-Menü), V7 (gleiche
-Modul-13-Bridge). Abgrenzung zur Pfad-3-Notiz: Pfad-3 ist Onboarding-
-Optik, Anker 8 ist die Plattform-Vision dahinter.
+**Kern:** Modul 04 macht heute nur einseitigen Cosinus-Vergleich; die
+drei Schichten (fachlich / prozess / skalierung), das Brücken-Feld
+und die doppelte Spore (capabilities + needs auf beiden Seiten) aus
+dem ursprünglichen Paper-Pitch leben als implizite Vision weiter,
+sind aber bislang nicht in PULS verankert. Anker 9 holt sie ein.
 
 **Was eingetragen:**
 
-- **PULS.md § Vision-Anker** um achten Anker erweitert: „Eigener
-  Mini-Browser — Tauri-App als dedizierter Knoten" mit Konzept,
-  Plattform-Tabelle, Architektur-Skizze, Verbindungen zu V2/V4/V5/V6/V7,
-  Abgrenzung zu V7, Größenordnung mit Code-Signing-Kosten, Status.
-- **PULS.md § Vision-Anker Anker 7 Schluss-Satz** ergänzt um Verweis
-  „komplementär zu Anker 8".
-- **PULS.md § Vision-Anker Anker 2 Pfad 3 Tauri-Notiz** ergänzt um
-  Verweis „Plattform-Architektur vertieft als Anker 8".
+- **PULS.md § Vision-Anker** um neunten Anker erweitert: „M04-
+  Erweiterung — drei Schichten + Brücke + doppelte Spore" mit
+  Konzept, Match-Pipeline (Stufe A lokal + Stufe B optional LLM),
+  Architektur-Skizze, Verbindungen zu V1/V4/V5/V6/V7/V8 + Modul 06,
+  Historie Paper ↔ Mycel, Größenordnung, Status.
+- **PULS.md § Vision-Anker Anker 7 Status** ergänzt um Verweis
+  „Anschluss an Anker 9".
+- **PULS.md § Vision-Anker Anker 8 Status** ergänzt um Verweis
+  „natürlicher Träger der LLM-Stufe-B-Calls" + Wechsel „Acht" →
+  „Neun Vision-Anker".
 - **PULS.md § Sitzungs-Einträge** neuer Top-Eintrag (dieser).
-- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md`.
+- **PR-#85-Sitzungs-Eintrag** (Mini-Browser, Anker 8) per Konvention
+  ins Archiv-Index ausgelagert; Übergabeprotokoll bleibt unverändert.
+- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md`.
 
-**Acht Vision-Anker jetzt im Repo:**
+**Neun Vision-Anker jetzt im Repo:**
 
-1. V1 — Sage als Hybrid-Knoten (Klaus' nächste Spec-Wahl)
-2. V2-Ausbau — Niedrigeres Onboarding (drei gleichwertige Pfade,
-   Pfad 3 mit Tauri-Notiz, vertieft in Anker 8)
+1. V1 — Sage als Hybrid-Knoten (Klaus' nächste Spec-Wahl, jetzt im
+   Großbrief erweitert um Anker 9 + Anker 6 + Plattform-Matrix)
+2. V2-Ausbau — Niedrigeres Onboarding (drei gleichwertige Pfade)
 3. Universum-Vision (umgesetzt PR #79 + #80)
 4. Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister
 5. Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser
 6. Multi-Identität in der IndexedDB
 7. SBKIM-Browser-Extension („Lampe in der Toolbar") — PR #84
-8. **Eigener Mini-Browser** (Tauri-App als dedizierter Knoten) — neu
+8. Eigener Mini-Browser (Tauri-App) — PR #85
+9. **M04-Erweiterung** (drei Schichten + Brücke + doppelte Spore) — neu
+
+**Paper-↔-Mycel-Brücke:** der ursprüngliche SBKIM-Pitch trug drei
+Schichten + Brücken-Feld als Kern-Innovation. Beim Pivot zur Mycel-
+Form wurde Modul 04 bewusst minimal gehalten (Cosinus + Schwelle),
+um die Infrastruktur zuerst tragfähig zu bekommen. Anker 9 macht die
+zurückgestellte Tiefe explizit und nennt sie als Bau-Ziel der V1-
+Sammelspec — kein eigener V1-paralleler Strang, sondern integraler
+Teil.
+
+**Sorge ums Freigeben (dokumentiert, nicht gehandelt):** Klaus hat
+Bedenken vor späterem Public-Schalten — Lizenzwahl (CC-BY-NC vs AGPL
+vs MIT) bleibt offen, Sage ist heute privat, kein Lecken. **Diese
+Pflege ändert daran nichts.** Lizenz-Entscheidung wird beim Public-
+Schalten separat geklärt.
 
 **Was NICHT angefasst:** Modul-Code, INTERFACES.md, Modul-Karten,
 Sage-Page, `status.json`. Vision lebt rein in PULS, kein Code-
 Eingriff. `update_puls_pie.py` NICHT aufgerufen.
 
-**Plattform-Ehrlichkeit:** Mini-Browser ist Desktop-only (Tauri
-unterstützt Windows/macOS/Linux). Klaus' DeX-/Tablet-Setup bleibt
-außen vor — wie bei Anker 7. Mobile-Lösung wäre eine separate
-Capacitor-Initiative, nicht im Anker 8 enthalten.
+**Plattform-Ehrlichkeit:** Stufe B (LLM-Call) braucht User-eigenen
+API-Key. Wer keinen hinterlegt, bleibt bei Stufe A — kein Knoten ist
+gezwungen, einen Drittanbieter zu nutzen. Stufe A bleibt das
+**rückgrat-tragende lokale Matching**, Stufe B ist Vertiefung.
 
-**PULS-Zeilen-Status:** Anker 8 + Sitzungs-Eintrag brachten PULS
-auf 3160 Zeilen, über der 3000er-Schutz-Klausel. Per Konvention
-„neue Sitzungen verschieben den dann jeweils vorletzten in den
-Archiv-Index" wurde der **PR-#84-Sitzungs-Eintrag** (Anker 7
-Extension) ins Archiv-Index ausgelagert, sein Übergabeprotokoll
-bleibt unverändert. PULS jetzt **3093 Zeilen** — weiterhin knapp
-über der Schwelle. Vorbestehendes Problem (vor dieser Sitzung
-2953), nicht durch diese Mini-Pflege verursacht. **Empfehlung:**
-nächste Mini-Pflege lagert mehrere ältere Sitzungs-Einträge in
-einem Rutsch ins Archiv aus, oder eine dezidierte Auslager-Sitzung
-zwischendrin.
+**Großbrief vorbereitet:** Klaus möchte die V1-Sammelspec als mehr-
+tägige Sitzung führen — Scope erweitert um Anker 9 (M04-Erweiterung),
+Anker 6 (Multi-Identität / Mehrfach-Sporen-Identität) und die
+**Plattform-Matrix** (Sporen-Verhalten in Desktop-Browser / DeX-
+Tablet / PWA-installiert / Mini-Browser / Extension). Der Brief liegt
+Klaus am Chat-Tab zur Auslösung vor, wann er Zeit hat — er läuft
+NICHT automatisch.
 
-**Sieben-vs-Acht-Wechsel:** PR #84 trug noch „Sieben Vision-Anker"
-mit der Begründung, Mini-Browser bleibe Notiz. Diese Mini-Pflege
-revidiert das per Klaus' Folge-Entscheidung — beide stehen jetzt
-als gleichberechtigte Anker da, weil sie sich architektonisch klar
-unterscheiden (Browser-Erweiterung vs. dedizierte Desktop-App).
+**PULS-Zeilen-Status:** Sitzungsstart 3105 Zeilen, jetzt **3254 Zeilen**
+(+149). Der neunte Vision-Anker selbst ist ~130 Zeilen dauerhafter
+Eintrag (Konzept, Pipeline, Architektur, Verbindungen, Historie,
+Größenordnung, Status); Sitzungs-Eintrag +78 minus PR-#85-Auslagerung
+-75 ist nahezu neutral. Mit PR #85 + dieser Pflege liegt PULS jetzt
+deutlich über der 3000er-Schutz-Klausel. **Dezidierte Auslager-Sitzung
+mehrerer älterer Sitzungs-Einträge bleibt überfällig** und wandert in
+die nächsten sinnvollen Schritte vor V1-Sammelspec.
 
-**Nächster sinnvoller Schritt:** Klaus entscheidet — Spec-Sitzung V1
-(Brief liegt fertig in gestrigen Chat) oder Storage-Persist-Schutz-
-Mini-Pflege (`navigator.storage.persist()`) oder Pause der Vision-
-Anker-Welle (acht Anker reichen für eine Weile).
+**Nächster sinnvoller Schritt:** Klaus entscheidet — V1-Sammelspec
+auslösen (mehrtägig, großer Brief in dieser Chat-Antwort als
+Codeblock), oder mehrere alte Sitzungs-Einträge ins Archiv auslagern
+(PULS unter 3000 bringen, eigene Mini-Pflege), oder Pause.
 
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md).
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md).
 
 ### 2026-05-18 · Mini-Pflege — Vision-Anker Multi-Identität in der IndexedDB
 
@@ -3044,6 +3194,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-18 | Mini-Pflege · Vision-Anker Mini-Browser (Tauri-App) als achter Anker (PR #85 — eigener achter Anker für die dedizierte Desktop-App; Konzept Tauri-Stack ~10-30 MB, eigene IndexedDB im App-Daten-Verzeichnis, Tray-Icon-Modus für Hintergrund-Empfang, Doppelklick-Installer .msi/.dmg/.AppImage, Auto-Update via Tauri-Updater; Verbindungen zu V2-Pfad-3 / V4 Königin-Hintergrund / V5 Backup-Datei / V6 Identitäts-Wechsler im Tray / V7 gleiche Modul-13-Bridge; Abgrenzung zu V7 Extension; Desktop-only — Mobile/DeX außen vor; PR-#84-Sitzungs-Eintrag dort ins Archiv ausgelagert) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Extension („Lampe in der Toolbar") + Mini-Browser-Konkretisierung Anker 2 Pfad 3 (PR #84 — siebter Vision-Anker; Manifest V3, Modul-13-Bridge, Plattform-Tabelle Desktop ja / Mobile nein, drei gleichwertige Onboarding-Pfade; Mini-Browser-Konkretisierung später per Folge-Pflege als eigener Anker 8 vertieft) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md) |
 | 2026-05-17 | Spec · Modul 05 BroadcastChannel-Bridge als same-origin Fallback (additiver Transport additiv zum HTTP-Pfad; `handshake(...)` um optionalen `options.transport`-Parameter erweitert mit Default `"auto"`; Wrapper-Envelope mit `replyChannelName` aus nonce; `BroadcastChannel('sbkim')` als gemeinsamer Channel pro Origin; `toNodeId` Pflicht im Channel-Pfad; Receiver-Tab muss offen sein, kein Wake-Lock; E1–E7-Entscheidungstabelle mit Begründungen; HandshakeRequest/Response-Schema unverändert; `PROTOCOL_VERSION` bleibt `"0.1"`; KEIN Code, KEIN Eingriff in Karte 09 — Bau-Sitzung folgt) | [→ Archiv](sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md) |
 | 2026-05-17 | Pflege · Modul 05/SW Scope-Fix `isOwnEndpoint` (`sbkim-sw.js` `isPathSuffix` durch scope-bewusste `isOwnEndpoint` ersetzt — leitet erwarteten Pfad aus `self.registration.scope` ab, strikte Gleichheit; behebt falsch-positiven Cross-Scope-Intercept; Variante 3c bewusst nicht abgedeckt; Same-origin cross-PWA via SW-Bridge bleibt konzeptuell unmöglich, Folge-Spec Modul 05 BroadcastChannel-Bridge empfohlen; Klaus muss `sbkim-sw.js` mit Cache-Bust in beide Endknoten nachziehen) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fix.md) |
