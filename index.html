@@ -2691,17 +2691,17 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     { idx: 0, status: 'text-only', shape: 'galaxy-spiral', size: 'large',
       title: 'SBKIM-Namensgebung',
       tag: 'Station 1',
-      summary: 'Inhalt folgt per Mini-Pflege — woher der Name kam, was die einzelnen Buchstaben in der Reise getragen haben.'
+      summary: 'Der Name SBKIM ist mit dem Protokoll gewachsen — zwei Lesarten, derselbe Anker. Erste Fassung: **Semantisch-Empfangendes Bidirektionales KI-Matching** — ein technisches Versprechen. Heutige Fassung: **Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel** — dieselbe Idee in einer biologischen Metapher.|**S** trägt durchgehend *Semantik*: zwischen den Knoten fließen Bedeutungen, keine rohen Daten. **I** trägt durchgehend *Inter-Knoten*: das Netz hat kein Zentrum, nur Punkte und Verbindungen.|**B** ist der Drehpunkt — zuerst **bidirektional** (jede Seite ist Anbieter und Sucher zugleich, siehe Station 2), heute **biologisch** (dem Pilz nachempfunden). **K** war anfangs **KI**, weil das Embedding-Modell die Vermittlung trägt; heute eher **Koordination** zwischen Knoten — derselbe Mechanismus ohne den Marketing-Marker. **M** war einmal **Matching**, ist heute **Mycel** — vom Algorithmus zur Lebensform.|Die zwei Lesarten beißen sich nicht. Sie sind dieselbe Idee von zwei Seiten gesehen.'
     },
     { idx: 1, status: 'text-only', shape: 'galaxy-elliptical', size: 'large',
       title: 'Zwei Seiten einer Medaille',
       tag: 'Station 2',
-      summary: 'Inhalt folgt per Mini-Pflege — das bidirektionale Match-Prinzip biographisch erzählt: wann und warum die Idee aufkam, Anbieter und Sucher zugleich zu denken.'
+      summary: 'Anfangs war das Mycel eine Einbahn: Sucher schickt Frage, Anbieter prüft, ob er antworten kann. Modul 04 (Match) rechnet nur eine Richtung — Cosinus zwischen Anfrage-Vektor und Spore-Stamm-Vektor, hoher Wert öffnet die Antwort-Pforte. Funktioniert, aber halbe Wahrheit.|Jede kleine Webseite ist beides: sie hat etwas zu erzählen UND sie sucht selbst. Wer Cocktails anbietet, fragt vielleicht nach Glaswaren. Wer Kochrezepte zeigt, sucht nach passenden Cocktails. Aus dieser Beobachtung kam die Idee, **Anbieter und Sucher zugleich zu denken**.|Konkret: eine Spore trägt zwei Felder — `capabilities` (was kann ich anbieten) und `needs` (was suche ich) — und ein Match prüft beide Vektoren gegen die andere Seite. Aus dem einseitigen Cosinus wird ein Zwei-Seiten-Spiegel. Das Mycel wird ein Marktplatz statt eines Schaufensters.|Vision-Anker 9 in `docs/PULS.md` trägt diese Erweiterung vollständig — diese Station ist ihr biographischer Anker.'
     },
     { idx: 2, status: 'text-only', shape: 'galaxy-ring', size: 'medium',
       title: 'Sage-Protokol-Geburt',
       tag: 'Station 3',
-      summary: 'Inhalt folgt per Mini-Pflege — der Pivot von Plattform-Form zu Mycel-Form, Geburt dieses Repos.'
+      summary: 'Sage fing nicht als Protokoll an. Die erste Form war eine **zentrale Plattform**: ein Server, eine Suche, ein Index, alle anderen sind Klienten.|Bei genauer Betrachtung war das wieder genau das, wovon es schon zu viele gibt — noch eine Suchmaschine, noch ein Gatekeeper, der zwischen kleinen Seiten und ihren Lesern sitzt. Der Pivot kam aus der Beobachtung, dass kleine Webseiten kein Plattform-Problem haben, sondern ein **Findbarkeits-Problem ohne Verkauf der Identität**.|Das Mycel war die Antwort: kein Server, kein Index, jeder Knoten hält seine eigene Spore. Die Hub-Bootstrap-Stelle kann ausfallen, ohne dass das Netz stirbt.|Damit wurde aus „Sage-Plattform" das **Sage-Protokol** — eine Spielregel zwischen Gleichberechtigten, ein L mit Absicht (im Glossar gepflegt). Die Geburt dieses Repos ist der Moment, in dem das eine Wort gestrichen und das andere geboren wurde.'
     },
     { idx: 3, status: 'live', shape: 'galaxy-sombrero', size: 'large',
       title: 'Wissenschaftlicher Niederschlag — SBKIM-Paper (EN)',
@@ -2920,15 +2920,21 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (!modal || !title || !tag || !body) return;
     tag.textContent = s.tag;
     title.textContent = s.title;
-    const safeSummary = s.summary
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-    let html = '<p>' + safeSummary + '</p>';
+    // Paragraph-Splitting + Markdown 1:1 wie openUniverseModal (| trennt Absätze, **fett**, `code`, „kursiv")
+    const paragraphs = s.summary.split('|').map(p => p.trim()).filter(Boolean);
+    let html = paragraphs.map(p => {
+      const safe = p.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const formatted = safe
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/„([^"]+)"/g, '„<em>$1</em>"');
+      return '<p>' + formatted + '</p>';
+    }).join('');
     if (s.status === 'live' && s.href) {
       const safeHref = s.href.replace(/"/g, '&quot;');
       html += '<a class="station-modal-link" href="' + safeHref + '" target="_blank" rel="noopener">Original-Dokument öffnen →</a>';
-    } else if (s.status === 'text-only') {
+    } else if (s.placeholder) {
       html += '<span class="station-placeholder-hint">Erzähl-Text folgt per Folge-Mini-Pflege.</span>';
     }
     body.innerHTML = html;
