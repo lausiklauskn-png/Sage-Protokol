@@ -1958,12 +1958,258 @@ Sitzung unangetastet.
   Empfangs-Modus (Anker 4 Vision); empfangen wird nur, solange ein
   Tab offen ist.
 
-> **Plattform-Matrix-Stub (folgt in Brief 02):** Dieser Block ist
-> hier nur als Verweis-Stub vermerkt — die volle Plattform-Matrix
-> mit Spalten je Plattform-Profil (GitHub Pages PWA / Tauri Mini-
-> Browser / Browser-Extension / Königin-Relay) entsteht als
-> §6.2 in Brief 02 als eigenständige Folge-Sitzung der V1-
-> Sammelspec-Kaskade. Brief-01-Sitzung greift dem nicht vor.
+> **Plattform-Matrix:** siehe § 6.2 unten — die fünf Plattform-
+> Profile (Desktop-Browser / DeX-Tablet / PWA-installiert /
+> Mini-Browser / Extension) werden dort verbindlich aufgelistet
+> und für Sage einzeln zugeordnet. Brief 02 der V1-Sammelspec-
+> Kaskade (2026-05-18) hat den Stub aus Brief 01 zur vollen
+> Matrix ausgebaut.
+
+### 6.2 Plattform-Matrix
+
+Verbindliche Aufzählung der Plattform-Profile, unter denen
+Endknoten heute laufen oder künftig laufen werden. Jede Zeile
+beschreibt ein Plattform-Profil — kein Endknoten ist mit „seiner"
+Plattform fest verheiratet, sondern wechselt mit der Trägerumgebung
+(Klaus' Sage-Page öffnet sich heute im Desktop-Browser-Profil,
+nach „Zur Startseite hinzufügen" im PWA-installiert-Profil, in
+einer Tauri-Hülle künftig im Mini-Browser-Profil — derselbe Code,
+andere Plattform-Eigenschaften).
+
+Spec-Sitzung Brief 02 der V1-Sammelspec-Kaskade (2026-05-18) hat
+die Matrix als § 6.2 neben § 6.1 Sage-Endknoten — Sage-Page-
+Architektur etabliert. Die Plattform-Ehrlichkeits-Klausel in
+§ 6.3 ist für diese Matrix verbindlich: kein Endknoten gibt vor,
+mehr zu können als seine Plattform erlaubt.
+
+| Plattform | IndexedDB | SW | Spore-Empfang | Identitäts-Backup | Stufe B | Beispiel-Knoten |
+|---|---|---|---|---|---|---|
+| Desktop-Browser | pro Profil | browser-SW | nur Tab offen | optional Container | ja (eigener Key) | heute Klaus' Sage-Page-Test im Chrome-Tab |
+| DeX-Tablet | pro Profil | browser-SW | nur Tab offen | optional Container | ja | heute Mein-Mixarium / Mein-Rezeptbuch im DeX-Chrome (Galaxy Tab S6 + DeX, Cross-Knoten-Handshake 2026-05-17) |
+| PWA-installiert | pro Profil | App-SW | Tab fest, längere Lebenszeit | optional Container | ja | Mein-Mixarium + Mein-Rezeptbuch nach „Zur Startseite hinzufügen" (Variante 3b mit `importScripts('./sbkim-sw.js')` im bestehenden App-SW, Karte 09 § Schritt 3b) |
+| Mini-Browser (V8) | eigene DB (App-Daten-Verzeichnis) | App-eigener | Tray-Modus, Hintergrund-OK | Datei-System | ja (Key im App-Dir) | Vision-Anker 8 (Tauri-App, noch nicht gebaut) |
+| Extension (V7) | Browser-DB geteilt mit PWA | Background-Service-Worker | Popup-Trigger, begrenzt | keine eigene, nutzt PWA-Container | ja im Popup | Vision-Anker 7 („Lampe in der Toolbar", noch nicht gebaut) |
+
+**Spalten-Glossar:**
+
+- **IndexedDB** — wo die identitäts-tragende Datenbank
+  (`sbkim_<dbSuffix>`) physisch liegt. „pro Profil" bedeutet:
+  Browser-Profil-spezifisch, Reklamations-Risiko bei Browser-
+  Aufräumen (siehe `docs/OBSERVATORIUM_BROWSER.md` § Lehre 1).
+  „eigene DB (App-Daten-Verzeichnis)" bei Mini-Browser löst dieses
+  Risiko strukturell. „Browser-DB geteilt mit PWA" bei der
+  Extension meint: Extension liest und schreibt nicht in die SBKIM-
+  IndexedDB; die Identitäts-Schlüssel bleiben in der PWA, die
+  Extension ist nur Anzeige- und Steuerungs-Hülle.
+- **SW** — welcher Service-Worker den `/sbkim/`-Pfad bedient.
+  „browser-SW" = der von der Page selbst registrierte Worker beim
+  Tab-Öffnen (Variante 3a Standalone, Karte 09 § Schritt 3a).
+  „App-SW" = der bestehende App-Service-Worker der PWA, in den
+  `sbkim-sw.js` via `importScripts('./sbkim-sw.js')` koexistent
+  eingebunden ist (Variante 3b, Karte 09 § Schritt 3b).
+  „App-eigener" = der Service-Worker, den die Mini-Browser-App-
+  Shell selbst hostet (kein Browser-Worker im Sinne der Web-API,
+  weil Tauri-WebView eigene Engine). „Background-Service-W." =
+  Extension-eigener Background-Worker nach Manifest V3.
+- **Spore-Empfang** — wann und wie lange der Knoten Handshakes
+  beantworten kann. „nur Tab offen" und „Popup-Trigger, begrenzt"
+  sind ehrlich offline-anfällig — der Knoten antwortet, solange
+  der Tab im Vordergrund läuft (oder im Hintergrund mit
+  ausreichendem Browser-Quota), sonst nicht. „Tab fest, längere
+  Lebenszeit" bei PWA-installiert ist eine Browser-Eigenschaft
+  (PWAs bekommen erfahrungsgemäß längere Worker-Lebenszeit), kein
+  echtes Hintergrund-Service-Versprechen. „Tray-Modus, Hintergrund-
+  OK" beim Mini-Browser ist der einzige strukturelle Hintergrund-
+  Empfang im Profil-Inventar — Bezug zu Vision-Anker 4 (Königin-
+  Relay) siehe § 6.4 unten.
+- **Identitäts-Backup** — wie die Identität die Plattform überlebt
+  (Browser-Wechsel, Geräte-Wechsel, IndexedDB-Reklamation). „optional
+  Container" meint: Modul 02 `exportBackup` / `importBackup` (Bau
+  02.X 2026-05-16, PBKDF2-SHA256-600 000 + AES-GCM-256) — Klaus
+  speichert den Backup-Blob außerhalb der Plattform und importiert
+  ihn beim Plattform-Wechsel. Verweis auf Vision-Anker 5
+  (Identitäts-Container) für die Container-UX. „Datei-System" beim
+  Mini-Browser meint: Tauri-Backend hat direkten Dateisystem-Zugriff
+  und kann den verschlüsselten Container in eine `.sbkim`-Datei im
+  App-Daten-Verzeichnis schreiben — kein Browser-Download-Pfad
+  nötig. „keine eigene, nutzt PWA-Container" bei der Extension
+  meint: Extension-Popup ruft den PWA-Endpunkt für Backup-Export
+  auf, eigene Schlüssel-Haltung wäre ein Sicherheitsbruch (zwei
+  Speicher-Schichten = zwei Verlust-Risiken).
+- **Stufe B** — Verfügbarkeit der optionalen LLM-Erklär-Schicht
+  aus Vision-Anker 9 (M04-Erweiterung — drei Schichten + Brücke
+  + doppelte Spore). „ja" bedeutet: die Plattform kann einen
+  User-eigenen API-Key halten und einen Stufe-B-Call ausführen.
+  Wo der Key konkret liegt, hängt vom Profil ab: „eigener Key"
+  in Desktop-Browser / DeX-Tablet (Browser-Storage); „Key im
+  App-Dir" beim Mini-Browser (Datei-System, kein Browser-
+  Reklamations-Risiko); „im Popup" bei der Extension (Extension-
+  eigener Storage, NICHT die PWA-IndexedDB — Trennung der
+  Sicherheits-Domänen). Die Spec der Stufe B selbst liegt in
+  Brief 03 (M04-Erweiterung), die Plattform-Matrix nennt nur das
+  Schnittstellen-Eckdatum.
+- **Beispiel-Knoten** — heute laufender Endknoten oder Vision-
+  Anker-Verweis. Jede Zeile soll einen konkreten Ankerpunkt
+  haben, damit die Matrix nicht im Abstrakten bleibt. Die zwei
+  Vision-Anker-Zeilen (Mini-Browser V8, Extension V7) markieren
+  die nicht-gebauten Profile transparent.
+
+**Sage als dritter Endknoten (Brief 01) in der Plattform-Matrix:**
+Sage liegt heute auf GitHub Pages und nimmt damit **zwei Profile**
+ein, je nach Andock-Zustand des Betreibers:
+
+- **Vor Installation (Desktop-Browser bzw. DeX-Tablet):** Sobald
+  jemand `https://lausiklauskn-png.github.io/Sage-Protokol/`
+  im Browser-Tab öffnet und an der Schwarz-Loch-Karte andockt
+  (Andock-Wizard aus § 6.1, Bau-Sitzung folgt), spielt der
+  Knoten unter dem Desktop-Browser-Profil bzw. dem DeX-Tablet-
+  Profil. IndexedDB `sbkim_sage` liegt pro Browser-Profil,
+  Service-Worker ist der von der Sage-Page selbst registrierte
+  Standalone `sbkim-sw.js` (Variante 3a aus § 6.1).
+- **Nach Installation (PWA-installiert):** Sobald der Betreiber
+  die Sage-Page via Browser-Menü „Zur Startseite hinzufügen"
+  installiert, wechselt der Knoten ins PWA-installiert-Profil
+  — mit längerer Worker-Lebenszeit und festerem Tab-Verhalten.
+  Der Andock-Vertrag in § 6.1 (IndexedDB-Suffix `sbkim_sage`,
+  volle init()-Kette) bleibt identisch; das Plattform-Profil
+  wechselt, nicht der Sage-Knoten-Vertrag.
+
+Sage steht damit **nicht als eigene Zeile in der Tabelle** — die
+Matrix beschreibt Plattform-Profile, nicht Endknoten. Sage nimmt
+diese Profile ein, ebenso wie Mein-Rezeptbuch heute das PWA-
+installiert-Profil einnimmt (Beispiel-Knoten-Spalte).
+
+> **Pflicht-Frage-Anker für künftige Plattform-Profile.** Wenn ein
+> neues Profil die Matrix erweitert (z.B. Mobile-PWA mit
+> WebPush-Background, mobile Capacitor-Hülle, Cordova-Wrapper),
+> muss die neue Zeile alle sechs Spalten ehrlich belegen und das
+> Beispiel-Knoten-Feld einen konkreten Anker tragen (Endknoten oder
+> Vision-Anker). Ehrliche Belegung heißt: was die Plattform
+> NICHT kann, steht expliziert in der Zelle — keine Schönfärberei
+> über Hintergrund-Empfang oder Schlüssel-Sicherheit. Siehe § 6.3.
+
+### 6.3 Plattform-Ehrlichkeits-Klausel
+
+**Verbindliche Spec-Klausel.** Sporen-Verhalten ist plattform-
+ehrlich: jede Spore trägt implizit ihre Plattform (durch ihren
+`endpoint` und das beobachtete Empfangs-Verhalten), kein Knoten
+lügt über Hintergrund-Empfang oder Schlüssel-Sicherheit.
+Plattformen mit „nur Tab offen" (Desktop-Browser, DeX-Tablet,
+PWA-installiert) oder „Popup-Trigger, begrenzt" (Extension) sind
+ehrlich offline-anfällig — Hintergrund-Empfang ist Vision-Anker 4
+(Königin-Relay) vorbehalten und **kein Pflicht-Bestandteil des
+Protokolls.** Ein Knoten ohne Hintergrund-Empfang ist ein
+vollwertiger Mycel-Teilnehmer; das Empfangsmodus-Prinzip aus
+`sbkim_paper.pdf` („wer nicht da ist, schweigt") bleibt
+unangetastet.
+
+**Begründung (Klaus' Lehre 1, Browser-Instanzen-Trennung).** Die
+Pages-Live-Tests am 2026-05-17 haben gezeigt, dass dieselbe Spore
+in zwei Browser-Instanzen (DeX-Chrome vs. Tablet-Chrome auf
+demselben Galaxy Tab S6) faktisch zwei getrennte Knoten ergibt —
+eigene IndexedDB, eigene Service-Worker, eigene PWA-Liste; ein im
+DeX-Modus angedockter Knoten ist im Tablet-Modus nicht da. Die
+Ursache ist keine Schwäche im Protokoll, sondern eine Eigenschaft
+der Plattform — die Browser-Engine isoliert Instanzen für
+legitime Sicherheits- und Datenschutz-Zwecke. Die Plattform-
+Ehrlichkeits-Klausel zieht daraus die Konsequenz: **eine Spore
+verspricht nicht, mehr zu können als ihre Plattform hergibt.** Wer
+einen immer-online-Knoten braucht, wechselt das Profil (Mini-
+Browser mit Tray-Modus, Vision-Anker 8) oder lehnt sich an eine
+Königin-Mailbox (Vision-Anker 4) — beides ist Plattform-Wechsel
+oder Plattform-Ergänzung, nicht Spore-Erweiterung.
+
+Diese Klausel ist verbindlich für jede künftige Plattform-Profil-
+Erweiterung der Matrix in § 6.2. Bezugs-Dokumente: Klaus' Lehre 1
+in `docs/OBSERVATORIUM_BROWSER.md` § Lehre 1; PULS § Offene
+Querschnitts-Fragen „DeX-Chrome vs. Tablet-Chrome — zwei
+getrennte Browser-Instanzen"; PULS § Vision-Anker 1 § Bezugs-
+Block (Pages-Live-Tests 2026-05-17).
+
+### 6.4 Vision-Bezüge
+
+Querverweis-Matrix zwischen den V1-Sammelspec-relevanten Vision-
+Ankern aus PULS § Vision-Anker. Sieben Anker — V1 (Sage-Hybrid),
+V9 (M04-Erweiterung), V6 (Multi-Identität), V7 (Extension), V8
+(Mini-Browser), V4 (Königin-Relay), V5 (Identitäts-Container).
+Dieser Block VERWEIST nur auf die Anker und benennt ihre Rolle im
+Plattform-Matrix-Kontext; er SPEZIFIZIERT sie nicht. Anker 1
+wurde mit Brief 01 als Strang 1 realisiert; Anker 9 (Brief 03),
+Anker 6 (Brief 04), Anker 7 / 8 / 4 / 5 haben eigene Spec-
+Sitzungen oder bleiben Vision.
+
+| V1 (Sage-Hybrid) | V9 (M04) | V6 (Multi-Id.) | V7 (Extension) | V8 (Mini-Browser) | V4 (Königin) | V5 (Container) |
+|---|---|---|---|---|---|---|
+| Träger | Stufe-B-Ort | Persona-Quelle | Toolbar-Lampe | Tray-Träger | Mailbox | Key-Speicher |
+
+**Erläuterungen pro Anker (Rolle im Plattform-Matrix-Kontext,
+nicht Spec des Ankers):**
+
+- **V1 (Sage-Hybrid) — Träger.** Sage ist ab Brief 01 ein
+  vollwertiger Endknoten und damit der erste konkrete Träger der
+  Plattform-Matrix-Profile, die der Hub selbst spezifiziert. Mit
+  Brief 01 wird die Konvention `NODE_TYPE_DEFAULT = "hybrid"` aus
+  § 0 selbstreferenziell wahr: Sage trägt die Matrix, in der
+  Sage selbst eine Zeile (bzw. zwei Profile, Desktop-Browser und
+  PWA-installiert) belegt. Vollständige Spec siehe § 6.1.
+- **V9 (M04-Erweiterung) — Stufe-B-Ort.** Die Spalte „Stufe B" der
+  Plattform-Matrix benennt nur, **wo** der LLM-Erklär-Pass laufen
+  kann (und wo der User-eigene API-Key liegt). **Wie** die drei
+  Schichten (fachlich / prozess / skalierung) und das Brücken-
+  Feld konkret aussehen, definiert Brief 03 der V1-Sammelspec-
+  Kaskade (M04-Erweiterung). Die Plattform-Matrix wartet auf
+  Brief 03 — bis dahin ist die „ja"-Belegung in den Stufe-B-Spalten
+  ein Schnittstellen-Versprechen, kein implementiertes Verhalten.
+- **V6 (Multi-Identität) — Persona-Quelle.** Brief 04 der V1-
+  Sammelspec-Kaskade spezifiziert mehrere Identitäts-Slots in
+  derselben IndexedDB (`sbkim_keys["main"]` / `["beruflich"]` /
+  `["test"]` + `sbkim_meta["active-identity"]`-Marker). Die
+  Plattform-Matrix bleibt davon unberührt — Multi-Identität ist
+  eine Schicht **innerhalb** einer Plattform, kein zusätzliches
+  Plattform-Profil. Mini-Browser und Extension können die
+  Persona-Wahl als UX-Element exponieren (Tray-Menü-Eintrag bzw.
+  Popup-Dropdown), das ist Bau-Detail in Brief 04 / V7 / V8.
+- **V7 (Extension) — Toolbar-Lampe.** Plattform-Profil-Zeile 5 der
+  Matrix in § 6.2. Manifest-V3-basierte Browser-Extension mit
+  zwei Toolbar-Lampen (Status + Aktivität); kein eigener
+  Identitäts-Speicher, nutzt die PWA-IndexedDB-Identität.
+  Modul-13-Bridge (in PULS § Vision-Anker 7 skizziert) bleibt
+  Spec-offen. Mobile-Browser unterstützen keine Extensions —
+  Klaus' DeX-/Tablet-Chrome-Setup bleibt außen vor.
+- **V8 (Mini-Browser) — Tray-Träger.** Plattform-Profil-Zeile 4
+  der Matrix in § 6.2. Tauri-App (Rust-Backend + System-WebView,
+  ~10–30 MB pro Plattform-Binary), eigene IndexedDB im App-Daten-
+  Verzeichnis (kein Browser-Reklamations-Risiko, strukturelle
+  Antwort auf Lehre 1), Tray-Icon-Modus für Hintergrund-Empfang.
+  Der einzige Profil-Eintrag mit „Hintergrund-OK" in der Spore-
+  Empfangs-Spalte — und damit der wahrscheinlichste Hintergrund-
+  Empfänger für eine Königin-Polling-Schleife (siehe V4).
+- **V4 (Königin-Relay) — Mailbox.** Plattformen mit „nur Tab
+  offen" (Desktop-Browser, DeX-Tablet, PWA-installiert) und
+  „Popup-Trigger, begrenzt" (Extension) sind die Hauptgründe,
+  warum die Königin als optionaler Modul-13-Anker überhaupt
+  Sinn ergibt: eine Mailbox puffert verschlüsselte Handshake-
+  Envelopes, solange der Empfänger nicht da ist. Die Plattform-
+  Matrix benennt das Problem (offline-Anfälligkeit der vier
+  Tab-/Popup-Profile), das Königin-Relay benennt die Lösungs-
+  Schicht. Brief 02 spezifiziert das Relay NICHT — Anker 4 hat
+  eine eigene Spec-Sitzung (PULS § Vision-Anker 4, Status „reif
+  für Spec-Diskussion nach V1").
+- **V5 (Identitäts-Container) — Key-Speicher.** Die Spalte
+  „Identitäts-Backup" der Plattform-Matrix verweist auf den
+  Container als Backup-Strategie über alle Plattformen hinweg.
+  Die Container-Spec liegt in Vision-Anker 5 (Pfad 1 Rucksack-
+  Datei ist mit Bau 02.X bereits implementiert; Pfade 2/3/4
+  Hardware-Wallet / Mini-Browser-Träger / Passkey-Sync sind
+  Vision). Stufe-B-API-Key (V9) gehört in den verschlüsselten
+  Container, nicht in plain IndexedDB.
+
+**Anti-Vorgriff auf V4 / V5 / V7 / V8 (Brief-02-Disziplin):** Die
+Matrix VERWEIST auf diese Vision-Anker, sie SPEZIFIZIERT sie nicht.
+Königin-Relay (V4), Identitäts-Container (V5), Extension (V7) und
+Mini-Browser (V8) haben eigene Spec-Sitzungen (oder bleiben
+Vision). Brief 02 nimmt nur die Schnittstellen-Eckdaten in die
+Matrix.
 
 ---
 
@@ -2006,3 +2252,4 @@ Sitzung unangetastet.
 | 2026-05-16 | Pflege Persistenz-Strategie verbinden | Stufe (3) der drei-stufigen Identitäts-Persistenz-Architektur (PULS § Offene Querschnitts-Fragen „Identitäts-Persistenz" — Stufen 1 und 2 schon gelöst; § Spore-Persistenz-Strategie verteilt Modul-00-Punkt „Warntext"). Folge-Pflege zu Bau 02.X Backup-Export (selbiger Tag, PR #54): die textliche Brücke zwischen Stufe (1) Storage-Persist und Stufe (2) Backup-Export. **§1 Modul 00 Bietet-Block** um Hinweis auf neues `DokuStatus`-Feld erweitert (`storagePersisted: boolean \| null` — Spiegelung des Modul-01-Getters, fail-soft). **§1 Modul 00 Nutzt-Block** um neue Zeile `SbkimStorage._meta.storagePersisted` erweitert (Lese-Pfad mit `typeof`-Check, fail-soft; `null` und `true` triggern nicht, nur explizites `false`). **§1 Modul 00 Geprüft-Zeile** um 2026-05-16 (Pflege Persistenz-Strategie verbinden — Stufe 3) erweitert. **Code in `src/modules/00_doku_fenster.js` additiv** (kein Refactoring der bestehenden sechs Funktionen): neue modul-lokale Konstante `DOKU_BACKUP_TIP_TEXT` mit deutschsprachigem Hinweis-Text (Verweis auf Modul 02 Panel-02-Knopf „Backup exportieren"); `getStatusSnapshot()` um Feld `storagePersisted: boolean \| null` erweitert (liest `SbkimStorage._meta.storagePersisted` fail-soft); neuer Modal-Render-Sub-Block `renderBackupTip()` + Prädikat `isBackupTipActive(snapshot)` — die Backup-Tipp-Zeile (Klassenpräfix `sbkim-doku-backup-tip`, hell-blaue Hinweis-Farbe) erscheint zwischen Knoten-Block und Sichttest-pro-Modul-Block, wenn `snapshot.storagePersisted === false` ODER `snapshot.quota.warningLevel !== "none"`; `_meta.backupTipActive()` als Test-Helper (zieht frischen Snapshot, gibt Boolean zurück); `_meta.dokuBackupTipText` für Test-Brücken-Zugriff. **Karte 00** § Datenformate (`DokuStatus`-Feld erweitert mit Drei-Werte-Hinweis und Null-/True-gleich-Konvention), neuer § Modal-Render-Pfad-Block „Backup-Tipp-Zeile" mit Trigger-Bedingung und Wortlaut, § Konfigurationswerte modul-lokale Zeile `DOKU_BACKUP_TIP_TEXT`, § Risiken neuer Punkt „Backup-Tipp ist textlich, keine Selbstheilung" (Aufrufer-Pflicht-Trennung — Klaus klickt Panel 02 selbst), § Manueller Test neuer Punkt 7 (Drei-Setup-Probe: Persist-Stub-`false` / Quota-Trigger / Negativ-Fall), § Bauzustand-Zeile „Pflege Persistenz-Strategie verbinden". **Aufrufer-Pflicht-Trennung verbindlich:** Modul 00 ruft `SbkimSpore.exportBackup` NICHT automatisch — Hinweis-only, Klaus klickt den Panel-02-Knopf selbst (Karte 00 § Verantwortlichkeiten „Macht nicht"). **Modul 01 / 02 / 03 / 04 / 05 / 06 / 07 / 08 unangetastet** (Modul 01 `_meta.storagePersisted` nur gelesen, Modul 02 `exportBackup` nur im Tipp-Text erwähnt). **Keine §0-Erweiterung** (keine neue Konstante; `DOKU_BACKUP_TIP_TEXT` ist modul-lokal). **Keine Spore-Feld-Erweiterung. Keine §2-/§3-/§4-/§5-Änderung.** **Kein Hauptversions-Sprung** (`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`, `BACKUP_FORMAT_VERSION` bleibt `1`). **`status.json` unverändert** (Modul 00 bleibt `score:"stub"`, additive Code-Erweiterung, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Sichttest ungeprüft** (headless gebaut — wartet auf Klaus' Browser-Lauf, Drei-Setup-Probe aus Karte 00 § Manueller Test Punkt 7). `node --check src/modules/00_doku_fenster.js` grün; Mini-Smoke-Test der Trigger-Logik in einem VM-Kontext (Persist-true/null/false × Quota-warn/none, vier Fälle alle grün). Damit ist der Querschnitts-Eintrag „Identitäts-Persistenz" final gelöst (alle drei Stufen) und „Spore-Persistenz-Strategie verteilt" ebenfalls (Quota-Schwellwert + Backup-Format + Warntext alle drei verankert). Übergabeprotokoll `docs/sessions/archiv/2026-05-16_pflege-persistenz-strategie-verbinden.md` angelegt. |
 | 2026-05-17 | Spec-Sitzung BroadcastChannel-Bridge | Folge-Spec zur Pflege Scope-Fix 2026-05-17 (PR #72/#73). Architektur-Grenze ehrlich gemacht: same-origin cross-PWA Handshake via SW-Bridge ist konzeptuell unmöglich (Sender-SW intercepted, nicht Receiver-SW). Lösung: **BroadcastChannel als additiver Fallback-Transport in Modul 05**, HandshakeRequest/HandshakeResponse-Schema **unverändert**. **§1 Modul 05 Bietet-Block** erweitert um optionalen dritten Parameter `options?: { transport?: "auto"\|"http"\|"channel" }` (Default `"auto"`). **§1 Modul 05 Nutzt-Block** um `BroadcastChannel('sbkim')` + Reply-Channel-Pfad ergänzt; Timeout aus QUERY_TIMEOUT_MS (kein neuer Wert). **§1 Modul 05 Fehlerverhalten** um zwei Zeilen erweitert (Channel-Timeout → `HandshakeTimeoutError` mit Log "timeout-channel", Channel-Reply-Signatur ungültig → `HandshakeSignatureInvalidError`). **§1 Modul 05 SW-Vertrag** um Architektur-Grenze-Hinweis erweitert (Spec-Klarheit, kein Bug — Auflösung in PR #72/#73 bestätigt). **§1 Modul 05 neuer Sub-Block „BroadcastChannel-Bridge"** mit Channel-Name, Envelope-Schema (Request/Response-Wrapper, NICHT signiert; nur das innere HandshakeRequest/Response wird signiert wie bisher), Receiver-Pflicht (eager in `init()`, Filter `toNodeId`/`fromNodeId`), Sender-Pfad (Reply-Channel pro Handshake, Timeout, finally-Cleanup, `nonceEcho`-Doppelt-Bindung), `toNodeId` als **Pflichtfeld** im Channel-Pfad (im HTTP-Pfad bleibt optional), Self-Hit-Schutz, Cleanup, „Wer-nicht-da-ist-schweigt"-Konvention. **§3 Endpunkt-Pfade** zweiter Sub-Block für Anastomose-Fallback-Transport: `channel-bridge: BroadcastChannel('sbkim')` + `reply-channel: BroadcastChannel('sbkim:reply:' + nonce)`. **Verbindlich nur für Modul 05** (Anastomose) — Heterokaryose (Modul 06) und Legacy (Modul 07) bleiben HTTP-only. **§1 Modul 05 Geprüft-Zeile** um 2026-05-17 erweitert. **Karte 05** § Schnittstelle (handshake-Signatur), neue Hauptsektion „BroadcastChannel-Bridge (same-origin Fallback)" mit Entscheidungs-Tabelle E1–E7 und Begründungen, § Datenformate (Envelope-Schema), § Manueller Test neuer Punkt 9 (Channel-Pfad), § Risiken neuer Punkt „Receiver-Tab-Pflicht", § Bauzustand-Zeile „Spec BroadcastChannel-Bridge". **PROTOCOL_VERSION bleibt `"0.1"`** (additive Transport-Erweiterung, kein Schema-Eingriff). **Kein Code** in `src/modules/05_anastomose.js` (Spec, kein Bau — Bau-Sitzung folgt). **Kein Eingriff** in `src/sbkim-sw.js` (SW-Pfad ist mit `isOwnEndpoint` aus PR #72 abgeschlossen). **Kein Eingriff** in Karte 09 (Andock-Hinweis „Beide Tabs offen halten" folgt in Bau-Sitzung). **`status.json` unverändert** — Modul 05 bleibt `score:"fertig"` (additive Spec-Erweiterung am Vertrag, keine Funktionalitäts-Regression; Bau erst danach setzt den Fallback live; `update_puls_pie.py` NICHT aufgerufen). Übergabeprotokoll `docs/sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md` angelegt.
 | 2026-05-18 | Spec-Sitzung V1 Sage-Hybrid (Brief 01) | Brief 01 der V1-Sammelspec-Kaskade (PULS § Meta-Pflege „V1-Sammelspec als Brief-Kaskade sequenziert", sechs heilige Tafeln). **Neue §6 Endknoten-Liste** angelegt: Sage als dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium aufgenommen (id `sage`, domain `Mycel-Bibliothek`, domainDescription / domainKeywords / domainVector `null`-Slot, Stamm/Gast disjunkt). **§6.1 Sage-Endknoten — Sage-Page-Architektur** dokumentiert (IndexedDB-Suffix `sbkim_sage`, App-SW Variante 3a, volle init()-Kette mit lazy Modul-03, Andock-Geste an Schwarz-Loch-Karte als Wizard-Hinweis, Plattform-Ehrlichkeits-Vorgriff auf Brief 02). Domäne-Entscheidung „Mycel-Bibliothek" begründet (gesamtes Doku-Korpus, nicht nur Glossar oder Sage-Page-Metapher). **§6 Änderungsprotokoll auf §7 nachnummeriert** (additiv, keine Inhalte verschoben). **PROTOCOL_VERSION bleibt `"0.1"`** (additive Erweiterung, kein bestehendes Feld zur Pflicht erhoben). Plattform-Matrix-Block hier nur als Verweis-Stub auf Brief 02; M04-Erweiterung (Brief 03) und Multi-Identität (Brief 04) bleiben unberührt. Mit-Pflege: CLAUDE.md § „Was dieses Repo ist" („Hub und Knoten zugleich"), Karte 09 § Schritt 1, `status.json` § endknoten (sage-Eintrag mit `pingStatus:"pending-first-andock"` und `nodeId:null`). Sage-Page (`index.html`) unangetastet — Sage-Page-Refactor folgt als Bau-Sitzung in Brief 99-Liste. Übergabeprotokoll `docs/sessions/archiv/2026-05-18_spec-v1-sage-hybrid.md`. PR „Spec: V1 Sage-Hybrid — Strang 1 der V1-Sammelspec-Kaskade". |
+| 2026-05-18 | Spec-Sitzung Plattform-Matrix (Brief 02) | Brief 02 der V1-Sammelspec-Kaskade — Strang 4 (Plattform-Matrix) als eigenständige Folge-Etappe nach Brief 01 (Spec V1 Sage-Hybrid, PR #96 gemerged). Drei neue Sub-Sektionen unter § 6: **§ 6.2 Plattform-Matrix** mit fünf Plattform-Profilen (Desktop-Browser / DeX-Tablet / PWA-installiert / Mini-Browser V8 / Extension V7) × sechs Spalten (IndexedDB / SW / Spore-Empfang / Identitäts-Backup / Stufe B / Beispiel-Knoten) plus Spalten-Glossar plus Sage-Anmerkung (Sage nimmt Desktop-Browser- und PWA-installiert-Profile ein, NICHT als eigene Zeile in der Matrix). **§ 6.3 Plattform-Ehrlichkeits-Klausel** als verbindliche Spec-Klausel: kein Endknoten gibt vor, mehr zu können als seine Plattform erlaubt — Hintergrund-Empfang ist Vision-Anker 4 (Königin-Relay) vorbehalten, kein Pflicht-Bestandteil des Protokolls; Begründung aus Klaus' Lehre 1 (Browser-Instanzen-Trennung, Pages-Live-Tests 2026-05-17). **§ 6.4 Vision-Bezüge** als Querverweis-Matrix mit sieben Ankern (V1 Träger / V9 Stufe-B-Ort / V6 Persona-Quelle / V7 Toolbar-Lampe / V8 Tray-Träger / V4 Mailbox / V5 Key-Speicher) plus Erläuterungs-Absatz pro Anker — Schnittstelle Plattform ↔ Anker, KEINE Spec der Anker selbst. **Plattform-Matrix-Stub aus § 6.1** (Brief 01) zu Verweis auf § 6.2 umgeschrieben. **PROTOCOL_VERSION bleibt `"0.1"`** (Strang 4 ist dokumentarisch additiv — Matrix ist Spec-Block, kein Spore-Schema-Feld, kein neuer Pflicht-Pfad). Mit-Pflege: KEINE — Brief 02 lebt rein in INTERFACES; CLAUDE.md / Karte 09 / `status.json` unangetastet (Brief 01 hat sie auf den Endknoten-Stand gebracht). Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6 streng eingehalten (Matrix verweist, spezifiziert nicht); Brief 03 (M04-Erweiterung) erbt die Spalte „Stufe B" als Schnittstellen-Eckdatum. Übergabeprotokoll `docs/sessions/archiv/2026-05-18_spec-plattform-matrix.md`. PR „Spec: Plattform-Matrix — Strang 2 der V1-Sammelspec-Kaskade" (Brief 01-PR #96 als gemerged vorausgesetzt). |
