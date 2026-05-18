@@ -1683,15 +1683,29 @@ merge-fähig.
    eigener Strang DANN; der Brief der eigenen Sitzung nennt das
    explizit, wenn Vorgänger-Korrekturen wahrscheinlich werden.
 
-6. **Brief-Auslieferung doppelt — Datei UND kopierbarer Chat-
-   Codeblock.** Jede Folge-Sitzung legt ihren Folge-Brief
-   (`BRIEF_<NN+1>_<NAME>.md`) als Datei im Repo AB UND gibt ihn am
-   Sitzungs-Ende AUCH als kopierbaren Codeblock direkt in der Chat-
-   Antwort aus (Klaus-Regel 2026-05-18 nach Meta-Pflege-Merge PR
-   #93). Klaus startet die Folge-Sitzung per Copy-Paste aus dem
-   Chat-Tab; reine Datei-Ablage zwingt zum Datei-Öffnen-Umweg.
-   Der Codeblock im Chat ist identisch zum Datei-Inhalt — kein
-   Auszug, keine Zusammenfassung.
+6. **Brief-Auslieferung als kopierbarer Auslöser-Befehl im Chat
+   (nicht als Brief-Volltext).** Jede Folge-Sitzung legt ihren
+   Folge-Brief (`BRIEF_<NN+1>_<NAME>.md`) als Datei im Repo ab UND
+   gibt am Sitzungs-Ende einen kurzen, kopierbaren Auslöser-Befehl
+   (3–5 Zeilen) als Codeblock direkt in der Chat-Antwort aus
+   (Klaus-Regel 2026-05-18 nach Meta-Pflege-Merge PR #93,
+   Refactoring derselben Pflege). Der Auslöser-Befehl nennt die
+   Brief-Datei, den Branch und den Kaskaden-Kontext — die neue
+   Sitzung liest den Brief selbst aus der Datei. Beispiel-Wortlaut:
+
+   ```
+   Lies docs/sessions/BRIEF_<NN>_<NAME>.md vollständig und führe
+   den Brief als nächste Sitzung in der V1-Sammelspec-Kaskade aus.
+   Konventionen siehe PULS § Sitzungs-Einträge „Meta-Pflege —
+   V1-Sammelspec als Brief-Kaskade sequenziert" (sechs heilige
+   Tafeln). Branch laut Brief.
+   ```
+
+   Klaus startet die neue Sitzung per Copy-Paste dieses Auslöser-
+   Befehls aus dem Chat-Tab. Brief-Volltext im Chat ist
+   ausdrücklich NICHT gewünscht — Datei im Repo ist die einzige
+   Wahrheits-Quelle des Briefes, Auslöser-Befehl ist nur der
+   Sprung-Anker.
 
 **PROTOCOL_VERSION-Disziplin der Kaskade:** Bleibt `"0.1"`, solange
 alle Strang-Erweiterungen ADDITIV sind und alte Sporen weiterhin
