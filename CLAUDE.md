@@ -6,12 +6,24 @@
 
 ## Was dieses Repo ist
 
-Sage-Protokol ist der **Spezifikations- und Bau-Hub** für das SBKIM-Protokoll
-(Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel). Es ist **kein Endknoten**.
-Die echten Endknoten sind die PWA-Apps des Betreibers:
+Sage-Protokol ist **Hub und Knoten zugleich** für das SBKIM-Protokoll
+(Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel): der
+**Spezifikations- und Bau-Hub** für alle SBKIM-Module **und** ein
+eigener Endknoten mit eigener Domäne. Mit Spec-Sitzung V1 Sage-
+Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) wird die
+Konvention `NODE_TYPE_DEFAULT = "hybrid"` aus INTERFACES §0
+endlich selbstreferenziell wahr.
+
+Drei gleichwertige Endknoten kennt das Sage-Mycel:
 
 - **Rezeptbuch** (externes Repo, kuratierte Domäne: Kochrezepte)
 - **Mixarium** (externes Repo, kuratierte Domäne: Cocktails / Drinks)
+- **Sage** (dieses Repo, kuratierte Domäne: Mycel-Bibliothek —
+  SBKIM-Glossar, Protokoll-Doku, heilige Tafeln). Spec in
+  INTERFACES §6 Endknoten-Liste + §6.1 Sage-Page-Architektur;
+  Bau via Sage-Page-Refactor-Bau-Sitzung aus der BRIEF_99-Liste,
+  sobald die Kaskade schließt (volle `init()`-Kette aller SBKIM-
+  Module, Andock-Wizard an der Schwarz-Loch-Karte).
 
 Hier in Sage-Protokol entstehen die **Module**, die anschließend per Copy-Paste
 in die echten Apps eingebaut werden. Hier liegen außerdem die **Spezifikationen**,

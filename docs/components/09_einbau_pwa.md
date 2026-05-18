@@ -272,6 +272,21 @@ sage-protokol/src/sbkim-sw.js                 → <endknoten>/sbkim-sw.js  (Repo
 ablegen. Folge: Scope-Falle, eingehende POSTs werden nicht abgefangen.
 Datei in den Repo-Root verschieben.
 
+**Sage-Observatorium selbst ist auch ein Endknoten — wer sich am
+Sage-Mycel andockt, bekommt es als Geschwister.** Mit der Spec-
+Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade,
+2026-05-18) hat das Sage-Protokol-Repo eine eigene Domäne
+(`Mycel-Bibliothek`, siehe INTERFACES §6 Endknoten-Liste) und gilt
+gleichberechtigt neben Rezeptbuch und Mixarium. Sages eigene
+`init()`-Kette aller SBKIM-Module und die Andock-Geste an der
+Schwarz-Loch-Karte werden in einer Folge-Bau-Sitzung „Sage-Page-
+Refactor V1" gebaut (in der `BRIEF_99_SAMMELSPEC_ABSCHLUSS`-Liste
+enumeriert, sobald die V1-Sammelspec-Kaskade schließt). Karte 09
+beschreibt den Andock-Pfad für Endknoten-PWAs allgemein; die
+Sage-spezifische Andock-Architektur (`IndexedDB`-Suffix `sbkim_sage`,
+App-SW Variante 3a, lazy-load Modul 03) ist in INTERFACES §6.1
+Sage-Endknoten — Sage-Page-Architektur dokumentiert.
+
 ### Schritt 2 — `<script>`-Tags in `index.html`
 
 In der bestehenden `index.html` vor `</body>` einfügen. Reihenfolge
