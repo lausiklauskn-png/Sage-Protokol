@@ -2,11 +2,12 @@
 
 Dieser Ordner trägt die **dokumentengestützten Stationen** der
 Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
-`docs/PULS.md`). Heute steht hier **eine** Datei:
+`docs/PULS.md`). Heute stehen hier **zwei** Dateien:
 
 | Datei | Station | Eintrag in `index.html` |
 |---|---|---|
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag — SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
+| `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag — SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
 
 ## Zweck
 
