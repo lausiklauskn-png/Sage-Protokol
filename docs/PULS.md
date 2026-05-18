@@ -874,6 +874,87 @@ Aufwand. Reihenfolge:
 - Storage-Persist-Schutz-Praxis (Mini-Pflege offen)
 - Klaus' Bauchgefühl, welcher Pfad sich am stimmigsten anfühlt
 
+### 2026-05-18 · Multi-Identität in der IndexedDB (Modul 02 Erweiterung)
+
+**Eingetragen:** Mini-Pflege „Vision-Anker Multi-Identität" 2026-05-18.
+Klaus' Folge-Gedanke nach dem Schlaf, klar abgegrenzt zu Lehre 1
+(Browser-Instanzen-Trennung). Worüber Lehre 1 als **Verlust-Risiko**
+sprach (zwei Browser-Instanzen erzeugen ungewollt zwei separate
+Identitäten), wird hier als **Feature** umgekehrt: **bewusst mehrere
+Identitäten in derselben IndexedDB**.
+
+Klaus' Bild: „mehrere Identitäten in mehreren Ebenen im Browser oder
+auf dem Tablet oder im Rechner, je nach Arbeitsoberfläche."
+
+### Konzept
+
+- **Heute:** Modul 02 hat einen Singleton-Slot `sbkim_keys["main"]`.
+  Eine PWA = eine Identität pro Browser-Instanz.
+- **Vision:** Modul 02 unterstützt **mehrere Identitäten** in derselben
+  IndexedDB:
+  ```
+  sbkim_keys["main"]       → Klaus' Default-Identität
+  sbkim_keys["beruflich"]  → Klaus' berufliche Persona
+  sbkim_keys["test"]       → Test-Knoten
+  ```
+  Plus aktive-Identität-Marker `sbkim_meta["active-identity"]`, der
+  bestimmt, welche Identität Module 05/06/07 gerade nutzen.
+
+### Schritte (Spec-Aufgabe — nicht jetzt umsetzen)
+
+- **Modul 02 erweitern:**
+  - `getOrCreateIdentity(key?)` (Default `"main"`)
+  - `setActiveIdentity(key)` (wechselt aktive Identität)
+  - `listIdentities()` (alle vorhandenen)
+  - `removeIdentity(key)` (vorsichtig, mit Bestätigung)
+- **Aktive Identität als Konvention:** Module 05/06/07 lesen
+  `sbkim_meta["active-identity"]` und verwenden den entsprechenden
+  Identitäts-Slot.
+- **UI zum Wechseln:** im Doku-Fenster oder als eigener Identity-
+  Picker; vielleicht im Universum als „Welche-Identität-bin-ich"-
+  Bewegung in der Sage-Page.
+- **Pages-`spore.json`:** kann nur eine Identität öffentlich
+  darstellen. Optionen:
+  - Nur aktive Identität in `spore.json`
+  - Liste-Schema (mehrere Identitäten, peer findet die passende
+    über `toNodeId`-Filter)
+- **Geschwister-Netze pro Identität:** Modul 05 muss `sbkim_siblings`
+  pro Identitäts-Slot verwalten — `sbkim_siblings_main`,
+  `sbkim_siblings_beruflich` etc.
+
+### Trade-offs
+
+- **IndexedDB-Verlust löscht alle Identitäten gleichzeitig** — kein
+  Backup-Schutz gegenüber Browser-Reklamation. Daher Vision-Anker 5
+  (Identitäts-Container) als Backup-Strategie bleibt parallel sinnvoll.
+- **Verwirrungs-Risiko:** welche Identität ist gerade aktiv? UI muss
+  das klar machen.
+- **Spec-Aufwand:** signifikant — Modul 02 grundlegend erweitert,
+  Module 05/06/07 ziehen nach. ~3-5 Stunden Spec, ~10-15 Stunden Bau.
+
+### Verbindung zu anderen Vision-Ankern
+
+- **V1 (Sage als Hybrid-Knoten):** Sage selbst könnte mehrere
+  Identitäten haben — Hub-Identität für Spec-Verträge, Endknoten-
+  Identität für Mycel-Beziehungen, Glossar-Identität für
+  Wörterbuch-Pflege.
+- **V3 (Niedrigeres Onboarding):** Multi-Identität-Wahl als Teil
+  des Andock-Wizards. Andocker entscheidet beim ersten Klick:
+  „eine Identität oder mehrere Personae?"
+- **V4 (Königin-Relay):** Königin muss pro-Identität-Mailboxes
+  verwalten. Klaus' Königin sieht: „Post für `klaus-beruflich`",
+  „Post für `klaus-test`".
+- **V5 (Identitäts-Container):** jeder Backup-Container könnte
+  mehrere Identitäten enthalten. „Klaus' kompletter Rucksack" =
+  alle Identitäten in einer Datei.
+
+### Status
+
+**Reif für Spec-Diskussion**, aber nicht für sofortige Spec. Wartet
+auf V1-Sage-Hybrid-Spec (wo sich zeigt, ob Sage mehrere Identitäten
+sinnvoll hätte) + V5-Identitäts-Container-Spec (wo Backup-Schema
+klar wird). Größenordnung: ~3-5 Stunden Spec, ~10-15 Stunden Bau.
+
 ---
 
 ## Sitzungs-Einträge
@@ -884,6 +965,50 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-18 · Mini-Pflege — Vision-Anker Multi-Identität in der IndexedDB
+
+**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
+`claude/pflege-vision-anker-multi-identitaet`. Folge zur Marathon-
+Tag-Pflege vom Vortag (PR #75-#82). Klaus' Folge-Gedanke nach dem
+Schlaf: präzisiert seine gestrige IndexedDB-Frage zum **sechsten
+Vision-Anker**, klar abgegrenzt zu Lehre 1 (Browser-Instanzen-
+Trennung).
+
+**Kern:** Was Lehre 1 als Verlust-Risiko beschreibt — zwei Browser-
+Instanzen erzeugen ungewollt zwei separate Identitäten — wird hier
+als **Feature** umgekehrt: bewusst mehrere Identitäten in derselben
+IndexedDB, plus aktive-Identität-Marker, plus UI zum Wechseln.
+Persona-Trennung pro Arbeitsoberfläche (Tablet, Desktop, Browser-
+Modus) als bewusste Wahl, nicht zufällige Konsequenz.
+
+**Was eingetragen:**
+
+- **PULS.md § Vision-Anker** um sechsten Anker erweitert: „Multi-
+  Identität in der IndexedDB (Modul 02 Erweiterung)" mit Konzept-
+  Beschreibung, Spec-Schritten, Trade-offs, Verbindungen zu V1/V3/
+  V4/V5, Status (reif für Spec-Diskussion, wartet auf V1).
+- **PULS.md § Sitzungs-Einträge** neuer Top-Eintrag (dieser).
+- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md`.
+
+**Sechs Vision-Anker jetzt im Repo:**
+
+1. V1 — Sage als Hybrid-Knoten (Klaus' nächste Spec-Wahl)
+2. V3-Ausbau — Niedrigeres Onboarding
+3. Universum-Vision (umgesetzt PR #79 + #80)
+4. Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister
+5. Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser
+6. **Multi-Identität in der IndexedDB** — neuer Anker (dieses)
+
+**Was NICHT angefasst:** Modul-Code, INTERFACES.md, Modul-Karten,
+Sage-Page, `status.json`. Vision lebt rein in PULS, kein Code-
+Eingriff. `update_puls_pie.py` NICHT aufgerufen.
+
+**Nächster sinnvoller Schritt:** Klaus entscheidet — Storage-Persist-
+Schutz-Mini-Pflege oder Spec-Sitzung V1 (Brief liegt fertig in gestrigen
+Chat).
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md).
 
 ### 2026-05-17 · Mini-Pflege — Vision-Anker Königin-Relay (Modul 13?)
 
