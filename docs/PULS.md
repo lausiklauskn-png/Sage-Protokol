@@ -1426,9 +1426,9 @@ geordneterer Choreographie:
 
 | Galaxie | Station | Status | Anker-Datei (sofern vorhanden) |
 |---|---|---|---|
-| 1 | **SBKIM-Namensgebung** — woher der Name kam, was die einzelnen Buchstaben in der Reise getragen haben | text-nur, Inhalt offen | (Modal-Body-Text, Klaus liefert per Folge-Mini-Pflege) |
-| 2 | **Zwei Seiten einer Medaille** — das bidirektionale Match-Prinzip biographisch erzählt: wann und warum die Idee aufkam, Anbieter und Sucher zugleich zu denken | text-nur, Inhalt offen | (Modal-Body-Text, Klaus liefert per Folge-Mini-Pflege) |
-| 3 | **Sage-Protokol-Geburt** — der Pivot von Plattform-Form zu Mycel-Form, Geburt dieses Repos | text-nur, Inhalt offen | (Modal-Body-Text, Klaus liefert per Folge-Mini-Pflege) |
+| 1 | **SBKIM-Namensgebung** — woher der Name kam, was die einzelnen Buchstaben in der Reise getragen haben | text-nur, **inhaltlich gefüllt** | (Modal-Body-Text, Pflege 2026-05-18) |
+| 2 | **Zwei Seiten einer Medaille** — das bidirektionale Match-Prinzip biographisch erzählt: wann und warum die Idee aufkam, Anbieter und Sucher zugleich zu denken | text-nur, **inhaltlich gefüllt** | (Modal-Body-Text, Pflege 2026-05-18) |
+| 3 | **Sage-Protokol-Geburt** — der Pivot von Plattform-Form zu Mycel-Form, Geburt dieses Repos | text-nur, **inhaltlich gefüllt** | (Modal-Body-Text, Pflege 2026-05-18) |
 | 4 | **Wissenschaftlicher Niederschlag — das englische SBKIM-Paper** | live | `docs/papers/sbkim-paper-en.html` |
 
 **Wachstums-Disziplin:** Pflege der Stationen und Bau neuer Galaxien
@@ -1592,18 +1592,22 @@ Aufteilbar in zwei Bau-Sitzungen, falls eine zu lang wird:
 
 ### Status
 
-**Realisiert PR #90 (Sonnen-Galaxie · Sage-Geschichts-Galerie)**.
-Sonnen-Karte sitzt zwischen Andock-Karte und Reading-Karte
-(`data-back-anchor="sonnen"`); Geschichts-Galerie-Screen lebt unter
-`#sonnen` und zeigt vier Stationen auf einer gemeinsamen Ellipsen-Bahn
-(`ANG_SPEED = 2π/50` s, Ellipse 30 vw × 18 vh, gleichmäßige Phasen-
-Verteilung über `STATIONS_DATA.length`) mit Eigenrotation via
-`@keyframes galaxy-spin`. Station 4 (EN-Paper, `status: 'live'`) trägt
-den `href` auf `docs/papers/sbkim-paper-en.html`; **Stationen 1–3
-(`status: 'text-only'`) warten auf Erzähl-Text per Folge-Mini-
-Pflegen** — eine pro Station, getrennt gepflegt wie bisher.
-`docs/papers/README.md` erklärt den Ordner als Heimat der
-dokumentengestützten Stationen.
+**Realisiert PR #90 (Bau) + Folge-Pflege 2026-05-18 (Stationen 1–3
+inhaltlich gefüllt)**. Sonnen-Karte sitzt zwischen Andock-Karte und
+Reading-Karte (`data-back-anchor="sonnen"`); Geschichts-Galerie-Screen
+lebt unter `#sonnen` und zeigt vier Stationen auf einer gemeinsamen
+Ellipsen-Bahn (`ANG_SPEED = 2π/50` s, Ellipse 30 vw × 18 vh,
+gleichmäßige Phasen-Verteilung über `STATIONS_DATA.length`) mit
+Eigenrotation via `@keyframes galaxy-spin`. **Alle vier Stationen
+sind inhaltlich gefüllt:** Station 1 (Namensgebung), Station 2
+(Zwei Seiten einer Medaille — biographische Quelle für Anker 9),
+Station 3 (Sage-Protokol-Geburt — Pivot Plattform → Mycel) als
+textuelle Erzählung im Modal-Body; Station 4 (EN-Paper, `status:
+'live'`) zusätzlich mit `href` auf `docs/papers/sbkim-paper-en.html`.
+Das Placeholder-Hint-Banner ist via expliziten `placeholder`-Flag
+gesteuert — neue text-only-Stationen können beim Anlegen `placeholder:
+true` setzen, gefüllte tragen den Flag nicht. `docs/papers/README.md`
+erklärt den Ordner als Heimat der dokumentengestützten Stationen.
 
 **Pflege-Disziplin Everlast GmbH:** jede Folge-Mini-Pflege, die Inhalt
 für Stationen 1–3 liefert, **prüft vor dem Commit**, dass der Text
@@ -1621,85 +1625,70 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-18 · Bau-Sitzung — Vision-Anker 10 Sonnen-Galaxie · Sage-Geschichts-Galerie
+### 2026-05-18 · Mini-Pflege — Sonnen-Galaxie Stationen 1–3 inhaltlich gefüllt
 
-**Sitzungs-Rolle:** Bau-Sitzung, headless. Branch
-`claude/bau-vision-10-sonnen-galaxie-JxoIH`. Brief
-`docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` 1:1 abgearbeitet.
+**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
+`claude/bau-vision-10-sonnen-galaxie-JxoIH` (Folge-Commits nach PR-#90-
+Merge auf derselben Branch). Klaus-Freigabe mid-Sitzung: „du entwirfst
+alles selber auf grundlage der PR mit dem Thema wurde alles vorbereitet"
+— hebt die Brief-Klausel „Keine eigenständigen Erzähl-Texte für
+Stationen 1–3" für diese Pflege explizit auf.
 
-**Kern:** Vision-Anker 10 vollständig in `index.html` eingebaut —
-alle **sieben Eingriffe** aus PULS § Anker 10 § Architektur-Skizze
-umgesetzt, additiv. Die Sonnen-Karte sitzt jetzt zwischen Andock-
-Karte und Reading-Karte; ein Klick öffnet den neuen Geschichts-
-Galerie-Screen, auf dem vier Stations-Galaxien auf einer
-gemeinsamen Ellipsen-Bahn tanzen, jede mit Eigenrotation. Station 4
-(EN-Paper) ist live mit Link auf `docs/papers/sbkim-paper-en.html`;
-Stationen 1–3 zeigen Platzhalter-Hinweis „Erzähl-Text folgt per
-Folge-Mini-Pflege" und warten auf Klaus' Erzähl-Texte.
+**Kern:** Stationen 1, 2 und 3 der Sage-Geschichts-Galerie tragen jetzt
+Erzähl-Text statt Platzhalter. Quellen für die Drafts: Hero-Claim,
+Glossar, CLAUDE.md, PULS § Anker 9 (M04-Erweiterung), PULS § Anker 10
+§ Stationen-Inventar. Tonalität bewusst Klaus' Stimme — präzise,
+ohne Imponiergehabe, keine erfundenen Daten oder Namen.
 
-**Heilige Tafel — Privatheit eingehalten:** Der Name „Everlast GmbH"
-taucht weder in Code, Kommentaren, Modal-Texten, Commit-Messages
-noch in der PR-Beschreibung auf — vor jedem Commit per Grep
-geprüft.
+- **Station 1 (SBKIM-Namensgebung):** zwei Lesarten desselben Ankers
+  („Semantisch-Empfangendes Bidirektionales KI-Matching" → „Semantisch-
+  Biologisch Koordiniertes Inter-Knoten-Mycel"), Buchstaben-für-
+  Buchstaben durchgegangen — S/I tragen durchgehend, B/K/M sind der
+  Drehpunkt zwischen technischer und biologischer Lesart.
+- **Station 2 (Zwei Seiten einer Medaille):** Anbieter↔Sucher
+  biographisch hergeleitet (Cocktails fragen nach Glaswaren,
+  Kochrezepte suchen Cocktails), `capabilities`+`needs` als doppelte
+  Spore, Verweis auf Vision-Anker 9 als formale Erweiterung.
+- **Station 3 (Sage-Protokol-Geburt):** Pivot von zentraler Plattform
+  zu Mycel-Form, „Findbarkeits-Problem ohne Verkauf der Identität" als
+  Kernerkenntnis, Umbenennung „Sage-Plattform" → „Sage-Protokol"
+  (zwei-L-Wahl im Glossar gepflegt).
 
-**Was konkret eingebaut:**
+**Heilige Tafel — Privatheit:** Pre-Commit-`grep -i everlast` clean.
+Keine Erwähnung des geschützten Namens in Code, Kommentaren, Modal-
+Texten, Commits oder PR-Beschreibung. Die Tonalität bleibt konzeptuell-
+biographisch ohne kommerziellen Kontext.
 
-- **CSS Sonnen-Karte** (`.sun-card / .sun-stage / .sun-scene /
-  .sun-corona / .sun-corona-2 / .sun-disk / .sun-spot s1/s2/s3`) +
-  vier Keyframes (`sun-corona-pulse / sun-corona-spin / sun-disk-
-  pulse / sun-spot-drift-1/2/3`). Hover halbiert alle Animations-
-  Dauern; `prefers-reduced-motion` schaltet alles ab.
-- **CSS Geschichts-Galerie-Screen** (`.sonnen-screen` mit warm-
-  dunklem Hintergrund `#1a0a08`, drei warm-goldene Nebel
-  `rgba(244,180,53,…) / rgba(255,120,40,…)` mit eigenen Drift-
-  Keyframes, `.station-galaxy` mit Status-Klassen `.text-only`
-  (dimmer) und `.live` (volle Sättigung), `.station-modal` analog
-  `.universe-modal` in warm-goldenem Ton).
-- **HTML Sonnen-Karte** mit Klaus' O-Ton in der Caption („Was macht
-  man, wenn man auf eine Antwort wartet? …"), `data-back-anchor=
-  "sonnen"`, `goScreen('sonnen', 'sonnen')` als Klick-Handler.
-- **HTML Geschichts-Galerie-Screen** (`#screen-sonnen`,
-  `#sonnen-stage`, `#sonnen-stars`-Canvas, drei `.sonnen-nebula`-
-  Schichten, `#sonnen-galaxies`-Container, Hint-Bar, `#station-
-  modal` mit Backdrop + Close-Button).
-- **JS** `STATIONS_DATA`-Array (vier Einträge wie im Brief
-  spezifiziert), `setupSonnenGalaxie()` mit einmaliger Init-
-  Schranke, Bewegungs-Mathematik `ANG_SPEED = 2π/50` s,
-  Phasen `(i / STATIONS_DATA.length) * 2π`, Ellipse 30 vw × 18 vh
-  zentriert bei 50/50; Eigenrotation läuft via vorhandenes
-  `@keyframes galaxy-spin`. `openStationModal(idx)` rendert
-  `text-only` mit Placeholder-Hint, `live` mit „Original-Dokument
-  öffnen →"-Link auf `href`. `closeStationModal()` + Esc-Listener.
-- **SCREENS-Array** um `'sonnen'` erweitert; `goScreen()` ruft
-  `setupSonnenGalaxie()` auf; `applyHashScreen()` mappt
-  `#sonnen` auf Zurück-Anker `'sonnen'`.
-- **`docs/papers/README.md`** angelegt — Ordner-Zweck, Verweis auf
-  Vision-Anker 10, Wachstums-Disziplin (text-only-Stationen
-  brauchen den Ordner nicht; nur dokumentengestützte hier rein),
-  Wiederholung der Privatheits-Klausel.
+**Was technisch zusätzlich angepasst wurde:**
+
+- `openStationModal()` jetzt 1:1 wie `openUniverseModal()`:
+  `|`-Splitting für Absätze, `**fett**`/`*kursiv*`/`` `code` ``-
+  Markdown, deutsche „Anführung" → kursiv. Stationen können jetzt
+  mehrere Absätze tragen.
+- **Placeholder-Hint-Logik umgestellt:** statt `status === 'text-only'`
+  prüft die Funktion jetzt einen expliziten `s.placeholder`-Flag.
+  Stationen 1–3 tragen ihn nicht mehr (gefüllt); zukünftige neue
+  text-only-Stationen können `placeholder: true` setzen, bis Klaus
+  Inhalt liefert.
 
 **Was NICHT angefasst:** Modul-Code in `src/modules/`, INTERFACES.md,
-Komponenten-Karten, `.blackhole-card`, Observatorium-Screen,
-`status.json`. Vision-Anker 10 § Status auf „Realisiert" umgestellt.
-`update_puls_pie.py` NICHT aufgerufen (kein status.json-Eingriff).
+Komponenten-Karten, `.blackhole-card`, Observatorium-Screen, Optik
+der Sonnen-Karte, Bewegungs-Mathematik. `status.json` weiterhin
+unverändert (optional `historie[]`-Feld bleibt offen).
 
-**Manueller Sichttest:** ungeprüft headless — Klaus prüft im
-Browser (Desktop + Tablet), ob (a) die Sonnen-Karte sichtbar ist
-und Hover stärker pulsiert, (b) der Geschichts-Galerie-Screen lädt
-und die vier Galaxien synchron auf der Ellipse tanzen, (c) Klick
-auf eine Stations-Galaxie das richtige Modal öffnet (Station 4
-mit EN-Paper-Link, Stationen 1–3 mit Platzhalter-Hint), (d) Esc /
-Backdrop das Modal schließen, (e) „← Zurück zur Sage" auf die
-Übersicht springt und zur Sonnen-Karte scrollt.
+**Manueller Sichttest:** ungeprüft headless — Klaus prüft im Browser
+auf `localhost:8000/#sonnen` bzw. nach GitHub-Pages-Deploy auf
+`lausiklauskn-png.github.io/Sage-Protokol/#sonnen`, ob jede der
+Stationen 1–3 beim Klick einen mehrteiligen Erzähl-Text statt des
+Placeholder-Hints zeigt. Station 4 unverändert mit Paper-Link.
 
-**Nächster sinnvoller Schritt:** Klaus liefert den ersten Stations-
-Erzähl-Text (Reihenfolge nach seiner Wahl — Namensgebung, Medaille
-oder Geburt); eine Mini-Pflege trägt ihn in den `summary`-Feldwert
-der jeweiligen `STATIONS_DATA`-Zeile ein und entfernt den
-Platzhalter-Hint (kleine Verzweigung in `openStationModal` oder
-expliziter `placeholder: false`-Flag — Folge-Pflege entscheidet).
+**Nächster sinnvoller Schritt:** Inhaltliche Schärfung der Texte
+durch Klaus (falls Drafts zu lang/zu kurz/im Ton daneben sind);
+optionale Erweiterung der Galerie um eine fünfte Station (Bahn-
+Ellipse skaliert via `360°/n` automatisch); optionale `status.json`
+um `historie[]` für maschinenlesbare Stations-Liste.
 
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_bau-vision-10-sonnen-galaxie.md](sessions/archiv/2026-05-18_bau-vision-10-sonnen-galaxie.md).
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_pflege-sonnen-stationen-erzaehl-texte.md](sessions/archiv/2026-05-18_pflege-sonnen-stationen-erzaehl-texte.md).
 
 ---
 
@@ -2542,6 +2531,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-18 | Bau-Sitzung · Vision-Anker 10 Sonnen-Galaxie · Sage-Geschichts-Galerie (PR #90 — alle sieben Eingriffe aus PULS § Anker 10 § Architektur-Skizze additiv in `index.html` umgesetzt: CSS Sonnen-Karte mit Korona/Disk/12-Sommersprossen, CSS Geschichts-Galerie-Screen mit `#02020c`-BG und warm-goldenen Nebeln, HTML Sonnen-Karte vor `.card.reading`, HTML `#screen-sonnen` nach Observatorium, `SCREENS`-Array, `goScreen()` + `applyHashScreen()`, JS-Block mit `STATIONS_DATA` + `setupSonnenGalaxie()` 1:1 wie Observatorium für Stars/Maus/Komet-Schweif/Wake-Boost; Optik-Korrekturen mid-PR Klaus eingearbeitet — Kern verschwommen, 12 wabernde Sommersprossen statt 3 großer Flecken, dunkler statt brauner Hintergrund, Ring dreht sich nicht mehr sondern pulst nur bei Hover; `docs/papers/README.md` angelegt; Privatheits-Klausel eingehalten) | [→ Archiv](sessions/archiv/2026-05-18_bau-vision-10-sonnen-galaxie.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Sonnen-Galaxie als zehnter Anker (Geschichts-Galerie · PR #88 — Anker 10 in PULS § Vision-Anker eingefügt, mid-Pflege re-gerahmt von „Papers-Bibliothek" auf „Sage-Geschichts-Galerie"; heilige Privatheits-Klausel „Everlast GmbH NICHT erwähnen"; `docs/papers/sbkim-paper-en.html` als dokumentengestützte Station 4 eingecheckt; Brief für Bau-Sitzung in `docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` abgelegt und auf Geschichts-Galerie umgeschrieben; CSS-Probelauf testweise eingefügt und disziplin-konform zurückgerollt) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-10-sonnen-galaxie.md) |
 | 2026-05-18 | Mini-Pflege · PULS-Auslagerung (8 ältere Sitzungs-Einträge aus dem Body in den Archiv-Index ausgelagert; Doppelung Body↔Index beseitigt; PULS 3256 → 2337 Zeilen netto −919; Konvention pro Sitzung wieder angewandt; reine Doku-Pflege, kein Modul-Code, kein `update_puls_pie.py`-Aufruf) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-puls-auslagerung.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Mini-Browser (Tauri-App) als achter Anker (PR #85 — eigener achter Anker für die dedizierte Desktop-App; Konzept Tauri-Stack ~10-30 MB, eigene IndexedDB im App-Daten-Verzeichnis, Tray-Icon-Modus für Hintergrund-Empfang, Doppelklick-Installer .msi/.dmg/.AppImage, Auto-Update via Tauri-Updater; Verbindungen zu V2-Pfad-3 / V4 Königin-Hintergrund / V5 Backup-Datei / V6 Identitäts-Wechsler im Tray / V7 gleiche Modul-13-Bridge; Abgrenzung zu V7 Extension; Desktop-only — Mobile/DeX außen vor; PR-#84-Sitzungs-Eintrag dort ins Archiv ausgelagert) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md) |
