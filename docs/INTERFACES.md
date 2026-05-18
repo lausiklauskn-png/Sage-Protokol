@@ -1387,6 +1387,102 @@ Geprüft: 2026-05-14 (Spec-Sitzung 09)
 
 ---
 
+### Modul: 15_membran
+Status: schablone  (Stub, Backlog-Membran, kein JS-Modul in Erst-Stufe —
+                   Spec ausstehend bis KI-Browser-Markt stabilisiert oder
+                   konkreter App-zu-App-Wunsch eines Endknoten-Betreibers.)
+Datei:  docs/components/15_membran.md (Karte; `src/modules/15_membran.js`
+        existiert noch nicht)
+
+Bietet (geplant, nicht implementiert — Spec-Sitzung 15 entscheidet die
+finale Form):
+
+  Vier Sub-Bereiche unter einer Membran-Metapher (Außenhülle zwischen
+  PWA-Zelle und Browser-Umgebung):
+
+  Sub (a) — Read-API für KI-Browser-Agenten (Stufe 1, Pflicht):
+    window.SbkimMembrane.read() → Promise<{
+      protocolVersion, nodeId, domain, sporeUrl,
+      siblings: [{ nodeIdHash, since, status }],  // ANONYMISIERT
+      storage:  { quotaWarningLevel, storagePersisted }
+    }>
+    Streng lesend, kein Seiteneffekt, keine Auslöser.
+
+  Sub (b) — App-zu-App-Brücke via postMessage (Stufe 2, Pflicht):
+    window.postMessage({
+      type:    "sbkim/membrane/v1",
+      op:      "sporeRef" | "query" | "hint",     // KEIN "handshake"
+      fromOrigin: <string>,
+      nonce:   <random>,
+      payload: <op-spezifisch>
+    }, peerOrigin /* aus Allowlist */)
+    Origin-Allowlist im Andocker hartkodiert; nonce-Pflicht; Replay-
+    Schutz; Cross-Origin same-Browser.
+
+  Sub (c) — Capability-Handshake / Membran-Token (Stufe 3, später):
+    MembraneCapability = {
+      audience: <agent-id | origin-pattern>,
+      scope:    "read" | "hint",                  // KEIN "write" in Stufe 3
+      expiresAt: <timestamp>,
+      nonce:    <random>,
+      signature: Ed25519(<canonical-payload>)     // durch eigene Spore signiert
+    }
+    Signatur-Pfad nutzt Modul 02 (canonical JSON + Ed25519); finale
+    Form Spec-Vorbehalt.
+
+  Sub (d) — Backup-Datei als manueller App-Transport (nur Verweis):
+    Existiert bereits in Modul 02 (Bau 02.X): exportBackup(password) /
+    importBackup(blob, password, options?) mit PBKDF2-SHA256 600 000 +
+    AES-GCM-256. Karte 15 dokumentiert nur — kein neuer Bau in 15.
+
+Nutzt-von (geplant):
+  KI-Browser-Agenten (Anthropic Browser Use, OpenAI Operator, Comet,
+  Dia, Arc-Nachfolger) · Endknoten-Schwester-Apps auf anderen Origins
+  desselben Browsers (Mein-Rezeptbuch ↔ Mein-Mixarium) · Endknoten-
+  Benutzer mit Backup-Datei-Wunsch.
+
+Abhängigkeiten (geplant):
+  Modul 02 (Spore-Signatur für Sub (c)-Capability-Token) ·
+  Modul 01 (LESERECHT auf sbkim_spore + sbkim_siblings — KEIN Schreiben
+  in Stufe 1) ·
+  Modul 00 (Spiegelung quotaWarningLevel + storagePersisted im
+  read()-Snapshot).
+  KEIN neuer Storage-Store in Stufe 1; Stufe 2 entscheidet ggf. einen
+  sbkim_membrane_inbox-Store für hint-Leads.
+
+Tabus (verbindlich, gelten auch ohne Spec):
+  - NIEMALS sbkim_keys lesen (auch nicht gehasht). Privater Schlüssel
+    verlässt die Zelle nie unverschlüsselt — Sub (d) Backup-Sluse ist
+    die einzige Ausnahme und nur mit PBKDF2+AES-GCM.
+  - NIEMALS nodeId der Geschwister im Klartext liefern. Sub (a) gibt
+    nur nodeIdHash = base64url(sha256(nodeId)) heraus.
+  - NIEMALS schreiben in Sub (a). read() ist async-pur.
+  - KEIN op:"handshake" in Sub (b). Wer Anastomose will, geht durch
+    Modul 05 (HTTP oder BroadcastChannel-Fallback).
+  - Origin-Allowlist ist STATISCH im Andocker konfiguriert, nicht über
+    die Membran selbst änderbar.
+  - Nonce-Pflicht in Sub (b) und Sub (c) — kein Replay-Schutz, keine
+    Brücke.
+  - Empfangsmodus-Prinzip bleibt: Membran initiiert nichts, sie
+    antwortet nur. Kein Crawler, keine Pulsation, keine Eigenanfragen.
+
+Hook-Punkte (nur Verweis, nicht implementiert):
+  Modul 10 (Reputation) auf Capability-Token-Aussteller (Sub (c)) ·
+  Modul 11 (Rate-Limit) auf eingehende postMessage-Calls pro Origin
+  (Sub (b)) ·
+  Modul 12 (Blocklist) auf Origin-Ebene (Sub (b)).
+
+Risiken (für Spec-Sitzung 15 zu schließen):
+  Origin-Spoofing · Datenexfiltration via KI-Browser-Agent ·
+  Agent-Replay (Token-Reuse) · Konsens-Bruch (Agent macht hint im
+  Hintergrund) · Allowlist-Drift bei PWA-Update · Sluse-Phishing
+  (Sub (d), heute schon mitigiert) · PWA-Suffix vs. Origin-Allowlist-
+  Kollision.
+
+Geprüft: 2026-05-18 (Hauptsitzung 15-Membran-Stub)
+
+---
+
 ## 2. Datenformate (Querschnitt)
 
 ### Spore-JSON

@@ -20,8 +20,8 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-17 (14 Module)
-  "🟫 Schablone" : 4
+  title Modulstand 2026-05-18 (15 Module)
+  "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
   "🟦 Code-Stub" : 7
@@ -107,6 +107,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
+| 15 membran | Stub (Membran-Backlog) | — | — | Außenhülle zwischen PWA-Zelle und Browser-Umgebung — vier Sub-Bereiche (a Read-API für KI-Browser-Agenten ✅ Pflicht / b postMessage-Brücke Rezeptbuch↔Mixarium mit Origin-Allowlist ✅ Pflicht / c signiertes Capability-Token ⏳ später / d Backup-Datei-Sluse 📄 nur Verweis auf Bau 02.X). Auslöser: Anthropic Browser Use / OpenAI Operator / Comet / Dia werden Markt-reif + Wunsch nach App-zu-App-Kommunikation ohne Server. Spec ausstehend bis KI-Browser real verfügbar ODER konkreter App-zu-App-Wunsch eines Endknoten-Betreibers. Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-18** (Karten 4/13/14 ziehen `membranBacklog[]` parallel zu `schutzBacklog[]` und `diffusionBacklog[]`) |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -540,6 +541,49 @@ parallel zu `schutzBacklog[]` (proaktiv vs. reaktiv); `scoreModel.
 maxScoreNote` bleibt unangetastet (Backlog zählt nicht zum maxScore).
 Das Pie-Skript `scripts/update_puls_pie.py` zählt beide Backlog-
 Kategorien jetzt mit.
+
+### Membran-Backlog (aus Hauptsitzung 15-Membran-Stub, 2026-05-18)
+
+Schutz, Diffusion und Membran sind drei verschiedene Backlog-Kategorien.
+Schutz (10/11/12) ist **reaktiv** — wehrt Schaden ab, wenn Apoptose
+und Match-Filter allein nicht mehr reichen. Diffusion (14) ist
+**proaktiv nach innen** — beschleunigt Wachstum durch konsensuelle
+Empfehlung beim Handshake. Membran (15) ist **proaktiv nach außen** —
+regelt die Außenhülle zwischen PWA-Zelle und Browser-Umgebung:
+KI-Browser-Agenten (Anthropic Browser Use, OpenAI Operator, Comet,
+Dia, Arc-Nachfolger) und Cross-Origin-App-zu-App-Brücken im selben
+Browser ohne Server-Hop.
+
+- `docs/components/15_membran.md` — Außenhülle des Knotens mit vier
+  Sub-Bereichen: (a) Read-API für In-Browser-Agenten (lesend, keine
+  Keys, `nodeIdHash` statt `nodeId` für Geschwister), (b) App-zu-App-
+  Brücke via `postMessage` mit strikter Origin-Allowlist
+  (`type:"sbkim/membrane/v1"`, `op:"sporeRef"|"query"|"hint"`, **kein**
+  `handshake`), (c) signiertes Capability-Token analog Modul 02-Ed25519
+  (später), (d) Backup-Datei als manueller App-Transport — existiert
+  bereits in Modul 02 Bau 02.X, Karte 15 verweist nur.
+
+Auswahl-Stufen verbindlich (a) + (b) Pflicht, (c) später, (d) nur
+dokumentiert. Empfangsmodus-Prinzip bleibt absolut: Membran initiiert
+nichts, sie hat nur Rezeptoren und Kanäle, kein `op:"handshake"` in
+Sub (b), kein `scope:"write"` in Sub (c) Stufe 3.
+
+Modul 15 wird gezogen, sobald **mindestens zwei** der folgenden
+Bedingungen erfüllt sind (höhere Schwelle als 14, weil Membran-Bau
+neue Angriffsfläche eröffnet):
+
+- KI-Browser real verfügbar (Anthropic Browser Use SDK oder OpenAI
+  Operator öffentlich mit dokumentiertem JS-Bridge-Mechanismus)
+- App-zu-App-Wunsch konkret (Klaus oder Drittnutzer äußern Bedürfnis
+  nach Cross-Origin-Konversation ohne Server)
+- Dritter Endknoten ausserhalb `github.io` will sich andocken
+
+`status.json` führt Modul 15 als eigenes Feld `membranBacklog[]`
+parallel zu `schutzBacklog[]` und `diffusionBacklog[]`; `scoreModel.
+maxScoreNote` präzisiert „Schutz-Backlog (10-12), Diffusion-Backlog (14)
+und Membran-Backlog (15) zählen nicht mit". Das Pie-Skript
+`scripts/update_puls_pie.py` zählt alle drei Backlog-Kategorien jetzt
+mit (15 Module / 5 Schablonen seit dieser Sitzung).
 
 ---
 
@@ -2275,6 +2319,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-18 | Hauptsitzung · Modul 15 Membran — Backlog-Stub angelegt (KI-Browser-Schnittstelle + App-zu-App-Brücke; vier Sub-Bereiche a/b Pflicht, c später, d nur Verweis; status.json `membranBacklog[]`, scripts/update_puls_pie.py mit-zählend, PULS-Schnellüberblick + neue Sektion „Membran-Backlog", CLAUDE.md-Modul-Tabelle erweitert + Karte 14 nachgeholt, INTERFACES.md Block nach Modul 09, Sage-Page Karten 4/13/14 + FALLBACK_STATUS; Vokabular „Cells" als Mycel-Anker = Zellmembran) | [→ Archiv](sessions/archiv/2026-05-18_haupt-15-membran-stub.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Mini-Browser (Tauri-App) als achter Anker (PR #85 — eigener achter Anker für die dedizierte Desktop-App; Konzept Tauri-Stack ~10-30 MB, eigene IndexedDB im App-Daten-Verzeichnis, Tray-Icon-Modus für Hintergrund-Empfang, Doppelklick-Installer .msi/.dmg/.AppImage, Auto-Update via Tauri-Updater; Verbindungen zu V2-Pfad-3 / V4 Königin-Hintergrund / V5 Backup-Datei / V6 Identitäts-Wechsler im Tray / V7 gleiche Modul-13-Bridge; Abgrenzung zu V7 Extension; Desktop-only — Mobile/DeX außen vor; PR-#84-Sitzungs-Eintrag dort ins Archiv ausgelagert) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Extension („Lampe in der Toolbar") + Mini-Browser-Konkretisierung Anker 2 Pfad 3 (PR #84 — siebter Vision-Anker; Manifest V3, Modul-13-Bridge, Plattform-Tabelle Desktop ja / Mobile nein, drei gleichwertige Onboarding-Pfade; Mini-Browser-Konkretisierung später per Folge-Pflege als eigener Anker 8 vertieft) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md) |
 | 2026-05-17 | Spec · Modul 05 BroadcastChannel-Bridge als same-origin Fallback (additiver Transport additiv zum HTTP-Pfad; `handshake(...)` um optionalen `options.transport`-Parameter erweitert mit Default `"auto"`; Wrapper-Envelope mit `replyChannelName` aus nonce; `BroadcastChannel('sbkim')` als gemeinsamer Channel pro Origin; `toNodeId` Pflicht im Channel-Pfad; Receiver-Tab muss offen sein, kein Wake-Lock; E1–E7-Entscheidungstabelle mit Begründungen; HandshakeRequest/Response-Schema unverändert; `PROTOCOL_VERSION` bleibt `"0.1"`; KEIN Code, KEIN Eingriff in Karte 09 — Bau-Sitzung folgt) | [→ Archiv](sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md) |

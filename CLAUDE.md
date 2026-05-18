@@ -118,7 +118,7 @@ ungemergten Branches lebten.
   Siehe `sbkim_paper.pdf` und `docs/components/*` — der Knoten ist
   Empfangsmodus mit Antwortrecht.
 
-## Die zehn Module + Schutz-Backlog 10-12
+## Die zehn Module + Schutz-Backlog 10-12 + Proaktiv-Backlog 14 + 15
 
 | # | Datei | Status (siehe PULS.md für Details) |
 |---|---|---|
@@ -135,6 +135,8 @@ ungemergten Branches lebten.
 | 10 | `docs/components/10_reputation.md` | Schutz-Backlog · Stub, Priorität niedrig |
 | 11 | `docs/components/11_rate_limit.md` | Schutz-Backlog · Stub, Priorität niedrig |
 | 12 | `docs/components/12_blocklist.md` | Schutz-Backlog · Stub, Priorität niedrig |
+| 14 | `docs/components/14_diffusion.md` | Diffusion-Backlog · Stub, Priorität niedrig |
+| 15 | `docs/components/15_membran.md` | Membran-Backlog · Stub, Priorität niedrig |
 
 Modul 00 (Doku-Fenster) ist die "5-Klick versteckte Funktion" in den
 Suchleisten der Endknoten-PWAs. Modul 09 beschreibt, wie ein fertiges Modul
@@ -145,6 +147,13 @@ Blocklist) — sie werden erst gebaut, wenn das Netz groß genug ist, dass
 Apoptose und Match-Filter allein nicht mehr reichen. Stubs liegen schon, damit
 keine Sitzung sie übersieht. Sichtbar gemacht in der Eigenschutz-Karte (Karte
 13) der Sage-Page.
+
+Karten 14 + 15 sind proaktive Backlog-Karten — **Diffusion** (14) arbeitet
+nach innen (konsensuelle Empfehlung im Handshake, Wuchs durch Empfehlung),
+**Membran** (15) arbeitet nach außen (Außenhülle zur Browser-Umgebung:
+KI-Browser-Agenten und App-zu-App-Brücken im selben Browser ohne Server).
+Stubs liegen schon, damit keine Sitzung sie übersieht. Beide werden in der
+Sage-Page Karten 4 / 13 / 14 parallel zum Schutz-Backlog gerendert.
 
 ## Wenn du blockiert bist
 
