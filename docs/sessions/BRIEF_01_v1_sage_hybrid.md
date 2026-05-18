@@ -213,13 +213,26 @@ Pflicht am Ende deiner Sitzung:
    Brief-01-Eintrag nötig sind. Brief 02 erbt die PROTOCOL_VERSION-
    Disziplin (bleibt 0.1, additiv).
 
-3. „Vorgeschlagene nächste Schritte"-Block in der Chat-Antwort am
+3. **Kaskaden-Konvention 6 (Brief-Auslieferungs-Regel — Pflicht in
+   jeder Folge-Sitzung):** Gib BRIEF_02_plattform_matrix.md zusätzlich
+   zur Datei-Anlage am Sitzungs-Ende AUCH als kopierbaren
+   Codeblock direkt in der Chat-Antwort aus. Klaus startet die
+   Folge-Sitzung per Copy-Paste aus dem Chat-Tab; eine reine Datei-
+   Ablage zwingt ihn zum Datei-Öffnen-Umweg. Der Codeblock im Chat
+   ist identisch zum Datei-Inhalt (kein Auszug, keine
+   Zusammenfassung — der vollständige erster-Prompt-taugliche Brief).
+   Diese Regel propagiert: dein BRIEF_02 muss seinerseits dieselbe
+   Pflicht für die Brief-03-Sitzung formulieren, und so weiter bis
+   BRIEF_99_SAMMELSPEC_ABSCHLUSS.
+
+4. „Vorgeschlagene nächste Schritte"-Block in der Chat-Antwort am
    Sitzungs-Ende (CLAUDE.md § Pflicht 5): verweise als ersten
-   Schritt auf BRIEF_02 als Auslöser der nächsten Sitzung; zweiter
-   Schritt als alternative Auslöser-Option (z.B. PR mergen + Sage-
-   Page-Refactor schon vorab planen — nur falls Klaus die Kaskade
-   pausieren will). Reihenfolge-Hinweis: Brief 02 setzt diesen PR
-   #<nummer> als gemerged voraus.
+   Schritt auf BRIEF_02 als Auslöser der nächsten Sitzung — mit
+   Hinweis „Brief 02 steht weiter unten in dieser Chat-Antwort als
+   Codeblock". Zweiter Schritt als alternative Auslöser-Option
+   (z.B. PR mergen + Sage-Page-Refactor schon vorab planen — nur
+   falls Klaus die Kaskade pausieren will). Reihenfolge-Hinweis:
+   Brief 02 setzt diesen PR #<nummer> als gemerged voraus.
 
 Wenn du blockierst:
 

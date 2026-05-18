@@ -1683,6 +1683,16 @@ merge-fähig.
    eigener Strang DANN; der Brief der eigenen Sitzung nennt das
    explizit, wenn Vorgänger-Korrekturen wahrscheinlich werden.
 
+6. **Brief-Auslieferung doppelt — Datei UND kopierbarer Chat-
+   Codeblock.** Jede Folge-Sitzung legt ihren Folge-Brief
+   (`BRIEF_<NN+1>_<NAME>.md`) als Datei im Repo AB UND gibt ihn am
+   Sitzungs-Ende AUCH als kopierbaren Codeblock direkt in der Chat-
+   Antwort aus (Klaus-Regel 2026-05-18 nach Meta-Pflege-Merge PR
+   #93). Klaus startet die Folge-Sitzung per Copy-Paste aus dem
+   Chat-Tab; reine Datei-Ablage zwingt zum Datei-Öffnen-Umweg.
+   Der Codeblock im Chat ist identisch zum Datei-Inhalt — kein
+   Auszug, keine Zusammenfassung.
+
 **PROTOCOL_VERSION-Disziplin der Kaskade:** Bleibt `"0.1"`, solange
 alle Strang-Erweiterungen ADDITIV sind und alte Sporen weiterhin
 gültig bleiben. Erst der Strang, der ein altes Feld zur Pflicht
