@@ -1592,7 +1592,7 @@ Aufteilbar in zwei Bau-Sitzungen, falls eine zu lang wird:
 
 ### Status
 
-**Realisiert PR #BAU-10 (Sonnen-Galaxie · Sage-Geschichts-Galerie)**.
+**Realisiert PR #90 (Sonnen-Galaxie · Sage-Geschichts-Galerie)**.
 Sonnen-Karte sitzt zwischen Andock-Karte und Reading-Karte
 (`data-back-anchor="sonnen"`); Geschichts-Galerie-Screen lebt unter
 `#sonnen` und zeigt vier Stationen auf einer gemeinsamen Ellipsen-Bahn
