@@ -644,6 +644,9 @@ scheitert vermutlich an Schritt 3 (Service-Worker) oder Schritt 5
    > (Pfad 1, browserintern, ~5-8 Min), GitHub-Generator (Pfad 2,
    > eigene Pages-URL, ~10-15 Min), Mini-Browser (Pfad 3, Desktop-
    > App, ~2 Min) — Karte 09 zeigt alle drei, Interessent wählt selbst.
+   > **Plattform-Architektur, Stack-Trade-offs, Verbindung zu V4/V5/V7
+   > vertieft als eigener Vision-Anker 8** (Folge-Pflege 2026-05-18,
+   > diese Notiz hält nur die Pfad-Optik fest).
 
 **Verhältnis zu Modul 10/11/12:** Sobald SBKIM-Distribution für
 Nicht-Klaus-Kreise relevant wird, werden die Schutz-Backlog-
@@ -1074,9 +1077,150 @@ Beide können denselben Modul-13-Status-Bridge nutzen.
 ### Status
 
 **Reif für Spec-Diskussion nach V1** (Sage als Hybrid-Knoten) und
-nach einer Konsolidierungsphase der Marathon-Resultate. Sieben
-Vision-Anker stehen jetzt parallel im Repo — V1 bleibt Klaus'
-nächste Spec-Wahl, alle anderen reifen im Hintergrund.
+nach einer Konsolidierungsphase der Marathon-Resultate. Komplementär
+zu Anker 8 (Mini-Browser): Extension bedient Browser-Nutzer,
+Mini-Browser bedient dedizierte Knoten — beide nutzen denselben
+Modul-13-Bridge.
+
+### 2026-05-18 · Eigener Mini-Browser — Tauri-App als dedizierter Knoten
+
+**Eingetragen:** Mini-Pflege „Vision-Anker Mini-Browser" 2026-05-18,
+Folge-Pflege am selben Tag (nach PR #84 Anker 7). Klaus' parallele
+zweite Browser-Identifikations-Schicht-Vision — bei PR #84 zunächst
+als Notiz an Anker 2 Pfad 3 angehängt, hier per Klaus' Folge-
+Entscheidung **als eigenständiger achter Vision-Anker vertieft**.
+
+Klaus' Bild: „eigener kleiner Browser, von dem aus die Kommunikation
+startet — muss nicht groß oder komplex sein. Läuft im Hintergrund,
+eigene IndexedDB, unabhängig von Chrome."
+
+### Konzept
+
+Standalone-Desktop-App, die nur die Sage-PWA hostet:
+
+- **Eigene IndexedDB** im App-Daten-Verzeichnis (`%APPDATA%/sbkim-node`
+  / `~/Library/Application Support/sbkim-node` / `~/.config/sbkim-node`)
+  → kein Browser-Reklamations-Risiko mehr (Lehre 1 + Spore-Verlust
+  2026-05-17 strukturell gelöst).
+- **Tray-Icon-Modus** für Hintergrund-Empfang — Browser-Tab nicht nötig,
+  Knoten bleibt empfangsbereit, solange der Computer läuft.
+- **Doppelklick-Installer** (`.msi` Windows, `.dmg` macOS, `.AppImage`
+  Linux) — Onboarding ~2 Minuten von Link bis empfangsbereit.
+- **Klein, fokussiert** — keine Tabs, keine Adressleiste, kein
+  Browser-Chrome-Drumherum. Hostet `index.html` + Sage-PWA, sonst nichts.
+
+### Antwort kompakt: Tauri ist der richtige Stack
+
+**Tauri** (Rust-Backend + System-WebView) liefert das, was Klaus will,
+ohne „eigenen Browser von Grund auf bauen" (Chromium-Code ~30 Mio
+Zeilen, unrealistisch):
+
+- ~10-30 MB Binaries pro Plattform (vs. Electron ~80-200 MB, weil
+  Electron Chromium komplett mitliefert; Tauri nutzt das OS-eigene
+  WebView2 / WKWebView / WebKitGTK)
+- Cross-Platform aus einer Rust-Codebase
+- Native System-Tray-Integration eingebaut
+- Auto-Update-Mechanismus (signed releases)
+- Aktive Community, MIT-Lizenz, Mozilla-finanziert mitentwickelt
+
+### Plattform-Tabelle
+
+| Plattform | Mini-Browser möglich? |
+|---|---|
+| Windows Desktop | ✓ (`.msi` via Tauri, nutzt WebView2) |
+| macOS Desktop | ✓ (`.dmg` via Tauri, nutzt WKWebView) |
+| Linux Desktop | ✓ (`.AppImage` via Tauri, nutzt WebKitGTK) |
+| Android — Klaus' Setup | ❌ (Tauri-Mobile-Support unreif; Capacitor wäre separate Initiative) |
+| iOS | ❌ (siehe Android) |
+| DeX-Chrome — Klaus' Setup | ❌ (kein Desktop-OS im Tauri-Sinn) |
+
+### Architektur-Skizze
+
+- **Tauri-App-Shell:** Rust-Backend, hostet `index.html` der Sage-PWA
+  lokal aus dem App-Bundle (kein Web-Server nötig — `tauri://localhost`
+  als interne Origin)
+- **IndexedDB:** WebView nutzt eigene IndexedDB-Instanz im App-Daten-
+  Verzeichnis, isoliert vom System-Browser
+- **Tray-Icon:** identische Lampen-Zustände wie Anker 7 Extension
+  (aus / lebt / andockt / etabliert / fehler) — Wiederverwendung der
+  Icon-Assets
+- **Tray-Menü:** „Sage öffnen" / „Backup exportieren" / „Identität
+  wechseln" (V6-Verbindung) / „Knoten beenden"
+- **Modul-13-Bridge:** dieselbe wie für die Extension — PWA sendet
+  Status-Updates an Tauri-Backend via `window.__TAURI__.event.emit()`,
+  Backend aktualisiert Tray-Icon und Menü-Status
+- **System-Autostart:** Toggle in Tray-Menü („mit System starten ✓") —
+  Tauri-Auto-Launch-Plugin
+- **Update:** Tauri-Updater prüft GitHub-Releases-Endpoint, signiert
+  mit Tauri-Private-Key, User klickt „Update installieren"
+
+### Verbindung zu anderen Vision-Ankern
+
+- **V2 (Niedrigeres Onboarding):** Mini-Browser IST Pfad 3 der drei
+  gleichwertigen Onboarding-Pfade (Wizard / GitHub-Generator / Mini-
+  Browser). V2 Pfad 3 ist die **Onboarding-Optik** („Wie kommt jemand
+  rein?"), Anker 8 ist die **Plattform-Architektur** dahinter
+  („Welcher Stack, welche Trade-offs, welche Bau-Schritte?").
+- **V4 (Königin-Relay):** Mini-Browser ist der **wahrscheinlichste
+  Hintergrund-Empfänger** für Königin-Mailbox-Polling. Browser-Tab kann
+  geschlossen sein, Tauri-App läuft im Tray weiter, holt Nachrichten
+  im 5-Minuten-Takt.
+- **V5 (Identitäts-Container):** Mini-Browser ist der **wahrscheinlichste
+  Träger** für File-System-basierte Backup-Verschlüsselung — Tauri
+  hat Datei-System-Zugriff via Rust-Backend, kann verschlüsselte
+  Identitäts-Container in eine `.sbkim`-Datei exportieren.
+- **V6 (Multi-Identität):** Tray-Menü-Eintrag „Identität wechseln"
+  zeigt Persona-Dropdown direkt am System-Tray.
+- **V7 (Extension):** komplementär, nicht konkurrierend (siehe nächster
+  Abschnitt).
+
+### Abgrenzung zu Anker 7 (Extension)
+
+| Aspekt | Extension (V7) | Mini-Browser (V8) |
+|---|---|---|
+| Zielgruppe | Nutzer mit existierendem Browser | Nutzer wollen dedizierten Knoten |
+| Installation | Browser-Store, 1 Klick | Doppelklick-Installer |
+| Identitäts-Speicher | Browser-IndexedDB (Reklamations-Risiko bleibt) | App-Daten-Verzeichnis (kein Risiko) |
+| Hintergrund-Empfang | Nein (Tab muss offen sein) | Ja (Tray-Modus) |
+| Mobile | Eingeschränkt (Kiwi-Workaround Android) | Nein (Desktop-only) |
+| Bau-Aufwand | ~15-25 h MVP | ~30-50 h MVP |
+| Stack-Lernen | Manifest V3 (JS, bekannt) | Tauri/Rust (neu für Klaus) |
+
+Beide können denselben **Modul-13-Status-Bridge** nutzen — derselbe
+PWA-Code spricht beide an, je nach Umgebung (Browser-Extension oder
+Tauri-Window).
+
+### Abgrenzung zu Anker 2 Pfad 3 Tauri-Notiz
+
+Anker 2 Pfad 3 hält den Mini-Browser als **einen von drei gleichwertigen
+Onboarding-Pfaden** fest (Wahl-Optik für Karte 09). Anker 8 ist die
+**eigenständige Plattform-Vision** dahinter — Architektur, Verbindungen
+zu V4/V5/V6/V7, eigene Spec-Reife. Beide bleiben parallel im Repo;
+Pfad-3-Notiz verweist auf Anker 8 für die Tiefe.
+
+### Größenordnung
+
+- Spec ~5-8 Stunden (mehr als Extension, weil Plattform-Stack neu)
+- Bau Tauri-App MVP ~30-50 Stunden (Rust-Lernkurve eingerechnet)
+- Cross-Platform-Build (Windows + macOS + Linux) ~10-15 Stunden
+  zusätzlich (CI-Setup, plattformspezifische Eigenheiten)
+- **Code-Signing:**
+  - Apple Developer Program ($99/Jahr) — sonst macOS Gatekeeper-Warnung
+  - Windows Code-Signing-Zertifikat (~$200-400/Jahr) — optional, sonst
+    SmartScreen-Warnung beim ersten Start
+  - Linux: keine Signatur nötig
+- **Distribution:** GitHub Releases (kostenlos) oder eigene Site;
+  Tauri-Updater zeigt auf JSON-Manifest mit signierten Binaries
+
+### Status
+
+**Reif für Spec-Diskussion**, parallel zu V7 (Extension). Höhere
+Bau-Hürde als Extension (Rust-Stack neu, Code-Signing-Kosten), aber
+**langfristig stabilster Endknoten-Pfad** — strukturelle Antwort auf
+Lehre 1, Spore-Verlust 2026-05-17 und Anker 4 Königin-Frage „wer
+empfängt, wenn der Tab zu ist". Acht Vision-Anker stehen jetzt
+parallel im Repo — V1 bleibt Klaus' nächste Spec-Wahl, alle anderen
+reifen im Hintergrund.
 
 ---
 
@@ -1089,73 +1233,80 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-18 · Mini-Pflege — Vision-Anker Extension („Lampe in der Toolbar") + Mini-Browser-Konkretisierung
+### 2026-05-18 · Mini-Pflege — Vision-Anker Mini-Browser (Tauri-App) als achter Anker
 
 **Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/pflege-vision-anker-extension`. Klaus' zweite Vision-
-Pflege desselben Tages (parallel zu Anker 6 Multi-Identität,
-PR #83). Zwei verwandte Browser-Identifikations-Schicht-Ideen,
-die Klaus heute morgen geäußert hat — nach AskUserQuestion-
-Klärung als **ein** neuer Anker + **eine** Notiz-Konkretisierung
-festgehalten.
+`claude/pflege-vision-anker-mini-browser`. Folge-Pflege am selben
+Tag nach PR #84 (Anker 7 Extension). Klaus hat seine ursprüngliche
+Entscheidung „Mini-Browser bleibt Notiz an Anker 2 Pfad 3" am selben
+Nachmittag revidiert: Mini-Browser bekommt **eigenen achten Vision-
+Anker**, parallel zur Extension.
 
-**Kern:** Anker 7 hält Klaus' „Lampe-in-der-Toolbar"-Vision fest
-(Browser-Extension mit Status-Lampe + Aktivitäts-Lampe). Klaus'
-parallele Mini-Browser-Vision (eigener Browser mit eigener
-IndexedDB, Hintergrund-Empfang, unabhängig von Chrome) wird
-**nicht** zu eigenem Anker 8 — sie konkretisiert Anker 2 Pfad 3
-(„Eigener Browser-Wrapper als Fern-Vision") mit Tauri-Tech-Stack
-und Onboarding-Bild „1 Klick Installer → Tray-Icon →
-empfangsbereit, ~2 Minuten".
-
-**Drei gleichwertige Onboarding-Pfade** (Klaus' Entscheidung
-2026-05-18, per AskUserQuestion): Karte 09 / Sage-Page zeigt
-Wizard (Pfad 1, ~5-8 Min), GitHub-Generator (Pfad 2, ~10-15 Min),
-Mini-Browser (Pfad 3, ~2 Min) als gleichwertige Optionen.
-Interessent wählt selbst nach Setup und Anspruch.
+**Kern:** Anker 8 hebt Klaus' Mini-Browser-Vision aus der Pfad-3-
+Notiz auf eigene Anker-Ebene — Plattform-Architektur (Tauri-Stack),
+Verbindungen zu V4 (Königin-Hintergrund-Empfang), V5 (Backup-Datei-
+System-Zugriff), V6 (Identitäts-Wechsler im Tray-Menü), V7 (gleiche
+Modul-13-Bridge). Abgrenzung zur Pfad-3-Notiz: Pfad-3 ist Onboarding-
+Optik, Anker 8 ist die Plattform-Vision dahinter.
 
 **Was eingetragen:**
 
-- **PULS.md § Vision-Anker** um siebten Anker erweitert:
-  „SBKIM-Browser-Extension („Lampe in der Toolbar")" mit
-  Konzept (zwei Lampen), Plattform-Tabelle (Desktop ja, Mobile
-  überwiegend nein), Architektur-Skizze (Manifest V3, Modul-13-
-  Bridge, Popup), Verbindung zu V2/V4/V5/V6, Abgrenzung zu
-  Mini-Browser, Status.
-- **PULS.md § Vision-Anker Anker 2 Pfad 3** Notiz-Anhang
-  „2026-05-18 · Konkretisierung Mini-Browser-Pfad (Tauri)" mit
-  Onboarding-Zeit-Vergleich der drei Pfade.
+- **PULS.md § Vision-Anker** um achten Anker erweitert: „Eigener
+  Mini-Browser — Tauri-App als dedizierter Knoten" mit Konzept,
+  Plattform-Tabelle, Architektur-Skizze, Verbindungen zu V2/V4/V5/V6/V7,
+  Abgrenzung zu V7, Größenordnung mit Code-Signing-Kosten, Status.
+- **PULS.md § Vision-Anker Anker 7 Schluss-Satz** ergänzt um Verweis
+  „komplementär zu Anker 8".
+- **PULS.md § Vision-Anker Anker 2 Pfad 3 Tauri-Notiz** ergänzt um
+  Verweis „Plattform-Architektur vertieft als Anker 8".
 - **PULS.md § Sitzungs-Einträge** neuer Top-Eintrag (dieser).
-- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md`.
+- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md`.
 
-**Sieben Vision-Anker jetzt im Repo:**
+**Acht Vision-Anker jetzt im Repo:**
 
 1. V1 — Sage als Hybrid-Knoten (Klaus' nächste Spec-Wahl)
 2. V2-Ausbau — Niedrigeres Onboarding (drei gleichwertige Pfade,
-   Pfad 3 mit Tauri-Konkretisierung 2026-05-18)
+   Pfad 3 mit Tauri-Notiz, vertieft in Anker 8)
 3. Universum-Vision (umgesetzt PR #79 + #80)
 4. Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister
 5. Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser
 6. Multi-Identität in der IndexedDB
-7. **SBKIM-Browser-Extension** („Lampe in der Toolbar") — neuer Anker
+7. SBKIM-Browser-Extension („Lampe in der Toolbar") — PR #84
+8. **Eigener Mini-Browser** (Tauri-App als dedizierter Knoten) — neu
 
 **Was NICHT angefasst:** Modul-Code, INTERFACES.md, Modul-Karten,
 Sage-Page, `status.json`. Vision lebt rein in PULS, kein Code-
 Eingriff. `update_puls_pie.py` NICHT aufgerufen.
 
-**Plattform-Ehrlichkeit:** Extension ≠ Universal-Lösung. Mobile-
-Chrome (Klaus' DeX-/Tablet-Setup) unterstützt keine Extensions.
-Mini-Browser (Tauri) löst das Mobile-Problem auch nicht (Desktop-
-only). Für Tablet-Empfang bleibt entweder PWA-Tab offen + Push-
-API + Königin-Relay (Anker 4), oder Capacitor-App als separate
-Mobile-Initiative.
+**Plattform-Ehrlichkeit:** Mini-Browser ist Desktop-only (Tauri
+unterstützt Windows/macOS/Linux). Klaus' DeX-/Tablet-Setup bleibt
+außen vor — wie bei Anker 7. Mobile-Lösung wäre eine separate
+Capacitor-Initiative, nicht im Anker 8 enthalten.
+
+**PULS-Zeilen-Status:** Anker 8 + Sitzungs-Eintrag brachten PULS
+auf 3160 Zeilen, über der 3000er-Schutz-Klausel. Per Konvention
+„neue Sitzungen verschieben den dann jeweils vorletzten in den
+Archiv-Index" wurde der **PR-#84-Sitzungs-Eintrag** (Anker 7
+Extension) ins Archiv-Index ausgelagert, sein Übergabeprotokoll
+bleibt unverändert. PULS jetzt **3093 Zeilen** — weiterhin knapp
+über der Schwelle. Vorbestehendes Problem (vor dieser Sitzung
+2953), nicht durch diese Mini-Pflege verursacht. **Empfehlung:**
+nächste Mini-Pflege lagert mehrere ältere Sitzungs-Einträge in
+einem Rutsch ins Archiv aus, oder eine dezidierte Auslager-Sitzung
+zwischendrin.
+
+**Sieben-vs-Acht-Wechsel:** PR #84 trug noch „Sieben Vision-Anker"
+mit der Begründung, Mini-Browser bleibe Notiz. Diese Mini-Pflege
+revidiert das per Klaus' Folge-Entscheidung — beide stehen jetzt
+als gleichberechtigte Anker da, weil sie sich architektonisch klar
+unterscheiden (Browser-Erweiterung vs. dedizierte Desktop-App).
 
 **Nächster sinnvoller Schritt:** Klaus entscheidet — Spec-Sitzung V1
 (Brief liegt fertig in gestrigen Chat) oder Storage-Persist-Schutz-
-Mini-Pflege (`navigator.storage.persist()`) oder weitere Vision-
-Anker-Pflege bei neuer Schlaf-Klarheit.
+Mini-Pflege (`navigator.storage.persist()`) oder Pause der Vision-
+Anker-Welle (acht Anker reichen für eine Weile).
 
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md).
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md).
 
 ### 2026-05-18 · Mini-Pflege — Vision-Anker Multi-Identität in der IndexedDB
 
@@ -2893,6 +3044,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-18 | Mini-Pflege · Vision-Anker Extension („Lampe in der Toolbar") + Mini-Browser-Konkretisierung Anker 2 Pfad 3 (PR #84 — siebter Vision-Anker; Manifest V3, Modul-13-Bridge, Plattform-Tabelle Desktop ja / Mobile nein, drei gleichwertige Onboarding-Pfade; Mini-Browser-Konkretisierung später per Folge-Pflege als eigener Anker 8 vertieft) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md) |
 | 2026-05-17 | Spec · Modul 05 BroadcastChannel-Bridge als same-origin Fallback (additiver Transport additiv zum HTTP-Pfad; `handshake(...)` um optionalen `options.transport`-Parameter erweitert mit Default `"auto"`; Wrapper-Envelope mit `replyChannelName` aus nonce; `BroadcastChannel('sbkim')` als gemeinsamer Channel pro Origin; `toNodeId` Pflicht im Channel-Pfad; Receiver-Tab muss offen sein, kein Wake-Lock; E1–E7-Entscheidungstabelle mit Begründungen; HandshakeRequest/Response-Schema unverändert; `PROTOCOL_VERSION` bleibt `"0.1"`; KEIN Code, KEIN Eingriff in Karte 09 — Bau-Sitzung folgt) | [→ Archiv](sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md) |
 | 2026-05-17 | Pflege · Modul 05/SW Scope-Fix `isOwnEndpoint` (`sbkim-sw.js` `isPathSuffix` durch scope-bewusste `isOwnEndpoint` ersetzt — leitet erwarteten Pfad aus `self.registration.scope` ab, strikte Gleichheit; behebt falsch-positiven Cross-Scope-Intercept; Variante 3c bewusst nicht abgedeckt; Same-origin cross-PWA via SW-Bridge bleibt konzeptuell unmöglich, Folge-Spec Modul 05 BroadcastChannel-Bridge empfohlen; Klaus muss `sbkim-sw.js` mit Cache-Bust in beide Endknoten nachziehen) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fix.md) |
 | 2026-05-17 | Test-Erkenntnis · A/B-Test PR #70 + Architekturfund `isPathSuffix` scope-unbewusst (kein PR; Befund: PR #70's `includeUncontrolled:false`-Fix korrekt für sein Szenario, aber irrelevant für same-origin cross-PWA, weil Sender-SW vor Receiver-SW intercepted; voller Cache-Eskalations-Trace inkl. File-Rename + chrome://serviceworker-internals/) | [→ Archiv](sessions/archiv/2026-05-17_pflege-sw-isPathSuffix-scope-fund.md) |
