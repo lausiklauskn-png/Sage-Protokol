@@ -213,13 +213,37 @@ Pflicht am Ende deiner Sitzung:
    Brief-01-Eintrag nötig sind. Brief 02 erbt die PROTOCOL_VERSION-
    Disziplin (bleibt 0.1, additiv).
 
-3. „Vorgeschlagene nächste Schritte"-Block in der Chat-Antwort am
-   Sitzungs-Ende (CLAUDE.md § Pflicht 5): verweise als ersten
-   Schritt auf BRIEF_02 als Auslöser der nächsten Sitzung; zweiter
-   Schritt als alternative Auslöser-Option (z.B. PR mergen + Sage-
-   Page-Refactor schon vorab planen — nur falls Klaus die Kaskade
-   pausieren will). Reihenfolge-Hinweis: Brief 02 setzt diesen PR
-   #<nummer> als gemerged voraus.
+3. **Kaskaden-Konvention 6 (Auslöser-Befehl im Chat, nicht Brief-
+   Volltext):** Gib am Sitzungs-Ende einen kurzen, kopierbaren
+   Auslöser-Befehl (3–5 Zeilen) als Codeblock direkt in der Chat-
+   Antwort aus. Der Auslöser nennt die Brief-Datei, den Branch und
+   den Kaskaden-Kontext; die Folge-Sitzung liest den Brief selbst
+   aus der Datei. Wortlaut (anpassen an deinen Brief-Namen +
+   Branch):
+
+   ```
+   Lies docs/sessions/BRIEF_02_plattform_matrix.md vollständig und
+   führe den Brief als nächste Sitzung in der V1-Sammelspec-Kaskade
+   aus. Konventionen siehe PULS § Sitzungs-Einträge „Meta-Pflege —
+   V1-Sammelspec als Brief-Kaskade sequenziert" (sechs heilige
+   Tafeln). Branch laut Brief (claude/spec-v1-plattform-matrix oder
+   ähnlich, vom main aus anlegen).
+   ```
+
+   Brief-Volltext im Chat ausdrücklich NICHT gewünscht — Datei im
+   Repo ist die einzige Wahrheits-Quelle des Briefes, der Auslöser-
+   Befehl ist nur der Sprung-Anker. Die Regel propagiert: dein
+   BRIEF_02 muss in seinem „Pflicht am Ende" denselben Auslöser-
+   Mechanismus für die Brief-03-Sitzung formulieren, und so weiter
+   bis BRIEF_99_SAMMELSPEC_ABSCHLUSS.
+
+4. „Vorgeschlagene nächste Schritte"-Block in der Chat-Antwort am
+   Sitzungs-Ende (CLAUDE.md § Pflicht 5): erster Schritt verweist
+   auf den Auslöser-Befehl aus Punkt 3 als Start-Trigger der
+   nächsten Sitzung. Zweiter Schritt als alternative Auslöser-Option
+   (z.B. PR mergen + Sage-Page-Refactor schon vorab planen — nur
+   falls Klaus die Kaskade pausieren will). Reihenfolge-Hinweis:
+   Brief 02 setzt diesen PR #<nummer> als gemerged voraus.
 
 Wenn du blockierst:
 
