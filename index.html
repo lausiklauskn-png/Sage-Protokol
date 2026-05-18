@@ -401,47 +401,67 @@
   .name-glossar-fuss { color: var(--muted); font-size: 0.92rem; margin: 0.8rem 0 1.6rem; }
 
   /* === Sonnen-Galaxie · Sage-Geschichts-Galerie === */
-  .sun-card { background: radial-gradient(ellipse at 30% 50%, #2a1208 0%, #1a0a08 45%, #0a0504 100%); border: 1px solid var(--line-strong); overflow: hidden; isolation: isolate; }
+  .sun-card { background: radial-gradient(ellipse at 30% 50%, #0a0a18 0%, #06061a 45%, #02020c 100%); border: 1px solid var(--line-strong); overflow: hidden; isolation: isolate; }
   .sun-card .card-tag { background: rgba(255,220,150,0.08); color: #f0d8a8; border: 1px solid rgba(244,180,53,0.22); }
   .sun-stage { display: grid; grid-template-columns: minmax(220px, 320px) 1fr; gap: 2rem; align-items: center; text-decoration: none; color: inherit; padding: 0.5rem 0; cursor: pointer; }
   .sun-scene { position: relative; width: 100%; aspect-ratio: 1; max-width: 280px; margin: 0 auto; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
   .sun-stage:hover .sun-scene { transform: scale(1.04); }
-  .sun-corona { position: absolute; inset: -8%; border-radius: 50%; background: radial-gradient(circle at center, rgba(255,230,170,0.95) 0%, rgba(255,180,80,0.65) 22%, rgba(255,120,40,0.35) 45%, rgba(200,80,20,0.15) 70%, transparent 100%); filter: blur(8px); opacity: 0.88; animation: sun-corona-pulse 6s ease-in-out infinite; }
-  .sun-corona-2 { position: absolute; inset: -2%; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255,200,100,0) 0%, rgba(255,220,140,0.55) 12%, rgba(255,150,60,0.18) 28%, rgba(255,230,150,0.45) 50%, rgba(255,160,60,0.18) 72%, rgba(255,210,130,0.55) 90%, rgba(255,200,100,0) 100%); filter: blur(6px); mix-blend-mode: screen; opacity: 0.65; animation: sun-corona-spin 28s linear infinite; }
-  .sun-disk { position: absolute; inset: 20%; border-radius: 50%; background: radial-gradient(circle at 40% 38%, #6a3214 0%, #4a1f0a 30%, #2a0e04 65%, #15060a 100%); box-shadow: 0 0 36px 4px rgba(255,160,80,0.45), inset 0 0 24px 4px rgba(120,40,10,0.5); animation: sun-disk-pulse 7s ease-in-out infinite; }
-  .sun-spot { position: absolute; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #1a0604 0%, #0a0302 60%, transparent 100%); filter: blur(1.5px); opacity: 0.78; }
-  .sun-spot.s1 { top: 33%; left: 30%; width: 18%; height: 18%; animation: sun-spot-drift-1 11s ease-in-out infinite; }
-  .sun-spot.s2 { top: 48%; left: 55%; width: 12%; height: 12%; animation: sun-spot-drift-2 9s ease-in-out infinite; }
-  .sun-spot.s3 { top: 38%; left: 50%; width: 9%;  height: 9%;  animation: sun-spot-drift-3 13s ease-in-out infinite; }
+  /* Äußere weiche Korona (radial, pulsierend) */
+  .sun-corona { position: absolute; inset: -8%; border-radius: 50%; background: radial-gradient(circle at center, rgba(255,230,170,0.95) 0%, rgba(255,180,80,0.65) 22%, rgba(255,120,40,0.35) 45%, rgba(200,80,20,0.15) 70%, transparent 100%); filter: blur(10px); opacity: 0.88; animation: sun-corona-pulse 6s ease-in-out infinite; }
+  /* Konischer Ring — NICHT drehend; pulst nur bei Hover (1:1 wie bh-chrome-Hover-Funktion: Animation läuft erst beim Mouseover) */
+  .sun-corona-2 { position: absolute; inset: -2%; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255,200,100,0) 0%, rgba(255,220,140,0.55) 12%, rgba(255,150,60,0.18) 28%, rgba(255,230,150,0.45) 50%, rgba(255,160,60,0.18) 72%, rgba(255,210,130,0.55) 90%, rgba(255,200,100,0) 100%); filter: blur(7px); mix-blend-mode: screen; opacity: 0.55; }
+  /* Sonnenkern — verschwommen wie Korona, kein Vollton */
+  .sun-disk { position: absolute; inset: 16%; border-radius: 50%; background: radial-gradient(circle at 50% 48%, rgba(255,235,180,0.85) 0%, rgba(255,180,90,0.62) 28%, rgba(220,110,50,0.40) 55%, rgba(120,55,25,0.18) 80%, transparent 100%); filter: blur(11px); opacity: 0.95; animation: sun-disk-pulse 7s ease-in-out infinite; }
+  /* Sonnenflecken — viele kleine, unterschiedliche Größen, organisch wabernde Ränder (Sommersprossen-Optik) */
+  .sun-spot { position: absolute; background: radial-gradient(ellipse at 42% 40%, rgba(20,10,5,0.88) 0%, rgba(12,6,3,0.70) 55%, rgba(8,4,2,0.32) 80%, transparent 100%); filter: blur(1.4px); opacity: 0.85; mix-blend-mode: multiply; will-change: border-radius, transform; }
+  .sun-spot.s1  { top: 30%; left: 36%; width: 6%; height: 6%; border-radius: 62% 42% 55% 47% / 58% 50% 60% 42%; animation: sun-spot-wabble-a 8s  ease-in-out infinite; }
+  .sun-spot.s2  { top: 36%; left: 50%; width: 4%; height: 4%; border-radius: 50% 60% 45% 55% / 60% 45% 55% 50%; animation: sun-spot-wabble-b 11s ease-in-out infinite -2s; }
+  .sun-spot.s3  { top: 42%; left: 38%; width: 5%; height: 5%; border-radius: 58% 48% 50% 52% / 45% 55% 50% 60%; animation: sun-spot-wabble-c 9s  ease-in-out infinite -4s; }
+  .sun-spot.s4  { top: 48%; left: 58%; width: 7%; height: 7%; border-radius: 48% 58% 56% 44% / 56% 44% 60% 48%; animation: sun-spot-wabble-a 10s ease-in-out infinite -1s; }
+  .sun-spot.s5  { top: 54%; left: 44%; width: 4%; height: 4%; border-radius: 56% 46% 60% 44% / 48% 58% 42% 56%; animation: sun-spot-wabble-b 12s ease-in-out infinite -5s; }
+  .sun-spot.s6  { top: 38%; left: 62%; width: 5%; height: 5%; border-radius: 52% 50% 46% 58% / 56% 44% 58% 46%; animation: sun-spot-wabble-c 8s  ease-in-out infinite -3s; }
+  .sun-spot.s7  { top: 60%; left: 52%; width: 6%; height: 6%; border-radius: 60% 44% 52% 50% / 48% 56% 44% 60%; animation: sun-spot-wabble-a 11s ease-in-out infinite -6s; }
+  .sun-spot.s8  { top: 32%; left: 56%; width: 3%; height: 3%; border-radius: 56% 48% 58% 46% / 52% 56% 46% 58%; animation: sun-spot-wabble-b 9s  ease-in-out infinite -1s; }
+  .sun-spot.s9  { top: 50%; left: 32%; width: 4%; height: 4%; border-radius: 46% 58% 50% 56% / 60% 46% 56% 44%; animation: sun-spot-wabble-c 10s ease-in-out infinite -7s; }
+  .sun-spot.s10 { top: 58%; left: 66%; width: 5%; height: 5%; border-radius: 54% 50% 48% 56% / 46% 60% 48% 54%; animation: sun-spot-wabble-a 12s ease-in-out infinite -4s; }
+  .sun-spot.s11 { top: 65%; left: 40%; width: 4%; height: 4%; border-radius: 50% 56% 58% 44% / 56% 48% 54% 46%; animation: sun-spot-wabble-b 8s  ease-in-out infinite -3s; }
+  .sun-spot.s12 { top: 44%; left: 48%; width: 6%; height: 6%; border-radius: 58% 46% 54% 50% / 50% 58% 44% 56%; animation: sun-spot-wabble-c 11s ease-in-out infinite -2s; }
+  /* Hover-Verstärkung — Korona pulst schneller, Ring beginnt überhaupt erst zu pulsieren (1:1 wie bh-chrome-Hover-Mechanik) */
   .sun-stage:hover .sun-corona   { animation-duration: 3s; opacity: 1; }
-  .sun-stage:hover .sun-corona-2 { animation-duration: 14s; }
-  .sun-stage:hover .sun-disk     { animation-duration: 3.5s; filter: brightness(1.15); }
-  .sun-stage:hover .sun-spot.s1  { animation-duration: 5.5s; }
-  .sun-stage:hover .sun-spot.s2  { animation-duration: 4.5s; }
-  .sun-stage:hover .sun-spot.s3  { animation-duration: 6.5s; }
+  .sun-stage:hover .sun-corona-2 { animation: sun-corona-2-pulse 2.6s ease-in-out infinite; }
+  .sun-stage:hover .sun-disk     { animation-duration: 3.5s; filter: blur(13px) brightness(1.12); }
+  .sun-stage:hover .sun-spot     { animation-duration: 4.5s; }
   @keyframes sun-corona-pulse {
-    0%, 100% { transform: scale(1);    opacity: 0.85; filter: blur(8px); }
-    50%      { transform: scale(1.08); opacity: 0.96; filter: blur(10px); }
+    0%, 100% { transform: scale(1);    opacity: 0.85; filter: blur(10px); }
+    50%      { transform: scale(1.08); opacity: 0.96; filter: blur(12px); }
   }
-  @keyframes sun-corona-spin { to { transform: rotate(360deg); } }
+  @keyframes sun-corona-2-pulse {
+    0%, 100% { transform: scale(1);    opacity: 0.55; filter: blur(7px); }
+    50%      { transform: scale(1.07); opacity: 0.92; filter: blur(9px); }
+  }
   @keyframes sun-disk-pulse {
-    0%, 100% { box-shadow: 0 0 36px 4px rgba(255,160,80,0.45), inset 0 0 24px 4px rgba(120,40,10,0.5); }
-    50%      { box-shadow: 0 0 52px 8px rgba(255,200,110,0.62), inset 0 0 32px 6px rgba(160,60,20,0.6); }
+    0%, 100% { transform: scale(1);    opacity: 0.92; filter: blur(11px); }
+    50%      { transform: scale(1.05); opacity: 1;    filter: blur(13px); }
   }
-  @keyframes sun-spot-drift-1 {
-    0%, 100% { transform: translate(0,0) scale(1);    opacity: 0.78; }
-    50%      { transform: translate(8%, -6%) scale(1.15); opacity: 0.90; }
+  @keyframes sun-spot-wabble-a {
+    0%   { border-radius: 62% 42% 55% 47% / 58% 50% 60% 42%; transform: scale(1)    rotate(0deg); }
+    33%  { border-radius: 48% 58% 42% 60% / 55% 42% 60% 48%; transform: scale(1.06) rotate(5deg); }
+    66%  { border-radius: 56% 46% 60% 44% / 48% 60% 42% 55%; transform: scale(0.94) rotate(-4deg); }
+    100% { border-radius: 62% 42% 55% 47% / 58% 50% 60% 42%; transform: scale(1)    rotate(0deg); }
   }
-  @keyframes sun-spot-drift-2 {
-    0%, 100% { transform: translate(0,0) scale(0.9);  opacity: 0.70; }
-    50%      { transform: translate(-7%, 5%) scale(1.10); opacity: 0.85; }
+  @keyframes sun-spot-wabble-b {
+    0%   { border-radius: 50% 60% 45% 55% / 60% 45% 55% 50%; transform: scale(1)    rotate(0deg)  translate(0,0); }
+    50%  { border-radius: 60% 45% 55% 50% / 45% 55% 50% 60%; transform: scale(1.08) rotate(-6deg) translate(1%,-1%); }
+    100% { border-radius: 50% 60% 45% 55% / 60% 45% 55% 50%; transform: scale(1)    rotate(0deg)  translate(0,0); }
   }
-  @keyframes sun-spot-drift-3 {
-    0%, 100% { transform: translate(0,0) scale(1);    opacity: 0.72; }
-    50%      { transform: translate(5%, 7%) scale(0.70); opacity: 0.88; }
+  @keyframes sun-spot-wabble-c {
+    0%   { border-radius: 58% 48% 50% 52% / 45% 55% 50% 60%; transform: scale(1)    rotate(0deg)  translate(0,0); }
+    40%  { border-radius: 45% 55% 60% 48% / 50% 48% 55% 60%; transform: scale(1.05) rotate(8deg)  translate(-1%,1%); }
+    80%  { border-radius: 52% 46% 58% 50% / 55% 50% 48% 55%; transform: scale(0.96) rotate(-5deg) translate(1%,0); }
+    100% { border-radius: 58% 48% 50% 52% / 45% 55% 50% 60%; transform: scale(1)    rotate(0deg)  translate(0,0); }
   }
   .sun-caption h3 { margin: 0 0 0.6rem; font-size: 1.3rem; color: #fff; letter-spacing: -0.005em; }
-  .sun-caption p { margin: 0 0 0.7rem; line-height: 1.65; color: #e8d8c0; max-width: 56ch; }
+  .sun-caption p { margin: 0 0 0.7rem; line-height: 1.65; color: #d8d8e8; max-width: 56ch; }
   .sun-caption .sun-hint { display: inline-block; padding: 0.32rem 0.7rem; background: linear-gradient(90deg, rgba(255,180,80,0.18) 0%, rgba(244,180,53,0.14) 100%); border: 1px solid rgba(244,180,53,0.4); border-radius: 999px; color: var(--gold); font-size: 0.92rem; font-weight: 500; margin-top: 0.3rem; }
   .sun-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-sm); }
   @media (max-width: 780px) {
@@ -594,10 +614,15 @@
   }
 
   /* === Sage-Geschichts-Galerie-Screen === */
-  .sonnen-screen { position: relative; min-height: 100vh; padding: 0; background: #1a0a08; color: #fdf2e0; overflow: hidden; }
-  .sonnen-back { position: fixed; top: 1.2rem; left: 1.2rem; z-index: 90; background: rgba(20,8,4,0.65); border: 1px solid rgba(255,200,140,0.25); color: #fdf2e0; padding: 0.55rem 1rem; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .2s, border-color .2s; }
-  .sonnen-back:hover { background: rgba(40,18,8,0.85); border-color: rgba(255,200,140,0.5); }
+  .sonnen-screen { position: relative; min-height: 100vh; padding: 0; background: #02020c; color: #fdf2e0; overflow: hidden; }
+  .sonnen-back { position: fixed; top: 1.2rem; left: 1.2rem; z-index: 90; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,200,140,0.25); color: #fdf2e0; padding: 0.55rem 1rem; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .2s, border-color .2s; }
+  .sonnen-back:hover { background: rgba(0,0,0,0.85); border-color: rgba(255,200,140,0.5); }
   .sonnen-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; }
+  /* Cursor unsichtbar — Komet-Schweif ist der einzige Zeiger (1:1 vom Observatorium übernommen) */
+  .sonnen-screen, .sonnen-screen *, .sonnen-stage, .sonnen-stage *, .station-galaxy { cursor: none !important; }
+  .sonnen-back, .sonnen-back * { cursor: pointer !important; }
+  .station-modal, .station-modal *, .station-modal-close, .station-modal-link { cursor: auto !important; }
+  .station-modal button, .station-modal-link { cursor: pointer !important; }
   .sonnen-stars { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
   .sonnen-nebula { position: absolute; pointer-events: none; mix-blend-mode: screen; opacity: 0.55; filter: blur(40px); will-change: transform; }
@@ -615,12 +640,12 @@
   .station-galaxy.medium .galaxy-body { animation-duration: 32s; }
   .station-galaxy.large  .galaxy-body { animation-duration: 40s; }
   .station-galaxy .galaxy-label { position: absolute; top: 100%; left: 50%; transform: translate(-50%, 0.6rem); white-space: nowrap; font-size: 0.78rem; letter-spacing: 0.04em; color: #fff; text-shadow: 0 0 12px rgba(0,0,0,0.95); opacity: 0; filter: blur(10px); transition: opacity 0.6s ease, filter 0.7s ease, transform 0.4s ease; pointer-events: none; padding: 0.25rem 0.65rem; background: rgba(20,8,4,0.7); border: 1px solid rgba(244,180,53,0.3); border-radius: 999px; backdrop-filter: blur(4px); }
-  .station-galaxy:hover, .station-galaxy:focus { filter: brightness(1.25) saturate(1.2) drop-shadow(0 0 18px rgba(255,200,110,0.5)); transform: scale(1.12); }
-  .station-galaxy:hover .galaxy-label, .station-galaxy:focus .galaxy-label { opacity: 1; filter: blur(0); transform: translate(-50%, 0.85rem); }
+  .station-galaxy:hover, .station-galaxy:focus, .station-galaxy.awake { filter: brightness(1.25) saturate(1.2) drop-shadow(0 0 18px rgba(244,180,53,0.45)); transform: scale(1.12); }
+  .station-galaxy:hover .galaxy-label, .station-galaxy:focus .galaxy-label, .station-galaxy.awake .galaxy-label { opacity: 1; filter: blur(0); transform: translate(-50%, 0.85rem); }
 
   /* Status-Klassen — text-only sichtbar gedämpft („Geschichte folgt"), live volle Sättigung */
   .station-galaxy.text-only { opacity: 0.72; filter: saturate(0.65); }
-  .station-galaxy.text-only:hover, .station-galaxy.text-only:focus { opacity: 0.96; filter: saturate(0.95) brightness(1.18) drop-shadow(0 0 14px rgba(255,200,110,0.4)); }
+  .station-galaxy.text-only:hover, .station-galaxy.text-only:focus, .station-galaxy.text-only.awake { opacity: 0.96; filter: saturate(0.95) brightness(1.18) drop-shadow(0 0 14px rgba(255,200,110,0.4)); }
   .station-galaxy.live { opacity: 1; filter: saturate(1.12); }
 
   .station-galaxy.small  { width: 90px;  height: 90px; }
@@ -882,6 +907,15 @@
               <div class="sun-spot s1"></div>
               <div class="sun-spot s2"></div>
               <div class="sun-spot s3"></div>
+              <div class="sun-spot s4"></div>
+              <div class="sun-spot s5"></div>
+              <div class="sun-spot s6"></div>
+              <div class="sun-spot s7"></div>
+              <div class="sun-spot s8"></div>
+              <div class="sun-spot s9"></div>
+              <div class="sun-spot s10"></div>
+              <div class="sun-spot s11"></div>
+              <div class="sun-spot s12"></div>
             </div>
             <div class="sun-caption">
               <h3>Auf welchen Spuren Sage gewachsen ist</h3>
@@ -2680,6 +2714,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   let sonnenInited = false;
   let sonnenRAF = 0;
   let sonnenStars = [];
+  let sonnenMouse = { x: -9999, y: -9999, active: false, lastMoveT: 0 };
+  let sonnenTrail = []; // Komet-Schweif: {x, y, age, speed}
   let sonnenGalaxyEls = [];
 
   function setupSonnenGalaxie() {
@@ -2701,10 +2737,11 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       el.innerHTML = '<div class="galaxy-body"></div><div class="galaxy-label">' + s.tag + ' · ' + s.title + '</div>';
       el.addEventListener('click', () => openStationModal(i));
       galaxiesEl.appendChild(el);
+      el._wakeBoost = 0;
       sonnenGalaxyEls.push(el);
     });
 
-    // 2. Canvas-Sterne erzeugen (warm-goldene Tonalität)
+    // 2. Canvas-Sterne erzeugen — Anzahl + Parameter 1:1 wie Observatorium
     function resizeCanvas() {
       canvas.width = stage.clientWidth;
       canvas.height = stage.clientHeight;
@@ -2712,7 +2749,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const STAR_COUNT = window.innerWidth < 720 ? 140 : 240;
+    const STAR_COUNT = window.innerWidth < 720 ? 180 : 320;
     sonnenStars = [];
     for (let i = 0; i < STAR_COUNT; i++) {
       sonnenStars.push({
@@ -2725,7 +2762,33 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       });
     }
 
-    // 3. Render-Loop — gemeinsame Ellipsen-Bahn, gleichmäßige Phasen-Verteilung
+    // 3. Maus-Tracking (Schweif-Glow + Komet-Schweif) — 1:1 vom Observatorium
+    function trackPointer(clientX, clientY) {
+      const rect = stage.getBoundingClientRect();
+      const nx = clientX - rect.left;
+      const ny = clientY - rect.top;
+      const last = sonnenTrail[sonnenTrail.length - 1];
+      let speed = 0;
+      if (last) {
+        const dx = nx - last.x;
+        const dy = ny - last.y;
+        speed = Math.sqrt(dx * dx + dy * dy);
+      }
+      sonnenMouse.x = nx;
+      sonnenMouse.y = ny;
+      sonnenMouse.active = true;
+      sonnenMouse.lastMoveT = performance.now();
+      sonnenTrail.push({ x: nx, y: ny, age: 0, speed: speed });
+      if (sonnenTrail.length > 220) sonnenTrail.shift();
+    }
+    stage.addEventListener('mousemove', e => trackPointer(e.clientX, e.clientY));
+    stage.addEventListener('mouseleave', () => { sonnenMouse.active = false; });
+    stage.addEventListener('touchmove', e => {
+      if (!e.touches[0]) return;
+      trackPointer(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    // 4. Render-Loop — Galaxien auf gemeinsamer Ellipsen-Bahn + Sterne + Komet-Schweif
     const ctx = canvas.getContext('2d');
     const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ANG_SPEED = (2 * Math.PI) / 50; // 50 s Umlaufzeit
@@ -2735,6 +2798,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       const vw = canvas.width;
       const vh = canvas.height;
 
+      // Galaxien-Positionen — gemeinsame Ellipsen-Bahn, gleichmäßige Phasen-Verteilung
       sonnenGalaxyEls.forEach((el, i) => {
         const phase = (i / STATIONS_DATA.length) * Math.PI * 2;
         const speed = reduced ? 0 : 1;
@@ -2744,24 +2808,103 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         const px = x01 * vw;
         const py = y01 * vh;
         el.style.transform = 'translate(' + (px - el.offsetWidth / 2) + 'px, ' + (py - el.offsetHeight / 2) + 'px)';
+
+        // Wake-Effekt bei Maus-Nähe (analog Observatorium)
+        if (sonnenMouse.active) {
+          const dx = sonnenMouse.x - px;
+          const dy = sonnenMouse.y - py;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const wakeRadius = 200;
+          const target = Math.max(0, 1 - dist / wakeRadius);
+          el._wakeBoost += (target - el._wakeBoost) * 0.12;
+          if (el._wakeBoost > 0.45) el.classList.add('awake');
+          else el.classList.remove('awake');
+        } else {
+          el._wakeBoost *= 0.95;
+          if (el._wakeBoost < 0.05) el.classList.remove('awake');
+        }
       });
 
+      // Sterne zeichnen mit Maus-Schweif-Glow (1:1 vom Observatorium)
       ctx.clearRect(0, 0, vw, vh);
+      const mx = sonnenMouse.x;
+      const my = sonnenMouse.y;
+      const trailRadius = 160;
       for (let i = 0; i < sonnenStars.length; i++) {
         const s = sonnenStars[i];
         const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * s.twinkleSpeed + s.twinklePhase));
-        const alpha = s.base * tw;
+        let alpha = s.base * tw;
+        let r = s.r;
+        if (sonnenMouse.active) {
+          const dx = s.x - mx;
+          const dy = s.y - my;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < trailRadius) {
+            const glow = Math.pow(1 - dist / trailRadius, 1.4);
+            alpha = Math.min(1, alpha + glow * 0.85);
+            r = s.r * (1 + glow * 1.6);
+          }
+        }
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,235,200,' + alpha.toFixed(3) + ')';
+        ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
         ctx.fill();
       }
+
+      // Komet-Schweif: alle Trail-Punkte altern lassen + zeichnen
+      const AGE_RATE = 0.022;
+      const newTrail = [];
+      for (let i = 0; i < sonnenTrail.length; i++) {
+        const p = sonnenTrail[i];
+        p.age += AGE_RATE;
+        if (p.age < 1) newTrail.push(p);
+      }
+      sonnenTrail = newTrail;
+
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < sonnenTrail.length; i++) {
+        const p = sonnenTrail[i];
+        const fade = Math.pow(1 - p.age, 1.8);
+        const speedBoost = Math.min(1.5, p.speed / 30);
+        const baseR = 2 + speedBoost * 3.5;
+        const r = baseR * fade;
+        if (r < 0.2) continue;
+        // Innerer Kern (warm-gold)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,230,180,' + (fade * 0.55).toFixed(3) + ')';
+        ctx.fill();
+        // Äußerer Glow (kühles Blau-Weiß)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,210,255,' + (fade * 0.18).toFixed(3) + ')';
+        ctx.fill();
+      }
+
+      // Komet-Kopf an der aktuellen Mausposition
+      const timeSinceMove = now - sonnenMouse.lastMoveT;
+      const headIntensity = sonnenMouse.active ? Math.max(0.25, 1 - timeSinceMove / 600) : 0;
+      if (headIntensity > 0.01) {
+        ctx.beginPath();
+        ctx.arc(mx, my, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,250,230,' + (headIntensity * 0.95).toFixed(3) + ')';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(mx, my, 10, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,220,170,' + (headIntensity * 0.35).toFixed(3) + ')';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(mx, my, 22, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,210,255,' + (headIntensity * 0.14).toFixed(3) + ')';
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
 
       sonnenRAF = requestAnimationFrame(frame);
     }
     sonnenRAF = requestAnimationFrame(frame);
 
-    // 4. Esc schließt Station-Modal
+    // 5. Esc schließt Station-Modal
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeStationModal();
     });
