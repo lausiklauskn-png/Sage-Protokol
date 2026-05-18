@@ -627,6 +627,24 @@ scheitert vermutlich an Schritt 3 (Service-Worker) oder Schritt 5
    Cache-Verwirrung). Sehr ambitioniert, vermutlich nur nach
    Variante 2-Reifezeit denkbar.
 
+   > **2026-05-18 · Konkretisierung Mini-Browser-Pfad:** Realisierbar
+   > mit **Tauri** (Rust + System-WebView, ~10-30 MB Binaries für
+   > Windows/macOS/Linux aus einer Codebase) — schlanker als Electron
+   > (~80-200 MB) und nicht „eigener Browser von Grund auf"
+   > (Chromium-Code ~30 Mio Zeilen, unrealistisch). Liefert: eigene
+   > IndexedDB im App-Daten-Verzeichnis (kein Browser-Reklamations-
+   > Risiko, löst Lehre 1 + Spore-Verlust 2026-05-17), Tray-Icon-Modus
+   > für Hintergrund-Empfang (Antwort auf Anker 4 Königin-Frage „wer
+   > empfängt, wenn der Tab zu ist"), Doppelklick-Installer (`.msi` /
+   > `.dmg` / `.AppImage`). **Onboarding-Bild:** 1 Klick Installer →
+   > Tray-Icon → empfangsbereit, ~2 Minuten von Link bis Knoten.
+   > **Mobile bleibt außen vor** — Tauri ist Desktop-only; für
+   > Android/iOS bräuchte es Capacitor (separate Initiative). **Drei
+   > gleichwertige Onboarding-Pfade** (Klaus 2026-05-18): Wizard
+   > (Pfad 1, browserintern, ~5-8 Min), GitHub-Generator (Pfad 2,
+   > eigene Pages-URL, ~10-15 Min), Mini-Browser (Pfad 3, Desktop-
+   > App, ~2 Min) — Karte 09 zeigt alle drei, Interessent wählt selbst.
+
 **Verhältnis zu Modul 10/11/12:** Sobald SBKIM-Distribution für
 Nicht-Klaus-Kreise relevant wird, werden die Schutz-Backlog-
 Module **akut** (Reputation, Rate-Limit, Blocklist) — heute
@@ -955,6 +973,111 @@ auf V1-Sage-Hybrid-Spec (wo sich zeigt, ob Sage mehrere Identitäten
 sinnvoll hätte) + V5-Identitäts-Container-Spec (wo Backup-Schema
 klar wird). Größenordnung: ~3-5 Stunden Spec, ~10-15 Stunden Bau.
 
+### 2026-05-18 · SBKIM-Browser-Extension — „Lampe in der Toolbar"
+
+**Eingetragen:** Mini-Pflege „Vision-Anker Extension" 2026-05-18.
+Klaus' Folge-Vision parallel zur Multi-Identität-Idee (Anker 6),
+gleicher Tag, gleicher Schlaf-Klarheit-Moment: ein **kleines Tool
+oben in der Browser-Navigationsleiste**, das den SBKIM-Status
+sichtbar macht.
+
+### Konzept
+
+Zwei Lampen am Toolbar-Icon:
+
+1. **Status-Lampe:** zeigt, dass das Protokoll lebt — Spore
+   existiert, Knoten empfangsbereit. Grün/grau (an/aus).
+2. **Aktivitäts-Lampe:** zeigt Handshake-Aktivität — gelb beim
+   Andocken, blinkt während Verbindung, grün bei established,
+   rot bei Fehler.
+
+Klaus' Bild: „kleines Tool, das jeder in seinem Browser oben in
+der Navigationsleiste installiert. Status- und Aktivitäts-Lampe
+direkt sichtbar, ohne die Sage-Page öffnen zu müssen."
+
+### Antwort kompakt: Technisch möglich — aber Mobile-Browser außen vor
+
+**Manifest V3** ist das richtige Werkzeug. Desktop-Browser
+(Chrome, Firefox, Edge, Brave, Opera, Safari) unterstützen MV3-
+Extensions vollständig. **Mobile-Browser unterstützen keine
+Extensions** — Klaus' eigenes DeX-/Tablet-Chrome-Setup bleibt
+außen vor (Workaround: Kiwi Browser auf Android, Chromium-fork
+mit Extension-Support).
+
+### Plattform-Tabelle
+
+| Plattform | Extension möglich? |
+|---|---|
+| Desktop Chrome / Edge / Brave / Opera / Firefox | ✓ |
+| Desktop Safari (macOS) | ✓ (Xcode + App Store nötig) |
+| Mobile Chrome (Android) — Klaus' Setup | ❌ |
+| DeX-Chrome — Klaus' Setup | ❌ |
+| Mobile Safari (iOS) | ✓ (eigenes Format) |
+| Mobile Firefox (Android) | (eingeschränkt) |
+| Kiwi Browser (Android) | ✓ |
+
+### Architektur-Skizze
+
+- **Manifest V3** mit `action` (Toolbar-Icon),
+  `background.service_worker`, `externally_connectable` für Sage-
+  PWA-Origin
+- **Toolbar-Icon-Varianten:** `icon-aus.png` / `icon-lebt.png` /
+  `icon-andockt.png` / `icon-etabliert.png` / `icon-fehler.png`
+- `chrome.action.setIcon()` wechselt Icon je nach SBKIM-Status
+- **Kommunikation Sage-PWA ↔ Extension** via
+  `chrome.runtime.sendMessage` (Manifest deklariert PWA-Origin als
+  `externally_connectable`)
+- **Modul 13 „Extension-Bridge"** (neu zu spezifizieren) — sendet
+  Status-Updates an Extension, wenn vorhanden; degradiert sauber,
+  wenn nicht installiert
+- **Popup HTML** für detaillierte Ansicht: Geschwister-Liste,
+  Handshake-Log, Backup-Export-Trigger, Identitäts-Wechsler
+- **Storage:** `chrome.storage.local` für UX-State (keine
+  Identitäts-Schlüssel — die bleiben in der PWA-IndexedDB; Extension
+  ist Anzeige + Steuerung, nicht Identitäts-Träger)
+
+### Verbindung zu anderen Vision-Ankern
+
+- **V2 (Niedrigeres Onboarding):** Extension ist **eine** UX-
+  Vereinfachung, ergänzt die drei gleichwertigen Pfade (Wizard /
+  GitHub-Generator / Mini-Browser) — kein Ersatz für den Andock-
+  Schritt, aber laufende Status-Sichtbarkeit
+- **V4 (Königin-Relay):** Extension zeigt Königin-Status („Königin
+  erreichbar, X Nachrichten warten")
+- **V5 (Identitäts-Container):** Backup-Export-Button im Popup,
+  Identitäts-Rucksack einen Klick weg
+- **V6 (Multi-Identität):** Identitäts-Wechsler im Popup — bewusste
+  Persona-Wahl per Mini-Dropdown am Toolbar
+
+### Abgrenzung Extension ↔ Mini-Browser (Anker 2 Pfad 3)
+
+Komplementär, nicht konkurrierend:
+
+- **Extension:** für Nutzer, die ohnehin Desktop-Chrome/Firefox
+  nutzen. Niedrige Hürde (Install in einer Minute), nutzt
+  existierenden Browser. Identität bleibt in PWA-IndexedDB
+  (Reklamations-Risiko bleibt).
+- **Mini-Browser (V2 Pfad 3):** für Nutzer, die einen dedizierten
+  Knoten wollen (immer-on, Tray-Icon, eigene IndexedDB). Löst das
+  Reklamations-Risiko, ist aber Desktop-App-Installation.
+
+Beide können denselben Modul-13-Status-Bridge nutzen.
+
+### Größenordnung
+
+- Spec ~3-5 Stunden
+- Bau Chrome-Extension ~15-25 Stunden
+- Cross-Browser-Anpassungen (Firefox/Edge/Safari) ~10-15 Stunden
+- App-Store-Distribution: Chrome Web Store ($5 einmalig), Firefox
+  AMO (gratis), Apple Developer ($99/Jahr für Safari/iOS)
+
+### Status
+
+**Reif für Spec-Diskussion nach V1** (Sage als Hybrid-Knoten) und
+nach einer Konsolidierungsphase der Marathon-Resultate. Sieben
+Vision-Anker stehen jetzt parallel im Repo — V1 bleibt Klaus'
+nächste Spec-Wahl, alle anderen reifen im Hintergrund.
+
 ---
 
 ## Sitzungs-Einträge
@@ -965,6 +1088,74 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-18 · Mini-Pflege — Vision-Anker Extension („Lampe in der Toolbar") + Mini-Browser-Konkretisierung
+
+**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
+`claude/pflege-vision-anker-extension`. Klaus' zweite Vision-
+Pflege desselben Tages (parallel zu Anker 6 Multi-Identität,
+PR #83). Zwei verwandte Browser-Identifikations-Schicht-Ideen,
+die Klaus heute morgen geäußert hat — nach AskUserQuestion-
+Klärung als **ein** neuer Anker + **eine** Notiz-Konkretisierung
+festgehalten.
+
+**Kern:** Anker 7 hält Klaus' „Lampe-in-der-Toolbar"-Vision fest
+(Browser-Extension mit Status-Lampe + Aktivitäts-Lampe). Klaus'
+parallele Mini-Browser-Vision (eigener Browser mit eigener
+IndexedDB, Hintergrund-Empfang, unabhängig von Chrome) wird
+**nicht** zu eigenem Anker 8 — sie konkretisiert Anker 2 Pfad 3
+(„Eigener Browser-Wrapper als Fern-Vision") mit Tauri-Tech-Stack
+und Onboarding-Bild „1 Klick Installer → Tray-Icon →
+empfangsbereit, ~2 Minuten".
+
+**Drei gleichwertige Onboarding-Pfade** (Klaus' Entscheidung
+2026-05-18, per AskUserQuestion): Karte 09 / Sage-Page zeigt
+Wizard (Pfad 1, ~5-8 Min), GitHub-Generator (Pfad 2, ~10-15 Min),
+Mini-Browser (Pfad 3, ~2 Min) als gleichwertige Optionen.
+Interessent wählt selbst nach Setup und Anspruch.
+
+**Was eingetragen:**
+
+- **PULS.md § Vision-Anker** um siebten Anker erweitert:
+  „SBKIM-Browser-Extension („Lampe in der Toolbar")" mit
+  Konzept (zwei Lampen), Plattform-Tabelle (Desktop ja, Mobile
+  überwiegend nein), Architektur-Skizze (Manifest V3, Modul-13-
+  Bridge, Popup), Verbindung zu V2/V4/V5/V6, Abgrenzung zu
+  Mini-Browser, Status.
+- **PULS.md § Vision-Anker Anker 2 Pfad 3** Notiz-Anhang
+  „2026-05-18 · Konkretisierung Mini-Browser-Pfad (Tauri)" mit
+  Onboarding-Zeit-Vergleich der drei Pfade.
+- **PULS.md § Sitzungs-Einträge** neuer Top-Eintrag (dieser).
+- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md`.
+
+**Sieben Vision-Anker jetzt im Repo:**
+
+1. V1 — Sage als Hybrid-Knoten (Klaus' nächste Spec-Wahl)
+2. V2-Ausbau — Niedrigeres Onboarding (drei gleichwertige Pfade,
+   Pfad 3 mit Tauri-Konkretisierung 2026-05-18)
+3. Universum-Vision (umgesetzt PR #79 + #80)
+4. Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister
+5. Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser
+6. Multi-Identität in der IndexedDB
+7. **SBKIM-Browser-Extension** („Lampe in der Toolbar") — neuer Anker
+
+**Was NICHT angefasst:** Modul-Code, INTERFACES.md, Modul-Karten,
+Sage-Page, `status.json`. Vision lebt rein in PULS, kein Code-
+Eingriff. `update_puls_pie.py` NICHT aufgerufen.
+
+**Plattform-Ehrlichkeit:** Extension ≠ Universal-Lösung. Mobile-
+Chrome (Klaus' DeX-/Tablet-Setup) unterstützt keine Extensions.
+Mini-Browser (Tauri) löst das Mobile-Problem auch nicht (Desktop-
+only). Für Tablet-Empfang bleibt entweder PWA-Tab offen + Push-
+API + Königin-Relay (Anker 4), oder Capacitor-App als separate
+Mobile-Initiative.
+
+**Nächster sinnvoller Schritt:** Klaus entscheidet — Spec-Sitzung V1
+(Brief liegt fertig in gestrigen Chat) oder Storage-Persist-Schutz-
+Mini-Pflege (`navigator.storage.persist()`) oder weitere Vision-
+Anker-Pflege bei neuer Schlaf-Klarheit.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md).
 
 ### 2026-05-18 · Mini-Pflege — Vision-Anker Multi-Identität in der IndexedDB
 
