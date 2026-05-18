@@ -1,11 +1,11 @@
 {
   "$schema": "https://sage-protokol.example/schemas/status.v1.json",
   "name": "Sage-Protokol",
-  "fullName": "Semantisch-Empfangendes Bidirektionales KI-Matching — Hub",
-  "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Kein Endknoten.",
+  "fullName": "Semantisch-Empfangendes Bidirektionales KI-Matching — Hub und Knoten zugleich",
+  "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-05-17",
+  "lastUpdated": "2026-05-18",
   "branch": "claude/semantic-agent-network-Y03Vg",
 
   "endknoten": [
@@ -32,6 +32,18 @@
       "guestCategories": ["Knabbereien", "Fingerfood"],
       "pingStatus": "live-direct",
       "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
+    },
+    {
+      "name": "Sage",
+      "domain": "Mycel-Bibliothek",
+      "integrated": false,
+      "integratedAt": null,
+      "nodeId": null,
+      "sporeUrl": "https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json",
+      "stammCategories": ["Protokoll-Doku", "Mycel-Vokabular", "Heilige Tafeln", "Karten", "INTERFACES", "ARCHITEKTUR"],
+      "guestCategories": ["Glossar-Wartung", "Schwesternetz-Beobachtungen", "Sitzungs-Briefe", "Übergabeprotokolle"],
+      "pingStatus": "pending-first-andock",
+      "url": "https://lausiklauskn-png.github.io/Sage-Protokol/"
     }
   ],
 
