@@ -1356,18 +1356,27 @@ erweitert kann auch ohne V1 als Mini-Pflege gezogen werden, falls
 Klaus das vorziehen will. Stufe B wartet auf V1 (Hybrid-Knoten als
 Auflage, Identitäts-Container für Key-Speicher).
 
-### 2026-05-18 · Sonnen-Galaxie — Papers-Bibliothek
+### 2026-05-18 · Sonnen-Galaxie — Sage-Geschichts-Galerie
 
-**Eingetragen:** Mini-Pflege „Vision-Anker Sonnen-Galaxie" 2026-05-18.
-Klaus' Bild: das Observatorium-Universum hinter dem Schwarzen Loch
-zeigt das **Wie** (Browser-Lehren als wandernde Galaxien). Ein
-**zweites** Vision-Universum oberhalb davon soll das **Worauf** zeigen
-— die wissenschaftlichen Papers, auf denen Sage-Protokol als Form
-ruht. „Das Observatorium ist auf privat gestellt; das finde ich
-hübsch, solange beide wissenschaftlichen Papers zur SBKIM-Integration
-als Grundlage angeführt werden." Heute schon eingecheckt:
-`docs/papers/sbkim-paper-en.html` (englisches SBKIM-Paper, 23 KB, sieben
-Sektionen; Klaus' Upload 2026-05-18 in dieser Pflege-Sitzung).
+**Eingetragen:** Mini-Pflege „Vision-Anker Sonnen-Galaxie" 2026-05-18,
+**mid-Pflege re-gerahmt** auf Klaus' Wunsch. Erstrahmung als
+„wissenschaftliche Papers-Bibliothek" wurde verworfen; tatsächliches
+Konzept: **Sage-Geschichts-Galerie** — Stationen der Entwicklung des
+Protokolls und seiner Namensgebung, biographisch-erzählerisch. Klaus'
+O-Ton: „eher in die Richtung was macht man, wenn man auf eine Antwort
+wartet? Man macht sich selber an die Arbeit. Die Pflege der Dokumente
+und der Bau neuer Galaxien kann getrennt von einem Automatismus
+erfolgen. So wie jetzt auch." Das eingecheckte EN-Paper
+(`docs/papers/sbkim-paper-en.html`) bleibt als **eine** Station unter
+mehreren — wissenschaftlicher Niederschlag der Reise, nicht
+Selbstzweck.
+
+**Heilige Tafel — Privatheits-Klausel:** **Die Sonnen-Galaxie erwähnt
+Everlast GmbH NICHT.** Klaus' Wunsch ausdrücklich. Stationen, die im
+realen Werdegang einen kommerziellen Kontext hatten, werden in der
+Galaxie ausschließlich in ihrer technisch-konzeptionellen Form
+erzählt. Gilt heilig auch für Folge-Mini-Pflegen, die neue Galaxien
+nachziehen.
 
 ### Konzept
 
@@ -1413,26 +1422,38 @@ geordneterer Choreographie:
   (`docs/papers/<file>.html` als Tab-Öffner mit `target="_blank"`).
   Bei `geplant`-Galaxie: keine Datei, nur Erläuterungs-Text.
 
-### Papers-Inventar (Start-Konfiguration)
+### Stationen-Inventar (Start-Konfiguration · 4 Galaxien)
 
-| Galaxie | Titel | Status | Datei |
+| Galaxie | Station | Status | Anker-Datei (sofern vorhanden) |
 |---|---|---|---|
-| 1 | SBKIM: A Protocol for Semantic Bidirectional Matching in Human and Agent Networks | live | `docs/papers/sbkim-paper-en.html` |
-| 2 | SBKIM-Paper · deutsche Fassung | draft | (Klaus lädt nach — voraussichtlich `docs/papers/sbkim-paper-de.html`) |
-| 3 | Mizel + SBKIM — Gegenüberstellung und Synergie | geplant | (noch nicht geschrieben — zusammenfassendes Paper, das beide Prinzipien gegenüberstellt: das Mizel-Mycel-Prinzip und SBKIM als semantisch bidirektionales KI-Matching, mit gemeinsamen Vorteilen und Eigen-Vorteilen) |
+| 1 | **SBKIM-Namensgebung** — woher der Name kam, was die einzelnen Buchstaben in der Reise getragen haben | text-nur, Inhalt offen | (Modal-Body-Text, Klaus liefert per Folge-Mini-Pflege) |
+| 2 | **Zwei Seiten einer Medaille** — das bidirektionale Match-Prinzip biographisch erzählt: wann und warum die Idee aufkam, Anbieter und Sucher zugleich zu denken | text-nur, Inhalt offen | (Modal-Body-Text, Klaus liefert per Folge-Mini-Pflege) |
+| 3 | **Sage-Protokol-Geburt** — der Pivot von Plattform-Form zu Mycel-Form, Geburt dieses Repos | text-nur, Inhalt offen | (Modal-Body-Text, Klaus liefert per Folge-Mini-Pflege) |
+| 4 | **Wissenschaftlicher Niederschlag — das englische SBKIM-Paper** | live | `docs/papers/sbkim-paper-en.html` |
 
-Wenn weitere Papers dazukommen, wachsen weitere Galaxien — Klaus' Bild:
-„Das wächst mit jeder publizierten Idee, nicht statisch." Die Bahn-
-Ellipse skaliert dann ihre Phasen automatisch (`360° / n` pro Galaxie).
+**Wachstums-Disziplin:** Pflege der Stationen und Bau neuer Galaxien
+laufen als **getrennte Mini-Pflegen**, nicht als Automatismus. Wie
+bisher: Klaus liefert den nächsten Inhalt, eine Mini-Pflege schreibt
+ihn ein, Bau-Sitzung rendert ihn. Wenn weitere Stationen dazukommen,
+skaliert die Bahn-Ellipse ihre Phasen automatisch (`360° / n` pro
+Galaxie). Stationen können **textuell** (nur Modal-Body) oder
+**dokumentengestützt** (mit Datei-Anker wie das EN-Paper) sein —
+beides gleichwertig in der Galaxie.
 
 ### Heute schon erledigt
 
-- **Ordner `docs/papers/`** angelegt.
+- **Ordner `docs/papers/`** angelegt (trägt das EN-Paper als
+  dokumentengestützte Station 4; weitere Stationen brauchen den
+  Ordner nicht).
 - **`docs/papers/sbkim-paper-en.html`** eingecheckt — Klaus' Upload des
   englischen SBKIM-Papers (23 KB, sieben Sektionen).
 - **CSS-Skizze für Sonnen-Karte** in dieser Sitzung kurz angetestet,
   dann **bewusst zurückgerollt** — Klaus' Disziplin „Brief schreiben,
   Bau in eigener Sitzung" hat Vorrang.
+- **Mid-Pflege Re-Framing:** Konzept von „Papers-Bibliothek" auf
+  „Geschichts-Galerie" verschoben (Folge-Commit auf PR #88). Optik
+  bleibt vollständig (Sonnen-Karte, Ellipsen-Bahn, Eigenrotation,
+  Sonnenflecken); nur die Daten und die Sprache haben sich gewandelt.
 
 ### Architektur-Skizze (für Bau-Sitzung)
 
@@ -1500,27 +1521,33 @@ Ellipse skaliert dann ihre Phasen automatisch (`360° / n` pro Galaxie).
    `h === 'papers'` zurück-Anker `'papers'` mitgeben.
 
 7. **JS-Block** nach `closeUniverseModal()` (~Z. 2479):
-   `PAPERS_DATA`-Array (s. Inventar oben), `setupPapersGalaxy()` mit
+   `STATIONS_DATA`-Array (s. Inventar oben), `setupSonnenGalaxie()` mit
    einmaliger Initialisierung-Schranke, Ellipsen-Bahnen-Rendering,
-   `openPaperModal(idx)`, `closePaperModal()`. Bewegungs-Mathe:
+   `openStationModal(idx)`, `closeStationModal()`. Bewegungs-Mathe:
    ```
    const ANG_SPEED = (2 * Math.PI) / 50;   // 50 s Umlaufzeit
    const t = now / 1000;
-   PAPERS_DATA.forEach((p, i) => {
-     const phase = (i / PAPERS_DATA.length) * Math.PI * 2;
+   STATIONS_DATA.forEach((s, i) => {
+     const phase = (i / STATIONS_DATA.length) * Math.PI * 2;
      const x01 = 50 + Math.cos(t * ANG_SPEED + phase) * 30;
      const y01 = 50 + Math.sin(t * ANG_SPEED + phase) * 18;
      // Eigenrotation läuft via CSS-@keyframes galaxy-spin
    });
    ```
+   Station-Eintrag hat zwei Varianten:
+   - **textuell:** `{ title, summary, status: 'text' }` — Modal zeigt
+     nur den `summary`-Body, keinen Datei-Link.
+   - **dokumentengestützt:** `{ title, summary, status: 'live', href }` —
+     Modal zeigt Body + „Original-Dokument öffnen →"-Link auf `href`
+     (z.B. `docs/papers/sbkim-paper-en.html`).
 
-**`status.json` — optionaler Eintrag:** ein neues Feld `papers` mit
-Liste der publizierten Papers (Titel, Status, Datei). Pflege-frei, weil
-selten geändert; aber dann ist die Papers-Bibliothek auch von
-maschinen-lesbar zugänglich (analog `endknoten`-Feld).
+**`status.json` — optionaler Eintrag:** ein neues Feld `historie` mit
+Liste der Stationen (Titel, Status, optional Datei). Pflege-frei, weil
+selten geändert; macht die Geschichts-Galerie auch maschinen-lesbar.
 
-**`docs/papers/README.md`** als Erklärung der Bibliothek + Liste der
-geplanten Papers (Vision-Anker 10 verlinkt).
+**`docs/papers/README.md`** als Erklärung der Bibliothek (was das
+EN-Paper hier soll: dokumentengestützte Station der Sonnen-Galaxie) +
+Verweis auf Vision-Anker 10.
 
 ### Sonnenflecken-Pattern (Klaus' Wunsch konkret)
 
@@ -1536,22 +1563,20 @@ Pulsieren").
 
 ### Verbindung zu anderen Vision-Ankern
 
-- **Anker 1 (Sage als Hybrid-Knoten):** Klaus hat angedeutet, dass das
-  Observatorium privat bleiben kann, **solange die Papers prominent
-  als Grundlage angeführt werden**. Sonnen-Karte erfüllt genau das —
-  sie ist die öffentliche Visitenkarte der Theorie hinter Sage. Wenn
-  V1-Spec kommt, kann die Sonnen-Karte auch erklären, **warum** Sage
-  Hybrid wird (drittes Paper Mizel × SBKIM motiviert die Hybridität).
-- **Anker 9 (M04-Erweiterung):** das geplante Synthesis-Paper „Mizel +
-  SBKIM" trägt die theoretische Begründung für die drei Schichten +
-  Brücken-Feld + doppelte Spore. Wenn Anker 9 in V1 reift, wird das
-  Paper sein wissenschaftliches Fundament.
+- **Anker 1 (Sage als Hybrid-Knoten):** das Observatorium kann privat
+  bleiben, weil die Sonnen-Galerie öffentlich die Geschichte des
+  Protokolls erzählt — wer die Reise versteht, versteht auch, **warum**
+  Sage als Hybrid-Knoten sinnvoll wird.
+- **Anker 9 (M04-Erweiterung):** Station „Zwei Seiten einer Medaille"
+  ist die biographische Quelle für die bidirektionale Match-Erweiterung
+  (Anbieter ↔ Sucher, doppelte Spore). Reift Anker 9 in V1, dann zieht
+  Station 2 als Erzähl-Anker mit.
 - **Schwarz-Loch-Karte (`.blackhole-card`):** optisches Pendant der
   Sonnen-Karte. Beide sitzen in derselben Bento-Reihe, aber an
-  gegenüberliegenden Positionen (Sonne weiter oben für „Wissens-
-  Grundlage", Loch weiter unten für „Bau-Erfahrungen"). Sie ergänzen
-  sich choreographisch: Sonne ist hell und ordnend (Theorie),
-  Schwarzes Loch ist dunkel und wirbelnd (Praxis-Lehren).
+  gegenüberliegenden Positionen (Sonne weiter oben für „Wo das Protokoll
+  herkam", Loch weiter unten für „Was wir auf dem Weg gelernt haben").
+  Sie ergänzen sich choreographisch: Sonne ist hell und erzählerisch
+  (Werdegang), Schwarzes Loch ist dunkel und wirbelnd (Bau-Lehren).
 
 ### Größenordnung
 
@@ -1567,12 +1592,20 @@ Aufteilbar in zwei Bau-Sitzungen, falls eine zu lang wird:
 
 ### Status
 
-**Reif für Bau-Sitzung.** Brief wird in dieser Pflege ebenfalls als
-`docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` abgelegt. EN-Paper liegt
-schon; DE-Paper Klaus lädt nach (kann auch erst nach Bau-Sitzung
-kommen — dann sieht die DE-Galaxie initial als `geplant` aus und
-wird auf `live` umgestellt, sobald die Datei da ist). Das Synthesis-
-Paper wartet auf Klaus' Schreib-Wille.
+**Reif für Bau-Sitzung mit `text-only`-Skelett**. Brief liegt als
+`docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` (in dieser Pflege auf
+Geschichts-Galerie-Konzept umgeschrieben). EN-Paper-Station (4) ist
+inhaltlich fertig (Datei eingecheckt, Modal kann sie verlinken).
+**Stationen 1–3 sind text-nur und Inhalt-offen** — Klaus liefert die
+Erzähl-Texte per Folge-Mini-Pflegen ein (eine pro Station, getrennt
+gepflegt wie bisher). Die Bau-Sitzung baut die Galaxie mit
+Platzhalter-Bodies („Inhalt folgt per Mini-Pflege"), die Folge-Pflegen
+schreiben die echten Texte ein.
+
+**Pflege-Disziplin Everlast GmbH:** jede Folge-Mini-Pflege, die Inhalt
+für Stationen 1–3 liefert, **prüft vor dem Commit**, dass der Text
+keine Erwähnung von Everlast GmbH enthält. Die heilige Tafel ganz oben
+in diesem Anker ist verbindlich.
 
 ---
 
@@ -1585,33 +1618,43 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-18 · Mini-Pflege — Vision-Anker Sonnen-Galaxie als zehnter Anker (Papers-Bibliothek)
+### 2026-05-18 · Mini-Pflege — Vision-Anker Sonnen-Galaxie als zehnter Anker (Geschichts-Galerie)
 
 **Sitzungs-Rolle:** Mini-Pflege, eingebettet im Web-Sitzungs-Mantel.
 Branch `claude/pflege-vision-10-sonnen-galaxie`. Folge-Pflege direkt
-nach PULS-Auslagerung (PR-Eintrag noch nicht gezogen). Klaus' Bild:
-ein zweites Vision-Universum oberhalb des Observatoriums — eine
-**Sonne als Eingang zur Papers-Bibliothek**, die sich öffnet zu einem
-warm-goldenen Universum, in dem die Papers als Galaxien auf
-geordneten Ellipsen-Bahnen tanzen, jede dreht sich auch um die eigene
-Achse. Klaus' O-Ton: „Im Prinzip wie das Schwarze Loch, nur weiter
-oben auf der Seite als Vision und für Neugierige — die Sonne als
-Lebensgrundlage. Nicht statisch, wächst mit jeder publizierten Idee."
+nach PULS-Auslagerung. Mid-Pflege **inhaltlich neu gerahmt** auf
+Klaus' Wunsch — siehe Re-Framing-Block unten.
 
-**Kern:** Anker 10 in `§ Vision-Anker (langfristig)` eingefügt, mit
-ausführlicher Bau-Architektur-Skizze, Papers-Inventar (drei Einträge
-für den Bau-Start), Sonnenflecken-Pattern (Klaus' Detail-Wunsch
-„unregelmäßige Außenform pulsierend"), Bahn-Mathematik (gemeinsame
-Ellipse, gleichmäßige Phasen-Verteilung) und Verbindung zu Anker 1
-(Observatorium privat — bedingt auf Papers-Anführung) und Anker 9
-(Synthesis-Paper trägt theoretisches Fundament für drei Schichten +
-Brücke). Anker 10 ist **reif für Bau-Sitzung**, nicht für Spec —
-weil Klaus' Vision visuell präzise ist und das Pendant zur
-Schwarz-Loch-Karte als Vorlage steht.
+**Kern:** Anker 10 in `§ Vision-Anker (langfristig)` eingefügt. Klaus'
+Bild: ein zweites Vision-Universum oberhalb des Observatoriums — eine
+**Sonne als Eingang zur Sage-Geschichts-Galerie**, die sich öffnet zu
+einem warm-goldenen Universum, in dem **Stationen der Sage-Entwicklung**
+als Galaxien auf geordneten Ellipsen-Bahnen tanzen, jede dreht sich
+auch um die eigene Achse. Tonalität: „Was macht man, wenn man auf eine
+Antwort wartet? Man macht sich selber an die Arbeit." Vier Stationen
+beim Start: SBKIM-Namensgebung, Zwei Seiten einer Medaille, Sage-
+Protokol-Geburt, Wissenschaftlicher Niederschlag (EN-Paper).
+
+**Heilige Tafel — Privatheit:** Die Sonnen-Galaxie erwähnt **Everlast
+GmbH NICHT**. Gilt auch für alle Folge-Mini-Pflegen, die Stations-
+Inhalte nachziehen.
+
+**Re-Framing mid-Pflege (Auditing-Notiz):** Anker 10 startete als
+„Papers-Bibliothek" mit drei Paper-Galaxien (EN live, DE draft,
+Synthesis geplant). Klaus' Re-Definition mitten in der Sitzung:
+Sonnen-Galaxie soll **Geschichts-Galerie** sein, biographisch-
+erzählerisch, Stationen statt Papers. EN-Paper bleibt als eine
+Station unter mehreren. PULS § Anker 10, Inventar, JS-Skelett, Brief
+und Verbindungen wurden in einem Folge-Edit auf das neue Konzept
+umgeschrieben. Optik (Sonnen-Karte, Ellipsen-Bahn, Eigenrotation,
+Sonnenflecken) bleibt unverändert — nur die Daten und die Sprache
+haben sich gewandelt.
 
 **Heute schon erledigt (Asset-Pflege):**
 
-- Ordner `docs/papers/` angelegt.
+- Ordner `docs/papers/` angelegt (trägt das EN-Paper als
+  dokumentengestützte Station 4; textuelle Stationen brauchen den
+  Ordner nicht).
 - **`docs/papers/sbkim-paper-en.html`** eingecheckt (Klaus' Upload des
   englischen SBKIM-Papers, 23 KB, sieben Sektionen — Titel
   „SBKIM: A Protocol for Semantic Bidirectional Matching in Human
@@ -1619,17 +1662,14 @@ Schwarz-Loch-Karte als Vorlage steht.
 - **Brief für Bau-Sitzung** als
   `docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` abgelegt — enthält
   Pflichtleseliste, Aufgaben-Schnitt (10a Sonnen-Karte + 10b
-  Papers-Galaxie-Screen, beide möglich in einem Wurf oder separat),
-  CSS/HTML/JS-Vorgaben, Pflicht-am-Ende-Block.
+  Geschichts-Galerie-Screen, beide möglich in einem Wurf oder
+  separat), CSS/HTML/JS-Vorgaben, Pflicht-am-Ende-Block, neue
+  Privatheits-Klausel.
 
 **Zwischenversuch (zurückgerollt):** In dieser Sitzung wurde ein
 **CSS-Block für die Sonnen-Karte testweise eingefügt** und anschließend
-**bewusst zurückgerollt**, nachdem Klaus mid-Sitzung klargestellt hat,
-dass er den Bau in einer **eigenen** Sitzung gegen den festen Vision-
-Anker fahren möchte. Disziplin-konform — verhindert Konzept-Drift
-mitten im Bau. Die CSS-Skizze (Sonnen-Korona, Sonnenscheibe-Kern,
-drei Sonnenflecken-Animationen) bleibt im Vision-Anker als
-Bau-Architektur-Block dokumentiert.
+**bewusst zurückgerollt**, nachdem Klaus mid-Sitzung „Briefing für
+neue Bau-Sitzung" angeordnet hat. Disziplin-konform.
 
 **Was NICHT angefasst:** Modul-Code, INTERFACES.md, Modul-Karten,
 Sage-Page (außer rolliertes CSS), `status.json`. Reine Vision-Pflege.
@@ -1646,13 +1686,13 @@ Sage-Page (außer rolliertes CSS), `status.json`. Reine Vision-Pflege.
 7. SBKIM-Browser-Extension („Lampe in der Toolbar")
 8. Eigener Mini-Browser (Tauri-App)
 9. M04-Erweiterung (drei Schichten + Brücke + doppelte Spore)
-10. **Sonnen-Galaxie — Papers-Bibliothek** — neu, Brief liegt
+10. **Sonnen-Galaxie — Sage-Geschichts-Galerie** — neu, Brief liegt
 
 **Nächster sinnvoller Schritt:** Bau-Sitzung mit Brief
-`docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` auslösen. Englisches
-Paper liegt schon; deutsches Paper kann auch erst nach Bau-Sitzung
-hochgeladen werden (Galaxie startet dann als `geplant` und wechselt
-auf `live`, sobald die Datei da ist).
+`docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` auslösen — Bau-Sitzung
+rendert die Galaxie mit Platzhalter-Bodies für Stationen 1–3,
+EN-Paper-Station 4 ist inhaltlich fertig. Klaus liefert die Erzähl-
+Texte für Stationen 1–3 anschließend per einzelner Mini-Pflegen.
 
 **Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-10-sonnen-galaxie.md](sessions/archiv/2026-05-18_mini-pflege-vision-10-sonnen-galaxie.md).
 
