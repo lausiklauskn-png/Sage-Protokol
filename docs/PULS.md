@@ -1629,6 +1629,142 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-18 · Meta-Pflege — V1-Sammelspec als Brief-Kaskade sequenziert
+
+**Sitzungs-Rolle:** Meta-Pflege, headless. Branch
+`claude/meta-v1-spec-cascade-RE14a`. Folge zur V1-Sammelspec-Brief-
+Rekonstruktion (PR #91). Klaus' Wunsch: die mehrtägige Sammelspec
+NICHT als Marathon-Sitzung ziehen, sondern in eine **Brief-Kaskade**
+zerlegen — eine Folge-Sitzung pro Strang, je ein PR, je ein Folge-
+Brief als Datei im Repo statt im Chat-Tab. Diese Sitzung speccst
+nichts; sie etabliert die Kaskaden-Konvention, dokumentiert sie in
+PULS und schreibt den ersten Folge-Brief.
+
+**Kern:** `docs/sessions/BRIEF_SPEC_V1_SAMMELSPEC.md` (rekonstruiert
+in PR #91) ist die Quell-Spec — vier Stränge in einem Brief
+(V1 Sage-Hybrid, Anker 9 M04-Erweiterung, Anker 6 Multi-Identität,
+Plattform-Matrix). Klaus' Risiko-Bild bei Marathon: ein einziger
+Tab-Verlust = Verlust der ganzen Sammelspec; INTERFACES bliebe
+halbgar mit Widerspruchs-Risiko zwischen den Strängen. Kaskade
+verteilt das Risiko und macht jede Etappe einzeln review- und
+merge-fähig.
+
+**Fünf heilige Tafeln der Kaskade:**
+
+1. **Eine Folge-Sitzung = ein Strang = ein PR.** Keine
+   Sammelfahrten. Wird ein Strang zu groß, teilt er sich in zwei
+   Folge-Sitzungen (z.B. „Strang 2a Spore-Schema + Schichten" und
+   „Strang 2b Brücken-Feld + Stufe B"); der Brief der vorausgehenden
+   Sitzung entscheidet die Teilung.
+
+2. **Jede Folge-Sitzung endet mit einem Brief als Datei im Repo.**
+   `docs/sessions/BRIEF_<NN>_<NAME>.md` mit `<NN>` als zweistellige
+   laufende Nummer (01, 02, …) und `<NAME>` als kurzer Strang-Name.
+   NICHT im Chat-Tab — Briefe im Chat-Tab gehen verloren, wie es
+   Klaus bei der M04-Brainstorming-Pflege passiert ist (siehe PR
+   #91 Rekonstruktion).
+
+3. **Brief-Bauplan einheitlich** wie `BRIEF_BAU_SONNEN_GALAXIE` und
+   `BRIEF_SPEC_V1_SAMMELSPEC`: Pflichtleseliste, heilige Tafeln
+   (PROTOCOL_VERSION-Disziplin, Anti-Missbrauch, Plattform-Ehrlichkeit
+   je nach Strang), Aufgaben-Schnitt mit konkreten Editier-Punkten,
+   „Was du NICHT tust", „Pflicht am Ende", Blockier-Klausel, Hinweise
+   außerhalb des Briefes.
+
+4. **Letzte Sitzung schließt die Kaskade.** Die finale Folge-Sitzung
+   (die den letzten Strang erledigt) schreibt KEINEN neuen Strang-
+   Brief, sondern `BRIEF_99_SAMMELSPEC_ABSCHLUSS.md` mit Auflistung
+   der dann anstehenden Bau-Briefe als nächste Kaskade.
+
+5. **Konsistenz-Prüfung verteilt, nicht zentral.** Jede Folge-Sitzung
+   liest VOR ihrem Eingriff den Stand von INTERFACES.md und der
+   relevanten Modul-Karten und prüft Widerspruchsfreiheit gegenüber
+   den vorausgegangenen Strängen. Vorgänger-Korrekturen ZUERST,
+   eigener Strang DANN; der Brief der eigenen Sitzung nennt das
+   explizit, wenn Vorgänger-Korrekturen wahrscheinlich werden.
+
+**PROTOCOL_VERSION-Disziplin der Kaskade:** Bleibt `"0.1"`, solange
+alle Strang-Erweiterungen ADDITIV sind und alte Sporen weiterhin
+gültig bleiben. Erst der Strang, der ein altes Feld zur Pflicht
+erhebt, bumpt auf `"0.2"`. Jeder Brief nennt seine Erwartung
+explizit.
+
+**Gewählte Strang-Reihenfolge (mit Begründung):**
+
+1. **Brief 01 — Strang 1 V1 Sage-Hybrid.** Strukturelle Grundlage:
+   Sage als dritter Endknoten in INTERFACES, `status.json`-Eintrag,
+   CLAUDE.md „Hub und Knoten zugleich", Karte 09 § Schritt 1
+   erweitert. Additiv, `PROTOCOL_VERSION` bleibt `"0.1"`. Ohne diese
+   Grundlage hängen Plattform-Matrix-Zeile und die späteren Bau-
+   Sitzungen in der Luft.
+2. **Brief 02 — Strang 4 Plattform-Matrix.** Eigenständiger
+   INTERFACES-Block neben Endknoten-Liste; setzt Brief 01 voraus
+   (Sage steht in der Matrix). Plattform-Ehrlichkeits-Klausel als
+   Spec-Anker, Querverweise zu Anker 4 (Königin) / Anker 7
+   (Extension) / Anker 8 (Mini-Browser).
+3. **Brief 03 — Strang 2 Anker 9 M04-Erweiterung.** Die Paper-↔-
+   Mycel-Brücke: doppelte Spore (cap + needs), drei Schichten
+   (fachlich/prozess/skalierung), Brücken-Feld, Stufe A/Stufe B,
+   Anti-Missbrauch. Berührt Modul-Karten 02 + 04 + 06 — das größte
+   Strang-Volumen. PROTOCOL_VERSION bleibt `"0.1"`, solange
+   `embeddingNeeds` optional bleibt.
+4. **Brief 04 — Strang 3 Anker 6 Multi-Identität.** Modul-02-API-
+   Erweiterung + Geschwister-Slot pro Identität + Pages-`spore.json`-
+   Strategie. Verknüpft sich mit Anker 9 (doppelte Spore PRO
+   PERSONA), daher zuletzt — kann Brief 03 als Vorgabe nehmen.
+5. **Brief 99 — Sammelspec-Abschluss.** Die Brief-04-Sitzung schreibt
+   keinen Strang-Brief mehr, sondern den Abschluss-Brief mit Bau-
+   Brief-Liste (Sage-Page-Refactor V1, Modul-02-Bau Schichten/Needs,
+   Modul-04-Bau Stufe A + Stufe B, Modul-02-Bau Multi-Identität) als
+   nächste Kaskade.
+
+Reihenfolge entspricht dem Etappierungs-Vorschlag des Großbriefs
+(Tag 1 V1 + Plattform-Matrix, Tag 2 M04, Tag 3 Multi-Identität) —
+nur dass jede Etappe als eigene Sitzung + eigener PR gefahren wird,
+nicht als Zwischen-Commit innerhalb einer Marathon-Sitzung.
+
+**Brief-Datei-Liste (Auftragsliste für die folgenden Sitzungen):**
+
+- `docs/sessions/BRIEF_01_v1_sage_hybrid.md` — in dieser Meta-Pflege
+  geschrieben
+- `docs/sessions/BRIEF_02_plattform_matrix.md` — von Brief-01-Sitzung
+  zu schreiben
+- `docs/sessions/BRIEF_03_m04_erweiterung.md` — von Brief-02-Sitzung
+  zu schreiben (der engere Bruder-Brief
+  `BRIEF_SPEC_M04_ERWEITERUNG.md` darf als Detail-Vorlage gezogen
+  werden; als alleinstehende Sitzung wird er in der Kaskade NICHT
+  mehr gezogen — Strang 2 läuft im Kaskaden-Lauf als Brief 03)
+- `docs/sessions/BRIEF_04_multi_identitaet.md` — von Brief-03-Sitzung
+  zu schreiben
+- `docs/sessions/BRIEF_99_sammelspec_abschluss.md` — von Brief-04-
+  Sitzung als Kaskaden-Schluss zu schreiben (Bau-Brief-Liste statt
+  neuer Spec-Strang)
+
+**Quell-Spec:** `docs/sessions/BRIEF_SPEC_V1_SAMMELSPEC.md` (PR #91-
+Rekonstruktion) — vollständiger Vier-Stränge-Brief, aus dem jede
+Folge-Sitzung ihren Strang-Abschnitt 1:1 als inhaltliche Vorgabe
+übernimmt. Querverweise zu PULS-Ankern 1 (V1 Sage-Hybrid, Z. 555-
+598), 9 (M04-Erweiterung, Z. 1229-1357), 6 (Multi-Identität,
+Z. 898-977).
+
+**Was NICHT angefasst:** Modul-Code in `src/`, INTERFACES.md,
+Modul-Karten, `data/status.json`, Sage-Page. Die Spec lebt rein in
+den Folge-Sitzungen — diese Meta-Pflege briefst, sie speccst nicht.
+`update_puls_pie.py` NICHT aufgerufen (kein Modul-Status-Wechsel).
+
+**Paralleler offener PR:** PR #89 (Karte 15 Membran als Stub, Draft)
+betrifft eine andere Karte / Backlog-Spur und kollidiert nicht mit
+der Kaskade. Brief 01 nimmt den `main`-Stand nach dem hier
+entstehenden PR-Merge auf.
+
+**Nächster sinnvoller Schritt:** Klaus mergt diese Meta-Pflege
+(damit `BRIEF_01_v1_sage_hybrid.md` auf `main` liegt) und startet
+die nächste Sitzung mit dem Brief-01-Inhalt im ersten Prompt.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_meta-pflege-v1-sammelspec-kaskade.md](sessions/archiv/2026-05-18_meta-pflege-v1-sammelspec-kaskade.md).
+
+---
+
 ### 2026-05-18 · Mini-Pflege — Sonnen-Galaxie um Station 5 (DE-Paper) erweitert
 
 **Sitzungs-Rolle:** Mini-Pflege, headless. Branch
