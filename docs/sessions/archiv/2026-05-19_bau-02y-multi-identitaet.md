@@ -478,6 +478,23 @@ beide Chrome-Instanzen sein können oder weil Recents-Tabs persistieren.
 Panel 01 (1–8) ebenfalls alle grün — `storagePersisted: false` ist
 erwartet (Tablet-Chrome verweigert persist standardmäßig).
 
+**Regression-Bonus durch Klaus (2026-05-19, gleicher Lauf, alle
+sichtbaren Panels durchgeklickt):**
+
+| Panel | Resultat |
+|---|---|
+| 03 Embedding | 1–5 grün (init/round-trip/cosine 0.9555/batch 0.8995/selbstcheck); Modell `Xenova/multilingual-e5-small`, Dim 384, L2-Norm 1.000 |
+| 04 Match | 1–5 grün + Selbstcheck — Käsekuchen↔Käsetorte 0.9507, ↔Auspuffrohr 0.8967, Hefeteig↔Kochrezepte 0.8312, Tarantino↔Kochrezepte 0.7737 (Apoptose-Trigger), ShapeMismatchError synchron |
+| 05 Anastomose | Setup + Test 1 grün: `outcome: established`, `score: 0.8881`, Response-Signatur ok, Sibling-Eintrag im `sbkim_siblings` (Pre-05.Y-Singleton-Pfad) |
+
+**Indirekter Beleg:** Modul 05 Test 1 nutzt die Singleton-API
+(`getOrCreateIdentity()` ohne `key`-Parameter) — der Pfad, der nach
+Bau 02.Y über den Default-Slot `"main"` rückwärts-kompatibel laufen
+muss. Setup + Handshake durchgelaufen, Geschwister-Eintrag in
+`sbkim_siblings` (immer noch der nicht-suffixed Store, weil Modul 05
+noch nicht 05.Y-aware) angelegt. Heilige Tafel „Bestehende Funktionen
+unangetastet" durch Live-Code bewiesen.
+
 **Klaus' Befund zum Workaround:** der erfolgreiche Panel-02-Lauf
 gelang erst, nachdem Klaus zuerst alle Knöpfe in Panel 01 durchgegangen
 war — insbesondere Knopf 1 „Storage init". Vermutete Sequenz: das
