@@ -122,6 +122,15 @@ init(options?) → Promise<void>
   // wenn die API fehlt oder das Promise rejectet, bleibt der Wert null.
   // Persist-Verweigerung ist KEIN SBKIM-Bruchgrund — der Knoten läuft
   // weiter (Chrome auto-bei-PWA, Firefox prompt, Safari restriktiv).
+  //
+  // Pflege „init() versions-fail-soft" (2026-05-19): DB_VERSION ist
+  // Mindest-Schema-Version, nicht Ziel-Version. init() respektiert
+  // existing DB-Versionen > DB_VERSION (entstanden durch ensureStore-
+  // Bumps in früheren Sitzungen) und übernimmt sie ohne VersionError
+  // zu werfen. Bei fehlendem Pflicht-Store in existing DB:
+  // StorageOpenError mit Liste der fehlenden Stores. Details siehe
+  // § Versionsmigration § Versions-Fail-Soft-Pfad und INTERFACES.md
+  // § 1 Modul 01 Bietet-Block (init-Garantien).
 
 getStore(storeName: string) → StoreHandle
   // Interner Helfer für Module, die mehrere Operationen in einer
@@ -383,6 +392,25 @@ identitäts-spezifischen Stores entstehen erst durch
 linear weiter (`newVersion = db.version + 1`), entkoppelt von der
 Build-Konstante `DB_VERSION`.
 
+#### Versions-Fail-Soft-Pfad (Pflege 2026-05-19)
+
+Mit der Pflege „init() versions-fail-soft" (2026-05-19) ist
+`DB_VERSION = 4` **Mindest-Schema-Version**, nicht „immer-anstreben-
+Version". `init()` öffnet die DB jetzt in zwei Phasen:
+
+| Phase | Aktion | Erwartung |
+|---|---|---|
+| 1 — Probe | `openProbe(name)`: `indexedDB.open(name)` ohne Version-Parameter | Liefert `{db, wasCreated}`. `wasCreated` flag wird über den `onupgradeneeded`-Trigger gesetzt — wenn er feuert, hat IndexedDB die DB GERADE angelegt (oldVersion=0 → 1). |
+| 2 — Entscheidung | Drei Fälle: | siehe unten |
+
+- **Fall A — `wasCreated === true`** (DB existierte nicht; openProbe hat sie versehentlich mit Version 1 + ohne Stores angelegt): probedDb schließen, `deleteDatabase(name)`, dann regulärer Initial-Pfad mit `indexedDB.open(name, DB_VERSION)` + `onupgradeneeded`-Loop (`oldVersion=0 → newVersion=4`, alle Pflicht-Stores aus `STORES_V1/V2/V3/V4` werden angelegt).
+- **Fall B — `existingVersion < DB_VERSION`** (DB existiert mit altem Schema): probedDb schließen, regulärer Initial-Pfad mit `indexedDB.open(name, DB_VERSION)` + `onupgradeneeded`-Loop für nur die fehlenden Migrations (Bau-01.Y-Verhalten unverändert).
+- **Fall C — `existingVersion >= DB_VERSION`** (DB existiert mit Mindest-Schema oder höher, häufig durch `ensureStore`-Bumps aus früheren Sitzungen): Pflicht-Stores aus `STORES_V1/V2/V3/V4` sync prüfen (`db.objectStoreNames.contains`); bei vollständigem Schema die existing Version übernehmen via `openExact(name, existingVersion)` ohne `onupgradeneeded`. Bei fehlendem Pflicht-Store: `StorageOpenError` mit Liste der fehlenden Stores (Modul 01 repariert manuell zerstörte DBs NICHT).
+
+`KNOWN_STORES` wird im Fall C zusätzlich um alle existing object-stores erweitert, damit Bau-01.Y-konform dynamisch angelegte Stores (z.B. `sbkim_siblings_<key>` aus Bau-02.Y oder Test-Stores aus früheren Sichttests) auch nach Tab-Reload für `get/put/del/all/clear` zur Verfügung stehen.
+
+**Klaus-Effekt:** Test-Stores aus früheren Sichttests (`sbkim_test_*` aus Bau-01.Y, identitäts-spezifische Stores aus Bau-02.Y) blockieren den nächsten `init()` nicht mehr. Klaus' Cleanup-Workaround „Browserdaten löschen + Storage init klicken" entfällt. **Bekannte Limitierung:** Multi-Tab-Race zwischen Probe-Open und Re-Open (siehe § Risiken).
+
 ### Konfigurationswerte
 
 ```
@@ -463,11 +491,26 @@ In `tests/manual_check.html`, Panel **01 Storage**, acht Knöpfe
    **synchron** geworfen (kein Promise-Aufbau). Log: `name`-Property
    und `message`.
 
-**Cleanup-Hinweis:** die Test-Stores `sbkim_test_*` aus Knöpfen 6/7
+9. **init() versions-fail-soft probe** (Pflege 2026-05-19) — beweist,
+   dass `init()` nach einem `ensureStore`-Bump und Tab-Reload ohne
+   `VersionError` durchgeht. Sequenz: (i) `init()` aufrufen
+   (Pflicht-Stores existieren), (ii) `ensureStore('sbkim_test_failsoft_dummy')`
+   ruft (bumpt `db.version` um 1, auf z.B. `existing + 1`), (iii)
+   `_meta.dbVersion` lesen — sollte > `DB_VERSION` sein. Log gibt
+   Hinweis, dass der eigentliche Beweis nach Tab-Reload + erneutem
+   Knopf 1 sichtbar wird (init muss grün durchgehen statt früher
+   `VersionError`). Cleanup-Hinweis: Test-Store
+   `sbkim_test_failsoft_dummy` bleibt in der DB; manueller Cleanup
+   über DevTools oder site-spezifisches Daten-Löschen.
+
+**Cleanup-Hinweis:** die Test-Stores `sbkim_test_*` aus Knöpfen 6/7/9
 bleiben in der DB. Klaus kann sie über DevTools → Application →
 IndexedDB → `sbkim` (rechte Maustaste auf Store-Name → „Delete") manuell
 entfernen. Modul 01 bietet keinen `dropStore`-Pfad — Drop-Operationen
 brauchen einen eigenen Spec-Eintrag (siehe § Versionsmigration).
+**Bonus seit Pflege „init() versions-fail-soft" (2026-05-19):** die
+Test-Stores blockieren `init()` nicht mehr — Klaus muss die DB nicht
+mehr vor jedem Sichttest löschen.
 
 Bewertung manuell durch den Tester. Ergebnis kommt in den Bauzustand-
 Block dieser Karte (Zeile „Sichttest").
@@ -522,6 +565,27 @@ Block dieser Karte (Zeile „Sichttest").
   schließen — Klaus' Single-Instance-Disziplin (siehe PULS § Offene
   Querschnitts-Fragen „DeX-Chrome vs. Tablet-Chrome") schützt
   zusätzlich.
+- **Manuell zerstörte DB (Pflege „init() versions-fail-soft", 2026-05-19):**
+  Wenn ein Pflicht-Store aus `STORES_V1/V2/V3/V4` in einer existing DB
+  mit `version >= DB_VERSION` fehlt (z.B. wenn jemand die DB manuell
+  via DevTools manipuliert hat), wirft `init()` `StorageOpenError`
+  mit Liste der fehlenden Stores. Modul 01 repariert manuell
+  zerstörte DBs **NICHT** — Klaus' Verantwortung (Browser-Daten
+  löschen + Re-Init, oder Site-spezifischen Storage-Reset).
+  Begründung: ein automatischer Reparatur-Pfad würde stille
+  Daten-Migration erlauben, was gegen die strikte additive
+  Versionsmigrations-Disziplin (siehe § Versionsmigration) verstößt.
+- **Multi-Tab-Race zwischen Probe und Re-Open (Pflege „init() versions-
+  fail-soft", 2026-05-19):** im Fail-Soft-Pfad (existing >= DB_VERSION)
+  passiert zwischen `openProbe(name)` und `openExact(name, existingVersion)`
+  ein kleines Zeitfenster, in dem ein anderer Tab einen
+  `ensureStore`-Bump auf `existingVersion + 1` machen könnte. Das
+  Re-Open mit `existingVersion` würde dann `VersionError` werfen. In
+  Klaus' Single-Tab-Standard-Setup praktisch selten; Workaround:
+  `init()` erneut rufen (die DB ist jetzt auf der höheren Version, der
+  nächste Probe liest die neue Version und der Pfad geht durch).
+  Modul 01 macht keinen automatischen Retry — Aufrufer (oder Klaus
+  manuell) entscheidet.
 
 ---
 
@@ -542,6 +606,8 @@ Block dieser Karte (Zeile „Sichttest").
 | Sichttest Knopf 5 Persist-Status (Pflege Storage-Persist) | 2026-05-16 | Klaus + Bau 02.X-Folge | geprüft 2026-05-16 (Klaus, Chrome auf Galaxy Tab S6 + DeX): fünfter Panel-01-Knopf „Persist-Status zeigen" liefert `_meta.storagePersisted: true` (Chrome auto-bei-PWA bestätigt — Stufe (1) der Identitäts-Persistenz wirkt plattformkonform). Klaus' Sichttest-Lauf war Teil des kombinierten Panel-01–08-Durchgangs am selben Tag (Bau-02.X-Sichttest-Sitzung) und kam grün heraus. |
 | Bau 01.Y `ensureStore` | 2026-05-19 | Bau 01.Y | Erste Bau-Sitzung der Bau-Sitzungs-Brief-Pipeline aus Brief 99 (Klaus' Wahl 2026-05-19: Infrastruktur zuerst). Option A aus INTERFACES.md § 9.5 umgesetzt: neue öffentliche Funktion `ensureStore(storeName) → Promise<void>` (acht-Funktionen-API jetzt: `init/getStore/get/put/del/all/clear/ensureStore`); modul-lokale Konstante `STORE_NAME_PATTERN = /^sbkim_[a-z0-9_]+$/`; neue Error-Klassen `InvalidStoreNameError` (sync, Pattern-Verstoß) und `EnsureStoreError` (async, `cause` aus IDBOpenDBRequest); `DB_VERSION` 3 → 4 (additive Schema-Erweiterung — `STORES_V4 = []`, weil v=4 keinen festen Pflicht-Store anlegt; markiert den Übergang zu dynamischen Stores via `ensureStore`); Versions-Bump-Choreografie linear via `newVersion = db.version + 1` (entkoppelt von der Build-Konstante `DB_VERSION` — zwei parallele `ensureStore`-Aufrufe können sich nicht in die Versionssequenz schreiben); `onversionchange`-Handler auf der NEUEN Verbindung fail-soft schließen (damit ein Folge-Bump im selben Tab durchgeht); Idempotenz-Check per `db.objectStoreNames.contains(name)` vor jedem Bump; `KNOWN_STORES` wird zur Laufzeit pro erfolgreichem `ensureStore` erweitert; `_meta.dbVersion` ist jetzt Getter (Live-Zustand, kann nun > 3 sein); `_meta.ensureStorePattern` als Read-Anker für Tests. **`PROTOCOL_VERSION` bleibt `"0.1"`** (lokales Storage-Schema, kein Spore-Feld). **`BACKUP_FORMAT_VERSION` bleibt `1`** (Bump 1→2 erst in Bau 02.Y). Drei neue Panel-01-Knöpfe in `tests/manual_check.html`: Knopf 6 `ensureStore('sbkim_test_foo')` happy-path, Knopf 7 `ensureStore('sbkim_test_foo')` zweimal (Idempotenz), Knopf 8 `ensureStore('invalid-name')` Pattern-Verstoß. INTERFACES.md § 1 Modul 01 nachgezogen (Bietet + Storage + Selbstcheck + Fehlerverhalten + Geprüft-Zeile); § 9.5 um Stand-Hinweis auf Bau 01.Y ergänzt (KEIN inhaltlicher Spec-Eingriff — Spec ist gesetzt). KEINE Modul-02/05/06/07-Änderung (transparenter Slot-Pfad kommt in 02.Y / 05.Y / 06.Y / 07.Y nach); KEINE identitäts-spezifischen Stores angelegt (Aufrufer-Pflicht, Modul 01 kennt Identität nicht); KEINE Sage-Page-Änderung; KEINE CLAUDE.md-/Karte-09-/`status.json`-Änderung; `update_puls_pie.py` NICHT aufgerufen (Modul 01 ist bereits `score:"fertig"`). `node --check src/modules/01_storage.js` grün. |
 | Sichttest Knöpfe 6/7/8 `ensureStore` (Bau 01.Y) | 2026-05-19 | Klaus | **geprüft 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6, Termux-`python3 -m http.server 8000`-Setup): 3/3 grün.** Drei-Stufen-Probe komplett bestanden: (i) Knopf 6 happy-path → `db_version_vor: 4`, `db_version_nach: 5`, `objectStoreNames_enthaelt_neuen: true`, `sbkim_test_foo` in `known_stores`; (ii) Knopf 7 zweimal → `db_version_vor_erstem: 5`, `db_version_nach_erstem: 5`, `db_version_nach_zweitem: 5`, `idempotent: true` (zweiter Aufruf hat `db.version` NICHT erhöht — Idempotenz-Garantie wirkt); (iii) Knopf 8 Pattern-Verstoß → `InvalidStoreNameError` synchron geworfen, `synchron_geworfen: true`, sprechende Message „Ungueltiger Store-Name: 'invalid-name'. Erlaubt sind nur Kleinbuchstaben, Ziffern und '_' nach dem 'sbkim_'-Praefix (Pattern ^sbkim_[a-z0-9_]+$)". Klaus' Re-Init-Lauf nach den ensureStore-Aufrufen zeigt `version: 5` mit `sbkim_test_foo` im Pflicht-Stores-Snapshot — `_meta.dbVersion`-Getter (Live-Zustand statt Build-Konstante) und `KNOWN_STORES`-Laufzeit-Erweiterung greifen sauber. Versions-Bump-Choreografie auf Single-Instance-DeX-Chrome problemlos durchgelaufen (kein `EnsureStoreError`-`cause`-`onblocked`-Befund). |
+| Pflege „init() versions-fail-soft" | 2026-05-19 | Pflege Modul 01 init versions-fail-soft | Folge-Pflege auf Klaus' Bau-02.Y-Sichttest 2026-05-19 (PR #104 gemerged, `main` `63e8fd1`) und Meta-Pflege Tafel-Evolutions-Klausel (PR #105 gemerged, `main` `60ea3f6`). Brief BAU_PFLEGE_01_INIT_FAIL_SOFT (PR #106 gemerged, `main` `42a04e0`) als Spec-Vorlage. **Tafel-Evolutions-konform** (CLAUDE.md § Heilige Tafeln § Tafel-Evolutions-Klausel): die Brief-02.Y-Tafel „KEIN Modul-01-Eingriff" war scope-disziplin für die Bau-Sitzung 02.Y, diese Pflege ist die explizite Folge-Sitzung mit eigenem Brief + eigenem PR. **`DB_VERSION` bleibt `4`** als Mindest-Schema-Version (Bedeutung-Wandel: nicht mehr „immer-anstreben"). **Code in `src/modules/01_storage.js` additiv** (kein Refactoring der bestehenden 8 Funktionen): drei neue Closure-Helpers `openProbe(name)` (öffnet ohne Version, liefert `{db, wasCreated}` via `onupgradeneeded`-Trigger als Marker), `checkRequiredStores(db)` (sync-Check auf STORES_V1/V2/V3/V4), `openExact(name, version)` (Re-Open ohne onupgradeneeded), `deleteDb(name)` (Helper für „openProbe hat versehentlich angelegt"-Fall). `init(options)` umgebaut auf zweiphasigen Pfad: Phase 1 openProbe, Phase 2 Entscheidung — `wasCreated` → deleteDb + regulärer Initial-Pfad; `existing < DB_VERSION` → regulärer Initial-Pfad mit onupgradeneeded; `existing >= DB_VERSION` → fail-soft mit checkRequiredStores + KNOWN_STORES-Erweiterung um dynamische Stores + openExact. `_meta.dbVersionPolicy = "fail-soft-min-schema"` als neuer Read-Anker. § Schnittstelle init-Doku-Block + § Versionsmigration neuer Sub-Block „Versions-Fail-Soft-Pfad" + § Risiken zwei neue Punkte (manuell zerstörte DB / Multi-Tab-Race) + § Manueller Test neuer Knopf 9. **Headless-Smoke-Test** `tests/smoke_pflege_01_init_fail_soft.mjs` (Node 22 + fake-indexeddb): drei Proben, 8/8 grün — frische DB (alle Pflicht-Stores), existing v=10 mit dynamischem Store (db.version übernommen, KNOWN_STORES erweitert), existing v=10 mit fehlendem sbkim_keys (StorageOpenError mit Liste). Bau-02.Y-Regression-Smoke-Test 33/33 weiterhin grün. **KEINE Modul-02/05/06/07-Änderung**, **KEIN `ensureStore`-Verhalten-Bruch** (Bau-01.Y-Pfad unverändert), **KEIN DB-Schema-Eingriff**, **keine Sage-Page-Änderung**, **keine CLAUDE.md-/Karte-09-/`status.json`-Änderung**. **`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `4`, `BACKUP_FORMAT_VERSION` bleibt `2`**. **`status.json` unverändert** (Modul 01 bleibt `score:"fertig"`; `update_puls_pie.py` NICHT aufgerufen). |
+| Sichttest Knopf 9 (Pflege „init() versions-fail-soft") | 2026-05-19 | Pflege 01-init | **ungeprüft, weil headless gebaut — wartet auf Klaus' Browser-Lauf** des neuen Panel-01-Knopfes 9. Drei-Probe: (i) init OK + ensureStore-Bump bumpt `db.version`, (ii) Tab-Reload, (iii) erneuter Storage init grün ohne `VersionError`. |
 | In Endknoten eingebaut | — | — | — |
 
 ---
