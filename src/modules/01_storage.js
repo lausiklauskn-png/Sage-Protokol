@@ -21,6 +21,28 @@
  *   onversionchange-Handler auf der NEUEN Verbindung fail-soft
  *   schließen, damit ein Folge-Bump im selben Tab durchgeht.
  *
+ * Pflege „init() versions-fail-soft" (2026-05-19) — DB_VERSION ist
+ *   jetzt Mindest-Schema-Version, nicht Ziel-Version. init() öffnet
+ *   die DB erst via openProbe(name) ohne Version-Parameter (liefert
+ *   existing Version), prüft Pflicht-Stores sync via
+ *   checkRequiredStores(db), und entscheidet:
+ *     - existing === 0 oder existing < DB_VERSION → regulärer Bau-01.Y-
+ *       Pfad mit indexedDB.open(name, DB_VERSION) + onupgradeneeded +
+ *       applyMigration. Bestehender Pfad UNVERÄNDERT.
+ *     - existing >= DB_VERSION → fail-soft-Pfad: probedDb.close(),
+ *       Pflicht-Stores prüfen, KNOWN_STORES um dynamische Stores
+ *       erweitern, dann openExact(name, existing.version) ohne
+ *       onupgradeneeded.
+ *   Bei fehlendem Pflicht-Store: StorageOpenError mit Liste der
+ *   fehlenden Stores. Modul 01 repariert manuell zerstörte DBs NICHT.
+ *   Klaus' Bau-02.Y-Sichttest 2026-05-19 hat den Befund aufgedeckt
+ *   (Cleanup-Workaround „Browserdaten löschen + Storage init klicken"
+ *   bei jedem Sichttest, weil ensureStore-Bumps aus früheren
+ *   Sitzungen die DB-Version > DB_VERSION machen). Tafel-Evolutions-
+ *   konform: die Brief-02.Y-Tafel „KEIN Modul-01-Eingriff" war
+ *   scope-disziplin für die Bau-Sitzung 02.Y; diese Pflege ist die
+ *   explizite Folge-Sitzung (Brief PR #106, eigener PR).
+ *
 
  * Pflege PWA-Suffix (2026-05-16) — additive Konfig im init-Pfad:
  *   init({ dbSuffix }) öffnet die DB als "sbkim_<dbSuffix>" statt der
@@ -312,57 +334,287 @@
         ));
         return;
       }
+
+      // Pflege „init() versions-fail-soft" (2026-05-19): zweiphasiger
+      // Pfad. Phase 1 probiert die DB ohne Version-Parameter — das
+      // liefert die existing Version, ohne einen Versions-Bump zu
+      // erzwingen und ohne VersionError zu werfen, wenn existing >
+      // DB_VERSION (häufiger Fall nach ensureStore-Bumps aus früheren
+      // Sitzungen / Sichttests). Phase 2 entscheidet:
+      //   existing === 0 oder existing < DB_VERSION: regulärer
+      //     Bau-01.Y-Pfad mit onupgradeneeded + applyMigration.
+      //   existing >= DB_VERSION: Pflicht-Stores sync prüfen, dann
+      //     Re-Open mit existing Version ohne onupgradeneeded.
+      // Bei fehlendem Pflicht-Store: StorageOpenError (Modul 01
+      // repariert manuell zerstörte DBs NICHT — Klaus' Verantwortung).
+      // Tafel-Evolutions-konform: die Brief-02.Y-Tafel „KEIN
+      // Modul-01-Eingriff" war scope-disziplin; diese Pflege ist die
+      // explizite Folge-Sitzung (PR #106 Brief gemerged, eigener PR).
+      openProbe(dbNameInUse).then(function (probeResult) {
+        var probedDb = probeResult.db;
+        var wasCreated = probeResult.wasCreated;
+        var existingVersion = probedDb ? probedDb.version : 0;
+
+        if (probedDb && !wasCreated && existingVersion >= DB_VERSION) {
+          // Fail-soft-Pfad: existing DB ist auf Mindest-Schema oder
+          // höher (durch frühere ensureStore-Bumps). Pflicht-Stores
+          // prüfen, KNOWN_STORES um dynamische Stores erweitern,
+          // dann Re-Open mit existing Version ohne onupgradeneeded.
+          var missing = checkRequiredStores(probedDb);
+          // KNOWN_STORES um alle existing object-stores erweitern,
+          // damit get/put/del/all/clear sie akzeptieren (Bau-01.Y-
+          // konform: bei jedem ensureStore wird der Name gepusht; nach
+          // Tab-Reload müssen wir den Stand aus der DB rekonstruieren).
+          if (probedDb.objectStoreNames && probedDb.objectStoreNames.length) {
+            for (var i = 0; i < probedDb.objectStoreNames.length; i++) {
+              var existingStore = probedDb.objectStoreNames[i];
+              if (KNOWN_STORES.indexOf(existingStore) === -1) {
+                KNOWN_STORES.push(existingStore);
+              }
+            }
+          }
+          try { probedDb.close(); } catch (e) { /* fail-soft */ }
+
+          if (missing.length > 0) {
+            reject(makeError(
+              "StorageOpenError",
+              "Pflicht-Stores fehlen in existing DB (v=" + existingVersion + "): " +
+                missing.join(", ") +
+                ". Modul 01 repariert manuell zerstoerte DBs nicht — Klaus' Verantwortung " +
+                "(Browser-Daten loeschen + Re-Init, oder Site-spezifischen Storage-Reset).",
+            ));
+            return;
+          }
+
+          // Re-Open mit existing Version, KEIN onupgradeneeded.
+          openExact(dbNameInUse, existingVersion).then(function (db) {
+            currentDb = db;
+            attachVersionChangeHandler(db);
+            requestStoragePersist().then(function () { resolve(db); });
+          }, reject);
+          return;
+        }
+
+        // Initial-Pfad: existing < DB_VERSION (Migration nötig) ODER
+        // existing === 0 (DB existiert nicht) ODER probeResult.wasCreated
+        // (openProbe hat die DB versehentlich mit Version 1 ohne Stores
+        // angelegt). Regulärer Bau-01.Y-Pfad mit onupgradeneeded +
+        // applyMigration.
+        if (probedDb) {
+          try { probedDb.close(); } catch (e) { /* fail-soft */ }
+        }
+
+        // Wenn die DB von openProbe versehentlich angelegt wurde, vor
+        // dem Initial-Open sofort löschen — sonst würde
+        // indexedDB.open(name, DB_VERSION) mit oldVersion=1
+        // starten und applyMigration(db, 1) wird im Loop nicht
+        // gerufen (Loop startet bei v=2). Pflicht-Stores aus v=1
+        // wären dann nie angelegt.
+        var preInitial = wasCreated ? deleteDb(dbNameInUse) : Promise.resolve();
+
+        preInitial.then(function () {
+          var req;
+          try {
+            req = indexedDB.open(dbNameInUse, DB_VERSION);
+          } catch (err) {
+            reject(makeError(
+              "StorageOpenError",
+              "IndexedDB.open() warf synchron: " + (err && err.message),
+              err,
+            ));
+            return;
+          }
+          req.onupgradeneeded = function (ev) {
+            var db = req.result;
+            var oldV = ev.oldVersion || 0;
+            var newV = ev.newVersion || DB_VERSION;
+            for (var v = oldV + 1; v <= newV; v++) {
+              applyMigration(db, v);
+            }
+          };
+          req.onsuccess = function () {
+            var db = req.result;
+            currentDb = db;
+            // Bau 01.Y (2026-05-19): fail-soft onversionchange-Handler
+            // installieren, damit ein späterer ensureStore-Bump (oder ein
+            // Bump aus einem anderen Tab) unsere Verbindung sauber schließen
+            // kann statt in onblocked zu hängen.
+            attachVersionChangeHandler(db);
+            // Pflege Storage-Persist (2026-05-16): persist()-Bitte nach
+            // erfolgreichem DB-Open, fail-soft. requestStoragePersist
+            // resolved IMMER (kein Throw, kein Reject) — Knoten bleibt
+            // lauffähig auch bei Verweigerung oder fehlender API.
+            requestStoragePersist().then(function () {
+              resolve(db);
+            });
+          };
+          req.onerror = function () {
+            var err = req.error;
+            reject(makeError(
+              "StorageOpenError",
+              "IndexedDB-Open scheiterte: " + (err && err.message),
+              err,
+            ));
+          };
+          req.onblocked = function () {
+            reject(makeError(
+              "StorageOpenError",
+              "IndexedDB-Open blockiert (andere Tabs der App offen?).",
+            ));
+          };
+        }, reject);
+      }, reject);
+    });
+    return dbPromise;
+  }
+
+  // Pflege „init() versions-fail-soft" (2026-05-19): Probe-Open ohne
+  // Version-Parameter. Liefert {db, wasCreated}: existing DB-Verbindung
+  // mit der existing Version, plus Flag ob die DB GERADE NEU angelegt
+  // wurde (IndexedDB-Spec: indexedDB.open(name) ohne Version legt die
+  // DB mit Version 1 an, falls sie nicht existiert; onupgradeneeded
+  // feuert dann mit oldVersion=0). Der Aufrufer (init) nutzt
+  // wasCreated, um zwischen „echter existierender DB" und „durch
+  // Probe-Open neu angelegter Leer-DB" zu unterscheiden — Leer-DB
+  // muss vor dem regulären Initial-Open gelöscht werden, damit
+  // applyMigration(db, 1) im onupgradeneeded-Loop greift (oldVersion=0
+  // → newVersion=DB_VERSION).
+  // KEIN onversionchange-Handler auf der Probe-Verbindung — sie ist
+  // transient und wird sofort wieder geschlossen.
+  function openProbe(name) {
+    return new Promise(function (resolve, reject) {
       var req;
+      var wasCreated = false;
       try {
-        req = indexedDB.open(dbNameInUse, DB_VERSION);
+        req = indexedDB.open(name);
       } catch (err) {
         reject(makeError(
           "StorageOpenError",
-          "IndexedDB.open() warf synchron: " + (err && err.message),
+          "IndexedDB.open() (Probe) warf synchron: " + (err && err.message),
           err,
         ));
         return;
       }
-      req.onupgradeneeded = function (ev) {
-        var db = req.result;
-        var oldV = ev.oldVersion || 0;
-        var newV = ev.newVersion || DB_VERSION;
-        for (var v = oldV + 1; v <= newV; v++) {
-          applyMigration(db, v);
-        }
+      req.onupgradeneeded = function () {
+        // Wenn dieser Handler feuert, hat IndexedDB die DB GERADE
+        // angelegt (oldVersion=0 → newVersion=1). KEIN
+        // createObjectStore — wir wollen die DB sofort wieder
+        // löschen, damit der Initial-Pfad sie regulär aufbaut.
+        wasCreated = true;
       };
       req.onsuccess = function () {
-        var db = req.result;
-        currentDb = db;
-        // Bau 01.Y (2026-05-19): fail-soft onversionchange-Handler
-        // installieren, damit ein späterer ensureStore-Bump (oder ein
-        // Bump aus einem anderen Tab) unsere Verbindung sauber schließen
-        // kann statt in onblocked zu hängen.
-        attachVersionChangeHandler(db);
-        // Pflege Storage-Persist (2026-05-16): persist()-Bitte nach
-        // erfolgreichem DB-Open, fail-soft. requestStoragePersist
-        // resolved IMMER (kein Throw, kein Reject) — Knoten bleibt
-        // lauffähig auch bei Verweigerung oder fehlender API.
-        requestStoragePersist().then(function () {
-          resolve(db);
-        });
+        resolve({ db: req.result, wasCreated: wasCreated });
       };
       req.onerror = function () {
         var err = req.error;
         reject(makeError(
           "StorageOpenError",
-          "IndexedDB-Open scheiterte: " + (err && err.message),
+          "IndexedDB-Probe-Open scheiterte: " + (err && err.message),
           err,
         ));
       };
       req.onblocked = function () {
         reject(makeError(
           "StorageOpenError",
-          "IndexedDB-Open blockiert (andere Tabs der App offen?).",
+          "IndexedDB-Probe-Open blockiert (andere Tabs der App offen?).",
         ));
       };
     });
-    return dbPromise;
+  }
+
+  // Pflege „init() versions-fail-soft" (2026-05-19): Helper zum
+  // Löschen der DB, falls openProbe sie versehentlich neu angelegt
+  // hat. Wird vor dem Initial-Pfad gerufen.
+  function deleteDb(name) {
+    return new Promise(function (resolve, reject) {
+      var req;
+      try {
+        req = indexedDB.deleteDatabase(name);
+      } catch (err) {
+        reject(makeError(
+          "StorageOpenError",
+          "IndexedDB.deleteDatabase() warf synchron: " + (err && err.message),
+          err,
+        ));
+        return;
+      }
+      req.onsuccess = function () { resolve(); };
+      req.onerror = function () {
+        var err = req.error;
+        reject(makeError(
+          "StorageOpenError",
+          "IndexedDB.deleteDatabase() scheiterte: " + (err && err.message),
+          err,
+        ));
+      };
+      req.onblocked = function () {
+        reject(makeError(
+          "StorageOpenError",
+          "IndexedDB.deleteDatabase() blockiert (andere Tabs offen).",
+        ));
+      };
+    });
+  }
+
+  // Pflege „init() versions-fail-soft" (2026-05-19): synchroner Check,
+  // ob alle Pflicht-Stores aus STORES_V1/V2/V3/V4 in der existing DB
+  // vorhanden sind. Returns Array der fehlenden Store-Namen (leer →
+  // alles da). Sicherheits-Anker für „manuell zerstörte DB".
+  function checkRequiredStores(db) {
+    var required = STORES_V1.concat(STORES_V2).concat(STORES_V3).concat(STORES_V4);
+    var missing = [];
+    for (var i = 0; i < required.length; i++) {
+      if (!db.objectStoreNames.contains(required[i])) {
+        missing.push(required[i]);
+      }
+    }
+    return missing;
+  }
+
+  // Pflege „init() versions-fail-soft" (2026-05-19): Re-Open der DB mit
+  // einer expliziten Version (= existing Version aus der Probe).
+  // Erwartung: Version exakt gleich → KEIN onupgradeneeded. Wenn ein
+  // anderer Tab zwischen Probe und Re-Open einen ensureStore-Bump
+  // gemacht hat (bekanntes Multi-Tab-Race-Risiko, Karte 01 § Risiken),
+  // schlägt das Re-Open mit VersionError fehl — dann wird der Aufruf
+  // mit StorageOpenError rejected. Klaus' Retry (init() nochmal) löst
+  // das in der Praxis.
+  function openExact(name, version) {
+    return new Promise(function (resolve, reject) {
+      var req;
+      try {
+        req = indexedDB.open(name, version);
+      } catch (err) {
+        reject(makeError(
+          "StorageOpenError",
+          "IndexedDB.open() (Re-Open mit Version " + version + ") warf synchron: " + (err && err.message),
+          err,
+        ));
+        return;
+      }
+      req.onupgradeneeded = function () {
+        // Sollte nicht passieren, wenn Version === existing. Wenn doch,
+        // ist es ein Race (anderer Tab hat zwischen Probe und Re-Open
+        // gebumpt). Wir loggen nichts hier und überlassen das
+        // onsuccess-/onerror-Pfad.
+      };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () {
+        var err = req.error;
+        reject(makeError(
+          "StorageOpenError",
+          "IndexedDB-Re-Open mit Version " + version + " scheiterte: " + (err && err.message) +
+            ". Moeglicher Multi-Tab-Race zwischen Probe und Re-Open (siehe Karte 01 § Risiken).",
+          err,
+        ));
+      };
+      req.onblocked = function () {
+        reject(makeError(
+          "StorageOpenError",
+          "IndexedDB-Re-Open mit Version " + version + " blockiert (andere Tabs der App offen?).",
+        ));
+      };
+    });
   }
 
   function wrapRequest(req, opLabel) {
@@ -615,6 +867,12 @@
       get knownStores() { return KNOWN_STORES.slice(); },
       // Bau 01.Y (2026-05-19): Pattern als Read-Anker für Tests.
       ensureStorePattern: STORE_NAME_PATTERN,
+      // Pflege „init() versions-fail-soft" (2026-05-19): Read-Anker für
+      // Tests, dass der Pflege-Stand aktiv ist. Wert "fail-soft-min-
+      // schema" bedeutet: init() respektiert existing > DB_VERSION
+      // (alter Stand wäre "strict": init() würde mit VersionError
+      // scheitern bei existing > DB_VERSION).
+      dbVersionPolicy: "fail-soft-min-schema",
       // storagePersisted: null vor init bzw. wenn navigator.storage.persist
       // nicht verfügbar / Promise rejected (fail-soft). true|false zeigt
       // den Browser-Entscheid (Chrome auto-bei-PWA, Firefox prompt, Safari

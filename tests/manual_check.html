@@ -263,6 +263,40 @@
           synchron_geworfen: true,
         };
       });
+
+      // Knopf 9 — init() versions-fail-soft probe (Pflege 2026-05-19)
+      // Drei-Schritt-Probe: (1) init() läuft sauber, dann ensureStore-
+      // Bump bumpt die DB-Version um 1 (nun > DB_VERSION). (2) Hinweis
+      // an den Tester: Tab reloaden + Knopf 1 erneut klicken → muss
+      // grün durchgehen statt früher VersionError. (3) Output zeigt
+      // _meta.dbVersionPolicy als Read-Anker, dass der Pflege-Stand
+      // aktiv ist.
+      SbkimUI.addButton("01_storage", "init() versions-fail-soft probe", async function () {
+        await SbkimStorage.init();
+        var versionVor = SbkimStorage._meta.dbVersion;
+        var policy = SbkimStorage._meta.dbVersionPolicy;
+        try {
+          await SbkimStorage.ensureStore("sbkim_test_failsoft_dummy");
+        } catch (err) {
+          SbkimUI.setStatus("01_storage", "err", err.name || "Fehler");
+          SbkimUI.log("01_storage", "✗ " + (err.name || "Error") + ": " + (err.message || err));
+          return;
+        }
+        var versionNach = SbkimStorage._meta.dbVersion;
+        var ok = (typeof policy === "string" && policy === "fail-soft-min-schema")
+                 && (versionNach > versionVor);
+        SbkimUI.setStatus("01_storage", ok ? "ok" : "fail",
+                          ok ? "fail-soft-Probe vorbereitet" : "Probe-Vorbereitung scheiterte");
+        return {
+          db_version_vor: versionVor,
+          db_version_nach_bump: versionNach,
+          dbVersionPolicy: policy,
+          hinweis_1: "ensureStore('sbkim_test_failsoft_dummy') hat die DB-Version um 1 hochgebumpt (jetzt > DB_VERSION = 4).",
+          hinweis_2: "Schritt 2 für Drei-Probe: Tab RELOADEN, dann Knopf 1 'Storage init' erneut klicken.",
+          hinweis_3: "Vor der Pflege wäre der Re-Init mit VersionError gescheitert; jetzt MUSS er sauber durchgehen (init übernimmt die existing höhere Version).",
+          cleanup_hinweis: "Test-Store sbkim_test_failsoft_dummy bleibt in der DB; manueller Cleanup via DevTools oder site-spezifisches Daten-Löschen.",
+        };
+      });
     })();
   </script>
 
