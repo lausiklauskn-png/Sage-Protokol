@@ -1116,6 +1116,20 @@ Folge-Pflege Modul 01 `init()` versions-fail-soft.
 Übergabeprotokoll
 [2026-05-19_bau-02y-multi-identitaet.md](sessions/archiv/2026-05-19_bau-02y-multi-identitaet.md).
 
+**Folge-Pflege „Modul 01 `init()` versions-fail-soft" als nächste
+Pipeline-Etappe vorgemerkt** (Meta-Pflege Tafel-Evolutions-Klausel
+2026-05-19 hat das in CLAUDE.md + INTERFACES.md § 9.5 verankert).
+Klaus' Bau-02.Y-Sichttest hat den Bug freigelegt: `init()` ruft
+hartkodiert `indexedDB.open(name, DB_VERSION)`; nach `ensureStore`-
+Bumps aus früheren Sitzungen ist die DB-Version > `DB_VERSION`, und
+der nächste init scheitert mit `VersionError`. Lösungs-Skizze: erst
+ohne Version-Param öffnen (existing Version lesen), Pflicht-Stores
+sync prüfen, nur bei fehlenden mit `existing.version + 1` bumpen.
+Eigener Brief, eigener PR, strikt additiv — die Brief-02.Y-Tafel
+„KEIN Modul-01-Eingriff" war scope-disziplin für die Bau-Sitzung
+02.Y, **erlaubt aber eine eigene Pflege-Sitzung** (Bezugs-Beispiel
+in der neuen CLAUDE.md-Klausel „Tafel-Evolution").
+
 ### 2026-05-18 · SBKIM-Browser-Extension — „Lampe in der Toolbar"
 
 **Eingetragen:** Mini-Pflege „Vision-Anker Extension" 2026-05-18.
@@ -1788,6 +1802,71 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-19 · Meta-Pflege Tafel-Evolutions-Klausel + Modul-01-init-Folge-Pipeline
+
+**Sitzungs-Rolle:** Meta-Pflege, headless. Branch
+`claude/pflege-tafel-evolution-und-modul-01-pipeline`. Direkte Folge
+auf den Merge von PR #104 (Bau 02.Y, `main` `63e8fd1`, gemerged
+2026-05-19). Klaus' Anweisung 2026-05-19: „hebe wenn Logisch bestimmte
+Regeln oder Aussagen aus der heilige Tafel auf, wenn sie im
+Widerspruch zu notwendigen Änderungen stehen. ... Weise mich darauf
+hin das die Anpassung der Heiligen Tafel Notwendig und Vorteilhaft
+wäre." — neue Konvention, die in CLAUDE.md verankert werden muss.
+
+**Kern (drei Sätze):** Klaus' Bau-02.Y-Sichttest 2026-05-19 hat einen
+echten Architektur-Bug in Modul 01 freigelegt (`init()` nicht
+versions-fail-soft), den Bau 02.Y nicht beheben durfte (Tafel
+„KEIN Modul-01-Eingriff" aus Brief 02.Y). Die Tafel war scope-
+disziplin für genau diese Bau-Sitzung — **eine eigene Pflege-Sitzung
+Modul 01 ist die saubere Anpassung**, und Klaus hat die Konvention
+generalisiert: heilige Tafeln sind verbindlich aber nicht ewig, bei
+Konflikt zwischen alter Tafel und neuer notwendiger Arbeit muss ich
+Klaus EXPLIZIT auf Anpassungs-Bedarf hinweisen. Diese Meta-Pflege
+verankert die Konvention in CLAUDE.md und vermerkt die Folge-Pflege
+Modul 01 in INTERFACES.md § 9.5 + PULS § Vision-Anker 6 § Status.
+
+**Drei Punkte:**
+
+- **CLAUDE.md § Heilige Tafeln** um neue Sub-Sektion „Tafel-
+  Evolutions-Klausel (Pflege 2026-05-19)" erweitert. Drei Disziplin-
+  Regeln (nicht stoisch befolgen / nicht stillschweigend umgehen /
+  Klaus EXPLIZIT auf Anpassungs-Bedarf hinweisen), Bezeichnungs-
+  Konvention „Diese-Sitzung-nicht"-Tafeln vs. absolute Verbote,
+  Bezugs-Beispiel Klaus' Sichttest-Befund Modul-01-init.
+- **INTERFACES.md § 9.5** um Folge-Befund 2026-05-19 erweitert:
+  Modul 01 `init()` ist nicht versions-fail-soft (hartkodiertes
+  `indexedDB.open(name, DB_VERSION)`; nach `ensureStore`-Bumps aus
+  früheren Sitzungen scheitert jeder neue init mit `VersionError`).
+  Lösungs-Skizze + Verweis auf die neue CLAUDE.md-Klausel. § 10
+  Änderungsprotokoll-Zeile angehängt.
+- **PULS § Vision-Anker 6 § Status** um Folge-Pflege-Vermerk erweitert
+  (Block direkt nach dem Bau-02.Y-Abschluss-Absatz).
+
+**Heilige Tafeln eingehalten:**
+
+- **Reihenfolge INTERFACES → Karte → Code.** Hier kein Code, kein
+  Karten-Eingriff — reine Meta-Pflege auf CLAUDE.md + INTERFACES.md +
+  PULS.md.
+- **`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `4`,
+  `BACKUP_FORMAT_VERSION` bleibt `2`.** Reine Doku-Pflege.
+
+**Was NICHT angefasst:**
+
+- **Modul-Code in `src/`.** Die eigentliche Modul-01-Pflege ist eine
+  eigene Folge-Sitzung mit eigenem Brief + eigenem PR.
+- **Karten 00–15 / Sage-Page / status.json / `update_puls_pie.py`** —
+  alle unverändert.
+
+**Nächster sinnvoller Schritt:** **Brief BAU_PFLEGE_01_INIT_FAIL_SOFT
+schreiben** (Meta-Pflege, ~30–45 min). Brief für die nächste Sitzung,
+die `init()` versions-fail-soft macht (additiv, kein DB-Schema-
+Eingriff, kein Vertrags-Drift auf § 1 Modul 01 jenseits einer
+Garantien-Block-Erweiterung). Bauauftrag dann separat triggern.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_pflege-tafel-evolution-modul01-pipeline.md](sessions/archiv/2026-05-19_pflege-tafel-evolution-modul01-pipeline.md).
+
+---
+
 ### 2026-05-19 · Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump in Modul 02
 
 **Sitzungs-Rolle:** Bau-Sitzung (kein Spec, kein Modul-Vertrag-Eingriff
@@ -2005,70 +2084,6 @@ Alternativ **Bau 04.A Stufe A erweitert in Modul 04** (~2–3 h;
 **Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_bau-02y-multi-identitaet.md](sessions/archiv/2026-05-19_bau-02y-multi-identitaet.md).
 
 ---
-
-### 2026-05-18 · Mini-Pflege — Sonnen-Galaxie um Station 5 (DE-Paper) erweitert
-
-**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/bau-vision-10-sonnen-galaxie-JxoIH` (Folge nach PR-#92-Merge,
-auf aktuellem `origin/main` rebased). Klaus hat das deutsche
-SBKIM-Paper als HTML hochgeladen und entschieden: **als 5. Station
-mit eigener Galaxie**.
-
-**Kern:** Die Sage-Geschichts-Galerie trägt jetzt **fünf** Stationen.
-Station 5 ist das deutsche Pendant zum englischen SBKIM-Paper, mit
-identischer Sieben-Sektionen-Struktur und derselben Print-zu-PDF-
-Logik (`window.print()`-Button am unteren Rand). Galaxie-Form:
-`galaxy-quasar` (Lichtstrahl-Beams, visuell auffällig — passt zum
-wissenschaftlichen Niederschlag). Die Bahn-Ellipse skaliert
-automatisch — fünf Phasen à 72°.
-
-**Was eingebaut:**
-
-- `docs/papers/sbkim-paper-de.html` eingecheckt (Klaus' Upload,
-  vollständige deutsche Übersetzung des EN-Papers, eigener
-  Print-Button — kein separates PDF nötig, gleiche Logik wie EN).
-- `STATIONS_DATA` um fünften Eintrag erweitert (`idx: 4`,
-  `status: 'live'`, `shape: 'galaxy-quasar'`, `size: 'large'`,
-  `href: 'docs/papers/sbkim-paper-de.html'`). Bewegungs-Mathematik
-  unverändert — Phasen-Verteilung erfolgt automatisch über
-  `STATIONS_DATA.length`.
-- PULS § Anker 10 § Stationen-Inventar um Zeile für Station 5
-  ergänzt; Überschrift „Start-Konfiguration · 4 Galaxien" auf
-  „5 Galaxien" angehoben.
-- PULS § Anker 10 § Status um Station-5-Vermerk + Verweis auf
-  72°-Phasen-Verteilung erweitert.
-- `docs/papers/README.md` um Zeile für DE-Datei ergänzt;
-  Einleitungstext von „eine Datei" auf „zwei Dateien" angehoben.
-
-**Heilige Tafel — Privatheit:** Pre-Commit-`grep -i everlast` clean
-auf `index.html`, `docs/papers/sbkim-paper-de.html`, PULS, README,
-Session-Protokoll, Commit-Message. Das DE-Paper enthält **keinen**
-kommerziellen Kontext — es ist der wissenschaftliche Niederschlag,
-nicht der Werdegang. Klausel eingehalten.
-
-**Format-Entscheidung „HTML statt PDF":** Das DE-Paper hat — wie
-das EN-Paper — einen eingebauten „Als PDF speichern"-Knopf
-(`window.print()`). On-demand-PDF aus dem Browser heraus, kein
-separates PDF-File im Repo. Konsistent zum EN-Paper.
-
-**Was NICHT angefasst:** Modul-Code, INTERFACES.md, Komponenten-
-Karten, Optik der Sonnen-Karte, Bewegungs-Mathematik (skaliert sich
-selbst), Observatorium-Screen, `status.json`.
-
-**Manueller Sichttest:** ungeprüft headless — Klaus prüft im
-Browser auf `localhost:8000/#sonnen` bzw. nach GitHub-Pages-Deploy,
-dass (a) fünf Galaxien statt vier auf der Ellipse tanzen, (b) die
-neue Quasar-Galaxie das DE-Paper-Modal mit „Original-Dokument
-öffnen →"-Link öffnet, (c) der Print-Knopf im DE-Paper das PDF
-on-demand erzeugt.
-
-**Nächster sinnvoller Schritt:** Sichttest; danach entweder
-Wachstum (sechste Station) oder Themen-Abschluss.
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_pflege-sonnen-station-5-de-paper.md](sessions/archiv/2026-05-18_pflege-sonnen-station-5-de-paper.md).
-
----
-
 
 ### 2026-05-18 · Mini-Pflege — Vision-Anker M04-Erweiterung als neunter Anker
 
@@ -2909,6 +2924,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-18 | Mini-Pflege · Sonnen-Galaxie Station 5 (DE-Paper) erweitert (PR; deutsches SBKIM-Paper als HTML als fünfte Station eingefügt; Galaxie-Form `galaxy-quasar` mit Lichtstrahl-Beams; Bahn-Ellipse skaliert auf fünf Phasen à 72°; `STATIONS_DATA[4]` mit 4 Erzähl-Absätzen; Privatheits-Klausel eingehalten) | [→ Archiv](sessions/archiv/2026-05-18_pflege-sonnen-station-5-de-paper.md) |
 | 2026-05-19 | Bau · 01.Y `ensureStore` in Modul 01 (PR #102 gemerged 2026-05-19, `main` `8a07ed5`; INTERFACES § 1 Modul 01 Bietet-Block um `ensureStore(storeName: string) → Promise<void>` als achte Funktion erweitert mit voller Garantien-Erklärung — Idempotenz, synchroner Pattern-Check `^sbkim_[a-z0-9_]+$` (`InvalidStoreNameError`), async `EnsureStoreError` mit `cause`-Property aus IDBOpenDBRequest, kein `UnknownStoreError`, strikt additiv, Aufrufer trägt Identitäts-Konvention; Storage-Block `DB-Version` 3 → 4 mit `STORES_V4 = []`-Begründung; Selbstcheck auf acht Funktionen; Geprüft-Zeile um 2026-05-19; § 9.5 Stand-Hinweis am Ende; § 10 Änderungsprotokoll-Zeile. **Code in `src/modules/01_storage.js`** additiv: `DB_VERSION = 4`; modul-lokale `STORE_NAME_PATTERN`; Factory-Funktionen `InvalidStoreNameError` + `EnsureStoreError`; neuer Modul-State `currentDb` als sync-lesbarer Anker; Helper `attachVersionChangeHandler(db)` (fail-soft `db.close()` + Cache-Invalidierung); neue Funktion `ensureStore(name)` mit synchronem Pattern-Check + Idempotenz-Check + Versions-Bump-Choreografie via `db.version + 1` + `KNOWN_STORES.push` zur Laufzeit; `_meta.dbVersion` als Getter (Live-Zustand), `_meta.dbVersionInitial` als Build-Konstante, `_meta.knownStores` als Getter (Snapshot pro Aufruf), `_meta.ensureStorePattern` als Read-Anker. **Karte 01** nachgezogen (§ Schnittstelle / § Stores / § Versionsmigration / § Konfigurationswerte / § Fehlerverhalten / § Risiken / § Manueller Test / § Bauzustand). **Panel 01 in `tests/manual_check.html`** drei neue Knöpfe (Knopf 6 happy-path, Knopf 7 Idempotenz, Knopf 8 Pattern-Verstoß). **Sichttest 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6, Termux-`python3 -m http.server 8000`-Setup): 3/3 grün** — Knopf 6 `db_version` 4 → 5, Idempotenz greift (Knopf 7 5/5/5), Knopf 8 `InvalidStoreNameError` synchron geworfen. **KEINE Modul-02/05/06/07-Änderung** (transparenter Slot-Pfad kommt in 02.Y / 05.Y / 06.Y / 07.Y), keine identitäts-spezifischen Stores angelegt (Aufrufer-Pflicht). **`PROTOCOL_VERSION` bleibt `"0.1"`, `BACKUP_FORMAT_VERSION` bleibt `1` (Bump 1→2 erst in Bau 02.Y), `DB_VERSION` von 3 auf 4**. `node --check` grün; Cleanup-Hinweis: Test-Stores `sbkim_test_*` bleiben in der DB, Klaus löscht via DevTools manuell — Modul 01 bietet keinen `dropStore`-Pfad) | [→ Archiv](sessions/archiv/2026-05-19_bau-01y-ensure-store.md) |
 | 2026-05-19 | Abschluss · V1-Sammelspec-Kaskade (Brief 99 · PR #100 gemerged 2026-05-19, `main` `80994fd`; schließt die vier Strang-Etappen Brief 01 V1-Sage-Hybrid PR #96 + Brief 02 Plattform-Matrix PR #97 + Brief 03 M04-Erweiterung PR #98 + Brief 04 Multi-Identität PR #99; KEINE neuen §-Inhalte in dieser Abschluss-Sitzung — INTERFACES § 10 Änderungsprotokoll um eine Abschluss-Zeile „Sammelspec-Abschluss (Brief 99)" erweitert; **PROTOCOL_VERSION bleibt `"0.1"`** + **BACKUP_FORMAT_VERSION bleibt `1`** als Snapshot-Stand verbindlich dokumentiert; Bau-Sitzungs-Brief-Pipeline für die nächste Welle benannt (KEINE Spec-Kaskade — jeder Bau eigene Bau-Sitzung mit eigenem PR; Reihenfolge ist Klaus' Entscheidung): Bau Sage-Page-Refactor → Bau 01.Y `ensureStore` in Modul 01 → Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump in Modul 02 → Bau 04.A Stufe A erweitert in Modul 04 → Bau 04.B Stufe B in Modul 04 → Bau 05.Y / 06.Y / 07.Y transparenter Slot-Pfad → Bau Multi-Identitäts-Migration der Endknoten; Konsistenz-Prüfung VOR dem Eingriff (Kaskaden-Konvention 5) abgehakt — alle vier Strang-PRs gemerged, INTERFACES § 0 / § 1 / § 2 / § 6 / § 7 / § 8 / § 9 / § 10 auf Brief-04-Stand geprüft, PROTOCOL_VERSION-Status-Snapshot `"0.1"`; KEIN Modul-Code, KEINE Sage-Page-Änderung, KEINE CLAUDE.md-/Karte-09-/`status.json`-Änderung — Brief 99 ist Doku-Pflege; Vision-Anker 1 / 6 / 9 § Status nachgezogen auf „Strang X realisiert + Sammelspec-Abschluss (Brief 99) abgeschlossen") | [→ Archiv](sessions/archiv/2026-05-19_abschluss-v1-sammelspec.md) |
 | 2026-05-19 | Spec · Multi-Identität — Strang 3 (Brief 04) der V1-Sammelspec-Kaskade (Brief 04 · PR #99 gemerged 2026-05-19, `main` `59e3998`; INTERFACES § 1 Modul 02 um fünf neue / erweiterte API-Funktionen erweitert (`getOrCreateIdentity(key?)`, `setActiveIdentity(key)`, `getActiveIdentityKey()`, `listIdentities()`, `removeIdentity(key, options?)`), Singleton-Klausel durch Identitäts-Slot-Vertrag ersetzt (Default-Slot „main" verbindlich, beliebig viele weitere Slots, `sbkim_meta["active-identity"]` als String-Marker), Selbstcheck auf zwölf Funktionen erweitert, Fehlerverhalten um `UnknownIdentityError` + `RemoveActiveIdentityError` erweitert; § 1 Modul 05 / 06 / 07 auf identitäts-spezifische Store-Pattern (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`, `sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`, `sbkim_hetero_outbox_<key>`) umgestellt mit Identitäts-Cache- und Receiver-Map-nodeId→key-Konvention; § 2 Spore-JSON Multi-Identitäts-Hinweis-Block (Strategie A gewählt — nur aktive Identität in `spore.json`, `PROTOCOL_VERSION` bleibt `"0.1"`; Strategie B NICHT gewählt — würde auf `"0.2"` bumpen); § 9 Identitäts-Map als neue verbindliche Spec-Klausel mit sieben Sub-§ (9.1 Slot-Schema, 9.2 identitäts-spezifische Stores + Persona-Isolation, 9.3 active-identity-Marker, 9.4 Receiver-Pfad, 9.5 Migrations-Strategie Option A/B, 9.6 Trade-off-Klausel, 9.7 Verbindung zur M04-Erweiterung); § 9 Änderungsprotokoll auf § 10 nachnummeriert; Apoptose-Granularität entschieden — `confirmSelfApoptose` global, `removeIdentity(key, {force:true})` ist Single-Identitäts-Apoptose mit Hook `_sendLegacyForIdentity` in Modul 07; Karten 02 / 05 / 06 / 07 nachgezogen; `PROTOCOL_VERSION` bleibt `"0.1"`, `BACKUP_FORMAT_VERSION` bleibt `1` (Bump 1→2 in Bau-Folge-Sitzung 02.Y); BRIEF_99 `docs/sessions/BRIEF_99_SAMMELSPEC_ABSCHLUSS.md` angelegt; kein Modul-Code, keine Sage-Page-Änderung) | [→ Archiv](sessions/archiv/2026-05-19_spec-multi-identitaet.md) |
