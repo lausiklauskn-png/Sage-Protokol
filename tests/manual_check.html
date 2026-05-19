@@ -487,7 +487,7 @@
         SbkimUI.log("02_spore",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("02_spore",
-          "  MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache/exportBackup/importBackup");
+          "  MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/setActiveIdentity/getActiveIdentityKey/listIdentities/removeIdentity/resetIdentityCache/exportBackup/importBackup");
       });
 
       // Knopf 6 — Backup exportieren (Bau 02.X, 2026-05-16)
@@ -617,6 +617,172 @@
         } catch (err) {
           SbkimUI.setStatus("02_spore", "err", err.name || "Fehler");
           SbkimUI.log("02_spore", "✗ " + (err.name || "Error") + ": " + (err.message || err));
+        }
+      });
+
+      // Knopf 8 — Identität anlegen + wechseln (Bau 02.Y, 2026-05-19)
+      // Sequenz getOrCreateIdentity('test') → listIdentities() →
+      // setActiveIdentity('test') → getActiveIdentityKey() → getNodeId().
+      // Erwartung: nodeId vor und nach dem Wechsel sind verschieden;
+      // listIdentities() zeigt ["main","test"] lexikographisch.
+      SbkimUI.addButton("02_spore", "Identität anlegen + wechseln", async function () {
+        await SbkimSpore.init();
+        // Sicherstellen, dass main existiert (Default-Slot).
+        var mainIdent = await SbkimSpore.getOrCreateIdentity();
+        var mainNodeId = mainIdent.nodeId;
+        SbkimUI.log("02_spore", "▶ vor Wechsel — main nodeId: " + mainNodeId);
+
+        var testIdent = await SbkimSpore.getOrCreateIdentity("test");
+        SbkimUI.log("02_spore", "▶ Slot 'test' angelegt — test nodeId: " + testIdent.nodeId);
+
+        var slots = await SbkimSpore.listIdentities();
+        SbkimUI.log("02_spore", "▶ listIdentities(): " + JSON.stringify(slots));
+
+        await SbkimSpore.setActiveIdentity("test");
+        var activeNow = await SbkimSpore.getActiveIdentityKey();
+        var nodeIdAfter = await SbkimSpore.getNodeId();
+        SbkimUI.log("02_spore", "▶ nach Wechsel — active-identity: " + activeNow + ", getNodeId(): " + nodeIdAfter);
+
+        var ok = (nodeIdAfter !== mainNodeId) && (activeNow === "test")
+                 && (slots.indexOf("main") !== -1) && (slots.indexOf("test") !== -1);
+        SbkimUI.setStatus("02_spore", ok ? "ok" : "err", ok ? "Identitäts-Wechsel OK" : "Wechsel inkonsistent");
+        return {
+          main_nodeId: mainNodeId,
+          test_nodeId: testIdent.nodeId,
+          active_after: activeNow,
+          getNodeId_after: nodeIdAfter,
+          listIdentities: slots,
+          erwartung: "nodeId vor ≠ nach; listIdentities = [main, test]; active-identity = 'test'",
+        };
+      });
+
+      // Knopf 9 — Identität entfernen (force) (Bau 02.Y, 2026-05-19)
+      // removeIdentity('test', {force:true}); active-identity fällt
+      // auf "main" zurück, getNodeId liefert wieder main-nodeId.
+      SbkimUI.addButton("02_spore", "Identität entfernen (force)", async function () {
+        await SbkimSpore.init();
+        var activeBefore = await SbkimSpore.getActiveIdentityKey();
+        SbkimUI.log("02_spore", "▶ vor Entfernen — active-identity: " + activeBefore);
+
+        var removed = await SbkimSpore.removeIdentity("test", { force: true });
+        SbkimUI.log("02_spore", "▶ removeIdentity('test', {force:true}) → " + removed);
+
+        var activeAfter = await SbkimSpore.getActiveIdentityKey();
+        var nodeIdAfter;
+        try { nodeIdAfter = await SbkimSpore.getNodeId(); }
+        catch (e) { nodeIdAfter = "<NoIdentityError: " + (e.message || e) + ">"; }
+        SbkimUI.log("02_spore", "▶ nach Entfernen — active-identity: " + activeAfter +
+                                ", getNodeId(): " + nodeIdAfter);
+
+        var slots = await SbkimSpore.listIdentities();
+        SbkimUI.log("02_spore", "▶ listIdentities(): " + JSON.stringify(slots));
+
+        // Idempotenz: zweiter Aufruf gibt false.
+        var removed2 = await SbkimSpore.removeIdentity("test", { force: true });
+        SbkimUI.log("02_spore", "▶ removeIdentity('test', {force:true}) erneut → " + removed2 + " (Idempotenz)");
+
+        var ok = (removed === true) && (activeAfter === "main") && (slots.indexOf("test") === -1) && (removed2 === false);
+        SbkimUI.setStatus("02_spore", ok ? "ok" : "err", ok ? "Persona-Apoptose OK" : "Fallback inkonsistent");
+        return {
+          removed: removed,
+          removed_idempotent: removed2,
+          active_before: activeBefore,
+          active_after: activeAfter,
+          getNodeId_after: nodeIdAfter,
+          listIdentities: slots,
+          erwartung: "removed=true, active-identity = 'main', test nicht in listIdentities, zweiter Aufruf removed=false",
+        };
+      });
+
+      // Knopf 10 — Backup mit Multi-Identität (Bau 02.Y, 2026-05-19)
+      // Setup: Identität 'test' anlegen (falls nicht da), dann
+      // exportBackup. Erwartung: version=2, payload-schema-version=2,
+      // identities.length === 2, beide nodeIds aufgelistet.
+      SbkimUI.addButton("02_spore", "Backup mit Multi-Identität", async function () {
+        var password = window.prompt("Passwort für Multi-Identitäts-Backup (mindestens 8 Zeichen):");
+        if (password === null) {
+          SbkimUI.log("02_spore", "ℹ Abgebrochen.");
+          return;
+        }
+        await SbkimSpore.init();
+        // Setup: main + test sicherstellen, beide mit Spore.
+        var mainIdent = await SbkimSpore.getOrCreateIdentity();
+        var existingMain = await SbkimSpore.getOwnSpore("main");
+        if (!existingMain) await SbkimSpore.generateOwnSpore(demoMeta, "main");
+
+        var testIdent = await SbkimSpore.getOrCreateIdentity("test");
+        var existingTest = await SbkimSpore.getOwnSpore("test");
+        if (!existingTest) {
+          var testMeta = Object.assign({}, demoMeta, {
+            nodeName: "Rezeptbuch (Test-Persona)",
+            domain: "rezeptbuch-test.example.org",
+          });
+          await SbkimSpore.generateOwnSpore(testMeta, "test");
+        }
+
+        var blob;
+        try {
+          blob = await SbkimSpore.exportBackup(password);
+        } catch (err) {
+          SbkimUI.setStatus("02_spore", "err", err.name || "Fehler");
+          SbkimUI.log("02_spore", "✗ " + (err.name || "Error") + ": " + (err.message || err));
+          return;
+        }
+        var wrapperVersion = blob.version;
+        var payloadSchemaVersion = blob["payload-schema-version"];
+        SbkimUI.log("02_spore", "▶ Backup-Wrapper version: " + wrapperVersion +
+                                ", payload-schema-version: " + payloadSchemaVersion);
+
+        // Test-Decrypt im Klartext, damit Klaus die identities[]-Liste
+        // sehen kann (sonst ist sie verschlüsselt).
+        try {
+          var salt = atob(blob.kdf.salt.replace(/-/g,"+").replace(/_/g,"/") + "==".slice(0, (4 - blob.kdf.salt.length % 4) % 4));
+          var saltBytes = new Uint8Array(salt.length);
+          for (var i = 0; i < salt.length; i++) saltBytes[i] = salt.charCodeAt(i);
+          var ivStr = atob(blob.cipher.iv.replace(/-/g,"+").replace(/_/g,"/") + "==".slice(0, (4 - blob.cipher.iv.length % 4) % 4));
+          var ivBytes = new Uint8Array(ivStr.length);
+          for (var j = 0; j < ivStr.length; j++) ivBytes[j] = ivStr.charCodeAt(j);
+          var ctStr = atob(blob.ciphertext.replace(/-/g,"+").replace(/_/g,"/") + "==".slice(0, (4 - blob.ciphertext.length % 4) % 4));
+          var ctBytes = new Uint8Array(ctStr.length);
+          for (var k = 0; k < ctStr.length; k++) ctBytes[k] = ctStr.charCodeAt(k);
+          var material = new TextEncoder().encode(password);
+          var baseKey = await crypto.subtle.importKey("raw", material, { name: "PBKDF2" }, false, ["deriveKey"]);
+          var aesKey = await crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt: saltBytes, iterations: blob.kdf.iterations, hash: "SHA-256" },
+            baseKey, { name: "AES-GCM", length: 256 }, false, ["decrypt"]
+          );
+          var plainBuf = await crypto.subtle.decrypt({ name: "AES-GCM", iv: ivBytes }, aesKey, ctBytes);
+          var payload = JSON.parse(new TextDecoder().decode(plainBuf));
+          var ids = payload.identities || [];
+          var slotKeys = ids.map(function (e) { return e.key; });
+          var slotNodeIds = ids.map(function (e) { return e.key + "→" + e.nodeId; });
+          SbkimUI.log("02_spore", "▶ payload.identities.length: " + ids.length);
+          SbkimUI.log("02_spore", "▶ Slot-Keys: " + JSON.stringify(slotKeys));
+          SbkimUI.log("02_spore", "▶ Slot-nodeIds: " + slotNodeIds.join("; "));
+          SbkimUI.log("02_spore", "▶ payload[\"active-identity\"]: " + payload["active-identity"]);
+
+          var ok = (wrapperVersion === 2) && (payloadSchemaVersion === 2)
+                   && (ids.length === 2) && (slotKeys.indexOf("main") !== -1)
+                   && (slotKeys.indexOf("test") !== -1);
+          SbkimUI.setStatus("02_spore", ok ? "ok" : "err", ok ? "Multi-ID-Backup OK" : "Form falsch");
+        } catch (e) {
+          SbkimUI.log("02_spore", "ℹ Klartext-Decrypt zur Anzeige fehlgeschlagen: " + (e.message || e));
+        }
+
+        // Download-Link wie Knopf 6.
+        try {
+          var json = JSON.stringify(blob);
+          var fileBlob = new Blob([json], { type: "application/json" });
+          var url = URL.createObjectURL(fileBlob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "sbkim-backup-multi-" + new Date().toISOString().slice(0, 10) + ".json";
+          a.textContent = "📦 Multi-ID-Backup herunterladen (" + json.length + " Bytes)";
+          a.style.cssText = "display:inline-block;margin:0.4rem 0;padding:0.3rem 0.6rem;background:#1E40AF;color:#fff;text-decoration:none;border-radius:4px;";
+          var panel = SbkimUI.panel("02_spore");
+          if (panel) panel.querySelector(".controls").appendChild(a);
+        } catch (e) {
+          SbkimUI.log("02_spore", "ℹ Download-Link konnte nicht erzeugt werden: " + (e && e.message || e));
         }
       });
     })();

@@ -115,11 +115,11 @@ Pilz-Modell.
 
 ## Schnittstelle
 
-Modul 02 exportiert **zwölf** öffentliche Funktionen ab Brief 04 der
-V1-Sammelspec-Kaskade (2026-05-19). Alle DB-Operationen laufen über
-`window.SbkimStorage`, sind also Promise-basiert. Schlüssel-Erzeugung
-ist **lazy** — sie passiert beim ersten `getOrCreateIdentity(key)`-Aufruf,
-nicht beim Skript-Laden.
+Modul 02 exportiert **vierzehn** öffentliche Funktionen ab Brief 04 der
+V1-Sammelspec-Kaskade (2026-05-19) plus Bau 02.Y (2026-05-19, Code-
+Stand). Alle DB-Operationen laufen über `window.SbkimStorage`, sind also
+Promise-basiert. Schlüssel-Erzeugung ist **lazy** — sie passiert beim
+ersten `getOrCreateIdentity(key)`-Aufruf, nicht beim Skript-Laden.
 
 ```
 init() → Promise<void>
@@ -620,9 +620,13 @@ Pfad — siehe § Risiken „Backup-Aktualität").
 
 ```jsonc
 {
-  "version":               1,                    // = BACKUP_FORMAT_VERSION (§0)
-                                                  // Hauptversion. Modul 02 versteht nur
-                                                  // den eigenen Wert (sonst BackupVersionMismatchError).
+  "version":               2,                    // = BACKUP_FORMAT_VERSION (§0)
+                                                  // Hauptversion. Modul 02 versteht
+                                                  // version 1 (alte Singleton-Backups, Bau 02.X)
+                                                  // UND version 2 (Multi-Identitäts-Backups,
+                                                  // Bau 02.Y). exportBackup schreibt nur
+                                                  // die aktuelle Version 2; alles Andere
+                                                  // beim Import → BackupVersionMismatchError.
   "kdf": {
     "algorithm":           "PBKDF2",
     "hash":                "SHA-256",
@@ -635,7 +639,7 @@ Pfad — siehe § Risiken „Backup-Aktualität").
   },
   "ciphertext":            "<base64url>",       // AES-GCM-Ausgang (inkl. 16-Byte-Auth-Tag),
                                                   // base64url ohne Padding.
-  "payload-schema-version": 1                   // Schema-Version DES KLARTEXT-Inhalts (siehe unten).
+  "payload-schema-version": 2                   // Schema-Version DES KLARTEXT-Inhalts (siehe unten).
                                                   // Additiv versioniert. Modul 02 erlaubt
                                                   // payload-schema-version <= eigene Konstante;
                                                   // höhere Werte werfen BackupSchemaError.
@@ -645,33 +649,70 @@ Pfad — siehe § Risiken „Backup-Aktualität").
 Der **Klartext-Payload** (Inhalt VOR der AES-GCM-Verschlüsselung) ist
 eine kanonisch-JSON-serialisierte UTF-8-Bytefolge (alphabetisch
 sortierte Object-Keys, rekursiv — dieselbe Disziplin wie Spore-
-Signatur). Schema bei `payload-schema-version: 1` (Spec-Sitzung
-Backup-Export Stufe 2, Pflicht-Frage 1 Variante b — Identität +
-Geschwister):
+Signatur). Schema bei `payload-schema-version: 2` (Bau 02.Y, 2026-05-19;
+Multi-Identitäts-Backup „kompletter Rucksack" aus INTERFACES.md § 9.6
+Pkt. 2):
 
 ```jsonc
 {
-  "createdAt":  "2026-05-16T07:00:00.000Z",    // ISO-8601 UTC
-  "nodeId":     "<base64url-sha256-rawpub>",    // = spore.id, Plausibilitäts-Anker
-  "keys": {
+  "createdAt":       "2026-05-19T07:00:00.000Z",   // ISO-8601 UTC
+  "active-identity": "main",                       // Optional. Wenn vorhanden + im identities-Array enthalten,
+                                                    // wird er beim Import als sbkim_meta["active-identity"]
+                                                    // gesetzt. Fehlt das Feld → Default "main" (oder erster Slot).
+  "nodeId":          "<base64url-sha256-rawpub>",  // Aktiver Slot, Plausibilitäts-Anker (konservative
+                                                    // Down-Grade-Kompat — alte Bau-02.X-Code-Pfade
+                                                    // lesen das Feld direkt).
+  "keys": {                                         // Aktiver Slot — konservative Down-Grade-Kompat
+                                                    // (alte Bau-02.X-Code-Pfade ohne identities[]-Verständnis
+                                                    // können den aktiven Slot wiederherstellen).
     "keyId":      "main",
-    "privateKey": { /* JsonWebKey, kty:"OKP", crv:"Ed25519", d:..., x:... */ },
-    "publicKey":  { /* JsonWebKey, kty:"OKP", crv:"Ed25519",       x:... */ }
+    "privateKey": { /* JsonWebKey */ },
+    "publicKey":  { /* JsonWebKey */ }
   },
-  "spore":      { /* vollständige SporeJson inkl. signature, wie in sbkim_spore["main"] */ },
-  "siblings": [
+  "spore":      { /* SporeJson des aktiven Slots */ },
+  "siblings":   [ /* Geschwister des aktiven Slots */ ],
+  "identities": [                                   // NEU in Bau 02.Y — Pflicht-Feld bei version: 2.
+                                                    //   Array von Objekten je Slot. Pflicht-Vor-Check
+                                                    //   in importBackup: identities.length >= 1
+                                                    //   (sonst BackupSchemaError).
     {
-      "nodeId":               "<peerNodeId>",
-      "domain":               "...",
-      "endpoint":             "...",
-      "pubKey":               { /* JsonWebKey */ },
-      "since":                "<ISO-8601>",
-      "heterokaryosisOptIn":  true             // optional, additiv (Modul 05/06/08)
+      "key":      "main",
+      "nodeId":   "<base64url-sha256-rawpub des Slots>",   // pro Slot redundant für Identifikation
+      "keys": {
+        "keyId":      "main",
+        "privateKey": { /* JsonWebKey, kty:"OKP", crv:"Ed25519", d:..., x:... */ },
+        "publicKey":  { /* JsonWebKey, kty:"OKP", crv:"Ed25519",       x:... */ }
+      },
+      "spore":    { /* vollständige SporeJson inkl. signature */ },
+      "siblings": [
+        {
+          "nodeId":               "<peerNodeId>",
+          "domain":               "...",
+          "endpoint":             "...",
+          "pubKey":               { /* JsonWebKey */ },
+          "since":                "<ISO-8601>",
+          "heterokaryosisOptIn":  true             // optional, additiv (Modul 05/06/08)
+        }
+        // ... weitere Geschwister des Slots, Reihenfolge: nach since aufsteigend
+      ]
     }
-    // ... weitere Geschwister, Reihenfolge: nach since aufsteigend
+    // ... weitere Slots (z.B. "beruflich", "test")
   ]
 }
 ```
+
+**Migrations-Hinweis (Bau 02.Y, 2026-05-19):** Alte Backups
+(`version: 1`, Bau 02.X 2026-05-16) bleiben über `importBackup`
+**weiterhin importierbar**. Der Klartext-Payload trägt dort kein
+`identities[]`-Feld — Modul 02 baut intern aus den Top-Level-Feldern
+`nodeId` / `keys` / `spore` / `siblings` einen Eintrag mit `key: "main"`
+und durchläuft denselben Multi-Identitäts-Import-Pfad. Damit
+funktioniert ein Re-Import von Klaus' Mein-Mixarium- /
+Mein-Rezeptbuch-Backup vom 2026-05-16 (Bau 02.X) ohne neuen Export.
+`exportBackup` schreibt IMMER `version: 2` (Aufwärts-Kompat ist gut,
+Aufwärts-Schreiben wäre ein Schritt zurück). Asymmetrie ist verbindlich:
+Lesen beider Versionen, Schreiben nur v=2 — siehe § Risiken „Backup-
+Schema-Migration v1 → v2 ist asymmetrisch".
 
 **KDF-Pfad (verbindlich):**
 ```
@@ -703,13 +744,49 @@ Passwort oder korruptes Backup") und löst die Promise NICHT mit
 
 ### Storage
 
-Stores: `sbkim_keys` (Schlüssel `"main"`, Wert
+Stores: `sbkim_keys` (Schlüssel `"main"` oder weitere Slot-Keys, Wert
 `{ keyId, privateKey: JsonWebKey, publicKey: JsonWebKey }`) und
-`sbkim_spore` (Schlüssel `"main"`, Wert `{ nodeId, sporeJson, signature }`,
+`sbkim_spore` (Schlüssel analog, Wert `{ nodeId, sporeJson, signature }`,
 wobei `sporeJson` das vollständige Spore-Objekt inkl. Signatur ist —
 das `signature`-Feld auf der Wrapper-Ebene wird redundant gehalten,
 damit Modul 05 ohne Re-Parse darauf zugreifen kann). JWK ist
 strukturell-klonbar, IndexedDB akzeptiert es ohne Wrapper.
+
+#### Identitäts-Slot-Vertrag (Brief 04 / Bau 02.Y)
+
+Mit Bau 02.Y (2026-05-19) ist der Multi-Identitäts-Pfad code-produktiv.
+Modul 02 schreibt nicht mehr ausschließlich auf den Default-Slot
+`"main"`, sondern auf einen frei wählbaren `<key>`. Identitäts-spezifische
+Stores tragen das Pattern `<store-base>_<key>` (siehe INTERFACES.md
+§ 9.2) und werden via `SbkimStorage.ensureStore(...)` dynamisch
+angelegt — Modul 01 kennt Identität NICHT, der Aufrufer (= Modul 02 in
+`getOrCreateIdentity` / `importBackup`) trägt die Konvention.
+
+| Eintrag | Schlüssel-Form | Schreiber | Anmerkung |
+|---|---|---|---|
+| `sbkim_keys[<key>]` | String-Key (Default `"main"`) | Modul 02 | Pro Identitäts-Slot ein Eintrag |
+| `sbkim_spore[<key>]` | String-Key | Modul 02 | Pro Identitäts-Slot ein Eintrag (eigener `embeddingCapabilities`/`embeddingNeeds` aus Brief 03 pro Persona) |
+| `sbkim_siblings_<key>` | Store-Name | Modul 05 / 06 / 08 | Pro Persona ein Store, via `ensureStore` angelegt |
+| `sbkim_anastomosis_log_<key>` | Store-Name | Modul 05 / 06 | Pro Persona ein Store, via `ensureStore` angelegt |
+| `sbkim_legacy_inbox_<key>` | Store-Name | Modul 07 | Pro Persona ein Store, via `ensureStore` angelegt |
+| `sbkim_hetero_inbox_<key>` | Store-Name | Modul 06 | Pro Persona ein Store, via `ensureStore` angelegt |
+| `sbkim_hetero_outbox_<key>` | Store-Name | Modul 08 | Pro Persona ein Store, via `ensureStore` angelegt |
+| `sbkim_meta["active-identity"]` | Marker-Key | Modul 02 (alleinig) | String, Default `"main"` falls fehlend |
+
+Modul 02 ruft `SbkimStorage.ensureStore("sbkim_siblings_<key>")` etc.
+für alle fünf identitäts-spezifischen Store-Basen PRO Persona-Slot,
+BEVOR ein Schreibvorgang in einen davon stattfindet. Die Aufrufe
+passieren in `getOrCreateIdentity(key)` (für neue Slots) und in
+`importBackup` (für Slots aus dem Backup, die in der aktuellen DB noch
+nicht existieren). Idempotenz von `ensureStore` garantiert, dass
+parallele oder wiederholte Aufrufe kein Problem sind (siehe Bau-01.Y-
+Garantien-Block in Karte 01 / INTERFACES.md § 1 Modul 01).
+
+**`active-identity`-Marker:** `sbkim_meta["active-identity"]` ist ein
+lokaler String-Marker (kein Spore-Feld, kein Netz-Transport). Modul 02
+ist alleiniger Schreiber (`setActiveIdentity` / `removeIdentity`-force-
+Fall). Default `"main"`, falls fehlend — Rückwärts-Kompat zum
+Singleton-Vertrag aus Spec-Sitzung 02 (2026-05-14).
 
 **Backup-Inhalt** (Pflicht-Frage 1 Variante b der Spec-Sitzung
 Backup-Export Stufe 2): `exportBackup` liest aus drei SBKIM-Stores
@@ -746,10 +823,10 @@ beim Skript-Laden.
 
 | Konstante | Wert | Bedeutung |
 |---|---|---|
-| `BACKUP_FORMAT_VERSION` | `1` | Hauptversion des Wrapper-Schemas (`SbkimBackupBlob.version`). Eigene additive Versionierung, getrennt von `PROTOCOL_VERSION` und `DB_VERSION`. Höhere Werte beim Import → `BackupVersionMismatchError`. |
+| `BACKUP_FORMAT_VERSION` | `2` | Hauptversion des Wrapper-Schemas (`SbkimBackupBlob.version`). Eigene additive Versionierung, getrennt von `PROTOCOL_VERSION` und `DB_VERSION`. Bau 02.Y 2026-05-19 bumpt von 1 auf 2. Modul 02 LIEST sowohl 1 als auch 2 (Liste `BACKUP_FORMAT_VERSION_READ_OK = [1, 2]`); SCHREIBT IMMER den aktuellen Wert. Höhere unbekannte Werte beim Import → `BackupVersionMismatchError`. |
 | `BACKUP_KDF_ITERATIONS` | `600000` | PBKDF2-Iterations für die Schlüssel-Ableitung. OWASP-Empfehlung 2023+ für PBKDF2-SHA256 (Pflicht-Frage 2 Variante b). Aufruf-Zeit auf low-end Android ~1–2 s, auf Desktop < 0,5 s. |
 | `BACKUP_PASSWORD_MIN_LEN` | `8` | Mindest-Länge des Passwort-Strings. Untere Validierungs-Schwelle — keine Entropie-Schätzung, keine Komplexitäts-Pflicht. Aufrufer-Pflicht, etwas Sinnvolles zu wählen. |
-| `BACKUP_PAYLOAD_SCHEMA_VERSION` | `1` | Schema-Version des Klartext-Payloads. Additiv versioniert. Modul 02 erlaubt Import von `<= BACKUP_PAYLOAD_SCHEMA_VERSION`; höhere Werte → `BackupSchemaError`. Erhöhung erst nötig, wenn der Klartext-Payload Pflichtfelder hinzubekommt. |
+| `BACKUP_PAYLOAD_SCHEMA_VERSION` | `2` | Schema-Version des Klartext-Payloads. Additiv versioniert. Bau 02.Y 2026-05-19 bumpt von 1 auf 2 (neues Pflicht-Feld `identities[]`). Modul 02 erlaubt Import von `<= BACKUP_PAYLOAD_SCHEMA_VERSION`; höhere Werte → `BackupSchemaError`. v=1-Payloads werden intern in einen einzigen `identities[]`-Eintrag migriert (Rückwärts-Kompat zum Bau-02.X-Format). |
 | `BACKUP_KDF_SALT_BYTES` | `16` | Salt-Länge für PBKDF2 (Konvention). |
 | `BACKUP_CIPHER_IV_BYTES` | `12` | IV-Länge für AES-GCM (Standard 96 bit). |
 
@@ -777,9 +854,12 @@ spezifiziert). Die salt-/iv-Längen-Konventionen sind modul-lokal
 | `exportBackup` / `importBackup` mit Passwort kürzer als `BACKUP_PASSWORD_MIN_LEN` (8) oder leerem String | wirft `InvalidBackupPasswordError` synchron, deutschsprachige Message. Kein Crypto-Aufruf. |
 | `importBackup`: AES-GCM-Auth-Tag schlägt fehl (falsches Passwort) oder Blob-Form ist korrupt (kein valides base64url, Längen falsch, JSON-Parse scheitert auf dem Klartext) | rejected mit `BackupDecryptError`. Eine Sammel-Klasse — Modul 02 verrät bewusst nicht, ob Passwort falsch oder Datei beschädigt (kein Oracle für Angreifer). |
 | `importBackup`: `blob.version` ≠ `BACKUP_FORMAT_VERSION` | rejected mit `BackupVersionMismatchError`. Wrapper-Hauptversion mismatch; Backup aus zukünftiger oder unbekannter Modul-Version. Kein Decrypt-Versuch. |
-| `importBackup`: `blob.payload-schema-version` > `BACKUP_PAYLOAD_SCHEMA_VERSION` (nach erfolgreichem Decrypt) oder Klartext-Payload-Pflichtfeld fehlt (`nodeId`, `keys.privateKey`, `keys.publicKey`, `spore`) | rejected mit `BackupSchemaError`, deutschsprachige Message mit Hinweis, welches Feld fehlt / welche Schema-Version unbekannt ist. |
-| `importBackup`: `sbkim_keys["main"]` existiert bereits UND `options.force !== true` | rejected mit `BackupOverwriteError` (Pflicht-Frage 3 Variante a). Kein Decrypt-Versuch (Vor-Check vor Crypto). Aufrufer entscheidet bewusst per `{force:true}`, ob die bestehende Identität ersetzt werden darf. |
+| `importBackup`: `blob.payload-schema-version` > `BACKUP_PAYLOAD_SCHEMA_VERSION` (nach erfolgreichem Decrypt), Klartext-Payload-Pflichtfeld fehlt (`nodeId`, `keys.privateKey`, `keys.publicKey`, `spore`), ODER bei `payload-schema-version: 2` ist `payload.identities[]` fehlend/leer | rejected mit `BackupSchemaError`, deutschsprachige Message mit Hinweis, welches Feld fehlt / welche Schema-Version unbekannt ist / „leere identities[]-Liste nach Decrypt" als zusätzlicher Auslöser (Bau 02.Y Pflicht-Vor-Check „mindestens eine Identität im Container"). |
+| `importBackup`: bei `version: 2` ist mindestens ein Slot aus `payload.identities[]` bereits in `sbkim_keys[entry.key]` belegt UND `options.force !== true` | rejected mit `BackupOverwriteError` (Pflicht-Frage 3 Variante a, **pro Slot** ab Bau 02.Y). Sammel-Error mit Hinweis auf die kollidierenden Slot-Keys. Kein Decrypt-Versuch für die identifizierten Slots. Aufrufer entscheidet bewusst per `{force:true}`, ob die bestehenden Identitäten ersetzt werden dürfen. Bei `version: 1` bleibt der Pre-Brief-04-Pfad: `sbkim_keys["main"]` bereits belegt + ohne force → `BackupOverwriteError`. |
 | `exportBackup`: keine Identität vorhanden | rejected mit `NoIdentityError` aus dem `getOrCreateIdentity`-Pfad (wird unverändert durchgereicht). Aufrufer muss erst `getOrCreateIdentity()` rufen. |
+| `setActiveIdentity(key)`: key nicht in `sbkim_keys` | wirft `UnknownIdentityError` (sync nach dem await; kein Storage-Schreibvorgang, aktive Identität bleibt unverändert). |
+| `removeIdentity(key, {force:false})`: key === `sbkim_meta["active-identity"]` | wirft `RemoveActiveIdentityError` (kein Storage-Eingriff; Aufrufer muss `{force:true}` setzen oder zuerst die aktive Identität wechseln). |
+| `removeIdentity(key)` bei unbekanntem key | KEIN Throw; resolves mit `false` (idempotent, analog `forgetSibling`). |
 
 Alle SBKIM-Fehler sind `Error`-Instanzen mit sprechendem `name` und
 deutschsprachigem `message`-Feld. `verifyForeignSpore` wirft niemals —
@@ -830,8 +910,46 @@ In `tests/manual_check.html`, Panel **02 Spore** (seit Bau-Sitzung
    vor dem Export (Singleton-Wiederherstellung). Falsches Passwort:
    `BackupDecryptError`. Modifizierte Backup-Datei (irgendein Zeichen
    im `ciphertext` umgetippt): `BackupDecryptError`. Wrapper-Version-
-   Feld auf `2` umgetippt: `BackupVersionMismatchError` (sync, kein
-   Decrypt-Versuch).
+   Feld auf `99` umgetippt: `BackupVersionMismatchError` (sync, kein
+   Decrypt-Versuch); Wrapper-Version `1` bleibt **importierbar**
+   (Rückwärts-Kompat ab Bau 02.Y).
+8. **Identität anlegen + wechseln (Bau 02.Y, 2026-05-19)** —
+   Sequenz `getOrCreateIdentity('test')` → `listIdentities()` →
+   `setActiveIdentity('test')` → `getActiveIdentityKey()` →
+   `getNodeId()`. Erwartung: vor dem Wechsel liefert `getNodeId()` die
+   main-nodeId; `listIdentities()` zeigt `["main", "test"]`
+   (lexikographisch sortiert); nach dem Wechsel liefert
+   `getActiveIdentityKey()` `"test"` und `getNodeId()` eine andere
+   nodeId. Sichtprüfung: DevTools → Application → IndexedDB → es
+   existieren die fünf identitäts-spezifischen Stores
+   `sbkim_siblings_test` / `sbkim_anastomosis_log_test` /
+   `sbkim_legacy_inbox_test` / `sbkim_hetero_inbox_test` /
+   `sbkim_hetero_outbox_test` (jeweils leer).
+9. **Identität entfernen (force) (Bau 02.Y)** —
+   `removeIdentity('test', {force:true})`. Erwartung: vor dem Aufruf
+   `active-identity === "test"`; nach dem Aufruf `active-identity ===
+   "main"` (Fallback auf main, weil `sbkim_keys["main"]` existiert);
+   `getNodeId()` liefert wieder die main-nodeId. Rückgabe: `true`.
+   Aufruf bei unbekanntem key (z.B. erneuter `removeIdentity('test',
+   {force:true})`): Rückgabe `false`, kein Throw. Aufruf ohne force
+   auf aktive Identität: `RemoveActiveIdentityError`.
+10. **Backup mit Multi-Identität (Bau 02.Y)** — Setup: Identität
+    `"test"` mit Knopf 8 anlegen. Dann `exportBackup` triggern.
+    Erwartung: Wrapper-`version: 2`, `payload-schema-version: 2`,
+    `payload.identities[]` mit zwei Einträgen (Slot-Keys `"main"` und
+    `"test"`, beide nodeIds), `payload["active-identity"]`-Feld passend
+    zum aktiven Slot. Import-Probe (in einer leeren Browser-Profil-
+    Instanz oder nach `removeIdentity('test',{force:true})` +
+    `removeIdentity('main',{force:true})` mit anschließendem Re-Import):
+    beide Slots werden wieder angelegt, `listIdentities()` zeigt erneut
+    `["main", "test"]`. Cleanup-Hinweis: Test-Slot wird mit Knopf 9
+    gelöscht (sbkim_keys-Eintrag + Spore-Eintrag + alle fünf
+    identitäts-spezifischen Stores werden via `clear` geleert); die
+    identitäts-spezifischen Stores `*_test` bleiben jedoch als **leere
+    Stores** in der IndexedDB stehen (Modul 01 bietet keinen
+    `dropStore`-Pfad — siehe § Risiken „Backup-Schema-Migration"-
+    Hinweis; manueller Cleanup über DevTools nötig, falls eine
+    saubere DB gewünscht ist).
 
 Bewertung manuell durch den Tester. Ergebnis kommt in den Bauzustand-
 Block dieser Karte (Zeile „Sichttest").
@@ -914,6 +1032,28 @@ Block dieser Karte (Zeile „Sichttest").
   **nicht** im Backup (siehe § Storage „Backup-Inhalt") — der
   Backup-Inhalt ist auf das beschränkt, was ohne Backup nicht
   selbst-heilen kann (= Identität + Sibling-Mitgliedschaft).
+- **Mid-Operation-Identitäts-Wechsel nicht spezifiziert (Bau 02.Y):**
+  ein Aufrufer, der mitten in einem laufenden Handshake /
+  Heterokaryosis-Pull / Legacy-Versand `setActiveIdentity` ruft, bekommt
+  undefiniertes Verhalten. INTERFACES.md § 9.3 hat das als bewusste
+  Spec-Lücke benannt — eine Folge-Spec-Sitzung darf einen aktiven Hook
+  nachreichen (z.B. CustomEvent `sbkim:active-identity-changed`); Bau
+  02.Y liefert ihn **NICHT**. Bis dahin gilt die Lese-Konvention:
+  Modul 05 / 06 / 07 rufen `getActiveIdentityKey()` im `init()`-Pfad und
+  cachen den Wert für die Operation; Wechsel-Effekte greifen erst bei
+  Folge-Operationen.
+- **Backup-Schema-Migration v1 → v2 ist asymmetrisch (Bau 02.Y):**
+  `importBackup` LIEST sowohl `version: 1` (alte Bau-02.X-Singleton-
+  Backups) als auch `version: 2` (Multi-Identitäts-Backups);
+  `exportBackup` SCHREIBT IMMER `version: 2`. Konsequenz: ein Backup
+  aus 02.Y-Code kann **nicht** in einem alten 02.X-Code (vor Bau 02.Y)
+  importiert werden — das alte Modul kennt nur `BACKUP_FORMAT_VERSION
+  === 1`. Klaus' bestehende Mein-Mixarium- / Mein-Rezeptbuch-Backups
+  vom 2026-05-16 (alle `version: 1`) bleiben in 02.Y-Code importierbar
+  (Rückwärts-Kompat); ein Down-Grade wäre der seltene Pfad. Hinweis im
+  Aufrufer-UX (Karte 09 / Andock-Wizard): nach Multi-Identitäts-
+  Migration bitte sofort ein neues Backup ziehen, falls die Endknoten
+  zwischen Geräten umziehen.
 
 ---
 
@@ -933,6 +1073,8 @@ Block dieser Karte (Zeile „Sichttest").
 | Sichttest (Bau 02.X) | 2026-05-16 | Bau 02.X Backup-Export | geprüft 2026-05-16 (Klaus, Chrome auf Galaxy Tab S6 + DeX): alle drei neuen Knöpfe grün — Knopf 6 (Backup exportieren) liefert valides Wrapper-Format `version:1`, `iterations:600000`, AES-GCM-256, `payload-schema-version:1`; Knopf 7 (Backup einlesen) ohne force → `BackupOverwriteError` mit korrekter Warnzeile + Status-Chip „Bestehende Identität" (Schutz-Pfad, erwartet); Knopf 7b (Identität ersetzen — unwiderruflich) funktioniert im normalen Pfad. Klaus hat parallel die Panels 01–08 in `tests/manual_check.html` grob durchgeklickt — alle Selbstchecks und Hauptpfade grün („die anderen 01–08 getestet, die waren alle OK"). **Test-Panel-UX-Befund** (kein Modul-Bug): der pendingBackup-Stash in Panel 02 Knopf 7 wurde beim zweiten Klick auf „Backup einlesen" überschrieben (`pendingBackup = null` direkt am Anfang des Handlers) — wenn Klaus zweimal auf Knopf 7 klickt ohne im File-Picker eine Datei zu wählen, ging der Stash verloren und Knopf 7b zeigte „Kein Backup zum Ersetzen vorgemerkt". **Modul-Vertrag unangetastet.** **In Folge-Mini-Pflege 2026-05-16 (Test-Panel-UX) gefixt:** Reset-Zeile aus dem Handler-Anfang entfernt, `pendingBackup = null` erst direkt vor dem `importBackup`-Aufruf (nach erfolgreicher File-Wahl) gesetzt — File-Picker-Cancel löst damit keine State-Änderung mehr aus, gestashter Stash aus dem vorherigen `BackupOverwriteError`-Lauf überlebt einen zweiten Knopf-7-Klick mit Picker-Cancel. Bestehende Pfade unverändert (Erfolgsfall null / `BackupOverwriteError`-Pfad füllt Stash / 7b-force-Pfad), `node --check` aller 10 Inline-Script-Blöcke grün. Sichttest des Fix-Pfads ungeprüft, weil headless gebaut — wartet auf Klaus' Browser-Lauf. |
 | Spec M04-Erweiterung (Brief 03) | 2026-05-19 | Spec M04-Erweiterung | Strang 2 der V1-Sammelspec-Kaskade (Brief 03; Brief 01-PR #96 + Brief 02-PR #97 als gemerged vorausgesetzt). Karte 02 additiv erweitert: § Datenformat „Spore-JSON" um zwei neue optionale Felder `embeddingCapabilities` (Alias-Name für `domainVector`, semantisch identisch) und `embeddingNeeds` (neuer Sucher-Vektor) — beide signaturpflichtig wenn vorhanden, beide additiv; neuer Sub-Block „M04-Erweiterung: embeddingCapabilities + embeddingNeeds (Brief 03)" mit Migrations-Tabelle (vier Spore-Zustände: Alt-Spore / Neu-Spore Anbieter-only / Neu-Spore voll / Übergangs-Spore) und Bauzustand-Hinweis für die Bau-Folge-Sitzung (`generateOwnSpore`-Allow-List um zwei Zeilen analog `stammCategories`/`guestCategories`-Pflege 2026-05-15; konkreter Code-Schnipsel als Spec-Vorlage, **KEIN Code-Eingriff** in dieser Spec-Sitzung); Bezugs-Verweise auf Vision-Anker 9 (M04-Haupt-Anker) + Vision-Anker 6 (Multi-Identität — doppelte Spore pro Persona, Brief 04 spezifiziert die Persona-Mehrfachheit) + Modul 04 (Consumer-Pfad) + Modul 06 (Brücken-Vorschlag-Eintrags-Typ). **PROTOCOL_VERSION bleibt `"0.1"`** — beide neuen Felder sind optional, alte Sporen ohne sie bleiben gültig (signalisieren „nur Anbieter-Modus"). **§ Schnittstelle, § Storage, § Fehlerverhalten, § Risiken, § Manueller Test unverändert** (die Felder sind optionale meta-Erweiterungen, kein neuer API-Pfad — Bau-Folge-Sitzung erweitert nur die `generateOwnSpore`-Allow-List und ggf. die Validierung). INTERFACES.md §0 (drei neue Konstanten: `SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL`, `STUFE_B_MAX_TOKENS`), §1 Modul 02 Bietet-Block-Spore-Schema-Erweiterungs-Hinweis, §2 Spore-JSON Optionale Felder, §9 Änderungsprotokoll (war §7, nachnummeriert weil Brief 03 § 7 + § 8 vor der Changelog einfügt) nachgezogen. **`status.json` unverändert** — Modul 02 bleibt `score:"stub"` (additive Spec-Erweiterung am Karten-Vertrag, kein Code-Bau, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Kein Code** in `src/modules/02_spore.js` — Bau-Folge-Sitzung folgt als eigene Phase. |
 | Spec Multi-Identität (Brief 04) | 2026-05-19 | Spec Multi-Identität | Strang 3 der V1-Sammelspec-Kaskade (Brief 04; Brief 03-PR #98 als gemerged vorausgesetzt). Karte 02 erweitert: § Schnittstelle um fünf neue / erweiterte Funktionen (`getOrCreateIdentity(key?)`, `setActiveIdentity(key)`, `getActiveIdentityKey()`, `listIdentities()`, `removeIdentity(key, options?)`; `generateOwnSpore(meta, key?)` und `getOwnSpore(key?)` um optionalen key-Parameter erweitert); Selbstcheck-Funktionsliste auf zwölf Funktionen erweitert; § Singleton-Identität durch Identitäts-Slot-Vertrag ersetzt; neuer Sub-Block „Multi-Identität (Brief 04)" mit API-Erweiterung + Pro-Persona-Spore-/M04-Verknüpfung + Persona-Isolation-Stores-Tabelle + Backup-Strategie „kompletter Rucksack" + Migrations-Strategie (Option A dynamische Store-Erzeugung empfohlen, Option B feste Slot-Tabelle als Alternative) + Trade-off-Klausel + Bezugs-Verweise; Bezugs-Verweis im M04-Erweiterungs-Sub-Block aktualisiert (Persona-Mehrfachheit jetzt geliefert). **PROTOCOL_VERSION bleibt `"0.1"`** — alle neuen Schlüssel-Slots und `active-identity`-Marker sind lokales Storage-Schema, keine Spore-Felder. Strategie A für `spore.json` gewählt (nur aktive Identität wird gehostet, Identitäts-Wechsel = neuer Push). **`BACKUP_FORMAT_VERSION`-Bump-Vermerk:** die Bau-Folge-Sitzung 02.Y bumpt das separate Backup-Wrapper-Schema von 1 auf 2 (Identitäten-Array im Payload) — KEIN PROTOCOL_VERSION-Eingriff. **§ Storage, § Fehlerverhalten, § Risiken, § Manueller Test unverändert** (Multi-Identitäts-Funktionen sind additive Erweiterung — Bau-Folge-Sitzung 02.Y zieht Code + Validierung + Sichttest-Punkte nach). INTERFACES.md § 1 Modul 02 (Bietet-Block + Singleton-Klausel + Storage + Selbstcheck + Fehlerverhalten + Garantien), § 1 Modul 05 / 06 / 07 (identitäts-spezifische Slot-Pattern + Receiver-Map), § 2 Spore-JSON (Multi-Identitäts-Hinweis-Block mit Strategie A/B), § 9 Identitäts-Map (neue verbindliche Spec-Klausel mit §9.1 Slot-Schema bis §9.7 M04-Verbindung), § 10 Änderungsprotokoll (war § 9, nachnummeriert) nachgezogen. **`status.json` unverändert** — Modul 02 bleibt `score:"stub"` (additive Spec-Erweiterung am Karten-Vertrag, kein Code-Bau, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Kein Code** in `src/modules/02_spore.js` — Bau-Folge-Sitzung 02.Y folgt als eigene Phase (Multi-Identitäts-Migration auf den Endknoten plus Backup-Schema-Bump). |
+| Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump | 2026-05-19 | Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump | Zweite Bau-Sitzung der Bau-Sitzungs-Brief-Pipeline aus Brief 99 (Klaus' Wahl 2026-05-19: logische Reihenfolge — Infrastruktur weiter). Direkte Folge auf Bau 01.Y (PR #102 gemerged 2026-05-19, `main` `8a07ed5`). **Code in `src/modules/02_spore.js` additiv** (kein Refactoring der bestehenden 10 + `resetIdentityCache` Funktionen): zwei neue Fehler-Factories (`UnknownIdentityError` sync von `setActiveIdentity`, `RemoveActiveIdentityError` sync von `removeIdentity` ohne force); In-Memory `identityCache` von Singleton auf Map `key → IdentitySnapshot` erweitert (additive Erweiterung, `resetIdentityCache()` leert die ganze Map); neuer Lese-Cache `activeIdentityKeyCache` als sync-Anker für `getActiveIdentityKey`. **`BACKUP_FORMAT_VERSION` modul-lokal 1 → 2**, neue Konstante `BACKUP_FORMAT_VERSION_READ_OK = [1, 2]` (`importBackup` akzeptiert beide; `exportBackup` schreibt nur die aktuelle). **`BACKUP_PAYLOAD_SCHEMA_VERSION` modul-lokal 1 → 2** (Klartext-Payload-Schema-Bump für `payload.identities[]`-Pflicht-Feld). Neuer Closure-Helper `ensureIdentityStores(key)` (Promise.all über fünf identitäts-spezifische Stores via `SbkimStorage.ensureStore("sbkim_<base>_<key>")`). **`getOrCreateIdentity(key)`** erweitert: Default-Slot `"main"`; Cache-Hit pro Slot; bei Cache-Miss + neuer Slot ruft `ensureIdentityStores(key)` VOR dem Schreibvorgang in `sbkim_keys[key]`; Rollback `del("sbkim_keys", key)` bei `EnsureStoreError` (vermeidet halb-angelegte Identitäten). **Neue Funktion `setActiveIdentity(key)`:** sync-TypeError bei nicht-String-key; `UnknownIdentityError`, wenn key nicht in `sbkim_keys`; idempotent (no-op wenn key bereits aktiv); schreibt `sbkim_meta["active-identity"]`; ruft `resetIdentityCache()`. **Neue Funktion `getActiveIdentityKey()`:** Lese-Cache; Default `"main"` bei fehlendem Marker. **Neue Funktion `listIdentities()`:** `SbkimStorage.all(sbkim_keys)` → Array von Slot-Keys, lexikographisch sortiert via `Array.prototype.sort()`. **Neue Funktion `removeIdentity(key, options?)`:** idempotent (`false` bei unbekanntem key, kein Throw); `RemoveActiveIdentityError` bei aktiver Identität + `!force`; force-Pfad ruft fail-soft `SbkimApoptose._sendLegacyForIdentity(key)` (typeof-check, `console.warn` wenn nicht da — Bau 07.Y noch nicht); Lösch-Pfad in INTERFACES-konformer Reihenfolge (`del(sbkim_keys)` → `del(sbkim_spore)` → fünf `clear`-Aufrufe pro identitäts-spezifischem Store, fail-soft via try/catch um `UnknownStoreError`); nach Lösch-Pfad neue aktive Identität setzen (`"main"` falls existent, sonst erster Slot aus `listIdentities()`, sonst `del("sbkim_meta", "active-identity")`); `resetIdentityCache()` am Ende. **`generateOwnSpore(meta, key?)`** und **`getOwnSpore(key?)`** um optionalen key-Parameter erweitert (Default `getActiveIdentityKey()`); `generateOwnSpore` ruft `ensureIdentityStores(key)` als Vorsichts-Pfad (für Slots, die aus Backup-Import stammen). **`exportBackup(password)`** erweitert: iteriert `listIdentities()`, baut `payload.identities[]` mit `{key, nodeId, keys, spore, siblings}` pro Slot (siblings fail-soft via try/catch); schreibt zusätzlich `payload["active-identity"]`; Wrapper schreibt `version: 2`, `payload-schema-version: 2`; alte Top-Level-Felder `nodeId`/`keys`/`spore`/`siblings` bleiben mit aktivem Slot befüllt (konservative Down-Grade-Kompat). **`importBackup(blob, password, options?)`** erweitert: akzeptiert `version: 1` ODER `version: 2`; bei v=1 Migration in eine `identities[]`-Eintrags-Liste mit `key: "main"` aus den Top-Level-Feldern (Rückwärts-Kompat zum Bau-02.X-Format); bei v=2 Pflicht-Vor-Check `identities.length >= 1` (sonst `BackupSchemaError`); pro Identität `BackupOverwriteError`-Check (Sammel-Error mit kollidierenden Slot-Keys), `ensureIdentityStores(entry.key)`, Slot-spezifische `put`-Schritte (sbkim_keys/sbkim_spore/siblings); active-identity nach Import gesetzt (optionales Top-Level-Feld `active-identity` aus dem Payload, sonst `"main"`). **Selbstcheck-Zeile** auf 14 Funktionen erweitert: `init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/setActiveIdentity/getActiveIdentityKey/listIdentities/removeIdentity/resetIdentityCache/exportBackup/importBackup`. **`_meta`** um `backupFormatVersion: 2` (nachgezogen) + `identityStoreBases` (Liste der fünf identitäts-spezifischen Store-Basen) erweitert. **`window.SbkimSpore`** um `UnknownIdentityError` + `RemoveActiveIdentityError` + die fünf neuen / erweiterten Funktionen ergänzt. **Panel 02** in `tests/manual_check.html` um drei Knöpfe erweitert: Knopf 8 „Identität anlegen + wechseln" (Sequenz `getOrCreateIdentity('test')` → `listIdentities()` → `setActiveIdentity('test')` → `getNodeId()` ≠ main-nodeId), Knopf 9 „Identität entfernen (force)" (`removeIdentity('test', {force:true})`; active-identity Fallback auf main), Knopf 10 „Backup mit Multi-Identität" (Setup zweite Identität + Export; `payload.identities.length === 2`). **`PROTOCOL_VERSION` bleibt `"0.1"`** (lokales Storage-Schema, kein Spore-Feld); **`DB_VERSION` bleibt `4`** (Bau 01.Y hat das gesetzt; neue identitäts-spezifische Stores entstehen dynamisch via `ensureStore`); **`BACKUP_FORMAT_VERSION` von 1 auf 2**. **KEINE Modul-05/06/07-Änderung** (transparenter Slot-Pfad kommt in 05.Y / 06.Y / 07.Y); KEIN `_sendLegacyForIdentity`-Implementierung in Modul 07 (Bau 02.Y ruft fail-soft via typeof-check + console.warn — Bau 07.Y bringt Implementation); KEIN Modul-01-Eingriff; KEINE Sage-Page-Änderung; KEINE CLAUDE.md-/Karte-09-/`status.json`-Änderung. **`status.json` unverändert** (Modul 02 bleibt `score:"fertig"` — Multi-Identitäts-API ist additive Erweiterung, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). `node --check src/modules/02_spore.js` grün; alle Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert. Headless-Smoke-Test mit `fake-indexeddb` (Node 22) deckt Modul-Lade / Selbstcheck / Multi-Identitäts-Pfad / removeIdentity-force-Fallback / Backup-Export v=2 / Backup-Import in leerer PWA mit Multi-Identität / alter v=1-Backup-Import. |
+| Sichttest (Bau 02.Y) | 2026-05-19 | Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump | **Erster Lauf 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6): Knopf 8 rot wegen Multi-Tab-`onblocked`-Befund** („Versions-Bump blockiert — ein anderer Tab hält die DB offen") — wie im Brief antizipiert (Stolperfalle 1). Zusätzlich aufgedeckt: Rollback-Pfad in `getOrCreateIdentity` war nicht atomar (sbkim_keys-Eintrag blieb nach EnsureStoreError im Storage). **Mini-Fix 2026-05-19** (Bau-Sitzung, gleicher PR): Reihenfolge in `getOrCreateIdentity` umgekehrt — `ensureIdentityStores(slotKey)` läuft jetzt VOR `storage.put(sbkim_keys, slotKey, ...)`, kein Rollback nötig. Smoke-Test 33/33 grün nach Fix. **Zweiter Browser-Lauf 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6): 3/3 grün** — Knopf 8 „Identitäts-Wechsel OK" (main `PJZAMj…` ≠ test `1Q4dlF…`, `listIdentities: [main, test]`, `active-identity: test`); Knopf 9 „Persona-Apoptose OK" (`active_before: test` → `removed: true` → `active_after: main` → `listIdentities: [main]` → zweiter Aufruf `false` Idempotenz); Knopf 10 „Multi-ID-Backup OK" (wrapper `version: 2`, `payload-schema-version: 2`, `identities.length: 2`, beide Slot-Keys + nodeIds, Download-Link 4777 Bytes). **Vorbereitungs-Workaround (Klaus' Befund):** vor dem 02-Test musste Panel 01 Knopf 1 „Storage init" geklickt werden — das rekonstruiert nach Browserdaten-Cleanup die Pflicht-Stores aus `STORES_V1/V2/V3`. Bestätigt die offene Pflege Modul 01 `init()` versions-fail-soft als nächste Folge-Sitzung. Auch Panel 01 1–8 alle grün. |
 | In Endknoten eingebaut | — | — | — |
 
 ---
