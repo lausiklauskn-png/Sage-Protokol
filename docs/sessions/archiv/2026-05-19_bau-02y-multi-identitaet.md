@@ -465,16 +465,34 @@ Bump erzwingt und IndexedDB die Multi-Tab-Choreografie über
 `onversionchange` regelt. Klaus' DeX-Chrome-Setup ist mit zwei
 sichtbaren Hälften (Chat-App-Hälfte + Browser-Hälfte) anfällig, weil
 beide Chrome-Instanzen sein können oder weil Recents-Tabs persistieren.
-**Zweiter Browser-Lauf durch Klaus ausstehend** mit Bedingung:
-saubere Single-Tab-Umgebung (Chrome komplett beenden, Browserdaten
-löschen, genau einen Tab öffnen).
 
-**Empfohlene Pflege-Folge-Sitzung (eigener Brief, eigener PR, NICHT
-Bau-02.Y-Scope):** Modul 01 `init()` sollte fail-soft sein bei
-existing DB-Version > `DB_VERSION` (öffnen mit `undefined` Version,
-dann nur bei fehlenden Pflicht-Stores einen Bump versuchen). Damit
-fällt das Klaus-unfreundliche Verhalten weg, dass Test-Stores aus
-einer früheren Sitzung den nächsten init scheitern lassen.
+**Zweiter Browser-Lauf nach Mini-Fix + Cleanup-Workaround
+2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6): 3/3 grün.**
+
+| Knopf | Status | Beleg |
+|---|---|---|
+| 8 — Identität anlegen + wechseln | ✓ „Identitäts-Wechsel OK" | main `PJZAMjgHZbz4jDLFIm8W9ZaK2TKdaxR9UTUwXw67ozs` ≠ test `1Q4dlFaYaMMQDslE7aOjfxeA2OH-3Zd5mE1x55Tfxtg`; `listIdentities: [main, test]`; `active-identity: test` |
+| 9 — Identität entfernen (force) | ✓ „Persona-Apoptose OK" | `active_before: test` (zeigt: Knopf 8 hat setActiveIdentity sauber durchgeführt); `removed: true`; `active_after: main` (Fallback); `listIdentities: [main]`; `removed_idempotent: false` (zweiter Aufruf) |
+| 10 — Backup mit Multi-Identität | ✓ „Multi-ID-Backup OK" | wrapper `version: 2`; `payload-schema-version: 2`; `payload.identities.length: 2`; Slot-Keys `[main, test]` (test frisch via `getOrCreateIdentity('test')` da Knopf 9 ihn gelöscht hat); `payload["active-identity"]: main`; Download-Link „📦 Multi-ID-Backup herunterladen (4777 Bytes)" erschienen |
+
+Panel 01 (1–8) ebenfalls alle grün — `storagePersisted: false` ist
+erwartet (Tablet-Chrome verweigert persist standardmäßig).
+
+**Klaus' Befund zum Workaround:** der erfolgreiche Panel-02-Lauf
+gelang erst, nachdem Klaus zuerst alle Knöpfe in Panel 01 durchgegangen
+war — insbesondere Knopf 1 „Storage init". Vermutete Sequenz: das
+erste Browserdaten-Cleanup hat die IndexedDB nicht erwischt (DB blieb
+auf v=15 aus früheren ensureStore-Bumps); das zweite Cleanup (oder
+Variante B nuklear) hat die DB komplett gelöscht; Panel-01-„Storage
+init" hat sie dann neu mit v=4 angelegt und die Pflicht-Stores aus
+`STORES_V1/V2/V3` rekonstruiert. **Dieser Befund ist die direkte
+Rechtfertigung für die nächste Folge-Pflege: Modul 01 `init()`
+versions-fail-soft** — eigener Brief, eigener PR, NICHT
+Bau-02.Y-Scope. Geplante Lösung: `init()` erst ohne Version öffnen
+(gibt die existing Version zurück), dann nur bei fehlenden
+Pflicht-Stores einen `db.version + 1`-Bump versuchen. Damit fällt
+das Klaus-unfreundliche Verhalten weg, dass Test-Stores aus einer
+früheren Sitzung den nächsten init mit `VersionError` blockieren.
 
 Klaus' Drei-Stufen-Probe in `tests/manual_check.html` Panel 02:
 
