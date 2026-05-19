@@ -1062,6 +1062,26 @@ Pipeline** aus Brief 99 (siehe § Sitzungs-Einträge „Abschluss — V1-
 Sammelspec-Kaskade (Brief 99)") und sind die nächste Welle nach
 Kaskaden-Abschluss; Reihenfolge ist Klaus' Entscheidung.
 
+**Bau 01.Y `ensureStore` 2026-05-19 abgeschlossen** (erste Bau-Sitzung
+der Pipeline, Klaus' Wahl „Infrastruktur zuerst"). Modul 01 hat jetzt
+die achte öffentliche Funktion `ensureStore(storeName: string) →
+Promise<void>` für die dynamische Anlage identitäts-spezifischer
+Stores ab DB-Version 4 (Option A aus § 9.5). Versions-Bump-Choreografie
+linear via `db.version + 1`, fail-soft `onversionchange`-Handler auf
+jeder neuen Verbindung, synchroner Pattern-Check
+`^sbkim_[a-z0-9_]+$` (`InvalidStoreNameError`), async Bump-Fehler
+`EnsureStoreError` mit `cause`-Property. **`DB_VERSION` von 3 auf 4**
+(`STORES_V4 = []` als leere Liste — v=4 markiert den Übergang zu
+„dynamische Stores via `ensureStore`", legt keinen festen Pflicht-
+Store an); **`PROTOCOL_VERSION` bleibt `"0.1"`**;
+**`BACKUP_FORMAT_VERSION` bleibt `1`** (Bump 1→2 erst in Bau 02.Y).
+KEINE Modul-02/05/06/07-Änderung, KEINE identitäts-spezifischen
+Stores angelegt — das ist Aufrufer-Pflicht in den Folge-Bau-Sitzungen.
+Drei neue Panel-01-Knöpfe in `tests/manual_check.html` für die Drei-
+Stufen-Probe (happy-path / Idempotenz / Pattern-Verstoß), Sichttest
+durch Klaus ausstehend. Übergabeprotokoll
+[2026-05-19_bau-01y-ensure-store.md](sessions/archiv/2026-05-19_bau-01y-ensure-store.md).
+
 ### 2026-05-18 · SBKIM-Browser-Extension — „Lampe in der Toolbar"
 
 **Eingetragen:** Mini-Pflege „Vision-Anker Extension" 2026-05-18.
@@ -1734,233 +1754,170 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-19 · Abschluss — V1-Sammelspec-Kaskade (Brief 99)
+### 2026-05-19 · Bau 01.Y `ensureStore` in Modul 01
 
-**Sitzungs-Rolle:** Abschluss-Sitzung der V1-Sammelspec-Kaskade,
-headless. Branch `claude/spec-v1-abschluss-jLB5z` (Harness-Suffix;
-gemeinte Konvention `claude/spec-v1-abschluss`). Schließt die vier
-Strang-Etappen der V1-Sammelspec-Brief-Kaskade nach Brief 01 (V1
-Sage-Hybrid, PR #96), Brief 02 (Plattform-Matrix, PR #97), Brief 03
-(M04-Erweiterung, PR #98) und Brief 04 (Multi-Identität, PR #99,
-gemerged 2026-05-19 `main` `59e3998`). Diese Sitzung ist KEIN
-Strang — sie ist Abschluss (Konvention aus BRIEF_99: ein eigener PR
-mit Abschluss-Artefakten, kein neuer Spec-Inhalt).
+**Sitzungs-Rolle:** Bau-Sitzung (kein Spec, kein Modul-Vertrag-
+Eingriff), headless. Branch `claude/bau-01y-ensure-store-SxpKG`
+(Harness-Suffix; gemeinte Konvention `claude/bau-01y-ensure-store`
+aus Brief 99). **Erster Bau** der Bau-Sitzungs-Brief-Pipeline aus
+Brief 99 (Klaus' Wahl 2026-05-19: **Infrastruktur zuerst** — vor
+Sage-Page-Refactor). Voraussetzung Brief 99 (PR #100 gemerged
+2026-05-19, `main` `80994fd`) ist erfüllt — die V1-Sammelspec-
+Kaskade ist auf `main` geschlossen, INTERFACES § 9.5 Option A
+(„dynamische Store-Erzeugung via `ensureStore`") ist verbindliche
+Spec.
 
-**Kern (drei Sätze):** Die V1-Sammelspec ist als Vier-Strang-Brief-
-Kaskade vollständig in INTERFACES.md verankert (Sage als dritter
-Endknoten, Plattform-Matrix mit fünf Profilen, M04-Erweiterung mit
-drei Schichten + Brücke + doppelte Spore, Multi-Identität mit
-identitäts-spezifischen Stores pro Persona); CLAUDE.md auf „Hub und
-Knoten zugleich" umgeschrieben, `status.json` um Sage als drittes
-Endknoten-Element erweitert. **PROTOCOL_VERSION bleibt `"0.1"`** —
-alle vier Stränge additiv (Strategie A für Pages-`spore.json`,
-Default-Slot „main" als Rückwärts-Kompat, lokales Multi-Identitäts-
-Storage-Schema), kein Spore-Schema-Eingriff zur Pflicht erhoben.
-`BACKUP_FORMAT_VERSION` bleibt `1` — Multi-Identitäts-Backup-Bump
-1→2 ist in Brief 04 § 9.6 als Bau-Folge-Sitzung-02.Y-Entscheidung
-dokumentiert, aber NICHT in der Kaskade vollzogen. Die nächste Welle
-sind sieben Bau-Sitzungen (Sage-Page-Refactor zuerst, dann
-Infrastruktur-Bauten 01.Y / 02.Y, Match-Pipeline-Bauten 04.A / 04.B,
-transparente Slot-Pfade in 05.Y / 06.Y / 07.Y, Endknoten-Migration).
+**Kern (drei Sätze):** Modul 01 hat jetzt eine achte öffentliche
+Funktion `ensureStore(storeName: string) → Promise<void>` für die
+dynamische Anlage identitäts-spezifischer Stores ab DB-Version 4.
+Die Versions-Bump-Choreografie ist linear über `db.version + 1`
+implementiert (entkoppelt von der Build-Konstante `DB_VERSION`), mit
+fail-soft `onversionchange`-Handlern auf jeder neuen Verbindung; das
+Modul-01-Pattern `^sbkim_[a-z0-9_]+$` wird synchron geprüft
+(`InvalidStoreNameError`), Bump-Fehler aus der IDBOpenDBRequest-
+Choreografie laufen async durch `EnsureStoreError` mit
+`cause`-Property. KEINE Modul-02/05/06/07-Änderung, KEINE identitäts-
+spezifischen Stores angelegt — das ist Aufrufer-Pflicht in den
+Folge-Bau-Sitzungen 02.Y / 05.Y / 06.Y / 07.Y.
 
-**Vier Stränge — Zusammenfassung in einem Absatz:**
+**Fünf Punkte a–e aus dem Brief:**
 
-- **Brief 01 (V1 Sage-Hybrid, Strang 1, PR #96 gemerged 2026-05-18
-  `main` `a3e0072`):** Sage als dritter Endknoten neben Mein-
-  Rezeptbuch und Mein-Mixarium. INTERFACES § 6 Endknoten-Liste neu
-  mit drei Einträgen; § 6.1 Sage-Page-Architektur (IndexedDB-Suffix
-  `sbkim_sage`, App-SW Variante 3a, volle init()-Kette mit lazy
-  Modul-03, Andock-Geste an Schwarz-Loch-Karte als Wizard-Hinweis);
-  CLAUDE.md auf „Hub und Knoten zugleich" umgeschrieben; Karte 09
-  § Schritt 1 erweitert; `status.json` § endknoten um `sage`-Eintrag
-  erweitert (`pingStatus:"pending-first-andock"`, `nodeId:null`);
-  Domäne „Mycel-Bibliothek" gewählt; Sage-Page-Refactor folgt als
-  Bau-Sitzung in der BRIEF_99-Liste.
-- **Brief 02 (Plattform-Matrix, Strang 4, PR #97 gemerged 2026-05-18
-  `main` `69077db`):** INTERFACES § 6.2 Plattform-Matrix mit fünf
-  Profilen (Desktop-Browser / DeX-Tablet / PWA-installiert / Mini-
-  Browser V8 / Extension V7) × sechs Spalten (IndexedDB / SW /
-  Spore-Empfang / Identitäts-Backup / Stufe B / Beispiel-Knoten);
-  § 6.3 Plattform-Ehrlichkeits-Klausel als verbindliche Spec-
-  Klausel (Begründung aus Lehre 1 — Browser-Instanzen-Trennung als
-  Verlust-Risiko); § 6.4 Vision-Bezüge als Querverweis-Matrix mit
-  sieben Ankern; § 6.1 Plattform-Matrix-Stub auf Verweis
-  umgeschrieben.
-- **Brief 03 (M04-Erweiterung, Strang 2, PR #98 gemerged 2026-05-19
-  `main` `27d6a19`):** INTERFACES § 0 drei neue Konstanten
-  (`SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL="claude-sonnet-4"`,
-  `STUFE_B_MAX_TOKENS=1024`); § 1 Modul 02 Bietet-Block-Spore-Schema-
-  Erweiterungs-Hinweis (`embeddingCapabilities` Alias +
-  `embeddingNeeds` neu); § 1 Modul 04 um zwei neue API-Funktionen
-  (`matchDimensions` + `explainMatchLLM`) + vier neue Sub-Blöcke
-  (Drei-Schichten-Modell mit Mittelwert-vs-Min-Begründung, Brücken-
-  Feld-Spec mit `BridgeProposal`, Schwellen-Vertrag mit fünf
-  Auswertungs-Regeln, Stufe-B-Vertrag mit JSON-Schema und Beispiel-
-  Output); § 2 Spore-JSON Optionale Felder um die zwei neuen Vektor-
-  Felder erweitert; § 7 LLM-Stufe-B-Ehrlichkeits-Klausel als
-  verbindliche Spec-Klausel (vier Sätze: Stufe B opt-in, Stufe A
-  rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen,
-  Knoten ohne Stufe B = vollwertige Netz-Teilnehmer); § 8 Anti-
-  Missbrauch-Klausel (Brücken-Vorschlag lokal,
-  `candidateScope:"netz"` formal nicht aktivierbar bis Anker 10-12,
-  Modul 06 filtert Outbox-Einträge).
-- **Brief 04 (Multi-Identität, Strang 3, PR #99 gemerged 2026-05-19
-  `main` `59e3998`):** INTERFACES § 1 Modul 02 um fünf neue /
-  erweiterte API-Funktionen (`getOrCreateIdentity(key?)`,
-  `setActiveIdentity(key)`, `getActiveIdentityKey()`,
-  `listIdentities()`, `removeIdentity(key, options?)`); Singleton-
-  Klausel durch Identitäts-Slot-Vertrag ersetzt (Default-Slot „main"
-  verbindlich, beliebig viele weitere Slots,
-  `sbkim_meta["active-identity"]` als String-Marker); § 1 Modul 05 /
-  06 / 07 auf identitäts-spezifische Store-Pattern
-  (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`,
-  `sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`,
-  `sbkim_hetero_outbox_<key>`) umgestellt mit Identitäts-Cache- und
-  Receiver-Map-nodeId→key-Konvention; § 2 Spore-JSON Multi-
-  Identitäts-Hinweis-Block (Strategie A gewählt — nur aktive
-  Identität in `spore.json`; Strategie B NICHT gewählt — würde
-  `PROTOCOL_VERSION` auf `"0.2"` bumpen); § 9 Identitäts-Map als
-  neue verbindliche Spec-Klausel mit sieben Sub-§; Änderungsprotokoll
-  auf § 10 nachnummeriert. Apoptose-Granularität entschieden:
-  `confirmSelfApoptose` global (alle Personae sterben gemeinsam),
-  `SbkimSpore.removeIdentity(key, {force:true})` ist die Single-
-  Identitäts-Apoptose mit internem Hook `_sendLegacyForIdentity` in
-  Modul 07.
-
-**Bau-Sitzungs-Brief-Pipeline (in vorgeschlagener Reihenfolge; jeder
-Bau ist eigene Bau-Sitzung mit eigenem PR; Reihenfolge ist Klaus'
-Entscheidung — Empfehlung: Sage-Page-Refactor zuerst als sichtbares
-Ergebnis, dann Infrastruktur-Bauten als Hebel):**
-
-1. **Bau Sage-Page-Refactor** — volle `init()`-Kette aller SBKIM-
-   Module (Modul 00/01/02/03/04/05/06/07/08 in der `index.html` des
-   Sage-Endknotens, statt nur Doku-Render) + Andock-Wizard an der
-   Schwarz-Loch-Karte (analog Karte 09 Schritt 1 + erste Andock-
-   Iteration) + Schichten-Lampen aus der M04-Erweiterung (drei
-   Lampen für fachlich / prozess / skalierung) + Identitäts-Wechsler-
-   UX (Brief-04-Folge — Persona-Liste + Default-Slot „main" + aktiver
-   Slot sichtbar). Geschätzt ~6-10 h.
-2. **Bau 01.Y `ensureStore` in Modul 01** — Option A aus § 9.5
-   Dynamische Store-Erzeugung (`SbkimStorage.ensureStore(name)`
-   öffentlich verfügbar machen, Versions-Bump-Choreografie für
-   DB-Version 3 → 4 nachziehen wenn nötig; Module 02 / 05 / 06 / 07
-   können dann beim Identitäts-Anlegen einen neuen Slot-Store
-   anlegen, ohne fest verdrahtete Slot-Tabelle). Geschätzt ~2-3 h.
-3. **Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump in Modul 02** —
-   die fünf neuen / erweiterten API-Funktionen aus Brief 04
-   implementieren (`getOrCreateIdentity(key?)`,
-   `setActiveIdentity(key)`, `getActiveIdentityKey()`,
-   `listIdentities()`, `removeIdentity(key, options?)`); Backup-
-   Wrapper-Schema auf `BACKUP_FORMAT_VERSION=2` mit
-   `payload.identities[]`-Pflicht-Feld nachziehen (Brief 04 § 9.6
-   „kompletter Rucksack"-Empfehlung, additiver Bump des Backup-
-   Wrapper-Schemas aus § 0; KEIN `PROTOCOL_VERSION`-Eingriff).
-   Geschätzt ~5-8 h (komplex wegen Backup-Schema-Bump und WebCrypto-
-   Pfaden pro Identität).
-4. **Bau 04.A Stufe A erweitert in Modul 04** — `matchDimensions`
-   synchron implementieren (drei Schichten fachlich / prozess /
-   skalierung als `embeddingCapabilities[layer]` ×
-   `embeddingNeeds[layer]` Cosinus pro Schicht, plus Schwellen-
-   Vertrag aus Brief 03 § 1 Modul 04 Stufe-A-Sub-Block). Geschätzt
-   ~2-3 h.
-5. **Bau 04.B Stufe B in Modul 04** — `explainMatchLLM` als opt-in
-   LLM-Call (Stufe B aus Brief 03 § 1 Modul 04 Stufe-B-Sub-Block,
-   JSON-Schema verbindlich, ehrliches Fehlerverhalten bei fehlendem
-   User-Key) + User-Key-Verwaltung (Speicher-Slot + UI-Anker, kein
-   Hardcode). Geschätzt ~5-8 h.
-6. **Bau 05.Y / 06.Y / 07.Y transparenter Slot-Pfad in den
-   Konsumenten** — Module 05 / 06 / 07 lesen `getActiveIdentityKey()`
-   im `init()`-Pfad, cachen den Wert für die Operation, schreiben in
-   `<store-base>_<key>`; Receiver-Map nodeId→key beim `init()`
-   bauen (Brief 04 § 9.3 + § 9.4). Je Modul ~2-3 h.
-7. **Bau Multi-Identitäts-Migration der Endknoten in Mein-Mixarium
-   / Mein-Rezeptbuch** — additive Andock-Wizard-Erweiterung in
-   beiden Endknoten-Repos (Persona-Auswahl beim ersten Andocken
-   anbieten, Default-Slot „main" bleibt). Geschätzt ~2 h.
-
-**Konsistenz-Prüfung VOR dem Eingriff (Kaskaden-Konvention 5):**
-drei Punkte abgehakt — (1) **alle vier Strang-PRs gemerged:** Brief
-01 PR #96 (`main` `a3e0072`), Brief 02 PR #97 (`main` `69077db`),
-Brief 03 PR #98 (`main` `27d6a19`), Brief 04 PR #99 (`main`
-`59e3998`); (2) **INTERFACES § 0 / § 1 / § 2 / § 6 / § 7 / § 8 /
-§ 9 / § 10 auf Brief-04-Stand geprüft** — drei §0-Konstanten aus
-Brief 03, fünf neue / erweiterte API-Funktionen in Modul 02 aus
-Brief 04, identitäts-spezifische Store-Pattern in 05 / 06 / 07 aus
-Brief 04, § 6.1 - § 6.4 aus Brief 01 + 02, § 7 LLM-Ehrlichkeits-
-Klausel aus Brief 03, § 8 Anti-Missbrauch-Klausel aus Brief 03,
-§ 9 Identitäts-Map aus Brief 04, § 10 Änderungsprotokoll mit
-Brief-01/02/03/04-Einträgen; (3) **PROTOCOL_VERSION-Status-Snapshot:**
-bleibt `"0.1"` — Strategie A (Brief 04) gewählt, keine alten Felder
-zur Pflicht erhoben (Brief 03), keine Spore-Schema-Eingriffe (Brief
-01 + 02); `BACKUP_FORMAT_VERSION` bleibt `1` (Bau-Folge-Sitzung 02.Y
-bumpt auf 2).
+- **a) INTERFACES.md § 1 Modul 01 nachgezogen:** Bietet-Block um
+  `ensureStore(storeName: string) → Promise<void>` erweitert
+  (additiv hinter `clear`); Garantien-Block ergänzt (Idempotenz;
+  synchroner Pattern-Check `^sbkim_[a-z0-9_]+$`; kein
+  `UnknownStoreError`; strict additiv; Aufrufer trägt Identitäts-
+  Konvention); Storage-Block `DB-Version` 3 → 4 nachgezogen mit
+  STORES_V4-leer-Begründung; neuer Sub-Hinweis „Dynamische Stores ab
+  DB-Version 4"; Selbstcheck-Funktionsliste auf acht Funktionen
+  erweitert; Fehlerverhalten-Tabelle um `InvalidStoreNameError`
+  (sync) und `EnsureStoreError` (async, `cause`) ergänzt; Geprüft-
+  Zeile um 2026-05-19 erweitert; § 9.5 um Stand-Hinweis auf Bau 01.Y
+  am Ende ergänzt (KEIN inhaltlicher Spec-Eingriff in § 9.1–9.7);
+  § 10 Änderungsprotokoll um neue Zeile erweitert.
+- **b) Karte 01 nachgezogen:** § Schnittstelle Einleitungs-Satz auf
+  „acht öffentliche Funktionen", neuer Code-Block für `ensureStore`
+  mit voller Garantien-Erklärung; § Storage-Stores neuer Sub-Block
+  „Dynamische Stores ab v=4" mit Aufrufer-Konvention / Pattern /
+  Idempotenz-Hinweis; § Versionsmigration neue Tabellenzeile `v=4`
+  plus Sonderfall-Block; § Konfigurationswerte um `STORE_NAME_PATTERN`
+  und `DB_VERSION = 4`; § Fehlerverhalten zwei neue Zeilen; § Risiken
+  neuer Punkt „Versions-Bump-Choreografie auf mehreren Tabs"; §
+  Manueller Test Knöpfe 6/7/8 mit Cleanup-Hinweis; § Bauzustand zwei
+  neue Zeilen (Bau 01.Y + Sichttest-„ungeprüft-wartet-auf-Klaus").
+- **c) `src/modules/01_storage.js` erweitert:** `DB_VERSION = 4`;
+  `STORES_V4 = []` als leere Liste + no-op-`applyMigration(db, 4)`-
+  Branch; modul-lokale Konstante `STORE_NAME_PATTERN`; Factory-
+  Funktionen `InvalidStoreNameError` / `EnsureStoreError` (analog
+  Modul 02 / 08); neuer Modul-State `currentDb` als sync-lesbarer
+  Anker; Helper `attachVersionChangeHandler(db)` (fail-soft `db.close()`
+  + Cache-Invalidierung); neue öffentliche Funktion `ensureStore(name)`
+  mit synchronem Pattern-Check / Idempotenz-Check / Versions-Bump-
+  Choreografie via `db.version + 1` / `KNOWN_STORES.push` zur
+  Laufzeit; Selbstcheck-Zeile auf acht Funktionen; `_meta.dbVersion`
+  als Getter (Live-Zustand) + `_meta.dbVersionInitial` als
+  Build-Konstante; `_meta.knownStores` als Getter (Snapshot pro
+  Aufruf); `_meta.ensureStorePattern` als Read-Anker für Tests;
+  Exporte `ensureStore` / `InvalidStoreNameError` / `EnsureStoreError`
+  ergänzt. `node --check src/modules/01_storage.js` grün.
+- **d) `tests/manual_check.html` Panel 01:** drei neue Knöpfe
+  additiv hinter Knopf 5 (Persist-Status). Knopf 6
+  `ensureStore('sbkim_test_foo')` happy-path mit
+  `db.version`-vor/nach-Log + `knownStores`-Diff +
+  Sichtprüfungs-Hinweis; Knopf 7 `ensureStore('sbkim_test_foo')`
+  zweimal mit Drei-Versionen-Log + Idempotenz-Flag (Panel-Status
+  `fail`, falls zweiter Aufruf bumpt); Knopf 8
+  `ensureStore('invalid-name')` mit `try/catch` außerhalb `await` +
+  `name`-Property-Check; Cleanup-Hinweis im Knopf-6-Output.
+- **e) Übergabeprotokoll:**
+  [`docs/sessions/archiv/2026-05-19_bau-01y-ensure-store.md`](sessions/archiv/2026-05-19_bau-01y-ensure-store.md)
+  mit allen fünf Punkten a–e, Heilige-Tafeln-Eingehalten-Block,
+  Was-NICHT-angefasst-Block, Sichttest-Vermerk, Nächster-sinnvoller-
+  Schritt-Block mit Verweis auf Bau 02.Y.
 
 **Heilige Tafeln eingehalten:**
 
-- **INTERFACES verbindlich.** Nur § 10 Änderungsprotokoll um eine
-  Abschluss-Zeile „Sammelspec-Abschluss (Brief 99)" erweitert. KEINE
-  inhaltliche Änderung an § 0 / § 1 / § 2 / § 6 / § 7 / § 8 / § 9 —
-  Brief 99 dokumentiert nur den Snapshot-Stand.
-- **PROTOCOL_VERSION-Disziplin als bewusste Entscheidung.** Snapshot-
-  Ergebnis `"0.1"` ohne Diskrepanz; keine heimliche Folge-Pflege
-  hat gebumpt. Brief 99 dokumentiert das verbindlich.
-- **Kein neuer Strang.** Brief 99 ist Abschluss — keine inhaltliche
-  Änderung an Brief 01-04, keine Königin-Relay-Spec (V4), keine
-  Identitäts-Container-Spec (V5), keine Extension- oder Mini-Browser-
-  Spec (V7 / V8).
-- **Kein Modul-Code, keine Sage-Page-Änderung, keine CLAUDE.md- /
-  Karte-09- / status.json-Änderung.** Abschluss ist Doku-Pflege; die
-  Bau-Brief-Pipeline lebt in dieser PULS-Notiz.
-- **`update_puls_pie.py` NICHT aufgerufen** (kein status.json-Score-
-  Wechsel).
+- **INTERFACES verbindlich.** Reihenfolge INTERFACES → Karte → Code;
+  KEIN Vertrags-Drift.
+- **Option A aus § 9.5 ist gewählt** (Brief 04 Spec). Modul 01 kennt
+  Identität NICHT — `ensureStore` nimmt einen beliebigen Store-
+  Namen, prüft das Modul-01-Pattern `^sbkim_[a-z0-9_]+$`, legt den
+  Store an, falls noch nicht da. Aufrufer (Modul 02 in Bau 02.Y)
+  liefert den `_<key>`-Suffix.
+- **Versions-Bump-Choreografie verbindlich.** Aktuelle Verbindung
+  wird vor dem Bump explizit `close()`-d; `newVersion = db.version +
+  1` hält die Versions-Folge linear und entkoppelt von der Build-
+  Konstante `DB_VERSION`; `onversionchange`-Handler auf der NEUEN
+  Verbindung schließt fail-soft; Idempotenz via
+  `db.objectStoreNames.contains(name)` (no-op, kein Bump, keine
+  Resource-Leakage); KEINE Schemata-Migration alter Stores — nur
+  additive Anlage.
+- **DB-Version auf 4 gesetzt.** `STORES_V4 = []` als leere Liste
+  gewählt (Konvention „alle Stores oberhalb v=3 dynamisch via
+  `ensureStore`"); Karte 01 § Versionsmigration dokumentiert mit
+  eigenem Sonderfall-Block.
+- **Selbstcheck-Format** erweitert (`MODUL 01 STORAGE bereit,
+  Funktionen: init/getStore/get/put/del/all/clear/ensureStore` —
+  acht Funktionen).
+- **`PROTOCOL_VERSION` bleibt `"0.1"`** (lokales Storage-Schema,
+  kein Spore-Feld).
+- **`BACKUP_FORMAT_VERSION` bleibt `1`** (Bau 02.Y bumpt das auf 2,
+  nicht 01.Y).
+- **`DB_VERSION` von 3 auf 4** (additive Schema-Erweiterung — leere
+  STORES_V4-Liste, Übergangs-Marker).
 
 **Was NICHT angefasst:**
 
-- **Modul-Code in `src/`** — Abschluss ist Doku-Pflege. Bau-Folge-
-  Sitzungen (Sage-Page-Refactor, 01.Y, 02.Y, 04.A, 04.B, 05.Y /
-  06.Y / 07.Y, Endknoten-Migration) folgen separat.
-- **Sage-Page `index.html`** — Sage-Page-Refactor ist eigene Bau-
-  Sitzung (Position 1 der Bau-Brief-Pipeline).
-- **Brief 01-04 inhaltlich** — keine Korrekturen, keine Nachträge.
-  Brief 99 fasst nur zusammen.
-- **CLAUDE.md / Karte 09 / `status.json`** — Brief 01 hat sie auf
-  den V1-Stand gebracht, Brief 99 ändert nichts.
-- **Vision-Anker 4 / 5 / 7 / 8** unangetastet — eigene Spec-
-  Sitzungen außerhalb der V1-Sammelspec-Kaskade.
+- **Modul 02 (Spore).** Multi-Identitäts-API kommt in Bau 02.Y;
+  Modul 02's `getOrCreateIdentity(key)` wird später `ensureStore`
+  pro identitäts-spezifischem Store rufen.
+- **Modul 05 / 06 / 07.** Transparenter Slot-Pfad kommt in 05.Y /
+  06.Y / 07.Y; KEINE Receiver-Map nodeId→key gebaut.
+- **KEINE identitäts-spezifischen Stores angelegt.** `ensureStore`
+  ist generisch — Modul 01 kennt Identität nicht.
+- **KEIN `PROTOCOL_VERSION`-Bump** (lokales Storage-Schema).
+- **KEIN `BACKUP_FORMAT_VERSION`-Bump** (02.Y bumpt das auf 2).
+- **KEINE Sage-Page-Änderung** (Sage-Page-Refactor ist eigene Bau-
+  Sitzung).
+- **KEINE CLAUDE.md-/Karte-09-/`status.json`-Änderung.**
+- **KEIN `update_puls_pie.py`-Aufruf** — Modul 01 ist bereits
+  `score:"fertig"` (Live-Andock-Beweis 2026-05-16); `ensureStore`
+  ist additive Erweiterung, kein Score-Wechsel.
+- **KEIN Modul-Vertrag-Eingriff in § 9.1–9.7.** Spec ist gesetzt;
+  Bau zieht nur Code nach. Einziger § 9.5-Eingriff ist ein Verweis-
+  Hinweis am Ende.
 
-**Vision-Anker 1 / 6 / 9 § Status nachgezogen** auf „Strang X
-realisiert + Sammelspec-Abschluss (Brief 99) abgeschlossen" mit
-Verweis auf die Bau-Brief-Pipeline. Vision-Anker 4 / 5 / 7 / 8
-**unangetastet** — eigene Spec-Sitzungen außerhalb der Kaskade.
+**Vision-Anker 6 § Status nachgezogen** um „Bau 01.Y `ensureStore`
+2026-05-19 abgeschlossen". Anker 1 / 9 unangetastet (01.Y berührt
+nur Anker 6).
 
-**Brief-04-Sitzungs-Eintrag ins Archiv-Index ausgelagert** (Konvention
-pro Sitzung — vorletzten Eintrag auslagern). Voll-Eintrag bleibt im
-Übergabeprotokoll `2026-05-19_spec-multi-identitaet.md`; im Archiv-
-Index als Tabellenzeile oben mit Quintessenz-Stichworten +
+**Vorletzten Sitzungs-Eintrag (Brief 99 Abschluss) ins Archiv-Index
+ausgelagert** (Konvention pro Sitzung). Voll-Eintrag bleibt im
+Übergabeprotokoll `2026-05-19_abschluss-v1-sammelspec.md`; im
+Archiv-Index als Tabellenzeile oben mit Quintessenz-Stichworten +
 Verlinkung.
 
-**Paralleler offener PR:** PR #89 (Karte 15 Membran als Stub, Draft,
-head `claude/browser-use-indexeddb-Jopiy`) bleibt unangetastet —
-eigener Modul-15-Block nach Modul 09 in INTERFACES, kollidiert nicht
-mit den Brief-99-Eingriffen in § 10.
+**Manueller Sichttest:** **ungeprüft, weil headless gebaut — wartet
+auf Klaus' Browser-Lauf** (Galaxy Tab S6 + DeX, Chrome). Drei-
+Stufen-Probe in Panel 01: (i) Knopf 6 happy-path → Store sichtbar in
+DevTools, `db.version` um 1 gestiegen; (ii) Knopf 7 zweimal →
+`db.version` zwischen den Aufrufen NICHT gestiegen (Idempotenz);
+(iii) Knopf 8 Pattern-Verstoß → `InvalidStoreNameError` synchron
+geworfen. Cleanup: Test-Stores `sbkim_test_*` bleiben in der DB,
+Klaus löscht sie via DevTools manuell.
 
-**Manueller Sichttest:** **ungeprüft, weil reine Doku-Pflege** —
-kein Modul-Code in `src/`, kein `tests/manual_check.html`-Eingriff,
-keine Sage-Page-Änderung; `status.json` unverändert
-(`update_puls_pie.py` nicht aufgerufen).
+**Nächster sinnvoller Schritt:** **Bau 02.Y Multi-Identitäts-API +
+Backup-Schema-Bump in Modul 02** als direkte logische Folge —
+nutzt `ensureStore` für identitäts-spezifische Stores pro Persona,
+bumpt zusätzlich `BACKUP_FORMAT_VERSION` von 1 auf 2 für die
+„kompletter Rucksack"-Backup-Strategie aus Brief 04 § 9.6. Geschätzt
+~5-8 h. Vor 02.Y bitte Sichttest der drei neuen Panel-01-Knöpfe
+durch Klaus — bei `EnsureStoreError` mit `cause`-Hinweis auf
+`onblocked` ist das ein Architektur-Befund (zwei DeX-Chrome-Tabs
+haben die DB offen), bitte als offene Frage in PULS dokumentieren
+statt Bau 02.Y darauf zu setzen.
 
-**Nächster sinnvoller Schritt:** Klaus mergt diese Abschluss-Sitzung
-(damit die V1-Sammelspec-Kaskade auf `main` geschlossen ist), dann
-startet er eine Bau-Sitzung aus der Bau-Brief-Pipeline. Empfehlung
-Reihenfolge: **Sage-Page-Refactor zuerst** (sichtbares Ergebnis für
-Klaus — die Sage-Page lädt endlich alle SBKIM-Module mit voller
-`init()`-Kette und macht den hybriden Endknoten-Status sichtbar);
-gefolgt von **Bau 01.Y `ensureStore`** und **Bau 02.Y Multi-
-Identitäts-API + Backup-Schema-Bump** als Infrastruktur-Hebel für
-alle weiteren Bauten. Die Bau-Reihenfolge ist KEINE Kaskade — jeder
-Bau-Brief ist eigenständige Bau-Sitzung mit eigenem PR.
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_abschluss-v1-sammelspec.md](sessions/archiv/2026-05-19_abschluss-v1-sammelspec.md).
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_bau-01y-ensure-store.md](sessions/archiv/2026-05-19_bau-01y-ensure-store.md).
 
 ---
 
@@ -2867,6 +2824,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-19 | Abschluss · V1-Sammelspec-Kaskade (Brief 99 · PR #100 gemerged 2026-05-19, `main` `80994fd`; schließt die vier Strang-Etappen Brief 01 V1-Sage-Hybrid PR #96 + Brief 02 Plattform-Matrix PR #97 + Brief 03 M04-Erweiterung PR #98 + Brief 04 Multi-Identität PR #99; KEINE neuen §-Inhalte in dieser Abschluss-Sitzung — INTERFACES § 10 Änderungsprotokoll um eine Abschluss-Zeile „Sammelspec-Abschluss (Brief 99)" erweitert; **PROTOCOL_VERSION bleibt `"0.1"`** + **BACKUP_FORMAT_VERSION bleibt `1`** als Snapshot-Stand verbindlich dokumentiert; Bau-Sitzungs-Brief-Pipeline für die nächste Welle benannt (KEINE Spec-Kaskade — jeder Bau eigene Bau-Sitzung mit eigenem PR; Reihenfolge ist Klaus' Entscheidung): Bau Sage-Page-Refactor → Bau 01.Y `ensureStore` in Modul 01 → Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump in Modul 02 → Bau 04.A Stufe A erweitert in Modul 04 → Bau 04.B Stufe B in Modul 04 → Bau 05.Y / 06.Y / 07.Y transparenter Slot-Pfad → Bau Multi-Identitäts-Migration der Endknoten; Konsistenz-Prüfung VOR dem Eingriff (Kaskaden-Konvention 5) abgehakt — alle vier Strang-PRs gemerged, INTERFACES § 0 / § 1 / § 2 / § 6 / § 7 / § 8 / § 9 / § 10 auf Brief-04-Stand geprüft, PROTOCOL_VERSION-Status-Snapshot `"0.1"`; KEIN Modul-Code, KEINE Sage-Page-Änderung, KEINE CLAUDE.md-/Karte-09-/`status.json`-Änderung — Brief 99 ist Doku-Pflege; Vision-Anker 1 / 6 / 9 § Status nachgezogen auf „Strang X realisiert + Sammelspec-Abschluss (Brief 99) abgeschlossen") | [→ Archiv](sessions/archiv/2026-05-19_abschluss-v1-sammelspec.md) |
 | 2026-05-19 | Spec · Multi-Identität — Strang 3 (Brief 04) der V1-Sammelspec-Kaskade (Brief 04 · PR #99 gemerged 2026-05-19, `main` `59e3998`; INTERFACES § 1 Modul 02 um fünf neue / erweiterte API-Funktionen erweitert (`getOrCreateIdentity(key?)`, `setActiveIdentity(key)`, `getActiveIdentityKey()`, `listIdentities()`, `removeIdentity(key, options?)`), Singleton-Klausel durch Identitäts-Slot-Vertrag ersetzt (Default-Slot „main" verbindlich, beliebig viele weitere Slots, `sbkim_meta["active-identity"]` als String-Marker), Selbstcheck auf zwölf Funktionen erweitert, Fehlerverhalten um `UnknownIdentityError` + `RemoveActiveIdentityError` erweitert; § 1 Modul 05 / 06 / 07 auf identitäts-spezifische Store-Pattern (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`, `sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`, `sbkim_hetero_outbox_<key>`) umgestellt mit Identitäts-Cache- und Receiver-Map-nodeId→key-Konvention; § 2 Spore-JSON Multi-Identitäts-Hinweis-Block (Strategie A gewählt — nur aktive Identität in `spore.json`, `PROTOCOL_VERSION` bleibt `"0.1"`; Strategie B NICHT gewählt — würde auf `"0.2"` bumpen); § 9 Identitäts-Map als neue verbindliche Spec-Klausel mit sieben Sub-§ (9.1 Slot-Schema, 9.2 identitäts-spezifische Stores + Persona-Isolation, 9.3 active-identity-Marker, 9.4 Receiver-Pfad, 9.5 Migrations-Strategie Option A/B, 9.6 Trade-off-Klausel, 9.7 Verbindung zur M04-Erweiterung); § 9 Änderungsprotokoll auf § 10 nachnummeriert; Apoptose-Granularität entschieden — `confirmSelfApoptose` global, `removeIdentity(key, {force:true})` ist Single-Identitäts-Apoptose mit Hook `_sendLegacyForIdentity` in Modul 07; Karten 02 / 05 / 06 / 07 nachgezogen; `PROTOCOL_VERSION` bleibt `"0.1"`, `BACKUP_FORMAT_VERSION` bleibt `1` (Bump 1→2 in Bau-Folge-Sitzung 02.Y); BRIEF_99 `docs/sessions/BRIEF_99_SAMMELSPEC_ABSCHLUSS.md` angelegt; kein Modul-Code, keine Sage-Page-Änderung) | [→ Archiv](sessions/archiv/2026-05-19_spec-multi-identitaet.md) |
 | 2026-05-19 | Spec · M04-Erweiterung — Strang 2 (Brief 03) der V1-Sammelspec-Kaskade (Brief 03 · PR #98 gemerged 2026-05-19, `main` `27d6a19`; INTERFACES § 0 um drei §0-Konstanten erweitert (`SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL="claude-sonnet-4"`, `STUFE_B_MAX_TOKENS=1024`), § 1 Modul 02 Bietet-Block-Spore-Schema-Erweiterungs-Hinweis (`embeddingCapabilities` Alias + `embeddingNeeds` neu), § 1 Modul 04 um zwei neue Funktionen + vier neue Sub-Blöcke (Drei-Schichten-Modell mit Mittelwert-vs-Min-Begründung, Brücken-Feld-Spec mit BridgeProposal, Schwellen-Vertrag mit 5 Auswertungs-Regeln, Stufe-B-Vertrag mit JSON-Schema und Beispiel-Output mit zwei Personas) + Fehlerverhalten-Tabelle um sieben neue Zeilen + Garantien um vier neue Punkte erweitert, § 2 Spore-JSON Optionale Felder um die zwei neuen Vektor-Felder erweitert, § 7 LLM-Stufe-B-Ehrlichkeits-Klausel (vier verbindliche Sätze: Stufe B opt-in, Stufe A rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen, Knoten ohne Stufe B = vollwertige Netz-Teilnehmer), § 8 Anti-Missbrauch-Klausel (drei verbindliche Sätze: Brücken-Vorschlag lokal, `candidateScope:"netz"` formal nicht aktivierbar bis Anker 10-12, Modul 06 filtert Outbox-Einträge), § 7 Änderungsprotokoll auf § 9 nachnummeriert; Karten 02 (M04-Sub-Block mit Migrations-Tabelle vier Spore-Zustände + Bauzustand-Hinweis für Bau-Folge-Sitzung) / 04 (vier neue Sub-Blöcke parallel zu INTERFACES + Stamm/Gast-Block unverändert) / 06 (Brücken-Vorschlag-Eintrags-Typ-Sub-Block + vier-stufige Filter-Logik) nachgezogen; PROTOCOL_VERSION bleibt `"0.1"` (additive Felder + additive Funktionen, kein altes Feld zur Pflicht erhoben); kein Modul-Code in `src/`, keine Sage-Page-Änderung; Brief 04 `docs/sessions/BRIEF_04_multi_identitaet.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-19_spec-m04-erweiterung.md) |
 | 2026-05-18 | Spec · Plattform-Matrix — Strang 2 der V1-Sammelspec-Kaskade (Brief 02 · PR #97 gemerged — `main` `69077db`; INTERFACES § 6.2 Plattform-Matrix mit fünf Profilen × sechs Spalten + Sage-Anmerkung, § 6.3 Plattform-Ehrlichkeits-Klausel als verbindliche Spec-Klausel mit Begründung aus Klaus' Lehre 1, § 6.4 Vision-Bezüge als Querverweis-Matrix mit sieben Ankern; § 6.1 Plattform-Matrix-Stub auf Verweis umgeschrieben; Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6 streng eingehalten; `PROTOCOL_VERSION` bleibt `"0.1"`; CLAUDE.md / Karte 09 / `status.json` unangetastet — Brief 02 lebt rein in INTERFACES; Brief 03 `docs/sessions/BRIEF_03_m04_erweiterung.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-plattform-matrix.md) |

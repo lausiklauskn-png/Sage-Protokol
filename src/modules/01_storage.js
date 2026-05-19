@@ -2,11 +2,26 @@
  * SBKIM — Modul 01 — Storage
  *
  * IndexedDB wrapper for all sbkim_* stores. Promise-based API, no
- * callbacks. Default database name: "sbkim", current version: 3
+ * callbacks. Default database name: "sbkim", current version: 4
  * (additive migrations: v=2 Bau-Sitzung 06 added `sbkim_hetero_inbox`,
  * v=3 Pflege Bau 06.1 added `sbkim_hetero_outbox` — Spec-Sitzung 08
- * specified the store; Pflege Bau 06.1 follows up the code anmelden).
+ * specified the store; Pflege Bau 06.1 follows up the code anmelden;
+ * v=4 Bau 01.Y 2026-05-19 opens the dynamic-store path via
+ * `ensureStore` — no new mandatory stores in v=4, `STORES_V4 = []`).
  *
+ * Bau 01.Y (2026-05-19) — `ensureStore(name) → Promise<void>` als
+ *   öffentlicher Helfer (INTERFACES.md § 9.5 Option A). Modul 01 kennt
+ *   Identität NICHT — der Aufrufer (Bau 02.Y Folge-Sitzung in Modul 02)
+ *   liefert den identitäts-spezifischen `_<key>`-Suffix. Pattern-Check
+ *   synchron via STORE_NAME_PATTERN (^sbkim_[a-z0-9_]+$); Idempotenz
+ *   via `db.objectStoreNames.contains(name)` vor jedem Versions-Bump;
+ *   Versions-Bump-Choreografie linear über `db.version + 1` (entkoppelt
+ *   von der Build-Konstante DB_VERSION, damit zwei parallele
+ *   ensureStore-Aufrufe sich nicht in die Versionssequenz schreiben);
+ *   onversionchange-Handler auf der NEUEN Verbindung fail-soft
+ *   schließen, damit ein Folge-Bump im selben Tab durchgeht.
+ *
+
  * Pflege PWA-Suffix (2026-05-16) — additive Konfig im init-Pfad:
  *   init({ dbSuffix }) öffnet die DB als "sbkim_<dbSuffix>" statt der
  *   Default-DB "sbkim". Pflicht-Anwendungsfall: GitHub-Pages-Project-
@@ -41,6 +56,7 @@
  *   del(name, key) -> Promise<void>
  *   all(name) -> Promise<Array<{key, value}>>
  *   clear(name) -> Promise<void>
+ *   ensureStore(name) -> Promise<void>   (Bau 01.Y; sync InvalidStoreNameError bei Pattern-Verstoß; async EnsureStoreError bei Bump-Fehler)
  *
  * Self-check: emits a console.info line on script load. See INTERFACES.md
  * and docs/components/01_storage.md for the binding spec.
@@ -49,9 +65,14 @@
   "use strict";
 
   var DB_NAME_DEFAULT = "sbkim";
-  var DB_VERSION = 3;
+  var DB_VERSION = 4;
   var SBKIM_STORE_PREFIX = "sbkim_";
   var DB_SUFFIX_PATTERN = /^[a-z0-9_-]+$/;
+
+  // Bau 01.Y (2026-05-19): Modul-01-Pattern für ensureStore-Namen.
+  // Strenger als DB_SUFFIX_PATTERN: Store-Namen tragen den sbkim_-Präfix
+  // und dürfen kein '-' enthalten (Trenner-Konvention bleibt '_').
+  var STORE_NAME_PATTERN = /^sbkim_[a-z0-9_]+$/;
 
   // Stores, die der initiale Migration-Pfad (v=1) anlegt.
   var STORES_V1 = [
@@ -75,7 +96,18 @@
     "sbkim_hetero_outbox",
   ];
 
-  var KNOWN_STORES = STORES_V1.concat(STORES_V2).concat(STORES_V3);
+  // Bau 01.Y (2026-05-19): v=4 öffnet den Pfad „dynamische Stores via
+  // ensureStore" (INTERFACES.md § 9.5 Option A). KEINE festen Pflicht-
+  // Stores in v=4 — die identitäts-spezifischen Stores entstehen erst
+  // durch ensureStore-Aufrufe aus den späteren Bau-Sitzungen (02.Y /
+  // 05.Y / 06.Y / 07.Y). Liste bleibt leer; applyMigration(db, 4) ist
+  // ein no-op-Marker.
+  var STORES_V4 = [];
+
+  // KNOWN_STORES wird ab Bau 01.Y zur Laufzeit erweitert (jeder
+  // erfolgreiche ensureStore-Aufruf pusht den neuen Namen hinten an).
+  // Die initiale Pflicht-Liste sind die Pflicht-Stores aus v=1/v=2/v=3.
+  var KNOWN_STORES = STORES_V1.concat(STORES_V2).concat(STORES_V3).concat(STORES_V4);
 
   function makeError(name, message, cause) {
     var e = new Error(message);
@@ -83,6 +115,13 @@
     if (cause !== undefined) e.cause = cause;
     return e;
   }
+
+  // Bau 01.Y (2026-05-19): Fehler-Factories für den ensureStore-Pfad,
+  // Factory-Stil analog Modul 02 / 08. Auf window.SbkimStorage.<Error>
+  // exportiert; intern bevorzugt makeError("Name", ...) für sprechende
+  // cause-Pfade.
+  function InvalidStoreNameError(message) { return makeError("InvalidStoreNameError", message); }
+  function EnsureStoreError(message, cause) { return makeError("EnsureStoreError", message, cause); }
 
   function assertKnownStore(storeName) {
     if (KNOWN_STORES.indexOf(storeName) === -1) {
@@ -126,18 +165,58 @@
       }
       return;
     }
+    if (version === 4) {
+      // Bau 01.Y (2026-05-19): v=4 öffnet den Pfad „dynamische Stores
+      // via ensureStore" (INTERFACES.md § 9.5 Option A). STORES_V4 ist
+      // leer — kein Pflicht-Store wird in v=4 additiv angelegt; der
+      // Sprung v=3 → v=4 ist ein reiner Marker für bestehende PWAs.
+      // Dynamische Stores entstehen erst durch ensureStore-Aufrufe aus
+      // den späteren Bau-Sitzungen, die linear weiter bumpen
+      // (db.version + 1 pro neuem Store).
+      for (var m = 0; m < STORES_V4.length; m++) {
+        var name4 = STORES_V4[m];
+        if (!db.objectStoreNames.contains(name4)) {
+          db.createObjectStore(name4);
+        }
+      }
+      return;
+    }
     // Future migrations: branch on `version` and add stores additively.
     // Never deleteObjectStore here without an explicit spec update.
   }
 
   var dbPromise = null;
   var dbNameInUse = DB_NAME_DEFAULT;
+  // currentDb (Bau 01.Y 2026-05-19): sync-lesbarer Anker auf die aktuelle
+  // IDBDatabase-Verbindung. Wird in req.onsuccess (init) und in
+  // openReq.onsuccess (ensureStore) gesetzt, in onversionchange auf null
+  // zurückgesetzt. Trägt _meta.dbVersion als Live-Zustand (statt der
+  // Build-Konstante DB_VERSION).
+  var currentDb = null;
   // navigator.storage.persist()-Status nach init. Werte:
   //   null  — vor init / API nicht verfügbar / persist() rejected (fail-soft)
   //   true  — Browser hat den Speicher als persistent markiert
   //   false — Browser hat verweigert (z.B. Safari restriktiv)
   // Knoten bleibt in allen drei Fällen lauffähig.
   var storagePersisted = null;
+
+  // Bau 01.Y (2026-05-19): gemeinsamer onversionchange-Handler für jede
+  // frisch geöffnete Verbindung. Wird ein Versions-Bump auf einer
+  // ANDEREN Verbindung derselben DB ausgelöst (anderer Tab oder ein
+  // ensureStore-Folgeruf im selben Tab — siehe brackets im ensureStore-
+  // Pfad, wo wir db.close() vor dem Bump explizit selbst rufen),
+  // schließt dieser Handler fail-soft die alte Verbindung. dbPromise
+  // wird invalidiert, damit nachfolgende init()-Aufrufe eine frische
+  // Verbindung mit der neuen Version aufbauen.
+  function attachVersionChangeHandler(db) {
+    db.onversionchange = function () {
+      try { db.close(); } catch (e) { /* ignore — fail-soft */ }
+      if (currentDb === db) {
+        currentDb = null;
+        dbPromise = null;
+      }
+    };
+  }
 
   function requestStoragePersist() {
     if (
@@ -254,6 +333,12 @@
       };
       req.onsuccess = function () {
         var db = req.result;
+        currentDb = db;
+        // Bau 01.Y (2026-05-19): fail-soft onversionchange-Handler
+        // installieren, damit ein späterer ensureStore-Bump (oder ein
+        // Bump aus einem anderen Tab) unsere Verbindung sauber schließen
+        // kann statt in onblocked zu hängen.
+        attachVersionChangeHandler(db);
         // Pflege Storage-Persist (2026-05-16): persist()-Bitte nach
         // erfolgreichem DB-Open, fail-soft. requestStoragePersist
         // resolved IMMER (kein Throw, kein Reject) — Knoten bleibt
@@ -391,6 +476,99 @@
     });
   }
 
+  // Bau 01.Y (2026-05-19) — INTERFACES.md § 9.5 Option A: dynamische
+  // Store-Erzeugung ab DB-Version 4. Aufrufer (Bau 02.Y in Modul 02)
+  // liefert den identitäts-spezifischen Store-Namen; Modul 01 kennt
+  // Identität NICHT und prüft nur das Modul-01-Pattern. Idempotent:
+  // existierender Store → no-op. KEINE Datenmigration alter Stores.
+  function ensureStore(storeName) {
+    // Pattern-Check SYNCHRON — vor jedem Promise-Aufbau, damit ein
+    // Programmier-Fehler nicht erst beim ersten await sichtbar wird.
+    if (typeof storeName !== "string" || !STORE_NAME_PATTERN.test(storeName)) {
+      throw makeError(
+        "InvalidStoreNameError",
+        "Ungueltiger Store-Name: '" + storeName +
+          "'. Erlaubt sind nur Kleinbuchstaben, Ziffern und '_' nach dem 'sbkim_'-Praefix (Pattern ^sbkim_[a-z0-9_]+$).",
+      );
+    }
+    return init().then(function (db) {
+      // Idempotenz: existierender Store → no-op-Promise. Kein Versions-
+      // Bump, keine Resource-Leakage. Falls der Store schon in der DB
+      // ist (z.B. von einem anderen Tab dynamisch angelegt), aber noch
+      // nicht in KNOWN_STORES, ziehen wir die Allow-List synchron nach,
+      // damit get/put/del/all/clear ihn akzeptieren.
+      if (db.objectStoreNames.contains(storeName)) {
+        if (KNOWN_STORES.indexOf(storeName) === -1) {
+          KNOWN_STORES.push(storeName);
+        }
+        return undefined;
+      }
+      return new Promise(function (resolve, reject) {
+        if (typeof indexedDB === "undefined" || indexedDB === null) {
+          reject(makeError(
+            "EnsureStoreError",
+            "IndexedDB nicht verfuegbar fuer ensureStore('" + storeName + "').",
+          ));
+          return;
+        }
+        var newVersion = db.version + 1;
+        // Aktuelle Verbindung schließen, damit der Versions-Bump
+        // durchgehen kann. dbPromise invalidieren, damit nachfolgende
+        // init()-Aufrufe auf der neuen Verbindung landen.
+        try { db.close(); } catch (e) { /* ignore — Verbindung war in seltsamem Zustand */ }
+        if (currentDb === db) currentDb = null;
+        dbPromise = null;
+        var openReq;
+        try {
+          openReq = indexedDB.open(dbNameInUse, newVersion);
+        } catch (err) {
+          reject(makeError(
+            "EnsureStoreError",
+            "indexedDB.open() warf synchron beim Versions-Bump fuer ensureStore('" + storeName + "'): " + (err && err.message),
+            err,
+          ));
+          return;
+        }
+        openReq.onupgradeneeded = function () {
+          var upDb = openReq.result;
+          // Nur den einen neuen Store anlegen — strict additiv. KEINE
+          // Schemata-Migration alter Stores, KEINE neuen Indices auf
+          // bestehenden Stores.
+          if (!upDb.objectStoreNames.contains(storeName)) {
+            upDb.createObjectStore(storeName);
+          }
+        };
+        openReq.onsuccess = function () {
+          var newDb = openReq.result;
+          // Fail-soft onversionchange-Handler auf der NEUEN Verbindung,
+          // damit ein Folge-Bump (weiterer ensureStore-Aufruf, anderer
+          // Tab) durchgeht statt in onblocked zu hängen.
+          attachVersionChangeHandler(newDb);
+          currentDb = newDb;
+          dbPromise = Promise.resolve(newDb);
+          if (KNOWN_STORES.indexOf(storeName) === -1) {
+            KNOWN_STORES.push(storeName);
+          }
+          resolve(undefined);
+        };
+        openReq.onerror = function () {
+          var err = openReq.error;
+          reject(makeError(
+            "EnsureStoreError",
+            "ensureStore('" + storeName + "') Versions-Bump scheiterte: " + (err && err.message),
+            err,
+          ));
+        };
+        openReq.onblocked = function () {
+          reject(makeError(
+            "EnsureStoreError",
+            "ensureStore('" + storeName + "') Versions-Bump blockiert — ein anderer Tab haelt die DB offen und ignoriert onversionchange.",
+          ));
+        };
+      });
+    });
+  }
+
   function getStore(storeName) {
     assertKnownStore(storeName);
     return {
@@ -410,15 +588,33 @@
     del: del,
     all: all,
     clear: clear,
+    ensureStore: ensureStore,
+    // Bau 01.Y (2026-05-19): Fehler-Factories als Export, analog Modul
+    // 02 / 08. Tests können sowohl `err.name === "InvalidStoreNameError"`
+    // als auch `err instanceof SbkimStorage.InvalidStoreNameError`-artige
+    // Vergleiche fahren — die Factory liefert Error-Instanzen mit
+    // sprechendem `name`-Feld.
+    InvalidStoreNameError: InvalidStoreNameError,
+    EnsureStoreError: EnsureStoreError,
     _meta: {
       // dbName: Live-Zustand. Vor dem ersten init()-Aufruf identisch mit
       // dem Default; nach init({dbSuffix}) zeigt das Getter den effektiv
       // verwendeten Namen ("sbkim_<dbSuffix>").
       get dbName() { return dbNameInUse; },
       dbNameDefault: DB_NAME_DEFAULT,
-      dbVersion: DB_VERSION,
+      // Bau 01.Y (2026-05-19): dbVersion als Getter — Live-Zustand statt
+      // Build-Konstante. Kann nach ensureStore-Aufrufen > DB_VERSION
+      // sein (db.version + 1 pro neuem Store).
+      get dbVersion() { return currentDb ? currentDb.version : DB_VERSION; },
+      dbVersionInitial: DB_VERSION,
       storePrefix: SBKIM_STORE_PREFIX,
-      knownStores: KNOWN_STORES.slice(),
+      // Bau 01.Y (2026-05-19): knownStores als Getter — KNOWN_STORES
+      // wird zur Laufzeit erweitert (jeder erfolgreiche ensureStore-
+      // Aufruf pusht den neuen Namen hinten an). Snapshot pro Lese-
+      // Aufruf.
+      get knownStores() { return KNOWN_STORES.slice(); },
+      // Bau 01.Y (2026-05-19): Pattern als Read-Anker für Tests.
+      ensureStorePattern: STORE_NAME_PATTERN,
       // storagePersisted: null vor init bzw. wenn navigator.storage.persist
       // nicht verfügbar / Promise rejected (fail-soft). true|false zeigt
       // den Browser-Entscheid (Chrome auto-bei-PWA, Firefox prompt, Safari
@@ -432,6 +628,6 @@
   // Self-check: emitted on script load (synchronous, before init()).
   // Format is uniform across all SBKIM modules — see INTERFACES.md.
   if (typeof console !== "undefined" && console.info) {
-    console.info("MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear");
+    console.info("MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear/ensureStore");
   }
 })(typeof window !== "undefined" ? window : globalThis);

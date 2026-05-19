@@ -93,7 +93,8 @@ SBKIM-Daten **getrennt** vom Endknoten-Anwendungs-Storage liegen
 
 ## Schnittstelle
 
-Modul 01 exportiert **sieben** öffentliche Funktionen. Alle DB-Operationen
+Modul 01 exportiert **acht** öffentliche Funktionen (sieben bestehende
+plus `ensureStore` aus Bau 01.Y 2026-05-19). Alle DB-Operationen
 liefern ein `Promise`. Es gibt **keine** Callback-Variante.
 
 ```
@@ -148,6 +149,46 @@ all(storeName: string) → Promise<Array<{key: string, value: any}>>
 clear(storeName: string) → Promise<void>
   // Leert den Store komplett. Vorsicht: keine Bestätigungslogik im
   // Modul — Aufrufer ist verantwortlich.
+
+ensureStore(storeName: string) → Promise<void>
+  // Bau 01.Y (2026-05-19): additive Anlage dynamischer Stores ab
+  // DB-Version 4 — Option A aus INTERFACES.md § 9.5 Migrations-
+  // Strategie. Idempotent: ist der Store bereits in der DB vorhanden,
+  // resolved die Promise sofort als no-op (kein Versions-Bump, keine
+  // Resource-Leakage).
+  //
+  // Pattern-Check SYNCHRON: storeName muss dem Modul-01-Pattern
+  // ^sbkim_[a-z0-9_]+$ entsprechen (Konstante STORE_NAME_PATTERN,
+  // modul-lokal). Verstoss wirft InvalidStoreNameError SYNCHRON vor
+  // jedem Promise-Aufbau. Das Pattern ist STRENGER als das dbSuffix-
+  // Pattern ^[a-z0-9_-]+$: Store-Namen tragen den 'sbkim_'-Präfix und
+  // dürfen kein '-' enthalten (Trenner-Konvention bleibt '_').
+  //
+  // Versions-Bump-Choreografie (verbindlich): bei Bedarf schließt
+  // Modul 01 die aktuelle DB-Verbindung, ruft indexedDB.open mit
+  // db.version + 1 (linearer Inkrement entkoppelt von DB_VERSION,
+  // damit zwei parallele ensureStore-Aufrufe sich nicht in die
+  // Versionssequenz schreiben) und legt im onupgradeneeded-Handler
+  // genau den neuen Store an (createObjectStore ohne keyPath, wie
+  // alle anderen sbkim_*-Stores — externe Keys). Andere Tabs
+  // bekommen das onversionchange-Event und müssen ihre eigene
+  // Verbindung fail-soft schließen, damit der Bump durchgeht.
+  //
+  // Aufrufer trägt die Identitäts-Konvention. Modul 01 kennt
+  // Identität NICHT; Bau 02.Y wird ensureStore mit dem
+  // identitäts-spezifischen Suffix (z.B.
+  // "sbkim_siblings_<key>") rufen. KEINE Datenmigration alter
+  // Stores, KEINE neuen Indices auf bestehenden Stores — strikt
+  // additiv.
+  //
+  // Bei Erfolg ist der Store ab sofort in
+  // getStore/get/put/del/all/clear regulär nutzbar (KNOWN_STORES
+  // wird zur Laufzeit erweitert).
+  //
+  // Bei Fehler in der IDBOpenDBRequest-Choreografie (onerror,
+  // onblocked, anderer Tab verweigert onversionchange) rejected die
+  // Promise mit EnsureStoreError; die cause-Property trägt die
+  // ursprüngliche IDBOpenDBRequest-Error-Reason.
 ```
 
 ### Selbstcheck
@@ -156,7 +197,7 @@ Beim **Skript-Laden** (synchron, direkt nach Modul-Import, vor dem
 ersten `init()`-Aufruf) emittiert das Modul:
 
 ```
-console.info("MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear");
+console.info("MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear/ensureStore");
 ```
 
 Sinn: Klaus öffnet beim Andocken in einer Endknoten-PWA die DevTools-
@@ -270,11 +311,34 @@ Schema-Hinweise:
   (Performance-Messung in Modul 04) kann ein optionaler Cache-Store
   ergänzt werden, aber nicht in dieser Spec.
 
+### Dynamische Stores ab v=4
+
+Mit Bau 01.Y (2026-05-19) öffnet Modul 01 den dynamischen Store-Pfad
+für die Multi-Identitäts-Erweiterung aus INTERFACES.md § 9. Die acht
+Stores oben (STORES_V1/V2/V3) bleiben der **initiale Pflicht-Migrations-
+Pfad** und werden bei `init()` automatisch angelegt. Zusätzlich
+existiert ab DB-Version 4 der Pfad `ensureStore(name)`:
+
+- **Aufrufer-Konvention:** Modul 02 (Bau-Folge-Sitzung 02.Y) ruft
+  `ensureStore("sbkim_siblings_<key>")` etc. für jeden identitäts-
+  spezifischen Store, bevor er beschrieben wird. Modul 01 kennt
+  Identität nicht — der `_<key>`-Suffix ist Aufrufer-Pflicht.
+- **Pattern:** `^sbkim_[a-z0-9_]+$` (Konstante `STORE_NAME_PATTERN`,
+  modul-lokal). Strenger als das `dbSuffix`-Pattern aus
+  `init({dbSuffix})` — Store-Namen tragen den `sbkim_`-Präfix und
+  dürfen kein `-` enthalten (Trenner-Konvention bleibt `_`).
+- **Idempotenz:** existierender Store → no-op-Promise. `ensureStore`
+  zweimal mit demselben Namen bumpt die DB-Version **nicht** — Modul 01
+  prüft `db.objectStoreNames.contains(name)` vor dem Versions-Bump.
+- **Pflicht-Stores bleiben unangetastet:** `ensureStore` legt nur den
+  einen neuen Store an, migriert oder ändert keine bestehenden Stores
+  oder Indices. Spec sagt strict additiv.
+
 ### Versionsmigration
 
 ```
 DB_NAME    = "sbkim"
-DB_VERSION = 3        // Stand 2026-05-15, Spec-Sitzung 08 (additive Migration v=3)
+DB_VERSION = 4        // Stand 2026-05-19, Bau 01.Y (additive Erweiterung — Übergang zu dynamischen Stores via ensureStore)
 ```
 
 Migrations-Logik in `onupgradeneeded`:
@@ -296,6 +360,7 @@ Stores werden **nie** überschrieben oder gelöscht.
 | `v=1` | `sbkim_keys`, `sbkim_spore`, `sbkim_siblings`, `sbkim_anastomosis_log`, `sbkim_legacy_inbox`, `sbkim_doku_meta` | Spec+Bau 01 (2026-05-14) |
 | `v=2` | `sbkim_hetero_inbox` | Bau 06 (2026-05-15) |
 | `v=3` | `sbkim_hetero_outbox` | Spec 08 (2026-05-15) |
+| `v=4` | _(keine Pflicht-Stores — `STORES_V4 = []`)_ | Bau 01.Y `ensureStore` (2026-05-19) |
 
 Künftige Migrationen erhöhen `DB_VERSION` um genau 1 pro Spec-Sitzung,
 die etwas an der Tabelle ändert. Migrations-Schritte sind additiv;
@@ -303,21 +368,42 @@ Drop-Operationen brauchen einen eigenen Spec-Eintrag mit dokumentiertem
 Datenverlust-Pfad. Bestehende Klaus-PWAs mit DB-Version 1 oder 2
 bekommen den jeweils fehlenden Store beim nächsten Lade durch den
 `onupgradeneeded`-Pfad — kein Datenverlust, additive Erweiterung. Eine
-PWA mit `v=1` läuft beim nächsten Lade durch `applyMigration(db, 2)`
-*und* `applyMigration(db, 3)` (Loop `for v = oldVersion+1 … newVersion`).
+PWA mit `v=1` läuft beim nächsten Lade durch `applyMigration(db, 2)`,
+`applyMigration(db, 3)` *und* `applyMigration(db, 4)` (Loop
+`for v = oldVersion+1 … newVersion`).
+
+**Sonderfall `v=4` (Bau 01.Y):** `STORES_V4` ist eine leere Liste —
+DB-Version 4 markiert den Übergang zu „dynamischen Stores ab v=4 via
+`ensureStore`" (siehe § Dynamische Stores ab v=4 sowie INTERFACES.md
+§ 9.5 Option A). Bestehende v=3-PWAs werden zur Lade-Zeit auf v=4
+hochgezogen, **ohne** dass ein neuer Pflicht-Store angelegt wird; die
+identitäts-spezifischen Stores entstehen erst durch
+`ensureStore`-Aufrufe aus den späteren Bau-Sitzungen (02.Y / 05.Y /
+06.Y / 07.Y). Jeder dieser späteren Aufrufe bumpt die DB-Version
+linear weiter (`newVersion = db.version + 1`), entkoppelt von der
+Build-Konstante `DB_VERSION`.
 
 ### Konfigurationswerte
 
 ```
-SBKIM_STORE_PREFIX = "sbkim_"   // INTERFACES.md §0
+SBKIM_STORE_PREFIX = "sbkim_"             // INTERFACES.md §0
 DB_NAME_DEFAULT    = "sbkim"
 DB_SUFFIX_PATTERN  = /^[a-z0-9_-]+$/
-DB_VERSION         = 3
+STORE_NAME_PATTERN = /^sbkim_[a-z0-9_]+$/ // Bau 01.Y (2026-05-19), modul-lokal — Pattern für ensureStore-Namen
+DB_VERSION         = 4
 ```
 
 `DB_NAME_DEFAULT` ist der DB-Name ohne Suffix. Wird beim `init`-Aufruf
 ein gültiger `dbSuffix` mitgegeben, ist der effektive DB-Name
 `SBKIM_STORE_PREFIX + dbSuffix` (also `sbkim_<dbSuffix>`).
+
+`STORE_NAME_PATTERN` ist seit Bau 01.Y (2026-05-19) **modul-lokal**:
+es gilt ausschließlich für `ensureStore(name)` (dynamische Stores ab
+v=4) und wird NICHT in INTERFACES.md §0 als globale Konstante geführt
+— der Pattern-Vertrag steht im INTERFACES.md § 1 Modul 01 Bietet-Block
+direkt bei der Funktion. Strenger als `DB_SUFFIX_PATTERN`
+(`^[a-z0-9_-]+$`): Store-Namen tragen den `sbkim_`-Präfix und dürfen
+kein `-` enthalten.
 
 ---
 
@@ -332,6 +418,8 @@ ein gültiger `dbSuffix` mitgegeben, ist der effektive DB-Name
 | Quota überschritten beim `put()` | rejects mit `QuotaExceededError`, kein Silent-Fail. Aufrufer entscheidet (Aufräumen / Nutzer-Hinweis). |
 | Strukturell-nicht-klonbarer Wert | rejects mit `DataCloneError` (vom Browser durchgereicht). |
 | DB-Open scheitert (Schema-Drift, Corruption) | rejects mit `StorageOpenError`; Modul versucht **keine** automatische Reparatur. |
+| `ensureStore(name)` mit Pattern-Verstoß | **synchroner** Wurf von `InvalidStoreNameError` (vor jedem Promise-Aufbau). Modul-01-Pattern `^sbkim_[a-z0-9_]+$`. |
+| `ensureStore(name)` Versions-Bump-Choreografie scheitert (`onerror`, `onblocked`, anderer Tab verweigert `onversionchange`) | rejects mit `EnsureStoreError`; `cause`-Property trägt die ursprüngliche `IDBOpenDBRequest`-Error-Reason. Bau 01.Y. |
 
 Alle Fehler sind `Error`-Instanzen mit sprechendem `name` (siehe Tabelle)
 und einem deutschsprachigen `message`-Feld für Logs.
@@ -340,12 +428,13 @@ und einem deutschsprachigen `message`-Feld für Logs.
 
 ## Manueller Test
 
-In `tests/manual_check.html`, Panel **01 Storage**, vier Knöpfe
-(seit Bau-Sitzung 2026-05-14 mit echten Aufrufen verdrahtet):
+In `tests/manual_check.html`, Panel **01 Storage**, acht Knöpfe
+(vier seit Bau-Sitzung 2026-05-14, Knopf 5 aus Pflege Storage-Persist
+2026-05-16, Knöpfe 6/7/8 aus Bau 01.Y 2026-05-19):
 
 1. **Storage init** — ruft `init()` auf, erwartet erfolgreich.
    Sichtprüfung: DevTools → Application → IndexedDB → `sbkim` muss
-   vorhanden sein, alle sechs Stores aus der Tabelle angelegt.
+   vorhanden sein, alle acht Stores aus der Tabelle angelegt.
 2. **Storage round-trip** — `put("sbkim_doku_meta", "01", {moduleId:"01", lastSighttest:"<now>", status:"ok"})`
    → `get(...)` → `del(...)` → `get(...)`. Erwartung: kein Fehler,
    letzter `get` liefert `undefined`.
@@ -355,6 +444,30 @@ In `tests/manual_check.html`, Panel **01 Storage**, vier Knöpfe
 4. **Selbstcheck Konsole prüfen** — Hinweisknopf ohne Aktion: weist
    den Tester an, DevTools → Konsole zu öffnen und die `console.info`-
    Zeile `MODUL 01 STORAGE bereit, Funktionen: ...` zu suchen.
+5. **Persist-Status zeigen** (Pflege Storage-Persist 2026-05-16) —
+   reine Lese-Operation; liest `_meta.storagePersisted` nach
+   `init()`. Erwartung in Chrome auf installierter PWA: `true`.
+6. **ensureStore('sbkim_test_foo')** (Bau 01.Y 2026-05-19, happy-path)
+   — legt einen Test-Store dynamisch an. Log: `db.version` vor und
+   nach dem Aufruf (zweiter Wert ist um 1 höher), `objectStoreNames`
+   enthält den neuen Store. Sichtprüfung: DevTools → Application →
+   IndexedDB → `sbkim` (oder `sbkim_<dbSuffix>`) muss
+   `sbkim_test_foo` als zusätzlichen Store zeigen.
+7. **ensureStore('sbkim_test_foo') zweimal** (Bau 01.Y 2026-05-19,
+   Idempotenz-Test) — zweiter Aufruf erzeugt keinen Versions-Bump.
+   Log: `db.version` darf zwischen den zwei Aufrufen NICHT steigen
+   (zweiter ist no-op, Idempotenz-Garantie aus § Schnittstelle).
+8. **ensureStore('invalid-name')** (Bau 01.Y 2026-05-19, Pattern-
+   Verstoß) — Bindestrich verstößt gegen Modul-01-Pattern
+   `^sbkim_[a-z0-9_]+$`. Erwartung: `InvalidStoreNameError`
+   **synchron** geworfen (kein Promise-Aufbau). Log: `name`-Property
+   und `message`.
+
+**Cleanup-Hinweis:** die Test-Stores `sbkim_test_*` aus Knöpfen 6/7
+bleiben in der DB. Klaus kann sie über DevTools → Application →
+IndexedDB → `sbkim` (rechte Maustaste auf Store-Name → „Delete") manuell
+entfernen. Modul 01 bietet keinen `dropStore`-Pfad — Drop-Operationen
+brauchen einen eigenen Spec-Eintrag (siehe § Versionsmigration).
 
 Bewertung manuell durch den Tester. Ergebnis kommt in den Bauzustand-
 Block dieser Karte (Zeile „Sichttest").
@@ -394,6 +507,21 @@ Block dieser Karte (Zeile „Sichttest").
   Stufe (3) Quota-Frühwarnung (Modul 00, schon spec) decken die übrigen
   Verlust-Pfade ab — siehe PULS § Offene Querschnitts-Fragen
   „Identitäts-Persistenz".
+- **Versions-Bump-Choreografie auf mehreren Tabs (Bau 01.Y, 2026-05-19):**
+  `ensureStore(name)` bumpt die IndexedDB-Version per
+  `indexedDB.open(dbName, db.version + 1)` und löst damit auf jeder
+  anderen offenen Verbindung derselben DB ein `onversionchange`-Event
+  aus. Modul 01 setzt seinen eigenen `onversionchange`-Handler auf
+  fail-soft schließen (damit ein Folge-Bump im selben Tab durchgeht).
+  Wenn ein **anderer Tab** seine Verbindung NICHT schließt (z.B. weil
+  Klaus die Endknoten-PWA in zwei DeX-/Tablet-Chrome-Instanzen offen
+  hat und nur einer das aktuelle Modul-01 fährt), bleibt der Bump in
+  `IDBOpenDBRequest.onblocked` hängen. Modul 01 wirft dann
+  `EnsureStoreError` mit `cause`-Property. Empfehlung beim Andocken:
+  vor dem ersten `ensureStore`-Lauf alle Tabs derselben Origin
+  schließen — Klaus' Single-Instance-Disziplin (siehe PULS § Offene
+  Querschnitts-Fragen „DeX-Chrome vs. Tablet-Chrome") schützt
+  zusätzlich.
 
 ---
 
@@ -412,6 +540,8 @@ Block dieser Karte (Zeile „Sichttest").
 | Pflege PWA-Suffix | 2026-05-16 | Pflege PWA-Suffix Karten 01+09 | Folge-Pflege nach Live-Andock-Sitzung 2026-05-16 (Mein-Mixarium + Mein-Rezeptbuch live SBKIM-integriert, aber identische `nodeId` wegen IndexedDB-Origin-Kollision auf GitHub-Pages-Project-Sites — siehe Übergabeprotokoll 2026-05-16 Andock Mein-Rezeptbuch). § Schnittstelle `init()` → `init(options?)` mit optionalem `dbSuffix: string` (Pattern `^[a-z0-9_-]+$`, sonst synchroner `InvalidDbSuffixError`); ohne Suffix bleibt der Default-DB-Name `sbkim` aktiv (rückwärtskompatibel, keine Klaus-PWA und keine Sage-Werkstatt muss umgestellt werden). § Stores: neuer Unter-Block „DB-Namen-Konvention (PWA-Suffix)" als ZWEITER Block in § Schnittstelle (vor § Stores) — drei-Zeilen-Tabelle (`init()` → `sbkim`, `init({dbSuffix:"mixarium"})` → `sbkim_mixarium`, `init({dbSuffix:"rezeptbuch"})` → `sbkim_rezeptbuch`) plus vier Konventions-Punkte (Andocker-Pflicht; Pattern-Validierung sync; Suffix beim ERSTEN init-Aufruf; Modul 02 bleibt unangetastet, IDENTITY_KEY weiterhin `"main"` innerhalb der jeweiligen DB). § Konfigurationswerte `DB_NAME` → `DB_NAME_DEFAULT` + neue Konstante `DB_SUFFIX_PATTERN`. § Fehlerverhalten zwei Zeilen ergänzt (`InvalidDbSuffixError` synchron bei ungültigem Suffix, async bei zweitem init mit abweichendem Suffix). **Code:** `src/modules/01_storage.js` `init(options)` Allow-List + Validierung + `dbNameInUse`-State (idempotent: zweiter init mit gleichem Suffix → gleiches dbPromise; abweichender Suffix → `InvalidDbSuffixError`); `_meta.dbName` als Getter (zeigt Live-Zustand statt Build-Konstante). **Modul 02 bleibt unangetastet** (`IDENTITY_KEY = "main"`; Identität ist DB-lokal, Pfade brechen nicht). **Keine Hauptversions-Erhöhung** (`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`). `node --check src/modules/01_storage.js` grün. |
 | Pflege Storage-Persist | 2026-05-16 | Pflege Storage-Persist | Stufe (1) der drei-stufigen Identitäts-Persistenz-Architektur (PULS § Offene Querschnitts-Fragen „Identitäts-Persistenz"). § Schnittstelle `init(options?)`-Doc-Block um Hinweis erweitert: nach erfolgreichem DB-Open ruft Modul 01 `navigator.storage.persist()` an (fail-soft); bei Erfolg setzt es `_meta.storagePersisted = true \| false` und gibt `console.info("Storage persist-Status: …")` aus, bei fehlender API oder Promise-Rejection bleibt der Wert `null` (kein Throw, kein Reject — Knoten bleibt lauffähig). § Risiken neuer Punkt „Persist-Verweigerung" (Chrome auto-bei-PWA, Firefox prompt, Safari restriktiv; Verlust-Pfade Stufe 2 Backup-Export Modul 02 + Stufe 3 Quota-Frühwarnung Modul 00 decken die übrigen Fälle ab). **Code:** `src/modules/01_storage.js` `requestStoragePersist()`-Hilfsfunktion zwischen Migrations- und init-Block; Aufruf im `req.onsuccess` vor dem `resolve(db)`; neuer Modul-Closure-State `storagePersisted` (null \| true \| false); `_meta.storagePersisted` als Getter (Live-Zustand statt Build-Konstante; Default `null` vor `init()`). Idempotenz beim Re-Init: dbPromise-Cache deckt das ab — persist() wird automatisch nur einmal pro Tab-Session gerufen. Smoke-Test mit Node + stub-`navigator.storage.persist` (vier Fälle: resolved true, resolved false, API fehlt, persist rejected — alle grün; Resultate als Tabelle im Übergabeprotokoll). **Keine Vertrags-Erweiterung** in INTERFACES.md §0 (keine neue Konstante; persist ist Browser-API ohne Schwelle). **Modul 02 / 05 / 06 / 07 / 08 / 00 unangetastet** (persist greift transparent unter ihren `Storage.init()`-Pfaden). **Modul 00 Quota-Frühwarnung** (`DOKU_QUOTA_WARN_RATIO` / `DOKU_QUOTA_WARN_BYTES` aus §0) bleibt eigene Stufe und wird hier zitiert, nicht aufgebrochen. **Keine Hauptversions-Erhöhung** (`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`). `node --check src/modules/01_storage.js` grün. |
 | Sichttest Knopf 5 Persist-Status (Pflege Storage-Persist) | 2026-05-16 | Klaus + Bau 02.X-Folge | geprüft 2026-05-16 (Klaus, Chrome auf Galaxy Tab S6 + DeX): fünfter Panel-01-Knopf „Persist-Status zeigen" liefert `_meta.storagePersisted: true` (Chrome auto-bei-PWA bestätigt — Stufe (1) der Identitäts-Persistenz wirkt plattformkonform). Klaus' Sichttest-Lauf war Teil des kombinierten Panel-01–08-Durchgangs am selben Tag (Bau-02.X-Sichttest-Sitzung) und kam grün heraus. |
+| Bau 01.Y `ensureStore` | 2026-05-19 | Bau 01.Y | Erste Bau-Sitzung der Bau-Sitzungs-Brief-Pipeline aus Brief 99 (Klaus' Wahl 2026-05-19: Infrastruktur zuerst). Option A aus INTERFACES.md § 9.5 umgesetzt: neue öffentliche Funktion `ensureStore(storeName) → Promise<void>` (acht-Funktionen-API jetzt: `init/getStore/get/put/del/all/clear/ensureStore`); modul-lokale Konstante `STORE_NAME_PATTERN = /^sbkim_[a-z0-9_]+$/`; neue Error-Klassen `InvalidStoreNameError` (sync, Pattern-Verstoß) und `EnsureStoreError` (async, `cause` aus IDBOpenDBRequest); `DB_VERSION` 3 → 4 (additive Schema-Erweiterung — `STORES_V4 = []`, weil v=4 keinen festen Pflicht-Store anlegt; markiert den Übergang zu dynamischen Stores via `ensureStore`); Versions-Bump-Choreografie linear via `newVersion = db.version + 1` (entkoppelt von der Build-Konstante `DB_VERSION` — zwei parallele `ensureStore`-Aufrufe können sich nicht in die Versionssequenz schreiben); `onversionchange`-Handler auf der NEUEN Verbindung fail-soft schließen (damit ein Folge-Bump im selben Tab durchgeht); Idempotenz-Check per `db.objectStoreNames.contains(name)` vor jedem Bump; `KNOWN_STORES` wird zur Laufzeit pro erfolgreichem `ensureStore` erweitert; `_meta.dbVersion` ist jetzt Getter (Live-Zustand, kann nun > 3 sein); `_meta.ensureStorePattern` als Read-Anker für Tests. **`PROTOCOL_VERSION` bleibt `"0.1"`** (lokales Storage-Schema, kein Spore-Feld). **`BACKUP_FORMAT_VERSION` bleibt `1`** (Bump 1→2 erst in Bau 02.Y). Drei neue Panel-01-Knöpfe in `tests/manual_check.html`: Knopf 6 `ensureStore('sbkim_test_foo')` happy-path, Knopf 7 `ensureStore('sbkim_test_foo')` zweimal (Idempotenz), Knopf 8 `ensureStore('invalid-name')` Pattern-Verstoß. INTERFACES.md § 1 Modul 01 nachgezogen (Bietet + Storage + Selbstcheck + Fehlerverhalten + Geprüft-Zeile); § 9.5 um Stand-Hinweis auf Bau 01.Y ergänzt (KEIN inhaltlicher Spec-Eingriff — Spec ist gesetzt). KEINE Modul-02/05/06/07-Änderung (transparenter Slot-Pfad kommt in 02.Y / 05.Y / 06.Y / 07.Y nach); KEINE identitäts-spezifischen Stores angelegt (Aufrufer-Pflicht, Modul 01 kennt Identität nicht); KEINE Sage-Page-Änderung; KEINE CLAUDE.md-/Karte-09-/`status.json`-Änderung; `update_puls_pie.py` NICHT aufgerufen (Modul 01 ist bereits `score:"fertig"`). `node --check src/modules/01_storage.js` grün. |
+| Sichttest Knöpfe 6/7/8 `ensureStore` (Bau 01.Y) | — | Klaus | **ungeprüft, weil headless gebaut — wartet auf Klaus' Browser-Lauf.** Drei-Stufen-Probe: (i) Knopf 6 happy-path → Store sichtbar in DevTools, `db.version` um 1 gestiegen; (ii) Knopf 7 zweimal → `db.version` zwischen den Aufrufen NICHT gestiegen (Idempotenz); (iii) Knopf 8 Pattern-Verstoß → `InvalidStoreNameError` synchron geworfen (`name`-Property gesetzt, `message` deutschsprachig). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
