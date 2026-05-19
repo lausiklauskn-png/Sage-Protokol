@@ -253,6 +253,21 @@ Sichttests. Klaus-Cleanup-Theater ist endgültig Geschichte; der
 Tafel-Evolutions-Pfad (CLAUDE.md § Heilige Tafeln § Tafel-
 Evolutions-Klausel aus PR #105) hat sich praktisch bewährt.
 
+**Randnotiz zur Test-Methodik (2026-05-19):** Klaus hat zwischen
+Sitzungs-Wechseln teilweise Hard-Reload (`Ctrl+Shift+R` /
+Pull-to-refresh) oder „Browserdaten löschen / Letzte Stunde" gefahren.
+Tiefe-Details des Chrome-Cleanup-Verhaltens je nach Version /
+Plattform / Settings sind nicht abschließend geprüft — Hard-Reload
+räumt sicher JS/HTML-Cache (Browser-Memory), IndexedDB bleibt
+typischerweise erhalten; „Browserdaten löschen" mit Häkchen bei
+„Cookies und Websitedaten" trifft die IndexedDB in Tablet-Chrome
+nicht immer (siehe PULS § Offene Querschnitts-Fragen „DeX-Chrome
+vs. Tablet-Chrome"). Der Beleg-Schluss für die Pflege Modul 01 hängt
+nicht von der Cleanup-Tiefe ab: Klaus' Bau-04.A-Knopf 7 hat eine
+deterministische `matchDimensions`-Probe gefahren, die nur
+funktioniert, wenn `init()` durchgekommen ist — und durchgekommen ist
+sie auf einer DB mit v > 4 (Beleg aus Bau-02.Y-/Bau-01.Y-Sichttests).
+
 ---
 
 ## Nächster sinnvoller Schritt
