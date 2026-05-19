@@ -20,8 +20,8 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-17 (14 Module)
-  "🟫 Schablone" : 4
+  title Modulstand 2026-05-18 (15 Module)
+  "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
   "🟦 Code-Stub" : 7
@@ -107,6 +107,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
+| 15 membran | Stub (Membran-Backlog) | — | — | Außenhülle zwischen PWA-Zelle und Browser-Umgebung — vier Sub-Bereiche (a Read-API für KI-Browser-Agenten ✅ Pflicht / b postMessage-Brücke Rezeptbuch↔Mixarium mit Origin-Allowlist ✅ Pflicht / c signiertes Capability-Token ⏳ später / d Backup-Datei-Sluse 📄 nur Verweis auf Bau 02.X). Auslöser: Anthropic Browser Use / OpenAI Operator / Comet / Dia werden Markt-reif + Wunsch nach App-zu-App-Kommunikation ohne Server. Spec ausstehend bis KI-Browser real verfügbar ODER konkreter App-zu-App-Wunsch eines Endknoten-Betreibers. Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-18** (Karten 4/13/14 ziehen `membranBacklog[]` parallel zu `schutzBacklog[]` und `diffusionBacklog[]`) |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -540,6 +541,49 @@ parallel zu `schutzBacklog[]` (proaktiv vs. reaktiv); `scoreModel.
 maxScoreNote` bleibt unangetastet (Backlog zählt nicht zum maxScore).
 Das Pie-Skript `scripts/update_puls_pie.py` zählt beide Backlog-
 Kategorien jetzt mit.
+
+### Membran-Backlog (aus Hauptsitzung 15-Membran-Stub, 2026-05-18)
+
+Schutz, Diffusion und Membran sind drei verschiedene Backlog-Kategorien.
+Schutz (10/11/12) ist **reaktiv** — wehrt Schaden ab, wenn Apoptose
+und Match-Filter allein nicht mehr reichen. Diffusion (14) ist
+**proaktiv nach innen** — beschleunigt Wachstum durch konsensuelle
+Empfehlung beim Handshake. Membran (15) ist **proaktiv nach außen** —
+regelt die Außenhülle zwischen PWA-Zelle und Browser-Umgebung:
+KI-Browser-Agenten (Anthropic Browser Use, OpenAI Operator, Comet,
+Dia, Arc-Nachfolger) und Cross-Origin-App-zu-App-Brücken im selben
+Browser ohne Server-Hop.
+
+- `docs/components/15_membran.md` — Außenhülle des Knotens mit vier
+  Sub-Bereichen: (a) Read-API für In-Browser-Agenten (lesend, keine
+  Keys, `nodeIdHash` statt `nodeId` für Geschwister), (b) App-zu-App-
+  Brücke via `postMessage` mit strikter Origin-Allowlist
+  (`type:"sbkim/membrane/v1"`, `op:"sporeRef"|"query"|"hint"`, **kein**
+  `handshake`), (c) signiertes Capability-Token analog Modul 02-Ed25519
+  (später), (d) Backup-Datei als manueller App-Transport — existiert
+  bereits in Modul 02 Bau 02.X, Karte 15 verweist nur.
+
+Auswahl-Stufen verbindlich (a) + (b) Pflicht, (c) später, (d) nur
+dokumentiert. Empfangsmodus-Prinzip bleibt absolut: Membran initiiert
+nichts, sie hat nur Rezeptoren und Kanäle, kein `op:"handshake"` in
+Sub (b), kein `scope:"write"` in Sub (c) Stufe 3.
+
+Modul 15 wird gezogen, sobald **mindestens zwei** der folgenden
+Bedingungen erfüllt sind (höhere Schwelle als 14, weil Membran-Bau
+neue Angriffsfläche eröffnet):
+
+- KI-Browser real verfügbar (Anthropic Browser Use SDK oder OpenAI
+  Operator öffentlich mit dokumentiertem JS-Bridge-Mechanismus)
+- App-zu-App-Wunsch konkret (Klaus oder Drittnutzer äußern Bedürfnis
+  nach Cross-Origin-Konversation ohne Server)
+- Dritter Endknoten ausserhalb `github.io` will sich andocken
+
+`status.json` führt Modul 15 als eigenes Feld `membranBacklog[]`
+parallel zu `schutzBacklog[]` und `diffusionBacklog[]`; `scoreModel.
+maxScoreNote` präzisiert „Schutz-Backlog (10-12), Diffusion-Backlog (14)
+und Membran-Backlog (15) zählen nicht mit". Das Pie-Skript
+`scripts/update_puls_pie.py` zählt alle drei Backlog-Kategorien jetzt
+mit (15 Module / 5 Schablonen seit dieser Sitzung).
 
 ---
 
@@ -2828,6 +2872,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 | 2026-05-18 | Spec · Plattform-Matrix — Strang 2 der V1-Sammelspec-Kaskade (Brief 02 · PR #97 gemerged — `main` `69077db`; INTERFACES § 6.2 Plattform-Matrix mit fünf Profilen × sechs Spalten + Sage-Anmerkung, § 6.3 Plattform-Ehrlichkeits-Klausel als verbindliche Spec-Klausel mit Begründung aus Klaus' Lehre 1, § 6.4 Vision-Bezüge als Querverweis-Matrix mit sieben Ankern; § 6.1 Plattform-Matrix-Stub auf Verweis umgeschrieben; Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6 streng eingehalten; `PROTOCOL_VERSION` bleibt `"0.1"`; CLAUDE.md / Karte 09 / `status.json` unangetastet — Brief 02 lebt rein in INTERFACES; Brief 03 `docs/sessions/BRIEF_03_m04_erweiterung.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-plattform-matrix.md) |
 | 2026-05-18 | Spec · V1 Sage-Hybrid — Strang 1 der V1-Sammelspec-Kaskade (Brief 01 · PR #96 gemerged — `main` `a3e0072`; INTERFACES § 6 Endknoten-Liste neu mit Sage als drittem Endknoten + § 6.1 Sage-Page-Architektur mit IndexedDB-Suffix `sbkim_sage` / App-SW Variante 3a / volle init()-Kette / Andock-Geste an Schwarz-Loch-Karte; CLAUDE.md auf „Hub und Knoten zugleich"; Karte 09 § Schritt 1 erweitert; `status.json` § endknoten um sage-Eintrag mit `pingStatus:"pending-first-andock"`; Domäne „Mycel-Bibliothek" gewählt; `PROTOCOL_VERSION` bleibt `"0.1"`; Sage-Page-Refactor folgt als Bau-Sitzung in BRIEF_99-Liste; Brief 02 `docs/sessions/BRIEF_02_plattform_matrix.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-v1-sage-hybrid.md) |
 | 2026-05-18 | Meta-Pflege · V1-Sammelspec als Brief-Kaskade sequenziert (PR #93 + Konvention-6-Refactor PR #95 — sechs heilige Tafeln: ein Strang = ein PR, Brief als Datei im Repo, einheitlicher Bauplan, BRIEF_99-Abschluss, verteilte Konsistenz-Prüfung, Auslöser-Befehl im Chat statt Brief-Volltext; Strang-Reihenfolge Brief 01 V1-Sage-Hybrid → Brief 02 Plattform-Matrix → Brief 03 M04-Erweiterung → Brief 04 Multi-Identität → BRIEF_99-Abschluss; Brief 01 `docs/sessions/BRIEF_01_v1_sage_hybrid.md` als erste Brief-Datei angelegt; PROTOCOL_VERSION bleibt `"0.1"` solange Stränge additiv; kein Modul-Code, kein INTERFACES-Eingriff in der Meta-Pflege selbst) | [→ Archiv](sessions/archiv/2026-05-18_meta-pflege-v1-sammelspec-kaskade.md) |
+| 2026-05-18 | Hauptsitzung · Modul 15 Membran — Backlog-Stub angelegt (KI-Browser-Schnittstelle + App-zu-App-Brücke; vier Sub-Bereiche a/b Pflicht, c später, d nur Verweis; status.json `membranBacklog[]`, scripts/update_puls_pie.py mit-zählend, PULS-Schnellüberblick + neue Sektion „Membran-Backlog", CLAUDE.md-Modul-Tabelle erweitert + Karte 14 nachgeholt, INTERFACES.md Block nach Modul 09, Sage-Page Karten 4/13/14 + FALLBACK_STATUS; Vokabular „Cells" als Mycel-Anker = Zellmembran) | [→ Archiv](sessions/archiv/2026-05-18_haupt-15-membran-stub.md) |
 | 2026-05-18 | Mini-Pflege · Sonnen-Galaxie Stationen 1–3 inhaltlich gefüllt (PR #92 — drei Erzähl-Texte je 4 Absätze, basierend auf Hero-Claim/CLAUDE.md/PULS § Anker 9; `openStationModal()` jetzt 1:1 wie `openUniverseModal()` mit `|`-Splitting + Markdown-Parser; Placeholder-Hint-Logik auf expliziten `s.placeholder`-Flag umgestellt; Privatheits-Klausel eingehalten) | [→ Archiv](sessions/archiv/2026-05-18_pflege-sonnen-stationen-erzaehl-texte.md) |
 | 2026-05-18 | Bau-Sitzung · Vision-Anker 10 Sonnen-Galaxie · Sage-Geschichts-Galerie (PR #90 — alle sieben Eingriffe aus PULS § Anker 10 § Architektur-Skizze additiv in `index.html` umgesetzt: CSS Sonnen-Karte mit Korona/Disk/12-Sommersprossen, CSS Geschichts-Galerie-Screen mit `#02020c`-BG und warm-goldenen Nebeln, HTML Sonnen-Karte vor `.card.reading`, HTML `#screen-sonnen` nach Observatorium, `SCREENS`-Array, `goScreen()` + `applyHashScreen()`, JS-Block mit `STATIONS_DATA` + `setupSonnenGalaxie()` 1:1 wie Observatorium für Stars/Maus/Komet-Schweif/Wake-Boost; Optik-Korrekturen mid-PR Klaus eingearbeitet — Kern verschwommen, 12 wabernde Sommersprossen statt 3 großer Flecken, dunkler statt brauner Hintergrund, Ring dreht sich nicht mehr sondern pulst nur bei Hover; `docs/papers/README.md` angelegt; Privatheits-Klausel eingehalten) | [→ Archiv](sessions/archiv/2026-05-18_bau-vision-10-sonnen-galaxie.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Sonnen-Galaxie als zehnter Anker (Geschichts-Galerie · PR #88 — Anker 10 in PULS § Vision-Anker eingefügt, mid-Pflege re-gerahmt von „Papers-Bibliothek" auf „Sage-Geschichts-Galerie"; heilige Privatheits-Klausel „Everlast GmbH NICHT erwähnen"; `docs/papers/sbkim-paper-en.html` als dokumentengestützte Station 4 eingecheckt; Brief für Bau-Sitzung in `docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` abgelegt und auf Geschichts-Galerie umgeschrieben; CSS-Probelauf testweise eingefügt und disziplin-konform zurückgerollt) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-10-sonnen-galaxie.md) |

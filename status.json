@@ -70,6 +70,10 @@
     { "id": "14", "name": "Diffusion",      "score": "schablone", "siegel": "Stub (Backlog), Priorität niedrig", "kurz": "Konsensuell-empfehlende Spore-Diffusion über Handshake-Erweiterung — Pfad 2 (drehbuchkonform), Pfade 1 (passiv) und 3 (parasitär) dokumentiert; Spec ausstehend bis Netz wächst" }
   ],
 
+  "membranBacklog": [
+    { "id": "15", "name": "Membran",        "score": "schablone", "siegel": "Stub (Backlog), Priorität niedrig", "kurz": "Außenhülle zwischen PWA-Zelle und Browser-Umgebung — vier Sub-Bereiche (a Read-API für KI-Browser-Agenten ✅ Pflicht / b postMessage-Brücke Rezeptbuch↔Mixarium mit Origin-Allowlist ✅ Pflicht / c signiertes Capability-Token ⏳ später / d Backup-Datei-Sluse 📄 nur Verweis auf Bau 02.X); Spec ausstehend bis Anthropic Browser Use / OpenAI Operator real verfügbar oder konkreter App-zu-App-Wunsch eines Endknoten-Betreibers" }
+  ],
+
   "nodeTypes": {
     "schablone": 0,
     "werkstatt": 3,
@@ -84,7 +88,7 @@
     "modulePerStep":    "siehe nodeTypes",
     "endknotenIntegrated":      8,
     "endknotenIntegratedAndPing": 15,
-    "maxScoreNote":     "Hub(10) + 10 Module × 10 + 2 Endknoten × 15 = 140. Schutz-Backlog (10-12) zählt nicht mit, da reaktiv-zukünftig."
+    "maxScoreNote":     "Hub(10) + 10 Module × 10 + 2 Endknoten × 15 = 140. Schutz-Backlog (10-12), Diffusion-Backlog (14) und Membran-Backlog (15) zählen nicht mit, da reaktiv/proaktiv-zukünftig."
   },
 
   "config": {

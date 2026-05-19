@@ -1110,7 +1110,8 @@
     <span class="key">"kurz"</span>: <span class="str">"…"</span>
   }],
   <span class="key">"schutzBacklog"</span>: [<span class="com">// 10/11/12 — reaktiv</span>],
-  <span class="key">"diffusionBacklog"</span>: [<span class="com">// 14 — proaktiv</span>],
+  <span class="key">"diffusionBacklog"</span>: [<span class="com">// 14 — proaktiv nach innen</span>],
+  <span class="key">"membranBacklog"</span>: [<span class="com">// 15 — proaktiv nach außen</span>],
   <span class="key">"nodeTypes"</span>: { <span class="key">"schablone"</span>: 0, <span class="key">"werkstatt"</span>: 3, <span class="key">"spec"</span>: 5, <span class="key">"stub"</span>: 7, <span class="key">"fertig"</span>: 10 },
   <span class="key">"config"</span>: { <span class="com">/* §0-Konstanten gespiegelt */</span> },
   <span class="key">"endpoints"</span>: { <span class="com">/* spore, anastomosis, heterokaryosis, legacy */</span> }
@@ -1384,7 +1385,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   const FALLBACK_STATUS = {
     branch: 'claude/semantic-agent-network-Y03Vg',
     protocolVersion: '0.1', schemaVersion: '1', lastUpdated: '2026-05-16',
-    endknoten: [], modules: [], schutzBacklog: [], diffusionBacklog: [],
+    endknoten: [], modules: [], schutzBacklog: [], diffusionBacklog: [], membranBacklog: [],
     nodeTypes: { schablone: 0, werkstatt: 3, spec: 5, stub: 7, fertig: 10 },
     config: { EMBEDDING_DIM: 384, EMBEDDING_MODEL: 'Xenova/multilingual-e5-small', PROTOCOL_VERSION: '0.1', PROVIDER_MIN_MATCH: 0.80, QUERY_TIMEOUT_MS: 4000 }
   };
@@ -1396,12 +1397,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     stub:      { label: 'Code-Stub',    color: '#2563EB' },
     fertig:    { label: 'Fertig',       color: '#16A34A' }
   };
-  const BACKLOG_IDS = new Set(['10', '11', '12', '14']);
+  const BACKLOG_IDS = new Set(['10', '11', '12', '14', '15']);
   const SLUG_MAP = {
     '00': 'doku_fenster', '01': 'storage', '02': 'spore', '03': 'embedding',
     '04': 'match', '05': 'anastomose', '06': 'heterokaryose', '07': 'apoptose',
     '08': 'ui_demo', '09': 'einbau_pwa',
-    '10': 'reputation', '11': 'rate_limit', '12': 'blocklist', '14': 'diffusion'
+    '10': 'reputation', '11': 'rate_limit', '12': 'blocklist',
+    '14': 'diffusion', '15': 'membran'
   };
 
   // ====== MODAL ======
@@ -1602,7 +1604,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     '02': { col: 1, row: 0 }, '08': { col: 1, row: 1 }, '04': { col: 1, row: 2 },
     '05': { col: 2, row: 0 }, '07': { col: 2, row: 1 },
     '06': { col: 3, row: 0 },
-    '10': { col: 0, row: 5 }, '11': { col: 1, row: 5 }, '12': { col: 2, row: 5 }, '14': { col: 3, row: 5 }
+    '10': { col: 0, row: 5 }, '11': { col: 1, row: 5 }, '12': { col: 2, row: 5 }, '14': { col: 3, row: 5 },
+    '15': { col: 3, row: 6 }
   };
 
   function isNextUp(m, byId) {
@@ -1625,7 +1628,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     const svg = document.getElementById('topology-svg');
     if (!svg) return;
     svg.innerHTML = '';
-    const all = [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || [])];
+    const all = [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || [])];
     const byId = {};
     all.forEach(m => { byId[m.id] = m; });
 
@@ -1651,7 +1654,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     backLabel.setAttribute('x', colX[0]); backLabel.setAttribute('y', backlogY - 38);
     backLabel.setAttribute('text-anchor', 'middle');
     backLabel.setAttribute('class', 'topo-cluster-label');
-    backLabel.textContent = 'backlog · reaktiv (schutz) + proaktiv (diffusion)';
+    backLabel.textContent = 'backlog · reaktiv (schutz) + proaktiv (diffusion + membran)';
     svg.appendChild(backLabel);
 
     const positions = {};
@@ -1724,7 +1727,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
     document.getElementById('topology-counts').innerHTML =
       '<strong>' + (s.modules || []).length + '</strong> Module · <strong>' +
-      ((s.schutzBacklog || []).length + (s.diffusionBacklog || []).length) +
+      ((s.schutzBacklog || []).length + (s.diffusionBacklog || []).length + (s.membranBacklog || []).length) +
       '</strong> Backlog · <strong>' + counts.nextup + '</strong> bereit zum Bau';
 
     const legend = document.getElementById('topology-legend');
@@ -1751,7 +1754,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (!list) return;
     list.innerHTML = '';
     const byId = {};
-    [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || [])].forEach(m => byId[m.id] = m);
+    [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || [])].forEach(m => byId[m.id] = m);
     (s.modules || []).forEach(m => list.appendChild(buildModRow(m, byId, false)));
     if ((s.schutzBacklog || []).length) {
       const d = document.createElement('div');
@@ -1763,9 +1766,16 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if ((s.diffusionBacklog || []).length) {
       const d = document.createElement('div');
       d.className = 'module-list-divider';
-      d.textContent = 'Diffusion-Backlog · proaktiv · Priorität niedrig';
+      d.textContent = 'Diffusion-Backlog · proaktiv (nach innen) · Priorität niedrig';
       list.appendChild(d);
       s.diffusionBacklog.forEach(m => list.appendChild(buildModRow(m, byId, true)));
+    }
+    if ((s.membranBacklog || []).length) {
+      const d = document.createElement('div');
+      d.className = 'module-list-divider';
+      d.textContent = 'Membran-Backlog · proaktiv (nach außen) · Priorität niedrig';
+      list.appendChild(d);
+      s.membranBacklog.forEach(m => list.appendChild(buildModRow(m, byId, true)));
     }
   }
   function buildModRow(m, byId, backlog) {
