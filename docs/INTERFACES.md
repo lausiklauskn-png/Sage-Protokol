@@ -34,6 +34,19 @@ HETERO_OUTBOX_MAX_ENTRIES = 5           // max. Anker in sbkim_hetero_outbox; Mo
                                         //   (konsistent mit HETERO_MAX_ANCHORS — was in der Outbox steht,
                                         //    geht beim nächsten Pull raus; größere Outbox hätte
                                         //    nicht-erreichbare Anker zur Folge)
+SCHICHT_MIN_MATCH      = 0.60           // Modul 04, Spec-Sitzung M04-Erweiterung (Brief 03 der V1-Sammelspec-
+                                        //   Kaskade). Pro-Dimension-Schwelle für `matchDimensions` —
+                                        //   eine Schicht darf fehlen (= häufiger Brücken-Anlass);
+                                        //   2+ Dimensionen unter SCHICHT_MIN_MATCH = Apoptose.
+                                        //   PROVIDER_MIN_MATCH=0.80 bleibt verbindlich für `overall`.
+STUFE_B_DEFAULT_MODEL  = "claude-sonnet-4"   // Modul 04, Spec-Sitzung M04-Erweiterung; Default-Modell-
+                                        //   ID für `explainMatchLLM` (Stufe-B-LLM-Call). Aufrufer darf
+                                        //   per Optional-Parameter überschreiben (z.B. Nachfolge-Modell).
+                                        //   Modul 04 hartcodiert die Modell-ID nicht — sie wird nur
+                                        //   hier als Konvention verankert.
+STUFE_B_MAX_TOKENS     = 1024           // Modul 04, Spec-Sitzung M04-Erweiterung; Default-`max_tokens`
+                                        //   für den Stufe-B-LLM-Call. Aufrufer-überschreibbar.
+                                        //   Pattern-Quelle: Layer-1-Demo der SBKIM-Plattform-`index.html`.
 ```
 
 ---
@@ -384,6 +397,29 @@ Bietet (öffentlich):
   Schlüssel-Erzeugung ist lazy: passiert beim ersten
   getOrCreateIdentity()-Aufruf, nicht beim Skript-Laden.
 
+  Spore-Schema-Erweiterung M04 (Spec-Sitzung M04-Erweiterung, Brief 03
+  der V1-Sammelspec-Kaskade, 2026-05-19): generateOwnSpore akzeptiert
+  zwei zusätzliche optionale meta-Felder, beide additiv und
+  signaturpflichtig wenn vorhanden:
+    - embeddingCapabilities : Float32Array(384) | number[384]
+                              Alias-Name für domainVector (selbe Semantik:
+                              "was kann dieser Knoten anbieten"). Wenn
+                              vorhanden, wird er kanonisch in das Spore-
+                              JSON aufgenommen wie domainVector. Eine
+                              Spore darf domainVector ODER embeddingCapabilities
+                              ODER beide tragen (siehe § 2 Spore-JSON
+                              § Optionale Felder).
+    - embeddingNeeds         : Float32Array(384) | number[384]
+                              Neues Feld für den Sucher-Vektor ("was
+                              sucht dieser Knoten"). Wenn fehlend oder
+                              null: "nur Anbieter-Modus" (kein
+                              Bidirektionalitäts-Test bei matchDimensions).
+                              Modul 04 nimmt das fail-soft an.
+  Beide Felder gehen in den kanonischen Sign-/Verify-Pfad ein (Array-
+  Elemente bleiben in geschriebener Reihenfolge, Object-Keys werden
+  alphabetisch sortiert — siehe § 2). PROTOCOL_VERSION bleibt "0.1" —
+  beide Felder sind optional, alte Sporen ohne sie bleiben gültig.
+
 Nutzt:
   SbkimStorage.init / get / put / all   (sbkim_keys["main"], sbkim_spore["main"];
                                          sbkim_siblings als Leser+Schreiber NUR im Backup-Pfad:
@@ -548,11 +584,34 @@ Datei:  src/modules/04_match.js
 Bietet (öffentlich):
   match(queryVec: Float32Array, passageVec: Float32Array) → number     // sync; [-1, 1] für L2-norm. Eingaben
   isAboveProviderThreshold(score: number)                  → boolean   // sync; score >= PROVIDER_MIN_MATCH (0.80)
+  matchDimensions(queryCap: Float32Array | null,
+                  queryNeeds: Float32Array | null,
+                  passageCap: Float32Array | null,
+                  passageNeeds: Float32Array | null)        → MatchDimensionsResult
+                                                                       // sync; M04-Erweiterung (Brief 03,
+                                                                       // 2026-05-19). Drei orthogonale
+                                                                       // Schichten + overall. Null-Vektoren
+                                                                       // signalisieren „nur Anbieter-Modus"
+                                                                       // (siehe § Drei-Schichten-Modell).
+  explainMatchLLM(matchResult: MatchDimensionsResult,
+                  apiKey: string,
+                  options?: { model?: string, maxTokens?: number,
+                              abortSignal?: AbortSignal })  → Promise<ExplainResult>
+                                                                       // async; M04-Erweiterung (Brief 03).
+                                                                       // Stufe-B-LLM-Call, opt-in pro Knoten.
+                                                                       // Fehlertolerant — siehe § Stufe-B-
+                                                                       // Vertrag und § 7 LLM-Stufe-B-
+                                                                       // Ehrlichkeits-Klausel.
   PROVIDER_MIN_MATCH                                       : number    // 0.80, aus §0 hierher gespiegelt
+  SCHICHT_MIN_MATCH                                        : number    // 0.60, aus §0 hierher gespiegelt (M04-Erweiterung)
 
-  KEIN mode-Parameter. Skalarprodukt ist symmetrisch; die Parameter-
-  Namen sind reine Lese-Hilfe für den Aufrufer. Reine Funktion, kein
-  Promise, kein async.
+  KEIN mode-Parameter für `match`. Skalarprodukt ist symmetrisch; die
+  Parameter-Namen sind reine Lese-Hilfe für den Aufrufer. Reine Funktion,
+  kein Promise, kein async.
+  `matchDimensions` ist ebenfalls sync (drei Cosinus-Aufrufe + Gewichtung),
+  kein Promise. `explainMatchLLM` ist der einzige async-Pfad und der
+  einzige, der Netz berührt — alle anderen Modul-04-Funktionen sind
+  zustandslos und lokal.
 
 Nutzt:
   (keine SBKIM-Module zur Laufzeit — vertraut auf die L2-Norm-Garantie
@@ -578,14 +637,384 @@ Fehlerverhalten:
   - Norm ≠ 1.0                                → kein Fehler. Ergebnis liegt evtl. außerhalb [-1, 1]
                                                 (Modul 04 vertraut auf die Norm-Garantie von Modul 03;
                                                  jede Norm-Prüfung im Hot-Path wäre Verschwendung).
+  - matchDimensions: alle vier Vektoren null  → DimensionsAllNullError (sync throw — keine Schicht
+                                                berechenbar; Aufrufer hätte vor dem Aufruf prüfen müssen).
+                                                Drei oder weniger null sind erlaubt (siehe § Drei-Schichten-
+                                                Modell § „Nur-Anbieter-Modus").
+  - matchDimensions: eine Seite vollständig null
+    (z.B. queryCap=null UND queryNeeds=null)  → KEIN Throw. Ergebnis: alle drei Schichten und overall
+                                                tragen `null`, plus `availableLanes: 0` — der Aufrufer
+                                                entscheidet, was das bedeutet (typisch: kein Bidirektionalitäts-
+                                                Test, Single-Vector-Pfad über `match()` ist Aufrufer-Wahl).
+  - explainMatchLLM: apiKey leer / kein String → InvalidApiKeyError (sync throw vor Netz-Aufruf).
+  - explainMatchLLM: matchResult fehlerhaft (kein MatchDimensionsResult)
+                                              → InvalidMatchResultError (sync throw vor Netz-Aufruf).
+  - explainMatchLLM: LLM-API HTTP-Fehler (4xx/5xx, Timeout, Netz)
+                                              → KEIN Throw. Resolved mit ExplainResult{ available:false,
+                                                reason:"<deutscher Klartext>", fallbackScore:overall }.
+                                                Aufrufer fällt auf Stufe-A-Resultat zurück; UI zeigt
+                                                „Erklärung nicht verfügbar". Siehe § Stufe-B-Vertrag.
+  - explainMatchLLM: LLM-Antwort kein valides JSON oder Schema-Mismatch
+                                              → KEIN Throw. Resolved mit ExplainResult{ available:false,
+                                                reason:"Antwort entsprach nicht dem Schema",
+                                                fallbackScore:overall }. Modul 04 verwirft die
+                                                LLM-Antwort still — kein Halb-Resultat.
+  - explainMatchLLM: abortSignal triggert      → AbortError (Standard-DOM-Verhalten, durchgereicht).
+                                                Aufrufer ist verantwortlich, das aufzufangen.
 
-Garantien für Modul 05 / 07:
+Garantien für Modul 05 / 06 / 07 / 08:
   - match() ist deterministisch und reproduzierbar (kein RNG, kein Zeit-Effekt).
   - Bei korrekt L2-normalisierten Eingaben liegt der Rückgabewert in [-1, 1].
   - isAboveProviderThreshold(score) liefert exakt score >= 0.80, ohne
     Toleranz-Spielraum. Wer Hysterese will, baut sie eine Schicht höher.
+  - matchDimensions() ist ebenfalls deterministisch und reproduzierbar — drei
+    Cosinus-Aufrufe + gewichteter Mittelwert für `overall`. Kein Promise,
+    kein async (M04-Erweiterung).
+  - explainMatchLLM() ist der EINZIGE Modul-04-Pfad, der Netz berührt
+    und der EINZIGE async-Pfad. Aufrufer (typisch Modul 06 / 08 / 00)
+    drosseln selbst (Rate-Limit-Awareness ist Aufrufer-Pflicht — Modul 04
+    fügt keine eigene Drossel ein). Stufe B ist opt-in pro Knoten — siehe
+    § 7 LLM-Stufe-B-Ehrlichkeits-Klausel.
+  - Brücken-Vorschläge aus explainMatchLLM bleiben LOKAL — Modul 04
+    sendet sie nicht über das Netz, und der Aufrufer ist an die
+    Anti-Missbrauch-Klausel in § 8 gebunden (candidateScope:"netz" ist
+    formal nicht aktivierbar bis Anker 10-12 gebaut sind).
 
-Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04)
+Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04), 2026-05-19 (Spec-Sitzung M04-Erweiterung — Brief 03 der V1-Sammelspec-Kaskade — drei Schichten, Brücken-Feld, Stufe-A/Stufe-B-Pipeline additiv)
+
+#### Drei-Schichten-Modell (M04-Erweiterung)
+
+Spec-Sitzung M04-Erweiterung (Brief 03 der V1-Sammelspec-Kaskade,
+2026-05-19) führt die drei orthogonalen Schichten aus dem
+ursprünglichen SBKIM-Paper (`docs/papers/sbkim-paper-en.html` § 3.3
+„The Three Dimensions" / `docs/papers/sbkim-paper-de.html` § 3.3) in
+die Mycel-Form ein. Die Schichten sind **orthogonal** — ein hoher
+Score in einer Dimension impliziert keinen hohen Score in einer
+anderen. Das erlaubt teil-kompatible Treffer und gezielte
+Brücken-Vorschläge (siehe § Brücken-Feld unten).
+
+```
+fachlich    (= domain im Paper)
+            : Was kannst du / was suchst du inhaltlich?
+              Domain-Match: dasselbe Problem-/Themen-Feld.
+              Beispiel: Kochrezepte ↔ Backrezepte = hoch;
+                        Kochrezepte ↔ Cocktails    = mittel (Speise-/Trink-Nachbarschaft);
+                        Kochrezepte ↔ Astrophysik = niedrig.
+
+prozess     (= process im Paper)
+            : Wie arbeitest du? Rhythmus, Methodik, Verbindlichkeit.
+              Workflow-Kompatibilität: passen die Arbeitsweisen
+              zusammen? Beispiel: täglich kuratierter Knoten ↔
+              monatlich kuratierter Knoten = niedriger Prozess-Match;
+              beide täglich = hoher Prozess-Match.
+
+skalierung  (= scale im Paper)
+            : Auf welcher Größenebene? Einzelner Knoten / Cluster / Netz.
+              Kapazität, Wachstum, Reichweite. Beispiel: Single-User-PWA
+              ↔ Single-User-PWA = passt; Single-User-PWA ↔
+              hundert-Knoten-Cluster = Skalierungs-Mismatch.
+```
+
+`matchDimensions(queryCap, queryNeeds, passageCap, passageNeeds)`
+nimmt vier Vektoren entgegen (jeder optional, jeder ein
+`Float32Array(384)` oder `null`) und liefert:
+
+```
+MatchDimensionsResult = {
+  fachlich   : number | null,   // [-1, 1] oder null wenn nicht berechenbar
+  prozess    : number | null,
+  skalierung : number | null,
+  overall    : number | null,   // gewichteter Mittelwert der nicht-null Schichten
+  availableLanes : number       // 0..2: wie viele Richtungs-Vergleiche
+                                //   gerechnet wurden (Cap×Needs in beiden
+                                //   Richtungen). 0 = nichts berechnet
+                                //   (Single-Anbieter ↔ Single-Anbieter ohne
+                                //   needs); 1 = einseitig (eine Seite hat
+                                //   keinen needs-Vektor — Anbieter-Modus);
+                                //   2 = volle Bidirektionalität.
+}
+```
+
+**Berechnung pro Lane:** wenn `queryCap` und `passageNeeds` beide
+nicht-null sind, ist Lane 1 berechenbar (A bietet → B sucht); wenn
+`queryNeeds` und `passageCap` beide nicht-null sind, ist Lane 2
+berechenbar (A sucht ← B bietet). Pro Lane wird `match(cap, needs)`
+ausgeführt. Wenn beide Lanes berechenbar sind, ist die Schicht-Score
+der Mittelwert beider Lane-Cosinus; wenn nur eine Lane berechenbar
+ist, der Single-Lane-Wert; wenn keine berechenbar, `null`.
+
+**Aufteilung in drei Schichten (Spec-Entscheidung):** Da die heutigen
+Embedding-Vektoren `domainVector` ein einziges Domain-Embedding pro
+Knoten tragen (kein separater Prozess- oder Skalierungs-Vektor), ist
+die Drei-Schichten-Aufteilung in der Stufe-A-Pipeline eine **Heuristik
+über demselben 384-dim Embedding-Raum**: das Modul rechnet drei
+Lane-Cosinus, kommt aber zu drei semantisch leicht unterschiedlichen
+Schicht-Zahlen, indem es jede Schicht mit einem festen
+Schicht-Projektions-Gewicht pro Lane multipliziert (Initial-Gewicht:
+identisch — `fachlich = prozess = skalierung = Lane-Cosinus`).
+**Die echte Schichten-Differenzierung passiert in Stufe B** — der
+LLM-Pass kann den Embedding-Lane-Cosinus durch semantisch reichere
+Schicht-Zahlen ergänzen oder übersteuern (siehe § Stufe-B-Vertrag).
+
+Spätere Pflege-Sitzungen dürfen die Schicht-Projektion verfeinern
+(z.B. separate `embeddingProcessNeeds` / `embeddingScaleNeeds`-Felder
+einführen, sobald empirische Daten zeigen, dass das nötig ist); das
+ist ein additiver Eingriff am Spore-Schema (heute optional, künftig
+möglicherweise Pflicht → dann PROTOCOL_VERSION-Bump).
+
+**Overall-Berechnung:** `overall` ist der **gewichtete Mittelwert**
+der nicht-null Schichten — `(fachlich + prozess + skalierung) / 3`,
+wenn alle drei vorhanden sind; sonst Mittelwert über die nicht-null
+Schichten. **Spec-Begründung Mittelwert vs. Min:** Mittelwert lässt
+eine ein-Dimensions-Schwäche überspielen, wenn die anderen zwei
+deutlich überschwellig sind (= Brücken-Anlass, kein Apoptose-Anlass);
+Min wäre zu hart — eine einzige schwache Dimension würde Anastomose
+verhindern, obwohl genau diese Lücke der Anlass für aktive Vermittlung
+sein könnte. Die Schwellen-Tafel unten setzt die harte Apoptose-
+Grenze separat (2+ Dimensionen unter `SCHICHT_MIN_MATCH = 0.60`).
+
+**Nur-Anbieter-Modus:** Wenn `queryNeeds === null` UND `passageNeeds
+=== null`, ist `availableLanes = 0`. Das ist heute der Default-Stand
+für alle Sporen ohne `embeddingNeeds`-Feld (siehe § 1 Modul 02 §
+Spore-Schema-Erweiterung M04). In diesem Modus liefert
+`matchDimensions` alle Schichten als `null` zurück — der Aufrufer
+sollte stattdessen den Single-Vector-Pfad `match(domainVectorA,
+domainVectorB)` nutzen und die alte einseitige Auswertung fahren
+(rückwärts-kompatibel zum heutigen Modul-05-Vertrag).
+
+#### Brücken-Feld-Spec (M04-Erweiterung)
+
+Brücken-Vorschlag = das Element in der Match-Antwort, das sagt: „was
+würde diese Verbindung vollständig machen?" Anlass: A und B matchen
+in zwei Schichten gut, in der dritten aber schlecht — der
+Brücken-Vorschlag nennt einen abstrakten Knoten-C, der die Lücke
+schließen könnte. Brücken-Vorschläge entstehen **ausschließlich** in
+Stufe B (`explainMatchLLM`) — die Stufe-A-Pipeline rechnet keine
+Brücken-Empfehlungen.
+
+```
+BridgeProposal = {
+  needed         : string,          // deutscher Klartext, was fehlt
+                                    //   Beispiel: „Knoten mit täglicher
+                                    //   Rezept-Pflege, der auch
+                                    //   Cocktail-Inhalte trägt"
+  lookingFor     : string | null,   // deutscher Klartext, was gesucht
+                                    //   wird (oder null, wenn die
+                                    //   Lücke einseitig auf der
+                                    //   Empfänger-Seite liegt)
+  candidateScope : "lokal" | "mailbox" | "netz"
+                                    //   "lokal"   = Anzeige nur im Knoten,
+                                    //              kein Netz-Schritt.
+                                    //              Heute der EINZIGE
+                                    //              produktiv aktivierbare
+                                    //              Wert (siehe § 8
+                                    //              Anti-Missbrauch).
+                                    //   "mailbox" = Anker an Modul 13
+                                    //              Königin-Relay (Vision-
+                                    //              Anker 4, PULS); Brücken-
+                                    //              Vorschlag wird in die
+                                    //              Königin-Mailbox gelegt,
+                                    //              sobald Modul 13 gebaut
+                                    //              ist. Vor Modul 13 NICHT
+                                    //              aktivierbar.
+                                    //   "netz"    = FORMAL NICHT AKTIVIERBAR
+                                    //              bis Anker 10/11/12
+                                    //              (Reputation / Rate-Limit /
+                                    //              Blocklist) gebaut sind.
+                                    //              Siehe § 8 Anti-Missbrauch.
+}
+```
+
+Wer einen Brücken-Vorschlag-Eintrag mit `candidateScope:"netz"` an
+Modul 06 übergeben würde, wird vom Heterokaryose-Modul (Karte 06)
+gefiltert (kein Versand). Stufe B darf `candidateScope:"netz"` heute
+nicht selbständig setzen — wenn die LLM-Antwort das Feld auf `"netz"`
+setzt, korrigiert Modul 04 still auf `"lokal"` (defensive Wahl, kein
+Throw). Diese Korrektur entfällt erst, wenn Anker 10-12 implementiert
+und freigegeben sind.
+
+#### Schwellen-Vertrag (M04-Erweiterung)
+
+```
+PROVIDER_MIN_MATCH = 0.80     // bleibt für `overall` (alte Pipeline + neue)
+SCHICHT_MIN_MATCH  = 0.60     // pro Dimension (neu, §0)
+```
+
+Auswertungs-Regeln (in dieser Reihenfolge):
+
+1. **Wenn `availableLanes === 0` (Nur-Anbieter-Modus):** Aufrufer
+   nutzt `match()` + `isAboveProviderThreshold()` wie bisher.
+   `matchDimensions` ist hier nicht anwendbar.
+
+2. **Wenn `availableLanes >= 1` und `overall < PROVIDER_MIN_MATCH`:**
+   Apoptose-Vorbedingung wie bisher (Modul 05 / 07 entscheidet, ob
+   tatsächlich Selbstlöschung folgt).
+
+3. **Wenn `availableLanes >= 1` und mind. 2 Schicht-Scores unter
+   `SCHICHT_MIN_MATCH`:** Apoptose-Vorbedingung. Selbst wenn `overall
+   >= 0.80` (statistisch möglich, wenn eine Schicht extrem stark ist),
+   dominiert die Schicht-Schwelle — zwei strukturelle Lücken sind kein
+   tragfähiges Match.
+
+4. **Wenn `availableLanes >= 1` und genau eine Schicht unter
+   `SCHICHT_MIN_MATCH` UND `overall >= PROVIDER_MIN_MATCH`:** Match
+   gilt als **brücken-tauglich**. Aufrufer kann optional
+   `explainMatchLLM` rufen, um einen Brücken-Vorschlag zu erhalten
+   (Stufe B). Ohne Stufe B bleibt der Match einfach als
+   „established mit Lücke" — Aufrufer entscheidet, ob er die Lücke
+   ignoriert oder anders behandelt.
+
+5. **Wenn alle Schichten >= `SCHICHT_MIN_MATCH` UND `overall >=
+   PROVIDER_MIN_MATCH`:** voller Match. Stufe B ist optional und nur
+   für Erklär-/UI-Zwecke nützlich.
+
+**Stufe-B-Übersteuerung:** `explainMatchLLM` darf eine Dimensions-
+Schwelle übersteuern, wenn die Begründung im Brücken-Vorschlag
+semantisch reicher ist als die Zahl (z.B. „die niedrige Skalierungs-
+Schicht ist hier irrelevant, weil A explizit nach kleinem Maßstab
+sucht"). In dem Fall liefert `explainMatchLLM` das Feld
+`overrideRecommendation: "established" | "established-with-bridge" |
+"rejected"` mit Begründung; Aufrufer kann dem folgen oder bei der
+Stufe-A-Heuristik bleiben. Modul 04 ist nicht weisungsbefugt — die
+Entscheidung bleibt beim Aufrufer.
+
+#### Stufe-B-Vertrag (`explainMatchLLM`)
+
+Stufe B ist ein opt-in LLM-Pass über das Match-Resultat aus Stufe A.
+Pattern-Quelle: Layer-1-Demo der SBKIM-Plattform-`index.html` (im
+Paper-Repo, **nicht** in diesem Repo — die Pattern-Form wird hier
+spezifiziert, der konkrete Prompt ist Bau-Detail).
+
+**Vertrag:**
+
+- **Modell:** `STUFE_B_DEFAULT_MODEL = "claude-sonnet-4"` aus § 0.
+  Aufrufer kann via `options.model` überschreiben (z.B. Nachfolge-
+  Modell). Modul 04 hartcodiert keine Modell-ID.
+- **`max_tokens`:** `STUFE_B_MAX_TOKENS = 1024` aus § 0. Aufrufer kann
+  via `options.maxTokens` überschreiben (typisch nur, wenn der
+  Brücken-Vorschlag besonders ausführlich werden soll).
+- **Output-Form:** JSON-only. Modul 04 setzt im Prompt explizit „Antworte
+  ausschließlich mit JSON nach dem unten gezeigten Schema, kein
+  Prosa-Text drumherum". Antworten ohne valides JSON werden verworfen
+  (siehe Fehlerverhalten).
+- **Antwort-JSON-Schema** (Modul 04 validiert strikt; Mismatch →
+  `available:false`):
+
+  ```jsonc
+  {
+    "schichten": {
+      "fachlich":   { "score": <number, [-1,1]>, "begruendung": "<deutsch, ≤200 Zeichen>" },
+      "prozess":    { "score": <number, [-1,1]>, "begruendung": "<deutsch, ≤200 Zeichen>" },
+      "skalierung": { "score": <number, [-1,1]>, "begruendung": "<deutsch, ≤200 Zeichen>" }
+    },
+    "bruecke": {                           // optional — null wenn kein Brücken-Vorschlag
+      "needed":         "<deutscher Klartext, ≤300 Zeichen>",
+      "lookingFor":     "<deutscher Klartext, ≤300 Zeichen> | null",
+      "candidateScope": "lokal" | "mailbox" | "netz"
+                         // Modul 04 korrigiert "netz" still auf "lokal", bis
+                         //   Anker 10-12 da sind — siehe § Brücken-Feld-Spec.
+    },
+    "erklaerung":               "<deutscher Klartext, ≤600 Zeichen, fasst das Match zusammen>",
+    "overrideRecommendation":   "established" | "established-with-bridge" | "rejected" | null
+                                // null = LLM gibt keine Übersteuerungs-Empfehlung,
+                                //   Stufe-A-Schwellen gelten unverändert.
+  }
+  ```
+
+- **Rückgabe `ExplainResult`** (Modul 04 verpackt das LLM-Ergebnis):
+
+  ```
+  ExplainResult = {
+    available             : boolean,           // true = LLM-Antwort gültig
+    schichten             : object | null,     // wie oben oder null bei available:false
+    bruecke               : BridgeProposal | null,
+    erklaerung            : string | null,
+    overrideRecommendation: string | null,
+    fallbackScore         : number,            // = matchResult.overall (Stufe-A-Resultat)
+    reason                : string | null,     // bei available:false: deutscher Grund
+                                               //   z.B. "API HTTP 429 (Rate-Limit)",
+                                               //   "Antwort entsprach nicht dem Schema",
+                                               //   "Netz nicht erreichbar"
+    model                 : string,            // verwendetes Modell (default oder options.model)
+    tokensUsed            : number | null      // input+output tokens, fail-soft wenn API es nicht liefert
+  }
+  ```
+
+- **Fehlertoleranz:** Stufe B darf scheitern. Wenn der LLM-Call
+  scheitert (HTTP-Fehler, Timeout, Netzfehler, Schema-Mismatch),
+  resolved `explainMatchLLM` mit `{available:false, reason, fallbackScore}`
+  — kein Throw, kein Halb-Resultat. Aufrufer fällt auf das Stufe-A-
+  Resultat (`matchResult`) zurück; UI zeigt „Erklärung nicht verfügbar".
+- **Rate-Limit-Awareness:** Modul 04 fügt KEINE eigene Drossel ein. Der
+  Aufrufer (typisch Modul 06 Heterokaryose-Brücken-Vorschlag, Modul 08
+  UI-Demo, Modul 00 Doku-Fenster mit Erklär-Knopf) drosselt selbst.
+  Empfehlung: max. 1 Stufe-B-Call pro Sekunde pro Knoten bei
+  Anthropic-API (Standard-Quota); konkrete Drossel-Strategie ist
+  Aufrufer-Bau-Detail.
+- **User-Key-Handling:** `apiKey` kommt aus dem Identitäts-Container
+  (Vision-Anker 5, PULS) — **niemals plain aus IndexedDB**. Die
+  Container-Spec selbst liegt in Anker 5 (eigene Spec-Sitzung, derzeit
+  als Pfad 1 „Rucksack-Datei" via Modul 02 Backup-Export bereits
+  rudimentär umgesetzt). Die Plattform-Matrix in § 6.2 listet pro
+  Plattform-Profil, wo der Key konkret liegen kann („eigener Key" in
+  Desktop-Browser / DeX-Tablet; „Key im App-Dir" beim Mini-Browser;
+  „im Popup" bei der Extension; „App-Dir-Key" gibt es nicht — die
+  Plattform-Matrix-Spalte „Stufe B" benennt die vier Key-Lokalisations-
+  Varianten). Modul 04 konsumiert den Key Plattform-agnostisch als
+  String — wer ihn übergibt, hat ihn aus dem für seine Plattform
+  zuständigen Container geholt.
+- **Schichten-Übersteuerung:** Wenn die LLM-Antwort eigene Schicht-
+  Scores liefert, sind diese die maßgeblichen Werte für die UI-
+  Anzeige; die Stufe-A-Heuristik-Werte aus `matchDimensions` bleiben
+  als `matchResult.fachlich/prozess/skalierung` separat im Aufruf-
+  Kontext sichtbar. Aufrufer entscheidet, welche Werte er anzeigt.
+
+**Beispiel-Output für eine Match-Sitzung mit zwei Personas** (Brief 03
+markiert das als „knüpft an Brief 04 Multi-Identität" — die zwei
+Personas hier sind zwei unabhängige Identitäten im selben IndexedDB-
+Slot-Schema aus Anker 6):
+
+```jsonc
+// Persona A („Klaus privat — Kochrezepte"):
+//   embeddingCapabilities = domainVector der Rezeptbuch-Spore
+//   embeddingNeeds        = Vektor für „Wein-Empfehlungen, die zu Hauptgang passen"
+//
+// Persona B („Klaus beruflich — Wein-Verkostungen"):
+//   embeddingCapabilities = Vektor für „Wein-Verkostungs-Notizen"
+//   embeddingNeeds        = null  ←  reiner Anbieter, Persona B sucht nichts
+//
+// matchDimensions(qCap=A.cap, qNeeds=A.needs, pCap=B.cap, pNeeds=B.needs)
+//   Lane 1 (A.cap × B.needs): nicht berechenbar (B.needs=null) → übersprungen
+//   Lane 2 (A.needs × B.cap): cosinus(A.Wein-Suche × B.Wein-Verkostung) = 0.83
+//   availableLanes = 1
+//   Schichten: fachlich = prozess = skalierung = 0.83 (gleicher Lane-Wert,
+//                                                       Schicht-Differenzierung kommt aus Stufe B)
+//   overall = 0.83
+//
+// explainMatchLLM(matchResult, apiKey) liefert:
+{
+  "available": true,
+  "schichten": {
+    "fachlich":   { "score": 0.91, "begruendung": "Wein-Verkostungs-Notizen passen direkt zu Wein-Empfehlungen für Hauptgang" },
+    "prozess":    { "score": 0.62, "begruendung": "Persona A pflegt täglich, Persona B nur wenn neue Verkostung — Prozess-Mismatch" },
+    "skalierung": { "score": 0.88, "begruendung": "Beide Single-Knoten ohne Cluster-Ambition" }
+  },
+  "bruecke": null,                            // kein Brücken-Vorschlag nötig
+  "erklaerung": "Anbieter-Sucher-Match auf Wein-Domain; Prozess-Lücke (kontinuierlich vs. ereignisbasiert) verhindert vollen Match nicht, weil A explizit nach Verkostungs-Wissen sucht.",
+  "overrideRecommendation": "established",
+  "fallbackScore": 0.83,
+  "reason": null,
+  "model": "claude-sonnet-4",
+  "tokensUsed": 421
+}
+```
+
+Persona-Quelle für `embeddingCapabilities` / `embeddingNeeds` pro
+Persona ist Brief 04 (Multi-Identität — `sbkim_keys["main"]` /
+`["beruflich"]` / `["test"]` + `sbkim_meta["active-identity"]`-Marker).
+Brief 03 spezifiziert nur, dass Modul 04 die zwei Vektor-Slots
+**pro Persona unabhängig** konsumiert; die Mehr-Slot-Logik selbst
+liegt in Brief 04.
 
 ---
 
@@ -1414,22 +1843,53 @@ signature        : string   base64url ohne Padding, Ed25519 über kanonisches JS
 **Optionale Felder** (wenn vorhanden, sind sie Teil der Signatur):
 
 ```
-nodeName            : string                  z.B. "Rezeptbuch Klaus"
-domainDescription   : string                  Freitext über die Domäne
-domainKeywords      : string[]                z.B. ["Backen", "Saucen"]
-domainVector        : number[]                384 floats, vorab-berechneter Domänen-Vektor
-endpointPaths       : object                  Override für §3, falls Hoster ohne .well-known
-stammCategories     : string[]                Kerngebiet-Kategorien des Knotens (siehe ARCHITEKTUR.md §8).
+nodeName                : string              z.B. "Rezeptbuch Klaus"
+domainDescription       : string              Freitext über die Domäne
+domainKeywords          : string[]            z.B. ["Backen", "Saucen"]
+domainVector            : number[]            384 floats, vorab-berechneter Domänen-Vektor.
+                                              Legacy-Name aus Spec-Sitzung 02 (2026-05-14) für den
+                                              Anbieter-Vektor („was kann dieser Knoten anbieten").
+                                              Spec-Sitzung M04-Erweiterung (Brief 03, 2026-05-19)
+                                              führt embeddingCapabilities als neuen kanonischen
+                                              Namen ein — siehe unten.
+embeddingCapabilities   : number[]            384 floats, NEU additiv (Brief 03, 2026-05-19).
+                                              Kanonischer Name für den Anbieter-Vektor; semantisch
+                                              identisch zu domainVector. Eine Spore darf domainVector
+                                              ODER embeddingCapabilities ODER BEIDE tragen.
+                                              Falls beide vorhanden: SOLLEN sie wertgleich sein
+                                              (Consumer prüft NICHT — keine Verifikations-Pflicht,
+                                              additiver Übergangs-Pfad). Consumer (Modul 04 /
+                                              Modul 05) liest bevorzugt embeddingCapabilities,
+                                              sonst domainVector, sonst kein Vektor verfügbar.
+embeddingNeeds          : number[]            384 floats, NEU additiv (Brief 03, 2026-05-19).
+                                              Sucher-Vektor („was sucht dieser Knoten"). Optional —
+                                              wenn fehlend oder null, ist der Knoten im
+                                              „nur Anbieter-Modus" (siehe § 1 Modul 04 § Drei-
+                                              Schichten-Modell § Nur-Anbieter-Modus). Signaturpflichtig
+                                              wenn vorhanden (analog domainKeywords / stammCategories /
+                                              embeddingCapabilities).
+endpointPaths           : object              Override für §3, falls Hoster ohne .well-known
+stammCategories         : string[]            Kerngebiet-Kategorien des Knotens (siehe ARCHITEKTUR.md §8).
                                               Beispiel Mixarium: ["Cocktails", "Mocktails", "Limonaden"].
                                               Beispiel Rezeptbuch: ["Vorspeisen", "Fleisch", "Fisch", "Vegetarisch"].
                                               Sortier-Reihenfolge frei wählbar; kanonische JSON-Sortierung
                                               sortiert nur Object-Keys, nicht Array-Elemente.
-guestCategories     : string[]                Begleit-Kategorien (UI-Label: "Überraschungs-Plus").
+guestCategories         : string[]            Begleit-Kategorien (UI-Label: "Überraschungs-Plus").
                                               Beispiel Mixarium: ["Knabbereien", "Fingerfood"].
                                               Beispiel Rezeptbuch: ["Begleitgetränke", "Weinkarte"].
                                               Disjunkt zu stammCategories (kein Element in beiden Listen);
                                               das ist Hosting-Pflicht des Knotens, kein Empfänger-Check.
 ```
+
+**Hinweis Spec-Sitzung M04-Erweiterung (Brief 03, 2026-05-19):** Die
+neuen Felder `embeddingCapabilities` und `embeddingNeeds` sind beide
+optional und additiv — `PROTOCOL_VERSION` bleibt `"0.1"`. Alte Sporen
+ohne diese Felder bleiben gültig; eine fehlende `embeddingNeeds`
+signalisiert „nur Anbieter-Modus" (kein Bidirektionalitäts-Test).
+Wenn eine Folge-Spec-Sitzung `embeddingNeeds` zur Pflicht erhöbe (z.B.
+in einer künftigen Stufe-B-only-Variante des Protokolls), bumpte
+`PROTOCOL_VERSION` auf `"0.2"` — diese Entscheidung gehört in eine
+eigene Spec-Sitzung und ist nicht Teil von Brief 03.
 
 **Versionierungs-Regel:**
 - Pflichtfelder dürfen ab Status `entwurf` nur noch additiv erweitert
@@ -2213,7 +2673,129 @@ Matrix.
 
 ---
 
-## 7. Änderungsprotokoll
+## 7. LLM-Stufe-B-Ehrlichkeits-Klausel (M04-Erweiterung)
+
+**Verbindliche Spec-Klausel.** Spec-Sitzung M04-Erweiterung (Brief 03
+der V1-Sammelspec-Kaskade, 2026-05-19). Stufe B — der optionale
+LLM-Erklär-Pass über das Stufe-A-Match-Resultat (`explainMatchLLM`
+aus § 1 Modul 04) — ist **opt-in pro Knoten**. Wer keinen User-eigenen
+API-Key hinterlegt, bleibt vollwertiger Mycel-Teilnehmer; Stufe A
+allein ist rückgrat-tragend lokal. Kein Knoten wird gezwungen, einen
+Drittanbieter (Anthropic, OpenAI, sonst) zu nutzen.
+
+Diese Klausel ist namentlich von § 6.3 Plattform-Ehrlichkeits-Klausel
+(Brief 02) zu unterscheiden: § 6.3 ist Plattform-allgemein (Hintergrund-
+Empfang, Schlüssel-Sicherheit, Spore-Verhalten); diese § 7 ist
+Stufe-B-spezifisch (LLM-Call, API-Key, Drittanbieter-Abhängigkeit).
+Sie ergänzen einander — § 6.3 + § 7 zusammen ergeben das Bild: das
+Mycel verspricht nichts, was eine Plattform oder ein Drittanbieter
+nicht zuverlässig hergibt.
+
+**Vier Sätze (verbindlich):**
+
+1. **Stufe B ist opt-in.** Ein Knoten ohne hinterlegten API-Key
+   ruft `explainMatchLLM` schlicht nicht auf — Modul 04 wirft beim
+   Aufruf mit leerem Schlüssel `InvalidApiKeyError` (siehe § 1 Modul 04
+   § Fehlerverhalten). Es gibt keinen automatischen Fallback auf einen
+   geteilten Schlüssel des Repos oder eines anderen Knotens.
+
+2. **Stufe A ist rückgrat-tragend lokal.** Match-Entscheidungen
+   (`isAboveProviderThreshold`, Schicht-Schwellen aus § 1 Modul 04 §
+   Schwellen-Vertrag) laufen ausschließlich aus den Stufe-A-Werten.
+   `explainMatchLLM` kann eine Übersteuerungs-Empfehlung liefern
+   (`overrideRecommendation`), aber Aufrufer sind nicht weisungsgebunden
+   — wer Stufe B ignoriert, bleibt im vollen Anastomose-/Heterokaryose-
+   Netz.
+
+3. **Kein Knoten wird gezwungen, einen Drittanbieter zu nutzen.**
+   Modul 04 hartcodiert keine API-Endpunkte und keine Modell-IDs
+   (siehe § 0 `STUFE_B_DEFAULT_MODEL` — Konvention, nicht Pflicht);
+   der `apiKey`-Parameter ist opaque (Modul 04 prüft nur, dass er
+   nicht leer ist und kein null). Aufrufer wählen Modell und Anbieter
+   pro Call. Wer eine selbst-gehostete LLM-API betreibt, kann sie
+   genauso einbinden wie die Anthropic-API.
+
+4. **Knoten ohne Stufe B sind vollwertige Netz-Teilnehmer.** Die
+   Match-Pipeline (Modul 04 → Modul 05 Anastomose → Modul 06
+   Heterokaryose → Modul 07 Apoptose) läuft komplett ohne Stufe B
+   durch. Brücken-Vorschläge entstehen nur dort, wo jemand Stufe B
+   anruft; das Mycel wächst auch ohne sie. Stufe B ist semantische
+   Vertiefung, keine Eintritts-Barriere.
+
+**Plattform-Matrix-Konsumtion (siehe § 6.2 Spalte „Stufe B"):** Die
+Plattform-Matrix nennt pro Profil, **wo** der User-eigene Key liegen
+kann (eigener Key in Desktop-Browser / DeX-Tablet; Key im App-Dir bei
+Mini-Browser; im Popup bei der Extension; via PWA-Container in
+allen Fällen optional via Modul 02 `exportBackup`). Modul 04
+konsumiert den Key Plattform-agnostisch — die Plattform-spezifische
+Container-Logik liegt in Vision-Anker 5 (Identitäts-Container,
+PULS § Vision-Anker, eigene Spec-Sitzung).
+
+Bezugs-Dokumente: PULS § Vision-Anker 9 § Match-Pipeline § Stufe B;
+`docs/papers/sbkim-paper-en.html` § 3.4 „Protocol Properties" („Stateless"
++ „Evaluator agnosticism"); § 6.2 Plattform-Matrix Spalte „Stufe B".
+
+---
+
+## 8. Anti-Missbrauch-Klausel (M04-Erweiterung)
+
+**Verbindliche Spec-Klausel.** Spec-Sitzung M04-Erweiterung (Brief 03
+der V1-Sammelspec-Kaskade, 2026-05-19). Der Brücken-Vorschlag aus
+Stufe B (`BridgeProposal` in § 1 Modul 04 § Brücken-Feld-Spec) bleibt
+**lokal** — kein Spore-Leak, keine ungeschützte Empfehlung über das
+Netz.
+
+**Drei Sätze (verbindlich):**
+
+1. **Brücken-Vorschlag bleibt lokal.** `candidateScope` darf in der
+   produktiv ausgelieferten Form heute nur `"lokal"` tragen. Wer
+   die Form aus dem LLM-Output mit `"netz"` empfängt, sieht sie
+   in Modul 04 still auf `"lokal"` korrigiert (defensive Wahl,
+   kein Throw — siehe § 1 Modul 04 § Brücken-Feld-Spec). Der
+   `"mailbox"`-Wert ist formal erlaubt, bedingt aber Modul 13
+   (Königin-Relay, Vision-Anker 4, PULS); vor Modul 13 nicht
+   produktiv aktivierbar — wer ihn setzt, wird vom Aufrufer
+   ignoriert.
+
+2. **`candidateScope:"netz"` ist formal nicht aktivierbar bis Anker
+   10-12 gebaut sind.** Modul 10 (Reputation, Schutz-Backlog), Modul
+   11 (Rate-Limit, Schutz-Backlog) und Modul 12 (Blocklist,
+   Schutz-Backlog) zusammen liefern die Anti-Spam-Schicht, ohne die
+   ein Netz-Versand von Brücken-Vorschlägen Spore-Leakage und
+   Spam-Vektoren erzeugen würde. Vor Anker-10-12-Aktivierung darf
+   kein Modul (insbesondere nicht Modul 06 Heterokaryose) eine
+   Brücken-Vorschlag-Outbox-Eintrag mit `candidateScope:"netz"`
+   versenden. Bei Aktivierung von Anker 10-12 wird diese Klausel
+   überprüft und ggf. eine Folge-Spec-Sitzung schreibt die
+   Netz-Aktivierung mit den dann verfügbaren Schutz-Mechanismen.
+
+3. **Modul 06 Heterokaryose filtert Brücken-Vorschlag-Einträge.**
+   Wenn `sbkim_hetero_outbox` (Schreiber Modul 08, Leser Modul 06)
+   einen Brücken-Vorschlag-Eintrag enthält (in einer Folge-Spec-
+   Sitzung 06 oder 08 als eigener `entryType`-Wert spezifiziert),
+   filtert Modul 06 ihn beim Lese-Pfad: `candidateScope:"lokal"` →
+   Anker bleibt im Outbox, geht nie ins Netz; `candidateScope:
+   "mailbox"` → Spec-offen, wartet auf Modul 13; `candidateScope:
+   "netz"` → wird nicht versendet (Karte 06 Spec, siehe Verweis
+   unten). Die Filter-Logik selbst spezifiziert Karte 06 in einem
+   Folge-Spec-Sub-Block (kein Bau-Detail in Brief 03).
+
+**Verbindlichkeit:** Diese Klausel gilt für **jede** Folge-Spec-
+Sitzung, die mit Brücken-Vorschlag-Einträgen umgeht — bis eine
+ausdrückliche Folge-Spec-Sitzung sie unter Verweis auf
+implementierte Anker 10-12 ändert.
+
+Bezugs-Dokumente: PULS § Vision-Anker 9 § Architektur-Skizze §
+„Anti-Missbrauch"; CLAUDE.md § „Was du nicht tust" („Kein Crawler,
+keine Pulsation, keine Eigenanfragen ins offene Netz"); `docs/
+components/10_reputation.md` (Stub, Schutz-Backlog); `docs/
+components/11_rate_limit.md` (Stub); `docs/components/12_blocklist.md`
+(Stub); Karte 06 § Brücken-Vorschlag-Eintrags-Typ (Folge-Spec-Block,
+Brief 03 hat den Verweis hinterlegt).
+
+---
+
+## 9. Änderungsprotokoll
 
 | Datum | Sitzung | Änderung |
 |---|---|---|
@@ -2253,3 +2835,4 @@ Matrix.
 | 2026-05-17 | Spec-Sitzung BroadcastChannel-Bridge | Folge-Spec zur Pflege Scope-Fix 2026-05-17 (PR #72/#73). Architektur-Grenze ehrlich gemacht: same-origin cross-PWA Handshake via SW-Bridge ist konzeptuell unmöglich (Sender-SW intercepted, nicht Receiver-SW). Lösung: **BroadcastChannel als additiver Fallback-Transport in Modul 05**, HandshakeRequest/HandshakeResponse-Schema **unverändert**. **§1 Modul 05 Bietet-Block** erweitert um optionalen dritten Parameter `options?: { transport?: "auto"\|"http"\|"channel" }` (Default `"auto"`). **§1 Modul 05 Nutzt-Block** um `BroadcastChannel('sbkim')` + Reply-Channel-Pfad ergänzt; Timeout aus QUERY_TIMEOUT_MS (kein neuer Wert). **§1 Modul 05 Fehlerverhalten** um zwei Zeilen erweitert (Channel-Timeout → `HandshakeTimeoutError` mit Log "timeout-channel", Channel-Reply-Signatur ungültig → `HandshakeSignatureInvalidError`). **§1 Modul 05 SW-Vertrag** um Architektur-Grenze-Hinweis erweitert (Spec-Klarheit, kein Bug — Auflösung in PR #72/#73 bestätigt). **§1 Modul 05 neuer Sub-Block „BroadcastChannel-Bridge"** mit Channel-Name, Envelope-Schema (Request/Response-Wrapper, NICHT signiert; nur das innere HandshakeRequest/Response wird signiert wie bisher), Receiver-Pflicht (eager in `init()`, Filter `toNodeId`/`fromNodeId`), Sender-Pfad (Reply-Channel pro Handshake, Timeout, finally-Cleanup, `nonceEcho`-Doppelt-Bindung), `toNodeId` als **Pflichtfeld** im Channel-Pfad (im HTTP-Pfad bleibt optional), Self-Hit-Schutz, Cleanup, „Wer-nicht-da-ist-schweigt"-Konvention. **§3 Endpunkt-Pfade** zweiter Sub-Block für Anastomose-Fallback-Transport: `channel-bridge: BroadcastChannel('sbkim')` + `reply-channel: BroadcastChannel('sbkim:reply:' + nonce)`. **Verbindlich nur für Modul 05** (Anastomose) — Heterokaryose (Modul 06) und Legacy (Modul 07) bleiben HTTP-only. **§1 Modul 05 Geprüft-Zeile** um 2026-05-17 erweitert. **Karte 05** § Schnittstelle (handshake-Signatur), neue Hauptsektion „BroadcastChannel-Bridge (same-origin Fallback)" mit Entscheidungs-Tabelle E1–E7 und Begründungen, § Datenformate (Envelope-Schema), § Manueller Test neuer Punkt 9 (Channel-Pfad), § Risiken neuer Punkt „Receiver-Tab-Pflicht", § Bauzustand-Zeile „Spec BroadcastChannel-Bridge". **PROTOCOL_VERSION bleibt `"0.1"`** (additive Transport-Erweiterung, kein Schema-Eingriff). **Kein Code** in `src/modules/05_anastomose.js` (Spec, kein Bau — Bau-Sitzung folgt). **Kein Eingriff** in `src/sbkim-sw.js` (SW-Pfad ist mit `isOwnEndpoint` aus PR #72 abgeschlossen). **Kein Eingriff** in Karte 09 (Andock-Hinweis „Beide Tabs offen halten" folgt in Bau-Sitzung). **`status.json` unverändert** — Modul 05 bleibt `score:"fertig"` (additive Spec-Erweiterung am Vertrag, keine Funktionalitäts-Regression; Bau erst danach setzt den Fallback live; `update_puls_pie.py` NICHT aufgerufen). Übergabeprotokoll `docs/sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md` angelegt.
 | 2026-05-18 | Spec-Sitzung V1 Sage-Hybrid (Brief 01) | Brief 01 der V1-Sammelspec-Kaskade (PULS § Meta-Pflege „V1-Sammelspec als Brief-Kaskade sequenziert", sechs heilige Tafeln). **Neue §6 Endknoten-Liste** angelegt: Sage als dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium aufgenommen (id `sage`, domain `Mycel-Bibliothek`, domainDescription / domainKeywords / domainVector `null`-Slot, Stamm/Gast disjunkt). **§6.1 Sage-Endknoten — Sage-Page-Architektur** dokumentiert (IndexedDB-Suffix `sbkim_sage`, App-SW Variante 3a, volle init()-Kette mit lazy Modul-03, Andock-Geste an Schwarz-Loch-Karte als Wizard-Hinweis, Plattform-Ehrlichkeits-Vorgriff auf Brief 02). Domäne-Entscheidung „Mycel-Bibliothek" begründet (gesamtes Doku-Korpus, nicht nur Glossar oder Sage-Page-Metapher). **§6 Änderungsprotokoll auf §7 nachnummeriert** (additiv, keine Inhalte verschoben). **PROTOCOL_VERSION bleibt `"0.1"`** (additive Erweiterung, kein bestehendes Feld zur Pflicht erhoben). Plattform-Matrix-Block hier nur als Verweis-Stub auf Brief 02; M04-Erweiterung (Brief 03) und Multi-Identität (Brief 04) bleiben unberührt. Mit-Pflege: CLAUDE.md § „Was dieses Repo ist" („Hub und Knoten zugleich"), Karte 09 § Schritt 1, `status.json` § endknoten (sage-Eintrag mit `pingStatus:"pending-first-andock"` und `nodeId:null`). Sage-Page (`index.html`) unangetastet — Sage-Page-Refactor folgt als Bau-Sitzung in Brief 99-Liste. Übergabeprotokoll `docs/sessions/archiv/2026-05-18_spec-v1-sage-hybrid.md`. PR „Spec: V1 Sage-Hybrid — Strang 1 der V1-Sammelspec-Kaskade". |
 | 2026-05-18 | Spec-Sitzung Plattform-Matrix (Brief 02) | Brief 02 der V1-Sammelspec-Kaskade — Strang 4 (Plattform-Matrix) als eigenständige Folge-Etappe nach Brief 01 (Spec V1 Sage-Hybrid, PR #96 gemerged). Drei neue Sub-Sektionen unter § 6: **§ 6.2 Plattform-Matrix** mit fünf Plattform-Profilen (Desktop-Browser / DeX-Tablet / PWA-installiert / Mini-Browser V8 / Extension V7) × sechs Spalten (IndexedDB / SW / Spore-Empfang / Identitäts-Backup / Stufe B / Beispiel-Knoten) plus Spalten-Glossar plus Sage-Anmerkung (Sage nimmt Desktop-Browser- und PWA-installiert-Profile ein, NICHT als eigene Zeile in der Matrix). **§ 6.3 Plattform-Ehrlichkeits-Klausel** als verbindliche Spec-Klausel: kein Endknoten gibt vor, mehr zu können als seine Plattform erlaubt — Hintergrund-Empfang ist Vision-Anker 4 (Königin-Relay) vorbehalten, kein Pflicht-Bestandteil des Protokolls; Begründung aus Klaus' Lehre 1 (Browser-Instanzen-Trennung, Pages-Live-Tests 2026-05-17). **§ 6.4 Vision-Bezüge** als Querverweis-Matrix mit sieben Ankern (V1 Träger / V9 Stufe-B-Ort / V6 Persona-Quelle / V7 Toolbar-Lampe / V8 Tray-Träger / V4 Mailbox / V5 Key-Speicher) plus Erläuterungs-Absatz pro Anker — Schnittstelle Plattform ↔ Anker, KEINE Spec der Anker selbst. **Plattform-Matrix-Stub aus § 6.1** (Brief 01) zu Verweis auf § 6.2 umgeschrieben. **PROTOCOL_VERSION bleibt `"0.1"`** (Strang 4 ist dokumentarisch additiv — Matrix ist Spec-Block, kein Spore-Schema-Feld, kein neuer Pflicht-Pfad). Mit-Pflege: KEINE — Brief 02 lebt rein in INTERFACES; CLAUDE.md / Karte 09 / `status.json` unangetastet (Brief 01 hat sie auf den Endknoten-Stand gebracht). Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6 streng eingehalten (Matrix verweist, spezifiziert nicht); Brief 03 (M04-Erweiterung) erbt die Spalte „Stufe B" als Schnittstellen-Eckdatum. Übergabeprotokoll `docs/sessions/archiv/2026-05-18_spec-plattform-matrix.md`. PR „Spec: Plattform-Matrix — Strang 2 der V1-Sammelspec-Kaskade" (Brief 01-PR #96 als gemerged vorausgesetzt). |
+| 2026-05-19 | Spec-Sitzung M04-Erweiterung (Brief 03) | Brief 03 der V1-Sammelspec-Kaskade — Strang 2 (M04-Erweiterung: drei Schichten + Brücke + doppelte Spore + Stufe-A/Stufe-B-Match-Pipeline) als dritte Etappe nach Brief 01 (V1 Sage-Hybrid, PR #96 gemerged) und Brief 02 (Plattform-Matrix, PR #97 gemerged). **§0 Globale Konstanten** um drei neue Konstanten erweitert: `SCHICHT_MIN_MATCH = 0.60` (pro-Dimension-Schwelle für `matchDimensions`), `STUFE_B_DEFAULT_MODEL = "claude-sonnet-4"` (Konvention für `explainMatchLLM`, aufrufer-überschreibbar), `STUFE_B_MAX_TOKENS = 1024` (Default für den Stufe-B-LLM-Call, aufrufer-überschreibbar). **§1 Modul 02 (Spore) Bietet-Block** um Spore-Schema-Erweiterungs-Hinweis ergänzt — zwei neue optionale meta-Felder für `generateOwnSpore`: `embeddingCapabilities` (Alias-Name für `domainVector`, semantisch identisch) und `embeddingNeeds` (neuer Sucher-Vektor, fehlend = „nur Anbieter-Modus"). **§1 Modul 04 (Match) Bietet-Block** um zwei neue API-Funktionen erweitert: `matchDimensions(qCap, qNeeds, pCap, pNeeds) → MatchDimensionsResult` (sync, drei Cosinus-Aufrufe + gewichteter `overall`, `availableLanes`-Feld für 0/1/2-Bidirektionalität) und `explainMatchLLM(matchResult, apiKey, options?) → Promise<ExplainResult>` (async, fehlertolerant — scheitert nie throw, resolved mit `available:false`-Form bei API-/Schema-Fehlern). **§1 Modul 04** um vier neue Sub-Blöcke erweitert: § Drei-Schichten-Modell (orthogonal `fachlich` / `prozess` / `skalierung`, Lane-Berechnung, Mittelwert vs. Min begründet, Nur-Anbieter-Modus), § Brücken-Feld-Spec (`BridgeProposal` mit `needed` / `lookingFor` / `candidateScope: "lokal"\|"mailbox"\|"netz"`), § Schwellen-Vertrag (`PROVIDER_MIN_MATCH=0.80` für `overall`, `SCHICHT_MIN_MATCH=0.60` pro Dimension, 2+ Dimensionen unter Schwelle = Apoptose, Stufe-B-Übersteuerung erlaubt), § Stufe-B-Vertrag (Modell + max_tokens + JSON-only-Output + Antwort-Schema + `ExplainResult` + Fehlertoleranz + Rate-Limit-Awareness + User-Key-Handling Plattform-agnostisch + Beispiel-Output mit zwei Personas als Brücke zu Brief 04). **§1 Modul 04 Fehlerverhalten** um sieben neue Zeilen erweitert (DimensionsAllNullError, InvalidApiKeyError, InvalidMatchResultError, LLM-HTTP-/Schema-/Abort-Fälle als fehlertolerante Resolves). **§1 Modul 04 Garantien** um vier neue Punkte erweitert (matchDimensions deterministisch, explainMatchLLM einziger Netz-/async-Pfad, Aufrufer-Drossel-Pflicht, Brücken-Vorschläge bleiben lokal). **§2 Spore-JSON** Optionale Felder um `embeddingCapabilities` (additiver Alias) und `embeddingNeeds` (neuer Sucher-Vektor) erweitert plus Hinweis-Block zur additiven Versionierungs-Disziplin. **§7 LLM-Stufe-B-Ehrlichkeits-Klausel (M04-Erweiterung)** als verbindliche Spec-Klausel neu eingefügt (Stufe B opt-in, Stufe A rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen, Knoten ohne Stufe B = vollwertige Netz-Teilnehmer; namentlich von § 6.3 Plattform-allgemeiner Ehrlichkeits-Klausel unterschieden). **§8 Anti-Missbrauch-Klausel (M04-Erweiterung)** als verbindliche Spec-Klausel neu eingefügt (Brücken-Vorschlag bleibt lokal, `candidateScope:"netz"` formal nicht aktivierbar bis Anker 10-12, Modul 06 filtert Brücken-Vorschlag-Outbox-Einträge). **§7 Änderungsprotokoll auf §9 nachnummeriert** (additiv, keine Inhalte verschoben — Brief 03 fügt § 7 + § 8 vor der Changelog ein). **PROTOCOL_VERSION bleibt `"0.1"`** — beide neuen Spore-Felder (`embeddingCapabilities`, `embeddingNeeds`) sind optional, beide neuen Match-Funktionen (`matchDimensions`, `explainMatchLLM`) sind additiv, alte Sporen ohne `embeddingNeeds` bleiben gültig (signalisieren „nur Anbieter-Modus"). Kein altes Feld zur Pflicht erhoben, kein Hauptversions-Sprung-Anlass. Mit-Pflege: Karte 02 (Schema-Erweiterung + Migrations-Pfad + Generate-Spore-Allow-List-Hinweis für spätere Bau-Sitzung), Karte 04 (matchDimensions + explainMatchLLM + Beispiel-Output mit zwei Personas + Stamm/Gast-Hinweis-Block unverändert), Karte 06 (Outbox-Brücken-Vorschlag-Eintrags-Typ + Anti-Missbrauch-Verweis). KEINE — CLAUDE.md / Karte 09 / `status.json` unangetastet (Brief 01 hat sie auf den Endknoten-Stand gebracht); Sage-Page (`index.html`) unangetastet (Sage-Page-Refactor folgt als Bau-Sitzung in Brief 99-Liste). KEINE — Modul-Code in `src/`, keine Multi-Identität-Spec (`sbkim_keys`-Multi-Slots → Brief 04), keine Königin-Relay-/Identitäts-Container-/Extension-/Mini-Browser-Spec (Vision-Anker eigene Spec-Sitzungen, Matrix verweist nur). Übergabeprotokoll `docs/sessions/archiv/2026-05-19_spec-m04-erweiterung.md`. PR „Spec: M04-Erweiterung — Strang 3 der V1-Sammelspec-Kaskade" (Brief 02-PR #97 als gemerged vorausgesetzt). |
