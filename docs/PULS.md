@@ -596,7 +596,8 @@ Sitzung ~2-3 Stunden für Sage-Page-Refactor + SW-Anlage + Andock-
 Geste.
 
 **Status:** **Strang 1 der V1-Sammelspec realisiert (2026-05-18, Brief
-01 der V1-Sammelspec-Kaskade)** — Sage als dritter Endknoten in
+01 der V1-Sammelspec-Kaskade) + Sammelspec-Abschluss (Brief 99)
+abgeschlossen (2026-05-19).** Sage als dritter Endknoten in
 INTERFACES §6 Endknoten-Liste + §6.1 Sage-Page-Architektur aufgenommen
 (Domäne `Mycel-Bibliothek`, IndexedDB-Suffix `sbkim_sage`, App-SW
 Variante 3a, volle init()-Kette mit lazy Modul-03, Andock-Geste an
@@ -604,11 +605,15 @@ Schwarz-Loch-Karte als Wizard-Hinweis). CLAUDE.md auf „Hub und Knoten
 zugleich" umgeschrieben, Karte 09 § Schritt 1 erweitert, `status.json`
 um `sage`-Endknoten-Eintrag (`pingStatus:"pending-first-andock"`,
 `nodeId:null`) ergänzt. `PROTOCOL_VERSION` bleibt `"0.1"` (additiv).
-Restliche Stränge laufen in Brief 02 (Plattform-Matrix), Brief 03
-(M04-Erweiterung) und Brief 04 (Multi-Identität); Sage-Page-Refactor
-(volle init()-Kette + Andock-Wizard in `index.html`) folgt als Bau-
-Sitzung über `BRIEF_99_SAMMELSPEC_ABSCHLUSS`, sobald die Kaskade
-schließt.
+Die V1-Sammelspec-Kaskade ist mit BRIEF_99-Abschluss vollständig
+geschlossen — Brief 02 (Plattform-Matrix, PR #97), Brief 03 (M04-
+Erweiterung, PR #98) und Brief 04 (Multi-Identität, PR #99) sind alle
+gemerged. **Sage-Page-Refactor** (volle init()-Kette + Andock-Wizard
++ Schichten-Lampen + Identitäts-Wechsler-UX in `index.html`) steht
+als **Position 1 der Bau-Sitzungs-Brief-Pipeline** aus Brief 99
+(siehe § Sitzungs-Einträge „Abschluss — V1-Sammelspec-Kaskade
+(Brief 99)") und ist die empfohlene erste Bau-Sitzung der nächsten
+Welle.
 
 ### 2026-05-17 · Niedrigeres Onboarding (Variante III-Ausbau)
 
@@ -985,11 +990,12 @@ auf dem Tablet oder im Rechner, je nach Arbeitsoberfläche."
 ### Status
 
 **Strang 3 der V1-Sammelspec realisiert (2026-05-19, Brief 04 der V1-
-Sammelspec-Kaskade).** INTERFACES.md § 9 „Identitäts-Map (Multi-
-Identität, Brief 04)" als verbindliche Spec-Klausel (sieben Sub-§ von
-Slot-Schema bis M04-Verbindung); Modul 02 um fünf neue / erweiterte
-API-Funktionen erweitert (`getOrCreateIdentity(key?)`,
-`setActiveIdentity(key)`, `getActiveIdentityKey()`, `listIdentities()`,
+Sammelspec-Kaskade) + Sammelspec-Abschluss (Brief 99) abgeschlossen
+(2026-05-19).** INTERFACES.md § 9 „Identitäts-Map (Multi-Identität,
+Brief 04)" als verbindliche Spec-Klausel (sieben Sub-§ von Slot-Schema
+bis M04-Verbindung); Modul 02 um fünf neue / erweiterte API-Funktionen
+erweitert (`getOrCreateIdentity(key?)`, `setActiveIdentity(key)`,
+`getActiveIdentityKey()`, `listIdentities()`,
 `removeIdentity(key, options?)`); identitäts-spezifische Stores pro
 Persona (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`,
 `sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`,
@@ -1003,9 +1009,14 @@ entschieden: `confirmSelfApoptose` global, per-Persona-Apoptose über
 `_sendLegacyForIdentity` in Modul 07. Multi-Identitäts-Backup
 „kompletter Rucksack" als Empfehlung verankert; `BACKUP_FORMAT_VERSION`-
 Bump 1→2 für die Bau-Folge-Sitzung 02.Y vermerkt (KEIN
-`PROTOCOL_VERSION`-Eingriff). BRIEF_99 (Sammelspec-Abschluss) als
-Folge-Sitzung in der Kaskade. Bau-Folge-Sitzungen (01.Y, 02.Y, 05.Y,
-06.Y, 07.Y) warten auf BRIEF_99-Abschluss.
+`PROTOCOL_VERSION`-Eingriff). Die V1-Sammelspec-Kaskade ist mit
+BRIEF_99-Abschluss (2026-05-19) vollständig geschlossen. **Bau-
+Folge-Sitzungen** für Multi-Identität (01.Y `ensureStore`, 02.Y Multi-
+Identitäts-API + Backup-Schema-Bump, 05.Y / 06.Y / 07.Y transparenter
+Slot-Pfad, Endknoten-Migration) stehen in der **Bau-Sitzungs-Brief-
+Pipeline** aus Brief 99 (siehe § Sitzungs-Einträge „Abschluss — V1-
+Sammelspec-Kaskade (Brief 99)") und sind die nächste Welle nach
+Kaskaden-Abschluss; Reihenfolge ist Klaus' Entscheidung.
 
 ### 2026-05-18 · SBKIM-Browser-Extension — „Lampe in der Toolbar"
 
@@ -1382,25 +1393,29 @@ sie als Bau-Ziel der V1-Sammelspec.
 ### Status
 
 **Strang 2 der V1-Sammelspec realisiert (2026-05-19, Brief 03 der
-V1-Sammelspec-Kaskade).** Spec-Sitzung 2026-05-19 hat die drei
-Schichten + Brücken-Feld + doppelte Spore + Stufe-A/Stufe-B-Match-
-Pipeline verbindlich in INTERFACES.md verankert (§0 drei neue
-Konstanten `SCHICHT_MIN_MATCH=0.60` / `STUFE_B_DEFAULT_MODEL` /
+V1-Sammelspec-Kaskade) + Sammelspec-Abschluss (Brief 99) abgeschlossen
+(2026-05-19).** Spec-Sitzung 2026-05-19 hat die drei Schichten +
+Brücken-Feld + doppelte Spore + Stufe-A/Stufe-B-Match-Pipeline
+verbindlich in INTERFACES.md verankert (§0 drei neue Konstanten
+`SCHICHT_MIN_MATCH=0.60` / `STUFE_B_DEFAULT_MODEL` /
 `STUFE_B_MAX_TOKENS`; §1 Modul 02 Bietet-Block-Spore-Schema-
 Erweiterungs-Hinweis; §1 Modul 04 zwei neue API-Funktionen
 `matchDimensions` + `explainMatchLLM` + vier neue Sub-Blöcke; §2
 Spore-JSON-Felder `embeddingCapabilities` + `embeddingNeeds`;
 §7 LLM-Stufe-B-Ehrlichkeits-Klausel neu; §8 Anti-Missbrauch-Klausel
-neu; §9 Änderungsprotokoll, war §7) plus Karten 02 / 04 / 06
-nachgezogen. **PROTOCOL_VERSION bleibt `"0.1"`** — alle neuen Felder
-und Funktionen sind additiv, alte Sporen ohne `embeddingNeeds` bleiben
-gültig (signalisieren „nur Anbieter-Modus"). **Verbleibende Etappen
-der V1-Sammelspec-Kaskade:** Brief 04 Multi-Identität (Strang 3 —
-`sbkim_keys`-Multi-Slots + `active-identity`-Marker, doppelte Spore
-pro Persona) folgt; BRIEF_99-Abschluss schließt die Kaskade. **Bau
-folgt nach Kaskaden-Abschluss** in eigenen Bau-Sitzungen (Stufe A
-erweitert ~2-3 h, Stufe B ~5-8 h, Sage-Page-Karte 04 ~3-5 h, Migrations-
-Pflege Spore-Schema ~2 h — alle nicht in Brief 03).
+neu; §9 Änderungsprotokoll, war §7 vor Brief 03, nach Brief 04 jetzt
+§10) plus Karten 02 / 04 / 06 nachgezogen. **PROTOCOL_VERSION bleibt
+`"0.1"`** — alle neuen Felder und Funktionen sind additiv, alte
+Sporen ohne `embeddingNeeds` bleiben gültig (signalisieren „nur
+Anbieter-Modus"). Die V1-Sammelspec-Kaskade ist mit BRIEF_99-Abschluss
+(2026-05-19) vollständig geschlossen. **Bau** folgt nach Kaskaden-
+Abschluss in eigenen Bau-Sitzungen aus der Bau-Sitzungs-Brief-Pipeline
+(siehe § Sitzungs-Einträge „Abschluss — V1-Sammelspec-Kaskade
+(Brief 99)"): Bau 04.A Stufe A erweitert (`matchDimensions` sync,
+~2-3 h), Bau 04.B Stufe B (`explainMatchLLM` + User-Key-Verwaltung,
+~5-8 h), Sage-Page-Karten 04 / Schichten-Lampen (Teil des Sage-
+Page-Refactor, ~6-10 h gesamt), Migrations-Pflege Spore-Schema
+(~2 h) — Reihenfolge Klaus' Entscheidung.
 
 ### 2026-05-18 · Sonnen-Galaxie — Sage-Geschichts-Galerie
 
@@ -1675,267 +1690,233 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-19 · Spec — Multi-Identität (Brief 04 der V1-Sammelspec-Kaskade)
+### 2026-05-19 · Abschluss — V1-Sammelspec-Kaskade (Brief 99)
 
-**Sitzungs-Rolle:** Spec-Sitzung, headless. Branch
-`claude/spec-v1-multi-identitaet-Kwytf` (Harness-Suffix; gemeinte
-Konvention `claude/spec-v1-multi-identitaet`). Vierte Etappe der
-V1-Sammelspec-Brief-Kaskade nach Brief 01 (Spec V1 Sage-Hybrid, PR
-#96 gemerged), Brief 02 (Spec Plattform-Matrix, PR #97 gemerged) und
-Brief 03 (Spec M04-Erweiterung, PR #98 gemerged 2026-05-19, `main`
-`27d6a19`). Quell-Spec: `docs/sessions/BRIEF_SPEC_V1_SAMMELSPEC.md`
-§ STRANG 3; herausgeschnitten als
-`docs/sessions/BRIEF_04_multi_identitaet.md`.
+**Sitzungs-Rolle:** Abschluss-Sitzung der V1-Sammelspec-Kaskade,
+headless. Branch `claude/spec-v1-abschluss-jLB5z` (Harness-Suffix;
+gemeinte Konvention `claude/spec-v1-abschluss`). Schließt die vier
+Strang-Etappen der V1-Sammelspec-Brief-Kaskade nach Brief 01 (V1
+Sage-Hybrid, PR #96), Brief 02 (Plattform-Matrix, PR #97), Brief 03
+(M04-Erweiterung, PR #98) und Brief 04 (Multi-Identität, PR #99,
+gemerged 2026-05-19 `main` `59e3998`). Diese Sitzung ist KEIN
+Strang — sie ist Abschluss (Konvention aus BRIEF_99: ein eigener PR
+mit Abschluss-Artefakten, kein neuer Spec-Inhalt).
 
-**Kern:** Strang 3 verankert die Multi-Identität in der IndexedDB als
-verbindliche Spec-Klausel. Modul 02 (Spore) bekommt fünf neue / erweiterte
-API-Funktionen (`getOrCreateIdentity(key?)`, `setActiveIdentity(key)`,
-`getActiveIdentityKey()`, `listIdentities()`, `removeIdentity(key, options?)`;
-`generateOwnSpore(meta, key?)` + `getOwnSpore(key?)` um optionalen
-key-Parameter erweitert). Default-Slot `"main"` bleibt verbindlich
-(Rückwärts-Kompat zum Singleton-Vertrag aus Spec-Sitzung 02
-2026-05-14); zusätzliche Slots können beliebig viele weitere Schlüssel
-tragen. Aktive Identität steht in `sbkim_meta["active-identity"]`
-(Default `"main"`, falls fehlend). Module 05 / 06 / 07 lesen
-`getActiveIdentityKey()` im `init()`-Pfad und cachen den Wert für die
-Lebenszeit der Operation. Identitäts-spezifische Stores pro Persona:
-`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`,
-`sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`,
-`sbkim_hetero_outbox_<key>`. Persona-Isolation: ein Geschwister gehört
-einer Persona, nicht dem ganzen Knoten. INTERFACES.md bekommt eine
-neue § 9 „Identitäts-Map" als verbindliche Spec-Klausel (§9.1 Slot-
-Schema bis §9.7 Verbindung zur M04-Erweiterung) und die Änderungsprotokoll-
-Sektion wird auf § 10 nachnummeriert.
+**Kern (drei Sätze):** Die V1-Sammelspec ist als Vier-Strang-Brief-
+Kaskade vollständig in INTERFACES.md verankert (Sage als dritter
+Endknoten, Plattform-Matrix mit fünf Profilen, M04-Erweiterung mit
+drei Schichten + Brücke + doppelte Spore, Multi-Identität mit
+identitäts-spezifischen Stores pro Persona); CLAUDE.md auf „Hub und
+Knoten zugleich" umgeschrieben, `status.json` um Sage als drittes
+Endknoten-Element erweitert. **PROTOCOL_VERSION bleibt `"0.1"`** —
+alle vier Stränge additiv (Strategie A für Pages-`spore.json`,
+Default-Slot „main" als Rückwärts-Kompat, lokales Multi-Identitäts-
+Storage-Schema), kein Spore-Schema-Eingriff zur Pflicht erhoben.
+`BACKUP_FORMAT_VERSION` bleibt `1` — Multi-Identitäts-Backup-Bump
+1→2 ist in Brief 04 § 9.6 als Bau-Folge-Sitzung-02.Y-Entscheidung
+dokumentiert, aber NICHT in der Kaskade vollzogen. Die nächste Welle
+sind sieben Bau-Sitzungen (Sage-Page-Refactor zuerst, dann
+Infrastruktur-Bauten 01.Y / 02.Y, Match-Pipeline-Bauten 04.A / 04.B,
+transparente Slot-Pfade in 05.Y / 06.Y / 07.Y, Endknoten-Migration).
 
-**PROTOCOL_VERSION bleibt `"0.1"`** — `sbkim_keys[key]` ist lokales
-Storage-Schema, kein Spore-Feld; `sbkim_meta["active-identity"]` ist
-ebenfalls lokal; alle neuen API-Funktionen additiv (alter Singleton-
-Aufruf-Pfad bleibt wortwörtlich gültig, Default-Slot "main" hält
-Rückwärts-Kompat). Strategie A für Pages-`spore.json` gewählt (nur die
-zum Push-Zeitpunkt aktive Identität wird gehostet, Identitäts-Wechsel
-= neuer Spore-Push) — kein Bump-Anlass. Strategie B (Liste-Schema
-mit `identities[]`-Pflicht-Feld) als Option für eine Folge-Spec-Sitzung
-benannt; Strategie B würde `PROTOCOL_VERSION` auf `"0.2"` bumpen und
-alle bestehenden Empfänger brechen, deshalb nicht in Brief 04 gewählt.
+**Vier Stränge — Zusammenfassung in einem Absatz:**
 
-**Sechs Punkte a–f umgesetzt:**
+- **Brief 01 (V1 Sage-Hybrid, Strang 1, PR #96 gemerged 2026-05-18
+  `main` `a3e0072`):** Sage als dritter Endknoten neben Mein-
+  Rezeptbuch und Mein-Mixarium. INTERFACES § 6 Endknoten-Liste neu
+  mit drei Einträgen; § 6.1 Sage-Page-Architektur (IndexedDB-Suffix
+  `sbkim_sage`, App-SW Variante 3a, volle init()-Kette mit lazy
+  Modul-03, Andock-Geste an Schwarz-Loch-Karte als Wizard-Hinweis);
+  CLAUDE.md auf „Hub und Knoten zugleich" umgeschrieben; Karte 09
+  § Schritt 1 erweitert; `status.json` § endknoten um `sage`-Eintrag
+  erweitert (`pingStatus:"pending-first-andock"`, `nodeId:null`);
+  Domäne „Mycel-Bibliothek" gewählt; Sage-Page-Refactor folgt als
+  Bau-Sitzung in der BRIEF_99-Liste.
+- **Brief 02 (Plattform-Matrix, Strang 4, PR #97 gemerged 2026-05-18
+  `main` `69077db`):** INTERFACES § 6.2 Plattform-Matrix mit fünf
+  Profilen (Desktop-Browser / DeX-Tablet / PWA-installiert / Mini-
+  Browser V8 / Extension V7) × sechs Spalten (IndexedDB / SW /
+  Spore-Empfang / Identitäts-Backup / Stufe B / Beispiel-Knoten);
+  § 6.3 Plattform-Ehrlichkeits-Klausel als verbindliche Spec-
+  Klausel (Begründung aus Lehre 1 — Browser-Instanzen-Trennung als
+  Verlust-Risiko); § 6.4 Vision-Bezüge als Querverweis-Matrix mit
+  sieben Ankern; § 6.1 Plattform-Matrix-Stub auf Verweis
+  umgeschrieben.
+- **Brief 03 (M04-Erweiterung, Strang 2, PR #98 gemerged 2026-05-19
+  `main` `27d6a19`):** INTERFACES § 0 drei neue Konstanten
+  (`SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL="claude-sonnet-4"`,
+  `STUFE_B_MAX_TOKENS=1024`); § 1 Modul 02 Bietet-Block-Spore-Schema-
+  Erweiterungs-Hinweis (`embeddingCapabilities` Alias +
+  `embeddingNeeds` neu); § 1 Modul 04 um zwei neue API-Funktionen
+  (`matchDimensions` + `explainMatchLLM`) + vier neue Sub-Blöcke
+  (Drei-Schichten-Modell mit Mittelwert-vs-Min-Begründung, Brücken-
+  Feld-Spec mit `BridgeProposal`, Schwellen-Vertrag mit fünf
+  Auswertungs-Regeln, Stufe-B-Vertrag mit JSON-Schema und Beispiel-
+  Output); § 2 Spore-JSON Optionale Felder um die zwei neuen Vektor-
+  Felder erweitert; § 7 LLM-Stufe-B-Ehrlichkeits-Klausel als
+  verbindliche Spec-Klausel (vier Sätze: Stufe B opt-in, Stufe A
+  rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen,
+  Knoten ohne Stufe B = vollwertige Netz-Teilnehmer); § 8 Anti-
+  Missbrauch-Klausel (Brücken-Vorschlag lokal,
+  `candidateScope:"netz"` formal nicht aktivierbar bis Anker 10-12,
+  Modul 06 filtert Outbox-Einträge).
+- **Brief 04 (Multi-Identität, Strang 3, PR #99 gemerged 2026-05-19
+  `main` `59e3998`):** INTERFACES § 1 Modul 02 um fünf neue /
+  erweiterte API-Funktionen (`getOrCreateIdentity(key?)`,
+  `setActiveIdentity(key)`, `getActiveIdentityKey()`,
+  `listIdentities()`, `removeIdentity(key, options?)`); Singleton-
+  Klausel durch Identitäts-Slot-Vertrag ersetzt (Default-Slot „main"
+  verbindlich, beliebig viele weitere Slots,
+  `sbkim_meta["active-identity"]` als String-Marker); § 1 Modul 05 /
+  06 / 07 auf identitäts-spezifische Store-Pattern
+  (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`,
+  `sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`,
+  `sbkim_hetero_outbox_<key>`) umgestellt mit Identitäts-Cache- und
+  Receiver-Map-nodeId→key-Konvention; § 2 Spore-JSON Multi-
+  Identitäts-Hinweis-Block (Strategie A gewählt — nur aktive
+  Identität in `spore.json`; Strategie B NICHT gewählt — würde
+  `PROTOCOL_VERSION` auf `"0.2"` bumpen); § 9 Identitäts-Map als
+  neue verbindliche Spec-Klausel mit sieben Sub-§; Änderungsprotokoll
+  auf § 10 nachnummeriert. Apoptose-Granularität entschieden:
+  `confirmSelfApoptose` global (alle Personae sterben gemeinsam),
+  `SbkimSpore.removeIdentity(key, {force:true})` ist die Single-
+  Identitäts-Apoptose mit internem Hook `_sendLegacyForIdentity` in
+  Modul 07.
 
-a) **`docs/INTERFACES.md` § 9 Identitäts-Map (neu eingefügt vor § 9
-   Änderungsprotokoll, das auf § 10 nachnummeriert wird)** mit sieben
-   Sub-§:
-   - **§ 9.1 Slot-Schema** — `sbkim_keys["main"]` + beliebige weitere
-     Slots; `sbkim_meta["active-identity"]` als String-Marker; keine
-     Validierung der Schlüssel-Form in Modul 02; "main" ist Default,
-     kein Magic-Wert.
-   - **§ 9.2 Identitäts-spezifische Stores** — Pattern-Tabelle für
-     fünf Stores (`sbkim_siblings_<key>`,
-     `sbkim_anastomosis_log_<key>`, `sbkim_legacy_inbox_<key>`,
-     `sbkim_hetero_inbox_<key>`, `sbkim_hetero_outbox_<key>`) plus
-     Persona-Isolation-Klausel (verbindlich, Folge-Spec darf nur unter
-     ausdrücklicher Trade-off-Verhandlung lockern).
-   - **§ 9.3 `active-identity`-Marker** — Lese-Konvention für Module
-     05/06/07 (im `init()` cachen, Mid-Operation-Wechsel NICHT
-     spezifiziert), Schreib-Konvention (Modul 02 alleiniger Schreiber).
-   - **§ 9.4 Receiver-Pfad** — eingehende Requests mit `toNodeId`
-     werden gegen alle eigenen Identitäten geprüft (Map nodeId→key
-     beim init()); getroffene Persona wird intern für die Operation
-     als aktive Identität verwendet; kein Treffer → Response
-     `outcome:"rejected", reason:"toNodeId stimmt nicht zum Empfänger"`.
-   - **§ 9.5 Migrations-Strategie** — Option A dynamische Store-
-     Erzeugung via `SbkimStorage.ensureStore(name)` (Empfehlung) vs.
-     Option B feste Slot-Tabelle (Spec-Alternative); Bau-Folge-Sitzung
-     01.Y zieht den Pfad nach.
-   - **§ 9.6 Trade-off-Klausel** — IndexedDB-Verlust löscht ALLE
-     Identitäten (Anker 5 als Backup-Strategie sinnvoll); Multi-
-     Identitäts-Backup-Strategie „kompletter Rucksack" empfohlen;
-     Königin-Relay (Anker 4) muss pro-Identität-Mailboxes verwalten;
-     Privatheit bleibt offen.
-   - **§ 9.7 Verbindung zur M04-Erweiterung (Brief 03)** — doppelte
-     Spore (`embeddingCapabilities` + `embeddingNeeds`) pro Identität;
-     Match-Pipeline pro Persona; Sibling-Listen tragen Match-Cosinus
-     zur spezifischen Persona, nicht zur globalen Sage-Identität.
+**Bau-Sitzungs-Brief-Pipeline (in vorgeschlagener Reihenfolge; jeder
+Bau ist eigene Bau-Sitzung mit eigenem PR; Reihenfolge ist Klaus'
+Entscheidung — Empfehlung: Sage-Page-Refactor zuerst als sichtbares
+Ergebnis, dann Infrastruktur-Bauten als Hebel):**
 
-b) **§ 1 Modul 02 API-Erweiterung** (in INTERFACES + Karte 02):
-   - Bietet-Block um fünf neue / erweiterte Funktionen + Singleton-
-     Klausel ersetzt durch Identitäts-Slot-Vertrag.
-   - Storage-Block um `sbkim_meta["active-identity"]` erweitert.
-   - Fehlerverhalten um `UnknownIdentityError` + `RemoveActiveIdentityError`
-     erweitert.
-   - Selbstcheck-Funktionsliste auf zwölf Funktionen erweitert.
-   - Garantien-Block um Aktive-Identität-Lese-Konvention für 05/06/07
-     erweitert.
+1. **Bau Sage-Page-Refactor** — volle `init()`-Kette aller SBKIM-
+   Module (Modul 00/01/02/03/04/05/06/07/08 in der `index.html` des
+   Sage-Endknotens, statt nur Doku-Render) + Andock-Wizard an der
+   Schwarz-Loch-Karte (analog Karte 09 Schritt 1 + erste Andock-
+   Iteration) + Schichten-Lampen aus der M04-Erweiterung (drei
+   Lampen für fachlich / prozess / skalierung) + Identitäts-Wechsler-
+   UX (Brief-04-Folge — Persona-Liste + Default-Slot „main" + aktiver
+   Slot sichtbar). Geschätzt ~6-10 h.
+2. **Bau 01.Y `ensureStore` in Modul 01** — Option A aus § 9.5
+   Dynamische Store-Erzeugung (`SbkimStorage.ensureStore(name)`
+   öffentlich verfügbar machen, Versions-Bump-Choreografie für
+   DB-Version 3 → 4 nachziehen wenn nötig; Module 02 / 05 / 06 / 07
+   können dann beim Identitäts-Anlegen einen neuen Slot-Store
+   anlegen, ohne fest verdrahtete Slot-Tabelle). Geschätzt ~2-3 h.
+3. **Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump in Modul 02** —
+   die fünf neuen / erweiterten API-Funktionen aus Brief 04
+   implementieren (`getOrCreateIdentity(key?)`,
+   `setActiveIdentity(key)`, `getActiveIdentityKey()`,
+   `listIdentities()`, `removeIdentity(key, options?)`); Backup-
+   Wrapper-Schema auf `BACKUP_FORMAT_VERSION=2` mit
+   `payload.identities[]`-Pflicht-Feld nachziehen (Brief 04 § 9.6
+   „kompletter Rucksack"-Empfehlung, additiver Bump des Backup-
+   Wrapper-Schemas aus § 0; KEIN `PROTOCOL_VERSION`-Eingriff).
+   Geschätzt ~5-8 h (komplex wegen Backup-Schema-Bump und WebCrypto-
+   Pfaden pro Identität).
+4. **Bau 04.A Stufe A erweitert in Modul 04** — `matchDimensions`
+   synchron implementieren (drei Schichten fachlich / prozess /
+   skalierung als `embeddingCapabilities[layer]` ×
+   `embeddingNeeds[layer]` Cosinus pro Schicht, plus Schwellen-
+   Vertrag aus Brief 03 § 1 Modul 04 Stufe-A-Sub-Block). Geschätzt
+   ~2-3 h.
+5. **Bau 04.B Stufe B in Modul 04** — `explainMatchLLM` als opt-in
+   LLM-Call (Stufe B aus Brief 03 § 1 Modul 04 Stufe-B-Sub-Block,
+   JSON-Schema verbindlich, ehrliches Fehlerverhalten bei fehlendem
+   User-Key) + User-Key-Verwaltung (Speicher-Slot + UI-Anker, kein
+   Hardcode). Geschätzt ~5-8 h.
+6. **Bau 05.Y / 06.Y / 07.Y transparenter Slot-Pfad in den
+   Konsumenten** — Module 05 / 06 / 07 lesen `getActiveIdentityKey()`
+   im `init()`-Pfad, cachen den Wert für die Operation, schreiben in
+   `<store-base>_<key>`; Receiver-Map nodeId→key beim `init()`
+   bauen (Brief 04 § 9.3 + § 9.4). Je Modul ~2-3 h.
+7. **Bau Multi-Identitäts-Migration der Endknoten in Mein-Mixarium
+   / Mein-Rezeptbuch** — additive Andock-Wizard-Erweiterung in
+   beiden Endknoten-Repos (Persona-Auswahl beim ersten Andocken
+   anbieten, Default-Slot „main" bleibt). Geschätzt ~2 h.
 
-c) **§ 1 Modul 05 Storage-Block + Karte 05**:
-   - Stores auf `sbkim_siblings_<key>` / `sbkim_anastomosis_log_<key>`
-     Pattern umgestellt (Pre-Brief-04-Singleton-Aufrufer treffen
-     unverändert auf `_main`-Slots).
-   - Identitäts-Cache-Konvention dokumentiert (init() liest
-     `getActiveIdentityKey()`, cached für Operation; Mid-Operation-
-     Wechsel NICHT spezifiziert).
-   - Receiver-Pfad: `request.toNodeId` gegen Map nodeId→key, getroffene
-     Persona für die eine Operation als aktive Identität.
-   - Garantien-Block um Persona-Isolation-Klausel erweitert.
-   - Karte 05 § Schnittstelle Hinweise + § Datenformate Multi-Identitäts-
-     Hinweis-Block.
-
-d) **§ 2 Spore-JSON + Karte 02 — Pages-`spore.json`-Strategien:**
-   - **Strategie A (Default, gewählt — `PROTOCOL_VERSION` bleibt 0.1):**
-     nur die aktive Identität in `spore.json`. Identitäts-Wechsel =
-     neuer Spore-Push. Rückwärts-kompatibel zu allen heutigen
-     Empfängern.
-   - **Strategie B (Spore-Schema-Eingriff, `PROTOCOL_VERSION`-Bump auf
-     0.2, NICHT in Brief 04 gewählt):** Liste-Schema mit `identities[]`-
-     Pflicht-Feld. Würde alle bestehenden Empfänger brechen, deshalb
-     für eine Folge-Spec-Sitzung benannt. Bump-Entscheidung gehört
-     EXPLIZIT ins Änderungsprotokoll + PULS-Sitzungs-Eintrag — keine
-     heimliche Edit.
-   - INTERFACES.md § 2 Spore-JSON bekommt einen Hinweis-Block mit
-     beiden Strategien und der A-Wahl als Default; Karte 02 erweitert
-     den M04-Erweiterungs-Sub-Block um den Brief-04-Bezug.
-
-e) **Verbindung zu Anker 9 (M04-Erweiterung, Brief 03) — doppelte
-   Spore PRO PERSONA:**
-   - Pro Identitäts-Slot in `sbkim_keys[key]` existiert ein eigener
-     Eintrag in `sbkim_spore[key]` mit eigenen `embeddingCapabilities`
-     + `embeddingNeeds`. `generateOwnSpore(meta, key?)` nimmt den
-     optionalen key-Parameter und schreibt in den passenden Slot.
-   - Match-Pipeline pro Persona: `matchDimensions` aus Brief 03
-     konsumiert die Vektor-Slots **einer Persona** pro Aufruf —
-     keine atomare Multi-Persona-Operation.
-   - Karte 02 § M04-Erweiterungs-Sub-Block (Brief 03) hatte einen
-     Verweis auf Brief 04 für die Persona-Mehrfachheit; Brief 04
-     liefert die Auflösung jetzt.
-
-f) **Trade-off-Klausel in INTERFACES (§ 9.6) + Karte 02 § Multi-
-   Identität (Brief 04) § Trade-off-Klausel:**
-   - IndexedDB-Verlust löscht ALLE Identitäten gleichzeitig — Anker 5
-     (Identitäts-Container) bleibt parallel sinnvoll. Brief 04
-     verweist; Container-Schema ist Anker 5's Spec.
-   - **Multi-Identitäts-Backup-Strategie:** Spec-Empfehlung „ein
-     Container mit allen Identitäten" (Klaus' „kompletter Rucksack"-
-     Vision aus PULS § Vision-Anker 6). Bau-Folge-Sitzung 02.Y zieht
-     das Backup-Schema additiv nach (`SbkimBackupBlob.payload.identities[]`
-     pro Slot). **`BACKUP_FORMAT_VERSION` wird in der Bau-Folge-
-     Sitzung von 1 auf 2 gebumpt** — additiver Bump des separaten
-     Backup-Wrapper-Schemas; KEIN `PROTOCOL_VERSION`-Eingriff
-     (Spore-Schema bleibt unverändert).
-   - Königin-Relay (Anker 4) muss pro-Identität-Mailboxes verwalten,
-     wenn Modul 13 gebaut wird — Brief 04 verankert die Konvention,
-     das *Wie* ist Anker 4's Spec.
-   - Verwirrungs-Risiko in der UI: Identitäts-Wechsler-UX ist nicht
-     Brief-04-Sache; gehört in die Sage-Page-Refactor-Bau-Sitzung
-     (BRIEF_99-Liste).
-
-**Apoptose-Granularität entschieden (Brief 04):**
-
-- **`confirmSelfApoptose` ist global** — alle Personae sterben
-  gemeinsam, Vermächtnis-Versand pro Persona an deren jeweilige
-  Geschwister, Cleanup iteriert über alle Slots. Nach Abschluss ist
-  `listIdentities()` leer; `sbkim_meta["active-identity"]` ist
-  gelöscht. Karte 07 § Multi-Identität (Brief 04) dokumentiert den
-  Pfad in voller Reihenfolge.
-- **`SbkimSpore.removeIdentity(key, {force:true})` ist die Single-
-  Identitäts-Apoptose** — Modul 02 ist Owner, ruft Modul 07's
-  internen Hook `_sendLegacyForIdentity(key, reason)` für den
-  Vermächtnis-Versand pro Persona. Die anderen Personae leben weiter.
-- **Receiver-Pfad in `receiveLegacy`** baut beim init() eine Map
-  nodeId→key, prüft eingehendes `toNodeId` und schreibt in
-  `sbkim_legacy_inbox_<hit-key>` — andere Personae bleiben unangetastet.
+**Konsistenz-Prüfung VOR dem Eingriff (Kaskaden-Konvention 5):**
+drei Punkte abgehakt — (1) **alle vier Strang-PRs gemerged:** Brief
+01 PR #96 (`main` `a3e0072`), Brief 02 PR #97 (`main` `69077db`),
+Brief 03 PR #98 (`main` `27d6a19`), Brief 04 PR #99 (`main`
+`59e3998`); (2) **INTERFACES § 0 / § 1 / § 2 / § 6 / § 7 / § 8 /
+§ 9 / § 10 auf Brief-04-Stand geprüft** — drei §0-Konstanten aus
+Brief 03, fünf neue / erweiterte API-Funktionen in Modul 02 aus
+Brief 04, identitäts-spezifische Store-Pattern in 05 / 06 / 07 aus
+Brief 04, § 6.1 - § 6.4 aus Brief 01 + 02, § 7 LLM-Ehrlichkeits-
+Klausel aus Brief 03, § 8 Anti-Missbrauch-Klausel aus Brief 03,
+§ 9 Identitäts-Map aus Brief 04, § 10 Änderungsprotokoll mit
+Brief-01/02/03/04-Einträgen; (3) **PROTOCOL_VERSION-Status-Snapshot:**
+bleibt `"0.1"` — Strategie A (Brief 04) gewählt, keine alten Felder
+zur Pflicht erhoben (Brief 03), keine Spore-Schema-Eingriffe (Brief
+01 + 02); `BACKUP_FORMAT_VERSION` bleibt `1` (Bau-Folge-Sitzung 02.Y
+bumpt auf 2).
 
 **Heilige Tafeln eingehalten:**
 
-- **INTERFACES verbindlich.** Schnittstellen-Änderungen ZUERST in
-  INTERFACES, dann in den Karten 02 / 05 / 06 / 07. § 1 Modul 02 +
-  § 1 Modul 05 + § 1 Modul 06 + § 1 Modul 07 + § 2 Spore-JSON + § 9
-  Identitäts-Map (neu) + § 10 Änderungsprotokoll (war § 9) alle
-  verankert; Karten 02 / 05 / 06 / 07 nachgezogen.
-- **PROTOCOL_VERSION-Disziplin geprüft, kein Bump.** Strategie A für
-  `spore.json` gewählt (additiv, kein Spore-Schema-Eingriff); alle
-  neuen API-Funktionen sind additiv (alter Singleton-Aufruf-Pfad
-  bleibt wortwörtlich gültig); `sbkim_keys[key]` und
-  `sbkim_meta["active-identity"]` sind lokales Storage-Schema, kein
-  Spore-Feld. PROTOCOL_VERSION bleibt `"0.1"`.
-- **`BACKUP_FORMAT_VERSION`-Bump-Vermerk** (Spec-Entscheidung in
-  Brief 04, Code-Bump erfolgt in Bau-Folge-Sitzung 02.Y): von 1 auf
-  2 für die Multi-Identitäts-Backup-Strategie „kompletter Rucksack".
-  Das ist ein additiver Bump des separaten Backup-Wrapper-Schemas
-  aus § 0; KEIN `PROTOCOL_VERSION`-Eingriff.
-- **Anti-Vorgriff auf V4 Königin-Relay:** Brief 04 spezifiziert die
-  Pro-Identität-Mailboxes-Pflicht; das *Wie* der Königin-Umsetzung
-  bleibt Anker 4's Spec-Sitzung.
-- **Anti-Vorgriff auf V5 Identitäts-Container:** Brief 04 erweitert
-  Backup-Format implizit auf alle Identitäten („kompletter Rucksack"),
-  spezifiziert den Container nicht (Anker 5 hat eigene Spec-Sitzung).
-- **Persona-Isolation:** verbindliche Spec-Klausel in § 9.2 (Stores
-  pro Persona getrennt; ein Peer gehört einer Persona, nicht dem
-  ganzen Knoten); Folge-Spec darf die Klausel nur unter ausdrücklicher
-  Trade-off-Verhandlung lockern.
-- **Privatheit (Anker 9 § Sorge ums Freigeben):** bleibt offen —
-  Brief 04 rührt die Lizenz-Frage nicht. Lizenz-Entscheidung wird
-  beim Public-Schalten separat geklärt.
-- **Konsistenz-Prüfung VOR dem Eingriff (Kaskaden-Konvention 5):**
-  Fünf Punkte abgehakt — (1) Brief-03-PR #98 ist gemerged, `main`-
-  Stand bei `27d6a19`; (2) INTERFACES § 0 / § 1 Modul 02 / § 1 Modul
-  04 / § 2 / § 7 / § 8 / § 9 auf Brief-03-Stand; (3) M04-Erweiterung-
-  Felder (`embeddingCapabilities` + `embeddingNeeds`) in der Multi-
-  Identitäts-Spec gespiegelt (pro Identitäts-Slot eigener Spore-Eintrag
-  mit eigenen Vektor-Slots); (4) Keine Korrekturen an Brief 01 / 02 /
-  03 nötig; (5) PR #89 (Karte 15 Membran als Stub, Draft) bleibt
-  unangetastet — Modul-15-Block liegt nach Modul 09 in INTERFACES,
-  kollidiert nicht mit den Brief-04-Eingriffen in § 1 Modul 02 / 05 /
-  06 / 07 / § 2 / § 9 / § 10 + Karten 02 / 05 / 06 / 07.
+- **INTERFACES verbindlich.** Nur § 10 Änderungsprotokoll um eine
+  Abschluss-Zeile „Sammelspec-Abschluss (Brief 99)" erweitert. KEINE
+  inhaltliche Änderung an § 0 / § 1 / § 2 / § 6 / § 7 / § 8 / § 9 —
+  Brief 99 dokumentiert nur den Snapshot-Stand.
+- **PROTOCOL_VERSION-Disziplin als bewusste Entscheidung.** Snapshot-
+  Ergebnis `"0.1"` ohne Diskrepanz; keine heimliche Folge-Pflege
+  hat gebumpt. Brief 99 dokumentiert das verbindlich.
+- **Kein neuer Strang.** Brief 99 ist Abschluss — keine inhaltliche
+  Änderung an Brief 01-04, keine Königin-Relay-Spec (V4), keine
+  Identitäts-Container-Spec (V5), keine Extension- oder Mini-Browser-
+  Spec (V7 / V8).
+- **Kein Modul-Code, keine Sage-Page-Änderung, keine CLAUDE.md- /
+  Karte-09- / status.json-Änderung.** Abschluss ist Doku-Pflege; die
+  Bau-Brief-Pipeline lebt in dieser PULS-Notiz.
+- **`update_puls_pie.py` NICHT aufgerufen** (kein status.json-Score-
+  Wechsel).
 
-**BRIEF_99 angelegt:** `docs/sessions/BRIEF_99_SAMMELSPEC_ABSCHLUSS.md`
-als letzte Datei-Aktion (Kaskaden-Konvention 2). Inhalt: Zusammenfassung
-aller vier Stränge (V1 Sage-Hybrid / Plattform-Matrix / M04-Erweiterung
-/ Multi-Identität), Bau-Sitzungs-Brief-Liste nach Kaskaden-Abschluss
-(Sage-Page-Refactor mit voller init()-Kette + Andock-Wizard +
-Schichten-Lampen + Identitäts-Wechsler; Bau Stufe A erweitert; Bau
-Stufe B; Bau Multi-Identitäts-Migration der Endknoten), Konsistenz-
-Prüfungs-Pflicht (alle vier Strang-PRs gemerged), PROTOCOL_VERSION-
-Status-Snapshot (bleibt `"0.1"`).
+**Was NICHT angefasst:**
 
-**Kaskaden-Konvention 6** (Auslöser-Befehl im Chat, nicht Brief-
-Volltext) propagiert: BRIEF_99's „Pflicht am Ende" formuliert keine
-Folge-Sitzung mehr (Kaskade schließt), aber benennt die Bau-Sitzungs-
-Brief-Pipeline für die nächste Welle.
+- **Modul-Code in `src/`** — Abschluss ist Doku-Pflege. Bau-Folge-
+  Sitzungen (Sage-Page-Refactor, 01.Y, 02.Y, 04.A, 04.B, 05.Y /
+  06.Y / 07.Y, Endknoten-Migration) folgen separat.
+- **Sage-Page `index.html`** — Sage-Page-Refactor ist eigene Bau-
+  Sitzung (Position 1 der Bau-Brief-Pipeline).
+- **Brief 01-04 inhaltlich** — keine Korrekturen, keine Nachträge.
+  Brief 99 fasst nur zusammen.
+- **CLAUDE.md / Karte 09 / `status.json`** — Brief 01 hat sie auf
+  den V1-Stand gebracht, Brief 99 ändert nichts.
+- **Vision-Anker 4 / 5 / 7 / 8** unangetastet — eigene Spec-
+  Sitzungen außerhalb der V1-Sammelspec-Kaskade.
 
-**Was NICHT angefasst:** Modul-Code in `src/` (Spec geht der
-Implementierung voraus); Sage-Page `index.html` (Sage-Page-Refactor
-ist Bau-Sitzung nach Kaskaden-Abschluss in der BRIEF_99-Liste); M04-
-Erweiterung-Änderung (Brief 03 hat sie gesetzt); Plattform-Matrix
-(Brief 02); CLAUDE.md (Brief 01 hat sie auf „Hub und Knoten zugleich"
-umgeschrieben); Karte 09 (Brief 01 hat § Schritt 1 erweitert);
-`status.json` (Brief 01 hat Sage als endknoten[]-Eintrag aufgenommen).
-`update_puls_pie.py` NICHT aufgerufen (kein `status.json`-Score-
-Wechsel). `tests/manual_check.html` unangetastet (Spec-Sitzung, kein
-UI-Eingriff). Königin-Relay-Spec (V4 eigene Spec); Identitäts-
-Container-Spec (V5 eigene Spec); Extension / Mini-Browser-Spec (V7 /
-V8 eigene Specs).
+**Vision-Anker 1 / 6 / 9 § Status nachgezogen** auf „Strang X
+realisiert + Sammelspec-Abschluss (Brief 99) abgeschlossen" mit
+Verweis auf die Bau-Brief-Pipeline. Vision-Anker 4 / 5 / 7 / 8
+**unangetastet** — eigene Spec-Sitzungen außerhalb der Kaskade.
 
-**Vision-Anker 6 § Status nachgezogen** auf „Strang 3 der V1-
-Sammelspec realisiert (2026-05-19, Brief 04 der V1-Sammelspec-
-Kaskade)" mit Verweis auf BRIEF_99-Abschluss. Vision-Anker 1 / 4 /
-5 / 7 / 8 / 9 **unangetastet** — Brief 04 ist Strang 3, ohne Bezug
-zu deren Status-Blöcken.
+**Brief-04-Sitzungs-Eintrag ins Archiv-Index ausgelagert** (Konvention
+pro Sitzung — vorletzten Eintrag auslagern). Voll-Eintrag bleibt im
+Übergabeprotokoll `2026-05-19_spec-multi-identitaet.md`; im Archiv-
+Index als Tabellenzeile oben mit Quintessenz-Stichworten +
+Verlinkung.
 
 **Paralleler offener PR:** PR #89 (Karte 15 Membran als Stub, Draft,
 head `claude/browser-use-indexeddb-Jopiy`) bleibt unangetastet —
 eigener Modul-15-Block nach Modul 09 in INTERFACES, kollidiert nicht
-mit den Brief-04-Eingriffen.
+mit den Brief-99-Eingriffen in § 10.
 
 **Manueller Sichttest:** **ungeprüft, weil reine Doku-Pflege** —
 kein Modul-Code in `src/`, kein `tests/manual_check.html`-Eingriff,
 keine Sage-Page-Änderung; `status.json` unverändert
 (`update_puls_pie.py` nicht aufgerufen).
 
-**Nächster sinnvoller Schritt:** Klaus mergt diese Spec-Sitzung (damit
-INTERFACES § 9 + Karten 02 / 05 / 06 / 07 + BRIEF_99-Datei auf `main`
-liegen) und startet die BRIEF_99-Abschluss-Sitzung über den Auslöser-
-Befehl (Kaskaden-Konvention 6, siehe Chat-Antwort). BRIEF_99 setzt
-diesen PR als gemerged voraus.
+**Nächster sinnvoller Schritt:** Klaus mergt diese Abschluss-Sitzung
+(damit die V1-Sammelspec-Kaskade auf `main` geschlossen ist), dann
+startet er eine Bau-Sitzung aus der Bau-Brief-Pipeline. Empfehlung
+Reihenfolge: **Sage-Page-Refactor zuerst** (sichtbares Ergebnis für
+Klaus — die Sage-Page lädt endlich alle SBKIM-Module mit voller
+`init()`-Kette und macht den hybriden Endknoten-Status sichtbar);
+gefolgt von **Bau 01.Y `ensureStore`** und **Bau 02.Y Multi-
+Identitäts-API + Backup-Schema-Bump** als Infrastruktur-Hebel für
+alle weiteren Bauten. Die Bau-Reihenfolge ist KEINE Kaskade — jeder
+Bau-Brief ist eigenständige Bau-Sitzung mit eigenem PR.
 
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_spec-multi-identitaet.md](sessions/archiv/2026-05-19_spec-multi-identitaet.md).
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_abschluss-v1-sammelspec.md](sessions/archiv/2026-05-19_abschluss-v1-sammelspec.md).
 
 ---
 
@@ -2842,6 +2823,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-19 | Spec · Multi-Identität — Strang 3 (Brief 04) der V1-Sammelspec-Kaskade (Brief 04 · PR #99 gemerged 2026-05-19, `main` `59e3998`; INTERFACES § 1 Modul 02 um fünf neue / erweiterte API-Funktionen erweitert (`getOrCreateIdentity(key?)`, `setActiveIdentity(key)`, `getActiveIdentityKey()`, `listIdentities()`, `removeIdentity(key, options?)`), Singleton-Klausel durch Identitäts-Slot-Vertrag ersetzt (Default-Slot „main" verbindlich, beliebig viele weitere Slots, `sbkim_meta["active-identity"]` als String-Marker), Selbstcheck auf zwölf Funktionen erweitert, Fehlerverhalten um `UnknownIdentityError` + `RemoveActiveIdentityError` erweitert; § 1 Modul 05 / 06 / 07 auf identitäts-spezifische Store-Pattern (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`, `sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`, `sbkim_hetero_outbox_<key>`) umgestellt mit Identitäts-Cache- und Receiver-Map-nodeId→key-Konvention; § 2 Spore-JSON Multi-Identitäts-Hinweis-Block (Strategie A gewählt — nur aktive Identität in `spore.json`, `PROTOCOL_VERSION` bleibt `"0.1"`; Strategie B NICHT gewählt — würde auf `"0.2"` bumpen); § 9 Identitäts-Map als neue verbindliche Spec-Klausel mit sieben Sub-§ (9.1 Slot-Schema, 9.2 identitäts-spezifische Stores + Persona-Isolation, 9.3 active-identity-Marker, 9.4 Receiver-Pfad, 9.5 Migrations-Strategie Option A/B, 9.6 Trade-off-Klausel, 9.7 Verbindung zur M04-Erweiterung); § 9 Änderungsprotokoll auf § 10 nachnummeriert; Apoptose-Granularität entschieden — `confirmSelfApoptose` global, `removeIdentity(key, {force:true})` ist Single-Identitäts-Apoptose mit Hook `_sendLegacyForIdentity` in Modul 07; Karten 02 / 05 / 06 / 07 nachgezogen; `PROTOCOL_VERSION` bleibt `"0.1"`, `BACKUP_FORMAT_VERSION` bleibt `1` (Bump 1→2 in Bau-Folge-Sitzung 02.Y); BRIEF_99 `docs/sessions/BRIEF_99_SAMMELSPEC_ABSCHLUSS.md` angelegt; kein Modul-Code, keine Sage-Page-Änderung) | [→ Archiv](sessions/archiv/2026-05-19_spec-multi-identitaet.md) |
 | 2026-05-19 | Spec · M04-Erweiterung — Strang 2 (Brief 03) der V1-Sammelspec-Kaskade (Brief 03 · PR #98 gemerged 2026-05-19, `main` `27d6a19`; INTERFACES § 0 um drei §0-Konstanten erweitert (`SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL="claude-sonnet-4"`, `STUFE_B_MAX_TOKENS=1024`), § 1 Modul 02 Bietet-Block-Spore-Schema-Erweiterungs-Hinweis (`embeddingCapabilities` Alias + `embeddingNeeds` neu), § 1 Modul 04 um zwei neue Funktionen + vier neue Sub-Blöcke (Drei-Schichten-Modell mit Mittelwert-vs-Min-Begründung, Brücken-Feld-Spec mit BridgeProposal, Schwellen-Vertrag mit 5 Auswertungs-Regeln, Stufe-B-Vertrag mit JSON-Schema und Beispiel-Output mit zwei Personas) + Fehlerverhalten-Tabelle um sieben neue Zeilen + Garantien um vier neue Punkte erweitert, § 2 Spore-JSON Optionale Felder um die zwei neuen Vektor-Felder erweitert, § 7 LLM-Stufe-B-Ehrlichkeits-Klausel (vier verbindliche Sätze: Stufe B opt-in, Stufe A rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen, Knoten ohne Stufe B = vollwertige Netz-Teilnehmer), § 8 Anti-Missbrauch-Klausel (drei verbindliche Sätze: Brücken-Vorschlag lokal, `candidateScope:"netz"` formal nicht aktivierbar bis Anker 10-12, Modul 06 filtert Outbox-Einträge), § 7 Änderungsprotokoll auf § 9 nachnummeriert; Karten 02 (M04-Sub-Block mit Migrations-Tabelle vier Spore-Zustände + Bauzustand-Hinweis für Bau-Folge-Sitzung) / 04 (vier neue Sub-Blöcke parallel zu INTERFACES + Stamm/Gast-Block unverändert) / 06 (Brücken-Vorschlag-Eintrags-Typ-Sub-Block + vier-stufige Filter-Logik) nachgezogen; PROTOCOL_VERSION bleibt `"0.1"` (additive Felder + additive Funktionen, kein altes Feld zur Pflicht erhoben); kein Modul-Code in `src/`, keine Sage-Page-Änderung; Brief 04 `docs/sessions/BRIEF_04_multi_identitaet.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-19_spec-m04-erweiterung.md) |
 | 2026-05-18 | Spec · Plattform-Matrix — Strang 2 der V1-Sammelspec-Kaskade (Brief 02 · PR #97 gemerged — `main` `69077db`; INTERFACES § 6.2 Plattform-Matrix mit fünf Profilen × sechs Spalten + Sage-Anmerkung, § 6.3 Plattform-Ehrlichkeits-Klausel als verbindliche Spec-Klausel mit Begründung aus Klaus' Lehre 1, § 6.4 Vision-Bezüge als Querverweis-Matrix mit sieben Ankern; § 6.1 Plattform-Matrix-Stub auf Verweis umgeschrieben; Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6 streng eingehalten; `PROTOCOL_VERSION` bleibt `"0.1"`; CLAUDE.md / Karte 09 / `status.json` unangetastet — Brief 02 lebt rein in INTERFACES; Brief 03 `docs/sessions/BRIEF_03_m04_erweiterung.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-plattform-matrix.md) |
 | 2026-05-18 | Spec · V1 Sage-Hybrid — Strang 1 der V1-Sammelspec-Kaskade (Brief 01 · PR #96 gemerged — `main` `a3e0072`; INTERFACES § 6 Endknoten-Liste neu mit Sage als drittem Endknoten + § 6.1 Sage-Page-Architektur mit IndexedDB-Suffix `sbkim_sage` / App-SW Variante 3a / volle init()-Kette / Andock-Geste an Schwarz-Loch-Karte; CLAUDE.md auf „Hub und Knoten zugleich"; Karte 09 § Schritt 1 erweitert; `status.json` § endknoten um sage-Eintrag mit `pingStatus:"pending-first-andock"`; Domäne „Mycel-Bibliothek" gewählt; `PROTOCOL_VERSION` bleibt `"0.1"`; Sage-Page-Refactor folgt als Bau-Sitzung in BRIEF_99-Liste; Brief 02 `docs/sessions/BRIEF_02_plattform_matrix.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-v1-sage-hybrid.md) |
