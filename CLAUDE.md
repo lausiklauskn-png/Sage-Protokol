@@ -63,6 +63,41 @@ Alles andere liest du **nicht**. Token-Budget.
 musst du **zuerst** dort nachziehen, **dann** den Code. Andersrum produziert
 Widersprüche zwischen Modulen.
 
+### Tafel-Evolutions-Klausel (Pflege 2026-05-19)
+
+Heilige Tafeln sind verbindlich, **aber nicht ewig**. Eine Tafel gilt, bis
+eine neuere Erkenntnis sie widerlegt — z.B. ein Sichttest-Befund, ein Live-
+Andock-Beweis, ein Architektur-Schluss aus einer Folge-Spec, oder einfach
+Klaus' Lehre aus dem praktischen Einsatz. Wenn alter Vertrag neue
+notwendige Arbeit verbietet, ist nicht die neue Erkenntnis falsch, sondern
+die Tafel verlangt eine bewusste Aktualisierung.
+
+**Disziplin für jede Sitzung:**
+
+- **Nicht stoisch befolgen.** Tafel als absolute Aussage zu lesen, wo sie
+  scope-spezifisch gemeint war, blockiert legitime Arbeit.
+- **Nicht stillschweigend umgehen.** Die Tafel mit einem Workaround
+  umfahren, ohne die Spannung zu benennen, hinterlässt eine vergiftete
+  Doku-Lage für die nächste Sitzung.
+- **Stattdessen: Klaus EXPLIZIT auf Anpassungs-Bedarf hinweisen.** Konkret
+  benennen: welche Tafel, welche neue Erkenntnis, welche Anpassung
+  vorgeschlagen, warum notwendig + vorteilhaft. Klaus entscheidet, ob die
+  Tafel umformuliert wird oder die neue Arbeit anders zu lösen ist.
+
+**Bezeichnungs-Konvention:** „Diese-Sitzung-nicht"-Tafeln (z.B. „KEIN
+Modul-01-Eingriff in Bau 02.Y") sind scope-disziplin, **kein** absolutes
+Verbot. Sie verbieten den Eingriff *in dieser konkreten Bau-Sitzung*, um
+das PR-Scope sauber zu halten — sie erlauben aber eine eigene Folge-Pflege-
+Sitzung mit eigenem Brief, eigenem PR. Wenn eine Folge-Pflege nötig wird,
+ist das ein gültiger Anpassungs-Grund (siehe oben).
+
+**Bezugs-Beispiel:** der Befund 2026-05-19 aus Klaus' Bau-02.Y-Sichttest —
+Modul 01 `init()` ist nicht versions-fail-soft (Test-Stores aus früheren
+Sichttests blockieren jeden neuen init mit `VersionError`). Die Tafel
+„KEIN Modul-01-Eingriff" (Brief 02.Y) war scope-bezogen für genau diese
+Bau-Sitzung; eine eigene Pflege-Sitzung Modul 01 ist die saubere Anpassung
+und wird als Folge-Sitzung in der Brief-99-Pipeline nachgezogen.
+
 ## Pflicht am Sitzungsende
 
 Bevor du `END` machst:
