@@ -639,7 +639,25 @@ gründliche Klärung (kein Bau-Code, nur Verträge); danach Bau-
 Sitzung ~2-3 Stunden für Sage-Page-Refactor + SW-Anlage + Andock-
 Geste.
 
-**Status:** Reif für Spec-Sitzung. Nächste Phase nach Klaus' Wahl.
+**Status:** **Strang 1 der V1-Sammelspec realisiert (2026-05-18, Brief
+01 der V1-Sammelspec-Kaskade) + Sammelspec-Abschluss (Brief 99)
+abgeschlossen (2026-05-19).** Sage als dritter Endknoten in
+INTERFACES §6 Endknoten-Liste + §6.1 Sage-Page-Architektur aufgenommen
+(Domäne `Mycel-Bibliothek`, IndexedDB-Suffix `sbkim_sage`, App-SW
+Variante 3a, volle init()-Kette mit lazy Modul-03, Andock-Geste an
+Schwarz-Loch-Karte als Wizard-Hinweis). CLAUDE.md auf „Hub und Knoten
+zugleich" umgeschrieben, Karte 09 § Schritt 1 erweitert, `status.json`
+um `sage`-Endknoten-Eintrag (`pingStatus:"pending-first-andock"`,
+`nodeId:null`) ergänzt. `PROTOCOL_VERSION` bleibt `"0.1"` (additiv).
+Die V1-Sammelspec-Kaskade ist mit BRIEF_99-Abschluss vollständig
+geschlossen — Brief 02 (Plattform-Matrix, PR #97), Brief 03 (M04-
+Erweiterung, PR #98) und Brief 04 (Multi-Identität, PR #99) sind alle
+gemerged. **Sage-Page-Refactor** (volle init()-Kette + Andock-Wizard
++ Schichten-Lampen + Identitäts-Wechsler-UX in `index.html`) steht
+als **Position 1 der Bau-Sitzungs-Brief-Pipeline** aus Brief 99
+(siehe § Sitzungs-Einträge „Abschluss — V1-Sammelspec-Kaskade
+(Brief 99)") und ist die empfohlene erste Bau-Sitzung der nächsten
+Welle.
 
 ### 2026-05-17 · Niedrigeres Onboarding (Variante III-Ausbau)
 
@@ -1015,10 +1033,34 @@ auf dem Tablet oder im Rechner, je nach Arbeitsoberfläche."
 
 ### Status
 
-**Reif für Spec-Diskussion**, aber nicht für sofortige Spec. Wartet
-auf V1-Sage-Hybrid-Spec (wo sich zeigt, ob Sage mehrere Identitäten
-sinnvoll hätte) + V5-Identitäts-Container-Spec (wo Backup-Schema
-klar wird). Größenordnung: ~3-5 Stunden Spec, ~10-15 Stunden Bau.
+**Strang 3 der V1-Sammelspec realisiert (2026-05-19, Brief 04 der V1-
+Sammelspec-Kaskade) + Sammelspec-Abschluss (Brief 99) abgeschlossen
+(2026-05-19).** INTERFACES.md § 9 „Identitäts-Map (Multi-Identität,
+Brief 04)" als verbindliche Spec-Klausel (sieben Sub-§ von Slot-Schema
+bis M04-Verbindung); Modul 02 um fünf neue / erweiterte API-Funktionen
+erweitert (`getOrCreateIdentity(key?)`, `setActiveIdentity(key)`,
+`getActiveIdentityKey()`, `listIdentities()`,
+`removeIdentity(key, options?)`); identitäts-spezifische Stores pro
+Persona (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`,
+`sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`,
+`sbkim_hetero_outbox_<key>`); Persona-Isolation als verbindliche
+Klausel (ein Geschwister gehört einer Persona, nicht dem ganzen
+Knoten); Strategie A für Pages-`spore.json` gewählt (nur aktive
+Identität, `PROTOCOL_VERSION` bleibt `"0.1"`); Strategie B als Folge-
+Spec-Option benannt (Bump auf 0.2, NICHT gewählt). Apoptose-Granularität
+entschieden: `confirmSelfApoptose` global, per-Persona-Apoptose über
+`SbkimSpore.removeIdentity(key, {force:true})` mit internem Hook
+`_sendLegacyForIdentity` in Modul 07. Multi-Identitäts-Backup
+„kompletter Rucksack" als Empfehlung verankert; `BACKUP_FORMAT_VERSION`-
+Bump 1→2 für die Bau-Folge-Sitzung 02.Y vermerkt (KEIN
+`PROTOCOL_VERSION`-Eingriff). Die V1-Sammelspec-Kaskade ist mit
+BRIEF_99-Abschluss (2026-05-19) vollständig geschlossen. **Bau-
+Folge-Sitzungen** für Multi-Identität (01.Y `ensureStore`, 02.Y Multi-
+Identitäts-API + Backup-Schema-Bump, 05.Y / 06.Y / 07.Y transparenter
+Slot-Pfad, Endknoten-Migration) stehen in der **Bau-Sitzungs-Brief-
+Pipeline** aus Brief 99 (siehe § Sitzungs-Einträge „Abschluss — V1-
+Sammelspec-Kaskade (Brief 99)") und sind die nächste Welle nach
+Kaskaden-Abschluss; Reihenfolge ist Klaus' Entscheidung.
 
 ### 2026-05-18 · SBKIM-Browser-Extension — „Lampe in der Toolbar"
 
@@ -1394,11 +1436,292 @@ sie als Bau-Ziel der V1-Sammelspec.
 
 ### Status
 
-**Reif für Spec-Diskussion, integraler Teil von V1-Sammelspec.** Kein
-eigenständiger Bau-Auftrag — Anker 9 lebt im V1-Brief mit. Stufe A
-erweitert kann auch ohne V1 als Mini-Pflege gezogen werden, falls
-Klaus das vorziehen will. Stufe B wartet auf V1 (Hybrid-Knoten als
-Auflage, Identitäts-Container für Key-Speicher).
+**Strang 2 der V1-Sammelspec realisiert (2026-05-19, Brief 03 der
+V1-Sammelspec-Kaskade) + Sammelspec-Abschluss (Brief 99) abgeschlossen
+(2026-05-19).** Spec-Sitzung 2026-05-19 hat die drei Schichten +
+Brücken-Feld + doppelte Spore + Stufe-A/Stufe-B-Match-Pipeline
+verbindlich in INTERFACES.md verankert (§0 drei neue Konstanten
+`SCHICHT_MIN_MATCH=0.60` / `STUFE_B_DEFAULT_MODEL` /
+`STUFE_B_MAX_TOKENS`; §1 Modul 02 Bietet-Block-Spore-Schema-
+Erweiterungs-Hinweis; §1 Modul 04 zwei neue API-Funktionen
+`matchDimensions` + `explainMatchLLM` + vier neue Sub-Blöcke; §2
+Spore-JSON-Felder `embeddingCapabilities` + `embeddingNeeds`;
+§7 LLM-Stufe-B-Ehrlichkeits-Klausel neu; §8 Anti-Missbrauch-Klausel
+neu; §9 Änderungsprotokoll, war §7 vor Brief 03, nach Brief 04 jetzt
+§10) plus Karten 02 / 04 / 06 nachgezogen. **PROTOCOL_VERSION bleibt
+`"0.1"`** — alle neuen Felder und Funktionen sind additiv, alte
+Sporen ohne `embeddingNeeds` bleiben gültig (signalisieren „nur
+Anbieter-Modus"). Die V1-Sammelspec-Kaskade ist mit BRIEF_99-Abschluss
+(2026-05-19) vollständig geschlossen. **Bau** folgt nach Kaskaden-
+Abschluss in eigenen Bau-Sitzungen aus der Bau-Sitzungs-Brief-Pipeline
+(siehe § Sitzungs-Einträge „Abschluss — V1-Sammelspec-Kaskade
+(Brief 99)"): Bau 04.A Stufe A erweitert (`matchDimensions` sync,
+~2-3 h), Bau 04.B Stufe B (`explainMatchLLM` + User-Key-Verwaltung,
+~5-8 h), Sage-Page-Karten 04 / Schichten-Lampen (Teil des Sage-
+Page-Refactor, ~6-10 h gesamt), Migrations-Pflege Spore-Schema
+(~2 h) — Reihenfolge Klaus' Entscheidung.
+
+### 2026-05-18 · Sonnen-Galaxie — Sage-Geschichts-Galerie
+
+**Eingetragen:** Mini-Pflege „Vision-Anker Sonnen-Galaxie" 2026-05-18,
+**mid-Pflege re-gerahmt** auf Klaus' Wunsch. Erstrahmung als
+„wissenschaftliche Papers-Bibliothek" wurde verworfen; tatsächliches
+Konzept: **Sage-Geschichts-Galerie** — Stationen der Entwicklung des
+Protokolls und seiner Namensgebung, biographisch-erzählerisch. Klaus'
+O-Ton: „eher in die Richtung was macht man, wenn man auf eine Antwort
+wartet? Man macht sich selber an die Arbeit. Die Pflege der Dokumente
+und der Bau neuer Galaxien kann getrennt von einem Automatismus
+erfolgen. So wie jetzt auch." Das eingecheckte EN-Paper
+(`docs/papers/sbkim-paper-en.html`) bleibt als **eine** Station unter
+mehreren — wissenschaftlicher Niederschlag der Reise, nicht
+Selbstzweck.
+
+**Heilige Tafel — Privatheits-Klausel:** **Die Sonnen-Galaxie erwähnt
+Everlast GmbH NICHT.** Klaus' Wunsch ausdrücklich. Stationen, die im
+realen Werdegang einen kommerziellen Kontext hatten, werden in der
+Galaxie ausschließlich in ihrer technisch-konzeptionellen Form
+erzählt. Gilt heilig auch für Folge-Mini-Pflegen, die neue Galaxien
+nachziehen.
+
+### Konzept
+
+**Sonnen-Karte** als optisches Pendant zur Schwarz-Loch-Karte, nur
+invertiert. Wo dort ein dunkler Akkretionsstrudel das Chrome-Logo
+verschluckt, leuchtet hier eine **wärme-goldene Korona** mit einem
+**dunklen, pulsierenden Sonnenkern** in der Mitte — der Kern ist das
+direkte Pendant zum schwarzen Loch (Klaus' Worte: „analog zum schwarzen
+Loch von Chrome, aber in einer Art Sonne, nicht so'n komisches Loch in
+der Mitte"). Auf der Sonnenscheibe wandern **Sonnenflecken** (dunkle
+Punkte in unregelmäßiger Außenform), die eigenständig pulsieren und
+driften. Mouse-Hover verstärkt alle Pulse — Korona schneller,
+Sonnenflecken schneller, Sonnenscheibe heller. Karte sitzt **weiter
+oben** auf der Sage-Page als die Schwarz-Loch-Karte (vor der Reading-
+Karte, „Vision und für Neugierige").
+
+**Klick auf die Sonne** öffnet ein neues Vollbild-Universum — analog zum
+Observatorium-Screen, mit eigener `papers-screen`-Klasse und
+geordneterer Choreographie:
+
+- **Hintergrund:** warm-goldene Nebel statt magenta/cyan; Sterne via
+  Canvas; Maus-Schweif erlaubt (Komet-Optik aus Observatorium
+  übernehmen, gerne).
+- **Galaxien-Bewegung — geordnet, nicht wandernd:** „nicht
+  durcheinander, sondern schön im Kreis oder in einer Ellipsenform und
+  sich selber noch mal innerhalb der Ellipsenform um sich selber
+  drehen." Konkret: eine **gemeinsame Bahn-Ellipse** um ein zentrales
+  Sonnen-Zentrum, alle Paper-Galaxien gleichmäßig phasen-verteilt
+  (3 Papers → 0°/120°/240°), gleiche Umlaufzeit (~ 40–60 s). Zusätzlich
+  dreht jede Galaxie um die **eigene Achse** (das existierende
+  `@keyframes galaxy-spin` reicht). Variante als Ausbaustufe: jede
+  Galaxie auf eigener Ellipse mit unterschiedlicher Neigung, damit die
+  Konstellation einen leichten 3D-Eindruck bekommt.
+- **Galaxien-Inhalt:** ein Eintrag pro Paper. Status-Klassen
+  steuern die Optik:
+  - `paper-galaxy.live`     — voller Glanz (publiziert)
+  - `paper-galaxy.draft`    — gedämpft, leicht schwankende Helligkeit
+    (in Arbeit)
+  - `paper-galaxy.geplant`  — sehr dimm, fast nur Umriss (Platzhalter
+    für künftige Papers)
+- **Klick auf Galaxie:** Modal analog `universe-modal`, mit
+  Paper-Titel, Kurzbeschreibung, Status-Badge, Link zur HTML-Ansicht
+  (`docs/papers/<file>.html` als Tab-Öffner mit `target="_blank"`).
+  Bei `geplant`-Galaxie: keine Datei, nur Erläuterungs-Text.
+
+### Stationen-Inventar (Start-Konfiguration · 5 Galaxien)
+
+| Galaxie | Station | Status | Anker-Datei (sofern vorhanden) |
+|---|---|---|---|
+| 1 | **SBKIM-Namensgebung** — woher der Name kam, was die einzelnen Buchstaben in der Reise getragen haben | text-nur, **inhaltlich gefüllt** | (Modal-Body-Text, Pflege 2026-05-18) |
+| 2 | **Zwei Seiten einer Medaille** — das bidirektionale Match-Prinzip biographisch erzählt: wann und warum die Idee aufkam, Anbieter und Sucher zugleich zu denken | text-nur, **inhaltlich gefüllt** | (Modal-Body-Text, Pflege 2026-05-18) |
+| 3 | **Sage-Protokol-Geburt** — der Pivot von Plattform-Form zu Mycel-Form, Geburt dieses Repos | text-nur, **inhaltlich gefüllt** | (Modal-Body-Text, Pflege 2026-05-18) |
+| 4 | **Wissenschaftlicher Niederschlag — das englische SBKIM-Paper** | live | `docs/papers/sbkim-paper-en.html` |
+| 5 | **Wissenschaftlicher Niederschlag — das deutsche SBKIM-Paper** | live | `docs/papers/sbkim-paper-de.html` |
+
+**Wachstums-Disziplin:** Pflege der Stationen und Bau neuer Galaxien
+laufen als **getrennte Mini-Pflegen**, nicht als Automatismus. Wie
+bisher: Klaus liefert den nächsten Inhalt, eine Mini-Pflege schreibt
+ihn ein, Bau-Sitzung rendert ihn. Wenn weitere Stationen dazukommen,
+skaliert die Bahn-Ellipse ihre Phasen automatisch (`360° / n` pro
+Galaxie). Stationen können **textuell** (nur Modal-Body) oder
+**dokumentengestützt** (mit Datei-Anker wie das EN-Paper) sein —
+beides gleichwertig in der Galaxie.
+
+### Heute schon erledigt
+
+- **Ordner `docs/papers/`** angelegt (trägt das EN-Paper als
+  dokumentengestützte Station 4; weitere Stationen brauchen den
+  Ordner nicht).
+- **`docs/papers/sbkim-paper-en.html`** eingecheckt — Klaus' Upload des
+  englischen SBKIM-Papers (23 KB, sieben Sektionen).
+- **CSS-Skizze für Sonnen-Karte** in dieser Sitzung kurz angetestet,
+  dann **bewusst zurückgerollt** — Klaus' Disziplin „Brief schreiben,
+  Bau in eigener Sitzung" hat Vorrang.
+- **Mid-Pflege Re-Framing:** Konzept von „Papers-Bibliothek" auf
+  „Geschichts-Galerie" verschoben (Folge-Commit auf PR #88). Optik
+  bleibt vollständig (Sonnen-Karte, Ellipsen-Bahn, Eigenrotation,
+  Sonnenflecken); nur die Daten und die Sprache haben sich gewandelt.
+
+### Architektur-Skizze (für Bau-Sitzung)
+
+**`index.html` — sieben Eingriffe, alle additiv:**
+
+1. **CSS-Block** „Sonnen-Galaxie · Papers-Bibliothek" vor dem
+   `.blackhole-card`-Block (~Z. 403). Spezifika:
+   - `.sun-card` als `radial-gradient`-Hintergrund mit warm-dunklem
+     Boden (Pendant zu `.blackhole-card`'s lila-schwarz).
+   - `.sun-stage` Grid wie `.blackhole-stage`, Hover-Scene-Scale.
+   - `.sun-scene` mit drei gestapelten Schichten:
+     `.sun-corona` (radial, pulsierend), `.sun-corona-2` (conic,
+     rotierend), `.sun-disk` (dunkler Sonnenkern, pulsierend) und drei
+     `.sun-spot.s1/.s2/.s3` (Sonnenflecken in unregelmäßigen Drift-
+     Bahnen).
+   - Vier Keyframes: `sun-corona-pulse`, `sun-corona-spin`,
+     `sun-disk-pulse`, `sun-spot-drift-1/2/3`.
+   - Hover: alle Animations-Dauern halbieren (analog Black-Hole-Card,
+     `bh-chrome` 11s→5.5s).
+   - `prefers-reduced-motion: reduce` schaltet alle Animationen ab.
+
+2. **CSS-Block** „Papers-Galaxie-Screen" für den neuen Screen.
+   `.papers-screen` analog `.observatorium-screen` aber warm-goldener
+   Tonalität (Nebel `rgba(244,180,53,…)` statt `rgba(255,70,180,…)`).
+   `.paper-galaxy` analog `.universe-galaxy` plus drei Status-Klassen
+   (`.live`, `.draft`, `.geplant`).
+
+3. **HTML-Block** Sonnen-Karte vor `.card.reading` (~Z. 751):
+   ```html
+   <article class="card span-12 sun-card" data-back-anchor="papers">
+     <span class="card-tag">Wissenschaftliche Grundlage · Papers-Bibliothek</span>
+     <a class="sun-stage" href="#papers"
+        onclick="goScreen('papers', 'papers'); return false;"
+        aria-label="Papers-Bibliothek öffnen — Sonnen-Galaxie">
+       <div class="sun-scene" aria-hidden="true">
+         <div class="sun-corona"></div>
+         <div class="sun-corona-2"></div>
+         <div class="sun-disk"></div>
+         <div class="sun-spot s1"></div>
+         <div class="sun-spot s2"></div>
+         <div class="sun-spot s3"></div>
+       </div>
+       <div class="sun-caption">
+         <h3>Auf welcher Grundlage Sage steht</h3>
+         <p>Zwei wissenschaftliche Papers tragen die Form. Das englische
+         beschreibt SBKIM als bidirektionales Matching-Protokoll mit drei
+         Dimensionen. Das deutsche folgt. Ein drittes Paper stellt das
+         Mycel-Prinzip dem SBKIM-Matching gegenüber.</p>
+         <p class="sun-hint">Klicke in die Sonne → die Papers tanzen
+         als Galaxien um sie herum.</p>
+       </div>
+     </a>
+   </article>
+   ```
+
+4. **HTML-Block** Papers-Galaxie-Screen nach `</main>` von
+   `screen-observatorium` (~Z. 1121), analog zum Observatorium-Screen,
+   eigene IDs (`screen-papers`, `papers-stage`, `papers-galaxies`,
+   `paper-modal`, …).
+
+5. **`SCREENS`-Array** (Z. ~1179) um `'papers'` erweitern.
+
+6. **`goScreen()`** (Z. ~1226): Aufruf `setupPapersGalaxy()` wenn
+   `id === 'papers'`. **`applyHashScreen()`** (Z. ~2482): bei
+   `h === 'papers'` zurück-Anker `'papers'` mitgeben.
+
+7. **JS-Block** nach `closeUniverseModal()` (~Z. 2479):
+   `STATIONS_DATA`-Array (s. Inventar oben), `setupSonnenGalaxie()` mit
+   einmaliger Initialisierung-Schranke, Ellipsen-Bahnen-Rendering,
+   `openStationModal(idx)`, `closeStationModal()`. Bewegungs-Mathe:
+   ```
+   const ANG_SPEED = (2 * Math.PI) / 50;   // 50 s Umlaufzeit
+   const t = now / 1000;
+   STATIONS_DATA.forEach((s, i) => {
+     const phase = (i / STATIONS_DATA.length) * Math.PI * 2;
+     const x01 = 50 + Math.cos(t * ANG_SPEED + phase) * 30;
+     const y01 = 50 + Math.sin(t * ANG_SPEED + phase) * 18;
+     // Eigenrotation läuft via CSS-@keyframes galaxy-spin
+   });
+   ```
+   Station-Eintrag hat zwei Varianten:
+   - **textuell:** `{ title, summary, status: 'text' }` — Modal zeigt
+     nur den `summary`-Body, keinen Datei-Link.
+   - **dokumentengestützt:** `{ title, summary, status: 'live', href }` —
+     Modal zeigt Body + „Original-Dokument öffnen →"-Link auf `href`
+     (z.B. `docs/papers/sbkim-paper-en.html`).
+
+**`status.json` — optionaler Eintrag:** ein neues Feld `historie` mit
+Liste der Stationen (Titel, Status, optional Datei). Pflege-frei, weil
+selten geändert; macht die Geschichts-Galerie auch maschinen-lesbar.
+
+**`docs/papers/README.md`** als Erklärung der Bibliothek (was das
+EN-Paper hier soll: dokumentengestützte Station der Sonnen-Galaxie) +
+Verweis auf Vision-Anker 10.
+
+### Sonnenflecken-Pattern (Klaus' Wunsch konkret)
+
+Klaus' Worte: „mit Sonnenflecken, die ebenfalls größer und kleiner mit
+unregelmäßiger Außenform pulsieren". Drei `.sun-spot`-Elemente mit
+unterschiedlichen Größen (18 / 12 / 9 % der Scene-Breite), an
+unterschiedlichen Positionen (top:33%/48%/38%, left:30%/55%/50%), jede
+mit eigener `@keyframes sun-spot-drift-X`-Animation (unterschiedliche
+Dauern 11/9/13 s, unterschiedliche Translate-Vektoren, leichte
+Skalierung 0.7–1.15). Bei Hover Dauer halbieren — passt visuell zum
+Sonnen-Stress-Erlebnis (Klaus' Worte: „bei Mouseover stärkeres
+Pulsieren").
+
+### Verbindung zu anderen Vision-Ankern
+
+- **Anker 1 (Sage als Hybrid-Knoten):** das Observatorium kann privat
+  bleiben, weil die Sonnen-Galerie öffentlich die Geschichte des
+  Protokolls erzählt — wer die Reise versteht, versteht auch, **warum**
+  Sage als Hybrid-Knoten sinnvoll wird.
+- **Anker 9 (M04-Erweiterung):** Station „Zwei Seiten einer Medaille"
+  ist die biographische Quelle für die bidirektionale Match-Erweiterung
+  (Anbieter ↔ Sucher, doppelte Spore). Reift Anker 9 in V1, dann zieht
+  Station 2 als Erzähl-Anker mit.
+- **Schwarz-Loch-Karte (`.blackhole-card`):** optisches Pendant der
+  Sonnen-Karte. Beide sitzen in derselben Bento-Reihe, aber an
+  gegenüberliegenden Positionen (Sonne weiter oben für „Wo das Protokoll
+  herkam", Loch weiter unten für „Was wir auf dem Weg gelernt haben").
+  Sie ergänzen sich choreographisch: Sonne ist hell und erzählerisch
+  (Werdegang), Schwarzes Loch ist dunkel und wirbelnd (Bau-Lehren).
+
+### Größenordnung
+
+- Bau-Sitzung CSS + HTML + JS für Sonnen-Karte: ~2 Stunden
+- Bau-Sitzung Papers-Galaxie-Screen + Modal + Bewegungs-Loop: ~2-3 Stunden
+- Status.json-Erweiterung + papers/README.md: ~0.5 Stunden
+- Manueller Sichttest (Klaus, Browser): ~0.5 Stunden
+- **Insgesamt eine Bau-Sitzung: ~5-6 Stunden**
+
+Aufteilbar in zwei Bau-Sitzungen, falls eine zu lang wird:
+- **Bau-Sitzung 10a:** Sonnen-Karte + Status.json + README (~3 h)
+- **Bau-Sitzung 10b:** Papers-Galaxie-Screen + Modal + Bewegungs-Loop (~3 h)
+
+### Status
+
+**Realisiert PR #90 (Bau) + Pflege PR #92 (Stationen 1–3
+inhaltlich gefüllt) + Pflege 2026-05-18 (Station 5 · DE-Paper
+ergänzt)**. Sonnen-Karte sitzt zwischen Andock-Karte und Reading-
+Karte (`data-back-anchor="sonnen"`); Geschichts-Galerie-Screen lebt
+unter `#sonnen` und zeigt **fünf Stationen** auf einer gemeinsamen
+Ellipsen-Bahn (`ANG_SPEED = 2π/50` s, Ellipse 30 vw × 18 vh,
+gleichmäßige Phasen-Verteilung über `STATIONS_DATA.length` — bei 5
+sind das 72° pro Galaxie) mit Eigenrotation via `@keyframes
+galaxy-spin`. **Alle fünf Stationen sind inhaltlich gefüllt:**
+Station 1 (Namensgebung), Station 2 (Zwei Seiten einer Medaille —
+biographische Quelle für Anker 9), Station 3 (Sage-Protokol-Geburt
+— Pivot Plattform → Mycel) als textuelle Erzählung im Modal-Body;
+Station 4 (EN-Paper, `status: 'live'`) zusätzlich mit `href` auf
+`docs/papers/sbkim-paper-en.html`; Station 5 (DE-Paper, `galaxy-
+quasar`, `status: 'live'`) zusätzlich mit `href` auf `docs/papers/
+sbkim-paper-de.html`. Das Placeholder-Hint-Banner ist via expliziten
+`placeholder`-Flag gesteuert — neue text-only-Stationen können beim
+Anlegen `placeholder: true` setzen, gefüllte tragen den Flag nicht.
+`docs/papers/README.md` führt jetzt beide Paper-Dateien.
+
+**Pflege-Disziplin Everlast GmbH:** jede Folge-Mini-Pflege, die Inhalt
+für Stationen 1–3 liefert, **prüft vor dem Commit**, dass der Text
+keine Erwähnung von Everlast GmbH enthält. Die heilige Tafel ganz oben
+in diesem Anker ist verbindlich.
 
 ---
 
@@ -1411,74 +1734,299 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-18 · Mini-Pflege — PULS-Auslagerung (8 ältere Sitzungs-Einträge in Archiv-Index)
+### 2026-05-19 · Abschluss — V1-Sammelspec-Kaskade (Brief 99)
 
-**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/pflege-puls-auslagerung`. Folge-Pflege direkt nach PR #86
-(Anker 9 M04-Erweiterung). Empfehlung aus PR #85 + PR #86 umgesetzt:
-**dezidierte Auslager-Sitzung mehrerer älterer Sitzungs-Einträge**.
+**Sitzungs-Rolle:** Abschluss-Sitzung der V1-Sammelspec-Kaskade,
+headless. Branch `claude/spec-v1-abschluss-jLB5z` (Harness-Suffix;
+gemeinte Konvention `claude/spec-v1-abschluss`). Schließt die vier
+Strang-Etappen der V1-Sammelspec-Brief-Kaskade nach Brief 01 (V1
+Sage-Hybrid, PR #96), Brief 02 (Plattform-Matrix, PR #97), Brief 03
+(M04-Erweiterung, PR #98) und Brief 04 (Multi-Identität, PR #99,
+gemerged 2026-05-19 `main` `59e3998`). Diese Sitzung ist KEIN
+Strang — sie ist Abschluss (Konvention aus BRIEF_99: ein eigener PR
+mit Abschluss-Artefakten, kein neuer Spec-Inhalt).
 
-**Kern:** PULS stand nach PR #86-Merge bei 3256 Zeilen, deutlich über
-der 3000er-Schutz-Klausel. Acht ältere Sitzungs-Einträge (alle ab
-„Pflege SW Scope-Fix" 2026-05-17 abwärts bis Test-Panel 2026-05-16)
-hatten bereits ihren Archiv-Index-Eintrag — der Body-Text war
-redundant. Diese Pflege entfernt diese Doppelung in einem Rutsch.
+**Kern (drei Sätze):** Die V1-Sammelspec ist als Vier-Strang-Brief-
+Kaskade vollständig in INTERFACES.md verankert (Sage als dritter
+Endknoten, Plattform-Matrix mit fünf Profilen, M04-Erweiterung mit
+drei Schichten + Brücke + doppelte Spore, Multi-Identität mit
+identitäts-spezifischen Stores pro Persona); CLAUDE.md auf „Hub und
+Knoten zugleich" umgeschrieben, `status.json` um Sage als drittes
+Endknoten-Element erweitert. **PROTOCOL_VERSION bleibt `"0.1"`** —
+alle vier Stränge additiv (Strategie A für Pages-`spore.json`,
+Default-Slot „main" als Rückwärts-Kompat, lokales Multi-Identitäts-
+Storage-Schema), kein Spore-Schema-Eingriff zur Pflicht erhoben.
+`BACKUP_FORMAT_VERSION` bleibt `1` — Multi-Identitäts-Backup-Bump
+1→2 ist in Brief 04 § 9.6 als Bau-Folge-Sitzung-02.Y-Entscheidung
+dokumentiert, aber NICHT in der Kaskade vollzogen. Die nächste Welle
+sind sieben Bau-Sitzungen (Sage-Page-Refactor zuerst, dann
+Infrastruktur-Bauten 01.Y / 02.Y, Match-Pipeline-Bauten 04.A / 04.B,
+transparente Slot-Pfade in 05.Y / 06.Y / 07.Y, Endknoten-Migration).
 
-**Ausgelagert (8 Einträge, alle bereits im Archiv-Index):**
+**Vier Stränge — Zusammenfassung in einem Absatz:**
 
-1. 2026-05-17 · Pflege Modul 05/SW — Scope-Fix `isOwnEndpoint`
-2. 2026-05-17 · Test-Erkenntnis A/B-Test PR #70
-3. 2026-05-17 · Pflege Modul 05/SW — Phantom-Clients-Fix
-4. 2026-05-17 · Mini-Pflege Score-Realität
-5. 2026-05-17 · Mini-Pflege Rechtschreibung „Protokoll"
-6. 2026-05-17 · Mini-Pflege Sage-Page — Live-Status
-7. 2026-05-16 · Live-Andock — Cross-Knoten-Handshake etabliert
-8. 2026-05-16 · Mini-Pflege Test-Panel — Knopf-7-pendingBackup-Reset
+- **Brief 01 (V1 Sage-Hybrid, Strang 1, PR #96 gemerged 2026-05-18
+  `main` `a3e0072`):** Sage als dritter Endknoten neben Mein-
+  Rezeptbuch und Mein-Mixarium. INTERFACES § 6 Endknoten-Liste neu
+  mit drei Einträgen; § 6.1 Sage-Page-Architektur (IndexedDB-Suffix
+  `sbkim_sage`, App-SW Variante 3a, volle init()-Kette mit lazy
+  Modul-03, Andock-Geste an Schwarz-Loch-Karte als Wizard-Hinweis);
+  CLAUDE.md auf „Hub und Knoten zugleich" umgeschrieben; Karte 09
+  § Schritt 1 erweitert; `status.json` § endknoten um `sage`-Eintrag
+  erweitert (`pingStatus:"pending-first-andock"`, `nodeId:null`);
+  Domäne „Mycel-Bibliothek" gewählt; Sage-Page-Refactor folgt als
+  Bau-Sitzung in der BRIEF_99-Liste.
+- **Brief 02 (Plattform-Matrix, Strang 4, PR #97 gemerged 2026-05-18
+  `main` `69077db`):** INTERFACES § 6.2 Plattform-Matrix mit fünf
+  Profilen (Desktop-Browser / DeX-Tablet / PWA-installiert / Mini-
+  Browser V8 / Extension V7) × sechs Spalten (IndexedDB / SW /
+  Spore-Empfang / Identitäts-Backup / Stufe B / Beispiel-Knoten);
+  § 6.3 Plattform-Ehrlichkeits-Klausel als verbindliche Spec-
+  Klausel (Begründung aus Lehre 1 — Browser-Instanzen-Trennung als
+  Verlust-Risiko); § 6.4 Vision-Bezüge als Querverweis-Matrix mit
+  sieben Ankern; § 6.1 Plattform-Matrix-Stub auf Verweis
+  umgeschrieben.
+- **Brief 03 (M04-Erweiterung, Strang 2, PR #98 gemerged 2026-05-19
+  `main` `27d6a19`):** INTERFACES § 0 drei neue Konstanten
+  (`SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL="claude-sonnet-4"`,
+  `STUFE_B_MAX_TOKENS=1024`); § 1 Modul 02 Bietet-Block-Spore-Schema-
+  Erweiterungs-Hinweis (`embeddingCapabilities` Alias +
+  `embeddingNeeds` neu); § 1 Modul 04 um zwei neue API-Funktionen
+  (`matchDimensions` + `explainMatchLLM`) + vier neue Sub-Blöcke
+  (Drei-Schichten-Modell mit Mittelwert-vs-Min-Begründung, Brücken-
+  Feld-Spec mit `BridgeProposal`, Schwellen-Vertrag mit fünf
+  Auswertungs-Regeln, Stufe-B-Vertrag mit JSON-Schema und Beispiel-
+  Output); § 2 Spore-JSON Optionale Felder um die zwei neuen Vektor-
+  Felder erweitert; § 7 LLM-Stufe-B-Ehrlichkeits-Klausel als
+  verbindliche Spec-Klausel (vier Sätze: Stufe B opt-in, Stufe A
+  rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen,
+  Knoten ohne Stufe B = vollwertige Netz-Teilnehmer); § 8 Anti-
+  Missbrauch-Klausel (Brücken-Vorschlag lokal,
+  `candidateScope:"netz"` formal nicht aktivierbar bis Anker 10-12,
+  Modul 06 filtert Outbox-Einträge).
+- **Brief 04 (Multi-Identität, Strang 3, PR #99 gemerged 2026-05-19
+  `main` `59e3998`):** INTERFACES § 1 Modul 02 um fünf neue /
+  erweiterte API-Funktionen (`getOrCreateIdentity(key?)`,
+  `setActiveIdentity(key)`, `getActiveIdentityKey()`,
+  `listIdentities()`, `removeIdentity(key, options?)`); Singleton-
+  Klausel durch Identitäts-Slot-Vertrag ersetzt (Default-Slot „main"
+  verbindlich, beliebig viele weitere Slots,
+  `sbkim_meta["active-identity"]` als String-Marker); § 1 Modul 05 /
+  06 / 07 auf identitäts-spezifische Store-Pattern
+  (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`,
+  `sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`,
+  `sbkim_hetero_outbox_<key>`) umgestellt mit Identitäts-Cache- und
+  Receiver-Map-nodeId→key-Konvention; § 2 Spore-JSON Multi-
+  Identitäts-Hinweis-Block (Strategie A gewählt — nur aktive
+  Identität in `spore.json`; Strategie B NICHT gewählt — würde
+  `PROTOCOL_VERSION` auf `"0.2"` bumpen); § 9 Identitäts-Map als
+  neue verbindliche Spec-Klausel mit sieben Sub-§; Änderungsprotokoll
+  auf § 10 nachnummeriert. Apoptose-Granularität entschieden:
+  `confirmSelfApoptose` global (alle Personae sterben gemeinsam),
+  `SbkimSpore.removeIdentity(key, {force:true})` ist die Single-
+  Identitäts-Apoptose mit internem Hook `_sendLegacyForIdentity` in
+  Modul 07.
 
-Keine Nachtragung im Archiv-Index nötig — alle 8 standen bereits dort.
-Übergabeprotokolle in `docs/sessions/archiv/` unverändert.
+**Bau-Sitzungs-Brief-Pipeline (in vorgeschlagener Reihenfolge; jeder
+Bau ist eigene Bau-Sitzung mit eigenem PR; Reihenfolge ist Klaus'
+Entscheidung — Empfehlung: Sage-Page-Refactor zuerst als sichtbares
+Ergebnis, dann Infrastruktur-Bauten als Hebel):**
 
-**Im Body verbleibende Einträge (10, inkl. dieser Pflege):**
+1. **Bau Sage-Page-Refactor** — volle `init()`-Kette aller SBKIM-
+   Module (Modul 00/01/02/03/04/05/06/07/08 in der `index.html` des
+   Sage-Endknotens, statt nur Doku-Render) + Andock-Wizard an der
+   Schwarz-Loch-Karte (analog Karte 09 Schritt 1 + erste Andock-
+   Iteration) + Schichten-Lampen aus der M04-Erweiterung (drei
+   Lampen für fachlich / prozess / skalierung) + Identitäts-Wechsler-
+   UX (Brief-04-Folge — Persona-Liste + Default-Slot „main" + aktiver
+   Slot sichtbar). Geschätzt ~6-10 h.
+2. **Bau 01.Y `ensureStore` in Modul 01** — Option A aus § 9.5
+   Dynamische Store-Erzeugung (`SbkimStorage.ensureStore(name)`
+   öffentlich verfügbar machen, Versions-Bump-Choreografie für
+   DB-Version 3 → 4 nachziehen wenn nötig; Module 02 / 05 / 06 / 07
+   können dann beim Identitäts-Anlegen einen neuen Slot-Store
+   anlegen, ohne fest verdrahtete Slot-Tabelle). Geschätzt ~2-3 h.
+3. **Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump in Modul 02** —
+   die fünf neuen / erweiterten API-Funktionen aus Brief 04
+   implementieren (`getOrCreateIdentity(key?)`,
+   `setActiveIdentity(key)`, `getActiveIdentityKey()`,
+   `listIdentities()`, `removeIdentity(key, options?)`); Backup-
+   Wrapper-Schema auf `BACKUP_FORMAT_VERSION=2` mit
+   `payload.identities[]`-Pflicht-Feld nachziehen (Brief 04 § 9.6
+   „kompletter Rucksack"-Empfehlung, additiver Bump des Backup-
+   Wrapper-Schemas aus § 0; KEIN `PROTOCOL_VERSION`-Eingriff).
+   Geschätzt ~5-8 h (komplex wegen Backup-Schema-Bump und WebCrypto-
+   Pfaden pro Identität).
+4. **Bau 04.A Stufe A erweitert in Modul 04** — `matchDimensions`
+   synchron implementieren (drei Schichten fachlich / prozess /
+   skalierung als `embeddingCapabilities[layer]` ×
+   `embeddingNeeds[layer]` Cosinus pro Schicht, plus Schwellen-
+   Vertrag aus Brief 03 § 1 Modul 04 Stufe-A-Sub-Block). Geschätzt
+   ~2-3 h.
+5. **Bau 04.B Stufe B in Modul 04** — `explainMatchLLM` als opt-in
+   LLM-Call (Stufe B aus Brief 03 § 1 Modul 04 Stufe-B-Sub-Block,
+   JSON-Schema verbindlich, ehrliches Fehlerverhalten bei fehlendem
+   User-Key) + User-Key-Verwaltung (Speicher-Slot + UI-Anker, kein
+   Hardcode). Geschätzt ~5-8 h.
+6. **Bau 05.Y / 06.Y / 07.Y transparenter Slot-Pfad in den
+   Konsumenten** — Module 05 / 06 / 07 lesen `getActiveIdentityKey()`
+   im `init()`-Pfad, cachen den Wert für die Operation, schreiben in
+   `<store-base>_<key>`; Receiver-Map nodeId→key beim `init()`
+   bauen (Brief 04 § 9.3 + § 9.4). Je Modul ~2-3 h.
+7. **Bau Multi-Identitäts-Migration der Endknoten in Mein-Mixarium
+   / Mein-Rezeptbuch** — additive Andock-Wizard-Erweiterung in
+   beiden Endknoten-Repos (Persona-Auswahl beim ersten Andocken
+   anbieten, Default-Slot „main" bleibt). Geschätzt ~2 h.
 
-1. Diese Pflege (Top, 2026-05-18)
-2. 2026-05-18 · M04-Erweiterung als neunter Anker (PR #86)
-3. 2026-05-18 · Multi-Identität (PR #83)
-4. 2026-05-17 · Königin-Relay (PR #82)
-5. 2026-05-17 · Observatorium-Lehre 8 + 8. Galaxie
-6. 2026-05-17 · Vision-Anker V1/V3/Universum
-7. 2026-05-17 · Live-Channel-Handshake + Browser-Observatorium
-8. 2026-05-17 · Bridge-Sichttest
-9. 2026-05-17 · Bau-Sitzung Modul 05 BroadcastChannel-Bridge
-10. 2026-05-17 · Spec-Sitzung Modul 05 BroadcastChannel-Bridge
+**Konsistenz-Prüfung VOR dem Eingriff (Kaskaden-Konvention 5):**
+drei Punkte abgehakt — (1) **alle vier Strang-PRs gemerged:** Brief
+01 PR #96 (`main` `a3e0072`), Brief 02 PR #97 (`main` `69077db`),
+Brief 03 PR #98 (`main` `27d6a19`), Brief 04 PR #99 (`main`
+`59e3998`); (2) **INTERFACES § 0 / § 1 / § 2 / § 6 / § 7 / § 8 /
+§ 9 / § 10 auf Brief-04-Stand geprüft** — drei §0-Konstanten aus
+Brief 03, fünf neue / erweiterte API-Funktionen in Modul 02 aus
+Brief 04, identitäts-spezifische Store-Pattern in 05 / 06 / 07 aus
+Brief 04, § 6.1 - § 6.4 aus Brief 01 + 02, § 7 LLM-Ehrlichkeits-
+Klausel aus Brief 03, § 8 Anti-Missbrauch-Klausel aus Brief 03,
+§ 9 Identitäts-Map aus Brief 04, § 10 Änderungsprotokoll mit
+Brief-01/02/03/04-Einträgen; (3) **PROTOCOL_VERSION-Status-Snapshot:**
+bleibt `"0.1"` — Strategie A (Brief 04) gewählt, keine alten Felder
+zur Pflicht erhoben (Brief 03), keine Spore-Schema-Eingriffe (Brief
+01 + 02); `BACKUP_FORMAT_VERSION` bleibt `1` (Bau-Folge-Sitzung 02.Y
+bumpt auf 2).
 
-Die Marathon-Welle 2026-05-17 (Vision-Anker + Modul-05-Live-Komplex)
-bleibt zusammen sichtbar, weil thematisch verzahnt und der direkte
-Kontext für V1-Sammelspec.
+**Heilige Tafeln eingehalten:**
 
-**Was NICHT angefasst:** Modul-Code, INTERFACES.md, Modul-Karten,
-Sage-Page, `status.json`. Reine Doku-Pflege. `update_puls_pie.py`
-NICHT aufgerufen.
+- **INTERFACES verbindlich.** Nur § 10 Änderungsprotokoll um eine
+  Abschluss-Zeile „Sammelspec-Abschluss (Brief 99)" erweitert. KEINE
+  inhaltliche Änderung an § 0 / § 1 / § 2 / § 6 / § 7 / § 8 / § 9 —
+  Brief 99 dokumentiert nur den Snapshot-Stand.
+- **PROTOCOL_VERSION-Disziplin als bewusste Entscheidung.** Snapshot-
+  Ergebnis `"0.1"` ohne Diskrepanz; keine heimliche Folge-Pflege
+  hat gebumpt. Brief 99 dokumentiert das verbindlich.
+- **Kein neuer Strang.** Brief 99 ist Abschluss — keine inhaltliche
+  Änderung an Brief 01-04, keine Königin-Relay-Spec (V4), keine
+  Identitäts-Container-Spec (V5), keine Extension- oder Mini-Browser-
+  Spec (V7 / V8).
+- **Kein Modul-Code, keine Sage-Page-Änderung, keine CLAUDE.md- /
+  Karte-09- / status.json-Änderung.** Abschluss ist Doku-Pflege; die
+  Bau-Brief-Pipeline lebt in dieser PULS-Notiz.
+- **`update_puls_pie.py` NICHT aufgerufen** (kein status.json-Score-
+  Wechsel).
 
-**PULS-Zeilen-Status:** 3256 → **2337 Zeilen** (−919 netto: 988
-Zeilen Body-Einträge entfernt, +69 für diesen Top-Eintrag). Komfortabel
-unter der 3000er-Schutz-Klausel, Puffer ~660 Zeilen bis zur Schwelle. Für die V1-Sammelspec (mehrtägig) gibt es jetzt Raum,
-ohne dass mittendrin eine weitere Auslagerung nötig wird.
+**Was NICHT angefasst:**
 
-**Konvention-Klärung:** Die Schutzklausel-Konvention „neue Sitzungen
-verschieben den dann jeweils vorletzten in den Archiv-Index" war über
-die Marathon-Welle (2026-05-16/17) nicht konsequent angewandt — die
-Vollband-Einträge blieben im Body **und** der Archiv-Index wurde
-parallel gepflegt. Diese Pflege bereinigt die Doppelung; künftig sollte
-die Konvention pro Sitzung umgesetzt werden (Top-Eintrag im Body, jede
-folgende Sitzung verschiebt vorletzten in den Index).
+- **Modul-Code in `src/`** — Abschluss ist Doku-Pflege. Bau-Folge-
+  Sitzungen (Sage-Page-Refactor, 01.Y, 02.Y, 04.A, 04.B, 05.Y /
+  06.Y / 07.Y, Endknoten-Migration) folgen separat.
+- **Sage-Page `index.html`** — Sage-Page-Refactor ist eigene Bau-
+  Sitzung (Position 1 der Bau-Brief-Pipeline).
+- **Brief 01-04 inhaltlich** — keine Korrekturen, keine Nachträge.
+  Brief 99 fasst nur zusammen.
+- **CLAUDE.md / Karte 09 / `status.json`** — Brief 01 hat sie auf
+  den V1-Stand gebracht, Brief 99 ändert nichts.
+- **Vision-Anker 4 / 5 / 7 / 8** unangetastet — eigene Spec-
+  Sitzungen außerhalb der V1-Sammelspec-Kaskade.
 
-**Nächster sinnvoller Schritt:** V1-Sammelspec auslösen — der Großbrief
-liegt am Chat-Tab (von PR #86) als Codeblock kopierbereit. Mehrtägig,
-nicht headless.
+**Vision-Anker 1 / 6 / 9 § Status nachgezogen** auf „Strang X
+realisiert + Sammelspec-Abschluss (Brief 99) abgeschlossen" mit
+Verweis auf die Bau-Brief-Pipeline. Vision-Anker 4 / 5 / 7 / 8
+**unangetastet** — eigene Spec-Sitzungen außerhalb der Kaskade.
 
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-puls-auslagerung.md](sessions/archiv/2026-05-18_mini-pflege-puls-auslagerung.md).
+**Brief-04-Sitzungs-Eintrag ins Archiv-Index ausgelagert** (Konvention
+pro Sitzung — vorletzten Eintrag auslagern). Voll-Eintrag bleibt im
+Übergabeprotokoll `2026-05-19_spec-multi-identitaet.md`; im Archiv-
+Index als Tabellenzeile oben mit Quintessenz-Stichworten +
+Verlinkung.
+
+**Paralleler offener PR:** PR #89 (Karte 15 Membran als Stub, Draft,
+head `claude/browser-use-indexeddb-Jopiy`) bleibt unangetastet —
+eigener Modul-15-Block nach Modul 09 in INTERFACES, kollidiert nicht
+mit den Brief-99-Eingriffen in § 10.
+
+**Manueller Sichttest:** **ungeprüft, weil reine Doku-Pflege** —
+kein Modul-Code in `src/`, kein `tests/manual_check.html`-Eingriff,
+keine Sage-Page-Änderung; `status.json` unverändert
+(`update_puls_pie.py` nicht aufgerufen).
+
+**Nächster sinnvoller Schritt:** Klaus mergt diese Abschluss-Sitzung
+(damit die V1-Sammelspec-Kaskade auf `main` geschlossen ist), dann
+startet er eine Bau-Sitzung aus der Bau-Brief-Pipeline. Empfehlung
+Reihenfolge: **Sage-Page-Refactor zuerst** (sichtbares Ergebnis für
+Klaus — die Sage-Page lädt endlich alle SBKIM-Module mit voller
+`init()`-Kette und macht den hybriden Endknoten-Status sichtbar);
+gefolgt von **Bau 01.Y `ensureStore`** und **Bau 02.Y Multi-
+Identitäts-API + Backup-Schema-Bump** als Infrastruktur-Hebel für
+alle weiteren Bauten. Die Bau-Reihenfolge ist KEINE Kaskade — jeder
+Bau-Brief ist eigenständige Bau-Sitzung mit eigenem PR.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_abschluss-v1-sammelspec.md](sessions/archiv/2026-05-19_abschluss-v1-sammelspec.md).
 
 ---
+
+### 2026-05-18 · Mini-Pflege — Sonnen-Galaxie um Station 5 (DE-Paper) erweitert
+
+**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
+`claude/bau-vision-10-sonnen-galaxie-JxoIH` (Folge nach PR-#92-Merge,
+auf aktuellem `origin/main` rebased). Klaus hat das deutsche
+SBKIM-Paper als HTML hochgeladen und entschieden: **als 5. Station
+mit eigener Galaxie**.
+
+**Kern:** Die Sage-Geschichts-Galerie trägt jetzt **fünf** Stationen.
+Station 5 ist das deutsche Pendant zum englischen SBKIM-Paper, mit
+identischer Sieben-Sektionen-Struktur und derselben Print-zu-PDF-
+Logik (`window.print()`-Button am unteren Rand). Galaxie-Form:
+`galaxy-quasar` (Lichtstrahl-Beams, visuell auffällig — passt zum
+wissenschaftlichen Niederschlag). Die Bahn-Ellipse skaliert
+automatisch — fünf Phasen à 72°.
+
+**Was eingebaut:**
+
+- `docs/papers/sbkim-paper-de.html` eingecheckt (Klaus' Upload,
+  vollständige deutsche Übersetzung des EN-Papers, eigener
+  Print-Button — kein separates PDF nötig, gleiche Logik wie EN).
+- `STATIONS_DATA` um fünften Eintrag erweitert (`idx: 4`,
+  `status: 'live'`, `shape: 'galaxy-quasar'`, `size: 'large'`,
+  `href: 'docs/papers/sbkim-paper-de.html'`). Bewegungs-Mathematik
+  unverändert — Phasen-Verteilung erfolgt automatisch über
+  `STATIONS_DATA.length`.
+- PULS § Anker 10 § Stationen-Inventar um Zeile für Station 5
+  ergänzt; Überschrift „Start-Konfiguration · 4 Galaxien" auf
+  „5 Galaxien" angehoben.
+- PULS § Anker 10 § Status um Station-5-Vermerk + Verweis auf
+  72°-Phasen-Verteilung erweitert.
+- `docs/papers/README.md` um Zeile für DE-Datei ergänzt;
+  Einleitungstext von „eine Datei" auf „zwei Dateien" angehoben.
+
+**Heilige Tafel — Privatheit:** Pre-Commit-`grep -i everlast` clean
+auf `index.html`, `docs/papers/sbkim-paper-de.html`, PULS, README,
+Session-Protokoll, Commit-Message. Das DE-Paper enthält **keinen**
+kommerziellen Kontext — es ist der wissenschaftliche Niederschlag,
+nicht der Werdegang. Klausel eingehalten.
+
+**Format-Entscheidung „HTML statt PDF":** Das DE-Paper hat — wie
+das EN-Paper — einen eingebauten „Als PDF speichern"-Knopf
+(`window.print()`). On-demand-PDF aus dem Browser heraus, kein
+separates PDF-File im Repo. Konsistent zum EN-Paper.
+
+**Was NICHT angefasst:** Modul-Code, INTERFACES.md, Komponenten-
+Karten, Optik der Sonnen-Karte, Bewegungs-Mathematik (skaliert sich
+selbst), Observatorium-Screen, `status.json`.
+
+**Manueller Sichttest:** ungeprüft headless — Klaus prüft im
+Browser auf `localhost:8000/#sonnen` bzw. nach GitHub-Pages-Deploy,
+dass (a) fünf Galaxien statt vier auf der Ellipse tanzen, (b) die
+neue Quasar-Galaxie das DE-Paper-Modal mit „Original-Dokument
+öffnen →"-Link öffnet, (c) der Print-Knopf im DE-Paper das PDF
+on-demand erzeugt.
+
+**Nächster sinnvoller Schritt:** Sichttest; danach entweder
+Wachstum (sechste Station) oder Themen-Abschluss.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_pflege-sonnen-station-5-de-paper.md](sessions/archiv/2026-05-18_pflege-sonnen-station-5-de-paper.md).
+
+---
+
 
 ### 2026-05-18 · Mini-Pflege — Vision-Anker M04-Erweiterung als neunter Anker
 
@@ -2319,7 +2867,16 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-19 | Spec · Multi-Identität — Strang 3 (Brief 04) der V1-Sammelspec-Kaskade (Brief 04 · PR #99 gemerged 2026-05-19, `main` `59e3998`; INTERFACES § 1 Modul 02 um fünf neue / erweiterte API-Funktionen erweitert (`getOrCreateIdentity(key?)`, `setActiveIdentity(key)`, `getActiveIdentityKey()`, `listIdentities()`, `removeIdentity(key, options?)`), Singleton-Klausel durch Identitäts-Slot-Vertrag ersetzt (Default-Slot „main" verbindlich, beliebig viele weitere Slots, `sbkim_meta["active-identity"]` als String-Marker), Selbstcheck auf zwölf Funktionen erweitert, Fehlerverhalten um `UnknownIdentityError` + `RemoveActiveIdentityError` erweitert; § 1 Modul 05 / 06 / 07 auf identitäts-spezifische Store-Pattern (`sbkim_siblings_<key>`, `sbkim_anastomosis_log_<key>`, `sbkim_legacy_inbox_<key>`, `sbkim_hetero_inbox_<key>`, `sbkim_hetero_outbox_<key>`) umgestellt mit Identitäts-Cache- und Receiver-Map-nodeId→key-Konvention; § 2 Spore-JSON Multi-Identitäts-Hinweis-Block (Strategie A gewählt — nur aktive Identität in `spore.json`, `PROTOCOL_VERSION` bleibt `"0.1"`; Strategie B NICHT gewählt — würde auf `"0.2"` bumpen); § 9 Identitäts-Map als neue verbindliche Spec-Klausel mit sieben Sub-§ (9.1 Slot-Schema, 9.2 identitäts-spezifische Stores + Persona-Isolation, 9.3 active-identity-Marker, 9.4 Receiver-Pfad, 9.5 Migrations-Strategie Option A/B, 9.6 Trade-off-Klausel, 9.7 Verbindung zur M04-Erweiterung); § 9 Änderungsprotokoll auf § 10 nachnummeriert; Apoptose-Granularität entschieden — `confirmSelfApoptose` global, `removeIdentity(key, {force:true})` ist Single-Identitäts-Apoptose mit Hook `_sendLegacyForIdentity` in Modul 07; Karten 02 / 05 / 06 / 07 nachgezogen; `PROTOCOL_VERSION` bleibt `"0.1"`, `BACKUP_FORMAT_VERSION` bleibt `1` (Bump 1→2 in Bau-Folge-Sitzung 02.Y); BRIEF_99 `docs/sessions/BRIEF_99_SAMMELSPEC_ABSCHLUSS.md` angelegt; kein Modul-Code, keine Sage-Page-Änderung) | [→ Archiv](sessions/archiv/2026-05-19_spec-multi-identitaet.md) |
+| 2026-05-19 | Spec · M04-Erweiterung — Strang 2 (Brief 03) der V1-Sammelspec-Kaskade (Brief 03 · PR #98 gemerged 2026-05-19, `main` `27d6a19`; INTERFACES § 0 um drei §0-Konstanten erweitert (`SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL="claude-sonnet-4"`, `STUFE_B_MAX_TOKENS=1024`), § 1 Modul 02 Bietet-Block-Spore-Schema-Erweiterungs-Hinweis (`embeddingCapabilities` Alias + `embeddingNeeds` neu), § 1 Modul 04 um zwei neue Funktionen + vier neue Sub-Blöcke (Drei-Schichten-Modell mit Mittelwert-vs-Min-Begründung, Brücken-Feld-Spec mit BridgeProposal, Schwellen-Vertrag mit 5 Auswertungs-Regeln, Stufe-B-Vertrag mit JSON-Schema und Beispiel-Output mit zwei Personas) + Fehlerverhalten-Tabelle um sieben neue Zeilen + Garantien um vier neue Punkte erweitert, § 2 Spore-JSON Optionale Felder um die zwei neuen Vektor-Felder erweitert, § 7 LLM-Stufe-B-Ehrlichkeits-Klausel (vier verbindliche Sätze: Stufe B opt-in, Stufe A rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen, Knoten ohne Stufe B = vollwertige Netz-Teilnehmer), § 8 Anti-Missbrauch-Klausel (drei verbindliche Sätze: Brücken-Vorschlag lokal, `candidateScope:"netz"` formal nicht aktivierbar bis Anker 10-12, Modul 06 filtert Outbox-Einträge), § 7 Änderungsprotokoll auf § 9 nachnummeriert; Karten 02 (M04-Sub-Block mit Migrations-Tabelle vier Spore-Zustände + Bauzustand-Hinweis für Bau-Folge-Sitzung) / 04 (vier neue Sub-Blöcke parallel zu INTERFACES + Stamm/Gast-Block unverändert) / 06 (Brücken-Vorschlag-Eintrags-Typ-Sub-Block + vier-stufige Filter-Logik) nachgezogen; PROTOCOL_VERSION bleibt `"0.1"` (additive Felder + additive Funktionen, kein altes Feld zur Pflicht erhoben); kein Modul-Code in `src/`, keine Sage-Page-Änderung; Brief 04 `docs/sessions/BRIEF_04_multi_identitaet.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-19_spec-m04-erweiterung.md) |
+| 2026-05-18 | Spec · Plattform-Matrix — Strang 2 der V1-Sammelspec-Kaskade (Brief 02 · PR #97 gemerged — `main` `69077db`; INTERFACES § 6.2 Plattform-Matrix mit fünf Profilen × sechs Spalten + Sage-Anmerkung, § 6.3 Plattform-Ehrlichkeits-Klausel als verbindliche Spec-Klausel mit Begründung aus Klaus' Lehre 1, § 6.4 Vision-Bezüge als Querverweis-Matrix mit sieben Ankern; § 6.1 Plattform-Matrix-Stub auf Verweis umgeschrieben; Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6 streng eingehalten; `PROTOCOL_VERSION` bleibt `"0.1"`; CLAUDE.md / Karte 09 / `status.json` unangetastet — Brief 02 lebt rein in INTERFACES; Brief 03 `docs/sessions/BRIEF_03_m04_erweiterung.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-plattform-matrix.md) |
+| 2026-05-18 | Spec · V1 Sage-Hybrid — Strang 1 der V1-Sammelspec-Kaskade (Brief 01 · PR #96 gemerged — `main` `a3e0072`; INTERFACES § 6 Endknoten-Liste neu mit Sage als drittem Endknoten + § 6.1 Sage-Page-Architektur mit IndexedDB-Suffix `sbkim_sage` / App-SW Variante 3a / volle init()-Kette / Andock-Geste an Schwarz-Loch-Karte; CLAUDE.md auf „Hub und Knoten zugleich"; Karte 09 § Schritt 1 erweitert; `status.json` § endknoten um sage-Eintrag mit `pingStatus:"pending-first-andock"`; Domäne „Mycel-Bibliothek" gewählt; `PROTOCOL_VERSION` bleibt `"0.1"`; Sage-Page-Refactor folgt als Bau-Sitzung in BRIEF_99-Liste; Brief 02 `docs/sessions/BRIEF_02_plattform_matrix.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-v1-sage-hybrid.md) |
+| 2026-05-18 | Meta-Pflege · V1-Sammelspec als Brief-Kaskade sequenziert (PR #93 + Konvention-6-Refactor PR #95 — sechs heilige Tafeln: ein Strang = ein PR, Brief als Datei im Repo, einheitlicher Bauplan, BRIEF_99-Abschluss, verteilte Konsistenz-Prüfung, Auslöser-Befehl im Chat statt Brief-Volltext; Strang-Reihenfolge Brief 01 V1-Sage-Hybrid → Brief 02 Plattform-Matrix → Brief 03 M04-Erweiterung → Brief 04 Multi-Identität → BRIEF_99-Abschluss; Brief 01 `docs/sessions/BRIEF_01_v1_sage_hybrid.md` als erste Brief-Datei angelegt; PROTOCOL_VERSION bleibt `"0.1"` solange Stränge additiv; kein Modul-Code, kein INTERFACES-Eingriff in der Meta-Pflege selbst) | [→ Archiv](sessions/archiv/2026-05-18_meta-pflege-v1-sammelspec-kaskade.md) |
 | 2026-05-18 | Hauptsitzung · Modul 15 Membran — Backlog-Stub angelegt (KI-Browser-Schnittstelle + App-zu-App-Brücke; vier Sub-Bereiche a/b Pflicht, c später, d nur Verweis; status.json `membranBacklog[]`, scripts/update_puls_pie.py mit-zählend, PULS-Schnellüberblick + neue Sektion „Membran-Backlog", CLAUDE.md-Modul-Tabelle erweitert + Karte 14 nachgeholt, INTERFACES.md Block nach Modul 09, Sage-Page Karten 4/13/14 + FALLBACK_STATUS; Vokabular „Cells" als Mycel-Anker = Zellmembran) | [→ Archiv](sessions/archiv/2026-05-18_haupt-15-membran-stub.md) |
+| 2026-05-18 | Mini-Pflege · Sonnen-Galaxie Stationen 1–3 inhaltlich gefüllt (PR #92 — drei Erzähl-Texte je 4 Absätze, basierend auf Hero-Claim/CLAUDE.md/PULS § Anker 9; `openStationModal()` jetzt 1:1 wie `openUniverseModal()` mit `|`-Splitting + Markdown-Parser; Placeholder-Hint-Logik auf expliziten `s.placeholder`-Flag umgestellt; Privatheits-Klausel eingehalten) | [→ Archiv](sessions/archiv/2026-05-18_pflege-sonnen-stationen-erzaehl-texte.md) |
+| 2026-05-18 | Bau-Sitzung · Vision-Anker 10 Sonnen-Galaxie · Sage-Geschichts-Galerie (PR #90 — alle sieben Eingriffe aus PULS § Anker 10 § Architektur-Skizze additiv in `index.html` umgesetzt: CSS Sonnen-Karte mit Korona/Disk/12-Sommersprossen, CSS Geschichts-Galerie-Screen mit `#02020c`-BG und warm-goldenen Nebeln, HTML Sonnen-Karte vor `.card.reading`, HTML `#screen-sonnen` nach Observatorium, `SCREENS`-Array, `goScreen()` + `applyHashScreen()`, JS-Block mit `STATIONS_DATA` + `setupSonnenGalaxie()` 1:1 wie Observatorium für Stars/Maus/Komet-Schweif/Wake-Boost; Optik-Korrekturen mid-PR Klaus eingearbeitet — Kern verschwommen, 12 wabernde Sommersprossen statt 3 großer Flecken, dunkler statt brauner Hintergrund, Ring dreht sich nicht mehr sondern pulst nur bei Hover; `docs/papers/README.md` angelegt; Privatheits-Klausel eingehalten) | [→ Archiv](sessions/archiv/2026-05-18_bau-vision-10-sonnen-galaxie.md) |
+| 2026-05-18 | Mini-Pflege · Vision-Anker Sonnen-Galaxie als zehnter Anker (Geschichts-Galerie · PR #88 — Anker 10 in PULS § Vision-Anker eingefügt, mid-Pflege re-gerahmt von „Papers-Bibliothek" auf „Sage-Geschichts-Galerie"; heilige Privatheits-Klausel „Everlast GmbH NICHT erwähnen"; `docs/papers/sbkim-paper-en.html` als dokumentengestützte Station 4 eingecheckt; Brief für Bau-Sitzung in `docs/sessions/BRIEF_BAU_SONNEN_GALAXIE.md` abgelegt und auf Geschichts-Galerie umgeschrieben; CSS-Probelauf testweise eingefügt und disziplin-konform zurückgerollt) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-10-sonnen-galaxie.md) |
+| 2026-05-18 | Mini-Pflege · PULS-Auslagerung (8 ältere Sitzungs-Einträge aus dem Body in den Archiv-Index ausgelagert; Doppelung Body↔Index beseitigt; PULS 3256 → 2337 Zeilen netto −919; Konvention pro Sitzung wieder angewandt; reine Doku-Pflege, kein Modul-Code, kein `update_puls_pie.py`-Aufruf) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-puls-auslagerung.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Mini-Browser (Tauri-App) als achter Anker (PR #85 — eigener achter Anker für die dedizierte Desktop-App; Konzept Tauri-Stack ~10-30 MB, eigene IndexedDB im App-Daten-Verzeichnis, Tray-Icon-Modus für Hintergrund-Empfang, Doppelklick-Installer .msi/.dmg/.AppImage, Auto-Update via Tauri-Updater; Verbindungen zu V2-Pfad-3 / V4 Königin-Hintergrund / V5 Backup-Datei / V6 Identitäts-Wechsler im Tray / V7 gleiche Modul-13-Bridge; Abgrenzung zu V7 Extension; Desktop-only — Mobile/DeX außen vor; PR-#84-Sitzungs-Eintrag dort ins Archiv ausgelagert) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-mini-browser.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Extension („Lampe in der Toolbar") + Mini-Browser-Konkretisierung Anker 2 Pfad 3 (PR #84 — siebter Vision-Anker; Manifest V3, Modul-13-Bridge, Plattform-Tabelle Desktop ja / Mobile nein, drei gleichwertige Onboarding-Pfade; Mini-Browser-Konkretisierung später per Folge-Pflege als eigener Anker 8 vertieft) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-extension.md) |
 | 2026-05-17 | Spec · Modul 05 BroadcastChannel-Bridge als same-origin Fallback (additiver Transport additiv zum HTTP-Pfad; `handshake(...)` um optionalen `options.transport`-Parameter erweitert mit Default `"auto"`; Wrapper-Envelope mit `replyChannelName` aus nonce; `BroadcastChannel('sbkim')` als gemeinsamer Channel pro Origin; `toNodeId` Pflicht im Channel-Pfad; Receiver-Tab muss offen sein, kein Wake-Lock; E1–E7-Entscheidungstabelle mit Begründungen; HandshakeRequest/Response-Schema unverändert; `PROTOCOL_VERSION` bleibt `"0.1"`; KEIN Code, KEIN Eingriff in Karte 09 — Bau-Sitzung folgt) | [→ Archiv](sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md) |

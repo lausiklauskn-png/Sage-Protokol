@@ -400,6 +400,79 @@
   .ueber-cta { margin-top: 1.4rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .name-glossar-fuss { color: var(--muted); font-size: 0.92rem; margin: 0.8rem 0 1.6rem; }
 
+  /* === Sonnen-Galaxie · Sage-Geschichts-Galerie === */
+  .sun-card { background: radial-gradient(ellipse at 30% 50%, #0a0a18 0%, #06061a 45%, #02020c 100%); border: 1px solid var(--line-strong); overflow: hidden; isolation: isolate; }
+  .sun-card .card-tag { background: rgba(255,220,150,0.08); color: #f0d8a8; border: 1px solid rgba(244,180,53,0.22); }
+  .sun-stage { display: grid; grid-template-columns: minmax(220px, 320px) 1fr; gap: 2rem; align-items: center; text-decoration: none; color: inherit; padding: 0.5rem 0; cursor: pointer; }
+  .sun-scene { position: relative; width: 100%; aspect-ratio: 1; max-width: 280px; margin: 0 auto; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+  .sun-stage:hover .sun-scene { transform: scale(1.04); }
+  /* Äußere weiche Korona (radial, pulsierend) */
+  .sun-corona { position: absolute; inset: -8%; border-radius: 50%; background: radial-gradient(circle at center, rgba(255,230,170,0.95) 0%, rgba(255,180,80,0.65) 22%, rgba(255,120,40,0.35) 45%, rgba(200,80,20,0.15) 70%, transparent 100%); filter: blur(10px); opacity: 0.88; animation: sun-corona-pulse 6s ease-in-out infinite; }
+  /* Konischer Ring — NICHT drehend; pulst nur bei Hover (1:1 wie bh-chrome-Hover-Funktion: Animation läuft erst beim Mouseover) */
+  .sun-corona-2 { position: absolute; inset: -2%; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255,200,100,0) 0%, rgba(255,220,140,0.55) 12%, rgba(255,150,60,0.18) 28%, rgba(255,230,150,0.45) 50%, rgba(255,160,60,0.18) 72%, rgba(255,210,130,0.55) 90%, rgba(255,200,100,0) 100%); filter: blur(7px); mix-blend-mode: screen; opacity: 0.55; }
+  /* Sonnenkern — verschwommen wie Korona, kein Vollton */
+  .sun-disk { position: absolute; inset: 16%; border-radius: 50%; background: radial-gradient(circle at 50% 48%, rgba(255,235,180,0.85) 0%, rgba(255,180,90,0.62) 28%, rgba(220,110,50,0.40) 55%, rgba(120,55,25,0.18) 80%, transparent 100%); filter: blur(11px); opacity: 0.95; animation: sun-disk-pulse 7s ease-in-out infinite; }
+  /* Sonnenflecken — viele kleine, unterschiedliche Größen, organisch wabernde Ränder (Sommersprossen-Optik) */
+  .sun-spot { position: absolute; background: radial-gradient(ellipse at 42% 40%, rgba(20,10,5,0.88) 0%, rgba(12,6,3,0.70) 55%, rgba(8,4,2,0.32) 80%, transparent 100%); filter: blur(1.4px); opacity: 0.85; mix-blend-mode: multiply; will-change: border-radius, transform; }
+  .sun-spot.s1  { top: 30%; left: 36%; width: 6%; height: 6%; border-radius: 62% 42% 55% 47% / 58% 50% 60% 42%; animation: sun-spot-wabble-a 8s  ease-in-out infinite; }
+  .sun-spot.s2  { top: 36%; left: 50%; width: 4%; height: 4%; border-radius: 50% 60% 45% 55% / 60% 45% 55% 50%; animation: sun-spot-wabble-b 11s ease-in-out infinite -2s; }
+  .sun-spot.s3  { top: 42%; left: 38%; width: 5%; height: 5%; border-radius: 58% 48% 50% 52% / 45% 55% 50% 60%; animation: sun-spot-wabble-c 9s  ease-in-out infinite -4s; }
+  .sun-spot.s4  { top: 48%; left: 58%; width: 7%; height: 7%; border-radius: 48% 58% 56% 44% / 56% 44% 60% 48%; animation: sun-spot-wabble-a 10s ease-in-out infinite -1s; }
+  .sun-spot.s5  { top: 54%; left: 44%; width: 4%; height: 4%; border-radius: 56% 46% 60% 44% / 48% 58% 42% 56%; animation: sun-spot-wabble-b 12s ease-in-out infinite -5s; }
+  .sun-spot.s6  { top: 38%; left: 62%; width: 5%; height: 5%; border-radius: 52% 50% 46% 58% / 56% 44% 58% 46%; animation: sun-spot-wabble-c 8s  ease-in-out infinite -3s; }
+  .sun-spot.s7  { top: 60%; left: 52%; width: 6%; height: 6%; border-radius: 60% 44% 52% 50% / 48% 56% 44% 60%; animation: sun-spot-wabble-a 11s ease-in-out infinite -6s; }
+  .sun-spot.s8  { top: 32%; left: 56%; width: 3%; height: 3%; border-radius: 56% 48% 58% 46% / 52% 56% 46% 58%; animation: sun-spot-wabble-b 9s  ease-in-out infinite -1s; }
+  .sun-spot.s9  { top: 50%; left: 32%; width: 4%; height: 4%; border-radius: 46% 58% 50% 56% / 60% 46% 56% 44%; animation: sun-spot-wabble-c 10s ease-in-out infinite -7s; }
+  .sun-spot.s10 { top: 58%; left: 66%; width: 5%; height: 5%; border-radius: 54% 50% 48% 56% / 46% 60% 48% 54%; animation: sun-spot-wabble-a 12s ease-in-out infinite -4s; }
+  .sun-spot.s11 { top: 65%; left: 40%; width: 4%; height: 4%; border-radius: 50% 56% 58% 44% / 56% 48% 54% 46%; animation: sun-spot-wabble-b 8s  ease-in-out infinite -3s; }
+  .sun-spot.s12 { top: 44%; left: 48%; width: 6%; height: 6%; border-radius: 58% 46% 54% 50% / 50% 58% 44% 56%; animation: sun-spot-wabble-c 11s ease-in-out infinite -2s; }
+  /* Hover-Verstärkung — Korona pulst schneller, Ring beginnt überhaupt erst zu pulsieren (1:1 wie bh-chrome-Hover-Mechanik) */
+  .sun-stage:hover .sun-corona   { animation-duration: 3s; opacity: 1; }
+  .sun-stage:hover .sun-corona-2 { animation: sun-corona-2-pulse 2.6s ease-in-out infinite; }
+  .sun-stage:hover .sun-disk     { animation-duration: 3.5s; filter: blur(13px) brightness(1.12); }
+  .sun-stage:hover .sun-spot     { animation-duration: 4.5s; }
+  @keyframes sun-corona-pulse {
+    0%, 100% { transform: scale(1);    opacity: 0.85; filter: blur(10px); }
+    50%      { transform: scale(1.08); opacity: 0.96; filter: blur(12px); }
+  }
+  @keyframes sun-corona-2-pulse {
+    0%, 100% { transform: scale(1);    opacity: 0.55; filter: blur(7px); }
+    50%      { transform: scale(1.07); opacity: 0.92; filter: blur(9px); }
+  }
+  @keyframes sun-disk-pulse {
+    0%, 100% { transform: scale(1);    opacity: 0.92; filter: blur(11px); }
+    50%      { transform: scale(1.05); opacity: 1;    filter: blur(13px); }
+  }
+  @keyframes sun-spot-wabble-a {
+    0%   { border-radius: 62% 42% 55% 47% / 58% 50% 60% 42%; transform: scale(1)    rotate(0deg); }
+    33%  { border-radius: 48% 58% 42% 60% / 55% 42% 60% 48%; transform: scale(1.06) rotate(5deg); }
+    66%  { border-radius: 56% 46% 60% 44% / 48% 60% 42% 55%; transform: scale(0.94) rotate(-4deg); }
+    100% { border-radius: 62% 42% 55% 47% / 58% 50% 60% 42%; transform: scale(1)    rotate(0deg); }
+  }
+  @keyframes sun-spot-wabble-b {
+    0%   { border-radius: 50% 60% 45% 55% / 60% 45% 55% 50%; transform: scale(1)    rotate(0deg)  translate(0,0); }
+    50%  { border-radius: 60% 45% 55% 50% / 45% 55% 50% 60%; transform: scale(1.08) rotate(-6deg) translate(1%,-1%); }
+    100% { border-radius: 50% 60% 45% 55% / 60% 45% 55% 50%; transform: scale(1)    rotate(0deg)  translate(0,0); }
+  }
+  @keyframes sun-spot-wabble-c {
+    0%   { border-radius: 58% 48% 50% 52% / 45% 55% 50% 60%; transform: scale(1)    rotate(0deg)  translate(0,0); }
+    40%  { border-radius: 45% 55% 60% 48% / 50% 48% 55% 60%; transform: scale(1.05) rotate(8deg)  translate(-1%,1%); }
+    80%  { border-radius: 52% 46% 58% 50% / 55% 50% 48% 55%; transform: scale(0.96) rotate(-5deg) translate(1%,0); }
+    100% { border-radius: 58% 48% 50% 52% / 45% 55% 50% 60%; transform: scale(1)    rotate(0deg)  translate(0,0); }
+  }
+  .sun-caption h3 { margin: 0 0 0.6rem; font-size: 1.3rem; color: #fff; letter-spacing: -0.005em; }
+  .sun-caption p { margin: 0 0 0.7rem; line-height: 1.65; color: #d8d8e8; max-width: 56ch; }
+  .sun-caption .sun-hint { display: inline-block; padding: 0.32rem 0.7rem; background: linear-gradient(90deg, rgba(255,180,80,0.18) 0%, rgba(244,180,53,0.14) 100%); border: 1px solid rgba(244,180,53,0.4); border-radius: 999px; color: var(--gold); font-size: 0.92rem; font-weight: 500; margin-top: 0.3rem; }
+  .sun-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--r-sm); }
+  @media (max-width: 780px) {
+    .sun-stage { grid-template-columns: 1fr; gap: 1rem; }
+    .sun-scene { max-width: 220px; }
+    .sun-caption h3 { font-size: 1.15rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sun-corona, .sun-corona-2, .sun-disk, .sun-spot { animation: none; }
+  }
+
   /* === Browser-Observatorium · schwarzes Loch === */
   .blackhole-card { background: radial-gradient(ellipse at 22% 50%, #1a0a2e 0%, #08081A 45%, #000 100%); border: 1px solid var(--line-strong); overflow: hidden; isolation: isolate; }
   .blackhole-card .card-tag { background: rgba(255,255,255,0.08); color: #d8d8e8; border: 1px solid rgba(255,255,255,0.12); }
@@ -538,6 +611,80 @@
   @media (prefers-reduced-motion: reduce) {
     .universe-nebula, .universe-galaxy .galaxy-body { animation: none; }
     .universe-modal-card { animation: none; }
+  }
+
+  /* === Sage-Geschichts-Galerie-Screen === */
+  .sonnen-screen { position: relative; min-height: 100vh; padding: 0; background: #02020c; color: #fdf2e0; overflow: hidden; }
+  .sonnen-back { position: fixed; top: 1.2rem; left: 1.2rem; z-index: 90; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,200,140,0.25); color: #fdf2e0; padding: 0.55rem 1rem; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .2s, border-color .2s; }
+  .sonnen-back:hover { background: rgba(0,0,0,0.85); border-color: rgba(255,200,140,0.5); }
+  .sonnen-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; }
+  /* Cursor unsichtbar — Komet-Schweif ist der einzige Zeiger (1:1 vom Observatorium übernommen) */
+  .sonnen-screen, .sonnen-screen *, .sonnen-stage, .sonnen-stage *, .station-galaxy { cursor: none !important; }
+  .sonnen-back, .sonnen-back * { cursor: pointer !important; }
+  .station-modal, .station-modal *, .station-modal-close, .station-modal-link { cursor: auto !important; }
+  .station-modal button, .station-modal-link { cursor: pointer !important; }
+  .sonnen-stars { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  .sonnen-nebula { position: absolute; pointer-events: none; mix-blend-mode: screen; opacity: 0.55; filter: blur(40px); will-change: transform; }
+  .sonnen-nebula-1 { top: -8%; left: -6%;  width: 65%; height: 65%; background: radial-gradient(ellipse at 30% 40%, rgba(244,180,53,0.55) 0%, rgba(255,160,80,0.32) 30%, rgba(220,110,30,0.18) 55%, transparent 75%); animation: sonnen-nebula-drift-1 140s ease-in-out infinite alternate; }
+  .sonnen-nebula-2 { top: 18%; right: -10%; width: 72%; height: 72%; background: radial-gradient(ellipse at 60% 50%, rgba(255,200,100,0.5) 0%, rgba(255,140,60,0.3) 28%, rgba(220,90,40,0.18) 55%, transparent 78%); animation: sonnen-nebula-drift-2 165s ease-in-out infinite alternate; }
+  .sonnen-nebula-3 { bottom: -15%; left: 18%; width: 78%; height: 60%; background: radial-gradient(ellipse at 45% 60%, rgba(255,120,40,0.32) 0%, rgba(244,180,53,0.28) 25%, rgba(180,80,30,0.18) 55%, transparent 80%); animation: sonnen-nebula-drift-3 180s ease-in-out infinite alternate; }
+  @keyframes sonnen-nebula-drift-1 { 0% { transform: translate(0,0) scale(1) rotate(0deg); } 50% { transform: translate(8%, 6%) scale(1.10) rotate(40deg); } 100% { transform: translate(-4%, 10%) scale(1.05) rotate(-25deg); } }
+  @keyframes sonnen-nebula-drift-2 { 0% { transform: translate(0,0) scale(1) rotate(0deg); } 50% { transform: translate(-9%, -6%) scale(1.08) rotate(-30deg); } 100% { transform: translate(5%, -10%) scale(1.12) rotate(20deg); } }
+  @keyframes sonnen-nebula-drift-3 { 0% { transform: translate(0,0) scale(1) rotate(0deg); } 50% { transform: translate(7%, -8%) scale(1.06) rotate(25deg); } 100% { transform: translate(-6%, 5%) scale(1.10) rotate(-15deg); } }
+
+  .sonnen-galaxies { position: absolute; inset: 0; pointer-events: none; }
+  button.station-galaxy, .station-galaxy { position: absolute; width: 110px; height: 110px; pointer-events: auto; cursor: pointer; transform-origin: center; transition: filter 0.5s ease, transform 0.5s ease; will-change: transform, filter; background: none !important; background-color: transparent !important; background-image: none !important; border: 0 !important; padding: 0 !important; outline: none !important; box-shadow: none !important; -webkit-appearance: none; appearance: none; -webkit-tap-highlight-color: transparent; color: inherit; }
+  button.station-galaxy:hover, button.station-galaxy:focus, .station-galaxy:hover, .station-galaxy:focus { background: none !important; background-color: transparent !important; background-image: none !important; border-color: transparent !important; box-shadow: none !important; }
+  .station-galaxy .galaxy-body { position: absolute; inset: 0; border-radius: 50%; animation: galaxy-spin 24s linear infinite; }
+  .station-galaxy.medium .galaxy-body { animation-duration: 32s; }
+  .station-galaxy.large  .galaxy-body { animation-duration: 40s; }
+  .station-galaxy .galaxy-label { position: absolute; top: 100%; left: 50%; transform: translate(-50%, 0.6rem); white-space: nowrap; font-size: 0.78rem; letter-spacing: 0.04em; color: #fff; text-shadow: 0 0 12px rgba(0,0,0,0.95); opacity: 0; filter: blur(10px); transition: opacity 0.6s ease, filter 0.7s ease, transform 0.4s ease; pointer-events: none; padding: 0.25rem 0.65rem; background: rgba(20,8,4,0.7); border: 1px solid rgba(244,180,53,0.3); border-radius: 999px; backdrop-filter: blur(4px); }
+  .station-galaxy:hover, .station-galaxy:focus, .station-galaxy.awake { filter: brightness(1.25) saturate(1.2) drop-shadow(0 0 18px rgba(244,180,53,0.45)); transform: scale(1.12); }
+  .station-galaxy:hover .galaxy-label, .station-galaxy:focus .galaxy-label, .station-galaxy.awake .galaxy-label { opacity: 1; filter: blur(0); transform: translate(-50%, 0.85rem); }
+
+  /* Status-Klassen — text-only sichtbar gedämpft („Geschichte folgt"), live volle Sättigung */
+  .station-galaxy.text-only { opacity: 0.72; filter: saturate(0.65); }
+  .station-galaxy.text-only:hover, .station-galaxy.text-only:focus, .station-galaxy.text-only.awake { opacity: 0.96; filter: saturate(0.95) brightness(1.18) drop-shadow(0 0 14px rgba(255,200,110,0.4)); }
+  .station-galaxy.live { opacity: 1; filter: saturate(1.12); }
+
+  .station-galaxy.small  { width: 90px;  height: 90px; }
+  .station-galaxy.medium { width: 130px; height: 130px; }
+  .station-galaxy.large  { width: 170px; height: 170px; }
+
+  .sonnen-hint { position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%); z-index: 90; display: inline-flex; align-items: center; gap: 1rem; padding: 0.55rem 1.1rem; background: rgba(20,8,4,0.65); border: 1px solid rgba(244,180,53,0.3); border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #f0d8a8; font-size: 0.88rem; }
+
+  /* Station-Modal (analog universe-modal, warm-goldener Ton) */
+  .station-modal { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 1.5rem; }
+  .station-modal[hidden] { display: none; }
+  .station-modal-backdrop { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(60,25,10,0.55) 0%, rgba(0,0,0,0.85) 70%); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .station-modal-card { position: relative; z-index: 1; max-width: 620px; width: 100%; padding: 2rem 2rem 1.5rem; background: linear-gradient(160deg, rgba(55,25,12,0.92) 0%, rgba(28,12,6,0.95) 100%); border: 1px solid rgba(244,180,53,0.3); border-radius: 22px; color: #fdf2e0; box-shadow: 0 28px 60px rgba(0,0,0,0.65), inset 0 0 80px rgba(255,160,80,0.12); animation: modal-zoom .45s cubic-bezier(0.2,0.7,0.2,1); }
+  .station-modal-close { position: absolute; top: 0.9rem; right: 1rem; width: 32px; height: 32px; padding: 0; background: rgba(255,220,160,0.1); border: 1px solid rgba(244,180,53,0.3); border-radius: 50%; color: #fdf2e0; font-size: 1rem; line-height: 1; cursor: pointer; }
+  .station-modal-close:hover { background: rgba(255,220,160,0.2); }
+  .station-modal-tag { display: inline-block; font-size: 0.78rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .station-modal-head h2 { margin: 0 0 1rem; font-size: 1.35rem; letter-spacing: -0.005em; color: #fff; }
+  .station-modal-body { line-height: 1.65; color: #e8d8c0; font-size: 0.96rem; }
+  .station-modal-body p { margin: 0 0 0.85rem; }
+  .station-modal-body p:last-child { margin-bottom: 0; }
+  .station-modal-body strong { color: #fff; }
+  .station-modal-body .station-modal-link { display: inline-block; margin-top: 0.6rem; color: rgba(244,180,53,0.85); font-size: 0.88rem; font-weight: 500; letter-spacing: 0.01em; text-decoration: none; }
+  .station-modal-body .station-modal-link:hover { color: var(--gold); }
+  .station-modal-body .station-placeholder-hint { display: inline-block; padding: 0.3rem 0.7rem; background: rgba(255,180,80,0.12); border: 1px dashed rgba(244,180,53,0.4); border-radius: 999px; color: #f4b435; font-size: 0.85rem; font-style: italic; margin-top: 0.6rem; }
+
+  @media (max-width: 720px) {
+    .sonnen-back { top: 0.6rem; left: 0.6rem; padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    .station-galaxy.small  { width: 70px;  height: 70px; }
+    .station-galaxy.medium { width: 100px; height: 100px; }
+    .station-galaxy.large  { width: 130px; height: 130px; }
+    .station-galaxy .galaxy-label { font-size: 0.7rem; padding: 0.2rem 0.5rem; }
+    .sonnen-hint { font-size: 0.78rem; padding: 0.4rem 0.8rem; }
+    .station-modal { padding: 0.8rem; }
+    .station-modal-card { padding: 1.4rem 1.3rem 1rem; }
+    .station-modal-head h2 { font-size: 1.15rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sonnen-nebula, .station-galaxy .galaxy-body { animation: none; }
+    .station-modal-card { animation: none; }
   }
   </style>
 </head>
@@ -747,6 +894,35 @@
             </div>
           </div>
           <div class="bars-legend">UI: 00, 08 · Netzwerk: 05, 06 · Kern: 01–04, 07</div>
+        </article>
+        <article class="card span-12 sun-card" data-back-anchor="sonnen">
+          <span class="card-tag">Sage-Geschichts-Galerie · auf den Spuren des Protokolls</span>
+          <a class="sun-stage" href="#sonnen"
+             onclick="goScreen('sonnen', 'sonnen'); return false;"
+             aria-label="Geschichts-Galerie öffnen — Sonnen-Galaxie">
+            <div class="sun-scene" aria-hidden="true">
+              <div class="sun-corona"></div>
+              <div class="sun-corona-2"></div>
+              <div class="sun-disk"></div>
+              <div class="sun-spot s1"></div>
+              <div class="sun-spot s2"></div>
+              <div class="sun-spot s3"></div>
+              <div class="sun-spot s4"></div>
+              <div class="sun-spot s5"></div>
+              <div class="sun-spot s6"></div>
+              <div class="sun-spot s7"></div>
+              <div class="sun-spot s8"></div>
+              <div class="sun-spot s9"></div>
+              <div class="sun-spot s10"></div>
+              <div class="sun-spot s11"></div>
+              <div class="sun-spot s12"></div>
+            </div>
+            <div class="sun-caption">
+              <h3>Auf welchen Spuren Sage gewachsen ist</h3>
+              <p>Was macht man, wenn man auf eine Antwort wartet? Man macht sich selber an die Arbeit. Hier liegen die Stationen, an denen das Protokoll seine Form gefunden hat — Namensgebung, das bidirektionale Match-Prinzip, die Geburt als Mycel, und das Paper, das die Theorie zusammenträgt.</p>
+              <p class="sun-hint">Klicke in die Sonne → die Stationen tanzen als Galaxien um sie herum.</p>
+            </div>
+          </a>
         </article>
         <article class="card reading span-12" data-back-anchor="reading">
           <span class="card-tag">Über das Protokoll · Lesematerial</span>
@@ -1120,6 +1296,31 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </article>
       </div>
     </main>
+    <!-- ============= SAGE-GESCHICHTS-GALERIE ============= -->
+    <main id="screen-sonnen" class="screen sonnen-screen">
+      <button class="screen-back sonnen-back" onclick="goScreen('overview', 'sonnen')">← Zurück zur Sage</button>
+      <div class="sonnen-stage" id="sonnen-stage">
+        <canvas id="sonnen-stars" class="sonnen-stars" aria-hidden="true"></canvas>
+        <div class="sonnen-nebula sonnen-nebula-1" aria-hidden="true"></div>
+        <div class="sonnen-nebula sonnen-nebula-2" aria-hidden="true"></div>
+        <div class="sonnen-nebula sonnen-nebula-3" aria-hidden="true"></div>
+        <div class="sonnen-galaxies" id="sonnen-galaxies" aria-label="Stationen der Sage-Entwicklung"></div>
+        <div class="sonnen-hint">
+          <span>Vier Stationen · Klick öffnet die Geschichte.</span>
+        </div>
+      </div>
+      <div class="station-modal" id="station-modal" role="dialog" aria-modal="true" aria-labelledby="station-modal-title" hidden>
+        <div class="station-modal-backdrop" onclick="closeStationModal()"></div>
+        <article class="station-modal-card">
+          <button class="station-modal-close" onclick="closeStationModal()" aria-label="Station schließen">✕</button>
+          <header class="station-modal-head">
+            <span class="station-modal-tag" id="station-modal-tag">Station</span>
+            <h2 id="station-modal-title">Titel</h2>
+          </header>
+          <div class="station-modal-body" id="station-modal-body"></div>
+        </article>
+      </div>
+    </main>
   </div>
   <!-- ============= ÜBER-MODAL ============= -->
   <div class="ueber-modal" id="ueber-modal" role="dialog" aria-modal="true" aria-labelledby="ueber-title" hidden>
@@ -1177,7 +1378,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script>
   // ====== STATE ======
   const STATE = { status: null };
-  const SCREENS = ['overview', 'cycle', 'module', 'data', 'warum', 'observatorium'];
+  const SCREENS = ['overview', 'cycle', 'module', 'data', 'warum', 'observatorium', 'sonnen'];
   let currentScreen = 'overview';
   let lastBentoCardId = null;
 
@@ -1243,6 +1444,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (id === 'cycle') startTour(); else stopTour();
     if (id === 'warum') startWarum(); else stopWarum();
     if (id === 'observatorium') setupObservatoriumUniverse();
+    if (id === 'sonnen') setupSonnenGalaxie();
   }
   function goWarum() { closeUeberModal(); goScreen('warum'); }
 
@@ -2488,11 +2690,285 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (modal) modal.hidden = true;
   }
 
+  // ====== SONNEN-GALAXIE (Sage-Geschichts-Galerie) ======
+  // Vier Stationen tanzen auf einer gemeinsamen Ellipsen-Bahn um ein
+  // zentrales Sonnen-Zentrum, gleichmäßig phasen-verteilt. Jede dreht
+  // sich zusätzlich um die eigene Achse (galaxy-spin via CSS). Status
+  // 'text-only' steht für Stationen, deren Erzähl-Text per Folge-
+  // Mini-Pflege noch nachgezogen wird; 'live' steht für Stationen mit
+  // dokumentengestütztem href.
+  const STATIONS_DATA = [
+    { idx: 0, status: 'text-only', shape: 'galaxy-spiral', size: 'large',
+      title: 'SBKIM-Namensgebung',
+      tag: 'Station 1',
+      summary: 'Der Name SBKIM ist mit dem Protokoll gewachsen — zwei Lesarten, derselbe Anker. Erste Fassung: **Semantisch-Empfangendes Bidirektionales KI-Matching** — ein technisches Versprechen. Heutige Fassung: **Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel** — dieselbe Idee in einer biologischen Metapher.|**S** trägt durchgehend *Semantik*: zwischen den Knoten fließen Bedeutungen, keine rohen Daten. **I** trägt durchgehend *Inter-Knoten*: das Netz hat kein Zentrum, nur Punkte und Verbindungen.|**B** ist der Drehpunkt — zuerst **bidirektional** (jede Seite ist Anbieter und Sucher zugleich, siehe Station 2), heute **biologisch** (dem Pilz nachempfunden). **K** war anfangs **KI**, weil das Embedding-Modell die Vermittlung trägt; heute eher **Koordination** zwischen Knoten — derselbe Mechanismus ohne den Marketing-Marker. **M** war einmal **Matching**, ist heute **Mycel** — vom Algorithmus zur Lebensform.|Die zwei Lesarten beißen sich nicht. Sie sind dieselbe Idee von zwei Seiten gesehen.'
+    },
+    { idx: 1, status: 'text-only', shape: 'galaxy-elliptical', size: 'large',
+      title: 'Zwei Seiten einer Medaille',
+      tag: 'Station 2',
+      summary: 'Anfangs war das Mycel eine Einbahn: Sucher schickt Frage, Anbieter prüft, ob er antworten kann. Modul 04 (Match) rechnet nur eine Richtung — Cosinus zwischen Anfrage-Vektor und Spore-Stamm-Vektor, hoher Wert öffnet die Antwort-Pforte. Funktioniert, aber halbe Wahrheit.|Jede kleine Webseite ist beides: sie hat etwas zu erzählen UND sie sucht selbst. Wer Cocktails anbietet, fragt vielleicht nach Glaswaren. Wer Kochrezepte zeigt, sucht nach passenden Cocktails. Aus dieser Beobachtung kam die Idee, **Anbieter und Sucher zugleich zu denken**.|Konkret: eine Spore trägt zwei Felder — `capabilities` (was kann ich anbieten) und `needs` (was suche ich) — und ein Match prüft beide Vektoren gegen die andere Seite. Aus dem einseitigen Cosinus wird ein Zwei-Seiten-Spiegel. Das Mycel wird ein Marktplatz statt eines Schaufensters.|Vision-Anker 9 in `docs/PULS.md` trägt diese Erweiterung vollständig — diese Station ist ihr biographischer Anker.'
+    },
+    { idx: 2, status: 'text-only', shape: 'galaxy-ring', size: 'medium',
+      title: 'Sage-Protokol-Geburt',
+      tag: 'Station 3',
+      summary: 'Sage fing nicht als Protokoll an. Die erste Form war eine **zentrale Plattform**: ein Server, eine Suche, ein Index, alle anderen sind Klienten.|Bei genauer Betrachtung war das wieder genau das, wovon es schon zu viele gibt — noch eine Suchmaschine, noch ein Gatekeeper, der zwischen kleinen Seiten und ihren Lesern sitzt. Der Pivot kam aus der Beobachtung, dass kleine Webseiten kein Plattform-Problem haben, sondern ein **Findbarkeits-Problem ohne Verkauf der Identität**.|Das Mycel war die Antwort: kein Server, kein Index, jeder Knoten hält seine eigene Spore. Die Hub-Bootstrap-Stelle kann ausfallen, ohne dass das Netz stirbt.|Damit wurde aus „Sage-Plattform" das **Sage-Protokol** — eine Spielregel zwischen Gleichberechtigten, ein L mit Absicht (im Glossar gepflegt). Die Geburt dieses Repos ist der Moment, in dem das eine Wort gestrichen und das andere geboren wurde.'
+    },
+    { idx: 3, status: 'live', shape: 'galaxy-sombrero', size: 'large',
+      title: 'Wissenschaftlicher Niederschlag — SBKIM-Paper (EN)',
+      tag: 'Station 4',
+      summary: 'Das englische SBKIM-Paper. Sieben Sektionen: Einleitung, verwandte Arbeiten, das SBKIM-Protokoll mit den drei Dimensionen, Zwei-Schichten-Architektur (Human + Agent), Referenz-Implementation, offene Probleme, Schluss.',
+      href: 'docs/papers/sbkim-paper-en.html'
+    },
+    { idx: 4, status: 'live', shape: 'galaxy-quasar', size: 'large',
+      title: 'Wissenschaftlicher Niederschlag — SBKIM-Paper (DE)',
+      tag: 'Station 5',
+      summary: 'Das deutsche SBKIM-Paper, parallel zum englischen aufgebaut. Sieben Sektionen: Einleitung, verwandte Arbeiten und Lückenanalyse, das SBKIM-Protokoll mit den drei orthogonalen Dimensionen (fachlich / prozess / skalierung), Zwei-Ebenen-Architektur (Layer 1 menschliche Netzwerke + Layer 2 Agentennetzwerke), Referenz-Implementierung, offene Probleme, Schlussfolgerung. Der Print-Knopf am unteren Rand erzeugt eine PDF-Version on-demand im Browser.',
+      href: 'docs/papers/sbkim-paper-de.html'
+    }
+  ];
+
+  let sonnenInited = false;
+  let sonnenRAF = 0;
+  let sonnenStars = [];
+  let sonnenMouse = { x: -9999, y: -9999, active: false, lastMoveT: 0 };
+  let sonnenTrail = []; // Komet-Schweif: {x, y, age, speed}
+  let sonnenGalaxyEls = [];
+
+  function setupSonnenGalaxie() {
+    if (sonnenInited) return;
+    sonnenInited = true;
+
+    const stage = document.getElementById('sonnen-stage');
+    const galaxiesEl = document.getElementById('sonnen-galaxies');
+    const canvas = document.getElementById('sonnen-stars');
+    if (!stage || !galaxiesEl || !canvas) return;
+
+    // 1. Stations-Galaxien als DOM-Elemente erzeugen
+    STATIONS_DATA.forEach((s, i) => {
+      const el = document.createElement('button');
+      el.className = 'station-galaxy ' + s.shape + ' ' + s.size + ' ' + s.status;
+      el.type = 'button';
+      el.setAttribute('aria-label', s.tag + ' — ' + s.title + ' öffnen');
+      el.dataset.idx = i;
+      el.innerHTML = '<div class="galaxy-body"></div><div class="galaxy-label">' + s.tag + ' · ' + s.title + '</div>';
+      el.addEventListener('click', () => openStationModal(i));
+      galaxiesEl.appendChild(el);
+      el._wakeBoost = 0;
+      sonnenGalaxyEls.push(el);
+    });
+
+    // 2. Canvas-Sterne erzeugen — Anzahl + Parameter 1:1 wie Observatorium
+    function resizeCanvas() {
+      canvas.width = stage.clientWidth;
+      canvas.height = stage.clientHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const STAR_COUNT = window.innerWidth < 720 ? 180 : 320;
+    sonnenStars = [];
+    for (let i = 0; i < STAR_COUNT; i++) {
+      sonnenStars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: 0.4 + Math.random() * 1.4,
+        base: 0.15 + Math.random() * 0.45,
+        twinkleSpeed: 0.4 + Math.random() * 1.6,
+        twinklePhase: Math.random() * Math.PI * 2
+      });
+    }
+
+    // 3. Maus-Tracking (Schweif-Glow + Komet-Schweif) — 1:1 vom Observatorium
+    function trackPointer(clientX, clientY) {
+      const rect = stage.getBoundingClientRect();
+      const nx = clientX - rect.left;
+      const ny = clientY - rect.top;
+      const last = sonnenTrail[sonnenTrail.length - 1];
+      let speed = 0;
+      if (last) {
+        const dx = nx - last.x;
+        const dy = ny - last.y;
+        speed = Math.sqrt(dx * dx + dy * dy);
+      }
+      sonnenMouse.x = nx;
+      sonnenMouse.y = ny;
+      sonnenMouse.active = true;
+      sonnenMouse.lastMoveT = performance.now();
+      sonnenTrail.push({ x: nx, y: ny, age: 0, speed: speed });
+      if (sonnenTrail.length > 220) sonnenTrail.shift();
+    }
+    stage.addEventListener('mousemove', e => trackPointer(e.clientX, e.clientY));
+    stage.addEventListener('mouseleave', () => { sonnenMouse.active = false; });
+    stage.addEventListener('touchmove', e => {
+      if (!e.touches[0]) return;
+      trackPointer(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
+    // 4. Render-Loop — Galaxien auf gemeinsamer Ellipsen-Bahn + Sterne + Komet-Schweif
+    const ctx = canvas.getContext('2d');
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ANG_SPEED = (2 * Math.PI) / 50; // 50 s Umlaufzeit
+
+    function frame(now) {
+      const t = now / 1000;
+      const vw = canvas.width;
+      const vh = canvas.height;
+
+      // Galaxien-Positionen — gemeinsame Ellipsen-Bahn, gleichmäßige Phasen-Verteilung
+      sonnenGalaxyEls.forEach((el, i) => {
+        const phase = (i / STATIONS_DATA.length) * Math.PI * 2;
+        const speed = reduced ? 0 : 1;
+        const angle = t * ANG_SPEED * speed + phase;
+        const x01 = (50 + Math.cos(angle) * 30) / 100;
+        const y01 = (50 + Math.sin(angle) * 18) / 100;
+        const px = x01 * vw;
+        const py = y01 * vh;
+        el.style.transform = 'translate(' + (px - el.offsetWidth / 2) + 'px, ' + (py - el.offsetHeight / 2) + 'px)';
+
+        // Wake-Effekt bei Maus-Nähe (analog Observatorium)
+        if (sonnenMouse.active) {
+          const dx = sonnenMouse.x - px;
+          const dy = sonnenMouse.y - py;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const wakeRadius = 200;
+          const target = Math.max(0, 1 - dist / wakeRadius);
+          el._wakeBoost += (target - el._wakeBoost) * 0.12;
+          if (el._wakeBoost > 0.45) el.classList.add('awake');
+          else el.classList.remove('awake');
+        } else {
+          el._wakeBoost *= 0.95;
+          if (el._wakeBoost < 0.05) el.classList.remove('awake');
+        }
+      });
+
+      // Sterne zeichnen mit Maus-Schweif-Glow (1:1 vom Observatorium)
+      ctx.clearRect(0, 0, vw, vh);
+      const mx = sonnenMouse.x;
+      const my = sonnenMouse.y;
+      const trailRadius = 160;
+      for (let i = 0; i < sonnenStars.length; i++) {
+        const s = sonnenStars[i];
+        const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * s.twinkleSpeed + s.twinklePhase));
+        let alpha = s.base * tw;
+        let r = s.r;
+        if (sonnenMouse.active) {
+          const dx = s.x - mx;
+          const dy = s.y - my;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < trailRadius) {
+            const glow = Math.pow(1 - dist / trailRadius, 1.4);
+            alpha = Math.min(1, alpha + glow * 0.85);
+            r = s.r * (1 + glow * 1.6);
+          }
+        }
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
+        ctx.fill();
+      }
+
+      // Komet-Schweif: alle Trail-Punkte altern lassen + zeichnen
+      const AGE_RATE = 0.022;
+      const newTrail = [];
+      for (let i = 0; i < sonnenTrail.length; i++) {
+        const p = sonnenTrail[i];
+        p.age += AGE_RATE;
+        if (p.age < 1) newTrail.push(p);
+      }
+      sonnenTrail = newTrail;
+
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < sonnenTrail.length; i++) {
+        const p = sonnenTrail[i];
+        const fade = Math.pow(1 - p.age, 1.8);
+        const speedBoost = Math.min(1.5, p.speed / 30);
+        const baseR = 2 + speedBoost * 3.5;
+        const r = baseR * fade;
+        if (r < 0.2) continue;
+        // Innerer Kern (warm-gold)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,230,180,' + (fade * 0.55).toFixed(3) + ')';
+        ctx.fill();
+        // Äußerer Glow (kühles Blau-Weiß)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,210,255,' + (fade * 0.18).toFixed(3) + ')';
+        ctx.fill();
+      }
+
+      // Komet-Kopf an der aktuellen Mausposition
+      const timeSinceMove = now - sonnenMouse.lastMoveT;
+      const headIntensity = sonnenMouse.active ? Math.max(0.25, 1 - timeSinceMove / 600) : 0;
+      if (headIntensity > 0.01) {
+        ctx.beginPath();
+        ctx.arc(mx, my, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,250,230,' + (headIntensity * 0.95).toFixed(3) + ')';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(mx, my, 10, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,220,170,' + (headIntensity * 0.35).toFixed(3) + ')';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(mx, my, 22, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,210,255,' + (headIntensity * 0.14).toFixed(3) + ')';
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+
+      sonnenRAF = requestAnimationFrame(frame);
+    }
+    sonnenRAF = requestAnimationFrame(frame);
+
+    // 5. Esc schließt Station-Modal
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeStationModal();
+    });
+  }
+
+  function openStationModal(idx) {
+    const s = STATIONS_DATA[idx];
+    if (!s) return;
+    const modal = document.getElementById('station-modal');
+    const title = document.getElementById('station-modal-title');
+    const tag = document.getElementById('station-modal-tag');
+    const body = document.getElementById('station-modal-body');
+    if (!modal || !title || !tag || !body) return;
+    tag.textContent = s.tag;
+    title.textContent = s.title;
+    // Paragraph-Splitting + Markdown 1:1 wie openUniverseModal (| trennt Absätze, **fett**, `code`, „kursiv")
+    const paragraphs = s.summary.split('|').map(p => p.trim()).filter(Boolean);
+    let html = paragraphs.map(p => {
+      const safe = p.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const formatted = safe
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/„([^"]+)"/g, '„<em>$1</em>"');
+      return '<p>' + formatted + '</p>';
+    }).join('');
+    if (s.status === 'live' && s.href) {
+      const safeHref = s.href.replace(/"/g, '&quot;');
+      html += '<a class="station-modal-link" href="' + safeHref + '" target="_blank" rel="noopener">Original-Dokument öffnen →</a>';
+    } else if (s.placeholder) {
+      html += '<span class="station-placeholder-hint">Erzähl-Text folgt per Folge-Mini-Pflege.</span>';
+    }
+    body.innerHTML = html;
+    modal.hidden = false;
+  }
+  function closeStationModal() {
+    const modal = document.getElementById('station-modal');
+    if (modal) modal.hidden = true;
+  }
+
   // ====== INIT ======
   function applyHashScreen() {
     const h = (location.hash || '').replace(/^#/, '');
     if (h && SCREENS.indexOf(h) !== -1) {
-      goScreen(h, h === 'observatorium' ? 'blackhole' : null);
+      let anchor = null;
+      if (h === 'observatorium') anchor = 'blackhole';
+      else if (h === 'sonnen') anchor = 'sonnen';
+      goScreen(h, anchor);
     }
   }
   document.addEventListener('DOMContentLoaded', () => {
