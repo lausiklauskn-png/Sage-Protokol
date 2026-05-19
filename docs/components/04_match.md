@@ -120,11 +120,15 @@ nacheinander auf.
 
 ## Schnittstelle
 
-Modul 04 exportiert **zwei** öffentliche Funktionen + eine Konstante.
-Die API ist **modus-frei** — die Parameter-Namen `queryVec` und
-`passageVec` erzwingen semantisch die richtige Reihenfolge, am Ergebnis
-ändert die Reihenfolge mathematisch nichts (Skalarprodukt ist
-kommutativ).
+Modul 04 exportiert seit Spec-Sitzung M04-Erweiterung (Brief 03 der
+V1-Sammelspec-Kaskade, 2026-05-19) **vier** öffentliche Funktionen +
+zwei Konstanten. Die zwei ursprünglichen Funktionen (`match`,
+`isAboveProviderThreshold`) bleiben unverändert (Vertrag aus Spec+Bau
+04 2026-05-14) — `matchDimensions` und `explainMatchLLM` sind additiv,
+und PROTOCOL_VERSION bleibt `"0.1"`. Die API ist weiterhin **modus-
+frei** — die Parameter-Namen `queryVec` / `passageVec` und `queryCap`
+/ `queryNeeds` / `passageCap` / `passageNeeds` erzwingen semantisch
+die richtige Reihenfolge.
 
 ```
 match(queryVec: Float32Array, passageVec: Float32Array) → number
@@ -137,7 +141,36 @@ isAboveProviderThreshold(score: number) → boolean
   // true, wenn score >= PROVIDER_MIN_MATCH (0.80).
   // Sync, kein Promise. Reine Vergleichsfunktion.
 
+matchDimensions(queryCap:    Float32Array | null,
+                queryNeeds:  Float32Array | null,
+                passageCap:  Float32Array | null,
+                passageNeeds:Float32Array | null) → MatchDimensionsResult
+  // NEU additiv aus Spec-Sitzung M04-Erweiterung (Brief 03).
+  // Sync, kein Promise. Liefert drei orthogonale Schicht-Scores
+  // (fachlich / prozess / skalierung) + overall + availableLanes.
+  // Null-Vektoren signalisieren „nur Anbieter-Modus" — siehe
+  // § Drei-Schichten-Modell unten und INTERFACES.md §1 Modul 04
+  // § Drei-Schichten-Modell § Nur-Anbieter-Modus.
+  // Wirft DimensionsAllNullError sync, wenn alle vier Vektoren null
+  // sind (Aufrufer hätte das vorher prüfen müssen). Andere Form-/
+  // Längen-Fehler werfen InvalidVectorError bzw. ShapeMismatchError
+  // analog zu match().
+
+explainMatchLLM(matchResult: MatchDimensionsResult,
+                apiKey:      string,
+                options?:    { model?: string,
+                               maxTokens?: number,
+                               abortSignal?: AbortSignal }) → Promise<ExplainResult>
+  // NEU additiv aus Spec-Sitzung M04-Erweiterung (Brief 03).
+  // Async, der EINZIGE Netz-/async-Pfad in Modul 04. Stufe-B-LLM-
+  // Call, opt-in pro Knoten (siehe INTERFACES.md §7 LLM-Stufe-B-
+  // Ehrlichkeits-Klausel). Fehlertolerant — scheitert nie throw,
+  // resolved mit ExplainResult{ available:false, reason, fallbackScore }
+  // bei HTTP-/Schema-/Netz-/Abort-Fehlern. Aufrufer fällt dann auf
+  // matchResult zurück; UI zeigt „Erklärung nicht verfügbar".
+
 PROVIDER_MIN_MATCH: number                                   // 0.80, aus INTERFACES.md §0
+SCHICHT_MIN_MATCH:  number                                   // 0.60, aus INTERFACES.md §0 (NEU aus Brief 03)
 ```
 
 ### Warum kein `mode`-Parameter
@@ -173,6 +206,258 @@ EMBEDDING_DIM      = 384      // erwartete Vektor-Länge (zur Form-Prüfung)
 aus INTERFACES.md §0 übernommen und auf `window.SbkimMatch.PROVIDER_MIN_MATCH`
 sichtbar gemacht. Wer den Wert ändern möchte, ändert ihn in §0 — Modul
 04 zieht nach.
+
+### Drei-Schichten-Modell (M04-Erweiterung, Brief 03)
+
+Spec-Sitzung M04-Erweiterung (Brief 03 der V1-Sammelspec-Kaskade,
+2026-05-19) führt die drei orthogonalen Schichten aus dem ursprünglichen
+SBKIM-Paper (`docs/papers/sbkim-paper-en.html` § 3.3 „The Three
+Dimensions" / `docs/papers/sbkim-paper-de.html` § 3.3) in die
+Mycel-Form ein. Diese Schicht steht **orthogonal zur Stamm/Gast-
+Klassifikation** (siehe Sub-Block unten — Stamm/Gast bleibt UI-Ebene
+und berührt Modul 04 nicht).
+
+**Drei Achsen (orthogonal):**
+
+| Achse | Paper-Name (EN) | Frage |
+|---|---|---|
+| `fachlich` | `domain` | Was kannst du / was suchst du inhaltlich? |
+| `prozess` | `process` | Wie arbeitest du? Rhythmus, Methodik, Verbindlichkeit. |
+| `skalierung` | `scale` | Auf welcher Größenebene? Einzelner Knoten / Cluster / Netz. |
+
+Orthogonal heißt: ein hoher Score in einer Achse impliziert keinen
+hohen Score in einer anderen. Das erlaubt **teil-kompatible Treffer**
+und macht Brücken-Vorschläge (siehe nächster Block) erst sinnvoll.
+
+**`matchDimensions`-Rückgabe (`MatchDimensionsResult`):**
+
+```jsonc
+{
+  "fachlich":       0.91 | null,       // [-1, 1] oder null wenn nicht berechenbar
+  "prozess":        0.62 | null,
+  "skalierung":     0.88 | null,
+  "overall":        0.80 | null,       // gewichteter Mittelwert der nicht-null Schichten
+  "availableLanes": 0 | 1 | 2          // wie viele Cap×Needs-Richtungen gerechnet wurden
+                                       //   0 = Nur-Anbieter-Modus auf beiden Seiten
+                                       //   1 = einseitig (eine Seite hat keinen needs-Vektor)
+                                       //   2 = volle Bidirektionalität
+}
+```
+
+**Berechnung pro Lane:** wenn `queryCap` und `passageNeeds` beide
+nicht-null sind, ist Lane 1 berechenbar (A bietet → B sucht); wenn
+`queryNeeds` und `passageCap` beide nicht-null sind, ist Lane 2
+berechenbar (A sucht ← B bietet). Pro Lane wird `match(cap, needs)`
+ausgeführt. Wenn beide Lanes berechenbar sind, ist die Schicht-Score
+der Mittelwert beider Lane-Cosinus; wenn nur eine Lane berechenbar
+ist, der Single-Lane-Wert; wenn keine berechenbar, `null`.
+
+**Aufteilung in drei Schichten (Spec-Entscheidung).** Da heute jeder
+Spore-Vektor (`domainVector` / `embeddingCapabilities` / `embeddingNeeds`)
+ein einziges 384-dim Domain-Embedding trägt — kein separater Prozess-
+oder Skalierungs-Vektor —, ist die Drei-Schichten-Aufteilung in der
+Stufe-A-Pipeline eine **Heuristik über demselben Embedding-Raum**: die
+Initial-Implementation rechnet drei identische Lane-Cosinus pro Schicht
+(`fachlich = prozess = skalierung = Lane-Cosinus`). **Die echte
+Schichten-Differenzierung passiert in Stufe B** (siehe `explainMatchLLM`-
+Block) — der LLM-Pass liefert semantisch reichere Schicht-Zahlen, die
+die Stufe-A-Heuristik für UI-Zwecke übersteuern können.
+
+Spätere Pflege-Sitzungen dürfen die Schicht-Projektion verfeinern (z.B.
+separate `embeddingProcessNeeds` / `embeddingScaleNeeds`-Felder
+einführen, sobald empirische Daten zeigen, dass das nötig ist); das
+wäre ein additiver Eingriff am Spore-Schema (heute optional, künftig
+möglicherweise Pflicht → dann PROTOCOL_VERSION-Bump).
+
+**Overall-Berechnung: gewichteter Mittelwert, nicht Min.** `overall`
+ist `(fachlich + prozess + skalierung) / 3` über die nicht-null
+Schichten. Min wäre zu hart — eine einzige schwache Dimension würde
+Anastomose verhindern, obwohl genau diese Lücke der Anlass für aktive
+Vermittlung sein könnte. Die harte Apoptose-Grenze (2+ Dimensionen unter
+`SCHICHT_MIN_MATCH = 0.60`) liegt separat im Schwellen-Vertrag — Schicht-
+Schwelle dominiert dann den `overall`-Wert.
+
+**Nur-Anbieter-Modus:** Wenn beide Knoten kein `embeddingNeeds` haben
+(heute der Default), liefert `matchDimensions` alle Schichten als
+`null` und `availableLanes:0`. Aufrufer fallen dann auf den
+Single-Vector-Pfad `match(domainVectorA, domainVectorB)` mit
+`isAboveProviderThreshold` zurück — **vollständig rückwärts-kompatibel**
+zum heutigen Modul-05-Verhalten.
+
+### Brücken-Feld-Spec (M04-Erweiterung, Brief 03)
+
+Brücken-Vorschlag = das Element in der Match-Antwort, das sagt: „was
+würde diese Verbindung vollständig machen?" Anlass: A und B matchen
+in zwei Schichten gut, in der dritten aber schlecht — der
+Brücken-Vorschlag nennt einen abstrakten Knoten-C, der die Lücke
+schließen könnte. Brücken-Vorschläge entstehen **ausschließlich** in
+Stufe B (`explainMatchLLM`) — die Stufe-A-Pipeline rechnet keine
+Brücken-Empfehlungen.
+
+```jsonc
+BridgeProposal = {
+  "needed":         "<deutscher Klartext, ≤300 Zeichen, was fehlt>",
+  "lookingFor":     "<deutscher Klartext, ≤300 Zeichen, was gesucht wird> | null",
+  "candidateScope": "lokal" | "mailbox" | "netz"
+}
+```
+
+**`candidateScope`-Werte** (verbindlich, siehe INTERFACES.md §1 Modul 04
+§ Brücken-Feld-Spec):
+
+- `"lokal"` — Anzeige nur im Knoten, kein Netz-Schritt. **Heute der
+  einzige produktiv aktivierbare Wert.**
+- `"mailbox"` — Anker an Modul 13 (Königin-Relay, Vision-Anker 4 in PULS).
+  Brücken-Vorschlag wird in die Königin-Mailbox gelegt, sobald Modul 13
+  gebaut ist. Vor Modul 13 nicht aktivierbar — wer ihn setzt, wird vom
+  Aufrufer ignoriert.
+- `"netz"` — **FORMAL NICHT AKTIVIERBAR bis Anker 10/11/12** (Reputation /
+  Rate-Limit / Blocklist, alle Schutz-Backlog). Modul 04 korrigiert eine
+  Stufe-B-LLM-Antwort mit `candidateScope:"netz"` still auf `"lokal"`
+  (defensive Wahl, kein Throw). Diese Korrektur entfällt erst, wenn
+  Anker 10-12 implementiert und freigegeben sind.
+
+Siehe INTERFACES.md §8 Anti-Missbrauch-Klausel.
+
+### Schwellen-Vertrag (M04-Erweiterung, Brief 03)
+
+```
+PROVIDER_MIN_MATCH = 0.80     // bleibt für `overall` (alte Pipeline + neue)
+SCHICHT_MIN_MATCH  = 0.60     // pro Dimension (NEU, §0)
+```
+
+**Auswertungs-Regeln** (in dieser Reihenfolge, identisch zu
+INTERFACES.md §1 Modul 04 § Schwellen-Vertrag):
+
+1. **`availableLanes === 0`** (Nur-Anbieter-Modus): Aufrufer nutzt
+   `match()` + `isAboveProviderThreshold()` wie bisher.
+2. **`overall < PROVIDER_MIN_MATCH`:** Apoptose-Vorbedingung wie bisher.
+3. **≥ 2 Schicht-Scores unter `SCHICHT_MIN_MATCH`:** Apoptose-Vorbedingung
+   (dominiert auch hohen `overall` — zwei strukturelle Lücken sind kein
+   tragfähiges Match).
+4. **Genau eine Schicht unter `SCHICHT_MIN_MATCH` UND `overall >=
+   PROVIDER_MIN_MATCH`:** Match gilt als **brücken-tauglich**. Aufrufer
+   kann optional `explainMatchLLM` rufen, um einen Brücken-Vorschlag zu
+   erhalten. Ohne Stufe B bleibt der Match einfach als „established mit
+   Lücke" — Aufrufer entscheidet, ob er die Lücke ignoriert.
+5. **Alle Schichten ≥ `SCHICHT_MIN_MATCH` UND `overall >=
+   PROVIDER_MIN_MATCH`:** voller Match. Stufe B nur für Erklär-/UI-Zwecke
+   nützlich.
+
+**Stufe-B-Übersteuerung:** `explainMatchLLM` darf eine Dimensions-Schwelle
+übersteuern, wenn die Begründung im Brücken-Vorschlag semantisch reicher
+ist als die Zahl (z.B. „die niedrige Skalierungs-Schicht ist hier
+irrelevant, weil A explizit nach kleinem Maßstab sucht"). In dem Fall
+liefert `explainMatchLLM` `overrideRecommendation: "established" |
+"established-with-bridge" | "rejected"` mit Begründung — Aufrufer kann
+folgen oder bei der Stufe-A-Heuristik bleiben. **Modul 04 ist nicht
+weisungsbefugt** — die Entscheidung bleibt beim Aufrufer.
+
+### Stufe-B-Vertrag (`explainMatchLLM`) — M04-Erweiterung, Brief 03
+
+Stufe B ist ein **opt-in** LLM-Pass über das Match-Resultat aus Stufe A.
+Pattern-Quelle: Layer-1-Demo der SBKIM-Plattform-`index.html` (im
+Paper-Repo, **nicht** in diesem Repo — die Pattern-Form wird hier
+spezifiziert, der konkrete Prompt ist Bau-Detail).
+
+**Vertrag (verbindlich):**
+
+| Aspekt | Wert |
+|---|---|
+| Modell | `STUFE_B_DEFAULT_MODEL = "claude-sonnet-4"` aus §0; aufrufer-überschreibbar via `options.model` (z.B. Nachfolge-Modell `"claude-sonnet-4-6"` / `"claude-opus-4-7"`). Modul 04 hartcodiert keine Modell-ID. |
+| `max_tokens` | `STUFE_B_MAX_TOKENS = 1024` aus §0; aufrufer-überschreibbar via `options.maxTokens`. |
+| Output-Form | **JSON-only.** Prompt setzt explizit „Antworte ausschließlich mit JSON nach dem unten gezeigten Schema, kein Prosa-Text drumherum". Antworten ohne valides JSON werden verworfen. |
+| Validierung | **Strikt** gegen das Antwort-Schema (unten). Schema-Mismatch → `ExplainResult.available:false` mit `reason:"Antwort entsprach nicht dem Schema"`. |
+| Fehlertoleranz | Scheitert nie throw. Resolved mit `{available:false, reason, fallbackScore}` bei HTTP-4xx/5xx, Timeout, Netz-Fehler, Schema-Mismatch. Aufrufer fällt auf Stufe-A-Resultat zurück. |
+| Rate-Limit | Modul 04 fügt **keine eigene Drossel** ein. Aufrufer (Modul 06 / 08 / 00) drosselt selbst — Empfehlung: max. 1 Stufe-B-Call/s/Knoten bei Anthropic-API-Standard-Quota. |
+| User-Key | `apiKey` kommt aus dem Identitäts-Container (Vision-Anker 5, PULS) — **niemals plain aus IndexedDB**. Plattform-Matrix §6.2 Spalte „Stufe B" listet die vier Key-Lokalisations-Varianten Plattform-agnostisch. Modul 04 konsumiert den Key als opaque String. |
+| Abort | `options.abortSignal` durchgereicht. `AbortError` wird **nicht** abgefangen — Aufrufer fängt selbst. |
+
+**Antwort-JSON-Schema** (Modul 04 validiert strikt):
+
+```jsonc
+{
+  "schichten": {
+    "fachlich":   { "score": <number, [-1,1]>, "begruendung": "<deutsch, ≤200 Zeichen>" },
+    "prozess":    { "score": <number, [-1,1]>, "begruendung": "<deutsch, ≤200 Zeichen>" },
+    "skalierung": { "score": <number, [-1,1]>, "begruendung": "<deutsch, ≤200 Zeichen>" }
+  },
+  "bruecke": {                           // optional — null wenn kein Brücken-Vorschlag
+    "needed":         "<deutscher Klartext, ≤300 Zeichen>",
+    "lookingFor":     "<deutscher Klartext, ≤300 Zeichen> | null",
+    "candidateScope": "lokal" | "mailbox" | "netz"
+                     // Modul 04 korrigiert "netz" still auf "lokal", bis
+                     //   Anker 10-12 da sind (siehe § Brücken-Feld-Spec).
+  },
+  "erklaerung":              "<deutscher Klartext, ≤600 Zeichen, fasst das Match zusammen>",
+  "overrideRecommendation":  "established" | "established-with-bridge" | "rejected" | null
+                             // null = keine Stufe-B-Übersteuerung; Stufe-A-Schwellen gelten.
+}
+```
+
+**Rückgabe (`ExplainResult`)** — Modul 04 verpackt das LLM-Ergebnis:
+
+```jsonc
+{
+  "available":              true | false,
+  "schichten":              { /* wie oben */ } | null,
+  "bruecke":                BridgeProposal | null,
+  "erklaerung":             "<string>" | null,
+  "overrideRecommendation": "established" | "established-with-bridge" | "rejected" | null,
+  "fallbackScore":          0.83,                            // = matchResult.overall (Stufe-A-Resultat)
+  "reason":                 "<deutscher Grund bei available:false>" | null,
+                                                              // z.B. "API HTTP 429 (Rate-Limit)",
+                                                              //      "Antwort entsprach nicht dem Schema",
+                                                              //      "Netz nicht erreichbar"
+  "model":                  "claude-sonnet-4",                // verwendetes Modell
+  "tokensUsed":             421 | null                        // input+output, fail-soft wenn API es nicht liefert
+}
+```
+
+**Beispiel-Output für eine Match-Sitzung mit zwei Personas** (Brücke
+zu Brief 04 Multi-Identität — die zwei Personas hier sind zwei
+unabhängige Identitäts-Slots im selben IndexedDB-Schema aus Anker 6):
+
+```jsonc
+// Persona A („Klaus privat — Kochrezepte"):
+//   embeddingCapabilities = domainVector der Rezeptbuch-Spore
+//   embeddingNeeds        = Vektor für „Wein-Empfehlungen, die zu Hauptgang passen"
+//
+// Persona B („Klaus beruflich — Wein-Verkostungen"):
+//   embeddingCapabilities = Vektor für „Wein-Verkostungs-Notizen"
+//   embeddingNeeds        = null   ← reiner Anbieter, Persona B sucht nichts
+//
+// matchDimensions(A.cap, A.needs, B.cap, B.needs)
+//   Lane 1 (A.cap × B.needs): nicht berechenbar (B.needs=null) → übersprungen
+//   Lane 2 (A.needs × B.cap): cosinus(A.Wein-Suche × B.Wein-Verkostung) = 0.83
+//   availableLanes = 1
+//   Schichten: fachlich = prozess = skalierung = 0.83 (gleicher Lane-Wert,
+//                                                       Stufe-A-Heuristik)
+//   overall = 0.83
+//
+// explainMatchLLM(matchResult, apiKey) liefert:
+{
+  "available": true,
+  "schichten": {
+    "fachlich":   { "score": 0.91, "begruendung": "Wein-Verkostungs-Notizen passen direkt zu Wein-Empfehlungen für Hauptgang" },
+    "prozess":    { "score": 0.62, "begruendung": "Persona A pflegt täglich, Persona B nur wenn neue Verkostung — Prozess-Mismatch" },
+    "skalierung": { "score": 0.88, "begruendung": "Beide Single-Knoten ohne Cluster-Ambition" }
+  },
+  "bruecke": null,                            // kein Brücken-Vorschlag nötig
+  "erklaerung": "Anbieter-Sucher-Match auf Wein-Domain; Prozess-Lücke (kontinuierlich vs. ereignisbasiert) verhindert vollen Match nicht, weil A explizit nach Verkostungs-Wissen sucht.",
+  "overrideRecommendation": "established",
+  "fallbackScore": 0.83,
+  "reason": null,
+  "model": "claude-sonnet-4",
+  "tokensUsed": 421
+}
+```
+
+Persona-Quelle für die zwei Vektor-Slots pro Persona ist Brief 04
+(Multi-Identität — `sbkim_keys["main"]` / `["beruflich"]` / `["test"]`
++ `sbkim_meta["active-identity"]`-Marker). Brief 03 spezifiziert nur,
+dass Modul 04 die zwei Vektor-Slots **pro Persona unabhängig**
+konsumiert; die Mehr-Slot-Logik selbst liegt in Brief 04.
 
 ### Stamm/Gast-Klassifikation berührt Modul 04 nicht
 
@@ -268,6 +553,14 @@ eigenes Dokument, sondern dieser Abschnitt.
 | Eingabe enthält `NaN` oder `±Infinity` | **kein** expliziter Check — das Ergebnis ist `NaN` / `±Infinity`, und der Aufrufer sieht das sofort. Modul 03 erzeugt das nicht; wer es einspeist, debuggt seine eigene Pipeline. |
 | Eingabe ist nicht L2-normalisiert | **kein** Fehler. Ergebnis liegt eventuell außerhalb `[-1, 1]`. Wer Norm bricht, sieht das am Wert. Diese Wahl ist bewusst — siehe „Macht nicht". |
 | `isAboveProviderThreshold(score)` mit Nicht-Zahl | wirft `TypeError` (Standard-JS-Verhalten beim Vergleich; nicht von uns extra abgefangen). |
+| `matchDimensions(qCap, qNeeds, pCap, pNeeds)` alle vier Vektoren null | wirft `DimensionsAllNullError` sync. Keine Schicht berechenbar; Aufrufer hätte vorher prüfen müssen. |
+| `matchDimensions` mit einer Seite vollständig null (z.B. `queryCap=null` UND `queryNeeds=null`) | **kein** Throw. Alle Schichten und `overall` sind `null`, `availableLanes:0`. Aufrufer entscheidet (typisch: Single-Vector-Pfad `match()`). |
+| `matchDimensions` mit Längen-Differenz oder Nicht-Float32Array in einem nicht-null Vektor | wirft `InvalidVectorError` bzw. `ShapeMismatchError` analog `match()`. |
+| `explainMatchLLM(matchResult, apiKey)` mit leerem `apiKey` oder kein String | wirft `InvalidApiKeyError` sync, vor Netz-Aufruf. Stufe B ist opt-in (siehe INTERFACES.md §7). |
+| `explainMatchLLM` mit fehlerhaftem `matchResult` (kein `MatchDimensionsResult`) | wirft `InvalidMatchResultError` sync, vor Netz-Aufruf. |
+| `explainMatchLLM` LLM-API HTTP-Fehler (4xx/5xx), Timeout, Netz-Fehler | **kein** Throw. Resolved mit `{available:false, reason:"<deutsch>", fallbackScore:overall}`. Aufrufer fällt auf Stufe-A-Resultat zurück; UI zeigt „Erklärung nicht verfügbar". |
+| `explainMatchLLM` LLM-Antwort kein valides JSON oder Schema-Mismatch | **kein** Throw. Resolved mit `{available:false, reason:"Antwort entsprach nicht dem Schema", fallbackScore:overall}`. Modul 04 verwirft die LLM-Antwort still — kein Halb-Resultat. |
+| `explainMatchLLM` `abortSignal` triggert | `AbortError` (Standard-DOM-Verhalten, durchgereicht). Aufrufer fängt selbst. |
 
 ---
 
@@ -372,6 +665,7 @@ statt < 0.40; Tarantino 0.7737 statt < 0.55).
 | Spec gefüllt | 2026-05-14 | Spec+Bau 04 | modus-freie API `match(queryVec, passageVec)`, `isAboveProviderThreshold`, L2-Norm-Vertrauen, A1–B3-Synthese, Fehlertabelle |
 | Code geschrieben | 2026-05-14 | Spec+Bau 04 | `src/modules/04_match.js`, IIFE mit `window.SbkimMatch`, synchroner Selbstcheck beim Skript-Laden, sechs Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
 | Sichttest | 2026-05-14 | Spec+Bau 04 + Pflege Match-Kal. | geprüft 2026-05-14 (Klaus, im Browser): 3 Tests grün (Käsetorte ähnlich, Hefeteig positiv, Form-Fehler); 2 Tests offenbarten Schwellen-Drift (Auspuffrohr 0.8967 statt < 0.40; Tarantino 0.7737 statt < 0.55) — daraufhin Kalibrierungs-Sitzung 2026-05-14 `PROVIDER_MIN_MATCH` 0.55 → 0.80, Test-Schwellen 0.70/0.40 → 0.92/0.90 |
+| Spec M04-Erweiterung (Brief 03) | 2026-05-19 | Spec M04-Erweiterung | Strang 2 der V1-Sammelspec-Kaskade (Brief 03; Brief 01-PR #96 + Brief 02-PR #97 als gemerged vorausgesetzt). Karte 04 additiv erweitert: § Schnittstelle um zwei neue Funktionen `matchDimensions(qCap, qNeeds, pCap, pNeeds) → MatchDimensionsResult` (sync, drei Cosinus-Aufrufe + gewichteter `overall`, `availableLanes` 0/1/2) und `explainMatchLLM(matchResult, apiKey, options?) → Promise<ExplainResult>` (async, einziger Netz-/async-Pfad, fehlertolerant — scheitert nie throw, resolved mit `available:false` bei API-/Schema-Fehlern) plus neue Konstante `SCHICHT_MIN_MATCH = 0.60`; § Schnittstelle-Einleitung von „zwei Funktionen + eine Konstante" auf „vier Funktionen + zwei Konstanten" angepasst. Vier neue Sub-Blöcke nach § Konfigurationswerte: § Drei-Schichten-Modell (orthogonal `fachlich` / `prozess` / `skalierung`, Tabelle Paper-Name-Korrespondenz, Lane-Berechnung, Mittelwert-vs-Min-Begründung, Nur-Anbieter-Modus mit Rückwärts-Kompatibilität), § Brücken-Feld-Spec (`BridgeProposal` mit `needed` / `lookingFor` / `candidateScope`; drei Werte mit Verfügbarkeits-Hinweis — `lokal` heute, `mailbox` bedingt Modul 13, `netz` formal nicht aktivierbar bis Anker 10-12), § Schwellen-Vertrag (`PROVIDER_MIN_MATCH=0.80` für `overall`, `SCHICHT_MIN_MATCH=0.60` pro Dimension, 5 Auswertungs-Regeln, Stufe-B-Übersteuerung), § Stufe-B-Vertrag (Modell + max_tokens + JSON-only-Output + Antwort-Schema + `ExplainResult` + Fehlertoleranz + Rate-Limit-Awareness + User-Key-Handling Plattform-agnostisch + Beispiel-Output mit zwei Personas als Brücke zu Brief 04). § Stamm/Gast-Klassifikation-Hinweis-Block **unverändert** (Schichten sind orthogonale Schicht zur Stamm/Gast-Klassifikation; explizit beide bleiben getrennt). § Fehlerverhalten um sieben neue Zeilen erweitert (DimensionsAllNullError, einseitig-null = kein Throw, Längen-/Form-Fehler analog `match()`, InvalidApiKeyError, InvalidMatchResultError, LLM-HTTP-/Schema-/Abort-Fälle fehlertolerant). **PROTOCOL_VERSION bleibt `"0.1"`** — beide neuen Funktionen sind additiv, `match` und `isAboveProviderThreshold` bleiben wortwörtlich erhalten, alte Aufrufer brechen nicht. INTERFACES.md §0 (drei neue Konstanten: `SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL`, `STUFE_B_MAX_TOKENS`), §1 Modul 04 (Bietet-Block erweitert + vier neue Sub-Blöcke + Fehlerverhalten + Garantien), §7 (LLM-Stufe-B-Ehrlichkeits-Klausel neu), §8 (Anti-Missbrauch-Klausel neu), §9 (Änderungsprotokoll, war §7) nachgezogen. **`status.json` unverändert** — Modul 04 bleibt `score:"stub"` (additive Spec-Erweiterung am Karten-Vertrag, kein Code-Bau, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Kein Code** in `src/modules/04_match.js` — Bau-Folge-Sitzungen (Stufe A erweitert ~2-3 h, Stufe B ~5-8 h) folgen als eigene Phasen. **Keine `tests/manual_check.html`-Änderung** — Panel 04 wartet auf Bau. Manueller-Test-Block in Karte 04 bleibt auf der heutigen 6-Knöpfe-Form (Stufe-A-only); Bau-Folge-Sitzungen ergänzen ihn um die neuen Pfade. |
 | In Endknoten eingebaut | — | — | — |
 
 ---

@@ -276,13 +276,15 @@ ein und sind damit signaturpflichtig):
 
 ```jsonc
 {
-  "nodeName":          "Rezeptbuch Klaus",
-  "domainDescription": "Hausgemachte Kochrezepte, vom Hefeteig bis zur Sauce.",
-  "domainKeywords":    ["Backen", "Saucen", "Hauptgang"],
-  "domainVector":      [/* 384 floats, optional bei kleinen Spores */],
-  "endpointPaths":     { /* override für INTERFACES.md §3, falls Hoster ohne .well-known */ },
-  "stammCategories":   ["Vorspeisen", "Fleisch", "Fisch", "Vegetarisch"],   // Kerngebiet (ARCHITEKTUR.md §8)
-  "guestCategories":   ["Begleitgetränke", "Weinkarte"]                     // UI-Label: "Überraschungs-Plus"
+  "nodeName":              "Rezeptbuch Klaus",
+  "domainDescription":     "Hausgemachte Kochrezepte, vom Hefeteig bis zur Sauce.",
+  "domainKeywords":        ["Backen", "Saucen", "Hauptgang"],
+  "domainVector":          [/* 384 floats, optional bei kleinen Spores */],
+  "embeddingCapabilities": [/* 384 floats, NEU additiv aus Spec-Sitzung M04-Erweiterung */],
+  "embeddingNeeds":        [/* 384 floats, NEU additiv aus Spec-Sitzung M04-Erweiterung */],
+  "endpointPaths":         { /* override für INTERFACES.md §3, falls Hoster ohne .well-known */ },
+  "stammCategories":       ["Vorspeisen", "Fleisch", "Fisch", "Vegetarisch"],   // Kerngebiet (ARCHITEKTUR.md §8)
+  "guestCategories":       ["Begleitgetränke", "Weinkarte"]                     // UI-Label: "Überraschungs-Plus"
 }
 ```
 
@@ -294,6 +296,90 @@ Reihenfolge — die ist Teil der Signatur). Disjunktheit (kein Element
 in beiden Listen) ist Hosting-Pflicht des Knotens, **kein**
 `verifyForeignSpore`-Abbruch-Grund — Empfänger nehmen die Listen so an,
 wie sie kommen.
+
+### M04-Erweiterung: embeddingCapabilities + embeddingNeeds (Brief 03)
+
+Spec-Sitzung M04-Erweiterung (Brief 03 der V1-Sammelspec-Kaskade,
+2026-05-19) führt zwei neue optionale Vektor-Felder ein, beide additiv
+und beide signaturpflichtig wenn vorhanden — analog zu `domainKeywords`
+/ `stammCategories`. **PROTOCOL_VERSION bleibt `"0.1"`** (kein altes
+Feld zur Pflicht erhoben, kein Pflicht-Rename).
+
+- **`embeddingCapabilities`** ist der **kanonische Name** für den
+  Anbieter-Vektor („was kann dieser Knoten anbieten") und semantisch
+  identisch zu `domainVector`. Eine Spore darf `domainVector` ODER
+  `embeddingCapabilities` ODER **beide** tragen. Falls beide vorhanden
+  sind, **sollen** sie wertgleich sein — `verifyForeignSpore` prüft
+  das **nicht**, weil die Signatur die ganze JSON-Form deckt und ein
+  Mismatch nur den Aufbau-Pfad des Senders beträfe (additiver Übergangs-
+  Pfad: neue PWAs dürfen weiterhin `domainVector` schreiben oder auf
+  `embeddingCapabilities` migrieren, gemischte Sporen sind erlaubt).
+  Consumer (Modul 04 `match` / `matchDimensions`, Modul 05
+  `verifyForeignSpore`-Empfänger) lesen bevorzugt
+  `embeddingCapabilities`, sonst `domainVector`, sonst „kein
+  Anbieter-Vektor verfügbar" — derselbe Fail-soft-Pfad wie heute.
+
+- **`embeddingNeeds`** ist das **neue Sucher-Vektor-Feld** („was sucht
+  dieser Knoten"). Ohne `embeddingNeeds` ist der Knoten im **„nur
+  Anbieter-Modus"** — Modul 04 `matchDimensions` liefert dann
+  `availableLanes:0` und alle Schicht-Scores als `null` (siehe
+  INTERFACES.md §1 Modul 04 § Drei-Schichten-Modell § Nur-Anbieter-
+  Modus). Der Aufrufer fällt in dem Fall auf die einseitige Auswertung
+  über `match(domainVectorA, domainVectorB)` zurück, exakt wie heute.
+
+#### Migrations-Pfad (Aufrufer-Seite)
+
+| Knoten-Zustand | `domainVector` | `embeddingCapabilities` | `embeddingNeeds` | matchDimensions-Verhalten |
+|---|---|---|---|---|
+| Alt-Spore (vor Brief 03) | ✓ vorhanden | — fehlt | — fehlt | Nur-Anbieter-Modus auf beiden Seiten → `availableLanes:0` → Aufrufer nutzt `match(…)` wie bisher (kein Funktionalitäts-Rückschritt) |
+| Neu-Spore Anbieter-only | — fehlt | ✓ vorhanden | — fehlt | Nur-Anbieter-Modus → `availableLanes:0` → wie oben |
+| Neu-Spore voll | optional | ✓ vorhanden | ✓ vorhanden | Bidirektional → `availableLanes:1` oder `2` je nach Gegen-Spore |
+| Übergangs-Spore | ✓ vorhanden | ✓ vorhanden (wertgleich) | optional | wie Neu-Spore — Consumer liest `embeddingCapabilities` bevorzugt |
+
+**Empfehlung an die Bau-Sitzung 02 (Folge-Bau, Brief 03 spezifiziert
+nur — kein Code-Eingriff in dieser Sitzung):** `generateOwnSpore` muss
+die `generateOwnSpore`-**Allow-List** im `unsigned`-Bauplan um zwei
+Zeilen erweitern, analog zu `stammCategories` / `guestCategories`
+(Bau-Sitzung Stamm/Gast 2026-05-15-Lehre):
+
+```
+// nach der domainVector-Zeile, vor endpointPaths:
+if (Array.isArray(meta.embeddingCapabilities) || meta.embeddingCapabilities instanceof Float32Array) {
+  unsigned.embeddingCapabilities = Array.from(meta.embeddingCapabilities);
+}
+if (Array.isArray(meta.embeddingNeeds) || meta.embeddingNeeds instanceof Float32Array) {
+  unsigned.embeddingNeeds = Array.from(meta.embeddingNeeds);
+}
+```
+
+Ohne diese Allow-List-Erweiterung würden die beiden neuen Felder
+beim `generateOwnSpore`-Aufruf still ignoriert (wie es bei
+`stammCategories` vor der 2026-05-15-Bau-Pflege passiert war).
+**Validierung** in `validateSporeMeta` bleibt **unverändert** — die
+Felder sind optional, non-Array-Werte werden stillschweigend
+ignoriert (gleiche Konvention wie `domainKeywords`). Form-Validierung
+(`Length === 384`, alle Elemente Zahlen) ist Aufrufer-Pflicht (das
+ist die Konvention für alle Vektor-Felder seit Spec-Sitzung 02).
+
+#### Bezugs-Verweise
+
+- **Vision-Anker 9** (M04-Erweiterung — drei Schichten + Brücke +
+  doppelte Spore), PULS § Vision-Anker. Brief 03 realisiert den
+  Strang 2 dieses Ankers.
+- **Vision-Anker 6** (Multi-Identität in der IndexedDB), PULS §
+  Vision-Anker. Brief 04 spezifiziert mehrere Identitäts-Slots
+  (`sbkim_keys["main"]` / `["beruflich"]` / `["test"]`) — die
+  doppelte Spore (`embeddingCapabilities` + `embeddingNeeds`)
+  existiert dann **pro Persona** als unabhängiger Vektor-Slot.
+  Brief 03 spezifiziert die Felder; Brief 04 spezifiziert die
+  Persona-Mehrfachheit. Karte 02 wartet auf Brief 04 für die
+  Multi-Identitäts-API.
+- **Modul 04** § Drei-Schichten-Modell / § Stufe-B-Vertrag — der
+  Consumer-Pfad für die neuen Felder, mit `MatchDimensionsResult`
+  und `ExplainResult` als Rückgaben.
+- **Modul 06** § Brücken-Vorschlag-Eintrags-Typ (Folge-Spec-Block,
+  Brief 03 hat den Verweis hinterlegt) — Outbox-Form für lokale
+  Brücken-Empfehlungen.
 
 Unbekannte zusätzliche Felder werden bei `verifyForeignSpore`
 **nicht** abgewiesen, sind aber Teil der Signatur (jeder Knoten
@@ -639,6 +725,7 @@ Block dieser Karte (Zeile „Sichttest").
 | Spec Backup-Export Stufe 2 | 2026-05-16 | Spec Backup-Export | Stufe (2) der drei-stufigen Identitäts-Persistenz-Architektur (PULS § Offene Querschnitts-Fragen „Identitäts-Persistenz"). Karte 02 additiv erweitert: § Schnittstelle um `exportBackup(password) → Promise<SbkimBackupBlob>` und `importBackup(blob, password, options?) → Promise<{restored, reason?}>`; Selbstcheck-Funktionsliste um die zwei neuen Namen (zehn Funktionen statt acht); § Datenformat um neuen Sub-Block „Backup-Format (SbkimBackupBlob)" mit Wrapper-Schema (`version`, `kdf`-Block PBKDF2/SHA-256, `cipher`-Block AES-GCM-256, `ciphertext`, `payload-schema-version`) + Klartext-Payload-Schema (nodeId-Anker + `keys` + `spore` + `siblings`-Array) + KDF-/Encrypt-Pfad verbindlich; § Storage um Hinweis-Block „Backup-Inhalt" (drei Stores `sbkim_keys`/`sbkim_spore`/`sbkim_siblings`, fail-soft beim Siblings-Lesen, bewusst nicht im Backup: Log/Inbox/Outbox/Doku-Meta — Pflicht-Frage 1 Variante b); neue § Konfigurationswerte mit sechs Konstanten (drei in §0 verankert: `BACKUP_FORMAT_VERSION=1`, `BACKUP_KDF_ITERATIONS=600000`, `BACKUP_PASSWORD_MIN_LEN=8`; drei modul-lokal: `BACKUP_PAYLOAD_SCHEMA_VERSION=1`, `BACKUP_KDF_SALT_BYTES=16`, `BACKUP_CIPHER_IV_BYTES=12`); § Fehlerverhalten um sechs neue Zeilen (`InvalidBackupPasswordError`, `BackupDecryptError` als Sammel-Klasse ohne Oracle, `BackupVersionMismatchError`, `BackupSchemaError`, `BackupOverwriteError` aus Pflicht-Frage 3 Variante a, `NoIdentityError`-Durchreichung); § Risiken um drei neue Punkte (Passwort-Schwäche, Sicherheits-Schwelle Import-Überschreibung, Backup-Aktualität). **INTERFACES.md** §0 um drei Konstanten + §1 Modul 02 (Bietet/Nutzt/Fehlerverhalten/Geprüft) + §2 Spore-JSON Hinweis-Block + §6 Änderungsprotokoll nachgezogen. **`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`** (Backup-Format ist eigene additive Versionierung, kein Spore-Feld, kein Storage-Schema-Eingriff). Spec ist additiv; **kein Code in `src/modules/02_spore.js`** — Bau-Sitzung 02.X folgt als eigene Phase. `status.json` unverändert (Modul 02 bleibt `score:"stub"`, Spec-Erweiterung im Karten-Vertrag, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). |
 | Code geschrieben (Bau 02.X Backup-Export) | 2026-05-16 | Bau 02.X Backup-Export | Folge-Bau zur Spec-Sitzung (PR #52 gemerged). Fünf Error-Klassen im Factory-Stil analog Modul 00/08 (`InvalidBackupPasswordError`, `BackupDecryptError` Sammel-Klasse ohne Oracle, `BackupVersionMismatchError`, `BackupSchemaError`, `BackupOverwriteError`); drei §0-Konstanten modul-lokal gespiegelt (`BACKUP_FORMAT_VERSION=1` / `BACKUP_KDF_ITERATIONS=600000` / `BACKUP_PASSWORD_MIN_LEN=8`) + drei modul-lokale Konstanten (`BACKUP_PAYLOAD_SCHEMA_VERSION=1` / `BACKUP_KDF_SALT_BYTES=16` / `BACKUP_CIPHER_IV_BYTES=12`); neuer Closure-Helper `derivePbkdf2AesGcmKey(password, salt, iterations)` (PBKDF2-SHA-256 → AES-GCM-256, beide non-extractable). **Helper-Reuse:** bestehender `canonicalJsonBytes`/`canonicalize`-Pfad aus dem Spore-Sign-Block + bestehender `base64urlEncode`/`base64urlDecode` werden für die Backup-Schicht wiederverwendet (kein Refactoring nötig — die kanonische Sort-Disziplin ist Vertrag, zweite Implementierung wäre Drift-Risiko). `exportBackup(password)` liest sbkim_keys["main"] + sbkim_spore["main"] direkt aus dem Storage (Roh-JWK), liest sbkim_siblings fail-soft via try/catch, baut den Klartext-Payload mit `createdAt`/`keys`/`nodeId`/`siblings`/`spore`, verschlüsselt mit PBKDF2 + AES-GCM-256 und liefert den Wrapper-Blob. `importBackup(blob, password, options?)` macht alle Vor-Checks (Mindest-Länge, Wrapper-Version, Force-Schwelle) VOR dem teuren Crypto-Aufruf; `iterations` wird aus `blob.kdf.iterations` gelesen (NICHT aus §0 — Spec-Sitzung Pflicht-Frage 2 „Hinweis zur Kompatibilität"); Decrypt + JSON-Parse in einem try/catch-Block sammelt auf `BackupDecryptError` (Sammel-Klasse ohne Oracle); Schema-Check (payload-schema-version + Pflichtfelder `nodeId`/`keys.privateKey`/`keys.publicKey`/`spore`) wirft `BackupSchemaError` mit konkret-feld-Hinweis; Sibling-Loop additiv (put pro Eintrag, key=nodeId). Letzter Schritt: `resetIdentityCache()` (Pflicht-Hook aus Pflege 2026-05-15). Selbstcheck-Zeile auf zehn Funktionen erweitert. **`_meta`** um vier Backup-Werte ergänzt (Format-Version, Iterations, Min-Len, Payload-Schema-Version). **Panel 02** in `tests/manual_check.html` um drei Knöpfe erweitert: „Backup exportieren" (Knopf 6 — Passwort-Prompt + Blob-Log + Download-Link `sbkim-backup-YYYY-MM-DD.json`), „Backup einlesen" (Knopf 7 — File-Picker + Passwort, erster Versuch ohne force, bei BackupOverwriteError Bestätigungs-Zeile mit alter nodeId), „Identität ersetzen — unwiderruflich" (Knopf 7b — force-Pfad, scharf nur wenn pendingBackup gesetzt). **Modul 00 / 01 / 03 / 04 / 05 / 06 / 07 / 08 unangetastet** (sbkim_siblings nur gelesen/geschrieben, kein Storage-Schema-Eingriff). **`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `3`** (Backup ist Aufrufer-extern, kein Store). `node --check src/modules/02_spore.js` grün; alle 10 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert. **status.json unverändert** (Modul 02 bleibt `score:"stub"`, additive Code-Erweiterung, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). |
 | Sichttest (Bau 02.X) | 2026-05-16 | Bau 02.X Backup-Export | geprüft 2026-05-16 (Klaus, Chrome auf Galaxy Tab S6 + DeX): alle drei neuen Knöpfe grün — Knopf 6 (Backup exportieren) liefert valides Wrapper-Format `version:1`, `iterations:600000`, AES-GCM-256, `payload-schema-version:1`; Knopf 7 (Backup einlesen) ohne force → `BackupOverwriteError` mit korrekter Warnzeile + Status-Chip „Bestehende Identität" (Schutz-Pfad, erwartet); Knopf 7b (Identität ersetzen — unwiderruflich) funktioniert im normalen Pfad. Klaus hat parallel die Panels 01–08 in `tests/manual_check.html` grob durchgeklickt — alle Selbstchecks und Hauptpfade grün („die anderen 01–08 getestet, die waren alle OK"). **Test-Panel-UX-Befund** (kein Modul-Bug): der pendingBackup-Stash in Panel 02 Knopf 7 wurde beim zweiten Klick auf „Backup einlesen" überschrieben (`pendingBackup = null` direkt am Anfang des Handlers) — wenn Klaus zweimal auf Knopf 7 klickt ohne im File-Picker eine Datei zu wählen, ging der Stash verloren und Knopf 7b zeigte „Kein Backup zum Ersetzen vorgemerkt". **Modul-Vertrag unangetastet.** **In Folge-Mini-Pflege 2026-05-16 (Test-Panel-UX) gefixt:** Reset-Zeile aus dem Handler-Anfang entfernt, `pendingBackup = null` erst direkt vor dem `importBackup`-Aufruf (nach erfolgreicher File-Wahl) gesetzt — File-Picker-Cancel löst damit keine State-Änderung mehr aus, gestashter Stash aus dem vorherigen `BackupOverwriteError`-Lauf überlebt einen zweiten Knopf-7-Klick mit Picker-Cancel. Bestehende Pfade unverändert (Erfolgsfall null / `BackupOverwriteError`-Pfad füllt Stash / 7b-force-Pfad), `node --check` aller 10 Inline-Script-Blöcke grün. Sichttest des Fix-Pfads ungeprüft, weil headless gebaut — wartet auf Klaus' Browser-Lauf. |
+| Spec M04-Erweiterung (Brief 03) | 2026-05-19 | Spec M04-Erweiterung | Strang 2 der V1-Sammelspec-Kaskade (Brief 03; Brief 01-PR #96 + Brief 02-PR #97 als gemerged vorausgesetzt). Karte 02 additiv erweitert: § Datenformat „Spore-JSON" um zwei neue optionale Felder `embeddingCapabilities` (Alias-Name für `domainVector`, semantisch identisch) und `embeddingNeeds` (neuer Sucher-Vektor) — beide signaturpflichtig wenn vorhanden, beide additiv; neuer Sub-Block „M04-Erweiterung: embeddingCapabilities + embeddingNeeds (Brief 03)" mit Migrations-Tabelle (vier Spore-Zustände: Alt-Spore / Neu-Spore Anbieter-only / Neu-Spore voll / Übergangs-Spore) und Bauzustand-Hinweis für die Bau-Folge-Sitzung (`generateOwnSpore`-Allow-List um zwei Zeilen analog `stammCategories`/`guestCategories`-Pflege 2026-05-15; konkreter Code-Schnipsel als Spec-Vorlage, **KEIN Code-Eingriff** in dieser Spec-Sitzung); Bezugs-Verweise auf Vision-Anker 9 (M04-Haupt-Anker) + Vision-Anker 6 (Multi-Identität — doppelte Spore pro Persona, Brief 04 spezifiziert die Persona-Mehrfachheit) + Modul 04 (Consumer-Pfad) + Modul 06 (Brücken-Vorschlag-Eintrags-Typ). **PROTOCOL_VERSION bleibt `"0.1"`** — beide neuen Felder sind optional, alte Sporen ohne sie bleiben gültig (signalisieren „nur Anbieter-Modus"). **§ Schnittstelle, § Storage, § Fehlerverhalten, § Risiken, § Manueller Test unverändert** (die Felder sind optionale meta-Erweiterungen, kein neuer API-Pfad — Bau-Folge-Sitzung erweitert nur die `generateOwnSpore`-Allow-List und ggf. die Validierung). INTERFACES.md §0 (drei neue Konstanten: `SCHICHT_MIN_MATCH=0.60`, `STUFE_B_DEFAULT_MODEL`, `STUFE_B_MAX_TOKENS`), §1 Modul 02 Bietet-Block-Spore-Schema-Erweiterungs-Hinweis, §2 Spore-JSON Optionale Felder, §9 Änderungsprotokoll (war §7, nachnummeriert weil Brief 03 § 7 + § 8 vor der Changelog einfügt) nachgezogen. **`status.json` unverändert** — Modul 02 bleibt `score:"stub"` (additive Spec-Erweiterung am Karten-Vertrag, kein Code-Bau, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Kein Code** in `src/modules/02_spore.js` — Bau-Folge-Sitzung folgt als eigene Phase. |
 | In Endknoten eingebaut | — | — | — |
 
 ---

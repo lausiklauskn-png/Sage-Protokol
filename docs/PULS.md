@@ -1363,11 +1363,26 @@ sie als Bau-Ziel der V1-Sammelspec.
 
 ### Status
 
-**Reif für Spec-Diskussion, integraler Teil von V1-Sammelspec.** Kein
-eigenständiger Bau-Auftrag — Anker 9 lebt im V1-Brief mit. Stufe A
-erweitert kann auch ohne V1 als Mini-Pflege gezogen werden, falls
-Klaus das vorziehen will. Stufe B wartet auf V1 (Hybrid-Knoten als
-Auflage, Identitäts-Container für Key-Speicher).
+**Strang 2 der V1-Sammelspec realisiert (2026-05-19, Brief 03 der
+V1-Sammelspec-Kaskade).** Spec-Sitzung 2026-05-19 hat die drei
+Schichten + Brücken-Feld + doppelte Spore + Stufe-A/Stufe-B-Match-
+Pipeline verbindlich in INTERFACES.md verankert (§0 drei neue
+Konstanten `SCHICHT_MIN_MATCH=0.60` / `STUFE_B_DEFAULT_MODEL` /
+`STUFE_B_MAX_TOKENS`; §1 Modul 02 Bietet-Block-Spore-Schema-
+Erweiterungs-Hinweis; §1 Modul 04 zwei neue API-Funktionen
+`matchDimensions` + `explainMatchLLM` + vier neue Sub-Blöcke; §2
+Spore-JSON-Felder `embeddingCapabilities` + `embeddingNeeds`;
+§7 LLM-Stufe-B-Ehrlichkeits-Klausel neu; §8 Anti-Missbrauch-Klausel
+neu; §9 Änderungsprotokoll, war §7) plus Karten 02 / 04 / 06
+nachgezogen. **PROTOCOL_VERSION bleibt `"0.1"`** — alle neuen Felder
+und Funktionen sind additiv, alte Sporen ohne `embeddingNeeds` bleiben
+gültig (signalisieren „nur Anbieter-Modus"). **Verbleibende Etappen
+der V1-Sammelspec-Kaskade:** Brief 04 Multi-Identität (Strang 3 —
+`sbkim_keys`-Multi-Slots + `active-identity`-Marker, doppelte Spore
+pro Persona) folgt; BRIEF_99-Abschluss schließt die Kaskade. **Bau
+folgt nach Kaskaden-Abschluss** in eigenen Bau-Sitzungen (Stufe A
+erweitert ~2-3 h, Stufe B ~5-8 h, Sage-Page-Karte 04 ~3-5 h, Migrations-
+Pflege Spore-Schema ~2 h — alle nicht in Brief 03).
 
 ### 2026-05-18 · Sonnen-Galaxie — Sage-Geschichts-Galerie
 
@@ -1642,139 +1657,217 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-18 · Spec — Plattform-Matrix (Brief 02 der V1-Sammelspec-Kaskade)
+### 2026-05-19 · Spec — M04-Erweiterung (Brief 03 der V1-Sammelspec-Kaskade)
 
 **Sitzungs-Rolle:** Spec-Sitzung, headless. Branch
-`claude/spec-v1-plattform-matrix-pYusR` (Harness-Suffix; gemeinte
-Konvention `claude/spec-v1-plattform-matrix`). Zweite Etappe der
+`claude/spec-v1-m04-erweiterung-2pv3U` (Harness-Suffix; gemeinte
+Konvention `claude/spec-v1-m04-erweiterung`). Dritte Etappe der
 V1-Sammelspec-Brief-Kaskade nach Brief 01 (Spec V1 Sage-Hybrid,
-PR #96 gemerged, `main`-Stand bei `a3e0072`). Quell-Spec:
-`docs/sessions/BRIEF_SPEC_V1_SAMMELSPEC.md` § STRANG 4;
-herausgeschnitten als `docs/sessions/BRIEF_02_plattform_matrix.md`.
+PR #96 gemerged) und Brief 02 (Spec Plattform-Matrix, PR #97
+gemerged, `main`-Stand bei `69077db`). Quell-Spec:
+`docs/sessions/BRIEF_SPEC_V1_SAMMELSPEC.md` § STRANG 2;
+herausgeschnitten als `docs/sessions/BRIEF_03_m04_erweiterung.md`.
 
-**Kern:** Strang 4 macht die Plattform-Schicht des Mycels
-explizit. Fünf Plattform-Profile stehen jetzt verbindlich
-nebeneinander in INTERFACES — Desktop-Browser, DeX-Tablet, PWA-
-installiert, Mini-Browser (V8), Extension (V7). Die Plattform-
-Ehrlichkeits-Klausel zieht aus Klaus' Lehre 1 (Browser-Instanzen-
-Trennung, Pages-Live-Tests 2026-05-17) die Konsequenz: kein
-Knoten lügt über Hintergrund-Empfang oder Schlüssel-Sicherheit;
-Hintergrund-Empfang ist Vision-Anker 4 (Königin-Relay)
-vorbehalten und kein Pflicht-Bestandteil des Protokolls. Sage
-nimmt heute zwei Profile ein (Desktop-Browser vor Installation,
-PWA-installiert nach „Zur Startseite hinzufügen") — ohne als
-eigene Zeile in der Matrix zu stehen, weil die Matrix Profile
-beschreibt, nicht Endknoten.
+**Kern:** Strang 2 holt die drei Schichten + Brücken-Feld + doppelte
+Spore aus dem ursprünglichen SBKIM-Paper (Plattform-Form, § 3.3) in
+die Mycel-Form ein. Modul 04 (Match) wird additiv um zwei neue API-
+Funktionen erweitert (`matchDimensions` für die Stufe-A-Pipeline mit
+drei orthogonalen Schichten und Lane-Bidirektionalität;
+`explainMatchLLM` für den optionalen Stufe-B-LLM-Pass mit
+Brücken-Vorschlag, JSON-only-Output und Fehlertoleranz). Modul 02
+(Spore) bekommt zwei neue optionale Schema-Felder
+(`embeddingCapabilities` als kanonischer Alias für `domainVector`,
+`embeddingNeeds` als neuer Sucher-Vektor — beide signaturpflichtig
+wenn vorhanden, beide additiv). Modul 06 (Heterokaryose) bekommt
+einen neuen Outbox-Eintrags-Typ „Brücken-Vorschlag" (Spec, kein
+Bau). Zwei neue heilige Tafeln gehen in INTERFACES (LLM-Stufe-B-
+Ehrlichkeits-Klausel + Anti-Missbrauch-Klausel).
 
-**Vier Punkte a–d umgesetzt, rein in INTERFACES:**
+**PROTOCOL_VERSION bleibt `"0.1"`** — explizite Entscheidung in
+dieser Sitzung. Alle neuen Felder (`embeddingCapabilities` /
+`embeddingNeeds`) sind optional, alle neuen Funktionen (`matchDimensions`
+/ `explainMatchLLM`) sind additiv. Alte Sporen ohne `embeddingNeeds`
+bleiben gültig (signalisieren „nur Anbieter-Modus" — `availableLanes:0`
+in `matchDimensions`; Aufrufer fällt auf Single-Vector-Pfad `match()`
+zurück, vollständig rückwärts-kompatibel). Kein altes Feld wurde zur
+Pflicht erhoben — die Brief-Wahl-Klausel „Sollte M04 ein altes Feld
+zur Pflicht erheben, bumpe auf 0.2" wurde geprüft und nicht ausgelöst.
 
-a) **`docs/INTERFACES.md` § 6.2 Plattform-Matrix** (neu) — Tabelle
-   mit fünf Plattform-Profilen × sechs Spalten (IndexedDB / SW /
-   Spore-Empfang / Identitäts-Backup / Stufe B / Beispiel-Knoten).
-   Spalten-Glossar mit präzisen Begriffsdefinitionen für jede
-   Spalte. Sage-Anmerkung unter der Matrix erklärt, dass Sage
-   Desktop-Browser-Profil (vor Installation) bzw. PWA-installiert-
-   Profil (nach Andocken) einnimmt, ohne als eigene Zeile in der
-   Tabelle zu stehen. Plattform-Matrix-Stub aus § 6.1 (Brief 01)
-   ist zu einem Verweis auf § 6.2 umgeschrieben.
+**Vier Punkte a–d umgesetzt:**
 
-b) **`docs/INTERFACES.md` § 6.3 Plattform-Ehrlichkeits-Klausel**
-   (neu) — verbindliche Spec-Klausel mit Wortlaut: „Sporen-
-   Verhalten ist plattform-ehrlich: jede Spore trägt implizit
-   ihre Plattform (durch ihren `endpoint` und das beobachtete
-   Empfangs-Verhalten), kein Knoten lügt über Hintergrund-
-   Empfang oder Schlüssel-Sicherheit." Hintergrund-Empfang ist
-   Vision-Anker 4 vorbehalten, kein Pflicht-Bestandteil.
-   Begründung in zweitem Absatz aus Klaus' Lehre 1 (Browser-
-   Instanzen-Trennung, Pages-Live-Tests 2026-05-17, PULS § Anker
-   1 Bezugs-Block).
+a) **`docs/INTERFACES.md`** — vier neue Sub-Sektionen + zwei neue
+   Top-Level-§-Blöcke + drei §0-Konstanten:
+   - **§ 0** drei neue Konstanten (`SCHICHT_MIN_MATCH=0.60` aus
+     STRANG 2 § a; `STUFE_B_DEFAULT_MODEL="claude-sonnet-4"` als
+     aufrufer-überschreibbare Konvention; `STUFE_B_MAX_TOKENS=1024`
+     als Default-Token-Budget, ebenfalls aufrufer-überschreibbar).
+   - **§ 1 Modul 02 (Spore) Bietet-Block** um Schema-Erweiterungs-
+     Hinweis ergänzt (zwei neue optionale meta-Felder
+     `embeddingCapabilities` Alias + `embeddingNeeds` neu, beide
+     signaturpflichtig wenn vorhanden, beide additiv).
+   - **§ 1 Modul 04 (Match) Bietet-Block** um zwei neue Funktionen
+     erweitert (`matchDimensions` sync mit `MatchDimensionsResult` +
+     `availableLanes:0/1/2`; `explainMatchLLM` async + fehlertolerant
+     + opt-in mit User-Key); Fehlerverhalten-Tabelle um sieben neue
+     Zeilen; Garantien-Block um vier neue Punkte; vier neue Sub-
+     Blöcke (Drei-Schichten-Modell mit Mittelwert-vs-Min-Begründung
+     und Nur-Anbieter-Modus, Brücken-Feld-Spec mit `BridgeProposal`
+     und drei `candidateScope`-Werten, Schwellen-Vertrag mit 5
+     Auswertungs-Regeln und Stufe-B-Übersteuerung, Stufe-B-Vertrag
+     mit Modell + max_tokens + JSON-Schema + `ExplainResult` +
+     Rate-Limit-Awareness + Plattform-agnostisches Key-Handling +
+     Beispiel-Output mit zwei Personas).
+   - **§ 2 Spore-JSON** Optionale Felder um `embeddingCapabilities`
+     (Alias für `domainVector`) und `embeddingNeeds` (neuer Sucher-
+     Vektor) erweitert plus Hinweis-Block zur additiven Versionierungs-
+     Disziplin.
+   - **§ 7 LLM-Stufe-B-Ehrlichkeits-Klausel (M04-Erweiterung)** neu
+     eingefügt — vier verbindliche Sätze: Stufe B opt-in, Stufe A
+     rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen,
+     Knoten ohne Stufe B = vollwertige Netz-Teilnehmer. Namentlich
+     von § 6.3 Plattform-allgemeiner Ehrlichkeits-Klausel
+     unterschieden. Plattform-Matrix-Konsumtion erklärt (Spalte
+     „Stufe B" in § 6.2 = wo der Key liegt; Modul 04 = wie der Call
+     läuft).
+   - **§ 8 Anti-Missbrauch-Klausel (M04-Erweiterung)** neu eingefügt —
+     drei verbindliche Sätze: Brücken-Vorschlag bleibt lokal,
+     `candidateScope:"netz"` formal nicht aktivierbar bis Anker
+     10-12 gebaut, Modul 06 filtert Brücken-Vorschlag-Outbox-
+     Einträge defensiv.
+   - **§ 7 Änderungsprotokoll auf § 9 nachnummeriert** (additiv —
+     Brief 03 fügt § 7 + § 8 vor der Changelog ein). Neuer
+     Brief-03-Eintrag in § 9 mit allen Punkten dieser Sitzung +
+     Verweis auf Brief-01-PR #96 und Brief-02-PR #97 als
+     Vorgänger + Hinweis auf den hier entstehenden Brief 04.
 
-c) **`docs/INTERFACES.md` § 6.4 Vision-Bezüge** (neu) —
-   Querverweis-Matrix mit sieben V1-Sammelspec-relevanten Vision-
-   Ankern als zweizeilige Tabelle (V1 Träger / V9 Stufe-B-Ort /
-   V6 Persona-Quelle / V7 Toolbar-Lampe / V8 Tray-Träger / V4
-   Mailbox / V5 Key-Speicher) plus Erläuterungs-Absatz pro Anker
-   mit der Rolle im Plattform-Matrix-Kontext (nicht Spec der
-   Anker selbst). Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6
-   streng eingehalten.
+b) **`docs/components/02_spore.md`** — § Datenformat „Spore-JSON"
+   Optionale-Felder-Block um die zwei neuen Vektor-Felder erweitert;
+   neuer Sub-Block „M04-Erweiterung: embeddingCapabilities +
+   embeddingNeeds (Brief 03)" mit Migrations-Tabelle (vier Spore-
+   Zustände: Alt-Spore / Neu-Spore Anbieter-only / Neu-Spore voll /
+   Übergangs-Spore) und Bauzustand-Hinweis für die Bau-Folge-
+   Sitzung (`generateOwnSpore`-Allow-List um zwei Zeilen analog
+   `stammCategories`/`guestCategories`-Pflege 2026-05-15; konkreter
+   Code-Schnipsel als Spec-Vorlage); Bezugs-Verweise auf Anker 9
+   (M04-Haupt-Anker) + Anker 6 (Multi-Identität — doppelte Spore
+   pro Persona, Brief 04 spezifiziert die Persona-Mehrfachheit) +
+   Modul 04 (Consumer) + Modul 06 (Brücken-Vorschlag-Outbox).
+   Bauzustand-Tabelle um Zeile „Spec M04-Erweiterung (Brief 03)".
 
-d) **`docs/INTERFACES.md` § 7 Änderungsprotokoll** — neuer
-   Eintrag „2026-05-18 · Spec-Sitzung Plattform-Matrix (Brief
-   02)" mit den drei Punkten a–c sowie Verweis auf Brief-01-PR
-   (#96) als Vorgänger und auf den hier entstehenden Brief 03
-   (M04-Erweiterung).
+c) **`docs/components/04_match.md`** — § Schnittstelle von
+   „zwei Funktionen + eine Konstante" auf „vier Funktionen + zwei
+   Konstanten" angepasst; `matchDimensions` und `explainMatchLLM`
+   mit vollen Signaturen und Verhaltens-Notizen ergänzt; vier neue
+   Sub-Blöcke (Drei-Schichten-Modell mit Paper-Korrespondenz-
+   Tabelle, Brücken-Feld-Spec, Schwellen-Vertrag, Stufe-B-Vertrag
+   mit vollem JSON-Schema und Beispiel-Output mit zwei Personas);
+   § Fehlerverhalten um sieben neue Zeilen; § Stamm/Gast-Hinweis-
+   Block **unverändert** (orthogonal zur Schichten-Schicht);
+   Bauzustand-Tabelle um Zeile „Spec M04-Erweiterung (Brief 03)".
+
+d) **`docs/components/06_heterokaryose.md`** — neuer Sub-Block
+   „Brücken-Vorschlag-Eintrags-Typ (M04-Erweiterung, Brief 03)"
+   nach § Anker-Quelle. Dokumentiert die additive Outbox-Eintrags-
+   Form `{entryType:"bridge-suggestion", label, vector:null,
+   addedAt, bridgeProposal:{needed, lookingFor, candidateScope}}`,
+   vier-stufige Filter-Logik im `readOwnAnchors`-Lese-Pfad
+   (Anker-Pfad schließt bridge-suggestion-Einträge AUS; `lokal`-
+   Einträge bleiben im Outbox; `mailbox`-Einträge warten auf Modul
+   13; `netz`-Einträge werden NICHT versendet bis Anker 10-12
+   gebaut), Schreiber-Konvention (Modul 08 als Co-Schreiber, Modul
+   04 spec-offen), Anti-Missbrauch-Verweis auf INTERFACES.md §8.
+   **Kein Code-Eingriff.** Bauzustand-Tabelle um Zeile „Spec M04-
+   Erweiterung Brücken-Vorschlag (Brief 03)".
 
 **Heilige Tafeln eingehalten:**
 
-- **INTERFACES verbindlich.** Brief 02 lebt rein in INTERFACES;
-  CLAUDE.md / Karte 09 / `status.json` bleiben unangetastet
-  (Brief 01 hat sie auf den Endknoten-Stand gebracht).
-- **PROTOCOL_VERSION-Disziplin:** Bleibt `"0.1"` — Strang 4 ist
-  dokumentarisch additiv (Matrix ist Spec-Block, kein Spore-
-  Schema-Feld, kein neuer Pflicht-Pfad). Es ergab sich beim
-  Editieren kein impliziter Pflicht-Hop, der einen 0.2-Bump
-  rechtfertigen würde.
-- **Plattform-Ehrlichkeits-Klausel als heilige Tafel der Matrix:**
-  Eigener § 6.3-Absatz mit präzisem Wortlaut + Begründung aus
-  Lehre 1.
-- **Anti-Vorgriff auf Anker 4 / 5 / 7 / 8 / 9 / 6:** Matrix
-  VERWEIST, spezifiziert NICHT. Brief 03 (M04-Erweiterung) erbt
-  die Spalte „Stufe B" der Matrix als Schnittstellen-Eckdatum
-  und füllt die Schichten + Brücke konkret.
-- **Privatheit:** Anker 9 § Sorge ums Freigeben bleibt offen —
-  Plattform-Matrix lässt die Lizenz-Frage unberührt.
-- **Konsistenz-Prüfung VOR dem Eingriff:** Brief-01-PR (#96)
-  ist gemerged, `main`-Stand bei `a3e0072`. INTERFACES § 6
-  Endknoten-Liste auf Brief-01-Stand (drei Endknoten, Sage
-  `Mycel-Bibliothek`, `domainVector:null`, Stamm/Gast disjunkt).
-  § 6.1 Sage-Endknoten — Sage-Page-Architektur in Ordnung
-  (IndexedDB-Suffix `sbkim_sage`, App-SW Variante 3a, volle
-  init()-Kette, Andock-Geste). § 7 Änderungsprotokoll hat den
-  Brief-01-Eintrag. Keine Korrektur an Brief 01 nötig. PR #89
-  (Karte 15 Membran als Stub, Draft, head `claude/browser-use-
-  indexeddb-Jopiy`) bleibt unangetastet — Modul-15-Block liegt
-  nach Modul 09 und kollidiert nicht mit § 6.2 / § 6.3 / § 6.4.
+- **INTERFACES verbindlich.** Schnittstellen-Änderungen ZUERST in
+  INTERFACES, dann in den Karten 02 / 04 / 06. Drei §0-Konstanten +
+  §1 Modul 02 + §1 Modul 04 + §2 Spore-JSON + §7 + §8 + §9
+  alle in INTERFACES verankert; Karten nachgezogen.
+- **PROTOCOL_VERSION-Disziplin geprüft, kein Bump.** `embeddingCapabilities`
+  ist optionaler Alias (kein Pflicht-Rename), `embeddingNeeds` ist
+  optionales Feld (kein Pflicht-Feld), `matchDimensions` /
+  `explainMatchLLM` sind additive Funktionen (alte Signatur bleibt
+  wortwörtlich). `PROTOCOL_VERSION` bleibt `"0.1"` — die Brief-Wahl-
+  Klausel „Sollte M04 ein altes Feld zur Pflicht erheben, bumpe auf
+  0.2" wurde explizit geprüft und nicht ausgelöst. Falls eine
+  Folge-Spec-Sitzung `embeddingNeeds` zur Pflicht erhöbe (z.B. in
+  einer künftigen Stufe-B-only-Variante), wäre das ein bewusster
+  Hauptversions-Sprung in einer eigenen Spec-Sitzung.
+- **Plattform-Ehrlichkeits-Klausel LLM (§ 7) als eigene heilige
+  Tafel.** Namentlich von § 6.3 Plattform-allgemeiner Ehrlichkeits-
+  Klausel unterschieden (§ 6.3 = Spore-Verhalten/Hintergrund-Empfang/
+  Schlüssel-Sicherheit; § 7 = Stufe-B-Drittanbieter-Abhängigkeit /
+  API-Key / Modell-Wahl). Beide ergänzen einander.
+- **Anti-Missbrauch-Klausel (§ 8) als eigene heilige Tafel.**
+  Brücken-Vorschlag bleibt lokal; `candidateScope:"netz"` formal nicht
+  aktivierbar bis Anker 10-12. Modul 04 korrigiert `"netz"`-LLM-
+  Antworten still auf `"lokal"`; Modul 06 filtert defensive Outbox-
+  Einträge. Gilt verbindlich für jede Folge-Spec-Sitzung, bis eine
+  ausdrückliche Sitzung mit Anker-10-12-als-gebaut-Vermerk sie
+  lockert.
+- **Privatheit (Anker 9 § Sorge ums Freigeben):** bleibt offen — die
+  M04-Spec rührt die Lizenz-Frage nicht. Lizenz-Entscheidung wird
+  beim Public-Schalten separat geklärt.
+- **Konsistenz-Prüfung VOR dem Eingriff (Kaskaden-Konvention 5):**
+  Fünf Punkte abgehakt — (1) Brief-02-PR #97 ist gemerged,
+  `main`-Stand bei `69077db`; (2) INTERFACES § 6.2 / § 6.3 / § 6.4
+  + § 7 Änderungsprotokoll auf Brief-02-Stand; (3) Brief-02-
+  Plattform-Matrix-Spalte „Stufe B" in der M04-Spec gespiegelt
+  (Plattform-agnostisches Key-Handling: vier Lokalisations-Varianten
+  via Spalte „Stufe B" konsumiert, kein Plattform-Lock-in in Modul
+  04); (4) Keine Korrekturen an Brief 01 oder Brief 02 nötig;
+  (5) PR #89 (Karte 15 Membran als Stub, Draft, head
+  `claude/browser-use-indexeddb-Jopiy`) bleibt unangetastet — Modul-
+  15-Block liegt nach Modul 09 in INTERFACES, kollidiert nicht mit
+  den Brief-03-Eingriffen in § 0 / § 1 Modul 02 / § 1 Modul 04 /
+  § 2 / § 7 / § 8 / § 9 + Karten 02 / 04 / 06.
 
-**Brief 03 angelegt:** `docs/sessions/BRIEF_03_m04_erweiterung.md`
-mit Aufgabe Strang 2 (M04-Erweiterung — drei Schichten + Brücke
-+ doppelte Spore) aus BRIEF_SPEC_V1_SAMMELSPEC herausgeschnitten,
-inkl. Pflichtleseliste mit Brief 01- und Brief 02-PRs +
-INTERFACES-Stand nach Brief 02 + Karten 02 / 04 / 06 + PULS-
-Anker-Querverweise V9 (Haupt) + V4 / V6 / V7 / V8 (Bezug).
-Kaskaden-Konvention 5 (Vorgänger-Konsistenz-Prüfung) explizit
-gefordert: Brief 03 muss prüfen, dass keine Korrekturen an Brief
-01 (Endknoten-Liste) oder Brief 02 (Plattform-Matrix) nötig
-sind, bevor M04-Spore-Schema und Match-API erweitert werden.
-PROTOCOL_VERSION-Disziplin geerbt: bleibt 0.1, solange
-`embeddingNeeds` und neue Match-Funktionen additiv sind; falls
-M04 ein altes Feld zur Pflicht erhebt (z.B. embedding →
-embeddingCapabilities als Pflicht-Rename), bumpt Brief 03 auf
-0.2 und nennt das explizit. Brief 04 (Multi-Identität) folgt
-als vierte Etappe.
+**Brief 04 angelegt:** `docs/sessions/BRIEF_04_multi_identitaet.md`
+mit Aufgabe Strang 3 (Multi-Identität — `sbkim_keys`-Multi-Slots +
+`active-identity`-Marker, doppelte Spore pro Persona) aus
+BRIEF_SPEC_V1_SAMMELSPEC herausgeschnitten, inkl. Pflichtleseliste
+mit Brief 01-/02-/03-PRs + INTERFACES-Stand nach Brief 03 + Karten
+02 / 05 / 06 / 07 nach Brief 03 + relevante PULS-Anker-Querverweise
+(V6 Multi-Identität als Haupt-Anker, plus V1 / V4 / V5 / V9 als
+Bezugs-Anker). Kaskaden-Konvention 5 (Vorgänger-Konsistenz-Prüfung)
+explizit gefordert: Brief 04 muss prüfen, dass keine Korrekturen an
+Brief 01 / 02 / 03 nötig sind, bevor `sbkim_keys`-Multi-Slots und
+`active-identity`-Marker eingeführt werden. PROTOCOL_VERSION-
+Disziplin geerbt: bleibt 0.1, solange `sbkim_keys[key]` ein lokales
+Schema ist und nicht in die Spore-JSON wandert. Falls Brief 04 eine
+`spore.json`-Liste-Schema-Variante (Strategie B aus § STRANG 3 § d)
+wählt, ist die Bump-Entscheidung explizit zu treffen.
 
 **Kaskaden-Konvention 6** (Auslöser-Befehl im Chat, nicht Brief-
-Volltext) propagiert: Brief 03's „Pflicht am Ende" formuliert
-denselben Mechanismus für Brief 04.
+Volltext) propagiert: Brief 04's „Pflicht am Ende" formuliert
+denselben Mechanismus für die BRIEF_99-Abschluss-Sitzung.
 
-**Was NICHT angefasst:** Modul-Code in `src/`, Sage-Page
-`index.html`, Karte 09 / CLAUDE.md / `status.json` (Brief 01-
-Stand bleibt), Spore-JSON-Schema (Brief 03), Match-API (Brief
-03), Multi-Identität (Brief 04), Königin-Relay (V4 eigene Spec),
-Identitäts-Container (V5 eigene Spec), Extension (V7 eigene
-Spec), Mini-Browser (V8 eigene Spec). `update_puls_pie.py`
-NICHT aufgerufen (kein `status.json`-Score-Wechsel).
+**Was NICHT angefasst:** Modul-Code in `src/` (Spec geht der
+Implementierung voraus); Sage-Page `index.html` (Sage-Page-Refactor
+ist Bau-Sitzung nach Kaskaden-Abschluss in der BRIEF_99-Liste);
+Sage-Page-Karten-Erweiterung um eine „Schichten-Lampen"-Visualisierung
+(Bau-Sitzung); Plattform-Matrix (Brief 02 hat sie gesetzt); Multi-
+Identität (Brief 04); Königin-Relay (V4 eigene Spec); Identitäts-
+Container (V5 eigene Spec); Extension / Mini-Browser (V7 / V8
+eigene Specs); CLAUDE.md (Brief 01 hat sie auf „Hub und Knoten
+zugleich" umgeschrieben); Karte 09 (Brief 01 hat § Schritt 1
+erweitert); `status.json` (Brief 01 hat Sage als endknoten[]-Eintrag
+aufgenommen). `update_puls_pie.py` NICHT aufgerufen (kein
+`status.json`-Score-Wechsel). `tests/manual_check.html` unangetastet
+(Spec-Sitzung, kein UI-Eingriff).
 
-**Vision-Anker 1 § Status nicht erneut angefasst** (Brief 01
-hat den Status auf „Strang 1 realisiert (2026-05-18)" gesetzt;
-Brief 02 ist Strang 4, kein Bezug zu V1-Status-Block). Vision-
-Anker 4 / 5 / 7 / 8 / 9 / 6 bleiben unangetastet — Matrix
-verweist, spezifiziert nicht.
+**Vision-Anker 9 § Status nachgezogen** auf „Strang 2 der V1-
+Sammelspec realisiert (2026-05-19, Brief 03 der V1-Sammelspec-
+Kaskade)" mit Verweis auf Brief 04 und BRIEF_99-Liste. Vision-Anker
+1 / 4 / 5 / 6 / 7 / 8 **unangetastet** — Brief 03 ist Strang 2,
+ohne Bezug zu deren Status-Blöcken.
 
 **Paralleler offener PR:** PR #89 (Karte 15 Membran als Stub,
 Draft, head `claude/browser-use-indexeddb-Jopiy`) bleibt
 unangetastet — eigener Modul-15-Block nach Modul 09 in
-INTERFACES, kollidiert nicht mit den hier neu hinzugekommenen
-§ 6.2 / § 6.3 / § 6.4 Sub-Sektionen unter § 6.
+INTERFACES, kollidiert nicht mit den Brief-03-Eingriffen.
 
 **Manueller Sichttest:** **ungeprüft, weil reine Doku-Pflege** —
 kein Modul-Code in `src/`, kein `tests/manual_check.html`-
@@ -1782,11 +1875,11 @@ Eingriff, keine Sage-Page-Änderung; `status.json` unverändert
 (`update_puls_pie.py` nicht aufgerufen).
 
 **Nächster sinnvoller Schritt:** Klaus mergt diese Spec-Sitzung
-(damit Brief 03 auf `main` liegt) und startet die Brief-03-
+(damit Brief 04 auf `main` liegt) und startet die Brief-04-
 Sitzung über den Auslöser-Befehl (Kaskaden-Konvention 6, siehe
-Chat-Antwort). Brief 03 setzt diesen PR als gemerged voraus.
+Chat-Antwort). Brief 04 setzt diesen PR als gemerged voraus.
 
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_spec-plattform-matrix.md](sessions/archiv/2026-05-18_spec-plattform-matrix.md).
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_spec-m04-erweiterung.md](sessions/archiv/2026-05-19_spec-m04-erweiterung.md).
 
 ---
 
@@ -2693,6 +2786,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-18 | Spec · Plattform-Matrix — Strang 2 der V1-Sammelspec-Kaskade (Brief 02 · PR #97 gemerged — `main` `69077db`; INTERFACES § 6.2 Plattform-Matrix mit fünf Profilen × sechs Spalten + Sage-Anmerkung, § 6.3 Plattform-Ehrlichkeits-Klausel als verbindliche Spec-Klausel mit Begründung aus Klaus' Lehre 1, § 6.4 Vision-Bezüge als Querverweis-Matrix mit sieben Ankern; § 6.1 Plattform-Matrix-Stub auf Verweis umgeschrieben; Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6 streng eingehalten; `PROTOCOL_VERSION` bleibt `"0.1"`; CLAUDE.md / Karte 09 / `status.json` unangetastet — Brief 02 lebt rein in INTERFACES; Brief 03 `docs/sessions/BRIEF_03_m04_erweiterung.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-plattform-matrix.md) |
 | 2026-05-18 | Spec · V1 Sage-Hybrid — Strang 1 der V1-Sammelspec-Kaskade (Brief 01 · PR #96 gemerged — `main` `a3e0072`; INTERFACES § 6 Endknoten-Liste neu mit Sage als drittem Endknoten + § 6.1 Sage-Page-Architektur mit IndexedDB-Suffix `sbkim_sage` / App-SW Variante 3a / volle init()-Kette / Andock-Geste an Schwarz-Loch-Karte; CLAUDE.md auf „Hub und Knoten zugleich"; Karte 09 § Schritt 1 erweitert; `status.json` § endknoten um sage-Eintrag mit `pingStatus:"pending-first-andock"`; Domäne „Mycel-Bibliothek" gewählt; `PROTOCOL_VERSION` bleibt `"0.1"`; Sage-Page-Refactor folgt als Bau-Sitzung in BRIEF_99-Liste; Brief 02 `docs/sessions/BRIEF_02_plattform_matrix.md` angelegt) | [→ Archiv](sessions/archiv/2026-05-18_spec-v1-sage-hybrid.md) |
 | 2026-05-18 | Meta-Pflege · V1-Sammelspec als Brief-Kaskade sequenziert (PR #93 + Konvention-6-Refactor PR #95 — sechs heilige Tafeln: ein Strang = ein PR, Brief als Datei im Repo, einheitlicher Bauplan, BRIEF_99-Abschluss, verteilte Konsistenz-Prüfung, Auslöser-Befehl im Chat statt Brief-Volltext; Strang-Reihenfolge Brief 01 V1-Sage-Hybrid → Brief 02 Plattform-Matrix → Brief 03 M04-Erweiterung → Brief 04 Multi-Identität → BRIEF_99-Abschluss; Brief 01 `docs/sessions/BRIEF_01_v1_sage_hybrid.md` als erste Brief-Datei angelegt; PROTOCOL_VERSION bleibt `"0.1"` solange Stränge additiv; kein Modul-Code, kein INTERFACES-Eingriff in der Meta-Pflege selbst) | [→ Archiv](sessions/archiv/2026-05-18_meta-pflege-v1-sammelspec-kaskade.md) |
 | 2026-05-18 | Mini-Pflege · Sonnen-Galaxie Stationen 1–3 inhaltlich gefüllt (PR #92 — drei Erzähl-Texte je 4 Absätze, basierend auf Hero-Claim/CLAUDE.md/PULS § Anker 9; `openStationModal()` jetzt 1:1 wie `openUniverseModal()` mit `|`-Splitting + Markdown-Parser; Placeholder-Hint-Logik auf expliziten `s.placeholder`-Flag umgestellt; Privatheits-Klausel eingehalten) | [→ Archiv](sessions/archiv/2026-05-18_pflege-sonnen-stationen-erzaehl-texte.md) |
