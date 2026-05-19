@@ -144,11 +144,16 @@ Konsumenten 05 / 06 / 07 kommt in 05.Y / 06.Y / 07.Y nach.
   3. Cache-Miss → `sbkim_keys[key]`-Read; existiert → in Cache laden.
   4. Existiert nicht → Identitäts-Erzeugung (Ed25519
      `crypto.subtle.generateKey` + `exportKey("jwk")`).
-  5. **VOR dem ersten Schreibvorgang in identitäts-spezifische
-     Stores:** `ensureIdentityStores(key)` rufen; bei
-     `EnsureStoreError`-Reject Rollback via `storage.del(sbkim_keys,
-     key)` — vermeidet halb-angelegte Identitäten.
-  6. Snapshot in Map-Cache, return.
+  5. `ensureIdentityStores(key)` **VOR** dem `sbkim_keys`-Schreibvorgang.
+     Bei `EnsureStoreError`-Reject (z.B. Multi-Tab-onblocked-Befund)
+     bleibt KEIN verwaister `sbkim_keys`-Eintrag zurück — kein
+     Rollback nötig. Reihenfolge nach Klaus' Sichttest 2026-05-19
+     auf DeX-Chrome umgekehrt (initial: put zuerst + Rollback im
+     Catch; das war nicht atomar unter onblocked, weil der Rollback-
+     `del` parallel zur blockierten Bump-Choreografie in seltsamem
+     DB-Connection-Zustand laufen kann).
+  6. `storage.put(sbkim_keys, slotKey, ...)` — atomar nach ensureStore.
+  7. Snapshot in Map-Cache, return.
 - **Neue Funktion `setActiveIdentity(key)`:** sync-TypeError bei
   nicht-String-key; `await storage.get(sbkim_keys, key)` —
   `UnknownIdentityError` bei null (kein Storage-Schreibvorgang);
@@ -428,7 +433,48 @@ prüft erst Klaus' Browser-Sichttest.
 
 ## Manueller Sichttest
 
-**ungeprüft, weil headless gebaut — wartet auf Klaus' Browser-Lauf.**
+**Erster Lauf 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6):**
+
+- Knopf 1 (Identität erzeugen oder laden): ✓ grün, main-nodeId
+  `98W7MM70XJIInSaUNCGRCQiPbs2jZRg6AGHAeg-hbpg`.
+- Knopf 8 (Identität anlegen + wechseln): ✗ rot.
+  `EnsureStoreError: ensureStore('sbkim_siblings_test') Versions-Bump
+  blockiert — ein anderer Tab haelt die DB offen und ignoriert
+  onversionchange.` **Genau die Stolperfalle-1 aus dem Brief** (Multi-
+  Tab-`onblocked`-Architektur-Befund, antizipiert).
+- Knopf 9 (Identität entfernen force): ✓ grün, `removed: true`,
+  `active_after: main`, `removed_idempotent: false`. **Unerwartet
+  `removed: true`** trotz fehlgeschlagenem Knopf 8 — zeigte einen
+  echten Code-Befund: der Rollback-Pfad in `getOrCreateIdentity`
+  (vor Mini-Fix) war nicht atomar — `sbkim_keys["test"]` blieb nach
+  `EnsureStoreError` in der DB.
+- Knopf 10 (Backup mit Multi-Identität): nicht erreicht (Test
+  abgebrochen nach Knopf-9-Befund).
+
+**Mini-Fix nach erstem Lauf (gleiche Bau-Sitzung, gleicher PR):**
+Reihenfolge in `getOrCreateIdentity` umgekehrt — `ensureIdentityStores`
+läuft jetzt VOR `storage.put(sbkim_keys, ...)`. Bei
+`EnsureStoreError`-Reject bleibt **kein verwaister sbkim_keys-Eintrag**
+zurück; Rollback-Logik komplett entfernt (war buggy in der ursprünglichen
+Form, und unnötig in der umgekehrten Reihenfolge). Smoke-Test 33/33
+weiterhin grün nach Fix.
+
+**Architektur-Befund (Multi-Tab-`onblocked`):** persistiert — Bau 02.Y
+kann das nicht auflösen, weil `ensureStore` (Modul 01) den Versions-
+Bump erzwingt und IndexedDB die Multi-Tab-Choreografie über
+`onversionchange` regelt. Klaus' DeX-Chrome-Setup ist mit zwei
+sichtbaren Hälften (Chat-App-Hälfte + Browser-Hälfte) anfällig, weil
+beide Chrome-Instanzen sein können oder weil Recents-Tabs persistieren.
+**Zweiter Browser-Lauf durch Klaus ausstehend** mit Bedingung:
+saubere Single-Tab-Umgebung (Chrome komplett beenden, Browserdaten
+löschen, genau einen Tab öffnen).
+
+**Empfohlene Pflege-Folge-Sitzung (eigener Brief, eigener PR, NICHT
+Bau-02.Y-Scope):** Modul 01 `init()` sollte fail-soft sein bei
+existing DB-Version > `DB_VERSION` (öffnen mit `undefined` Version,
+dann nur bei fehlenden Pflicht-Stores einen Bump versuchen). Damit
+fällt das Klaus-unfreundliche Verhalten weg, dass Test-Stores aus
+einer früheren Sitzung den nächsten init scheitern lassen.
 
 Klaus' Drei-Stufen-Probe in `tests/manual_check.html` Panel 02:
 

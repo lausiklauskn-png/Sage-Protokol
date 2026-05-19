@@ -349,24 +349,20 @@
     var nodeId = await deriveNodeIdFromPublicKey(keyPair.publicKey);
 
     var storage = getStorage();
+
+    // Bau 02.Y: identitäts-spezifische Stores ZUERST anlegen, BEVOR
+    // sbkim_keys[slotKey] geschrieben wird. Bei EnsureStoreError-Reject
+    // (z.B. Multi-Tab-onblocked-Befund, Sichttest 2026-05-19) bleibt
+    // KEIN verwaister sbkim_keys-Eintrag zurück — kein Rollback nötig.
+    // ensureStore ist idempotent (Bau 01.Y); ein nachfolgender retry
+    // mit demselben slotKey überspringt existierende Stores.
+    await ensureIdentityStores(slotKey);
+
     await storage.put(KEYS_STORE, slotKey, {
       keyId: slotKey,
       privateKey: privateKeyJwk,
       publicKey: publicKeyJwk,
     });
-
-    // Bau 02.Y: identitäts-spezifische Stores anlegen, BEVOR Module
-    // 05/06/07/08 in sie schreiben. Bei EnsureStoreError-Reject:
-    // Rollback der sbkim_keys-Zeile, damit keine halb-angelegte
-    // Identität zurückbleibt (würde sonst beim nächsten loadIdentity
-    // gefunden, aber ohne Stores → spätere Schreibvorgänge scheitern).
-    try {
-      await ensureIdentityStores(slotKey);
-    } catch (err) {
-      try { await storage.del(KEYS_STORE, slotKey); }
-      catch (e) { /* fail-soft Rollback */ }
-      throw err;
-    }
 
     identityCache.set(slotKey, {
       nodeId: nodeId,
