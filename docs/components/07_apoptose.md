@@ -228,47 +228,66 @@ init() → Promise<void>
   // Idempotent.
 
 prepareSelfApoptose(reason) → Promise<{confirmationToken, expiresAt, recipientCount}>
-  // Erster Schritt der irreversiblen Operation. Erzeugt einen
-  // Ein-Mal-Token (16 zufällige Bytes, base64url ohne Padding) mit
-  // 60 Sekunden Gültigkeit. Liest sbkim_siblings, berichtet, wie
-  // viele Empfänger das Vermächtnis bekommen würden. Stösst einen
-  // console.warn("SELF-APOPTOSE VORBEREITET — irreversibel, Token
-  // gültig 60s") an. Verbraucht den Token NICHT — der Aufrufer
-  // muss explizit confirmSelfApoptose aufrufen.
+  // Erster Schritt der irreversiblen Operation (global, Brief 04 der
+  // V1-Sammelspec-Kaskade: confirmSelfApoptose wirkt über ALLE
+  // Identitäten). Erzeugt einen Ein-Mal-Token (16 zufällige Bytes,
+  // base64url ohne Padding) mit 60 Sekunden Gültigkeit. Iteriert
+  // SbkimSpore.listIdentities() und liest pro Persona
+  // sbkim_siblings_<key>; recipientCount ist die Summe aller
+  // Geschwister über alle Identitäten. Stösst einen
+  // console.warn("SELF-APOPTOSE VORBEREITET — irreversibel, ALLE
+  // Identitäten, Token gültig 60s") an. Verbraucht den Token NICHT —
+  // der Aufrufer muss explizit confirmSelfApoptose aufrufen.
   // reason: deutschsprachiger Klartext, z.B. "Domain stillgelegt".
+  // Für Single-Identitäts-Apoptose siehe SbkimSpore.removeIdentity(key,
+  // {force:true}) — Modul 02 ist Owner, ruft Modul 07's internen
+  // Hook _sendLegacyForIdentity für den Vermächtnis-Versand pro
+  // Persona.
 
 confirmSelfApoptose(token, reason) → Promise<{outcome, recipientsNotified, recipientsFailed}>
-  // Zweiter Schritt — irreversibel. Prüft Token-Gültigkeit
-  // (vorhanden, nicht abgelaufen, identisches reason). Bei Erfolg:
-  //   1. baue LegacyMessage (siehe Datenformat), kanonisch signiert
-  //      mit dem eigenen Ed25519-Schlüssel.
-  //   2. listSiblings() → versende an alle parallel via
-  //      Promise.allSettled mit AbortController(QUERY_TIMEOUT_MS)
-  //      pro Empfänger. Empfänger, die outcome:"accepted" antworten,
-  //      landen in recipientsNotified; Timeout/Netz/invalide
-  //      Signatur/outcome:"rejected" → recipientsFailed.
-  //   3. Lokaler Cleanup, sequenziell:
-  //        clear(sbkim_siblings) → clear(sbkim_anastomosis_log) →
-  //        clear(sbkim_legacy_inbox) → clear(sbkim_hetero_inbox) →
-  //        clear(sbkim_spore) → clear(sbkim_keys) →
+  // Zweiter Schritt — irreversibel + global (Brief 04). Prüft Token-
+  // Gültigkeit (vorhanden, nicht abgelaufen, identisches reason).
+  // Bei Erfolg:
+  //   1. Pro Persona <key> aus listIdentities():
+  //      1a. baue LegacyMessage mit der Identität <key> (kanonisch
+  //          signiert mit dem zugehörigen Ed25519-Schlüssel aus
+  //          sbkim_keys[<key>]).
+  //      1b. Lese sbkim_siblings_<key> → versende an alle dieser
+  //          Persona parallel via Promise.allSettled mit
+  //          AbortController(QUERY_TIMEOUT_MS) pro Empfänger.
+  //          Empfänger, die outcome:"accepted" antworten, landen
+  //          in recipientsNotified; Timeout/Netz/invalide Signatur/
+  //          outcome:"rejected" → recipientsFailed. Empfänger einer
+  //          Persona, die in mehreren Personae als Geschwister
+  //          vorkommen, erhalten pro Persona ein eigenes Vermächtnis
+  //          und tauchen entsprechend mehrfach in der Liste auf.
+  //   2. Lokaler Cleanup, sequenziell — pro Persona <key>:
+  //        clear(sbkim_siblings_<key>) →
+  //        clear(sbkim_anastomosis_log_<key>) →
+  //        clear(sbkim_legacy_inbox_<key>) →
+  //        clear(sbkim_hetero_inbox_<key>) →
+  //        clear(sbkim_hetero_outbox_<key>).
+  //      Dann einmal (außerhalb der Persona-Schleife):
+  //        clear(sbkim_spore) (alle Slots) →
+  //        clear(sbkim_keys) (alle Slots) →
+  //        del(sbkim_meta["active-identity"]) →
   //        SbkimSpore.resetIdentityCache().
   //      Identität ist die letzte Bastion; resetIdentityCache leert
   //      Modul 02's In-Memory-identityCache, ohne den der Cache die
   //      alte nodeId weiter ausliefern würde (Pflege-Sitzung
-  //      2026-05-15). sbkim_hetero_inbox neu zwischen Schritt 3
-  //      und 4 (Bau-Sitzung 06 + Cleanup-Pflege 07, 2026-05-15) —
-  //      siehe § Apoptose-Pfad Schritt 5. sbkim_doku_meta bleibt
-  //      unangetastet.
-  //   4. return {outcome:"completed", recipientsNotified,
+  //      2026-05-15). sbkim_doku_meta bleibt unangetastet.
+  //   3. return {outcome:"completed", recipientsNotified,
   //      recipientsFailed}. Nach diesem Return gibt es keine
   //      Identität mehr — Folge-Aufrufe von Spore/Apoptose werfen
-  //      NoIdentityError bzw. ApoptoseAlreadyExecutedError.
+  //      NoIdentityError bzw. ApoptoseAlreadyExecutedError;
+  //      listIdentities() liefert [].
   // Wirft InvalidApoptoseTokenError bei ungültigem/abgelaufenem
-  // Token. Wirft ApoptoseAlreadyExecutedError, wenn Identität fehlt.
-  // Versand-Fehler einzelner Empfänger werfen NICHT — sie landen in
-  // recipientsFailed. Storage-Fehler beim Cleanup werden
-  // unverändert durchgereicht (Knoten ist dann in einem
-  // inkonsistenten Zustand — siehe § Risiken).
+  // Token. Wirft ApoptoseAlreadyExecutedError, wenn keine Identität
+  // mehr existiert (listIdentities().length === 0). Versand-Fehler
+  // einzelner Empfänger werfen NICHT — sie landen in
+  // recipientsFailed. Storage-Fehler beim Cleanup werden unverändert
+  // durchgereicht (Knoten ist dann in einem inkonsistenten Zustand —
+  // siehe § Risiken).
 
 receiveLegacy(incomingLegacy) → Promise<LegacyResponse>
   // Wird vom Service-Worker aufgerufen, sobald ein /sbkim/legacy
@@ -284,35 +303,46 @@ receiveLegacy(incomingLegacy) → Promise<LegacyResponse>
   //   4. Signatur gegen senderSpore.publicKey verifizieren ⇒ bei
   //      Fehler Response outcome:"rejected",
   //      reason:"Signatur ungültig".
-  //   5. sbkim_legacy_inbox.put({fromNodeId, reason,
-  //      signature, receivedAt}), sbkim_siblings.del(fromNodeId).
-  //   6. Response outcome:"accepted", receiverSpore + Signatur
-  //      kanonisch.
+  //   4b. Receiver-Map nodeId→key (Brief 04 der V1-Sammelspec-Kaskade):
+  //       incomingLegacy.toNodeId wird gegen alle eigenen Identitäten
+  //       geprüft (Map beim init() gebaut). Treffer → <hit-key> ist
+  //       die getroffene Persona für diese Operation. Kein Treffer →
+  //       Response outcome:"rejected", reason:"toNodeId stimmt nicht
+  //       zum Empfänger".
+  //   5. sbkim_legacy_inbox_<hit-key>.put({fromNodeId, reason,
+  //      signature, receivedAt}), sbkim_siblings_<hit-key>.del(fromNodeId).
+  //      Andere Identitäten bleiben unangetastet.
+  //   6. Response outcome:"accepted", receiverSpore der getroffenen
+  //      Persona + Signatur kanonisch.
   // Wirft NIEMALS — alle Fehlpfade werden als
   // LegacyResponse{outcome:"rejected", reason} zurückgegeben
   // (analog Modul 02 verifyForeignSpore und Modul 05
   // receiveHandshake).
 
-listLegacy() → Promise<Array<{fromNodeId, reason, receivedAt}>>
-  // Lädt alle Einträge aus sbkim_legacy_inbox. Reihenfolge:
+listLegacy(key?: string) → Promise<Array<{fromNodeId, reason, receivedAt}>>
+  // Default-Parameter key=SbkimSpore.getActiveIdentityKey() (Brief 04).
+  // Lädt alle Einträge aus sbkim_legacy_inbox_<key>. Reihenfolge:
   // Storage-natürlich (nach Schlüssel = fromNodeId). signature wird
-  // bewusst weggelassen (Lese-Helfer für UI / Modul 00 /
-  // Modul 08).
+  // bewusst weggelassen (Lese-Helfer für UI / Modul 00 / Modul 08).
+  // Persona-übergreifende Sicht: Aufrufer iteriert listIdentities()
+  // (INTERFACES.md § 9.2).
 
-forgetExpiredSiblings(maxAgeMs) → Promise<Array<{nodeId, lastSeen}>>
-  // TTL-Sweep. Lädt sbkim_siblings + sbkim_anastomosis_log,
-  // berechnet pro Geschwister die letzte erfolgreiche Anastomose
-  // (höchstes ts mit outcome ∈ {"established", "re-handshake"} und
-  // peerId == sibling.nodeId); Fallback sibling.since. Geschwister
-  // mit (now - lastActivity) > maxAgeMs werden via
-  // SbkimStorage.del(sbkim_siblings, nodeId) gelöscht — KEIN
-  // Vermächtnis. Rückgabe: Array der gelöschten Geschwister mit
-  // ihrer letzten Aktivitäts-Zeit.
+forgetExpiredSiblings(maxAgeMs, key?: string) → Promise<Array<{nodeId, lastSeen}>>
+  // Default-Parameter key=SbkimSpore.getActiveIdentityKey() (Brief 04).
+  // TTL-Sweep pro Persona. Lädt sbkim_siblings_<key> +
+  // sbkim_anastomosis_log_<key>, berechnet pro Geschwister die
+  // letzte erfolgreiche Anastomose (höchstes ts mit outcome ∈
+  // {"established", "re-handshake"} und peerId == sibling.nodeId);
+  // Fallback sibling.since. Geschwister mit (now - lastActivity) >
+  // maxAgeMs werden via SbkimStorage.del(sbkim_siblings_<key>, nodeId)
+  // gelöscht — KEIN Vermächtnis. Rückgabe: Array der gelöschten
+  // Geschwister mit ihrer letzten Aktivitäts-Zeit.
   // maxAgeMs: Pflicht-Parameter (kein Default in der Signatur);
   // der Aufrufer übergibt SIBLING_MAX_AGE_MS aus §0 — siehe
   // § Konfigurationswerte.
   // Idempotent: zweimaliger Aufruf in Folge liefert beim zweiten
-  // Mal das leere Array.
+  // Mal das leere Array. Wer einen Knoten-weiten Sweep braucht,
+  // iteriert listIdentities() und ruft die Funktion pro Slot.
 ```
 
 ### Selbstcheck
@@ -556,6 +586,87 @@ aber die Logik bleibt sauber).
 
 ---
 
+## Multi-Identität (Brief 04)
+
+Spec-Sitzung Multi-Identität (Brief 04 der V1-Sammelspec-Kaskade,
+2026-05-19) trennt Modul 07 in zwei klar getrennte Pfade:
+
+### Globale Self-Apoptose (Knoten stirbt — alle Personae)
+
+`confirmSelfApoptose(token, reason)` wirkt **global**: alle Personae
+des Knotens sterben gemeinsam. Pro Persona wird ein eigenes
+Vermächtnis signiert (mit dem zugehörigen Schlüssel aus
+`sbkim_keys[<key>]`) und an die Geschwister aus `sbkim_siblings_<key>`
+verschickt. Cleanup iteriert über alle Slots (siehe § Schnittstelle ›
+`confirmSelfApoptose` Schritt 2). Nach Abschluss ist
+`SbkimSpore.listIdentities()` leer; `sbkim_meta["active-identity"]`
+ist gelöscht.
+
+Empfänger, die in mehreren Personae als Geschwister auftauchen,
+erhalten pro Persona ein eigenes Vermächtnis und tauchen entsprechend
+mehrfach in `recipientsNotified`/`recipientsFailed` auf.
+
+### Single-Identitäts-Apoptose (eine Persona stirbt — andere leben weiter)
+
+`SbkimSpore.removeIdentity(key, {force:true})` ist der per-Persona-
+Pfad. Modul 02 ist Owner; Modul 07 wird nur für den Vermächtnis-
+Versand pro Persona gerufen — interner Hook
+`_sendLegacyForIdentity(key, reason)`. Cleanup-Reihenfolge in Modul
+02 (siehe INTERFACES.md § 1 Modul 07 § Cleanup-Reihenfolge — Per-
+Persona-Pfad):
+
+```
+1. _sendLegacyForIdentity(key, reason)  ← Vermächtnis pro Persona
+2. clear(sbkim_siblings_<key>)
+3. clear(sbkim_anastomosis_log_<key>)
+4. clear(sbkim_legacy_inbox_<key>)
+5. clear(sbkim_hetero_inbox_<key>)
+6. clear(sbkim_hetero_outbox_<key>)  ← best-effort
+7. sbkim_spore.del(<key>)
+8. sbkim_keys.del(<key>)
+9. ggf. neue active-identity setzen (siehe Modul 02 § removeIdentity)
+10. SbkimSpore.resetIdentityCache()
+```
+
+Bei `removeIdentity(<inactive>, {force:false})` (Default) wird der
+Slot **nicht** als aktive Identität markiert; trotzdem wird KEIN
+Vermächtnis verschickt — eine inaktive Persona wird nur lokal
+vergessen, sie ist nicht „gestorben". Die Aufrufer-Disziplin: für
+Vermächtnis-Versand muss `force:true` gesetzt UND die Persona als
+aktiv markiert sein (oder per `setActiveIdentity` vorher gewechselt
+werden). Modul 02 implementiert die Logik; Modul 07 liefert nur den
+Hook.
+
+### Receiver-Pfad (eingehende Vermächtnisse)
+
+`receiveLegacy(incomingLegacy)` baut beim `init()` eine Map nodeId→key
+aus allen eigenen Identitäten (`SbkimSpore.listIdentities()` ×
+`getOrCreateIdentity`). Pro eingehendem Vermächtnis wird
+`incomingLegacy.toNodeId` gegen die Map geprüft (siehe § Schnittstelle
+› `receiveLegacy` Schritt 4b). Treffer → das Vermächtnis landet in
+`sbkim_legacy_inbox_<hit-key>` und der entsprechende
+`sbkim_siblings_<hit-key>[fromNodeId]` wird gelöscht. Andere Personae
+bleiben unangetastet.
+
+### TTL-Sweep und `listLegacy` pro Persona
+
+`forgetExpiredSiblings(maxAgeMs, key?)` und `listLegacy(key?)` haben
+ab Brief 04 einen optionalen `key`-Parameter (Default: aktive
+Identität). Wer einen Knoten-weiten Sweep / Lese-Pfad braucht,
+iteriert `listIdentities()` und ruft die Funktion pro Slot.
+
+### Bezugs-Verweise
+
+- **INTERFACES.md § 1 Modul 07** — vollständige Vertrags-Form mit
+  Cleanup-Reihenfolge globally und per-Persona.
+- **INTERFACES.md § 9 Identitäts-Map** — verbindliche Spec-Klausel
+  mit Slot-Schema, Persona-Isolation, Receiver-Pfad.
+- **Karte 02 § Multi-Identität (Brief 04)** — `removeIdentity` als
+  Aufruf-Owner; Hook-Vertrag zu Modul 07.
+- **PULS § Vision-Anker 6** (Multi-Identität — Haupt-Anker).
+
+---
+
 ## Fehlerverhalten
 
 | Lage | Reaktion |
@@ -570,6 +681,8 @@ aber die Logik bleibt sauber).
 | `receiveLegacy()`: Storage-Fehler beim `sbkim_legacy_inbox.put` oder `sbkim_siblings.del` | **wirft niemals nach außen**. Response `outcome:"rejected", reason:"interner Speicherfehler"`; der Original-Storage-Fehler landet in `console.error` für Debugging. |
 | `listLegacy()` / `forgetExpiredSiblings()`: Storage-Fehler aus Modul 01 | unverändert durchgereicht (z.B. `StorageUnavailableError`). |
 | `forgetExpiredSiblings()`: `maxAgeMs` fehlt / ist ≤ 0 | wirft `InvalidTtlError`. Kein Sweep. (Spec-Wille: der Aufrufer muss den Wert bewusst aus §0 mitgeben.) |
+| `receiveLegacy()`: `toNodeId` stimmt mit keiner eigenen Identität überein (Receiver-Map nach Brief 04) | **wirft niemals**. Response `outcome:"rejected", reason:"toNodeId stimmt nicht zum Empfänger"`. Kein Storage-Eingriff. |
+| `_sendLegacyForIdentity(key, reason)` (interner Hook für Modul 02 `removeIdentity`-Pfad): Aufruf für unbekannte Identität | wirft `UnknownIdentityError` — Modul 02 prüft das vor dem Hook-Aufruf, der Hook ist defensiv abgesichert. |
 
 Alle SBKIM-Fehler sind `Error`-Instanzen mit sprechendem `name` und
 deutschsprachigem `message`. **Wichtig:** semantische Ablehnung (Spore
@@ -750,6 +863,7 @@ Mixarium (Bau-Sitzung 09 mit aktivem Apoptose-Knopf in der UI-Demo).
 | Sichttest | 2026-05-15 | Klaus + Pflege 02+07-Cache-Invalidate + Re-Sichttest | geprüft 2026-05-15 (Klaus, im Browser): Setup OK · Test 1 (Vermächtnis-Round-Trip) `outcome:accepted, inbox_hat_eintrag:true, sender_aus_siblings_entfernt:true` · Test 2 (Signatur-Manipulation) `outcome:rejected, reason:"Signatur ungültig"` · Test 3 (Versions-Mismatch) `reason:"Inkompatible Hauptversion: 1.0"` · Test 4 (TTL-Cleanup) entfernt altOld, behält altYoung · Test 5 (listLegacy) signature weggelassen, Form korrekt · Test 7 (Token-Ablauf) `InvalidApoptoseTokenError, Identität bleibt` · Selbstcheck-Zeile in DevTools-Konsole. **Test 6 (Self-Apoptose) zeigte echten Modul-Bug** — `outcome:completed, stores_alle_leer:true`, ABER `getNodeId_wirft_NoIdentityError:false`. Modul 02's In-Memory-`identityCache` wurde nicht durch externes `storage.clear` invalidiert; Modul 07 löschte alle SBKIM-Stores sequenziell, wusste aber nichts von Modul 02's Cache. **Folgeschaden:** Tests 1/2/3/8 nach Test 6 schlugen fehl mit „Keine Identität in sbkim_keys[main]". **Pflege-Sitzung 2026-05-15** ergänzt Modul 02 um öffentliche Funktion `resetIdentityCache() → void` (sync, idempotent, leert nur den Closure-Cache, kein Storage-Eingriff); Modul 07's confirmSelfApoptose-Cleanup ruft sie als Schritt 6 nach den fünf `storage.clear`-Aufrufen. Karte 02 + Karte 07 § Schnittstelle + INTERFACES.md §1 Modul 02 + §1 Modul 07 + §6 ziehen mit. **Sauberere Lösung von vier Optionen** (saubere Vertrag-Trennung: Modul 02 kennt keine Apoptose, bietet aber den Hook; performance-neutral; additiv; Spec-disziplinär — kein Trick). **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate. Klaus' Re-Sichttest 2026-05-15 lieferte für Test 6: `getNodeId_wirft_NoIdentityError:true` (vorher: `false` — Cache-Bug behoben), `outcome:completed, stores_alle_leer:true, recipientsFailed.length:2, recipientsNotified.length:0` — Pass-Check erfüllt. |
 | Pflege Cache-Invalidate | 2026-05-15 | Pflege 02+07-Cache-Invalidate | Karte 07 § Schnittstelle (`confirmSelfApoptose`-Schritt-3-Block) + § Apoptose-Pfad (Schritt 5 Cleanup-Reihenfolge) um zusätzlichen Cleanup-Schritt `SbkimSpore.resetIdentityCache()` ergänzt — Pflicht ab dieser Pflege-Sitzung. Modul 07 Code: nach den fünf `storage.clear`-Aufrufen + den eigenen Cache-Invalidations (`ownPrivateKeyCache = null; pseudoSiblings = null;`) wird `getSpore().resetIdentityCache()` als Schritt 6 gerufen (mit `typeof`-Guard für Rückwärts-Lauffähigkeit, falls Modul 02 noch alte Version geladen ist). `node --check src/modules/07_apoptose.js` grün. status.json unverändert (kein Score-Wechsel). |
 | Pflege Cleanup-Reihenfolge Bau 06 | 2026-05-15 | Bau 06 + Cleanup-Pflege 07 | Karte 07 § Schnittstelle (`confirmSelfApoptose`-Schritt-3-Block) + § Apoptose-Pfad Sender-Seite Schritt 5 um zusätzlichen `sbkim_hetero_inbox`-Cleanup-Schritt zwischen `sbkim_legacy_inbox` und `sbkim_spore` erweitert (additive Position vor der Identitäts-Schicht). Modul 07 Code: `HETERO_INBOX_STORE`-Konstante neu, `CLEANUP_ORDER` von fünf auf sechs Einträge erweitert (Position 4 zwischen `INBOX_STORE` und `SPORE_STORE`); `confirmSelfApoptose` löscht jetzt sechs Stores sequenziell, gefolgt von `resetIdentityCache()`. INTERFACES.md §1 Modul 07 § Storage Cleanup-Reihenfolge zieht mit (sechs Schritte plus `resetIdentityCache`). `node --check src/modules/07_apoptose.js` grün. **Test 6 in Panel 07** muss in einem Folge-Sichttest neu durchgespielt werden — die Anzahl der zu prüfenden leeren Stores ist um eins (`sbkim_hetero_inbox`) gestiegen; die bestehende `keys+spore+siblings+log+inbox`-Pass-Check-Zeile in Panel 07 ist additiv erweiterbar. status.json unverändert (kein Score-Wechsel für Modul 07; der Score-Wechsel betrifft Modul 06). |
+| Spec Multi-Identität (Brief 04) | 2026-05-19 | Spec Multi-Identität | Strang 3 der V1-Sammelspec-Kaskade (Brief 04; Brief 03-PR #98 als gemerged vorausgesetzt). Karte 07 erweitert: § Schnittstelle (`prepareSelfApoptose` summiert Empfänger über alle Personae; `confirmSelfApoptose` wirkt **global**, Versand pro Persona mit eigenem Schlüssel + Cleanup-Schleife über alle Slots; `receiveLegacy` Schritt 4b Receiver-Map nodeId→key + Schritt 5 auf `sbkim_legacy_inbox_<hit-key>` / `sbkim_siblings_<hit-key>`; `listLegacy(key?)` und `forgetExpiredSiblings(maxAgeMs, key?)` um optionalen key-Parameter erweitert); neuer Top-Level-§ „Multi-Identität (Brief 04)" mit Globale Self-Apoptose-Pfad + Single-Identitäts-Apoptose-Pfad (interner Hook `_sendLegacyForIdentity` für Modul 02 `removeIdentity`-Aufrufe) + Receiver-Pfad + TTL-/listLegacy-pro-Persona + Bezugs-Verweise; § Fehlerverhalten um zwei neue Zeilen erweitert (`toNodeId`-Mismatch in `receiveLegacy` als Outcome, nicht Throw; `_sendLegacyForIdentity`-Hook `UnknownIdentityError`). **§ Konfigurationswerte, § Datenformate, § Apoptose-Pfad-Schritte 1-4 / Empfänger-Seite, § TTL-Verhalten unverändert** (Spec-Wille bleibt; die Multi-Identitäts-Schicht ist transparente Aufrufer-Iteration). INTERFACES.md §1 Modul 07 (Bietet-Block + Nutzt-Block + Storage-Pattern + Cleanup-Reihenfolge global + Per-Persona-Cleanup + Selbstcheck-Hinweis + Garantien-Erweiterung) + § 9 Identitäts-Map nachgezogen. **PROTOCOL_VERSION bleibt `"0.1"`** — additive Storage-Schema-Erweiterung, kein Spore-Schema-Eingriff, LegacyMessage/LegacyResponse-Schema unverändert (toNodeId ist bereits Pflichtfeld in der bestehenden Spec). **`status.json` unverändert** — Modul 07 bleibt `score:"stub"` (additive Spec-Erweiterung am Karten-Vertrag, kein Code-Bau, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Kein Code** in `src/modules/07_apoptose.js` — Bau-Folge-Sitzung 07.Y folgt als eigene Phase (Cleanup-Schleife + Per-Persona-Hook + Receiver-Map). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
