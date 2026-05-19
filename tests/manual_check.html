@@ -450,7 +450,97 @@
         SbkimUI.log("04_match",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("04_match",
-          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.80");
+          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions, " +
+          "Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
+      });
+
+      // Bau 04.A: drei Knöpfe für matchDimensions (synchron, ohne
+      // SbkimEmbedding-Modell — deterministische Float32Array-Vektoren
+      // via LCG, damit das Test-Panel ohne ~30 MB Modell-Lade läuft).
+      function lcgVec(seed) {
+        var state = seed >>> 0;
+        var v = new Float32Array(384);
+        var sumSq = 0;
+        for (var i = 0; i < 384; i++) {
+          state = ((Math.imul(state, 1664525) + 1013904223) >>> 0);
+          v[i] = (state / 0xFFFFFFFF) * 2 - 1;
+          sumSq += v[i] * v[i];
+        }
+        var n = Math.sqrt(sumSq);
+        for (var j = 0; j < 384; j++) v[j] = v[j] / n;
+        return v;
+      }
+
+      // Knopf 6 — matchDimensions bidirektional (Bau 04.A, 2026-05-19)
+      SbkimUI.addButton("04_match", "matchDimensions bidirektional", async function () {
+        var qCap = lcgVec(1);
+        var qNeeds = lcgVec(2);
+        var pCap = lcgVec(3);
+        var pNeeds = lcgVec(4);
+        var result = SbkimMatch.matchDimensions(qCap, qNeeds, pCap, pNeeds);
+        var ok = (result.availableLanes === 2) &&
+                 (typeof result.fachlich === "number") &&
+                 (result.fachlich === result.prozess) &&
+                 (result.fachlich === result.skalierung) &&
+                 (result.overall === result.fachlich) &&
+                 (result.bruecke === null);
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "matchDimensions bidirektional OK" : "Form falsch");
+        return {
+          fachlich: result.fachlich !== null ? Number(result.fachlich.toFixed(4)) : null,
+          prozess: result.prozess !== null ? Number(result.prozess.toFixed(4)) : null,
+          skalierung: result.skalierung !== null ? Number(result.skalierung.toFixed(4)) : null,
+          overall: result.overall !== null ? Number(result.overall.toFixed(4)) : null,
+          availableLanes: result.availableLanes,
+          bruecke: result.bruecke,
+          hinweis: "Stufe-A-Heuristik: alle drei Schichten ergeben denselben Lane-Cosinus. Bau 04.B (LLM) liefert die echte Differenzierung.",
+          erwartung: "availableLanes:2, drei Schichten gleich, overall === Schicht-Score, bruecke:null",
+        };
+      });
+
+      // Knopf 7 — matchDimensions Nur-Anbieter-Modus
+      SbkimUI.addButton("04_match", "matchDimensions Nur-Anbieter-Modus", async function () {
+        var pCap = lcgVec(3);
+        var pNeeds = lcgVec(4);
+        // Eine Seite vollständig null (queryCap=queryNeeds=null) →
+        // Nur-Anbieter-Modus, alle Schichten null, availableLanes:0,
+        // KEIN Throw.
+        var result = SbkimMatch.matchDimensions(null, null, pCap, pNeeds);
+        var ok = (result.availableLanes === 0) &&
+                 (result.fachlich === null) &&
+                 (result.prozess === null) &&
+                 (result.skalierung === null) &&
+                 (result.overall === null) &&
+                 (result.bruecke === null);
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Nur-Anbieter-Modus OK" : "Form falsch");
+        return {
+          result: result,
+          erwartung: "alle Schichten null, availableLanes:0, kein Throw — Aufrufer faellt auf match(domainVectorA, domainVectorB) zurueck",
+        };
+      });
+
+      // Knopf 8 — matchDimensions alle vier null (Fehler erwartet)
+      SbkimUI.addButton("04_match", "matchDimensions alle vier null (Fehler erwartet)", async function () {
+        var caught = null;
+        try {
+          SbkimMatch.matchDimensions(null, null, null, null);
+        } catch (err) {
+          caught = err;
+        }
+        if (caught === null) {
+          SbkimUI.setStatus("04_match", "fail", "kein Fehler — erwartet DimensionsAllNullError");
+          throw new Error("Erwartete DimensionsAllNullError synchron, kam keiner.");
+        }
+        var ok = caught.name === "DimensionsAllNullError";
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "DimensionsAllNullError synchron" : "falscher Fehler-Name");
+        return {
+          erwartet: "DimensionsAllNullError",
+          erhalten_name: caught.name,
+          erhalten_message: caught.message,
+          synchron_geworfen: true,
+        };
       });
     })();
   </script>

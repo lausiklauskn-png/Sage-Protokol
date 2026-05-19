@@ -41,7 +41,7 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 - 🟦 **[01 Storage](components/01_storage.md)** — geprüft 2026-05-14 + 2026-05-16 + 2026-05-19 (Klaus, im Browser); init/round-trip/Unknown-Store sauber, jetzt acht Pflicht-Stores plus dynamische Stores ab v=4 (Bau 01.Y `ensureStore` 2026-05-19 grün — Knöpfe 6/7/8 3/3, happy-path / Idempotenz / Pattern-Verstoß); **Pflege „`init()` versions-fail-soft" 2026-05-19 live grün** (Klaus, DeX-Chrome: Knopf 9 `db_version_vor: 16 → nach_bump: 17`, dann Tab-Reload + Bonus-Probe Panel-02-Knöpfe 8/9/10 alle grün ohne Cleanup-Workaround). Headless-Smoke-Test 8/8 grün + Bau-02.Y-Regression 33/33 grün.
 - 🟦 **[02 Spore](components/02_spore.md)** — geprüft 2026-05-14 + 2026-05-16 (Klaus, im Browser); Identität deterministisch, Spore sortiert, Sign+Verify valide, Manipulation erkannt; **Bau 02.X Backup-Export Sichttest 2026-05-16 grün** — Knöpfe 6/7/7b alle drei Hauptpfade ohne Modul-Bug. **Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump Sichttest 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6): 3/3 grün** (nach Mini-Fix + Cleanup-Workaround) — Knopf 8 „Identitäts-Wechsel OK", Knopf 9 „Persona-Apoptose OK", Knopf 10 „Multi-ID-Backup OK"; Erst-Befund Multi-Tab-onblocked auf Knopf 8 + Rollback-Bug in `getOrCreateIdentity` durch Mini-Fix (Reihenfolge `ensureIdentityStores` vor `put(sbkim_keys)`) behoben; Headless-Smoke-Test 33/33 grün. Panel 01 (1–8) ebenfalls grün. Klaus' Beobachtung: zweiter Lauf gelang erst nach „Storage init"-Klick in Panel 01 — bestätigt offene Folge-Pflege Modul 01 `init()` versions-fail-soft.
 - 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
-- 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert
+- 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert. **Bau 04.A `matchDimensions` sync 2026-05-19** code-stand grün (drei orthogonale Schichten + gewichteter overall + availableLanes 0/1/2 + Nur-Anbieter-Modus + DimensionsAllNullError; Stufe-A-Heuristik: alle drei Schichten gleich dem Lane-Cosinus, Bau 04.B liefert echte Differenzierung via LLM). Smoke-Test 19/19 grün; **Browser-Sichttest Panel 04 Knöpfe 7/8/9 ausstehend**.
 - 🟦 **[06 Heterokaryose](components/06_heterokaryose.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 06) + **Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15** (`sbkim_hetero_outbox` als Anker-Quelle nach Spec-Sitzung 08, fail-soft Fallback bleibt); **Sichttest 2026-05-16 rasch grob durchgeklickt** (Klaus, Chrome auf Galaxy Tab S6 + DeX): Panel 06 mit 14 Knöpfen — alle Selbstchecks grün, Hauptpfade ohne Modul-Bug; voller Test-1–9-Lauf inkl. Test 9 `HETERO_MAX_ANCHORS`-Begrenzung folgt bei Bedarf. Fünf-Funktionen-API, kanonischer Sign/Verify-Pfad als **vierter Pfad bewusst dupliziert** (Single-File-PWA-Stil), neuer Store `sbkim_hetero_inbox` (DB-Version 1→2 additiv, Bau 06), Service-Worker dritter fetch-Listener-Pfad `/sbkim/heterokaryosis`; Anker-Quelle nach Pflege Bau 06.1 = `sbkim_hetero_outbox` fail-soft mit Spore-Single-Anker-Fallback. **Test 6 in Panel 07 muss in einem Folge-Sichttest neu durchgespielt werden** (Cleanup löscht jetzt sechs Stores statt fünf).
 
 Code-Stub frisch aus den Bau-Sitzungen 2026-05-14/15, **Sichttest ausstehend bzw. teilweise erledigt:**
@@ -97,7 +97,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege PWA-Suffix + Pflege Storage-Persist 2026-05-16, Bau 01.Y `ensureStore` 2026-05-19, Pflege `init()` versions-fail-soft 2026-05-19) | geprüft 2026-05-14 + 2026-05-16 + 2026-05-19 (Klaus) — Bau 01.Y `ensureStore` Knöpfe 6/7/8 3/3 grün (DeX-Chrome); **Pflege „`init()` versions-fail-soft" Knopf 9 live grün 2026-05-19** (`db_version_vor: 16 → nach_bump: 17`, Bonus-Probe Panel-02-Knöpfe 8/9/10 ohne Cleanup grün); Headless-Smoke 8/8 + Bau-02.Y-Regression 33/33 weiterhin grün | IndexedDB-Wrapper |
 | 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15, Pflege Spec Backup-Export Stufe 2 2026-05-16, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Stamm/Gast-Durchreichung 2026-05-15, Bau 02.X Backup-Export 2026-05-16, Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump 2026-05-19, Mini-Fix Rollback-Pfad 2026-05-19) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) + 2026-05-16 (Klaus, Bau 02.X Backup-Export Knöpfe 6/7/7b alle drei grün) + **2026-05-19 (Klaus, DeX-Chrome: Bau 02.Y Knöpfe 8/9/10 alle drei grün** nach Mini-Fix + Cleanup-Workaround) | Ed25519-Identität, Multi-Identitäts-Slots (Bau 02.Y), base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. **`generateOwnSpore` Code-Allow-List nachgezogen** 2026-05-15 (Bau 02 Stamm/Gast): zwei Zeilen analog zu `domainKeywords` — ohne diese Pflege würden Stamm/Gast-Felder beim Andock still ignoriert. **Spec Backup-Export Stufe 2 2026-05-16** (Identitäts-Persistenz Stufe 2): zwei neue Funktionen `exportBackup(password) → Promise<SbkimBackupBlob>` + `importBackup(blob, password, options?)` (PBKDF2-SHA256 600 000 + AES-GCM-256, Klartext-Payload = Identität + Geschwister, defensiv per Default — `BackupOverwriteError`); drei §0-Konstanten verankert (`BACKUP_FORMAT_VERSION=1` / `BACKUP_KDF_ITERATIONS=600000` / `BACKUP_PASSWORD_MIN_LEN=8`); fünf neue Error-Klassen (`InvalidBackupPasswordError` / `BackupDecryptError` / `BackupVersionMismatchError` / `BackupSchemaError` / `BackupOverwriteError`). KEIN Spore-Feld dazu (Backup-Schicht separat, `PROTOCOL_VERSION` bleibt `"0.1"`). **Bau-Sitzung 02.X ausstehend**, KEIN Code in `src/modules/02_spore.js`. |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
-| 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80. **Karte 04 § Stamm/Gast-Hinweis 2026-05-15** (Spec-Sitzung Stamm/Gast): Match bleibt unverändert; Stamm/Gast ist Klassifikations-Schicht auf Daten-Ebene, kein Vektor-Math; explizit kein Dämpfungsfaktor, keine zweite Schwelle. |
+| 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15, Spec M04-Erweiterung Brief 03 2026-05-19) | Code-Stub (2026-05-14, Bau 04.A `matchDimensions` sync 2026-05-19) | geprüft 2026-05-14 (Klaus) — drei Tests grün + Kalibrierung; Bau 04.A Headless-Smoke 19/19 grün; **Browser-Sichttest Panel-04-Knöpfe 7/8/9 ausstehend** | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80. **Karte 04 § Stamm/Gast-Hinweis 2026-05-15**: Match bleibt unverändert; Stamm/Gast ist Klassifikations-Schicht auf Daten-Ebene. **Bau 04.A 2026-05-19** `matchDimensions` synchron (drei Schichten + overall + availableLanes + DimensionsAllNullError + Nur-Anbieter-Modus); Stufe-A-Heuristik (alle drei Schichten gleich); `explainMatchLLM` kommt mit Bau 04.B. |
 | 05 anastomose | Spec fertig (2026-05-14, Spec BroadcastChannel-Bridge 2026-05-17) | Code-Stub (2026-05-14, Bau BroadcastChannel-Bridge 2026-05-17) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt; **Bau BroadcastChannel-Bridge Sichttest 2026-05-17 grün** (Klaus, Browser im Termux-`python3 -m http.server 8000`-Setup auf Galaxy Tab S6 + DeX) — Knöpfe 9 / 9a / 9b / 9c alle vier ohne Modul-Befund (Test 9 established score 0.8881; Test 9a HandshakeTimeoutError nach 4005 ms; Test 9b MissingToNodeIdError synchron; Test 9c Auto-Fallback HTTP-404→Channel etabliert score 0.8881) | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) + same-origin Fallback-Transport via `BroadcastChannel('sbkim')` aus Bau-Sitzung 2026-05-17 (additiv, `options.transport ∈ {"auto","http","channel"}` mit Default `"auto"` und einmaligem Auto-Fallback bei klaren HTTP-Defekt-Signalen) |
 | 06 heterokaryose | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15) | rasch grob durchgeklickt 2026-05-16 (Klaus, Tab S6 + DeX) — Panel 06 14 Knöpfe Selbstchecks + Hauptpfade grün; voller Test-1–9-Lauf folgt bei Bedarf | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
@@ -1810,116 +1810,96 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-19 · Pflege Modul 01 `init()` versions-fail-soft
+### 2026-05-19 · Bau 04.A `matchDimensions` synchron in Modul 04
 
-**Sitzungs-Rolle:** Pflege-Sitzung (kein Spec, kein neuer Modul-
-Vertrag, additive Garantien-Erweiterung an Modul 01), headless.
-Branch `claude/pflege-01-init-fail-soft`. Direkte Folge auf Klaus'
-Bau-02.Y-Sichttest 2026-05-19 (PR #104), Meta-Pflege Tafel-
-Evolutions-Klausel (PR #105) und Brief-Pflege (PR #106). Erste
-Pflege-Sitzung der Bau-Pipeline nach Bau 02.Y.
+**Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 03 hat alles in
+INTERFACES § 1 Modul 04 + § 0 + § 7 + § 8 spezifiziert), headless.
+Branch `claude/bau-04a-match-dimensions`. Direkte Folge auf den Brief
+BAU_04A_MATCH_DIMENSIONS (PR #109 gemerged 2026-05-19, `main`
+`ae98842`). Erste Bau-Sitzung der M04-Erweiterung aus Brief 03.
 
-**Kern (drei Sätze):** `DB_VERSION = 4` ist jetzt Mindest-Schema-
-Version, nicht „immer-anstreben". `init()` öffnet die DB zweiphasig
-(Probe ohne Version + Entscheidung), respektiert existing DB-
-Versionen > `DB_VERSION` (entstanden durch `ensureStore`-Bumps in
-früheren Sitzungen) und übernimmt sie ohne `VersionError`. Klaus'
-Cleanup-Workaround „Browserdaten löschen + Storage init klicken"
-bei jedem Sichttest entfällt — Test-Stores aus früheren Sichttests
-blockieren `init()` nicht mehr.
+**Kern (drei Sätze):** Modul 04 hat jetzt `matchDimensions(queryCap,
+queryNeeds, passageCap, passageNeeds)` synchron — drei orthogonale
+Schichten (fachlich / prozess / skalierung) + gewichteter `overall` +
+`availableLanes ∈ {0,1,2}` + `bruecke: null` (Bau 04.B füllt das via
+`explainMatchLLM`). In Stufe A sind die drei Schichten eine Heuristik
+über demselben Embedding-Raum — alle drei ergeben denselben Lane-
+Cosinus gemäß Karte 04 § Drei-Schichten-Modell „Aufteilung in drei
+Schichten". Die echte semantische Differenzierung passiert in Stufe B
+via `explainMatchLLM` — eigene Folge-Sitzung Bau 04.B mit eigenem Brief.
 
 **Sechs Punkte a–f:**
 
-- **a) INTERFACES.md** drei kleine Eingriffe: § 1 Modul 01 Bietet-
-  Block um neuen Sub-Block „init-Garantien (Pflege „init() versions-
-  fail-soft", 2026-05-19)" erweitert; Geprüft-Zeile + § 9.5
-  Stand-Hinweis (Pflege durchgeführt) + § 10 Änderungsprotokoll-
-  Zeile. KEIN Vertrags-Drift in Bietet-/Storage-/Fehler-Block.
-- **b) Karte 01** § Schnittstelle init-Doku-Block + § Versionsmigration
-  neuer Sub-Block „Versions-Fail-Soft-Pfad" mit Entscheidungs-Tabelle
-  (drei Fälle A/B/C) + § Risiken zwei neue Punkte (manuell zerstörte
-  DB / Multi-Tab-Race) + § Manueller Test Knopf 9 + § Bauzustand
-  zwei neue Zeilen.
-- **c) `src/modules/01_storage.js` additiv** (kein Refactoring der
-  bestehenden 8 Funktionen): vier neue Closure-Helper `openProbe(name)`
-  (returns `{db, wasCreated}`, `wasCreated` via `onupgradeneeded`-
-  Trigger), `checkRequiredStores(db)` (sync auf STORES_V1/V2/V3/V4),
-  `openExact(name, version)` (Re-Open ohne onupgradeneeded),
-  `deleteDb(name)` (Helper für `wasCreated`-Fall). `init(options)`
-  umgebaut auf zweiphasigen Pfad — Probe + Entscheidung
-  (`wasCreated` → `deleteDb` + Initial; `existing < DB_VERSION` →
-  Initial mit Migration; `existing >= DB_VERSION` →
-  `checkRequiredStores` + KNOWN_STORES-Erweiterung + `openExact`).
-  `_meta.dbVersionPolicy = "fail-soft-min-schema"` als neuer Read-
-  Anker. `node --check` grün.
-- **d) Panel 01 Knopf 9 „init() versions-fail-soft probe"** in
-  `tests/manual_check.html` — bumpt `db.version` per `ensureStore`,
-  Tester reloadet Tab + klickt Knopf 1, init muss grün durchgehen.
-- **e) Smoke-Test** `tests/smoke_pflege_01_init_fail_soft.mjs` (Node
-  22 + fake-indexeddb): **8 Sub-Proben, 8 grün, 0 rot** — frische DB
-  / existing v=10 mit dynamischem Store / existing v=10 mit
-  fehlendem Pflicht-Store. Bau-02.Y-Smoke-Test 33/33 weiterhin grün
-  (Regression-Bonus).
-- **f) Übergabeprotokoll** `docs/sessions/archiv/2026-05-19_pflege-01-init-fail-soft.md`.
-
-**Bau-Befund (in der Sitzung gelöst):** der erste Code-Versuch ohne
-`wasCreated`-Flag hat den Bau-02.Y-Smoke-Test gebrochen — `openProbe`
-legt nach IndexedDB-Spec die DB neu mit Version 1 ohne Stores an,
-falls sie nicht existiert. Der nachfolgende Initial-Open mit
-`DB_VERSION=4` rief dann nur Migrations `v=2/3/4`; `v=1` wurde
-übersprungen (Loop startet bei oldVersion=1+1=2). Pflicht-Stores aus
-v=1 fehlten. Fix: `wasCreated`-Flag via `onupgradeneeded`-Trigger,
-dann `deleteDb(name)` vor Initial-Pfad — `oldVersion=0` greift wieder
-voll.
+- **a) INTERFACES.md** zwei Eingriffe: § 1 Modul 04 Geprüft-Zeile um
+  „2026-05-19 (Bau 04.A `matchDimensions` sync)" erweitert; § 10
+  Änderungsprotokoll neue Zeile. KEIN Vertrags-Drift.
+- **b) Karte 04** § Manueller Test um drei neue Knöpfe 7/8/9 erweitert
+  (Knopf-6-Selbstcheck-Format mitgepflegt auf den neuen Stand); §
+  Bauzustand zwei neue Zeilen.
+- **c) `src/modules/04_match.js` additiv** (kein Refactoring der
+  bestehenden `match` / `isAboveProviderThreshold`): neue Konstante
+  `SCHICHT_MIN_MATCH = 0.60`; neue Fehler-Factory
+  `DimensionsAllNullError`; Closure-Helper `cosineSafe(a, b)`; neue
+  Funktion `matchDimensions(queryCap, queryNeeds, passageCap,
+  passageNeeds)` sync mit Lane-Berechnung + Stufe-A-Heuristik (alle
+  drei Schichten gleich dem Schicht-Score) + `bruecke: null`;
+  `DimensionsAllNullError` SYNCHRON bei allen vier null; Nur-Anbieter-
+  Modus → alle Schichten null, `availableLanes:0`, kein Throw.
+  Selbstcheck auf drei Funktionen erweitert. `_meta` um
+  `schichtMinMatch` + `matchDimensionsLanes` erweitert. `node --check`
+  grün.
+- **d) Panel 04 drei Knöpfe** (Knopf 7 bidirektional / Knopf 8 Nur-
+  Anbieter / Knopf 9 DimensionsAllNullError). Deterministische LCG-
+  Vektoren statt SbkimEmbedding (zustandslose Funktion, kein Modell-
+  Lade nötig).
+- **e) Smoke-Test** `tests/smoke_bau04a_match_dimensions.mjs` als
+  reine Funktions-Probe in Node 22: **19 Sub-Proben, 19 grün, 0 rot.**
+  Bau-02.Y- und Pflege-01-Regression-Smoke-Tests weiterhin grün
+  (33/33 + 8/8).
+- **f) Übergabeprotokoll** `docs/sessions/archiv/2026-05-19_bau-04a-match-dimensions.md`.
 
 **Heilige Tafeln eingehalten:**
 
-- **Tafel-Evolutions-konform** (CLAUDE.md § Heilige Tafeln § Tafel-
-  Evolutions-Klausel aus PR #105): die Brief-02.Y-Tafel „KEIN
-  Modul-01-Eingriff" war scope-disziplin, diese Pflege ist die
-  explizite Folge-Sitzung mit eigenem Brief (PR #106) + eigenem PR.
-- **INTERFACES verbindlich.** § 1 Modul 01 Bietet/Storage/Fehler-
-  Block unverändert; nur Garantien-Erweiterung.
-- **`ensureStore`-Pfad unverändert** (Bau-01.Y-Stand bleibt).
-- **`DB_VERSION` bleibt `4`** als Mindest-Schema-Version
-  (Bedeutung-Wandel).
-- **`PROTOCOL_VERSION` bleibt `"0.1"`, `BACKUP_FORMAT_VERSION`
-  bleibt `2`**.
+- **INTERFACES verbindlich** — § 1 Modul 04 Bietet/Storage/Fehler/
+  Garantien-Block UNVERÄNDERT (Brief 03 hat das spec'd).
+- **`explainMatchLLM` ist Bau 04.B** (eigene Folge-Sitzung).
+- **`BridgeProposal` bleibt null** in Bau 04.A.
+- **Stufe-A-Heuristik gemäß Karte 04** (alle drei Schichten gleich
+  dem Lane-Cosinus) — Karte ist eindeutig, KEINE Tafel-Spannung
+  während des Baus aufgetreten (der Brief hatte das antizipiert).
+- **Bestehende `match` / `isAboveProviderThreshold` unangetastet.**
+- **`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `4`,
+  `BACKUP_FORMAT_VERSION` bleibt `2`.**
 - **Reihenfolge INTERFACES → Karte → Code** befolgt.
 
 **Was NICHT angefasst:**
 
-- **Modul-Code 02 / 05 / 06 / 07 / 00 / 08.**
-- **`ensureStore`-Pfad** (Bau-01.Y-Stand).
-- **DB-Schema-Eingriff, neuer Pflicht-Store.**
-- **`PROTOCOL_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.**
+- **Modul-Code 00/01/02/03/05/06/07/08.**
+- **`explainMatchLLM`, `BridgeProposal`-Befüllung** (Bau 04.B).
+- **Netz-Pfad** (Modul 04 zustandslos + lokal).
+- **DB-Schema-Eingriff.**
+- **`PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.**
 - **Sage-Page / Karte 09 / `status.json`.**
-- **`update_puls_pie.py`-Aufruf** — Modul 01 ist `score:"fertig"`,
-  additive Robustheits-Pflege ohne Score-Wechsel.
+- **`update_puls_pie.py`-Aufruf** — Modul 04 ist `score:"fertig"`,
+  additive Erweiterung ohne Score-Wechsel.
 
-**Vision-Anker 6 § Status nachgezogen** um „Folge-Pflege Modul 01
-`init()` versions-fail-soft 2026-05-19 abgeschlossen".
+**Vision-Anker 9 (M04-Erweiterung) § Status nachgezogen** um „Bau 04.A
+`matchDimensions` sync 2026-05-19 abgeschlossen, Bau 04.B steht noch
+aus".
 
-**Vorletzten Sitzungs-Eintrag (Meta-Pflege Tafel-Evolutions-Klausel)
+**Vorletzten Sitzungs-Eintrag (Pflege Modul 01 init versions-fail-soft)
 ins Archiv-Index ausgelagert** (Konvention pro Sitzung).
 
-**Manueller Sichttest:** **grün geprüft 2026-05-19 (Klaus, DeX-Chrome
-auf Galaxy Tab S6):** Pflege Modul 01 `init()` versions-fail-soft
-live bewiesen. Drei-Probe + Bonus: (i) Knopf 9 grün —
-`db_version_vor: 16` (akkumuliert aus früheren Sichttests),
-`db_version_nach_bump: 17`, `dbVersionPolicy: "fail-soft-min-schema"`.
-(ii) Tab-Reload (kein Browserdaten-Cleanup nötig). (iii) Bonus-Probe
-direkt mit Panel 02 Knöpfen 8/9/10 weitergemacht — alle drei grün
-ohne `VersionError`. **Klaus-freundliches Ergebnis bestätigt:** ein
-einmaliges Cleanup am Anfang, danach Sichttests beliebig oft ohne
-erneutes Löschen. Klaus' Befund aus Bau-02.Y-Sichttest („zweiter Lauf
-gelang erst nach Panel-01-Storage-init-Klick") ist damit aufgelöst.
+**Manueller Sichttest:** **ungeprüft, weil headless gebaut — wartet
+auf Klaus' Browser-Lauf** der drei neuen Panel-04-Knöpfe (7/8/9). Mit
+der Pflege Modul 01 (PR #107/#108) ist Klaus' Test-Workflow jetzt ohne
+Cleanup-Theater.
 
-**Nächster sinnvoller Schritt:** **Brief `BAU_04A` schreiben**
-(`matchDimensions` synchron aus Brief 03 / M04-Erweiterung) als
-nächste Pipeline-Etappe.
+**Nächster sinnvoller Schritt:** **Klaus' Browser-Sichttest** der
+Panel-04-Knöpfe, dann **Brief `BAU_04B` schreiben** (Stufe B —
+`explainMatchLLM` + User-Key-Verwaltung) als nächste Pipeline-Etappe.
 
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_pflege-01-init-fail-soft.md](sessions/archiv/2026-05-19_pflege-01-init-fail-soft.md).
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_bau-04a-match-dimensions.md](sessions/archiv/2026-05-19_bau-04a-match-dimensions.md).
 
 ---
 
@@ -2762,6 +2742,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-19 | Pflege · Modul 01 `init()` versions-fail-soft (PR #107 gemerged 2026-05-19, `main` `b9e1a8f`; Sichttest-Nachzug PR #108, `main` `af4fdff`). Folge-Pflege auf Klaus' Bau-02.Y-Sichttest. DB_VERSION ist jetzt Mindest-Schema-Version, nicht „immer-anstreben". init() öffnet die DB zweiphasig (Probe + Entscheidung), respektiert existing > DB_VERSION ohne VersionError. Bei fehlendem Pflicht-Store: StorageOpenError mit Liste. Vier neue Closure-Helper (openProbe / checkRequiredStores / openExact / deleteDb); `_meta.dbVersionPolicy = "fail-soft-min-schema"` als Read-Anker. Karte 01 § Versionsmigration neuer Sub-Block + § Risiken zwei neue Punkte + § Manueller Test Knopf 9 + § Bauzustand. **Sichttest 2026-05-19 (Klaus, DeX-Chrome): live grün** — `db_version_vor: 16 → nach_bump: 17`, Bonus-Probe Panel-02-Knöpfe 8/9/10 alle grün ohne Cleanup-Workaround. Headless-Smoke 8/8 grün, Bau-02.Y-Regression 33/33 weiterhin grün. Tafel-Evolutions-konform (PR #105). PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION unverändert | [→ Archiv](sessions/archiv/2026-05-19_pflege-01-init-fail-soft.md) |
 | 2026-05-19 | Bau · 02.Y Multi-Identitäts-API + Backup-Schema-Bump in Modul 02 (PR #104 gemerged 2026-05-19, `main` `63e8fd1`; zweite Bau-Sitzung der Pipeline aus Brief 99 — Klaus' Wahl „logische Reihenfolge — Infrastruktur weiter". Modul 02 hat fünf neue/erweiterte Funktionen (`setActiveIdentity` / `getActiveIdentityKey` / `listIdentities` / `removeIdentity` plus optionaler `key`-Parameter auf `getOrCreateIdentity` / `generateOwnSpore` / `getOwnSpore`); identitäts-spezifische Stores via `SbkimStorage.ensureStore` aus Bau 01.Y. **`BACKUP_FORMAT_VERSION` 1 → 2** (Multi-Identitäts-Backup „kompletter Rucksack"); alte v=1-Backups bleiben lesbar. `sbkim_meta` lazy via `ensureStore` (KEIN Modul-01-Eingriff). KEINE Modul-05/06/07-Änderung. Drei neue Panel-02-Knöpfe + Mini-Fix Rollback-Pfad (Reihenfolge `ensureIdentityStores` vor `put(sbkim_keys)`). Sichttest 2026-05-19 (Klaus, DeX-Chrome): 3/3 grün nach Mini-Fix + Cleanup-Workaround. Headless-Smoke 33/33 grün. Klaus' Befund: zweiter Lauf gelang erst nach Panel-01-„Storage init"-Klick — Folge-Pflege Modul 01 init() versions-fail-soft bestätigt. PROTOCOL_VERSION/DB_VERSION unverändert) | [→ Archiv](sessions/archiv/2026-05-19_bau-02y-multi-identitaet.md) |
 | 2026-05-19 | Meta-Pflege · Tafel-Evolutions-Klausel + Modul-01-init-Folge-Pipeline (PR #105 gemerged 2026-05-19, `main` `60ea3f6`; nach Klaus' Anweisung: heilige Tafeln aufheben wenn alte Regel neuer notwendiger Arbeit widerspricht — Klaus EXPLIZIT auf Anpassungs-Bedarf hinweisen statt stoisch befolgen oder stillschweigend umgehen. **CLAUDE.md § Heilige Tafeln** um Sub-Sektion „Tafel-Evolutions-Klausel (Pflege 2026-05-19)" erweitert: drei Disziplin-Regeln, Bezeichnungs-Konvention „Diese-Sitzung-nicht"-Tafeln vs. absolute Verbote, Bezugs-Beispiel Modul-01-init-Befund. **INTERFACES.md § 9.5** um Folge-Befund 2026-05-19 erweitert. **PULS § Vision-Anker 6 § Status** um Folge-Pflege-Block. Ältester Sitzungs-Eintrag im selben PR ins Archiv ausgelagert; PULS unter 3000-Zeilen-Schutz-Klausel. PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION unverändert) | [→ Archiv](sessions/archiv/2026-05-19_pflege-tafel-evolution-modul01-pipeline.md) |
 | 2026-05-19 | Brief · Pflege Modul 01 `init()` versions-fail-soft angelegt (PR #106 gemerged 2026-05-19, `main` `42a04e0`; Brief BAU_PFLEGE_01_INIT_FAIL_SOFT.md für die folgende Pflege-Sitzung; sechs Punkte a-f spezifiziert; Heilige Tafeln scope-genau; Lösungs-Skizze openProbe(name); Stolperfallen dokumentiert; Zeitschätzung 2-3 h) | (Brief im Repo: docs/sessions/BRIEF_BAU_PFLEGE_01_INIT_FAIL_SOFT.md) |
