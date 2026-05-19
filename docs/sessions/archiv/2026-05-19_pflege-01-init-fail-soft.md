@@ -209,25 +209,44 @@ Diese Datei: `docs/sessions/archiv/2026-05-19_pflege-01-init-fail-soft.md`.
 
 ## Manueller Sichttest
 
-**Ungeprüft, weil headless gebaut — wartet auf Klaus' Browser-Lauf**
-des neuen Panel-01-Knopfes 9.
+**Grün geprüft 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6,
+Termux-`python3 -m http.server 8000`-Setup):** Pflege Modul 01 `init()`
+versions-fail-soft live bewiesen.
 
-Drei-Schritt-Probe (Klaus, DeX-Chrome auf Galaxy Tab S6):
+**Schritt 1 — Knopf 9 „init() versions-fail-soft probe":**
+- `db_version_vor: 16` (akkumuliert aus früheren Bau-01.Y- + Bau-02.Y-
+  Sichttests; ein Browserdaten-Cleanup beim Sitzungsanfang hatte die
+  DB einmal zurückgesetzt, danach hat sich die Version durch
+  `ensureStore`-Bumps wieder auf 16 hochgewandert).
+- `db_version_nach_bump: 17` — Bau-01.Y-`ensureStore`-Choreografie
+  bumpt sauber um 1.
+- `dbVersionPolicy: "fail-soft-min-schema"` — Read-Anker bestätigt den
+  Pflege-Stand.
+- Status-Chip grün „fail-soft-Probe vorbereitet".
 
-1. Termux-Setup wie bisher (`python3 -m http.server 8000`), Tab auf
-   `http://localhost:8000/tests/manual_check.html`.
-2. **Knopf 9 „init() versions-fail-soft probe"** klicken. Erwartung:
-   Status-Chip grün „fail-soft-Probe vorbereitet", Log zeigt
-   `db_version_nach_bump > db_version_vor` und
-   `dbVersionPolicy: "fail-soft-min-schema"`.
-3. Browser-Tab **reloaden**. Dann **Knopf 1 „Storage init"** erneut
-   klicken. Erwartung: kein `VersionError`, init geht durch,
-   `_meta.dbVersion` ist die nach-Bump-Version (also > 4).
+**Schritt 2 — Tab-Reload:** ohne Browserdaten-Cleanup.
 
-**Bonus-Probe für die Tafel-Evolutions-Wirkung:** Klaus kann nach
-Knopf 9 + Reload sofort weiter Panel 02 testen (Bau 02.Y-Knöpfe),
-ohne Browserdaten zu löschen. Der gesamte Cleanup-Workaround
-entfällt.
+**Schritt 3 + Bonus — Panel 02 Knöpfe 8/9/10 direkt weiter:** alle drei
+grün ohne `VersionError`:
+- Knopf 8 „Identitäts-Wechsel OK": main `4W-MgkDhvm0…` ≠ test
+  `00fhU4rp…`, `listIdentities: [main, test]`, `active-identity: test`.
+- Knopf 9 „Persona-Apoptose OK": `active_before: test → active_after:
+  main`, `removed: true`, zweiter Aufruf `removed: false` (Idempotenz).
+- Knopf 10 „Multi-ID-Backup OK": wrapper `version: 2`,
+  `payload-schema-version: 2`, `identities.length: 2`, Download-Link
+  4766 Bytes.
+
+**Indirekter Beleg für die Pflege-Wirkung:** Panel 02 Knöpfe rufen
+`SbkimSpore.init()` → `SbkimStorage.init()`. Bei einer DB auf v=17
+> `DB_VERSION=4` hätte `init()` vor der Pflege mit `VersionError`
+gescheitert. Hier lief alles durch — `init()` hat die existing
+v=17 sauber übernommen via Probe + Re-Open ohne Versions-Bump.
+
+**Klaus-freundliches Ergebnis bestätigt:** ein einmaliges Cleanup am
+Anfang einer Sitzung reicht; danach Sichttests beliebig oft ohne
+Browserdaten zu löschen. Klaus' Befund aus dem Bau-02.Y-Sichttest
+2026-05-19 („zweiter Lauf gelang erst nach Panel-01-Storage-init-
+Klick") ist damit aufgelöst — `init()` macht das jetzt von selbst.
 
 ---
 
