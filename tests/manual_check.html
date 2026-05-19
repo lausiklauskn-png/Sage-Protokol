@@ -197,6 +197,72 @@
         SbkimUI.setStatus("01_storage", "ok", "Persist-Status gelesen");
         return { storagePersisted: persisted, deutung: deutung };
       });
+
+      // Bau 01.Y (2026-05-19): drei Knöpfe für die Drei-Stufen-Probe
+      // `ensureStore` — happy-path, Idempotenz, Pattern-Verstoß.
+      // Cleanup-Hinweis: Test-Stores `sbkim_test_*` bleiben in der DB;
+      // Klaus löscht sie via DevTools → Application → IndexedDB manuell.
+      SbkimUI.addButton("01_storage", "ensureStore('sbkim_test_foo')", async function () {
+        await SbkimStorage.init();
+        var versionVor = SbkimStorage._meta.dbVersion;
+        await SbkimStorage.ensureStore("sbkim_test_foo");
+        var versionNach = SbkimStorage._meta.dbVersion;
+        var nowKnown = SbkimStorage._meta.knownStores;
+        var enthaeltNeuen = nowKnown.indexOf("sbkim_test_foo") !== -1;
+        SbkimUI.setStatus("01_storage", "ok", "ensureStore happy-path");
+        return {
+          db_version_vor: versionVor,
+          db_version_nach: versionNach,
+          objectStoreNames_enthaelt_neuen: enthaeltNeuen,
+          known_stores: nowKnown,
+          hinweis: "Sichtprüfung: DevTools → Application → IndexedDB → " + SbkimStorage._meta.dbName + " muss sbkim_test_foo zeigen.",
+        };
+      });
+
+      SbkimUI.addButton("01_storage", "ensureStore('sbkim_test_foo') zweimal", async function () {
+        await SbkimStorage.init();
+        var versionA = SbkimStorage._meta.dbVersion;
+        await SbkimStorage.ensureStore("sbkim_test_foo");
+        var versionB = SbkimStorage._meta.dbVersion;
+        await SbkimStorage.ensureStore("sbkim_test_foo");
+        var versionC = SbkimStorage._meta.dbVersion;
+        var idempotent = versionB === versionC;
+        SbkimUI.setStatus("01_storage", idempotent ? "ok" : "fail", idempotent ? "Idempotenz greift" : "Idempotenz verletzt!");
+        return {
+          db_version_vor_erstem: versionA,
+          db_version_nach_erstem: versionB,
+          db_version_nach_zweitem: versionC,
+          idempotent: idempotent,
+          hinweis: idempotent
+            ? "Idempotenz greift: zweiter Aufruf hat db.version NICHT erhöht (no-op)."
+            : "Idempotenz verletzt: zweiter Aufruf hat db.version erhöht — Modul-Bug!",
+        };
+      });
+
+      SbkimUI.addButton("01_storage", "ensureStore('invalid-name') (Fehler erwartet)", async function () {
+        await SbkimStorage.init();
+        var caught = null;
+        try {
+          // Bindestrich '-' verstößt gegen ^sbkim_[a-z0-9_]+$ (auch der
+          // fehlende sbkim_-Präfix verstößt). Synchroner Wurf erwartet —
+          // KEIN Promise-Aufbau.
+          SbkimStorage.ensureStore("invalid-name");
+        } catch (err) {
+          caught = err;
+        }
+        if (caught === null) {
+          SbkimUI.setStatus("01_storage", "fail", "kein Fehler — erwartet InvalidStoreNameError");
+          throw new Error("Erwartete InvalidStoreNameError synchron, kam keiner.");
+        }
+        var korrekterName = caught.name === "InvalidStoreNameError";
+        SbkimUI.setStatus("01_storage", korrekterName ? "ok" : "fail", korrekterName ? "InvalidStoreNameError synchron" : "falscher Fehler-Name");
+        return {
+          erwartet: "InvalidStoreNameError",
+          erhalten_name: caught.name,
+          erhalten_message: caught.message,
+          synchron_geworfen: true,
+        };
+      });
     })();
   </script>
 
