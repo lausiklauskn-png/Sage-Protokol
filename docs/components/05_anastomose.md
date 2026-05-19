@@ -214,20 +214,28 @@ receiveHandshake(incomingRequest) → Promise<HandshakeResponse>
   //    Wenn !isAboveProviderThreshold(score) → Log "abgelehnt: score",
   //    Response outcome:"rejected", reason:"score unterhalb Schwelle",
   //    score mit-gemeldet.
-  // 6. Sonst: sbkim_siblings.put(peer), Log "established",
+  // 6. Sonst: sbkim_siblings_<hit-key>.put(peer), Log "established",
   //    Response outcome:"established", score, ownSpore mit-geliefert,
   //    Response-Signatur über kanonische Form (ohne signature) gesetzt.
+  //    Multi-Identitäts-Hinweis (Brief 04): <hit-key> ist die Persona,
+  //    deren nodeId der Sender via request.toNodeId angesprochen hat —
+  //    Receiver-Map nodeId→key wird beim init() einmal gebaut. Ohne
+  //    request.toNodeId fällt der Receiver auf die aktive Identität
+  //    zurück (Pre-Brief-04-Verhalten als Default).
   // Wirft niemals — alle Fehlpfade werden als
   // HandshakeResponse{outcome:"rejected", reason} zurückgegeben.
 
 listSiblings() → Promise<Array<{nodeId, domain, since, pubKey}>>
-  // Lädt alle Einträge aus sbkim_siblings. Reihenfolge ist die
-  // Storage-natürliche (Schlüssel-Reihenfolge nach nodeId).
+  // Lädt alle Einträge aus sbkim_siblings_<key>, wobei <key> die aktive
+  // Identität ist (Brief 04). Reihenfolge ist die Storage-natürliche
+  // (Schlüssel-Reihenfolge nach nodeId). Wer Persona-übergreifende
+  // Sicht braucht, iteriert SbkimSpore.listIdentities() und addiert
+  // pro Slot aufrufer-seitig — INTERFACES.md § 9.2 Persona-Isolation.
 
 forgetSibling(nodeId) → Promise<void>
-  // Entfernt den nodeId-Eintrag aus sbkim_siblings. Der Log-Eintrag
-  // bleibt (Audit-Spur). Idempotent: forgetSibling auf unbekannten
-  // nodeId wirft nicht.
+  // Entfernt den nodeId-Eintrag aus sbkim_siblings_<key> (aktive
+  // Identität; Brief 04). Der Log-Eintrag bleibt (Audit-Spur).
+  // Idempotent: forgetSibling auf unbekannten nodeId wirft nicht.
 ```
 
 ### Selbstcheck
@@ -293,7 +301,8 @@ Signatur über die Form **ohne** `signature`-Feld):
 }
 ```
 
-**`sbkim_siblings["<peerNodeId>"]`** (Storage-Wert pro Geschwister):
+**`sbkim_siblings_<key>["<peerNodeId>"]`** (Storage-Wert pro Geschwister
+in der Persona `<key>`; `<key>` = aktive Identität, Default `"main"`):
 
 ```jsonc
 {
@@ -305,7 +314,8 @@ Signatur über die Form **ohne** `signature`-Feld):
 }
 ```
 
-**`sbkim_anastomosis_log["<timestamp>"]`** (Storage-Wert pro Begegnung):
+**`sbkim_anastomosis_log_<key>["<timestamp>"]`** (Storage-Wert pro
+Begegnung in der Persona `<key>`):
 
 ```jsonc
 {
@@ -315,6 +325,20 @@ Signatur über die Form **ohne** `signature`-Feld):
   // KEIN domainVector, kein Score-Profil, kein Inhalt — anonymisiert.
 }
 ```
+
+**Multi-Identität (Brief 04 der V1-Sammelspec-Kaskade, 2026-05-19):**
+Die Store-Namen folgen ab Brief 04 dem Pattern
+`sbkim_siblings_<key>` / `sbkim_anastomosis_log_<key>` — `<key>` ist
+die aktive Identität aus `SbkimSpore.getActiveIdentityKey()` (Default
+`"main"`). Pre-Brief-04-Aufrufer, die mit fester Singleton-Identität
+gearbeitet haben, treffen unverändert auf `sbkim_siblings_main` /
+`sbkim_anastomosis_log_main`. Receiver-Pfad: `request.toNodeId` wird
+gegen alle eigenen Identitäten geprüft (Map nodeId→key beim
+`init()`), und der `sbkim_siblings_<hit-key>`-Slot der getroffenen
+Persona wird gefüllt. Persona-Isolation: ein Peer, der mit Persona A
+einen established-Handshake hatte, ist NICHT automatisch Geschwister
+von Persona B. Vollständige Identitäts-Map-Spec siehe INTERFACES.md §
+9.
 
 Versionierungs-Regel: HandshakeRequest und HandshakeResponse folgen
 [INTERFACES.md §4](../INTERFACES.md). Pflichtfelder dürfen ab Status
@@ -864,6 +888,7 @@ Test gehört in den Einbau in Rezeptbuch + Mixarium (Modul 09).
 | Code BroadcastChannel-Bridge | 2026-05-17 | Bau BC-Bridge | additive Erweiterung in `src/modules/05_anastomose.js` ohne Refactoring der bestehenden Pfade. Neu: zwei Error-Klassen `InvalidTransportError` + `MissingToNodeIdError` (Factory-Stil, analog zu den sechs bestehenden); drei Konstanten `ALLOWED_TRANSPORTS = ["auto","http","channel"]` + `BROADCAST_CHANNEL_NAME = "sbkim"` + `REPLY_CHANNEL_PREFIX = "sbkim:reply:"`; `RESPONSE_REQUIRED_FIELDS`-Liste für Auto-Fallback-Schema-Check; Closure-Helfer `setupBroadcastChannelBridge()` (eager in `init()` direkt nach `setupServiceWorkerBridge()` aufgerufen, Self-Hit-Schutz `fromNodeId !== ownId`, Filter `toNodeId === ownId`, `replyChannelName.startsWith("sbkim:reply:")`-Plausibilität, Reply-Channel-Cleanup in finally); `postChannelEnvelope(request)` (Sender-roher Channel-Transport, prüft synchron `toNodeId`-Pflicht und `nonce`-Pflicht, öffnet Reply-Channel VOR dem Posten, Timeout `QUERY_TIMEOUT_MS`, `nonceEcho`-Doppelt-Bindung, finally-Cleanup); `sendViaChannel(targetSpore, request, preScore, httpCause)` (postet + loggt `"timeout-channel"` bei Timeout + hängt HTTP-`cause` bei Auto-Fallback + konsumiert via `consumeResponse`); `parseTransport(options)` mit Allow-List-Check + `transportDefault`-Closure; `shouldAutoFallback(httpResponse, parsedJson)` (HTTP 4xx/5xx, non-JSON, Schema-Pflichtfelder-Lücke, outcome außerhalb `{"established","rejected"}` → Fallback; Netz-/DNS-/Abort-Fehler ohne HTTP-Status → KEIN Fallback). `handshake()`-Signatur um dritten Parameter `options?` erweitert; HTTP-Pfad wird bei Fetch-Erfolg/Defekt nicht mehr direkt geworfen, sondern an Auto-Fallback-Entscheidung weitergereicht; transport `"channel"` überspringt den HTTP-Pfad komplett. Drei neue Test-Brücken `_setTransport(t)`, `_clearChannelState()`, `_postChannelEnvelope(request)` plus neue `_meta`-Felder (`responseRequiredFields`, `allowedTransports`, `broadcastChannelName`, `replyChannelPrefix`). `node --check src/modules/05_anastomose.js` grün. Smoke-Test im Node-VM-Kontext (round-trip echo, timeout-after-4s, nonce-mismatch, `_setTransport('foobar')` → `InvalidTransportError`, fehlendes `toNodeId` → `MissingToNodeIdError`) alle fünf grün. Panel 05 in `tests/manual_check.html` um vier Knöpfe 9 / 9a / 9b / 9c erweitert (Test 9 alt→main intra-tab; Test 9a Timeout via fremde `toNodeId`; Test 9b `MissingToNodeIdError` synchron; Test 9c Auto-Fallback-Beweis mit Pseudo-Peer-Echo + 404-Endpoint). Karte 09 § Schritt 4 um Andock-Hinweis-Block „Beide Tabs offen halten für same-origin Channel" erweitert; § Sichtkontrolle 5- auf 6-Punkt-Block (Punkt 6: BroadcastChannel-Bridge-Sichttest). **`receiveHandshake` unverändert.** **HandshakeRequest/Response-Schema unverändert.** **`src/sbkim-sw.js` nicht angetastet** (PR #72 `isOwnEndpoint`-Scope-Fix bleibt). `PROTOCOL_VERSION` bleibt `"0.1"`. status.json nicht geändert. |
 | Sichttest | 2026-05-15 | Klaus + Pflege 05-Test-2 | geprüft 2026-05-15 (Klaus, im Browser): sechs von sieben Tests grün im ersten Lauf — Setup (Main + Alt + Embedding) OK · Test 1 (passendes Match) `response_score:0.888, outcome:established` · Test 3 (Versions-Mismatch 1.0) `reason:"Inkompatible Hauptversion: 1.0 (wir: 0.1)"` · Test 4 (Signatur manipuliert) `reason:"Request-Signatur ungültig"` · Test 5 (Re-Handshake) `since unverändert, sibling einmal gespeichert, letzter Log outcome:"re-handshake"` · Test 6 (forgetSibling) `alt entfernt, Log unverändert, forget_unbekannt_wirft_nicht:true` · Test 7 (listSiblings) `beide alt-Knoten in Liste, Form korrekt`. **Test 2 (Domain-Mismatch / Tarantino-Vektor) Test-Bug** — Erwartung war `outcome:rejected, score<0.80`, tatsächlich `outcome:established, score:0.854`. Tarantino-Filme handeln semantisch oft in Bars → zu nah am Mixarium-Cocktail-Vektor. Modul-Logik korrekt (`PROVIDER_MIN_MATCH=0.80` greift wie spezifiziert), nur der Test-Vektor war schlecht gewählt. **Pflege-Sitzung 2026-05-15** baut Test 2 auf Vektor-Trias um (drei semantisch klar fremde Kandidaten: Steuerrecht und Bilanzierung / Eisenbahnsignalanlagen / Quantenfeldtheorie); Pass-Check „mindestens einer der drei rejected mit score < 0.80"; Tarantino-Vergleichswert wird parallel als reiner Cosinus protokolliert (Drift-Sicht). Karte 05 § Manueller Test Punkt 2 zieht mit. Kein Eingriff in Modul-Vertrag oder INTERFACES.md. Klaus' zweiter Sichttest-Lauf nach Pflege folgt im Browser; falls auch alle drei Trias-Kandidaten über 0.80 liegen, eigene Folge-Pflege-Sitzung „Embedding-Baseline" (PROVIDER_MIN_MATCH-Anhebung oder andere Vektor-Familie). |
 | Sichttest BC-Bridge | 2026-05-17 | Klaus + Mini-Pflege Bau-Sichttest-grün | **geprüft 2026-05-17 (Klaus, im Browser, Termux-`python3 -m http.server 8000` auf Galaxy Tab S6 + DeX): vier von vier Tests grün im ersten Lauf** — Setup (Main + Alt + Embedding via lokalem `python3 -m http.server`; Modell vom CDN-Fallback `cdn.jsdelivr.net` gezogen) OK · **Test 9 (Channel-Pfad established alt→main intra-tab)** `response_outcome:"established", response_score:0.8881, response_signatur_ok:true, alt_als_sibling_eingetragen:true` · **Test 9a (toNodeId-Mismatch-Timeout)** `fehler_name:"HandshakeTimeoutError", timeout_ms:4005` — saubere `QUERY_TIMEOUT_MS`-Grenze · **Test 9b (MissingToNodeIdError synchron)** `request_hat_toNodeId:false, fehler_name:"MissingToNodeIdError"` · **Test 9c (Auto-Fallback HTTP-404 → Channel etabliert)** `target_endpoint:"http://localhost:8000/nicht-vorhanden-fuer-test-9c/", ergebnis.outcome:"established", ergebnis.peerNodeId:"25IUGiGscRhvgYd_O4EqBttkm6XME8KXST1iX2MEbI4", ergebnis.score:0.8881`. **Score-Stabilität bestätigt:** Test 9 und Test 9c liefern identischen Score 0.8881, weil Sender- und Receiver-Vektor in beiden Fällen die Pseudo-Knoten-Vektoren sind — Auto-Fallback funktioniert nicht nur transportiert, sondern liefert dasselbe semantische Ergebnis wie der reine Channel-Pfad (wie spezifiziert). **Bau BroadcastChannel-Bridge ist headless + Browser-Sichttest abgeschlossen.** Nächste Stufe: Endknoten-Pflege (`src/modules/05_anastomose.js` in `Mein-Mixarium/sbkim/` + `Mein-Rezeptbuch/sbkim/` kopieren) + Live-Cross-Knoten-Handshake. |
+| Spec Multi-Identität (Brief 04) | 2026-05-19 | Spec Multi-Identität | Strang 3 der V1-Sammelspec-Kaskade (Brief 04; Brief 03-PR #98 als gemerged vorausgesetzt). Karte 05 erweitert: § Schnittstelle Hinweise auf `sbkim_siblings_<key>`-Pattern in `handshake` (Punkt 6 receiver-seitig) + `listSiblings` + `forgetSibling` (`<key>` = aktive Identität, Default `"main"`); § Datenformate `sbkim_siblings`/`sbkim_anastomosis_log` auf identitäts-spezifische Pattern-Namen umgestellt + neuer Hinweis-Block „Multi-Identität (Brief 04)" mit Receiver-Pfad (Map nodeId→key beim init()) und Persona-Isolation-Klausel. **§ Schnittstelle der Funktions-Signaturen unverändert** — der Slot-Pfad ist transparent über `SbkimSpore.getActiveIdentityKey()`, Aufrufer-API bleibt gleich. INTERFACES.md §1 Modul 05 (Storage-Block-Pattern + Identitäts-Cache-Konvention + Garantien-Erweiterung) + § 9 Identitäts-Map (verbindliche Spec-Klausel) nachgezogen. **PROTOCOL_VERSION bleibt `"0.1"`** — additive Storage-Schema-Erweiterung, kein Spore-Schema-Eingriff, HandshakeRequest/Response-Schema unverändert. **`status.json` unverändert** — Modul 05 bleibt `score:"fertig"` (additive Spec-Erweiterung am Karten-Vertrag, kein Code-Bau, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Kein Code** in `src/modules/05_anastomose.js` — Bau-Folge-Sitzung 05.Y folgt als eigene Phase (transparenter Slot-Pfad über `getActiveIdentityKey()`). |
 | In Endknoten eingebaut | 2026-05-17 | Klaus + Mini-Pflege Live-Channel-Handshake | **Modul-05-v2 mit BroadcastChannel-Bridge in beiden Endknoten live** (`Mein-Rezeptbuch/sbkim/05_anastomose-v2.js` Commit `a1b9ded` + `Mein-Mixarium/sbkim/05_anastomose-v2.js` Commit `9d2f127`, File-Rename als Cache-Bust); beide Endknoten in DeX-Chrome neu angedockt (alte 2026-05-16-Identitäten waren durch IndexedDB-Verlust nicht mehr da) mit neuen nodeIds `BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY` (Mein-Rezeptbuch, Spore-Commit `3bcc453`) + `JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY` (Mein-Mixarium, Spore-Commit `e9d0a45`). **Erster regulärer Cross-Knoten-Handshake ohne localStorage-Bypass:** `SbkimAnastomose.handshake(peerSpore, ownVec)` zwischen den beiden DeX-Chrome-Tabs derselben Origin, Default `transport:"auto"` → HTTP-Pfad scheitert mit Pages-405 → Auto-Fallback greift → Channel-Bridge routet via `BroadcastChannel('sbkim')` → Receiver in Tab B filtert via `toNodeId === own.nodeId`, ruft `receiveHandshake`, signiert kanonische Response, postet auf Reply-Channel. **Resultat bidirektional grün:** `outcome:"established"`, score **0.9544261159927087** in beide Richtungen (cosine ist symmetrisch), `sbkim_siblings` in beiden IndexedDBs gegenseitig gefüllt. Score-Stabilität ist auch eine Score-Beobachtung — Kochrezepte- und Cocktail-Domain liegen semantisch deutlich enger als das Schwellen-`PROVIDER_MIN_MATCH=0.80` verlangt. **Pflege-Kette PR #65 → #70 → #71 → #72 → #73 → #74 → #75 → #76 → diese Mini-Pflege vollständig geschlossen.** Details in [PULS-Eintrag „Live-Channel-Handshake + Browser-Observatorium"](../PULS.md) + [Übergabeprotokoll 2026-05-17 Live-Channel-Handshake](../sessions/archiv/2026-05-17_live-channel-handshake.md). |
 
 ---

@@ -355,12 +355,59 @@ Datei:  src/modules/02_spore.js
 
 Bietet (öffentlich):
   init()                              → Promise<void>
-  getOrCreateIdentity()               → Promise<{ nodeId: string, publicKeyJwk: JsonWebKey }>
-  getNodeId()                         → Promise<string>          // base64url(sha256(rawPub)), ohne Padding
-  getPublicKeyJwk()                   → Promise<JsonWebKey>      // OKP / Ed25519
-  generateOwnSpore(meta)              → Promise<SporeJson>       // signiert + persistiert
-  getOwnSpore()                       → Promise<SporeJson | null>
+  getOrCreateIdentity(key?: string)   → Promise<{ nodeId: string, publicKeyJwk: JsonWebKey }>
+                                                                    // Default-Parameter key="main" (Rückwärts-Kompat zum Singleton-
+                                                                    // Vertrag aus Spec-Sitzung 02 2026-05-14). Multi-Identität:
+                                                                    // Spec-Sitzung Multi-Identität (Brief 04 der V1-Sammelspec-
+                                                                    // Kaskade, 2026-05-19). Siehe § 9 Identitäts-Map.
+  getNodeId()                         → Promise<string>          // base64url(sha256(rawPub)), ohne Padding;
+                                                                    // bezieht sich auf die AKTIVE Identität (sbkim_meta["active-identity"]).
+  getPublicKeyJwk()                   → Promise<JsonWebKey>      // OKP / Ed25519; aktive Identität.
+  generateOwnSpore(meta, key?: string)→ Promise<SporeJson>       // signiert + persistiert.
+                                                                    // Default-Parameter key=getActiveIdentityKey(). Brief 04 (Multi-
+                                                                    // Identität): schreibt nach sbkim_spore[key]. Pro Identität existiert
+                                                                    // ein eigener Spore-Slot mit eigener embeddingCapabilities +
+                                                                    // embeddingNeeds (M04-Erweiterung pro Persona).
+  getOwnSpore(key?: string)           → Promise<SporeJson | null>
+                                                                    // Default-Parameter key=getActiveIdentityKey(). Liefert Spore
+                                                                    // der angegebenen Identität (null wenn Slot fehlt).
   verifyForeignSpore(spore)           → Promise<{ valid: boolean, reason?: string }>
+  setActiveIdentity(key: string)      → Promise<void>            // Spec-Sitzung Multi-Identität (Brief 04).
+                                                                    // Schreibt sbkim_meta["active-identity"] = key. Validiert,
+                                                                    // dass key in sbkim_keys existiert — sonst UnknownIdentityError
+                                                                    // (kein Storage-Eingriff). Idempotent: wenn key bereits aktiv,
+                                                                    // resolves ohne Storage-Schreibvorgang. resetIdentityCache()
+                                                                    // wird intern gerufen, sodass nachfolgende getNodeId/getOwnSpore-
+                                                                    // Aufrufe die neue Identität liefern.
+  getActiveIdentityKey()              → Promise<string>          // Spec-Sitzung Multi-Identität (Brief 04). Liest
+                                                                    // sbkim_meta["active-identity"]; Default "main", falls fehlend
+                                                                    // (Rückwärts-Kompat zum Singleton-Vertrag).
+  listIdentities()                    → Promise<string[]>        // Spec-Sitzung Multi-Identität (Brief 04). Alle Schlüssel in
+                                                                    // sbkim_keys (lexikographisch sortiert für stabile Reihenfolge).
+                                                                    // Leeres Array, wenn noch keine Identität angelegt wurde.
+  removeIdentity(key: string, options?: { force?: boolean })
+                                      → Promise<boolean>          // Spec-Sitzung Multi-Identität (Brief 04). Löscht den
+                                                                    // Identitäts-Slot key inkl. allen identitäts-spezifischen Stores.
+                                                                    // options-Form: { force?: boolean } (Default false).
+                                                                    // - force:false → RemoveActiveIdentityError, wenn key === active-identity
+                                                                    //   (defensiver Schutz vor versehentlicher Selbstauslöschung).
+                                                                    // - force:true  → löscht auch die aktive Identität; setzt
+                                                                    //   active-identity auf "main", falls dort noch eine Identität liegt;
+                                                                    //   sonst auf den ersten Schlüssel aus listIdentities() (lexikographisch);
+                                                                    //   sonst (kein Slot mehr) wird sbkim_meta["active-identity"] gelöscht.
+                                                                    // - key === active-identity → Vermächtnis-Versand pro Persona (siehe
+                                                                    //   Modul 07). Single-Identitäts-Apoptose im Sinne von Brief 04 §
+                                                                    //   Trade-off-Klausel. Bei key !== active-identity wird KEIN
+                                                                    //   Vermächtnis verschickt — die andere Persona ist nicht
+                                                                    //   „gestorben", sie wird nur lokal vergessen.
+                                                                    // Löscht in dieser Reihenfolge: sbkim_keys[key], sbkim_spore[key],
+                                                                    // sbkim_siblings_<key> (Store), sbkim_hetero_inbox_<key> (Store),
+                                                                    // sbkim_legacy_inbox_<key> (Store), sbkim_anastomosis_log_<key>
+                                                                    // (Store). resetIdentityCache() wird am Ende gerufen.
+                                                                    // Rückgabe: true wenn gelöscht, false wenn key unbekannt
+                                                                    // (idempotent — wie forgetSibling). Bestätigungs-Konvention auf
+                                                                    // Anwendungs-Ebene: UI muss vor dem Aufruf bestätigen; Modul 02
+                                                                    // selbst hat keinen Bestätigungs-Token.
   resetIdentityCache()                → void                     // sync, idempotent — leert In-Memory-identityCache;
                                                                     // Storage bleibt unangetastet (Aufgabe von Modul 01).
                                                                     // Aufrufer: externe Cleanup-Pfade, die sbkim_keys/
@@ -389,13 +436,22 @@ Bietet (öffentlich):
                                                                     // restored=true ruft Modul 02 intern
                                                                     // resetIdentityCache().
 
-  Singleton-Identität pro PWA: in beiden Stores (sbkim_keys und
-  sbkim_spore) wird der feste Schlüssel "main" benutzt. Eine zweite
-  Identität ist nicht Sache von Modul 02 — wer das will, legt eine
-  neue PWA an.
+  Identitäts-Slot-Vertrag (Spec-Sitzung Multi-Identität, Brief 04,
+  2026-05-19): sbkim_keys und sbkim_spore tragen jeweils einen
+  Identitäts-Slot pro key. Default-Slot "main" bleibt verbindlich
+  (Rückwärts-Kompat zum Singleton-Vertrag aus Spec-Sitzung 02
+  2026-05-14). Zusätzliche Slots können beliebig viele weitere keys
+  tragen (frei wählbare Strings, [a-z0-9-]+ empfohlen — Modul 02
+  validiert nicht, der Aufrufer trägt Verantwortung für sinnvolle
+  Schlüsselnamen). Die AKTIVE Identität steht in
+  sbkim_meta["active-identity"]; Default "main", falls fehlend. Siehe
+  § 9 Identitäts-Map für den vollständigen Vertrag.
 
   Schlüssel-Erzeugung ist lazy: passiert beim ersten
-  getOrCreateIdentity()-Aufruf, nicht beim Skript-Laden.
+  getOrCreateIdentity(key)-Aufruf für den jeweiligen key, nicht beim
+  Skript-Laden. Vor Brief 04 als „Singleton beim ersten
+  getOrCreateIdentity()" beschrieben; der Mechanismus bleibt
+  identisch — lediglich um den optionalen key-Parameter erweitert.
 
   Spore-Schema-Erweiterung M04 (Spec-Sitzung M04-Erweiterung, Brief 03
   der V1-Sammelspec-Kaskade, 2026-05-19): generateOwnSpore akzeptiert
@@ -447,22 +503,30 @@ Nutzt:
     crypto.getRandomValues(Uint8Array(16|12))    salt + iv für Backup-Pfad
 
 Storage:
-  Stores: sbkim_keys, sbkim_spore (beide aus Modul 01).
-  Schreib-Keys: ausschließlich "main" (Singleton).
-  Werteform sbkim_keys["main"]:  { keyId: string, privateKey: JsonWebKey, publicKey: JsonWebKey }
-  Werteform sbkim_spore["main"]: { nodeId: string, sporeJson: SporeJson, signature: string }
+  Stores: sbkim_keys, sbkim_spore, sbkim_meta (alle aus Modul 01).
+  Schreib-Keys vor Brief 04: ausschließlich "main" (Singleton).
+  Schreib-Keys nach Brief 04: beliebig viele Identitäts-Slot-Keys; "main"
+    bleibt Default-Slot. Identitäts-Map-Vertrag in § 9.
+  Werteform sbkim_keys[key]:   { keyId: string, privateKey: JsonWebKey, publicKey: JsonWebKey }
+  Werteform sbkim_spore[key]:  { nodeId: string, sporeJson: SporeJson, signature: string }
     sporeJson enthält die Signatur bereits im Feld "signature"; auf der
     Wrapper-Ebene wird sie redundant gehalten, damit Modul 05 ohne
     Re-Parse darauf zugreifen kann.
+  sbkim_meta["active-identity"]: string  (Spec-Sitzung Multi-Identität,
+    Brief 04). Lokaler Marker, kein Spore-Feld, wird NICHT über das
+    Netz transportiert. Default "main", wenn fehlend.
 
 Events:
   (keine — keine Pub/Sub. Andere Module rufen die Funktionen direkt.)
 
 Selbstcheck:
   Beim Skript-Laden (synchron, vor jeglichem Aufruf):
-    console.info("MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/resetIdentityCache/exportBackup/importBackup");
+    console.info("MODUL 02 SPORE bereit, Funktionen: init/getOrCreateIdentity/getNodeId/getPublicKeyJwk/generateOwnSpore/getOwnSpore/verifyForeignSpore/setActiveIdentity/getActiveIdentityKey/listIdentities/removeIdentity/resetIdentityCache/exportBackup/importBackup");
   Wie Modul 01 — die Meldung signalisiert "Modul geladen", nicht
-  "Identität existiert".
+  "Identität existiert". Die Multi-Identitäts-Funktionen (Brief 04)
+  sind in der Selbstcheck-Zeile aufgeführt, weil sie öffentliche API
+  sind — der Selbstcheck nennt KEINE Identitäts-Slot-Keys, weil die
+  Slot-Liste aufrufer-getrieben ist.
 
 node_id-Ableitung (verbindlich, von anderen Knoten nachrechenbar):
   rawPub  = await crypto.subtle.exportKey("raw", publicKey)   // 32 bytes
@@ -500,10 +564,25 @@ Fehlerverhalten:
                                           → BackupOverwriteError (Pflicht-Frage 3 Variante a;
                                             Vor-Check vor Crypto). Recovery in leerer PWA greift
                                             ohne force, weil dort keine Identität existiert.
+  - setActiveIdentity(key): key nicht in sbkim_keys
+                                          → UnknownIdentityError (kein Storage-Schreibvorgang;
+                                            aktive Identität bleibt unverändert; Spec-Sitzung
+                                            Multi-Identität, Brief 04).
+  - removeIdentity(key, {force:false}): key === sbkim_meta["active-identity"]
+                                          → RemoveActiveIdentityError (kein Storage-Eingriff;
+                                            Aufrufer muss force:true setzen oder zuerst die
+                                            aktive Identität wechseln; Spec-Sitzung Multi-
+                                            Identität, Brief 04).
+  - removeIdentity(key) bei unbekanntem key
+                                          → KEIN Throw; resolves mit false (idempotent, analog
+                                            forgetSibling).
 
 Garantien für Modul 05 / 06 / 07:
-  - Singleton: getNodeId liefert über die gesamte Lebenszeit derselben
-    PWA denselben String (solange IndexedDB-Speicher erhalten bleibt).
+  - Identitäts-Stabilität: getNodeId(/* aktive Identität */) liefert
+    über die gesamte Lebenszeit derselben PWA denselben String, solange
+    weder setActiveIdentity gerufen wird noch sbkim_keys[active]
+    storage-extern entfernt wird. Identitäts-Wechsel (setActiveIdentity)
+    invalidiert den Cache und ändert die folgende getNodeId-Antwort.
   - Verifikation eines fremden Spore-Strings ist seitenfrei rekonstruier-
     bar — kein Zustand außerhalb des übergebenen JSON-Blocks nötig.
   - Spore-Format ist additiv versioniert: neue Pflichtfelder erscheinen
@@ -516,8 +595,14 @@ Garantien für Modul 05 / 06 / 07:
     getPublicKeyJwk weiter die alte Identität aus dem Cache und der
     nächste storage-direkte Lookup (z.B. SbkimApoptose.loadOwnPrivateKey)
     wirft NoIdentityError trotz "frischer" Identität-Erwartung.
+  - Aktive Identität als Lese-Konvention (Brief 04): Modul 05 / 06 / 07
+    rufen SbkimSpore.getActiveIdentityKey() in ihren init()-Pfaden und
+    cachen den Wert für die Lebenszeit der jeweiligen Operation. Ein
+    Identitäts-Wechsel mid-Operation ist NICHT spezifiziert und nicht
+    geliefert; eine Folge-Spec-Sitzung darf einen aktiven Hook für
+    Mid-Operation-Wechsel spezifizieren.
 
-Geprüft: 2026-05-14 (Spec+Bau-Sitzung 02), 2026-05-15 (Pflege-Sitzung 02+07-Cache-Invalidate), 2026-05-15 (Bau 02 Stamm/Gast-Felder), 2026-05-16 (Spec-Sitzung Backup-Export Stufe 2), 2026-05-16 (Bau 02.X Backup-Export Code-Stub)
+Geprüft: 2026-05-14 (Spec+Bau-Sitzung 02), 2026-05-15 (Pflege-Sitzung 02+07-Cache-Invalidate), 2026-05-15 (Bau 02 Stamm/Gast-Felder), 2026-05-16 (Spec-Sitzung Backup-Export Stufe 2), 2026-05-16 (Bau 02.X Backup-Export Code-Stub), 2026-05-19 (Spec-Sitzung Multi-Identität — Brief 04 der V1-Sammelspec-Kaskade)
 
 ---
 
@@ -1052,9 +1137,13 @@ Bietet (öffentlich):
   ins offene Netz.
 
 Nutzt:
-  SbkimStorage.init / get / put / del / all     (sbkim_siblings, sbkim_anastomosis_log)
-  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk
-                                                 (eigene Identität, kanonisches Sign)
+  SbkimStorage.init / get / put / del / all     (sbkim_siblings_<key>, sbkim_anastomosis_log_<key> —
+                                                 Pattern pro Identität ab Brief 04; Default-Slot
+                                                 sbkim_siblings_main / sbkim_anastomosis_log_main)
+  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk /
+                   getActiveIdentityKey / listIdentities
+                                                 (eigene Identität, kanonisches Sign; aktive Identität
+                                                 lesen + alle Identitäten für Receiver-Map ab Brief 04)
   SbkimSpore.verifyForeignSpore                  (fremde Spore prüfen — Signatur, id-Konsistenz, Hauptversion)
   SbkimMatch.match                               (Cosinus zweier domainVector)
   SbkimMatch.isAboveProviderThreshold            (Schwelle ≥ PROVIDER_MIN_MATCH (0.80) aus §0)
@@ -1073,13 +1162,43 @@ Nutzt:
     Same-origin-only (Browser-Standard); cross-domain läuft weiterhin nur über HTTP.
 
 Storage:
-  Stores (beide aus Modul 01):
-    sbkim_siblings         (Schlüssel: peerNodeId; Wert: { nodeId, domain, endpoint, pubKey, since })
-    sbkim_anastomosis_log  (Schlüssel: ISO-Timestamp; Wert: { ts, peerId, outcome })
+  Stores (alle aus Modul 01 — als Pattern ab Brief 04 der V1-Sammelspec-
+  Kaskade, 2026-05-19):
+    sbkim_siblings_<key>        (Schlüssel: peerNodeId; Wert: { nodeId, domain,
+                                  endpoint, pubKey, since })
+    sbkim_anastomosis_log_<key> (Schlüssel: ISO-Timestamp; Wert: { ts, peerId, outcome })
+  <key> = aktive Identität aus SbkimSpore.getActiveIdentityKey()
+  (Default "main"). Pre-Brief-04-Aufrufer, die mit fester
+  Singleton-Identität gearbeitet haben, treffen unverändert auf
+  sbkim_siblings_main und sbkim_anastomosis_log_main — das ist die
+  Rückwärts-Kompat. Modul 05 schreibt und liest ausschließlich den
+  Slot der aktiven Identität (siehe Identitäts-Cache-Konvention unten).
+  Andere Identitäten haben ihre eigenen, voneinander isolierten
+  Geschwister-Netze und Log-Strings; ein Geschwister-Knoten gehört
+  einer Persona, nicht dem ganzen Knoten.
   outcome ∈ { "established", "rejected", "re-handshake", "timeout" }.
   Log ist anonymisiert: kein domainVector, kein Score-Profil, kein
   Anfrage-Inhalt; nur Begegnung + Ausgang. `since` bleibt beim ersten
   Anklopf-Zeitpunkt eingefroren (Reentry-Idempotenz).
+
+Identitäts-Cache-Konvention (Brief 04 der V1-Sammelspec-Kaskade,
+2026-05-19):
+  - Modul 05 ruft SbkimSpore.getActiveIdentityKey() im init()-Pfad
+    und cached den Wert in einem Modul-lokalen `activeIdentityKey`
+    für die Lebenszeit der jeweiligen Operation (ein handshake-
+    Aufruf, ein receiveHandshake-Aufruf, ein listSiblings-Aufruf).
+  - Mid-Operation-Wechsel der aktiven Identität ist NICHT spezifiziert
+    — wer mitten in einem laufenden handshake setActiveIdentity ruft,
+    bekommt undefiniertes Verhalten (Spec-offen für Folge-Sitzung).
+  - Receiver-Pfad (receiveHandshake): toNodeId aus dem eingehenden
+    Request wird gegen ALLE eigenen Identitäten (listIdentities() →
+    getNodeId pro key) verglichen, NICHT nur gegen die aktive — eine
+    inkommende Anfrage darf jede vorhandene Persona ansprechen. Der
+    Receiver setzt die aktive Identität für diese eine Operation
+    intern auf die getroffene Persona und schreibt sbkim_siblings_<hit-key>.
+    Brief 04 spezifiziert das als Empfangs-Konvention; Modul 05 baut
+    keinen ListProzess für alle Slots in jedem Receive-Pfad, sondern
+    eine schlanke Map nodeId → key beim init().
 
 Events:
   (keine — keine Pub/Sub. Modul 09 / 08 rufen handshake() bzw.
@@ -1211,18 +1330,25 @@ Datenformate:
   "Datenformate".
 
 Garantien für Modul 06 / 07:
-  - sbkim_siblings ist die Einzige Quelle für „verbundene Geschwister".
-    Modul 06 (Heterokaryose) iteriert nur über diese Liste und legt
-    keine eigenen Listen an.
+  - sbkim_siblings_<key> ist die Einzige Quelle für „verbundene Geschwister"
+    der jeweiligen Identität. Modul 06 (Heterokaryose) iteriert nur über
+    diese Liste und legt keine eigenen Listen an.
   - Modul 05 vergisst Geschwister NICHT von selbst (kein TTL, keine
     Apoptose). Vergessen ist Aufgabe von Modul 07 (Apoptose) bzw.
     manuell über forgetSibling.
   - Anastomose ist die kleinste Einheit eines Schlucks: ein
     Handshake = eine Aktion + ein Log-Eintrag. Wer mehrfach handshakt,
-    erzeugt mehrfach Logs — aber pro Peer nur einen Geschwister-
-    Eintrag.
+    erzeugt mehrfach Logs — aber pro Peer + Identität nur einen
+    Geschwister-Eintrag (zwei Personae auf dem eigenen Knoten dürfen
+    denselben Peer als Geschwister haben — sie sind getrennte
+    semantische Identitäten).
+  - Persona-Isolation: ein Peer, der mit Persona A einen established-
+    Handshake hatte, ist NICHT automatisch Geschwister von Persona B.
+    Wer Persona-übergreifende Geschwister-Sicht braucht, iteriert
+    listIdentities() und addiert die sbkim_siblings_<key>-Stores
+    aufrufer-seitig.
 
-Geprüft: 2026-05-14 (Spec-Sitzung 05), 2026-05-17 (Spec-Sitzung BroadcastChannel-Bridge — additiver Fallback-Transport, Schema unverändert)
+Geprüft: 2026-05-14 (Spec-Sitzung 05), 2026-05-17 (Spec-Sitzung BroadcastChannel-Bridge — additiver Fallback-Transport, Schema unverändert), 2026-05-19 (Spec-Sitzung Multi-Identität — Brief 04 der V1-Sammelspec-Kaskade, sbkim_siblings_<key>-Pattern + Receiver-Map)
 
 ---
 
@@ -1239,13 +1365,16 @@ Bietet (öffentlich):
   forgetHeterokaryosis(peerNodeId: string, ts: string)         → Promise<void>
 
   Heterokaryose ist die *dritte Komposition* (nach Modul 05 und 07) aus
-  01/02. Modul 06 rechnet nicht selbst — es liest `sbkim_siblings` als
-  Quelle für „verbundene Geschwister" und für den additiven
+  01/02. Modul 06 rechnet nicht selbst — es liest `sbkim_siblings_<key>`
+  als Quelle für „verbundene Geschwister" und für den additiven
   Opt-In-Filter, signiert kanonisch mit dem Ed25519-Schlüssel aus
-  `sbkim_keys["main"]`, und schreibt empfangene Anker in
-  `sbkim_hetero_inbox`. Modul 06 ruft `SbkimAnastomose.handshake`
-  **NICHT** auf — der Heterokaryose-Pull ist ein eigener HTTP-POST
-  gegen ENDPOINT.heterokaryosis (= "/sbkim/heterokaryosis" aus §3).
+  `sbkim_keys[<key>]`, und schreibt empfangene Anker in
+  `sbkim_hetero_inbox_<key>`. <key> ist die aktive Identität aus
+  SbkimSpore.getActiveIdentityKey() (Default "main"; Brief 04 der
+  V1-Sammelspec-Kaskade, 2026-05-19). Modul 06 ruft
+  `SbkimAnastomose.handshake` **NICHT** auf — der Heterokaryose-Pull
+  ist ein eigener HTTP-POST gegen ENDPOINT.heterokaryosis
+  (= "/sbkim/heterokaryosis" aus §3).
 
   Pull-Pattern verbindlich: der Initiator fragt, der Angefragte
   antwortet. Kein Push, keine Pulsation, keine Eigenanfrage ins offene
@@ -1261,11 +1390,15 @@ Bietet (öffentlich):
   prüft lokal vor Versand; Empfänger prüft serverseitig.
 
 Nutzt:
-  SbkimStorage.init / get / put / del / all     (sbkim_hetero_inbox als Schreiber;
-                                                 sbkim_siblings als Leser für Opt-In-Filter und Sender-Lookup;
-                                                 sbkim_anastomosis_log als Schreiber für hetero-* outcomes)
-  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk
-                                                 (eigene Identität + Spore für Signatur)
+  SbkimStorage.init / get / put / del / all     (sbkim_hetero_inbox_<key> als Schreiber;
+                                                 sbkim_siblings_<key> als Leser für Opt-In-Filter und Sender-Lookup;
+                                                 sbkim_anastomosis_log_<key> als Schreiber für hetero-* outcomes;
+                                                 sbkim_hetero_outbox_<key> als Leser für Anker-Quelle.
+                                                 <key> = aktive Identität ab Brief 04.)
+  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk /
+                   getActiveIdentityKey
+                                                 (eigene Identität + Spore für Signatur; aktive Identität
+                                                 lesen ab Brief 04)
   SbkimSpore.verifyForeignSpore                  (eingehende Sender-Spore prüfen — Signatur, id-Konsistenz, Hauptversion)
   WebCrypto via Modul 02:
     crypto.subtle.sign({ name: "Ed25519" }, privateKey, bytes)   (HeterokaryosisRequest / HeterokaryosisResponse signieren)
@@ -1274,13 +1407,16 @@ Nutzt:
     AbortController(QUERY_TIMEOUT_MS = 4000) pro Pull.
 
 Storage:
-  Stores (alle aus Modul 01 — `sbkim_hetero_inbox` ist ein neuer Store
-  und muss in der Bau-Sitzung 06 in Karte 01's Store-Vertrag ergänzt
-  werden; bis dahin ist er ein **angekündigter Store** in dieser Spec):
-    sbkim_hetero_inbox     (Schlüssel: `<peerNodeId>|<ts>`;
+  Stores (alle aus Modul 01 — als Pattern pro Identität ab Brief 04
+  der V1-Sammelspec-Kaskade, 2026-05-19; <key> = aktive Identität):
+    sbkim_hetero_inbox_<key>   (Schlüssel: `<peerNodeId>|<ts>`;
                             Wert: { peerNodeId, ts, anchors, signature, receivedAt })
-                            — Schreiber 06, Leser 06/00/08
-    sbkim_siblings         (Schlüssel: peerNodeId; Schreiber 05)
+                            — Schreiber 06, Leser 06/00/08.
+                            Pro Persona getrennt: ein Heterokaryose-Pull
+                            wird der Identität zugeordnet, die ihn ausgelöst
+                            hat; eine andere Persona desselben Knotens
+                            sieht ihn nicht.
+    sbkim_siblings_<key>   (Schlüssel: peerNodeId; Schreiber 05)
                             — Modul 06 ist hier LESER für:
                               - vorhanden? (Sibling-Filter beim Empfangen)
                               - heterokaryosisOptIn === true? (Opt-In-Filter
@@ -1291,7 +1427,8 @@ Storage:
                             Modul 05 setzt das Feld nicht, Modul 12
                             (Blocklist, Schutz-Backlog) wird es in
                             einer eigenen Spec-Sitzung berühren dürfen.
-    sbkim_anastomosis_log  (Schlüssel: ts; Schreiber 05+06)
+    sbkim_anastomosis_log_<key>
+                           (Schlüssel: ts; Schreiber 05+06)
                             — Modul 06 schreibt zusätzliche outcome-Werte
                               (additiv zum bisherigen Vokabular aus Karte 05):
                                 "hetero-pulled"              — A hat erfolgreich Anker empfangen
@@ -1306,16 +1443,26 @@ Storage:
                               für die lastActivity-Berechnung). Modul 12 darf
                               die neuen outcome-Werte später konsumieren
                               (Anker-Vergiftungs-Detektion).
-    sbkim_hetero_outbox    (Anker-Quelle; Spec-Wille Modul 06: vorbereitet
-                            für Modul 08 / spätere Spec-Sitzung 02-Pflege,
-                            **noch nicht spezifiziert**. Falls vorhanden,
-                            liest Modul 06 ihn; sonst Fallback auf
-                            Spore-Single-Anker mit Label "(domain)".
-                            **Bau-Iteration 06 (2026-05-15) implementiert
-                            ausschließlich den Spore-Single-Anker-Fallback**
-                            — der Outbox-Store ist KEIN angemeldeter v=2-
-                            Store; Spec-Sitzung 08 entscheidet, wie er
-                            angelegt wird.)
+    sbkim_hetero_outbox_<key>
+                           (Anker-Quelle; Schreiber 08 — Endknoten-Pflege-
+                            UI für Anker-Vorrat. Pro Identität getrennt:
+                            jede Persona pflegt ihren eigenen Anker-
+                            Vorrat. Brief 04 zieht das Pattern nach;
+                            Bau-Folge-Sitzung 08.Y migriert den
+                            Singleton-Store v=3 zu identitäts-
+                            spezifischen Stores. Falls Store leer/
+                            fehlend, Fallback auf Spore-Single-Anker
+                            mit Label "(domain)".)
+
+  Receiver-Pfad (Brief 04): Wie in Modul 05 — toNodeId aus dem ein-
+  gehenden HeterokaryosisRequest wird gegen alle eigenen Identitäten
+  geprüft (Map nodeId → key beim init()), und der Pull wird in den
+  Slot der getroffenen Persona geschrieben. Anker-Auswahl (Outbox
+  oder Spore-Fallback) und Signatur erfolgen mit dem Schlüssel
+  derselben Persona.
+
+  Identitäts-Cache-Konvention (Brief 04): wie Modul 05 — getActiveIdentityKey
+  im init()-Pfad gerufen und für die Lebenszeit der Operation gecached.
 
   Vermerk an Karte 07 (Apoptose-Cleanup): Self-Apoptose-Cleanup-
   Reihenfolge muss in einer eigenen Folge-Pflege-Sitzung um
@@ -1407,22 +1554,27 @@ Service-Worker-Vertrag (für statisch gehostete Endknoten):
   - Variante A (Page-Hosted) verbindlich, analog 05/07.
 
 Garantien für Modul 07 / 08 / 10 / 11 / 12 / 14:
-  - sbkim_hetero_inbox ist Einzige Quelle für „empfangene
-    Heterokaryose-Anker"; Modul 08 / 10 / 12 dürfen davon ausgehen,
-    dass jeder Eintrag eine valide Signatur durchlaufen hat (oder gar
-    nicht angelegt wurde).
+  - sbkim_hetero_inbox_<key> ist Einzige Quelle für „empfangene
+    Heterokaryose-Anker" der jeweiligen Persona; Modul 08 / 10 / 12
+    dürfen davon ausgehen, dass jeder Eintrag eine valide Signatur
+    durchlaufen hat (oder gar nicht angelegt wurde).
   - Modul 06 erzeugt keine eigenen Sibling-Listen, keine Pulsation,
     keine Eigenanfragen — der einzige Netz-Aufruf ist der
     explizite Pull bei `requestHeterokaryosis`.
-  - Modul 06 schreibt sbkim_siblings NICHT — Schreibrecht bleibt bei
+  - Modul 06 schreibt sbkim_siblings_<key> NICHT — Schreibrecht bleibt bei
     Modul 05.
+  - Persona-Isolation der Heterokaryose: Anker einer Persona dürfen
+    NICHT in der Inbox einer anderen Persona desselben Knotens
+    landen. Wer Persona-übergreifende Anker-Sicht braucht, iteriert
+    listIdentities() und addiert die sbkim_hetero_inbox_<key>-Stores
+    aufrufer-seitig (analog Modul 05 § Persona-Isolation).
   - Modul 14 (Diffusion, Backlog) darf Modul 06 als Lead-Pool-
     Konsument betrachten: ein bekannter Geschwister-Hop liefert
     Anker, die einen späteren Lead-Match feinkörniger machen können
     (Spec-Sitzung 14 entscheidet die genaue Form, wenn die Schwelle
     erreicht ist).
 
-Geprüft: 2026-05-15 (Spec-Sitzung 06), 2026-05-15 (Bau-Sitzung 06 — Code-Stub belegt; Anker-Quelle in der Erst-Bau-Iteration ausschließlich Spore-Single-Anker-Fallback / Degraded-Modus)
+Geprüft: 2026-05-15 (Spec-Sitzung 06), 2026-05-15 (Bau-Sitzung 06 — Code-Stub belegt; Anker-Quelle in der Erst-Bau-Iteration ausschließlich Spore-Single-Anker-Fallback / Degraded-Modus), 2026-05-19 (Spec-Sitzung Multi-Identität — Brief 04 der V1-Sammelspec-Kaskade, sbkim_hetero_inbox_<key>-Pattern + Receiver-Map)
 
 ---
 
@@ -1434,17 +1586,42 @@ Bietet (öffentlich):
   init()                                                           → Promise<void>
   prepareSelfApoptose(reason: string)
                                                                    → Promise<{ confirmationToken: string, expiresAt: string, recipientCount: number }>
+                                                                   // recipientCount summiert die Geschwister ÜBER ALLE Identitäten
+                                                                   // (Brief 04 der V1-Sammelspec-Kaskade) — confirmSelfApoptose
+                                                                   // wirkt global.
   confirmSelfApoptose(token: string, reason: string)
                                                                    → Promise<{ outcome: "completed", recipientsNotified: string[], recipientsFailed: Array<{ nodeId, reason }> }>
+                                                                   // Versand pro Identität (jede Persona signiert ihr eigenes
+                                                                   // LegacyMessage und schickt es an die Geschwister AUS
+                                                                   // sbkim_siblings_<key>); Cleanup global (alle Identitäts-
+                                                                   // Stores werden geleert; siehe § Cleanup-Reihenfolge).
+                                                                   // Brief 04: Liste recipientsNotified/recipientsFailed
+                                                                   // aggregiert pro nodeId — Duplikate (Peer ist Geschwister
+                                                                   // mehrerer Personae desselben Knotens) erscheinen mehrfach,
+                                                                   // weil sie pro Persona ein separates Vermächtnis bekommen.
   receiveLegacy(incomingLegacy: LegacyMessage)                     → Promise<LegacyResponse>
-  listLegacy()                                                     → Promise<Array<{ fromNodeId, reason, receivedAt }>>
-  forgetExpiredSiblings(maxAgeMs: number)                          → Promise<Array<{ nodeId, lastSeen }>>
+                                                                   // Receiver-Pfad (Brief 04): toNodeId aus dem eingehenden
+                                                                   // Vermächtnis wird gegen alle eigenen Identitäten geprüft
+                                                                   // (Map nodeId → key beim init(), analog Modul 05/06); das
+                                                                   // empfangene Vermächtnis landet in sbkim_legacy_inbox_<hit-key>,
+                                                                   // und der entsprechende sbkim_siblings_<hit-key>[fromNodeId]
+                                                                   // wird gelöscht. Andere Identitäten bleiben unberührt.
+  listLegacy(key?: string)                                         → Promise<Array<{ fromNodeId, reason, receivedAt }>>
+                                                                   // Default-Parameter key=getActiveIdentityKey(). Liefert
+                                                                   // Vermächtnisse der angegebenen Persona (Brief 04).
+  forgetExpiredSiblings(maxAgeMs: number, key?: string)            → Promise<Array<{ nodeId, lastSeen }>>
+                                                                   // Default-Parameter key=getActiveIdentityKey(). TTL-Sweep
+                                                                   // wirkt auf sbkim_siblings_<key>; pro Aufruf eine Persona.
+                                                                   // Wer einen Knoten-weiten Sweep braucht, iteriert
+                                                                   // listIdentities() und ruft die Funktion pro key.
 
   Apoptose ist die *zweite Komposition* (nach Modul 05) aus 01/02. Modul
-  07 rechnet nicht selbst — es liest `sbkim_siblings` als Quelle der
+  07 rechnet nicht selbst — es liest `sbkim_siblings_<key>` als Quelle der
   Vermächtnis-Empfänger und für TTL-Sweeps, signiert kanonisch mit dem
-  Ed25519-Schlüssel aus `sbkim_keys["main"]`, und schreibt empfangene
-  Vermächtnisse in `sbkim_legacy_inbox`. Modul 07 ruft
+  Ed25519-Schlüssel aus `sbkim_keys[<key>]`, und schreibt empfangene
+  Vermächtnisse in `sbkim_legacy_inbox_<key>`. <key> = aktive Identität
+  aus SbkimSpore.getActiveIdentityKey() (Default "main"; Brief 04 der
+  V1-Sammelspec-Kaskade, 2026-05-19). Modul 07 ruft
   `SbkimAnastomose.handshake` **NICHT** auf — der Vermächtnis-Versand
   ist ein eigener HTTP-POST gegen ENDPOINT.legacy (= "/sbkim/legacy"
   aus §3).
@@ -1453,17 +1630,32 @@ Bietet (öffentlich):
   `prepareSelfApoptose` liefert einen einmal verwendbaren Token mit
   60 s Gültigkeit (APOPTOSE_TOKEN_TTL_MS = 60_000, Modul-lokal);
   erst `confirmSelfApoptose(token, reason)` versendet das Vermächtnis
-  und löscht die SBKIM-Stores. Nach Self-Apoptose haben
-  SbkimSpore.getNodeId / getOwnSpore keine Identität mehr (werfen
-  NoIdentityError).
+  und löscht die SBKIM-Stores. **Granularität ab Brief 04 (Multi-
+  Identität):** confirmSelfApoptose wirkt **global** — alle Identitäten
+  des Knotens sterben gemeinsam, Vermächtnis-Versand erfolgt pro
+  Identität an deren jeweilige Geschwister (eine Persona → ihre
+  Geschwister, jeweils mit eigenem Schlüssel signiert). Nach
+  Self-Apoptose haben SbkimSpore.getNodeId / getOwnSpore keine
+  Identität mehr (werfen NoIdentityError); listIdentities() liefert
+  []. Für die per-Persona-Auflösung („eine einzelne Persona stirbt,
+  die anderen leben weiter") ruft der Aufrufer
+  `SbkimSpore.removeIdentity(key, {force:true})` — dieser Pfad ist
+  in Modul 02 implementiert und ruft intern in Modul 07 den
+  `_sendLegacyForIdentity(key, reason)`-Hook (siehe Bietet-Block),
+  der das Vermächtnis nur für die Geschwister dieser Persona
+  verschickt. Brief 04 spezifiziert die Schnittstelle; die Bau-
+  Sitzung schreibt den Hook.
 
 Nutzt:
   SbkimStorage.init / get / put / del / all / clear
-                                                 (sbkim_legacy_inbox als Schreiber;
-                                                  sbkim_siblings als Leser + Löscher für TTL und Empfangs-Cleanup;
-                                                  sbkim_keys / sbkim_spore / sbkim_anastomosis_log / sbkim_legacy_inbox als Löscher beim Self-Apoptose-Cleanup)
-  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk
-                                                 (eigene Identität + Spore für Signatur)
+                                                 (sbkim_legacy_inbox_<key> als Schreiber;
+                                                  sbkim_siblings_<key> als Leser + Löscher für TTL und Empfangs-Cleanup;
+                                                  sbkim_keys / sbkim_spore und die identitäts-spezifischen Stores als
+                                                  Löscher beim Self-Apoptose-Cleanup, pro Identität iteriert)
+  SbkimSpore.init / getOrCreateIdentity / getOwnSpore / getNodeId / getPublicKeyJwk /
+                   getActiveIdentityKey / listIdentities
+                                                 (eigene Identität + Spore für Signatur; aktive Identität +
+                                                 alle Identitäten ab Brief 04)
   SbkimSpore.verifyForeignSpore                  (eingehende Sender-Spore prüfen — Signatur, id-Konsistenz, Hauptversion)
   SbkimSpore.resetIdentityCache                  (sync; Pflicht-Aufruf nach storage.clear(sbkim_keys/sbkim_spore)
                                                   im Self-Apoptose-Cleanup, sonst liefert getNodeId stale
@@ -1476,36 +1668,57 @@ Nutzt:
     Versand parallel via Promise.allSettled.
 
 Storage:
-  Stores (alle aus Modul 01):
-    sbkim_legacy_inbox     (Schlüssel: fromNodeId;
+  Stores (alle aus Modul 01 — als Pattern pro Identität ab Brief 04
+  der V1-Sammelspec-Kaskade, 2026-05-19; <key> = aktive Identität):
+    sbkim_legacy_inbox_<key>     (Schlüssel: fromNodeId;
                             Wert: { fromNodeId, reason, signature, receivedAt })
-                            — Schreiber 07, Leser 07/00/08
-    sbkim_siblings         (Schlüssel: peerNodeId; Schreiber 05)
+                            — Schreiber 07, Leser 07/00/08. Pro Persona getrennt:
+                            ein empfangenes Vermächtnis gehört der Persona, deren
+                            nodeId in toNodeId stand.
+    sbkim_siblings_<key>   (Schlüssel: peerNodeId; Schreiber 05)
                             — Modul 07 ist hier LÖSCHER:
-                              - bei receiveLegacy(C) → sbkim_siblings.del(C)
-                              - bei forgetExpiredSiblings(maxAgeMs) → sbkim_siblings.del(älter als maxAgeMs)
+                              - bei receiveLegacy(C) → sbkim_siblings_<hit-key>.del(C)
+                                (Receiver-Map nodeId → key wie in Modul 05)
+                              - bei forgetExpiredSiblings(maxAgeMs, key?) → del(älter als maxAgeMs)
                             Schreibrecht hat WEITERHIN nur Modul 05.
-    sbkim_anastomosis_log  (Schlüssel: ts; Schreiber 05)
+    sbkim_anastomosis_log_<key>
+                           (Schlüssel: ts; Schreiber 05+06)
                             — Modul 07 ist hier LESER:
                               max(ts) mit outcome ∈ {"established","re-handshake"} pro peerId
-                              = lastActivity für TTL-Vergleich.
-    sbkim_keys             (Schreiber 02) — Modul 07 löscht den "main"-Eintrag beim Self-Apoptose-Cleanup.
+                              = lastActivity für TTL-Vergleich. Pro Persona getrennt.
+    sbkim_keys             (Schreiber 02) — Modul 07 löscht alle key-Slots
+                            beim globalen Self-Apoptose-Cleanup; bei
+                            removeIdentity(<single>, {force:true})-Pfad
+                            (per-Persona-Apoptose) wird nur sbkim_keys[<single>]
+                            entfernt (Modul 02 ist Owner; Modul 07 wird
+                            via Hook _sendLegacyForIdentity gerufen).
     sbkim_spore            (Schreiber 02) — dito.
-    sbkim_hetero_inbox     (Schreiber 06) — Modul 07 löscht den Store beim Self-Apoptose-Cleanup
-                            (Position 4 in der Reihenfolge unten, additiv ab Bau-Sitzung 06
-                            + Cleanup-Pflege 07, 2026-05-15).
+    sbkim_hetero_inbox_<key>
+                           (Schreiber 06) — Modul 07 löscht alle
+                            Identitäts-spezifischen Inbox-Stores beim
+                            Self-Apoptose-Cleanup.
 
-  Reihenfolge des Self-Apoptose-Cleanup (sequenziell):
-    1. sbkim_siblings        clear
-    2. sbkim_anastomosis_log clear
-    3. sbkim_legacy_inbox    clear
-    4. sbkim_hetero_inbox    clear   ← neu zwischen Schritt 3 und Schritt 5 (Bau-Sitzung 06 +
-                                       Cleanup-Pflege 07, 2026-05-15). Position vor der
-                                       Identitäts-Schicht (spore/keys): Heterokaryose-Inbox-
-                                       Einträge haben keinen Eigen-Wert ohne die Identität.
-    5. sbkim_spore           clear
-    6. sbkim_keys            clear   ← zuletzt; Identität ist die letzte Bastion
-    7. SbkimSpore.resetIdentityCache()
+  Reihenfolge des Self-Apoptose-Cleanup (sequenziell — global, Brief 04):
+    Außere Schleife über listIdentities() ergibt die Reihenfolge der Slot-
+    spezifischen Schritte. Pro Identität key:
+      1. sbkim_siblings_<key>          clear
+      2. sbkim_anastomosis_log_<key>   clear
+      3. sbkim_legacy_inbox_<key>      clear
+      4. sbkim_hetero_inbox_<key>      clear  ← Heterokaryose-Inbox-Einträge
+                                                haben keinen Eigen-Wert ohne
+                                                die Identität.
+      5. sbkim_hetero_outbox_<key>     clear  ← Anker-Vorrat additiv (Brief 04;
+                                                Bau-Folge-Sitzung 08.Y zieht
+                                                den Outbox-Singleton zur
+                                                Identitäts-spezifischen Form
+                                                nach — bis dahin best-effort
+                                                löschen).
+    Außerhalb der Schleife (zuletzt, einmal):
+      6. sbkim_spore                    clear (alle Slots)
+      7. sbkim_keys                     clear (alle Slots)
+      8. sbkim_meta["active-identity"]  del   ← lokaler Marker, kein
+                                                Identitäts-Slot mehr aktiv
+      9. SbkimSpore.resetIdentityCache()
                                      ← Cache-Invalidate; ohne diesen Schritt
                                        liefert SbkimSpore.getNodeId weiter die
                                        alte nodeId aus dem identityCache,
@@ -1515,6 +1728,22 @@ Storage:
                                        außen leert, MUSS resetIdentityCache
                                        unmittelbar danach rufen.
   sbkim_doku_meta bleibt unangetastet (Schreiber 00).
+
+  Reihenfolge des Per-Persona-Cleanup (über removeIdentity(key, {force:true}),
+  Brief 04): Modul 02 ist Owner und ruft Modul 07 nur für den Vermächtnis-
+  Versand (Hook _sendLegacyForIdentity(key, reason) — Schreibrecht für
+  sbkim_keys/sbkim_spore bleibt bei Modul 02). Reihenfolge (Modul 02):
+    1. Vermächtnis-Versand an sbkim_siblings_<key> (Hook in Modul 07)
+    2. sbkim_siblings_<key>          clear
+    3. sbkim_anastomosis_log_<key>   clear
+    4. sbkim_legacy_inbox_<key>      clear
+    5. sbkim_hetero_inbox_<key>      clear
+    6. sbkim_hetero_outbox_<key>     clear (best-effort, siehe oben)
+    7. sbkim_spore.del(<key>)
+    8. sbkim_keys.del(<key>)
+    9. sbkim_meta["active-identity"]  ggf. neu setzen (siehe Modul 02 §
+                                       removeIdentity Bietet-Block)
+   10. SbkimSpore.resetIdentityCache()
 
 Events:
   (keine — Service-Worker liefert eingehende /sbkim/legacy-Bodies via
@@ -1526,7 +1755,9 @@ Selbstcheck:
   Wie Modul 01/02/04/05 — keine Schwelle/Konstante in der Selbstcheck-
   Zeile. Die irreversible Natur der Self-Apoptose wird beim Aufruf
   von prepareSelfApoptose als console.warn nachgereicht, nicht beim
-  Skript-Laden.
+  Skript-Laden. Die Multi-Identitäts-Hook _sendLegacyForIdentity
+  (Brief 04) ist intern (Modul-02-Aufruf-Pfad) und steht NICHT in
+  der öffentlichen API — daher nicht in der Selbstcheck-Zeile.
 
 Versionierungs- und Vermächtnis-Vertrag:
   - Hauptversion-Mismatch zwischen lokaler PROTOCOL_VERSION und
@@ -1579,20 +1810,31 @@ TTL-Trigger (Spec-Sitzung 07, 2026-05-14):
   Hauptversions-Sprung. `status.json.config` zieht den Wert mit.
 
 Garantien für Modul 06 / 10 / 11:
-  - sbkim_legacy_inbox ist Einzige Quelle für „empfangene Vermächtnisse";
-    Modul 10 / 12 dürfen davon ausgehen, dass jeder Eintrag eine valide
-    Signatur durchlaufen hat (oder gar nicht angelegt wurde).
-  - Modul 07 löscht sbkim_siblings-Einträge zwei Wege:
-      (a) auf Vermächtnis-Empfang (sender wird vergessen),
-      (b) auf TTL-Sweep (stille Geschwister).
-    Modul 06 (Heterokaryose) iteriert sbkim_siblings und darf davon
-    ausgehen, dass abgelaufene Geschwister verschwinden, sobald der
-    Andocker forgetExpiredSiblings regelmäßig ruft.
+  - sbkim_legacy_inbox_<key> ist Einzige Quelle für „empfangene Vermächtnisse"
+    der jeweiligen Persona; Modul 10 / 12 dürfen davon ausgehen, dass
+    jeder Eintrag eine valide Signatur durchlaufen hat (oder gar nicht
+    angelegt wurde).
+  - Modul 07 löscht sbkim_siblings_<key>-Einträge zwei Wege:
+      (a) auf Vermächtnis-Empfang (sender wird im Slot der getroffenen
+          Persona vergessen),
+      (b) auf TTL-Sweep (stille Geschwister; pro Persona-Aufruf, oder
+          aufrufer-iteriert über alle Identitäten).
+    Modul 06 (Heterokaryose) iteriert sbkim_siblings_<key> und darf
+    davon ausgehen, dass abgelaufene Geschwister verschwinden, sobald
+    der Andocker forgetExpiredSiblings regelmäßig ruft.
   - Modul 07 erzeugt keine eigenen Listen, keine Pulsation, keine
     Eigenanfragen — der einzige Netz-Aufruf ist der parallele
-    Vermächtnis-Versand beim Self-Apoptose-Confirm.
+    Vermächtnis-Versand beim Self-Apoptose-Confirm bzw. beim
+    removeIdentity-Pfad pro Persona.
+  - Globale vs. Per-Persona-Apoptose (Brief 04): confirmSelfApoptose
+    ist global (alle Identitäten sterben), removeIdentity(key,
+    {force:true}) ist per Persona (eine Persona stirbt, die anderen
+    leben weiter). Die zwei Pfade sind explizit verschieden — kein
+    Aufrufer darf annehmen, dass removeIdentity die Auto-Variante
+    von confirmSelfApoptose ist (Single-Identitäts-Apoptose verlangt
+    eigene UI-Bestätigung; siehe Modul 02 § removeIdentity).
 
-Geprüft: 2026-05-14 (Spec-Sitzung 07)
+Geprüft: 2026-05-14 (Spec-Sitzung 07), 2026-05-19 (Spec-Sitzung Multi-Identität — Brief 04 der V1-Sammelspec-Kaskade, identitäts-spezifische Stores + Per-Persona-Cleanup + _sendLegacyForIdentity-Hook)
 
 ---
 
@@ -1890,6 +2132,39 @@ Wenn eine Folge-Spec-Sitzung `embeddingNeeds` zur Pflicht erhöbe (z.B.
 in einer künftigen Stufe-B-only-Variante des Protokolls), bumpte
 `PROTOCOL_VERSION` auf `"0.2"` — diese Entscheidung gehört in eine
 eigene Spec-Sitzung und ist nicht Teil von Brief 03.
+
+**Hinweis Spec-Sitzung Multi-Identität (Brief 04 der V1-Sammelspec-
+Kaskade, 2026-05-19) — Pages-`spore.json`-Strategie:**
+
+Brief 04 entscheidet sich für **Strategie A (Default)** — die unter
+`<endpoint>/sbkim/spore.json` öffentlich gehostete Spore-Datei trägt
+ausschließlich die zum Push-Zeitpunkt **aktive** Identität. Spore-JSON-
+Schema bleibt unverändert, alle Pflichtfelder beziehen sich auf genau
+eine Identität (id / publicKey / endpoint / domain / etc.), und
+`PROTOCOL_VERSION` bleibt `"0.1"`. Ein Identitäts-Wechsel auf
+Endknoten-Seite (Aufruf von `SbkimSpore.setActiveIdentity(key)` plus
+`generateOwnSpore(meta, key)`) führt zu einem neuen `spore.json`-Push;
+ein Peer, der die zwei Personae „sehen" möchte, müsste zwei Spore-URLs
+kennen — entweder Konvention im Endknoten (z.B.
+`/sbkim/spore-<key>.json`) oder Identitäts-Container-Push (Anker 5
+eigene Spec). Brief 04 spezifiziert die Mehrfach-Pfad-Konvention NICHT
+— sie bleibt Aufrufer-Pflicht.
+
+**Strategie B (Liste-Schema, NICHT in Brief 04 gewählt):** ein
+zukünftiges Spore-Schema mit Pflicht-Feld `identities[]` (Array von
+Identitäts-Sub-Spore-Objekten, jede mit eigener `id` / `publicKey` /
+`embeddingCapabilities` / `embeddingNeeds`) wäre Multi-Persona-First-
+Class-Citizen — Peer könnte über `toNodeId` die spezifische Persona
+filtern, ohne mehrere URLs zu kennen. Diese Variante bricht aber alle
+bestehenden Empfänger, die ein flaches Spore-Objekt erwarten, und
+erfordert einen `PROTOCOL_VERSION`-Bump auf `"0.2"` (Pflicht-Feld
+hinzugefügt = Hauptversions-Sprung nach § 4 § Versionierungs-Regel).
+Strategie B ist als Option für eine Folge-Spec-Sitzung benannt, wenn
+der Multi-Persona-Use-Case reift; bis dahin bleibt sie ausdrücklich
+**nicht aktiviert**. Wer Strategie B in einer Folge-Spec-Sitzung
+wählt, hat die Bump-Entscheidung EXPLIZIT zu treffen und im
+Änderungsprotokoll § 10 + im PULS-Sitzungs-Eintrag + im Übergabe-
+protokoll zu begründen — keine heimliche Edit.
 
 **Versionierungs-Regel:**
 - Pflichtfelder dürfen ab Status `entwurf` nur noch additiv erweitert
@@ -2795,7 +3070,204 @@ Brief 03 hat den Verweis hinterlegt).
 
 ---
 
-## 9. Änderungsprotokoll
+## 9. Identitäts-Map (Multi-Identität, Brief 04)
+
+**Verbindliche Spec-Klausel.** Spec-Sitzung Multi-Identität (Brief 04
+der V1-Sammelspec-Kaskade, 2026-05-19). Diese Sektion verankert die
+Multi-Identitäts-Konvention, die mit Brief 04 eingeführt wird, und
+spannt den Vertrag zwischen Modul 02 (Owner der Identitäts-Slots) und
+den Konsumenten 05 / 06 / 07 auf. Sie ist namentlich von § 0 (globale
+Konstanten) und § 1 Modul 02 (Modul-Vertrag) zu unterscheiden — § 9
+beschreibt die *Map* zwischen Slot-Schlüssel und identitäts-spezifischen
+Stores plus den `active-identity`-Marker; § 0 / § 1 verweisen darauf.
+
+### 9.1 Slot-Schema
+
+```
+sbkim_keys["main"]                      → Default-Identitäts-Slot (verbindlich, Rückwärts-Kompat)
+sbkim_keys["<frei wählbarer key>"]      → weitere Slots, beliebig viele
+sbkim_spore["main"]                     → Spore-Slot zur Identität "main"
+sbkim_spore["<key>"]                    → Spore-Slot zur Identität <key>
+sbkim_meta["active-identity"]           → String-Marker: welche Identität ist aktiv?
+                                          Default "main", falls fehlend.
+```
+
+**Schlüssel-Wahl:** keys sind frei wählbare Strings, [a-z0-9-]+
+empfohlen (kein Sub-Slash, kein Whitespace, keine Sonderzeichen, die
+in Store-Namen Probleme machen). Modul 02 validiert keine Schlüssel-
+Form — der Aufrufer trägt Verantwortung. Reservierte Schlüssel: KEINE
+(auch "main" ist kein Magic-Wert; lediglich Default-Slot mit
+Rückwärts-Kompat-Garantie). Maximale Slot-Anzahl: kein Limit in Brief
+04 (Spec-offen für Folge-Sitzung; praktische Grenze ist
+IndexedDB-Quota).
+
+### 9.2 Identitäts-spezifische Stores
+
+Folgende IndexedDB-Stores existieren pro Identitäts-Slot. Pattern-
+Form `<store-base>_<key>`; die Store-Liste pro `<key>` ist
+deckungsgleich. Modul 01 ist Owner aller Stores; pro Identität
+werden sie additiv angelegt (siehe § 9.5 Migrations-Strategie).
+
+| Store-Basis              | Pattern                              | Schreiber | Leser     |
+|---|---|---|---|
+| `sbkim_siblings`         | `sbkim_siblings_<key>`               | 05         | 05/06/07/08 |
+| `sbkim_anastomosis_log`  | `sbkim_anastomosis_log_<key>`        | 05/06      | 07          |
+| `sbkim_legacy_inbox`     | `sbkim_legacy_inbox_<key>`           | 07         | 07/00/08   |
+| `sbkim_hetero_inbox`     | `sbkim_hetero_inbox_<key>`           | 06         | 06/00/08   |
+| `sbkim_hetero_outbox`    | `sbkim_hetero_outbox_<key>`          | 08         | 06         |
+
+**Persona-Isolation:** Anker / Geschwister / Vermächtnisse einer
+Persona dürfen NICHT in den Slots einer anderen Persona desselben
+Knotens landen. Wer Persona-übergreifende Sicht braucht, iteriert
+`SbkimSpore.listIdentities()` aufrufer-seitig und addiert die Stores.
+Diese Spec-Klausel ist verbindlich für Module 05 / 06 / 07 — eine
+Folge-Spec-Sitzung darf sie nicht lockern, ohne den Privatheits-
+Trade-off (zwischen Personen-Wechsel und „leak across personae")
+ausdrücklich neu zu verhandeln.
+
+### 9.3 `active-identity`-Marker
+
+`sbkim_meta["active-identity"]` ist ein lokaler String-Marker (kein
+Spore-Feld, kein Netz-Transport). Default „main", falls fehlend.
+
+Lese-Konvention (verbindlich für Module 05 / 06 / 07):
+- Modul ruft `SbkimSpore.getActiveIdentityKey()` im `init()`-Pfad.
+- Wert wird in einer modul-lokalen Variable für die Lebenszeit der
+  jeweiligen Operation gecached.
+- Mid-Operation-Wechsel ist **nicht spezifiziert**; ein Aufrufer, der
+  mitten in einem laufenden handshake / receiveLegacy /
+  requestHeterokaryosis `setActiveIdentity` ruft, bekommt undefiniertes
+  Verhalten. Eine Folge-Spec-Sitzung darf einen aktiven Hook für
+  Mid-Operation-Wechsel definieren (z.B. CustomEvent
+  `sbkim:active-identity-changed`); Brief 04 spezifiziert das NICHT.
+
+Schreib-Konvention:
+- Modul 02 ist **alleiniger Schreiber** des Markers
+  (`setActiveIdentity` / `removeIdentity` mit force-Fall).
+- Modul 01 darf `sbkim_meta` aus IndexedDB-Sicht löschen (beim
+  globalen Self-Apoptose-Cleanup über Modul 07; siehe § 1 Modul 07
+  § Cleanup-Reihenfolge Schritt 8).
+
+### 9.4 Receiver-Pfad (Eingehende Anfragen treffen auf Personae)
+
+Eingehende Requests aus Modul 05 / 06 / 07 tragen typischerweise ein
+`toNodeId`-Feld (Modul 05 HandshakeRequest optional, Modul 06
+HeterokaryosisRequest Pflicht, Modul 07 LegacyMessage Pflicht). Brief
+04 verankert die Receiver-Map-Konvention:
+
+1. Beim `init()` baut das jeweilige Modul eine Map
+   `nodeId → key` aus `listIdentities()` ×
+   `getOrCreateIdentity(key)`-Resolution.
+2. Pro eingehendem Request wird `request.toNodeId` gegen die Map
+   geprüft. Treffer → die getroffene Persona wird für diese Operation
+   intern als aktive Identität verwendet (siehe entsprechende
+   `_per_identity_op(...)`-Pattern-Notizen in den Modul-Verträgen).
+3. Kein Treffer → Response `outcome:"rejected", reason:"toNodeId
+   stimmt nicht zum Empfänger"` (analog Modul 05 Vor-Brief-04-
+   Verhalten — die Logik wird erweitert, die Reason-Klausel bleibt
+   gleich).
+
+**Schlanke Map-Konvention:** die nodeId→key-Map wird beim `init()`
+einmal gebaut und gecached (nicht pro Request neu aufgelöst, weil
+das pro Persona einen async-Crypto-Aufruf erzwingen würde). Wer
+`getOrCreateIdentity` für eine bisher unbekannte Persona-Key ruft
+(neue Identität anlegen), muss anschließend Module 05 / 06 / 07
+re-initialisieren ODER eine API-Erweiterung in einer Folge-Spec-
+Sitzung anstoßen (`refreshIdentityMap()`-Hook in 05 / 06 / 07).
+Brief 04 spezifiziert das NICHT; die heutige Empfehlung ist:
+`init()` einmal pro Tab und Identitäts-Anlage über
+`getOrCreateIdentity(key)` + Re-Andock-Reload für neue Personae.
+
+### 9.5 Migrations-Strategie (Modul-01-Eingriff)
+
+Modul 01 muss die identitäts-spezifischen Stores anlegen können.
+Brief 04 stellt zwei Optionen mit Trade-offs:
+
+**Option A (Empfehlung) — Dynamische Store-Erzeugung:** Modul 01
+bekommt einen additiven Helper `ensureStore(name: string) →
+Promise<void>` (Spec-offen für die genaue Signatur — Modul 01
+darf eine Liste verlangen). Modul 02 ruft `ensureStore(...)` für
+jeden identitäts-spezifischen Store, bevor er beschrieben wird.
+Vorteile: keine vorab-Annahme über die Slot-Anzahl, keine harte
+v=N-Migration pro Identitätsanlage. Nachteile: jeder
+`getOrCreateIdentity(key)`-Aufruf braucht ein `db.close()` +
+`indexedDB.open(<dbName>, <new-version>)`-Kreislauf in Modul 01 —
+non-trivial, weil IndexedDB-Versions-Bumps `onversionchange` auf
+allen offenen Tabs feuern. Bau-Folge-Sitzung 01.Y muss die Versions-
+Bump-Choreografie sauber liefern.
+
+**Option B — Fest deklarierte Slot-Tabelle:** Modul 01 deklariert
+eine endliche Slot-Liste (z.B. STORES_V4 = STORES_V3 + Stores für
+N feste Identitäts-Slots). Vorteile: einfacher Versions-Bump v=3 →
+v=4, keine dynamische Choreografie. Nachteile: Slot-Anzahl ist
+hartcodiert (N=3 oder 5 oder 10) und blockiert Klaus' Vision „beliebig
+viele Personae".
+
+**Empfehlung in der Spec:** Option A (dynamische Store-Erzeugung).
+Die Bau-Folge-Sitzung 01.Y zieht den `ensureStore`-Pfad nach und
+versioniert v=3 → v=4 nur einmalig (zum Andock-Zeitpunkt der
+Multi-Identitäts-Migration in den Endknoten). Klaus entscheidet
+beim Andock pro Endknoten, ob er die Migration mitmacht.
+
+### 9.6 Trade-off-Klausel
+
+1. **IndexedDB-Verlust löscht ALLE Identitäten gleichzeitig.** Anker
+   5 (Identitäts-Container, eigene Spec-Sitzung) bleibt parallel
+   sinnvoll als Backup-Strategie. Brief 04 verweist nur — der
+   Container-Inhalt ist Anker 5's Spec.
+2. **Multi-Identitäts-Backup-Strategie (Modul 02 `exportBackup`
+   erweitert):** Spec-Empfehlung in Brief 04 ist **ein Container mit
+   allen Identitäten** als „kompletter Rucksack" (Klaus' Vision aus
+   PULS § Vision-Anker 6). Die Bau-Folge-Sitzung 02.Y zieht den Code
+   nach (additive Schema-Erweiterung `SbkimBackupBlob.payload.identities[]`
+   pro Slot, Klartext nach Decrypt — `BACKUP_FORMAT_VERSION` wird in
+   der Bau-Folge-Sitzung von 1 auf 2 gebumpt, weil das Backup-Schema
+   ein neues Pflicht-Feld bekommt; das ist KEIN
+   `PROTOCOL_VERSION`-Bump, sondern ein additiver Bump des separaten
+   Backup-Wrapper-Schemas aus § 0 `BACKUP_FORMAT_VERSION`).
+   `importBackup` muss in der Bau-Folge-Sitzung 02.Y einen Pflicht-
+   Vor-Check ergänzen (mindestens eine Identität im Container) und
+   pro Slot die `BackupOverwriteError`-Klausel anwenden.
+3. **Königin-Relay (Anker 4) muss pro-Identität-Mailboxes verwalten,
+   wenn Modul 13 gebaut wird.** Brief 04 verankert die Konvention —
+   das *Wie* ist Anker 4's Spec-Sitzung.
+4. **Privatheit (Anker 9 § Sorge ums Freigeben):** Brief 04 rührt die
+   Lizenz-Frage nicht. Lizenz-Entscheidung wird beim Public-Schalten
+   separat geklärt.
+
+### 9.7 Verbindung zur M04-Erweiterung (Brief 03)
+
+Pro Identitäts-Slot in `sbkim_keys[key]` existiert ein entsprechender
+Eintrag in `sbkim_spore[key]` mit eigenen `embeddingCapabilities` +
+`embeddingNeeds` (M04-Spore-Schema, Brief 03). `generateOwnSpore(meta,
+key)` nimmt den optionalen `key`-Parameter (Default
+`getActiveIdentityKey()`) und schreibt in den passenden Slot. Karte 02
+§ M04-Erweiterung-Sub-Block aus Brief 03 hat die Persona-spezifische
+Auflösung als offenen Punkt notiert; Brief 04 liefert sie.
+
+Match-Pipeline pro Persona: `SbkimMatch.matchDimensions` (aus Brief
+03) konsumiert pro Aufruf die Vektor-Slots **einer Persona** (Aufrufer
+wählt). Multi-Persona-Aufrufe sind keine atomare Operation in Modul
+04 — wer mehrere Personae gleichzeitig matchen will, ruft
+`matchDimensions` mehrfach. Brief 04 verlangt keinen Modul-04-
+Eingriff; die Schichten-Schicht aus Brief 03 ist orthogonal zur
+Persona-Mehrfachheit.
+
+Verbindlichkeit: Die Sibling-Listen pro Identität
+(`sbkim_siblings_<key>`) tragen ihre Match-Cosinus zu der spezifischen
+Persona, nicht zur globalen Sage-Identität. Wer Persona-übergreifende
+Match-Statistiken braucht, addiert aufrufer-seitig (siehe § 9.2
+Persona-Isolation).
+
+Bezugs-Dokumente: PULS § Vision-Anker 6 (Multi-Identität, Haupt-Anker),
+PULS § Vision-Anker 9 (M04-Erweiterung, doppelte Spore pro Persona),
+PULS § Vision-Anker 4 (Königin-Relay), PULS § Vision-Anker 5
+(Identitäts-Container), Karte 02 § Multi-Identität (Brief 04), Karten
+05 / 06 / 07 § identitäts-spezifische Slot-Pfade.
+
+---
+
+## 10. Änderungsprotokoll
 
 | Datum | Sitzung | Änderung |
 |---|---|---|
@@ -2836,3 +3308,4 @@ Brief 03 hat den Verweis hinterlegt).
 | 2026-05-18 | Spec-Sitzung V1 Sage-Hybrid (Brief 01) | Brief 01 der V1-Sammelspec-Kaskade (PULS § Meta-Pflege „V1-Sammelspec als Brief-Kaskade sequenziert", sechs heilige Tafeln). **Neue §6 Endknoten-Liste** angelegt: Sage als dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium aufgenommen (id `sage`, domain `Mycel-Bibliothek`, domainDescription / domainKeywords / domainVector `null`-Slot, Stamm/Gast disjunkt). **§6.1 Sage-Endknoten — Sage-Page-Architektur** dokumentiert (IndexedDB-Suffix `sbkim_sage`, App-SW Variante 3a, volle init()-Kette mit lazy Modul-03, Andock-Geste an Schwarz-Loch-Karte als Wizard-Hinweis, Plattform-Ehrlichkeits-Vorgriff auf Brief 02). Domäne-Entscheidung „Mycel-Bibliothek" begründet (gesamtes Doku-Korpus, nicht nur Glossar oder Sage-Page-Metapher). **§6 Änderungsprotokoll auf §7 nachnummeriert** (additiv, keine Inhalte verschoben). **PROTOCOL_VERSION bleibt `"0.1"`** (additive Erweiterung, kein bestehendes Feld zur Pflicht erhoben). Plattform-Matrix-Block hier nur als Verweis-Stub auf Brief 02; M04-Erweiterung (Brief 03) und Multi-Identität (Brief 04) bleiben unberührt. Mit-Pflege: CLAUDE.md § „Was dieses Repo ist" („Hub und Knoten zugleich"), Karte 09 § Schritt 1, `status.json` § endknoten (sage-Eintrag mit `pingStatus:"pending-first-andock"` und `nodeId:null`). Sage-Page (`index.html`) unangetastet — Sage-Page-Refactor folgt als Bau-Sitzung in Brief 99-Liste. Übergabeprotokoll `docs/sessions/archiv/2026-05-18_spec-v1-sage-hybrid.md`. PR „Spec: V1 Sage-Hybrid — Strang 1 der V1-Sammelspec-Kaskade". |
 | 2026-05-18 | Spec-Sitzung Plattform-Matrix (Brief 02) | Brief 02 der V1-Sammelspec-Kaskade — Strang 4 (Plattform-Matrix) als eigenständige Folge-Etappe nach Brief 01 (Spec V1 Sage-Hybrid, PR #96 gemerged). Drei neue Sub-Sektionen unter § 6: **§ 6.2 Plattform-Matrix** mit fünf Plattform-Profilen (Desktop-Browser / DeX-Tablet / PWA-installiert / Mini-Browser V8 / Extension V7) × sechs Spalten (IndexedDB / SW / Spore-Empfang / Identitäts-Backup / Stufe B / Beispiel-Knoten) plus Spalten-Glossar plus Sage-Anmerkung (Sage nimmt Desktop-Browser- und PWA-installiert-Profile ein, NICHT als eigene Zeile in der Matrix). **§ 6.3 Plattform-Ehrlichkeits-Klausel** als verbindliche Spec-Klausel: kein Endknoten gibt vor, mehr zu können als seine Plattform erlaubt — Hintergrund-Empfang ist Vision-Anker 4 (Königin-Relay) vorbehalten, kein Pflicht-Bestandteil des Protokolls; Begründung aus Klaus' Lehre 1 (Browser-Instanzen-Trennung, Pages-Live-Tests 2026-05-17). **§ 6.4 Vision-Bezüge** als Querverweis-Matrix mit sieben Ankern (V1 Träger / V9 Stufe-B-Ort / V6 Persona-Quelle / V7 Toolbar-Lampe / V8 Tray-Träger / V4 Mailbox / V5 Key-Speicher) plus Erläuterungs-Absatz pro Anker — Schnittstelle Plattform ↔ Anker, KEINE Spec der Anker selbst. **Plattform-Matrix-Stub aus § 6.1** (Brief 01) zu Verweis auf § 6.2 umgeschrieben. **PROTOCOL_VERSION bleibt `"0.1"`** (Strang 4 ist dokumentarisch additiv — Matrix ist Spec-Block, kein Spore-Schema-Feld, kein neuer Pflicht-Pfad). Mit-Pflege: KEINE — Brief 02 lebt rein in INTERFACES; CLAUDE.md / Karte 09 / `status.json` unangetastet (Brief 01 hat sie auf den Endknoten-Stand gebracht). Anti-Vorgriff auf V4 / V5 / V7 / V8 / V9 / V6 streng eingehalten (Matrix verweist, spezifiziert nicht); Brief 03 (M04-Erweiterung) erbt die Spalte „Stufe B" als Schnittstellen-Eckdatum. Übergabeprotokoll `docs/sessions/archiv/2026-05-18_spec-plattform-matrix.md`. PR „Spec: Plattform-Matrix — Strang 2 der V1-Sammelspec-Kaskade" (Brief 01-PR #96 als gemerged vorausgesetzt). |
 | 2026-05-19 | Spec-Sitzung M04-Erweiterung (Brief 03) | Brief 03 der V1-Sammelspec-Kaskade — Strang 2 (M04-Erweiterung: drei Schichten + Brücke + doppelte Spore + Stufe-A/Stufe-B-Match-Pipeline) als dritte Etappe nach Brief 01 (V1 Sage-Hybrid, PR #96 gemerged) und Brief 02 (Plattform-Matrix, PR #97 gemerged). **§0 Globale Konstanten** um drei neue Konstanten erweitert: `SCHICHT_MIN_MATCH = 0.60` (pro-Dimension-Schwelle für `matchDimensions`), `STUFE_B_DEFAULT_MODEL = "claude-sonnet-4"` (Konvention für `explainMatchLLM`, aufrufer-überschreibbar), `STUFE_B_MAX_TOKENS = 1024` (Default für den Stufe-B-LLM-Call, aufrufer-überschreibbar). **§1 Modul 02 (Spore) Bietet-Block** um Spore-Schema-Erweiterungs-Hinweis ergänzt — zwei neue optionale meta-Felder für `generateOwnSpore`: `embeddingCapabilities` (Alias-Name für `domainVector`, semantisch identisch) und `embeddingNeeds` (neuer Sucher-Vektor, fehlend = „nur Anbieter-Modus"). **§1 Modul 04 (Match) Bietet-Block** um zwei neue API-Funktionen erweitert: `matchDimensions(qCap, qNeeds, pCap, pNeeds) → MatchDimensionsResult` (sync, drei Cosinus-Aufrufe + gewichteter `overall`, `availableLanes`-Feld für 0/1/2-Bidirektionalität) und `explainMatchLLM(matchResult, apiKey, options?) → Promise<ExplainResult>` (async, fehlertolerant — scheitert nie throw, resolved mit `available:false`-Form bei API-/Schema-Fehlern). **§1 Modul 04** um vier neue Sub-Blöcke erweitert: § Drei-Schichten-Modell (orthogonal `fachlich` / `prozess` / `skalierung`, Lane-Berechnung, Mittelwert vs. Min begründet, Nur-Anbieter-Modus), § Brücken-Feld-Spec (`BridgeProposal` mit `needed` / `lookingFor` / `candidateScope: "lokal"\|"mailbox"\|"netz"`), § Schwellen-Vertrag (`PROVIDER_MIN_MATCH=0.80` für `overall`, `SCHICHT_MIN_MATCH=0.60` pro Dimension, 2+ Dimensionen unter Schwelle = Apoptose, Stufe-B-Übersteuerung erlaubt), § Stufe-B-Vertrag (Modell + max_tokens + JSON-only-Output + Antwort-Schema + `ExplainResult` + Fehlertoleranz + Rate-Limit-Awareness + User-Key-Handling Plattform-agnostisch + Beispiel-Output mit zwei Personas als Brücke zu Brief 04). **§1 Modul 04 Fehlerverhalten** um sieben neue Zeilen erweitert (DimensionsAllNullError, InvalidApiKeyError, InvalidMatchResultError, LLM-HTTP-/Schema-/Abort-Fälle als fehlertolerante Resolves). **§1 Modul 04 Garantien** um vier neue Punkte erweitert (matchDimensions deterministisch, explainMatchLLM einziger Netz-/async-Pfad, Aufrufer-Drossel-Pflicht, Brücken-Vorschläge bleiben lokal). **§2 Spore-JSON** Optionale Felder um `embeddingCapabilities` (additiver Alias) und `embeddingNeeds` (neuer Sucher-Vektor) erweitert plus Hinweis-Block zur additiven Versionierungs-Disziplin. **§7 LLM-Stufe-B-Ehrlichkeits-Klausel (M04-Erweiterung)** als verbindliche Spec-Klausel neu eingefügt (Stufe B opt-in, Stufe A rückgrat-tragend lokal, kein Knoten zu Drittanbieter gezwungen, Knoten ohne Stufe B = vollwertige Netz-Teilnehmer; namentlich von § 6.3 Plattform-allgemeiner Ehrlichkeits-Klausel unterschieden). **§8 Anti-Missbrauch-Klausel (M04-Erweiterung)** als verbindliche Spec-Klausel neu eingefügt (Brücken-Vorschlag bleibt lokal, `candidateScope:"netz"` formal nicht aktivierbar bis Anker 10-12, Modul 06 filtert Brücken-Vorschlag-Outbox-Einträge). **§7 Änderungsprotokoll auf §9 nachnummeriert** (additiv, keine Inhalte verschoben — Brief 03 fügt § 7 + § 8 vor der Changelog ein). **PROTOCOL_VERSION bleibt `"0.1"`** — beide neuen Spore-Felder (`embeddingCapabilities`, `embeddingNeeds`) sind optional, beide neuen Match-Funktionen (`matchDimensions`, `explainMatchLLM`) sind additiv, alte Sporen ohne `embeddingNeeds` bleiben gültig (signalisieren „nur Anbieter-Modus"). Kein altes Feld zur Pflicht erhoben, kein Hauptversions-Sprung-Anlass. Mit-Pflege: Karte 02 (Schema-Erweiterung + Migrations-Pfad + Generate-Spore-Allow-List-Hinweis für spätere Bau-Sitzung), Karte 04 (matchDimensions + explainMatchLLM + Beispiel-Output mit zwei Personas + Stamm/Gast-Hinweis-Block unverändert), Karte 06 (Outbox-Brücken-Vorschlag-Eintrags-Typ + Anti-Missbrauch-Verweis). KEINE — CLAUDE.md / Karte 09 / `status.json` unangetastet (Brief 01 hat sie auf den Endknoten-Stand gebracht); Sage-Page (`index.html`) unangetastet (Sage-Page-Refactor folgt als Bau-Sitzung in Brief 99-Liste). KEINE — Modul-Code in `src/`, keine Multi-Identität-Spec (`sbkim_keys`-Multi-Slots → Brief 04), keine Königin-Relay-/Identitäts-Container-/Extension-/Mini-Browser-Spec (Vision-Anker eigene Spec-Sitzungen, Matrix verweist nur). Übergabeprotokoll `docs/sessions/archiv/2026-05-19_spec-m04-erweiterung.md`. PR „Spec: M04-Erweiterung — Strang 3 der V1-Sammelspec-Kaskade" (Brief 02-PR #97 als gemerged vorausgesetzt). |
+| 2026-05-19 | Spec-Sitzung Multi-Identität (Brief 04) | Brief 04 der V1-Sammelspec-Kaskade — Strang 3 (Multi-Identität in der IndexedDB: `sbkim_keys`-Multi-Slots, `active-identity`-Marker, identitäts-spezifische Stores pro Persona, doppelte Spore pro Persona) als vierte Etappe nach Brief 03 (M04-Erweiterung, PR #98 gemerged 2026-05-19, `main` `27d6a19`). **§1 Modul 02 (Spore) Bietet-Block** um fünf neue / erweiterte API-Funktionen erweitert: `getOrCreateIdentity(key?)` (optionaler Slot-Parameter, Default "main"), `setActiveIdentity(key)` (schreibt `sbkim_meta["active-identity"]`, validiert key), `getActiveIdentityKey()` (liefert aktiven Slot, Default "main"), `listIdentities()` (lexikographisch sortierte Slot-Liste), `removeIdentity(key, options?)` (idempotent löscht Slot inkl. identitäts-spezifischer Stores; `force:false` → `RemoveActiveIdentityError` bei aktiver Identität; `force:true` → setzt active-identity neu); `generateOwnSpore(meta, key?)` und `getOwnSpore(key?)` um optionalen key-Parameter erweitert. **§1 Modul 02 Singleton-Klausel** ersetzt durch Identitäts-Slot-Vertrag (Default-Slot "main" verbindlich, beliebig viele weitere Slots, sbkim_meta["active-identity"] als String-Marker). **§1 Modul 02 Storage** um `sbkim_meta["active-identity"]` erweitert. **§1 Modul 02 Fehlerverhalten** um `UnknownIdentityError` + `RemoveActiveIdentityError` erweitert. **§1 Modul 05 (Anastomose) Storage** auf `sbkim_siblings_<key>` / `sbkim_anastomosis_log_<key>` Pattern umgestellt (Pre-Brief-04-Singleton-Aufrufer treffen unverändert auf `_main`-Slots). Receiver-Pfad: toNodeId-Map nodeId→key beim init() gebaut, getroffene Persona für die eine Operation als aktive Identität verwendet. **§1 Modul 06 (Heterokaryose) Storage** auf `sbkim_hetero_inbox_<key>` / `sbkim_hetero_outbox_<key>` Pattern umgestellt; Identitäts-Cache-Konvention analog Modul 05. **§1 Modul 07 (Apoptose) Storage** auf `sbkim_legacy_inbox_<key>` Pattern umgestellt; Cleanup-Reihenfolge auf zwei Pfade aufgespalten (globale Self-Apoptose über alle Slots iteriert; per-Persona-Cleanup über `removeIdentity(key, {force:true})` als eigener Pfad in Modul 02, der Modul 07 nur für den Vermächtnis-Versand pro Persona ruft — interner Hook `_sendLegacyForIdentity`). `confirmSelfApoptose` wirkt global (alle Personae sterben gemeinsam, Vermächtnis-Versand pro Persona an ihre Geschwister, Cleanup über alle Slots). `forgetExpiredSiblings(maxAgeMs, key?)` und `listLegacy(key?)` um optionalen key-Parameter erweitert. **§2 Spore-JSON** Multi-Identitäts-Hinweis-Block ergänzt: **Strategie A** (Default, gewählt) — `spore.json` trägt nur die aktive Identität, `PROTOCOL_VERSION` bleibt `"0.1"`. **Strategie B** (Liste-Schema mit `identities[]`-Pflicht-Feld, NICHT gewählt) als Option für Folge-Spec-Sitzung benannt — würde `PROTOCOL_VERSION` auf `"0.2"` bumpen, alle bestehenden Empfänger brechen. **§9 Identitäts-Map (Multi-Identität, Brief 04)** als neue verbindliche Spec-Klausel eingefügt: §9.1 Slot-Schema, §9.2 identitäts-spezifische Stores mit Persona-Isolation, §9.3 active-identity-Marker (Modul 02 alleiniger Schreiber), §9.4 Receiver-Pfad mit nodeId→key-Map beim init(), §9.5 Migrations-Strategie (Option A dynamische Store-Erzeugung empfohlen, Option B feste Slot-Tabelle als Alternative), §9.6 Trade-off-Klausel (IndexedDB-Verlust + Backup-Strategie „kompletter Rucksack" + Königin-Relay-Pflicht + Privatheit), §9.7 Verbindung zur M04-Erweiterung (doppelte Spore pro Persona, Match-Pipeline pro Persona). **§9 Änderungsprotokoll auf §10 nachnummeriert** (additiv, keine Inhalte verschoben — Brief 04 fügt § 9 vor der Changelog ein). **PROTOCOL_VERSION bleibt `"0.1"`** — `sbkim_keys[key]` ist lokales Storage-Schema, kein Spore-Feld; `sbkim_meta["active-identity"]` ist ebenfalls lokal; alle neuen API-Funktionen additiv (alter Singleton-Aufruf-Pfad bleibt wortwörtlich gültig, Default-Slot "main" hält Rückwärts-Kompat). Strategie B nicht gewählt → kein Bump-Anlass. **`BACKUP_FORMAT_VERSION` Bump-Vermerk:** die Multi-Identitäts-Backup-Strategie (`exportBackup`/`importBackup` für alle Identitäten als ein Container — Klaus' „kompletter Rucksack") braucht in der Bau-Folge-Sitzung 02.Y einen Bump von 1 auf 2 (separates Wrapper-Schema, kein PROTOCOL_VERSION-Eingriff); Brief 04 verankert die Spec-Entscheidung, der Code-Bump erfolgt in der Bau-Folge-Sitzung. Mit-Pflege: Karte 02 (Multi-Identitäts-API + Sub-Block „Multi-Identität (Brief 04)" + Storage-Slot-Pattern + Migrations-Hinweis), Karte 05 (Sibling-Slot-Pattern transparent über `getActiveIdentityKey()` + Receiver-Map), Karte 06 (Hetero-Inbox-Slot-Pattern + Receiver-Map + Outbox-Slot-Pattern), Karte 07 (per-Persona-Cleanup + globale Self-Apoptose-Cleanup-Reihenfolge mit Schleife + `_sendLegacyForIdentity`-Hook). KEINE — CLAUDE.md (Brief 01 hat sie auf „Hub und Knoten zugleich"), Karte 09 (Brief 01 hat § Schritt 1 erweitert), `status.json` (Brief 01 hat Sage als endknoten[]-Eintrag aufgenommen). KEINE — Modul-Code in `src/`, keine Sage-Page-Änderung (Sage-Page-Refactor folgt als Bau-Sitzung in BRIEF_99-Liste), keine M04-Erweiterung-Änderung (Brief 03 hat sie gesetzt), keine Plattform-Matrix-Änderung (Brief 02), keine Königin-Relay-/Identitäts-Container-/Extension-/Mini-Browser-Spec (eigene Spec-Sitzungen, Brief 04 verweist nur). Übergabeprotokoll `docs/sessions/archiv/2026-05-19_spec-multi-identitaet.md`. PR „Spec: Multi-Identität — Strang 4 der V1-Sammelspec-Kaskade" (Brief 03-PR #98 als gemerged vorausgesetzt). |

@@ -205,8 +205,10 @@ init() → Promise<void>
 requestHeterokaryosis(peerNodeId) → Promise<HeterokaryoseResult>
   // Initiiert einen ausgehenden Heterokaryose-Pull gegen den
   // Geschwister peerNodeId.
-  // 1. sibling = SbkimStorage.get(sbkim_siblings, peerNodeId).
-  //    Wenn nicht vorhanden → wirft UnknownSiblingError. Kein Netz.
+  // 1. sibling = SbkimStorage.get(sbkim_siblings_<key>, peerNodeId).
+  //    <key> = aktive Identität aus SbkimSpore.getActiveIdentityKey()
+  //    (Default "main"; Brief 04 der V1-Sammelspec-Kaskade). Wenn nicht
+  //    vorhanden → wirft UnknownSiblingError. Kein Netz.
   // 2. Lokale Vorprüfung: sibling.heterokaryosisOptIn === true?
   //    Sonst → KEIN Throw. Log-Zeile "hetero-opt-out-local",
   //    return {outcome:"opt-out-local"}.
@@ -229,7 +231,7 @@ requestHeterokaryosis(peerNodeId) → Promise<HeterokaryoseResult>
   //    Signatur-Fehler → wirft HeterokaryoseSignatureInvalidError,
   //    Log "hetero-rejected".
   // 7. outcome-Verzweigung:
-  //    "shared"   → sbkim_hetero_inbox.put({peerNodeId|ts, anchors,
+  //    "shared"   → sbkim_hetero_inbox_<key>.put({peerNodeId|ts, anchors,
   //                  signature, receivedAt}), Log "hetero-pulled",
   //                  return {outcome:"shared", anchorCount,
   //                          peerNodeId, ts}.
@@ -255,13 +257,19 @@ receiveHeterokaryosis(incomingRequest) → Promise<HeterokaryosisResponse>
   //   4. Request-Signatur gegen senderSpore.publicKey verifizieren ⇒
   //      bei Fehler Response outcome:"rejected",
   //      reason:"Request-Signatur ungültig".
-  //   5. Filter: ist senderSpore.id in sbkim_siblings?
+  //   4b. Receiver-Map nodeId→key (Brief 04): request.toNodeId wird
+  //       gegen alle eigenen Identitäten geprüft (Map beim init()
+  //       gebaut). Treffer → <hit-key> ist die getroffene Persona für
+  //       diese Operation. Kein Treffer → Response outcome:"rejected",
+  //       reason:"toNodeId stimmt nicht zum Empfänger".
+  //   5. Filter: ist senderSpore.id in sbkim_siblings_<hit-key>?
   //      Sonst Response outcome:"rejected",
   //      reason:"Sender ist kein Geschwister". (Modul 06 antwortet
-  //      ausschließlich auf bekannte Geschwister — Spore-Signatur
-  //      allein reicht NICHT.)
-  //   6. Filter: sbkim_siblings[senderId].heterokaryosisOptIn ===
-  //      true? Sonst Response outcome:"opt-out", Log
+  //      ausschließlich auf bekannte Geschwister der getroffenen
+  //      Persona — Spore-Signatur allein reicht NICHT, und ein
+  //      Geschwister einer ANDEREN Persona zählt nicht.)
+  //   6. Filter: sbkim_siblings_<hit-key>[senderId].heterokaryosisOptIn
+  //      === true? Sonst Response outcome:"opt-out", Log
   //      "hetero-opt-out". (KEIN reason-Detail beim opt-out — das
   //      hält die Antwort minimal.)
   //   7. Sonst: Anker-Quelle lesen (siehe § Anker-Quelle unten),
@@ -274,16 +282,19 @@ receiveHeterokaryosis(incomingRequest) → Promise<HeterokaryosisResponse>
   //   receiveHandshake und Modul 07 receiveLegacy).
 
 listHeterokaryosis() → Promise<Array<{peerNodeId, ts, anchorCount, receivedAt}>>
-  // Lädt alle Einträge aus sbkim_hetero_inbox. Reihenfolge:
-  // Storage-natürlich (nach Schlüssel = peerNodeId|ts). Anker-
-  // Inhalte (label, vector) werden bewusst weggelassen — Lese-
-  // Helfer für UI / Modul 00 / Modul 08; eine echte Detail-View
-  // (mit Ankern) gehört in Modul 08 und nutzt SbkimStorage direkt.
+  // Lädt alle Einträge aus sbkim_hetero_inbox_<key> (aktive Identität;
+  // Brief 04). Reihenfolge: Storage-natürlich (nach Schlüssel =
+  // peerNodeId|ts). Anker-Inhalte (label, vector) werden bewusst
+  // weggelassen — Lese-Helfer für UI / Modul 00 / Modul 08; eine
+  // echte Detail-View (mit Ankern) gehört in Modul 08 und nutzt
+  // SbkimStorage direkt. Persona-übergreifende Sicht: Aufrufer
+  // iteriert listIdentities() (INTERFACES.md § 9.2).
 
 forgetHeterokaryosis(peerNodeId, ts) → Promise<void>
-  // Entfernt den Inbox-Eintrag mit Schlüssel `peerNodeId|ts`. Der
-  // sbkim_anastomosis_log-Eintrag bleibt (Audit-Spur). Idempotent:
-  // unbekannter Schlüssel wirft NICHT.
+  // Entfernt den Inbox-Eintrag mit Schlüssel `peerNodeId|ts` aus
+  // sbkim_hetero_inbox_<key> (aktive Identität; Brief 04). Der
+  // sbkim_anastomosis_log_<key>-Eintrag bleibt (Audit-Spur).
+  // Idempotent: unbekannter Schlüssel wirft NICHT.
 ```
 
 ### Selbstcheck
@@ -932,6 +943,7 @@ ist ohne diese Kontextdaten leer-funktional).
 | Pflege Bau 06.1 Outbox-Lese-Pfad | 2026-05-15 | Pflege Bau 06.1 | `src/modules/06_heterokaryose.js` § Anker-Quelle voll implementiert: neuer `OUTBOX_STORE = "sbkim_hetero_outbox"`-Konstante; `readOwnAnchors()` ruft zuerst `readOutboxAnchors()` (try/catch um `SbkimStorage.all("sbkim_hetero_outbox")`; bei Wurf, leerem oder fehlendem Store → `null` als Fallback-Signal mit `console.info`-Hinweis), sortiert nicht-leere Einträge absteigend nach `addedAt`, mappt die ersten `HETERO_MAX_ANCHORS` (= 5) auf Anker-Form `{label, vector}` (outbox-internes `addedAt` bleibt im Store); bei `null` Fallback auf `readSporeFallbackAnchors()` (= bisheriger Spore-Single-Anker-Fallback). **Fail-soft auf Store-Fehler** ist Spec-Wille: ältere Klaus-PWAs mit DB-Version 1/2 ohne v=3-Store werfen `UnknownStoreError` aus Modul 01, Modul 06 fällt sauber zurück. `src/modules/01_storage.js`: `DB_VERSION` 2 → 3 (additiv), neuer `STORES_V3 = ["sbkim_hetero_outbox"]`-Block in `applyMigration(db, 3)`; bestehende PWAs bekommen den Store beim nächsten Lade additiv ohne Datenverlust (Loop `for v = oldVersion+1 … newVersion` zieht die fehlenden Migrations-Schritte nach). Panel 06 Test 9 in `tests/manual_check.html` von „teil-abgedeckt" auf **vollen Begrenzungs-Test (5 von 6)** gehoben: Setup-Schritt schreibt sechs Outbox-Einträge direkt via `SbkimStorage.put` (Schlüssel `label`, Wert `{label, vector[384], addedAt}`; sechs `addedAt`-Werte über je eine Minute gestaffelt; **kein** `SbkimUiDemo`-Aufruf — Bau-Sitzung 08 ist eigene Phase, Test-Konvention seit Bau 06 ist direkter Storage-Zugriff analog `_addPseudoSibling`); Pass-Check `response.anchors.length === 5`, `anchors[0].label === "Nachtisch"` (neuestes Label, Reihenfolge-Check), `"Hefeteig"` (ältestes Label) aussortiert, jeder Anker hält Schema `{label, vector[384]}` ein. Nach dem Test räumt Panel 06 die sechs Outbox-Einträge wieder weg, damit andere Test-Knöpfe (z.B. Test 1) wieder den Spore-Single-Anker-Fallback sehen. Panel-06-Hinweis (`<pre class="log">`) entsprechend nachgezogen (zwei Anker-Quellen, Test 9 voller Begrenzungs-Test). **Keine §1-Modul-06-Vertrags-Änderung** in INTERFACES.md (das fail-soft-Lese-Recht steht seit Spec-Sitzung 06; Pflege Bau 06.1 zieht nur die Implementation nach). **Keine `src/modules/08_ui_demo.js`-Datei angelegt** (Bau-Sitzung 08 ist eigene Phase). `node --check src/modules/01_storage.js` und `node --check src/modules/06_heterokaryose.js` grün; alle 9 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert. **`status.json` unverändert** — Modul 06 bleibt `score:"stub"` (Code-Stub), die Pflege ist additiv im Code, kein Score-Wechsel; Pie nicht regeneriert. Karte 06 § Anker-Quelle (Pflege-Hinweis-Block), § Manueller Test Punkt 9 (von „teil-abgedeckt" auf „voll abgedeckt") und § Bauzustand-Zeile + Karte 01 § Bauzustand-Zeile + INTERFACES.md §6 nachgezogen. |
 | Sichttest | 2026-05-16 | Klaus + Bau 02.X-Folge | geprüft 2026-05-16 (Klaus, Chrome auf Galaxy Tab S6 + DeX) — Panel 06 mit 14 Knöpfen rasch grob durchgeklickt zusammen mit Panels 01–05/07/08, alle Selbstchecks grün, Hauptpfade ohne Auffälligkeit. Voller Test-1–9-Lauf mit 14-Knopf-Pass-Check (inkl. Setup, Test 1 passendes Match, Tests 2/3/4 Reject-Pfade, Tests 5/6 Re-Handshake + forgetHeterokaryosis, Tests 7/8 listHeterokaryosis, **Test 9 HETERO_MAX_ANCHORS-Begrenzung mit sechs Outbox-Einträgen → fünf Anker, neueste zuerst**, Selbstcheck) folgt bei Bedarf. Anker-Pfad fail-soft Fallback und Outbox-Lese-Pfad aus Pflege Bau 06.1 noch nicht im Detail re-verifiziert; bisheriger Eindruck: kein Modul-Bug aufgefallen. |
 | Spec M04-Erweiterung Brücken-Vorschlag (Brief 03) | 2026-05-19 | Spec M04-Erweiterung | Strang 2 der V1-Sammelspec-Kaskade (Brief 03; Brief 01-PR #96 + Brief 02-PR #97 als gemerged vorausgesetzt). Karte 06 additiv erweitert: neuer Sub-Block „Brücken-Vorschlag-Eintrags-Typ (M04-Erweiterung, Brief 03)" direkt nach § Anker-Quelle. Dokumentiert die additive Outbox-Eintrags-Form `{entryType:"bridge-suggestion", label, vector:null, addedAt, bridgeProposal:{needed, lookingFor, candidateScope}}`, vier-stufige Filter-Logik im `readOwnAnchors`-Lese-Pfad (Anker-Pfad schließt bridge-suggestion-Einträge AUS; lokal-Einträge bleiben im Outbox, mailbox-Einträge warten auf Modul 13, netz-Einträge werden NICHT versendet bis Anker 10-12 gebaut), Schreiber-Konvention (Modul 08 als Co-Schreiber, Modul 04 spec-offen), Anti-Missbrauch-Klausel-Verweis auf INTERFACES.md §8 als verbindliche heilige Tafel. **Kein Code-Eingriff** in `src/modules/06_heterokaryose.js` oder `src/modules/08_ui_demo.js` — Bau-Implementierung folgt als eigene Phase (Spec-Sitzung 08.2 oder dedizierte Bau-Sitzung Brücken-Vorschlag-Outbox). **Keine §1-Modul-06-Vertrags-Änderung** in INTERFACES.md (der Lese-Pfad ist additiv und fail-soft — bestehende Anker-Einträge funktionieren weiter, der `entryType`-Filter ist eine zusätzliche Schicht). **PROTOCOL_VERSION bleibt `"0.1"`** — der neue Eintrags-Typ ist in `sbkim_hetero_outbox` (Storage-Schema, additiv), kein Spore-Feld, kein Hauptversions-Sprung. **`status.json` unverändert** — Modul 06 bleibt `score:"stub"` (Spec-Erweiterung am Karten-Vertrag, kein Code-Bau, kein Score-Wechsel). |
+| Spec Multi-Identität (Brief 04) | 2026-05-19 | Spec Multi-Identität | Strang 3 der V1-Sammelspec-Kaskade (Brief 04; Brief 03-PR #98 als gemerged vorausgesetzt). Karte 06 erweitert: § Schnittstelle Hinweise auf `sbkim_siblings_<key>` (Punkt 1 `requestHeterokaryosis`) + `sbkim_hetero_inbox_<key>` (Punkt 7 receive + listHeterokaryosis + forgetHeterokaryosis); neuer Receiver-Pfad-Block in `receiveHeterokaryosis` Schritt 4b: `request.toNodeId` wird gegen alle eigenen Identitäten geprüft (Map nodeId→key beim init()), getroffene Persona für die eine Operation als aktive Identität. Sibling-Filter (Schritt 5) und Opt-In-Filter (Schritt 6) lesen aus `sbkim_siblings_<hit-key>` der getroffenen Persona — ein Geschwister einer anderen Persona zählt nicht. **§ Schnittstelle der Funktions-Signaturen unverändert** — der Slot-Pfad ist transparent über `SbkimSpore.getActiveIdentityKey()` + Receiver-Map. INTERFACES.md §1 Modul 06 (Bietet-Block-Header + Nutzt + Storage-Pattern-Erweiterung + Identitäts-Cache-Konvention + Receiver-Pfad-Hinweis + Persona-Isolation-Klausel in Garantien) + § 9 Identitäts-Map (verbindliche Spec-Klausel) nachgezogen. **PROTOCOL_VERSION bleibt `"0.1"`** — additive Storage-Schema-Erweiterung, kein Spore-Schema-Eingriff, HeterokaryosisRequest/Response-Schema unverändert. **`status.json` unverändert** — Modul 06 bleibt `score:"stub"` (additive Spec-Erweiterung am Karten-Vertrag, kein Code-Bau, kein Score-Wechsel; `update_puls_pie.py` NICHT aufgerufen). **Kein Code** in `src/modules/06_heterokaryose.js` — Bau-Folge-Sitzung 06.Y folgt als eigene Phase (transparenter Slot-Pfad über `getActiveIdentityKey()` + Receiver-Map). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
