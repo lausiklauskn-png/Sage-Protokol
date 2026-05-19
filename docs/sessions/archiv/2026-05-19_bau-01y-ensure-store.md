@@ -277,9 +277,9 @@ prüft erst Klaus' Browser-Sichttest.
 
 ## Manueller Sichttest
 
-**Ungeprüft, weil headless gebaut — wartet auf Klaus' Browser-Lauf
-(Galaxy Tab S6 + DeX, Chrome).** Drei-Stufen-Probe in
-`tests/manual_check.html` Panel 01:
+**Geprüft 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6,
+Termux-`python3 -m http.server 8000`-Setup): 3/3 grün.** Drei-Stufen-
+Probe in `tests/manual_check.html` Panel 01:
 
 1. **Knopf 6 happy-path:** `ensureStore('sbkim_test_foo')` → in
    DevTools → Application → IndexedDB → `sbkim` (oder
@@ -292,6 +292,26 @@ prüft erst Klaus' Browser-Sichttest.
    `InvalidStoreNameError` **synchron** geworfen (kein Promise-Aufbau,
    try/catch außerhalb `await` fängt). `name`-Property gesetzt,
    `message` deutschsprachig.
+
+**Klaus' Sichttest-Resultate (2026-05-19, DeX-Chrome):**
+
+- **Knopf 6:** `db_version_vor: 4`, `db_version_nach: 5`,
+  `objectStoreNames_enthaelt_neuen: true`, `sbkim_test_foo` in
+  `known_stores` — grün ✓
+- **Knopf 7:** `db_version_vor_erstem: 5`, `db_version_nach_erstem:
+  5`, `db_version_nach_zweitem: 5`, `idempotent: true` — grün ✓
+- **Knopf 8:** `erwartet: "InvalidStoreNameError"`, `erhalten_name:
+  "InvalidStoreNameError"`, `synchron_geworfen: true`, sprechende
+  Message mit Pattern-Hinweis — grün ✓
+- **Re-Init nach den ensureStore-Aufrufen:** `version: 5` mit
+  `sbkim_test_foo` im Pflicht-Stores-Snapshot — `_meta.dbVersion`-
+  Getter (Live-Zustand statt Build-Konstante) und `KNOWN_STORES`-
+  Laufzeit-Erweiterung greifen sauber.
+- **Versions-Bump-Choreografie** auf Single-Instance-DeX-Chrome
+  problemlos durchgelaufen (kein `EnsureStoreError`-`cause`-
+  `onblocked`-Befund). Das vor dem Bau befürchtete Mehrfach-Tab-
+  Szenario (DeX-Chrome vs. Tablet-Chrome) trat in Klaus' Setup nicht
+  ein.
 
 **Cleanup nach Sichttest:** die Test-Stores `sbkim_test_*` bleiben in
 der IndexedDB. Klaus kann sie über DevTools → Application → IndexedDB
