@@ -215,25 +215,43 @@ Spannung antizipiert; in der Karte ist das aber klar geregelt.
 
 ## Manueller Sichttest
 
-**Ungeprüft, weil headless gebaut — wartet auf Klaus' Browser-Lauf**
-der drei neuen Panel-04-Knöpfe.
+**Grün geprüft 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6,
+Termux-`python3 -m http.server 8000`-Setup):** Bau 04.A live bewiesen.
 
-Drei-Stufen-Probe in `tests/manual_check.html` Panel 04 (Knöpfe
-7/8/9):
+**Schritt 1 — Knopf 7 „matchDimensions bidirektional":**
+- `fachlich: -0.0084`, `prozess: -0.0084`, `skalierung: -0.0084`,
+  `overall: -0.0084` — **alle vier identisch**, Stufe-A-Heuristik
+  live bestätigt (drei Schichten = Schicht-Score = Lane-Cosinus).
+- `availableLanes: 2`.
+- `bruecke: null` (Bau 04.B kommt mit `explainMatchLLM`).
+- Status-Chip grün „matchDimensions bidirektional OK".
 
-1. **Knopf 7 „matchDimensions bidirektional"** — Erwartung:
-   Status-Chip grün, Log zeigt `availableLanes: 2`, alle drei
-   Schichten gleich, `overall === fachlich`, `bruecke: null`.
-2. **Knopf 8 „matchDimensions Nur-Anbieter-Modus"** — Erwartung:
-   Status-Chip grün, Log zeigt alle Schichten null,
-   `availableLanes: 0`, KEIN Throw.
-3. **Knopf 9 „matchDimensions alle vier null (Fehler erwartet)"** —
-   Erwartung: Status-Chip grün, Log zeigt `name:
-   DimensionsAllNullError`, `synchron_geworfen: true`.
+**Cosinus-Wert-Beobachtung:** `-0.0084` ist nahe null — das ist
+genau das erwartete Verhalten für zwei zufällige LCG-Vektoren in
+384 Dimensionen ("Curse of Dimensionality": hochdimensionale
+Zufallsvektoren sind fast orthogonal). Die Funktion ist
+deterministisch + reproduzierbar (jeder Test-Lauf liefert exakt
+denselben Wert), genau wie spezifiziert.
 
-Bonus: Klaus kann nach Bau-04.A-Sichttest ohne Cleanup direkt zu
-Panel 02 / 01 zurückschalten — die Pflege Modul 01 init versions-
-fail-soft macht das jetzt von selbst (siehe PR #107 / #108).
+**Schritt 2 — Knopf 8 „matchDimensions Nur-Anbieter-Modus":**
+- Alle Schichten `null`, `availableLanes: 0`, `bruecke: null`.
+- KEIN Throw.
+- Status-Chip grün „Nur-Anbieter-Modus OK".
+
+**Schritt 3 — Knopf 9 „matchDimensions alle vier null (Fehler erwartet)":**
+- `name: DimensionsAllNullError`, `synchron_geworfen: true`.
+- Deutsche Message: „matchDimensions: alle vier Vektoren null.
+  Aufrufer haette vor dem Aufruf pruefen muessen (siehe Karte 04
+  § Fehlerverhalten + § Drei-Schichten-Modell § Nur-Anbieter-Modus)."
+- Status-Chip grün „DimensionsAllNullError synchron".
+
+**Indirekter Beleg für Pflege Modul 01 init() versions-fail-soft
+(PR #107 / #108):** Klaus hat ohne Browserdaten-Cleanup direkt zu
+Panel 04 weitergeklickt — `init()` läuft jetzt von selbst sauber
+durch, auch bei alter DB-Version aus Bau-02.Y- / Bau-01.Y-
+Sichttests. Klaus-Cleanup-Theater ist endgültig Geschichte; der
+Tafel-Evolutions-Pfad (CLAUDE.md § Heilige Tafeln § Tafel-
+Evolutions-Klausel aus PR #105) hat sich praktisch bewährt.
 
 ---
 
