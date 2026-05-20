@@ -2,10 +2,11 @@
  * SBKIM — Modul 08 — UI-Demo
  *
  * Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose)
- * braucht, aber selbst nicht füllt: `sbkim_hetero_outbox` (Anker-Vorrat,
- * Schreiber Modul 08, Leser Modul 06) und `sbkim_siblings[peerNodeId].
- * heterokaryosisOptIn` (Co-Schreiber neben Modul 05 — Modul 08 darf nur
- * das eine additive Feld setzen).
+ * braucht, aber selbst nicht füllt: `sbkim_hetero_outbox_<activeSlotKey>`
+ * (Anker-Vorrat, Schreiber Modul 08, Leser Modul 06) und
+ * `sbkim_siblings_<activeSlotKey>[peerNodeId].heterokaryosisOptIn`
+ * (Co-Schreiber neben Modul 05 — Modul 08 darf nur das eine additive
+ * Feld setzen).
  *
  * Modul 08 ist NICHT protokoll-aktiv: kein Netz, kein Embedding, keine
  * Signatur, keine Spore-Erzeugung, kein Heterokaryose-Pull. Vektor-
@@ -20,15 +21,15 @@
  *   setSiblingHeteroOptIn(peerNodeId, optIn)           -> Promise<void>
  *
  * Inoffiziell (Unterstrich-Präfix, nur für tests/manual_check.html):
- *   _clearOutbox()              -> löscht alle sbkim_hetero_outbox-Einträge
- *                                  sequenziell, idempotent
+ *   _clearOutbox()              -> leert sbkim_hetero_outbox_<activeSlotKey>
+ *                                  via SbkimStorage.clear, idempotent
  *   _addPseudoSibling(sib)      -> direkter SbkimStorage.put auf
- *                                  sbkim_siblings (Vorbereitung für
- *                                  setSiblingHeteroOptIn-Tests). Schreibt
- *                                  KEIN heterokaryosisOptIn — das Feld
+ *                                  sbkim_siblings_<activeSlotKey>
+ *                                  (Vorbereitung für setSiblingHeteroOptIn-Tests).
+ *                                  Schreibt KEIN heterokaryosisOptIn — das Feld
  *                                  setzt Modul 08 selbst.
- *   _clearPseudoSiblings()      -> löscht die per Test-Brücke angelegten
- *                                  Pseudo-Sibling-Einträge wieder.
+ *   _clearPseudoSiblings()      -> leert sbkim_siblings_<activeSlotKey> via
+ *                                  SbkimStorage.clear, idempotent.
  *
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). See INTERFACES.md §1 Modul 08 und
@@ -40,9 +41,21 @@
  *   InvalidOptInArgError
  *
  * `UnknownSiblingError` trägt denselben Namen wie in Modul 06 — Spec-
- * Wille; Bedeutung identisch (peerNodeId nicht in sbkim_siblings).
+ * Wille; Bedeutung identisch (peerNodeId nicht in sbkim_siblings_<key>).
  * Modul-Zugehörigkeit über window.SbkimUiDemo vs.
  * window.SbkimHeterokaryose erkennbar.
+ *
+ * Bau 08.Y slot-spezifische Outbox (2026-05-20): Modul 08 schreibt
+ * jetzt in `sbkim_hetero_outbox_<activeSlotKey>` und liest/schreibt
+ * `sbkim_siblings_<activeSlotKey>`. `activeSlotKey` wird im `init()`
+ * via `SbkimSpore.getActiveIdentityKey()` gecached (Default „main" als
+ * Rückwärts-Kompat zum Singleton-Vertrag). Vor jedem ersten Schreib-
+ * vorgang ruft Modul 08 `SbkimStorage.ensureStore` für die zwei slot-
+ * suffixed Stores (idempotent via Bau 01.Y). Modul 08 ist storage-only
+ * und braucht KEIN Receiver-Map — kein Netz-Empfang, kein
+ * `_per_identity_op`-Pattern. Persona-übergreifende Pflege (OptIn-Flag
+ * setzen für Sibling aus anderer Persona) ist Aufrufer-Pflicht via
+ * `SbkimSpore.setActiveIdentity` + Re-Init (Tab-Reload).
  */
 (function (global) {
   "use strict";
@@ -53,8 +66,9 @@
   var HETERO_OUTBOX_MAX_ENTRIES = 5;
   var OUTBOX_LABEL_MAX_LEN = 64;
 
-  var OUTBOX_STORE = "sbkim_hetero_outbox";
-  var SIBLINGS_STORE = "sbkim_siblings";
+  var OUTBOX_STORE_BASE = "sbkim_hetero_outbox";
+  var SIBLINGS_STORE_BASE = "sbkim_siblings";
+  var DEFAULT_IDENTITY_KEY = "main";
 
   // ---- Fehler-Erzeugung ----
   //
@@ -81,24 +95,65 @@
   // ---- Dependency-Probes ----
 
   function probeDependencies() {
-    if (!global.SbkimStorage) {
+    var missing = [];
+    if (!global.SbkimStorage) missing.push("SbkimStorage (Modul 01)");
+    if (!global.SbkimSpore) missing.push("SbkimSpore (Modul 02)");
+    if (missing.length > 0) {
       throw makeError(
         "UiDemoDependenciesError",
-        "Fehlende Modul-Abhängigkeit: SbkimStorage (Modul 01). " +
-          "Lade 01_storage.js vor 08_ui_demo.js.",
+        "Fehlende Modul-Abhängigkeiten: " + missing.join(", ") + ". " +
+          "Lade 01_storage.js und 02_spore.js vor 08_ui_demo.js (Bau 08.Y " +
+          "slot-spezifische Outbox braucht SbkimSpore.getActiveIdentityKey).",
       );
     }
   }
 
   function getStorage() { return global.SbkimStorage; }
+  function getSpore() { return global.SbkimSpore; }
 
   function nowIso() { return new Date().toISOString(); }
+
+  // ---- Bau 08.Y: slot-spezifische Store-Namen ----
+  //
+  // Pre-Brief-04-Aufrufer treffen unverändert auf `_main`-Slots
+  // (DEFAULT_IDENTITY_KEY = "main", verankert via
+  // SbkimSpore.getActiveIdentityKey-Default). Mehrfach-Personae nutzen
+  // ihren eigenen activeSlotKey.
+
+  function heteroOutboxStoreName(slot) {
+    return OUTBOX_STORE_BASE + "_" + slot;
+  }
+
+  function siblingsStoreName(slot) {
+    return SIBLINGS_STORE_BASE + "_" + slot;
+  }
+
+  // ensureSlotStores: ruft SbkimStorage.ensureStore für die zwei
+  // slot-spezifischen Stores, die Modul 08 berührt. Idempotent dank
+  // Bau 01.Y's ensureStore-Garantie. Wird vor jedem ersten
+  // Schreibvorgang in einen Slot gerufen — Modul 02's
+  // ensureIdentityStores deckt den Pfad bei getOrCreateIdentity bereits
+  // ab; Modul 08's eigener Aufruf ist defensiv und idempotent, um
+  // Sichttest-Pfade abzusichern (Backup-Re-Import, Tab-Race etc.).
+  async function ensureSlotStores(slot) {
+    var storage = getStorage();
+    if (typeof storage.ensureStore !== "function") {
+      throw makeError(
+        "UiDemoDependenciesError",
+        "SbkimStorage.ensureStore fehlt — Bau 01.Y nicht eingespielt. " +
+          "Modul 08 (Bau 08.Y slot-spezifische Outbox) braucht den dynamischen " +
+          "Store-Pfad aus Modul 01.",
+      );
+    }
+    await storage.ensureStore(heteroOutboxStoreName(slot));
+    await storage.ensureStore(siblingsStoreName(slot));
+  }
 
   // ---- Modul-Zustand ----
 
   var ready = false;
+  var activeSlotKey = null;  // gecached vom init() via SbkimSpore.getActiveIdentityKey(); null vor init.
   var configuredOptions = {
-    storeName: OUTBOX_STORE,
     labelMaxLen: OUTBOX_LABEL_MAX_LEN,
     embeddingDim: EMBEDDING_DIM,
     maxEntries: HETERO_OUTBOX_MAX_ENTRIES,
@@ -109,9 +164,9 @@
   async function init(options) {
     probeDependencies();
     if (options && typeof options === "object") {
-      if (typeof options.storeName === "string" && options.storeName.length > 0) {
-        configuredOptions.storeName = options.storeName;
-      }
+      // Bau 08.Y: options.storeName ist obsolet (Slot-Pfad ist intern
+      // via SbkimSpore.getActiveIdentityKey gesetzt) — wird stillschweigend
+      // ignoriert, damit pre-Brief-04-Aufrufer nicht brechen.
       if (typeof options.labelMaxLen === "number" && options.labelMaxLen > 0) {
         configuredOptions.labelMaxLen = options.labelMaxLen;
       }
@@ -124,6 +179,12 @@
     }
     if (ready) return;
     await getStorage().init();
+    await getSpore().init();
+    activeSlotKey = await getSpore().getActiveIdentityKey();
+    if (typeof activeSlotKey !== "string" || activeSlotKey.length === 0) {
+      activeSlotKey = DEFAULT_IDENTITY_KEY;
+    }
+    await ensureSlotStores(activeSlotKey);
     ready = true;
     // Spec: kein DOM-Mount, keine Listener-Registrierung — Modul 08 ist
     // eine reine API-Schicht. DOM-Pflege liegt beim Endknoten.
@@ -137,7 +198,7 @@
 
   async function listOutbox() {
     await ensureReady();
-    var rows = await getStorage().all(configuredOptions.storeName);
+    var rows = await getStorage().all(heteroOutboxStoreName(activeSlotKey));
     if (!Array.isArray(rows) || rows.length === 0) return [];
     var entries = [];
     for (var i = 0; i < rows.length; i++) {
@@ -198,22 +259,29 @@
   }
 
   async function addOutboxAnchor(label, vector) {
-    // Reihenfolge: sync-Checks zuerst (Label, Vektor), dann erst der
-    // async-Voll-Check gegen den Store. So fliegt der Wurf vor dem
-    // Schreib-Versuch.
+    // Reihenfolge (Karte 08 § Manueller Test + Bauzustand Pflicht-
+    // Entscheidung 1): sync-Checks zuerst (Label, Vektor), dann erst
+    // der async-Voll-Check gegen den Store. So fliegt der Wurf vor
+    // dem Schreib-Versuch.
     validateLabel(label);
     validateVector(vector);
     await ensureReady();
+    // Bau 08.Y: defensiv ensureStore vor jedem ersten Schreibvorgang
+    // (idempotent, Bau 01.Y) — schützt gegen Tab-Race oder Backup-
+    // Re-Import-Pfade, in denen ensureSlotStores im init() noch nicht
+    // den Soll-Stand erreicht hat.
+    await ensureSlotStores(activeSlotKey);
     var storage = getStorage();
-    var existing = await storage.get(configuredOptions.storeName, label);
+    var storeName = heteroOutboxStoreName(activeSlotKey);
+    var existing = await storage.get(storeName, label);
     if (existing === undefined) {
-      var rows = await storage.all(configuredOptions.storeName);
+      var rows = await storage.all(storeName);
       var count = Array.isArray(rows) ? rows.length : 0;
       if (count >= configuredOptions.maxEntries) {
         throw makeError(
           "OutboxFullError",
-          "sbkim_hetero_outbox am Limit (" + configuredOptions.maxEntries +
-            " Einträge). Vor dem Anlegen eines NEUEN Labels einen alten Anker " +
+          storeName + " am Limit (" + configuredOptions.maxEntries +
+            " Einträge pro Slot). Vor dem Anlegen eines NEUEN Labels einen alten Anker " +
             "mit removeOutboxAnchor(label) entfernen.",
         );
       }
@@ -223,7 +291,7 @@
       vector: vector.slice(),
       addedAt: nowIso(),
     };
-    await storage.put(configuredOptions.storeName, label, entry);
+    await storage.put(storeName, label, entry);
   }
 
   // ---- removeOutboxAnchor(label) — idempotent ----
@@ -233,7 +301,7 @@
     await ensureReady();
     // SbkimStorage.del ist idempotent (Modul 01-Vertrag) — kein Fehler,
     // wenn der Schlüssel fehlt.
-    await getStorage().del(configuredOptions.storeName, label);
+    await getStorage().del(heteroOutboxStoreName(activeSlotKey), label);
   }
 
   // ---- setSiblingHeteroOptIn(peerNodeId, optIn) — Co-Schreiber ----
@@ -252,12 +320,16 @@
       );
     }
     await ensureReady();
+    // Bau 08.Y: defensiv ensureStore (idempotent) — gleiche Begründung
+    // wie in addOutboxAnchor.
+    await ensureSlotStores(activeSlotKey);
     var storage = getStorage();
-    var sibling = await storage.get(SIBLINGS_STORE, peerNodeId);
+    var storeName = siblingsStoreName(activeSlotKey);
+    var sibling = await storage.get(storeName, peerNodeId);
     if (!sibling) {
       throw makeError(
         "UnknownSiblingError",
-        "Unbekanntes Geschwister: " + peerNodeId + ". " +
+        "Unbekanntes Geschwister: " + peerNodeId + " (Slot " + activeSlotKey + "). " +
           "Modul 08 legt KEINEN Sibling-Eintrag an — vorher anastomosieren (Modul 05).",
       );
     }
@@ -265,28 +337,23 @@
     // nur heterokaryosisOptIn wird gesetzt (Karte 01 § Schema-Hinweise +
     // INTERFACES.md §1 Modul 08 Storage-Block).
     var updated = Object.assign({}, sibling, { heterokaryosisOptIn: optIn });
-    await storage.put(SIBLINGS_STORE, peerNodeId, updated);
+    await storage.put(storeName, peerNodeId, updated);
   }
 
   // ---- Test-Brücken (Unterstrich-Präfix, inoffiziell) ----
 
-  // Leert sbkim_hetero_outbox sequenziell. Idempotent — falls der Store
-  // schon leer ist, passiert nichts.
+  // Bau 08.Y: leert sbkim_hetero_outbox_<activeSlotKey> via
+  // SbkimStorage.clear. Idempotent — falls der Store schon leer ist,
+  // passiert nichts.
   async function _clearOutbox() {
     await ensureReady();
-    var storage = getStorage();
-    var rows = await storage.all(configuredOptions.storeName);
-    for (var i = 0; i < rows.length; i++) {
-      try { await storage.del(configuredOptions.storeName, rows[i].key); } catch (e) { /* nb */ }
-    }
+    await getStorage().clear(heteroOutboxStoreName(activeSlotKey));
   }
 
   // Pseudo-Sibling-Tracking analog Modul 06: schreibt direkt in
-  // sbkim_siblings, damit setSiblingHeteroOptIn einen Eintrag findet.
-  // Schreibt KEIN heterokaryosisOptIn-Flag — das Feld setzt Modul 08
-  // selbst (Co-Schreiber-Konvention).
-  var pseudoSiblingIds = [];
-
+  // sbkim_siblings_<activeSlotKey>, damit setSiblingHeteroOptIn einen
+  // Eintrag findet. Schreibt KEIN heterokaryosisOptIn-Flag — das Feld
+  // setzt Modul 08 selbst (Co-Schreiber-Konvention).
   async function _addPseudoSibling(sib) {
     if (!sib || typeof sib.nodeId !== "string") {
       throw makeError(
@@ -302,19 +369,12 @@
       pubKey: sib.pubKey === undefined ? null : sib.pubKey,
       since: typeof sib.since === "string" ? sib.since : nowIso(),
     };
-    await getStorage().put(SIBLINGS_STORE, sib.nodeId, entry);
-    if (pseudoSiblingIds.indexOf(sib.nodeId) === -1) {
-      pseudoSiblingIds.push(sib.nodeId);
-    }
+    await getStorage().put(siblingsStoreName(activeSlotKey), sib.nodeId, entry);
   }
 
   async function _clearPseudoSiblings() {
     await ensureReady();
-    var storage = getStorage();
-    for (var i = 0; i < pseudoSiblingIds.length; i++) {
-      try { await storage.del(SIBLINGS_STORE, pseudoSiblingIds[i]); } catch (e) { /* nb */ }
-    }
-    pseudoSiblingIds = [];
+    await getStorage().clear(siblingsStoreName(activeSlotKey));
   }
 
   // ---- public surface ----
@@ -344,8 +404,12 @@
       embeddingDim: EMBEDDING_DIM,
       heteroOutboxMaxEntries: HETERO_OUTBOX_MAX_ENTRIES,
       outboxLabelMaxLen: OUTBOX_LABEL_MAX_LEN,
-      outboxStore: OUTBOX_STORE,
-      siblingsStore: SIBLINGS_STORE,
+      outboxStoreBase: OUTBOX_STORE_BASE,
+      siblingsStoreBase: SIBLINGS_STORE_BASE,
+      // Bau 08.Y: Read-Anker für Tests (slot-suffixed Store-Namen sind
+      // intern, der aktive Slot-Key wird gecached und über _meta lesbar
+      // gemacht — null vor init, string danach).
+      get activeSlotKey() { return activeSlotKey; },
     },
   };
 
