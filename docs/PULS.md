@@ -41,7 +41,7 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 - 🟦 **[01 Storage](components/01_storage.md)** — geprüft 2026-05-14 + 2026-05-16 + 2026-05-19 (Klaus, im Browser); init/round-trip/Unknown-Store sauber, jetzt acht Pflicht-Stores plus dynamische Stores ab v=4 (Bau 01.Y `ensureStore` 2026-05-19 grün — Knöpfe 6/7/8 3/3, happy-path / Idempotenz / Pattern-Verstoß); **Pflege „`init()` versions-fail-soft" 2026-05-19 live grün** (Klaus, DeX-Chrome: Knopf 9 `db_version_vor: 16 → nach_bump: 17`, dann Tab-Reload + Bonus-Probe Panel-02-Knöpfe 8/9/10 alle grün ohne Cleanup-Workaround). Headless-Smoke-Test 8/8 grün + Bau-02.Y-Regression 33/33 grün.
 - 🟦 **[02 Spore](components/02_spore.md)** — geprüft 2026-05-14 + 2026-05-16 (Klaus, im Browser); Identität deterministisch, Spore sortiert, Sign+Verify valide, Manipulation erkannt; **Bau 02.X Backup-Export Sichttest 2026-05-16 grün** — Knöpfe 6/7/7b alle drei Hauptpfade ohne Modul-Bug. **Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump Sichttest 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6): 3/3 grün** (nach Mini-Fix + Cleanup-Workaround) — Knopf 8 „Identitäts-Wechsel OK", Knopf 9 „Persona-Apoptose OK", Knopf 10 „Multi-ID-Backup OK"; Erst-Befund Multi-Tab-onblocked auf Knopf 8 + Rollback-Bug in `getOrCreateIdentity` durch Mini-Fix (Reihenfolge `ensureIdentityStores` vor `put(sbkim_keys)`) behoben; Headless-Smoke-Test 33/33 grün. Panel 01 (1–8) ebenfalls grün. Klaus' Beobachtung: zweiter Lauf gelang erst nach „Storage init"-Klick in Panel 01 — bestätigt offene Folge-Pflege Modul 01 `init()` versions-fail-soft.
 - 🟦 **[03 Embedding](components/03_embedding.md)** — geprüft 2026-05-14 (Klaus, im Browser); L2-Norm 1.0, gleicher Inhalt ≈0.95, Baseline für unverwandte Begriffe ungewöhnlich hoch
-- 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser); 3/5 Tests grün, 2 zeigten Schwellen-Drift → Pflege-Sitzung 2026-05-14 hat `PROVIDER_MIN_MATCH` und Test-Schwellen kalibriert. **Bau 04.A `matchDimensions` sync 2026-05-19 live grün** (Klaus, DeX-Chrome: Knopf 7 drei Schichten alle `-0.0084` identisch — Stufe-A-Heuristik live bestätigt, Knopf 8 Nur-Anbieter-Modus, Knopf 9 `DimensionsAllNullError` synchron). Smoke-Test 19/19 grün; Bau 04.B (Stufe B `explainMatchLLM`) steht aus.
+- 🟦 **[04 Match](components/04_match.md)** — geprüft 2026-05-14 (Klaus, im Browser) + Bau 04.A `matchDimensions` sync 2026-05-19 live grün + **Bau 04.B `explainMatchLLM` 2026-05-20** (Stufe-B-LLM-Pass gegen Anthropic-API, JSON-only, strikte Schema-Validierung, fail-soft — zwei sync Throws InvalidApiKeyError + InvalidMatchResultError, alle anderen Fehlerpfade resolved mit `ExplainResult{available:false, reason}`; AbortError durchgereicht; Anti-Missbrauch § 8: `candidateScope:"netz"` still auf `"lokal"` korrigiert). **Bau 04.B Sichttest ungeprüft** (headless 30/30 smoke grün — wartet auf Klaus' Browser-Lauf Panel 04 Knopf 10 mit Anthropic-API-Key; bei `localhost`-Test möglicherweise CORS, Workaround echtes PWA-Setup).
 - 🟦 **[06 Heterokaryose](components/06_heterokaryose.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 06) + Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15 + **Bau 06.Y transparenter Slot-Pfad 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur — Modul 06 schreibt jetzt slot-spezifisch in `sbkim_hetero_inbox_<key>` + `sbkim_anastomosis_log_<key>`; liest aus `sbkim_hetero_outbox_<key>` + `sbkim_siblings_<key>`; Receiver-Pfad nutzt `nodeId → slotKey`-Map; Sender cached `opSlot` zur Op-Zeit; volle 06/05/08-Achse jetzt geschlossen-konsistent slot-suffixed). Sichttest 2026-05-16 rasch grob durchgeklickt (Panel 06 14 Knöpfe), volle 12-Knopf-Sichttest-Runde 2026-05-20 grün im Bau-08.Y-Lauf inkl. Test 9 `HETERO_MAX_ANCHORS`. **Bau 06.Y Sichttest ungeprüft** (headless 25/25 smoke grün — wartet auf Klaus' Browser-Lauf Panel 06 + Knopf 15 Sekundär-Persona-Test).
 
 Code-Stub frisch aus den Bau-Sitzungen 2026-05-14/15, **Sichttest ausstehend bzw. teilweise erledigt:**
@@ -97,7 +97,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege PWA-Suffix + Pflege Storage-Persist 2026-05-16, Bau 01.Y `ensureStore` 2026-05-19, Pflege `init()` versions-fail-soft 2026-05-19) | geprüft 2026-05-14 + 2026-05-16 + 2026-05-19 (Klaus) — Bau 01.Y `ensureStore` Knöpfe 6/7/8 3/3 grün (DeX-Chrome); **Pflege „`init()` versions-fail-soft" Knopf 9 live grün 2026-05-19** (`db_version_vor: 16 → nach_bump: 17`, Bonus-Probe Panel-02-Knöpfe 8/9/10 ohne Cleanup grün); Headless-Smoke 8/8 + Bau-02.Y-Regression 33/33 weiterhin grün | IndexedDB-Wrapper |
 | 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15, Pflege Spec Backup-Export Stufe 2 2026-05-16, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Stamm/Gast-Durchreichung 2026-05-15, Bau 02.X Backup-Export 2026-05-16, Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump 2026-05-19, Mini-Fix Rollback-Pfad 2026-05-19) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) + 2026-05-16 (Klaus, Bau 02.X Backup-Export Knöpfe 6/7/7b alle drei grün) + **2026-05-19 (Klaus, DeX-Chrome: Bau 02.Y Knöpfe 8/9/10 alle drei grün** nach Mini-Fix + Cleanup-Workaround) | Ed25519-Identität, Multi-Identitäts-Slots (Bau 02.Y), base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. **`generateOwnSpore` Code-Allow-List nachgezogen** 2026-05-15 (Bau 02 Stamm/Gast): zwei Zeilen analog zu `domainKeywords` — ohne diese Pflege würden Stamm/Gast-Felder beim Andock still ignoriert. **Spec Backup-Export Stufe 2 2026-05-16** (Identitäts-Persistenz Stufe 2): zwei neue Funktionen `exportBackup(password) → Promise<SbkimBackupBlob>` + `importBackup(blob, password, options?)` (PBKDF2-SHA256 600 000 + AES-GCM-256, Klartext-Payload = Identität + Geschwister, defensiv per Default — `BackupOverwriteError`); drei §0-Konstanten verankert (`BACKUP_FORMAT_VERSION=1` / `BACKUP_KDF_ITERATIONS=600000` / `BACKUP_PASSWORD_MIN_LEN=8`); fünf neue Error-Klassen (`InvalidBackupPasswordError` / `BackupDecryptError` / `BackupVersionMismatchError` / `BackupSchemaError` / `BackupOverwriteError`). KEIN Spore-Feld dazu (Backup-Schicht separat, `PROTOCOL_VERSION` bleibt `"0.1"`). **Bau-Sitzung 02.X ausstehend**, KEIN Code in `src/modules/02_spore.js`. |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
-| 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15, Spec M04-Erweiterung Brief 03 2026-05-19) | Code-Stub (2026-05-14, Bau 04.A `matchDimensions` sync 2026-05-19) | geprüft 2026-05-14 (Klaus) — drei Tests grün + Kalibrierung; **Bau 04.A Knöpfe 7/8/9 live grün 2026-05-19** (Klaus, DeX-Chrome: drei Schichten gleich, Nur-Anbieter, DimensionsAllNullError synchron); Headless-Smoke 19/19 weiterhin grün | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80. **Karte 04 § Stamm/Gast-Hinweis 2026-05-15**: Match bleibt unverändert; Stamm/Gast ist Klassifikations-Schicht auf Daten-Ebene. **Bau 04.A 2026-05-19** `matchDimensions` synchron (drei Schichten + overall + availableLanes + DimensionsAllNullError + Nur-Anbieter-Modus); Stufe-A-Heuristik (alle drei Schichten gleich); `explainMatchLLM` kommt mit Bau 04.B. |
+| 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15, Spec M04-Erweiterung Brief 03 2026-05-19) | Code-Stub (2026-05-14, Bau 04.A `matchDimensions` sync 2026-05-19, **Bau 04.B `explainMatchLLM` 2026-05-20**) | geprüft 2026-05-14 (Klaus) + Bau 04.A live grün 2026-05-19; **Bau 04.B Sichttest ungeprüft** (headless 30/30 smoke grün — wartet auf Klaus' Browser-Lauf Panel 04 Knopf 10 mit Anthropic-API-Key; CORS-Limitierung im localhost möglich, Workaround echtes PWA-Setup) | Vektorvergleich, modus-frei; Bau 04.A 2026-05-19 `matchDimensions` synchron (drei Schichten, Stufe-A-Heuristik). **Bau 04.B 2026-05-20** `explainMatchLLM` async — Stufe-B-LLM-Pass gegen Anthropic-API (hartcodiert), JSON-only, strikte Schema-Validierung, fail-soft (zwei sync Throws InvalidApiKeyError + InvalidMatchResultError; alle anderen Fehlerpfade resolved; AbortError durchgereicht). Anti-Missbrauch § 8: `candidateScope:"netz"` still auf `"lokal"` korrigiert. User-Key als opaque String (Vision-Anker 5 = produktiver Identitäts-Container, nicht in 04.B; Test-Brücke via `window.prompt`). **Brief-99-Pipeline ist mit Bau 04.B + Konsumenten-Achse 05/06/07/08 jetzt vollständig** — nur noch Endknoten-Migration offen. |
 | 05 anastomose | Spec fertig (2026-05-14, Spec BroadcastChannel-Bridge 2026-05-17, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-14, Bau BroadcastChannel-Bridge 2026-05-17, **Bau 05.Y transparenter Slot-Pfad 2026-05-20**) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert; **Bau BroadcastChannel-Bridge Sichttest 2026-05-17 grün** (Klaus, DeX-Chrome) — Knöpfe 9 / 9a / 9b / 9c alle vier ohne Modul-Befund (Test 9 established score 0.8881; Test 9a HandshakeTimeoutError nach 4005 ms; Test 9b MissingToNodeIdError synchron; Test 9c Auto-Fallback HTTP-404→Channel etabliert 0.8881); volle Regression Panels 01-07 grün im Bau-08.Y-Sichttest 2026-05-20 (Test 9c live grün); **Bau 05.Y Sichttest ungeprüft** (headless gebaut 2026-05-20, wartet auf Klaus' Browser-Lauf Panel 05 Setup + Knopf 10 Sekundär-Persona) | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) + same-origin Fallback-Transport via `BroadcastChannel('sbkim')` aus Bau-Sitzung 2026-05-17 (additiv, `options.transport ∈ {"auto","http","channel"}` mit Default `"auto"` und einmaligem Auto-Fallback bei klaren HTTP-Defekt-Signalen) |
 | 06 heterokaryose | Spec fertig (2026-05-15, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15, **Bau 06.Y transparenter Slot-Pfad 2026-05-20**) | rasch grob durchgeklickt 2026-05-16 + volle 12-Knopf-Sichttest-Runde 2026-05-20 (Klaus, Tab S6 + DeX) — Panel 06 alle Tests grün inkl. Test 9 HETERO_MAX_ANCHORS; **Bau 06.Y Sichttest ungeprüft** (headless 25/25 smoke grün — wartet auf Klaus' Browser-Lauf Panel 06 Setup + Knopf 15 Sekundär-Persona) | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
 | 07 apoptose | Spec fertig (2026-05-14, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Cleanup-Reihenfolge Bau 06 2026-05-15, **Bau 07.Y transparenter Slot-Pfad + Legacy-Hook 2026-05-20**) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate; volle 8-Knopf-Sichttest-Runde 2026-05-20 im Bau-08.Y-Lauf grün; **Bau 07.Y Sichttest ungeprüft** (headless 30/30 smoke grün — wartet auf Klaus' Browser-Lauf Panel 07 Test 6 globale Slot-Iteration + Panel 02 Knopf 9 Persona-Apoptose-Hook produktiv) | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; Cleanup-Schritt ruft `SbkimSpore.resetIdentityCache()` (Pflege 2026-05-15). **Bau 07.Y 2026-05-20:** drei Eingriffe — (1) transparenter Slot-Pfad in Stores; (2) globale `confirmSelfApoptose` iteriert über ALLE Slots; (3) neuer interner Hook `_sendLegacyForIdentity(key)` für Bau-02.Y `removeIdentity(key, {force:true})`-Aufrufe. **Konsumenten-Achse 05/06/07/08 vollständig slot-suffixed.** **Bau-02.Y-fail-soft-Klausel aufgelöst** ohne Modul-02-Code-Änderung. |
@@ -1810,6 +1810,114 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-20 · Bau 04.B `explainMatchLLM` in Modul 04 (Match)
+
+**Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 03 hat alles in
+INTERFACES + Karte 04 § Stufe-B-Vertrag spezifiziert). Branch
+`claude/bau-04b-explain-match-llm-j6mJF`, vom `main` `cd138c3` aus
+angelegt (Stand nach Bau 07.Y PR #121). Schließt die M04-Erweiterung
+aus Brief 03 (Stufe B nach Stufe A). Brief BAU_04B_EXPLAIN_MATCH_LLM
+(PR #112 gemerged 2026-05-20, `main` `a1f6939`) als Spec-Vorlage.
+
+**Kern (drei Sätze):** Modul 04 hat jetzt `explainMatchLLM(matchResult,
+apiKey, options?)` async — Stufe-B-LLM-Pass gegen Anthropic-API
+(`https://api.anthropic.com/v1/messages`, hartcodiert), JSON-only-
+Output, strikte Schema-Validierung. Zwei sync Throws
+(`InvalidApiKeyError` + `InvalidMatchResultError`) als Aufrufer-
+Validierung; danach **alle Fehlerpfade fail-soft** resolved mit
+`ExplainResult{available:false, reason:"<deutsch>", fallbackScore:
+matchResult.overall}` — Aufrufer fällt auf Stufe-A-Resultat zurück.
+`AbortError` ist die EINE Ausnahme (durchgereicht). Anti-Missbrauch
+§ 8: `candidateScope:"netz"` wird still auf `"lokal"` korrigiert.
+
+**Sechs Punkte a–f:**
+
+- **a) INTERFACES.md** zwei Eingriffe: § 1 Modul 04 Geprüft-Zeile +
+  § 10 Änderungsprotokoll. KEIN Vertrags-Drift.
+
+- **b) Karte 04** § Bauzustand neue Zeile mit vollständiger Code-
+  Beschreibung.
+
+- **c) `src/modules/04_match.js` additiv** (keine bestehende Funktion
+  verändert): zwei neue Fehler-Factories (`InvalidApiKeyError` +
+  `InvalidMatchResultError`); fünf neue modul-lokale Konstanten
+  (`STUFE_B_DEFAULT_MODEL` / `STUFE_B_MAX_TOKENS` / `ANTHROPIC_API_URL`
+  / `ANTHROPIC_API_VERSION` / `LLM_MAX_OUTPUT_CHARS`); drei interne
+  Helper (`validateMatchResultShape` / `buildLlmPrompt` /
+  `validateLlmResponseSchema` mit netz→lokal-Korrektur); neue
+  Funktion `explainMatchLLM` async (sync-Vor-Checks; fetch POST mit
+  Anthropic-Headern; fail-soft auf allen Fehlerpfaden;
+  `AbortError` durchgereicht; erfolg-Pfad mit `ExplainResult{available:
+  true, ...}`). Selbstcheck-Zeile auf VIER Funktionen erweitert.
+  `_meta` um `stufeBDefaultModel` + `stufeBMaxTokens` +
+  `anthropicApiUrl` + `anthropicApiVersion` erweitert.
+  Modul-Kopfkommentar um Bau-04.B-Block am Ende. `node --check` grün.
+
+- **d) Panel 04** neuer Knopf 10 „explainMatchLLM Test-Brücke" —
+  User-Key-Eingabe via `window.prompt` (KEIN localStorage —
+  Sicherheits-Klausel; produktiver Identitäts-Container ist
+  Vision-Anker 5). Setup via deterministischem matchDimensions-Aufruf
+  (Käsekuchen-vs-Käsetorte). Status-Chip „Stufe-B-Call OK" auch bei
+  `available:false`. Panel-Header um Bau-04.B-Block + CORS-Hinweis
+  erweitert.
+
+- **e) Smoke-Test** `tests/smoke_bau04b_explain_match_llm.mjs` mit
+  fetch-Stub (Node 22, KEIN echter Netz-Aufruf). Zehn Proben + zwei
+  Bonus (HTTP 200 valide JSON / candidateScope:"netz"→"lokal" /
+  HTTP 429 / HTTP 500 / TypeError fetch / LLM-Output kein JSON /
+  Schema-Mismatch / leerer apiKey → sync InvalidApiKeyError / leeres
+  matchResult → sync InvalidMatchResultError / AbortError
+  durchgereicht / usage fehlt → tokensUsed null / Schicht-Score=1.5
+  außerhalb [-1,1] → Schema-Mismatch). **30 Sub-Proben, 30 grün.**
+  Regression: Bau-02.Y 33/33 + Bau-04.A 19/19 + Pflege-01 8/8 +
+  Bau-05.Y 25/25 + Bau-06.Y 25/25 + Bau-07.Y 30/30 + Bau-08.Y 26/26
+  alle grün. **Summe alle Smokes: 196 Sub-Proben grün.**
+
+- **f) Übergabeprotokoll**
+  `docs/sessions/archiv/2026-05-20_bau-04b-explain-match-llm.md`.
+
+**Heilige Tafeln eingehalten:** INTERFACES verbindlich. Karte 04
+§ Stufe-B-Vertrag eins-zu-eins. Fehlertoleranz: nur zwei sync Throws,
+alle anderen Pfade fail-soft. `AbortError` durchgereicht.
+Anti-Missbrauch § 8: netz→lokal-Korrektur. User-Key-Verwaltung NICHT
+in Modul 04 (Vision-Anker 5). Anthropic-API hartcodiert.
+Rate-Limit-Awareness Aufrufer-Pflicht. Bestehende Funktionen
+unangetastet. `PROTOCOL_VERSION` / `DB_VERSION` /
+`BACKUP_FORMAT_VERSION` unverändert. **KEINE Tafel-Spannung.**
+
+**Was NICHT angefasst:** Kein Identitäts-Container-Code; kein
+localStorage / sessionStorage / IndexedDB für API-Key (Sicherheit);
+kein Modul-01/02/03/05/06/07/08-Eingriff; kein eigener Rate-Limit-
+Pfad; keine Sage-Page-/CLAUDE.md-/Karte-09-/`status.json`-Änderung
+(Modul 04 bleibt `score:"fertig"`).
+
+**Bekannte Limitierung CORS:** Anthropic-API erlaubt direkte Browser-
+Aufrufe seit 2024 mit `anthropic-dangerous-direct-browser-access`-
+Header — Modul 04 setzt diesen Header BEWUSST NICHT (keine
+Klaus-feindliche Konfig-Komplexität). Bei `localhost`-Test scheitert
+CORS möglich; Workaround echtes PWA-Setup (GitHub-Pages-Endknoten).
+
+**Sichttest:** ungeprüft, weil headless gebaut. Wartet auf Klaus'
+Browser-Lauf Panel 04 Knopf 10 mit Anthropic-API-Key.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Browser-Sichttest Panel 04 Knopf 10** — Anthropic-API-
+   Key bereithalten; bei CORS-Fehler: Workaround echtes PWA-Setup.
+2. **Endknoten-Migration (Mein-Mixarium + Mein-Rezeptbuch)** — alle
+   Bau-02.Y / 04.A / 04.B / 05.Y / 06.Y / 07.Y / 08.Y produktiv im
+   Endknoten-Repo. **Brief-99-Pipeline ist mit Bau 04.B + Konsumenten-
+   Achse jetzt vollständig.** Endknoten-Migration ist die letzte
+   verbleibende Phase.
+3. **Vision-Anker 5 Identitäts-Container Spec-Sitzung** (optional) —
+   löst die `window.prompt`-Test-Brücke aus Bau 04.B mit produktivem
+   sicheren Pfad.
+
+**PR:** Branch `claude/bau-04b-explain-match-llm-j6mJF`,
+Draft-PR „Bau 04.B `explainMatchLLM` in Modul 04 (Match)".
+
+---
+
 ### 2026-05-20 · Bau 07.Y transparenter Slot-Pfad + `_sendLegacyForIdentity`-Hook in Modul 07 (Apoptose)
 
 **Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 04 PR #99 hat
@@ -2747,140 +2855,6 @@ Bau-Code in der Spec-Sitzung** — nur Verträge.
 
 **Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker.md](sessions/archiv/2026-05-17_mini-pflege-vision-anker.md).
 
-### 2026-05-17 · Mini-Pflege — Live-Channel-Handshake + Browser-Observatorium
-
-**Sitzungs-Rolle:** Mini-Pflege (Folge zur Bau-Sitzung
-BroadcastChannel-Bridge, PR #75 `b8c8f41`, und Mini-Pflege Bau-
-Sichttest, PR #76 `8801896`). Branch
-`claude/pflege-live-channel-handshake-observatorium`. Klaus hat
-**den ersten regulären Cross-Knoten-Handshake im SBKIM-Netz ohne
-localStorage-Bypass** über Eruda gefahren — das Ziel der gesamten
-Sitzungskette PR #65 → #70 → #71 → #72 → #73 → #74 → #75 → #76 ist
-erreicht.
-
-**Ablauf (Klaus, Galaxy Tab S6 + Samsung DeX, Termux 0.118):**
-
-1. **Endknoten-Pflege:** `src/modules/05_anastomose.js` aus
-   Sage-Protokol-main (Commit `8801896`, mit BroadcastChannel-Bridge
-   aus PR #75) in beide Endknoten kopiert als `sbkim/05_anastomose-v2.js`
-   (File-Rename als Cache-Bust, Konvention aus PR #73). `<script>`-
-   Referenz in `index.html` via `sed` umgestellt. Commits:
-   Mein-Rezeptbuch `a1b9ded`, Mein-Mixarium `9d2f127`.
-2. **Sichttest Stufe 1 (Bau-Tests im Browser):** Klaus hatte vorher
-   `tests/manual_check.html` aus dem Sage-Protokol-Clone über lokalen
-   `python3 -m http.server 8000` (Termux) im Tablet-Chrome aufgerufen
-   und Panel 05 Knöpfe 9 / 9a / 9b / 9c durchgeklickt — vier von vier
-   grün (siehe Mini-Pflege „Bau-Sichttest BroadcastChannel-Bridge grün"
-   in PR #76).
-3. **IndexedDB-Verlust-Befund:** beim Live-Test in DeX-Chrome zeigten
-   beide Endknoten-Tabs „SBKIM-Andock bereit. Spore erzeugen mit
-   `__sbkimErzeugeSpore()`" — die alten 2026-05-16-Identitäten waren
-   weg. Ursache nicht abschließend geklärt: vermutlich Chrome-Update
-   / Site-Daten-Löschung / Storage-Quota / PWA-Re-Install zwischen
-   2026-05-16 und 2026-05-17.
-4. **Re-Andock in DeX-Chrome:** in beiden Tabs `__sbkimErzeugeSpore()`
-   ausgeführt, Embedding-Modell (~30 MB) erstmals vom CDN gezogen,
-   Spore-JSON via Blob-Download nach `~/storage/downloads/`,
-   `cp`-Befehl in Termux nach `~/Mein-{Rezeptbuch,Mixarium}/sbkim/
-   spore.json`, Commit + Push. Neue nodeIds: Mein-Rezeptbuch
-   `BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY` (Commit `3bcc453`),
-   Mein-Mixarium `JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`
-   (Commit `e9d0a45`). Pages-Deploy abgewartet + via
-   `curl ...?$(date +%s)` verifiziert (beide neue IDs live).
-5. **Live-Handshake-Test:** in Mein-Rezeptbuch-Tab (DeX-Chrome,
-   Multi-Window mit Mein-Mixarium nebeneinander) regulärer
-   `SbkimAnastomose.handshake(peerSpore, ownVec)`-Aufruf via Eruda
-   (kein expliziter `transport`-Override → Default `"auto"`).
-   HTTP-POST gegen `Mein-Mixarium/sbkim/anastomosis` scheitert mit
-   405 (Pages), Auto-Fallback greift, Channel-Pfad routet via
-   `BroadcastChannel('sbkim')` zum Mein-Mixarium-Tab, Receiver
-   filtert + ruft `receiveHandshake`, signiert Response kanonisch.
-   **Resultat:**
-   ```json
-   {
-     "outcome": "established",
-     "peerNodeId": "JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY",
-     "peerDomain": "lausiklauskn-png.github.io",
-     "score": 0.9544261159927087
-   }
-   ```
-6. **Gegenrichtung verifiziert:** im Mein-Mixarium-Tab denselben
-   `handshake()` mit Rezeptbuch als Peer → `outcome:"established"`,
-   `peerNodeId: BSWxXmXvxF8FUR_…`, identischer Score 0.9544
-   (cosine ist symmetrisch, gleicher domainVector-Vergleich).
-7. **Sibling-Persistenz:** `SbkimAnastomose.listSiblings()` in
-   Mein-Rezeptbuch zeigt Mein-Mixarium als Geschwister-Eintrag in
-   IndexedDB — Bidirektionalität bewiesen.
-
-**Score-Beobachtung 0.9544:** Kochrezepte- und Cocktail-Domain liegen
-semantisch sehr eng — weit über `PROVIDER_MIN_MATCH = 0.80`. Klaus'
-Hypothese „Cocktails und Kochrezepte vielleicht zu unterschiedlich"
-(aus 2026-05-16) ist nun zum zweiten Mal widerlegt.
-
-**Browser-Observatorium-Lehren (Tech-Note für Andocker/Programmierer):**
-
-Klaus' Auftrag „Vermerk im Observatorium über die Abgründe und Tiefen
-eines Browsers" wurde umgesetzt:
-
-- **Neue Doku-Datei** [`docs/OBSERVATORIUM_BROWSER.md`](OBSERVATORIUM_BROWSER.md)
-  mit sieben Lehren aus dem 2026-05-17-Live-Betrieb: Browser-Instanzen-
-  Trennung (DeX vs. Tablet), IndexedDB-Persistenz-Risiken,
-  BroadcastChannel-Bedingungen, Service-Worker-Cache-Strategien,
-  Eruda ≠ Chrome-DevTools, Termux + Android-Storage als Brücke, DeX
-  als Test-Plattform. Pro Lehre Beobachtung + Phänomenologie +
-  Konsequenz für SBKIM + Workarounds + Vorteile. Lebende Sammlung,
-  Pflege-Konvention dokumentiert.
-- **Sage-Page (`index.html`) neue Karte „Browser-Observatorium ·
-  Anziehung ins Detail"** am Ende des Overview-Screens — ein
-  simuliertes schwarzes Loch mit rotierendem Akkretionsscheiben-
-  Gradient, schwarzem Ereignishorizont und einem verschwommenen
-  Chrome-Icon, das durch CSS-Keyframes in Endlos-Schleife in den
-  Kern gezogen wird. Hover beschleunigt die Animation und zieht
-  die Szene leicht zum Cursor (subtile Sog-Geste via
-  `requestAnimationFrame`, keine echte Cursor-Manipulation — die
-  unterbindet der Browser aus Sicherheitsgründen). Klick öffnet die
-  neue Doku-md auf GitHub. Tagline „Browser sind wie schwarze
-  Löcher, neugierig?" (Klaus' Wortlaut). `prefers-reduced-motion`
-  respektiert (keine Animation bei aktivierter Einstellung).
-
-**`pingStatus`-Update:** Endknoten-Tabelle in PULS § Endknoten —
-Mein-Rezeptbuch und Mein-Mixarium von `"live-direct"` (manueller
-Bypass) auf `"live-channel"` (regulärer Handshake via Channel-Pfad).
-Alte 2026-05-16-nodeIds (`RHhposP0…` / `7xf0tt33_…`) als
-Historie-Vermerk in der Tabelle erwähnt; aktive nodeIds sind
-`BSWxXm…` / `JOlHK3…`.
-
-**Karte 05 § Bauzustand:** neue Zeile „In Endknoten eingebaut |
-2026-05-17 | Klaus + Mini-Pflege Live-Channel-Handshake" mit Score-
-Beleg und Verweis auf diesen Sitzungs-Eintrag.
-
-**§ Offene Querschnitts-Fragen aktualisiert:**
-
-- SW-Bridge-Phantom-Cache-Bug-Eintrag von „Architektur-Grenze sauber
-  benannt, Klaus-Endknoten-Pflege offen" auf **vollständig erledigt**
-  umgestellt — Pflege-Kette von PR #65 bis zu dieser Mini-Pflege
-  zugeklappt.
-- Neuer Eintrag **„DeX-Chrome vs. Tablet-Chrome — zwei getrennte
-  Browser-Instanzen"** als Nebenbei-Befund mit Verweis auf das
-  Observatorium § Lehre 1. Kein Code-Eingriff nötig — Workaround
-  ist Single-Instance-Disziplin oder Backup-Import via Modul 02.
-
-**Validierung headless:**
-
-- Sage-Page `index.html` JS-Block per `node --check` validiert — grün.
-- Markdown-Doku `OBSERVATORIUM_BROWSER.md` formal sauber (Header,
-  sieben Lehren, Querverweise, Pflege-Konvention).
-- PULS unter 3000-Zeilen-Schutz (aktuell ~2100).
-- **Browser-Sichttest der Schwarz-Loch-Karte ausstehend** — Klaus
-  prüft die Animation visuell beim nächsten Sage-Page-Aufruf. Falls
-  Performance-/Layout-Probleme auf Mobile-Chrome auftreten, eigene
-  Mini-Folge-Pflege.
-
-**`status.json` nicht geändert** — keine Score-Bewegung
-(Live-Test-Bestätigung). `update_puls_pie.py` nicht aufgerufen.
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_live-channel-handshake.md](sessions/archiv/2026-05-17_live-channel-handshake.md).
-
 ---
 
 ## Archiv-Index (Sitzungen vor dieser Pflege)
@@ -2890,6 +2864,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Mini-Pflege · Live-Channel-Handshake + Browser-Observatorium | Live-Beweis Cross-Knoten-Handshake ohne localStorage-Bypass: Modul-05-v2 mit BroadcastChannel-Bridge in beiden Endknoten (Mein-Mixarium + Mein-Rezeptbuch), File-Rename als Cache-Bust. Beide Endknoten in DeX-Chrome neu angedockt mit neuen nodeIds (alte 2026-05-16-Identitäten durch IndexedDB-Verlust nicht mehr da). Erster regulärer Cross-Knoten-Handshake: `outcome:"established"`, score 0.9544261159927087 bidirektional via Auto-Fallback HTTP→Channel-Bridge. Pflege-Kette PR #65 → #70 → #71 → #72 → #73 → #74 → #75 → #76 vollständig geschlossen. Plus Browser-Observatorium-Sitzung mit Mini-Pflege auf der Sage-Page. status.json unverändert. | [→ Archiv](sessions/archiv/2026-05-17_live-channel-handshake.md) |
 | 2026-05-17 | Mini-Pflege · Bau-Sichttest BroadcastChannel-Bridge grün | Folge-Eintrag zur Bau-Sitzung BroadcastChannel-Bridge (PR #75 `b8c8f41`). Klaus hat Panel 05 Knöpfe 9 / 9a / 9b / 9c im Browser durchgeklickt — alle vier grün im ersten Lauf (Termux-`python3 -m http.server 8000` auf Galaxy Tab S6 + DeX, Modell vom CDN-Fallback `cdn.jsdelivr.net` gezogen). Test 9 Channel-Pfad established score 0.8881, Test 9a HandshakeTimeoutError nach 4005 ms, Test 9b MissingToNodeIdError synchron, Test 9c Auto-Fallback HTTP-404→Channel etabliert 0.8881. Score-Stabilität bestätigt zwischen Test 9 und 9c. PROTOCOL_VERSION unverändert; status.json unverändert (Sichttest-Bestätigung, kein Score-Wechsel). | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-bau-05-sichttest-gruen.md) |
 | 2026-05-17 | Bau-Sitzung Modul 05 · BroadcastChannel-Bridge implementiert | Bau-Sitzung zur Spec-Sitzung BroadcastChannel-Bridge (PR #75, `b8c8f41`). Additiver Channel-Pfad in `src/modules/05_anastomose.js` ohne Refactoring der bestehenden Pfade — zwei neue Error-Klassen (`InvalidTransportError` + `MissingToNodeIdError`), drei Konstanten (`ALLOWED_TRANSPORTS`, `BROADCAST_CHANNEL_NAME`, `REPLY_CHANNEL_PREFIX`), Closure-Helfer `setupBroadcastChannelBridge()` + `postChannelEnvelope()` + `sendViaChannel()` + `parseTransport()` + `shouldAutoFallback()`. `handshake()` um optionalen `options.transport`-Parameter mit Default `"auto"` erweitert; Auto-Fallback bei HTTP-Defekt-Signalen (4xx/5xx, non-JSON, Schema-Lücke, outcome unklar). Channel-Pfad: BroadcastChannel('sbkim') als Main-Channel, Reply-Channel via `nonce`-Ableitung, Receiver-Filter `toNodeId === own.nodeId && fromNodeId !== own.nodeId`, Cleanup in finally. HandshakeRequest/Response-Schema unverändert. Panel 05 in `tests/manual_check.html` um vier Knöpfe 9 / 9a / 9b / 9c erweitert. Karte 09 § Schritt 4 um Andock-Hinweis „Beide Tabs offen halten" erweitert. `node --check` grün, Smoke-Test im Node-VM-Kontext alle fünf Proben grün. PROTOCOL_VERSION bleibt `"0.1"`, status.json unverändert. | [→ Archiv](sessions/archiv/2026-05-17_bau-05-broadcastchannel-bridge.md) |
 | 2026-05-19 | Pflege · Modul 01 `init()` versions-fail-soft (PR #107 gemerged 2026-05-19, `main` `b9e1a8f`; Sichttest-Nachzug PR #108, `main` `af4fdff`). Folge-Pflege auf Klaus' Bau-02.Y-Sichttest. DB_VERSION ist jetzt Mindest-Schema-Version, nicht „immer-anstreben". init() öffnet die DB zweiphasig (Probe + Entscheidung), respektiert existing > DB_VERSION ohne VersionError. Bei fehlendem Pflicht-Store: StorageOpenError mit Liste. Vier neue Closure-Helper (openProbe / checkRequiredStores / openExact / deleteDb); `_meta.dbVersionPolicy = "fail-soft-min-schema"` als Read-Anker. Karte 01 § Versionsmigration neuer Sub-Block + § Risiken zwei neue Punkte + § Manueller Test Knopf 9 + § Bauzustand. **Sichttest 2026-05-19 (Klaus, DeX-Chrome): live grün** — `db_version_vor: 16 → nach_bump: 17`, Bonus-Probe Panel-02-Knöpfe 8/9/10 alle grün ohne Cleanup-Workaround. Headless-Smoke 8/8 grün, Bau-02.Y-Regression 33/33 weiterhin grün. Tafel-Evolutions-konform (PR #105). PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION unverändert | [→ Archiv](sessions/archiv/2026-05-19_pflege-01-init-fail-soft.md) |
