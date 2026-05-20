@@ -61,7 +61,7 @@
   <section class="panel" data-module="04_match">
     <h2>04 Match <span class="status ok">Code-Stub</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
-    <pre class="log">— bereit. Voraussetzung: Modul 03 wird beim ersten Klick mitgeladen (~5–15 s beim ersten Mal). —</pre>
+    <pre class="log">— bereit. Voraussetzung: Modul 03 wird beim ersten Klick mitgeladen (~5–15 s beim ersten Mal). Bau 04.B (2026-05-20): Knopf 10 ruft `explainMatchLLM` (Stufe B) gegen die Anthropic-API. User-Key-Eingabe via `window.prompt` (KEIN localStorage — Test-Brücke; produktiver Identitäts-Container ist Vision-Anker 5). CORS-Hinweis: bei `localhost`-Tests könnte Anthropic-API CORS-blocken — Workaround: Test im echten PWA-Setup (GitHub-Pages-Endknoten). —</pre>
   </section>
 
   <section class="panel" data-module="05_anastomose">
@@ -540,6 +540,79 @@
           erhalten_name: caught.name,
           erhalten_message: caught.message,
           synchron_geworfen: true,
+        };
+      });
+
+      // Knopf 10 (Bau 04.B, 2026-05-20) — explainMatchLLM Test-Brücke.
+      // User-Key-Eingabe via window.prompt (KEIN localStorage, KEIN
+      // produktiver Identitäts-Container — Vision-Anker 5). Setup-
+      // matchResult via deterministischem matchDimensions-Aufruf;
+      // dann explainMatchLLM gegen die echte Anthropic-API.
+      //
+      // CORS-Hinweis: Anthropic-API erlaubt direkte Browser-Aufrufe
+      // seit 2024 mit dem Header `anthropic-dangerous-direct-browser-access`,
+      // den Modul 04 BEWUSST NICHT setzt (Klaus-feindliche Konfig-
+      // Komplexität vermieden). Bei `localhost`-Tests könnte CORS
+      // stören — Workaround: Test im echten PWA-Setup (GitHub-Pages-
+      // Endknoten), nicht in Termux-`localhost`.
+      SbkimUI.addButton("04_match", "Test 10: explainMatchLLM (Bau 04.B Test-Brücke — Anthropic-API-Key per window.prompt)", async function () {
+        var apiKey = window.prompt(
+          "Anthropic API-Key (sk-ant-…) eingeben:\n\n" +
+          "(Bau 04.B Test-Brücke — Key wird NICHT persistiert.\n" +
+          "Produktiver Identitäts-Container ist Vision-Anker 5.)",
+          "",
+        );
+        if (!apiKey || apiKey.length === 0) {
+          SbkimUI.log("04_match", "ℹ Abgebrochen.");
+          return { abgebrochen: true };
+        }
+
+        // Setup-matchResult via Modul 03 + 04 (deterministische
+        // Vektoren analog Knöpfe 6-8 — Käsekuchen-vs-Käsetorte als
+        // Default, ein hoher Match-Score).
+        await SbkimEmbedding.init();
+        var qCap = await SbkimEmbedding.embedQuery("Käsekuchen mit Quark");
+        var pCap = await SbkimEmbedding.embedPassage("Käsetorte mit Quark");
+        var matchResult = SbkimMatch.matchDimensions(qCap, null, pCap, null);
+
+        SbkimUI.log("04_match",
+          "ℹ Stufe-A overall=" + matchResult.overall.toFixed(4) +
+          ", availableLanes=" + matchResult.availableLanes +
+          ". Rufe Anthropic-API …");
+
+        var result;
+        try {
+          result = await SbkimMatch.explainMatchLLM(matchResult, apiKey);
+        } catch (err) {
+          // sync InvalidApiKeyError / InvalidMatchResultError (sollte
+          // hier nicht passieren, da Key + matchResult valide); oder
+          // AbortError (kein abortSignal übergeben).
+          SbkimUI.setStatus("04_match", "err", err.name);
+          return { fehler_name: err.name, fehler_message: err.message };
+        }
+
+        SbkimUI.setStatus("04_match", "ok", "Stufe-B-Call OK (available=" + result.available + ")");
+        if (result.available === true) {
+          return {
+            available: true,
+            model: result.model,
+            tokensUsed: result.tokensUsed,
+            schichten: result.schichten,
+            bruecke: result.bruecke,
+            erklaerung: result.erklaerung,
+            overrideRecommendation: result.overrideRecommendation,
+            fallbackScore: result.fallbackScore,
+            stufeA_overall: matchResult.overall,
+          };
+        }
+        return {
+          available: false,
+          model: result.model,
+          tokensUsed: result.tokensUsed,
+          reason: result.reason,
+          fallbackScore: result.fallbackScore,
+          stufeA_overall: matchResult.overall,
+          hinweis: "Modul 04 hat sauber resolved. Bei CORS-Fehler im localhost: Test im echten PWA-Setup (GitHub-Pages-Endknoten), nicht in Termux.",
         };
       });
     })();
