@@ -73,7 +73,7 @@
   <section class="panel" data-module="06_heterokaryose">
     <h2>06 Heterokaryose <span class="status ok">Code-Stub</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
-    <pre class="log">— bereit. Voraussetzung: Module 01/02 sind beim Skript-Laden mitgekommen. „Setup" stellt eine Identität sicher, erzeugt eine Spore (mit domainVector) und schreibt drei In-Memory-Pseudo-Geschwister direkt in sbkim_siblings — zwei mit heterokaryosisOptIn:true, einer mit Flag fehlend. Der echte Netz-Pfad (Service-Worker + fetch /sbkim/heterokaryosis) ist hier nicht abgedeckt; er gehört in Modul 09 zweite Iteration (Live-Andock). Anker-Quelle nach Pflege Bau 06.1: zuerst sbkim_hetero_outbox (Schreiber Modul 08, Spec-Sitzung 08), fail-soft Fallback auf den Spore-Single-Anker („domain"-Label, 384-Float-Vektor aus der eigenen Spore). Test 9 prüft die HETERO_MAX_ANCHORS-Begrenzung jetzt voll (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). —</pre>
+    <pre class="log">— bereit. Voraussetzung: Module 01/02 sind beim Skript-Laden mitgekommen. „Setup" stellt eine Identität sicher, erzeugt eine Spore (mit domainVector) und schreibt drei In-Memory-Pseudo-Geschwister direkt in sbkim_siblings_&lt;activeSlotKey&gt; — zwei mit heterokaryosisOptIn:true, einer mit Flag fehlend. Der echte Netz-Pfad (Service-Worker + fetch /sbkim/heterokaryosis) ist hier nicht abgedeckt; er gehört in Modul 09 zweite Iteration (Live-Andock). Anker-Quelle nach Pflege Bau 06.1 + Bau 06.Y: zuerst sbkim_hetero_outbox_&lt;activeSlotKey&gt; (Schreiber Modul 08 nach Bau 08.Y), fail-soft Fallback auf den Spore-Single-Anker („domain"-Label, 384-Float-Vektor aus der eigenen Spore). Test 9 prüft die HETERO_MAX_ANCHORS-Begrenzung jetzt voll (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Bau 06.Y (2026-05-20): Modul 06 schreibt jetzt slot-spezifisch in sbkim_hetero_inbox_&lt;activeSlotKey&gt; und sbkim_anastomosis_log_&lt;activeSlotKey&gt;; Receiver-Pfad nutzt nodeId→key-Map zur Persona-Auflösung. Knopf 15 macht eine Sekundär-Persona „test_06y" und erfordert Tab-Reload. —</pre>
   </section>
 
   <section class="panel" data-module="07_apoptose">
@@ -2276,6 +2276,30 @@
           "  MODUL 06 HETEROKARYOSE bereit, Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis");
         SbkimUI.log("06_heterokaryose",
           "ℹ Hinweis: HETERO_MAX_ANCHORS (5), QUERY_TIMEOUT_MS (4000), Endpunkt-Konstante stehen in §0 / §3, NICHT in der Selbstcheck-Zeile.");
+      });
+
+      // Knopf 15 (Bau 06.Y, 2026-05-20) — Sekundär-Persona-Vorbereitung.
+      // Analog Panel 05 Knopf 10. Legt `test_06y` an + setzt aktiv;
+      // Klaus reloaded Tab, dann Setup + Test 1 erneut → Inbox-Eintrag
+      // landet in sbkim_hetero_inbox_test_06y statt sbkim_hetero_inbox_main.
+      // Cleanup: removeIdentity('test_06y', {force:true}) räumt.
+      SbkimUI.addButton("06_heterokaryose", "Test 15: Sekundär-Persona-Vorbereitung (Bau 06.Y — Tab-Reload nötig)", async function () {
+        await SbkimSpore.init();
+        await SbkimSpore.getOrCreateIdentity("test_06y");
+        await SbkimSpore.setActiveIdentity("test_06y");
+        var activeNach = await SbkimSpore.getActiveIdentityKey();
+        var idents = await SbkimSpore.listIdentities();
+        SbkimUI.setStatus("06_heterokaryose", "ok", "Sekundär-Persona angelegt — Tab reloaden");
+        return {
+          neuer_slot: "test_06y",
+          active_identity_nach_wechsel: activeNach,
+          listIdentities: idents,
+          modul06_meta_activeSlotKey_jetzt: SbkimHeterokaryose._meta.activeSlotKey,
+          modul06_meta_receiverMapSize_jetzt: SbkimHeterokaryose._meta.receiverMapSize,
+          naechster_schritt: "Tab RELOADEN (Strg+Shift+R) — dann Setup + Test 1 erneut. Inbox-Eintrag landet jetzt in sbkim_hetero_inbox_test_06y statt sbkim_hetero_inbox_main; auch Log in sbkim_anastomosis_log_test_06y.",
+          cleanup_hinweis: "Nach dem Test: removeIdentity('test_06y', {force:true}) räumt die identitäts-spezifischen Stores. Active-identity fällt automatisch auf 'main' zurück.",
+          erwartung: "test_06y in listIdentities, active-identity = 'test_06y'; Modul 06 muss durch Tab-Reload re-initialisiert werden, damit Receiver-Map den neuen Slot kennt.",
+        };
       });
     })();
   </script>

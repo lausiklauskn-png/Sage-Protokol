@@ -58,6 +58,18 @@
  * fällt Modul 06 auf den Spore-Single-Anker-Fallback zurück (Label
  * "(domain)", Vektor = senderSpore.domainVector, oder leeres Array,
  * wenn auch das fehlt — Degraded-Modus).
+ *
+ * Bau 06.Y transparenter Slot-Pfad (2026-05-20): Modul 06 schreibt
+ * identitäts-spezifisch in `sbkim_hetero_inbox_<key>` und
+ * `sbkim_anastomosis_log_<key>`; liest aus `sbkim_hetero_outbox_<key>`
+ * (Schreiber Modul 08 nach Bau 08.Y) und `sbkim_siblings_<key>`
+ * (Schreiber Modul 05 nach Bau 05.Y). Receiver-Pfad nutzt eine
+ * `nodeId → key`-Map (im `init()` einmal aus `listIdentities()` ×
+ * `getOrCreateIdentity(slot)` aufgebaut) zur Persona-Auflösung;
+ * Sender-Pfad nutzt den aktiven Slot (Cache in `init()` via
+ * `getActiveIdentityKey()`). Spec-Quelle: Brief 04 (PR #99,
+ * INTERFACES § 1 Modul 06 + § 9.2 + § 9.4) + Bau 02.Y (PR #104,
+ * Multi-Identitäts-API).
  */
 (function (global) {
   "use strict";
@@ -70,10 +82,18 @@
   var ENDPOINT_HETEROKARYOSIS = "/sbkim/heterokaryosis";
   var NONCE_BYTES = 16;
 
-  var SIBLINGS_STORE = "sbkim_siblings";
-  var LOG_STORE = "sbkim_anastomosis_log";
-  var INBOX_STORE = "sbkim_hetero_inbox";
-  var OUTBOX_STORE = "sbkim_hetero_outbox";
+  // Bau 06.Y: identitäts-spezifische Stores via Slot-Suffix.
+  // Die Basis-Konstanten + Slot-Helper (siblingsStoreName etc.) bauen
+  // den vollen Store-Namen. Reine Lese-Stores (sbkim_siblings_<key> +
+  // sbkim_hetero_outbox_<key>) gehören Modul 05 bzw. Modul 08 als
+  // Schreiber; Modul 06 ist Schreiber für sbkim_hetero_inbox_<key>
+  // und sbkim_anastomosis_log_<key>.
+  var SIBLINGS_STORE_BASE = "sbkim_siblings";
+  var LOG_STORE_BASE = "sbkim_anastomosis_log";
+  var INBOX_STORE_BASE = "sbkim_hetero_inbox";
+  var OUTBOX_STORE_BASE = "sbkim_hetero_outbox";
+  var KEYS_STORE = "sbkim_keys";
+  var DEFAULT_IDENTITY_KEY = "main";
 
   var REQUEST_REQUIRED_FIELDS = [
     "fromNodeId",
@@ -123,6 +143,38 @@
 
   function getStorage() { return global.SbkimStorage; }
   function getSpore() { return global.SbkimSpore; }
+
+  // ---- Bau 06.Y: Slot-Helfer ----
+  //
+  // Modul 06 lebt nach Bau 06.Y in identitäts-spezifischen Stores. Die
+  // Closure-Helper bauen den vollen Namen aus Basis + Slot.
+  // `ensureSlotStores` legt die zwei Modul-06-Schreib-Stores
+  // (sbkim_hetero_inbox_<slot>, sbkim_anastomosis_log_<slot>) defensiv
+  // via Bau-01.Y `ensureStore` an (idempotent — wer schon da war, bleibt
+  // da). Outbox + Siblings sind Lese-Stores (Schreiber Modul 08 bzw.
+  // Modul 05); deren ensure-Pflicht liegt beim Schreiber.
+
+  function siblingsStoreName(slotKey) {
+    return SIBLINGS_STORE_BASE + "_" + slotKey;
+  }
+
+  function anastomosisLogStoreName(slotKey) {
+    return LOG_STORE_BASE + "_" + slotKey;
+  }
+
+  function heteroInboxStoreName(slotKey) {
+    return INBOX_STORE_BASE + "_" + slotKey;
+  }
+
+  function heteroOutboxStoreName(slotKey) {
+    return OUTBOX_STORE_BASE + "_" + slotKey;
+  }
+
+  async function ensureSlotStores(slotKey) {
+    var storage = getStorage();
+    await storage.ensureStore(heteroInboxStoreName(slotKey));
+    await storage.ensureStore(anastomosisLogStoreName(slotKey));
+  }
 
   // ---- base64url ohne Padding (RFC 4648 §5, dupliziert aus Modul 02/05/07) ----
 
@@ -240,10 +292,12 @@
     return { key: key, ts: ts };
   }
 
-  async function logEntry(peerId, outcome) {
+  async function logEntry(peerId, outcome, slotKey) {
+    // Bau 06.Y: schreibt slot-spezifisch in sbkim_anastomosis_log_<slot>.
+    var sk = slotKey || activeSlotKey || DEFAULT_IDENTITY_KEY;
     try {
       var k = nextLogKey();
-      await getStorage().put(LOG_STORE, k.key, {
+      await getStorage().put(anastomosisLogStoreName(sk), k.key, {
         ts: k.ts,
         peerId: peerId,
         outcome: outcome,
@@ -252,7 +306,7 @@
       // Log-Fehler dürfen den Pfad nicht abbrechen — Apoptose/Anastomose
       // protokollieren, aber stoßen den Hauptpfad nicht um.
       if (typeof console !== "undefined" && console.error) {
-        console.error("MODUL 06 HETEROKARYOSE: Log-Schreibfehler (" + outcome + "):", err);
+        console.error("MODUL 06 HETEROKARYOSE: Log-Schreibfehler (" + outcome + ", slot=" + sk + "):", err);
       }
     }
   }
@@ -261,8 +315,17 @@
 
   var ready = false;
   var bridgeRegistered = false;
-  var ownPrivateKeyCache = null;
+  // Bau 06.Y: pro Slot ein cached CryptoKey (statt einem globalen).
+  var ownPrivateKeyCacheBySlot = new Map();
   var receiverHttpStatusOverride = null;   // Test-Bridge für 404-Pfad
+  // Bau 06.Y: aktiver Slot wird im init() einmal aus
+  // `getActiveIdentityKey()` gecached. Operations cachen ihn nochmal
+  // lokal (analog Bau 05.Y, Modul 05) — gegen Mid-Operation-Wechsel.
+  var activeSlotKey = null;
+  // Bau 06.Y: Receiver-Map nodeId → slotKey, im init() einmal aus
+  // `listIdentities()` × `getOrCreateIdentity(slot)` aufgebaut.
+  // Re-Init via Tab-Reload (Karte 06 § Receiver-Map-Schlank-Konvention).
+  var receiverMap = new Map();
 
   // ---- init() ----
 
@@ -271,6 +334,26 @@
     getSubtle();
     await getStorage().init();
     await getSpore().init();
+    // Bau 06.Y: aktive Identität sicherstellen — sonst kann Modul 06
+    // später nicht signieren. Modul 02 ist beim ersten Aufruf lazy.
+    await getSpore().getOrCreateIdentity();
+
+    // Bau 06.Y: aktiven Slot cachen + slot-spezifische Stores anlegen.
+    var spore = getSpore();
+    activeSlotKey = await spore.getActiveIdentityKey();
+    await ensureSlotStores(activeSlotKey);
+
+    // Bau 06.Y: Receiver-Map nodeId → slotKey einmal aus
+    // listIdentities × getOrCreateIdentity(slot) bauen. Re-Init via
+    // Tab-Reload (Karte 06 § Receiver-Map-Schlank-Konvention).
+    receiverMap = new Map();
+    var slots = await spore.listIdentities();
+    for (var i = 0; i < slots.length; i++) {
+      var slot = slots[i];
+      var ident = await spore.getOrCreateIdentity(slot);
+      receiverMap.set(ident.nodeId, slot);
+    }
+
     setupServiceWorkerBridge();
     ready = true;
     // Spec: kein Selbst-Sweep, keine Pulsation, kein Auto-Pull beim
@@ -282,14 +365,18 @@
     if (!ready) await init();
   }
 
-  async function loadOwnPrivateKey() {
-    if (ownPrivateKeyCache) return ownPrivateKeyCache;
+  async function loadOwnPrivateKey(slotKey) {
+    // Bau 06.Y: pro Slot ein cached CryptoKey. Sender ruft mit dem
+    // aktiven Slot, Receiver mit dem aus der receiverMap getroffenen.
+    var sk = slotKey || activeSlotKey || DEFAULT_IDENTITY_KEY;
+    if (ownPrivateKeyCacheBySlot.has(sk)) return ownPrivateKeyCacheBySlot.get(sk);
     var storage = getStorage();
-    var stored = await storage.get("sbkim_keys", "main");
+    var stored = await storage.get(KEYS_STORE, sk);
     if (!stored || !stored.privateKey) {
       throw makeError(
         "NoIdentityError",
-        "Keine Identität in sbkim_keys[\"main\"] — getOrCreateIdentity wurde nicht ausgeführt.",
+        "Keine Identität in sbkim_keys[\"" + sk + "\"] — getOrCreateIdentity('" + sk +
+          "') wurde nicht ausgeführt.",
       );
     }
     var subtle = getSubtle();
@@ -299,11 +386,12 @@
     } catch (err) {
       throw makeError(
         "HeterokaryoseDependenciesError",
-        "Privatschlüssel nicht importierbar: " + (err && err.message ? err.message : err),
+        "Privatschlüssel nicht importierbar (slot=" + sk + "): " +
+          (err && err.message ? err.message : err),
         err,
       );
     }
-    ownPrivateKeyCache = priv;
+    ownPrivateKeyCacheBySlot.set(sk, priv);
     return priv;
   }
 
@@ -358,14 +446,20 @@
   // PWA-DB-Version ohne v=3), fällt Modul 06 fail-soft auf den Spore-
   // Single-Anker-Fallback zurück.
 
-  async function readOutboxAnchors() {
+  async function readOutboxAnchors(slotKey) {
+    // Bau 06.Y: liest aus sbkim_hetero_outbox_<slot> (Schreiber Modul 08
+    // nach Bau 08.Y). Fail-soft auf Spore-Single-Anker, wenn der Store
+    // leer ist, fehlt oder das Lesen wirft (z.B. UnknownStoreError auf
+    // einer alten PWA-DB-Version, oder ein noch-nicht-via-Bau-08.Y-
+    // angelegter Slot).
+    var sk = slotKey || activeSlotKey || DEFAULT_IDENTITY_KEY;
     var rows;
     try {
-      rows = await getStorage().all(OUTBOX_STORE);
+      rows = await getStorage().all(heteroOutboxStoreName(sk));
     } catch (err) {
       if (typeof console !== "undefined" && console.info) {
         console.info(
-          "MODUL 06 HETEROKARYOSE: Outbox-Lese-Pfad fail-soft (" +
+          "MODUL 06 HETEROKARYOSE: Outbox-Lese-Pfad fail-soft (slot=" + sk + ", " +
             (err && err.name ? err.name : "?") + ") — Fallback auf Spore-Single-Anker.",
         );
       }
@@ -394,8 +488,9 @@
     return anchors;
   }
 
-  async function readSporeFallbackAnchors() {
-    var ownSpore = await getSpore().getOwnSpore();
+  async function readSporeFallbackAnchors(slotKey) {
+    // Bau 06.Y: nutzt die Spore des aktiven/getroffenen Slots.
+    var ownSpore = await getSpore().getOwnSpore(slotKey);
     if (!ownSpore) return [];
     if (!Array.isArray(ownSpore.domainVector) || ownSpore.domainVector.length === 0) {
       return [];
@@ -403,10 +498,10 @@
     return [{ label: "(domain)", vector: ownSpore.domainVector.slice() }];
   }
 
-  async function readOwnAnchors() {
-    var outbox = await readOutboxAnchors();
+  async function readOwnAnchors(slotKey) {
+    var outbox = await readOutboxAnchors(slotKey);
     if (outbox !== null) return outbox;
-    return await readSporeFallbackAnchors();
+    return await readSporeFallbackAnchors(slotKey);
   }
 
   // ---- requestHeterokaryosis() ----
@@ -423,8 +518,13 @@
       );
     }
 
-    // 1. Sibling-Lookup
-    var sibling = await storage.get(SIBLINGS_STORE, peerNodeId);
+    // Bau 06.Y: Operations-Slot zur Sender-Zeit cachen (gegen Mid-
+    // Operation-Wechsel — Karte 02 § Risiken). Defensiv ensureStore.
+    var opSlot = activeSlotKey || await spore.getActiveIdentityKey();
+    await ensureSlotStores(opSlot);
+
+    // 1. Sibling-Lookup (slot-spezifisch nach Bau 05.Y / 06.Y)
+    var sibling = await storage.get(siblingsStoreName(opSlot), peerNodeId);
     if (!sibling) {
       throw makeError(
         "UnknownSiblingError",
@@ -434,20 +534,21 @@
 
     // 2. Lokale Opt-In-Vorprüfung (fail-soft: Feld fehlt → false)
     if (sibling.heterokaryosisOptIn !== true) {
-      await logEntry(peerNodeId, "hetero-opt-out-local");
+      await logEntry(peerNodeId, "hetero-opt-out-local", opSlot);
       return { outcome: "opt-out-local" };
     }
 
-    // 3. Eigene Identität + Spore laden
-    var ownSpore = await spore.getOwnSpore();
+    // 3. Eigene Identität + Spore laden (Bau 06.Y: für den aktiven Slot)
+    var ownSpore = await spore.getOwnSpore(opSlot);
     if (!ownSpore) {
       throw makeError(
         "HeterokaryoseDependenciesError",
-        "Eigene Spore fehlt — SbkimSpore.generateOwnSpore(meta) zuerst.",
+        "Eigene Spore fehlt (slot=" + opSlot + ") — SbkimSpore.generateOwnSpore(meta) zuerst.",
       );
     }
-    var privKey = await loadOwnPrivateKey();
-    var ownNodeId = await spore.getNodeId();
+    var privKey = await loadOwnPrivateKey(opSlot);
+    var ident = await spore.getOrCreateIdentity(opSlot);
+    var ownNodeId = ident.nodeId;
 
     // 4. HeterokaryosisRequest bauen + signieren
     var unsigned = {
@@ -482,7 +583,7 @@
     } catch (err) {
       clearTimeout(timeoutId);
       if (err && err.name === "AbortError") {
-        await logEntry(peerNodeId, "hetero-timeout");
+        await logEntry(peerNodeId, "hetero-timeout", opSlot);
         throw makeError(
           "HeterokaryoseTimeoutError",
           "Heterokaryose-POST > " + QUERY_TIMEOUT_MS + " ms abgebrochen: " + url,
@@ -499,7 +600,7 @@
 
     // 5a. HTTP 404 → endpoint_unsupported (KEIN Throw)
     if (response.status === 404) {
-      await logEntry(peerNodeId, "hetero-endpoint-unsupported");
+      await logEntry(peerNodeId, "hetero-endpoint-unsupported", opSlot);
       return { outcome: "endpoint_unsupported" };
     }
 
@@ -521,10 +622,10 @@
       );
     }
 
-    return await consumeResponse(peerNodeId, responseJson);
+    return await consumeResponse(peerNodeId, responseJson, opSlot);
   }
 
-  async function consumeResponse(peerNodeId, responseJson) {
+  async function consumeResponse(peerNodeId, responseJson, opSlot) {
     if (!responseJson || typeof responseJson !== "object") {
       throw makeError("HeterokaryoseNetworkError", "Antwort ist kein Objekt.");
     }
@@ -535,7 +636,7 @@
     var spore = getSpore();
     var verifyReceiver = await spore.verifyForeignSpore(responseJson.receiverSpore);
     if (!verifyReceiver.valid) {
-      await logEntry(peerNodeId, "hetero-rejected");
+      await logEntry(peerNodeId, "hetero-rejected", opSlot);
       throw makeError(
         "HeterokaryoseSignatureInvalidError",
         "receiverSpore ungültig: " + (verifyReceiver.reason || "?"),
@@ -544,7 +645,7 @@
 
     var sigOk = await verifyEnvelope(responseJson, responseJson.receiverSpore.publicKey);
     if (!sigOk) {
-      await logEntry(peerNodeId, "hetero-rejected");
+      await logEntry(peerNodeId, "hetero-rejected", opSlot);
       throw makeError(
         "HeterokaryoseSignatureInvalidError",
         "Response-Signatur gegen receiverSpore.publicKey ungültig.",
@@ -556,7 +657,7 @@
       var ts = typeof responseJson.timestamp === "string" ? responseJson.timestamp : nowIso();
       var receivedAt = nowIso();
       try {
-        await getStorage().put(INBOX_STORE, peerNodeId + "|" + ts, {
+        await getStorage().put(heteroInboxStoreName(opSlot), peerNodeId + "|" + ts, {
           peerNodeId: peerNodeId,
           ts: ts,
           anchors: anchors,
@@ -565,7 +666,7 @@
         });
       } catch (storageErr) {
         if (typeof console !== "undefined" && console.error) {
-          console.error("MODUL 06 HETEROKARYOSE: Inbox-Schreibfehler:", storageErr);
+          console.error("MODUL 06 HETEROKARYOSE: Inbox-Schreibfehler (slot=" + opSlot + "):", storageErr);
         }
         throw makeError(
           "HeterokaryoseNetworkError",
@@ -573,7 +674,7 @@
           storageErr,
         );
       }
-      await logEntry(peerNodeId, "hetero-pulled");
+      await logEntry(peerNodeId, "hetero-pulled", opSlot);
       return {
         outcome: "shared",
         anchorCount: anchors.length,
@@ -583,12 +684,12 @@
     }
 
     if (responseJson.outcome === "opt-out") {
-      await logEntry(peerNodeId, "hetero-opt-out");
+      await logEntry(peerNodeId, "hetero-opt-out", opSlot);
       return { outcome: "opt-out" };
     }
 
     // outcome:"rejected" oder unbekannt → als rejected behandeln
-    await logEntry(peerNodeId, "hetero-rejected");
+    await logEntry(peerNodeId, "hetero-rejected", opSlot);
     return {
       outcome: "rejected",
       reason: typeof responseJson.reason === "string" ? responseJson.reason : "(kein Grund mitgeschickt)",
@@ -635,59 +736,70 @@
         );
       }
 
-      // 5. toNodeId-Check (Pflicht in HeterokaryosisRequest)
-      var myNodeId = await spore.getNodeId();
-      if (typeof incomingRequest.toNodeId !== "string" || incomingRequest.toNodeId !== myNodeId) {
+      // 5. Bau 06.Y: Receiver-Map-Lookup für toNodeId.
+      //    HeterokaryosisRequest verlangt toNodeId (REQUEST_REQUIRED_FIELDS).
+      //    - toNodeId in der Map → targetSlot ist die getroffene Persona.
+      //    - toNodeId nicht in der Map → rejected, KEIN Storage-Eingriff.
+      var targetSlot = receiverMap.get(incomingRequest.toNodeId);
+      if (targetSlot === undefined) {
         return await buildResponse(
           { outcome: "rejected", reason: "toNodeId stimmt nicht zum Empfänger" },
           incomingRequest,
         );
       }
 
-      // 6. Sibling-Filter (Sender muss in unserer sbkim_siblings stehen)
+      // Bau 06.Y: ab hier alles im Kontext des targetSlot.
+      await ensureSlotStores(targetSlot);
+
+      // 6. Sibling-Filter (Sender muss in unserer sbkim_siblings_<targetSlot>
+      //    stehen — Bau 05.Y + 06.Y: slot-spezifischer Sibling-Lookup).
       var senderId = incomingRequest.senderSpore.id;
       var siblingEntry;
       try {
-        siblingEntry = await storage.get(SIBLINGS_STORE, senderId);
+        siblingEntry = await storage.get(siblingsStoreName(targetSlot), senderId);
       } catch (storageErr) {
         if (typeof console !== "undefined" && console.error) {
-          console.error("MODUL 06 HETEROKARYOSE: Sibling-Lookup-Fehler:", storageErr);
+          console.error("MODUL 06 HETEROKARYOSE: Sibling-Lookup-Fehler (slot=" + targetSlot + "):", storageErr);
         }
         return await buildResponse(
           { outcome: "rejected", reason: "interner Speicherfehler" },
           incomingRequest,
+          targetSlot,
         );
       }
       if (!siblingEntry) {
         return await buildResponse(
           { outcome: "rejected", reason: "Sender ist kein Geschwister" },
           incomingRequest,
+          targetSlot,
         );
       }
 
       // 7. Opt-In-Filter (fail-soft, fehlend → false)
       if (siblingEntry.heterokaryosisOptIn !== true) {
-        await logEntry(senderId, "hetero-opt-out");
-        return await buildResponse({ outcome: "opt-out" }, incomingRequest);
+        await logEntry(senderId, "hetero-opt-out", targetSlot);
+        return await buildResponse({ outcome: "opt-out" }, incomingRequest, targetSlot);
       }
 
-      // 8. Anker-Quelle lesen, max. HETERO_MAX_ANCHORS, Response bauen
+      // 8. Anker-Quelle lesen (slot-spezifisch nach Bau 06.Y + 08.Y),
+      //    max. HETERO_MAX_ANCHORS, Response bauen mit getroffener Persona.
       var anchors;
       try {
-        anchors = await readOwnAnchors();
+        anchors = await readOwnAnchors(targetSlot);
       } catch (err) {
         if (typeof console !== "undefined" && console.error) {
-          console.error("MODUL 06 HETEROKARYOSE: Anker-Quelle-Fehler:", err);
+          console.error("MODUL 06 HETEROKARYOSE: Anker-Quelle-Fehler (slot=" + targetSlot + "):", err);
         }
         anchors = [];
       }
       if (anchors.length > HETERO_MAX_ANCHORS) {
         anchors = anchors.slice(0, HETERO_MAX_ANCHORS);
       }
-      await logEntry(senderId, "hetero-served");
+      await logEntry(senderId, "hetero-served", targetSlot);
       return await buildResponse(
         { outcome: "shared", anchors: anchors },
         incomingRequest,
+        targetSlot,
       );
     } catch (err) {
       // Spec: receiveHeterokaryosis wirft niemals. Wenn doch (z.B. Build-
@@ -724,17 +836,23 @@
     return null;
   }
 
-  async function buildResponse(extra, incomingRequest) {
+  async function buildResponse(extra, incomingRequest, slotKey) {
     var spore = getSpore();
-    var ownSpore = await spore.getOwnSpore();
+    // Bau 06.Y: ohne slot-Argument fällt buildResponse auf den aktiven
+    // Slot zurück (Pre-Receiver-Map-Pfad, z.B. malformede Requests).
+    // Mit Argument signiert die Antwort mit der GETROFFENEN Persona —
+    // Brief 04 § 9.4.
+    var sk = slotKey || activeSlotKey || DEFAULT_IDENTITY_KEY;
+    var ownSpore = await spore.getOwnSpore(sk);
     if (!ownSpore) {
       throw makeError(
         "HeterokaryoseDependenciesError",
-        "Eigene Spore fehlt — HeterokaryosisResponse kann nicht signiert werden.",
+        "Eigene Spore fehlt (slot=" + sk + ") — HeterokaryosisResponse kann nicht signiert werden.",
       );
     }
-    var privKey = await loadOwnPrivateKey();
-    var ownNodeId = await spore.getNodeId();
+    var privKey = await loadOwnPrivateKey(sk);
+    var ident = await spore.getOrCreateIdentity(sk);
+    var ownNodeId = ident.nodeId;
 
     var unsigned = {
       fromNodeId: ownNodeId,
@@ -755,8 +873,10 @@
   // ---- listHeterokaryosis() ----
 
   async function listHeterokaryosis() {
+    // Bau 06.Y: liest aus dem Inbox-Slot der AKTIVEN Identität.
+    // Persona-übergreifende Sicht ist Aufrufer-Pflicht.
     await ensureReady();
-    var rows = await getStorage().all(INBOX_STORE);
+    var rows = await getStorage().all(heteroInboxStoreName(activeSlotKey));
     return rows.map(function (r) {
       return {
         peerNodeId: r.value.peerNodeId,
@@ -782,9 +902,10 @@
         "forgetHeterokaryosis: ts fehlt oder ist leer.",
       );
     }
+    // Bau 06.Y: löscht aus dem Inbox-Slot der AKTIVEN Identität.
     await ensureReady();
     // Idempotent: del wirft nicht, wenn der Schlüssel fehlt (Modul 01-Vertrag).
-    await getStorage().del(INBOX_STORE, peerNodeId + "|" + ts);
+    await getStorage().del(heteroInboxStoreName(activeSlotKey), peerNodeId + "|" + ts);
   }
 
   // ---- Test-Brücken (Unterstrich-Präfix, inoffiziell) ----
@@ -797,13 +918,17 @@
     if (typeof toNodeId !== "string" || toNodeId.length === 0) {
       throw makeError("HeterokaryoseDependenciesError", "toNodeId fehlt.");
     }
+    // Bau 06.Y: Test-Brücke signiert mit der aktiven Identität.
     var spore = getSpore();
-    var ownSpore = await spore.getOwnSpore();
+    var opSlot = activeSlotKey || await spore.getActiveIdentityKey();
+    var ownSpore = await spore.getOwnSpore(opSlot);
     if (!ownSpore) {
-      throw makeError("HeterokaryoseDependenciesError", "Eigene Spore fehlt — generateOwnSpore(meta) zuerst.");
+      throw makeError("HeterokaryoseDependenciesError",
+        "Eigene Spore fehlt (slot=" + opSlot + ") — generateOwnSpore(meta) zuerst.");
     }
-    var ownNodeId = await spore.getNodeId();
-    var privKey = await loadOwnPrivateKey();
+    var ident = await spore.getOrCreateIdentity(opSlot);
+    var ownNodeId = ident.nodeId;
+    var privKey = await loadOwnPrivateKey(opSlot);
     var unsigned = {
       fromNodeId: ownNodeId,
       nonce: randomBytesB64(NONCE_BYTES),
@@ -846,7 +971,12 @@
     } else if (sib.heterokaryosisOptIn === false) {
       entry.heterokaryosisOptIn = false;
     }
-    await getStorage().put(SIBLINGS_STORE, sib.nodeId, entry);
+    // Bau 06.Y: Pseudo-Sibling landet im sbkim_siblings_<activeSlot>-
+    // Store (Modul 05 alleiniger Schreiber nach Bau 05.Y; hier nutzen
+    // wir denselben Store-Namen über ensureStore defensiv).
+    var sk = activeSlotKey || DEFAULT_IDENTITY_KEY;
+    await getStorage().ensureStore(siblingsStoreName(sk));
+    await getStorage().put(siblingsStoreName(sk), sib.nodeId, entry);
     if (pseudoSiblingIds.indexOf(sib.nodeId) === -1) {
       pseudoSiblingIds.push(sib.nodeId);
     }
@@ -855,8 +985,9 @@
   async function _clearPseudoSiblings() {
     await ensureReady();
     var storage = getStorage();
+    var sk = activeSlotKey || DEFAULT_IDENTITY_KEY;
     for (var i = 0; i < pseudoSiblingIds.length; i++) {
-      try { await storage.del(SIBLINGS_STORE, pseudoSiblingIds[i]); } catch (e) { /* nb */ }
+      try { await storage.del(siblingsStoreName(sk), pseudoSiblingIds[i]); } catch (e) { /* nb */ }
     }
     pseudoSiblingIds = [];
   }
@@ -902,10 +1033,15 @@
       queryTimeoutMs: QUERY_TIMEOUT_MS,
       heteroMaxAnchors: HETERO_MAX_ANCHORS,
       endpointHeterokaryosis: ENDPOINT_HETEROKARYOSIS,
-      inboxStore: INBOX_STORE,
-      outboxStore: OUTBOX_STORE,
-      siblingsStore: SIBLINGS_STORE,
-      logStore: LOG_STORE,
+      // Bau 06.Y: Stores leben slot-suffixed. Die Basis-Namen
+      // bleiben als Read-Anker, der Live-Zustand kommt aus den
+      // Gettern unten.
+      inboxStoreBase: INBOX_STORE_BASE,
+      outboxStoreBase: OUTBOX_STORE_BASE,
+      siblingsStoreBase: SIBLINGS_STORE_BASE,
+      logStoreBase: LOG_STORE_BASE,
+      get activeSlotKey() { return activeSlotKey; },
+      get receiverMapSize() { return receiverMap ? receiverMap.size : 0; },
       requestRequiredFields: REQUEST_REQUIRED_FIELDS.slice(),
     },
   };
