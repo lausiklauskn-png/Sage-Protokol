@@ -296,8 +296,11 @@ sind modul-lokal).
 Aus [INTERFACES.md §0](../INTERFACES.md#0-globale-konstanten):
 
 ```
-HETERO_OUTBOX_MAX_ENTRIES = 5     // max. Anker in sbkim_hetero_outbox; Modul 08, Spec-Sitzung 08
+HETERO_OUTBOX_MAX_ENTRIES = 5     // max. Anker PRO SLOT in sbkim_hetero_outbox_<key>; Modul 08, Spec-Sitzung 08
                                   //   konsistent mit HETERO_MAX_ANCHORS = 5 (Modul 06)
+                                  //   Bau 08.Y (2026-05-20): Begrenzung gilt PRO SLOT, nicht global —
+                                  //   bei 3 Personae hat Klaus theoretisch 5 Anker × 3 = 15 Anker
+                                  //   insgesamt im Knoten. Spec-konform, keine Tafel-Spannung.
 EMBEDDING_DIM             = 384   // Dimension des Vektor-Arrays pro Anker
 ```
 
@@ -320,7 +323,17 @@ Pull raus.
 
 ### Datenformate
 
-**`sbkim_hetero_outbox[label]`** — Wert pro Outbox-Eintrag:
+**Slot-Pfad (Bau 08.Y, 2026-05-20):** Modul 08 schreibt nach Bau 08.Y
+nicht mehr in den globalen Store `sbkim_hetero_outbox`, sondern in den
+slot-suffixed Store `sbkim_hetero_outbox_<activeSlotKey>` (Schema
+INTERFACES § 9.2). Der `activeSlotKey` wird im `init()` via
+`SbkimSpore.getActiveIdentityKey()` gecached (Default `"main"` als
+Rückwärts-Kompat zum Singleton-Vertrag). Persona-übergreifende
+Outbox-/Opt-In-Pflege ist Aufrufer-Pflicht via
+`SbkimSpore.setActiveIdentity` + Modul-08-Re-Init (Tab-Reload).
+Pre-Brief-04-Aufrufer treffen unverändert auf `_main`-Slots.
+
+**`sbkim_hetero_outbox_<activeSlotKey>[label]`** — Wert pro Outbox-Eintrag:
 
 ```jsonc
 {
@@ -343,7 +356,7 @@ rein lokal; die Response-Signatur in Modul 06 deckt das
 HeterokaryosisResponse-JSON inklusive `anchors` ab, der lokale
 Outbox-Store braucht keine Eigen-Signatur.
 
-**`sbkim_siblings[peerNodeId]` — Co-Schreiber-Verhalten von Modul 08:**
+**`sbkim_siblings_<activeSlotKey>[peerNodeId]` — Co-Schreiber-Verhalten von Modul 08:**
 
 ```jsonc
 {
@@ -439,49 +452,60 @@ den Pfad). Mindestens **sieben Knöpfe**:
 
 1. **Setup** — `SbkimStorage.init()` + `SbkimUiDemo.init()`.
    Erwartung: `console.info("MODUL 08 UI-DEMO bereit, …")`-Zeile
-   in DevTools sichtbar; `sbkim_hetero_outbox` als Store in
-   DevTools → Application → IndexedDB → `sbkim` sichtbar (leer);
-   DB-Version 3.
+   in DevTools sichtbar; **Bau 08.Y (2026-05-20):** der slot-suffixed
+   Store `sbkim_hetero_outbox_<activeSlotKey>` (typisch
+   `sbkim_hetero_outbox_main`) sichtbar in DevTools → Application →
+   IndexedDB → `sbkim` (leer); DB-Version ≥ 4 (Bau 01.Y); Setup-Output
+   zeigt das Feld `active_slot_key` aus `SbkimUiDemo._meta`.
 2. **Outbox add + list** — drei Pseudo-Vektoren (z.B. via
    `SbkimEmbedding.embedPassage("Hefeteig")` /
    `embedPassage("Schwarzwald-Torte")` / `embedPassage("Sauerteig")`)
    eintragen, dann `listOutbox()` ausgeben. Erwartung: drei
-   Einträge, Reihenfolge absteigend nach `addedAt` (zuletzt
-   eingetragener oben), keine Vektoren in der Ausgabe (nur
-   `{label, addedAt}`).
+   Einträge in `sbkim_hetero_outbox_main`, Reihenfolge absteigend
+   nach `addedAt` (zuletzt eingetragener oben), keine Vektoren in
+   der Ausgabe (nur `{label, addedAt}`).
 3. **Outbox remove** — `removeOutboxAnchor("Schwarzwald-Torte")`.
-   Erwartung: `listOutbox()` zeigt zwei Einträge ohne den
-   gelöschten; erneutes `removeOutboxAnchor("Schwarzwald-Torte")`
-   wirft *nicht* (idempotent).
+   Erwartung: `listOutbox()` zeigt zwei Einträge in
+   `sbkim_hetero_outbox_main` ohne den gelöschten; erneutes
+   `removeOutboxAnchor("Schwarzwald-Torte")` wirft *nicht*
+   (idempotent).
 4. **Outbox überschreiben** — `addOutboxAnchor("Hefeteig", neuerVektor)`
    mit demselben Label wie in Schritt 2. Erwartung: `listOutbox()`
-   zeigt weiterhin zwei Einträge (Anzahl unverändert), Hefeteig-
-   Eintrag hat ein frisches `addedAt` und steht oben.
+   zeigt weiterhin zwei Einträge in `sbkim_hetero_outbox_main`
+   (Anzahl unverändert), Hefeteig-Eintrag hat ein frisches
+   `addedAt` und steht oben.
 5. **`HETERO_OUTBOX_MAX_ENTRIES`-Überschreitung** — fünf Anker
    eintragen, dann einen sechsten *neuen* versuchen. Erwartung:
-   `OutboxFullError`. Nach `removeOutboxAnchor` eines beliebigen
-   alten Eintrags geht der sechste durch.
+   `OutboxFullError` (mit Hinweis auf den slot-suffixed Store-Namen
+   und „5 Einträge pro Slot" in der Message). Nach
+   `removeOutboxAnchor` eines beliebigen alten Eintrags geht der
+   sechste durch.
 6. **Opt-In setzen** — `_addPseudoSibling("peerXY", {…})` als
    Test-Brücke (analog Modul 05 / 06 — direkter `SbkimStorage.put`
-   auf `sbkim_siblings`), dann
+   auf `sbkim_siblings_<activeSlotKey>`), dann
    `setSiblingHeteroOptIn("peerXY", true)`. Erwartung:
-   `SbkimStorage.get("sbkim_siblings","peerXY")` zeigt
+   `SbkimStorage.get("sbkim_siblings_main","peerXY")` zeigt
    `heterokaryosisOptIn: true`, alle anderen Felder unverändert.
    Anschließend `setSiblingHeteroOptIn("peerXY", false)`.
    Erwartung: Feld auf `false`. Anschließend
-   `setSiblingHeteroOptIn("unbekannt", true)` → `UnknownSiblingError`.
+   `setSiblingHeteroOptIn("unbekannt", true)` → `UnknownSiblingError`
+   (mit Slot-Hinweis in der Message).
 7. **Selbstcheck-Hinweis** — Hinweis-Knopf zeigt in der Konsole
    die erwartete Selbstcheck-Zeile (analog Panel 00 / 01 / 02 / 04
-   / 05 / 06 / 07).
+   / 05 / 06 / 07). Selbstcheck-Zeile UNVERÄNDERT durch Bau 08.Y —
+   die fünf Funktionen heißen weiterhin gleich.
 
 Test-Brücken (Unterstrich-Präfix, exportiert für `manual_check.html`,
 analog Modul 05 / 06 / 07):
 
 ```
-_clearOutbox()              — leert sbkim_hetero_outbox für saubere Test-Wiederholungen
-_addPseudoSibling(id, obj)  — direkter SbkimStorage.put auf sbkim_siblings
-                               (Vorbereitung für Test 6 / Opt-In)
-_clearPseudoSiblings()
+_clearOutbox()              — leert sbkim_hetero_outbox_<activeSlotKey> für saubere Test-Wiederholungen
+                               (Bau 08.Y: via SbkimStorage.clear auf den slot-suffixed Store, idempotent)
+_addPseudoSibling(id, obj)  — direkter SbkimStorage.put auf sbkim_siblings_<activeSlotKey>
+                               (Bau 08.Y: Vorbereitung für Test 6 / Opt-In im aktiven Slot)
+_clearPseudoSiblings()      — leert sbkim_siblings_<activeSlotKey> via SbkimStorage.clear
+                               (Bau 08.Y: Slot-isoliert; bestehende Pseudo-Sibling-ID-Liste
+                               im Modul entfällt durch den clear-Pfad)
 ```
 
 `_addPseudoSibling` ist konsistent mit Modul 06 (das dieselbe
@@ -567,6 +591,7 @@ Bedingungen sind im Werkstatt-Browser kaum reproduzierbar.
 | Spec gefüllt | 2026-05-15 | Spec 08 | Modul-08-Rollenwahl verbindlich entschieden (Variante b — Endknoten-Modul `SbkimUiDemo`); Werkstatt `tests/manual_check.html` ausdrücklich KEIN Modul-08-Code. Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`); Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox` (Schlüssel `label`, Wert `{label, vector, addedAt}`, Reihenfolge absteigend nach `addedAt`); Co-Schreiber für `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (Haupt-Schreiber bleibt Modul 05, Modul 08 darf nur das eine additive Feld setzen, wenn der Eintrag bereits existiert — sonst `UnknownSiblingError`). **§0 um `HETERO_OUTBOX_MAX_ENTRIES = 5` erweitert** (additiv, kein Hauptversions-Sprung, konsistent mit `HETERO_MAX_ANCHORS = 5`). **Karte 01 § Stores um `sbkim_hetero_outbox` erweitert (DB-Version 2 → 3, additive Migration v=3)** — Schreiber 08, Leser 06. Selbstcheck-Format synchron beim Skript-Laden. Modul-lokale Konstante `OUTBOX_LABEL_MAX_LEN = 64` (konsistent mit Anker-Form aus Karte 06). Fehlertabelle mit 16 Lagen + sechs benannte Error-Klassen (`UiDemoDependenciesError`, `InvalidAnchorLabelError`, `InvalidAnchorVectorError`, `OutboxFullError`, `UnknownSiblingError`, `InvalidOptInArgError`). Manueller-Test-Skizze mit sieben Test-Punkten + drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling`, `_clearPseudoSiblings`). **Self-Apoptose-Knopf bewusst NICHT in Modul 08** (Spec-Sitzung 00 hatte ihn aus Modul 00 ausgelagert; Spec-Sitzung 08 entscheidet: auch nicht hier; eigene Spec-Sitzung 08.2 darf das später nachholen). **DOM-Form bleibt offen** — Endknoten gestaltet die Pflege-UI selbst. **Embedding-frei** — `addOutboxAnchor` erwartet einen fertigen Vektor (Aufrufer ruft `SbkimEmbedding` selbst). INTERFACES.md §0 (`HETERO_OUTBOX_MAX_ENTRIES`-Zeile) + §1 Modul 01 (Storage-Block, DB-Version-Tabelle v=3, Co-Schreiber-Hinweis auf `sbkim_siblings.heterokaryosisOptIn`) + §1 Modul 08 (volle Vertrag-Sektion auf Status `entwurf`) + §6 (Änderungsprotokoll-Zeile) nachgezogen. `status.json` Modul 08 von `score:"werkstatt"` / `siegel:"in Werkstatt"` auf `score:"spec"` / `siegel:"Spec fertig"`, `kurz` aktualisiert; `config.HETERO_OUTBOX_MAX_ENTRIES = 5` ergänzt. Pie regeneriert (Werkstatt 1 → 0, Spec fertig 1 → 2). **Kein JS-Code** in `src/modules/08_ui_demo.js`. **Keine `tests/manual_check.html`-Änderung.** **Keine Karte-05-/Karte-06-/Karte-07-Schnittstellen-Änderung.** Folge-Pflege Bau 06.1 (Outbox-Lese-Pfad in `06_heterokaryose.js`) als Querverweis notiert. |
 | Code geschrieben | 2026-05-15 | Bau 08 | `src/modules/08_ui_demo.js` als IIFE mit `window.SbkimUiDemo` angelegt; fünf öffentliche Funktionen (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen (`UiDemoDependenciesError`, `InvalidAnchorLabelError`, `InvalidAnchorVectorError`, `OutboxFullError`, `UnknownSiblingError`, `InvalidOptInArgError`) im Factory-Stil analog Modul 00 (auf `SbkimUiDemo.<Error>` exportiert), drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling`, `_clearPseudoSiblings`), synchroner Selbstcheck `MODUL 08 UI-DEMO bereit, Funktionen: init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn` beim Skript-Laden. **Bau-Pflicht-Entscheidung 1:** Reihenfolge der Checks in `addOutboxAnchor` — (1) `label`-Typ + Länge sync, (2) `vector`-Form sync, (3) async-Existenz-Check + Voll-Check; `OutboxFullError` fliegt nur, wenn das Label NEU ist und der Store am Limit steht (Überschreiben eines bekannten Labels bleibt erlaubt, kein Verdrängen). **Bau-Pflicht-Entscheidung 2:** `init()` idempotent über internen `ready`-Flag; mehrfacher Aufruf schreibt Konfigurations-Updates aus `options`, ruft `SbkimStorage.init()` aber nur einmal effektiv und loggt den Selbstcheck nicht doppelt (Selbstcheck steht synchron im IIFE-Body, nicht in `init()`). **Bau-Pflicht-Entscheidung 3:** `setSiblingHeteroOptIn` strikt boolean (`true === true` / `false === false`, kein truthy/falsy-Cast — `1`, `null`, `"true"` werfen `InvalidOptInArgError`); Lese-Modify-Write-Zyklus mit `Object.assign({}, sibling, {heterokaryosisOptIn})` — alle anderen Felder bleiben unverändert (Co-Schreiber-Disziplin). **Bau-Pflicht-Entscheidung 4:** `_addPseudoSibling` schreibt KEIN `heterokaryosisOptIn`-Feld (anders als Modul 06's Test-Brücke) — Panel-08-Tests prüfen den Co-Schreiber-Pfad, indem Modul 08 das Feld selbst setzt. `tests/manual_check.html` Panel 08 von „in dieser Datei selbst" (Werkstatt-Stub) auf „Code-Stub" mit acht Knöpfen umgestellt (Setup + sechs Test-Punkte aus § Manueller Test + Selbstcheck-Hinweis); Pseudo-Vektoren deterministisch in Panel-08-Code erzeugt (Modul 08 ist Embedding-frei). **Kein Eingriff in `01_storage.js`** (DB-Version 3 bereits aus Pflege Bau 06.1) **/ `05_anastomose.js`** (unangetastet seit Spec-Sitzung 06) **/ `06_heterokaryose.js`** (Outbox-Lese-Pfad bereits aus Pflege Bau 06.1) **/ Karten 05/06/07/09/10/11/12/14 / Sage-Page**. **Self-Apoptose-Knopf NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün; alle 10 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert. INTERFACES.md §6 + `status.json` Modul 08 von `score:"spec"` / `siegel:"Spec fertig"` auf `score:"stub"` / `siegel:"Code-Stub"` + `lastUpdated` 2026-05-15 hochgestuft; Pie regeneriert (Spec fertig 2 → 1, Code-Stub 8 → 9). |
 | Sichttest | — | — | — |
+| Bau 08.Y slot-spezifische Outbox | 2026-05-20 | Bau 08.Y | **Auflöser der „bekannten Limitierung" aus Bau-06.Y-Brief**: Modul 08 schreibt jetzt slot-spezifisch in `sbkim_hetero_outbox_<activeSlotKey>` (Bau-06.Y liest dorthin). Brief BAU_08Y_SLOT_SPEZIFISCHE_OUTBOX (PR #116) als Spec-Vorlage. **Modul 08 ist storage-only** — kein Netz-Empfang, KEIN Receiver-Map (kürzester der vier Konsumenten-Bauten 05.Y/06.Y/07.Y/08.Y). **Code in `src/modules/08_ui_demo.js` additiv-mit-internem-Refactoring**: neue modul-lokale Konstanten `OUTBOX_STORE_BASE` / `SIBLINGS_STORE_BASE` / `DEFAULT_IDENTITY_KEY="main"`; neue Closure-Helper `heteroOutboxStoreName(slot)` (sync) + `siblingsStoreName(slot)` (sync) + `ensureSlotStores(slot)` (async, ruft `SbkimStorage.ensureStore` für beide slot-suffixed Stores; idempotent dank Bau 01.Y); Modul-State um `var activeSlotKey = null` erweitert (gecached vom `init()` via `SbkimSpore.getActiveIdentityKey()`); `probeDependencies` um Pflicht-Abhängigkeit `SbkimSpore (Modul 02)` erweitert (Bau 08.Y braucht den Slot-Key); `init(options)` ruft jetzt `SbkimStorage.init()` + `SbkimSpore.init()` + `activeSlotKey = await SbkimSpore.getActiveIdentityKey()` + `await ensureSlotStores(activeSlotKey)` (Reihenfolge: erst Storage/Spore-Pfad, dann Slot-Cache, dann ensureStore-Pfad pro Slot); `options.storeName` wird stillschweigend ignoriert (slot-suffix ist intern verbindlich); `listOutbox()` liest aus `heteroOutboxStoreName(activeSlotKey)`; `addOutboxAnchor` ruft defensiv `ensureSlotStores(activeSlotKey)` vor jedem ersten Schreibvorgang, Existing-Check + Voll-Check + put-Pfad gegen `heteroOutboxStoreName(activeSlotKey)`, `OutboxFullError`-Message benennt jetzt den slot-suffixed Store + „Einträge pro Slot"; `removeOutboxAnchor` löscht aus `heteroOutboxStoreName(activeSlotKey)`; `setSiblingHeteroOptIn` liest + schreibt nach `siblingsStoreName(activeSlotKey)` (Co-Schreiber-Konvention via `Object.assign({}, sibling, {heterokaryosisOptIn})` unverändert), `UnknownSiblingError`-Message benennt den Slot; Test-Brücken `_clearOutbox` / `_clearPseudoSiblings` umgestellt auf `SbkimStorage.clear(<slot-suffixed-store>)` (statt iteratives `del` — sauberer und Slot-isoliert), `_addPseudoSibling` schreibt in `siblingsStoreName(activeSlotKey)`; `pseudoSiblingIds`-Tracker entfernt (durch `clear`-Pfad obsolet). `_meta` um `outboxStoreBase` / `siblingsStoreBase` + Getter `activeSlotKey` (Read-Anker, null vor init) erweitert; Modul-Kopfkommentar um Bau-08.Y-Block am Ende. **Selbstcheck-Zeile UNVERÄNDERT** — die fünf Funktionen heißen weiterhin gleich (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`). **Karte 08** § Konfigurationswerte (`HETERO_OUTBOX_MAX_ENTRIES = 5` PRO SLOT, Hinweis ergänzt), § Datenformate (Slot-Pfad-Block + `sbkim_hetero_outbox_<activeSlotKey>` + `sbkim_siblings_<activeSlotKey>`), § Manueller Test (Erwartungs-Block je Knopf nachgezogen — slot-suffixed Store-Namen), § Test-Brücken-Doku (Clear-Pfad-Wechsel). **Panel 08** in `tests/manual_check.html` Setup-Knopf-Output zeigt jetzt `active_slot_key` + `outbox_store: "sbkim_hetero_outbox_main"` (slot-suffixed) statt `"sbkim_hetero_outbox"`; bestehende acht Knöpfe ohne Strukturänderung; Optional-Knopf Sekundär-Persona-Test bewusst NICHT in dieser Bau-Sitzung (Bau-05.Y/06.Y/07.Y-Sichttests haben das Muster genug demonstriert). **Headless-Smoke-Test** `tests/smoke_bau08y_slot_spezifische_outbox.mjs` mit fake-indexeddb (Node 22): drei Proben (Default-Slot Schreib-/Lese-Pfad + non-suffixed Store unangetastet / Sekundär-Slot via Modul-Re-Load + Persona-Isolation / Co-Schreiber-Pfad in `sbkim_siblings_main` + strikt-boolean + UnknownSiblingError) + Bonus (Cross-Persona-Slot-Isolation) — **26 Sub-Proben, 26 grün**. Regression: Bau-02.Y-Smoke 33/33 + Bau-04.A-Smoke 19/19 + Pflege-01-Smoke 8/8 alle grün. **PROTOCOL_VERSION bleibt `"0.1"`, DB_VERSION bleibt `4`, BACKUP_FORMAT_VERSION bleibt `2`**. Pre-Brief-04-Aufrufer treffen unverändert auf `_main`-Slots via `getActiveIdentityKey`-Default. KEIN Modul-01/02/03/04/05/06/07-Eingriff, KEIN Receiver-Map-Code, KEINE `setActiveIdentity`-Aufrufe aus Modul 08, KEINE Migration alter nicht-suffixed Daten (Aufrufer-Pflicht via Backup-Re-Import aus Bau 02.Y), KEINE Karte-05-/-06-/-07-/-09-/Sage-Page-/CLAUDE.md-/`status.json`-Änderung. **`status.json` unverändert** (Modul 08 bleibt `score:"stub"`; `update_puls_pie.py` NICHT aufgerufen — additive Erweiterung). Sichttest erwartet — ungeprüft, weil headless gebaut; wartet auf Klaus' Browser-Lauf Panel 08 Setup-Knopf (zeigt slot-suffixed Store-Namen + `active_slot_key`). Übergabeprotokoll `docs/sessions/archiv/2026-05-20_bau-08y-slot-spezifische-outbox.md`. |
 | In Endknoten eingebaut | — | — | — |
 
 ---

@@ -99,7 +99,7 @@
   <section class="panel" data-module="08_ui_demo">
     <h2>08 UI-Demo <span class="status ok">Code-Stub</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
-    <pre class="log">— bereit. Voraussetzung: Modul 01 (Storage) ist über das Skript-Tag mitgeladen. Modul 08 ist Storage-only — kein Netz, kein Embedding, keine Signatur, kein Heterokaryose-Pull. „Setup" leert sbkim_hetero_outbox und löscht die Pseudo-Sibling-Einträge der Test-Brücke, damit jeder Test-Knopf bei null startet. Vektor-Erzeugung ist Aufrufer-Pflicht — die Panel-08-Tests nutzen fertige Pseudo-Vektoren statt SbkimEmbedding (Modul 08 ist Embedding-frei). Self-Apoptose-Knopf bewusst NICHT in diesem Panel (Spec-Sitzung 08-Entscheidung; siehe Karte 08 § Risiken). —</pre>
+    <pre class="log">— bereit. Voraussetzung: Module 01 (Storage) und 02 (Spore) sind über die Skript-Tags mitgeladen. Modul 08 ist Storage-only — kein Netz, kein Embedding, keine Signatur, kein Heterokaryose-Pull. „Setup" leert sbkim_hetero_outbox_&lt;activeSlotKey&gt; und löscht die Pseudo-Sibling-Einträge der Test-Brücke (slot-isoliert), damit jeder Test-Knopf bei null startet. Vektor-Erzeugung ist Aufrufer-Pflicht — die Panel-08-Tests nutzen fertige Pseudo-Vektoren statt SbkimEmbedding (Modul 08 ist Embedding-frei). Bau 08.Y (2026-05-20): Modul 08 schreibt jetzt slot-spezifisch — Setup-Output zeigt den aktiven Slot. HETERO_OUTBOX_MAX_ENTRIES = 5 gilt PRO SLOT, nicht global. Self-Apoptose-Knopf bewusst NICHT in diesem Panel (Spec-Sitzung 08-Entscheidung; siehe Karte 08 § Risiken). —</pre>
   </section>
 
   <script>
@@ -2285,14 +2285,21 @@
 
       SbkimUI.addButton("08_ui_demo", "Setup: Outbox leeren + Pseudo-Sibling-Spur räumen", async function () {
         await ensureSetup();
+        // Bau 08.Y: aktiver Slot-Key wird im SbkimUiDemo.init() via
+        // SbkimSpore.getActiveIdentityKey() gecached; Modul 08 schreibt
+        // jetzt in sbkim_hetero_outbox_<activeSlotKey> statt in den
+        // globalen sbkim_hetero_outbox.
+        var activeSlot = SbkimUiDemo._meta.activeSlotKey;
         SbkimUI.setStatus("08_ui_demo", "ok", "Setup OK");
         return {
-          outbox_store: "sbkim_hetero_outbox",
+          active_slot_key: activeSlot,
+          outbox_store: "sbkim_hetero_outbox_" + activeSlot,
+          siblings_store: "sbkim_siblings_" + activeSlot,
           db_version: SbkimStorage._meta.dbVersion,
           max_entries: SbkimUiDemo._meta.heteroOutboxMaxEntries,
           label_max_len: SbkimUiDemo._meta.outboxLabelMaxLen,
           embedding_dim: SbkimUiDemo._meta.embeddingDim,
-          hinweis: "Modul 08 ist Storage-only — Vektor-Erzeugung ist Aufrufer-Pflicht. Panel 08 nutzt deterministische Pseudo-Vektoren statt SbkimEmbedding.",
+          hinweis: "Bau 08.Y: Modul 08 schreibt jetzt slot-spezifisch. HETERO_OUTBOX_MAX_ENTRIES (= 5) gilt PRO SLOT, nicht global. Modul 08 ist Storage-only — Vektor-Erzeugung ist Aufrufer-Pflicht. Panel 08 nutzt deterministische Pseudo-Vektoren statt SbkimEmbedding.",
         };
       });
 
@@ -2469,9 +2476,14 @@
           since: new Date(Date.now() - 1000).toISOString(),
         });
 
+        // Bau 08.Y: Modul 08 schreibt jetzt slot-spezifisch in
+        // sbkim_siblings_<activeSlotKey>. Direkte Storage-Reads gehen
+        // jetzt gegen den slot-suffixed Store.
+        var siblingsStore = "sbkim_siblings_" + SbkimUiDemo._meta.activeSlotKey;
+
         // 1. Opt-In auf true setzen
         await SbkimUiDemo.setSiblingHeteroOptIn(PSEUDO_SIB_A, true);
-        var afterTrue = await SbkimStorage.get("sbkim_siblings", PSEUDO_SIB_A);
+        var afterTrue = await SbkimStorage.get(siblingsStore, PSEUDO_SIB_A);
         var trueOk = afterTrue && afterTrue.heterokaryosisOptIn === true &&
                      afterTrue.nodeId === PSEUDO_SIB_A &&
                      afterTrue.domain === "pseudo-optin.invalid" &&
@@ -2479,7 +2491,7 @@
 
         // 2. Opt-In auf false setzen — andere Felder bleiben unverändert
         await SbkimUiDemo.setSiblingHeteroOptIn(PSEUDO_SIB_A, false);
-        var afterFalse = await SbkimStorage.get("sbkim_siblings", PSEUDO_SIB_A);
+        var afterFalse = await SbkimStorage.get(siblingsStore, PSEUDO_SIB_A);
         var falseOk = afterFalse && afterFalse.heterokaryosisOptIn === false &&
                       afterFalse.domain === "pseudo-optin.invalid";
 
@@ -2499,7 +2511,7 @@
         catch (err) { stringThrew = err; }
         var stringOk = stringThrew && stringThrew.name === "InvalidOptInArgError";
         // Nach den Strenge-Würfen muss das Flag unverändert auf false stehen.
-        var afterStrict = await SbkimStorage.get("sbkim_siblings", PSEUDO_SIB_A);
+        var afterStrict = await SbkimStorage.get(siblingsStore, PSEUDO_SIB_A);
         var unchangedOk = afterStrict && afterStrict.heterokaryosisOptIn === false;
 
         var pass = trueOk && falseOk && unknownOk && truthyOk && stringOk && unchangedOk;
