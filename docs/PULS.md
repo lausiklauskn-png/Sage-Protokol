@@ -1810,6 +1810,79 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-20 · Sichttest-Nachzug Bau-Pipeline vollständig
+
+**Sitzungs-Rolle:** Mini-Pflege, Doku-only. Branch
+`claude/sichttest-nachzug-bau-pipeline-vollstaendig-j6mJF`, vom
+`main`-Stand nach Bau 04.B PR #122 + Brief-Endknoten-Migration PR #123
+aus angelegt. Folge auf Klaus' Browser-Sichttests 2026-05-20 (DeX-
+Chrome auf Galaxy Tab S6, Termux-`python3 -m http.server 8000`-
+Setup) — die ausstehende Doku-Nachpflege der Sichttest-Vermerke aus
+Bau 01.Y/02.Y/04.B/05.Y/06.Y/07.Y/08.Y.
+
+**Kern:** Klaus hat alle Bau-Sitzungen der Bau-99-Pipeline live
+durchgeklickt: Panel 01 Storage zeigt `db_version: 7` mit
+slot-suffixed Stores (`sbkim_siblings_main`, `sbkim_hetero_inbox_main`,
+`sbkim_hetero_outbox_main`, `sbkim_anastomosis_log_main`,
+`sbkim_legacy_inbox_main`); Panel 02 Knopf 8 Identitäts-Wechsel
+test↔main grün; Panel 05/06/07 Selbstcheck-Konsolen-Zeilen jeweils
+grün; Panel 07 Test 6 Self-Apoptose IRREVERSIBEL über alle Slots; Panel 08
+mit `outbox_store: "sbkim_hetero_outbox_main"` (slot-suffixed); Panel 04
+Knopf 10 `explainMatchLLM` live grün mit `window.prompt`-API-Key (nach
+Service-Worker-Cleanup für Cache-Bust, weil DeX-Chrome zunächst die alte
+9-Knopf-Variante cachte).
+
+**Was eingetragen:**
+
+- Karte 01 § Bauzustand neue Zeile „Sichttest Bau-Pipeline-vollständig"
+  mit Panel-01-Beleg `db_version: 7` + slot-suffixed-Stores-Liste.
+- Karte 02 § Bauzustand neue Zeile „Sichttest-Nachzug Bau-Pipeline"
+  mit Knopf-8-Identitäts-Wechsel-Re-Verifikation.
+- Karte 04 § Bauzustand Bau 04.B Zeile um „Sichttest 2026-05-20
+  grundbelegt"-Anhang erweitert (10. Knopf live grün nach SW-Cleanup).
+- Karte 05 § Bauzustand Bau 05.Y Zeile um „Sichttest 2026-05-20
+  grundbelegt"-Anhang erweitert (Panel 05 mit Knopf 10 sichtbar).
+- Karte 06 § Bauzustand Bau 06.Y Zeile um „Sichttest 2026-05-20
+  teilbelegt"-Anhang erweitert (Selbstcheck nur — Klaus hat
+  Schwerpunkt auf 04 gelegt; voller 12-Test-Lauf offen).
+- Karte 07 § Bauzustand Bau 07.Y Zeile um „Sichttest 2026-05-20
+  grundbelegt"-Anhang erweitert (Test 6 Self-Apoptose IRREVERSIBEL).
+- `tests/manual_check.html` Knopf „Selbstcheck Konsole prüfen" auf vier
+  Funktionen aktualisiert (war noch auf drei vor Bau 04.B).
+
+**Was NICHT angefasst:** Modul-Code in `src/`, INTERFACES.md,
+`status.json`, Sage-Page `index.html`, CLAUDE.md.
+`PROTOCOL_VERSION` / `DB_VERSION` / `BACKUP_FORMAT_VERSION`
+unverändert. `update_puls_pie.py` NICHT aufgerufen.
+
+**Bekannte Befunde aus dem Sichttest:**
+
+- Service-Worker-Cache hatte zunächst die alte Panel-04-Variante mit
+  9 Knöpfen ausgeliefert — Klaus' Workaround:
+  `chrome://serviceworker-internals/` Unregister + „Clear site data" +
+  Tab-Reopen. Nach Cleanup: 10 Knöpfe live. Cache-Bust ist in CORS-
+  freier `python3 -m http.server 8000`-Umgebung jeder Bau-Sitzung
+  wieder relevant.
+- Panel 06 12-Test-Re-Verifikation offen für Folge-Sichttest-
+  Sitzung (Klaus hat in dieser Sitzung den Schwerpunkt auf Panel 04
+  Bau 04.B gelegt).
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Endknoten-Migration ausführen** in zwei externen Bau-Sitzungen
+   (Mein-Mixarium + Mein-Rezeptbuch). Brief liegt im Sage-Protokol-
+   Repo bereit (`docs/sessions/BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md`).
+2. **Vision-Anker 5 Identitäts-Container Spec-Sitzung** (optional,
+   parallel) — löst die `window.prompt`-Test-Brücke aus Bau 04.B mit
+   produktivem sicheren Pfad.
+3. **Folge-Sichttest Panel 06 12-Test-Lauf** (Multi-Slot-Persona-Setup
+   mit Knopf 15 + Tests 1–9 voll durchklicken).
+
+**PR:** Branch `claude/sichttest-nachzug-bau-pipeline-vollstaendig-j6mJF`,
+Draft-PR „Sichttest-Nachzug Bau-Pipeline vollständig".
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-20_sichttest-nachzug-bau-pipeline-vollstaendig.md](sessions/archiv/2026-05-20_sichttest-nachzug-bau-pipeline-vollstaendig.md).
+
 ### 2026-05-20 · Brief — Bau-Sitzung Endknoten-Migration Multi-Identität angelegt
 
 **Sitzungs-Rolle:** Brief-Sitzung (kein Spec, kein Bau-Code — nur
@@ -2815,99 +2888,6 @@ Diese Vision verdient frischen Kopf.
 
 **Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md](sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md).
 
-### 2026-05-17 · Mini-Pflege — Observatorium-Lehre 8 + 8. Galaxie
-
-**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/pflege-observatorium-lehre-8`. Folge zur Bau-Sitzung
-Browser-Observatorium-Universum (PR #79 `d9ac013`).
-
-Klaus' Befund beim Universum-Sichttest auf Galaxy Tab S6 + Samsung
-DeX: **DeX-Android zeichnet einen System-Cursor-Overlay**, der durch
-keine CSS-`cursor`-Property überschreiben werden kann. Wir haben sieben
-Cursor-Workaround-Varianten durchprobiert (`none`, `crosshair`, SVG-
-Custom-Cursor, PNG-Custom-Cursor 1×1 und 32×32, …) — alle ignoriert. Nur
-`cursor: pointer` für klickbare `<button>`-Elemente wird respektiert.
-
-**Was eingetragen:**
-
-- **`docs/OBSERVATORIUM_BROWSER.md`** um **Lehre 8 „DeX-Cursor-Overlay
-  ist nicht überschreibbar"** erweitert (Beobachtung, Tabelle der sieben
-  versuchten Workarounds, Konsequenzen, pragmatische Workarounds,
-  Vorteile-Vermerk). Folgt der Pflege-Konvention dieser Datei (lebende
-  Sammlung, neue Lehren bekommen eigenen Block).
-- **`index.html`** um **achte Galaxie** im Universum erweitert:
-  Shape `galaxy-edgeon`, eine taumelnde Disk-Galaxie. CSS-Keyframe
-  `@keyframes galaxy-precess` rotiert sie um die eigene Achse (15s
-  ease-in-out) und kippt sie zyklisch zwischen 8° und 74°
-  `rotateX` — sie wirkt zyklisch flacher und runder wie eine Frisbee
-  in Sicht-Drehung. Klaus' visuelle Erinnerung daran, dass nicht
-  alles, was man festhalten will, sich festhalten lässt.
-- Modal-Kurzfassung zur Galaxie 8 enthält die Workaround-Tabelle als
-  knappe Variante + den philosophisch-poetischen Schlusssatz.
-
-**Was NICHT angefasst:**
-
-- Modul-Code, INTERFACES.md, status.json.
-- Andere Galaxien des Universums (Phase 1 aus PR #79 final).
-- IndexedDB-Persist-Schutz (`navigator.storage.persist()` in
-  `SbkimStorage.init()`) — bleibt offene Folge-Mini-Pflege „Storage-
-  Persist-Schutz", weil das ein Modul-01-Eingriff ist und nicht zum
-  Observatorium-Bau gehört.
-
-**`status.json`** unverändert. PULS unter 3000-Zeilen-Schutz.
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-observatorium-lehre-8.md](sessions/archiv/2026-05-17_mini-pflege-observatorium-lehre-8.md).
-
-### 2026-05-17 · Mini-Pflege — Vision-Anker (V1 / V3 / Universum)
-
-**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/pflege-vision-anker`. Folge zu Live-Channel-Handshake
-(PR #77 `7c08b88`).
-
-Klaus hat nach erfolgreichem Live-Cross-Knoten-Handshake drei
-langfristige Visionen geäußert, die nicht verloren gehen sollen
-ohne sofort Spec oder Bau auszulösen. Diese Pflege legt einen
-neuen PULS-Block **§ Vision-Anker** an (parallel zu § Schutz-
-Backlog und § Diffusion-Backlog) und trägt drei Visionen ein:
-
-1. **Sage als Hybrid-Knoten (Variante I)** — Klaus' Ameisenkönigin-
-   Bild: Sage kann Hub bleiben **und** zugleich vollwertiger
-   Endknoten werden. CLAUDE.md / INTERFACES.md / status.json /
-   Sage-Page müssen nachgezogen werden. Sage's Domäne ist offen
-   (Mycel-Bibliothek / SBKIM-Glossar / Sage-Observatorium).
-   **Status: reif für Spec-Sitzung, Klaus' nächste Wahl.**
-2. **Niedrigeres Onboarding (Variante III-Ausbau)** — Karte 09's
-   9 Schritte schrecken ab. Drei Pfade als langfristiger Plan:
-   Andock-Wizard als Standalone-PWA, SBKIM-PWA-Distribution mit
-   GitHub-Identität als Geschenk-Paket, eigener Browser-Wrapper
-   (Electron/Tauri/Capacitor) als Fern-Vision. Verbreitung
-   außerhalb Klaus-Kreis macht Schutz-Backlog-Module 10/11/12
-   akut. **Status: reif für Vor-Diskussion, nicht für Spec.**
-3. **Browser-Observatorium-Universum (visuelle Variante)** — die
-   sieben Lehren der `OBSERVATORIUM_BROWSER.md` als animiertes
-   Mini-Universum in der Sage-Page, jeder Stern eine Lehre, Klick
-   öffnet Modal mit gerendertem md-Text. md bleibt Wahrheits-
-   Quelle, Universum liest sie clientseitig (minimaler md-Parser
-   ohne externe Library). **Status: reif für eigene Bau-Sitzung,
-   jederzeit zwischen V1- und V3-Bau einschiebbar.**
-
-**Was eingetragen:** PULS.md neuer Block § Vision-Anker (~120
-Zeilen) mit drei Vision-Ankern in voller Tiefe. PULS § Sitzungs-
-Einträge neuer Top-Eintrag (dieser). Übergabeprotokoll
-`docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker.md`.
-
-**Was NICHT angefasst:** Modul-Karten, INTERFACES.md, `src/`-Code,
-Sage-Page `index.html`. `status.json` unverändert — Visionen sind
-keine Modul-Stände. `update_puls_pie.py` nicht aufgerufen.
-
-**Nächster sinnvoller Schritt:** Spec-Sitzung „Sage als Hybrid-
-Knoten (Variante I)" als nächste Phase. Eigener Brief, eigener
-Branch. Klärt CLAUDE.md-Umschreibung, INTERFACES.md-Aufnahme,
-Sage's Domäne, Module-Lade-Strategie, App-SW-Variante. **Kein
-Bau-Code in der Spec-Sitzung** — nur Verträge.
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker.md](sessions/archiv/2026-05-17_mini-pflege-vision-anker.md).
-
 ---
 
 ## Archiv-Index (Sitzungen vor dieser Pflege)
@@ -2917,6 +2897,8 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Mini-Pflege · Vision-Anker (V1 / V3 / Universum) | Drei langfristige Vision-Anker (Sage als Hybrid-Knoten, Niedrigeres Onboarding, Browser-Observatorium-Universum) als neuer PULS-Block § Vision-Anker eingetragen — keine Spec, kein Bau-Code, nur Sammel-Anker für Folge-Sitzungen. Vision-Anker 1 (V1 Sage-Hybrid) wurde später (2026-05-18/19) durch die V1-Sammelspec-Kaskade Brief 01–04 realisiert. | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-vision-anker.md) |
+| 2026-05-17 | Mini-Pflege · Observatorium-Lehre 8 + 8. Galaxie | Klaus' DeX-Cursor-Overlay-Befund (System-Cursor durch keine CSS-`cursor`-Property überschreibbar; sieben Workaround-Varianten alle ignoriert) als Lehre 8 in `docs/OBSERVATORIUM_BROWSER.md` eingetragen + achte Galaxie `galaxy-edgeon` (taumelnde Disk-Galaxie mit `@keyframes galaxy-precess`) als Sage-Page-Begleit-Anker. Modul-Code/INTERFACES.md/status.json unangetastet. | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-observatorium-lehre-8.md) |
 | 2026-05-17 | Mini-Pflege · Live-Channel-Handshake + Browser-Observatorium | Live-Beweis Cross-Knoten-Handshake ohne localStorage-Bypass: Modul-05-v2 mit BroadcastChannel-Bridge in beiden Endknoten (Mein-Mixarium + Mein-Rezeptbuch), File-Rename als Cache-Bust. Beide Endknoten in DeX-Chrome neu angedockt mit neuen nodeIds (alte 2026-05-16-Identitäten durch IndexedDB-Verlust nicht mehr da). Erster regulärer Cross-Knoten-Handshake: `outcome:"established"`, score 0.9544261159927087 bidirektional via Auto-Fallback HTTP→Channel-Bridge. Pflege-Kette PR #65 → #70 → #71 → #72 → #73 → #74 → #75 → #76 vollständig geschlossen. Plus Browser-Observatorium-Sitzung mit Mini-Pflege auf der Sage-Page. status.json unverändert. | [→ Archiv](sessions/archiv/2026-05-17_live-channel-handshake.md) |
 | 2026-05-17 | Mini-Pflege · Bau-Sichttest BroadcastChannel-Bridge grün | Folge-Eintrag zur Bau-Sitzung BroadcastChannel-Bridge (PR #75 `b8c8f41`). Klaus hat Panel 05 Knöpfe 9 / 9a / 9b / 9c im Browser durchgeklickt — alle vier grün im ersten Lauf (Termux-`python3 -m http.server 8000` auf Galaxy Tab S6 + DeX, Modell vom CDN-Fallback `cdn.jsdelivr.net` gezogen). Test 9 Channel-Pfad established score 0.8881, Test 9a HandshakeTimeoutError nach 4005 ms, Test 9b MissingToNodeIdError synchron, Test 9c Auto-Fallback HTTP-404→Channel etabliert 0.8881. Score-Stabilität bestätigt zwischen Test 9 und 9c. PROTOCOL_VERSION unverändert; status.json unverändert (Sichttest-Bestätigung, kein Score-Wechsel). | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-bau-05-sichttest-gruen.md) |
 | 2026-05-17 | Bau-Sitzung Modul 05 · BroadcastChannel-Bridge implementiert | Bau-Sitzung zur Spec-Sitzung BroadcastChannel-Bridge (PR #75, `b8c8f41`). Additiver Channel-Pfad in `src/modules/05_anastomose.js` ohne Refactoring der bestehenden Pfade — zwei neue Error-Klassen (`InvalidTransportError` + `MissingToNodeIdError`), drei Konstanten (`ALLOWED_TRANSPORTS`, `BROADCAST_CHANNEL_NAME`, `REPLY_CHANNEL_PREFIX`), Closure-Helfer `setupBroadcastChannelBridge()` + `postChannelEnvelope()` + `sendViaChannel()` + `parseTransport()` + `shouldAutoFallback()`. `handshake()` um optionalen `options.transport`-Parameter mit Default `"auto"` erweitert; Auto-Fallback bei HTTP-Defekt-Signalen (4xx/5xx, non-JSON, Schema-Lücke, outcome unklar). Channel-Pfad: BroadcastChannel('sbkim') als Main-Channel, Reply-Channel via `nonce`-Ableitung, Receiver-Filter `toNodeId === own.nodeId && fromNodeId !== own.nodeId`, Cleanup in finally. HandshakeRequest/Response-Schema unverändert. Panel 05 in `tests/manual_check.html` um vier Knöpfe 9 / 9a / 9b / 9c erweitert. Karte 09 § Schritt 4 um Andock-Hinweis „Beide Tabs offen halten" erweitert. `node --check` grün, Smoke-Test im Node-VM-Kontext alle fünf Proben grün. PROTOCOL_VERSION bleibt `"0.1"`, status.json unverändert. | [→ Archiv](sessions/archiv/2026-05-17_bau-05-broadcastchannel-bridge.md) |
