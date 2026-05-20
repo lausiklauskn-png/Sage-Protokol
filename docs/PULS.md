@@ -47,7 +47,7 @@ Block), die in der Pflege-Sitzung 2026-05-14 zu `PROVIDER_MIN_MATCH`
 Code-Stub frisch aus den Bau-Sitzungen 2026-05-14/15, **Sichttest ausstehend bzw. teilweise erledigt:**
 
 - 🟦 **[05 Anastomose](components/05_anastomose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung) + BroadcastChannel-Bridge 2026-05-17 + **Bau 05.Y transparenter Slot-Pfad 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur — Modul 05 schreibt jetzt slot-spezifisch in `sbkim_siblings_<key>` und `sbkim_anastomosis_log_<key>`; Receiver-Pfad nutzt `nodeId → slotKey`-Map zur Persona-Auflösung; Sender cached `opSlot` zur Op-Zeit). Sichttest geprüft 2026-05-15 (6/7 → Test 2 in Pflege als Vektor-Trias repariert); BroadcastChannel-Sichttest 2026-05-17 grün (4/4); volle Regression Panels 01-07 im Bau-08.Y-Sichttest 2026-05-20 grün. **Bau 05.Y Sichttest ungeprüft** (headless 25/25 smoke grün — wartet auf Klaus' Browser-Lauf Panel 05 + Knopf 10 Sekundär-Persona).
-- 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 7 von 8 Tests grün im ersten Lauf (Setup + Tests 1/2/3/4/5/7 + Selbstcheck); **Test 6 (Self-Apoptose) deckte echten Modul-Bug auf**: nach Cleanup `getNodeId_wirft_NoIdentityError:false` trotz `stores_alle_leer:true` — Modul 02's In-Memory-`identityCache` wurde nicht durch externes `storage.clear` invalidiert (Modul 07 wusste nichts vom Modul-02-Cache). Folgeschaden: Tests 1/2/3/8 nach Test 6 mit „Keine Identität in sbkim_keys[main]". **Pflege-Sitzung 2026-05-15** ergänzt Modul 02 um öffentliche `resetIdentityCache() → void` (sync, idempotent, leert nur Closure-Cache, kein Storage-Eingriff) und Modul 07's Cleanup ruft sie als letzten Schritt nach den `storage.clear`-Aufrufen — heilige Tafeln (INTERFACES.md §1 Modul 02 + §1 Modul 07 + §6 + Karten 02 + 07) ziehen mit. Re-Sichttest 2026-05-15 bestätigte den Cache-Fix: `getNodeId_wirft_NoIdentityError:true`. Modul 07 Sichttest 8/8 grün. **Pflege Cleanup-Reihenfolge Bau 06 (2026-05-15)** erweitert `CLEANUP_ORDER` additiv um `sbkim_hetero_inbox` (Position 4 zwischen `sbkim_legacy_inbox` und `sbkim_spore`); Test 6 muss in einem Folge-Sichttest neu durchgespielt werden (jetzt 6 statt 5 Stores zu prüfen).
+- 🟦 **[07 Apoptose](components/07_apoptose.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung) + Pflege 02+07-Cache-Invalidate 2026-05-15 + Pflege Cleanup-Reihenfolge Bau 06 2026-05-15 + **Bau 07.Y transparenter Slot-Pfad + `_sendLegacyForIdentity`-Hook 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur außer optionalen `key`-Parametern). Modul 07 schreibt jetzt slot-spezifisch (`sbkim_legacy_inbox_<key>` + `sbkim_anastomosis_log_<key>`); globale `confirmSelfApoptose` iteriert über ALLE Slots; neuer Hook `_sendLegacyForIdentity(key)` — **Bau-02.Y-fail-soft-Klausel aufgelöst**. **Konsumenten-Achse 05/06/07/08 jetzt vollständig slot-suffixed.** Sichttest 8/8 grün 2026-05-15 (Klaus, Re-Sichttest nach Cache-Invalidate); volle 8-Knopf-Sichttest-Runde 2026-05-20 im Bau-08.Y-Lauf grün inkl. Test 6 Self-Apoptose IRREVERSIBEL. **Bau 07.Y Sichttest ungeprüft** (headless 30/30 smoke grün — wartet auf Klaus' Browser-Lauf Panel 07 Test 6 globale Slot-Iteration + Panel 02 Knopf 9 Persona-Apoptose-Hook produktiv ohne `console.warn`).
 - 🟦 **[00 Doku-Fenster](components/00_doku_fenster.md)** — Code geschrieben 2026-05-14 (Bau-Sitzung), Sichttest geprüft 2026-05-15 (Klaus, im Browser): 5 von 6 Tests grün im ersten Lauf (Setup, Test 2 5-Klick-Simulation, Test 3 4-Klick + Timeout, Test 5 TTL-Sweep, Selbstcheck-Hinweis); **Test 4 Test-Bug** mit Mini-Werten 81/100 (freeBytes=19 Bytes ist trivial < 50 MiB → `warningLevel:"both"` statt erwartetem `"ratio"`) → **Pflege-Sitzung 2026-05-15** repariert mit GiB-Skalierung (`usage:8.1 GiB, quota:10 GiB` → freeBytes ≈ 1.9 GiB → `warningLevel:"ratio"` sauber); Modul-Vertrag und INTERFACES.md unangetastet
 
 Spec frisch, **Bau ausstehend**:
@@ -100,7 +100,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15, Spec M04-Erweiterung Brief 03 2026-05-19) | Code-Stub (2026-05-14, Bau 04.A `matchDimensions` sync 2026-05-19) | geprüft 2026-05-14 (Klaus) — drei Tests grün + Kalibrierung; **Bau 04.A Knöpfe 7/8/9 live grün 2026-05-19** (Klaus, DeX-Chrome: drei Schichten gleich, Nur-Anbieter, DimensionsAllNullError synchron); Headless-Smoke 19/19 weiterhin grün | Vektorvergleich, modus-frei; Pflege-Sitzung 2026-05-14 PROVIDER_MIN_MATCH 0.55→0.80. **Karte 04 § Stamm/Gast-Hinweis 2026-05-15**: Match bleibt unverändert; Stamm/Gast ist Klassifikations-Schicht auf Daten-Ebene. **Bau 04.A 2026-05-19** `matchDimensions` synchron (drei Schichten + overall + availableLanes + DimensionsAllNullError + Nur-Anbieter-Modus); Stufe-A-Heuristik (alle drei Schichten gleich); `explainMatchLLM` kommt mit Bau 04.B. |
 | 05 anastomose | Spec fertig (2026-05-14, Spec BroadcastChannel-Bridge 2026-05-17, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-14, Bau BroadcastChannel-Bridge 2026-05-17, **Bau 05.Y transparenter Slot-Pfad 2026-05-20**) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert; **Bau BroadcastChannel-Bridge Sichttest 2026-05-17 grün** (Klaus, DeX-Chrome) — Knöpfe 9 / 9a / 9b / 9c alle vier ohne Modul-Befund (Test 9 established score 0.8881; Test 9a HandshakeTimeoutError nach 4005 ms; Test 9b MissingToNodeIdError synchron; Test 9c Auto-Fallback HTTP-404→Channel etabliert 0.8881); volle Regression Panels 01-07 grün im Bau-08.Y-Sichttest 2026-05-20 (Test 9c live grün); **Bau 05.Y Sichttest ungeprüft** (headless gebaut 2026-05-20, wartet auf Klaus' Browser-Lauf Panel 05 Setup + Knopf 10 Sekundär-Persona) | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) + same-origin Fallback-Transport via `BroadcastChannel('sbkim')` aus Bau-Sitzung 2026-05-17 (additiv, `options.transport ∈ {"auto","http","channel"}` mit Default `"auto"` und einmaligem Auto-Fallback bei klaren HTTP-Defekt-Signalen) |
 | 06 heterokaryose | Spec fertig (2026-05-15, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15, **Bau 06.Y transparenter Slot-Pfad 2026-05-20**) | rasch grob durchgeklickt 2026-05-16 + volle 12-Knopf-Sichttest-Runde 2026-05-20 (Klaus, Tab S6 + DeX) — Panel 06 alle Tests grün inkl. Test 9 HETERO_MAX_ANCHORS; **Bau 06.Y Sichttest ungeprüft** (headless 25/25 smoke grün — wartet auf Klaus' Browser-Lauf Panel 06 Setup + Knopf 15 Sekundär-Persona) | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
-| 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
+| 07 apoptose | Spec fertig (2026-05-14, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Cleanup-Reihenfolge Bau 06 2026-05-15, **Bau 07.Y transparenter Slot-Pfad + Legacy-Hook 2026-05-20**) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate; volle 8-Knopf-Sichttest-Runde 2026-05-20 im Bau-08.Y-Lauf grün; **Bau 07.Y Sichttest ungeprüft** (headless 30/30 smoke grün — wartet auf Klaus' Browser-Lauf Panel 07 Test 6 globale Slot-Iteration + Panel 02 Knopf 9 Persona-Apoptose-Hook produktiv) | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; Cleanup-Schritt ruft `SbkimSpore.resetIdentityCache()` (Pflege 2026-05-15). **Bau 07.Y 2026-05-20:** drei Eingriffe — (1) transparenter Slot-Pfad in Stores; (2) globale `confirmSelfApoptose` iteriert über ALLE Slots; (3) neuer interner Hook `_sendLegacyForIdentity(key)` für Bau-02.Y `removeIdentity(key, {force:true})`-Aufrufe. **Konsumenten-Achse 05/06/07/08 vollständig slot-suffixed.** **Bau-02.Y-fail-soft-Klausel aufgelöst** ohne Modul-02-Code-Änderung. |
 | 08 ui_demo | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Bau 08.Y slot-spezifische Outbox 2026-05-20) | geprüft 2026-05-15 (Klaus) — 6/6 Test-Punkte grün; **Bau 08.Y Sichttest 2026-05-20 grün** (Klaus, DeX-Chrome auf Galaxy Tab S6): Setup + Tests 1–6 grün, Setup zeigt `active_slot_key:"main"` + slot-suffixed Stores `sbkim_hetero_outbox_main` / `sbkim_siblings_main`, Test 4 OutboxFullError-Message live „am Limit (5 Einträge pro Slot)" mit Slot-Suffix, Test 6 Co-Schreiber-Pfad strikt-boolean. Volle Regression Panels 01–07 grün im selben Lauf | Endknoten-Pflege-UI für `sbkim_hetero_outbox` und `sbkim_siblings.heterokaryosisOptIn`; Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken. **Bau 08.Y slot-spezifische Outbox 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur): Modul 08 schreibt jetzt slot-spezifisch in `sbkim_hetero_outbox_<activeSlotKey>` und liest/schreibt `sbkim_siblings_<activeSlotKey>`; `activeSlotKey` im `init()` via `SbkimSpore.getActiveIdentityKey()` gecached (Default `"main"` als Rückwärts-Kompat); `probeDependencies` um Pflicht-Abhängigkeit `SbkimSpore (Modul 02)` erweitert; neue Closure-Helper `heteroOutboxStoreName/siblingsStoreName/ensureSlotStores`; defensives `ensureSlotStores` vor jedem ersten Schreibvorgang (idempotent, Bau 01.Y); Test-Brücken `_clearOutbox` / `_clearPseudoSiblings` via `SbkimStorage.clear` slot-isoliert. Selbstcheck-Zeile UNVERÄNDERT. `HETERO_OUTBOX_MAX_ENTRIES = 5` gilt jetzt PRO SLOT (bei 3 Personae theoretisch 15 Anker insgesamt). Headless-Smoke-Test 26/26 grün (drei Proben + Bonus). **Bekannte Limitierung aus Bau-06.Y-Brief aufgelöst** — Modul 06 (Bau 06.Y) liest aus `sbkim_hetero_outbox_<key>`, Modul 08 (diese Bau-Sitzung) schreibt dorthin. Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox_<key>` (Schlüssel `label`, max. `HETERO_OUTBOX_MAX_ENTRIES`=5 PRO SLOT, absteigend nach `addedAt`, Überschreiben statt Verdrängen) und Co-Schreiber für `sbkim_siblings_<key>.heterokaryosisOptIn` (Modul 05 unangetastet). **Storage-only** (kein Netz, kein Embedding, keine Signatur, KEIN Receiver-Map). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); `setSiblingHeteroOptIn` strikt boolean; Self-Apoptose-Knopf bewusst NICHT in Panel 08. Panel 08 in `tests/manual_check.html` mit acht Knöpfen + Setup-Output zeigt `active_slot_key` + slot-suffixed Store-Namen. **Sichttest 2026-05-15 (Klaus): 6/6 Test-Punkte grün im ersten Lauf** (Bau-08-Sichttest). **Bau 08.Y Sichttest 2026-05-20 (Klaus, DeX-Chrome): Setup + Tests 1–6 grün** — Setup zeigt slot-suffixed Stores; Test 4 OutboxFullError-Message live mit „sbkim_hetero_outbox_main am Limit (5 Einträge pro Slot)"; Test 6 Co-Schreiber-Pfad strikt-boolean. **Vollständige Regression Panels 01–07 grün** im selben Lauf — keine Bau-08.Y-Regression. |
 | 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15, Pflege App-SW-Koexistenz 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt — plus Pflege App-SW-Koexistenz (2026-05-15): Schritt 3 a/b-Verzweigung (Pre-Flight-Check → 3a `register('sbkim-sw.js')` für PWA ohne eigenen SW, 3b `importScripts('./sbkim-sw.js')` im bestehenden App-SW für PWA mit eigenem SW), achtes Risiko „App-SW-Überschreibung", `sbkim-sw.js` `SBKIM_SW_STANDALONE`-Flag rückwärtskompatibel (Default `true`, `false` für Variante 3b) |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
@@ -1810,6 +1810,128 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-20 · Bau 07.Y transparenter Slot-Pfad + `_sendLegacyForIdentity`-Hook in Modul 07 (Apoptose)
+
+**Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 04 PR #99 hat
+alles spezifiziert; Bau 02.Y ruft den Hook bereits fail-soft).
+Branch `claude/bau-07y-transparent-slot-pfad-und-legacy-hook-j6mJF`,
+vom `main` `48a1abd` aus angelegt (Stand nach Bau 06.Y PR #120).
+**Dritte und letzte der drei Konsumenten-Bauten** (05.Y / 06.Y / 07.Y).
+Brief BAU_07Y_TRANSPARENT_SLOT_PFAD_UND_LEGACY_HOOK (PR #115
+gemerged 2026-05-20, `main` `cf38d0f`) als Spec-Vorlage.
+
+**Kern (drei Sätze):** Modul 07 schreibt jetzt slot-spezifisch in
+`sbkim_legacy_inbox_<key>` und `sbkim_anastomosis_log_<key>`; liest
+aus `sbkim_siblings_<key>` (Bau 05.Y) und im Cleanup-Pfad
+zusätzlich aus `sbkim_hetero_inbox_<key>` (Bau 06.Y) +
+`sbkim_hetero_outbox_<key>` (Bau 08.Y). Globale `confirmSelfApoptose`
+iteriert jetzt über ALLE Slots — pro Slot Vermächtnis-Versand via
+neuem Hook `_sendLegacyForIdentity(key)` + pro Slot Cleanup; danach
+globaler `sbkim_meta["active-identity"]`-Reset + Modul-02-Cache-
+Invalidate. Der neue Hook ist auf `window.SbkimApoptose._sendLegacyForIdentity`
+exportiert — **Bau-02.Y-fail-soft-Klausel aufgelöst** ohne
+Modul-02-Code-Änderung (typeof-check findet den Hook jetzt).
+
+**Sechs Punkte a–f:**
+
+- **a) INTERFACES.md** zwei Eingriffe: § 1 Modul 07 Geprüft-Zeile +
+  § 10 Änderungsprotokoll. KEIN Vertrags-Drift.
+
+- **b) Karte 07** § Bauzustand neue Zeile mit vollständiger Code-
+  Beschreibung.
+
+- **c) `src/modules/07_apoptose.js` additiv-mit-internem-Refactoring**
+  (keine äußere Signatur-Änderung außer optionalen `key`-Parametern
+  auf `listLegacy(key?)` und `forgetExpiredSiblings(maxAgeMs, key?)`,
+  beide rückwärtskompatibel). Drei Eingriffe: (1) transparenter
+  Slot-Pfad in Storage-Stores; (2) globale `confirmSelfApoptose`
+  iteriert über ALLE Slots; (3) neuer interner Hook
+  `_sendLegacyForIdentity(key, reason?)`. Konstanten `_BASE`-Variante;
+  `CLEANUP_ORDER` durch `CLEANUP_ORDER_BASES = [siblings, log,
+  legacy_inbox, hetero_inbox, hetero_outbox]` ersetzt. Fünf neue
+  Closure-Helper für Store-Namen + `ensureSlotStores`. Modul-State
+  um `activeSlotKey` + `receiverMap` + `ownPrivateKeyCacheBySlot`
+  erweitert. `init()` ruft `getOrCreateIdentity()` + cached aktiven
+  Slot + `ensureSlotStores` + baut `receiverMap`. **`confirmSelfApoptose`**
+  komplett umgeschrieben: PRO Slot `_sendLegacyForIdentity` (fail-
+  soft, aggregiert recipientsNotified/Failed); PRO Slot Cleanup
+  über CLEANUP_ORDER_BASES + `del(spore,slot)` + `del(keys,slot)`;
+  globaler `del(meta,"active-identity")`; Caches invalidiert +
+  `SbkimSpore.resetIdentityCache()`. **`_sendLegacyForIdentity(key,
+  reason?)`** neu: Aufrufer Bau-02.Y oder confirmSelfApoptose;
+  sendet Persona-Vermächtnis an Geschwister DIESER Persona; signiert
+  PRO Sibling separat mit `toNodeId: sibling.nodeId`; KEIN Store-
+  Cleanup (Modul 02 räumt; confirmSelfApoptose räumt nach Hook);
+  fail-soft. **`receiveLegacy`** Receiver-Map-Lookup. **`listLegacy(key?)`
+  + `forgetExpiredSiblings(maxAgeMs, key?)`** optional per-Persona.
+  Selbstcheck-Zeile UNVERÄNDERT. `_meta` um Basis-Namen + Getter
+  `activeSlotKey` + Getter `receiverMapSize` erweitert.
+  `node --check` grün.
+
+- **d) Panel 07** bestehende neun Knöpfe ohne Strukturänderung
+  (Cleanup-Pfad nach Bau 07.Y transparent slot-suffixed).
+
+- **e) Smoke-Test** `tests/smoke_bau07y_transparent_slot_pfad_und_legacy_hook.mjs`
+  mit fake-indexeddb (Node 22). Fünf Proben (Default-Slot „main"
+  receiveLegacy + listLegacy / Sekundär-Slot „test_07y" via Modul-
+  Re-Load + listLegacy(key) per Persona / Receiver mit unbekanntem
+  toNodeId → rejected / `_sendLegacyForIdentity('main')` resolved
+  fail-soft + KEIN Cleanup / globale `confirmSelfApoptose` über
+  zwei Slots — pro Slot Cleanup + globaler Marker + Cache-
+  Invalidate). **30 Sub-Proben, 30 grün.** Regression: Bau-02.Y
+  33/33 + Bau-04.A 19/19 + Pflege-01 8/8 + Bau-05.Y 25/25 + Bau-06.Y
+  25/25 + Bau-08.Y 26/26 alle grün.
+
+- **f) Übergabeprotokoll**
+  `docs/sessions/archiv/2026-05-20_bau-07y-transparent-slot-pfad-und-legacy-hook.md`.
+
+**Heilige Tafeln eingehalten:** INTERFACES verbindlich.
+`_sendLegacyForIdentity(key)` ist INTERNER Hook auf
+`window.SbkimApoptose._sendLegacyForIdentity` exportiert. Globale
+Self-Apoptose iteriert über alle Slots. Per-Persona-Apoptose läuft
+NICHT durch Modul 07 (Modul 02's `removeIdentity`-Pfad). Receiver-
+Map § 9.4. KEIN `setActiveIdentity`-Aufruf. `forgetExpiredSiblings`
++ `listLegacy` optional per-Persona. `ensureStore` defensiv.
+Cleanup-Reihenfolge verbindlich. Default-Slot „main" Rückwärts-
+Kompat. Bestehende Funktionen in äußerer Signatur gültig.
+**KEINE Tafel-Spannung.**
+
+**Konsumenten-Achse 05/06/07/08 jetzt vollständig slot-suffixed.**
+Mit Bau 07.Y schließt sich die Pipeline der vier Konsumenten-Bauten
+aus Brief 99. **Bau-02.Y-fail-soft-Klausel aufgelöst:** Modul 02's
+typeof-check für `_sendLegacyForIdentity` findet den Hook jetzt;
+`console.warn`-Pfad verschwindet automatisch ohne Modul-02-Code-
+Änderung.
+
+**Was NICHT angefasst:** Modul-02-Code (typeof-check passt schon);
+Modul-05/06/08-Code; `setActiveIdentity`-Aufrufe aus Modul 07;
+Migration alter Daten; `PROTOCOL_VERSION`/`DB_VERSION`/
+`BACKUP_FORMAT_VERSION`-Bump; Sage-Page; CLAUDE.md; Karte 09;
+`status.json` (Modul 07 bleibt `score:"fertig"`).
+
+**Sichttest:** ungeprüft, weil headless gebaut. Wartet auf Klaus'
+Browser-Lauf Panel 07 (Test 6 Self-Apoptose globale Slot-Iteration
++ Panel 02 Knopf 9 Persona-Apoptose ohne `console.warn`).
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Browser-Sichttest Panel 07 + Panel 02** — Test 6
+   Self-Apoptose globale Slot-Iteration; Panel 02 Knopf 9
+   Persona-Apoptose-Hook produktiv.
+2. **Endknoten-Migration (Mein-Mixarium + Mein-Rezeptbuch)** — alle
+   Bau-02.Y / 04.A / 05.Y / 06.Y / 07.Y / 08.Y produktiv im
+   Endknoten-Repo. Konsumenten-Achse 05/06/07/08 vollständig
+   slot-suffixed — Multi-Persona-Pfad live.
+3. **Bau 04.B explainMatchLLM** (parallel) — Brief BAU_04B
+   (PR #112) gemerged. ~3-4 h, braucht User-Key-Test-Brücke.
+4. **Vision-Anker 5 Identitäts-Container Spec-Sitzung** (optional).
+
+**PR:** Branch `claude/bau-07y-transparent-slot-pfad-und-legacy-hook-j6mJF`,
+Draft-PR „Bau 07.Y transparenter Slot-Pfad + `_sendLegacyForIdentity`-
+Hook in Modul 07 (Apoptose)".
+
+---
+
 ### 2026-05-20 · Bau 06.Y transparenter Slot-Pfad in Modul 06 (Heterokaryose)
 
 **Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 04 PR #99 hat das
@@ -2759,89 +2881,6 @@ Beleg und Verweis auf diesen Sitzungs-Eintrag.
 
 **Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_live-channel-handshake.md](sessions/archiv/2026-05-17_live-channel-handshake.md).
 
-### 2026-05-17 · Mini-Pflege — Bau-Sichttest BroadcastChannel-Bridge grün
-
-**Sitzungs-Rolle:** Mini-Pflege (Folge-Eintrag zur Bau-Sitzung
-BroadcastChannel-Bridge, PR #75 `b8c8f41`). Branch
-`claude/pflege-bau-05-sichttest-gruen`. Klaus hat Panel 05 Knöpfe
-9 / 9a / 9b / 9c im Browser durchgeklickt — **alle vier grün im
-ersten Lauf**, keine Modul-Befunde.
-
-**Setup:** Galaxy Tab S6 + DeX, Chrome auf Android, lokaler
-`python3 -m http.server 8000` aus Termux gegen frischen
-Sage-Protokol-Clone. Embedding-Modell `Xenova/multilingual-e5-small`
-über CDN-Fallback (`cdn.jsdelivr.net`) — die `/models/...`-404er
-vom Python-Server sind erwartet (`transformers.js` sucht zuerst
-lokal, fällt dann ans CDN).
-
-**Test-Ergebnisse (kopiert aus Panel-Output):**
-
-- **Test 9 — Channel-Pfad established (alt → main, intra-tab)** ✓
-  ```json
-  {
-    "response_outcome": "established",
-    "response_score": 0.8880516027995051,
-    "response_signatur_ok": true,
-    "alt_als_sibling_eingetragen": true
-  }
-  ```
-- **Test 9a — toNodeId-Mismatch-Timeout** ✓
-  ```json
-  {
-    "fehler_name": "HandshakeTimeoutError",
-    "fehler_message": "Channel-Reply > 4000 ms ausgeblieben.",
-    "timeout_ms": 4005
-  }
-  ```
-  Saubere `QUERY_TIMEOUT_MS`-Grenze (5 ms Overhead durch Event-Loop).
-- **Test 9b — MissingToNodeIdError synchron** ✓
-  ```json
-  {
-    "request_hat_toNodeId": false,
-    "fehler_name": "MissingToNodeIdError"
-  }
-  ```
-- **Test 9c — Auto-Fallback (HTTP 404 → Channel etabliert)** ✓
-  ```json
-  {
-    "ergebnis": {
-      "outcome": "established",
-      "peerNodeId": "25IUGiGscRhvgYd_O4EqBttkm6XME8KXST1iX2MEbI4",
-      "peerDomain": "mixarium.example.org",
-      "score": 0.8880516027995051
-    },
-    "target_endpoint": "http://localhost:8000/nicht-vorhanden-fuer-test-9c/"
-  }
-  ```
-
-**Beobachtung — Score-Stabilität:** Test 9 und Test 9c liefern
-identischen Score 0.8881, weil in beiden Fällen die gleichen
-Pseudo-Knoten-Vektoren (alt/main aus dem Setup-Knopf) genutzt
-werden. Auto-Fallback funktioniert nicht nur transport-mäßig,
-sondern liefert auch dasselbe semantische Ergebnis wie der reine
-Channel-Pfad — wie spezifiziert (HandshakeRequest/Response-Schema
-unverändert, Envelope nur Transport-Schicht).
-
-**Was eingetragen:** Karte 05 § Bauzustand neue Zeile „Sichttest
-BC-Bridge | 2026-05-17 | Klaus + Mini-Pflege Bau-Sichttest-grün" mit
-allen vier Test-Outputs. PULS.md Schnellüberblick-Zeile Modul 05
-von „Sichttest ausstehend" auf „2026-05-17 grün" umgestellt.
-
-**Was offen bleibt (Klaus' nächster Schritt):**
-**Endknoten-Pflege.** `src/modules/05_anastomose.js` aus
-`Sage-Protokol` in `Mein-Mixarium/sbkim/` + `Mein-Rezeptbuch/sbkim/`
-kopieren (Cache-Bust via File-Rename oder Query-Param), Commit +
-Push in beiden Endknoten-Repos. Dann beide PWA-Tabs auf
-`lausiklauskn-png.github.io` öffnen und über Eruda regulären
-`SbkimAnastomose.handshake(peerSpore, ownVec)` aufrufen.
-**Erwartet `outcome:"established"` über den Channel-Pfad** — erster
-Cross-Knoten-Handshake **ohne** localStorage-Bypass.
-
-**`status.json` nicht geändert** — Modul 05 bleibt `score:"fertig"`
-(Sichttest-Bestätigung, kein Funktionalitäts-Verlust).
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-bau-05-sichttest-gruen.md](sessions/archiv/2026-05-17_mini-pflege-bau-05-sichttest-gruen.md).
-
 ---
 
 ## Archiv-Index (Sitzungen vor dieser Pflege)
@@ -2851,6 +2890,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-17 | Mini-Pflege · Bau-Sichttest BroadcastChannel-Bridge grün | Folge-Eintrag zur Bau-Sitzung BroadcastChannel-Bridge (PR #75 `b8c8f41`). Klaus hat Panel 05 Knöpfe 9 / 9a / 9b / 9c im Browser durchgeklickt — alle vier grün im ersten Lauf (Termux-`python3 -m http.server 8000` auf Galaxy Tab S6 + DeX, Modell vom CDN-Fallback `cdn.jsdelivr.net` gezogen). Test 9 Channel-Pfad established score 0.8881, Test 9a HandshakeTimeoutError nach 4005 ms, Test 9b MissingToNodeIdError synchron, Test 9c Auto-Fallback HTTP-404→Channel etabliert 0.8881. Score-Stabilität bestätigt zwischen Test 9 und 9c. PROTOCOL_VERSION unverändert; status.json unverändert (Sichttest-Bestätigung, kein Score-Wechsel). | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-bau-05-sichttest-gruen.md) |
 | 2026-05-17 | Bau-Sitzung Modul 05 · BroadcastChannel-Bridge implementiert | Bau-Sitzung zur Spec-Sitzung BroadcastChannel-Bridge (PR #75, `b8c8f41`). Additiver Channel-Pfad in `src/modules/05_anastomose.js` ohne Refactoring der bestehenden Pfade — zwei neue Error-Klassen (`InvalidTransportError` + `MissingToNodeIdError`), drei Konstanten (`ALLOWED_TRANSPORTS`, `BROADCAST_CHANNEL_NAME`, `REPLY_CHANNEL_PREFIX`), Closure-Helfer `setupBroadcastChannelBridge()` + `postChannelEnvelope()` + `sendViaChannel()` + `parseTransport()` + `shouldAutoFallback()`. `handshake()` um optionalen `options.transport`-Parameter mit Default `"auto"` erweitert; Auto-Fallback bei HTTP-Defekt-Signalen (4xx/5xx, non-JSON, Schema-Lücke, outcome unklar). Channel-Pfad: BroadcastChannel('sbkim') als Main-Channel, Reply-Channel via `nonce`-Ableitung, Receiver-Filter `toNodeId === own.nodeId && fromNodeId !== own.nodeId`, Cleanup in finally. HandshakeRequest/Response-Schema unverändert. Panel 05 in `tests/manual_check.html` um vier Knöpfe 9 / 9a / 9b / 9c erweitert. Karte 09 § Schritt 4 um Andock-Hinweis „Beide Tabs offen halten" erweitert. `node --check` grün, Smoke-Test im Node-VM-Kontext alle fünf Proben grün. PROTOCOL_VERSION bleibt `"0.1"`, status.json unverändert. | [→ Archiv](sessions/archiv/2026-05-17_bau-05-broadcastchannel-bridge.md) |
 | 2026-05-19 | Pflege · Modul 01 `init()` versions-fail-soft (PR #107 gemerged 2026-05-19, `main` `b9e1a8f`; Sichttest-Nachzug PR #108, `main` `af4fdff`). Folge-Pflege auf Klaus' Bau-02.Y-Sichttest. DB_VERSION ist jetzt Mindest-Schema-Version, nicht „immer-anstreben". init() öffnet die DB zweiphasig (Probe + Entscheidung), respektiert existing > DB_VERSION ohne VersionError. Bei fehlendem Pflicht-Store: StorageOpenError mit Liste. Vier neue Closure-Helper (openProbe / checkRequiredStores / openExact / deleteDb); `_meta.dbVersionPolicy = "fail-soft-min-schema"` als Read-Anker. Karte 01 § Versionsmigration neuer Sub-Block + § Risiken zwei neue Punkte + § Manueller Test Knopf 9 + § Bauzustand. **Sichttest 2026-05-19 (Klaus, DeX-Chrome): live grün** — `db_version_vor: 16 → nach_bump: 17`, Bonus-Probe Panel-02-Knöpfe 8/9/10 alle grün ohne Cleanup-Workaround. Headless-Smoke 8/8 grün, Bau-02.Y-Regression 33/33 weiterhin grün. Tafel-Evolutions-konform (PR #105). PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION unverändert | [→ Archiv](sessions/archiv/2026-05-19_pflege-01-init-fail-soft.md) |
 | 2026-05-19 | Bau · 02.Y Multi-Identitäts-API + Backup-Schema-Bump in Modul 02 (PR #104 gemerged 2026-05-19, `main` `63e8fd1`; zweite Bau-Sitzung der Pipeline aus Brief 99 — Klaus' Wahl „logische Reihenfolge — Infrastruktur weiter". Modul 02 hat fünf neue/erweiterte Funktionen (`setActiveIdentity` / `getActiveIdentityKey` / `listIdentities` / `removeIdentity` plus optionaler `key`-Parameter auf `getOrCreateIdentity` / `generateOwnSpore` / `getOwnSpore`); identitäts-spezifische Stores via `SbkimStorage.ensureStore` aus Bau 01.Y. **`BACKUP_FORMAT_VERSION` 1 → 2** (Multi-Identitäts-Backup „kompletter Rucksack"); alte v=1-Backups bleiben lesbar. `sbkim_meta` lazy via `ensureStore` (KEIN Modul-01-Eingriff). KEINE Modul-05/06/07-Änderung. Drei neue Panel-02-Knöpfe + Mini-Fix Rollback-Pfad (Reihenfolge `ensureIdentityStores` vor `put(sbkim_keys)`). Sichttest 2026-05-19 (Klaus, DeX-Chrome): 3/3 grün nach Mini-Fix + Cleanup-Workaround. Headless-Smoke 33/33 grün. Klaus' Befund: zweiter Lauf gelang erst nach Panel-01-„Storage init"-Klick — Folge-Pflege Modul 01 init() versions-fail-soft bestätigt. PROTOCOL_VERSION/DB_VERSION unverändert) | [→ Archiv](sessions/archiv/2026-05-19_bau-02y-multi-identitaet.md) |
