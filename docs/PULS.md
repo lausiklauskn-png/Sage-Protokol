@@ -56,7 +56,7 @@ Spec frisch, **Bau ausstehend**:
 
 Letzter Bau frisch (Bau-Sitzung 2026-05-15), **Sichttest geprüft 2026-05-15:**
 
-- 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox` (Anker-Vorrat) und `sbkim_siblings[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. **Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün** (Pflege-Sitzung Sichttest-Resultate 2026-05-15).
+- 🟦 **[08 UI-Demo](components/08_ui_demo.md)** — Code geschrieben 2026-05-15 (Bau-Sitzung 08), **Bau 08.Y slot-spezifische Outbox 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur). Endknoten-Andocker-UI für die zwei Stellen, die Modul 06 (Heterokaryose) braucht, aber nicht selbst füllt: `sbkim_hetero_outbox_<activeSlotKey>` (Anker-Vorrat, slot-spezifisch seit Bau 08.Y) und `sbkim_siblings_<activeSlotKey>[peerNodeId].heterokaryosisOptIn` (additives Opt-In-Flag pro Geschwister). Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken (`_clearOutbox`, `_addPseudoSibling` ohne Opt-In-Flag, `_clearPseudoSiblings`), synchroner Selbstcheck. **Storage-only** (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); Überschreiben eines bekannten Labels bleibt erlaubt. `setSiblingHeteroOptIn` strikt boolean (`1`, `"true"` werfen `InvalidOptInArgError`); Co-Schreiber-Disziplin via `Object.assign`. Panel 08 in `tests/manual_check.html` mit acht Knöpfen (Setup + sechs Test-Punkte + Selbstcheck-Hinweis); Panel-Status von Werkstatt-Stub `idle` auf `ok "Code-Stub"`. **Self-Apoptose-Knopf bewusst NICHT in Panel 08** (Spec-Sitzung 08-Entscheidung respektiert). `node --check src/modules/08_ui_demo.js` grün, alle 10 Inline-`<script>`-Blöcke validiert. **Sichttest geprüft 2026-05-15 (Klaus, im Browser): 6/6 Test-Punkte grün** (Pflege-Sitzung Sichttest-Resultate 2026-05-15). **Bau 08.Y Sichttest 2026-05-20 (Klaus, DeX-Chrome auf Galaxy Tab S6): Setup + Tests 1–6 grün** — Setup zeigt `active_slot_key:"main"` + `outbox_store:"sbkim_hetero_outbox_main"` + `siblings_store:"sbkim_siblings_main"`, Test 4 OutboxFullError-Message zitiert „sbkim_hetero_outbox_main am Limit (5 Einträge pro Slot)" (Slot-Suffix + „pro Slot"-Wortlaut live), Test 6 Co-Schreiber-Pfad auf slot-suffixed `sbkim_siblings_main` + `InvalidOptInArgError` für `1`/`"true"`. **Vollständige Regression Panels 01–07 grün** im selben Lauf (Storage / Spore Multi-Persona / Embedding / Match `matchDimensions` / Anastomose 9c Auto-Fallback / Heterokaryose Test 9 `HETERO_MAX_ANCHORS`-Begrenzung / Apoptose Self-Apoptose IRREVERSIBEL) — keine Bau-08.Y-Regression.
 
 Empfehlung Hauptsitzung: **Klaus' Re-Andock beider Endknoten mit
 PWA-Suffix**. Die Pflege-Sitzung 2026-05-16 „Karten 01 + 09 PWA-
@@ -101,7 +101,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 05 anastomose | Spec fertig (2026-05-14, Spec BroadcastChannel-Bridge 2026-05-17) | Code-Stub (2026-05-14, Bau BroadcastChannel-Bridge 2026-05-17) | geprüft 2026-05-15 (Klaus) — 6/7 Tests grün im ersten Lauf, Test 2 Test-Bug (Tarantino-Vektor zu nah an Cocktails 0.854) in Pflege-Sitzung 2026-05-15 als Vektor-Trias repariert (3 Kandidaten parallel, Pass = ≥ 1 unter 0.80); Klaus' zweiter Lauf nach Pflege folgt; **Bau BroadcastChannel-Bridge Sichttest 2026-05-17 grün** (Klaus, Browser im Termux-`python3 -m http.server 8000`-Setup auf Galaxy Tab S6 + DeX) — Knöpfe 9 / 9a / 9b / 9c alle vier ohne Modul-Befund (Test 9 established score 0.8881; Test 9a HandshakeTimeoutError nach 4005 ms; Test 9b MissingToNodeIdError synchron; Test 9c Auto-Fallback HTTP-404→Channel etabliert score 0.8881) | Handshake; Fünf-Funktionen-API, bidirektional, kanonisch signiert, Schwelle aus Modul 04; SW Variante A (Page-Hosted) + same-origin Fallback-Transport via `BroadcastChannel('sbkim')` aus Bau-Sitzung 2026-05-17 (additiv, `options.transport ∈ {"auto","http","channel"}` mit Default `"auto"` und einmaligem Auto-Fallback bei klaren HTTP-Defekt-Signalen) |
 | 06 heterokaryose | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Pflege Bau 06.1 Outbox-Lese-Pfad 2026-05-15) | rasch grob durchgeklickt 2026-05-16 (Klaus, Tab S6 + DeX) — Panel 06 14 Knöpfe Selbstchecks + Hauptpfade grün; voller Test-1–9-Lauf folgt bei Bedarf | Datenaustausch unter Geschwistern; Fünf-Funktionen-API (`init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis`), Pull-Pattern, Opt-In beidseits (additiv auf `sbkim_siblings`), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store `sbkim_hetero_inbox` (Komposit-Schlüssel `peerNodeId\|ts`, DB-Version 1→2 additiv), SW Variante A mit drittem fetch-Listener `/sbkim/heterokaryosis` (Message-Typ `SBKIM_HETEROKARYOSIS_REQUEST`); Modul 07 Cleanup-Reihenfolge nachgezogen (`sbkim_hetero_inbox` zwischen `sbkim_legacy_inbox` und `sbkim_spore`). **Anker-Quelle nach Pflege Bau 06.1 (2026-05-15): voller Outbox-Lese-Pfad implementiert** — `sbkim_hetero_outbox` (Spec-Sitzung 08, v=3-Store) wird fail-soft gelesen, max. `HETERO_MAX_ANCHORS=5` Anker absteigend nach `addedAt`; Fallback auf Spore-Single-Anker bei leerer/fehlender Outbox bestehen geblieben. `src/modules/01_storage.js` `DB_VERSION` 2 → 3 (additive Migration v=3, `STORES_V3=["sbkim_hetero_outbox"]`); Panel 06 mit 14 Knöpfen; Test 9 (`HETERO_MAX_ANCHORS`-Begrenzung) voll abgedeckt (sechs Outbox-Einträge → Response liefert genau fünf, neueste zuerst). Sichttest ausstehend (headless gebaut, wartet auf Klaus' Browser) |
 | 07 apoptose | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15) | geprüft 2026-05-15 (Klaus) — **8/8 Tests grün** nach Pflege 02+07-Cache-Invalidate (Re-Sichttest 2026-05-15 bestätigte `getNodeId_wirft_NoIdentityError:true`); Test 6 (Self-Apoptose) hatte einen Modul-02-Cache-Bug aufgedeckt, der in Pflege 2026-05-15 mit `resetIdentityCache()` als Cleanup-Schritt 6 behoben wurde. | Selbstlöschung mit signiertem Vermächtnis; zweistufige Self-Apoptose (Token 60 s), Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker; kanonischer Sign/Verify-Pfad aus 02/05 dritter Pfad dupliziert; SW erweitert um `/sbkim/legacy` (gemeinsamer fetch-Listener mit `/sbkim/anastomosis`); Panel 07 mit zehn Knöpfen; Cleanup-Schritt 6 ruft `SbkimSpore.resetIdentityCache()` nach Pflege-Sitzung 2026-05-15 |
-| 08 ui_demo | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Bau 08.Y slot-spezifische Outbox 2026-05-20) | geprüft 2026-05-15 (Klaus) — 6/6 Test-Punkte grün; **Bau 08.Y Sichttest ungeprüft** (headless gebaut 2026-05-20, wartet auf Klaus' Browser-Lauf Panel 08 Setup-Knopf) | Endknoten-Pflege-UI für `sbkim_hetero_outbox` und `sbkim_siblings.heterokaryosisOptIn`; Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken. **Bau 08.Y slot-spezifische Outbox 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur): Modul 08 schreibt jetzt slot-spezifisch in `sbkim_hetero_outbox_<activeSlotKey>` und liest/schreibt `sbkim_siblings_<activeSlotKey>`; `activeSlotKey` im `init()` via `SbkimSpore.getActiveIdentityKey()` gecached (Default `"main"` als Rückwärts-Kompat); `probeDependencies` um Pflicht-Abhängigkeit `SbkimSpore (Modul 02)` erweitert; neue Closure-Helper `heteroOutboxStoreName/siblingsStoreName/ensureSlotStores`; defensives `ensureSlotStores` vor jedem ersten Schreibvorgang (idempotent, Bau 01.Y); Test-Brücken `_clearOutbox` / `_clearPseudoSiblings` via `SbkimStorage.clear` slot-isoliert. Selbstcheck-Zeile UNVERÄNDERT. `HETERO_OUTBOX_MAX_ENTRIES = 5` gilt jetzt PRO SLOT (bei 3 Personae theoretisch 15 Anker insgesamt). Headless-Smoke-Test 26/26 grün (drei Proben + Bonus). **Bekannte Limitierung aus Bau-06.Y-Brief aufgelöst** — Modul 06 (Bau 06.Y) liest aus `sbkim_hetero_outbox_<key>`, Modul 08 (diese Bau-Sitzung) schreibt dorthin. Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox_<key>` (Schlüssel `label`, max. `HETERO_OUTBOX_MAX_ENTRIES`=5 PRO SLOT, absteigend nach `addedAt`, Überschreiben statt Verdrängen) und Co-Schreiber für `sbkim_siblings_<key>.heterokaryosisOptIn` (Modul 05 unangetastet). **Storage-only** (kein Netz, kein Embedding, keine Signatur, KEIN Receiver-Map). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); `setSiblingHeteroOptIn` strikt boolean; Self-Apoptose-Knopf bewusst NICHT in Panel 08. Panel 08 in `tests/manual_check.html` mit acht Knöpfen + Setup-Output zeigt `active_slot_key` + slot-suffixed Store-Namen. **Sichttest 2026-05-15 (Klaus): 6/6 Test-Punkte grün im ersten Lauf** (Bau-08-Sichttest; Bau-08.Y-Sichttest steht aus). |
+| 08 ui_demo | Spec fertig (2026-05-15) | Code-Stub (2026-05-15, Bau 08.Y slot-spezifische Outbox 2026-05-20) | geprüft 2026-05-15 (Klaus) — 6/6 Test-Punkte grün; **Bau 08.Y Sichttest 2026-05-20 grün** (Klaus, DeX-Chrome auf Galaxy Tab S6): Setup + Tests 1–6 grün, Setup zeigt `active_slot_key:"main"` + slot-suffixed Stores `sbkim_hetero_outbox_main` / `sbkim_siblings_main`, Test 4 OutboxFullError-Message live „am Limit (5 Einträge pro Slot)" mit Slot-Suffix, Test 6 Co-Schreiber-Pfad strikt-boolean. Volle Regression Panels 01–07 grün im selben Lauf | Endknoten-Pflege-UI für `sbkim_hetero_outbox` und `sbkim_siblings.heterokaryosisOptIn`; Fünf-Funktionen-API (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn`), sechs benannte Error-Klassen im Factory-Stil analog Modul 00, drei Test-Brücken. **Bau 08.Y slot-spezifische Outbox 2026-05-20** (additiv-mit-internem-Refactoring, KEIN Bruch der äußeren Signatur): Modul 08 schreibt jetzt slot-spezifisch in `sbkim_hetero_outbox_<activeSlotKey>` und liest/schreibt `sbkim_siblings_<activeSlotKey>`; `activeSlotKey` im `init()` via `SbkimSpore.getActiveIdentityKey()` gecached (Default `"main"` als Rückwärts-Kompat); `probeDependencies` um Pflicht-Abhängigkeit `SbkimSpore (Modul 02)` erweitert; neue Closure-Helper `heteroOutboxStoreName/siblingsStoreName/ensureSlotStores`; defensives `ensureSlotStores` vor jedem ersten Schreibvorgang (idempotent, Bau 01.Y); Test-Brücken `_clearOutbox` / `_clearPseudoSiblings` via `SbkimStorage.clear` slot-isoliert. Selbstcheck-Zeile UNVERÄNDERT. `HETERO_OUTBOX_MAX_ENTRIES = 5` gilt jetzt PRO SLOT (bei 3 Personae theoretisch 15 Anker insgesamt). Headless-Smoke-Test 26/26 grün (drei Proben + Bonus). **Bekannte Limitierung aus Bau-06.Y-Brief aufgelöst** — Modul 06 (Bau 06.Y) liest aus `sbkim_hetero_outbox_<key>`, Modul 08 (diese Bau-Sitzung) schreibt dorthin. Modul 08 alleiniger Schreiber von `sbkim_hetero_outbox_<key>` (Schlüssel `label`, max. `HETERO_OUTBOX_MAX_ENTRIES`=5 PRO SLOT, absteigend nach `addedAt`, Überschreiben statt Verdrängen) und Co-Schreiber für `sbkim_siblings_<key>.heterokaryosisOptIn` (Modul 05 unangetastet). **Storage-only** (kein Netz, kein Embedding, keine Signatur, KEIN Receiver-Map). `addOutboxAnchor`-Check-Reihenfolge: (1) Label sync, (2) Vektor sync, (3) async-Voll-Check (`OutboxFullError` nur bei NEUEM Label); `setSiblingHeteroOptIn` strikt boolean; Self-Apoptose-Knopf bewusst NICHT in Panel 08. Panel 08 in `tests/manual_check.html` mit acht Knöpfen + Setup-Output zeigt `active_slot_key` + slot-suffixed Store-Namen. **Sichttest 2026-05-15 (Klaus): 6/6 Test-Punkte grün im ersten Lauf** (Bau-08-Sichttest). **Bau 08.Y Sichttest 2026-05-20 (Klaus, DeX-Chrome): Setup + Tests 1–6 grün** — Setup zeigt slot-suffixed Stores; Test 4 OutboxFullError-Message live mit „sbkim_hetero_outbox_main am Limit (5 Einträge pro Slot)"; Test 6 Co-Schreiber-Pfad strikt-boolean. **Vollständige Regression Panels 01–07 grün** im selben Lauf — keine Bau-08.Y-Regression. |
 | 09 einbau_pwa | Spec fertig (2026-05-14, Pflege Schritt 9 + 07/00 2026-05-15, Pflege App-SW-Koexistenz 2026-05-15) | — (Anleitung, kein JS-Modul) | — | Andock-Anleitung — **9 Schritte** (Schritt 9 neu aus Pflege-Sitzung 2026-05-15: SbkimApoptose.init + SbkimDoku.init + optionaler TTL-Sweep nach Handshake); `<script>`-Reihenfolge 01→02→03→04→05→07→00; Soft-Pflicht `domainVector` im Andock-Workflow (kein Hauptversions-Sprung); SW im Endknoten-Repo-Root, `/sbkim/spore.json` als Spore-Endpunkt — plus Pflege App-SW-Koexistenz (2026-05-15): Schritt 3 a/b-Verzweigung (Pre-Flight-Check → 3a `register('sbkim-sw.js')` für PWA ohne eigenen SW, 3b `importScripts('./sbkim-sw.js')` im bestehenden App-SW für PWA mit eigenem SW), achtes Risiko „App-SW-Überschreibung", `sbkim-sw.js` `SBKIM_SW_STANDALONE`-Flag rückwärtskompatibel (Default `true`, `false` für Variante 3b) |
 | 10 reputation | Stub (Schutz-Backlog) | — | — | Knoten-Reputation, Priorität niedrig |
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
@@ -1810,6 +1810,103 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-20 · Bau 08.Y slot-spezifische Outbox — Sichttest-Nachzug
+
+**Sitzungs-Rolle:** Sichttest-Pflege-Sitzung (kein Code, kein Spec —
+Doku-Nachzug nach Klaus' Browser-Sichttest 2026-05-20). Branch
+`claude/bau-08y-sichttest-nachzug-j6mJF`, vom main aus angelegt nach
+Merge PR #117 (`main` `54bba18`).
+
+**Kern (drei Sätze):** Klaus hat in seinem Termux-`python3 -m
+http.server 8000`-Setup auf Galaxy Tab S6 + DeX-Chrome alle acht
+Panels von `tests/manual_check.html` durchgespielt — Panels 01–07
+als Regression-Sichttest, Panel 08 als Bau-08.Y-Live-Beleg. Setup-
+Knopf Panel 08 zeigt `active_slot_key:"main"` plus die slot-suffixed
+Store-Namen `sbkim_hetero_outbox_main` / `sbkim_siblings_main`, und
+die OutboxFullError-Message in Test 4 zitiert die slot-spezifische
+Variante mit dem „pro Slot"-Wortlaut live. **Keine Regression in
+Panels 01–07** — Bau 08.Y ist additiv und sauber.
+
+**Belege im Sichttest:**
+
+- **Panel 08 Setup-Output:** `outbox_store:"sbkim_hetero_outbox_main"`,
+  `siblings_store:"sbkim_siblings_main"`, `active_slot_key:"main"`,
+  `hinweis` enthält „Bau 08.Y: Modul 08 schreibt jetzt slot-spezifisch.
+  HETERO_OUTBOX_MAX_ENTRIES (= 5) gilt PRO SLOT, nicht global."
+- **Panel 08 Test 1 (Outbox add + list):** drei Anker in
+  `sbkim_hetero_outbox_main`, neueste zuerst (Sauerteig), Schema
+  korrekt, keine Vektoren in der Ausgabe.
+- **Panel 08 Test 2 (Outbox remove):** idempotent — zweiter remove
+  desselben Labels wirft nicht.
+- **Panel 08 Test 3 (Überschreiben):** Anzahl unverändert (2),
+  `addedAt` aktualisiert, Hefeteig steht jetzt oben.
+- **Panel 08 Test 4 (OutboxFullError):** Message live „sbkim_hetero_outbox_main
+  am Limit (5 Einträge pro Slot)" — Slot-Suffix + „pro Slot"-Wortlaut
+  sind beide im Live-Output. Überschreiben eines bekannten Labels
+  wirft nicht; nach remove passt ein neuer durch.
+- **Panel 08 Test 5 (Validierung):** alle sechs Fälle werfen den
+  passenden Error-Namen (`InvalidAnchorLabelError` × 3,
+  `InvalidAnchorVectorError` × 3); Outbox bleibt leer (sync-Wurf
+  vor jedem Schreib-Versuch).
+- **Panel 08 Test 6 (setSiblingHeteroOptIn):** Co-Schreiber-Pfad
+  liest/schreibt `sbkim_siblings_main`; Opt-In schaltet zwischen
+  `true`/`false`, andere Felder bleiben; unbekannter Sibling wirft
+  `UnknownSiblingError`; `1` und `"true"` werfen `InvalidOptInArgError`
+  (strikt boolean).
+- **Panel 01 Storage-init:** Store-Liste enthält jetzt `sbkim_hetero_outbox_main`
+  und `sbkim_siblings_main` zusätzlich zum legacy `sbkim_hetero_outbox`
+  und `sbkim_siblings` (non-suffixed bleibt für Backup-Re-Import-
+  Workflow unangetastet, wie in Bau-08.Y-Brief spezifiziert).
+- **Panel 01 versions-fail-soft probe:** `db_version_vor: 7 → nach_bump: 8`
+  (Pflege Modul 01 versions-fail-soft 2026-05-19 weiterhin grün).
+- **Panel 02 Spore:** alle 11 Knöpfe inkl. Multi-Persona-Wechsel,
+  Persona-Apoptose, Multi-ID-Backup-Export grün.
+- **Panel 03 Embedding + Panel 04 Match:** Vergleich Query/Passage
+  0.9555, Tarantino-vs-Kochrezepte 0.7737 unter Schwelle (Apoptose-
+  Trigger); Bau 04.A `matchDimensions` synchron alle drei Knöpfe
+  weiterhin grün.
+- **Panel 05 Anastomose:** Test 1 Handshake established 0.8881,
+  Test 9 Channel-Pfad established 0.8881, Test 9c Auto-Fallback
+  HTTP 404 → Channel etabliert 0.8881 — Bau BroadcastChannel-Bridge
+  weiterhin grün.
+- **Panel 06 Heterokaryose:** Test 9 `HETERO_MAX_ANCHORS`-Begrenzung
+  (sechs Outbox-Einträge → fünf in Response, „Nachtisch" zuerst,
+  „Hefeteig" ausselektiert) — Modul 06 liest noch aus `sbkim_hetero_outbox`
+  (ohne Slot-Suffix), das ist die in Bau-06.Y-Brief dokumentierte
+  bekannte Limitierung; Bau 06.Y selbst (eigene Bau-Sitzung) baut
+  den Lese-Pfad slot-suffixed um.
+- **Panel 07 Apoptose:** alle 8 Tests grün, inkl. Test 6 Self-Apoptose
+  IRREVERSIBEL (`stores_alle_leer:true`, `getNodeId_wirft_NoIdentityError:true`).
+  Modul-02-Cache-Invalidate-Fix aus Pflege-Sitzung 2026-05-15
+  weiterhin grün.
+
+**Was NICHT angefasst:** kein Code-Eingriff, kein Spec-Eingriff,
+kein status.json-Eingriff (Modul 08 bleibt `score:"fertig"`).
+Karte 08 § Bauzustand zieht eine Sichttest-Zeile nach. Übergabe-
+protokoll erstellt.
+
+**Tafel-Spannung:** keine.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Bau-Sitzungen 05.Y / 06.Y / 07.Y schreiben** — eigene
+   Bau-Sitzungen je ~2-3 h, in beliebiger Reihenfolge (Briefe gemerged
+   seit 2026-05-19; nach diesen drei ist die Bau-08.Y-Limitierung
+   „Modul 06 liest aus `sbkim_hetero_outbox` ohne Slot-Suffix"
+   vollständig aufgelöst).
+2. **Endknoten-Migration (Mein-Mixarium + Mein-Rezeptbuch)** — alle
+   Bau-02.Y / 04.A / 05.Y / 06.Y / 07.Y / 08.Y produktiv im
+   Endknoten-Repo verfügbar machen (Multi-Persona-Pfad live;
+   setzt Schritt 1 voraus).
+3. **Vision-Anker 5 Identitäts-Container Spec-Sitzung** (optional) —
+   löst die User-Key-Test-Brücke aus Bau 04.B mit produktivem
+   sicheren Pfad.
+
+**PR:** Branch `claude/bau-08y-sichttest-nachzug-j6mJF`,
+Draft-PR „Bau 08.Y slot-spezifische Outbox — Sichttest-Nachzug".
+
+---
+
 ### 2026-05-20 · Bau 08.Y slot-spezifische Outbox in Modul 08
 
 **Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 04 hat das Store-
@@ -1891,9 +1988,11 @@ Bau 02.Y); `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
 Bump; Sage-Page; CLAUDE.md; Karte 09; `status.json`;
 `update_puls_pie.py` (Modul 08 bleibt `score:"stub"`, additiv).
 
-**Sichttest:** ungeprüft, weil headless gebaut. Wartet auf Klaus'
-Browser-Lauf Panel 08 Setup-Knopf (zeigt slot-suffixed Store-Namen
-+ `active_slot_key`).
+**Sichttest:** initial ungeprüft, weil headless gebaut.
+**Klaus' Browser-Sichttest 2026-05-20 grün** (DeX-Chrome auf Galaxy
+Tab S6) — Setup + Panel 08 Tests 1–6 alle grün, plus volle Regression
+Panels 01–07 grün. Details in der Folge-Sitzung „Sichttest-Nachzug"
+oben.
 
 **Vorgeschlagene nächste Schritte:**
 
@@ -2723,133 +2822,6 @@ Funktionalitäts-Verlust nach unten). `update_puls_pie.py` nicht
 aufgerufen.
 
 **Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_bau-05-broadcastchannel-bridge.md](sessions/archiv/2026-05-17_bau-05-broadcastchannel-bridge.md).
-
-### 2026-05-17 · Spec-Sitzung Modul 05 — BroadcastChannel-Bridge als same-origin Fallback
-
-**Sitzungs-Rolle:** Spec-Sitzung, headless, EINE Phase. Branch
-`claude/spec-broadcastchannel-bridge-3HUAH`. Folge-Sitzung zur Pflege
-Scope-Fix (PR #72 + Endknoten-Sichttest PR #73). Schließt die
-Architektur-Lücke same-origin cross-PWA: die SW-Bridge ist dort
-konzeptuell unmöglich (Sender-SW intercepted vor Receiver-SW),
-deshalb braucht der Handshake einen alternativen Transport.
-
-**Was geändert (additiv, kein Code in `src/`):**
-
-- **`docs/INTERFACES.md` §1 Modul 05 Vertrag erweitert:**
-  - Bietet-Block um optionalen dritten Parameter
-    `options?: { transport?: "auto"|"http"|"channel" }` (Default `"auto"`).
-    HandshakeRequest/Response-Schema **unverändert** — Channel ist
-    Transport-Schicht.
-  - Nutzt-Block um `BroadcastChannel('sbkim')` + Reply-Channel-Pfad
-    ergänzt; Timeout aus bestehendem `QUERY_TIMEOUT_MS` (4000 ms),
-    keine neue Konstante.
-  - Fehlerverhalten um zwei Zeilen erweitert
-    (`HandshakeTimeoutError` mit Log `"timeout-channel"` und Auto-
-    Fallback-`cause`; Channel-Reply-Signatur ungültig →
-    `HandshakeSignatureInvalidError`).
-  - SW-Vertrag-Block um Architektur-Grenze-Hinweis ergänzt (Spec-
-    Klarheit aus PR #72/#73: same-origin via SW-Bridge konzeptuell
-    unmöglich).
-  - Neuer Sub-Block „BroadcastChannel-Bridge" mit Channel-Name,
-    Envelope-Schema, Receiver-Pflicht, Sender-Pfad,
-    `toNodeId`-Pflichtschärfung, Self-Hit-Schutz, Cleanup,
-    „Wer-nicht-da-ist-schweigt"-Konvention.
-  - Geprüft-Zeile um 2026-05-17 (Spec-Sitzung BroadcastChannel-Bridge)
-    erweitert.
-- **`docs/INTERFACES.md` §3 Endpunkt-Pfade** um zweiten Sub-Block
-  „Same-origin Fallback-Transport für Modul 05":
-  - `channel-bridge: BroadcastChannel('sbkim')`
-  - `reply-channel: BroadcastChannel('sbkim:reply:' + nonce)`
-  - Verbindlich **nur** für Modul 05 — Heterokaryose (06) und Legacy
-    (07) bleiben HTTP-only.
-- **`docs/INTERFACES.md` §6 Änderungsprotokoll** neue Zeile am Ende.
-- **`docs/components/05_anastomose.md`:**
-  - § Schnittstelle: `handshake`-Signatur und Schritt-für-Schritt-
-    Doc um Channel-Pfad + Auto-Fallback-Trigger erweitert.
-  - § SW-Worker-Hinweis um Architektur-Grenze-Block (PR #72/#73-
-    Beleg, Distinguishing-Test 405/404).
-  - **Neue Hauptsektion „BroadcastChannel-Bridge (same-origin
-    Fallback)"** mit Motivation, Vertrag, Auto-Fallback-Logik,
-    E1–E7-Entscheidungstabelle (jede mit Begründung) und „Was
-    diese Spec NICHT regelt"-Block.
-  - § Fehlerverhalten um drei Zeilen (Channel-Timeout + Auto-
-    Fallback-`cause`, `nonceEcho`-Mismatch, synchrones
-    `MissingToNodeIdError`).
-  - § Manueller Test um Punkt 9 (Channel-Pfad, Sub-Tests 9a/9b/9c
-    inkl. Auto-Fallback-Beweis).
-  - § Risiken um Receiver-Tab-Pflicht.
-  - § Bauzustand-Zeile „Spec BroadcastChannel-Bridge".
-
-**Sieben Entscheidungen (E1–E7), verbindlich:**
-
-- **E1 Channel-Name:** `BroadcastChannel('sbkim')` — ein gemeinsamer
-  Channel pro Origin, Filtern via `toNodeId`. Versionierung läuft
-  über `payload.protocolVersion` (analog HTTP-Pfad), nicht über den
-  Channel-Namen.
-- **E2 Auto-Fallback:** α (Default `transport:"auto"`). HTTP zuerst,
-  bei klaren Signalen (4xx/5xx, non-JSON, fehlende Pflichtfelder)
-  Channel-Fallback. Cross-domain bleibt unverändert HTTP-only.
-  Override `transport:"http"|"channel"` für Test/Diagnose.
-- **E3 Receiver-Init:** Eager in `init()`. Konsistent zur SW-Bridge-
-  Init und Karte-09-Andock-Pflicht.
-- **E4 Timeout & Failure:** `QUERY_TIMEOUT_MS` (4000 ms) als Timeout,
-  bei Timeout `HandshakeTimeoutError` (Throw, kein semantisches
-  Outcome). Log-Zeile `"timeout-channel"`. Bei Auto-Fallback HTTP-
-  Fehler als `cause`.
-- **E5 Message-Format:** Wrapper-Envelope mit `replyChannelName` aus
-  nonce; HandshakeRequest/Response-Schema **unverändert**. Envelope
-  selbst NICHT signiert (nur das innere Schema, wie HTTP-Pfad).
-- **E6 Cleanup:** Main-Channel über Tab-Lebensdauer; Reply-Channels
-  pro Handshake, Close in `finally` (Sender + Receiver).
-- **E7 Replay/Self-Hit:** `toNodeId` Pflicht im Channel-Pfad
-  (HTTP-Pfad bleibt optional); Receiver-Filter `toNodeId === own.nodeId`
-  + `fromNodeId !== own.nodeId`. Aktiver Replay-Schutz bleibt
-  Schutz-Backlog Modul 11.
-
-**Was NICHT angefasst:**
-
-- `src/modules/05_anastomose.js` (Bau-Sitzung folgt).
-- `src/sbkim-sw.js` (SW-Pfad ist mit `isOwnEndpoint` aus PR #72
-  abgeschlossen).
-- `receiveHandshake`-Signatur (Channel-Receiver ruft denselben am
-  Ende auf).
-- Andere Module (00/01/02/03/04/06/07/08/09).
-- `docs/components/09_einbau_pwa.md` (Andock-Hinweis „Beide Tabs
-  offen halten" folgt in Bau-Sitzung 05 — die Spec ohne Code zu
-  paaren wäre verwirrend für den Andocker).
-- `PROTOCOL_VERSION` bleibt `"0.1"`.
-- `status.json` unverändert — Modul 05 bleibt `score:"fertig"`
-  (additive Spec-Erweiterung am Vertrag, keine Funktionalitäts-
-  Regression; Bau erst danach setzt den Fallback live). `update_puls_pie.py`
-  NICHT aufgerufen.
-
-**Validierung:**
-
-- `docs/INTERFACES.md` und `docs/components/05_anastomose.md`
-  manuell gegen das Schema gegengelesen — HandshakeRequest/Response-
-  Pflichtfelder unverändert, nur Transport-Schicht additiv.
-- Karte 05 § Manueller Test § Voraussetzungen explizit auf
-  „zwei Tabs offen" erweitert (Sub-Test 9 Live-Pfad). Pseudo-Knoten-
-  Variante für einen Tab dokumentiert.
-- E1–E7-Entscheidungen alle mit ein-Satz-Begründung versehen, damit
-  die Bau-Sitzung ohne Rückfrage starten kann.
-
-**Was diesen Schritt NICHT löst:**
-
-- Tatsächlicher Cross-Knoten-Handshake mit `outcome:"established"`
-  ohne localStorage-Bypass — das ist Ziel der **nachfolgenden Bau-
-  Sitzung Modul 05** (additiver Channel-Pfad in
-  `src/modules/05_anastomose.js`) + Klaus' Sichttest.
-- Karte 09 Andock-Hinweis — folgt in der Bau-Sitzung (gemeinsam mit
-  dem Code-Eingriff, damit der Andocker nur einen vollständigen
-  Schritt liest).
-
-**Klaus' Pflicht nach Merge:** Keine Endknoten-Pflege nötig (Spec
-ist kein Endknoten-Eingriff). Der Spec-Stand muss vor der nachfolgenden
-Bau-Sitzung gemerged sein, damit die Bau-Sitzung gegen `main`
-arbeiten kann.
-
-**Übergabeprotokoll:** [→ Archiv](sessions/archiv/2026-05-17_spec-05-broadcastchannel-bridge.md)
 
 ---
 
