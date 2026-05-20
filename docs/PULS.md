@@ -1810,6 +1810,59 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-20 · Brief — Bau-Sitzung Endknoten-Migration Multi-Identität angelegt
+
+**Sitzungs-Rolle:** Brief-Sitzung (kein Spec, kein Bau-Code — nur
+Doku-Pflege). Branch `claude/brief-endknoten-migration-multi-identity-j6mJF`,
+vom `main` `9f4d565` aus angelegt (Stand nach Bau 04.B PR #122).
+**Letzte Phase der Brief-99-Pipeline** — die zwei Endknoten-Repos
+(Mein-Mixarium + Mein-Rezeptbuch) bekommen einen Brief, der den
+Migrations-Pfad zusammenfasst. Brief wird zwei Mal ausgelöst
+(einmal pro Endknoten); Inhalt identisch.
+
+**Kern:** Klaus baut im Endknoten-Repo — Dateien kopieren
+(`src/modules/*.js` + `sbkim-sw.js` aus Sage-Protokol nach
+Endknoten-`sbkim/`-Verzeichnis); Cache-Bust via File-Rename oder
+`CACHE_NAME`-Bump; Sichttest mit den neun Selbstcheck-Zeilen +
+Live-Cross-Knoten-Handshake + Multi-Persona-Test in DevTools-Konsole.
+`sbkim-init.js`-Code im Endknoten bleibt weitgehend unverändert —
+der Slot-Pfad ist transparent über `getActiveIdentityKey()`-Default
+„main".
+
+**Was im Brief steht:** Pflichtleseliste (Karte 09 + die zehn Modul-
+Dateien); Heilige Tafeln Endknoten-spezifisch; sechs Punkte a–f
+(Dateien kopieren / script-Reihenfolge / sbkim-init.js / Cache-Bust
+/ Sichttest mit neun Selbstcheck-Zeilen + Live-Handshake + Multi-
+Persona-Test / Übergabeprotokoll); Stolperfallen (Cache-Bust;
+IndexedDB-Verlust; CORS bei Bau 04.B). Zeitschätzung ~2 h pro
+Endknoten.
+
+**Was NICHT angefasst:** Kein Sage-Protokol-Modul-Code-Eingriff;
+kein Vision-Anker-5-Code; kein Multi-Persona-UI im Doku-Fenster
+(eigene Pflege-Sitzungen). `PROTOCOL_VERSION` / `DB_VERSION` /
+`BACKUP_FORMAT_VERSION` unverändert. `status.json` unverändert.
+`update_puls_pie.py` NICHT aufgerufen.
+
+**Brief-Datei:** `docs/sessions/BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md`.
+
+**Vorgeschlagene nächste Schritte:**
+
+1. **Klaus' Browser-Sichttests in Sage-Protokol-Panels** —
+   ausstehende Sichttests aus Bau 05.Y / 06.Y / 07.Y / 04.B
+   nachholen (Panel 05 Knopf 10 / Panel 06 Knopf 15 / Panel 07 Test 6
+   + Panel 02 Knopf 9 / Panel 04 Knopf 10).
+2. **Endknoten-Migration ausführen** in zwei externen Bau-Sitzungen
+   (Mein-Mixarium + Mein-Rezeptbuch). Brief liegt im Sage-Protokol-
+   Repo bereit.
+3. **Vision-Anker 5 Identitäts-Container Spec-Sitzung** (optional,
+   parallel) — löst die `window.prompt`-Test-Brücke aus Bau 04.B mit
+   produktivem sicheren Pfad.
+
+**PR:** Branch `claude/brief-endknoten-migration-multi-identity-j6mJF`,
+Draft-PR „Brief — Bau-Sitzung Endknoten-Migration Multi-Identität".
+
+---
+
 ### 2026-05-20 · Bau 04.B `explainMatchLLM` in Modul 04 (Match)
 
 **Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 03 hat alles in
