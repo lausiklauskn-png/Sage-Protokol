@@ -67,7 +67,7 @@
   <section class="panel" data-module="05_anastomose">
     <h2>05 Anastomose <span class="status ok">Code-Stub</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
-    <pre class="log">— bereit. Voraussetzung: Module 01/02/03/04 sind beim Skript-Laden mitgekommen. Erster Klick auf „Setup" lädt Modul 03 (~30 MB) und legt zwei Knoten an: „Main" in IndexedDB, „Alt" rein im Speicher. Der echte Netz-Pfad (Service-Worker + fetch) ist hier nicht abgedeckt — der gehört in Modul 09 (Einbau in Rezeptbuch/Mixarium). —</pre>
+    <pre class="log">— bereit. Voraussetzung: Module 01/02/03/04 sind beim Skript-Laden mitgekommen. Erster Klick auf „Setup" lädt Modul 03 (~30 MB) und legt zwei Knoten an: „Main" in IndexedDB, „Alt" rein im Speicher. Der echte Netz-Pfad (Service-Worker + fetch) ist hier nicht abgedeckt — der gehört in Modul 09 (Einbau in Rezeptbuch/Mixarium). Bau 05.Y (2026-05-20): Modul 05 schreibt jetzt slot-spezifisch in `sbkim_siblings_<activeSlotKey>` und `sbkim_anastomosis_log_<activeSlotKey>`. Setup zeigt nach Bau 05.Y, dass die neuen Stores `sbkim_siblings_main` / `sbkim_anastomosis_log_main` (statt non-suffixed) in DevTools auftauchen. Knopf 10 macht eine Sekundär-Persona „test_05y" und erfordert Tab-Reload, damit Modul 05 mit dem neuen Slot re-initialisiert. —</pre>
   </section>
 
   <section class="panel" data-module="06_heterokaryose">
@@ -1455,6 +1455,38 @@
           target_endpoint: ALT_404.endpoint,
           erwartung: "HTTP-POST → 404 (oder ähnlich), dann Channel-Fallback → outcome=established über Pseudo-Peer-Echo",
           hinweis: "Pseudo-Peer-Echo ist nur Test-Helfer — im echten Klaus-Setup ist das die zweite Endknoten-PWA in einem zweiten Tab.",
+        };
+      });
+
+      // Knopf 10 (Bau 05.Y, 2026-05-20) — Sekundär-Persona-Vorbereitung.
+      // Legt einen zweiten Slot „test_05y" an und macht ihn aktiv.
+      // Klaus muss danach den TAB RELOADEN, damit Modul 05 mit dem neuen
+      // active-identity-Marker re-initialisiert + die Receiver-Map den
+      // neuen Slot kennt. Nach dem Reload landet der nächste Test-1-
+      // Klick im Sibling-Store sbkim_siblings_test_05y statt
+      // sbkim_siblings_main. Cleanup: removeIdentity('test_05y',
+      // {force:true}) räumt die identitäts-spezifischen Stores.
+      SbkimUI.addButton("05_anastomose", "Test 10: Sekundär-Persona-Vorbereitung (Bau 05.Y — Tab-Reload nötig)", async function () {
+        await SbkimSpore.init();
+        await SbkimSpore.getOrCreateIdentity("test_05y");
+        await SbkimSpore.setActiveIdentity("test_05y");
+        var activeNach = await SbkimSpore.getActiveIdentityKey();
+        var idents = await SbkimSpore.listIdentities();
+        // Modul 05 wurde mit dem alten activeSlotKey gecached. Der
+        // Operations-Pfad würde theoretisch über getActiveIdentityKey()
+        // den neuen Slot ziehen, aber die Receiver-Map ist NOCH ohne
+        // den neuen Slot — Re-Init via Tab-Reload ist Spec-konform
+        // (Karte 05 § Receiver-Map-Schlank-Konvention).
+        SbkimUI.setStatus("05_anastomose", "ok", "Sekundär-Persona angelegt — Tab reloaden");
+        return {
+          neuer_slot: "test_05y",
+          active_identity_nach_wechsel: activeNach,
+          listIdentities: idents,
+          modul05_meta_activeSlotKey_jetzt: SbkimAnastomose._meta.activeSlotKey,
+          modul05_meta_receiverMapSize_jetzt: SbkimAnastomose._meta.receiverMapSize,
+          naechster_schritt: "Tab RELOADEN (Strg+Shift+R) — dann Setup + Test 1 erneut. Sibling-Eintrag landet jetzt in sbkim_siblings_test_05y statt sbkim_siblings_main.",
+          cleanup_hinweis: "Nach dem Test: removeIdentity('test_05y', {force:true}) räumt die identitäts-spezifischen Stores. Active-identity fällt automatisch auf 'main' zurück.",
+          erwartung: "test_05y in listIdentities, active-identity = 'test_05y'; Modul 05 muss durch Tab-Reload re-initialisiert werden, damit Receiver-Map den neuen Slot kennt.",
         };
       });
     })();
