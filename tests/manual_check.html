@@ -569,11 +569,18 @@
 
         // Setup-matchResult via Modul 03 + 04 (deterministische
         // Vektoren analog Knöpfe 6-8 — Käsekuchen-vs-Käsetorte als
-        // Default, ein hoher Match-Score).
+        // Default, ein hoher Match-Score). Pflege 2026-05-21: alle vier
+        // Vektoren befüllen (queryCap+queryNeeds+passageCap+passageNeeds),
+        // damit availableLanes=2 und matchResult.overall ≠ null. Vorher
+        // nur (qCap, null, pCap, null) → Nur-Anbieter-Fall → overall=null
+        // → toFixed-TypeError unten beim Stufe-A-Log. Bau-04.B-Befund
+        // Klaus' Sichttest 2026-05-21.
         await SbkimEmbedding.init();
         var qCap = await SbkimEmbedding.embedQuery("Käsekuchen mit Quark");
+        var qNeeds = await SbkimEmbedding.embedQuery("Käsetorte mit Quark");
         var pCap = await SbkimEmbedding.embedPassage("Käsetorte mit Quark");
-        var matchResult = SbkimMatch.matchDimensions(qCap, null, pCap, null);
+        var pNeeds = await SbkimEmbedding.embedPassage("Käsekuchen mit Quark");
+        var matchResult = SbkimMatch.matchDimensions(qCap, qNeeds, pCap, pNeeds);
 
         SbkimUI.log("04_match",
           "ℹ Stufe-A overall=" + matchResult.overall.toFixed(4) +
