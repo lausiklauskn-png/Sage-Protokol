@@ -36,13 +36,13 @@
     {
       "name": "Sage",
       "domain": "Mycel-Bibliothek",
-      "integrated": false,
+      "integrated": true,
       "integratedAt": "2026-05-21",
-      "nodeId": null,
+      "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
       "sporeUrl": "https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json",
       "stammCategories": ["Protokoll-Doku", "Mycel-Vokabular", "Heilige Tafeln", "Karten", "INTERFACES", "ARCHITEKTUR"],
       "guestCategories": ["Glossar-Wartung", "Schwesternetz-Beobachtungen", "Sitzungs-Briefe", "Übergabeprotokolle"],
-      "pingStatus": "pending-first-sichttest",
+      "pingStatus": "live-direct",
       "url": "https://lausiklauskn-png.github.io/Sage-Protokol/"
     }
   ],
