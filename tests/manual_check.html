@@ -989,6 +989,66 @@
           SbkimUI.log("02_spore", "ℹ Download-Link konnte nicht erzeugt werden: " + (e && e.message || e));
         }
       });
+
+      // Knopf 11 — Test-Slots aufräumen (Pflege 2026-05-21, Sichttest-
+      // State-Reset für nachfolgende Modul-06/07/00-Sichttest-Reihen
+      // nach Bau 05.Y / 06.Y / 07.Y / 02.Y).
+      //
+      // Entfernt alle Identitäts-Slots AUSSER 'main' und stellt 'main'
+      // als active-identity wieder her. Schreibt KEINE neuen Identitäten.
+      // Self-Apoptose-fail-soft: wenn ein Slot bereits removed wurde,
+      // gibt removeIdentity false zurück — kein Throw.
+      //
+      // Erwartung nach Klick: listIdentities = ["main"], active = "main".
+      // Pflicht-Nachzug: Tab Strg+Shift+R, damit Modul 05/06/07/08 ihre
+      // _meta.activeSlotKey-Caches neu aus IndexedDB lesen.
+      SbkimUI.addButton("02_spore", "Test-Slots aufräumen (außer main)", async function () {
+        await SbkimSpore.init();
+        var idsBefore = await SbkimSpore.listIdentities();
+        var activeBefore = await SbkimSpore.getActiveIdentityKey();
+        SbkimUI.log("02_spore", "▶ vorher · active=" + activeBefore +
+                                ", slots=" + JSON.stringify(idsBefore));
+
+        // Aktive zuerst auf 'main' setzen (falls 'main' existiert),
+        // damit removeIdentity der anderen Slots nicht die aktive trifft.
+        if (idsBefore.indexOf("main") !== -1 && activeBefore !== "main") {
+          await SbkimSpore.setActiveIdentity("main");
+          SbkimUI.log("02_spore", "▶ active-identity zurück auf 'main'.");
+        }
+
+        var removed = [];
+        var skipped = [];
+        for (var i = 0; i < idsBefore.length; i++) {
+          var slot = idsBefore[i];
+          if (slot === "main") { skipped.push(slot); continue; }
+          try {
+            var ok = await SbkimSpore.removeIdentity(slot, { force: true });
+            if (ok) removed.push(slot);
+            else skipped.push(slot + " (war bereits weg)");
+          } catch (err) {
+            skipped.push(slot + " (" + (err.name || "Fehler") + ": " + (err.message || err) + ")");
+          }
+        }
+
+        var idsAfter = await SbkimSpore.listIdentities();
+        var activeAfter = await SbkimSpore.getActiveIdentityKey();
+        SbkimUI.log("02_spore", "▶ nachher · active=" + activeAfter +
+                                ", slots=" + JSON.stringify(idsAfter));
+        SbkimUI.log("02_spore", "▶ entfernt: " + JSON.stringify(removed));
+        if (skipped.length > 0) {
+          SbkimUI.log("02_spore", "▶ übersprungen / Fehler: " + JSON.stringify(skipped));
+        }
+
+        var clean = (idsAfter.length === 1 && idsAfter[0] === "main" && activeAfter === "main");
+        SbkimUI.setStatus("02_spore", clean ? "ok" : "err",
+                          clean ? "Aufgeräumt — JETZT Strg+Shift+R" : "Aufräumen unvollständig");
+        if (clean) {
+          SbkimUI.log("02_spore",
+            "ℹ Bitte den Tab JETZT mit Strg+Shift+R neu laden — damit Modul 05/06/07/08 " +
+            "ihre _meta.activeSlotKey-Caches neu aus IndexedDB lesen. Ohne Reload bleibt der State " +
+            "inkonsistent (z.B. Modul-06-Cache zeigt noch test_05y).");
+        }
+      });
     })();
   </script>
 
