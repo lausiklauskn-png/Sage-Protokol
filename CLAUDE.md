@@ -35,6 +35,60 @@ Klaus. Kein Programmierer, lernbereit. Arbeitet bevorzugt mit PWAs als
 Single-File-`index.html`. Hat aktuell drei Nutzer (zwei davon installiert).
 Tonalität: ruhig, präzise, ohne Imponiergehabe. Antworten auf Deutsch.
 
+### Arbeitsumgebung (Pflege 2026-05-21)
+
+**Hardware:** Samsung Galaxy Tab S6 (Android-Tablet). Wechselt zwischen
+**Tablet-Modus** und **DeX-Modus** (Desktop-ähnliche UI mit externem
+Bildschirm + Maus + Tastatur). DeX-Chrome und Tablet-Chrome sind
+**zwei getrennte Browser-Instanzen** — eigene IndexedDB, eigene
+Service-Worker, eigene PWA-Liste (siehe `docs/OBSERVATORIUM_BROWSER.md`
+Lehre 1 / Lehre 7).
+
+**Werkzeuge:**
+
+- **Chrome-Browser** für Sage-Page, Endknoten-PWAs, GitHub-Browser-UI
+  (Pull-Requests reviewen).
+- **Termux** (Linux-Userland auf Android): `git pull` /
+  `git status`, `python3 -m http.server 8000` für lokalen Sichttest
+  von `tests/manual_check.html`. KEIN Code-Editor-Workflow.
+- **Eruda** (in-Page-DevTools-Polyfill) nur dort, wo es explizit in
+  einer PWA eingebaut ist — typisch bei Live-Andock-Sichttests an
+  Endknoten-PWAs. **Nicht eingebaut** in `tests/manual_check.html` —
+  Modul-Sichttests laufen ausschließlich über die Test-Bridge-Knöpfe
+  in den Panels, nicht über eine Konsole.
+
+**Sichttest-Stil:**
+
+- **Knöpfe statt Konsole.** Test-Bridges in `tests/manual_check.html`
+  bieten benannte Knöpfe pro Test-Punkt mit `<pre>`-Output. Wer einen
+  neuen Sichttest-Pfad oder eine Wartungs-Operation (z.B. State-
+  Aufräumen) braucht, ergänzt sie als Knopf in der passenden Panel-
+  Sektion mit eigener Pflege-Sitzung + eigenem PR — KEINE Konsolen-
+  Befehle für Klaus.
+- **Hard-Reload als Cache-Bust** (Strg+Shift+R bzw. „Cache leeren und
+  neu laden" im Chrome-Menü) nach jedem Repo-Pull, weil Pages-Service-
+  Worker und Browser-HTTP-Cache jeweils hartnäckig sind. Siehe
+  `docs/OBSERVATORIUM_BROWSER.md` Lehre 4.
+- **Klaus' Browser-Sichttest ist nicht ersetzbar.** Headless-Smoke-Tests
+  bestätigen Modul-Logik, aber jeder echte Bug zeigt sich erst am
+  Tablet. Bau-Sitzungen schließen explizit mit „Sichttest ungeprüft,
+  wartet auf Klaus' Browser-Lauf" — keine Sitzung markiert sich
+  selbst als grün ohne Klaus.
+
+**Kommunikations-Stil:**
+
+- **Einzelschritte, nicht Block-Anweisungen.** Klaus verirrt sich beim
+  Scrollen, wenn eine Anleitung mehrere copy-paste-Stücke + mehrere
+  Browser-Aktionen mischt. Konvention: pro Antwort EIN konkreter
+  Schritt mit klarem Erfolgs-Indikator, dann auf Rückmeldung warten.
+- **Copy-Paste-Blöcke** sind kompakt, vollständig, und gehören in einen
+  Test-Bridge-Knopf-Handler (eigener PR) ODER in eine Eruda-Konsole
+  (nur wenn Eruda auf der jeweiligen Page eingebaut ist) — NICHT in
+  die Chrome-Adressleiste (die deutet das als Suchanfrage).
+- **GitHub-Mergen** läuft über die Bau-Sitzung per GitHub-API auf
+  Klaus' Zuruf („PR XYZ mergen"), KEIN Klick-Workflow auf der Web-UI
+  für Klaus.
+
 ## Wer du bist (jede Claude-Sitzung)
 
 Du bist eine **Sitzung**, kein Mensch. Du arbeitest entweder als:
