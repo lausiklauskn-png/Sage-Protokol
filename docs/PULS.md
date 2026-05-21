@@ -1810,6 +1810,62 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-21 · Sichttest-Folge zur Bau-Sitzung Sage-Page-Refactor — Sage live
+
+**Sitzungs-Rolle:** Sichttest-Folge zur Bau-Sitzung Sage-Page-Refactor.
+Live-Andock von Sage als drittem Endknoten + Test-Bridge-Pflege-Kaskade.
+Branch `claude/bau-sage-page-refactor-E7wNI` (Sitzungs-Anker; jede
+Pflege auf eigenem Sub-Branch).
+
+**Kern:** Klaus' Browser-Sichttest am Galaxy Tab S6 / DeX-Chrome auf
+`https://lausiklauskn-png.github.io/Sage-Protokol/#andock` — Andock-
+Wizard durchgespielt, alle drei Schritte grün, signed `spore.json`
+(11,19 KB) + verschlüsseltes Backup heruntergeladen, `nodeId
+nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA` in `sbkim_sage`. **Sage
+ist offiziell der dritte Endknoten** neben Rezeptbuch und Mixarium;
+`NODE_TYPE_DEFAULT = "hybrid"` aus INTERFACES §0 ist endlich
+selbstreferenziell wahr.
+
+**Acht PRs gemerged:** #127 Bau 04.B Test 10 Setup-Fix · #128
+Test-Slots-Aufräumknopf Panel 02 · #129 CLAUDE.md Betreiber-
+Arbeitsumgebung (Galaxy Tab S6 / DeX / Termux / Eruda + Sichttest-/
+Kommunikations-Stil) · #130 Test-Bridge slot-suffix-Nachzug Bau
+05.Y/06.Y/07.Y (18+ Stellen — schließt ROT-Befunde 06/07/00 als
+Test-Bridge-Bug, nicht Modul-Bug) · #131 Notfall-Reset-Knopf für
+IndexedDB (direkter `deleteDatabase`, umgeht Modul-01-Versions-Bump-
+Bug) · #132 URL-Hash-Trigger `#andock` für Wizard (auch wenn Identität
+existiert) · **#133 Sage-Endknoten live** (`status.json § endknoten[sage]:
+integrated:true, nodeId:"nysOZE3V…YfA", pingStatus:"live-direct"`;
+Live-Beweis analog 2026-05-16 Rezeptbuch + Mixarium) · #134 Wizard-
+Footer auf Klarheit ohne Insider-Codes (Klaus' Live-Feedback).
+
+**Was NICHT angefasst:** KEIN Modul-Code in `src/modules/*.js`. KEIN
+Spec-Eingriff. KEIN PROTOCOL_VERSION / DB_VERSION / BACKUP_FORMAT_VERSION
+Bump. Alle Änderungen leben in `tests/manual_check.html`, `index.html`,
+`CLAUDE.md`, `sbkim/spore.json`, `status.json`.
+
+**Offene Folge-Pflege:** (1) **Modul-01-`init`-Versions-Bump-Bug**
+(bekannt aus PULS § Bau-02.Y-Sichttest 2026-05-19; in dieser Sitzung
+reproduzierbar auf frischer DB nach #131-Reset). Code-Pfad-Diagnose im
+Übergabeprotokoll § Diagnose 2: `openProbe`-Connection bekommt keinen
+`onversionchange`-Handler, IDB-Worker-Thread hält sie nach synchronem
+`close()` weiter offen, späterer `ensureStore`-Bump scheitert mit
+`onblocked`. Nur in `manual_check.html` betroffen — Endknoten-PWAs nicht.
+Eigene Bau-Pflege-Sitzung nötig, Brief noch nicht geschrieben. (2)
+**Vollständiger Modul-06/07/00-Sichttest auf grüner DB.** Wartet auf
+#1; statisch verifiziert (kein un-suffixed Slot-Store-Zugriff per `grep`),
+nicht live durchgeklickt.
+
+**Nächster sinnvoller Schritt:** Brief für Modul-01-Pflege
+„Versions-Bump-Race in `openProbe`" schreiben — Close-Wait via
+`db.onclose`-Promise, `onversionchange` auch auf Probe-Connection,
+Sichttest-Trigger via #131-Notfall-Knopf reproduzierbar, KEIN
+PROTOCOL_VERSION/DB_VERSION-Bump.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-21_bau-sage-page-refactor-sichttest.md](sessions/archiv/2026-05-21_bau-sage-page-refactor-sichttest.md).
+
+---
+
 ### 2026-05-21 · Bau Sage-Page-Refactor — Sage als dritter Endknoten bau-fertig
 
 **Sitzungs-Rolle:** Bau-Sitzung. Branch `claude/bau-sage-page-refactor`,
@@ -2850,50 +2906,6 @@ Codeblock), oder mehrere alte Sitzungs-Einträge ins Archiv auslagern
 
 **Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md).
 
-### 2026-05-18 · Mini-Pflege — Vision-Anker Multi-Identität in der IndexedDB
-
-**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/pflege-vision-anker-multi-identitaet`. Folge zur Marathon-
-Tag-Pflege vom Vortag (PR #75-#82). Klaus' Folge-Gedanke nach dem
-Schlaf: präzisiert seine gestrige IndexedDB-Frage zum **sechsten
-Vision-Anker**, klar abgegrenzt zu Lehre 1 (Browser-Instanzen-
-Trennung).
-
-**Kern:** Was Lehre 1 als Verlust-Risiko beschreibt — zwei Browser-
-Instanzen erzeugen ungewollt zwei separate Identitäten — wird hier
-als **Feature** umgekehrt: bewusst mehrere Identitäten in derselben
-IndexedDB, plus aktive-Identität-Marker, plus UI zum Wechseln.
-Persona-Trennung pro Arbeitsoberfläche (Tablet, Desktop, Browser-
-Modus) als bewusste Wahl, nicht zufällige Konsequenz.
-
-**Was eingetragen:**
-
-- **PULS.md § Vision-Anker** um sechsten Anker erweitert: „Multi-
-  Identität in der IndexedDB (Modul 02 Erweiterung)" mit Konzept-
-  Beschreibung, Spec-Schritten, Trade-offs, Verbindungen zu V1/V3/
-  V4/V5, Status (reif für Spec-Diskussion, wartet auf V1).
-- **PULS.md § Sitzungs-Einträge** neuer Top-Eintrag (dieser).
-- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md`.
-
-**Sechs Vision-Anker jetzt im Repo:**
-
-1. V1 — Sage als Hybrid-Knoten (Klaus' nächste Spec-Wahl)
-2. V3-Ausbau — Niedrigeres Onboarding
-3. Universum-Vision (umgesetzt PR #79 + #80)
-4. Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister
-5. Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser
-6. **Multi-Identität in der IndexedDB** — neuer Anker (dieses)
-
-**Was NICHT angefasst:** Modul-Code, INTERFACES.md, Modul-Karten,
-Sage-Page, `status.json`. Vision lebt rein in PULS, kein Code-
-Eingriff. `update_puls_pie.py` NICHT aufgerufen.
-
-**Nächster sinnvoller Schritt:** Klaus entscheidet — Storage-Persist-
-Schutz-Mini-Pflege oder Spec-Sitzung V1 (Brief liegt fertig in gestrigen
-Chat).
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md).
-
 ## Archiv-Index (Sitzungen vor dieser Pflege)
 
 Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
@@ -2901,6 +2913,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-18 | Mini-Pflege · Vision-Anker Multi-Identität in der IndexedDB (sechster Vision-Anker als Feature-Inversion von Lehre 1 — bewusste Persona-Trennung statt zufällige Browser-Instanzen-Trennung; PULS § Vision-Anker erweitert; kein Modul-Code, keine INTERFACES.md-Änderung) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md) |
 | 2026-05-19 | Bau · 04.A `matchDimensions` synchron in Modul 04 (PR #110 gemerged 2026-05-19; erste Bau-Sitzung der M04-Erweiterung aus Brief 03; additiv ohne Refactoring der bestehenden `match`/`isAboveProviderThreshold`; `matchDimensions(queryCap, queryNeeds, passageCap, passageNeeds)` synchron mit Drei-Schichten-Heuristik + `availableLanes ∈ {0,1,2}` + `bruecke:null`; `DimensionsAllNullError` sync bei allen vier null; Stufe-A-Heuristik gemäß Karte 04 (alle drei Schichten gleich dem Lane-Cosinus, echte semantische Differenzierung kommt in Stufe B via `explainMatchLLM` Bau 04.B). Smoke-Test 19/19 grün. Sichttest 2026-05-19 (Klaus, DeX-Chrome): grün geprüft. PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION unverändert. KEIN Modul-Code in 00/01/02/03/05/06/07/08, KEIN Schema-Eingriff, KEINE Sage-Page-Änderung) | [→ Archiv](sessions/archiv/2026-05-19_bau-04a-match-dimensions.md) |
 | 2026-05-17 | Mini-Pflege · Vision-Anker Königin-Relay (Modul 13?) (PR #82, Branch `claude/pflege-vision-anker-koenigin-relay`; Klaus' Architektur-Frage „Was, wenn ich einmal einen Browser nehme und ein andermal einen anderen? Ist die Spore nur zu finden, wenn der Browser offen ist?" als vierter Vision-Anker eingetragen — „Königin-Relay" als optionales Mailbox-Modul für offline-Geschwister, privacy-wahrend (verschlüsselte Envelopes), drei Implementations-Optionen (Server/PWA-mit-Push/Eigenes-Gerät), Status reif für Spec-Diskussion nach V1. Modul-Karten/INTERFACES/status.json unangetastet) | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md) |
 | 2026-05-17 | Mini-Pflege · Vision-Anker (V1 / V3 / Universum) | Drei langfristige Vision-Anker (Sage als Hybrid-Knoten, Niedrigeres Onboarding, Browser-Observatorium-Universum) als neuer PULS-Block § Vision-Anker eingetragen — keine Spec, kein Bau-Code, nur Sammel-Anker für Folge-Sitzungen. Vision-Anker 1 (V1 Sage-Hybrid) wurde später (2026-05-18/19) durch die V1-Sammelspec-Kaskade Brief 01–04 realisiert. | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-vision-anker.md) |
