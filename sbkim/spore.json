@@ -1,0 +1,37 @@
+{
+  "_comment": "Sage-Endknoten · Spore-Skeleton (Bau Sage-Page-Refactor 2026-05-21). Statisch deployt mit nodeId/signature/publicKey/domainVector = null. Vor erstem Cross-Knoten-Handshake muss Klaus' Browser den Andock-Wizard an der Schwarz-Loch-Karte durchlaufen, der via `SbkimSpore.getOrCreateIdentity()` + `SbkimEmbedding.embedPassage()` + `SbkimSpore.generateOwnSpore()` die vollständige signierte Spore erzeugt und als Download anbietet. Klaus committet die fertige spore.json danach manuell hier. KEIN Laufzeit-Schreiben aus der Sage-Page selbst (Origin-Limitierung, Stolperfalle 3 aus Bau-Brief).",
+  "protocolVersion": "0.1",
+  "embeddingModel": "Xenova/multilingual-e5-small",
+  "nodeType": "hybrid",
+  "domain": "Mycel-Bibliothek",
+  "domainDescription": "Lebendiges SBKIM-Vokabular und Protokoll-Doku: Glossar, INTERFACES, ARCHITEKTUR, Karten 00-15, PULS — die Karte, die sich selbst kennt.",
+  "domainKeywords": [
+    "SBKIM-Glossar",
+    "Mycel-Vokabular",
+    "Protokoll-Doku",
+    "Heilige Tafeln",
+    "Karten",
+    "Schwesternetz-Beobachtungen"
+  ],
+  "stammCategories": [
+    "Protokoll-Doku",
+    "Mycel-Vokabular",
+    "Heilige Tafeln",
+    "Karten",
+    "INTERFACES",
+    "ARCHITEKTUR"
+  ],
+  "guestCategories": [
+    "Glossar-Wartung",
+    "Schwesternetz-Beobachtungen",
+    "Sitzungs-Briefe",
+    "Übergabeprotokolle"
+  ],
+  "endpoint": "https://lausiklauskn-png.github.io/Sage-Protokol/",
+  "nodeName": "Sage",
+  "createdAt": null,
+  "id": null,
+  "publicKey": null,
+  "domainVector": null,
+  "signature": null
+}

@@ -727,7 +727,7 @@
           </div>
         </div>
         <div class="hero-topology">
-          <div class="hub-demo-badge">Hub · kein Endknoten</div>
+          <div class="hub-demo-badge">Hub · und Knoten zugleich</div>
           <div class="topology-head">
             <div>
               <h2>Modul-Topologie · live</h2>
@@ -828,7 +828,7 @@
         <article class="card span-5" data-back-anchor="endknoten">
           <span class="card-tag">Endknoten · live</span>
           <h3>Wer ist schon angedockt?</h3>
-          <p>Die echten PWAs des Betreibers. Sage ist kein Endknoten — nur Vermittlungsstelle.</p>
+          <p>Die drei Endknoten des Sage-Mycels — Sage selbst ist seit V1-Sage-Hybrid (Brief 01) der dritte Knoten, neben Rezeptbuch und Mixarium. Hub und Knoten zugleich.</p>
           <div class="endknoten-grid" id="endknoten-grid"></div>
         </article>
         <article class="card span-7" data-back-anchor="demoanteil">
@@ -994,7 +994,7 @@
           <span class="card-tag">Browser-Observatorium · Anziehung ins Detail</span>
           <a class="blackhole-stage"
              href="#observatorium"
-             onclick="goScreen('observatorium', 'blackhole'); return false;"
+             onclick="return bhStageClick(event);"
              aria-label="Browser-Observatorium öffnen — wandernde Galaxien-Konstellation">
             <div class="blackhole-scene" aria-hidden="true">
               <div class="bh-disk"></div>
@@ -2979,5 +2979,385 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   });
   window.addEventListener('hashchange', applyHashScreen);
   </script>
+
+  <!-- ============= ANDOCK-WIZARD (Sage als dritter Endknoten) ============= -->
+  <div id="sage-andock-modal" class="sage-andock-modal" hidden role="dialog" aria-modal="true" aria-labelledby="sage-andock-title">
+    <div class="sage-andock-backdrop" onclick="closeAndockWizard()"></div>
+    <div class="sage-andock-card">
+      <button class="sage-andock-close" onclick="closeAndockWizard()" aria-label="Wizard schließen">×</button>
+      <span class="sage-andock-tag">Andock-Wizard · Sage als dritter Endknoten</span>
+      <h2 id="sage-andock-title">Du dockst gerade am Sage-Mycel an</h2>
+      <p class="sage-andock-lede">Sage ist seit Brief 01 (V1-Sage-Hybrid) <strong>Hub und Knoten zugleich</strong>. Dieser kleine Wizard führt durch die Erst-Identitäts-Erzeugung. Erstmaliges Andocken kann 5–15 s dauern (Modul 03 lädt das ~30 MB Embedding-Modell beim ersten <code>generateOwnSpore</code>).</p>
+
+      <ol class="sage-andock-steps">
+        <li>
+          <h3><span class="sage-andock-num">1</span>Identität erzeugen</h3>
+          <p>Erzeugt einen Ed25519-Schlüsselpaar in der Browser-IndexedDB <code>sbkim_sage</code>. Die <code>nodeId</code> ist deterministisch aus dem Public Key abgeleitet — kein Server, kein Account.</p>
+          <button class="sage-andock-btn primary" id="sage-andock-step1-btn" onclick="andockStep1Identity()">Identität erzeugen</button>
+          <div class="sage-andock-output" id="sage-andock-step1-out"></div>
+        </li>
+        <li>
+          <h3><span class="sage-andock-num">2</span>Spore mit Domain-Vektor erzeugen</h3>
+          <p>Sage's Domäne ist <em>Mycel-Bibliothek</em>. Der Knopf lädt Modul 03 (Embedding, ~30 MB einmalig), erzeugt den 384-dim <code>domainVector</code> aus den Stamm-Kategorien und signiert die Spore. Die fertige <code>spore.json</code> kommt als Download — committe sie nach <code>sbkim/spore.json</code> im Sage-Page-Repo.</p>
+          <button class="sage-andock-btn" id="sage-andock-step2-btn" onclick="andockStep2Spore()" disabled>Spore erzeugen + herunterladen</button>
+          <div class="sage-andock-output" id="sage-andock-step2-out"></div>
+        </li>
+        <li>
+          <h3><span class="sage-andock-num">3</span>Backup machen</h3>
+          <p>Ein passwort-verschlüsseltes Backup (PBKDF2-SHA256 600 000 + AES-GCM-256) sichert die Identität gegen IndexedDB-Verlust. Klaus' Lehre 2 aus dem Browser-Observatorium: ohne Backup ist eine Identität nur einen Reklamations-Klick weit von tot.</p>
+          <button class="sage-andock-btn" id="sage-andock-step3-btn" onclick="andockStep3Backup()" disabled>Backup-Blob erzeugen + herunterladen</button>
+          <div class="sage-andock-output" id="sage-andock-step3-out"></div>
+        </li>
+      </ol>
+
+      <div class="sage-andock-identities">
+        <h3>Identitäts-Wechsler</h3>
+        <p class="sage-andock-mini">Sage hat in der Regel nur eine Identität. Wer mehrere Personae braucht (siehe Bau 02.Y Multi-Identitäts-API), wählt hier:</p>
+        <div class="sage-andock-identity-row">
+          <label for="sage-andock-identity-select" class="sage-andock-mini-label">Aktive Identität:</label>
+          <select id="sage-andock-identity-select" onchange="andockSwitchIdentity(this.value)">
+            <option value="">— keine geladen —</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="sage-andock-footer">
+        Dieser Wizard ist die Sage-spezifische Mini-Andock-Geste. Der volle Andock-Wizard als Standalone-PWA (Variante III, Vision-Anker 2) ist eine eigene Spec-Sitzung. Wer den klassischen Pfad sucht: <a href="docs/components/09_einbau_pwa.md" target="_blank" rel="noopener">Karte 09 — Einbau-PWA-Anleitung</a> · oder direkt
+        <a href="docs/OBSERVATORIUM_BROWSER.md" target="_blank" rel="noopener">die Browser-Observatorium-Doku</a> öffnen.
+      </p>
+    </div>
+  </div>
+
+  <style>
+  /* === Andock-Wizard-Modal === */
+  .sage-andock-modal { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: 1.5rem; }
+  .sage-andock-modal[hidden] { display: none; }
+  .sage-andock-backdrop { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(40,10,60,0.55) 0%, rgba(0,0,0,0.88) 70%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .sage-andock-card { position: relative; z-index: 1; max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem 2rem 1.5rem; background: linear-gradient(160deg, rgba(20,18,45,0.95) 0%, rgba(8,8,26,0.97) 100%); border: 1px solid rgba(244,180,53,0.32); border-radius: 22px; color: #f0f0ff; box-shadow: 0 28px 60px rgba(0,0,0,0.7), inset 0 0 80px rgba(244,180,53,0.06); animation: modal-zoom .45s cubic-bezier(0.2,0.7,0.2,1); }
+  .sage-andock-close { position: absolute; top: 0.9rem; right: 1rem; width: 32px; height: 32px; padding: 0; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 50%; color: #f0f0ff; font-size: 1.2rem; line-height: 1; cursor: pointer; }
+  .sage-andock-close:hover { background: rgba(255,255,255,0.15); }
+  .sage-andock-tag { display: inline-block; font-size: 0.78rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .sage-andock-card h2 { margin: 0 0 0.8rem; font-size: 1.45rem; letter-spacing: -0.005em; color: #fff; }
+  .sage-andock-lede { line-height: 1.6; color: #d8d8e8; margin: 0 0 1.4rem; font-size: 0.95rem; }
+  .sage-andock-lede code { background: rgba(255,255,255,0.08); padding: 0.06em 0.36em; border-radius: 4px; }
+  .sage-andock-steps { list-style: none; padding: 0; margin: 0 0 1.4rem; display: grid; gap: 1rem; }
+  .sage-andock-steps li { padding: 1rem 1.1rem; background: rgba(0,0,0,0.42); border: 1px solid var(--line); border-radius: var(--r-sm); }
+  .sage-andock-steps h3 { margin: 0 0 0.5rem; font-size: 1.02rem; font-weight: 500; display: flex; align-items: center; gap: 0.6rem; color: #fff; }
+  .sage-andock-num { display: inline-grid; place-items: center; width: 24px; height: 24px; background: rgba(244,180,53,0.18); border: 1px solid rgba(244,180,53,0.4); border-radius: 50%; color: var(--gold); font-family: "Geist Mono", monospace; font-size: 0.78rem; }
+  .sage-andock-steps p { margin: 0 0 0.7rem; color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+  .sage-andock-btn { padding: 0.55rem 1rem; font-size: 0.9rem; }
+  .sage-andock-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .sage-andock-output { margin-top: 0.7rem; padding: 0.6rem 0.8rem; background: rgba(0,0,0,0.5); border: 1px solid var(--line); border-radius: 6px; font-family: "Geist Mono", monospace; font-size: 0.78rem; color: #cfcfe5; min-height: 0; word-break: break-all; }
+  .sage-andock-output:empty { display: none; }
+  .sage-andock-output.ok { border-color: rgba(52,211,153,0.4); color: #aef0d0; }
+  .sage-andock-output.err { border-color: rgba(244,63,94,0.4); color: #f8b7b7; }
+  .sage-andock-identities { margin: 0 0 1.2rem; padding: 0.9rem 1.1rem; background: rgba(110,231,211,0.05); border: 1px solid rgba(110,231,211,0.18); border-radius: var(--r-sm); }
+  .sage-andock-identities h3 { margin: 0 0 0.4rem; font-size: 0.95rem; font-weight: 500; color: #fff; }
+  .sage-andock-mini, .sage-andock-mini-label { color: var(--muted); font-size: 0.82rem; }
+  .sage-andock-mini { margin: 0 0 0.6rem; line-height: 1.5; }
+  .sage-andock-identity-row { display: flex; align-items: center; gap: 0.7rem; }
+  .sage-andock-identity-row select { flex: 1; width: auto; padding: 0.45rem 0.7rem; }
+  .sage-andock-footer { font-size: 0.82rem; color: var(--dim); line-height: 1.5; margin: 0; padding-top: 0.8rem; border-top: 1px dashed var(--line); }
+  .sage-andock-footer a { color: rgba(244,180,53,0.78); }
+  .sage-andock-footer a:hover { color: var(--gold); }
+  @media (max-width: 600px) {
+    .sage-andock-card { padding: 1.4rem 1.1rem 1rem; }
+    .sage-andock-card h2 { font-size: 1.15rem; }
+  }
+
+  /* === Schichten-Lampen pro Modul-Zeile === */
+  .mod-row { grid-template-columns: 42px minmax(0, 1fr) auto auto; }
+  .mod-lamps { display: inline-flex; align-items: center; gap: 0.32rem; padding: 0.2rem 0.45rem; background: rgba(0,0,0,0.4); border: 1px solid var(--line); border-radius: 999px; }
+  .mod-lamp { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.16); display: inline-block; }
+  .mod-lamp.stub { background: var(--status-stub); box-shadow: 0 0 4px rgba(37,99,235,0.55); }
+  .mod-lamp.werkstatt { background: var(--status-werkstatt); box-shadow: 0 0 4px rgba(234,88,12,0.55); }
+  .mod-lamp.spec { background: var(--status-spec); box-shadow: 0 0 4px rgba(202,138,4,0.55); }
+  .mod-lamp.fertig { background: var(--status-fertig); box-shadow: 0 0 4px rgba(22,163,74,0.65); }
+  .mod-lamp.schablone { background: var(--status-schablone); box-shadow: 0 0 4px rgba(146,64,14,0.55); }
+  .mod-lamp-tooltip { display: none; }
+  @media (max-width: 540px) {
+    .mod-row { grid-template-columns: 42px minmax(0, 1fr) auto; }
+    .mod-lamps { display: none; }
+  }
+  </style>
+
+  <script>
+  // ============= ANDOCK-WIZARD =============
+  let __sageAndockOpenedOnce = false;
+  let __sageAndockSpore = null;
+  let __sageAndockNodeId = null;
+
+  async function bhStageClick(event) {
+    if (event) event.preventDefault();
+    // Erst-Klick: Wizard aufrufen, falls keine Identität existiert.
+    // Folge-Klicks: Doku-md-Pfad (Browser-Observatorium-Screen).
+    try {
+      const hasIdentity = await sageHasIdentity();
+      if (!__sageAndockOpenedOnce && !hasIdentity) {
+        __sageAndockOpenedOnce = true;
+        openAndockWizard();
+        return false;
+      }
+    } catch (_e) { /* fail-soft: bei Modul-Defekt zum Doku-md-Pfad fallen */ }
+    // Doku-md-Pfad: Browser-Observatorium-Screen öffnen.
+    goScreen('observatorium', 'blackhole');
+    return false;
+  }
+
+  async function sageHasIdentity() {
+    if (!window.SbkimSpore || typeof window.SbkimSpore.listIdentities !== 'function') return false;
+    try {
+      const ids = await window.SbkimSpore.listIdentities();
+      return Array.isArray(ids) && ids.length > 0;
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function openAndockWizard() {
+    const modal = document.getElementById('sage-andock-modal');
+    if (!modal) return;
+    modal.hidden = false;
+    refreshAndockIdentities();
+  }
+  function closeAndockWizard() {
+    const modal = document.getElementById('sage-andock-modal');
+    if (modal) modal.hidden = true;
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('sage-andock-modal');
+      if (modal && !modal.hidden) closeAndockWizard();
+    }
+  });
+
+  function setAndockOutput(id, text, cls) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    el.classList.remove('ok', 'err');
+    if (cls) el.classList.add(cls);
+  }
+
+  async function andockStep1Identity() {
+    const btn = document.getElementById('sage-andock-step1-btn');
+    const step2btn = document.getElementById('sage-andock-step2-btn');
+    if (!window.SbkimSpore || typeof window.SbkimSpore.getOrCreateIdentity !== 'function') {
+      setAndockOutput('sage-andock-step1-out', 'Modul 02 (SbkimSpore) nicht geladen — Sichttest-Setup prüfen.', 'err');
+      return;
+    }
+    btn.disabled = true;
+    setAndockOutput('sage-andock-step1-out', 'Erzeuge Identität …');
+    try {
+      const id = await window.SbkimSpore.getOrCreateIdentity();
+      __sageAndockNodeId = id.nodeId;
+      setAndockOutput('sage-andock-step1-out', 'nodeId: ' + id.nodeId, 'ok');
+      step2btn.disabled = false;
+      refreshAndockIdentities();
+    } catch (err) {
+      setAndockOutput('sage-andock-step1-out', 'Fehler: ' + (err && err.message ? err.message : err), 'err');
+      btn.disabled = false;
+    }
+  }
+
+  async function andockStep2Spore() {
+    const btn = document.getElementById('sage-andock-step2-btn');
+    const step3btn = document.getElementById('sage-andock-step3-btn');
+    if (!window.SbkimEmbedding || !window.SbkimSpore) {
+      setAndockOutput('sage-andock-step2-out', 'Module 02 oder 03 nicht geladen.', 'err');
+      return;
+    }
+    btn.disabled = true;
+    setAndockOutput('sage-andock-step2-out', 'Lade Modul 03 (Embedding-Modell, ~30 MB) …');
+    try {
+      await window.SbkimEmbedding.init();
+      setAndockOutput('sage-andock-step2-out', 'Erzeuge Domain-Vektor (384 floats) …');
+      const stammCategories = ['Protokoll-Doku', 'Mycel-Vokabular', 'Heilige Tafeln', 'Karten', 'INTERFACES', 'ARCHITEKTUR'];
+      const guestCategories = ['Glossar-Wartung', 'Schwesternetz-Beobachtungen', 'Sitzungs-Briefe', 'Übergabeprotokolle'];
+      const domainDescription = 'Lebendiges SBKIM-Vokabular und Protokoll-Doku: Glossar, INTERFACES, ARCHITEKTUR, Karten 00-15, PULS — die Karte, die sich selbst kennt.';
+      const domainKeywords = ['SBKIM-Glossar', 'Mycel-Vokabular', 'Protokoll-Doku', 'Heilige Tafeln', 'Karten', 'Schwesternetz-Beobachtungen'];
+      const vec = await window.SbkimEmbedding.embedPassage(domainDescription + '. ' + domainKeywords.join(', '));
+      setAndockOutput('sage-andock-step2-out', 'Signiere Spore …');
+      const spore = await window.SbkimSpore.generateOwnSpore({
+        domain: 'Mycel-Bibliothek',
+        endpoint: 'https://lausiklauskn-png.github.io/Sage-Protokol/',
+        nodeType: 'hybrid',
+        nodeName: 'Sage',
+        domainDescription: domainDescription,
+        domainKeywords: domainKeywords,
+        domainVector: Array.from(vec),
+        stammCategories: stammCategories,
+        guestCategories: guestCategories,
+      });
+      __sageAndockSpore = spore;
+      downloadJson('spore.json', spore);
+      setAndockOutput('sage-andock-step2-out', 'Spore erzeugt + heruntergeladen (nodeId=' + spore.id + ', signatur-länge=' + (spore.signature || '').length + '). Committe nach sbkim/spore.json.', 'ok');
+      step3btn.disabled = false;
+    } catch (err) {
+      setAndockOutput('sage-andock-step2-out', 'Fehler: ' + (err && err.message ? err.message : err), 'err');
+      btn.disabled = false;
+    }
+  }
+
+  async function andockStep3Backup() {
+    const btn = document.getElementById('sage-andock-step3-btn');
+    if (!window.SbkimSpore || typeof window.SbkimSpore.exportBackup !== 'function') {
+      setAndockOutput('sage-andock-step3-out', 'Modul 02 exportBackup fehlt — Bau 02.X nicht eingespielt.', 'err');
+      return;
+    }
+    const password = window.prompt('Backup-Passwort wählen (mindestens 8 Zeichen, KEIN automatisches Reset möglich):');
+    if (!password) {
+      setAndockOutput('sage-andock-step3-out', 'Abgebrochen — kein Passwort.', 'err');
+      return;
+    }
+    btn.disabled = true;
+    setAndockOutput('sage-andock-step3-out', 'Erzeuge Backup-Blob (PBKDF2-SHA256 600 000 + AES-GCM-256) …');
+    try {
+      const blob = await window.SbkimSpore.exportBackup(password);
+      const ts = new Date().toISOString().replace(/[:.]/g, '-');
+      downloadJson('sage-backup-' + ts + '.sbkim.json', blob);
+      setAndockOutput('sage-andock-step3-out', 'Backup heruntergeladen. Bewahre die Datei sicher auf — ohne Passwort + Datei keine Wiederherstellung.', 'ok');
+    } catch (err) {
+      setAndockOutput('sage-andock-step3-out', 'Fehler: ' + (err && err.message ? err.message : err), 'err');
+      btn.disabled = false;
+    }
+  }
+
+  function downloadJson(filename, obj) {
+    const text = JSON.stringify(obj, null, 2);
+    const blob = new Blob([text], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+  }
+
+  async function refreshAndockIdentities() {
+    const sel = document.getElementById('sage-andock-identity-select');
+    if (!sel || !window.SbkimSpore || typeof window.SbkimSpore.listIdentities !== 'function') return;
+    try {
+      const ids = await window.SbkimSpore.listIdentities();
+      let active = null;
+      if (typeof window.SbkimSpore.getActiveIdentityKey === 'function') {
+        try { active = await window.SbkimSpore.getActiveIdentityKey(); } catch (_e) { /* nb */ }
+      }
+      sel.innerHTML = '';
+      if (!ids || !ids.length) {
+        const opt = document.createElement('option');
+        opt.value = ''; opt.textContent = '— keine geladen —';
+        sel.appendChild(opt);
+        return;
+      }
+      ids.forEach((k) => {
+        const opt = document.createElement('option');
+        opt.value = k; opt.textContent = k + (k === active ? '  (aktiv)' : '');
+        if (k === active) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    } catch (_e) { /* nb */ }
+  }
+
+  async function andockSwitchIdentity(key) {
+    if (!key || !window.SbkimSpore || typeof window.SbkimSpore.setActiveIdentity !== 'function') return;
+    try {
+      await window.SbkimSpore.setActiveIdentity(key);
+      refreshAndockIdentities();
+    } catch (err) {
+      console.warn('setActiveIdentity:', err);
+    }
+  }
+
+  // ============= SCHICHTEN-LAMPEN =============
+  // Drei LED-Dots pro Modul-Kachel: Spec / Code / Sichttest. Farbe aus
+  // score-Feld (stub=blau, werkstatt=orange, spec=gelb, fertig=grün,
+  // schablone=braun). Spec-Lampe leuchtet ab spec-Schwelle, Code-Lampe
+  // ab stub-Schwelle, Sichttest-Lampe ab fertig-Schwelle. Liest aus
+  // status.json (separat — STATE/renderModuleList sind in einer Closure
+  // der Haupt-Script-Block).
+  const STATUS_ORDER = { schablone: 0, werkstatt: 1, spec: 2, stub: 3, fertig: 4 };
+  let __sageLampsStatus = null;
+
+  function getStufenLampen(score) {
+    const lvl = STATUS_ORDER[score] !== undefined ? STATUS_ORDER[score] : 0;
+    return [
+      { label: 'Spec',      active: lvl >= 2 ? score : null },
+      { label: 'Code',      active: lvl >= 3 ? score : null },
+      { label: 'Sichttest', active: lvl >= 4 ? score : null },
+    ];
+  }
+
+  function decorateModuleListLamps() {
+    const list = document.getElementById('module-list');
+    if (!list || !__sageLampsStatus) return;
+    const s = __sageLampsStatus;
+    const byId = {};
+    [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || [])].forEach(m => byId[m.id] = m);
+    const rows = list.querySelectorAll('.mod-row');
+    rows.forEach((row) => {
+      if (row.querySelector('.mod-lamps')) return;
+      const numEl = row.querySelector('.mod-num');
+      if (!numEl) return;
+      const modId = numEl.textContent.trim();
+      const m = byId[modId];
+      if (!m) return;
+      const lamps = getStufenLampen(m.score || 'schablone');
+      const wrap = document.createElement('div');
+      wrap.className = 'mod-lamps';
+      wrap.title = (m.siegel || '') + ' · ' + (m.score || '—');
+      lamps.forEach((l) => {
+        const dot = document.createElement('span');
+        dot.className = 'mod-lamp' + (l.active ? ' ' + l.active : '');
+        dot.title = l.label + (l.active ? ' (' + l.active + ')' : ' (ausstehend)');
+        wrap.appendChild(dot);
+      });
+      const badge = row.querySelector('.badge');
+      row.insertBefore(wrap, badge);
+    });
+  }
+
+  async function setupSchichtenLampen() {
+    try {
+      const r = await fetch('status.json', { cache: 'no-cache' });
+      if (!r.ok) return;
+      __sageLampsStatus = await r.json();
+    } catch (_e) { return; }
+    const list = document.getElementById('module-list');
+    if (!list) return;
+    // Sofort einmal versuchen, falls die Haupt-loadStatus()-Render-Pass
+    // schon durch ist.
+    decorateModuleListLamps();
+    // Plus: MutationObserver fängt späteres / wiederholtes Rendern.
+    const observer = new MutationObserver(() => decorateModuleListLamps());
+    observer.observe(list, { childList: true });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupSchichtenLampen, { once: true });
+  } else {
+    setupSchichtenLampen();
+  }
+
+  window.addEventListener('sbkim-sage-ready', () => {
+    refreshAndockIdentities();
+  });
+  </script>
+
+  <!-- ============= SBKIM-MODULE (Sage als dritter Endknoten) ============= -->
+  <!-- Volle init()-Kette aus Karte 09 § Schritt 2. Modul 03 wird lazy
+       geladen (Andock-Wizard ruft `SbkimEmbedding.init()` erst auf Klaus'
+       Klick — ~30 MB Modell-Download nur wenn nötig). sbkim-init.js
+       koordiniert die Kette mit fail-soft-Behandlung pro Modul. -->
+  <script src="src/modules/00_doku_fenster.js"></script>
+  <script src="src/modules/01_storage.js"></script>
+  <script src="src/modules/02_spore.js"></script>
+  <script src="src/modules/03_embedding.js"></script>
+  <script src="src/modules/04_match.js"></script>
+  <script src="src/modules/05_anastomose.js"></script>
+  <script src="src/modules/06_heterokaryose.js"></script>
+  <script src="src/modules/07_apoptose.js"></script>
+  <script src="src/modules/08_ui_demo.js"></script>
+  <script src="sbkim-init.js"></script>
 </body>
 </html>
