@@ -297,6 +297,80 @@
           cleanup_hinweis: "Test-Store sbkim_test_failsoft_dummy bleibt in der DB; manueller Cleanup via DevTools oder site-spezifisches Daten-Löschen.",
         };
       });
+
+      // Notfall-Reset-Knopf — Pflege 2026-05-21.
+      //
+      // Hintergrund: Wenn frühere Sichttests viele ensureStore-Aufrufe
+      // gemacht haben, ist die DB-Version weit über DB_VERSION=4 gebumpt
+      // (z.B. auf 17). Ein neuer ensureStore-Aufruf (z.B. für sbkim_meta
+      // aus Modul 02 Bau 02.Y) braucht dann erneut einen Versions-Bump,
+      // und manchmal blockt der mit onblocked („ein anderer Tab hält die
+      // DB offen") — selbst wenn nur ein Tab offen ist und kein Service-
+      // Worker läuft. Das ist ein bekannter Modul-01-Bug (PULS §
+      // Bau-02.Y-Sichttest 2026-05-19, Modul 01 fail-soft init nicht
+      // vollständig). Modul-01-Pflege ist eigene Sitzung.
+      //
+      // Dieser Knopf umgeht Modul 01 komplett: er ruft direkt
+      // `indexedDB.deleteDatabase("sbkim")` und löscht die DB samt allen
+      // Stores. Beim nächsten Tab-Reload startet Modul 01 init() auf
+      // einer frischen DB mit Version=DB_VERSION; alle dynamischen
+      // Stores (sbkim_meta, sbkim_siblings_<slot>, etc.) werden via
+      // ensureStore beim ersten Bedarf wieder angelegt — in einem
+      // sauberen Bump-Schritt OHNE Block.
+      //
+      // KEIN init()-Aufruf — der Knopf funktioniert auch wenn init() blockt.
+      SbkimUI.addButton("01_storage", "Notfall-Reset: IndexedDB komplett löschen", async function () {
+        // Bestätigung — irreversibel, alle Identitäten/Siblings/Logs weg.
+        var ok = window.confirm(
+          "DB 'sbkim' wird KOMPLETT gelöscht.\n\n" +
+          "Alle Identitäten, Siblings, Logs etc. gehen verloren.\n" +
+          "Danach Tab mit Strg+Shift+R neu laden.\n\n" +
+          "Wirklich löschen?"
+        );
+        if (!ok) {
+          SbkimUI.log("01_storage", "ℹ Abgebrochen.");
+          return;
+        }
+
+        // Modul-01-Caches invalidieren — fail-soft, falls Modul 01 init()
+        // schon blockt.
+        try {
+          if (SbkimStorage && SbkimStorage._closeForReset) {
+            SbkimStorage._closeForReset();
+          }
+        } catch (e) { /* nb */ }
+
+        // Direkt indexedDB.deleteDatabase — keine Modul-01-API.
+        var deleted = await new Promise(function (resolve) {
+          var req = indexedDB.deleteDatabase("sbkim");
+          req.onsuccess = function () { resolve({ ok: true }); };
+          req.onerror = function () {
+            resolve({ ok: false, error: req.error && req.error.message });
+          };
+          req.onblocked = function () {
+            resolve({ ok: false, blocked: true });
+          };
+        });
+
+        if (deleted.ok) {
+          SbkimUI.setStatus("01_storage", "ok", "DB gelöscht — JETZT Strg+Shift+R");
+          SbkimUI.log("01_storage", "▶ indexedDB.deleteDatabase('sbkim'): erfolgreich.");
+          SbkimUI.log("01_storage",
+            "ℹ Bitte JETZT den Tab mit Strg+Shift+R hard-reloaden. " +
+            "Modul 01 startet dann auf einer frischen DB; alle Setup-Knöpfe sollten danach " +
+            "ohne Versions-Bump-Block laufen.");
+        } else if (deleted.blocked) {
+          SbkimUI.setStatus("01_storage", "err", "delete blockiert — Browser neu starten");
+          SbkimUI.log("01_storage",
+            "✗ indexedDB.deleteDatabase blockiert — eine offene Connection verhindert das Löschen. " +
+            "Bitte den Browser KOMPLETT beenden (App-Switcher, Chrome wegwischen) und neu öffnen, " +
+            "dann diesen Knopf erneut probieren.");
+        } else {
+          SbkimUI.setStatus("01_storage", "err", "delete fehlgeschlagen");
+          SbkimUI.log("01_storage",
+            "✗ indexedDB.deleteDatabase fehlgeschlagen: " + (deleted.error || "unbekannt"));
+        }
+      });
     })();
   </script>
 
