@@ -1302,7 +1302,9 @@
         var einmal = siblingsAfter.filter(function (s) { return s.nodeId === alt.nodeId; }).length === 1;
 
         // Log nachschauen: letzte Zeile sollte "re-handshake" sein.
-        var allLogs = await SbkimStorage.all("sbkim_anastomosis_log");
+        // Bau 05.Y: slot-suffixed.
+        var activeSlotLog = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var allLogs = await SbkimStorage.all("sbkim_anastomosis_log_" + activeSlotLog);
         var letzte = allLogs.length > 0 ? allLogs[allLogs.length - 1].value : null;
 
         var pass = resp1.outcome === "established" && resp2.outcome === "established" && sameSince && einmal;
@@ -1321,15 +1323,18 @@
 
       SbkimUI.addButton("05_anastomose", "Test 6: forgetSibling (entfernt Eintrag, Log bleibt)", async function () {
         await ensureSetup();
+        // Bau 05.Y: slot-suffixed.
+        var activeSlotLog = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var logStore = "sbkim_anastomosis_log_" + activeSlotLog;
         var siblingsVor = await SbkimAnastomose.listSiblings();
-        var logVor = await SbkimStorage.all("sbkim_anastomosis_log");
+        var logVor = await SbkimStorage.all(logStore);
 
         await SbkimAnastomose.forgetSibling(alt.nodeId);
         // unbekannte nodeId — sollte nicht werfen
         await SbkimAnastomose.forgetSibling("nicht-existent-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
         var siblingsNach = await SbkimAnastomose.listSiblings();
-        var logNach = await SbkimStorage.all("sbkim_anastomosis_log");
+        var logNach = await SbkimStorage.all(logStore);
 
         var altWeg = siblingsNach.filter(function (s) { return s.nodeId === alt.nodeId; }).length === 0;
         var logBleibt = logNach.length === logVor.length;
@@ -1477,7 +1482,10 @@
         // mains Receiver filtert via toNodeId raus, kein Reply.
         var fremdNodeId = "fremd-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         var request = await SbkimAnastomose._buildSignedRequest(alt.privateKey, alt.spore, altVec, fremdNodeId);
-        var logsBefore = await SbkimStorage.all("sbkim_anastomosis_log");
+        // Bau 05.Y: slot-suffixed Log.
+        var activeSlotLog = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var logStore = "sbkim_anastomosis_log_" + activeSlotLog;
+        var logsBefore = await SbkimStorage.all(logStore);
         var t0 = Date.now();
         var fehler = null;
         try {
@@ -1486,7 +1494,7 @@
           fehler = err;
         }
         var dt = Date.now() - t0;
-        var logsAfter = await SbkimStorage.all("sbkim_anastomosis_log");
+        var logsAfter = await SbkimStorage.all(logStore);
         var pass = fehler !== null && fehler.name === "HandshakeTimeoutError" && dt >= 3500;
         SbkimUI.setStatus("05_anastomose", pass ? "ok" : "err", pass ? "Test 9a OK" : "Test 9a fehlgeschlagen");
         return {
@@ -1726,10 +1734,11 @@
         // Wir bauen eine signierte LegacyMessage mit unserer Identität und
         // empfangen sie wieder (Singleton ≈ Selbst-Sender). Damit der
         // Sibling-del-Pfad nicht ins Leere greift, hängen wir uns kurz als
-        // Geschwister in sbkim_siblings.
+        // Geschwister in sbkim_siblings_<activeSlot> (Bau 05.Y / 07.Y).
         var nodeId = await SbkimSpore.getNodeId();
         var ownSpore = await SbkimSpore.getOwnSpore();
-        await SbkimStorage.put("sbkim_siblings", nodeId, {
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        await SbkimStorage.put("sbkim_siblings_" + activeSlot, nodeId, {
           nodeId: nodeId, domain: MAIN_META.domain, endpoint: MAIN_META.endpoint,
           pubKey: ownSpore.publicKey, since: new Date().toISOString(),
         });
@@ -1793,8 +1802,11 @@
       SbkimUI.addButton("07_apoptose", "Test 4: TTL-Cleanup (forgetExpiredSiblings)", async function () {
         await ensureSetup();
         // Zwei Geschwister direkt in IndexedDB hineinmanövrieren — Modul
-        // 07 forgetExpiredSiblings liest aus sbkim_siblings (kein Pseudo-
-        // Override hier, weil der Sweep über den echten Store läuft).
+        // 07 forgetExpiredSiblings liest aus sbkim_siblings_<activeSlot>
+        // (Bau 05.Y / 07.Y). Kein Pseudo-Override hier, weil der Sweep
+        // über den echten Store läuft.
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var siblingsStore = "sbkim_siblings_" + activeSlot;
         var altOldId  = "TTL-OLD-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         var altYoungId = "TTL-YOUNG-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
         var altOld = {
@@ -1805,17 +1817,17 @@
           nodeId: altYoungId, domain: "alt-young.invalid", endpoint: "http://127.0.0.1:1/young/",
           pubKey: null, since: new Date().toISOString(),
         };
-        await SbkimStorage.put("sbkim_siblings", altOldId, altOld);
-        await SbkimStorage.put("sbkim_siblings", altYoungId, altYoung);
+        await SbkimStorage.put(siblingsStore, altOldId, altOld);
+        await SbkimStorage.put(siblingsStore, altYoungId, altYoung);
 
         var maxAge = 30 * 24 * 60 * 60 * 1000;
         var removed = await SbkimApoptose.forgetExpiredSiblings(maxAge);
-        var siblingsAfter = await SbkimStorage.all("sbkim_siblings");
+        var siblingsAfter = await SbkimStorage.all(siblingsStore);
         var oldGone   = !siblingsAfter.some(function (r) { return r.key === altOldId; });
         var youngBleibt = siblingsAfter.some(function (r) { return r.key === altYoungId; });
 
         // Aufräumen, damit Test 6 nicht über die Reste stolpert.
-        try { await SbkimStorage.del("sbkim_siblings", altYoungId); } catch (e) { /* nb */ }
+        try { await SbkimStorage.del(siblingsStore, altYoungId); } catch (e) { /* nb */ }
 
         var pass = oldGone && youngBleibt && removed.length === 1 && removed[0].nodeId === altOldId;
         SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
@@ -1831,12 +1843,15 @@
         await ensureSetup();
         // Drei Einträge direkt in den Inbox-Store schieben (ohne den
         // vollen receiveLegacy-Pfad, weil Test 1 das schon abdeckt).
+        // Bau 07.Y: Modul 07 listLegacy liest aus sbkim_legacy_inbox_<slot>.
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var legacyInbox = "sbkim_legacy_inbox_" + activeSlot;
         var nodeId = await SbkimSpore.getNodeId();
         var ids = [
           nodeId + "-x", nodeId + "-y", nodeId + "-z",
         ];
         for (var i = 0; i < ids.length; i++) {
-          await SbkimStorage.put("sbkim_legacy_inbox", ids[i], {
+          await SbkimStorage.put(legacyInbox, ids[i], {
             fromNodeId: ids[i],
             reason: "Test-Grund " + (i + 1),
             signature: "DEMO-SIGNATURE-NUR-FUER-PANEL",
@@ -1853,7 +1868,7 @@
         });
         // Aufräumen — die Demo-Einträge nicht in IndexedDB liegen lassen.
         for (var j = 0; j < ids.length; j++) {
-          try { await SbkimStorage.del("sbkim_legacy_inbox", ids[j]); } catch (e) { /* nb */ }
+          try { await SbkimStorage.del(legacyInbox, ids[j]); } catch (e) { /* nb */ }
         }
         var pass = allKnown && formOk;
         SbkimUI.setStatus("07_apoptose", pass ? "ok" : "err", pass ? "Test 5 OK" : "Test 5 fehlgeschlagen");
@@ -1871,7 +1886,14 @@
         // recipientsFailed.length === 2 erwartet (Pseudo-Endpoints führen
         // ins Leere); recipientsNotified.length === 0. Lokaler Cleanup
         // läuft trotzdem — wir prüfen Stores nach.
+        // Bau 07.Y: confirmSelfApoptose iteriert über ALLE Slots und räumt
+        // slot-suffixed Stores (sbkim_siblings_<slot>, sbkim_anastomosis_log_<slot>,
+        // sbkim_legacy_inbox_<slot>, sbkim_hetero_inbox/outbox_<slot>) sowie
+        // sbkim_keys[slot] und sbkim_spore[slot] (single stores, slot-key-indiziert).
         var nodeIdVorher = await SbkimSpore.getNodeId();
+        // Slot-Liste VOR Self-Apoptose sichern — danach gibt's keine
+        // Identitäten mehr.
+        var slotsVorher = await SbkimSpore.listIdentities();
 
         var prep = await SbkimApoptose.prepareSelfApoptose("Sichttest Bau-Sitzung 07");
         if (typeof prep.confirmationToken !== "string" || prep.confirmationToken.length < 16) {
@@ -1881,13 +1903,19 @@
 
         var result = await SbkimApoptose.confirmSelfApoptose(prep.confirmationToken, "Sichttest Bau-Sitzung 07");
 
-        // Stores prüfen
+        // Stores prüfen — sbkim_keys + sbkim_spore sind single stores mit
+        // slot-key-Index (Modul 02), all() liefert über alle Slots.
         var keys     = await SbkimStorage.all("sbkim_keys");
         var sporeR   = await SbkimStorage.all("sbkim_spore");
-        var siblingsR = await SbkimStorage.all("sbkim_siblings");
-        var logR     = await SbkimStorage.all("sbkim_anastomosis_log");
-        var inboxR   = await SbkimStorage.all("sbkim_legacy_inbox");
-        var allEmpty = (keys.length + sporeR.length + siblingsR.length + logR.length + inboxR.length) === 0;
+        // Slot-suffixed Stores: pro Slot prüfen, der vor Apoptose existierte.
+        var siblingsSum = 0, logSum = 0, inboxSum = 0;
+        for (var si = 0; si < slotsVorher.length; si++) {
+          var sk = slotsVorher[si];
+          try { siblingsSum += (await SbkimStorage.all("sbkim_siblings_" + sk)).length; } catch (e) { /* Store fehlt = leer */ }
+          try { logSum      += (await SbkimStorage.all("sbkim_anastomosis_log_" + sk)).length; } catch (e) { /* Store fehlt = leer */ }
+          try { inboxSum    += (await SbkimStorage.all("sbkim_legacy_inbox_" + sk)).length; } catch (e) { /* Store fehlt = leer */ }
+        }
+        var allEmpty = (keys.length + sporeR.length + siblingsSum + logSum + inboxSum) === 0;
 
         // Folge-Aufruf muss NoIdentityError werfen
         var noIdentityThrown = false;
@@ -1938,10 +1966,11 @@
       SbkimUI.addButton("07_apoptose", "Test 8: receiveLegacy mit unbekanntem Sender", async function () {
         await ensureSetup();
         // Stelle sicher, dass keine vorigen Test-Sibling-Reste die Antwort
-        // verzerren.
+        // verzerren. Bau 05.Y / 07.Y: slot-suffixed Stores.
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
         var nodeId = await SbkimSpore.getNodeId();
-        try { await SbkimStorage.del("sbkim_siblings", nodeId); } catch (e) { /* nb */ }
-        try { await SbkimStorage.del("sbkim_legacy_inbox", nodeId); } catch (e) { /* nb */ }
+        try { await SbkimStorage.del("sbkim_siblings_" + activeSlot, nodeId); } catch (e) { /* nb */ }
+        try { await SbkimStorage.del("sbkim_legacy_inbox_" + activeSlot, nodeId); } catch (e) { /* nb */ }
 
         var siblingsVor = (await SbkimAnastomose.listSiblings()).length;
         var legacy = await SbkimApoptose._buildSignedLegacyMessage("Domain stillgelegt");
@@ -2061,7 +2090,7 @@
           eigene_node_id: nodeId,
           pseudo_optin:  { nodeId: PSEUDO_OPT_IN,  heterokaryosisOptIn: true },
           pseudo_optout: { nodeId: PSEUDO_OPT_OUT, heterokaryosisOptIn: false },
-          inbox_store: "sbkim_hetero_inbox",
+          inbox_store: "sbkim_hetero_inbox_<activeSlot>",
           anker_quelle: "Spore-Single-Anker-Fallback (domainVector aus eigener Spore)",
           hinweis: "Pseudo-Endpunkte führen ins Leere — Tests nutzen _invokeReceiveHeterokaryosisDirect statt echtem fetch; nur Test 12 nutzt den fetch-Pfad via _setReceiverHttpStatus(404).",
         };
@@ -2093,8 +2122,11 @@
         // bewusst über _invokeReceiveHeterokaryosisDirect, weil der echte
         // requestHeterokaryosis-Pfad einen fetch braucht. Wir schreiben
         // den Eintrag manuell, um den listHeterokaryosis-Pfad zu testen.
+        // Bau 06.Y: Modul 06 liest aus sbkim_hetero_inbox_<activeSlot>,
+        // also muss die Bridge slot-suffixed schreiben.
         var ts = response.timestamp;
-        await SbkimStorage.put("sbkim_hetero_inbox", nodeId + "|" + ts, {
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        await SbkimStorage.put("sbkim_hetero_inbox_" + activeSlot, nodeId + "|" + ts, {
           peerNodeId: nodeId,
           ts: ts,
           anchors: response.anchors || [],
@@ -2178,10 +2210,11 @@
       SbkimUI.addButton("06_heterokaryose", "Test 5: Sender ist kein Geschwister (Empfänger-Seite)", async function () {
         await ensureSetup();
         // Wir bauen einen valide signierten Request mit unserer Identität,
-        // entfernen aber den eigenen Eintrag aus sbkim_siblings → der
-        // Sibling-Filter beim Empfänger schlägt zu.
+        // entfernen aber den eigenen Eintrag aus sbkim_siblings_<slot>
+        // (Bau 05.Y) → der Sibling-Filter beim Empfänger schlägt zu.
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
         var nodeId = await SbkimSpore.getNodeId();
-        try { await SbkimStorage.del("sbkim_siblings", nodeId); } catch (e) { /* nb */ }
+        try { await SbkimStorage.del("sbkim_siblings_" + activeSlot, nodeId); } catch (e) { /* nb */ }
         var request = await SbkimHeterokaryose._buildSignedHeterokaryosisRequest(nodeId);
         var response = await SbkimHeterokaryose._invokeReceiveHeterokaryosisDirect(request);
         var pass = response.outcome === "rejected" && /Geschwister/i.test(response.reason || "");
@@ -2272,9 +2305,12 @@
         });
 
         // Outbox-Vorbereitung: alte Einträge löschen, sechs neue setzen.
-        var bestand = await SbkimStorage.all("sbkim_hetero_outbox");
+        // Bau 06.Y / 08.Y: Modul 06/08 lesen/schreiben slot-suffixed.
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var outboxStore = "sbkim_hetero_outbox_" + activeSlot;
+        var bestand = await SbkimStorage.all(outboxStore);
         for (var b = 0; b < bestand.length; b++) {
-          await SbkimStorage.del("sbkim_hetero_outbox", bestand[b].key);
+          await SbkimStorage.del(outboxStore, bestand[b].key);
         }
         function makeVector(seed) {
           var v = new Array(384);
@@ -2284,7 +2320,7 @@
         var labels = ["Hefeteig", "Saucen", "Brot", "Backen", "Hauptgang", "Nachtisch"];
         var baseMs = Date.parse("2026-05-15T07:00:00.000Z");
         for (var i = 0; i < labels.length; i++) {
-          await SbkimStorage.put("sbkim_hetero_outbox", labels[i], {
+          await SbkimStorage.put(outboxStore, labels[i], {
             label: labels[i],
             vector: makeVector(i),
             addedAt: new Date(baseMs + i * 60000).toISOString(),
@@ -2309,7 +2345,7 @@
         // Outbox wieder leeren, damit nachfolgende Klicks (z.B. Test 1)
         // den Spore-Single-Anker-Fallback sehen.
         for (var c = 0; c < labels.length; c++) {
-          await SbkimStorage.del("sbkim_hetero_outbox", labels[c]);
+          await SbkimStorage.del(outboxStore, labels[c]);
         }
 
         SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 9 OK (Begrenzung greift)" : "Test 9 fehlgeschlagen");
@@ -2328,13 +2364,16 @@
         await ensureSetup();
         // Drei Inbox-Einträge direkt einsetzen (zwei Pulls vom gleichen Peer
         // mit unterschiedlichem ts, ein Pull von einem anderen Peer).
+        // Bau 06.Y: slot-suffixed Inbox.
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var inboxStore = "sbkim_hetero_inbox_" + activeSlot;
         var entries = [
           { peerNodeId: PSEUDO_OPT_IN,  ts: "2026-05-15T07:00:00.000Z" },
           { peerNodeId: PSEUDO_OPT_IN,  ts: "2026-05-15T08:00:00.000Z" },
           { peerNodeId: PSEUDO_OTHER,   ts: "2026-05-15T09:00:00.000Z" },
         ];
         for (var i = 0; i < entries.length; i++) {
-          await SbkimStorage.put("sbkim_hetero_inbox", entries[i].peerNodeId + "|" + entries[i].ts, {
+          await SbkimStorage.put(inboxStore, entries[i].peerNodeId + "|" + entries[i].ts, {
             peerNodeId: entries[i].peerNodeId,
             ts: entries[i].ts,
             anchors: [{ label: "(domain)", vector: new Array(384).fill(0.1) }],
@@ -2353,7 +2392,7 @@
         });
         // Aufräumen
         for (var j = 0; j < entries.length; j++) {
-          try { await SbkimStorage.del("sbkim_hetero_inbox", entries[j].peerNodeId + "|" + entries[j].ts); } catch (e) { /* nb */ }
+          try { await SbkimStorage.del(inboxStore, entries[j].peerNodeId + "|" + entries[j].ts); } catch (e) { /* nb */ }
         }
         var pass = alleDa && formOk;
         SbkimUI.setStatus("06_heterokaryose", pass ? "ok" : "err", pass ? "Test 10 OK" : "Test 10 fehlgeschlagen");
@@ -2368,8 +2407,11 @@
 
       SbkimUI.addButton("06_heterokaryose", "Test 11: forgetHeterokaryosis (idempotent)", async function () {
         await ensureSetup();
+        // Bau 06.Y: slot-suffixed Inbox.
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var inboxStore = "sbkim_hetero_inbox_" + activeSlot;
         var ts1 = "2026-05-15T10:00:00.000Z";
-        await SbkimStorage.put("sbkim_hetero_inbox", PSEUDO_OPT_IN + "|" + ts1, {
+        await SbkimStorage.put(inboxStore, PSEUDO_OPT_IN + "|" + ts1, {
           peerNodeId: PSEUDO_OPT_IN, ts: ts1, anchors: [], signature: "DEMO", receivedAt: ts1,
         });
         var beforeForget = (await SbkimHeterokaryose.listHeterokaryosis()).filter(function (l) {
@@ -2896,14 +2938,17 @@
           SbkimUI.setStatus("00_doku_fenster", "warn", "Test 5 übersprungen");
           return { uebersprungen: "SbkimApoptose nicht geladen" };
         }
-        // Zwei echte Geschwister-Einträge in sbkim_siblings (mit >30 Tage altem
-        // since) — der Sweep liest aus dem Store, nicht aus pseudoSiblings.
+        // Zwei echte Geschwister-Einträge in sbkim_siblings_<slot> (mit
+        // >30 Tage altem since) — der Sweep liest aus dem Store, nicht aus
+        // pseudoSiblings. Bau 05.Y / 07.Y: slot-suffixed.
+        var activeSlot = (await SbkimSpore.getActiveIdentityKey()) || "main";
+        var siblingsStore = "sbkim_siblings_" + activeSlot;
         var oldIso = new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString();
-        await SbkimStorage.put("sbkim_siblings", TTL_OLD_ID, {
+        await SbkimStorage.put(siblingsStore, TTL_OLD_ID, {
           nodeId: TTL_OLD_ID, domain: "doku-old-1.invalid",
           endpoint: "http://127.0.0.1:1/doku-old-1/", pubKey: null, since: oldIso,
         });
-        await SbkimStorage.put("sbkim_siblings", TTL_OLD_ID_2, {
+        await SbkimStorage.put(siblingsStore, TTL_OLD_ID_2, {
           nodeId: TTL_OLD_ID_2, domain: "doku-old-2.invalid",
           endpoint: "http://127.0.0.1:1/doku-old-2/", pubKey: null, since: oldIso,
         });
