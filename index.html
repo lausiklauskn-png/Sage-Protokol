@@ -3124,6 +3124,21 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     const modal = document.getElementById('sage-andock-modal');
     if (modal) modal.hidden = true;
   }
+
+  // URL-Hash-Trigger: ?…/Sage-Protokol/#andock öffnet den Wizard auch
+  // dann, wenn Klaus schon eine Identität in sbkim_sage hat (sonst greift
+  // bhStageClick's „!hasIdentity"-Bedingung und die Schwarz-Loch-Karte
+  // führt zur Observatorium-Doku, nicht zum Wizard). Pflege 2026-05-21:
+  // Klaus muss Spore-Erzeugen / Backup auch nach Identitäts-Erst-Anlage
+  // erreichen.
+  function maybeOpenAndockFromHash() {
+    if (window.location.hash === '#andock' || window.location.hash === '#andock-wizard') {
+      openAndockWizard();
+    }
+  }
+  window.addEventListener('hashchange', maybeOpenAndockFromHash);
+  document.addEventListener('DOMContentLoaded', maybeOpenAndockFromHash);
+
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       const modal = document.getElementById('sage-andock-modal');
