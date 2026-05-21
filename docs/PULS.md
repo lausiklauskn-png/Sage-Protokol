@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-18 (15 Module)
+  title Modulstand 2026-05-21 (15 Module)
   "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -1810,6 +1810,178 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-21 · Bau Sage-Page-Refactor — Sage als dritter Endknoten bau-fertig
+
+**Sitzungs-Rolle:** Bau-Sitzung. Branch `claude/bau-sage-page-refactor`,
+vom `main`-Stand nach Brief-PR #125 (`bf391bb`) angelegt. Erste Bau-
+Sitzung der Brief-99-Pipeline aus der V1-Sammelspec-Abschluss-Sitzung —
+realisiert Vision-Anker 1 (Sage als Hybrid-Knoten) in laufender
+`index.html`-Logik, nachdem die Spec-Schiene (Brief 01) im PR #96 schon
+durch war.
+
+**Kern (drei Sätze):** Die Sage-Page lädt jetzt selbst alle SBKIM-
+Module mit fail-soft init()-Kette unter dem IndexedDB-Suffix `sbkim_sage`,
+hat einen eigenen Standalone-`sbkim-sw.js` im Repo-Root (Variante 3a
+aus Karte 09 § Schritt 3), und der Klick auf die Schwarz-Loch-Karte
+öffnet beim ersten Mal einen Mini-Andock-Wizard (Identität → Spore mit
+lazy-Modul-03-Embedding → Backup). Die Module-Bento-Karte zeigt pro
+Modul drei kleine Schichten-Lampen (Spec / Code / Sichttest), gefärbt
+aus `status.json § modules[i].score`. **KEIN Modul-Code-Eingriff,
+KEIN Spec-Eingriff, KEIN Schema-Bump** — der gesamte Refactor lebt in
+`index.html`, drei neuen Dateien (`sbkim-sw.js`, `sbkim-init.js`,
+`sbkim/spore.json`) und einer kleinen `status.json`-Pflege.
+
+**Sechs Punkte a–f:**
+
+- **a) `sbkim-sw.js` im Sage-Page-Repo-Root angelegt** als wortgleiche
+  Kopie von `src/sbkim-sw.js` (Header-Kommentar um Sage-spezifischen
+  Block + Cache-Bust-Hinweis ergänzt — Logik 1:1). Variante 3a aus
+  Karte 09, weil Sage-Page keinen eigenen App-SW betreibt.
+- **b) Neun `<script>`-Tags in `index.html`** vor `</body>`, Reihenfolge
+  `00 → 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08`. Modul 03 (Embedding,
+  ~30 MB) wird **lazy** — `init()` läuft erst im Andock-Wizard, nicht im
+  Boot. Sage-Page bleibt für reinen Doku-Hub-Besuch leicht. `sbkim-init.js`
+  als letztes Tag.
+- **c) `sbkim-init.js` (neue Datei) für die volle init()-Kette.** Ruft
+  `SbkimStorage.init({dbSuffix:"sage"})` → 02 Spore → 05 Anastomose → 06
+  Heterokaryose → 07 Apoptose → 08 UI-Demo → 00 Doku-Fenster; danach
+  `navigator.serviceWorker.register("sbkim-sw.js")`. **Fail-soft** pro
+  Modul mit `console.warn` (Sage-Page bleibt bei einzelnem Modul-Bruch
+  ladbar — Klaus' primärer Doku-Hub-Use-Case). Custom-Event
+  `sbkim-sage-ready` für Folge-UI-Hooks. Modul 03 bewusst nicht in der
+  Boot-Kette — der Andock-Wizard ruft `SbkimEmbedding.init()` direkt
+  vor dem ersten `embedPassage()`.
+- **d) `sbkim/spore.json` als statisches Skeleton committet.**
+  `id`/`publicKey`/`domainVector`/`signature`/`createdAt: null` als
+  Slot bis zur ersten Browser-Sichttest-Andockung von Klaus; alle
+  Meta-Felder (`domain: "Mycel-Bibliothek"`, `domainDescription`,
+  `domainKeywords`, `stammCategories`, `guestCategories`, `endpoint`,
+  `nodeType: "hybrid"`, `protocolVersion: "0.1"`, `embeddingModel`)
+  aus INTERFACES § 6 Tabellen befüllt. Vollständige signierte
+  Spore kommt nach Klaus' Andock-Wizard-Lauf als Download — Klaus
+  committet sie danach manuell hierhin. Origin-Limitierung
+  verhindert Laufzeit-Schreiben aus der Sage-Page (Stolperfalle 3
+  Brief).
+- **e) Andock-Wizard im Schwarz-Loch-Karten-Klick** (Modal-Dialog,
+  analog zum Universe-/Station-Modal-Stil). Erst-Klick öffnet den
+  Wizard, falls keine Identität existiert (`SbkimSpore.listIdentities()
+  → []`); Folge-Klicks öffnen wie zuvor den Browser-Observatorium-
+  Screen (`goScreen('observatorium')`). **Drei Schritte:** (1)
+  Identität via `getOrCreateIdentity()`, nodeId angezeigt; (2) Modul 03
+  lazy laden + `embedPassage(domainDescription + ", " + keywords)` +
+  `generateOwnSpore({...stammCategories, guestCategories,
+  domainVector})` + `spore.json` als Download; (3) Backup via
+  `exportBackup(window.prompt(...))` + Download. **Plus Identitäts-
+  Wechsler** als Dropdown unten (`listIdentities` + `setActiveIdentity`)
+  — klein und versteckt, Sage hat in der Regel nur eine Identität.
+  Variante III-Standalone-Andock-Wizard (Vision-Anker 2) bleibt eigene
+  Spec-Sitzung.
+- **f) Schichten-Lampen** an der Modul-Bento-Karte „Module ·
+  Schnellübersicht" (Karte 4). Drei kleine LED-Dots pro `.mod-row`
+  (Spec / Code / Sichttest), Farbe aus `score`-Feld (stub=blau,
+  werkstatt=orange, spec=gelb, fertig=grün, schablone=braun); Tooltip
+  zeigt `siegel`. **CSS-only Style + Vanilla-JS Hook über
+  MutationObserver auf `#module-list`** (kein Eingriff in die
+  bestehende `renderModuleList`-Closure — `STATE`/`renderModuleList`
+  sind im Haupt-Script-Block nicht über `window` erreichbar; eigener
+  `fetch('status.json')` parallel).
+
+**Sage-spezifische heilige Tafeln eingehalten:**
+
+- **KEIN Modul-Code-Eingriff.** `src/modules/*.js` und `src/sbkim-sw.js`
+  unangetastet (Sage-Page-Root-Kopie ist additiv, kein Symlink). Bau-
+  99-Pipeline-Module bleiben quellgleich.
+- **IndexedDB-Suffix `sbkim_sage`** in `sbkim-init.js` gesetzt
+  (`SbkimStorage.init({dbSuffix: "sage"})`) — analog `sbkim_rezeptbuch`
+  und `sbkim_mixarium`, keine Origin-Kollision wenn parallel installiert.
+- **App-SW Variante 3a.** Standalone-`sbkim-sw.js` im Sage-Page-Root
+  als einziger SW (Sage-Page hat keinen App-SW). Kopie von
+  `src/sbkim-sw.js` ohne Refactoring der SW-Logik.
+- **Domäne „Mycel-Bibliothek".** `domainDescription`/`domainKeywords`/
+  `stammCategories`/`guestCategories` aus INTERFACES § 6 Tabelle übernommen,
+  ohne Klaus-Verfasser-Text. `domainVector` als statische
+  Spore-JSON-Slot — Klaus' Browser füllt nach.
+- **Andock-Geste an der Schwarz-Loch-Karte** — Karte visuell
+  unverändert (CSS-Klassen `.blackhole-card`/`.blackhole-stage` nicht
+  angefasst), nur der Klick-Handler `onclick="bhStageClick(event)"`
+  wechselt; Doku-md-Pfad bleibt als alternativer Pfad (Wizard-Footer
+  + Folge-Klick nach Identitäts-Erzeugung).
+- **Identitäts-Wechsler-UX** klein und versteckt im Wizard-Footer
+  (`SbkimSpore.setActiveIdentity` aus Bau 02.Y produktiv) — nicht
+  aufdringlich.
+- **Schichten-Lampen** rein als visuelle Erweiterung; keine eigene
+  Schicht-Logik, nur Lesen aus `status.json`. Mobile-Layout (≤540 px)
+  blendet die Lampen aus, damit die `mod-row` nicht überquillt.
+- **`PROTOCOL_VERSION` / `DB_VERSION` / `BACKUP_FORMAT_VERSION`
+  unverändert** (`"0.1"` / `4` / `2`). Bau-Sitzung ist Endknoten-Bau,
+  kein Protokoll-Schema-Eingriff.
+
+**Zwei Bestands-UI-Texte als Reflektion der bereits in INTERFACES
+§ 6 verankerten V1-Spec korrigiert** (keine neue Spec, nur Konsistenz
+zur Tafel): „Hub · kein Endknoten" → „Hub · und Knoten zugleich" und
+„Sage ist kein Endknoten — nur Vermittlungsstelle" → „Sage selbst ist
+seit V1-Sage-Hybrid (Brief 01) der dritte Knoten, neben Rezeptbuch und
+Mixarium. Hub und Knoten zugleich."
+
+**Was NICHT angefasst:**
+
+- **`src/modules/*.js`.** Keine Slot-Lücke, kein Modul-Bug ausgenutzt.
+  Wenn Klaus' Sichttest eine API-Lücke aufdeckt (z.B. fehlender
+  `searchIconSelector`-Default für Sage-Page-Stil, der kein
+  klassisches PWA-Such-Symbol hat), kommt das in eine eigene Folge-
+  Pflege-Sitzung Modul 00 — NICHT in diese Bau-Sitzung mitgefixt.
+- **Spec.** INTERFACES § 6 / § 6.1 / § 6.2 / § 6.3 unverändert (Brief
+  01 + 02 hatten alles für Sage spezifiziert).
+- **`PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.**
+- **Endknoten-Pflege von Mein-Rezeptbuch / Mein-Mixarium.** Bleibt
+  eigene Bau-Sitzung „Endknoten-Migration Multi-Identität" aus Brief
+  Pipeline (PR #123).
+
+**`status.json § endknoten[sage]`** auf `integratedAt: "2026-05-21"`
+und `pingStatus: "pending-first-sichttest"` (neuer Zwischen-Zustand
+zwischen `pending-first-andock` und `live` — signalisiert „Bau fertig,
+wartet auf Klaus' Browser-Lauf") gesetzt; `nodeId: null` bleibt bis
+zum ersten Sichttest. `lastUpdated` auf `2026-05-21`. Pie-Block via
+`scripts/update_puls_pie.py` regeneriert — Modulstand unverändert
+(keine Score-Wechsel, der Sage-Eintrag ist Endknoten-Pflege).
+
+**Karte 09 § Bauzustand-Tabelle** um Zeile „Sage als dritter Endknoten
+bau-fertig (Sichttest ungeprüft)" 2026-05-21 erweitert — mit voller
+Sechs-Punkte-Abdeckung.
+
+**Ältesten Sitzungs-Eintrag (Bau 04.A `matchDimensions`) ins Archiv-
+Index ausgelagert** (Konvention pro Sitzung — PULS unter 3000-Zeilen-
+Schutz-Klausel halten).
+
+**Manueller Sichttest:** **ungeprüft, wartet auf Klaus' Browser-Lauf**
+(Stolperfalle 6 Brief: Sichttest braucht Klaus, nicht headless). Klaus'
+Sichttest umfasst: (1) Service-Worker-Cleanup (`chrome://serviceworker-
+internals/` Unregister + „Clear site data" + Tab-Reopen, Stolperfalle 1
+Brief — Cache-Bust); (2) Sage-Page öffnen → Schwarz-Loch-Karte klicken
+→ Andock-Wizard erscheint; (3) Knopf 1 Identität erzeugen → nodeId
+sichtbar; (4) Knopf 2 Spore + Vektor erzeugen → ~30 MB Embedding-Modell
+lädt (5–15 s), `spore.json` Download startet; (5) heruntergeladene
+`spore.json` nach `sbkim/spore.json` committen + pushen; (6) Knopf 3
+Backup-Blob erzeugen → Passwort eingeben → Download startet, sicher
+verwahren; (7) DevTools → Application → IndexedDB → `sbkim_sage`
+prüfen (Stores `sbkim_keys`/`sbkim_spore` mit Schlüssel `"main"`);
+(8) Identitäts-Wechsler-Dropdown zeigt `main (aktiv)`; (9) Folge-Klick
+auf die Schwarz-Loch-Karte öffnet den Browser-Observatorium-Screen
+(nicht erneut den Wizard); (10) Module-Bento-Zeilen zeigen jeweils
+drei LED-Dots, Modul 03/05/09 mit allen drei grün, Module 00–08 mit
+ersten zwei farbig (stub=blau) — Sichttest-LED bleibt grau.
+
+**Nächster sinnvoller Schritt:** **Klaus' Browser-Sichttest** (siehe
+oben, blockiert die `pingStatus`-Promotion auf `"live"` und die
+`nodeId`-Eintragung in `status.json § endknoten[sage]`). Danach
+eigene Mini-Pflege-Sitzung „Sage-Page-Sichttest grün" mit
+`pingStatus: "live"` + signierter `spore.json`-Commit + Sichttest-LED
+auf grün in der Bento-Tabelle.
+
+**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-21_bau-sage-page-refactor.md](sessions/archiv/2026-05-21_bau-sage-page-refactor.md).
+
+---
+
 ### 2026-05-20 · Sichttest-Nachzug Bau-Pipeline vollständig
 
 **Sitzungs-Rolle:** Mini-Pflege, Doku-only. Branch
@@ -2587,110 +2759,6 @@ Draft-PR „Bau 08.Y slot-spezifische Outbox in Modul 08 (UI-Demo)".
 
 ---
 
-### 2026-05-19 · Bau 04.A `matchDimensions` synchron in Modul 04
-
-**Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 03 hat alles in
-INTERFACES § 1 Modul 04 + § 0 + § 7 + § 8 spezifiziert), headless.
-Branch `claude/bau-04a-match-dimensions`. Direkte Folge auf den Brief
-BAU_04A_MATCH_DIMENSIONS (PR #109 gemerged 2026-05-19, `main`
-`ae98842`). Erste Bau-Sitzung der M04-Erweiterung aus Brief 03.
-
-**Kern (drei Sätze):** Modul 04 hat jetzt `matchDimensions(queryCap,
-queryNeeds, passageCap, passageNeeds)` synchron — drei orthogonale
-Schichten (fachlich / prozess / skalierung) + gewichteter `overall` +
-`availableLanes ∈ {0,1,2}` + `bruecke: null` (Bau 04.B füllt das via
-`explainMatchLLM`). In Stufe A sind die drei Schichten eine Heuristik
-über demselben Embedding-Raum — alle drei ergeben denselben Lane-
-Cosinus gemäß Karte 04 § Drei-Schichten-Modell „Aufteilung in drei
-Schichten". Die echte semantische Differenzierung passiert in Stufe B
-via `explainMatchLLM` — eigene Folge-Sitzung Bau 04.B mit eigenem Brief.
-
-**Sechs Punkte a–f:**
-
-- **a) INTERFACES.md** zwei Eingriffe: § 1 Modul 04 Geprüft-Zeile um
-  „2026-05-19 (Bau 04.A `matchDimensions` sync)" erweitert; § 10
-  Änderungsprotokoll neue Zeile. KEIN Vertrags-Drift.
-- **b) Karte 04** § Manueller Test um drei neue Knöpfe 7/8/9 erweitert
-  (Knopf-6-Selbstcheck-Format mitgepflegt auf den neuen Stand); §
-  Bauzustand zwei neue Zeilen.
-- **c) `src/modules/04_match.js` additiv** (kein Refactoring der
-  bestehenden `match` / `isAboveProviderThreshold`): neue Konstante
-  `SCHICHT_MIN_MATCH = 0.60`; neue Fehler-Factory
-  `DimensionsAllNullError`; Closure-Helper `cosineSafe(a, b)`; neue
-  Funktion `matchDimensions(queryCap, queryNeeds, passageCap,
-  passageNeeds)` sync mit Lane-Berechnung + Stufe-A-Heuristik (alle
-  drei Schichten gleich dem Schicht-Score) + `bruecke: null`;
-  `DimensionsAllNullError` SYNCHRON bei allen vier null; Nur-Anbieter-
-  Modus → alle Schichten null, `availableLanes:0`, kein Throw.
-  Selbstcheck auf drei Funktionen erweitert. `_meta` um
-  `schichtMinMatch` + `matchDimensionsLanes` erweitert. `node --check`
-  grün.
-- **d) Panel 04 drei Knöpfe** (Knopf 7 bidirektional / Knopf 8 Nur-
-  Anbieter / Knopf 9 DimensionsAllNullError). Deterministische LCG-
-  Vektoren statt SbkimEmbedding (zustandslose Funktion, kein Modell-
-  Lade nötig).
-- **e) Smoke-Test** `tests/smoke_bau04a_match_dimensions.mjs` als
-  reine Funktions-Probe in Node 22: **19 Sub-Proben, 19 grün, 0 rot.**
-  Bau-02.Y- und Pflege-01-Regression-Smoke-Tests weiterhin grün
-  (33/33 + 8/8).
-- **f) Übergabeprotokoll** `docs/sessions/archiv/2026-05-19_bau-04a-match-dimensions.md`.
-
-**Heilige Tafeln eingehalten:**
-
-- **INTERFACES verbindlich** — § 1 Modul 04 Bietet/Storage/Fehler/
-  Garantien-Block UNVERÄNDERT (Brief 03 hat das spec'd).
-- **`explainMatchLLM` ist Bau 04.B** (eigene Folge-Sitzung).
-- **`BridgeProposal` bleibt null** in Bau 04.A.
-- **Stufe-A-Heuristik gemäß Karte 04** (alle drei Schichten gleich
-  dem Lane-Cosinus) — Karte ist eindeutig, KEINE Tafel-Spannung
-  während des Baus aufgetreten (der Brief hatte das antizipiert).
-- **Bestehende `match` / `isAboveProviderThreshold` unangetastet.**
-- **`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `4`,
-  `BACKUP_FORMAT_VERSION` bleibt `2`.**
-- **Reihenfolge INTERFACES → Karte → Code** befolgt.
-
-**Was NICHT angefasst:**
-
-- **Modul-Code 00/01/02/03/05/06/07/08.**
-- **`explainMatchLLM`, `BridgeProposal`-Befüllung** (Bau 04.B).
-- **Netz-Pfad** (Modul 04 zustandslos + lokal).
-- **DB-Schema-Eingriff.**
-- **`PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.**
-- **Sage-Page / Karte 09 / `status.json`.**
-- **`update_puls_pie.py`-Aufruf** — Modul 04 ist `score:"fertig"`,
-  additive Erweiterung ohne Score-Wechsel.
-
-**Vision-Anker 9 (M04-Erweiterung) § Status nachgezogen** um „Bau 04.A
-`matchDimensions` sync 2026-05-19 abgeschlossen, Bau 04.B steht noch
-aus".
-
-**Vorletzten Sitzungs-Eintrag (Pflege Modul 01 init versions-fail-soft)
-ins Archiv-Index ausgelagert** (Konvention pro Sitzung).
-
-**Manueller Sichttest:** **grün geprüft 2026-05-19 (Klaus, DeX-Chrome
-auf Galaxy Tab S6):** Bau 04.A live bewiesen. Drei-Stufen-Probe: (i)
-Knopf 7 grün — drei Schichten alle `-0.0084` identisch (Stufe-A-
-Heuristik live bestätigt), `availableLanes: 2`, `bruecke: null`. Der
-Cosinus-Wert nahe null zeigt deterministisches + reproduzierbares
-Verhalten für zufällige 384-dim-LCG-Vektoren ("Curse of
-Dimensionality" — hochdimensionale Zufallsvektoren sind fast
-orthogonal). (ii) Knopf 8 grün — Nur-Anbieter-Modus, alle Schichten
-null, `availableLanes: 0`, kein Throw. (iii) Knopf 9 grün —
-`DimensionsAllNullError` synchron, deutsche Message.
-
-**Indirekter Beleg für Pflege Modul 01 (PR #107/#108):** Klaus hat
-ohne Browserdaten-Cleanup direkt zu Panel 04 weitergeklickt — `init()`
-läuft jetzt von selbst sauber durch, auch bei alter DB-Version aus
-früheren Sichttests. Klaus-Cleanup-Theater ist Geschichte.
-
-**Nächster sinnvoller Schritt:** **Brief `BAU_04B` schreiben** (Stufe
-B — `explainMatchLLM` + User-Key-Verwaltung aus Brief 03 § Stufe-B-
-Vertrag) als nächste Pipeline-Etappe.
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-19_bau-04a-match-dimensions.md](sessions/archiv/2026-05-19_bau-04a-match-dimensions.md).
-
----
-
 ### 2026-05-18 · Mini-Pflege — Vision-Anker M04-Erweiterung als neunter Anker
 
 **Sitzungs-Rolle:** Mini-Pflege, headless. Branch
@@ -2826,70 +2894,6 @@ Chat).
 
 **Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md).
 
-### 2026-05-17 · Mini-Pflege — Vision-Anker Königin-Relay (Modul 13?)
-
-**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/pflege-vision-anker-koenigin-relay`. Folge zur Cursor-Variante
-(PR #81 `047294b`) und allen Universum-Sitzungen heute.
-
-Klaus' fundamentale Architektur-Frage spät am Abend: **„Was, wenn ich
-einmal einen Browser nehme und ein andermal einen anderen? Ist die
-Spore nur zu finden, wenn der Browser offen ist? Ist sie empfangsbereit,
-wenn der Browser nicht geöffnet ist?"**
-
-Die ehrliche Antwort berührt das **Empfangsmodus-Prinzip des SBKIM-
-Papers** („Wer nicht da ist, schweigt"). Browser-PWAs sind nicht für
-dauerhaft laufende Dienste gebaut — Pages leben nur solange die Tabs
-offen sind, Service-Worker werden nach Stunden suspendiert, IndexedDB
-ist pro Browser-Instanz. Das ist konzeptuell sauber für ein peer-to-
-peer Mycel, aber eine harte Grenze für Verbreitung außerhalb des
-Klaus-Kreises.
-
-Klaus' Bild als Mittelweg: **Königin wie bei Bienen** — Bezugspunkt,
-nicht Daten-Eigentümer. Ein **„Königin-Relay" als optionales neues
-Modul** (möglicherweise Modul 13). Privacy-wahrend (nur verschlüsselte
-Envelopes, nicht private Schlüssel). Optional anbindbar (peer-to-peer-
-Default bleibt). Mehrere Königinnen möglich (kein Single Point of
-Failure).
-
-**Was eingetragen:**
-
-- **PULS.md § Vision-Anker** um vierten Anker erweitert:
-  „Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister" mit
-  Modell-Beschreibung, drei Implementations-Optionen (Server / PWA-
-  mit-Push / Eigenes-Gerät), Anknüpfung an V1 (Sage als erster Schritt
-  in Königin-Richtung), Trade-offs (Privacy-Annahmen, Hosting-Frage,
-  Implementations-Aufwand), Status (reif für Spec-Diskussion **nach**
-  V1).
-- **PULS.md § Sitzungs-Einträge** neuer Top-Eintrag (dieser).
-- **Übergabeprotokoll:** `docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md`.
-
-**Reihenfolge der Visionen jetzt:**
-
-1. **V1 — Sage als Hybrid-Knoten** (Klaus' explizite nächste Spec-
-   Wahl, eingetragen 2026-05-17 Vision-Anker-Pflege PR #78)
-2. **V3-Ausbau — Niedrigeres Onboarding** (langfristiger Plan)
-3. **Universum-Vision — Bildlich-animiertes Mini-Universum** (umgesetzt
-   in PR #79 + Lehre 8 in #80)
-4. **Königin-Relay (Modul 13?)** — neuer Anker (dieses), wartet auf
-   V1-Erfahrung + IndexedDB-Persist-Schutz-Praxis
-5. **Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser**
-   — fünfter Anker (dieses), vier Konzept-Pfade (Datei-Backup-UX schon
-   teilweise da, Hardware-Wallet/WebAuthn als Fern-Vision, Passkey-
-   Sync als pragmatische Brücke, Mini-Browser kombiniert mit V3)
-
-**Was NICHT angefasst:** Modul-Karten, INTERFACES.md, status.json,
-Sage-Page (Vision lebt rein in PULS, kein Code-Eingriff).
-`update_puls_pie.py` NICHT aufgerufen.
-
-**Nächster sinnvoller Schritt:** Pause / Schlaf. Klaus hatte einen
-Marathon-Tag (PR #75 → #76 → #77 → #78 → #79 → #80 → #81 → #82).
-Diese Vision verdient frischen Kopf.
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md](sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md).
-
----
-
 ## Archiv-Index (Sitzungen vor dieser Pflege)
 
 Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
@@ -2897,6 +2901,8 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-19 | Bau · 04.A `matchDimensions` synchron in Modul 04 (PR #110 gemerged 2026-05-19; erste Bau-Sitzung der M04-Erweiterung aus Brief 03; additiv ohne Refactoring der bestehenden `match`/`isAboveProviderThreshold`; `matchDimensions(queryCap, queryNeeds, passageCap, passageNeeds)` synchron mit Drei-Schichten-Heuristik + `availableLanes ∈ {0,1,2}` + `bruecke:null`; `DimensionsAllNullError` sync bei allen vier null; Stufe-A-Heuristik gemäß Karte 04 (alle drei Schichten gleich dem Lane-Cosinus, echte semantische Differenzierung kommt in Stufe B via `explainMatchLLM` Bau 04.B). Smoke-Test 19/19 grün. Sichttest 2026-05-19 (Klaus, DeX-Chrome): grün geprüft. PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION unverändert. KEIN Modul-Code in 00/01/02/03/05/06/07/08, KEIN Schema-Eingriff, KEINE Sage-Page-Änderung) | [→ Archiv](sessions/archiv/2026-05-19_bau-04a-match-dimensions.md) |
+| 2026-05-17 | Mini-Pflege · Vision-Anker Königin-Relay (Modul 13?) (PR #82, Branch `claude/pflege-vision-anker-koenigin-relay`; Klaus' Architektur-Frage „Was, wenn ich einmal einen Browser nehme und ein andermal einen anderen? Ist die Spore nur zu finden, wenn der Browser offen ist?" als vierter Vision-Anker eingetragen — „Königin-Relay" als optionales Mailbox-Modul für offline-Geschwister, privacy-wahrend (verschlüsselte Envelopes), drei Implementations-Optionen (Server/PWA-mit-Push/Eigenes-Gerät), Status reif für Spec-Diskussion nach V1. Modul-Karten/INTERFACES/status.json unangetastet) | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-vision-anker-koenigin-relay.md) |
 | 2026-05-17 | Mini-Pflege · Vision-Anker (V1 / V3 / Universum) | Drei langfristige Vision-Anker (Sage als Hybrid-Knoten, Niedrigeres Onboarding, Browser-Observatorium-Universum) als neuer PULS-Block § Vision-Anker eingetragen — keine Spec, kein Bau-Code, nur Sammel-Anker für Folge-Sitzungen. Vision-Anker 1 (V1 Sage-Hybrid) wurde später (2026-05-18/19) durch die V1-Sammelspec-Kaskade Brief 01–04 realisiert. | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-vision-anker.md) |
 | 2026-05-17 | Mini-Pflege · Observatorium-Lehre 8 + 8. Galaxie | Klaus' DeX-Cursor-Overlay-Befund (System-Cursor durch keine CSS-`cursor`-Property überschreibbar; sieben Workaround-Varianten alle ignoriert) als Lehre 8 in `docs/OBSERVATORIUM_BROWSER.md` eingetragen + achte Galaxie `galaxy-edgeon` (taumelnde Disk-Galaxie mit `@keyframes galaxy-precess`) als Sage-Page-Begleit-Anker. Modul-Code/INTERFACES.md/status.json unangetastet. | [→ Archiv](sessions/archiv/2026-05-17_mini-pflege-observatorium-lehre-8.md) |
 | 2026-05-17 | Mini-Pflege · Live-Channel-Handshake + Browser-Observatorium | Live-Beweis Cross-Knoten-Handshake ohne localStorage-Bypass: Modul-05-v2 mit BroadcastChannel-Bridge in beiden Endknoten (Mein-Mixarium + Mein-Rezeptbuch), File-Rename als Cache-Bust. Beide Endknoten in DeX-Chrome neu angedockt mit neuen nodeIds (alte 2026-05-16-Identitäten durch IndexedDB-Verlust nicht mehr da). Erster regulärer Cross-Knoten-Handshake: `outcome:"established"`, score 0.9544261159927087 bidirektional via Auto-Fallback HTTP→Channel-Bridge. Pflege-Kette PR #65 → #70 → #71 → #72 → #73 → #74 → #75 → #76 vollständig geschlossen. Plus Browser-Observatorium-Sitzung mit Mini-Pflege auf der Sage-Page. status.json unverändert. | [→ Archiv](sessions/archiv/2026-05-17_live-channel-handshake.md) |
