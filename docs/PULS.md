@@ -94,7 +94,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | Modul | Spec | Code | Manueller Sichttest | Anmerkung |
 |---|---|---|---|---|
 | 00 doku_fenster | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege Persistenz-Strategie verbinden 2026-05-16) | geprüft 2026-05-15 (Klaus) — 5/6 Tests grün im ersten Lauf, Test 4 Test-Bug in Pflege-Sitzung 2026-05-15 mit GiB-Skalierung repariert; **Pflege Persistenz-Strategie verbinden Sichttest 2026-05-16 grün** (Klaus, im Browser) — Drei-Setup-Probe aus § Manueller Test Punkt 7 alle drei Pfade ohne Auffälligkeit: Persist-Trigger-Stub, Quota-Trigger, Negativ-Fall | Sechs-Funktionen-API (`init/open/close/isOpen/getStatusSnapshot/recordSighttest`), reines Lese-/Trigger-Modul, alleiniger Schreiber `sbkim_doku_meta`, 5-Klick-Geste mit 3s-Zeitfenster, Modal mit Backdrop und MutationObserver-Mount, Quota-Doppel-Schwelle (80% / 50 MiB), Self-Apoptose bewusst NICHT in 00. **Pflege Persistenz-Strategie verbinden 2026-05-16** (additiv, kein Refactoring): `getStatusSnapshot()` um Feld `storagePersisted: boolean \| null` erweitert (Spiegelung Modul-01-Getter fail-soft); Modal zeigt zusätzliche „Backup empfohlen"-Tipp-Zeile (`DOKU_BACKUP_TIP_TEXT` modul-lokal), wenn `storagePersisted === false` ODER `quota.warningLevel !== "none"`. Hinweis-only, kein Direkt-Aufruf von `SbkimSpore.exportBackup` aus Modul 00 (Aufrufer-Pflicht-Trennung). |
-| 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege PWA-Suffix + Pflege Storage-Persist 2026-05-16, Bau 01.Y `ensureStore` 2026-05-19, Pflege `init()` versions-fail-soft 2026-05-19, **Pflege Versions-Bump-Race in `openProbe` 2026-05-22**) | geprüft 2026-05-14 + 2026-05-16 + 2026-05-19 (Klaus) — Bau 01.Y `ensureStore` Knöpfe 6/7/8 3/3 grün (DeX-Chrome); **Pflege „`init()` versions-fail-soft" Knopf 9 live grün 2026-05-19** (`db_version_vor: 16 → nach_bump: 17`, Bonus-Probe Panel-02-Knöpfe 8/9/10 ohne Cleanup grün); **Pflege „Versions-Bump-Race in `openProbe`" 2026-05-22 Sichttest ungeprüft** (Headless-Smoke 6/6 grün — wartet auf Klaus' Browser-Lauf: Panel-01-Notfall-Reset → Hard-Reload → Panel-06-Setup MUSS ohne `ensureStore Versions-Bump blockiert`-Throw durchgehen); Headless-Smoke 8/8 + Race-Smoke 6/6 + Bau-02.Y-Regression 33/33 weiterhin grün | IndexedDB-Wrapper |
+| 01 storage | Spec fertig (2026-05-14) | Code-Stub (2026-05-14, Pflege PWA-Suffix + Pflege Storage-Persist 2026-05-16, Bau 01.Y `ensureStore` 2026-05-19, Pflege `init()` versions-fail-soft 2026-05-19, Pflege Versions-Bump-Race in `openProbe` 2026-05-22) | geprüft 2026-05-14 + 2026-05-16 + 2026-05-19 + **2026-05-22** (Klaus) — Bau 01.Y `ensureStore` Knöpfe 6/7/8 3/3 grün (DeX-Chrome); Pflege „`init()` versions-fail-soft" Knopf 9 live grün 2026-05-19 (`db_version_vor: 16 → nach_bump: 17`, Bonus-Probe Panel-02-Knöpfe 8/9/10 ohne Cleanup grün); **Pflege „Versions-Bump-Race in `openProbe`" Sichttest 2026-05-22 grün** (Klaus, DeX-Chrome auf Galaxy Tab S6, 11-Knopf-Sequenz alle grün — Panel-01-Notfall-Reset → Hard-Reload → Panel-06-Setup ohne `ensureStore Versions-Bump blockiert`-Throw + Panel-06-Tests 1/9/10/11 + Panel-07-Tests 4/5/6 + Panel-00-Test 5 alle live grün; zentraler Race-Auflösungs-Beweis ist Setup-Knopf in Panel 06, der vor der Pflege reproduzierbar brach); Headless-Smoke 8/8 + Race-Smoke 6/6 + Bau-02.Y-Regression 33/33 weiterhin grün | IndexedDB-Wrapper |
 | 02 spore | Spec fertig (2026-05-14, Pflege Stamm/Gast-Felder 2026-05-15, Pflege Spec Backup-Export Stufe 2 2026-05-16, Spec Multi-Identität Brief 04 2026-05-19) | Code-Stub (2026-05-14, Pflege Cache-Invalidate 2026-05-15, Pflege Stamm/Gast-Durchreichung 2026-05-15, Bau 02.X Backup-Export 2026-05-16, Bau 02.Y Multi-Identitäts-API + Backup-Schema-Bump 2026-05-19, Mini-Fix Rollback-Pfad 2026-05-19) | geprüft 2026-05-14 (Klaus) + 2026-05-15 (Cache-Invalidate-Pflege via Sichttest 07) + 2026-05-16 (Klaus, Bau 02.X Backup-Export Knöpfe 6/7/7b alle drei grün) + **2026-05-19 (Klaus, DeX-Chrome: Bau 02.Y Knöpfe 8/9/10 alle drei grün** nach Mini-Fix + Cleanup-Workaround) | Ed25519-Identität, Multi-Identitäts-Slots (Bau 02.Y), base64url-sha256-rawpub; +`resetIdentityCache()` aus Pflege-Sitzung 2026-05-15 (Pflicht-Hook für Apoptose-Cleanup). **Spore-JSON Optionale Felder additiv erweitert** 2026-05-15 (Spec-Sitzung Stamm/Gast): `stammCategories: string[]` + `guestCategories: string[]`, signaturpflichtig wenn vorhanden, Disjunktheit als Hosting-Pflicht (kein Verify-Abbruch). Sign-/Verify-Pfad unverändert. **`generateOwnSpore` Code-Allow-List nachgezogen** 2026-05-15 (Bau 02 Stamm/Gast): zwei Zeilen analog zu `domainKeywords` — ohne diese Pflege würden Stamm/Gast-Felder beim Andock still ignoriert. **Spec Backup-Export Stufe 2 2026-05-16** (Identitäts-Persistenz Stufe 2): zwei neue Funktionen `exportBackup(password) → Promise<SbkimBackupBlob>` + `importBackup(blob, password, options?)` (PBKDF2-SHA256 600 000 + AES-GCM-256, Klartext-Payload = Identität + Geschwister, defensiv per Default — `BackupOverwriteError`); drei §0-Konstanten verankert (`BACKUP_FORMAT_VERSION=1` / `BACKUP_KDF_ITERATIONS=600000` / `BACKUP_PASSWORD_MIN_LEN=8`); fünf neue Error-Klassen (`InvalidBackupPasswordError` / `BackupDecryptError` / `BackupVersionMismatchError` / `BackupSchemaError` / `BackupOverwriteError`). KEIN Spore-Feld dazu (Backup-Schicht separat, `PROTOCOL_VERSION` bleibt `"0.1"`). **Bau-Sitzung 02.X ausstehend**, KEIN Code in `src/modules/02_spore.js`. |
 | 03 embedding | Spec fertig (2026-05-14) | Code-Stub (2026-05-14) | geprüft 2026-05-14 (Klaus) | semantischer Vektor |
 | 04 match | Spec fertig (2026-05-14, Pflege Stamm/Gast-Hinweis 2026-05-15, Spec M04-Erweiterung Brief 03 2026-05-19) | Code-Stub (2026-05-14, Bau 04.A `matchDimensions` sync 2026-05-19, **Bau 04.B `explainMatchLLM` 2026-05-20**) | geprüft 2026-05-14 (Klaus) + Bau 04.A live grün 2026-05-19; **Bau 04.B Sichttest ungeprüft** (headless 30/30 smoke grün — wartet auf Klaus' Browser-Lauf Panel 04 Knopf 10 mit Anthropic-API-Key; CORS-Limitierung im localhost möglich, Workaround echtes PWA-Setup) | Vektorvergleich, modus-frei; Bau 04.A 2026-05-19 `matchDimensions` synchron (drei Schichten, Stufe-A-Heuristik). **Bau 04.B 2026-05-20** `explainMatchLLM` async — Stufe-B-LLM-Pass gegen Anthropic-API (hartcodiert), JSON-only, strikte Schema-Validierung, fail-soft (zwei sync Throws InvalidApiKeyError + InvalidMatchResultError; alle anderen Fehlerpfade resolved; AbortError durchgereicht). Anti-Missbrauch § 8: `candidateScope:"netz"` still auf `"lokal"` korrigiert. User-Key als opaque String (Vision-Anker 5 = produktiver Identitäts-Container, nicht in 04.B; Test-Brücke via `window.prompt`). **Brief-99-Pipeline ist mit Bau 04.B + Konsumenten-Achse 05/06/07/08 jetzt vollständig** — nur noch Endknoten-Migration offen. |
@@ -1857,15 +1857,33 @@ ensureStore-Bump (50-ms-Timeout dominiert, weil fake-indexeddb kein
 `onclose` für normalen `close()` feuert — spiegelt das Android-Chrome-
 Verhalten korrekt).
 
-**Sichttest:** **ungeprüft.** Wartet auf Klaus' Browser-Lauf am Galaxy
-Tab S6 / DeX-Chrome auf `127.0.0.1:8000/tests/manual_check.html`
-(Sequenz aus dem Brief: Panel 01 Knopf „Notfall-Reset" → Strg+Shift+R
-Hard-Reload → Panel 06 Knopf „Setup" MUSS ohne `ensureStore Versions-
-Bump blockiert`-Throw durchgehen; danach Panel-06-Tests 1/9/10/11 +
-Panel-07-Tests 4/5/6 + Panel-00-Test 5 live grün). Klaus' Sichttest
-auf Android-Chrome ist die finale Bestätigung, weil dort die
-`onclose`-Feuer-Unzuverlässigkeit messbarer ist als auf Desktop-
-Chrome.
+**Sichttest:** **grün geprüft 2026-05-22** (Klaus, DeX-Chrome auf
+Galaxy Tab S6, Termux-`python3 -m http.server 8000`-Setup,
+Nachpflege-Sitzung 2026-05-22 PR #?). Volle 11-Knopf-Sequenz aus dem
+Brief durchgespielt, **alle 11 Klicks grün** — Pfad genau der, der
+vor der Pflege reproduzierbar mit `ensureStore Versions-Bump
+blockiert` brach:
+
+| Schritt | Knopf | Ergebnis |
+|---|---|---|
+| 1 | Panel 01 „Notfall-Reset: IndexedDB komplett löschen" | DB `sbkim` gelöscht, Status-Chip „DB gelöscht — JETZT Strg+Shift+R" |
+| 2 | Strg+Shift+R Hard-Reload | Tab frisch, Panels 00–08 wieder bereit |
+| 3 | Panel 06 „Setup: Identität + 2 Pseudo-Geschwister (einmalig)" | **KEIN `ensureStore Versions-Bump blockiert`-Throw** (zentraler Race-Auflösungs-Beweis); `eigene_node_id: UnvQCNPhthiUCfb3CX3nzi7yGHBqvvzRvC_fA0Va858`, beide Pseudo-Geschwister geschrieben |
+| 4 | Panel 06 Test 1 (Lokaler Pull-Round-Trip) | `outcome:"shared"`, `anchor_count:1`, Signatur valide, Inbox hat Eintrag |
+| 5 | Panel 06 Test 9 (HETERO_MAX_ANCHORS-Begrenzung) | 6 Outbox-Einträge → `anchor_count:5`, „Nachtisch" zuerst, „Hefeteig" aussortiert |
+| 6 | Panel 06 Test 10 (listHeterokaryosis) | 4 Inbox-Einträge, Form korrekt, `anchors`-Inhalte UI-seitig weggelassen |
+| 7 | Panel 06 Test 11 (forgetHeterokaryosis idempotent) | `vor_forget:1 → nach_forget:0`, zweiter Aufruf wirft nicht |
+| 8 | Panel 07 Test 4 (TTL-Cleanup) | `entfernt_anzahl:1`, altOld weg, altYoung bleibt |
+| 9 | Panel 07 Test 5 (listLegacy) | 3 Demo-Einträge ohne `signature`-Feld in der UI-Antwort |
+| 10 | Panel 07 Test 6 (Self-Apoptose IRREVERSIBEL) | `outcome:"completed"`, `stores_alle_leer:true`, `getNodeId_wirft_NoIdentityError:true` (Pseudo-Endpoints in `recipients_failed` erwartet) |
+| 11 | Panel 00 Test 5 (TTL-Sweep) | `entfernt_anzahl:2`, beide alten Siblings entfernt, Snapshot leer |
+
+Der **zentrale Race-Auflösungs-Beweis** ist Schritt 3: vor der Pflege
+warf Panel 06 Setup reproduzierbar `ensureStore('sbkim_meta')
+Versions-Bump blockiert` — nach der Pflege geht der Knopf sauber
+durch. 50-ms-Timeout-Fallback in `closeConnectionAndWait` greift auf
+Android-Chrome erwartungs-gemäß (DeX-Chrome feuert `db.onclose` nicht
+zuverlässig — der Timeout ist die Sicherheits-Klausel).
 
 **Tafel-Evolution:** keine evolviert (additive Race-Auflösung, kein
 Vertragsbruch). Heilige Tafel „KEIN INTERFACES-Bietet-Eingriff" für
