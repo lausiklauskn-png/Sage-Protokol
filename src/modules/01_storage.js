@@ -21,6 +21,32 @@
  *   onversionchange-Handler auf der NEUEN Verbindung fail-soft
  *   schließen, damit ein Folge-Bump im selben Tab durchgeht.
  *
+ * Pflege „Versions-Bump-Race in openProbe" (2026-05-21) — additive
+ *   Race-Auflösung in der `openProbe` → `init` → `ensureStore`-Achse.
+ *   Klaus' Sichttest-Befund 2026-05-21 (DeX-Chrome auf Galaxy Tab S6):
+ *   `ensureStore('sbkim_meta') Versions-Bump blockiert` reproduzierbar
+ *   auf frischer DB nach `tests/manual_check.html` Notfall-Reset + Hard-
+ *   Reload + Panel-06-Setup. Ursache: `db.close()` ist synchron in JS,
+ *   aber IndexedDB schließt die Verbindung intern asynchron — ein direkt
+ *   nachfolgender `indexedDB.open(name, newVersion)` trifft auf eine
+ *   noch nicht geschlossene Vorgänger-Verbindung und hängt in
+ *   `onblocked`. Manifestiert sich nur in `manual_check.html` bei
+ *   wiederholtem Modul-Wechsel (mehrere init()-Ketten pro Tab) —
+ *   Endknoten-PWAs sind nicht betroffen (nur eine init()-Kette pro
+ *   Tab-Lebenszeit). Drei Eingriffe: (1) neuer Helper
+ *   `closeConnectionAndWait(db)` wartet auf `db.onclose`-Feuer ODER auf
+ *   einen 50-ms-Timeout-Fallback (Chrome feuert `onclose` nicht
+ *   zuverlässig auf Android); (2) beide `probedDb.close()`-Stellen in
+ *   `init()` (Fail-soft-Pfad + Initial-Pfad) und der `db.close()` vor
+ *   dem Versions-Bump in `ensureStore` nutzen jetzt
+ *   `closeConnectionAndWait` async-await statt synchroner Aufruf;
+ *   (3) `openProbe` installiert `attachVersionChangeHandler` AUF der
+ *   Probe-Verbindung — die Probe ist zwar transient, aber muss im
+ *   IDB-Worker-Thread sicher schließen können, falls ein späterer Bump
+ *   das `onversionchange`-Event auslöst. KEIN `DB_VERSION`-Bump,
+ *   KEIN INTERFACES-Bietet-Eingriff (nur additive Race-frei-Garantie),
+ *   KEIN `ensureStore`-Verhalten-Bruch von außen.
+ *
  * Pflege „init() versions-fail-soft" (2026-05-19) — DB_VERSION ist
  *   jetzt Mindest-Schema-Version, nicht Ziel-Version. init() öffnet
  *   die DB erst via openProbe(name) ohne Version-Parameter (liefert
@@ -240,6 +266,24 @@
     };
   }
 
+  // Pflege „Versions-Bump-Race in openProbe" (2026-05-21): Close-Wait-
+  // Helper. `db.close()` ist synchron in JS, aber IndexedDB schließt
+  // die Verbindung intern asynchron (im DB-Worker-Thread). Ein direkt
+  // nachfolgender `indexedDB.open(name, newVersion)` kann auf eine
+  // noch nicht vollständig geschlossene Vorgänger-Verbindung treffen
+  // und in `onblocked` hängen. Manifestiert sich besonders auf Android-
+  // Chrome (Klaus' Galaxy Tab S6 / DeX-Chrome) bei wiederholten Modul-
+  // Wechseln in `tests/manual_check.html`. Helper wartet auf
+  // `db.onclose`-Feuer ODER auf einen 50-ms-Timeout-Fallback (Chrome
+  // feuert `onclose` nicht zuverlässig in allen Fällen).
+  function closeConnectionAndWait(db) {
+    return new Promise(function (resolve) {
+      db.onclose = resolve;
+      setTimeout(resolve, 50);
+      try { db.close(); } catch (e) { resolve(); }
+    });
+  }
+
   function requestStoragePersist() {
     if (
       typeof navigator === "undefined" ||
@@ -373,25 +417,33 @@
               }
             }
           }
-          try { probedDb.close(); } catch (e) { /* fail-soft */ }
+          // Pflege „Versions-Bump-Race in openProbe" (2026-05-21):
+          // statt synchronem `probedDb.close()` async-Wait via
+          // `closeConnectionAndWait` — die Probe-Verbindung muss im
+          // IDB-Worker-Thread vollständig geschlossen sein, bevor der
+          // Re-Open mit existing Version startet. Sonst trifft
+          // `openExact` auf eine noch nicht aufgelöste Vorgänger-
+          // Verbindung und kann in `onblocked` hängen (Android-Chrome-
+          // Quirk).
+          closeConnectionAndWait(probedDb).then(function () {
+            if (missing.length > 0) {
+              reject(makeError(
+                "StorageOpenError",
+                "Pflicht-Stores fehlen in existing DB (v=" + existingVersion + "): " +
+                  missing.join(", ") +
+                  ". Modul 01 repariert manuell zerstoerte DBs nicht — Klaus' Verantwortung " +
+                  "(Browser-Daten loeschen + Re-Init, oder Site-spezifischen Storage-Reset).",
+              ));
+              return;
+            }
 
-          if (missing.length > 0) {
-            reject(makeError(
-              "StorageOpenError",
-              "Pflicht-Stores fehlen in existing DB (v=" + existingVersion + "): " +
-                missing.join(", ") +
-                ". Modul 01 repariert manuell zerstoerte DBs nicht — Klaus' Verantwortung " +
-                "(Browser-Daten loeschen + Re-Init, oder Site-spezifischen Storage-Reset).",
-            ));
-            return;
-          }
-
-          // Re-Open mit existing Version, KEIN onupgradeneeded.
-          openExact(dbNameInUse, existingVersion).then(function (db) {
-            currentDb = db;
-            attachVersionChangeHandler(db);
-            requestStoragePersist().then(function () { resolve(db); });
-          }, reject);
+            // Re-Open mit existing Version, KEIN onupgradeneeded.
+            openExact(dbNameInUse, existingVersion).then(function (db) {
+              currentDb = db;
+              attachVersionChangeHandler(db);
+              requestStoragePersist().then(function () { resolve(db); });
+            }, reject);
+          });
           return;
         }
 
@@ -400,10 +452,16 @@
         // (openProbe hat die DB versehentlich mit Version 1 ohne Stores
         // angelegt). Regulärer Bau-01.Y-Pfad mit onupgradeneeded +
         // applyMigration.
-        if (probedDb) {
-          try { probedDb.close(); } catch (e) { /* fail-soft */ }
-        }
+        //
+        // Pflege „Versions-Bump-Race in openProbe" (2026-05-21):
+        // async-Wait auf das Close-Event der Probe-Verbindung, bevor
+        // der reguläre Initial-Open startet. Verhindert
+        // `onblocked`-Race auf Android-Chrome.
+        var closePromise = probedDb
+          ? closeConnectionAndWait(probedDb)
+          : Promise.resolve();
 
+        closePromise.then(function () {
         // Wenn die DB von openProbe versehentlich angelegt wurde, vor
         // dem Initial-Open sofort löschen — sonst würde
         // indexedDB.open(name, DB_VERSION) mit oldVersion=1
@@ -463,6 +521,7 @@
             ));
           };
         }, reject);
+        });
       }, reject);
     });
     return dbPromise;
@@ -479,8 +538,16 @@
   // muss vor dem regulären Initial-Open gelöscht werden, damit
   // applyMigration(db, 1) im onupgradeneeded-Loop greift (oldVersion=0
   // → newVersion=DB_VERSION).
-  // KEIN onversionchange-Handler auf der Probe-Verbindung — sie ist
-  // transient und wird sofort wieder geschlossen.
+  // Pflege „Versions-Bump-Race in openProbe" (2026-05-21):
+  // `onversionchange`-Handler AUF der Probe-Verbindung installieren
+  // (Race-Auflösung). Die Probe-Verbindung ist zwar transient und wird
+  // vom Aufrufer sofort wieder geschlossen, aber `db.close()` ist
+  // synchron in JS während IndexedDB die Verbindung im DB-Worker-Thread
+  // asynchron schließt. Ein späterer `ensureStore`-Bump im selben Tab
+  // (oder aus einem anderen Tab) muss die Verbindung im Worker-Thread
+  // ebenfalls schließen können — der Handler ist die Fail-soft-
+  // Versicherung, damit der Bump nicht in `onblocked` hängt, falls die
+  // Probe-Verbindung im DB-Worker noch nicht aufgelöst ist.
   function openProbe(name) {
     return new Promise(function (resolve, reject) {
       var req;
@@ -503,6 +570,12 @@
         wasCreated = true;
       };
       req.onsuccess = function () {
+        // Pflege „Versions-Bump-Race in openProbe" (2026-05-21):
+        // Fail-soft-`onversionchange`-Handler auf der Probe-Verbindung,
+        // damit ein späterer Bump (selber Tab via `ensureStore` oder
+        // anderer Tab) die Verbindung sicher schließen kann statt im
+        // IDB-Worker-Thread offen weiterzuleben.
+        attachVersionChangeHandler(req.result);
         resolve({ db: req.result, wasCreated: wasCreated });
       };
       req.onerror = function () {
@@ -767,56 +840,65 @@
         // Aktuelle Verbindung schließen, damit der Versions-Bump
         // durchgehen kann. dbPromise invalidieren, damit nachfolgende
         // init()-Aufrufe auf der neuen Verbindung landen.
-        try { db.close(); } catch (e) { /* ignore — Verbindung war in seltsamem Zustand */ }
+        //
+        // Pflege „Versions-Bump-Race in openProbe" (2026-05-21): statt
+        // synchronem `db.close()` async-Wait via
+        // `closeConnectionAndWait` — der `indexedDB.open(name,
+        // newVersion)` muss erst starten, wenn die alte Verbindung im
+        // IDB-Worker-Thread vollständig geschlossen ist. Sonst hängt
+        // der Bump in `onblocked` (manifestiert sich auf Android-
+        // Chrome / Galaxy Tab S6 stärker als auf Desktop-Chrome).
         if (currentDb === db) currentDb = null;
         dbPromise = null;
-        var openReq;
-        try {
-          openReq = indexedDB.open(dbNameInUse, newVersion);
-        } catch (err) {
-          reject(makeError(
-            "EnsureStoreError",
-            "indexedDB.open() warf synchron beim Versions-Bump fuer ensureStore('" + storeName + "'): " + (err && err.message),
-            err,
-          ));
-          return;
-        }
-        openReq.onupgradeneeded = function () {
-          var upDb = openReq.result;
-          // Nur den einen neuen Store anlegen — strict additiv. KEINE
-          // Schemata-Migration alter Stores, KEINE neuen Indices auf
-          // bestehenden Stores.
-          if (!upDb.objectStoreNames.contains(storeName)) {
-            upDb.createObjectStore(storeName);
+        closeConnectionAndWait(db).then(function () {
+          var openReq;
+          try {
+            openReq = indexedDB.open(dbNameInUse, newVersion);
+          } catch (err) {
+            reject(makeError(
+              "EnsureStoreError",
+              "indexedDB.open() warf synchron beim Versions-Bump fuer ensureStore('" + storeName + "'): " + (err && err.message),
+              err,
+            ));
+            return;
           }
-        };
-        openReq.onsuccess = function () {
-          var newDb = openReq.result;
-          // Fail-soft onversionchange-Handler auf der NEUEN Verbindung,
-          // damit ein Folge-Bump (weiterer ensureStore-Aufruf, anderer
-          // Tab) durchgeht statt in onblocked zu hängen.
-          attachVersionChangeHandler(newDb);
-          currentDb = newDb;
-          dbPromise = Promise.resolve(newDb);
-          if (KNOWN_STORES.indexOf(storeName) === -1) {
-            KNOWN_STORES.push(storeName);
-          }
-          resolve(undefined);
-        };
-        openReq.onerror = function () {
-          var err = openReq.error;
-          reject(makeError(
-            "EnsureStoreError",
-            "ensureStore('" + storeName + "') Versions-Bump scheiterte: " + (err && err.message),
-            err,
-          ));
-        };
-        openReq.onblocked = function () {
-          reject(makeError(
-            "EnsureStoreError",
-            "ensureStore('" + storeName + "') Versions-Bump blockiert — ein anderer Tab haelt die DB offen und ignoriert onversionchange.",
-          ));
-        };
+          openReq.onupgradeneeded = function () {
+            var upDb = openReq.result;
+            // Nur den einen neuen Store anlegen — strict additiv. KEINE
+            // Schemata-Migration alter Stores, KEINE neuen Indices auf
+            // bestehenden Stores.
+            if (!upDb.objectStoreNames.contains(storeName)) {
+              upDb.createObjectStore(storeName);
+            }
+          };
+          openReq.onsuccess = function () {
+            var newDb = openReq.result;
+            // Fail-soft onversionchange-Handler auf der NEUEN Verbindung,
+            // damit ein Folge-Bump (weiterer ensureStore-Aufruf, anderer
+            // Tab) durchgeht statt in onblocked zu hängen.
+            attachVersionChangeHandler(newDb);
+            currentDb = newDb;
+            dbPromise = Promise.resolve(newDb);
+            if (KNOWN_STORES.indexOf(storeName) === -1) {
+              KNOWN_STORES.push(storeName);
+            }
+            resolve(undefined);
+          };
+          openReq.onerror = function () {
+            var err = openReq.error;
+            reject(makeError(
+              "EnsureStoreError",
+              "ensureStore('" + storeName + "') Versions-Bump scheiterte: " + (err && err.message),
+              err,
+            ));
+          };
+          openReq.onblocked = function () {
+            reject(makeError(
+              "EnsureStoreError",
+              "ensureStore('" + storeName + "') Versions-Bump blockiert — ein anderer Tab haelt die DB offen und ignoriert onversionchange.",
+            ));
+          };
+        });
       });
     });
   }
