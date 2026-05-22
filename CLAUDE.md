@@ -182,6 +182,17 @@ Bevor du `END` machst:
    Befund Z"). Auch wenn dasselbe im Übergabeprotokoll
    § „Nächster sinnvoller Schritt" steht: hier doppeln. Das ist
    Klaus' Übersichts-Anker am Tab, ohne Datei-Öffnen.
+6. **Brief-Codeblock für die nächste Sitzung direkt im Chat ausgeben**
+   (Pflege 2026-05-21). Wenn die Sitzung mit `Befehl schreiben` einen
+   Folge-Brief in `docs/sessions/BRIEF_*.md` angelegt hat, MUSS der
+   vollständige Codeblock aus dem Brief (zwischen den Triple-Backticks)
+   in der finalen Chat-Antwort der aktuellen Sitzung **wortwörtlich
+   und komplett** ausgegeben werden — als Markdown-Fenced-Code-Block,
+   damit Klaus copy-pasten kann ohne den Brief erst öffnen zu müssen.
+   Konvention spart eine ganze Folge-Frage („Wo ist der Brief, wie
+   kopiere ich ihn?"). Auch wenn der Brief schon als PR gemerged ist —
+   der Codeblock kommt nochmal in die Chat-Antwort. Klaus' Tab ist
+   der Einstiegspunkt für die nächste Sitzung, nicht ein Datei-Browser.
 
 ## Vor dem nächsten Sitzungs-Brief (`Befehl schreiben`)
 
