@@ -47,6 +47,13 @@ STUFE_B_DEFAULT_MODEL  = "claude-sonnet-4"   // Modul 04, Spec-Sitzung M04-Erwei
 STUFE_B_MAX_TOKENS     = 1024           // Modul 04, Spec-Sitzung M04-Erweiterung; Default-`max_tokens`
                                         //   für den Stufe-B-LLM-Call. Aufrufer-überschreibbar.
                                         //   Pattern-Quelle: Layer-1-Demo der SBKIM-Plattform-`index.html`.
+MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50   // Modul 15, Spec-Sitzung 15 (Sub (e) 2026-05-24); maximale
+                                        //   Anzahl `FremdzugriffEntry`-Einträge im Membran-Ringbuffer
+                                        //   (RAM-only, Closure-State in `15_membran.js`). FIFO-
+                                        //   Verdrängung bei vollem Buffer, kein Throw. Default 50 —
+                                        //   ausgewogen zwischen „Live-Schau über mehrere Minuten"
+                                        //   und „RAM-Aufblähung". Klaus' Spur ist eine lebende Schau,
+                                        //   kein Audit-Archiv (siehe Karte 15 § Sub (e) Strikte Tabus).
 ```
 
 ---
@@ -2148,98 +2155,253 @@ Geprüft: 2026-05-14 (Spec-Sitzung 09)
 ---
 
 ### Modul: 15_membran
-Status: schablone  (Stub, Backlog-Membran, kein JS-Modul in Erst-Stufe —
-                   Spec ausstehend bis KI-Browser-Markt stabilisiert oder
-                   konkreter App-zu-App-Wunsch eines Endknoten-Betreibers.)
-Datei:  docs/components/15_membran.md (Karte; `src/modules/15_membran.js`
-        existiert noch nicht)
+Status: entwurf  (Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe voll
+                 spezifiziert in Spec-Sitzung 15 vom 2026-05-24; Sub (a)
+                 Read-API + Sub (b) postMessage-Brücke Grob-Spec mit
+                 fixiertem globalen Namen + Allowlist-Konfigurationspfad
+                 + Sub-(e)-Hooks, finale Spec ausstehend in Spec-Sitzung
+                 15.B; Sub (c) Capability-Token Stufe 3, später; Sub (d)
+                 Backup-Datei nur Verweis auf Modul 02 Bau 02.X.)
+Datei:  docs/components/15_membran.md (Karte) ·
+        src/modules/15_membran.js (existiert noch nicht — Bau-Sitzung 15
+        nach Spec-Sitzung 15 vom 2026-05-24 fällig) ·
+        Erweiterung in src/sbkim-sw.js für endpoint-probe-Detektor
+        (Sub (e) SW-Hook; eigene SW-Bau-Sitzung oder Teil von Bau 15)
 
-Bietet (geplant, nicht implementiert — Spec-Sitzung 15 entscheidet die
-finale Form):
+Bietet (öffentlich):
+  // --- Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe (Stufe 1, voll-Spec) ---
+  init(options?)                              → Promise<void>
+  fremdzugriff.list()                         → FremdzugriffEntry[]    // sync, defensive Kopie, älteste zuerst
+  fremdzugriff.subscribe(cb)                  → unsubscribeFn          // sync, cb(entry) bei jedem Neueintrag
+  fremdzugriff.clear()                        → void                    // Buffer leeren + Lampe aus
+  fremdzugriff._recordForTest(entry)          → void                    // Test-Brücke (Unterstrich-Konvention)
 
-  Vier Sub-Bereiche unter einer Membran-Metapher (Außenhülle zwischen
-  PWA-Zelle und Browser-Umgebung):
+  // --- Sub (a) Read-API für KI-Browser-Agenten (Stufe 1, Grob-Spec) ---
+  read()                                      → Promise<MembraneSnapshot>
+    // MembraneSnapshot-Form (finale Spec ausstehend, Anker-Form):
+    // {
+    //   protocolVersion, nodeId, domain, sporeUrl,
+    //   siblings:  [{ nodeIdHash, since, status }],   // ANONYMISIERT
+    //   storage:   { quotaWarningLevel, storagePersisted }
+    // }
+    // Streng lesend, kein Seiteneffekt AUSSER Sub-(e)-Buffer-Eintrag.
 
-  Sub (a) — Read-API für KI-Browser-Agenten (Stufe 1, Pflicht):
-    window.SbkimMembrane.read() → Promise<{
-      protocolVersion, nodeId, domain, sporeUrl,
-      siblings: [{ nodeIdHash, since, status }],  // ANONYMISIERT
-      storage:  { quotaWarningLevel, storagePersisted }
-    }>
-    Streng lesend, kein Seiteneffekt, keine Auslöser.
+  // --- Sub (b) App-zu-App-Brücke via postMessage (Stufe 2, Grob-Spec) ---
+  // Sender:
+  //   peerWindow.postMessage({
+  //     type:       "sbkim/membrane/v1",
+  //     op:         "sporeRef" | "query" | "hint",   // KEIN "handshake"
+  //     fromOrigin: <string>,
+  //     nonce:      <random>,
+  //     payload:    <op-spezifisch>
+  //   }, peerOrigin /* aus Allowlist via init({allowedOrigins}) */)
+  // Empfänger: window.addEventListener("message", …) prüft Allowlist
+  //   und type, beantwortet bzw. verwirft. Sub (e) triggert Eintrag
+  //   bei JEDER message-Quelle ungleich window.location.origin.
 
-  Sub (b) — App-zu-App-Brücke via postMessage (Stufe 2, Pflicht):
-    window.postMessage({
-      type:    "sbkim/membrane/v1",
-      op:      "sporeRef" | "query" | "hint",     // KEIN "handshake"
-      fromOrigin: <string>,
-      nonce:   <random>,
-      payload: <op-spezifisch>
-    }, peerOrigin /* aus Allowlist */)
-    Origin-Allowlist im Andocker hartkodiert; nonce-Pflicht; Replay-
-    Schutz; Cross-Origin same-Browser.
+  // --- Sub (c) Capability-Handshake / Membran-Token (Stufe 3, später) ---
+  // MembraneCapability-Form aus Karte 15 § Sub (c); Spec-Sitzung 15.C
+  //   füllt die finale Form.
 
-  Sub (c) — Capability-Handshake / Membran-Token (Stufe 3, später):
-    MembraneCapability = {
-      audience: <agent-id | origin-pattern>,
-      scope:    "read" | "hint",                  // KEIN "write" in Stufe 3
-      expiresAt: <timestamp>,
-      nonce:    <random>,
-      signature: Ed25519(<canonical-payload>)     // durch eigene Spore signiert
+  // --- Sub (d) Backup-Datei (nur Verweis) ---
+  // Existiert in Modul 02 (Bau 02.X): SbkimSpore.exportBackup/importBackup
+  //   (PBKDF2-SHA256 600 000 + AES-GCM-256). Karte 15 verweist nur.
+
+  options-Form (init):
+    {
+      // Sub (e) Steuerung — alles optional, Defaults aus §0/Modul-lokal:
+      bufferMax?:    number,            // Default MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50
+      lampSelector?: string,            // Default '#lamp-fremd' (CSS-Selektor in der Page)
+      mountModal?:   boolean,           // Default true — Modal in document.body anlegen + Click-Handler
+      // Sub (b) Allowlist (Stufe-2-Pflicht, in Stufe 1 noch optional):
+      allowedOrigins?: string[]         // strict-String-Liste, kein Wildcard;
+                                        // Default [] (Sub (b) ohne Allowlist verwirft alle Cross-Origin-Messages
+                                        // als rejected-allowlist und triggert Sub-(e)-Eintrag)
     }
-    Signatur-Pfad nutzt Modul 02 (canonical JSON + Ed25519); finale
-    Form Spec-Vorbehalt.
 
-  Sub (d) — Backup-Datei als manueller App-Transport (nur Verweis):
-    Existiert bereits in Modul 02 (Bau 02.X): exportBackup(password) /
-    importBackup(blob, password, options?) mit PBKDF2-SHA256 600 000 +
-    AES-GCM-256. Karte 15 dokumentiert nur — kein neuer Bau in 15.
+  FremdzugriffEntry-Form (Karte 15 § Sub (e) Schema, verbindlich):
+    {
+      at:        <ISO-8601 UTC mit ms>,
+      kind:      "membrane-read" | "membrane-postmessage" | "endpoint-probe",
+      origin:    <string | null>,                // Cross-Origin-Quelle oder null
+      agentHint: <string | null>,                // navigator.userAgent.slice(0, 64) oder null
+      endpoint:  <string | null>,                // relativer Pfad ab '/' oder null
+      decision:  "accepted" | "ignored" | "rejected-allowlist",
+      details:   <kind-spezifisch>               // Karte 15 § Sub (e) Feld-Konventionen
+    }
 
-Nutzt-von (geplant):
-  KI-Browser-Agenten (Anthropic Browser Use, OpenAI Operator, Comet,
-  Dia, Arc-Nachfolger) · Endknoten-Schwester-Apps auf anderen Origins
-  desselben Browsers (Mein-Rezeptbuch ↔ Mein-Mixarium) · Endknoten-
-  Benutzer mit Backup-Datei-Wunsch.
+Nutzt:
+  Browser-API: window.addEventListener("message", …)   Sub (b) Empfänger-Pfad (in init() registriert)
+  Browser-API: BroadcastChannel("sbkim-membrane")      Sub (e) SW-→Page-Brücke für endpoint-probes
+                                                        (SW-Seite postet { type:"SBKIM_MEMBRANE_PROBE",
+                                                         entry: FremdzugriffEntry })
+  Browser-API: navigator.userAgent                     Sub (e) agentHint-Feld, abgeschnitten auf 64 Zeichen
+  DOM: document.querySelector(lampSelector)            Sub (e) Lampen-Element für CSS-Klassen-Toggle
+                                                        (.fremd-alert / .fremd-pulse)
+  DOM: document.body                                   Sub (e) Modal-Mount-Anker
+  SbkimSpore.getNodeId / getOwnSpore                   Sub (a) read()-Pfad (Pflicht ab Sub-(a)-Bau)
+                                                        — fail-soft (nodeId:null im Snapshot)
+  SbkimAnastomose.listSiblings                         Sub (a) read()-Pfad — fail-soft (siblings:[])
+  SbkimStorage._meta.storagePersisted                  Sub (a) read()-Pfad (Spiegelung Modul-01-Getter)
+                                                        — fail-soft (storagePersisted:null)
+  Browser-API: navigator.storage.estimate()            Sub (a) read()-Pfad für quotaWarningLevel
+                                                        — fail-soft (storage:{quotaWarningLevel:"none"})
 
-Abhängigkeiten (geplant):
-  Modul 02 (Spore-Signatur für Sub (c)-Capability-Token) ·
-  Modul 01 (LESERECHT auf sbkim_spore + sbkim_siblings — KEIN Schreiben
-  in Stufe 1) ·
-  Modul 00 (Spiegelung quotaWarningLevel + storagePersisted im
-  read()-Snapshot).
-  KEIN neuer Storage-Store in Stufe 1; Stufe 2 entscheidet ggf. einen
-  sbkim_membrane_inbox-Store für hint-Leads.
+  Sub (e) hat KEINE Pflicht-Modul-Abhängigkeiten — Buffer + Lampe + Modal
+  laufen ohne anderes SBKIM-Modul (das macht Sub (e) auch in der Sage-
+  Page sofort baubar, ohne dass Modul 02/05/Storage initialisiert sein
+  müssten).
 
-Tabus (verbindlich, gelten auch ohne Spec):
+Storage:
+  KEINE Stores. Sub (e) ist RAM-only (Modul-lokales Closure `let buffer = []`).
+  Sub (a)+(b) lesen ggf. via Modul 01 (Sub (a) sbkim_spore / sbkim_siblings —
+  Lese-Recht, KEIN Schreiben in Stufe 1).
+  Sub (b) Stufe 2 entscheidet ggf. neuen Store sbkim_membrane_inbox für
+  hint-Leads (Spec-Sitzung 15.B).
+
+Events:
+  reagiert: window "message"-Event                     Sub (b)-Empfänger + Sub-(e)-Hook
+  reagiert: BroadcastChannel("sbkim-membrane") "message"
+                                                       Sub-(e)-Hook für SW-gemeldete endpoint-probes
+  reagiert: click auf lampSelector-Element             Sub-(e)-Modal öffnen
+  reagiert: Esc-Keydown / Backdrop-Klick               Sub-(e)-Modal schließen
+  feuert:   (keine CustomEvents — Sub-(e)-subscribe(cb) ist die Live-API,
+             keine DOM-Event-Indirektion.)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 15 MEMBRAN bereit, Funktionen: init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}");
+  Wie Modul 00/01/02/04/05/06/07/08 — keine Konstante in der Selbstcheck-
+  Zeile. MEMBRANE_FREMDZUGRIFF_BUFFER_MAX steht verbindlich in §0;
+  AGENT_HINT_MAX_LEN = 64 ist modul-lokal in Karte 15.
+
+Versionierungs- und Sichtbarkeits-Vertrag:
+  - Modul 15 ist nicht protokoll-aktiv (kein Netz, keine Signatur, keine
+    Spore-Erzeugung in Stufe 1; Sub (c) Stufe 3 nutzt später Modul-02-
+    Signatur). Es gibt keinen Hauptversions-Check in 15 — die §0-
+    Konstante MEMBRANE_FREMDZUGRIFF_BUFFER_MAX wird beim Skript-Laden
+    bzw. init() gelesen.
+  - FremdzugriffEntry-Schema ist additiv versioniert: das details-Feld
+    ist offen für kind-spezifische Erweiterungen (spätere Sub-(b)-
+    Stufe-2-Spec darf op-spezifische Felder ergänzen, ohne den Ringbuffer
+    zu brechen). Pflichtfelder bleiben stabil.
+  - Sub (e) Ringbuffer-Inhalt ist SESSION-ONLY (RAM-only, Tab-Reload =
+    leer). Wer Persistenz will, baut Modul 12 (Blocklist) mit Append-Log.
+
+Fehlerverhalten:
+  - init(): options.lampSelector kein gültiger CSS-Selektor    → console.warn, kein Throw;
+                                                                  Lampen-Toggle wird übersprungen, Buffer + Modal funktionieren
+  - init(): lampSelector matcht aktuell kein Element            → console.warn, kein Throw;
+                                                                  Re-Mount beim DOMContentLoaded
+  - init(): zweimaliger Aufruf                                  → idempotent (kein Doppel-Listener,
+                                                                  kein Doppel-Modal-Mount)
+  - fremdzugriff.list(): unter allen Bedingungen                → leeres oder gefülltes Array, KEIN Throw
+  - fremdzugriff.subscribe(cb): cb nicht Funktion               → console.warn, no-op unsubscribeFn
+  - fremdzugriff.subscribe(cb): cb wirft beim Aufruf             → Throw GEFANGEN (console.warn),
+                                                                  andere Listener werden weiter aufgerufen
+  - fremdzugriff.clear(): unter allen Bedingungen               → no-op bei leerem Buffer, KEIN Throw
+  - fremdzugriff._recordForTest(entry): entry kein Objekt /
+       fehlende Pflichtfelder / unbekannter kind/decision-Wert  → console.warn, KEIN Throw, KEIN Eintrag
+                                                                  (fail-soft analog Doku-recordSighttest-Pattern)
+  - read() (Sub (a)): jede Sub-Lese-Quelle wirft                → fail-soft (Feld auf null/[]),
+                                                                  read() resolved IMMER mit Snapshot.
+                                                                  Sub-(e)-Eintrag wird trotzdem geschrieben
+                                                                  (kind:"membrane-read", decision:"accepted").
+  - Eingehende postMessage (Sub (b)): unbekannter type           → kein read, kein Sub-(b)-Antwort-Pfad;
+                                                                  Sub-(e)-Eintrag (decision:"ignored")
+  - Eingehende postMessage: Origin nicht in allowedOrigins       → kein Bedienen;
+                                                                  Sub-(e)-Eintrag (decision:"rejected-allowlist")
+  - BroadcastChannel-Message: kein "SBKIM_MEMBRANE_PROBE"-Type   → still verworfen, kein Eintrag
+
+  KEINE benannten Error-Klassen für Sub (e) — rein beobachtend, alles
+  fail-soft mit console.warn. Sub (a) finale Spec entscheidet, ob
+  Quota-Block einen MembraneQuotaError wirft (vermutlich NICHT — fail-
+  soft an die Agenten zurückreichen, der Agent ist nicht Klaus und kann
+  keinen Backup-Restore triggern); Sub (b) finale Spec entscheidet, ob
+  Allowlist-Verletzungen Throws werfen sollen (vermutlich NICHT —
+  stille Verwerfung + Sub-(e)-Eintrag reicht).
+
+Datenformate:
+  FremdzugriffEntry              → Karte 15 § Sub (e) Schema (oben gespiegelt).
+  MembraneSnapshot (Sub (a))     → Karte 15 § Sub (a) Anker-Form;
+                                    finale Feld-Liste in Spec-Sitzung 15.B.
+  postMessage-Envelope (Sub (b)) → Karte 15 § Sub (b) Anker-Form
+                                    (type "sbkim/membrane/v1", op, fromOrigin, nonce, payload);
+                                    finale Schema-Pflicht in Spec-Sitzung 15.B.
+
+Garantien für Modul 00 / 09 / 12 / 14 / Sage-Page:
+  - Sub (e) Lampe + Modal sind ANZEIGE-only. Sub (e) blockiert nicht,
+    filtert nicht, signiert nicht. Filter-Verhalten gehört in Modul 12
+    (Blocklist), Rate-Limit in Modul 11.
+  - Lampe pulst bei JEDER decision (accepted/ignored/rejected-allowlist) —
+    auch bei Abweisungen, weil Klaus Phishing-Versuche sehen soll
+    (Karte 15 § Risiken „Allowlist-Drift").
+  - Sub (a) read()-Snapshot enthält NIEMALS sbkim_keys, NIEMALS nodeId
+    der Geschwister im Klartext (nur nodeIdHash), NIEMALS PII von
+    Drittseiten. Tabus aus Karte 15 § Sub (a) Strikte Tabus sind
+    bindend, auch wenn die finale Spec sich noch ändert.
+  - Sub (b) Allowlist ist STATISCH im Andocker via init({allowedOrigins})
+    konfiguriert, nicht über die Membran selbst änderbar. Sub (b) kennt
+    KEIN op:"handshake" — Anastomose geht durch Modul 05.
+  - Sub (e) Ringbuffer ist RAM-only — Tab-Reload leert ihn. Modul 12
+    (Blocklist) darf später einen eigenen Append-Log bauen, aber NICHT
+    den Sub-(e)-Buffer mitnutzen (Trennung Anzeige/Audit).
+  - Sage-Page (index.html) erhält in Bau-Sitzung 15:
+      :root { --lamp-alert: #DC2626; }
+      .lamp.fremd-alert { … }     // Dauer-Rot mit Glow
+      .lamp.fremd-pulse { … }     // kurzer Puls analog .traffic-pulse
+      <span class="lamp" id="lamp-fremd" title="…"></span>
+      <span class="lamp-label">fremd</span>
+    direkt nach #lamp-traffic + Label „verkehr". Click-Handler auf
+    #lamp-fremd öffnet das Sub-(e)-Modal.
+  - Modul 09 (Einbau-PWA) bekommt in eigener Folge-Pflege einen
+    zehnten optionalen Schritt: „Membran-Allowlist setzen + Lampe in
+    PWA-Header anhängen falls Fremdzugriff-Sichtbarkeit gewünscht".
+
+Tabus (verbindlich, gelten auch für künftige Sub-Stufen):
   - NIEMALS sbkim_keys lesen (auch nicht gehasht). Privater Schlüssel
     verlässt die Zelle nie unverschlüsselt — Sub (d) Backup-Sluse ist
     die einzige Ausnahme und nur mit PBKDF2+AES-GCM.
   - NIEMALS nodeId der Geschwister im Klartext liefern. Sub (a) gibt
     nur nodeIdHash = base64url(sha256(nodeId)) heraus.
-  - NIEMALS schreiben in Sub (a). read() ist async-pur.
+  - NIEMALS schreiben in Sub (a). read() ist async-pur (außer dem
+    Sub-(e)-Buffer-Eintrag — der ist Beobachtungs-Schicht, kein
+    Protokoll-Seiteneffekt).
   - KEIN op:"handshake" in Sub (b). Wer Anastomose will, geht durch
     Modul 05 (HTTP oder BroadcastChannel-Fallback).
-  - Origin-Allowlist ist STATISCH im Andocker konfiguriert, nicht über
-    die Membran selbst änderbar.
+  - Origin-Allowlist ist STATISCH im Andocker konfiguriert (via
+    init({allowedOrigins})), nicht über die Membran selbst änderbar.
   - Nonce-Pflicht in Sub (b) und Sub (c) — kein Replay-Schutz, keine
     Brücke.
   - Empfangsmodus-Prinzip bleibt: Membran initiiert nichts, sie
     antwortet nur. Kein Crawler, keine Pulsation, keine Eigenanfragen.
+  - Sub (e) PII-Schutz: agentHint NUR navigator.userAgent.slice(0, 64),
+    KEINE weiteren navigator.*-Felder; details niemals voller
+    postMessage-payload (nur op + nonce); origin nur als Schema+Host+Port.
 
 Hook-Punkte (nur Verweis, nicht implementiert):
   Modul 10 (Reputation) auf Capability-Token-Aussteller (Sub (c)) ·
   Modul 11 (Rate-Limit) auf eingehende postMessage-Calls pro Origin
   (Sub (b)) ·
-  Modul 12 (Blocklist) auf Origin-Ebene (Sub (b)).
+  Modul 12 (Blocklist) auf Origin-Ebene (Sub (b)) — KANN Sub-(e)-
+  Einträge zum Trigger nutzen, schreibt aber einen eigenen Persistent-
+  Log (Trennung Anzeige/Audit).
 
-Risiken (für Spec-Sitzung 15 zu schließen):
-  Origin-Spoofing · Datenexfiltration via KI-Browser-Agent ·
-  Agent-Replay (Token-Reuse) · Konsens-Bruch (Agent macht hint im
-  Hintergrund) · Allowlist-Drift bei PWA-Update · Sluse-Phishing
-  (Sub (d), heute schon mitigiert) · PWA-Suffix vs. Origin-Allowlist-
-  Kollision.
+Risiken (für Spec-Sitzung 15.B / 15.C zu schließen, Sub (e) jetzt
+mitigiert):
+  Origin-Spoofing (Mitigation: postMessage event.origin browser-seitig
+  nicht-fälschbar + Sub-(b)-Allowlist) · Datenexfiltration via
+  KI-Browser-Agent (Mitigation: Sub (a) nodeIdHash + sbkim_keys nie
+  exponiert; Sub (e) Lampe macht Read-Vorgänge SICHTBAR) ·
+  Agent-Replay (Mitigation: nonce + expiresAt in Sub (c)) · Konsens-
+  Bruch (Mitigation: Sub (e) Lampe + kein Auto-Handshake) ·
+  Allowlist-Drift bei PWA-Update (Mitigation: Sub (e) zeigt
+  rejected-allowlist-Einträge, Klaus erkennt fehlende Origins) ·
+  Sluse-Phishing (Sub (d), heute schon mitigiert) · PWA-Suffix vs.
+  Origin-Allowlist-Kollision.
 
-Geprüft: 2026-05-18 (Hauptsitzung 15-Membran-Stub)
+Geprüft: 2026-05-18 (Hauptsitzung 15-Membran-Stub),
+         2026-05-24 (Spec-Sitzung 15 — Sub (e) voll, Sub (a)+(b) grob)
 
 ---
 
