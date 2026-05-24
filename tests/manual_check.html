@@ -102,6 +102,13 @@
     <pre class="log">— bereit. Voraussetzung: Module 01 (Storage) und 02 (Spore) sind über die Skript-Tags mitgeladen. Modul 08 ist Storage-only — kein Netz, kein Embedding, keine Signatur, kein Heterokaryose-Pull. „Setup" leert sbkim_hetero_outbox_&lt;activeSlotKey&gt; und löscht die Pseudo-Sibling-Einträge der Test-Brücke (slot-isoliert), damit jeder Test-Knopf bei null startet. Vektor-Erzeugung ist Aufrufer-Pflicht — die Panel-08-Tests nutzen fertige Pseudo-Vektoren statt SbkimEmbedding (Modul 08 ist Embedding-frei). Bau 08.Y (2026-05-20): Modul 08 schreibt jetzt slot-spezifisch — Setup-Output zeigt den aktiven Slot. HETERO_OUTBOX_MAX_ENTRIES = 5 gilt PRO SLOT, nicht global. Self-Apoptose-Knopf bewusst NICHT in diesem Panel (Spec-Sitzung 08-Entscheidung; siehe Karte 08 § Risiken). —</pre>
   </section>
 
+  <section class="panel" data-module="15_membran">
+    <h2>15 Membran <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <span id="panel-15-fake-lamp" style="display:none;" title="Fake-Lampe für Sub-(e)-Tests (kein DOM-Element in der Sage-Page nötig)"></span>
+    <pre class="log">— bereit. Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe (Bau-Sitzung 15, 2026-05-24). Modul 15 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding. Ringbuffer RAM-only (MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50), Persistenz bewusst verworfen (Karte 15 § Strikte Tabus „lebende Schau, kein Audit-Archiv"). „Setup" ruft `SbkimMembrane.init({lampSelector:'#panel-15-fake-lamp', allowedOrigins:[]})` und leert den Buffer via `clear()`. Lampen-Toggle (Klassen `fremd-alert` / `fremd-pulse`) ist im DevTools-Element-Inspector am `#panel-15-fake-lamp`-Span beobachtbar (Span ist display:none, aber classList ist da). Sub (a) read() + Sub (b) postMessage-Listener sind Skelette — finale Spec wartet auf Spec-Sitzung 15.B. Sub-(e)-Hooks in beiden Pfaden sind aber verbindlich und werden hier getestet. Sage-Page-Sichttest (echte Lampe in der Navleiste): separat, nicht in diesem Panel. —</pre>
+  </section>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {
@@ -3059,6 +3066,352 @@
           "  MODUL 00 DOKU-FENSTER bereit, Funktionen: init/open/close/isOpen/getStatusSnapshot/recordSighttest");
         SbkimUI.log("00_doku_fenster",
           "ℹ Hinweis: Reveal-Schwelle / Quota-Schwellen stehen in §0, NICHT in der Selbstcheck-Zeile.");
+      });
+    })();
+  </script>
+
+  <!-- Modul 15 — Membran (Bau-Sitzung 2026-05-24) -->
+  <script src="../src/modules/15_membran.js"></script>
+  <script>
+    (function () {
+      // Panel 15 — Membran (Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe)
+      //
+      // Spec-Vorgabe (Karte 15 § Bau-Sitzung-Hinweise + Brief Bau 15):
+      // Setup-Knopf + sieben Test-Knöpfe + Selbstcheck-Hinweis.
+      // Modul 15 ist beobachtend, RAM-only, kein Storage-Eingriff —
+      // Tests laufen daher ohne SbkimStorage.init().
+
+      var FAKE_LAMP_SELECTOR = "#panel-15-fake-lamp";
+      var setupDone = false;
+
+      async function ensureSetup() {
+        await SbkimMembrane.init({
+          lampSelector: FAKE_LAMP_SELECTOR,
+          allowedOrigins: [],
+          mountModal: false, // Panel-15-Tests brauchen kein Modal in document.body
+        });
+        // Buffer leeren — jedes Test-Lauf beginnt bei null. clear()
+        // ist idempotent (kein Throw bei leerem Buffer).
+        SbkimMembrane.fremdzugriff.clear();
+        setupDone = true;
+      }
+
+      function makeProbeEntry(kind, decision, extras) {
+        var e = {
+          kind: kind,
+          origin: extras && extras.origin !== undefined ? extras.origin : null,
+          agentHint: extras && extras.agentHint !== undefined ? extras.agentHint : "Test/1.0",
+          endpoint: extras && extras.endpoint !== undefined ? extras.endpoint : null,
+          decision: decision,
+          details: extras && extras.details ? extras.details : {},
+        };
+        return e;
+      }
+
+      SbkimUI.addButton("15_membran", "Setup: init() + Buffer leeren + Fake-Lampe verdrahten", async function () {
+        await ensureSetup();
+        var lampEl = document.querySelector(FAKE_LAMP_SELECTOR);
+        var lampClasses = lampEl ? Array.prototype.slice.call(lampEl.classList) : null;
+        SbkimUI.setStatus("15_membran", "ok", "Setup OK");
+        return {
+          ready: SbkimMembrane._meta.ready,
+          buffer_max: SbkimMembrane._meta.bufferMax,
+          puffer_laenge_nach_clear: SbkimMembrane._meta.bufferLength,
+          listener_count: SbkimMembrane._meta.listenerCount,
+          lampen_selector: FAKE_LAMP_SELECTOR,
+          lampe_da: !!lampEl,
+          lampen_klassen: lampClasses,
+          modal_gemounted: SbkimMembrane._meta.modalMounted,
+          allowed_origins: SbkimMembrane._meta.allowedOrigins,
+          hinweis: "Sub (e) ist RAM-only, kein Storage-Eingriff. Lampen-Klassen (fremd-alert / fremd-pulse) sind im DevTools-Element-Inspector am " + FAKE_LAMP_SELECTOR + " beobachtbar (Span ist display:none, classList ist trotzdem live).",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 1: _recordForTest (drei Einträge, list() älteste zuerst)", async function () {
+        await ensureSetup();
+        SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("membrane-read", "accepted", {
+          details: { fieldsRequested: null },
+        }));
+        await new Promise(function (r) { setTimeout(r, 3); });
+        SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("membrane-postmessage", "accepted", {
+          origin: "https://foo.example",
+          details: { op: "sporeRef", nonce: "n-1" },
+        }));
+        await new Promise(function (r) { setTimeout(r, 3); });
+        SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("endpoint-probe", "accepted", {
+          origin: "https://bar.example",
+          endpoint: "/sbkim/spore.json",
+          details: { method: "GET", secFetchSite: "cross-site" },
+        }));
+
+        var list = SbkimMembrane.fremdzugriff.list();
+        var lengthOk = list.length === 3;
+        var orderOk = lengthOk &&
+                      list[0].kind === "membrane-read" &&
+                      list[1].kind === "membrane-postmessage" &&
+                      list[2].kind === "endpoint-probe";
+        var ascendingOk = lengthOk && list[0].at <= list[1].at && list[1].at <= list[2].at;
+        var defensiveCopyOk = false;
+        try {
+          list.pop();
+          defensiveCopyOk = SbkimMembrane.fremdzugriff.list().length === 3;
+        } catch (_e) { /* nb */ }
+
+        var lampEl = document.querySelector(FAKE_LAMP_SELECTOR);
+        var lampAlertOn = lampEl && lampEl.classList.contains("fremd-alert");
+
+        var pass = lengthOk && orderOk && ascendingOk && defensiveCopyOk && lampAlertOn;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 1 OK" : "Test 1 fehlgeschlagen");
+        return {
+          anzahl: SbkimMembrane.fremdzugriff.list().length,
+          reihenfolge: SbkimMembrane.fremdzugriff.list().map(function (e) { return e.kind; }),
+          aelteste_zuerst: ascendingOk,
+          defensive_kopie: defensiveCopyOk,
+          lampe_fremd_alert: lampAlertOn,
+          erwartung: "drei Einträge, älteste zuerst (membrane-read → postmessage → endpoint-probe), list() liefert defensive Kopie (pop am Rückgabe-Array berührt Buffer nicht), Lampe trägt fremd-alert",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 2: subscribe(cb) + Counter inkrementiert bei neuem Eintrag", async function () {
+        await ensureSetup();
+        var counter = 0;
+        var lastEntry = null;
+        var unsubscribe = SbkimMembrane.fremdzugriff.subscribe(function (entry) {
+          counter += 1;
+          lastEntry = entry;
+        });
+
+        SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("membrane-read", "accepted"));
+        var afterFirst = counter;
+        SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("endpoint-probe", "accepted", {
+          origin: "https://example.test",
+          endpoint: "/sbkim/anastomosis",
+          details: { method: "POST", secFetchSite: "cross-site" },
+        }));
+        var afterSecond = counter;
+
+        unsubscribe();
+        // Nach unsubscribe darf der Counter NICHT mehr steigen.
+        SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("membrane-read", "accepted"));
+        var afterUnsubscribe = counter;
+
+        // Zweiter unsubscribe-Aufruf ist idempotent (no-op).
+        var secondUnsubOk = true;
+        try { unsubscribe(); } catch (_e) { secondUnsubOk = false; }
+
+        // cb=null/undefined → no-op unsubscribeFn (kein Throw).
+        var nullCbOk = true;
+        try {
+          var u2 = SbkimMembrane.fremdzugriff.subscribe(null);
+          if (typeof u2 !== "function") nullCbOk = false;
+          u2();
+        } catch (_e) { nullCbOk = false; }
+
+        var pass = afterFirst === 1 && afterSecond === 2 && afterUnsubscribe === 2 &&
+                   lastEntry && lastEntry.kind === "endpoint-probe" && secondUnsubOk && nullCbOk;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          counter_nach_eins:           afterFirst,
+          counter_nach_zwei:           afterSecond,
+          counter_nach_unsubscribe:    afterUnsubscribe,
+          letzter_eintrag_kind:        lastEntry && lastEntry.kind,
+          zweiter_unsub_idempotent:    secondUnsubOk,
+          subscribe_null_cb_noop:      nullCbOk,
+          erwartung: "Counter zählt synchron mit, unsubscribe stoppt Listener, zweiter unsubscribe-Aufruf wirft nicht, subscribe(null) liefert no-op-unsubscribeFn",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 3: clear() leert Buffer + nimmt Lampe aus", async function () {
+        await ensureSetup();
+        SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("membrane-read", "accepted"));
+        SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("endpoint-probe", "accepted", {
+          endpoint: "/sbkim/spore.json",
+          details: { method: "GET", secFetchSite: "cross-site" },
+        }));
+        var beforeLen = SbkimMembrane.fremdzugriff.list().length;
+        var lampEl = document.querySelector(FAKE_LAMP_SELECTOR);
+        var lampBeforeOn = lampEl && lampEl.classList.contains("fremd-alert");
+
+        SbkimMembrane.fremdzugriff.clear();
+        var afterLen = SbkimMembrane.fremdzugriff.list().length;
+        var lampAfterOn = lampEl && lampEl.classList.contains("fremd-alert");
+
+        // Zweiter clear() ist no-op (kein Throw).
+        var secondClearOk = true;
+        try { SbkimMembrane.fremdzugriff.clear(); } catch (_e) { secondClearOk = false; }
+
+        var pass = beforeLen === 2 && afterLen === 0 && lampBeforeOn && !lampAfterOn && secondClearOk;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          vor_clear:        beforeLen,
+          nach_clear:       afterLen,
+          lampe_vor_clear:  lampBeforeOn,
+          lampe_nach_clear: lampAfterOn,
+          zweiter_clear_idempotent: secondClearOk,
+          erwartung: "Buffer leer nach clear(), Lampe verliert fremd-alert, zweiter clear() ist no-op",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 4: Ringbuffer-Voll-Probe (60 Einträge → list().length = 50)", async function () {
+        await ensureSetup();
+        for (var i = 0; i < 60; i++) {
+          SbkimMembrane.fremdzugriff._recordForTest(makeProbeEntry("membrane-read", "accepted", {
+            agentHint: "Probe-" + i,
+          }));
+        }
+        var list = SbkimMembrane.fremdzugriff.list();
+        var lengthOk = list.length === SbkimMembrane._meta.bufferMax; // 50
+        // Älteste 10 müssen verdrängt sein: erster Eintrag im Buffer hat
+        // agentHint "Probe-10", letzter "Probe-59".
+        var firstOk = list[0] && list[0].agentHint === "Probe-10";
+        var lastOk = list[list.length - 1] && list[list.length - 1].agentHint === "Probe-59";
+
+        var pass = lengthOk && firstOk && lastOk;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          buffer_max: SbkimMembrane._meta.bufferMax,
+          eingetragen: 60,
+          puffer_laenge: list.length,
+          aeltester_agentHint:  list[0] && list[0].agentHint,
+          juengster_agentHint:  list[list.length - 1] && list[list.length - 1].agentHint,
+          erwartung: "Buffer schneidet bei MEMBRANE_FREMDZUGRIFF_BUFFER_MAX (50) ab, älteste 10 verdrängt, jüngster ist Probe-59",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 5: read() liefert Snapshot + Sub-(e)-Eintrag (kind:membrane-read)", async function () {
+        await ensureSetup();
+        var snapshot = await SbkimMembrane.read();
+        var list = SbkimMembrane.fremdzugriff.list();
+        var hasReadEntry = list.length === 1 && list[0].kind === "membrane-read" &&
+                           list[0].decision === "accepted" && list[0].origin === null;
+        var snapshotShape = snapshot && typeof snapshot === "object" &&
+                            "protocolVersion" in snapshot && "nodeId" in snapshot &&
+                            "domain" in snapshot && "sporeUrl" in snapshot &&
+                            Array.isArray(snapshot.siblings) &&
+                            snapshot.storage && "quotaWarningLevel" in snapshot.storage &&
+                            "storagePersisted" in snapshot.storage;
+        // Strikte Tabus: NIEMALS sbkim_keys, NIEMALS Klartext-nodeId der Geschwister.
+        var noKeys = !("sbkim_keys" in snapshot) && !("privateKey" in snapshot);
+        var siblingsAnonymized = snapshot.siblings.every(function (s) {
+          return s && (s.nodeIdHash !== undefined) && (s.nodeId === undefined);
+        });
+        var pass = hasReadEntry && snapshotShape && noKeys && siblingsAnonymized;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          snapshot: snapshot,
+          sub_e_eintrag_da: hasReadEntry,
+          schema_ok: snapshotShape,
+          keine_keys: noKeys,
+          siblings_anonymisiert: siblingsAnonymized,
+          erwartung: "read() liefert Anker-Snapshot fail-soft (Felder dürfen null/[] sein, wenn keine Module geladen sind), Sub-(e)-Buffer hat einen Eintrag mit kind:membrane-read decision:accepted origin:null, keine sbkim_keys/nodeId-Klartext-Felder",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 6: postMessage Same-Origin (kein Eintrag) + Fremd-Origin → rejected-allowlist", async function () {
+        await ensureSetup();
+
+        // 6a Same-Origin via window.postMessage — KEIN Eintrag.
+        await new Promise(function (resolve) {
+          var sameOrigin = window.location.origin;
+          var handlerSeen = false;
+          function once() {
+            if (handlerSeen) return;
+            handlerSeen = true;
+            window.removeEventListener("message", once);
+            // Kleine Verzögerung, damit Modul-15-Listener auch durchgelaufen ist.
+            setTimeout(resolve, 10);
+          }
+          window.addEventListener("message", once);
+          window.postMessage({ type: "sbkim/membrane/v1", op: "sporeRef", nonce: "n-same", fromOrigin: sameOrigin }, sameOrigin);
+          // Fallback-Timeout, falls Browser-Event nicht feuert.
+          setTimeout(once, 200);
+        });
+        var afterSameOrigin = SbkimMembrane.fremdzugriff.list().length;
+
+        // 6b Fremd-Origin via dispatchEvent(new MessageEvent('message',{origin:...}))
+        // — synchroner Pfad, kein Promise nötig.
+        var fakeEvent = new MessageEvent("message", {
+          origin: "https://foo.example",
+          data: { type: "sbkim/membrane/v1", op: "sporeRef", nonce: "n-fremd", fromOrigin: "https://foo.example" },
+        });
+        window.dispatchEvent(fakeEvent);
+        var listAfterFremd = SbkimMembrane.fremdzugriff.list();
+        var afterFremd = listAfterFremd.length;
+        var fremdEntry = listAfterFremd[listAfterFremd.length - 1];
+
+        var sameOriginOk = afterSameOrigin === 0;
+        var fremdInBuffer = afterFremd === 1;
+        var fremdDecisionOk = fremdEntry && fremdEntry.decision === "rejected-allowlist";
+        var fremdKindOk = fremdEntry && fremdEntry.kind === "membrane-postmessage";
+        var fremdOriginOk = fremdEntry && fremdEntry.origin === "https://foo.example";
+        var fremdDetailsOk = fremdEntry && fremdEntry.details &&
+                             fremdEntry.details.op === "sporeRef" &&
+                             fremdEntry.details.nonce === "n-fremd";
+
+        var pass = sameOriginOk && fremdInBuffer && fremdDecisionOk && fremdKindOk && fremdOriginOk && fremdDetailsOk;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 6 OK" : "Test 6 fehlgeschlagen");
+        return {
+          eintraege_nach_same_origin: afterSameOrigin,
+          eintraege_nach_fremd:       afterFremd,
+          fremd_eintrag: fremdEntry,
+          erwartung: "Same-Origin postMessage erzeugt KEINEN Eintrag, Fremd-Origin erzeugt Eintrag {kind:'membrane-postmessage', decision:'rejected-allowlist', origin:'https://foo.example', details:{op:'sporeRef', nonce:'n-fremd'}}",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 7: init mit allowedOrigins → Fremd-Origin gibt decision 'ignored'/'accepted'", async function () {
+        // Re-Init mit Allowlist überschreibt die Optionen. Wichtig: init
+        // ist idempotent, aber Optionen werden bei jedem Aufruf neu
+        // gesetzt (Karte 15 § Bau-Hinweise).
+        await SbkimMembrane.init({
+          lampSelector: FAKE_LAMP_SELECTOR,
+          allowedOrigins: ["https://foo.example"],
+          mountModal: false,
+        });
+        SbkimMembrane.fremdzugriff.clear();
+
+        // 7a: Allowlisted Origin + bekannter type → "ignored"
+        // (Stufe 1 ohne Bedienungs-Pfad — Karte 15 § Sub (b) Bau-15).
+        var allowedKnownTypeEvent = new MessageEvent("message", {
+          origin: "https://foo.example",
+          data: { type: "sbkim/membrane/v1", op: "query", nonce: "n-allowed-1" },
+        });
+        window.dispatchEvent(allowedKnownTypeEvent);
+
+        // 7b: Allowlisted Origin + unbekannter type → "ignored"
+        var allowedUnknownTypeEvent = new MessageEvent("message", {
+          origin: "https://foo.example",
+          data: { type: "fremd/protokoll/v0", op: "ping" },
+        });
+        window.dispatchEvent(allowedUnknownTypeEvent);
+
+        // 7c: Nicht-allowlisted Origin → "rejected-allowlist"
+        var rejectedEvent = new MessageEvent("message", {
+          origin: "https://baz.example",
+          data: { type: "sbkim/membrane/v1", op: "sporeRef" },
+        });
+        window.dispatchEvent(rejectedEvent);
+
+        var list = SbkimMembrane.fremdzugriff.list();
+        var allKindOk = list.length === 3 && list.every(function (e) { return e.kind === "membrane-postmessage"; });
+        var firstDecisionOk  = list[0] && list[0].decision === "ignored" && list[0].origin === "https://foo.example";
+        var secondDecisionOk = list[1] && list[1].decision === "ignored" && list[1].origin === "https://foo.example";
+        var thirdDecisionOk  = list[2] && list[2].decision === "rejected-allowlist" && list[2].origin === "https://baz.example";
+        var pass = allKindOk && firstDecisionOk && secondDecisionOk && thirdDecisionOk;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 7 OK" : "Test 7 fehlgeschlagen");
+        return {
+          eintraege: list.map(function (e) { return { kind: e.kind, decision: e.decision, origin: e.origin, op: e.details && e.details.op }; }),
+          allowed_origins_jetzt: SbkimMembrane._meta.allowedOrigins,
+          erwartung: "drei Einträge — beide Allowlist-Origin-Messages = 'ignored' (Stufe 1 ohne Antwort-Pfad), nicht-Allowlist-Origin = 'rejected-allowlist'",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("15_membran",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("15_membran",
+          "  MODUL 15 MEMBRAN bereit, Funktionen: init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}");
+        SbkimUI.log("15_membran",
+          "ℹ Hinweis: MEMBRANE_FREMDZUGRIFF_BUFFER_MAX (= 50) steht in §0; AGENT_HINT_MAX_LEN (= 64) ist modul-lokal — NICHT in der Selbstcheck-Zeile.");
       });
     })();
   </script>

@@ -112,6 +112,16 @@
       return window.SbkimUiDemo && window.SbkimUiDemo.init();
     });
 
+    // 15 Membran — Fremdzugriff-Detektor + Navleisten-Lampe (Sub (e)).
+    // Sub (e) hat KEINE Pflicht-Modul-Abhängigkeiten (Karte 15 § Nutzt) —
+    // Buffer + Lampe + Modal laufen auch ohne Storage/Spore. Sub (a)
+    // read() liest Spore/Anastomose/Storage fail-soft.
+    await initModule("SbkimMembrane", function () {
+      return window.SbkimMembrane && window.SbkimMembrane.init({
+        lampSelector: "#lamp-fremd",
+      });
+    });
+
     // 00 Doku-Fenster zuletzt — liest die anderen Module als optionale
     // Quellen. Sage-Page hat aktuell KEIN sichtbares Such-Symbol (das ist
     // ein Endknoten-PWA-UI-Element). Wir versuchen mehrere Selektoren;
