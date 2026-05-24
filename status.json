@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-05-21",
+  "lastUpdated": "2026-05-24",
   "branch": "claude/semantic-agent-network-Y03Vg",
 
   "endknoten": [
@@ -71,7 +71,7 @@
   ],
 
   "membranBacklog": [
-    { "id": "15", "name": "Membran",        "score": "schablone", "siegel": "Stub (Backlog), Priorität niedrig", "kurz": "Außenhülle zwischen PWA-Zelle und Browser-Umgebung — vier Sub-Bereiche (a Read-API für KI-Browser-Agenten ✅ Pflicht / b postMessage-Brücke Rezeptbuch↔Mixarium mit Origin-Allowlist ✅ Pflicht / c signiertes Capability-Token ⏳ später / d Backup-Datei-Sluse 📄 nur Verweis auf Bau 02.X); Spec ausstehend bis Anthropic Browser Use / OpenAI Operator real verfügbar oder konkreter App-zu-App-Wunsch eines Endknoten-Betreibers" }
+    { "id": "15", "name": "Membran",        "score": "schablone", "siegel": "Stub (Backlog), Priorität hoch (2026-05-24, Auslöser Gemini 3.5 Flash)", "kurz": "Außenhülle zwischen PWA-Zelle und Browser-Umgebung — fünf Sub-Bereiche (a Read-API für KI-Browser-Agenten ✅ Pflicht / b postMessage-Brücke Rezeptbuch↔Mixarium mit Origin-Allowlist ✅ Pflicht / c signiertes Capability-Token ⏳ später / d Backup-Datei-Sluse 📄 nur Verweis auf Bau 02.X / e Fremdzugriff-Detektor + rote Navleisten-Lampe ✅ Pflicht, neu 2026-05-24). Hochstufung niedrig → hoch nach Google I/O 2026 — Gemini 3.5 Flash als Default-Modell in Gemini-App + Google-Suche, agentisch. Sub (e) zieht sofort (Spec-Sitzung 15 in Brief-99-Pipeline); Sub (a)+(b)+(c) weiter an ursprünglicher Schwelle (KI-Browser-SDK + App-zu-App-Wunsch)" }
   ],
 
   "nodeTypes": {

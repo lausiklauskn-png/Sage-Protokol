@@ -1,15 +1,42 @@
 # Modul 15 — Membran
 
-> **Status:** 🟫 Schablone · Membran-Backlog · Priorität niedrig  ·  **Schicht:** Außenhülle (Brücke zwischen Knoten und seiner Browser-Umgebung)  ·  **Anker:** Sage-Page → Karte 4 / 13 / 14 als zweiter Backlog parallel zu Diffusion
+> **Status:** 🟫 Schablone · Membran-Backlog · **Priorität hoch** (2026-05-24, Auslöser Gemini 3.5 Flash)  ·  **Schicht:** Außenhülle (Brücke zwischen Knoten und seiner Browser-Umgebung)  ·  **Anker:** Sage-Page → Karte 4 / 13 / 14 als zweiter Backlog parallel zu Diffusion, plus **Navleisten-Lampe** (Sub (e))
 > **Datei (Code):** `src/modules/15_membran.js` (existiert noch nicht — Spec ausstehend)
 >
 > _Außenschicht des Knotens. Regelt, was zwischen der PWA-Zelle und ihrer
 > Browser-Umgebung passiert: lesender Zugriff für KI-Browser-Agenten
-> (Anthropic Browser Use, OpenAI Operator, Comet, Dia, Arc-Nachfolger)
-> und App-zu-App-Brücken zwischen Endknoten desselben Browsers, ohne
-> Server-Hop. Stub, kein Spec-Detail — wartet auf den Markt-Reife-Moment
-> der KI-Browser oder den ersten konkreten App-zu-App-Wunsch eines
-> Endknoten-Betreibers._
+> (Anthropic Browser Use, OpenAI Operator, Comet, Dia, Arc-Nachfolger,
+> **Gemini 3.5 Flash** als neues Default-Modell in Gemini-App + Google-
+> Suche seit I/O 2026) und App-zu-App-Brücken zwischen Endknoten
+> desselben Browsers, ohne Server-Hop. Stub, kein Spec-Detail —
+> Spec-Sitzung 15 nun **vorgemerkt** durch Gemini-3.5-Flash-Ankündigung
+> (Klaus-Eintrag 2026-05-24)._
+
+---
+
+## Hochstufungs-Notiz 2026-05-24 (Auslöser Gemini 3.5 Flash)
+
+Google hat auf der I/O 2026 (19./20. Mai) **Gemini 3.5 Flash** als
+neues **Default-Modell** in der Gemini-App und in der Google-Suche
+(AI Mode) ausgerollt — global, „built to act, not just answer"
+(agentisch, Coding- und Tool-Use-Schwerpunkt). Damit ist die
+Vorbedingung „KI-Browser real verfügbar" aus § Wann ziehen
+(Schwellwert) **defacto** erfüllt: ein agentisches Default-Modell
+sitzt ab sofort auf jedem Android-Tablet, das Klaus' Endknoten
+besucht — heute noch über Gemini-App / Suche, morgen vermutlich
+über Browser-Integration.
+
+**Karte 15 Priorität niedrig → hoch.** Neue Sub (e) ergänzt
+(Fremdzugriff-Detektor + Lampe, siehe unten). Spec-Sitzung 15
+ist als Folge-Sitzung in der Brief-99-Pipeline vorgemerkt; Brief
+liegt unter `docs/sessions/BRIEF_SPEC_15_MEMBRAN.md`.
+
+**Was sich NICHT ändert:** das Empfangsmodus-Prinzip aus
+`CLAUDE.md` (keine Eigen-Anfragen, keine Pulsation, keine Crawler)
+bleibt unangetastet. Membran ist und bleibt passiv — der
+Fremdzugriff-Detektor **beobachtet**, er filtert nicht; die
+Lampe **zeigt**, sie blockiert nicht. Block-Verhalten gehört in
+Karte 12 (Blocklist), nicht in 15.
 
 ---
 
@@ -228,6 +255,87 @@ zu-App-Transport-Weg, solange Sub (b) noch Stub ist. Verdient als
 Sluse einen formalen Anker, damit Modul 09 und Modul 00 ihn
 einheitlich erwähnen können.
 
+### Sub (e) — Fremdzugriff-Detektor + Navleisten-Lampe ✅ **Pflicht (Stufe 1, neu 2026-05-24)**
+
+Sichtbare Membran-Rezeption: jeder Zugriff von außen — sei es ein
+KI-Browser-Agent (Gemini 3.5 Flash, Anthropic Browser Use, OpenAI
+Operator, Comet, Dia), eine fremde `postMessage`-Quelle, oder
+irgendeine Cross-Origin-Probe an einem Sage-Endpunkt — schlägt sich
+in einer **roten Lampe** in der Navleiste der Sage-Page nieder. Klick
+auf die Lampe öffnet ein **Fremdzugriff-Fenster** mit Live-Liste der
+letzten N Zugriffe.
+
+**Anker-Form** (Spec-Sitzung 15 entscheidet die finale Signatur):
+
+```js
+window.SbkimMembrane.fremdzugriff = {
+  list: () => FremdzugriffEntry[],   // ringbuffer, max N (Vorschlag 50)
+  subscribe: (cb) => unsubscribeFn,   // für die Lampen-Animation
+  clear: () => void                    // manuelles Aufräumen
+};
+
+// FremdzugriffEntry (Schablone)
+{
+  at: <timestamp>,
+  kind: "membrane-read" | "membrane-postmessage" | "endpoint-probe",
+  origin: <string | null>,            // event.origin oder Referer-Origin
+  agentHint: <string | null>,         // User-Agent-Marker, fail-soft
+  endpoint: <string | null>,          // z.B. "/sbkim/spore.json"
+  decision: "accepted" | "ignored" | "rejected-allowlist",
+  details: { ... }                    // op-spezifisch
+}
+```
+
+**Lampe in der Navleiste:**
+
+- Position: dritte Lampe rechts neben `#lamp-alive` („lebt", grün) und
+  `#lamp-traffic` („verkehr", gold-Puls). Vorschlag-ID `#lamp-fremd`,
+  Label `"fremd"`.
+- Default-Zustand: dunkel/aus (kein Fremdzugriff in der aktuellen
+  Sitzung registriert).
+- Aktiv-Zustand: **rot leuchtend** (Vorschlag CSS-Variable
+  `--lamp-alert: #DC2626` oder ähnlich), kurzer Puls beim ersten
+  Eintrag analog `lamp-pulse` für `lamp-traffic`.
+- Klick: öffnet Fremdzugriff-Fenster (Modal analog Doku-Fenster
+  Modul 00, oder eigene Card-Slide aus der rechten Seite — Spec
+  entscheidet). Inhalt: Tabelle der `FremdzugriffEntry` mit
+  Zeitstempel, Origin, Endpoint, Decision.
+
+**Strikte Tabus für Sub (e):**
+
+- **Lampe blockiert nicht.** Sub (e) ist Beobachtung + Anzeige —
+  Filter-Verhalten gehört in Karte 12 (Blocklist), Rate-Limit in
+  Karte 11. Die Lampe darf nicht „blinken weil ich abgewiesen
+  habe", sondern „blinken weil Fremdzugriff stattgefunden hat".
+- **Niemals PII in `FremdzugriffEntry`.** `origin` ist OK (öffentlich,
+  Browser-bekannt); IP-Adresse, Cookies, User-Identität von
+  Drittseiten **nie**. `agentHint` ist freier String, aber gehasht
+  wenn länger als N Zeichen — Spec entscheidet.
+- **Ringbuffer, kein Persistent-Log.** Sub (e) hält die letzten N
+  Einträge im RAM (oder optional `sessionStorage`, nicht IndexedDB).
+  Klaus' Fremdzugriff-Übersicht ist eine **lebende Schau**, kein
+  Audit-Archiv. Wer Audit will, baut Modul 12 (Blocklist) + dort
+  einen Append-Log.
+- **Same-Origin-Zugriffe zählen NICHT als Fremdzugriff.** Die eigene
+  Sage-Page-PWA, die ihre eigene `status.json` fetched, ist kein
+  Fremd-Vorgang — sonst pulst die Lampe ohne Anlass. Definition
+  „fremd" = `event.origin !== window.location.origin` für
+  postMessage + Referer-Check für HTTP-Endpoint-Probes.
+
+**Architektur-Trennung:** Sub (e) hat zwei Schichten —
+**Detektion** (Hook in Sub (a) Read-API + Sub (b) postMessage-
+Listener + Service-Worker-Fetch-Listener für Endpoint-Probes) und
+**Anzeige** (Navleisten-Lampe + Modal). Spec entscheidet, ob die
+Anzeige-Schicht in Modul 00 (Doku-Fenster) eingehängt wird oder
+eigenständig in der Sage-Page als reines UI-Stück lebt.
+
+**Warum jetzt (Hochstufungs-Begründung):** Gemini 3.5 Flash auf
+jedem Android-Tablet ab Mai 2026 macht „liest mit, ohne dass Klaus
+es sieht" zur realistischen Sorge. Die Lampe ist die **kleinste
+sinnvolle Antwort** vor Sub (a) Capability-Token-Bau (Stufe 3) —
+sie macht das Phänomen sichtbar, ohne neue Angriffsfläche zu
+eröffnen.
+
 ---
 
 ## Was eine spätere Spec-Sitzung füllen müsste
@@ -282,13 +390,55 @@ eine Spec-Sitzung 15.
   Membran-Karte verweist zurück. Wer baut die Verweise — Spec-Sitzung
   15 oder eigene Mini-Pflege?
 
+### Für Sub (e) — Fremdzugriff-Detektor + Lampe
+
+- Ringbuffer-Größe N (Vorschlag 50 — zu klein verliert frühe Spuren,
+  zu groß bläht RAM auf).
+- Persistenz: nur RAM, oder `sessionStorage` (übersteht Tab-Reload,
+  nicht Tab-Close), oder doch ein eigener IndexedDB-Store
+  `sbkim_membrane_log` mit fixer TTL-Eviction (z.B. 24 h)?
+- Modal-Form: Wiederverwendung Modul-00-Doku-Fenster-Modal (eine
+  zweite Sektion in der bestehenden Doku) ODER eigenes Modal in der
+  Sage-Page ODER eigenständige Slide-Card aus dem rechten Rand?
+  Spec-Sitzung wägt ab.
+- Lampen-Pulse-Verhalten: jeder Fremdzugriff pulst (sichtbar laut,
+  könnte nervig wirken) oder nur „Lampe leuchtet rot, solange in
+  den letzten X Minuten ≥1 Eintrag"? Spec wählt eine Variante.
+- Endpoint-Probe-Erkennung: Service-Worker-Fetch-Listener prüft
+  `Origin` / `Referer`-Header für Cross-Origin — was tun bei
+  Same-Origin-Subpfad-Requests aus einem iframe oder einer
+  Schwester-App im selben Browser? Definition „fremd" muss
+  formalisiert werden.
+- Was passiert bei `decision: "rejected-allowlist"` (Sub (b) lehnt
+  unbekannten postMessage-Origin ab)? Lampe trotzdem rot? Vorschlag
+  ja — Klaus soll Abweisungen sehen, weil sie auf Phishing-Versuche
+  hindeuten können.
+
 ---
 
 ## Wann ziehen (Schwellwert)
 
-Modul 15 wird gebaut, wenn **mindestens zwei** der folgenden
-Bedingungen erfüllt sind (höhere Schwelle als 14, weil Membran-Bau
-neue Angriffsfläche eröffnet):
+> **Aktualisierung 2026-05-24:** Die ursprüngliche Schwelle „mindestens
+> zwei der drei Bedingungen" ist faktisch erfüllt, **wenn man Sub (e)
+> separat zieht**. Sub (a)+(b)+(c) bleiben an ihrer ursprünglichen
+> Schwelle hängen (KI-Browser-SDK + App-zu-App-Wunsch); Sub (e)
+> **Fremdzugriff-Detektor + Lampe** wird sofort gezogen, weil Gemini
+> 3.5 Flash als Default-Modell jetzt ausgerollt ist und Klaus die
+> Beobachtungs-Schicht haben will, **bevor** die KI-Agenten anfangen,
+> seine Endknoten zu probieren.
+
+**Reihenfolge nach Hochstufung 2026-05-24:**
+
+1. **Sub (e) Fremdzugriff-Lampe — sofort** (Spec-Sitzung 15 mit
+   Brief `BRIEF_SPEC_15_MEMBRAN.md`).
+2. **Sub (a) Read-API + Sub (b) postMessage-Brücke** — weiter wie
+   gehabt, ziehen wenn mindestens zwei der ursprünglichen drei
+   Bedingungen erfüllt sind.
+3. **Sub (c) Capability-Token** — Stufe 3, frühestens nach Sub (a)+(b).
+4. **Sub (d) Backup-Datei** — schon vorhanden (Modul 02 Bau 02.X),
+   nur Querverweis-Pflege offen.
+
+**Ursprüngliche Schwelle (für Sub (a)+(b)+(c)):**
 
 - **KI-Browser real:** Anthropic Browser Use oder OpenAI Operator
   öffentlich verfügbar, mit dokumentiertem JS-Bridge-Mechanismus.
@@ -301,10 +451,11 @@ neue Angriffsfläche eröffnet):
   ein dritter Endknoten will sich andocken, der nicht auf
   `github.io` liegt.
 
-Bis dahin: Stub-Status, kein Spec, kein Code. Wer früher anfängt,
-spekuliert über einen Browser-Markt, der noch nicht stabilisiert ist
-— Browser-Use-SDKs ändern sich monatlich, eine zu frühe Spec wird
-veraltet sein, bevor sie gebraucht wird.
+Für Sub (a)+(b)+(c) gilt weiterhin: Stub-Status, kein Spec, kein Code,
+bis Schwelle erfüllt. Wer früher anfängt, spekuliert über einen
+Browser-Markt, der noch nicht stabilisiert ist — Browser-Use-SDKs
+ändern sich monatlich, eine zu frühe Spec wird veraltet sein, bevor
+sie gebraucht wird.
 
 ---
 
@@ -406,6 +557,7 @@ Origin still verworfen; Capability-Token mit abgelaufenem
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Stub angelegt | 2026-05-18 | Hauptsitzung 15-Membran-Stub | Membran-Backlog (proaktiv, **Außen**-Pendant zum Diffusion-Backlog 14). Vier Sub-Bereiche (a Read-API ✅ Pflicht / b postMessage-Brücke ✅ Pflicht / c Capability-Token ⏳ später / d Backup-Sluse 📄 nur verweisend). Klaus' Auslöser: aufkommende KI-Browser (Anthropic Browser Use, OpenAI Operator, Comet, Dia) + Wunsch nach App-zu-App-Kommunikation Rezeptbuch ↔ Mixarium ohne Server. Vokabular „Cells" als Mycel-Anker (Zellmembran). |
+| Hochstufung + Sub (e) | 2026-05-24 | Pflege-Hauptsitzung Gemini-3.5-Flash-Anlass | Priorität niedrig → **hoch**. Auslöser: Google I/O 2026 — Gemini 3.5 Flash als Default-Modell in Gemini-App + Google-Suche (AI Mode), agentisch („act, not just answer"). Neue Sub (e) ergänzt — Fremdzugriff-Detektor + rote Navleisten-Lampe in der Sage-Page (rechts neben `#lamp-alive` + `#lamp-traffic`), Klick öffnet Fremdzugriff-Fenster mit Ringbuffer der letzten N Einträge. Sub (e) zieht **sofort** (eigene Spec-Sitzung 15 in Brief-99-Pipeline); Sub (a)+(b)+(c) bleiben an ursprünglicher Schwelle. Brief: `docs/sessions/BRIEF_SPEC_15_MEMBRAN.md`. |
 | Spec gefüllt | — | — | — |
 | Code geschrieben | — | — | — |
 | Sichttest | — | — | — |
@@ -416,7 +568,7 @@ Origin still verworfen; Capability-Token mit abgelaufenem
 **Querverweise**
 
 - **Abhängigkeiten (für spätere Spec):** Modul 02 (Spore-Signatur für Capability-Token) · Modul 01 (Lese-Recht auf `sbkim_spore`, `sbkim_siblings` — kein Schreiben) · Modul 00 (Spiegelung Quota/Persist-Felder im Read-Snapshot) · keine neuen Stores in Stufe 1
-- **Wird genutzt von:** KI-Browser-Agenten (Anthropic Browser Use, OpenAI Operator, Comet, Dia) · Endknoten-Schwester-Apps auf anderen Origins · Benutzer mit Backup-Datei-Wunsch
+- **Wird genutzt von:** KI-Browser-Agenten (Anthropic Browser Use, OpenAI Operator, Comet, Dia, **Gemini 3.5 Flash** als Default in Gemini-App + Google-Suche seit I/O 2026) · Endknoten-Schwester-Apps auf anderen Origins · Benutzer mit Backup-Datei-Wunsch · **Klaus selbst über Navleisten-Lampe** (Sub (e), Live-Schau der eingehenden Fremdzugriffe)
 - **Hook-Punkte (nur Verweis, nicht implementiert):** Modul 10 (Reputation) auf Capability-Token-Aussteller · Modul 11 (Rate-Limit) auf eingehende postMessage-Calls pro Origin · Modul 12 (Blocklist) auf Origin-Ebene
 - **Site-Karte:** Sage-Page Karten 4 / 13 / 14 ziehen `membranBacklog[]` parallel zu `schutzBacklog[]` und `diffusionBacklog[]` — Pflege-Sitzung 2026-05-18 (diese Sitzung)
 - **Paper:** `sbkim_paper.pdf` Kap. 1.4 (Empfangsmodus-Prinzip) · Kap. 6 (Geflecht-Außenkontakt)
