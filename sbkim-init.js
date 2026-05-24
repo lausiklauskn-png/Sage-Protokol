@@ -119,6 +119,12 @@
     await initModule("SbkimMembrane", function () {
       return window.SbkimMembrane && window.SbkimMembrane.init({
         lampSelector: "#lamp-fremd",
+        // Sage-Page-only Sichttest-Knopf im Fremdzugriff-Modal (Pflege
+        // 2026-05-24). Endknoten setzen das NICHT — der Knopf erscheint
+        // ausschließlich in der Sage-Page für Klaus' Lampen-Sichttest,
+        // weil die drei Endknoten same-origin sind und ein echter
+        // Cross-Origin-Trigger schwer reproduzierbar ist.
+        enableTestButton: true,
       });
     });
 

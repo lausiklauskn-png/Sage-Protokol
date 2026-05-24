@@ -2214,9 +2214,15 @@ Bietet (öffentlich):
       lampSelector?: string,            // Default '#lamp-fremd' (CSS-Selektor in der Page)
       mountModal?:   boolean,           // Default true — Modal in document.body anlegen + Click-Handler
       // Sub (b) Allowlist (Stufe-2-Pflicht, in Stufe 1 noch optional):
-      allowedOrigins?: string[]         // strict-String-Liste, kein Wildcard;
+      allowedOrigins?: string[],        // strict-String-Liste, kein Wildcard;
                                         // Default [] (Sub (b) ohne Allowlist verwirft alle Cross-Origin-Messages
                                         // als rejected-allowlist und triggert Sub-(e)-Eintrag)
+      // Sage-Page-Sichttest-Knopf (Pflege 2026-05-24):
+      enableTestButton?: boolean        // Default false. Wenn true, ergänzt das Fremdzugriff-Modal
+                                        // einen sichtbaren „🧪 Demo-Eintrag"-Knopf neben „Aufräumen",
+                                        // der via _recordForTest einen synthetischen endpoint-probe-Eintrag
+                                        // einschiebt. Ausschließlich Sichttest-Werkzeug; Endknoten setzen
+                                        // die Flag NICHT (echter Live-Test kommt dort über fremde Origin).
     }
 
   FremdzugriffEntry-Form (Karte 15 § Sub (e) Schema, verbindlich):

@@ -66,6 +66,14 @@
   var modalKeydownHandler = null;
   var postMessageListener = null;
   var broadcastChannel = null;
+  // Sage-Page-Sichttest-Anker (Pflege 2026-05-24, „Fremd-Lampe-Test-Knopf"):
+  // wenn `init({enableTestButton:true})` gesetzt ist, ergänzt das Modal
+  // im Summary-Bereich einen kleinen „🧪 Demo-Eintrag"-Knopf. Endknoten-
+  // PWAs setzen die Flag NICHT; nur Sage-Page setzt sie. Der Knopf ist
+  // ausschließlich Sichttest-Werkzeug für Klaus und ruft `_recordForTest`
+  // mit einem synthetischen `kind:"endpoint-probe"`-Eintrag auf — keine
+  // produktive Pfad-Erweiterung.
+  var testButtonEnabled = false;
 
   // ---- Hilfsfunktionen ----
 
@@ -402,6 +410,40 @@
     summary.appendChild(count);
     summary.appendChild(clearBtn);
 
+    // Sage-Page-Sichttest-Knopf (nur wenn init({enableTestButton:true})).
+    // Endknoten-PWAs setzen die Flag NICHT — der Knopf ist dort unsichtbar.
+    if (testButtonEnabled) {
+      var testBtn = doc.createElement("button");
+      testBtn.type = "button";
+      testBtn.setAttribute("data-membran-test", "");
+      testBtn.textContent = "🧪 Demo-Eintrag";
+      testBtn.title = "Sichttest: synthetischen endpoint-probe-Eintrag einfügen (Sage-Page-Sichttest, kein produktiver Pfad)";
+      testBtn.style.cssText = [
+        "background:rgba(110,168,254,0.18)",
+        "color:#F5F5FF",
+        "border:1px solid rgba(110,168,254,0.45)",
+        "border-radius:8px",
+        "padding:0.3rem 0.7rem",
+        "cursor:pointer",
+        "font-size:0.86rem",
+      ].join(";");
+      testBtn.addEventListener("click", function () {
+        try {
+          recordForTest({
+            kind: "endpoint-probe",
+            origin: "https://gemini.google.com",
+            agentHint: "Sichttest/1.0 (Demo-Knopf in Sage-Page-Modal)",
+            endpoint: "/sbkim/spore.json",
+            decision: "accepted",
+            details: { method: "GET", secFetchSite: "cross-site" },
+          });
+        } catch (err) {
+          warn("Demo-Eintrag-Knopf fehlgeschlagen", err);
+        }
+      });
+      summary.appendChild(testBtn);
+    }
+
     var table = doc.createElement("table");
     table.style.cssText = "width:100%;border-collapse:collapse;font-size:0.8rem;font-family:'Geist Mono',ui-monospace,monospace;";
     table.innerHTML =
@@ -687,6 +729,9 @@
     }
     if (Array.isArray(opts.allowedOrigins)) {
       allowedOrigins = opts.allowedOrigins.filter(function (o) { return typeof o === "string"; });
+    }
+    if (opts.enableTestButton === true) {
+      testButtonEnabled = true;
     }
     var mountModal = opts.mountModal !== false; // default true
 
