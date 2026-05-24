@@ -2259,6 +2259,23 @@ Storage:
   Sub (b) Stufe 2 entscheidet ggf. neuen Store sbkim_membrane_inbox für
   hint-Leads (Spec-Sitzung 15.B).
 
+  BroadcastChannel('sbkim-membrane') hat seit Bau-Sitzung 15.SW vom
+  2026-05-24 ZWEI aktive Schreiber:
+    - Page-Schicht (`src/modules/15_membran.js` subscribeBroadcastChannel-
+      Closure): LESEND. Hört auf `SBKIM_MEMBRANE_PROBE`-Messages und legt
+      den darin transportierten FremdzugriffEntry (kind:"endpoint-probe")
+      in den Ringbuffer.
+    - SW-Schicht (`src/sbkim-sw.js` postProbeViaBroadcastChannel): SCHREIBEND.
+      Postet bei jedem als Fremd erkannten Fetch auf einen SBKIM-Endpunkt
+      ein `{type:"SBKIM_MEMBRANE_PROBE", entry:FremdzugriffEntry}`-Paket.
+      Pro Probe neue Channel-Instanz (open → post → close), KEIN long-lived
+      Channel im SW (Lebenszyklus-Komplikation vermieden — eigene Folge-
+      Pflege falls Probe-Volumen je zum Bottleneck wird).
+  Message-Schema (SBKIM_MEMBRANE_PROBE) bleibt UNVERÄNDERT seit Spec-
+  Sitzung 15 vom 2026-05-24 / Bau-Sitzung 15 (Page-Empfänger ist
+  schema-bestimmend). Bau-Sitzung 15.SW hat KEINE Schema-Änderung
+  vorgenommen — nur den Sender im SW ergänzt.
+
 Events:
   reagiert: window "message"-Event                     Sub (b)-Empfänger + Sub-(e)-Hook
   reagiert: BroadcastChannel("sbkim-membrane") "message"

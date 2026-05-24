@@ -107,7 +107,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
-| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, Sub (a)+(b) grob, Sub (c) später, Sub (d) Verweis) | Code-Stub (Bau-Sitzung 15 Sub (e) 2026-05-24) | ungeprüft — wartet auf Klaus' Browser-Lauf | Außenhülle zwischen PWA-Zelle und Browser-Umgebung. **Bau-Sitzung 15 vom 2026-05-24:** `src/modules/15_membran.js` neu angelegt — Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe vollständig implementiert (Ringbuffer RAM-only mit FIFO-Verdrängung bei `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50`, Listener-Liste mit subscribe/unsubscribe, idempotenter `clear()`, `_recordForTest`-Test-Brücke, Lampen-Toggle via `.fremd-alert`/`.fremd-pulse`, eigenständiges Modal in `document.body` mit Backdrop/Esc/✕/Aufräumen-Knopf + tabellarischer Live-Render, Click-Handler an `#lamp-fremd`, BroadcastChannel('sbkim-membrane')-Subscription für SW-endpoint-probes — SW-Erweiterung in `src/sbkim-sw.js` ZURÜCKGESTELLT als eigene Bau-Sitzung 15.SW). Sub (a) `read()` als Skelett (fail-soft Snapshot aus `SbkimSpore`/`SbkimAnastomose`/`SbkimStorage._meta`/`navigator.storage`; Geschwister anonymisiert via `nodeIdHash = base64url-sha256(nodeId)`; Tabu `sbkim_keys` strikt eingehalten) — finale Feld-Liste wartet auf Spec-Sitzung 15.B. Sub (b) postMessage-Listener als Skelett (Allowlist via `init({allowedOrigins})`; Same-Origin = kein Eintrag; bekannter `type` + Allowlist = `decision:"ignored"` (Bedienung wartet auf 15.B); unbekannter `type` + Allowlist = `"ignored"`; nicht-Allowlist = `"rejected-allowlist"`). KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). Modul-lokal `AGENT_HINT_MAX_LEN = 64`, `LAMP_PULSE_MS = 600`. `index.html` um drei additive Schritte erweitert: `:root --lamp-alert:#DC2626;` + zwei CSS-Regeln (`.lamp.fremd-alert` mit Glow + Atmung-Animation, `.lamp.fremd-pulse` via `@keyframes lamp-alert-pulse`) + `<span class="lamp" id="lamp-fremd">` + Label nach `#lamp-traffic` + `<script src="src/modules/15_membran.js">` + `SbkimMembrane.init({lampSelector:'#lamp-fremd'})`-Aufruf in `sbkim-init.js` (nach 08, vor 00). Panel 15 in `tests/manual_check.html` mit Setup + sieben Test-Knöpfen (Setup, `_recordForTest`-Probe drei Einträge, subscribe+Counter, `clear()`+Lampe-aus, Ringbuffer-Voll-Probe 60→50 mit P10..P59-Verdrängung, `read()`-Snapshot+Sub-(e)-Hook+Tabu-Check, postMessage Same/Fremd-Origin via `dispatchEvent(MessageEvent)`, init mit Allowlist→`ignored`/`rejected-allowlist`) + Selbstcheck-Hinweis. Headless-Smoke 11/11 grün im Node-Stub. `node --check src/modules/15_membran.js` grün, alle 12 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch grün. **Sichttest ungeprüft** (wartet auf Klaus' Browser-Lauf Panel 15 + Sage-Page-Navleisten-Lampe). |
+| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, Sub (a)+(b) grob, Sub (c) später, Sub (d) Verweis) | Code-Stub (Bau-Sitzung 15 Sub (e) 2026-05-24 + **Bau 15.SW SW-Probe-Detektor 2026-05-24**) | ungeprüft — wartet auf Klaus' Browser-Lauf (Panel 15 Knopf 8 SW-Probe-Simulation BroadcastChannel + Knopf 9 Klaus-Hinweis für Live-Cross-Origin-Test) | Außenhülle zwischen PWA-Zelle und Browser-Umgebung. **Bau-Sitzung 15 vom 2026-05-24:** `src/modules/15_membran.js` neu angelegt — Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe vollständig implementiert (Ringbuffer RAM-only mit FIFO-Verdrängung bei `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50`, Listener-Liste mit subscribe/unsubscribe, idempotenter `clear()`, `_recordForTest`-Test-Brücke, Lampen-Toggle via `.fremd-alert`/`.fremd-pulse`, eigenständiges Modal in `document.body` mit Backdrop/Esc/✕/Aufräumen-Knopf + tabellarischer Live-Render, Click-Handler an `#lamp-fremd`, BroadcastChannel('sbkim-membrane')-Subscription für SW-endpoint-probes — SW-Erweiterung in `src/sbkim-sw.js` ZURÜCKGESTELLT als eigene Bau-Sitzung 15.SW). Sub (a) `read()` als Skelett (fail-soft Snapshot aus `SbkimSpore`/`SbkimAnastomose`/`SbkimStorage._meta`/`navigator.storage`; Geschwister anonymisiert via `nodeIdHash = base64url-sha256(nodeId)`; Tabu `sbkim_keys` strikt eingehalten) — finale Feld-Liste wartet auf Spec-Sitzung 15.B. Sub (b) postMessage-Listener als Skelett (Allowlist via `init({allowedOrigins})`; Same-Origin = kein Eintrag; bekannter `type` + Allowlist = `decision:"ignored"` (Bedienung wartet auf 15.B); unbekannter `type` + Allowlist = `"ignored"`; nicht-Allowlist = `"rejected-allowlist"`). KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). Modul-lokal `AGENT_HINT_MAX_LEN = 64`, `LAMP_PULSE_MS = 600`. `index.html` um drei additive Schritte erweitert: `:root --lamp-alert:#DC2626;` + zwei CSS-Regeln (`.lamp.fremd-alert` mit Glow + Atmung-Animation, `.lamp.fremd-pulse` via `@keyframes lamp-alert-pulse`) + `<span class="lamp" id="lamp-fremd">` + Label nach `#lamp-traffic` + `<script src="src/modules/15_membran.js">` + `SbkimMembrane.init({lampSelector:'#lamp-fremd'})`-Aufruf in `sbkim-init.js` (nach 08, vor 00). Panel 15 in `tests/manual_check.html` mit Setup + sieben Test-Knöpfen (Setup, `_recordForTest`-Probe drei Einträge, subscribe+Counter, `clear()`+Lampe-aus, Ringbuffer-Voll-Probe 60→50 mit P10..P59-Verdrängung, `read()`-Snapshot+Sub-(e)-Hook+Tabu-Check, postMessage Same/Fremd-Origin via `dispatchEvent(MessageEvent)`, init mit Allowlist→`ignored`/`rejected-allowlist`) + Selbstcheck-Hinweis. Headless-Smoke 11/11 grün im Node-Stub. `node --check src/modules/15_membran.js` grün, alle 12 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch grün. **Sichttest ungeprüft** (wartet auf Klaus' Browser-Lauf Panel 15 + Sage-Page-Navleisten-Lampe). |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -1809,6 +1809,139 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-24 · Bau-Sitzung 15.SW — Membran Sub (e) SW-Probe-Detektor
+
+**Sitzungs-Rolle:** Bau-Sitzung. Branch
+`claude/bau-15sw-membran-sw-probe`. Anschluss-Sitzung an Bau-Sitzung 15
+vom selben Tag (Brief
+`docs/sessions/BRIEF_BAU_15SW_MEMBRAN_SW_PROBE.md`). Auftrag aus
+dem Brief: `src/sbkim-sw.js` additiv um einen vorgezogenen Sub-(e)-
+Probe-Hook erweitern, der eingehende Fetches auf SBKIM-Endpunkte
+fail-soft als „fremd" / „same-origin" klassifiziert und Fremd-Versuche
+via `BroadcastChannel('sbkim-membrane')` an die Page-Membran-Schicht
+postet (Empfänger ist `subscribeBroadcastChannel`-Closure in
+`src/modules/15_membran.js` aus Bau 15). KEIN Eingriff in die drei
+bestehenden `handleBridge`-Pfade ANASTOMOSIS/LEGACY/HETEROKARYOSIS,
+KEIN `respondWith`, Probe-Hook ist passiv-beobachtend (Spec-Wille
+Sub (e) ist Beobachtung + Anzeige, kein Filter; Filter gehört in Karte
+12 Blocklist, Rate-Limit in Karte 11).
+
+**Eingriffe:**
+
+- `src/sbkim-sw.js` erweitert (273 → 396 Zeilen, additiv). Drei neue
+  Konstanten am Modul-Anfang: `MEMBRANE_PROBE_CHANNEL="sbkim-membrane"`,
+  `MEMBRANE_PROBE_MESSAGE_TYPE="SBKIM_MEMBRANE_PROBE"`,
+  `SBKIM_ENDPOINT_PATHS=["/sbkim/spore.json", "/sbkim/anastomosis",
+  "/sbkim/legacy", "/sbkim/heterokaryosis"]` (`/sbkim/query` bewusst
+  weggelassen — Modul 04.C Search-API serverseitig noch nicht da,
+  Detektor würde sonst für noch nicht existierende Endpunkte feuern).
+  Sub-(e)-Hook `maybeRecordMembraneProbe(event.request)` als ERSTE
+  Zeile im bestehenden `fetch`-Listener (vor den drei `isOwnEndpoint`-
+  Branches), synchron + fail-soft. Drei Hilfsfunktionen am Datei-Ende
+  hinzugefügt: `pathMatchesSbkimEndpoint(pathname)` (nutzt bestehende
+  `isOwnEndpoint`-Funktion für jeden Pfad aus `SBKIM_ENDPOINT_PATHS`),
+  `classifyOrigin(url, secFetchSite, referer)` (exakt nach Karte 15
+  § Fremd-Definition Reihenfolge 1→4: url.origin ungleich → Fremd;
+  Sec-Fetch-Site cross-site/same-site → Fremd; same-origin/none/
+  fehlend → same-origin; Fallback Referer-Origin parsen),
+  `postProbeViaBroadcastChannel(entry)` (pro Probe neue Channel-Instanz,
+  open → postMessage → close, fail-soft via try/catch/finally).
+  `FremdzugriffEntry` baut mit `kind:"endpoint-probe"`,
+  `agentHint:null` (SW hat keinen zuverlässigen UA — Sub-Resource-
+  Fetches tragen häufig keinen UA-Header), `decision:"accepted"`
+  (SW erkennt nur, bedient nicht; die Bridge-Branches entscheiden
+  später), `details:{method, secFetchSite}`. KEIN Replay-/Dedupe-
+  Schutz (Sub (e) ist Beobachtung, jeder Probe-Versuch ist sehenswert;
+  Modul 11 Rate-Limit kann später hooken).
+
+- `tests/manual_check.html` Panel 15 um Knopf 8 + Knopf 9 erweitert
+  (sieben → neun Knöpfe). **Knopf 8 „SW-Probe-Simulation via
+  BroadcastChannel"**: testet den End-to-End-Pfad SW→Page ohne SW-Lauf
+  via direktem `new BroadcastChannel("sbkim-membrane").postMessage(
+  {type:"SBKIM_MEMBRANE_PROBE", entry:{...}})`. Erwartet einen Eintrag
+  mit `kind:"endpoint-probe"`, `details.method:"GET"`,
+  `details.secFetchSite:"cross-site"` + Lampe trägt `fremd-alert`.
+  BroadcastChannel ist asynchron im Browser — Test wartet 30 ms vor
+  der `list()`-Probe (typisch < 5 ms intra-process, 30 ms ist
+  großzügig dosiert). **Knopf 9 „Live-SW-Probe-Auslöser
+  (Hinweis)"**: kein automatischer Test — instruiert Klaus per
+  `<pre>`-Output, dass ein echter SW-Probe-Test eine zweite Origin
+  braucht (z.B. von Mein-Mixarium-PWA auf
+  `https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json`
+  fetchen) und in der Sage-Page-Lampe `#lamp-fremd` rot wird; in
+  `tests/manual_check.html` allein nicht reproduzierbar.
+
+- **Karte 15 § Bauzustand-Tabelle** um zwei Zeilen erweitert: bestehende
+  Sichttest-Zeile um Hinweis ergänzt („Bau 15.SW SW-Probe Sichttest
+  ausstehend — Knopf 8 prüft den BroadcastChannel-Pfad headless,
+  Knopf 9 ist nur ein Klaus-Hinweis für echten Cross-Origin-Test");
+  neue Zeile „Code geschrieben (SW-Seite) | 2026-05-24 | Bau-Sitzung
+  15.SW | …" mit voller Architektur-Beschreibung.
+
+- **INTERFACES.md § 1 Modul 15 Storage-Block** um Hinweis ergänzt,
+  dass `BroadcastChannel('sbkim-membrane')` jetzt ZWEI aktive
+  Schreiber hat: Page-Schicht LESEND (subscribeBroadcastChannel-
+  Closure in `src/modules/15_membran.js`), SW-Schicht SCHREIBEND
+  (postProbeViaBroadcastChannel in `src/sbkim-sw.js`). Pro Probe
+  neue Channel-Instanz (open → post → close), KEIN long-lived
+  Channel im SW. Message-Schema (`SBKIM_MEMBRANE_PROBE`) bleibt
+  UNVERÄNDERT — Page-Empfänger ist schema-bestimmend, Bau-Sitzung
+  15.SW hat KEINE Schema-Änderung vorgenommen, nur den Sender im
+  SW ergänzt.
+
+- **status.json** `membranBacklog[0].siegel` um „SW-Probe-Detektor
+  Bau 15.SW 2026-05-24" ergänzt; `score:"stub"` UNVERÄNDERT (Sub (a)+(b)+
+  (c) sind noch offen — kein Sprung auf „fertig"). `kurz` um Bau-15.SW-
+  Block erweitert (Hook-Position, vier Endpunkte mit `/sbkim/query`-
+  Ausnahme, Fremd-Bewertungs-Reihenfolge 1→4, Per-Probe-Channel-
+  Strategie). `update_puls_pie.py` aufgerufen — Pie unverändert
+  („PULS-Pie ist bereits aktuell").
+
+**Headless-Smoke-Test 21/21 grün** (Node `vm.createContext` mit
+`self`-/`BroadcastChannel`-Stub): Cross-site Sec-Fetch-Site → 1 probe
+(alle 9 Felder geprüft inkl. `type:SBKIM_MEMBRANE_PROBE`, `channel:
+sbkim-membrane`, `kind:endpoint-probe`, `endpoint:/sbkim/spore.json`,
+`origin:https://attack.example` aus Referer, `details.method:GET`,
+`details.secFetchSite:cross-site`, `agentHint:null`,
+`decision:accepted`); Same-origin Sec-Fetch-Site → 0 probes;
+Sec-Fetch-Site:none → 0 probes; Non-SBKIM-Endpoint → 0 probes;
+URL-Origin direkt fremd (Schritt 1, kein Sec-Fetch-Site nötig) → 1
+probe mit `origin = url.origin`; same-site Sec-Fetch-Site → fremd mit
+`origin` aus Referer (Subdomain-Pfad); Sec-Fetch-Site fehlt + Referer
+fremd → fremd (Fallback Schritt 4); `/sbkim/query` NICHT gefiltert
+→ 0 probes; kein Sec-Fetch-Site + kein Referer → 0 probes (defensiv
+als same-origin gewertet). `node --check src/sbkim-sw.js` grün, alle
+11 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch
+grün.
+
+**Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf:**
+
+- Panel 15 Knopf 8 SW-Probe-Simulation via BroadcastChannel in
+  `tests/manual_check.html` (DeX-Chrome auf Galaxy Tab S6, Hard-Reload
+  nach Pull). Erwartung: ein Eintrag mit `kind:endpoint-probe` +
+  `details.method:GET` + Lampe `fremd-alert` an Fake-Lampe.
+- Panel 15 Knopf 9 ist nur Klaus-Hinweis — kein automatischer Test.
+- Echter Live-Cross-Origin-Test: braucht zwei Origins, ist headless
+  nicht reproduzierbar (siehe Knopf 9 Output für die Anleitung).
+
+**Vorgemerkt (für eigene Folge-Sitzungen):**
+
+- **Endknoten-Migration Karte 09 § Schritt 10** (Membran-Allowlist +
+  Lampe in PWA-Header anhängen) — eigene Folge-Pflege, blockiert
+  durch Sub (b) finale Spec.
+- **Spec-Sitzung 15.B** für Sub (a) Read-API und Sub (b)
+  postMessage-Bedienungs-Pfad finalisieren.
+- **`/sbkim/query`-Endpunkt im Pfad-Filter** ergänzen, sobald
+  Modul 04.C Search-API serverseitig steht.
+- **Long-lived BroadcastChannel-Instanz im SW** mit Lebenszyklus-
+  Logik nur dann, wenn Probe-Volumen so hoch wird, dass Per-Probe-
+  Channel-Open zum Bottleneck wird (vermutlich nie).
+
+Übergabeprotokoll:
+[`docs/sessions/archiv/2026-05-24_bau-15sw-membran-sw-probe.md`](sessions/archiv/2026-05-24_bau-15sw-membran-sw-probe.md).
+
+---
 
 ### 2026-05-24 · Bau-Sitzung 15 — Membran Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe (Code-Stub)
 
