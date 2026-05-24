@@ -128,6 +128,20 @@
       });
     });
 
+    // 16 SBKIM-Siegel — Self-Inscribing-Selbst-Zertifikat. Surface-Check
+    // gegen sieben Pflicht-Module (01/02/03/04/05/07/15); Modul 03 ist
+    // `lazy:true` (Sage-Page-spezifisch, ~30 MB Modell), Status
+    // "deferred" gilt als bestanden. Option β: badgeSelector zeigt auf
+    // den `.lamps`-Container, Badge-Span wird darin als vierte Plakette
+    // nach #lamp-fremd erzeugt — und zwar NUR wenn `isCertified()===true`
+    // (Anti-Greenwashing-Klausel binär). repoUrl bleibt Auto-Erkennung:
+    // `https://lausiklauskn-png.github.io/Sage-Protokol/`.
+    await initModule("SbkimSiegel", function () {
+      return window.SbkimSiegel && window.SbkimSiegel.init({
+        badgeSelector: ".lamps",
+      });
+    });
+
     // 00 Doku-Fenster zuletzt — liest die anderen Module als optionale
     // Quellen. Sage-Page hat aktuell KEIN sichtbares Such-Symbol (das ist
     // ein Endknoten-PWA-UI-Element). Wir versuchen mehrere Selektoren;

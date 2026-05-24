@@ -23,8 +23,8 @@ pie showData
   title Modulstand 2026-05-24 (16 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
-  "🟨 Spec fertig" : 1
-  "🟦 Code-Stub" : 8
+  "🟨 Spec fertig" : 0
+  "🟦 Code-Stub" : 9
   "🟩 Fertig" : 3
 ```
 
@@ -108,7 +108,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
 | 15 membran | Spec fertig (Sub (e) voll 2026-05-24, Sub (a)+(b) grob, Sub (c) später, Sub (d) Verweis) | Code-Stub (Bau-Sitzung 15 Sub (e) 2026-05-24 + Bau 15.SW SW-Probe-Detektor 2026-05-24 + Pflege Sage-Page-Sichttest-Knopf 2026-05-24) | **geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6)** — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün (alle sechs Pflicht-Felder); Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün (acht-Schritt-Sichttest aus Pflege-Anleitung); echter Live-Cross-Origin-SW-Probe bleibt headless-only (alle drei Endknoten same-origin auf `lausiklauskn-png.github.io`) |
-| 16 siegel | **Spec fertig (2026-05-24, Spec-Sitzung 16)** | — | — | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. **Spec-Sitzung 16 vom 2026-05-24:** alle vier Sub-Bereiche final spezifiziert — Sub (a) Pflicht-Modul-Liste mit sieben Modulen (01 Storage / 02 Spore / 03 Embedding [`lazy:true` für Sage-Page] / 04 Match / 05 Anastomose / 07 Apoptose / 15 Membran) + Surface-Funktions-Anker pro Modul (`init`/`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`) + Status-Schema (`"ok"`/`"deferred"`/`"missing"`/`"broken"`) + binärer Fail-Modus (kein Render bei missing/broken, eine `console.warn`-Zeile mit ID-Liste); Sub (b) Badge-Rendering — DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach #lamp-fremd, 40-px rundes Medaillon Edel-Gold (`#C9A961`-Klasse) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei verschlungene Hyphen-Bögen + zentraler Knoten-Punkt), 600 ms First-Boot-Animation einmalig, dezenter Glow-Hover, KEINE Stufen-Varianten (Klaus-Festlegung: Siegel wächst über Aspekte, nicht über sichtbare Stufen), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1); Sub (c) Erklärungs-Modal — eigenständig in `document.body` (analog Modul 15), Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-Liste mit Status + Aspekte-Liste + Aussteller-Klärung), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen), nüchterne Aussteller-Klärung in zwei Zeilen (Klaus-Korrektur 2026-05-24: KEIN Disclaimer-Schwall), Repo-URL Auto-Erkennung mit `init({repoUrl})`-Override; Sub (d) `ZERTIFIKAT_ASPEKTE`-Schema (`{since, module, aspect, description}`) chronologisch aufsteigend, Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24" verbindlich für Bau 16, Pflicht-Konvention: jedes spätere Sicherheits-Modul (10/11/12/14/15.B) MUSS in seiner Pflege einen Aspekt ergänzen. Persistenz **RAM-only** (Variante A, kein DB_VERSION-Bump, kein neuer Store, kein PROTOCOL_VERSION-Bump — Modul 16 ist nicht protokoll-aktiv). Schnittstelle `window.SbkimSiegel = {init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta}`. KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). INTERFACES.md § 1 Modul 16 voller Block ergänzt (analog § 1 Modul 15). **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
+| 16 siegel | Spec fertig (2026-05-24, Spec-Sitzung 16) | **Code-Stub (Bau-Sitzung 16 vom 2026-05-24)** | Sichttest ungeprüft (Headless-Smoke 32/32 grün, wartet auf Klaus' Browser-Lauf) | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. **Spec-Sitzung 16 vom 2026-05-24:** alle vier Sub-Bereiche final spezifiziert — Sub (a) Pflicht-Modul-Liste mit sieben Modulen (01 Storage / 02 Spore / 03 Embedding [`lazy:true` für Sage-Page] / 04 Match / 05 Anastomose / 07 Apoptose / 15 Membran) + Surface-Funktions-Anker pro Modul (`init`/`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`) + Status-Schema (`"ok"`/`"deferred"`/`"missing"`/`"broken"`) + binärer Fail-Modus (kein Render bei missing/broken, eine `console.warn`-Zeile mit ID-Liste); Sub (b) Badge-Rendering — DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach #lamp-fremd, 40-px rundes Medaillon Edel-Gold (`#C9A961`-Klasse) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei verschlungene Hyphen-Bögen + zentraler Knoten-Punkt), 600 ms First-Boot-Animation einmalig, dezenter Glow-Hover, KEINE Stufen-Varianten (Klaus-Festlegung: Siegel wächst über Aspekte, nicht über sichtbare Stufen), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1); Sub (c) Erklärungs-Modal — eigenständig in `document.body` (analog Modul 15), Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-Liste mit Status + Aspekte-Liste + Aussteller-Klärung), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen), nüchterne Aussteller-Klärung in zwei Zeilen (Klaus-Korrektur 2026-05-24: KEIN Disclaimer-Schwall), Repo-URL Auto-Erkennung mit `init({repoUrl})`-Override; Sub (d) `ZERTIFIKAT_ASPEKTE`-Schema (`{since, module, aspect, description}`) chronologisch aufsteigend, Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24" verbindlich für Bau 16, Pflicht-Konvention: jedes spätere Sicherheits-Modul (10/11/12/14/15.B) MUSS in seiner Pflege einen Aspekt ergänzen. Persistenz **RAM-only** (Variante A, kein DB_VERSION-Bump, kein neuer Store, kein PROTOCOL_VERSION-Bump — Modul 16 ist nicht protokoll-aktiv). Schnittstelle `window.SbkimSiegel = {init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta}`. KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). INTERFACES.md § 1 Modul 16 voller Block ergänzt (analog § 1 Modul 15). **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -1810,6 +1810,164 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-24 · Bau-Sitzung 16 — SBKIM-Siegel Code-Stub + Sage-Page Badge
+
+**Sitzungs-Rolle:** Bau-Sitzung. Branch
+`claude/modul-16-siegel-build-LcJA9`. Anschluss nach Spec-Sitzung 16
+(vorheriger PULS-Eintrag) — Karte 16 voll gefüllt, INTERFACES §1
+Modul 16 verbindlich, Brief `BRIEF_BAU_16_SIEGEL.md` aus Pipeline-
+Reihenfolge-Tafel Schritt 2.
+
+**Was getan:**
+
+- **`src/modules/16_siegel.js` neu angelegt** (~620 Zeilen, IIFE-Pattern
+  analog Modul 15). Public Surface
+  `window.SbkimSiegel = {init, isCertified, getExplanation,
+  getCertifiedModules, getAspects, _meta}`. Modul-interne Konstanten:
+  - `PFLICHT_MODULE` mit sieben Einträgen (01 Storage / 02 Spore /
+    03 Embedding `lazy:true` / 04 Match / 05 Anastomose / 07 Apoptose /
+    15 Membran) + Surface-Funktions-Anker pro Modul.
+  - `ZERTIFIKAT_ASPEKTE` mit Start-Eintrag „Grund-Siegel-Bezeugung
+    2026-05-24" (verbindlich aus Spec-Sitzung 16).
+- **Surface-Check** im `init()`: pro Eintrag `typeof
+  globalThis[globalName]` + `typeof ns[surfaceFn] === "function"` →
+  Status ∈ {"ok", "deferred", "missing", "broken"}. Snapshot einmalig,
+  gecacht in Closure. Re-Init no-op (Karte 16 § Sub (a)
+  Idempotenz-Klausel).
+- **`isCertified()`** sync, true wenn alle Status ∈ {"ok", "deferred"}.
+- **Binärer Fail-Modus** (Karte 16 § Sub (a)): bei mindestens einem
+  `missing`/`broken`-Modul genau EINE `console.warn`-Zeile mit ID-Liste,
+  KEIN Badge-Render, KEIN Modal-Mount. Element ist gar nicht im DOM.
+  Verbindlicher Wortlaut: „[SbkimSiegel] kein Render: Pflicht-Module
+  fehlen/defekt — 04 (missing), 07 (broken). Siehe
+  docs/components/16_siegel.md § Sub (a)."
+- **Defensive Kopien** für `getExplanation()` / `getCertifiedModules()`
+  / `getAspects()` / `_meta.pflichtModuleSpec` (analog Modul 15
+  `fremdzugriff.list()`-Pattern). Mutation am Rückgabe-Array berührt
+  den internen State nicht.
+- **Badge-Mount Option β** (Bau-Sitzungs-Wahl, dokumentiert in Karte 16
+  § Bauzustand): `badgeSelector` zeigt auf einen CONTAINER (Default
+  `.lamps`), Modul-Code erzeugt `<span id="sbkim-siegel-badge">…</span>`
+  via JS darin — ausschließlich wenn `isCertified() === true`. Anti-
+  Greenwashing-Klausel binär erfüllt (kein DOM-Element überhaupt im
+  Negativ-Fall, kein `display:none`-Workaround). Wenn der Selektor ein
+  bereits-existierendes Element mit `id="sbkim-siegel-badge"` matcht,
+  nutzt das Modul dieses Element als Anker (Rückwärts-Kompat). Wenn der
+  Selektor zur `init()`-Zeit nicht matcht, läuft ein
+  `MutationObserver`-Re-Try analog Modul 00 (10 s Safety-Timeout, dann
+  `console.warn`).
+- **SVG-Wappen** mit drei Hyphen-Bögen + zentralem Knoten-Punkt
+  (Karte 16 § Sub (b) Wappen-Element, viewBox `0 0 40 40`).
+  Glyph-Farbe Bronze-Ink (`#1A1306` hartcodiert im SVG für Stroke,
+  passt zu `:root --siegel-ink`).
+- **Modal-Mount** analog Modul 15 in `document.body`. Backdrop /
+  Esc-Keydown / ✕-Klick schließen, alle drei äquivalent. Inhalt:
+  Datum („Bezeugt seit YYYY-MM-DD HH:MM Uhr"), Pflicht-Modul-Liste mit
+  Status-Punkt + Status-Label („bereit" / „bereit (lazy)" / „fehlt" /
+  „defekt"), Aspekte-Liste chronologisch aufsteigend mit Tie-Breaker
+  `module`-ID, zwei-zeilige Aussteller-Klärung (verbindlicher Wortlaut
+  aus Karte 16 § Sub (c)) — KEIN Disclaimer-Schwall, KEIN „ohne
+  Garantie"-Block (Klaus-Korrektur 2026-05-24). Wertigere Typografie:
+  Serif (`'Spectral','Georgia',serif`) für Titel + Aussteller-Block,
+  Geist (Standard-Sans) für Daten-Listen.
+- **First-Boot-Animation** einmalig pro Session: `.first-boot`-Klasse
+  per JS gesetzt, nach 600 ms entfernt. `_meta.firstBootShown` als
+  Guard. RAM-only — Tab-Reload zeigt die Animation erneut (Karte 16
+  § Persistenz Variante A).
+- **Repo-URL Auto-Erkennung** (Karte 16 § Sub (c) Repo-URL-Quelle):
+  `location.origin + "/" + firstPathSegment + "/"`. Sage-Page-Default
+  ergibt `https://lausiklauskn-png.github.io/Sage-Protokol/`. Override
+  via `init({repoUrl:"..."})` mit Sanity-Check (muss mit `http(s)://`
+  oder `/` anfangen, sonst fail-soft auf Auto-Erkennung).
+- **KEINE benannten Error-Klassen** (Karte 16 § Strikte Tabus). Alle
+  Fehlerpfade fail-soft via `console.warn` mit Prefix `[SbkimSiegel]`.
+- **Selbstcheck-Zeile** beim Skript-Laden:
+  `MODUL 16 SIEGEL bereit, Funktionen: init/isCertified/getExplanation/
+  getCertifiedModules/getAspects` (synchron, vor jedem Aufruf —
+  Konvention analog Modul 00/01/02/04/05/06/07/08/15).
+- **`index.html` additiv erweitert**:
+  - `:root` um vier neue Variablen ergänzt (`--siegel-gold:#C9A961`,
+    `--siegel-gold-glow:rgba(201,169,97,0.55)`, `--siegel-ink:#1A1306`,
+    `--siegel-line:rgba(201,169,97,0.45)`) — direkt nach den
+    Lampen-Variablen.
+  - Badge-CSS-Block (40-px rundes Medaillon, Radial-Gradient Edel-Gold
+    auf Bronze-Ink, dezenter Glow-Hover, `:focus-visible`-Outline,
+    `.first-boot`-Klasse + `@keyframes siegel-first-boot` 0%→60%→100%
+    mit Scale 0.7→1.12→1.00 und Glow-Peak bei 60%) direkt nach den
+    Lampen-Regeln.
+  - Kein statisches DOM-Element in der Navleiste (Option β: Modul
+    erzeugt den Span erst bei Bezeugung).
+  - `<script src="src/modules/16_siegel.js">` nach `15_membran.js`,
+    vor `sbkim-init.js`.
+- **`sbkim-init.js` ergänzt**: `SbkimSiegel.init({badgeSelector:".lamps"})`-
+  Aufruf nach `SbkimMembrane.init`, vor `SbkimDoku.init`. Doku-Kommentar
+  beschreibt die Option-β-Wahl + Anti-Greenwashing-Garantie + die Auto-
+  Erkennung der Repo-URL.
+- **Panel 16 in `tests/manual_check.html` neu angelegt**: acht Knöpfe
+  (Setup + Tests 1–6 + Hinweis-Knöpfe 7/8 + Selbstcheck). Test 1
+  prüft `PFLICHT_MODULE`-Spec + defensive Kopien, Test 2 prüft das
+  Snapshot-Schema, Test 3 simuliert Badge-Click + Esc + Backdrop, Test
+  4 prüft Modal-Render (Datum + Module + Aspekte + Aussteller-Klausel
+  mit „self-inscribing" und ohne Disclaimer-Schwall), Test 5 prüft
+  Auto-Erkennung der Repo-URL, Test 6 prüft `firstBootShown`-Flag.
+  Tests 7 und 8 sind HINWEIS-Knöpfe für die Anti-Greenwashing- und
+  Hidden-Modus-Pfade (idempotent-Disziplin: nur nach Tab-Reload
+  reproduzierbar).
+- **`docs/components/16_siegel.md`** § Bauzustand auf
+  „Code geschrieben 2026-05-24" gesetzt mit voller Bau-Notiz inkl.
+  Option-β-Begründung + Headless-Smoke-Resultat.
+- **`status.json`** `modules`-Eintrag für Modul 16 auf `score:"stub"`
+  + voller Code-Stub-Vermerk im `siegel`-Feld.
+- **PULS-Pie aktualisiert** via `python3 scripts/update_puls_pie.py`
+  (Code-Stub 8 → 9, Spec fertig 1 → 0). Schnellüberblick-Zeile für
+  Modul 16 in „Code"-Spalte auf „Code-Stub (Bau-Sitzung 16 vom
+  2026-05-24)" gesetzt.
+
+**Headless-Smoke-Test 32/32 grün:**
+
+- 14 Happy-Path-Proben: ready/isCertified/certifiedAt/firstBootShown,
+  Snapshot-Schema mit 7 Modulen, 03=deferred / 01=ok, certifiedModules-
+  Länge 7, Aspekte-Start-Eintrag, repoUrl Auto-Erkennung, ID-Reihenfolge,
+  defensive Kopie, Re-Init-Idempotenz.
+- 10 Anti-Greenwashing-Fail: bei `SbkimMatch=undefined` +
+  `SbkimApoptose` ohne `prepareSelfApoptose` → isCertified false,
+  certifiedAt null, badgeMounted false, modalMounted false, genau EINE
+  `console.warn`-Zeile mit „04 (missing), 07 (broken)", Snapshot mit
+  „missing"/„broken"-Status weiterhin abrufbar.
+- 8 Hidden-Mode + Override-Proben: `visible:"hidden"` + `mountModal:false`
+  + `repoUrl:"https://github.com/lausiklauskn-png/Mein-Mixarium"` —
+  isCertified true, KEIN Badge im DOM, KEIN Modal, visibleMode `hidden`,
+  API erreichbar, repoUrl-Override greift, alle sieben Module ok.
+
+**Was offen:**
+
+- **Sichttest 16 (Klaus)** in der Sage-Page: Badge sichtbar in der
+  Navleiste nach `#lamp-fremd`-Label, Click öffnet Modal,
+  First-Boot-Animation einmal sichtbar, Aussteller-Klärung enthält
+  „self-inscribing" + verlinkten Repo-URL ohne Disclaimer-Schwall,
+  Panel 16 in `tests/manual_check.html` 6/6 grün.
+- **Pflege-Sitzung CLAUDE.md** § „Sicherheits-Module pflegen
+  Aspekte" als neuer Pflicht-Block (Spec-Sitzung 16 markierte das als
+  to-do; Pipeline-Reihenfolge-Tafel Schritt 3a).
+- **Spec-Sitzung 15.B** (Sub (a) Read-API mit Siegel-Hook im
+  Snapshot, Sub (b) postMessage-Bedienung) — Pipeline-Schritt 4 nach
+  Sichttest 16.
+- **Endknoten-Migration** in Mein-Rezeptbuch + Mein-Mixarium (Karte 09
+  § Schritt 10 — Membran-Allowlist + FREMD-Lampe + Siegel-Badge pro
+  PWA, eigene Folge-Sitzung pro Endknoten-Repo) — Pipeline-Schritt 5.
+
+**Nächster sinnvoller Schritt:** Klaus' Browser-Sichttest in der
+Sage-Page (Hard-Reload, Badge in der Navleiste neben `#lamp-fremd`
+suchen, einmal anklicken — Modal mit Bezeugt-Datum + sieben
+Modul-Zeilen + Grund-Siegel-Aspekt-Eintrag + zwei-Zeilen-Aussteller-
+Klärung muss erscheinen; Esc + Backdrop-Klick schließen). Parallel
+Panel 16 in `tests/manual_check.html` durchspielen (Setup + Tests 1–6,
+Test 4 ist der zentrale Beweis für die Aussteller-Klärung „self-
+inscribing" ohne Disclaimer-Schwall). Bei Befund: eigene Mini-Pflege-
+Sitzung.
+
+---
 
 ### 2026-05-24 · Spec-Sitzung 16 — SBKIM-Siegel vollständig spezifiziert
 
