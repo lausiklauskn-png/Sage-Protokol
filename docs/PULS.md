@@ -1811,6 +1811,65 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-24 · Mini-Pflege — `status.json` Endknoten-Daten nachgezogen
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-status-json-endknoten-redock`. Anschluss nach PR #148
+(Brief Spec 16). Anlass: Klaus' Hinweis im Sichttest-Dialog 2026-05-24
+„ich habe vorhin was gelesen, von Sporen die zuletzt 16.05.26
+aktualisiert wurden?" — `status.json` Endknoten-Daten waren noch auf
+dem Erst-Andock-Stand (2026-05-16, alte Tablet-Chrome-nodeIds), obwohl
+der DeX-Chrome-Re-Andock am 2026-05-17 mit frischen nodeIds erfolgt
+war und seitdem in PULS-Endknoten-Tabelle korrekt dokumentiert ist.
+Reine Anzeige-Drift, keine technische Konsequenz — aber die Sage-Page
+zeigte beim Endknoten-Karten-Render veraltete IDs.
+
+**Eingriffe (kein Code, nur status.json + Doku):**
+
+- `status.json` Endknoten-Block:
+  - **Rezeptbuch**: `nodeId` von `RHhposP0…` auf
+    `BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY` aktualisiert (DeX-
+    Chrome-Identität aus Re-Andock 2026-05-17); `reIntegratedAt:
+    "2026-05-17"` als neues Feld ergänzt; `previousNodeIds: [...]`
+    als Historie-Array (alte ID archiviert, nicht gelöscht — für
+    Audit-Zwecke).
+  - **Mixarium**: `nodeId` von `7xf0tt33_…` auf
+    `JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY` aktualisiert
+    (DeX-Chrome-Identität); `reIntegratedAt: "2026-05-17"` +
+    `previousNodeIds: [...]` ergänzt.
+  - **Sage**: unverändert (Erst-Andock 2026-05-21, keine Drift).
+- `integratedAt` bleibt 2026-05-16 für Rezeptbuch + Mixarium —
+  das ist das Erst-Andock-Datum und semantisch korrekt. Re-Andock-
+  Information ist additiv via neues `reIntegratedAt`-Feld.
+- `pingStatus` bleibt `live-direct` für alle drei — das ist HTTP-
+  Liveness (Spore antwortet HTTP 200), nicht der Handshake-Pfad-
+  Status. PULS dokumentiert separat den Channel-Bridge-Handshake
+  in der Endknoten-Tabellen-Anmerkung.
+- `update_puls_pie.py` aufgerufen — Pie unverändert (16 Module,
+  Verteilung gleich).
+
+**Disziplin:**
+
+- KEIN Code-Eingriff, nur Daten-Pflege.
+- KEIN Eingriff in PULS-Endknoten-Tabelle (PULS hatte die korrekten
+  Daten schon, das ist die Source-of-Truth-Doku; status.json wurde
+  zur PULS-Wahrheit nachgezogen, nicht andersrum).
+- KEINE Modul-Änderung, KEINE neuen Backlogs, KEINE Schema-
+  Erweiterung über die zwei neuen optionalen Felder hinaus.
+- `previousNodeIds` als Array bewusst gewählt (Vorgriff: falls
+  weitere Re-Andocks kommen, einfach hinten anhängen — keine
+  Schema-Änderung pro Re-Andock).
+
+**Vorgemerkt:**
+
+- **Spec-Sitzung 16 SBKIM-Siegel** als nächste Sitzung — Brief
+  `docs/sessions/BRIEF_SPEC_16_SIEGEL.md` auf `main` (PR #148).
+
+Übergabeprotokoll:
+[`docs/sessions/archiv/2026-05-24_pflege-status-json-endknoten-redock.md`](sessions/archiv/2026-05-24_pflege-status-json-endknoten-redock.md).
+
+---
+
 ### 2026-05-24 · Mini-Pflege — Modul 16 SBKIM-Siegel Stub angelegt
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch
