@@ -248,7 +248,7 @@ ungemergten Branches lebten.
 | 11 | `docs/components/11_rate_limit.md` | Schutz-Backlog · Stub, Priorität niedrig |
 | 12 | `docs/components/12_blocklist.md` | Schutz-Backlog · Stub, Priorität niedrig |
 | 14 | `docs/components/14_diffusion.md` | Diffusion-Backlog · Stub, Priorität niedrig |
-| 15 | `docs/components/15_membran.md` | Membran-Backlog · Stub, Priorität niedrig |
+| 15 | `docs/components/15_membran.md` | Membran-Backlog · Stub, **Priorität hoch** (2026-05-24, Auslöser Gemini 3.5 Flash) |
 
 Modul 00 (Doku-Fenster) ist die "5-Klick versteckte Funktion" in den
 Suchleisten der Endknoten-PWAs. Modul 09 beschreibt, wie ein fertiges Modul
@@ -266,6 +266,15 @@ nach innen (konsensuelle Empfehlung im Handshake, Wuchs durch Empfehlung),
 KI-Browser-Agenten und App-zu-App-Brücken im selben Browser ohne Server).
 Stubs liegen schon, damit keine Sitzung sie übersieht. Beide werden in der
 Sage-Page Karten 4 / 13 / 14 parallel zum Schutz-Backlog gerendert.
+
+**Hochstufung Karte 15 — 2026-05-24:** Google hat auf der I/O 2026 Gemini
+3.5 Flash als Default-Modell in Gemini-App + Suche ausgerollt, mit Schwerpunkt
+„act, not just answer" (agentisch). Das schiebt KI-Browser-Agenten aus dem
+„theoretisch" in „kommt aufs Tablet" — Karte 15 Priorität niedrig → **hoch**,
+Spec-Sitzung 15 in Brief-99-Pipeline ergänzt. Neuer Sub-Bereich (e)
+„Fremdzugriff-Detektor + Lampe" auf Karte 15 dazu — rote Lampe in der
+Sage-Page-Navleiste neben „lebt" und „verkehr", Klick öffnet
+Fremdzugriff-Fenster. Bau erst nach Spec-Sitzung 15.
 
 ## Wenn du blockiert bist
 

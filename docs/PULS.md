@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-21 (15 Module)
+  title Modulstand 2026-05-24 (15 Module)
   "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -107,7 +107,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
-| 15 membran | Stub (Membran-Backlog) | — | — | Außenhülle zwischen PWA-Zelle und Browser-Umgebung — vier Sub-Bereiche (a Read-API für KI-Browser-Agenten ✅ Pflicht / b postMessage-Brücke Rezeptbuch↔Mixarium mit Origin-Allowlist ✅ Pflicht / c signiertes Capability-Token ⏳ später / d Backup-Datei-Sluse 📄 nur Verweis auf Bau 02.X). Auslöser: Anthropic Browser Use / OpenAI Operator / Comet / Dia werden Markt-reif + Wunsch nach App-zu-App-Kommunikation ohne Server. Spec ausstehend bis KI-Browser real verfügbar ODER konkreter App-zu-App-Wunsch eines Endknoten-Betreibers. Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-18** (Karten 4/13/14 ziehen `membranBacklog[]` parallel zu `schutzBacklog[]` und `diffusionBacklog[]`) |
+| 15 membran | Stub (Membran-Backlog) | — | — | Außenhülle zwischen PWA-Zelle und Browser-Umgebung — fünf Sub-Bereiche (a Read-API für KI-Browser-Agenten ✅ Pflicht / b postMessage-Brücke Rezeptbuch↔Mixarium mit Origin-Allowlist ✅ Pflicht / c signiertes Capability-Token ⏳ später / d Backup-Datei-Sluse 📄 nur Verweis auf Bau 02.X / **e Fremdzugriff-Detektor + rote Navleisten-Lampe ✅ Pflicht, neu 2026-05-24**). Auslöser: Anthropic Browser Use / OpenAI Operator / Comet / Dia werden Markt-reif + Wunsch nach App-zu-App-Kommunikation ohne Server. **Hochstufung 2026-05-24 niedrig → hoch** nach Google I/O 2026 (Gemini 3.5 Flash als Default-Modell in Gemini-App + Google-Suche, agentisch — „act, not just answer"). Sub (e) zieht **sofort** (Spec-Sitzung 15 in Brief-99-Pipeline, Brief `BRIEF_SPEC_15_MEMBRAN.md`); Sub (a)+(b)+(c) weiter an ursprünglicher Schwelle (KI-Browser-SDK + App-zu-App-Wunsch). **Sage-Page-Sichtbarmachung seit 2026-05-18** (Karten 4/13/14 ziehen `membranBacklog[]` parallel zu `schutzBacklog[]` und `diffusionBacklog[]`); Sub-(e)-Lampe wird zusätzlich in der Sage-Page-Navleiste (`<div class="lamps">`) eingehängt. |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -1809,6 +1809,67 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-24 · Pflege-Hauptsitzung — Karte 15 Hochstufung + Sub (e) Fremdzugriff-Lampe (Anlass Gemini 3.5 Flash)
+
+**Sitzungs-Rolle:** Pflege-Hauptsitzung. Branch
+`claude/gemini-flash-sage-protocol-41Dx5`. Anlass: Klaus' Chat-Frage
+nach Gemini 3.5 Flash + dessen Verhältnis zu Sage-Protokol. Kein
+Code in `src/`, kein UI-Eingriff in `index.html` — reine Doku-
+Pflege + Vorbereitungs-Brief für eine spätere Spec-Sitzung 15.
+
+**Kern (drei Sätze):** Google hat auf der I/O 2026 (19./20. Mai)
+Gemini 3.5 Flash als Default-Modell in der Gemini-App und in der
+Google-Suche (AI Mode) ausgerollt, mit Schwerpunkt „act, not just
+answer" (agentisch). Damit ist die Vorbedingung „KI-Browser real
+verfügbar" für Karte 15 (Membran) defacto erfüllt — Priorität
+**niedrig → hoch**. Eine neue Sub-Bereich-Stufe (e) wird der Karte
+hinzugefügt: **Fremdzugriff-Detektor + rote Navleisten-Lampe** in
+der Sage-Page (rechts neben `#lamp-alive` „lebt" und `#lamp-traffic`
+„verkehr"), Klick öffnet ein Fremdzugriff-Fenster mit Ringbuffer
+der letzten N Zugriffe.
+
+**Was angefasst wurde:** `CLAUDE.md` (Modul-Tabelle Karte 15 Status
++ neuer Erklär-Absatz unter „Karten 14 + 15"), `docs/components/15_membran.md`
+(Status-Zeile, neuer Hochstufungs-Notiz-Abschnitt, neuer Sub (e),
+neue offene Fragen für Sub (e), Schwellwert-Block um Sub-(e)-
+Sofort-Ziehung erweitert, Bauzustand-Tabelle um Hochstufungs-
+Zeile ergänzt, „Wird genutzt von"-Querverweis um Gemini 3.5 Flash
++ Klaus' Lampen-Schau ergänzt), `status.json` (`lastUpdated`
+2026-05-21 → 2026-05-24; `membranBacklog[0].siegel` + `.kurz`
+nachgezogen, fünfter Sub-Bereich (e) in `.kurz`), `docs/PULS.md`
+(Tabellen-Zeile 15, neuer Sitzungs-Eintrag oben), neuer Brief
+`docs/sessions/BRIEF_SPEC_15_MEMBRAN.md` für die spätere Spec-
+Sitzung 15, Übergabeprotokoll `docs/sessions/archiv/2026-05-24_pflege-modul-15-hochstufung.md`.
+**Pie-Block automatisch via `python3 scripts/update_puls_pie.py`
+nachgezogen** (Daten 5/0/0/7/3 unverändert, nur Datum aktualisiert).
+
+**Wichtig — was bewusst NICHT gemacht wurde:**
+
+- Kein `index.html`-Eingriff. Die dritte Lampe baut erst die spätere
+  Bau-Sitzung 15 (nach Spec-Sitzung 15). Diese Sitzung legt nur den
+  Spec-Anker.
+- Kein `src/modules/15_membran.js` angelegt. Membran-Code wartet auf
+  Spec.
+- Kein INTERFACES.md-Eingriff. Karte 15 spiegelt in INTERFACES erst,
+  wenn die Spec gefüllt ist (Spec-Sitzung 15-Pflicht analog Spec-
+  Sitzungen 00–09).
+- Empfangsmodus-Prinzip unangetastet (keine Eigen-Anfragen, keine
+  Pulsation, keine Crawler). Fremdzugriff-Detektor ist und bleibt
+  **passiv beobachtend**.
+
+**Offene Fragen für die Spec-Sitzung 15:** liegen jetzt in Karte 15
+§ „Für Sub (e) — Fremdzugriff-Detektor + Lampe" (sechs konkrete
+Spec-Fragen — Ringbuffer-Größe, Persistenz-Schicht, Modal-Form,
+Pulse-Verhalten, Endpoint-Probe-Definition „fremd", `decision`-
+Behandlung).
+
+**Nächster sinnvoller Schritt:** Spec-Sitzung 15 ziehen, sobald
+ein PR-Fenster ohne Bau-Sitzung-Kollision frei ist. Spec füllt die
+Lampen-Form + den Ringbuffer-Vertrag aus, INTERFACES.md spiegelt
+nach. Erst danach Bau-Sitzung 15 (Modul-Code + Lampe in
+`index.html`). Brief liegt bereit als
+`docs/sessions/BRIEF_SPEC_15_MEMBRAN.md`.
 
 ### 2026-05-22 · Pflege Modul 01 — Versions-Bump-Race in `openProbe` aufgelöst
 
