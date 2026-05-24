@@ -230,7 +230,7 @@ ungemergten Branches lebten.
   Siehe `sbkim_paper.pdf` und `docs/components/*` — der Knoten ist
   Empfangsmodus mit Antwortrecht.
 
-## Die zehn Module + Schutz-Backlog 10-12 + Proaktiv-Backlog 14 + 15
+## Die zehn Module + Schutz-Backlog 10-12 + Proaktiv-Backlog 14 + 15 + Siegel-Backlog 16
 
 | # | Datei | Status (siehe PULS.md für Details) |
 |---|---|---|
@@ -249,6 +249,7 @@ ungemergten Branches lebten.
 | 12 | `docs/components/12_blocklist.md` | Schutz-Backlog · Stub, Priorität niedrig |
 | 14 | `docs/components/14_diffusion.md` | Diffusion-Backlog · Stub, Priorität niedrig |
 | 15 | `docs/components/15_membran.md` | Membran-Backlog · Stub, **Priorität hoch** (2026-05-24, Auslöser Gemini 3.5 Flash) |
+| 16 | `docs/components/16_siegel.md` | Siegel-Backlog · Stub, **Priorität hoch** (2026-05-24, Auslöser App-Freigabe) |
 
 Modul 00 (Doku-Fenster) ist die "5-Klick versteckte Funktion" in den
 Suchleisten der Endknoten-PWAs. Modul 09 beschreibt, wie ein fertiges Modul
@@ -275,6 +276,16 @@ Spec-Sitzung 15 in Brief-99-Pipeline ergänzt. Neuer Sub-Bereich (e)
 „Fremdzugriff-Detektor + Lampe" auf Karte 15 dazu — rote Lampe in der
 Sage-Page-Navleiste neben „lebt" und „verkehr", Klick öffnet
 Fremdzugriff-Fenster. Bau erst nach Spec-Sitzung 15.
+
+Karte 16 (Siegel) ist die Selbst-Bezeugungs-Karte — self-inscribing
+**SBKIM-Siegel** in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil),
+das eine PWA-Zelle nach erfolgter Integration der Pflicht-Module sich
+selbst ausstellt. Lebendes Dokument: jedes Sicherheits-Update ergänzt
+einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne
+erfüllte Selbst-Prüfung. Modal nennt die Self-Inscribing-Natur kurz
+und nüchtern (kein Disclaimer-Schwall). Anlass: Klaus' geplante
+App-Freigabe — sichtbares Vertrauens-Signal für Forker und Endnutzer.
+Stub angelegt 2026-05-24, Spec-Sitzung 16 in Brief-99-Pipeline.
 
 ## Wenn du blockiert bist
 
