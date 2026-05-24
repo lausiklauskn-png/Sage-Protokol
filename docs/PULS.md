@@ -107,7 +107,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
-| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, Sub (a)+(b) grob, Sub (c) später, Sub (d) Verweis) | Code-Stub (Bau-Sitzung 15 Sub (e) 2026-05-24 + **Bau 15.SW SW-Probe-Detektor 2026-05-24**) | ungeprüft — wartet auf Klaus' Browser-Lauf (Panel 15 Knopf 8 SW-Probe-Simulation BroadcastChannel + Knopf 9 Klaus-Hinweis für Live-Cross-Origin-Test) | Außenhülle zwischen PWA-Zelle und Browser-Umgebung. **Bau-Sitzung 15 vom 2026-05-24:** `src/modules/15_membran.js` neu angelegt — Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe vollständig implementiert (Ringbuffer RAM-only mit FIFO-Verdrängung bei `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50`, Listener-Liste mit subscribe/unsubscribe, idempotenter `clear()`, `_recordForTest`-Test-Brücke, Lampen-Toggle via `.fremd-alert`/`.fremd-pulse`, eigenständiges Modal in `document.body` mit Backdrop/Esc/✕/Aufräumen-Knopf + tabellarischer Live-Render, Click-Handler an `#lamp-fremd`, BroadcastChannel('sbkim-membrane')-Subscription für SW-endpoint-probes — SW-Erweiterung in `src/sbkim-sw.js` ZURÜCKGESTELLT als eigene Bau-Sitzung 15.SW). Sub (a) `read()` als Skelett (fail-soft Snapshot aus `SbkimSpore`/`SbkimAnastomose`/`SbkimStorage._meta`/`navigator.storage`; Geschwister anonymisiert via `nodeIdHash = base64url-sha256(nodeId)`; Tabu `sbkim_keys` strikt eingehalten) — finale Feld-Liste wartet auf Spec-Sitzung 15.B. Sub (b) postMessage-Listener als Skelett (Allowlist via `init({allowedOrigins})`; Same-Origin = kein Eintrag; bekannter `type` + Allowlist = `decision:"ignored"` (Bedienung wartet auf 15.B); unbekannter `type` + Allowlist = `"ignored"`; nicht-Allowlist = `"rejected-allowlist"`). KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). Modul-lokal `AGENT_HINT_MAX_LEN = 64`, `LAMP_PULSE_MS = 600`. `index.html` um drei additive Schritte erweitert: `:root --lamp-alert:#DC2626;` + zwei CSS-Regeln (`.lamp.fremd-alert` mit Glow + Atmung-Animation, `.lamp.fremd-pulse` via `@keyframes lamp-alert-pulse`) + `<span class="lamp" id="lamp-fremd">` + Label nach `#lamp-traffic` + `<script src="src/modules/15_membran.js">` + `SbkimMembrane.init({lampSelector:'#lamp-fremd'})`-Aufruf in `sbkim-init.js` (nach 08, vor 00). Panel 15 in `tests/manual_check.html` mit Setup + sieben Test-Knöpfen (Setup, `_recordForTest`-Probe drei Einträge, subscribe+Counter, `clear()`+Lampe-aus, Ringbuffer-Voll-Probe 60→50 mit P10..P59-Verdrängung, `read()`-Snapshot+Sub-(e)-Hook+Tabu-Check, postMessage Same/Fremd-Origin via `dispatchEvent(MessageEvent)`, init mit Allowlist→`ignored`/`rejected-allowlist`) + Selbstcheck-Hinweis. Headless-Smoke 11/11 grün im Node-Stub. `node --check src/modules/15_membran.js` grün, alle 12 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch grün. **Sichttest ungeprüft** (wartet auf Klaus' Browser-Lauf Panel 15 + Sage-Page-Navleisten-Lampe). |
+| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, Sub (a)+(b) grob, Sub (c) später, Sub (d) Verweis) | Code-Stub (Bau-Sitzung 15 Sub (e) 2026-05-24 + Bau 15.SW SW-Probe-Detektor 2026-05-24 + Pflege Sage-Page-Sichttest-Knopf 2026-05-24) | **geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6)** — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün (alle sechs Pflicht-Felder); Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün (acht-Schritt-Sichttest aus Pflege-Anleitung); echter Live-Cross-Origin-SW-Probe bleibt headless-only (alle drei Endknoten same-origin auf `lausiklauskn-png.github.io`) | Außenhülle zwischen PWA-Zelle und Browser-Umgebung. **Bau-Sitzung 15 vom 2026-05-24:** `src/modules/15_membran.js` neu angelegt — Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe vollständig implementiert (Ringbuffer RAM-only mit FIFO-Verdrängung bei `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50`, Listener-Liste mit subscribe/unsubscribe, idempotenter `clear()`, `_recordForTest`-Test-Brücke, Lampen-Toggle via `.fremd-alert`/`.fremd-pulse`, eigenständiges Modal in `document.body` mit Backdrop/Esc/✕/Aufräumen-Knopf + tabellarischer Live-Render, Click-Handler an `#lamp-fremd`, BroadcastChannel('sbkim-membrane')-Subscription für SW-endpoint-probes — SW-Erweiterung in `src/sbkim-sw.js` ZURÜCKGESTELLT als eigene Bau-Sitzung 15.SW). Sub (a) `read()` als Skelett (fail-soft Snapshot aus `SbkimSpore`/`SbkimAnastomose`/`SbkimStorage._meta`/`navigator.storage`; Geschwister anonymisiert via `nodeIdHash = base64url-sha256(nodeId)`; Tabu `sbkim_keys` strikt eingehalten) — finale Feld-Liste wartet auf Spec-Sitzung 15.B. Sub (b) postMessage-Listener als Skelett (Allowlist via `init({allowedOrigins})`; Same-Origin = kein Eintrag; bekannter `type` + Allowlist = `decision:"ignored"` (Bedienung wartet auf 15.B); unbekannter `type` + Allowlist = `"ignored"`; nicht-Allowlist = `"rejected-allowlist"`). KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). Modul-lokal `AGENT_HINT_MAX_LEN = 64`, `LAMP_PULSE_MS = 600`. `index.html` um drei additive Schritte erweitert: `:root --lamp-alert:#DC2626;` + zwei CSS-Regeln (`.lamp.fremd-alert` mit Glow + Atmung-Animation, `.lamp.fremd-pulse` via `@keyframes lamp-alert-pulse`) + `<span class="lamp" id="lamp-fremd">` + Label nach `#lamp-traffic` + `<script src="src/modules/15_membran.js">` + `SbkimMembrane.init({lampSelector:'#lamp-fremd'})`-Aufruf in `sbkim-init.js` (nach 08, vor 00). Panel 15 in `tests/manual_check.html` mit Setup + sieben Test-Knöpfen (Setup, `_recordForTest`-Probe drei Einträge, subscribe+Counter, `clear()`+Lampe-aus, Ringbuffer-Voll-Probe 60→50 mit P10..P59-Verdrängung, `read()`-Snapshot+Sub-(e)-Hook+Tabu-Check, postMessage Same/Fremd-Origin via `dispatchEvent(MessageEvent)`, init mit Allowlist→`ignored`/`rejected-allowlist`) + Selbstcheck-Hinweis. Headless-Smoke 11/11 grün im Node-Stub. `node --check src/modules/15_membran.js` grün, alle 12 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch grün. **Sichttest ungeprüft** (wartet auf Klaus' Browser-Lauf Panel 15 + Sage-Page-Navleisten-Lampe). |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -1809,6 +1809,83 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-24 · Sichttest-Nachzug — Karte 15 Sub (e) Fremd-Lampe live grün
+
+**Sitzungs-Rolle:** Pflege-Sitzung (Sichttest-Nachzug). Branch
+`claude/sichttest-15-fremd-lampe-gruen`. Anschluss nach PR #142 (Bau 15)
++ PR #144 (Bau 15.SW) + PR #145 (Pflege Sage-Page-Sichttest-Knopf), alle
+gemerged 2026-05-24.
+
+**Klaus' Browser-Sichttest auf DeX-Chrome (Galaxy Tab S6):**
+
+1. **Panel 15 Knopf 8** „SW-Probe-Simulation via BroadcastChannel" in
+   `tests/manual_check.html` — **grün** (Bau 15.SW Verifikation):
+   alle sechs Pflicht-Felder passen (`kind:endpoint-probe`,
+   `endpoint:/sbkim/spore.json`, `origin:https://probe.example`,
+   `details.method:GET`, `details.secFetchSite:cross-site`,
+   `lampe_fremd_alert:true`). End-to-End-Pfad SW→Page via
+   `BroadcastChannel('sbkim-membrane')` bewiesen.
+2. **Sage-Page FREMD-Lampe + Modal** auf gehosteter
+   `https://lausiklauskn-png.github.io/Sage-Protokol/` nach Pages-Build
+   von PR #145 — **grün** (Bau 15 Sub (e) Sage-Page-Lampe +
+   Pflege Sage-Page-Sichttest-Knopf): acht-Schritt-Sichttest komplett
+   („funktioniert wie erwartet" — Klaus): FREMD-Lampe sichtbar → Klick
+   öffnet Modal → „🧪 Demo-Eintrag"-Knopf neben „Aufräumen" sichtbar
+   → Klick fügt synthetischen `endpoint-probe`-Eintrag in Tabelle ein
+   → Lampe pulst rot → Modal schließen → Lampe leuchtet weiter
+   (Dauer-Alert) → Lampe erneut klicken → Tabelle zeigt Eintrag →
+   „Aufräumen" → Tabelle leer, Lampe dunkel.
+
+**Was bleibt headless-only:** Bau 15.SW echter Live-Cross-Origin-SW-
+Probe (Sage-Pages-SW empfängt cross-site Fetch von wirklich fremder
+Origin) — Klaus' drei Endknoten sind alle same-origin auf
+`https://lausiklauskn-png.github.io`, der SW-Probe-Detektor wertet
+same-origin laut Karte 15 § Fremd-Definition Schritt 3 bewusst NICHT
+als Fremd (Spec-Wille). Echter Cross-Origin-Trigger bräuchte fremde
+Origin (Gemini-3.5-Flash-Browser-Agent, Custom-Domain, Browser-
+Extension). Der Demo-Knopf-Pfad deckt den Page-Empfang sauber ab.
+
+**Eingriffe (Dokumentations-Nachzug, kein Code):**
+
+- `docs/components/15_membran.md` § Bauzustand-Tabelle Sichttest-Zeile
+  von „ungeprüft 2026-05-24" auf **„geprüft 2026-05-24 (Klaus, DeX-
+  Chrome auf Galaxy Tab S6)"** umgestellt; Beleg-Block (welcher Test
+  was bewies) ergänzt.
+- `status.json` `membranBacklog[0].siegel` um Sichttest-Status
+  ergänzt: „Sichttest 2026-05-24 grün (Klaus, DeX-Chrome)". `score`
+  bleibt `"stub"` (Sub (a)+(b)+(c) sind weiterhin offen — Sichttest
+  grün ändert daran nichts).
+- `docs/PULS.md` Schnellüberblick-Tabellenzeile 15 Sichttest-Spalte
+  auf grün.
+
+**Disziplin:**
+
+- KEIN Code-Eingriff, nur Doku-Nachzug.
+- KEIN Sprung von `score:"stub"` auf `"fertig"` — die Code-Decken
+  (Sub (a) + Sub (b) finale Spec) sind noch offen, Sub (c) Capability-
+  Token kommt später, Sub (d) ist Verweis.
+- Klaus' Konvention „Bau-Sitzungen schließen mit ‚Sichttest ungeprüft,
+  wartet auf Klaus' Browser-Lauf' — keine Sitzung markiert sich selbst
+  als grün ohne Klaus" eingehalten: die drei Bau-/Pflege-Sitzungen
+  waren als „ungeprüft" geschlossen, dieser Sichttest-Nachzug stellt
+  sie mit Klaus' explizitem „Funktioniert wie erwartet" auf grün.
+
+**Vorgemerkt — Folge-Sitzungen:**
+
+- **Spec-Sitzung 15.B** für Sub (a) Read-API + Sub (b) postMessage-
+  Bedienungs-Pfad finalisieren — Klaus triggert mit `Befehl
+  schreiben`.
+- **Endknoten-Migration Karte 09 § Schritt 10** (Membran-Allowlist +
+  Lampe in PWA-Header anhängen) — eigene Folge-Pflege pro Endknoten-
+  Repo.
+- **`/sbkim/query`-Endpunkt im SW-Pfad-Filter** ergänzen, sobald
+  Modul 04.C Search-API serverseitig steht.
+
+Übergabeprotokoll:
+[`docs/sessions/archiv/2026-05-24_sichttest-15-fremd-lampe-gruen.md`](sessions/archiv/2026-05-24_sichttest-15-fremd-lampe-gruen.md).
+
+---
 
 ### 2026-05-24 · Mini-Pflege — Sage-Page Fremd-Lampe Sichttest-Knopf
 
