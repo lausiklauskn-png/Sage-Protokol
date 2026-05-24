@@ -287,6 +287,62 @@ und nüchtern (kein Disclaimer-Schwall). Anlass: Klaus' geplante
 App-Freigabe — sichtbares Vertrauens-Signal für Forker und Endnutzer.
 Stub angelegt 2026-05-24, Spec-Sitzung 16 in Brief-99-Pipeline.
 
+## Pipeline-Reihenfolge bis App-Freigabe (verbindlich, 2026-05-24)
+
+Klaus' strategische Festlegung: **vor der öffentlichen App-Freigabe**
+müssen die folgenden Sitzungen **in dieser Reihenfolge** durchlaufen
+sein. Eine Sitzung darf später ergänzen oder verfeinern, aber
+**nicht umsortieren**, ohne Klaus' explizites Einverständnis. Die
+Reihenfolge ist eine Tafel (siehe § Tafel-Evolutions-Klausel) — eine
+neue Erkenntnis darf sie weiterentwickeln, aber nur mit klarem
+Anpassungs-Antrag, nicht stillschweigend.
+
+| # | Sitzung | Branch-Vorschlag | Brief liegt? |
+|---|---|---|---|
+| 1 | **Spec-Sitzung 16** — SBKIM-Siegel-Form festlegen (vier Sub-Bereiche, Pflicht-Modul-Liste, Badge-Optik, Modal-Inhalt, Aspekte-Schema) | `claude/spec-16-siegel` | ✅ `docs/sessions/BRIEF_SPEC_16_SIEGEL.md` |
+| 2 | **Bau-Sitzung 16** — `src/modules/16_siegel.js`, Badge-CSS in `index.html`, Modal-Mount, `ZERTIFIKAT_ASPEKTE`-Startwert | `claude/bau-16-siegel` | ⏳ wird in Spec-Sitzung 16 angelegt |
+| 3 | **Sichttest 16** — Klaus, Sage-Page Badge sichtbar + Modal öffnet sich | (kein eigener Branch, Sichttest-Nachzug-PR) | — |
+| 4 | **Spec-Sitzung 15.B** — Modul 15 Sub (a) Read-API + Sub (b) postMessage-Bedienung mit Siegel-Hook im Snapshot | `claude/spec-15b-membran` | ⏳ wird in Spec-Sitzung 16 oder Bau 16 angelegt |
+| 5 | **Endknoten-Migration** — Karte 09 § Schritt 10 (Membran-Allowlist + Lampe + Siegel-Anker pro Endknoten-PWA), eigene Folge-Sitzung pro Endknoten-Repo | `claude/migration-<endknoten>` (extern) | ⏳ Brief liegt schon: `BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md` (wird vor Schritt 5 um Siegel-/Lampen-Anker erweitert) |
+| 6 | **Klaus' App-Freigabe** — Mein-Rezeptbuch, Mein-Mixarium, Sage-Protokol mit Siegel sichtbar öffentlich verteilen | (kein Branch, Klaus-Schritt) | — |
+
+**Danach (organisch, ohne feste Reihenfolge — jeder Bau ergänzt
+einen Aspekt-Eintrag im Siegel-Modal):**
+
+- Modul 11 Mini-Bau (Rate-Limit-Hook für eingehende postMessage)
+- Modul 12 Mini-Bau (manuelle Blocklist im Andocker-UI)
+- Modul 10 Voll-Bau (Reputation — frühestens wenn Netz ≥ 10 aktive
+  Geschwister hat und Statistik liefert)
+
+### Warum diese Reihenfolge (Begründung)
+
+- **Modul 16 vor Modul 15.B**, weil 15.B den Siegel-Hook im
+  `read()`-Snapshot mitliefern soll und dafür das fertige Siegel-
+  Schema braucht.
+- **Modul 16 vor App-Freigabe**, weil Klaus' explizite Strategie-
+  Festlegung 2026-05-24: vor der Verteilung der Apps muss ein
+  sichtbares Vertrauens-Signal für Forker und Endnutzer stehen.
+- **Schutz-Module 11/12/10 NACH App-Freigabe**, weil sie nach
+  CLAUDE.md-Spec „erst gebaut, wenn das Netz groß genug ist, dass
+  Apoptose und Match-Filter allein nicht mehr reichen". Spec-getrieben
+  ohne reale Angriffsfläche → potenziell falsche Form. Aspekte-
+  Wachstum im Siegel-Modal macht spätere Updates sichtbar, ohne
+  dass Forker re-andocken müssen.
+- **Endknoten-Migration NACH Bau 16 + Spec 15.B**, weil Migration
+  Membran-Lampe **und** Siegel-Badge in einem Schritt einbaut —
+  sonst zweimal pro Endknoten-Repo migrieren.
+
+### Wer darf umsortieren
+
+- **Klaus** explizit per Chat — dann zieht eine eigene Pflege-Sitzung
+  diese Tafel nach (CLAUDE.md aktualisieren).
+- **Eine Sitzung, die einen Block-Befund hat** (Tafel-Evolutions-
+  Klausel: neue Erkenntnis darf alte Tafel weiterentwickeln) — aber
+  nur mit explizitem Anpassungs-Antrag an Klaus, nicht stillschweigend.
+- **NIEMAND** stillschweigend. Wer einen Bau-/Spec-Brief schreibt,
+  der von dieser Reihenfolge abweicht, MUSS in der Sitzungs-Antwort
+  begründen, warum.
+
 ## Wenn du blockiert bist
 
 Beim ersten echten Hindernis: **ende die Sitzung sauber**, dokumentiere im

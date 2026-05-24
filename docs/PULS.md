@@ -1811,6 +1811,55 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-24 · Mini-Pflege — CLAUDE.md Pipeline-Reihenfolge-Tafel verankert
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-claude-md-pipeline-reihenfolge`. Anschluss nach PR #149
+(status.json-Pflege). Anlass: Klaus' Frage „ist 4. mit vermerkt wegen
+der Wichtigkeit der Reihenfolge?" — die Pipeline-Reihenfolge (Spec 16
+→ Bau 16 → Sichttest → Spec 15.B → Endknoten-Migration → App-Freigabe;
+Schutz-Module organisch danach) stand verstreut in Brief #148, Karte
+16 und PULS-Sitzungs-Einträgen, aber NICHT als zentrale verbindliche
+Tafel in der Pflichtleseliste. Eine neue Sitzung sah die Reihenfolge
+nur dann, wenn sie zufällig den richtigen Brief las.
+
+**Eingriffe (kein Code, nur CLAUDE.md):**
+
+- `CLAUDE.md` neuer Block **„Pipeline-Reihenfolge bis App-Freigabe
+  (verbindlich, 2026-05-24)"** direkt nach der Modul-Tabelle, vor
+  „Wenn du blockiert bist". Inhalt:
+  - Tabelle mit sechs Schritten (Sitzung, Branch-Vorschlag, Brief-
+    Status)
+  - Block „Danach (organisch)" für Module 11 / 12 / 10
+  - **Begründung** der Reihenfolge (warum 16 vor 15.B, warum 16 vor
+    Freigabe, warum Schutz-Module danach, warum Endknoten-Migration
+    nach Bau 16 + Spec 15.B)
+  - **Wer darf umsortieren** (Klaus per Chat, oder Sitzung mit
+    Block-Befund + Anpassungs-Antrag; **niemand stillschweigend**)
+- `docs/PULS.md` Sitzungs-Eintrag oben.
+
+**Disziplin:**
+
+- KEIN Code-Eingriff.
+- KEINE Doppel-Verankerung — die bestehenden Stellen in Karte 16
+  § Reihenfolge und Brief #148 § Hintergrund bleiben unverändert,
+  CLAUDE.md ist jetzt zusätzliche zentrale Pflicht-Tafel.
+- Tafel-Evolutions-Klausel explizit referenziert: die Reihenfolge ist
+  eine Tafel und darf von einer neuen Erkenntnis weiterentwickelt
+  werden — aber nur mit explizitem Anpassungs-Antrag, nicht
+  stillschweigend.
+
+**Vorgemerkt:**
+
+- Klaus startet in einer neuen Sitzung Spec-Sitzung 16 mit dem Brief-
+  Codeblock aus `BRIEF_SPEC_16_SIEGEL.md`. Branch dort:
+  `claude/spec-16-siegel`.
+
+Übergabeprotokoll:
+[`docs/sessions/archiv/2026-05-24_pflege-claude-md-pipeline-reihenfolge.md`](sessions/archiv/2026-05-24_pflege-claude-md-pipeline-reihenfolge.md).
+
+---
+
 ### 2026-05-24 · Mini-Pflege — `status.json` Endknoten-Daten nachgezogen
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch
