@@ -21,9 +21,9 @@ auslagern statt kürzen.
 ```mermaid
 pie showData
   title Modulstand 2026-05-24 (15 Module)
-  "🟫 Schablone" : 5
+  "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
-  "🟨 Spec fertig" : 0
+  "🟨 Spec fertig" : 1
   "🟦 Code-Stub" : 7
   "🟩 Fertig" : 3
 ```
@@ -107,7 +107,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
-| 15 membran | Stub (Membran-Backlog) | — | — | Außenhülle zwischen PWA-Zelle und Browser-Umgebung — fünf Sub-Bereiche (a Read-API für KI-Browser-Agenten ✅ Pflicht / b postMessage-Brücke Rezeptbuch↔Mixarium mit Origin-Allowlist ✅ Pflicht / c signiertes Capability-Token ⏳ später / d Backup-Datei-Sluse 📄 nur Verweis auf Bau 02.X / **e Fremdzugriff-Detektor + rote Navleisten-Lampe ✅ Pflicht, neu 2026-05-24**). Auslöser: Anthropic Browser Use / OpenAI Operator / Comet / Dia werden Markt-reif + Wunsch nach App-zu-App-Kommunikation ohne Server. **Hochstufung 2026-05-24 niedrig → hoch** nach Google I/O 2026 (Gemini 3.5 Flash als Default-Modell in Gemini-App + Google-Suche, agentisch — „act, not just answer"). Sub (e) zieht **sofort** (Spec-Sitzung 15 in Brief-99-Pipeline, Brief `BRIEF_SPEC_15_MEMBRAN.md`); Sub (a)+(b)+(c) weiter an ursprünglicher Schwelle (KI-Browser-SDK + App-zu-App-Wunsch). **Sage-Page-Sichtbarmachung seit 2026-05-18** (Karten 4/13/14 ziehen `membranBacklog[]` parallel zu `schutzBacklog[]` und `diffusionBacklog[]`); Sub-(e)-Lampe wird zusätzlich in der Sage-Page-Navleiste (`<div class="lamps">`) eingehängt. |
+| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, Sub (a)+(b) grob, Sub (c) später, Sub (d) Verweis) | — (Bau-Sitzung 15 nächster Schritt) | — | Außenhülle zwischen PWA-Zelle und Browser-Umgebung. **Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe vollständig spezifiziert** in Spec-Sitzung 15 vom 2026-05-24: `window.SbkimMembrane.fremdzugriff.{list,subscribe,clear,_recordForTest}`, `FremdzugriffEntry`-Schema (drei `kind` × drei `decision`, `at/origin/agentHint/endpoint/details`), Persistenz **RAM-only** (kein neuer Store, kein DB-Version-Bump), Ringbuffer `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50` in §0 INTERFACES verankert, Modal **eigenständig in der Sage-Page** (Modul-00-Reuse und Slide-Card begründet verworfen), Fremd-Definition formal (`event.origin !== window.location.origin` für postMessage; SW-Fetch-Listener prüft `request.url`-Origin + `Sec-Fetch-Site` + `Referer` für endpoint-probes), Lampe **Dauer-Rot solange Buffer nicht leer + zusätzlicher Puls pro Eintrag**, KEINE benannten Error-Klassen (rein beobachtend, fail-soft via console.warn). Sub (a) Read-API + Sub (b) postMessage-Brücke bekommen Grob-Spec (globaler Name `window.SbkimMembrane` fixiert, Allowlist via `init({allowedOrigins})` im Andocker, Sub-(e)-Hooks verbindlich); finale Spec ausstehend (Spec-Sitzung 15.B). Sub (c)+(d) unangetastet. INTERFACES.md §0 + §1 Modul-15-Block voll gespiegelt. **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 15 (`src/modules/15_membran.js` + Lampe in `index.html` + Panel 15 in `tests/manual_check.html`) ist nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_15_MEMBRAN_FREMDZUGRIFF.md`. |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -1810,6 +1810,131 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-24 · Spec-Sitzung 15 — Membran Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe (voll-Spec)
+
+**Sitzungs-Rolle:** Spec-Sitzung. Branch
+`claude/spec-15-membran-fremdzugriff-0R5iQ`. Anschluss-Sitzung an
+die Pflege-Hauptsitzung Karte-15-Hochstufung vom selben Tag (Brief
+`docs/sessions/BRIEF_SPEC_15_MEMBRAN.md`, Schwerpunkt Sub (e)).
+Kein Modul-Code in `src/`, kein UI-Eingriff in `index.html` —
+ausschließlich Spec-Pflege.
+
+**Kern (drei Sätze):** Sub (e) Fremdzugriff-Detektor + Navleisten-
+Lampe ist vollständig spezifiziert — Schnittstelle
+`window.SbkimMembrane.fremdzugriff.{list,subscribe,clear,_recordForTest}`
+mit verbindlichem `FremdzugriffEntry`-Schema (drei `kind`-Werte ×
+drei `decision`-Werte, PII-strikt), Persistenz **RAM-only** (Closure-
+`let buffer = []` ohne Storage-Anbindung, kein DB-Version-Bump),
+Modal-Form **eigenständig in der Sage-Page** (Modul-00-Reuse und
+Slide-Card begründet verworfen). Sub (a)+(b) bekommen Grob-Spec-
+Entscheidungen (globaler Name `window.SbkimMembrane` fixiert,
+Origin-Allowlist via `init({allowedOrigins})` im Andocker, Sub-(e)-
+Hooks für `read()` und eingehende `message` verbindlich); finale
+Spec dieser zwei Subs bleibt für Spec-Sitzung 15.B offen. INTERFACES.md
+§0 (neuer Konstanten-Block `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50`)
++ §1 Modul-15-Block (Status `schablone` → `entwurf`) vollständig
+nachgezogen.
+
+**Sieben Spec-Entscheidungen aus dem Brief beantwortet:**
+
+1. **Lampen-Anker** — dritte Lampe `<span class="lamp" id="lamp-fremd">`
+   nach `#lamp-traffic`, Label `fremd`, CSS-Variable `--lamp-alert: #DC2626`,
+   neue CSS-Klassen `.lamp.fremd-alert` (Dauer-Glow) und
+   `.lamp.fremd-pulse` (kurzer Puls analog `.traffic-pulse`), Click-
+   Handler öffnet Sub-(e)-Modal.
+2. **Modal-Form** — **eigenständig in der Sage-Page** gewählt (kein
+   Modul-00-Reuse, weil Modul 00 in Endknoten-PWAs lebt nicht in der
+   Sage-Page; keine Slide-Card, weil kein etabliertes Pattern). Modal
+   in `15_membran.js`-Closure mit `mountFremdzugriffModal()`-Helper.
+3. **JS-API** — vier Funktionen unter `window.SbkimMembrane.fremdzugriff`:
+   `list()` (sync, defensive Array-Kopie), `subscribe(cb)` (sync,
+   listener-Fehler werden gefangen), `clear()` (Buffer + Lampe aus),
+   `_recordForTest(entry)` (Test-Brücke mit Unterstrich-Konvention
+   analog Modul 08 `_clearOutbox`).
+4. **`FremdzugriffEntry`-Schema** — sieben Felder fixiert (`at`,
+   `kind`, `origin`, `agentHint`, `endpoint`, `decision`, `details`),
+   drei `kind`-Werte (`membrane-read` / `membrane-postmessage` /
+   `endpoint-probe`), drei `decision`-Werte (`accepted` / `ignored` /
+   `rejected-allowlist`), kind-spezifische `details`-Mindest-Form
+   verbindlich (z.B. `{op, nonce}` für postMessage — niemals voller
+   `payload`).
+5. **Persistenz** — **RAM-only** (Modul-lokales Closure-`let buffer`).
+   `sessionStorage` und IndexedDB-Store mit TTL begründet verworfen
+   (Klaus' „lebende Schau" ≠ Audit-Archiv; IndexedDB wäre `DB_VERSION`-
+   Bump für eine reine Anzeige-Schicht).
+6. **„Fremd"-Definition** — `event.origin !== window.location.origin`
+   für postMessage; für endpoint-probes SW-Fetch-Listener-Hook mit
+   Reihenfolge `request.url`-Origin → `Sec-Fetch-Site` → `Referer` →
+   Fallback same-origin; same-origin-Subpfade aus iframes zählen NICHT
+   als Fremd; SW publiziert via `BroadcastChannel('sbkim-membrane')`-
+   Message `{ type:"SBKIM_MEMBRANE_PROBE", entry }` an die Page-Schicht.
+7. **INTERFACES.md-Spiegelung** — §0 neue Konstante
+   `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50`; §1 Modul-15-Block
+   komplett umgeschrieben (Status `schablone` → `entwurf`, vollständige
+   Bietet-/Nutzt-/Storage-/Events-/Fehler-/Tabu-Sektion analog Modul
+   00/08; KEINE benannten Error-Klassen für Sub (e) — rein beobachtend).
+
+**Was angefasst wurde:** `docs/components/15_membran.md` (Status-
+Zeile, Sub (e) komplett ausgeschrieben mit Schnittstelle / Schema /
+Persistenz-Entscheidung / Ringbuffer-Verhalten / Fremd-Definition /
+Lampe-DOM-Vorlage / Modal-Inhalt / Architektur-Trennung / Strikte
+Tabus / Bau-Sitzung-Hinweise; Sub (a)+(b) mit Grob-Spec-Block für
+globalen Namen + Sub-(e)-Hook + Allowlist-Konfigurationspfad;
+„Offene Fragen Sub (e)"-Block als gelöst markiert mit Verweis;
+Bauzustand-Tabelle Zeile „Spec gefüllt 2026-05-24"), `docs/INTERFACES.md`
+(§0 `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX` ergänzt; §1 Modul-15-Block
+komplett neu), `status.json` (`membranBacklog[0].score` `"schablone"`
+→ `"spec"`, `.siegel` + `.kurz` nachgezogen), `docs/PULS.md`
+(Tabellen-Zeile 15 + neuer Sitzungs-Eintrag oben + Pie-Block
+automatisch via `python3 scripts/update_puls_pie.py` nachgezogen —
+Daten 4/0/1/7/3 statt 5/0/0/7/3), neuer Brief
+`docs/sessions/BRIEF_BAU_15_MEMBRAN_FREMDZUGRIFF.md` für die Folge-
+Bau-Sitzung, Übergabeprotokoll
+`docs/sessions/archiv/2026-05-24_spec-15-membran-fremdzugriff.md`.
+
+**Wichtig — was bewusst NICHT gemacht wurde:**
+
+- Kein `src/modules/15_membran.js`. Modul-Code ist Bau-Sitzung 15.
+- Kein `index.html`-Eingriff. Die dritte Lampe baut die Bau-Sitzung 15
+  (DOM-Vorlage liegt in Karte 15 + INTERFACES.md zur copy-paste-
+  Übernahme bereit).
+- Kein Eingriff in andere Modul-Karten (außer Querverweis-Bullets am
+  Ende von Karte 15 — die standen schon).
+- Kein Eingriff in das Empfangsmodus-Prinzip — Sub (e) ist und bleibt
+  passiv beobachtend, die Lampe BLOCKIERT NICHT, sie ZEIGT.
+- Sub (c) Capability-Token unangetastet (Stufe 3, wartet auf
+  Sub (a)+(b)).
+- Sub (d) Backup-Datei unangetastet (existiert bereits in Modul 02
+  Bau 02.X, Karte 15 verweist nur).
+
+**Offene Folgepunkte (für die nächste Sitzung):**
+
+- **Bau-Sitzung 15 ziehen.** Vollständiger Brief liegt unter
+  `docs/sessions/BRIEF_BAU_15_MEMBRAN_FREMDZUGRIFF.md`. Vorgesehen:
+  `src/modules/15_membran.js` (Sub (e) komplett, Sub (a) read()-
+  Skelett mit Sub-(e)-Hook, Sub (b) postMessage-Listener mit Sub-(e)-
+  Hook + Allowlist-Stub), Lampe in `index.html` (drei kleine
+  Eingriffe: `:root --lamp-alert`, zwei CSS-Klassen, Lampen-Span +
+  Label nach `#lamp-traffic`), Panel 15 in `tests/manual_check.html`,
+  Erweiterung von `src/sbkim-sw.js` für endpoint-probe-Detektor (oder
+  als eigene SW-Bau-Sitzung 15.SW, je nach Token-Budget).
+- **Spec-Sitzung 15.B** (Sub (a)+(b) finale Spec): bleibt offen,
+  zieht erst, wenn ein Endknoten-Betreiber konkret App-zu-App-Wunsch
+  äußert ODER ein dritter Endknoten außerhalb `github.io` Andock-
+  Anlass gibt. Heute kein Zeitdruck.
+- **Folge-Pflege Karte 09** (Andock-Anleitung): Schritt 10 optional
+  „Membran-Allowlist setzen + Lampe in PWA-Header anhängen" — eigene
+  Pflege-Sitzung nach Bau-Sitzung 15, sobald Sub (e) live in der
+  Sage-Page bewiesen ist.
+
+**Nächster sinnvoller Schritt:** Bau-Sitzung 15 ziehen (Brief liegt
+fertig), parallel die Sammelspec-15.B kann warten bis Endknoten-
+Wunsch. Sage-Page-Refactor (BRIEF_BAU_SAGE_PAGE_REFACTOR.md aus
+Brief-99-Pipeline) ist parallel ziehbar — kollidiert mit der Lampen-
+Erweiterung der Bau-Sitzung 15 in `index.html`; saubere Reihenfolge:
+**erst Sage-Page-Refactor mergen, dann Bau-Sitzung 15** (Lampe ist
+additiv, Refactor ändert die Sage-Page-Struktur).
+
 ### 2026-05-24 · Pflege-Hauptsitzung — Karte 15 Hochstufung + Sub (e) Fremdzugriff-Lampe (Anlass Gemini 3.5 Flash)
 
 **Sitzungs-Rolle:** Pflege-Hauptsitzung. Branch
@@ -2682,208 +2807,6 @@ protokoll erstellt.
 **PR:** Branch `claude/bau-08y-sichttest-nachzug-j6mJF`,
 Draft-PR „Bau 08.Y slot-spezifische Outbox — Sichttest-Nachzug".
 
----
-
-### 2026-05-20 · Bau 08.Y slot-spezifische Outbox in Modul 08
-
-**Sitzungs-Rolle:** Bau-Sitzung (kein Spec — Brief 04 hat das Store-
-Pattern in INTERFACES § 9.2 spezifiziert, Spec-Sitzung 08 hat den
-Modul-08-Vertrag spec'd), headless. Branch
-`claude/bau-08y-slot-spezifische-outbox-j6mJF`. Vierte Konsumenten-
-Bau-Sitzung der Bau-Sitzungs-Brief-Pipeline aus Brief 99 (nach
-Bau 05.Y / 06.Y / 07.Y — alle drei Briefe gemerged, Bau-Sitzungen
-folgen in eigener Reihenfolge). Brief BAU_08Y_SLOT_SPEZIFISCHE_OUTBOX
-(PR #116 gemerged 2026-05-20, `main` `4b063ad`) als Spec-Vorlage.
-
-**Kern (drei Sätze):** Modul 08 schreibt jetzt slot-spezifisch in
-`sbkim_hetero_outbox_<activeSlotKey>` und liest/schreibt
-`sbkim_siblings_<activeSlotKey>`. Der `activeSlotKey` wird im `init()`
-via `SbkimSpore.getActiveIdentityKey()` einmalig gecached (Default
-`"main"` — Rückwärts-Kompat zum Singleton-Vertrag). **Bau 08.Y löst
-die in Bau-06.Y-Brief dokumentierte bekannte Limitierung auf** —
-Modul 06 liest jetzt aus `sbkim_hetero_outbox_<key>` (Bau 06.Y),
-Modul 08 schreibt dorthin (diese Sitzung).
-
-**Sechs Punkte a–f:**
-
-- **a) INTERFACES.md** zwei Eingriffe: § 1 Modul 08 Geprüft-Zeile um
-  „2026-05-20 (Bau 08.Y slot-spezifische Outbox)" erweitert; § 10
-  Änderungsprotokoll neue Zeile. KEIN Vertrags-Drift.
-- **b) Karte 08** § Konfigurationswerte um „PRO SLOT, nicht global"-
-  Hinweis; § Datenformate Slot-Pfad-Block + slot-suffixed Store-
-  Namen; § Manueller Test Erwartungs-Block je Knopf nachgezogen;
-  § Bauzustand neue Zeile.
-- **c) `src/modules/08_ui_demo.js` additiv-mit-internem-Refactoring**
-  (KEIN Bruch der äußeren Signatur): neue Konstanten
-  `OUTBOX_STORE_BASE` / `SIBLINGS_STORE_BASE` / `DEFAULT_IDENTITY_KEY`;
-  Closure-Helper `heteroOutboxStoreName(slot)` /
-  `siblingsStoreName(slot)` / `ensureSlotStores(slot)`; Modul-State
-  `activeSlotKey`; `probeDependencies` um `SbkimSpore (Modul 02)`
-  erweitert; `init()` ruft `SbkimSpore.init()` +
-  `getActiveIdentityKey()` + `ensureSlotStores(activeSlotKey)`;
-  `listOutbox / addOutboxAnchor / removeOutboxAnchor /
-  setSiblingHeteroOptIn` lesen/schreiben slot-spezifisch; Test-
-  Brücken `_clearOutbox` / `_clearPseudoSiblings` via
-  `SbkimStorage.clear`, `_addPseudoSibling` schreibt in slot-suffixed
-  Store; `pseudoSiblingIds`-Tracker entfernt; `_meta` um
-  `outboxStoreBase` / `siblingsStoreBase` + Getter `activeSlotKey`
-  erweitert. Selbstcheck-Zeile UNVERÄNDERT. `node --check` grün.
-- **d) Panel 08** Setup-Knopf-Output zeigt `active_slot_key` +
-  slot-suffixed Store-Namen + „pro Slot"-Hinweis; Test 6 direkte
-  Storage-Reads umgestellt auf `sbkim_siblings_<activeSlotKey>`;
-  bestehende acht Knöpfe ohne Strukturänderung; Optional-Knopf
-  Sekundär-Persona-Test bewusst NICHT in dieser Bau-Sitzung
-  (Brief-Empfehlung). Panel-Header-Hinweistext nachgezogen. Alle 10
-  Inline-`<script>`-Blöcke syntaktisch validiert.
-- **e) Smoke-Test** `tests/smoke_bau08y_slot_spezifische_outbox.mjs`
-  mit fake-indexeddb (Node 22): drei Proben (Default-Slot Schreib-/
-  Lese-Pfad + non-suffixed Store unangetastet / Sekundär-Slot via
-  Modul-Re-Load + Persona-Isolation / Co-Schreiber-Pfad in
-  `sbkim_siblings_main` + strikt-boolean + UnknownSiblingError) +
-  Bonus (Cross-Persona-Slot-Isolation) — **26 Sub-Proben, 26 grün,
-  0 rot**. Regression: Bau-02.Y-Smoke 33/33 + Bau-04.A-Smoke 19/19
-  + Pflege-01-Smoke 8/8 alle grün.
-- **f) Übergabeprotokoll** `docs/sessions/archiv/2026-05-20_bau-08y-slot-spezifische-outbox.md`.
-
-**Heilige Tafeln eingehalten:** INTERFACES verbindlich (§ 1 Modul 08
-Bietet/Storage/Fehler/Garantien UNVERÄNDERT — Spec-Sitzung 08 +
-Brief 04 stehen). Modul 08 ist storage-only (KEIN Receiver-Map,
-KEIN Netz-Empfang, kürzester der vier Konsumenten-Bauten).
-Aktiver-Slot-Cache analog Bau-05.Y-Brief. Stores pro aktivem Slot
-(`sbkim_hetero_outbox_<key>` + `sbkim_siblings_<key>`). `ensureStore`
-defensiv vor jedem ersten Schreibvorgang (idempotent, Bau 01.Y).
-Co-Schreiber-Konvention via `Object.assign` unverändert. Default-Slot
-„main" Rückwärts-Kompat. Bestehende Funktionen in äußerer Signatur
-gültig. `addOutboxAnchor`-Check-Reihenfolge unverändert (Pflicht-
-Entscheidung 1 aus Bau 08 von 2026-05-15). **KEINE Tafel-Spannung**.
-
-**Was NICHT angefasst:** Modul-05/06/07-Code (eigene Bau-Sitzungen);
-Receiver-Map-Code (Modul 08 storage-only); `setActiveIdentity`-
-Aufrufe aus Modul 08 (Aufrufer-Pflicht); Migration alter
-nicht-suffixed Outbox-Daten (Aufrufer via Backup-Re-Import aus
-Bau 02.Y); `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
-Bump; Sage-Page; CLAUDE.md; Karte 09; `status.json`;
-`update_puls_pie.py` (Modul 08 bleibt `score:"stub"`, additiv).
-
-**Sichttest:** initial ungeprüft, weil headless gebaut.
-**Klaus' Browser-Sichttest 2026-05-20 grün** (DeX-Chrome auf Galaxy
-Tab S6) — Setup + Panel 08 Tests 1–6 alle grün, plus volle Regression
-Panels 01–07 grün. Details in der Folge-Sitzung „Sichttest-Nachzug"
-oben.
-
-**Vorgeschlagene nächste Schritte:**
-
-1. **Klaus' Browser-Sichttest Panel 08** — Setup-Knopf zeigt
-   slot-suffixed Store-Namen + `active_slot_key`; Tests 1–6 wie bisher
-   grün (nicht headless — wartet auf Klaus' Browser-Lauf).
-2. **Endknoten-Migration (Mein-Mixarium + Mein-Rezeptbuch)** — alle
-   Bau-02.Y / 04.A / 05.Y / 06.Y / 07.Y / 08.Y produktiv im
-   Endknoten-Repo verfügbar (Multi-Persona-Pfad live; setzt voraus,
-   dass Bau-Sitzungen 05.Y / 06.Y / 07.Y ebenfalls gebaut sind —
-   PR #113 / #114 / #115 sind nur Briefe).
-3. **Bau-Sitzungen 05.Y / 06.Y / 07.Y schreiben** — eigene
-   Bau-Sitzungen, je ~2-3 h, in beliebiger Reihenfolge (Briefe
-   gemerged seit 2026-05-19).
-4. **Vision-Anker 5 Identitäts-Container Spec-Sitzung** (optional) —
-   löst die User-Key-Test-Brücke aus Bau 04.B mit produktivem
-   sicheren Pfad.
-
-**PR:** Branch `claude/bau-08y-slot-spezifische-outbox-j6mJF`,
-Draft-PR „Bau 08.Y slot-spezifische Outbox in Modul 08 (UI-Demo)".
-
----
-
-### 2026-05-18 · Mini-Pflege — Vision-Anker M04-Erweiterung als neunter Anker
-
-**Sitzungs-Rolle:** Mini-Pflege, headless. Branch
-`claude/pflege-vision-anker-m04-erweiterung`. Brainstorming-Sitzung
-mit zwei Strängen — Klaus hat die **Brücke zwischen SBKIM-Paper
-(Plattform-Form) und Mycel-Form** sichtbar gemacht und parallel die
-Sorge ums spätere Freigeben thematisiert.
-
-**Kern:** Modul 04 macht heute nur einseitigen Cosinus-Vergleich; die
-drei Schichten (fachlich / prozess / skalierung), das Brücken-Feld
-und die doppelte Spore (capabilities + needs auf beiden Seiten) aus
-dem ursprünglichen Paper-Pitch leben als implizite Vision weiter,
-sind aber bislang nicht in PULS verankert. Anker 9 holt sie ein.
-
-**Was eingetragen:**
-
-- **PULS.md § Vision-Anker** um neunten Anker erweitert: „M04-
-  Erweiterung — drei Schichten + Brücke + doppelte Spore" mit
-  Konzept, Match-Pipeline (Stufe A lokal + Stufe B optional LLM),
-  Architektur-Skizze, Verbindungen zu V1/V4/V5/V6/V7/V8 + Modul 06,
-  Historie Paper ↔ Mycel, Größenordnung, Status.
-- **PULS.md § Vision-Anker Anker 7 Status** ergänzt um Verweis
-  „Anschluss an Anker 9".
-- **PULS.md § Vision-Anker Anker 8 Status** ergänzt um Verweis
-  „natürlicher Träger der LLM-Stufe-B-Calls" + Wechsel „Acht" →
-  „Neun Vision-Anker".
-- **PULS.md § Sitzungs-Einträge** neuer Top-Eintrag (dieser).
-- **PR-#85-Sitzungs-Eintrag** (Mini-Browser, Anker 8) per Konvention
-  ins Archiv-Index ausgelagert; Übergabeprotokoll bleibt unverändert.
-- **Übergabeprotokoll** `docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md`.
-
-**Neun Vision-Anker jetzt im Repo:**
-
-1. V1 — Sage als Hybrid-Knoten (Klaus' nächste Spec-Wahl, jetzt im
-   Großbrief erweitert um Anker 9 + Anker 6 + Plattform-Matrix)
-2. V2-Ausbau — Niedrigeres Onboarding (drei gleichwertige Pfade)
-3. Universum-Vision (umgesetzt PR #79 + #80)
-4. Königin-Relay (Modul 13?) — Mailbox für offline-Geschwister
-5. Identitäts-Container — Rucksack, Safe, Chipkarte, Mini-Browser
-6. Multi-Identität in der IndexedDB
-7. SBKIM-Browser-Extension („Lampe in der Toolbar") — PR #84
-8. Eigener Mini-Browser (Tauri-App) — PR #85
-9. **M04-Erweiterung** (drei Schichten + Brücke + doppelte Spore) — neu
-
-**Paper-↔-Mycel-Brücke:** der ursprüngliche SBKIM-Pitch trug drei
-Schichten + Brücken-Feld als Kern-Innovation. Beim Pivot zur Mycel-
-Form wurde Modul 04 bewusst minimal gehalten (Cosinus + Schwelle),
-um die Infrastruktur zuerst tragfähig zu bekommen. Anker 9 macht die
-zurückgestellte Tiefe explizit und nennt sie als Bau-Ziel der V1-
-Sammelspec — kein eigener V1-paralleler Strang, sondern integraler
-Teil.
-
-**Sorge ums Freigeben (dokumentiert, nicht gehandelt):** Klaus hat
-Bedenken vor späterem Public-Schalten — Lizenzwahl (CC-BY-NC vs AGPL
-vs MIT) bleibt offen, Sage ist heute privat, kein Lecken. **Diese
-Pflege ändert daran nichts.** Lizenz-Entscheidung wird beim Public-
-Schalten separat geklärt.
-
-**Was NICHT angefasst:** Modul-Code, INTERFACES.md, Modul-Karten,
-Sage-Page, `status.json`. Vision lebt rein in PULS, kein Code-
-Eingriff. `update_puls_pie.py` NICHT aufgerufen.
-
-**Plattform-Ehrlichkeit:** Stufe B (LLM-Call) braucht User-eigenen
-API-Key. Wer keinen hinterlegt, bleibt bei Stufe A — kein Knoten ist
-gezwungen, einen Drittanbieter zu nutzen. Stufe A bleibt das
-**rückgrat-tragende lokale Matching**, Stufe B ist Vertiefung.
-
-**Großbrief vorbereitet:** Klaus möchte die V1-Sammelspec als mehr-
-tägige Sitzung führen — Scope erweitert um Anker 9 (M04-Erweiterung),
-Anker 6 (Multi-Identität / Mehrfach-Sporen-Identität) und die
-**Plattform-Matrix** (Sporen-Verhalten in Desktop-Browser / DeX-
-Tablet / PWA-installiert / Mini-Browser / Extension). Der Brief liegt
-Klaus am Chat-Tab zur Auslösung vor, wann er Zeit hat — er läuft
-NICHT automatisch.
-
-**PULS-Zeilen-Status:** Sitzungsstart 3105 Zeilen, jetzt **3254 Zeilen**
-(+149). Der neunte Vision-Anker selbst ist ~130 Zeilen dauerhafter
-Eintrag (Konzept, Pipeline, Architektur, Verbindungen, Historie,
-Größenordnung, Status); Sitzungs-Eintrag +78 minus PR-#85-Auslagerung
--75 ist nahezu neutral. Mit PR #85 + dieser Pflege liegt PULS jetzt
-deutlich über der 3000er-Schutz-Klausel. **Dezidierte Auslager-Sitzung
-mehrerer älterer Sitzungs-Einträge bleibt überfällig** und wandert in
-die nächsten sinnvollen Schritte vor V1-Sammelspec.
-
-**Nächster sinnvoller Schritt:** Klaus entscheidet — V1-Sammelspec
-auslösen (mehrtägig, großer Brief in dieser Chat-Antwort als
-Codeblock), oder mehrere alte Sitzungs-Einträge ins Archiv auslagern
-(PULS unter 3000 bringen, eigene Mini-Pflege), oder Pause.
-
-**Übergabeprotokoll:** [docs/sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md](sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md).
-
 ## Archiv-Index (Sitzungen vor dieser Pflege)
 
 Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
@@ -2891,6 +2814,8 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-20 | Bau · 08.Y slot-spezifische Outbox in Modul 08 (Bau-Sitzung; Branch `claude/bau-08y-slot-spezifische-outbox-j6mJF`; vierte Konsumenten-Bau-Sitzung der Bau-Sitzungs-Brief-Pipeline aus Brief 99; Modul 08 schreibt jetzt slot-spezifisch in `sbkim_hetero_outbox_<activeSlotKey>` und liest/schreibt `sbkim_siblings_<activeSlotKey>`; `activeSlotKey` im `init()` via `SbkimSpore.getActiveIdentityKey()` einmalig gecached (Default `"main"` als Rückwärts-Kompat); löst die in Bau-06.Y-Brief dokumentierte bekannte Limitierung auf; INTERFACES § 1 Modul 08 + Karte 08 + Panel 08 in `tests/manual_check.html` Setup-Output nachgezogen; Selbstcheck UNVERÄNDERT; `HETERO_OUTBOX_MAX_ENTRIES = 5` gilt jetzt PRO SLOT; Headless-Smoke 26/26 grün; Sichttest-Nachzug-Sitzung am 2026-05-20 als Folge; PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION unverändert; KEIN Eingriff in Modul-00/01/02/03/04/05/06/07-Code) | (zusammen mit [Sichttest-Nachzug](sessions/archiv/2026-05-20_bau-08y-sichttest-nachzug.md) im Archiv) |
+| 2026-05-18 | Mini-Pflege · Vision-Anker M04-Erweiterung als neunter Anker (Brainstorming Paper-↔-Mycel-Brücke + Sorge ums Freigeben; PULS § Vision-Anker um neunten Anker erweitert — drei Schichten + Brücke + doppelte Spore, Stufe A lokal + Stufe B optional LLM; Anker 7 + 8 Status-Verweise ergänzt; PR-#85-Sitzungs-Eintrag auch ins Archiv; Großbrief V1-Sammelspec vorbereitet mit Scope-Erweiterung um Anker 9 / Anker 6 / Plattform-Matrix; kein Modul-Code, kein INTERFACES-Eingriff) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-m04-erweiterung.md) |
 | 2026-05-21 | Bau · Sage-Page-Refactor — Sage als dritter Endknoten bau-fertig (Bau-Sitzung; Branch `claude/bau-sage-page-refactor`; Sage-Page lädt alle SBKIM-Module mit fail-soft init()-Kette unter IndexedDB-Suffix `sbkim_sage`; eigener Standalone-`sbkim-sw.js` Variante 3a; Schwarz-Loch-Karte öffnet beim ersten Klick einen Mini-Andock-Wizard Identität → Spore mit lazy-Modul-03-Embedding → Backup; Module-Bento mit drei LED-Lampen pro Modul Spec/Code/Sichttest; PR #125 gemerged 2026-05-21; Sichttest-Folge mit PRs #127–#134 schloss die Sichttest-Schleife) | [→ Archiv](sessions/archiv/2026-05-21_bau-sage-page-refactor.md) |
 | 2026-05-18 | Mini-Pflege · Vision-Anker Multi-Identität in der IndexedDB (sechster Vision-Anker als Feature-Inversion von Lehre 1 — bewusste Persona-Trennung statt zufällige Browser-Instanzen-Trennung; PULS § Vision-Anker erweitert; kein Modul-Code, keine INTERFACES.md-Änderung) | [→ Archiv](sessions/archiv/2026-05-18_mini-pflege-vision-anker-multi-identitaet.md) |
 | 2026-05-19 | Bau · 04.A `matchDimensions` synchron in Modul 04 (PR #110 gemerged 2026-05-19; erste Bau-Sitzung der M04-Erweiterung aus Brief 03; additiv ohne Refactoring der bestehenden `match`/`isAboveProviderThreshold`; `matchDimensions(queryCap, queryNeeds, passageCap, passageNeeds)` synchron mit Drei-Schichten-Heuristik + `availableLanes ∈ {0,1,2}` + `bruecke:null`; `DimensionsAllNullError` sync bei allen vier null; Stufe-A-Heuristik gemäß Karte 04 (alle drei Schichten gleich dem Lane-Cosinus, echte semantische Differenzierung kommt in Stufe B via `explainMatchLLM` Bau 04.B). Smoke-Test 19/19 grün. Sichttest 2026-05-19 (Klaus, DeX-Chrome): grün geprüft. PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION unverändert. KEIN Modul-Code in 00/01/02/03/05/06/07/08, KEIN Schema-Eingriff, KEINE Sage-Page-Änderung) | [→ Archiv](sessions/archiv/2026-05-19_bau-04a-match-dimensions.md) |
