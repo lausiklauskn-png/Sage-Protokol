@@ -20,8 +20,8 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-24 (15 Module)
-  "🟫 Schablone" : 4
+  title Modulstand 2026-05-24 (16 Module)
+  "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
   "🟦 Code-Stub" : 8
@@ -107,7 +107,8 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
-| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, Sub (a)+(b) grob, Sub (c) später, Sub (d) Verweis) | Code-Stub (Bau-Sitzung 15 Sub (e) 2026-05-24 + Bau 15.SW SW-Probe-Detektor 2026-05-24 + Pflege Sage-Page-Sichttest-Knopf 2026-05-24) | **geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6)** — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün (alle sechs Pflicht-Felder); Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün (acht-Schritt-Sichttest aus Pflege-Anleitung); echter Live-Cross-Origin-SW-Probe bleibt headless-only (alle drei Endknoten same-origin auf `lausiklauskn-png.github.io`) | Außenhülle zwischen PWA-Zelle und Browser-Umgebung. **Bau-Sitzung 15 vom 2026-05-24:** `src/modules/15_membran.js` neu angelegt — Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe vollständig implementiert (Ringbuffer RAM-only mit FIFO-Verdrängung bei `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50`, Listener-Liste mit subscribe/unsubscribe, idempotenter `clear()`, `_recordForTest`-Test-Brücke, Lampen-Toggle via `.fremd-alert`/`.fremd-pulse`, eigenständiges Modal in `document.body` mit Backdrop/Esc/✕/Aufräumen-Knopf + tabellarischer Live-Render, Click-Handler an `#lamp-fremd`, BroadcastChannel('sbkim-membrane')-Subscription für SW-endpoint-probes — SW-Erweiterung in `src/sbkim-sw.js` ZURÜCKGESTELLT als eigene Bau-Sitzung 15.SW). Sub (a) `read()` als Skelett (fail-soft Snapshot aus `SbkimSpore`/`SbkimAnastomose`/`SbkimStorage._meta`/`navigator.storage`; Geschwister anonymisiert via `nodeIdHash = base64url-sha256(nodeId)`; Tabu `sbkim_keys` strikt eingehalten) — finale Feld-Liste wartet auf Spec-Sitzung 15.B. Sub (b) postMessage-Listener als Skelett (Allowlist via `init({allowedOrigins})`; Same-Origin = kein Eintrag; bekannter `type` + Allowlist = `decision:"ignored"` (Bedienung wartet auf 15.B); unbekannter `type` + Allowlist = `"ignored"`; nicht-Allowlist = `"rejected-allowlist"`). KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). Modul-lokal `AGENT_HINT_MAX_LEN = 64`, `LAMP_PULSE_MS = 600`. `index.html` um drei additive Schritte erweitert: `:root --lamp-alert:#DC2626;` + zwei CSS-Regeln (`.lamp.fremd-alert` mit Glow + Atmung-Animation, `.lamp.fremd-pulse` via `@keyframes lamp-alert-pulse`) + `<span class="lamp" id="lamp-fremd">` + Label nach `#lamp-traffic` + `<script src="src/modules/15_membran.js">` + `SbkimMembrane.init({lampSelector:'#lamp-fremd'})`-Aufruf in `sbkim-init.js` (nach 08, vor 00). Panel 15 in `tests/manual_check.html` mit Setup + sieben Test-Knöpfen (Setup, `_recordForTest`-Probe drei Einträge, subscribe+Counter, `clear()`+Lampe-aus, Ringbuffer-Voll-Probe 60→50 mit P10..P59-Verdrängung, `read()`-Snapshot+Sub-(e)-Hook+Tabu-Check, postMessage Same/Fremd-Origin via `dispatchEvent(MessageEvent)`, init mit Allowlist→`ignored`/`rejected-allowlist`) + Selbstcheck-Hinweis. Headless-Smoke 11/11 grün im Node-Stub. `node --check src/modules/15_membran.js` grün, alle 12 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch grün. **Sichttest ungeprüft** (wartet auf Klaus' Browser-Lauf Panel 15 + Sage-Page-Navleisten-Lampe). |
+| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, Sub (a)+(b) grob, Sub (c) später, Sub (d) Verweis) | Code-Stub (Bau-Sitzung 15 Sub (e) 2026-05-24 + Bau 15.SW SW-Probe-Detektor 2026-05-24 + Pflege Sage-Page-Sichttest-Knopf 2026-05-24) | **geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6)** — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün (alle sechs Pflicht-Felder); Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün (acht-Schritt-Sichttest aus Pflege-Anleitung); echter Live-Cross-Origin-SW-Probe bleibt headless-only (alle drei Endknoten same-origin auf `lausiklauskn-png.github.io`) |
+| 16 siegel | Stub (2026-05-24, Schablone) | — | — | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. Vier Sub-Bereiche (a Pflicht-Modul-Liste, b Badge-Rendering Auszeichnungs-Optik, c Erklärungs-Modal mit kurzer Aussteller-Klärung, d Aspekte-Liste). Anlass: Klaus' geplante App-Freigabe — Vertrauens-Signal für Forker und Endnutzer. Priorität hoch (vor App-Freigabe). Spec-Sitzung 16 ausstehend. | Außenhülle zwischen PWA-Zelle und Browser-Umgebung. **Bau-Sitzung 15 vom 2026-05-24:** `src/modules/15_membran.js` neu angelegt — Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe vollständig implementiert (Ringbuffer RAM-only mit FIFO-Verdrängung bei `MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50`, Listener-Liste mit subscribe/unsubscribe, idempotenter `clear()`, `_recordForTest`-Test-Brücke, Lampen-Toggle via `.fremd-alert`/`.fremd-pulse`, eigenständiges Modal in `document.body` mit Backdrop/Esc/✕/Aufräumen-Knopf + tabellarischer Live-Render, Click-Handler an `#lamp-fremd`, BroadcastChannel('sbkim-membrane')-Subscription für SW-endpoint-probes — SW-Erweiterung in `src/sbkim-sw.js` ZURÜCKGESTELLT als eigene Bau-Sitzung 15.SW). Sub (a) `read()` als Skelett (fail-soft Snapshot aus `SbkimSpore`/`SbkimAnastomose`/`SbkimStorage._meta`/`navigator.storage`; Geschwister anonymisiert via `nodeIdHash = base64url-sha256(nodeId)`; Tabu `sbkim_keys` strikt eingehalten) — finale Feld-Liste wartet auf Spec-Sitzung 15.B. Sub (b) postMessage-Listener als Skelett (Allowlist via `init({allowedOrigins})`; Same-Origin = kein Eintrag; bekannter `type` + Allowlist = `decision:"ignored"` (Bedienung wartet auf 15.B); unbekannter `type` + Allowlist = `"ignored"`; nicht-Allowlist = `"rejected-allowlist"`). KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). Modul-lokal `AGENT_HINT_MAX_LEN = 64`, `LAMP_PULSE_MS = 600`. `index.html` um drei additive Schritte erweitert: `:root --lamp-alert:#DC2626;` + zwei CSS-Regeln (`.lamp.fremd-alert` mit Glow + Atmung-Animation, `.lamp.fremd-pulse` via `@keyframes lamp-alert-pulse`) + `<span class="lamp" id="lamp-fremd">` + Label nach `#lamp-traffic` + `<script src="src/modules/15_membran.js">` + `SbkimMembrane.init({lampSelector:'#lamp-fremd'})`-Aufruf in `sbkim-init.js` (nach 08, vor 00). Panel 15 in `tests/manual_check.html` mit Setup + sieben Test-Knöpfen (Setup, `_recordForTest`-Probe drei Einträge, subscribe+Counter, `clear()`+Lampe-aus, Ringbuffer-Voll-Probe 60→50 mit P10..P59-Verdrängung, `read()`-Snapshot+Sub-(e)-Hook+Tabu-Check, postMessage Same/Fremd-Origin via `dispatchEvent(MessageEvent)`, init mit Allowlist→`ignored`/`rejected-allowlist`) + Selbstcheck-Hinweis. Headless-Smoke 11/11 grün im Node-Stub. `node --check src/modules/15_membran.js` grün, alle 12 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch grün. **Sichttest ungeprüft** (wartet auf Klaus' Browser-Lauf Panel 15 + Sage-Page-Navleisten-Lampe). |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -1809,6 +1810,138 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-24 · Mini-Pflege — Modul 16 SBKIM-Siegel Stub angelegt
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul-16-siegel-stub`. Anschluss nach PR #146
+(Sichttest-Nachzug Karte 15 grün). Anlass: Klaus' strategische Planung
+zur App-Freigabe. Vor öffentlicher Verteilung der PWAs (Mein-Mixarium,
+Mein-Rezeptbuch, Sage-Protokol + ggf. weitere) braucht es ein
+sichtbares **Vertrauens-Signal** für Forker und Endnutzer. Diskussion
+2026-05-24 hat drei Eckpunkte fixiert:
+
+1. **Name: SBKIM-Siegel** (nicht TÜV+, nicht Gift+, nicht Mycel-
+   Plakette — Klaus' Festlegung).
+2. **Self-Inscribing als Aussteller-Modell** — die App stellt sich
+   das Siegel selbst aus nach erfolgreicher Selbst-Prüfung der
+   Pflicht-Module beim Boot. Kein zentraler Hub-Aussteller, kein
+   CI-Build-Check. Vertrauen kommt vom Repo, in dem die App gehostet
+   ist.
+3. **Lebendes Dokument** — die Erklärung hinter dem Siegel wächst
+   organisch: jedes Sicherheits-Update ergänzt einen Aspekt mit
+   Datum. Das Siegel altert nicht, es wächst.
+
+Klaus' Zusatz aus dem späten Diskussions-Strang: **optische Wertigkeit**
+als Auszeichnung (Prädikatswein- / DLG- / Stiftung-Warentest-Stil).
+Modal nennt die Self-Inscribing-Natur kurz und nüchtern — KEIN
+Haftungsausschluss-Block, kein Disclaimer-Schwall (Klaus-Korrektur:
+„ohne Garantie war nicht ernst gemeint").
+
+**Eingriffe (kein Code, nur Doku + Status-Erweiterung):**
+
+- `docs/components/16_siegel.md` neu angelegt — Stub-Struktur analog
+  Karte 14 (Diffusion) und Karte 15 (Membran): Im-Mycel-Bild,
+  Vokabular, vier Sub-Bereiche (a Pflicht-Modul-Liste,
+  b Badge-Rendering Auszeichnungs-Optik, c Erklärungs-Modal mit
+  kurzer Aussteller-Klärung, d Aspekte-Liste lebendes Dokument),
+  Persistenz-Anker (RAM-only-Default), Strikte Tabus
+  (Anti-Greenwashing, Self-Issued ist keine Vertrauens-Garantie),
+  Schnittstellen-Anker (`SbkimSiegel.{init, isCertified,
+  getExplanation, getCertifiedModules, getAspects}`), Brief-99-
+  Pipeline-Position.
+- `status.json` neuer Top-Level-Block `siegelBacklog[]` parallel
+  zu `schutzBacklog` / `diffusionBacklog` / `membranBacklog` (analoge
+  Architektur-Entscheidung: Schutz reaktiv, Diffusion proaktiv nach
+  innen, Membran proaktiv nach außen, **Siegel proaktiv nach innen+
+  außen — Selbst-Bezeugung**). Eintrag Modul 16 (`score:"schablone"`,
+  `siegel:"Stub (Siegel-Backlog, angelegt 2026-05-24), Priorität hoch
+  (vor App-Freigabe)"`).
+- `scripts/update_puls_pie.py` erweitert um Lesen von `siegelBacklog`
+  zusätzlich zu den drei bestehenden Backlogs. Skript gelaufen:
+  **15 → 16 Module, Schablonen 4 → 5**, andere Score-Verteilungen
+  unverändert.
+- `CLAUDE.md` Modul-Tabelle Eintrag 16 ergänzt + Erläuterungs-Absatz
+  „Karte 16 (Siegel) ist die Selbst-Bezeugungs-Karte …" parallel
+  zum bestehenden Karten-14+15-Absatz. Überschrift „Die zehn Module +
+  Schutz-Backlog 10-12 + Proaktiv-Backlog 14 + 15 + Siegel-Backlog 16".
+- `docs/PULS.md` Schnellüberblick-Tabelle Zeile 16 ergänzt; Sitzungs-
+  Eintrag oben (dieser Block).
+
+**Optische Vorgabe (Klaus, 2026-05-24, im Stub-Sub-(b) verankert):**
+
+Das Siegel soll **wie eine Auszeichnung wirken**, NICHT wie ein
+billiger Marketing-Sticker. Referenzen sind klassische Qualitäts-
+Siegel: Prädikatswein-Plaketten (Spätlese / Auslese), DLG-Gold/
+Silber/Bronze, Stiftung Warentest „sehr gut". Konkrete Design-Anker
+in der Karte: Medaillon-Form (rund/leicht oval, 32–48 px), Edelmetall-
+Anmutung (Default Edel-Gold `#C9A961`), klassische Serif- oder
+humanistische Sans-Serif (NICHT die Mono-Schrift der Lampen-Labels),
+abstraktes Mycel-Wappen-Element, SVG-skalierbar, dezenter Hover-
+Glow, einmaliger Aufleuch-Puls beim ersten Bezeugen. Negativ-
+Beispiele explizit benannt (keine Neon-Farben, keine Emoji-Plakette,
+keine animierten GIFs).
+
+**Modal-Klausel (Klaus, 2026-05-24, im Stub-Sub-(c) verankert):**
+
+Das Erklärungs-Modal trägt einen kurzen Fakt-Satz zur Aussteller-
+Klärung — KEIN Haftungsausschluss-Block (Klaus' Korrektur: „ohne
+Garantie war nicht ernst gemeint"):
+
+> Dieses Siegel ist **self-inscribing**: die App hat sich selbst
+> geprüft. Vertrauen kommt vom Repo, in dem sie gehostet ist:
+> `<repo-url>`.
+
+Zwei Zeilen, nüchtern, ohne Disclaimer-Ton. Spec-Sitzung 16 darf
+feinpolieren, aber NICHT aufblähen.
+
+**Anti-Greenwashing-Klausel:**
+
+- Kein Siegel ohne erfüllte Selbst-Prüfung — wenn ein Pflicht-Modul
+  fehlt, KEIN Badge-Render. Auch nicht ausgegraut, auch nicht „in
+  Arbeit". Spec ist binär: zertifiziert oder gar nicht.
+- Aspekte-Liste ist code-versioniert, NICHT zur Laufzeit ergänzbar.
+- Pflicht-Modul-Liste ist code-versioniert, NICHT zur Laufzeit
+  änderbar.
+- Keine Werbe-Sprache („zertifiziert von …!").
+- Keine PII im Modal.
+
+**Disziplin:**
+
+- KEIN Code-Eingriff in dieser Pflege — nur Karte 16 anlegen, status.json
+  erweitern, Pie regenerieren, Doku nachziehen.
+- KEIN Spec-Eingriff in andere Module — Modul 16 Hooks (z.B. Modul 15
+  Sub (a) `read()` trägt Siegel im Snapshot mit) sind Spec-Sitzung-
+  16-Pflicht, nicht hier.
+- `score:"schablone"` (Stub) — KEIN Sprung auf `"spec"` oder „stub",
+  weil Spec-Sitzung 16 noch nicht gelaufen ist. Karte 16 ist heute
+  noch nur Anker, nicht Vertrag.
+
+**Vorgemerkt — Folge-Sitzungen (Klaus' Reihenfolge-Empfehlung aus
+2026-05-24-Diskussion):**
+
+```
+Schritt 1: Spec-Sitzung 16    (diese Karte füllen — finale Pflicht-
+                               Modul-Liste, Badge-DOM-Form, SVG-
+                               Wappen-Entwurf, Modal-Inhalt,
+                               Aspekte-Schema)
+Schritt 2: Bau-Sitzung 16     (src/modules/16_siegel.js, Badge-CSS
+                               in index.html, Modal-Mount,
+                               ZERTIFIKAT_ASPEKTE-Startwert)
+Schritt 3: Sichttest 16       (Klaus, Sage-Page Badge sichtbar +
+                               Modal öffnet sich)
+Schritt 4: Spec-Sitzung 15.B  (Sub (a) + Sub (b) mit Siegel-Hook)
+Schritt 5: Endknoten-Migration Karte 09 § Schritt 10
+                               (Membran-Lampe + Siegel-Anker pro
+                                Endknoten-PWA)
+Schritt 6: Klaus' App-Freigabe (mit Siegel sichtbar)
+Später:    Modul 11 / 12 / 10  (jeder Bau ergänzt einen Aspekt)
+```
+
+Übergabeprotokoll:
+[`docs/sessions/archiv/2026-05-24_pflege-modul-16-siegel-stub.md`](sessions/archiv/2026-05-24_pflege-modul-16-siegel-stub.md).
+
+---
 
 ### 2026-05-24 · Sichttest-Nachzug — Karte 15 Sub (e) Fremd-Lampe live grün
 
