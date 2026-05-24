@@ -38,6 +38,7 @@
     --topology-breath-s: 4.6s;
     --nextup-glow-s: 2.4s;
     --lamp-pulse-ms: 600ms;
+    --lamp-alert: #DC2626;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -113,9 +114,13 @@
   .lamp.alive { background: var(--accent); box-shadow: 0 0 8px rgba(110,231,211,0.7); }
   .lamp.alive::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--accent); opacity: 0.45; animation: lamp-breath 3.2s ease-in-out infinite; }
   .lamp.traffic-pulse { background: var(--gold); animation: lamp-pulse var(--lamp-pulse-ms) ease-out; }
+  .lamp.fremd-alert { background: var(--lamp-alert); box-shadow: 0 0 8px rgba(220,38,38,0.7); }
+  .lamp.fremd-alert::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--lamp-alert); opacity: 0.45; animation: lamp-breath 3.2s ease-in-out infinite; }
+  .lamp.fremd-pulse { animation: lamp-alert-pulse var(--lamp-pulse-ms) ease-out; }
   .lamp-label { color: var(--dim); font-family: "Geist Mono", monospace; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; }
   @keyframes lamp-breath { 0%, 100% { transform: scale(1); opacity: 0.45; } 50% { transform: scale(1.5); opacity: 0; } }
   @keyframes lamp-pulse { 0% { box-shadow: 0 0 0 0 rgba(244,180,53,0.7); transform: scale(1); } 50% { transform: scale(1.45); } 100% { box-shadow: 0 0 0 14px rgba(244,180,53,0); transform: scale(1); } }
+  @keyframes lamp-alert-pulse { 0% { box-shadow: 0 0 0 0 rgba(220,38,38,0.75); transform: scale(1); } 50% { transform: scale(1.45); } 100% { box-shadow: 0 0 0 14px rgba(220,38,38,0); transform: scale(1); } }
   .screen { display: none; padding-top: 2rem; }
   .screen.active { display: block; animation: fade-in 0.5s var(--ease-out-quart); }
   @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -702,6 +707,8 @@
         <span class="lamp-label">lebt</span>
         <span class="lamp" id="lamp-traffic" title="Verkehr — pulst kurz bei status.json-Fetch"></span>
         <span class="lamp-label">verkehr</span>
+        <span class="lamp" id="lamp-fremd" title="Fremdzugriff — rot bei Zugriff von außen (Klick öffnet Liste)"></span>
+        <span class="lamp-label">fremd</span>
       </div>
       <div class="topbar-meta mono" id="topbar-meta">—</div>
     </div>
@@ -3373,6 +3380,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script src="src/modules/06_heterokaryose.js"></script>
   <script src="src/modules/07_apoptose.js"></script>
   <script src="src/modules/08_ui_demo.js"></script>
+  <script src="src/modules/15_membran.js"></script>
   <script src="sbkim-init.js"></script>
 </body>
 </html>
