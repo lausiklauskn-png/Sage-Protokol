@@ -39,6 +39,10 @@
     --nextup-glow-s: 2.4s;
     --lamp-pulse-ms: 600ms;
     --lamp-alert: #DC2626;
+    --siegel-gold:      #C9A961;
+    --siegel-gold-glow: rgba(201,169,97,0.55);
+    --siegel-ink:       #1A1306;
+    --siegel-line:      rgba(201,169,97,0.45);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -121,6 +125,13 @@
   @keyframes lamp-breath { 0%, 100% { transform: scale(1); opacity: 0.45; } 50% { transform: scale(1.5); opacity: 0; } }
   @keyframes lamp-pulse { 0% { box-shadow: 0 0 0 0 rgba(244,180,53,0.7); transform: scale(1); } 50% { transform: scale(1.45); } 100% { box-shadow: 0 0 0 14px rgba(244,180,53,0); transform: scale(1); } }
   @keyframes lamp-alert-pulse { 0% { box-shadow: 0 0 0 0 rgba(220,38,38,0.75); transform: scale(1); } 50% { transform: scale(1.45); } 100% { box-shadow: 0 0 0 14px rgba(220,38,38,0); transform: scale(1); } }
+  /* Modul 16 SBKIM-Siegel — Badge in Auszeichnungs-Optik (Karte 16 § Sub (b)). */
+  #sbkim-siegel-badge { width: 40px; height: 40px; border-radius: 50%; margin-left: 0.4rem; background: radial-gradient(circle at 32% 28%, #E6CE94 0%, var(--siegel-gold) 38%, #8C6E2F 100%); border: 1px solid var(--siegel-line); box-shadow: 0 0 0 1px rgba(0,0,0,0.2), inset 0 0 6px rgba(255,255,255,0.15); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: box-shadow .25s ease-out; }
+  #sbkim-siegel-badge svg { width: 32px; height: 32px; display: block; }
+  #sbkim-siegel-badge:hover { box-shadow: 0 0 12px var(--siegel-gold-glow), inset 0 0 6px rgba(255,255,255,0.20); }
+  #sbkim-siegel-badge:focus-visible { outline: 2px solid var(--siegel-gold); outline-offset: 2px; }
+  #sbkim-siegel-badge.first-boot { animation: siegel-first-boot 600ms ease-out; }
+  @keyframes siegel-first-boot { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; box-shadow: 0 0 18px var(--siegel-gold-glow); } 100% { transform: scale(1.00); opacity: 1; } }
   .screen { display: none; padding-top: 2rem; }
   .screen.active { display: block; animation: fade-in 0.5s var(--ease-out-quart); }
   @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -3381,6 +3392,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script src="src/modules/07_apoptose.js"></script>
   <script src="src/modules/08_ui_demo.js"></script>
   <script src="src/modules/15_membran.js"></script>
+  <script src="src/modules/16_siegel.js"></script>
   <script src="sbkim-init.js"></script>
 </body>
 </html>

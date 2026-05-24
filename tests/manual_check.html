@@ -109,6 +109,13 @@
     <pre class="log">— bereit. Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe (Bau-Sitzung 15, 2026-05-24). Modul 15 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding. Ringbuffer RAM-only (MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50), Persistenz bewusst verworfen (Karte 15 § Strikte Tabus „lebende Schau, kein Audit-Archiv"). „Setup" ruft `SbkimMembrane.init({lampSelector:'#panel-15-fake-lamp', allowedOrigins:[]})` und leert den Buffer via `clear()`. Lampen-Toggle (Klassen `fremd-alert` / `fremd-pulse`) ist im DevTools-Element-Inspector am `#panel-15-fake-lamp`-Span beobachtbar (Span ist display:none, aber classList ist da). Sub (a) read() + Sub (b) postMessage-Listener sind Skelette — finale Spec wartet auf Spec-Sitzung 15.B. Sub-(e)-Hooks in beiden Pfaden sind aber verbindlich und werden hier getestet. Sage-Page-Sichttest (echte Lampe in der Navleiste): separat, nicht in diesem Panel. —</pre>
   </section>
 
+  <section class="panel" data-module="16_siegel">
+    <h2>16 SBKIM-Siegel <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <div id="panel-16-badge-container" title="Container-Anker für Panel-16-Tests; Option β erzeugt #sbkim-siegel-badge darin"></div>
+    <pre class="log">— bereit. Bau-Sitzung 16 (2026-05-24). Modul 16 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding, kein Handshake — lokales Render-Modul. Self-inscribing-Selbst-Zertifikat nach Surface-Check der sieben Pflicht-Module (01/02/03/04/05/07/15); Modul 03 ist `lazy:true` (Status "deferred" gilt als bestanden). Anti-Greenwashing binär: Badge-Element ist nur im DOM, wenn isCertified()===true. Bau-Variante: Option β — `badgeSelector` zeigt auf Container (Panel-Tests: `#panel-16-badge-container`), Modul erzeugt `#sbkim-siegel-badge`-Span darin. RAM-only (kein DB_VERSION-Bump, kein neuer Store). KEINE benannten Error-Klassen — fail-soft via `console.warn`. Test-Pfad: weil `SbkimSiegel.init` idempotent ist (Karte 16 § Sub (a)), nutzen die Tests die internen Surface-Manipulationen (window.SbkimMatch=undefined etc.) und Re-Reads via getExplanation(), KEIN Re-Init. —</pre>
+  </section>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {
@@ -3490,6 +3497,293 @@
           "  MODUL 15 MEMBRAN bereit, Funktionen: init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}");
         SbkimUI.log("15_membran",
           "ℹ Hinweis: MEMBRANE_FREMDZUGRIFF_BUFFER_MAX (= 50) steht in §0; AGENT_HINT_MAX_LEN (= 64) ist modul-lokal — NICHT in der Selbstcheck-Zeile.");
+      });
+    })();
+  </script>
+
+  <!-- Modul 16 — SBKIM-Siegel (Bau-Sitzung 2026-05-24) -->
+  <script src="../src/modules/16_siegel.js"></script>
+  <script>
+    (function () {
+      // Panel 16 — SBKIM-Siegel
+      //
+      // Disziplin: SbkimSiegel.init() ist idempotent (Karte 16 § Sub (a)).
+      // Jeder Test, der einen anderen Surface-Zustand braucht, manipuliert
+      // window.SbkimMatch / window.SbkimAnastomose / … VOR dem allerersten
+      // init()-Aufruf. Re-Init in derselben Tab-Session ändert NICHTS am
+      // Snapshot. Klaus kann zwischen den Test-Knöpfen den Tab neu laden,
+      // um einen frischen Surface-Snapshot zu erzwingen.
+
+      var BADGE_CONTAINER = "#panel-16-badge-container";
+      var BADGE_ID = "#sbkim-siegel-badge";
+      var MODAL_ID = "#sbkim-siegel-modal";
+
+      function getBadge() { return document.querySelector(BADGE_ID); }
+      function getModal() { return document.querySelector(MODAL_ID); }
+
+      // Erwarteter Start-Stand der ZERTIFIKAT_ASPEKTE-Liste (Karte 16
+      // § Sub (d) Start-Eintrag): genau ein Eintrag „Grund-Siegel-
+      // Bezeugung 2026-05-24". Spätere Sicherheits-Module ergänzen die
+      // Liste — der Test prüft minLength, nicht equals.
+      var ASPEKTE_START_COUNT = 1;
+
+      SbkimUI.addButton("16_siegel", "Setup: SbkimSiegel.init() + Status zeigen", async function () {
+        await SbkimSiegel.init({
+          badgeSelector: BADGE_CONTAINER,
+          mountModal: true,
+        });
+        var snap = SbkimSiegel.getExplanation();
+        var badge = getBadge();
+        SbkimUI.setStatus("16_siegel", "ok", "Setup OK");
+        return {
+          ready:              SbkimSiegel._meta.ready,
+          isCertified:        SbkimSiegel.isCertified(),
+          certifiedAt:        SbkimSiegel._meta.certifiedAt,
+          first_boot_shown:   SbkimSiegel._meta.firstBootShown,
+          badge_im_dom:       !!badge,
+          badge_in_container: !!(badge && document.querySelector(BADGE_CONTAINER) &&
+                                  document.querySelector(BADGE_CONTAINER).contains(badge)),
+          modal_gemounted:    SbkimSiegel._meta.modalMounted,
+          visible_modus:      SbkimSiegel._meta.visibleMode,
+          repo_url:           snap.repoUrl,
+          module_status:      snap.modules.map(function (m) { return m.id + ":" + m.status; }),
+          aspekte_anzahl:     snap.aspects.length,
+          erwartung: "ready=true, isCertified je nach Modul-Lade-Zustand der Test-Page; bei allen sieben Pflicht-Modulen geladen → certifiedAt gesetzt + badge_im_dom=true.",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 1: PFLICHT_MODULE-Spec + defensive Kopien", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        var spec = SbkimSiegel._meta.pflichtModuleSpec;
+        var specOk = Array.isArray(spec) && spec.length === 7;
+        var ids = spec.map(function (e) { return e.id; });
+        var idsOk = ids.join(",") === "01,02,03,04,05,07,15";
+        var lazyOk = spec.every(function (e) {
+          return (e.id === "03" ? e.lazy === true : e.lazy === false);
+        });
+
+        var certifiedBefore = SbkimSiegel.getCertifiedModules();
+        var aspectsBefore = SbkimSiegel.getAspects();
+
+        // Defensive Kopie: pop() auf Rückgabe-Array berührt internen
+        // Zustand nicht.
+        try { certifiedBefore.pop(); aspectsBefore.pop(); spec.pop(); } catch (_e) { /* nb */ }
+        var certifiedAfter = SbkimSiegel.getCertifiedModules();
+        var aspectsAfter = SbkimSiegel.getAspects();
+        var specAfter = SbkimSiegel._meta.pflichtModuleSpec;
+
+        var defensive =
+          certifiedAfter.length >= certifiedBefore.length &&
+          aspectsAfter.length >= ASPEKTE_START_COUNT &&
+          specAfter.length === 7;
+
+        var pass = specOk && idsOk && lazyOk && defensive;
+        SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Test 1 OK" : "Test 1 fehlgeschlagen");
+        return {
+          spec_ids:                   ids,
+          spec_lazy_nur_03:           lazyOk,
+          certified_modules_aktuell:  certifiedAfter,
+          aspekte_anzahl:             aspectsAfter.length,
+          defensive_kopie:            defensive,
+          erwartung: "PFLICHT_MODULE hat 7 Einträge in Reihenfolge 01/02/03/04/05/07/15; nur Modul 03 ist lazy:true; defensive Kopien — pop() am Rückgabe-Array berührt internen State nicht.",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 2: getExplanation()-Snapshot-Schema", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        var snap = SbkimSiegel.getExplanation();
+        var shapeOk = snap && typeof snap === "object" &&
+                      "certifiedAt" in snap && "isCertified" in snap &&
+                      "repoUrl" in snap && Array.isArray(snap.modules) &&
+                      Array.isArray(snap.certifiedModules) &&
+                      Array.isArray(snap.aspects);
+        var modulesShapeOk = snap.modules.length === 7 && snap.modules.every(function (m) {
+          return m && "id" in m && "name" in m && "globalName" in m &&
+                 "surfaceFn" in m && "lazy" in m && "status" in m &&
+                 (m.status === "ok" || m.status === "deferred" ||
+                  m.status === "missing" || m.status === "broken");
+        });
+        var aspectStart = snap.aspects.length >= 1 &&
+                          snap.aspects[0].since === "2026-05-24" &&
+                          snap.aspects[0].module === "16" &&
+                          snap.aspects[0].aspect === "Grund-Siegel-Bezeugung";
+        var pass = shapeOk && modulesShapeOk && aspectStart;
+        SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          shape_ok:         shapeOk,
+          modules_shape:    modulesShapeOk,
+          start_eintrag:    aspectStart,
+          modules_kurzform: snap.modules.map(function (m) { return m.id + ":" + m.status; }),
+          aspekte_titel:    snap.aspects.map(function (a) { return a.since + " " + a.module + " " + a.aspect; }),
+          erwartung: "ExplanationSnapshot hat alle Pflicht-Felder (certifiedAt/isCertified/repoUrl/modules[]/certifiedModules[]/aspects[]); modules hat 7 Einträge mit Status ∈ ok/deferred/missing/broken; aspects[0] = „Grund-Siegel-Bezeugung\" 2026-05-24 Modul 16.",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 3: Badge im DOM + Click öffnet Modal + Esc/Backdrop schließt", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        if (!SbkimSiegel.isCertified()) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 3 nicht ausführbar (isCertified=false)");
+          return {
+            hinweis: "Diese Test-Page lädt nicht alle sieben Pflicht-Module — Badge wird nicht gerendert (Anti-Greenwashing). Aktueller Surface-Status:",
+            module_status: SbkimSiegel.getExplanation().modules.map(function (m) { return m.id + ":" + m.status; }),
+          };
+        }
+        var badge = getBadge();
+        if (!badge) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 3 fehlgeschlagen (Badge fehlt)");
+          return { fehler: "Badge-Element nicht im DOM trotz isCertified()===true." };
+        }
+        // Click → Modal öffnen.
+        badge.click();
+        await new Promise(function (r) { setTimeout(r, 50); });
+        var modal = getModal();
+        var modalShownAfterClick = modal && modal.style.display === "flex";
+        // Esc → schließen.
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+        await new Promise(function (r) { setTimeout(r, 30); });
+        var modalHiddenAfterEsc = modal && modal.style.display === "none";
+
+        // Re-Open + Backdrop-Klick.
+        badge.click();
+        await new Promise(function (r) { setTimeout(r, 30); });
+        var backdrop = modal && modal.querySelector("[data-siegel-backdrop]");
+        if (backdrop) backdrop.click();
+        await new Promise(function (r) { setTimeout(r, 30); });
+        var modalHiddenAfterBackdrop = modal && modal.style.display === "none";
+
+        var pass = !!modalShownAfterClick && !!modalHiddenAfterEsc && !!modalHiddenAfterBackdrop;
+        SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          badge_im_dom:                 !!badge,
+          modal_offen_nach_click:       modalShownAfterClick,
+          modal_zu_nach_esc:            modalHiddenAfterEsc,
+          modal_zu_nach_backdrop_click: modalHiddenAfterBackdrop,
+          erwartung: "Badge-Click öffnet das Modal (display:flex); Esc schließt es; erneutes Öffnen + Backdrop-Klick schließt es ebenfalls.",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 4: Modal-Render — Datum, Modul-Liste, Aspekte, Aussteller-Klärung", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        if (!SbkimSiegel.isCertified()) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 4 nicht ausführbar (isCertified=false)");
+          return { hinweis: "Modal rendert nicht ohne grüne Bezeugung. Siehe Test 3 Hinweis." };
+        }
+        var badge = getBadge();
+        if (badge) badge.click();
+        await new Promise(function (r) { setTimeout(r, 50); });
+        var modal = getModal();
+        if (!modal) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 4 fehlgeschlagen (Modal fehlt)");
+          return { fehler: "Modal-Element nicht im DOM." };
+        }
+        var dateEl = modal.querySelector("[data-siegel-date]");
+        var dateText = dateEl ? dateEl.textContent : "";
+        var modulesItems = modal.querySelectorAll("[data-siegel-modules] li");
+        var aspectsItems = modal.querySelectorAll("[data-siegel-aspects] li");
+        var aussteller = modal.querySelector("[data-siegel-aussteller]");
+        var ausstellerText = aussteller ? aussteller.textContent : "";
+        var ausstellerHasSelfInscribing = /self-inscribing/i.test(ausstellerText);
+        var ausstellerHasRepoUrl = /https?:\/\//.test(ausstellerText);
+        var ausstellerHasNoDisclaimerShovel = !/ohne Garantie|Haftungsausschluss|haftung/i.test(ausstellerText);
+
+        // Modal schließen.
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+        var pass = !!dateText && /^Bezeugt seit /.test(dateText) &&
+                   modulesItems.length === 7 &&
+                   aspectsItems.length >= 1 &&
+                   !!aussteller && ausstellerHasSelfInscribing &&
+                   ausstellerHasRepoUrl && ausstellerHasNoDisclaimerShovel;
+        SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          datum_zeile:                dateText,
+          modul_zeilen_anzahl:        modulesItems.length,
+          aspekte_zeilen_anzahl:      aspectsItems.length,
+          aussteller_block_da:        !!aussteller,
+          aussteller_self_inscribing: ausstellerHasSelfInscribing,
+          aussteller_repo_url_da:     ausstellerHasRepoUrl,
+          aussteller_kein_disclaimer: ausstellerHasNoDisclaimerShovel,
+          erwartung: "Datum-Zeile beginnt mit „Bezeugt seit \"; sieben Modul-Zeilen; mindestens ein Aspekt; Aussteller-Klausel enthält „self-inscribing\" + Repo-URL und KEINEN Disclaimer-Schwall.",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 5: repoUrl-Auto-Erkennung", async function () {
+        // Override kann in derselben Session nicht getriggert werden
+        // (init idempotent). Test prüft Auto-Erkennungs-Pfad live.
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        var snap = SbkimSiegel.getExplanation();
+        var origin = window.location.origin;
+        var path = window.location.pathname || "/";
+        var firstSegment = path.split("/").filter(Boolean)[0];
+        var expectedAuto = firstSegment ? (origin + "/" + firstSegment + "/") : (origin + "/");
+
+        var autoOk = snap.repoUrl === expectedAuto;
+        SbkimUI.setStatus("16_siegel", autoOk ? "ok" : "err", autoOk ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          repo_url_live:     snap.repoUrl,
+          repo_url_erwartet: expectedAuto,
+          repo_url_match:    autoOk,
+          hinweis_override:  "Override-Pfad ist nur nach Tab-Reload + Panel-Code-Anpassung reproduzierbar (init idempotent). Erwartung: init({repoUrl:'https://github.com/lausiklauskn-png/Sage-Protokol'}) überschreibt die Auto-Erkennung.",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 6: First-Boot-Flag (RAM-only, einmalig pro Session)", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        if (!SbkimSiegel.isCertified()) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 6 nicht ausführbar (isCertified=false)");
+          return { hinweis: "Ohne grüne Bezeugung kein Badge-Mount und kein First-Boot-Flag." };
+        }
+        var firstBootShown = SbkimSiegel._meta.firstBootShown;
+        SbkimUI.setStatus("16_siegel", firstBootShown ? "ok" : "err", firstBootShown ? "Test 6 OK" : "Test 6 fehlgeschlagen");
+        return {
+          first_boot_shown_flag: firstBootShown,
+          erwartung: "Nach dem allerersten erfolgreichen init() ist `firstBootShown:true`. Die `.first-boot`-Klasse wurde 600 ms lang am Badge gesetzt (in DevTools beobachtbar gewesen) und dann entfernt. Bei einem Tab-Reload wird die Animation erneut sichtbar (RAM-only).",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 7: Anti-Greenwashing-Hinweis (braucht Tab-Reload)", async function () {
+        SbkimUI.setStatus("16_siegel", "ok", "Hinweis-Knopf, kein automatischer Test");
+        SbkimUI.log("16_siegel",
+          "ℹ Anti-Greenwashing-Test (binärer Fail-Modus) lässt sich in derselben Session NICHT triggern,");
+        SbkimUI.log("16_siegel",
+          "  weil SbkimSiegel.init() idempotent ist (Karte 16 § Sub (a)).");
+        SbkimUI.log("16_siegel", "");
+        SbkimUI.log("16_siegel", "So testet Klaus den Fail-Modus:");
+        SbkimUI.log("16_siegel", "   1. Tab neu laden (Strg+Shift+R).");
+        SbkimUI.log("16_siegel", "   2. VOR dem ersten Panel-16-Knopf-Klick in DevTools-Konsole:");
+        SbkimUI.log("16_siegel", "        window.SbkimMatch = undefined;");
+        SbkimUI.log("16_siegel", "   3. Panel-16-Setup-Knopf drücken.");
+        SbkimUI.log("16_siegel", "   4. Erwartung:");
+        SbkimUI.log("16_siegel", "      - isCertified() === false");
+        SbkimUI.log("16_siegel", "      - genau EINE Konsole-Warnung mit „04 (missing)\"");
+        SbkimUI.log("16_siegel", "      - KEIN Badge im DOM (Inspector: kein #sbkim-siegel-badge)");
+        SbkimUI.log("16_siegel", "      - getExplanation().modules[3].status === \"missing\"");
+        return { live_test_in_session: false, braucht_tab_reload: true };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 8: Hidden-Modus-Hinweis (braucht Tab-Reload)", async function () {
+        SbkimUI.setStatus("16_siegel", "ok", "Hinweis-Knopf, kein automatischer Test");
+        SbkimUI.log("16_siegel",
+          "ℹ Hidden-Modus (visible:'hidden') ist init-Zeit-Option; init idempotent → nur nach Tab-Reload testbar.");
+        SbkimUI.log("16_siegel", "So testet Klaus den Pfad:");
+        SbkimUI.log("16_siegel", "   1. Tab neu laden.");
+        SbkimUI.log("16_siegel", "   2. Panel-16-Setup-Code temporär anpassen:");
+        SbkimUI.log("16_siegel", "        SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER, visible: 'hidden' });");
+        SbkimUI.log("16_siegel", "   3. Setup-Knopf drücken. Erwartung:");
+        SbkimUI.log("16_siegel", "      - SbkimSiegel._meta.visibleMode === 'hidden'");
+        SbkimUI.log("16_siegel", "      - KEIN Badge im DOM");
+        SbkimUI.log("16_siegel", "      - SbkimSiegel.isCertified() liefert dennoch true");
+        SbkimUI.log("16_siegel", "      - SbkimSiegel.getExplanation() liefert vollen Snapshot");
+        return { live_test_in_session: false, braucht_tab_reload: true };
+      });
+
+      SbkimUI.addButton("16_siegel", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("16_siegel",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("16_siegel",
+          "  MODUL 16 SIEGEL bereit, Funktionen: init/isCertified/getExplanation/getCertifiedModules/getAspects");
+        SbkimUI.log("16_siegel",
+          "ℹ Hinweis: PFLICHT_MODULE (7 Einträge) und ZERTIFIKAT_ASPEKTE (Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24\") sind modul-lokal — NICHT in der Selbstcheck-Zeile.");
       });
     })();
   </script>
