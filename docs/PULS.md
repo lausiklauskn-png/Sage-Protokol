@@ -1810,6 +1810,86 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-24 · Mini-Pflege — Sage-Page Fremd-Lampe Sichttest-Knopf
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-fremd-lampe-test-knopf`. Anschluss nach Bau 15 + Bau
+15.SW (PR #142 + #144 auf `main`). Anlass: Klaus' Browser-Sichttest
+Panel 15 Knopf 8 in `tests/manual_check.html` ist grün — End-to-End-
+Pfad SW→Page bewiesen. Aber die FREMD-Lampe auf der gehosteten Sage-
+Page (`https://lausiklauskn-png.github.io/Sage-Protokol/`) lässt sich
+mit Klaus' aktuellem Setup NICHT live triggern, weil seine drei
+Endknoten (Mein-Rezeptbuch, Mein-Mixarium, Sage) **alle same-origin**
+auf `https://lausiklauskn-png.github.io` liegen. Cross-PWA-Fetches
+zwischen ihnen sind `Sec-Fetch-Site:same-origin` und werden laut
+Karte 15 § Fremd-Definition Schritt 3 bewusst NICHT als Fremd
+gewertet (Spec-Wille). Echter Cross-Origin-Test bräuchte eine wirklich
+fremde Origin (Gemini-Browser-Agent, Browser-Extension), die Klaus
+nicht trivial reproduzieren kann.
+
+**Lösung:** ein optionaler Sichttest-Knopf direkt im Fremdzugriff-
+Modal, hinter einem Init-Flag, das nur die Sage-Page setzt.
+Endknoten bleiben unberührt.
+
+**Eingriffe:**
+
+- `src/modules/15_membran.js`: neue Init-Option `enableTestButton?:
+  boolean` (Default `false`); modul-lokale Closure-Variable
+  `testButtonEnabled` (Default `false`). In `mountFremdzugriffModal`
+  nach dem „Aufräumen"-Knopf ein zweiter Knopf „🧪 Demo-Eintrag"
+  im Summary-Bereich, der `recordForTest` mit einem synthetischen
+  `kind:"endpoint-probe"`-Eintrag aufruft (`origin:
+  "https://gemini.google.com"`, `endpoint:"/sbkim/spore.json"`,
+  `details:{method:"GET", secFetchSite:"cross-site"}`, `agentHint:
+  "Sichttest/1.0 (Demo-Knopf in Sage-Page-Modal)"`). Knopf nur
+  sichtbar wenn `testButtonEnabled === true`. Stil: blau (Akzent-
+  Farbe), klein, unauffällig — analog Aufräumen-Knopf-Layout.
+- `sbkim-init.js` der Sage-Page: `enableTestButton:true` im
+  `SbkimMembrane.init()`-Aufruf gesetzt. Endknoten-`sbkim-init.js`
+  (in den jeweiligen Repos) setzen die Flag NICHT — Default-Pfad,
+  Knopf bleibt dort unsichtbar.
+- `docs/INTERFACES.md` § 1 Modul 15 options-Form um
+  `enableTestButton?:boolean` erweitert.
+- `docs/components/15_membran.md` § Bauzustand-Tabelle neue Zeile
+  „Pflege Sage-Page-Sichttest-Knopf | 2026-05-24 | Mini-Pflege | …".
+
+**Validierung:** `node --check src/modules/15_membran.js` grün.
+
+**Disziplin / Tabus:**
+
+- KEIN Eingriff in das Schema von `FremdzugriffEntry` oder die
+  drei `kind`-Werte.
+- KEIN Eingriff in die produktiven Eintragspfade (SW-Probe via
+  BroadcastChannel, postMessage-Listener, `_recordForTest`-API).
+- KEIN Storage-Eingriff, KEIN `DB_VERSION`-Bump, KEIN
+  `PROTOCOL_VERSION`-Bump.
+- KEINE neuen Error-Klassen (Sub (e) bleibt rein beobachtend +
+  fail-soft).
+- KEINE Endknoten-Migration (Knopf erscheint dort nicht — bewusst,
+  Endknoten haben jeweils echte fremde Origins als potenzielle
+  Trigger).
+- KEINE Schema-Änderung am BroadcastChannel-Message-Format.
+
+**Sichttest:** ungeprüft — wartet auf Klaus' Browser-Lauf der
+gehosteten Sage-Page nach GitHub-Pages-Build (typisch 1–2 min nach
+Merge). Erwartung: FREMD-Lampe klicken → Modal öffnet sich → neuer
+„🧪 Demo-Eintrag"-Knopf neben „Aufräumen" sichtbar → Klick fügt
+einen `endpoint-probe`-Eintrag in die Tabelle ein → Lampe wird rot
++ pulst → „Aufräumen" leert Tabelle und Lampe geht aus.
+
+**Vorgemerkt:**
+
+- **Endknoten-Migration Karte 09 § Schritt 10** (Membran-Allowlist
+  + Lampe in PWA-Header) — eigene Folge-Sitzung pro Endknoten-Repo,
+  setzt `enableTestButton` dort bewusst NICHT.
+- **Spec-Sitzung 15.B** für Sub (a) Read-API + Sub (b) postMessage-
+  Bedienungs-Pfad finalisieren — Klaus triggert mit `Befehl schreiben`.
+
+Übergabeprotokoll:
+[`docs/sessions/archiv/2026-05-24_pflege-fremd-lampe-test-knopf.md`](sessions/archiv/2026-05-24_pflege-fremd-lampe-test-knopf.md).
+
+---
+
 ### 2026-05-24 · Bau-Sitzung 15.SW — Membran Sub (e) SW-Probe-Detektor
 
 **Sitzungs-Rolle:** Bau-Sitzung. Branch
