@@ -2428,6 +2428,321 @@ Geprüft: 2026-05-18 (Hauptsitzung 15-Membran-Stub),
 
 ---
 
+### Modul: 16_siegel
+Status: entwurf  (Spec-Sitzung 16 vom 2026-05-24 — alle vier Sub-Bereiche
+                 final spezifiziert: Sub (a) Pflicht-Modul-Liste mit
+                 sieben Modulen + Surface-Check-Form, Sub (b) Badge-
+                 Rendering Auszeichnungs-Optik, Sub (c) Erklärungs-
+                 Modal mit nüchterner Aussteller-Klärung, Sub (d)
+                 `ZERTIFIKAT_ASPEKTE`-Liste lebendes Dokument.
+                 Bau-Sitzung 16 ausstehend; Modul-Code in
+                 `src/modules/16_siegel.js` existiert noch nicht.)
+Datei:  docs/components/16_siegel.md (Karte) ·
+        src/modules/16_siegel.js (existiert noch nicht — Bau-Sitzung 16
+        nach Spec-Sitzung 16 vom 2026-05-24 fällig) ·
+        index.html (Bau-Sitzung 16 ergänzt :root --siegel-*-Variablen,
+        Badge-CSS + DOM-Anker `#sbkim-siegel-badge` als vierte
+        Plakette nach #lamp-fremd, ergänzt `<script src="src/modules/
+        16_siegel.js">` und `SbkimSiegel.init({...})`-Aufruf in
+        sbkim-init.js nach SbkimMembrane.init)
+
+Bietet (öffentlich):
+  init(options?)                  → Promise<void>
+                                    // Snapshot-Init, prüft PFLICHT_MODULE-Surface
+                                    // via typeof-Check, cached in Closure, mountet
+                                    // Badge + Modal-Lifecycle. Idempotent: zweiter
+                                    // Aufruf no-op (kein Re-Check).
+  isCertified()                   → boolean (sync)
+                                    // true wenn alle PFLICHT_MODULE-Status ∈
+                                    // {"ok","deferred"} sind. Gültig nach init().
+  getExplanation()                → ExplanationSnapshot (sync)
+                                    // Defensive Kopie. Modal-Render-Quelle.
+  getCertifiedModules()           → string[] (sync)
+                                    // Modul-IDs mit status ∈ {"ok","deferred"}.
+                                    // Defensive Kopie.
+  getAspects()                    → Aspect[] (sync)
+                                    // ZERTIFIKAT_ASPEKTE chronologisch aufsteigend
+                                    // (älteste oben). Defensive Kopie.
+  _meta                           // Read-Anker für Tests (analog Modul 15):
+                                    //   firstBootShown:    boolean
+                                    //   certifiedAt:       string | null  (ISO-8601)
+                                    //   pflichtModuleSpec: Array (Snapshot der
+                                    //                       PFLICHT_MODULE-Spec)
+
+  options-Form (init):
+    {
+      // CSS-Selektor für das Badge-Element. Default '#sbkim-siegel-badge'.
+      // Wenn Selektor zur init()-Zeit nicht matcht und mountModal:true,
+      // wird via MutationObserver wie in Modul 00 nach DOMContentLoaded
+      // erneut versucht.
+      badgeSelector?: string,
+
+      // "visible" (Default): Badge im DOM + Modal-Lifecycle aktiv.
+      // "hidden": kein Badge-DOM, kein Modal-Mount; API erreichbar.
+      visible?: "visible" | "hidden",
+
+      // Default true. false unterbindet Modal-Mount + Click-Handler-no-op.
+      // Sinnvoll für Endknoten mit eigenem Modal-Design.
+      mountModal?: boolean,
+
+      // Override für die Aussteller-Klärungs-URL. null/undefined → Auto-
+      // Erkennung (location.origin + erstes Pfad-Segment).
+      // Endknoten setzen typischerweise den Source-Repo-URL
+      // (z.B. "https://github.com/lausiklauskn-png/Mein-Mixarium").
+      repoUrl?: string | null,
+    }
+
+  ExplanationSnapshot (Karte 16 § Schnittstelle, verbindlich):
+    {
+      certifiedAt:      <ISO-8601 string | null>,
+      isCertified:      <boolean>,
+      repoUrl:          <string>,
+      modules:          [
+        { id, name, globalName, surfaceFn, lazy, status }
+        // status ∈ "ok" | "deferred" | "missing" | "broken"
+      ],
+      certifiedModules: <string[]>,
+      aspects:          [Aspect, ...]   // chronologisch aufsteigend
+    }
+
+  Aspect (Karte 16 § Sub (d), verbindlich):
+    {
+      since:       <ISO-Datum string>,  // "YYYY-MM-DD"
+      module:      <string>,             // zweistellige Modul-ID
+      aspect:      <string>,             // Kurz-Titel, ≤ 80 Zeichen
+      description: <string>,             // 1–2 Sätze, ≤ 240 Zeichen, kein PII
+    }
+
+  PFLICHT_MODULE (modul-interne Konstante, Karte 16 § Sub (a)):
+    Sieben Einträge — Stand Spec-Sitzung 16 vom 2026-05-24:
+    [
+      { id:"01", name:"Storage",     globalName:"SbkimStorage",     surfaceFn:"init",                lazy:false },
+      { id:"02", name:"Spore",       globalName:"SbkimSpore",       surfaceFn:"getOwnSpore",         lazy:false },
+      { id:"03", name:"Embedding",   globalName:"SbkimEmbedding",   surfaceFn:"embedPassage",        lazy:true  },
+      { id:"04", name:"Match",       globalName:"SbkimMatch",       surfaceFn:"match",               lazy:false },
+      { id:"05", name:"Anastomose",  globalName:"SbkimAnastomose",  surfaceFn:"handshake",           lazy:false },
+      { id:"07", name:"Apoptose",    globalName:"SbkimApoptose",    surfaceFn:"prepareSelfApoptose", lazy:false },
+      { id:"15", name:"Membran",     globalName:"SbkimMembrane",    surfaceFn:"init",                lazy:false },
+    ]
+    Diese Liste ist code-versioniert. Aktualisierung NUR über eine
+    Pflege-PR mit Karten- und Brief-Update; KEINE Runtime-API zum
+    Setzen.
+
+  ZERTIFIKAT_ASPEKTE (modul-interne Konstante, Karte 16 § Sub (d)):
+    Start-Eintrag verbindlich für Bau-Sitzung 16:
+    [
+      {
+        since:       "2026-05-24",
+        module:      "16",
+        aspect:      "Grund-Siegel-Bezeugung",
+        description: "Diese App bestätigt durch Selbst-Prüfung beim Boot, dass die SBKIM-Pflicht-Module 01/02/03/04/05/07/15 geladen sind.",
+      },
+    ]
+    Diese Liste ist code-versioniert. Erweiterung NUR über Pflege-PR
+    jedes spätergebaut werden Sicherheits-Moduls (Konvention §
+    Garantien unten); KEINE Runtime-API zum Setzen.
+
+Nutzt:
+  Browser-API: typeof globalThis[NS]              Surface-Check für
+                                                   PFLICHT_MODULE — KEIN
+                                                   echter Funktions-Aufruf,
+                                                   nur "Funktion existiert".
+  Browser-API: document.querySelector(badgeSelector)
+                                                   Badge-Mount, optional
+                                                   MutationObserver-Re-Try
+                                                   (analog Modul 00).
+  Browser-API: document.body                       Modal-Mount-Anker (eigenes
+                                                   Modal, analog Modul 15).
+  Browser-API: location.origin / location.pathname Auto-Erkennung der Repo-URL
+                                                   (erstes Pfad-Segment).
+  Modul 16 ruft KEINE Funktion eines Pflicht-Moduls auf — nur typeof-
+  Check. Damit ist Modul 16 von der Pflicht-Modul-Achse entkoppelt;
+  ein Pflicht-Modul-Bug bricht nur die Bezeugung, nicht den 16er-Lauf.
+
+Storage:
+  KEINE Stores. Modul 16 ist RAM-only (Modul-lokales Closure
+  `let metaSnapshot = null`).
+  KEIN `DB_VERSION`-Bump in Modul 01. KEIN neuer Store. Persistenz-
+  Entscheidung Karte 16 § Persistenz: per-Session-Selbst-Bezeugung
+  ist die ehrliche Aussage; eine IndexedDB-Persistenz würde
+  suggerieren, das Siegel sei „älter" als es aktiv ist.
+
+Events:
+  reagiert: click auf badgeSelector-Element        Modal öffnen
+  reagiert: Esc-Keydown / Backdrop-Klick / ✕-Klick Modal schließen
+  feuert:   (keine CustomEvents — getExplanation() ist die Live-API,
+             keine DOM-Event-Indirektion. Modul 15 Sub (a) read() darf
+             in Spec-Sitzung 15.B einen Siegel-Hook ergänzen, der
+             SbkimSiegel.getExplanation() synchron abfragt.)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 16 SIEGEL bereit, Funktionen: init/isCertified/getExplanation/getCertifiedModules/getAspects");
+  Wie Modul 00/01/02/04/05/06/07/08/15 — keine Konstante in der
+  Selbstcheck-Zeile. PFLICHT_MODULE und ZERTIFIKAT_ASPEKTE sind modul-
+  lokal in `src/modules/16_siegel.js`.
+
+Versionierungs- und Sichtbarkeits-Vertrag:
+  - Modul 16 ist NICHT protokoll-aktiv. Kein Netz, keine Signatur, kein
+    Embedding, kein Handshake. Lokales Render-Modul. Es gibt keinen
+    Hauptversions-Check in 16 — `PROTOCOL_VERSION` bleibt unverändert,
+    `DB_VERSION` bleibt unverändert.
+  - PFLICHT_MODULE und ZERTIFIKAT_ASPEKTE sind **code-versioniert**.
+    Spätere Sicherheits-Module (10/11/12/14/künftige 15.B-Erweiterungen)
+    ergänzen einen ZERTIFIKAT_ASPEKTE-Eintrag in ihrer eigenen Bau-/
+    Pflege-Sitzung — KEINE Runtime-API für Aspekte/Pflicht-Module.
+  - `ExplanationSnapshot.modules[].status`-Werte sind additiv
+    versioniert: `"ok"` / `"deferred"` / `"missing"` / `"broken"` sind
+    die vier festgelegten Werte. Eine spätere Spec darf ergänzen
+    (z.B. `"stale"` für Pflicht-Module mit veraltetem Surface), aber
+    nicht umbenennen.
+  - `_meta.certifiedAt` ist SESSION-ONLY (RAM-only, Tab-Reload setzt
+    Datum neu). Modal-Text „bezeugt seit YYYY-MM-DD HH:MM" ist die
+    ehrliche Selbst-Beschreibung. Wer Persistenz will, baut Modul 12
+    (Blocklist) mit Append-Log und ergänzt einen Aspekt-Eintrag.
+
+Fehlerverhalten:
+  - init(): badgeSelector kein gültiger CSS-Selektor               → console.warn, KEIN Throw;
+                                                                     Badge-Mount übersprungen, Modal-Mount
+                                                                     erfolgt trotzdem (mountModal:true)
+  - init(): badgeSelector matcht zur init()-Zeit kein Element     → MutationObserver-Re-Try analog Modul 00,
+                                                                     gibt nach 10 s auf (console.warn)
+  - init(): repoUrl ist string aber keine gültige URL              → fail-soft, Auto-Erkennung als Fallback,
+                                                                     console.warn
+  - init(): zweimaliger Aufruf                                    → idempotent (kein Re-Check, kein
+                                                                     Re-Mount, kein Doppel-Listener)
+  - init(): mindestens ein PFLICHT_MODULE mit status "missing"/"broken"
+                                                                   → genau EINE console.warn-Zeile mit
+                                                                     ID-Liste; KEIN Badge-Render (Element
+                                                                     wird gar nicht angelegt — nicht
+                                                                     display:none, sondern nicht im DOM);
+                                                                     Modal-Mount übersprungen;
+                                                                     isCertified() → false;
+                                                                     getExplanation() liefert Snapshot
+                                                                     trotzdem (Debug-Zwecke)
+  - isCertified() vor init()                                       → returniert false (Default-Wert,
+                                                                     kein Throw)
+  - getExplanation() vor init()                                    → returniert leeren Snapshot
+                                                                     (certifiedAt:null, isCertified:false,
+                                                                     modules:[], aspects:[]), kein Throw
+  - getCertifiedModules() / getAspects() vor init()               → leeres Array, kein Throw
+
+  KEINE benannten Error-Klassen für Modul 16. Modul ist rein lokal/
+  beobachtend; alle Pfade sind fail-soft mit console.warn analog
+  Modul 15. Sub (a) finale Spec entscheidet KEINE Fehler-Pfade über
+  diese hinaus (z.B. NICHT Custom-Error für Pflicht-Modul-Spoofing —
+  Spoofing ist ein bewusster akzeptierter Trade-off, siehe Karte 16
+  § Risiken).
+
+Datenformate:
+  ExplanationSnapshot   → Karte 16 § Schnittstelle (oben gespiegelt).
+  Aspect                → Karte 16 § Sub (d) (oben gespiegelt).
+  PFLICHT_MODULE-Entry  → { id, name, globalName, surfaceFn, lazy }
+                           (oben unter PFLICHT_MODULE gelistet).
+  Status-Werte          → "ok" | "deferred" | "missing" | "broken".
+
+Garantien für Modul 00 / 09 / 10 / 11 / 12 / 14 / 15:
+  - **Anti-Greenwashing-Klausel:** kein Badge-Render bei
+    isCertified() === false. Element ist gar nicht im DOM (nicht
+    display:none, nicht ausgegraut). Klaus' Disziplin 2026-05-24,
+    binär.
+  - **Self-Issued ist eine Disziplin-Aussage, KEIN UI-Disclaimer.**
+    Modal-Klausel ist sachliche Selbst-Beschreibung in zwei Zeilen
+    (Karte 16 § Sub (c)). Kein Haftungs-Block; „ohne Garantie" wird
+    NICHT in den UI-Text aufgenommen (Klaus-Korrektur 2026-05-24).
+  - **Keine Hub-Aussteller-Variante.** Self-Inscribing ist die einzige
+    spezifizierte Variante. Eine zentrale Zertifizierungs-Autorität
+    widerspricht dem dezentralen SBKIM-Geist.
+  - **PFLICHT_MODULE und ZERTIFIKAT_ASPEKTE sind code-versioniert.**
+    Keine Runtime-API zum Setzen. Endknoten-PWAs ergänzen Einträge in
+    ihrer Repo-Kopie von `16_siegel.js`, falls sie wollen — aber das
+    ist ein Pflege-PR-Schritt, nicht ein Config-Schritt.
+  - **Pflicht-Konvention für künftige Sicherheits-Module:** jedes
+    spätere Sicherheits-Modul (10 Reputation / 11 Rate-Limit / 12
+    Blocklist / 14 Diffusion / 15.B Membran Sub (a)+(b) finale Spec /
+    künftige Module) MUSS in seiner Bau- bzw. Pflege-Sitzung in
+    `src/modules/16_siegel.js` einen ZERTIFIKAT_ASPEKTE-Eintrag
+    ergänzen (Listen-Ende, aktuelles Datum + Modul-ID + kurze
+    Beschreibung). Folge-Pflege CLAUDE.md: § „Sicherheits-Module
+    pflegen Aspekte" als neuer Pflicht-Block ist NACH Bau-Sitzung 16
+    fällig (eigene Mini-Pflege-Sitzung).
+  - **Keine PII im Modal.** Repo-URL, Modul-Liste, Aspekt-Beschreibung
+    sind alle öffentlich. Modal trägt KEINE nodeId, KEINE Geschwister-
+    Daten, KEINE API-Keys.
+  - **Modul 15 Sub (a) read()-Hook (vorbestellt für Spec-Sitzung 15.B):**
+    `read()`-Snapshot SOLL ein optionales Feld
+    `siegel: { isCertified, repoUrl, certifiedModules }` mitliefern.
+    Modul 16 stellt dafür die sync getter (`isCertified()` +
+    `getExplanation()`) bereit; Modul 15 Sub (a) finale Spec
+    entscheidet das Snapshot-Schema.
+  - **Sage-Page (index.html) erhält in Bau-Sitzung 16:**
+      :root {
+        --siegel-gold:        #C9A961;
+        --siegel-gold-glow:   rgba(201,169,97,0.55);
+        --siegel-ink:         #1A1306;
+        --siegel-line:        rgba(201,169,97,0.45);
+      }
+      #sbkim-siegel-badge   { ... rundes 40-px-Medaillon, Edel-Gold ... }
+      #sbkim-siegel-badge:hover { box-shadow: 0 0 12px var(--siegel-gold-glow); }
+      #sbkim-siegel-badge.first-boot { animation: siegel-first-boot 600ms ease-out; }
+      @keyframes siegel-first-boot { 0%→0.7/0%, 60%→1.12/100%, 100%→1.00/100% }
+      <span id="sbkim-siegel-badge" title="SBKIM-Siegel — klick für Details">
+        <svg viewBox="0 0 40 40">…drei Hyphen-Bögen + Knoten…</svg>
+      </span>
+    direkt nach <span class="lamp" id="lamp-fremd"> + "fremd"-Label.
+    Click-Handler öffnet das Sub-(c)-Modal. Modul 09 (Einbau-PWA)
+    bekommt in eigener Folge-Pflege einen erweiterten Schritt 10:
+    „Membran-Allowlist + FREMD-Lampe + Siegel-Badge in PWA-Header
+    anhängen".
+
+Tabus (verbindlich):
+  - NIEMALS Badge-Render ohne isCertified() === true. Anti-
+    Greenwashing-Klausel, binär.
+  - NIEMALS Disclaimer-Schwall im Modal. Zwei Zeilen Aussteller-
+    Klärung, sachlich (Klaus-Korrektur 2026-05-24).
+  - NIEMALS Hub-Aussteller-Variante. Self-Inscribing ist die einzige
+    Variante.
+  - NIEMALS Runtime-Ergänzung von PFLICHT_MODULE oder
+    ZERTIFIKAT_ASPEKTE. Code-versioniert.
+  - NIEMALS Funktionen der Pflicht-Module aufrufen — nur typeof-
+    Check. Modul 16 ist von der Pflicht-Modul-Achse entkoppelt.
+  - NIEMALS PII im Modal. Repo-URL/Modul-Liste/Aspekte sind öffentlich;
+    nodeId/API-Keys/Geschwister-Liste niemals.
+  - NIEMALS Stufen-Varianten (Bronze/Silber/Gold) für das Grund-
+    Siegel. Klaus' Festlegung 2026-05-24: Siegel wächst über Aspekte,
+    NICHT über sichtbare Stufen.
+  - NIEMALS Spore-Schema erweitern um ein `siegel`-Feld. Modul 16 ist
+    eine PWA-lokale Bezeugung, kein Netz-Signal. Sichtbarmachung im
+    Netz gehört in Modul 10 Reputation, nicht in 02 Spore.
+  - Empfangsmodus-Prinzip bleibt: Modul 16 initiiert nichts, beobachtet
+    nichts, antwortet nichts ins Netz. Lokale Render-Schicht.
+
+Hook-Punkte (nur Verweis, nicht implementiert):
+  Modul 10 (Reputation) auf certifiedModules + repoUrl als Anfangs-
+  Trust-Signal beim Handshake (eigene Spec-Sitzung 10) ·
+  Modul 15 Sub (a) read() ergänzt `siegel`-Feld im Snapshot (Spec-
+  Sitzung 15.B) ·
+  Module 11/12/14/künftige: jeder Bau/Pflege ergänzt einen
+  ZERTIFIKAT_ASPEKTE-Eintrag.
+
+Risiken (Karte 16 § Risiken):
+  Surface-Check-Spoofing (Mitigation: akzeptierter Trade-off; tiefere
+  Verhaltens-Prüfung wäre fragil) · Aspekte-Liste-Drift zwischen
+  Endknoten (Mitigation: gewollt — jeder Knoten hat eigene Pflege-
+  Geschichte) · Embedding-Lazy-Loading vortäuscht Bezeugung
+  (Mitigation: lazy:true nur für Modul 03 in Sage-Page, Endknoten
+  laden 03 eager via Karte 09) · Repo-URL-Auto-Erkennung trifft
+  falsche Pfad-Komponente (Mitigation: Custom-Domain-PWA setzt
+  expliziten repoUrl-Override) · First-Boot-Animation Hintergrund-Tab
+  unsichtbar (Mitigation: bewusste Akzeptanz, Animation ist
+  Hervorhebung, kein Pflicht-Signal) · Verwechslung mit „rechtlicher
+  Garantie" (Mitigation: Modal-Klausel sagt es nüchtern, kein
+  Haftungs-Block — Klaus-Korrektur 2026-05-24).
+
+Geprüft: 2026-05-24 (Spec-Sitzung 16 — alle vier Sub-Bereiche final)
+
+---
+
 ## 2. Datenformate (Querschnitt)
 
 ### Spore-JSON
