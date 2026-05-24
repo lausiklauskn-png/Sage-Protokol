@@ -3405,6 +3405,84 @@
         };
       });
 
+      SbkimUI.addButton("15_membran", "Test 8: SW-Probe-Simulation via BroadcastChannel('sbkim-membrane')", async function () {
+        await ensureSetup();
+        // Wir testen den End-to-End-Pfad SW→Page, NICHT die interne
+        // Closure. Daher eigener BroadcastChannel im Panel-Code (nicht
+        // SbkimMembrane._meta.broadcastChannel anfassen).
+        if (typeof BroadcastChannel !== "function") {
+          SbkimUI.setStatus("15_membran", "err", "Test 8 nicht ausführbar (BroadcastChannel fehlt)");
+          return { hinweis: "Browser ohne BroadcastChannel — Sub-(e)-SW-Pfad inaktiv. Auf modernen Chromes irrelevant; alte Safari < 15.4 würde betroffen sein." };
+        }
+        var channel = new BroadcastChannel("sbkim-membrane");
+        try {
+          channel.postMessage({
+            type: "SBKIM_MEMBRANE_PROBE",
+            entry: {
+              at: new Date().toISOString(),
+              kind: "endpoint-probe",
+              origin: "https://probe.example",
+              agentHint: null,
+              endpoint: "/sbkim/spore.json",
+              decision: "accepted",
+              details: { method: "GET", secFetchSite: "cross-site" },
+            },
+          });
+
+          // BroadcastChannel ist asynchron im Browser — der Page-
+          // Listener feuert nicht synchron. 30 ms ist großzügig dosiert
+          // (typisch < 5 ms intra-process).
+          await new Promise(function (r) { setTimeout(r, 30); });
+
+          var list = SbkimMembrane.fremdzugriff.list();
+          var lastEntry = list.length > 0 ? list[list.length - 1] : null;
+
+          var lengthOk = list.length >= 1;
+          var kindOk = lastEntry && lastEntry.kind === "endpoint-probe";
+          var endpointOk = lastEntry && lastEntry.endpoint === "/sbkim/spore.json";
+          var originOk = lastEntry && lastEntry.origin === "https://probe.example";
+          var methodOk = lastEntry && lastEntry.details && lastEntry.details.method === "GET";
+          var secFetchSiteOk = lastEntry && lastEntry.details && lastEntry.details.secFetchSite === "cross-site";
+
+          var lampEl = document.querySelector(FAKE_LAMP_SELECTOR);
+          var lampAlertOn = lampEl && lampEl.classList.contains("fremd-alert");
+
+          var pass = lengthOk && kindOk && endpointOk && originOk && methodOk && secFetchSiteOk && lampAlertOn;
+          SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 8 OK" : "Test 8 fehlgeschlagen");
+          return {
+            anzahl_eintraege: list.length,
+            letzter_eintrag: lastEntry,
+            lampe_fremd_alert: lampAlertOn,
+            erwartung: "ein Eintrag (kind:endpoint-probe, endpoint:/sbkim/spore.json, origin:https://probe.example, details.method:GET, details.secFetchSite:cross-site), Lampe trägt fremd-alert. Beweist End-to-End-Pfad SW→Page via BroadcastChannel('sbkim-membrane').",
+          };
+        } finally {
+          try { channel.close(); } catch (_e) { /* nb */ }
+        }
+      });
+
+      SbkimUI.addButton("15_membran", "Test 9: Live-SW-Probe-Auslöser (Hinweis für echten Cross-Origin-Test)", async function () {
+        SbkimUI.setStatus("15_membran", "ok", "Hinweis (kein automatischer Test)");
+        SbkimUI.log("15_membran",
+          "ℹ Live-SW-Probe-Test ist headless NICHT reproduzierbar — er braucht eine zweite Origin.");
+        SbkimUI.log("15_membran",
+          "ℹ So gehts mit echter Origin:");
+        SbkimUI.log("15_membran",
+          "    1. Sage-Protokol gehostet auf https://lausiklauskn-png.github.io/Sage-Protokol/ mit aktiviertem sbkim-sw.js (Bau 15.SW erweitert).");
+        SbkimUI.log("15_membran",
+          "    2. Sage-Page (gleicher Tab oder neuer Tab) öffnen — die Navleisten-Lampe #lamp-fremd muss da sein (init aus sbkim-init.js).");
+        SbkimUI.log("15_membran",
+          "    3. Aus einer FREMDEN Origin (z.B. Mein-Mixarium-PWA) einen fetch auf https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json triggern (z.B. via Eruda: `fetch('https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json')`).");
+        SbkimUI.log("15_membran",
+          "    4. In der Sage-Page wird #lamp-fremd rot, Klick öffnet das Fremdzugriff-Fenster mit kind:endpoint-probe + origin:https://lausiklauskn-png.github.io + endpoint:/Sage-Protokol/sbkim/spore.json + details.secFetchSite:same-site.");
+        SbkimUI.log("15_membran",
+          "ℹ Hinweis: in tests/manual_check.html allein NICHT reproduzierbar (kein gehosteter SW, keine Cross-Origin-Quelle). Knopf 8 prüft den BroadcastChannel-Pfad headless via direkter Page-Post.");
+        return {
+          live_test_reproduzierbar: false,
+          braucht_zwei_origins: true,
+          knopf_8_pruefte_alternative: "Knopf 8 simuliert den SW-Post via BroadcastChannel direkt, deckt damit den Page-Empfänger-Pfad ohne SW-Lauf ab.",
+        };
+      });
+
       SbkimUI.addButton("15_membran", "Selbstcheck Konsole prüfen", async function () {
         SbkimUI.log("15_membran",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
