@@ -1,6 +1,7 @@
 # Modul 16 — SBKIM-Siegel
 
-> **Status:** 🟫 Stub (angelegt 2026-05-24) · Siegel-Backlog · **Priorität hoch** (vor App-Freigabe)  ·  **Schicht:** Selbst-Bezeugung der PWA-Zelle nach erfolgter Integration der SBKIM-Pflicht-Module  ·  **Anker:** Sage-Page Karte 4 / 13 / 14 als zusätzlicher Backlog parallel zu Schutz / Diffusion / Membran, plus Badge-Anker im Header der jeweiligen PWA
+> **Status:** 🟨 Spec fertig (2026-05-24, Spec-Sitzung 16) · Siegel-Backlog · **Priorität hoch** (vor App-Freigabe)  ·  **Schicht:** Selbst-Bezeugung der PWA-Zelle nach erfolgter Integration der SBKIM-Pflicht-Module  ·  **Anker:** Header-Badge in der Navleiste (vierte Plakette nach `#lamp-alive` / `#lamp-traffic` / `#lamp-fremd`), Click öffnet eigenständiges Erklärungs-Modal in `document.body`
+> **Datei (Code):** `src/modules/16_siegel.js` (existiert noch nicht — Bau-Sitzung 16 nach Spec-Sitzung 16 vom 2026-05-24 fällig)
 
 ---
 
@@ -21,14 +22,21 @@ das nach außen.
   Kein zentraler Aussteller, kein CI-Build-Check.
 - **Self-Inscribing** — Selbst-Bezeugung. Die App prüft beim Boot, ob
   die Pflicht-Module geladen sind, und stellt sich das Siegel selbst
-  aus. Vertrauen kommt vom Repo-Reputation, nicht von einer
-  Zertifizierungs-Autorität.
+  aus. Vertrauen kommt vom Repo, in dem sie gehostet ist, nicht von
+  einer Zertifizierungs-Autorität.
 - **Lebendes Dokument** — die Erklärung hinter dem Siegel wächst
   organisch: jedes Sicherheits-Update ergänzt einen Aspekt mit
   Datum. Das Siegel altert nicht, es wächst.
 - **Anti-Greenwashing-Klausel** — kein Siegel ohne erfüllte
   Selbst-Prüfung. Wenn ein Pflicht-Modul fehlt oder fehlerhaft lädt,
   KEIN Badge-Render. Disziplin, keine Marketing-Plakette.
+- **Surface-Check** — Pflicht-Modul-Prüfung über die globalen
+  Namensräume (`window.SbkimStorage`, …) und über eine pro Modul
+  definierte „zentrale Funktion" (z.B. `getOwnSpore` für Modul 02).
+  Snapshot zur `init()`-Zeit, gecacht.
+- **`ZERTIFIKAT_ASPEKTE`** — modul-interne, code-versionierte Liste
+  von `Aspect`-Objekten. Die Liste wächst pro Pflege-PR jedes
+  spätergebaut werden Sicherheits-Moduls.
 
 ## Warum jetzt (Hochstufungs-Begründung)
 
@@ -40,272 +48,797 @@ Autorität ist self-inscribing der einzige Pfad, der nicht zentralisiert
 und nicht skalierungs-blockiert ist.
 
 Der Trade-off mit dem Schutz-Backlog (Modul 10 / 11 / 12) ist bewusst:
-das Siegel bestätigt zur Freigabe-Zeit den Grundbaukasten (01–08 + 15),
-nicht den Voll-Schutz. Die Erklärung wächst danach organisch — sobald
-Modul 11 oder 12 dazukommt, ergänzt ein neuer `ZERTIFIKAT_ASPEKTE`-
-Eintrag den Text. Forker müssen nicht re-andocken: pro PWA-Lauf
-aktualisiert sich das Siegel selbst.
+das Siegel bestätigt zur Freigabe-Zeit den Grundbaukasten (01–05 + 07
++ 15), nicht den Voll-Schutz. Die Erklärung wächst danach organisch —
+sobald Modul 11 oder 12 dazukommt, ergänzt ein neuer
+`ZERTIFIKAT_ASPEKTE`-Eintrag den Text. Forker müssen nicht re-andocken:
+pro PWA-Lauf aktualisiert sich das Siegel selbst.
 
-## Vier Sub-Bereiche (Anker für Spec-Sitzung 16)
+---
+
+## Vier Sub-Bereiche (final spezifiziert)
 
 ### Sub (a) — Selbst-Prüfung (Pflicht-Modul-Liste)
 
-Welche Module gelten als **Pflicht** für das Grund-Siegel?
+#### Finale Pflicht-Modul-Liste
 
-**Anker-Vorschlag (Spec-Sitzung entscheidet):**
+Für das **Grund-Siegel** gelten genau **sieben** Module als Pflicht:
 
-- Modul 01 (Storage) — IndexedDB-Wrapper. Pflicht (Foundation).
-- Modul 02 (Spore) — Ed25519-Identität. Pflicht (Identitäts-Anker).
-- Modul 03 (Embedding) — Vektor. Pflicht (Match-Voraussetzung).
-- Modul 04 (Match) — Threshold-Vergleich. Pflicht (Anastomose-Voraussetzung).
-- Modul 05 (Anastomose) — Handshake. Pflicht (Netz-Teilnahme).
-- Modul 07 (Apoptose) — Selbstlöschung. Pflicht (Lebenszyklus).
-- Modul 15 (Membran Sub (e)) — Fremdzugriff-Lampe. Pflicht (Außen-Schicht).
+| Modul | Global | Pflicht-Funktion (Surface-Anker) | Lazy? | Begründung |
+|---|---|---|---|---|
+| **01** Storage     | `SbkimStorage`     | `init`               | nein | Foundation — alle anderen Module bauen darauf. |
+| **02** Spore       | `SbkimSpore`       | `getOwnSpore`        | nein | Identitäts-Anker — ohne Spore kein SBKIM-Knoten. |
+| **03** Embedding   | `SbkimEmbedding`   | `embedPassage`       | **ja** | Vektor-Schicht. Sage-Page lädt 03 lazy (asset-schwer, ~30 MB Modell). Surface-Check toleriert „deferred". |
+| **04** Match       | `SbkimMatch`       | `match`              | nein | Schwellen-Vergleich, Anastomose-Voraussetzung. |
+| **05** Anastomose  | `SbkimAnastomose`  | `handshake`          | nein | Netz-Teilnahme — ohne Handshake kein Geschwister-Pfad. |
+| **07** Apoptose    | `SbkimApoptose`    | `prepareSelfApoptose` | nein | Lebenszyklus — ohne Apoptose keine Selbstlöschung, Mycel-Grundsatz verletzt. |
+| **15** Membran     | `SbkimMembrane`    | `init`               | nein | Außen-Schicht — Fremdzugriff-Sichtbarmachung Pflicht, weil seit Gemini 3.5 Flash relevant. |
 
-**Nicht Pflicht für Grund-Siegel (kann später):**
+**Nicht Pflicht für Grund-Siegel** (kann später als Aspekt-Eintrag
+ergänzt werden, blockiert aber **nicht** das Siegel-Render):
 
-- Modul 00 (Doku-Fenster) — UI-Feature, nicht protokoll-aktiv.
-- Modul 04.B (`explainMatchLLM`) — braucht API-Key, individuelle
-  Entscheidung pro PWA.
-- Modul 06 (Heterokaryose) — Opt-In, nicht jeder Knoten will Anker-
-  Tausch.
-- Modul 08 (UI-Demo) — Endknoten-Pflege-UI, optionale Schicht.
-- Modul 10 / 11 / 12 (Schutz-Backlog) — werden mit Aspekten ergänzt,
-  sobald sie kommen.
+- **Modul 00** (Doku-Fenster) — UI-Feature, nicht protokoll-aktiv. Sage-
+  Page hat aktuell kein sichtbares Such-Symbol, Sage-spezifischer
+  Eingang ist der Andock-Wizard. **Bestätigt nicht Pflicht.**
+- **Modul 04.B** (`explainMatchLLM`) — API-Key-abhängig, individuelle
+  Entscheidung pro PWA. Surface-Check erfolgt ausschließlich auf
+  Modul 04 (`match`); 04.B wäre eine zusätzliche Funktion auf
+  `SbkimMatch`, deren Existenz NICHT vom Surface-Check verlangt wird.
+  **Bestätigt nicht Pflicht.**
+- **Modul 06** (Heterokaryose) — Opt-In, nicht jeder Knoten will
+  Anker-Tausch. Karte 06 ist beidseits Opt-In via Co-Schreiber-Flag,
+  kein Pflicht-Verkehr. **Bestätigt nicht Pflicht.**
+- **Modul 08** (UI-Demo) — Endknoten-Pflege-UI, Sage-Page hat ihn nicht
+  als sichtbare UI, sondern als ladbares Modul (sbkim-init.js Z. 110).
+  Pflicht-Check würde Sage-Page hart abhängig vom UI-Modul machen,
+  obwohl Sage-Page kein Endknoten-PWA-UI hat. **Bestätigt nicht Pflicht.**
+- **Modul 09** (Einbau-PWA) — Anleitung, kein JS-Modul.
+- **Modul 10 / 11 / 12** (Schutz-Backlog) — werden mit Aspekten ergänzt,
+  sobald sie kommen. Pflicht-Check bei Bau-Zeitpunkt würde 16
+  zwingen, vor 11/12 niemals grün zu werden.
+- **Modul 14** (Diffusion) — Backlog, ähnlich 10/11/12.
 
-**Pflicht-Prüfung-Form**: Modul 16 prüft beim Boot, ob für jedes
-Pflicht-Modul der globale Namensraum besteht UND eine definierte
-Pflicht-Funktion existiert (z.B. `window.SbkimSpore.getOwnSpore`).
-Wenn ein einziger Check fehlschlägt → **kein Siegel-Render** + ein
-ehrlicher Warnungs-Eintrag in der Konsole (`console.warn`).
+#### Surface-Check-Form
 
-### Sub (b) — Badge-Rendering
+Pro Modul-Eintrag in `PFLICHT_MODULE` prüft das Modul beim **`init()`-
+Snapshot**:
 
-**Anker-Form (Spec-Sitzung entscheidet):**
+```js
+function checkModuleSurface(entry) {
+  const ns = globalThis[entry.globalName];
+  if (ns === undefined) {
+    return entry.lazy ? "deferred" : "missing";
+  }
+  if (ns === null || typeof ns !== "object") {
+    return "broken";
+  }
+  if (typeof ns[entry.surfaceFn] !== "function") {
+    return "broken";
+  }
+  return "ok";
+}
+```
 
-- DOM-Anker: `#sbkim-cert-badge` (CSS-Selektor, konfigurierbar pro
-  PWA via `init({badgeSelector})`).
-- Default-Position: neben den drei Navleisten-Lampen (LEBT / VERKEHR
-  / FREMD) — als vierte Plakette mit Schriftzug `SBKIM-Siegel` oder
-  einem definierten Glyph.
-- Sichtbarkeits-Modi (per `init({visible})`):
-  - `"visible"` (Default für Sage-Page + Endknoten): sichtbares
-    Badge mit Klick-Handler.
-  - `"hidden"` (für Tool-Apps mit eigenem Design-Wunsch): kein DOM-
-    Render, aber Siegel-API erreichbar (`SbkimSiegel.isCertified()`,
-    `SbkimSiegel.getExplanation()`).
+Status-Werte (Schema verbindlich):
 
-**Optische Anforderung — Auszeichnungs-Stil (Klaus-Vorgabe 2026-05-24):**
+- `"ok"` — globaler Namespace existiert + Surface-Funktion ist `function`.
+- `"deferred"` — globaler Namespace existiert NICHT, aber Modul ist
+  als `lazy:true` markiert. Gilt für die Bezeugung als **akzeptabel**
+  (kein Block).
+- `"missing"` — globaler Namespace existiert nicht und Modul ist
+  NICHT `lazy:true`. **Blockt das Siegel.**
+- `"broken"` — Namespace existiert, aber Surface-Funktion fehlt oder
+  ist kein `function`. **Blockt das Siegel.**
 
-Das Siegel soll **wie eine Auszeichnung wirken**, NICHT wie ein
-billiger Marketing-Sticker. Referenzen sind klassische Qualitäts-
-Siegel:
+#### Surface-Check-Zeitpunkt
 
-- **Prädikatswein-Plaketten** (Kabinett / Spätlese / Auslese /
-  Beerenauslese): zentrierter Schriftblock, klassische Antiqua-
-  Schrift, Rahmen mit Wappen-Anmutung, Datum unten klein.
-- **DLG-Gold/Silber/Bronze** (Deutsche Landwirtschafts-Gesellschaft):
-  rundes Medaillon, kontrastreich, mit Goldton, klar lesbar auch in
-  klein.
-- **Stiftung Warentest „sehr gut"**: nüchterner Stil, klare Hierarchie,
-  Datum als integraler Bestandteil.
+**Einmalig beim `init()` (Snapshot), dann gecacht.** Analog Modul 15
+Sub (e) `subscribeBroadcastChannel`-Pattern: ein Check beim Init,
+Ergebnis lebt in Closure-State, `isCertified()` / `getExplanation()`
+liefern den gecachten Snapshot.
 
-**Konkrete Design-Anker (Spec-Sitzung 16 + Bau-Sitzung 16 entscheiden
-die finale Form):**
+Begründung: Pflicht-Module werden vor 16 in der `sbkim-init.js`-
+Kette geladen (`SbkimSiegel.init()` kommt **nach** allen anderen
+Pflicht-Modulen). Ein nachträgliches Verschwinden eines Pflicht-
+Moduls wäre ein nicht-spezifizierter Ausnahmefall — diese Spec
+nimmt das nicht ab.
 
-- **Form**: rundes oder leicht ovales Medaillon — keine rechteckige
-  Plakette. Größe: ~32–48 px Durchmesser im Header, klickbar.
-- **Farben**: nicht Neon, nicht Pastell. Klassisch — z.B. Edelmetall-
-  Anmutung (Gold/Bronze/Silber je nach Aspekt-Stufe später möglich)
-  + dunkler Untergrund (passend zur Sage-Page-Hintergrundsfarbe). Im
-  Default ein zurückhaltendes Edel-Gold (`#C9A961`-Klasse) auf
-  dunklem Grund.
-- **Schrift**: Serif oder humanistische Sans-Serif mit Kontrast (NICHT
-  die Mono-Schrift der Lampen-Labels). „SBKIM" größer, „SIEGEL"
-  darunter kleiner, ggf. mit Datum.
-- **Wappen-Element**: ein kleines abstraktes Mycel-Symbol oder ein
-  Hyphen-Geflecht als zentraler Glyph. Spec-Sitzung 16 entwirft das
-  SVG.
-- **Hover/Aktiv-Zustand**: dezenter Glow oder Atmung (analog der
-  Membran-Lampe, aber wertiger — kein hektisches Pulsieren).
-- **Animation beim ersten Bezeugen** (Page-Load mit erfolgreicher
-  Selbst-Prüfung): einmaliges Aufleuchten + leichter Skalierungs-Puls
-  (~600 ms), dann ruhiger Default-Zustand. Disziplin: keine Dauer-
-  Animation („überschreit nicht das, was es selbst ist").
-- **Print-/Hi-Resolution-Tauglichkeit**: SVG, vektorbasiert,
-  skalierbar bis Visitenkarten-Druck (Klaus kann das Siegel später
-  auf einer Über-Seite o.ä. drucken, wenn er die App offiziell
-  vorstellt).
+**Re-Run** ist möglich: `SbkimSiegel.init()` zweimal aufrufen wirft
+nicht, aber **überschreibt den Snapshot nicht** beim zweiten Aufruf
+(idempotent, gibt das gecachte Resultat zurück). Wer einen Re-Check
+will, lädt die Page neu. Konvention analog Modul 15.
 
-**Negativ-Beispiele (was das Siegel NICHT sein soll):**
+#### Fail-Modus (binär)
 
-- Keine Neon-Farben, kein „NEW!"-Banner-Stil.
-- Keine HTML-Emoji-Plakette (`🛡` als Hauptelement).
-- Keine animierten GIFs / Glitter.
-- Keine Werbe-Sprache („zertifiziert von …!").
-- Kein „Beta"/"Alpha"-Stempel — entweder zertifiziert oder gar nicht.
+Bei **mindestens einem** Modul mit Status `"missing"` oder `"broken"`:
 
-**Anti-Greenwashing-Anker**: Wenn `isCertified() === false` (eine
-Pflicht-Modul-Prüfung schlug fehl), darf Sub (b) **kein Badge
-rendern**. Auch nicht ausgegraut, auch nicht „in Arbeit". Spec ist
-binär: zertifiziert oder nicht.
+- **KEIN Badge-Render.** Nicht ausgegraut, nicht „in Arbeit". Spec
+  ist binär.
+- **Genau EINE `console.warn`-Zeile** mit ID-Liste der fehlenden /
+  kaputten Module:
+  ```
+  SBKIM-Siegel kein Render: Pflicht-Module fehlen/defekt — 04 (missing), 07 (broken). Siehe Karte 16 § Sub (a).
+  ```
+- **`isCertified()` liefert `false`** (sync), `getExplanation()`
+  liefert dennoch den Snapshot (für Debug-Zwecke; Modal-Render-
+  Code prüft `isCertified()` und rendert nicht ohne grün).
+
+Module mit Status `"deferred"` (z.B. Modul 03 in der Sage-Page) zählen
+für die Bezeugung als **OK**. `isCertified()` liefert `true`.
+
+### Sub (b) — Badge-Rendering (Auszeichnungs-Optik)
+
+#### DOM-Anker und Position
+
+- **DOM-Anker:** `#sbkim-siegel-badge` (CSS-Selektor, konfigurierbar
+  per `init({badgeSelector})`).
+- **Default-Position:** **vierte Plakette** in der Navleiste, direkt
+  nach `<span class="lamp" id="lamp-fremd">` + `<span class="lamp-
+  label">fremd</span>`. KEIN eigener Header-Bereich neben dem Branch-
+  Text — die Lampen-Reihe ist die etablierte Schicht für „Knoten-
+  Lebenszeichen", das Siegel gehört dort als die wertigste Marke
+  rechts ans Ende.
+- **Bau-Sitzung 16 fügt das DOM-Element in `index.html` ein** (analog
+  Bau 15 § index.html-Eingriff), Default-Selektor `#sbkim-siegel-
+  badge`. Endknoten-PWAs ergänzen einen passenden Anker im jeweiligen
+  Header (Folge-Pflege Karte 09 § Schritt 10).
+
+#### Form und Größe
+
+- **Form:** rundes Medaillon (`border-radius: 50%`). Kein Oval, kein
+  Rechteck, keine Plakette. Mit den drei Lampen davor entsteht eine
+  visuelle Reihe „drei kleine Lichter + eine größere Münze".
+- **Größe:** **40 px Durchmesser** (Mittel des Brief-Vorschlags 32–
+  48 px). Klickbar (Mindest-Touch-Target 40 px erfüllt).
+- **Hover-Cursor:** `pointer`. Hover-Tooltip via `title`-Attribut
+  („SBKIM-Siegel — klick für Details").
+
+#### Farb-Palette
+
+**Default Edel-Gold** auf dunklem Grund. Keine Stufen-Varianten
+(kein Bronze / Silber / Gold-Hierarchie) — Klaus' verbindliche
+Festlegung 2026-05-24: das Siegel wächst über die Aspekte-Liste, NICHT
+über sichtbare Stufen.
+
+Konkrete Werte (Bau-Sitzung 16 verfeinert, Spec verankert die
+Klassen):
+
+```css
+:root {
+  --siegel-gold:        #C9A961;   /* Edel-Gold, gedämpft */
+  --siegel-gold-glow:   rgba(201,169,97,0.55);
+  --siegel-ink:         #1A1306;   /* sehr dunkler Bronze-Untergrund */
+  --siegel-line:        rgba(201,169,97,0.45);
+}
+
+#sbkim-siegel-badge {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #E6CE94 0%, #C9A961 38%, #8C6E2F 100%);
+  border: 1px solid var(--siegel-line);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.2), inset 0 0 6px rgba(255,255,255,0.15);
+  cursor: pointer;
+}
+
+#sbkim-siegel-badge:hover {
+  box-shadow: 0 0 12px var(--siegel-gold-glow), inset 0 0 6px rgba(255,255,255,0.20);
+}
+
+#sbkim-siegel-badge.first-boot {
+  animation: siegel-first-boot 600ms ease-out;
+}
+@keyframes siegel-first-boot {
+  0%   { transform: scale(0.7); opacity: 0; }
+  60%  { transform: scale(1.12); opacity: 1; box-shadow: 0 0 18px var(--siegel-gold-glow); }
+  100% { transform: scale(1.00); opacity: 1; }
+}
+```
+
+`:root`-Variablen sind in `index.html` zu ergänzen — drei neue (Gold,
+Glow, Ink); `--siegel-line` wird aus Glow abgeleitet. **Keine
+Erweiterung** der `:root`-Variablen für Lampen-Farben.
+
+#### Schrift
+
+- **Pflicht-Konvention für Spec:** Serif-Stack mit System-Fallback —
+  `font-family: 'Spectral', 'Georgia', 'Times New Roman', serif;`.
+  Spec verlangt KEIN zwingendes Google-Font-Loading; Bau-Sitzung 16
+  entscheidet, ob `Spectral` über `<link href="...">` nachgeladen
+  wird oder System-Serif (Georgia) ausreicht. Default-Empfehlung:
+  System-Serif (kein Font-Load-Lag, keine Layout-Shift, sofort
+  verfügbar). Spectral kann später nachgereicht werden, wenn Klaus
+  ein einheitliches Markenbild über alle Endknoten will.
+- **Verboten:** Geist (Standard-Sans), Geist Mono (Lampen-Labels).
+  Das Siegel muss optisch aus der Mono-/Sans-Welt rauskippen.
+
+#### Wappen-Element (zentraler Glyph)
+
+**Verbale Anker-Beschreibung (Spec):**
+
+> Drei verschlungene Hyphen-Bögen, im Zentrum ein kleiner Knoten-
+> Punkt. Die Bögen treffen sich nicht in einer geometrischen Mitte,
+> sondern leicht versetzt — wie drei Hyphen, die durcheinander
+> wachsen, aber dasselbe Ziel haben. Glyph-Farbe: dunkler als das
+> Goldgrund (Bronze-Ink `#1A1306`-Klasse), nicht-glänzend, damit der
+> Glyph als „Prägung im Metall" lesbar ist und nicht als „Sticker".
+
+**SVG-Skelett (Spec-Anker, finale Pfade in Bau-Sitzung 16):**
+
+```svg
+<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- Drei verschlungene Hyphen-Bögen, Spec-Skelett.
+       Bau-Sitzung 16 bestimmt die finalen Pfade — diese Kurven sind
+       Anker-Form, nicht endgültig. -->
+  <g fill="none" stroke="#1A1306" stroke-width="1.4" stroke-linecap="round">
+    <path d="M10 14 Q 20 8, 30 14" />
+    <path d="M14 26 Q 20 32, 26 26" />
+    <path d="M12 20 Q 24 14, 28 22" />
+  </g>
+  <circle cx="20" cy="20" r="1.6" fill="#1A1306" />
+</svg>
+```
+
+`viewBox="0 0 40 40"` gibt der Bau-Sitzung freie Skalierungs-Hand —
+das SVG ist vektorbasiert und print-tauglich (Klaus' Wunsch: später
+auf Visitenkarte / Über-Seite druckbar).
+
+#### Hover / Aktiv-Zustand
+
+- **Hover:** dezenter Glow (Box-Shadow im Gold-Ton, siehe CSS oben).
+  KEIN Pulsieren bei Dauer-Hover. Klassisch-zurückhaltend wie ein
+  Wachs-Siegel im Streiflicht.
+- **Aktiv-Zustand:** identisch zum Default. Das Badge ist nicht
+  „aktiv vs. inaktiv" — es ist entweder gerendert (zertifiziert)
+  oder gar nicht da (Anti-Greenwashing).
+
+#### First-Boot-Animation
+
+**Bestätigt** (Brief-Vorschlag): einmaliger Aufleuch-Puls + leichte
+Skalierung (`scale 0.7 → 1.12 → 1.0`) über **600 ms** beim ersten
+erfolgreichen `isCertified() === true`-Lauf pro Session. Klasse
+`.first-boot` wird per JS gesetzt und nach 600 ms wieder entfernt.
+
+**Disziplin:** **keine Dauer-Animation**. Klaus' Festlegung: „Auszeichnung
+überschreit nicht das, was sie selbst ist." Wer beim Reload das Badge
+sieht, bekommt nur die First-Boot-Animation — bei Re-Visits derselben
+Tab-Session passiert NICHTS (Animation ist an `_meta.firstBootShown`-
+Flag gekoppelt, einmal pro Session).
+
+#### Sichtbarkeits-Modi
+
+`init({visible})` mit drei diskreten Werten (Brief-Erweiterung um
+`"compact"` **zurückgestellt** — Bau-Sitzung 16 kann das später
+nachreichen, wenn ein konkreter Endknoten den Wunsch äußert):
+
+- `"visible"` (Default für Sage-Page + Endknoten) — sichtbares
+  Badge, Click öffnet Modal.
+- `"hidden"` (Tool-Apps mit eigenem Design) — kein DOM-Render des
+  Badge, aber `SbkimSiegel.isCertified()` / `getExplanation()` /
+  `getAspects()` / `getCertifiedModules()` API erreichbar. Modal-
+  Mount ebenfalls unterbunden (Mountfindet kein Trigger).
+
+**Compact-Modus** bewusst ausgeschlossen — bis ein Endknoten konkret
+darum bittet, bleibt 40 px die einzige Größe. Spec spart eine zweite
+SVG-Variante und eine Größen-Variable. Bau-Sitzung 16 / 17 darf das
+nachreichen.
+
+#### Anti-Greenwashing-Anker (binär)
+
+Wenn `isCertified() === false`:
+
+- **KEIN Badge-Render.** Element wird gar nicht angelegt (bzw.
+  `display:none` ist NICHT ausreichend — kein DOM-Element überhaupt,
+  damit Inspektion sofort sichtbar macht „kein Siegel").
+- **Auch nicht ausgegraut.** Auch nicht „in Arbeit". Auch nicht
+  „warte auf Embedding".
+
+Diese Klausel ist binär und nicht-verhandelbar (Karte 16 § Strikte
+Tabus).
 
 ### Sub (c) — Erklärungs-Modal
 
-Klick auf das Badge öffnet ein Modal mit:
+#### Titel
 
-- **Titel**: „SBKIM-Siegel — was bedeutet das?"
-- **Datum der ersten Bezeugung** (der erste erfolgreiche Selbst-
-  Prüfungs-Lauf — pro PWA in RAM-only oder optional in IndexedDB
-  zur Persistenz).
-- **Modul-Liste**: welche Pflicht-Module bei diesem Lauf grün waren
-  (z.B. „01 Storage · 02 Spore · 03 Embedding · …").
-- **Aspekte-Liste**: chronologische Auflistung der Sicherheits-
-  Aspekte mit Datum (siehe Sub (d)).
-- **Aussteller-Klärung**: ein kurzer Fakt-Satz, der die Self-
-  Inscribing-Natur ehrlich benennt — ohne Disclaimer-Ton, ohne
-  juristische Sprache. Anker:
+**Bestätigt:** „SBKIM-Siegel — was bedeutet das?"
 
-  > Dieses Siegel ist **self-inscribing**: die App hat sich selbst
-  > geprüft. Vertrauen kommt vom Repo, in dem sie gehostet ist:
-  > `<repo-url>`.
+#### Inhalt (Pflicht-Struktur)
 
-  Zwei Zeilen reichen. Spec-Sitzung 16 darf die exakte Formulierung
-  feinpolieren, aber NICHT zu einem Haftungsausschluss aufblähen.
+Modal-Body rendert in dieser Reihenfolge:
 
-Modal-Form analog Modul 15 Fremdzugriff-Modal (eigenständig in
-`document.body`, Backdrop-Klick / Esc / ✕ zum Schließen), aber mit
-**wertigerer Typografie** (Serif für Titel + Klausel-Block, dezenter
-Rahmen, klassischer Stil-Wechsel weg vom Mono-/Lampen-Stil).
+1. **Datum der ersten Bezeugung** (z.B. „Bezeugt seit 2026-05-24,
+   18:42 Uhr"). Datum aus `_meta.certifiedAt` (siehe §
+   Persistenz unten).
+2. **Modul-Liste** (Pflicht-Module): jede Zeile zeigt
+   `<ID> · <Name> · <Status>` mit Status-Marker. Status-Marker:
+   - `"ok"` → grüner Punkt + „bereit"
+   - `"deferred"` → goldener Punkt + „bereit (lazy)"
+   - `"missing"` / `"broken"` → roter Punkt (rendert nur, wenn
+     `isCertified() === false`, kommt in der Praxis im Modal nicht
+     vor, weil das Modal ohne Bezeugung gar nicht öffnet)
+3. **Aspekte-Liste**: chronologisch aufsteigend (älteste oben),
+   pro Aspekt `<seit-Datum> · <module-ID> · <aspect-Titel>` plus
+   `<description>` als Body-Text in kleiner Schrift.
+4. **Aussteller-Klärung** (zwei Zeilen, nüchtern — siehe nächster
+   Abschnitt).
+
+#### Aussteller-Klärung (final, nüchtern)
+
+**Verbindlicher Wortlaut:**
+
+> Dieses Siegel ist **self-inscribing**: die App hat sich beim Boot
+> selbst geprüft.
+> Vertrauen kommt vom Repo, in dem sie gehostet ist: `<repo-url>`.
+
+`<repo-url>` wird zur Laufzeit eingesetzt, als anklickbarer Link
+gerendert (`<a href="<repo-url>" target="_blank" rel="noopener
+noreferrer">`).
+
+**Disziplin (Klaus-Korrektur 2026-05-24):** KEIN Disclaimer-Schwall,
+KEIN „ohne Garantie"-Block, KEIN Haftungs-Schein-Stil. „Ohne
+Garantie" war nicht ernst gemeint und wird **nicht** aufgenommen.
+Die zwei Zeilen oben sind verbindlich; eine spätere Pflege darf
+Wortlaut-Politur einbringen (z.B. „bereit" statt „bereit"), aber
+NICHT die Zahl der Sätze, NICHT die nüchterne Sachlichkeit kippen.
+
+#### Modal-Form
+
+- **Eigenständig in `document.body`** (analog Modul 15 Fremdzugriff-
+  Modal). Kein Modul-00-Reuse, keine Slide-Card.
+- **Backdrop-Klick / Esc-Keydown / ✕-Button** schließen das Modal,
+  alle drei äquivalent.
+- **Wertigere Typografie** (Spec-Wille):
+  - Titel + Aussteller-Klärungs-Block in **Serif** (`'Spectral',
+    'Georgia', serif`).
+  - Modul-Liste + Aspekte-Liste bleiben in **Geist** (Standard-Sans)
+    — das ist die „Daten"-Schicht, sie soll lesbar und kompakt sein.
+  - **Dezenter Rahmen** (1 px Edel-Gold-Linie `var(--siegel-line)`
+    am Modal-Container), nicht die Standard-Modul-15-Glas-Optik.
+  - **Hintergrund:** sehr dunkles Bronze (`var(--siegel-ink)`-Klasse)
+    statt des Modul-15-`--bg-2`-Tons — klassischer Stil-Wechsel weg
+    vom Sage-Page-Mono-/Lampen-Stil.
+- **Mindest-Breite** 320 px, **Maximal-Breite** 560 px, vertikal
+  scrollbar bei vielen Aspekte-Einträgen.
+
+Bau-Sitzung 16 entscheidet die exakten Padding-/Margin-Werte; die
+Spec verankert nur Schrift-Familie + Rahmen-Farbe + Hintergrund-Ton.
+
+#### Repo-URL-Quelle
+
+**Auto-Erkennung mit Override-Option** (Brief-Vorschlag bestätigt):
+
+```js
+function defaultRepoUrl() {
+  // GitHub-Pages-Konvention: https://<user>.github.io/<repo>/...
+  // Anker: erste Pfad-Komponente als Repo-Pfad ankern.
+  var origin = (typeof location !== "undefined" && location.origin) || "";
+  var path = (typeof location !== "undefined" && location.pathname) || "/";
+  var firstSegment = path.split("/").filter(Boolean)[0];
+  if (firstSegment) {
+    return origin + "/" + firstSegment + "/";
+  }
+  return origin + "/";
+}
+```
+
+**Override:** `init({repoUrl: "https://github.com/..."})` ersetzt
+die Auto-Erkennung. Endknoten-PWAs setzen typischerweise den
+expliziten **GitHub-Repo-Source-URL** (z.B.
+`https://github.com/lausiklauskn-png/Mein-Mixarium`), weil das mehr
+Vertrauen bietet als die Pages-URL (Klaus kann via Repo-Issues
+kontaktiert werden, Forker können forken).
+
+**Empfehlung im Spec:** Endknoten-PWAs sollten den **Source-Repo-
+URL** setzen, nicht die Pages-URL. Sage-Page-Default kann die
+Auto-Erkennung nutzen (`https://lausiklauskn-png.github.io/Sage-
+Protokol/`) oder explizit `https://github.com/lausiklauskn-png/Sage-
+Protokol` setzen — Bau-Sitzung 16 entscheidet, Klaus genehmigt.
 
 ### Sub (d) — Aspekte-Liste (lebendes Dokument)
 
-Modul-interne `ZERTIFIKAT_ASPEKTE`-Liste, chronologisch geordnet,
-strukturierte Einträge:
+#### Schema
+
+```js
+Aspect = {
+  since:       <ISO-Datum>,     // "YYYY-MM-DD" (Datum, nicht Datetime)
+  module:      <string>,         // Modul-ID, z.B. "16", "11", "12"
+  aspect:      <string>,         // Kurz-Titel, ≤ 80 Zeichen
+  description: <string>,         // 1–2 Sätze, ≤ 240 Zeichen, kein PII
+}
+```
+
+**Disziplin:**
+
+- `since` ist **Datum**, nicht Datetime. Pflege-PRs tragen das Pflege-
+  Datum ein. Multiple Aspekte am selben Tag sind erlaubt (Reihenfolge
+  über `module`-ID-Sortierung als Tie-Breaker).
+- `module` ist **string** (analog `status.json` `modules[].id`), nie
+  number. Pflicht-Format zweistellig (`"01"` statt `"1"`).
+- `aspect` ist **kurzer Titel** ohne Satzende-Punkt (z.B.
+  „Grund-Siegel-Bezeugung", „Rate-Limit für eingehende postMessage").
+- `description` ist **1–2 Sätze**, sachlich, KEIN PII, KEINE Marketing-
+  Sprache. Modal rendert `description` als Text, daher HTML-Entitäten
+  per Konvention NICHT escapen-pflichtig (Bau-Sitzung 16 baut
+  text-only Render).
+
+#### Start-Eintrag (verbindlich für Bau-Sitzung 16)
 
 ```js
 {
   since:       "2026-05-24",
-  module:      "16",           // welches Modul den Aspekt einführt
+  module:      "16",
   aspect:      "Grund-Siegel-Bezeugung",
-  description: "Diese App bestätigt durch Selbst-Prüfung beim Boot,
-                dass die SBKIM-Pflicht-Module 01/02/03/04/05/07/15
-                geladen sind.",
+  description: "Diese App bestätigt durch Selbst-Prüfung beim Boot, dass die SBKIM-Pflicht-Module 01/02/03/04/05/07/15 geladen sind.",
 }
 ```
 
-Jedes neue Sicherheits-Update ergänzt einen Eintrag — z.B.:
+Begründungs-Disziplin: die Beschreibung **nennt die Pflicht-Module
+namentlich**, weil der erste Aspekt-Eintrag den Bezugs-Anker für
+spätere Erweiterungen setzt. Spätere Aspekte verweisen nur auf das
+neue Modul (z.B. „Modul 11 Rate-Limit für eingehende postMessage"),
+nicht auf die ganze Pflicht-Liste — die ist im ersten Eintrag
+zementiert.
+
+#### Reihenfolge
+
+**Aufsteigend chronologisch (älteste oben).** Bestätigt
+Brief-Vorschlag. Begründung: jeder spätere Aspekt setzt auf den
+vorherigen auf — wer das Modal von oben nach unten liest, sieht
+**das Wachsen** des Siegels über die Zeit. Tie-Breaker bei gleichem
+Datum: `module`-ID aufsteigend.
+
+#### Pflicht-Konvention für künftige Sicherheits-Module
+
+**Verbindlich in Karte 16 § Sub (d):** jedes spätere Sicherheits- /
+Schutz-Modul (10 Reputation, 11 Rate-Limit, 12 Blocklist, künftige
+14 Diffusion, künftige Sub-Bereiche von Modul 15) **MUSS** in seiner
+Bau- / Pflege-Sitzung in `src/modules/16_siegel.js` einen
+`ZERTIFIKAT_ASPEKTE`-Eintrag ergänzen (am Listen-Ende, mit aktuellem
+Datum + Modul-ID + kurzer Beschreibung).
+
+**Folge-Pflege CLAUDE.md (Spec-Sitzung 16 markiert das als
+to-do für die Hauptsitzung — diese Spec-Sitzung selbst greift
+NICHT in CLAUDE.md ein, weil das eine Querschnitts-Tafel-Pflege ist):**
+das Verfahren wird in CLAUDE.md § „Was du nicht tust" als positive
+Pflicht aufgenommen — etwa unter einem neuen Block § „Sicherheits-
+Module pflegen Aspekte". Diese Pflege ist Aufgabe einer eigenen
+Mini-Pflege-Sitzung NACH Bau-Sitzung 16 (siehe § Brief-99-Pipeline
+unten).
+
+**Disziplin:** Aspekte werden **NICHT zur Laufzeit hinzugefügt**. Die
+`ZERTIFIKAT_ASPEKTE`-Liste ist code-versioniert. Jeder Aspekt-
+Eintrag entspricht einem Pflege-PR (oder Bau-PR) mit nachvollziehbarem
+Datum + Commit-SHA.
+
+---
+
+## Schnittstelle (final)
+
+```js
+window.SbkimSiegel = {
+  // Snapshot-Init: prüft Pflicht-Module, cached Resultat in Closure,
+  // mountet Badge (wenn visible !== "hidden") und Modal-Lifecycle.
+  // Idempotent — zweiter Aufruf ist no-op (kein Re-Check, kein Re-Mount).
+  init: function (options) { /* Promise<void> */ },
+
+  // Sync, boolean — true wenn alle Pflicht-Module (ohne lazy-Tolerator-
+  // Sonderfall) Status ∈ {"ok", "deferred"} sind. Gültig nach init().
+  isCertified: function () { /* boolean */ },
+
+  // Sync, ExplanationSnapshot — Modal-Render-Quelle. Defensive Kopie,
+  // Mutation am zurückgegebenen Objekt berührt den internen Snapshot
+  // nicht (analog Modul 15 fremdzugriff.list()).
+  getExplanation: function () { /* ExplanationSnapshot */ },
+
+  // Sync, string[] — IDs der bestätigten Pflicht-Module
+  // (Status "ok" + "deferred"). Defensive Kopie.
+  getCertifiedModules: function () { /* string[] */ },
+
+  // Sync, Aspect[] — chronologisch aufsteigend, defensive Kopie.
+  getAspects: function () { /* Aspect[] */ },
+
+  // Read-Anker für Tests (analog Modul 15 _meta). Pflicht-Felder:
+  //   firstBootShown:    boolean   (true nach erster First-Boot-Animation)
+  //   certifiedAt:       string | null  (ISO-8601, gesetzt beim ersten
+  //                                       isCertified()===true im init())
+  //   pflichtModuleSpec: array     (kopierter Snapshot der PFLICHT_MODULE)
+  _meta: { /* Read-Only-Anker */ },
+};
+```
+
+### `options`-Form (`init()`)
 
 ```js
 {
-  since:       "2026-07-01",   // Datum des Modul-11-Mini-Builds
-  module:      "11",
-  aspect:      "Rate-Limit für eingehende postMessage",
-  description: "Diese App begrenzt eingehende postMessage-Calls auf
-                X pro Sekunde pro Origin (Modul 11 § Rate-Limit-Regel).",
+  // CSS-Selektor für das Badge-Element. Default '#sbkim-siegel-badge'.
+  // Wenn der Selektor zur init()-Zeit nicht matcht und `mountModal:true`,
+  // wird via MutationObserver wie in Modul 00 nach DOMContentLoaded
+  // erneut versucht.
+  badgeSelector?: string,
+
+  // "visible" (Default): Badge wird gerendert + Modal-Lifecycle aktiv.
+  // "hidden": Kein DOM-Render des Badges, kein Modal-Mount; API
+  //           (isCertified/getExplanation/getAspects/getCertifiedModules)
+  //           bleibt erreichbar.
+  visible?: "visible" | "hidden",
+
+  // Default true. Wenn false: Modal wird NICHT angelegt, Click-Handler
+  // am Badge ist no-op. Sinnvoll für Endknoten-PWAs, die ein eigenes
+  // Modal-Design haben und nur das Badge nutzen wollen.
+  mountModal?: boolean,
+
+  // Override für die Aussteller-Klärungs-Zeile. Wenn null/undefined,
+  // wird die Auto-Erkennung (`location.origin + first-path-segment`)
+  // verwendet. Endknoten setzen typischerweise den Source-Repo-URL
+  // (z.B. "https://github.com/lausiklauskn-png/Mein-Mixarium").
+  repoUrl?: string | null,
 }
 ```
 
-**Disziplin**: Aspekte werden NICHT zur Laufzeit hinzugefügt. Die
-Liste ist code-versioniert. Jeder Aspekt-Eintrag entspricht einem
-Pflege-PR (oder Bau-PR) mit nachvollziehbarem Datum + Commit-SHA.
+### `ExplanationSnapshot`
+
+```js
+{
+  certifiedAt:  <ISO-8601 string | null>,   // null wenn isCertified() === false
+  isCertified:  <boolean>,                   // Spiegel von isCertified() zur Snapshot-Zeit
+  repoUrl:      <string>,                    // aus Override oder Auto-Erkennung
+  modules:      [                            // pflicht-Modul-Liste mit Status
+    { id, name, globalName, surfaceFn, lazy, status }   // status ∈ "ok"/"deferred"/"missing"/"broken"
+  ],
+  certifiedModules: <string[]>,              // IDs aus modules[] mit status ∈ {"ok","deferred"}
+  aspects:      [Aspect, ...]                // chronologisch aufsteigend
+}
+```
+
+### `Aspect`
+
+```js
+{
+  since:       <ISO-Datum string>,   // "YYYY-MM-DD"
+  module:      <string>,              // zweistellige Modul-ID
+  aspect:      <string>,              // Kurz-Titel
+  description: <string>,              // 1–2 Sätze, ≤ 240 Zeichen
+}
+```
+
+---
 
 ## Persistenz
 
-**Vorschlag (Spec-Sitzung entscheidet):**
+**Wahl: RAM-only (Variante A).** Analog Modul 15 Sub (e).
 
-- RAM-only für Selbst-Prüfungs-Resultat (analog Modul 15 Sub (e)).
-- Optional in IndexedDB für „Datum der ersten Bezeugung" (Single-
-  Wert-Eintrag in einem kleinen Store `sbkim_siegel_meta`). Spec-
-  Sitzung entscheidet, ob das wirklich nötig ist oder ob das First-
-  Boot-Datum pro Session ausreicht.
+Begründung in drei Sätzen:
 
-Kein `DB_VERSION`-Bump, kein `PROTOCOL_VERSION`-Bump (Siegel ist
-nicht protokoll-aktiv — kein Netz, keine Signatur, kein Embedding).
+1. Das Siegel ist eine **per-Session-Selbst-Bezeugung** — bei jedem
+   Tab-Reload prüft die App sich erneut. Persistenz fügt keinen Wert
+   hinzu, weil das Datum „erste Bezeugung dieser Tab-Session" eine
+   ehrliche Aussage ist; eine IndexedDB-Persistenz würde suggerieren,
+   das Siegel sei „älter" als es tatsächlich aktiv ist.
+2. **Kein `DB_VERSION`-Bump** in Modul 01, kein neuer Store, keine
+   Migration. Modul 16 ist storage-frei (analog Modul 15).
+3. `certifiedAt` ist der Zeitstempel der **aktuellen** Bezeugung
+   (`new Date().toISOString()` zur `init()`-Zeit, wenn
+   `isCertified() === true`). Das Modal kommuniziert ehrlich „bezeugt
+   seit dieser Session"; wer das Persistente will, baut Modul 12
+   Blocklist mit Append-Log und ergänzt einen Aspekt-Eintrag.
 
-## Strikte Tabus
+**Konsequenz:** Modal-Datum sagt **„bezeugt seit YYYY-MM-DD HH:MM"**
+mit Stunden+Minuten der aktuellen Session. Klaus' typische Sichttest-
+Frage „seit wann?" beantwortet sich damit ehrlich („seit ich den
+Tab geöffnet habe").
+
+---
+
+## Strikte Tabus (verbindlich)
 
 - **Kein Siegel ohne Selbst-Prüfung-grün.** Wenn ein Pflicht-Modul
-  fehlt, KEIN Badge-Render.
-- **Self-Issued ist keine Vertrauens-Garantie.** Das Modal macht das
-  explizit: „Diese App hat sich selbst geprüft. Vertrauen kommt vom
-  Repo." Klaus' Verantwortung als Repo-Betreiber bleibt.
-- **Keine Hub-Aussteller-Variante (b)** aus der Sitzungs-Diskussion
-  2026-05-24. Self-Inscribing ist die einzige spezifizierte Variante.
-- **Keine Aspekte-Liste zur Laufzeit ergänzen.** Code-versioniert,
-  pro Pflege-PR.
-- **Keine Pflicht-Modul-Liste zur Laufzeit ändern.** Code-versioniert,
-  pro Pflege-PR; Sub (a) Pflicht-Liste ist Spec-Wille.
-- **Keine PII im Modal.** Repo-URL, Modul-Liste, Aspekte-Beschreibung
-  sind alle öffentlich; keine `nodeId` / Geschwister-Daten / API-Keys.
+  fehlt (`status:"missing"` oder `"broken"`), KEIN Badge-Render. Auch
+  nicht ausgegraut, auch nicht „in Arbeit". Binär.
+- **Self-Issued ist eine Disziplin-Aussage, KEIN UI-Disclaimer.** Die
+  Modal-Klausel ist sachliche Selbst-Beschreibung in zwei Zeilen, kein
+  Haftungsausschluss-Block. „Ohne Garantie" wird NICHT in den UI-Text
+  aufgenommen (Klaus-Korrektur 2026-05-24).
+- **Keine Hub-Aussteller-Variante.** Self-Inscribing ist die einzige
+  spezifizierte Variante. Eine zentrale Zertifizierungs-Autorität
+  würde dem dezentralen SBKIM-Geist widersprechen.
+- **Keine Aspekte-Liste zur Laufzeit ergänzen.** `ZERTIFIKAT_ASPEKTE`
+  ist code-versioniert. Jeder neue Eintrag = ein Pflege-PR mit
+  Commit-SHA. KEINE `addAspect(...)`-Funktion auf der API.
+- **Keine Pflicht-Modul-Liste zur Laufzeit ändern.** `PFLICHT_MODULE`
+  ist code-versioniert. KEINE `setPflichtModule(...)`-Funktion auf
+  der API. Endknoten-PWAs können nicht „Modul 11 als zusätzlich
+  Pflicht" konfigurieren — sie ergänzen einen Aspekt-Eintrag in
+  ihrer Repo-Kopie von `16_siegel.js`, falls sie wollen.
+- **Keine PII im Modal.** Repo-URL ist öffentlich (es ist die
+  Hosting-URL). Modul-Liste ist öffentlich (Modul-IDs sind Spec-
+  Konvention). Aspekt-Beschreibungen sind öffentlich (sie stehen
+  im Code-Repo). **Keine `nodeId`** im Modal, **keine API-Keys**,
+  **keine Geschwister-Liste**.
+- **Keine Stufen-Varianten (Bronze / Silber / Gold) für das Grund-
+  Siegel.** Klaus' Festlegung 2026-05-24: das Siegel wächst über die
+  Aspekte-Liste, NICHT über sichtbare Stufen. Eine spätere Spec-
+  Sitzung darf das ändern, aber nur mit explizitem Anpassungs-Antrag
+  (Tafel-Evolutions-Klausel CLAUDE.md).
+- **Modul 16 ist nicht protokoll-aktiv.** Kein Netz, keine Signatur,
+  kein Embedding, kein Handshake. Lokales Render-Modul, das den
+  Empfangsmodus-Grundsatz aus CLAUDE.md / `sbkim_paper.pdf` nicht
+  berührt.
+- **Lazy-Module-Toleranz ist auf 03 (Embedding) begrenzt.** Spätere
+  Pflicht-Module dürfen NICHT pauschal als `lazy:true` markiert
+  werden, um die Pflicht-Prüfung zu umgehen. Wer ein neues
+  Pflicht-Modul lazy macht, muss das in einer eigenen Pflege-Sitzung
+  Karte 16 begründen.
 
-## Schnittstelle (Anker, finale Spec offen)
+---
 
-```js
-// Spec-Sitzung 16 füllt die finale Form.
+## Risiken
 
-window.SbkimSiegel = {
-  init(options?)              // Promise<void>
-  isCertified()               // sync, boolean — wahr nur wenn alle Pflicht-Module grün
-  getExplanation()            // sync, ExplanationSnapshot — Modal-Inhalt
-  getCertifiedModules()       // sync, string[] — Liste der bestätigten Modul-IDs
-  getAspects()                // sync, Aspect[] — chronologisch
-  _meta                       // Read-Anker für Tests
-}
+- **Surface-Check-Spoofing.** Ein böswilliges Snippet ergänzt
+  `window.SbkimSpore = { getOwnSpore: () => null }`-Stub und täuscht
+  das Siegel. Mitigation: Surface-Check erkennt nur „Funktion
+  existiert", nicht „Funktion arbeitet korrekt". Das ist ein bewusster
+  Trade-off — eine tiefe Verhaltens-Prüfung wäre fragil (Stale
+  Test-Stubs würden ständig falsche Negativ-Befunde liefern). Wer
+  einen tieferen Check will, baut eine Bau-Sitzung 16.B mit
+  Handshake-Self-Test (Modul 05 läuft erfolgreich an sich selbst).
+  Akzeptiert: Spoofing erfordert lokalen Code-Eingriff im PWA-Repo;
+  wer das tut, hat schon volle Kontrolle.
+- **Aspekte-Liste-Drift zwischen Endknoten.** Mein-Mixarium ergänzt
+  einen Aspekt-Eintrag, Mein-Rezeptbuch nicht — das Siegel-Modal
+  zeigt unterschiedliche Aspekte pro Endknoten. Mitigation: das
+  ist **gewollt** — jeder Endknoten ist ein eigener Mycel-Knoten
+  mit eigener Pflege-Geschichte. Falls Klaus eine zentrale Aspekte-
+  Liste will, muss eine spätere Spec-Sitzung das festlegen
+  (z.B. via fetch auf Sage-Hub-status.json — bricht aber den
+  Empfangsmodus-Grundsatz).
+- **Embedding-Lazy-Loading vortäuscht Bezeugung.** Sage-Page lädt
+  Modul 03 lazy; Surface-Check sieht `status:"deferred"`, wertet
+  das als bestanden. Ein PWA-Repo, das Modul 03 absichtlich NICHT
+  einbindet, würde dennoch ein Siegel zeigen. Mitigation: Bau-
+  Sitzung 16 setzt `lazy:false` für jedes Pflicht-Modul, das im
+  Endknoten-PWA-Andock-Workflow (Karte 09 § Schritt 2) eager
+  geladen werden soll. Sage-Page ist ein expliziter Sonderfall.
+- **Repo-URL-Auto-Erkennung trifft falsche Pfad-Komponente.** Z.B.
+  `https://lausiklauskn-png.github.io/Sage-Protokol/some/subpath` —
+  Auto-Erkennung nimmt `Sage-Protokol`-Segment korrekt, aber bei
+  Custom-Domain (`https://klaus.example/myapp`) wäre `myapp`-
+  Segment evtl. nicht der Repo-Name. Mitigation: PWA-Andocker setzt
+  bei Custom-Domain den expliziten `repoUrl`-Override.
+- **First-Boot-Animation während Lade-Sequenz nicht sichtbar.** Wenn
+  Klaus auf dem Tablet das Tab erst Sekunden später aktiv anschaut
+  (Hintergrund-Tab), entgeht ihm die 600-ms-Animation. Mitigation:
+  bewusste Akzeptanz — die Animation ist Hervorhebung, kein
+  Pflicht-Signal. Wer das Badge bei Re-Visit sieht, hat denselben
+  Informations-Wert (es ist da, also bezeugt).
+- **Verwechslung mit „rechtlicher Garantie".** Ein Nutzer interpretiert
+  das Goldglanz-Medaillon als TÜV-äquivalente Zertifizierung.
+  Mitigation: das Modal sagt es **explizit, nüchtern**: „self-
+  inscribing — die App hat sich selbst geprüft, Vertrauen kommt vom
+  Repo". Klaus' Korrektur lehnt einen zusätzlichen Haftungsausschluss-
+  Block ab — die zwei Sätze sind die definierte ehrlich Selbst-
+  Beschreibung, kein Versuch, Vertrauen aufzubauen, das nicht da ist.
 
-// Form:
-options = {
-  badgeSelector?: string,     // Default '#sbkim-cert-badge'
-  visible?: "visible" | "hidden", // Default "visible"
-  mountModal?: boolean,       // Default true (wenn visible)
-}
+---
 
-ExplanationSnapshot = {
-  certifiedAt: <ISO-8601>,
-  repoUrl: <string | null>,   // aus document.location oder init-Option
-  modules: [{ id, name, surfaceCheck: "ok" | "missing" | "broken" }],
-  aspects: Aspect[],
-}
+## Manueller Test (Vorbereitung für Bau-Sitzung 16)
 
-Aspect = {
-  since: <ISO-Datum>,
-  module: <string>,
-  aspect: <string>,
-  description: <string>,
-}
-```
+*(Diese Spec-Sitzung definiert die Test-Punkte; konkrete
+Knöpfe + Output-Form gehören in Panel 16 von
+`tests/manual_check.html` aus der Bau-Sitzung 16.)*
+
+**Erwartete Test-Punkte:**
+
+1. **Setup**: `SbkimSiegel.init({mountModal:true})` aufrufen, im Setup-
+   Output Modul-Liste mit Status-Spalte zeigen (alle „ok" oder
+   „deferred"). `isCertified()` → `true`.
+2. **isCertified mit fehlendem Pflicht-Modul**: Test-Brücke setzt
+   `window.SbkimMatch = undefined` (oder schiebt einen Stub ohne
+   `match`-Funktion), ruft `SbkimSiegel.init()` erneut auf einer
+   Test-Sub-Instanz — erwartet `isCertified() === false`, eine
+   `console.warn`-Zeile mit ID `04 (missing)`, KEIN Badge-Render
+   (Element ist nicht im DOM).
+3. **Badge-Click öffnet Modal**: Click auf `#sbkim-siegel-badge` →
+   Modal mit Pflicht-Modul-Liste, Aspekte-Liste, Aussteller-Klärung
+   sichtbar. Backdrop-Klick / Esc / ✕ schließen.
+4. **Aussteller-Klärung mit Override**: `init({repoUrl:
+   "https://github.com/lausiklauskn-png/Mein-Mixarium"})` — Modal-
+   Aussteller-Klärungs-Zeile zeigt diesen Link.
+5. **Aspekte-Reihenfolge**: Modal-Aspekte-Liste hat den Grund-
+   Siegel-Eintrag oben (2026-05-24, Modul 16). Bei Bau-Sitzung 16
+   ist genau ein Eintrag drin; spätere Pflege-Sitzungen fügen
+   Einträge unten an.
+6. **First-Boot-Animation**: erster Tab-Lauf → 600-ms-Aufleucht-Puls
+   am Badge sichtbar. Reload des Tabs → erneut sichtbar (RAM-only,
+   `firstBootShown` ist per-Session).
+7. **Hidden-Modus**: `init({visible:"hidden"})` — kein Badge im DOM,
+   aber `SbkimSiegel.isCertified()` und `getExplanation()` liefern
+   sinnvolle Werte.
+8. **Anti-Greenwashing**: Test-Brücke `_setPflichtModuleStatusForTest`
+   markiert Modul 05 als `"missing"` — Re-Init ergibt kein Badge,
+   eine `console.warn`-Zeile mit `05 (missing)`. (Bau-Sitzung 16
+   entscheidet, ob diese Test-Brücke nötig ist oder ob das via
+   tatsächliche `window.SbkimAnastomose = undefined`-Manipulation
+   getestet wird.)
+
+---
 
 ## Reihenfolge im Brief-99-Pipeline
 
 ```
-Schritt 1: Spec-Sitzung 16 (diese Karte füllen — finale Pflicht-
-           Modul-Liste, Badge-DOM-Form, Modal-Inhalt, Aspekte-
-           Schema)
-Schritt 2: Bau-Sitzung 16 (src/modules/16_siegel.js, Badge-CSS in
-           index.html, Modal-Mount, ZERTIFIKAT_ASPEKTE-Startwert)
-Schritt 3: Sichttest 16 (Klaus, Sage-Page Badge sichtbar + Modal
-           öffnet sich)
-Schritt 4: Spec-Sitzung 15.B (Sub (a) + Sub (b) mit Siegel-Hook im
-           Snapshot)
-Schritt 5: Endknoten-Migration Karte 09 § Schritt 10
-           + Siegel-Anker pro Endknoten-PWA
-Schritt 6: Klaus' App-Freigabe (mit Siegel sichtbar)
-Später:    Modul 11 / 12 / 10 — jeder Bau ergänzt einen Aspekt
+Schritt 1: Spec-Sitzung 16        (DIESE — Karte gefüllt 2026-05-24)
+Schritt 2: Bau-Sitzung 16          (src/modules/16_siegel.js,
+                                    Badge-CSS in index.html, Modal-Mount,
+                                    ZERTIFIKAT_ASPEKTE-Startwert,
+                                    Panel 16 in tests/manual_check.html)
+Schritt 3: Sichttest 16            (Klaus, Sage-Page Badge sichtbar +
+                                    Modal öffnet sich + First-Boot-
+                                    Animation + Aussteller-Klärung)
+Schritt 3a: Pflege CLAUDE.md       (Sicherheits-Modul-Aspekt-Pflicht
+                                    in CLAUDE.md verankern — eigene
+                                    Mini-Pflege-Sitzung nach Bau 16)
+Schritt 4: Spec-Sitzung 15.B       (Sub (a) Read-API: Siegel-Hook im
+                                    Snapshot — read() liefert
+                                    `siegel: { isCertified, repoUrl,
+                                    certifiedModules }`; Sub (b)
+                                    postMessage finale Form)
+Schritt 5: Endknoten-Migration     (Karte 09 § Schritt 10 — Membran-
+                                    Allowlist + FREMD-Lampe + Siegel-
+                                    Badge pro Endknoten-PWA. Eigene
+                                    Folge-Sitzung pro Endknoten-Repo
+                                    (Mein-Rezeptbuch, Mein-Mixarium))
+Schritt 6: Klaus' App-Freigabe     (mit Siegel sichtbar, Modal-
+                                    Aussteller-Klärung verlinkt auf
+                                    GitHub-Repo)
+Später:    Modul 11 / 12 / 10      (jeder Bau ergänzt einen
+                                    ZERTIFIKAT_ASPEKTE-Eintrag im
+                                    Siegel-Modul)
 ```
+
+---
 
 ## Bauzustand
 
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Stub angelegt | 2026-05-24 | Mini-Pflege „Modul 16 SBKIM-Siegel Stub" | Name fix: SBKIM-Siegel. Self-Inscribing als Aussteller-Modell, lebendes Dokument als Aspekte-Pfad. Anlass: Klaus' geplante App-Freigabe — Vertrauens-Signal für Forker und Endnutzer. Detail-Spec ausstehend (Spec-Sitzung 16). |
+| Spec gefüllt | 2026-05-24 | Spec-Sitzung 16 | Karte 16 vollständig gefüllt — alle vier Sub-Bereiche final, Schnittstelle (`window.SbkimSiegel = {init, isCertified, getExplanation, getCertifiedModules, getAspects, _meta}`), Persistenz RAM-only (Variante A, kein `DB_VERSION`-Bump), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1), `ZERTIFIKAT_ASPEKTE`-Schema mit Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24", `PFLICHT_MODULE`-Liste mit sieben Modulen (01/02/03/04/05/07/15) + Surface-Funktions-Anker pro Modul (`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`/`init`) + Lazy-Tolerator für Modul 03 (Sage-Page-spezifisch lazy-loaded). Anti-Greenwashing binär, Aussteller-Klärung verbindlich zwei Zeilen (KEIN Disclaimer-Schwall, Klaus-Korrektur). DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach FREMD-Lampe, 40 px-Medaillon Edel-Gold (`#C9A961`) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei Hyphen-Bögen + zentraler Knoten-Punkt). Modal eigenständig in `document.body` (analog Modul 15), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen). INTERFACES.md §1 Modul 16 voll gespiegelt; §0 unverändert (Modul 16 hat keine globalen Konstanten). **Kein Modul-Code, kein `index.html`-Eingriff, kein Sichttest** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
+| Code geschrieben | — | Bau-Sitzung 16 | folgt |
+| Sichttest | — | Sichttest 16 | folgt |
+| In Endknoten eingebaut | — | Endknoten-Migration (Folge-Sitzung Karte 09 § Schritt 10) | folgt |
 
 ---
 
 **Querverweise**
 
-- **Abhängigkeiten (für spätere Spec):** Modul 01 / 02 / 03 / 04 / 05 / 07 / 15 (Pflicht-Surface für Selbst-Prüfung — fail-soft, kein Throw bei Fehlen, sondern „kein Siegel-Render")
-- **Wird genutzt von:** Endnutzer (Vertrauens-Signal beim ersten Page-Load) · Forker (Build-Selbst-Check ohne CI-Pipeline) · Klaus selbst (Sichtbarmachung der Pflicht-Modul-Integration vor App-Freigabe) · künftiges Modul 10 Reputation (Hook: Siegel-Daten als Anfangs-Trust-Signal beim Handshake)
-- **Hook-Punkte (nur Verweis, nicht implementiert):** Modul 15 Sub (a) `read()` könnte das Siegel im Snapshot mitliefern · Modul 02 Spore könnte einen optionalen `siegel`-Feld im Spore-Schema dazu bekommen (Spec-Sitzung 16 entscheidet, ob das Spore-Schema betroffen ist — Default: NEIN, additive Erweiterung später)
-- **Site-Karte:** Sage-Page Karten 4 / 13 / 14 ziehen `siegelBacklog[]` parallel zu `schutzBacklog[]` / `diffusionBacklog[]` / `membranBacklog[]` — Folge-Pflege-Sitzung
-- **Paper:** `sbkim_paper.pdf` Kap. 1 (Empfangsmodus-Prinzip — Self-Issued statt Hub-Aussteller passt zum dezentralen Geist)
-- **Verwandt:** [Modul 15](15_membran.md) (Außen-Schicht, parallel) · [Modul 09](09_einbau_pwa.md) (Andock-Schritt 10 ergänzt Siegel-Anker pro PWA) · [Modul 00](00_doku_fenster.md) (Modal-Verhalten als Vorbild)
+- **Abhängigkeiten:** Modul 01 / 02 / 03 / 04 / 05 / 07 / 15 — Pflicht-
+  Surface für Selbst-Prüfung. Modul 16 ruft KEINE Funktion dieser
+  Module auf — nur `typeof`-Check ihrer globalen Namensräume. Damit
+  ist Modul 16 entkoppelt; ein Pflicht-Modul-Fehler bricht nur die
+  Bezeugung, nicht den 16er-Lauf.
+- **Wird genutzt von:** Endnutzer (Vertrauens-Signal beim ersten Page-
+  Load) · Forker (Build-Selbst-Check ohne CI-Pipeline) · Klaus selbst
+  (Sichtbarmachung der Pflicht-Modul-Integration vor App-Freigabe) ·
+  künftiges Modul 10 Reputation (Hook: Siegel-Daten als Anfangs-
+  Trust-Signal beim Handshake — eigene Spec-Sitzung 10)
+- **Hook-Punkte (nur Verweis, nicht implementiert):** Modul 15 Sub (a)
+  `read()` soll in Spec-Sitzung 15.B das Siegel im Snapshot mitliefern
+  (`siegel: {isCertified, repoUrl, certifiedModules}`). Modul 02 Spore
+  könnte einen optionalen `siegel`-Feld im Spore-Schema dazu bekommen
+  — **bewusst ABGELEHNT in dieser Spec**: das Siegel ist eine PWA-
+  lokale Bezeugung, kein Netz-Signal. Wer das Siegel im Netz sichtbar
+  machen will, baut Modul 10 Reputation, NICHT eine Spore-
+  Erweiterung.
+- **Site-Karte:** Sage-Page Karten 4 / 13 / 14 ziehen `siegelBacklog[]`
+  parallel zu `schutzBacklog[]` / `diffusionBacklog[]` /
+  `membranBacklog[]` — eigene Folge-Pflege-Sitzung, falls Klaus die
+  Bauzustands-Sichtbarkeit der Karte 16 in der Sage-Page möchte (kein
+  Block für die App-Freigabe).
+- **Paper:** `sbkim_paper.pdf` Kap. 1 (Empfangsmodus-Prinzip — Self-
+  Issued statt Hub-Aussteller passt zum dezentralen Geist) · Kap. 6
+  (Geflecht-Außenkontakt — die Bezeugung ist ein Außenkontakt-Signal,
+  keine Innen-Schicht)
+- **Verwandt:** [Modul 15](15_membran.md) (Außen-Schicht, parallel —
+  Membran-Lampe zeigt Fremdzugriff, Siegel zeigt Selbst-Bezeugung;
+  beide leben in der Navleiste) · [Modul 09](09_einbau_pwa.md) (Andock-
+  Schritt 10 ergänzt Siegel-Anker pro Endknoten-PWA) · [Modul 00](00_doku_fenster.md)
+  (Modal-Verhalten als loses Vorbild, aber 16 nutzt eigenes Modal,
+  keine 00-Wiederverwendung) · [Modul 02](02_spore.md) (Spore-Schema
+  bewusst NICHT erweitert — siehe Hook-Punkte oben)
