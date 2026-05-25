@@ -1811,6 +1811,51 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-25 · Pflege Karte 09 § Schritt 12 — Floating-Widget als Endknoten-Standard
+
+**Sitzungs-Rolle:** Folge-Pflege nach den vier Modul-17-PRs (#166 Bau,
+#167/#168/#169 UX). Pipeline-Schritt 3 der „Weitere Schritte"-Liste
+(vor Endknoten-Re-Migration).
+
+**Was getan (reine Doku-Pflege, KEIN Modul-Code):**
+
+- Karte 09 § Andock-Schritt-Pfad-Überschrift „elf Schritte" → „elf
+  Schritte + Render-Schicht Schritt 12".
+- **Hinweis-Block vor Schritt 10 + 11** ergänzt: Schritte sind ab
+  sofort Sage-Page-Pfad (Navleisten-Lampen + Siegel-Badge); Endknoten
+  nutzen Schritt 12 (Floating-Widget) als einheitlichen Render-Pfad.
+- **Neuer Schritt 12** zwischen Schritt 11 und § Sichtkontrolle:
+  - **Drei-Zeilen-Einbau:** Modul-Datei-Kopie + `<script>`-Tag + EIN
+    `SbkimWidget.init({allowedOrigins, repoUrl})`-Aufruf.
+  - **Init-Reihenfolge-Pflicht** prominent: `SbkimWidget.init()` MUSS
+    VOR `SbkimMembrane.init()` / `SbkimSiegel.init()` im Endknoten-
+    Andocker stehen (sonst finden Modul 15/16 die Proxy-Spans nicht).
+  - Erwartung-Block: Floating-Pille bottom-right, vier Lampen + Labels,
+    Drag/X-Schließen/Minimize, Slot-Klicks öffnen Modals.
+  - Theme-Anpassung via `:root`-CSS-Variablen-Override + `theme:
+    "transparent"`-Option dokumentiert.
+  - Fallback-Hinweis für Forker mit Navleisten-Bevorzugung (Schritte
+    10 + 11 bleiben gültig).
+- Karte 09 § Bauzustand neue Zeile.
+- INTERFACES.md § 10 Änderungsprotokoll-Eintrag.
+
+**Was offen blieb:**
+
+- **Endknoten-Re-Migration** (Pipeline-Schritt 5d): Mein-Rezeptbuch +
+  Mein-Mixarium, je externe Sitzung mit Drei-Zeilen-Einbau.
+- **App-Freigabe** (Pipeline-Schritt 6) nach Re-Migration.
+- **Spec-Sitzung Tool-PWA-Container für SIEGEL** — Klaus-Idee, nach
+  App-Freigabe.
+
+**Nächster sinnvoller Schritt:** Endknoten-Re-Migration starten (eigene
+externe Sitzung pro Endknoten-Repo). Brief in der Chat-Antwort der
+nächsten Sitzung.
+
+**Sitzungs-PR:** Branch `claude/pflege-09-widget-einbau`, PR folgt
+nach Commit + Push.
+
+---
+
 ### 2026-05-25 · Pflege Modul 17 UX — Sage-Page-Lampen-Stil + Drei-Zustand-Schnittstelle (minimize/maximize)
 
 **Sitzungs-Rolle:** Folge-Pflege nach Bau-Sitzung 17 (PR #166 gemerged

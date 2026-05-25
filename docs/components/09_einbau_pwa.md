@@ -249,7 +249,7 @@ mehr ab. **Verbindliche Konvention: SW immer im Repo-Root.**
 
 ---
 
-## Andock-Schritt-Pfad (neun Schritte)
+## Andock-Schritt-Pfad (elf Schritte + Render-Schicht Schritt 12)
 
 Die Schritte sind nummeriert. Klaus geht sie in dieser Reihenfolge
 durch. Jeder Schritt nennt **was zu tun ist**, **was im DevTools-
@@ -931,6 +931,15 @@ TTL-Sweep-Knopf zu klicken.
 
 ### Schritt 10 — Membran-Allowlist + FREMD-Lampe + SW-Probe-Detektor
 
+> **⚠ Pflege 2026-05-25:** Schritt 10 + 11 sind jetzt **Sage-Page-Pfad**
+> (Navleisten-Lampen + Siegel-Badge in `index.html`). **Endknoten** (Mein-
+> Rezeptbuch, Mein-Mixarium, künftige Forks) bauen Modul 15 + 16 NICHT
+> selbst in die Navleiste ein — sie nutzen das **Floating-Widget (Modul
+> 17, Schritt 12)** als einheitlichen Render-Pfad. Klick-Handler werden
+> automatisch an Widget-interne Proxy-Spans (`#lamp-fremd`, `#sbkim-siegel-badge`)
+> attached. Schritte 10 + 11 bleiben als Referenz für den Sage-Page-Pfad
+> und für Forker, die bewusst die Navleisten-Optik nachbauen wollen.
+
 Mit Modul 15 (Membran) baut der Endknoten seine **Außenhülle**: eine
 Read-API (Sub (a)) für KI-Browser-Agenten, eine `postMessage`-Brücke
 (Sub (b)) mit strikter Origin-Allowlist und einen Fremdzugriff-
@@ -1201,6 +1210,90 @@ Modul-Liste).
   class="lamps">…</div>`-Container neben dem Navleisten-Titel
   anlegen oder den `badgeSelector` auf einen vorhandenen Container
   umstellen.
+
+---
+
+### Schritt 12 — Floating-Widget (Modul 17, Endknoten-Standard)
+
+> **Pflege 2026-05-25 (PR #166–#169):** Endknoten-Standard für die
+> Render-Schicht der Module 15 + 16. Ersetzt die Navleisten-Mount-Pfade
+> aus Schritt 10 + 11 für Endknoten-PWAs. Sage-Page (`index.html`) bleibt
+> beim eigenen Navleisten-Pfad.
+
+Modul 17 ist die **Render-Schicht**: floating Mini-Panel im Eruda-Stil,
+self-mountend in `<body>`, drag-fähig, X-Schließen, Minimieren auf nur
+SIEGEL. Vier-Slot-Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) mit
+Sage-Page-Lampen-Optik (Glow + Atmung) + Text-Labels. Module 15 + 16
+bleiben Backends — ihre Click-Handler attachen automatisch an Widget-
+interne Proxy-Spans, sobald `SbkimWidget.init()` lief. **Daher Init-
+Reihenfolge-Pflicht:** `SbkimWidget.init()` MUSS VOR `SbkimMembrane.init()`
+/ `SbkimSiegel.init()` im Endknoten-Andocker stehen.
+
+**a) Modul-Datei kopieren:**
+
+```
+sage-protokol/src/modules/17_floating_widget.js  →  <endknoten>/sbkim/17_floating_widget.js
+```
+
+**b) `<script>`-Tag in der `index.html` einfügen** (VOR `sbkim/15_membran.js`
+und `sbkim/16_siegel.js`, damit das Widget VOR Modul 15 / 16 init läuft
+— Modul 15 / 16 finden dann die Proxy-Spans für ihre Click-Handler):
+
+```html
+<script src="sbkim/17_floating_widget.js" defer></script>
+```
+
+**c) Init-Aufruf im Andocker** (z.B. `sbkim-init.js`, VOR den Modul-15-
+und Modul-16-Init-Aufrufen):
+
+```js
+await SbkimWidget.init({
+  allowedOrigins: ["https://lausiklauskn-png.github.io"], // Doku-Spiegelung
+  repoUrl:        "https://github.com/lausiklauskn-png/<dein-endknoten-repo>",
+});
+```
+
+Das war's. **Drei Zeilen Einbau** (Modul-Datei-Kopie + `<script>`-Tag +
+ein Init-Aufruf). Modul 15 + 16 init-Aufrufe bleiben unverändert
+(`SbkimMembrane.init({allowedOrigins})` + `SbkimSiegel.init({badgeSelector:".lamps"})`)
+— sie finden ihre Mount-Anker automatisch im Widget.
+
+**Erwartung nach Hard-Reload:**
+
+- Floating-Pille unten-rechts im Viewport (bottom-right + 16 px Abstand).
+- Vier Lampen + Labels: LEBT (grün, atmend) · VERKEHR (gold, pulst bei
+  Handshake/postMessage) · FREMD (rot wenn Buffer nicht leer) · SIEGEL
+  (Gold-Medaillon mit ★, erscheint asynchron nach erfolgreichem Surface-
+  Check der sieben Pflicht-Module).
+- Drag funktioniert (Position persistiert in `localStorage`).
+- X-Knopf rechts blendet das Widget aus; `SbkimWidget.show()` in
+  DevTools-Konsole zeigt es wieder. Minimize-Knopf (`−`) schrumpft die
+  Pille auf nur SIEGEL (oder LEBT-Fallback ohne SIEGEL).
+- Slot-Klicks: LEBT/VERKEHR öffnen eigene Modul-17-Modals; FREMD/SIEGEL
+  triggern via Proxy-Click die Sub-(e)-/Sub-(c)-Modals von Modul 15/16.
+
+**Theme-Anpassung (optional):**
+
+Modul 17 nutzt CSS-Variablen auf `:root`, die die PWA überschreiben
+kann (z.B. um den Pille-Hintergrund an das eigene Theme anzupassen):
+
+```css
+:root {
+  --sbkim-widget-bg: var(--meine-pwa-card-bg);
+  --sbkim-widget-fg: var(--meine-pwa-text);
+  --sbkim-widget-accent-green: var(--meine-pwa-accent);
+  --sbkim-widget-accent-gold:  var(--meine-pwa-gold);
+  --sbkim-widget-accent-red:   var(--meine-pwa-warn);
+}
+```
+
+Oder via `init({theme: "transparent"})` — Hintergrund komplett
+durchsichtig, nur Lampen + Labels schweben über der App.
+
+**Fallback (Sage-Page-Pfad):** Wer bewusst die Navleisten-Mount-Optik
+nachbauen will (z.B. weil das Floating-Widget die App-eigene UI
+verdeckt), lässt `SbkimWidget.init()` weg und bleibt bei Schritten
+10 + 11. Modul 15 + 16 funktionieren unabhängig.
 
 ---
 
@@ -1669,6 +1762,7 @@ unverändert.
 | **Sage als dritter Endknoten bau-fertig** (Sichttest ungeprüft) | 2026-05-21 | Bau Sage-Page-Refactor | Sage-Page selbst befolgt jetzt Karte 09 als dritter Endknoten neben Rezeptbuch + Mixarium. **Sechs Eingriffe nur in `index.html` und neuen Sage-Page-Root-Dateien, KEIN `src/modules/*.js`-Eingriff, KEIN Spec-Eingriff:** (a) `sbkim-sw.js` als Kopie von `src/sbkim-sw.js` im Sage-Page-Repo-Root angelegt (Variante 3a aus § Schritt 3 — Sage-Page hat keinen App-SW; bei Pflege-Sitzungen, die `src/sbkim-sw.js` ändern, ist diese Kopie nachzuziehen — Cache-Bust via File-Rename oder `CACHE_NAME`-Bump bei künftigen Bumps). (b) Neun `<script>`-Tags in `index.html` vor `</body>` (alle Module 00–08 inkl. 03, das als lazy-Modul nur seinen Selbstcheck nach `init()` emittiert; Reihenfolge analog Karte 09 § Schritt 2 mit 00 zuerst wegen Closure-Reihenfolge und 08 als letztes Modul vor `sbkim-init.js`). (c) Neue Datei `sbkim-init.js` im Sage-Page-Repo-Root: ruft `SbkimStorage.init({dbSuffix:"sage"})` → 02 → 05 → 06 → 07 → 08 → 00; fail-soft pro Modul mit `console.warn` (Sage-Page bleibt als Doku-Hub ladbar bei einzelnem Modul-Bruch — Klaus' Doku-Hub-Bedürfnis); registriert `sbkim-sw.js` als Service-Worker am Ende; Custom-Event `sbkim-sage-ready` für die Andock-Wizard-Logik. (d) `sbkim/spore.json` als statisches **Skeleton** committet (`id/publicKey/domainVector/signature/createdAt: null` als Slot bis Klaus' erstem Browser-Sichttest; `domain`/`domainDescription`/`domainKeywords`/`stammCategories`/`guestCategories`/`endpoint`/`nodeType` befüllt aus INTERFACES § 6 Tabellen). Vollständige signierte Spore kommt nach Klaus' Andock-Wizard-Lauf als Download — Klaus committet sie dann manuell hierhin (Stolperfalle 3 Brief: Origin-Limitierung, keine Laufzeit-Schreibung in `sbkim/spore.json`). (e) **Andock-Wizard-Modal** als zusätzlicher Pfad auf der bestehenden Schwarz-Loch-Karte: Klick auf die Karte öffnet beim ersten Mal (falls keine Identität existiert) den Wizard — drei Schritte (Identität via `getOrCreateIdentity`, Spore-Erzeugung mit lazy Modul-03-Init + `embedPassage` + `generateOwnSpore` + Spore-JSON-Download, Backup via `exportBackup(passwordPrompt)`) plus Identitäts-Wechsler (`listIdentities` + `setActiveIdentity` Dropdown); Folge-Klicks öffnen wie zuvor den Browser-Observatorium-Screen (`goScreen('observatorium')`). Variante III-Vollwizard aus Vision-Anker 2 ist NICHT Gegenstand — hier nur Sage-spezifische Mini-Geste. (f) **Schichten-Lampen** an jeder Modul-Bento-Zeile (Karte „Module · Schnellübersicht"): drei kleine LED-Dots (Spec / Code / Sichttest), Farbe aus `status.json § modules[i].score`, Tooltip mit `siegel`-Feld; eigener `fetch('./status.json')` + MutationObserver-Hook auf `#module-list` (kein Eingriff in die bestehende `renderModuleList`-Closure). **Zwei UI-Texte aus Vor-V1-Zeit korrigiert** („Hub · kein Endknoten" → „Hub · und Knoten zugleich" und „Sage ist kein Endknoten — nur Vermittlungsstelle" → „Sage selbst ist seit V1-Sage-Hybrid der dritte Knoten") — Reflektion der bereits in INTERFACES § 6 verbindlich verankerten Spec, kein neuer Spec-Eingriff. **`status.json § endknoten[sage]`** auf `integratedAt: "2026-05-21"` und `pingStatus: "pending-first-sichttest"` (neuer Zwischen-Zustand zwischen `pending-first-andock` und `live`) gesetzt; `nodeId: null` bleibt bis zu Klaus' Browser-Sichttest. **`PROTOCOL_VERSION` / `DB_VERSION` / `BACKUP_FORMAT_VERSION` unverändert.** **Sichttest ungeprüft** — wartet auf Klaus' Browser-Lauf mit Service-Worker-Cleanup (Stolperfalle 1 Brief), Andock-Wizard-Durchklick, Spore-Erzeugung und Backup. |
 | Werte für Rezeptbuch eingetragen | — | — | TBD — Klaus trägt nach |
 | Werte für Mixarium eingetragen | — | — | TBD — Klaus trägt nach |
+| Pflege Schritt 12 — Floating-Widget als Endknoten-Standard | 2026-05-25 | Pflege 09 Widget-Einbau | Folge-Pflege nach Bau-Sitzung 17 (PR #166) + drei UX-Pflegen 17 (PR #167/#168/#169) gemerged am 2026-05-25. **Reine Doku-Pflege, KEIN Modul-Code-Eingriff.** Konkrete Eingriffe in Karte 09: (1) § Andock-Schritt-Pfad-Überschrift „elf Schritte" → „elf Schritte + Render-Schicht Schritt 12". (2) Vor Schritt 10 + 11 prominenter Hinweis-Block ergänzt: Schritte 10 + 11 sind ab sofort **Sage-Page-Pfad** (Navleisten-Lampen + Siegel-Badge in `index.html`); **Endknoten** nutzen Modul 17 Floating-Widget als einheitlichen Render-Pfad — Click-Handler attachen automatisch an Widget-interne Proxy-Spans (`#lamp-fremd`, `#sbkim-siegel-badge`). Schritte 10 + 11 inhaltlich UNVERÄNDERT (Referenz für Sage-Page + Forker, die bewusst Navleisten-Optik nachbauen). (3) Neuer **Schritt 12 — Floating-Widget (Modul 17, Endknoten-Standard)** zwischen Schritt 11 und § Sichtkontrolle: Modul-Datei-Kopie + `<script>`-Tag + EIN `SbkimWidget.init({allowedOrigins, repoUrl})`-Aufruf (drei Zeilen Einbau). **Init-Reihenfolge-Pflicht** prominent: `SbkimWidget.init()` MUSS VOR `SbkimMembrane.init()` / `SbkimSiegel.init()` im Endknoten-Andocker stehen — sonst finden Modul 15/16 ihre Mount-Anker (Proxy-Spans im Widget) nicht. Erwartung nach Hard-Reload (Floating-Pille bottom-right, vier Lampen + Labels, Drag/X-Schließen/Minimize, Slot-Klicks öffnen Modals). Theme-Anpassung-Block: `:root`-CSS-Variablen-Override-Pattern + `theme:"transparent"`-Option dokumentiert. Fallback-Block für Forker, die Navleisten-Pfad bevorzugen (Schritte 10 + 11). **KEINE Spec-Änderung an Karte 15 / 16 / 17 / INTERFACES § 1 Modul 15 / 16 / 17** — diese sind Tafeln, hier wurde nur die Andock-Anleitung erweitert. **Keine Tafel-Umsortierung in CLAUDE.md § Pipeline-Reihenfolge** (Schritt 5d Endknoten-Re-Migration mit Widget bleibt). **`status.json` Modul 09 unverändert** (bleibt `score:"fertig"`, Pie nicht regeneriert — additiv im Andock-Pfad, kein Modul-Bau). |
 | Erstmaliger Einbau Rezeptbuch | — | — | — |
 | Erstmaliger Einbau Mixarium | — | — | — |
 
