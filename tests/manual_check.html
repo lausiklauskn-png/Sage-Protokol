@@ -3548,20 +3548,43 @@
         var noSiblingNodeIdField = snapshot.siblings.every(function (s) {
           return s && s.nodeId === undefined && (s.nodeIdHash === undefined || typeof s.nodeIdHash === "string");
         });
-        // Wenn Anastomose Geschwister hat, check dass deren nodeId NICHT im JSON ist
+        // Wenn Anastomose Geschwister hat, check dass deren nodeId NICHT im JSON
+        // ist. Die EIGENE nodeId (snapshot.nodeId) ist Klartext laut Karte 15
+        // § Sub (a) Feld-Konventionen — wir nehmen sie vom Vergleich aus.
+        // Ein Selbst-Eintrag in sbkim_siblings (alte Test-Daten aus Bau-05-
+        // BroadcastChannel-Selbst-Handshake) würde sonst einen False-Positive
+        // produzieren.
+        var ownNodeId = typeof snapshot.nodeId === "string" ? snapshot.nodeId : null;
         var siblingNodeIdLeak = "kein Geschwister-Test-Setup (Anastomose hat möglicherweise keine Einträge)";
+        var foreignSiblingCount = 0;
+        var selfSiblingCount = 0;
         try {
           if (typeof SbkimAnastomose !== "undefined" && SbkimAnastomose && typeof SbkimAnastomose.listSiblings === "function") {
             var rows = await SbkimAnastomose.listSiblings();
             if (Array.isArray(rows) && rows.length > 0) {
-              var leaks = rows.filter(function (r) { return r && typeof r.nodeId === "string" && json.includes(r.nodeId); });
-              siblingNodeIdLeak = leaks.length === 0 ? "kein Klartext-Leak" : leaks.length + " Leaks gefunden";
+              var foreign = rows.filter(function (r) {
+                if (!r || typeof r.nodeId !== "string") return false;
+                if (ownNodeId && r.nodeId === ownNodeId) { selfSiblingCount++; return false; }
+                return true;
+              });
+              foreignSiblingCount = foreign.length;
+              var leaks = foreign.filter(function (r) { return json.includes(r.nodeId); });
+              if (foreignSiblingCount === 0 && selfSiblingCount > 0) {
+                siblingNodeIdLeak = "kein Klartext-Leak (nur " + selfSiblingCount + " Selbst-Eintrag in sbkim_siblings, eigene nodeId ist Klartext laut Karte 15 § Sub (a))";
+              } else {
+                siblingNodeIdLeak = leaks.length === 0
+                  ? "kein Klartext-Leak (" + foreignSiblingCount + " fremde Geschwister geprüft" + (selfSiblingCount > 0 ? ", " + selfSiblingCount + " Selbst-Eintrag ignoriert" : "") + ")"
+                  : leaks.length + " Klartext-Leaks gefunden bei " + foreignSiblingCount + " fremden Geschwistern";
+              }
             }
           }
         } catch (_e) { /* nb */ }
         // navigator.userAgent darf NICHT im Snapshot stehen.
         var noUA = navigator.userAgent ? !json.includes(navigator.userAgent.slice(0, 32)) : true;
-        var pass = noKeysMarker && noSiblingNodeIdField && noUA;
+        // Echter Leak ist jetzt Teil des pass-Checks: wenn ein fremder
+        // Geschwister-nodeId im JSON auftaucht, ist Test 11 rot.
+        var noForeignLeak = !/^[0-9]+ Klartext-Leaks/.test(siblingNodeIdLeak);
+        var pass = noKeysMarker && noSiblingNodeIdField && noUA && noForeignLeak;
         SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 11 OK" : "Test 11 fehlgeschlagen");
         return {
           kein_sbkim_keys: noKeysMarker,
