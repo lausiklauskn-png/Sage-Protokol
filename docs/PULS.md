@@ -23,8 +23,8 @@ pie showData
   title Modulstand 2026-05-25 (17 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
-  "🟨 Spec fertig" : 1
-  "🟦 Code-Stub" : 8
+  "🟨 Spec fertig" : 0
+  "🟦 Code-Stub" : 9
   "🟩 Fertig" : 4
 ```
 
@@ -1810,6 +1810,146 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-25 · Bau-Sitzung 17 Floating-Widget — Code-Stub voll angelegt + DispatchEvent-Hooks in Modul 02/05/15/16 + Panel 17 + Headless-Smoke 19/19 grün
+
+**Sitzungs-Rolle:** Bau-Sitzung 17 (Pipeline-Schritt 5c). Branch
+`claude/floating-widget-build-17-RQLgJ`. Anschluss nach Spec-Sitzung
+17 (PR #165 gemerged 2026-05-25).
+
+**Brief:** `docs/sessions/BRIEF_BAU_17_FLOATING_WIDGET.md` mit voll
+spezifizierter Bau-Anweisung (A–F) — alle sechs Pflicht-Blöcke
+umgesetzt.
+
+**Was getan:**
+
+- **`src/modules/17_floating_widget.js` voll angelegt** (~770 Zeilen,
+  IIFE-Pattern wie andere Module). Public Surface `window.SbkimWidget
+  = {init, show, hide, isVisible, getPosition, _meta}`:
+  - **init(options?)** mountet Pille in `<body>` via MutationObserver-
+    Fallback (analog Modul 00/16, 10 s Safety-Timeout). Standalone-CSS
+    via `<style id="sbkim-widget-style">`-Element ans Ende von `<head>`
+    (KEIN Shadow-DOM in Stufe 1, CSS-Variablen modul-lokal mit
+    `--sbkim-widget-*`-Präfix, KEIN `:root`-Eingriff). Vier 40-px-Slot-
+    Buttons horizontal (LEBT/VERKEHR/FREMD/SIEGEL); X-Knopf oben-rechts;
+    Drag-Mechanik via Pointer-Events (5 px Threshold, gesamte Pille
+    drag-fähig außerhalb der Slots, Viewport-Clamp 24 px immer
+    sichtbar, freies Drag mit Pixel-Präzision — Spec-Empfehlung
+    übernommen, KEIN Snap-zu-Ecken in Stufe 1). `localStorage`-
+    Persistierung `sbkim_widget_visible` + `sbkim_widget_position`
+    (UX-only, defekter JSON fail-soft auf Defaults).
+  - **Fünf Event-Listener auf `window`** (sbkim:alive / :handshake /
+    :postmessage / :fremd-alert / :siegel-certified) registriert.
+    Detail-Form-Check fail-soft (fremd-alert ohne bufferSize → Slot-
+    Zustand bleibt; siegel-certified ohne SbkimSiegel.isCertified=true
+    → KEIN DOM-Mount + console.warn mit „Anti-Greenwashing"-Marker).
+  - **SIEGEL-Slot Anti-Greenwashing binär:** zwei Pfade, beide mit
+    `SbkimSiegel.isCertified()===true`-Check (Defensive-Doppel-Prüfung).
+    First-Boot-Animation 600 ms einmal pro Session.
+  - **LEBT-Modal** und **VERKEHR-Modal** eigenständig in
+    `document.body` gemountet; Uptime-Counter aktualisiert 1× pro
+    Sekunde; VERKEHR-Tabelle mit RAM-only FIFO 10.
+  - **Modal-Bridge: Option 1 aus Brief (Bau-Sitzung-17-Entscheidung)**
+    — Widget legt unsichtbare Spans `<span id="lamp-fremd">` und
+    `<span id="sbkim-siegel-badge">` in seinem Inneren an. Modul 15/16
+    attachen ihre Click-Handler dort. **Folge: `SbkimWidget.init()`
+    MUSS VOR `SbkimMembrane.init()`/`SbkimSiegel.init()` im Endknoten-
+    Andocker stehen.** Karte 09 § Schritt 12 dokumentiert das in
+    eigener Folge-Pflege nach Bau 17 (Pipeline-Schritt 3 der „Weitere
+    Schritte"-Liste).
+  - **KEINE benannten Error-Klassen** (Render-Schicht, fail-soft via
+    `console.warn` analog Modul 15/16).
+- **DispatchEvent-Hooks additiv in Modul 02/05/15/16** (vier Code-
+  Stellen, Selbstcheck-Zeilen UNVERÄNDERT):
+  - **Modul 02:** neuer Flag `aliveDispatched` + Helper
+    `dispatchAliveOnce(nodeId)`; Aufruf am Ende beider
+    getOrCreateIdentity-Pfade (existing-Slot + new-Slot). Einmal pro
+    Session — auch bei Multi-Persona-Anlage wird sbkim:alive nur
+    einmal gefeuert (Modul 17 LEBT-Slot reagiert auf den ersten).
+  - **Modul 05:** neuer Helper `dispatchHandshakeEvent(outcome,
+    peerNodeId, direction)`; **`handshake`/`receiveHandshake` zu thin
+    wrappers umgebaut** (additiv-mit-internem-Refactoring) um
+    `_doHandshake`/`_doReceiveHandshake`. Wrappers dispatchen
+    `sbkim:handshake` mit direction-Feld (outgoing/incoming) nach
+    Result-Resolve. Äußere Signatur + Selbstcheck-Zeile + Public-
+    Surface-Pointer UNVERÄNDERT. BroadcastChannel-Bridge + SW-Bridge
+    routen Receiver-Events automatisch durch den neuen Wrapper.
+  - **Modul 15:** neue Helper `dispatchPostmessageEvent(op, decision)`
+    + `dispatchFremdAlertEvent(kind, decision, bufferSize)`;
+    `recordEntry` dispatcht `sbkim:fremd-alert` NACH Buffer-Push +
+    Listener-Aufruf; `recordPostMessageEntry` dispatcht
+    `sbkim:postmessage` gated auf VALID_OPS-Whitelist (Type-Mismatch +
+    unbekannte Ops geben KEIN Event ab — sind keine SBKIM-Membran-
+    Postmessages im engeren Sinn, Karte 17 § Event-Bus-Schema).
+  - **Modul 16:** `ZERTIFIKAT_ASPEKTE` um Modul-17-Eintrag „Floating-
+    Widget mit Vier-Slot-Live-Status" 2026-05-25 erweitert (Konvention
+    CLAUDE.md § „Sicherheits-Module pflegen Aspekte" — Modul 17 ist
+    zwar Render-Schicht, aber der Brief empfiehlt den Eintrag, weil
+    das Widget die Live-Schau-Schicht für die Sicherheits-Module ist).
+    `init()` dispatcht `sbkim:siegel-certified` am Ende, wenn
+    `certifiedFlag===true` (durch `ready=true`-Flag-Schutz idempotent).
+- **Panel 17** in `tests/manual_check.html` mit Setup + Mock-Modul-16-
+  Knopf + 10 Test-Knöpfen + Selbstcheck-Hinweis. Tests decken alle
+  Pfade ab (LEBT-grün, VERKEHR-pulst, FREMD-rot, fremd-alert-Schema-
+  Fail-soft, SIEGEL-erscheint-mit-Mock, SIEGEL-Anti-Greenwashing-
+  Hinweis-mit-Tab-Reload, Traffic-FIFO-10, hide+show+localStorage,
+  getPosition-defensive-Kopie, Modal-Bridge).
+- **Headless-Smoke** `tests/smoke_bau17_floating_widget.mjs` mit
+  minimalem DOM-Stub (Element/classList/querySelector/addEventListener/
+  dispatchEvent + window-localStorage + CustomEvent-Polyfill): 19
+  Proben, 19/19 grün.
+- **Modul-15-Smoke-Regression** 31/31 grün (Sub-(b)-Tests prüfen
+  unverändertes Verhalten + die neuen DispatchEvent-Hooks brechen das
+  Verhalten nicht).
+- **node --check** für alle fünf modifizierten/neuen Module +
+  alle 13 Inline-`<script>`-Blöcke in `tests/manual_check.html` grün.
+- **status.json** Modul 17 von `score:"spec"` auf `"stub"` aktualisiert;
+  `python3 scripts/update_puls_pie.py` aufgerufen (Pie: 🟧 0 / 🟨 0 /
+  🟦 9 / 🟩 4 / 🟫 4 — Spec-fertig-Pool von 1 auf 0, Code-Stub-Pool
+  von 8 auf 9).
+- **CLAUDE.md** § Modul-Tabelle Eintrag 17 auf „Code-Stub" mit
+  Modal-Bridge-Init-Reihenfolge-Hinweis.
+- **Karte 17** § Bauzustand um Zeile „Code geschrieben 2026-05-25"
+  erweitert (lange Detail-Beschreibung).
+- **INTERFACES.md** § 1 Modul 17 Status-Block + Geprüft-Zeile +
+  § 10 Änderungsprotokoll-Eintrag erweitert.
+
+**Was offen blieb:**
+
+- **Sichttest 17 (Pipeline-Schritt 2 der „Weitere Schritte"-Liste)** —
+  Klaus muss Panel 17 in `tests/manual_check.html` am DeX-Chrome
+  durchklicken (Setup + Mock-Modul-16 + Tests 1–10 + Selbstcheck-
+  Hinweis). Plus Sage-Page-Bonus-Check (Navleisten-Lampen + Siegel-
+  Badge in der Sage-Page bleiben unverändert — das Widget ist KEIN
+  Sage-Page-Modul). Erfolgs-Indikator: alle zehn Tests grün, Pille
+  bottom-right sichtbar, LEBT pulsiert grün, Drag funktioniert.
+- **Pflege Karte 09 § Schritt 10 + 11 + 12 (Pipeline-Schritt 3)** —
+  drei-Zeilen-Einbau-Anweisung pro Endknoten dokumentieren. Eigene
+  Mini-Pflege-Sitzung. Wichtige Konvention zu dokumentieren:
+  `SbkimWidget.init()` MUSS VOR `SbkimMembrane.init()`/
+  `SbkimSiegel.init()` stehen.
+- **Endknoten-Re-Migration (Pipeline-Schritt 4)** — zwei Sitzungen
+  (Mein-Rezeptbuch + Mein-Mixarium, je extern) mit drei-Zeilen-
+  Einbau. Setzt Sichttest 17 voraus.
+- **Optionale Folge-Pflegen** (nach App-Freigabe): Modul-00-+-Widget-
+  Wiederherstellungs-Geste verknüpfen; Eruda-Kollisions-Erkennung
+  (`typeof window.eruda !== "undefined"` → automatisch
+  `defaultCorner:"bottom-left"`); Mobile-Karussell falls 320 px zu eng;
+  Modul 11/12/10 Schutz-Module (ergänzen je ZERTIFIKAT_ASPEKTE-Eintrag
+  im Siegel).
+
+**Nächster sinnvoller Schritt:** **Sichttest 17** (Klaus am Tablet,
+DeX-Chrome). Brief-Codeblock für Sichttest-Sitzung 17 unten in der
+Chat-Antwort.
+
+**Tafel-Evolutions-Bezug:** keiner — diese Bau-Sitzung folgt der
+Pipeline-Reihenfolge unverändert. Modul-Bau-Reihenfolge 5c liegt
+zwischen Spec-Sitzung 17 (5b) und Endknoten-Re-Migration (5d).
+
+**Sitzungs-PR:** Branch `claude/floating-widget-build-17-RQLgJ`,
+PR folgt nach Commit + Push.
+
+---
 
 ### 2026-05-25 · Spec-Sitzung 17 Floating-Widget — Vier-Slot-Live-Status-Dashboard
 
