@@ -20,10 +20,10 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-24 (16 Module)
+  title Modulstand 2026-05-25 (17 Module)
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
-  "🟨 Spec fertig" : 0
+  "🟨 Spec fertig" : 1
   "🟦 Code-Stub" : 8
   "🟩 Fertig" : 4
 ```
@@ -1810,6 +1810,154 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-25 · Spec-Sitzung 17 Floating-Widget — Vier-Slot-Live-Status-Dashboard
+
+**Sitzungs-Rolle:** Spec-Sitzung 17 (Pipeline-Schritt 5b). Branch
+`claude/spec-17-floating-widget-vywVo`. Anschluss nach Brief-Anlage
+Spec-17 (PR #163 gemerged 2026-05-25).
+
+**Anlass:** Klaus' UI-Befund nach erster Endknoten-Migration —
+Navleisten-Mount nicht skalierbar (Lampen + Siegel-Badge zu viel
+Platz, kein User-X-Schließen, kein Drag, nicht einheitlich zwischen
+Endknoten). Brief `BRIEF_SPEC_15_16_FLOATING_WIDGET.md` (PR #163)
+hat 17 Spec-Punkte vorgegeben; **Klaus-Zusatz-Wunsch 2026-05-25**
+(Tafel-Evolutions-Klausel) hat den ursprünglichen 2-Plaketten-
+Vorschlag aus Brief-Punkt 3 zu einem **Vier-Slot-Live-Status-
+Dashboard** weiterentwickelt: LEBT/VERKEHR/FREMD/SIEGEL als
+sichtbare Spiegel der SBKIM-Schicht, jeder Slot mit eigenem Anti-
+Greenwashing-Pfad.
+
+**Getan — reine Doku-Pflege, KEIN Modul-Code:**
+
+1. **Neue Karte `docs/components/17_floating_widget.md`** angelegt
+   (~570 Zeilen). Volle Spec mit Mycel-Bild, Vokabular, Hochstufungs-
+   Begründung, **Vier-Slot-Layout** (Tabelle Aktiv-Quelle pro Slot,
+   Aktiv-/Inaktiv-Zustand, Anti-Greenwashing-Klausel pro Slot),
+   Maße/Footprint Desktop+Mobile, Z-Index-Konvention,
+   **Event-Bus-Schema** (fünf Custom-Events auf `window`:
+   `sbkim:alive` Modul 02 · `sbkim:handshake` Modul 05 ·
+   `sbkim:postmessage` Modul 15 Sub b · `sbkim:fremd-alert` Modul 15
+   Sub e · `sbkim:siegel-certified` Modul 16) mit Detail-Form-Tabelle
+   und PII-Disziplin (KEINE Inhalte, nur Counts + Status-Flags),
+   UX-Regeln (Default-Sichtbarkeit ALLE Slots immer im DOM außer
+   SIEGEL bei `isCertified()===false`), Tap-Verhalten pro Slot
+   (LEBT/VERKEHR neue Modals aus Modul 17, FREMD/SIEGEL Proxy-Click
+   auf bestehende Modul-15-/16-Modals), Drag-Mechanik (Pointer-Events
+   API, 5 px Threshold, freies Drag empfohlen), X-Schließen + vier
+   Wiederherstellungs-Pfade (DevTools-`show()` / 5-Klick-Geste an
+   Modul-00-Such-Symbol / Doku-Fenster-Knopf / Tab-Reload bei
+   `rememberHidden:false`), Schnittstelle
+   `window.SbkimWidget = {init/show/hide/isVisible/getPosition/_meta}`,
+   options-Form mit `slots`-Whitelist + `defaultCorner`/`defaultOffset`/
+   `allowClose`/`allowDrag`/`rememberHidden`/`zIndex`/`theme`,
+   Persistenz (`localStorage` für Visible + Position, RAM-only
+   VERKEHR-Mini-Log FIFO 10), Modal-Bridge via Proxy-Click,
+   Sage-Page-Pfad bleibt erhalten (Klaus-Festlegung 2026-05-25 —
+   Navleisten-Lampen + Siegel-Badge Sage-page-spezifisch, Endknoten
+   bekommen Widget), Strikte Tabus (KEINE Identität / Krypto /
+   IndexedDB / Netz / Auto-Verhalten / Modal-Override /
+   PROTOCOL_VERSION-Bump), Selbstcheck-Zeile-Konvention, 10 Test-
+   Punkte für Bau-Sitzung 17, Folge-Pflege-Liste, Bauzustand-
+   Tabelle.
+
+2. **`docs/INTERFACES.md` § 1 Modul 17** voll spezifiziert (~280
+   Zeilen) — alle Felder gespiegelt aus Karte 17 (Bietet/options/
+   PositionSnapshot/Vier-Slot-Layout/Event-Bus-Schema/Nutzt/Storage/
+   Events/Selbstcheck/Versionierungs-Vertrag/Fehlerverhalten/
+   Datenformate/Garantien für 00-09-15-16/Tabus/Hook-Punkte/Risiken/
+   Geprüft). Status `entwurf` (Spec-Sitzung 17 vom 2026-05-25).
+
+3. **`docs/INTERFACES.md` § 1 Modul 02 + 05 + 15 + 16 Events-Blöcke
+   erweitert** um die jeweils gefeuerten Pflicht-Custom-Events
+   (Vorbestellung Modul 17 Floating-Widget, Bau-Sitzung 17 oder
+   eigene Mini-Pflege). Detail-Form pro Event mit PII-Disziplin-
+   Hinweis dokumentiert. **KEIN Code-Eingriff** in den jeweiligen
+   `src/modules/`-Dateien — nur Schnittstellen-Doku.
+
+4. **`docs/INTERFACES.md` § 10 Änderungsprotokoll** Eintrag
+   2026-05-25 Spec-Sitzung 17 mit Voll-Begründung (Pipeline-Schritt
+   5b, Tafel-Evolutions-Klausel, alle Pflicht-Stellen genannt).
+
+5. **`docs/components/15_membran.md` § Sub (e)** + **`docs/components/
+   16_siegel.md` § Sub (b)** + **`docs/components/02_spore.md`
+   § Bauzustand** + **`docs/components/05_anastomose.md` § Bauzustand**
+   je um einen ein-Satz-Verweis-Block / Zeile erweitert ("Seit
+   Spec-Sitzung 17 (2026-05-25) ist Endknoten-Standard das Widget
+   aus Karte 17; Hook `dispatchEvent(...)` wird in Bau-Sitzung 17
+   nachgezogen. KEIN Eingriff in `src/modules/<modul>.js` durch
+   Spec-Sitzung 17 selbst.").
+
+6. **`status.json` § modules[]** um Modul 17 erweitert (`score:"spec"`,
+   `siegel:"Spec fertig"`, abhängig `["02","05","15","16"]`, langer
+   `kurz`-Block mit allen Spec-Punkten zusammengefasst). `lastUpdated:
+   "2026-05-25"`. `python3 scripts/update_puls_pie.py` aufgerufen →
+   neuer Pie-Stand (17 Module: 🟫 4 · 🟧 0 · 🟨 1 · 🟦 8 · 🟩 4) im
+   `## Modulstand heute`-Block oben in dieser Datei.
+
+7. **`CLAUDE.md` § Modul-Tabelle** Eintrag 17 auf „**Spec fertig**
+   (2026-05-25, Spec-Sitzung 17)" aktualisiert mit kompletter
+   Zusammenfassung. § Pipeline-Reihenfolge bleibt unangetastet
+   (PR #163 hat sie bereits am 2026-05-25 verankert).
+
+8. **Brief Bau-Sitzung 17 angelegt:**
+   `docs/sessions/BRIEF_BAU_17_FLOATING_WIDGET.md` (~250 Zeilen Brief-
+   Codeblock mit allen Bau-Anweisungen, Anti-Greenwashing-Disziplin,
+   Pflicht-Liste der dispatchEvent-Hooks in Modul 02/05/15/16, Panel-
+   17-Test-Punkte, strikte Tabus, Pflicht am Ende).
+
+9. **Übergabeprotokoll** `docs/sessions/archiv/2026-05-25_spec-17-floating-widget.md`
+   angelegt.
+
+**Klärungs-Entscheidungen (Klaus-Zusatz-Wunsch + Brief-Architektur-
+Fragen A–F):**
+
+- **A. Event-Bus:** Custom DOM Events (`window.dispatchEvent`) statt
+  direktem Backend-Subscribe oder Polling. Modul-Anbieter dispatchen
+  je eine `dispatchEvent`-Zeile, Widget kennt nur Event-Namen.
+- **B. Module 02 + 05 § Tafel-Erweiterung:** **hier** nur Event-
+  Schema in Karte 17 + INTERFACES § 1 Modul 17 festgelegt + je ein-
+  Satz-Verweis in Karten 02/05/15/16. **Volle dispatchEvent-Code-
+  Pflege** kommt in Bau-Sitzung 17 (oder eigenen Mini-Pflege-
+  Sitzungen pro Modul, Bau-Sitzung-17-Brief lässt das offen).
+- **C. Layout:** Vier 40 px-Slots horizontal nebeneinander
+  (~200 px × 48 px Gesamt). Mobile bleibt horizontal (kein
+  Karussell), Slots auf 36 px verkleinert.
+- **D. Default-Sichtbarkeit:** ALLE vier Slots immer im DOM (auch
+  grau/dunkel) — leerer Slot = „Funktion bekannt, gerade nicht aktiv".
+  Ausnahme SIEGEL bei `isCertified()===false` → nicht im DOM (binär,
+  Spiegelung Karte 16 § Strikte Tabus).
+- **E. Tap-Verhalten:** LEBT-Tap öffnet **neues** Status-Modal
+  (Uptime + Modul-02-Init-Status + nodeId-Präfix, Modul 17 baut es
+  selbst). VERKEHR-Tap öffnet **neues** Mini-Log-Modal (RAM-only
+  FIFO 10, KEINE Persistenz — analog Modul 15 Sub e). FREMD-Tap +
+  SIEGEL-Tap öffnen die **bestehenden** Modul-15-/16-Modals
+  unverändert (Modal-Bridge via Proxy-Click).
+- **F. Brief-Punkt 3 (2-Plaketten-Vorschlag) abgelöst** durch
+  Vier-Slot-Live-Dashboard via Tafel-Evolutions-Klausel. Pille-Maße
+  + Layout entsprechend angepasst (siehe C).
+
+**Was NICHT getan:**
+
+- KEIN Modul-Code in `src/modules/17_floating_widget.js` (Spec-
+  Sitzung, kein Bau — kommt in Bau-Sitzung 17).
+- KEIN Endknoten-Eingriff (extern, eigene Folge-Sitzung pro Repo).
+- KEIN Modul-02/05/15/16-Backend-Code-Eingriff (`src/modules/`-
+  Dateien unangetastet — Event-Hook-Code ist Bau-Sitzung 17).
+- KEIN Sage-Page-Eingriff (`index.html` unangetastet — Sage-Page
+  behält Navleisten-Lampen + Siegel-Badge, Klaus-Festlegung).
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
+  Bump (Modul 17 ist nicht protokoll-aktiv).
+- KEINE Tafel-Umsortierung über Pipeline-Schritte hinaus.
+
+**PR und nächste Schritte:** Commit + Push auf
+`claude/spec-17-floating-widget-vywVo`; Draft-PR. Bau-Sitzung 17 ist
+Pipeline-Schritt 5c (Brief `BRIEF_BAU_17_FLOATING_WIDGET.md` liegt).
+
+Übergabeprotokoll
+`docs/sessions/archiv/2026-05-25_spec-17-floating-widget.md`.
+
+---
 
 ### 2026-05-25 · Brief-Anlage Rückbau Modul 15 + 16 + Spore-Diagnose pro Endknoten
 

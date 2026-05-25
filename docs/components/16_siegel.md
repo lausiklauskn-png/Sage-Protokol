@@ -334,6 +334,15 @@ Wenn `isCertified() === false`:
 Diese Klausel ist binär und nicht-verhandelbar (Karte 16 § Strikte
 Tabus).
 
+#### Floating-Widget-Pfad (seit Spec-Sitzung 17, 2026-05-25)
+
+Seit Spec-Sitzung 17 (2026-05-25) ist Endknoten-Standard das Widget
+aus [Karte 17](17_floating_widget.md); die Navleisten-Badge-Optik
+bleibt Sage-Page-Pfad. Modul 16 ist Backend für den SIEGEL-Slot des
+Widgets — `dispatchEvent("sbkim:siegel-certified", { detail: { certifiedAt,
+repoUrl }})` einmalig nach `init()` wenn `isCertified() === true` wird
+in Bau-Sitzung 17 nachgezogen.
+
 ### Sub (c) — Erklärungs-Modal
 
 #### Titel

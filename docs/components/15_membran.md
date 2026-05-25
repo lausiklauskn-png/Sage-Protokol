@@ -894,6 +894,16 @@ ist die **kleinste sinnvolle Antwort** vor Sub (c) Capability-Token-
 Bau (Stufe 3) — sie macht das Phänomen sichtbar, ohne neue
 Angriffsfläche zu eröffnen.
 
+#### Floating-Widget-Pfad (seit Spec-Sitzung 17, 2026-05-25)
+
+Seit Spec-Sitzung 17 (2026-05-25) ist Endknoten-Standard das Widget
+aus [Karte 17](17_floating_widget.md); die Navleisten-Lampen-Optik
+bleibt Sage-Page-Pfad. Modul 15 ist Backend für den FREMD-Slot (Sub (e))
+und VERKEHR-Slot (Sub (b)) des Widgets — `dispatchEvent("sbkim:fremd-alert",
+{ detail: { kind, decision, bufferSize }})` pro Ringbuffer-Neueintrag
+und `dispatchEvent("sbkim:postmessage", { detail: { op, direction:"incoming",
+decision }})` pro eingehender `message` werden in Bau-Sitzung 17 nachgezogen.
+
 ---
 
 ## Was eine spätere Spec-Sitzung füllen müsste
