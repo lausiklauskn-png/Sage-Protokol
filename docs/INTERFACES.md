@@ -613,7 +613,16 @@ Storage:
     Netz transportiert. Default "main", wenn fehlend.
 
 Events:
-  (keine — keine Pub/Sub. Andere Module rufen die Funktionen direkt.)
+  feuert (Vorbestellung Modul 17 Floating-Widget, Bau-Sitzung 17 oder
+         eigene Mini-Pflege; Spec-Sitzung 17 vom 2026-05-25):
+    sbkim:alive  — Custom-Event auf window, einmalig nach init() +
+                   getOrCreateIdentity(). Detail-Form:
+                     { since:  <ISO-8601 string>,
+                       nodeId: <base64url-sha256, eigene Identität, Klartext> }
+                   PII-Disziplin: KEINE domain, KEINE Geschwister-Daten,
+                   KEINE API-Keys. Konsumiert von Modul 17 (LEBT-Slot)
+                   und ggf. künftigen Sage-Page-Statistik-Karten.
+  reagiert: (keine — Modul 02 ist Quelle, kein Konsument.)
 
 Selbstcheck:
   Beim Skript-Laden (synchron, vor jeglichem Aufruf):
@@ -1297,8 +1306,22 @@ Identitäts-Cache-Konvention (Brief 04 der V1-Sammelspec-Kaskade,
     eine schlanke Map nodeId → key beim init().
 
 Events:
-  (keine — keine Pub/Sub. Modul 09 / 08 rufen handshake() bzw.
-   der Service-Worker ruft receiveHandshake() direkt auf.)
+  feuert (Vorbestellung Modul 17 Floating-Widget, Bau-Sitzung 17 oder
+         eigene Mini-Pflege; Spec-Sitzung 17 vom 2026-05-25):
+    sbkim:handshake — Custom-Event auf window, pro abgeschlossenem
+                      Handshake (Sender + Empfänger beide). Detail-Form:
+                        { outcome:     "established" | "rejected" |
+                                       "re-handshake" | "rejected-local",
+                          peerNodeId:  <base64url-sha256> | null,
+                          direction:   "incoming" | "outgoing" }
+                      PII-Disziplin: KEINE Spore-Inhalte, KEIN score-
+                      Feld (Empfehlungs-Pfad bleibt bei Modul 14
+                      Diffusion). peerNodeId ist Klartext (Andocker
+                      sieht ihn ohnehin in sbkim_siblings). Konsumiert
+                      von Modul 17 (VERKEHR-Slot + Mini-Log).
+  reagiert: (keine — Modul 05 ist Quelle, kein Konsument der Custom-
+             Events. Modul 09 / 08 rufen handshake() bzw. der Service-
+             Worker ruft receiveHandshake() direkt auf.)
 
 Selbstcheck:
   Beim Skript-Laden (synchron, vor jeglichem Aufruf):
@@ -2360,8 +2383,32 @@ Events:
                                                        Sub-(e)-Hook für SW-gemeldete endpoint-probes
   reagiert: click auf lampSelector-Element             Sub-(e)-Modal öffnen
   reagiert: Esc-Keydown / Backdrop-Klick               Sub-(e)-Modal schließen
-  feuert:   (keine CustomEvents — Sub-(e)-subscribe(cb) ist die Live-API,
-             keine DOM-Event-Indirektion.)
+  feuert (Vorbestellung Modul 17 Floating-Widget, Bau-Sitzung 17 oder
+         eigene Mini-Pflege; Spec-Sitzung 17 vom 2026-05-25):
+    sbkim:postmessage — Custom-Event auf window, pro eingehender message
+                        mit type:"sbkim/membrane/v1" (gespiegelt aus
+                        Sub (b)-Empfänger-Pfad NACH Allowlist + Schema +
+                        Replay-Dedupe). Detail-Form:
+                          { op:        "sporeRef" | "query" | "hint" | "queryResult",
+                            direction: "incoming",
+                            decision:  "accepted" | "ignored" | "rejected-allowlist" }
+                        PII-Disziplin: KEIN payload, KEIN origin im
+                        Custom-Event (origin steht im Sub-(e)-Buffer);
+                        nur op + direction + decision.
+    sbkim:fremd-alert — Custom-Event auf window, pro Ringbuffer-Neueintrag
+                        in Sub (e) (Spiegelung des subscribe(cb)-Hooks).
+                        Detail-Form:
+                          { kind:       "membrane-read" | "membrane-postmessage" |
+                                       "endpoint-probe",
+                            decision:   "accepted" | "ignored" | "rejected-allowlist",
+                            bufferSize: <number> (aktuelle Buffer-Länge nach Eintrag) }
+                        PII-Disziplin: KEIN origin, KEIN agentHint, KEIN
+                        endpoint im Custom-Event (alle drei stehen im
+                        Sub-(e)-Buffer und kommen via fremdzugriff.list() /
+                        subscribe(cb) raus; das Custom-Event ist nur
+                        Status-Trigger für den FREMD-Slot des Widgets).
+  Konsumiert von Modul 17 (VERKEHR-Slot pro sbkim:postmessage, FREMD-Slot
+  pro sbkim:fremd-alert).
 
 Selbstcheck:
   Beim Skript-Laden (synchron, vor jeglichem Aufruf):
@@ -2767,10 +2814,21 @@ Storage:
 Events:
   reagiert: click auf badgeSelector-Element        Modal öffnen
   reagiert: Esc-Keydown / Backdrop-Klick / ✕-Klick Modal schließen
-  feuert:   (keine CustomEvents — getExplanation() ist die Live-API,
-             keine DOM-Event-Indirektion. Modul 15 Sub (a) read() darf
-             in Spec-Sitzung 15.B einen Siegel-Hook ergänzen, der
-             SbkimSiegel.getExplanation() synchron abfragt.)
+  feuert (Vorbestellung Modul 17 Floating-Widget, Bau-Sitzung 17 oder
+         eigene Mini-Pflege; Spec-Sitzung 17 vom 2026-05-25):
+    sbkim:siegel-certified — Custom-Event auf window, einmalig nach
+                             init() wenn isCertified()===true. Detail-Form:
+                               { certifiedAt: <ISO-8601 string>,
+                                 repoUrl:     <string> }
+                             PII-Disziplin: Repo-URL ist öffentlich
+                             (Hosting-URL), certifiedAt ist die Session-
+                             Zeitstempel-Zeit. Konsumiert von Modul 17
+                             (SIEGEL-Slot ins DOM mounten + First-Boot-
+                             Animation). Anti-Greenwashing-Klausel binär:
+                             wird NUR gefeuert wenn isCertified()===true.
+  reagiert: (keine — getExplanation() ist die Live-API, keine DOM-Event-
+             Indirektion. Modul 15 Sub (a) read() ergänzt einen Siegel-
+             Hook, der SbkimSiegel.getExplanation() synchron abfragt.)
 
 Selbstcheck:
   Beim Skript-Laden (synchron, vor jeglichem Aufruf):
@@ -2937,6 +2995,340 @@ Risiken (Karte 16 § Risiken):
   Haftungs-Block — Klaus-Korrektur 2026-05-24).
 
 Geprüft: 2026-05-24 (Spec-Sitzung 16 — alle vier Sub-Bereiche final)
+
+---
+
+### Modul: 17_floating_widget
+Status: entwurf  (Spec-Sitzung 17 vom 2026-05-25 — Vier-Slot-Live-Status-
+                 Dashboard als finale Form: LEBT/VERKEHR/FREMD/SIEGEL,
+                 Event-Bus-Schema mit fünf Custom-Events
+                 (sbkim:alive / :handshake / :postmessage / :fremd-alert /
+                 :siegel-certified), self-mountendes floating Mini-Panel
+                 im Eruda-Stil mit Drag + X-Schließen + localStorage-
+                 Persistierung. Modul-15-+-16-Backends bleiben unverändert
+                 (Klaus-Festlegung Tafel-Evolutions-Klausel —
+                 Navleisten-Optik bleibt Sage-Page-Pfad, Widget ist
+                 Endknoten-Standard). Bau-Sitzung 17 ausstehend;
+                 Modul-Code in `src/modules/17_floating_widget.js`
+                 existiert noch nicht.)
+Datei:  docs/components/17_floating_widget.md (Karte) ·
+        src/modules/17_floating_widget.js (existiert noch nicht —
+        Bau-Sitzung 17 nach Spec-Sitzung 17 vom 2026-05-25 fällig) ·
+        Endknoten-Andocker (sbkim/sbkim-init.js): EIN-Zeilen-Aufruf
+        `await SbkimWidget.init({allowedOrigins, repoUrl})` als
+        Endknoten-Standard-Pfad (statt drei Zeilen Modul-15-init +
+        Modul-16-init mit Selektor-Bridge)
+
+Bietet (öffentlich):
+  init(options?)                  → Promise<void>
+                                    // Self-mountet die Pille in <body>,
+                                    // registriert fünf Event-Listener auf
+                                    // window, liest localStorage für
+                                    // visible + position. Idempotent —
+                                    // zweiter Aufruf no-op.
+  show()                          → void (sync)
+                                    // Widget einblenden + localStorage-
+                                    // Wahl persistieren. No-op + console.warn
+                                    // wenn nicht initialisiert.
+  hide()                          → void (sync)
+                                    // Widget ausblenden + localStorage-
+                                    // Wahl persistieren.
+  isVisible()                     → boolean (sync)
+                                    // Aus DOM-State gelesen (nicht aus
+                                    // localStorage — sonst drift).
+  getPosition()                   → PositionSnapshot (sync)
+                                    // Defensive Kopie. Defaults bei
+                                    // nicht-initialisiertem Modul:
+                                    // { corner:"bottom-right", offsetX:16,
+                                    //   offsetY:16, x:null, y:null }.
+  _meta                           // Read-Anker für Tests (analog Modul 15/16):
+                                    //   slots:          string[]
+                                    //   eventCounts:    { alive, handshake,
+                                    //                     postmessage,
+                                    //                     fremdAlert,
+                                    //                     siegelCertified }
+                                    //   trafficLogSize: number (max 10)
+                                    //   widgetMounted:  boolean
+                                    //   firstBootShown: boolean
+
+  options-Form (init):
+    {
+      // Doku-Spiegelung, NICHT durchgereicht (Modul 17 ruft NICHT
+      // SbkimMembrane.init() / SbkimSiegel.init(); Andocker bleibt
+      // verantwortlich — Spec-Empfehlung Karte 17 § API-Signatur):
+      allowedOrigins?: string[],
+      repoUrl?:        string,
+
+      // UX-Optionen (alle optional):
+      defaultCorner?:  "top-left" | "top-right" | "bottom-left" | "bottom-right",
+                       // Default "bottom-right"
+      defaultOffset?:  { x:number, y:number },  // Default { x:16, y:16 }
+      allowClose?:     boolean,    // Default true. false = kein X-Knopf
+      allowDrag?:      boolean,    // Default true. false = fixe Position
+      rememberHidden?: boolean,    // Default true. User-Wahl heilig.
+      slots?:          ("lebt"|"verkehr"|"fremd"|"siegel")[],
+                       // Default ["lebt","verkehr","fremd","siegel"].
+                       // Ein Endknoten ohne Modul 15 kann z.B.
+                       // ["lebt","siegel"] setzen → andere Slots werden
+                       // nicht angelegt.
+      zIndex?:         number,     // Default 9990 (unter Modal-Layer 9999,
+                                   // weit unter Eruda 9999999).
+      theme?:          "auto" | "dark" | "light",  // Default "auto".
+    }
+
+  PositionSnapshot (Karte 17 § Schnittstelle):
+    {
+      corner:  "top-left" | "top-right" | "bottom-left" | "bottom-right" | null,
+      offsetX: number,      // px von der Corner-Kante
+      offsetY: number,      // px von der Corner-Kante
+      x:       number | null,  // wenn Free-Drag aktiv: abs. px von links
+      y:       number | null,  // wenn Free-Drag aktiv: abs. px von oben
+    }
+
+  Vier-Slot-Layout (verbindlich, Karte 17 § Vier-Slot-Layout):
+    Slot          Aktiv-Quelle                  Aktiv-Zustand                  Inaktiv
+    LEBT          Modul 02 (Spore)              pulsiert grün                  grau (kein sbkim:alive)
+    VERKEHR       Modul 05 + Modul 15 Sub (b)   gold-Puls pro Event            dunkel (keine Events)
+    FREMD         Modul 15 Sub (e)              dauer-rot + Puls               grau (Buffer leer / Modul 15 fehlt)
+    SIEGEL        Modul 16                      sichtbar (Gold-Medaillon)      NICHT IM DOM (Anti-Greenwashing binär)
+
+    Alle vier Slots im DOM (Ausnahme SIEGEL bei isCertified()===false → kein
+    DOM-Element). UX-Disziplin: leerer Slot = „Funktion bekannt, gerade nicht
+    aktiv", nicht versteckt.
+
+Event-Bus-Schema (verbindlich, Karte 17 § Event-Bus-Schema):
+  Modul 17 abonniert fünf Custom-Events auf window. Anbieter-Module
+  dispatchen via window.dispatchEvent(new CustomEvent(name, {detail})).
+  Detail-Form PII-frei (nur Counts + Status-Flags, KEINE Inhalte).
+
+  Event-Name              Dispatcher                       detail-Form
+  sbkim:alive             Modul 02 (Spore)                 { since:ISO, nodeId:base64url }
+  sbkim:handshake         Modul 05 (Anastomose)            { outcome, peerNodeId|null, direction:"incoming"|"outgoing" }
+                                                            outcome ∈ "established" | "rejected" | "re-handshake" | "rejected-local"
+  sbkim:postmessage       Modul 15 Sub (b)                 { op, direction:"incoming", decision }
+                                                            op ∈ "sporeRef"|"query"|"hint"|"queryResult"
+                                                            decision ∈ "accepted"|"ignored"|"rejected-allowlist"
+  sbkim:fremd-alert       Modul 15 Sub (e)                 { kind, decision, bufferSize }
+                                                            kind ∈ "membrane-read"|"membrane-postmessage"|"endpoint-probe"
+  sbkim:siegel-certified  Modul 16 (SBKIM-Siegel)          { certifiedAt:ISO, repoUrl:string }
+
+  Trigger-Zeitpunkt + Hook-Pflege siehe Karte 17 § Event-Bus-Schema +
+  Folge-Pflege-Liste. Bau-Sitzung 17 verdrahtet die dispatchEvent-Aufrufe
+  in den jeweiligen Modulen (oder eigene Mini-Pflege-Sitzungen pro Modul).
+
+  Konvention:
+    - bubbles:false, cancelable:false. Andere Module dürfen die Events
+      ebenfalls abonnieren (z.B. künftige Sage-Page-Statistik).
+    - Anti-Greenwashing: Anbieter dispatcht das Event NUR bei realer
+      Operation (Test-Brücken wie Modul 15 _recordForTest feuern bewusst
+      mit, weil sie für das Widget „echte" Einträge simulieren).
+    - Frequency-Drossel auf Anbieter-Seite NICHT pflicht; Modul 17 macht
+      intern Render-Drossel (typisch requestAnimationFrame).
+
+Nutzt:
+  Browser-API: document.body                        Self-Mount-Anker für die Pille
+  Browser-API: document.head                        CSS-Inject via <style>-Element bei init()
+  Browser-API: window.addEventListener(name, cb)   fünf Event-Listener auf window
+                                                    (sbkim:alive / :handshake / :postmessage /
+                                                     :fremd-alert / :siegel-certified)
+  Browser-API: localStorage                         UX-Preferences (visible + position).
+                                                    KEIN IndexedDB-Schreiber, KEIN Modul-01-
+                                                    Abhängigkeit (Modul 17 startet, auch wenn
+                                                    Modul 01 fehlt).
+  Browser-API: PointerEvent / pointerdown/move/up   Drag-Mechanik (Touch + Mouse vereinheitlicht)
+  Browser-API: requestAnimationFrame                Render-Drossel bei Event-Sturm
+  DOM: document.querySelector("#lamp-fremd")        Modal-Bridge (Proxy-Click) für FREMD-Slot,
+                                                    falls Modul 15 im DOM gemountet ist
+                                                    (fail-soft via typeof-Check)
+  DOM: document.querySelector("#sbkim-siegel-badge") Modal-Bridge für SIEGEL-Slot, falls Modul 16
+                                                    im DOM gemountet ist (fail-soft)
+  SbkimSiegel.isCertified()                         Sync-Lese-Check für SIEGEL-Slot bei
+                                                    sbkim:siegel-certified-Event (fail-soft,
+                                                    Anti-Greenwashing-Klausel binär)
+
+  KEINE Pflicht-Modul-Abhängigkeit. Modul 17 startet idempotent, auch wenn
+  Modul 02/05/15/16 alle fehlen — alle Slots bleiben dann grau bzw. SIEGEL
+  nicht im DOM.
+
+Storage:
+  KEINE IndexedDB-Stores. localStorage-Schlüssel (verbindlich):
+    sbkim_widget_visible   → "true" | "false"   (Default "true")
+    sbkim_widget_position  → JSON-Stringify eines PositionSnapshot
+                             (Default {corner:"bottom-right", offsetX:16, offsetY:16})
+
+  VERKEHR-Mini-Log: RAM-only FIFO max 10 (analog Modul 15 Sub (e) Ringbuffer-
+  Pattern, aber kleiner). Kein localStorage, kein IndexedDB. Tab-Reload =
+  leer.
+
+  KEIN DB_VERSION-Bump in Modul 01. KEIN neuer Store. KEIN
+  PROTOCOL_VERSION-Bump (Modul 17 ist nicht protokoll-aktiv).
+
+Events:
+  reagiert: window "sbkim:alive"               LEBT-Slot pulsiert grün
+  reagiert: window "sbkim:handshake"           VERKEHR-Slot pulst + Mini-Log
+  reagiert: window "sbkim:postmessage"         VERKEHR-Slot pulst + Mini-Log
+  reagiert: window "sbkim:fremd-alert"         FREMD-Slot dauer-rot + Puls
+  reagiert: window "sbkim:siegel-certified"    SIEGEL-Slot ins DOM mounten +
+                                                First-Boot-Animation (einmalig
+                                                pro Session)
+  reagiert: click auf Slot-Element             Modal-Bridge (LEBT/VERKEHR neue
+                                                Modals aus Modul 17; FREMD/SIEGEL
+                                                Proxy-Click auf bestehende Modul-
+                                                15-/16-Modals)
+  reagiert: click auf X-Knopf                  Widget ausblenden + localStorage
+  reagiert: pointerdown/move/up auf Pille      Drag-Mechanik
+  feuert:   (keine CustomEvents — Modul 17 ist reiner Konsument der vier
+             Event-Kanäle.)
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 17 FLOATING-WIDGET bereit, Funktionen: init/show/hide/isVisible/getPosition");
+  Wie Modul 00/01/02/04/05/06/07/08/15/16 — Format-Konvention konsistent.
+
+Versionierungs- und Sichtbarkeits-Vertrag:
+  - Modul 17 ist NICHT protokoll-aktiv. Kein Netz, keine Signatur, kein
+    Embedding, kein Handshake. Reine Render-Schicht.
+    PROTOCOL_VERSION/DB_VERSION/BACKUP_FORMAT_VERSION alle unverändert.
+  - Event-Detail-Form additiv versioniert: Felder hinzufügen erlaubt
+    (z.B. künftig `signalStrength` in `sbkim:handshake`); umbenennen nicht.
+  - localStorage-Schema additiv versioniert: weitere Schlüssel mit
+    `sbkim_widget_<…>`-Präfix erlaubt; bestehende Schlüssel-Form bleibt.
+  - VERKEHR-Mini-Log ist SESSION-ONLY (RAM-only FIFO 10). Wer Persistenz
+    will, hängt einen eigenen Listener an die Custom-Events und schreibt
+    in seinen eigenen Store.
+
+Fehlerverhalten:
+  - init(): document.body fehlt (z.B. Skript im <head> ohne defer)  → fail-soft, MutationObserver wartet auf
+                                                                       document.body, mountet dann; KEIN Throw
+  - init(): zweimaliger Aufruf                                       → idempotent (kein Doppel-Mount, kein
+                                                                       Doppel-Listener-Set)
+  - init(): localStorage nicht verfügbar (Inkognito-Modus, alte
+       iOS-Safari-Varianten)                                          → fail-soft, Position-/Visible-Persistierung
+                                                                       übersprungen, Widget startet mit Defaults
+  - show()/hide() vor init()                                         → no-op + genau EINE console.warn-Zeile pro
+                                                                       Sitzung (frequenz-gedrosselt)
+  - sbkim:siegel-certified-Event bei isCertified()===false (Anti-
+       Greenwashing-Bypass-Versuch)                                   → Slot wird NICHT ins DOM angelegt; KEIN
+                                                                       Throw; eine console.warn-Zeile
+  - sbkim:fremd-alert-Event ohne bufferSize-Feld                    → Slot bleibt grau; kein Throw
+                                                                       (fail-soft Schema-Check)
+  - sbkim:handshake-Event mit unbekanntem outcome                   → Mini-Log-Eintrag ohne Wertung; Slot pulst
+                                                                       (Event ist real); kein Throw
+  - Drag-Pointer-Event-Fehler (z.B. capturing fail)                 → Drag abgebrochen, Position springt zurück
+                                                                       zur Last-Known-Good-Position; kein Throw
+  - Modal-Bridge: #lamp-fremd / #sbkim-siegel-badge fehlt im DOM    → Slot-Click ist no-op + console.warn
+                                                                       (Modul 15 / 16 nicht gemountet)
+
+  KEINE benannten Error-Klassen. Modul 17 ist rein lokal/render-only;
+  alle Pfade sind fail-soft mit console.warn analog Modul 15/16.
+
+Datenformate:
+  PositionSnapshot         → Karte 17 § Schnittstelle (oben gespiegelt).
+  Slot-IDs                 → "lebt" | "verkehr" | "fremd" | "siegel".
+  Event-detail-Schemata    → Karte 17 § Event-Bus-Schema (oben gespiegelt).
+  TrafficLogEntry          → { at:ISO, source:"handshake"|"postmessage",
+                              direction:"incoming"|"outgoing",
+                              decision:string } (RAM-only, FIFO 10).
+
+Garantien für Modul 00 / 02 / 05 / 09 / 15 / 16:
+  - **Anti-Greenwashing pro Slot (binär für SIEGEL, transparent für
+    LEBT/VERKEHR/FREMD):** SIEGEL-Slot ist nicht im DOM, wenn
+    `SbkimSiegel.isCertified() === false`. LEBT/VERKEHR/FREMD-Slots
+    bleiben sichtbar aber grau, wenn kein zugrundeliegendes Event sie
+    aktiviert — UX-Wahl gegen „verschwindende UI".
+  - **Backend-Module unverändert.** Modul 15 + 16 Public-Surface bleibt
+    identisch (Klaus-Festlegung Tafel-Evolutions-Klausel 2026-05-25).
+    Nur die Render-Schicht wandert ins Widget. lampSelector +
+    badgeSelector bleiben weiterhin Spec-konforme Optionen für den
+    Sage-Page-Pfad.
+  - **Sage-Page-Pfad bleibt erhalten.** Sage-Page (index.html) behält
+    Navleisten-Lampen + Siegel-Badge in der definierten DOM-Position
+    (Karte 15 § Sub (e) Lampe + Karte 16 § Sub (b) Position). Endknoten-
+    PWAs nutzen das Widget als Standard. Zweigleisigkeit ist Spec-Wille.
+  - **Endknoten-Einbau auf drei Zeilen reduziert** (statt 30): Modul-
+    Datei-Kopie + <script>-Tag + EIN SbkimWidget.init({allowedOrigins,
+    repoUrl})-Aufruf. KEINE CSS-Variablen-Kopier-Pflicht, KEIN
+    Navleisten-Markup-Anpassung. Karte 09 § Schritt 10 + 11 + neuer
+    Schritt 12 wird in eigener Folge-Pflege nachgezogen (NICHT in
+    Spec-Sitzung 17).
+  - **Event-Bus ist passiver Hook-Punkt.** Modul 17 dispatcht KEINE
+    eigenen Events. Andere Module dürfen die fünf sbkim:*-Events
+    ebenfalls abonnieren — z.B. eine künftige Sage-Page-Statistik-
+    Karte. Konsumenten-Reihenfolge ist nicht spezifiziert (Listener-
+    Aufruf-Reihenfolge ist Browser-Implementation-defined).
+  - **VERKEHR-Mini-Log ist RAM-only FIFO 10.** Analog Modul 15 Sub (e)
+    Ringbuffer-Pattern, aber kürzer. Tab-Reload = leer. Wer Audit will,
+    baut Modul 12 (Blocklist) mit Append-Log.
+  - **localStorage-Schlüssel sind UX-only.** sbkim_widget_visible +
+    sbkim_widget_position sind keine Protokoll-Daten, kein Spore-Feld,
+    kein Identitäts-Anker. Browser-Daten-Wipe → Default-Position
+    wiederhergestellt, kein Identitäts-Verlust (analog zu Modul 17 §
+    Risiken).
+
+Tabus (verbindlich):
+  - NIEMALS eigene Identität / Spore / Signatur / Crypto. Modul 17 ist
+    Render-Schicht.
+  - NIEMALS IndexedDB-Schreiber. Nur localStorage für UX-Preferences.
+  - NIEMALS Netz-Pfad: kein fetch, kein BroadcastChannel, keine
+    postMessage, kein Service-Worker-Hook.
+  - NIEMALS Anti-Greenwashing-Bypass für SIEGEL-Slot. Binär: kein
+    DOM-Render ohne isCertified()===true (Spiegelung Karte 16 §
+    Strikte Tabus).
+  - NIEMALS Override der Modul-15-/16-Modals. Modal-Bridge via Proxy-
+    Click; bestehende Modals bleiben unverändert.
+  - NIEMALS Auto-Verhalten ohne init(). Skript-Laden zeigt nur die
+    Selbstcheck-Zeile; erst SbkimWidget.init() mountet die Pille.
+  - NIEMALS PII in Event-Details. Detail-Form trägt nur Counts +
+    Status-Flags. Keine domain-Strings, keine query-text-Inhalte,
+    keine hint-vector-Inhalte. nodeId in sbkim:alive ist die EIGENE
+    Identität (analog Modul 15 Sub (a) read() Klartext-Konvention);
+    peerNodeId in sbkim:handshake ist auch Klartext, weil der Andocker
+    den Peer ohnehin in sbkim_siblings sieht — nicht hashed.
+  - NIEMALS Dauer-Disclaimer-Schwall im Widget selbst. Erklärungen
+    gehören in Sub-(c)-Modal von Modul 16 + Sub-(e)-Modal von Modul 15.
+  - NIEMALS Pflicht-Module-Liste. Modul 17 prüft NICHT, ob Anbieter-
+    Module da sind — es lauscht nur auf Events. Pflicht-Modul-Bezeugung
+    ist Modul-16-Aufgabe.
+  - Empfangsmodus-Prinzip: Modul 17 initiiert nichts, antwortet nichts
+    ins Netz. Reine Page-Schicht-Render.
+
+Hook-Punkte:
+  Modul 02 (Spore) → dispatcht sbkim:alive einmalig nach init() +
+    getOrCreateIdentity(). Bau-Sitzung 17 oder eigene Mini-Pflege.
+  Modul 05 (Anastomose) → dispatcht sbkim:handshake pro abgeschlossenem
+    Handshake (Sender + Empfänger). Bau-Sitzung 17 oder eigene Mini-
+    Pflege.
+  Modul 15 Sub (b) → dispatcht sbkim:postmessage pro eingehender
+    message mit type:"sbkim/membrane/v1". Bau-Sitzung 17 oder eigene
+    Mini-Pflege.
+  Modul 15 Sub (e) → dispatcht sbkim:fremd-alert pro Ringbuffer-
+    Neueintrag (Spiegelung des subscribe(cb)-Hooks). Bau-Sitzung 17
+    oder eigene Mini-Pflege.
+  Modul 16 (SBKIM-Siegel) → dispatcht sbkim:siegel-certified einmalig
+    nach init() wenn isCertified()===true. Bau-Sitzung 17 oder eigene
+    Mini-Pflege.
+  Modul 00 (Doku-Fenster) → optional: 5-Klick-Geste am Such-Symbol
+    triggert SbkimWidget.show() als Wiederherstellungs-Pfad (b).
+    Eigene Folge-Pflege Modul 00 + Modul 17.
+
+Risiken:
+  Slot-Event-Drift (Mitigation: Bau-Sitzung 17 verdrahtet die fünf
+  Pflicht-Events in einer Sitzung) · localStorage-Verlust (Mitigation:
+  bewusste Akzeptanz, Default-Position als Fallback) · Eruda-Kollision
+  (Mitigation: defaultCorner-Override) · Mobile-Footprint zu groß
+  (Mitigation: Klärungs-Entscheidung Bau-Sitzung 17 ob 36 px Slots
+  reichen) · Slot-Anti-Greenwashing-Verwechslung (Mitigation: Click
+  öffnet Modal trotzdem, Modal-Text klärt) · Event-Spamming
+  (Mitigation: Render-Drossel via requestAnimationFrame).
+
+Geprüft: 2026-05-25 (Spec-Sitzung 17 — Vier-Slot-Live-Status-Dashboard
+                     spezifiziert: Event-Bus-Schema fünf Pflicht-Events,
+                     Layout 200×48 px Pille mit vier 40 px-Slots,
+                     localStorage-Persistierung visible + position,
+                     RAM-only VERKEHR-FIFO 10, Modal-Bridge zu Modul
+                     15/16 unverändert, Sage-Page-Pfad bleibt erhalten,
+                     KEIN Code, KEIN Modul-15/16-Eingriff, KEINE
+                     Sage-Page-Änderung)
 
 ---
 
@@ -4270,3 +4662,4 @@ PULS § Vision-Anker 4 (Königin-Relay), PULS § Vision-Anker 5
 | 2026-05-20 | Bau-Sitzung 04.B `explainMatchLLM` in Modul 04 | Stufe-B-LLM-Pass produktiv nach Bau 04.A (matchDimensions sync) + Brief 03 M04-Erweiterung. Brief BAU_04B_EXPLAIN_MATCH_LLM (PR #112 gemerged 2026-05-20, `main` `a1f6939`) als Spec-Vorlage. **§ 1 Modul 04 Geprüft-Zeile** + § 10 Änderungsprotokoll. KEIN Vertrags-Eingriff (Brief 03 hat `explainMatchLLM` voll spezifiziert). **Code in `src/modules/04_match.js` additiv** (keine bestehende Funktion verändert): zwei neue Fehler-Factories `InvalidApiKeyError(message)` + `InvalidMatchResultError(message)` (sync von `explainMatchLLM`-Vor-Check); fünf neue modul-lokale Konstanten `STUFE_B_DEFAULT_MODEL = "claude-sonnet-4"` + `STUFE_B_MAX_TOKENS = 1024` (gespiegelt aus § 0) + `ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"` + `ANTHROPIC_API_VERSION = "2023-06-01"` + `LLM_MAX_OUTPUT_CHARS = 4096` (defensiv-Schutz vor pathologischen LLM-Outputs); modul-lokale Allow-Lists `ALLOWED_CANDIDATE_SCOPES = ["lokal","mailbox","netz"]` + `ALLOWED_OVERRIDE_RECOMMENDATIONS = ["established","established-with-bridge","rejected"]` + Längen-Limits `MAX_BEGRUENDUNG_LEN = 200` + `MAX_ERKLAERUNG_LEN = 600`. Drei interne Helper: `isNumberOrNull(v)` (sync), `validateMatchResultShape(matchResult)` (sync, wirft `InvalidMatchResultError` mit konkreten Feld-Hinweis), `buildLlmPrompt(matchResult)` (sync, baut deutsche User-Message mit vier Schicht-Werten + Schema-Block wörtlich aus Karte 04), `validateLlmResponseSchema(parsedJson, matchResult)` (sync, prüft strikt `schichten.{fachlich/prozess/skalierung}.{score:Number∈[-1,1], begruendung:String ≤ MAX_BEGRUENDUNG_LEN}` + `bruecke:null|{needed:String, lookingFor:String\|null, candidateScope:"lokal"\|"mailbox"\|"netz"}` + `erklaerung:String ≤ MAX_ERKLAERUNG_LEN` + `overrideRecommendation:null\|"established"\|"established-with-bridge"\|"rejected"`; **Anti-Missbrauch § 8: `candidateScope:"netz"` STILL auf `"lokal"` korrigiert** — KEIN Throw, KEIN Logging, defensiv; entfällt erst mit Anker 10/11/12). **Neue Funktion `explainMatchLLM(matchResult, apiKey, options?)` async**: Sync-Vor-Checks werfen `InvalidApiKeyError` (leerer/nicht-String apiKey) oder `InvalidMatchResultError` (matchResult kein gültiges MatchDimensionsResult); danach Options-Defaults (model / maxTokens / abortSignal); fetch POST an `ANTHROPIC_API_URL` mit Headern `x-api-key` + `anthropic-version` + `content-type:application/json` und Body `{model, max_tokens, messages:[{role:"user", content:prompt}]}` + signal. **Fail-soft auf allen Fehlerpfaden:** HTTP 4xx/5xx → `ExplainResult{available:false, reason:"API HTTP <status> (<text>)", fallbackScore:matchResult.overall, model, tokensUsed:null}`; HTTP 429 sondergetaggt als „API HTTP 429 (Rate-Limit) — Aufrufer-Drossel-Pflicht"; response.json() wirft → „Antwort war kein valides JSON"; Anthropic-API-Form fehlt (kein `content[0].text`) → „Antwort entsprach nicht der Anthropic-API-Form"; LLM-Text > LLM_MAX_OUTPUT_CHARS gekürzt vor JSON-Parse; LLM-Text kein valides JSON → „LLM-Output war kein valides JSON"; Schema-Mismatch (validateLlmResponseSchema returns null) → „Antwort entsprach nicht dem Schema: <konkreter Hinweis>"; TypeError aus fetch → „Netz nicht erreichbar (<message>)". **`AbortError` aus fetch wird NICHT abgefangen** — Standard-DOM-Verhalten, durchgereicht; Aufrufer fängt selbst. **Erfolgs-Pfad:** `ExplainResult{available:true, schichten, bruecke (mit candidateScope:"netz"→"lokal"-Korrektur), erklaerung, overrideRecommendation, fallbackScore:matchResult.overall, model, tokensUsed:(input+output) oder null}`. **`window.SbkimMatch`-Export** um `explainMatchLLM` + `InvalidApiKeyError` + `InvalidMatchResultError` ergänzt. **Selbstcheck-Zeile auf VIER Funktionen erweitert**: `MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60`. `_meta` um `stufeBDefaultModel` + `stufeBMaxTokens` + `anthropicApiUrl` + `anthropicApiVersion` (Read-Anker für Tests) erweitert. Modul-Kopfkommentar um Bau-04.B-Block am Ende. `node --check src/modules/04_match.js` grün. **Karte 04** § Manueller Test um Knopf 10 erweitert; § Bauzustand neue Zeile. **Panel 04** in `tests/manual_check.html` Knopf 10 „explainMatchLLM Test-Brücke" — User-Key-Eingabe via `window.prompt` (KEIN localStorage / sessionStorage / IndexedDB-Persistenz — Sicherheits-Klausel; produktiver Identitäts-Container ist Vision-Anker 5, eigene Folge-Spec-Sitzung), Setup-matchResult via deterministischem `SbkimMatch.matchDimensions`-Aufruf mit Käsekuchen-vs-Käsetorte-Vektoren; Logging von `available`/`model`/`tokensUsed`/`schichten`/`bruecke`/`erklaerung`/`overrideRecommendation` bzw. `reason`/`fallbackScore`. Status-Chip „Stufe-B-Call OK" (auch bei `available:false` — Modul 04 hat sauber resolved, nicht rot wegen API-Fehler). Panel-Header-Hinweistext um Bau-04.B-Block + CORS-Hinweis erweitert. **Headless-Smoke-Test** `tests/smoke_bau04b_explain_match_llm.mjs` mit fetch-Stub (Node 22, KEIN echter Netz-Aufruf): zehn Proben + zwei Bonus-Proben (HTTP 200 valide JSON / candidateScope:"netz"→"lokal"-Korrektur / HTTP 429 / HTTP 500 / TypeError fetch / LLM-Output kein JSON / Schema-Mismatch / leerer apiKey → sync InvalidApiKeyError / leeres matchResult → sync InvalidMatchResultError / AbortError aus fetch durchgereicht / usage fehlt → tokensUsed null / schichten.score=1.5 außerhalb [-1,1] → Schema-Mismatch). 30 Sub-Proben, 30 grün. Regression: Bau-02.Y 33/33 + Bau-04.A 19/19 + Pflege-01 8/8 + Bau-05.Y 25/25 + Bau-06.Y 25/25 + Bau-07.Y 30/30 + Bau-08.Y 26/26 alle grün. **PROTOCOL_VERSION bleibt `"0.1"`, DB_VERSION bleibt `4`, BACKUP_FORMAT_VERSION bleibt `2`** — Modul 04 zustandslos, kein Storage, kein Spore-Feld. KEIN Modul-01/02/03/05/06/07/08-Eingriff, KEIN Identitäts-Container-Code (Vision-Anker 5), KEIN localStorage / sessionStorage / IndexedDB-Persistenz des API-Keys (Sicherheits-Klausel), KEIN eigener Rate-Limit-Pfad (Aufrufer-Pflicht), KEINE Sage-Page-/CLAUDE.md-/Karte-09-/`status.json`-Änderung. **`status.json` unverändert** (Modul 04 bleibt `score:"fertig"`; `update_puls_pie.py` NICHT aufgerufen — additive Erweiterung). **Bekannte Limitierung CORS:** Anthropic-API erlaubt direkte Browser-Aufrufe seit 2024 mit `anthropic-dangerous-direct-browser-access`-Header — Modul 04 setzt diesen Header BEWUSST NICHT (keine Klaus-feindliche Konfig-Komplexität). Bei `localhost`-Test scheitert CORS möglich; Workaround echtes PWA-Setup mit gehosteter Origin (GitHub-Pages-Endknoten). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf Panel 04 Knopf 10 mit Anthropic-API-Key. Übergabeprotokoll `docs/sessions/archiv/2026-05-20_bau-04b-explain-match-llm.md`. |
 | 2026-05-20 | Bau-Sitzung 08.Y slot-spezifische Outbox in Modul 08 | Vierte Konsumenten-Bau-Sitzung der Bau-Sitzungs-Brief-Pipeline aus Brief 99 (nach Bau 05.Y / 06.Y / 07.Y — alle drei Briefe gemerged, Bau-Sitzungen folgen in eigener Reihenfolge). Brief BAU_08Y_SLOT_SPEZIFISCHE_OUTBOX (PR #116 gemerged 2026-05-20, `main` `4b063ad`) als Spec-Vorlage. **Modul 08 ist storage-only** (kein Netz, kein Receiver-Map) — kürzester der vier Konsumenten-Bauten. **§ 1 Modul 08 Geprüft-Zeile** um „2026-05-20 (Bau 08.Y slot-spezifische Outbox)" erweitert. KEIN Vertrags-Eingriff in Bietet / Storage / Fehlerverhalten / Garantien — der Vertrag steht aus Spec-Sitzung 08 + Brief 04 (Slot-Pattern). **Code in `src/modules/08_ui_demo.js` additiv-mit-internem-Refactoring** (keine äußere Signatur-Änderung): Modul-State um `var activeSlotKey = null` erweitert (gecached vom `init()`); modul-lokale Konstanten `OUTBOX_STORE` / `SIBLINGS_STORE` durch `OUTBOX_STORE_BASE` / `SIBLINGS_STORE_BASE` ersetzt (Slot-Suffix wird im Schreib-Pfad angehängt); neuer Helper `heteroOutboxStoreName(slot)` (sync, intern, returns `"sbkim_hetero_outbox_" + slot`); neuer Helper `siblingsStoreName(slot)` (sync, intern, returns `"sbkim_siblings_" + slot`); neuer Helper `ensureSlotStores(slot)` (async, intern, ruft `SbkimStorage.ensureStore` für beide slot-suffixed Stores — idempotent dank Bau 01.Y); `probeDependencies` um `SbkimSpore (Modul 02)` als zweite Pflicht-Abhängigkeit erweitert; `init(options)` erweitert um (1) `SbkimSpore.init()` + (2) `activeSlotKey = await SbkimSpore.getActiveIdentityKey()` (Default `"main"` bei fehlendem Marker) + (3) `await ensureSlotStores(activeSlotKey)`; `options.storeName` wird stillschweigend ignoriert (slot-suffix ist intern verbindlich); `listOutbox()` / `addOutboxAnchor` / `removeOutboxAnchor` lesen + schreiben jetzt gegen `heteroOutboxStoreName(activeSlotKey)`; `setSiblingHeteroOptIn` liest + schreibt gegen `siblingsStoreName(activeSlotKey)` (Co-Schreiber-Konvention via `Object.assign({}, sibling, {heterokaryosisOptIn})` unverändert); defensives `ensureSlotStores(activeSlotKey)` vor jedem ersten Schreibvorgang in `addOutboxAnchor` + `setSiblingHeteroOptIn` (idempotent, schützt gegen Backup-Re-Import-Pfade); `addOutboxAnchor`-Check-Reihenfolge unverändert (1 Label sync, 2 Vektor sync, 3 async-Voll-Check `OutboxFullError` nur bei NEUEM Label); `removeOutboxAnchor` weiterhin idempotent via `SbkimStorage.del`; Test-Brücken `_clearOutbox` / `_addPseudoSibling` / `_clearPseudoSiblings` umgestellt auf slot-spezifische Stores (`_clearOutbox` und `_clearPseudoSiblings` nutzen jetzt `SbkimStorage.clear(<store>)` statt iteratives `del` — sauberer, da Slot-isoliert); `pseudoSiblingIds`-Tracker entfernt (durch `clear`-Pfad obsolet); `_meta` um `outboxStoreBase` / `siblingsStoreBase` + Getter `activeSlotKey` (Read-Anker für Tests, null vor init) erweitert; Modul-Kopfkommentar um Bau-08.Y-Block am Ende. Selbstcheck-Zeile UNVERÄNDERT (`init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn` — fünf Funktionen heißen weiterhin gleich). `node --check src/modules/08_ui_demo.js` grün. **Karte 08** § Schnittstelle (Storage-Block-Erweiterung um slot-suffixed Stores), § Manueller Test (Erwartungs-Block je Knopf nachgezogen — `sbkim_hetero_outbox_main` jetzt statt `sbkim_hetero_outbox`; Setup-Knopf-Output zeigt aktiven Slot), § Konfigurationswerte (`HETERO_OUTBOX_MAX_ENTRIES = 5` jetzt PRO SLOT, Hinweis ergänzt), § Bauzustand neue Zeile. **Panel 08** in `tests/manual_check.html` Setup-Knopf-Output zeigt den aktiven Slot + slot-suffixed Store-Namen (`outbox_store: "sbkim_hetero_outbox_main"`, neues Feld `active_slot_key`); Test-1-Erwartung um Slot-Suffix-Hinweis erweitert; bestehende acht Knöpfe ohne Strukturänderung. Optional-Knopf Sekundär-Persona-Test bewusst NICHT in dieser Bau-Sitzung (Empfehlung Brief 08.Y — Bau-05.Y/06.Y/07.Y-Sichttests haben das Sekundär-Persona-Muster genug demonstriert). **Headless-Smoke-Test** `tests/smoke_bau08y_slot_spezifische_outbox.mjs` mit fake-indexeddb (Node 22): drei Proben (Default-Slot Schreib-/Lese-Pfad / Sekundär-Slot via Modul-Re-Load / Co-Schreiber-Pfad in `sbkim_siblings_main`) + Bonus (Slot-Isolation Cross-Persona) — 26 Sub-Proben, 26 grün. Regression: Bau-02.Y-Smoke 33/33 + Bau-04.A-Smoke 19/19 + Pflege-01-Smoke 8/8 alle grün. **Bekannte Limitierung aus Bau-06.Y-Brief aufgelöst:** Modul 06 liest jetzt aus `sbkim_hetero_outbox_<key>` (Bau 06.Y) — Modul 08 schreibt dorthin (diese Bau-Sitzung). Pre-Brief-04-Aufrufer treffen unverändert auf `_main`-Slots via `getActiveIdentityKey`-Default. **PROTOCOL_VERSION bleibt `"0.1"`, DB_VERSION bleibt `4`, BACKUP_FORMAT_VERSION bleibt `2`**. KEIN Modul-01/02/03/04/05/06/07-Eingriff, KEIN Receiver-Map-Code (Modul 08 storage-only), KEINE `setActiveIdentity`-Aufrufe aus Modul 08, KEINE Migration der alten nicht-suffixed `sbkim_hetero_outbox`-Daten (Aufrufer-Pflicht via Backup-Re-Import aus Bau 02.Y in main-Slot bringen), KEINE Sage-Page-/CLAUDE.md-/Karte-09-/`status.json`-Änderung. **`status.json` unverändert** (Modul 08 bleibt `score:"stub"`; `update_puls_pie.py` NICHT aufgerufen — additive Erweiterung, kein Score-Wechsel). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf von Panel 08 Setup-Knopf (zeigt slot-suffixed Store-Namen). Übergabeprotokoll `docs/sessions/archiv/2026-05-20_bau-08y-slot-spezifische-outbox.md`. |
 | 2026-05-22 | Pflege Modul 01 Versions-Bump-Race in `openProbe` | Folge-Pflege auf Klaus' Sichttest 2026-05-21 (Sichttest-Folge zur Bau-Sage-Page-Refactor-Sitzung, PRs #127–#134 gemerged) und Diagnose-2-Befund im Übergabeprotokoll `2026-05-21_bau-sage-page-refactor-sichttest.md`: `ensureStore('sbkim_meta') Versions-Bump blockiert — ein anderer Tab haelt die DB offen und ignoriert onversionchange.` reproduzierbar auf frischer DB nach Panel-01-Notfall-Reset (PR #131) + Hard-Reload + Panel-06-Setup, **nur in `tests/manual_check.html` bei wiederholtem Modul-Wechsel** — Endknoten-PWAs nicht betroffen, weil sie nur EINE `init()`-Kette pro Tab-Lebenszeit haben. Ursache: `db.close()` ist synchron in JS, IndexedDB schließt die Verbindung intern asynchron, ein direkt nachfolgender `indexedDB.open(name, newVersion)` trifft auf eine noch nicht aufgelöste Vorgänger-Verbindung und hängt in `onblocked` (manifestiert sich auf Android-Chrome / Galaxy Tab S6 / DeX-Chrome stärker als auf Desktop-Chrome, weil `db.onclose` dort weniger zuverlässig feuert). **§ 1 Modul 01 Bietet-Block:** Garantien-Block nachgezogen um neuen Sub-Block „init-Garantien (Pflege „Versions-Bump-Race in openProbe", 2026-05-22)" mit drei Punkten: (1) Race-frei bei Versions-Bumps innerhalb derselben Tab-Session (Wait auf `db.onclose` ODER 50-ms-Timeout-Fallback); (2) `openProbe`-Probe-Verbindung trägt jetzt den fail-soft-`onversionchange`-Handler; (3) Anwendungsfall + Endknoten-PWA-Unbetroffenheit explizit benannt. **§ 1 Modul 01 Geprüft-Zeile** um 2026-05-22 erweitert. **§ 9.5 Migrations-Strategie** neuer Stand-Hinweis-Absatz „Stand 2026-05-22 (Folge-Pflege „Versions-Bump-Race in openProbe")" mit Befund / Code-Lösung / Tafel-Evolutions-Hinweis. **KEIN Bietet-/Storage-/Fehler-Block-Eingriff** für Modul 01 (acht öffentliche Funktionen + Signaturen unverändert); **KEIN `ensureStore`-Verhalten-Bruch von außen** (Aufrufer-Seite 02/05/06/07/08 ohne Code-Änderung); **KEIN `DB_VERSION`-Bump** (`DB_VERSION = 4` bleibt). **Code in `src/modules/01_storage.js` additiv**: neuer modul-lokaler Helper `closeConnectionAndWait(db)` (wartet auf `db.onclose`-Feuer ODER 50-ms-Timeout-Fallback); `openProbe(name)` ruft `attachVersionChangeHandler(req.result)` vor `resolve`; `init()` beide `probedDb.close()`-Stellen (Fail-soft-Pfad + Initial-Pfad) und `ensureStore` `db.close()` (vor Versions-Bump) auf `closeConnectionAndWait(db).then(...)` umgestellt — `indexedDB.open(name, newVersion)` startet jetzt erst nach vollständig aufgelöster Vorgänger-Verbindung. Modul-Kopfkommentar um Pflege-Block am Anfang erweitert (Befund, Ursache, drei Eingriffe). **Headless-Smoke-Test** `tests/smoke_pflege_01_versions_bump_race.mjs` (Node 22 + fake-indexeddb): vier Proben, 6 Sub-Proben, 6/6 grün. **Regression** alle anderen Smoke-Tests grün ohne Anpassung: Pflege-01-Smoke 8/8 + Bau-02.Y 33/33 + Bau-04.A 19/19 + Bau-05.Y 25/25 + Bau-06.Y 25/25 + Bau-07.Y 30/30 + Bau-08.Y 26/26 = 166 Proben grün. **KEINE Modul-02/03/04/05/06/07/08-Änderung**, **KEINE `tests/manual_check.html`-Änderung** (Sichttest-Trigger ist der vorhandene PR-#131-Notfall-Reset-Knopf + Hard-Reload + Panel-06-Setup-Knopf), **KEINE Sage-Page-Änderung**, **KEINE CLAUDE.md-/Karte-09-/`status.json`-Änderung**. **`PROTOCOL_VERSION` bleibt `"0.1"`, `DB_VERSION` bleibt `4`, `BACKUP_FORMAT_VERSION` bleibt `2`**. **`status.json` unverändert** (Modul 01 bleibt `score:"fertig"`; `update_puls_pie.py` NICHT aufgerufen). Karte 01 § Versionsmigration neuer Sub-Block „Folge-Pflege 2026-05-21 — Race-Auflösung in openProbe + Close-Wait" (zwei Absätze: Was sich änderte / Klaus' Sichttest-Beweis); § Bauzustand zwei neue Zeilen (Pflege „Versions-Bump-Race" + Sichttest-Race-Auflösung); § Risiken unverändert (bestehender Race war nicht dokumentiert, deshalb keine Tafel zu evolvieren). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf am Galaxy Tab S6 / DeX-Chrome. Übergabeprotokoll `docs/sessions/archiv/2026-05-22_pflege-01-versions-bump-race.md`. |
+| 2026-05-25 | Spec-Sitzung 17 Floating-Widget | Pipeline-Schritt 5b. Neuer § 1 Modul 17-Block voll spezifiziert — Vier-Slot-Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) als finale Form (Klaus-Zusatz-Wunsch 2026-05-25 ersetzt den ursprünglichen 2-Plaketten-Vorschlag aus Brief `BRIEF_SPEC_15_16_FLOATING_WIDGET.md` Punkt 3 via Tafel-Evolutions-Klausel). Schnittstelle `window.SbkimWidget = {init/show/hide/isVisible/getPosition/_meta}` mit Pille ~200×48 px, self-mountend in `<body>`, Drag via Pointer-Events, X-Schließen + vier Wiederherstellungs-Pfade, `localStorage`-persistierte Visible + Position, RAM-only VERKEHR-Mini-Log FIFO 10. **Event-Bus-Schema** (fünf Pflicht-Events auf `window`): `sbkim:alive` (Modul 02 dispatcht), `sbkim:handshake` (Modul 05), `sbkim:postmessage` (Modul 15 Sub b), `sbkim:fremd-alert` (Modul 15 Sub e), `sbkim:siegel-certified` (Modul 16). Modul 17 lauscht passiv, kennt keine Modul-Referenz; Anbieter-Module dispatchen bei realer Operation (Anti-Greenwashing). Detail-Form PII-frei (Counts + Status-Flags, KEINE Inhalte). § 1 Modul 02/05/15/16 Events-Blöcke um die Pflicht-Custom-Events erweitert (`feuert: sbkim:…` mit Detail-Form und Konsument-Hinweis). Karten 02 + 05 § Bauzustand + 15 § Sub (e) + 16 § Sub (b) bekommen je einen ein-Satz-Verweis-Block. Modul-15-+-16-Backends bleiben unverändert (Klaus-Festlegung); Sage-Page-Pfad (Navleisten-Lampen + Siegel-Badge) bleibt erhalten als Sage-page-spezifisch. Endknoten-Standard wird das Widget — Endknoten-Einbau auf drei Zeilen reduziert (Modul-Datei-Kopie + `<script>`-Tag + EIN `SbkimWidget.init({allowedOrigins, repoUrl})`-Aufruf). Karte 09 § Schritt 10 + 11 schrumpfen in eigener Folge-Pflege nach Bau 17. CLAUDE.md § Modul-Tabelle Eintrag 17 auf „Spec fertig" gesetzt; § Pipeline-Reihenfolge bleibt unangetastet (Spec-Sitzung 17 entspricht Pipeline-Schritt 5b, war bereits am 2026-05-25 in PR #163 verankert). `status.json` § modules[] um Modul 17 (`score:"spec"`, `siegel:"Spec fertig"`) erweitert; `python3 scripts/update_puls_pie.py` aufgerufen. **KEIN Modul-Code** in `src/modules/17_floating_widget.js` (Spec-Sitzung, kein Bau). **KEINE Endknoten-Änderung.** **KEIN Eingriff in `src/modules/02_spore.js` / `05_anastomose.js` / `15_membran.js` / `16_siegel.js`** (Event-Hook-Code ist Bau-Sitzung 17 oder eigene Folge-Pflege pro Modul). **KEINE Sage-Page-Änderung.** **KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump** (Modul 17 ist nicht protokoll-aktiv). Brief Bau-Sitzung 17 angelegt: `docs/sessions/BRIEF_BAU_17_FLOATING_WIDGET.md`. Übergabeprotokoll `docs/sessions/archiv/2026-05-25_spec-17-floating-widget.md`. |

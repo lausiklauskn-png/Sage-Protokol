@@ -264,7 +264,7 @@ ungemergten Branches lebten.
 | 14 | `docs/components/14_diffusion.md` | Diffusion-Backlog · Stub, Priorität niedrig |
 | 15 | `docs/components/15_membran.md` | Membran-Backlog · Stub, **Priorität hoch** (2026-05-24, Auslöser Gemini 3.5 Flash) |
 | 16 | `docs/components/16_siegel.md` | Siegel-Backlog · Stub, **Priorität hoch** (2026-05-24, Auslöser App-Freigabe) |
-| 17 | `docs/components/17_floating_widget.md` | Widget-Backlog · Spec ausstehend, **Priorität hoch** (2026-05-25, Auslöser Klaus' UI-Befund nach erster Endknoten-Migration — Navleisten-Mount nicht skalierbar; Floating-Modul wie Eruda als Endknoten-Standard, Sage-Page behält Navleisten-Lampen) |
+| 17 | `docs/components/17_floating_widget.md` | Widget-Backlog · **Spec fertig** (2026-05-25, Spec-Sitzung 17), **Priorität hoch**. Vier-Slot-Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) als finale Form — Klaus-Zusatz-Wunsch 2026-05-25 via Tafel-Evolutions-Klausel ersetzt den 2-Plaketten-Vorschlag aus Brief `BRIEF_SPEC_15_16_FLOATING_WIDGET.md`. Event-Bus-Schema mit fünf Custom-Events auf `window` (sbkim:alive/handshake/postmessage/fremd-alert/siegel-certified). Self-mountend in `<body>`, Drag, X-Schließen, localStorage-Persistierung. Modul-15-+-16-Backends bleiben unverändert (Sage-Page behält Navleisten-Lampen, Endknoten-Standard ist Widget). Bau-Sitzung 17 nächster Schritt. |
 
 Modul 00 (Doku-Fenster) ist die "5-Klick versteckte Funktion" in den
 Suchleisten der Endknoten-PWAs. Modul 09 beschreibt, wie ein fertiges Modul
