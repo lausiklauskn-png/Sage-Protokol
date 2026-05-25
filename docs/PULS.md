@@ -107,7 +107,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
-| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, **Sub (a)+(b) finalisiert 2026-05-25** in Spec-Sitzung 15.B mit MembraneSnapshot-Schema inkl. Siegel-Hook + Envelope mit vier op-Werten sporeRef/query/hint/queryResult + Allowlist fail-soft + Nonce-Pflicht 30 s Replay-Dedupe + Rate-Limit-Hook für Modul 11 vorbestellt, Sub (c) später, Sub (d) Verweis) | Code-Stub (Bau-Sitzung 15 Sub (e) 2026-05-24 + Bau 15.SW SW-Probe-Detektor 2026-05-24 + Pflege Sage-Page-Sichttest-Knopf 2026-05-24; **Bau 15.B Sub (a)+(b) Bedien-Pfade ausstehend** — Brief liegt unter `docs/sessions/BRIEF_BAU_15B_MEMBRAN.md`) | **geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6)** — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün (alle sechs Pflicht-Felder); Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün (acht-Schritt-Sichttest aus Pflege-Anleitung); echter Live-Cross-Origin-SW-Probe bleibt headless-only (alle drei Endknoten same-origin auf `lausiklauskn-png.github.io`) |
+| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, **Sub (a)+(b) finalisiert 2026-05-25** in Spec-Sitzung 15.B mit MembraneSnapshot-Schema inkl. Siegel-Hook + Envelope mit vier op-Werten sporeRef/query/hint/queryResult + Allowlist fail-soft + Nonce-Pflicht 30 s Replay-Dedupe + Rate-Limit-Hook für Modul 11 vorbestellt, Sub (c) später, Sub (d) Verweis) | **Code-Stub voll** (Bau-Sitzung 15.B Sub (a)+(b) Bedien-Pfade 2026-05-25 + Bau 15 Sub (e) + Bau 15.SW SW-Probe-Detektor + Pflege Sage-Page-Sichttest-Knopf, alle 2026-05-24) | **Bau 15.B Sichttest ungeprüft 2026-05-25** (Headless-Smoke `tests/smoke_bau15b_membran.mjs` 31/31 grün — wartet auf Klaus' Browser-Lauf Panel 15 Knöpfe 10–17 in DeX-Chrome); Sub (e) + Bau 15.SW + Sage-Page-Lampe geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün, Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün |
 | 16 siegel | Spec fertig (2026-05-24, Spec-Sitzung 16) | **Code-Stub (Bau-Sitzung 16 vom 2026-05-24)** | Sichttest ungeprüft (Headless-Smoke 32/32 grün, wartet auf Klaus' Browser-Lauf) | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. **Spec-Sitzung 16 vom 2026-05-24:** alle vier Sub-Bereiche final spezifiziert — Sub (a) Pflicht-Modul-Liste mit sieben Modulen (01 Storage / 02 Spore / 03 Embedding [`lazy:true` für Sage-Page] / 04 Match / 05 Anastomose / 07 Apoptose / 15 Membran) + Surface-Funktions-Anker pro Modul (`init`/`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`) + Status-Schema (`"ok"`/`"deferred"`/`"missing"`/`"broken"`) + binärer Fail-Modus (kein Render bei missing/broken, eine `console.warn`-Zeile mit ID-Liste); Sub (b) Badge-Rendering — DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach #lamp-fremd, 40-px rundes Medaillon Edel-Gold (`#C9A961`-Klasse) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei verschlungene Hyphen-Bögen + zentraler Knoten-Punkt), 600 ms First-Boot-Animation einmalig, dezenter Glow-Hover, KEINE Stufen-Varianten (Klaus-Festlegung: Siegel wächst über Aspekte, nicht über sichtbare Stufen), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1); Sub (c) Erklärungs-Modal — eigenständig in `document.body` (analog Modul 15), Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-Liste mit Status + Aspekte-Liste + Aussteller-Klärung), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen), nüchterne Aussteller-Klärung in zwei Zeilen (Klaus-Korrektur 2026-05-24: KEIN Disclaimer-Schwall), Repo-URL Auto-Erkennung mit `init({repoUrl})`-Override; Sub (d) `ZERTIFIKAT_ASPEKTE`-Schema (`{since, module, aspect, description}`) chronologisch aufsteigend, Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24" verbindlich für Bau 16, Pflicht-Konvention: jedes spätere Sicherheits-Modul (10/11/12/14/15.B) MUSS in seiner Pflege einen Aspekt ergänzen. Persistenz **RAM-only** (Variante A, kein DB_VERSION-Bump, kein neuer Store, kein PROTOCOL_VERSION-Bump — Modul 16 ist nicht protokoll-aktiv). Schnittstelle `window.SbkimSiegel = {init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta}`. KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). INTERFACES.md § 1 Modul 16 voller Block ergänzt (analog § 1 Modul 15). **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
@@ -1810,6 +1810,240 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-25 · Bau-Sitzung 15.B — Modul 15 Sub (a) Read-API + Sub (b) postMessage-Brücke implementiert
+
+**Sitzungs-Rolle:** Bau-Sitzung (Pipeline-Schritt 4 → Bau, Vorbereitung
+auf Schritt 5 Endknoten-Migration). Branch
+`claude/membrane-build-15b-7g9Ll`. Anschluss nach PR aus Spec-Sitzung
+15.B (Brief liegt unter `docs/sessions/BRIEF_BAU_15B_MEMBRAN.md`).
+
+**Anlass:** Spec-Sitzung 15.B (vorheriger Sitzungs-Eintrag) hat Karte 15
+§ Sub (a)+(b) vollständig spezifiziert. Bau-Sitzung 15.B implementiert
+die Spec 1:1 — finale MembraneSnapshot-Form, finale postMessage-
+Envelope mit vier op-Werten + Bedien-Pfaden, RAM-Caches, Hooks für
+Modul 11/14/04.C/16. Klaus' App-Freigabe braucht Modul 15 produktiv,
+sonst sind die Endknoten ohne Membran-Allowlist + Read-API für Browser-
+Agenten unterwegs.
+
+**Was getan:**
+
+- **`src/modules/15_membran.js` Sub (a) `read()` voll implementiert:**
+  - Snapshot-Schema 1:1 aus Karte 15 § Sub (a) MembraneSnapshot
+    gefüllt — Identitäts-Block (`protocolVersion` immer §0-`"0.1"`,
+    `nodeId` Klartext eigene Identität, `domain`, `sporeUrl`,
+    `domainKeywords[]`, `stammCategories[]`, `guestCategories[]` aus
+    Spore fail-soft pro Feld), Geschwister-Block anonymisiert
+    (`siblings:[{nodeIdHash:base64url-sha256(nodeId), since, status}]`,
+    KEIN `score`/`lastSeen`), Storage-Block (`{quotaWarningLevel,
+    storagePersisted}` Spiegelung Modul-01-Getter +
+    `navigator.storage.estimate` Doppelschwelle 80 %/50 MiB),
+    **Siegel-Block** neu (`siegel:{isCertified, repoUrl,
+    certifiedModules}` 3-Fall-Logik: `null` wenn Modul 16
+    fehlt/`_meta.ready===false`, voll mit `isCertified:true|false`
+    sonst — defensive Kopie aus `SbkimSiegel.getExplanation()` ohne
+    zweiten Klon).
+  - **Sub-(e)-Hook erweitert** auf `details:{fieldsRequested:null,
+    snapshotByteLen:JSON.stringify(snapshot).length}`. Daten-Volumen-
+    Beobachtung möglich (Spec 15.B Sub (a)).
+  - Quota blockt `read()` NICHT (Empfangsmodus-Prinzip — `read()` ist
+    Beobachtungs-Schicht, kein Storage-Schreiber).
+
+- **`src/modules/15_membran.js` Sub (b) postMessage-Bedien-Pfad voll
+  implementiert** mit 7-stufiger Empfänger-Kette:
+  1. Same-Origin → still verworfen (kein Sub-(e)-Eintrag).
+  2. Type-Check (`data.type !== "sbkim/membrane/v1"`) → `ignored`.
+  3. Allowlist-Check (`event.origin` nicht in `allowedOrigins`) →
+     `rejected-allowlist`.
+  4. Nonce-Pflicht (`typeof data.nonce !== "string"`) → `ignored`.
+  5. **Replay-Dedupe** via RAM-Map `seenNonces` (FIFO 30 s TTL via
+     `pruneSeenNonces(nowMs)`) → still verworfen, KEIN doppelter
+     Sub-(e)-Eintrag, KEINE Antwort.
+  6. **Rate-Limit-Hook** optional an `window.SbkimRateLimit?.checkOrigin(origin)`
+     (fail-soft wenn Modul 11 fehlt; `"throttled"` → `decision:"ignored"`
+     + `details.throttled:true`).
+  7. **Op-Dispatch** (whitelist Set `{sporeRef, query, hint,
+     queryResult}` — unbekannte op insb. `"handshake"` → `ignored`):
+     - **`sporeRef`** — Schema-Check (`nodeId/sporeUrl/domain` alle
+       Strings nicht-leer); OK → RAM-Cache `recentSporeRefs[origin] =
+       {nodeId, sporeUrl, domain, receivedAt}` (FIFO max 16,
+       Insertion-Order via Map.delete+set für Re-Insertion) →
+       `accepted`; Schema-Fehler → `ignored`, KEINE Antwort.
+     - **`hint`** — Schema-Check (`vector` Array Länge 384, `label`
+       String, `ttlMs` Number >0); OK + `SbkimDiffusion?.recordLead`
+       vorhanden → Delegation mit `{vector, label, ttlMs,
+       sourceOrigin}` → `accepted`; OK aber Modul 14 fehlt →
+       frequenz-gedrosselte `console.info`-Zeile (einmal pro Session,
+       Bool-Guard `diffusionMissingNotified`) → `ignored`; Schema-
+       Fehler → `ignored`. KEINE Antwort (fire-and-forget).
+     - **`query`** — Schema-Check (`text` String nicht-leer, `k`
+       Default 5); OK + `SbkimMatch?.queryLocal` vorhanden → `await
+       SbkimMatch.queryLocal(text, k)` + Reply via
+       `event.source.postMessage({op:"queryResult", fromOrigin,
+       nonce:crypto.randomUUID(), inReplyTo, payload:{results,
+       error:null}}, event.origin)` → `accepted`; OK aber Modul 04.C
+       fehlt → Reply mit `payload:{results:[],
+       error:"module-04c-not-available"}` → `ignored`; Schema-Fehler
+       → `ignored`, KEINE Antwort.
+     - **`queryResult`** — `inReplyTo` (Envelope-Feld, Fallback via
+       Payload) gegen RAM-Map `pendingQueries[nonce] = {origin,
+       sentAt, resolve}` (TTL 30 s via `prunePendingQueries(nowMs)`)
+       matchen; Match → `pending.resolve(payload)` + Eintrag löschen
+       → `accepted`; kein Match → `ignored`.
+
+- **`src/modules/15_membran.js` `init()` Allowlist-Validierung
+  fail-soft:** filter nicht-String oder ohne `http://`/`https://`-
+  Präfix aus + `console.warn` pro entferntem Eintrag (Format
+  `[SbkimMembrane] Allowlist-Eintrag verworfen (Format ungültig):
+  "…"`). KEIN sync Throw — Andocker-Init bleibt funktional bei
+  Tippfehler.
+
+- **`SbkimMembrane._meta` erweitert** um vier neue Getter +
+  Test-Brücke:
+  - `recentSporeRefsCount` (sync Map-Größe)
+  - `pendingQueriesCount` (sync Map-Größe)
+  - `seenNoncesCount` (sync Map-Größe)
+  - `siegelAvailable` (sync — prüft `SbkimSiegel._meta.ready === true`)
+  - `_registerPendingQueryForTest(nonce, origin) → Promise` (Test-
+    Brücke für queryResult-Match-Pfad, weil Sub (b) Empfänger-Schicht
+    ist und keine Sender-API auf der Public-Surface anbietet)
+  - `recentSporeRefsSnapshot` (defensive Kopie der Map als Objekt)
+  - Konstanten-Anker `protocolVersion`/`replayDedupeTtlMs`/
+    `recentSporeRefsMax`/`embeddingDim` (read-only)
+
+- **Selbstcheck-Zeile UNVERÄNDERT** (`init/read/fremdzugriff.{list,
+  subscribe,clear,_recordForTest}`) — Sub (a)+(b) ergänzen KEINE neuen
+  Public-Surface-Funktionen, nur read() + postMessage-Listener gefüllt
+  (Bau-Brief Pflicht-Punkt 4).
+
+- **`src/modules/16_siegel.js` `ZERTIFIKAT_ASPEKTE`-Eintrag ergänzt**
+  (Pflicht-Konvention CLAUDE.md § „Sicherheits-Module pflegen
+  Aspekte"): additiv am Listen-Ende, KEIN Eingriff in Surface oder
+  PFLICHT_MODULE:
+  ```js
+  {
+    since:       "2026-05-25",
+    module:      "15",
+    aspect:      "Sub (a) Read-API + Sub (b) postMessage-Brücke",
+    description: "Finale Bedien-Pfade: MembraneSnapshot mit Siegel-
+      Hook, vier op-Werte (sporeRef/query/hint/queryResult) mit
+      Nonce-Pflicht, fail-soft Allowlist, Rate-Limit-Hook für
+      Modul 11.",
+  }
+  ```
+
+- **Panel 15 in `tests/manual_check.html` um 8 neue Knöpfe 10–17
+  erweitert:**
+  - **Knopf 10** — Sub (a) read() vollständig: Snapshot-JSON
+    (max 50 Zeilen Preview), Pflicht-Felder + siegel-Form-Check +
+    Sub-(e)-Hook mit snapshotByteLen.
+  - **Knopf 11** — Sub (a) Anti-PII-Probe: JSON enthält weder
+    `sbkim_keys` noch Geschwister-nodeId-Klartext noch
+    `navigator.userAgent`.
+  - **Knopf 12** — Sub (b) op:sporeRef Probe (Allowlist OK →
+    `accepted` + `recentSporeRefsCount` steigt + Cache-Inhalt).
+  - **Knopf 13** — Sub (b) op:query Probe (Modul 04.C fehlt →
+    `ignored`, weil Reply an `event.source` geht und bei
+    `dispatchEvent` `source=null` ist; Headless-Smoke deckt vollen
+    Reply-Pfad ab).
+  - **Knopf 14** — Sub (b) op:hint Probe (Modul 14 fehlt → `ignored`
+    + `console.info` einmal pro Session frequenz-gedrosselt;
+    Schema-Fehler-Probe mit vector falscher Länge auch `ignored`).
+  - **Knopf 15** — Sub (b) Replay-Probe (gleicher Nonce zweimal →
+    1 Eintrag nach erstem Aufruf, 1 nach Replay, keine Verdopplung).
+  - **Knopf 16** — Sub (b) Allowlist-fail-soft (gemischte Liste
+    `["https://gut.example", 42, null, "ohne-präfix.example",
+    "https://auch-gut.example"]` → 3 console.warn-Zeilen + finale
+    Allowlist mit 2 Einträgen).
+  - **Knopf 17** — Sub (b) Rate-Limit-Hook (Modul 11 Stub →
+    `decision:"ignored"` + `details.throttled:true`).
+  - Setup-Output erweitert um `siegelAvailable`,
+    `recentSporeRefsCount`, `pendingQueriesCount`, `seenNoncesCount`.
+  - Default `allowedOrigins` in `ensureSetup()` jetzt
+    `["https://peer-a.example", "https://peer-b.example"]` damit
+    Tests den Accepted-Pfad erreichen können.
+
+- **Headless-Smoke `tests/smoke_bau15b_membran.mjs` 31/31 grün** —
+  vollständige Abdeckung: Sub (a) Schema/protocolVersion/siegel-null/
+  siegel-voll/siegelAvailable/Anti-PII (kein sbkim_keys, kein
+  Geschwister-nodeId)/siblings anonymisiert; Sub (b) Allowlist
+  fail-soft (3 warns + 2 Einträge übrig)/sporeRef OK + Schema-Fehler/
+  query OK + 04.C-fehlt-Reply mit `error:"module-04c-not-available"`/
+  hint Schema-Fehler + Modul-14-fehlt-Info einmal pro Session + OK
+  mit recordLead/queryResult Match + no-Match/Replay-Dedupe/handshake-
+  Tabu/Rate-Limit-throttle/Nonce-fehlend/Allowlist-Reject/FIFO-
+  Eviction bei 17. Eintrag (max 16). Smoke-Test nutzt DOM-/`crypto`-/
+  `navigator`-Stubs via `new Function`-Injection (analog Bau 15-
+  Pattern).
+
+- **`node --check src/modules/15_membran.js` grün, `node --check
+  src/modules/16_siegel.js` grün, alle 12 inline-script-Blöcke in
+  `tests/manual_check.html` syntaktisch grün.**
+
+- **Karte 15 § Bauzustand** Zeile „Code geschrieben (Sub (a)+(b)
+  Bedien-Pfade) | 2026-05-25 | Bau-Sitzung 15.B | …" mit voller
+  Bau-Anmerkung (siehe oben).
+
+- **INTERFACES.md § 1 Modul 15 Status** auf `review` gezogen (war
+  `entwurf`) — Bau-Sitzung 15.B implementiert die Spec 1:1, Spec
+  ist verbindlich, Browser-Sichttest steht noch aus. „Geprüft"-
+  Zeile um „2026-05-25 (Bau-Sitzung 15.B …)" erweitert.
+
+- **`status.json` `membranBacklog[0].siegel`** auf neuen Text
+  aktualisiert (Bau-15.B-Eintrag vorn angefügt, alle vorherigen
+  Pflege-Notizen behalten). Pie-Skript aufgerufen → „bereits
+  aktuell" (score bleibt `"stub"`, kein Modul-Zähler-Wechsel).
+
+**Disziplin gehalten:**
+
+- KEIN Eingriff in `src/sbkim-sw.js` (Bau 15.SW fertig 2026-05-24,
+  Sub-(e)-SW-Probe-Detektor unangetastet).
+- KEIN Eingriff in Sub (e) Detektor-Schicht (Ringbuffer, Modal,
+  Lampe, BroadcastChannel-Subscription) — Bau 15 fertig 2026-05-24.
+- KEIN Eingriff in `index.html` (kein neues DOM-Element, kein neuer
+  Lampen-Zustand).
+- KEIN Eingriff in `sbkim-init.js` (Sage-Page hat keine produktiven
+  Sub-(b)-Pfade — `allowedOrigins`-Liste ist Endknoten-Pflege in
+  Pipeline-Schritt 5).
+- KEIN Eingriff in Modul 14 (Diffusion) — hint-Pfad ist fail-soft.
+- KEIN Eingriff in Modul 11 (Rate-Limit) — checkOrigin-Hook ist
+  optional.
+- KEIN Eingriff in Modul 04 (Match) für `queryLocal` — Modul 04.C
+  Search-API ist eigene Spec-/Bau-Sitzung.
+- KEIN Eingriff in Modul 16 außer `ZERTIFIKAT_ASPEKTE`-Eintrag
+  (Pflicht-Konvention).
+- KEINE Sender-API auf `window.SbkimMembrane` — Sub (b) ist
+  Empfänger-Schicht, Sender-Pattern liegt beim Andocker.
+- KEINE Schema-Bruch — alle Fail-Pfade auf null/[] oder `decision:
+  "ignored"`, KEIN neues Feld außerhalb Spec.
+- KEIN `op:"handshake"`-Pfad — die op-Validierung filtert ihn
+  explizit als unbekannte op (ignored).
+- KEIN sync Throw aus `init()` oder dem postMessage-Listener —
+  alles fail-soft via `console.warn`/`console.info`.
+- KEIN Persistent-Log für Sub (b) — Persistenz bleibt RAM-only
+  (sbkim_membrane_log verworfen).
+- KEINE Tafel-Umsortierung (Pipeline-Schritt 4 bleibt Schritt 4 +
+  Bau).
+- KEIN `PROTOCOL_VERSION`-Bump (Modul 15 ist nicht protokoll-aktiv).
+- KEIN `DB_VERSION`-Bump (Persistenz RAM-only).
+
+**Nächster sinnvoller Schritt:**
+
+1. **PR mergen** + Klaus' Sichttest Panel 15 Knöpfe 10–17 in DeX-
+   Chrome auf Galaxy Tab S6 (Sage-Page Bonus-Check: FREMD-Lampe +
+   Modal + Demo-Knopf bleiben unverändert — Bau 15.B berührt das
+   Sub-(e)-Modul nicht).
+2. **Endknoten-Migration** Pipeline-Schritt 5 (Brief
+   `BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md`, ergänzt um
+   Sub-(b)-Allowlist + Siegel-Anker pro Endknoten-PWA — eigene
+   Folge-Sitzung pro Endknoten-Repo extern).
+3. **Klaus' App-Freigabe** Pipeline-Schritt 6 — sobald Endknoten-
+   Migration durch ist, mit Siegel sichtbar öffentlich verteilen.
+
+Details im
+[Übergabeprotokoll 2026-05-25 Bau-Sitzung 15.B](sessions/archiv/2026-05-25_bau-15b-membran.md).
+
+---
 
 ### 2026-05-25 · Spec-Sitzung 15.B — Modul 15 Sub (a) Read-API + Sub (b) postMessage-Brücke finalisiert
 

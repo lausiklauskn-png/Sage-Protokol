@@ -87,6 +87,12 @@
       aspect:      "Grund-Siegel-Bezeugung",
       description: "Diese App bestätigt durch Selbst-Prüfung beim Boot, dass die SBKIM-Pflicht-Module 01/02/03/04/05/07/15 geladen sind.",
     },
+    {
+      since:       "2026-05-25",
+      module:      "15",
+      aspect:      "Sub (a) Read-API + Sub (b) postMessage-Brücke",
+      description: "Finale Bedien-Pfade: MembraneSnapshot mit Siegel-Hook, vier op-Werte (sporeRef/query/hint/queryResult) mit Nonce-Pflicht, fail-soft Allowlist, Rate-Limit-Hook für Modul 11.",
+    },
   ];
 
   // ---- Konstanten ----

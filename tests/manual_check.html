@@ -106,7 +106,7 @@
     <h2>15 Membran <span class="status ok">Code-Stub</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
     <span id="panel-15-fake-lamp" style="display:none;" title="Fake-Lampe für Sub-(e)-Tests (kein DOM-Element in der Sage-Page nötig)"></span>
-    <pre class="log">— bereit. Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe (Bau-Sitzung 15, 2026-05-24). Modul 15 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding. Ringbuffer RAM-only (MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50), Persistenz bewusst verworfen (Karte 15 § Strikte Tabus „lebende Schau, kein Audit-Archiv"). „Setup" ruft `SbkimMembrane.init({lampSelector:'#panel-15-fake-lamp', allowedOrigins:[]})` und leert den Buffer via `clear()`. Lampen-Toggle (Klassen `fremd-alert` / `fremd-pulse`) ist im DevTools-Element-Inspector am `#panel-15-fake-lamp`-Span beobachtbar (Span ist display:none, aber classList ist da). Sub (a) read() + Sub (b) postMessage-Listener sind Skelette — finale Spec wartet auf Spec-Sitzung 15.B. Sub-(e)-Hooks in beiden Pfaden sind aber verbindlich und werden hier getestet. Sage-Page-Sichttest (echte Lampe in der Navleiste): separat, nicht in diesem Panel. —</pre>
+    <pre class="log">— bereit. Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe (Bau-Sitzung 15, 2026-05-24). Sub (a) Read-API + Sub (b) postMessage-Brücke voll spezifiziert + implementiert (Bau-Sitzung 15.B, 2026-05-25). Modul 15 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding. Ringbuffer RAM-only (MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50), Persistenz bewusst verworfen (Karte 15 § Strikte Tabus „lebende Schau, kein Audit-Archiv"). „Setup" ruft `SbkimMembrane.init({lampSelector:'#panel-15-fake-lamp', allowedOrigins:['https://peer-a.example','https://peer-b.example']})` und leert den Buffer via `clear()`. Knöpfe 10–17 testen Sub (a)+(b)-Pfade: Snapshot-Schema, Anti-PII, op-Dispatch (sporeRef/query/hint/queryResult), Allowlist fail-soft, Nonce-Replay-Dedupe, Rate-Limit-Hook. Sage-Page-Sichttest (echte Lampe in der Navleiste): separat, nicht in diesem Panel. —</pre>
   </section>
 
   <section class="panel" data-module="16_siegel">
@@ -3089,12 +3089,13 @@
       // Tests laufen daher ohne SbkimStorage.init().
 
       var FAKE_LAMP_SELECTOR = "#panel-15-fake-lamp";
+      var DEFAULT_ALLOWED_ORIGINS = ["https://peer-a.example", "https://peer-b.example"];
       var setupDone = false;
 
       async function ensureSetup() {
         await SbkimMembrane.init({
           lampSelector: FAKE_LAMP_SELECTOR,
-          allowedOrigins: [],
+          allowedOrigins: DEFAULT_ALLOWED_ORIGINS,
           mountModal: false, // Panel-15-Tests brauchen kein Modal in document.body
         });
         // Buffer leeren — jedes Test-Lauf beginnt bei null. clear()
@@ -3130,7 +3131,12 @@
           lampen_klassen: lampClasses,
           modal_gemounted: SbkimMembrane._meta.modalMounted,
           allowed_origins: SbkimMembrane._meta.allowedOrigins,
-          hinweis: "Sub (e) ist RAM-only, kein Storage-Eingriff. Lampen-Klassen (fremd-alert / fremd-pulse) sind im DevTools-Element-Inspector am " + FAKE_LAMP_SELECTOR + " beobachtbar (Span ist display:none, classList ist trotzdem live).",
+          // Sub-(a)+(b)-Diagnose (Bau 15.B): RAM-Cache-Größen + Siegel-Flag.
+          siegel_available: SbkimMembrane._meta.siegelAvailable,
+          recent_spore_refs_count: SbkimMembrane._meta.recentSporeRefsCount,
+          pending_queries_count: SbkimMembrane._meta.pendingQueriesCount,
+          seen_nonces_count: SbkimMembrane._meta.seenNoncesCount,
+          hinweis: "Sub (e) ist RAM-only, kein Storage-Eingriff. Lampen-Klassen (fremd-alert / fremd-pulse) sind im DevTools-Element-Inspector am " + FAKE_LAMP_SELECTOR + " beobachtbar (Span ist display:none, classList ist trotzdem live). Sub-(a)+(b)-Caches (recentSporeRefs / pendingQueries / seenNonces) sind ebenfalls RAM-only — Tab-Reload leert alles.",
         };
       });
 
@@ -3490,6 +3496,298 @@
         };
       });
 
+      // ---- Bau 15.B Sub (a)+(b) Test-Knöpfe 10–17 ----
+
+      SbkimUI.addButton("15_membran", "Test 10: Sub (a) read() vollständig (Schema + siegel-Hook)", async function () {
+        await ensureSetup();
+        var snapshot = await SbkimMembrane.read();
+        var requiredKeys = ["protocolVersion","nodeId","domain","sporeUrl","domainKeywords","stammCategories","guestCategories","siblings","storage","siegel"];
+        var presentKeys = requiredKeys.filter(function (k) { return k in snapshot; });
+        var schemaOk = presentKeys.length === requiredKeys.length;
+        var protocolOk = snapshot.protocolVersion === "0.1";
+        var storageOk = snapshot.storage && "quotaWarningLevel" in snapshot.storage && "storagePersisted" in snapshot.storage;
+        // siegel: entweder null (kein Modul 16) oder Objekt mit drei Feldern.
+        var siegelOk;
+        if (snapshot.siegel === null) {
+          siegelOk = true;
+        } else {
+          siegelOk = snapshot.siegel && typeof snapshot.siegel.isCertified === "boolean" &&
+                     "repoUrl" in snapshot.siegel && Array.isArray(snapshot.siegel.certifiedModules);
+        }
+        var sublist = SbkimMembrane.fremdzugriff.list();
+        var lastEntry = sublist[sublist.length - 1];
+        var hookOk = lastEntry && lastEntry.kind === "membrane-read" && lastEntry.decision === "accepted" &&
+                     lastEntry.details && typeof lastEntry.details.snapshotByteLen === "number" &&
+                     lastEntry.details.snapshotByteLen > 0;
+        var pass = schemaOk && protocolOk && storageOk && siegelOk && hookOk;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 10 OK" : "Test 10 fehlgeschlagen");
+        // Snapshot kurz halten (max ~50 Zeilen).
+        var snapshotPreview = JSON.stringify(snapshot, null, 2);
+        if (snapshotPreview.split("\n").length > 50) {
+          snapshotPreview = snapshotPreview.split("\n").slice(0, 50).join("\n") + "\n… (gekürzt)";
+        }
+        return {
+          schema_ok: schemaOk,
+          protocol_version_ok: protocolOk,
+          storage_block_ok: storageOk,
+          siegel_form_ok: siegelOk,
+          siegel_state: snapshot.siegel === null ? "null (Modul 16 fehlt oder nicht ready)" : "voll: isCertified=" + snapshot.siegel.isCertified,
+          sub_e_hook_ok: hookOk,
+          snapshotByteLen: lastEntry && lastEntry.details && lastEntry.details.snapshotByteLen,
+          snapshot_preview: snapshotPreview,
+          erwartung: "MembraneSnapshot mit allen 10 Pflicht-Feldern (protocolVersion='0.1', siblings/storage/siegel-Form), Sub-(e)-Hook mit kind:membrane-read + decision:accepted + snapshotByteLen>0",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 11: Sub (a) Anti-PII-Probe", async function () {
+        await ensureSetup();
+        var snapshot = await SbkimMembrane.read();
+        var json = JSON.stringify(snapshot);
+        var noKeysMarker = !json.includes("sbkim_keys") && !json.includes("privateKey");
+        // Geschwister-nodeId Klartext-Check: snapshot.siblings darf KEIN nodeId-Feld haben.
+        var noSiblingNodeIdField = snapshot.siblings.every(function (s) {
+          return s && s.nodeId === undefined && (s.nodeIdHash === undefined || typeof s.nodeIdHash === "string");
+        });
+        // Wenn Anastomose Geschwister hat, check dass deren nodeId NICHT im JSON ist
+        var siblingNodeIdLeak = "kein Geschwister-Test-Setup (Anastomose hat möglicherweise keine Einträge)";
+        try {
+          if (typeof SbkimAnastomose !== "undefined" && SbkimAnastomose && typeof SbkimAnastomose.listSiblings === "function") {
+            var rows = await SbkimAnastomose.listSiblings();
+            if (Array.isArray(rows) && rows.length > 0) {
+              var leaks = rows.filter(function (r) { return r && typeof r.nodeId === "string" && json.includes(r.nodeId); });
+              siblingNodeIdLeak = leaks.length === 0 ? "kein Klartext-Leak" : leaks.length + " Leaks gefunden";
+            }
+          }
+        } catch (_e) { /* nb */ }
+        // navigator.userAgent darf NICHT im Snapshot stehen.
+        var noUA = navigator.userAgent ? !json.includes(navigator.userAgent.slice(0, 32)) : true;
+        var pass = noKeysMarker && noSiblingNodeIdField && noUA;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 11 OK" : "Test 11 fehlgeschlagen");
+        return {
+          kein_sbkim_keys: noKeysMarker,
+          kein_geschwister_nodeId_feld: noSiblingNodeIdField,
+          geschwister_nodeId_leak: siblingNodeIdLeak,
+          kein_navigator_userAgent: noUA,
+          erwartung: "JSON enthält weder 'sbkim_keys' noch 'privateKey'; siblings haben kein nodeId-Klartext-Feld; navigator.userAgent steht nicht im Snapshot (gehört in Sub-(e)-agentHint, nicht in Sub-(a)-Snapshot)",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 12: Sub (b) op:sporeRef Probe (Allowlist OK → accepted)", async function () {
+        await ensureSetup();
+        var nonce = "test12-" + crypto.randomUUID();
+        var beforeCount = SbkimMembrane._meta.recentSporeRefsCount;
+        var event = new MessageEvent("message", {
+          origin: "https://peer-a.example",
+          data: {
+            type: "sbkim/membrane/v1", op: "sporeRef",
+            fromOrigin: "https://peer-a.example", nonce: nonce,
+            payload: { nodeId: "peer-a-id-test12", sporeUrl: "https://peer-a.example/sbkim/spore.json", domain: "Drinks" },
+          },
+        });
+        window.dispatchEvent(event);
+        await new Promise(function (r) { setTimeout(r, 20); });
+        var list = SbkimMembrane.fremdzugriff.list();
+        var entry = list[list.length - 1];
+        var afterCount = SbkimMembrane._meta.recentSporeRefsCount;
+        var cacheOk = afterCount > beforeCount;
+        var decisionOk = entry && entry.decision === "accepted" && entry.details.op === "sporeRef" && entry.details.nonce === nonce;
+        var pass = cacheOk && decisionOk;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 12 OK" : "Test 12 fehlgeschlagen");
+        return {
+          recent_spore_refs_count_vor: beforeCount,
+          recent_spore_refs_count_nach: afterCount,
+          eintrag: entry,
+          cache_snapshot: SbkimMembrane._meta.recentSporeRefsSnapshot,
+          erwartung: "decision='accepted', op='sporeRef', recentSporeRefsCount steigt um 1, Cache enthält Eintrag für https://peer-a.example",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 13: Sub (b) op:query (Modul 04.C fehlt) → queryResult-Antwort", async function () {
+        await ensureSetup();
+        // Modul 04.C SbkimMatch.queryLocal existiert nicht in der Test-
+        // Page (nur Modul 04 ohne queryLocal). Wir fangen die Antwort
+        // via temporären Listener ab — der Empfänger wäre normalerweise
+        // event.source, aber in window.dispatchEvent ist source=null.
+        // Wir prüfen daher den Sub-(e)-Eintrag (decision=ignored bei
+        // 04.C fehlend).
+        var nonce = "test13-" + crypto.randomUUID();
+        // Temporär die queryLocal-Funktion entfernen, falls da
+        var hadQueryLocal = false;
+        if (typeof SbkimMatch !== "undefined" && SbkimMatch && typeof SbkimMatch.queryLocal === "function") {
+          hadQueryLocal = true;
+          delete SbkimMatch.queryLocal;
+        }
+        // Reply-Capture via source-Stub
+        var capturedReply = null;
+        var fakeSource = { postMessage: function (msg, targetOrigin) { capturedReply = { msg: msg, targetOrigin: targetOrigin }; } };
+        var event = new MessageEvent("message", {
+          origin: "https://peer-a.example",
+          data: {
+            type: "sbkim/membrane/v1", op: "query",
+            fromOrigin: "https://peer-a.example", nonce: nonce,
+            payload: { text: "wie macht man pasta?", k: 3 },
+          },
+        });
+        // Wir simulieren event.source via dispatch — MessageEvent
+        // erlaubt source im init, aber Browser ignorieren das.
+        // Direkter Handler-Aufruf via window-Listener.
+        // dispatchEvent über window setzt source=null. Wir injizieren
+        // einen Listener nicht — wir prüfen NUR Sub-(e)-Eintrag.
+        window.dispatchEvent(event);
+        await new Promise(function (r) { setTimeout(r, 30); });
+        var list = SbkimMembrane.fremdzugriff.list();
+        var entry = list[list.length - 1];
+        var decisionOk = entry && entry.decision === "ignored" && entry.details.op === "query";
+        var pass = decisionOk;
+        if (hadQueryLocal) { /* nicht restaurieren — Test war wenn 04.C fehlt */ }
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 13 OK" : "Test 13 fehlgeschlagen");
+        return {
+          modul_04c_vorhanden: hadQueryLocal,
+          eintrag: entry,
+          hinweis: "Antwort kann in der Browser-Konsole NICHT abgefangen werden (event.source=null bei dispatchEvent). Sichttest prüft hier nur den Sub-(e)-Eintrag mit decision='ignored', op='query'. Headless-Smoke deckt den vollen Reply-Pfad ab.",
+          erwartung: "decision='ignored', op='query' (weil Modul 04.C fehlt — die queryResult-Antwort mit error='module-04c-not-available' wäre an event.source gegangen, aber source=null bei dispatchEvent)",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 14: Sub (b) op:hint (Modul 14 fehlt) → ignored + console.info", async function () {
+        await ensureSetup();
+        var nonce = "test14-" + crypto.randomUUID();
+        var vector = new Array(384).fill(0.1);
+        var event = new MessageEvent("message", {
+          origin: "https://peer-a.example",
+          data: {
+            type: "sbkim/membrane/v1", op: "hint",
+            fromOrigin: "https://peer-a.example", nonce: nonce,
+            payload: { vector: vector, label: "test-lead-14", ttlMs: 5000 },
+          },
+        });
+        window.dispatchEvent(event);
+        await new Promise(function (r) { setTimeout(r, 20); });
+        var list = SbkimMembrane.fremdzugriff.list();
+        var entry = list[list.length - 1];
+        var decisionOk = entry && entry.decision === "ignored" && entry.details.op === "hint";
+        // Schema-Fehler-Probe: vector falsche Länge → auch ignored.
+        var nonceBad = "test14b-" + crypto.randomUUID();
+        var badEvent = new MessageEvent("message", {
+          origin: "https://peer-a.example",
+          data: {
+            type: "sbkim/membrane/v1", op: "hint",
+            fromOrigin: "https://peer-a.example", nonce: nonceBad,
+            payload: { vector: [1, 2, 3], label: "x", ttlMs: 1000 },
+          },
+        });
+        window.dispatchEvent(badEvent);
+        await new Promise(function (r) { setTimeout(r, 20); });
+        var list2 = SbkimMembrane.fremdzugriff.list();
+        var badEntry = list2[list2.length - 1];
+        var badOk = badEntry && badEntry.decision === "ignored" && badEntry.details.op === "hint" && badEntry.details.nonce === nonceBad;
+        var pass = decisionOk && badOk;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 14 OK" : "Test 14 fehlgeschlagen");
+        return {
+          ok_eintrag: entry,
+          schemafehler_eintrag: badEntry,
+          hinweis: "console.info-Zeile '[SbkimMembrane] Modul 14 (Diffusion) fehlt — hint-Pfad still verworfen.' wird beim ersten OK-hint EINMAL pro Session geschrieben (Frequenz-Drossel). Bei wiederholten Hints feuert sie NICHT erneut.",
+          erwartung: "beide Einträge mit decision='ignored', op='hint'; console.info-Zeile einmal pro Session (DevTools-Konsole prüfen)",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 15: Sub (b) Replay-Probe (gleicher Nonce zweimal)", async function () {
+        await ensureSetup();
+        var nonce = "test15-" + crypto.randomUUID();
+        var msgData = {
+          type: "sbkim/membrane/v1", op: "sporeRef",
+          fromOrigin: "https://peer-a.example", nonce: nonce,
+          payload: { nodeId: "replay-id", sporeUrl: "https://peer-a.example/sbkim/spore.json", domain: "Test" },
+        };
+        window.dispatchEvent(new MessageEvent("message", { origin: "https://peer-a.example", data: msgData }));
+        await new Promise(function (r) { setTimeout(r, 20); });
+        var countAfterFirst = SbkimMembrane.fremdzugriff.list().length;
+        var nonceCountAfterFirst = SbkimMembrane._meta.seenNoncesCount;
+
+        // Replay mit gleichem Nonce — KEIN neuer Sub-(e)-Eintrag, kein
+        // doppelter Nonce in seenNonces.
+        window.dispatchEvent(new MessageEvent("message", { origin: "https://peer-a.example", data: msgData }));
+        await new Promise(function (r) { setTimeout(r, 20); });
+        var countAfterReplay = SbkimMembrane.fremdzugriff.list().length;
+
+        var pass = countAfterFirst === 1 && countAfterReplay === 1 && nonceCountAfterFirst >= 1;
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 15 OK" : "Test 15 fehlgeschlagen");
+        return {
+          eintraege_nach_erster_message: countAfterFirst,
+          eintraege_nach_replay: countAfterReplay,
+          seen_nonces_count: SbkimMembrane._meta.seenNoncesCount,
+          erwartung: "1 Eintrag nach erstem Aufruf, 1 Eintrag nach Replay (keine Verdopplung), seenNonces enthält den Nonce — Replay still verworfen ohne Sub-(e)-Eintrag",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 16: Sub (b) Allowlist-fail-soft (gemischte Liste)", async function () {
+        // Wir hängen einen console.warn-Counter auf, um die fail-soft-Warnungen
+        // zu zählen.
+        var origWarn = console.warn;
+        var warnCount = 0;
+        console.warn = function () {
+          for (var i = 0; i < arguments.length; i++) {
+            if (typeof arguments[i] === "string" && arguments[i].indexOf("Allowlist-Eintrag verworfen") !== -1) {
+              warnCount++;
+              break;
+            }
+          }
+          return origWarn.apply(console, arguments);
+        };
+        try {
+          await SbkimMembrane.init({
+            lampSelector: FAKE_LAMP_SELECTOR,
+            mountModal: false,
+            allowedOrigins: ["https://gut.example", 42, null, "ohne-präfix.example", "https://auch-gut.example"],
+          });
+        } finally {
+          console.warn = origWarn;
+        }
+        var finalAllowlist = SbkimMembrane._meta.allowedOrigins;
+        var expected = ["https://gut.example", "https://auch-gut.example"];
+        var allowlistOk = finalAllowlist.length === 2 && finalAllowlist[0] === expected[0] && finalAllowlist[1] === expected[1];
+        var warnOk = warnCount === 3; // 42, null, "ohne-präfix.example"
+        var pass = allowlistOk && warnOk;
+        // Setup zurücksetzen für nachfolgende Tests.
+        await ensureSetup();
+        SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 16 OK" : "Test 16 fehlgeschlagen");
+        return {
+          finale_allowlist: finalAllowlist,
+          warn_count: warnCount,
+          erwartung: "finale Allowlist = ['https://gut.example','https://auch-gut.example'] (zwei String-Einträge mit http(s)://-Präfix übrig), 3 console.warn-Zeilen 'Allowlist-Eintrag verworfen…' (für 42, null, 'ohne-präfix.example')",
+        };
+      });
+
+      SbkimUI.addButton("15_membran", "Test 17: Sub (b) Rate-Limit-Hook (Modul 11 Stub → throttled)", async function () {
+        await ensureSetup();
+        // Modul 11 als Stub injizieren — checkOrigin liefert IMMER "throttled".
+        var orig = window.SbkimRateLimit;
+        window.SbkimRateLimit = { checkOrigin: function () { return "throttled"; } };
+        try {
+          var nonce = "test17-" + crypto.randomUUID();
+          window.dispatchEvent(new MessageEvent("message", {
+            origin: "https://peer-a.example",
+            data: {
+              type: "sbkim/membrane/v1", op: "sporeRef",
+              fromOrigin: "https://peer-a.example", nonce: nonce,
+              payload: { nodeId: "throttled-id", sporeUrl: "https://peer-a.example/sbkim/spore.json", domain: "T" },
+            },
+          }));
+          await new Promise(function (r) { setTimeout(r, 20); });
+          var list = SbkimMembrane.fremdzugriff.list();
+          var entry = list[list.length - 1];
+          var pass = entry && entry.decision === "ignored" && entry.details.throttled === true && entry.details.op === "sporeRef";
+          SbkimUI.setStatus("15_membran", pass ? "ok" : "err", pass ? "Test 17 OK" : "Test 17 fehlgeschlagen");
+          return {
+            eintrag: entry,
+            erwartung: "decision='ignored', details.throttled=true, op='sporeRef' (Klaus sieht im Fremdzugriff-Modal 'ignoriert wegen Rate-Limit', nicht nur 'ignoriert')",
+          };
+        } finally {
+          if (orig === undefined) delete window.SbkimRateLimit;
+          else window.SbkimRateLimit = orig;
+        }
+      });
+
       SbkimUI.addButton("15_membran", "Selbstcheck Konsole prüfen", async function () {
         SbkimUI.log("15_membran",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
@@ -3497,6 +3795,8 @@
           "  MODUL 15 MEMBRAN bereit, Funktionen: init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}");
         SbkimUI.log("15_membran",
           "ℹ Hinweis: MEMBRANE_FREMDZUGRIFF_BUFFER_MAX (= 50) steht in §0; AGENT_HINT_MAX_LEN (= 64) ist modul-lokal — NICHT in der Selbstcheck-Zeile.");
+        SbkimUI.log("15_membran",
+          "ℹ Bau 15.B (2026-05-25): Sub (a)+(b)-Bedien-Pfade voll, Selbstcheck-Zeile UNVERÄNDERT (Sub (a)+(b) ergänzen KEINE neuen Public-Surface-Funktionen, nur read() + postMessage-Listener gefüllt).");
       });
     })();
   </script>
