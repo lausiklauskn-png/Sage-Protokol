@@ -1811,6 +1811,55 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-25 · Mini-Pflege — CLAUDE.md § „Sicherheits-Module pflegen Aspekte" verankert + Pipeline-Schritt 3a
+
+**Sitzungs-Rolle:** Mini-Pflege. Branch
+`claude/pflege-claudemd-sicherheits-aspekte-5IOHj`. Anschluss nach
+Bau-Sitzung 16 (PR #152) + Pflege Wappen/Korona (PR #154) + Brief-Anlage
+PR #155.
+
+**Anlass:** Pipeline-Schritt 3a aus der CLAUDE.md-Tafel
+„Pipeline-Reihenfolge bis App-Freigabe" — explizit als to-do markiert
+in Spec-Sitzung 16 (Karte 16 § Sub (d) Pflicht-Konvention) und in
+INTERFACES § 1 Modul 16 § Garantien-Block („Folge-Pflege CLAUDE.md:
+§ „Sicherheits-Module pflegen Aspekte" als neuer Pflicht-Block ist NACH
+Bau-Sitzung 16 fällig — eigene Mini-Pflege-Sitzung").
+
+**Was getan:**
+
+- **CLAUDE.md § „Was du tust (Pflicht-Konventionen)" als neuer
+  positiver Pflicht-Block angelegt**, direkt nach § „Was du nicht
+  tust". Genau ein Bullet-Eintrag: „Sicherheits-Module pflegen
+  Aspekte" — bindet Bau-/Pflege-Sitzungen von 10/11/12/14/15.B + alle
+  künftigen Sicherheits-Module an einen `ZERTIFIKAT_ASPEKTE`-Eintrag
+  in `src/modules/16_siegel.js` (Datum + Modul-ID + Beschreibung).
+  Verweis-Anker auf Karte 16 § Sub (d) UND INTERFACES § 1 Modul 16
+  § ZERTIFIKAT_ASPEKTE (beide sind verbindliche Quelle).
+- **Pipeline-Reihenfolge-Tafel Stand nachgezogen** (CLAUDE.md
+  § Pipeline-Reihenfolge): Schritt 1 ✅ PR #151, Schritt 2 ✅ PR #152
+  + Pflege Wappen/Korona PR #154, **Schritt 3a NEU eingefügt** und
+  ✅ erledigt (PR aus dieser Sitzung), Schritte 3/4/5/6 unverändert.
+
+**Disziplin gehalten:**
+
+- KEIN Modul-Code, KEIN Eingriff in `src/modules/16_siegel.js`
+  (Aspekt-Liste bleibt unverändert — neue Aspekte werden erst von
+  echten Sicherheits-Bau-Sitzungen ergänzt).
+- KEIN Eingriff in Karte 16 oder INTERFACES.md (Pflicht-Konvention
+  steht dort schon — CLAUDE.md spiegelt sie nur).
+- KEINE Tafel-Umsortierung (Klaus' Reihenfolge unangetastet, neuer
+  Schritt 3a ist additive Pflege-Spalte zwischen 3 und 4, keine
+  Reihenfolge-Verschiebung).
+- KEIN `status.json`-Wechsel, Pie-Skript NICHT aufgerufen.
+- Sichttest nicht nötig — reine Doku-Pflege.
+
+**Nächster sinnvoller Schritt:** PR mergen → Spec-Sitzung 15.B per
+`Befehl schreiben` als nächste Claude-Sitzung (Pipeline-Schritt 4).
+Klaus' Sichttest 16 (Pipeline-Schritt 3) läuft parallel, ist keine
+Claude-Sitzung.
+
+---
+
 ### 2026-05-24 · Mini-Pflege — Modul 16 Wappen-Wechsel + Korona-Redesign (`.bh-disk`-Stil)
 
 **Sitzungs-Rolle:** Mini-Pflege (Klaus-Wunsch im Anschluss an Bau-Sitzung 16
