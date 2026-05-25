@@ -24,8 +24,8 @@ pie showData
   "🟫 Schablone" : 4
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 9
-  "🟩 Fertig" : 3
+  "🟦 Code-Stub" : 8
+  "🟩 Fertig" : 4
 ```
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
@@ -107,7 +107,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 11 rate_limit | Stub (Schutz-Backlog) | — | — | Rate-Limit & TTL, Priorität niedrig |
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
-| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, **Sub (a)+(b) finalisiert 2026-05-25** in Spec-Sitzung 15.B mit MembraneSnapshot-Schema inkl. Siegel-Hook + Envelope mit vier op-Werten sporeRef/query/hint/queryResult + Allowlist fail-soft + Nonce-Pflicht 30 s Replay-Dedupe + Rate-Limit-Hook für Modul 11 vorbestellt, Sub (c) später, Sub (d) Verweis) | **Code-Stub voll** (Bau-Sitzung 15.B Sub (a)+(b) Bedien-Pfade 2026-05-25 + Bau 15 Sub (e) + Bau 15.SW SW-Probe-Detektor + Pflege Sage-Page-Sichttest-Knopf, alle 2026-05-24) | **Bau 15.B Sichttest ungeprüft 2026-05-25** (Headless-Smoke `tests/smoke_bau15b_membran.mjs` 31/31 grün — wartet auf Klaus' Browser-Lauf Panel 15 Knöpfe 10–17 in DeX-Chrome); Sub (e) + Bau 15.SW + Sage-Page-Lampe geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün, Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün |
+| 15 membran | Spec fertig (Sub (e) voll 2026-05-24, **Sub (a)+(b) finalisiert 2026-05-25** in Spec-Sitzung 15.B mit MembraneSnapshot-Schema inkl. Siegel-Hook + Envelope mit vier op-Werten sporeRef/query/hint/queryResult + Allowlist fail-soft + Nonce-Pflicht 30 s Replay-Dedupe + Rate-Limit-Hook für Modul 11 vorbestellt, Sub (c) später, Sub (d) Verweis) | **Fertig** (Bau-Sitzung 15.B Sub (a)+(b) Bedien-Pfade 2026-05-25 + Bau 15 Sub (e) + Bau 15.SW SW-Probe-Detektor + Pflege Sage-Page-Sichttest-Knopf, alle 2026-05-24; PR #159 gemerged) | **Bau 15.B Sichttest 8/8 grün 2026-05-25** (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 15 Setup + Knöpfe 10–17 alle grün im Termux-`localhost:8000`-Lauf nach Hard-Reload; Sage-Page Bonus vier Plaketten sichtbar (LEBT/VERKEHR/FREMD/Siegel-Badge); Mini-Pflege Knopf-11-Anti-PII-Filter (eigene nodeId vom String-Match ausnehmen) im selben PR #159 mitgenehmigt. Sub (e) + Bau 15.SW + Sage-Page-Lampe geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün, Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün |
 | 16 siegel | Spec fertig (2026-05-24, Spec-Sitzung 16) | **Code-Stub (Bau-Sitzung 16 vom 2026-05-24)** | Sichttest ungeprüft (Headless-Smoke 32/32 grün, wartet auf Klaus' Browser-Lauf) | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. **Spec-Sitzung 16 vom 2026-05-24:** alle vier Sub-Bereiche final spezifiziert — Sub (a) Pflicht-Modul-Liste mit sieben Modulen (01 Storage / 02 Spore / 03 Embedding [`lazy:true` für Sage-Page] / 04 Match / 05 Anastomose / 07 Apoptose / 15 Membran) + Surface-Funktions-Anker pro Modul (`init`/`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`) + Status-Schema (`"ok"`/`"deferred"`/`"missing"`/`"broken"`) + binärer Fail-Modus (kein Render bei missing/broken, eine `console.warn`-Zeile mit ID-Liste); Sub (b) Badge-Rendering — DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach #lamp-fremd, 40-px rundes Medaillon Edel-Gold (`#C9A961`-Klasse) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei verschlungene Hyphen-Bögen + zentraler Knoten-Punkt), 600 ms First-Boot-Animation einmalig, dezenter Glow-Hover, KEINE Stufen-Varianten (Klaus-Festlegung: Siegel wächst über Aspekte, nicht über sichtbare Stufen), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1); Sub (c) Erklärungs-Modal — eigenständig in `document.body` (analog Modul 15), Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-Liste mit Status + Aspekte-Liste + Aussteller-Klärung), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen), nüchterne Aussteller-Klärung in zwei Zeilen (Klaus-Korrektur 2026-05-24: KEIN Disclaimer-Schwall), Repo-URL Auto-Erkennung mit `init({repoUrl})`-Override; Sub (d) `ZERTIFIKAT_ASPEKTE`-Schema (`{since, module, aspect, description}`) chronologisch aufsteigend, Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24" verbindlich für Bau 16, Pflicht-Konvention: jedes spätere Sicherheits-Modul (10/11/12/14/15.B) MUSS in seiner Pflege einen Aspekt ergänzen. Persistenz **RAM-only** (Variante A, kein DB_VERSION-Bump, kein neuer Store, kein PROTOCOL_VERSION-Bump — Modul 16 ist nicht protokoll-aktiv). Schnittstelle `window.SbkimSiegel = {init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta}`. KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). INTERFACES.md § 1 Modul 16 voller Block ergänzt (analog § 1 Modul 15). **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
@@ -1810,6 +1810,100 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-25 · Sichttest + Brief-Anlage — Bau-15.B Sichttest grün + Pflege-Brief Endknoten-Migration erweitern angelegt
+
+**Sitzungs-Rolle:** Mini-Pflege (Sichttest-Status-Nachzug + Brief-
+Anlage). Branch `claude/brief-pflege-endknoten-migration-erweitern`.
+Anschluss nach Bau-Sitzung 15.B (PR #159 gemerged, 2026-05-25).
+
+**Anlass:** Klaus hat im selben Tag den Bau-15.B-Sichttest 8/8 grün
+durchgezogen (Panel 15 Setup + Knöpfe 10–17 in DeX-Chrome auf Galaxy
+Tab S6, Termux-`localhost:8000`-Server, Hard-Reload nach Pull). Im
+Sichttest zeigte Knopf 11 zunächst einen False-Positive
+„geschwister_nodeId_leak: 1 Leaks gefunden" — Ursache war ein
+Selbst-Eintrag in Klaus' lokalem `sbkim_siblings`-Store (alte Test-
+Daten, vermutlich aus Bau-05-BroadcastChannel-Selbst-Handshake), den
+der Knopf-Vergleich nicht von echten fremden Geschwistern unterschied
+(eigene `nodeId` ist nach Karte 15 § Sub (a) Feld-Konventionen
+absichtlich Klartext). Mini-Pflege Knopf 11 im selben PR #159
+nachgezogen (Commit `ad9ede9`, „A — direkt mergen" wurde nach
+Klaus-Wahl zu „B — erst Mini-Fix, dann mergen") → PR #159 squash-
+gemerged auf main als `7547ced`. Klaus tippte „Befehl schreiben" am
+Sitzungs-Ende; diese Mini-Pflege zieht den Sichttest-Status für
+Bau 15.B auf main nach und legt den Brief für die nächste Pflege-
+Sitzung an.
+
+**Was getan:**
+
+- **Karte 15 § Bauzustand** Zeile „Sichttest Bau 15.B | geprüft
+  2026-05-25 (Klaus, DeX-Chrome auf Galaxy Tab S6)" mit voller
+  Sichttest-Anmerkung (Setup-`_meta`-Output, alle acht Knöpfe 10–17
+  einzeln dokumentiert, Sage-Page Bonus, Mini-Pflege Knopf-11-Fix).
+- **INTERFACES.md § 1 Modul 15 Status** auf `stabil` gezogen (war
+  `review`) — Klaus-Sichttest 8/8 grün ist der dritte und letzte
+  Lifecycle-Schritt (Spec → Code → Sichttest). „Geprüft"-Zeile um
+  2026-05-25-Sichttest-Eintrag erweitert.
+- **PULS.md** Tabellenzeile 15 auf „Fertig" mit Sichttest-Hinweis +
+  diesen Sitzungs-Eintrag oben.
+- **status.json** `membranBacklog[0]` `score` auf `"fertig"` gezogen
+  (war `"stub"`); `siegel`-Text vorn um „Sichttest 8/8 grün
+  2026-05-25" ergänzt. Pie-Skript aufgerufen → neuer Pie-Stand mit
+  Modul 15 in Spalte „🟩 Fertig" statt „🟦 Code-Stub".
+- **Brief-Anlage `docs/sessions/BRIEF_PFLEGE_ENDKNOTEN_MIGRATION_ERWEITERN.md`**:
+  detaillierter Codeblock für die nächste Pflege-Sitzung, die zwei
+  Karten-/Brief-Erweiterungen macht:
+  - **Karte 09 § Einbau-Anleitung** um Schritt 10 (Membran-Allowlist
+    + FREMD-Lampe + SW-Probe-Detektor) und Schritt 11 (Siegel-Badge-
+    Container) erweitern — beide mit kompletten CSS-/DOM-/script-/
+    init-Anker-Verweisen auf die Sage-Page-Vorlage (`:root`-
+    Variablen, `.lamp.fremd-*`-Klassen, `#sbkim-siegel-badge`-Block,
+    `.lamps`-Container).
+  - **`BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md`** um zwei
+    neue Aufgaben-Punkte g) Modul 15 einbauen + h) Modul 16 einbauen
+    ergänzen + Punkt e) Sichttest um die zwei neuen Selbstcheck-
+    Zeilen erweitern.
+  - **`allowedOrigins`-Default-Vorschlag pro Endknoten**:
+    `["https://lausiklauskn-png.github.io"]` (sicher konservativ;
+    wächst mit dem Mycel pro Folge-Pflege).
+  - **`enableTestButton:true` NICHT bei Endknoten** — nur Sage-Page
+    (Karte 15 § Pflege Sage-Page-Sichttest-Knopf 2026-05-24 verbindlich).
+  - **Modul 16 `repoUrl`-Override pro Endknoten** (z.B.
+    `"https://github.com/lausiklauskn-png/Mein-Rezeptbuch"`) +
+    Anti-Greenwashing-Hinweis (Badge erscheint nur wenn alle sieben
+    Pflicht-Module geladen sind).
+
+**Disziplin gehalten:**
+
+- KEIN Modul-Code-Eingriff in `src/modules/*.js` (Sage-Protokol-
+  Module sind verbindlich auf main).
+- KEIN Eingriff in `index.html` oder `sbkim-init.js` (die Vorlage
+  bleibt).
+- KEIN Eingriff in `tests/manual_check.html` (Bau 15.B + Mini-Pflege
+  Knopf 11 sind auf main).
+- KEINE Spec-Änderung an Karte 15 / Karte 16 / INTERFACES § 1 Modul
+  15+16 (Tafeln bleiben — diese Pflege ist Status-Nachzug + Brief).
+- KEINE Tafel-Umsortierung Pipeline (Reihenfolge unverändert:
+  Schritt 5 Endknoten-Migration → Schritt 6 App-Freigabe; diese
+  Brief-Anlage ist Vorbereitung für Schritt 5).
+- KEIN `PROTOCOL_VERSION`-Bump, KEIN `DB_VERSION`-Bump.
+
+**Nächster sinnvoller Schritt:**
+
+1. **PR aus dieser Mini-Pflege mergen** (Brief-Anlage + Status-Nachzug).
+2. **Pflege-Sitzung Endknoten-Migration-Brief erweitern** (Pipeline-
+   Schritt 5-Vorbereitung) — Brief liegt fertig im Repo, eigene
+   Sitzung in Sage-Protokol-Repo erweitert Karte 09 + Brief um Module
+   15 + 16.
+3. **Externe Endknoten-Bau-Sitzungen** pro Endknoten-Repo (`Mein-
+   Rezeptbuch` + `Mein-Mixarium`) mit dem erweiterten Brief —
+   Pipeline-Schritt 5 voll.
+4. **Klaus' App-Freigabe** (Pipeline-Schritt 6).
+
+Details im
+[Übergabeprotokoll 2026-05-25 Sichttest + Brief Endknoten-Migration](sessions/archiv/2026-05-25_sichttest-15b-brief-endknoten-migration.md).
+
+---
 
 ### 2026-05-25 · Bau-Sitzung 15.B — Modul 15 Sub (a) Read-API + Sub (b) postMessage-Brücke implementiert
 
