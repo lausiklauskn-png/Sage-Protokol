@@ -2155,19 +2155,23 @@ Geprüft: 2026-05-14 (Spec-Sitzung 09)
 ---
 
 ### Modul: 15_membran
-Status: entwurf  (Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe voll
-                 spezifiziert in Spec-Sitzung 15 vom 2026-05-24; **Sub (a)
+Status: review  (Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe voll
+                 spezifiziert in Spec-Sitzung 15 vom 2026-05-24; Sub (a)
                  Read-API + Sub (b) postMessage-Brücke voll spezifiziert
-                 in Spec-Sitzung 15.B vom 2026-05-25** — finales
-                 MembraneSnapshot-Schema mit Siegel-Hook-Feld, finale
-                 postMessage-Envelope mit vier `op`-Werten
-                 (sporeRef/query/hint/queryResult) + expliziten Payload-
-                 Schemata, Allowlist strict String fail-soft, Rate-Limit-
-                 Hook für Modul 11 vorbestellt, Nonce-Pflicht mit 30 s
-                 Replay-Dedupe. Bau-Sitzung 15.B ausstehend
-                 (`src/modules/15_membran.js` Sub (a)+(b) heute Skelett);
-                 Sub (c) Capability-Token Stufe 3, später; Sub (d)
-                 Backup-Datei nur Verweis auf Modul 02 Bau 02.X.)
+                 in Spec-Sitzung 15.B vom 2026-05-25 und **vollständig
+                 implementiert in Bau-Sitzung 15.B vom 2026-05-25** —
+                 `src/modules/15_membran.js` Sub (a) `read()` voll mit
+                 MembraneSnapshot inkl. Siegel-Hook 3-Fall-Logik;
+                 Sub (b) postMessage-Listener voll mit Allowlist-fail-
+                 soft (`init()`), Nonce-Pflicht + 30 s Replay-Dedupe
+                 RAM-Map, Rate-Limit-Hook (fail-soft an Modul 11),
+                 Op-Dispatch sporeRef/query/hint/queryResult
+                 (`handshake` Tabu, Schema-Validierung pro Op, RAM-
+                 Caches recentSporeRefs/pendingQueries). Headless-
+                 Smoke 31/31 grün; Sichttest ungeprüft (wartet auf
+                 Klaus' Browser-Lauf Panel 15 Knöpfe 10–17). Sub (c)
+                 Capability-Token Stufe 3, später; Sub (d) Backup-
+                 Datei nur Verweis auf Modul 02 Bau 02.X.)
 Datei:  docs/components/15_membran.md (Karte) ·
         src/modules/15_membran.js (existiert noch nicht — Bau-Sitzung 15
         nach Spec-Sitzung 15 vom 2026-05-24 fällig) ·
@@ -2612,7 +2616,11 @@ Geprüft: 2026-05-18 (Hauptsitzung 15-Membran-Stub),
          2026-05-24 (Spec-Sitzung 15 — Sub (e) voll, Sub (a)+(b) grob),
          2026-05-25 (Spec-Sitzung 15.B — Sub (a) Snapshot-Schema +
                      Siegel-Hook + Sub (b) Envelope/Op-Tabelle/Nonce/
-                     Rate-Limit-Hook voll spezifiziert)
+                     Rate-Limit-Hook voll spezifiziert),
+         2026-05-25 (Bau-Sitzung 15.B — Sub (a) read() voll, Sub (b)
+                     postMessage-Bedien-Pfade voll implementiert;
+                     Headless-Smoke 31/31 grün, Browser-Sichttest
+                     ungeprüft)
 
 ---
 

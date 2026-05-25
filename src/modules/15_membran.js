@@ -1,19 +1,25 @@
 /*
  * SBKIM — Modul 15 — Membran
  *
- * Außenhülle zwischen PWA-Zelle und Browser-Umgebung. Bau-Sitzung 15
- * (2026-05-24) implementiert:
+ * Außenhülle zwischen PWA-Zelle und Browser-Umgebung. Bau-Sitzung 15.B
+ * (2026-05-25) füllt die Bedien-Pfade Sub (a)+(b); Bau-Sitzung 15
+ * (2026-05-24) hatte Sub (e) voll und Sub (a)+(b) als Skelette.
  *
- *   Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe — vollständig
- *     (Ringbuffer RAM-only, Listener-Liste, Lampen-Toggle, Modal-Mount,
- *      Click-Handler, BroadcastChannel-Subscription für SW-endpoint-probes)
- *   Sub (a) read() — Skelett (fail-soft Snapshot aus optionalen Quellen)
- *   Sub (b) postMessage-Listener — Skelett (Allowlist-Filter + Sub-(e)-Eintrag,
- *      KEIN Antwort-Pfad — Bedienung wartet auf Spec-Sitzung 15.B)
+ *   Sub (a) read() — voll: MembraneSnapshot mit Identitäts-/Geschwister-
+ *     anonymisiert-/Storage-/Siegel-Block (3-Fall-Logik für Siegel).
+ *     Sub-(e)-Hook mit snapshotByteLen-Feld.
+ *   Sub (b) postMessage — voll: vier op-Werte (sporeRef/query/hint/
+ *     queryResult), Allowlist fail-soft, Nonce-Pflicht + 30 s Replay-
+ *     Dedupe, optionaler Rate-Limit-Hook für Modul 11. KEIN handshake.
+ *   Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe — Ringbuffer RAM-
+ *     only, Listener-Liste, Lampen-Toggle, Modal-Mount, Click-Handler,
+ *     BroadcastChannel-Subscription für SW-endpoint-probes.
  *
  * Modul 15 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein
- * Embedding, keine Spore-Erzeugung. Sub (e) ist rein beobachtend; KEINE
- * benannten Error-Klassen — alle Fehlerpfade fail-soft mit console.warn.
+ * Embedding, keine Spore-Erzeugung. Sub (b) ist Empfänger-Schicht (keine
+ * Sender-API auf der Public-Surface — Sender-Pattern liegt beim Andocker).
+ * KEINE benannten Error-Klassen — alle Fehlerpfade fail-soft mit
+ * console.warn / console.info.
  *
  * Public surface (registered on window.SbkimMembrane):
  *   init(options?)                                    -> Promise<void>
@@ -27,7 +33,8 @@
  *   { bufferMax?: number,           // Default MEMBRANE_FREMDZUGRIFF_BUFFER_MAX = 50
  *     lampSelector?: string,        // Default '#lamp-fremd'
  *     mountModal?: boolean,         // Default true
- *     allowedOrigins?: string[] }   // Default [] (alle Cross-Origin → rejected-allowlist)
+ *     allowedOrigins?: string[],    // Default [] (alle Cross-Origin → rejected-allowlist)
+ *     enableTestButton?: boolean }  // Default false (Sage-Page-Sichttest-Knopf)
  *
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). Siehe INTERFACES.md §1 Modul 15 und
@@ -46,6 +53,13 @@
   var BROADCAST_CHANNEL_NAME = "sbkim-membrane";
   var SW_PROBE_MESSAGE_TYPE = "SBKIM_MEMBRANE_PROBE";
   var LAMP_PULSE_MS = 600;
+
+  // Sub (b) modul-lokale Konstanten (Karte 15 § Sub (b), Spec-Sitzung 15.B).
+  var PROTOCOL_VERSION = "0.1";              // §0 INTERFACES, Sub (a) Pflicht-Feld
+  var REPLAY_DEDUPE_TTL_MS = 30000;          // Nonce + pendingQueries TTL
+  var RECENT_SPORE_REFS_MAX = 16;            // FIFO-Eviction (Karte 15 § Op-Tabelle sporeRef)
+  var EMBEDDING_DIM = 384;                   // hint-Payload Vektor-Länge
+  var VALID_OPS = { "sporeRef": 1, "query": 1, "hint": 1, "queryResult": 1 };
 
   var VALID_KINDS = { "membrane-read": 1, "membrane-postmessage": 1, "endpoint-probe": 1 };
   var VALID_DECISIONS = { "accepted": 1, "ignored": 1, "rejected-allowlist": 1 };
@@ -66,6 +80,15 @@
   var modalKeydownHandler = null;
   var postMessageListener = null;
   var broadcastChannel = null;
+  // Sub (b) RAM-only Caches (Karte 15 § Sub (b) Persistenz-Entscheidung).
+  // seenNonces: nonce → receivedAt (ms). FIFO-Eviction nach REPLAY_DEDUPE_TTL_MS.
+  var seenNonces = new Map();
+  // recentSporeRefs: origin → {nodeId, sporeUrl, domain, receivedAt}. FIFO max 16.
+  var recentSporeRefs = new Map();
+  // pendingQueries: nonce → {origin, sentAt, resolve}. TTL REPLAY_DEDUPE_TTL_MS.
+  var pendingQueries = new Map();
+  // Frequenz-Drossel für Modul-14-fehlt-Hinweis (einmal pro Sitzung).
+  var diffusionMissingNotified = false;
   // Sage-Page-Sichttest-Anker (Pflege 2026-05-24, „Fremd-Lampe-Test-Knopf"):
   // wenn `init({enableTestButton:true})` gesetzt ist, ergänzt das Modal
   // im Summary-Bereich einen kleinen „🧪 Demo-Eintrag"-Knopf. Endknoten-
@@ -84,6 +107,39 @@
       if (cause !== undefined) console.warn("[SbkimMembrane] " + message, cause);
       else console.warn("[SbkimMembrane] " + message);
     }
+  }
+
+  function info(message) {
+    if (typeof console !== "undefined" && console.info) {
+      console.info("[SbkimMembrane] " + message);
+    }
+  }
+
+  // Sub (b) Hilfen: Replay-Dedupe + FIFO-Eviction.
+  function pruneSeenNonces(nowMs) {
+    if (seenNonces.size === 0) return;
+    var cutoff = nowMs - REPLAY_DEDUPE_TTL_MS;
+    // Map iteriert in Insertion-Order — älteste zuerst, FIFO sauber.
+    var stale = [];
+    seenNonces.forEach(function (receivedAt, nonce) {
+      if (receivedAt < cutoff) stale.push(nonce);
+    });
+    for (var i = 0; i < stale.length; i++) seenNonces.delete(stale[i]);
+  }
+
+  function prunePendingQueries(nowMs) {
+    if (pendingQueries.size === 0) return;
+    var cutoff = nowMs - REPLAY_DEDUPE_TTL_MS;
+    var stale = [];
+    pendingQueries.forEach(function (entry, nonce) {
+      if (entry.sentAt < cutoff) stale.push(nonce);
+    });
+    for (var i = 0; i < stale.length; i++) pendingQueries.delete(stale[i]);
+  }
+
+  function isHttpOrigin(s) {
+    if (typeof s !== "string" || s.length === 0) return false;
+    return s.indexOf("http://") === 0 || s.indexOf("https://") === 0;
   }
 
   function safeUserAgentHint() {
@@ -241,43 +297,270 @@
     recordEntry(entry);
   }
 
-  // ---- Sub (b) postMessage-Listener ----
+  // ---- Sub (b) postMessage-Listener (Spec-Sitzung 15.B vom 2026-05-25) ----
+  //
+  // Empfänger-Kette (Reihenfolge verbindlich):
+  //   1. event.origin === own → still verworfen (kein Sub-(e)-Eintrag)
+  //   2. data.type !== "sbkim/membrane/v1" → decision:"ignored"
+  //   3. event.origin nicht in allowedOrigins → decision:"rejected-allowlist"
+  //   4. nonce fehlt → decision:"ignored"
+  //   5. Replay (nonce <30 s gesehen) → still verworfen, KEIN Sub-(e)-Eintrag
+  //   6. SbkimRateLimit?.checkOrigin → "throttled" → ignored + throttled-Marker
+  //   7. op-Dispatch — bedient pro Op-Tabelle (Karte 15 § Sub (b)).
+
+  function recordPostMessageEntry(event, op, nonce, decision, extraDetails) {
+    var details = { op: op, nonce: nonce };
+    if (extraDetails && typeof extraDetails === "object") {
+      // Defensive Kopie der Extra-Felder (KEIN voller Payload — PII-Tabu).
+      if (extraDetails.throttled === true) details.throttled = true;
+    }
+    recordEntry({
+      kind: "membrane-postmessage",
+      origin: typeof event.origin === "string" ? event.origin : null,
+      agentHint: safeUserAgentHint(),
+      endpoint: null,
+      decision: decision,
+      details: details,
+    });
+  }
+
+  function isValidSporeRefPayload(p) {
+    return p && typeof p === "object" &&
+           typeof p.nodeId === "string" && p.nodeId.length > 0 &&
+           typeof p.sporeUrl === "string" && p.sporeUrl.length > 0 &&
+           typeof p.domain === "string" && p.domain.length > 0;
+  }
+
+  function isValidHintPayload(p) {
+    if (!p || typeof p !== "object") return false;
+    if (!Array.isArray(p.vector) || p.vector.length !== EMBEDDING_DIM) return false;
+    if (typeof p.label !== "string" || p.label.length === 0) return false;
+    if (typeof p.ttlMs !== "number" || !(p.ttlMs > 0)) return false;
+    return true;
+  }
+
+  function isValidQueryPayload(p) {
+    if (!p || typeof p !== "object") return false;
+    if (typeof p.text !== "string" || p.text.length === 0) return false;
+    // k ist optional (Default 5) — wenn vorhanden, muss er Number sein.
+    if (p.k !== undefined && (typeof p.k !== "number" || !(p.k > 0))) return false;
+    return true;
+  }
+
+  function cacheSporeRef(origin, payload) {
+    // FIFO-Eviction: Map iteriert in Insertion-Order. Bei Re-Insertion
+    // (gleicher Origin) erst löschen, damit der neue Eintrag ans Ende kommt.
+    if (recentSporeRefs.has(origin)) recentSporeRefs.delete(origin);
+    recentSporeRefs.set(origin, {
+      nodeId: payload.nodeId,
+      sporeUrl: payload.sporeUrl,
+      domain: payload.domain,
+      receivedAt: nowIso(),
+    });
+    while (recentSporeRefs.size > RECENT_SPORE_REFS_MAX) {
+      var firstKey = recentSporeRefs.keys().next().value;
+      recentSporeRefs.delete(firstKey);
+    }
+  }
+
+  function sendQueryResultReply(event, inReplyToNonce, results, errorReason) {
+    // event.source kann Window oder MessagePort sein. Wir machen das fail-soft —
+    // wenn kein source vorhanden ist, wird einfach nichts gesendet (Sub-(e)-
+    // Eintrag wurde trotzdem geschrieben).
+    try {
+      if (!event.source || typeof event.source.postMessage !== "function") return;
+      var replyNonce;
+      try { replyNonce = global.crypto.randomUUID(); }
+      catch (_e) { replyNonce = "reply-" + Date.now() + "-" + Math.random().toString(36).slice(2); }
+      var replyFromOrigin = "";
+      try { replyFromOrigin = global.location.origin; } catch (_e) { /* nb */ }
+      var replyPayload = { results: results, error: errorReason };
+      event.source.postMessage({
+        type: MEMBRANE_MESSAGE_TYPE,
+        op: "queryResult",
+        fromOrigin: replyFromOrigin,
+        nonce: replyNonce,
+        inReplyTo: inReplyToNonce,
+        payload: replyPayload,
+      }, event.origin);
+    } catch (err) {
+      warn("queryResult-Antwort konnte nicht gesendet werden — fail-soft.", err);
+    }
+  }
+
+  async function dispatchOp(event, op, nonce, payload) {
+    if (op === "sporeRef") {
+      if (!isValidSporeRefPayload(payload)) {
+        recordPostMessageEntry(event, op, nonce, "ignored");
+        return;
+      }
+      cacheSporeRef(event.origin, payload);
+      recordPostMessageEntry(event, op, nonce, "accepted");
+      return;
+    }
+
+    if (op === "hint") {
+      if (!isValidHintPayload(payload)) {
+        recordPostMessageEntry(event, op, nonce, "ignored");
+        return;
+      }
+      var diffusion = global.SbkimDiffusion;
+      if (diffusion && typeof diffusion.recordLead === "function") {
+        try {
+          diffusion.recordLead({
+            vector: payload.vector,
+            label: payload.label,
+            ttlMs: payload.ttlMs,
+            sourceOrigin: event.origin,
+          });
+          recordPostMessageEntry(event, op, nonce, "accepted");
+        } catch (err) {
+          warn("SbkimDiffusion.recordLead hat geworfen — fail-soft.", err);
+          recordPostMessageEntry(event, op, nonce, "ignored");
+        }
+      } else {
+        // Modul 14 fehlt — frequenz-gedrosselter Hinweis (einmal pro Sitzung).
+        if (!diffusionMissingNotified) {
+          diffusionMissingNotified = true;
+          info("Modul 14 (Diffusion) fehlt — hint-Pfad still verworfen. Modul 14 wird im Backlog gebaut (Karte 14).");
+        }
+        recordPostMessageEntry(event, op, nonce, "ignored");
+      }
+      return;
+    }
+
+    if (op === "query") {
+      if (!isValidQueryPayload(payload)) {
+        recordPostMessageEntry(event, op, nonce, "ignored");
+        return;
+      }
+      var k = (typeof payload.k === "number" && payload.k > 0) ? payload.k : 5;
+      var match = global.SbkimMatch;
+      if (match && typeof match.queryLocal === "function") {
+        try {
+          var results = await match.queryLocal(payload.text, k);
+          sendQueryResultReply(event, nonce, Array.isArray(results) ? results : [], null);
+          recordPostMessageEntry(event, op, nonce, "accepted");
+        } catch (err) {
+          warn("SbkimMatch.queryLocal hat geworfen — fail-soft mit Fehler-Antwort.", err);
+          sendQueryResultReply(event, nonce, [], "module-04c-query-failed");
+          recordPostMessageEntry(event, op, nonce, "ignored");
+        }
+      } else {
+        // Modul 04.C noch nicht da — Antwort mit fail-soft-Marker.
+        sendQueryResultReply(event, nonce, [], "module-04c-not-available");
+        recordPostMessageEntry(event, op, nonce, "ignored");
+      }
+      return;
+    }
+
+    if (op === "queryResult") {
+      var inReplyTo = (payload && typeof payload === "object" && typeof payload.inReplyTo === "string")
+        ? payload.inReplyTo
+        : null;
+      // Spec-Konvention: inReplyTo liegt auf Envelope-Ebene, NICHT im Payload.
+      // Wir lesen ihn primär aus dem Event (siehe handlePostMessage); dieser
+      // Pfad ist Fallback für Sender, die ihn versehentlich in payload legen.
+      if (!inReplyTo) {
+        recordPostMessageEntry(event, op, nonce, "ignored");
+        return;
+      }
+      var pending = pendingQueries.get(inReplyTo);
+      if (!pending) {
+        recordPostMessageEntry(event, op, nonce, "ignored");
+        return;
+      }
+      pendingQueries.delete(inReplyTo);
+      try { pending.resolve(payload); } catch (err) { warn("pendingQueries-Resolver hat geworfen.", err); }
+      recordPostMessageEntry(event, op, nonce, "accepted");
+      return;
+    }
+
+    // Unbekannte op (insbesondere "handshake" — explizites Tabu).
+    recordPostMessageEntry(event, op, nonce, "ignored");
+  }
 
   function handlePostMessage(event) {
     try {
+      // 1. Same-Origin → still verworfen (keine Sub-(e)-Buffer-Verschmutzung).
       var sameOrigin = false;
       try {
         sameOrigin = event.origin === global.location.origin;
       } catch (_e) { /* nb */ }
-      if (sameOrigin) return; // Same-Origin gilt nicht als Fremdzugriff (Karte 15 § Fremd-Definition).
+      if (sameOrigin) return;
 
       var data = event.data;
       var op = (data && typeof data.op === "string") ? data.op : null;
       var nonce = (data && typeof data.nonce === "string") ? data.nonce : null;
       var type = (data && typeof data.type === "string") ? data.type : null;
+      var inReplyToEnvelope = (data && typeof data.inReplyTo === "string") ? data.inReplyTo : null;
+      var payload = (data && typeof data.payload === "object" && data.payload !== null) ? data.payload : null;
 
-      var decision;
-      if (allowedOrigins.indexOf(event.origin) < 0) {
-        decision = "rejected-allowlist";
-      } else if (type !== MEMBRANE_MESSAGE_TYPE) {
-        decision = "ignored";
-      } else {
-        // Allowlist-OK + korrekter Type: Stufe 1 erfasst nur, Bedienung
-        // ist Spec-Sitzung 15.B (siehe Karte 15 § Sub (b)). Wir markieren
-        // den Eintrag als "ignored", weil keine Antwort gesendet wird —
-        // sobald 15.B den Bedien-Pfad spezifiziert, wechselt das auf
-        // "accepted".
-        decision = "ignored";
+      // 2. Type-Check.
+      if (type !== MEMBRANE_MESSAGE_TYPE) {
+        recordPostMessageEntry(event, op, nonce, "ignored");
+        return;
       }
 
-      recordEntry({
-        kind: "membrane-postmessage",
-        origin: typeof event.origin === "string" ? event.origin : null,
-        agentHint: safeUserAgentHint(),
-        endpoint: null,
-        decision: decision,
-        details: { op: op, nonce: nonce },
-      });
+      // 3. Allowlist-Check.
+      if (allowedOrigins.indexOf(event.origin) < 0) {
+        recordPostMessageEntry(event, op, nonce, "rejected-allowlist");
+        return;
+      }
+
+      // 4. Nonce-Pflicht.
+      if (!nonce) {
+        recordPostMessageEntry(event, op, nonce, "ignored");
+        return;
+      }
+
+      // 5. Replay-Dedupe.
+      var now = Date.now();
+      pruneSeenNonces(now);
+      if (seenNonces.has(nonce)) {
+        // Still verworfen — KEIN Sub-(e)-Eintrag, KEINE Antwort.
+        return;
+      }
+      seenNonces.set(nonce, now);
+      prunePendingQueries(now);
+
+      // 6. Rate-Limit-Hook (optional, Modul 11 — fail-soft).
+      try {
+        var rateLimit = global.SbkimRateLimit;
+        if (rateLimit && typeof rateLimit.checkOrigin === "function") {
+          var verdict = rateLimit.checkOrigin(event.origin);
+          if (verdict === "throttled") {
+            recordPostMessageEntry(event, op, nonce, "ignored", { throttled: true });
+            return;
+          }
+        }
+      } catch (err) {
+        // Modul 11 wirft im Hook — fail-soft, weiter durchreichen.
+        warn("SbkimRateLimit.checkOrigin hat geworfen — fail-soft.", err);
+      }
+
+      // 7. Op-Validierung (whitelist).
+      if (!op || !VALID_OPS[op]) {
+        recordPostMessageEntry(event, op, nonce, "ignored");
+        return;
+      }
+
+      // Für queryResult: inReplyTo aus Envelope-Ebene durchreichen, falls
+      // payload selbst die Info nicht trägt. Sender-Konvention: inReplyTo
+      // ist Envelope-Feld. Wir reichen es in dispatchOp via payload-Wrapper
+      // — bewusst nicht in den Payload geschoben, sondern als zweiter Pfad.
+      if (op === "queryResult") {
+        // Wir bauen eine Payload-Kopie mit inReplyTo-Anker, damit dispatchOp
+        // ihn lesen kann. Originale payload bleibt unangetastet.
+        var augmented = (payload && typeof payload === "object") ? payload : {};
+        if (!augmented.inReplyTo && inReplyToEnvelope) augmented.inReplyTo = inReplyToEnvelope;
+        // dispatchOp ist async — wir reichen das Promise nicht hoch, weil
+        // der Browser-Event-Loop das ohnehin nicht erwartet (fire-and-forget).
+        dispatchOp(event, op, nonce, augmented);
+        return;
+      }
+
+      dispatchOp(event, op, nonce, payload);
     } catch (err) {
       warn("postMessage-Handler hat geworfen — fail-soft.", err);
     }
@@ -587,19 +870,25 @@
   // baut nur das Skelett, fail-soft pro Quelle.
 
   async function readSnapshot() {
+    // Identitäts-Block (Spore). protocolVersion ist IMMER §0-Wert "0.1"
+    // (Spec 15.B: aktiver Stand, nicht aus Spore lesen).
     var snapshot = {
-      protocolVersion: null,
+      protocolVersion: PROTOCOL_VERSION,
       nodeId: null,
       domain: null,
       sporeUrl: null,
+      domainKeywords: [],
+      stammCategories: [],
+      guestCategories: [],
       siblings: [],
       storage: {
         quotaWarningLevel: "none",
         storagePersisted: null,
       },
+      siegel: null,
     };
 
-    // Spore: nodeId + domain + sporeUrl (fail-soft pro Feld).
+    // Spore: nodeId + domain + sporeUrl + Listen-Felder (fail-soft pro Feld).
     try {
       var spore = global.SbkimSpore;
       if (spore) {
@@ -613,11 +902,19 @@
           if (typeof spore.getOwnSpore === "function") {
             var own = await spore.getOwnSpore();
             if (own && typeof own === "object") {
-              if (typeof own.protocolVersion === "string") snapshot.protocolVersion = own.protocolVersion;
               if (typeof own.domain === "string") snapshot.domain = own.domain;
               if (typeof own.endpoint === "string") {
                 var ep = own.endpoint.replace(/\/+$/, "");
                 snapshot.sporeUrl = ep + "/sbkim/spore.json";
+              }
+              if (Array.isArray(own.domainKeywords)) {
+                snapshot.domainKeywords = own.domainKeywords.filter(function (s) { return typeof s === "string"; });
+              }
+              if (Array.isArray(own.stammCategories)) {
+                snapshot.stammCategories = own.stammCategories.filter(function (s) { return typeof s === "string"; });
+              }
+              if (Array.isArray(own.guestCategories)) {
+                snapshot.guestCategories = own.guestCategories.filter(function (s) { return typeof s === "string"; });
               }
             }
           }
@@ -626,6 +923,7 @@
     } catch (_e) { /* nb */ }
 
     // Anastomose: siblings ANONYMISIERT (nodeIdHash via base64url-sha256).
+    // KEIN score, KEIN lastSeen (Empfehlungs-Pfad-Tabu, Spec 15.B).
     try {
       var anast = global.SbkimAnastomose;
       if (anast && typeof anast.listSiblings === "function") {
@@ -661,6 +959,7 @@
     } catch (_e) { /* nb */ }
 
     // Quota: navigator.storage.estimate() → grob in "none"/"ratio"/"bytes"/"both".
+    // Quota blockt read() NICHT (Empfangsmodus-Prinzip, Spec 15.B).
     try {
       var nav = global.navigator;
       if (nav && nav.storage && typeof nav.storage.estimate === "function") {
@@ -669,15 +968,39 @@
       }
     } catch (_e) { /* nb */ }
 
+    // Siegel-Block (Modul 16 SbkimSiegel — drei Pflicht-Fälle):
+    //   - Modul 16 fehlt/nicht ready → null
+    //   - Modul 16 vorhanden + isCertified()===false → voll mit isCertified:false
+    //   - Modul 16 vorhanden + isCertified()===true → voll mit isCertified:true
+    // getExplanation() liefert bereits defensive Kopie — kein zweiter Klon nötig.
+    try {
+      var siegel = global.SbkimSiegel;
+      if (siegel && typeof siegel === "object" &&
+          siegel._meta && siegel._meta.ready === true &&
+          typeof siegel.isCertified === "function" &&
+          typeof siegel.getExplanation === "function") {
+        var explanation = siegel.getExplanation();
+        snapshot.siegel = {
+          isCertified: siegel.isCertified() === true,
+          repoUrl: (explanation && typeof explanation.repoUrl === "string") ? explanation.repoUrl : null,
+          certifiedModules: (explanation && Array.isArray(explanation.modules)) ? explanation.modules : [],
+        };
+      }
+    } catch (_e) { /* nb — fail-soft, siegel bleibt null */ }
+
     // Sub-(e)-Hook: jeder read() schreibt einen Eintrag (Karte 15
-    // § Architektur-Trennung Detektions-Schicht Pfad 1).
+    // § Architektur-Trennung Detektions-Schicht Pfad 1). snapshotByteLen
+    // macht Daten-Volumen-Beobachtung möglich (Spec 15.B Sub (a)).
+    var snapshotByteLen = 0;
+    try { snapshotByteLen = JSON.stringify(snapshot).length; }
+    catch (_e) { /* nb */ }
     recordEntry({
       kind: "membrane-read",
       origin: null,
       agentHint: safeUserAgentHint(),
       endpoint: null,
       decision: "accepted",
-      details: { fieldsRequested: null },
+      details: { fieldsRequested: null, snapshotByteLen: snapshotByteLen },
     });
 
     return snapshot;
@@ -728,7 +1051,20 @@
       lampSelector = opts.lampSelector;
     }
     if (Array.isArray(opts.allowedOrigins)) {
-      allowedOrigins = opts.allowedOrigins.filter(function (o) { return typeof o === "string"; });
+      // Sub (b) Validierungs-Strenge (Karte 15 § Konfigurations-Pfad, Spec
+      // 15.B): fail-soft. Pro entferntem Eintrag eine `console.warn`-Zeile,
+      // KEIN sync Throw — sonst bräche ein falsch konfigurierter Andocker
+      // die ganze Init-Kette.
+      var filtered = [];
+      for (var ai = 0; ai < opts.allowedOrigins.length; ai++) {
+        var entry = opts.allowedOrigins[ai];
+        if (isHttpOrigin(entry)) {
+          filtered.push(entry);
+        } else {
+          warn("Allowlist-Eintrag verworfen (Format ungültig): " + JSON.stringify(entry));
+        }
+      }
+      allowedOrigins = filtered;
     }
     if (opts.enableTestButton === true) {
       testButtonEnabled = true;
@@ -816,12 +1152,55 @@
       messageType: MEMBRANE_MESSAGE_TYPE,
       broadcastChannelName: BROADCAST_CHANNEL_NAME,
       swProbeMessageType: SW_PROBE_MESSAGE_TYPE,
+      protocolVersion: PROTOCOL_VERSION,
+      replayDedupeTtlMs: REPLAY_DEDUPE_TTL_MS,
+      recentSporeRefsMax: RECENT_SPORE_REFS_MAX,
+      embeddingDim: EMBEDDING_DIM,
       get bufferLength() { return buffer.length; },
       get listenerCount() { return listeners.length; },
       get modalMounted() { return modalMounted; },
       get modalOpen() { return modalOpen; },
       get ready() { return ready; },
       get allowedOrigins() { return allowedOrigins.slice(); },
+      // Sub (b) Read-Anker — Größen-Getter, keine direkten Map-Referenzen
+      // (Snapshot-Pattern; interne Maps bleiben modul-lokal).
+      get recentSporeRefsCount() { return recentSporeRefs.size; },
+      get pendingQueriesCount() { return pendingQueries.size; },
+      get seenNoncesCount() { return seenNonces.size; },
+      get siegelAvailable() {
+        try {
+          var s = global.SbkimSiegel;
+          return !!(s && typeof s === "object" && s._meta && s._meta.ready === true);
+        } catch (_e) { return false; }
+      },
+      // Test-Brücke für queryResult-Match-Pfad. Sub (b) ist Empfänger-
+      // Schicht — eine echte Sender-API liegt beim Andocker (Karte 15
+      // § Sender-Mechanismus). Für Sichttest registrieren wir einen
+      // Pending-Eintrag und liefern das Promise zurück, das bei einer
+      // passenden queryResult-Message resolved.
+      _registerPendingQueryForTest: function (nonce, origin) {
+        var resolveFn = null;
+        var p = new Promise(function (resolve) { resolveFn = resolve; });
+        pendingQueries.set(nonce, {
+          origin: typeof origin === "string" ? origin : null,
+          sentAt: Date.now(),
+          resolve: resolveFn,
+        });
+        return p;
+      },
+      // Snapshot der RAM-Caches (defensive Kopie für Tests).
+      get recentSporeRefsSnapshot() {
+        var out = {};
+        recentSporeRefs.forEach(function (entry, origin) {
+          out[origin] = {
+            nodeId: entry.nodeId,
+            sporeUrl: entry.sporeUrl,
+            domain: entry.domain,
+            receivedAt: entry.receivedAt,
+          };
+        });
+        return out;
+      },
     },
   };
 
