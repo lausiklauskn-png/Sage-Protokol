@@ -22,9 +22,13 @@ main).
 
 **Voraussetzungen:**
 
-- PR #159 (Bau-Sitzung 15.B) ist auf main (✅ gemerged 2026-05-25).
+- PR #159 (Bau-Sitzung 15.B) ist auf main (✅ gemerged 2026-05-25,
+  squash `7547ced`).
+- PR #160 (Sichttest-Status-Nachzug Bau 15.B + diese Brief-Anlage)
+  ist auf main (✅ gemerged 2026-05-25, squash `d2b44c3`).
 - Bau-15.B-Sichttest 8/8 grün (Klaus, DeX-Chrome 2026-05-25; ✅
-  bestätigt im PULS.md-Update aus dieser Brief-Anlage).
+  dokumentiert in Karte 15 § Bauzustand + INTERFACES § 1 Modul 15
+  Status `stabil` + PULS.md + status.json `score:"fertig"`).
 - Karte 15 + Karte 16 + INTERFACES.md § 1 Modul 15 + § 1 Modul 16
   sind verbindlich auf main.
 
@@ -58,8 +62,30 @@ Deine Aufgabe:
 
 PRIMÄR — Pflege-Sitzung „Endknoten-Migrations-Brief erweitern":
 
-1. **`docs/components/09_einbau_pwa.md` § Einbau-Anleitung** um zwei
-   neue Schritte ergänzen:
+1. **`docs/components/09_einbau_pwa.md`** ergänzen — DREI Stellen, in
+   dieser Reihenfolge:
+
+   **1a — § Andock-Schritt-Pfad-Überschrift** aktualisieren: aktuell
+   „neun Schritte" → „elf Schritte" (additiv, kein Re-Ordering).
+
+   **1b — § Schritt 2 `<script>`-Tags in `index.html`**: bestehende
+   Reihenfolge `01→02→03→04→05→07→00→06→08` um `→15→16` erweitern.
+   Modul 15 muss nach 08 + 00 stehen (lebt nicht vom Storage/Spore
+   für sein Sub (e), aber Sub (a) read() liest fail-soft Spore/
+   Anastomose/Storage — Reihenfolge folgt Andock-Konvention).
+   Modul 16 ZULETZT (surface-checkt alle anderen Module).
+
+   **1c — § Sichtkontrolle nach dem Andocken (Pflicht)**: aktuell
+   listet sie „neun Selbstcheck-Zeilen + sechs IndexedDB-Stores" auf;
+   ergänzen um die zwei neuen Selbstcheck-Zeilen (Modul 15 + Modul
+   16; siehe Erwartungs-Block Aufgaben g+h unten) — insgesamt dann
+   „elf Selbstcheck-Zeilen + sechs IndexedDB-Stores + zwei live-
+   Endpunkte + 5-Klick-Geste + FREMD-Lampe sichtbar + Siegel-Badge
+   sichtbar (wenn certified)".
+
+   **1d — § Einbau-Anleitung NEUE Schritte 10 + 11** anhängen
+   (direkt nach Schritt 9):
+
    - **§ Schritt 10 — Membran-Allowlist + FREMD-Lampe + SW-Probe-
      Detektor:**
      - `src/modules/15_membran.js` ins Endknoten-`sbkim/`-Verzeichnis
@@ -109,9 +135,18 @@ PRIMÄR — Pflege-Sitzung „Endknoten-Migrations-Brief erweitern":
        NACH 15 (letztes SBKIM-Modul, weil es alle anderen surface-
        checkt).
      - `sbkim-init.js`: `await SbkimSiegel.init({badgeSelector:
-       ".lamps", repoUrl: "<endknoten-repo-url>"});` (Repo-URL
-       Override pro Endknoten — z.B.
-       `"https://github.com/lausiklauskn-png/Mein-Rezeptbuch"`).
+       ".lamps", repoUrl: "<endknoten-repo-url>"});`.
+       **`repoUrl`-Override-Pflicht pro Endknoten:** Modul 16 Auto-
+       Erkennung würde `location.origin + first-path-segment` liefern
+       (z.B. `https://lausiklauskn-png.github.io/Mein-Mixarium/`),
+       was die Pages-Hosting-URL ist — NICHT das Quell-Repo. Im Modal
+       („SBKIM-Siegel — was bedeutet das?") soll der Repo-Link auf
+       das GitHub-Repo verweisen, damit Forker den Quellcode prüfen
+       können. Override-Werte:
+       - Mein-Rezeptbuch:
+         `"https://github.com/lausiklauskn-png/Mein-Rezeptbuch"`
+       - Mein-Mixarium:
+         `"https://github.com/lausiklauskn-png/Mein-Mixarium"`
      - **Anti-Greenwashing-Hinweis:** Badge erscheint NUR im DOM
        wenn alle sieben Pflicht-Module geladen sind (Modul 03
        Embedding gilt als `lazy:true` deferred-bestanden). Wenn
@@ -130,10 +165,28 @@ PRIMÄR — Pflege-Sitzung „Endknoten-Migrations-Brief erweitern":
        Buffer, rot bei Eintrag).
      - Sub-(e)-Modal öffnet via Klick auf `#lamp-fremd`.
      - SW-Probe-Detektor aktiv (Bau 15.SW): wenn eine fremde Origin
-       (z.B. Klaus per Eruda auf einem dritten Tab)
        `fetch("https://lausiklauskn-png.github.io/<endknoten>/sbkim/
        spore.json")` ruft, wird ein `endpoint-probe`-Eintrag im
        Modal sichtbar.
+     - **Endknoten-Sichttest-Workaround für FREMD-Lampe:** Klaus'
+       drei Endknoten sind alle same-origin (`https://lausiklauskn-
+       png.github.io`), Sub-(e)-SW-Probe-Detektor wertet das NICHT
+       als Fremd (Karte 15 § Fremd-Definition Schritt 3). Endknoten
+       setzen `enableTestButton:true` NICHT (Konvention — der „🧪
+       Demo-Eintrag"-Knopf bleibt Sage-Page-only). Klaus' Test-Pfad
+       im Endknoten:
+       - (a) Eruda öffnen (typisch über Such-Symbol oder Konsolen-
+         Geste, je nach Endknoten-Setup).
+       - (b) In Eruda `fetch("https://<andere-origin>/etwas")` von
+         einer wirklich fremden Origin — fragmentierter Pfad, weil
+         alle Endknoten same-origin sind. Realistischer: warten bis
+         ein KI-Browser-Agent (Gemini 3.5 Flash) den Endknoten in
+         der echten App-Freigabe besucht; bis dahin headless-only
+         via `tests/manual_check.html` Panel 15 Knopf 8.
+       - (c) Alternativ: temporär für den Sichttest
+         `SbkimMembrane._meta`-Test-Brücke nutzen (wenn vorhanden;
+         siehe `fremdzugriff._recordForTest` für synthetischen
+         Eintrag).
    - **h) Modul 16 (Siegel) einbauen** — Schritt 11 aus Karte 09
      ausführen. Erwartungs-Block:
      - Selbstcheck-Zeile in DevTools-Konsole:
@@ -242,3 +295,27 @@ Code-Lager die richtigen CSS-Anker selbst — fehleranfällig.
 3. Klaus' **App-Freigabe** Pipeline-Schritt 6 — die drei Apps
    (Mein-Rezeptbuch + Mein-Mixarium + Sage) bekommen ihre öffentliche
    Sichtbarkeit, das SBKIM-Siegel als Vertrauens-Signal sichtbar.
+
+### Optionale Folge-Pflegen vor App-Freigabe (außerhalb dieser Pflege)
+
+- **Modul 16 Voll-Sichttest** (Panel 16 Knöpfe 1–6 in
+  `tests/manual_check.html`): Klaus hat 2026-05-25 nur den Sage-Page
+  Bonus-Check gemacht („Badge sichtbar in Navleiste") — der volle
+  Panel-16-Sichttest (Setup + Tests 1–6) fehlt noch. Eigene Mini-
+  Sitzung, klein.
+- **Klaus' lokales `sbkim_siblings` aufräumen**: enthält einen
+  Selbst-Eintrag mit seiner eigenen `nodeId` (alte Test-Daten,
+  vermutlich aus Bau-05-BroadcastChannel-Selbst-Handshake). Modul
+  05 wirft Self-Handshakes inzwischen meist ab, aber alter Eintrag
+  bleibt. Nicht blockierend — Mini-Pflege Knopf-11-Anti-PII-Filter
+  in PR #159 macht diesen Eintrag im Sichttest jetzt sichtbar als
+  „Selbst-Eintrag ignoriert" statt als „Leak".
+- **PULS.md-Auslagerung**: 3000-Zeilen-Grenze schon vor dieser
+  Pflege überschritten (pre-existing); ältere 2026-05-1x-Einträge
+  nach `docs/sessions/archiv/` schieben. Eigene Pflege-Sitzung
+  (klein, Doku-Schieben).
+- **Tablet vs DeX Browser-Instanz** für Endknoten-Sichttest: Klaus'
+  Galaxy Tab S6 hat zwei getrennte Browser-Instanzen (CLAUDE.md
+  § Arbeitsumgebung Lehre 1). Endknoten-Sichttest muss in DERSELBEN
+  Instanz laufen, in der der Endknoten installiert ist. Hinweis für
+  externe Endknoten-Bauer.
