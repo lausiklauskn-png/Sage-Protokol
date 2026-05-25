@@ -2156,11 +2156,17 @@ Geprüft: 2026-05-14 (Spec-Sitzung 09)
 
 ### Modul: 15_membran
 Status: entwurf  (Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe voll
-                 spezifiziert in Spec-Sitzung 15 vom 2026-05-24; Sub (a)
-                 Read-API + Sub (b) postMessage-Brücke Grob-Spec mit
-                 fixiertem globalen Namen + Allowlist-Konfigurationspfad
-                 + Sub-(e)-Hooks, finale Spec ausstehend in Spec-Sitzung
-                 15.B; Sub (c) Capability-Token Stufe 3, später; Sub (d)
+                 spezifiziert in Spec-Sitzung 15 vom 2026-05-24; **Sub (a)
+                 Read-API + Sub (b) postMessage-Brücke voll spezifiziert
+                 in Spec-Sitzung 15.B vom 2026-05-25** — finales
+                 MembraneSnapshot-Schema mit Siegel-Hook-Feld, finale
+                 postMessage-Envelope mit vier `op`-Werten
+                 (sporeRef/query/hint/queryResult) + expliziten Payload-
+                 Schemata, Allowlist strict String fail-soft, Rate-Limit-
+                 Hook für Modul 11 vorbestellt, Nonce-Pflicht mit 30 s
+                 Replay-Dedupe. Bau-Sitzung 15.B ausstehend
+                 (`src/modules/15_membran.js` Sub (a)+(b) heute Skelett);
+                 Sub (c) Capability-Token Stufe 3, später; Sub (d)
                  Backup-Datei nur Verweis auf Modul 02 Bau 02.X.)
 Datei:  docs/components/15_membran.md (Karte) ·
         src/modules/15_membran.js (existiert noch nicht — Bau-Sitzung 15
@@ -2176,28 +2182,88 @@ Bietet (öffentlich):
   fremdzugriff.clear()                        → void                    // Buffer leeren + Lampe aus
   fremdzugriff._recordForTest(entry)          → void                    // Test-Brücke (Unterstrich-Konvention)
 
-  // --- Sub (a) Read-API für KI-Browser-Agenten (Stufe 1, Grob-Spec) ---
+  // --- Sub (a) Read-API für KI-Browser-Agenten (Stufe 1, voll-Spec 2026-05-25) ---
   read()                                      → Promise<MembraneSnapshot>
-    // MembraneSnapshot-Form (finale Spec ausstehend, Anker-Form):
+    // MembraneSnapshot-Form (finale Spec, Karte 15 § Sub (a) verbindlich):
     // {
-    //   protocolVersion, nodeId, domain, sporeUrl,
-    //   siblings:  [{ nodeIdHash, since, status }],   // ANONYMISIERT
-    //   storage:   { quotaWarningLevel, storagePersisted }
+    //   // Identitäts-Block (aus Modul 02 SbkimSpore)
+    //   protocolVersion: "0.1",                     // §0 PROTOCOL_VERSION
+    //   nodeId:          <eigene-base64url-sha256>, // KLARTEXT (eigene Identität)
+    //   domain:          <string>,                  // Spore-Domain
+    //   sporeUrl:        <string>,                  // /sbkim/spore.json-Pfad
+    //   domainKeywords:  <string[]>,                // Spore-Feld, public
+    //   stammCategories: <string[]>,                // Spore-Feld, public
+    //   guestCategories: <string[]>,                // Spore-Feld, public
+    //
+    //   // Geschwister-Block ANONYMISIERT (aus Modul 05 SbkimAnastomose)
+    //   siblings: [{ nodeIdHash, since, status }],  // KEIN score, KEIN lastSeen
+    //
+    //   // Storage-Block (aus Modul 01 SbkimStorage._meta + navigator.storage)
+    //   storage:  { quotaWarningLevel, storagePersisted },
+    //
+    //   // Siegel-Block (aus Modul 16 SbkimSiegel, Vorbestellung INTERFACES §1 M16)
+    //   siegel:   null | { isCertified, repoUrl, certifiedModules:[…vollständig] }
     // }
-    // Streng lesend, kein Seiteneffekt AUSSER Sub-(e)-Buffer-Eintrag.
+    // Streng lesend, kein Seiteneffekt AUSSER Sub-(e)-Buffer-Eintrag
+    // (kind:"membrane-read", details:{ fieldsRequested:null, snapshotByteLen }).
+    // Quota blockt read() NICHT (Empfangsmodus-Prinzip — read() ist
+    // Beobachtungs-Schicht, kein Storage-Schreiber).
 
-  // --- Sub (b) App-zu-App-Brücke via postMessage (Stufe 2, Grob-Spec) ---
-  // Sender:
+  // --- Sub (b) App-zu-App-Brücke via postMessage (Stufe 2, voll-Spec 2026-05-25) ---
+  // Sender (Andocker-Pflicht, NICHT Modul-15-Surface):
   //   peerWindow.postMessage({
   //     type:       "sbkim/membrane/v1",
-  //     op:         "sporeRef" | "query" | "hint",   // KEIN "handshake"
+  //     op:         "sporeRef" | "query" | "hint" | "queryResult",   // KEIN "handshake"
   //     fromOrigin: <string>,
-  //     nonce:      <random>,
-  //     payload:    <op-spezifisch>
+  //     nonce:      <crypto.randomUUID()>,          // Pflicht pro Anfrage
+  //     inReplyTo:  <nonce-der-Anfrage> | undefined, // nur bei op:"queryResult"
+  //     payload:    <op-spezifisch, siehe Tabelle>
   //   }, peerOrigin /* aus Allowlist via init({allowedOrigins}) */)
-  // Empfänger: window.addEventListener("message", …) prüft Allowlist
-  //   und type, beantwortet bzw. verwirft. Sub (e) triggert Eintrag
-  //   bei JEDER message-Quelle ungleich window.location.origin.
+  //
+  // Empfänger: window.addEventListener("message", …) prüft
+  //   (1) event.origin === window.location.origin → still verworfen
+  //       (same-origin gilt nicht als Fremd-Origin)
+  //   (2) event.origin nicht in allowedOrigins → Sub-(e)-Eintrag
+  //       decision:"rejected-allowlist", KEINE Antwort
+  //   (3) data.type !== "sbkim/membrane/v1" → Sub-(e)-Eintrag
+  //       decision:"ignored"
+  //   (4) optionaler SbkimRateLimit?.checkOrigin(origin)-Hook
+  //       (fail-soft wenn Modul 11 fehlt; "throttled" → ignored
+  //       + details.throttled:true)
+  //   (5) op-Schema-Validierung → bedient oder ignored
+  //
+  // op-Tabelle (verbindlich):
+  //   sporeRef    payload={nodeId, sporeUrl, domain}
+  //               → fire-and-forget; RAM-Cache recentSporeRefs[origin]
+  //                 (max. 16 Origins FIFO). KEIN IndexedDB-Schreiber.
+  //                 decision:"accepted" wenn verarbeitet, "ignored" bei
+  //                 Schema-Fehler.
+  //   query       payload={text:string, k:number(Default 5)}
+  //               → Antwort via op:"queryResult" mit inReplyTo:<nonce>.
+  //                 Delegiert an SbkimMatch.queryLocal(text, k) wenn
+  //                 vorhanden (Modul 04.C, noch nicht implementiert);
+  //                 fehlt das → Antwort {results:[], error:"module-04c-
+  //                 not-available"} + decision:"ignored".
+  //   hint        payload={vector:number[384], label:string, ttlMs:number}
+  //               → fire-and-forget; delegiert an SbkimDiffusion?.recordLead
+  //                 ({vector, label, ttlMs, sourceOrigin:event.origin}) wenn
+  //                 Modul 14 vorhanden, sonst console.info +
+  //                 decision:"ignored". KEIN Auto-Handshake zur Lead-Origin.
+  //   queryResult payload={results:Array<{label,score,sporeUrl}>,
+  //                        error:string|null}
+  //               → Empfänger matched inReplyTo gegen pendingQueries[nonce]
+  //                 (RAM-Map TTL 30 s); resolves den Aufrufer-Promise.
+  //                 Bei kein-Match: decision:"ignored" (Replay/verspätet).
+  //
+  // Nonce-Pflicht: crypto.randomUUID() pro Anfrage, 30 s Replay-Dedupe
+  //   (RAM-Map seenNonces[nonce] = receivedAt mit FIFO-Eviction).
+  //
+  // Sub (e) triggert Eintrag bei JEDER message-Quelle ungleich
+  //   window.location.origin (auch decision:"rejected-allowlist").
+  //
+  // KEIN op:"handshake" — Anastomose bleibt bei Modul 05 (HTTP / same-origin
+  //   BroadcastChannel-Fallback). Sub (b) ist Brücke für Browser-interne
+  //   App-zu-App-Konversation, nicht Replacement für Modul 05.
 
   // --- Sub (c) Capability-Handshake / Membran-Token (Stufe 3, später) ---
   // MembraneCapability-Form aus Karte 15 § Sub (c); Spec-Sitzung 15.C
@@ -2214,9 +2280,13 @@ Bietet (öffentlich):
       lampSelector?: string,            // Default '#lamp-fremd' (CSS-Selektor in der Page)
       mountModal?:   boolean,           // Default true — Modal in document.body anlegen + Click-Handler
       // Sub (b) Allowlist (Stufe-2-Pflicht, in Stufe 1 noch optional):
-      allowedOrigins?: string[],        // strict-String-Liste, kein Wildcard;
+      allowedOrigins?: string[],        // strict-String-Liste, exakter Origin-Match,
+                                        // kein Wildcard, kein "*self*"-Sonderwert;
                                         // Default [] (Sub (b) ohne Allowlist verwirft alle Cross-Origin-Messages
-                                        // als rejected-allowlist und triggert Sub-(e)-Eintrag)
+                                        // als rejected-allowlist und triggert Sub-(e)-Eintrag).
+                                        // Validierung fail-soft: Modul 15 filtert nicht-String-Einträge
+                                        // oder Einträge ohne http(s)://-Präfix aus + console.warn pro
+                                        // entferntem Eintrag (KEIN sync Throw, damit Andocker-Init weiterläuft).
       // Sage-Page-Sichttest-Knopf (Pflege 2026-05-24):
       enableTestButton?: boolean        // Default false. Wenn true, ergänzt das Fremdzugriff-Modal
                                         // einen sichtbaren „🧪 Demo-Eintrag"-Knopf neben „Aufräumen",
@@ -2330,10 +2400,35 @@ Fehlerverhalten:
                                                                   read() resolved IMMER mit Snapshot.
                                                                   Sub-(e)-Eintrag wird trotzdem geschrieben
                                                                   (kind:"membrane-read", decision:"accepted").
+  - read() (Sub (a)): Modul 16 SbkimSiegel fehlt/nicht ready    → siegel-Feld auf null (Doku-Hinweis im
+                                                                  Snapshot-Schema, damit Agent zwischen
+                                                                  "Modul 16 nicht da" und "nicht zertifiziert"
+                                                                  unterscheiden kann)
+  - read() (Sub (a)): Quota-Warnung                              → KEIN Block, snapshot.storage.quotaWarningLevel
+                                                                  wird gesetzt, read() resolved normal
   - Eingehende postMessage (Sub (b)): unbekannter type           → kein read, kein Sub-(b)-Antwort-Pfad;
                                                                   Sub-(e)-Eintrag (decision:"ignored")
   - Eingehende postMessage: Origin nicht in allowedOrigins       → kein Bedienen;
                                                                   Sub-(e)-Eintrag (decision:"rejected-allowlist")
+  - Eingehende postMessage: Schema-Fehler im Payload             → kein Bedienen, KEINE Antwort;
+                                                                  Sub-(e)-Eintrag (decision:"ignored");
+                                                                  KEIN Throw, console.warn frequenzgedrosselt
+  - Eingehende postMessage: Replay (nonce schon gesehen <30 s)  → still verworfen, KEINE Antwort,
+                                                                  KEIN doppelter Sub-(e)-Eintrag
+  - Eingehende op:"hint" (Sub (b)): Modul 14 fehlt              → console.info, KEINE Antwort;
+                                                                  Sub-(e)-Eintrag (decision:"ignored")
+  - Eingehende op:"query" (Sub (b)): Modul 04.C fehlt           → Antwort op:"queryResult" mit
+                                                                  {results:[], error:"module-04c-not-available",
+                                                                   inReplyTo:<nonce>};
+                                                                  Sub-(e)-Eintrag (decision:"ignored")
+  - Eingehende op:"queryResult" (Sub (b)): kein passendes      → still verworfen (kein Pending-Promise);
+       pendingQueries[inReplyTo]                                  Sub-(e)-Eintrag (decision:"ignored")
+  - init({allowedOrigins}): Element kein String / kein         → fail-soft, Eintrag aus Allowlist
+       gültiger Origin-String                                     herausgefiltert + console.warn;
+                                                                  KEIN sync Throw — Andocker-Init läuft weiter
+  - SbkimRateLimit?.checkOrigin liefert "throttled" (Sub (b))   → Sub-(e)-Eintrag (decision:"ignored",
+                                                                  details.throttled:true);
+                                                                  KEINE Antwort
   - BroadcastChannel-Message: kein "SBKIM_MEMBRANE_PROBE"-Type   → still verworfen, kein Eintrag
 
   KEINE benannten Error-Klassen für Sub (e) — rein beobachtend, alles
@@ -2346,11 +2441,28 @@ Fehlerverhalten:
 
 Datenformate:
   FremdzugriffEntry              → Karte 15 § Sub (e) Schema (oben gespiegelt).
-  MembraneSnapshot (Sub (a))     → Karte 15 § Sub (a) Anker-Form;
-                                    finale Feld-Liste in Spec-Sitzung 15.B.
-  postMessage-Envelope (Sub (b)) → Karte 15 § Sub (b) Anker-Form
-                                    (type "sbkim/membrane/v1", op, fromOrigin, nonce, payload);
-                                    finale Schema-Pflicht in Spec-Sitzung 15.B.
+  MembraneSnapshot (Sub (a))     → Karte 15 § Sub (a) Snapshot-Schema (final
+                                    Spec-Sitzung 15.B 2026-05-25), oben in
+                                    Bietet-Block gespiegelt. Pflicht-Felder:
+                                    protocolVersion, nodeId, domain, sporeUrl,
+                                    domainKeywords, stammCategories,
+                                    guestCategories, siblings, storage, siegel.
+                                    Alle Sub-Lese-Quellen fail-soft (Feld auf
+                                    null/[] bei Modul-Miss); read() resolved
+                                    IMMER mit Snapshot. siegel-Feld ist null
+                                    wenn Modul 16 fehlt, sonst
+                                    {isCertified, repoUrl, certifiedModules}.
+  postMessage-Envelope (Sub (b)) → Karte 15 § Sub (b) Envelope-Schema (final
+                                    Spec-Sitzung 15.B 2026-05-25):
+                                    {type:"sbkim/membrane/v1", op, fromOrigin,
+                                     nonce:crypto.randomUUID(), inReplyTo?,
+                                     payload}. op ∈ {sporeRef, query, hint,
+                                     queryResult}; KEIN handshake.
+  Sub-(b)-Payload-Schemata       → siehe op-Tabelle in Bietet-Block oben:
+                                    sporeRef.payload={nodeId,sporeUrl,domain};
+                                    query.payload={text,k};
+                                    hint.payload={vector,label,ttlMs};
+                                    queryResult.payload={results,error}.
 
 Garantien für Modul 00 / 09 / 12 / 14 / Sage-Page:
   - Sub (e) Lampe + Modal sind ANZEIGE-only. Sub (e) blockiert nicht,
@@ -2360,12 +2472,42 @@ Garantien für Modul 00 / 09 / 12 / 14 / Sage-Page:
     auch bei Abweisungen, weil Klaus Phishing-Versuche sehen soll
     (Karte 15 § Risiken „Allowlist-Drift").
   - Sub (a) read()-Snapshot enthält NIEMALS sbkim_keys, NIEMALS nodeId
-    der Geschwister im Klartext (nur nodeIdHash), NIEMALS PII von
-    Drittseiten. Tabus aus Karte 15 § Sub (a) Strikte Tabus sind
-    bindend, auch wenn die finale Spec sich noch ändert.
+    der Geschwister im Klartext (nur nodeIdHash, base64url-sha256 OHNE
+    Per-Session-Salt), NIEMALS PII von Drittseiten, NIEMALS
+    navigator.userAgent, NIEMALS Klaus' API-Key (Modul 04.B). Die EIGENE
+    nodeId wird im Klartext geliefert — der Agent sieht sie ohnehin in
+    IndexedDB. Tabus aus Karte 15 § Sub (a) Strikte Tabus sind
+    bindend (Spec-Sitzung 15.B 2026-05-25 finalisiert).
+  - Sub (a) Snapshot enthält ein Siegel-Hook-Feld
+    `siegel: { isCertified, repoUrl, certifiedModules } | null` —
+    Vorbestellung aus INTERFACES § 1 Modul 16 § Hook-Punkte. Drei
+    Pflicht-Fälle: null wenn Modul 16 fehlt; voll mit isCertified:true
+    wenn ready+grün; voll mit isCertified:false wenn ready+rot
+    (transparent für Agent, Badge bleibt anti-greenwashing nicht im DOM).
+    certifiedModules-Eintrag voll (`{id,name,surfaceFn,lazy,status}`),
+    nicht reduziert.
+  - Sub (a) Quota blockt read() NICHT — Empfangsmodus-Prinzip. Quota-
+    Warnung wird im Snapshot-Feld storage.quotaWarningLevel sichtbar,
+    der Agent entscheidet selbst über Folge-Schritte (z.B. Modul 02
+    Sub (d) Backup-Restore vorschlagen).
   - Sub (b) Allowlist ist STATISCH im Andocker via init({allowedOrigins})
-    konfiguriert, nicht über die Membran selbst änderbar. Sub (b) kennt
-    KEIN op:"handshake" — Anastomose geht durch Modul 05.
+    konfiguriert, nicht über die Membran selbst änderbar. Format strict
+    String, exakter Origin-Match, KEIN Wildcard, KEIN "*self*"-Sonderwert.
+    Validierungs-Strenge: fail-soft (console.warn pro entferntem Eintrag,
+    KEIN sync Throw — Andocker-Init bleibt funktional).
+  - Sub (b) Op-Tabelle (final 2026-05-25): vier Werte sporeRef / query /
+    hint / queryResult mit expliziten Payload-Schemata. KEIN
+    op:"handshake" — Anastomose geht durch Modul 05.
+  - Sub (b) Nonce-Pflicht: crypto.randomUUID() pro Anfrage, 30 s Replay-
+    Dedupe via RAM-Map. Jede Antwort referenziert inReplyTo:<nonce>.
+  - Sub (b) Rate-Limit-Hook für Modul 11: optionaler
+    SbkimRateLimit?.checkOrigin(origin)-Aufruf vor Bedienung, fail-soft
+    wenn Modul 11 fehlt. Drosselungs-Marker details.throttled:true macht
+    Modul-11-Verwerfungen im Fremdzugriff-Modal sichtbar.
+  - Sub (b) sporeRef-Cache (recentSporeRefs[origin], max. 16 FIFO) und
+    Sub (b) Nonce-Dedupe (seenNonces[nonce] TTL 30 s) und Sub (b)
+    pendingQueries (TTL 30 s) sind alle RAM-only — KEIN neuer Store
+    (sbkim_membrane_log verworfen).
   - Sub (e) Ringbuffer ist RAM-only — Tab-Reload leert ihn. Modul 12
     (Blocklist) darf später einen eigenen Append-Log bauen, aber NICHT
     den Sub-(e)-Buffer mitnutzen (Trennung Anzeige/Audit).
@@ -2385,8 +2527,18 @@ Tabus (verbindlich, gelten auch für künftige Sub-Stufen):
   - NIEMALS sbkim_keys lesen (auch nicht gehasht). Privater Schlüssel
     verlässt die Zelle nie unverschlüsselt — Sub (d) Backup-Sluse ist
     die einzige Ausnahme und nur mit PBKDF2+AES-GCM.
-  - NIEMALS nodeId der Geschwister im Klartext liefern. Sub (a) gibt
-    nur nodeIdHash = base64url(sha256(nodeId)) heraus.
+  - NIEMALS nodeId der GESCHWISTER im Klartext liefern. Sub (a) gibt
+    nur nodeIdHash = base64url(sha256(nodeId)) heraus, OHNE Per-Session-
+    Salt (Spec-Sitzung 15.B 2026-05-25 verworfen — kosmetischer
+    Schutz). Die EIGENE nodeId wird im Klartext geliefert (Agent sieht
+    sie ohnehin in IndexedDB).
+  - NIEMALS score/lastSeen der Geschwister in Sub (a) exponieren —
+    Empfehlungs-Pfad bleibt bei Modul 14 Diffusion, nicht durch Membran
+    sichtbar.
+  - NIEMALS navigator.userAgent im Sub-(a)-Snapshot. Sub-(e)-Buffer
+    nutzt agentHint (slice(0, 64)) — getrennte Schicht.
+  - NIEMALS Klaus' API-Key (Modul 04.B) in Sub (a). Lebt ausschließlich
+    in sbkim_keys / Modul 02.
   - NIEMALS schreiben in Sub (a). read() ist async-pur (außer dem
     Sub-(e)-Buffer-Eintrag — der ist Beobachtungs-Schicht, kein
     Protokoll-Seiteneffekt).
@@ -2394,21 +2546,54 @@ Tabus (verbindlich, gelten auch für künftige Sub-Stufen):
     Modul 05 (HTTP oder BroadcastChannel-Fallback).
   - Origin-Allowlist ist STATISCH im Andocker konfiguriert (via
     init({allowedOrigins})), nicht über die Membran selbst änderbar.
-  - Nonce-Pflicht in Sub (b) und Sub (c) — kein Replay-Schutz, keine
-    Brücke.
+    Format strict String, exakter Origin-Match — KEIN Wildcard, KEIN
+    Pattern, KEIN "*self*"-Sonderwert.
+  - Validierungs-Strenge der Allowlist: fail-soft (console.warn pro
+    entferntem Eintrag), KEIN sync Throw — Andocker-Init darf bei
+    Tippfehler in der Origins-Liste nicht brechen.
+  - Nonce-Pflicht in Sub (b) (crypto.randomUUID() pro Anfrage, 30 s
+    Replay-Dedupe) und Sub (c) — kein Replay-Schutz, keine Brücke.
+  - KEIN Auto-Handshake bei sporeRef/hint. Der Andocker muss explizit
+    SbkimAnastomose.handshake() rufen — Empfangsmodus-Prinzip.
+  - KEIN op:"hint" mit Schreib-Recht ohne Modul 14. Wenn Modul 14 fehlt,
+    wird der hint stillschweigend ignoriert; Modul 15 legt KEINEN Stub-
+    Store sbkim_diffusion_leads an (Modul 15 ist Empfänger der
+    Botschaft, nicht Store-Owner).
+  - KEIN Persistent-Log für Sub (b) (sbkim_membrane_log o.ä. verworfen).
+    Persistenz bleibt RAM-only. Wer Audit will, baut Modul 12.
   - Empfangsmodus-Prinzip bleibt: Membran initiiert nichts, sie
     antwortet nur. Kein Crawler, keine Pulsation, keine Eigenanfragen.
   - Sub (e) PII-Schutz: agentHint NUR navigator.userAgent.slice(0, 64),
     KEINE weiteren navigator.*-Felder; details niemals voller
-    postMessage-payload (nur op + nonce); origin nur als Schema+Host+Port.
+    postMessage-payload (nur op + nonce + optional throttled:true);
+    origin nur als Schema+Host+Port.
 
-Hook-Punkte (nur Verweis, nicht implementiert):
-  Modul 10 (Reputation) auf Capability-Token-Aussteller (Sub (c)) ·
+Hook-Punkte:
+  Modul 10 (Reputation) auf Capability-Token-Aussteller (Sub (c)) — nur Verweis.
   Modul 11 (Rate-Limit) auf eingehende postMessage-Calls pro Origin
-  (Sub (b)) ·
-  Modul 12 (Blocklist) auf Origin-Ebene (Sub (b)) — KANN Sub-(e)-
-  Einträge zum Trigger nutzen, schreibt aber einen eigenen Persistent-
-  Log (Trennung Anzeige/Audit).
+    (Sub (b)) — VORBESTELLT in Spec-Sitzung 15.B 2026-05-25:
+    Sub (b) ruft optional window.SbkimRateLimit?.checkOrigin(origin) →
+    "ok" | "throttled" vor jeder Bedienung; fail-soft wenn Modul 11
+    fehlt; "throttled" → decision:"ignored" + details.throttled:true.
+    Modul 11 bringt seinen ZERTIFIKAT_ASPEKTE-Eintrag in Modul 16 mit
+    (Pflicht-Konvention CLAUDE.md § Sicherheits-Module pflegen Aspekte).
+  Modul 12 (Blocklist) auf Origin-Ebene (Sub (b)) — nur Verweis. KANN
+    Sub-(e)-Einträge zum Trigger nutzen, schreibt aber einen eigenen
+    Persistent-Log (Trennung Anzeige/Audit).
+  Modul 14 (Diffusion) auf op:"hint"-Pfad (Sub (b)) — VORBESTELLT in
+    Spec-Sitzung 15.B 2026-05-25: Sub (b) delegiert hint-Bedienung an
+    window.SbkimDiffusion?.recordLead({vector, label, ttlMs,
+    sourceOrigin}); fail-soft wenn Modul 14 fehlt (console.info +
+    decision:"ignored"). Modul 15 ist Empfänger der Botschaft, NICHT
+    Store-Owner des sbkim_diffusion_leads.
+  Modul 04.C (Search-API) auf op:"query"-Pfad (Sub (b)) — VORBESTELLT in
+    Spec-Sitzung 15.B 2026-05-25: Sub (b) delegiert query-Bedienung an
+    window.SbkimMatch?.queryLocal(text, k) → Promise<Array<{label,
+    score, sporeUrl}>>; fail-soft wenn 04.C fehlt (Antwort {results:[],
+    error:"module-04c-not-available"} via op:"queryResult").
+  Modul 16 (SBKIM-Siegel) auf Sub (a) read()-Snapshot — siehe Garantien-
+    Block oben (siegel-Feld). Vorbestellung gespiegelt aus INTERFACES
+    § 1 Modul 16 § Hook-Punkte.
 
 Risiken (für Spec-Sitzung 15.B / 15.C zu schließen, Sub (e) jetzt
 mitigiert):
@@ -2424,7 +2609,10 @@ mitigiert):
   Origin-Allowlist-Kollision.
 
 Geprüft: 2026-05-18 (Hauptsitzung 15-Membran-Stub),
-         2026-05-24 (Spec-Sitzung 15 — Sub (e) voll, Sub (a)+(b) grob)
+         2026-05-24 (Spec-Sitzung 15 — Sub (e) voll, Sub (a)+(b) grob),
+         2026-05-25 (Spec-Sitzung 15.B — Sub (a) Snapshot-Schema +
+                     Siegel-Hook + Sub (b) Envelope/Op-Tabelle/Nonce/
+                     Rate-Limit-Hook voll spezifiziert)
 
 ---
 
