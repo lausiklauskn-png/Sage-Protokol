@@ -1811,6 +1811,103 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-25 · Brief-Anlage Rückbau Modul 15 + 16 + Spore-Diagnose pro Endknoten
+
+**Sitzungs-Rolle:** Mini-Pflege (Brief-Anlage; kein Modul-Code-,
+Spec- oder Sage-Page-Eingriff). Branch
+`claude/brief-rueckbau-15-16-endknoten`. Parallel zu PR #163 (Spec-
+Sitzung-17-Floating-Widget-Brief, Draft) — diese Pflege legt einen
+Notfall-Rückbau-Brief PRO ENDKNOTEN an, der vor der Re-Migration
+mit Widget (Pipeline-Schritt 5d) läuft.
+
+**Anlass:** Klaus' zwei Befunde 2026-05-25 nach erster Endknoten-
+Migration:
+
+1. **UI-Befund:** Lampen + Siegel nehmen zu viel Platz in der
+   Navleiste, nicht einheitlich, kein User-X.
+2. **NEU:** Mein-Rezeptbuch hat seine Spore (oder Identität)
+   verloren. Mein-Mixarium kann keinen Handshake mehr zu
+   Mein-Rezeptbuch herstellen.
+3. **Visueller Befund aus Klaus' Screenshots:** Mein-Rezeptbuch
+   zeigt VOLLE Sage-Page-Optik (Top-Header-Bar mit `LEBT · VERKEHR
+   · FREMD · SBKIM-Siegel` als Pille — Sage-Page 1:1 nachgebaut);
+   Mein-Mixarium zeigt nur `FREMD · Siegel-Badge` floating rechts
+   außerhalb des App-Containers, KEINE Top-Bar. Beide Sitzungen
+   haben den Brief unterschiedlich interpretiert.
+4. **Klaus' Frage:** PWAs laufen auf main? Ja, GitHub Pages baut
+   standardmäßig main aus — daher muss Phase A0 des Rückbau-
+   Briefs explizit den PR-Stand pro Repo prüfen, bevor Code-
+   Diagnose läuft.
+
+**Getan — reine Doku-Pflege:**
+
+1. **Neue Brief-Datei
+   `docs/sessions/BRIEF_RUECKBAU_15_16_ENDKNOTEN.md`** angelegt
+   (~360 Zeilen Brief-Codeblock, sechs Phasen A0/A/B/C/D/E + Klaus-
+   Phase F nach Sitzung). Brief gilt PRO ENDKNOTEN (Mein-Rezeptbuch
+   UND Mein-Mixarium), Inhalt identisch, Sitzung erkennt sich
+   selbst. Kern-Phasen:
+   - **A0 PR + main-Stand prüfen** (NEU, Klaus' Frage): Branch-
+     Stand, PR-Historie 7 Tage, main-`index.html` lesen + Module
+     zählen, Pages-Build-Status, Visual-Sichttest aus Screenshots
+     dokumentieren.
+   - **A Diagnose** (READ-ONLY): Spore-Datei + SW + Modul-Liste +
+     Navleisten-Markup + sbkim-init.js.
+   - **B Rückbau `index.html`:** Modul-15-+-16-`<script>`-Tags,
+     CSS-Anker (`--lamp-alert`, `--siegel-*`, `.lamp.fremd-alert`,
+     `.lamp.fremd-pulse`, `#sbkim-siegel-badge` + Keyframes),
+     Navleisten-Markup, `.lamps`-Container je nach Pre-Migration-
+     Befund.
+   - **C Rückbau `sbkim-init.js`:** `SbkimMembrane.init` +
+     `SbkimSiegel.init` raus.
+   - **D Modul-Dateien + SW:** `sbkim/15_membran.js` +
+     `sbkim/16_siegel.js` löschen; `sbkim-sw.js` SW-Probe-Detektor
+     ausbauen; `CACHE_NAME`-Bump; File-Rename für Cache-Bust.
+   - **E Sichtkontrolle** (Klaus, im Browser): neun statt elf
+     Selbstcheck-Zeilen, keine FREMD-Lampe, kein Siegel-Badge.
+   - **F Spore-Reparatur (KLAUS-PHASE nach Sitzung):** drei Pfade
+     je nach IndexedDB-Identität-Stand: F2 Re-Sign, F3 Backup-
+     Import, F4 Frische Identität. Plus F5 Konnektivitäts-Test
+     Mein-Mixarium ↔ Mein-Rezeptbuch.
+
+2. **Heilige Tafeln im Brief:** Kein Sage-Protokol-Eingriff; Spore
+   NICHT antasten (Reparatur ist Browser-Crypto-Pflicht); IndexedDB
+   NICHT manipulieren; Module 00–08 bleiben; PROTOCOL_VERSION /
+   DB_VERSION / BACKUP_FORMAT_VERSION unverändert; PWA-Suffix bleibt.
+
+3. **Stolperfallen + Klaus-Phase-F + Termux-Klärung** ausführlich
+   dokumentiert. Termux ist KEIN Code-Editor-Workflow, aber für
+   drei Operationen (Diagnose-Cat von `sbkim/spore.json`, Commit der
+   reparierten Spore, lokaler `http.server`) der saubere Pfad.
+
+**Was diese Sitzung NICHT geändert hat:**
+- KEINE Modul-Code-Änderung.
+- KEINE Spec-Änderung an Karten / INTERFACES.
+- KEIN Eingriff in CLAUDE.md (Pipeline-Erweiterung steht in PR #163
+  Draft; diese Pflege ist Notfall-Pflege parallel zum Spec-Pfad).
+- KEIN `PROTOCOL_VERSION`-Bump.
+- KEIN Sichttest nötig.
+- KEINE `status.json`-Änderung.
+
+**Was offen:** Klaus startet PRO ENDKNOTEN-REPO eine Rückbau-
+Sitzung mit dem Brief-Codeblock; nach Phase E folgt Klaus' Phase F
+im Browser. Danach Spec-Sitzung 17 (PR #163 mergen) + Bau-Sitzung
+17 + Re-Migration mit Widget (Pipeline 5b/5c/5d) + App-Freigabe.
+
+**Nächster sinnvoller Schritt:**
+
+1. PR mergen (Draft → Ready → Merge, klein + additiv).
+2. Rückbau-Sitzung in Mein-Rezeptbuch starten — Brief-Codeblock als
+   ersten Prompt.
+3. Phase F im Browser (Spore-Reparatur, Pfad nach Diagnose-Befund).
+4. Zweiten Endknoten (Mein-Mixarium) parallel rückbauen.
+5. DANACH: PR #163 mergen + Spec-Sitzung 17 starten (Pipeline 5b).
+
+Übergabeprotokoll
+`docs/sessions/archiv/2026-05-25_brief-anlage-rueckbau-15-16-endknoten.md`.
+
+---
+
 ### 2026-05-25 · Pflege Endknoten-Migrations-Brief erweitern (Module 15 + 16)
 
 **Sitzungs-Rolle:** Pflege (reine Doku, kein Modul-Code-Eingriff).
