@@ -1811,6 +1811,107 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-25 · Pflege Endknoten-Migrations-Brief erweitern (Module 15 + 16)
+
+**Sitzungs-Rolle:** Pflege (reine Doku, kein Modul-Code-Eingriff).
+Branch `claude/brief-pflege-endknoten-migration-xRN7n`. Anschluss
+nach Brief-Anlage 2026-05-25 (PR #160 gemerged, Brief-Datei
+`BRIEF_PFLEGE_ENDKNOTEN_MIGRATION_ERWEITERN.md` als Auftrag).
+
+**Anlass:** Pipeline-Schritt 5 (Endknoten-Migration) ist nach Bau-
+Sitzung 15.B (PR #159 gemerged 2026-05-25 + Sichttest 8/8 grün) der
+nächste Schritt vor App-Freigabe (Pipeline-Schritt 6). Der bestehende
+Brief `BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md` deckte nur
+die Module 00–08 ab (vor Modul 15 + 16 angelegt). Vor der Verteilung
+an Klaus' externe Endknoten-Repos muss er um Modul 15 (Membran-
+Allowlist + FREMD-Lampe) und Modul 16 (SBKIM-Siegel-Badge) erweitert
+werden. Zusätzlich braucht Karte 09 zwei neue Schritte (10 + 11),
+sonst wissen Endknoten-Bauer nicht, wohin `#lamp-fremd` und die
+`.lamps`-Container-Klasse gehören.
+
+**Getan — reine Doku-Pflege, zwei Dateien erweitert:**
+
+1. **`docs/components/09_einbau_pwa.md`** vier Stellen geändert:
+   (a) § Andock-Schritt-Pfad-Überschrift „neun Schritte" → „elf
+   Schritte" + Mermaid-Flowchart A1–A9 → A1–A11. (b) § Schritt 2
+   `<script>`-Reihenfolge `01→02→03→04→05→07→00` →
+   `…→00→15→16` mit Begründungs-Absatz (15 nach 00 weil
+   Sub (a) `read()` Spore/Anastomose/Storage fail-soft liest; 16
+   zuletzt weil es alle anderen surface-checkt — Anti-Greenwashing-
+   Klausel binär). (c) § Sichtkontrolle: sieben → elf Selbstcheck-
+   Zeilen + zwei neue Sichtkontroll-Punkte (7. FREMD-Lampe sichtbar
+   grau/rot + Klick-Modal; 8. Siegel-Badge sichtbar wenn certified +
+   Diagnose-Hinweis bei fehlendem Pflicht-Modul). (d) NEUE Schritte
+   10 + 11 nach Schritt 9 angehängt: **Schritt 10 Membran-Allowlist
+   + FREMD-Lampe + SW-Probe-Detektor** (Modul-Datei-Kopie + CSS-
+   Anker `--lamp-alert`, `.lamp.fremd-alert`, `.lamp.fremd-pulse`,
+   `@keyframes lamp-breath/lamp-alert-pulse` aus Sage-Protokol's
+   `index.html` Z. 121–127; Navleisten-Markup `#lamp-fremd`;
+   `sbkim-init.js`-Aufruf mit `allowedOrigins:["https://
+   lausiklauskn-png.github.io"]` pro Endknoten; `enableTestButton:
+   true` NICHT bei Endknoten — Sage-Page-only-Konvention aus Pflege
+   2026-05-24; Sichtkontroll-Block + drei Fehler-Diagnosen);
+   **Schritt 11 SBKIM-Siegel-Badge** (Modul-Datei-Kopie + vier
+   `--siegel-*`-CSS-Variablen aus Z. 42–45 + `#sbkim-siegel-badge`-
+   CSS-Block + First-Boot-Animation aus Z. 129–134; Option β
+   `badgeSelector:".lamps"` analog Sage-Page; `repoUrl`-Override-
+   Pflicht-Tabelle pro Endknoten — Auto-Erkennung liefert Pages-URL,
+   Override braucht Quell-Repo-URL für Modal-Aussteller-Klärung;
+   Anti-Greenwashing-Hinweis kein Badge ohne grüne Selbst-Prüfung;
+   Sichtkontroll-Block + drei Fehler-Diagnosen). Bauzustand-Zeile
+   2026-05-25 ergänzt.
+
+2. **`docs/sessions/BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md`**
+   Aufgaben-Liste „sechs Punkte a–f" → „acht Punkte a–h": Punkt a)
+   um 15_membran.js + 16_siegel.js + SW-Probe-Detektor-Hinweis
+   erweitert; Punkt b) script-Reihenfolge `→ 15_membran → 16_siegel`
+   + Begründungs-Absatz; Punkt e) elf statt neun Selbstcheck-Zeilen
+   inkl. Modul 15 + 16; NEUE Punkte g) Modul 15 + h) Modul 16
+   Vollanleitungen (Modul-Datei-Kopie + CSS-Anker + Navleisten-
+   Markup + `sbkim-init.js`-Aufruf + Erwartungs-Block + drei Test-
+   Pfade für FREMD-Lampe-Sichttest-Workaround); Punkt-1-Pflicht am
+   Ende um „FREMD-Lampe + Siegel-Badge"-Erwartung erweitert;
+   Zeitschätzung ~2 h → ~2.5–3 h pro Endknoten; Meta-Sitzung-
+   Kontext um Pflege-Eintrag 2026-05-25 ergänzt.
+
+**Sekundärer Auftrag aus dem Brief abgewogen + VERWORFEN:** INTERFACES
+§ 6 Endknoten-Tabelle-Erweiterung mit `siegelBadgeMounted`-Spalte —
+die Tabelle hat ein verbindliches `id/domain/domainDescription/
+domainKeywords/domainVector`-Schema (Spec); eine `siegelBadgeMounted`-
+Spalte wäre fremd in dieser Schema-Form. Endknoten-spezifischer
+Badge-Mount-Zustand gehört in den Sichttest-Befund pro Endknoten-
+Bau-Sitzung (Übergabeprotokolle im Endknoten-Repo), nicht in die
+Spec-Tabelle.
+
+**Was diese Sitzung NICHT geändert hat:**
+- KEINE Modul-Code-Änderung (`src/modules/*.js` unangetastet).
+- KEIN `index.html`-Eingriff in der Sage-Page (Vorlage bleibt).
+- KEINE Spec-Änderung an Karte 15 / 16 / INTERFACES § 1 Modul 15 /
+  16 — die sind Tafeln.
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.
+- KEINE Pipeline-Reihenfolge-Umsortierung in CLAUDE.md (Schritt 5 →
+  6 bleibt).
+- KEINE `status.json`-Pie-Regeneration (additiv im Andock-Pfad).
+- KEIN Sichttest nötig (reine Doku-Pflege; Karte 09 + Brief sind
+  Spec, kein ausführbarer Code).
+
+**Was offen:** Klaus startet pro Endknoten eine externe Bau-Sitzung
+(`Mein-Rezeptbuch` + `Mein-Mixarium`) mit dem erweiterten Brief als
+ersten Prompt. Danach App-Freigabe (Pipeline-Schritt 6) — die drei
+Apps mit Siegel-Badge sichtbar verteilen.
+
+**Nächster sinnvoller Schritt:**
+1. PR mergen (oder Draft-PR reviewen).
+2. Pro Endknoten-Repo eine externe Bau-Sitzung mit dem erweiterten
+   Brief — Pipeline-Schritt 5 voll ausführen.
+3. App-Freigabe Pipeline-Schritt 6.
+
+Bis dahin kein weiterer Sage-Protokol-Eingriff — Klaus arbeitet in
+den Endknoten-Repos. Übergabeprotokoll
+`docs/sessions/archiv/2026-05-25_pflege-endknoten-migration-erweitern.md`.
+
+---
+
 ### 2026-05-25 · Sichttest + Brief-Anlage — Bau-15.B Sichttest grün + Pflege-Brief Endknoten-Migration erweitern angelegt
 
 **Sitzungs-Rolle:** Mini-Pflege (Sichttest-Status-Nachzug + Brief-

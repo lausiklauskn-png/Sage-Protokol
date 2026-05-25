@@ -44,8 +44,8 @@ verschiedene Schlüsselpaare. Das ist Spec-Wille, kein Bug.
 
 ```mermaid
 flowchart TB
-  A1[1 · Dateien kopieren<br/>7 Module + SW]
-  A2[2 · script-Tags<br/>in index.html<br/>01→02→03→04→05→07→00]
+  A1[1 · Dateien kopieren<br/>9 Module + SW]
+  A2[2 · script-Tags<br/>in index.html<br/>01→02→03→04→05→07→00→15→16]
   A3[3 · SW registrieren<br/>navigator.serviceWorker<br/>.register]
   A4[4 · init aufrufen<br/>SbkimAnastomose.init]
   A5[5 · domainVector erzeugen<br/>embedPassage<br/>über Stichwörter]
@@ -53,19 +53,24 @@ flowchart TB
   A7[7 · Spore deployen<br/>sbkim/spore.json<br/>commit + push]
   A8[8 · Ersten Handshake<br/>handshake peer, vec]
   A9[9 · Apoptose+Doku<br/>SbkimApoptose.init<br/>+SbkimDoku.init<br/>+TTL-Sweep]
+  A10[10 · Membran-Allowlist<br/>+ FREMD-Lampe<br/>SbkimMembrane.init]
+  A11[11 · Siegel-Badge<br/>SbkimSiegel.init<br/>+repoUrl-Override]
 
-  A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7 --> A8 --> A9
+  A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7 --> A8 --> A9 --> A10 --> A11
 
   classDef step fill:#CA8A04,color:#fff,stroke:#fff,stroke-width:1px
-  class A1,A2,A3,A4,A5,A6,A7,A8,A9 step
+  class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11 step
 ```
 
-Die neun Schritte sind **linear** und einmalig pro Endknoten. Schritte
+Die elf Schritte sind **linear** und einmalig pro Endknoten. Schritte
 1–4 sind Einbau (Code), Schritte 5–7 sind Identitäts- und Spore-Aufbau
 (Daten), Schritt 8 ist der erste Live-Test gegen ein Geschwister,
 **Schritt 9 schaltet Vermächtnis-Empfang (Apoptose) und das versteckte
 5-Klick-Doku-Fenster scharf** (Pflege-Sitzung 2026-05-15, jetzt
-verbindlich im Andock-Pfad).
+verbindlich im Andock-Pfad), **Schritt 10 baut Membran-Allowlist
+plus FREMD-Lampe ein** und **Schritt 11 setzt das SBKIM-Siegel-Badge
+in die Navleiste** (Pflege Endknoten-Migrations-Brief erweitern
+2026-05-25, mit Bau-Sitzung 15.B / 16 als Voraussetzung).
 
 ---
 
@@ -300,19 +305,28 @@ In der bestehenden `index.html` vor `</body>` einfügen. Reihenfolge
 <script src="sbkim/05_anastomose.js"></script>
 <script src="sbkim/07_apoptose.js"></script>     <!-- Vermächtnis-Empfang + TTL-Sweep -->
 <script src="sbkim/00_doku_fenster.js"></script> <!-- 5-Klick-Statusfenster -->
+<script src="sbkim/15_membran.js"></script>      <!-- Sub (a) Read-API + Sub (b) postMessage + Sub (e) FREMD-Lampe -->
+<script src="sbkim/16_siegel.js"></script>       <!-- SBKIM-Siegel-Badge, surface-checkt alle vorhergehenden -->
 ```
 
 Alternativ (Inline-Single-File-Stil, Klaus-Default für kleine
-Endknoten): den Inhalt der sieben JS-Dateien direkt in sieben
+Endknoten): den Inhalt der neun JS-Dateien direkt in neun
 `<script>`-Blöcke kopieren — keine `src`-Attribute, in derselben
 Reihenfolge.
 
 **Reihenfolge-Begründung:** Modul 07 nutzt 01/02/05 (Storage,
 Spore-Identität, Geschwister-Liste); Modul 00 nutzt 01 (Pflicht)
-und liest 02/05/07 fail-soft. **Modul 00 zuletzt**, weil es die
+und liest 02/05/07 fail-soft. **Modul 00 nach 07**, weil es die
 anderen Module beim `init()` und `getStatusSnapshot()` als
 optionale Lese-Quellen prüft — fehlen sie auf `window`, zeigt das
-Doku-Fenster „Modul nicht geladen" und bleibt benutzbar.
+Doku-Fenster „Modul nicht geladen" und bleibt benutzbar. **Modul
+15 nach 00**, weil Sub (a) `read()` Spore / Anastomose / Storage
+fail-soft liest (Reihenfolge folgt der Andock-Konvention, kein
+harter Abhängigkeits-Block: Sub (e) Lampe + Buffer + Modal laufen
+auch ohne Storage/Spore). **Modul 16 ganz zuletzt**, weil es alle
+anderen Pflicht-Module surface-checkt (`isCertified()` prüft
+01/02/03/04/05/07/15 auf `window`); fehlt eines, erscheint kein
+Badge (Anti-Greenwashing-Klausel, Karte 16 § Strikte Tabus).
 
 **Sichtkontrolle:** Beim ersten Laden der App in DevTools → Konsole
 müssen sieben Zeilen erscheinen (eine pro Modul, beim Skript-Laden;
@@ -915,6 +929,279 @@ TTL-Sweep-Knopf zu klicken.
   „Andocken"-Knopf). Modul 09 macht keinen Background-Handshake.
 - **Kein Heterokaryose-Pfad** (Modul 06 ist späte Phase, Schablone).
 
+### Schritt 10 — Membran-Allowlist + FREMD-Lampe + SW-Probe-Detektor
+
+Mit Modul 15 (Membran) baut der Endknoten seine **Außenhülle**: eine
+Read-API (Sub (a)) für KI-Browser-Agenten, eine `postMessage`-Brücke
+(Sub (b)) mit strikter Origin-Allowlist und einen Fremdzugriff-
+Detektor (Sub (e)) mit roter Lampe in der Navleiste. Auslöser für
+die Hochstufung „niedrige Priorität → hoch": Gemini 3.5 Flash und
+ähnliche KI-Browser-Agenten ab 2026-05.
+
+**a) Modul-Datei kopieren:**
+
+```
+sage-protokol/src/modules/15_membran.js  →  <endknoten>/sbkim/15_membran.js
+sage-protokol/src/sbkim-sw.js            →  <endknoten>/sbkim-sw.js  (überschreibt — enthält jetzt SW-Probe-Detektor)
+```
+
+`src/sbkim-sw.js` enthält seit Bau-Sitzung 15.SW den **SW-Probe-
+Detektor**, der eingehende `fetch`-Requests auf Endpunkte unterhalb
+von `/sbkim/` als `endpoint-probe`-Einträge an die Page reicht
+(Modul 15 Sub (e) Fremd-Definition Schritt 3). Beim Re-Andock ist
+die SW-Datei pflichtig zu erneuern; Klaus' bewährte Cache-Bust-
+Strategie (File-Rename `sbkim-sw-v3.js` oder `CACHE_NAME`-Bump) gilt
+hier weiterhin.
+
+**b) `index.html` des Endknoten — CSS-Anker:**
+
+Im `:root`-Block die Lampen-Variable ergänzen (falls noch nicht da):
+
+```css
+:root {
+  /* …vorhandene Variablen… */
+  --lamp-alert: #DC2626;
+  --lamp-pulse-ms: 600ms;
+}
+```
+
+Danach den Lampen-Style-Block ergänzen (1:1 aus Sage-Protokol's
+`index.html`, Z. 121–127):
+
+```css
+.lamp.fremd-alert {
+  background: var(--lamp-alert);
+  box-shadow: 0 0 8px rgba(220,38,38,0.7);
+}
+.lamp.fremd-alert::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--lamp-alert);
+  opacity: 0.45;
+  animation: lamp-breath 3.2s ease-in-out infinite;
+}
+.lamp.fremd-pulse { animation: lamp-alert-pulse var(--lamp-pulse-ms) ease-out; }
+
+@keyframes lamp-breath {
+  0%, 100% { transform: scale(1); opacity: 0.45; }
+  50%      { transform: scale(1.5); opacity: 0; }
+}
+@keyframes lamp-alert-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(220,38,38,0.75); transform: scale(1); }
+  50%  { transform: scale(1.45); }
+  100% { box-shadow: 0 0 0 14px rgba(220,38,38,0); transform: scale(1); }
+}
+```
+
+Falls der Endknoten noch keine `.lamp` / `.lamps`-Klassen hat (z.B.
+weil er bislang ohne Sage-Page-Optik gebaut wurde), zusätzlich die
+Basis-Lampen-Klasse aus Sage-Protokol's `index.html` Z. 116–117 kopieren.
+
+**c) `index.html` des Endknoten — Navleisten-Markup:**
+
+Neben den bestehenden `#lamp-alive` / `#lamp-traffic`-Lampen (falls
+vorhanden — siehe Sage-Page-Bauzustand 2026-05-21) eine FREMD-
+Lampe als dritte Plakette einfügen:
+
+```html
+<span class="lamp" id="lamp-fremd"
+      title="Fremdzugriff — rot bei Zugriff von außen (Klick öffnet Liste)"></span>
+<span class="lamp-label">fremd</span>
+```
+
+**d) `<script>`-Tag in die Reihenfolge:** Modul 15 nach 00, vor 16 —
+siehe § Schritt 2 oben.
+
+**e) `sbkim-init.js`-Aufruf:**
+
+```js
+await SbkimMembrane.init({
+  lampSelector:   "#lamp-fremd",
+  allowedOrigins: ["https://lausiklauskn-png.github.io"],
+  // enableTestButton bleibt NICHT gesetzt (Endknoten-Konvention).
+});
+```
+
+**`allowedOrigins`-Liste pro Endknoten:**
+
+| Endknoten | `allowedOrigins` |
+|---|---|
+| Mein-Rezeptbuch | `["https://lausiklauskn-png.github.io"]` |
+| Mein-Mixarium | `["https://lausiklauskn-png.github.io"]` |
+
+Same-origin gilt nach Karte 15 § Fremd-Definition Schritt 3 **nicht**
+als Fremd — Sub (b) postMessage zwischen den drei Klaus-Endknoten
+unter derselben Origin läuft als „Geschwister", nicht als
+„Fremdzugriff". Die Allowlist wird wirksam, sobald neue
+Geschwister-Origins (Custom-Domain, anderer GitHub-Account, eigene
+Hosting-Stelle) ins Mycel kommen — dann zieht eine Folge-Pflege
+diese Liste nach.
+
+**`enableTestButton: true` setzt nur die Sage-Page**, NICHT die
+Endknoten. Hintergrund (Karte 15 § Pflege Sage-Page-Sichttest-Knopf
+2026-05-24): der „🧪 Demo-Eintrag"-Knopf im Fremdzugriff-Modal ist
+Klaus' Lampen-Sichttest-Werkzeug für die Sage-Page, weil die drei
+Endknoten same-origin sind und ein echter Cross-Origin-Trigger im
+Endknoten-Sichttest schwer reproduzierbar ist. Endknoten lassen das
+Flag weg (Default `false`).
+
+**Sichtkontrolle Schritt 10:**
+
+- Konsolen-Zeile `MODUL 15 MEMBRAN bereit, Funktionen:
+  init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}`.
+- Navleiste zeigt jetzt **drei Lampen**: lebt (grün), verkehr (gold-
+  pulsierend bei status.json-Fetch), fremd (grau bei leerem Buffer).
+- Klick auf die FREMD-Lampe öffnet das Sub-(e)-Modal mit
+  Backdrop + Liste der Fremdzugriffs-Einträge.
+- SW-Probe-Detektor aktiv: wenn eine fremde Origin
+  `fetch("https://lausiklauskn-png.github.io/<endknoten>/sbkim/
+  spore.json")` ruft, erscheint ein `endpoint-probe`-Eintrag im
+  Modal und die Lampe färbt sich rot.
+
+**Häufige Fehler:**
+
+- **`lampSelector` matcht kein DOM-Element.** Modul 15 macht
+  `console.warn` und bleibt funktional (Buffer + Modal arbeiten
+  ohne Lampe). Fix: Selektor in `init()` an das tatsächliche
+  Navleisten-Markup anpassen.
+- **`allowedOrigins`-Eintrag mit Trailing-Slash oder Pfad.** Modul
+  15 normalisiert den String (Karte 15 § Konfigurations-Pfad,
+  Z. 437–444): nur `https://`/`http://`-Präfix wird übernommen,
+  Pfad/Trailing-Slash werden verworfen. Klaus' Sichttest sieht
+  trotzdem die korrigierte Liste in der DevTools-Konsole — kein
+  harter Fehler.
+
+### Schritt 11 — SBKIM-Siegel-Badge
+
+Mit Modul 16 (SBKIM-Siegel) stellt sich der Endknoten **selbst** das
+Vertrauens-Siegel aus: vier Sub-Bereiche, sieben Pflicht-Module,
+Anti-Greenwashing-Klausel (kein Badge ohne Selbst-Prüfung-grün).
+
+**a) Modul-Datei kopieren:**
+
+```
+sage-protokol/src/modules/16_siegel.js  →  <endknoten>/sbkim/16_siegel.js
+```
+
+**b) `index.html` des Endknoten — CSS-Anker:**
+
+Im `:root`-Block die vier Siegel-Variablen ergänzen (1:1 aus Sage-
+Protokol's `index.html` Z. 42–45):
+
+```css
+:root {
+  /* …vorhandene Variablen… */
+  --siegel-gold:      #C9A961;
+  --siegel-gold-glow: rgba(201,169,97,0.55);
+  --siegel-ink:       #1A1306;
+  --siegel-line:      rgba(201,169,97,0.45);
+}
+```
+
+Danach den Badge-Style-Block ergänzen (1:1 aus Sage-Protokol's
+`index.html` Z. 129–134):
+
+```css
+#sbkim-siegel-badge {
+  width: 40px; height: 40px; border-radius: 50%;
+  margin-left: 0.4rem;
+  background: transparent; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: visible;
+  transition: filter .25s ease-out, transform .25s ease-out;
+}
+#sbkim-siegel-badge svg { width: 40px; height: 40px; display: block; overflow: visible; }
+#sbkim-siegel-badge:hover { filter: drop-shadow(0 0 8px var(--siegel-gold-glow)); transform: scale(1.06); }
+#sbkim-siegel-badge:focus-visible { outline: 2px solid var(--siegel-gold); outline-offset: 3px; }
+#sbkim-siegel-badge.first-boot { animation: siegel-first-boot 600ms ease-out; }
+@keyframes siegel-first-boot {
+  0%   { transform: scale(0.7); opacity: 0; }
+  60%  { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 14px var(--siegel-gold-glow)); }
+  100% { transform: scale(1.00); opacity: 1; }
+}
+```
+
+**c) Badge-Container:** Modul 16 fährt in **Option β** (Sage-Page-
+analog) und erzeugt den Badge-Span im bestehenden `.lamps`-Container
+neben den Navleisten-Lampen — als vierte Plakette nach LEBT /
+VERKEHR / FREMD. Falls der Endknoten keinen `.lamps`-Container hat
+(z.B. weil er bislang ohne Sage-Page-Optik gebaut wurde), legt der
+Andocker einen neuen Container mit `class="lamps"` neben dem
+Navleisten-Titel an — Modul 16 erzeugt den Badge-Span darin **nur,
+wenn `isCertified()===true`** (Anti-Greenwashing-Klausel binär,
+Karte 16 § Strikte Tabus).
+
+**d) `<script>`-Tag in die Reihenfolge:** Modul 16 als letztes SBKIM-
+Modul, NACH 15 — siehe § Schritt 2 oben.
+
+**e) `sbkim-init.js`-Aufruf mit `repoUrl`-Override:**
+
+```js
+await SbkimSiegel.init({
+  badgeSelector: ".lamps",
+  repoUrl:       "https://github.com/lausiklauskn-png/Mein-Mixarium",
+});
+```
+
+**`repoUrl`-Override-Pflicht pro Endknoten:** Modul 16's Auto-
+Erkennung würde `location.origin + first-path-segment` liefern (z.B.
+`https://lausiklauskn-png.github.io/Mein-Mixarium/`), was die
+GitHub-Pages-Hosting-URL ist — **nicht** das Quell-Repo. Im Modal
+(„SBKIM-Siegel — was bedeutet das?") soll der Repo-Link auf das
+GitHub-Repo verweisen, damit Forker den Quellcode prüfen können
+(Karte 16 § Sub (c) Modal-Inhalt § Aussteller-Klärung).
+
+| Endknoten | `repoUrl` |
+|---|---|
+| Mein-Rezeptbuch | `https://github.com/lausiklauskn-png/Mein-Rezeptbuch` |
+| Mein-Mixarium | `https://github.com/lausiklauskn-png/Mein-Mixarium` |
+| Sage (Sage-Protokol) | Auto-Erkennung reicht (`location.origin + "/Sage-Protokol/"`) |
+
+**Anti-Greenwashing-Hinweis:** Das Badge erscheint **nur dann im
+DOM**, wenn alle sieben Pflicht-Module geladen sind (Modul 03
+Embedding ist `lazy:true` und gilt als „deferred-bestanden"). Wenn
+z.B. ein Endknoten Modul 04 (Match) nicht lädt, weil kein Match-Pfad
+gebraucht wird, erscheint **kein Badge** — Karte 16 § Strikte Tabus
+verbietet ein „Pflicht-Modul lazy markieren, nur weil es nicht
+geladen wird". Wer ein Pflicht-Modul nicht lädt, hat kein Siegel
+(bewusste Klaus-Festlegung, Karte 16 § Sub (a) finale Pflicht-
+Modul-Liste).
+
+**Sichtkontrolle Schritt 11:**
+
+- Konsolen-Zeile `MODUL 16 SIEGEL bereit, Funktionen:
+  init/isCertified/getExplanation/getCertifiedModules/getAspects`.
+- Navleiste zeigt jetzt **vier Plaketten**: lebt · verkehr · fremd
+  · Siegel-Badge (40 px rundes Gold-Medaillon mit Wappen-SVG +
+  Akkretions-Korona).
+- Klick auf das Badge öffnet das Erklärungs-Modal mit Backdrop,
+  Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-
+  Liste mit Status + Aspekte-Liste + Aussteller-Klärung), Esc oder
+  Backdrop-Klick schließt.
+- `await SbkimSiegel.isCertified()` in der DevTools-Konsole liefert
+  `true`; `await SbkimSiegel.getCertifiedModules()` liefert die ID-
+  Liste `["01_storage", "02_spore", "03_embedding", "04_match",
+  "05_anastomose", "07_apoptose", "15_membran"]`.
+
+**Häufige Fehler:**
+
+- **Badge erscheint nicht.** Ein Pflicht-Modul fehlt. In DevTools-
+  Konsole nach `SBKIM-Siegel kein Render: Pflicht-Module fehlen/
+  defekt — …`-Zeile suchen (Karte 16 § Sub (a) binärer Fail-Modus);
+  die fehlende Modul-ID nennt das Problem. Fix: Schritt 2 prüfen,
+  ob der `<script>`-Tag des Moduls vorhanden ist.
+- **`repoUrl`-Override fehlt.** Im Modal steht die GitHub-Pages-URL
+  statt der GitHub-Repo-URL — Forker landen auf der gehosteten App
+  statt am Quellcode. Fix: `init({repoUrl: "..."})` mit dem
+  korrekten Repo-Pfad setzen.
+- **Container `.lamps` fehlt.** Modul 16 wirft keinen Fehler, aber
+  `_meta.badgeMounted` bleibt `false`. Fix: einen `<div
+  class="lamps">…</div>`-Container neben dem Navleisten-Titel
+  anlegen oder den `badgeSelector` auf einen vorhandenen Container
+  umstellen.
+
 ---
 
 ## Sichtkontrolle nach dem Andocken (Pflicht)
@@ -922,22 +1209,28 @@ TTL-Sweep-Knopf zu klicken.
 Drei Dinge müssen sichtbar werden, sonst ist der Endknoten **nicht**
 fertig andockend:
 
-1. **In DevTools → Konsole** beim Laden der PWA sieben Selbstcheck-
-   Zeilen `MODUL XX … bereit, Funktionen: …` (01, 02, 04, 05, 07, 00
-   beim Skript-Laden; 03 nach `init()`). Außerdem `SBKIM-SW
+1. **In DevTools → Konsole** beim Laden der PWA elf Selbstcheck-
+   Zeilen `MODUL XX … bereit, Funktionen: …` (01, 02, 04, 05, 07, 00,
+   15, 16 beim Skript-Laden; 03 nach `init()`). Außerdem `SBKIM-SW
    registriert, Scope: …`, `SBKIM-Init grün — …`,
-   `SBKIM-Apoptose grün — Vermächtnis-Empfang aktiv.` und
-   `SBKIM-Doku grün — 5-Klick-Geste am Such-Symbol aktiv.`.
+   `SBKIM-Apoptose grün — Vermächtnis-Empfang aktiv.`,
+   `SBKIM-Doku grün — 5-Klick-Geste am Such-Symbol aktiv.`. Modul 15
+   loggt zusätzlich `MODUL 15 MEMBRAN bereit, Funktionen:
+   init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}`,
+   Modul 16 `MODUL 16 SIEGEL bereit, Funktionen:
+   init/isCertified/getExplanation/getCertifiedModules/getAspects`.
 
-2. **In DevTools → Application → IndexedDB → `sbkim`** sechs Stores:
-   `sbkim_keys` (Schlüssel `"main"` mit Keypair), `sbkim_spore`
-   (Schlüssel `"main"` mit der signierten Spore inkl. `domainVector`),
-   `sbkim_siblings` (anfangs leer, nach Schritt 8 mit dem ersten Peer
-   gefüllt), `sbkim_anastomosis_log` (nach Schritt 8 mit `established`-
-   Eintrag), `sbkim_legacy_inbox` (leer; nach eingehendem Vermächtnis
-   eine Zeile pro gestorbenem Geschwister), `sbkim_doku_meta`
-   (Schlüssel `"meta"` aus Schritt 9; nach erstem Doku-Fenster-Öffnen
-   ist `lastOpenedAt` ein ISO-8601-String statt `null`).
+2. **In DevTools → Application → IndexedDB → `sbkim_<DB_SUFFIX>`**
+   sechs Stores: `sbkim_keys` (Schlüssel `"main"` mit Keypair),
+   `sbkim_spore` (Schlüssel `"main"` mit der signierten Spore inkl.
+   `domainVector`), `sbkim_siblings` (anfangs leer, nach Schritt 8 mit
+   dem ersten Peer gefüllt), `sbkim_anastomosis_log` (nach Schritt 8
+   mit `established`-Eintrag), `sbkim_legacy_inbox` (leer; nach
+   eingehendem Vermächtnis eine Zeile pro gestorbenem Geschwister),
+   `sbkim_doku_meta` (Schlüssel `"meta"` aus Schritt 9; nach erstem
+   Doku-Fenster-Öffnen ist `lastOpenedAt` ein ISO-8601-String statt
+   `null`). Modul 15 + 16 nutzen **kein** IndexedDB — Fremdzugriff-
+   Buffer (Sub (e)) und Pflicht-Modul-Snapshot (16) sind RAM-only.
 
 3. **Im Browser** Klartext-Spore unter
    `https://klaus.github.io/<repo>/sbkim/spore.json` — `id`, `domain`,
@@ -1050,6 +1343,24 @@ keine produktive PWA.
      ist, läuft der Channel-Pfad in einen `HandshakeTimeoutError`
      (Log `"timeout-channel"`). Das ist kein Bug, sondern die
      dokumentierte „Wer nicht da ist, schweigt"-Disziplin.
+
+7. **FREMD-Lampe sichtbar.** Nach Schritt 10 steht in der Navleiste
+   neben `lebt` / `verkehr` eine dritte Plakette `fremd` (`#lamp-
+   fremd`). Bei leerem `SbkimMembrane.fremdzugriff`-Buffer ist sie
+   grau; bei Eintrag (echter Cross-Origin-Probe oder Test-Brücke
+   `SbkimMembrane.fremdzugriff._recordForTest({...})`) wird sie rot
+   (Klasse `fremd-alert`) und pulst einmalig (Klasse `fremd-pulse`,
+   `lamp-alert-pulse`-Animation). Klick öffnet das Sub-(e)-Modal mit
+   Liste der Fremdzugriffs-Einträge.
+
+8. **Siegel-Badge sichtbar (wenn `isCertified()===true`).** Nach
+   Schritt 11 erscheint im `.lamps`-Container ein 40-px-Gold-
+   Medaillon als vierte Plakette nach `fremd`. Klick öffnet das
+   Erklärungs-Modal mit Datum + Pflicht-Modul-Liste + Aspekte +
+   Aussteller-Klärung. Wenn das Badge **nicht** erscheint, ist
+   mindestens ein Pflicht-Modul nicht geladen (siehe Karte 16
+   § Sub (a) binärer Fail-Modus) — in der Konsole nach `SBKIM-
+   Siegel kein Render: …`-Zeile suchen.
 
 ---
 
@@ -1354,6 +1665,7 @@ unverändert.
 | Pflege App-SW-Koexistenz + Tablet-Sichtkontrolle (Eruda) | 2026-05-15 | Pflege 09-App-SW-Koexistenz-Tablet | Drei Stränge ergänzt, **kein Modul-Eingriff**: (1) **§ Datei-Pfad-Konvention** um **dritte Variante 3c** (SBKIM-SW unter `sbkim/sbkim-sw.js` mit Scope `/<repo>/sbkim/`) als nachrangige Übergangslösung erweitert; neue Tabelle „Wann welche Variante?" mit drei Zeilen (Pre-Flight-Ergebnis → Eigenschaften → Empfehlung-Stern bei 3a/3b, β-Hinweis bei 3c). (2) **§ Schritt 3c** als neuer Sub-Block nach 3b: Code-Block (`register("sbkim/sbkim-sw.js", { scope: "sbkim/" })`), Vor-/Nachteil-Vergleich (App-SW unangetastet ↔ Schutz-Module 11/12 später blockiert), Sichtkontrolle-Hinweis (zwei SW-Registrierungen mit disjunkten Scopes), expliziter „nur Übergangslösung"-Vermerk inkl. späterer Migrations-Pflicht auf 3b. (3) **§ Sichtkontrolle § Tablet-Variante (Eruda)** als neuer Sub-Block nach den vier Pflicht-Punkten: Eruda-Script-Tag `eruda@3` gepinnt (CDN jsdelivr, SRI nicht erforderlich, Sichttest-Modus); Mapping der vier Pflicht-Punkte auf Eruda-Tabs (Console / Resources→IndexedDB / Network / 5-Klick-Geste); Verbot „nach Sichtkontrolle wieder entfernen — kein Produktiv-Einbau, kein SBKIM-Modul, kein Datenschutz-Stein". Pre-Flight-Check, `SBKIM_SW_STANDALONE`-Flag und `src/sbkim-sw.js` aus Pflege App-SW-Koexistenz **unverändert** (PR #31 funktional korrekt). **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07.** **Keine Änderung an `docs/INTERFACES.md`** (Karte 09 ist Anleitung, kein Modul-Vertrag — §1/§3/§6 unverändert). **`status.json` Modul 09 unverändert** (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — die Pflege ist additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). **Schließt die zwei Karten-Lücken aus der abgebrochenen Bau-Sitzung 09 vom 2026-05-15** und entblockt die zweite Bau-Iteration mit Klaus am Live-Andock. |
 | Pflege App-SW-Koexistenz | 2026-05-15 | Pflege 09-App-SW-Koexistenz | Karte 09 § Andock-Schritt-Pfad **Schritt 3 in 3a/3b aufgesplittet** plus neuer **Pre-Flight-Check** als Einleitungs-Block (`navigator.serviceWorker.getRegistration('./')` — Verzweigungs-Ergebnis ist die Auswahl 3a oder 3b). **Variante 3a (PWA ohne eigenen SW):** unverändert bisheriges Schritt-3-Verhalten (`register('sbkim-sw.js')` + Konsolen-Zeile `SBKIM-SW registriert, Scope: …`). **Variante 3b (PWA mit eigenem App-SW):** Endknoten setzt in `app-sw.js` ganz oben `self.SBKIM_SW_STANDALONE = false; importScripts('./sbkim-sw.js');` — **kein** zweiter `register`-Aufruf, der bestehende `register('./app-sw.js')` reicht. Konsolen-Zeile `SBKIM-SW geladen via importScripts (Variante 3b)`, DevTools zeigt **eine** Registrierung (App-SW), nicht zwei. **Achtes Risiko „App-SW-Überschreibung"** in § Risiken & offene Punkte ergänzt: Beschreibung (Schritt-3-`register` ersetzt bestehenden App-SW im selben Scope wegen unbedingtem `skipWaiting`/`clients.claim` in `sbkim-sw.js`), Erkennung (DevTools zeigt `sbkim-sw.js` statt `app-sw.js` als aktiven Worker), Lösung (Variante 3b + `SBKIM_SW_STANDALONE=false`), Konvention (Pre-Flight-Check vor Schritt 3 ist Pflicht). **§ Service-Worker-Hinweis** `install`/`activate`-Vertragsblock erweitert — `skipWaiting`/`clients.claim` jetzt unter `SBKIM_SW_STANDALONE`-Schalter (Default `true` → Variante 3a bisher; `false` → Variante 3b lässt App-SW seinen Lebenszyklus); fetch-Listener-Reihenfolge dokumentiert (Browser ruft Listener in Registrier-Reihenfolge, erster `respondWith` gewinnt — sbkim-sw.js fasst nur `/sbkim/*`-Pfade an, alle anderen Events fallen an den App-SW-Listener durch). **§ Datei-Pfad-Konvention** um optionalen Block `app-sw.js` im Repo-Root ergänzt (sauberer relativer `importScripts('./sbkim-sw.js')`-Pfad nur dann garantiert). **§ Sichtkontrolle nach dem Andocken** um fünften (variantenspezifischen) Pflicht-Punkt erweitert: Variante-3b-Zwei-Browser-Test (eine Registrierung im DevTools, Konsolen-Zeile, `POST /sbkim/anastomosis` liefert 200, App-Offline-Pfade unverändert) — wartet auf Klaus' nächsten Live-Andock-Versuch. **`src/sbkim-sw.js` umgebaut** — `SBKIM_SW_STANDALONE`-Flag am Modul-Anfang (Default `true`, rückwärtskompatibel); `install`/`activate`-Handler rufen `skipWaiting`/`clients.claim` nur unter `SBKIM_SW_STANDALONE === true`; fetch-Listener-Pfad für `/sbkim/anastomosis` und `/sbkim/legacy` unverändert; Header-Kommentar erweitert um beide Lade-Pfade. **INTERFACES.md §6** Änderungsprotokoll-Zeile am unteren Ende (neueste unten, Konventions-Stil); keine §1-Vertragsänderung (das Flag ist SW-intern, kein öffentlicher Funktions-Export wandert). **Keine Code-Änderung an Modulen 00/01/02/03/04/05/07** (deren Code unverändert). **`status.json` Modul 09 unverändert** (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — die Pflege ist additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). |
 | Pflege PWA-Suffix | 2026-05-16 | Pflege PWA-Suffix Karten 01+09 | Folge-Pflege nach Live-Andock-Sitzung 2026-05-16 (Mein-Mixarium + Mein-Rezeptbuch live SBKIM-integriert, aber identische `nodeId` wegen IndexedDB-Origin-Kollision auf GitHub-Pages-Project-Sites — beide Endknoten unter `lausiklauskn-png.github.io`, IndexedDB ist im Browser pro Origin, nicht pro Pfad). **§ Vor dem Einbau zu klärende Werte** um neue Zeile `<DB_SUFFIX>` erweitert (Beispielwerte: `rezeptbuch` / `mixarium`); Erklärungs-Block direkt darunter zur IndexedDB-Origin-Kollision und zur Default-Variante (ohne Suffix, eine PWA pro Origin). **§ Schritt 4** umbenannt von „`SbkimAnastomose.init()`" auf „`SbkimStorage.init({dbSuffix})` + `SbkimAnastomose.init()`", Code-Block jetzt mit zwei sequenziellen `await`-Aufrufen (Storage zuerst mit `dbSuffix`, dann Anastomose); neue Erklärungs-Absätze („Warum zwei Aufrufe statt einem?" und Sichtkontrolle-Hinweis auf DB-Namen `sbkim_<DB_SUFFIX>`); „Häufiger Fehler"-Block um `InvalidDbSuffixError` ergänzt. Begründung: Modul 01 ist die einzige Stelle, die den DB-Namen kennt — wer Suffix setzen will, muss `SbkimStorage.init` ZUERST aufrufen; Idempotenz garantiert, dass der interne `Storage.init()`-Aufruf in `SbkimAnastomose.init` dasselbe `dbPromise` benutzt. **Modul 05 bleibt unangetastet** (`SbkimAnastomose.init()` weiterhin ohne Optionen — keine Vertrags-Ausweitung in INTERFACES.md §1 Modul 05). **Keine Hauptversions-Erhöhung** (`PROTOCOL_VERSION` bleibt `"0.1"`). Hinweis für Klaus' Re-Andock: in beiden Endknoten-Repos muss `sbkim-init.js` um den `SbkimStorage.init({dbSuffix:…})`-Aufruf erweitert werden (vor dem bestehenden `SbkimAnastomose.init`), DANN `__sbkimErzeugeSpore` neu triggern — neue nodeIds entstehen pro PWA, alte Pages-Spores werden überschrieben. |
+| Pflege Endknoten-Migrations-Brief erweitern (Module 15 + 16) | 2026-05-25 | Pflege Endknoten-Migrations-Brief erweitern | Folge-Pflege nach Bau-Sitzung 15.B (PR #159 gemerged 2026-05-25, Klaus' Sichttest 8/8 grün) und Bau-Sitzung 16 (PR #152 + Wappen/Korona PR #154 gemerged 2026-05-24). **Reine Doku-Pflege, KEIN Modul-Code-Eingriff** — Karte 09 + Brief-Datei `BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md` erweitert. Konkrete Eingriffe in Karte 09: (1) § Andock-Schritt-Pfad-Überschrift „neun Schritte" → „elf Schritte"; Mermaid-Flowchart von A1–A9 auf A1–A11 erweitert. (2) § Schritt 2 `<script>`-Reihenfolge `01→02→03→04→05→07→00` → `01→02→03→04→05→07→00→15→16` mit zwei Begründungs-Absätzen (Modul 15 nach 00 weil Sub (a) `read()` Spore/Anastomose/Storage fail-soft liest; Modul 16 zuletzt weil es alle anderen surface-checkt — Anti-Greenwashing-Klausel binär). (3) § Sichtkontrolle: sieben Selbstcheck-Zeilen → elf (Modul 15 + Modul 16 Selbstcheck-Zeilen ergänzt); zwei neue Sichtkontroll-Punkte (7. FREMD-Lampe sichtbar, 8. Siegel-Badge sichtbar wenn certified). (4) § Einbau-Anleitung: zwei NEUE Schritte 10 + 11 nach Schritt 9 angehängt — **Schritt 10 Membran-Allowlist + FREMD-Lampe + SW-Probe-Detektor** (Modul-Datei-Kopie, CSS-Anker aus Sage-Protokol's `index.html` Z. 121–127, Navleisten-Markup `#lamp-fremd`, `sbkim-init.js`-Aufruf mit `allowedOrigins:["https://lausiklauskn-png.github.io"]` pro Endknoten, `enableTestButton:true` NICHT bei Endknoten — Sage-Page-only-Konvention aus Pflege 2026-05-24); **Schritt 11 SBKIM-Siegel-Badge** (Modul-Datei-Kopie, vier `--siegel-*`-Variablen + `#sbkim-siegel-badge`-CSS aus Sage-Protokol's `index.html` Z. 42–45 + 129–134, Option β analog Sage-Page mit `badgeSelector:".lamps"`, `repoUrl`-Override-Pflicht pro Endknoten — Auto-Erkennung liefert Pages-URL, Override braucht Quell-Repo-URL für Modal-Aussteller-Klärung). Konkrete Eingriffe in `BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md`: Aufgaben-Liste von „sechs Punkte a–f" auf „acht Punkte a–h"; Punkt a) um `15_membran.js` + `16_siegel.js` erweitert; Punkt b) script-Reihenfolge um `→ 15_membran → 16_siegel` erweitert; Punkt e) elf statt neun Selbstcheck-Zeilen + neue Erwartung „FREMD-Lampe + Siegel-Badge sichtbar"; **neue Punkte g) Modul 15 einbauen** (Karte 09 § Schritt 10, Erwartungs-Block + Endknoten-Sichttest-Workaround mit drei alternativen Test-Pfaden — fragmentierter Cross-Origin-Trigger, KI-Browser-Agent-Wartezeit, Test-Brücke `_recordForTest`); **neue Punkte h) Modul 16 einbauen** (Karte 09 § Schritt 11, Erwartungs-Block mit `repoUrl`-Override-Pflicht pro Endknoten + Anti-Greenwashing-Hinweis). Meta-Sitzung-Kontext-Block um Pflege-Eintrag 2026-05-25 ergänzt; Zeitschätzung von ~2 h auf ~2.5–3 h pro Endknoten erhöht. **KEINE Spec-Änderung an Karte 15 / Karte 16 / INTERFACES § 1 Modul 15 / Modul 16** — diese sind Tafeln, hier wurde nur die Andock-Anleitung erweitert. **Keine Tafel-Umsortierung in CLAUDE.md § Pipeline-Reihenfolge** (Schritt 5 Endknoten-Migration → Schritt 6 App-Freigabe). **`status.json` Modul 09 unverändert** (bleibt `score:"spec"` / `siegel:"Spec fertig"`, Pie nicht regeneriert — additiv im Andock-Pfad, kein Modul-Bau). **Karte 16 § Bauzustand bleibt unangetastet** — Sub-(a)-Pflicht-Module-Liste + Sub-(b)-Badge-Optik sind Tafeln. **INTERFACES § 6 Endknoten-Tabelle bleibt unangetastet** (`id/domain/domainDescription/domainKeywords/domainVector`-Schema — eine `siegelBadgeMounted`-Spalte wäre fremd in dieser Schema-Form; Endknoten-spezifischer Badge-Mount-Zustand gehört in den Sichttest-Befund pro Endknoten-Bau-Sitzung, nicht in die Spec-Tabelle). |
 | **Sage als dritter Endknoten bau-fertig** (Sichttest ungeprüft) | 2026-05-21 | Bau Sage-Page-Refactor | Sage-Page selbst befolgt jetzt Karte 09 als dritter Endknoten neben Rezeptbuch + Mixarium. **Sechs Eingriffe nur in `index.html` und neuen Sage-Page-Root-Dateien, KEIN `src/modules/*.js`-Eingriff, KEIN Spec-Eingriff:** (a) `sbkim-sw.js` als Kopie von `src/sbkim-sw.js` im Sage-Page-Repo-Root angelegt (Variante 3a aus § Schritt 3 — Sage-Page hat keinen App-SW; bei Pflege-Sitzungen, die `src/sbkim-sw.js` ändern, ist diese Kopie nachzuziehen — Cache-Bust via File-Rename oder `CACHE_NAME`-Bump bei künftigen Bumps). (b) Neun `<script>`-Tags in `index.html` vor `</body>` (alle Module 00–08 inkl. 03, das als lazy-Modul nur seinen Selbstcheck nach `init()` emittiert; Reihenfolge analog Karte 09 § Schritt 2 mit 00 zuerst wegen Closure-Reihenfolge und 08 als letztes Modul vor `sbkim-init.js`). (c) Neue Datei `sbkim-init.js` im Sage-Page-Repo-Root: ruft `SbkimStorage.init({dbSuffix:"sage"})` → 02 → 05 → 06 → 07 → 08 → 00; fail-soft pro Modul mit `console.warn` (Sage-Page bleibt als Doku-Hub ladbar bei einzelnem Modul-Bruch — Klaus' Doku-Hub-Bedürfnis); registriert `sbkim-sw.js` als Service-Worker am Ende; Custom-Event `sbkim-sage-ready` für die Andock-Wizard-Logik. (d) `sbkim/spore.json` als statisches **Skeleton** committet (`id/publicKey/domainVector/signature/createdAt: null` als Slot bis Klaus' erstem Browser-Sichttest; `domain`/`domainDescription`/`domainKeywords`/`stammCategories`/`guestCategories`/`endpoint`/`nodeType` befüllt aus INTERFACES § 6 Tabellen). Vollständige signierte Spore kommt nach Klaus' Andock-Wizard-Lauf als Download — Klaus committet sie dann manuell hierhin (Stolperfalle 3 Brief: Origin-Limitierung, keine Laufzeit-Schreibung in `sbkim/spore.json`). (e) **Andock-Wizard-Modal** als zusätzlicher Pfad auf der bestehenden Schwarz-Loch-Karte: Klick auf die Karte öffnet beim ersten Mal (falls keine Identität existiert) den Wizard — drei Schritte (Identität via `getOrCreateIdentity`, Spore-Erzeugung mit lazy Modul-03-Init + `embedPassage` + `generateOwnSpore` + Spore-JSON-Download, Backup via `exportBackup(passwordPrompt)`) plus Identitäts-Wechsler (`listIdentities` + `setActiveIdentity` Dropdown); Folge-Klicks öffnen wie zuvor den Browser-Observatorium-Screen (`goScreen('observatorium')`). Variante III-Vollwizard aus Vision-Anker 2 ist NICHT Gegenstand — hier nur Sage-spezifische Mini-Geste. (f) **Schichten-Lampen** an jeder Modul-Bento-Zeile (Karte „Module · Schnellübersicht"): drei kleine LED-Dots (Spec / Code / Sichttest), Farbe aus `status.json § modules[i].score`, Tooltip mit `siegel`-Feld; eigener `fetch('./status.json')` + MutationObserver-Hook auf `#module-list` (kein Eingriff in die bestehende `renderModuleList`-Closure). **Zwei UI-Texte aus Vor-V1-Zeit korrigiert** („Hub · kein Endknoten" → „Hub · und Knoten zugleich" und „Sage ist kein Endknoten — nur Vermittlungsstelle" → „Sage selbst ist seit V1-Sage-Hybrid der dritte Knoten") — Reflektion der bereits in INTERFACES § 6 verbindlich verankerten Spec, kein neuer Spec-Eingriff. **`status.json § endknoten[sage]`** auf `integratedAt: "2026-05-21"` und `pingStatus: "pending-first-sichttest"` (neuer Zwischen-Zustand zwischen `pending-first-andock` und `live`) gesetzt; `nodeId: null` bleibt bis zu Klaus' Browser-Sichttest. **`PROTOCOL_VERSION` / `DB_VERSION` / `BACKUP_FORMAT_VERSION` unverändert.** **Sichttest ungeprüft** — wartet auf Klaus' Browser-Lauf mit Service-Worker-Cleanup (Stolperfalle 1 Brief), Andock-Wizard-Durchklick, Spore-Erzeugung und Backup. |
 | Werte für Rezeptbuch eingetragen | — | — | TBD — Klaus trägt nach |
 | Werte für Mixarium eingetragen | — | — | TBD — Klaus trägt nach |
