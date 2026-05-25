@@ -1192,10 +1192,14 @@
     if (!doc) return;
     var btn = buildSlotButton(doc, "siegel");
     attachSlotClick(btn, "siegel");
-    // Einfügen vor dem Proxy-Container (am Ende der Slot-Reihe).
-    var proxy = widgetRoot.querySelector(".sbkim-widget-proxy");
-    if (proxy && proxy.parentNode === widgetRoot) {
-      widgetRoot.insertBefore(btn, proxy);
+    // Pflege 17 SIEGEL-Reihenfolge 2026-05-25: SIEGEL gehört in die Slot-
+    // Reihe (LEBT/VERKEHR/FREMD/SIEGEL), VOR den Aktions-Knöpfen Minimize
+    // und Close. Bevorzugt einfügen vor minimizeBtnEl, sonst vor Proxy-
+    // Container, sonst ans Ende.
+    var insertRef = minimizeBtnEl ||
+                    widgetRoot.querySelector(".sbkim-widget-proxy");
+    if (insertRef && insertRef.parentNode === widgetRoot) {
+      widgetRoot.insertBefore(btn, insertRef);
     } else {
       widgetRoot.appendChild(btn);
     }

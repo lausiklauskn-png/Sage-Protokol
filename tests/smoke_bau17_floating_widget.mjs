@@ -624,6 +624,24 @@ async function run() {
     "attr=" + widget7.getAttribute("data-theme"),
     widget7.getAttribute("data-theme") === "transparent");
 
+  // Pflege SIEGEL-Reihenfolge: SIEGEL-Slot wird beim async Mount VOR den
+  // Aktions-Knöpfen (Minimize/Close) eingefügt — DOM-Reihenfolge:
+  // LEBT, VERKEHR, FREMD, SIEGEL, Minimize, Close, Proxy.
+  const g9 = makeStubGlobal();
+  loadModuleInto(g9, "src/modules/17_floating_widget.js");
+  await g9.SbkimWidget.init({});
+  g9.SbkimSiegel = { isCertified: () => true };
+  dispatchWindowEvent(g9, "sbkim:siegel-certified", { certifiedAt: "2026-05-25T00:00:00.000Z", repoUrl: "https://example/" });
+  const widget9 = g9.document.getElementById("sbkim-widget");
+  const childIds = widget9.children.map(c => c.id || c.className).filter(Boolean);
+  const siegelIdx = childIds.indexOf("sbkim-widget-slot-siegel");
+  const minimizeIdx = childIds.findIndex(s => s.indexOf("sbkim-widget-minimize") >= 0);
+  const closeIdx = childIds.findIndex(s => s.indexOf("sbkim-widget-close") >= 0);
+  record("28b. SIEGEL-Slot steht VOR Minimize + Close im DOM (Pflege Reihenfolge)",
+    "siegelIdx < minimizeIdx < closeIdx",
+    "siegel=" + siegelIdx + "/minimize=" + minimizeIdx + "/close=" + closeIdx,
+    siegelIdx >= 0 && minimizeIdx > siegelIdx && closeIdx > minimizeIdx);
+
   // Default theme:"auto" setzt KEIN data-theme-Attribut.
   const g8 = makeStubGlobal();
   loadModuleInto(g8, "src/modules/17_floating_widget.js");
