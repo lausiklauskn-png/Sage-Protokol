@@ -90,6 +90,16 @@
     siegel:  "SBKIM-Siegel — Modul 16 Self-Inscribing-Bezeugung. Klick öffnet Aspekte-Modal.",
   };
 
+  // Pflege 17 UX 2026-05-25 (Klaus-Wunsch: 1:1 Sage-Page-Stil):
+  // Text-Labels neben den Lampen. Klein-geschrieben wie auf der
+  // Sage-Page (`<span class="lamp-label">lebt</span>` etc.).
+  var SLOT_LABELS = {
+    lebt:    "lebt",
+    verkehr: "verkehr",
+    fremd:   "fremd",
+    siegel:  "siegel",
+  };
+
   // Sage-Page-Stil-Anker: Tafel siehe index.html § :root + .lamps + .lamp.
   // 9 px Lampen in einer Pill mit border-radius:999px + Glow + Atmung.
 
@@ -99,7 +109,7 @@
 
   // Erlaubte Corner-Werte (Karte 17 § Schnittstelle).
   var ALLOWED_CORNERS = ["top-left", "top-right", "bottom-left", "bottom-right"];
-  var ALLOWED_THEMES = ["auto", "dark", "light"];
+  var ALLOWED_THEMES = ["auto", "dark", "light", "transparent"];
 
   // ---- Modul-Zustand (Closure) ----
 
@@ -280,15 +290,19 @@
   // ---- CSS-Injektion ----
 
   function buildCss() {
-    // Pflege 17 UX 2026-05-25: Sage-Page-Lampen-Stil. 10 px Lampen in
-    // ~28 px Click-Targets (Touch-Mindestgröße bewahrt), Pille kompakt
-    // mit border-radius:999px wie `.lamps` auf der Sage-Page. Glow + Atmung
-    // analog `.lamp.alive::after` (lamp-breath 3.2s). Keine Glyph-Texte —
-    // Tooltip im title, Modal beim Tap.
+    // Pflege 17 UX 2026-05-25 (Klaus-Wunsch: 1:1 Sage-Page-Stil):
+    // Lampen + Text-Labels nebeneinander wie auf der Sage-Page.
+    // CSS-Variablen auf `:root` definiert — PWA kann sie via eigenem
+    // `:root`-Block überschreiben (Hintergrund/Akzent-Farben/Text-Farbe).
+    // Theme-Option `"transparent"` setzt den Hintergrund auf `transparent`
+    // (für PWAs mit eigenem Outer-Frame). Default folgt dem Sage-Page-
+    // Wert `rgba(0,0,0,0.45)` direkt.
     return [
-      "/* SBKIM Modul 17 Floating-Widget — Sage-Page-Lampen-Stil (Pflege UX 2026-05-25). */",
-      ":root, .sbkim-widget {",
-      "  --sbkim-widget-bg: rgba(0, 0, 0, 0.55);",
+      "/* SBKIM Modul 17 Floating-Widget — 1:1 Sage-Page-Stil (Pflege UX 2026-05-25). */",
+      "/* CSS-Variablen auf :root für PWA-Override. Eigene PWA setzt z.B. */",
+      "/*   :root { --sbkim-widget-bg: var(--meine-pwa-card-bg); }       */",
+      ":root {",
+      "  --sbkim-widget-bg: rgba(0, 0, 0, 0.45);",
       "  --sbkim-widget-fg: #F5F5FF;",
       "  --sbkim-widget-fg-dim: rgba(245, 245, 255, 0.55);",
       "  --sbkim-widget-line: rgba(255, 255, 255, 0.18);",
@@ -299,6 +313,10 @@
       "  --sbkim-widget-siegel-gold: #C9A961;",
       "  --sbkim-widget-pulse-ms: 600ms;",
       "}",
+      // Theme-Override per data-theme-Attribut am Widget-Root.
+      "#" + WIDGET_ID + "[data-theme=\"transparent\"] { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }",
+      "#" + WIDGET_ID + "[data-theme=\"light\"] { background: rgba(255, 255, 255, 0.85); color: #1A1A1A; border-color: rgba(0, 0, 0, 0.18); }",
+      "#" + WIDGET_ID + "[data-theme=\"light\"] .sbkim-widget-label { color: rgba(0, 0, 0, 0.55); }",
       "#" + WIDGET_ID + " {",
       "  position: fixed;",
       "  z-index: " + optZIndex + ";",
@@ -306,10 +324,11 @@
       "  color: var(--sbkim-widget-fg);",
       "  border: 1px solid var(--sbkim-widget-line);",
       "  border-radius: 999px;",
-      "  padding: 6px 12px;",
+      // Sage-Page-Werte: padding: 0.32rem 0.7rem; gap: 0.45rem
+      "  padding: 0.32rem 0.7rem;",
       "  display: flex;",
       "  align-items: center;",
-      "  gap: 10px;",
+      "  gap: 0.45rem;",
       "  font-family: 'Geist', system-ui, sans-serif;",
       "  font-size: 0.66rem;",
       "  user-select: none;",
@@ -347,40 +366,49 @@
       "  pointer-events: none;",
       "  overflow: hidden;",
       "}",
-      // Slot-Button: Click-Target ~28×28, sichtbare Lampe in ::before pseudo.
+      // Slot-Button: Sage-Page-Stil — Lampe + Label nebeneinander.
+      // Button-Touch-Target ist die ganze Lampe+Label-Gruppe.
       ".sbkim-widget-slot {",
       "  position: relative;",
-      "  width: 28px;",
-      "  height: 28px;",
-      "  border-radius: 50%;",
       "  background: transparent;",
       "  border: none;",
-      "  padding: 0;",
+      "  padding: 4px 6px;",
       "  margin: 0;",
       "  cursor: pointer;",
       "  display: inline-flex;",
       "  align-items: center;",
-      "  justify-content: center;",
+      "  gap: 0.35rem;",
       "  outline: none;",
-      "  transition: transform 0.12s;",
+      "  border-radius: 999px;",
+      "  transition: background 0.18s;",
       "}",
-      ".sbkim-widget-slot:hover { transform: scale(1.18); }",
+      ".sbkim-widget-slot:hover { background: rgba(255, 255, 255, 0.06); }",
       ".sbkim-widget-slot:focus-visible {",
       "  outline: 1px solid var(--sbkim-widget-accent-gold);",
       "  outline-offset: 2px;",
       "}",
-      // Innere Lampe via ::before — wie Sage-Page-Lampen (9 px in der Sage-Page,",
-      // hier 10 px für besseren Touch-Tap-Lesbarkeit).
+      // Innere Lampe via ::before — exakt 9 px wie auf der Sage-Page.
       ".sbkim-widget-slot::before {",
       "  content: \"\";",
       "  display: block;",
-      "  width: 10px;",
-      "  height: 10px;",
+      "  width: 9px;",
+      "  height: 9px;",
       "  border-radius: 50%;",
       "  background: var(--sbkim-widget-lamp-bg);",
       "  transition: background 0.2s, box-shadow 0.2s;",
+      "  flex-shrink: 0;",
       "}",
-      // LEBT aktiv: grünes Glow + Atmungs-Ring (lamp-breath analog Sage-Page).",
+      // Text-Label rechts neben der Lampe (Sage-Page `.lamp-label`).
+      ".sbkim-widget-label {",
+      "  font-family: 'Geist Mono', ui-monospace, monospace;",
+      "  font-size: 0.66rem;",
+      "  letter-spacing: 0.06em;",
+      "  text-transform: uppercase;",
+      "  color: var(--sbkim-widget-fg-dim);",
+      "  line-height: 1;",
+      "  white-space: nowrap;",
+      "}",
+      // LEBT aktiv: grünes Glow + Atmungs-Ring (Sage-Page `.lamp.alive`).
       ".sbkim-widget-slot.lebt.active::before {",
       "  background: var(--sbkim-widget-accent-green);",
       "  box-shadow: 0 0 8px rgba(110, 231, 211, 0.7);",
@@ -388,11 +416,11 @@
       ".sbkim-widget-slot.lebt.active::after {",
       "  content: \"\";",
       "  position: absolute;",
+      "  left: calc(6px + 4.5px - 8.5px);",   // Mittelpunkt der Lampe = padding-left + lampWidth/2
       "  top: 50%;",
-      "  left: 50%;",
-      "  transform: translate(-50%, -50%);",
-      "  width: 18px;",
-      "  height: 18px;",
+      "  transform: translateY(-50%);",
+      "  width: 17px;",
+      "  height: 17px;",
       "  border-radius: 50%;",
       "  border: 1px solid var(--sbkim-widget-accent-green);",
       "  opacity: 0.45;",
@@ -413,11 +441,11 @@
       ".sbkim-widget-slot.fremd.active::after, .sbkim-widget-slot.fremd.fremd-alert::after {",
       "  content: \"\";",
       "  position: absolute;",
+      "  left: calc(6px + 4.5px - 8.5px);",
       "  top: 50%;",
-      "  left: 50%;",
-      "  transform: translate(-50%, -50%);",
-      "  width: 18px;",
-      "  height: 18px;",
+      "  transform: translateY(-50%);",
+      "  width: 17px;",
+      "  height: 17px;",
       "  border-radius: 50%;",
       "  border: 1px solid var(--sbkim-widget-accent-red);",
       "  opacity: 0.45;",
@@ -427,25 +455,54 @@
       ".sbkim-widget-slot.fremd.fremd-pulse::before {",
       "  animation: sbkim-widget-lamp-alert-pulse var(--sbkim-widget-pulse-ms) ease-out;",
       "}",
-      // SIEGEL: kleines Gold-Medaillon mit Stern-Glyph. Etwas größer +
-      // markanter als die anderen Lampen, weil es das Identitäts-Siegel ist.
+      // Aktive Slots: Label etwas heller anzeigen (Sage-Page-Pattern).
+      ".sbkim-widget-slot.active .sbkim-widget-label, .sbkim-widget-slot.fremd-alert .sbkim-widget-label {",
+      "  color: var(--sbkim-widget-fg);",
+      "}",
+      // SIEGEL: kleines Gold-Medaillon mit ★ — Sage-Page hat hier ein
+      // großes Wappen-SVG (#sbkim-siegel-badge 40 px). Im Widget halten
+      // wir es kleiner (22 px), das Wappen-Modal von Modul 16 bleibt das
+      // volle Identitäts-Symbol beim Click.
       ".sbkim-widget-slot.siegel {",
+      "  padding: 2px 4px 2px 6px;",
+      "}",
+      ".sbkim-widget-slot.siegel::before {",
       "  width: 22px;",
       "  height: 22px;",
       "  border-radius: 50%;",
       "  background: radial-gradient(circle at 35% 30%, #FFE066 0%, var(--sbkim-widget-siegel-gold) 55%, #A67C00 100%);",
       "  border: 1px solid rgba(201, 169, 97, 0.85);",
       "  box-shadow: 0 0 6px rgba(201, 169, 97, 0.5);",
+      "  display: flex;",
+      "  align-items: center;",
+      "  justify-content: center;",
       "  color: #1A1306;",
-      "  font-size: 0.7rem;",
+      "  font-size: 0.78rem;",
       "  font-weight: 700;",
       "  line-height: 1;",
+      "  text-align: center;",
+      // Stern-Glyph via ::before-content nicht möglich (würde content="" überschreiben).
+      // Stattdessen: das Slot-Element bekommt den ★ als zusätzliches Element. Siehe buildSlotButton.
       "}",
-      ".sbkim-widget-slot.siegel::before {",
-      "  display: none;",
-      "}",
-      ".sbkim-widget-slot.siegel.siegel-first-boot {",
+      ".sbkim-widget-slot.siegel.siegel-first-boot::before {",
       "  animation: sbkim-widget-siegel-first-boot 600ms ease-out;",
+      "}",
+      // Stern-Glyph zentriert über der Lampe-::before (per absoluten Span).
+      ".sbkim-widget-siegel-glyph {",
+      "  position: absolute;",
+      "  left: 6px;",                 // selber Wert wie padding-left vom Slot
+      "  top: 50%;",
+      "  transform: translateY(-50%);",
+      "  width: 22px;",
+      "  height: 22px;",
+      "  display: flex;",
+      "  align-items: center;",
+      "  justify-content: center;",
+      "  color: #1A1306;",
+      "  font-size: 0.78rem;",
+      "  font-weight: 700;",
+      "  line-height: 1;",
+      "  pointer-events: none;",
       "}",
       "@keyframes sbkim-widget-lamp-breath {",
       "  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.45; }",
@@ -572,10 +629,11 @@
   // ---- DOM-Bau ----
 
   function buildSlotButton(doc, slotId) {
-    // Pflege 17 UX 2026-05-25: pure Lampen (Sage-Page-Stil) statt Drei-
-    // Buchstaben-Glyphe. Hintergrund + Glow + Atmung via CSS-Pseudo-Elemente.
-    // SIEGEL bekommt einen kleinen ★ als Glyph zur Hervorhebung als Identitäts-
-    // Marker — kein Text bei LEBT/VERKEHR/FREMD. Tooltip voll im title.
+    // Pflege 17 UX 2026-05-25 (Klaus-Wunsch 1:1 Sage-Page-Stil):
+    // Slot = Lampe (::before-Pseudo, 9 px) + Text-Label (kleingeschrieben,
+    // monospace, dimmed). SIEGEL bekommt zusätzlich ein zentriertes
+    // ★-Span über der Lampe-::before (kann CSS pseudo nicht setzen, wenn
+    // content="" für die Lampe genutzt wird).
     var btn = doc.createElement("button");
     btn.type = "button";
     btn.id = "sbkim-widget-slot-" + slotId;
@@ -584,11 +642,19 @@
     btn.setAttribute("aria-label", SLOT_TOOLTIPS[slotId] || slotId);
     btn.title = SLOT_TOOLTIPS[slotId] || slotId;
     if (slotId === "siegel") {
-      // Stern-Glyph als Identitäts-Hinweis (Idee Klaus 2026-05-25: SIEGEL
-      // wird später als Tool-PWA-Container für Andocken + Sporen-
+      // ★-Glyph zentriert auf der Gold-Lampe (Idee Klaus 2026-05-25:
+      // SIEGEL wird später als Tool-PWA-Container für Andocken + Sporen-
       // Installation gestaltet — Spec-Notiz für eigene Folge-Sitzung).
-      btn.textContent = "★"; // ★
+      var glyph = doc.createElement("span");
+      glyph.className = "sbkim-widget-siegel-glyph";
+      glyph.textContent = "★";
+      glyph.setAttribute("aria-hidden", "true");
+      btn.appendChild(glyph);
     }
+    var label = doc.createElement("span");
+    label.className = "sbkim-widget-label";
+    label.textContent = SLOT_LABELS[slotId] || slotId;
+    btn.appendChild(label);
     return btn;
   }
 
@@ -616,6 +682,12 @@
     root.className = "sbkim-widget";
     root.setAttribute("role", "complementary");
     root.setAttribute("aria-label", "SBKIM Live-Status-Widget");
+    // Pflege 17 UX 2026-05-25: Theme via data-theme-Attribut. Default "auto"
+    // setzt das Attribut NICHT (gesteuert via :root-CSS-Variablen). Andere
+    // Werte ("transparent", "light", "dark") aktivieren spezifische CSS-Regeln.
+    if (optTheme && optTheme !== "auto") {
+      root.setAttribute("data-theme", optTheme);
+    }
 
     // Slots in der Reihenfolge ALL_SLOTS, gefiltert via enabledSlots.
     slotElements = {};
@@ -1374,6 +1446,11 @@
     if (typeof opts.theme === "string" && ALLOWED_THEMES.indexOf(opts.theme) >= 0) {
       optTheme = opts.theme;
     }
+    // Pflege 17 UX 2026-05-25: Theme via data-theme-Attribut am Widget-Root,
+    // damit PWAs ihren eigenen Hintergrund anwenden können. `theme:"transparent"`
+    // (NEU) macht den Hintergrund vollständig durchsichtig. Die CSS-Variablen
+    // auf `:root` (siehe buildCss) kann die PWA via eigenem `:root`-Block
+    // überschreiben — das ist der saubere Weg für Theme-Anpassung.
 
     if (Array.isArray(opts.slots) && opts.slots.length > 0) {
       var filtered = [];

@@ -579,16 +579,30 @@ async function run() {
     g6.SbkimWidget.isMinimized() === true &&
     g6.document.getElementById("sbkim-widget").getAttribute("data-minimized") === "true");
 
-  // Slot-Buttons haben KEINEN Glyph-Text mehr (außer SIEGEL mit ★).
+  // Slot-Buttons enthalten Label-Span (Sage-Page-Stil: Lampe + Text-Label
+  // nebeneinander). SIEGEL hat zusätzlich einen ★-Glyph-Span.
   const lebtBtn5 = g5.document.getElementById("sbkim-widget-slot-lebt");
   const verkBtn5 = g5.document.getElementById("sbkim-widget-slot-verkehr");
   const fremdBtn5 = g5.document.getElementById("sbkim-widget-slot-fremd");
   const siegelBtn5 = g5.document.getElementById("sbkim-widget-slot-siegel");
-  record("25. Pflege UX: LEBT/VERKEHR/FREMD-Slots haben KEINEN Glyph-Text (Lampen-Stil)",
-    "leere textContent",
-    "lebt='" + lebtBtn5.textContent + "'/verkehr='" + verkBtn5.textContent + "'/fremd='" + fremdBtn5.textContent + "'/siegel='" + siegelBtn5.textContent + "'",
-    lebtBtn5.textContent === "" && verkBtn5.textContent === "" && fremdBtn5.textContent === "" &&
-    siegelBtn5.textContent === "★");
+  function findLabel(btn) {
+    for (const c of btn.children) {
+      if (c._classes && c._classes.has("sbkim-widget-label")) return c.textContent;
+    }
+    return null;
+  }
+  function findGlyph(btn) {
+    for (const c of btn.children) {
+      if (c._classes && c._classes.has("sbkim-widget-siegel-glyph")) return c.textContent;
+    }
+    return null;
+  }
+  record("25. Pflege UX 1:1 Sage-Page: Label-Span pro Slot (lebt/verkehr/fremd/siegel)",
+    "Labels gesetzt, SIEGEL hat zusätzlich ★-Glyph",
+    "lebt='" + findLabel(lebtBtn5) + "'/verkehr='" + findLabel(verkBtn5) + "'/fremd='" + findLabel(fremdBtn5) + "'/siegel='" + findLabel(siegelBtn5) + "'/star='" + findGlyph(siegelBtn5) + "'",
+    findLabel(lebtBtn5) === "lebt" && findLabel(verkBtn5) === "verkehr" &&
+    findLabel(fremdBtn5) === "fremd" && findLabel(siegelBtn5) === "siegel" &&
+    findGlyph(siegelBtn5) === "★");
 
   // Tooltip via title-Property voll ausgeschrieben (aria-label gespiegelt).
   record("26. Tooltips voll ausgeschrieben (title-Property + aria-label, nicht nur Slot-Name)",
@@ -599,6 +613,26 @@ async function run() {
     /Klick öffnet/.test(fremdBtn5.title || "") &&
     /Klick öffnet/.test(siegelBtn5.title || "") &&
     /Klick öffnet/.test(lebtBtn5._attributes["aria-label"] || ""));
+
+  // -------- Sechster Test-Lauf: Theme "transparent" --------
+  const g7 = makeStubGlobal();
+  loadModuleInto(g7, "src/modules/17_floating_widget.js");
+  await g7.SbkimWidget.init({ theme: "transparent" });
+  const widget7 = g7.document.getElementById("sbkim-widget");
+  record("27. theme:'transparent' setzt data-theme='transparent' am Root",
+    "data-theme='transparent'",
+    "attr=" + widget7.getAttribute("data-theme"),
+    widget7.getAttribute("data-theme") === "transparent");
+
+  // Default theme:"auto" setzt KEIN data-theme-Attribut.
+  const g8 = makeStubGlobal();
+  loadModuleInto(g8, "src/modules/17_floating_widget.js");
+  await g8.SbkimWidget.init({});
+  const widget8 = g8.document.getElementById("sbkim-widget");
+  record("28. theme default 'auto' setzt KEIN data-theme-Attribut (CSS-Variablen-Pfad aktiv)",
+    "data-theme attr = null",
+    "attr=" + widget8.getAttribute("data-theme"),
+    widget8.getAttribute("data-theme") === null);
 
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;
