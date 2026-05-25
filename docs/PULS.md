@@ -1844,31 +1844,7 @@ Migration:
 1. **Neue Brief-Datei
    `docs/sessions/BRIEF_RUECKBAU_15_16_ENDKNOTEN.md`** angelegt
    (~360 Zeilen Brief-Codeblock, sechs Phasen A0/A/B/C/D/E + Klaus-
-   Phase F nach Sitzung). Brief gilt PRO ENDKNOTEN (Mein-Rezeptbuch
-   UND Mein-Mixarium), Inhalt identisch, Sitzung erkennt sich
-   selbst. Kern-Phasen:
-   - **A0 PR + main-Stand prüfen** (NEU, Klaus' Frage): Branch-
-     Stand, PR-Historie 7 Tage, main-`index.html` lesen + Module
-     zählen, Pages-Build-Status, Visual-Sichttest aus Screenshots
-     dokumentieren.
-   - **A Diagnose** (READ-ONLY): Spore-Datei + SW + Modul-Liste +
-     Navleisten-Markup + sbkim-init.js.
-   - **B Rückbau `index.html`:** Modul-15-+-16-`<script>`-Tags,
-     CSS-Anker (`--lamp-alert`, `--siegel-*`, `.lamp.fremd-alert`,
-     `.lamp.fremd-pulse`, `#sbkim-siegel-badge` + Keyframes),
-     Navleisten-Markup, `.lamps`-Container je nach Pre-Migration-
-     Befund.
-   - **C Rückbau `sbkim-init.js`:** `SbkimMembrane.init` +
-     `SbkimSiegel.init` raus.
-   - **D Modul-Dateien + SW:** `sbkim/15_membran.js` +
-     `sbkim/16_siegel.js` löschen; `sbkim-sw.js` SW-Probe-Detektor
-     ausbauen; `CACHE_NAME`-Bump; File-Rename für Cache-Bust.
-   - **E Sichtkontrolle** (Klaus, im Browser): neun statt elf
-     Selbstcheck-Zeilen, keine FREMD-Lampe, kein Siegel-Badge.
-   - **F Spore-Reparatur (KLAUS-PHASE nach Sitzung):** drei Pfade
-     je nach IndexedDB-Identität-Stand: F2 Re-Sign, F3 Backup-
-     Import, F4 Frische Identität. Plus F5 Konnektivitäts-Test
-     Mein-Mixarium ↔ Mein-Rezeptbuch.
+   Phase F nach Sitzung).
 
 2. **Heilige Tafeln im Brief:** Kein Sage-Protokol-Eingriff; Spore
    NICHT antasten (Reparatur ist Browser-Crypto-Pflicht); IndexedDB
@@ -1880,31 +1856,55 @@ Migration:
    drei Operationen (Diagnose-Cat von `sbkim/spore.json`, Commit der
    reparierten Spore, lokaler `http.server`) der saubere Pfad.
 
-**Was diese Sitzung NICHT geändert hat:**
-- KEINE Modul-Code-Änderung.
-- KEINE Spec-Änderung an Karten / INTERFACES.
-- KEIN Eingriff in CLAUDE.md (Pipeline-Erweiterung steht in PR #163
-  Draft; diese Pflege ist Notfall-Pflege parallel zum Spec-Pfad).
-- KEIN `PROTOCOL_VERSION`-Bump.
-- KEIN Sichttest nötig.
-- KEINE `status.json`-Änderung.
-
-**Was offen:** Klaus startet PRO ENDKNOTEN-REPO eine Rückbau-
-Sitzung mit dem Brief-Codeblock; nach Phase E folgt Klaus' Phase F
-im Browser. Danach Spec-Sitzung 17 (PR #163 mergen) + Bau-Sitzung
-17 + Re-Migration mit Widget (Pipeline 5b/5c/5d) + App-Freigabe.
-
-**Nächster sinnvoller Schritt:**
-
-1. PR mergen (Draft → Ready → Merge, klein + additiv).
-2. Rückbau-Sitzung in Mein-Rezeptbuch starten — Brief-Codeblock als
-   ersten Prompt.
-3. Phase F im Browser (Spore-Reparatur, Pfad nach Diagnose-Befund).
-4. Zweiten Endknoten (Mein-Mixarium) parallel rückbauen.
-5. DANACH: PR #163 mergen + Spec-Sitzung 17 starten (Pipeline 5b).
-
 Übergabeprotokoll
 `docs/sessions/archiv/2026-05-25_brief-anlage-rueckbau-15-16-endknoten.md`.
+
+---
+
+### 2026-05-25 · Brief-Anlage + Pipeline-Anpassung — Spec-Sitzung 17 Floating-Widget (Auslöser Klaus' UI-Befund)
+
+**Sitzungs-Rolle:** Mini-Pflege (Brief-Anlage + Pipeline-Anpassung,
+kein Modul-Code-Eingriff). Branch
+`claude/brief-spec-15-16-floating-widget`. Anschluss nach erster
+Endknoten-Migration (PR #162 gemerged, externe Sitzungen
+Mein-Rezeptbuch + Mein-Mixarium gelaufen 2026-05-25).
+
+**Anlass:** Klaus' Live-Sichttest 2026-05-25 nach den ersten zwei
+externen Endknoten-Bau-Sitzungen. **UI-Befund (Tafel-Evolutions-
+Klausel-relevant):**
+
+- **Mein-Rezeptbuch:** Lampen + Siegel-Badge nehmen zu viel Platz in
+  der oberen Navleiste.
+- **Mein-Mixarium:** Navleiste vollständig ausgefüllt — keine
+  Atemluft für App-eigene Header-Elemente.
+- **Nicht einheitlich:** beide Endknoten haben unterschiedliche
+  Header-Strukturen, der Brief verlangte einen `.lamps`-Container
+  mit CSS-Variablen-Kopier-Pflicht aus Sage-Page — produzierte genau
+  diese Inkonsistenzen.
+- **Kein User-X-Schließen:** Anti-Greenwashing-Klausel falsch
+  interpretiert (sie verbietet nur das Anzeigen ohne Selbst-Prüfung-
+  grün, nicht das User-Verbergen).
+- **Kein Drag:** Position ist hartkodiert.
+
+Klaus' Architektur-Forderung im Chat: „Wir müssen uns auf ein
+einheitliches Modul einigen, das jederzeit weitergegeben werden
+kann." Vorschlag: floating Mini-Panel im Eruda-Stil, self-mountend,
+mit Drag + X-Schließen + localStorage-Persistierung.
+
+**Getan — reine Doku-Pflege:**
+
+1. **Neue Brief-Datei
+   `docs/sessions/BRIEF_SPEC_15_16_FLOATING_WIDGET.md`** angelegt
+   (~270 Zeilen Brief-Codeblock, 17 Spec-Punkte).
+
+2. **CLAUDE.md § Pipeline-Reihenfolge** um drei neue Schritte
+   erweitert zwischen Schritt 5 und Schritt 6 (5b Spec-Sitzung 17,
+   5c Bau-Sitzung 17, 5d Endknoten-Re-Migration mit Widget).
+
+3. **CLAUDE.md § Die zehn Module + Backlogs** um Modul 17 erweitert.
+
+Übergabeprotokoll
+`docs/sessions/archiv/2026-05-25_brief-anlage-spec-17-floating-widget.md`.
 
 ---
 

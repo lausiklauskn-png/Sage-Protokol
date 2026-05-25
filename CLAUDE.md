@@ -244,7 +244,7 @@ ungemergten Branches lebten.
   gegen diese Konvention sind Pflege-PR-Befunde und werden in der
   Folge-Sitzung nachgezogen.
 
-## Die zehn Module + Schutz-Backlog 10-12 + Proaktiv-Backlog 14 + 15 + Siegel-Backlog 16
+## Die zehn Module + Schutz-Backlog 10-12 + Proaktiv-Backlog 14 + 15 + Siegel-Backlog 16 + Widget-Backlog 17
 
 | # | Datei | Status (siehe PULS.md für Details) |
 |---|---|---|
@@ -264,6 +264,7 @@ ungemergten Branches lebten.
 | 14 | `docs/components/14_diffusion.md` | Diffusion-Backlog · Stub, Priorität niedrig |
 | 15 | `docs/components/15_membran.md` | Membran-Backlog · Stub, **Priorität hoch** (2026-05-24, Auslöser Gemini 3.5 Flash) |
 | 16 | `docs/components/16_siegel.md` | Siegel-Backlog · Stub, **Priorität hoch** (2026-05-24, Auslöser App-Freigabe) |
+| 17 | `docs/components/17_floating_widget.md` | Widget-Backlog · Spec ausstehend, **Priorität hoch** (2026-05-25, Auslöser Klaus' UI-Befund nach erster Endknoten-Migration — Navleisten-Mount nicht skalierbar; Floating-Modul wie Eruda als Endknoten-Standard, Sage-Page behält Navleisten-Lampen) |
 
 Modul 00 (Doku-Fenster) ist die "5-Klick versteckte Funktion" in den
 Suchleisten der Endknoten-PWAs. Modul 09 beschreibt, wie ein fertiges Modul
@@ -318,7 +319,10 @@ Anpassungs-Antrag, nicht stillschweigend.
 | 3 | **Sichttest 16** — Klaus, Sage-Page Badge sichtbar + Modal öffnet sich | (kein eigener Branch, Sichttest-Nachzug-PR) | — |
 | 3a | **Pflege CLAUDE.md** — § „Sicherheits-Module pflegen Aspekte" als neuer Pflicht-Block (Folge-Pflege aus Spec-Sitzung 16 / Karte 16 § Sub (d) Pflicht-Konvention) | `claude/pflege-claudemd-sicherheits-aspekte` | ✅ erledigt 2026-05-25, PR #<diese-Sitzung> |
 | 4 | **Spec-Sitzung 15.B** — Modul 15 Sub (a) Read-API + Sub (b) postMessage-Bedienung mit Siegel-Hook im Snapshot | `claude/spec-15b-membran` | ⏳ wird in Spec-Sitzung 16 oder Bau 16 angelegt |
-| 5 | **Endknoten-Migration** — Karte 09 § Schritt 10 (Membran-Allowlist + Lampe + Siegel-Anker pro Endknoten-PWA), eigene Folge-Sitzung pro Endknoten-Repo | `claude/migration-<endknoten>` (extern) | ⏳ Brief liegt schon: `BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md` (wird vor Schritt 5 um Siegel-/Lampen-Anker erweitert) |
+| 5 | **Endknoten-Migration (erste Iteration)** — Karte 09 § Schritt 10 + 11 (Membran-Allowlist + Lampe + Siegel-Anker pro Endknoten-PWA), eigene Folge-Sitzung pro Endknoten-Repo | `claude/migration-<endknoten>` (extern) | ⚠️ erste Iteration 2026-05-25 gelaufen (Mein-Rezeptbuch + Mein-Mixarium), aber **UI-Befund Klaus**: Lampen + Siegel in der Navleiste nehmen zu viel Platz, kein User-X-Schließen, nicht einheitlich. Re-Migration nach Schritt 5d nötig. Brief: `BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md` (erweitert via PR #162). |
+| 5b | **Spec-Sitzung 17 Floating-Widget** — gemeinsames floating Mini-Panel (Eruda-Stil) bündelt FREMD-Lampe + Siegel-Badge; Self-Mount in `<body>`, Drag, X-Schließen, localStorage-Persistierung. Modul 15 + 16 Backends bleiben unverändert. Sage-Page behält Navleisten-Lampen. | `claude/spec-15-16-floating-widget` | ⏳ Brief liegt: `BRIEF_SPEC_15_16_FLOATING_WIDGET.md` (Auslöser: Klaus' UI-Befund 2026-05-25 nach erster Endknoten-Migration) |
+| 5c | **Bau-Sitzung 17** — `src/modules/17_floating_widget.js` mit Standalone-CSS, Drag-Mechanik, X-Schließen + Wiederherstellung, Modal-Anker-Bridge zu Modul 15 + 16 | `claude/bau-17-floating-widget` | ⏳ wird in Spec-Sitzung 17 angelegt |
+| 5d | **Endknoten-Re-Migration mit Widget** — die zwei Endknoten (Mein-Rezeptbuch + Mein-Mixarium) auf das Widget umstellen, alte Navleisten-Lampen + Siegel ausbauen. Drei-Zeilen-Einbau statt 30. | `claude/migration-<endknoten>-widget` (extern) | ⏳ wird in Bau-Sitzung 17 angelegt |
 | 6 | **Klaus' App-Freigabe** — Mein-Rezeptbuch, Mein-Mixarium, Sage-Protokol mit Siegel sichtbar öffentlich verteilen | (kein Branch, Klaus-Schritt) | — |
 
 **Danach (organisch, ohne feste Reihenfolge — jeder Bau ergänzt
@@ -346,6 +350,18 @@ einen Aspekt-Eintrag im Siegel-Modal):**
 - **Endknoten-Migration NACH Bau 16 + Spec 15.B**, weil Migration
   Membran-Lampe **und** Siegel-Badge in einem Schritt einbaut —
   sonst zweimal pro Endknoten-Repo migrieren.
+- **Schritt 5b/5c/5d (Spec 17 Widget → Bau 17 → Re-Migration) NACH
+  erster Endknoten-Migration**, weil der UI-Befund (Lampen + Siegel
+  in der Navleiste nehmen zu viel Platz, kein User-X, nicht
+  einheitlich zwischen Mein-Rezeptbuch und Mein-Mixarium) erst durch
+  Klaus' Live-Sichttest 2026-05-25 entstanden ist (Tafel-Evolutions-
+  Klausel — neue Erkenntnis erlaubt bewusste Anpassung der alten
+  Navleisten-Mount-Tafel). Modul 15 + 16 Backends bleiben
+  unverändert, nur die Render-Schicht wandert ins Floating-Widget
+  (Modul 17). Sage-Page behält ihre Navleisten-Lampen als sage-
+  page-spezifischer Pfad (Klaus-Festlegung 2026-05-25). Re-Migration
+  vor App-Freigabe, sonst tragen die verteilten Apps die ungeeignete
+  Optik weiter.
 
 ### Wer darf umsortieren
 
