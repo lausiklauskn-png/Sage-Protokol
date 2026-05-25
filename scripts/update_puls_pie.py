@@ -45,6 +45,7 @@ def count_statuses(status):
         + status.get("diffusionBacklog", [])
         + status.get("membranBacklog", [])
         + status.get("siegelBacklog", [])
+        + status.get("toolPwaBacklog", [])
     )
     for module in pool:
         score = module.get("score")

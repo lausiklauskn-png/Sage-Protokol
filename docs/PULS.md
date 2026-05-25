@@ -20,8 +20,8 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-25 (17 Module)
-  "🟫 Schablone" : 4
+  title Modulstand 2026-05-25 (18 Module)
+  "🟫 Schablone" : 5
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
   "🟦 Code-Stub" : 9
@@ -1810,6 +1810,54 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-25 · Stub-Anlage Modul 18 Tool-PWA-Container (SIEGEL-Anker)
+
+**Sitzungs-Rolle:** Stub-Anlage + Brief für eine kommende Spec-Sitzung
+18 nach App-Freigabe. Klaus' Idee aus Sichttest 17 (2026-05-25): SIEGEL
+soll mehr sein als Status-Anzeige — ein Tool-Schrank für Wartungs-
+Operationen einer Endknoten-PWA.
+
+**Was getan (reine Doku, kein Modul-Code):**
+
+- `docs/components/18_tool_pwa.md` Stub angelegt: Vokabular, Zweck,
+  Sub-Bereiche-Skizze (a Andock-Geste, b Sporen-Installation, c
+  Identitäts-Wechsel, d Backup, e Self-Apoptose), Schnittstelle-Skizze,
+  Strikte Tabus-Vorbereitung, Bauzustand-Tabelle, Querverweise.
+  Sub-Bereiche enthalten **offene Spec-Punkte** für die Voll-Spec
+  später.
+- `docs/sessions/BRIEF_SPEC_18_TOOL_PWA.md` als Brief für die Voll-
+  Spec-Sitzung 18, die NACH App-Freigabe läuft (nach mindestens 5–10
+  Endnutzer-Sichtproben — Tool-Form sollte aus Praxis entstehen).
+- **Abgrenzung gegen Vision-Anker 5** (Identitäts-Container Rucksack/
+  Safe/Chipkarte) im Brief dokumentiert: Modul 18 ist eingebettete
+  Wartungs-Schicht IN einer Endknoten-PWA; Vision-Anker 5 ist eigene
+  externe Container-PWA. Beide können parallel existieren.
+- CLAUDE.md § Modul-Tabelle Eintrag 18 als „Schablone" hinzugefügt.
+- `status.json` neuer `toolPwaBacklog` mit Modul 18
+  (`score:"schablone"`). `scripts/update_puls_pie.py` um den neuen
+  Backlog-Pool erweitert. Pie regeneriert: 18 Module total, 🟫 5 / 🟧 0
+  / 🟨 0 / 🟦 9 / 🟩 4.
+
+**Was offen blieb:**
+
+- **Spec-Sitzung 18** (Voll-Spec): Sub-Bereiche final entscheiden,
+  Schnittstelle festlegen, Modal-Form klären, Risiken + Tabus
+  ausarbeiten. Brief liegt. Pipeline-Stellung: NACH App-Freigabe.
+- **Endknoten-Re-Migration** Mein-Rezeptbuch + Mein-Mixarium kann
+  jetzt starten — Modul 18 ist **nicht-blockierend** (Endknoten kommen
+  mit Standard-Modul-16-Modal live; Tool-PWA-Container als spätere
+  Pflege).
+- **App-Freigabe** (Pipeline-Schritt 6) nach Endknoten-Re-Migration.
+
+**Nächster sinnvoller Schritt:** Endknoten-Re-Migration Mein-Rezeptbuch
+starten (externe Sitzung im Endknoten-Repo). Brief-Codeblock in der
+finalen Chat-Antwort dieser Sitzung.
+
+**Sitzungs-PR:** Branch `claude/stub-18-tool-pwa`, PR folgt nach
+Commit + Push.
+
+---
 
 ### 2026-05-25 · Pflege Karte 09 § Schritt 12 — Floating-Widget als Endknoten-Standard
 
