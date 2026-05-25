@@ -22,6 +22,15 @@ Endnutzer-Feedback sammelt.
 - App-Freigabe ist passiert (Pipeline-Schritt 6) — d.h. Klaus hat
   mindestens 5–10 Endnutzer-Sichtproben aus der Praxis.
 
+**Klaus-Festlegungen 2026-05-25 (Tafel-Charakter, in der Spec-Sitzung 18 NICHT mehr zur Disposition):**
+
+1. **Sub-Bereiche: alle fünf** sind Pflicht-Bestandteil
+   (Andock-Geste / Sporen-Installation / Identitäts-Wechsel / Backup /
+   Self-Apoptose). Spec-Sitzung 18 entscheidet nur noch die internen
+   Details pro Sub-Bereich.
+2. **Code lebt als Modul 18 in Sage-Protokol** (analog Modul 17),
+   jeder Endknoten kopiert die Datei. KEIN separates Mini-Repo.
+
 ---
 
 ## Brief-Codeblock (für den ersten Prompt der Spec-Sitzung 18)

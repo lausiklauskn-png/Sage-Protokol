@@ -63,6 +63,28 @@ PWA in einem klar geführten UI:
 
 ---
 
+## Klaus-Festlegungen 2026-05-25 (vor Spec-Sitzung)
+
+Klaus hat in der Stub-Anlage-Sitzung zwei der offenen Spec-Punkte
+vorab festgelegt:
+
+1. **Sub-Bereiche: alle fünf** sind Pflicht-Bestandteil des Tool-PWA-
+   Containers (Andock-Geste · Sporen-Installation · Identitäts-
+   Wechsel · Backup · Self-Apoptose). Die Spec-Sitzung 18 entscheidet
+   nur noch die internen Details pro Sub-Bereich (Modal-Form,
+   Schema, Risiken).
+2. **Code lebt als Modul 18 in Sage-Protokol** — analog Modul 17.
+   Jeder Endknoten kopiert die Datei (`src/modules/18_tool_pwa.js`)
+   in sein eigenes `sbkim/`-Verzeichnis. Eigene Mini-Repo-Variante
+   ist KEIN Ziel.
+
+Diese Festlegungen sind Tafel-Charakter und bleiben in der Voll-
+Spec-Sitzung 18 fix; die offenen Punkte unter „§ Sub-Bereiche (Spec-
+Skizze, offen)" werden in der Voll-Spec auf Basis dieser zwei
+Festlegungen detailliert.
+
+---
+
 ## Sub-Bereiche (Spec-Skizze, offen)
 
 Diese Liste ist eine **Vorschlags-Skizze** — die volle Spec-Sitzung 18
