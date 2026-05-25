@@ -64,8 +64,11 @@
   var SHOW_WARN_THROTTLE_MS = 60000;
 
   // localStorage-Schlüssel (Karte 17 § Persistenz / § localStorage-Schema).
+  // Pflege 17 UX 2026-05-25: dritter Schlüssel `sbkim_widget_minimized`
+  // für den Drei-Zustand-Pfad full / minimized / hidden.
   var LS_KEY_VISIBLE = "sbkim_widget_visible";
   var LS_KEY_POSITION = "sbkim_widget_position";
+  var LS_KEY_MINIMIZED = "sbkim_widget_minimized";
 
   // Custom-Event-Namen (Karte 17 § Event-Bus-Schema).
   var EVENT_ALIVE = "sbkim:alive";
@@ -76,12 +79,19 @@
 
   // Slot-IDs (Karte 17 § Vier-Slot-Layout).
   var ALL_SLOTS = ["lebt", "verkehr", "fremd", "siegel"];
-  var SLOT_LABELS = {
-    lebt:    "LEBT",
-    verkehr: "VERKEHR",
-    fremd:   "FREMD",
-    siegel:  "SIEGEL",
+
+  // Pflege 17 UX 2026-05-25: volle Tooltip-Texte (Touch-Devices zeigen
+  // sie nicht direkt, aber Desktop-Hover + Reader-Modus + Screenreader
+  // nutzen sie). Klick-Modals geben den Kontext am Touch-Tablet.
+  var SLOT_TOOLTIPS = {
+    lebt:    "LEBT — Page lebt seit init() (Modul 02 Spore). Klick öffnet Status-Modal.",
+    verkehr: "VERKEHR — letzte Handshakes (Modul 05) + postMessages (Modul 15). Klick öffnet Mini-Log.",
+    fremd:   "FREMD — Fremdzugriff-Buffer (Modul 15 Sub e). Rot wenn Buffer nicht leer. Klick öffnet Modul-15-Modal.",
+    siegel:  "SBKIM-Siegel — Modul 16 Self-Inscribing-Bezeugung. Klick öffnet Aspekte-Modal.",
   };
+
+  // Sage-Page-Stil-Anker: Tafel siehe index.html § :root + .lamps + .lamp.
+  // 9 px Lampen in einer Pill mit border-radius:999px + Glow + Atmung.
 
   // Proxy-IDs für Modal-Bridge (Brief § Modal-Bridge Option 1).
   var PROXY_LAMP_FREMD_ID = "lamp-fremd";
@@ -108,6 +118,13 @@
   var currentFreeX = null;     // wenn Free-Drag aktiv: abs. px von links
   var currentFreeY = null;     // wenn Free-Drag aktiv: abs. px von oben
   var visibleFlag = true;
+  // Pflege 17 UX 2026-05-25: dritter Sichtbarkeits-Zustand „minimiert"
+  // (nur SIEGEL sichtbar, oder LEBT als Fallback wenn kein SIEGEL).
+  // Default false (voll). State-Maschine: full → minimized via minimize();
+  // minimized → full via maximize(); jeder Zustand → hidden via hide();
+  // hidden → vorheriger Zustand via show().
+  var minimizedFlag = false;
+  var minimizeBtnEl = null;
 
   // Options aus init().
   var optAllowClose = true;
@@ -190,6 +207,15 @@
     lsSet(LS_KEY_VISIBLE, visibleFlag ? "true" : "false");
   }
 
+  function loadMinimizedFromLs() {
+    var raw = lsGet(LS_KEY_MINIMIZED);
+    minimizedFlag = (raw === "true");
+  }
+
+  function persistMinimized() {
+    lsSet(LS_KEY_MINIMIZED, minimizedFlag ? "true" : "false");
+  }
+
   function loadPositionFromLs() {
     var raw = lsGet(LS_KEY_POSITION);
     if (!raw) return;
@@ -254,17 +280,23 @@
   // ---- CSS-Injektion ----
 
   function buildCss() {
+    // Pflege 17 UX 2026-05-25: Sage-Page-Lampen-Stil. 10 px Lampen in
+    // ~28 px Click-Targets (Touch-Mindestgröße bewahrt), Pille kompakt
+    // mit border-radius:999px wie `.lamps` auf der Sage-Page. Glow + Atmung
+    // analog `.lamp.alive::after` (lamp-breath 3.2s). Keine Glyph-Texte —
+    // Tooltip im title, Modal beim Tap.
     return [
-      "/* SBKIM Modul 17 Floating-Widget — Standalone-CSS (Bau-Sitzung 17). */",
+      "/* SBKIM Modul 17 Floating-Widget — Sage-Page-Lampen-Stil (Pflege UX 2026-05-25). */",
       ":root, .sbkim-widget {",
-      "  --sbkim-widget-bg: rgba(20, 20, 30, 0.85);",
+      "  --sbkim-widget-bg: rgba(0, 0, 0, 0.55);",
       "  --sbkim-widget-fg: #F5F5FF;",
       "  --sbkim-widget-fg-dim: rgba(245, 245, 255, 0.55);",
       "  --sbkim-widget-line: rgba(255, 255, 255, 0.18);",
-      "  --sbkim-widget-accent-green: #16A34A;",
-      "  --sbkim-widget-accent-gold: #C9A961;",
+      "  --sbkim-widget-lamp-bg: rgba(255, 255, 255, 0.12);",
+      "  --sbkim-widget-accent-green: #6EE7D3;",
+      "  --sbkim-widget-accent-gold: #F4B435;",
       "  --sbkim-widget-accent-red: #DC2626;",
-      "  --sbkim-widget-slot-bg: rgba(255, 255, 255, 0.05);",
+      "  --sbkim-widget-siegel-gold: #C9A961;",
       "  --sbkim-widget-pulse-ms: 600ms;",
       "}",
       "#" + WIDGET_ID + " {",
@@ -273,25 +305,39 @@
       "  background: var(--sbkim-widget-bg);",
       "  color: var(--sbkim-widget-fg);",
       "  border: 1px solid var(--sbkim-widget-line);",
-      "  border-radius: 12px;",
-      "  padding: 8px 8px 8px 8px;",
+      "  border-radius: 999px;",
+      "  padding: 6px 12px;",
       "  display: flex;",
       "  align-items: center;",
-      "  gap: 4px;",
+      "  gap: 10px;",
       "  font-family: 'Geist', system-ui, sans-serif;",
-      "  font-size: 0.78rem;",
+      "  font-size: 0.66rem;",
       "  user-select: none;",
       "  -webkit-user-select: none;",
       "  touch-action: none;",
       "  backdrop-filter: blur(8px);",
       "  -webkit-backdrop-filter: blur(8px);",
-      "  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);",
+      "  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);",
       "}",
       "#" + WIDGET_ID + ".sbkim-widget-hidden { display: none; }",
       "#" + WIDGET_ID + ".sbkim-widget-dragging {",
       "  cursor: grabbing;",
-      "  transform: scale(1.03);",
+      "  transform: scale(1.04);",
       "  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);",
+      "}",
+      // Minimierter Zustand: andere Slots ausgeblendet (CSS-Hide via Attribut).
+      "#" + WIDGET_ID + "[data-minimized=\"true\"] .sbkim-widget-slot[data-slot=\"lebt\"],",
+      "#" + WIDGET_ID + "[data-minimized=\"true\"] .sbkim-widget-slot[data-slot=\"verkehr\"],",
+      "#" + WIDGET_ID + "[data-minimized=\"true\"] .sbkim-widget-slot[data-slot=\"fremd\"] {",
+      "  display: none;",
+      "}",
+      // Wenn kein SIEGEL gemountet ist und minimiert, behält LEBT seinen Platz.
+      "#" + WIDGET_ID + "[data-minimized=\"true\"][data-fallback=\"lebt\"] .sbkim-widget-slot[data-slot=\"lebt\"] {",
+      "  display: inline-flex;",
+      "}",
+      "#" + WIDGET_ID + "[data-minimized=\"true\"][data-fallback=\"lebt\"] .sbkim-widget-slot[data-slot=\"verkehr\"],",
+      "#" + WIDGET_ID + "[data-minimized=\"true\"][data-fallback=\"lebt\"] .sbkim-widget-slot[data-slot=\"fremd\"] {",
+      "  display: none;",
       "}",
       "#" + WIDGET_ID + " .sbkim-widget-proxy {",
       "  position: absolute;",
@@ -301,98 +347,146 @@
       "  pointer-events: none;",
       "  overflow: hidden;",
       "}",
+      // Slot-Button: Click-Target ~28×28, sichtbare Lampe in ::before pseudo.
       ".sbkim-widget-slot {",
-      "  width: 40px;",
-      "  height: 40px;",
+      "  position: relative;",
+      "  width: 28px;",
+      "  height: 28px;",
       "  border-radius: 50%;",
-      "  background: var(--sbkim-widget-slot-bg);",
-      "  border: 1px solid var(--sbkim-widget-line);",
-      "  color: var(--sbkim-widget-fg-dim);",
+      "  background: transparent;",
+      "  border: none;",
+      "  padding: 0;",
+      "  margin: 0;",
       "  cursor: pointer;",
-      "  display: flex;",
+      "  display: inline-flex;",
       "  align-items: center;",
       "  justify-content: center;",
-      "  font-size: 0.62rem;",
-      "  font-weight: 500;",
-      "  font-family: 'Geist Mono', ui-monospace, monospace;",
-      "  letter-spacing: 0.02em;",
-      "  padding: 0;",
       "  outline: none;",
-      "  transition: background 0.18s, color 0.18s, transform 0.12s;",
+      "  transition: transform 0.12s;",
       "}",
-      ".sbkim-widget-slot:hover { transform: scale(1.06); }",
-      ".sbkim-widget-slot:focus-visible { outline: 1px solid var(--sbkim-widget-accent-gold); outline-offset: 2px; }",
-      ".sbkim-widget-slot.lebt.active {",
-      "  background: rgba(22, 163, 74, 0.18);",
-      "  color: var(--sbkim-widget-accent-green);",
-      "  border-color: rgba(22, 163, 74, 0.55);",
-      "  animation: sbkim-widget-lebt-pulse 2.2s ease-in-out infinite;",
+      ".sbkim-widget-slot:hover { transform: scale(1.18); }",
+      ".sbkim-widget-slot:focus-visible {",
+      "  outline: 1px solid var(--sbkim-widget-accent-gold);",
+      "  outline-offset: 2px;",
       "}",
-      ".sbkim-widget-slot.verkehr.active {",
-      "  background: rgba(201, 169, 97, 0.10);",
-      "  color: var(--sbkim-widget-accent-gold);",
-      "  border-color: rgba(201, 169, 97, 0.45);",
+      // Innere Lampe via ::before — wie Sage-Page-Lampen (9 px in der Sage-Page,",
+      // hier 10 px für besseren Touch-Tap-Lesbarkeit).
+      ".sbkim-widget-slot::before {",
+      "  content: \"\";",
+      "  display: block;",
+      "  width: 10px;",
+      "  height: 10px;",
+      "  border-radius: 50%;",
+      "  background: var(--sbkim-widget-lamp-bg);",
+      "  transition: background 0.2s, box-shadow 0.2s;",
       "}",
-      ".sbkim-widget-slot.verkehr.verkehr-pulse {",
-      "  animation: sbkim-widget-verkehr-pulse var(--sbkim-widget-pulse-ms) ease-out;",
+      // LEBT aktiv: grünes Glow + Atmungs-Ring (lamp-breath analog Sage-Page).",
+      ".sbkim-widget-slot.lebt.active::before {",
+      "  background: var(--sbkim-widget-accent-green);",
+      "  box-shadow: 0 0 8px rgba(110, 231, 211, 0.7);",
       "}",
-      ".sbkim-widget-slot.fremd.active, .sbkim-widget-slot.fremd.fremd-alert {",
-      "  background: rgba(220, 38, 38, 0.18);",
-      "  color: var(--sbkim-widget-accent-red);",
-      "  border-color: rgba(220, 38, 38, 0.55);",
-      "  box-shadow: 0 0 8px rgba(220, 38, 38, 0.5);",
+      ".sbkim-widget-slot.lebt.active::after {",
+      "  content: \"\";",
+      "  position: absolute;",
+      "  top: 50%;",
+      "  left: 50%;",
+      "  transform: translate(-50%, -50%);",
+      "  width: 18px;",
+      "  height: 18px;",
+      "  border-radius: 50%;",
+      "  border: 1px solid var(--sbkim-widget-accent-green);",
+      "  opacity: 0.45;",
+      "  animation: sbkim-widget-lamp-breath 3.2s ease-in-out infinite;",
+      "  pointer-events: none;",
       "}",
-      ".sbkim-widget-slot.fremd.fremd-pulse {",
-      "  animation: sbkim-widget-fremd-pulse var(--sbkim-widget-pulse-ms) ease-out;",
+      ".sbkim-widget-slot.verkehr.active::before {",
+      "  background: var(--sbkim-widget-accent-gold);",
+      "  box-shadow: 0 0 6px rgba(244, 180, 53, 0.55);",
       "}",
+      ".sbkim-widget-slot.verkehr.verkehr-pulse::before {",
+      "  animation: sbkim-widget-lamp-pulse var(--sbkim-widget-pulse-ms) ease-out;",
+      "}",
+      ".sbkim-widget-slot.fremd.active::before, .sbkim-widget-slot.fremd.fremd-alert::before {",
+      "  background: var(--sbkim-widget-accent-red);",
+      "  box-shadow: 0 0 8px rgba(220, 38, 38, 0.75);",
+      "}",
+      ".sbkim-widget-slot.fremd.active::after, .sbkim-widget-slot.fremd.fremd-alert::after {",
+      "  content: \"\";",
+      "  position: absolute;",
+      "  top: 50%;",
+      "  left: 50%;",
+      "  transform: translate(-50%, -50%);",
+      "  width: 18px;",
+      "  height: 18px;",
+      "  border-radius: 50%;",
+      "  border: 1px solid var(--sbkim-widget-accent-red);",
+      "  opacity: 0.45;",
+      "  animation: sbkim-widget-lamp-breath 3.2s ease-in-out infinite;",
+      "  pointer-events: none;",
+      "}",
+      ".sbkim-widget-slot.fremd.fremd-pulse::before {",
+      "  animation: sbkim-widget-lamp-alert-pulse var(--sbkim-widget-pulse-ms) ease-out;",
+      "}",
+      // SIEGEL: kleines Gold-Medaillon mit Stern-Glyph. Etwas größer +
+      // markanter als die anderen Lampen, weil es das Identitäts-Siegel ist.
       ".sbkim-widget-slot.siegel {",
-      "  background: linear-gradient(180deg, #FFE066 0%, #C9A961 50%, #A67C00 100%);",
+      "  width: 22px;",
+      "  height: 22px;",
+      "  border-radius: 50%;",
+      "  background: radial-gradient(circle at 35% 30%, #FFE066 0%, var(--sbkim-widget-siegel-gold) 55%, #A67C00 100%);",
+      "  border: 1px solid rgba(201, 169, 97, 0.85);",
+      "  box-shadow: 0 0 6px rgba(201, 169, 97, 0.5);",
       "  color: #1A1306;",
-      "  border-color: rgba(201, 169, 97, 0.75);",
-      "  font-weight: 600;",
+      "  font-size: 0.7rem;",
+      "  font-weight: 700;",
+      "  line-height: 1;",
+      "}",
+      ".sbkim-widget-slot.siegel::before {",
+      "  display: none;",
       "}",
       ".sbkim-widget-slot.siegel.siegel-first-boot {",
       "  animation: sbkim-widget-siegel-first-boot 600ms ease-out;",
       "}",
-      "@keyframes sbkim-widget-lebt-pulse {",
-      "  0%, 100% { opacity: 1; }",
-      "  50% { opacity: 0.62; }",
+      "@keyframes sbkim-widget-lamp-breath {",
+      "  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.45; }",
+      "  50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }",
       "}",
-      "@keyframes sbkim-widget-verkehr-pulse {",
-      "  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.7); }",
-      "  100% { transform: scale(1); box-shadow: 0 0 0 12px rgba(201, 169, 97, 0); }",
+      "@keyframes sbkim-widget-lamp-pulse {",
+      "  0% { box-shadow: 0 0 0 0 rgba(244, 180, 53, 0.7); transform: scale(1); }",
+      "  50% { transform: scale(1.45); }",
+      "  100% { box-shadow: 0 0 0 10px rgba(244, 180, 53, 0); transform: scale(1); }",
       "}",
-      "@keyframes sbkim-widget-fremd-pulse {",
-      "  0% { box-shadow: 0 0 8px rgba(220, 38, 38, 0.5); }",
-      "  50% { box-shadow: 0 0 18px rgba(220, 38, 38, 0.9); }",
-      "  100% { box-shadow: 0 0 8px rgba(220, 38, 38, 0.5); }",
+      "@keyframes sbkim-widget-lamp-alert-pulse {",
+      "  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.75); transform: scale(1); }",
+      "  50% { transform: scale(1.45); }",
+      "  100% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); transform: scale(1); }",
       "}",
       "@keyframes sbkim-widget-siegel-first-boot {",
-      "  0% { transform: scale(0.7); opacity: 0; }",
-      "  60% { transform: scale(1.15); opacity: 1; }",
+      "  0% { transform: scale(0.6); opacity: 0; }",
+      "  60% { transform: scale(1.2); opacity: 1; }",
       "  100% { transform: scale(1); opacity: 1; }",
       "}",
-      "#" + WIDGET_ID + " .sbkim-widget-close {",
-      "  position: absolute;",
-      "  top: -8px;",
-      "  right: -8px;",
+      // Minimize-/Close-Knöpfe: kleine Icon-Buttons rechts. Touch-Größe 18 px.
+      "#" + WIDGET_ID + " .sbkim-widget-btn {",
       "  width: 18px;",
       "  height: 18px;",
       "  border-radius: 50%;",
-      "  background: rgba(40, 40, 50, 0.95);",
+      "  background: rgba(255, 255, 255, 0.08);",
       "  color: var(--sbkim-widget-fg);",
       "  border: 1px solid var(--sbkim-widget-line);",
       "  cursor: pointer;",
-      "  font-size: 0.6rem;",
+      "  font-size: 0.62rem;",
       "  line-height: 1;",
       "  padding: 0;",
-      "  display: flex;",
+      "  display: inline-flex;",
       "  align-items: center;",
       "  justify-content: center;",
-      "  opacity: 0.6;",
-      "  transition: opacity 0.18s;",
+      "  opacity: 0.55;",
+      "  transition: opacity 0.18s, background 0.18s;",
+      "  margin-left: 2px;",
       "}",
-      "#" + WIDGET_ID + " .sbkim-widget-close:hover { opacity: 1; }",
+      "#" + WIDGET_ID + " .sbkim-widget-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.15); }",
+      "#" + WIDGET_ID + " .sbkim-widget-close { color: #F5C4C4; }",
       ".sbkim-widget-modal {",
       "  position: fixed;",
       "  inset: 0;",
@@ -478,14 +572,23 @@
   // ---- DOM-Bau ----
 
   function buildSlotButton(doc, slotId) {
+    // Pflege 17 UX 2026-05-25: pure Lampen (Sage-Page-Stil) statt Drei-
+    // Buchstaben-Glyphe. Hintergrund + Glow + Atmung via CSS-Pseudo-Elemente.
+    // SIEGEL bekommt einen kleinen ★ als Glyph zur Hervorhebung als Identitäts-
+    // Marker — kein Text bei LEBT/VERKEHR/FREMD. Tooltip voll im title.
     var btn = doc.createElement("button");
     btn.type = "button";
     btn.id = "sbkim-widget-slot-" + slotId;
     btn.className = "sbkim-widget-slot " + slotId;
     btn.setAttribute("data-slot", slotId);
-    btn.setAttribute("aria-label", SLOT_LABELS[slotId] + "-Slot");
-    btn.title = SLOT_LABELS[slotId];
-    btn.textContent = SLOT_LABELS[slotId].slice(0, 3); // erste drei Buchstaben als Glyph
+    btn.setAttribute("aria-label", SLOT_TOOLTIPS[slotId] || slotId);
+    btn.title = SLOT_TOOLTIPS[slotId] || slotId;
+    if (slotId === "siegel") {
+      // Stern-Glyph als Identitäts-Hinweis (Idee Klaus 2026-05-25: SIEGEL
+      // wird später als Tool-PWA-Container für Andocken + Sporen-
+      // Installation gestaltet — Spec-Notiz für eigene Folge-Sitzung).
+      btn.textContent = "★"; // ★
+    }
     return btn;
   }
 
@@ -514,21 +617,6 @@
     root.setAttribute("role", "complementary");
     root.setAttribute("aria-label", "SBKIM Live-Status-Widget");
 
-    // X-Knopf (nur wenn optAllowClose).
-    if (optAllowClose) {
-      var closeBtn = doc.createElement("button");
-      closeBtn.type = "button";
-      closeBtn.className = "sbkim-widget-close";
-      closeBtn.setAttribute("aria-label", "Widget schließen");
-      closeBtn.title = "Schließen — wiederherstellbar via SbkimWidget.show()";
-      closeBtn.textContent = "✕";
-      closeBtn.addEventListener("click", function (ev) {
-        if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
-        hide();
-      });
-      root.appendChild(closeBtn);
-    }
-
     // Slots in der Reihenfolge ALL_SLOTS, gefiltert via enabledSlots.
     slotElements = {};
     for (var i = 0; i < ALL_SLOTS.length; i++) {
@@ -555,6 +643,36 @@
       attachSlotClick(btn, slotId);
       root.appendChild(btn);
       slotElements[slotId] = btn;
+    }
+
+    // Pflege 17 UX 2026-05-25: Minimieren- und Schließen-Knöpfe RECHTS
+    // am Pillen-Ende (statt schwebend über der Pille). Sage-Page-Stil:
+    // kleine Icon-Buttons, dezent (opacity 0.55), Hover-Aufhellung.
+    minimizeBtnEl = doc.createElement("button");
+    minimizeBtnEl.type = "button";
+    minimizeBtnEl.className = "sbkim-widget-btn sbkim-widget-minimize";
+    minimizeBtnEl.setAttribute("aria-label", "Widget minimieren (nur SBKIM-Siegel zeigen)");
+    minimizeBtnEl.title = "Minimieren — zeigt nur das SBKIM-Siegel. Erneuter Klick maximiert.";
+    minimizeBtnEl.textContent = minimizedFlag ? "+" : "−";
+    minimizeBtnEl.addEventListener("click", function (ev) {
+      if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
+      if (minimizedFlag) maximize();
+      else minimize();
+    });
+    root.appendChild(minimizeBtnEl);
+
+    if (optAllowClose) {
+      var closeBtn = doc.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.className = "sbkim-widget-btn sbkim-widget-close";
+      closeBtn.setAttribute("aria-label", "Widget schließen");
+      closeBtn.title = "Schließen — wiederherstellbar via SbkimWidget.show()";
+      closeBtn.textContent = "✕";
+      closeBtn.addEventListener("click", function (ev) {
+        if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
+        hide();
+      });
+      root.appendChild(closeBtn);
     }
 
     // Proxy-Container für #lamp-fremd / #sbkim-siegel-badge.
@@ -648,15 +766,13 @@
 
   function onPointerDown(ev) {
     if (!optAllowDrag || !widgetRoot) return;
-    // Drag nur, wenn der Klick AUSSERHALB der Slots landet (Klaus-
-    // Entscheidung Bau-Sitzung 17: gesamte Pille drag-fähig außerhalb
-    // der Slots, weniger DOM-Komplexität als eigener Drag-Griff).
+    // Drag nur, wenn der Klick AUSSERHALB der Slots + Icon-Buttons landet.
     var target = ev.target;
-    if (target && (target.classList && target.classList.contains("sbkim-widget-slot"))) {
-      return;
-    }
-    if (target && target.classList && target.classList.contains("sbkim-widget-close")) {
-      return;
+    if (target && target.classList) {
+      if (target.classList.contains("sbkim-widget-slot")) return;
+      if (target.classList.contains("sbkim-widget-btn")) return;
+      if (target.classList.contains("sbkim-widget-close")) return;
+      if (target.classList.contains("sbkim-widget-minimize")) return;
     }
     var rect = widgetRoot.getBoundingClientRect();
     dragState = {
@@ -761,6 +877,7 @@
     doc.body.appendChild(widgetRoot);
     applyPositionToRoot();
     applyVisibility();
+    applyMinimizedState();
     applySlotActiveStatesFromCounts();
   }
 
@@ -810,6 +927,34 @@
     if (!widgetRoot) return;
     if (visibleFlag) widgetRoot.classList.remove("sbkim-widget-hidden");
     else widgetRoot.classList.add("sbkim-widget-hidden");
+  }
+
+  function applyMinimizedState() {
+    // Pflege 17 UX 2026-05-25: setzt data-minimized + data-fallback am Root.
+    // CSS regelt das Ausblenden der anderen Slots. Wenn SIEGEL nicht gemountet
+    // ist (kein Modul 16), fallback auf LEBT als sichtbarer Marker.
+    if (!widgetRoot) return;
+    if (minimizedFlag) {
+      widgetRoot.setAttribute("data-minimized", "true");
+      if (!siegelMounted) {
+        widgetRoot.setAttribute("data-fallback", "lebt");
+      } else {
+        widgetRoot.removeAttribute("data-fallback");
+      }
+    } else {
+      widgetRoot.removeAttribute("data-minimized");
+      widgetRoot.removeAttribute("data-fallback");
+    }
+    if (minimizeBtnEl) {
+      minimizeBtnEl.textContent = minimizedFlag ? "+" : "−";
+      minimizeBtnEl.setAttribute(
+        "aria-label",
+        minimizedFlag ? "Widget maximieren (alle Slots zeigen)" : "Widget minimieren (nur SBKIM-Siegel zeigen)"
+      );
+      minimizeBtnEl.title = minimizedFlag
+        ? "Maximieren — zeigt alle vier Slots."
+        : "Minimieren — zeigt nur das SBKIM-Siegel. Erneuter Klick maximiert.";
+    }
   }
 
   function applySlotActiveStatesFromCounts() {
@@ -956,6 +1101,10 @@
     }
     slotElements.siegel = btn;
     siegelMounted = true;
+    // Pflege 17 UX 2026-05-25: SIEGEL ist jetzt da — wenn das Widget
+    // minimiert war (mit data-fallback="lebt"), data-fallback entfernen,
+    // damit SIEGEL zum sichtbaren Slot wird.
+    if (minimizedFlag) applyMinimizedState();
     // First-Boot-Animation (analog Modul 16 § Sub (b)).
     if (!firstBootShown) {
       try {
@@ -1262,6 +1411,7 @@
         parseOptions(options);
         loadVisibleFromLs();
         loadPositionFromLs();
+        loadMinimizedFromLs();
 
         mountWidget();
         registerEventListeners();
@@ -1318,6 +1468,42 @@
     return buildPositionSnapshot();
   }
 
+  // Pflege 17 UX 2026-05-25: Drei-Zustand-Schnittstelle. minimize() klappt
+  // die Pille auf nur den SIEGEL-Slot zusammen (oder LEBT-Fallback wenn
+  // kein SIEGEL gemountet). maximize() macht den Voll-Zustand wieder her.
+  // hide() / show() bleiben unverändert (komplettes Wegklicken).
+  function minimize() {
+    if (!ready) {
+      var now = Date.now();
+      if (now - lastShowWarnAt > SHOW_WARN_THROTTLE_MS) {
+        lastShowWarnAt = now;
+        warn("minimize() vor init() — no-op.");
+      }
+      return;
+    }
+    minimizedFlag = true;
+    persistMinimized();
+    applyMinimizedState();
+  }
+
+  function maximize() {
+    if (!ready) {
+      var now = Date.now();
+      if (now - lastShowWarnAt > SHOW_WARN_THROTTLE_MS) {
+        lastShowWarnAt = now;
+        warn("maximize() vor init() — no-op.");
+      }
+      return;
+    }
+    minimizedFlag = false;
+    persistMinimized();
+    applyMinimizedState();
+  }
+
+  function isMinimized() {
+    return minimizedFlag === true;
+  }
+
   // ---- Public Surface ----
 
   var SbkimWidget = {
@@ -1325,6 +1511,9 @@
     show:        show,
     hide:        hide,
     isVisible:   isVisible,
+    minimize:    minimize,
+    maximize:    maximize,
+    isMinimized: isMinimized,
     getPosition: getPosition,
     _meta: {
       widgetId:        WIDGET_ID,
@@ -1334,6 +1523,7 @@
       defaultZIndex:   DEFAULT_Z_INDEX,
       lsKeyVisible:    LS_KEY_VISIBLE,
       lsKeyPosition:   LS_KEY_POSITION,
+      lsKeyMinimized:  LS_KEY_MINIMIZED,
       events: {
         alive:           EVENT_ALIVE,
         handshake:       EVENT_HANDSHAKE,
@@ -1345,6 +1535,7 @@
       get widgetMounted()  { return !!(widgetRoot && widgetRoot.parentNode); },
       get firstBootShown() { return firstBootShown; },
       get siegelMounted()  { return siegelMounted; },
+      get minimizedFlag()  { return minimizedFlag; },
       get slots()          { return enabledSlots.slice(); },
       get eventCounts()    {
         return {
@@ -1385,9 +1576,10 @@
   global.SbkimWidget = SbkimWidget;
 
   // Self-check (synchron, beim Skript-Laden — vor jedem Aufruf).
+  // Pflege 17 UX 2026-05-25: minimize/maximize/isMinimized ergänzt.
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 17 FLOATING-WIDGET bereit, Funktionen: init/show/hide/isVisible/getPosition",
+      "MODUL 17 FLOATING-WIDGET bereit, Funktionen: init/show/hide/isVisible/minimize/maximize/isMinimized/getPosition",
     );
   }
 })(typeof window !== "undefined" ? window : globalThis);

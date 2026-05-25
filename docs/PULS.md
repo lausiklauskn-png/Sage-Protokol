@@ -1811,6 +1811,85 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-25 · Pflege Modul 17 UX — Sage-Page-Lampen-Stil + Drei-Zustand-Schnittstelle (minimize/maximize)
+
+**Sitzungs-Rolle:** Folge-Pflege nach Bau-Sitzung 17 (PR #166 gemerged
+2026-05-25) und Klaus' Sichttest 17 (9 von 10 Tests grün, UX-Befund
+offen). Branch `claude/pflege-17-ux-minimalistisch`.
+
+**Klaus' UX-Befund (Tafel-Evolutions-Klausel):** „LEB / VER / FRE als
+Drei-Buchstaben-Glyphe suggerieren falsche Begriffe (LEB → Leberwurst?
+VER → Versicherung? FRE → Freitag?), lieber Lampen-Stil wie Sage-Page
+mit Tooltips + minimalistischer + minimierbar auf nur SIEGEL".
+
+**Was getan:**
+
+- **Sage-Page-Lampen-Stil-Anker:** `index.html` § `.lamps` + `.lamp` +
+  `lamp-breath` + `lamp-pulse` + `lamp-alert-pulse` als Stil-Referenz
+  übernommen. Standalone-CSS-Block in `src/modules/17_floating_widget.js`
+  `buildCss()` komplett umgebaut: Pille mit `border-radius:999px`,
+  Click-Targets 28 px (Touch-Mindestgröße bewahrt), sichtbare Lampe
+  als `::before`-Pseudo-Element (10 px Durchmesser), Atmungs-Ring als
+  `::after` (3.2 s Animation analog Sage-Page), Puls-Animationen
+  pro Slot, SIEGEL als 22 px Gold-Medaillon mit ★-Glyph.
+- **Drei-Buchstaben-Glyphe entfernt** — `buildSlotButton()` setzt
+  jetzt KEINEN `textContent` mehr (außer SIEGEL ★). Tooltip voll im
+  `title`-Property + `aria-label` via neuer `SLOT_TOOLTIPS`-Tabelle
+  („LEBT — Page lebt seit init() (Modul 02 Spore). Klick öffnet
+  Status-Modal." usw.).
+- **Drei-Zustand-Schnittstelle neu:** `SbkimWidget.minimize()` /
+  `maximize()` / `isMinimized()` — voll → minimiert (nur SIEGEL
+  sichtbar, oder LEBT-Fallback wenn kein SIEGEL gemountet via
+  `data-fallback="lebt"`-Attribut) → versteckt (X-Knopf bleibt).
+  Drittes localStorage-Schlüssel `sbkim_widget_minimized` (Default
+  `"false"`). Selbstcheck-Zeile auf „init/show/hide/isVisible/
+  minimize/maximize/isMinimized/getPosition" erweitert.
+- **Minimize- und X-Knopf** als kleine dezente Icon-Buttons rechts
+  am Pillen-Ende (statt schwebend über der Pille — Sage-Page-Stil).
+  `onPointerDown()`-Drag-Filter um neue `sbkim-widget-btn`-Klasse
+  erweitert (Knopf-Klicks dürfen Drag nicht auslösen).
+- **`mountSiegelSlot()`** ruft nach Slot-Mount `applyMinimizedState()`
+  erneut auf → `data-fallback="lebt"` wird entfernt, sobald SIEGEL
+  da ist (UX-Konsistenz beim asynchronen Mount).
+- **Panel 17** in `tests/manual_check.html` Header-Status auf
+  „Code-Stub + Pflege UX 2026-05-25", Test 11 (minimize) + Test 12
+  (maximize) ergänzt, Selbstcheck-Hinweis aktualisiert.
+- **Headless-Smoke** `tests/smoke_bau17_floating_widget.mjs` um sieben
+  Proben erweitert (20–26): Public-Surface-Check, minimize ohne
+  SIEGEL → fallback=lebt, SIEGEL-mount-während-minimiert, maximize,
+  localStorage-Round-Trip, kein-Slot-Glyph, volle Tooltips. **26/26
+  grün**. Modul-15-Regression `tests/smoke_bau15b_membran.mjs`
+  **31/31 grün** ohne Anpassung. `node --check` für Modul-17 + alle
+  13 Inline-Scripts in `manual_check.html` grün.
+- **Karte 17** § Bauzustand neue Zeile „Pflege UX 2026-05-25"
+  zwischen Bau-Sitzung-17 und Sichttest. **INTERFACES.md** § 1
+  Modul 17 Bietet-Block um drei Funktionen erweitert, Storage-Block
+  um dritten LS-Schlüssel, Geprüft-Zeile + § 10 Änderungsprotokoll
+  nachgezogen.
+
+**Was offen blieb:**
+
+- **Klaus-Notiz für Folge-Sitzung:** SIEGEL-Slot soll später als
+  „abgerundeter Container für Tool-PWA" (Andocken + Sporen-
+  Installation) gestaltet werden — Idee, noch nicht jetzt
+  implementiert.
+- **Sichttest Pflege UX** durch Klaus (DeX-Chrome, Galaxy Tab S6):
+  Hard-Reload + Panel 17 Setup + Test 11/12 + Sage-Page-Bonus-Check
+  (Navleisten-Lampen bleiben unverändert).
+- **Pflege Karte 09 § Schritt 10–12** (Endknoten-Drei-Zeilen-Einbau
+  mit Init-Reihenfolge-Pflicht) — eigene Folge-Sitzung.
+- **Endknoten-Re-Migration** (zwei externe Sitzungen) — Mein-
+  Rezeptbuch + Mein-Mixarium — setzt diese Pflege voraus, damit die
+  Endknoten direkt die finale Optik kriegen.
+
+**Nächster sinnvoller Schritt:** Sichttest Pflege UX (Klaus am
+Tablet). Brief-Codeblock in der finalen Chat-Antwort.
+
+**Sitzungs-PR:** Branch `claude/pflege-17-ux-minimalistisch`, PR
+folgt nach Commit + Push.
+
+---
+
 ### 2026-05-25 · Bau-Sitzung 17 Floating-Widget — Code-Stub voll angelegt + DispatchEvent-Hooks in Modul 02/05/15/16 + Panel 17 + Headless-Smoke 19/19 grün
 
 **Sitzungs-Rolle:** Bau-Sitzung 17 (Pipeline-Schritt 5c). Branch
