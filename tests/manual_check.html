@@ -117,9 +117,9 @@
   </section>
 
   <section class="panel" data-module="17_floating_widget">
-    <h2>17 Floating-Widget <span class="status ok">Code-Stub</span></h2>
+    <h2>17 Floating-Widget <span class="status ok">Code-Stub + Pflege UX 2026-05-25</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
-    <pre class="log">— bereit. Bau-Sitzung 17 (2026-05-25). Modul 17 ist NICHT protokoll-aktiv: Render-Schicht, kein Netz, kein Embedding, kein IndexedDB. Self-mountende Pille in `document.body` (bottom-right + 16 px Default), vier Slots (LEBT/VERKEHR/FREMD/SIEGEL — SIEGEL nur wenn `SbkimSiegel.isCertified()===true`). Drag via Pointer-Events, X-Schließen, localStorage-Persistierung (`sbkim_widget_visible` + `sbkim_widget_position`). VERKEHR-Mini-Log RAM-only FIFO 10. KEINE benannten Error-Klassen — fail-soft via `console.warn`. Setup-Knopf: `SbkimWidget.init({})` — die Pille erscheint unten-rechts. Modul-16-Stub-Knopf legt `window.SbkimSiegel = { isCertified: () => true }` an, damit Test 5 ohne echtes Modul 16 funktioniert. Setze SbkimSiegel.isCertified vor Test 5 anders, dann Knopf 6 (Anti-Greenwashing) zeigt den Negativ-Pfad. Modal-Bridge nutzt Proxy-Spans `#lamp-fremd` + `#sbkim-siegel-badge` im Widget — Modul 15/16 müssen ihre Click-Handler dort attachen, daher MUSS `SbkimWidget.init()` im Endknoten VOR `SbkimMembrane.init()`/`SbkimSiegel.init()` laufen. Sage-Page behält die Navleisten-Lampen, das Widget ist Endknoten-Standard. —</pre>
+    <pre class="log">— bereit. Bau-Sitzung 17 (2026-05-25) + Pflege UX 2026-05-25: Sage-Page-Lampen-Stil (10 px Lampen mit Glow + Atmung, kompakte Pille mit border-radius:999px), keine Drei-Buchstaben-Glyphe mehr — Lampen sprechen über Farbe + Glow, Tooltip voll im title-Attribut + aria-label, SIEGEL als kleines Gold-Medaillon mit ★. Drei-Zustand-Schnittstelle: voll (alle vier Slots) → minimiert (nur SIEGEL, oder LEBT-Fallback wenn kein SIEGEL) → versteckt (X-Knopf, localStorage-persistiert). `SbkimWidget.minimize()` / `maximize()` / `isMinimized()` neu, `sbkim_widget_minimized`-localStorage-Key. Modul 17 ist NICHT protokoll-aktiv: Render-Schicht, kein Netz, kein Embedding, kein IndexedDB. Self-mountende Pille in `document.body`, Drag via Pointer-Events, X-Schließen, RAM-only VERKEHR-FIFO 10. Setup-Knopf: `SbkimWidget.init({})`. Modul-16-Stub-Knopf legt `window.SbkimSiegel` an für Test 5. Modal-Bridge nutzt Proxy-Spans `#lamp-fremd` + `#sbkim-siegel-badge` im Widget — Modul 15/16 müssen ihre Click-Handler dort attachen, daher MUSS `SbkimWidget.init()` im Endknoten VOR `SbkimMembrane.init()`/`SbkimSiegel.init()` laufen. Sage-Page behält die Navleisten-Lampen, Widget ist Endknoten-Standard. —</pre>
   </section>
 
   <script>
@@ -4396,11 +4396,58 @@
         };
       });
 
+      SbkimUI.addButton("17_floating_widget", "Test 11: minimize() → nur SIEGEL sichtbar (Pflege UX)", async function () {
+        await SbkimWidget.init({});
+        SbkimWidget.minimize();
+        var widget = document.getElementById("sbkim-widget");
+        var lebt = document.getElementById("sbkim-widget-slot-lebt");
+        var verkehr = document.getElementById("sbkim-widget-slot-verkehr");
+        var fremd = document.getElementById("sbkim-widget-slot-fremd");
+        var siegel = document.getElementById("sbkim-widget-slot-siegel");
+        var lebtStyle = lebt ? window.getComputedStyle(lebt).display : "n/a";
+        var verkehrStyle = verkehr ? window.getComputedStyle(verkehr).display : "n/a";
+        var fremdStyle = fremd ? window.getComputedStyle(fremd).display : "n/a";
+        var siegelStyle = siegel ? window.getComputedStyle(siegel).display : "n/a";
+        var pass = SbkimWidget.isMinimized() === true &&
+                   widget.getAttribute("data-minimized") === "true" &&
+                   localStorage.getItem("sbkim_widget_minimized") === "true";
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 11 OK" : "Test 11 fehlgeschlagen");
+        return {
+          is_minimized:               SbkimWidget.isMinimized(),
+          data_minimized_attr:        widget.getAttribute("data-minimized"),
+          data_fallback_attr:         widget.getAttribute("data-fallback"),
+          localStorage_minimized:     localStorage.getItem("sbkim_widget_minimized"),
+          slot_display_status: {
+            lebt:    lebtStyle,
+            verkehr: verkehrStyle,
+            fremd:   fremdStyle,
+            siegel:  siegelStyle,
+          },
+          erwartung: "Wenn SIEGEL gemountet: nur SIEGEL sichtbar (display:inline-flex), LEBT/VERKEHR/FREMD display:none. Falls kein SIEGEL: LEBT als Fallback sichtbar (data-fallback='lebt').",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 12: maximize() → alle Slots wieder sichtbar", async function () {
+        await SbkimWidget.init({});
+        SbkimWidget.maximize();
+        var widget = document.getElementById("sbkim-widget");
+        var pass = SbkimWidget.isMinimized() === false &&
+                   widget.getAttribute("data-minimized") === null &&
+                   localStorage.getItem("sbkim_widget_minimized") === "false";
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 12 OK" : "Test 12 fehlgeschlagen");
+        return {
+          is_minimized:           SbkimWidget.isMinimized(),
+          data_minimized_attr:    widget.getAttribute("data-minimized"),
+          localStorage_minimized: localStorage.getItem("sbkim_widget_minimized"),
+          erwartung: "isMinimized=false, data-minimized-Attribut entfernt, localStorage='false'. Pille zeigt wieder alle Slots.",
+        };
+      });
+
       SbkimUI.addButton("17_floating_widget", "Selbstcheck Konsole prüfen", async function () {
         SbkimUI.log("17_floating_widget",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("17_floating_widget",
-          "  MODUL 17 FLOATING-WIDGET bereit, Funktionen: init/show/hide/isVisible/getPosition");
+          "  MODUL 17 FLOATING-WIDGET bereit, Funktionen: init/show/hide/isVisible/minimize/maximize/isMinimized/getPosition");
         SbkimUI.log("17_floating_widget",
           "ℹ Hinweis: Modul 17 ist Render-Schicht, KEINE benannten Error-Klassen, KEIN PROTOCOL_VERSION-/DB_VERSION-Bump.");
       });

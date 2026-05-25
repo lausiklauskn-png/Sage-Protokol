@@ -524,6 +524,116 @@ async function run() {
     crashed ? "CRASH" : "OK",
     !crashed);
 
+  // -------- Fünfter Test-Lauf: Pflege 17 UX minimize/maximize --------
+  const g5 = makeStubGlobal();
+  loadModuleInto(g5, "src/modules/17_floating_widget.js");
+  const W5 = g5.SbkimWidget;
+  await W5.init({});
+  // Pflege 17 UX: minimize/maximize/isMinimized verfügbar.
+  record("20. minimize/maximize/isMinimized auf Public Surface",
+    "drei Funktionen + lsKeyMinimized im _meta",
+    "min=" + typeof W5.minimize + "/max=" + typeof W5.maximize + "/is=" + typeof W5.isMinimized + "/ls=" + W5._meta.lsKeyMinimized,
+    typeof W5.minimize === "function" && typeof W5.maximize === "function" &&
+    typeof W5.isMinimized === "function" && W5._meta.lsKeyMinimized === "sbkim_widget_minimized");
+
+  // minimize() ohne SIEGEL → data-minimized + data-fallback="lebt" am Root.
+  const widget5 = g5.document.getElementById("sbkim-widget");
+  W5.minimize();
+  const minState1 = {
+    isMinimized: W5.isMinimized(),
+    dataMinimized: widget5.getAttribute("data-minimized"),
+    dataFallback: widget5.getAttribute("data-fallback"),
+    lsValue: g5.localStorage.getItem("sbkim_widget_minimized"),
+  };
+  record("21. minimize() ohne SIEGEL → data-minimized=true + data-fallback=lebt + localStorage",
+    "minimized true, fallback lebt, ls true",
+    JSON.stringify(minState1),
+    minState1.isMinimized === true && minState1.dataMinimized === "true" &&
+    minState1.dataFallback === "lebt" && minState1.lsValue === "true");
+
+  // SIEGEL mounten via Event + Mock → data-fallback weg.
+  g5.SbkimSiegel = { isCertified: () => true };
+  dispatchWindowEvent(g5, "sbkim:siegel-certified", { certifiedAt: "2026-05-25T12:00:00.000Z", repoUrl: "https://example/" });
+  record("22. SIEGEL gemountet während minimiert → data-fallback entfernt (SIEGEL ist sichtbar)",
+    "fallback null, minimized bleibt true",
+    "minimized=" + W5.isMinimized() + "/fallback=" + widget5.getAttribute("data-fallback") + "/siegelMounted=" + W5._meta.siegelMounted,
+    W5.isMinimized() === true && widget5.getAttribute("data-fallback") === null &&
+    W5._meta.siegelMounted === true);
+
+  // maximize() → data-minimized weg, localStorage false.
+  W5.maximize();
+  record("23. maximize() → data-minimized weg + localStorage false",
+    "minimized false, attr null, ls false",
+    "min=" + W5.isMinimized() + "/attr=" + widget5.getAttribute("data-minimized") + "/ls=" + g5.localStorage.getItem("sbkim_widget_minimized"),
+    W5.isMinimized() === false && widget5.getAttribute("data-minimized") === null &&
+    g5.localStorage.getItem("sbkim_widget_minimized") === "false");
+
+  // localStorage-Persistierung: frische Init mit gesetztem Wert.
+  const g6 = makeStubGlobal();
+  g6.localStorage.setItem("sbkim_widget_minimized", "true");
+  loadModuleInto(g6, "src/modules/17_floating_widget.js");
+  await g6.SbkimWidget.init({});
+  record("24. localStorage minimized=true wird beim init() gelesen",
+    "isMinimized=true nach init",
+    "isMin=" + g6.SbkimWidget.isMinimized() + "/dataAttr=" + g6.document.getElementById("sbkim-widget").getAttribute("data-minimized"),
+    g6.SbkimWidget.isMinimized() === true &&
+    g6.document.getElementById("sbkim-widget").getAttribute("data-minimized") === "true");
+
+  // Slot-Buttons enthalten Label-Span (Sage-Page-Stil: Lampe + Text-Label
+  // nebeneinander). SIEGEL hat zusätzlich einen ★-Glyph-Span.
+  const lebtBtn5 = g5.document.getElementById("sbkim-widget-slot-lebt");
+  const verkBtn5 = g5.document.getElementById("sbkim-widget-slot-verkehr");
+  const fremdBtn5 = g5.document.getElementById("sbkim-widget-slot-fremd");
+  const siegelBtn5 = g5.document.getElementById("sbkim-widget-slot-siegel");
+  function findLabel(btn) {
+    for (const c of btn.children) {
+      if (c._classes && c._classes.has("sbkim-widget-label")) return c.textContent;
+    }
+    return null;
+  }
+  function findGlyph(btn) {
+    for (const c of btn.children) {
+      if (c._classes && c._classes.has("sbkim-widget-siegel-glyph")) return c.textContent;
+    }
+    return null;
+  }
+  record("25. Pflege UX 1:1 Sage-Page: Label-Span pro Slot (lebt/verkehr/fremd/siegel)",
+    "Labels gesetzt, SIEGEL hat zusätzlich ★-Glyph",
+    "lebt='" + findLabel(lebtBtn5) + "'/verkehr='" + findLabel(verkBtn5) + "'/fremd='" + findLabel(fremdBtn5) + "'/siegel='" + findLabel(siegelBtn5) + "'/star='" + findGlyph(siegelBtn5) + "'",
+    findLabel(lebtBtn5) === "lebt" && findLabel(verkBtn5) === "verkehr" &&
+    findLabel(fremdBtn5) === "fremd" && findLabel(siegelBtn5) === "siegel" &&
+    findGlyph(siegelBtn5) === "★");
+
+  // Tooltip via title-Property voll ausgeschrieben (aria-label gespiegelt).
+  record("26. Tooltips voll ausgeschrieben (title-Property + aria-label, nicht nur Slot-Name)",
+    "alle title enthalten 'Klick öffnet'",
+    "lebt='" + (lebtBtn5.title || "").slice(0, 40) + "...'",
+    /Klick öffnet/.test(lebtBtn5.title || "") &&
+    /Klick öffnet/.test(verkBtn5.title || "") &&
+    /Klick öffnet/.test(fremdBtn5.title || "") &&
+    /Klick öffnet/.test(siegelBtn5.title || "") &&
+    /Klick öffnet/.test(lebtBtn5._attributes["aria-label"] || ""));
+
+  // -------- Sechster Test-Lauf: Theme "transparent" --------
+  const g7 = makeStubGlobal();
+  loadModuleInto(g7, "src/modules/17_floating_widget.js");
+  await g7.SbkimWidget.init({ theme: "transparent" });
+  const widget7 = g7.document.getElementById("sbkim-widget");
+  record("27. theme:'transparent' setzt data-theme='transparent' am Root",
+    "data-theme='transparent'",
+    "attr=" + widget7.getAttribute("data-theme"),
+    widget7.getAttribute("data-theme") === "transparent");
+
+  // Default theme:"auto" setzt KEIN data-theme-Attribut.
+  const g8 = makeStubGlobal();
+  loadModuleInto(g8, "src/modules/17_floating_widget.js");
+  await g8.SbkimWidget.init({});
+  const widget8 = g8.document.getElementById("sbkim-widget");
+  record("28. theme default 'auto' setzt KEIN data-theme-Attribut (CSS-Variablen-Pfad aktiv)",
+    "data-theme attr = null",
+    "attr=" + widget8.getAttribute("data-theme"),
+    widget8.getAttribute("data-theme") === null);
+
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;
   const total = results.length;
