@@ -230,6 +230,20 @@ ungemergten Branches lebten.
   Siehe `sbkim_paper.pdf` und `docs/components/*` — der Knoten ist
   Empfangsmodus mit Antwortrecht.
 
+## Was du tust (Pflicht-Konventionen)
+
+- **Sicherheits-Module pflegen Aspekte.** Jede Bau- bzw. Pflege-Sitzung
+  eines Sicherheits- oder Schutz-Moduls (10 Reputation / 11 Rate-Limit
+  / 12 Blocklist / 14 Diffusion / 15.B Membran Sub (a)+(b) / künftige
+  Sicherheits-Module) MUSS in `src/modules/16_siegel.js` einen
+  `ZERTIFIKAT_ASPEKTE`-Eintrag am Listen-Ende ergänzen (aktuelles
+  Datum + Modul-ID + ein-Satz-Beschreibung, Schema siehe
+  Karte 16 § Sub (d) bzw. INTERFACES § 1 Modul 16 § ZERTIFIKAT_ASPEKTE).
+  Das Aspekte-Wachstum macht spätere Sicherheits-Updates im Siegel-
+  Modal sichtbar, **ohne dass Forker re-andocken müssen**. Verstöße
+  gegen diese Konvention sind Pflege-PR-Befunde und werden in der
+  Folge-Sitzung nachgezogen.
+
 ## Die zehn Module + Schutz-Backlog 10-12 + Proaktiv-Backlog 14 + 15 + Siegel-Backlog 16
 
 | # | Datei | Status (siehe PULS.md für Details) |
@@ -299,9 +313,10 @@ Anpassungs-Antrag, nicht stillschweigend.
 
 | # | Sitzung | Branch-Vorschlag | Brief liegt? |
 |---|---|---|---|
-| 1 | **Spec-Sitzung 16** — SBKIM-Siegel-Form festlegen (vier Sub-Bereiche, Pflicht-Modul-Liste, Badge-Optik, Modal-Inhalt, Aspekte-Schema) | `claude/spec-16-siegel` | ✅ `docs/sessions/BRIEF_SPEC_16_SIEGEL.md` |
-| 2 | **Bau-Sitzung 16** — `src/modules/16_siegel.js`, Badge-CSS in `index.html`, Modal-Mount, `ZERTIFIKAT_ASPEKTE`-Startwert | `claude/bau-16-siegel` | ⏳ wird in Spec-Sitzung 16 angelegt |
+| 1 | **Spec-Sitzung 16** — SBKIM-Siegel-Form festlegen (vier Sub-Bereiche, Pflicht-Modul-Liste, Badge-Optik, Modal-Inhalt, Aspekte-Schema) | `claude/spec-16-siegel` | ✅ erledigt 2026-05-24, PR #151 |
+| 2 | **Bau-Sitzung 16** — `src/modules/16_siegel.js`, Badge-CSS in `index.html`, Modal-Mount, `ZERTIFIKAT_ASPEKTE`-Startwert | `claude/bau-16-siegel` | ✅ erledigt 2026-05-24, PR #152 + Pflege Wappen/Korona PR #154 |
 | 3 | **Sichttest 16** — Klaus, Sage-Page Badge sichtbar + Modal öffnet sich | (kein eigener Branch, Sichttest-Nachzug-PR) | — |
+| 3a | **Pflege CLAUDE.md** — § „Sicherheits-Module pflegen Aspekte" als neuer Pflicht-Block (Folge-Pflege aus Spec-Sitzung 16 / Karte 16 § Sub (d) Pflicht-Konvention) | `claude/pflege-claudemd-sicherheits-aspekte` | ✅ erledigt 2026-05-25, PR #<diese-Sitzung> |
 | 4 | **Spec-Sitzung 15.B** — Modul 15 Sub (a) Read-API + Sub (b) postMessage-Bedienung mit Siegel-Hook im Snapshot | `claude/spec-15b-membran` | ⏳ wird in Spec-Sitzung 16 oder Bau 16 angelegt |
 | 5 | **Endknoten-Migration** — Karte 09 § Schritt 10 (Membran-Allowlist + Lampe + Siegel-Anker pro Endknoten-PWA), eigene Folge-Sitzung pro Endknoten-Repo | `claude/migration-<endknoten>` (extern) | ⏳ Brief liegt schon: `BRIEF_BAU_ENDKNOTEN_MIGRATION_MULTI_IDENTITY.md` (wird vor Schritt 5 um Siegel-/Lampen-Anker erweitert) |
 | 6 | **Klaus' App-Freigabe** — Mein-Rezeptbuch, Mein-Mixarium, Sage-Protokol mit Siegel sichtbar öffentlich verteilen | (kein Branch, Klaus-Schritt) | — |
