@@ -344,19 +344,43 @@
       "  transform: scale(1.04);",
       "  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);",
       "}",
-      // Minimierter Zustand: andere Slots ausgeblendet (CSS-Hide via Attribut).
+      // Slide-Animation für Minimieren/Maximieren (Pflege 17 Slide 2026-05-25):
+      // Die transition + max-width + overflow sind auf .sbkim-widget-slot
+      // weiter unten als Teil der Default-Regel definiert (single source).
+      // Im minimierten Zustand rutschen LEBT/VERKEHR/FREMD sichtbar nach links,
+      // schrumpfen auf 0 px Breite und werden unsichtbar — die Pille zieht sich
+      // visuell auf SIEGEL (oder LEBT-Fallback) zusammen. Animation 280 ms.
+      // Minimierter Zustand: LEBT/VERKEHR/FREMD schieben hinter SIEGEL.
       "#" + WIDGET_ID + "[data-minimized=\"true\"] .sbkim-widget-slot[data-slot=\"lebt\"],",
       "#" + WIDGET_ID + "[data-minimized=\"true\"] .sbkim-widget-slot[data-slot=\"verkehr\"],",
       "#" + WIDGET_ID + "[data-minimized=\"true\"] .sbkim-widget-slot[data-slot=\"fremd\"] {",
-      "  display: none;",
+      "  max-width: 0;",
+      "  opacity: 0;",
+      "  margin: 0;",
+      "  padding-left: 0;",
+      "  padding-right: 0;",
+      "  transform: translateX(-20px);",
+      "  pointer-events: none;",
       "}",
-      // Wenn kein SIEGEL gemountet ist und minimiert, behält LEBT seinen Platz.
+      // Wenn kein SIEGEL gemountet ist und minimiert, behält LEBT seinen Platz
+      // (Fallback). LEBT rutscht NICHT weg.
       "#" + WIDGET_ID + "[data-minimized=\"true\"][data-fallback=\"lebt\"] .sbkim-widget-slot[data-slot=\"lebt\"] {",
-      "  display: inline-flex;",
+      "  max-width: 220px;",
+      "  opacity: 1;",
+      "  margin: 0;",
+      "  padding: 4px 6px;",
+      "  transform: translateX(0);",
+      "  pointer-events: auto;",
       "}",
       "#" + WIDGET_ID + "[data-minimized=\"true\"][data-fallback=\"lebt\"] .sbkim-widget-slot[data-slot=\"verkehr\"],",
       "#" + WIDGET_ID + "[data-minimized=\"true\"][data-fallback=\"lebt\"] .sbkim-widget-slot[data-slot=\"fremd\"] {",
-      "  display: none;",
+      "  max-width: 0;",
+      "  opacity: 0;",
+      "  margin: 0;",
+      "  padding-left: 0;",
+      "  padding-right: 0;",
+      "  transform: translateX(-20px);",
+      "  pointer-events: none;",
       "}",
       "#" + WIDGET_ID + " .sbkim-widget-proxy {",
       "  position: absolute;",
@@ -368,6 +392,8 @@
       "}",
       // Slot-Button: Sage-Page-Stil — Lampe + Label nebeneinander.
       // Button-Touch-Target ist die ganze Lampe+Label-Gruppe.
+      // max-width + overflow + erweiterte transition für die Slide-Animation
+      // beim Minimieren (siehe oben).
       ".sbkim-widget-slot {",
       "  position: relative;",
       "  background: transparent;",
@@ -380,7 +406,9 @@
       "  gap: 0.35rem;",
       "  outline: none;",
       "  border-radius: 999px;",
-      "  transition: background 0.18s;",
+      "  max-width: 220px;",
+      "  overflow: hidden;",
+      "  transition: background 180ms ease, max-width 280ms ease, opacity 220ms ease, margin 280ms ease, padding 280ms ease, transform 280ms ease;",
       "}",
       ".sbkim-widget-slot:hover { background: rgba(255, 255, 255, 0.06); }",
       ".sbkim-widget-slot:focus-visible {",
