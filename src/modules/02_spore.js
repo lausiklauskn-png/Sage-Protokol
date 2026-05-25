@@ -230,6 +230,31 @@
   // nicht gelesen. setActiveIdentity / removeIdentity / resetIdentityCache
   // invalidieren bzw. setzen ihn.
   var activeIdentityKeyCache = null;
+  // Bau 17: sbkim:alive-Custom-Event wird nach erfolgreichem
+  // getOrCreateIdentity() einmal pro Sitzung gefeuert (Karte 17 §
+  // Event-Bus-Schema). Flag-Schutz, damit jeder weitere
+  // getOrCreateIdentity-Aufruf (z.B. für Sekundär-Persona) den Event
+  // NICHT erneut dispatcht — Modul 17 LEBT-Slot reagiert auf den ersten.
+  var aliveDispatched = false;
+
+  function dispatchAliveOnce(nodeId) {
+    if (aliveDispatched) return;
+    aliveDispatched = true;
+    try {
+      if (typeof global.dispatchEvent === "function" && typeof global.CustomEvent === "function") {
+        global.dispatchEvent(new global.CustomEvent("sbkim:alive", {
+          detail: {
+            since:  new Date().toISOString(),
+            nodeId: nodeId,
+          },
+          bubbles:    false,
+          cancelable: false,
+        }));
+      }
+    } catch (_e) {
+      // fail-soft — Render-Schicht (Modul 17) ist optional.
+    }
+  }
 
   async function init() {
     // Probe WebCrypto and storage but do not generate keys.
@@ -328,6 +353,7 @@
     var slotKey = key || DEFAULT_IDENTITY_KEY;
     var existing = await loadIdentity(slotKey);
     if (existing) {
+      dispatchAliveOnce(existing.nodeId);
       return { nodeId: existing.nodeId, publicKeyJwk: existing.publicKeyJwk };
     }
 
@@ -370,6 +396,7 @@
       privateKey: keyPair.privateKey,
       publicKey: keyPair.publicKey,
     });
+    dispatchAliveOnce(nodeId);
     return { nodeId: nodeId, publicKeyJwk: publicKeyJwk };
   }
 

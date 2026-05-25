@@ -102,6 +102,46 @@
 
   function nowIso() { return new Date().toISOString(); }
 
+  // Bau 17: Custom-Event-Dispatcher für die Render-Schicht (Modul 17).
+  // Karte 17 § Event-Bus-Schema legt zwei Modul-15-Events fest:
+  //   - sbkim:postmessage (Sub (b), pro op-Dispatch nach Allowlist/Schema/
+  //                         Replay-Dedupe, decision final)
+  //   - sbkim:fremd-alert (Sub (e), pro Ringbuffer-Neueintrag)
+  // PII-Disziplin: KEIN origin / payload / agentHint / endpoint im Event-
+  // Detail; nur Counts + Status-Flags. Konsument liest die vollen
+  // Einträge via fremdzugriff.list() / subscribe(cb).
+  function dispatchPostmessageEvent(op, decision) {
+    try {
+      if (typeof global.dispatchEvent === "function" && typeof global.CustomEvent === "function") {
+        global.dispatchEvent(new global.CustomEvent("sbkim:postmessage", {
+          detail: {
+            op:        op,
+            direction: "incoming",
+            decision:  decision,
+          },
+          bubbles:    false,
+          cancelable: false,
+        }));
+      }
+    } catch (_e) { /* fail-soft — Render-Schicht ist optional. */ }
+  }
+
+  function dispatchFremdAlertEvent(kind, decision, bufferSize) {
+    try {
+      if (typeof global.dispatchEvent === "function" && typeof global.CustomEvent === "function") {
+        global.dispatchEvent(new global.CustomEvent("sbkim:fremd-alert", {
+          detail: {
+            kind:       kind,
+            decision:   decision,
+            bufferSize: bufferSize,
+          },
+          bubbles:    false,
+          cancelable: false,
+        }));
+      }
+    } catch (_e) { /* fail-soft */ }
+  }
+
   function warn(message, cause) {
     if (typeof console !== "undefined" && console.warn) {
       if (cause !== undefined) console.warn("[SbkimMembrane] " + message, cause);
@@ -238,6 +278,11 @@
     pulseLamp();
     notifyListeners(entry);
     notifyModal(entry);
+    // Bau 17: Custom-Event NACH Buffer-Push + Listener-Aufruf
+    // (Karte 17 § Event-Bus-Schema). Spiegelt den subscribe(cb)-Hook
+    // auf das DOM-Event-System, damit Modul 17 (Render-Schicht)
+    // unabhängig von der Listener-API mitkriegt.
+    dispatchFremdAlertEvent(entry.kind, entry.decision, buffer.length);
   }
 
   function notifyListeners(entry) {
@@ -322,6 +367,15 @@
       decision: decision,
       details: details,
     });
+    // Bau 17: sbkim:postmessage-Event nur bei SBKIM-Op (sporeRef/query/
+    // hint/queryResult). Type-Mismatch-Pfad und unbekannte ops geben
+    // keinen Event ab — sie sind keine SBKIM-Membran-Postmessages im
+    // engeren Sinn (Karte 17 § Event-Bus-Schema, detail.op-Whitelist).
+    // Replay-Dedupe-Pfade rufen `recordPostMessageEntry` ohnehin nicht
+    // (still verworfen vor dem Eintrag — Sub (b) Empfänger-Kette Punkt 5).
+    if (typeof op === "string" && VALID_OPS[op]) {
+      dispatchPostmessageEvent(op, decision);
+    }
   }
 
   function isValidSporeRefPayload(p) {

@@ -116,6 +116,12 @@
     <pre class="log">— bereit. Bau-Sitzung 16 (2026-05-24). Modul 16 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding, kein Handshake — lokales Render-Modul. Self-inscribing-Selbst-Zertifikat nach Surface-Check der sieben Pflicht-Module (01/02/03/04/05/07/15); Modul 03 ist `lazy:true` (Status "deferred" gilt als bestanden). Anti-Greenwashing binär: Badge-Element ist nur im DOM, wenn isCertified()===true. Bau-Variante: Option β — `badgeSelector` zeigt auf Container (Panel-Tests: `#panel-16-badge-container`), Modul erzeugt `#sbkim-siegel-badge`-Span darin. RAM-only (kein DB_VERSION-Bump, kein neuer Store). KEINE benannten Error-Klassen — fail-soft via `console.warn`. Test-Pfad: weil `SbkimSiegel.init` idempotent ist (Karte 16 § Sub (a)), nutzen die Tests die internen Surface-Manipulationen (window.SbkimMatch=undefined etc.) und Re-Reads via getExplanation(), KEIN Re-Init. —</pre>
   </section>
 
+  <section class="panel" data-module="17_floating_widget">
+    <h2>17 Floating-Widget <span class="status ok">Code-Stub</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Bau-Sitzung 17 (2026-05-25). Modul 17 ist NICHT protokoll-aktiv: Render-Schicht, kein Netz, kein Embedding, kein IndexedDB. Self-mountende Pille in `document.body` (bottom-right + 16 px Default), vier Slots (LEBT/VERKEHR/FREMD/SIEGEL — SIEGEL nur wenn `SbkimSiegel.isCertified()===true`). Drag via Pointer-Events, X-Schließen, localStorage-Persistierung (`sbkim_widget_visible` + `sbkim_widget_position`). VERKEHR-Mini-Log RAM-only FIFO 10. KEINE benannten Error-Klassen — fail-soft via `console.warn`. Setup-Knopf: `SbkimWidget.init({})` — die Pille erscheint unten-rechts. Modul-16-Stub-Knopf legt `window.SbkimSiegel = { isCertified: () => true }` an, damit Test 5 ohne echtes Modul 16 funktioniert. Setze SbkimSiegel.isCertified vor Test 5 anders, dann Knopf 6 (Anti-Greenwashing) zeigt den Negativ-Pfad. Modal-Bridge nutzt Proxy-Spans `#lamp-fremd` + `#sbkim-siegel-badge` im Widget — Modul 15/16 müssen ihre Click-Handler dort attachen, daher MUSS `SbkimWidget.init()` im Endknoten VOR `SbkimMembrane.init()`/`SbkimSiegel.init()` laufen. Sage-Page behält die Navleisten-Lampen, das Widget ist Endknoten-Standard. —</pre>
+  </section>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {
@@ -4107,6 +4113,296 @@
           "  MODUL 16 SIEGEL bereit, Funktionen: init/isCertified/getExplanation/getCertifiedModules/getAspects");
         SbkimUI.log("16_siegel",
           "ℹ Hinweis: PFLICHT_MODULE (7 Einträge) und ZERTIFIKAT_ASPEKTE (Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24\") sind modul-lokal — NICHT in der Selbstcheck-Zeile.");
+      });
+    })();
+  </script>
+
+  <!-- Modul 17 — Floating-Widget (Bau-Sitzung 2026-05-25) -->
+  <script src="../src/modules/17_floating_widget.js"></script>
+  <script>
+    (function () {
+      // Panel 17 — Floating-Widget
+      //
+      // Disziplin: SbkimWidget.init() ist idempotent (Karte 17 §
+      // Fehlerverhalten). Jeder Test, der einen anderen Slot-Zustand
+      // braucht, dispatcht das passende sbkim:*-Event. Tab-Reload erzeugt
+      // einen frischen Widget-Zustand inkl. localStorage-Persistierung.
+
+      function getSlot(id) {
+        return document.getElementById("sbkim-widget-slot-" + id);
+      }
+
+      function pretty(obj) {
+        try { return JSON.stringify(obj, null, 2); }
+        catch (_e) { return String(obj); }
+      }
+
+      SbkimUI.addButton("17_floating_widget", "Setup: SbkimWidget.init({}) + Slots zeigen", async function () {
+        await SbkimWidget.init({});
+        var widgetEl = document.getElementById("sbkim-widget");
+        var styleEl = document.getElementById("sbkim-widget-style");
+        SbkimUI.setStatus("17_floating_widget", "ok", "Setup OK");
+        return {
+          ready:             SbkimWidget._meta.ready,
+          widget_im_dom:     !!widgetEl,
+          style_im_head:     !!styleEl,
+          slots_aktiviert:   SbkimWidget._meta.slots,
+          slot_elements_im_dom: {
+            lebt:    !!getSlot("lebt"),
+            verkehr: !!getSlot("verkehr"),
+            fremd:   !!getSlot("fremd"),
+            siegel:  !!getSlot("siegel"),
+          },
+          position:          SbkimWidget.getPosition(),
+          sichtbar:          SbkimWidget.isVisible(),
+          event_counts:      SbkimWidget._meta.eventCounts,
+          first_boot_shown:  SbkimWidget._meta.firstBootShown,
+          erwartung: "Pille bottom-right sichtbar (modal-frei); drei Slots (LEBT/VERKEHR/FREMD) initial im DOM; SIEGEL nur wenn Modul 16 bereits zertifiziert (Test 5 + 6).",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Mock-Modul-16 (für Test 5)", async function () {
+        // Test-Brücke: dieses Mock erlaubt Test 5 (Siegel-Slot mounten),
+        // ohne dass die echte Modul-16-Init durchläuft. window.SbkimSiegel
+        // muss EXISTIEREN + isCertified() returns true. Nach Test 6
+        // (Anti-Greenwashing) sollte Klaus den Mock entfernen / Tab
+        // reloaden.
+        window.SbkimSiegel = window.SbkimSiegel || {};
+        if (typeof window.SbkimSiegel.isCertified !== "function") {
+          window.SbkimSiegel.isCertified = function () { return true; };
+        } else {
+          // existierendes Modul 16: nicht überschreiben
+          SbkimUI.log("17_floating_widget", "ℹ Echtes Modul 16 vorhanden — Mock übersprungen, isCertified() bleibt aktiv.");
+        }
+        SbkimUI.setStatus("17_floating_widget", "ok", "Mock OK");
+        return {
+          mock_installed:    typeof window.SbkimSiegel.isCertified === "function",
+          is_certified_now:  window.SbkimSiegel.isCertified(),
+          erwartung: "Test 5 kann jetzt sbkim:siegel-certified feuern und SIEGEL-Slot mounten.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 1: LEBT-Slot wird grün (sbkim:alive)", async function () {
+        await SbkimWidget.init({});
+        var beforeCount = SbkimWidget._meta.eventCounts.alive;
+        window.dispatchEvent(new CustomEvent("sbkim:alive", {
+          detail: { since: new Date().toISOString(), nodeId: "demo_node_id_abc123XYZ" },
+        }));
+        var slot = getSlot("lebt");
+        var hasActive = slot && slot.classList.contains("active");
+        var pass = !!hasActive && SbkimWidget._meta.eventCounts.alive === beforeCount + 1;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 1 OK" : "Test 1 fehlgeschlagen");
+        return {
+          lebt_active:       hasActive,
+          alive_count:       SbkimWidget._meta.eventCounts.alive,
+          since:             SbkimWidget._meta.lebtSince,
+          nodeId_prefix:     SbkimWidget._meta.lebtNodeIdPrefix,
+          erwartung: "LEBT-Slot bekommt .active-Klasse, pulsiert grün, nodeId-Präfix sind die ersten 12 Zeichen.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 2: VERKEHR pulst (drei Events)", async function () {
+        await SbkimWidget.init({});
+        var beforeLog = SbkimWidget._meta.trafficLogSize;
+        window.dispatchEvent(new CustomEvent("sbkim:handshake", {
+          detail: { outcome: "established", peerNodeId: "peer1", direction: "outgoing" },
+        }));
+        window.dispatchEvent(new CustomEvent("sbkim:postmessage", {
+          detail: { op: "sporeRef", direction: "incoming", decision: "accepted" },
+        }));
+        window.dispatchEvent(new CustomEvent("sbkim:handshake", {
+          detail: { outcome: "established", peerNodeId: "peer2", direction: "incoming" },
+        }));
+        var slot = getSlot("verkehr");
+        var snapshot = SbkimWidget._meta.trafficLogSnapshot;
+        var pass = slot && slot.classList.contains("active") &&
+                   SbkimWidget._meta.trafficLogSize === beforeLog + 3;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          verkehr_active:    slot && slot.classList.contains("active"),
+          log_size:          SbkimWidget._meta.trafficLogSize,
+          letzter_eintrag:   snapshot[snapshot.length - 1],
+          hinweis_modal:     "Klick auf VERKEHR-Slot öffnet das Mini-Log-Modal (Modul-17-internes Modal).",
+          erwartung: "VERKEHR-Slot bekommt .active-Klasse, pulst gold pro Event. Tap öffnet Mini-Log mit drei Einträgen.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 3: FREMD wird rot (sbkim:fremd-alert)", async function () {
+        await SbkimWidget.init({});
+        window.dispatchEvent(new CustomEvent("sbkim:fremd-alert", {
+          detail: { kind: "endpoint-probe", decision: "accepted", bufferSize: 1 },
+        }));
+        window.dispatchEvent(new CustomEvent("sbkim:fremd-alert", {
+          detail: { kind: "endpoint-probe", decision: "accepted", bufferSize: 2 },
+        }));
+        var slot = getSlot("fremd");
+        var hasActive = slot && (slot.classList.contains("active") || slot.classList.contains("fremd-alert"));
+        var pass = !!hasActive && SbkimWidget._meta.fremdBufferSize === 2;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          fremd_active:      hasActive,
+          buffer_size:       SbkimWidget._meta.fremdBufferSize,
+          fremd_alert_count: SbkimWidget._meta.eventCounts.fremdAlert,
+          erwartung: "FREMD-Slot wird dauer-rot, pulst kurz pro Event. bufferSize=2 wird im _meta sichtbar.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 4: sbkim:fremd-alert OHNE bufferSize → fail-soft", async function () {
+        await SbkimWidget.init({});
+        var bufferBefore = SbkimWidget._meta.fremdBufferSize;
+        var didThrow = false;
+        try {
+          window.dispatchEvent(new CustomEvent("sbkim:fremd-alert", {
+            detail: { kind: "endpoint-probe", decision: "accepted" }, // bufferSize fehlt
+          }));
+        } catch (err) {
+          didThrow = true;
+        }
+        var pass = !didThrow && SbkimWidget._meta.fremdBufferSize === bufferBefore;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          kein_crash:        !didThrow,
+          buffer_unverändert:SbkimWidget._meta.fremdBufferSize === bufferBefore,
+          erwartung: "Karte 17 § Fehlerverhalten: „fremd-alert ohne bufferSize → Slot bleibt grau, kein Throw\". Buffer-State bleibt erhalten.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 5: SIEGEL-Slot erscheint (braucht Mock-Knopf VOR diesem Test)", async function () {
+        await SbkimWidget.init({});
+        if (!window.SbkimSiegel || typeof window.SbkimSiegel.isCertified !== "function" ||
+            window.SbkimSiegel.isCertified() !== true) {
+          SbkimUI.setStatus("17_floating_widget", "err", "Test 5 nicht ausführbar — Modul 16 fehlt");
+          return {
+            hinweis: "Mock-Modul-16-Knopf zuerst drücken oder echtes Modul 16 muss laufen + isCertified()===true sein.",
+            siegel_im_dom: !!getSlot("siegel"),
+          };
+        }
+        var beforeCount = SbkimWidget._meta.eventCounts.siegelCertified;
+        window.dispatchEvent(new CustomEvent("sbkim:siegel-certified", {
+          detail: { certifiedAt: new Date().toISOString(), repoUrl: "https://lausiklauskn-png.github.io/Sage-Protokol/" },
+        }));
+        var slot = getSlot("siegel");
+        var pass = !!slot && SbkimWidget._meta.eventCounts.siegelCertified === beforeCount + 1 &&
+                   SbkimWidget._meta.siegelMounted === true;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          siegel_im_dom:     !!slot,
+          first_boot_shown:  SbkimWidget._meta.firstBootShown,
+          certified_at:      SbkimWidget._meta.siegelCertifiedAt,
+          repo_url:          SbkimWidget._meta.siegelRepoUrl,
+          siegel_certified_count: SbkimWidget._meta.eventCounts.siegelCertified,
+          erwartung: "SIEGEL-Slot wird ins DOM angefügt (Gold-Medaillon) mit First-Boot-Animation 600 ms. _meta.siegelMounted=true.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 6: SIEGEL erscheint NICHT bei isCertified()===false (braucht Tab-Reload davor)", async function () {
+        SbkimUI.setStatus("17_floating_widget", "ok", "Hinweis-Knopf");
+        SbkimUI.log("17_floating_widget", "ℹ Anti-Greenwashing-Test — in derselben Session schwer reproduzierbar.");
+        SbkimUI.log("17_floating_widget", "So testet Klaus den Pfad:");
+        SbkimUI.log("17_floating_widget", "  1. Tab neu laden (Strg+Shift+R).");
+        SbkimUI.log("17_floating_widget", "  2. VOR dem Mock-Knopf in DevTools-Konsole:");
+        SbkimUI.log("17_floating_widget", "       window.SbkimSiegel = { isCertified: () => false };");
+        SbkimUI.log("17_floating_widget", "  3. Setup-Knopf, dann diesen Knopf, der das Event feuert:");
+        SbkimUI.log("17_floating_widget", "       window.dispatchEvent(new CustomEvent('sbkim:siegel-certified',");
+        SbkimUI.log("17_floating_widget", "         { detail: { certifiedAt: '...', repoUrl: '...' } }));");
+        SbkimUI.log("17_floating_widget", "  4. Erwartung: KEIN SIEGEL-Slot im DOM, eine console.warn-Zeile mit „Anti-Greenwashing\".");
+        // Wir feuern den Event trotzdem — wenn isCertified false ist, sollte
+        // der Slot NICHT erscheinen.
+        var beforeMounted = SbkimWidget._meta.siegelMounted;
+        window.dispatchEvent(new CustomEvent("sbkim:siegel-certified", {
+          detail: { certifiedAt: new Date().toISOString(), repoUrl: "https://test/" },
+        }));
+        return {
+          tab_reload_empfohlen: true,
+          siegel_war_schon_gemountet_vor_test: beforeMounted,
+          siegel_jetzt_gemountet: SbkimWidget._meta.siegelMounted,
+          erwartung: "Nach Tab-Reload + Override: siegel_jetzt_gemountet === false; vorhandener Mount aus Test 5 bleibt aus dieser Session (idempotent, kein erneutes Mount).",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 7: Traffic-Log FIFO max 10", async function () {
+        await SbkimWidget.init({});
+        for (var i = 0; i < 12; i++) {
+          window.dispatchEvent(new CustomEvent("sbkim:handshake", {
+            detail: { outcome: "established", peerNodeId: "peer-" + i, direction: "outgoing" },
+          }));
+        }
+        var size = SbkimWidget._meta.trafficLogSize;
+        var pass = size === 10;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 7 OK" : "Test 7 fehlgeschlagen");
+        return {
+          log_size_nach_12_events: size,
+          erwartung: "Nach 12 sbkim:handshake-Events ist trafficLogSize=10 (FIFO max 10, älteste 2 verdrängt).",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 8: X-Schließen + show()-Wiederherstellung + localStorage-Persistierung", async function () {
+        await SbkimWidget.init({});
+        SbkimWidget.hide();
+        var visAfterHide = SbkimWidget.isVisible();
+        var lsAfterHide = localStorage.getItem("sbkim_widget_visible");
+        SbkimWidget.show();
+        var visAfterShow = SbkimWidget.isVisible();
+        var lsAfterShow = localStorage.getItem("sbkim_widget_visible");
+        var pass = visAfterHide === false && lsAfterHide === "false" &&
+                   visAfterShow === true && lsAfterShow === "true";
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 8 OK" : "Test 8 fehlgeschlagen");
+        return {
+          isVisible_nach_hide:     visAfterHide,
+          localStorage_nach_hide:  lsAfterHide,
+          isVisible_nach_show:     visAfterShow,
+          localStorage_nach_show:  lsAfterShow,
+          erwartung: "hide() setzt display:none + localStorage \"false\"; show() setzt display normal + localStorage \"true\".",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 9: getPosition() liefert defensive Kopie", async function () {
+        await SbkimWidget.init({});
+        var pos1 = SbkimWidget.getPosition();
+        var pos2 = SbkimWidget.getPosition();
+        try { pos1.corner = "MUTATED"; pos1.offsetX = 9999; } catch (_e) { /* nb */ }
+        var pos3 = SbkimWidget.getPosition();
+        var pass = pos1 !== pos2 && pos3.corner !== "MUTATED" && pos3.offsetX !== 9999;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 9 OK" : "Test 9 fehlgeschlagen");
+        return {
+          pos_aktuell:        pos3,
+          mutation_geblockt:  pos3.corner !== "MUTATED",
+          erwartung: "Mutation am pos1-Objekt darf den internen Widget-State NICHT verändern; pos3 liefert weiterhin Defaults bzw. den persistierten Wert.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 10: Modal-Bridge (FREMD/SIEGEL via Proxy-Click)", async function () {
+        await SbkimWidget.init({});
+        var didThrow = false;
+        try {
+          // FREMD: Proxy-Click auf #lamp-fremd. Wenn echtes Modul 15 mit
+          // Click-Handler im DOM ist, öffnet sich das Sub-(e)-Modal. Sonst
+          // no-op + console.warn.
+          getSlot("fremd").click();
+          // SIEGEL: Proxy-Click auf #sbkim-siegel-badge (nur wenn Slot da).
+          var siegel = getSlot("siegel");
+          if (siegel) siegel.click();
+        } catch (err) {
+          didThrow = true;
+        }
+        var pass = !didThrow;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 10 OK" : "Test 10 fehlgeschlagen");
+        return {
+          kein_crash: !didThrow,
+          fremd_slot_da: !!getSlot("fremd"),
+          siegel_slot_da: !!getSlot("siegel"),
+          hinweis: "Wenn Modul 15 (auf der Sage-Page) seinen Click-Handler an #lamp-fremd attached hat, öffnet sich das Sub-(e)-Modal. In dieser Test-Page ist Modul 15 separat gemountet (Panel 15 setup), das echte #lamp-fremd ist NICHT im DOM — Bridge fällt auf Widget-internen Proxy-Span zurück, ohne Click-Handler → no-op + Warn ist erwartet.",
+          erwartung: "Beide Clicks dürfen NICHT crashen (fail-soft). Console-Warn bei fehlendem Click-Handler ist OK.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("17_floating_widget",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("17_floating_widget",
+          "  MODUL 17 FLOATING-WIDGET bereit, Funktionen: init/show/hide/isVisible/getPosition");
+        SbkimUI.log("17_floating_widget",
+          "ℹ Hinweis: Modul 17 ist Render-Schicht, KEINE benannten Error-Klassen, KEIN PROTOCOL_VERSION-/DB_VERSION-Bump.");
       });
     })();
   </script>

@@ -93,6 +93,12 @@
       aspect:      "Sub (a) Read-API + Sub (b) postMessage-Brücke",
       description: "Finale Bedien-Pfade: MembraneSnapshot mit Siegel-Hook, vier op-Werte (sporeRef/query/hint/queryResult) mit Nonce-Pflicht, fail-soft Allowlist, Rate-Limit-Hook für Modul 11.",
     },
+    {
+      since:       "2026-05-25",
+      module:      "17",
+      aspect:      "Floating-Widget mit Vier-Slot-Live-Status",
+      description: "Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) als Endknoten-Standard; macht den SBKIM-Lauf sichtbar ohne Navleisten-Mount-Pflicht. Render-Schicht ohne Protokoll-Eingriff.",
+    },
   ];
 
   // ---- Konstanten ----
@@ -847,6 +853,26 @@
     }
 
     ready = true;
+
+    // Bau 17: sbkim:siegel-certified-Custom-Event NUR bei
+    // isCertified()===true (Anti-Greenwashing-Klausel binär). Wird
+    // genau einmal pro Sitzung gefeuert — `ready`-Flag oben schützt
+    // gegen Re-Init. Modul 17 (LEBT-Slot ... Pardon, SIEGEL-Slot)
+    // hängt davon ab, dass dieser Event auf `window` ankommt.
+    try {
+      if (typeof global.dispatchEvent === "function" && typeof global.CustomEvent === "function") {
+        global.dispatchEvent(new global.CustomEvent("sbkim:siegel-certified", {
+          detail: {
+            certifiedAt: certifiedAt,
+            repoUrl:     resolveRepoUrl(),
+          },
+          bubbles:    false,
+          cancelable: false,
+        }));
+      }
+    } catch (_e) {
+      // fail-soft — Render-Schicht (Modul 17) ist optional.
+    }
   }
 
   // ---- Öffentliche API ----
