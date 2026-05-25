@@ -90,28 +90,35 @@ Heilige Tafeln (Endknoten-Migration-spezifisch):
   `BACKUP_FORMAT_VERSION` ist `2`.** Endknoten erbt diese Werte
   automatisch aus den kopierten Modul-Dateien.
 
-Deine Aufgabe heute — sechs Punkte a–f:
+Deine Aufgabe heute — acht Punkte a–h:
 
 a) **Modul-Dateien aus Sage-Protokol nach Endknoten-Repo kopieren.**
    Quelle: Sage-Protokol `src/modules/00_doku_fenster.js` bis
-   `src/modules/08_ui_demo.js`. Ziel: Endknoten-Repo's
-   `sbkim/`-Verzeichnis (oder wo immer das Endknoten-Repo die SBKIM-
-   Module hält). Optional Rename: `08_ui_demo.js` →
-   `08_ui_demo-v3.js` als Cache-Bust falls der Endknoten schon eine
-   ältere Variante hat (Klaus' Bewährungs-Strategie aus früheren
-   Live-Andock-Sitzungen).
+   `src/modules/08_ui_demo.js` **plus `15_membran.js` und
+   `16_siegel.js`**. Ziel: Endknoten-Repo's `sbkim/`-Verzeichnis (oder
+   wo immer das Endknoten-Repo die SBKIM-Module hält). Optional
+   Rename: `08_ui_demo.js` → `08_ui_demo-v3.js` als Cache-Bust falls
+   der Endknoten schon eine ältere Variante hat (Klaus' Bewährungs-
+   Strategie aus früheren Live-Andock-Sitzungen).
 
-   `src/sbkim-sw.js` ebenfalls kopieren (Service-Worker).
+   `src/sbkim-sw.js` ebenfalls kopieren (Service-Worker — enthält
+   seit Bau 15.SW den SW-Probe-Detektor; beim Re-Andock pflichtig
+   zu erneuern).
 
 b) **Karte 09 nachprüfen** ob script-Reihenfolge in `index.html`
    stimmt:
    ```
    01_storage → 02_spore → 03_embedding → 04_match → 05_anastomose
      → 07_apoptose → 00_doku_fenster → 06_heterokaryose → 08_ui_demo
+     → 15_membran → 16_siegel
    ```
    (Modul 06 NACH 00 wegen Outbox-Lese-Pfad aus Modul 08 / Spore-
-   Single-Anker-Fallback; Modul 08 zuletzt weil Bau 08.Y die
-   slot-suffixed Outbox schreibt.)
+   Single-Anker-Fallback; Modul 08 vor 15 weil Bau 08.Y die
+   slot-suffixed Outbox schreibt. Modul 15 nach 08 (Sub (a) `read()`
+   liest Spore/Anastomose/Storage fail-soft, kein harter
+   Abhängigkeits-Block); Modul 16 ZULETZT, weil es alle anderen
+   Pflicht-Module surface-checkt — Karte 09 § Schritt 2
+   Reihenfolge-Begründung.)
 
 c) **`sbkim-init.js`** im Endknoten-Repo aktualisieren falls
    Code-Drift:
@@ -132,7 +139,7 @@ d) **Cache-Bust für Service-Worker.** Falls der Endknoten schon
 
 e) **Sichttest im Endknoten-PWA:**
    - Endknoten-PWA in DeX-Chrome / Tablet-Chrome neu laden.
-   - DevTools → Konsole → die neun Selbstcheck-Zeilen prüfen:
+   - DevTools → Konsole → die elf Selbstcheck-Zeilen prüfen:
      ```
      MODUL 00 DOKU-FENSTER bereit, Funktionen: ...
      MODUL 01 STORAGE bereit, Funktionen: init/getStore/get/put/del/all/clear/ensureStore
@@ -143,6 +150,8 @@ e) **Sichttest im Endknoten-PWA:**
      MODUL 06 HETEROKARYOSE bereit, Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis
      MODUL 07 APOPTOSE bereit, Funktionen: init/prepareSelfApoptose/confirmSelfApoptose/receiveLegacy/listLegacy/forgetExpiredSiblings
      MODUL 08 UI-DEMO bereit, Funktionen: init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn
+     MODUL 15 MEMBRAN bereit, Funktionen: init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}
+     MODUL 16 SIEGEL bereit, Funktionen: init/isCertified/getExplanation/getCertifiedModules/getAspects
      ```
    - DevTools → Application → IndexedDB → die slot-suffixed Stores
      müssen erscheinen (sbkim_siblings_main, sbkim_hetero_inbox_main,
@@ -170,6 +179,120 @@ f) **Übergabeprotokoll im Endknoten-Repo** (typisch
    Inhalt: Datum, was kopiert wurde, Sichttest-Befund, Cache-Bust-
    Strategie.
 
+g) **Modul 15 (Membran) einbauen** — Schritt 10 aus Karte 09
+   ausführen. Konkret:
+   - `src/modules/15_membran.js` ins Endknoten-`sbkim/`-Verzeichnis
+     kopieren (Punkt a oben).
+   - `src/sbkim-sw.js` ebenfalls erneuern — enthält den SW-Probe-
+     Detektor (Bau 15.SW).
+   - `index.html` des Endknoten: `:root` um `--lamp-alert: #DC2626;`
+     ergänzen (falls noch nicht da); CSS-Block für `.lamp.fremd-
+     alert`, `.lamp.fremd-pulse`, `@keyframes lamp-alert-pulse`,
+     `@keyframes lamp-breath` ergänzen (1:1 aus Sage-Protokol's
+     `index.html` Z. 121–127); FREMD-Lampe in die Navleiste:
+     ```html
+     <span class="lamp" id="lamp-fremd"
+           title="Fremdzugriff — rot bei Zugriff von außen (Klick öffnet Liste)"></span>
+     <span class="lamp-label">fremd</span>
+     ```
+   - `<script src="sbkim/15_membran.js">` in die Reihenfolge NACH 08
+     + 00, VOR 16.
+   - `sbkim-init.js`:
+     ```js
+     await SbkimMembrane.init({
+       lampSelector:   "#lamp-fremd",
+       allowedOrigins: ["https://lausiklauskn-png.github.io"],
+       // KEIN enableTestButton:true — Endknoten-Konvention.
+     });
+     ```
+
+   **`allowedOrigins`-Liste pro Endknoten** (Same-origin gilt NICHT
+   als Fremd, aber für künftige Geschwister-Origins):
+   - Mein-Rezeptbuch: `["https://lausiklauskn-png.github.io"]`
+   - Mein-Mixarium: `["https://lausiklauskn-png.github.io"]`
+
+   **Erwartungs-Block:**
+   - DevTools-Konsole: `MODUL 15 MEMBRAN bereit, Funktionen:
+     init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}`.
+   - Navleiste: FREMD-Lampe sichtbar (grau bei leerem Buffer, rot
+     bei Eintrag).
+   - Klick auf `#lamp-fremd` öffnet das Sub-(e)-Modal mit Backdrop
+     + Liste.
+   - SW-Probe-Detektor aktiv: wenn eine fremde Origin
+     `fetch("https://lausiklauskn-png.github.io/<endknoten>/sbkim/
+     spore.json")` ruft, erscheint ein `endpoint-probe`-Eintrag im
+     Modal und die Lampe wird rot.
+
+   **Endknoten-Sichttest-Workaround für FREMD-Lampe:** Klaus' drei
+   Endknoten sind alle same-origin (`https://lausiklauskn-
+   png.github.io`), der Sub-(e)-SW-Probe-Detektor wertet das nicht
+   als Fremd (Karte 15 § Fremd-Definition Schritt 3). Endknoten
+   setzen `enableTestButton:true` **nicht** (Konvention — der „🧪
+   Demo-Eintrag"-Knopf bleibt Sage-Page-only). Klaus' Test-Pfad im
+   Endknoten:
+   - (a) Eruda öffnen (typisch über Such-Symbol oder Konsolen-Geste,
+     je nach Endknoten-Setup).
+   - (b) In Eruda `fetch("https://<andere-origin>/etwas")` von einer
+     wirklich fremden Origin auslösen — fragmentierter Pfad, weil
+     alle Endknoten same-origin sind. Realistischer: warten, bis
+     ein KI-Browser-Agent (Gemini 3.5 Flash) den Endknoten in der
+     echten App-Freigabe besucht; bis dahin headless-only via
+     `tests/manual_check.html` Panel 15 Knopf 8.
+   - (c) Alternativ: temporär für den Sichttest die Test-Brücke
+     `SbkimMembrane.fremdzugriff._recordForTest({...})` in der
+     Konsole nutzen (Karte 15 § Sub (e) Schnittstelle).
+
+h) **Modul 16 (SBKIM-Siegel) einbauen** — Schritt 11 aus Karte 09
+   ausführen. Konkret:
+   - `src/modules/16_siegel.js` ins Endknoten-`sbkim/`-Verzeichnis
+     kopieren (Punkt a oben).
+   - `index.html` des Endknoten: `:root` um die vier Siegel-
+     Variablen ergänzen (`--siegel-gold: #C9A961;`,
+     `--siegel-gold-glow: rgba(201,169,97,0.55);`,
+     `--siegel-ink: #1A1306;`, `--siegel-line:
+     rgba(201,169,97,0.45);` — 1:1 aus Sage-Protokol's `index.html`
+     Z. 42–45); CSS-Block für `#sbkim-siegel-badge` + Hover/Focus/
+     First-Boot-Animation ergänzen (1:1 aus Sage-Protokol's
+     `index.html` Z. 129–134); falls der Endknoten keinen `.lamps`-
+     Container hat, einen neuen Container `<div class="lamps">…
+     </div>` neben dem Navleisten-Titel anlegen — Modul 16
+     erzeugt den Badge-Span darin NUR wenn `isCertified()===true`.
+   - `<script src="sbkim/16_siegel.js">` als ZUVERLÄSSIG LETZTES
+     SBKIM-Modul, nach 15.
+   - `sbkim-init.js`:
+     ```js
+     await SbkimSiegel.init({
+       badgeSelector: ".lamps",
+       repoUrl:       "<endknoten-repo-url>",
+     });
+     ```
+
+   **`repoUrl`-Override-Pflicht pro Endknoten** (Auto-Erkennung
+   liefert die Pages-URL, NICHT das Quell-Repo):
+   - Mein-Rezeptbuch:
+     `"https://github.com/lausiklauskn-png/Mein-Rezeptbuch"`
+   - Mein-Mixarium:
+     `"https://github.com/lausiklauskn-png/Mein-Mixarium"`
+
+   **Anti-Greenwashing-Hinweis:** Badge erscheint NUR im DOM, wenn
+   alle sieben Pflicht-Module geladen sind (Modul 03 Embedding gilt
+   als `lazy:true` deferred-bestanden). Wenn z.B. der Endknoten
+   Modul 04 nicht lädt (kein Match-Pfad), erscheint KEIN Badge —
+   Klaus' Wahl bewusst (Karte 16 § Strikte Tabus).
+
+   **Erwartungs-Block:**
+   - DevTools-Konsole: `MODUL 16 SIEGEL bereit, Funktionen:
+     init/isCertified/getExplanation/getCertifiedModules/getAspects`.
+   - Navleiste: Badge sichtbar als vierte Plakette nach LEBT /
+     VERKEHR / FREMD (40 px Gold-Medaillon mit Wappen-SVG +
+     Akkretions-Korona).
+   - Klick auf Badge öffnet Modal mit Datum + Modul-Liste +
+     Aspekte (Start-Einträge: „Grund-Siegel-Bezeugung 2026-05-24"
+     + „Modul 15 Sub (a)+(b) 2026-05-25") + zwei Zeilen Aussteller-
+     Klärung.
+   - Esc / Backdrop-Klick schließt Modal.
+   - `await SbkimSiegel.isCertified()` in der Konsole liefert `true`.
+
 Was du NICHT tust:
 
 - **Kein Sage-Protokol-Eingriff.** Die SBKIM-Module sind in
@@ -188,10 +311,11 @@ Was du NICHT tust:
 
 Pflicht am Ende der Sitzung:
 
-1. Sichttest-Befund — wenigstens die neun Selbstcheck-Zeilen + ein
-   Live-Cross-Knoten-Handshake. Bei Befund: HALTE AN, dokumentiere
-   in Sage-Protokol PULS § Sitzungs-Eintrag (eigene Folge-Sitzung
-   im Sage-Protokol-Repo).
+1. Sichttest-Befund — wenigstens die elf Selbstcheck-Zeilen + ein
+   Live-Cross-Knoten-Handshake + FREMD-Lampe sichtbar + Siegel-Badge
+   sichtbar (wenn certified). Bei Befund: HALTE AN, dokumentiere in
+   Sage-Protokol PULS § Sitzungs-Eintrag (eigene Folge-Sitzung im
+   Sage-Protokol-Repo).
 
 2. „Vorgeschlagene nächste Schritte"-Block:
    - Zweiter Endknoten parallel migrieren (falls noch nicht).
@@ -227,8 +351,9 @@ Stolperfallen:
   „Einstellungen → SBKIM zurücksetzen", mit Token-Confirmation aus
   Modul 07). Eigene Pflege-Sitzung.
 
-Zeitschätzung: ~2 h pro Endknoten (Datei-Kopieren + Cache-Bust +
-Sichttest). Multi-Persona-UI optional, eigene Pflege-Sitzung wenn
+Zeitschätzung: ~2.5–3 h pro Endknoten (Datei-Kopieren + Cache-Bust +
+CSS-Anker für Modul 15 + 16 + Sichttest inkl. FREMD-Lampe + Siegel-
+Badge). Multi-Persona-UI optional, eigene Pflege-Sitzung wenn
 gewünscht.
 ```
 
@@ -240,7 +365,18 @@ gewünscht.
   (Sammelspec-Abschluss PR #100). Alle Bau-Sitzungen 01.Y / 02.Y /
   04.A / 04.B / 05.Y / 06.Y / 07.Y / 08.Y sind gemerged in
   Sage-Protokol (`main` `9f4d565` nach PR #122). **Endknoten-
-  Migration ist die letzte Phase der Brief-99-Pipeline.**
+  Migration ist Pipeline-Schritt 5 vor App-Freigabe (Pipeline-
+  Schritt 6) — siehe CLAUDE.md § Pipeline-Reihenfolge bis App-
+  Freigabe.**
+
+- **Pflege Endknoten-Migrations-Brief erweitern (2026-05-25):** Der
+  Brief wurde mit der Pflege-Sitzung „Endknoten-Migrations-Brief
+  erweitern (Module 15 + 16)" um die zwei Punkte g) Membran und
+  h) Siegel ergänzt — nach Bau-Sitzung 15.B (PR #159) und Bau-
+  Sitzung 16 (PR #152 + Pflege Wappen/Korona PR #154). Karte 09
+  trägt jetzt elf Schritte (10 Membran-Allowlist + 11 Siegel-Badge).
+  Auslöser: vor App-Freigabe muss jeder Endknoten FREMD-Lampe und
+  SBKIM-Siegel sichtbar tragen.
 
 - **Klaus' Endknoten:** Mein-Mixarium + Mein-Rezeptbuch (zwei
   externe GitHub-Repos). Diese Bau-Sitzung wird zwei Mal gefahren
