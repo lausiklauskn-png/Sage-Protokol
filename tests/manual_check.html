@@ -544,7 +544,7 @@
         SbkimUI.log("04_match",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("04_match",
-          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM, " +
+          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, " +
           "Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
       });
 
@@ -714,6 +714,190 @@
           fallbackScore: result.fallbackScore,
           stufeA_overall: matchResult.overall,
           hinweis: "Modul 04 hat sauber resolved. Bei CORS-Fehler im localhost: Test im echten PWA-Setup (GitHub-Pages-Endknoten), nicht in Termux.",
+        };
+      });
+
+      // ---- Bau 04.C (2026-05-26): queryLocal — lokales Such-Feld-Backend ----
+      //
+      // Tests 11–15 nutzen einen Mini-Mock von SbkimEmbedding mit
+      // deterministischen Vektoren (KEINE Modell-Lade, KEIN ~30 MB
+      // Modell-Download nötig). Test 14 nutzt SbkimMatch.setLocalCorpus,
+      // Test 15 prüft den leer-Korpus-Pfad ohne Throw.
+      //
+      // Hinweis: SbkimEmbedding wird hier per Side-Effect für die
+      // queryLocal-Probe ausgetauscht. NICHT mit echtem Modul 03
+      // mischen — wer Embedding-Knöpfe (Panel 03) danach läuft, sollte
+      // einen Hard-Reload machen, weil window.SbkimEmbedding-Identität
+      // jetzt der Mock ist.
+
+      var queryLocal04CRefVec = null;
+      function ensureQueryLocalSetup04C() {
+        if (queryLocal04CRefVec !== null) return queryLocal04CRefVec;
+        // Deterministischer Referenz-Vektor via LCG.
+        var state = 4711 >>> 0;
+        var v = new Float32Array(384);
+        var sumSq = 0;
+        for (var i = 0; i < 384; i++) {
+          state = ((Math.imul(state, 1664525) + 1013904223) >>> 0);
+          v[i] = (state / 0xFFFFFFFF) * 2 - 1;
+          sumSq += v[i] * v[i];
+        }
+        var n = Math.sqrt(sumSq);
+        for (var j = 0; j < 384; j++) v[j] = v[j] / n;
+        queryLocal04CRefVec = v;
+        // SbkimEmbedding-Mock installieren — queryLocal ruft embedQuery,
+        // Mock liefert immer denselben Referenz-Vektor. Echte
+        // Schwellen-Trennung passiert über die Korpus-Vektoren (mit
+        // Ziel-Cosinus konstruiert).
+        window.SbkimEmbedding = window.SbkimEmbedding || {};
+        window.SbkimEmbedding.embedQuery = async function () {
+          return queryLocal04CRefVec;
+        };
+        return v;
+      }
+
+      // mixedVec(ref, target, seed): Vektor mit cos(ref, result) ~= target.
+      function mixedVec04C(reference, target, noiseSeed) {
+        var state = noiseSeed >>> 0;
+        var noise = new Float32Array(384);
+        var sumSqN = 0;
+        for (var i = 0; i < 384; i++) {
+          state = ((Math.imul(state, 1664525) + 1013904223) >>> 0);
+          noise[i] = (state / 0xFFFFFFFF) * 2 - 1;
+          sumSqN += noise[i] * noise[i];
+        }
+        var nN = Math.sqrt(sumSqN);
+        for (var j = 0; j < 384; j++) noise[j] = noise[j] / nN;
+        var a = target;
+        var b = Math.sqrt(Math.max(0, 1 - target * target));
+        var out = new Float32Array(384);
+        var sumSq = 0;
+        for (var k = 0; k < 384; k++) {
+          out[k] = a * reference[k] + b * noise[k];
+          sumSq += out[k] * out[k];
+        }
+        var nOut = Math.sqrt(sumSq);
+        for (var l = 0; l < 384; l++) out[l] = out[l] / nOut;
+        return out;
+      }
+
+      // Knopf 11 — queryLocal Happy-Path mit Mini-Korpus
+      SbkimUI.addButton("04_match", "Test 11: queryLocal Happy-Path (Mini-Korpus, Top-3)", async function () {
+        var ref = ensureQueryLocalSetup04C();
+        var corpus = [
+          { label: "Top",    anchorId: "rez-1", passageVec: mixedVec04C(ref, 0.95, 101) },
+          { label: "Mittel", anchorId: "rez-2", passageVec: mixedVec04C(ref, 0.85, 102) },
+          { label: "Drunter", anchorId: "rez-3", passageVec: mixedVec04C(ref, 0.50, 103) },
+        ];
+        var out = await SbkimMatch.queryLocal("Such-Text", 3, { corpus: corpus });
+        var ok = out.length === 2 &&
+                 out[0].label === "Top" &&
+                 out[1].label === "Mittel" &&
+                 out[0].score >= out[1].score &&
+                 out.every(function (r) { return r.score >= 0.80; });
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "queryLocal Happy-Path OK" : "Trefferform falsch");
+        return {
+          treffer_anzahl: out.length,
+          treffer: out.map(function (r) {
+            return { label: r.label, score: Number(r.score.toFixed(4)), anchorId: r.anchorId };
+          }),
+          erwartung: "2 Treffer, Top zuerst, alle >= 0.80, der Unter-Schwelle-Treffer fehlt",
+        };
+      });
+
+      // Knopf 12 — Schwelle-Cut (alle unter 0.80)
+      SbkimUI.addButton("04_match", "Test 12: queryLocal Schwelle-Cut (alle < 0.80 → [])", async function () {
+        var ref = ensureQueryLocalSetup04C();
+        var corpus = [
+          { label: "Niedrig 1", anchorId: "x1", passageVec: mixedVec04C(ref, 0.30, 201) },
+          { label: "Niedrig 2", anchorId: "x2", passageVec: mixedVec04C(ref, 0.55, 202) },
+          { label: "Knapp drunter", anchorId: "x3", passageVec: mixedVec04C(ref, 0.78, 203) },
+        ];
+        var out = await SbkimMatch.queryLocal("Such-Text", 5, { corpus: corpus });
+        var ok = out.length === 0;
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Schwelle-Cut OK (leere Liste, kein Throw)" : "unerwartete Treffer");
+        return {
+          treffer_anzahl: out.length,
+          erwartung: "leere Liste (alle unter 0.80), KEIN Throw",
+          hinweis: "Modul 04 schweigt unter Schwelle (konsistent mit isAboveProviderThreshold).",
+        };
+      });
+
+      // Knopf 13 — Top-k-Cut mit k=2 von 5 Treffern über Schwelle
+      SbkimUI.addButton("04_match", "Test 13: queryLocal Top-k-Cut (k=2 von 5)", async function () {
+        var ref = ensureQueryLocalSetup04C();
+        var corpus = [];
+        var targets = [0.95, 0.92, 0.88, 0.85, 0.82];
+        for (var i = 0; i < targets.length; i++) {
+          corpus.push({
+            label: "T" + (i + 1),
+            anchorId: "t" + (i + 1),
+            passageVec: mixedVec04C(ref, targets[i], 300 + i),
+          });
+        }
+        var out = await SbkimMatch.queryLocal("Such-Text", 2, { corpus: corpus });
+        var ok = out.length === 2 &&
+                 out[0].label === "T1" &&
+                 out[1].label === "T2";
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Top-k-Cut OK (T1+T2)" : "falsche Treffer-Reihenfolge");
+        return {
+          treffer_anzahl: out.length,
+          treffer: out.map(function (r) {
+            return { label: r.label, score: Number(r.score.toFixed(4)) };
+          }),
+          erwartung: "exakt 2 Treffer (T1 + T2, höchste Scores), die anderen verworfen",
+        };
+      });
+
+      // Knopf 14 — Provider-Pfad via setLocalCorpus
+      SbkimUI.addButton("04_match", "Test 14: queryLocal Provider-Pfad (setLocalCorpus)", async function () {
+        var ref = ensureQueryLocalSetup04C();
+        var corpus = [
+          { label: "Über Provider", anchorId: "p1", passageVec: mixedVec04C(ref, 0.93, 401) },
+          { label: "Auch da",        anchorId: "p2", passageVec: mixedVec04C(ref, 0.86, 402) },
+          { label: "Drunter",        anchorId: "p3", passageVec: mixedVec04C(ref, 0.40, 403) },
+        ];
+        SbkimMatch.setLocalCorpus(corpus);
+        var registered = SbkimMatch._meta.localCorpusRegistered;
+        // queryLocal OHNE options.corpus → Provider liefert.
+        var out = await SbkimMatch.queryLocal("Such-Text", 5);
+        var ok = registered === true &&
+                 out.length === 2 &&
+                 out[0].label === "Über Provider";
+        // Cleanup: Provider entfernen, damit Test 15 (leerer Korpus)
+        // sauber startet.
+        SbkimMatch.setLocalCorpus(null);
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Provider-Pfad OK" : "Provider liefert nicht");
+        return {
+          provider_registriert: registered,
+          treffer_anzahl: out.length,
+          treffer: out.map(function (r) {
+            return { label: r.label, score: Number(r.score.toFixed(4)), anchorId: r.anchorId };
+          }),
+          erwartung: "Provider registriert, queryLocal ohne options.corpus liefert 2 Treffer",
+        };
+      });
+
+      // Knopf 15 — leerer Korpus + kein Provider
+      SbkimUI.addButton("04_match", "Test 15: queryLocal leerer Korpus (kein Throw)", async function () {
+        ensureQueryLocalSetup04C();
+        // Sicherstellen, dass kein Provider hängen geblieben ist.
+        SbkimMatch.setLocalCorpus(null);
+        var out1 = await SbkimMatch.queryLocal("Such-Text", 5, { corpus: [] });
+        var out2 = await SbkimMatch.queryLocal("Such-Text", 5);   // weder Provider noch options.corpus
+        var ok = out1.length === 0 && out2.length === 0 &&
+                 SbkimMatch._meta.localCorpusRegistered === false;
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "leerer Korpus OK (kein Throw)" : "unerwartetes Verhalten");
+        return {
+          mit_options_corpus_leer: out1.length,
+          ohne_provider: out2.length,
+          provider_registriert: SbkimMatch._meta.localCorpusRegistered,
+          erwartung: "beide leer (kein Throw), Provider entfernt",
         };
       });
     })();

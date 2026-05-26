@@ -10,11 +10,18 @@
  *   isAboveProviderThreshold(score) -> boolean
  *   matchDimensions(queryCap, queryNeeds, passageCap, passageNeeds) -> MatchDimensionsResult
  *   explainMatchLLM(matchResult, apiKey, options?) -> Promise<ExplainResult>
+ *   queryLocal(text, k?, options?) -> Promise<Array<{label, score, anchorId}>>
+ *   setLocalCorpus(corpus | provider) -> void   (Bau 04.C registriert Korpus-Quelle)
  *   PROVIDER_MIN_MATCH -> number   (0.80, gespiegelt aus INTERFACES.md §0)
  *   SCHICHT_MIN_MATCH -> number    (0.60, Bau 04.A, gespiegelt aus INTERFACES.md §0)
  *   DimensionsAllNullError -> ErrorFactory
  *   InvalidApiKeyError -> ErrorFactory       (Bau 04.B sync throw)
  *   InvalidMatchResultError -> ErrorFactory  (Bau 04.B sync throw)
+ *   EmptyQueryError -> ErrorFactory          (Bau 04.C sync throw)
+ *   QueryTooLongError -> ErrorFactory        (Bau 04.C sync throw)
+ *   InvalidKError -> ErrorFactory            (Bau 04.C sync throw)
+ *   EmbeddingNotAvailableError -> ErrorFactory (Bau 04.C sync throw)
+ *   InvalidCorpusError -> ErrorFactory       (Bau 04.C sync throw)
  *
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). Modul 04 has no async load step. See INTERFACES.md
@@ -42,6 +49,23 @@
  * `candidateScope:"netz"` wird still auf `"lokal"` korrigiert
  * (Anti-Missbrauch-Klausel § 8; entfällt erst mit Anker 10/11/12).
  * Spec-Quelle Brief 03 (PR #98) + Karte 04 § Stufe-B-Vertrag.
+ *
+ * Bau 04.C `queryLocal` (2026-05-26): lokales Such-Feld-Backend.
+ * Klaus' Such-Feld-Vision (bidirektionales Cross-Knoten-Matching-Anker).
+ * Modul 15 Sub (b) `op:"query"` postMessage-Bridge ruft seit Bau 15.B
+ * `SbkimMatch.queryLocal()` fail-soft (typeof-Check) — diese Bau-Sitzung
+ * schließt die Lücke, KEIN Code-Update in Modul 15 nötig.
+ * Signatur: queryLocal(text, k?, options?) → Promise<Array<{label,score,anchorId}>>.
+ * Async (Modul 03 lazy), Default k=5, hartcodierte Schwelle PROVIDER_MIN_MATCH=0.80.
+ * Korpus zwei Pfade: options.corpus (Vorrang, Test-Brücken) ODER
+ * registrierter Provider via setLocalCorpus(corpus|fn). Embedding via
+ * SbkimEmbedding.embedQuery (NICHT embedPassage). Top-k-Cut nach Filter
+ * (≥0.80) + Sort. Fünf Fehler-Pfade benannt (EmptyQueryError /
+ * QueryTooLongError / InvalidKError / EmbeddingNotAvailableError /
+ * InvalidCorpusError); leerer Korpus + alle-unter-Schwelle resolved
+ * mit [] ohne Throw. KEIN Netz-Aufruf, KEINE Korpus-Persistierung in
+ * Modul 04 (Endknoten-Pflicht). Spec-Quelle Karte 04 § Sub (c) +
+ * Tafel-Spec-Pflege Mycel-Vision 2026-05-26.
  */
 (function (global) {
   "use strict";
@@ -76,6 +100,24 @@
   }
   function InvalidMatchResultError(message) {
     return makeError("InvalidMatchResultError", message);
+  }
+
+  // Bau 04.C: sync Throws aus queryLocal-Vor-Check. Factory-Stil
+  // analog DimensionsAllNullError, deutsch-sprachige Messages.
+  function EmptyQueryError(message) {
+    return makeError("EmptyQueryError", message);
+  }
+  function QueryTooLongError(message) {
+    return makeError("QueryTooLongError", message);
+  }
+  function InvalidKError(message) {
+    return makeError("InvalidKError", message);
+  }
+  function EmbeddingNotAvailableError(message) {
+    return makeError("EmbeddingNotAvailableError", message);
+  }
+  function InvalidCorpusError(message) {
+    return makeError("InvalidCorpusError", message);
   }
 
   // Bau 04.B: modul-lokale Konstanten gespiegelt aus § 0 + Karte 04
@@ -542,16 +584,191 @@
     };
   }
 
+  // ---- Bau 04.C: queryLocal + Korpus-Provider ----
+  //
+  // Korpus-Quelle hat zwei Pfade (Karte 04 § Sub (c) § Datenquelle):
+  //   1. options.corpus (Vorrang — typisch Test-Brücken, einmaliger Aufruf)
+  //   2. registrierter Provider via setLocalCorpus(corpus|fn) (Endknoten-
+  //      Andocker ruft das einmal in init() auf)
+  // Wer keinen Korpus anbietet, kriegt `[]` zurück (kein Throw — leerer
+  // Korpus ist legitim, Endknoten ohne Daten).
+  var _localCorpusProvider = null;
+
+  // Validiert ein Korpus-Array gegen das Schema { label, anchorId?,
+  // passageVec:Float32Array(384) }. Sync, wirft InvalidCorpusError mit
+  // konkretem Hinweis. Wird vor jedem queryLocal-Score-Loop gerufen.
+  function validateCorpus(corpus) {
+    if (!Array.isArray(corpus)) {
+      throw InvalidCorpusError(
+        "Korpus muss ein Array sein, war: " + describe(corpus) + ".",
+      );
+    }
+    for (var i = 0; i < corpus.length; i++) {
+      var item = corpus[i];
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        throw InvalidCorpusError(
+          "Korpus[" + i + "] muss ein Objekt sein, war: " + describe(item) + ".",
+        );
+      }
+      if (typeof item.label !== "string" || item.label.length === 0) {
+        throw InvalidCorpusError(
+          "Korpus[" + i + "].label muss nicht-leerer String sein.",
+        );
+      }
+      if (!(item.passageVec instanceof Float32Array)) {
+        throw InvalidCorpusError(
+          "Korpus[" + i + "].passageVec muss Float32Array sein, war: " + describe(item.passageVec) + ".",
+        );
+      }
+      if (item.passageVec.length !== EMBEDDING_DIM) {
+        throw InvalidCorpusError(
+          "Korpus[" + i + "].passageVec hat Laenge " + item.passageVec.length +
+            ", erwartet " + EMBEDDING_DIM + " (siehe INTERFACES.md §0 EMBEDDING_DIM).",
+        );
+      }
+    }
+  }
+
+  // setLocalCorpus akzeptiert ein Array (defensiv kopiert) ODER eine
+  // Provider-Funktion (lazy lookup zur queryLocal-Zeit). null/undefined
+  // entfernen den Provider. Idempotent — wer mehrmals ruft, überschreibt.
+  function setLocalCorpus(corpusOrProvider) {
+    if (corpusOrProvider === null || corpusOrProvider === undefined) {
+      _localCorpusProvider = null;
+      return;
+    }
+    if (typeof corpusOrProvider === "function") {
+      _localCorpusProvider = corpusOrProvider;
+      return;
+    }
+    if (Array.isArray(corpusOrProvider)) {
+      // Defensive Kopie auf Array-Ebene (Items selbst bleiben Referenzen —
+      // Float32Array kopieren wäre teuer und semantisch unnötig).
+      var snapshot = Array.from(corpusOrProvider);
+      _localCorpusProvider = function () { return snapshot; };
+      return;
+    }
+    throw InvalidCorpusError(
+      "setLocalCorpus erwartet Array, Funktion oder null, war: " + describe(corpusOrProvider) + ".",
+    );
+  }
+
+  // queryLocal — lokale semantische Such-Funktion. Karte 04 § Sub (c).
+  // Async, weil Modul 03 (Embedding) lazy ist (~5–15 s beim ersten
+  // Aufruf, danach Cache-Hit). Reihenfolge:
+  //   1. Sync-Vor-Checks (Empty/TooLong/InvalidK/EmbeddingNotAvailable).
+  //   2. Korpus-Quelle ermitteln (options.corpus | _localCorpusProvider).
+  //      InvalidCorpusError sync vor Embedding (Performance + klare
+  //      Fehlerquelle).
+  //   3. Embedding via SbkimEmbedding.embedQuery (NICHT embedPassage —
+  //      Such-Texte sind Anfragen).
+  //   4. match() pro Korpus-Eintrag, filter >= PROVIDER_MIN_MATCH, sort
+  //      descending, slice(0, k).
+  // Returns: leere Liste bei leerem Korpus oder allen Treffern unter
+  // Schwelle (kein Throw — Aufrufer interpretiert leere Liste als
+  // „keine lokalen Treffer").
+  async function queryLocal(text, k, options) {
+    // 1. Sync-Vor-Checks.
+    if (typeof text !== "string" || text.length === 0) {
+      throw EmptyQueryError(
+        "queryLocal: 'text' muss nicht-leerer String sein, war: " + describe(text) + ".",
+      );
+    }
+    if (text.length > LLM_MAX_OUTPUT_CHARS) {
+      throw QueryTooLongError(
+        "queryLocal: 'text' ist " + text.length + " Zeichen lang, max " + LLM_MAX_OUTPUT_CHARS +
+          " (defensiv-Schutz gegen pathologische Inputs).",
+      );
+    }
+    var effectiveK = (k === undefined || k === null) ? 5 : k;
+    if (typeof effectiveK !== "number" || !isFinite(effectiveK) ||
+        effectiveK < 1 || Math.floor(effectiveK) !== effectiveK) {
+      throw InvalidKError(
+        "queryLocal: 'k' muss Integer >= 1 sein, war: " + describe(k) + ".",
+      );
+    }
+    var embedding = global.SbkimEmbedding;
+    if (!embedding || typeof embedding.embedQuery !== "function") {
+      throw EmbeddingNotAvailableError(
+        "queryLocal: window.SbkimEmbedding.embedQuery fehlt — Modul 03 ist nicht geladen.",
+      );
+    }
+
+    // 2. Korpus ermitteln (options.corpus hat Vorrang, dann Provider).
+    var opts = options || {};
+    var corpus;
+    if (Object.prototype.hasOwnProperty.call(opts, "corpus") && opts.corpus !== undefined) {
+      corpus = opts.corpus;
+    } else if (typeof _localCorpusProvider === "function") {
+      try {
+        corpus = _localCorpusProvider();
+      } catch (err) {
+        throw InvalidCorpusError(
+          "queryLocal: _localCorpusProvider hat geworfen: " + (err && err.message ? err.message : String(err)),
+        );
+      }
+    } else {
+      corpus = [];
+    }
+    validateCorpus(corpus);
+
+    // 3. Leerer Korpus → leere Liste, KEIN Embedding-Call, kein Throw.
+    if (corpus.length === 0) return [];
+
+    // 4. Embedding. Modul-03-Fehler werden mit `cause` rethrown.
+    var queryVec;
+    try {
+      queryVec = await embedding.embedQuery(text);
+    } catch (err) {
+      var failed = makeError(
+        "EmbeddingFailedError",
+        "queryLocal: SbkimEmbedding.embedQuery hat geworfen: " + (err && err.message ? err.message : String(err)),
+        err,
+      );
+      throw failed;
+    }
+    if (!(queryVec instanceof Float32Array) || queryVec.length !== EMBEDDING_DIM) {
+      throw makeError(
+        "EmbeddingFailedError",
+        "queryLocal: SbkimEmbedding.embedQuery lieferte unerwartete Form: " + describe(queryVec) +
+          " (Laenge " + (queryVec && queryVec.length) + ", erwartet Float32Array(" + EMBEDDING_DIM + ")).",
+      );
+    }
+
+    // 5. Score + Filter + Sort + Top-k.
+    var scored = [];
+    for (var i = 0; i < corpus.length; i++) {
+      var item = corpus[i];
+      var score = match(queryVec, item.passageVec);
+      if (score >= PROVIDER_MIN_MATCH) {
+        scored.push({
+          label: item.label,
+          score: score,
+          anchorId: (typeof item.anchorId === "string") ? item.anchorId : null,
+        });
+      }
+    }
+    scored.sort(function (a, b) { return b.score - a.score; });
+    return scored.slice(0, effectiveK);
+  }
+
   var SbkimMatch = {
     match: match,
     isAboveProviderThreshold: isAboveProviderThreshold,
     matchDimensions: matchDimensions,
     explainMatchLLM: explainMatchLLM,
+    queryLocal: queryLocal,
+    setLocalCorpus: setLocalCorpus,
     PROVIDER_MIN_MATCH: PROVIDER_MIN_MATCH,
     SCHICHT_MIN_MATCH: SCHICHT_MIN_MATCH,
     DimensionsAllNullError: DimensionsAllNullError,
     InvalidApiKeyError: InvalidApiKeyError,
     InvalidMatchResultError: InvalidMatchResultError,
+    EmptyQueryError: EmptyQueryError,
+    QueryTooLongError: QueryTooLongError,
+    InvalidKError: InvalidKError,
+    EmbeddingNotAvailableError: EmbeddingNotAvailableError,
+    InvalidCorpusError: InvalidCorpusError,
     _meta: {
       embeddingDim: EMBEDDING_DIM,
       providerMinMatch: PROVIDER_MIN_MATCH,
@@ -561,6 +778,9 @@
       stufeBMaxTokens: STUFE_B_MAX_TOKENS,
       anthropicApiUrl: ANTHROPIC_API_URL,
       anthropicApiVersion: ANTHROPIC_API_VERSION,
+      queryLocalDefaultK: 5,
+      queryLocalMaxTextLen: LLM_MAX_OUTPUT_CHARS,
+      get localCorpusRegistered() { return typeof _localCorpusProvider === "function"; },
     },
   };
 
@@ -572,7 +792,7 @@
   // Block nennt PROVIDER_MIN_MATCH und SCHICHT_MIN_MATCH.
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM, " +
+      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, " +
         "Schwellen: PROVIDER_MIN_MATCH=" + PROVIDER_MIN_MATCH +
         ", SCHICHT_MIN_MATCH=" + SCHICHT_MIN_MATCH,
     );

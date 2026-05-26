@@ -792,6 +792,38 @@ Bietet (öffentlich):
                                                                        // Fehlertolerant — siehe § Stufe-B-
                                                                        // Vertrag und § 7 LLM-Stufe-B-
                                                                        // Ehrlichkeits-Klausel.
+  queryLocal(text: string, k?: number,
+             options?: { corpus?: Array<{label,passageVec,anchorId?}> })
+                                                          → Promise<Array<{
+                                                                label:    string,
+                                                                score:    number,
+                                                                anchorId: string | null
+                                                              }>>
+                                                                       // async; Bau 04.C (Sub (c), 2026-05-26).
+                                                                       // Lokales Such-Feld-Backend. Embedding
+                                                                       // via Modul 03 `embedQuery`, Top-k-Cut
+                                                                       // nach Filter (>= PROVIDER_MIN_MATCH)
+                                                                       // + Sort descending. Default k=5.
+                                                                       // Korpus zwei Pfade: options.corpus
+                                                                       // (Vorrang) ODER registrierter
+                                                                       // Provider via setLocalCorpus.
+                                                                       // Fünf Sync-Throws (EmptyQueryError /
+                                                                       // QueryTooLongError / InvalidKError /
+                                                                       // EmbeddingNotAvailableError /
+                                                                       // InvalidCorpusError); leerer Korpus
+                                                                       // und alle-unter-Schwelle resolved
+                                                                       // mit [] (kein Throw). Cross-Knoten-
+                                                                       // Search-Hook auf Modul 15 Sub (b)
+                                                                       // ohne Code-Update (typeof-Check).
+  setLocalCorpus(corpusOrProvider: Array | Function | null)  → void
+                                                                       // sync; Bau 04.C. Registriert
+                                                                       // Korpus-Quelle für queryLocal.
+                                                                       // Array → defensive Array-Kopie via
+                                                                       // Array.from. Function → lazy lookup
+                                                                       // zur queryLocal-Zeit. null → Provider
+                                                                       // entfernt. Idempotent (mehrfach
+                                                                       // rufbar). Wirft InvalidCorpusError
+                                                                       // sync bei anderem Argument-Typ.
   PROVIDER_MIN_MATCH                                       : number    // 0.80, aus §0 hierher gespiegelt
   SCHICHT_MIN_MATCH                                        : number    // 0.60, aus §0 hierher gespiegelt (M04-Erweiterung)
 
@@ -799,9 +831,10 @@ Bietet (öffentlich):
   Parameter-Namen sind reine Lese-Hilfe für den Aufrufer. Reine Funktion,
   kein Promise, kein async.
   `matchDimensions` ist ebenfalls sync (drei Cosinus-Aufrufe + Gewichtung),
-  kein Promise. `explainMatchLLM` ist der einzige async-Pfad und der
-  einzige, der Netz berührt — alle anderen Modul-04-Funktionen sind
-  zustandslos und lokal.
+  kein Promise. `explainMatchLLM` ist der einzige async-Pfad, der Netz
+  berührt. `queryLocal` ist async (wegen Modul 03 lazy), aber rein
+  lokal — KEIN Netz-Aufruf, KEINE Korpus-Persistierung. `setLocalCorpus`
+  ist sync.
 
 Nutzt:
   (keine SBKIM-Module zur Laufzeit — vertraut auf die L2-Norm-Garantie
@@ -816,8 +849,9 @@ Events:
 
 Selbstcheck:
   Beim Skript-Laden (synchron, sofort beim <script>-Tag-Auswerten):
-    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold, Schwelle: PROVIDER_MIN_MATCH=0.80");
+    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
   Wie Modul 01 — Modul 04 hat keinen asynchronen Lade-Schritt.
+  (Format-Stand seit Bau 04.C 2026-05-26 — fünf Funktionen, zwei Schwellen.)
 
 Fehlerverhalten:
   - Eingabe ist nicht Float32Array            → InvalidVectorError  (sync throw)
@@ -851,6 +885,28 @@ Fehlerverhalten:
                                                 LLM-Antwort still — kein Halb-Resultat.
   - explainMatchLLM: abortSignal triggert      → AbortError (Standard-DOM-Verhalten, durchgereicht).
                                                 Aufrufer ist verantwortlich, das aufzufangen.
+  - queryLocal: text leer / kein String        → EmptyQueryError (sync throw vor Embedding).
+  - queryLocal: text länger als LLM_MAX_OUTPUT_CHARS (4096 Zeichen)
+                                              → QueryTooLongError (sync throw, defensiv-Schutz
+                                                gegen Pathological-Inputs).
+  - queryLocal: k kein Integer >= 1            → InvalidKError (sync throw).
+  - queryLocal: SbkimEmbedding / embedQuery fehlt
+                                              → EmbeddingNotAvailableError (sync throw,
+                                                vor Korpus-Check).
+  - queryLocal: corpus kein Array oder Item-Schema falsch
+    (label kein String, passageVec kein Float32Array(384))
+                                              → InvalidCorpusError (sync throw).
+  - queryLocal: leerer Korpus / alle Treffer < PROVIDER_MIN_MATCH
+                                              → KEIN Throw. Resolved mit leerer Liste `[]`.
+                                                Aufrufer (typisch Modul 15 Sub b)
+                                                interpretiert das als „keine Cross-Knoten-Treffer".
+  - queryLocal: embedQuery Promise rejected (Modell-Lade-Fehler)
+                                              → EmbeddingFailedError (async rethrow mit
+                                                ursprünglicher Cause).
+  - queryLocal: embedQuery liefert unerwartete Form (kein Float32Array(384))
+                                              → EmbeddingFailedError (async).
+  - setLocalCorpus: Argument kein Array / Function / null
+                                              → InvalidCorpusError (sync throw).
 
 Garantien für Modul 05 / 06 / 07 / 08:
   - match() ist deterministisch und reproduzierbar (kein RNG, kein Zeit-Effekt).
@@ -869,8 +925,20 @@ Garantien für Modul 05 / 06 / 07 / 08:
     sendet sie nicht über das Netz, und der Aufrufer ist an die
     Anti-Missbrauch-Klausel in § 8 gebunden (candidateScope:"netz" ist
     formal nicht aktivierbar bis Anker 10-12 gebaut sind).
+  - queryLocal() ist async, aber rein lokal — KEIN Netz-Aufruf,
+    KEINE Korpus-Persistierung in Modul 04 (Endknoten-Pflicht). Modul 04
+    nimmt fertige `passageVec`-Vektoren entgegen, analog `match()`
+    § Macht nicht. Cross-Knoten-Search-Hook auf Modul 15 Sub (b) ohne
+    Code-Update — Modul 15 prüft `typeof window.SbkimMatch.queryLocal
+    === "function"` fail-soft, der Empfänger-Pfad greift automatisch
+    sobald Modul 04.C geladen ist.
+  - setLocalCorpus() ist idempotent (mehrfach rufbar). Array-Variante
+    macht eine defensive Array-Kopie via `Array.from` (Items selbst
+    bleiben Referenzen — Float32Array zu kopieren wäre teuer und
+    semantisch unnötig). Function-Variante: lazy-lookup zur queryLocal-
+    Zeit. null entfernt den Provider.
 
-Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04), 2026-05-19 (Spec-Sitzung M04-Erweiterung — Brief 03 der V1-Sammelspec-Kaskade — drei Schichten, Brücken-Feld, Stufe-A/Stufe-B-Pipeline additiv), 2026-05-19 (Bau 04.A `matchDimensions` sync), 2026-05-20 (Bau 04.B `explainMatchLLM` produktiv — Stufe-B-LLM-Pass gegen Anthropic-API, JSON-only-Output, strikte Schema-Validierung, fail-soft; zwei sync Throws InvalidApiKeyError + InvalidMatchResultError; candidateScope:"netz" still auf "lokal" korrigiert)
+Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04), 2026-05-19 (Spec-Sitzung M04-Erweiterung — Brief 03 der V1-Sammelspec-Kaskade — drei Schichten, Brücken-Feld, Stufe-A/Stufe-B-Pipeline additiv), 2026-05-19 (Bau 04.A `matchDimensions` sync), 2026-05-20 (Bau 04.B `explainMatchLLM` produktiv — Stufe-B-LLM-Pass gegen Anthropic-API, JSON-only-Output, strikte Schema-Validierung, fail-soft; zwei sync Throws InvalidApiKeyError + InvalidMatchResultError; candidateScope:"netz" still auf "lokal" korrigiert), 2026-05-26 (Bau 04.C `queryLocal` produktiv — lokales Such-Feld-Backend, async via Modul 03 lazy, Default k=5, hartcodierte Schwelle 0.80, Korpus zwei Pfade options.corpus + setLocalCorpus-Provider, fünf neue Sync-Throws, leerer Korpus + unter-Schwelle → leere Liste ohne Throw, Cross-Knoten-Hook auf Modul 15 Sub (b) ohne Code-Update; Headless-Smoke 43/43 grün; Sichttest ungeprüft)
 
 #### Drei-Schichten-Modell (M04-Erweiterung)
 
@@ -4714,4 +4782,7 @@ PULS § Vision-Anker 4 (Königin-Relay), PULS § Vision-Anker 5
 | 2026-05-25 | Pflege Karte 09 § Schritt 12 — Floating-Widget als Endknoten-Standard | Folge-Pflege nach Bau-Sitzung 17 (PR #166) + drei UX-Pflegen 17 (PR #167/#168/#169) am 2026-05-25 gemerged. **Reine Doku-Pflege, KEIN Modul-Code-Eingriff** — Karte 09 erweitert: (1) § Andock-Schritt-Pfad-Überschrift "elf Schritte → elf Schritte + Render-Schicht Schritt 12". (2) Hinweis-Block vor Schritt 10 + 11 — Schritte sind ab sofort Sage-Page-Pfad; Endknoten nutzen Schritt 12 (Floating-Widget) als einheitlichen Render-Pfad mit Click-Handler-Bridge via Proxy-Spans. Schritte 10 + 11 inhaltlich UNVERÄNDERT (Referenz für Sage-Page + Forker mit Navleisten-Bevorzugung). (3) Neuer **Schritt 12 — Floating-Widget (Modul 17, Endknoten-Standard)** zwischen Schritt 11 und § Sichtkontrolle: Drei-Zeilen-Einbau (Modul-Datei-Kopie + `<script>`-Tag + `SbkimWidget.init({allowedOrigins, repoUrl})`); **Init-Reihenfolge-Pflicht** prominent (SbkimWidget.init() MUSS VOR SbkimMembrane.init() / SbkimSiegel.init() — sonst finden Modul 15/16 die Proxy-Spans nicht); Erwartung-Block; Theme-Anpassung via CSS-Variablen-Override + theme:"transparent"; Fallback-Hinweis auf Schritte 10 + 11 für Forker mit Navleisten-Bevorzugung. **KEINE Spec-Änderung an Karte 15 / 16 / 17 / INTERFACES § 1 Modul 15 / 16 / 17.** **Keine Tafel-Umsortierung in CLAUDE.md § Pipeline-Reihenfolge.** **`status.json` Modul 09 unverändert** (Pie nicht regeneriert — additiv im Andock-Pfad, kein Modul-Bau, kein Score-Wechsel). Karte 09 § Bauzustand neue Zeile. Übergabeprotokoll `docs/sessions/archiv/2026-05-25_pflege-09-widget-einbau.md`. |
 | 2026-05-26 | Pflege 17 Tooltips + Self-Heartbeat | Zwei Befunde aus Endknoten-Re-Migrationen Mein-Rezeptbuch (PR #246) + Mein-Mixarium 2026-05-26. **(1) Doppel-Tooltips fix:** `title`-Attribut auf Slot-Buttons + Minimize/Close-Knöpfen weggelassen (buildSlotButton + buildWidget + applyMinimizedState). aria-label trägt vollen Tooltip-Text. Browser-Standard-Tooltip auf DeX-Chrome via title triggerte zusammen mit Android-Touch-Bubble doppel-Anzeige nur auf rechten Slots (FREMD/SIEGEL/Minimize/Close), weil linke Slots (LEBT/VERKEHR) sofort eigene Modul-17-Modals öffneten und der longpress-Pfad nicht ausgelöst wurde. **(2) Self-Heartbeat-Fallback:** neue Konstante `SELF_HEARTBEAT_DELAY_MS=5000`, neue Funktion `scheduleSelfHeartbeat()` in `init()` — wenn 5 s nach init `eventCounts.alive===0` UND `window.SbkimSpore._meta.ready===true`, dispatcht Modul 17 selbst ein synthetisches `sbkim:alive` mit `detail.synthetic:true` und `detail.nodeId:null`. Anti-Greenwashing intakt — ohne SbkimSpore.ready KEIN dispatch. `_meta` um `selfHeartbeatFired` + `selfHeartbeatDelayMs`. Architektur-Entscheidung: Option (b) Klaus-Brief — Modul 02 bleibt unangetastet. Schema-Erweiterung in Karte 17 additiv (`synthetic` + `nodeId:null` als erlaubte Werte). Headless-Smoke 28→32 Proben, 32/32 grün; Modul-15-Regression 31/31 grün; node --check grün. KEIN Modul-02/05/15/16-Eingriff, KEIN PROTOCOL_VERSION-/DB_VERSION-Bump, KEINE Sage-Page-Änderung. KEINE Tafel-Umsortierung CLAUDE.md. status.json Modul 17 unverändert (bleibt `score:"stub"`). Endknoten-Hinweis im PR-Body: Mein-Rezeptbuch + Mein-Mixarium sollen sbkim/17_floating_widget.js auf den neuen Sage-Commit nachziehen. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_pflege-17-tooltips-und-heartbeat.md`. |
 
+| 2026-05-26 | Bau-Sitzung 04.C `queryLocal` + Hub-Vorlage | **Bau-Sitzung Phase A Pipeline-Schritt 5f.** Brief `BRIEF_BAU_04C_QUERY_LOCAL.md`. **§ 1 Modul 04 Bietet-Block** um zwei neue Funktionen erweitert: `queryLocal(text, k?, options?) → Promise<Array<{label,score,anchorId}>>` (async via Modul 03 lazy, Default k=5, hartcodierte Schwelle `PROVIDER_MIN_MATCH=0.80`, Korpus zwei Pfade `options.corpus` Vorrang + registrierter Provider, Top-k-Cut nach Filter+Sort, Cross-Knoten-Search-Hook auf Modul 15 Sub (b) ohne Code-Update) + `setLocalCorpus(corpusOrProvider) → void` (sync, idempotent, akzeptiert Array/Function/null, defensive Array-Kopie via Array.from). **§ 1 Modul 04 Fehlerverhalten** um zehn Zeilen erweitert (EmptyQueryError / QueryTooLongError / InvalidKError / EmbeddingNotAvailableError / InvalidCorpusError / leerer Korpus + alle-unter-Schwelle → leere Liste ohne Throw / EmbeddingFailedError async rethrow + Bad-Shape-Check / setLocalCorpus-Argument-Throw). **§ 1 Modul 04 Selbstcheck-Zeile** auf fünf Funktionen aktualisiert. **§ 1 Modul 04 Garantien-Block** um queryLocal-Lokalität + setLocalCorpus-Idempotenz erweitert. **§ 1 Modul 04 Geprüft-Zeile** um Bau 04.C 2026-05-26 erweitert. **Code in `src/modules/04_match.js` additiv** (keine bestehende Funktion verändert): fünf neue Fehler-Factories (EmptyQueryError, QueryTooLongError, InvalidKError, EmbeddingNotAvailableError, InvalidCorpusError), Closure-State `_localCorpusProvider`, sync-Helper `validateCorpus` (Array-Check + Item-Schema-Check), neue Public-Funktionen `queryLocal` (async) + `setLocalCorpus` (sync). `_meta` um `queryLocalDefaultK:5` + `queryLocalMaxTextLen:4096` + Live-Getter `localCorpusRegistered` erweitert. Selbstcheck-Zeile aktualisiert. **Panel 04** in `tests/manual_check.html` um fünf Knöpfe erweitert (Test 11–15: Happy-Path / Schwelle-Cut / Top-k-Cut / Provider-Pfad / leerer Korpus). SbkimEmbedding wird im Test-Setup gemockt (deterministischer LCG-Referenz-Vektor 384-dim, KEINE Modell-Lade). **Headless-Smoke** `tests/smoke_bau04c_query_local.mjs` mit 12 Probengruppen + Sync-Throws + Provider-Pfade + defensive Kopie: **43 Sub-Proben, 43 grün.** Regression smoke_bau04a 19/19 + smoke_bau04b 30/30 + smoke_bau15b 31/31 + smoke_bau17 32/32 weiterhin grün. **PROTOCOL_VERSION** / **DB_VERSION** / **BACKUP_FORMAT_VERSION** unverändert. KEIN Modul-15-Eingriff (fail-soft-Pattern greift automatisch). KEIN Modul-03-Eingriff. KEINE Korpus-Persistierung in Modul 04 (Endknoten-Pflicht). **`status.json` Modul 04 bleibt `score:"stub"`** — Score-Wechsel folgt nach Klaus' Sichttest Panel 04 Knöpfe 11–15 (analog Bau 04.B). **Karte 18 § Such-Feld-Integration-Pattern** voll ausgeführt: Stichwort/Semantik-Klassifikations-Heuristik (≤3 Wörter ohne Fragezeichen + Bridge-Words → Stichwort lokal; sonst → Semantik queryLocal + Cross-Knoten), Code-Schnipsel klassifizieren + senden, Resultat-Liste-UI-Pattern mit zwei Sektionen, Anker-Pfad-Konvention via `#anchor=…` URL-Fragment, Edge-Cases (Timeout / kein Sibling / Schwelle leer). **Hub-Landing-Page-Vorlage** in `docs/components/_sb_kim_tool_point_template/` angelegt (index.html, status.json, README.md, sbkim/spore.json, EINBAU.md) — KEIN Push ins externe Repo `lausiklauskn-png/SB-KIMTool-Point`, kopierfertig für Klaus' Folge-Sitzung. **Drei Folge-Briefe** in `docs/sessions/`: `BRIEF_BAU_ENDKNOTEN_SUCHFELD_MR.md`, `BRIEF_BAU_ENDKNOTEN_SUCHFELD_MM.md`, `BRIEF_BAU_HUB_SB_KIMTOOL_POINT_INITIAL.md`. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_bau-04c-suchfeld-und-hub-vorlage.md`. |
+
 | 2026-05-26 | Tafel-Spec-Pflege Mycel-Vision | **Reine Doku-Pflege**, KEIN Modul-Code-Eingriff. Auslöser: Klaus' Vision-Klärung 2026-05-26 (Such-Feld als bidirektionales Cross-Knoten-Matching-Anker; mehrstufige Mycel-Architektur Sage → Starter-Bundle → Externer Hub → Forker-PWAs). **Karte 04** § Sub (c) `queryLocal` voll spec'd (Signatur `queryLocal(text, k?, options?) → Promise<Array<{label,score,anchorId}>>`, async via Modul 03 lazy, Default k=5, hartcodierte Schwelle `PROVIDER_MIN_MATCH=0.80`, Korpus zwei Pfade `options.corpus` + `_corpusProvider`-Callback via `setLocalCorpus`, Top-k-Cut nach Filter+Sort, fünf Fehler-Pfade benannt, Performance-Reserve < 10000 Einträge, Cross-Knoten-Search-Hook auf Modul 15 Sub (b) ohne Code-Update). Selbstcheck-Zeile künftig fünf Funktionen. **Karte 16** § Sub (e) Mycel-Verbindungs-Stufe voll spec'd (zweistufiger SIEGEL Bronze/Gold, Modul-16-Listener auf `sbkim:handshake outcome:"established"`, RAM-only `_meta.mycelConnected`, visuelle Unterscheidung gedämpfter Bronze-Ton via saturate(0.6)-filter + Stufenwechsel-Animation 600 ms, Klick in Bronze öffnet Modul-18-Andock-Geste mit Hinweis-Block); Aspekt 4 „Mycel-Verbindung etabliert (erster Handshake)" in ZERTIFIKAT_ASPEKTE-Liste verankert mit dynamischer Render-Variante (vor Handshake als „pending" markiert). § Strikte Tabus Klausel „Keine Stufen-Varianten" auf „Bronze/Gold-Stufung erlaubt seit 2026-05-26" angepasst (Tafel-Anpassung mit explizitem Anpassungs-Antrag; Silber/Platin/weitere bleiben verboten). **Karte 18** Sub-Bereiche von 5 (a–e) auf 9 (a–i) erweitert: Sub (a) Andocken 4-Schritt-Workflow präzisiert + Empfangsmodus-Klausel; Sub (b) NEU Heterokaryose (ersetzt alte „Sporen-Installation"); Sub (c)–(e) bleiben; Sub (f) NEU Sporen NEU generieren; Sub (g) NEU Re-Embedding; Sub (h) NEU Manueller Handshake-Trigger (triggert SIEGEL Bronze→Gold); Sub (i) NEU Spore-Discovery (Sage / Externer Hub / Manuelle-URL). Neuer Karten-Abschnitt § Such-Feld-Integration-Pattern mit Pepo-Demo-Studie als Referenz (Symmetrie-Anforderung + Score-Ring + Drei-Dimensionen + Match-/Differenz-Listen sind übernehmbar; WebRTC/PeerJS-Transport + Claude-API-zentrale-Match-Engine + Tablet-Hub-Modell NICHT übernehmbar). § Schnittstelle `options.enabledTabs` von 5 auf 9 Werte erweitert + `externalHubUrl`. **Drei neue Stub-Karten** angelegt: `docs/components/19_andock_wizard.md` (Andock-Wizard als kopierbares JS-Modul, extrahiert aus Sage-Page-Wizard-Code in `index.html` Z. ~969–991), `docs/components/_starter_bundle.md` (Modul-Distributions-Repo, eigenes GitHub-Repo `sbkim-starter`-Vorschlag), `docs/components/_mycel_hub.md` (öffentliches Observatorium light für Forker, eigenes GitHub-Repo `sbkim-hub`-Vorschlag, mit eingebettetem Modul 19). **Drei neue Briefe**: `BRIEF_BAU_04C_QUERY_LOCAL.md` (Phase-A-Bau), `BRIEF_SPEC_19_ANDOCK_WIZARD.md` (Phase-B-Spec), `BRIEF_SPEC_18_TOOL_PWA.md` aktualisiert (Sub-Bereiche 9-Liste + Such-Pattern-Pflicht). **CLAUDE.md** § Pipeline-Reihenfolge erweitert um Phase A (Schritte 5e–5j) + Phase B (Schritte 7–9) + Phase C (Schritte 10–12); § Modul-Tabelle um Modul 18 (Schablone 9-Sub) + Modul 19 (Schablone) erweitert. **`status.json`** neuer `mycelHubBacklog`-Pool mit Modul 19 + `_starter_bundle` + `_mycel_hub` (alle `score:"schablone"`); Modul 04 + 16 + 18 bleiben mit ihrem bisherigen Score (additive Spec-Erweiterung, kein Code-Bau). `scripts/update_puls_pie.py` um `mycelHubBacklog`-Pool erweitert + `python3 scripts/update_puls_pie.py` aufgerufen. **KEIN Modul-Code**, KEIN Endknoten-Eingriff, KEINE Sage-Page-Änderung (`index.html` nur als Code-Vorlage für Modul 19 referenziert), KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump, KEIN Modul-02/05/15/17-Eingriff. **Pepo-Demo-URL-Befund**: lausiklauskn-png/semantic-match-demo enthält bidirektionale Match-UI (Vier-Feld-Eingabe, Score-Ring, drei Dimensionen) als Pattern-Vorlage, aber KEINE Sporen/Hub/lokales-Embedding-Architektur — diese sind Sage-eigene Erweiterungen. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_tafel-spec-mycel-vision.md`. |
+
