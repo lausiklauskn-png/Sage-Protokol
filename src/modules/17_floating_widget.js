@@ -419,10 +419,13 @@
       "  outline: none;",
       "  border-radius: 999px;",
       "  max-width: 220px;",
-      // Pflege 17 lamp-breath 2026-05-26: overflow nicht hier per Default —
-      // sonst clippt der lamp-breath-Atmungs-Ring bei scale(1.5) und
-      // Klaus sieht nur einen Halbbogen statt einer rundlaufenden Welle.
-      // overflow:hidden wird nur für minimized-State unten gesetzt.
+      // Pflege 17 lamp-breath 2026-05-26: overflow:visible explizit
+      // überschreibt Chrome's User-Agent-`button { overflow: hidden }`-
+      // Default, sonst clippt der Browser den `::after`-Atmungs-Ring an
+      // den Button-Kanten (Klaus' Sichttest: Ring nur als Halbbögen
+      // oben/unten sichtbar). overflow:hidden wird nur im minimized-
+      // State unten gesetzt.
+      "  overflow: visible;",
       "  transition: background 180ms ease, max-width 280ms ease, opacity 220ms ease, margin 280ms ease, padding 280ms ease, transform 280ms ease;",
       "}",
       // overflow:hidden NUR im minimierten Zustand, damit max-width:0 sauber clippt.
