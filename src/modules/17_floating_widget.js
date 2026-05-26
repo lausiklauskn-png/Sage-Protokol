@@ -544,9 +544,13 @@
       "  line-height: 1;",
       "  pointer-events: none;",
       "}",
+      // Atmungs-Ring auf .sbkim-widget-slot.{lebt,fremd}.active::after.
+      // Beachte: die ::after-Regeln nutzen `top:50%; transform:translateY(-50%);`
+      // zur vertikalen Zentrierung — die Animation muss diesen translateY
+      // bewahren, sonst springt der Ring beim Start in die Ecke.
       "@keyframes sbkim-widget-lamp-breath {",
-      "  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.45; }",
-      "  50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }",
+      "  0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.45; }",
+      "  50% { transform: translateY(-50%) scale(1.5); opacity: 0; }",
       "}",
       "@keyframes sbkim-widget-lamp-pulse {",
       "  0% { box-shadow: 0 0 0 0 rgba(244, 180, 53, 0.7); transform: scale(1); }",
