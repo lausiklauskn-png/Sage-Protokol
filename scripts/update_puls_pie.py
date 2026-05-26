@@ -4,8 +4,9 @@
 Aufruf:  python3 scripts/update_puls_pie.py
 
 Liest status.json (modules + schutzBacklog + diffusionBacklog +
-membranBacklog + siegelBacklog), zaehlt pro score-Wert und ersetzt den
-existierenden ```mermaid / pie showData / ...```-Block in docs/PULS.md.
+membranBacklog + siegelBacklog + toolPwaBacklog + mycelHubBacklog),
+zaehlt pro score-Wert und ersetzt den existierenden
+```mermaid / pie showData / ...```-Block in docs/PULS.md.
 Datum kommt aus status.json.lastUpdated.
 
 Idempotent: mehrfacher Aufruf erzeugt keine Drift.
@@ -46,6 +47,7 @@ def count_statuses(status):
         + status.get("membranBacklog", [])
         + status.get("siegelBacklog", [])
         + status.get("toolPwaBacklog", [])
+        + status.get("mycelHubBacklog", [])
     )
     for module in pool:
         score = module.get("score")
