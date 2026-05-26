@@ -1811,6 +1811,78 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-26 · Pflege 17 Widget-Bronze/Gold-Render (Sub-(e)-Folge-Pflege 1/3)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-17-widget-bronze-gold-render`. Erste der drei Sub-(e)-
+Folge-Pflegen aus der Endknoten-Sichttest-Bilanz vom 2026-05-26.
+
+**Anlass:** Klaus' Befund aus dem Cross-Knoten-Sub-(e)-Sichttest:
+das Floating-Widget Modul 17 rendert den SIEGEL-Slot-Button **stufen-
+unabhängig** als Gold-Medaillon. Modul 16's `data-stufe="bronze"`/
+`"gold"`-Attribut wirkt nur am unsichtbaren Widget-Proxy-Span im
+Inneren, nicht am sichtbaren Slot-Button. → kein visueller
+Bronze/Gold-Unterschied im Slot.
+
+**Was getan:**
+
+- **`src/modules/17_floating_widget.js` additiv** erweitert (KEIN
+  Bruch der Public-Surface, KEINE Refactoring):
+  - Neuer Closure-State `siegelStufeRendered` + `siegelStufenwechselTimeoutId`.
+  - Neuer Helper `getCurrentSiegelStufe()` (fail-soft Lookup auf
+    `SbkimSiegel._meta.siegelStufe`, Default `"bronze"`).
+  - Neuer Helper `applySiegelStufe(stufe, withAnimation)`: setzt
+    `data-siegel-stufe`-Attribut + idempotent Stufenwechsel-Klasse
+    für 600 ms.
+  - `mountSiegelSlot()` ruft `applySiegelStufe(initial, false)` nach
+    Slot-Mount.
+  - `onHandshake()` ruft via `setTimeout(0) { applySiegelStufe(getCurrentSiegelStufe(), true) }` —
+    der setTimeout-Trick verschiebt den Lookup ans Event-Loop-Ende,
+    damit Modul 16's Listener garantiert gelaufen ist.
+- **`buildCss()`-Block erweitert** um vier neue Regeln (Bronze:
+  `filter:saturate(0.5) brightness(0.78)` am ::before + Glyph; Gold:
+  `filter:none`) + neuer Keyframe `sbkim-widget-siegel-stufenwechsel`
+  (600 ms Skalierungs-Puls 1.0→1.35→1.0 mit Gold-Glow).
+- **`_meta`** um Live-Getter `siegelStufeRendered` erweitert.
+- **Panel 17** in `tests/manual_check.html` um Knöpfe 13+14 erweitert
+  (Bronze-Initial + synthetischer Handshake → Gold-Wechsel).
+- **Headless-Smoke** `tests/smoke_bau17_floating_widget.mjs` von 32 →
+  **34 Proben**, 34/34 grün.
+- **Regression** smoke_bau15b 31/31 + smoke_bau16_sub_e_bronze 15/15
+  grün.
+- **node --check** Modul 17 + alle 13 Inline-Scripts grün.
+- Karte 17 § Bauzustand + INTERFACES.md § 1 Modul 17 Geprüft + § 10
+  Änderungsprotokoll nachgezogen.
+- `status.json` Modul 17 unverändert (bleibt `stub`); Pie nicht
+  regeneriert.
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-16-Eingriff (Modul 16's Sub-(e)-Logik unangetastet).
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+- KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Render-Schicht-Pflege, kein
+  Sicherheits-Modul).
+- KEIN Endknoten-Eingriff.
+- KEINE Tafel-Umsortierung CLAUDE.md.
+
+**Was offen blieb:**
+
+- **Endknoten-Update-Pflege** pro MR + MM: neuer Modul-17-Code aus
+  Sage-`main` in die Endknoten ziehen (kombinierbar mit anderen
+  Sub-(e)-Folge-Pflegen Modul-05-Update + Modal-Local-Time).
+- **Klaus' Browser-Sichttest** Panel 17 Knöpfe 13+14 in DeX-Chrome.
+- Sub-(e)-Folge-Pflegen 2 (Endknoten-Modul-05-Update) + 3 (Modul 16
+  Modal-Local-Time) stehen aus.
+
+**Nächster sinnvoller Schritt:** Pflege Endknoten-Modul-05-Update
+(zwei externe Bau-Sitzungen MR + MM, Brief liegt
+`BRIEF_PFLEGE_ENDKNOTEN_MODUL_05_UPDATE.md`). Macht den manuellen
+Eruda-Dispatch aus dem Sub-(e)-Sichttest überflüssig.
+
+**Übergabeprotokoll:** `docs/sessions/archiv/2026-05-26_pflege-17-widget-bronze-gold-render.md`.
+
+---
+
 ### 2026-05-26 · Endknoten-Sichttest Cross-Knoten Sub (e) + drei Folge-Briefe
 
 **Sitzungs-Rolle:** Pflege-Sitzung Sichttest-Bilanz. Branch

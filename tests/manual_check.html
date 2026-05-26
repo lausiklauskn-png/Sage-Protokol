@@ -4797,6 +4797,61 @@
         };
       });
 
+      SbkimUI.addButton("17_floating_widget", "Test 13: SIEGEL-Slot Bronze-Initial (Sub (e) Render)", async function () {
+        // Erwartet: Slot ist im DOM (Modul 16 muss vorher initialisiert haben);
+        // data-siegel-stufe="bronze", siegelStufeRendered="bronze".
+        var slot = document.getElementById("sbkim-widget-slot-siegel");
+        if (!slot) {
+          SbkimUI.setStatus("17_floating_widget", "err",
+            "Test 13 nicht ausführbar — SIEGEL-Slot nicht im DOM. Stelle sicher, dass Modul 16 initialisiert ist (siehe Setup).");
+          return { hinweis: "SIEGEL-Slot fehlt — Modul 16 nicht ready oder isCertified()===false." };
+        }
+        var dataStufe = slot.getAttribute("data-siegel-stufe");
+        var renderedGetter = SbkimWidget._meta.siegelStufeRendered;
+        // Vor-Reset auf Bronze (falls Modul 16 Sub (e) verfügbar ist).
+        if (window.SbkimSiegel && typeof SbkimSiegel._resetMycelConnectedForTest === "function") {
+          SbkimSiegel._resetMycelConnectedForTest();
+          // Modul 17 lauscht nicht eigenständig auf reset — manuell triggern via leerem Re-Apply.
+          // Wir prüfen den Zustand direkt nach Mount, nicht nach Reset.
+        }
+        var pass = dataStufe === "bronze" && renderedGetter === "bronze";
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Bronze-Initial OK" : "Test 13 fehlgeschlagen");
+        return {
+          data_siegel_stufe:        dataStufe,
+          siegel_stufe_rendered:    renderedGetter,
+          erwartung: "Nach SIEGEL-Slot-Mount initial: data-siegel-stufe=\"bronze\" + _meta.siegelStufeRendered=\"bronze\".",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 14: Bronze→Gold via sbkim:handshake + Stufenwechsel-Klasse", async function () {
+        var slot = document.getElementById("sbkim-widget-slot-siegel");
+        if (!slot) {
+          SbkimUI.setStatus("17_floating_widget", "err",
+            "Test 14 nicht ausführbar — SIEGEL-Slot nicht im DOM.");
+          return { hinweis: "SIEGEL-Slot fehlt." };
+        }
+        // Synthetischer Handshake-Event dispatchen. Modul 16 wechselt Bronze→Gold,
+        // Modul 17 lauscht und re-rendert nach setTimeout(0).
+        window.dispatchEvent(new CustomEvent("sbkim:handshake", {
+          detail: { outcome: "established", peerNodeId: "test-peer", direction: "outgoing" },
+        }));
+        // setTimeout(0) im Modul-17-onHandshake durchlaufen lassen.
+        await new Promise(function (r) { setTimeout(r, 30); });
+        var dataStufeNach = slot.getAttribute("data-siegel-stufe");
+        var klasseStufenwechselGesetzt = slot.classList.contains("sbkim-widget-siegel-stufenwechsel");
+        var renderedGetter = SbkimWidget._meta.siegelStufeRendered;
+        var pass = dataStufeNach === "gold" &&
+                   klasseStufenwechselGesetzt === true &&
+                   renderedGetter === "gold";
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Bronze→Gold + Animation OK" : "Test 14 fehlgeschlagen");
+        return {
+          data_siegel_stufe_nach:       dataStufeNach,
+          klasse_stufenwechsel_gesetzt: klasseStufenwechselGesetzt,
+          siegel_stufe_rendered:        renderedGetter,
+          erwartung: "Nach Dispatch: data-siegel-stufe=\"gold\", Klasse `.sbkim-widget-siegel-stufenwechsel` für 600 ms gesetzt, _meta.siegelStufeRendered=\"gold\".",
+        };
+      });
+
       SbkimUI.addButton("17_floating_widget", "Selbstcheck Konsole prüfen", async function () {
         SbkimUI.log("17_floating_widget",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");

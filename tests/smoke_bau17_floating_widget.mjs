@@ -702,6 +702,43 @@ async function run() {
     gH2.SbkimWidget._meta.eventCounts.alive === 0 &&
     gH2.SbkimWidget._meta.selfHeartbeatFired === false);
 
+  // Pflege Sub-(e)-Visueller-Slot-Render 2026-05-26:
+  // ===================================================================
+
+  // Probe 32: SIEGEL-Slot mit Mock-Stufe=bronze → data-siegel-stufe="bronze"
+  // + siegelStufeRendered-Getter zeigt "bronze".
+  const gS = makeStubGlobal();
+  loadModuleInto(gS, "src/modules/17_floating_widget.js");
+  await gS.SbkimWidget.init({});
+  gS.SbkimSiegel = { isCertified: () => true, _meta: { siegelStufe: "bronze" } };
+  dispatchWindowEvent(gS, "sbkim:siegel-certified", { certifiedAt: "2026-05-26T18:10:00.000Z", repoUrl: "https://example/" });
+  await new Promise(r => setTimeout(r, 20));
+  const siegelBtnS = gS.document.getElementById("sbkim-widget-slot-siegel");
+  record("32. SIEGEL-Slot rendert Bronze-Stufe (data-siegel-stufe='bronze' + _meta.siegelStufeRendered='bronze')",
+    "data-siegel-stufe=bronze, siegelStufeRendered=bronze",
+    "data-siegel-stufe=" + (siegelBtnS && siegelBtnS._attributes["data-siegel-stufe"]) +
+    " siegelStufeRendered=" + gS.SbkimWidget._meta.siegelStufeRendered,
+    siegelBtnS &&
+    siegelBtnS._attributes["data-siegel-stufe"] === "bronze" &&
+    gS.SbkimWidget._meta.siegelStufeRendered === "bronze");
+
+  // Probe 33: sbkim:handshake outcome:"established" → Mock-Stufe wechselt auf
+  // "gold", Modul 17 re-checkt nach setTimeout(0) → data-siegel-stufe="gold"
+  // + Stufenwechsel-Klasse für 600 ms gesetzt.
+  gS.SbkimSiegel._meta.siegelStufe = "gold"; // Modul-16-Update simulieren
+  dispatchWindowEvent(gS, "sbkim:handshake", { outcome: "established", direction: "outgoing" });
+  await new Promise(r => setTimeout(r, 20)); // setTimeout(0) im onHandshake durchlaufen lassen
+  const klasseStufenwechselGesetzt = siegelBtnS && siegelBtnS._classes.has("sbkim-widget-siegel-stufenwechsel");
+  const stufeNach = siegelBtnS && siegelBtnS._attributes["data-siegel-stufe"];
+  record("33. sbkim:handshake outcome=established + Modul-16-Update → SIEGEL data-siegel-stufe='gold' + Stufenwechsel-Klasse",
+    "data-siegel-stufe=gold, klasse=true, siegelStufeRendered=gold",
+    "data-siegel-stufe=" + stufeNach +
+    " klasse=" + klasseStufenwechselGesetzt +
+    " siegelStufeRendered=" + gS.SbkimWidget._meta.siegelStufeRendered,
+    stufeNach === "gold" &&
+    klasseStufenwechselGesetzt === true &&
+    gS.SbkimWidget._meta.siegelStufeRendered === "gold");
+
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;
   const total = results.length;
