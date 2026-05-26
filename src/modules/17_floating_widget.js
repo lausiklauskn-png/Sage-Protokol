@@ -62,6 +62,16 @@
   var TRAFFIC_LOG_MAX = 10;
   var MOUNT_OBSERVER_TIMEOUT_MS = 10000;
   var SHOW_WARN_THROTTLE_MS = 60000;
+  // Pflege 17 Heartbeat 2026-05-26: Self-Heartbeat-Fallback für LEBT.
+  // Wenn 5 s nach `init()` kein `sbkim:alive`-Event eingegangen ist UND
+  // `window.SbkimSpore._meta.ready === true`, dispatcht Modul 17 selbst
+  // ein synthetisches `sbkim:alive` mit `nodeId:null` und `synthetic:true`-
+  // Marker. Anti-Greenwashing intakt: das Modul-02-`init()`-Lauf IST ein
+  // realer Event — die Lampe leuchtet nur, wenn Modul 02 tatsächlich
+  // geladen + initialisiert ist. Für Endknoten-PWAs, die keinen explizit
+  // `getOrCreateIdentity()`-Aufruf im Init-Pfad haben (Identität wird erst
+  // beim Andock-Wizard erzeugt).
+  var SELF_HEARTBEAT_DELAY_MS = 5000;
 
   // localStorage-Schlüssel (Karte 17 § Persistenz / § localStorage-Schema).
   // Pflege 17 UX 2026-05-25: dritter Schlüssel `sbkim_widget_minimized`
@@ -165,6 +175,8 @@
   var lastShowWarnAt = 0;
   var mountObserver = null;
   var mountObserverTimeoutId = null;
+  var selfHeartbeatTimerId = null;
+  var selfHeartbeatFired = false;
   var lebtSince = null;        // ISO-String, aus sbkim:alive
   var lebtNodeIdPrefix = null; // Erste 12 Zeichen
   var siegelCertifiedAt = null;
@@ -668,7 +680,13 @@
     btn.className = "sbkim-widget-slot " + slotId;
     btn.setAttribute("data-slot", slotId);
     btn.setAttribute("aria-label", SLOT_TOOLTIPS[slotId] || slotId);
-    btn.title = SLOT_TOOLTIPS[slotId] || slotId;
+    // Pflege 17 Tooltips 2026-05-26 (Klaus' Sichttest-Befund DeX-Chrome):
+    // Browser-Standard-`title`-Tooltip auf rechten Slots (FREMD/SIEGEL/
+    // Minimize/Close) zeigte sich doppelt auf Touch-Devices (Browser-
+    // Tooltip via title + Android-Touch-Action-Bubble). Fix: title-Attribut
+    // weggelassen, aria-label trägt den Tooltip-Text weiter für A11y +
+    // Screenreader. Tap öffnet das jeweilige Modal — das ist der Kontext-
+    // Pfad am Touch-Tablet.
     if (slotId === "siegel") {
       // ★-Glyph zentriert auf der Gold-Lampe (Idee Klaus 2026-05-25:
       // SIEGEL wird später als Tool-PWA-Container für Andocken + Sporen-
@@ -751,8 +769,8 @@
     minimizeBtnEl = doc.createElement("button");
     minimizeBtnEl.type = "button";
     minimizeBtnEl.className = "sbkim-widget-btn sbkim-widget-minimize";
-    minimizeBtnEl.setAttribute("aria-label", "Widget minimieren (nur SBKIM-Siegel zeigen)");
-    minimizeBtnEl.title = "Minimieren — zeigt nur das SBKIM-Siegel. Erneuter Klick maximiert.";
+    minimizeBtnEl.setAttribute("aria-label", "Widget minimieren — zeigt nur das SBKIM-Siegel. Erneuter Klick maximiert.");
+    // Pflege 17 Tooltips 2026-05-26: kein title-Attribut (siehe buildSlotButton-Kommentar).
     minimizeBtnEl.textContent = minimizedFlag ? "+" : "−";
     minimizeBtnEl.addEventListener("click", function (ev) {
       if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
@@ -765,8 +783,8 @@
       var closeBtn = doc.createElement("button");
       closeBtn.type = "button";
       closeBtn.className = "sbkim-widget-btn sbkim-widget-close";
-      closeBtn.setAttribute("aria-label", "Widget schließen");
-      closeBtn.title = "Schließen — wiederherstellbar via SbkimWidget.show()";
+      closeBtn.setAttribute("aria-label", "Widget schließen — wiederherstellbar via SbkimWidget.show()");
+      // Pflege 17 Tooltips 2026-05-26: kein title-Attribut.
       closeBtn.textContent = "✕";
       closeBtn.addEventListener("click", function (ev) {
         if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
@@ -1047,13 +1065,17 @@
     }
     if (minimizeBtnEl) {
       minimizeBtnEl.textContent = minimizedFlag ? "+" : "−";
+      // Pflege 17 Tooltips 2026-05-26: aria-label trägt Tooltip-Text;
+      // title-Attribut weggelassen (Touch-Devices zeigten doppel-Tooltips).
       minimizeBtnEl.setAttribute(
         "aria-label",
-        minimizedFlag ? "Widget maximieren (alle Slots zeigen)" : "Widget minimieren (nur SBKIM-Siegel zeigen)"
+        minimizedFlag
+          ? "Widget maximieren — zeigt alle vier Slots."
+          : "Widget minimieren — zeigt nur das SBKIM-Siegel. Erneuter Klick maximiert."
       );
-      minimizeBtnEl.title = minimizedFlag
-        ? "Maximieren — zeigt alle vier Slots."
-        : "Minimieren — zeigt nur das SBKIM-Siegel. Erneuter Klick maximiert.";
+      // Idempotent: removeAttribute ist no-op wenn nicht gesetzt.
+      try { minimizeBtnEl.removeAttribute("title"); }
+      catch (_e) { /* nb */ }
     }
   }
 
@@ -1093,6 +1115,40 @@
   }
 
   // ---- Event-Listener (window) ----
+
+  // Pflege 17 Heartbeat 2026-05-26: Self-Heartbeat-Fallback für LEBT.
+  function scheduleSelfHeartbeat() {
+    if (selfHeartbeatTimerId !== null) return;        // idempotent
+    if (selfHeartbeatFired) return;
+    selfHeartbeatTimerId = setTimeout(function () {
+      selfHeartbeatTimerId = null;
+      if (eventCounts.alive > 0) {
+        // Modul 02 hat schon einen echten `sbkim:alive` gefeuert —
+        // Self-Heartbeat nicht mehr nötig.
+        return;
+      }
+      var spore = global.SbkimSpore;
+      if (!spore || !spore._meta || spore._meta.ready !== true) {
+        // Modul 02 ist NICHT initialisiert — Anti-Greenwashing: keine
+        // synthetische LEBT-Aktivierung. LEBT bleibt grau.
+        return;
+      }
+      selfHeartbeatFired = true;
+      try {
+        if (typeof global.dispatchEvent === "function" && typeof global.CustomEvent === "function") {
+          global.dispatchEvent(new global.CustomEvent("sbkim:alive", {
+            detail: {
+              since:     new Date().toISOString(),
+              nodeId:    null,
+              synthetic: true,
+            },
+            bubbles:    false,
+            cancelable: false,
+          }));
+        }
+      } catch (_e) { /* fail-soft */ }
+    }, SELF_HEARTBEAT_DELAY_MS);
+  }
 
   function registerEventListeners() {
     if (listeners.alive) return; // idempotent
@@ -1526,6 +1582,8 @@
         registerEventListeners();
         try { global.addEventListener("keydown", onGlobalKeydown); }
         catch (_e) { /* nb */ }
+        // Pflege 17 Heartbeat 2026-05-26: 5-s-Fallback-Timer starten.
+        scheduleSelfHeartbeat();
 
         ready = true;
       } catch (err) {
@@ -1669,6 +1727,8 @@
         return copy;
       },
       get fremdBufferSize()    { return fremdBufferSize; },
+      get selfHeartbeatFired() { return selfHeartbeatFired; },
+      selfHeartbeatDelayMs:    SELF_HEARTBEAT_DELAY_MS,
       get lebtSince()          { return lebtSince; },
       get lebtNodeIdPrefix()   { return lebtNodeIdPrefix; },
       get siegelCertifiedAt()  { return siegelCertifiedAt; },

@@ -1811,6 +1811,71 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-26 · Pflege Modul 17 — Tooltips + Self-Heartbeat
+
+**Sitzungs-Rolle:** Pflege-Sitzung nach Endknoten-Re-Migrationen
+Mein-Rezeptbuch (PR #246) + Mein-Mixarium 2026-05-26. Branch
+`claude/pflege-17-tooltips-und-heartbeat`.
+
+**Befunde (aus Endknoten-Doku):**
+
+1. **Doppel-Tooltips** auf DeX-Chrome — rechten Slots (FREMD/SIEGEL/
+   Minimize/Close) zeigten beim longpress Browser-Tooltip via `title`
+   + Android-Touch-Action-Bubble doppelt. Linke Slots (LEBT/VERKEHR)
+   OK, weil sie sofort eigene Modul-17-Modals öffnen.
+2. **LEBT-Heartbeat fehlt** in Endknoten — Modul 02 dispatcht
+   `sbkim:alive` nur in `getOrCreateIdentity()`, aber Endknoten-Init
+   ruft nur `SbkimSpore.init()` (Identität wird erst beim Andock-
+   Wizard erzeugt). Folge: LEBT-Slot bleibt grau.
+
+**Fixes:**
+
+- **Befund 1:** `title`-Attribut auf Slot-Buttons + Icon-Buttons
+  (Minimize/Close) weggelassen. `aria-label` trägt vollen Tooltip-Text
+  (Screenreader + A11y intakt). Verlust: kein Hover-Tooltip auf
+  Desktop — Klaus' Tablet-Workflow akzeptabel.
+- **Befund 2:** Self-Heartbeat-Fallback in Modul 17 — neue Konstante
+  `SELF_HEARTBEAT_DELAY_MS = 5000`, neue Funktion `scheduleSelfHeartbeat()`
+  in `init()`. 5 s nach init: wenn `eventCounts.alive === 0` UND
+  `window.SbkimSpore._meta.ready === true`, dispatcht Modul 17 selbst
+  ein synthetisches `sbkim:alive` mit `nodeId: null` und
+  `synthetic: true`-Marker. **Anti-Greenwashing intakt** — ohne
+  SbkimSpore.ready KEIN dispatch. Architektur-Entscheidung: Option (b)
+  aus Klaus' Brief (Modul 17 trägt den Fallback, Modul 02 bleibt
+  unangetastet).
+- `_meta` um `selfHeartbeatFired` (Getter) + `selfHeartbeatDelayMs`
+  (Konstante) erweitert.
+
+**Tests:**
+
+- Headless-Smoke 28 → **32 Proben**, 32/32 grün. Neue Proben: 29
+  Tooltip-Attribut-Check (title weg, aria-label voll), 30 Self-
+  Heartbeat-Success (mit SbkimSpore.ready=true), 31 Anti-Greenwashing
+  (ohne SbkimSpore kein dispatch). Probe 26 aktualisiert.
+- Modul-15-Regression `tests/smoke_bau15b_membran.mjs` 31/31 grün
+  ohne Anpassung.
+- `node --check src/modules/17_floating_widget.js` grün.
+
+**Doku:**
+
+- Karte 17 § Bauzustand neue Zeile „Pflege Tooltips + Self-Heartbeat
+  2026-05-26".
+- INTERFACES.md § 10 Änderungsprotokoll-Eintrag.
+
+**Was offen blieb:**
+
+- **Sichttest** durch Klaus auf Sage-Page (manual_check.html) —
+  Tooltips zeigen sich einmal, LEBT pulst grün nach 5 s (wenn
+  SbkimSpore.init() lief).
+- **Endknoten-Hinweis:** Mein-Rezeptbuch + Mein-Mixarium ziehen
+  ihren `sbkim/17_floating_widget.js` auf den neuen Sage-Commit
+  nach (Endknoten-CLAUDE.md Pipeline-Schritt 5d-Folge-Pflege).
+
+**Sitzungs-PR:** Branch `claude/pflege-17-tooltips-und-heartbeat`,
+PR folgt nach Commit + Push.
+
+---
+
 ### 2026-05-25 · Stub-Anlage Modul 18 Tool-PWA-Container (SIEGEL-Anker)
 
 **Sitzungs-Rolle:** Stub-Anlage + Brief für eine kommende Spec-Sitzung
