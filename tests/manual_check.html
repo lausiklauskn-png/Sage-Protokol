@@ -113,7 +113,7 @@
     <h2>16 SBKIM-Siegel <span class="status ok">Code-Stub</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
     <div id="panel-16-badge-container" title="Container-Anker für Panel-16-Tests; Option β erzeugt #sbkim-siegel-badge darin"></div>
-    <pre class="log">— bereit. Bau-Sitzung 16 (2026-05-24). Modul 16 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding, kein Handshake — lokales Render-Modul. Self-inscribing-Selbst-Zertifikat nach Surface-Check der sieben Pflicht-Module (01/02/03/04/05/07/15); Modul 03 ist `lazy:true` (Status "deferred" gilt als bestanden). Anti-Greenwashing binär: Badge-Element ist nur im DOM, wenn isCertified()===true. Bau-Variante: Option β — `badgeSelector` zeigt auf Container (Panel-Tests: `#panel-16-badge-container`), Modul erzeugt `#sbkim-siegel-badge`-Span darin. RAM-only (kein DB_VERSION-Bump, kein neuer Store). KEINE benannten Error-Klassen — fail-soft via `console.warn`. Test-Pfad: weil `SbkimSiegel.init` idempotent ist (Karte 16 § Sub (a)), nutzen die Tests die internen Surface-Manipulationen (window.SbkimMatch=undefined etc.) und Re-Reads via getExplanation(), KEIN Re-Init. —</pre>
+    <pre class="log">— bereit. Bau-Sitzung 16 (2026-05-24) + Bau 16 Sub (e) Bronze/Gold-Stufung (2026-05-26). Modul 16 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding, kein Handshake — lokales Render-Modul. Self-inscribing-Selbst-Zertifikat nach Surface-Check der sieben Pflicht-Module (01/02/03/04/05/07/15); Modul 03 ist `lazy:true` (Status "deferred" gilt als bestanden). Anti-Greenwashing binär: Badge-Element ist nur im DOM, wenn isCertified()===true. Bau-Variante: Option β — `badgeSelector` zeigt auf Container (Panel-Tests: `#panel-16-badge-container`), Modul erzeugt `#sbkim-siegel-badge`-Span darin. RAM-only (kein DB_VERSION-Bump, kein neuer Store). KEINE benannten Error-Klassen — fail-soft via `console.warn`. Test-Pfad: weil `SbkimSiegel.init` idempotent ist (Karte 16 § Sub (a)), nutzen die Tests die internen Surface-Manipulationen (window.SbkimMatch=undefined etc.) und Re-Reads via getExplanation(), KEIN Re-Init. **Sub (e) Bronze/Gold-Stufung (2026-05-26):** zweistufiger SIEGEL — Bronze („Mycel suchend") wenn Surface-Check grün aber noch kein Cross-Knoten-Handshake; Gold („Mycel verbunden") sobald `sbkim:handshake outcome:"established"` empfangen wird. Knöpfe 9–12 testen Bronze-Initial / Stufenwechsel / Idempotenz / Bronze-Klick-Modal-Hinweis-Block. Test-Brücke `_resetMycelConnectedForTest()` setzt Bronze-Vorzustand ohne Tab-Reload. RAM-only, Tab-Reload startet wieder Bronze (gewollt). —</pre>
   </section>
 
   <section class="panel" data-module="17_floating_widget">
@@ -4290,13 +4290,183 @@
         return { live_test_in_session: false, braucht_tab_reload: true };
       });
 
+      // ---- Panel 16 Sub (e) Bronze/Gold-Stufung (Bau 16 Sub e, 2026-05-26) ----
+      //
+      // Knöpfe 9–12 testen den Bronze/Gold-Pfad. Reihenfolge: zuerst 9
+      // (Bronze-Initial nach Setup), dann 10 (synthetischer Handshake →
+      // Gold), dann 11 (Idempotenz: zweiter Handshake ändert nichts),
+      // dann 12 (Reset via Test-Brücke + Bronze-Klick öffnet Modal mit
+      // Hinweis-Block).
+
+      SbkimUI.addButton("16_siegel", "Test 9: Sub (e) Bronze-Initial (data-stufe + aria-label)", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        if (!SbkimSiegel.isCertified()) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 9 nicht ausführbar (isCertified=false)");
+          return { hinweis: "Sub (e) braucht grüne Bezeugung — sonst kein Badge zum Stufen-Testen." };
+        }
+        // Test-Brücke: vor dem ersten Setup könnte Knopf 10 schon einen
+        // Handshake gefeuert haben. Reset via _resetMycelConnectedForTest
+        // garantiert Bronze-Initial-Stand.
+        SbkimSiegel._resetMycelConnectedForTest();
+        var badge = getBadge();
+        var stufe = badge ? badge.getAttribute("data-stufe") : null;
+        var ariaLabel = badge ? badge.getAttribute("aria-label") : null;
+        var title = badge ? badge.getAttribute("title") : null;
+        var mycelConnected = SbkimSiegel._meta.mycelConnected;
+        var mycelConnectedAt = SbkimSiegel._meta.mycelConnectedAt;
+        var pass = stufe === "bronze" && ariaLabel === "SBKIM-Siegel · Mycel suchend" &&
+                   title === null && mycelConnected === false && mycelConnectedAt === null;
+        SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Sub (e) Bronze-Initial OK" : "Test 9 fehlgeschlagen");
+        return {
+          badge_data_stufe:        stufe,
+          badge_aria_label:        ariaLabel,
+          badge_title_attribut:    title,
+          mycel_connected:         mycelConnected,
+          mycel_connected_at:      mycelConnectedAt,
+          siegel_stufe_getter:     SbkimSiegel._meta.siegelStufe,
+          erwartung: "Bronze-Initial: data-stufe=\"bronze\", aria-label=\"SBKIM-Siegel · Mycel suchend\", KEIN title-Attribut (Doppel-Tooltip-Pflege 17). mycelConnected=false, mycelConnectedAt=null.",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 10: Synthetischer Handshake → Gold + Stufenwechsel-Animation", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        if (!SbkimSiegel.isCertified()) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 10 nicht ausführbar (isCertified=false)");
+          return { hinweis: "Sub (e) braucht grüne Bezeugung." };
+        }
+        // Reset (Test-Brücke): garantiert Bronze-Vorzustand.
+        SbkimSiegel._resetMycelConnectedForTest();
+        var badge = getBadge();
+        var stufeVor = badge ? badge.getAttribute("data-stufe") : null;
+        // Beobachte, ob Klasse stufenwechsel-gold gesetzt wurde (per
+        // ClassList-Mutation, weil Animation 600 ms läuft — wir prüfen
+        // direkt nach Dispatch).
+        var klasseStufenwechselSetzt = false;
+        // Synthetischer Handshake-Event auf window dispatchen.
+        window.dispatchEvent(new CustomEvent("sbkim:handshake", {
+          detail: { outcome: "established", peerNodeId: "test-peer", direction: "outgoing" },
+        }));
+        // Direkt nach Dispatch (vor 600 ms Auto-Remove): Klasse muss da sein.
+        klasseStufenwechselSetzt = badge && badge.classList.contains("stufenwechsel-gold");
+        var stufeNach = badge ? badge.getAttribute("data-stufe") : null;
+        var ariaLabelNach = badge ? badge.getAttribute("aria-label") : null;
+        var mycelConnectedNach = SbkimSiegel._meta.mycelConnected;
+        var mycelConnectedAtNach = SbkimSiegel._meta.mycelConnectedAt;
+        var pass = stufeVor === "bronze" && stufeNach === "gold" &&
+                   ariaLabelNach === "SBKIM-Siegel · Mycel verbunden" &&
+                   mycelConnectedNach === true &&
+                   typeof mycelConnectedAtNach === "string" && mycelConnectedAtNach.length > 0 &&
+                   klasseStufenwechselSetzt;
+        SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Sub (e) Bronze→Gold OK" : "Test 10 fehlgeschlagen");
+        return {
+          stufe_vor:                      stufeVor,
+          stufe_nach:                     stufeNach,
+          aria_label_nach:                ariaLabelNach,
+          mycel_connected_nach:           mycelConnectedNach,
+          mycel_connected_at_nach:        mycelConnectedAtNach,
+          klasse_stufenwechsel_gold:      klasseStufenwechselSetzt,
+          erwartung: "Nach Dispatch: data-stufe=\"gold\", aria-label=\"SBKIM-Siegel · Mycel verbunden\", mycelConnected=true, mycelConnectedAt ist ISO-Datum. Klasse `.stufenwechsel-gold` ist für 600 ms gesetzt (direkt nach Dispatch hier beobachtbar).",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 11: Idempotenz — zweiter Handshake ändert nichts", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        if (!SbkimSiegel.isCertified()) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 11 nicht ausführbar (isCertified=false)");
+          return { hinweis: "Sub (e) braucht grüne Bezeugung." };
+        }
+        // Vor-Reset (Bronze), dann ein Handshake (Gold), dann timestamp
+        // speichern, kurz warten bis Klasse entfernt wurde, dann zweiter
+        // Handshake — Erwartung: mycelConnectedAt unverändert, KEINE
+        // zweite Animation, data-stufe bleibt Gold.
+        SbkimSiegel._resetMycelConnectedForTest();
+        window.dispatchEvent(new CustomEvent("sbkim:handshake", {
+          detail: { outcome: "established", peerNodeId: "test-peer-1", direction: "outgoing" },
+        }));
+        var mycelConnectedAtErsteWelle = SbkimSiegel._meta.mycelConnectedAt;
+        // Warten bis Stufenwechsel-Klasse weg ist (CSS-Animation 600 ms).
+        await new Promise(function (r) { setTimeout(r, 750); });
+        var badge = getBadge();
+        var klasseVorZweitemDispatch = badge && badge.classList.contains("stufenwechsel-gold");
+        // Zweiter Dispatch — sollte idempotent sein (kein Effekt).
+        window.dispatchEvent(new CustomEvent("sbkim:handshake", {
+          detail: { outcome: "established", peerNodeId: "test-peer-2", direction: "incoming" },
+        }));
+        var klasseNachZweitemDispatch = badge && badge.classList.contains("stufenwechsel-gold");
+        var mycelConnectedAtZweiteWelle = SbkimSiegel._meta.mycelConnectedAt;
+        var stufeNach = badge ? badge.getAttribute("data-stufe") : null;
+
+        var pass = mycelConnectedAtErsteWelle === mycelConnectedAtZweiteWelle &&
+                   klasseVorZweitemDispatch === false &&
+                   klasseNachZweitemDispatch === false &&
+                   stufeNach === "gold" &&
+                   SbkimSiegel._meta.mycelConnected === true;
+        SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Idempotent OK" : "Test 11 fehlgeschlagen");
+        return {
+          mycel_connected_at_erste_welle:  mycelConnectedAtErsteWelle,
+          mycel_connected_at_zweite_welle: mycelConnectedAtZweiteWelle,
+          datum_unveraendert:              mycelConnectedAtErsteWelle === mycelConnectedAtZweiteWelle,
+          klasse_vor_zweitem_dispatch:     klasseVorZweitemDispatch,
+          klasse_nach_zweitem_dispatch:    klasseNachZweitemDispatch,
+          stufe_nach_zweitem_dispatch:     stufeNach,
+          erwartung: "Zweiter sbkim:handshake outcome:\"established\" ändert mycelConnectedAt NICHT, setzt KEINE zweite Animation (Klasse `.stufenwechsel-gold` bleibt nach Dispatch nicht erneut aktiv), Badge bleibt Gold.",
+        };
+      });
+
+      SbkimUI.addButton("16_siegel", "Test 12: Bronze-Klick öffnet Modal mit Hinweis-Block + [Andocken]", async function () {
+        await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
+        if (!SbkimSiegel.isCertified()) {
+          SbkimUI.setStatus("16_siegel", "err", "Test 12 nicht ausführbar (isCertified=false)");
+          return { hinweis: "Sub (e) braucht grüne Bezeugung." };
+        }
+        // Reset auf Bronze.
+        SbkimSiegel._resetMycelConnectedForTest();
+        var badge = getBadge();
+        // Modal öffnen via Click.
+        if (badge) badge.click();
+        await new Promise(function (r) { setTimeout(r, 80); });
+        var modal = getModal();
+        var modalOffen = modal && modal.style.display === "flex";
+        var hinweisBlock = modal && modal.querySelector("[data-siegel-bronze-hinweis]");
+        var hinweisBlockSichtbar = hinweisBlock && hinweisBlock.style.display !== "none";
+        var andockBtn = modal && modal.querySelector("[data-siegel-andock-btn]");
+        var aspectsItems = modal ? modal.querySelectorAll("[data-siegel-aspects] li") : [];
+        // Aspekt 4 muss in Bronze als „pending" rendern. Letzter Aspekt
+        // ist Aspekt 4 (since:"2026-05-26" + module:"16" +
+        // aspect:"Mycel-Verbindung etabliert…"); seine since-Span sollte
+        // jetzt "pending" zeigen statt "2026-05-26".
+        var letzterAspekt = aspectsItems[aspectsItems.length - 1];
+        var letzterAspektText = letzterAspekt ? letzterAspekt.textContent : "";
+        var pendingMarkerSichtbar = /pending/.test(letzterAspektText);
+
+        // Modal schließen.
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+
+        var pass = modalOffen && !!hinweisBlock && !!hinweisBlockSichtbar &&
+                   !!andockBtn && /Andocken/.test(andockBtn.textContent || "") &&
+                   pendingMarkerSichtbar;
+        SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Bronze-Klick OK" : "Test 12 fehlgeschlagen");
+        return {
+          modal_offen:                modalOffen,
+          hinweis_block_im_dom:       !!hinweisBlock,
+          hinweis_block_sichtbar:     !!hinweisBlockSichtbar,
+          andock_button_im_modal:     !!andockBtn,
+          aspekt_4_pending_marker:    pendingMarkerSichtbar,
+          letzter_aspekt_text_kopf:   letzterAspektText.slice(0, 60),
+          aspekte_anzahl:             aspectsItems.length,
+          erwartung: "Bronze-Klick öffnet Modal; Hinweis-Block `[data-siegel-bronze-hinweis]` ist sichtbar (display!=none); [Andocken]-Knopf im Block; Aspekt 4 in der Aspekte-Liste rendert mit „pending\"-Marker statt Datum (letzter Aspekt-Eintrag).",
+        };
+      });
+
       SbkimUI.addButton("16_siegel", "Selbstcheck Konsole prüfen", async function () {
         SbkimUI.log("16_siegel",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("16_siegel",
           "  MODUL 16 SIEGEL bereit, Funktionen: init/isCertified/getExplanation/getCertifiedModules/getAspects");
         SbkimUI.log("16_siegel",
-          "ℹ Hinweis: PFLICHT_MODULE (7 Einträge) und ZERTIFIKAT_ASPEKTE (Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24\") sind modul-lokal — NICHT in der Selbstcheck-Zeile.");
+          "ℹ Hinweis: PFLICHT_MODULE (7 Einträge) und ZERTIFIKAT_ASPEKTE (Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24\" + drei weitere Aspekte 15/17/16) sind modul-lokal — NICHT in der Selbstcheck-Zeile.");
+        SbkimUI.log("16_siegel",
+          "ℹ Sub (e) Bronze/Gold-Stufung (Bau 16 Sub e, 2026-05-26): Knöpfe 9–12 testen den Stufenwechsel. _meta.mycelConnected (boolean, RAM-only) + _meta.mycelConnectedAt (ISO-Datum|null) + _meta.siegelStufe (\"bronze\"|\"gold\").");
       });
     })();
   </script>
