@@ -419,8 +419,15 @@
       "  outline: none;",
       "  border-radius: 999px;",
       "  max-width: 220px;",
-      "  overflow: hidden;",
+      // Pflege 17 lamp-breath 2026-05-26: overflow nicht hier per Default —
+      // sonst clippt der lamp-breath-Atmungs-Ring bei scale(1.5) und
+      // Klaus sieht nur einen Halbbogen statt einer rundlaufenden Welle.
+      // overflow:hidden wird nur für minimized-State unten gesetzt.
       "  transition: background 180ms ease, max-width 280ms ease, opacity 220ms ease, margin 280ms ease, padding 280ms ease, transform 280ms ease;",
+      "}",
+      // overflow:hidden NUR im minimierten Zustand, damit max-width:0 sauber clippt.
+      "#" + WIDGET_ID + "[data-minimized=\"true\"] .sbkim-widget-slot {",
+      "  overflow: hidden;",
       "}",
       ".sbkim-widget-slot:hover { background: rgba(255, 255, 255, 0.06); }",
       ".sbkim-widget-slot:focus-visible {",
