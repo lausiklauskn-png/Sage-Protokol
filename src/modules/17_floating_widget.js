@@ -121,6 +121,15 @@
   var ALLOWED_CORNERS = ["top-left", "top-right", "bottom-left", "bottom-right"];
   var ALLOWED_THEMES = ["auto", "dark", "light", "transparent"];
 
+  // Pflege 17 Stufen-Render 2026-05-26 (Sub-(e)-Sichttest-Befund 1):
+  // Sichtbarer SIEGEL-Slot bekommt `data-siegel-stufe`-Attribut, damit
+  // Bronze (Mycel suchend) vs. Gold (Mycel verbunden) visuell unterscheidbar
+  // wird. Modul 16 setzt `data-stufe` am unsichtbaren Proxy-Span — das
+  // griff bisher nur am Proxy, nicht am sichtbaren Slot-Button.
+  var SIEGEL_STUFE_BRONZE = "bronze";
+  var SIEGEL_STUFE_GOLD = "gold";
+  var SIEGEL_STUFENWECHSEL_MS = 600;
+
   // ---- Modul-Zustand (Closure) ----
 
   var ready = false;
@@ -182,6 +191,11 @@
   var siegelCertifiedAt = null;
   var siegelRepoUrl = null;
   var fremdBufferSize = 0;
+  // Pflege 17 Stufen-Render 2026-05-26: was der sichtbare SIEGEL-Slot
+  // gerade rendert. null wenn SIEGEL noch nicht gemountet. Sonst
+  // "bronze" oder "gold". Diagnose-Anker für _meta.
+  var siegelStufeRendered = null;
+  var siegelStufenwechselTimerId = null;
 
   // ---- Hilfsfunktionen ----
 
@@ -526,6 +540,30 @@
       "#" + WIDGET_ID + " .sbkim-widget-slot.siegel.siegel-first-boot::before {",
       "  animation: sbkim-widget-siegel-first-boot 600ms ease-out;",
       "}",
+      // Pflege 17 Stufen-Render 2026-05-26 (Sub-(e)-Sichttest-Befund 1):
+      // Bronze („Mycel suchend") = Surface-Check grün, aber noch kein
+      // Cross-Knoten-Handshake; Gold („Mycel verbunden") = mind. ein
+      // sbkim:handshake outcome:"established" empfangen. Spiegelt das
+      // Spec-Pattern aus index.html § Sub (e) (dort wirkt der Filter am
+      // 40 px Wappen-SVG; hier am 22 px Gold-Medaillon + ★-Glyph).
+      "#" + WIDGET_ID + " .sbkim-widget-slot.siegel[data-siegel-stufe=\"bronze\"]::before,",
+      "#" + WIDGET_ID + " .sbkim-widget-slot.siegel[data-siegel-stufe=\"bronze\"] .sbkim-widget-siegel-glyph {",
+      "  filter: saturate(0.6) brightness(0.85);",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-widget-slot.siegel[data-siegel-stufe=\"bronze\"]:hover::before {",
+      "  filter: saturate(0.6) brightness(0.85);",
+      "  box-shadow: 0 0 8px rgba(140, 110, 47, 0.55);",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-widget-slot.siegel[data-siegel-stufe=\"gold\"] { /* Default-Render — keine Override */ }",
+      // Bronze→Gold-Animation 600 ms (analog index.html § siegel-stufenwechsel-gold).
+      "#" + WIDGET_ID + " .sbkim-widget-slot.siegel.sbkim-widget-siegel-stufenwechsel::before {",
+      "  animation: sbkim-widget-siegel-stufenwechsel-gold 600ms ease-out;",
+      "}",
+      "@keyframes sbkim-widget-siegel-stufenwechsel-gold {",
+      "  0%   { transform: scale(1.00); box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.55); }",
+      "  40%  { transform: scale(1.15); box-shadow: 0 0 18px 4px rgba(201, 169, 97, 0.55); }",
+      "  100% { transform: scale(1.00); box-shadow: 0 0 6px rgba(201, 169, 97, 0.5); }",
+      "}",
       // Stern-Glyph zentriert über der Lampe-::before (per absoluten Span).
       "#" + WIDGET_ID + " .sbkim-widget-siegel-glyph {",
       "  position: absolute;",
@@ -783,6 +821,11 @@
         root.appendChild(siegelBtn);
         slotElements[slotId] = siegelBtn;
         siegelMounted = true;
+        // Pflege 17 Stufen-Render 2026-05-26: initial-Stufe-Attribut
+        // direkt nach Mount setzen (Modul 16 hat dann bereits init()
+        // gelaufen, sonst wären wir nicht in diesem Zweig — fail-soft
+        // Default ist "bronze").
+        applySiegelStufeToSlot(getSiegelStufe());
         continue;
       }
       var btn = buildSlotButton(doc, slotId);
@@ -1217,6 +1260,17 @@
     setSlotActive("verkehr", true);
     pulseSlot("verkehr", "verkehr-pulse", VERKEHR_PULSE_MS);
     refreshVerkehrModalIfOpen();
+    // Pflege 17 Stufen-Render 2026-05-26 (Sub-(e)-Sichttest-Befund 1):
+    // bei established-Handshake den sichtbaren SIEGEL-Slot von Bronze
+    // auf Gold umschalten + 600 ms Stufenwechsel-Animation. Idempotent:
+    // wenn schon Gold, no-op (kein Re-Animate-Spam). Slot muss
+    // gemountet sein (sonst gibt's nichts zu re-stylen).
+    if (detail.outcome === "established" && siegelMounted) {
+      if (siegelStufeRendered !== SIEGEL_STUFE_GOLD) {
+        applySiegelStufeToSlot(SIEGEL_STUFE_GOLD);
+        playSiegelStufenwechselAnimation();
+      }
+    }
   }
 
   function onPostmessage(ev) {
@@ -1289,6 +1343,10 @@
     }
     slotElements.siegel = btn;
     siegelMounted = true;
+    // Pflege 17 Stufen-Render 2026-05-26: initial-Stufe-Attribut direkt
+    // nach Mount setzen. Modul 16 hat zu diesem Zeitpunkt
+    // `_meta.siegelStufe` gesetzt (Bau 16 Sub e).
+    applySiegelStufeToSlot(getSiegelStufe());
     // Pflege 17 UX 2026-05-25: SIEGEL ist jetzt da — wenn das Widget
     // minimiert war (mit data-fallback="lebt"), data-fallback entfernen,
     // damit SIEGEL zum sichtbaren Slot wird.
@@ -1313,6 +1371,54 @@
     if (!siegel || typeof siegel.isCertified !== "function") return false;
     try { return siegel.isCertified() === true; }
     catch (_e) { return false; }
+  }
+
+  // Pflege 17 Stufen-Render 2026-05-26: lookup auf
+  // SbkimSiegel._meta.siegelStufe (Modul-16-Getter aus Bau 16 Sub (e)).
+  // Fail-soft Default = "bronze" (sicheres minus). Architektur-Pfad (ii)
+  // aus dem Brief — robust gegen Event-Reihenfolge.
+  function getSiegelStufe() {
+    var siegel = global.SbkimSiegel;
+    if (!siegel || !siegel._meta) return SIEGEL_STUFE_BRONZE;
+    try {
+      var s = siegel._meta.siegelStufe;
+      if (s === SIEGEL_STUFE_GOLD) return SIEGEL_STUFE_GOLD;
+    } catch (_e) { /* fail-soft */ }
+    return SIEGEL_STUFE_BRONZE;
+  }
+
+  // Schreibt data-siegel-stufe ans sichtbare Slot-Element. Idempotent +
+  // fail-soft. Ruft KEIN Modul 16 auf.
+  function applySiegelStufeToSlot(stufe) {
+    var el = slotElements.siegel;
+    if (!el) return;
+    try {
+      el.setAttribute("data-siegel-stufe", stufe);
+      siegelStufeRendered = stufe;
+    } catch (err) {
+      warn("data-siegel-stufe konnte nicht gesetzt werden.", err);
+    }
+  }
+
+  // Bronze→Gold-Stufenwechsel-Animation am sichtbaren Slot (600 ms).
+  function playSiegelStufenwechselAnimation() {
+    var el = slotElements.siegel;
+    if (!el || !el.classList) return;
+    try {
+      el.classList.add("sbkim-widget-siegel-stufenwechsel");
+      if (siegelStufenwechselTimerId !== null) {
+        clearTimeout(siegelStufenwechselTimerId);
+      }
+      siegelStufenwechselTimerId = setTimeout(function () {
+        if (el && el.classList) {
+          try { el.classList.remove("sbkim-widget-siegel-stufenwechsel"); }
+          catch (_e) { /* nb */ }
+        }
+        siegelStufenwechselTimerId = null;
+      }, SIEGEL_STUFENWECHSEL_MS);
+    } catch (err) {
+      warn("Siegel-Stufenwechsel-Animation fehlgeschlagen.", err);
+    }
   }
 
   function nowIso() { return new Date().toISOString(); }
@@ -1761,6 +1867,9 @@
       get lebtNodeIdPrefix()   { return lebtNodeIdPrefix; },
       get siegelCertifiedAt()  { return siegelCertifiedAt; },
       get siegelRepoUrl()      { return siegelRepoUrl; },
+      // Pflege 17 Stufen-Render 2026-05-26: was der sichtbare SIEGEL-Slot
+      // gerade anzeigt ("bronze" | "gold" | null). null = nicht gemountet.
+      get siegelStufeRendered() { return siegelStufeRendered; },
       get visibleFlag()        { return visibleFlag; },
       get optAllowClose()      { return optAllowClose; },
       get optAllowDrag()       { return optAllowDrag; },

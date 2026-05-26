@@ -702,6 +702,62 @@ async function run() {
     gH2.SbkimWidget._meta.eventCounts.alive === 0 &&
     gH2.SbkimWidget._meta.selfHeartbeatFired === false);
 
+  // -------- Siebter Test-Lauf: Pflege 17 Stufen-Render Bronze/Gold --------
+  // Pflege 17 Stufen-Render 2026-05-26 (Sub-(e)-Sichttest-Befund 1):
+  // sichtbarer SIEGEL-Slot bekommt data-siegel-stufe initial aus
+  // SbkimSiegel._meta.siegelStufe (Bronze fail-soft Default), wechselt
+  // auf Gold beim sbkim:handshake outcome:"established".
+  const gS = makeStubGlobal();
+  loadModuleInto(gS, "src/modules/17_floating_widget.js");
+  // Modul-16-Stub mit _meta.siegelStufe-Getter — initial "bronze".
+  let mockStufe = "bronze";
+  gS.SbkimSiegel = {
+    isCertified: () => true,
+    _meta: { get siegelStufe() { return mockStufe; } },
+  };
+  await gS.SbkimWidget.init({});
+  // SIEGEL ist beim init() schon im DOM, weil isCertified()===true (Probe
+  // 11-Pfad). data-siegel-stufe muss initial "bronze" sein.
+  const siegelSlotS = gS.document.getElementById("sbkim-widget-slot-siegel");
+  record("32. Pflege Stufen-Render: SIEGEL-Slot initial data-siegel-stufe='bronze'",
+    "attr=bronze, _meta.siegelStufeRendered=bronze, slot im DOM",
+    "slot=" + !!siegelSlotS +
+    "/attr=" + (siegelSlotS && siegelSlotS.getAttribute("data-siegel-stufe")) +
+    "/rendered=" + gS.SbkimWidget._meta.siegelStufeRendered,
+    !!siegelSlotS &&
+    siegelSlotS.getAttribute("data-siegel-stufe") === "bronze" &&
+    gS.SbkimWidget._meta.siegelStufeRendered === "bronze");
+
+  // sbkim:handshake outcome:"established" → Slot wird Gold + Animations-
+  // Klasse für 600 ms gesetzt.
+  mockStufe = "gold"; // Modul 16 hätte _meta.siegelStufe jetzt auch auf gold
+  dispatchWindowEvent(gS, "sbkim:handshake", { outcome: "established", peerNodeId: "peer1", direction: "outgoing" });
+  const hasStufenwechselClass = siegelSlotS._classes.has("sbkim-widget-siegel-stufenwechsel");
+  const stufeNach = siegelSlotS.getAttribute("data-siegel-stufe");
+  record("33. Pflege Stufen-Render: sbkim:handshake established → Gold + Stufenwechsel-Animations-Klasse",
+    "attr=gold, _meta.rendered=gold, .sbkim-widget-siegel-stufenwechsel direkt nach Dispatch true",
+    "attr=" + stufeNach +
+    "/rendered=" + gS.SbkimWidget._meta.siegelStufeRendered +
+    "/anim=" + hasStufenwechselClass,
+    stufeNach === "gold" &&
+    gS.SbkimWidget._meta.siegelStufeRendered === "gold" &&
+    hasStufenwechselClass === true);
+
+  // Stufenwechsel-Animations-Klasse wird nach 600 ms wieder entfernt.
+  await new Promise(r => setTimeout(r, 700));
+  const animAfter = siegelSlotS._classes.has("sbkim-widget-siegel-stufenwechsel");
+  record("34. Pflege Stufen-Render: Stufenwechsel-Klasse wird nach 600 ms entfernt + Idempotenz (zweiter Handshake no-op)",
+    "anim-klasse weg, Gold bleibt; zweiter dispatch ändert nichts",
+    "animAfter=" + animAfter + "/attrAfter=" + siegelSlotS.getAttribute("data-siegel-stufe"),
+    animAfter === false && siegelSlotS.getAttribute("data-siegel-stufe") === "gold");
+  // Zweiter established-Handshake: idempotent, animiert NICHT erneut.
+  dispatchWindowEvent(gS, "sbkim:handshake", { outcome: "established", peerNodeId: "peer2", direction: "incoming" });
+  const animAfterSecond = siegelSlotS._classes.has("sbkim-widget-siegel-stufenwechsel");
+  record("35. Pflege Stufen-Render: zweiter established-Handshake → KEIN Re-Animate (Idempotenz)",
+    "anim-klasse bleibt false, Slot bleibt Gold",
+    "anim=" + animAfterSecond + "/attr=" + siegelSlotS.getAttribute("data-siegel-stufe"),
+    animAfterSecond === false && siegelSlotS.getAttribute("data-siegel-stufe") === "gold");
+
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;
   const total = results.length;

@@ -1811,6 +1811,93 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-26 · Pflege Modul 17 Widget Bronze/Gold-Render
+
+**Sitzungs-Rolle:** Pflege-Sitzung Render-Schicht. Branch
+`claude/pflege-17-widget-bronze-gold-render`. Folge-Pflege zu Sub-(e)-
+Sichttest-Bilanz vom selben Tag (Befund 1).
+
+**Anlass:** Sichtbarer SIEGEL-Slot im Floating-Widget rendert
+stufen-unabhängig als Gold-Medaillon mit ★ — Klaus visuell kein
+Unterschied zwischen MR (pre-Handshake, sollte Bronze sein) und MM
+(post-Handshake, ist Gold). Modul 16 setzt `data-stufe="bronze"`/
+`"gold"` korrekt am unsichtbaren `#sbkim-siegel-badge`-Proxy-Span im
+Widget-Inneren (Spec-konform), aber der sichtbare Slot-Button daneben
+hat keine Stufen-Logik. Architektur-Pfad (ii) aus Brief gewählt:
+Modul 17 nutzt lookup auf `SbkimSiegel._meta.siegelStufe` (Modul-16-
+Getter aus Bau 16 Sub e) im `mountSiegelSlot()`-Aufruf — robust gegen
+Event-Reihenfolge (Modul 16 init vor Modul 17 dispatch).
+
+**Was geändert wurde:**
+
+- **`src/modules/17_floating_widget.js`** additiv: drei neue
+  Konstanten (`SIEGEL_STUFE_BRONZE`/`SIEGEL_STUFE_GOLD`/
+  `SIEGEL_STUFENWECHSEL_MS=600`), drei neue Helper (`getSiegelStufe()`
+  fail-soft Default `"bronze"` / `applySiegelStufeToSlot(stufe)` /
+  `playSiegelStufenwechselAnimation()`), `mountSiegelSlot()` +
+  `buildWidget()`-Init-Pfad rufen `applySiegelStufeToSlot(getSiegelStufe())`
+  nach Slot-Mount, `onHandshake()` schaltet bei `outcome:"established"`
+  + `siegelMounted===true` + `siegelStufeRendered!=="gold"` auf Gold
+  + 600 ms `.sbkim-widget-siegel-stufenwechsel`-Klasse (idempotent —
+  zweiter Handshake re-animiert nicht). `_meta` um Getter
+  `siegelStufeRendered` (string\|null) erweitert.
+- **`buildCss()`** erweitert um drei Regeln + `@keyframes
+  sbkim-widget-siegel-stufenwechsel-gold`: Bronze-Filter
+  `saturate(0.6) brightness(0.85)` am Slot::before + `.sbkim-widget-
+  siegel-glyph`, Bronze-Hover-glow `rgba(140,110,47,0.55)`, Gold =
+  Default-Render kein Override, Animation analog index.html `siegel-
+  stufenwechsel-gold`.
+- **Panel 17** in `tests/manual_check.html` um Test 13 (Initial-
+  Bronze-Attribut + _meta-Spiegelung) + Test 14 (sbkim:handshake
+  established → Gold + Animations-Klasse + 700-ms-Re-Check)
+  erweitert; Header-Status auf „Code-Stub + Pflege Sub-(e)-Render
+  2026-05-26".
+- **Headless-Smoke** `tests/smoke_bau17_floating_widget.mjs` um vier
+  neue Proben 32–35 erweitert: 36/36 grün.
+- **Karte 17** § Bauzustand neue Zeile „Pflege Sub-(e)-Visueller
+  Slot-Render".
+- **INTERFACES.md** § 1 Modul 17 Bietet-Block + Vier-Slot-Layout +
+  Geprüft-Zeile erweitert; § 10 Änderungsprotokoll neue Zeile.
+
+**Was geprüft:**
+
+- node --check `17_floating_widget.js` + alle 13 Inline-`<script>`-
+  Blöcke in `tests/manual_check.html` grün.
+- smoke_bau17_floating_widget.mjs 36/36 grün.
+- smoke_bau15b_membran.mjs 31/31 grün (Regression).
+- smoke_bau16_sub_e_bronze.mjs 15/15 grün (Regression).
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-16-Eingriff (Modul 16 setzt `data-stufe` korrekt am
+  Proxy-Span — Spec-Konformität bestätigt).
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+- KEIN Endknoten-Eingriff (eigene Folge-PRs pro Endknoten-Repo).
+- KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Render-Schicht-Pflege).
+- KEINE Tafel-Umsortierung CLAUDE.md.
+- KEINE Sage-Page-Änderung (`index.html` unangetastet).
+
+**Was offen:**
+
+- Klaus' Sichttest Panel 17 Tests 13 + 14 auf der Sage-Page.
+- Endknoten-Re-Migration: Mein-Rezeptbuch + Mein-Mixarium müssen
+  `sbkim/17_floating_widget.js` auf den neuen Sage-Commit nachziehen
+  — eigene Folge-PRs pro Endknoten-Repo.
+- Visueller Vergleich: MR (Bronze, kein Verkehr) vs. MM (Gold,
+  post-handshake) sollte sichtbar unterscheidbar werden.
+
+**Nächster sinnvoller Schritt:** Merge PR, dann Endknoten-Update-
+Sitzungen (Mein-Rezeptbuch + Mein-Mixarium) auf den neuen Sage-
+Commit ziehen. Optional kombinieren mit Pflege Modul-05-Update
+(zweite Folge-Pflege aus dem Sichttest-Befund 2) — ein gemeinsamer
+Endknoten-Update-PR pro Repo.
+
+`status.json` Modul 17 unverändert (Score bleibt `"stub"`,
+additive Render-Pflege); `python3 scripts/update_puls_pie.py`
+aufgerufen (Pie-Verteilung unverändert).
+
+---
+
 ### 2026-05-26 · Endknoten-Sichttest Cross-Knoten Sub (e) + drei Folge-Briefe
 
 **Sitzungs-Rolle:** Pflege-Sitzung Sichttest-Bilanz. Branch
