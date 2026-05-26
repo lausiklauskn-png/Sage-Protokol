@@ -530,6 +530,37 @@ async function run() {
     !!andockBtnNew && !!infoNotiz &&
     /Modul 18 noch nicht verfügbar/.test(infoNotiz.textContent));
 
+  // Probe 16: Pflege Modal-Local-Time 2026-05-26 (Sub-(e)-Folge-Pflege 3/3).
+  // Modal-Datum „Bezeugt seit YYYY-MM-DD, HH:MM Uhr" muss aus LOKALEN
+  // Date-Methoden (getHours/getMinutes/etc.) gebaut werden, nicht aus
+  // UTC-ISO-Split (toISOString().slice). Klaus' Befund DeX-Chrome: das
+  // Modal zeigte vorher UTC-Zeit statt MESZ-lokal. Test: Stub-Datum +
+  // Verifikation, dass dateLine.textContent KEINE UTC-Hour-Werte enthält
+  // wenn lokale Zeitzone abweicht.
+  // Wir setzen ein bekanntes ISO-Datum mit klarer UTC-Hour (T18:42),
+  // erzeugen das Modul-16-Modal frisch und prüfen den dateLine-Text.
+  // Lokale Zone hängt von der Laufumgebung ab — wir prüfen daher die
+  // GEFORDERTE Konsistenz: der gerenderte Hour-Wert muss der LOKALEN
+  // Stunde aus `new Date(certifiedAt).getHours()` entsprechen.
+  // Modal ist nach den vorigen Proben noch offen (modal-Variable).
+  // dateLine aus dem bestehenden Modal abrufen.
+  const dateLineLT = modal && modal.querySelector("[data-siegel-date]");
+  const certIso = S._meta.certifiedAt;
+  const expectedDate = new Date(certIso);
+  const expectedHH = String(expectedDate.getHours()).padStart(2, "0");
+  const expectedMM = String(expectedDate.getMinutes()).padStart(2, "0");
+  const expectedTimePart = expectedHH + ":" + expectedMM;
+  // ISO-UTC-Hour zum Abgleich (würde verwendet werden bei dem alten
+  // toISOString().slice-Bug).
+  const utcHH = String(expectedDate.getUTCHours()).padStart(2, "0");
+  const utcTimePart = utcHH + ":" + String(expectedDate.getUTCMinutes()).padStart(2, "0");
+  const dateText = dateLineLT && dateLineLT.textContent;
+  const hatLokaleZeit = dateText && dateText.includes(expectedTimePart);
+  record("16. Modal-Datum lokal: Bezeugt seit … HH:MM aus lokalen Date-Methoden (Pflege Modal-Local-Time)",
+    "dateLine enthält lokale getHours():getMinutes() (UTC-Pfad würde abweichen wenn TZ != UTC)",
+    `dateText=\"${dateText && dateText.slice(0, 60)}\"/expectedLokal=${expectedTimePart}/utcWaere=${utcTimePart}/hatLokaleZeit=${hatLokaleZeit}`,
+    !!hatLokaleZeit);
+
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;
   const total = results.length;
