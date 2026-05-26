@@ -869,12 +869,26 @@
     var dateLine = modalRoot.querySelector("[data-siegel-date]");
     if (dateLine) {
       if (snap.certifiedAt) {
-        // ISO "2026-05-24T18:42:31.123Z" → "2026-05-24 HH:MM" lokal.
+        // Pflege Modal-Local-Time 2026-05-26 (Sub-(e)-Folge-Pflege 3/3):
+        // certifiedAt ist UTC-ISO ("2026-05-24T18:42:31.123Z"). Vor der
+        // Pflege wurden die ISO-Slices direkt angezeigt — Klaus' Befund
+        // DeX-Chrome (MESZ, UTC+2): „Datum/Uhrzeit ist nicht aktuell,
+        // ich vermute nicht Mitteleuropäische Zeit, eher Amerikan."
+        // Fix: lokale Date-Methoden (getFullYear/getMonth/getDate/
+        // getHours/getMinutes) statt UTC-ISO-Split. ISO-Datum-Format
+        // (YYYY-MM-DD) bleibt, weil Klaus' Doku-Stil das überall nutzt
+        // (Aspekte-since-Feld, Übergabeprotokoll-Dateinamen).
         var date = new Date(snap.certifiedAt);
-        var iso = isNaN(date.getTime()) ? snap.certifiedAt : date.toISOString();
-        var datePart = iso.slice(0, 10);
-        var timePart = iso.slice(11, 16);
-        dateLine.textContent = "Bezeugt seit " + datePart + ", " + timePart + " Uhr.";
+        if (isNaN(date.getTime())) {
+          dateLine.textContent = "Bezeugt seit " + snap.certifiedAt;
+        } else {
+          var yyyy = date.getFullYear();
+          var mm = String(date.getMonth() + 1).padStart(2, "0");
+          var dd = String(date.getDate()).padStart(2, "0");
+          var HH = String(date.getHours()).padStart(2, "0");
+          var MM = String(date.getMinutes()).padStart(2, "0");
+          dateLine.textContent = "Bezeugt seit " + yyyy + "-" + mm + "-" + dd + ", " + HH + ":" + MM + " Uhr.";
+        }
       } else {
         dateLine.textContent = "Bezeugt: —";
       }

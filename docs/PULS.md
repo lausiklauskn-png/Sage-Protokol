@@ -1811,6 +1811,90 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-26 · Pflege 16 Modal-Local-Time (Sub-(e)-Folge-Pflege 3/3)
+
+**Sitzungs-Rolle:** Pflege-Sitzung Render-Kosmetik. Branch
+`claude/pflege-16-modal-local-time`. Dritte und letzte der drei
+Sage-Sub-(e)-Folge-Pflegen aus dem Endknoten-Sichttest-Bilanz vom
+2026-05-26.
+
+**Anlass:** Klaus' Befund DeX-Chrome auf Galaxy Tab S6 in MESZ
+(UTC+2):
+
+> Datum/Uhrzeit ist nicht aktuell, ich vermute nicht
+> Mitteleuropäische Zeit, eher Amerikan.
+
+Das SBKIM-Siegel-Modal zeigte „Bezeugt seit 2026-05-26, 19:10 Uhr"
+statt der lokalen Zeit 21:10. Ursache: `renderModalContents()` in
+Modul 16 hat den `dateLine.textContent` per
+`new Date(snap.certifiedAt).toISOString().slice(0, 10)` +
+`iso.slice(11, 16)` gebaut — UTC-ISO-Substrings.
+
+**Fix in `src/modules/16_siegel.js`** Zeilen ~872–885 (kleiner
+Eingriff, additiv):
+
+UTC-ISO-Slice durch lokale Date-Methoden ersetzt — `date.getFullYear()`,
+`String(date.getMonth() + 1).padStart(2, "0")`, `getDate()`,
+`getHours()`, `getMinutes()` mit `padStart(2, "0")`. Format-
+Konvention `YYYY-MM-DD, HH:MM Uhr` bleibt (ISO-Datum + lokale
+Stunden/Minuten — kein Optik-Wechsel auf `toLocaleString`-Style,
+weil Klaus' Doku-Pattern überall ISO-Datum verwendet). Fail-soft-
+Fallback: bei `NaN`-Date wird der Roh-`certifiedAt` direkt
+angezeigt.
+
+`_meta.certifiedAt` bleibt UTC-ISO (Spec-Vertrag aus § Persistenz
+unverändert — nur die Render-Schicht konvertiert).
+
+**Was getan:**
+
+- `src/modules/16_siegel.js` Zeile 872–885 minimal-patch.
+- Karte 16 § Sub (c) Modal-Body Punkt 1 um Anzeige-Konvention-
+  Block erweitert (lokale Date-Methoden + Begründung).
+- Karte 16 § Bauzustand neue Zeile „Pflege Modal-Local-Time".
+- INTERFACES.md § 1 Modul 16 Geprüft-Zeile + § 10
+  Änderungsprotokoll-Eintrag.
+- Headless-Smoke `smoke_bau16_sub_e_bronze.mjs` um Probe 16
+  erweitert (16/16 grün).
+- Regression `smoke_bau15b` 31/31 + `smoke_bau17` 36/36 grün.
+- node --check Modul 16 grün.
+- status.json Modul 16 unverändert (`stub`); Pie nicht
+  regeneriert.
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN funktionaler Vertrags-Eingriff (Public Surface unverändert;
+  `_meta.certifiedAt`-Format bleibt UTC-ISO).
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+- KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Render-Schicht-Pflege, kein
+  Sicherheits-Modul-Update).
+- KEIN Endknoten-Eingriff.
+- KEINE Tafel-Umsortierung CLAUDE.md.
+
+**Alle drei Sage-Sub-(e)-Folge-Pflegen abgeschlossen:**
+
+| # | Pflege | PR | Status |
+|---|---|---|---|
+| 1 | Modul 17 Bronze/Gold-Render | #185 | ✅ gemerged |
+| 2 | Endknoten-Modul-05-Update | extern (MR + MM) | offen — eigene Sitzungen |
+| 3 | Modul 16 Modal-Local-Time | dieser PR | ✅ in Arbeit |
+
+**Was offen blieb:**
+
+- **Endknoten-Sammel-Update-PR pro MR + MM**: nach Sage-Pflegen 1+3
+  + Endknoten-Modul-05-Update (Pflege 2) alle Updates in einem
+  Endknoten-PR pro Repo nachziehen.
+- **Klaus' Browser-Sichttest** Modal-Datum lokal in DeX-Chrome
+  nach Endknoten-Update + Modal-Click.
+
+**Nächster sinnvoller Schritt:** Pflege Endknoten-Modul-05-Update
+(Pflege 2/3) — zwei externe Bau-Sitzungen MR + MM. Brief liegt:
+`BRIEF_PFLEGE_ENDKNOTEN_MODUL_05_UPDATE.md`. Codeblock für MR
+wurde bereits im Sage-Chat ausgegeben.
+
+**Übergabeprotokoll:** `docs/sessions/archiv/2026-05-26_pflege-16-modal-local-time.md`.
+
+---
+
 ### 2026-05-26 · Pflege Modul 17 Widget Bronze/Gold-Render
 
 **Sitzungs-Rolle:** Pflege-Sitzung Render-Schicht. Branch
