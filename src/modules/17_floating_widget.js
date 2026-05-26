@@ -456,9 +456,13 @@
       "  white-space: nowrap;",
       "}",
       // LEBT aktiv: grünes Glow + Atmungs-Ring (Sage-Page `.lamp.alive`).
+      // Plus: kontinuierlicher `box-shadow`-Pulse direkt auf der Lampe
+      // (Pflege 17 lamp-breath 2026-05-26 — Klaus' Sichttest: dünner
+      // border-Ring war auf High-DPI-Tablet zu subtil sichtbar).
       ".sbkim-widget-slot.lebt.active::before {",
       "  background: var(--sbkim-widget-accent-green);",
       "  box-shadow: 0 0 8px rgba(110, 231, 211, 0.7);",
+      "  animation: sbkim-widget-lamp-alive-pulse 2.4s ease-in-out infinite;",
       "}",
       ".sbkim-widget-slot.lebt.active::after {",
       "  content: \"\";",
@@ -469,8 +473,8 @@
       "  width: 17px;",
       "  height: 17px;",
       "  border-radius: 50%;",
-      "  border: 1px solid var(--sbkim-widget-accent-green);",
-      "  opacity: 0.45;",
+      "  border: 2px solid var(--sbkim-widget-accent-green);",
+      "  opacity: 0.5;",
       "  animation: sbkim-widget-lamp-breath 3.2s ease-in-out infinite;",
       "  pointer-events: none;",
       "}",
@@ -556,8 +560,14 @@
       // zur vertikalen Zentrierung — die Animation muss diesen translateY
       // bewahren, sonst springt der Ring beim Start in die Ecke.
       "@keyframes sbkim-widget-lamp-breath {",
-      "  0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.45; }",
-      "  50% { transform: translateY(-50%) scale(1.5); opacity: 0; }",
+      "  0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.5; }",
+      "  50% { transform: translateY(-50%) scale(1.7); opacity: 0; }",
+      "}",
+      // Kontinuierlicher box-shadow-Pulse auf der Lampe selbst — gut sichtbar
+      // auf High-DPI-Tablets. Analog Sage-Page traffic-pulse, aber infinite.
+      "@keyframes sbkim-widget-lamp-alive-pulse {",
+      "  0% { box-shadow: 0 0 0 0 rgba(110, 231, 211, 0.75), 0 0 8px rgba(110, 231, 211, 0.7); }",
+      "  100% { box-shadow: 0 0 0 9px rgba(110, 231, 211, 0), 0 0 8px rgba(110, 231, 211, 0.7); }",
       "}",
       "@keyframes sbkim-widget-lamp-pulse {",
       "  0% { box-shadow: 0 0 0 0 rgba(244, 180, 53, 0.7); transform: scale(1); }",
