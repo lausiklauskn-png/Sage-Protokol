@@ -152,7 +152,7 @@ Vorschläge:
   "domain": "<DEINE_DOMAIN>",          // z.B. "Kochrezepte"
   "domainKeywords": [],                // 5–15 deutsch, kurze Strings
   "nodeType": "hybrid",
-  "hubUrl": "<HUB_URL>",                // z.B. "https://sbkim-hub.example/"
+  "hubUrl": "<HUB_URL>",                // z.B. "https://lausiklauskn-png.github.io/SB-KIMTool-Point/"
   "embedding": {
     "model": "Xenova/multilingual-e5-small",
     "lazy": true

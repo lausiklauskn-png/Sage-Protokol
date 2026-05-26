@@ -122,7 +122,8 @@ Bestehender Wizard-Code in `index.html` ist Sage-Page-spezifisch:
 - Theme-CSS direkt mit Sage-Page-Variablen.
 
 Externer Mycel-Hub will:
-- Eigenes Repo (`<owner>/sbkim-hub`).
+- Eigenes Repo (Klaus' Repo: `lausiklauskn-png/SB-KIMTool-Point`,
+  angelegt 2026-05-26 public + leer).
 - Eigene `status.json` als PR-Ziel.
 - Eigenes Theme.
 
