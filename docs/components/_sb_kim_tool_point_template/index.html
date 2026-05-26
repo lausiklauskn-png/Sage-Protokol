@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SB-KIMTool-Point — Externer SBKIM-Mycel-Hub</title>
+  <meta name="description" content="Öffentliches Observatorium light für SBKIM-Forker-PWAs. Andocken, Endknoten-Liste, Mycel-Sichtbarkeit." />
+
+  <style>
+    :root {
+      --bg: #05050F;
+      --bg-card: #0E0E18;
+      --fg: #E8E8F0;
+      --fg-dim: #A0A0B0;
+      --accent: #16A34A;
+      --accent-dim: #0F6B30;
+      --line: #1F1F2C;
+      --gold: #C9A961;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.55;
+      font-size: 15px;
+      min-height: 100vh;
+    }
+
+    header.hub-header {
+      padding: 2.5rem 1.5rem 1.5rem;
+      max-width: 920px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--line);
+    }
+    header.hub-header h1 {
+      margin: 0 0 0.5rem;
+      font-family: "Spectral", "Georgia", serif;
+      font-size: 1.9rem;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+    }
+    header.hub-header p.lead {
+      margin: 0;
+      color: var(--fg-dim);
+      max-width: 60ch;
+    }
+
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    section {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+    }
+    section > h2 {
+      margin: 0 0 0.75rem;
+      font-family: "Spectral", "Georgia", serif;
+      font-size: 1.25rem;
+      color: var(--fg);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 0.4rem;
+    }
+    section p { color: var(--fg-dim); }
+
+    .endknoten-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .endknoten-list li {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .endknoten-list li:last-child { border-bottom: none; }
+    .lamp {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--fg-dim);
+      box-shadow: 0 0 6px currentColor;
+    }
+    .lamp.live { background: var(--accent); color: var(--accent); }
+    .lamp.cold { background: #5A4A2E; color: #5A4A2E; }
+    .endknoten-list a { color: var(--gold); text-decoration: none; }
+    .endknoten-list a:hover { text-decoration: underline; }
+    .endknoten-list .domain { color: var(--fg-dim); font-size: 0.9em; }
+
+    footer.hub-footer {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      border-top: 1px solid var(--line);
+      color: var(--fg-dim);
+      font-size: 0.9em;
+    }
+    footer.hub-footer a { color: var(--gold); text-decoration: none; }
+    footer.hub-footer a:hover { text-decoration: underline; }
+
+    .placeholder-note {
+      color: var(--fg-dim);
+      font-style: italic;
+      font-size: 0.9em;
+      padding: 0.5rem 0.75rem;
+      border-left: 3px solid var(--accent-dim);
+      background: rgba(22,163,74,0.05);
+    }
+  </style>
+</head>
+<body>
+
+<header class="hub-header">
+  <h1>SB-KIMTool-Point</h1>
+  <p class="lead">
+    Öffentliches Observatorium light für SBKIM-Forker-PWAs.
+    Hier sammelt sich das Mycel jenseits von Klaus' Sage —
+    eigene Endknoten, eigene Andocker, eigene Sicht.
+  </p>
+</header>
+
+<main>
+
+  <section>
+    <h2>Was ist das Mycel?</h2>
+    <p>
+      SBKIM (Semantisch-Biologisch Koordiniertes Inter-Knoten-Mycel)
+      ist ein dezentrales Andock-Protokoll für progressive Web-Apps.
+      Jede teilnehmende PWA ist ein Knoten mit eigener Spore, eigener
+      Identität und eigener semantischer Domäne. Verbunden über
+      lokales Embedding (Modul 03), Cosinus-Match (Modul 04),
+      Anastomose-Handshake (Modul 05) und Heterokaryose-Datenaustausch
+      (Modul 06).
+    </p>
+    <p>
+      Die <strong>Sage</strong> (Klaus' Sage-Protokol) ist der
+      Spezifikations-Hub — sie pflegt die Module, die Karten, die
+      heiligen Tafeln. Dieser <strong>SB-KIMTool-Point</strong> ist
+      der Forker-Hub — eine Tochter-Hyphe, die Forker-PWAs sichtbar
+      macht, ohne die Sage mit fremden Domain-Sporen zu fluten.
+    </p>
+  </section>
+
+  <section id="andock-wizard">
+    <h2>Andocken</h2>
+    <p>
+      Der Andock-Wizard (Modul 19, kopierbar aus Sage-Protokol)
+      mountet hier, sobald Modul 19 gebaut ist.
+    </p>
+    <div class="placeholder-note">
+      Andock-Wizard noch nicht gebaut. Sobald
+      <code>modules/19_andock_wizard.js</code> aus dem
+      <a href="https://github.com/lausiklauskn-png/Sage-Protokol" rel="noopener">Sage-Protokol-Repo</a>
+      übernommen ist, dockt diese Sektion neue Forker-PWAs an
+      und erzeugt einen Pull-Request gegen
+      <code>SB-KIMTool-Point/status.json</code>.
+    </div>
+  </section>
+
+  <section id="endknoten">
+    <h2>Angedockte Endknoten</h2>
+    <p>
+      Aus <code>status.json</code> dieses Repos. Forker tragen sich
+      hier via Andock-Wizard ein (Pull-Request).
+    </p>
+    <ul class="endknoten-list" id="endknoten-list">
+      <li><span class="lamp cold"></span>
+        <em>noch keine Forker registriert.</em>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Spec-Quelle</h2>
+    <p>
+      Alle Modul-Verträge, Karten und heiligen Tafeln leben im
+      <a href="https://github.com/lausiklauskn-png/Sage-Protokol" rel="noopener">Sage-Protokol-Repo</a>.
+      Dieser Hub spiegelt die Spec NICHT — Forker, die die Verträge
+      lesen wollen, gehen direkt zur Sage.
+    </p>
+  </section>
+
+  <section>
+    <h2>Pflege</h2>
+    <p>
+      Dieser Hub ist statisch (GitHub-Pages). Pflege via Pull-Request.
+      Erst-Iteration pflegt Klaus selbst; spätere Governance-Optionen
+      (Maintainer-Liste, Anti-Spam-Module 10/11/12) folgen mit
+      wachsendem Forker-Netz.
+    </p>
+  </section>
+
+</main>
+
+<footer class="hub-footer">
+  <p>
+    SB-KIMTool-Point · Externer SBKIM-Mycel-Hub ·
+    Spec-Quelle: <a href="https://github.com/lausiklauskn-png/Sage-Protokol" rel="noopener">Sage-Protokol</a> ·
+    Diese Seite: <a href="https://github.com/lausiklauskn-png/SB-KIMTool-Point" rel="noopener">SB-KIMTool-Point</a>
+  </p>
+</footer>
+
+<!--
+  Floating-Widget (Modul 17) — der Hub ist selber ein SBKIM-Knoten.
+  Mountet automatisch in <body>, zeigt LEBT/VERKEHR/FREMD/SIEGEL-
+  Plaketten. Wartet auf Modul-Datei-Kopie aus Sage-Protokol-Repo.
+-->
+<!-- <script src="modules/17_floating_widget.js"></script> -->
+<!-- <script src="modules/19_andock_wizard.js"></script> -->
+
+<script>
+  // Render-Helper: Endknoten-Liste aus status.json laden + rendern.
+  // Fail-soft: bei fehlerhafter status.json zeigt die Seite die
+  // statische „noch keine Forker"-Zeile.
+  (async () => {
+    try {
+      const resp = await fetch("status.json", { cache: "no-store" });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      const list = document.getElementById("endknoten-list");
+      const endknoten = Array.isArray(data.endknoten) ? data.endknoten : [];
+      if (endknoten.length === 0) return;
+      list.innerHTML = "";
+      for (const e of endknoten) {
+        const li = document.createElement("li");
+        const lamp = document.createElement("span");
+        lamp.className = "lamp " + (e.live ? "live" : "cold");
+        li.appendChild(lamp);
+        const link = document.createElement("a");
+        link.href = e.url || "#";
+        link.rel = "noopener";
+        link.textContent = e.name || "(unnamed)";
+        li.appendChild(link);
+        if (e.domain) {
+          const dom = document.createElement("span");
+          dom.className = "domain";
+          dom.textContent = "— " + e.domain;
+          li.appendChild(dom);
+        }
+        list.appendChild(li);
+      }
+    } catch (err) {
+      // Fail-soft: Default-Liste bleibt stehen.
+    }
+  })();
+</script>
+
+</body>
+</html>

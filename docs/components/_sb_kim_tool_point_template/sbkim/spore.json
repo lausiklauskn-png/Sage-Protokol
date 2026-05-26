@@ -1,0 +1,23 @@
+{
+  "_comment": "Hub-Spore-Skelett. Wird beim ersten Andock-Wizard-Lauf durch Modul 02 (SbkimSpore.generateOwnSpore) ersetzt. Felder nodeId / publicKey / domainVector / signature werden dann gefüllt; Domain-Beschreibung + Keywords bleiben.",
+  "schemaVersion": "1",
+  "protocolVersion": "0.1",
+  "nodeId": null,
+  "nodeType": "hybrid",
+  "domain": "Mycel-Hub",
+  "domainDescription": "Externer SBKIM-Mycel-Hub — Forker-Observatorium light. Sammelt Forker-PWAs, die das SBKIM-Protokoll nutzen.",
+  "domainKeywords": [
+    "SBKIM",
+    "Mycel",
+    "Forker-Hub",
+    "Observatorium",
+    "Andocken",
+    "Spore",
+    "Endknoten"
+  ],
+  "endpoint": null,
+  "nodeName": "SB-KIMTool-Point (Hub)",
+  "publicKey": null,
+  "domainVector": null,
+  "signature": null
+}
