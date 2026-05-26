@@ -20,8 +20,8 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-25 (18 Module)
-  "🟫 Schablone" : 5
+  title Modulstand 2026-05-26 (21 Module)
+  "🟫 Schablone" : 8
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
   "🟦 Code-Stub" : 9
@@ -1810,6 +1810,139 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-26 · Tafel-Spec-Pflege Mycel-Vision (Klaus' Vision-Korrektur)
+
+**Sitzungs-Rolle:** Hauptsitzung Tafel-Spec-Pflege. Branch
+`claude/tafel-spec-mycel-vision`. **Reine Doku-Pflege**, KEIN
+Modul-Code-Eingriff.
+
+**Anlass:** Klaus' Vision-Klärung 2026-05-26 in mehreren Etappen:
+
+1. **Such-Feld als bidirektionales Cross-Knoten-Matching-Anker** —
+   Klaus' Kern-Intuition: User tippt in Mein-Rezeptbuch „welcher Wein
+   passt zu Lasagne" → Cross-Knoten-Query an Mein-Mixarium → Treffer
+   kommen zurück → Verweis ins andere PWA. Genau das, was das
+   `sbkim_paper.pdf` als „Semantisches Bidirektionales KI-Matching"
+   beschreibt — und was Klaus' externes
+   [Semantic Match Demo](https://github.com/lausiklauskn-png/semantic-match-demo)
+   als UI-Pattern enthält.
+2. **Modul 04.C `queryLocal` fehlt** — kritischer Blocker. Modul 15
+   Sub (b) hat den Empfänger-Pfad gebaut (`op:"query"` /
+   `op:"queryResult"`), antwortet aber mit
+   `error:"module-04c-not-available"`.
+3. **Modul 15 + 16 Rückbau in Endknoten zurücknehmen** — Klaus hat
+   15+16 aus MR + MM zurückgebaut. Mit Floating-Widget (Modul 17) ist
+   die UX gelöst → 15+16 wieder rein, plus zusätzlich Modul 18 (Tool-
+   PWA-Container) und Modul 19 (Andock-Wizard kopierbar).
+4. **Mehrstufen-Architektur:** Sage-Protokol → SBKIM-Starter-Bundle
+   (eigenes Repo) → Externer Mycel-Hub (eigenes Repo) → Forker-PWAs
+   (Pepo Semantic Match Demo, Muttis Rezeptbuch, etc.).
+5. **Modul 16 Aspekt 4 + Bronze-Stufe** — zweistufiger SIEGEL (Bronze
+   „Mycel suchend" / Gold „Mycel verbunden") löst Henne-Ei-Problem
+   (Andocken erreichbar ohne Voraus-Voll-SIEGEL).
+6. **Auto-Andocken NEIN** — Empfangsmodus-Prinzip wahren. Andocken
+   nur via Modul 18 Sub (a) explizite Geste.
+
+Klaus' Anweisung: **„bevor wir bauen nachdenken"** — daher diese eine
+große Tafel-Spec-Pflege, die die komplette erweiterte Vision
+dokumentiert, BEVOR irgendetwas gebaut wird.
+
+**Pepo-Demo-Studie (vorab):**
+
+WebFetch auf `lausiklauskn-png/semantic-match-demo` (index.html +
+hub.html + protocol/sbkim-node.html + SBKIM_Paper_DE.html):
+
+- ✅ **Übernehmbar als Pattern-Vorlage:** Symmetrie-Anforderung
+  (beide Parteien beschreiben Fähigkeit UND Bedarf, Vier-Feld-
+  Eingabe), Score-Ring (0–100% mit Farb-Schwellen ≥70/40-69/<40),
+  Drei-Dimensionen-Anzeige (fachlich/prozess/skalierung — entspricht
+  Modul 04.A `matchDimensions`), Match-/Differenz-Listen, Confirm-
+  Workflow.
+- ❌ **NICHT übernehmbar:** WebRTC/PeerJS-Transport (Demo nutzt
+  PeerJS, Sage nutzt postMessage + BroadcastChannel), Claude-API
+  als zentrale Match-Engine (Demo rechnet alles per Claude,
+  Sage rechnet lokal via Modul 03 + 04 + optional Stufe-B-LLM via
+  04.B), Tablet-Hub-Vermittler-Modell (Demo hat Tablet als zentralen
+  Hub, Sage hat dezentrale Peers).
+
+Klaus' Klärung 2026-05-26: die Demo war Vorlage für eine andere
+Firma, nicht Sage-Spec — aber die bidirektionale Match-Vision ist
+identisch. Sage-Mycel ist die eigenständige dezentrale Implementation.
+
+**Was diese Sitzung getan hat:**
+
+1. **Karte 04 § Sub (c) `queryLocal` voll spec'd** — Signatur, Default
+   `k=5`, hartcodierte Schwelle `PROVIDER_MIN_MATCH=0.80`, Korpus zwei
+   Pfade (`options.corpus` + `_corpusProvider`-Callback via
+   `setLocalCorpus`), Embedding via Modul 03 `embedQuery`, Top-k-Cut,
+   fünf Fehler-Pfade, Strikte Tabus, Cross-Knoten-Search-Hook auf
+   Modul 15 Sub (b) ohne Code-Update. Selbstcheck-Zeile künftig fünf
+   Funktionen.
+2. **Karte 16 § Sub (e) Mycel-Verbindungs-Stufe** voll spec'd —
+   zweistufiger SIEGEL Bronze/Gold via `sbkim:handshake`-Listener,
+   RAM-only `_meta.mycelConnected`, visuelle Unterscheidung gedämpfter
+   Bronze-Ton via saturate(0.6)-filter + Stufenwechsel-Animation
+   600 ms. Aspekt 4 „Mycel-Verbindung etabliert (erster Handshake)"
+   in ZERTIFIKAT_ASPEKTE-Liste. § Strikte Tabus Klausel angepasst
+   (Bronze/Gold-Stufung erlaubt seit 2026-05-26; Silber/Platin
+   bleiben verboten).
+3. **Karte 18 Sub-Bereiche von 5 (a–e) auf 9 (a–i) erweitert** —
+   neue Sub (b) Heterokaryose (ersetzt alte „Sporen-Installation");
+   neue Sub (f) Sporen-Regeneration; (g) Re-Embedding; (h) Manueller
+   Handshake-Trigger; (i) Spore-Discovery (Sage / Externer Hub /
+   Manuelle-URL). Neuer Karten-Abschnitt § Such-Feld-Integration-
+   Pattern (Pepo-Demo-Studie als Referenz, Sender-Helper-Code-Pattern,
+   UI-Pattern, Anker-Pfad-Konvention).
+4. **Drei neue Stub-Karten:**
+   - `docs/components/19_andock_wizard.md` (Andock-Wizard kopierbar)
+   - `docs/components/_starter_bundle.md` (Modul-Distributions-Repo)
+   - `docs/components/_mycel_hub.md` (öffentliches Observatorium light)
+5. **Drei neue Briefe:**
+   - `BRIEF_BAU_04C_QUERY_LOCAL.md` (Phase-A-Bau-Sitzung)
+   - `BRIEF_SPEC_19_ANDOCK_WIZARD.md` (Phase-B-Spec-Sitzung)
+   - `BRIEF_SPEC_18_TOOL_PWA.md` aktualisiert (9 Sub-Bereiche +
+     Such-Pattern-Pflicht)
+6. **CLAUDE.md § Pipeline-Reihenfolge erweitert** um Phase A
+   (5e–5j: Re-Aktivierung MR/MM + Bau 04.C + Bau 16 Sub e +
+   Spec/Bau 18 + Such-Feld-Helper + Migration), Phase B (7–9:
+   Modul 19 + Starter-Bundle + Externer Mycel-Hub), Phase C
+   (10–12: Pepo + Muttis Rezeptbuch + Cross-Knoten-Such-Test).
+   § Modul-Tabelle Eintrag 18 auf 9-Sub-Schema; Eintrag 19 NEU.
+7. **`status.json`** neuer `mycelHubBacklog`-Pool mit Modul 19 +
+   `starter-bundle` + `mycel-hub` (alle `score:"schablone"`); Modul
+   18-Eintrag um 9-Sub-Hinweis erweitert; `lastUpdated:"2026-05-26"`.
+   `scripts/update_puls_pie.py` um `mycelHubBacklog`-Pool erweitert.
+   Pie regeneriert (21 Module, 🟫 8 / 🟧 0 / 🟨 0 / 🟦 9 / 🟩 4).
+8. **INTERFACES.md § 10 Änderungsprotokoll-Eintrag** mit vollem
+   Tafel-Spec-Pflege-Resultat.
+
+**Was diese Sitzung NICHT getan hat:**
+
+- KEIN Modul-Code in `src/modules/`.
+- KEIN Endknoten-Eingriff (externe Repos unangetastet).
+- KEINE Sage-Page-Änderung (`index.html` nur als Code-Vorlage für
+  Modul 19 referenziert, nicht modifiziert).
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.
+- KEIN Modul-02/05/15/17-Code-Eingriff.
+- KEINE Tafel-Umsortierung CLAUDE.md außer additiver Pipeline-
+  Erweiterung (Phasen A/B/C ergänzt, alte Schritte 1–6 unverändert).
+
+**Offen / Nächster sinnvoller Schritt:**
+
+1. **Sichttest dieser Pflege durch Klaus** (Karten lesen, oder
+   zumindest § Klaus-Festlegungen-Blöcke pro Karte; Pipeline-
+   Reihenfolge in CLAUDE.md prüfen). Bei „grün" mergen.
+2. **Phase A Pipeline-Schritt 5f starten** — Bau-Sitzung 04.C
+   `queryLocal` (Brief `BRIEF_BAU_04C_QUERY_LOCAL.md` liegt). Kritisch,
+   weil Modul 15 Sub (b) ohne 04.C nicht funktioniert.
+3. **Phase A Pipeline-Schritt 5e + 5g + 5h + 5i + 5j folgen** —
+   Re-Aktivierung MR/MM + Bronze-Stufe-Bau + Modul 18 + Such-Feld-
+   Helper + Endknoten-Migration.
+4. **Phase B Spec-Sitzung 19 Andock-Wizard** (Brief
+   `BRIEF_SPEC_19_ANDOCK_WIZARD.md` liegt) — NACH App-Freigabe.
+
+---
 
 ### 2026-05-26 · Pflege Modul 17 — Tooltips + Self-Heartbeat
 

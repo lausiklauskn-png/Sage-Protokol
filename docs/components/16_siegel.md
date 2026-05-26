@@ -441,6 +441,166 @@ Auto-Erkennung nutzen (`https://lausiklauskn-png.github.io/Sage-
 Protokol/`) oder explizit `https://github.com/lausiklauskn-png/Sage-
 Protokol` setzen — Bau-Sitzung 16 entscheidet, Klaus genehmigt.
 
+### Sub (e) — Mycel-Verbindungs-Stufe (Bronze / Gold, Spec-Erweiterung 2026-05-26)
+
+**Anlass:** Klaus' Vision-Klärung 2026-05-26 (Tafel-Spec-Pflege Mycel-
+Vision): das SIEGEL soll **zweistufig** sein — Bronze („Mycel
+suchend"), wenn der Surface-Check grün ist, aber noch kein
+Cross-Knoten-Handshake stattgefunden hat; Gold („Mycel verbunden")
+sobald der erste `sbkim:handshake outcome:"established"`-Event erfolgt
+ist.
+
+**Tafel-Anpassungs-Antrag (CLAUDE.md § Tafel-Evolutions-Klausel):**
+Diese Karte hatte unter § Strikte Tabus den Punkt „Keine Stufen-
+Varianten (Bronze / Silber / Gold) für das Grund-Siegel". Klaus'
+Vision-Klärung 2026-05-26 ergänzt diese Klausel — siehe § Strikte
+Tabus § „Bronze/Gold-Stufung erlaubt seit 2026-05-26".
+
+#### Warum zweistufig
+
+Henne-Ei-Problem (Klaus' Anmerkung 2026-05-26): „Wenn das SIEGEL erst
+nach dem ersten Handshake voll erscheint, gibt es vorher kein
+Andocken — und ohne Andocken kein erster Handshake." Die Tafel-
+Antwort: das SIEGEL erscheint **schon Bronze** wenn die Surface-Prüfung
+grün ist, sodass Klick → Modul 18 Tool-PWA-Container (Andock-Geste)
+möglich wird. Nach erstem erfolgreichem Handshake wechselt der SIEGEL
+auf Gold + First-Boot-Animation Aspekt 4.
+
+#### Schema
+
+```js
+SiegelStufe = "bronze" | "gold"
+```
+
+Logik:
+
+```js
+function siegelStufe() {
+  // Voraussetzung: isCertified() === true (Surface-Check grün).
+  // Wenn nicht, ist KEIN Badge da (Anti-Greenwashing intakt).
+  if (_meta.mycelConnected === true) return "gold";
+  return "bronze";
+}
+```
+
+**`_meta.mycelConnected`** wird auf `true` gesetzt, sobald Modul 16
+einen `sbkim:handshake` window-Event mit
+`detail.outcome === "established"` empfängt (Mechanismus siehe
+nächster Block).
+
+#### Modul-16-Listener auf `sbkim:handshake`
+
+Bau-Sitzung 16 Sub (e) ergänzt im `init()`:
+
+```js
+window.addEventListener("sbkim:handshake", function (event) {
+  const outcome = event?.detail?.outcome;
+  if (outcome !== "established") return;
+  if (_meta.mycelConnected) return;  // idempotent
+  _meta.mycelConnected = true;
+  _meta.mycelConnectedAt = new Date().toISOString();
+  // Re-Render Badge mit Gold-Stufe + First-Boot-Animation-Variante
+  // für Stufenwechsel (z.B. .first-boot-gold Klasse 600 ms).
+  rerenderBadge();
+});
+```
+
+**Idempotent:** zweiter `outcome:"established"`-Event ändert nichts.
+**Fail-soft:** wenn `event.detail` fehlt oder kein Objekt ist, no-op
+(Modul 16 wirft nicht).
+
+#### Visuelle Unterscheidung Bronze vs. Gold
+
+**Bronze (Mycel suchend):**
+- Wappen-Glyph rendert in **gedämpftem Bronze-Ton** (`#8C6E2F`
+  statt `#C9A961`) — derselbe SVG, andere CSS-Variable.
+- Goldring-Farbe ebenfalls gedämpft.
+- Tooltip: „SBKIM-Siegel · Mycel suchend"
+
+**Gold (Mycel verbunden):**
+- Vollwertige Gold-Optik (`#C9A961`-Klasse, original CSS aus Spec-
+  Sitzung 16).
+- First-Boot-Animation auf Stufenwechsel (`.first-boot-gold`
+  Klasse, 600 ms, optisch ähnlich aber unterscheidbar von der
+  originalen First-Boot-Animation).
+- Tooltip: „SBKIM-Siegel · Mycel verbunden"
+
+**CSS-Skizze (Spec-Anker, finale Werte in Bau-Sitzung 16 Sub e):**
+
+```css
+:root {
+  --siegel-bronze:      #8C6E2F;
+  --siegel-bronze-glow: rgba(140,110,47,0.45);
+}
+
+#sbkim-siegel-badge[data-stufe="bronze"] {
+  filter: saturate(0.6) brightness(0.85);
+  /* Wappen-SVG wird per JS auf Bronze-Glyph-Farbe umgesetzt */
+}
+
+#sbkim-siegel-badge[data-stufe="gold"] {
+  /* Default-Render, keine Override */
+}
+
+@keyframes siegel-stufenwechsel-gold {
+  0%   { transform: scale(1.00); }
+  40%  { transform: scale(1.15); box-shadow: 0 0 24px var(--siegel-gold-glow); }
+  100% { transform: scale(1.00); }
+}
+
+#sbkim-siegel-badge.stufenwechsel-gold {
+  animation: siegel-stufenwechsel-gold 600ms ease-out;
+}
+```
+
+Bau-Sitzung 16 Sub (e) entscheidet die finalen Pfade; das Spec verankert
+das Verhalten + die zwei Stufen-Werte.
+
+#### Klick-Verhalten in Bronze
+
+**Beide Stufen klickbar.** In Bronze öffnet der Klick weiterhin das
+Erklär-Modal (Sub c), aber das Modal zeigt **zusätzlich** einen
+Hinweis-Block:
+
+> „**Mycel suchend** — diese App ist SBKIM-fähig, aber noch nicht mit
+> Geschwister-Knoten verbunden. Klick auf [Andocken] (Modul 18) um
+> eine Verbindung herzustellen."
+
+`[Andocken]`-Knopf öffnet Modul 18 Sub (a) (sobald gebaut). Vor
+Modul 18 zeigt der Knopf eine Info-Notiz: „Modul 18 noch nicht
+verfügbar — Andocken via Sage-Page-Andock-Wizard."
+
+#### Persistenz (Bronze → Gold-Wechsel)
+
+**RAM-only** (analog Modul 16 Persistenz-Klausel, § Persistenz).
+`_meta.mycelConnected` lebt nur in der aktuellen Tab-Session.
+
+**Konsequenz:** beim Tab-Reload startet jeder Endknoten wieder mit
+Bronze, bis der erste neue Handshake erfolgt. Das ist **gewollt** —
+die Bronze/Gold-Stufe spiegelt die **aktive Verbindungs-Situation**,
+nicht eine historisch erfolgte Verbindung. Wer mehr will, baut Modul
+10 Reputation mit Append-Log.
+
+#### Aspekt-4-Eintrag (verbindlich für Bau-Sitzung 16 Sub e)
+
+Wenn `_meta.mycelConnected === true` → ZERTIFIKAT_ASPEKTE-Liste rendert
+zusätzlich:
+
+```js
+{
+  since:       "2026-05-26",
+  module:      "16",
+  aspect:      "Mycel-Verbindung etabliert (erster Handshake)",
+  description: "Diese App hat in der aktuellen Session mindestens einen erfolgreichen Cross-Knoten-Handshake durchgeführt. SIEGEL-Stufe Gold.",
+}
+```
+
+Aspekt 4 ist **dynamisch sichtbar** (nur in Gold-Stufe), aber bleibt
+**code-versionierter Eintrag** in `ZERTIFIKAT_ASPEKTE` (in Bronze-
+Stufe rendert das Modal Aspekt 4 trotzdem, aber mit Marker „pending"
+statt mit Datum — Bau-Sitzung 16 Sub e entscheidet die exakte UI-
+Darstellung).
+
 ### Sub (d) — Aspekte-Liste (lebendes Dokument)
 
 #### Schema
@@ -485,6 +645,30 @@ spätere Erweiterungen setzt. Spätere Aspekte verweisen nur auf das
 neue Modul (z.B. „Modul 11 Rate-Limit für eingehende postMessage"),
 nicht auf die ganze Pflicht-Liste — die ist im ersten Eintrag
 zementiert.
+
+#### Aspekt 4 — Mycel-Verbindung etabliert (Spec-Erweiterung 2026-05-26)
+
+```js
+{
+  since:       "2026-05-26",
+  module:      "16",
+  aspect:      "Mycel-Verbindung etabliert (erster Handshake)",
+  description: "Diese App hat in der aktuellen Session mindestens einen erfolgreichen Cross-Knoten-Handshake durchgeführt. SIEGEL-Stufe Gold.",
+}
+```
+
+**Sonderfall — dynamische Render-Variante (Spec-Erweiterung 2026-05-26):**
+
+Aspekt 4 ist der einzige `ZERTIFIKAT_ASPEKTE`-Eintrag, der vom
+Modul-16-Listener auf `sbkim:handshake outcome:"established"` aktiviert
+wird (siehe § Sub (e) Mycel-Verbindungs-Stufe). Solange
+`_meta.mycelConnected === false`, rendert das Modal Aspekt 4 mit
+Marker „pending"; sobald `true`, rendert es mit Datum. Andere Aspekte
+sind statisch (Datum aus `since`-Feld). Bau-Sitzung 16 Sub (e)
+entscheidet, ob „pending"-Aspekte sichtbar oder ausgeblendet werden;
+Default-Vorschlag: **sichtbar mit grauem Marker**, damit Endnutzer
+sieht „Mycel-Verbindung noch nicht hergestellt" als sinnvollen UI-
+Anker für Andock-Geste.
 
 #### Reihenfolge
 
@@ -661,11 +845,19 @@ Tab geöffnet habe").
   Konvention). Aspekt-Beschreibungen sind öffentlich (sie stehen
   im Code-Repo). **Keine `nodeId`** im Modal, **keine API-Keys**,
   **keine Geschwister-Liste**.
-- **Keine Stufen-Varianten (Bronze / Silber / Gold) für das Grund-
-  Siegel.** Klaus' Festlegung 2026-05-24: das Siegel wächst über die
-  Aspekte-Liste, NICHT über sichtbare Stufen. Eine spätere Spec-
-  Sitzung darf das ändern, aber nur mit explizitem Anpassungs-Antrag
-  (Tafel-Evolutions-Klausel CLAUDE.md).
+- **Bronze/Gold-Stufung erlaubt seit 2026-05-26** (Tafel-Anpassung, Tafel-
+  Spec-Pflege Mycel-Vision). **Original-Klausel 2026-05-24:** „Keine
+  Stufen-Varianten (Bronze / Silber / Gold) für das Grund-Siegel."
+  **Anpassung 2026-05-26 (Klaus' Vision-Klärung):** zwei Stufen
+  erlaubt — Bronze („Mycel suchend") und Gold („Mycel verbunden").
+  Begründung: Henne-Ei-Problem (ohne SIEGEL → kein Andocken; ohne
+  Andocken → kein erster Handshake → kein Voll-SIEGEL). Bronze macht
+  das SIEGEL **klickbar bevor** der erste Cross-Knoten-Handshake
+  erfolgt ist und triggert Modul 18 Sub (a) (Andock-Geste). Spec siehe
+  § Sub (e) Mycel-Verbindungs-Stufe. **Silber, Platin, weitere Stufen
+  bleiben verboten** — zwei Stufen entsprechen einer aktiven
+  Bedeutung (suchend vs. verbunden), drei oder mehr wären Marketing-
+  Hierarchie.
 - **Modul 16 ist nicht protokoll-aktiv.** Kein Netz, keine Signatur,
   kein Embedding, kein Handshake. Lokales Render-Modul, das den
   Empfangsmodus-Grundsatz aus CLAUDE.md / `sbkim_paper.pdf` nicht
@@ -810,6 +1002,7 @@ Später:    Modul 11 / 12 / 10      (jeder Bau ergänzt einen
 | Stub angelegt | 2026-05-24 | Mini-Pflege „Modul 16 SBKIM-Siegel Stub" | Name fix: SBKIM-Siegel. Self-Inscribing als Aussteller-Modell, lebendes Dokument als Aspekte-Pfad. Anlass: Klaus' geplante App-Freigabe — Vertrauens-Signal für Forker und Endnutzer. Detail-Spec ausstehend (Spec-Sitzung 16). |
 | Spec gefüllt | 2026-05-24 | Spec-Sitzung 16 | Karte 16 vollständig gefüllt — alle vier Sub-Bereiche final, Schnittstelle (`window.SbkimSiegel = {init, isCertified, getExplanation, getCertifiedModules, getAspects, _meta}`), Persistenz RAM-only (Variante A, kein `DB_VERSION`-Bump), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1), `ZERTIFIKAT_ASPEKTE`-Schema mit Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24", `PFLICHT_MODULE`-Liste mit sieben Modulen (01/02/03/04/05/07/15) + Surface-Funktions-Anker pro Modul (`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`/`init`) + Lazy-Tolerator für Modul 03 (Sage-Page-spezifisch lazy-loaded). Anti-Greenwashing binär, Aussteller-Klärung verbindlich zwei Zeilen (KEIN Disclaimer-Schwall, Klaus-Korrektur). DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach FREMD-Lampe, 40 px-Medaillon Edel-Gold (`#C9A961`) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei Hyphen-Bögen + zentraler Knoten-Punkt). Modal eigenständig in `document.body` (analog Modul 15), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen). INTERFACES.md §1 Modul 16 voll gespiegelt; §0 unverändert (Modul 16 hat keine globalen Konstanten). **Kein Modul-Code, kein `index.html`-Eingriff, kein Sichttest** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
 | Code geschrieben | 2026-05-24 | Bau-Sitzung 16 | `src/modules/16_siegel.js` voll angelegt (Public Surface `init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta`, `PFLICHT_MODULE` mit sieben Einträgen, `ZERTIFIKAT_ASPEKTE` mit Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24", Surface-Check + binärer Fail-Modus, Badge-Mount mit Option β + MutationObserver-Re-Try analog Modul 00, Modal-Mount in `document.body` analog Modul 15, First-Boot-Animation einmalig pro Session, Repo-URL Auto-Erkennung + Override, nüchterne zweizeilige Aussteller-Klärung, KEINE benannten Error-Klassen — alle Fehlerpfade fail-soft via `console.warn`). `index.html` erweitert (`:root` mit vier neuen `--siegel-*`-Variablen, Badge-CSS-Block inkl. `@keyframes siegel-first-boot`, `<script src="src/modules/16_siegel.js">` vor `sbkim-init.js`). `sbkim-init.js` ergänzt um `SbkimSiegel.init({badgeSelector:".lamps"})`-Aufruf nach `SbkimMembrane.init`. Panel 16 in `tests/manual_check.html` mit acht Knöpfen (Setup + Tests 1–6 + Hinweis-Knöpfe 7/8 + Selbstcheck-Hinweis). **Bauzustands-Wahl Option β:** `badgeSelector` zeigt auf einen CONTAINER (Default `.lamps`); Modul-Code erzeugt das `<span id="sbkim-siegel-badge">`-Element via JS darin — ausschließlich wenn `isCertified()===true`. Damit ist die Anti-Greenwashing-Klausel binär erfüllt (kein DOM-Element überhaupt im Negativ-Fall, kein `display:none`-Workaround nötig). Wenn der Selektor ein bereits-existierendes Element mit `id="sbkim-siegel-badge"` matcht, nutzt das Modul dieses Element als Anker (Rückwärts-Kompat für Endknoten, die später ihren Header-Badge inline einbauen wollen). **Headless-Smoke 32/32 grün** (14 Happy-Path + 10 Anti-Greenwashing-Fail + 8 Hidden-Mode/Override). Sichttest ausstehend — wartet auf Klaus' Browser-Lauf in der Sage-Page + Panel 16 in `tests/manual_check.html`. |
+| Spec-Erweiterung Sub (e) + Aspekt 4 | 2026-05-26 | Tafel-Spec-Pflege Mycel-Vision | Klaus' Vision-Klärung 2026-05-26: zweistufiger SIEGEL — Bronze („Mycel suchend") und Gold („Mycel verbunden"). Löst Henne-Ei-Problem (ohne SIEGEL → kein Andocken; ohne Andocken → kein Voll-SIEGEL). Karte 16 erweitert: § Sub (e) Mycel-Verbindungs-Stufe voll spec'd (`SiegelStufe = "bronze"|"gold"`, Modul-16-Listener auf `sbkim:handshake outcome:"established"`, `_meta.mycelConnected` RAM-only, visuelle Unterscheidung gedämpfter Bronze-Ton + saturate-0.6-filter + Tooltip-Variante + Stufenwechsel-Animation 600 ms, Klick-Verhalten in Bronze öffnet Modul-18-Andock-Geste mit Hinweis-Block, RAM-only-Persistenz analog Modul 16); § Sub (d) Aspekte-Liste erweitert um Aspekt 4 „Mycel-Verbindung etabliert (erster Handshake)" mit dynamischer Render-Variante (Aspekt 4 ist der einzige Eintrag, der vom `sbkim:handshake`-Listener aktiviert wird, vorher als „pending" markiert sichtbar); § Strikte Tabus Klausel „Keine Stufen-Varianten" auf „Bronze/Gold-Stufung erlaubt seit 2026-05-26" angepasst (Tafel-Anpassung mit explizitem Anpassungs-Antrag, Silber/Platin bleiben verboten — zwei Stufen entsprechen aktiver Bedeutung, drei wären Marketing-Hierarchie). **`status.json` Modul 16 bleibt `score:"stub"`** — additive Spec-Erweiterung, Bau-Sitzung 16 Sub (e) folgt mit Code. PROTOCOL_VERSION bleibt `"0.1"`. INTERFACES.md §1 Modul 16 voll gespiegelt + § 10 Änderungsprotokoll-Eintrag. |
 | Wappen-Wechsel + Korona-Redesign | 2026-05-24 | Mini-Pflege (Klaus-Wunsch im Anschluss an Bau 16) | Auf Klaus' Wunsch das initiale „drei Hyphen-Bögen + Knoten-Punkt"-Skelett-Wappen aus Spec-Sitzung 16 § Sub (b) durch das vollwertige **Ritterschild-Auszeichnungssiegel** ersetzt (Klaus aus einer parallelen Claude-Chat-Sitzung mitgebracht): Gold-Ring + Navy-Interior + Bandschriftzug „OFFIZIELLE BESTÄTIGUNG" oben + Wortmarke „SBKIM SIEGEL" + drei Untermedaillons (Schild / Mycel-Baum / Unendlichkeit) + Bodenband „SELF-INSCRIBING". **Korona-Redesign** auf Klaus' Anschluss-Wunsch: die ursprünglichen Gold-Sonnenstrahlen aus dem mitgebrachten SVG ersetzt durch eine **Akkretions-Disk-Korona im `.bh-disk`-Stil** der Sage-Page-Schwarzes-Loch-Karte (`index.html:498` conic-gradient orange → gold → magenta → blau → türkis → orange). Im SVG umgesetzt als zwölf 30°-Arc-Segmente außerhalb des Gold-Rings (Radius 475, Stroke 60), mit `feGaussianBlur stdDeviation=22` zu einer smoothen Conic-Anmutung verschmolzen; dazu eine zweite, schmalere Innen-Schicht (Radius 460, Stroke 32, Blur 14) analog `.bh-disk-2`. Source of truth: `assets/sbkim-siegel-wappen.svg` (eigenständig editierbar, mit Inline-Kommentar-Anker im Korona-Block); `src/modules/16_siegel.js` enthält dieselbe SVG-Quelle als `WAPPEN_SVG`-Konstante (Konvention: beide Stellen synchron halten). `index.html` Badge-CSS bereinigt — Radial-Gradient-Background + Border + Inset-Shadow entfernt (das SVG bringt jetzt seinen eigenen Gold-Ring + Navy-Interior mit), `:focus-visible` + Hover-Glow + `@keyframes siegel-first-boot` bleiben (Hover-Effekt jetzt via `drop-shadow`-Filter, weil das Badge transparent ist). Headless-Smoke 15/15 grün (Wappen im DOM, Korona-Filter aktiv, drei Untermedaillons da, alte Hyphen-Bögen entfernt). **Bedeutungs-Klärung** (Klaus' Anmerkung „nicht ganz klargekommen mit dem Sinn"): das neue Wappen trägt seine Bedeutung explizit im Bild — „SBKIM SIEGEL" + „SELF-INSCRIBING" als Wortmarken im Bild selbst, drei Untermedaillons als visuelle Anker für Sicherheits-Schild / Mycel-Geflecht / Unendlichkeit. Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf nach Pull). |
 | Sichttest | — | Sichttest 16 | folgt (Klaus, Sage-Page Badge sichtbar + Modal öffnet sich + First-Boot-Animation + Aussteller-Klärung) |
 | In Endknoten eingebaut | — | Endknoten-Migration (Folge-Sitzung Karte 09 § Schritt 10) | folgt |

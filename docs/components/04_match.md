@@ -459,6 +459,229 @@ Persona-Quelle für die zwei Vektor-Slots pro Persona ist Brief 04
 dass Modul 04 die zwei Vektor-Slots **pro Persona unabhängig**
 konsumiert; die Mehr-Slot-Logik selbst liegt in Brief 04.
 
+### Sub (c) — `queryLocal` (lokales Such-Feld-Backend, M04.C-Erweiterung 2026-05-26)
+
+`queryLocal` ist die **lokale Such-Funktion** in Modul 04. Sie nimmt
+einen freien Such-Text vom Endknoten-PWA-Such-Feld entgegen, erzeugt
+via Modul 03 ein Embedding und gibt **Top-k lokale Treffer** als
+Liste zurück. Die Funktion ist der Empfänger-Pfad für Modul 15 Sub (b)
+`op:"query"` postMessage-Bridge (cross-Knoten-Search) UND der direkte
+Helper für endknoten-PWA-eigene Such-Felder.
+
+**Auslöser:** Klaus' Vision-Klärung 2026-05-26: Such-Feld als
+**bidirektionales Cross-Knoten-Matching-Anker**. Beispiel: User tippt
+in Mein-Rezeptbuch „welcher Wein passt zu Lasagne" → lokal: kein
+direkter Treffer in Rezepten → cross-Knoten-Query an Mein-Mixarium →
+Wein-Empfehlung kommt zurück. Modul 15 Sub (b) hat den
+Empfänger-postMessage-Pfad gebaut (`op:"query"` → Empfänger ruft
+`SbkimMatch.queryLocal()` → `op:"queryResult"` zurück), antwortet aber
+bisher mit `error:"module-04c-not-available"` weil 04.C fehlt.
+
+**Signatur:**
+
+```
+queryLocal(text: string, k?: number) → Promise<Array<{
+  label:    string,            // anzeigbarer Treffer-Titel
+  score:    number,            // Cosinus-Ähnlichkeit, [0, 1]
+  anchorId: string | null,     // optional, opake Anker-ID
+                               // (z.B. Rezept-Slug, Spore-Ref)
+}>>
+```
+
+**Async**, weil Modul 03 lazy ist (Modell-Lade bis ~5–15 s beim
+ersten Aufruf, danach Cache-Hit).
+
+**Default `k = 5`** — die `LOCAL_RESULT_THRESHOLD = 3` aus §0 ist eine
+**Anzeige-Schwelle** (Endknoten-UI zeigt erst ab 3 Treffern eine
+Liste, sonst nur den Top-Treffer), keine k-Begrenzung. Die Spec
+trennt beide: `k` ist der Top-k-Cut in `queryLocal`, `LOCAL_RESULT_THRESHOLD`
+ist UI-Konvention.
+
+**Schwelle:** Treffer mit `score < PROVIDER_MIN_MATCH` (0.80) werden
+**nicht** zurückgegeben. Begründung: konsistent mit `match()` /
+`isAboveProviderThreshold` — Modul 04 schweigt unter der Schwelle.
+Wer eine niedrigere Schwelle will, ruft `match()` direkt + filtert
+selbst.
+
+#### Datenquelle (Spec-Punkt — Endknoten-spezifisch)
+
+`queryLocal` matcht das Such-Text-Embedding gegen einen **lokalen
+Vektor-Korpus**. Welcher Korpus das ist, ist **Endknoten-spezifisch**:
+
+- **Mein-Rezeptbuch:** Korpus = Liste der lokalen Rezepte mit
+  pre-computed `passageVec` pro Rezept (Endknoten-Pflicht, NICHT
+  Modul-04-Pflicht — Modul 04 nimmt fertige Vektoren entgegen, analog
+  `match()` § Macht nicht).
+- **Mein-Mixarium:** Korpus = Liste der lokalen Cocktails / Mocktails
+  / Drinks mit pre-computed `passageVec`.
+- **Sage-Protokol:** Korpus = Modul-Karten / Spec-Doku-Einträge
+  (Spec-Sitzung 04.C entscheidet, ob Sage-Page das überhaupt nutzt;
+  Default-Vorschlag: Sage-Page hat KEIN Such-Feld in der Navleiste
+  und ruft `queryLocal` nicht).
+
+**Schnittstelle zum Korpus:**
+
+```js
+SbkimMatch.queryLocal(text, k, options?) → Promise<...>
+```
+
+`options.corpus` (Pflicht-Feld in Spec-Sitzung 04.C):
+
+```js
+{
+  corpus: Array<{                       // Endknoten liefert dies
+    label:    string,                   // anzeigbarer Titel
+    anchorId: string | null,
+    passageVec: Float32Array(384),      // pre-computed via Modul 03
+  }>,
+  // Wenn corpus nicht übergeben wird, ruft queryLocal stattdessen
+  // einen optionalen Callback (SbkimMatch._corpusProvider) — den
+  // Endknoten-PWAs einmalig in init() registrieren.
+}
+```
+
+**Spec-Entscheidungs-Punkt:** Soll `queryLocal` einen
+`_corpusProvider`-Callback halten (registriert via
+`SbkimMatch.setLocalCorpus(corpus)` oder
+`SbkimMatch.registerLocalCorpusProvider(fn)`), oder soll der Aufrufer
+den Korpus jedes Mal mitübergeben? Spec-Sitzung 04.C entscheidet.
+
+Vorschlag (Spec-Vorbereitung): **Beide Pfade**, mit Vorrang für
+`options.corpus` (für Test-Brücken). Endknoten registriert einmalig in
+`init()` einen Provider; `queryLocal` ohne `options.corpus` nutzt den
+Provider.
+
+#### Embedding-Schritt
+
+`queryLocal` ruft intern:
+
+1. `SbkimEmbedding.embedQuery(text)` (NICHT `embedPassage` — Such-
+   Texte sind Anfragen, nicht Inhalte; Modus-Wahl wichtig für e5-
+   small).
+2. Returns Float32Array(384), L2-normalisiert (Modul-03-Garantie).
+
+**Fehler-Fall:** Wenn `window.SbkimEmbedding` nicht existiert ODER
+`embedQuery` nicht funktioniert, **wirft** `queryLocal` einen
+`EmbeddingNotAvailableError` (sync, vor jedem corpus-Loop). Cross-
+Knoten-Anrufer (Modul 15 Sub b) übersetzt das in eine `op:"queryResult"`
+mit `error:"embedding-not-available"`.
+
+#### Top-k-Cut + Score-Sort
+
+Nach Embedding:
+
+```js
+const queryVec = await SbkimEmbedding.embedQuery(text);
+const corpus = options.corpus || _corpusProvider?.() || [];
+const results = corpus
+  .map(item => ({
+    label:    item.label,
+    score:    SbkimMatch.match(queryVec, item.passageVec),
+    anchorId: item.anchorId || null,
+  }))
+  .filter(r => r.score >= PROVIDER_MIN_MATCH)   // Schwelle ≥ 0.80
+  .sort((a, b) => b.score - a.score)
+  .slice(0, k);
+```
+
+**Sort:** absteigend nach Score (höchster zuerst).
+**Cut:** auf `k` Treffer.
+**Schwelle:** vorher (Reihenfolge wichtig — sort+slice macht keinen
+Sinn, wenn alle unter 0.80 sind).
+
+#### Fehler-Pfade
+
+| Lage | Reaktion |
+|---|---|
+| `text` leer oder kein String | wirft `EmptyQueryError` sync, vor Embedding |
+| `text` länger als `LLM_MAX_OUTPUT_CHARS` (4096) | wirft `QueryTooLongError` sync, defensive Schutz gegen Pathological-Inputs |
+| `k` kein Integer oder `< 1` | wirft `InvalidKError` sync |
+| Modul 03 fehlt / `embedQuery` kein function | wirft `EmbeddingNotAvailableError` sync |
+| Modul 03 `embedQuery` Promise rejected (Modell-Lade-Fehler) | wirft `EmbeddingFailedError` async (rethrow mit ursprünglicher Cause) |
+| `corpus` nicht Array oder `passageVec` falsche Form | wirft `InvalidCorpusError` sync |
+| Korpus leer (`corpus.length === 0`) | resolved mit leerer Liste `[]`. KEIN Throw, weil leerer Korpus legitim ist (Endknoten hat noch keine Daten). |
+| Alle Treffer < 0.80 (Schwelle nicht erreicht) | resolved mit leerer Liste `[]`. Aufrufer (z.B. Modul 15 Sub b) interpretiert das als „keine Cross-Knoten-Treffer". |
+| Embedding-Timeout (Modul 03 `init()` länger als `QUERY_TIMEOUT_MS = 4000`) | **Modul 04 bricht NICHT ab** — `queryLocal` wartet ohne eigenen Timeout, Aufrufer ist für Timeout zuständig (Modul 15 Sub b hat `pendingQueries TTL 30s`). |
+
+#### Performance-Trade-off
+
+Pro `queryLocal`-Call:
+- 1× Embedding-Call (Modul 03, ~10–50 ms nach erstem Cache-Warmup)
+- N× `match()` (Modul 04, ~1 µs pro Vergleich)
+- 1× `sort` (N × log N, ~µs für N < 1000)
+
+**N = 100 Rezepte** in Mein-Rezeptbuch → Gesamt ~50 ms. **N = 1000** →
+~50 ms (Embedding dominiert, lineare Skalierung der `match()`-Calls
+ist vernachlässigbar).
+
+**Empfehlung:** kein Index, keine WebGPU, keine SIMD-Vektorisierung in
+Erst-Iteration — die Performance reicht für Endknoten-Korpus-Größen <
+10000 Einträge mit weiter Reserve. Wenn Klaus später einen Endknoten
+mit > 10000 Einträgen baut (z.B. eine Wikipedia-Mirror-PWA), kann
+eine Folge-Pflege-Sitzung einen Index hinzufügen.
+
+#### Selbstcheck-Erweiterung
+
+`queryLocal`-Bau ergänzt die Selbstcheck-Zeile um die fünfte Funktion:
+
+```
+console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
+```
+
+#### Cross-Knoten-Search-Pfad (Hook auf Modul 15 Sub b)
+
+Modul 15 Sub (b) postMessage-Bridge ruft `queryLocal` **NICHT direkt**
+auf — sie hält keinen Direkt-Import. Stattdessen:
+
+```js
+// In Modul 15 Sub (b), op:"query" Handler:
+if (typeof window.SbkimMatch?.queryLocal !== "function") {
+  // sendet queryResult mit error:"module-04c-not-available" zurück
+  return;
+}
+const results = await window.SbkimMatch.queryLocal(query.text, query.k);
+// sendet queryResult mit results-Array zurück
+```
+
+Das fail-soft-Muster (Modul 15 prüft vor Aufruf) bleibt unverändert —
+Modul 04.C-Bau-Sitzung ergänzt nur die Funktion, Modul 15 Sub b braucht
+KEIN Code-Update.
+
+#### Strikte Tabus für `queryLocal`
+
+- **KEIN Netz-Aufruf.** `queryLocal` rechnet rein lokal. Cross-Knoten-
+  Search läuft via Modul 15 Sub (b) postMessage (Empfangsmodus-Prinzip
+  intakt).
+- **KEINE eigene Embedding-Variante.** Nur via Modul 03 `embedQuery`.
+- **KEINE Korpus-Persistierung.** Modul 04 hält keinen Korpus-Cache,
+  keinen IndexedDB-Schreibpfad. Korpus lebt im Aufrufer (Endknoten-
+  PWA).
+- **KEINE PII-Filterung.** Wenn der Aufrufer Such-Text mit PII hat
+  (Personennamen, etc.), liegt das beim Aufrufer. Modul 04 ist
+  blind für Inhalt.
+- **KEINE Rate-Limit-Pflicht in Modul 04.** Cross-Knoten-Anrufe gehen
+  durch Modul 15 Sub (b), das Modul 11 (Rate-Limit) als optionalen
+  Hook hat. Modul 04 selbst rechnet bedingungslos.
+
+#### Spec-Sitzung 04.C entscheidet noch
+
+- `options.corpus` vs. `_corpusProvider`-Callback (Vorschlag: beide)
+- Genauer Name für die Korpus-Registrierungs-Funktion (`setLocalCorpus`
+  / `registerLocalCorpusProvider` / `setCorpusProvider`)
+- Soll `queryLocal` einen optionalen `embeddedCorpus`-Pfad haben, in
+  dem der Aufrufer bereits-embedded Vektoren übergibt (für Performance-
+  Sensitive Korpora)?
+- Soll `queryLocal` einen separaten Schwellen-Parameter
+  `options.threshold` haben (statt hartcodiert auf `PROVIDER_MIN_MATCH`)?
+- Soll der Such-Text-Embedding-Modus konfigurierbar sein
+  (`embedQuery` vs. `embedPassage`)?
+
+Default-Vorschlag der Spec-Pflege 2026-05-26: Erst-Iteration
+schlicht (hartcodierte Schwelle 0.80, hartcodiert `embedQuery`,
+beide Korpus-Pfade). Spätere Pflege-Sitzungen verfeinern.
+
+---
+
 ### Stamm/Gast-Klassifikation berührt Modul 04 nicht
 
 Spec-Sitzung 2026-05-15 „Stamm/Gast-Felder in Spore-JSON" hat eine
@@ -690,6 +913,8 @@ Modell-Lade braucht.
 | Bau 04.A `matchDimensions` sync | 2026-05-19 | Bau 04.A `matchDimensions` synchron in Modul 04 | Erste Bau-Sitzung der M04-Erweiterung aus Brief 03. Brief BAU_04A_MATCH_DIMENSIONS (PR #109 gemerged 2026-05-19, `main` `ae98842`) als Spec-Vorlage. **Code in `src/modules/04_match.js` additiv** (kein Refactoring der bestehenden `match` / `isAboveProviderThreshold`): neue Konstante `SCHICHT_MIN_MATCH = 0.60` (modul-lokal gespiegelt aus § 0); neue Fehler-Factory `DimensionsAllNullError` (sync, von `matchDimensions` bei allen vier null); Closure-Helper `cosineSafe(a, b)` (intern, null-safe wrapper um `match`); neue Funktion `matchDimensions(queryCap, queryNeeds, passageCap, passageNeeds)` sync gemäß Karte 04 § Drei-Schichten-Modell — Lane-Berechnung (Lane 1 = queryCap × passageNeeds, Lane 2 = queryNeeds × passageCap), `availableLanes ∈ {0,1,2}`, Schicht-Score = Mittelwert berechenbarer Lanes, **Stufe-A-Heuristik:** alle drei Schichten (fachlich/prozess/skalierung) ergeben denselben Lane-Cosinus (echte Differenzierung kommt in Stufe B / Bau 04.B), `overall = Mittelwert der nicht-null Schichten` (in Stufe A === Schicht-Score), `bruecke: null` (Bau 04.B füllt das via `explainMatchLLM`), `DimensionsAllNullError` SYNCHRON bei allen vier null, Nur-Anbieter-Modus (eine Seite vollständig null) → alle Schichten null + `availableLanes:0` + kein Throw. **Selbstcheck-Zeile auf drei Funktionen erweitert** (`match/isAboveProviderThreshold/matchDimensions`); Schwellen-Block nennt jetzt beide (`PROVIDER_MIN_MATCH=0.80`, `SCHICHT_MIN_MATCH=0.60`). `_meta` um `schichtMinMatch` + `matchDimensionsLanes` Read-Anker erweitert. **Karte 04** § Manueller Test um drei neue Knöpfe (7 bidirektional / 8 Nur-Anbieter / 9 alle-vier-null), Knopf-6-Selbstcheck-Format-Zeile auf neuen Stand; § Bauzustand neue Zeile. **Panel 04** in `tests/manual_check.html` um drei Knöpfe erweitert (deterministische LCG-Vektoren statt SbkimEmbedding — `matchDimensions` zustandslos, kein Modell-Lade nötig). **Smoke-Test** `tests/smoke_bau04a_match_dimensions.mjs` als reine Funktions-Probe in Node 22 (kein fake-indexeddb): 19 Sub-Proben, 19 grün, 0 rot. Regression-Smoke-Tests Bau-02.Y 33/33 + Pflege-01 8/8 weiterhin grün. **PROTOCOL_VERSION bleibt `"0.1"`, DB_VERSION bleibt `4`, BACKUP_FORMAT_VERSION bleibt `2`**. KEIN Modul-01/02/03/05/06/07/08-Eingriff, KEIN `explainMatchLLM` (Bau 04.B kommt mit eigenem Brief), KEIN `BridgeProposal`-Code, KEINE Sage-Page-Änderung, KEINE CLAUDE.md-/Karte-09-/`status.json`-Änderung. **`status.json` unverändert** (Modul 04 bleibt `score:"fertig"`; `update_puls_pie.py` NICHT aufgerufen). `node --check src/modules/04_match.js` grün; alle 10 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert. |
 | Sichttest (Bau 04.A) | 2026-05-19 | Klaus + Bau 04.A | **grün geprüft 2026-05-19 (Klaus, DeX-Chrome auf Galaxy Tab S6):** Bau 04.A live bewiesen. Drei-Stufen-Probe: (i) **Knopf 7 grün** „matchDimensions bidirektional OK" — drei Schichten alle `-0.0084` identisch (Stufe-A-Heuristik live bestätigt — `fachlich === prozess === skalierung === overall`); `availableLanes: 2`, `bruecke: null`. Der Cosinus-Wert nahe null ist erwartet (zwei zufällige 384-dim-LCG-Vektoren sind im hochdimensionalen Raum fast orthogonal — „Curse of Dimensionality"); zeigt deterministisches + reproduzierbares Verhalten. (ii) **Knopf 8 grün** „Nur-Anbieter-Modus OK" — alle Schichten `null`, `availableLanes: 0`, `bruecke: null`, KEIN Throw. (iii) **Knopf 9 grün** „DimensionsAllNullError synchron" — `name: DimensionsAllNullError`, `synchron_geworfen: true`, deutsche Message. **Indirekter Beleg für Pflege Modul 01 init() versions-fail-soft (PR #107/#108):** Klaus hat ohne Browserdaten-Cleanup direkt zu Panel 04 weitergeklickt — `init()` läuft jetzt von selbst sauber durch, auch bei alter DB-Version aus Bau-02.Y-/Bau-01.Y-Sichttests. Klaus-Cleanup-Theater ist Geschichte. |
 | Bau 04.B `explainMatchLLM` | 2026-05-20 | Bau 04.B `explainMatchLLM` in Modul 04 | **Code in `src/modules/04_match.js` additiv** (keine bestehende Funktion verändert). Stufe-B-LLM-Pass gegen Anthropic-API (`https://api.anthropic.com/v1/messages`, hartcodiert), JSON-only-Output, strikte Schema-Validierung, fail-soft. **Zwei neue Fehler-Factories** `InvalidApiKeyError(message)` + `InvalidMatchResultError(message)` (sync von `explainMatchLLM`-Vor-Check). **Modul-lokale Konstanten** gespiegelt aus § 0: `STUFE_B_DEFAULT_MODEL = "claude-sonnet-4"` + `STUFE_B_MAX_TOKENS = 1024` + `ANTHROPIC_API_URL` + `ANTHROPIC_API_VERSION = "2023-06-01"` + `LLM_MAX_OUTPUT_CHARS = 4096` (defensiv-Schutz). Drei interne Helper: `validateMatchResultShape` (sync, wirft `InvalidMatchResultError`), `buildLlmPrompt` (deutscher Prompt mit Schema-Block wörtlich), `validateLlmResponseSchema` (strikt, **`candidateScope:"netz"` STILL auf `"lokal"` korrigiert** — Anti-Missbrauch § 8, defensiv ohne Throw/Logging; entfällt erst mit Anker 10/11/12). **Neue Funktion `explainMatchLLM(matchResult, apiKey, options?)` async**: Sync-Vor-Checks werfen `InvalidApiKeyError` / `InvalidMatchResultError`; fetch POST mit Headern `x-api-key` + `anthropic-version` + `content-type:application/json`. **Fail-soft auf allen Fehlerpfaden:** HTTP 4xx/5xx, HTTP 429 (sondergetaggt als Rate-Limit), `response.json()` wirft, Anthropic-API-Form fehlt, LLM-Text kein valides JSON, Schema-Mismatch, TypeError aus fetch — alles resolved mit `ExplainResult{available:false, reason:"<deutsch>", fallbackScore:matchResult.overall, model, tokensUsed:null}`. **`AbortError` aus fetch wird NICHT abgefangen** — Standard-DOM-Verhalten, durchgereicht. **Erfolgs-Pfad:** `ExplainResult{available:true, schichten, bruecke (mit netz→lokal-Korrektur), erklaerung, overrideRecommendation, fallbackScore, model, tokensUsed:(input+output)|null}`. **Selbstcheck-Zeile auf VIER Funktionen erweitert.** `_meta` um `stufeBDefaultModel` / `stufeBMaxTokens` / `anthropicApiUrl` / `anthropicApiVersion` erweitert. Modul-Kopfkommentar um Bau-04.B-Block am Ende. `node --check` grün. **Panel 04 Knopf 10** „explainMatchLLM Test-Brücke" — User-Key-Eingabe via `window.prompt` (KEIN localStorage / sessionStorage / IndexedDB — Sicherheits-Klausel; produktiver Identitäts-Container ist Vision-Anker 5). Setup-matchResult via deterministischem matchDimensions-Aufruf (Käsekuchen-vs-Käsetorte). Logging von available/model/tokensUsed/schichten/bruecke/erklaerung/overrideRecommendation bzw. reason/fallbackScore. Status-Chip „Stufe-B-Call OK" (auch bei `available:false` — Modul 04 hat sauber resolved). **Headless-Smoke-Test** `tests/smoke_bau04b_explain_match_llm.mjs` mit fetch-Stub (Node 22, KEIN echter Netz-Aufruf): zehn Proben + zwei Bonus. **30 Sub-Proben, 30 grün.** Regression: alle sieben anderen Smokes weiterhin grün. **PROTOCOL_VERSION** / **DB_VERSION** / **BACKUP_FORMAT_VERSION** unverändert. KEIN Modul-01/02/03/05/06/07/08-Eingriff, KEIN Identitäts-Container-Code (Vision-Anker 5), KEIN localStorage / sessionStorage / IndexedDB-Persistenz des API-Keys (Sicherheits-Klausel), KEIN eigener Rate-Limit-Pfad. `status.json` unverändert (Modul 04 bleibt `score:"fertig"`). **Bekannte Limitierung CORS:** Anthropic-API erlaubt direkte Browser-Aufrufe seit 2024 mit `anthropic-dangerous-direct-browser-access`-Header — Modul 04 setzt diesen Header BEWUSST NICHT. Bei `localhost`-Test scheitert CORS möglich; Workaround echtes PWA-Setup. **Sichttest 2026-05-20 grundbelegt** (Klaus, DeX-Chrome auf Galaxy Tab S6, Termux-`python3 -m http.server 8000`-Setup): nach Service-Worker-Cleanup (alter SBKIM-SW hielt die Pre-Bau-04.B-`manual_check.html` im Cache) Panel 04 mit allen zehn Knöpfen sichtbar; alle fünf älteren Match-Tests + drei Bau-04.A-`matchDimensions`-Knöpfe live grün (Käsekuchen vs. Käsetorte 0.9507, Käsekuchen vs. Auspuffrohr 0.8967, Hefeteig vs. Kochrezepte 0.8312, Tarantino vs. Kochrezepte 0.7737, ShapeMismatchError synchron, drei Schichten-Heuristik, Nur-Anbieter-Modus, DimensionsAllNullError); **Knopf 10 `explainMatchLLM` Test-Brücke da** — angeklickt → `window.prompt`-Dialog öffnet sich mit Anthropic-API-Key-Eingabefeld + Klaus-feindliche-Konfig-Hinweis sichtbar. Abbruch-Pfad geprüft: `{abgebrochen: true}`-Resultat, kein Throw. Anthropic-API-Aufruf mit echtem Key + Schichten-Differenzierung steht noch aus (Klaus' Wahl; bei CORS-Befund im localhost-Test → Workaround echtes PWA-Setup). **Mini-Pflege-Nachzug 2026-05-20:** `tests/manual_check.html` Knopf „Selbstcheck Konsole prüfen"-Hinweistext für Panel 04 von drei auf vier Funktionen aktualisiert (`match/isAboveProviderThreshold/matchDimensions/explainMatchLLM`); Modul-04-Selbstcheck-Zeile selbst (`src/modules/04_match.js`) war seit Bau 04.B schon korrekt vier-Funktionen — nur der UI-Hinweis in der Test-Seite hing eine Version hinterher. |
+| Spec Sub (c) `queryLocal` | 2026-05-26 | Tafel-Spec-Pflege Mycel-Vision | Klaus' Vision-Klärung 2026-05-26: Such-Feld als bidirektionales Cross-Knoten-Matching-Anker. Modul 15 Sub (b) postMessage-Bridge hat den Empfänger-Pfad gebaut (`op:"query"` → `op:"queryResult"`), antwortet bisher mit `error:"module-04c-not-available"` — Modul 04.C ist der fehlende Empfänger. Karte 04 § Sub (c) `queryLocal` voll spec'd: Signatur `queryLocal(text, k?, options?) → Promise<Array<{label,score,anchorId}>>`, async (Modul 03 lazy), Default `k=5`, Schwelle `PROVIDER_MIN_MATCH=0.80` hartcodiert (konsistent mit `match()`), Korpus zwei Pfade (`options.corpus` ODER registrierter `_corpusProvider`-Callback aus `setLocalCorpus(corpus)`), Embedding via Modul 03 `embedQuery`, Top-k-Cut nach Sort + Filter, Performance-Reserve für Endknoten-Korpus < 10000 Einträge, fünf Fehler-Pfade benannt (EmptyQueryError / QueryTooLongError / InvalidKError / EmbeddingNotAvailableError / EmbeddingFailedError / InvalidCorpusError — leerer Korpus + alle-unter-Schwelle resolved mit `[]` ohne Throw), Strikte Tabus voll (kein Netz, keine eigene Embedding-Variante, keine Korpus-Persistierung, keine PII-Filterung, keine Rate-Limit-Pflicht in Modul 04 — Modul 11 hängt an Modul 15 Sub b). Cross-Knoten-Search-Pfad als Hook-Block: Modul 15 Sub b prüft `typeof window.SbkimMatch.queryLocal === "function"` vor Aufruf (fail-soft-Muster intakt), kein Code-Update in Modul 15 nötig. Spec-Sitzung 04.C entscheidet noch fünf Detail-Punkte (Korpus-Pfad-Vorrang, Namen für `setLocalCorpus`-Funktion, `embeddedCorpus`-Performance-Pfad, optionaler `options.threshold`, konfigurierbarer Embedding-Modus). Brief: `docs/sessions/BRIEF_BAU_04C_QUERY_LOCAL.md`. **`status.json` Modul 04 bleibt `score:"stub"`** — additive Spec-Erweiterung, kein Code-Bau. PROTOCOL_VERSION bleibt `"0.1"`. INTERFACES.md §1 Modul 04 voll gespiegelt + § 10 Änderungsprotokoll-Eintrag. |
+| Bau Sub (c) `queryLocal` | — | Bau-Sitzung 04.C | folgt — `src/modules/04_match.js` um `queryLocal`-Funktion + Helper + Selbstcheck-Erweiterung + zwei neue Fehler-Factories (EmptyQueryError, QueryTooLongError, InvalidKError, EmbeddingNotAvailableError, InvalidCorpusError); Panel 04 Knöpfe 11–13 (mini-Korpus, leerer Korpus, cross-Knoten-Stub); Headless-Smoke `tests/smoke_bau04c_query_local.mjs`. |
 | In Endknoten eingebaut | — | — | — |
 
 ---
