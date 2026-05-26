@@ -108,7 +108,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
 | 15 membran | Spec fertig (Sub (e) voll 2026-05-24, **Sub (a)+(b) finalisiert 2026-05-25** in Spec-Sitzung 15.B mit MembraneSnapshot-Schema inkl. Siegel-Hook + Envelope mit vier op-Werten sporeRef/query/hint/queryResult + Allowlist fail-soft + Nonce-Pflicht 30 s Replay-Dedupe + Rate-Limit-Hook für Modul 11 vorbestellt, Sub (c) später, Sub (d) Verweis) | **Fertig** (Bau-Sitzung 15.B Sub (a)+(b) Bedien-Pfade 2026-05-25 + Bau 15 Sub (e) + Bau 15.SW SW-Probe-Detektor + Pflege Sage-Page-Sichttest-Knopf, alle 2026-05-24; PR #159 gemerged) | **Bau 15.B Sichttest 8/8 grün 2026-05-25** (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 15 Setup + Knöpfe 10–17 alle grün im Termux-`localhost:8000`-Lauf nach Hard-Reload; Sage-Page Bonus vier Plaketten sichtbar (LEBT/VERKEHR/FREMD/Siegel-Badge); Mini-Pflege Knopf-11-Anti-PII-Filter (eigene nodeId vom String-Match ausnehmen) im selben PR #159 mitgenehmigt. Sub (e) + Bau 15.SW + Sage-Page-Lampe geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün, Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün |
-| 16 siegel | Spec fertig (2026-05-24, Spec-Sitzung 16) | **Code-Stub (Bau-Sitzung 16 vom 2026-05-24)** | Sichttest ungeprüft (Headless-Smoke 32/32 grün, wartet auf Klaus' Browser-Lauf) | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. **Spec-Sitzung 16 vom 2026-05-24:** alle vier Sub-Bereiche final spezifiziert — Sub (a) Pflicht-Modul-Liste mit sieben Modulen (01 Storage / 02 Spore / 03 Embedding [`lazy:true` für Sage-Page] / 04 Match / 05 Anastomose / 07 Apoptose / 15 Membran) + Surface-Funktions-Anker pro Modul (`init`/`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`) + Status-Schema (`"ok"`/`"deferred"`/`"missing"`/`"broken"`) + binärer Fail-Modus (kein Render bei missing/broken, eine `console.warn`-Zeile mit ID-Liste); Sub (b) Badge-Rendering — DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach #lamp-fremd, 40-px rundes Medaillon Edel-Gold (`#C9A961`-Klasse) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei verschlungene Hyphen-Bögen + zentraler Knoten-Punkt), 600 ms First-Boot-Animation einmalig, dezenter Glow-Hover, KEINE Stufen-Varianten (Klaus-Festlegung: Siegel wächst über Aspekte, nicht über sichtbare Stufen), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1); Sub (c) Erklärungs-Modal — eigenständig in `document.body` (analog Modul 15), Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-Liste mit Status + Aspekte-Liste + Aussteller-Klärung), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen), nüchterne Aussteller-Klärung in zwei Zeilen (Klaus-Korrektur 2026-05-24: KEIN Disclaimer-Schwall), Repo-URL Auto-Erkennung mit `init({repoUrl})`-Override; Sub (d) `ZERTIFIKAT_ASPEKTE`-Schema (`{since, module, aspect, description}`) chronologisch aufsteigend, Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24" verbindlich für Bau 16, Pflicht-Konvention: jedes spätere Sicherheits-Modul (10/11/12/14/15.B) MUSS in seiner Pflege einen Aspekt ergänzen. Persistenz **RAM-only** (Variante A, kein DB_VERSION-Bump, kein neuer Store, kein PROTOCOL_VERSION-Bump — Modul 16 ist nicht protokoll-aktiv). Schnittstelle `window.SbkimSiegel = {init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta}`. KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). INTERFACES.md § 1 Modul 16 voller Block ergänzt (analog § 1 Modul 15). **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
+| 16 siegel | Spec fertig (2026-05-24, Spec-Sitzung 16, Tafel-Spec-Pflege Mycel-Vision 2026-05-26 Sub (e) Bronze/Gold) | **Code-Stub (Bau-Sitzung 16 vom 2026-05-24 + Bau Sub (e) 2026-05-26)** | **Sub (e) geprüft 2026-05-26 (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 16 Knöpfe 9–12 4/4 grün** (Bronze-Initial + Bronze→Gold + Idempotenz + Bronze-Klick-Modal-Hinweis); Knöpfe 1–8 (Bau-16-Basis) bleiben ungeprüft. Headless-Smoke 32/32 + Sub (e) 15/15 grün. | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. **Spec-Sitzung 16 vom 2026-05-24:** alle vier Sub-Bereiche final spezifiziert — Sub (a) Pflicht-Modul-Liste mit sieben Modulen (01 Storage / 02 Spore / 03 Embedding [`lazy:true` für Sage-Page] / 04 Match / 05 Anastomose / 07 Apoptose / 15 Membran) + Surface-Funktions-Anker pro Modul (`init`/`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`) + Status-Schema (`"ok"`/`"deferred"`/`"missing"`/`"broken"`) + binärer Fail-Modus (kein Render bei missing/broken, eine `console.warn`-Zeile mit ID-Liste); Sub (b) Badge-Rendering — DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach #lamp-fremd, 40-px rundes Medaillon Edel-Gold (`#C9A961`-Klasse) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei verschlungene Hyphen-Bögen + zentraler Knoten-Punkt), 600 ms First-Boot-Animation einmalig, dezenter Glow-Hover, KEINE Stufen-Varianten (Klaus-Festlegung: Siegel wächst über Aspekte, nicht über sichtbare Stufen), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1); Sub (c) Erklärungs-Modal — eigenständig in `document.body` (analog Modul 15), Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-Liste mit Status + Aspekte-Liste + Aussteller-Klärung), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen), nüchterne Aussteller-Klärung in zwei Zeilen (Klaus-Korrektur 2026-05-24: KEIN Disclaimer-Schwall), Repo-URL Auto-Erkennung mit `init({repoUrl})`-Override; Sub (d) `ZERTIFIKAT_ASPEKTE`-Schema (`{since, module, aspect, description}`) chronologisch aufsteigend, Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24" verbindlich für Bau 16, Pflicht-Konvention: jedes spätere Sicherheits-Modul (10/11/12/14/15.B) MUSS in seiner Pflege einen Aspekt ergänzen. Persistenz **RAM-only** (Variante A, kein DB_VERSION-Bump, kein neuer Store, kein PROTOCOL_VERSION-Bump — Modul 16 ist nicht protokoll-aktiv). Schnittstelle `window.SbkimSiegel = {init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta}`. KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). INTERFACES.md § 1 Modul 16 voller Block ergänzt (analog § 1 Modul 15). **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -1810,6 +1810,81 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-26 · Sichttest 16 Sub (e) grün (4/4)
+
+**Sitzungs-Rolle:** Pflege-Sitzung Sichttest-Nachzug. Branch
+`claude/sichttest-16-sub-e-v25wR`. Pipeline-Phase A Schritt 5g
+(Folge zu Bau 16 Sub e aus PR #180).
+
+**Anlass:** Klaus hat unmittelbar nach Merge von PR #180 die vier
+neuen Panel-16-Knöpfe 9–12 auf seinem Galaxy Tab S6 (DeX-Chrome,
+Termux `python3 -m http.server 8000` nach Hard-Reload) live
+durchgeklickt. Alle vier grün. Diese Pflege-Sitzung zieht den Befund
+in Karte 16 + INTERFACES.md + status.json + PULS nach.
+
+**Sichttest-Befunde (4/4 grün):**
+
+| Test | Ergebnis | Status-Chip |
+|---|---|---|
+| 9 Bronze-Initial | `badge_data_stufe:"bronze"`, `aria_label:"SBKIM-Siegel · Mycel suchend"`, `title:null` (Doppel-Tooltip-Klausel Pflege 17), `mycel_connected:false`, `mycel_connected_at:null`, `siegel_stufe_getter:"bronze"` | „Sub (e) Bronze-Initial OK" |
+| 10 Bronze→Gold via synthetischem Handshake (zweimal idempotent grün dank `_resetMycelConnectedForTest`) | `stufe_vor:"bronze"` → `stufe_nach:"gold"`, `aria_label_nach:"SBKIM-Siegel · Mycel verbunden"`, `mycel_connected_nach:true`, `mycel_connected_at_nach:"2026-05-26T16:27:22.973Z"`, `klasse_stufenwechsel_gold:true` | „Sub (e) Bronze→Gold OK" |
+| 11 Idempotenz (zweiter Handshake) | `erste_welle === zweite_welle === "2026-05-26T16:27:56.565Z"`, `datum_unveraendert:true`, `klasse_nach_zweitem_dispatch:false`, `stufe_nach_zweitem_dispatch:"gold"` | „Idempotent OK" |
+| 12 Bronze-Klick öffnet Modal | `modal_offen:true`, `hinweis_block_im_dom:true`, `hinweis_block_sichtbar:true`, `andock_button_im_modal:true`, `aspekt_4_pending_marker:true`, `letzter_aspekt_text_kopf:"pending· 16· Mycel-Verbindung etabliert (erster Handshake)…"`, `aspekte_anzahl:4` | „Bronze-Klick OK" |
+
+**Was getan:**
+
+- **Karte 16 § Bauzustand:** „Sichttest Sub (e) — folgt"-Zeile durch
+  volle 4/4-grün-Sichttest-Zeile mit allen Knopf-Outputs ersetzt.
+- **INTERFACES.md § 1 Modul 16 Geprüft-Zeile** um vierten Eintrag
+  „2026-05-26 (Sichttest Bau 16 Sub (e) — Klaus, DeX-Chrome auf
+  Galaxy Tab S6: Panel 16 Knöpfe 9–12 4/4 grün)" erweitert.
+- **INTERFACES.md § 10 Änderungsprotokoll** neue Tabellen-Zeile
+  „Sichttest 16 Sub (e) grün" mit vollem Bericht.
+- **`status.json` Modul 16** `siegel`-Text um Sub-(e)-Sichttest-Befund
+  erweitert; **Score BLEIBT `"stub"`** — Sub-(e)-Sichttest deckt
+  nur Knöpfe 9–12 ab, Knöpfe 1–8 (Bau-16-Basis) bleiben ungeprüft
+  (eigener späterer Sichttest-Nachzug nötig, bevor Score auf
+  `"fertig"` wechseln kann).
+- **`python3 scripts/update_puls_pie.py`** aufgerufen — Pie-
+  Verteilung unverändert, weil Score-Wechsel nicht stattfindet.
+- **PULS.md** § Schnellüberblick Modul-16-Zeile aktualisiert (Spec +
+  Code + Manueller Sichttest); dieser Sitzungs-Eintrag oben in
+  § Sitzungs-Einträge.
+
+**Heilige Tafeln dieser Sitzung eingehalten:**
+
+- KEIN Modul-Code-Eingriff in `src/modules/16_siegel.js`
+  (Sichttest-Pflege ist reine Doku).
+- KEIN Endknoten-Eingriff.
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+- KEINE Tafel-Umsortierung CLAUDE.md.
+- KEIN „Sicherheits-Module pflegen Aspekte"-Aspekt (CLAUDE.md
+  § Pflicht-Konvention gilt nicht — diese Pflege ist Sichttest-
+  Nachzug, kein neues Sicherheits-Modul / keine Sub-Funktion).
+
+**Was offen blieb:**
+
+- **Sichttest Bau-16-Basis (Knöpfe 1–8)** weiterhin ungeprüft —
+  eigener Sichttest-Nachzug nötig (Setup + Test 1 PFLICHT_MODULE-
+  Spec + Test 2 Snapshot-Schema + Test 3 Badge im DOM + Modal +
+  Test 4 Modal-Render + Test 5 repoUrl-Auto-Erkennung + Test 6
+  First-Boot-Flag + Test 7/8 Hinweis-Knöpfe). Erst wenn Voll-
+  Sichttest grün ist, kann Modul 16 Score auf `"fertig"`
+  wechseln (analog Konvention 04.B/04.C).
+- **Endknoten-Re-Aktivierung Modul 15+16+04.C** in Mein-Rezeptbuch
+  + Mein-Mixarium (Pipeline-Phase A Schritt 5e). Setzt aktuellen
+  Stand voraus — Sub (e) Sichttest grün stellt sicher, dass die
+  Endknoten beim ersten Cross-Knoten-Handshake live Bronze→Gold
+  wechseln werden.
+
+**Nächster sinnvoller Schritt:** Endknoten-Re-Aktivierung Mein-
+Rezeptbuch + Mein-Mixarium (Pipeline-Schritt 5e, eigene Folge-
+Sitzung pro Endknoten-Repo).
+
+**Übergabeprotokoll:** `docs/sessions/archiv/2026-05-26_sichttest-16-sub-e-gruen.md`.
+
+---
 
 ### 2026-05-26 · Bau-Sitzung 16 Sub (e) Bronze/Gold-Stufung
 
