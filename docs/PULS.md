@@ -108,7 +108,7 @@ und der zugehörigen [Mixarium-Andock-Übergabe](sessions/archiv/2026-05-16_ando
 | 12 blocklist | Stub (Schutz-Backlog) | — | — | manuelle Sperrliste, Priorität niedrig |
 | 14 diffusion | Stub (Diffusion-Backlog) | — | — | konsensuell-empfehlende Spore-Diffusion via Handshake-Erweiterung (Pfad 2 verbindlich, Pfad 1 = Default-Status-quo, Pfad 3 verworfen wegen Empfangsmodus-Prinzip); Spec ausstehend bis Netz ≥ 10 Geschwister oder erfolgreicher Live-Andock + Wachstums-Bedürfnis; Priorität niedrig — **plus Sage-Page-Sichtbarmachung 2026-05-15** (Karten 4/13/14 ziehen `diffusionBacklog[]` parallel zu `schutzBacklog[]`) |
 | 15 membran | Spec fertig (Sub (e) voll 2026-05-24, **Sub (a)+(b) finalisiert 2026-05-25** in Spec-Sitzung 15.B mit MembraneSnapshot-Schema inkl. Siegel-Hook + Envelope mit vier op-Werten sporeRef/query/hint/queryResult + Allowlist fail-soft + Nonce-Pflicht 30 s Replay-Dedupe + Rate-Limit-Hook für Modul 11 vorbestellt, Sub (c) später, Sub (d) Verweis) | **Fertig** (Bau-Sitzung 15.B Sub (a)+(b) Bedien-Pfade 2026-05-25 + Bau 15 Sub (e) + Bau 15.SW SW-Probe-Detektor + Pflege Sage-Page-Sichttest-Knopf, alle 2026-05-24; PR #159 gemerged) | **Bau 15.B Sichttest 8/8 grün 2026-05-25** (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 15 Setup + Knöpfe 10–17 alle grün im Termux-`localhost:8000`-Lauf nach Hard-Reload; Sage-Page Bonus vier Plaketten sichtbar (LEBT/VERKEHR/FREMD/Siegel-Badge); Mini-Pflege Knopf-11-Anti-PII-Filter (eigene nodeId vom String-Match ausnehmen) im selben PR #159 mitgenehmigt. Sub (e) + Bau 15.SW + Sage-Page-Lampe geprüft 2026-05-24 (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 15 Knopf 8 BroadcastChannel-End-to-End grün, Sage-Page FREMD-Lampe + Modal + „🧪 Demo-Eintrag"-Knopf grün |
-| 16 siegel | Spec fertig (2026-05-24, Spec-Sitzung 16, Tafel-Spec-Pflege Mycel-Vision 2026-05-26 Sub (e) Bronze/Gold) | **Code-Stub (Bau-Sitzung 16 vom 2026-05-24 + Bau Sub (e) 2026-05-26)** | **Sub (e) geprüft 2026-05-26 (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 16 Knöpfe 9–12 4/4 grün** (Bronze-Initial + Bronze→Gold + Idempotenz + Bronze-Klick-Modal-Hinweis); Knöpfe 1–8 (Bau-16-Basis) bleiben ungeprüft. Headless-Smoke 32/32 + Sub (e) 15/15 grün. | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. **Spec-Sitzung 16 vom 2026-05-24:** alle vier Sub-Bereiche final spezifiziert — Sub (a) Pflicht-Modul-Liste mit sieben Modulen (01 Storage / 02 Spore / 03 Embedding [`lazy:true` für Sage-Page] / 04 Match / 05 Anastomose / 07 Apoptose / 15 Membran) + Surface-Funktions-Anker pro Modul (`init`/`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`) + Status-Schema (`"ok"`/`"deferred"`/`"missing"`/`"broken"`) + binärer Fail-Modus (kein Render bei missing/broken, eine `console.warn`-Zeile mit ID-Liste); Sub (b) Badge-Rendering — DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach #lamp-fremd, 40-px rundes Medaillon Edel-Gold (`#C9A961`-Klasse) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei verschlungene Hyphen-Bögen + zentraler Knoten-Punkt), 600 ms First-Boot-Animation einmalig, dezenter Glow-Hover, KEINE Stufen-Varianten (Klaus-Festlegung: Siegel wächst über Aspekte, nicht über sichtbare Stufen), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1); Sub (c) Erklärungs-Modal — eigenständig in `document.body` (analog Modul 15), Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-Liste mit Status + Aspekte-Liste + Aussteller-Klärung), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen), nüchterne Aussteller-Klärung in zwei Zeilen (Klaus-Korrektur 2026-05-24: KEIN Disclaimer-Schwall), Repo-URL Auto-Erkennung mit `init({repoUrl})`-Override; Sub (d) `ZERTIFIKAT_ASPEKTE`-Schema (`{since, module, aspect, description}`) chronologisch aufsteigend, Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24" verbindlich für Bau 16, Pflicht-Konvention: jedes spätere Sicherheits-Modul (10/11/12/14/15.B) MUSS in seiner Pflege einen Aspekt ergänzen. Persistenz **RAM-only** (Variante A, kein DB_VERSION-Bump, kein neuer Store, kein PROTOCOL_VERSION-Bump — Modul 16 ist nicht protokoll-aktiv). Schnittstelle `window.SbkimSiegel = {init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta}`. KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). INTERFACES.md § 1 Modul 16 voller Block ergänzt (analog § 1 Modul 15). **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
+| 16 siegel | Spec fertig (2026-05-24, Spec-Sitzung 16, Tafel-Spec-Pflege Mycel-Vision 2026-05-26 Sub (e) Bronze/Gold) | **Code-Stub (Bau-Sitzung 16 vom 2026-05-24 + Bau Sub (e) 2026-05-26)** | **Sub (e) geprüft 2026-05-26 (Klaus, DeX-Chrome auf Galaxy Tab S6) — Panel 16 Knöpfe 9–12 4/4 grün + Endknoten-Cross-Knoten-Sichttest in MR + MM beide Sub (e) live grün** (Bronze-Initial visuell + Modal + Handshake established score 0.9544 via BC-Bridge + Bronze→Gold-Wechsel in beiden PWAs via manuellem Eruda-Dispatch — drei Folge-Befunde: Widget-Slot stufen-unabhängig, Endknoten-Modul-05 prä-Bau-17, Modal-UTC-Zeit); Knöpfe 1–8 (Bau-16-Basis) bleiben ungeprüft. Headless-Smoke 32/32 + Sub (e) 15/15 grün. | SBKIM-Siegel — Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der Pflicht-Module. Self-Inscribing (kein Hub-Aussteller, kein CI-Build-Check), Badge in Auszeichnungs-Optik (Prädikatswein- / DLG-Stil — Medaillon-Form, Edel-Gold-Anmutung, klassische Serif-Schrift, kein Marketing-Sticker-Stil), Click öffnet Modal mit Erklärung + nüchternem Aussteller-Klärungs-Satz (self-inscribing, Vertrauen kommt vom Repo — kein Disclaimer-Schwall). Lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit Datum. Anti-Greenwashing-Klausel: kein Siegel ohne erfüllte Selbst-Prüfung. **Spec-Sitzung 16 vom 2026-05-24:** alle vier Sub-Bereiche final spezifiziert — Sub (a) Pflicht-Modul-Liste mit sieben Modulen (01 Storage / 02 Spore / 03 Embedding [`lazy:true` für Sage-Page] / 04 Match / 05 Anastomose / 07 Apoptose / 15 Membran) + Surface-Funktions-Anker pro Modul (`init`/`getOwnSpore`/`embedPassage`/`match`/`handshake`/`prepareSelfApoptose`/`init`) + Status-Schema (`"ok"`/`"deferred"`/`"missing"`/`"broken"`) + binärer Fail-Modus (kein Render bei missing/broken, eine `console.warn`-Zeile mit ID-Liste); Sub (b) Badge-Rendering — DOM-Anker `#sbkim-siegel-badge` als vierte Plakette nach #lamp-fremd, 40-px rundes Medaillon Edel-Gold (`#C9A961`-Klasse) auf Bronze-Ink (`#1A1306`), Serif-System-Fallback (`'Spectral','Georgia',serif`, kein Pflicht-Google-Font), Wappen-Skelett (drei verschlungene Hyphen-Bögen + zentraler Knoten-Punkt), 600 ms First-Boot-Animation einmalig, dezenter Glow-Hover, KEINE Stufen-Varianten (Klaus-Festlegung: Siegel wächst über Aspekte, nicht über sichtbare Stufen), Sichtbarkeits-Modi `"visible"`/`"hidden"` (kein `"compact"` in Stufe 1); Sub (c) Erklärungs-Modal — eigenständig in `document.body` (analog Modul 15), Titel „SBKIM-Siegel — was bedeutet das?", Inhalt (Datum + Modul-Liste mit Status + Aspekte-Liste + Aussteller-Klärung), wertigere Typografie (Serif für Titel + Klausel, Geist für Daten-Listen), nüchterne Aussteller-Klärung in zwei Zeilen (Klaus-Korrektur 2026-05-24: KEIN Disclaimer-Schwall), Repo-URL Auto-Erkennung mit `init({repoUrl})`-Override; Sub (d) `ZERTIFIKAT_ASPEKTE`-Schema (`{since, module, aspect, description}`) chronologisch aufsteigend, Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24" verbindlich für Bau 16, Pflicht-Konvention: jedes spätere Sicherheits-Modul (10/11/12/14/15.B) MUSS in seiner Pflege einen Aspekt ergänzen. Persistenz **RAM-only** (Variante A, kein DB_VERSION-Bump, kein neuer Store, kein PROTOCOL_VERSION-Bump — Modul 16 ist nicht protokoll-aktiv). Schnittstelle `window.SbkimSiegel = {init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta}`. KEINE benannten Error-Klassen (rein beobachtend, fail-soft via `console.warn`). INTERFACES.md § 1 Modul 16 voller Block ergänzt (analog § 1 Modul 15). **Kein Modul-Code, kein index.html-Eingriff** — Bau-Sitzung 16 nächster Schritt. Brief: `docs/sessions/BRIEF_BAU_16_SIEGEL.md`. |
 
 Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` · `stabil` · `eingebaut`
 
@@ -1810,6 +1810,101 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-26 · Endknoten-Sichttest Cross-Knoten Sub (e) + drei Folge-Briefe
+
+**Sitzungs-Rolle:** Pflege-Sitzung Sichttest-Bilanz. Branch
+`claude/sichttest-sub-e-endknoten-bilanz`. Pipeline-Phase A
+Schritt 5e abgeschlossen.
+
+**Anlass:** Nach Merge MR PR #249 + MM PR #58 (Re-Aktivierung Modul
+15+16 in beiden Endknoten) + Folge-Fix-PRs für badgeSelector-Konfig
+(Sage-Default `.lamps` Endknoten-untauglich → Fix `#sbkim-siegel-
+badge` Widget-Proxy) hat Klaus den vollen Sub-(e)-Sichttest in beiden
+Endknoten gefahren. Live-Cross-Knoten-Handshake bewiesen.
+
+**Vier Sichttest-Hauptpunkte (DeX-Chrome auf Galaxy Tab S6):**
+
+| Punkt | MR | MM |
+|---|---|---|
+| 1 Initial-Bronze visuell + Modal-Hinweis + Aspekt-4-pending | ✅ | ✅ |
+| 2 Cross-Knoten-Handshake via Eruda (BC-Bridge) | — (passiver Empfänger) | ✅ `outcome:"established", score:0.9544` |
+| 3 Bronze→Gold via manuellem Eruda-Dispatch + Modal-Refresh | ✅ `stufe:gold` | ✅ `stufe:gold` |
+| 4 RAM-only-Persistenz (Tab-Reload → Bronze) | (nicht erneut getestet) | (nicht erneut getestet) |
+
+**Spec-Konforme Beobachtungen:**
+
+- Modul 16 isCertified=true in beiden PWAs (alle sieben Pflicht-
+  Module live).
+- Modal-Render korrekt: Bronze-Hinweis-Block + `[Andocken]`-Knopf
+  + Modul-18-Info-Notiz in Bronze; Hinweis-Block weg + Aspekt 4
+  datiert in Gold.
+- Aspekt 4 „Mycel-Verbindung etabliert (erster Handshake)" zeigt
+  „pending" in Bronze, Datum in Gold (per Spec).
+- VERKEHR-Slot in MM-Widget zeigt `handshake outgoing established`-
+  Event live (Widget-Event-Bus aus Bau 17 funktioniert).
+
+**Drei eigenständige Folge-Befunde** (eigene Pflege-Sitzungen
+geplant, Briefe in dieser Sitzung mit angelegt):
+
+1. **Widget-SIEGEL-Slot stufen-unabhängig** — Modul 17 rendert Slot-
+   Button immer als Gold-Medaillon mit ★. Modul 16's `data-stufe`-
+   Attribut wirkt nur am unsichtbaren Widget-Proxy-Span im Inneren,
+   nicht am sichtbaren Button. Visueller Bronze/Gold-Unterschied
+   im Slot fehlt. Brief: `BRIEF_PFLEGE_17_WIDGET_BRONZE_GOLD_RENDER.md`.
+
+2. **Endknoten-`sbkim/05_anastomose-v2.js` ist prä-Bau-17** — dispatcht
+   KEIN `sbkim:handshake`-window-Event automatisch beim erfolgreichen
+   Cross-Knoten-Handshake. Bronze→Gold-Wechsel nur via manuellem
+   Eruda-Dispatch testbar. Fix: Endknoten-Modul-05 auf Sage-main-
+   Stand updaten (analog Modul 15/16/17/sw — eigene PR pro Endknoten).
+   Brief: `BRIEF_PFLEGE_ENDKNOTEN_MODUL_05_UPDATE.md`.
+
+3. **Modal-„Bezeugt seit … Uhr"-Datum zeigt UTC** statt MESZ-lokal.
+   Modul 16 `certifiedAt` wird in `mountSiegelModal()` ohne
+   `toLocaleString("de-DE")`-Konvertierung gerendert. Klaus' Befund:
+   „Datum/Uhrzeit ist nicht aktuell, ich vermute nicht
+   Mitteleuropäische Zeit, eher Amerikan." Brief:
+   `BRIEF_PFLEGE_16_MODAL_LOCAL_TIME.md`.
+
+**Was getan:**
+
+- Karte 16 § Bauzustand Zeile „In Endknoten eingebaut" gefüllt mit
+  vollem Sichttest-Bericht + drei Folge-Befunde.
+- INTERFACES.md § 1 Modul 16 Geprüft-Zeile + § 10 Änderungsprotokoll
+  um Endknoten-Sichttest-Eintrag erweitert.
+- status.json Modul 16 `siegel`-Text um Cross-Knoten-Sichttest-Befund
+  erweitert (Score bleibt `"stub"` — Knöpfe 1–8 + Folge-Befunde offen).
+- Drei Folge-Briefe in `docs/sessions/` angelegt.
+- PULS.md Schnellüberblick Modul-16-Zeile aktualisiert + dieser
+  Sitzungs-Eintrag oben.
+- Übergabeprotokoll.
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-Code-Eingriff in Sage (Sichttest-Bilanz ist Doku-
+  Pflege, Folge-Pflegen kommen in eigenen PRs).
+- KEIN Endknoten-Eingriff (MR + MM Re-Aktivierung lief in eigenen
+  Sitzungen + PRs).
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+- KEINE Tafel-Umsortierung CLAUDE.md.
+- KEIN neuer ZERTIFIKAT_ASPEKTE-Eintrag (Sichttest-Bilanz ist
+  keine Sicherheits-Modul-Pflege).
+
+**Nächste Schritte (priorisiert):**
+
+1. **Pflege 17 Widget-SIEGEL-Slot Bronze/Gold-Render** (Sage-Bau-
+   Sitzung, Modul 17 erweitern um Stufen-Listener + CSS-Anpassung
+   des sichtbaren Slot-Buttons).
+2. **Pflege Endknoten-Modul-05 Update** (zwei externe Bau-Sitzungen
+   pro MR + MM, Volldatei-Replace aus Sage-main).
+3. **Pflege 16 Modal lokale Zeit** (kleine Sage-Pflege, ein
+   `toLocaleString`-Aufruf in `mountSiegelModal()`).
+4. Optional: Sichttest Bau-16-Basis Knöpfe 1–8 nachholen.
+
+**Übergabeprotokoll:** `docs/sessions/archiv/2026-05-26_endknoten-sichttest-cross-knoten-sub-e.md`.
+
+---
 
 ### 2026-05-26 · Sichttest 16 Sub (e) grün (4/4)
 
