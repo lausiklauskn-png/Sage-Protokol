@@ -1811,6 +1811,163 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-26 · Bau 04.C `queryLocal` + Such-Feld-Vorbereitung + Hub-Vorlage
+
+**Sitzungs-Rolle:** Hauptsitzung Bau-Phase-A-Such-Feld-Sprint
+(Pipeline-Schritt 5f + Vorbereitung 5i + Vorbereitung Phase B
+Schritt 9). Branch `claude/bau-04c-suchfeld-hub-mjSYl`. **Modul-04-
+Code-Eingriff additiv + drei Doku-Blöcke + drei Folge-Briefe.**
+
+**Auslöser:** Tafel-Spec-Pflege Mycel-Vision (2026-05-26) hat Karte
+04 § Sub (c) `queryLocal` voll spec'd; Modul 15 Sub (b) wartet seit
+Bau 15.B 2026-05-25 fail-soft auf `SbkimMatch.queryLocal`. Diese
+Sitzung schließt die Lücke und legt die Vorlagen für die externen
+Folge-Sitzungen an (Endknoten + Hub).
+
+**Was getan (fünf Blöcke, fünf Commits):**
+
+**Block 1 — Bau Modul 04 Sub (c) `queryLocal`** (Pipeline-Phase A 5f):
+
+- `src/modules/04_match.js` additiv erweitert (keine bestehende
+  Funktion verändert): fünf neue Fehler-Factories sync (EmptyQueryError,
+  QueryTooLongError, InvalidKError, EmbeddingNotAvailableError,
+  InvalidCorpusError); neue Closure-State `_localCorpusProvider`;
+  sync-Helper `validateCorpus` (Array-Check + Item-Schema-Check pro
+  Eintrag); neue async-Funktion
+  `queryLocal(text, k?, options?) → Promise<Array<{label,score,anchorId}>>`
+  (Default k=5, hartcodierte Schwelle PROVIDER_MIN_MATCH=0.80, Korpus
+  zwei Pfade options.corpus + Provider, Embedding via Modul 03
+  `embedQuery`, Top-k-Cut nach Filter+Sort, leerer Korpus + alle-
+  unter-Schwelle → leere Liste ohne Throw, EmbeddingFailedError async
+  rethrow + Bad-Shape-Check); neue Public-Funktion
+  `setLocalCorpus(corpusOrProvider)` (sync, idempotent, akzeptiert
+  Array/Function/null, defensive Array-Kopie via Array.from).
+- **Selbstcheck-Zeile auf fünf Funktionen erweitert.** `_meta` um
+  `queryLocalDefaultK:5` + `queryLocalMaxTextLen:4096` + Live-Getter
+  `localCorpusRegistered` erweitert.
+- **Panel 04** in `tests/manual_check.html` um fünf Knöpfe erweitert
+  (Test 11 Happy-Path Mini-Korpus / Test 12 Schwelle-Cut alle < 0.80
+  / Test 13 Top-k-Cut k=2 von 5 / Test 14 Provider-Pfad via
+  setLocalCorpus / Test 15 leerer Korpus kein Throw). SbkimEmbedding
+  wird im Test-Setup gemockt (deterministischer LCG-Referenz-Vektor
+  384-dim, KEINE Modell-Lade). Korpus-Vektoren via
+  `mixedVec04C(ref, target, seed)` mit exakt vorhersagbarem Cosinus.
+  Selbstcheck-Hinweis-Knopf-Text aktualisiert auf fünf Funktionen.
+- **Headless-Smoke** `tests/smoke_bau04c_query_local.mjs` mit 12
+  Probengruppen: **43 Sub-Proben, 43 grün, 0 rot.** Regression:
+  smoke_bau04a 19/19, smoke_bau04b 30/30, smoke_bau15b 31/31,
+  smoke_bau17 32/32 weiterhin grün.
+- **Karte 04** § Bauzustand neue Zeile „Bau Sub (c) `queryLocal`";
+  § Manueller Test um Knöpfe 11–15 erweitert (10 Bau-04.B-Knopf
+  beibehalten); § Schnittstelle Selbstcheck-Format-Zeile aktualisiert.
+- **INTERFACES.md §1 Modul 04** Bietet-Block um zwei neue
+  Funktionen + Fehlerverhalten um zehn Zeilen + Garantien-Block um
+  queryLocal-Lokalität + setLocalCorpus-Idempotenz + Geprüft-Zeile +
+  Selbstcheck-Zeile erweitert. § 10 Änderungsprotokoll-Eintrag.
+- **`status.json` Modul 04** bleibt `score:"stub"` (analog Bau 04.B,
+  Score-Wechsel folgt nach Klaus' Sichttest). `siegel` + `kurz`
+  erweitert. `update_puls_pie.py` NICHT aufgerufen (keine Score-
+  Änderung).
+- **PROTOCOL_VERSION / DB_VERSION / BACKUP_FORMAT_VERSION** unverändert.
+
+**Block 2 — Karte 18 § Such-Feld-Integration-Pattern voll** (Klaus'
+Stichwort/Semantik-Heuristik):
+
+Drei-Signal-Klassifikator (alle drei für „Stichwort" gelten): Wort-
+Anzahl ≤ 3, kein Fragezeichen, kein Bridge-Word aus deutscher Liste
+(welcher/welches/welche/passt/zu/für/mit/ohne/wie/wann/warum/was/wer/wo,
+case-insensitiv, ganzes Wort).
+
+- Stichwort → lokale Substring-Filter-Suche (endknoten-spezifisch),
+  KEIN Modul-03/04-Aufruf.
+- Semantik → `queryLocal` + Cross-Knoten-Query via BroadcastChannel
+  `sbkim-membrane` (postMessage op:"query" pro Geschwister, 3 s
+  Timeout, op:"queryResult" sammeln).
+
+Code-Schnipsel: classifySearch + runSearch + sendCrossKnotenQuery
+(BroadcastChannel-basiert, same-origin Mycel). UI-Pattern mit zwei
+Sektionen („Lokal" + „Aus dem Mycel"), Treffer-Spalten
+Label/Score/Geschwister-Verweis. Anker-Pfad-Konvention
+`#anchor=<anchorId>` + scrollToAnchor-Hook-Beispiel. Edge-Cases
+(leeres Feld, 0 lokale Treffer, Modul 03 nicht geladen, kein
+Geschwister, Timeout pro Geschwister, fremdes module-04c-not-available,
+> 4096 Zeichen, Debounce-Pflicht).
+
+**Block 3 — SB-KIMTool-Point Hub-Landing-Page-Vorlage:**
+
+`docs/components/_sb_kim_tool_point_template/` mit fünf Dateien:
+
+- `index.html` — Single-file Hub-Landing-Page (GitHub-Pages-fähig),
+  Mount-Anker `<section id="andock-wizard">` + `<section id="endknoten">`,
+  Floating-Widget-Mount-Skripte auskommentiert. Rendert Endknoten-
+  Liste fail-soft via fetch("status.json"). Sage-Tonalität, kein
+  Marketing-Glanz. Verweis auf Sage-Protokol als Spec-Quelle.
+- `status.json` — Skelett mit leerer endknoten-Liste, Hub-Spore-
+  Platzhalter, Pflicht-Modul-Liste (02/17/19).
+- `README.md` — Forker-Aufruf, Pflege-Konvention (keine PII, keine
+  Spec-Spiegelung, kein Auto-Merge).
+- `sbkim/spore.json` — Hub-Spore-Skelett, Domain „Mycel-Hub",
+  nodeType „hybrid".
+- `EINBAU.md` — Sieben-Schritte-Anleitung für Klaus' Folge-Sitzung
+  im externen Repo.
+
+**KEIN Push ins externe Repo** `lausiklauskn-png/SB-KIMTool-Point` —
+die Vorlage bleibt in Sage-Protokol, das Hub-Repo wird in eigener
+Folge-Sitzung befüllt.
+
+**Block 4 — Drei Folge-Briefe in `docs/sessions/`:**
+
+- `BRIEF_BAU_ENDKNOTEN_SUCHFELD_MR.md` — Such-Feld-Dual-Modus in
+  Mein-Rezeptbuch (Klaus' Folge-Sitzung im externen Repo).
+- `BRIEF_BAU_ENDKNOTEN_SUCHFELD_MM.md` — Such-Feld-Dual-Modus in
+  Mein-Mixarium.
+- `BRIEF_BAU_HUB_SB_KIMTOOL_POINT_INITIAL.md` — Initial-Bau im
+  externen Hub-Repo (Vorlage aus `_sb_kim_tool_point_template/`
+  einsetzen + Module 02/17 kopieren + Hub-Spore generieren).
+
+Jeder Brief enthält Pflichtlese-Liste, Block-Struktur, Heilige Tafeln,
+PR-Konvention, Endstand-Codeblock für die jeweils übernächste Sitzung.
+
+**Block 5 — PULS.md + Übergabeprotokoll + Brief-Codeblock im Chat:**
+
+- PULS.md neuer Sitzungs-Eintrag oben (dieser hier).
+- Übergabeprotokoll
+  `docs/sessions/archiv/2026-05-26_bau-04c-suchfeld-und-hub-vorlage.md`.
+- `update_puls_pie.py` NICHT aufgerufen (keine status.json-Modul-
+  Score-Änderung).
+- „Vorgeschlagene nächste Schritte"-Block + Brief-Codeblock im Chat
+  (Konvention CLAUDE.md Pflicht-5 + Pflicht-6).
+
+**Tests bestanden:**
+
+- `node --check src/modules/04_match.js` grün.
+- `node tests/smoke_bau04c_query_local.mjs` — 43/43 grün.
+- Regression: smoke_bau04a 19/19, smoke_bau04b 30/30,
+  smoke_bau15b 31/31, smoke_bau17 32/32 weiterhin grün.
+- Alle 13 Inline-`<script>`-Blöcke in `tests/manual_check.html`
+  syntaktisch validiert.
+- `python3 -c "import json; json.load(open('status.json'))"` valid.
+- `python3 -c "import json; json.load(open('docs/components/_sb_kim_tool_point_template/status.json'))"` valid.
+- `python3 -c "import json; json.load(open('docs/components/_sb_kim_tool_point_template/sbkim/spore.json'))"` valid.
+
+**Was offen / nächster sinnvoller Schritt:**
+
+- **Klaus' Sichttest 04.C** (Panel 04 Knöpfe 11–15 in Browser, nach
+  Hard-Reload — der SbkimEmbedding-Mock ist Side-Effect, wer Panel 03
+  danach läuft, muss reloaden).
+- **Bau-Sitzung 16 Sub (e) Bronze/Gold-SIEGEL-Stufung** (Pipeline-
+  Schritt 5g). Wartet nicht auf Bau 04.C-Sichttest — Modul 16
+  unabhängig.
+- **Externe Folge-Sitzungen** in MR/MM für Such-Feld-Dual-Modus
+  (Briefe liegen) — Klaus startet die im jeweiligen Repo.
+- **Externer Hub-Initial-Bau** in SB-KIMTool-Point (Brief liegt) —
+  Klaus' Folge-Sitzung, Phase B (nach App-Freigabe).
+
+**Sitzungs-PR:** Branch `claude/bau-04c-suchfeld-hub-mjSYl`,
+Draft-PR folgt nach Push.
+
+---
+
 ### 2026-05-26 · Doku-Pflege — PULS-Archiv-Auslagerung + Hub-Naming `SB-KIMTool-Point`
 
 **Sitzungs-Rolle:** Pflege-Sitzung (Doppel-Scope, beide Doku-only).

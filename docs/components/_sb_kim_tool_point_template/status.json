@@ -1,0 +1,28 @@
+{
+  "$schema": "https://sage-protokol.example/schemas/hub-status.v1.json",
+  "name": "SB-KIMTool-Point",
+  "fullName": "Externer SBKIM-Mycel-Hub — Forker-Observatorium light",
+  "purpose": "Öffentliche Endknoten-Liste für SBKIM-Forker-PWAs jenseits von Klaus' Sage. Keine Spec-Spiegelung. Pflege via Pull-Request.",
+  "specSource": "https://github.com/lausiklauskn-png/Sage-Protokol",
+  "protocolVersion": "0.1",
+  "schemaVersion": "1",
+  "lastUpdated": "2026-05-26",
+  "branch": "main",
+
+  "hubSpore": {
+    "nodeId": null,
+    "domain": "Mycel-Hub",
+    "nodeType": "hybrid",
+    "endpoint": null,
+    "sporeUrl": "sbkim/spore.json",
+    "comment": "Hub-eigene Spore wird beim ersten Andock-Wizard-Lauf erzeugt (Modul 02). nodeId + endpoint bleiben null, bis Klaus oder ein Maintainer den Hub initial andockt."
+  },
+
+  "endknoten": [],
+
+  "modules": {
+    "comment": "Hub kopiert ausgewählte SBKIM-Module aus dem Sage-Protokol-Repo. Pflicht für Hub-Funktion: 02 Spore (eigene Identität), 17 Floating-Widget (Hub-Sichtbarkeit als Knoten), 19 Andock-Wizard (Forker-Andocken). Optional: 03/04/05 für Cross-Knoten-Such-Tests.",
+    "pflicht": ["02", "17", "19"],
+    "optional": ["01", "03", "04", "05", "16"]
+  }
+}
