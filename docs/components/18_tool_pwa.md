@@ -333,66 +333,240 @@ Schicht. Wichtige Übertragbare Pattern:
 - Tablet-Hub-Vermittler-Modell (Demo hat Tablet als Hub; Sage hat
   dezentrale Peers).
 
-**Sender-Helper-Code-Pattern (Spec-Vorbereitung):**
+### Dual-Modus-Klassifikation (Stichwort vs. Semantik) — 2026-05-26
 
-Das Such-Feld der Endknoten-PWA ruft einen kleinen Helper auf:
+Klaus' Heuristik 2026-05-26: nicht jede Eingabe ins Such-Feld ist eine
+semantische Anfrage. Wer „Gulasch" tippt, will den vorhandenen Rezept-
+Datensatz „Muttis Gulasch" sehen — kein Cross-Knoten-Embedding-Pass.
+Wer „welcher Wein passt zu Lasagne?" tippt, **will** semantische
+Antwort und braucht den Cross-Knoten-Schritt.
+
+**Klassifikation (3 Signale, alle drei müssen für „Stichwort" erfüllt
+sein):**
+
+1. **Wort-Anzahl ≤ 3** (Whitespace-Split, Leerzeilen-Trim).
+2. **Kein Fragezeichen** im Text.
+3. **Kein Bridge-Word**. Bridge-Words sind die deutschen Wörter, die
+   typisch eine semantische Brückenfrage einleiten:
+   ```
+   welcher, welches, welche,
+   passt, zu, für, mit, ohne,
+   wie, wann, warum,
+   was, wer, wo
+   ```
+   Match: case-insensitiv, ganzes Wort (`/\b…\b/i`).
+
+Erfüllt eine Eingabe **alle drei** → **Stichwort-Modus** (lokale Filter-
+Suche auf die App-eigene Domain-Inhalts-Liste, ohne Modul 03/04). Sonst
+→ **Semantik-Modus** (`queryLocal` + Cross-Knoten-Query).
+
+Beispiele:
+
+| Eingabe                                       | Wörter | ? | Bridge | Modus      |
+|-----------------------------------------------|--------|---|--------|------------|
+| `Gulasch`                                      | 1      | nein | nein | Stichwort  |
+| `Spaghetti`                                    | 1      | nein | nein | Stichwort  |
+| `Alkoholfreie Nachspeisen`                     | 2      | nein | nein | Stichwort  |
+| `Spaghetti welche Sorte`                       | 3      | nein | **ja** (welche) | Semantik   |
+| `welcher Wein passt zu Gulasch?`               | 5      | ja | ja   | Semantik   |
+| `Hauptgang mit wenig Aufwand`                  | 4      | nein | ja (mit) | Semantik   |
+| `Erdbeerkuchen`                                | 1      | nein | nein | Stichwort  |
+| `wie mache ich Erdbeerkuchen?`                 | 4      | ja | ja   | Semantik   |
+
+**Klassifikations-Funktion (Endknoten-Pflicht):**
 
 ```js
-async function sendCrossKnotenQuery(text, k = 5) {
-  const ownSpore = await SbkimSpore.getOwnSpore();
-  const siblings = await SbkimStorage.list("sbkim_siblings_" + slotKey);
+const BRIDGE_WORDS = [
+  "welcher","welches","welche",
+  "passt","zu","für","mit","ohne",
+  "wie","wann","warum",
+  "was","wer","wo",
+];
+const BRIDGE_RE = new RegExp(
+  "\\b(?:" + BRIDGE_WORDS.join("|") + ")\\b",
+  "i",
+);
 
-  const localResults = await SbkimMatch.queryLocal(text, k); // Sub Modul 04.C
-
-  // Sende op:"query" an alle Geschwister-Origins via window.postMessage
-  // ODER via fetch auf /sbkim/query-Endpoint des Geschwisters (Modul 15
-  // entscheidet den Pfad — Sub b Empfänger-Kette ist gebaut).
-  // Sender-Pattern lebt NICHT in Modul 15 (das ist Empfänger-only);
-  // dieser Helper ist Endknoten-PWA-eigene Code-Stelle.
-
-  const crossResults = await Promise.allSettled(
-    siblings.map(s => sendQueryToSibling(s, text, k))
-  );
-
-  return { localResults, crossResults };
+function classifySearch(text) {
+  const trimmed = String(text || "").trim();
+  if (trimmed.length === 0) return "leer";
+  const wordCount = trimmed.split(/\s+/).length;
+  const hasQuestionMark = trimmed.includes("?");
+  const hasBridgeWord = BRIDGE_RE.test(trimmed);
+  if (wordCount <= 3 && !hasQuestionMark && !hasBridgeWord) {
+    return "stichwort";
+  }
+  return "semantik";
 }
 ```
 
-**Genauer Sender-Mechanismus** (Spec entscheidet in Spec-Sitzung 04.C
-ODER eigener Spec-Sitzung „Such-Pattern"):
+### Such-Helper (Endknoten-Pflicht, kein Modul-Code)
 
-- **Variante 1:** `window.postMessage` an iframe-eingebettete
-  Geschwister (SBKIM-Spore-Browser-Sandbox).
-- **Variante 2:** `fetch('/sbkim/query', { method: "POST", body: ... })`
-  am Geschwister-Endpoint (CORS-Pflicht beim Geschwister-Knoten).
-- **Variante 3:** BroadcastChannel `sbkim-membrane` für same-origin-
-  Mycel (Klaus' eigene Apps + Sage).
+```js
+async function runSearch(text, opts) {
+  const mode = classifySearch(text);
+  if (mode === "leer")     return { mode, localResults: [], crossResults: [] };
+  if (mode === "stichwort") {
+    // Stichwort-Modus: lokal-Filter auf die App-eigene Domain-Liste.
+    // KEIN queryLocal-Aufruf, KEIN Cross-Knoten-Pass. App ist
+    // verantwortlich für die Filter-Funktion (Substring-Match auf
+    // Titel / Tags / Kategorie der lokalen Items).
+    const localResults = opts.localKeywordFilter(text);
+    return { mode, localResults, crossResults: [] };
+  }
+  // Semantik-Modus: queryLocal + Cross-Knoten parallel.
+  const k = opts.k || 5;
+  const [localResults, crossResults] = await Promise.all([
+    SbkimMatch.queryLocal(text, k),          // Modul 04.C
+    sendCrossKnotenQuery(text, k, opts),     // siehe Sender-Helper unten
+  ]);
+  return { mode, localResults, crossResults };
+}
+```
 
-Klaus' Wahl (Vision-Klärung 2026-05-26): Variante 3 für same-origin-
-Mycel (MR + MM + Sage), Variante 1 oder 2 für cross-origin-Forker —
-das entscheidet die Spec-Sitzung 04.C bzw. eine eigene Spec-Sitzung
-„Cross-Knoten-Such-Pattern".
+`opts.localKeywordFilter` ist eine Endknoten-Funktion, die Synchron
+über die App-Daten filtert (z.B. Substring-Match in Titeln). Sie
+existiert pro App separat — Mein-Rezeptbuch filtert über Rezept-
+Titel + Tags, Mein-Mixarium über Cocktail-Namen + Kategorien.
 
-**UI-Pattern: lokale Treffer + Cross-Knoten-Treffer:**
+### Sender-Helper-Code-Pattern (Spec-Vorbereitung)
 
-Endknoten-PWA-Such-Feld zeigt zwei Ergebnis-Sektionen:
+Im Semantik-Modus muss neben `queryLocal` auch eine `op:"query"`-
+Botschaft an die Geschwister-Sporen gehen. Sender-Mechanismus:
 
-1. **Lokale Treffer** (aus `queryLocal()`): direkt mit Anchor-Link in
-   die PWA (z.B. zum Rezept).
-2. **Cross-Knoten-Treffer** (aus `op:"queryResult"`): mit Verweis-Link
-   in das Geschwister-PWA (z.B.
-   `https://lausiklauskn-png.github.io/Mein-Mixarium/#anchor=wein-zu-lasagne`).
+```js
+async function sendCrossKnotenQuery(text, k, opts) {
+  // Geschwister aus Modul 05 sibling-Store lesen (slot-spezifisch).
+  const siblings = opts.siblings || [];          // Endknoten lädt einmalig
+  if (siblings.length === 0) return [];
 
-**Anker-Pfad in Cross-Knoten-Treffer:** das `anchorId`-Feld aus
-`queryLocal` (Modul 04.C-Schnittstelle) wird als URL-Fragment an die
-Geschwister-PWA-URL angehängt. Geschwister-PWA muss `window.location.hash`
-beim Boot prüfen und auf den Anchor scrollen (Endknoten-Pflicht,
-NICHT Modul-18-Pflicht).
+  // Pro Geschwister: postMessage op:"query" via BroadcastChannel.
+  // Für cross-origin Mycel-Mitglieder (Forker) wäre window.postMessage
+  // an ein eingebettetes iframe der Empfehlungs-Pfad (Spec für eine
+  // spätere Iteration).
+  const channel = new BroadcastChannel("sbkim-membrane");
+  const replies = [];
+  const TIMEOUT_MS = 3000;
 
-**Spec-Status:** Pattern ist hier dokumentiert als Vorlage für
-Endknoten-Bauer. Die genaue Sender-Helper-Form bleibt Endknoten-Code,
-nicht Modul-18-Code (Modul 18 bietet nur den Container für Wartungs-
-Aktionen, das Such-Feld lebt im Endknoten-Domain-spezifischen UI).
+  const collected = await Promise.all(siblings.map(s => sendOne(s)));
+
+  channel.close();
+  return collected.flat();
+
+  function sendOne(sibling) {
+    return new Promise(resolve => {
+      const nonce = crypto.randomUUID();
+      const handler = (e) => {
+        const env = e.data;
+        if (!env || env.type !== "sbkim/membrane/v1") return;
+        if (env.op !== "queryResult") return;
+        if (env.inReplyTo !== nonce) return;
+        channel.removeEventListener("message", handler);
+        clearTimeout(timer);
+        const results = (env.payload && Array.isArray(env.payload.results))
+          ? env.payload.results
+          : [];
+        resolve(results.map(r => ({
+          ...r,
+          siblingOrigin: sibling.origin,
+          siblingNodeId: sibling.nodeId,
+        })));
+      };
+      const timer = setTimeout(() => {
+        channel.removeEventListener("message", handler);
+        resolve([]);   // Timeout → leere Liste, kein Fehler
+      }, TIMEOUT_MS);
+      channel.addEventListener("message", handler);
+
+      channel.postMessage({
+        type:       "sbkim/membrane/v1",
+        op:         "query",
+        fromOrigin: window.location.origin,
+        nonce:      nonce,
+        payload:    { text: text, k: k },
+      });
+    });
+  }
+}
+```
+
+Hinweis: dieses Pattern ist **BroadcastChannel-basiert** (same-origin
+Mycel, Klaus' Apps auf `lausiklauskn-png.github.io`). Für cross-origin-
+Forker entscheidet eine spätere Spec-Sitzung den genauen Transport
+(typisch `window.postMessage` an ein iframe der Geschwister-PWA).
+**Modul 15 ist nur Empfänger** — der Sender lebt im Endknoten-Code,
+nicht in Modul 15.
+
+### UI-Pattern: zwei Sektionen mit Bedienungs-Vokabular
+
+Endknoten-PWA-Such-Feld zeigt **zwei Ergebnis-Sektionen** nach einem
+Semantik-Pass:
+
+```
+┌─────────────────────────────────────────────────┐
+│ Suche: "welcher Wein passt zu Lasagne?"         │
+├─────────────────────────────────────────────────┤
+│ ▸ Lokal (Mein-Rezeptbuch)                       │
+│   — keine Treffer (oder Top-5-Liste)            │
+│                                                  │
+│ ▸ Aus dem Mycel (Geschwister-Knoten)            │
+│   • Chianti Classico (0.91)        → Mixarium   │
+│   • Sangiovese (0.88)              → Mixarium   │
+│   • Trockene Rotweine (0.84)       → Mixarium   │
+└─────────────────────────────────────────────────┘
+```
+
+Im Stichwort-Modus wird nur die lokale Sektion gezeigt (kein „Aus dem
+Mycel"-Block, weil kein Cross-Knoten-Pass lief).
+
+**Spalten:** Label · Score (optional, 0.00–1.00 oder Prozent-Form) ·
+„→ <Geschwister-Name>"-Link.
+
+### Anker-Pfad in Cross-Knoten-Treffer (Konvention)
+
+Cross-Knoten-Treffer-Link öffnet die Geschwister-PWA mit URL-Fragment:
+
+```
+https://lausiklauskn-png.github.io/Mein-Mixarium/#anchor=<anchorId>
+```
+
+Wobei `anchorId` aus `queryLocal`-Rückgabe der Geschwister-Sporen
+stammt (`{label, score, anchorId}`). Geschwister-PWA prüft bei
+Boot `window.location.hash`:
+
+```js
+window.addEventListener("DOMContentLoaded", () => {
+  const m = window.location.hash.match(/^#anchor=(.+)$/);
+  if (m) scrollToAnchor(decodeURIComponent(m[1]));
+});
+```
+
+`scrollToAnchor` ist endknoten-PWA-eigene Funktion (z.B. setzt
+`document.querySelector(\`[data-anchor="${id}"]\`).scrollIntoView()`).
+**KEINE Modul-18-Pflicht** — das ist UI-Pflege im jeweiligen Endknoten.
+
+### Edge-Cases (Endknoten-Pflicht)
+
+| Lage | Endknoten-Verhalten |
+|---|---|
+| Such-Feld leer (`text === ""`) | Klassifikation `"leer"`, beide Listen leer, KEIN Embedding-Call, KEIN postMessage. |
+| Stichwort liefert 0 lokale Treffer | „keine Treffer" sichtbar, KEIN Auto-Semantik-Pass (User-Geste). UI darf einen Knopf „Auch im Mycel suchen?" anbieten — explizit. |
+| Modul 03 noch nicht geladen | `queryLocal` wirft `EmbeddingNotAvailableError` → UI zeigt „Embedding-Modul lädt noch …" und macht die Stichwort-Sektion sichtbar. |
+| Kein Geschwister im Sibling-Store | `sendCrossKnotenQuery` liefert `[]` sofort, kein Channel-Open. „Aus dem Mycel"-Sektion zeigt „keine angedockten Geschwister" oder bleibt verborgen. |
+| BroadcastChannel-Timeout (kein Geschwister antwortet) | Pro Geschwister 3 s Timeout, dann leere Liste für dieses Geschwister. Andere Geschwister antworten unabhängig. Gesamt-Promise scheitert nie. |
+| Cross-Knoten-Antwort mit `error:"module-04c-not-available"` | Geschwister hat 04.C noch nicht geladen — Treffer-Liste leer, Endknoten zeigt „Geschwister-Knoten unterstützt Such-API nicht (Modul 04.C fehlt)". Da Bau 04.C diese Sitzung schließt, sollten alle Endknoten nach Migration den Pfad fahren. |
+| Sehr lange Eingabe (> 4096 Zeichen) | `queryLocal` wirft `QueryTooLongError` sync → UI zeigt „Eingabe zu lang, max 4096 Zeichen". Cross-Knoten-Pass wird NICHT versucht (Eingabe muss zuerst gekürzt werden — defensiv-Schutz). |
+| Klaus tippt während embedding läuft | Endknoten-eigene Debounce-Logik (typisch 300 ms). Modul 04 hat KEINE eigene Debounce — wer ohne Debounce mit jeder Tastenanschlag-Anfrage Modul 03 ruft, blockiert sich selbst (Modul-03-Lazy gilt nur beim ersten Call, danach Cache-Hit ~10–50 ms). |
+
+### Pattern-Status
+
+Diese Sektion ist **Vorlage für Endknoten-Bauer**, keine Modul-18-
+Surface-Spec. Modul 18 selbst bietet Wartungs-Aktionen (Andocken,
+Backup, Self-Apoptose etc.); das Such-Feld lebt **außerhalb** von
+Modul 18, im endknoten-domain-spezifischen UI. Die Endknoten-Briefe
+`BRIEF_BAU_ENDKNOTEN_SUCHFELD_MR.md` und
+`BRIEF_BAU_ENDKNOTEN_SUCHFELD_MM.md` setzen dieses Pattern in den
+beiden Endknoten um.
 
 ---
 
