@@ -117,7 +117,7 @@
   </section>
 
   <section class="panel" data-module="17_floating_widget">
-    <h2>17 Floating-Widget <span class="status ok">Code-Stub + Pflege UX 2026-05-25</span></h2>
+    <h2>17 Floating-Widget <span class="status ok">Code-Stub + Pflege Sub-(e)-Render 2026-05-26</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
     <pre class="log">— bereit. Bau-Sitzung 17 (2026-05-25) + Pflege UX 2026-05-25: Sage-Page-Lampen-Stil (10 px Lampen mit Glow + Atmung, kompakte Pille mit border-radius:999px), keine Drei-Buchstaben-Glyphe mehr — Lampen sprechen über Farbe + Glow, Tooltip voll im title-Attribut + aria-label, SIEGEL als kleines Gold-Medaillon mit ★. Drei-Zustand-Schnittstelle: voll (alle vier Slots) → minimiert (nur SIEGEL, oder LEBT-Fallback wenn kein SIEGEL) → versteckt (X-Knopf, localStorage-persistiert). `SbkimWidget.minimize()` / `maximize()` / `isMinimized()` neu, `sbkim_widget_minimized`-localStorage-Key. Modul 17 ist NICHT protokoll-aktiv: Render-Schicht, kein Netz, kein Embedding, kein IndexedDB. Self-mountende Pille in `document.body`, Drag via Pointer-Events, X-Schließen, RAM-only VERKEHR-FIFO 10. Setup-Knopf: `SbkimWidget.init({})`. Modul-16-Stub-Knopf legt `window.SbkimSiegel` an für Test 5. Modal-Bridge nutzt Proxy-Spans `#lamp-fremd` + `#sbkim-siegel-badge` im Widget — Modul 15/16 müssen ihre Click-Handler dort attachen, daher MUSS `SbkimWidget.init()` im Endknoten VOR `SbkimMembrane.init()`/`SbkimSiegel.init()` laufen. Sage-Page behält die Navleisten-Lampen, Widget ist Endknoten-Standard. —</pre>
   </section>
@@ -4794,6 +4794,82 @@
           data_minimized_attr:    widget.getAttribute("data-minimized"),
           localStorage_minimized: localStorage.getItem("sbkim_widget_minimized"),
           erwartung: "isMinimized=false, data-minimized-Attribut entfernt, localStorage='false'. Pille zeigt wieder alle Slots.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 13: SIEGEL-Slot initial data-siegel-stufe='bronze' (Pflege Stufen-Render)", async function () {
+        await SbkimWidget.init({});
+        // Mock Modul 16 mit _meta.siegelStufe-Getter (initial bronze).
+        // Wenn echtes Modul 16 da ist, NICHT überschreiben.
+        if (!window.SbkimSiegel) {
+          var stufeRef = "bronze";
+          window.SbkimSiegel = {
+            isCertified: function () { return true; },
+            _meta: { get siegelStufe() { return stufeRef; } },
+            __setStufe: function (s) { stufeRef = s; },
+          };
+        }
+        // SIEGEL-Slot mounten (oder schon gemountet aus Test 5).
+        window.dispatchEvent(new CustomEvent("sbkim:siegel-certified", {
+          detail: { certifiedAt: new Date().toISOString(), repoUrl: "https://lausiklauskn-png.github.io/Sage-Protokol/" },
+        }));
+        var siegel = document.getElementById("sbkim-widget-slot-siegel");
+        if (!siegel) {
+          SbkimUI.setStatus("17_floating_widget", "err", "Test 13: SIEGEL-Slot nicht im DOM");
+          return { hinweis: "Modul 16 muss isCertified()===true sein. Mock-Knopf zuerst." };
+        }
+        var attr = siegel.getAttribute("data-siegel-stufe");
+        var rendered = SbkimWidget._meta.siegelStufeRendered;
+        // Bei echtem Modul 16 kann der Wert je nach Mycel-Stand bronze ODER gold sein.
+        // Wir akzeptieren beides; entscheidend: das Attribut ist gesetzt + _meta-Getter
+        // spiegelt den Wert.
+        var attrIsValid = attr === "bronze" || attr === "gold";
+        var pass = attrIsValid && rendered === attr;
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 13 OK" : "Test 13 fehlgeschlagen");
+        return {
+          data_siegel_stufe:    attr,
+          _meta_siegelStufeRendered: rendered,
+          erwartung: "data-siegel-stufe ist gesetzt (bronze ODER gold). Bronze: gedämpftes Gold-Medaillon (saturate 0.6 brightness 0.85). Gold: Default-Render. _meta.siegelStufeRendered spiegelt das Attribut.",
+        };
+      });
+
+      SbkimUI.addButton("17_floating_widget", "Test 14: sbkim:handshake established → SIEGEL wird Gold + Stufenwechsel-Animation (Pflege Stufen-Render)", async function () {
+        await SbkimWidget.init({});
+        var siegel = document.getElementById("sbkim-widget-slot-siegel");
+        if (!siegel) {
+          SbkimUI.setStatus("17_floating_widget", "err", "Test 14: SIEGEL-Slot nicht im DOM");
+          return { hinweis: "Test 13 oder Test 5 zuerst — Mock-Modul-16-Knopf + sbkim:siegel-certified-Dispatch." };
+        }
+        // Modul-16-Mock auf Gold setzen (sonst lookup beim mountSiegelSlot
+        // gibt fail-soft bronze zurück — hier prüfen wir den
+        // Stufenwechsel-Pfad via Event).
+        if (window.SbkimSiegel && typeof window.SbkimSiegel.__setStufe === "function") {
+          window.SbkimSiegel.__setStufe("gold");
+        }
+        var stufeVor = siegel.getAttribute("data-siegel-stufe");
+        window.dispatchEvent(new CustomEvent("sbkim:handshake", {
+          detail: { outcome: "established", peerNodeId: "test_peer_stufenwechsel", direction: "outgoing" },
+        }));
+        var stufeNach = siegel.getAttribute("data-siegel-stufe");
+        var hasAnim = siegel.classList.contains("sbkim-widget-siegel-stufenwechsel");
+        var renderedNach = SbkimWidget._meta.siegelStufeRendered;
+        // Test passt, wenn nach Dispatch: Gold + Animations-Klasse aktiv.
+        // (Wenn Slot schon vorher Gold war, ist hasAnim false — Idempotenz-Pfad.)
+        var pass = stufeNach === "gold" && renderedNach === "gold" &&
+                   (stufeVor === "bronze" ? hasAnim === true : true);
+        SbkimUI.setStatus("17_floating_widget", pass ? "ok" : "err", pass ? "Test 14 OK" : "Test 14 fehlgeschlagen");
+        // Nach 700 ms re-checken: Animation-Klasse muss weg sein.
+        setTimeout(function () {
+          var animSpaeter = siegel.classList.contains("sbkim-widget-siegel-stufenwechsel");
+          SbkimUI.log("17_floating_widget", "ℹ Nach 700 ms: stufenwechsel-Klasse aktiv=" + animSpaeter + " (erwartet: false).");
+        }, 700);
+        return {
+          stufe_vor:             stufeVor,
+          stufe_nach:            stufeNach,
+          _meta_rendered_nach:   renderedNach,
+          animations_klasse_aktiv: hasAnim,
+          hinweis: stufeVor === "gold" ? "Slot war bereits Gold → Idempotenz-Pfad (kein Re-Animate). Test 13 vor Test 14 hatte Bronze gesetzt — Test-Reihenfolge zählt." : "Slot wechselt von Bronze auf Gold mit 600 ms Pulse-Animation. Modul-15-Sub-(e)-Spec § Visuelle Unterscheidung gespiegelt.",
+          erwartung: "data-siegel-stufe='gold' nach Dispatch. Wenn Slot vorher Bronze: 600 ms .sbkim-widget-siegel-stufenwechsel-Klasse + scale+box-shadow-Animation am Lampen-Medaillon.",
         };
       });
 

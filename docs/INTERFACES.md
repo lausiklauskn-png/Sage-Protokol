@@ -3236,6 +3236,13 @@ Bietet (öffentlich):
                                     //   trafficLogSize: number (max 10)
                                     //   widgetMounted:  boolean
                                     //   firstBootShown: boolean
+                                    //   siegelStufeRendered: "bronze"|"gold"|null
+                                    //                         (Pflege Stufen-Render
+                                    //                          2026-05-26 — was der
+                                    //                          sichtbare SIEGEL-Slot
+                                    //                          gerade anzeigt; null
+                                    //                          wenn Slot noch nicht
+                                    //                          gemountet)
 
   options-Form (init):
     {
@@ -3276,11 +3283,27 @@ Bietet (öffentlich):
     LEBT          Modul 02 (Spore)              pulsiert grün                  grau (kein sbkim:alive)
     VERKEHR       Modul 05 + Modul 15 Sub (b)   gold-Puls pro Event            dunkel (keine Events)
     FREMD         Modul 15 Sub (e)              dauer-rot + Puls               grau (Buffer leer / Modul 15 fehlt)
-    SIEGEL        Modul 16                      sichtbar (Gold-Medaillon)      NICHT IM DOM (Anti-Greenwashing binär)
+    SIEGEL        Modul 16                      Bronze/Gold (data-siegel-stufe) NICHT IM DOM (Anti-Greenwashing binär)
 
     Alle vier Slots im DOM (Ausnahme SIEGEL bei isCertified()===false → kein
     DOM-Element). UX-Disziplin: leerer Slot = „Funktion bekannt, gerade nicht
     aktiv", nicht versteckt.
+
+    SIEGEL-Stufen-Render (Pflege Stufen-Render 2026-05-26, Sub-(e)-Sichttest-
+    Befund 1): der sichtbare SIEGEL-Slot bekommt `data-siegel-stufe`-Attribut
+    am Button-Element. Zwei Werte:
+      - "bronze" (Default fail-soft) → CSS-Filter saturate(0.6) brightness(0.85)
+                                       am Gold-Medaillon + ★-Glyph; Hover mit
+                                       Bronze-glow.
+      - "gold"   → Default-Render (kein Override).
+    Initial-Wert wird beim Slot-Mount aus `SbkimSiegel._meta.siegelStufe`
+    gelesen (Architektur-Pfad ii — robust gegen Event-Reihenfolge). Bei
+    `sbkim:handshake` mit `outcome:"established"` re-setzt Modul 17 das
+    Attribut auf "gold" + 600 ms `.sbkim-widget-siegel-stufenwechsel`-Klasse
+    für die Stufenwechsel-Animation (analog Modul 16 `.stufenwechsel-gold`
+    in index.html § Sub (e)). Idempotent — zweiter established-Handshake
+    re-animiert nicht. _meta.siegelStufeRendered spiegelt den aktuellen
+    Render-Stand als Diagnose-Anker.
 
 Event-Bus-Schema (verbindlich, Karte 17 § Event-Bus-Schema):
   Modul 17 abonniert fünf Custom-Events auf window. Anbieter-Module
@@ -3537,7 +3560,33 @@ Geprüft: 2026-05-25 (Spec-Sitzung 17 — Vier-Slot-Live-Status-Dashboard
                      maximize/isMinimized/getPosition erweitert.
                      Headless-Smoke 26/26 grün, Modul-15-Regression
                      31/31 grün. KEIN Modul-15-/-16-Backend-Eingriff,
-                     KEIN PROTOCOL_VERSION-Bump.)
+                     KEIN PROTOCOL_VERSION-Bump.),
+         2026-05-26 (Pflege Sub-(e)-Visueller Slot-Render — Folge-Pflege
+                     auf Sub-(e)-Sichttest-Bilanz vom 2026-05-26
+                     Befund 1: sichtbarer SIEGEL-Slot bekommt jetzt
+                     data-siegel-stufe-Attribut. Modul 17 liest initial-
+                     Stufe via getSiegelStufe() aus
+                     SbkimSiegel._meta.siegelStufe (Architektur-Pfad ii,
+                     fail-soft Default "bronze"), Re-Setting beim
+                     sbkim:handshake outcome:"established" auf "gold" +
+                     600 ms Stufenwechsel-Klasse
+                     .sbkim-widget-siegel-stufenwechsel (analog Modul
+                     16 .stufenwechsel-gold). Bronze-CSS-Override:
+                     filter saturate(0.6) brightness(0.85) am
+                     Slot::before + .sbkim-widget-siegel-glyph;
+                     Bronze-Hover mit Bronze-glow rgba(140,110,47,0.55).
+                     Gold = Default-Render. _meta um Getter
+                     siegelStufeRendered erweitert. Idempotent —
+                     zweiter established-Handshake re-animiert nicht.
+                     Headless-Smoke 32 → 36 Proben (32 Initial-Bronze,
+                     33 Bronze→Gold + Animations-Klasse, 34 Klasse-
+                     Cleanup nach 600 ms, 35 Idempotenz), 36/36 grün.
+                     Modul-15-Regression 31/31 grün; Modul-16-Sub-(e)-
+                     Regression 15/15 grün; node --check + 13 Inline-
+                     Scripts grün. Panel 17 um Test 13 + 14 erweitert.
+                     KEIN Modul-16-Eingriff, KEIN ZERTIFIKAT_ASPEKTE-
+                     Eintrag, KEIN PROTOCOL_VERSION-Bump, KEIN Endknoten-
+                     Eingriff.)
 
 ---
 
@@ -4886,3 +4935,5 @@ PULS § Vision-Anker 4 (Königin-Relay), PULS § Vision-Anker 5
 | 2026-05-26 | Sichttest 16 Sub (e) grün | **Reine Doku-Pflege-Sitzung** (Sichttest-Nachzug nach Bau 16 Sub (e) aus PR #180 / Pipeline-Schritt 5g). Klaus' Live-Probe Panel 16 Knöpfe 9–12 in DeX-Chrome auf Galaxy Tab S6, Termux `python3 -m http.server 8000` nach Hard-Reload: **4/4 grün**. Knopf 9 Bronze-Initial: `badge_data_stufe:"bronze"`, `aria_label:"SBKIM-Siegel · Mycel suchend"`, `title:null` (Pflege-17-Doppel-Tooltip-Klausel wirkt), `mycel_connected:false`, `mycel_connected_at:null`, `siegel_stufe_getter:"bronze"`. Knopf 10 Bronze→Gold (zweimal idempotent grün dank `_resetMycelConnectedForTest`): `stufe_vor:"bronze"` → `stufe_nach:"gold"`, `aria_label_nach:"SBKIM-Siegel · Mycel verbunden"`, `mycel_connected_nach:true`, `mycel_connected_at_nach:"2026-05-26T16:27:22.973Z"`, `klasse_stufenwechsel_gold:true` (Klasse direkt nach Dispatch live beobachtet, 600 ms Auto-Remove). Knopf 11 Idempotenz: `erste_welle === zweite_welle === "2026-05-26T16:27:56.565Z"`, `datum_unveraendert:true`, `klasse_nach_zweitem_dispatch:false`, `stufe_nach_zweitem_dispatch:"gold"`. Knopf 12 Bronze-Klick öffnet Modal mit Hinweis-Block + [Andocken]: `modal_offen:true`, `hinweis_block_im_dom:true`, `hinweis_block_sichtbar:true`, `andock_button_im_modal:true`, `aspekt_4_pending_marker:true`, `letzter_aspekt_text_kopf:"pending· 16· Mycel-Verbindung etabliert (erster Handshake)…"`, `aspekte_anzahl:4`. **§ 1 Modul 16 Geprüft-Zeile** um „2026-05-26 (Sichttest Bau 16 Sub (e) — Klaus, DeX-Chrome auf Galaxy Tab S6: Panel 16 Knöpfe 9–12 4/4 grün)" erweitert. **Karte 16 § Bauzustand** „Sichttest Sub (e) — folgt"-Zeile ersetzt durch volle 4/4-grün-Sichttest-Zeile mit allen Knopf-Outputs. **`status.json` Modul 16 BLEIBT `score:"stub"`** — Sub-(e)-Sichttest deckt nur Knöpfe 9–12 ab; Knöpfe 1–8 (Bau-16-Basis) bleiben ungeprüft (eigener späterer Sichttest-Nachzug). `siegel`-Text um Sub-(e)-Sichttest-Befund erweitert. `python3 scripts/update_puls_pie.py` aufgerufen — Pie-Verteilung unverändert, weil Score-Wechsel nicht stattfindet. **PULS.md** § Schnellüberblick Modul-16-Zeile aktualisiert + neuer Sitzungs-Eintrag oben. **KEIN Modul-Code-Eingriff** (`src/modules/16_siegel.js` unangetastet), KEIN Endknoten-Eingriff, KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump, KEINE Tafel-Umsortierung CLAUDE.md. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_sichttest-16-sub-e-gruen.md`. |
 
 | 2026-05-26 | Endknoten-Sichttest Cross-Knoten Sub (e) + drei Folge-Briefe | **Pipeline-Phase A Schritt 5e abgeschlossen.** Klaus' Live-Sichttest im DeX-Chrome (Galaxy Tab S6) mit beiden Endknoten Mein-Rezeptbuch + Mein-Mixarium in derselben Chrome-Instanz nach Merge von MR PR #249, MM PR #58 + Fix-PRs für `badgeSelector`-Konfig (Sage-Default `.lamps` war Endknoten-untauglich, Fix: explizit `#sbkim-siegel-badge` Widget-Proxy-Anker). **Sub (e) funktional in beiden Endknoten bewiesen:** Initial-Bronze visuell + Eruda-`_meta.siegelStufe:"bronze"`, Modal öffnet sich mit Bronze-Hinweis-Block + `[Andocken]`-Knopf + Modul-18-Info-Notiz, Aspekt 4 als „pending"-Marker; Live-Cross-Knoten-Handshake via Eruda + Klipboard-Workaround (Sage-`navigator.clipboard.readText()` ging in DeX-Chrome nicht zuverlässig zwischen Tabs → Workaround mit BroadcastChannel-Spore-Transfer als 5-Min-Sender-Loop in MR + 60-s-Listener in MM) ergibt `outcome:"established", score:0.9544`; manueller `window.dispatchEvent("sbkim:handshake", outcome:"established")` in beiden PWAs ergibt `stufe:"gold"` + `mycelConnected:true` + Modal-Refresh (Bronze-Hinweis-Block weg, Aspekt 4 datiert). **VERKEHR-Slot in MM-Widget** zeigt `handshake outgoing established`-Event. **Drei eigenständige Folge-Befunde** (separate Pflege-Sitzungen — Briefe in PR mit angelegt): (1) **Modul 17 Widget-SIEGEL-Slot stufen-unabhängig**: Render bleibt Gold-Medaillon mit ★, `data-stufe="bronze"`/`"gold"` wirkt nur am unsichtbaren Widget-Proxy-Span, nicht am sichtbaren Slot-Button → visuell kein Bronze/Gold-Unterschied; (2) **Endknoten-`sbkim/05_anastomose-v2.js` ist prä-Bau-17**: dispatcht KEIN `sbkim:handshake`-window-Event automatisch beim erfolgreichen Handshake → manueller Eruda-Dispatch als Workaround nötig; Fix: Endknoten-Modul-05 auf Sage-`main`-Stand updaten (analog Modul 15/16/17/sw); (3) **Modal-Datum „Bezeugt seit … Uhr" zeigt UTC** statt MESZ-lokal — `Modul 16 certifiedAt` wird ohne `toLocaleString`-Konvertierung gerendert. **`status.json` Modul 16** `siegel`-Text um Cross-Knoten-Sichttest-Befund erweitert; Score BLEIBT `"stub"` (Knöpfe 1–8 Bau-16-Basis bleiben ungeprüft + drei Folge-Befunde offen). **Karte 16 § Bauzustand** Zeile „In Endknoten eingebaut" gefüllt mit MR-PR-#249 + MM-PR-#58 + Sub-(e)-Sichttest-Befund + drei Folge-Befunde. **§ 1 Modul 16 Geprüft-Zeile** um Endknoten-Cross-Knoten-Sichttest-Eintrag erweitert. **Drei neue Folge-Briefe** in `docs/sessions/`: `BRIEF_PFLEGE_17_WIDGET_BRONZE_GOLD_RENDER.md`, `BRIEF_PFLEGE_ENDKNOTEN_MODUL_05_UPDATE.md`, `BRIEF_PFLEGE_16_MODAL_LOCAL_TIME.md`. **PULS.md** Schnellüberblick + neuer Sitzungs-Eintrag oben. **KEIN Modul-Code-Eingriff in Sage** (Diagnose-Sitzung, Folge-Pflegen wirken in eigenen PRs), KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump, KEIN Endknoten-Eingriff, KEINE Tafel-Umsortierung CLAUDE.md. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_endknoten-sichttest-cross-knoten-sub-e.md`. |
+
+| 2026-05-26 | Pflege Modul 17 Widget Bronze/Gold-Render | **Folge-Pflege auf Sub-(e)-Sichttest-Bilanz vom 2026-05-26** (Befund 1 — separate Pflege-Sitzung pro Befund). Brief `BRIEF_PFLEGE_17_WIDGET_BRONZE_GOLD_RENDER.md`. **Auslöser:** sichtbarer SIEGEL-Slot im Floating-Widget rendert stufen-unabhängig als Gold-Medaillon mit ★ — Klaus visuell kein Unterschied zwischen MR (pre-Handshake, sollte Bronze sein) und MM (post-Handshake, ist Gold). Ursache: Modul 16 setzt `data-stufe="bronze"`/`"gold"` korrekt am unsichtbaren `#sbkim-siegel-badge`-Proxy-Span im Widget-Inneren (Spec-konform), aber der sichtbare Slot-Button daneben hat keine Stufen-Logik. **Architektur-Pfad (ii)** aus Brief gewählt: Modul 17 nutzt lookup auf `SbkimSiegel._meta.siegelStufe` (Modul-16-Getter aus Bau 16 Sub e) im `mountSiegelSlot()`-Aufruf — robust gegen Event-Reihenfolge (Modul 16 init vor Modul 17 dispatch). **§ 1 Modul 17 Bietet-Block** um `_meta.siegelStufeRendered` (Getter, "bronze"|"gold"|null) erweitert. **§ 1 Modul 17 Vier-Slot-Layout** SIEGEL-Zeile aktualisiert auf „Bronze/Gold (data-siegel-stufe)" + neuer Block „SIEGEL-Stufen-Render" beschreibt den Pfad (Initial-Wert via `getSiegelStufe()` aus `SbkimSiegel._meta.siegelStufe`, Re-Setting bei `sbkim:handshake outcome:"established"`, Bronze-CSS-Filter `saturate(0.6) brightness(0.85)`, Gold = Default-Render, 600 ms `.sbkim-widget-siegel-stufenwechsel`-Klasse für Animation, idempotent). **§ 1 Modul 17 Geprüft-Zeile** um Pflege-Sub-(e)-Render 2026-05-26 erweitert. **Code in `src/modules/17_floating_widget.js` additiv**: neue Konstanten `SIEGEL_STUFE_BRONZE`/`SIEGEL_STUFE_GOLD`/`SIEGEL_STUFENWECHSEL_MS=600`; neue Helper `getSiegelStufe()` (fail-soft Default `"bronze"`) + `applySiegelStufeToSlot(stufe)` (setzt `data-siegel-stufe`-Attribut + aktualisiert `siegelStufeRendered`-Closure-State) + `playSiegelStufenwechselAnimation()` (600 ms `.sbkim-widget-siegel-stufenwechsel`-Klasse mit setTimeout-Cleanup); `mountSiegelSlot()` ruft `applySiegelStufeToSlot(getSiegelStufe())` nach Slot-Mount; `buildWidget()`-Init-Pfad (SIEGEL-Slot beim init-Zeitpunkt schon zertifiziert) tut dasselbe; `onHandshake()` prüft bei `outcome:"established"` + `siegelMounted===true` + `siegelStufeRendered!=="gold"`: schaltet auf Gold + startet Animation (idempotent — kein Re-Animate bei zweitem established-Handshake). **`buildCss()`-Block** erweitert um drei Regeln + ein @keyframes: `#sbkim-widget .sbkim-widget-slot.siegel[data-siegel-stufe="bronze"]::before`+`.sbkim-widget-siegel-glyph { filter: saturate(0.6) brightness(0.85); }`; Bronze-Hover-Override mit Bronze-glow `rgba(140,110,47,0.55)`; Gold = Default-Render kein Override; `.sbkim-widget-siegel-stufenwechsel::before { animation: sbkim-widget-siegel-stufenwechsel-gold 600ms ease-out; }`; `@keyframes sbkim-widget-siegel-stufenwechsel-gold` (scale 1.00→1.15→1.00 + box-shadow Gold-Pulse, analog index.html `siegel-stufenwechsel-gold`). **Panel 17** in `tests/manual_check.html` um Test 13 (Initial-Bronze-Attribut + _meta-Spiegelung) + Test 14 (sbkim:handshake established → Gold + Animations-Klasse + 700-ms-Re-Check) erweitert; Header-Status auf „Code-Stub + Pflege Sub-(e)-Render 2026-05-26". **Headless-Smoke** `tests/smoke_bau17_floating_widget.mjs` um vier neue Proben 32–35 erweitert (Initial-Bronze, Bronze→Gold + Stufenwechsel-Klasse, Klasse-Cleanup nach 600 ms, Idempotenz beim zweiten established-Handshake), **36/36 grün**. **Modul-15-Regression** 31/31 grün; **Modul-16-Sub-(e)-Regression** `tests/smoke_bau16_sub_e_bronze.mjs` 15/15 grün; **node --check** für `17_floating_widget.js` + alle 13 Inline-`<script>`-Blöcke in `tests/manual_check.html` grün. **PROTOCOL_VERSION**/**DB_VERSION**/**BACKUP_FORMAT_VERSION** unverändert. **KEIN Modul-16-Eingriff** (Modul 16 setzt `data-stufe` korrekt am Proxy-Span — Pflege-17-Spec-Konformität bestätigt). **KEIN ZERTIFIKAT_ASPEKTE-Eintrag** (Render-Schicht-Pflege, kein Sicherheits-Modul-Update). **KEIN Endknoten-Eingriff** (Mein-Rezeptbuch + Mein-Mixarium ziehen `sbkim/17_floating_widget.js` in eigener Folge-Pflege pro Endknoten-Repo nach — eigene PRs pro Endknoten). **KEINE Sage-Page-Änderung** (`index.html` unangetastet). **KEINE Tafel-Umsortierung** in CLAUDE.md § Pipeline-Reihenfolge. `status.json` Modul 17 BLEIBT `score:"stub"` (additive Render-Pflege, kein Score-Wechsel); `python3 scripts/update_puls_pie.py` aufgerufen (Pie unverändert). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf Panel 17 + Endknoten-Re-Migration mit visuellem Vergleich. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_pflege-17-widget-bronze-gold-render.md`. |
