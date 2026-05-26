@@ -339,7 +339,7 @@ Anpassungs-Antrag, nicht stillschweigend.
 |---|---|---|---|
 | 7 | **Spec + Bau Modul 19 Andock-Wizard (kopierbar)** — Sage-Page-Wizard-Code (`index.html` Karte 4, Z. ~969–991) als eigenständiges `src/modules/19_andock_wizard.js` extrahieren. Einsatz: Sage UND Externer Mycel-Hub. | `claude/spec-19-andock-wizard` → `claude/bau-19-andock-wizard` | ⏳ Brief liegt: `BRIEF_SPEC_19_ANDOCK_WIZARD.md` |
 | 8 | **SBKIM-Starter-Bundle-Repo** — neues GitHub-Repo `<owner>/sbkim-starter` mit allen Modulen + Installer-Script + Konfig-Template + README. Modul-Distribution für Forker. | `claude/spec-starter-bundle` → `claude/bau-starter-bundle` (extern, neues Repo) | ⏳ Karte: `docs/components/_starter_bundle.md` (Tafel-Spec-Pflege 2026-05-26) |
-| 9 | **Externer Mycel-Hub-Repo** — neues GitHub-Repo `<owner>/sbkim-hub` als öffentliches Observatorium light für Forker. Eigene `status.json` + Andock-Wizard (Modul 19) eingebaut. | `claude/spec-mycel-hub` → `claude/bau-mycel-hub` (extern, neues Repo) | ⏳ Karte: `docs/components/_mycel_hub.md` (Tafel-Spec-Pflege 2026-05-26) |
+| 9 | **Externer Mycel-Hub-Repo `SB-KIMTool-Point`** — GitHub-Repo `lausiklauskn-png/SB-KIMTool-Point` als öffentliches Observatorium light für Forker. **Repo angelegt 2026-05-26 (public, leer)** — `https://github.com/lausiklauskn-png/SB-KIMTool-Point`. Eigene `status.json` + Andock-Wizard (Modul 19) eingebaut. | `claude/spec-mycel-hub` → `claude/bau-mycel-hub` (extern, im Repo `SB-KIMTool-Point`) | ⏳ Karte: `docs/components/_mycel_hub.md` (Tafel-Spec-Pflege 2026-05-26) |
 
 **Phase C (Forker-Test, nach Phase B):**
 

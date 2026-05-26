@@ -139,7 +139,8 @@ window.SbkimAndockWizard = {
   // mountAnchor: CSS-Selektor für das Container-Element, in das der
   //   Wizard sein DOM einsetzt.
   // hubRepo:     "lausiklauskn-png/Sage-Protokol" oder
-  //              "<forker>/sbkim-hub" — bestimmt das PR-Ziel.
+  //              "lausiklauskn-png/SB-KIMTool-Point" oder
+  //              "<forker>/<eigener-hub>" — bestimmt das PR-Ziel.
   // hubStatusJsonUrl: optional, sonst aus hubRepo abgeleitet.
   init: function (options) { /* Promise<void>, idempotent */ },
 

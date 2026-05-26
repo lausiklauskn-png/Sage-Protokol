@@ -5,8 +5,9 @@
 > Pipeline-Phase B)  ·  **Schicht:** Eigenes GitHub-Repo + GitHub-Pages-
 > Site als öffentliches Observatorium light für Forker. Trennt
 > Forker-Last von Klaus' Sage-Protokol.
-> **Datei (Code):** Eigenes Repo `sbkim-hub` (Vorschlag, finalisiert in
-> Spec-Sitzung Mycel-Hub).
+> **Datei (Code):** Repo `lausiklauskn-png/SB-KIMTool-Point` —
+> **angelegt 2026-05-26 (public, leer)**:
+> https://github.com/lausiklauskn-png/SB-KIMTool-Point
 
 ---
 
@@ -52,7 +53,7 @@ wird. Trennung:
 ## Repo-Struktur (Spec-Skizze)
 
 ```
-sbkim-hub/
+SB-KIMTool-Point/
 ├── README.md                      # Hub-Vorstellung + Forker-Aufruf
 ├── LICENSE                        # MIT (analog Sage)
 ├── index.html                     # Hub-Landing-Page (Observatorium light)
@@ -79,7 +80,7 @@ sbkim-hub/
    wer pflegt ihn (Klaus? Community?).
 2. **Andock-Wizard** (Modul 19, eingebettet) — Forker kann seine PWA
    hier anmelden, kriegt Spore-Template + PR-Link auf
-   `sbkim-hub/status.json`.
+   `SB-KIMTool-Point/status.json`.
 3. **Endknoten-Liste** (aus `status.json`) — alle angemeldeten Forker-
    PWAs mit Domain + Status-Lampe (analog Sage-Page Karte 1 Sonnen-
    Galaxie). Live-Ping über Service-Worker / `<img>`-Heartbeat
@@ -99,21 +100,20 @@ sbkim-hub/
 
 ## Spec-Punkte (offen für Spec-Sitzung Mycel-Hub)
 
-### Repo-Name (Klaus entscheidet)
+### Repo-Name (Klaus' Festlegung 2026-05-26)
 
-Vorschläge:
-- `sbkim-hub` (kurz, klar)
-- `sbkim-mycel-hub` (länger, präziser)
-- `mycel-observatorium` (deutsch, narrativ)
+**`SB-KIMTool-Point`** — angelegt am 2026-05-26 als public
+GitHub-Repo `lausiklauskn-png/SB-KIMTool-Point` (leer). Klaus'
+Naming-Begründung: `SB-KIM` referenziert das Akronym mit
+Bindestrich-Lesbarkeit; `Tool-Point` bezeichnet den zentralen
+Sammel-/Ausgangspunkt für Werkzeuge (passt zu Modul 18 Tool-PWA-
+Container, dessen Tools über den Hub entdeckt werden können).
 
-### Repo-Owner (Klaus entscheidet)
+### Repo-Owner (Klaus' Festlegung 2026-05-26)
 
-Vorschläge:
-- `lausiklauskn-png/sbkim-hub` (Klaus' Konto, redaktionelle Kontrolle)
-- Eigene Organisation `sbkim/hub` (für Forker-Community)
-- **Klaus-Disziplin:** Auch wenn Klaus den Hub gründet, sollten
-  Forker später Owner-Wechsel machen können. Spec-Sitzung Mycel-Hub
-  klärt die Governance.
+**`lausiklauskn-png`** (Klaus' Konto). Klaus pflegt als Erst-
+Iteration selbst. Spätere Governance-Optionen (eigene Org,
+Maintainer-Liste): siehe Hub-Pflege-Modell unten.
 
 ### Hub-Pflege-Modell (Spec entscheidet)
 
@@ -136,8 +136,9 @@ das Mycel klein ist. Wenn Forker-Zahl wächst, organisch zu B/C übergehen.
 
 - Hub-`index.html` lädt `modules/19_andock_wizard.js` und mountet
   ihn an `<section id="andock-wizard">`.
-- Wizard-`hubRepo`-Option zeigt auf `sbkim-hub`-Repo (NICHT auf
-  Sage-Protokol — der Hub sammelt **seine eigenen** Endknoten).
+- Wizard-`hubRepo`-Option zeigt auf `SB-KIMTool-Point`-Repo
+  (NICHT auf Sage-Protokol — der Hub sammelt **seine eigenen**
+  Endknoten).
 - Forker kann optional einen **zweiten Andock** an Sage-Protokol
   machen, wenn er auch Klaus' Mycel beitreten will.
 
@@ -174,8 +175,9 @@ das Mycel klein ist. Wenn Forker-Zahl wächst, organisch zu B/C übergehen.
 | Schritt | Datum | Sitzung | Anmerkung |
 |---|---|---|---|
 | Konzept-Karte angelegt | 2026-05-26 | Tafel-Spec-Pflege Mycel-Vision | Klaus' Vision-Korrektur 2026-05-26: mehrstufige Mycel-Architektur. Diese Karte ist Vorbereitungs-Konzept mit Repo-Struktur-Skizze + offenen Spec-Fragen. Volle Spec-Sitzung Mycel-Hub folgt nach App-Freigabe + Modul 19 + Starter-Bundle. |
-| Spec gefüllt | — | Spec-Sitzung Mycel-Hub | folgt — Repo-Name + Owner + Pflege-Modell finalisieren, Hub-Landing-Page-Design. |
-| Repo angelegt | — | Bau-Sitzung Mycel-Hub | folgt — neues GitHub-Repo `<Owner>/sbkim-hub` erzeugen + initiale Sektionen + Andock-Wizard (Modul 19) eingebaut + erste Forker-Eintrag (Pepo). |
+| Repo-Name + Owner festgelegt | 2026-05-26 | Naming-Pflege | `lausiklauskn-png/SB-KIMTool-Point` als public Repo angelegt (leer). Klaus' Naming-Festlegung — SB-KIM-Akronym + Tool-Point-Konzept (Sammelpunkt für Modul-18-Tool-PWAs). |
+| Spec gefüllt | — | Spec-Sitzung Mycel-Hub | folgt — Pflege-Modell finalisieren, Hub-Landing-Page-Design. |
+| Repo befüllt | — | Bau-Sitzung Mycel-Hub | folgt — Repo `lausiklauskn-png/SB-KIMTool-Point` mit initialen Sektionen + Andock-Wizard (Modul 19) eingebaut + erste Forker-Einträge. |
 | Erster Forker live | — | Forker-Test | folgt — Pepo Semantic Match Demo oder Muttis Rezeptbuch via Hub-Wizard angedockt + Cross-Knoten-Such-Test (Phase C, siehe CLAUDE.md). |
 
 ---
