@@ -1811,6 +1811,120 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-26 · Bau-Sitzung 16 Sub (e) Bronze/Gold-Stufung
+
+**Sitzungs-Rolle:** Bau-Sitzung. Branch `claude/bau-16-sub-e-bronze-1UeT1`.
+Pipeline-Phase A Schritt 5g. Brief: PR #179 / `BRIEF_BAU_16_SUB_E_BRONZE.md`.
+
+**Anlass:** Klaus' Tafel-Spec-Pflege 2026-05-26 (PR #175) hatte das
+SIEGEL zweistufig spezifiziert — Bronze („Mycel suchend") wenn Surface-
+Check grün, aber noch kein Cross-Knoten-Handshake; Gold („Mycel
+verbunden") sobald erster `sbkim:handshake outcome:"established"`-Event
+ankommt. Diese Bau-Sitzung implementiert die Spec-Erweiterung Karte 16
+§ Sub (e) Mycel-Verbindungs-Stufe.
+
+**Was getan:**
+
+- **`src/modules/16_siegel.js` additiv erweitert** (KEIN Bruch
+  bestehender Public-Surface, KEIN Refactoring):
+  - Closure-State `mycelConnected:false` + `mycelConnectedAt:null`
+    (RAM-only — Tab-Reload startet wieder Bronze, gewollt).
+  - Closure-interne Helper `siegelStufe()` (gibt `"bronze"`/`"gold"`),
+    `applyStufeToBadge()` (setzt `data-stufe`-Attribut + stufen-
+    spezifisches `aria-label`, entfernt `title`-Attribut),
+    `playStufenwechselAnimation()` (`stufenwechsel-gold`-Klasse 600 ms),
+    `onHandshakeEvent(event)` (idempotent + fail-soft via
+    `event?.detail?.outcome !== "established"` → no-op),
+    `registerHandshakeListener()`, `isAspect4(a)`.
+  - `mountBadge()` um EINEN Aufruf `applyStufeToBadge()` vor
+    `attachBadgeClickHandler` erweitert (additiv, eine Zeile).
+  - `init()` um EINEN Aufruf `registerHandshakeListener()` vor dem
+    `ready=true`-Flag erweitert (Listener registriert nach Badge-Mount
+    nur bei grünem Surface-Check).
+  - `buildBadgeElement()` setzt initiales aria-label auf
+    „SBKIM-Siegel · Mycel suchend" + KEIN title-Attribut mehr (Pflege
+    17 Tooltips-Konvention).
+  - `mountSiegelModal()` um `bronzeHinweisBlock` zwischen Header und
+    dateLine erweitert (display:none Default).
+  - Neuer Helper `renderBronzeHinweisBlock(modalRoot)`: in Gold-Stufe
+    display:none, in Bronze-Stufe display:block mit Hinweis-Text +
+    `[Andocken]`-Knopf; Andock-Click fail-soft via
+    `global.SbkimToolPwa?.openAndockTab`-Check (bei Fehlen Info-Notiz
+    „Modul 18 noch nicht verfügbar — Andocken via Sage-Page-Andock-
+    Wizard.").
+  - `renderModalContents()` aspectsList-Loop um Aspekt-4-Pending-Marker
+    erweitert: `isAspect4(a) && mycelConnected !== true` → since-Span
+    zeigt „pending" italic + grau statt Datum.
+  - `ZERTIFIKAT_ASPEKTE` um Aspekt 4 am Listen-Ende ergänzt
+    (`since:"2026-05-26"`, `module:"16"`, `aspect:"Mycel-Verbindung
+    etabliert (erster Handshake)"`).
+  - Test-Brücke `_resetMycelConnectedForTest()` (Test-only, Panel 16
+    Knopf 12 + Smoke-Test).
+  - `_meta` um drei Live-Getter erweitert: `mycelConnected` (boolean),
+    `mycelConnectedAt` (string|null ISO-8601), `siegelStufe`
+    (`"bronze"|"gold"`).
+- **`index.html` additiv erweitert**:
+  - Zwei neue `:root`-Variablen `--siegel-bronze: #8C6E2F` +
+    `--siegel-bronze-glow: rgba(140,110,47,0.45)`.
+  - Drei neue CSS-Regeln im Badge-Block:
+    `#sbkim-siegel-badge[data-stufe="bronze"]` (filter
+    saturate-brightness), `:hover`-Variante mit Bronze-Glow-Drop-
+    Shadow, `[data-stufe="gold"]` als no-op-Anker,
+    `.stufenwechsel-gold` (animation 600 ms).
+  - Neuer `@keyframes siegel-stufenwechsel-gold` (0→1.15→1.0 mit
+    Gold-Glow-Box-Shadow + Drop-Shadow-Filter im Mittelpunkt).
+- **Panel 16** in `tests/manual_check.html` um vier Knöpfe 9–12
+  erweitert (Sub-(e)-Bronze-Initial / synthetischer Handshake → Gold
+  + Stufenwechsel-Klasse / Idempotenz-Test / Bronze-Klick → Modal-
+  Hinweis-Block + [Andocken] + Aspekt-4-Pending). Panel-Header-Text
+  um Bau-16-Sub-(e)-Block erweitert.
+- **Headless-Smoke** `tests/smoke_bau16_sub_e_bronze.mjs` (Node 22)
+  mit minimalem DOM-Stub inkl. Descendant-Combinator-Support +
+  textContent-Getter/Setter: 15 Proben, **15/15 grün**.
+- **Regression**: smoke_bau04a 19/19 + smoke_bau04b 30/30 +
+  smoke_bau04c 43/43 + smoke_bau15b 31/31 + smoke_bau17 32/32 grün.
+- **node --check** für `16_siegel.js` + alle 13 Inline-`<script>`-
+  Blöcke in `tests/manual_check.html` grün.
+- **Doku-Pflege**: Karte 16 § Bauzustand neue Zeile, INTERFACES.md
+  § 1 Modul 16 Bietet-/Events-/Geprüft-Block + § 10 Änderungsprotokoll
+  voll gespiegelt. status.json Modul 16 `siegel`-Text aktualisiert
+  (`score:"stub"` bleibt bis Sichttest grün, analog 04.B/04.C-
+  Konvention).
+
+**Heilige Tafeln dieser Sitzung eingehalten:**
+
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+- KEIN Auto-Andocken (Empfangsmodus-Prinzip wahren) — Aspekt 4 nur
+  via empfangenem `sbkim:handshake`-Event aktiviert.
+- KEIN Persistent-Store für mycelConnected (RAM-only, gewollt).
+- KEIN Modul-18-Code-Bau (fail-soft-Check).
+- KEIN Modul-05/17-Eingriff (Custom-Event existiert seit Bau 17).
+- KEIN Endknoten-Eingriff (Re-Aktivierung folgt als Pipeline-
+  Schritt 5e).
+- KEINE Sage-Page-Änderung außer index.html CSS-Variablen +
+  Badge-Regeln (Block 2 des Briefs).
+
+**Was offen blieb:**
+
+- Sichttest Panel 16 Knöpfe 9–12 (Klaus' Browser-Lauf) — ungeprüft,
+  wartet auf DeX-Chrome am Galaxy Tab S6.
+- Endknoten-Re-Aktivierung Mein-Rezeptbuch + Mein-Mixarium mit
+  Sub-(e)-Pfad (Pipeline-Schritt 5e, eigene Folge-Sitzung pro
+  Endknoten).
+- Bau Modul 18 Tool-PWA-Container (Pipeline-Schritt 5h) — der
+  fail-soft `[Andocken]`-Knopf bleibt vorerst auf Info-Notiz-Pfad.
+
+**Nächster sinnvoller Schritt:** Sichttest-Pflege-Sitzung „Sichttest
+16 Sub e grün" nach Klaus' Browser-Lauf Panel 16 Knöpfe 9–12
+(analog Pfad PR #178 für 04.C).
+
+**Headless-Bilanz:** 15/15 grün (Bau 16 Sub e) + Regression 04.A
+19/19 + 04.B 30/30 + 04.C 43/43 + 15.B 31/31 + 17 32/32 grün.
+
+**Übergabeprotokoll:** `docs/sessions/archiv/2026-05-26_bau-16-sub-e-bronze.md`.
+
+---
+
 ### 2026-05-26 · Pflege Sichttest 04.C grün (5/5)
 
 **Sitzungs-Rolle:** Pflege-Sitzung Sichttest-Nachzug. Branch

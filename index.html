@@ -43,6 +43,9 @@
     --siegel-gold-glow: rgba(201,169,97,0.55);
     --siegel-ink:       #1A1306;
     --siegel-line:      rgba(201,169,97,0.45);
+    /* Sub (e) Bronze/Gold-Stufung (Karte 16 § Sub (e), 2026-05-26). */
+    --siegel-bronze:      #8C6E2F;
+    --siegel-bronze-glow: rgba(140, 110, 47, 0.45);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -132,6 +135,16 @@
   #sbkim-siegel-badge:focus-visible { outline: 2px solid var(--siegel-gold); outline-offset: 3px; }
   #sbkim-siegel-badge.first-boot { animation: siegel-first-boot 600ms ease-out; }
   @keyframes siegel-first-boot { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 14px var(--siegel-gold-glow)); } 100% { transform: scale(1.00); opacity: 1; } }
+  /* Modul 16 Sub (e) Bronze/Gold-Stufung (Karte 16 § Sub (e), 2026-05-26).
+     Bronze („Mycel suchend") = Surface-Check grün, aber noch kein Cross-Knoten-Handshake;
+     Gold („Mycel verbunden") = mind. ein sbkim:handshake outcome:"established" empfangen.
+     Wappen-SVG wird per filter:saturate(0.6) brightness(0.85) gedämpft (Spec § Visuelle Unterscheidung).
+     Gold-Stufenwechsel-Animation 600 ms via siegel-stufenwechsel-gold. */
+  #sbkim-siegel-badge[data-stufe="bronze"] { filter: saturate(0.6) brightness(0.85); }
+  #sbkim-siegel-badge[data-stufe="bronze"]:hover { filter: saturate(0.6) brightness(0.85) drop-shadow(0 0 8px var(--siegel-bronze-glow)); }
+  #sbkim-siegel-badge[data-stufe="gold"] { /* Default-Render — keine Override */ }
+  #sbkim-siegel-badge.stufenwechsel-gold { animation: siegel-stufenwechsel-gold 600ms ease-out; }
+  @keyframes siegel-stufenwechsel-gold { 0% { transform: scale(1.00); box-shadow: 0 0 0 0 var(--siegel-gold-glow); } 40% { transform: scale(1.15); box-shadow: 0 0 24px 4px var(--siegel-gold-glow); filter: drop-shadow(0 0 14px var(--siegel-gold-glow)); } 100% { transform: scale(1.00); box-shadow: 0 0 0 0 var(--siegel-gold-glow); } }
   .screen { display: none; padding-top: 2rem; }
   .screen.active { display: block; animation: fade-in 0.5s var(--ease-out-quart); }
   @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }

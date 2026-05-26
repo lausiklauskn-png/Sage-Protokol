@@ -99,7 +99,34 @@
       aspect:      "Floating-Widget mit Vier-Slot-Live-Status",
       description: "Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) als Endknoten-Standard; macht den SBKIM-Lauf sichtbar ohne Navleisten-Mount-Pflicht. Render-Schicht ohne Protokoll-Eingriff.",
     },
+    // Aspekt 4 — Mycel-Verbindung etabliert (Karte 16 § Sub (e),
+    // Spec-Erweiterung 2026-05-26). Dynamisch sichtbar:
+    // _meta.mycelConnected === false → Modal rendert „pending"-Marker
+    // statt Datum; _meta.mycelConnected === true → Modal rendert Datum.
+    // Aktivierung über window-Event sbkim:handshake outcome:"established"
+    // (Modul 05 Bau 17). RAM-only — Tab-Reload startet wieder Bronze.
+    {
+      since:       "2026-05-26",
+      module:      "16",
+      aspect:      "Mycel-Verbindung etabliert (erster Handshake)",
+      description: "Diese App hat in der aktuellen Session mindestens einen erfolgreichen Cross-Knoten-Handshake durchgeführt. SIEGEL-Stufe Gold.",
+    },
   ];
+
+  // ---- Aspekt-4-Anker (Karte 16 § Sub (e) dynamische Render-Variante) ----
+  //
+  // Eindeutige Identifikation des „Mycel-Verbindung etablierten"-Aspekts
+  // in der ZERTIFIKAT_ASPEKTE-Liste; das Modal rendert ihn in Bronze mit
+  // „pending"-Marker statt Datum.
+
+  var ASPEKT_4_SINCE = "2026-05-26";
+  var ASPEKT_4_MODULE = "16";
+  var ASPEKT_4_TITLE_PREFIX = "Mycel-Verbindung etabliert";
+
+  function isAspect4(a) {
+    return a && a.since === ASPEKT_4_SINCE && a.module === ASPEKT_4_MODULE &&
+           typeof a.aspect === "string" && a.aspect.indexOf(ASPEKT_4_TITLE_PREFIX) === 0;
+  }
 
   // ---- Konstanten ----
 
@@ -109,6 +136,16 @@
   var MODAL_TITLE = "SBKIM-Siegel — was bedeutet das?";
   var FIRST_BOOT_ANIMATION_MS = 600;
   var MOUNT_OBSERVER_TIMEOUT_MS = 10000;
+
+  // Sub (e) Bronze/Gold-Stufung (Spec-Erweiterung 2026-05-26).
+  var STUFE_BRONZE = "bronze";
+  var STUFE_GOLD = "gold";
+  var STUFENWECHSEL_ANIMATION_MS = 600;
+  var HANDSHAKE_EVENT = "sbkim:handshake";
+  var ARIA_LABEL_BRONZE = "SBKIM-Siegel · Mycel suchend";
+  var ARIA_LABEL_GOLD = "SBKIM-Siegel · Mycel verbunden";
+  var BRONZE_HINWEIS_HTML_FALLBACK =
+    "Modul 18 noch nicht verfügbar — Andocken via Sage-Page-Andock-Wizard.";
 
   // ---- Wappen-SVG (Akkretions-Disk-Korona + Auszeichnungs-Siegel) ----
   //
@@ -148,6 +185,13 @@
   var mountObserver = null;
   var mountObserverTimeoutId = null;
 
+  // Sub (e) Bronze/Gold-Stufe (Karte 16 § Sub (e)). RAM-only: Tab-Reload
+  // startet wieder Bronze — gewollt (Karte 16 § Sub (e) Persistenz).
+  var mycelConnected = false;
+  var mycelConnectedAt = null;
+  var handshakeListener = null;
+  var stufenwechselTimeoutId = null;
+
   // ---- Hilfsfunktionen ----
 
   function warn(message, cause) {
@@ -158,6 +202,81 @@
   }
 
   function nowIso() { return new Date().toISOString(); }
+
+  // ---- Sub (e) Bronze/Gold-Stufe (Karte 16 § Sub (e)) ----
+  //
+  // siegelStufe() ist closure-intern — KEIN export auf public surface
+  // (Brief Block 1 B). _meta.mycelConnected ist der publizierte Anker.
+  function siegelStufe() {
+    if (mycelConnected === true) return STUFE_GOLD;
+    return STUFE_BRONZE;
+  }
+
+  // Setzt data-stufe + aria-label auf das Badge-Element. KEIN title-
+  // Attribut (Konvention aus Pflege 17 Tooltips, Doppel-Tooltip-Problem
+  // auf DeX-Chrome — aria-label trägt vollen Text).
+  function applyStufeToBadge() {
+    if (!badgeElement) return;
+    var stufe = siegelStufe();
+    try {
+      badgeElement.setAttribute("data-stufe", stufe);
+      badgeElement.setAttribute(
+        "aria-label",
+        stufe === STUFE_GOLD ? ARIA_LABEL_GOLD : ARIA_LABEL_BRONZE,
+      );
+      if (typeof badgeElement.removeAttribute === "function") {
+        badgeElement.removeAttribute("title");
+      }
+    } catch (err) {
+      warn("data-stufe / aria-label konnte nicht gesetzt werden.", err);
+    }
+  }
+
+  // Stufenwechsel-Animation (600 ms .stufenwechsel-gold-Klasse).
+  function playStufenwechselAnimation() {
+    if (!badgeElement || !badgeElement.classList) return;
+    try {
+      badgeElement.classList.add("stufenwechsel-gold");
+      if (stufenwechselTimeoutId !== null) {
+        clearTimeout(stufenwechselTimeoutId);
+      }
+      stufenwechselTimeoutId = setTimeout(function () {
+        if (badgeElement) {
+          try { badgeElement.classList.remove("stufenwechsel-gold"); } catch (_e) { /* nb */ }
+        }
+        stufenwechselTimeoutId = null;
+      }, STUFENWECHSEL_ANIMATION_MS);
+    } catch (err) {
+      warn("Stufenwechsel-Animation konnte nicht starten.", err);
+    }
+  }
+
+  // window-Event-Listener-Handler für sbkim:handshake (Modul 05 Bau 17).
+  // Idempotent + fail-soft (Karte 16 § Sub (e) Modul-16-Listener).
+  function onHandshakeEvent(event) {
+    var outcome = event && event.detail && event.detail.outcome;
+    if (outcome !== "established") return;     // no-op (fail-soft)
+    if (mycelConnected === true) return;       // idempotent
+    mycelConnected = true;
+    mycelConnectedAt = nowIso();
+    applyStufeToBadge();
+    playStufenwechselAnimation();
+    if (modalOpen) {
+      try { renderModalContents(); } catch (err) { warn("Modal-Refresh nach Stufenwechsel fehlgeschlagen.", err); }
+    }
+  }
+
+  function registerHandshakeListener() {
+    if (handshakeListener) return;            // idempotent
+    if (typeof global.addEventListener !== "function") return;
+    handshakeListener = onHandshakeEvent;
+    try {
+      global.addEventListener(HANDSHAKE_EVENT, handshakeListener);
+    } catch (err) {
+      warn("Handshake-Listener-Registrierung fehlgeschlagen.", err);
+      handshakeListener = null;
+    }
+  }
 
   function escapeAttr(str) {
     // Modal/Badge-Title-Strings sind statisch oder kommen aus
@@ -333,8 +452,10 @@
     span.id = BADGE_ID;
     span.setAttribute("role", "button");
     span.setAttribute("tabindex", "0");
-    span.setAttribute("aria-label", "SBKIM-Siegel öffnen");
-    span.setAttribute("title", "SBKIM-Siegel — klick für Details");
+    // aria-label wird in applyStufeToBadge() je nach Sub-(e)-Stufe gesetzt
+    // (Bronze/Gold). KEIN title-Attribut — Pflege 17 Tooltips 2026-05-26:
+    // Doppel-Tooltip-Problem auf DeX-Chrome.
+    span.setAttribute("aria-label", ARIA_LABEL_BRONZE);
     // SVG-Wappen: Ritterschild-Siegel mit Akkretions-Disk-Korona
     // (source of truth: `assets/sbkim-siegel-wappen.svg`; inlined als
     // `WAPPEN_SVG`-Konstante oben im Modul). Skaliert via viewBox auf
@@ -374,8 +495,8 @@
       }
       if (!anchor.getAttribute("role")) anchor.setAttribute("role", "button");
       if (!anchor.getAttribute("tabindex")) anchor.setAttribute("tabindex", "0");
-      if (!anchor.getAttribute("aria-label")) anchor.setAttribute("aria-label", "SBKIM-Siegel öffnen");
-      if (!anchor.getAttribute("title")) anchor.setAttribute("title", "SBKIM-Siegel — klick für Details");
+      // aria-label setzt applyStufeToBadge() je nach Sub-(e)-Stufe.
+      // KEIN title-Attribut (Pflege 17 Tooltips, Doppel-Tooltip-Problem).
     } else {
       var span = buildBadgeElement();
       anchor.appendChild(span);
@@ -383,6 +504,7 @@
       badgeCreatedByModule = true;
     }
 
+    applyStufeToBadge();   // Sub (e) Bronze/Gold (Karte 16 § Sub (e)).
     attachBadgeClickHandler();
     playFirstBootAnimation();
   }
@@ -559,6 +681,25 @@
     header.appendChild(title);
     header.appendChild(closeBtn);
 
+    // Sub (e) Bronze-Hinweis-Block (Karte 16 § Sub (e) Klick-Verhalten in
+    // Bronze). Sichtbar nur wenn _meta.mycelConnected === false. Enthält
+    // den Hinweis-Text + einen [Andocken]-Knopf, der Modul 18 Sub (a)
+    // öffnet (fail-soft: wenn Modul 18 nicht da, Info-Notiz im Modal).
+    var bronzeHinweisBlock = doc.createElement("div");
+    bronzeHinweisBlock.setAttribute("data-siegel-bronze-hinweis", "");
+    bronzeHinweisBlock.style.cssText = [
+      "display:none",
+      "margin:0 0 1rem",
+      "padding:0.75rem 0.9rem",
+      "background:rgba(140,110,47,0.12)",
+      "border:1px solid var(--siegel-bronze-glow, rgba(140,110,47,0.45))",
+      "border-radius:8px",
+      "font-family:'Geist', system-ui, sans-serif",
+      "font-size:0.86rem",
+      "line-height:1.5",
+      "color:rgba(245,245,255,0.88)",
+    ].join(";");
+
     var dateLine = doc.createElement("p");
     dateLine.setAttribute("data-siegel-date", "");
     dateLine.style.cssText = "margin:0 0 1rem;font-size:0.86rem;color:rgba(245,245,255,0.78);";
@@ -612,6 +753,7 @@
     ].join(";");
 
     panel.appendChild(header);
+    panel.appendChild(bronzeHinweisBlock);     // Sub (e) — sichtbar nur in Bronze
     panel.appendChild(dateLine);
     panel.appendChild(modulesHeader);
     panel.appendChild(modulesList);
@@ -649,10 +791,80 @@
     return status;
   }
 
+  // Sub (e) Bronze-Hinweis-Block-Render (Karte 16 § Sub (e) Klick-
+  // Verhalten in Bronze). Wird aus renderModalContents() bei jedem
+  // Modal-Render aufgerufen.
+  function renderBronzeHinweisBlock(modalRoot) {
+    var block = modalRoot.querySelector("[data-siegel-bronze-hinweis]");
+    if (!block) return;
+    var doc = global.document;
+    block.textContent = "";
+
+    // In Gold-Stufe: Block ausblenden.
+    if (siegelStufe() === STUFE_GOLD) {
+      block.style.display = "none";
+      return;
+    }
+
+    block.style.display = "block";
+
+    var p = doc.createElement("p");
+    p.style.cssText = "margin:0 0 0.6rem;";
+    var strong = doc.createElement("strong");
+    strong.textContent = "Mycel suchend";
+    strong.style.cssText = "color:var(--siegel-bronze, #8C6E2F);font-weight:600;";
+    p.appendChild(strong);
+    p.appendChild(doc.createTextNode(
+      " — diese App ist SBKIM-fähig, aber noch nicht mit Geschwister-Knoten verbunden. " +
+      "Klick auf [Andocken] (Modul 18) um eine Verbindung herzustellen.",
+    ));
+    block.appendChild(p);
+
+    var andockBtn = doc.createElement("button");
+    andockBtn.type = "button";
+    andockBtn.setAttribute("data-siegel-andock-btn", "");
+    andockBtn.textContent = "Andocken";
+    andockBtn.style.cssText = [
+      "padding:0.4rem 0.9rem",
+      "background:var(--siegel-bronze, #8C6E2F)",
+      "color:#1A1306",
+      "border:1px solid var(--siegel-line, rgba(201,169,97,0.45))",
+      "border-radius:6px",
+      "font-family:'Geist', system-ui, sans-serif",
+      "font-size:0.86rem",
+      "font-weight:500",
+      "cursor:pointer",
+    ].join(";");
+    andockBtn.addEventListener("click", function () {
+      // Fail-soft Modul-18-Check (Karte 16 § Sub (e) Klick-Verhalten):
+      // wenn SbkimToolPwa.openAndockTab existiert, aufrufen; sonst Info-
+      // Notiz im Modal anzeigen.
+      var toolPwa = global.SbkimToolPwa;
+      if (toolPwa && typeof toolPwa.openAndockTab === "function") {
+        try { toolPwa.openAndockTab(); }
+        catch (err) { warn("Modul 18 openAndockTab fehlgeschlagen.", err); }
+        return;
+      }
+      // Info-Notiz im Block einblenden (analog Spec § Klick-Verhalten in
+      // Bronze, Z. 569-571).
+      var existing = block.querySelector("[data-siegel-andock-info]");
+      if (existing) return;        // idempotent
+      var info = doc.createElement("p");
+      info.setAttribute("data-siegel-andock-info", "");
+      info.textContent = BRONZE_HINWEIS_HTML_FALLBACK;
+      info.style.cssText = "margin:0.6rem 0 0;font-size:0.82rem;color:rgba(245,245,255,0.7);font-style:italic;";
+      block.appendChild(info);
+    });
+    block.appendChild(andockBtn);
+  }
+
   function renderModalContents() {
     if (!modalRoot) return;
     var doc = global.document;
     var snap = buildExplanationSnapshot();
+
+    // Sub (e) Bronze-Hinweis-Block — vor allen anderen Render-Schritten.
+    renderBronzeHinweisBlock(modalRoot);
 
     var dateLine = modalRoot.querySelector("[data-siegel-date]");
     if (dateLine) {
@@ -704,11 +916,17 @@
         var a = sorted[k];
         var aLi = doc.createElement("li");
         aLi.style.cssText = "padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05);";
+        // Sub (e) Aspekt-4-Pending-Marker (Karte 16 § Sub (d) Sonderfall
+        // dynamische Render-Variante): in Bronze-Stufe rendert das Modal
+        // Aspekt 4 mit Marker „pending" statt Datum, mit grauer Farbe.
+        var isPendingAspect4 = isAspect4(a) && mycelConnected !== true;
         var head = doc.createElement("div");
         head.style.cssText = "display:flex;gap:0.5rem;align-items:baseline;margin-bottom:0.2rem;";
         var since = doc.createElement("span");
-        since.textContent = a.since;
-        since.style.cssText = "font-family:'Geist Mono',ui-monospace,monospace;color:var(--siegel-gold, #C9A961);font-size:0.82rem;";
+        since.textContent = isPendingAspect4 ? "pending" : a.since;
+        since.style.cssText = isPendingAspect4
+          ? "font-family:'Geist Mono',ui-monospace,monospace;color:rgba(245,245,255,0.45);font-size:0.82rem;font-style:italic;"
+          : "font-family:'Geist Mono',ui-monospace,monospace;color:var(--siegel-gold, #C9A961);font-size:0.82rem;";
         var moduleId = doc.createElement("span");
         moduleId.textContent = "· " + a.module;
         moduleId.style.cssText = "font-family:'Geist Mono',ui-monospace,monospace;color:rgba(245,245,255,0.62);font-size:0.82rem;";
@@ -852,6 +1070,13 @@
       try { mountSiegelModal(); } catch (err) { warn("Modal-Mount fehlgeschlagen", err); }
     }
 
+    // Sub (e) Bronze/Gold-Stufung (Karte 16 § Sub (e), 2026-05-26):
+    // window-Event-Listener für sbkim:handshake outcome:"established"
+    // registrieren. Erst NACH Badge-Mount, damit applyStufeToBadge auf
+    // einem existierenden Element arbeiten kann. Idempotent +
+    // fail-soft im Handler.
+    registerHandshakeListener();
+
     ready = true;
 
     // Bau 17: sbkim:siegel-certified-Custom-Event NUR bei
@@ -927,12 +1152,34 @@
     return out;
   }
 
+  // Sub (e) Test-Brücke (Karte 16 § Sub (e), Panel 16 Knopf 12):
+  // setzt _meta.mycelConnected zurück auf false, re-rendert Badge.
+  // KEIN public-Use; ausschließlich Test-Brücke (Convention analog
+  // Modul 08 _clearOutbox, Modul 15 clear). Tab-Reload erreicht das
+  // gleiche, aber Panel-Test braucht Reset ohne Reload.
+  function _resetMycelConnectedForTest() {
+    mycelConnected = false;
+    mycelConnectedAt = null;
+    if (stufenwechselTimeoutId !== null) {
+      clearTimeout(stufenwechselTimeoutId);
+      stufenwechselTimeoutId = null;
+    }
+    if (badgeElement && badgeElement.classList) {
+      try { badgeElement.classList.remove("stufenwechsel-gold"); } catch (_e) { /* nb */ }
+    }
+    applyStufeToBadge();
+    if (modalOpen) {
+      try { renderModalContents(); } catch (err) { warn("Modal-Refresh nach _resetMycelConnectedForTest fehlgeschlagen.", err); }
+    }
+  }
+
   var SbkimSiegel = {
     init:                init,
     isCertified:         isCertified,
     getExplanation:      getExplanation,
     getCertifiedModules: getCertifiedModules,
     getAspects:          getAspects,
+    _resetMycelConnectedForTest: _resetMycelConnectedForTest,
     _meta: {
       badgeId:           BADGE_ID,
       modalId:           MODAL_ID,
@@ -948,6 +1195,10 @@
       get visibleMode()       { return visibleMode; },
       get mountModalFlag()    { return mountModalFlag; },
       get badgeSelector()     { return badgeSelector; },
+      // Sub (e) Bronze/Gold-Stufung (Karte 16 § Sub (e)).
+      get mycelConnected()    { return mycelConnected; },
+      get mycelConnectedAt()  { return mycelConnectedAt; },
+      get siegelStufe()       { return siegelStufe(); },
     },
   };
 
