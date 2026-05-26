@@ -317,7 +317,18 @@
 
   async function loadIdentity(key) {
     var slotKey = key || DEFAULT_IDENTITY_KEY;
-    if (identityCache.has(slotKey)) return identityCache.get(slotKey);
+    if (identityCache.has(slotKey)) {
+      var cached = identityCache.get(slotKey);
+      // Pflege 17 Heartbeat 2026-05-26: jeder Pfad, der eine geladene
+      // Identität liefert, soll `sbkim:alive` dispatchen. Bisher war
+      // das nur in getOrCreateIdentity — Aufrufer wie generateOwnSpore
+      // mit existing-Identity oder getNodeId/getPublicKeyJwk lösten das
+      // nicht aus. Klaus' Sichttest 2026-05-26: LEBT bleibt grau wenn
+      // die Identität schon im Storage liegt. Once-Flag im
+      // dispatchAliveOnce schützt vor Doppel-Feuer.
+      dispatchAliveOnce(cached.nodeId);
+      return cached;
+    }
     await ensureReady();
     var storage = getStorage();
     var subtle = getSubtle();
@@ -346,6 +357,7 @@
       publicKey: publicKey,
     };
     identityCache.set(slotKey, snapshot);
+    dispatchAliveOnce(nodeId);
     return snapshot;
   }
 
