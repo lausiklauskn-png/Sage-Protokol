@@ -604,15 +604,16 @@ async function run() {
     findLabel(fremdBtn5) === "fremd" && findLabel(siegelBtn5) === "siegel" &&
     findGlyph(siegelBtn5) === "★");
 
-  // Tooltip via title-Property voll ausgeschrieben (aria-label gespiegelt).
-  record("26. Tooltips voll ausgeschrieben (title-Property + aria-label, nicht nur Slot-Name)",
-    "alle title enthalten 'Klick öffnet'",
-    "lebt='" + (lebtBtn5.title || "").slice(0, 40) + "...'",
-    /Klick öffnet/.test(lebtBtn5.title || "") &&
-    /Klick öffnet/.test(verkBtn5.title || "") &&
-    /Klick öffnet/.test(fremdBtn5.title || "") &&
-    /Klick öffnet/.test(siegelBtn5.title || "") &&
-    /Klick öffnet/.test(lebtBtn5._attributes["aria-label"] || ""));
+  // Pflege Tooltips 2026-05-26: Tooltip-Text liegt jetzt NUR im aria-label
+  // (title-Attribut wurde entfernt wegen Doppel-Tooltip auf DeX-Chrome).
+  record("26. Tooltips voll im aria-label (title entfernt — Pflege Tooltips 2026-05-26)",
+    "alle aria-label enthalten 'Klick öffnet', kein title",
+    "lebt aria='" + (lebtBtn5._attributes["aria-label"] || "").slice(0, 40) + "...'",
+    /Klick öffnet/.test(lebtBtn5._attributes["aria-label"] || "") &&
+    /Klick öffnet/.test(verkBtn5._attributes["aria-label"] || "") &&
+    /Klick öffnet/.test(fremdBtn5._attributes["aria-label"] || "") &&
+    /Klick öffnet/.test(siegelBtn5._attributes["aria-label"] || "") &&
+    !lebtBtn5.title && !verkBtn5.title && !fremdBtn5.title && !siegelBtn5.title);
 
   // -------- Sechster Test-Lauf: Theme "transparent" --------
   const g7 = makeStubGlobal();
@@ -651,6 +652,55 @@ async function run() {
     "data-theme attr = null",
     "attr=" + widget8.getAttribute("data-theme"),
     widget8.getAttribute("data-theme") === null);
+
+  // Pflege Tooltips 2026-05-26: title-Attribut darf NICHT mehr gesetzt sein
+  // auf Slot-Buttons + Icon-Buttons. aria-label bleibt voll.
+  const lebtBtn8 = g8.document.getElementById("sbkim-widget-slot-lebt");
+  const fremdBtn8 = g8.document.getElementById("sbkim-widget-slot-fremd");
+  function hasTitle(el) {
+    return el && (el._attributes.title !== undefined || (el.title && el.title.length > 0));
+  }
+  record("29. Pflege Tooltips: title-Attribut NICHT auf Slot-Buttons (nur aria-label)",
+    "kein title attr, aria-label gesetzt",
+    "lebt: title=" + hasTitle(lebtBtn8) + " aria=" + !!lebtBtn8._attributes["aria-label"] +
+    " / fremd: title=" + hasTitle(fremdBtn8) + " aria=" + !!fremdBtn8._attributes["aria-label"],
+    !hasTitle(lebtBtn8) && !hasTitle(fremdBtn8) &&
+    /Klick öffnet/.test(lebtBtn8._attributes["aria-label"] || "") &&
+    /Klick öffnet/.test(fremdBtn8._attributes["aria-label"] || ""));
+
+  // Pflege Heartbeat 2026-05-26: Self-Heartbeat-Fallback nach 5 s.
+  // Test setzt SbkimSpore._meta.ready=true (synthetic), wartet 5.5 s, prüft
+  // dass sbkim:alive dispatched + LEBT.active gesetzt wurde.
+  const gH = makeStubGlobal();
+  loadModuleInto(gH, "src/modules/17_floating_widget.js");
+  gH.SbkimSpore = { _meta: { ready: true } };
+  await gH.SbkimWidget.init({});
+  const beforeAliveH = gH.SbkimWidget._meta.eventCounts.alive;
+  // SELF_HEARTBEAT_DELAY_MS ist 5000 — wir warten 5500 ms.
+  await new Promise(r => setTimeout(r, 5500));
+  const afterAliveH = gH.SbkimWidget._meta.eventCounts.alive;
+  const lebtH = gH.document.getElementById("sbkim-widget-slot-lebt");
+  record("30. Self-Heartbeat-Fallback: nach 5 s ohne sbkim:alive + SbkimSpore.ready=true → synthetic dispatch + LEBT.active",
+    "alive +1, LEBT.active=true, selfHeartbeatFired=true",
+    "before=" + beforeAliveH + " after=" + afterAliveH +
+    " active=" + (lebtH && lebtH._classes.has("active")) +
+    " fired=" + gH.SbkimWidget._meta.selfHeartbeatFired,
+    afterAliveH === beforeAliveH + 1 &&
+    lebtH && lebtH._classes.has("active") &&
+    gH.SbkimWidget._meta.selfHeartbeatFired === true);
+
+  // Self-Heartbeat-Anti-Greenwashing: ohne SbkimSpore.ready KEIN Dispatch.
+  const gH2 = makeStubGlobal();
+  loadModuleInto(gH2, "src/modules/17_floating_widget.js");
+  // SbkimSpore nicht setzen → ready ist nicht true → kein synthetic dispatch.
+  await gH2.SbkimWidget.init({});
+  await new Promise(r => setTimeout(r, 5500));
+  record("31. Self-Heartbeat-Anti-Greenwashing: ohne SbkimSpore.ready KEIN synthetic dispatch",
+    "alive=0, LEBT.active=false, fired=false",
+    "alive=" + gH2.SbkimWidget._meta.eventCounts.alive +
+    " fired=" + gH2.SbkimWidget._meta.selfHeartbeatFired,
+    gH2.SbkimWidget._meta.eventCounts.alive === 0 &&
+    gH2.SbkimWidget._meta.selfHeartbeatFired === false);
 
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;
