@@ -1120,6 +1120,10 @@
     UnknownIdentityError: UnknownIdentityError,
     RemoveActiveIdentityError: RemoveActiveIdentityError,
     _meta: {
+      // Pflege 17 Self-Heartbeat 2026-05-26: `ready`-Getter exponiert
+      // den internen Closure-Flag — Modul 17 prüft das beim Self-
+      // Heartbeat-Fallback (Karte 17 § Anti-Greenwashing-Klausel).
+      get ready() { return ready; },
       protocolVersion: PROTOCOL_VERSION,
       defaultIdentityKey: DEFAULT_IDENTITY_KEY,
       keysStore: KEYS_STORE,
