@@ -260,10 +260,39 @@ em.gold { color: var(--gold); font-style: normal; }
 }
 
 /* === Sektion 1 Eröffnung — Mycel-Boden, ein Satz === */
+#scene-1 {
+  /* Eigener Stacking-Context für das Foto-Pseudo-Element. */
+  isolation: isolate;
+}
+#scene-1::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('./vendor/img/scene-1-mycel.webp') center/cover no-repeat;
+  z-index: -1;
+  pointer-events: none;
+}
+#scene-1::after {
+  /* Leichte zusätzliche Vignette auf der linken Hälfte, damit der
+     Text-Bereich noch eine Spur dunkler wird. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.30) 35%,
+    rgba(0,0,0,0.08) 60%,
+    transparent 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
 #scene-1 .inner {
   display: grid; gap: 2rem;
   align-items: center;
   text-align: left;
+  position: relative;  /* damit Inner über den ::before-Schichten liegt */
 }
 #scene-1 .lede { text-wrap: balance; max-width: 20ch; }
 .signature-mark {
@@ -401,12 +430,64 @@ em.gold { color: var(--gold); font-style: normal; }
   line-height: 1.6;
 }
 
-/* === Sektion 5 Observatorium — Schlüssel + Tür-Spalt === */
+/* === Sektion 5 Observatorium — Foto + Schlüssel davor === */
+#scene-5 {
+  isolation: isolate;
+}
+#scene-5::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('./vendor/img/scene-5-door.webp') center/cover no-repeat;
+  z-index: -1;
+  pointer-events: none;
+  /* leichtes Atem-Zoom als bewegter Effekt über dem Foto */
+  animation: scene5-breath 14s ease-in-out infinite alternate;
+}
+#scene-5::after {
+  /* Vignette rechts für Text-Lesbarkeit. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to left,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.30) 35%,
+    rgba(0,0,0,0.08) 60%,
+    transparent 100%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+/* Zusätzlich: Tür-Lichtspalt-Glow als eigener Layer in .key-host.
+   Der Lichtspalt im Foto ist bei ca. 30% x, full height. Wir legen
+   einen warmen Glow als CSS-Layer darauf, der pulsiert (Tür-Atem). */
+#scene-5 .key-host::before {
+  content: '';
+  position: absolute;
+  top: -10%; bottom: -10%;
+  left: 28%;
+  width: 14%;
+  background: radial-gradient(ellipse 50% 50% at center, rgba(255, 200, 100, 0.45) 0%, rgba(255, 180, 90, 0.18) 35%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: door-light-pulse 4.5s ease-in-out infinite alternate;
+}
+@keyframes door-light-pulse {
+  0%   { opacity: 0.55; transform: scaleX(1.00); }
+  100% { opacity: 1.00; transform: scaleX(1.08); }
+}
+@keyframes scene5-breath {
+  0%   { transform: scale(1.00) translate(0, 0); }
+  100% { transform: scale(1.05) translate(-1%, -0.5%); }
+}
 #scene-5 .inner {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 4rem;
   align-items: center;
+  position: relative;
 }
 #scene-5 .key-host {
   position: relative;
@@ -430,17 +511,38 @@ em.gold { color: var(--gold); font-style: normal; }
 
 /* === Sektion 6 Lichtung — Mesh-Gradient + Frage === */
 #scene-6 {
-  background: var(--bg-deep);
-  /* Eigener Stacking-Context: Mesh-Gradient-Canvas + Inner-Layer ordnen
-     sich intern, nicht gegen das fixed Stage-Canvas (mix-blend-Refactor). */
+  /* kein eigenes background — das Pseudo-::before-Foto würde sonst
+     vom Section-Hintergrund überdeckt (background liegt vor neg z-index). */
   isolation: isolate;
 }
-#scene-6 .grad-host {
-  position: absolute; inset: 0;
-  overflow: hidden;
-  z-index: 0;
+#scene-6::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('./vendor/img/scene-6-lichtung.webp') center/cover no-repeat;
+  z-index: -1;
+  pointer-events: none;
+  animation: scene6-drift 22s ease-in-out infinite alternate;
 }
-#scene-6 .grad-host canvas { width: 100%; height: 100%; display: block; }
+@keyframes scene6-drift {
+  /* Wind-Sway wie AVATAR: mehrere Stops mit unterschiedlichen Translate-
+     Werten geben einen quasi-zufälligen Sway-Effekt. */
+  0%   { transform: scale(1.02) translate(0, 0); }
+  20%  { transform: scale(1.03) translate(-0.4%, 0.15%); }
+  45%  { transform: scale(1.04) translate(0.55%, -0.20%); }
+  70%  { transform: scale(1.035) translate(-0.30%, 0.30%); }
+  100% { transform: scale(1.045) translate(0.25%, -0.40%); }
+}
+#scene-6::after {
+  /* zentrale Dämpfungs-Vignette für Text-Lesbarkeit, liegt zwischen
+     Foto und grad-host. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 35%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
 #scene-6 .inner {
   position: relative; z-index: 2;
   text-align: center;
@@ -698,9 +800,9 @@ footer.foot h4 {
      Sektion 6 — Akt der Einladung
 ============================================================ -->
 <section class="scene" id="scene-6" data-scene="6">
-  <div class="grad-host" aria-hidden="true">
-    <canvas id="grad-canvas"></canvas>
-  </div>
+  <!-- Sektion 6 nutzt seit 2026-05-27 ein Foto als Hintergrund
+       (docs/einladung/vendor/img/scene-6-lichtung.webp) statt Mesh-Gradient-
+       Canvas. Der scene6-drift-CSS-Anim gibt die Bewegung. -->
   <div class="inner">
     <p class="eyebrow" data-i18n="s6.eyebrow">Akt der Einladung</p>
     <h2 class="question" data-i18n-html="s6.question">Kommst du<br>mitbauen,<br>oder gehst du weiter?</h2>
@@ -1167,7 +1269,10 @@ const mycMat = new THREE.ShaderMaterial({
       gl_PointSize = size * (220.0 / -mv.z) * uPxRatio;
       gl_Position = projectionMatrix * mv;
       vMix   = aSeed;
-      vAlpha = 0.32 + 0.18 * sin(t * 0.8);
+      // Glitter-Pulse: scharfe Spitzen je Partikel mit unterschiedlicher
+      // Phase (aSeed-versetzt). Klassischer Funkel-Effekt.
+      float pulse = sin(t * 2.4 + aSeed * 31.4159);
+      vAlpha = 0.10 + 0.55 * pow(max(pulse, 0.0), 4.0);
     }
   `,
   fragmentShader: /* glsl */`
@@ -1220,10 +1325,10 @@ mycelGroup.add(links);
 // ---------------------------------------------------------------
 // Schlüssel-Welt (Sektion 5) — eigene Group, anfangs unsichtbar
 // ---------------------------------------------------------------
+// Schlüssel rendert in eigenem Canvas (`#key-canvas`), damit das
+// Sektion-5-Foto als Hintergrund-Layer DAHINTER liegen kann.
+// (Vor 2026-05-27 lag der Schlüssel im fixed stage-canvas.)
 const keyGroup = new THREE.Group();
-keyGroup.visible = false;
-keyGroup.position.set(0, 0, 0);
-scene.add(keyGroup);
 
 // Schlüssel-Form: Bart + Schaft + Reide; aus Boxen + Zylinder
 function makeKey() {
@@ -1332,34 +1437,87 @@ function makeKey() {
 const keyData = makeKey();
 keyGroup.add(keyData.group);
 
-// Tür-Hintergrund-Plane mit Lichtspalt-Shader
-const doorMat = new THREE.ShaderMaterial({
-  uniforms: { uTime: { value: 0 } },
-  vertexShader: /* glsl */`
-    varying vec2 vUv;
-    void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
-  `,
-  fragmentShader: /* glsl */`
-    uniform float uTime;
-    varying vec2 vUv;
-    void main() {
-      // dunkles Tür-Material mit warmem Spalt in der Mitte
-      float d = abs(vUv.x - 0.5);
-      float slit = smoothstep(0.018, 0.0, d);
-      float flicker = 0.9 + 0.1 * sin(uTime * 1.4 + vUv.y * 8.0);
-      vec3 dark = vec3(0.025, 0.03, 0.04);
-      vec3 warm = vec3(0.98, 0.78, 0.42) * flicker;
-      vec3 col = mix(dark, warm, slit);
-      // Vignette
-      float v = smoothstep(0.0, 0.7, length(vUv - 0.5));
-      col *= 1.0 - v * 0.65;
-      gl_FragColor = vec4(col, 1.0);
+// Eigener Renderer für den Schlüssel im #key-canvas (Sektion 5).
+// Das Foto liegt als Sektion-Hintergrund DAHINTER — der Schlüssel
+// schwebt davor. Tür-Backdrop-Shader entfällt, weil das Foto die
+// Tür selbst zeigt.
+(function setupKeyRenderer() {
+  const keyCanvas = document.getElementById('key-canvas');
+  if (!keyCanvas) return;
+  const kr = new THREE.WebGLRenderer({ canvas: keyCanvas, antialias: true, alpha: true });
+  kr.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  kr.setSize(keyCanvas.clientWidth, keyCanvas.clientHeight, false);
+  kr.setClearColor(0x000000, 0);
+  const ks = new THREE.Scene();
+  const kc = new THREE.PerspectiveCamera(40, keyCanvas.clientWidth/keyCanvas.clientHeight, 0.1, 100);
+  kc.position.set(0, 0, 5);
+  kc.lookAt(0, 0, 0);
+  ks.add(keyGroup);
+
+  // Sporen-Layer (Licht-Funken, treiben aus dem Tür-Spalt)
+  const SPORE_N = 90;
+  const spPos = new Float32Array(SPORE_N * 3);
+  const spSeed = new Float32Array(SPORE_N);
+  for (let i = 0; i < SPORE_N; i++) {
+    spPos[i*3]   = (Math.random() - 0.5) * 5;
+    spPos[i*3+1] = (Math.random() - 0.5) * 3;
+    spPos[i*3+2] = -0.3 + Math.random() * 0.6;
+    spSeed[i] = Math.random();
+  }
+  const spGeo = new THREE.BufferGeometry();
+  spGeo.setAttribute('position', new THREE.BufferAttribute(spPos, 3));
+  spGeo.setAttribute('aSeed',    new THREE.BufferAttribute(spSeed, 1));
+  const spMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uPxRatio: { value: kr.getPixelRatio() } },
+    vertexShader: `
+      uniform float uTime; uniform float uPxRatio;
+      attribute float aSeed; varying float vAlpha;
+      void main() {
+        vec3 p = position;
+        float t = uTime * 0.4 + aSeed * 6.283;
+        p.x += sin(t) * 0.15;
+        p.y += mod(t * 0.18, 3.0) - 1.5;   // langsames Aufsteigen
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_PointSize = (2.5 + sin(t*2.0) * 1.0) * uPxRatio * (40.0 / -mv.z);
+        gl_Position = projectionMatrix * mv;
+        vAlpha = 0.4 + 0.5 * sin(t * 1.3);
+      }
+    `,
+    fragmentShader: `
+      varying float vAlpha;
+      void main() {
+        vec2 c = gl_PointCoord - 0.5;
+        float d = length(c);
+        if (d > 0.5) discard;
+        float soft = smoothstep(0.5, 0.0, d);
+        gl_FragColor = vec4(1.0, 0.86, 0.55, soft * vAlpha * 0.7);
+      }
+    `,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  const spores = new THREE.Points(spGeo, spMat);
+  ks.add(spores);
+
+  let t0 = performance.now();
+  function keyLoop() {
+    if (!keyCanvas.isConnected) return;
+    const t = (performance.now() - t0) / 1000;
+    keyData.mat.uniforms.uTime.value = t;
+    spMat.uniforms.uTime.value = t;
+    keyData.group.rotation.y = Math.sin(t * 0.45) * 0.22 + 0.10;
+    keyData.group.rotation.x = Math.sin(t * 0.3) * 0.06;
+    keyData.group.position.y = Math.sin(t * 0.6) * 0.06;
+    if (keyCanvas.clientWidth !== kr.domElement.width / kr.getPixelRatio() ||
+        keyCanvas.clientHeight !== kr.domElement.height / kr.getPixelRatio()) {
+      kr.setSize(keyCanvas.clientWidth, keyCanvas.clientHeight, false);
+      kc.aspect = keyCanvas.clientWidth / keyCanvas.clientHeight;
+      kc.updateProjectionMatrix();
     }
-  `
-});
-const door = new THREE.Mesh(new THREE.PlaneGeometry(7, 4.5), doorMat);
-door.position.set(0, 0, -1.6);
-keyGroup.add(door);
+    kr.render(ks, kc);
+    requestAnimationFrame(keyLoop);
+  }
+  keyLoop();
+})();
 
 // ---------------------------------------------------------------
 // Scroll-Choreografie: Kamera + Group-Sichtbarkeit
@@ -1939,7 +2097,11 @@ function tick() {
   // Mycel-Group sichtbar in Sektionen 1+2; vom Schlüssel ausgeblendet in 5.
   // Sichtbarkeit über Material-Opacity steuern, damit Übergang weich ist.
   let mycelVisAim = 1.0;
-  if (active === 5) mycelVisAim = 0.12;
+  // Sektion 1 hat ein Foto-Backdrop als Haupt-Atmosphäre — die WebGL-
+  // Sporen liegen nur als leise Bewegungs-Schicht darüber (mix-blend
+  // greift im Photo + dezenter Sporenflug schwebt mit).
+  if (active === 1) mycelVisAim = 0.55;  // Glitzer über dem Mycel-Foto
+  if (active === 5) mycelVisAim = 0.0;  // Schlüssel + Tür-Foto in eigenem Canvas
   if (active === 6) mycelVisAim = 0.0;
   if (active === 4) mycelVisAim = 0.0;
   if (active === 3) mycelVisAim = 0.0;
@@ -1954,15 +2116,8 @@ function tick() {
   mycelGroup.scale.setScalar(s);
   links.material.opacity = 0.18 * mycMat._curOpa;
 
-  // Schlüssel-Group nur in Sektion 5
-  keyGroup.visible = active === 5;
-  if (keyGroup.visible) {
-    keyData.mat.uniforms.uTime.value = t;
-    doorMat.uniforms.uTime.value = t;
-    keyData.group.rotation.y = Math.sin(t * 0.45) * 0.25 + 0.18;
-    keyData.group.rotation.x = Math.sin(t * 0.3) * 0.1;
-    keyData.group.position.y = Math.sin(t * 0.6) * 0.08;
-  }
+  // Schlüssel rendert jetzt in eigenem Canvas (#key-canvas, Sektion 5);
+  // siehe setupKeyRenderer() oben. Kein Tick im stage-loop nötig.
 
   // mycel-eigene Rotation (sehr langsam)
   if (!reducedMotion) {

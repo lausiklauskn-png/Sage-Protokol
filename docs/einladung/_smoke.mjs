@@ -72,7 +72,13 @@ const cnv          = await page.evaluate(() => {
   return c ? { w: c.width, h: c.height } : null;
 });
 const fruitingCanvasCount = await page.locator('canvas[data-fruiting]').count();
-const gradCanvas = await page.locator('#grad-canvas').count();
+// Sektion 6 nutzt seit 2026-05-27 ein Foto + scene6-drift-Anim statt
+// Mesh-Gradient-Canvas. Stattdessen prüfen wir das Hintergrund-Foto.
+const scene6Photo = await page.evaluate(() => {
+  const s6 = document.getElementById('scene-6');
+  const bg = getComputedStyle(s6, '::before').background;
+  return bg && bg.includes('scene-6-lichtung.webp');
+});
 
 // 2. Sprach-Wechsel testet
 await page.locator('.lang-switch button[data-lang="en"]').click();
@@ -90,7 +96,7 @@ console.log('--- Smoke-Test Einladung ---');
 console.log('Sektionen:           ', sectionCount, '(erwartet 6)');
 console.log('Stage-Canvas:        ', cnv);
 console.log('Fruchtkörper-Canvas: ', fruitingCanvasCount, '(erwartet 3)');
-console.log('Grad-Canvas:         ', gradCanvas, '(erwartet 1)');
+console.log('Scene 6 Foto:        ', scene6Photo, '(erwartet true)');
 console.log('Star-Field Punkte:   ', starCount, '(erwartet > 100)');
 console.log('Lede DE:             ', JSON.stringify((lederText||'').slice(0, 80)));
 console.log('Lede EN:             ', JSON.stringify((enLede   ||'').slice(0, 80)));
@@ -100,7 +106,7 @@ const checks = {
   sectionCount:        sectionCount === 6,
   stageCanvas:         cnv && cnv.w > 0 && cnv.h > 0,
   fruitingCanvasCount: fruitingCanvasCount === 3,
-  gradCanvas:          gradCanvas === 1,
+  scene6Photo:         scene6Photo === true,
   starCount:           starCount > 100,
   langDe:              /Geflecht/.test(lederText || ''),
   langEn:              /network/.test(enLede || ''),
