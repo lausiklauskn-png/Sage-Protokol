@@ -664,7 +664,12 @@ section.scene-doorway .doorway-stage {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background: #06080a;
+  /* Lichtungs-Foto als Hintergrund — wenn die Tür in Phase 4 transparent
+     wird, scheint die Lichtung durch und führt nahtlos zur Akt-Sektion. */
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.7) 70%),
+    url('./vendor/img/scene-6-lichtung.webp') center/cover no-repeat,
+    #06080a;
 }
 section.scene-doorway .doorway-image {
   position: absolute; inset: 0;
@@ -675,7 +680,8 @@ section.scene-doorway .doorway-image {
      rechte Seite). Wird vom JS pro Scroll-Frame aktualisiert. */
   transform: scale(2.5) translateX(-22%);
   transform-origin: center;
-  will-change: transform;
+  will-change: transform, opacity;
+  opacity: 1;
 }
 section.scene-doorway .doorway-flash {
   position: absolute; inset: 0;
@@ -1364,33 +1370,42 @@ document.querySelectorAll('section.scene').forEach(sec => {
     const scrolled = Math.max(0, -rect.top);
     const progress = Math.max(0, Math.min(1, scrolled / Math.max(1, total)));
 
-    let scale = 2.5, tx = -22, flashO = 0;
+    let scale = 2.5, tx = -22, flashO = 0, imgO = 1;
 
     if (progress < 0.40) {
-      // Phase 1: Tür rechts groß → fährt zur Mitte
+      // Phase 1: Tür rechts groß gezoomt → fährt nach links zur Mitte,
+      // wird dabei KLEINER, bis das ganze Bild sichtbar ist.
       const t = progress / 0.40;
       const e = t * t * (3 - 2 * t);   // ease smoothstep
       scale = 2.5 - e * 1.5;            // 2.5 → 1.0
       tx    = -22 + e * 22;             // -22% → 0
-    } else if (progress < 0.65) {
-      // Phase 2: ruht
+    } else if (progress < 0.60) {
+      // Phase 2: ganzes Bild sichtbar, ruht
       scale = 1.0;
       tx    = 0;
-    } else if (progress < 0.88) {
-      // Phase 3: Zoom auf Lichtspalt (im Bild links bei ca. 30% x)
-      const t = (progress - 0.65) / 0.23;
+    } else if (progress < 0.85) {
+      // Phase 3: Kamera zoomt wieder nahe ran auf den Lichtspalt,
+      // gleichzeitig wird der Lichtschein heller (flash opacity wächst
+      // schon hier, nicht erst am Ende).
+      const t = (progress - 0.60) / 0.25;
       const e = t * t * (3 - 2 * t);
-      scale = 1.0 + e * 1.6;            // 1.0 → 2.6
-      tx    = 0 + e * 20;               // 0 → +20% (Bild rechts verschoben = Spalt zentriert)
+      scale = 1.0 + e * 1.8;            // 1.0 → 2.8
+      tx    = 0 + e * 22;               // 0 → +22% (Bild nach rechts = Spalt zentriert)
+      flashO = e * 0.55;                // 0 → 0.55 (Licht wird heller)
     } else {
-      // Phase 4: Flash + Übergang
-      const t = (progress - 0.88) / 0.12;
-      scale = 2.6 + t * 1.4;
-      tx    = 20 + t * 6;
-      flashO = t;
+      // Phase 4: Tür wird TRANSPARENT (statt White-Flash), Licht-Schein
+      // wird voll. Darunter scheint nur warmer Lichtungs-Glow durch,
+      // der nahtlos in Sektion 6 (Akt der Einladung) übergeht.
+      const t = (progress - 0.85) / 0.15;
+      const e = t * t * (3 - 2 * t);
+      scale = 2.8 + e * 0.6;            // leichter Weiter-Zoom
+      tx    = 22 + e * 4;
+      imgO  = 1 - e;                    // 1 → 0 (Tür wird transparent)
+      flashO = 0.55 + e * 0.45;         // 0.55 → 1.0 (voller Lichtschein)
     }
 
     image.style.transform = `scale(${scale.toFixed(3)}) translateX(${tx.toFixed(2)}%)`;
+    image.style.opacity = imgO.toFixed(3);
     flash.style.opacity = flashO.toFixed(3);
   }
 
