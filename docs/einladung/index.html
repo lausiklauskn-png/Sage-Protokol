@@ -271,6 +271,14 @@ em.gold { color: var(--gold); font-style: normal; }
   background: url('./vendor/img/scene-1-mycel.webp') center/cover no-repeat;
   z-index: -1;
   pointer-events: none;
+  /* Kamerafahrt: sanfter Push-In über 20s, alternate. Camera kriecht
+     in den Mycel-Boden hinein und wieder heraus. */
+  animation: scene1-camera 20s ease-in-out infinite alternate;
+}
+@keyframes scene1-camera {
+  /* Kamerafahrt von LINKS zur Mitte, dann sanftes Heranzoomen. */
+  0%   { transform: scale(1.08) translate(-3.5%, 0.5%); }
+  100% { transform: scale(1.04) translate(0, 0); }
 }
 #scene-1::after {
   /* Leichte zusätzliche Vignette auf der linken Hälfte, damit der
@@ -468,8 +476,10 @@ em.gold { color: var(--gold); font-style: normal; }
    doppelter Glow wäre redundant. Sporen aus dem #key-canvas-WebGL-
    Renderer liefern weiter die treibende Bewegungs-Schicht. */
 @keyframes scene5-breath {
-  0%   { transform: scale(1.00) translate(0, 0); }
-  100% { transform: scale(1.05) translate(-1%, -0.5%); }
+  /* Kamerafahrt von RECHTS zur Mitte — gegenläufig zu Sektion 1 für
+     asynchrone Sektion-Wechsel beim Scrollen. */
+  0%   { transform: scale(1.08) translate(3.5%, -0.5%); }
+  100% { transform: scale(1.04) translate(0, 0); }
 }
 #scene-5 .inner {
   display: grid;
@@ -536,13 +546,13 @@ em.gold { color: var(--gold); font-style: normal; }
   animation: scene6-drift 22s ease-in-out infinite alternate;
 }
 @keyframes scene6-drift {
-  /* Wind-Sway wie AVATAR: mehrere Stops mit unterschiedlichen Translate-
-     Werten geben einen quasi-zufälligen Sway-Effekt. */
-  0%   { transform: scale(1.02) translate(0, 0); }
-  20%  { transform: scale(1.03) translate(-0.4%, 0.15%); }
-  45%  { transform: scale(1.04) translate(0.55%, -0.20%); }
-  70%  { transform: scale(1.035) translate(-0.30%, 0.30%); }
-  100% { transform: scale(1.045) translate(0.25%, -0.40%); }
+  /* Kamerafahrt von OBEN zur Mitte + Wind-Sway: die Kamera schwebt von
+     oben in die Lichtung herab, mit Wind-Stops für Bewegungs-Vielfalt. */
+  0%   { transform: scale(1.10) translate(0.5%, -3.5%); }
+  25%  { transform: scale(1.08) translate(-0.4%, -2.5%); }
+  50%  { transform: scale(1.06) translate(0.6%, -1.5%); }
+  75%  { transform: scale(1.05) translate(-0.3%, -0.6%); }
+  100% { transform: scale(1.04) translate(0, 0); }
 }
 #scene-6::after {
   /* zentrale Dämpfungs-Vignette für Text-Lesbarkeit. */
