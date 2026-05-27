@@ -1,0 +1,275 @@
+/* === Druck-Stylesheet für die Einladung ===
+   Wird vom PDF-Generator (docs/einladung/_pdf.mjs) per Headless-
+   Chromium auf die Markdown→HTML-Zwischenfassung angewendet.
+   Klassisch-elegantes Print-Magazin-Layout:
+   - Serif-Fließtext (Fraunces, lokal vendoriert)
+   - Modular-marginalisierte Schicht-Etiketten
+   - DIN-A4-Hochformat, 24 mm Rand
+   - kein farbiges Pixel-Drama, sondern Buchsatz-Niveau
+
+   Erzeugung (aus docs/einladung/):
+     PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers \
+       node _pdf.mjs    # erzeugt einladung.pdf
+*/
+
+@page {
+  size: A4 portrait;
+  margin: 24mm 22mm 22mm 22mm;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/fraunces-full.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/fraunces-full-italic.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/inter-wght.woff2') format('woff2-variations');
+}
+
+html, body {
+  background: #f6f1e7;
+  color: #1c1815;
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: "opsz" 14, "wght" 380, "SOFT" 30;
+  font-size: 10.5pt;
+  line-height: 1.55;
+}
+
+.print-root { max-width: 165mm; margin: 0 auto; }
+
+/* === Titel-Seite === */
+.title-page {
+  page-break-after: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 230mm;
+  padding-top: 18mm;
+}
+.title-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5pt;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #6e5a2e;
+  margin: 0 0 28mm;
+}
+.title-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 14mm; height: 0.4mm;
+  background: #c79f4b;
+  vertical-align: middle;
+  margin-right: 5mm;
+}
+.title-head {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 144, "wght" 320, "SOFT" 100;
+  font-size: 48pt;
+  line-height: 1.04;
+  letter-spacing: -0.012em;
+  margin: 0 0 6mm;
+  max-width: 130mm;
+}
+.title-head em {
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "wght" 280, "SOFT" 100;
+  color: #8c6e2f;
+}
+.title-sub {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 96, "wght" 320, "SOFT" 100;
+  font-size: 15pt;
+  color: #4c3f28;
+  max-width: 110mm;
+  margin: 0 0 22mm;
+}
+.title-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 8pt;
+  letter-spacing: 0.06em;
+  color: #6e5a2e;
+  border-top: 0.3mm solid #c79f4b;
+  padding-top: 6mm;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4mm;
+}
+.title-meta strong {
+  display: block;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 7.2pt;
+  letter-spacing: 0.18em;
+  color: #8c6e2f;
+  margin-bottom: 1mm;
+}
+
+/* === Sektions-Layout === */
+section.chapter {
+  page-break-before: always;
+  page-break-inside: avoid;
+  display: grid;
+  grid-template-columns: 32mm 1fr;
+  gap: 8mm;
+  padding-top: 6mm;
+}
+section.chapter:first-of-type { page-break-before: auto; }
+section.chapter .marginalia {
+  position: relative;
+}
+section.chapter .marg-num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "wght" 200, "SOFT" 100;
+  font-size: 36pt;
+  line-height: 0.85;
+  color: #c79f4b;
+  letter-spacing: -0.04em;
+  margin: 0 0 3mm;
+}
+section.chapter .marg-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 7.4pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8c6e2f;
+  border-top: 0.3mm solid #c79f4b;
+  padding-top: 2mm;
+  display: block;
+  max-width: 28mm;
+  line-height: 1.4;
+}
+
+section.chapter .body h2 {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 96, "wght" 400, "SOFT" 50;
+  font-size: 22pt;
+  line-height: 1.1;
+  margin: 0 0 6mm;
+  max-width: 110mm;
+  letter-spacing: -0.012em;
+}
+section.chapter .body h3 {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 36, "wght" 540, "SOFT" 30;
+  font-size: 11pt;
+  margin: 5mm 0 2mm;
+  color: #6e5a2e;
+}
+section.chapter .body p {
+  margin: 0 0 3.4mm;
+  font-size: 10.6pt;
+  text-align: justify;
+  hyphens: auto;
+}
+section.chapter .body p strong { color: #1c1815; font-weight: 500; }
+section.chapter .body ul {
+  margin: 0 0 4mm;
+  padding-left: 6mm;
+}
+section.chapter .body ul li {
+  margin: 0 0 2mm;
+  font-size: 10.4pt;
+  line-height: 1.5;
+}
+section.chapter .body ul li strong {
+  font-variation-settings: "wght" 540;
+}
+
+/* === Sprach-Trenner ===
+   Jeder Sprach-Block beginnt auf einer neuen Seite, mit einer schmalen
+   Korona-Linie und einer kleinen Sprach-Etikette. */
+.lang-divider {
+  page-break-before: always;
+  margin: 0 0 12mm;
+  padding-top: 10mm;
+  border-top: 0.5mm solid #c79f4b;
+  text-align: center;
+}
+.lang-divider h1 {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 96, "wght" 320, "SOFT" 80;
+  font-style: italic;
+  font-size: 28pt;
+  margin: 4mm 0 2mm;
+  color: #2c2418;
+}
+.lang-divider .lang-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 8pt;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #8c6e2f;
+}
+.lang-divider .lang-tag::before { content: "· "; }
+.lang-divider .lang-tag::after  { content: " ·"; }
+.lang-divider .lang-lead {
+  margin: 10mm auto 0;
+  max-width: 120mm;
+  text-align: left;
+}
+.lang-divider .lang-lead blockquote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 36, "wght" 360, "SOFT" 80;
+  font-size: 11.5pt;
+  color: #4c3f28;
+  border-left: 0.5mm solid #c79f4b;
+  padding-left: 6mm;
+  margin: 0 0 6mm;
+  line-height: 1.5;
+}
+.lang-divider .lang-lead p {
+  font-family: 'Inter', sans-serif;
+  font-size: 8.6pt;
+  color: #6e5a2e;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+/* === Schluss-Seite === */
+.colophon {
+  page-break-before: always;
+  padding-top: 30mm;
+  text-align: center;
+}
+.colophon h2 {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 96, "wght" 320, "SOFT" 100;
+  font-size: 18pt;
+  color: #4c3f28;
+  margin: 0 0 8mm;
+}
+.colophon p {
+  font-family: 'Inter', sans-serif;
+  font-size: 9pt;
+  letter-spacing: 0.04em;
+  color: #5a4e34;
+  line-height: 1.7;
+  max-width: 110mm;
+  margin: 0 auto 4mm;
+}
+.colophon hr {
+  border: 0;
+  border-top: 0.2mm solid #c79f4b;
+  width: 26mm;
+  margin: 8mm auto;
+}
+
+/* === Footer-Note auf jeder Seite (Header/Footer) ===
+   Wird via Headless-Chromium displayHeaderFooter im Generator gesetzt;
+   hier nur ein no-op-Anker, damit der Generator das nicht sucht. */

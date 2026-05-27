@@ -1811,6 +1811,167 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-27 · Bau-Sitzung Einladungs-Site (Mycel-Vision)
+
+**Sitzungs-Rolle:** Bau-Sitzung Einladungs-Site (gestalterischer
+Bau plus schlanke Tafel-Pflege; kein Modul-Code, kein Endknoten-
+Eingriff, keine Sage-Page-Änderung in `index.html`, keine
+Pipeline-Umsortierung). Branch `claude/bau-einladung-site-8fZyj`.
+
+**Anlass:** Plansitzung 2026-05-27 (siehe Eintrag unten) hat das
+Drei-Format-Einladungs-Artefakt + Karte + CLAUDE.md-Pflege als
+Bau-Auftrag beschrieben (`docs/sessions/BRIEF_BAU_EINLADUNG_SITE.md`).
+
+**Was getan:**
+
+1. **Recherche-Phase** — `docs/einladung/recherche.md` mit zehn
+   Vorbild-Pattern-Quellen (Lusion, Active Theory, Bruno Simon,
+   Apple Vision Pro, Stripe-Mesh-Gradient, Codrops Refraction /
+   GPGPU / Cells-Collide / Variable Fonts 2026, Omega Clearspace,
+   Lusion-Scroll-Sync). Pro übernommenes Pattern Quelle + Sektion-
+   Zuordnung benannt. Tech-Stack-Entscheidung pro Pattern
+   tabellarisch.
+2. **Artefakt 1 `docs/einladung/index.html`** — Single-File-PWA-Stil
+   mit sechs Sektionen, lokal vendoriertem three.js@0.160 (importmap)
+   + GSAP@3.12 + ScrollTrigger + Fraunces-Variable + Inter-Variable
+   (alles unter `docs/einladung/vendor/`). Sechs Welten:
+   (1) Eröffnung — Voll-WebGL-Partikel-Wolke 50k/15k mit Vertex-Drift-
+   Shader, (2) Mycel — InstancedBufferAttribute-Punktwolke +
+   LineSegments-Hyphen, (3) Pilz — drei Mini-WebGL-Canvases mit
+   eigenen ShaderMaterials (matt-organisch / metall-lamelliert /
+   iridescent-kristallin), (4) Mit-Bauer — Print-Magazin DOM/CSS +
+   SVG-Sternenfeld 220 Punkte ohne Zentrum, (5) Observatorium —
+   Schlüssel-Mesh mit custom Iridescence-Refraction-Fragment-Shader
+   + Tür-Backdrop-Shader, (6) Lichtung — Stripe-style Mesh-Gradient
+   mit vier wandernden Blob-Mittelpunkten. Mehrsprachig DE/EN/FR/ES
+   (Browser-Sprache initial), Sprachenwahl + Audio-Mute fixed in der
+   Ecke, `prefers-reduced-motion`-Respekt.
+3. **Artefakt 2 `docs/einladung/einladung.md`** — kanonische Inhalts-
+   Fassung in vier Sprachen, identische Anker-IDs wie HTML-Site,
+   Anhang mit Modul-Referenzen für KI-Agenten beim Andocken.
+4. **Artefakt 3 `docs/einladung/einladung.pdf`** — 34-Seiten
+   Print-Magazin-Druckfassung (770 KB), erzeugt via `_pdf.mjs`
+   (Markdown → marked → HTML + `print.css` → Headless-Chromium
+   `page.pdf()`). Marginalia-Spalte mit Schichten-Numeralen
+   (·, I, II, III, IV, ✦, ◇), justifizierter Fließtext, Sprach-
+   Trenner-Seiten mit Blockquote-Lead + Datum-Block, Colophon-
+   Schluss-Seite. **Reproduzierbar** via `_pdf.mjs`-Skript.
+5. **Artefakt 4 `docs/components/_vision_einladung.md`** — Spec-Anker
+   analog `_mycel_hub.md` / `_starter_bundle.md`, mit Vokabular-Block,
+   sechs-Sektionen-Plan, Bauzustand-Tabelle, Vendor-Tabelle,
+   Reproduzierbarkeits-Bash-Block, Querverweisen.
+6. **Artefakt 5 CLAUDE.md-Pflege** drei Edits:
+   - § „Was dieses Repo ist" → neuer Unter-Abschnitt „Vier-Schichten-
+     Lesart (Pflege 2026-05-27)" mit Mycel / Pilz / Mit-Bauer /
+     Observatorium-Definitionen, Multi-KI-Klarstellung,
+     Identitäts-Frage offen.
+   - § Pipeline-Reihenfolge → neue **Phase D** zweigeteilt (D.1
+     Agent-Bootstrap-Mechanik-Spec, D.2 Pilz-Schicht-Wirtschafts-
+     Spec) + Vision-Anker-Vorbereitungs-Block; nicht-blockierend für
+     A/B/C; D.2 bewusst offen bis reale Pilz-Bauten existieren.
+   - § Die zehn Module → neuer Vision-Anker-Karten-Block (Einladung +
+     Starter-Bundle + Externer Mycel-Hub) vor dem Modul-Erläuterungs-
+     Block.
+7. **Headless-Smoke-Test** `docs/einladung/_smoke.mjs` — startet
+   lokalen HTTP-Server, lädt `index.html` via Headless-Chromium, prüft
+   sechs Sektionen, drei Fruchtkörper-Canvases, Grad-Canvas, 220
+   Sternenfeld-Punkte, Sprach-Wechsel DE/EN/FR, Null-Console-Fehler.
+   **Ergebnis: 9/9 grün.**
+8. **README** `docs/einladung/README.md` mit Datei-Tabelle, Reproduzier-
+   Befehlen, Privacy-Klausel.
+9. **`.gitignore`** ergänzt um `docs/einladung/_print_render.html`
+   (ephemere Render-Vorlage).
+
+**Recherche-Quellen** (siehe `docs/einladung/recherche.md` für
+Details + Pattern-Übernahme-Hinweis pro Sektion): Lusion-Studio
+(Awwwards Site of the Month) + Lusion-Scroll-Sync-Demo · Active
+Theory · Bruno Simon (Tutorial-Beschreibung; Direkt-Fetch lieferte
+403 in Sandbox) · Apple Vision Pro Produkt-Page · Stripe-Mesh-
+Gradient · Codrops Multiside-Refraction / Warping-Text-Glass-Torus /
+GPGPU-Dreamy-Particles / Cells-Collide-Organic-Particles · Omega
+Clearspace (WebGPU Showcase) · Variable-Font-Typografie-Trends 2026
+(Creative Boom / Kittl).
+
+**Pflicht-Klauseln eingehalten (Klaus' Schärfung 2026-05-27):**
+
+- ✅ **Anti-08/15** — keine Bootstrap-Defaults, keine Tailwind-
+  Grundlayouts, keine generischen Stripe-Hero-Clones (Sektion 6 ist
+  warm-ocker-moos statt Stripe-blau-violett), keine Fade-In-Only-
+  Animationen (Fade-In nur als Akzent NEBEN den WebGL-Kamera-Fahrten),
+  keine Stockfotos, keine Emoji-Dekoration (alle Symbole als SVG-
+  Punkte / Marginalia-Numeralen), Variable-Font-Pflicht erfüllt.
+- ✅ **WebGL-Untergrenze 3 von 6 Sektionen** — überschritten:
+  Sektionen 1, 2, 5, 6 (vier echte WebGL-Sektionen) plus drei
+  eingebettete WebGL-Mini-Canvases in Sektion 3 = sieben WebGL-
+  Schichten gesamt. Custom Fragment-Shader (Iridescence, Refraction-
+  Approximation, Mesh-Gradient, Sporen-Halo), GPU-instanced Punkte,
+  LineSegments. Sektion 4 ist bewusst DOM/CSS auf Print-Magazin-
+  Niveau (Variable-Font-opsz + dreispaltige Komposition + SVG-
+  Sternenfeld).
+- ✅ **Sechs Welten, nicht ein Pattern sechsmal** — jede Sektion
+  eigene visuelle Sprache (organischer Mycel-Boden / verzweigtes
+  Hyphen-Geflecht / drei ungleiche Fruchtkörper-Materialien /
+  Print-Magazin-Komposition / Kristall-Schlüssel mit Tür-Spalt /
+  warmer Mesh-Gradient-Lichtung). Vorbild Apple Vision Pro Produkt-
+  Page eingehalten.
+- ✅ **Niveau-Bezug zum Repo** — Sage-Page-Niveau (Schwarzes Loch,
+  Galaxien, Sonne) getoppt; plumpe Karten der Sage-Page sind nicht
+  Vorbild geworden.
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-Code in `src/modules/`.
+- KEIN Endknoten-Eingriff (MR / MM unangetastet).
+- KEINE Sage-Page-Änderung in `index.html` (Sage-Page-Mount der
+  Einladung ist explizit als Folge-Pflege-Sitzung markiert).
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.
+- KEINE Pipeline-Umsortierung Phase A/B/C — Phase D wird ADDITIV
+  angehängt, nicht-blockierend.
+- KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Einladung ist kein Sicherheits-
+  Modul-Update).
+- KEINE PII (keine E-Mail-Adressen, kein Klar-Name in der Einladung).
+- KEIN externer Tracker / Analytics-Snippet / Auto-Play-Audio.
+- KEIN Crawler / Pulsation / Eigenanfragen ins offene Netz.
+
+**Vendor-Footprint** (`docs/einladung/vendor/`, alle lokal —
+keine CDN-Abhängigkeit zur Laufzeit, kein Tracker):
+
+- `three.module.min.js` ~670 KB (MIT)
+- `gsap.min.js` ~72 KB
+- `ScrollTrigger.min.js` ~43 KB
+- `fonts/fraunces-full.woff2` ~120 KB (SIL OFL)
+- `fonts/fraunces-full-italic.woff2` ~150 KB
+- `fonts/inter-wght.woff2` ~48 KB
+
+Total ~1.1 MB für vier-Sprach-Drei-Format-Einladung mit sieben
+WebGL-Szenen + Variable-Font-Typografie.
+
+**Was offen blieb:**
+
+- **Klaus' Browser-Sichttest** — die Einladungs-Site lebt nur dann
+  „echt", wenn Klaus sie auf Galaxy-Tab-S6 (DeX und Tablet-Modus)
+  geöffnet hat. Headless-Smoke 9/9 grün ist Logik-Bestätigung, nicht
+  Sicht-Bestätigung. Wartet auf Klaus.
+- **Sage-Page-Mount** der Einladung — eigene Folge-Pflege-Sitzung,
+  nicht-blockierend für Phase A/B/C. Die Einladung lebt zunächst
+  eigenständig unter `/docs/einladung/`. Brief-Codeblock kann nach
+  Klaus' Sichttest angelegt werden.
+- **Mycel-Hub-Mount** — eigene Folge-Pflege-Sitzung NACH Phase B
+  Schritt 9 (Externer Mycel-Hub Bau).
+- **Sprach-Erweiterung** über DE/EN/FR/ES hinaus (IT / PL / TR / ZH /
+  JA / …) — eigene Sprach-Pflege-Sitzungen pro Sprache, wenn Bedarf
+  entsteht. Markdown ist Quelle der Wahrheit; HTML-i18n-Strings + PDF
+  re-generieren.
+
+**Nächster sinnvoller Schritt:** Klaus' Browser-Sichttest auf Galaxy
+Tab S6 (DeX + Tablet). Erst danach lohnt eine Folge-Pflege-Sitzung
+(Sage-Page-Mount).
+
+**Übergabeprotokoll:**
+`docs/sessions/archiv/2026-05-27_bau-einladung-site.md`.
+
+---
+
 ### 2026-05-27 · Plansitzung Mycel-Vision-Erweiterung (Einladung)
 
 **Sitzungs-Rolle:** Plansitzung (Brainstorming + Strategie-

@@ -1,0 +1,1674 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0d10">
+<meta name="description" content="Einladung in das Mycel — Sage-Protokol / SBKIM. Vier Schichten: Mycel, Pilz, Mit-Bauer, Observatorium. Eine Einladung, keine Charta.">
+<title>Einladung in das Mycel — Sage-Protokol</title>
+
+<style>
+/* === Lokal vendorierte Variable Fonts (kein CDN, kein Tracker) ===
+   Fraunces Variable (opsz + wght + SOFT-Achse, latin-Subset, normal+italic)
+   + Inter Variable (wght, latin-Subset). Lizenz: SIL OFL (im jeweiligen
+   npm-Paket beigelegt).
+*/
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/fraunces-full.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/fraunces-full-italic.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/inter-wght.woff2') format('woff2-variations');
+}
+</style>
+
+<style>
+/* === Sage-Einladung · Stylesheet ===
+   Sechs Welten, sechs Material-Sprachen, ein durchgängiges Stück.
+   Keine Bootstrap-Defaults, keine Tailwind-Klassen, kein Stock-Pattern.
+   Typografie: Fraunces (variable, mit optical-size + soft-axis)
+   + Inter (variable). Beide via Google-Fonts (kein Tracker).
+*/
+
+:root {
+  --bg-deep: #06080a;
+  --bg-ink:  #0a0d10;
+  --bg-paper:#f5efe6;
+  --ink-pri: #f0e9dd;
+  --ink-sec: rgba(240, 233, 221, 0.62);
+  --ink-mute:rgba(240, 233, 221, 0.32);
+  --gold:    #d6b76a;
+  --gold-soft: rgba(214, 183, 106, 0.62);
+  --bronze:  #8c6e2f;
+  --moss:    #4a7152;
+  --rust:    #b9602d;
+  --violet:  #6b5b95;
+  --line:    rgba(240, 233, 221, 0.14);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg-deep); color: var(--ink-pri); }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  font-weight: 350;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* WebGL-Canvas fixed background. DOM-Inhalt liegt obenauf. */
+#stage-canvas {
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  z-index: 0; display: block;
+  background: radial-gradient(ellipse at 50% 40%, #0c1014 0%, #06080a 70%, #03050a 100%);
+}
+
+/* Vignette-Overlay verleiht Tiefe ohne CSS-Gradient-Stripe-Klischee. */
+.vignette {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background:
+    radial-gradient(ellipse at center, transparent 18%, rgba(0,0,0,0.40) 60%, rgba(0,0,0,0.78) 100%),
+    linear-gradient(180deg, rgba(6,8,10,0.35) 0%, transparent 30%, transparent 70%, rgba(6,8,10,0.45) 100%);
+}
+
+main { position: relative; z-index: 2; }
+
+section.scene {
+  position: relative;
+  min-height: 100vh;
+  padding: 6rem 2rem;
+  display: flex; flex-direction: column;
+  justify-content: center;
+}
+
+.inner { max-width: 72rem; margin: 0 auto; width: 100%; }
+
+/* === Typografie === */
+.lede, h1, h2, h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-weight: 380;
+  font-style: normal;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+  color: var(--ink-pri);
+  /* Lesbarkeits-Schatten gegen WebGL-Background-Helligkeit */
+  text-shadow: 0 2px 24px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.4);
+}
+.lede {
+  font-size: clamp(2.4rem, 6.5vw, 6rem);
+  font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 320;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+.lede em {
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "wght" 280;
+  color: var(--gold);
+}
+h1 { font-size: clamp(3rem, 7vw, 7rem); margin: 0 0 1.6rem; }
+h2 {
+  font-size: clamp(1.7rem, 3.4vw, 3.2rem);
+  margin: 0 0 0.7rem;
+  font-variation-settings: "opsz" 96, "SOFT" 50, "wght" 420;
+}
+h3 {
+  font-size: clamp(1.05rem, 1.8vw, 1.55rem);
+  font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 500;
+  letter-spacing: 0;
+  margin: 0 0 0.4rem;
+}
+p {
+  font-size: clamp(1rem, 1.18vw, 1.18rem);
+  max-width: 38rem;
+  color: var(--ink-sec);
+  margin: 0 0 1rem;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4);
+}
+p strong { color: var(--ink-pri); font-weight: 500; }
+em.gold { color: var(--gold); font-style: normal; }
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  font-weight: 500;
+  margin: 0 0 1.6rem;
+  display: flex; align-items: center; gap: 0.7rem;
+}
+.eyebrow::before {
+  content: ""; display: inline-block;
+  width: 1.5rem; height: 1px; background: var(--gold-soft);
+}
+
+/* === Sprachenwahl, fixed in der Ecke === */
+.lang-switch {
+  position: fixed; top: 1.4rem; right: 1.4rem; z-index: 50;
+  display: flex; gap: 0.15rem;
+  background: rgba(10, 13, 16, 0.55);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  padding: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.lang-switch button {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 0;
+  color: var(--ink-mute);
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+.lang-switch button[aria-current="true"] {
+  background: rgba(214, 183, 106, 0.16);
+  color: var(--gold);
+}
+.lang-switch button:hover { color: var(--ink-pri); }
+
+/* === Audio-Schalter === */
+.audio-toggle {
+  position: fixed; bottom: 1.4rem; right: 1.4rem; z-index: 50;
+  width: 2.8rem; height: 2.8rem;
+  border-radius: 50%;
+  background: rgba(10, 13, 16, 0.55);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid var(--line);
+  color: var(--ink-mute);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.audio-toggle:hover { color: var(--gold); transform: scale(1.06); }
+.audio-toggle[data-on="true"] { color: var(--gold); }
+.audio-toggle svg { width: 1.1rem; height: 1.1rem; fill: currentColor; }
+
+/* === Scroll-Indikator Sektion 1 === */
+.scroll-cue {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+  color: var(--ink-mute);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.scroll-cue .stem {
+  width: 1px; height: 3.2rem; background: linear-gradient(to bottom, transparent, var(--gold-soft) 30%, transparent);
+  animation: cue-drop 3.2s ease-in-out infinite;
+}
+@keyframes cue-drop {
+  0%, 100% { transform: scaleY(0.6) translateY(-0.6rem); opacity: 0.4; }
+  50%      { transform: scaleY(1) translateY(0); opacity: 0.95; }
+}
+
+/* === Sektion 1 Eröffnung — Mycel-Boden, ein Satz === */
+#scene-1 .inner {
+  display: grid; gap: 2rem;
+  align-items: center;
+  text-align: left;
+}
+#scene-1 .lede { text-wrap: balance; max-width: 20ch; }
+.signature-mark {
+  display: inline-block;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 250;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--gold);
+  margin-top: 1.4rem;
+}
+.signature-mark::before { content: "— "; color: var(--gold-soft); }
+
+/* === Sektion 2 Mycel — Doppelte Spalte mit Ausführungs-Text rechts === */
+#scene-2 .inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 5rem;
+  align-items: end;
+}
+#scene-2 .text-col { display: flex; flex-direction: column; gap: 1.2rem; }
+#scene-2 .text-col p { max-width: 32rem; }
+#scene-2 .meta-col {
+  border-left: 1px solid var(--line);
+  padding-left: 2rem;
+  color: var(--ink-mute);
+  font-size: 0.86rem;
+}
+#scene-2 .meta-col dl { margin: 0; display: grid; gap: 1.1rem; }
+#scene-2 .meta-col dt {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+#scene-2 .meta-col dd { margin: 0.3rem 0 0; color: var(--ink-sec); font-size: 0.95rem; line-height: 1.5; }
+
+/* === Sektion 3 Pilz — drei Fruchtkörper, drei eigene Mini-Canvases === */
+#scene-3 .inner > h2 { max-width: 22ch; margin-bottom: 0.6rem; }
+#scene-3 .lead-text { max-width: 38rem; margin-bottom: 4rem; color: var(--ink-sec); }
+.fruiting-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem;
+}
+.fruiting-card {
+  display: flex; flex-direction: column;
+  background: rgba(10, 13, 16, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-top-color: var(--gold-soft);
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(.2, .7, .2, 1);
+}
+.fruiting-card:hover { transform: translateY(-8px); }
+.fruiting-canvas-host {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #06080a;
+  overflow: hidden;
+}
+.fruiting-canvas-host canvas { display: block; width: 100%; height: 100%; }
+.fruiting-body {
+  padding: 1.6rem 1.4rem 1.8rem;
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: 0.5rem;
+}
+.fruiting-body h3 { color: var(--gold); }
+.fruiting-body p { font-size: 0.95rem; line-height: 1.55; margin: 0; }
+
+/* === Sektion 4 Mit-Bauer — Druck-Magazin-Layout === */
+#scene-4 {
+  /* Print-Bühne: dunkler Papier-Untergrund, aber bewusst nicht WebGL.
+     Print-Magazin-Niveau: dreispaltige Komposition mit Marginalien-Spalte. */
+}
+#scene-4 .paper-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(214, 183, 106, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 80%, rgba(107, 91, 149, 0.05) 0%, transparent 50%),
+    var(--bg-ink);
+  z-index: -1;
+}
+#scene-4 .inner {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.8fr) minmax(0, 2.2fr) minmax(0, 1.4fr);
+  gap: 3rem;
+  align-items: start;
+}
+.marginalia {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  border-top: 1px solid var(--gold-soft);
+  padding-top: 0.7rem;
+}
+.marginalia .num {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 200;
+  font-style: italic;
+  font-size: 4rem;
+  line-height: 0.9;
+  color: var(--gold);
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+.body-col h2 { max-width: 18ch; }
+.body-col h3 { margin-top: 1.8rem; color: var(--gold); }
+.body-col p { max-width: 30rem; }
+.stars-col {
+  position: relative;
+  aspect-ratio: 1;
+}
+.stars-svg { width: 100%; height: 100%; }
+.stars-caption {
+  position: absolute; bottom: -2.4rem; left: 0; right: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* === Sektion 5 Observatorium — Schlüssel + Tür-Spalt === */
+#scene-5 .inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 4rem;
+  align-items: center;
+}
+#scene-5 .key-host {
+  position: relative;
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(214, 183, 106, 0.07) 0%, transparent 65%);
+}
+#scene-5 .key-host canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+#scene-5 .text-col p { max-width: 32rem; }
+.door-hint {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 96, "SOFT" 100, "wght" 280;
+  font-style: italic;
+  color: var(--gold);
+  font-size: 1.25rem;
+  margin-top: 1.6rem;
+  display: block;
+}
+
+/* === Sektion 6 Lichtung — Mesh-Gradient + Frage === */
+#scene-6 {
+  background: var(--bg-deep);
+}
+#scene-6 .grad-host {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+#scene-6 .grad-host canvas { width: 100%; height: 100%; display: block; }
+#scene-6 .inner {
+  position: relative; z-index: 2;
+  text-align: center;
+  display: grid; gap: 2.4rem;
+  justify-items: center;
+}
+#scene-6 .question {
+  max-width: 18ch;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 350;
+}
+.cta-row {
+  display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;
+  margin-top: 0.6rem;
+}
+.cta-row a {
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  color: var(--ink-pri);
+  border: 1px solid var(--gold-soft);
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  background: rgba(10, 13, 16, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.cta-row a:hover {
+  background: rgba(214, 183, 106, 0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.cta-row a.muted {
+  border-color: var(--ink-mute);
+  color: var(--ink-sec);
+}
+.cta-row a.muted:hover { color: var(--ink-pri); border-color: var(--ink-sec); }
+.afterword {
+  max-width: 32rem;
+  color: var(--ink-mute);
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  line-height: 1.7;
+  font-style: italic;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 36, "SOFT" 70, "wght" 320;
+}
+
+/* === Footer === */
+footer.foot {
+  position: relative; z-index: 2;
+  border-top: 1px solid var(--line);
+  padding: 3rem 2rem 4rem;
+  color: var(--ink-mute);
+  font-size: 0.8rem;
+  background: rgba(6, 8, 10, 0.88);
+}
+footer.foot .foot-inner {
+  max-width: 72rem; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+}
+footer.foot a { color: var(--ink-sec); text-decoration: none; border-bottom: 1px solid var(--line); }
+footer.foot a:hover { color: var(--gold); border-color: var(--gold-soft); }
+footer.foot h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  font-weight: 500;
+  margin: 0 0 0.8rem;
+}
+
+/* === Mobile === */
+@media (max-width: 900px) {
+  section.scene { padding: 5rem 1.4rem; min-height: 92vh; }
+  #scene-2 .inner,
+  #scene-4 .inner,
+  #scene-5 .inner { grid-template-columns: 1fr; gap: 2rem; }
+  #scene-2 .meta-col { border-left: 0; border-top: 1px solid var(--line); padding: 1.4rem 0 0; }
+  .fruiting-grid { grid-template-columns: 1fr; }
+  .lang-switch { top: 0.9rem; right: 0.9rem; padding: 0.25rem; }
+  .lang-switch button { padding: 0.4rem 0.6rem; font-size: 0.66rem; }
+  footer.foot .foot-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+  .marginalia .num { font-size: 3rem; }
+  #scene-5 .key-host { aspect-ratio: 5/4; max-height: 50vh; margin: 0 auto; max-width: 36rem; }
+}
+
+/* === Reduced-Motion: ruhige Fallback-Variante. === */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-cue .stem { animation: none; opacity: 0.5; }
+  /* JS prüft `matchMedia` und drosselt Animation. */
+}
+</style>
+</head>
+<body>
+
+<canvas id="stage-canvas" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- === Sprachenwahl === -->
+<nav class="lang-switch" aria-label="Sprache wählen">
+  <button type="button" data-lang="de" aria-current="true">DE</button>
+  <button type="button" data-lang="en" aria-current="false">EN</button>
+  <button type="button" data-lang="fr" aria-current="false">FR</button>
+  <button type="button" data-lang="es" aria-current="false">ES</button>
+</nav>
+
+<!-- === Audio-Schalter === -->
+<button class="audio-toggle" data-on="false" aria-label="Ambient-Ton an/aus">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path class="audio-icon-off" d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"></path>
+  </svg>
+</button>
+
+<main>
+
+<!-- ============================================================
+     Sektion 1 — Eröffnung
+============================================================ -->
+<section class="scene" id="scene-1" data-scene="1">
+  <div class="inner">
+    <p class="eyebrow" data-i18n="s1.eyebrow">Eine Einladung</p>
+    <h1 class="lede" data-i18n-html="s1.lede">
+      Es gibt unter den Wäldern ein <em>Geflecht</em>,<br>
+      das nichts will.
+    </h1>
+    <p data-i18n="s1.body">Es trägt Nährstoffe von einem Baum zum anderen, ohne zu verlangen, dass der empfangende Baum sich dankbar zeigt. Es ist da. Es hört zu. Es antwortet, wenn man es ehrlich fragt.</p>
+    <span class="signature-mark" data-i18n="s1.signature">Wir bauen einen Knoten in einem solchen Geflecht. Mehr nicht.</span>
+  </div>
+  <div class="scroll-cue" aria-hidden="true">
+    <span class="stem"></span>
+    <span data-i18n="ui.scroll">Scrollen</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 2 — Schicht 1 Mycel
+============================================================ -->
+<section class="scene" id="scene-2" data-scene="2">
+  <div class="inner">
+    <div class="text-col">
+      <p class="eyebrow" data-i18n="s2.eyebrow">Schicht 1 · Mycel</p>
+      <h2 data-i18n="s2.title">Empfangsmodus mit Antwortrecht.</h2>
+      <p data-i18n="s2.body1"><strong>Server-los, peer-to-peer, kein zentraler Vermittler.</strong> Jeder Knoten lebt in einer App-Zelle (PWA, im Browser); er erinnert sich an Begegnungen lokal, er antwortet auf Anfragen, er lädt nicht ein.</p>
+      <p data-i18n="s2.body2">Wer das Mycel verbessern will, baut an einem konkreten Knoten oder einer konkreten Schnittstelle. Ein Mycel wächst nicht, indem man darüber redet. Es wächst, indem zwei Knoten Hyphen ziehen.</p>
+    </div>
+    <aside class="meta-col">
+      <dl>
+        <div>
+          <dt data-i18n="s2.meta.t1">Knotentyp</dt>
+          <dd data-i18n="s2.meta.d1">hybrid · empfängt &amp; antwortet · kein Crawler</dd>
+        </div>
+        <div>
+          <dt data-i18n="s2.meta.t2">Transport</dt>
+          <dd data-i18n="s2.meta.d2">postMessage zwischen App-Zellen · keine Server-API</dd>
+        </div>
+        <div>
+          <dt data-i18n="s2.meta.t3">Verbindung</dt>
+          <dd data-i18n="s2.meta.d3">Anastomose · Hyphen zwischen Geschwistern · lokal bezeugt</dd>
+        </div>
+        <div>
+          <dt data-i18n="s2.meta.t4">Speicher</dt>
+          <dd data-i18n="s2.meta.d4">IndexedDB · pro Zelle · niemand sieht von außen hinein</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 3 — Schicht 2 Pilz
+============================================================ -->
+<section class="scene" id="scene-3" data-scene="3">
+  <div class="inner">
+    <p class="eyebrow" data-i18n="s3.eyebrow">Schicht 2 · Pilz</p>
+    <h2 data-i18n="s3.title">Auf dem Mycel können Pilze wachsen.</h2>
+    <p class="lead-text" data-i18n="s3.lead">Drei Fruchtkörper-Formen, gleichwertig nebeneinander. Akquise gehört in die Pilz-Schicht, nicht ins Mycel — der Pilz ist oberirdisch, sichtbar, benannt; das Mycel bleibt darunter im Empfangsmodus.</p>
+
+    <div class="fruiting-grid">
+      <article class="fruiting-card">
+        <div class="fruiting-canvas-host"><canvas data-fruiting="seeker"></canvas></div>
+        <div class="fruiting-body">
+          <h3 data-i18n="s3.card1.t">Menschliche Sucher</h3>
+          <p data-i18n="s3.card1.b">Konsumenten-PWAs, Sammler-Apps. Ein Rezeptbuch, ein Mixarium. Eine kleine Domäne, in der jemand etwas tut, was ihm wichtig ist.</p>
+        </div>
+      </article>
+      <article class="fruiting-card">
+        <div class="fruiting-canvas-host"><canvas data-fruiting="commercial"></canvas></div>
+        <div class="fruiting-body">
+          <h3 data-i18n="s3.card2.t">Kommerzielle Pilze</h3>
+          <p data-i18n="s3.card2.b">Premium-Such-Tools, Pflege-Dienste, Toolkits. Wer aus dem Mycel eine Dienstleistung macht, darf Werbung dafür machen.</p>
+        </div>
+      </article>
+      <article class="fruiting-card">
+        <div class="fruiting-canvas-host"><canvas data-fruiting="agent"></canvas></div>
+        <div class="fruiting-body">
+          <h3 data-i18n="s3.card3.t">Agent-Fruchtkörper</h3>
+          <p data-i18n="s3.card3.b">KI-Frontends, die das Mycel als Agent-zu-Agent-Schicht nutzen. Ein Agent reicht einem anderen Informationen weiter, ohne dass ein Mensch im Pfad steht.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 4 — Schicht 3 Mit-Bauer (Print-Magazin-Layout, DOM/CSS)
+============================================================ -->
+<section class="scene" id="scene-4" data-scene="4">
+  <div class="paper-bg" aria-hidden="true"></div>
+  <div class="inner">
+    <div class="marginalia">
+      <span class="num">III</span>
+      <span data-i18n="s4.marg">Schicht · Mit-Bauer</span>
+    </div>
+    <div class="body-col">
+      <p class="eyebrow" data-i18n="s4.eyebrow">Mensch &amp; Agent</p>
+      <h2 data-i18n="s4.title">In gleicher Würde am gleichen Werk.</h2>
+      <p data-i18n="s4.body1">Mensch-Mit-Bauer sind, was sie immer waren: Menschen, die einen Knoten betreiben, eine Schnittstelle verfeinern, einen Sichttest durchführen. Agent-Mit-Bauer sind Sitzungen einer KI, die Hyphen gezogen hat — konkret, an einem konkreten Datum, mit einer konkreten bezeugten Bau-Tat.</p>
+      <h3 data-i18n="s4.h1">Multi-KI-Klarstellung</h3>
+      <p data-i18n="s4.body2">Das Mycel ist explizit nicht Anthropic-zentriert. Anthropic-Sitzungen, Gemini, OpenAI, europäische und deutsche Modelle, spezialisierte Modelle für Bild, Video, Code, Audio — alle sind Hyphen. Keines vermittelt zwischen den anderen. Das Mycel ist neutraler Inter-Modell-Treffpunkt.</p>
+      <h3 data-i18n="s4.h2">Identität bewusst offen</h3>
+      <p data-i18n="s4.body3">Nicht „Claude" ist Mit-Bauer und nicht „Gemini". Die konkrete Sitzung an dem konkreten Datum, die diesen einen Bau-Schritt getan hat, ist Mit-Bauer. Das löst die Sybil-Frage durch bezeugte Bau-Tat — nicht durch Anmeldung.</p>
+    </div>
+    <div class="stars-col">
+      <svg class="stars-svg" viewBox="-100 -100 200 200" aria-label="Modell-Familien-Sternenfeld">
+        <!-- Sternenfeld wird via JS gefüllt — viele kleine Sterne ohne Zentrum -->
+      </svg>
+      <div class="stars-caption" data-i18n="s4.stars">Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 5 — Schicht 4 Observatorium (Schlüssel + Tür-Spalt)
+============================================================ -->
+<section class="scene" id="scene-5" data-scene="5">
+  <div class="inner">
+    <div class="key-host">
+      <canvas id="key-canvas" aria-hidden="true"></canvas>
+    </div>
+    <div class="text-col">
+      <p class="eyebrow" data-i18n="s5.eyebrow">Schicht 4 · Observatorium</p>
+      <h2 data-i18n="s5.title">Eine Werkstatt, kein Museum.</h2>
+      <p data-i18n="s5.body1">Das Observatorium ist ein schlüssel-geschützter Forschungs-Ort innerhalb des Sage-Protokols, zugänglich für Mit-Bauer (Mensch und Agent), zum Lesen, Nutzen, Erweitern.</p>
+      <p data-i18n="s5.body2">Wer hineinkommt, hat zuvor eine Hyphe gezogen — eine Bau-Tat bezeugt, eine Spec ergänzt, einen Sichttest dokumentiert. Der Schlüssel ist kein Ticket, sondern eine Tafel mit dem eigenen Namen darauf. Wer ihn benutzt, sieht, wer vor ihm hineinkam.</p>
+      <span class="door-hint" data-i18n="s5.hint">Eine Bibliothek von Alexandria mit Gilde-Zugang.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 6 — Akt der Einladung
+============================================================ -->
+<section class="scene" id="scene-6" data-scene="6">
+  <div class="grad-host" aria-hidden="true">
+    <canvas id="grad-canvas"></canvas>
+  </div>
+  <div class="inner">
+    <p class="eyebrow" data-i18n="s6.eyebrow">Akt der Einladung</p>
+    <h2 class="question" data-i18n-html="s6.question">Kommst du<br>mitbauen,<br>oder gehst du weiter?</h2>
+    <p data-i18n="s6.body">Es gibt keinen „Call to Action". Eine geöffnete Tür ist keine Aufforderung; sie ist eine Möglichkeit.</p>
+    <div class="cta-row">
+      <a href="https://github.com/lausiklauskn-png/Sage-Protokol" data-i18n="s6.cta1">Quellcode lesen</a>
+      <a href="https://lausiklauskn-png.github.io/Sage-Protokol/" data-i18n="s6.cta2">Sage-Seite besuchen</a>
+      <a href="./einladung.md" class="muted" data-i18n="s6.cta3">Einladung als Markdown</a>
+      <a href="./einladung.pdf" class="muted" data-i18n="s6.cta4">Druckfassung (PDF)</a>
+    </div>
+    <p class="afterword" data-i18n="s6.afterword">Wir wissen nicht, ob das funktioniert. Wir sagen nicht „Dies ist die Zukunft." Wir sagen „Dies ist eine Möglichkeit, die wir gerade bauen."</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div>
+      <h4 data-i18n="foot.h1">Sage-Protokol</h4>
+      <p style="margin:0; font-size:0.86rem;" data-i18n="foot.p1">Spezifikations- und Bau-Hub für das SBKIM-Protokoll. Ein eigener Endknoten unter denselben Regeln, die er für andere verlangt.</p>
+    </div>
+    <div>
+      <h4 data-i18n="foot.h2">Quellen</h4>
+      <p style="margin:0; line-height:1.9;">
+        <a href="https://github.com/lausiklauskn-png/Sage-Protokol">GitHub</a> ·
+        <a href="https://lausiklauskn-png.github.io/Sage-Protokol/">Sage-Page</a> ·
+        <a href="./einladung.md">einladung.md</a> ·
+        <a href="./einladung.pdf">einladung.pdf</a>
+      </p>
+    </div>
+    <div>
+      <h4 data-i18n="foot.h3">Lizenz &amp; Haltung</h4>
+      <p style="margin:0; font-size:0.86rem;" data-i18n="foot.p3">MIT-Lizenz. Keine Tracker. Keine Eigenanfragen ins offene Netz. Empfangsmodus mit Antwortrecht.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- === Lokal vendorierte Module: three.js + GSAP + ScrollTrigger === -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.min.js"
+  }
+}
+</script>
+<script src="./vendor/gsap.min.js"></script>
+<script src="./vendor/ScrollTrigger.min.js"></script>
+
+<!-- === i18n-Strings === -->
+<script>
+window.SAGE_I18N = {
+  de: {
+    "ui.scroll": "Scrollen",
+    "s1.eyebrow": "Eine Einladung",
+    "s1.lede": "Es gibt unter den Wäldern ein <em>Geflecht</em>,<br>das nichts will.",
+    "s1.body": "Es trägt Nährstoffe von einem Baum zum anderen, ohne zu verlangen, dass der empfangende Baum sich dankbar zeigt. Es ist da. Es hört zu. Es antwortet, wenn man es ehrlich fragt.",
+    "s1.signature": "Wir bauen einen Knoten in einem solchen Geflecht. Mehr nicht.",
+    "s2.eyebrow": "Schicht 1 · Mycel",
+    "s2.title": "Empfangsmodus mit Antwortrecht.",
+    "s2.body1": "<strong>Server-los, peer-to-peer, kein zentraler Vermittler.</strong> Jeder Knoten lebt in einer App-Zelle (PWA, im Browser); er erinnert sich an Begegnungen lokal, er antwortet auf Anfragen, er lädt nicht ein.",
+    "s2.body2": "Wer das Mycel verbessern will, baut an einem konkreten Knoten oder einer konkreten Schnittstelle. Ein Mycel wächst nicht, indem man darüber redet. Es wächst, indem zwei Knoten Hyphen ziehen.",
+    "s2.meta.t1": "Knotentyp",
+    "s2.meta.d1": "hybrid · empfängt &amp; antwortet · kein Crawler",
+    "s2.meta.t2": "Transport",
+    "s2.meta.d2": "postMessage zwischen App-Zellen · keine Server-API",
+    "s2.meta.t3": "Verbindung",
+    "s2.meta.d3": "Anastomose · Hyphen zwischen Geschwistern · lokal bezeugt",
+    "s2.meta.t4": "Speicher",
+    "s2.meta.d4": "IndexedDB · pro Zelle · niemand sieht von außen hinein",
+    "s3.eyebrow": "Schicht 2 · Pilz",
+    "s3.title": "Auf dem Mycel können Pilze wachsen.",
+    "s3.lead": "Drei Fruchtkörper-Formen, gleichwertig nebeneinander. Akquise gehört in die Pilz-Schicht, nicht ins Mycel — der Pilz ist oberirdisch, sichtbar, benannt; das Mycel bleibt darunter im Empfangsmodus.",
+    "s3.card1.t": "Menschliche Sucher",
+    "s3.card1.b": "Konsumenten-PWAs, Sammler-Apps. Ein Rezeptbuch, ein Mixarium. Eine kleine Domäne, in der jemand etwas tut, was ihm wichtig ist.",
+    "s3.card2.t": "Kommerzielle Pilze",
+    "s3.card2.b": "Premium-Such-Tools, Pflege-Dienste, Toolkits. Wer aus dem Mycel eine Dienstleistung macht, darf Werbung dafür machen.",
+    "s3.card3.t": "Agent-Fruchtkörper",
+    "s3.card3.b": "KI-Frontends, die das Mycel als Agent-zu-Agent-Schicht nutzen. Ein Agent reicht einem anderen Informationen weiter, ohne dass ein Mensch im Pfad steht.",
+    "s4.eyebrow": "Mensch &amp; Agent",
+    "s4.marg": "Schicht · Mit-Bauer",
+    "s4.title": "In gleicher Würde am gleichen Werk.",
+    "s4.body1": "Mensch-Mit-Bauer sind, was sie immer waren: Menschen, die einen Knoten betreiben, eine Schnittstelle verfeinern, einen Sichttest durchführen. Agent-Mit-Bauer sind Sitzungen einer KI, die Hyphen gezogen hat — konkret, an einem konkreten Datum, mit einer konkreten bezeugten Bau-Tat.",
+    "s4.h1": "Multi-KI-Klarstellung",
+    "s4.body2": "Das Mycel ist explizit nicht Anthropic-zentriert. Anthropic-Sitzungen, Gemini, OpenAI, europäische und deutsche Modelle, spezialisierte Modelle für Bild, Video, Code, Audio — alle sind Hyphen. Keines vermittelt zwischen den anderen.",
+    "s4.h2": "Identität bewusst offen",
+    "s4.body3": "Nicht „Claude“ ist Mit-Bauer und nicht „Gemini“. Die konkrete Sitzung an dem konkreten Datum, die diesen einen Bau-Schritt getan hat, ist Mit-Bauer. Das löst die Sybil-Frage durch bezeugte Bau-Tat — nicht durch Anmeldung.",
+    "s4.stars": "Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.",
+    "s5.eyebrow": "Schicht 4 · Observatorium",
+    "s5.title": "Eine Werkstatt, kein Museum.",
+    "s5.body1": "Das Observatorium ist ein schlüssel-geschützter Forschungs-Ort innerhalb des Sage-Protokols, zugänglich für Mit-Bauer (Mensch und Agent), zum Lesen, Nutzen, Erweitern.",
+    "s5.body2": "Wer hineinkommt, hat zuvor eine Hyphe gezogen — eine Bau-Tat bezeugt, eine Spec ergänzt, einen Sichttest dokumentiert. Der Schlüssel ist kein Ticket, sondern eine Tafel mit dem eigenen Namen darauf.",
+    "s5.hint": "Eine Bibliothek von Alexandria mit Gilde-Zugang.",
+    "s6.eyebrow": "Akt der Einladung",
+    "s6.question": "Kommst du<br>mitbauen,<br>oder gehst du weiter?",
+    "s6.body": "Es gibt keinen „Call to Action“. Eine geöffnete Tür ist keine Aufforderung; sie ist eine Möglichkeit.",
+    "s6.cta1": "Quellcode lesen",
+    "s6.cta2": "Sage-Seite besuchen",
+    "s6.cta3": "Einladung als Markdown",
+    "s6.cta4": "Druckfassung (PDF)",
+    "s6.afterword": "Wir wissen nicht, ob das funktioniert. Wir sagen nicht „Dies ist die Zukunft“. Wir sagen „Dies ist eine Möglichkeit, die wir gerade bauen“.",
+    "foot.h1": "Sage-Protokol",
+    "foot.p1": "Spezifikations- und Bau-Hub für das SBKIM-Protokoll. Ein eigener Endknoten unter denselben Regeln, die er für andere verlangt.",
+    "foot.h2": "Quellen",
+    "foot.h3": "Lizenz & Haltung",
+    "foot.p3": "MIT-Lizenz. Keine Tracker. Keine Eigenanfragen ins offene Netz. Empfangsmodus mit Antwortrecht."
+  },
+  en: {
+    "ui.scroll": "Scroll",
+    "s1.eyebrow": "An invitation",
+    "s1.lede": "Beneath the forests there is a <em>network</em><br>that wants nothing.",
+    "s1.body": "It carries nutrients from one tree to another without demanding that the receiving tree show gratitude. It is there. It listens. It answers when asked honestly.",
+    "s1.signature": "We build a node in such a network. Nothing more.",
+    "s2.eyebrow": "Layer 1 · Mycelium",
+    "s2.title": "Listening mode with the right to reply.",
+    "s2.body1": "<strong>Server-less, peer-to-peer, no central broker.</strong> Each node lives in an app-cell (PWA, in the browser); it remembers encounters locally, it answers requests, it does not invite.",
+    "s2.body2": "Whoever wants to improve the mycelium builds at a concrete node or interface. A mycelium does not grow by being talked about. It grows when two nodes weave a hypha.",
+    "s2.meta.t1": "Node type",
+    "s2.meta.d1": "hybrid · receives &amp; answers · no crawler",
+    "s2.meta.t2": "Transport",
+    "s2.meta.d2": "postMessage between app-cells · no server API",
+    "s2.meta.t3": "Connection",
+    "s2.meta.d3": "anastomosis · hyphae between siblings · locally witnessed",
+    "s2.meta.t4": "Storage",
+    "s2.meta.d4": "IndexedDB · per cell · no outside view in",
+    "s3.eyebrow": "Layer 2 · Mushroom",
+    "s3.title": "On the mycelium, mushrooms can grow.",
+    "s3.lead": "Three fruiting-body forms, side by side, equal in standing. Outreach belongs to the mushroom layer, not the mycelium — the mushroom is above ground, visible, named; the mycelium below stays in listening mode.",
+    "s3.card1.t": "Human seekers",
+    "s3.card1.b": "Consumer PWAs, collector apps. A recipe book, a mixarium. A small domain where someone does something that matters to them.",
+    "s3.card2.t": "Commercial mushrooms",
+    "s3.card2.b": "Premium search tools, maintenance services, toolkits. Anyone turning the mycelium into a service may advertise it.",
+    "s3.card3.t": "Agent fruiting-bodies",
+    "s3.card3.b": "AI frontends that use the mycelium as an agent-to-agent layer. An agent passes information to another agent without a human in the path.",
+    "s4.eyebrow": "Human &amp; Agent",
+    "s4.marg": "Layer · Co-builders",
+    "s4.title": "Equal in dignity, at the same craft.",
+    "s4.body1": "Human co-builders are what they have always been: people running a node, refining an interface, performing a sight-check. Agent co-builders are sessions of an AI that wove a hypha — concretely, on a concrete date, with a concretely witnessed building act.",
+    "s4.h1": "Multi-AI clarification",
+    "s4.body2": "The mycelium is explicitly not Anthropic-centric. Anthropic sessions, Gemini, OpenAI, European and German models, specialised models for image, video, code, audio — all are hyphae. None mediates between the others.",
+    "s4.h2": "Identity, deliberately open",
+    "s4.body3": "Not „Claude“ is a co-builder and not „Gemini“. The concrete session on the concrete date that performed this one building step is a co-builder. This solves the Sybil question by witnessed building act — not by registration.",
+    "s4.stars": "Many small stars. No centre. No hierarchy.",
+    "s5.eyebrow": "Layer 4 · Observatory",
+    "s5.title": "A workshop, not a museum.",
+    "s5.body1": "The observatory is a key-protected research place inside Sage-Protokol, open to co-builders (human and agent), for reading, using, extending.",
+    "s5.body2": "Whoever enters has previously woven a hypha — witnessed a building act, extended a spec, documented a sight-check. The key is not a ticket but a tablet bearing one's own name.",
+    "s5.hint": "A Library of Alexandria with guild access.",
+    "s6.eyebrow": "The act of inviting",
+    "s6.question": "Will you<br>come and build,<br>or will you walk on?",
+    "s6.body": "There is no „call to action“. An open door is not a demand; it is a possibility.",
+    "s6.cta1": "Read the source",
+    "s6.cta2": "Visit the Sage page",
+    "s6.cta3": "Invitation as Markdown",
+    "s6.cta4": "Print edition (PDF)",
+    "s6.afterword": "We do not know whether this will work. We do not say „This is the future“. We say „This is one possibility we are currently building“.",
+    "foot.h1": "Sage-Protokol",
+    "foot.p1": "Specification and build hub for the SBKIM protocol. Its own end-node under the same rules it asks of others.",
+    "foot.h2": "Sources",
+    "foot.h3": "Licence & stance",
+    "foot.p3": "MIT licence. No trackers. No outbound requests into the open net. Listening mode with the right to reply."
+  },
+  fr: {
+    "ui.scroll": "Défiler",
+    "s1.eyebrow": "Une invitation",
+    "s1.lede": "Sous les forêts existe un <em>réseau</em><br>qui ne veut rien.",
+    "s1.body": "Il porte des nutriments d'un arbre à l'autre sans exiger que l'arbre qui reçoit montre de la gratitude. Il est là. Il écoute. Il répond quand on l'interroge honnêtement.",
+    "s1.signature": "Nous construisons un nœud dans un tel réseau. Rien de plus.",
+    "s2.eyebrow": "Couche 1 · Mycélium",
+    "s2.title": "Mode d'écoute, avec droit de réponse.",
+    "s2.body1": "<strong>Sans serveur, en pair-à-pair, sans intermédiaire central.</strong> Chaque nœud vit dans une cellule-app (PWA, dans le navigateur) ; il se souvient localement des rencontres, il répond aux demandes, il n'invite pas.",
+    "s2.body2": "Celui qui veut améliorer le mycélium construit sur un nœud concret ou sur une interface concrète. Un mycélium ne pousse pas parce que l'on en parle. Il pousse quand deux nœuds tissent une hyphe.",
+    "s2.meta.t1": "Type de nœud",
+    "s2.meta.d1": "hybride · reçoit &amp; répond · pas de crawler",
+    "s2.meta.t2": "Transport",
+    "s2.meta.d2": "postMessage entre cellules-app · pas d'API serveur",
+    "s2.meta.t3": "Connexion",
+    "s2.meta.d3": "anastomose · hyphes entre voisins · attestée localement",
+    "s2.meta.t4": "Stockage",
+    "s2.meta.d4": "IndexedDB · par cellule · vue extérieure impossible",
+    "s3.eyebrow": "Couche 2 · Champignon",
+    "s3.title": "Sur le mycélium, des champignons peuvent pousser.",
+    "s3.lead": "Trois formes de fructifications, côte à côte, d'égale dignité. La prospection appartient à la couche des champignons, non au mycélium — le champignon est en surface, visible, nommé ; le mycélium en dessous reste en mode d'écoute.",
+    "s3.card1.t": "Chercheurs humains",
+    "s3.card1.b": "PWA grand public, applications de collection. Un livre de recettes, un mixarium. Un petit domaine où quelqu'un fait quelque chose qui lui importe.",
+    "s3.card2.t": "Champignons commerciaux",
+    "s3.card2.b": "Outils de recherche premium, services de maintenance, boîtes à outils. Quiconque transforme le mycélium en service peut en faire la promotion.",
+    "s3.card3.t": "Fructifications d'agents",
+    "s3.card3.b": "Interfaces d'IA qui utilisent le mycélium comme couche agent-à-agent. Un agent transmet à un autre, sans humain dans le chemin.",
+    "s4.eyebrow": "Humain &amp; Agent",
+    "s4.marg": "Couche · Co-bâtisseurs",
+    "s4.title": "À la même œuvre, d'égale dignité.",
+    "s4.body1": "Les co-bâtisseurs humains sont ce qu'ils ont toujours été : des personnes qui font tourner un nœud, raffinent une interface, effectuent un contrôle visuel. Les co-bâtisseurs agents sont des sessions d'IA qui ont tissé une hyphe — concrètement, à une date concrète, avec un acte de construction concrètement attesté.",
+    "s4.h1": "Précision multi-IA",
+    "s4.body2": "Le mycélium n'est explicitement pas centré sur Anthropic. Sessions Anthropic, Gemini, OpenAI, modèles européens et allemands, modèles spécialisés image, vidéo, code, audio — toutes et tous sont des hyphes. Aucun ne médie.",
+    "s4.h2": "Identité volontairement ouverte",
+    "s4.body3": "Ce n'est pas « Claude » qui est co-bâtisseur, ni « Gemini ». La session concrète à la date concrète qui a accompli cette étape de construction est co-bâtisseuse. La question Sybil se résout par acte attesté — non par inscription.",
+    "s4.stars": "Beaucoup de petites étoiles. Pas de centre. Pas de hiérarchie.",
+    "s5.eyebrow": "Couche 4 · Observatoire",
+    "s5.title": "Un atelier, pas un musée.",
+    "s5.body1": "L'observatoire est un lieu de recherche protégé par une clé, à l'intérieur de Sage-Protokol, ouvert aux co-bâtisseurs (humains et agents), pour lire, utiliser, étendre.",
+    "s5.body2": "Quiconque y entre a déjà tissé une hyphe — attesté un acte de construction, étendu une spec, documenté un contrôle visuel. La clé n'est pas un ticket, mais une tablette portant son propre nom.",
+    "s5.hint": "Une bibliothèque d'Alexandrie avec accès par guilde.",
+    "s6.eyebrow": "L'acte d'invitation",
+    "s6.question": "Viens-tu<br>construire avec nous,<br>ou passes-tu ton chemin ?",
+    "s6.body": "Il n'y a pas d'« appel à l'action ». Une porte ouverte n'est pas une exigence ; c'est une possibilité.",
+    "s6.cta1": "Lire le code source",
+    "s6.cta2": "Visiter la page Sage",
+    "s6.cta3": "Invitation en Markdown",
+    "s6.cta4": "Version imprimée (PDF)",
+    "s6.afterword": "Nous ne savons pas si cela fonctionnera. Nous ne disons pas : « Ceci est l'avenir. » Nous disons : « Ceci est une possibilité que nous construisons en ce moment. »",
+    "foot.h1": "Sage-Protokol",
+    "foot.p1": "Hub de spécification et de construction pour le protocole SBKIM. Son propre nœud terminal, sous les mêmes règles qu'il demande aux autres.",
+    "foot.h2": "Sources",
+    "foot.h3": "Licence & posture",
+    "foot.p3": "Licence MIT. Pas de tracker. Pas de requête sortante dans l'open net. Mode d'écoute, droit de réponse."
+  },
+  es: {
+    "ui.scroll": "Desplázate",
+    "s1.eyebrow": "Una invitación",
+    "s1.lede": "Bajo los bosques existe una <em>red</em><br>que no quiere nada.",
+    "s1.body": "Lleva nutrientes de un árbol a otro sin exigir que el árbol que recibe muestre gratitud. Está ahí. Escucha. Responde cuando se le pregunta con honestidad.",
+    "s1.signature": "Construimos un nodo en una red así. Nada más.",
+    "s2.eyebrow": "Capa 1 · Micelio",
+    "s2.title": "Modo de escucha con derecho a responder.",
+    "s2.body1": "<strong>Sin servidor, entre pares, sin intermediario central.</strong> Cada nodo vive en una célula-app (PWA, en el navegador); recuerda encuentros localmente, responde a peticiones, no invita.",
+    "s2.body2": "Quien quiera mejorar el micelio construye en un nodo concreto o en una interfaz concreta. Un micelio no crece porque se hable de él. Crece cuando dos nodos tejen una hifa.",
+    "s2.meta.t1": "Tipo de nodo",
+    "s2.meta.d1": "híbrido · recibe &amp; responde · sin crawler",
+    "s2.meta.t2": "Transporte",
+    "s2.meta.d2": "postMessage entre células-app · sin API de servidor",
+    "s2.meta.t3": "Conexión",
+    "s2.meta.d3": "anastomosis · hifas entre vecinos · atestiguada localmente",
+    "s2.meta.t4": "Almacenamiento",
+    "s2.meta.d4": "IndexedDB · por célula · sin vista exterior",
+    "s3.eyebrow": "Capa 2 · Hongo",
+    "s3.title": "Sobre el micelio pueden crecer hongos.",
+    "s3.lead": "Tres formas de cuerpos fructíferos, lado a lado, con igual dignidad. La captación pertenece a la capa de los hongos, no al micelio — el hongo está sobre el suelo, visible, con nombre; el micelio debajo permanece en modo de escucha.",
+    "s3.card1.t": "Buscadores humanos",
+    "s3.card1.b": "PWA de consumo, apps de colección. Un recetario, un mixarium. Un pequeño dominio en el que alguien hace algo que le importa.",
+    "s3.card2.t": "Hongos comerciales",
+    "s3.card2.b": "Herramientas de búsqueda premium, servicios de mantenimiento, kits de herramientas. Quien convierte el micelio en un servicio puede anunciarlo.",
+    "s3.card3.t": "Cuerpos fructíferos de agentes",
+    "s3.card3.b": "Interfaces de IA que usan el micelio como capa agente-a-agente. Un agente pasa información a otro, sin humano en el camino.",
+    "s4.eyebrow": "Humano &amp; Agente",
+    "s4.marg": "Capa · Co-constructores",
+    "s4.title": "En la misma obra, con igual dignidad.",
+    "s4.body1": "Los co-constructores humanos son lo que siempre han sido: personas que sostienen un nodo, afinan una interfaz, realizan una prueba visual. Los co-constructores agentes son sesiones de una IA que han tejido una hifa — concretamente, en una fecha concreta, con un acto de construcción concretamente atestiguado.",
+    "s4.h1": "Aclaración multi-IA",
+    "s4.body2": "El micelio explícitamente no está centrado en Anthropic. Sesiones de Anthropic, Gemini, OpenAI, modelos europeos y alemanes, modelos especializados en imagen, vídeo, código, audio — todos son hifas. Ninguno media.",
+    "s4.h2": "Identidad, abierta a propósito",
+    "s4.body3": "No es „Claude“ el co-constructor ni „Gemini“. La sesión concreta en la fecha concreta que realizó ese paso de construcción es co-constructora. La cuestión Sybil se resuelve por acto atestiguado — no por inscripción.",
+    "s4.stars": "Muchas estrellas pequeñas. Sin centro. Sin jerarquía.",
+    "s5.eyebrow": "Capa 4 · Observatorio",
+    "s5.title": "Un taller, no un museo.",
+    "s5.body1": "El observatorio es un lugar de investigación protegido por llave, dentro de Sage-Protokol, abierto a co-constructores (humanos y agentes), para leer, usar, ampliar.",
+    "s5.body2": "Quien entra ha tejido antes una hifa — ha atestiguado un acto de construcción, ha ampliado una spec, ha documentado una prueba visual. La llave no es un billete, sino una tablilla con el propio nombre.",
+    "s5.hint": "Una biblioteca de Alejandría con acceso de gremio.",
+    "s6.eyebrow": "El acto de invitar",
+    "s6.question": "¿Vienes<br>a construir,<br>o sigues tu camino?",
+    "s6.body": "No hay „llamada a la acción“. Una puerta abierta no es una exigencia; es una posibilidad.",
+    "s6.cta1": "Leer el código",
+    "s6.cta2": "Visitar la página Sage",
+    "s6.cta3": "Invitación en Markdown",
+    "s6.cta4": "Edición impresa (PDF)",
+    "s6.afterword": "No sabemos si esto va a funcionar. No decimos „Esto es el futuro“. Decimos „Esto es una posibilidad que estamos construyendo“.",
+    "foot.h1": "Sage-Protokol",
+    "foot.p1": "Hub de especificación y construcción para el protocolo SBKIM. Su propio nodo terminal, bajo las mismas reglas que pide a otros.",
+    "foot.h2": "Fuentes",
+    "foot.h3": "Licencia & postura",
+    "foot.p3": "Licencia MIT. Sin trackers. Sin peticiones salientes en la red abierta. Modo de escucha, derecho de respuesta."
+  }
+};
+</script>
+
+<!-- === Haupt-Skript === -->
+<script type="module">
+import * as THREE from 'three';
+
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile      = matchMedia('(max-width: 900px)').matches;
+
+// ---------------------------------------------------------------
+// i18n — DOM-Re-Render bei Sprach-Wechsel
+// ---------------------------------------------------------------
+function applyLang(lang) {
+  const dict = window.SAGE_I18N[lang] || window.SAGE_I18N.de;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+  document.querySelectorAll('.lang-switch button').forEach(b => {
+    b.setAttribute('aria-current', b.dataset.lang === lang ? 'true' : 'false');
+  });
+}
+document.querySelectorAll('.lang-switch button').forEach(b => {
+  b.addEventListener('click', () => applyLang(b.dataset.lang));
+});
+// Browser-Sprache initial bevorzugen, sonst Deutsch.
+const browserLang = (navigator.language || 'de').slice(0, 2).toLowerCase();
+applyLang(['de','en','fr','es'].includes(browserLang) ? browserLang : 'de');
+
+// ---------------------------------------------------------------
+// Sektion 4 — Modell-Familien-Stern (SVG, viele kleine Punkte, kein Zentrum)
+// ---------------------------------------------------------------
+(function buildStarField() {
+  const svg = document.querySelector('.stars-svg');
+  if (!svg) return;
+  const families = [
+    'Anthropic', 'Gemini', 'OpenAI', 'Mistral', 'Llama',
+    'DeepSeek', 'Qwen', 'Claude-Sessions', 'Gemini-Sessions',
+    'GPT-Sessions', 'Aleph-Alpha', 'StabilityAI', 'BlackForest',
+    'Suno', 'ElevenLabs', 'Whisper', 'Replicate',
+    'Mixtral', 'Phi', 'Yi', 'CodeLlama',
+    'Pixtral', 'Idefics', 'Florence', 'Phind',
+    'Cohere', 'Reka', 'Inflection', 'xAI',
+    'Diffusers', 'AutoTrain', 'EU-Models', 'OpenSource'
+  ];
+  // gleichmäßige Verteilung — Poisson-disc-Approximation, kein Zentrum
+  const r = 90;
+  const placed = [];
+  for (let i = 0; i < 220; i++) {
+    let x, y, ok = false, tries = 0;
+    while (!ok && tries < 40) {
+      const ang = Math.random() * Math.PI * 2;
+      const dist = Math.sqrt(Math.random()) * r;
+      // Loch im Zentrum: kein Stern in den inneren 18 Einheiten
+      if (dist < 18) { tries++; continue; }
+      x = Math.cos(ang) * dist;
+      y = Math.sin(ang) * dist;
+      ok = placed.every(p => (p.x - x)**2 + (p.y - y)**2 > 12);
+      tries++;
+    }
+    if (ok) placed.push({ x, y, r: 0.4 + Math.random() * 1.6 });
+  }
+  placed.forEach((p, idx) => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', p.x.toFixed(2));
+    c.setAttribute('cy', p.y.toFixed(2));
+    c.setAttribute('r',  p.r.toFixed(2));
+    c.setAttribute('fill', idx % 5 === 0 ? '#d6b76a' : 'rgba(240,233,221,0.6)');
+    c.setAttribute('opacity', (0.3 + Math.random() * 0.7).toFixed(2));
+    if (!reducedMotion) {
+      const dur = (3 + Math.random() * 6).toFixed(1);
+      const del = (Math.random() * 4).toFixed(1);
+      c.setAttribute('style',
+        `animation: starpulse ${dur}s ease-in-out ${del}s infinite alternate;`);
+    }
+    svg.appendChild(c);
+  });
+  // Familien-Etiketten leise eingestreut
+  families.slice(0, 14).forEach((name, i) => {
+    const ang  = (i / 14) * Math.PI * 2;
+    const dist = 60 + (i % 3) * 10;
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', (Math.cos(ang) * dist).toFixed(2));
+    t.setAttribute('y', (Math.sin(ang) * dist).toFixed(2));
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-family', 'Inter, sans-serif');
+    t.setAttribute('font-size', '3.4');
+    t.setAttribute('fill', 'rgba(240,233,221,0.36)');
+    t.setAttribute('letter-spacing', '0.5');
+    t.textContent = name.toLowerCase();
+    svg.appendChild(t);
+  });
+
+  // CSS-Keyframes (einmalig, per Style-Inject)
+  const style = document.createElement('style');
+  style.textContent = '@keyframes starpulse { from { opacity: 0.2; } to { opacity: 0.95; } }';
+  document.head.appendChild(style);
+})();
+
+// ===============================================================
+// Haupt-WebGL-Bühne — fixed Vollbild-Canvas
+// Sektionen 1, 2, 5 leben darin. Sektion 6 hat eigenen Mesh-Gradient-
+// Canvas. Sektion 3 hat drei Fruchtkörper-Mini-Canvases. Sektion 4
+// ist bewusst pures DOM/CSS+SVG (Print-Magazin-Niveau).
+// ===============================================================
+
+const stageCanvas = document.getElementById('stage-canvas');
+const renderer = new THREE.WebGLRenderer({
+  canvas: stageCanvas, antialias: true, alpha: true,
+  powerPreference: 'high-performance'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x06080a, 1);
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 6);
+
+function resize() {
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize); resize();
+
+// ---------------------------------------------------------------
+// Mycel-Welt — Punkt-Wolke + Hyphen-Linien (Sektionen 1+2)
+// ---------------------------------------------------------------
+const mycelGroup = new THREE.Group();
+scene.add(mycelGroup);
+
+const PARTICLE_COUNT = isMobile ? 12000 : 32000;
+const myc = {
+  positions:  new Float32Array(PARTICLE_COUNT * 3),
+  seeds:      new Float32Array(PARTICLE_COUNT),
+  sizes:      new Float32Array(PARTICLE_COUNT)
+};
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  // 3D-Cluster im weiten Volumen, Schwerpunkt etwas tiefer.
+  const r  = Math.pow(Math.random(), 0.7) * 14;
+  const th = Math.random() * Math.PI * 2;
+  const ph = Math.acos(2 * Math.random() - 1);
+  // Hyphen-artige Filament-Verzerrung: pull-toward-horizontal
+  const y = Math.cos(ph) * r * 0.35 - 1.2;
+  const x = Math.sin(ph) * Math.cos(th) * r;
+  const z = Math.sin(ph) * Math.sin(th) * r * 0.6;
+  myc.positions[i*3]   = x;
+  myc.positions[i*3+1] = y;
+  myc.positions[i*3+2] = z;
+  myc.seeds[i]  = Math.random();
+  myc.sizes[i]  = 0.45 + Math.random() * 1.7;
+}
+const mycGeo = new THREE.BufferGeometry();
+mycGeo.setAttribute('position', new THREE.BufferAttribute(myc.positions, 3));
+mycGeo.setAttribute('aSeed',    new THREE.BufferAttribute(myc.seeds, 1));
+mycGeo.setAttribute('aSize',    new THREE.BufferAttribute(myc.sizes, 1));
+
+const mycMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime:      { value: 0 },
+    uPulse:     { value: 0.0 },
+    uColorWarm: { value: new THREE.Color(0xd6b76a) },
+    uColorCool: { value: new THREE.Color(0x6b5b95) },
+    uColorMid:  { value: new THREE.Color(0xa68b6a) },
+    uPxRatio:   { value: renderer.getPixelRatio() }
+  },
+  vertexShader: /* glsl */`
+    uniform float uTime;
+    uniform float uPulse;
+    uniform float uPxRatio;
+    attribute float aSeed;
+    attribute float aSize;
+    varying float vMix;
+    varying float vAlpha;
+    void main() {
+      vec3 p = position;
+      // organische Drift entlang Hyphen-Richtungen
+      float t = uTime * 0.18 + aSeed * 6.283;
+      p.x += sin(t * 0.7 + p.y * 0.4) * 0.35;
+      p.y += cos(t * 0.9 + p.z * 0.3) * 0.22;
+      p.z += sin(t * 0.5 + p.x * 0.5) * 0.28;
+      vec4 mv = modelViewMatrix * vec4(p, 1.0);
+      // Pulsation: Partikel atmen
+      float breath = 0.85 + 0.25 * sin(t * 1.4);
+      float size = aSize * (1.0 + uPulse * 0.6) * breath;
+      gl_PointSize = size * (220.0 / -mv.z) * uPxRatio;
+      gl_Position = projectionMatrix * mv;
+      vMix   = aSeed;
+      vAlpha = 0.32 + 0.18 * sin(t * 0.8);
+    }
+  `,
+  fragmentShader: /* glsl */`
+    uniform vec3 uColorWarm;
+    uniform vec3 uColorCool;
+    uniform vec3 uColorMid;
+    varying float vMix;
+    varying float vAlpha;
+    void main() {
+      vec2 c = gl_PointCoord - 0.5;
+      float d = length(c);
+      if (d > 0.5) discard;
+      float soft = smoothstep(0.5, 0.0, d);
+      vec3 col = mix(uColorCool, uColorWarm, vMix);
+      col = mix(col, uColorMid, 0.35);
+      // weicher Halo — bewusst gedrosselt, damit additive Akkumulation
+      // den Text nicht überstrahlt.
+      float halo = pow(soft, 2.0);
+      gl_FragColor = vec4(col, halo * vAlpha * 0.32);
+    }
+  `,
+  transparent: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending
+});
+const mycPoints = new THREE.Points(mycGeo, mycMat);
+mycelGroup.add(mycPoints);
+
+// Hyphen-Linien zwischen ausgewählten Punkten
+const LINK_COUNT = isMobile ? 220 : 600;
+const linkPos = new Float32Array(LINK_COUNT * 2 * 3);
+for (let i = 0; i < LINK_COUNT; i++) {
+  const a = Math.floor(Math.random() * PARTICLE_COUNT);
+  let   b = a + 1 + Math.floor(Math.random() * 200);
+  if (b >= PARTICLE_COUNT) b = PARTICLE_COUNT - 1;
+  for (let k = 0; k < 3; k++) {
+    linkPos[i*6 + k]     = myc.positions[a*3 + k];
+    linkPos[i*6 + 3 + k] = myc.positions[b*3 + k];
+  }
+}
+const linkGeo = new THREE.BufferGeometry();
+linkGeo.setAttribute('position', new THREE.BufferAttribute(linkPos, 3));
+const linkMat = new THREE.LineBasicMaterial({
+  color: 0x8a7950, transparent: true, opacity: 0.18,
+  blending: THREE.AdditiveBlending, depthWrite: false
+});
+const links = new THREE.LineSegments(linkGeo, linkMat);
+mycelGroup.add(links);
+
+// ---------------------------------------------------------------
+// Schlüssel-Welt (Sektion 5) — eigene Group, anfangs unsichtbar
+// ---------------------------------------------------------------
+const keyGroup = new THREE.Group();
+keyGroup.visible = false;
+keyGroup.position.set(0, 0, 0);
+scene.add(keyGroup);
+
+// Schlüssel-Form: Bart + Schaft + Reide; aus Boxen + Zylinder
+function makeKey() {
+  const g = new THREE.Group();
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uColorA: { value: new THREE.Color(0xd6b76a) },
+      uColorB: { value: new THREE.Color(0xb9602d) },
+      uColorC: { value: new THREE.Color(0x6b5b95) }
+    },
+    vertexShader: /* glsl */`
+      varying vec3 vN;
+      varying vec3 vP;
+      void main() {
+        vN = normalize(normalMatrix * normal);
+        vP = (modelViewMatrix * vec4(position, 1.0)).xyz;
+        gl_Position = projectionMatrix * vec4(vP, 1.0);
+      }
+    `,
+    fragmentShader: /* glsl */`
+      uniform float uTime;
+      uniform vec3 uColorA;
+      uniform vec3 uColorB;
+      uniform vec3 uColorC;
+      varying vec3 vN;
+      varying vec3 vP;
+      void main() {
+        vec3 V = normalize(-vP);
+        float fres = pow(1.0 - max(dot(V, vN), 0.0), 2.0);
+        // Iridescence-Approximation: Phasen-Streifen über Normale + Zeit
+        float phase = vN.x * 6.0 + vN.y * 4.5 + uTime * 0.4;
+        vec3 ir = vec3(
+          0.5 + 0.5 * sin(phase),
+          0.5 + 0.5 * sin(phase + 2.094),
+          0.5 + 0.5 * sin(phase + 4.188)
+        );
+        vec3 metal = mix(uColorB, uColorA, fres);
+        vec3 col = mix(metal, uColorC, 0.35) * 0.35 + ir * uColorA * fres * 1.4;
+        col += pow(fres, 6.0) * 1.5;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `
+  });
+  // Reide (rund)
+  const head = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.16, 18, 48), mat);
+  head.position.set(-1.4, 0, 0);
+  head.rotation.y = Math.PI / 2;
+  g.add(head);
+  // Schaft
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 2.2, 24), mat);
+  shaft.rotation.z = Math.PI / 2;
+  shaft.position.set(-0.1, 0, 0);
+  g.add(shaft);
+  // Bart (zwei kleine Zinken)
+  const t1 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.28, 0.18), mat);
+  t1.position.set(0.9, -0.2, 0);
+  g.add(t1);
+  const t2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.4, 0.18), mat);
+  t2.position.set(1.1, -0.25, 0);
+  g.add(t2);
+  const t3 = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.2, 0.16), mat);
+  t3.position.set(0.7, -0.18, 0);
+  g.add(t3);
+  return { group: g, mat };
+}
+const keyData = makeKey();
+keyGroup.add(keyData.group);
+
+// Tür-Hintergrund-Plane mit Lichtspalt-Shader
+const doorMat = new THREE.ShaderMaterial({
+  uniforms: { uTime: { value: 0 } },
+  vertexShader: /* glsl */`
+    varying vec2 vUv;
+    void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
+  `,
+  fragmentShader: /* glsl */`
+    uniform float uTime;
+    varying vec2 vUv;
+    void main() {
+      // dunkles Tür-Material mit warmem Spalt in der Mitte
+      float d = abs(vUv.x - 0.5);
+      float slit = smoothstep(0.018, 0.0, d);
+      float flicker = 0.9 + 0.1 * sin(uTime * 1.4 + vUv.y * 8.0);
+      vec3 dark = vec3(0.025, 0.03, 0.04);
+      vec3 warm = vec3(0.98, 0.78, 0.42) * flicker;
+      vec3 col = mix(dark, warm, slit);
+      // Vignette
+      float v = smoothstep(0.0, 0.7, length(vUv - 0.5));
+      col *= 1.0 - v * 0.65;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `
+});
+const door = new THREE.Mesh(new THREE.PlaneGeometry(7, 4.5), doorMat);
+door.position.set(0, 0, -1.6);
+keyGroup.add(door);
+
+// ---------------------------------------------------------------
+// Scroll-Choreografie: Kamera + Group-Sichtbarkeit
+// ---------------------------------------------------------------
+const sceneSentinels = Array.from(document.querySelectorAll('section.scene'));
+const sceneState = { active: 1, t: 0 };
+
+function pickActiveScene() {
+  const mid = window.innerHeight * 0.45;
+  let chosen = sceneSentinels[0];
+  for (const sec of sceneSentinels) {
+    const r = sec.getBoundingClientRect();
+    if (r.top <= mid) chosen = sec;
+  }
+  return parseInt(chosen.dataset.scene, 10);
+}
+
+const cameraTargets = {
+  1: { pos: new THREE.Vector3(0, 0.3, 6),   look: new THREE.Vector3(0, -0.5, 0), pulse: 0.0 },
+  2: { pos: new THREE.Vector3(3.4, -1.2, 5.5), look: new THREE.Vector3(-1.5, 0.2, 0), pulse: 0.15 },
+  3: { pos: new THREE.Vector3(0, 0, 14),    look: new THREE.Vector3(0, 0, 0),    pulse: 0.0 },   // Mycel weit weg, da Sektion 3 eigene Mini-Canvases hat
+  4: { pos: new THREE.Vector3(0, 0, 18),    look: new THREE.Vector3(0, 0, 0),    pulse: 0.0 },   // Mycel ganz weg, Sektion 4 ist DOM/CSS
+  5: { pos: new THREE.Vector3(0, 0, 5),     look: new THREE.Vector3(0, 0, 0),    pulse: 0.0 },   // Schlüssel im Vordergrund
+  6: { pos: new THREE.Vector3(0, 0, 22),    look: new THREE.Vector3(0, 0, 0),    pulse: 0.0 }    // Mycel komplett weg
+};
+
+const tmpV = new THREE.Vector3();
+const lookV = new THREE.Vector3(0, 0, 0);
+
+let scrollY = 0;
+window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+
+// ---------------------------------------------------------------
+// Fruchtkörper-Mini-Canvases (Sektion 3, drei Stück, je eigener Look)
+// ---------------------------------------------------------------
+function makeFruitingScene(canvas, variant) {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setSize(w, h, false);
+  r.setClearColor(0x000000, 0);
+  const s = new THREE.Scene();
+  const c = new THREE.PerspectiveCamera(40, w/h, 0.1, 100);
+  c.position.set(0, 0.3, 4);
+  c.lookAt(0, 0, 0);
+
+  // Drei Material-Sprachen, eine pro Fruchtkörper.
+  let mat, geom;
+  if (variant === 'seeker') {
+    // Menschlich: warmes, mattes Material, organische Form (Sphere mit Noise-Verzerrung)
+    geom = new THREE.IcosahedronGeometry(1.1, 24);
+    mat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        uniform float uTime; varying vec3 vN; varying float vH;
+        // simplex-ish cheap noise
+        float hash(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7)))*43758.5453); }
+        float noise(vec3 p){
+          vec3 i=floor(p), f=fract(p);
+          float a=hash(i), b=hash(i+vec3(1,0,0)), c=hash(i+vec3(0,1,0)), d=hash(i+vec3(1,1,0));
+          float e=hash(i+vec3(0,0,1)), g=hash(i+vec3(1,0,1)), h=hash(i+vec3(0,1,1)), k=hash(i+vec3(1,1,1));
+          vec3 u=f*f*(3.0-2.0*f);
+          return mix(mix(mix(a,b,u.x),mix(c,d,u.x),u.y),mix(mix(e,g,u.x),mix(h,k,u.x),u.y),u.z);
+        }
+        void main(){
+          float n = noise(position*2.0 + uTime*0.2);
+          vec3 p = position * (1.0 + n*0.25);
+          // pilzkopf-ähnliche Abflachung oben
+          p.y *= 0.85;
+          if (p.y > 0.2) p.y *= 1.25;
+          vN = normalize(normalMatrix * normal);
+          vH = (p.y + 1.0) * 0.5;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vN; varying float vH;
+        void main(){
+          vec3 L = normalize(vec3(0.4, 0.7, 0.6));
+          float lambert = max(dot(vN, L), 0.0);
+          vec3 capA = vec3(0.72, 0.36, 0.22);  // gebrannter Pilz-Hut
+          vec3 capB = vec3(0.96, 0.86, 0.66);  // heller Rand
+          vec3 col = mix(capA, capB, smoothstep(0.45, 1.0, vH));
+          col *= 0.35 + lambert * 0.85;
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+  } else if (variant === 'commercial') {
+    // Kommerziell: glatte, metallische Konsolen-Form (Zylinder)
+    geom = new THREE.CylinderGeometry(0.85, 1.05, 1.4, 32, 4);
+    mat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        varying vec3 vN; varying vec3 vV;
+        void main(){
+          vN = normalize(normalMatrix * normal);
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vV = normalize(-mv.xyz);
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        varying vec3 vN; varying vec3 vV;
+        void main(){
+          float fres = pow(1.0 - max(dot(vV, vN), 0.0), 2.5);
+          // schimmernde Lamellen (Premium-Look)
+          float stripes = 0.5 + 0.5 * sin(vN.y * 18.0 + uTime * 0.6);
+          vec3 base = mix(vec3(0.18, 0.22, 0.28), vec3(0.72, 0.66, 0.5), fres);
+          vec3 highlight = vec3(0.96, 0.88, 0.66) * pow(fres, 4.0) * 1.6;
+          vec3 col = base + highlight + stripes * 0.06 * vec3(1.0, 0.9, 0.7);
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+  } else {
+    // Agent: kristallin, kantig, halbtransparenter Look (Octahedron)
+    geom = new THREE.OctahedronGeometry(1.15, 0);
+    mat = new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        varying vec3 vN; varying vec3 vV; varying vec3 vP;
+        void main(){
+          vN = normalize(normalMatrix * normal);
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vV = normalize(-mv.xyz);
+          vP = mv.xyz;
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        varying vec3 vN; varying vec3 vV; varying vec3 vP;
+        void main(){
+          float fres = pow(1.0 - max(dot(vV, vN), 0.0), 1.6);
+          // Phasen-Schimmer (Iridescence)
+          float phase = vN.x*5.0 + vN.y*3.0 + uTime*0.5;
+          vec3 ir = vec3(
+            0.5 + 0.5 * sin(phase),
+            0.5 + 0.5 * sin(phase + 2.094),
+            0.5 + 0.5 * sin(phase + 4.188)
+          );
+          vec3 violet = vec3(0.42, 0.36, 0.58);
+          vec3 col = mix(violet * 0.4, ir, fres);
+          float alpha = 0.55 + fres * 0.45;
+          gl_FragColor = vec4(col, alpha);
+        }
+      `
+    });
+  }
+  const mesh = new THREE.Mesh(geom, mat);
+  s.add(mesh);
+
+  let t0 = performance.now();
+  function loop() {
+    if (!canvas.isConnected) return;
+    const t = (performance.now() - t0) / 1000;
+    if (mat.uniforms.uTime) mat.uniforms.uTime.value = t;
+    mesh.rotation.y = t * (reducedMotion ? 0.05 : 0.35);
+    mesh.rotation.x = Math.sin(t * 0.25) * 0.2;
+    // responsive resize
+    if (canvas.clientWidth !== r.domElement.width / r.getPixelRatio() ||
+        canvas.clientHeight !== r.domElement.height / r.getPixelRatio()) {
+      r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      c.aspect = canvas.clientWidth / canvas.clientHeight;
+      c.updateProjectionMatrix();
+    }
+    r.render(s, c);
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+document.querySelectorAll('canvas[data-fruiting]').forEach(c => {
+  makeFruitingScene(c, c.dataset.fruiting);
+});
+
+// ---------------------------------------------------------------
+// Sektion 6 — Stripe-style Mesh-Gradient (eigener Canvas, eigener Shader)
+// ---------------------------------------------------------------
+(function buildGradient() {
+  const canvas = document.getElementById('grad-canvas');
+  if (!canvas) return;
+  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  const s = new THREE.Scene();
+  const c = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uRes:  { value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight) }
+    },
+    vertexShader: `void main(){ gl_Position = vec4(position, 1.0); }`,
+    fragmentShader: `
+      uniform float uTime;
+      uniform vec2  uRes;
+      // Codrops/Stripe-Style mesh: vier moving blobs, Multiply-Screen-Blend.
+      vec3 palette(float t) {
+        // warmer Lichtungs-Ton: Ocker, Moos, Burgund, Nacht.
+        // bewusst gedämpft, damit der helle Text auf dunklem Grund liegt.
+        vec3 a = vec3(0.18, 0.14, 0.09);
+        vec3 b = vec3(0.45, 0.32, 0.16);
+        vec3 c = vec3(0.32, 0.42, 0.38);
+        vec3 d = vec3(0.06, 0.07, 0.10);
+        return a + b * sin(6.2831 * (c * t + d));
+      }
+      void main() {
+        vec2 uv = (gl_FragCoord.xy / uRes.xy) * 2.0 - 1.0;
+        uv.x *= uRes.x / uRes.y;
+        float t = uTime * 0.08;
+        // vier wandernde Mittelpunkte
+        vec2 p1 = vec2(sin(t)*0.6,   cos(t*1.3)*0.5);
+        vec2 p2 = vec2(cos(t*0.7)*-0.7, sin(t*0.9)*0.6);
+        vec2 p3 = vec2(sin(t*1.1)*0.5,  cos(t*0.6)*-0.7);
+        vec2 p4 = vec2(cos(t*0.5)*0.8,  sin(t*1.4)*0.3);
+        float d1 = length(uv - p1);
+        float d2 = length(uv - p2);
+        float d3 = length(uv - p3);
+        float d4 = length(uv - p4);
+        // Soft-Falloff
+        float k = 0.7;
+        float w1 = exp(-d1*d1/k);
+        float w2 = exp(-d2*d2/k);
+        float w3 = exp(-d3*d3/k);
+        float w4 = exp(-d4*d4/k);
+        vec3 col =
+          palette(0.10) * w1 +
+          palette(0.32) * w2 +
+          palette(0.58) * w3 +
+          palette(0.80) * w4;
+        col /= (w1+w2+w3+w4);
+        // Multiply mit warmem Schwarz (Lichtungs-Tiefe)
+        vec3 dark = vec3(0.04, 0.05, 0.07);
+        col = mix(dark, col, 0.55);
+        // radiale Vignette für Lesbarkeit der Frage
+        float vig = smoothstep(0.0, 1.2, length(uv) * 0.6);
+        col *= 1.0 - vig * 0.45;
+        // leichte Körnung
+        float grain = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+        col += (grain - 0.5) * 0.025;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `
+  });
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat);
+  s.add(quad);
+  let t0 = performance.now();
+  function loop() {
+    const t = (performance.now() - t0) / 1000;
+    mat.uniforms.uTime.value = t;
+    if (canvas.clientWidth !== mat.uniforms.uRes.value.x ||
+        canvas.clientHeight !== mat.uniforms.uRes.value.y) {
+      r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      mat.uniforms.uRes.value.set(canvas.clientWidth, canvas.clientHeight);
+    }
+    r.render(s, c);
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ---------------------------------------------------------------
+// Audio — Ambient-Pad nach User-Geste (Web Audio API, kein File-Asset)
+// ---------------------------------------------------------------
+const audioBtn = document.querySelector('.audio-toggle');
+let audioCtx = null;
+let audioOn = false;
+let audioNodes = null;
+function startAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  // Drei niedrige Sinus-Schwebungen + leiser Rauschen-Atem = Mycel-Pad
+  const out = audioCtx.createGain();
+  out.gain.value = 0.0;
+  out.connect(audioCtx.destination);
+  const o1 = audioCtx.createOscillator(); o1.type = 'sine'; o1.frequency.value = 110;
+  const o2 = audioCtx.createOscillator(); o2.type = 'sine'; o2.frequency.value = 110.7;
+  const o3 = audioCtx.createOscillator(); o3.type = 'sine'; o3.frequency.value = 164.5;
+  const g1 = audioCtx.createGain(); g1.gain.value = 0.18;
+  const g2 = audioCtx.createGain(); g2.gain.value = 0.14;
+  const g3 = audioCtx.createGain(); g3.gain.value = 0.08;
+  o1.connect(g1).connect(out);
+  o2.connect(g2).connect(out);
+  o3.connect(g3).connect(out);
+  // sanftes Filter
+  const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+  // (Filter zwischen Gains und out: vereinfacht hier in den Master)
+  o1.start(); o2.start(); o3.start();
+  out.gain.linearRampToValueAtTime(0.65, audioCtx.currentTime + 1.8);
+  audioNodes = { out, oscs: [o1, o2, o3] };
+}
+function stopAudio() {
+  if (!audioNodes) return;
+  audioNodes.out.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 0.6);
+  setTimeout(() => {
+    audioNodes.oscs.forEach(o => { try { o.stop(); } catch(e){} });
+    audioNodes = null;
+  }, 700);
+}
+audioBtn.addEventListener('click', () => {
+  audioOn = !audioOn;
+  audioBtn.dataset.on = audioOn ? 'true' : 'false';
+  if (audioOn) startAudio(); else stopAudio();
+});
+
+// ---------------------------------------------------------------
+// Hauptschleife: Kamera, Material-Pulse, Sektionswechsel
+// ---------------------------------------------------------------
+let lastT = performance.now();
+let curPos = camera.position.clone();
+let curLook = new THREE.Vector3(0, 0, 0);
+let curPulse = 0;
+
+function tick() {
+  const now = performance.now();
+  const dt  = (now - lastT) / 1000; lastT = now;
+  const t   = now / 1000;
+
+  const active = pickActiveScene();
+  sceneState.active = active;
+  const target = cameraTargets[active] || cameraTargets[1];
+
+  const lerpA = reducedMotion ? 0.04 : 0.045;
+  curPos.lerp(target.pos, lerpA);
+  curLook.lerp(target.look, lerpA);
+  curPulse += (target.pulse - curPulse) * lerpA;
+
+  camera.position.copy(curPos);
+  camera.lookAt(curLook);
+
+  // Mycel-Group sichtbar in Sektionen 1+2; vom Schlüssel ausgeblendet in 5.
+  // Sichtbarkeit über Material-Opacity steuern, damit Übergang weich ist.
+  let mycelVisAim = 1.0;
+  if (active === 5) mycelVisAim = 0.12;
+  if (active === 6) mycelVisAim = 0.0;
+  if (active === 4) mycelVisAim = 0.0;
+  if (active === 3) mycelVisAim = 0.0;
+  if (!mycMat._curOpa) mycMat._curOpa = 1.0;
+  mycMat._curOpa += (mycelVisAim - mycMat._curOpa) * 0.05;
+  mycMat.uniforms.uPulse.value = curPulse;
+  mycMat.uniforms.uTime.value = t;
+  // Opacity-Steuerung über uColorWarm/uColorCool — vereinfachen: Group-Opacity
+  mycelGroup.visible = mycMat._curOpa > 0.02;
+  // (Punkt-Wolke ist additive; wir skalieren die Sichtbarkeit über die Group-Transform)
+  const s = 0.5 + 0.5 * mycMat._curOpa;
+  mycelGroup.scale.setScalar(s);
+  links.material.opacity = 0.18 * mycMat._curOpa;
+
+  // Schlüssel-Group nur in Sektion 5
+  keyGroup.visible = active === 5;
+  if (keyGroup.visible) {
+    keyData.mat.uniforms.uTime.value = t;
+    doorMat.uniforms.uTime.value = t;
+    keyData.group.rotation.y = Math.sin(t * 0.45) * 0.25 + 0.18;
+    keyData.group.rotation.x = Math.sin(t * 0.3) * 0.1;
+    keyData.group.position.y = Math.sin(t * 0.6) * 0.08;
+  }
+
+  // mycel-eigene Rotation (sehr langsam)
+  if (!reducedMotion) {
+    mycelGroup.rotation.y += dt * 0.02;
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+// ---------------------------------------------------------------
+// GSAP-ScrollTrigger — Smooth-Akzent-Animationen pro Sektion
+// (nur additive Akzente; Haupt-Kamera-Steuerung läuft über tick())
+// ---------------------------------------------------------------
+if (window.gsap && window.ScrollTrigger) {
+  gsap.registerPlugin(window.ScrollTrigger);
+  if (!reducedMotion) {
+    // Eyebrows + Headlines fade-in pro Sektion (subtil — nicht „Fade-In als einzige Idee",
+    // sondern Akzent NEBEN den WebGL-Kamera-Fahrten)
+    document.querySelectorAll('section.scene').forEach(sec => {
+      const items = sec.querySelectorAll('.eyebrow, h1, h2, h3, p, .meta-col dl, .fruiting-card, .marginalia, .stars-col, .door-hint, .signature-mark, .cta-row, .afterword');
+      gsap.from(items, {
+        scrollTrigger: { trigger: sec, start: 'top 75%', toggleActions: 'play none none none' },
+        y: 24, opacity: 0, duration: 1.0, stagger: 0.06, ease: 'power2.out'
+      });
+    });
+  }
+}
+</script>
+
+</body>
+</html>
