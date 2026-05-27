@@ -32,6 +32,70 @@ Gestaltungs-Auftrag Klaus 2026-05-27 (wörtlich):
 > zur Verfügung und meine Erlaubnis frei zu gestalten. Die Zukunft
 > darf gern anders aussehen als das was wir bisher gesehen haben.
 
+### Niveau-Anker (Pflicht-Schärfung 2026-05-27 nach Klaus' Rückfrage)
+
+Klaus hat die Gestaltungs-Anweisung in einer zweiten Nachricht
+nochmals zugespitzt. Drei Pflicht-Klauseln werden daraus extrahiert
+und sind in dieser Bau-Sitzung **nicht verhandelbar** — wer sie
+unterläuft, hat den Auftrag verfehlt.
+
+**(1) Anti-08/15-Klausel — verboten sind:**
+
+- Bootstrap- / Tailwind-default-Optik (Buttons, Cards, Hero-Stripes)
+- generische Stripe-Hero-Gradient-Clones ohne eigene Bild-Idee
+- reine Fade-In / Slide-In / Hover-Schatten als „Animation"
+- flache Section-Reihen, in denen Text und Bild nebeneinander stehen
+  und sich gegenseitig erklären
+- Stockfotos, generische Illustrations-Packs, Emoji als Dekoration
+- System-Sans-Serif als einzige Schrift; Bootstrap-Icons; Lucide-
+  als-Hauptmotiv
+
+**(2) WebGL-Untergrenze:**
+
+**Mindestens drei der sechs Sektionen** müssen über reines DOM/CSS
+hinausgehen und **echte WebGL-Shader-Effekte** tragen (custom
+fragment shader für Material, GPU-instanced Geometrie, Post-
+Processing). Die anderen drei dürfen DOM/CSS sein, aber nur wenn
+sie typografisch / kompositionell auf Print-Magazin-Niveau stehen
+(siehe „Vorbild-Niveau"-Liste unten — Apple Product Pages, Linear-
+Blog-Hero-Sektionen). Pure CSS-Animation als „Ersatz für 3D" gilt
+nicht.
+
+**(3) Sechs Welten, nicht ein Pattern sechsmal:**
+
+Jede Sektion bekommt eine **eigene visuelle Sprache** (eigene
+Komposition, eigene Material-Sprache, eigene Bewegungs-Idee). Die
+Site darf NICHT so wirken, als ob ein einzelnes Layout-Template
+mit anderen Texten gefüllt wurde. Vorbild: Apple Vision Pro
+Produkt-Seite — jede Sektion eine andere Bildwelt, aber alle
+zusammen ein Stück.
+
+**(4) Niveau-Bezug zum eigenen Repo:**
+
+Die bestehende Sage-Page (`index.html`) hat **gute Stellen**
+(Schwarzes Loch / Galaxien-Karte / Sonne) und **schwache Stellen**
+(2D / plump wirkende Karten). Klaus benennt das explizit. Die
+Einladungs-Site setzt das **Mindest-Niveau bei den guten Stellen
+an und toppt es**. Karten, die im bestehenden Repo plump wirken,
+sind **negative Lehre**, nicht Vorbild — die Einladung übernimmt
+keine ihrer Lösungen.
+
+**(5) Vorbild-Niveau — Stichproben für die Recherche-Phase:**
+
+Mindestens fünf der folgenden Sites werden in der Recherche-Phase
+(siehe unten) gelesen, mit konkreter Pattern-Notiz pro Site:
+- Lusion, Bruno Simon, Active Theory, resn.co.nz, Spline
+- awwwards.com (Site of the Day der laufenden Woche)
+- Apple Vision Pro Produkt-Seite, Apple iPhone-Pro-Seite
+- Linear.app (subtile Bewegungs-Magie auf Print-Niveau)
+- Stripe Sessions / Stripe.dev (Scroll-Choreografie)
+
+Erlaubt + erwünscht: **1:1-Pixel-Übernahme** einzelner Pattern als
+Ausgangspunkt (Material-Shader, Kamera-Fahrt-Kurve, Typografie-
+Grid). Anschließend semantische Anpassung an Mycel/Pilz/Mit-Bauer/
+Observatorium. Klaus erlaubt das explizit; die Recherche-Notiz
+muss benennen, welcher Pattern von wo übernommen wurde.
+
 **Pipeline-Stellung:** Phase A — additiv, nicht-blockierend für
 die bestehenden Schritte 5e–5j. Eigene Sitzung mit eigenem PR.
 
@@ -105,7 +169,40 @@ In recherche.md festhalten: konkrete Pattern (Hero-3D / Scroll-Trigger /
 Material-Shader / Typografie-Hierarchie / Audio-Atmosphäre /
 Performance-Budget), Quellen-Verweise (URL + Datum), Pixel-Referenzen
 (Screenshots-Beschreibungen oder Link-Anker), Tech-Stack-Entscheidung
-pro Pattern.
+pro Pattern. Notiere pro übernommenem Pattern: „aus <Site> übernommen,
+für Sektion <N> umgewidmet" — Klaus erlaubt 1:1-Pixel-Übernahme als
+Ausgangspunkt, will aber die Quelle benannt sehen.
+
+Pflicht-Klauseln (nicht verhandelbar — Klaus' Schärfung 2026-05-27):
+
+(1) ANTI-08/15. Verboten: Bootstrap-/Tailwind-default-Optik, generische
+    Stripe-Hero-Gradient-Clones, reine Fade-In/Slide-In/Hover-Schatten
+    als „Animation", flache Section-Reihen mit Text neben Bild,
+    Stockfotos, generische Illustrations-Packs, Emoji als Dekoration,
+    System-Sans-Serif als einzige Schrift.
+
+(2) WEBGL-UNTERGRENZE. Mindestens DREI der sechs Sektionen müssen
+    echte WebGL-Shader tragen (custom fragment shader, GPU-instanced
+    Geometrie, Post-Processing) — nicht bloß CSS-Animation. Die drei
+    anderen Sektionen dürfen DOM/CSS sein, aber nur auf Print-Magazin-
+    Typografie-Niveau (Variable Fonts mit optical sizing, Spalten-
+    Komposition, nicht Bootstrap-Standard-Layout).
+
+(3) SECHS WELTEN, NICHT EIN PATTERN SECHSMAL. Jede Sektion bekommt
+    eine eigene visuelle Sprache (eigene Komposition, eigene Material-
+    Sprache, eigene Bewegungs-Idee). Vorbild: Apple Vision Pro Produkt-
+    Seite — jede Sektion eine andere Bildwelt, alle zusammen ein Stück.
+
+(4) NIVEAU-BEZUG ZUM REPO. Sage-Page index.html hat gute Stellen
+    (Schwarzes Loch / Galaxien-Karte / Sonne) und schwache Stellen
+    (2D / plump). Die Einladung setzt das Mindest-Niveau bei den guten
+    Stellen an und TOPPT es. Plumpe Karten sind negative Lehre, nicht
+    Vorbild.
+
+Wenn am Ende der Sitzung eine Sektion nicht beide Pflicht-Klauseln 1+3
+einhält oder die Site insgesamt die WebGL-Untergrenze 2 verfehlt, gilt
+der Auftrag NICHT als erfüllt — markiere das in PULS.md ehrlich
+(„Sektion N im 08/15-Bereich, nachschärfen") statt grün zu melden.
 
 Deine Aufgabe (fünf Artefakte, ein gemeinsamer PR):
 
