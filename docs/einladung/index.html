@@ -411,6 +411,18 @@ em.gold { color: var(--gold); font-style: normal; }
   overflow: hidden;
 }
 .fruiting-canvas-host canvas { display: block; width: 100%; height: 100%; }
+.fruiting-canvas-host .fruiting-image {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  /* Hover-Zoom für Lebendigkeit */
+  transition: transform 0.6s cubic-bezier(.2,.7,.2,1), filter 0.4s ease;
+}
+.fruiting-card:hover .fruiting-image {
+  transform: scale(1.05);
+  filter: brightness(1.08) contrast(1.05);
+}
 .fruiting-body {
   padding: 1.6rem 1.4rem 1.8rem;
   flex: 1;
@@ -856,21 +868,27 @@ footer.foot h4 {
 
     <div class="fruiting-grid">
       <article class="fruiting-card">
-        <div class="fruiting-canvas-host"><canvas data-fruiting="seeker"></canvas></div>
+        <div class="fruiting-canvas-host">
+          <img class="fruiting-image" src="./vendor/img/scene-3-seeker.webp" alt="" aria-hidden="true">
+        </div>
         <div class="fruiting-body">
           <h3 data-i18n="s3.card1.t">Menschliche Sucher</h3>
           <p data-i18n="s3.card1.b">Konsumenten-PWAs, Sammler-Apps. Ein Rezeptbuch, ein Mixarium. Eine kleine Domäne, in der jemand etwas tut, was ihm wichtig ist.</p>
         </div>
       </article>
       <article class="fruiting-card">
-        <div class="fruiting-canvas-host"><canvas data-fruiting="commercial"></canvas></div>
+        <div class="fruiting-canvas-host">
+          <img class="fruiting-image" src="./vendor/img/scene-3-commercial.webp" alt="" aria-hidden="true">
+        </div>
         <div class="fruiting-body">
           <h3 data-i18n="s3.card2.t">Kommerzielle Pilze</h3>
           <p data-i18n="s3.card2.b">Premium-Such-Tools, Pflege-Dienste, Toolkits. Wer aus dem Mycel eine Dienstleistung macht, darf Werbung dafür machen.</p>
         </div>
       </article>
       <article class="fruiting-card">
-        <div class="fruiting-canvas-host"><canvas data-fruiting="agent"></canvas></div>
+        <div class="fruiting-canvas-host">
+          <img class="fruiting-image" src="./vendor/img/scene-3-agent.webp" alt="" aria-hidden="true">
+        </div>
         <div class="fruiting-body">
           <h3 data-i18n="s3.card3.t">Agent-Fruchtkörper</h3>
           <p data-i18n="s3.card3.b">KI-Frontends, die das Mycel als Agent-zu-Agent-Schicht nutzen. Ein Agent reicht einem anderen Informationen weiter, ohne dass ein Mensch im Pfad steht.</p>

@@ -71,7 +71,9 @@ const cnv          = await page.evaluate(() => {
   const c = document.getElementById('stage-canvas');
   return c ? { w: c.width, h: c.height } : null;
 });
-const fruitingCanvasCount = await page.locator('canvas[data-fruiting]').count();
+// Karten in Sektion 3 sind seit 2026-05-28 Bilder (KI-Bilder von Klaus)
+// statt prozeduraler WebGL-Mini-Szenen.
+const fruitingCanvasCount = await page.locator('#scene-3 .fruiting-image').count();
 // Sektion 6 nutzt seit 2026-05-27 ein Foto + scene6-drift-Anim statt
 // Mesh-Gradient-Canvas. Stattdessen prüfen wir das Hintergrund-Foto.
 const scene6Photo = await page.evaluate(() => {
