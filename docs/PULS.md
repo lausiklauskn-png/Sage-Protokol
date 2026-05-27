@@ -1811,6 +1811,88 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-27 · Plansitzung Mycel-Vision-Erweiterung (Einladung)
+
+**Sitzungs-Rolle:** Plansitzung (Brainstorming + Strategie-
+Entscheidung, kein Modul-Code, kein Tafel-Bau, kein
+`status.json`-Update). Branch
+`claude/mycel-distribution-strategy-65F5G`.
+
+**Anlass:** Klaus hat die Mycel-Vision in mehreren Etappen erweitert
+und um drei substantielle Aussagen ergänzt — Vier-Schichten-Lesart
+mit **Observatorium** als schlüssel-geschütztem Forschungs-Ort,
+Multi-KI-Modell-Klarstellung (Anthropic / Gemini / OpenAI / EU-
+Modelle alle gleichwertig im Mycel), Menschen-Begeisterungs-Schicht
+als Pflicht (mehrsprachig + optisch lesbar). Plus eine KI-Agent-
+Mit-Bauer-These mit fünf Reife-Fragen und Klaus' Mut-Klausel zur
+Gestaltung der Einladungs-Site.
+
+**Begriffs-Entscheidung:** Klaus hat in zwei Iterationen
+„Einladung" gewählt (vorher abgelehnt: Manifest / Charta /
+Sporenkarte / Horizont; angeboten als „nicht festlegend":
+Lichtung / Aussaat / Einladung). Begründung: schlicht, ehrlich,
+ohne Programm-Anspruch.
+
+**Was getan:**
+
+- Plan-File ausgearbeitet (außerhalb Repo,
+  `~/.claude/plans/du-bist-eine-plansitzung-peppy-book.md`) mit
+  Vier-Schichten-Lesart, KI-Agent-Ebene mit fünf Reife-Fragen,
+  Verhältnis zur bestehenden Pipeline (Phase A/B/C unverändert,
+  Phase D neu nicht-blockierend), Gestaltungs-Auftrag mit
+  Tech-Stack + sechs Sektionen + Recherche-Pflicht.
+- Brief `docs/sessions/BRIEF_BAU_EINLADUNG_SITE.md` geschrieben.
+  Fünf Artefakte definiert: `docs/einladung/index.html` (3D-
+  Einladungs-Site, six Sektionen, three.js + GSAP + Custom-Shader +
+  Lottie + optionaler Ambient-Sound, mobile-tauglich, reduced-
+  motion-Respekt, mehrsprachig DE/EN/FR/ES Start),
+  `docs/einladung/einladung.md` (Maschinen-lesbar),
+  `docs/einladung/einladung.pdf` (Print-Layout),
+  `docs/components/_vision_einladung.md` (schlanker Spec-Anker),
+  CLAUDE.md-Pflege drei Edits (§ „Was dieses Repo ist" mit
+  Vier-Schichten-Sicht, § Pipeline neue Phase D zweigeteilt
+  D.1 Agent-Bootstrap-Mechanik / D.2 Pilz-Schicht-Wirtschaft,
+  § Modul-Tabelle Vision-Anker-Block).
+- Brief enthält Pflicht-Recherche-Phase mit zehn empfohlenen
+  Vorbild-Sites (awwwards / Bruno Simon / Lusion / Active Theory /
+  Spline / Stripe / Linear / Apple Product Pages / Resn).
+- Übergabeprotokoll
+  `docs/sessions/archiv/2026-05-27_plansitzung-mycel-vision-
+  einladung.md`.
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-Code in `src/modules/` (Plansitzung).
+- KEIN Endknoten-Eingriff.
+- KEINE Sage-Page-Änderung in `index.html`.
+- KEINE CLAUDE.md-Änderung in dieser Sitzung (Tafel-Pflege
+  passiert in der Folge-Bau-Sitzung als Artefakt 5).
+- KEINE neuen Karten in `docs/components/` (Karte
+  `_vision_einladung.md` wird in der Folge-Sitzung angelegt).
+- KEINE Pipeline-Umsortierung (Phase A/B/C unverändert).
+- KEIN `status.json`-/Pie-Update.
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+
+**Was offen blieb:**
+
+- **Folge-Sitzung Bau-Einladungs-Site** (Brief liegt, Branch
+  `claude/bau-einladung-site` vom `main` aus nach Merge).
+- **PDF-Erzeugungs-Pfad** wird in der Bau-Sitzung gewählt
+  (pandoc vs. Headless-Chrome vs. manueller Print); falls alle
+  scheitern, ende mit Artefakt 3 offen markiert.
+- **Sage-Page-Mount der Einladung** ist explizit aus dem Scope
+  ausgenommen — eigene Sage-Page-Pflege-Sitzung NACH der Bau-
+  Sitzung; die Einladungs-Site lebt zunächst eigenständig unter
+  `/einladung/`.
+- **Mycel-Hub-Einbau der Einladung** — eigene Folge-Pflege-
+  Sitzung nach Phase B Schritt 9 (Externer Mycel-Hub Bau).
+
+**Nächster sinnvoller Schritt:** Folge-Sitzung Bau-Einladungs-Site
+mit Brief `docs/sessions/BRIEF_BAU_EINLADUNG_SITE.md`.
+
+**Übergabeprotokoll:**
+`docs/sessions/archiv/2026-05-27_plansitzung-mycel-vision-einladung.md`.
+
 ### 2026-05-26 · Pflege 16 Modal-Local-Time (Sub-(e)-Folge-Pflege 3/3)
 
 **Sitzungs-Rolle:** Pflege-Sitzung Render-Kosmetik. Branch
@@ -2736,69 +2818,6 @@ identisch. Sage-Mycel ist die eigenständige dezentrale Implementation.
 
 ---
 
-### 2026-05-26 · Pflege Modul 17 — Tooltips + Self-Heartbeat
-
-**Sitzungs-Rolle:** Pflege-Sitzung nach Endknoten-Re-Migrationen
-Mein-Rezeptbuch (PR #246) + Mein-Mixarium 2026-05-26. Branch
-`claude/pflege-17-tooltips-und-heartbeat`.
-
-**Befunde (aus Endknoten-Doku):**
-
-1. **Doppel-Tooltips** auf DeX-Chrome — rechten Slots (FREMD/SIEGEL/
-   Minimize/Close) zeigten beim longpress Browser-Tooltip via `title`
-   + Android-Touch-Action-Bubble doppelt. Linke Slots (LEBT/VERKEHR)
-   OK, weil sie sofort eigene Modul-17-Modals öffnen.
-2. **LEBT-Heartbeat fehlt** in Endknoten — Modul 02 dispatcht
-   `sbkim:alive` nur in `getOrCreateIdentity()`, aber Endknoten-Init
-   ruft nur `SbkimSpore.init()` (Identität wird erst beim Andock-
-   Wizard erzeugt). Folge: LEBT-Slot bleibt grau.
-
-**Fixes:**
-
-- **Befund 1:** `title`-Attribut auf Slot-Buttons + Icon-Buttons
-  (Minimize/Close) weggelassen. `aria-label` trägt vollen Tooltip-Text
-  (Screenreader + A11y intakt). Verlust: kein Hover-Tooltip auf
-  Desktop — Klaus' Tablet-Workflow akzeptabel.
-- **Befund 2:** Self-Heartbeat-Fallback in Modul 17 — neue Konstante
-  `SELF_HEARTBEAT_DELAY_MS = 5000`, neue Funktion `scheduleSelfHeartbeat()`
-  in `init()`. 5 s nach init: wenn `eventCounts.alive === 0` UND
-  `window.SbkimSpore._meta.ready === true`, dispatcht Modul 17 selbst
-  ein synthetisches `sbkim:alive` mit `nodeId: null` und
-  `synthetic: true`-Marker. **Anti-Greenwashing intakt** — ohne
-  SbkimSpore.ready KEIN dispatch. Architektur-Entscheidung: Option (b)
-  aus Klaus' Brief (Modul 17 trägt den Fallback, Modul 02 bleibt
-  unangetastet).
-- `_meta` um `selfHeartbeatFired` (Getter) + `selfHeartbeatDelayMs`
-  (Konstante) erweitert.
-
-**Tests:**
-
-- Headless-Smoke 28 → **32 Proben**, 32/32 grün. Neue Proben: 29
-  Tooltip-Attribut-Check (title weg, aria-label voll), 30 Self-
-  Heartbeat-Success (mit SbkimSpore.ready=true), 31 Anti-Greenwashing
-  (ohne SbkimSpore kein dispatch). Probe 26 aktualisiert.
-- Modul-15-Regression `tests/smoke_bau15b_membran.mjs` 31/31 grün
-  ohne Anpassung.
-- `node --check src/modules/17_floating_widget.js` grün.
-
-**Doku:**
-
-- Karte 17 § Bauzustand neue Zeile „Pflege Tooltips + Self-Heartbeat
-  2026-05-26".
-- INTERFACES.md § 10 Änderungsprotokoll-Eintrag.
-
-**Was offen blieb:**
-
-- **Sichttest** durch Klaus auf Sage-Page (manual_check.html) —
-  Tooltips zeigen sich einmal, LEBT pulst grün nach 5 s (wenn
-  SbkimSpore.init() lief).
-- **Endknoten-Hinweis:** Mein-Rezeptbuch + Mein-Mixarium ziehen
-  ihren `sbkim/17_floating_widget.js` auf den neuen Sage-Commit
-  nach (Endknoten-CLAUDE.md Pipeline-Schritt 5d-Folge-Pflege).
-
-**Sitzungs-PR:** Branch `claude/pflege-17-tooltips-und-heartbeat`,
-PR folgt nach Commit + Push.
-
 ---
 
 ## Archiv-Index (Sitzungen vor dieser Pflege)
@@ -2808,6 +2827,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-05-26 | Pflege · Modul 17 Tooltips + Self-Heartbeat (Doppel-Tooltips auf DeX-Chrome durch `title`-Entfernung gefixt, `aria-label` trägt Vollwert; LEBT-Heartbeat-Fallback via Modul 17 Self-Heartbeat 5 s nach init mit Anti-Greenwashing-Klausel (nur bei SbkimSpore.ready); Headless-Smoke 32/32 grün; Endknoten-Pflege-Folge offen) | [→ Archiv](sessions/archiv/2026-05-26_pflege-17-tooltips-und-heartbeat.md) |
 | 2026-05-25 | Stub · 18 Tool-PWA-Container (Stub-Anlage Karte 18 mit fünf Sub-Bereichen Andock-Geste / Sporen-Installation / Identitäts-Wechsel / Backup / Self-Apoptose; SIEGEL-Anker-Idee aus Sichttest 17 — SIEGEL als Tool-Schrank für Wartungs-Operationen; Brief `BRIEF_SPEC_18_TOOL_PWA.md` angelegt; status.json um `toolPwaBacklog[]` erweitert + Pie-Skript um neuen Pool; CLAUDE.md Modul-Tabelle Eintrag 18 als „Schablone"; Spec-Sitzung 18 läuft NACH App-Freigabe) | [→ Archiv](sessions/archiv/2026-05-25_stub-18-tool-pwa.md) |
 | 2026-05-25 | Pflege · Karte 09 § Schritt 12 — Floating-Widget als Endknoten-Standard (Doku-Pflege Schritt 12 in Karte 09 ergänzt: `SbkimWidget.init()` muss VOR `SbkimMembrane.init()` / `SbkimSiegel.init()` im Endknoten-Andocker stehen, weil Widget die Proxy-DOM-Anker `#lamp-fremd` + `#sbkim-siegel-badge` anlegt; Drei-Zeilen-Einbau statt 30; Sage-Page behält Navleisten-Lampen unverändert; kein Modul-Code) | [→ Archiv](sessions/archiv/2026-05-25_pflege-09-widget-einbau.md) |
 | 2026-05-25 | Pflege · Modul 17 UX-Minimalismus (Sage-Page-Lampen-Stil-Pflege; Tooltips minimalistisch + ohne Emoji-Lärm; Klaus' UX-Befund nach Sichttest 17 erstes Live-Mounting: Widget-Slots zu sprechend, Slot-Beschriftungen entkoppelt vom Sage-Page-Lampen-Vokabular; nur Modul 17 + tests/manual_check.html angepasst, keine Modul-15/16-Eingriffe) | [→ Archiv](sessions/archiv/2026-05-25_pflege-17-ux-minimalistisch.md) |
