@@ -95,7 +95,7 @@ const frEyebrow = await page.locator('#scene-1 .eyebrow').textContent();
 const starCount = await page.locator('.stars-svg circle').count();
 
 console.log('--- Smoke-Test Einladung ---');
-console.log('Sektionen:           ', sectionCount, '(erwartet 6)');
+console.log('Sektionen:           ', sectionCount, '(erwartet 7)');
 console.log('Stage-Canvas:        ', cnv);
 console.log('Fruchtkörper-Canvas: ', fruitingCanvasCount, '(erwartet 3)');
 console.log('Scene 6 Foto:        ', scene6Photo, '(erwartet true)');
@@ -105,7 +105,7 @@ console.log('Lede EN:             ', JSON.stringify((enLede   ||'').slice(0, 80)
 console.log('Eyebrow FR:          ', JSON.stringify(frEyebrow));
 
 const checks = {
-  sectionCount:        sectionCount === 6,
+  sectionCount:        sectionCount === 7,
   stageCanvas:         cnv && cnv.w > 0 && cnv.h > 0,
   fruitingCanvasCount: fruitingCanvasCount === 3,
   scene6Photo:         scene6Photo === true,

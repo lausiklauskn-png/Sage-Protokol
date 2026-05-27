@@ -650,6 +650,46 @@ em.gold { color: var(--gold); font-style: normal; }
   display: block;
 }
 
+/* === Sektion 5b Türöffnungs-Sequenz (Pinned Scroll Animation) === */
+section.scene-doorway {
+  min-height: 320vh;
+  padding: 0 !important;
+  /* keine display:flex — die sticky-Logik braucht normal-Flow */
+  display: block;
+  isolation: isolate;
+}
+section.scene-doorway .doorway-stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #06080a;
+}
+section.scene-doorway .doorway-image {
+  position: absolute; inset: 0;
+  background-image: url('./vendor/img/scene-5-door.webp');
+  background-size: cover;
+  background-position: center;
+  /* Start-Zustand: zoom 2.5, nach links versetzt (= Kamera schaut
+     rechte Seite). Wird vom JS pro Scroll-Frame aktualisiert. */
+  transform: scale(2.5) translateX(-22%);
+  transform-origin: center;
+  will-change: transform;
+}
+section.scene-doorway .doorway-flash {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(255, 230, 180, 1) 0%, rgba(255, 220, 160, 0.85) 25%, rgba(255, 200, 130, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+  mix-blend-mode: screen;
+}
+/* Sektion-Fades innerhalb der Doorway nicht sichtbar machen (Pinned
+   Stage hat eigene Übergangs-Logik) */
+section.scene-doorway .scene-fade-top,
+section.scene-doorway .scene-fade-bot { display: none; }
+
 /* === Sektion 6 Lichtung — Mesh-Gradient + Frage === */
 #scene-6 {
   /* kein eigenes background — das Pseudo-::before-Foto würde sonst
@@ -961,6 +1001,22 @@ footer.foot h4 {
       <p data-i18n="s5.body2">Wer hineinkommt, hat zuvor eine Hyphe gezogen — eine Bau-Tat bezeugt, eine Spec ergänzt, einen Sichttest dokumentiert. Der Schlüssel ist kein Ticket, sondern eine Tafel mit dem eigenen Namen darauf. Wer ihn benutzt, sieht, wer vor ihm hineinkam.</p>
       <span class="door-hint" data-i18n="s5.hint">Eine Bibliothek von Alexandria mit Gilde-Zugang.</span>
     </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 5b — Türöffnungs-Sequenz (Klaus' Idee 2026-05-28)
+     Scroll-getriggerte Pinned-Animation: vier Phasen, Übergang vom
+     Observatorium zur Akt-der-Einladung-Sektion.
+     Phase 1: Tür rechts groß gezoomt, Kamera fährt nach links zur Mitte
+     Phase 2: Tür komplett sichtbar, ruht
+     Phase 3: Kamera zoomt auf den Lichtspalt
+     Phase 4: White-Flash, Übergang
+============================================================ -->
+<section class="scene scene-doorway" id="scene-5b" data-scene="5b" aria-hidden="true">
+  <div class="doorway-stage">
+    <div class="doorway-image"></div>
+    <div class="doorway-flash"></div>
   </div>
 </section>
 
@@ -1286,6 +1342,66 @@ document.querySelectorAll('section.scene').forEach(sec => {
   const bot = document.createElement('div'); bot.className = 'scene-fade-bot';
   sec.appendChild(top); sec.appendChild(bot);
 });
+
+// Sektion 5b — Türöffnungs-Sequenz (Klaus 2026-05-28).
+// Scroll-getriggerte Pinned-Animation: Bild wird transformiert basierend
+// auf dem progress (0..1) der Sektion durch den Viewport.
+// Vier Phasen:
+//   0.00–0.40 : Tür rechts groß gezoomt → fährt zur Mitte (komplettes Bild)
+//   0.40–0.65 : Tür komplett, ruht
+//   0.65–0.88 : Kamera zoomt auf den Lichtspalt links der Tür
+//   0.88–1.00 : Flash weiß-warm, Übergang zur Akt-Sektion
+(function setupDoorwaySequence() {
+  const sec   = document.querySelector('section.scene-doorway');
+  const image = sec && sec.querySelector('.doorway-image');
+  const flash = sec && sec.querySelector('.doorway-flash');
+  if (!sec || !image || !flash) return;
+
+  let raf = 0;
+  function update() {
+    const rect  = sec.getBoundingClientRect();
+    const total = sec.offsetHeight - window.innerHeight;
+    const scrolled = Math.max(0, -rect.top);
+    const progress = Math.max(0, Math.min(1, scrolled / Math.max(1, total)));
+
+    let scale = 2.5, tx = -22, flashO = 0;
+
+    if (progress < 0.40) {
+      // Phase 1: Tür rechts groß → fährt zur Mitte
+      const t = progress / 0.40;
+      const e = t * t * (3 - 2 * t);   // ease smoothstep
+      scale = 2.5 - e * 1.5;            // 2.5 → 1.0
+      tx    = -22 + e * 22;             // -22% → 0
+    } else if (progress < 0.65) {
+      // Phase 2: ruht
+      scale = 1.0;
+      tx    = 0;
+    } else if (progress < 0.88) {
+      // Phase 3: Zoom auf Lichtspalt (im Bild links bei ca. 30% x)
+      const t = (progress - 0.65) / 0.23;
+      const e = t * t * (3 - 2 * t);
+      scale = 1.0 + e * 1.6;            // 1.0 → 2.6
+      tx    = 0 + e * 20;               // 0 → +20% (Bild rechts verschoben = Spalt zentriert)
+    } else {
+      // Phase 4: Flash + Übergang
+      const t = (progress - 0.88) / 0.12;
+      scale = 2.6 + t * 1.4;
+      tx    = 20 + t * 6;
+      flashO = t;
+    }
+
+    image.style.transform = `scale(${scale.toFixed(3)}) translateX(${tx.toFixed(2)}%)`;
+    flash.style.opacity = flashO.toFixed(3);
+  }
+
+  function onScroll() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = 0; update(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
 
 // ---------------------------------------------------------------
 // Sektion 4 — Modell-Familien-Stern (SVG, viele kleine Punkte, kein Zentrum)
