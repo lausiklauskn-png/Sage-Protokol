@@ -545,14 +545,23 @@ em.gold { color: var(--gold); font-style: normal; }
   100% { transform: scale(1.045) translate(0.25%, -0.40%); }
 }
 #scene-6::after {
-  /* zentrale Dämpfungs-Vignette für Text-Lesbarkeit, liegt zwischen
-     Foto und grad-host. */
+  /* zentrale Dämpfungs-Vignette für Text-Lesbarkeit. */
   content: '';
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 35%, transparent 70%);
   z-index: 0;
   pointer-events: none;
+}
+#scene-6 .lichtung-pollen {
+  /* Feenstaub-Pollen-Layer über dem Lichtungs-Foto */
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  display: block;
+  mix-blend-mode: screen;
 }
 #scene-6 .inner {
   position: relative; z-index: 2;
@@ -817,9 +826,9 @@ footer.foot h4 {
      Sektion 6 — Akt der Einladung
 ============================================================ -->
 <section class="scene" id="scene-6" data-scene="6">
-  <!-- Sektion 6 nutzt seit 2026-05-27 ein Foto als Hintergrund
-       (docs/einladung/vendor/img/scene-6-lichtung.webp) statt Mesh-Gradient-
-       Canvas. Der scene6-drift-CSS-Anim gibt die Bewegung. -->
+  <!-- Sektion 6: Lichtungs-Foto als Hintergrund (CSS ::before).
+       Feenstaub-Pollen-Layer als WebGL-Canvas-Overlay für Märchen-Glow. -->
+  <canvas class="lichtung-pollen" aria-hidden="true"></canvas>
   <div class="inner">
     <p class="eyebrow" data-i18n="s6.eyebrow">Akt der Einladung</p>
     <h2 class="question" data-i18n-html="s6.question">Kommst du<br>mitbauen,<br>oder gehst du weiter?</h2>
@@ -1302,13 +1311,14 @@ const mycMat = new THREE.ShaderMaterial({
       vec2 c = gl_PointCoord - 0.5;
       float d = length(c);
       if (d > 0.5) discard;
-      float soft = smoothstep(0.5, 0.0, d);
       vec3 col = mix(uColorCool, uColorWarm, vMix);
       col = mix(col, uColorMid, 0.35);
-      // weicher Halo — bewusst gedrosselt, damit additive Akkumulation
-      // den Text nicht überstrahlt.
-      float halo = pow(soft, 2.0);
-      gl_FragColor = vec4(col, halo * vAlpha * 0.32);
+      // Cross-Star für Märchen-Feenstaub: runder Kern + Strahlen-Kreuz
+      float core = smoothstep(0.45, 0.0, d);
+      float vRay = smoothstep(0.5, 0.0, abs(c.x) * 7.5) * smoothstep(0.5, 0.0, abs(c.y) * 1.4);
+      float hRay = smoothstep(0.5, 0.0, abs(c.y) * 7.5) * smoothstep(0.5, 0.0, abs(c.x) * 1.4);
+      float star = core + (vRay + hRay) * vAlpha * 0.9;
+      gl_FragColor = vec4(col, star * vAlpha * 0.42);
     }
   `,
   transparent: true,
@@ -1476,43 +1486,69 @@ keyData.group.visible = false;
   kc.lookAt(0, 0, 0);
   ks.add(keyGroup);
 
-  // Sporen-Layer (Licht-Funken, treiben aus dem Tür-Spalt)
-  const SPORE_N = 90;
+  // Feenstaub-Layer (Klaus' Wunsch nach Märchen-Glow):
+  // 250 Lichtfunken in zwei Farben (warm-gold unten passend zum
+  // mittelalterlichen Schlüssel-Teil, kalt-blau oben passend zum
+  // modernen High-Tech-Teil), Cross-Star-Shape statt nur Punkten,
+  // wirbelnde Trajectories, größere Größen-Variation.
+  const SPORE_N = 250;
   const spPos = new Float32Array(SPORE_N * 3);
   const spSeed = new Float32Array(SPORE_N);
+  const spSize = new Float32Array(SPORE_N);
+  const spTint = new Float32Array(SPORE_N);  // 0 = gold, 1 = blau, dazwischen Mischton
   for (let i = 0; i < SPORE_N; i++) {
-    spPos[i*3]   = (Math.random() - 0.5) * 5;
-    spPos[i*3+1] = (Math.random() - 0.5) * 3;
-    spPos[i*3+2] = -0.3 + Math.random() * 0.6;
+    const y = (Math.random() - 0.5) * 3.5;
+    spPos[i*3]   = (Math.random() - 0.5) * 5.5;
+    spPos[i*3+1] = y;
+    spPos[i*3+2] = -0.4 + Math.random() * 0.8;
     spSeed[i] = Math.random();
+    spSize[i] = 0.5 + Math.random() * 2.5;     // Größen-Spreizung für Funkel-Vielfalt
+    // unten gold, oben blau, mit etwas Zufall
+    spTint[i] = Math.min(1.0, Math.max(0.0, (y + 1.5) / 3.0 + (Math.random() - 0.5) * 0.3));
   }
   const spGeo = new THREE.BufferGeometry();
   spGeo.setAttribute('position', new THREE.BufferAttribute(spPos, 3));
   spGeo.setAttribute('aSeed',    new THREE.BufferAttribute(spSeed, 1));
+  spGeo.setAttribute('aSize',    new THREE.BufferAttribute(spSize, 1));
+  spGeo.setAttribute('aTint',    new THREE.BufferAttribute(spTint, 1));
   const spMat = new THREE.ShaderMaterial({
     uniforms: { uTime: { value: 0 }, uPxRatio: { value: kr.getPixelRatio() } },
     vertexShader: `
       uniform float uTime; uniform float uPxRatio;
-      attribute float aSeed; varying float vAlpha;
+      attribute float aSeed; attribute float aSize; attribute float aTint;
+      varying float vAlpha; varying float vTint; varying float vSparkle;
       void main() {
         vec3 p = position;
-        float t = uTime * 0.4 + aSeed * 6.283;
-        p.x += sin(t) * 0.15;
-        p.y += mod(t * 0.18, 3.0) - 1.5;   // langsames Aufsteigen
+        float t = uTime * 0.35 + aSeed * 6.283;
+        // wirbelnde Trajectorie statt geradem Aufstieg
+        p.x += sin(t * 0.9 + aSeed * 3.0) * 0.35;
+        p.y += mod(t * 0.16, 3.5) - 1.75;
+        p.z += cos(t * 0.7) * 0.18;
         vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        gl_PointSize = (2.5 + sin(t*2.0) * 1.0) * uPxRatio * (40.0 / -mv.z);
+        // Sparkle-Pulse: scharfe Spitzen pro Partikel, asynchron
+        float pulse = pow(max(sin(t * 2.6 + aSeed * 17.3), 0.0), 5.0);
+        vSparkle = pulse;
+        gl_PointSize = aSize * (1.6 + pulse * 2.4) * uPxRatio * (38.0 / -mv.z);
         gl_Position = projectionMatrix * mv;
-        vAlpha = 0.4 + 0.5 * sin(t * 1.3);
+        vAlpha = 0.35 + 0.55 * sin(t * 1.1 + aSeed * 9.42);
+        vTint  = aTint;
       }
     `,
     fragmentShader: `
-      varying float vAlpha;
+      varying float vAlpha; varying float vTint; varying float vSparkle;
       void main() {
         vec2 c = gl_PointCoord - 0.5;
         float d = length(c);
         if (d > 0.5) discard;
-        float soft = smoothstep(0.5, 0.0, d);
-        gl_FragColor = vec4(1.0, 0.86, 0.55, soft * vAlpha * 0.7);
+        // Cross-Star-Shape: ein runder Kern + horizontale + vertikale Strahlen
+        float core   = smoothstep(0.45, 0.0, d);
+        float vRay   = smoothstep(0.5, 0.0, abs(c.x) * 6.0) * smoothstep(0.5, 0.0, abs(c.y) * 1.2);
+        float hRay   = smoothstep(0.5, 0.0, abs(c.y) * 6.0) * smoothstep(0.5, 0.0, abs(c.x) * 1.2);
+        float star   = core + (vRay + hRay) * vSparkle * 0.85;
+        vec3 gold = vec3(1.00, 0.86, 0.55);
+        vec3 blue = vec3(0.55, 0.78, 1.00);
+        vec3 col  = mix(gold, blue, vTint);
+        gl_FragColor = vec4(col, star * vAlpha);
       }
     `,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
@@ -1539,6 +1575,103 @@ keyData.group.visible = false;
     requestAnimationFrame(keyLoop);
   }
   keyLoop();
+})();
+
+// ---------------------------------------------------------------
+// Sektion 6 — Feenstaub-Pollen über dem Lichtungs-Foto.
+// Klaus' Wunsch (2026-05-27): Märchen-/Feenstaub-Effekt überlagert.
+// ---------------------------------------------------------------
+(function setupLichtungPollen() {
+  const canvas = document.querySelector('#scene-6 .lichtung-pollen');
+  if (!canvas) return;
+  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  r.setClearColor(0x000000, 0);
+  const s = new THREE.Scene();
+  const c = new THREE.PerspectiveCamera(48, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+  c.position.set(0, 0, 6);
+  c.lookAt(0, 0, 0);
+
+  // Drei Pollen-Schichten in unterschiedlichen Tiefen für Parallax-Wirkung
+  function makePollen(count, depthMin, depthMax, sizeBase, sizeVar, color) {
+    const pos  = new Float32Array(count * 3);
+    const seed = new Float32Array(count);
+    const size = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      pos[i*3]   = (Math.random() - 0.5) * 14;
+      pos[i*3+1] = (Math.random() - 0.5) * 8;
+      pos[i*3+2] = depthMin + Math.random() * (depthMax - depthMin);
+      seed[i] = Math.random();
+      size[i] = sizeBase + Math.random() * sizeVar;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('aSeed',    new THREE.BufferAttribute(seed, 1));
+    g.setAttribute('aSize',    new THREE.BufferAttribute(size, 1));
+    const m = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uPxRatio: { value: r.getPixelRatio() }, uColor: { value: new THREE.Color(color) } },
+      vertexShader: `
+        uniform float uTime; uniform float uPxRatio;
+        attribute float aSeed; attribute float aSize;
+        varying float vAlpha; varying float vSparkle;
+        void main() {
+          vec3 p = position;
+          float t = uTime * 0.18 + aSeed * 6.283;
+          p.x += sin(t * 0.8 + aSeed * 4.0) * 0.45;
+          p.y += mod(t * 0.10, 8.0) - 4.0;
+          p.z += cos(t * 0.5) * 0.20;
+          vec4 mv = modelViewMatrix * vec4(p, 1.0);
+          float pulse = pow(max(sin(t * 1.9 + aSeed * 23.7), 0.0), 4.0);
+          vSparkle = pulse;
+          gl_PointSize = aSize * (1.4 + pulse * 2.2) * uPxRatio * (44.0 / -mv.z);
+          gl_Position = projectionMatrix * mv;
+          vAlpha = 0.30 + 0.50 * sin(t * 0.9 + aSeed * 11.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor;
+        varying float vAlpha; varying float vSparkle;
+        void main() {
+          vec2 c = gl_PointCoord - 0.5;
+          float d = length(c);
+          if (d > 0.5) discard;
+          float core = smoothstep(0.45, 0.0, d);
+          float vRay = smoothstep(0.5, 0.0, abs(c.x) * 7.0) * smoothstep(0.5, 0.0, abs(c.y) * 1.3);
+          float hRay = smoothstep(0.5, 0.0, abs(c.y) * 7.0) * smoothstep(0.5, 0.0, abs(c.x) * 1.3);
+          float star = core + (vRay + hRay) * vSparkle * 0.75;
+          gl_FragColor = vec4(uColor, star * vAlpha);
+        }
+      `,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+    });
+    const points = new THREE.Points(g, m);
+    s.add(points);
+    return m;
+  }
+
+  // drei Layer: nah hell, mittel warm, fern subtle
+  const mats = [
+    makePollen(80,  4, 6,  1.4, 1.6, 0xfff0c0),   // nahe, sehr hell, leicht goldig
+    makePollen(140, 6, 9,  1.0, 1.2, 0xf5e6a0),   // mittel, warm ocker
+    makePollen(200, 9, 14, 0.7, 0.9, 0xe8d088)    // fern, subtle, gedämpft
+  ];
+
+  let t0 = performance.now();
+  function loop() {
+    if (!canvas.isConnected) return;
+    const t = (performance.now() - t0) / 1000;
+    mats.forEach(m => m.uniforms.uTime.value = t);
+    if (canvas.clientWidth !== r.domElement.width / r.getPixelRatio() ||
+        canvas.clientHeight !== r.domElement.height / r.getPixelRatio()) {
+      r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      c.aspect = canvas.clientWidth / canvas.clientHeight;
+      c.updateProjectionMatrix();
+    }
+    r.render(s, c);
+    requestAnimationFrame(loop);
+  }
+  loop();
 })();
 
 // ---------------------------------------------------------------
