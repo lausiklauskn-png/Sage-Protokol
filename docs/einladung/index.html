@@ -72,22 +72,25 @@ body {
   overflow-x: hidden;
 }
 
-/* WebGL-Canvas fixed background. DOM-Inhalt liegt obenauf. */
+/* WebGL-Canvas fixed background. DOM-Inhalt liegt obenauf.
+   WICHTIG: kein expliziter z-index auf canvas/vignette/main, damit
+   mix-blend-mode in Text-Elementen GEGEN das Canvas wirken kann
+   (mix-blend respektiert den nächsten stacking-context). */
 #stage-canvas {
   position: fixed; inset: 0; width: 100vw; height: 100vh;
-  z-index: 0; display: block;
+  display: block;
   background: radial-gradient(ellipse at 50% 40%, #0c1014 0%, #06080a 70%, #03050a 100%);
 }
 
 /* Vignette-Overlay verleiht Tiefe ohne CSS-Gradient-Stripe-Klischee. */
 .vignette {
-  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  position: fixed; inset: 0; pointer-events: none;
   background:
     radial-gradient(ellipse at center, transparent 18%, rgba(0,0,0,0.40) 60%, rgba(0,0,0,0.78) 100%),
     linear-gradient(180deg, rgba(6,8,10,0.35) 0%, transparent 30%, transparent 70%, rgba(6,8,10,0.45) 100%);
 }
 
-main { position: relative; z-index: 2; }
+main { position: relative; }
 
 section.scene {
   position: relative;
@@ -110,6 +113,36 @@ section.scene {
   color: var(--ink-pri);
   /* Lesbarkeits-Schatten gegen WebGL-Background-Helligkeit */
   text-shadow: 0 2px 24px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Klaus' Lesbarkeits-Klausel 2026-05-27:
+   Auf WebGL-Sektionen (1, 2, 5) wandert die Mycel-Helligkeit unter
+   den Text. mix-blend-mode: difference invertiert die Schrift LOKAL
+   pro Pixel gegen den Hintergrund — heller Bereich = dunkler Text,
+   dunkler Bereich = heller Text. Auch in Bewegung, auch bei Stillstand.
+   Nur auf den Sektionen mit WebGL-Backdrop angewendet; Sektion 3
+   (Karten haben eigenen Hintergrund), 4 (Print-Magazin DOM) und 6
+   (Mesh-Gradient mit eigener Vignette) bleiben unverändert. */
+#scene-1 .lede, #scene-1 .eyebrow, #scene-1 .signature-mark,
+#scene-2 h2, #scene-2 .eyebrow,
+#scene-5 h2, #scene-5 .eyebrow, #scene-5 .door-hint {
+  mix-blend-mode: difference;
+  color: #f5efe6;
+  text-shadow: none;
+}
+#scene-1 .lede em, #scene-5 .door-hint {
+  /* der Akzent-Goldton soll sichtbar bleiben — bei difference wird Gold
+     gegen den Hintergrund invertiert. Wir gewichten ihn etwas heller,
+     damit er nach der Inversion lesbar warm bleibt. */
+  color: #f7e3a8;
+}
+/* Body-Text auf WebGL-Sektionen ebenfalls difference, aber etwas
+   gedimpft (kleinere Schrift verträgt mix-blend bei subpixel nicht so
+   gut wie Display-Schrift, daher leicht zurückgenommen + Shadow zurück). */
+#scene-1 p, #scene-2 p, #scene-5 p {
+  mix-blend-mode: difference;
+  color: #e6ddd0;
+  text-shadow: none;
 }
 .lede {
   font-size: clamp(2.4rem, 6.5vw, 6rem);
@@ -311,6 +344,11 @@ em.gold { color: var(--gold); font-style: normal; }
   /* Print-Bühne: dunkler Papier-Untergrund, aber bewusst nicht WebGL.
      Print-Magazin-Niveau: dreispaltige Komposition mit Marginalien-Spalte. */
 }
+#scene-4 {
+  /* Eigener Stacking-Context, damit das Papier-Hintergrund nicht hinter
+     das WebGL-Canvas rutscht (mix-blend-mode-Refactor 2026-05-27). */
+  isolation: isolate;
+}
 #scene-4 .paper-bg {
   position: absolute; inset: 0;
   background:
@@ -393,6 +431,9 @@ em.gold { color: var(--gold); font-style: normal; }
 /* === Sektion 6 Lichtung — Mesh-Gradient + Frage === */
 #scene-6 {
   background: var(--bg-deep);
+  /* Eigener Stacking-Context: Mesh-Gradient-Canvas + Inner-Layer ordnen
+     sich intern, nicht gegen das fixed Stage-Canvas (mix-blend-Refactor). */
+  isolation: isolate;
 }
 #scene-6 .grad-host {
   position: absolute; inset: 0;
