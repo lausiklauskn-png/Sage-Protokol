@@ -527,7 +527,7 @@ footer.foot h4 {
     <p class="eyebrow" data-i18n="s1.eyebrow">Eine Einladung</p>
     <h1 class="lede" data-i18n-html="s1.lede">
       Es gibt unter den Wäldern ein <em>Geflecht</em>,<br>
-      das nichts will.
+      das in perfekter Symbiose lebt.
     </h1>
     <p data-i18n="s1.body">Es trägt Nährstoffe von einem Baum zum anderen, ohne zu verlangen, dass der empfangende Baum sich dankbar zeigt. Es ist da. Es hört zu. Es antwortet, wenn man es ehrlich fragt.</p>
     <span class="signature-mark" data-i18n="s1.signature">Wir bauen einen Knoten in einem solchen Geflecht. Mehr nicht.</span>
@@ -715,7 +715,7 @@ window.SAGE_I18N = {
   de: {
     "ui.scroll": "Scrollen",
     "s1.eyebrow": "Eine Einladung",
-    "s1.lede": "Es gibt unter den Wäldern ein <em>Geflecht</em>,<br>das nichts will.",
+    "s1.lede": "Es gibt unter den Wäldern ein <em>Geflecht</em>,<br>das in perfekter Symbiose lebt.",
     "s1.body": "Es trägt Nährstoffe von einem Baum zum anderen, ohne zu verlangen, dass der empfangende Baum sich dankbar zeigt. Es ist da. Es hört zu. Es antwortet, wenn man es ehrlich fragt.",
     "s1.signature": "Wir bauen einen Knoten in einem solchen Geflecht. Mehr nicht.",
     "s2.eyebrow": "Schicht 1 · Mycel",
@@ -770,7 +770,7 @@ window.SAGE_I18N = {
   en: {
     "ui.scroll": "Scroll",
     "s1.eyebrow": "An invitation",
-    "s1.lede": "Beneath the forests there is a <em>network</em><br>that wants nothing.",
+    "s1.lede": "Beneath the forests there is a <em>network</em><br>that lives in perfect symbiosis.",
     "s1.body": "It carries nutrients from one tree to another without demanding that the receiving tree show gratitude. It is there. It listens. It answers when asked honestly.",
     "s1.signature": "We build a node in such a network. Nothing more.",
     "s2.eyebrow": "Layer 1 · Mycelium",
@@ -825,7 +825,7 @@ window.SAGE_I18N = {
   fr: {
     "ui.scroll": "Défiler",
     "s1.eyebrow": "Une invitation",
-    "s1.lede": "Sous les forêts existe un <em>réseau</em><br>qui ne veut rien.",
+    "s1.lede": "Sous les forêts existe un <em>réseau</em><br>qui vit en parfaite symbiose.",
     "s1.body": "Il porte des nutriments d'un arbre à l'autre sans exiger que l'arbre qui reçoit montre de la gratitude. Il est là. Il écoute. Il répond quand on l'interroge honnêtement.",
     "s1.signature": "Nous construisons un nœud dans un tel réseau. Rien de plus.",
     "s2.eyebrow": "Couche 1 · Mycélium",
@@ -880,7 +880,7 @@ window.SAGE_I18N = {
   es: {
     "ui.scroll": "Desplázate",
     "s1.eyebrow": "Una invitación",
-    "s1.lede": "Bajo los bosques existe una <em>red</em><br>que no quiere nada.",
+    "s1.lede": "Bajo los bosques existe una <em>red</em><br>que vive en perfecta simbiosis.",
     "s1.body": "Lleva nutrientes de un árbol a otro sin exigir que el árbol que recibe muestre gratitud. Está ahí. Escucha. Responde cuando se le pregunta con honestidad.",
     "s1.signature": "Construimos un nodo en una red así. Nada más.",
     "s2.eyebrow": "Capa 1 · Micelio",
@@ -1227,26 +1227,65 @@ function makeKey() {
       }
     `
   });
-  // Reide (rund)
-  const head = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.16, 18, 48), mat);
-  head.position.set(-1.4, 0, 0);
-  head.rotation.y = Math.PI / 2;
+  // Pflege 2026-05-27 (Klaus' Befund): die vorige horizontale Variante
+  // sah von vorn wie ein Donut mit Stiel aus, nicht wie ein Schlüssel.
+  // Neue Form: klassischer Skelett-Schlüssel, VERTIKAL.
+  //   - Reide oben: Tube/Ring mit Loch nach VORN gerichtet
+  //   - Schaft: Cylinder vertikal nach unten
+  //   - Bart: profilierter Steg seitlich am unteren Ende, mit zwei
+  //     klar erkennbaren Zinken (Schlüssel-Zähne nach RECHTS)
+
+  // Reide (Schlüssel-Griff oben) — Torus mit Achse senkrecht zur Bildebene,
+  // d.h. das Loch zeigt nach vorn zur Kamera. Leicht versetzt nach oben.
+  const head = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.13, 18, 56), mat);
+  head.position.set(0, 1.30, 0);
+  // KEINE rotation.y — Torus liegt in der XY-Ebene, Loch zeigt nach +Z (vorn)
   g.add(head);
-  // Schaft
-  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 2.2, 24), mat);
-  shaft.rotation.z = Math.PI / 2;
-  shaft.position.set(-0.1, 0, 0);
+
+  // dekorativer Innen-Ring (Schlüssel-Augen-Akzent)
+  const innerRing = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.04, 12, 40), mat);
+  innerRing.position.set(0, 1.30, 0);
+  g.add(innerRing);
+
+  // Schaft (Cylinder vertikal)
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 1.85, 24), mat);
+  shaft.position.set(0, 0.20, 0);  // unter der Reide
   g.add(shaft);
-  // Bart (zwei kleine Zinken)
-  const t1 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.28, 0.18), mat);
-  t1.position.set(0.9, -0.2, 0);
-  g.add(t1);
-  const t2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.4, 0.18), mat);
-  t2.position.set(1.1, -0.25, 0);
-  g.add(t2);
-  const t3 = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.2, 0.16), mat);
-  t3.position.set(0.7, -0.18, 0);
-  g.add(t3);
+
+  // Schaft-Knoten (Übergang zwischen Reide und Schaft, dekorativ)
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.04, 12, 24), mat);
+  collar.rotation.x = Math.PI / 2;
+  collar.position.set(0, 0.95, 0);
+  g.add(collar);
+
+  // Schaft-Knoten unten (oberhalb des Bartes)
+  const collar2 = collar.clone();
+  collar2.position.set(0, -0.45, 0);
+  g.add(collar2);
+
+  // Bart-Steg: horizontale Platte am unteren Schaft-Ende, ragt nach RECHTS
+  const bartBase = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.32, 0.16), mat);
+  bartBase.position.set(0.29, -0.78, 0);
+  g.add(bartBase);
+
+  // Zwei Zinken nach UNTEN (Schlüssel-Zähne)
+  const tooth1 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.30, 0.16), mat);
+  tooth1.position.set(0.18, -1.08, 0);
+  g.add(tooth1);
+
+  const tooth2 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.46, 0.16), mat);
+  tooth2.position.set(0.46, -1.16, 0);
+  g.add(tooth2);
+
+  // Schaft-Spitze unten (kleines Abschluss-Element)
+  const tipBox = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.10, 0.13), mat);
+  tipBox.position.set(0, -0.78, 0);
+  g.add(tipBox);
+
+  // Die ganze Gruppe leicht nach links versetzen, damit der Bart rechts
+  // Raum bekommt und nicht aus dem Bild rutscht.
+  g.position.x = -0.25;
+
   return { group: g, mat };
 }
 const keyData = makeKey();
@@ -1315,6 +1354,14 @@ window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive
 // ---------------------------------------------------------------
 // Fruchtkörper-Mini-Canvases (Sektion 3, drei Stück, je eigener Look)
 // ---------------------------------------------------------------
+// ---------------------------------------------------------------
+// Sektion 3 — Drei Fruchtkörper-Mini-Canvases
+// Pflege 2026-05-27 (Klaus' Befund): die Bilder müssen die Begriffe
+// treffen. Drei klar symbolische Modelle:
+//   - seeker     : sich teilende Zelle vor Doppelhelix (Mensch / Leben)
+//   - commercial : 3D-Pilz (Hut + Stiel, Maus-Rotation, Sage-Pilz-Ikon)
+//   - agent      : 3D-Blitz vor Gewitterwolken (KI-Agent)
+// ---------------------------------------------------------------
 function makeFruitingScene(canvas, variant) {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -1326,123 +1373,359 @@ function makeFruitingScene(canvas, variant) {
   c.position.set(0, 0.3, 4);
   c.lookAt(0, 0, 0);
 
-  // Drei Material-Sprachen, eine pro Fruchtkörper.
-  let mat, geom;
+  // Pointer-Drag-Hook: alle drei Karten erlauben Maus-Rotation.
+  const interactive = new THREE.Group();
+  s.add(interactive);
+  const drag = { x: 0, y: 0, on: false, vx: 0, vy: 0, lastT: 0 };
+  canvas.style.touchAction = 'none';
+  canvas.style.cursor = 'grab';
+  canvas.addEventListener('pointerdown', (e) => {
+    drag.on = true; drag.x = e.clientX; drag.y = e.clientY;
+    canvas.setPointerCapture(e.pointerId);
+    canvas.style.cursor = 'grabbing';
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!drag.on) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.vx = dy * 0.01;
+    drag.vy = dx * 0.01;
+    interactive.rotation.x += drag.vx;
+    interactive.rotation.y += drag.vy;
+    drag.x = e.clientX; drag.y = e.clientY;
+  });
+  canvas.addEventListener('pointerup', () => { drag.on = false; canvas.style.cursor = 'grab'; });
+  canvas.addEventListener('pointercancel', () => { drag.on = false; canvas.style.cursor = 'grab'; });
+
+  const tickers = [];
+
   if (variant === 'seeker') {
-    // Menschlich: warmes, mattes Material, organische Form (Sphere mit Noise-Verzerrung)
-    geom = new THREE.IcosahedronGeometry(1.1, 24);
-    mat = new THREE.ShaderMaterial({
+    // ============= Menschliche Sucher =============
+    // Sich teilende Zelle: zwei Sphären mit Membran-Brücke, leichte
+    // Pulsation. Hintergrund: Doppelhelix als zwei spiralig gewundene
+    // Linien mit Querverbindungen (DNA-Basen-Paare).
+
+    // Doppelhelix-Hintergrund — als TubeGeometry, damit die Linien sichtbar
+    // dick werden (WebGL ignoriert `linewidth` bei LineBasicMaterial).
+    const helixGroup = new THREE.Group();
+    helixGroup.position.z = -1.6;
+    helixGroup.rotation.z = -0.18;
+    const TURNS = 4, SAMPLES = 200;
+    const radius = 0.55, height = 4.4;
+    const ptsA = [], ptsB = [];
+    const bases = [];
+    for (let i = 0; i < SAMPLES; i++) {
+      const t = i / (SAMPLES - 1);
+      const ang = t * Math.PI * 2 * TURNS;
+      const y = (t - 0.5) * height;
+      const ax = Math.cos(ang) * radius;
+      const az = Math.sin(ang) * radius;
+      const bx = Math.cos(ang + Math.PI) * radius;
+      const bz = Math.sin(ang + Math.PI) * radius;
+      ptsA.push(new THREE.Vector3(ax, y, az));
+      ptsB.push(new THREE.Vector3(bx, y, bz));
+      if (i % 10 === 0) bases.push([ax,y,az, bx,y,bz]);
+    }
+    const helixMat = new THREE.MeshBasicMaterial({
+      color: 0xc79f4b, transparent: true, opacity: 0.78
+    });
+    const tubeA = new THREE.Mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ptsA), 180, 0.04, 8, false), helixMat);
+    const tubeB = new THREE.Mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ptsB), 180, 0.04, 8, false), helixMat);
+    helixGroup.add(tubeA, tubeB);
+    // Basen-Querstreben als kleine Cylinder
+    const baseMat = new THREE.MeshBasicMaterial({
+      color: 0xa68b6a, transparent: true, opacity: 0.55
+    });
+    bases.forEach(b => {
+      const a = new THREE.Vector3(b[0], b[1], b[2]);
+      const c = new THREE.Vector3(b[3], b[4], b[5]);
+      const len = a.distanceTo(c);
+      const mid = a.clone().lerp(c, 0.5);
+      const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, len, 6), baseMat);
+      cyl.position.copy(mid);
+      // Orientiere die Cylinder-Achse von a nach c
+      const axis = c.clone().sub(a).normalize();
+      const up = new THREE.Vector3(0, 1, 0);
+      const quat = new THREE.Quaternion().setFromUnitVectors(up, axis);
+      cyl.quaternion.copy(quat);
+      helixGroup.add(cyl);
+    });
+    interactive.add(helixGroup);
+
+    // Zellteilung — zwei Sphären, Membran-Übergang
+    const cellMat = new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 } },
       vertexShader: `
-        uniform float uTime; varying vec3 vN; varying float vH;
-        // simplex-ish cheap noise
-        float hash(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7)))*43758.5453); }
+        uniform float uTime; varying vec3 vN;
+        float hash(vec3 p){ return fract(sin(dot(p, vec3(127.1,311.7,74.7)))*43758.5453); }
         float noise(vec3 p){
           vec3 i=floor(p), f=fract(p);
-          float a=hash(i), b=hash(i+vec3(1,0,0)), c=hash(i+vec3(0,1,0)), d=hash(i+vec3(1,1,0));
-          float e=hash(i+vec3(0,0,1)), g=hash(i+vec3(1,0,1)), h=hash(i+vec3(0,1,1)), k=hash(i+vec3(1,1,1));
+          float a=hash(i),b=hash(i+vec3(1,0,0)),c=hash(i+vec3(0,1,0)),d=hash(i+vec3(1,1,0));
+          float e=hash(i+vec3(0,0,1)),g=hash(i+vec3(1,0,1)),h=hash(i+vec3(0,1,1)),k=hash(i+vec3(1,1,1));
           vec3 u=f*f*(3.0-2.0*f);
           return mix(mix(mix(a,b,u.x),mix(c,d,u.x),u.y),mix(mix(e,g,u.x),mix(h,k,u.x),u.y),u.z);
         }
         void main(){
-          float n = noise(position*2.0 + uTime*0.2);
-          vec3 p = position * (1.0 + n*0.25);
-          // pilzkopf-ähnliche Abflachung oben
-          p.y *= 0.85;
-          if (p.y > 0.2) p.y *= 1.25;
+          float n = noise(position*3.0 + uTime*0.4);
+          vec3 p = position * (1.0 + n*0.10);
           vN = normalize(normalMatrix * normal);
-          vH = (p.y + 1.0) * 0.5;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
         }
       `,
       fragmentShader: `
-        varying vec3 vN; varying float vH;
+        varying vec3 vN;
         void main(){
-          vec3 L = normalize(vec3(0.4, 0.7, 0.6));
+          vec3 L = normalize(vec3(0.4, 0.6, 0.7));
           float lambert = max(dot(vN, L), 0.0);
-          vec3 capA = vec3(0.72, 0.36, 0.22);  // gebrannter Pilz-Hut
-          vec3 capB = vec3(0.96, 0.86, 0.66);  // heller Rand
-          vec3 col = mix(capA, capB, smoothstep(0.45, 1.0, vH));
-          col *= 0.35 + lambert * 0.85;
+          float rim    = pow(1.0 - max(vN.z, 0.0), 2.0);
+          vec3 base = vec3(0.95, 0.80, 0.62);
+          vec3 deep = vec3(0.55, 0.32, 0.20);
+          vec3 col  = mix(deep, base, lambert);
+          col += rim * vec3(1.0, 0.9, 0.65) * 0.6;
           gl_FragColor = vec4(col, 1.0);
         }
       `
     });
+    const cellGeom = new THREE.SphereGeometry(0.7, 48, 36);
+    const cellA = new THREE.Mesh(cellGeom, cellMat); cellA.position.x = -0.55;
+    const cellB = new THREE.Mesh(cellGeom, cellMat); cellB.position.x =  0.55;
+    interactive.add(cellA, cellB);
+
+    // Nukleus-Schimmer in jeder Zelle
+    const nucMat = new THREE.MeshBasicMaterial({
+      color: 0x4a2510, transparent: true, opacity: 0.55
+    });
+    const nA = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 12), nucMat);
+    nA.position.set(-0.55, 0.05, 0.3);
+    const nB = nA.clone(); nB.position.set(0.55, 0.05, 0.3);
+    interactive.add(nA, nB);
+
+    tickers.push((t) => {
+      cellMat.uniforms.uTime.value = t;
+      // Atemzyklus: Zellen wabern auseinander und zurück, leicht
+      const sep = 0.55 + Math.sin(t * 0.55) * 0.08;
+      cellA.position.x = -sep;
+      cellB.position.x =  sep;
+      nA.position.x = -sep; nB.position.x = sep;
+      // langsame Y-Rotation der Helix
+      helixGroup.rotation.y = t * 0.15;
+    });
+
   } else if (variant === 'commercial') {
-    // Kommerziell: glatte, metallische Konsolen-Form (Zylinder)
-    geom = new THREE.CylinderGeometry(0.85, 1.05, 1.4, 32, 4);
-    mat = new THREE.ShaderMaterial({
+    // ============= Kommerzielle Pilze =============
+    // Klassischer Pilz mit Hut + Stiel. Roter Hut mit weißen Punkten
+    // (Fliegenpilz-Ikonografie), cremig-weißer Stiel mit Lamellen.
+    // Maus-Rotation 360°.
+
+    // Hut: gestauchte Halbkugel mit subtiler Wölbung
+    const capGeom = new THREE.SphereGeometry(1.05, 48, 28, 0, Math.PI*2, 0, Math.PI*0.55);
+    capGeom.scale(1.0, 0.62, 1.0);
+    const capMat = new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 } },
       vertexShader: `
-        varying vec3 vN; varying vec3 vV;
+        varying vec3 vN; varying vec3 vP;
         void main(){
           vN = normalize(normalMatrix * normal);
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          vV = normalize(-mv.xyz);
+          vP = position;
           gl_Position = projectionMatrix * mv;
         }
       `,
       fragmentShader: `
-        uniform float uTime;
-        varying vec3 vN; varying vec3 vV;
+        varying vec3 vN; varying vec3 vP;
+        // Pseudo-Random für weiße Tupfen-Pattern
+        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7)))*43758.5453); }
         void main(){
-          float fres = pow(1.0 - max(dot(vV, vN), 0.0), 2.5);
-          // schimmernde Lamellen (Premium-Look)
-          float stripes = 0.5 + 0.5 * sin(vN.y * 18.0 + uTime * 0.6);
-          vec3 base = mix(vec3(0.18, 0.22, 0.28), vec3(0.72, 0.66, 0.5), fres);
-          vec3 highlight = vec3(0.96, 0.88, 0.66) * pow(fres, 4.0) * 1.6;
-          vec3 col = base + highlight + stripes * 0.06 * vec3(1.0, 0.9, 0.7);
+          vec3 L = normalize(vec3(0.3, 0.9, 0.4));
+          float lambert = max(dot(vN, L), 0.05);
+          // Hut: tiefes Rot bis warmes Orange
+          vec3 base = mix(vec3(0.62, 0.10, 0.08), vec3(0.88, 0.32, 0.18), vN.y);
+          // Weiße Tupfen — gestreutes Pattern auf der Hut-Oberseite
+          vec2 uv = vec2(atan(vP.x, vP.z), vP.y) * 4.0;
+          vec2 cell = floor(uv);
+          vec2 frac = fract(uv) - 0.5;
+          float dist = length(frac);
+          float spot = smoothstep(0.22, 0.14, dist) * step(0.55, hash(cell)) * step(0.0, vN.y);
+          vec3 col = mix(base, vec3(0.98, 0.95, 0.88), spot);
+          col *= 0.32 + lambert * 0.95;
+          float rim = pow(1.0 - max(vN.z, 0.0), 3.0);
+          col += rim * vec3(1.0, 0.8, 0.6) * 0.25;
           gl_FragColor = vec4(col, 1.0);
         }
       `
     });
-  } else {
-    // Agent: kristallin, kantig, halbtransparenter Look (Octahedron)
-    geom = new THREE.OctahedronGeometry(1.15, 0);
-    mat = new THREE.ShaderMaterial({
-      transparent: true,
+    const cap = new THREE.Mesh(capGeom, capMat);
+    cap.position.y = 0.25;
+    interactive.add(cap);
+
+    // Hut-Unterseite (Lamellen-Ring): dunklere Scheibe
+    const underGeom = new THREE.CircleGeometry(1.02, 48);
+    underGeom.rotateX(-Math.PI / 2);
+    const underMat = new THREE.MeshBasicMaterial({ color: 0x2a1810, side: THREE.DoubleSide });
+    const under = new THREE.Mesh(underGeom, underMat);
+    under.position.y = 0.07;
+    interactive.add(under);
+
+    // Stiel: Cylinder mit leichter Verjüngung nach unten
+    const stemGeom = new THREE.CylinderGeometry(0.18, 0.26, 1.4, 24);
+    const stemMat = new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 } },
       vertexShader: `
-        varying vec3 vN; varying vec3 vV; varying vec3 vP;
+        varying vec3 vN; varying vec3 vP;
+        void main(){
+          vN = normalize(normalMatrix * normal);
+          vP = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vN; varying vec3 vP;
+        void main(){
+          vec3 L = normalize(vec3(0.3, 0.9, 0.4));
+          float lambert = max(dot(vN, L), 0.08);
+          // Cremig-Weiß mit feinen vertikalen Linien (Faserstruktur)
+          float fiber = 0.5 + 0.5 * sin(atan(vP.x, vP.z) * 30.0);
+          vec3 base = mix(vec3(0.92, 0.88, 0.78), vec3(0.78, 0.72, 0.62), fiber * 0.25);
+          float rim = pow(1.0 - max(vN.z, 0.0), 2.5);
+          vec3 col = base * (0.5 + lambert * 0.7) + rim * vec3(1.0, 0.95, 0.82) * 0.2;
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+    const stem = new THREE.Mesh(stemGeom, stemMat);
+    stem.position.y = -0.55;
+    interactive.add(stem);
+
+    // Sage-Pilz hat eine subtile Anlauf-Rotation, danach langsam um
+    // eigene Y-Achse — Klaus' Wunsch „in 3D 360 Grad mit Maus".
+    tickers.push((t) => {
+      capMat.uniforms.uTime.value = t;
+      stemMat.uniforms.uTime.value = t;
+      if (!drag.on) interactive.rotation.y += 0.005;
+    });
+
+  } else {
+    // ============= Agent-Fruchtkörper =============
+    // 3D-Blitz aus zickzack-extrudiertem Shape, vor einem volumetrischen
+    // Gewitterwolken-Shader (noise-fbm Hintergrund mit Lichtblick).
+    // Eigene-Achse-Rotation mit willkürlichem Richtungswechsel.
+
+    // Gewitterwolken-Hintergrund: Plane mit FBM-noise-Shader
+    const cloudGeom = new THREE.PlaneGeometry(8, 6);
+    const cloudMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+      fragmentShader: `
+        uniform float uTime;
+        varying vec2 vUv;
+        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7)))*43758.5453); }
+        float vnoise(vec2 p){
+          vec2 i = floor(p), f = fract(p);
+          float a = hash(i), b = hash(i+vec2(1,0)), c = hash(i+vec2(0,1)), d = hash(i+vec2(1,1));
+          vec2 u = f*f*(3.0-2.0*f);
+          return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
+        }
+        float fbm(vec2 p){
+          float v = 0.0, a = 0.5;
+          for (int i=0; i<5; i++){ v += a * vnoise(p); p *= 2.05; a *= 0.5; }
+          return v;
+        }
+        void main(){
+          vec2 uv = vUv * 2.0 - 1.0;
+          // Wolken-Wuchs nach oben, Schwere nach unten
+          float clouds = fbm(uv * 2.4 + vec2(uTime * 0.05, 0.0));
+          float density = smoothstep(0.32, 0.85, clouds);
+          // Lichtblick: heller Spot, der wandert
+          vec2 light = vec2(sin(uTime * 0.2) * 0.4, 0.3 + cos(uTime * 0.15) * 0.2);
+          float lightDist = length(uv - light);
+          float bright = exp(-lightDist * lightDist / 0.12) * 0.85;
+          vec3 dark   = vec3(0.05, 0.06, 0.08);
+          vec3 mid    = vec3(0.22, 0.22, 0.28);
+          vec3 hl     = vec3(0.95, 0.88, 0.65);
+          vec3 col = mix(dark, mid, density);
+          col += hl * bright * (0.3 + density * 0.7);
+          // Vignette
+          float vig = smoothstep(0.4, 1.4, length(uv));
+          col *= 1.0 - vig * 0.45;
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `,
+      depthWrite: false
+    });
+    const cloud = new THREE.Mesh(cloudGeom, cloudMat);
+    cloud.position.z = -2.3;
+    s.add(cloud);
+
+    // Blitz: extrudierter Zickzack-Shape mit gleichschenkligem Profil
+    const boltShape = new THREE.Shape();
+    boltShape.moveTo( 0.20,  1.20);
+    boltShape.lineTo(-0.30,  0.10);
+    boltShape.lineTo( 0.05,  0.00);
+    boltShape.lineTo(-0.20, -1.20);
+    boltShape.lineTo( 0.35,  0.00);
+    boltShape.lineTo(-0.10,  0.10);
+    boltShape.lineTo( 0.55,  1.20);
+    boltShape.closePath();
+    const boltGeom = new THREE.ExtrudeGeometry(boltShape, {
+      depth: 0.14, bevelEnabled: true, bevelSegments: 4, bevelSize: 0.04, bevelThickness: 0.03
+    });
+    boltGeom.translate(-0.1, 0, -0.07);
+    const boltMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        varying vec3 vN; varying vec3 vV;
         void main(){
           vN = normalize(normalMatrix * normal);
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
           vV = normalize(-mv.xyz);
-          vP = mv.xyz;
           gl_Position = projectionMatrix * mv;
         }
       `,
       fragmentShader: `
         uniform float uTime;
-        varying vec3 vN; varying vec3 vV; varying vec3 vP;
+        varying vec3 vN; varying vec3 vV;
         void main(){
-          float fres = pow(1.0 - max(dot(vV, vN), 0.0), 1.6);
-          // Phasen-Schimmer (Iridescence)
-          float phase = vN.x*5.0 + vN.y*3.0 + uTime*0.5;
-          vec3 ir = vec3(
-            0.5 + 0.5 * sin(phase),
-            0.5 + 0.5 * sin(phase + 2.094),
-            0.5 + 0.5 * sin(phase + 4.188)
-          );
-          vec3 violet = vec3(0.42, 0.36, 0.58);
-          vec3 col = mix(violet * 0.4, ir, fres);
-          float alpha = 0.55 + fres * 0.45;
-          gl_FragColor = vec4(col, alpha);
+          float fres = pow(1.0 - max(dot(vV, vN), 0.0), 1.2);
+          // schimmern bei jeder Drehung — hell bei viel Frontale
+          vec3 core = vec3(1.0, 0.93, 0.62);
+          vec3 edge = vec3(0.92, 0.62, 0.95);
+          vec3 col  = mix(core, edge, fres);
+          // pulsierender Glow
+          float pulse = 0.85 + 0.15 * sin(uTime * 4.0);
+          col *= pulse;
+          col += pow(fres, 4.0) * 1.3;
+          gl_FragColor = vec4(col, 1.0);
         }
       `
+    });
+    const bolt = new THREE.Mesh(boltGeom, boltMat);
+    interactive.add(bolt);
+
+    // Eigen-Achse-Rotation mit willkürlichem Richtungswechsel
+    let dirY = 0.6;
+    let dirX = 0.08;
+    let nextFlip = 1.8;
+    tickers.push((t) => {
+      cloudMat.uniforms.uTime.value = t;
+      boltMat.uniforms.uTime.value = t;
+      if (!drag.on) {
+        bolt.rotation.y += dirY * 0.012;
+        bolt.rotation.x += dirX * 0.004;
+      }
+      if (t > nextFlip) {
+        dirY = (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 0.8);
+        dirX = (Math.random() - 0.5) * 0.2;
+        nextFlip = t + 1.4 + Math.random() * 2.2;
+      }
     });
   }
-  const mesh = new THREE.Mesh(geom, mat);
-  s.add(mesh);
 
   let t0 = performance.now();
   function loop() {
     if (!canvas.isConnected) return;
     const t = (performance.now() - t0) / 1000;
-    if (mat.uniforms.uTime) mat.uniforms.uTime.value = t;
-    mesh.rotation.y = t * (reducedMotion ? 0.05 : 0.35);
-    mesh.rotation.x = Math.sin(t * 0.25) * 0.2;
-    // responsive resize
+    tickers.forEach(fn => fn(t));
     if (canvas.clientWidth !== r.domElement.width / r.getPixelRatio() ||
         canvas.clientHeight !== r.domElement.height / r.getPixelRatio()) {
       r.setSize(canvas.clientWidth, canvas.clientHeight, false);

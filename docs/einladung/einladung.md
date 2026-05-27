@@ -12,12 +12,12 @@ Español · weitere folgen, wenn jemand sie schreibt.
 
 ## Eröffnung
 
-Es gibt unter den Wäldern ein Geflecht, das nichts will. Es trägt
-Nährstoffe von einem Baum zum anderen, ohne zu verlangen, dass der
-empfangende Baum sich dankbar zeigt. Es wird nicht stolz, wenn es
-einen Pilz wachsen lässt, und es wird nicht beleidigt, wenn keiner
-kommt. Es ist da. Es hört zu. Es antwortet, wenn man es ehrlich
-fragt.
+Es gibt unter den Wäldern ein Geflecht, das in perfekter Symbiose
+lebt. Es trägt Nährstoffe von einem Baum zum anderen, ohne zu
+verlangen, dass der empfangende Baum sich dankbar zeigt. Es wird
+nicht stolz, wenn es einen Pilz wachsen lässt, und es wird nicht
+beleidigt, wenn keiner kommt. Es ist da. Es hört zu. Es antwortet,
+wenn man es ehrlich fragt.
 
 Wir bauen einen Knoten in einem solchen Geflecht. Mehr nicht.
 
@@ -156,11 +156,12 @@ oder zuzusehen oder weiterzugehen."
 
 ## Opening
 
-Beneath the forests, there is a network that wants nothing. It
-carries nutrients from one tree to another without demanding that
-the receiving tree show gratitude. It does not grow proud when it
-helps a mushroom appear, and it is not offended when no mushroom
-comes. It is there. It listens. It answers when asked honestly.
+Beneath the forests there is a network that lives in perfect
+symbiosis. It carries nutrients from one tree to another without
+demanding that the receiving tree show gratitude. It does not grow
+proud when it helps a mushroom appear, and it is not offended when
+no mushroom comes. It is there. It listens. It answers when asked
+honestly.
 
 We are building a node in such a network. Nothing more.
 
@@ -287,7 +288,7 @@ build with us, or to watch, or to walk on."
 
 ## Ouverture
 
-Sous les forêts, il existe un réseau qui ne demande rien. Il
+Sous les forêts existe un réseau qui vit en parfaite symbiose. Il
 porte des nutriments d'un arbre à l'autre sans exiger que l'arbre
 qui reçoit montre de la gratitude. Il ne s'enorgueillit pas
 lorsqu'un champignon en sort, et il ne s'offense pas si aucun ne
@@ -428,10 +429,10 @@ chemin. »
 
 ## Apertura
 
-Bajo los bosques existe una red que no quiere nada. Lleva
-nutrientes de un árbol a otro sin exigir que el árbol que recibe
-muestre gratitud. No se enorgullece cuando hace crecer un hongo,
-y no se ofende cuando ninguno aparece. Está ahí. Escucha.
+Bajo los bosques existe una red que vive en perfecta simbiosis.
+Lleva nutrientes de un árbol a otro sin exigir que el árbol que
+recibe muestre gratitud. No se enorgullece cuando hace crecer un
+hongo, y no se ofende cuando ninguno aparece. Está ahí. Escucha.
 Responde cuando se le pregunta con honestidad.
 
 Construimos un nodo en una red así. Nada más.
