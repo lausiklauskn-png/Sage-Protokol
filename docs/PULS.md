@@ -1992,6 +1992,36 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Embedding-Download-Fortschritt (UX)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-embedding-fortschritt`. Auslöser: Klaus' Live-Befund —
+nach tiefem Browser-Löschen lädt das 30-MB-Embedding-Modell neu, **ohne
+jeden Fortschritts-Hinweis** („lädt ewig, frustrierend, nichts zu sehen").
+
+**Fix:** Modul 03 `init()` reicht jetzt einen `progress_callback` an
+transformers.js `pipeline(...)` und sendet den Download-Fortschritt als
+window-Event **`sbkim:embedding-progress`** (`detail` = transformers.js-
+Daten: `status`/`file`/`progress`/`loaded`/`total`). Fail-soft +
+konsumentenfrei (Event-Bus-Stil analog Modul 17). Der Sage-Andock-Wizard
+(Schritt 2 „Spore erzeugen") lauscht darauf und zeigt einen Live-
+Balken („Embedding-Modell lädt … ████░░ 45 % (model.onnx, ~30 MB)").
+Listener wird in Success- + Catch-Pfad sauber entfernt.
+
+**Kein** Modell-Wechsel (Klaus' Frage): `Xenova/multilingual-e5-small`
+bleibt — 384-dim ist protokoll-fest (INTERFACES §0, Modul 04/05), und ein
+Wechsel bräuchte mycel-weite Lockstep-Migration aller Knoten + Re-
+Embedding. Der lange Ladevorgang ist einmalig (gecacht); nur nach Cache-
+Wipe sichtbar. Begründung im Chat festgehalten.
+
+**Tests:** `node --check` Modul 03 grün, index.html-Wizard-Script-Block
+grün, Regression Modul-18-Smoke 18/18 grün. **KEIN** VERSION-Bump.
+**Offen / Folge-Kandidat:** Modul-18-Wizard (Match-Schritt) kann denselben
+`sbkim:embedding-progress`-Event konsumieren — noch nicht verdrahtet.
+Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf).
+
+---
+
 ### 2026-05-28 · Pflege Sage-Identitäts-Wizard z-index (UX-Fix)
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch
