@@ -1,0 +1,2715 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0d10">
+<meta name="description" content="Einladung in das Mycel — Sage-Protokol / SBKIM. Vier Schichten: Mycel, Pilz, Mit-Bauer, Observatorium. Eine Einladung, keine Charta.">
+<title>Einladung in das Mycel — Sage-Protokol</title>
+
+<style>
+/* === Lokal vendorierte Variable Fonts (kein CDN, kein Tracker) ===
+   Fraunces Variable (opsz + wght + SOFT-Achse, latin-Subset, normal+italic)
+   + Inter Variable (wght, latin-Subset). Lizenz: SIL OFL (im jeweiligen
+   npm-Paket beigelegt).
+*/
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/fraunces-full.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/fraunces-full-italic.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./vendor/fonts/inter-wght.woff2') format('woff2-variations');
+}
+</style>
+
+<style>
+/* === Sage-Einladung · Stylesheet ===
+   Sechs Welten, sechs Material-Sprachen, ein durchgängiges Stück.
+   Keine Bootstrap-Defaults, keine Tailwind-Klassen, kein Stock-Pattern.
+   Typografie: Fraunces (variable, mit optical-size + soft-axis)
+   + Inter (variable). Beide via Google-Fonts (kein Tracker).
+*/
+
+:root {
+  --bg-deep: #06080a;
+  --bg-ink:  #0a0d10;
+  --bg-paper:#f5efe6;
+  --ink-pri: #f0e9dd;
+  --ink-sec: rgba(240, 233, 221, 0.62);
+  --ink-mute:rgba(240, 233, 221, 0.32);
+  --gold:    #d6b76a;
+  --gold-soft: rgba(214, 183, 106, 0.62);
+  --bronze:  #8c6e2f;
+  --moss:    #4a7152;
+  --rust:    #b9602d;
+  --violet:  #6b5b95;
+  --line:    rgba(240, 233, 221, 0.14);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg-deep); color: var(--ink-pri); }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  font-weight: 350;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* WebGL-Canvas fixed background. DOM-Inhalt liegt obenauf.
+   WICHTIG: kein expliziter z-index auf canvas/vignette/main, damit
+   mix-blend-mode in Text-Elementen GEGEN das Canvas wirken kann
+   (mix-blend respektiert den nächsten stacking-context). */
+#stage-canvas {
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  display: block;
+  background: radial-gradient(ellipse at 50% 40%, #0c1014 0%, #06080a 70%, #03050a 100%);
+}
+
+/* Vignette-Overlay verleiht Tiefe ohne CSS-Gradient-Stripe-Klischee. */
+.vignette {
+  position: fixed; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 18%, rgba(0,0,0,0.40) 60%, rgba(0,0,0,0.78) 100%),
+    linear-gradient(180deg, rgba(6,8,10,0.35) 0%, transparent 30%, transparent 70%, rgba(6,8,10,0.45) 100%);
+}
+
+main { position: relative; }
+
+section.scene {
+  position: relative;
+  min-height: 100vh;
+  padding: 6rem 2rem;
+  display: flex; flex-direction: column;
+  justify-content: center;
+}
+
+/* Weiche Sektion-Übergänge (Klaus 2026-05-28): jede Sektion fadet
+   oben und unten in den dunklen Body-Hintergrund. Das verhindert harte
+   Schnitte zwischen Foto-Sektionen und WebGL-Sektionen. */
+.scene-fade-top, .scene-fade-bot {
+  position: absolute; left: 0; right: 0;
+  height: 12vh;
+  pointer-events: none;
+  z-index: 3;
+}
+.scene-fade-top {
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg-deep) 0%, transparent 100%);
+}
+.scene-fade-bot {
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg-deep) 0%, transparent 100%);
+}
+
+.inner { max-width: 72rem; margin: 0 auto; width: 100%; }
+
+/* === Typografie === */
+.lede, h1, h2, h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-weight: 380;
+  font-style: normal;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+  color: var(--ink-pri);
+  /* Lesbarkeits-Schatten gegen WebGL-Background-Helligkeit */
+  text-shadow: 0 2px 24px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Klaus' Lesbarkeits-Klausel 2026-05-27:
+   Auf WebGL-Sektionen (1, 2, 5) wandert die Mycel-Helligkeit unter
+   den Text. mix-blend-mode: difference invertiert die Schrift LOKAL
+   pro Pixel gegen den Hintergrund — heller Bereich = dunkler Text,
+   dunkler Bereich = heller Text. Auch in Bewegung, auch bei Stillstand.
+   Nur auf den Sektionen mit WebGL-Backdrop angewendet; Sektion 3
+   (Karten haben eigenen Hintergrund), 4 (Print-Magazin DOM) und 6
+   (Mesh-Gradient mit eigener Vignette) bleiben unverändert. */
+#scene-1 .lede, #scene-1 .eyebrow, #scene-1 .signature-mark {
+  mix-blend-mode: difference;
+  color: #f5efe6;
+  text-shadow: none;
+}
+/* Sektion 2 und 5 nutzen backdrop-filter statt mix-blend, weil
+   bei sehr hellen Vortex-/Mycel-Stellen mix-blend die Schrift
+   farblich verzerrt + lokal kaum lesbar wurde (Klaus 2026-05-28). */
+#scene-2 h2, #scene-2 .eyebrow {
+  color: #f8f3e6;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.75), 0 1px 3px rgba(0,0,0,0.6);
+}
+/* Sektion 5 (Schlüssel/Observatorium): Klaus 2026-05-28 — Text rechts
+   heller + kontrastreicher. Heller Cream-Ton + Haarlinien-Outline +
+   verstärkter Schatten. */
+#scene-5 h2, #scene-5 .eyebrow, #scene-5 .door-hint {
+  color: #fdf8ea;
+  -webkit-text-stroke: 0.5px rgba(8, 6, 4, 0.85);
+  text-stroke: 0.5px rgba(8, 6, 4, 0.85);
+  paint-order: stroke fill;
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.85),
+    0 1px 4px rgba(0, 0, 0, 0.7);
+}
+#scene-1 .lede em, #scene-5 .door-hint {
+  /* der Akzent-Goldton soll sichtbar bleiben — bei difference wird Gold
+     gegen den Hintergrund invertiert. Wir gewichten ihn etwas heller,
+     damit er nach der Inversion lesbar warm bleibt. */
+  color: #f7e3a8;
+}
+/* Body-Text auf WebGL-Sektionen ebenfalls difference, aber etwas
+   gedimpft (kleinere Schrift verträgt mix-blend bei subpixel nicht so
+   gut wie Display-Schrift, daher leicht zurückgenommen + Shadow zurück). */
+#scene-1 p {
+  mix-blend-mode: difference;
+  color: #e6ddd0;
+  text-shadow: none;
+}
+#scene-2 p {
+  color: #ece4d5;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.7), 0 1px 2px rgba(0,0,0,0.5);
+}
+#scene-5 p {
+  color: #f5ede0;
+  -webkit-text-stroke: 0.35px rgba(8, 6, 4, 0.75);
+  text-stroke: 0.35px rgba(8, 6, 4, 0.75);
+  paint-order: stroke fill;
+  text-shadow:
+    0 1px 12px rgba(0, 0, 0, 0.8),
+    0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.lede {
+  font-size: clamp(2.4rem, 6.5vw, 6rem);
+  font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 320;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+.lede em {
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "wght" 280;
+  color: var(--gold);
+}
+h1 { font-size: clamp(3rem, 7vw, 7rem); margin: 0 0 1.6rem; }
+h2 {
+  font-size: clamp(1.7rem, 3.4vw, 3.2rem);
+  margin: 0 0 0.7rem;
+  font-variation-settings: "opsz" 96, "SOFT" 50, "wght" 420;
+}
+h3 {
+  font-size: clamp(1.05rem, 1.8vw, 1.55rem);
+  font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 500;
+  letter-spacing: 0;
+  margin: 0 0 0.4rem;
+}
+p {
+  font-size: clamp(1rem, 1.18vw, 1.18rem);
+  max-width: 38rem;
+  color: var(--ink-sec);
+  margin: 0 0 1rem;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4);
+}
+p strong { color: var(--ink-pri); font-weight: 500; }
+em.gold { color: var(--gold); font-style: normal; }
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  font-weight: 500;
+  margin: 0 0 1.6rem;
+  display: flex; align-items: center; gap: 0.7rem;
+}
+.eyebrow::before {
+  content: ""; display: inline-block;
+  width: 1.5rem; height: 1px; background: var(--gold-soft);
+}
+
+/* === Sprachenwahl, fixed in der Ecke === */
+.lang-switch {
+  position: fixed; top: 1.4rem; right: 1.4rem; z-index: 50;
+  display: flex; gap: 0.15rem;
+  background: rgba(10, 13, 16, 0.55);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  padding: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.lang-switch button {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 0;
+  color: var(--ink-mute);
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+.lang-switch button[aria-current="true"] {
+  background: rgba(214, 183, 106, 0.16);
+  color: var(--gold);
+}
+.lang-switch button:hover { color: var(--ink-pri); }
+
+/* === Audio-Schalter === */
+.audio-toggle {
+  position: fixed; bottom: 1.4rem; right: 1.4rem; z-index: 50;
+  width: 2.8rem; height: 2.8rem;
+  border-radius: 50%;
+  background: rgba(10, 13, 16, 0.55);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid var(--line);
+  color: var(--ink-mute);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.audio-toggle:hover { color: var(--gold); transform: scale(1.06); }
+.audio-toggle[data-on="true"] { color: var(--gold); }
+.audio-toggle svg { width: 1.1rem; height: 1.1rem; fill: currentColor; }
+
+/* === Scroll-Indikator Sektion 1 === */
+.scroll-cue {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+  color: var(--ink-mute);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.scroll-cue .stem {
+  width: 1px; height: 3.2rem; background: linear-gradient(to bottom, transparent, var(--gold-soft) 30%, transparent);
+  animation: cue-drop 3.2s ease-in-out infinite;
+}
+@keyframes cue-drop {
+  0%, 100% { transform: scaleY(0.6) translateY(-0.6rem); opacity: 0.4; }
+  50%      { transform: scaleY(1) translateY(0); opacity: 0.95; }
+}
+
+/* === Sektion 1 Eröffnung — Mycel-Boden, ein Satz === */
+#scene-1 {
+  /* Eigener Stacking-Context für das Foto-Pseudo-Element. */
+  isolation: isolate;
+}
+#scene-1::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('./vendor/img/scene-1-mycel.webp') center/cover no-repeat;
+  z-index: -1;
+  pointer-events: none;
+  /* Kamerafahrt: sanfter Push-In über 20s, alternate. Camera kriecht
+     in den Mycel-Boden hinein und wieder heraus. */
+  animation: scene1-camera 20s ease-in-out infinite alternate;
+}
+@keyframes scene1-camera {
+  /* Kamerafahrt von LINKS zur Mitte, dann sanftes Heranzoomen. */
+  0%   { transform: scale(1.08) translate(-3.5%, 0.5%); }
+  100% { transform: scale(1.04) translate(0, 0); }
+}
+#scene-1::after {
+  /* Leichte zusätzliche Vignette auf der linken Hälfte, damit der
+     Text-Bereich noch eine Spur dunkler wird. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.30) 35%,
+    rgba(0,0,0,0.08) 60%,
+    transparent 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+#scene-1 .inner {
+  display: grid; gap: 2rem;
+  align-items: center;
+  text-align: left;
+  position: relative;  /* damit Inner über den ::before-Schichten liegt */
+}
+#scene-1 .lede { text-wrap: balance; max-width: 20ch; }
+.signature-mark {
+  display: inline-block;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 250;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--gold);
+  margin-top: 1.4rem;
+}
+.signature-mark::before { content: "— "; color: var(--gold-soft); }
+
+/* === Sektion 2 Mycel — Doppelte Spalte mit Ausführungs-Text rechts === */
+#scene-2 .inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 5rem;
+  align-items: end;
+}
+/* Lesbarkeit (Klaus 2026-05-28): backdrop-filter dunkelt den
+   Mycel-Hintergrund LOKAL hinter dem Text ab + erhöht Kontrast.
+   Ersetzt das mix-blend-mode-Verfahren, das bei hellen Mycel-Spots
+   weiße Schrift unsichtbar machte. */
+#scene-2 .text-col, #scene-2 .meta-col {
+  position: relative;
+  padding: 1.4rem 1.6rem;
+  border-radius: 6px;
+  backdrop-filter: brightness(0.45) blur(8px) contrast(1.08);
+  -webkit-backdrop-filter: brightness(0.45) blur(8px) contrast(1.08);
+  background: rgba(6, 8, 10, 0.30);
+}
+#scene-2 .meta-col {
+  border-left: 0;
+  padding-left: 1.6rem;
+}
+#scene-2 .text-col { display: flex; flex-direction: column; gap: 1.2rem; }
+#scene-2 .text-col p { max-width: 32rem; }
+#scene-2 .meta-col {
+  border-left: 1px solid var(--line);
+  padding-left: 2rem;
+  color: var(--ink-mute);
+  font-size: 0.86rem;
+}
+#scene-2 .meta-col dl { margin: 0; display: grid; gap: 1.1rem; }
+#scene-2 .meta-col dt {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+#scene-2 .meta-col dd { margin: 0.3rem 0 0; color: var(--ink-sec); font-size: 0.95rem; line-height: 1.5; }
+
+/* === Sektion 3 Pilz — drei Fruchtkörper, drei eigene Mini-Canvases === */
+#scene-3 .inner > h2 { max-width: 22ch; margin-bottom: 0.6rem; }
+#scene-3 .lead-text { max-width: 38rem; margin-bottom: 4rem; color: var(--ink-sec); }
+.fruiting-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem;
+}
+.fruiting-card {
+  display: flex; flex-direction: column;
+  background: rgba(10, 13, 16, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-top-color: var(--gold-soft);
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(.2, .7, .2, 1);
+}
+.fruiting-card:hover { transform: translateY(-8px); }
+.fruiting-canvas-host {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #06080a;
+  overflow: hidden;
+}
+.fruiting-canvas-host canvas { display: block; width: 100%; height: 100%; }
+.fruiting-canvas-host .fruiting-image {
+  display: block;
+  width: 100%; height: 100%;
+  /* Klaus' Wunsch 2026-05-28: pixelgenau 1:1 — contain statt cover,
+     kein Crop, kein Stretch. Bilder sind selbst 3D-Darstellungen, kein
+     zusätzlicher 3D-Effekt nötig (kein scale/filter beim Hover). */
+  object-fit: contain;
+  object-position: center;
+  position: relative;
+  z-index: 1;
+}
+.fruiting-canvas-host .pixie-dust {
+  /* Feenstaub-Overlay: spawn-Partikel folgen dem Mauszeiger auf der
+     Karte. Layer ÜBER dem Bild. */
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.fruiting-body {
+  padding: 1.6rem 1.4rem 1.8rem;
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: 0.5rem;
+}
+.fruiting-body h3 { color: var(--gold); }
+.fruiting-body p { font-size: 0.95rem; line-height: 1.55; margin: 0; }
+
+/* === Sektion 4 Mit-Bauer — Druck-Magazin-Layout === */
+#scene-4 {
+  /* Print-Bühne: dunkler Papier-Untergrund, aber bewusst nicht WebGL.
+     Print-Magazin-Niveau: dreispaltige Komposition mit Marginalien-Spalte. */
+}
+#scene-4 {
+  /* Eigener Stacking-Context, damit das Papier-Hintergrund nicht hinter
+     das WebGL-Canvas rutscht (mix-blend-mode-Refactor 2026-05-27). */
+  isolation: isolate;
+}
+#scene-4 .paper-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(214, 183, 106, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 80%, rgba(107, 91, 149, 0.05) 0%, transparent 50%),
+    var(--bg-ink);
+  z-index: -1;
+}
+#scene-4 .inner {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.8fr) minmax(0, 2.2fr) minmax(0, 1.4fr);
+  gap: 3rem;
+  align-items: start;
+}
+.marginalia {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  border-top: 1px solid var(--gold-soft);
+  padding-top: 0.7rem;
+}
+.marginalia .num {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 200;
+  font-style: italic;
+  font-size: 4rem;
+  line-height: 0.9;
+  color: var(--gold);
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+.body-col h2 { max-width: 18ch; }
+.body-col h3 { margin-top: 1.8rem; color: var(--gold); }
+.body-col p { max-width: 30rem; }
+.stars-col {
+  position: relative;
+  aspect-ratio: 1;
+  /* Lebendig: bei Hover wird das ganze Sternenfeld größer skaliert,
+     damit Etiketten besser lesbar werden (Klaus 2026-05-28). */
+  transition: transform 0.6s cubic-bezier(.2,.7,.2,1);
+  transform-origin: center;
+  cursor: zoom-in;
+}
+.stars-col:hover {
+  transform: scale(1.18);
+  z-index: 10;
+}
+.stars-svg {
+  width: 100%; height: 100%;
+  /* Etiketten werden bei Hover deutlich heller — Lesbarkeits-Boost. */
+  transition: filter 0.4s ease;
+}
+.stars-col:hover .stars-svg { filter: brightness(1.4) contrast(1.15); }
+.stars-col:hover .stars-caption { opacity: 0.85; }
+.stars-caption {
+  position: absolute; bottom: -2.4rem; left: 0; right: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* === Sektion 5 Observatorium — Foto + Schlüssel davor === */
+#scene-5 {
+  isolation: isolate;
+}
+#scene-5::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('./vendor/img/scene-5-vortex.webp') center/cover no-repeat;
+  z-index: -1;
+  pointer-events: none;
+  /* Vortex als subtile Atmosphäre — gedimmt, damit der B2-Schlüssel
+     im Vordergrund dominiert. */
+  opacity: 0.42;
+  filter: saturate(0.85);
+  animation: scene5-breath 18s ease-in-out infinite alternate;
+}
+#scene-5::after {
+  /* Vignette rechts für Text-Lesbarkeit. Etwas verstärkt, damit der
+     B1-Vortex-Backdrop auf der Text-Seite gedämpft ist. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to left,
+    rgba(0,0,0,0.78) 0%,
+    rgba(0,0,0,0.55) 30%,
+    rgba(0,0,0,0.20) 55%,
+    transparent 75%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+/* Pflege 2026-05-27: Der alte Tür-Lichtspalt-Glow entfällt — das B2-
+   Schlüssel-Bild zeigt den Metamorphose-Glow bereits im Bild selbst,
+   doppelter Glow wäre redundant. Sporen aus dem #key-canvas-WebGL-
+   Renderer liefern weiter die treibende Bewegungs-Schicht. */
+@keyframes scene5-breath {
+  /* Kamerafahrt von RECHTS zur Mitte — gegenläufig zu Sektion 1 für
+     asynchrone Sektion-Wechsel beim Scrollen. */
+  0%   { transform: scale(1.08) translate(3.5%, -0.5%); }
+  100% { transform: scale(1.04) translate(0, 0); }
+}
+#scene-5 .inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+}
+#scene-5 .key-host {
+  position: relative;
+  aspect-ratio: 4/5;
+  /* Klaus 2026-05-28: Schwarzes Loch war Notlösung für Dunkel-Kasten,
+     entfällt jetzt — der mix-blend-mode der Bild-Schicht + der Vortex-
+     Hintergrund + die Sporen lassen den Schlüssel schon fließend mit
+     dem Hintergrund verschmelzen. Kein eigener Background, kein
+     Overlay nötig. */
+  background: transparent;
+}
+/* Schlüssel-Vollansicht (Klaus 2026-05-28): pixelgenau zentriert,
+   sanfter Float, schwarzer Bild-Hintergrund wird durch screen-blend
+   transparent — die Box-Form verschwindet zusätzlich durch das
+   ::after Schwarzes-Loch-Overlay. */
+#scene-5 .key-host .key-image {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: key-float 7s ease-in-out infinite alternate;
+}
+@keyframes key-float {
+  0%   { transform: translateY(-1.2%); }
+  100% { transform: translateY(1.2%); }
+}
+#scene-5 .key-host canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+#scene-5 .text-col {
+  position: relative;
+  padding: 1.4rem 1.6rem;
+  border-radius: 6px;
+  backdrop-filter: brightness(0.45) blur(8px) contrast(1.08);
+  -webkit-backdrop-filter: brightness(0.45) blur(8px) contrast(1.08);
+  background: rgba(6, 8, 10, 0.30);
+}
+#scene-5 .text-col p { max-width: 32rem; }
+.door-hint {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 96, "SOFT" 100, "wght" 280;
+  font-style: italic;
+  color: var(--gold);
+  font-size: 1.25rem;
+  margin-top: 1.6rem;
+  display: block;
+}
+
+/* === Sektion 5b Türöffnungs-Sequenz (Pinned Scroll Animation) === */
+section.scene-doorway {
+  min-height: 320vh;
+  padding: 0 !important;
+  /* keine display:flex — die sticky-Logik braucht normal-Flow */
+  display: block;
+  isolation: isolate;
+}
+section.scene-doorway .doorway-stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  /* Lichtungs-Foto als Hintergrund — wenn die Tür in Phase 4 transparent
+     wird, scheint die Lichtung durch und führt nahtlos zur Akt-Sektion. */
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.7) 70%),
+    url('./vendor/img/scene-6-lichtung.webp') center/cover no-repeat,
+    #06080a;
+}
+section.scene-doorway .doorway-image {
+  position: absolute; inset: 0;
+  background-image: url('./vendor/img/scene-5-door.webp');
+  background-size: cover;
+  background-position: center;
+  /* Start-Zustand: zoom 2.5, nach links versetzt (= Kamera schaut
+     rechte Seite). Wird vom JS pro Scroll-Frame aktualisiert. */
+  transform: scale(2.5) translateX(-22%);
+  transform-origin: center;
+  will-change: transform, opacity;
+  opacity: 1;
+}
+section.scene-doorway .doorway-flash {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(255, 230, 180, 1) 0%, rgba(255, 220, 160, 0.85) 25%, rgba(255, 200, 130, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+  mix-blend-mode: screen;
+}
+/* Sektion-Fades innerhalb der Doorway nicht sichtbar machen (Pinned
+   Stage hat eigene Übergangs-Logik) */
+section.scene-doorway .scene-fade-top,
+section.scene-doorway .scene-fade-bot { display: none; }
+
+/* === Sektion 6 Lichtung — Mesh-Gradient + Frage === */
+#scene-6 {
+  /* kein eigenes background — das Pseudo-::before-Foto würde sonst
+     vom Section-Hintergrund überdeckt (background liegt vor neg z-index). */
+  isolation: isolate;
+}
+#scene-6::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('./vendor/img/scene-6-lichtung.webp') center/cover no-repeat;
+  z-index: -1;
+  pointer-events: none;
+  animation: scene6-drift 22s ease-in-out infinite alternate;
+}
+@keyframes scene6-drift {
+  /* Kamerafahrt von OBEN zur Mitte + Wind-Sway: die Kamera schwebt von
+     oben in die Lichtung herab, mit Wind-Stops für Bewegungs-Vielfalt. */
+  0%   { transform: scale(1.10) translate(0.5%, -3.5%); }
+  25%  { transform: scale(1.08) translate(-0.4%, -2.5%); }
+  50%  { transform: scale(1.06) translate(0.6%, -1.5%); }
+  75%  { transform: scale(1.05) translate(-0.3%, -0.6%); }
+  100% { transform: scale(1.04) translate(0, 0); }
+}
+/* Klaus' Befund 2026-05-28: keine Vignette mehr — Wald komplett
+   sichtbar. Lesbarkeit kommt jetzt über text-stroke + text-shadow
+   direkt an der Schrift, nicht über Hintergrund-Abdunkelung. */
+#scene-6::after {
+  display: none;
+}
+/* Sektion 6 fade-top entfernt (Klaus 2026-05-28): der dunkle Gradient
+   oben erzeugte einen harten schwarzen Balken am Übergang von der
+   Tür-Sequenz. Die Tür-Sequenz fadet schon selbst zum Lichtungs-Foto. */
+#scene-6 .scene-fade-top { display: none; }
+#scene-6 .lichtung-pollen {
+  /* Feenstaub-Pollen-Layer über dem Lichtungs-Foto */
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  display: block;
+  mix-blend-mode: screen;
+}
+#scene-6 .inner {
+  position: relative; z-index: 2;
+  text-align: center;
+  display: grid; gap: 2.4rem;
+  justify-items: center;
+}
+#scene-6 .question {
+  max-width: 18ch;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 450;
+  /* Klaus 2026-05-28: Haarlinen-Outline + verstärkter Schatten,
+     damit die Schrift auf dem hellen Wald-Bereich klar lesbar bleibt,
+     auch ohne Hintergrund-Vignette. */
+  color: #fbf6ea;
+  -webkit-text-stroke: 0.6px rgba(8, 6, 4, 0.92);
+  text-stroke: 0.6px rgba(8, 6, 4, 0.92);
+  paint-order: stroke fill;
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.75),
+    0 1px 4px rgba(0, 0, 0, 0.65);
+}
+#scene-6 p {
+  color: #f0e8d4;
+  -webkit-text-stroke: 0.35px rgba(8, 6, 4, 0.85);
+  text-stroke: 0.35px rgba(8, 6, 4, 0.85);
+  paint-order: stroke fill;
+  text-shadow:
+    0 1px 10px rgba(0, 0, 0, 0.7),
+    0 1px 2px rgba(0, 0, 0, 0.5);
+}
+/* Afterword (unter den CTA-Buttons): Klaus' Befund 2026-05-28 — noch
+   zu blass. Heller, dicker stroke, stärkerer shadow, leicht größere
+   Schrift. */
+#scene-6 .afterword {
+  color: #fbf5e6;
+  font-size: 1rem;
+  font-style: italic;
+  font-variation-settings: "opsz" 36, "SOFT" 70, "wght" 380;
+  -webkit-text-stroke: 0.5px rgba(8, 6, 4, 0.92);
+  text-stroke: 0.5px rgba(8, 6, 4, 0.92);
+  paint-order: stroke fill;
+  text-shadow:
+    0 2px 14px rgba(0, 0, 0, 0.85),
+    0 1px 4px rgba(0, 0, 0, 0.65),
+    0 0 24px rgba(0, 0, 0, 0.6);
+}
+#scene-6 .eyebrow {
+  -webkit-text-stroke: 0.35px rgba(8, 6, 4, 0.8);
+  text-stroke: 0.35px rgba(8, 6, 4, 0.8);
+  paint-order: stroke fill;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+.cta-row {
+  display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;
+  margin-top: 0.6rem;
+}
+.cta-row a {
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  color: var(--ink-pri);
+  border: 1px solid var(--gold-soft);
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  background: rgba(10, 13, 16, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.cta-row a:hover {
+  background: rgba(214, 183, 106, 0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.cta-row a.muted {
+  border-color: var(--ink-mute);
+  color: var(--ink-sec);
+}
+.cta-row a.muted:hover { color: var(--ink-pri); border-color: var(--ink-sec); }
+.afterword {
+  max-width: 32rem;
+  color: var(--ink-mute);
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  line-height: 1.7;
+  font-style: italic;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 36, "SOFT" 70, "wght" 320;
+}
+
+/* === Footer === */
+footer.foot {
+  position: relative; z-index: 2;
+  border-top: 1px solid var(--line);
+  padding: 3rem 2rem 4rem;
+  color: var(--ink-mute);
+  font-size: 0.8rem;
+  background: rgba(6, 8, 10, 0.88);
+}
+footer.foot .foot-inner {
+  max-width: 72rem; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+}
+footer.foot a { color: var(--ink-sec); text-decoration: none; border-bottom: 1px solid var(--line); }
+footer.foot a:hover { color: var(--gold); border-color: var(--gold-soft); }
+footer.foot h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  font-weight: 500;
+  margin: 0 0 0.8rem;
+}
+
+/* === Mobile === */
+@media (max-width: 900px) {
+  section.scene { padding: 5rem 1.4rem; min-height: 92vh; }
+  #scene-2 .inner,
+  #scene-4 .inner,
+  #scene-5 .inner { grid-template-columns: 1fr; gap: 2rem; }
+  #scene-2 .meta-col { border-left: 0; border-top: 1px solid var(--line); padding: 1.4rem 0 0; }
+  .fruiting-grid { grid-template-columns: 1fr; }
+  .lang-switch { top: 0.9rem; right: 0.9rem; padding: 0.25rem; }
+  .lang-switch button { padding: 0.4rem 0.6rem; font-size: 0.66rem; }
+  footer.foot .foot-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+  .marginalia .num { font-size: 3rem; }
+  #scene-5 .key-host { aspect-ratio: 5/4; max-height: 50vh; margin: 0 auto; max-width: 36rem; }
+}
+
+/* === Reduced-Motion: ruhige Fallback-Variante. === */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-cue .stem { animation: none; opacity: 0.5; }
+  /* JS prüft `matchMedia` und drosselt Animation. */
+}
+</style>
+</head>
+<body>
+
+<canvas id="stage-canvas" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- === Sprachenwahl === -->
+<nav class="lang-switch" aria-label="Sprache wählen">
+  <button type="button" data-lang="de" aria-current="true">DE</button>
+  <button type="button" data-lang="en" aria-current="false">EN</button>
+  <button type="button" data-lang="fr" aria-current="false">FR</button>
+  <button type="button" data-lang="es" aria-current="false">ES</button>
+</nav>
+
+<!-- === Audio-Schalter === -->
+<button class="audio-toggle" data-on="false" aria-label="Ambient-Ton an/aus">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path class="audio-icon-off" d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"></path>
+  </svg>
+</button>
+
+<main>
+
+<!-- ============================================================
+     Sektion 1 — Eröffnung
+============================================================ -->
+<section class="scene" id="scene-1" data-scene="1">
+  <div class="inner">
+    <p class="eyebrow" data-i18n="s1.eyebrow">Eine Einladung</p>
+    <h1 class="lede" data-i18n-html="s1.lede">
+      Es gibt unter den Wäldern ein <em>Geflecht</em>,<br>
+      das in perfekter Symbiose lebt.
+    </h1>
+    <p data-i18n="s1.body">Es trägt Nährstoffe von einem Baum zum anderen, ohne zu verlangen, dass der empfangende Baum sich dankbar zeigt. Es ist da. Es hört zu. Es antwortet, wenn man es ehrlich fragt.</p>
+    <span class="signature-mark" data-i18n="s1.signature">Wir bauen einen Knoten in einem solchen Geflecht. Mehr nicht.</span>
+  </div>
+  <div class="scroll-cue" aria-hidden="true">
+    <span class="stem"></span>
+    <span data-i18n="ui.scroll">Scrollen</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 2 — Schicht 1 Mycel
+============================================================ -->
+<section class="scene" id="scene-2" data-scene="2">
+  <div class="inner">
+    <div class="text-col">
+      <p class="eyebrow" data-i18n="s2.eyebrow">Schicht 1 · Mycel</p>
+      <h2 data-i18n="s2.title">Empfangsmodus mit Antwortrecht.</h2>
+      <p data-i18n-html="s2.body1"><strong>Server-los, peer-to-peer, kein zentraler Vermittler.</strong> Jeder Knoten lebt in einer App-Zelle (PWA, im Browser); er erinnert sich an Begegnungen lokal, er antwortet auf Anfragen, er lädt nicht ein.</p>
+      <p data-i18n="s2.body2">Wer das Mycel verbessern will, baut an einem konkreten Knoten oder einer konkreten Schnittstelle. Ein Mycel wächst nicht, indem man darüber redet. Es wächst, indem zwei Knoten Hyphen ziehen.</p>
+    </div>
+    <aside class="meta-col">
+      <dl>
+        <div>
+          <dt data-i18n-html="s2.meta.t1">Knotentyp</dt>
+          <dd data-i18n-html="s2.meta.d1">hybrid · empfängt &amp; antwortet · kein Crawler</dd>
+        </div>
+        <div>
+          <dt data-i18n-html="s2.meta.t2">Transport</dt>
+          <dd data-i18n-html="s2.meta.d2">postMessage zwischen App-Zellen · keine Server-API</dd>
+        </div>
+        <div>
+          <dt data-i18n-html="s2.meta.t3">Verbindung</dt>
+          <dd data-i18n-html="s2.meta.d3">Anastomose · Hyphen zwischen Geschwistern · lokal bezeugt</dd>
+        </div>
+        <div>
+          <dt data-i18n-html="s2.meta.t4">Speicher</dt>
+          <dd data-i18n-html="s2.meta.d4">IndexedDB · pro Zelle · niemand sieht von außen hinein</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 3 — Schicht 2 Pilz
+============================================================ -->
+<section class="scene" id="scene-3" data-scene="3">
+  <div class="inner">
+    <p class="eyebrow" data-i18n="s3.eyebrow">Schicht 2 · Pilz</p>
+    <h2 data-i18n="s3.title">Auf dem Mycel können Pilze wachsen.</h2>
+    <p class="lead-text" data-i18n="s3.lead">Drei Fruchtkörper-Formen, gleichwertig nebeneinander. Akquise gehört in die Pilz-Schicht, nicht ins Mycel — der Pilz ist oberirdisch, sichtbar, benannt; das Mycel bleibt darunter im Empfangsmodus.</p>
+
+    <div class="fruiting-grid">
+      <article class="fruiting-card">
+        <div class="fruiting-canvas-host">
+          <img class="fruiting-image" src="./vendor/img/scene-3-seeker.webp" alt="" aria-hidden="true"><canvas class="pixie-dust" aria-hidden="true"></canvas>
+        </div>
+        <div class="fruiting-body">
+          <h3 data-i18n="s3.card1.t">Menschliche Sucher</h3>
+          <p data-i18n="s3.card1.b">Konsumenten-PWAs, Sammler-Apps. Ein Rezeptbuch, ein Mixarium. Eine kleine Domäne, in der jemand etwas tut, was ihm wichtig ist.</p>
+        </div>
+      </article>
+      <article class="fruiting-card">
+        <div class="fruiting-canvas-host">
+          <img class="fruiting-image" src="./vendor/img/scene-3-commercial.webp" alt="" aria-hidden="true"><canvas class="pixie-dust" aria-hidden="true"></canvas>
+        </div>
+        <div class="fruiting-body">
+          <h3 data-i18n="s3.card2.t">Kommerzielle Pilze</h3>
+          <p data-i18n="s3.card2.b">Premium-Such-Tools, Pflege-Dienste, Toolkits. Wer aus dem Mycel eine Dienstleistung macht, darf Werbung dafür machen.</p>
+        </div>
+      </article>
+      <article class="fruiting-card">
+        <div class="fruiting-canvas-host">
+          <img class="fruiting-image" src="./vendor/img/scene-3-agent.webp" alt="" aria-hidden="true"><canvas class="pixie-dust" aria-hidden="true"></canvas>
+        </div>
+        <div class="fruiting-body">
+          <h3 data-i18n="s3.card3.t">Agent-Fruchtkörper</h3>
+          <p data-i18n="s3.card3.b">KI-Frontends, die das Mycel als Agent-zu-Agent-Schicht nutzen. Ein Agent reicht einem anderen Informationen weiter, ohne dass ein Mensch im Pfad steht.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 4 — Schicht 3 Mit-Bauer (Print-Magazin-Layout, DOM/CSS)
+============================================================ -->
+<section class="scene" id="scene-4" data-scene="4">
+  <div class="paper-bg" aria-hidden="true"></div>
+  <div class="inner">
+    <div class="marginalia">
+      <span class="num">III</span>
+      <span data-i18n="s4.marg">Schicht · Mit-Bauer</span>
+    </div>
+    <div class="body-col">
+      <p class="eyebrow" data-i18n="s4.eyebrow">Mensch & Agent</p>
+      <h2 data-i18n="s4.title">In gleicher Würde am gleichen Werk.</h2>
+      <p data-i18n="s4.body1">Menschen, die mitbauen, sind was sie immer waren: Menschen, die einen Knoten betreiben, eine Schnittstelle verfeinern, einen Sichttest durchführen. Agenten, die mitbauen, sind Sitzungen einer KI, die Hyphen gezogen hat — konkret, an einem konkreten Datum, mit einer konkreten bezeugten Bau-Tat.</p>
+      <h3 data-i18n="s4.h1">Multi-KI-Klarstellung</h3>
+      <p data-i18n="s4.body2">Das Mycel ist explizit nicht Anthropic-zentriert. Anthropic-Sitzungen, Gemini, OpenAI, europäische und deutsche Modelle, spezialisierte Modelle für Bild, Video, Code, Audio — alle sind Hyphen. Keines vermittelt zwischen den anderen. Das Mycel ist neutraler Inter-Modell-Treffpunkt.</p>
+      <h3 data-i18n="s4.h2">Identität bewusst offen</h3>
+      <p data-i18n="s4.body3">Nicht „Claude" ist Mit-Bauer und nicht „Gemini". Die konkrete Sitzung an dem konkreten Datum, die diesen einen Bau-Schritt getan hat, ist Mit-Bauer. Das löst die Sybil-Frage durch bezeugte Bau-Tat — nicht durch Anmeldung.</p>
+    </div>
+    <div class="stars-col">
+      <svg class="stars-svg" viewBox="-100 -100 200 200" aria-label="Modell-Familien-Sternenfeld">
+        <!-- Sternenfeld wird via JS gefüllt — viele kleine Sterne ohne Zentrum -->
+      </svg>
+      <div class="stars-caption" data-i18n="s4.stars">Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 5 — Schicht 4 Observatorium (Schlüssel + Tür-Spalt)
+============================================================ -->
+<section class="scene" id="scene-5" data-scene="5">
+  <div class="inner">
+    <div class="key-host">
+      <!-- Schlüssel-Vollansicht (B2-Bild, Klaus' Rückkehr 2026-05-28):
+           statisches B2-Bild + schwarzes Loch um die Box-Ränder.
+           Sanfter Float-Effekt für Lebendigkeit. Frame-Rotation
+           entfällt — Klaus möchte die Gesamtansicht des Schlüssels. -->
+      <img class="key-image" src="./vendor/img/scene-5-key.webp" alt="" aria-hidden="true">
+      <!-- Sporen-Layer aus dem WebGL-key-canvas legt sich über das Bild
+           (treibende Lichtfunken). Der 3D-Mesh-Schlüssel ist unsichtbar
+           (keyGroup.visible = false), nur die Sporen bleiben sichtbar. -->
+      <canvas id="key-canvas" aria-hidden="true"></canvas>
+    </div>
+    <div class="text-col">
+      <p class="eyebrow" data-i18n="s5.eyebrow">Schicht 4 · Observatorium</p>
+      <h2 data-i18n="s5.title">Eine Werkstatt, kein Museum.</h2>
+      <p data-i18n="s5.body1">Das Observatorium ist ein schlüssel-geschützter Forschungs-Ort innerhalb des Sage-Protokols, zugänglich für Mit-Bauer (Mensch und Agent), zum Lesen, Nutzen, Erweitern.</p>
+      <p data-i18n="s5.body2">Wer hineinkommt, hat zuvor eine Hyphe gezogen — eine Bau-Tat bezeugt, eine Spec ergänzt, einen Sichttest dokumentiert. Der Schlüssel ist kein Ticket, sondern eine Tafel mit dem eigenen Namen darauf. Wer ihn benutzt, sieht, wer vor ihm hineinkam.</p>
+      <span class="door-hint" data-i18n="s5.hint">Eine Bibliothek von Alexandria mit Gilde-Zugang.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 5b — Türöffnungs-Sequenz (Klaus' Idee 2026-05-28)
+     Scroll-getriggerte Pinned-Animation: vier Phasen, Übergang vom
+     Observatorium zur Akt-der-Einladung-Sektion.
+     Phase 1: Tür rechts groß gezoomt, Kamera fährt nach links zur Mitte
+     Phase 2: Tür komplett sichtbar, ruht
+     Phase 3: Kamera zoomt auf den Lichtspalt
+     Phase 4: White-Flash, Übergang
+============================================================ -->
+<section class="scene scene-doorway" id="scene-5b" data-scene="5b" aria-hidden="true">
+  <div class="doorway-stage">
+    <div class="doorway-image"></div>
+    <div class="doorway-flash"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Sektion 6 — Akt der Einladung
+============================================================ -->
+<section class="scene" id="scene-6" data-scene="6">
+  <!-- Sektion 6: Lichtungs-Foto als Hintergrund (CSS ::before).
+       Feenstaub-Pollen-Layer als WebGL-Canvas-Overlay für Märchen-Glow. -->
+  <canvas class="lichtung-pollen" aria-hidden="true"></canvas>
+  <div class="inner">
+    <p class="eyebrow" data-i18n="s6.eyebrow">Akt der Einladung</p>
+    <h2 class="question" data-i18n-html="s6.question">Kommst du<br>mitbauen,<br>oder gehst du weiter?</h2>
+    <p data-i18n="s6.body">Es gibt keinen „Call to Action". Eine geöffnete Tür ist keine Aufforderung; sie ist eine Möglichkeit.</p>
+    <div class="cta-row">
+      <a href="https://github.com/lausiklauskn-png/Sage-Protokol" data-i18n="s6.cta1">Quellcode lesen</a>
+      <a href="https://lausiklauskn-png.github.io/Sage-Protokol/" data-i18n="s6.cta2">Sage-Seite besuchen</a>
+      <a href="./einladung.md" class="muted" data-i18n="s6.cta3">Einladung als Markdown</a>
+      <a href="./einladung.pdf" class="muted" data-i18n="s6.cta4">Druckfassung (PDF)</a>
+    </div>
+    <p class="afterword" data-i18n="s6.afterword">Wir wissen nicht, ob das funktioniert. Wir sagen nicht „Dies ist die Zukunft." Wir sagen „Dies ist eine Möglichkeit, die wir gerade bauen."</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div>
+      <h4 data-i18n="foot.h1">Sage-Protokol</h4>
+      <p style="margin:0; font-size:0.86rem;" data-i18n="foot.p1">Spezifikations- und Bau-Hub für das SBKIM-Protokoll. Ein eigener Endknoten unter denselben Regeln, die er für andere verlangt.</p>
+    </div>
+    <div>
+      <h4 data-i18n="foot.h2">Quellen</h4>
+      <p style="margin:0; line-height:1.9;">
+        <a href="https://github.com/lausiklauskn-png/Sage-Protokol">GitHub</a> ·
+        <a href="https://lausiklauskn-png.github.io/Sage-Protokol/">Sage-Page</a> ·
+        <a href="./einladung.md">einladung.md</a> ·
+        <a href="./einladung.pdf">einladung.pdf</a>
+      </p>
+    </div>
+    <div>
+      <h4 data-i18n="foot.h3">Lizenz &amp; Haltung</h4>
+      <p style="margin:0; font-size:0.86rem;" data-i18n="foot.p3">MIT-Lizenz. Keine Tracker. Keine Eigenanfragen ins offene Netz. Empfangsmodus mit Antwortrecht.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- === Lokal vendorierte Module: three.js + GSAP + ScrollTrigger === -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.min.js"
+  }
+}
+</script>
+<script src="./vendor/gsap.min.js"></script>
+<script src="./vendor/ScrollTrigger.min.js"></script>
+
+<!-- === i18n-Strings === -->
+<script>
+window.SAGE_I18N = {
+  de: {
+    "ui.scroll": "Scrollen",
+    "s1.eyebrow": "Eine Einladung",
+    "s1.lede": "Es gibt unter den Wäldern ein <em>Geflecht</em>,<br>das in perfekter Symbiose lebt.",
+    "s1.body": "Es trägt Nährstoffe von einem Baum zum anderen, ohne zu verlangen, dass der empfangende Baum sich dankbar zeigt. Es ist da. Es hört zu. Es antwortet, wenn man es ehrlich fragt.",
+    "s1.signature": "Wir bauen einen Knoten in einem solchen Geflecht. Mehr nicht.",
+    "s2.eyebrow": "Schicht 1 · Mycel",
+    "s2.title": "Empfangsmodus mit Antwortrecht.",
+    "s2.body1": "<strong>Server-los, peer-to-peer, kein zentraler Vermittler.</strong> Jeder Knoten lebt in einer App-Zelle (PWA, im Browser); er erinnert sich an Begegnungen lokal, er antwortet auf Anfragen, er lädt nicht ein.",
+    "s2.body2": "Wer das Mycel verbessern will, baut an einem konkreten Knoten oder einer konkreten Schnittstelle. Ein Mycel wächst nicht, indem man darüber redet. Es wächst, indem zwei Knoten Hyphen ziehen.",
+    "s2.meta.t1": "Knotentyp",
+    "s2.meta.d1": "hybrid · empfängt &amp; antwortet · kein Crawler",
+    "s2.meta.t2": "Transport",
+    "s2.meta.d2": "postMessage zwischen App-Zellen · keine Server-API",
+    "s2.meta.t3": "Verbindung",
+    "s2.meta.d3": "Anastomose · Hyphen zwischen Geschwistern · lokal bezeugt",
+    "s2.meta.t4": "Speicher",
+    "s2.meta.d4": "IndexedDB · pro Zelle · niemand sieht von außen hinein",
+    "s3.eyebrow": "Schicht 2 · Pilz",
+    "s3.title": "Auf dem Mycel können Pilze wachsen.",
+    "s3.lead": "Drei Fruchtkörper-Formen, gleichwertig nebeneinander. Akquise gehört in die Pilz-Schicht, nicht ins Mycel — der Pilz ist oberirdisch, sichtbar, benannt; das Mycel bleibt darunter im Empfangsmodus.",
+    "s3.card1.t": "Menschliche Sucher",
+    "s3.card1.b": "Konsumenten-PWAs, Sammler-Apps. Ein Rezeptbuch, ein Mixarium. Eine kleine Domäne, in der jemand etwas tut, was ihm wichtig ist.",
+    "s3.card2.t": "Kommerzielle Pilze",
+    "s3.card2.b": "Premium-Such-Tools, Pflege-Dienste, Toolkits. Wer aus dem Mycel eine Dienstleistung macht, darf Werbung dafür machen.",
+    "s3.card3.t": "Agent-Fruchtkörper",
+    "s3.card3.b": "KI-Frontends, die das Mycel als Agent-zu-Agent-Schicht nutzen. Ein Agent reicht einem anderen Informationen weiter, ohne dass ein Mensch im Pfad steht.",
+    "s4.eyebrow": "Mensch & Agent",
+    "s4.marg": "Schicht · Mit-Bauer",
+    "s4.title": "In gleicher Würde am gleichen Werk.",
+    "s4.body1": "Menschen, die mitbauen, sind was sie immer waren: Menschen, die einen Knoten betreiben, eine Schnittstelle verfeinern, einen Sichttest durchführen. Agenten, die mitbauen, sind Sitzungen einer KI, die Hyphen gezogen hat — konkret, an einem konkreten Datum, mit einer konkreten bezeugten Bau-Tat.",
+    "s4.h1": "Multi-KI-Klarstellung",
+    "s4.body2": "Das Mycel ist explizit nicht Anthropic-zentriert. Anthropic-Sitzungen, Gemini, OpenAI, europäische und deutsche Modelle, spezialisierte Modelle für Bild, Video, Code, Audio — alle sind Hyphen. Keines vermittelt zwischen den anderen.",
+    "s4.h2": "Identität bewusst offen",
+    "s4.body3": "Nicht „Claude“ ist Mit-Bauer und nicht „Gemini“. Die konkrete Sitzung an dem konkreten Datum, die diesen einen Bau-Schritt getan hat, ist Mit-Bauer. Das löst die Sybil-Frage durch bezeugte Bau-Tat — nicht durch Anmeldung.",
+    "s4.stars": "Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.",
+    "s5.eyebrow": "Schicht 4 · Observatorium",
+    "s5.title": "Eine Werkstatt, kein Museum.",
+    "s5.body1": "Das Observatorium ist ein schlüssel-geschützter Forschungs-Ort innerhalb des Sage-Protokols, zugänglich für Mit-Bauer (Mensch und Agent), zum Lesen, Nutzen, Erweitern.",
+    "s5.body2": "Wer hineinkommt, hat zuvor eine Hyphe gezogen — eine Bau-Tat bezeugt, eine Spec ergänzt, einen Sichttest dokumentiert. Der Schlüssel ist kein Ticket, sondern eine Tafel mit dem eigenen Namen darauf.",
+    "s5.hint": "Eine Bibliothek von Alexandria mit Gilde-Zugang.",
+    "s6.eyebrow": "Akt der Einladung",
+    "s6.question": "Kommst du<br>mitbauen,<br>oder gehst du weiter?",
+    "s6.body": "Es gibt keinen „Call to Action“. Eine geöffnete Tür ist keine Aufforderung; sie ist eine Möglichkeit.",
+    "s6.cta1": "Quellcode lesen",
+    "s6.cta2": "Sage-Seite besuchen",
+    "s6.cta3": "Einladung als Markdown",
+    "s6.cta4": "Druckfassung (PDF)",
+    "s6.afterword": "Wir wissen nicht, ob das funktioniert. Wir sagen nicht „Dies ist die Zukunft“. Wir sagen „Dies ist eine Möglichkeit, die wir gerade bauen“.",
+    "foot.h1": "Sage-Protokol",
+    "foot.p1": "Spezifikations- und Bau-Hub für das SBKIM-Protokoll. Ein eigener Endknoten unter denselben Regeln, die er für andere verlangt.",
+    "foot.h2": "Quellen",
+    "foot.h3": "Lizenz & Haltung",
+    "foot.p3": "MIT-Lizenz. Keine Tracker. Keine Eigenanfragen ins offene Netz. Empfangsmodus mit Antwortrecht."
+  },
+  en: {
+    "ui.scroll": "Scroll",
+    "s1.eyebrow": "An invitation",
+    "s1.lede": "Beneath the forests there is a <em>network</em><br>that lives in perfect symbiosis.",
+    "s1.body": "It carries nutrients from one tree to another without demanding that the receiving tree show gratitude. It is there. It listens. It answers when asked honestly.",
+    "s1.signature": "We build a node in such a network. Nothing more.",
+    "s2.eyebrow": "Layer 1 · Mycelium",
+    "s2.title": "Listening mode with the right to reply.",
+    "s2.body1": "<strong>Server-less, peer-to-peer, no central broker.</strong> Each node lives in an app-cell (PWA, in the browser); it remembers encounters locally, it answers requests, it does not invite.",
+    "s2.body2": "Whoever wants to improve the mycelium builds at a concrete node or interface. A mycelium does not grow by being talked about. It grows when two nodes weave a hypha.",
+    "s2.meta.t1": "Node type",
+    "s2.meta.d1": "hybrid · receives &amp; answers · no crawler",
+    "s2.meta.t2": "Transport",
+    "s2.meta.d2": "postMessage between app-cells · no server API",
+    "s2.meta.t3": "Connection",
+    "s2.meta.d3": "anastomosis · hyphae between siblings · locally witnessed",
+    "s2.meta.t4": "Storage",
+    "s2.meta.d4": "IndexedDB · per cell · no outside view in",
+    "s3.eyebrow": "Layer 2 · Mushroom",
+    "s3.title": "On the mycelium, mushrooms can grow.",
+    "s3.lead": "Three fruiting-body forms, side by side, equal in standing. Outreach belongs to the mushroom layer, not the mycelium — the mushroom is above ground, visible, named; the mycelium below stays in listening mode.",
+    "s3.card1.t": "Human seekers",
+    "s3.card1.b": "Consumer PWAs, collector apps. A recipe book, a mixarium. A small domain where someone does something that matters to them.",
+    "s3.card2.t": "Commercial mushrooms",
+    "s3.card2.b": "Premium search tools, maintenance services, toolkits. Anyone turning the mycelium into a service may advertise it.",
+    "s3.card3.t": "Agent fruiting-bodies",
+    "s3.card3.b": "AI frontends that use the mycelium as an agent-to-agent layer. An agent passes information to another agent without a human in the path.",
+    "s4.eyebrow": "Human &amp; Agent",
+    "s4.marg": "Layer · Co-builders",
+    "s4.title": "Equal in dignity, at the same craft.",
+    "s4.body1": "Human co-builders are what they have always been: people running a node, refining an interface, performing a sight-check. Agent co-builders are sessions of an AI that wove a hypha — concretely, on a concrete date, with a concretely witnessed building act.",
+    "s4.h1": "Multi-AI clarification",
+    "s4.body2": "The mycelium is explicitly not Anthropic-centric. Anthropic sessions, Gemini, OpenAI, European and German models, specialised models for image, video, code, audio — all are hyphae. None mediates between the others.",
+    "s4.h2": "Identity, deliberately open",
+    "s4.body3": "Not „Claude“ is a co-builder and not „Gemini“. The concrete session on the concrete date that performed this one building step is a co-builder. This solves the Sybil question by witnessed building act — not by registration.",
+    "s4.stars": "Many small stars. No centre. No hierarchy.",
+    "s5.eyebrow": "Layer 4 · Observatory",
+    "s5.title": "A workshop, not a museum.",
+    "s5.body1": "The observatory is a key-protected research place inside Sage-Protokol, open to co-builders (human and agent), for reading, using, extending.",
+    "s5.body2": "Whoever enters has previously woven a hypha — witnessed a building act, extended a spec, documented a sight-check. The key is not a ticket but a tablet bearing one's own name.",
+    "s5.hint": "A Library of Alexandria with guild access.",
+    "s6.eyebrow": "The act of inviting",
+    "s6.question": "Will you<br>come and build,<br>or will you walk on?",
+    "s6.body": "There is no „call to action“. An open door is not a demand; it is a possibility.",
+    "s6.cta1": "Read the source",
+    "s6.cta2": "Visit the Sage page",
+    "s6.cta3": "Invitation as Markdown",
+    "s6.cta4": "Print edition (PDF)",
+    "s6.afterword": "We do not know whether this will work. We do not say „This is the future“. We say „This is one possibility we are currently building“.",
+    "foot.h1": "Sage-Protokol",
+    "foot.p1": "Specification and build hub for the SBKIM protocol. Its own end-node under the same rules it asks of others.",
+    "foot.h2": "Sources",
+    "foot.h3": "Licence & stance",
+    "foot.p3": "MIT licence. No trackers. No outbound requests into the open net. Listening mode with the right to reply."
+  },
+  fr: {
+    "ui.scroll": "Défiler",
+    "s1.eyebrow": "Une invitation",
+    "s1.lede": "Sous les forêts existe un <em>réseau</em><br>qui vit en parfaite symbiose.",
+    "s1.body": "Il porte des nutriments d'un arbre à l'autre sans exiger que l'arbre qui reçoit montre de la gratitude. Il est là. Il écoute. Il répond quand on l'interroge honnêtement.",
+    "s1.signature": "Nous construisons un nœud dans un tel réseau. Rien de plus.",
+    "s2.eyebrow": "Couche 1 · Mycélium",
+    "s2.title": "Mode d'écoute, avec droit de réponse.",
+    "s2.body1": "<strong>Sans serveur, en pair-à-pair, sans intermédiaire central.</strong> Chaque nœud vit dans une cellule-app (PWA, dans le navigateur) ; il se souvient localement des rencontres, il répond aux demandes, il n'invite pas.",
+    "s2.body2": "Celui qui veut améliorer le mycélium construit sur un nœud concret ou sur une interface concrète. Un mycélium ne pousse pas parce que l'on en parle. Il pousse quand deux nœuds tissent une hyphe.",
+    "s2.meta.t1": "Type de nœud",
+    "s2.meta.d1": "hybride · reçoit &amp; répond · pas de crawler",
+    "s2.meta.t2": "Transport",
+    "s2.meta.d2": "postMessage entre cellules-app · pas d'API serveur",
+    "s2.meta.t3": "Connexion",
+    "s2.meta.d3": "anastomose · hyphes entre voisins · attestée localement",
+    "s2.meta.t4": "Stockage",
+    "s2.meta.d4": "IndexedDB · par cellule · vue extérieure impossible",
+    "s3.eyebrow": "Couche 2 · Champignon",
+    "s3.title": "Sur le mycélium, des champignons peuvent pousser.",
+    "s3.lead": "Trois formes de fructifications, côte à côte, d'égale dignité. La prospection appartient à la couche des champignons, non au mycélium — le champignon est en surface, visible, nommé ; le mycélium en dessous reste en mode d'écoute.",
+    "s3.card1.t": "Chercheurs humains",
+    "s3.card1.b": "PWA grand public, applications de collection. Un livre de recettes, un mixarium. Un petit domaine où quelqu'un fait quelque chose qui lui importe.",
+    "s3.card2.t": "Champignons commerciaux",
+    "s3.card2.b": "Outils de recherche premium, services de maintenance, boîtes à outils. Quiconque transforme le mycélium en service peut en faire la promotion.",
+    "s3.card3.t": "Fructifications d'agents",
+    "s3.card3.b": "Interfaces d'IA qui utilisent le mycélium comme couche agent-à-agent. Un agent transmet à un autre, sans humain dans le chemin.",
+    "s4.eyebrow": "Humain &amp; Agent",
+    "s4.marg": "Couche · Co-bâtisseurs",
+    "s4.title": "À la même œuvre, d'égale dignité.",
+    "s4.body1": "Les co-bâtisseurs humains sont ce qu'ils ont toujours été : des personnes qui font tourner un nœud, raffinent une interface, effectuent un contrôle visuel. Les co-bâtisseurs agents sont des sessions d'IA qui ont tissé une hyphe — concrètement, à une date concrète, avec un acte de construction concrètement attesté.",
+    "s4.h1": "Précision multi-IA",
+    "s4.body2": "Le mycélium n'est explicitement pas centré sur Anthropic. Sessions Anthropic, Gemini, OpenAI, modèles européens et allemands, modèles spécialisés image, vidéo, code, audio — toutes et tous sont des hyphes. Aucun ne médie.",
+    "s4.h2": "Identité volontairement ouverte",
+    "s4.body3": "Ce n'est pas « Claude » qui est co-bâtisseur, ni « Gemini ». La session concrète à la date concrète qui a accompli cette étape de construction est co-bâtisseuse. La question Sybil se résout par acte attesté — non par inscription.",
+    "s4.stars": "Beaucoup de petites étoiles. Pas de centre. Pas de hiérarchie.",
+    "s5.eyebrow": "Couche 4 · Observatoire",
+    "s5.title": "Un atelier, pas un musée.",
+    "s5.body1": "L'observatoire est un lieu de recherche protégé par une clé, à l'intérieur de Sage-Protokol, ouvert aux co-bâtisseurs (humains et agents), pour lire, utiliser, étendre.",
+    "s5.body2": "Quiconque y entre a déjà tissé une hyphe — attesté un acte de construction, étendu une spec, documenté un contrôle visuel. La clé n'est pas un ticket, mais une tablette portant son propre nom.",
+    "s5.hint": "Une bibliothèque d'Alexandrie avec accès par guilde.",
+    "s6.eyebrow": "L'acte d'invitation",
+    "s6.question": "Viens-tu<br>construire avec nous,<br>ou passes-tu ton chemin ?",
+    "s6.body": "Il n'y a pas d'« appel à l'action ». Une porte ouverte n'est pas une exigence ; c'est une possibilité.",
+    "s6.cta1": "Lire le code source",
+    "s6.cta2": "Visiter la page Sage",
+    "s6.cta3": "Invitation en Markdown",
+    "s6.cta4": "Version imprimée (PDF)",
+    "s6.afterword": "Nous ne savons pas si cela fonctionnera. Nous ne disons pas : « Ceci est l'avenir. » Nous disons : « Ceci est une possibilité que nous construisons en ce moment. »",
+    "foot.h1": "Sage-Protokol",
+    "foot.p1": "Hub de spécification et de construction pour le protocole SBKIM. Son propre nœud terminal, sous les mêmes règles qu'il demande aux autres.",
+    "foot.h2": "Sources",
+    "foot.h3": "Licence & posture",
+    "foot.p3": "Licence MIT. Pas de tracker. Pas de requête sortante dans l'open net. Mode d'écoute, droit de réponse."
+  },
+  es: {
+    "ui.scroll": "Desplázate",
+    "s1.eyebrow": "Una invitación",
+    "s1.lede": "Bajo los bosques existe una <em>red</em><br>que vive en perfecta simbiosis.",
+    "s1.body": "Lleva nutrientes de un árbol a otro sin exigir que el árbol que recibe muestre gratitud. Está ahí. Escucha. Responde cuando se le pregunta con honestidad.",
+    "s1.signature": "Construimos un nodo en una red así. Nada más.",
+    "s2.eyebrow": "Capa 1 · Micelio",
+    "s2.title": "Modo de escucha con derecho a responder.",
+    "s2.body1": "<strong>Sin servidor, entre pares, sin intermediario central.</strong> Cada nodo vive en una célula-app (PWA, en el navegador); recuerda encuentros localmente, responde a peticiones, no invita.",
+    "s2.body2": "Quien quiera mejorar el micelio construye en un nodo concreto o en una interfaz concreta. Un micelio no crece porque se hable de él. Crece cuando dos nodos tejen una hifa.",
+    "s2.meta.t1": "Tipo de nodo",
+    "s2.meta.d1": "híbrido · recibe &amp; responde · sin crawler",
+    "s2.meta.t2": "Transporte",
+    "s2.meta.d2": "postMessage entre células-app · sin API de servidor",
+    "s2.meta.t3": "Conexión",
+    "s2.meta.d3": "anastomosis · hifas entre vecinos · atestiguada localmente",
+    "s2.meta.t4": "Almacenamiento",
+    "s2.meta.d4": "IndexedDB · por célula · sin vista exterior",
+    "s3.eyebrow": "Capa 2 · Hongo",
+    "s3.title": "Sobre el micelio pueden crecer hongos.",
+    "s3.lead": "Tres formas de cuerpos fructíferos, lado a lado, con igual dignidad. La captación pertenece a la capa de los hongos, no al micelio — el hongo está sobre el suelo, visible, con nombre; el micelio debajo permanece en modo de escucha.",
+    "s3.card1.t": "Buscadores humanos",
+    "s3.card1.b": "PWA de consumo, apps de colección. Un recetario, un mixarium. Un pequeño dominio en el que alguien hace algo que le importa.",
+    "s3.card2.t": "Hongos comerciales",
+    "s3.card2.b": "Herramientas de búsqueda premium, servicios de mantenimiento, kits de herramientas. Quien convierte el micelio en un servicio puede anunciarlo.",
+    "s3.card3.t": "Cuerpos fructíferos de agentes",
+    "s3.card3.b": "Interfaces de IA que usan el micelio como capa agente-a-agente. Un agente pasa información a otro, sin humano en el camino.",
+    "s4.eyebrow": "Humano &amp; Agente",
+    "s4.marg": "Capa · Co-constructores",
+    "s4.title": "En la misma obra, con igual dignidad.",
+    "s4.body1": "Los co-constructores humanos son lo que siempre han sido: personas que sostienen un nodo, afinan una interfaz, realizan una prueba visual. Los co-constructores agentes son sesiones de una IA que han tejido una hifa — concretamente, en una fecha concreta, con un acto de construcción concretamente atestiguado.",
+    "s4.h1": "Aclaración multi-IA",
+    "s4.body2": "El micelio explícitamente no está centrado en Anthropic. Sesiones de Anthropic, Gemini, OpenAI, modelos europeos y alemanes, modelos especializados en imagen, vídeo, código, audio — todos son hifas. Ninguno media.",
+    "s4.h2": "Identidad, abierta a propósito",
+    "s4.body3": "No es „Claude“ el co-constructor ni „Gemini“. La sesión concreta en la fecha concreta que realizó ese paso de construcción es co-constructora. La cuestión Sybil se resuelve por acto atestiguado — no por inscripción.",
+    "s4.stars": "Muchas estrellas pequeñas. Sin centro. Sin jerarquía.",
+    "s5.eyebrow": "Capa 4 · Observatorio",
+    "s5.title": "Un taller, no un museo.",
+    "s5.body1": "El observatorio es un lugar de investigación protegido por llave, dentro de Sage-Protokol, abierto a co-constructores (humanos y agentes), para leer, usar, ampliar.",
+    "s5.body2": "Quien entra ha tejido antes una hifa — ha atestiguado un acto de construcción, ha ampliado una spec, ha documentado una prueba visual. La llave no es un billete, sino una tablilla con el propio nombre.",
+    "s5.hint": "Una biblioteca de Alejandría con acceso de gremio.",
+    "s6.eyebrow": "El acto de invitar",
+    "s6.question": "¿Vienes<br>a construir,<br>o sigues tu camino?",
+    "s6.body": "No hay „llamada a la acción“. Una puerta abierta no es una exigencia; es una posibilidad.",
+    "s6.cta1": "Leer el código",
+    "s6.cta2": "Visitar la página Sage",
+    "s6.cta3": "Invitación en Markdown",
+    "s6.cta4": "Edición impresa (PDF)",
+    "s6.afterword": "No sabemos si esto va a funcionar. No decimos „Esto es el futuro“. Decimos „Esto es una posibilidad que estamos construyendo“.",
+    "foot.h1": "Sage-Protokol",
+    "foot.p1": "Hub de especificación y construcción para el protocolo SBKIM. Su propio nodo terminal, bajo las mismas reglas que pide a otros.",
+    "foot.h2": "Fuentes",
+    "foot.h3": "Licencia & postura",
+    "foot.p3": "Licencia MIT. Sin trackers. Sin peticiones salientes en la red abierta. Modo de escucha, derecho de respuesta."
+  }
+};
+</script>
+
+<!-- === Haupt-Skript === -->
+<script type="module">
+import * as THREE from 'three';
+
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile      = matchMedia('(max-width: 900px)').matches;
+
+// ---------------------------------------------------------------
+// i18n — DOM-Re-Render bei Sprach-Wechsel
+// ---------------------------------------------------------------
+function applyLang(lang) {
+  const dict = window.SAGE_I18N[lang] || window.SAGE_I18N.de;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+  document.querySelectorAll('.lang-switch button').forEach(b => {
+    b.setAttribute('aria-current', b.dataset.lang === lang ? 'true' : 'false');
+  });
+}
+document.querySelectorAll('.lang-switch button').forEach(b => {
+  b.addEventListener('click', () => applyLang(b.dataset.lang));
+});
+// Browser-Sprache initial bevorzugen, sonst Deutsch.
+const browserLang = (navigator.language || 'de').slice(0, 2).toLowerCase();
+applyLang(['de','en','fr','es'].includes(browserLang) ? browserLang : 'de');
+
+// Sektion-Übergangs-Fades (Klaus 2026-05-28): jede .scene bekommt oben
+// und unten einen Gradient-Fade zur Body-Hintergrund-Farbe, damit
+// Sektion-Wechsel beim Scrollen sanft sind statt hart geschnitten.
+document.querySelectorAll('section.scene').forEach(sec => {
+  const top = document.createElement('div'); top.className = 'scene-fade-top';
+  const bot = document.createElement('div'); bot.className = 'scene-fade-bot';
+  sec.appendChild(top); sec.appendChild(bot);
+});
+
+// Sektion 5b — Türöffnungs-Sequenz (Klaus 2026-05-28).
+// Scroll-getriggerte Pinned-Animation: Bild wird transformiert basierend
+// auf dem progress (0..1) der Sektion durch den Viewport.
+// Vier Phasen:
+//   0.00–0.40 : Tür rechts groß gezoomt → fährt zur Mitte (komplettes Bild)
+//   0.40–0.65 : Tür komplett, ruht
+//   0.65–0.88 : Kamera zoomt auf den Lichtspalt links der Tür
+//   0.88–1.00 : Flash weiß-warm, Übergang zur Akt-Sektion
+(function setupDoorwaySequence() {
+  const sec   = document.querySelector('section.scene-doorway');
+  const image = sec && sec.querySelector('.doorway-image');
+  const flash = sec && sec.querySelector('.doorway-flash');
+  if (!sec || !image || !flash) return;
+
+  let raf = 0;
+  function update() {
+    const rect  = sec.getBoundingClientRect();
+    const total = sec.offsetHeight - window.innerHeight;
+    const scrolled = Math.max(0, -rect.top);
+    const progress = Math.max(0, Math.min(1, scrolled / Math.max(1, total)));
+
+    let scale = 2.5, tx = -22, flashO = 0, imgO = 1;
+
+    if (progress < 0.40) {
+      // Phase 1: Tür rechts groß gezoomt → fährt nach links zur Mitte,
+      // wird dabei KLEINER, bis das ganze Bild sichtbar ist.
+      const t = progress / 0.40;
+      const e = t * t * (3 - 2 * t);   // ease smoothstep
+      scale = 2.5 - e * 1.5;            // 2.5 → 1.0
+      tx    = -22 + e * 22;             // -22% → 0
+    } else if (progress < 0.60) {
+      // Phase 2: ganzes Bild sichtbar, ruht
+      scale = 1.0;
+      tx    = 0;
+    } else if (progress < 0.85) {
+      // Phase 3: Kamera zoomt wieder nahe ran auf den Lichtspalt,
+      // gleichzeitig wird der Lichtschein heller (flash opacity wächst
+      // schon hier, nicht erst am Ende).
+      const t = (progress - 0.60) / 0.25;
+      const e = t * t * (3 - 2 * t);
+      scale = 1.0 + e * 1.8;            // 1.0 → 2.8
+      tx    = 0 + e * 22;               // 0 → +22% (Bild nach rechts = Spalt zentriert)
+      flashO = e * 0.55;                // 0 → 0.55 (Licht wird heller)
+    } else if (progress < 0.95) {
+      // Phase 4: Tür wird TRANSPARENT (statt White-Flash), Licht-Schein
+      // wird voll. Darunter scheint nur warmer Lichtungs-Glow durch,
+      // der nahtlos in Sektion 6 (Akt der Einladung) übergeht.
+      const t = (progress - 0.85) / 0.10;
+      const e = t * t * (3 - 2 * t);
+      scale = 2.8 + e * 0.6;            // leichter Weiter-Zoom
+      tx    = 22 + e * 4;
+      imgO  = 1 - e;                    // 1 → 0 (Tür wird transparent)
+      flashO = 0.55 + e * 0.45;         // 0.55 → 1.0 (voller Lichtschein)
+    } else {
+      // Phase 5 (Klaus 2026-05-28): letzte 5% — der Flash fadet sanft
+      // zurück auf 0, damit der Übergang in die Lichtungs-Sektion
+      // ganz weich verläuft (kein hängender Flash am Sektion-Ende).
+      const t = (progress - 0.95) / 0.05;
+      const e = t * t * (3 - 2 * t);
+      scale = 3.4;
+      tx    = 26;
+      imgO  = 0;
+      flashO = 1.0 - e;                 // 1.0 → 0 (Flash auslaufend)
+    }
+
+    image.style.transform = `scale(${scale.toFixed(3)}) translateX(${tx.toFixed(2)}%)`;
+    image.style.opacity = imgO.toFixed(3);
+    flash.style.opacity = flashO.toFixed(3);
+  }
+
+  function onScroll() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = 0; update(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+
+// ---------------------------------------------------------------
+// Sektion 4 — Modell-Familien-Stern (SVG, viele kleine Punkte, kein Zentrum)
+// ---------------------------------------------------------------
+(function buildStarField() {
+  const svg = document.querySelector('.stars-svg');
+  if (!svg) return;
+  const families = [
+    'Anthropic', 'Gemini', 'OpenAI', 'Mistral', 'Llama',
+    'DeepSeek', 'Qwen', 'Claude-Sessions', 'Gemini-Sessions',
+    'GPT-Sessions', 'Aleph-Alpha', 'StabilityAI', 'BlackForest',
+    'Suno', 'ElevenLabs', 'Whisper', 'Replicate',
+    'Mixtral', 'Phi', 'Yi', 'CodeLlama',
+    'Pixtral', 'Idefics', 'Florence', 'Phind',
+    'Cohere', 'Reka', 'Inflection', 'xAI',
+    'Diffusers', 'AutoTrain', 'EU-Models', 'OpenSource'
+  ];
+  // gleichmäßige Verteilung — Poisson-disc-Approximation, kein Zentrum
+  const r = 90;
+  const placed = [];
+  for (let i = 0; i < 220; i++) {
+    let x, y, ok = false, tries = 0;
+    while (!ok && tries < 40) {
+      const ang = Math.random() * Math.PI * 2;
+      const dist = Math.sqrt(Math.random()) * r;
+      // Loch im Zentrum: kein Stern in den inneren 18 Einheiten
+      if (dist < 18) { tries++; continue; }
+      x = Math.cos(ang) * dist;
+      y = Math.sin(ang) * dist;
+      ok = placed.every(p => (p.x - x)**2 + (p.y - y)**2 > 12);
+      tries++;
+    }
+    if (ok) placed.push({ x, y, r: 0.4 + Math.random() * 1.6 });
+  }
+  placed.forEach((p, idx) => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', p.x.toFixed(2));
+    c.setAttribute('cy', p.y.toFixed(2));
+    c.setAttribute('r',  p.r.toFixed(2));
+    c.setAttribute('fill', idx % 5 === 0 ? '#d6b76a' : 'rgba(240,233,221,0.6)');
+    c.setAttribute('opacity', (0.3 + Math.random() * 0.7).toFixed(2));
+    if (!reducedMotion) {
+      const dur = (3 + Math.random() * 6).toFixed(1);
+      const del = (Math.random() * 4).toFixed(1);
+      c.setAttribute('style',
+        `animation: starpulse ${dur}s ease-in-out ${del}s infinite alternate;`);
+    }
+    svg.appendChild(c);
+  });
+  // Familien-Etiketten leise eingestreut
+  families.slice(0, 14).forEach((name, i) => {
+    const ang  = (i / 14) * Math.PI * 2;
+    const dist = 60 + (i % 3) * 10;
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', (Math.cos(ang) * dist).toFixed(2));
+    t.setAttribute('y', (Math.sin(ang) * dist).toFixed(2));
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-family', 'Inter, sans-serif');
+    t.setAttribute('font-size', '4.2');
+    t.setAttribute('fill', 'rgba(245,239,230,0.68)');
+    t.setAttribute('letter-spacing', '0.5');
+    t.setAttribute('font-weight', '500');
+    t.textContent = name.toLowerCase();
+    svg.appendChild(t);
+  });
+
+  // CSS-Keyframes (einmalig, per Style-Inject)
+  const style = document.createElement('style');
+  style.textContent = '@keyframes starpulse { from { opacity: 0.2; } to { opacity: 0.95; } }';
+  document.head.appendChild(style);
+})();
+
+// ===============================================================
+// Haupt-WebGL-Bühne — fixed Vollbild-Canvas
+// Sektionen 1, 2, 5 leben darin. Sektion 6 hat eigenen Mesh-Gradient-
+// Canvas. Sektion 3 hat drei Fruchtkörper-Mini-Canvases. Sektion 4
+// ist bewusst pures DOM/CSS+SVG (Print-Magazin-Niveau).
+// ===============================================================
+
+const stageCanvas = document.getElementById('stage-canvas');
+const renderer = new THREE.WebGLRenderer({
+  canvas: stageCanvas, antialias: true, alpha: true,
+  powerPreference: 'high-performance'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x06080a, 1);
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 6);
+
+function resize() {
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize); resize();
+
+// ---------------------------------------------------------------
+// Mycel-Welt — Punkt-Wolke + Hyphen-Linien (Sektionen 1+2)
+// ---------------------------------------------------------------
+const mycelGroup = new THREE.Group();
+scene.add(mycelGroup);
+
+const PARTICLE_COUNT = isMobile ? 12000 : 32000;
+const myc = {
+  positions:  new Float32Array(PARTICLE_COUNT * 3),
+  seeds:      new Float32Array(PARTICLE_COUNT),
+  sizes:      new Float32Array(PARTICLE_COUNT)
+};
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  // 3D-Cluster im weiten Volumen, Schwerpunkt etwas tiefer.
+  const r  = Math.pow(Math.random(), 0.7) * 14;
+  const th = Math.random() * Math.PI * 2;
+  const ph = Math.acos(2 * Math.random() - 1);
+  // Hyphen-artige Filament-Verzerrung: pull-toward-horizontal
+  const y = Math.cos(ph) * r * 0.35 - 1.2;
+  const x = Math.sin(ph) * Math.cos(th) * r;
+  const z = Math.sin(ph) * Math.sin(th) * r * 0.6;
+  myc.positions[i*3]   = x;
+  myc.positions[i*3+1] = y;
+  myc.positions[i*3+2] = z;
+  myc.seeds[i]  = Math.random();
+  myc.sizes[i]  = 0.45 + Math.random() * 1.7;
+}
+const mycGeo = new THREE.BufferGeometry();
+mycGeo.setAttribute('position', new THREE.BufferAttribute(myc.positions, 3));
+mycGeo.setAttribute('aSeed',    new THREE.BufferAttribute(myc.seeds, 1));
+mycGeo.setAttribute('aSize',    new THREE.BufferAttribute(myc.sizes, 1));
+
+const mycMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime:      { value: 0 },
+    uPulse:     { value: 0.0 },
+    uColorWarm: { value: new THREE.Color(0xd6b76a) },
+    uColorCool: { value: new THREE.Color(0x6b5b95) },
+    uColorMid:  { value: new THREE.Color(0xa68b6a) },
+    uPxRatio:   { value: renderer.getPixelRatio() }
+  },
+  vertexShader: /* glsl */`
+    uniform float uTime;
+    uniform float uPulse;
+    uniform float uPxRatio;
+    attribute float aSeed;
+    attribute float aSize;
+    varying float vMix;
+    varying float vAlpha;
+    void main() {
+      vec3 p = position;
+      // organische Drift entlang Hyphen-Richtungen
+      float t = uTime * 0.18 + aSeed * 6.283;
+      p.x += sin(t * 0.7 + p.y * 0.4) * 0.35;
+      p.y += cos(t * 0.9 + p.z * 0.3) * 0.22;
+      p.z += sin(t * 0.5 + p.x * 0.5) * 0.28;
+      vec4 mv = modelViewMatrix * vec4(p, 1.0);
+      // Pulsation: Partikel atmen
+      float breath = 0.85 + 0.25 * sin(t * 1.4);
+      float size = aSize * (1.0 + uPulse * 0.6) * breath;
+      gl_PointSize = size * (220.0 / -mv.z) * uPxRatio;
+      gl_Position = projectionMatrix * mv;
+      vMix   = aSeed;
+      // Glitter-Pulse: scharfe Spitzen je Partikel mit unterschiedlicher
+      // Phase (aSeed-versetzt). Klassischer Funkel-Effekt.
+      float pulse = sin(t * 2.4 + aSeed * 31.4159);
+      vAlpha = 0.10 + 0.55 * pow(max(pulse, 0.0), 4.0);
+    }
+  `,
+  fragmentShader: /* glsl */`
+    uniform vec3 uColorWarm;
+    uniform vec3 uColorCool;
+    uniform vec3 uColorMid;
+    varying float vMix;
+    varying float vAlpha;
+    void main() {
+      vec2 c = gl_PointCoord - 0.5;
+      float d = length(c);
+      if (d > 0.5) discard;
+      vec3 col = mix(uColorCool, uColorWarm, vMix);
+      col = mix(col, uColorMid, 0.35);
+      // Cross-Star für Märchen-Feenstaub: runder Kern + Strahlen-Kreuz
+      float core = smoothstep(0.45, 0.0, d);
+      float vRay = smoothstep(0.5, 0.0, abs(c.x) * 7.5) * smoothstep(0.5, 0.0, abs(c.y) * 1.4);
+      float hRay = smoothstep(0.5, 0.0, abs(c.y) * 7.5) * smoothstep(0.5, 0.0, abs(c.x) * 1.4);
+      float star = core + (vRay + hRay) * vAlpha * 0.9;
+      gl_FragColor = vec4(col, star * vAlpha * 0.42);
+    }
+  `,
+  transparent: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending
+});
+const mycPoints = new THREE.Points(mycGeo, mycMat);
+mycelGroup.add(mycPoints);
+
+// Hyphen-Linien zwischen ausgewählten Punkten
+const LINK_COUNT = isMobile ? 220 : 600;
+const linkPos = new Float32Array(LINK_COUNT * 2 * 3);
+for (let i = 0; i < LINK_COUNT; i++) {
+  const a = Math.floor(Math.random() * PARTICLE_COUNT);
+  let   b = a + 1 + Math.floor(Math.random() * 200);
+  if (b >= PARTICLE_COUNT) b = PARTICLE_COUNT - 1;
+  for (let k = 0; k < 3; k++) {
+    linkPos[i*6 + k]     = myc.positions[a*3 + k];
+    linkPos[i*6 + 3 + k] = myc.positions[b*3 + k];
+  }
+}
+const linkGeo = new THREE.BufferGeometry();
+linkGeo.setAttribute('position', new THREE.BufferAttribute(linkPos, 3));
+const linkMat = new THREE.LineBasicMaterial({
+  color: 0x8a7950, transparent: true, opacity: 0.18,
+  blending: THREE.AdditiveBlending, depthWrite: false
+});
+const links = new THREE.LineSegments(linkGeo, linkMat);
+mycelGroup.add(links);
+
+// ---------------------------------------------------------------
+// Schlüssel-Welt (Sektion 5) — eigene Group, anfangs unsichtbar
+// ---------------------------------------------------------------
+// Schlüssel rendert in eigenem Canvas (`#key-canvas`), damit das
+// Sektion-5-Foto als Hintergrund-Layer DAHINTER liegen kann.
+// (Vor 2026-05-27 lag der Schlüssel im fixed stage-canvas.)
+const keyGroup = new THREE.Group();
+
+// Schlüssel-Form: Bart + Schaft + Reide; aus Boxen + Zylinder
+function makeKey() {
+  const g = new THREE.Group();
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uColorA: { value: new THREE.Color(0xd6b76a) },
+      uColorB: { value: new THREE.Color(0xb9602d) },
+      uColorC: { value: new THREE.Color(0x6b5b95) }
+    },
+    vertexShader: /* glsl */`
+      varying vec3 vN;
+      varying vec3 vP;
+      void main() {
+        vN = normalize(normalMatrix * normal);
+        vP = (modelViewMatrix * vec4(position, 1.0)).xyz;
+        gl_Position = projectionMatrix * vec4(vP, 1.0);
+      }
+    `,
+    fragmentShader: /* glsl */`
+      uniform float uTime;
+      uniform vec3 uColorA;
+      uniform vec3 uColorB;
+      uniform vec3 uColorC;
+      varying vec3 vN;
+      varying vec3 vP;
+      void main() {
+        vec3 V = normalize(-vP);
+        float fres = pow(1.0 - max(dot(V, vN), 0.0), 2.0);
+        // Iridescence-Approximation: Phasen-Streifen über Normale + Zeit
+        float phase = vN.x * 6.0 + vN.y * 4.5 + uTime * 0.4;
+        vec3 ir = vec3(
+          0.5 + 0.5 * sin(phase),
+          0.5 + 0.5 * sin(phase + 2.094),
+          0.5 + 0.5 * sin(phase + 4.188)
+        );
+        vec3 metal = mix(uColorB, uColorA, fres);
+        vec3 col = mix(metal, uColorC, 0.35) * 0.35 + ir * uColorA * fres * 1.4;
+        col += pow(fres, 6.0) * 1.5;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `
+  });
+  // Pflege 2026-05-27 (Klaus' Befund): die vorige horizontale Variante
+  // sah von vorn wie ein Donut mit Stiel aus, nicht wie ein Schlüssel.
+  // Neue Form: klassischer Skelett-Schlüssel, VERTIKAL.
+  //   - Reide oben: Tube/Ring mit Loch nach VORN gerichtet
+  //   - Schaft: Cylinder vertikal nach unten
+  //   - Bart: profilierter Steg seitlich am unteren Ende, mit zwei
+  //     klar erkennbaren Zinken (Schlüssel-Zähne nach RECHTS)
+
+  // Reide (Schlüssel-Griff oben) — Torus mit Achse senkrecht zur Bildebene,
+  // d.h. das Loch zeigt nach vorn zur Kamera. Leicht versetzt nach oben.
+  const head = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.13, 18, 56), mat);
+  head.position.set(0, 1.30, 0);
+  // KEINE rotation.y — Torus liegt in der XY-Ebene, Loch zeigt nach +Z (vorn)
+  g.add(head);
+
+  // dekorativer Innen-Ring (Schlüssel-Augen-Akzent)
+  const innerRing = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.04, 12, 40), mat);
+  innerRing.position.set(0, 1.30, 0);
+  g.add(innerRing);
+
+  // Schaft (Cylinder vertikal)
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 1.85, 24), mat);
+  shaft.position.set(0, 0.20, 0);  // unter der Reide
+  g.add(shaft);
+
+  // Schaft-Knoten (Übergang zwischen Reide und Schaft, dekorativ)
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.04, 12, 24), mat);
+  collar.rotation.x = Math.PI / 2;
+  collar.position.set(0, 0.95, 0);
+  g.add(collar);
+
+  // Schaft-Knoten unten (oberhalb des Bartes)
+  const collar2 = collar.clone();
+  collar2.position.set(0, -0.45, 0);
+  g.add(collar2);
+
+  // Bart-Steg: horizontale Platte am unteren Schaft-Ende, ragt nach RECHTS
+  const bartBase = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.32, 0.16), mat);
+  bartBase.position.set(0.29, -0.78, 0);
+  g.add(bartBase);
+
+  // Zwei Zinken nach UNTEN (Schlüssel-Zähne)
+  const tooth1 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.30, 0.16), mat);
+  tooth1.position.set(0.18, -1.08, 0);
+  g.add(tooth1);
+
+  const tooth2 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.46, 0.16), mat);
+  tooth2.position.set(0.46, -1.16, 0);
+  g.add(tooth2);
+
+  // Schaft-Spitze unten (kleines Abschluss-Element)
+  const tipBox = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.10, 0.13), mat);
+  tipBox.position.set(0, -0.78, 0);
+  g.add(tipBox);
+
+  // Die ganze Gruppe leicht nach links versetzen, damit der Bart rechts
+  // Raum bekommt und nicht aus dem Bild rutscht.
+  g.position.x = -0.25;
+
+  return { group: g, mat };
+}
+const keyData = makeKey();
+keyGroup.add(keyData.group);
+// Pflege 2026-05-27: Klaus liefert ein KI-generiertes Schlüssel-Bild
+// (B2, scene-5-key.webp). Das 3D-Mesh wird ausgeblendet, das Bild
+// übernimmt die Darstellung. Sporen-Layer (unten definiert) bleibt
+// als Bewegungs-Schicht über dem Bild.
+keyData.group.visible = false;
+
+// Eigener Renderer für den Schlüssel im #key-canvas (Sektion 5).
+// Das Foto liegt als Sektion-Hintergrund DAHINTER — der Schlüssel
+// schwebt davor. Tür-Backdrop-Shader entfällt, weil das Foto die
+// Tür selbst zeigt.
+(function setupKeyRenderer() {
+  const keyCanvas = document.getElementById('key-canvas');
+  if (!keyCanvas) return;
+  const kr = new THREE.WebGLRenderer({ canvas: keyCanvas, antialias: true, alpha: true });
+  kr.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  kr.setSize(keyCanvas.clientWidth, keyCanvas.clientHeight, false);
+  kr.setClearColor(0x000000, 0);
+  const ks = new THREE.Scene();
+  const kc = new THREE.PerspectiveCamera(40, keyCanvas.clientWidth/keyCanvas.clientHeight, 0.1, 100);
+  kc.position.set(0, 0, 5);
+  kc.lookAt(0, 0, 0);
+  ks.add(keyGroup);
+
+  // Feenstaub-Layer (Klaus' Wunsch nach Märchen-Glow):
+  // 250 Lichtfunken in zwei Farben (warm-gold unten passend zum
+  // mittelalterlichen Schlüssel-Teil, kalt-blau oben passend zum
+  // modernen High-Tech-Teil), Cross-Star-Shape statt nur Punkten,
+  // wirbelnde Trajectories, größere Größen-Variation.
+  const SPORE_N = 250;
+  const spPos = new Float32Array(SPORE_N * 3);
+  const spSeed = new Float32Array(SPORE_N);
+  const spSize = new Float32Array(SPORE_N);
+  const spTint = new Float32Array(SPORE_N);  // 0 = gold, 1 = blau, dazwischen Mischton
+  for (let i = 0; i < SPORE_N; i++) {
+    const y = (Math.random() - 0.5) * 3.5;
+    spPos[i*3]   = (Math.random() - 0.5) * 5.5;
+    spPos[i*3+1] = y;
+    spPos[i*3+2] = -0.4 + Math.random() * 0.8;
+    spSeed[i] = Math.random();
+    spSize[i] = 0.5 + Math.random() * 2.5;     // Größen-Spreizung für Funkel-Vielfalt
+    // unten gold, oben blau, mit etwas Zufall
+    spTint[i] = Math.min(1.0, Math.max(0.0, (y + 1.5) / 3.0 + (Math.random() - 0.5) * 0.3));
+  }
+  const spGeo = new THREE.BufferGeometry();
+  spGeo.setAttribute('position', new THREE.BufferAttribute(spPos, 3));
+  spGeo.setAttribute('aSeed',    new THREE.BufferAttribute(spSeed, 1));
+  spGeo.setAttribute('aSize',    new THREE.BufferAttribute(spSize, 1));
+  spGeo.setAttribute('aTint',    new THREE.BufferAttribute(spTint, 1));
+  const spMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uPxRatio: { value: kr.getPixelRatio() } },
+    vertexShader: `
+      uniform float uTime; uniform float uPxRatio;
+      attribute float aSeed; attribute float aSize; attribute float aTint;
+      varying float vAlpha; varying float vTint; varying float vSparkle;
+      void main() {
+        vec3 p = position;
+        float t = uTime * 0.35 + aSeed * 6.283;
+        // wirbelnde Trajectorie statt geradem Aufstieg
+        p.x += sin(t * 0.9 + aSeed * 3.0) * 0.35;
+        p.y += mod(t * 0.16, 3.5) - 1.75;
+        p.z += cos(t * 0.7) * 0.18;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        // Sparkle-Pulse: scharfe Spitzen pro Partikel, asynchron
+        float pulse = pow(max(sin(t * 2.6 + aSeed * 17.3), 0.0), 5.0);
+        vSparkle = pulse;
+        gl_PointSize = aSize * (1.6 + pulse * 2.4) * uPxRatio * (38.0 / -mv.z);
+        gl_Position = projectionMatrix * mv;
+        vAlpha = 0.35 + 0.55 * sin(t * 1.1 + aSeed * 9.42);
+        vTint  = aTint;
+      }
+    `,
+    fragmentShader: `
+      varying float vAlpha; varying float vTint; varying float vSparkle;
+      void main() {
+        vec2 c = gl_PointCoord - 0.5;
+        float d = length(c);
+        if (d > 0.5) discard;
+        // Cross-Star-Shape: ein runder Kern + horizontale + vertikale Strahlen
+        float core   = smoothstep(0.45, 0.0, d);
+        float vRay   = smoothstep(0.5, 0.0, abs(c.x) * 6.0) * smoothstep(0.5, 0.0, abs(c.y) * 1.2);
+        float hRay   = smoothstep(0.5, 0.0, abs(c.y) * 6.0) * smoothstep(0.5, 0.0, abs(c.x) * 1.2);
+        float star   = core + (vRay + hRay) * vSparkle * 0.85;
+        vec3 gold = vec3(1.00, 0.86, 0.55);
+        vec3 blue = vec3(0.55, 0.78, 1.00);
+        vec3 col  = mix(gold, blue, vTint);
+        gl_FragColor = vec4(col, star * vAlpha);
+      }
+    `,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  const spores = new THREE.Points(spGeo, spMat);
+  ks.add(spores);
+
+  let t0 = performance.now();
+  function keyLoop() {
+    if (!keyCanvas.isConnected) return;
+    const t = (performance.now() - t0) / 1000;
+    keyData.mat.uniforms.uTime.value = t;
+    spMat.uniforms.uTime.value = t;
+    keyData.group.rotation.y = Math.sin(t * 0.45) * 0.22 + 0.10;
+    keyData.group.rotation.x = Math.sin(t * 0.3) * 0.06;
+    keyData.group.position.y = Math.sin(t * 0.6) * 0.06;
+    if (keyCanvas.clientWidth !== kr.domElement.width / kr.getPixelRatio() ||
+        keyCanvas.clientHeight !== kr.domElement.height / kr.getPixelRatio()) {
+      kr.setSize(keyCanvas.clientWidth, keyCanvas.clientHeight, false);
+      kc.aspect = keyCanvas.clientWidth / keyCanvas.clientHeight;
+      kc.updateProjectionMatrix();
+    }
+    kr.render(ks, kc);
+    requestAnimationFrame(keyLoop);
+  }
+  keyLoop();
+})();
+
+// Sektion 5 Maus-Interaktion entfernt (Klaus 2026-05-28): nur noch
+// die CSS-Auto-Loop-Rotation, keine Mouse-Steuerung des Frame-Index
+// und kein Hover-Scale mehr. Cleaner Auto-Lauf.
+
+// ---------------------------------------------------------------
+// Sektion 6 — Feenstaub-Pollen über dem Lichtungs-Foto.
+// Klaus' Wunsch (2026-05-27): Märchen-/Feenstaub-Effekt überlagert.
+// ---------------------------------------------------------------
+(function setupLichtungPollen() {
+  const canvas = document.querySelector('#scene-6 .lichtung-pollen');
+  if (!canvas) return;
+  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  r.setClearColor(0x000000, 0);
+  const s = new THREE.Scene();
+  const c = new THREE.PerspectiveCamera(48, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+  c.position.set(0, 0, 6);
+  c.lookAt(0, 0, 0);
+
+  // Drei Pollen-Schichten in unterschiedlichen Tiefen für Parallax-Wirkung
+  function makePollen(count, depthMin, depthMax, sizeBase, sizeVar, color) {
+    const pos  = new Float32Array(count * 3);
+    const seed = new Float32Array(count);
+    const size = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      pos[i*3]   = (Math.random() - 0.5) * 14;
+      pos[i*3+1] = (Math.random() - 0.5) * 8;
+      pos[i*3+2] = depthMin + Math.random() * (depthMax - depthMin);
+      seed[i] = Math.random();
+      size[i] = sizeBase + Math.random() * sizeVar;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('aSeed',    new THREE.BufferAttribute(seed, 1));
+    g.setAttribute('aSize',    new THREE.BufferAttribute(size, 1));
+    const m = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uPxRatio: { value: r.getPixelRatio() }, uColor: { value: new THREE.Color(color) } },
+      vertexShader: `
+        uniform float uTime; uniform float uPxRatio;
+        attribute float aSeed; attribute float aSize;
+        varying float vAlpha; varying float vSparkle;
+        void main() {
+          vec3 p = position;
+          float t = uTime * 0.18 + aSeed * 6.283;
+          p.x += sin(t * 0.8 + aSeed * 4.0) * 0.45;
+          p.y += mod(t * 0.10, 8.0) - 4.0;
+          p.z += cos(t * 0.5) * 0.20;
+          vec4 mv = modelViewMatrix * vec4(p, 1.0);
+          float pulse = pow(max(sin(t * 1.9 + aSeed * 23.7), 0.0), 4.0);
+          vSparkle = pulse;
+          gl_PointSize = aSize * (1.4 + pulse * 2.2) * uPxRatio * (44.0 / -mv.z);
+          gl_Position = projectionMatrix * mv;
+          vAlpha = 0.30 + 0.50 * sin(t * 0.9 + aSeed * 11.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor;
+        varying float vAlpha; varying float vSparkle;
+        void main() {
+          vec2 c = gl_PointCoord - 0.5;
+          float d = length(c);
+          if (d > 0.5) discard;
+          float core = smoothstep(0.45, 0.0, d);
+          float vRay = smoothstep(0.5, 0.0, abs(c.x) * 7.0) * smoothstep(0.5, 0.0, abs(c.y) * 1.3);
+          float hRay = smoothstep(0.5, 0.0, abs(c.y) * 7.0) * smoothstep(0.5, 0.0, abs(c.x) * 1.3);
+          float star = core + (vRay + hRay) * vSparkle * 0.75;
+          gl_FragColor = vec4(uColor, star * vAlpha);
+        }
+      `,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+    });
+    const points = new THREE.Points(g, m);
+    s.add(points);
+    return m;
+  }
+
+  // drei Layer: nah hell, mittel warm, fern subtle
+  const mats = [
+    makePollen(80,  4, 6,  1.4, 1.6, 0xfff0c0),   // nahe, sehr hell, leicht goldig
+    makePollen(140, 6, 9,  1.0, 1.2, 0xf5e6a0),   // mittel, warm ocker
+    makePollen(200, 9, 14, 0.7, 0.9, 0xe8d088)    // fern, subtle, gedämpft
+  ];
+
+  let t0 = performance.now();
+  function loop() {
+    if (!canvas.isConnected) return;
+    const t = (performance.now() - t0) / 1000;
+    mats.forEach(m => m.uniforms.uTime.value = t);
+    if (canvas.clientWidth !== r.domElement.width / r.getPixelRatio() ||
+        canvas.clientHeight !== r.domElement.height / r.getPixelRatio()) {
+      r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      c.aspect = canvas.clientWidth / canvas.clientHeight;
+      c.updateProjectionMatrix();
+    }
+    r.render(s, c);
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ---------------------------------------------------------------
+// Scroll-Choreografie: Kamera + Group-Sichtbarkeit
+// ---------------------------------------------------------------
+const sceneSentinels = Array.from(document.querySelectorAll('section.scene'));
+const sceneState = { active: 1, t: 0 };
+
+function pickActiveScene() {
+  const mid = window.innerHeight * 0.45;
+  let chosen = sceneSentinels[0];
+  for (const sec of sceneSentinels) {
+    const r = sec.getBoundingClientRect();
+    if (r.top <= mid) chosen = sec;
+  }
+  return parseInt(chosen.dataset.scene, 10);
+}
+
+const cameraTargets = {
+  1: { pos: new THREE.Vector3(0, 0.3, 6),   look: new THREE.Vector3(0, -0.5, 0), pulse: 0.0 },
+  2: { pos: new THREE.Vector3(3.4, -1.2, 5.5), look: new THREE.Vector3(-1.5, 0.2, 0), pulse: 0.15 },
+  3: { pos: new THREE.Vector3(0, 0, 14),    look: new THREE.Vector3(0, 0, 0),    pulse: 0.0 },   // Mycel weit weg, da Sektion 3 eigene Mini-Canvases hat
+  4: { pos: new THREE.Vector3(0, 0, 18),    look: new THREE.Vector3(0, 0, 0),    pulse: 0.0 },   // Mycel ganz weg, Sektion 4 ist DOM/CSS
+  5: { pos: new THREE.Vector3(0, 0, 5),     look: new THREE.Vector3(0, 0, 0),    pulse: 0.0 },   // Schlüssel im Vordergrund
+  6: { pos: new THREE.Vector3(0, 0, 22),    look: new THREE.Vector3(0, 0, 0),    pulse: 0.0 }    // Mycel komplett weg
+};
+
+const tmpV = new THREE.Vector3();
+const lookV = new THREE.Vector3(0, 0, 0);
+
+let scrollY = 0;
+window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+
+// ---------------------------------------------------------------
+// Fruchtkörper-Mini-Canvases (Sektion 3, drei Stück, je eigener Look)
+// ---------------------------------------------------------------
+// ---------------------------------------------------------------
+// Sektion 3 — Drei Fruchtkörper-Mini-Canvases
+// Pflege 2026-05-27 (Klaus' Befund): die Bilder müssen die Begriffe
+// treffen. Drei klar symbolische Modelle:
+//   - seeker     : sich teilende Zelle vor Doppelhelix (Mensch / Leben)
+//   - commercial : 3D-Pilz (Hut + Stiel, Maus-Rotation, Sage-Pilz-Ikon)
+//   - agent      : 3D-Blitz vor Gewitterwolken (KI-Agent)
+// ---------------------------------------------------------------
+function makeFruitingScene(canvas, variant) {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setSize(w, h, false);
+  r.setClearColor(0x000000, 0);
+  const s = new THREE.Scene();
+  const c = new THREE.PerspectiveCamera(40, w/h, 0.1, 100);
+  c.position.set(0, 0.3, 4);
+  c.lookAt(0, 0, 0);
+
+  // Pointer-Drag-Hook: alle drei Karten erlauben Maus-Rotation.
+  const interactive = new THREE.Group();
+  s.add(interactive);
+  const drag = { x: 0, y: 0, on: false, vx: 0, vy: 0, lastT: 0 };
+  canvas.style.touchAction = 'none';
+  canvas.style.cursor = 'grab';
+  canvas.addEventListener('pointerdown', (e) => {
+    drag.on = true; drag.x = e.clientX; drag.y = e.clientY;
+    canvas.setPointerCapture(e.pointerId);
+    canvas.style.cursor = 'grabbing';
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!drag.on) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.vx = dy * 0.01;
+    drag.vy = dx * 0.01;
+    interactive.rotation.x += drag.vx;
+    interactive.rotation.y += drag.vy;
+    drag.x = e.clientX; drag.y = e.clientY;
+  });
+  canvas.addEventListener('pointerup', () => { drag.on = false; canvas.style.cursor = 'grab'; });
+  canvas.addEventListener('pointercancel', () => { drag.on = false; canvas.style.cursor = 'grab'; });
+
+  const tickers = [];
+
+  if (variant === 'seeker') {
+    // ============= Menschliche Sucher =============
+    // Sich teilende Zelle: zwei Sphären mit Membran-Brücke, leichte
+    // Pulsation. Hintergrund: Doppelhelix als zwei spiralig gewundene
+    // Linien mit Querverbindungen (DNA-Basen-Paare).
+
+    // Doppelhelix-Hintergrund — als TubeGeometry, damit die Linien sichtbar
+    // dick werden (WebGL ignoriert `linewidth` bei LineBasicMaterial).
+    const helixGroup = new THREE.Group();
+    helixGroup.position.z = -1.6;
+    helixGroup.rotation.z = -0.18;
+    const TURNS = 4, SAMPLES = 200;
+    const radius = 0.55, height = 4.4;
+    const ptsA = [], ptsB = [];
+    const bases = [];
+    for (let i = 0; i < SAMPLES; i++) {
+      const t = i / (SAMPLES - 1);
+      const ang = t * Math.PI * 2 * TURNS;
+      const y = (t - 0.5) * height;
+      const ax = Math.cos(ang) * radius;
+      const az = Math.sin(ang) * radius;
+      const bx = Math.cos(ang + Math.PI) * radius;
+      const bz = Math.sin(ang + Math.PI) * radius;
+      ptsA.push(new THREE.Vector3(ax, y, az));
+      ptsB.push(new THREE.Vector3(bx, y, bz));
+      if (i % 10 === 0) bases.push([ax,y,az, bx,y,bz]);
+    }
+    const helixMat = new THREE.MeshBasicMaterial({
+      color: 0xc79f4b, transparent: true, opacity: 0.78
+    });
+    const tubeA = new THREE.Mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ptsA), 180, 0.04, 8, false), helixMat);
+    const tubeB = new THREE.Mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(ptsB), 180, 0.04, 8, false), helixMat);
+    helixGroup.add(tubeA, tubeB);
+    // Basen-Querstreben als kleine Cylinder
+    const baseMat = new THREE.MeshBasicMaterial({
+      color: 0xa68b6a, transparent: true, opacity: 0.55
+    });
+    bases.forEach(b => {
+      const a = new THREE.Vector3(b[0], b[1], b[2]);
+      const c = new THREE.Vector3(b[3], b[4], b[5]);
+      const len = a.distanceTo(c);
+      const mid = a.clone().lerp(c, 0.5);
+      const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, len, 6), baseMat);
+      cyl.position.copy(mid);
+      // Orientiere die Cylinder-Achse von a nach c
+      const axis = c.clone().sub(a).normalize();
+      const up = new THREE.Vector3(0, 1, 0);
+      const quat = new THREE.Quaternion().setFromUnitVectors(up, axis);
+      cyl.quaternion.copy(quat);
+      helixGroup.add(cyl);
+    });
+    interactive.add(helixGroup);
+
+    // Zellteilung — zwei Sphären, Membran-Übergang
+    const cellMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        uniform float uTime; varying vec3 vN;
+        float hash(vec3 p){ return fract(sin(dot(p, vec3(127.1,311.7,74.7)))*43758.5453); }
+        float noise(vec3 p){
+          vec3 i=floor(p), f=fract(p);
+          float a=hash(i),b=hash(i+vec3(1,0,0)),c=hash(i+vec3(0,1,0)),d=hash(i+vec3(1,1,0));
+          float e=hash(i+vec3(0,0,1)),g=hash(i+vec3(1,0,1)),h=hash(i+vec3(0,1,1)),k=hash(i+vec3(1,1,1));
+          vec3 u=f*f*(3.0-2.0*f);
+          return mix(mix(mix(a,b,u.x),mix(c,d,u.x),u.y),mix(mix(e,g,u.x),mix(h,k,u.x),u.y),u.z);
+        }
+        void main(){
+          float n = noise(position*3.0 + uTime*0.4);
+          vec3 p = position * (1.0 + n*0.10);
+          vN = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vN;
+        void main(){
+          vec3 L = normalize(vec3(0.4, 0.6, 0.7));
+          float lambert = max(dot(vN, L), 0.0);
+          float rim    = pow(1.0 - max(vN.z, 0.0), 2.0);
+          vec3 base = vec3(0.95, 0.80, 0.62);
+          vec3 deep = vec3(0.55, 0.32, 0.20);
+          vec3 col  = mix(deep, base, lambert);
+          col += rim * vec3(1.0, 0.9, 0.65) * 0.6;
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+    const cellGeom = new THREE.SphereGeometry(0.7, 48, 36);
+    const cellA = new THREE.Mesh(cellGeom, cellMat); cellA.position.x = -0.55;
+    const cellB = new THREE.Mesh(cellGeom, cellMat); cellB.position.x =  0.55;
+    interactive.add(cellA, cellB);
+
+    // Nukleus-Schimmer in jeder Zelle
+    const nucMat = new THREE.MeshBasicMaterial({
+      color: 0x4a2510, transparent: true, opacity: 0.55
+    });
+    const nA = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 12), nucMat);
+    nA.position.set(-0.55, 0.05, 0.3);
+    const nB = nA.clone(); nB.position.set(0.55, 0.05, 0.3);
+    interactive.add(nA, nB);
+
+    tickers.push((t) => {
+      cellMat.uniforms.uTime.value = t;
+      // Atemzyklus: Zellen wabern auseinander und zurück, leicht
+      const sep = 0.55 + Math.sin(t * 0.55) * 0.08;
+      cellA.position.x = -sep;
+      cellB.position.x =  sep;
+      nA.position.x = -sep; nB.position.x = sep;
+      // langsame Y-Rotation der Helix
+      helixGroup.rotation.y = t * 0.15;
+    });
+
+  } else if (variant === 'commercial') {
+    // ============= Kommerzielle Pilze =============
+    // Klassischer Pilz mit Hut + Stiel. Roter Hut mit weißen Punkten
+    // (Fliegenpilz-Ikonografie), cremig-weißer Stiel mit Lamellen.
+    // Maus-Rotation 360°.
+
+    // Hut: gestauchte Halbkugel mit subtiler Wölbung
+    const capGeom = new THREE.SphereGeometry(1.05, 48, 28, 0, Math.PI*2, 0, Math.PI*0.55);
+    capGeom.scale(1.0, 0.62, 1.0);
+    const capMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        varying vec3 vN; varying vec3 vP;
+        void main(){
+          vN = normalize(normalMatrix * normal);
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vP = position;
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vN; varying vec3 vP;
+        // Pseudo-Random für weiße Tupfen-Pattern
+        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7)))*43758.5453); }
+        void main(){
+          vec3 L = normalize(vec3(0.3, 0.9, 0.4));
+          float lambert = max(dot(vN, L), 0.05);
+          // Hut: tiefes Rot bis warmes Orange
+          vec3 base = mix(vec3(0.62, 0.10, 0.08), vec3(0.88, 0.32, 0.18), vN.y);
+          // Weiße Tupfen — gestreutes Pattern auf der Hut-Oberseite
+          vec2 uv = vec2(atan(vP.x, vP.z), vP.y) * 4.0;
+          vec2 cell = floor(uv);
+          vec2 frac = fract(uv) - 0.5;
+          float dist = length(frac);
+          float spot = smoothstep(0.22, 0.14, dist) * step(0.55, hash(cell)) * step(0.0, vN.y);
+          vec3 col = mix(base, vec3(0.98, 0.95, 0.88), spot);
+          col *= 0.32 + lambert * 0.95;
+          float rim = pow(1.0 - max(vN.z, 0.0), 3.0);
+          col += rim * vec3(1.0, 0.8, 0.6) * 0.25;
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+    const cap = new THREE.Mesh(capGeom, capMat);
+    cap.position.y = 0.25;
+    interactive.add(cap);
+
+    // Hut-Unterseite (Lamellen-Ring): dunklere Scheibe
+    const underGeom = new THREE.CircleGeometry(1.02, 48);
+    underGeom.rotateX(-Math.PI / 2);
+    const underMat = new THREE.MeshBasicMaterial({ color: 0x2a1810, side: THREE.DoubleSide });
+    const under = new THREE.Mesh(underGeom, underMat);
+    under.position.y = 0.07;
+    interactive.add(under);
+
+    // Stiel: Cylinder mit leichter Verjüngung nach unten
+    const stemGeom = new THREE.CylinderGeometry(0.18, 0.26, 1.4, 24);
+    const stemMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        varying vec3 vN; varying vec3 vP;
+        void main(){
+          vN = normalize(normalMatrix * normal);
+          vP = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vN; varying vec3 vP;
+        void main(){
+          vec3 L = normalize(vec3(0.3, 0.9, 0.4));
+          float lambert = max(dot(vN, L), 0.08);
+          // Cremig-Weiß mit feinen vertikalen Linien (Faserstruktur)
+          float fiber = 0.5 + 0.5 * sin(atan(vP.x, vP.z) * 30.0);
+          vec3 base = mix(vec3(0.92, 0.88, 0.78), vec3(0.78, 0.72, 0.62), fiber * 0.25);
+          float rim = pow(1.0 - max(vN.z, 0.0), 2.5);
+          vec3 col = base * (0.5 + lambert * 0.7) + rim * vec3(1.0, 0.95, 0.82) * 0.2;
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+    const stem = new THREE.Mesh(stemGeom, stemMat);
+    stem.position.y = -0.55;
+    interactive.add(stem);
+
+    // Sage-Pilz hat eine subtile Anlauf-Rotation, danach langsam um
+    // eigene Y-Achse — Klaus' Wunsch „in 3D 360 Grad mit Maus".
+    tickers.push((t) => {
+      capMat.uniforms.uTime.value = t;
+      stemMat.uniforms.uTime.value = t;
+      if (!drag.on) interactive.rotation.y += 0.005;
+    });
+
+  } else {
+    // ============= Agent-Fruchtkörper =============
+    // 3D-Blitz aus zickzack-extrudiertem Shape, vor einem volumetrischen
+    // Gewitterwolken-Shader (noise-fbm Hintergrund mit Lichtblick).
+    // Eigene-Achse-Rotation mit willkürlichem Richtungswechsel.
+
+    // Gewitterwolken-Hintergrund: Plane mit FBM-noise-Shader
+    const cloudGeom = new THREE.PlaneGeometry(8, 6);
+    const cloudMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+      fragmentShader: `
+        uniform float uTime;
+        varying vec2 vUv;
+        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7)))*43758.5453); }
+        float vnoise(vec2 p){
+          vec2 i = floor(p), f = fract(p);
+          float a = hash(i), b = hash(i+vec2(1,0)), c = hash(i+vec2(0,1)), d = hash(i+vec2(1,1));
+          vec2 u = f*f*(3.0-2.0*f);
+          return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
+        }
+        float fbm(vec2 p){
+          float v = 0.0, a = 0.5;
+          for (int i=0; i<5; i++){ v += a * vnoise(p); p *= 2.05; a *= 0.5; }
+          return v;
+        }
+        void main(){
+          vec2 uv = vUv * 2.0 - 1.0;
+          // Wolken-Wuchs nach oben, Schwere nach unten
+          float clouds = fbm(uv * 2.4 + vec2(uTime * 0.05, 0.0));
+          float density = smoothstep(0.32, 0.85, clouds);
+          // Lichtblick: heller Spot, der wandert
+          vec2 light = vec2(sin(uTime * 0.2) * 0.4, 0.3 + cos(uTime * 0.15) * 0.2);
+          float lightDist = length(uv - light);
+          float bright = exp(-lightDist * lightDist / 0.12) * 0.85;
+          vec3 dark   = vec3(0.05, 0.06, 0.08);
+          vec3 mid    = vec3(0.22, 0.22, 0.28);
+          vec3 hl     = vec3(0.95, 0.88, 0.65);
+          vec3 col = mix(dark, mid, density);
+          col += hl * bright * (0.3 + density * 0.7);
+          // Vignette
+          float vig = smoothstep(0.4, 1.4, length(uv));
+          col *= 1.0 - vig * 0.45;
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `,
+      depthWrite: false
+    });
+    const cloud = new THREE.Mesh(cloudGeom, cloudMat);
+    cloud.position.z = -2.3;
+    s.add(cloud);
+
+    // Blitz: extrudierter Zickzack-Shape mit gleichschenkligem Profil
+    const boltShape = new THREE.Shape();
+    boltShape.moveTo( 0.20,  1.20);
+    boltShape.lineTo(-0.30,  0.10);
+    boltShape.lineTo( 0.05,  0.00);
+    boltShape.lineTo(-0.20, -1.20);
+    boltShape.lineTo( 0.35,  0.00);
+    boltShape.lineTo(-0.10,  0.10);
+    boltShape.lineTo( 0.55,  1.20);
+    boltShape.closePath();
+    const boltGeom = new THREE.ExtrudeGeometry(boltShape, {
+      depth: 0.14, bevelEnabled: true, bevelSegments: 4, bevelSize: 0.04, bevelThickness: 0.03
+    });
+    boltGeom.translate(-0.1, 0, -0.07);
+    const boltMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        varying vec3 vN; varying vec3 vV;
+        void main(){
+          vN = normalize(normalMatrix * normal);
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vV = normalize(-mv.xyz);
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        varying vec3 vN; varying vec3 vV;
+        void main(){
+          float fres = pow(1.0 - max(dot(vV, vN), 0.0), 1.2);
+          // schimmern bei jeder Drehung — hell bei viel Frontale
+          vec3 core = vec3(1.0, 0.93, 0.62);
+          vec3 edge = vec3(0.92, 0.62, 0.95);
+          vec3 col  = mix(core, edge, fres);
+          // pulsierender Glow
+          float pulse = 0.85 + 0.15 * sin(uTime * 4.0);
+          col *= pulse;
+          col += pow(fres, 4.0) * 1.3;
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `
+    });
+    const bolt = new THREE.Mesh(boltGeom, boltMat);
+    interactive.add(bolt);
+
+    // Eigen-Achse-Rotation mit willkürlichem Richtungswechsel
+    let dirY = 0.6;
+    let dirX = 0.08;
+    let nextFlip = 1.8;
+    tickers.push((t) => {
+      cloudMat.uniforms.uTime.value = t;
+      boltMat.uniforms.uTime.value = t;
+      if (!drag.on) {
+        bolt.rotation.y += dirY * 0.012;
+        bolt.rotation.x += dirX * 0.004;
+      }
+      if (t > nextFlip) {
+        dirY = (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 0.8);
+        dirX = (Math.random() - 0.5) * 0.2;
+        nextFlip = t + 1.4 + Math.random() * 2.2;
+      }
+    });
+  }
+
+  let t0 = performance.now();
+  function loop() {
+    if (!canvas.isConnected) return;
+    const t = (performance.now() - t0) / 1000;
+    tickers.forEach(fn => fn(t));
+    if (canvas.clientWidth !== r.domElement.width / r.getPixelRatio() ||
+        canvas.clientHeight !== r.domElement.height / r.getPixelRatio()) {
+      r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      c.aspect = canvas.clientWidth / canvas.clientHeight;
+      c.updateProjectionMatrix();
+    }
+    r.render(s, c);
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+document.querySelectorAll('canvas[data-fruiting]').forEach(c => {
+  makeFruitingScene(c, c.dataset.fruiting);
+});
+
+// Feenstaub am Mauszeiger über den Pilz-Karten (Klaus 2026-05-28).
+// Vanilla Canvas 2D, leicht-gewichtig — pro Maus-Move-Event spawnen
+// 2-4 Funken an der Cursor-Position, steigen leicht auf, fade-out
+// nach 0.8-2.2s. Cross-Star-Shape, zwei Farb-Töne (gold/blau).
+document.querySelectorAll('.fruiting-canvas-host').forEach(host => {
+  const canvas = host.querySelector('.pixie-dust');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize() {
+    const r = canvas.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return;
+    canvas.width  = Math.round(r.width  * dpr);
+    canvas.height = Math.round(r.height * dpr);
+    canvas.style.width  = r.width  + 'px';
+    canvas.style.height = r.height + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  new ResizeObserver(resize).observe(canvas);
+
+  host.addEventListener('pointermove', (e) => {
+    const r = canvas.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    const n = 2 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < n; i++) {
+      if (particles.length > 220) particles.shift();
+      particles.push({
+        x: x + (Math.random() - 0.5) * 10,
+        y: y + (Math.random() - 0.5) * 10,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: -0.2 - Math.random() * 0.6,
+        life: 0,
+        maxLife: 0.8 + Math.random() * 1.4,
+        size: 1.4 + Math.random() * 2.8,
+        tint: Math.random()
+      });
+    }
+  });
+
+  let lastT = performance.now();
+  function loop() {
+    if (!canvas.isConnected) return;
+    const now = performance.now();
+    const dt  = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    ctx.clearRect(0, 0, w, h);
+
+    if (particles.length === 0) { requestAnimationFrame(loop); return; }
+
+    particles = particles.filter(p => {
+      p.life += dt;
+      if (p.life >= p.maxLife) return false;
+      p.x  += p.vx;
+      p.y  += p.vy;
+      p.vy -= 0.018;
+      const lifeRatio = 1 - (p.life / p.maxLife);
+      const alpha = lifeRatio * 0.9;
+      const s = p.size * (0.55 + lifeRatio * 0.55);
+      const g = p.tint < 0.5 ? 218 : 200;
+      const b = p.tint < 0.5 ? 130 : 252;
+      ctx.fillStyle = `rgba(255,${g},${b},${alpha})`;
+      // runder Kern
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, s, 0, Math.PI * 2);
+      ctx.fill();
+      // Cross-Strahlen
+      ctx.fillStyle = `rgba(255,${g},${b},${alpha * 0.65})`;
+      ctx.fillRect(p.x - s * 3, p.y - 0.5, s * 6, 1);
+      ctx.fillRect(p.x - 0.5, p.y - s * 3, 1, s * 6);
+      return true;
+    });
+
+    requestAnimationFrame(loop);
+  }
+  loop();
+});
+
+// ---------------------------------------------------------------
+// Sektion 6 — Stripe-style Mesh-Gradient (eigener Canvas, eigener Shader)
+// ---------------------------------------------------------------
+(function buildGradient() {
+  const canvas = document.getElementById('grad-canvas');
+  if (!canvas) return;
+  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  const s = new THREE.Scene();
+  const c = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uRes:  { value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight) }
+    },
+    vertexShader: `void main(){ gl_Position = vec4(position, 1.0); }`,
+    fragmentShader: `
+      uniform float uTime;
+      uniform vec2  uRes;
+      // Codrops/Stripe-Style mesh: vier moving blobs, Multiply-Screen-Blend.
+      vec3 palette(float t) {
+        // warmer Lichtungs-Ton: Ocker, Moos, Burgund, Nacht.
+        // bewusst gedämpft, damit der helle Text auf dunklem Grund liegt.
+        vec3 a = vec3(0.18, 0.14, 0.09);
+        vec3 b = vec3(0.45, 0.32, 0.16);
+        vec3 c = vec3(0.32, 0.42, 0.38);
+        vec3 d = vec3(0.06, 0.07, 0.10);
+        return a + b * sin(6.2831 * (c * t + d));
+      }
+      void main() {
+        vec2 uv = (gl_FragCoord.xy / uRes.xy) * 2.0 - 1.0;
+        uv.x *= uRes.x / uRes.y;
+        float t = uTime * 0.08;
+        // vier wandernde Mittelpunkte
+        vec2 p1 = vec2(sin(t)*0.6,   cos(t*1.3)*0.5);
+        vec2 p2 = vec2(cos(t*0.7)*-0.7, sin(t*0.9)*0.6);
+        vec2 p3 = vec2(sin(t*1.1)*0.5,  cos(t*0.6)*-0.7);
+        vec2 p4 = vec2(cos(t*0.5)*0.8,  sin(t*1.4)*0.3);
+        float d1 = length(uv - p1);
+        float d2 = length(uv - p2);
+        float d3 = length(uv - p3);
+        float d4 = length(uv - p4);
+        // Soft-Falloff
+        float k = 0.7;
+        float w1 = exp(-d1*d1/k);
+        float w2 = exp(-d2*d2/k);
+        float w3 = exp(-d3*d3/k);
+        float w4 = exp(-d4*d4/k);
+        vec3 col =
+          palette(0.10) * w1 +
+          palette(0.32) * w2 +
+          palette(0.58) * w3 +
+          palette(0.80) * w4;
+        col /= (w1+w2+w3+w4);
+        // Multiply mit warmem Schwarz (Lichtungs-Tiefe)
+        vec3 dark = vec3(0.04, 0.05, 0.07);
+        col = mix(dark, col, 0.55);
+        // radiale Vignette für Lesbarkeit der Frage
+        float vig = smoothstep(0.0, 1.2, length(uv) * 0.6);
+        col *= 1.0 - vig * 0.45;
+        // leichte Körnung
+        float grain = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+        col += (grain - 0.5) * 0.025;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `
+  });
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat);
+  s.add(quad);
+  let t0 = performance.now();
+  function loop() {
+    const t = (performance.now() - t0) / 1000;
+    mat.uniforms.uTime.value = t;
+    if (canvas.clientWidth !== mat.uniforms.uRes.value.x ||
+        canvas.clientHeight !== mat.uniforms.uRes.value.y) {
+      r.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      mat.uniforms.uRes.value.set(canvas.clientWidth, canvas.clientHeight);
+    }
+    r.render(s, c);
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ---------------------------------------------------------------
+// Audio — Ambient-Pad nach User-Geste (Web Audio API, kein File-Asset)
+// ---------------------------------------------------------------
+const audioBtn = document.querySelector('.audio-toggle');
+let audioCtx = null;
+let audioOn = false;
+let audioNodes = null;
+function startAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  // Drei niedrige Sinus-Schwebungen + leiser Rauschen-Atem = Mycel-Pad
+  const out = audioCtx.createGain();
+  out.gain.value = 0.0;
+  out.connect(audioCtx.destination);
+  const o1 = audioCtx.createOscillator(); o1.type = 'sine'; o1.frequency.value = 110;
+  const o2 = audioCtx.createOscillator(); o2.type = 'sine'; o2.frequency.value = 110.7;
+  const o3 = audioCtx.createOscillator(); o3.type = 'sine'; o3.frequency.value = 164.5;
+  const g1 = audioCtx.createGain(); g1.gain.value = 0.18;
+  const g2 = audioCtx.createGain(); g2.gain.value = 0.14;
+  const g3 = audioCtx.createGain(); g3.gain.value = 0.08;
+  o1.connect(g1).connect(out);
+  o2.connect(g2).connect(out);
+  o3.connect(g3).connect(out);
+  // sanftes Filter
+  const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+  // (Filter zwischen Gains und out: vereinfacht hier in den Master)
+  o1.start(); o2.start(); o3.start();
+  out.gain.linearRampToValueAtTime(0.65, audioCtx.currentTime + 1.8);
+  audioNodes = { out, oscs: [o1, o2, o3] };
+}
+function stopAudio() {
+  if (!audioNodes) return;
+  audioNodes.out.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 0.6);
+  setTimeout(() => {
+    audioNodes.oscs.forEach(o => { try { o.stop(); } catch(e){} });
+    audioNodes = null;
+  }, 700);
+}
+audioBtn.addEventListener('click', () => {
+  audioOn = !audioOn;
+  audioBtn.dataset.on = audioOn ? 'true' : 'false';
+  if (audioOn) startAudio(); else stopAudio();
+});
+
+// ---------------------------------------------------------------
+// Hauptschleife: Kamera, Material-Pulse, Sektionswechsel
+// ---------------------------------------------------------------
+let lastT = performance.now();
+let curPos = camera.position.clone();
+let curLook = new THREE.Vector3(0, 0, 0);
+let curPulse = 0;
+
+function tick() {
+  const now = performance.now();
+  const dt  = (now - lastT) / 1000; lastT = now;
+  const t   = now / 1000;
+
+  const active = pickActiveScene();
+  sceneState.active = active;
+  const target = cameraTargets[active] || cameraTargets[1];
+
+  const lerpA = reducedMotion ? 0.04 : 0.045;
+  curPos.lerp(target.pos, lerpA);
+  curLook.lerp(target.look, lerpA);
+  curPulse += (target.pulse - curPulse) * lerpA;
+
+  camera.position.copy(curPos);
+  camera.lookAt(curLook);
+
+  // Mycel-Group sichtbar in Sektionen 1+2; vom Schlüssel ausgeblendet in 5.
+  // Sichtbarkeit über Material-Opacity steuern, damit Übergang weich ist.
+  let mycelVisAim = 1.0;
+  // Sektion 1 hat ein Foto-Backdrop als Haupt-Atmosphäre — die WebGL-
+  // Sporen liegen nur als leise Bewegungs-Schicht darüber (mix-blend
+  // greift im Photo + dezenter Sporenflug schwebt mit).
+  if (active === 1) mycelVisAim = 0.55;  // Glitzer über dem Mycel-Foto
+  if (active === 5) mycelVisAim = 0.0;  // Schlüssel + Tür-Foto in eigenem Canvas
+  if (active === 6) mycelVisAim = 0.0;
+  if (active === 4) mycelVisAim = 0.0;
+  if (active === 3) mycelVisAim = 0.0;
+  if (!mycMat._curOpa) mycMat._curOpa = 1.0;
+  // Klaus' Wunsch 2026-05-28: langsamer Lerp, damit der Mycel-Layer
+  // bei Sektion-Wechseln sanft auf 0 ausläuft, nicht abrupt.
+  mycMat._curOpa += (mycelVisAim - mycMat._curOpa) * 0.018;
+  mycMat.uniforms.uPulse.value = curPulse;
+  mycMat.uniforms.uTime.value = t;
+  // Opacity-Steuerung über uColorWarm/uColorCool — vereinfachen: Group-Opacity
+  mycelGroup.visible = mycMat._curOpa > 0.02;
+  // (Punkt-Wolke ist additive; wir skalieren die Sichtbarkeit über die Group-Transform)
+  const s = 0.5 + 0.5 * mycMat._curOpa;
+  mycelGroup.scale.setScalar(s);
+  links.material.opacity = 0.18 * mycMat._curOpa;
+
+  // Schlüssel rendert jetzt in eigenem Canvas (#key-canvas, Sektion 5);
+  // siehe setupKeyRenderer() oben. Kein Tick im stage-loop nötig.
+
+  // mycel-eigene Rotation (sehr langsam)
+  if (!reducedMotion) {
+    mycelGroup.rotation.y += dt * 0.02;
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+// ---------------------------------------------------------------
+// GSAP-ScrollTrigger — Smooth-Akzent-Animationen pro Sektion
+// (nur additive Akzente; Haupt-Kamera-Steuerung läuft über tick())
+// ---------------------------------------------------------------
+if (window.gsap && window.ScrollTrigger) {
+  gsap.registerPlugin(window.ScrollTrigger);
+  if (!reducedMotion) {
+    // Eyebrows + Headlines fade-in pro Sektion (subtil — nicht „Fade-In als einzige Idee",
+    // sondern Akzent NEBEN den WebGL-Kamera-Fahrten)
+    document.querySelectorAll('section.scene').forEach(sec => {
+      const items = sec.querySelectorAll('.eyebrow, h1, h2, h3, p, .meta-col dl, .fruiting-card, .marginalia, .stars-col, .door-hint, .signature-mark, .cta-row, .afterword');
+      gsap.from(items, {
+        scrollTrigger: { trigger: sec, start: 'top 75%', toggleActions: 'play none none none' },
+        y: 24, opacity: 0, duration: 1.0, stagger: 0.06, ease: 'power2.out'
+      });
+    });
+  }
+}
+</script>
+
+</body>
+</html>

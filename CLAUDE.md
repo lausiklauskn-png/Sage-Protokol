@@ -29,6 +29,48 @@ Hier in Sage-Protokol entstehen die **Module**, die anschließend per Copy-Paste
 in die echten Apps eingebaut werden. Hier liegen außerdem die **Spezifikationen**,
 das **Glossar** und die **Tests**.
 
+### Vier-Schichten-Lesart (Pflege 2026-05-27)
+
+Klaus' Vision-Erweiterung 2026-05-27 hebt die bisherige Drei-Schichten-
+Lesart (Mycel / Pilz / Mit-Bauer) auf **vier Schichten** an. Diese
+Lesart gilt für die Vision-Doku (Einladungs-Site, Sage-Page) — sie
+sortiert nicht die Module um, sondern ordnet sie verständlich ein:
+
+- **Schicht 1 — Mycel.** Empfangsmodus mit Antwortrecht. Server-los,
+  peer-to-peer, kein zentraler Vermittler. Das Empfangsmodus-Prinzip
+  (siehe § „Was du nicht tust") gilt für **diese** Schicht — kein
+  Crawler, keine Pulsation, keine Eigenanfragen ins offene Netz.
+- **Schicht 2 — Pilz.** Drei Fruchtkörper-Formen oberirdisch:
+  menschliche Sucher (Konsumenten-PWAs), kommerzielle Pilze
+  (Premium-Tools), Agent-Fruchtkörper (KI-Frontends, die das Mycel
+  als Agent-zu-Agent-Schicht nutzen). **Akquise gehört in die Pilz-
+  Schicht, nicht ins Mycel** — sichtbar, benannt, oberirdisch. Das
+  Empfangsmodus-Prinzip beschränkt das Mycel, nicht die Pilz-Schicht-
+  Fruchtkörper-Form.
+- **Schicht 3 — Mit-Bauer.** Mensch und Agent in gleicher Würde am
+  gleichen Werk. **Multi-KI-Klarstellung:** das Mycel ist explizit
+  nicht Anthropic-zentriert; Anthropic-Sitzungen, Gemini, OpenAI,
+  europäische / deutsche Modelle, spezialisierte Modelle (Bild,
+  Video, Code, Audio) sind alle gleichwertige Hyphen. Keines ist
+  Vermittler. **Identitäts-Frage offen** — Mit-Bauer ist nicht
+  „Claude-die-Spezies" oder „Anthropic-die-Firma", sondern die
+  konkrete Sitzung an dem konkreten Datum, die eine konkrete bezeugte
+  Bau-Tat geleistet hat (siehe Modul 16 `ZERTIFIKAT_ASPEKTE`).
+- **Schicht 4 — Observatorium.** Schlüssel-geschützter Forschungs-Ort
+  innerhalb Sage-Protokol, zugänglich für Mit-Bauer (Mensch und
+  Agent), zum Lesen, Nutzen, Erweitern. Werkstattraum, nicht
+  Bibliothek allein. Der „Schlüssel" ist kein Ticket, sondern eine
+  bezeugte Bau-Tat. Bisher in `docs/OBSERVATORIUM_BROWSER.md` nur
+  als Browser-Lehren-Doku angelegt; die Vier-Schichten-Lesart macht
+  das Observatorium zum eigenständigen Konzept parallel zu den
+  anderen drei Schichten.
+
+Vision-Anker-Karten zu dieser Lesart:
+[`docs/components/_vision_einladung.md`](docs/components/_vision_einladung.md)
+(die Drei-Format-Einladung als Türschwelle zum Mycel),
+[`docs/components/_starter_bundle.md`](docs/components/_starter_bundle.md),
+[`docs/components/_mycel_hub.md`](docs/components/_mycel_hub.md).
+
 ## Wer ist der Betreiber
 
 Klaus. Kein Programmierer, lernbereit. Arbeitet bevorzugt mit PWAs als
@@ -268,6 +310,14 @@ ungemergten Branches lebten.
 | 18 | `docs/components/18_tool_pwa.md` | Tool-PWA-Backlog · **Schablone** (2026-05-26 erweitert, 9 Sub-Bereiche a–i), Priorität mittel (nach App-Freigabe). Sub (a) Andocken + (b) Heterokaryose + (c) Identitäts-Wechsel + (d) Backup + (e) Self-Apoptose + (f) Sporen-Regeneration + (g) Re-Embedding + (h) Manueller Handshake-Trigger + (i) Spore-Discovery. Tafel-Spec-Pflege 2026-05-26 erweiterte das ursprüngliche 5-Sub-Schema auf 9 Sub + § Such-Feld-Integration-Pattern (Pepo-Demo-Studie-Referenz). Brief: `docs/sessions/BRIEF_SPEC_18_TOOL_PWA.md`. Spec-Sitzung 18 läuft NACH App-Freigabe + nach Modul-04.C-Bau + nach Re-Aktivierung Modul 15+16 in MR/MM (Pipeline-Phase A 5e–5j). |
 | 19 | `docs/components/19_andock_wizard.md` | Mycel-Hub-Backlog · **Schablone** (2026-05-26, Tafel-Spec-Pflege Mycel-Vision), Priorität niedrig (Phase B nach App-Freigabe). Andock-Wizard als kopierbares JS-Modul, extrahiert aus dem bestehenden Sage-Page-Wizard-Code (`index.html` Karte 4, Z. ~969–991). Einsatz: Sage-Protokol UND **Externer Mycel-Hub** (siehe `docs/components/_mycel_hub.md`). Brief: `docs/sessions/BRIEF_SPEC_19_ANDOCK_WIZARD.md`. |
 
+**Vision-Anker-Karten (Konzept-Karten, kein Modul-Code):**
+
+| Karte | Datei | Status |
+|---|---|---|
+| Einladung | `docs/components/_vision_einladung.md` | Vision-Anker · **Code-Stub** (2026-05-27, Bau-Sitzung Einladungs-Site). Drei-Format-Artefakt unter `docs/einladung/` (HTML + Markdown + PDF), Sechs-Sektionen-Site mit echten WebGL-Shadern (three.js + GSAP, lokal vendoriert), mehrsprachig DE/EN/FR/ES, Print-Magazin-Druckfassung 34 Seiten. Vier-Schichten-Lesart visuell aufgebaut. **Sichttest ungeprüft — wartet auf Klaus' Galaxy-Tab-S6-Browser.** |
+| Starter-Bundle | `docs/components/_starter_bundle.md` | Vision-Anker · Schablone (Phase B Schritt 8). |
+| Externer Mycel-Hub | `docs/components/_mycel_hub.md` | Vision-Anker · Schablone (Phase B Schritt 9). Repo `lausiklauskn-png/SB-KIMTool-Point` 2026-05-26 angelegt (public, leer). |
+
 Modul 00 (Doku-Fenster) ist die "5-Klick versteckte Funktion" in den
 Suchleisten der Endknoten-PWAs. Modul 09 beschreibt, wie ein fertiges Modul
 in Rezeptbuch / Mixarium eingebaut wird.
@@ -348,6 +398,30 @@ Anpassungs-Antrag, nicht stillschweigend.
 | 10 | **Pepo Semantic Match Demo via Starter-Bundle integrieren** — Klaus' externes Repo `lausiklauskn-png/semantic-match-demo` als erster Forker-PWA-Knoten ans Mycel andocken (UI-Pattern aus Demo + Sage-Mycel-Architektur). | (Klaus' eigener Endknoten, eigene Sitzung) |
 | 11 | **Muttis Rezeptbuch via Starter-Bundle integrieren** — Muttis blanco-Repo bekommt SBKIM-Module via Starter-Bundle + Andock an Externen Mycel-Hub. | (Forker-PWA, eigene Sitzung) |
 | 12 | **Cross-Knoten-Such-Test Forker → Klaus' Mycel** — End-to-End-Test mit zwei getrennten Forker-Endpunkten + Klaus' Endknoten: tippt User in Forker-Such-Feld eine Anfrage, kriegt Cross-Knoten-Treffer aus Klaus' Mycel (oder umgekehrt)? | (manueller Sichttest) |
+
+**Phase D (organisch, nicht-blockierend für Phase A/B/C — Klaus'
+Vision-Erweiterung 2026-05-27):**
+
+Phase D ist eine **organische Folge-Phase** nach Phase C; sie kann
+inhaltlich vorbereitet, aber nicht abgeschlossen werden, bevor die
+technische Schicht (Phase A/B/C) Pilz-Bauten ermöglicht. Zweigeteilt:
+
+| # | Sitzung | Branch-Vorschlag | Status |
+|---|---|---|---|
+| D.1 | **Agent-Bootstrap-Mechanik-Spec** — Sybil-Schutz via bezeugte Bau-Tat (`ZERTIFIKAT_ASPEKTE`-Anker), Identitäts-Schema (Sitzung-an-Datum statt Modell-Familie), Refinanzierungs-Schleife für Agent-Mit-Bauer (Pilz-Geld → Folge-Bau-Sitzungen). Setzt voraus, dass Modul 16 Sub (e) Bronze/Gold und die Endknoten-Re-Aktivierung gebaut sind. | `claude/spec-d1-agent-bootstrap` | ⏳ wartet auf Phase A 5g + 5e |
+| D.2 | **Pilz-Schicht-Wirtschafts-Spec** — Genossenschaft / Lizenz-Modell / Token / etwas, das wir heute nicht benennen können. **Bleibt bewusst offen**, bis Phase A/B/C technisch fertig ist und reale Pilz-Bauten existieren, an denen sich das Modell bewähren kann. | `claude/spec-d2-pilz-wirtschaft` | ⏳ wartet auf Phase C |
+
+**Vision-Anker-Vorbereitung** (vor Phase D, organisch):
+
+- **Einladungs-Site** (`docs/einladung/`) — Drei-Format-Artefakt
+  (HTML / Markdown / PDF) baut die Vier-Schichten-Lesart visuell auf.
+  Bau 2026-05-27 in Sitzung `claude/bau-einladung-site`. Karte:
+  `docs/components/_vision_einladung.md`. Sichttest ungeprüft, wartet
+  auf Klaus' Galaxy-Tab-S6-Browser.
+- **Folge-Pflege** Sage-Page-Mount der Einladung (eigene Sitzung,
+  Pipeline-Phase-frei — kann parallel zu Phase A laufen).
+- **Folge-Pflege** Mycel-Hub-Mount der Einladung (NACH Phase B
+  Schritt 9 Externer Mycel-Hub Bau).
 
 **Danach (organisch, ohne feste Reihenfolge — jeder Bau ergänzt
 einen Aspekt-Eintrag im Siegel-Modal):**
