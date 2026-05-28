@@ -3973,6 +3973,23 @@ Geprüft: 2026-05-28 (Spec-Sitzung 18 Sub (a) Vorab — Sub (a)
                      Eintrag (Modul 18 ist Wartungs-/Andock-Schicht,
                      kein Sicherheits-Modul), KEINE Tafel-Umsortierung
                      CLAUDE.md.)
+       · 2026-05-28 (Sichttest-Nachzug Bau 18 Sub (a) Vorab — Klaus'
+                     Live-Sichttest Panel 18 Knöpfe 1–10 alle grün am
+                     Galaxy Tab S6 (DeX-Chrome). Test 6 hat live gegen
+                     https://lausiklauskn-png.github.io/Mein-Mixarium/
+                     sbkim/spore.json gefetched + verifyForeignSpore
+                     durchgelaufen + Foreign-Spore-Preview vollständig
+                     gerendert (Knoten-ID B7Fke9CYTR1BrC3x…, sieben
+                     Domain-Stichworte, alle Stamm-/Gast-Kategorien).
+                     Erster produktiver Cross-Knoten-Spore-Read aus
+                     Modul 18. Test 8 confirm()-Bestätigungs-Dialog
+                     bei offenen Wizard-Eingaben korrekt ausgelöst.
+                     Drei Screenshots als Beleg in
+                     docs/sessions/archiv/screenshots/. Pipeline-Phase
+                     A Schritt 5h.1 abgeschlossen. Folge: Endknoten-
+                     Re-Migration MR + MM als eigene Sitzungen pro
+                     Endknoten-Repo. Übergabe: docs/sessions/archiv/
+                     2026-05-28_sichttest-bau-18-sub-a-vorab.md.)
 
 ---
 
