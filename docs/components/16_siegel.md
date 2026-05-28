@@ -581,13 +581,28 @@ Hinweis-Block:
 Modul 18 zeigt der Knopf eine Info-Notiz: „Modul 18 noch nicht
 verfügbar — Andocken via Sage-Page-Andock-Wizard."
 
-**Bronze-Modal schließt sich beim erfolgreichen Andock-Pfad
-automatisch; Fallback-Pfad lässt es offen.** (Pflege 2026-05-28 nach
-Klaus' Sichttest in Mein-Rezeptbuch — vorher blieben Bronze-Modal +
-Modul-18-Andock-Wizard übereinanderliegend; jetzt schließt der
-erfolgreiche `SbkimToolPwa.openAndockTab()`-Aufruf das Bronze-Modal
-direkt nach dem Wizard-Mount. Der Fallback-Pfad ohne Modul 18 lässt
-das Modal offen, damit der User die Info-Notiz noch lesen kann.)
+**Drei-Pfad-Verhalten (Pflege 2026-05-28 — Refinement von PR #197
+nach Sage-Page-Sichttest):**
+
+- **Pfad 1 — Erfolg:** `SbkimToolPwa.openAndockTab()` wirft NICHT
+  (Modul 18 ist initialisiert) → Wizard startet → Bronze-Modal
+  schließt sich automatisch.
+- **Pfad 2 — Throw:** `openAndockTab()` wirft `ToolPwaNotReadyError`
+  (Modul 18 geladen, aber Andocker hat `init()` nicht aufgerufen) →
+  Bronze-Modal bleibt offen, Info-Hinweis „Modul 18 ist geladen,
+  aber im Andocker nicht initialisiert" wird im Hinweis-Block
+  eingeblendet. User sieht sofort die Konfigurations-Lücke.
+- **Pfad 3 — Fallback:** `SbkimToolPwa` fehlt komplett (Modul-18-
+  Skript nicht geladen) → bestehende Info-Notiz „Modul 18 noch nicht
+  verfügbar", Modal bleibt offen.
+
+Hintergrund: PR #197 schloss das Modal IMMER nach `openAndockTab()`,
+auch wenn der Aufruf wegen fehlender `init()` warf. Klaus' Sage-Page-
+Sichttest 2026-05-28 zeigte: Modal verschwand, aber kein Wizard kam
+— verwirrend. Begleitende Pflege füllt diese Lücke: Sage-Page
+`sbkim-init.js` ruft `SbkimToolPwa.init({…Sage-Spore-Werte…})` jetzt
+nach `SbkimSiegel.init` auf (Sage ist Hybrid-Endknoten, siehe
+`sbkim/spore.json` `nodeType:"hybrid"`).
 
 #### Persistenz (Bronze → Gold-Wechsel)
 
