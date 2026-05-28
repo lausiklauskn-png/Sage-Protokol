@@ -57,6 +57,13 @@
   var PROVIDER_MIN_MATCH = 0.80;             // §0 INTERFACES
   var SCHICHT_MIN_MATCH = 0.60;              // §0 INTERFACES
   var EMBEDDING_LOAD_TIMEOUT_MS = 30000;     // Spec § Sub (a) Schritt 3
+  // Pflege 2026-05-28: großzügiger Channel-Reply-Timeout für den
+  // INTERAKTIVEN Handshake. Der Protokoll-Default (Modul 05
+  // QUERY_TIMEOUT_MS = 4 s) ist für automatisierte Pfade; im Wizard wartet
+  // ein Mensch + es gibt das Schließen-X. Mobile-Chrome verwirft/drosselt
+  // Hintergrund-Tabs (Observatorium-Lehre 3) — der Empfänger-Tab braucht
+  // Luft zum Aufwachen + Antworten. 5 min Puffer (Klaus' Test-Erfahrung).
+  var HANDSHAKE_CHANNEL_TIMEOUT_MS = 300000;
   var HANDSHAKE_AUTO_CLOSE_MS = 2000;        // Spec § Sub (a) Schritt 4
   var MOUNT_OBSERVER_TIMEOUT_MS = 10000;
   var MODAL_Z_INDEX = 10000;                 // > Modul-17-Modal-9999 (Spec § Risiken)
@@ -1188,7 +1195,7 @@
     // Vektor als die Spore — siehe Pflege 05+18 Handshake-Eigenvektor).
     setStep4Status("loading", "Handshake läuft …");
     Promise.resolve()
-      .then(function () { return anaMod.handshake(foreignSporeCache); })
+      .then(function () { return anaMod.handshake(foreignSporeCache, undefined, { timeoutMs: HANDSHAKE_CHANNEL_TIMEOUT_MS }); })
       .then(function () {
         setStep4Status("ok",
           "Handshake erfolgreich — Geschwister-Knoten verbunden. " +

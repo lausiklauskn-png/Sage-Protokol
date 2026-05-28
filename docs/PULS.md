@@ -1992,6 +1992,32 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Handshake-Timeout-Override (interaktiv großzügig)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-handshake-timeout-override`. Auslöser: Klaus' Befund —
+der Live-Cross-Tab-Handshake bricht nach 4 s ab („Channel-Reply > 4000
+ms"); früher war der Timeout zum Testen auf 5–10 min hochgesetzt, der
+Re-Sync auf `main` (QUERY_TIMEOUT_MS=4000) hat das überschrieben.
+Wurzel-Erklärung in `docs/OBSERVATORIUM_BROWSER.md` Lehre 1 + 3:
+BroadcastChannel ist same-origin **und** same-instance, und Mobile-Chrome
+verwirft/drosselt Hintergrund-Tabs → Empfänger-Listener weg → Timeout.
+
+**Fix:** Modul 05 `handshake(targetSpore, ownDomainVector?, options?)`
+bekommt `options.timeoutMs`-Override (Channel-Reply + HTTP-Abort).
+Protokoll-Default bleibt `QUERY_TIMEOUT_MS = 4000` für automatisierte
+Pfade (forker-sicher). Threaded durch `_doHandshake` → `sendViaChannel`
+→ `postChannelEnvelope`. Modul 18 interaktiver Wizard
+`triggerStepFourHandshake` reicht `HANDSHAKE_CHANNEL_TIMEOUT_MS = 300000`
+(5 min) — Mensch wartet + Schließen-X vorhanden. Smoke Probe 18 prüft
+jetzt zusätzlich `timeoutMs > 4000` im handshake-Aufruf (18/18 grün).
+INTERFACES § 1 Modul 05 + Karte 05 nachgezogen. `node --check` 05+18 grün.
+**KEIN** VERSION-Bump. Sichttest: der eigentliche Erfolg hängt am
+Mobile-Workaround (beide Tabs sichtbar, DeX-Splitscreen) — der Timeout
+gibt nur Luft, ersetzt aber keinen verworfenen Tab.
+
+---
+
 ### 2026-05-28 · Pflege Embedding-Lade-Puls (UX, Folge zu #205)
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch

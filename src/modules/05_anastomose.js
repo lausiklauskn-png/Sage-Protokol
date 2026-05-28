@@ -488,7 +488,10 @@
   // Liefert das rohe HandshakeResponse-Payload zurück; consume/verify ist
   // Sache des Aufrufers (consumeResponse für den regulären Handshake-Pfad).
 
-  async function postChannelEnvelope(request) {
+  async function postChannelEnvelope(request, timeoutMs) {
+    var replyTimeout = (typeof timeoutMs === "number" && isFinite(timeoutMs) && timeoutMs > 0)
+      ? timeoutMs
+      : QUERY_TIMEOUT_MS;
     if (!request || typeof request !== "object") {
       throw makeError("HandshakeNetworkError", "request fehlt für Channel-Pfad.");
     }
@@ -523,9 +526,9 @@
         try { replyChan.close(); } catch (e) {}
         reject(makeError(
           "HandshakeTimeoutError",
-          "Channel-Reply > " + QUERY_TIMEOUT_MS + " ms ausgeblieben.",
+          "Channel-Reply > " + replyTimeout + " ms ausgeblieben.",
         ));
-      }, QUERY_TIMEOUT_MS);
+      }, replyTimeout);
 
       replyChan.addEventListener("message", function (event) {
         if (settled) return;
@@ -568,10 +571,10 @@
   // im Timeout-Fall, hängt einen optionalen HTTP-cause an die Fehler-
   // Kette (Auto-Fallback) und konsumiert die Response wie der HTTP-Pfad.
 
-  async function sendViaChannel(targetSpore, request, preScore, httpCause, opSlot) {
+  async function sendViaChannel(targetSpore, request, preScore, httpCause, opSlot, timeoutMs) {
     var responseJson;
     try {
-      responseJson = await postChannelEnvelope(request);
+      responseJson = await postChannelEnvelope(request, timeoutMs);
     } catch (err) {
       if (err.name === "HandshakeTimeoutError") {
         try { await logEntry(targetSpore.id, "timeout-channel", opSlot); } catch (e) {}
@@ -672,6 +675,16 @@
   async function _doHandshake(targetSpore, ownDomainVector, options) {
     await ensureReady();
     var transport = parseTransport(options);     // wirft InvalidTransportError bei bad value
+    // Pflege 2026-05-28: optionaler Timeout-Override (options.timeoutMs).
+    // Protokoll-Default bleibt QUERY_TIMEOUT_MS (4 s) für automatisierte
+    // Pfade; interaktive Aufrufer (Modul-18-Wizard) reichen einen
+    // großzügigeren Wert, damit ein kurz aufgeweckter Geschwister-Tab in
+    // Mobile-Chrome antworten kann (Observatorium-Lehre 3 § Tab-Suspendierung).
+    var effTimeoutMs = QUERY_TIMEOUT_MS;
+    if (options && typeof options.timeoutMs === "number" &&
+        isFinite(options.timeoutMs) && options.timeoutMs > 0) {
+      effTimeoutMs = options.timeoutMs;
+    }
     var spore = getSpore();
     var match = getMatch();
 
@@ -768,13 +781,13 @@
 
     // 5b. transport === "channel": HTTP-Pfad überspringen, direkt zum Channel.
     if (transport === "channel") {
-      return await sendViaChannel(targetSpore, request, preScore, null, opSlot);
+      return await sendViaChannel(targetSpore, request, preScore, null, opSlot, effTimeoutMs);
     }
 
     // 6. POST mit Abort-Timeout (transport ∈ {"http", "auto"})
     var url = String(targetSpore.endpoint).replace(/\/$/, "") + ENDPOINT_ANASTOMOSIS;
     var controller = new AbortController();
-    var timeoutId = setTimeout(function () { controller.abort(); }, QUERY_TIMEOUT_MS);
+    var timeoutId = setTimeout(function () { controller.abort(); }, effTimeoutMs);
     var response = null;
     var fetchErr = null;
     try {
@@ -797,7 +810,7 @@
         await logEntry(targetSpore.id, "timeout", opSlot);
         throw makeError(
           "HandshakeTimeoutError",
-          "Anfrage an " + url + " > " + QUERY_TIMEOUT_MS + " ms abgebrochen.",
+          "Anfrage an " + url + " > " + effTimeoutMs + " ms abgebrochen.",
           fetchErr,
         );
       }
@@ -826,7 +839,7 @@
         "HTTP-Antwort nicht verwertbar (Status " + response.status +
           ", Content-Type " + ctHeader + ") — Auto-Fallback auf BroadcastChannel-Pfad.",
       );
-      return await sendViaChannel(targetSpore, request, preScore, httpCause, opSlot);
+      return await sendViaChannel(targetSpore, request, preScore, httpCause, opSlot, effTimeoutMs);
     }
 
     // 6d. transport === "http": altes Verhalten — bei 4xx/5xx oder

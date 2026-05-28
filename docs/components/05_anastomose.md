@@ -158,6 +158,12 @@ handshake(targetSpore, ownDomainVector?, options?) → Promise<HandshakeResult>
   // "Eigene Spore noch nicht erzeugt … generateOwnSpore(meta) zuerst".
   // Explizit übergebener Vektor wird honoriert (Float32Array(384)).
   //
+  // Pflege 2026-05-28: options.timeoutMs override für Channel-Reply-/HTTP-
+  // Abort-Timeout. Default QUERY_TIMEOUT_MS (4000) für automatisierte Pfade.
+  // Interaktiver Modul-18-Wizard reicht z.B. 300000 (5 min), damit ein in
+  // Mobile-Chrome kurz aufgeweckter Tab antworten kann (Observatorium-Lehre
+  // 3). Ungültig (≤0/NaN/kein number) → Fallback QUERY_TIMEOUT_MS.
+  //
   // options.transport (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17,
   // additiv; ohne options unverändert zum Bestehenden):
   //   "auto"    (Default) — HTTP zuerst, bei klaren Signalen einmaliger
