@@ -1992,6 +1992,21 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Modul-18-Match-Schritt Embedding-Fortschritt
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul18-embedding-fortschritt`. Folge zu #205/#206: der
+Embedding-Fortschritts-Event (`sbkim:embedding-progress`, Modul 03) wird
+jetzt auch im **Modul-18-Wizard Schritt 3 (Match)** angezeigt — derselbe
+Live-Balken statt des statischen „lädt …". Genau der Pfad, den Klaus beim
+Andocken/Handshake (Siegel → Andocken) benutzt. `init()` registriert einen
+`onEmbeddingProgress`-Listener, gated auf `currentStep===3 &&
+embeddingReady==="loading"` (bedient nur das eigene Lade-Fenster, nicht den
+Sage-Identitäts-Wizard). Smoke Probe 19 NEU (Listener-Registrierung) →
+19/19 grün. `node --check` 18 grün. **KEIN** VERSION-Bump.
+
+---
+
 ### 2026-05-28 · Pflege Sage-Andock-Einstiege (Discoverability)
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch

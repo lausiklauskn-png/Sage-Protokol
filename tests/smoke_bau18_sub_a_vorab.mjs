@@ -680,6 +680,22 @@ async function run() {
     `hsCalled=${hsCalled}/arg1Foreign=${hsArg1IsForeign}/arg2Undefined=${hsArg2Undefined}/timeout=${hsGotGenerousTimeout}/embedPassageStep4=${embedPassageCalledInStep4}`,
     hsCalled === true && hsArg1IsForeign === true && hsArg2Undefined === true && hsGotGenerousTimeout === true && embedPassageCalledInStep4 === false);
 
+  // -------- Probe 19: init registriert den Embedding-Progress-Listener --------
+  // Pflege 2026-05-28: Modul 18 zeigt im Match-Schritt einen Live-Balken aus
+  // dem sbkim:embedding-progress-Event (Modul 03). init() muss den Listener
+  // registrieren.
+  const g19 = makeStubGlobal();
+  const reg19 = [];
+  const origAdd19 = g19.addEventListener;
+  g19.addEventListener = (type, cb) => { reg19.push(type); return origAdd19(type, cb); };
+  loadModuleInto(g19, "src/modules/18_tool_pwa.js");
+  const T19 = g19.SbkimToolPwa;
+  await T19.init(VALID_OPTS);
+  record("19. init registriert sbkim:embedding-progress-Listener (Match-Schritt Live-Balken)",
+    "addEventListener('sbkim:embedding-progress') aufgerufen",
+    `registered=${reg19.includes("sbkim:embedding-progress")}`,
+    reg19.includes("sbkim:embedding-progress"));
+
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;
   const total = results.length;
