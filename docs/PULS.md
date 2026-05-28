@@ -1992,6 +1992,19 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Modul-18-Lade-Puls (Schritt 3 + 4)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul18-lade-puls`. Reines CSS in Modul 18: der Lade-Status
+(`.sbkim-tool-pwa-status[data-kind="loading"]`) pulsiert jetzt — deckt
+**Schritt 3** (Embedding-Download) **und Schritt 4** (Handshake-Wartezeit,
+bis 5 min) ab. Opacity-Animation auf dem Compositor (läuft trotz Haupt-
+Thread-Last, stoppt bei echtem Einfrieren). `prefers-reduced-motion`
+respektiert. Nutzt das vorhandene `data-kind`-Attribut → keine JS-Logik-
+Änderung. `node --check` grün, Smoke 19/19. **KEIN** VERSION-Bump.
+
+---
+
 ### 2026-05-28 · Pflege Modul-18-Match-Schritt Embedding-Fortschritt
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch

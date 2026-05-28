@@ -1419,6 +1419,14 @@
       "  border: 1px solid rgba(255, 255, 255, 0.12);",
       "}",
       ".sbkim-tool-pwa-status[data-kind=\"loading\"] { color: rgba(245, 245, 255, 0.65); }",
+      // Pflege 2026-05-28: pulsierender Lade-Status (Schritt 3 Embedding-
+      // Download + Schritt 4 Handshake-Wartezeit, die bis 5 min dauern kann).
+      // Opacity-Animation läuft auf dem Compositor — pulsiert weiter trotz
+      // Haupt-Thread-Last, stoppt aber, wenn die Seite echt eingefroren ist
+      // („lebt noch vs. hängt", Observatorium-Lehre + Klaus' Wunsch).
+      "@keyframes sbkim-tool-pwa-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }",
+      ".sbkim-tool-pwa-status[data-kind=\"loading\"] { animation: sbkim-tool-pwa-pulse 1.1s ease-in-out infinite; }",
+      "@media (prefers-reduced-motion: reduce) { .sbkim-tool-pwa-status[data-kind=\"loading\"] { animation: none; } }",
       ".sbkim-tool-pwa-status[data-kind=\"ok\"] { color: #6EE7D3; border-color: rgba(110, 231, 211, 0.4); }",
       ".sbkim-tool-pwa-status[data-kind=\"warn\"] { color: #F4B435; border-color: rgba(244, 180, 53, 0.4); }",
       ".sbkim-tool-pwa-status[data-kind=\"error\"] { color: #F5C4C4; border-color: rgba(220, 38, 38, 0.4); background: rgba(220, 38, 38, 0.12); }",
