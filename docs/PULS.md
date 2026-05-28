@@ -1811,6 +1811,87 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-28 · Sichttest + Folge-Pflegen Einladung (in derselben Bau-Sitzung)
+
+**Sitzungs-Rolle:** Iterative Pflege innerhalb der noch offenen
+Bau-Sitzung `claude/bau-einladung-site-8fZyj`. Klaus hat in der Nacht
+2026-05-28 die Site auf Galaxy Tab S6 + DeX-Chrome gepullt und Befund
+für Befund per Chat gemeldet. Statt einer eigenen Folge-Sitzung wurden
+alle Pflegen am selben Branch nachgezogen.
+
+**Was inhaltlich geändert wurde** (Details im Übergabeprotokoll):
+
+1. **Sektion 1** Eröffnungs-Satz: „das nichts will" → „das in
+   perfekter Symbiose lebt" (HTML + MD, vier Sprachen).
+2. **Sektion 3 Pilz-Karten**: drei KI-Bilder von Klaus integriert
+   (Hände-mit-Sporen, Premium-Pilz, Synapsen-Pilz) ersetzen die
+   prozeduralen WebGL-Mini-Szenen. Pixelgenau via `object-fit: contain`,
+   Hover-3D weg, Mouse-getriggerter Feenstaub am Cursor pro Karte.
+3. **Sektion 5 Schlüssel**: mehrfach iteriert — B1-Vortex-Hintergrund
+   + B2-Schlüssel-Vollansicht via mix-blend-mode (Schwarz transparent),
+   Stop-Motion-Rotation verworfen, schwarzes Loch verworfen
+   (Notlösung), Maus-Interaktion verworfen. Text mit Haarlinien-
+   Outline + verstärktem Schatten.
+4. **Sektion 6 Lichtung**: Vignette entfernt (Wald komplett sichtbar),
+   Text mit `text-stroke` + verstärkten Shadows. Afterword unter den
+   CTA-Buttons heller.
+5. **Sektion 5b NEU — Tür-Sequenz**: Pinned-Scroll-Animation 320vh
+   mit fünf Phasen (groß rechts zoom → fährt zur Mitte → ruht → Zoom
+   auf Lichtspalt → Tür transparent + Flash → Flash sanft auf 0).
+   Lichtungs-Foto als Stage-Background schimmert in Phase 4 durch.
+6. **Übergang 5b→6**: harter schwarzer Balken (scene-fade-top von 6)
+   entfernt — die Tür-Sequenz fadet schon zum Lichtungs-Foto.
+7. **DE Mit-Bauer-Sprache**: „Mensch-Mit-Bauer" und „Agent-Mit-Bauer"
+   (holprig) ersetzt durch „Menschen, die mitbauen" und „Agenten, die
+   mitbauen" (Variante A, gleichwertig). EN/FR/ES unverändert.
+   Bug-Fix: `&amp;`-Entity in `s4.eyebrow`.
+8. **Übergänge insgesamt**: JS-eingefügte `.scene-fade-top/-bot` für
+   sanftere Sektion-Wechsel. Mycel-Opacity-Lerp halbiert.
+9. **Kamerafahrten**: Sektion 1/5/6 mit seitlichen Kamerafahrten
+   (links/rechts/oben) zur Mitte hin.
+10. **Feenstaub-Verstärkung**: Cross-Star-Funken auf allen drei Foto-
+    Sektionen + Schlüssel-Sporen zweifarbig.
+11. **Drei Lossless-WebP-Foto-Hintergründe** vendoriert (Mycel-Boden,
+    Vortex, Lichtung) plus Tür-Bild und B2-Schlüssel und 4 Rotations-
+    Frames (im Archiv).
+
+**Sage-Page-Mount der Einladung (Klaus' Anweisung 2026-05-28):**
+
+Ursprünglich als eigene Folge-Pflege-Sitzung geplant, von Klaus zum
+Schluss explizit für diese Bau-Sitzung autorisiert (Tafel-Evolutions-
+Klausel auf „KEINE Sage-Page-Änderung in `index.html`"). Neue Karte
+zwischen Lesematerial- und Andock-Karte: Tür-Bild semi-transparent
+Default, bei Hover über 1.8s langsam voll sichtbar (Klaus' Wunsch:
+„erst bei längerem draufbleiben"). Mouse-Move spawnt Cross-Star-
+Feenstaub am Cursor. Klick → Tür-Öffnungs-Animation → Navigation zu
+`docs/einladung/index.html`. Vision-Karte Bauzustand aktualisiert.
+
+**Heilige Tafeln (Stand 2026-05-28):**
+
+- KEIN Modul-Code geändert in `src/modules/` (nur Doku + Einladung).
+- KEIN Endknoten-Eingriff.
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+- KEINE Pipeline-Umsortierung Phase A/B/C.
+- Sage-Page-Tafel ANGEPASST: Mount der Einladungs-Türschwelle in
+  `index.html` durch Klaus' explizite Anweisung autorisiert.
+
+**Verifikations-Status:**
+
+- ✅ Klaus' Browser-Sichttest auf Galaxy Tab S6 erfolgt.
+- ✅ Headless-Smoke 9/9 nach jeder Pflege grün.
+- ✅ PDF nach DE-Änderungen re-erzeugt (32 Seiten, ~750 KB).
+- ✅ Sage-Page-Mount visuell geprüft (Idle + Hover-Screenshots).
+- ✅ Klaus' OK auf Sage-Page-Mount (2026-05-28).
+
+**Nächster sinnvoller Schritt:** PR #188 aus Draft auf Ready for
+Review setzen; Klaus mergt nach Bedarf. Sitzung damit abschluss-bereit.
+
+**Übergabeprotokoll erweitert:**
+`docs/sessions/archiv/2026-05-27_bau-einladung-site.md` § „Folge-
+Pflegen 2026-05-28".
+
+---
+
 ### 2026-05-27 · Bau-Sitzung Einladungs-Site (Mycel-Vision)
 
 **Sitzungs-Rolle:** Bau-Sitzung Einladungs-Site (gestalterischer

@@ -292,3 +292,125 @@ entschieden, ob ein Sage-Page-Mount-Brief geschrieben wird.
 
 Brief für Folge-Pflege (Sage-Page-Mount der Einladung) ist nicht
 Bestandteil dieser Sitzung — Klaus' Wunsch.
+
+---
+
+## Folge-Pflegen 2026-05-28 (Live-Sichttest + iterative Anpassungen)
+
+Klaus hat in der Nacht 2026-05-28 die Site auf seinem Galaxy Tab S6
+gepullt und mehrere Iterations-Befunde gemeldet. Statt einer
+separaten Pflege-Sitzung wurden sie innerhalb derselben Bau-Sitzung
+abgearbeitet (Branch `claude/bau-einladung-site-8fZyj` bleibt offen).
+
+### Inhaltliche/visuelle Befunde
+
+1. **Sektion 1 Symbiose-Wendung**: Eröffnungs-Satz „das nichts will"
+   geändert in „das in perfekter Symbiose lebt" — in HTML-i18n + MD
+   alle vier Sprachen.
+2. **Sektion 3 Pilz-Karten**: Klaus hat drei eigene KI-Bilder
+   geliefert (Sucher: Hände mit Sporen, Kommerziell: Premium-Pilz
+   auf Marmor, Agent: Synapsen-Pilz). Die prozeduralen WebGL-Mini-
+   Szenen ersetzt durch `<img class="fruiting-image">` mit
+   object-fit: contain (pixelgenau 1:1). Hover-3D-Effekt entfernt.
+   Maus-getriggerter Feenstaub pro Karte (Vanilla Canvas 2D, Cross-
+   Star-Funken, gold + blau, max 220 Partikel).
+3. **Sektion 5 Schlüssel**: mehrfach iteriert:
+   - B1-Vortex als Hintergrund + B2-Schlüssel als Vordergrund
+     (mix-blend-mode: screen, Bild-Schwarz wird transparent)
+   - Stop-Motion 4-Frame-Rotation gebaut, dann auf Klaus' Wunsch
+     wieder durch B2-Vollansicht ersetzt (Frames bleiben als
+     Vendor-Archiv)
+   - Schwarzes Loch um die Box (radial-Vignette) gebaut, dann
+     wieder entfernt (war Notlösung, brauchte es nicht mehr durch
+     mix-blend-Verschmelzung)
+   - Maus-Interaktion (setupKeyInteraction) wieder entfernt
+   - Text-Lesbarkeit: backdrop-filter Card hinter `.text-col`
+4. **Sektion 6 Lichtung**: Vignette entfernt (Klaus „Wald komplett
+   sichtbar"), Text mit `-webkit-text-stroke` Haarlinien-Outline
+   und verstärkten text-shadows. Afterword unter den CTA-Buttons
+   nochmal heller (`#fbf5e6`, stroke 0.5px, font-weight 380).
+5. **Tür-Sequenz (Sektion 5b NEU)**: Pinned-Scroll-Animation
+   320vh hoch, vier (jetzt fünf) Phasen: (1) Tür rechts gross
+   gezoomt → fährt nach links zur Mitte, (2) ruht, (3) Zoom auf
+   den Lichtspalt, (4) Tür wird transparent + warmer Flash, (5)
+   Flash fadet zurück auf 0 für nahtlosen Übergang. Lichtungs-Foto
+   als Stage-Background schimmert durch in Phase 4.
+6. **Übergang 5b→6**: harter schwarzer Balken (scene-fade-top von
+   Sektion 6) entfernt — die Tür-Sequenz fadet schon selbst zum
+   Lichtungs-Foto.
+7. **Mit-Bauer-Sprache (DE)**: „Mensch-Mit-Bauer" / „Agent-Mit-Bauer"
+   (Bindestrich-Komposita) ersetzt durch „Menschen, die mitbauen" /
+   „Agenten, die mitbauen" (Variante A). EN/FR/ES unverändert. Bug-
+   Fix: `s4.eyebrow` von `Mensch &amp; Agent` auf `Mensch & Agent`
+   (HTML-Entity wurde als Plain-Text gerendert).
+8. **Sektion-Übergangs-Fades**: JS-eingefügte `.scene-fade-top`/
+   `.scene-fade-bot` für sanftere Sektion-Wechsel. Mycel-Opacity-
+   Lerp von 0.05 auf 0.018 reduziert.
+9. **Kamerafahrten**: Sektion 1/5/6 bekommen seitliche Kamerafahrten
+   zur Mitte hin (links/rechts/oben) mit unterschiedlichen Dauern
+   (20s/16s/22s alternate).
+10. **Feenstaub-Verstärkung**: Sektion 1 Mycel-Glitter mit Cross-
+    Star-Shape; Sektion 5 Schlüssel-Sporen 250 Punkte mit zwei
+    Farben (gold unten, blau oben); Sektion 6 NEU Pollen-Layer
+    (drei Tiefen-Schichten, 80+140+200 Partikel).
+11. **Drei Foto-Hintergründe** vendoriert als Lossless WebP:
+    `scene-1-mycel.webp` (Mycel-Boden), `scene-5-vortex.webp`
+    (alchemischer Übergang), `scene-6-lichtung.webp` (Lichtung mit
+    Sonnenstrahlen). Ursprünglich angeliefert: `scene-5-door.webp`
+    (Tür mit Säulenhalle, wird in der Tür-Sequenz wieder verwendet).
+    Plus B2-Schlüssel (`scene-5-key.webp`) und vier Rotations-Frames
+    (`scene-5-key-frame-0..3.webp`, jetzt Archiv).
+
+### Sage-Page-Mount (vorgezogen)
+
+Ursprünglich als eigene Folge-Pflege-Sitzung geplant — Klaus hat
+zum Sitzungs-Schluss explizit autorisiert, den Mount in dieser Bau-
+Sitzung mit zu erledigen. Neue Karte zwischen Lesematerial- und
+Andock-Karte in `index.html`:
+
+  <article class="card span-12 einladung-card">
+    "Bevor du andockst — eine Einladung"
+
+Tür-Bild startet semi-transparent (opacity 0.30, entsättigt). Bei
+Hover wird sie über 1.8s langsam auf volle Sichtbarkeit aufgebaut
+(Klaus' Wunsch: „erst bei längerem draufbleiben"). Mouse-Move
+spawnt Cross-Star-Feenstaub am Cursor. Klick triggert kurze Tür-
+Öffnungs-Animation (warmer Flash + leichte Bewegung), nach 850ms
+Navigation zu `docs/einladung/index.html`. Reduced-Motion-Fallback.
+
+### Heilige-Tafel-Anpassung
+
+Die ursprüngliche Bau-Sitzungs-Pflicht „KEINE Sage-Page-Änderung
+in `index.html`" wird durch Klaus' explizite Anweisung im Live-Chat
+aufgehoben (Tafel-Evolutions-Klausel CLAUDE.md). Vision-Anker-Karte
+`_vision_einladung.md` Bauzustand aktualisiert.
+
+### Commit-Bilanz seit Sichttest-Beginn (chronologisch)
+
+```
+df05b4b Sage-Page-Mount der Einladung — Türschwelle-Karte
+fa7bd8b Pflege Einladung — DE Mit-Bauer-Beschreibung sprachlich entspannt
+2cb4026 Pflege Tür-Sequenz — Phase 5 für sanftes Flash-Auslaufen
+0a930d3 Pflege Übergang zur Lichtung — harter dunkler Balken entfernt
+ae2b2ae Pflege Sektion 5 — schwarzes Loch entfernt, Schichten reichen
+ebfdb09 Pflege Sektion 5 — zurück zur Schlüssel-Vollansicht
+dbc21b0 Pflege Sektion 5+6 — Text-Kontrast und schwarzes Loch um Schlüssel
+309410c Pflege Sektion 6 — Vignette weg, Text mit Haarlinien-Outline
+0a930d3 + viele weitere Pflegen davor (Maus-Feenstaub, Stop-Motion,
+        Foto-Integration, Kamerafahrten, Türöffnungs-Sequenz,
+        Lossless-WebP, ...)
+```
+
+### Verifikations-Status nach 2026-05-28
+
+- ✅ Klaus' Browser-Sichttest auf Galaxy Tab S6 hat stattgefunden
+  (mehrere Screenshots im Chat dokumentiert).
+- ✅ Headless-Smoke-Test 9/9 nach jedem Pflege-Commit grün.
+- ✅ PDF nach DE-Symbiose-Änderung + Mit-Bauer-Pflege neu erzeugt.
+- ✅ Sage-Page-Mount visuell geprüft (Idle + Hover-State).
+- ✅ Klaus' OK auf den Sage-Page-Mount (2026-05-28).
+
+### Nächster sinnvoller Schritt (jetzt)
+
+PULS.md final aktualisieren; PR #188 aus Draft auf Ready for Review
+setzen. Sitzung ist abschluss-bereit.
