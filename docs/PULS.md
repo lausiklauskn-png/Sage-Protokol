@@ -1811,6 +1811,61 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-28 · Brief-Anlage MR + MM Modul-18-Einbau (Mini-Sitzungs-Briefe)
+
+**Sitzungs-Rolle:** Brief-Anlage. Branch
+`claude/briefe-mr-mm-modul-18-einbau`. Reine Doku — Klaus hat
+nachgefragt, ob die Endknoten-Re-Migration nicht schon passiert
+ist. Klärung: 5e-Re-Aktivierung (Modul 15/16/17) ist 2026-05-26 in
+MR PR #249 + MM PR #58 durch (siehe
+`2026-05-26_endknoten-sichttest-cross-knoten-sub-e.md`), aber
+**Modul 18 fehlt in MR + MM**. Klaus' Live-Screenshots 2026-05-28
+bestätigen LEBT/VERKEHR/FREMD/SIEGEL-Widget aktiv in beiden
+Endknoten — SIEGEL-Klick triggert aktuell den Fallback „Modul 18
+noch nicht verfügbar".
+
+**Was getan:**
+
+1. **`docs/sessions/BRIEF_BAU_MR_MODUL_18.md`** angelegt. Kompakter
+   Mini-Sitzungs-Brief für `lausiklauskn-png/Mein-Rezeptbuch`:
+   drei Eingriffe (Datei kopieren + Skript-Tag + `SbkimToolPwa.init`-
+   Aufruf NACH `SbkimSiegel.init`), Pflicht-Disziplin, Sichttest-
+   Schritte für Klaus' Tab.
+2. **`docs/sessions/BRIEF_BAU_MM_MODUL_18.md`** analog für
+   `lausiklauskn-png/Mein-Mixarium`.
+3. Beide Briefe explizit abgegrenzt gegen die 5e-Re-Aktivierung:
+   „Nicht zu verwechseln mit PR #249/#58 vom 2026-05-26 — die hatten
+   Modul 15+16+17; dieser Brief füllt **nur** die Modul-18-Lücke."
+4. Klare Konventions-Anker für die Endknoten-Sitzungen: KEIN
+   Modul-Code-Eingriff (1:1 Kopie), KEIN `PROTOCOL_VERSION`-Bump,
+   KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag, KEIN automatischer Andock-
+   Trigger.
+
+**Auslöser-Kontext:** Klaus hat nach dem Sichttest Bau 18 Sub (a)
+Vorab + Brief Observatoriums-Vorteilspack nachgefragt, ob die
+Re-Migration schon passiert sei (PRs #249/#58 von Mai 2026 noch
+erinnert). Klärung: die große 5e-Re-Aktivierung ist durch; jetzt
+steht nur noch der **Modul-18-Mini-Einbau** aus (Pipeline 5h.1-Folge).
+
+**Pflicht-Disziplin eingehalten (dieser PR):**
+
+- ✓ KEIN Modul-Code-Eingriff.
+- ✓ KEIN Eingriff in `src/modules/`.
+- ✓ KEIN externer Repo-Eingriff (GitHub-MCP-Tools nur auf
+  Sage-Protokol — die Mini-Sitzungen pro Endknoten startet Klaus
+  in der jeweiligen externen Repo-Sitzung mit dem Brief als Prompt).
+- ✓ KEIN `PROTOCOL_VERSION`-/Pie-Update.
+- ✓ KEINE Tafel-Umsortierung CLAUDE.md.
+
+**Nächster Schritt:** Klaus startet pro externes Repo eine eigene
+Claude-Code-Sitzung mit dem jeweiligen Brief als Prompt — analog
+zum 5e-Re-Aktivierungs-Workflow von 2026-05-25. Nach Modul-18-Einbau
++ Sichttest in beiden Endknoten ist Pipeline-Phase A Schritt 5h.1-
+Folge geschlossen. Danach: Truhe-Bau-Sitzung
+(`claude/bau-observatoriums-vorteilspack`, Brief in PR #195).
+
+---
+
 ### 2026-05-28 · Plansitzung Observatoriums-Vorteilspack (Truhe-Brief)
 
 **Sitzungs-Rolle:** Brief-Anlage-Sitzung (kleine Sitzung). Branch
