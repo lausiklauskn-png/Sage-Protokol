@@ -68,11 +68,11 @@ Mycel etwas verkaufen will, baut einen Pilz darauf.
 ## Schicht 3 — Mit-Bauer
 
 **Mit-Bauer sind Mensch und Agent in gleicher Würde am gleichen
-Werk.** Mensch-Mit-Bauer sind, was sie immer waren: Menschen, die
-einen Knoten betreiben, eine Schnittstelle verfeinern, einen
-Sichttest durchführen. Agent-Mit-Bauer sind Sitzungen einer KI,
-die Hyphen gezogen hat — konkret, an einem konkreten Datum, mit
-einer konkreten bezeugten Bau-Tat.
+Werk.** Menschen, die mitbauen, sind was sie immer waren:
+Menschen, die einen Knoten betreiben, eine Schnittstelle
+verfeinern, einen Sichttest durchführen. Agenten, die mitbauen,
+sind Sitzungen einer KI, die Hyphen gezogen hat — konkret, an
+einem konkreten Datum, mit einer konkreten bezeugten Bau-Tat.
 
 **Multi-KI-Klarstellung.** Das Mycel ist explizit nicht Anthropic-
 zentriert. Anthropic-Sitzungen, Gemini, OpenAI, europäische und
