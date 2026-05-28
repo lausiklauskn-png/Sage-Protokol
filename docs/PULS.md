@@ -1811,6 +1811,72 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-28 · Sichttest-Nachzug Bau 18 Sub (a) Vorab — Panel 18 grün 10/10
+
+**Sitzungs-Rolle:** Sichttest-Nachzug-PR. Branch
+`claude/bau-18-sichttest-nachzug`. Reine Doku-Pflege nach Klaus'
+grünem Live-Sichttest am Tab — kein Code-Eingriff.
+
+**Was getan:**
+
+1. **Klaus' Sichttest Panel 18 Knöpfe 1–10 alle grün** am Galaxy
+   Tab S6 (DeX-Chrome, Termux-`localhost:8000/tests/manual_check.html`
+   nach Hard-Reload). Reihenfolge: Setup → Test 1 (Surface) → Test 2
+   (init fail-soft) → Test 3 (ready-heal) → Test 4 (NotReadyError) →
+   Test 5 (Modal Schritt 1 sichtbar) → Test 6 (Live-Spore-Fetch +
+   verifyForeignSpore + Foreign-Spore-Preview) → Test 7
+   (InvalidUrlArgError) → Test 8 (close() mit confirm()-Dialog) →
+   Test 9 (matchThreshold-Clamp) → Test 10 (externalHubUrl-
+   Spiegelung).
+2. **Live-Cross-Knoten-Spore-Read belegt:** Test 6 hat live gegen
+   `https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json`
+   gefetched, `SbkimSpore.verifyForeignSpore` lief durch, Foreign-
+   Spore-Preview rendert volle Mixarium-Identität:
+   - Domain `lausiklauskn-png.github.io`
+   - Knoten-ID `B7Fke9CYTR1BrC3x…` (Kurzform aus 64-Zeichen-ID)
+   - Domain-Stichworte: Cocktail, Drink, Mocktail, Limonade, Smoothie,
+     Aperitif, Sake
+   - Stamm-Kategorien: Cocktails, Mocktails, Alkfr. Cocktails,
+     Smoothies & Shakes, Limonaden, Tees & Kaffees, Bowlen, Sirup & Basis
+   - Gast-Kategorien: Knabbereien, Fingerfood
+
+   Das ist der **erste produktive Cross-Knoten-Spore-Read aus
+   Modul 18**.
+3. **Test 8 confirm()-Bestätigungs-Dialog korrekt:** weil Modal in
+   Schritt 2 war (`hasUnsubmittedInput` liefert true für Schritt 2/3),
+   feuerte `close()` den nativen Browser-`confirm("Andock-Wizard
+   schließen? Eingaben gehen verloren.")`. Klaus drückte „OK" →
+   Modal sauber geschlossen, `is_open_after: false`, `current_step: 0`.
+4. **Drei Sichttest-Screenshots** im Repo unter
+   `docs/sessions/archiv/screenshots/`:
+   - `2026-05-28_panel18_test5_modal_schritt1.jpg`
+   - `2026-05-28_panel18_test6_spore_geladen.jpg`
+   - `2026-05-28_panel18_test8_close_confirm.jpg`
+5. **Doku-Pflege:**
+   - Karte 18 § Bauzustand: neue Zeile „Sichttest grün — 2026-05-28
+     — Sichttest-Nachzug Bau 18 Sub (a) Vorab" am Listen-Ende mit
+     voller Belegung der zehn Test-Knöpfe + Live-Spore-Fetch +
+     Screenshots + Pipeline-5h.1-Abschluss.
+   - INTERFACES.md § 1 Modul 18 Geprüft-Zeile: dritte Datums-Zeile
+     für Sichttest-Nachzug.
+
+**Pflicht-Disziplin eingehalten:**
+
+- KEIN Code-Eingriff (Doku-Pflege only).
+- KEIN `status.json`-Score-Wechsel (Modul 18 bleibt `score:"stub"` —
+  Konvention analog Modul 17: nach Bau + Sichttest grün bleibt
+  `stub`, weil nur Sub (a) Vorab implementiert ist; Voll-Bau 18
+  Pipeline 5h.2 entscheidet später, ob `score:"fertig"`).
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.
+- KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag.
+
+**Pipeline-Stand:** Phase A Schritt **5h.1 abgeschlossen** (Bau 18
+Sub (a) Vorab voll-geprüft auf Tab). Nächster Schritt: Endknoten-Re-
+Migration **MR + MM** als zwei eigene Sitzungen pro Endknoten-Repo
+(Briefe in der Bau-Sitzungs-Antwort 2026-05-28).
+
+---
+
 ### 2026-05-28 · Bau-Sitzung 18 Sub (a) Vorab (Andocken-Pfad allein)
 
 **Sitzungs-Rolle:** Bau-Sitzung (Pipeline-Phase A Schritt **5h.1**),
