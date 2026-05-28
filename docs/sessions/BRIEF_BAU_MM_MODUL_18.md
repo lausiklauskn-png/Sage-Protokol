@@ -29,8 +29,13 @@ produktiv auf den Andock-Wizard.
    ```
    Alle vier müssen existieren. Wenn nicht: falsche Branch, abbrechen.
 3. **Sage-Repo** Sub-(a)-Vorab-Stand lesen (read-only):
-   - `src/modules/18_tool_pwa.js` (~1448 Zeilen) — wird 1:1 ins
-     MM-Repo kopiert.
+   - `src/modules/18_tool_pwa.js` (~1504 Zeilen, **inkl. Match-
+     embedQueryBatch-Wurzel-Fix PR #199 vom 2026-05-28**) — wird 1:1
+     ins MM-Repo kopiert. Der Fix sorgt dafür, dass Wizard-Schritt 3
+     (Match) die Domain-Stichworte erst über Modul 03 `embedQueryBatch`
+     zu Float32Array-Vektoren macht, bevor er `matchDimensions` ruft.
+     **Da 1:1 kopiert wird, kommt der Fix automatisch mit** — nur die
+     aktuelle `main`-Datei verwenden.
    - `docs/components/18_tool_pwa.md` § Sub (a) Andocken.
    - `docs/INTERFACES.md` § 1 Modul 18 — Pflicht-Init-Felder
      (`endpoint` + `domain` + `domainKeywords`).
@@ -114,10 +119,20 @@ await SbkimToolPwa.init({
 3. Bronze-SIEGEL-Klick → Modul-16-Bronze-Modal → `[Andocken]`-Knopf
    klicken → **Modul-18-Andock-Wizard öffnet sich** (statt Fallback-
    Text). Stepper-Schritt 1 sichtbar.
-4. Optional Live-Cross-Knoten-Test: URL
+4. **Live-Cross-Knoten-Test bis zum Match (verbindlich, prüft den
+   PR-#199-Fix):** URL
    `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/` eingeben →
-   Weiter → Spore-Fetch gegen MR.
-5. Bei Erfolg: Sichttest grün.
+   Weiter → **Schritt 2** Spore-Fetch gegen MR live grün → Weiter →
+   **Schritt 3 Match:**
+   - Beim **ersten** Aufruf Lade-Hinweis „Embedding-Modell wird
+     geladen (ca. 30 MB …). Bitte nicht abbrechen." (dauert je nach
+     Netz Sekunden bis Minuten).
+   - Erwartet danach: **„Match: NN % — über/unter Schwelle"** + drei
+     Bars (Fachlich / Prozess / Skalierung; in Stufe A identisch).
+   - **Darf NICHT** „Parameter 'queryVec' muss Float32Array sein, war:
+     String" werfen. Tut es das doch → alter Code im Service-Worker-
+     Cache, Hard-Reload / SW abräumen.
+5. Bei Erfolg (Match-Score + Bars sichtbar): Sichttest grün.
 
 ---
 
@@ -133,7 +148,9 @@ await SbkimToolPwa.init({
 
 ## Querverweise
 
-- Sage-Repo Sub-(a)-Vorab-Stand: PR #190 + PR #193 + PR #194.
+- Sage-Repo Sub-(a)-Vorab-Stand: PR #190 + PR #193 + PR #194
+  + **PR #199 (Match-embedQueryBatch-Wurzel-Fix, gemergt 2026-05-28,
+    Sichttest grün auf Sage-Page: Match 86 % + Drei-Bars)**.
 - Sage-Karte Modul 18: `docs/components/18_tool_pwa.md` § Sub (a).
 - Vorgänger-Re-Aktivierung MM (Modul 15+16+17): MM PR #58 vom
   2026-05-26.

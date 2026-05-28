@@ -30,8 +30,15 @@ Read gegen MM-Spore erfolgreich).
    ```
    Alle vier müssen existieren. Wenn nicht: falsche Branch, abbrechen.
 3. **Sage-Repo** Sub-(a)-Vorab-Stand lesen (read-only):
-   - `src/modules/18_tool_pwa.js` (~1448 Zeilen) — diese Datei wird
-     1:1 ins MR-Repo kopiert.
+   - `src/modules/18_tool_pwa.js` (~1504 Zeilen, **inkl. Match-
+     embedQueryBatch-Wurzel-Fix PR #199 vom 2026-05-28**) — diese
+     Datei wird 1:1 ins MR-Repo kopiert. Der Fix sorgt dafür, dass
+     Wizard-Schritt 3 (Match) die Domain-Stichworte erst über Modul 03
+     `embedQueryBatch` zu Float32Array-Vektoren macht, bevor er
+     `matchDimensions` ruft — sonst wirft Schritt 3 sofort
+     „Parameter 'queryVec' muss Float32Array sein, war: String".
+     **Da 1:1 kopiert wird, kommt der Fix automatisch mit** — kein
+     Sonder-Eingriff nötig, nur die aktuelle `main`-Datei verwenden.
    - `docs/components/18_tool_pwa.md` § Sub (a) Andocken — für
      Verständnis der Surface.
    - `docs/INTERFACES.md` § 1 Modul 18 — Pflicht-Init-Felder
@@ -137,10 +144,22 @@ Klaus' Sichttest auf Tab nach Push:
    klicken → Modul 16 Bronze-Modal öffnet sich → `[Andocken]`-Knopf
    klicken → **Modul-18-Andock-Wizard öffnet sich** (statt Fallback-
    Text). Stepper-Schritt 1 sichtbar (URL-Eingabe leer).
-4. **Optional Live-Cross-Knoten-Test:** URL
+4. **Live-Cross-Knoten-Test bis zum Match (verbindlich, prüft den
+   PR-#199-Fix):** URL
    `https://lausiklauskn-png.github.io/Mein-Mixarium/` eingeben →
-   Weiter → Spore-Fetch sollte gegen MM live durchgehen.
-5. Bei Erfolg: Sichttest grün, fertig.
+   Weiter → **Schritt 2** Spore-Fetch gegen MM live grün → Weiter →
+   **Schritt 3 Match:**
+   - Beim **ersten** Aufruf erscheint der Lade-Hinweis „Embedding-
+     Modell wird geladen (ca. 30 MB …). Bitte nicht abbrechen." und
+     es dauert (je nach Netz Sekunden bis Minuten — das 30-MB-Modell
+     lädt).
+   - Erwartet danach: **„Match: NN % — über/unter Schwelle"** + die
+     drei Bars (Fachlich / Prozess / Skalierung). In Stufe A sind alle
+     drei Bars identisch (gleicher Cosinus-Wert) — das ist korrekt.
+   - **Darf NICHT** mehr „Parameter 'queryVec' muss Float32Array sein,
+     war: String" werfen. Tut es das doch → alter Code im Browser-
+     Cache (Service-Worker), Hard-Reload / SW abräumen und erneut.
+5. Bei Erfolg (Match-Score + Bars sichtbar): Sichttest grün, fertig.
 
 ---
 
@@ -162,7 +181,9 @@ Klaus' Sichttest auf Tab nach Push:
 ## Querverweise
 
 - Sage-Repo Sub-(a)-Vorab-Stand: PR #190 (Spec, gemergt 2026-05-28)
-  + PR #193 (Bau, gemergt 2026-05-28) + PR #194 (Sichttest-Nachzug).
+  + PR #193 (Bau, gemergt 2026-05-28) + PR #194 (Sichttest-Nachzug)
+  + **PR #199 (Match-embedQueryBatch-Wurzel-Fix, gemergt 2026-05-28,
+    Sichttest grün auf Sage-Page: Match 86 % + Drei-Bars)**.
 - Sage-Karte Modul 18: `docs/components/18_tool_pwa.md` § Sub (a).
 - Sage-INTERFACES § 1 Modul 18: Pflicht-Init-Felder + Surface-Vertrag.
 - Vorgänger-Re-Aktivierung MR (Modul 15+16+17): MR PR #249 vom
