@@ -1811,6 +1811,114 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-28 · Pflege Brief-Multisuchfeld — Klaus' UI-Festlegungen einarbeiten
+
+**Sitzungs-Rolle:** Pflege-Sitzung (reine Brief-Doku, KEIN Modul-
+Code, KEIN Endknoten-Eingriff). Branch
+`claude/pflege-brief-suchfeld-multi-ui-festlegungen`.
+
+**Anlass:** Parallel zur Plansitzung in PR #189 lief eine zweite
+Plansitzung (PR #191, Branch `claude/multisearch-field-spec-ER2BL`)
+mit identischer Aufgabe. Klaus hat das Doppel-Arbeitsmuster (vor
+dem er bei der 2026-05-27-Tafel-Pflege gewarnt hatte) bemerkt und
+entschieden: **Inhalte aus PR #191 in die #189-Briefe einarbeiten
+als separate Pflege-PR**, nicht parallele Brief-Versionen behalten.
+PR #191 wurde geschlossen.
+
+**Klaus' Festlegungen aus PR #191 (per `AskUserQuestion`),
+einzuarbeiten:**
+
+1. **UI-Modus-Wechsel:** Symbol-Schalter UNTER der Texteingabe IM
+   Suchfeld nebeneinander (kein zusätzlicher Höhen-Bedarf),
+   Tooltip-Pflicht in Klaus-Sprache (keine Modul-IDs), Klick wechselt
+   grau → modus-spezifische Aktiv-Farbe, Multi-Aktiv erlaubt,
+   Default Lokal + Mycel aktiv (Web NICHT aktiv).
+2. **Treffer-UI:** unified-Liste mit Quellen-Marker (NICHT drei
+   separate Sektionen wie im #189-Brief vorgeschlagen).
+3. **Lokal-Sprung:** direkter Anchor-Sprung wenn nur Lokal aktiv +
+   Score ≥ 0.95 (sonst Liste).
+4. **Mycel-Treffer-Pflicht-Darstellung:** Score-Ring (Pepo-Demo-
+   Pattern) + Drei-Layer-Bars für `matchDimensions` (fachlich /
+   technisch / skalierung) + Gesamt-Score. Im #189-Brief stand das
+   als „optional pro Endknoten" — jetzt PFLICHT.
+5. **Web-Modus:** mischt Externer Mycel-Hub + Sage-`status.json` +
+   externe Web-API in derselben unified-Liste (Drei-Quellen-Mix mit
+   Quellen-Marker pro Treffer).
+
+**Was getan:**
+
+- **Neuer „Pflege 2026-05-28"-Block** am Anfang von
+  `docs/sessions/BRIEF_SPEC_SUCHFELD_MULTI.md` (zwischen
+  Branch-Vorschlag und Brief-Codeblock) — verankert Klaus' drei
+  UI-Festlegungen als Tafel-Charakter mit verbindlicher Lesart für
+  die Spec-Sitzung. Inkl. Daten-Schnittstellen-Vorschlag (Modul 15
+  Sub b `queryResult.payload.results[].dimensions` optional, Modul
+  04.C `withDimensions:true` Opt-In) + Sub-(a)-Vorab-Pflege-Hinweis
+  (NICHT nötig, PR #190 hat die Spec abgeschlossen).
+- **Brief-Codeblock Abschnitt C** mit „Klaus-Korrektur 2026-05-28"
+  ergänzt — die ursprüngliche „Variante D — Drei Sektionen
+  gestapelt"-Empfehlung ist als VERWORFEN markiert; die Symbol-
+  Schalter-Form als verbindlicher Ersatz benannt. Variante D bleibt
+  als Vergleichs-Anker stehen, damit die Spec-Sitzung den Begründungs-
+  Kontext kennt.
+- **Brief-Codeblock Abschnitt J** komplett überarbeitet — Score-
+  Ring + Drei-Layer-Bars sind jetzt PFLICHT für Mycel-Treffer
+  (statt offen), unified-Liste statt Sektionen, Lokal-Sprung-
+  Verhalten verankert. Treffer-Schema mit vier Quellen-Marker-
+  Varianten (→ Geschwister / → Externer Hub / → Sage-Mycel / ⌖
+  Web). Daten-Schnittstellen-Erweiterung als Spec-Entscheidung
+  ausgewiesen.
+- **`BRIEF_SPEC_18_SUB_A_VORAB.md` bewusst unangetastet** — die
+  Spec-Sitzung 18 Sub (a) ist über PR #190 abgeschlossen, der Brief
+  hat keinen weiteren Spec-Wert. Pflege wäre Doku-Schmuck.
+
+**Was offen blieb:**
+
+- **Folge-Spec-Sitzung Multisuchfeld** (Branch
+  `claude/spec-suchfeld-multi`) — Klaus startet sie mit dem
+  gepflegten Brief. Sie verarbeitet Klaus' UI-Festlegungen aus dem
+  Pflege-Block + entscheidet die offenen Punkte aus dem Brief-
+  Codeblock + legt eine Karte (Modul 20 oder Erweiterung Modul 18
+  / Modul 04) an. Brief-Codeblock unverändert für Copy-Paste.
+- **Tafel-Pflege CLAUDE.md Pipeline 5h.1 / 5i.1 / 5i.2** bleibt
+  separate Folge-Sitzung mit Klaus' explizitem OK (steht so
+  bereits im #189-Brief § Pipeline-Anpassungs-Antrag).
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-Code in `src/modules/`.
+- KEIN Endknoten-Eingriff.
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.
+- KEINE Tafel-Umsortierung CLAUDE.md (Pipeline-Anpassungs-Antrag
+  bleibt im Brief, eigene Folge-Pflege-Sitzung mit Klaus' OK).
+- KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag (Brief-Pflege ist kein
+  Sicherheits-Modul-Update).
+
+**Tafel-Beobachtung (Doppel-Arbeit-Lehre):** PR #189 und PR #191
+liefen am 2026-05-28 parallel an derselben Aufgabe und produzierten
+zwei Brief-Versionen mit denselben Dateinamen. Klaus' Verifikations-
+Block (CLAUDE.md § „Vor dem nächsten Sitzungs-Brief") verlangt
+PR-Listen-Check; bei Sitzungen, die NICHT aus `Befehl schreiben`
+hervorgehen (Plansitzungen via direkte Briefing-Anweisung), ist
+dieser Check aktuell nicht explizit gefordert. **Folge-Lehre:**
+auch Plansitzungen sollten am Anfang `git fetch origin && git
+log --oneline origin/main -10` ausführen, um parallele Sitzungen
+zu erkennen. Die hier durchgeführte Verifikation („grep für
+Brief-Dateinamen") fand den parallelen Brief nicht, weil PR #189
+noch ungemerged war zum Zeitpunkt des Lokal-Branch-Anlegens.
+
+**Nächster sinnvoller Schritt:** Klaus liest den gepflegten Brief
+und startet die Spec-Sitzung Multisuchfeld (Branch
+`claude/spec-suchfeld-multi`). Pipeline-Sequenz bleibt 5h.1 →
+5i.1 → 5i.2 (Sub-(a)-Vorab-Spec fertig in #190, jetzt Sub-(a)-Bau-
+Sitzung Vorrang vor Spec-Sitzung Multisuchfeld? — Klaus entscheidet
+die Reihenfolge in seiner Antwort).
+
+**Übergabeprotokoll:**
+`docs/sessions/archiv/2026-05-28_pflege-brief-suchfeld-multi-ui-festlegungen.md`.
+
+---
+
 ### 2026-05-28 · Spec-Sitzung 18 Sub (a) Vorab (Andocken-Pfad allein)
 
 **Sitzungs-Rolle:** Spec-Sitzung (Pipeline-Phase A Schritt **5h.1**),

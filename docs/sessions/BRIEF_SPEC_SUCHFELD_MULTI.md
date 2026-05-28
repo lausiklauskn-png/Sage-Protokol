@@ -27,6 +27,160 @@ Bestätigung 2026-05-28: **Sub (a) Vorab (Modul 18) ist Voraussetzung**
 
 ---
 
+## Pflege 2026-05-28 — Klaus' UI-Festlegungen aus paralleler Plansitzung
+
+**Anlass:** Parallel zur Plansitzung, aus der dieser Brief entstand
+(PR #189), lief eine zweite Plansitzung (PR #191, geschlossen am
+selben Tag wegen Dateinamens-Konflikt). Klaus hat darin per
+`AskUserQuestion` drei UI-Festlegungen getroffen, die der Brief
+unten in den Abschnitten C + J **noch nicht trägt**. Diese Pflege
+trägt sie nach — die ergänzten Festlegungen sind **Tafel-Charakter**
+und überschreiben die ursprünglichen „Empfehlung Variante D" + „pro
+Endknoten optional"-Formulierungen.
+
+### Festlegung 1 — UI-Modus-Wechsel: Symbol-Schalter IM Suchfeld
+
+**Klaus' Wortlaut 2026-05-28:** „Symbolschalter innerhalb des
+Suchfeldes unter der Texteingabe nebeneinander es ist hochgenug
+dafür nicht höher machen keinen zusätzlichen Platz dafür verwende,
+im Suchfeld integrieren. nofalls mit symbolen arbeiten und tooltips
+erklären wo die suche Stattfindet, bei klick verändert sich die
+Farbe der Symbole. von grau in die jeweilige aktive Farbe".
+
+**Verbindliche Lesart für die Spec-Sitzung:**
+
+- **Drei Symbol-Schalter UNTER der Texteingabe IM Suchfeld**
+  nebeneinander (Lupe-Lokal · Mycel-Glyph · Globus-Web). KEIN
+  zusätzlicher vertikaler Platz, KEIN zweites UI-Element neben
+  dem Suchfeld.
+- **Default-Farbe grau**, bei Klick wechselt das Symbol auf seine
+  Aktiv-Farbe (Spec-Anker — Bau-Sitzung entscheidet finale Werte):
+  - Lokal: Mycel-Grün (`--accent-local: #2EA77E`)
+  - Mycel: Edel-Gold aus Modul 16 (`--accent-mycel: #C9A961`)
+  - Web: Stahl-Blau (`--accent-web: #6E8FBF`)
+- **Tooltips in allen Schalter-Zuständen verfügbar** (Klaus-
+  Schärfung 2026-05-28): sowohl bei **aktivem** als auch bei
+  **inaktivem** Schalter, und auch **während laufender Suche**.
+  Tooltip-Text muss den Zustand mitsprechen (z.B. „Lokal — in
+  dieser App suchen · aktiv" vs. „Lokal — in dieser App suchen ·
+  inaktiv, klick zum Einschalten"). Spec-Sitzung legt die genaue
+  Wortlaut-Variation fest. Tooltips beschreiben die Such-Quelle
+  in Klaus' Sprache (Lokal / Mycel / Web — Externer Mycel-Hub +
+  Sage + Internet) — KEIN technisches Vokabular („Modul 04.C" etc.).
+- **Multi-Aktiv erlaubt** (Toggle pro Symbol, nicht Exclusive-
+  Choice). Mindestens ein Schalter muss aktiv bleiben (letzter
+  aktiver Schalter nicht deaktivierbar, UI-Disziplin).
+- **Default-Active:** Lokal + Mycel aktiv, Web **NICHT** aktiv
+  (Pilz-Schicht-Akquise-Disziplin — User aktiviert Web bewusst).
+- **Persistenz** in `localStorage` pro PWA-Origin
+  (`sbkim_search_modes_active`), UX-only, kein Protokoll-Belang.
+
+**Konsequenz für Abschnitt C des Brief-Codeblocks unten:** „Variante
+D — Drei Sektionen gestapelt mit Auto-Klassifikation + Extern hinter
+Knopf" ist **verworfen**. Die Spec-Sitzung verankert stattdessen die
+Symbol-Schalter-Form aus diesem Pflege-Block. Klassifikation
+(Stichwort vs. Semantik) bleibt **interne Logik**, ist aber NICHT
+sichtbarer Klassifikations-Indikator unter dem Such-Feld — Klaus'
+Festlegung „keinen zusätzlichen Platz verwende" schließt das aus.
+
+### Festlegung 2 — Treffer-UI: unified-Liste mit Quellen-Marker
+
+**Klaus' Wortlaut 2026-05-28:** „Lokal soll gleich zum Ergebnis
+Springen, (Rezept/Getränk) Mycell soll Die Drei Layer mit %tualen
+übereinstimmung der Suche wie geplant Semantisch Technisch und noch
+eine übereinstimmung die zeigt wie Hoch die übereinstimmungen mit
+der semantischen suche sind. Schon wie geplant eine Semantische
+Bidirektionales KI Matching/Mycel" sollte auch übers internet
+Verbundene Sporen/Knoten finden. Ansonsten unified-Liste, bei klick
+auf web sollten schon externe Knoten mit angeführt werden sollte
+auch gehen".
+
+**Verbindliche Lesart für die Spec-Sitzung:**
+
+- **Unified-Liste mit Quellen-Marker** ist die Default-Treffer-Form.
+  Die ASCII-Sektionen-Skizze in Abschnitt C des Brief-Codeblocks
+  unten ist **nur noch Strukturhilfe**, nicht UI-Vorgabe — die
+  Spec-Sitzung legt eine **eine** Liste mit Markern fest, optional
+  mit ein-/ausklappbaren Untergruppen.
+- **Lokal-Treffer-Sprung-Verhalten:**
+  - Wenn **nur Lokal aktiv** UND der Lokal-Top-Treffer einen Score
+    ≥ 0.95 hat (Stichwort-Modus: einziger Filter-Treffer) → der
+    Endknoten springt direkt zum Anchor
+    (`location.hash = "#anchor=<id>"` + `scrollToAnchor()`), KEINE
+    Treffer-Liste-Render.
+  - Wenn Lokal + Mycel oder Lokal + Web aktiv ist → keine Sprung-
+    Optimierung, immer Liste (User würde sonst Mycel-/Web-Treffer
+    aus dem Blick verlieren).
+  - Schwelle 0.95 ist Spec-Anker — Bau-Sitzung entscheidet finale
+    Schwelle.
+- **Mycel-Treffer-Anzeige (Pflicht, nicht optional):**
+  - **Score-Ring** (Pepo-Demo-Pattern aus Karte 18 § Such-Feld-
+    Integration-Pattern): Kreis 0–100 % mit Farb-Skala (gold ≥ 70 /
+    bronze 40–69 / rot < 40), zentral-Zahl in Prozent.
+  - **Drei Bars für `matchDimensions`** aus Modul 04.A — fachlich /
+    technisch / skalierung (Spec-Wahl Klaus 2026-05-28: das sind
+    die „drei Layer" aus dem Wortlaut).
+  - **Gesamt-Score** (Semantik-Skalarprodukt aus Modul 04 `match()`)
+    als zentrale Zahl im Ring + Klein-Text-Marker („Sem. 0.91").
+  - Quelle-Marker pro Treffer: „→ <Geschwister-Name>" (z.B.
+    „→ Mixarium") als anklickbarer Anker-Link
+    (`https://.../#anchor=<id>`).
+- **Web-Modus-Drei-Quellen-Mix in derselben Liste:**
+  - Hub-Treffer (Externer Mycel-Hub `_mycel_hub.md` —
+    SB-KIMTool-Point-`status.json`): Marker „→ <Knoten-Name> ·
+    Externer Hub".
+  - Sage-Mycel-Treffer (Sage-Page `status.json`-Auswertung):
+    Marker „→ <Knoten-Name> · Sage-Mycel".
+  - Web-API-Treffer (DuckDuckGo / Brave / generischer Adapter):
+    Marker „⌖ Web · <api-name>", öffnet in neuem Tab
+    (`target="_blank" rel="noopener noreferrer"`).
+
+**Daten-Schnittstellen-Erweiterung (offene Frage für Spec-Sitzung):**
+Modul 15 Sub (b) `op:"queryResult"`-Antwort sollte die `dimensions`
+mitliefern können — Spec-Vorschlag aus Pflege-Block:
+
+```js
+queryResult.payload.results[i] = {
+  label:       string,
+  anchorId:    string,
+  score:       number,
+  dimensions?: { fachlich, technisch, skalierung }, // neu, optional
+};
+```
+
+Modul 04.C `queryLocal` könnte einen Opt-In bekommen
+(`queryLocal(text, k, {withDimensions: true})`) — Spec-Sitzung
+entscheidet, ob das eine eigene Folge-Bau-Sitzung 04.D wird.
+
+### Festlegung 3 — Web-Modus mischt drei Quellen in derselben Liste
+
+Klaus' Wunsch „bei klick auf web sollten schon externe Knoten mit
+angeführt werden sollte auch gehen" bestätigt die Drei-Pfad-Spec
+aus Abschnitt G des Brief-Codeblocks unten (DuckDuckGo / Brave /
+generischer Adapter) — UND ergänzt sie um die zwei **Mycel-
+extension-Pfade**:
+
+- **Externer Mycel-Hub** (SB-KIMTool-Point) — `endknoten[]`-Liste
+  aus dem Hub-`status.json` als potenzielle Andock-Ziele.
+- **Sage-`status.json`** (Klaus' Mycel-Anker) — Klaus' Endknoten +
+  künftige Forker-Endknoten.
+
+Beide werden vom Web-Symbol-Klick getriggert (Pilz-Schicht-Akquise,
+User-Geste) und in dieselbe unified-Liste mit Marker eingefügt.
+Andock-Knopf bei Hub-/Sage-Treffern führt zu
+`SbkimToolPwa.openAndockTab(url)` — Sub (a) Vorab ist seit
+PR #190 (Spec) gemerged, Bau-Sitzung folgt.
+
+### Sub (a) Vorab — Brief-Pflege NICHT nötig
+
+Klaus' Festlegung „Ja, Sub (a) vorab-Brief" wurde durch PR #189
++ PR #190 bereits umgesetzt — die Spec-Sitzung 18 Sub (a) ist
+abgeschlossen, Karte 18 + INTERFACES.md gepflegt. Der Schwester-
+Brief `BRIEF_SPEC_18_SUB_A_VORAB.md` braucht **keine** ergänzende
+Pflege; offene Punkte aus diesem Brief sind in PR #190 entschieden.
+
+---
+
 ## Brief-Codeblock (für den ersten Prompt der Spec-Sitzung)
 
 ```
@@ -117,14 +271,21 @@ B. **Tafel-Konflikt-Auflösung verankern.**
    Diese vier Bedingungen MÜSSEN in der Spec als strikte Tabus
    stehen und in jeder Bau-Sitzung MR/MM eingehalten werden.
 
-C. **UI-Modus-Wechsel (Klaus-Empfehlung 2026-05-28: Variante D).**
+C. **UI-Modus-Wechsel.**
 
-   Klaus hat in der Plansitzung um Empfehlung gebeten („denke an
-   Nutzer Die coole Ideen schätzen"). **Empfehlung in dieser Spec
-   verankern:**
+   **Klaus-Korrektur 2026-05-28 (verbindlich, siehe Pflege-Block
+   am Brief-Anfang vor dem Codeblock):** die ursprüngliche
+   Variante-D-Empfehlung ist **VERWORFEN**. Klaus hat per
+   `AskUserQuestion` „Symbolschalter innerhalb des Suchfeldes unter
+   der Texteingabe nebeneinander" festgelegt — drei Symbol-Schalter
+   IM Suchfeld mit Klick-Farbwechsel grau → aktiv, Multi-Aktiv
+   erlaubt, Default Lokal + Mycel aktiv, Web NICHT aktiv. Tooltips
+   in Klaus-Sprache (keine Modul-IDs). Persistenz in `localStorage`
+   pro PWA-Origin. Details im Pflege-Block oben.
 
-   **Variante D — Drei Sektionen gestapelt mit Auto-Klassifikation
-   + Extern hinter Knopf.**
+   **Verworfene Variante D (nur als Vergleichs-Anker):**
+   Drei Sektionen gestapelt mit Auto-Klassifikation + Extern hinter
+   Knopf.
 
    Begründung:
    - Macht die Vier-Schichten-Lesart visuell sichtbar (User sieht
@@ -326,20 +487,53 @@ I. **SB-KIMTool-Point-Integration (Klaus' Klärung 2026-05-28).**
    Aufruf — User-Geste-getriggert wie Extern (Empfangsmodus-
    Pilz-Schicht).
 
-J. **UI-Pattern: drei (oder vier) Sektionen mit Score-Ring +
-   Quelle-Marker (Pepo-Demo-Stil).**
+J. **UI-Pattern: unified-Liste mit Quellen-Marker + Lokal-Sprung
+   + Drei-Layer-Mycel-Anzeige.**
 
-   Pro Treffer:
-   - Label (Titel)
-   - Score (0-100% oder 0.00-1.00, Pepo-Demo: Score-Ring teal/
-     gold/rot bei ≥70% / 40-69% / <40%)
-   - Quelle-Marker (→ Mein-Mixarium / → SB-KIMTool-Point / →
-     duckduckgo.com)
-   - Treffer-Aktion (Anker-Link bei Mycel/Hub; URL-Link bei
-     Extern; `[Andocken]` bei SBKIM-fähigem Extern-/Hub-Treffer)
+   **Klaus-Korrektur 2026-05-28 (verbindlich, siehe Pflege-Block
+   am Brief-Anfang vor dem Codeblock):** Treffer-Form ist **eine
+   unified-Liste mit Quellen-Marker**, nicht drei separate
+   Sektionen. Score-Ring + Drei-Layer-Bars sind **PFLICHT für
+   Mycel-Treffer**, nicht optional pro Endknoten. Lokal-Treffer
+   springt direkt zum Anchor, wenn nur Lokal aktiv UND Score ≥
+   0.95 (sonst Liste).
 
-   Spec entscheidet, ob Score-Ring Pflicht oder optional pro
-   Endknoten ist.
+   **Spec verankert pro Treffer:**
+
+   - Label (Titel).
+   - Quelle-Marker:
+     - „→ <Geschwister-Name>" (Mycel-Treffer, anklickbarer Anker-
+       Link `https://.../#anchor=<id>`).
+     - „→ <Knoten-Name> · Externer Hub" (Hub-Treffer aus SB-KIMTool-
+       Point `status.json`).
+     - „→ <Knoten-Name> · Sage-Mycel" (Sage-Page `status.json`).
+     - „⌖ Web · <api-name>" (Web-API-Treffer, neuer Tab).
+   - **Mycel-Treffer Pflicht-Darstellung** (Pepo-Demo-Pattern):
+     - **Score-Ring** 0–100 % mit Farb-Skala (gold ≥ 70 / bronze
+       40–69 / rot < 40), zentral-Zahl in Prozent.
+     - **Drei Bars für `matchDimensions`** (Modul 04.A): fachlich /
+       technisch / skalierung, 0.00–1.00 als horizontaler Balken
+       mit Label + Score rechts.
+     - **Gesamt-Score** (Semantik-Skalarprodukt aus Modul 04
+       `match()`) als zentrale Zahl im Ring + Klein-Text-Marker
+       („Sem. 0.91").
+   - **Lokal-Treffer-Sprung-Verhalten:**
+     - Wenn **nur Lokal aktiv** UND Top-Treffer-Score ≥ 0.95 →
+       direkter Sprung (`location.hash = "#anchor=<id>"` +
+       `scrollToAnchor()`), KEINE Liste.
+     - Wenn weitere Modi aktiv (Mycel oder Web) → immer Liste,
+       kein Sprung.
+     - Schwelle 0.95 ist Spec-Anker — Bau-Sitzung entscheidet final.
+   - Treffer-Aktion: Anker-Link bei Mycel/Sage-Mycel; URL-Link
+     bei Web-API (neuer Tab); `[Andocken]` bei Hub-Treffer +
+     SBKIM-fähigem Web-API-Treffer (Sub (a) Vorab-Pfad, PR #190).
+
+   **Daten-Schnittstellen-Erweiterung (Spec-Entscheidung):**
+   Modul 15 Sub (b) `op:"queryResult"`-Payload um optionales
+   `dimensions: {fachlich, technisch, skalierung}` erweitern; Modul
+   04.C `queryLocal` bekommt Opt-In `withDimensions:true`. Spec-
+   Sitzung entscheidet, ob das in dieser Sitzung mitgezogen wird
+   oder eigene Bau-Sitzung 04.D braucht.
 
 K. **Edge-Cases (Endknoten-Pflicht, Spec verankert pro Modus).**
 
