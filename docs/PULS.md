@@ -1811,6 +1811,95 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-28 · Plansitzung Observatoriums-Vorteilspack (Truhe-Brief)
+
+**Sitzungs-Rolle:** Brief-Anlage-Sitzung (kleine Sitzung). Branch
+`claude/brief-observatoriums-vorteilspack`. Reine Doku/Spec-Arbeit,
+KEIN Modul-Code, KEIN Sage-Page-Eingriff.
+
+**Anlass:** Klaus' Vision 2026-05-28 nach grünem Sichttest Bau 18
+Sub (a) Vorab (PR #194): eine **Toolbox-Truhe im Sage-Page-
+Observatorium** mit allen SBKIM-Tools als kopierfertige
+„Verpackungen". Alte Seemannskiste + Schlüssel-Schritt-Mechanik
+(analog Einladungs-Tür Scene 5/5b), Container-Größe wie Schwarz-
+Loch-/Sonnen-Karte (~280 px). Klaus' Wort: **„Vorteilspack"** —
+die Truhe ist die Sage-Page-Sichtbarkeit des Starter-Bundles
+(Phase B Schritt 8), Klick-und-Kopier-Pfad statt git-clone.
+
+**Was getan:**
+
+1. **Brief** `docs/sessions/BRIEF_BAU_OBSERVATORIUMS_VORTEILSPACK.md`
+   voll angelegt. Inhalt:
+   - Pflicht-Verifikations-Schritt (CLAUDE.md, Konzept-Karte,
+     Schwester-Konzept Starter-Bundle, Einladungs-Optik, Schwarz-
+     Loch-Container-Größe, alle Modul-Karten).
+   - Pflicht-Disziplin (KEIN `src/modules/`-Eingriff, KEIN
+     `PROTOCOL_VERSION`-Bump, KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag,
+     KEIN Endknoten-Eingriff, KEIN Modul-19-Bau, KEINE Tafel-
+     Umsortierung).
+   - Sage-Page-Karte-Vorschlag mit Truhe-Stage (280 px) + Schlüssel
+     davor + Klick-Mechanik in vier Phasen.
+   - Tool-Tile-Außen-Sicht (Tier-Badge + Icon + Name + Aufgabe +
+     Status-Marker) + Tool-Modal-Inhalt (neun Sektionen pro Tool).
+   - Tier-Vorschlag (Bau-Sitzung muss final entscheiden):
+     - **Must-have (3):** 01 Storage, 02 Spore, 15 Membran.
+     - **Basic (7):** 03 Embedding, 04 Match, 05 Anastomose, 07
+       Apoptose, 16 Siegel, 17 Floating-Widget, 18 Tool-PWA Sub (a)
+       Vorab.
+     - **Pro (8+):** 00 Doku-Fenster, 06 Heterokaryose, 08 UI-Demo,
+       09 Einbau-Anleitung, 10/11/12 Schutz-Backlog, 14 Diffusion-
+       Backlog, 19 Andock-Wizard (Konzept).
+   - Vibe-Coding-Prompt-Paket-Template pro Tool — Klaus copy-paste-
+     fähig in eine KI-Sitzung, die KI baut dann das Tool im Repo
+     ein.
+   - Code-Inhalt-Strategie: **Hybrid** empfohlen — statische
+     Metadaten + lazy-fetch von `src/modules/NN_modul.js` beim
+     Kopier-Klick.
+   - Klärung Beziehung zum Starter-Bundle (Phase B Schritt 8):
+     Truhe = klick-und-kopier; Starter-Bundle = git-clone.
+
+2. **Konzept-Karte** `docs/components/_observatoriums_vorteilspack.md`
+   als Schablone angelegt mit Vokabular, Klaus-Festlegungen 2026-05-28
+   (fünf Tafel-Punkte), sechs Sub-Bereiche (a–f) mit Spec-Skizze +
+   offenen Spec-Punkten, Strikte Tabus, Bauzustand-Tabelle.
+
+3. **CLAUDE.md Pflege** § „Vision-Anker-Vorbereitung":
+   - Neue Zeile für Observatoriums-Vorteilspack-Truhe.
+   - Pipeline-Position: NACH MR + MM Endknoten-Re-Migration,
+     parallel zu Phase B Schritt 7 möglich.
+   - **KEINE Tafel-Umsortierung** der Phase-A/B-Reihenfolge.
+
+**Pflicht-Disziplin eingehalten:**
+
+- ✓ KEIN Code in `src/modules/`.
+- ✓ KEIN Sage-Page-Eingriff in `index.html` (kommt erst in der
+  Bau-Sitzung).
+- ✓ KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
+  Bump.
+- ✓ KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag (Truhe ist Distributions-/
+  Render-Schicht, kein Sicherheits-Modul).
+- ✓ KEINE Pipeline-Umsortierung (Truhe ist Vision-Anker-
+  Vorbereitung, Pipeline-Phase-frei).
+- ✓ KEIN Endknoten-Eingriff.
+
+**Was offen:**
+
+1. **Bau-Sitzung Observatoriums-Vorteilspack-Truhe** — eigener
+   Branch `claude/bau-observatoriums-vorteilspack`, NACH MR + MM
+   Re-Migration. Brief liegt.
+2. **Tier-Liste final** entscheiden in der Bau-Sitzung (Vorschlag
+   im Brief, aber Klaus' Veto möglich).
+3. **Asset-Frage** (Schlüssel-WebP-Reuse oder eigene CSS-/SVG-
+   Variante) wird in der Bau-Sitzung gelöst.
+4. **Tool-Datenbank-Quelle** (Build-Time-JSON oder Runtime-Fetch)
+   wird in der Bau-Sitzung gelöst.
+
+**Nächster Schritt:** Endknoten-Re-Migration MR + MM als zwei
+eigene Sitzungen in den externen Repos starten. Truhe-Bau-Sitzung
+folgt **NACH** MR + MM.
+
+---
+
 ### 2026-05-28 · Sichttest-Nachzug Bau 18 Sub (a) Vorab — Panel 18 grün 10/10
 
 **Sitzungs-Rolle:** Sichttest-Nachzug-PR. Branch
