@@ -21,10 +21,10 @@ auslagern statt kürzen.
 ```mermaid
 pie showData
   title Modulstand 2026-05-26 (21 Module)
-  "🟫 Schablone" : 8
+  "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 8
+  "🟦 Code-Stub" : 9
   "🟩 Fertig" : 5
 ```
 
@@ -1810,6 +1810,171 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-28 · Bau-Sitzung 18 Sub (a) Vorab (Andocken-Pfad allein)
+
+**Sitzungs-Rolle:** Bau-Sitzung (Pipeline-Phase A Schritt **5h.1**),
+Folge von Spec-Sitzung 18 Sub (a) Vorab (PR #190). Branch
+`claude/bau-18-sub-a-vorab-Ze6Xf`.
+
+**Anlass:** Spec-Sitzung 18 Sub (a) Vorab vom 2026-05-28 hat
+Endknoten-Init-Schema + `openAndockTab(url?)`-Signatur + Embedding-
+Lazy-Trigger + Match-Schwelle-UI + Stepper-Modal-Form festgelegt.
+Diese Bau-Sitzung schreibt den Modul-Code, der den fail-soft-Hook
+im Modul-16-Sub-(e)-Bronze-Modal (PR #180) produktiv macht und das
+Multisuchfeld mit einer realen Andock-Surface versorgt.
+
+**Was getan:**
+
+1. **`src/modules/18_tool_pwa.js`** voll angelegt (~1 000 Zeilen
+   inkl. Inline-CSS) mit:
+   - Public-Surface `SbkimToolPwa = {init, openAndockTab, close,
+     isOpen, _meta}` + Selbstcheck-Zeile
+     `MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen:
+     init/openAndockTab/close/isOpen` beim Skript-Laden.
+   - Zwei Errors (Factory-Stil analog Modul 15/16):
+     `ToolPwaNotReadyError` (mit Liste der fehlenden Felder im
+     Message) + `ToolPwaInvalidUrlArgError`.
+   - `init(options)` Promise<void>, idempotent + fail-soft.
+     Pflicht-Felder `endpoint`+`domain`+`domainKeywords` fehlen
+     → `console.warn` + `_meta.ready=false` + `_meta.missingFields[]`,
+     KEIN Throw. `matchThreshold > PROVIDER_MIN_MATCH (0.80)` →
+     clamp + warn. `externalHubUrl` Read-Anker (KEIN Hub-Fetch
+     in Sub (a) Vorab). `repoUrl` Auto-Erkennung aus
+     `location.origin` + erstem Pfad-Segment.
+   - `openAndockTab(url?)` mit Sync-Validierung **vor** await
+     (ready-Check + `new URL(url)`-Validierung). Async: Modal-
+     Self-Mount in `document.body` (Override via `opts.mountTarget`)
+     mit MutationObserver-Fallback (10 s Timeout). Bereits-offen +
+     gleiche URL → no-op; bereits-offen + andere URL → Reset auf
+     Schritt 2.
+   - Vier-Schritt-Stepper-UI (URL/Spore/Match/Handshake):
+     - Schritt 1: Text-Input + „Weiter →"-Knopf, URL-Validierung
+       sichtbar im Fehler-Label.
+     - Schritt 2: `fetch(joinUrl(url, "sbkim/spore.json"))` +
+       `SbkimSpore.verifyForeignSpore` (Signatur-Fail kein
+       „Trotzdem"-Knopf). Foreign-Spore-Preview (Domain /
+       Knoten-ID-kurz / Domain-Stichworte / Kategorien).
+     - Schritt 3: Match-Check mit Lazy-Embedding (Re-Use bei
+       `SbkimEmbedding._meta.ready===true` ODER `isReady()===true`,
+       sonst `SbkimEmbedding.init()` mit 30 s Time-out-Warnung +
+       Retry-Knopf). `SbkimMatch.matchDimensions` → Drei-Schichten-
+       Bars fachlich/prozess/skalierung mit Bar-Farben grün/gelb/rot.
+       Bei `overall >= matchThreshold` → grün + „Weiter zum
+       Handshake". Bei `overall < matchThreshold` → gelb/rot +
+       „Trotzdem andocken". Bei `DimensionsAllNullError` → Fehler
+       OHNE „Trotzdem"-Knopf.
+     - Schritt 4: `SbkimAnastomose.handshake(foreignSpore)` →
+       grünes Häkchen + auto-Close 2 s. Fehler-Fall: konkrete
+       Meldung + Retry-Knopf.
+   - `close()` mit `confirm()`-Bestätigung bei offenen Wizard-
+     Eingaben (Schritt 1 mit URL-Text ODER Schritt 2/3); no-op
+     bei Schritt 0/4.
+   - `isOpen()` boolean (aus `_meta.modalOpen`).
+   - `_meta` 13 Felder gemäß INTERFACES § 1 Modul 18, defensive
+     Kopie pro Lese-Zugriff (Array-Mutation am Snapshot beeinflusst
+     Closure-State NICHT — getestet in Smoke 11).
+   - Inline-CSS via `<style>`-Inject im `<head>` (Konvention
+     analog Modul 17 — Drei-Zeilen-Einbau-Konvention für
+     Endknoten). `z-index: 10000` (> Modul-17-Modal-9999, Spec
+     § Risiken Modal-Konflikt-Mitigation).
+
+2. **`index.html`** erweitert: NEUER `<script>`-Tag vor
+   `sbkim-init.js`. Sage-Page macht KEINEN `SbkimToolPwa.init()`-
+   Aufruf (Sub (a) Vorab ist Endknoten-Pflicht — Sage-Page hat
+   keine Andock-Geste, der Andock-Wizard auf der Schwarz-Loch-
+   Karte ist eigenständig).
+
+3. **`tests/manual_check.html` Panel 18** angelegt mit 11 Knöpfen:
+   - Setup-Knopf (`SbkimToolPwa.init({endpoint, domain,
+     domainKeywords})` mit Test-Werten).
+   - Test 1: Surface + Selbstcheck-Hinweis.
+   - Test 2: `init({})` ohne opts → warn + `ready=false`.
+   - Test 3: `init({…vollständig…})` → `ready=true`.
+   - Test 4: `openAndockTab()` ohne ready → `ToolPwaNotReadyError`.
+   - Test 5: `openAndockTab()` mit ready → Modal Schritt 1.
+   - Test 6: `openAndockTab("https://…")` → Schritt 2 direkt.
+   - Test 7: `openAndockTab("not-a-url")` → `ToolPwaInvalidUrlArgError`.
+   - Test 8: `close()` schließt Modal.
+   - Test 9: `matchThreshold > 0.80` → clamp + warn.
+   - Test 10: `externalHubUrl` als string → `_meta` gespiegelt
+     (kein Hub-Fetch).
+   - Reset-Knopf für sauberen Vorzustand vor Test 4.
+   - Selbstcheck-Hinweis.
+
+4. **Headless-Smoke `tests/smoke_bau18_sub_a_vorab.mjs`** mit 17
+   Proben (15 vom Brief gefordert + 2 zusätzliche Härtungen):
+   - Surface (Probe 1).
+   - init fail-soft (Probe 2).
+   - init grün (Probe 3).
+   - openAndockTab ohne ready → Error (Probe 4).
+   - openAndockTab mit ready → Modal Schritt 1 (Probe 5).
+   - openAndockTab mit url → Schritt 2 (Probe 6).
+   - openAndockTab mit ungültiger url → Error (Probe 7).
+   - close (Probe 8).
+   - matchThreshold-Clamp (Probe 9).
+   - externalHubUrl-Spiegelung + kein Hub-Fetch (Probe 10).
+   - _meta-Defensiv-Kopie (Probe 11).
+   - modalOpen-Toggle (Probe 12).
+   - currentStep-Bewegung (Probe 13).
+   - missingFields-Reset bei Re-Init (Probe 14).
+   - Re-Use-Test SbkimEmbedding._meta.ready (Probe 15) inkl.
+     Match-Bars + Schritt-2→3-Übergang.
+   - Idempotenz mit identischen opts (Probe 16, Zusatz).
+   - repoUrl Auto-Erkennung (Probe 17, Zusatz).
+   Lauf: **17/17 grün**.
+
+5. **Doku-Pflege:**
+   - **Karte 18 § Bauzustand:** neue Zeile „Bau Sub (a) Vorab —
+     2026-05-28 — Bau-Sitzung 18 Sub (a) Vorab" am Listen-Ende.
+     Status-Header auf 🟦 **Code-Stub Sub (a) Vorab** + Sub (b)–(i)
+     bleibt 🟫 Schablone.
+   - **INTERFACES.md § 1 Modul 18:** Status-Block auf
+     „Code-Stub (Bau Sub (a) Vorab)" geändert, Geprüft-Zeile
+     mit voll-Begründungs-Block ergänzt (alle Tabus + Pflicht-
+     Disziplinen sichtbar verankert).
+   - **`status.json` Modul 18:** von `score:"schablone"` auf
+     `score:"stub"` gehoben (Konvention analog Modul 17 nach
+     Bau-Sitzung 17). `abhaengig: ["02","03","04","05","16"]`
+     ergänzt. `scripts/update_puls_pie.py` ausgeführt — Pie zeigt
+     jetzt 7 Schablone / 9 Code-Stub / 5 Fertig (Modul 18 wechselt
+     von Schablone-7-Bucket in Code-Stub-9-Bucket).
+
+**Pflicht-Disziplin eingehalten:**
+
+- KEIN Code für Sub (b)–(i). NUR Sub (a) Vorab-Surface.
+- KEIN Endknoten-Eingriff (MR + MM Re-Migration ist eigene Folge-
+  Sitzung pro Endknoten-Repo).
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
+  Bump (Sub (a) Vorab ist RAM-only Render-Schicht).
+- KEINE neuen Module (KEIN Modul 19, KEIN Vision-Anker-5-
+  Container).
+- KEINE Tafel-Umsortierung CLAUDE.md (5h → 5h.1+5h.2-Pflege ist
+  eigene Folge-Sitzung).
+- KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag (Modul 18 ist Wartungs-/
+  Andock-Schicht, kein Sicherheits-Modul).
+- KEIN automatisches Andock-Triggern. KEIN Hub-Fetch. KEIN
+  `matchThreshold > PROVIDER_MIN_MATCH`.
+
+**Was offen:**
+
+- **Sichttest ungeprüft** — wartet auf Klaus' Browser-Lauf Panel 18
+  Knöpfe 1–10 (Galaxy Tab S6 / DeX-Chrome). Konvention CLAUDE.md
+  „Klaus' Browser-Sichttest ist nicht ersetzbar".
+- **Endknoten-Re-Migration MR + MM** — eigene Folge-Sitzungen pro
+  Endknoten-Repo. Sobald Klaus' Sichttest Panel 18 grün ist,
+  startet die MR-Folge-Sitzung (Brief in dieser Sitzungs-Antwort).
+- **Sub (b)–(i) Voll-Spec + Voll-Bau** — Pipeline 5h.2, NACH App-
+  Freigabe.
+- **PR #190 (Spec-Sitzung 18 Sub (a) Vorab)** noch offen — wurde
+  in diese Bau-Branch fast-forward-gemergt, damit der Bau auf der
+  Spec aufsetzt. Klaus entscheidet die Merge-Reihenfolge.
+
+**Nächster Schritt:** Klaus' Sichttest Panel 18 Knöpfe 1–10. Bei
+grünem Sichttest startet MR-Folge-Sitzung (Brief in der Chat-
+Antwort).
+
+---
 
 ### 2026-05-28 · Spec-Sitzung 18 Sub (a) Vorab (Andocken-Pfad allein)
 
