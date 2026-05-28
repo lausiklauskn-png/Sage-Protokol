@@ -1992,6 +1992,31 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Sage-Identitäts-Wizard z-index (UX-Fix)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-sage-andock-wizard-zindex`. Auslöser: Klaus' Live-
+Sichttest 2026-05-28 — der Sage-Identitäts-Wizard (`sage-andock-modal`,
+„Identität erzeugen / Spore erzeugen + herunterladen / Backup") war mit
+`z-index: 300` hinter dem Siegel-Modal (99998) und dem Modul-18-Wizard
+(10000) vergraben und praktisch unauffindbar. Klaus landete wiederholt
+auf den falschen Modals (Modul-18-Wizard, Siegel-Modal, „Spore-Vorlage
+erzeugen"-Karte für fremde PWAs).
+
+**Fix:** `.sage-andock-modal` z-index 300 → **100000** (über Siegel,
+Membran-Fremd-Alert 99999, Modul-18). Der Identitäts-Wizard ist eine
+bewusste User-Geste (`#andock` / Schwarz-Loch-Klick) und muss beim
+Öffnen vorn liegen. Eine CSS-Zeile in `index.html`.
+
+**Offen / nächster Schritt:** Sichttest ungeprüft — nach Merge +
+Hard-Reload `#andock` öffnet den Identitäts-Wizard vorn → Schritt 1/2
+(Identität + Spore erzeugen) → nodeId → Commit `sbkim/spore.json` →
+End-to-End-Handshake MM↔Sage. **Discoverability bleibt offen**
+(der Wizard hat keinen sichtbaren Knopf, nur Hash/Schwarz-Loch-Klick)
+— Kandidat für Folge-Pflege.
+
+---
+
 ### 2026-05-28 · Pflege 05+18 Handshake — Eigenvektor-Auflösung (Lösung 1, korrigiert PR #201)
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch

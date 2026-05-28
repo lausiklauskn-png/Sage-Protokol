@@ -3168,7 +3168,12 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
   <style>
   /* === Andock-Wizard-Modal === */
-  .sage-andock-modal { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: 1.5rem; }
+  /* z-index 100000: über Siegel-Modal (Modul 16, 99998), Membran-Fremd-Alert
+     (Modul 15, 99999) und Modul-18-Wizard (10000). Der Identitäts-Wizard ist
+     eine bewusste User-Geste (#andock / Schwarz-Loch-Klick) und muss vorn
+     liegen — Pflege 2026-05-28 nach Klaus' Sichttest: Wizard war mit z-index
+     300 hinter Siegel + Modul-18-Modal vergraben, praktisch unauffindbar. */
+  .sage-andock-modal { position: fixed; inset: 0; z-index: 100000; display: grid; place-items: center; padding: 1.5rem; }
   .sage-andock-modal[hidden] { display: none; }
   .sage-andock-backdrop { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(40,10,60,0.55) 0%, rgba(0,0,0,0.88) 70%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
   .sage-andock-card { position: relative; z-index: 1; max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem 2rem 1.5rem; background: linear-gradient(160deg, rgba(20,18,45,0.95) 0%, rgba(8,8,26,0.97) 100%); border: 1px solid rgba(244,180,53,0.32); border-radius: 22px; color: #f0f0ff; box-shadow: 0 28px 60px rgba(0,0,0,0.7), inset 0 0 80px rgba(244,180,53,0.06); animation: modal-zoom .45s cubic-bezier(0.2,0.7,0.2,1); }
