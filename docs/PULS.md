@@ -1811,6 +1811,144 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-28 · Plansitzung Multisuchfeld — zwei Spec-Briefe (Sub (a) Vorab + Multisuchfeld)
+
+**Sitzungs-Rolle:** Plansitzung (Spec-Brief-Schreiben, kein Modul-
+Code, kein Endknoten-Eingriff, kein `status.json`-Update). Branch
+`claude/multisearch-field-spec-DXrva`.
+
+**Anlass:** Klaus' Wunsch 2026-05-28: das Endknoten-Suchfeld soll
+**multi-modal** sein — Lokal (Modul 04.C) + Cross-Knoten Mycel
+(Modul 15 Sub b) + **EXTERN** Internet (mit Klaus' Begriff
+„Spuren"). Bisherige Dual-Modus-Briefe MR/MM (Pipeline-Schritt 5i)
+decken nur Lokal + Mycel.
+
+**Klaus' Klärung in der Sitzung:**
+
+1. **Sitzungs-Scope:** „vor dem Suchfeld 18 umsetzen und in Den
+   Plan Repo Idee SB-KIMTOOL-Point mit einbeziehen" — Modul 18
+   Sub (a) Andocken-Pfad muss VOR dem Multisuchfeld umgesetzt
+   werden (Pipeline-Vorrang), und SB-KIMTool-Point (Externer
+   Mycel-Hub, Phase B Schritt 9) soll im Plan einbezogen werden.
+2. **UI-Modus:** Klaus bat um Empfehlung („denke an Nutzer Die
+   coole Ideen schätzen") — Empfehlung im Brief verankert:
+   Variante D (drei Sektionen gestapelt + Auto-Klassifikation +
+   Knopf für Extern). Macht Vier-Schichten-Lesart visuell sichtbar.
+3. **Extern-Backend:** „Mehrere Backends parallel — Klaus
+   entscheidet später" — Spec listet DuckDuckGo Instant Answer +
+   Brave Search + generischer Fetch-Helper parallel + Anti-
+   Tracking-Disziplin.
+
+**Was getan:**
+
+1. **Verifikations-Pflicht-Schritt** (CLAUDE.md-Pflege 2026-05-27
+   nach Klaus' Doppel-Arbeit-Befund): `main` aktuell (PR #187 +
+   #188 gemerged), Branch `claude/multisearch-field-spec-DXrva`
+   ausgecheckt, CLAUDE.md komplett gelesen (vor allem § Vier-
+   Schichten-Lesart 2026-05-27 + § Pipeline Phase A/B/D), PULS
+   § Schnellüberblick + jüngste Sitzungs-Einträge, status.json,
+   Karte 18 (9 Sub-Bereiche + § Such-Feld-Integration-Pattern),
+   Karte 16 § Sub (e) (`[Andocken]`-Knopf + fail-soft-Check),
+   beide Dual-Modus-Briefe MR/MM. **Kein Doppel-Arbeit-Befund** —
+   `BRIEF_SPEC_SUCHFELD_MULTI.md` existiert noch nicht.
+
+2. **Brief 1 angelegt: `docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md`**
+   — Pipeline-Vorrang-Brief (Klaus' Klärung „vor dem Suchfeld 18").
+   Drei offene Spec-Punkte aus Karte 18 § Sub (a) final-zu-legen
+   (Endknoten-Init-Schema + Embedding-Lazy-Trigger + Match-Schwelle-
+   UI), plus drei Folge-Entscheidungen (Modal-Form, Andocken aus
+   Multisuchfeld-Discovery, SB-KIMTool-Point-Integration via
+   `externalHubUrl`-Param). Sub-Bereiche (b)–(i) explizit
+   ausgeklammert (Voll-Spec 18 nach App-Freigabe).
+   - Pipeline-Antrag: Schritt 5h → 5h.1 (Sub a Vorab) + 5h.2
+     (Voll-Spec 18). 5h.1 vor 5i Such-Feld-Integration.
+   - Folge-Bau-Sitzung implementiert `src/modules/18_tool_pwa.js`
+     mit `init` + `openAndockTab` + `close` + `isOpen` + `_meta`.
+     Modul 16 fail-soft-Check (PR #180) greift dann produktiv.
+
+3. **Brief 2 angelegt: `docs/sessions/BRIEF_SPEC_SUCHFELD_MULTI.md`**
+   — Multisuchfeld-Spec (drei Modi + UI + Backend-Mehrwahl + SB-
+   KIMTool-Point-Bezug). Inhalt:
+   - **Tafel-Konflikt-Lösung verankert:** Empfangsmodus-Prinzip
+     gilt für Mycel-Schicht (Schicht 1); Extern-Such ist Pilz-
+     Schicht-Operation (Schicht 2) und tafel-konform unter vier
+     Bedingungen (nur User-Geste, eine Anfrage pro Aufruf, kein
+     Persist ohne OptIn, kein User-Profiling).
+   - **UI-Empfehlung Variante D** (drei Sektionen gestapelt +
+     Klassifikations-Indikator + Auto-Lokal/Mycel + Extern hinter
+     Knopf). Vier-Schichten-Lesart visuell sichtbar. Drei
+     alternative UI-Varianten (Auto / Dropdown / Tab-Reiter)
+     explizit als ablehnungswürdig dokumentiert.
+   - **Drei externe Backends parallel** mit Anti-Tracking-
+     Disziplin: DuckDuckGo Instant Answer (kein API-Key), Brave
+     Search (API-Key User-Pflicht analog 04.B), generischer
+     Fetch-Helper (User-konfigurierbar mit einheitlichem Response-
+     Schema). Voll-Spec entscheidet Default.
+   - **„Spuren"-Begriff** mit drei Lesarten ausgelegt
+     (Suchhistorie / Sporen-Spuren / Internet-Spuren). Spec-
+     Sitzung klärt mit Klaus per Rückfrage.
+   - **„Andocken"-Knopf in Extern-/Hub-Treffer** auf
+     `SbkimToolPwa.openAndockTab(url)` (Voraussetzung 5h.1
+     Sub (a) Vorab muss gebaut sein).
+   - **SB-KIMTool-Point-Integration** (Klaus' Klärung) als
+     vierte Sektion zwischen Mycel und Extern empfohlen — Hub
+     `status.json` als Discovery-Quelle, eigene Sektion mit
+     `[Andocken]`-Knopf, User-Geste-getriggert.
+   - **Strikte Tabus verbindlich verankert** (kein Auto-Polling,
+     kein User-Profil, kein Persist ohne OptIn, kein Default-Key,
+     kein Crawler, kein Cross-Knoten-Forward, kein Tracking-
+     Pixel-Render).
+   - Pipeline-Antrag: Schritt 5i → 5i.1 (Dual-Modus, Briefe MR/MM
+     bereits angelegt) + 5i.2 (Multisuchfeld). 5i.2 setzt 5h.1
+     voraus.
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-Code in `src/modules/` (Plansitzung).
+- KEIN Endknoten-Eingriff.
+- KEINE Sage-Page-Änderung in `index.html`.
+- KEINE CLAUDE.md-Änderung (Pipeline-Antrag bleibt in beiden
+  Briefen als § Pipeline-Anpassungs-Antrag stehen; eigene
+  Folge-Pflege-Sitzung mit Klaus' OK).
+- KEINE neuen Karten in `docs/components/` (Karte 18 bleibt
+  unangetastet — die Spec-Sitzung 18 Sub (a) Vorab erweitert sie
+  später, nicht diese Plansitzung).
+- KEIN `status.json`-/Pie-Update.
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
+  Bump.
+- KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Plansitzung).
+- KEINE PII in beiden Briefen.
+
+**Was offen blieb:**
+
+- **Folge-Spec-Sitzung 18 Sub (a) Vorab** (Brief liegt,
+  Branch `claude/spec-18-sub-a-vorab` vom `main` aus nach Merge
+  dieser PR).
+- **Folge-Spec-Sitzung Multisuchfeld** (Brief liegt, Branch
+  `claude/spec-suchfeld-multi`; SETZT VORAUS dass 5h.1 läuft).
+- **Eigene Folge-Pflege-Sitzung CLAUDE.md** Pipeline-Reihenfolge
+  Phase A anpassen (5h → 5h.1 + 5h.2, 5i → 5i.1 + 5i.2) — Klaus'
+  explizites OK in dieser Sitzung gegeben, aber als eigene
+  schmale Pflege mit eigenem PR (Tafel-Evolutions-Klausel).
+- **„Spuren"-Begriffs-Klärung** mit Klaus in der Spec-Sitzung
+  Multisuchfeld (Lesart 1/2/3 — Karte 1 Such-Verlauf-Persist mit
+  OptIn ist am wahrscheinlichsten).
+- **Vier alternative Bau-Sitzungen** (MR + MM Dual-Modus aus
+  bisherigen Briefen 5i.1; MR + MM Multisuchfeld aus 5i.2 nach
+  Spec-Sitzung Multisuchfeld). Pipeline-Reihenfolge: 5h.1 →
+  5h.1-Bau → 5i.1 (parallel, schon Briefe) → Spec-Sitzung
+  Multisuchfeld → 5i.2 (MR + MM).
+
+**Nächster sinnvoller Schritt:** Klaus mergt PR dieser Plansitzung,
+dann Folge-Spec-Sitzung 18 Sub (a) Vorab (Pipeline-Vorrang). Brief-
+Codeblock dafür in der Chat-Antwort dieser Sitzung ausgegeben
+(Klaus' Konvention 2026-05-21).
+
+**Übergabeprotokoll:**
+`docs/sessions/archiv/2026-05-28_plansitzung-multisuchfeld.md`.
+
+---
+
 ### 2026-05-28 · Sichttest + Folge-Pflegen Einladung (in derselben Bau-Sitzung)
 
 **Sitzungs-Rolle:** Iterative Pflege innerhalb der noch offenen
