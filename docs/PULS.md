@@ -597,6 +597,43 @@ Auslöser. Pflege-Disziplin: Vision wird hier festgehalten, mit
 Datum + Sitzungs-Bezug + ungefährer Größenordnung. Wer sie ziehen
 will, formuliert daraus einen Spec-Sitzungs-Brief.
 
+### 2026-05-28 · Sporenpflege-Lehre — Schlüssel = Auffindbarkeit
+
+**Eingetragen:** Pflege-Sitzung 05+18 Handshake-Eigenvektor 2026-05-28,
+aus Klaus' Erkenntnis: „Sporenpflege ist wichtig, sonst kann man im
+Netz nicht wiedergefunden werden oder muss sich neu einbetten und
+handshaken."
+
+**Die Lehre (Baumeister-Klärung):** Eine SBKIM-Zelle ist **zwei
+Dinge** — das **Ed25519-Schlüsselpaar** (`sbkim_keys`, slot=main) ist
+die *wahre Identität*, die `spore.json` nur die *signierte
+Visitenkarte*. Die `nodeId` = `base64url(sha256(publicKey))` hängt
+**ausschließlich** am Schlüssel. Daraus folgt die Auffindbarkeits-
+Hierarchie:
+
+| Pflege | nodeId bleibt? | Re-Handshake nötig? | Modul |
+|---|---|---|---|
+| **Schlüssel-Backup** (kritisch) | ja | nur bei Schlüsselverlust | 02 Backup / 18 Sub (d) |
+| **Re-Spore / Re-Embedding** (Domänenwechsel) | ja | nein — Geschwister behalten dich | 18 Sub (f)+(g) |
+| **Voll-Reset** (Notfall, neuer Schlüssel) | **nein, neu** | ja, überall | — |
+
+**Drei Verlust-Fälle:**
+
+1. **Schlüsselpaar weg** (IndexedDB gelöscht, neues Gerät, **anderer
+   Browser** — DeX-Chrome ≠ Tablet-Chrome, getrennte Speicher!) →
+   neue nodeId → für alle ein Fremder, überall neu handshaken. **Die
+   eigentliche Gefahr.** Schutz: Schlüssel-Backup.
+2. **Domäne/Stichworte geändert** → `domainVector` veraltet → neu
+   einbetten + neu signieren (Sub f/g). nodeId bleibt.
+3. **Protokoll-Version springt** → Spore-Format/Signatur ungültig →
+   neu signieren.
+
+**Größenordnung:** eigene Bau-Sitzung „Modul 18 Sub (d)+(f)+(g) —
+Sporenpflege" (Brief liegt: `docs/sessions/BRIEF_PFLEGE_18_SPORENPFLEGE.md`).
+Backup-/Restore zuerst (kritisch), dann Re-Spore + Re-Embedding, alles
+über Test-Bridge-Knöpfe (kein Konsolen-Hack). Pipeline: nach App-
+Freigabe-Strang, parallel zu Modul-18-Voll-Spec (5h.2) möglich.
+
 ### 2026-05-17 · Sage als Hybrid-Knoten (Variante I)
 
 **Eingetragen:** Mini-Pflege „Vision-Anker" 2026-05-17 (Folge zu
