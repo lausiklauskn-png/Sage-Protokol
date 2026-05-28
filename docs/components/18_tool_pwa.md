@@ -256,6 +256,53 @@ NICHT bei `init()`. Begründung:
 - `true` → bereit (auch wenn über externe Init-Quelle)
 - `"failed"` → Load fehlgeschlagen, retry möglich
 
+##### Embedding-Pflicht-Aufruf vor `matchDimensions` (Pflege 2026-05-28, Wurzel-Fix)
+
+**Verbindlich:** Schritt 3 ruft **vor** `SbkimMatch.matchDimensions`
+zwingend `SbkimEmbedding.embedQueryBatch([...])` für die vier
+Textblob-Strings (`ownCap`, `ownNeeds`, `foreignCap`, `foreignNeeds`)
+auf. `matchDimensions` erwartet vier `Float32Array(384)` (Modul 04
+§ `assertVector`) — die Textblobs sind Strings. Wer sie direkt an
+`matchDimensions` reicht, bekommt synchron `InvalidVectorError`
+(„Parameter 'queryVec' muss Float32Array sein, war: String").
+
+Ablauf in `computeAndRenderMatch`:
+
+1. **Lade-Hinweis sofort setzen** (kein künstlicher Timeout, kein
+   `Promise.race` — das Modell lädt so lange wie das Netz braucht,
+   der Wizard hat zum Abbrechen das Schließen-X):
+
+   > „Embedding-Modell wird geladen (ca. 30 MB beim ersten Aufruf,
+   > kann auf langsamer Verbindung mehrere Minuten dauern). Bitte
+   > nicht abbrechen."
+
+2. **Verfügbarkeits-Check:** fehlt `SbkimEmbedding.embedQueryBatch`
+   → Fehlermeldung „Modul 03 (Embedding) ist nicht verfügbar —
+   SbkimEmbedding.embedQueryBatch fehlt." + return.
+
+3. **Null-Safe-Mapping:** `textBlob` liefert `null`, wenn eine Seite
+   keine Stichworte hat. `null` darf **nicht** in den Batch — nur die
+   nicht-null Strings werden embedded, die Vektoren danach an ihre
+   ursprüngliche Spalten-Position zurückgesetzt. `matchDimensions`
+   verträgt `null` pro Spalte (Nur-Anbieter-Modus), aber kein `null`
+   im `embedQueryBatch`-Input. Sind **alle vier** Strings null →
+   Fehlermeldung „Match nicht möglich — keine Domain-Stichworte auf
+   beiden Seiten." vorab (ohne `matchDimensions` aufzurufen, das sonst
+   `DimensionsAllNullError` würfe).
+
+4. **Embedding → Match:** `embedQueryBatch(nonNullTexts)` resolved →
+   Lade-Hinweis „Embedding fertig — Match wird berechnet …" →
+   `matchDimensions(out[0], out[1], out[2], out[3])` mit den
+   rück-gemappten Vektoren → Drei-Bars-Render + Score-Auswertung.
+   Beim **zweiten** Aufruf in derselben Tab-Session ist das Modell
+   gecacht (Re-Use-Pfad `SbkimEmbedding._meta.ready === true`), Match
+   läuft in < 1 s.
+
+Begründung: Klaus' Live-Sichttest 2026-05-28 nach PR #198 (Andock-
+Wizard öffnete erstmals sauber). Schritt 3 warf den Float32Array-
+Pflicht-Fehler reproduzierbar in Sage-Page **und** Mein-Rezeptbuch
+(1:1-Sync) → Wurzel im Sage-Quellcode, nicht im Endknoten.
+
 #### Match-Schwelle-UI (final, Spec-Sitzung 18 Sub (a) Vorab 2026-05-28)
 
 **Entscheidung: Differenzierte Drei-Schichten-Darstellung +
@@ -1094,6 +1141,7 @@ spätere Felder via Voll-Spec 18):
 | Code geschrieben | — | Bau-Sitzung 18 | folgt — `src/modules/18_tool_pwa.js` + CSS + Panel 18 in `tests/manual_check.html` + Headless-Smoke. |
 | In Endknoten eingebaut | — | Endknoten-Folge-Sitzungen | folgt — Modul 18 in Mein-Rezeptbuch / Mein-Mixarium kopieren + `init()`-Aufruf. |
 | Bau Sub (a) Vorab | 2026-05-28 | Bau-Sitzung 18 Sub (a) Vorab | Pipeline-Phase A Schritt **5h.1**. `src/modules/18_tool_pwa.js` voll angelegt mit Surface `init`+`openAndockTab`+`close`+`isOpen`+`_meta` (13 Felder, defensive Kopie pro Lese-Zugriff) + zwei Errors `ToolPwaNotReadyError` + `ToolPwaInvalidUrlArgError` (Factory-Stil analog Modul 15/16) + Selbstcheck `MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen: init/openAndockTab/close/isOpen`. `init()` fail-soft: fehlende Pflicht-Felder (`endpoint`+`domain`+`domainKeywords`) → `console.warn` + `_meta.ready=false` + `_meta.missingFields[]`, KEIN Throw; Idempotenz mit Pflicht-Feld-Sanity-Check (identische opts no-op, geänderte Pflicht-Felder + warn, geänderte Optional-Felder überschreiben). `matchThreshold > PROVIDER_MIN_MATCH` (=0.80) wird auf 0.80 geclampt + warn. `externalHubUrl` Read-Anker (KEIN Hub-Fetch in Sub (a) Vorab). `repoUrl` Auto-Erkennung aus `location.origin` + erstem Pfad-Segment (analog Modul 16). `openAndockTab(url?)` mit Sync-Validierung vor `await`: `_meta.ready !== true` → `ToolPwaNotReadyError` mit Liste der fehlenden Felder, URL-Argument-Validierung via `new URL(url)` → `ToolPwaInvalidUrlArgError`. Async: Modal-Mount in `document.body` (Override via `opts.mountTarget`) mit Self-Mount-Observer-Fallback (MutationObserver 10 s Timeout). Vier-Schritt-Stepper-UI: ① URL eingeben (Text-Input + „Weiter →"), ② Spore fetchen via `fetch(joinUrl(url, "sbkim/spore.json"))` + `verifyForeignSpore` (Signatur-Fail kein „Trotzdem"-Knopf), Foreign-Spore-Preview (Domain/Knoten-ID-kurz/Domain-Stichworte/Kategorien), ③ Match-Check mit Lazy-Embedding (Re-Use bei `SbkimEmbedding._meta.ready===true` ODER `isReady()===true`, sonst `init()` mit 30 s Time-out-Warnung + Retry-Knopf, `SbkimMatch.matchDimensions` → Drei-Schichten-Bars fachlich/prozess/skalierung mit Bar-Farben grün/gelb/rot, „Trotzdem andocken" bei `overall < matchThreshold`, `DimensionsAllNullError` kein „Trotzdem"-Knopf), ④ Handshake via `SbkimAnastomose.handshake(foreignSpore)` → grünes Häkchen + auto-Close 2 s. `close()` mit `confirm()`-Bestätigung bei offenen Wizard-Eingaben (Schritt 1 mit URL-Text ODER Schritt 2/3); no-op bei Schritt 0/4. Inline-CSS via `<style>`-Inject (Konvention analog Modul 17 — Drei-Zeilen-Einbau für Endknoten); `z-index: 10000` (> Modul-17-Modal-9999). `index.html` um `<script src="src/modules/18_tool_pwa.js"></script>` vor `sbkim-init.js` erweitert; Sage-Page macht KEINEN `SbkimToolPwa.init()`-Aufruf (Sub (a) Vorab ist Endknoten-Pflicht, Sage-Page hat keine Andock-Geste). Panel 18 in `tests/manual_check.html` mit 11 Knöpfen (Setup + Tests 1–10 + Reset + Selbstcheck-Hinweis). Headless-Smoke `tests/smoke_bau18_sub_a_vorab.mjs` 17/17 grün. Regression `smoke_bau15b` 31/31, `smoke_bau16_sub_e_bronze` 16/16, `smoke_bau17_floating_widget` 36/36 grün. `node --check src/modules/18_tool_pwa.js` grün, alle 14 inline-script-Blöcke in `tests/manual_check.html` grün. `status.json` Modul 18 von `score:"schablone"` auf `score:"stub"` gehoben (Konvention analog Modul 17 nach Bau-Sitzung 17). `scripts/update_puls_pie.py` ausgeführt. Sub (b)–(i) bleiben Schablone — Voll-Spec 18 + Voll-Bau 18 Pipeline 5h.2 nach App-Freigabe. **KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.** KEIN Endknoten-Eingriff (MR + MM Re-Migration ist eigene Folge-Sitzung pro Endknoten-Repo). KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Modul 18 ist Wartungs-/Andock-Schicht, kein Sicherheits-Modul). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf Panel 18 Knöpfe 1–10. Brief: `docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md` (Spec) + Folge-Brief für Bau Sub (a) Vorab in dieser Sitzung. |
+| Pflege Match-embedQueryBatch-Pflicht | 2026-05-28 | Pflege-Sitzung Modul 18 Sub (a) Match-Embed | **Wurzel-Fix.** Bug-Wurzel: `computeAndRenderMatch` rief `SbkimMatch.matchDimensions(ownCap, ownNeeds, foreignCap, foreignNeeds)` mit den **String**-Outputs von `textBlob` auf. `matchDimensions` erwartet vier `Float32Array(384)` (Modul 04 § `assertVector`) → synchroner `InvalidVectorError` („Parameter 'queryVec' muss Float32Array sein, war: String"). Das Embedding (Modul 03) wurde zwar lazy initialisiert, aber die vier Textblobs nie zu Vektoren gemacht — der `embedQueryBatch`-Aufruf fehlte komplett. Fix-Kern: `computeAndRenderMatch` ruft jetzt **vor** `matchDimensions` zwingend `SbkimEmbedding.embedQueryBatch([...])` für die nicht-null Textblobs auf (Null-Safe-Mapping: `null`-Spalten bleiben `null` und werden NICHT in den Batch gegeben — `matchDimensions` verträgt `null` pro Spalte, aber `embedQueryBatch` nicht; alle vier null → Vorab-Fehlermeldung statt `DimensionsAllNullError`). Lade-Hinweis sofort: „Embedding-Modell wird geladen (ca. 30 MB beim ersten Aufruf, kann auf langsamer Verbindung mehrere Minuten dauern). Bitte nicht abbrechen." **KEIN künstlicher Timeout** (kein `Promise.race` mit `setTimeout`) — das Modell lädt so lange wie das Netz braucht, der Wizard hat zum Abbrechen das Schließen-X. Klaus' Live-Befund 2026-05-28 nach PR #198: Schritt 3 (Match) warf den Float32Array-Pflicht-Fehler reproduzierbar in Sage-Page **und** Mein-Rezeptbuch (1:1-Sync) → Wurzel im Sage-Quellcode, nicht im Endknoten. Smoke `smoke_bau18_sub_a_vorab.mjs` Probe 15 additiv verschärft: `embedQueryBatch(Strings)` läuft VOR `matchDimensions`, `matchDimensions` bekommt nur `Float32Array`/`null` (17/17 grün). **KEIN** Eingriff in Modul 03 / Modul 04 (Surfaces unverändert — die Float32Array-Pflicht ist korrekt). **KEIN** PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump, **KEIN** ZERTIFIKAT_ASPEKTE-Eintrag (Render-Schicht-Pflege, kein Sicherheits-Modul-Update), **KEIN** Endknoten-Eingriff (MR + MM ziehen die neue Modul-18-Datei in eigener Sync-Sitzung nach Sichttest grün). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf. Übergabeprotokoll: `docs/sessions/archiv/2026-05-28_pflege-modul-18-match-embed.md`. |
 | Sichttest grün | 2026-05-28 | Sichttest-Nachzug Bau 18 Sub (a) Vorab | Klaus' Live-Sichttest am Galaxy Tab S6 (DeX-Chrome, `localhost:8000/tests/manual_check.html` nach Hard-Reload). Panel 18 Knöpfe **1–10 alle grün** (Setup + Test 1 Surface + Test 2 fail-soft + Test 3 ready-heal + Test 4 NotReadyError + Test 5 Modal Schritt 1 sichtbar + Test 6 Live-Spore-Fetch + Test 7 InvalidUrlArgError + Test 8 close() mit confirm() + Test 9 matchThreshold-Clamp + Test 10 externalHubUrl-Spiegelung). **Live-Bestätigung:** Test 6 hat live gegen `https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json` gefetched, `SbkimSpore.verifyForeignSpore` lief durch, Foreign-Spore-Preview rendert volle Mixarium-Identität (Knoten-ID `B7Fke9CYTR1BrC3x…`, sieben Domain-Stichworte, alle Stamm-/Gast-Kategorien). Damit ist der **erste produktive Cross-Knoten-Spore-Read aus Modul 18** belegt. Test 8 hat den `confirm()`-Bestätigungs-Dialog bei offenen Wizard-Eingaben korrekt ausgelöst (Spec § Sub (a) close()). **Drei Sichttest-Screenshots** in `docs/sessions/archiv/screenshots/`: Test 5 (Modal Schritt 1 + Stepper), Test 6 (Spore geladen + verifyForeignSpore grün + Foreign-Spore-Preview), Test 8 (confirm()-Dialog). Pipeline-Phase A Schritt **5h.1 abgeschlossen**. Folge: Endknoten-Re-Migration MR + MM als eigene Sitzungen pro Endknoten-Repo (Briefe in der Bau-Sitzungs-Antwort 2026-05-28). Übergabeprotokoll: `docs/sessions/archiv/2026-05-28_sichttest-bau-18-sub-a-vorab.md`. |
 
 ---
