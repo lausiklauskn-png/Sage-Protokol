@@ -625,6 +625,7 @@ async function run() {
   let hsCalled = false;
   let hsArg1IsForeign = false;
   let hsArg2Undefined = false;
+  let hsGotGenerousTimeout = false;
   let embedPassageCalledInStep4 = false;
   const g18b = makeStubGlobal({
     fetch: async (_url) => ({
@@ -651,10 +652,13 @@ async function run() {
     matchDimensions: () => ({ overall: 0.85, fachlich: { score: 0.85 }, prozess: { score: 0.85 }, skalierung: { score: 0.85 } }),
   };
   g18b.SbkimAnastomose = {
-    handshake: async (targetSpore, ownDomainVector) => {
+    handshake: async (targetSpore, ownDomainVector, options) => {
       hsCalled = true;
       hsArg1IsForeign = !!targetSpore && targetSpore.id === "test_node_id_remote_b";
       hsArg2Undefined = (ownDomainVector === undefined);
+      // Pflege 2026-05-28: interaktiver Wizard reicht einen großzügigen
+      // timeoutMs (> Protokoll-Default 4000) für Mobile-Tab-Aufwachen.
+      hsGotGenerousTimeout = !!options && typeof options.timeoutMs === "number" && options.timeoutMs > 4000;
       return { outcome: "established", score: 0.85 };
     },
   };
@@ -671,10 +675,10 @@ async function run() {
   const next3 = g18b.document.querySelector("[data-tool-pwa-step3-next]");
   if (next3) { next3.disabled = false; next3.click(); }       // → Schritt 4 Handshake
   await new Promise(r => setTimeout(r, 30));
-  record("18. Schritt 4: handshake(foreignSpore) OHNE 2. Argument — Modul 05 löst Eigenvektor auf, Modul 18 embeddet nicht",
-    "handshake aufgerufen + Arg1 foreignSpore + Arg2 undefined + kein embedPassage in Schritt 4",
-    `hsCalled=${hsCalled}/arg1Foreign=${hsArg1IsForeign}/arg2Undefined=${hsArg2Undefined}/embedPassageStep4=${embedPassageCalledInStep4}`,
-    hsCalled === true && hsArg1IsForeign === true && hsArg2Undefined === true && embedPassageCalledInStep4 === false);
+  record("18. Schritt 4: handshake(foreignSpore, undefined, {timeoutMs>4000}) — Modul 05 löst Eigenvektor auf, Modul 18 embeddet nicht, großzügiger Timeout",
+    "handshake aufgerufen + Arg1 foreignSpore + Arg2 undefined + großzügiger timeoutMs + kein embedPassage in Schritt 4",
+    `hsCalled=${hsCalled}/arg1Foreign=${hsArg1IsForeign}/arg2Undefined=${hsArg2Undefined}/timeout=${hsGotGenerousTimeout}/embedPassageStep4=${embedPassageCalledInStep4}`,
+    hsCalled === true && hsArg1IsForeign === true && hsArg2Undefined === true && hsGotGenerousTimeout === true && embedPassageCalledInStep4 === false);
 
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;

@@ -1299,6 +1299,14 @@ Bietet (öffentlich):
   listSiblings()                                               → Promise<Array<{ nodeId, domain, since, pubKey }>>
   forgetSibling(nodeId: string)                                → Promise<void>
 
+  `options.timeoutMs` (Pflege 2026-05-28): optionaler Override für den
+    Channel-Reply- bzw. HTTP-Abort-Timeout. Default QUERY_TIMEOUT_MS (4000)
+    für automatisierte Pfade. Interaktive Aufrufer (Modul-18-Andock-Wizard)
+    reichen einen großzügigeren Wert (z.B. 300000 = 5 min), damit ein in
+    Mobile-Chrome kurz aufgeweckter Geschwister-Tab antworten kann
+    (Observatorium-Lehre 3 § Tab-Suspendierung). Ungültige Werte (≤0,
+    NaN, kein number) → Fallback auf QUERY_TIMEOUT_MS.
+
   `options.transport` (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17):
     "auto"    (Default) — HTTP zuerst; bei klaren Signalen (HTTP 4xx/5xx,
               non-JSON-Antwort, JSON ohne Pflichtfelder des HandshakeResponse,
