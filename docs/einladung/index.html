@@ -720,14 +720,11 @@ section.scene-doorway .scene-fade-bot { display: none; }
   75%  { transform: scale(1.05) translate(-0.3%, -0.6%); }
   100% { transform: scale(1.04) translate(0, 0); }
 }
+/* Klaus' Befund 2026-05-28: keine Vignette mehr — Wald komplett
+   sichtbar. Lesbarkeit kommt jetzt über text-stroke + text-shadow
+   direkt an der Schrift, nicht über Hintergrund-Abdunkelung. */
 #scene-6::after {
-  /* zentrale Dämpfungs-Vignette für Text-Lesbarkeit. */
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 35%, transparent 70%);
-  z-index: 0;
-  pointer-events: none;
+  display: none;
 }
 #scene-6 .lichtung-pollen {
   /* Feenstaub-Pollen-Layer über dem Lichtungs-Foto */
@@ -747,7 +744,32 @@ section.scene-doorway .scene-fade-bot { display: none; }
 }
 #scene-6 .question {
   max-width: 18ch;
-  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 350;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 450;
+  /* Klaus 2026-05-28: Haarlinen-Outline + verstärkter Schatten,
+     damit die Schrift auf dem hellen Wald-Bereich klar lesbar bleibt,
+     auch ohne Hintergrund-Vignette. */
+  color: #fbf6ea;
+  -webkit-text-stroke: 0.6px rgba(8, 6, 4, 0.92);
+  text-stroke: 0.6px rgba(8, 6, 4, 0.92);
+  paint-order: stroke fill;
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.75),
+    0 1px 4px rgba(0, 0, 0, 0.65);
+}
+#scene-6 p, #scene-6 .afterword {
+  color: #f0e8d4;
+  -webkit-text-stroke: 0.35px rgba(8, 6, 4, 0.85);
+  text-stroke: 0.35px rgba(8, 6, 4, 0.85);
+  paint-order: stroke fill;
+  text-shadow:
+    0 1px 10px rgba(0, 0, 0, 0.7),
+    0 1px 2px rgba(0, 0, 0, 0.5);
+}
+#scene-6 .eyebrow {
+  -webkit-text-stroke: 0.35px rgba(8, 6, 4, 0.8);
+  text-stroke: 0.35px rgba(8, 6, 4, 0.8);
+  paint-order: stroke fill;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
 }
 .cta-row {
   display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;
