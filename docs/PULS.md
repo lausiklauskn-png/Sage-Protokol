@@ -1955,6 +1955,53 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Modul 18 Sub (a) Match-Schritt — Embedding-Pflicht-Aufruf (Wurzel-Fix)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul-18-match-embed-6XM5l`. Wurzel-Fix für Klaus'
+Live-Befund in Schritt 3 (Match) nach PR #198.
+
+**Wurzel-Diagnose (Bug-Kette):** `computeAndRenderMatch` in
+`src/modules/18_tool_pwa.js` reichte die **String**-Outputs von
+`textBlob` direkt an `SbkimMatch.matchDimensions` — das erwartet aber
+vier `Float32Array(384)` (Modul 04 § `assertVector`) → synchroner
+`InvalidVectorError` („Parameter 'queryVec' muss Float32Array sein,
+war: String"). Das Embedding (Modul 03) wurde lazy initialisiert,
+aber die vier Textblobs nie zu Vektoren gemacht — der
+`embedQueryBatch`-Aufruf fehlte komplett. Reproduzierbar in Sage-Page
+UND Mein-Rezeptbuch (1:1-Sync) → Wurzel im Sage-Quellcode.
+
+**Was getan:**
+
+1. **Eingriff A** — `computeAndRenderMatch` ruft jetzt **vor**
+   `matchDimensions` zwingend `SbkimEmbedding.embedQueryBatch([...])`
+   für die nicht-null Textblobs auf. Null-Safe-Mapping (null-Spalten
+   bleiben null, gehen NICHT in den Batch; alle vier null →
+   Vorab-Fehlermeldung statt `DimensionsAllNullError`). Lade-Hinweis
+   sofort: „Embedding-Modell wird geladen (ca. 30 MB beim ersten
+   Aufruf …)". **KEIN künstlicher Timeout** (kein `Promise.race`).
+2. **Eingriff B** — Karte 18 § Sub (a) § Match-Schritt: neuer Block
+   „Embedding-Pflicht-Aufruf vor `matchDimensions`" + § Bauzustand-
+   Zeile „Pflege Match-embedQueryBatch-Pflicht — 2026-05-28".
+3. **Test** — `smoke_bau18_sub_a_vorab.mjs` Probe 15 additiv
+   verschärft (`embedQueryBatch(Strings)` VOR `matchDimensions`,
+   `matchDimensions` bekommt nur Float32Array/null) — **17/17 grün**.
+   Regression `smoke_bau15b` 31/31, `smoke_bau16_sub_e_bronze` 16/16,
+   `smoke_bau17_floating_widget` 36/36 grün. `node --check` 18 + 04
+   grün.
+
+**Pflicht-Disziplin:** KEIN Eingriff in Modul 03 / Modul 04 (Surfaces
+korrekt). KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
+Bump, KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag (Render-Schicht-Pflege), KEIN
+Endknoten-Eingriff (MR + MM eigene Sync-Sitzung nach Sichttest grün).
+
+**Offen / nächster Schritt:** Sichttest ungeprüft — wartet auf Klaus'
+Galaxy-Tab-S6-Browser-Lauf (erster echter 30-MB-Embedding-Download im
+Match-Schritt). Danach MR + MM Sync-Sitzungen. Übergabeprotokoll:
+`docs/sessions/archiv/2026-05-28_pflege-modul-18-match-embed.md`.
+
+---
+
 ### 2026-05-28 · Sichttest-Nachzug Bau 18 Sub (a) Vorab — Panel 18 grün 10/10
 
 **Sitzungs-Rolle:** Sichttest-Nachzug-PR. Branch

@@ -496,6 +496,14 @@ async function run() {
   // Schritt 3 ruft computeAndRenderMatch direkt (kein embMod.init-Aufruf).
   let embInitCalled = false;
   let matchCalled = false;
+  // Pflege 2026-05-28: Schritt 3 ruft jetzt zwingend embedQueryBatch
+  // VOR matchDimensions (Float32Array-Pflicht aus Modul 04). Wir tracken
+  // den Aufruf + prüfen, dass matchDimensions ausschließlich
+  // Float32Array(384) bekommt — genau der Bug, den der alte Mock (Strings)
+  // nicht gefangen hat.
+  let embBatchCalled = false;
+  let embBatchInputAllStrings = false;
+  let matchGotOnlyVectors = false;
   const fakeSpore = {
     domain: "mixarium",
     id: "test_node_id_remote_a",
@@ -517,10 +525,20 @@ async function run() {
     _meta: { ready: true },
     init: async () => { embInitCalled = true; },
     isReady: () => true,
+    embedQueryBatch: async (texts) => {
+      embBatchCalled = true;
+      embBatchInputAllStrings = Array.isArray(texts) && texts.length > 0 &&
+        texts.every((t) => typeof t === "string");
+      return texts.map(() => new Float32Array(384));
+    },
   };
   g15.SbkimMatch = {
-    matchDimensions: (_a, _b, _c, _d) => {
+    matchDimensions: (a, b, c, d) => {
       matchCalled = true;
+      // Bug-Wächter: jede nicht-null Spalte MUSS Float32Array sein.
+      matchGotOnlyVectors = [a, b, c, d].every(
+        (v) => v === null || v instanceof Float32Array,
+      );
       return {
         overall: 0.85,
         fachlich:   { score: 0.85 },
@@ -561,10 +579,13 @@ async function run() {
     T15._meta.currentStep === 3 &&
     T15._meta.embeddingReady === true &&
     embInitCalled === false &&
-    matchCalled === true;
-  record("15. Re-Use: SbkimEmbedding._meta.ready===true → KEIN init()-Aufruf, embeddingReady=true, matchDimensions wird gerufen",
-    "step=3 + embeddingReady=true + embInitCalled=false + matchCalled=true",
-    `step=${T15._meta.currentStep}/embReady=${T15._meta.embeddingReady}/embInit=${embInitCalled}/match=${matchCalled}`,
+    embBatchCalled === true &&
+    embBatchInputAllStrings === true &&
+    matchCalled === true &&
+    matchGotOnlyVectors === true;
+  record("15. Re-Use: ready===true → KEIN init(), embedQueryBatch(Strings) VOR matchDimensions, matchDimensions bekommt nur Float32Array",
+    "step=3 + embeddingReady=true + embInit=false + embBatch=true(Strings) + match=true(Vektoren)",
+    `step=${T15._meta.currentStep}/embReady=${T15._meta.embeddingReady}/embInit=${embInitCalled}/embBatch=${embBatchCalled}(strings=${embBatchInputAllStrings})/match=${matchCalled}(vectors=${matchGotOnlyVectors})`,
     okReUse);
 
   // -------- Probe 16: Idempotenz mit identischen opts → no-op (no warn) --------
