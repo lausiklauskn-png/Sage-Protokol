@@ -3610,6 +3610,328 @@ Geprüft: 2026-05-25 (Spec-Sitzung 17 — Vier-Slot-Live-Status-Dashboard
 
 ---
 
+### Modul: 18_tool_pwa
+Status: entwurf  (Sub (a) Vorab — Spec-Sitzung 18 Sub (a) Vorab vom
+                 2026-05-28: Sub (a) Andocken-Pfad voll spezifiziert
+                 (Endknoten-Init-Schema mit Pflicht-Feldern
+                 endpoint+domain+domainKeywords, fail-soft mit
+                 console.warn, Idempotenz; `openAndockTab(url?)`-
+                 Signatur final mit sync-Validierung vor await;
+                 Embedding-Lazy-Trigger lazy on demand bei erstem
+                 `openAndockTab()`-Aufruf + Re-Use wenn 04.C bereits
+                 init; Match-Schwelle-UI mit Drei-Schichten-Darstellung
+                 fachlich/prozess/skalierung + „Trotzdem andocken"-Knopf;
+                 Stepper-UI mit vier Schritt-Punkten; Multisuchfeld-
+                 Andock-URL-Vorbelegung; SB-KIMTool-Point-Integration
+                 via `opts.externalHubUrl`-Read-Anker (Sub (a) Vorab
+                 ruft KEINEN Hub-Fetch)). Sub-Bereiche (b)–(i) bleiben
+                 **Spec ausstehend** für Voll-Spec 18 (Pipeline-Schritt
+                 5h.2, NACH App-Freigabe). Modul-Code in
+                 `src/modules/18_tool_pwa.js` existiert noch nicht —
+                 Bau-Sitzung 18 Sub (a) Vorab folgt mit nur Sub (a)-
+                 Surface (`init`+`openAndockTab`+`close`+`isOpen`+
+                 `_meta`).)
+Datei:  docs/components/18_tool_pwa.md (Karte — § Sub (a) Vorab final
+        2026-05-28; Sub (b)–(i) Schablone aus Tafel-Spec-Pflege
+        2026-05-26) ·
+        src/modules/18_tool_pwa.js (existiert noch nicht — Bau-
+        Sitzung 18 Sub (a) Vorab nach dieser Spec-Sitzung fällig) ·
+        Endknoten-Andocker (sbkim/sbkim-init.js der Endknoten):
+        nach Bau Sub (a) Vorab + Endknoten-Re-Migration ergänzt
+        Klaus' Andocker den Aufruf
+        `await SbkimToolPwa.init({endpoint, domain, domainKeywords,
+        stammCategories, guestCategories, repoUrl, externalHubUrl?})`
+        NACH `SbkimWidget.init` / `SbkimMembrane.init` /
+        `SbkimSiegel.init`.
+
+Bietet (öffentlich) — Sub (a) Vorab:
+  init(options)                   → Promise<void>
+                                    // Liest opts.endpoint + domain +
+                                    // domainKeywords + optionale Felder.
+                                    // Pflicht-Felder fehlen → console.warn
+                                    // + _meta.ready=false; KEIN Throw.
+                                    // Idempotent: zweiter Aufruf mit
+                                    // identischen opts → no-op; zweiter
+                                    // Aufruf mit veränderten opts → setzt
+                                    // _meta neu (Pflicht-Feld-Wechsel
+                                    // löst console.warn aus, kein Throw).
+  openAndockTab(url?)             → Promise<void>
+                                    // Sync vor await: validiert _meta.ready
+                                    // === true (wirft sonst ToolPwaNotReady-
+                                    // Error); wenn url übergeben, validiert
+                                    // sie als String mit gültigem URL-
+                                    // Konstruktor (wirft sonst ToolPwa-
+                                    // InvalidUrlArgError sync).
+                                    // Async: öffnet das Andock-Modal mit
+                                    // Wizard-Schritt 1 (URL-Eingabe leer)
+                                    // ODER Schritt 2 (Spore-Fetch mit url
+                                    // vorbelegt) je nach Argument. Promise
+                                    // resolved wenn Modal sichtbar gemountet
+                                    // — NICHT erst nach Wizard-Abschluss.
+                                    // Wenn Modal bereits offen mit gleicher
+                                    // url → no-op; mit anderer url →
+                                    // Wizard-Reset auf Schritt 2 mit neuer
+                                    // URL.
+  close()                         → void (sync)
+                                    // Schließt das Andock-Modal. Bei
+                                    // offenen Wizard-Eingaben (URL eingegeben
+                                    // aber noch nicht handshaked):
+                                    // Bestätigungs-Modal vor dem Schluss
+                                    // („Andock-Wizard schließen? Eingaben
+                                    // gehen verloren."). No-op wenn Modal
+                                    // nicht offen.
+  isOpen()                        → boolean (sync)
+                                    // true wenn das Andock-Modal sichtbar
+                                    // gemountet ist (_meta.modalOpen).
+  _meta                           // Read-Anker für Tests + Multisuchfeld:
+                                    //   ready:           boolean
+                                    //   endpoint:        string  (aus opts)
+                                    //   domain:          string
+                                    //   domainKeywords:  string[]
+                                    //   stammCategories: string[] (Default [])
+                                    //   guestCategories: string[] (Default [])
+                                    //   matchThreshold:  number  (Default
+                                    //                    PROVIDER_MIN_MATCH
+                                    //                    = 0.80; geclampt
+                                    //                    auf [0, PROVIDER_MIN_MATCH])
+                                    //   externalHubUrl:  string|null
+                                    //                    (Default null; Sub
+                                    //                    (a) Vorab macht
+                                    //                    KEINEN Hub-Fetch
+                                    //                    — Read-Anker für
+                                    //                    Sub (i)+Multisuchfeld)
+                                    //   repoUrl:         string  (Default
+                                    //                    Auto-Erkennung)
+                                    //   embeddingReady:  null|"loading"|
+                                    //                    true|"failed"
+                                    //                    (Modul-03-Lazy-Load-
+                                    //                    Status)
+                                    //   modalOpen:       boolean
+                                    //   currentStep:     0|1|2|3|4
+                                    //                    (0 = Modal zu;
+                                    //                    1–4 = Wizard-Schritt)
+                                    //   lastFetchUrl:    string|null
+                                    //                    (URL aus letztem
+                                    //                    openAndockTab()-
+                                    //                    Aufruf)
+                                    //   missingFields:   string[]
+                                    //                    (Pflicht-Felder,
+                                    //                    die bei init()
+                                    //                    fehlten; leer wenn
+                                    //                    ready=true)
+
+  options-Form (init), Sub (a) Vorab-relevant:
+    {
+      // Pflicht-Felder (alle drei Voraussetzung für _meta.ready=true):
+      endpoint:        string,
+      domain:          string,
+      domainKeywords:  string[],
+
+      // Optional:
+      stammCategories?:  string[],          // Default []
+      guestCategories?:  string[],          // Default []
+      matchThreshold?:   number,            // Default PROVIDER_MIN_MATCH (0.80);
+                                            // wird auf [0, PROVIDER_MIN_MATCH]
+                                            // geclampt; > 0.80 → console.warn +
+                                            // Setzen auf 0.80
+      externalHubUrl?:   string | null,     // Default null. Sub (a) Vorab
+                                            // implementiert KEINEN Hub-Fetch;
+                                            // nur Read-Anker für Sub (i) +
+                                            // Multisuchfeld
+      repoUrl?:          string,            // Default Auto-Erkennung
+                                            // (location.origin + erstes
+                                            // Pfad-Segment)
+      mountTarget?:      HTMLElement | null,// Default document.body
+      // Sub (b)–(i)-Felder (bindToSiegelSlot, enabledTabs, theme, …)
+      // bleiben Voll-Spec 18-Aufgabe.
+    }
+
+Sub-Bereiche (b)–(i) Spec ausstehend (Voll-Spec 18 Pipeline-Schritt
+5h.2, NACH App-Freigabe):
+  - Sub (b) Bidirektionaler Sporen-Informationsaustausch (Heterokaryose)
+  - Sub (c) Identitäts-Wechsel (Multi-Identität)
+  - Sub (d) Backup-Export + -Import
+  - Sub (e) Self-Apoptose (irreversibel)
+  - Sub (f) Sporen NEU generieren
+  - Sub (g) Re-Embedding
+  - Sub (h) Manueller Handshake-Trigger aus Sibling-Liste
+  - Sub (i) Spore-Discovery (Sage / Externer-Hub / Manuelle-URL)
+  Voll-Spec 18 entscheidet die finale Surface; mögliche generische
+  `open(subBereich?)`-Funktion / `enabledTabs`-Option / Tab-Container-
+  Layout. Bis dahin ist `openAndockTab` der einzige Public-Trigger.
+
+Nutzt — Sub (a) Vorab:
+  SbkimSpore.getOwnSpore             Lesen — Wizard zeigt eigene Spore-
+                                      Identität in Schritt 1 als Absender-
+                                      Anker. Fail-soft: wenn nicht da,
+                                      Wizard rendert Anker-Block ohne
+                                      Identitäts-Anzeige, Schritte gehen
+                                      trotzdem (Bauer-Verantwortung über
+                                      opts.endpoint+domain+domainKeywords).
+  SbkimSpore.verifyForeignSpore      Wizard-Schritt 2: Spore-Signatur-
+                                      Verifikation der fetched Foreign-
+                                      Spore. Bei Fail: Schritt-2-Fehlermeldung
+                                      „Spore-Signatur ungültig", KEIN
+                                      „Trotzdem"-Knopf.
+  SbkimEmbedding.init / embedPassage Wizard-Schritt 3 LAZY-LOAD: erster
+                                      Aufruf von openAndockTab() löst (bei
+                                      Bedarf) Modul-03-Init aus. Re-Use,
+                                      wenn SbkimEmbedding._meta.ready ===
+                                      true bereits. User-sichtbarer
+                                      Progress-Indicator Pflicht.
+  SbkimMatch.matchDimensions         Wizard-Schritt 3: Match-Berechnung mit
+                                      eigenem domainKeywords-Vektor vs.
+                                      Foreign-Spore-domainKeywords. Liefert
+                                      overall + drei Schicht-Werte
+                                      (fachlich/prozess/skalierung) als
+                                      Bar-Render-Quelle.
+  SbkimMatch._meta.providerMinMatch  Read — Default für opts.matchThreshold.
+  SbkimAnastomose.handshake          Wizard-Schritt 4: Handshake-Aufruf.
+                                      Bei Erfolg → Modal-Erfolgs-Bestätigung
+                                      + auto-Close nach 2 s. `sbkim:handshake`-
+                                      Custom-Event-Dispatch erfolgt aus
+                                      Modul 05 (Bau 17 hat den Hook gelegt);
+                                      Modul 16 Sub (e) reagiert → Bronze→
+                                      Gold-Wechsel.
+  Browser-API: window.fetch          Wizard-Schritt 2: `fetch(url +
+                                      "sbkim/spore.json")`. KEIN
+                                      Cross-Origin-Auto-Retry. CORS-Fehler
+                                      werden in Schritt 2 als Fehlermeldung
+                                      gerendert mit „URL ändern"-Knopf.
+  Browser-API: document.body         Self-Mount-Anker für das Modal
+                                      (analog Modul 15/16/17). Override
+                                      via opts.mountTarget möglich.
+
+Storage — Sub (a) Vorab:
+  KEINE eigenen Stores. Modul 18 Sub (a) Vorab ist RAM-only (Closure-
+  State analog Modul 16). Wizard-Eingaben (URL, Foreign-Spore-Cache,
+  Match-Score) leben nur in der Modal-Session und gehen beim Close
+  verloren. Persistenter Sibling-Eintrag entsteht via SbkimAnastomose
+  in Schritt 4 (Modul 05 schreibt sbkim_siblings_<slotKey>).
+  Sub (b)–(i)-Stores (z.B. sbkim_backup_… / sbkim_search_history)
+  bleiben Voll-Spec 18-Aufgabe.
+
+Events — Sub (a) Vorab:
+  feuert:    (keine eigenen) — Sub (a) Vorab dispatcht KEINE Custom-
+             Events. Der `sbkim:handshake`-Event aus dem Wizard-
+             Schritt-4-Handshake wird von Modul 05 dispatched (Hook-
+             Bau-Sitzung 17), NICHT von Modul 18.
+  reagiert:  (keine eigenen) — Sub (a) Vorab abonniert KEINE window-
+             Custom-Events. Andock-Trigger erfolgt ausschließlich
+             via öffentlich aufrufbares `openAndockTab()` (vom
+             SIEGEL-Bronze-Modal-Knopf in Modul 16 Sub e, vom
+             Multisuchfeld-Treffer-Andock-Knopf, oder programmatisch
+             aus Endknoten-UI).
+
+Fehlerverhalten — Sub (a) Vorab (verbindlich für Bau-Sitzung 18 Sub
+(a) Vorab):
+  Errors aus openAndockTab() (sync vor await):
+    - ToolPwaNotReadyError(message)
+        message enthält Liste der fehlenden init-Felder.
+        Konvention analog Modul 15 MembraneNotReadyError.
+    - ToolPwaInvalidUrlArgError(message)
+        url-Argument ist kein valider URL-String (new URL(url) wirft).
+
+  Wizard-interne Fehler (NICHT als Errors aus openAndockTab —
+  als UI-Hinweise pro Wizard-Schritt):
+    - Spore-Fetch 404 / non-JSON / CORS-Fehler
+        → Schritt-2-Fehlermeldung, „Erneut versuchen" + „URL ändern".
+    - SbkimSpore.verifyForeignSpore-Fail (Signatur-Mismatch)
+        → Schritt-2-Fehlermeldung „Spore-Signatur ungültig",
+          KEIN „Trotzdem"-Knopf.
+    - EmbeddingLoadError (Modul 03 Lazy-Load fail)
+        → Schritt-3-Fehlermeldung „Embedding-Modul lädt nicht —
+          Netz prüfen?", „Erneut versuchen"-Knopf ruft
+          SbkimEmbedding.init() nochmal.
+    - DimensionsAllNullError aus matchDimensions
+        → Schritt-3-Fehlermeldung „Match konnte nicht berechnet
+          werden — Domain-Stichworte fehlen", KEIN „Trotzdem"-Knopf.
+    - overall < matchThreshold
+        → Schritt-3-Drei-Schichten-Darstellung mit Bar-Farben
+          (grün ≥ matchThreshold; gelb ≥ SCHICHT_MIN_MATCH; rot
+          < SCHICHT_MIN_MATCH); „Trotzdem andocken"-Knopf + Warnung.
+    - SbkimAnastomose.handshake-Fehler
+        → Schritt-4-Fehlermeldung mit konkretem Grund
+          (Timeout / Schwelle / Signatur), „Erneut versuchen"-Knopf.
+
+  init() wirft KEINE Errors. Fehlende Pflicht-Felder → console.warn
+  + _meta.ready=false. Re-Init mit voll-Pflicht-Feldern ist der
+  einzige Weg, _meta.ready auf true zu heben.
+
+Selbstcheck:
+  Beim Skript-Laden (synchron, vor jeglichem Aufruf):
+    console.info("MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen: init/openAndockTab/close/isOpen");
+  Konvention analog Modul 16/17 — keine Konstante in der Selbstcheck-
+  Zeile. Sub (b)–(i)-Funktionen werden Voll-Spec 18 / Bau-Sitzung 18
+  Voll-Bau in die Zeile aufnehmen.
+
+Strikte Tabus — Sub (a) Vorab (verbindlich):
+  - KEINE eigene Identität. Modul 18 ruft Modul 02 für alle
+    Identitäts-Operationen.
+  - KEIN automatisches Andock-Triggern. Nur auf explizite User-Geste.
+  - KEIN Hub-Fetch in Sub (a) Vorab. externalHubUrl ist Read-Anker.
+  - KEIN matchThreshold > PROVIDER_MIN_MATCH. Endknoten-Bauer kann
+    reduzieren, aber nicht erhöhen.
+  - KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump
+    (Sub (a) Vorab ist RAM-only Render-Schicht).
+  - KEIN PII im Wizard-Modal (foreign-Spore-Felder sind public —
+    nodeId/domain/domainKeywords/categories; KEINE IP-Adressen,
+    KEINE lokalen Identitäts-Daten, KEINE Geschwister-Liste
+    angedockt vorher).
+
+Hook-Punkte (nur Verweis, nicht in Sub (a) Vorab implementiert):
+  - Modul 16 Sub (e) Bronze-Hinweis-Block ruft fail-soft
+    `typeof window.SbkimToolPwa?.openAndockTab === "function"`
+    → ruft `SbkimToolPwa.openAndockTab()` (ohne url) bei Klick.
+    Hook existiert seit PR #180 (Bau 16 Sub e).
+  - Multisuchfeld (Spec-Sitzung Multisuchfeld, Pipeline-Schritt
+    5i.2, Schwester-Brief BRIEF_SPEC_SUCHFELD_MULTI.md) ruft
+    `SbkimToolPwa.openAndockTab(treffer.url)` aus Extern-/Hub-
+    Treffer-Knopf.
+  - Sub (i) Spore-Discovery (Voll-Spec 18) liest
+    `SbkimToolPwa._meta.externalHubUrl` als Hub-Endpunkt und ruft
+    `SbkimToolPwa.openAndockTab(eintrag.endpoint)` pro Hub-Eintrag.
+
+Risiken (Karte 18 § Risiken — werden in Voll-Spec 18 vervollständigt):
+  - URL-Spoofing — User tippt eine URL ein, deren spore.json
+    gefälscht ist. Mitigation: Schritt 2 ruft
+    SbkimSpore.verifyForeignSpore (Signatur-Check), Fail kein
+    „Trotzdem"-Knopf.
+  - Embedding-Modul-Lazy-Load schlägt fehl bei schlechter Netz-
+    Verbindung. Mitigation: Schritt 3 zeigt Time-out-Warnung,
+    Retry-Knopf.
+  - Match-Schwelle-Override (matchThreshold reduziert) verleitet
+    User zum Andocken zwischen sinnlosen Domain-Paaren. Mitigation:
+    matchThreshold > PROVIDER_MIN_MATCH ist verboten (Sanity-Check);
+    Drei-Schichten-Darstellung macht die Schwäche pro Schicht
+    sichtbar.
+  - Modal-Konflikt mit gleichzeitig offenem Modul-16-Erklär-Modal.
+    Mitigation: Bau-Sitzung 18 Sub (a) Vorab entscheidet die
+    z-index-Hierarchie (Vorschlag analog Modul 17 9999, Modul 16
+    Modal bleibt unter Modul 18, oder Modul 18 schließt Modul 16
+    bei Open — Bau-Sitzung 18 Sub (a) Vorab klärt).
+  - Sub (b)–(i)-Wechselwirkung — z.B. Identitäts-Wechsel während
+    offener Sub (a)-Wizard-Sitzung. Mitigation: Sub (a) Vorab
+    spec-frei (Voll-Spec 18 löst). Sub (a) Vorab-Sitzung lässt das
+    explizit als offene Frage stehen.
+
+Geprüft: 2026-05-28 (Spec-Sitzung 18 Sub (a) Vorab — Sub (a)
+                     Andocken-Pfad voll spezifiziert; Sub (b)–(i)
+                     ausdrücklich „Spec ausstehend" für Voll-Spec 18.
+                     Karte 18 § Sub (a) gefüllt; INTERFACES.md § 1
+                     Modul 18 als neuer Eintrag angelegt. status.json
+                     Modul 18 bleibt score:"schablone".
+                     KEIN PROTOCOL_VERSION-/DB_VERSION-/
+                     BACKUP_FORMAT_VERSION-Bump, KEIN Modul-Code in
+                     src/, KEIN Endknoten-Eingriff, KEINE Tafel-
+                     Umsortierung CLAUDE.md (eigene Folge-Pflege-
+                     Sitzung mit Klaus' OK für 5h → 5h.1+5h.2),
+                     KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Spec, kein
+                     Sicherheits-Modul-Update).
+                     Brief: docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md.)
+
+---
+
 ## 2. Datenformate (Querschnitt)
 
 ### Spore-JSON

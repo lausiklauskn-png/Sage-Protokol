@@ -1811,6 +1811,147 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-28 · Spec-Sitzung 18 Sub (a) Vorab (Andocken-Pfad allein)
+
+**Sitzungs-Rolle:** Spec-Sitzung (Pipeline-Phase A Schritt **5h.1**),
+reine Doku/Spec-Arbeit, KEIN Modul-Code. Branch
+`claude/spec-18-sub-a-vorab-2oi16`.
+
+**Anlass:** Klaus' Klärung 2026-05-28 in der Plansitzung Multisuchfeld:
+Modul 18 Sub (a) Andocken-Pfad **vor** dem Multisuchfeld umsetzen
+(Pipeline-Vorrang). Vorab-Spec **nur für Sub (a)** schließt zwei Lücken:
+(1) Bronze-Modal-`[Andocken]`-Knopf in Modul 16 Sub (e) (PR #180)
+greift live, sobald `SbkimToolPwa.openAndockTab` existiert; (2)
+Multisuchfeld-Spec setzt Sub (a) als Andock-Geste voraus.
+
+**Was getan:**
+
+1. **Karte 18 § Sub (a) Andocken** voll gefüllt mit Klaus' sechs
+   Entscheidungspunkten:
+   - **Endknoten-Init-Schema** — Pflicht-Felder
+     `endpoint`+`domain`+`domainKeywords`; Optional `stammCategories`/
+     `guestCategories`/`matchThreshold`/`externalHubUrl`/`repoUrl`/
+     `mountTarget`. Fail-soft mit `console.warn` bei fehlenden Pflicht-
+     Feldern (KEIN Throw aus `init()`, `_meta.ready=false`,
+     `openAndockTab()` wirft dann `ToolPwaNotReadyError` sync).
+     Idempotenz: identische opts → no-op; geänderte Pflicht-Felder →
+     `console.warn` (laufender Identitäts-Wechsel ist Voll-Spec-18-
+     Sub-(c)-Aufgabe).
+   - **`openAndockTab(url?: string): Promise<void>`-Signatur** —
+     sync vor `await`: `_meta.ready`-Check + URL-Validierung; async:
+     öffnet Modal mit Wizard-Schritt 1 (leer) ODER Schritt 2 (URL
+     vorbelegt). Resolved sobald Modal sichtbar gemountet ist,
+     NICHT erst nach Wizard-Abschluss. Zweiter Aufruf mit gleicher
+     `url` → no-op; andere `url` → Reset auf Schritt 2.
+   - **Embedding-Lazy-Trigger** — Lazy on demand beim ersten
+     `openAndockTab()`-Aufruf (NICHT bei `init()`), Re-Use wenn
+     `SbkimEmbedding._meta.ready===true` aus 04.C-Pfad. User-
+     sichtbarer Spinner in Wizard-Schritt 3 verbindlich, 30 s
+     Time-out-Warnung, fail-soft Retry.
+   - **Match-Schwelle-UI** — Drei-Schichten-Darstellung
+     `fachlich`/`prozess`/`skalierung` via `SbkimMatch.matchDimensions`
+     (Modul 04.A); Bar-Farben grün/gelb/rot bei `≥matchThreshold`/
+     `≥SCHICHT_MIN_MATCH`/`<SCHICHT_MIN_MATCH`. „Trotzdem andocken"-
+     Knopf bei `overall<matchThreshold`. `opts.matchThreshold`
+     override-bar, geclampt auf `[0, PROVIDER_MIN_MATCH=0.80]` —
+     Bauer kann reduzieren, NICHT erhöhen (Spec-Tabu, wer strenger
+     filtern will baut Modul-10-Reputation).
+   - **Modal-Form** — Stepper-UI mit vier Schritt-Punkten oben
+     („① URL — ② Spore — ③ Match — ④ Handshake"), Single-Pane-Body,
+     „← Zurück" + „Weiter →"-Footer. Bestätigungs-Modal bei
+     Schluss mit Eingaben; automatischer Modal-Close 2 s nach
+     erfolgreichem Handshake.
+   - **Andocken aus Multisuchfeld-Discovery** — `openAndockTab(url)`-
+     URL-Parameter-Pfad; URL-Vorbelegung springt zu Schritt 2;
+     Erkennungs-Heuristik liegt beim Aufrufer (Sub (i) / Multisuchfeld),
+     nicht in Sub (a) Vorab.
+   - **SB-KIMTool-Point-Integration** — `opts.externalHubUrl` als
+     optionaler `string|null`-Parameter, Default `null`. Sub (a)
+     Vorab ruft KEINEN Hub-Fetch (nur Read-Anker `_meta.externalHubUrl`
+     für Sub (i) + Multisuchfeld). Multi-Hub-Array bleibt Voll-Spec 18.
+
+2. **Karte 18 § Schnittstelle** Sub (a) Vorab-Vertrag verankert:
+   `init`+`openAndockTab`+`close`+`isOpen`+`_meta` als Sub-(a)-Vorab-
+   final. Zwei Errors benannt (`ToolPwaNotReadyError` +
+   `ToolPwaInvalidUrlArgError`). `_meta`-Schema voll spec'd (13 Read-
+   Anker-Felder). Wizard-interne Fehler als UI-Hinweise pro Schritt
+   (NICHT als JS-Errors aus `openAndockTab`).
+
+3. **Karte 18 § Strikte Tabus** Sub (a) Vorab-Block verankert
+   (KEIN automatisches Andock-Triggern, KEIN Hub-Fetch, KEIN
+   `matchThreshold > PROVIDER_MIN_MATCH`, KEIN Re-Init ohne `warn`,
+   KEIN Modul-Pflicht-Check beim Bronze-Klick, KEIN PII-Render).
+
+4. **Karte 18 § Modal-Form** Sub (a) Vorab-Stepper-UI verankert;
+   Sub (b)–(i)-Tab-Container bleibt Voll-Spec 18-Aufgabe.
+
+5. **Karte 18 § Bauzustand** neue Zeile „Spec Sub (a) Vorab gefüllt
+   2026-05-28" — Sub (b)–(i) bleiben unverändert als Skizze.
+
+6. **INTERFACES.md § 1 Modul 18** als neuer Eintrag angelegt (war
+   vorher nicht da): Status `entwurf (Sub (a) Vorab)`, Sub (b)–(i)
+   explizit „Spec ausstehend" für Voll-Spec 18. Voll-Block mit
+   Bietet/Nutzt/Storage/Events/Fehlerverhalten/Selbstcheck/Strikte
+   Tabus/Hook-Punkte/Risiken/Geprüft.
+
+7. **Karte 18 § Status-Header** auf 🟨 Spec Sub (a) Vorab gefüllt
+   gehoben (vorher 🟫 Schablone).
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-Code in `src/modules/` (Spec-Sitzung).
+- KEIN Endknoten-Eingriff.
+- KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.
+- KEINE Voll-Spec der Sub-Bereiche (b)–(i) — explizit ausgeklammert
+  (Voll-Spec 18 Pipeline-Schritt 5h.2 NACH App-Freigabe).
+- KEINE Tafel-Umsortierung CLAUDE.md — Klaus' OK zur 5h → 5h.1+5h.2-
+  Aufteilung liegt vor (Plansitzung 2026-05-28), aber CLAUDE.md-Pflege
+  ist eigene Folge-Sitzung mit eigenem PR.
+- KEINE neuen Karten in `docs/components/` (Karte 18 bestand bereits).
+- KEIN `status.json`-/Pie-Update — Modul 18 bleibt `score:"schablone"`
+  (Sub (a) allein ist noch kein „spec"-Voll-Stand; Voll-Spec 18 hebt
+  später auf `score:"spec"`).
+- KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Spec, kein Sicherheits-Modul-
+  Update).
+- KEINE PII in der Spec.
+
+**Was offen blieb:**
+
+- **Folge-Bau-Sitzung Sub (a) Vorab** — implementiert
+  `src/modules/18_tool_pwa.js` mit nur `init`+`openAndockTab`+
+  `close`+`isOpen`+`_meta`. CSS + Panel 18 in `tests/manual_check.html`
+  + Headless-Smoke. Pipeline-Schritt 5h.1 abgeschlossen wenn Sichttest
+  grün. Brief-Codeblock dafür in der Chat-Antwort dieser Sitzung
+  (Klaus' Konvention 2026-05-21).
+- **Endknoten-Re-Migration mit Modul 18 Sub (a)** — Mein-Rezeptbuch +
+  Mein-Mixarium bekommen `<script src="sbkim/18_tool_pwa.js">` +
+  `SbkimToolPwa.init({…})`-Aufruf. Sichttest: Bronze-Modal-
+  `[Andocken]`-Knopf greift live, öffnet 4-Schritt-Wizard.
+- **Multisuchfeld-Spec-Sitzung** (Schwester-Brief
+  `BRIEF_SPEC_SUCHFELD_MULTI.md`, Pipeline-Schritt 5i.2) kann erst
+  danach starten — Sub (a) Vorab ist Voraussetzung für Extern-/Hub-
+  Treffer-Andock-Knopf.
+- **Voll-Spec-Sitzung 18** (Sub b–i) bleibt Pipeline-Phase 6 (NACH
+  App-Freigabe), Pipeline-Schritt 5h.2.
+- **Eigene Folge-Pflege CLAUDE.md** Pipeline-Reihenfolge Phase A
+  anpassen (5h → 5h.1 + 5h.2) — Klaus' OK liegt aus 2026-05-28-
+  Plansitzung vor, aber eigene Pflege-Sitzung mit eigenem PR.
+- **Offene Fragen für Voll-Spec 18** (in Karte 18 § Sub (a) am
+  Ende notiert): Sub-(b)-Heterokaryose-Slot-Wechsel während offener
+  Sub-(a)-Wizard-Sitzung? Sub-(c)-Identitäts-Wechsel-Interferenz?
+  Sub-(i)-Spore-Discovery-Render-Form? Multi-Hub-Setups
+  (`externalHubUrl: string[]`)? Re-Handshake-Verhalten bei
+  bestehendem Sibling-Eintrag mit derselben `nodeId`?
+
+**Nächster sinnvoller Schritt:** Klaus mergt PR dieser Spec-Sitzung,
+dann Folge-Bau-Sitzung 18 Sub (a) Vorab (Brief-Codeblock in der
+Chat-Antwort dieser Sitzung).
+
+**Übergabeprotokoll:**
+`docs/sessions/archiv/2026-05-28_spec-18-sub-a-vorab.md`.
+
+---
+
 ### 2026-05-28 · Plansitzung Multisuchfeld — zwei Spec-Briefe (Sub (a) Vorab + Multisuchfeld)
 
 **Sitzungs-Rolle:** Plansitzung (Spec-Brief-Schreiben, kein Modul-
