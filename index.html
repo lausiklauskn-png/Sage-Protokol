@@ -715,6 +715,98 @@
     .sonnen-nebula, .station-galaxy .galaxy-body { animation: none; }
     .station-modal-card { animation: none; }
   }
+
+  /* === Einladung-Türschwelle (2026-05-28) === */
+  .einladung-card { isolation: isolate; }
+  .einladung-stage {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16/9;
+    margin: 1.4rem 0 0.4rem;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #06080a;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    isolation: isolate;
+  }
+  .einladung-door {
+    position: absolute; inset: 0;
+    background: url('docs/einladung/vendor/img/scene-5-door.webp') center/cover no-repeat;
+    /* Start-Zustand: schwach sichtbar, entsättigt. Bei Maus-Nähe wird
+       sie LANGSAM (1.8s) voll sichtbar — erst bei längerem Drauf-
+       bleiben kommt der volle Detail-Kontrast (Klaus 2026-05-28). */
+    opacity: 0.30;
+    filter: saturate(0.6) brightness(0.78);
+    transition:
+      opacity 1.8s cubic-bezier(.4, .0, .25, 1),
+      filter  1.8s cubic-bezier(.4, .0, .25, 1),
+      transform 0.6s cubic-bezier(.2,.7,.2,1);
+    will-change: opacity, filter, transform;
+  }
+  /* Bei Maus-Hover läuft die Tür langsam auf volle Sichtbarkeit.
+     Bei Maus-Weg schneller (0.55s) zurück in den Standby-Zustand. */
+  .einladung-stage:hover .einladung-door,
+  .einladung-stage.is-near .einladung-door {
+    opacity: 1;
+    filter: saturate(1.05) brightness(1.0);
+  }
+  .einladung-stage:not(:hover):not(.is-near) .einladung-door {
+    transition:
+      opacity 0.55s ease-out,
+      filter  0.55s ease-out,
+      transform 0.6s cubic-bezier(.2,.7,.2,1);
+  }
+  .einladung-dust {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    z-index: 2;
+  }
+  .einladung-flash {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(255, 230, 180, 0.95) 0%, rgba(255, 210, 140, 0.45) 35%, rgba(255, 200, 130, 0) 75%);
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    transition: opacity 0.6s ease;
+    z-index: 3;
+  }
+  .einladung-hint {
+    position: absolute;
+    bottom: 1rem; right: 1.2rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(244, 230, 200, 0.85);
+    background: rgba(0,0,0,0.45);
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(214, 183, 106, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 4;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+  }
+  .einladung-stage.is-near .einladung-hint { opacity: 1; }
+  /* Klick-Öffnungs-Animation: Flash voll, leichte Tür-Bewegung */
+  .einladung-stage.is-opening .einladung-door {
+    opacity: 1;
+    filter: saturate(1.1) brightness(1.4);
+    transform: scale(1.05) translateX(-2%);
+  }
+  .einladung-stage.is-opening .einladung-flash {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .einladung-door { opacity: 0.7; filter: none; transition: none; }
+    .einladung-flash, .einladung-dust { display: none; }
+    .einladung-hint { opacity: 1; }
+  }
   </style>
 </head>
 <body>
@@ -977,6 +1069,21 @@
             <h4>Identität sichern · Modul 02 Backup-Export Stufe 2</h4>
             <p>Endknoten-PWAs können seit 2026-05-16 ihre Identität passwort-verschlüsselt exportieren (PBKDF2-SHA256 600 000 + AES-GCM-256). Browser-Wechsel oder tiefes Speicher-Löschen tötet die nodeId nicht mehr — Backup im Endknoten, nicht in der Sage.</p>
           </div>
+        </article>
+        <!-- Einladung-Türschwelle (2026-05-28): Tür-Bild mit Mouse-
+             Nähe-Feenstaub. Bei Maus weit weg semi-transparent, bei
+             Annäherung wird sie sichtbar. Klick öffnet docs/einladung/. -->
+        <article class="card span-12 einladung-card" data-back-anchor="einladung">
+          <span class="card-tag">Einladung in das Mycel · Türschwelle</span>
+          <h3>Bevor du andockst — eine Einladung</h3>
+          <p>Eine Tür, die nichts fordert. Wer hineingeht, kann mitbauen oder zusehen oder weitergehen. Komm näher, dann wird sie sichtbar — klick darauf, dann öffnet sie sich.</p>
+          <a class="einladung-stage" href="docs/einladung/index.html"
+             aria-label="Einladung in das Mycel öffnen">
+            <div class="einladung-door"></div>
+            <canvas class="einladung-dust" aria-hidden="true"></canvas>
+            <div class="einladung-flash"></div>
+            <span class="einladung-hint">Klicken zum Öffnen</span>
+          </a>
         </article>
         <article class="card span-12" data-back-anchor="andock">
           <span class="card-tag">Andock · 3 Klicks bis zum Spore-Vorschlag</span>
@@ -3407,5 +3514,114 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script src="src/modules/15_membran.js"></script>
   <script src="src/modules/16_siegel.js"></script>
   <script src="sbkim-init.js"></script>
+  <script>
+  // Einladung-Türschwelle (2026-05-28): Feenstaub am Cursor, Klick öffnet
+  // /docs/einladung/ mit kurzer Tür-Öffnungs-Animation (Glow + Bewegung).
+  (function setupEinladungDoor() {
+    const stage = document.querySelector('.einladung-stage');
+    if (!stage) return;
+    const canvas = stage.querySelector('.einladung-dust');
+    const ctx    = canvas.getContext('2d');
+    let particles = [];
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let nearActive = false;
+    let nearTimer  = 0;
+
+    function resize() {
+      const r = canvas.getBoundingClientRect();
+      if (r.width === 0) return;
+      canvas.width  = Math.round(r.width  * dpr);
+      canvas.height = Math.round(r.height * dpr);
+      canvas.style.width  = r.width  + 'px';
+      canvas.style.height = r.height + 'px';
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    }
+    resize();
+    new ResizeObserver(resize).observe(canvas);
+
+    function spawn(x, y, n) {
+      for (let i = 0; i < n; i++) {
+        if (particles.length > 260) particles.shift();
+        particles.push({
+          x: x + (Math.random() - 0.5) * 14,
+          y: y + (Math.random() - 0.5) * 14,
+          vx: (Math.random() - 0.5) * 0.7,
+          vy: -0.3 - Math.random() * 0.7,
+          life: 0,
+          maxLife: 0.9 + Math.random() * 1.6,
+          size: 1.4 + Math.random() * 3.0,
+          tint: Math.random()
+        });
+      }
+    }
+
+    stage.addEventListener('pointerenter', () => {
+      stage.classList.add('is-near');
+      nearActive = true;
+    });
+    stage.addEventListener('pointerleave', () => {
+      stage.classList.remove('is-near');
+      nearActive = false;
+    });
+    stage.addEventListener('pointermove', (e) => {
+      const r = canvas.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      spawn(x, y, 3 + Math.floor(Math.random() * 3));
+    });
+
+    // Klick: Tür-Öffnungs-Animation laufen lassen, danach Navigation.
+    // preventDefault, weil wir die Animation erst zeigen wollen.
+    stage.addEventListener('click', (e) => {
+      if (stage.classList.contains('is-opening')) return;
+      e.preventDefault();
+      stage.classList.add('is-opening');
+      // Burst Feenstaub für visuelles Echo
+      const r = canvas.getBoundingClientRect();
+      for (let i = 0; i < 80; i++) {
+        spawn(r.width * (0.2 + Math.random() * 0.6),
+              r.height * (0.3 + Math.random() * 0.4), 1);
+      }
+      setTimeout(() => { window.location.href = stage.getAttribute('href'); }, 850);
+    });
+
+    let lastT = performance.now();
+    function loop() {
+      if (!canvas.isConnected) return;
+      const now = performance.now();
+      const dt  = Math.min(0.05, (now - lastT) / 1000);
+      lastT = now;
+      const w = canvas.width / dpr, h = canvas.height / dpr;
+      ctx.clearRect(0, 0, w, h);
+
+      if (particles.length === 0) { requestAnimationFrame(loop); return; }
+
+      particles = particles.filter(p => {
+        p.life += dt;
+        if (p.life >= p.maxLife) return false;
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.vy -= 0.018;
+        const lifeRatio = 1 - (p.life / p.maxLife);
+        const alpha = lifeRatio * 0.92;
+        const s = p.size * (0.55 + lifeRatio * 0.55);
+        const g = p.tint < 0.5 ? 220 : 200;
+        const b = p.tint < 0.5 ? 135 : 252;
+        ctx.fillStyle = `rgba(255,${g},${b},${alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, s, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(255,${g},${b},${alpha * 0.6})`;
+        ctx.fillRect(p.x - s * 3, p.y - 0.5, s * 6, 1);
+        ctx.fillRect(p.x - 0.5, p.y - s * 3, 1, s * 6);
+        return true;
+      });
+
+      requestAnimationFrame(loop);
+    }
+    loop();
+  })();
+  </script>
 </body>
 </html>

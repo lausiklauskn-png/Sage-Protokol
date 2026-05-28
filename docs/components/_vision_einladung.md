@@ -144,7 +144,7 @@ Material-Sprache + Bewegungs-Idee).
 |---|---|---|---|
 | Plansitzung (Vier-Schichten-Lesart, Mut-Klausel, Begriff „Einladung") | 2026-05-27 | Plansitzung Mycel-Vision-Erweiterung | Übergabeprotokoll: `docs/sessions/archiv/2026-05-27_plansitzung-mycel-vision-einladung.md`. Brief: `docs/sessions/BRIEF_BAU_EINLADUNG_SITE.md`. |
 | Recherche + Bau der drei Format-Schichten | 2026-05-27 | Bau-Sitzung Einladungs-Site | `claude/bau-einladung-site`. Headless-Smoke-Test (`_smoke.mjs`) 9/9 grün auf vendored three.js + GSAP + Variable-Fonts. PDF-Generator (`_pdf.mjs`) erzeugt 34-Seiten-Druckfassung via Headless-Chromium + marked. **Sichttest ungeprüft — wartet auf Klaus' Galaxy-Tab-S6-Browser.** |
-| Sage-Page-Mount | — | Folge-Pflege-Sitzung | folgt — eigene Sitzung; nicht Bestandteil des Bau-Auftrags. |
+| Sage-Page-Mount | 2026-05-28 | Folge-Pflege in der Bau-Sitzung (Klaus' Anweisung) | `index.html` bekommt eine neue Karte „Einladung in das Mycel · Türschwelle" zwischen Lesematerial- und Andock-Karte. Tür-Bild (`scene-5-door.webp`) startet semi-transparent (opacity 0.30, entsättigt); bei Hover langsam (1.8s ease) auf volle Sichtbarkeit. Mouse-Move spawnt Feenstaub-Funken am Cursor (Cross-Star-Particles, gold/blau, screen-blend). Klick triggert eine kurze Öffnungs-Animation (warmer Flash, leichte Tür-Bewegung) und navigiert nach 850ms zu `docs/einladung/index.html`. Reduced-Motion-Fallback ohne Animation. |
 | Mycel-Hub-Mount | — | Folge-Pflege-Sitzung | folgt — NACH Phase B Schritt 9 (Externer Mycel-Hub Bau). |
 | Sprach-Erweiterung über DE/EN/FR/ES | — | Sprach-Pflege-Sitzungen | folgt — wenn Bedarf entsteht (IT, PL, TR, ZH, JA, …). |
 
