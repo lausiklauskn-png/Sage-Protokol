@@ -1811,6 +1811,108 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-28 · Plansitzung Multisuchfeld + Modul 18 Sub (a) Vorab (zwei Briefe)
+
+**Sitzungs-Rolle:** Plansitzung (reine Doku/Spec-Vorbereitung, KEIN
+Modul-Code, KEIN Endknoten-Eingriff). Branch
+`claude/multisearch-field-spec-ER2BL`.
+
+**Anlass:** Klaus' zwei Themen 2026-05-28 — (A) Multi-Modus-Suchfeld
+in den Endknoten-PWAs (Lokal · Mycel · Extern), (B) Modul 18 Sub (a)
+Andocken-Vorab-Pfad, damit der Bronze-SIEGEL-Andock-Knopf in Modul
+16 Sub (e) produktiv wird, ohne auf die Voll-Spec-Sitzung 18 (alle
+9 Sub-Bereiche) warten zu müssen.
+
+**Verifikation vor Brief-Schreiben** (Klaus' Befund 2026-05-27:
+vorherige Folge-Sitzungen haben aus VERALTETEN Stub-Listen kopiert):
+
+- `git fetch origin && git checkout main && git pull origin main` —
+  main aktuell mit PR #187 + #188 gemerged.
+- CLAUDE.md komplett gelesen, inkl. Vier-Schichten-Lesart 2026-05-27
+  + Pipeline mit Phase D NEU.
+- PULS.md § Schnellüberblick + jüngste drei Sitzungs-Einträge.
+- status.json modules + toolPwaBacklog.
+- Karte 18 KOMPLETT (Schablone mit 9 Sub-Bereichen + § Such-Feld-
+  Integration-Pattern).
+- Karte 16 § Sub (e) — Modal-Bronze-Hinweis-Block + `[Andocken]`-
+  Knopf + fail-soft-Check (`typeof window.SbkimToolPwa?.openAndockTab
+  === "function"`) bereits seit PR #180 eingebaut.
+- Bestehende Suchfeld-Briefe BRIEF_BAU_ENDKNOTEN_SUCHFELD_MR.md +
+  _MM.md gelesen — decken nur Lokal + Mycel (Karte 18 Dual-Modus),
+  KEIN Web-Modus.
+- Kein `BRIEF_SPEC_SUCHFELD_MULTI.md` existiert noch — keine
+  Doppel-Arbeit.
+
+**Klaus' Festlegungen 2026-05-28 (per AskUserQuestion):**
+
+1. **UI-Modus-Wechsel:** Drei Symbol-Schalter UNTER der Texteingabe
+   IM Suchfeld nebeneinander (kein zusätzlicher Höhen-Bedarf), Symbol
+   + Tooltip, Klick wechselt von Grau zur Aktiv-Farbe. Multi-Aktiv
+   erlaubt.
+2. **Modul 18 Sub (a) Vorab:** JA, eigener Brief skizziert die
+   Minimal-API `SbkimToolPwa.openAndockTab(url?)` mit 4-Schritt-
+   Andock-Workflow + drei offenen Spec-Punkten.
+3. **Treffer-UI:** unified-Liste mit Quellen-Marker. Lokal-Treffer
+   springen direkt zum Anchor (wenn nur Lokal aktiv + Score ≥ 0.95).
+   Mycel-Treffer mit Score-Ring (Pepo-Demo-Pattern) + Drei-Layer-
+   Bars für `matchDimensions` (fachlich/technisch/skalierung) +
+   Gesamt-Score. Web-Modus mischt Externer-Hub + Sage-`status.json`
+   + externe Such-API (Adapter-Schnittstelle, Endknoten-Bauer wählt
+   Provider).
+
+**Tafel-Lösung Empfangsmodus-Konflikt:** Vier-Schichten-Lesart
+(CLAUDE.md § Pflege 2026-05-27) löst den Konflikt — Extern-Such ist
+**Pilz-Schicht-Akquise** (oberirdisch, sichtbar, User-Geste-getriggert,
+kein Auto-Polling). Mycel-Schicht bleibt Empfangsmodus. Tafel
+EINGEHALTEN, nicht umsortiert.
+
+**Was getan:**
+
+- `docs/sessions/BRIEF_SPEC_SUCHFELD_MULTI.md` angelegt — Voll-
+  Skelett der Multisuchfeld-Spec mit zehn offenen Spec-Punkten,
+  Klaus' UI-Festlegungen, Tafel-Lösung, drei Such-Modi formell,
+  Anti-Tracking-Pflicht, Schnittstellen-Skizze (Option A vs. B),
+  Brief-Codeblock für die Folge-Spec-Sitzung.
+- `docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md` angelegt — Minimal-
+  API-Spec für `SbkimToolPwa.openAndockTab`, drei offene Spec-Punkte
+  (Embedding-Lazy-Trigger / Match-Schwelle-UI / Endknoten-Init-
+  Schema), strikte Abgrenzung gegen Sub (b)–(i), Brief-Codeblock
+  für die Folge-Spec-Sitzung.
+
+**Was offen blieb:**
+
+- Voll-Spec-Sitzung Multisuchfeld (Klaus startet sie auf Branch
+  `claude/spec-suchfeld-multi`) entscheidet die zehn offenen Spec-
+  Punkte und legt Modul-Karte 20 (oder 04.D-Erweiterung) an.
+- Spec-Sitzung Modul 18 Sub (a) Vorab (Branch `claude/spec-18-sub-
+  a-vorab`) entscheidet die drei offenen Spec-Punkte.
+- **Klaus' Browser-Sichttest** ist KEINE Pflicht in dieser Plansitzung
+  (reine Brief-Anlage, kein Bau, kein UI-Eingriff).
+
+**Heilige Tafeln eingehalten:**
+
+- KEIN Modul-Code in `src/modules/`.
+- KEIN Endknoten-Eingriff.
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.
+- KEINE Tafel-Umsortierung CLAUDE.md (Pipeline-Schritte 5k/5l/5m
+  als Phase-A-Erweiterungen werden erst in den Folge-Spec-Sitzungen
+  nach Klaus' Bestätigung eingetragen, siehe Tafel-Evolutions-
+  Klausel).
+- KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Brief-Anlage ist kein Sicherheits-
+  Modul-Update).
+
+**Nächster sinnvoller Schritt:** Klaus startet eine der zwei Spec-
+Sitzungen — Empfehlung Multisuchfeld zuerst (Schritt 5k), weil
+Web-Modus-Spec mehr Architektur-Klärungen braucht. Sub-(a)-Vorab-
+Spec (Schritt 5m) kann parallel laufen — die zwei Sitzungen
+schneiden sich nicht (Multisuchfeld berührt Modul 20 / 04 / 15;
+Sub-(a)-Vorab berührt Modul 18 / 16 / 05).
+
+**Übergabeprotokoll:**
+`docs/sessions/archiv/2026-05-28_plansitzung-multisuchfeld-modul-18-sub-a.md`.
+
+---
+
 ### 2026-05-28 · Sichttest + Folge-Pflegen Einladung (in derselben Bau-Sitzung)
 
 **Sitzungs-Rolle:** Iterative Pflege innerhalb der noch offenen
