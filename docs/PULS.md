@@ -1992,6 +1992,22 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Embedding-Lade-Puls (UX, Folge zu #205)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-embedding-puls`. Klaus' Wunsch: „lasse ihn pulsen solange
+es nicht eingefroren ist". Der Lade-Indikator im Sage-Andock-Wizard
+Schritt 2 pulsiert jetzt (CSS-Opacity-Animation `sage-andock-pulse`,
+Klasse `.is-loading`) während des Embedding-Ladens. Opacity läuft auf dem
+Compositor → pulsiert auch weiter, während der Haupt-Thread am Modell
+rechnet, **stoppt aber, wenn die Seite echt eingefroren ist** — genau der
+„lebt noch vs. hängt"-Indikator. Klasse wird in Success- + Catch-Pfad
+entfernt; `setAndockOutput` lässt sie unangetastet (nur ok/err). `prefers-
+reduced-motion` respektiert (kein Puls). Reines CSS+JS in index.html,
+Script-Block `node --check` grün. KEIN VERSION-Bump.
+
+---
+
 ### 2026-05-28 · Pflege Embedding-Download-Fortschritt (UX)
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch
