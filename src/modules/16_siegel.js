@@ -843,6 +843,13 @@
       if (toolPwa && typeof toolPwa.openAndockTab === "function") {
         try { toolPwa.openAndockTab(); }
         catch (err) { warn("Modul 18 openAndockTab fehlgeschlagen.", err); }
+        // Pflege 2026-05-28 (Bronze-Modal-Close-on-Andock): nach
+        // erfolgreichem Wizard-Trigger das Bronze-Modal schließen,
+        // damit nicht zwei Modale übereinanderliegen (Klaus' Sichttest-
+        // Befund in Mein-Rezeptbuch). Fallback-Pfad (Modul 18 fehlt)
+        // lässt das Modal absichtlich offen — User soll die Info-Notiz
+        // noch lesen können.
+        closeModal();
         return;
       }
       // Info-Notiz im Block einblenden (analog Spec § Klick-Verhalten in
