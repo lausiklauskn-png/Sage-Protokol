@@ -86,13 +86,32 @@
     });
   }
 
+  function emitProgress(data) {
+    // Pflege 2026-05-28: meldet den Modell-Download-Fortschritt als
+    // window-Event, damit UIs (Sage-Andock-Wizard, Modul-18-Wizard) einen
+    // Fortschritts-Stand zeigen können statt „lädt ewig" ohne Rückmeldung.
+    // Fail-soft + konsumentenfrei (passt zum Event-Bus von Modul 17) — wer
+    // nicht lauscht, merkt nichts. transformers.js progress_callback liefert
+    // u.a. {status, file, progress(0-100), loaded, total}.
+    try {
+      if (global && typeof global.dispatchEvent === "function" &&
+          typeof global.CustomEvent === "function") {
+        global.dispatchEvent(new global.CustomEvent("sbkim:embedding-progress", {
+          detail: data,
+        }));
+      }
+    } catch (_e) { /* nb — Render-Hinweis, nie kritisch */ }
+  }
+
   function init() {
     if (pipePromise) return pipePromise.then(function () { /* void */ });
     pipePromise = (async function () {
       var transformers = await loadTransformers();
       var pipeline = transformers.pipeline;
       try {
-        var p = await pipeline("feature-extraction", EMBEDDING_MODEL);
+        var p = await pipeline("feature-extraction", EMBEDDING_MODEL, {
+          progress_callback: function (data) { emitProgress(data); },
+        });
         pipe = p;
         emitSelfCheckOnce();
         return p;
