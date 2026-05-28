@@ -1,16 +1,19 @@
 # Modul 18 — Tool-PWA-Container (SIEGEL-Anker)
 
-> **Status:** 🟨 Spec Sub (a) Vorab gefüllt (2026-05-28, Pipeline-Schritt
-> 5h.1) · Sub (b)–(i) Schablone (2026-05-26, Tafel-Spec-Pflege Mycel-Vision) ·
+> **Status:** 🟦 Code-Stub Sub (a) Vorab (2026-05-28, Bau-Sitzung 18 Sub
+> (a) Vorab, Pipeline-Schritt 5h.1) · Sub (b)–(i) 🟫 Schablone (2026-05-26,
+> Tafel-Spec-Pflege Mycel-Vision) ·
 > Tool-PWA-Backlog · **Priorität:** Sub (a) Vorab vor App-Freigabe
 > (Andock-Pfad für SIEGEL-Bronze-Hinweis-Block + Multisuchfeld);
 > Sub (b)–(i) NACH App-Freigabe (Pipeline-Schritt 5h.2)  ·  **Schicht:**
 > Wartungs- + Andock-Schicht für Endknoten-PWAs, getriggert durch
 > Klick auf SIEGEL-Slot im Floating-Widget (Modul 17) ODER auf den
 > Multisuchfeld-Treffer-`[Andocken]`-Knopf.
-> **Datei (Code):** `src/modules/18_tool_pwa.js` (existiert noch nicht
-> — Bau-Sitzung 18 Sub (a) Vorab folgt mit nur `init`+`openAndockTab`+
-> `close`+`isOpen`+`_meta`. Voll-Bau Modul 18 NACH App-Freigabe.)
+> **Datei (Code):** `src/modules/18_tool_pwa.js` (Bau-Sitzung 18 Sub (a)
+> Vorab vom 2026-05-28 — implementiert `init`+`openAndockTab`+`close`+
+> `isOpen`+`_meta` mit zwei benannten Errors `ToolPwaNotReadyError` +
+> `ToolPwaInvalidUrlArgError`. Voll-Bau Modul 18 Sub (b)–(i) NACH
+> App-Freigabe.)
 
 ---
 
@@ -1090,6 +1093,7 @@ spätere Felder via Voll-Spec 18):
 | Spec gefüllt | — | Spec-Sitzung 18 | folgt — alle Sub-Bereiche final entscheiden + Schnittstelle festlegen + Modal-Form klären. |
 | Code geschrieben | — | Bau-Sitzung 18 | folgt — `src/modules/18_tool_pwa.js` + CSS + Panel 18 in `tests/manual_check.html` + Headless-Smoke. |
 | In Endknoten eingebaut | — | Endknoten-Folge-Sitzungen | folgt — Modul 18 in Mein-Rezeptbuch / Mein-Mixarium kopieren + `init()`-Aufruf. |
+| Bau Sub (a) Vorab | 2026-05-28 | Bau-Sitzung 18 Sub (a) Vorab | Pipeline-Phase A Schritt **5h.1**. `src/modules/18_tool_pwa.js` voll angelegt mit Surface `init`+`openAndockTab`+`close`+`isOpen`+`_meta` (13 Felder, defensive Kopie pro Lese-Zugriff) + zwei Errors `ToolPwaNotReadyError` + `ToolPwaInvalidUrlArgError` (Factory-Stil analog Modul 15/16) + Selbstcheck `MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen: init/openAndockTab/close/isOpen`. `init()` fail-soft: fehlende Pflicht-Felder (`endpoint`+`domain`+`domainKeywords`) → `console.warn` + `_meta.ready=false` + `_meta.missingFields[]`, KEIN Throw; Idempotenz mit Pflicht-Feld-Sanity-Check (identische opts no-op, geänderte Pflicht-Felder + warn, geänderte Optional-Felder überschreiben). `matchThreshold > PROVIDER_MIN_MATCH` (=0.80) wird auf 0.80 geclampt + warn. `externalHubUrl` Read-Anker (KEIN Hub-Fetch in Sub (a) Vorab). `repoUrl` Auto-Erkennung aus `location.origin` + erstem Pfad-Segment (analog Modul 16). `openAndockTab(url?)` mit Sync-Validierung vor `await`: `_meta.ready !== true` → `ToolPwaNotReadyError` mit Liste der fehlenden Felder, URL-Argument-Validierung via `new URL(url)` → `ToolPwaInvalidUrlArgError`. Async: Modal-Mount in `document.body` (Override via `opts.mountTarget`) mit Self-Mount-Observer-Fallback (MutationObserver 10 s Timeout). Vier-Schritt-Stepper-UI: ① URL eingeben (Text-Input + „Weiter →"), ② Spore fetchen via `fetch(joinUrl(url, "sbkim/spore.json"))` + `verifyForeignSpore` (Signatur-Fail kein „Trotzdem"-Knopf), Foreign-Spore-Preview (Domain/Knoten-ID-kurz/Domain-Stichworte/Kategorien), ③ Match-Check mit Lazy-Embedding (Re-Use bei `SbkimEmbedding._meta.ready===true` ODER `isReady()===true`, sonst `init()` mit 30 s Time-out-Warnung + Retry-Knopf, `SbkimMatch.matchDimensions` → Drei-Schichten-Bars fachlich/prozess/skalierung mit Bar-Farben grün/gelb/rot, „Trotzdem andocken" bei `overall < matchThreshold`, `DimensionsAllNullError` kein „Trotzdem"-Knopf), ④ Handshake via `SbkimAnastomose.handshake(foreignSpore)` → grünes Häkchen + auto-Close 2 s. `close()` mit `confirm()`-Bestätigung bei offenen Wizard-Eingaben (Schritt 1 mit URL-Text ODER Schritt 2/3); no-op bei Schritt 0/4. Inline-CSS via `<style>`-Inject (Konvention analog Modul 17 — Drei-Zeilen-Einbau für Endknoten); `z-index: 10000` (> Modul-17-Modal-9999). `index.html` um `<script src="src/modules/18_tool_pwa.js"></script>` vor `sbkim-init.js` erweitert; Sage-Page macht KEINEN `SbkimToolPwa.init()`-Aufruf (Sub (a) Vorab ist Endknoten-Pflicht, Sage-Page hat keine Andock-Geste). Panel 18 in `tests/manual_check.html` mit 11 Knöpfen (Setup + Tests 1–10 + Reset + Selbstcheck-Hinweis). Headless-Smoke `tests/smoke_bau18_sub_a_vorab.mjs` 17/17 grün. Regression `smoke_bau15b` 31/31, `smoke_bau16_sub_e_bronze` 16/16, `smoke_bau17_floating_widget` 36/36 grün. `node --check src/modules/18_tool_pwa.js` grün, alle 14 inline-script-Blöcke in `tests/manual_check.html` grün. `status.json` Modul 18 von `score:"schablone"` auf `score:"stub"` gehoben (Konvention analog Modul 17 nach Bau-Sitzung 17). `scripts/update_puls_pie.py` ausgeführt. Sub (b)–(i) bleiben Schablone — Voll-Spec 18 + Voll-Bau 18 Pipeline 5h.2 nach App-Freigabe. **KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.** KEIN Endknoten-Eingriff (MR + MM Re-Migration ist eigene Folge-Sitzung pro Endknoten-Repo). KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Modul 18 ist Wartungs-/Andock-Schicht, kein Sicherheits-Modul). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf Panel 18 Knöpfe 1–10. Brief: `docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md` (Spec) + Folge-Brief für Bau Sub (a) Vorab in dieser Sitzung. |
 
 ---
 

@@ -3611,26 +3611,20 @@ Geprüft: 2026-05-25 (Spec-Sitzung 17 — Vier-Slot-Live-Status-Dashboard
 ---
 
 ### Modul: 18_tool_pwa
-Status: entwurf  (Sub (a) Vorab — Spec-Sitzung 18 Sub (a) Vorab vom
-                 2026-05-28: Sub (a) Andocken-Pfad voll spezifiziert
-                 (Endknoten-Init-Schema mit Pflicht-Feldern
-                 endpoint+domain+domainKeywords, fail-soft mit
-                 console.warn, Idempotenz; `openAndockTab(url?)`-
-                 Signatur final mit sync-Validierung vor await;
-                 Embedding-Lazy-Trigger lazy on demand bei erstem
-                 `openAndockTab()`-Aufruf + Re-Use wenn 04.C bereits
-                 init; Match-Schwelle-UI mit Drei-Schichten-Darstellung
-                 fachlich/prozess/skalierung + „Trotzdem andocken"-Knopf;
-                 Stepper-UI mit vier Schritt-Punkten; Multisuchfeld-
-                 Andock-URL-Vorbelegung; SB-KIMTool-Point-Integration
-                 via `opts.externalHubUrl`-Read-Anker (Sub (a) Vorab
-                 ruft KEINEN Hub-Fetch)). Sub-Bereiche (b)–(i) bleiben
-                 **Spec ausstehend** für Voll-Spec 18 (Pipeline-Schritt
-                 5h.2, NACH App-Freigabe). Modul-Code in
-                 `src/modules/18_tool_pwa.js` existiert noch nicht —
-                 Bau-Sitzung 18 Sub (a) Vorab folgt mit nur Sub (a)-
-                 Surface (`init`+`openAndockTab`+`close`+`isOpen`+
-                 `_meta`).)
+Status: Code-Stub (Bau Sub (a) Vorab — Bau-Sitzung 18 Sub (a) Vorab
+                 vom 2026-05-28, Pipeline-Phase A Schritt 5h.1:
+                 `src/modules/18_tool_pwa.js` voll angelegt mit
+                 Sub-(a)-Vorab-Surface gemäß Spec-Sitzung 18 Sub (a)
+                 Vorab vom 2026-05-28 (init/openAndockTab/close/isOpen
+                 + 13-Feld-_meta + zwei Errors ToolPwaNotReadyError +
+                 ToolPwaInvalidUrlArgError + Selbstcheck-Zeile + Vier-
+                 Schritt-Stepper-UI mit Lazy-Embedding-Re-Use und Drei-
+                 Schichten-Match-Bars und Handshake-auto-close). Sub-
+                 Bereiche (b)–(i) bleiben **Spec ausstehend** für Voll-
+                 Spec 18 + Voll-Bau 18 (Pipeline-Schritt 5h.2, NACH
+                 App-Freigabe). Sichttest ungeprüft — wartet auf Klaus'
+                 Browser-Lauf Panel 18 Knöpfe 1–10. Headless-Smoke
+                 `smoke_bau18_sub_a_vorab.mjs` 17/17 grün.)
 Datei:  docs/components/18_tool_pwa.md (Karte — § Sub (a) Vorab final
         2026-05-28; Sub (b)–(i) Schablone aus Tafel-Spec-Pflege
         2026-05-26) ·
@@ -3929,6 +3923,56 @@ Geprüft: 2026-05-28 (Spec-Sitzung 18 Sub (a) Vorab — Sub (a)
                      KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Spec, kein
                      Sicherheits-Modul-Update).
                      Brief: docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md.)
+       · 2026-05-28 (Bau-Sitzung 18 Sub (a) Vorab —
+                     src/modules/18_tool_pwa.js voll angelegt mit
+                     Surface init+openAndockTab+close+isOpen+_meta
+                     (13 Felder, defensive Kopie pro Lese-Zugriff) +
+                     zwei Errors ToolPwaNotReadyError +
+                     ToolPwaInvalidUrlArgError (Factory-Stil) +
+                     Selbstcheck "MODUL 18 TOOL-PWA bereit, Sub (a)
+                     Vorab, Funktionen: init/openAndockTab/close/
+                     isOpen". init() fail-soft (Pflicht-Felder fehlen
+                     → console.warn + ready=false, KEIN Throw) +
+                     Idempotenz + Pflicht-Feld-Sanity-Check.
+                     matchThreshold > 0.80 → clamp + warn.
+                     externalHubUrl Read-Anker, KEIN Hub-Fetch.
+                     repoUrl Auto-Erkennung. openAndockTab(url?) mit
+                     Sync-Validierung vor await (ToolPwaNotReadyError
+                     + ToolPwaInvalidUrlArgError). Modal Self-Mount in
+                     document.body mit Self-Mount-Observer-Fallback.
+                     Vier-Schritt-Stepper-UI (URL/Spore/Match/
+                     Handshake) mit Lazy-Embedding (Re-Use bei
+                     SbkimEmbedding._meta.ready===true ODER
+                     isReady()===true), Drei-Schichten-Match-Bars
+                     fachlich/prozess/skalierung via matchDimensions,
+                     „Trotzdem"-Knopf bei overall<matchThreshold (KEIN
+                     bei DimensionsAllNullError ODER Signatur-Fail),
+                     Handshake auto-close 2 s. close() mit confirm()-
+                     Bestätigung bei offenen Wizard-Eingaben. Inline-
+                     CSS via <style>-Inject (Konvention Modul 17).
+                     index.html um <script>-Tag vor sbkim-init.js
+                     erweitert; KEIN SbkimToolPwa.init()-Aufruf in
+                     Sage-Page (Sub (a) Vorab ist Endknoten-Pflicht).
+                     Panel 18 in tests/manual_check.html mit 11
+                     Knöpfen. Headless-Smoke smoke_bau18_sub_a_vorab.mjs
+                     17/17 grün. Regression smoke_bau15b 31/31,
+                     smoke_bau16_sub_e_bronze 16/16, smoke_bau17 36/36
+                     grün. node --check src/modules/18_tool_pwa.js
+                     grün, alle 14 inline-script-Blöcke in
+                     manual_check.html grün. status.json Modul 18 von
+                     schablone auf stub gehoben (Konvention analog
+                     Modul 17). update_puls_pie.py ausgeführt.
+                     Sub (b)–(i) bleiben Spec ausstehend für Voll-
+                     Spec 18 + Voll-Bau 18 Pipeline 5h.2 NACH App-
+                     Freigabe. Sichttest ungeprüft — wartet auf Klaus'
+                     Browser-Lauf Panel 18 Knöpfe 1–10. KEIN
+                     PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-
+                     Bump (RAM-only Render-Schicht), KEIN Endknoten-
+                     Eingriff (Re-Migration ist eigene Folge-Sitzung
+                     pro Endknoten-Repo), KEIN ZERTIFIKAT_ASPEKTE-
+                     Eintrag (Modul 18 ist Wartungs-/Andock-Schicht,
+                     kein Sicherheits-Modul), KEINE Tafel-Umsortierung
+                     CLAUDE.md.)
 
 ---
 
