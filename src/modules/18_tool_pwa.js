@@ -124,6 +124,7 @@
   var mountTarget = null;
   var missingFields = REQUIRED_FIELDS.slice();
   var embeddingReady = null;                 // null | "loading" | true | "failed"
+  var embeddingProgressListenerAttached = false;  // Pflege 2026-05-28
 
   // Wizard-State (RAM-only, Reset bei close()).
   var modalRoot = null;
@@ -215,6 +216,16 @@
 
   function init(options) {
     var opts = options || {};
+    // Pflege 2026-05-28: Embedding-Download-Fortschritt (Modul 03 sendet
+    // sbkim:embedding-progress) auch im Match-Schritt anzeigen — derselbe
+    // Live-Balken wie im Sage-Identitäts-Wizard, statt statischem „lädt …".
+    if (!embeddingProgressListenerAttached && global &&
+        typeof global.addEventListener === "function") {
+      try {
+        global.addEventListener("sbkim:embedding-progress", onEmbeddingProgress);
+        embeddingProgressListenerAttached = true;
+      } catch (_e) { /* fail-soft */ }
+    }
     var missing = computeMissingFields(opts);
 
     if (missing.length > 0) {
@@ -1078,6 +1089,26 @@
       var retry = modalRoot.querySelector("[data-tool-pwa-step3-retry]");
       if (retry) retry.style.display = "";
     }
+  }
+
+  // Pflege 2026-05-28: Live-Balken für den Embedding-Modell-Download im
+  // Match-Schritt. Gated auf currentStep===3 && embeddingReady==="loading",
+  // damit der Listener nur das eigene Lade-Fenster bedient (nicht z.B. den
+  // Sage-Identitäts-Wizard, der dasselbe Event auslöst).
+  function onEmbeddingProgress(ev) {
+    if (currentStep !== 3 || embeddingReady !== "loading") return;
+    var d = ev && ev.detail;
+    if (!d || d.status !== "progress" ||
+        typeof d.progress !== "number" || !isFinite(d.progress)) return;
+    var pct = Math.max(0, Math.min(100, Math.round(d.progress)));
+    var filled = Math.round(pct / 5);
+    var bar = "";
+    var i;
+    for (i = 0; i < filled; i++) bar += "█";
+    for (i = filled; i < 20; i++) bar += "░";
+    var file = d.file ? String(d.file).split("/").pop() : "Modell";
+    setStep3Status("loading",
+      "Embedding-Modell lädt … " + bar + " " + pct + " % (" + file + ", ~30 MB einmalig)");
   }
 
   function renderMatchBars(result) {
