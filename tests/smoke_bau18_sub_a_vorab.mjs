@@ -614,14 +614,18 @@ async function run() {
     `repoUrl=${T17._meta.repoUrl}`,
     T17._meta.repoUrl === "https://test.local/Mein-Rezeptbuch/");
 
-  // -------- Probe 18: Schritt 4 Handshake bekommt Float32Array(384) als ownDomainVector --------
-  // Pflege 2026-05-28 (Folge-Wurzel-Fix): triggerStepFourHandshake muss
-  // handshake(targetSpore, ownDomainVector) mit einem embedPassage-Vektor
-  // als 2. Argument rufen — sonst wirft Modul 05 „ownDomainVector muss
-  // Float32Array(384) sein". Wir treiben bis Schritt 4 und prüfen Arg 2.
+  // -------- Probe 18: Schritt 4 delegiert ownDomainVector-Auflösung an Modul 05 --------
+  // Pflege 2026-05-28 (Eigenvektor-Auflösung): triggerStepFourHandshake
+  // ruft handshake(targetSpore) OHNE 2. Argument — Modul 05 löst den
+  // eigenen Domain-Vektor kanonisch aus der eigenen Spore auf (single
+  // source of truth). Modul 18 berechnet KEINEN eigenen Vektor mehr
+  // (kein embedPassage in Schritt 4 → keine Inkonsistenz request.domain-
+  // Vector vs. senderSpore). Wir treiben bis Schritt 4 und prüfen, dass
+  // handshake mit genau einem Argument (foreignSpore) aufgerufen wird.
   let hsCalled = false;
-  let hsArg2IsVector = false;
-  let embedPassageGotString = false;
+  let hsArg1IsForeign = false;
+  let hsArg2Undefined = false;
+  let embedPassageCalledInStep4 = false;
   const g18b = makeStubGlobal({
     fetch: async (_url) => ({
       ok: true, status: 200, json: async () => ({
@@ -636,8 +640,10 @@ async function run() {
     _meta: { ready: true },
     isReady: () => true,
     embedQueryBatch: async (texts) => texts.map(() => new Float32Array(384)),
-    embedPassage: async (text) => {
-      embedPassageGotString = (typeof text === "string" && text.length > 0);
+    embedPassage: async (_text) => {
+      // Schritt 4 darf embedPassage NICHT (mehr) aufrufen — der Vektor
+      // kommt aus Modul 05. (Schritt 3 nutzt embedQueryBatch, nicht hier.)
+      embedPassageCalledInStep4 = true;
       return new Float32Array(384);
     },
   };
@@ -645,9 +651,10 @@ async function run() {
     matchDimensions: () => ({ overall: 0.85, fachlich: { score: 0.85 }, prozess: { score: 0.85 }, skalierung: { score: 0.85 } }),
   };
   g18b.SbkimAnastomose = {
-    handshake: async (_targetSpore, ownDomainVector) => {
+    handshake: async (targetSpore, ownDomainVector) => {
       hsCalled = true;
-      hsArg2IsVector = (ownDomainVector instanceof Float32Array) && ownDomainVector.length === 384;
+      hsArg1IsForeign = !!targetSpore && targetSpore.id === "test_node_id_remote_b";
+      hsArg2Undefined = (ownDomainVector === undefined);
       return { outcome: "established", score: 0.85 };
     },
   };
@@ -658,13 +665,16 @@ async function run() {
   const next2 = g18b.document.querySelector("[data-tool-pwa-step2-next]");
   if (next2) { next2.disabled = false; next2.click(); }       // → Schritt 3 Match
   await new Promise(r => setTimeout(r, 30));
+  // embedPassage-Tracking erst NACH Schritt 3 scharf stellen (Schritt 3
+  // nutzt embedQueryBatch, ruft embedPassage ohnehin nicht).
+  embedPassageCalledInStep4 = false;
   const next3 = g18b.document.querySelector("[data-tool-pwa-step3-next]");
   if (next3) { next3.disabled = false; next3.click(); }       // → Schritt 4 Handshake
   await new Promise(r => setTimeout(r, 30));
-  record("18. Schritt 4: handshake(targetSpore, ownDomainVector) bekommt embedPassage-Float32Array(384) als Arg 2",
-    "embedPassage(String)=true + handshake aufgerufen + Arg2 Float32Array(384)=true",
-    `embedPassage=${embedPassageGotString}/hsCalled=${hsCalled}/arg2Vector=${hsArg2IsVector}`,
-    embedPassageGotString === true && hsCalled === true && hsArg2IsVector === true);
+  record("18. Schritt 4: handshake(foreignSpore) OHNE 2. Argument — Modul 05 löst Eigenvektor auf, Modul 18 embeddet nicht",
+    "handshake aufgerufen + Arg1 foreignSpore + Arg2 undefined + kein embedPassage in Schritt 4",
+    `hsCalled=${hsCalled}/arg1Foreign=${hsArg1IsForeign}/arg2Undefined=${hsArg2Undefined}/embedPassageStep4=${embedPassageCalledInStep4}`,
+    hsCalled === true && hsArg1IsForeign === true && hsArg2Undefined === true && embedPassageCalledInStep4 === false);
 
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;

@@ -1282,9 +1282,19 @@ Datei:  src/modules/05_anastomose.js
 
 Bietet (öffentlich):
   init()                                                       → Promise<void>
-  handshake(targetSpore: SporeJson, ownDomainVector: Float32Array(384),
+  handshake(targetSpore: SporeJson, ownDomainVector?: Float32Array(384),
             options?: { transport?: "auto"|"http"|"channel" })
                                                                → Promise<HandshakeResult>
+    // Pflege 2026-05-28: ownDomainVector ist OPTIONAL. Wird er weggelassen
+    // (undefined/null), löst Modul 05 ihn kanonisch aus der eigenen Spore
+    // auf (ownSpore.domainVector → Float32Array(384)) — dieselbe Quelle,
+    // die als senderSpore mitgesendet wird (single source of truth). Wer
+    // explizit einen Vektor übergibt, wird weiter honoriert (muss
+    // Float32Array(384) sein). Fehlt die eigene Spore ganz →
+    // AnastomoseDependenciesError „Eigene Spore noch nicht erzeugt …
+    // generateOwnSpore(meta) zuerst". Hintergrund: Aufrufer (Modul 18 etc.)
+    // sollen den Vektor nicht selbst ableiten müssen — ein frisch
+    // berechneter Vektor wich vom signierten Spore-domainVector ab.
   receiveHandshake(incomingRequest: HandshakeRequest)          → Promise<HandshakeResponse>
   listSiblings()                                               → Promise<Array<{ nodeId, domain, since, pubKey }>>
   forgetSibling(nodeId: string)                                → Promise<void>

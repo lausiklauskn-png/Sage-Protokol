@@ -147,9 +147,16 @@ init() → Promise<void>
   // Wirft AnastomoseDependenciesError, wenn ein Modul fehlt.
   // Idempotent.
 
-handshake(targetSpore, ownDomainVector, options?) → Promise<HandshakeResult>
+handshake(targetSpore, ownDomainVector?, options?) → Promise<HandshakeResult>
   // Initiiert einen ausgehenden Handshake an targetSpore.endpoint +
   // ENDPOINT.anastomosis.
+  //
+  // Pflege 2026-05-28: ownDomainVector ist OPTIONAL. Weggelassen
+  // (undefined/null) → Modul 05 löst ihn aus der eigenen Spore auf
+  // (ownSpore.domainVector → Float32Array(384), dieselbe Quelle wie
+  // senderSpore). Fehlt die eigene Spore → AnastomoseDependenciesError
+  // "Eigene Spore noch nicht erzeugt … generateOwnSpore(meta) zuerst".
+  // Explizit übergebener Vektor wird honoriert (Float32Array(384)).
   //
   // options.transport (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17,
   // additiv; ohne options unverändert zum Bestehenden):
