@@ -590,30 +590,12 @@ em.gold { color: var(--gold); font-style: normal; }
 #scene-5 .key-host {
   position: relative;
   aspect-ratio: 4/5;
-  /* Schwarzes Loch (Klaus 2026-05-28): der Schlüssel kommt aus einem
-     dunklen Loch heraus, die rechteckigen Bild-Rand-Kanten werden
-     vom Loch geschluckt — keine sichtbare Box mehr. */
-  background:
-    radial-gradient(ellipse 55% 65% at 50% 50%, rgba(40, 24, 8, 0.18) 0%, transparent 60%),
-    #000;
-}
-/* Vignetten-Maske ÜBER den Schlüssel-Frames: Center transparent
-   (Schlüssel sichtbar), Ränder fließend in Schwarz → die Box-Form
-   verschwindet, Schlüssel schwebt in einem schwarzen Loch. */
-#scene-5 .key-host::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 60% 75% at 50% 50%,
-    transparent 0%,
-    transparent 35%,
-    rgba(0, 0, 0, 0.4) 60%,
-    rgba(0, 0, 0, 0.85) 82%,
-    rgba(0, 0, 0, 1) 100%
-  );
-  z-index: 5;
-  pointer-events: none;
+  /* Klaus 2026-05-28: Schwarzes Loch war Notlösung für Dunkel-Kasten,
+     entfällt jetzt — der mix-blend-mode der Bild-Schicht + der Vortex-
+     Hintergrund + die Sporen lassen den Schlüssel schon fließend mit
+     dem Hintergrund verschmelzen. Kein eigener Background, kein
+     Overlay nötig. */
+  background: transparent;
 }
 /* Schlüssel-Vollansicht (Klaus 2026-05-28): pixelgenau zentriert,
    sanfter Float, schwarzer Bild-Hintergrund wird durch screen-blend
