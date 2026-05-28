@@ -1955,6 +1955,40 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Modul 18 Sub (a) Handshake — ownDomainVector (Folge-Wurzel-Fix)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul-18-handshake-domainvector`. Folge zum Match-Embed-
+Fix (PR #199).
+
+**Wurzel-Diagnose:** Nach dem Match-Fix lief Schritt 3 grün (Sage-Page
+86 %, Mein-Mixarium 85 % + Drei-Bars), aber Schritt 4 (Handshake) warf
+„ownDomainVector muss Float32Array(384) sein — Aufruf von handshake".
+`triggerStepFourHandshake` rief `SbkimAnastomose.handshake(foreignSpore)`
+mit nur einem Argument; `handshake(targetSpore, ownDomainVector)`
+erwartet als 2. Arg einen eigenen Domain-Vektor `Float32Array(384)`
+(Modul 05 § `_doHandshake`). Gleiche Bug-Klasse wie PR #199, eine
+Stufe weiter. Reproduzierbar auf Sage-Page **und** Mein-Mixarium.
+
+**Was getan:** `triggerStepFourHandshake` leitet den eigenen Domain-
+Vektor jetzt kanonisch ab via `SbkimEmbedding.embedPassage(
+domainKeywords.join(", "))` (analog Spore-`domainVector` /
+`manual_check.html` `mainVec`) und reicht ihn als 2. Argument an
+`handshake`. Verfügbarkeits-Check + Leere-Stichworte-Guard. Smoke Probe
+18 NEU (treibt bis Schritt 4, prüft `handshake` bekommt Float32Array(384)
+als Arg 2) → **18/18 grün**. `node --check` 18 + 05 grün.
+
+**Pflicht-Disziplin:** KEIN Eingriff in Modul 03 / Modul 05 (Surfaces
+korrekt). KEIN VERSION-Bump, KEIN ZERTIFIKAT_ASPEKTE-Eintrag, KEIN
+Endknoten-Eingriff.
+
+**Offen / nächster Schritt:** Sichttest ungeprüft — wartet auf Klaus'
+Browser-Lauf Schritt 4. Danach MR + MM Sync (Modul-18-Datei jetzt inkl.
+Match-Fix + Handshake-Fix). Übergabeprotokoll:
+`docs/sessions/archiv/2026-05-28_pflege-modul-18-handshake-domainvector.md`.
+
+---
+
 ### 2026-05-28 · Pflege Modul 18 Sub (a) Match-Schritt — Embedding-Pflicht-Aufruf (Wurzel-Fix)
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch

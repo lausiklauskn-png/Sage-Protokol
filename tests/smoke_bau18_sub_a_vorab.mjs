@@ -614,6 +614,58 @@ async function run() {
     `repoUrl=${T17._meta.repoUrl}`,
     T17._meta.repoUrl === "https://test.local/Mein-Rezeptbuch/");
 
+  // -------- Probe 18: Schritt 4 Handshake bekommt Float32Array(384) als ownDomainVector --------
+  // Pflege 2026-05-28 (Folge-Wurzel-Fix): triggerStepFourHandshake muss
+  // handshake(targetSpore, ownDomainVector) mit einem embedPassage-Vektor
+  // als 2. Argument rufen — sonst wirft Modul 05 „ownDomainVector muss
+  // Float32Array(384) sein". Wir treiben bis Schritt 4 und prüfen Arg 2.
+  let hsCalled = false;
+  let hsArg2IsVector = false;
+  let embedPassageGotString = false;
+  const g18b = makeStubGlobal({
+    fetch: async (_url) => ({
+      ok: true, status: 200, json: async () => ({
+        domain: "mixarium", id: "test_node_id_remote_b",
+        domainKeywords: ["cocktail", "drink"], stammCategories: [], guestCategories: [],
+      }),
+    }),
+  });
+  loadModuleInto(g18b, "src/modules/18_tool_pwa.js");
+  g18b.SbkimSpore = { verifyForeignSpore: async (_s) => ({ valid: true }) };
+  g18b.SbkimEmbedding = {
+    _meta: { ready: true },
+    isReady: () => true,
+    embedQueryBatch: async (texts) => texts.map(() => new Float32Array(384)),
+    embedPassage: async (text) => {
+      embedPassageGotString = (typeof text === "string" && text.length > 0);
+      return new Float32Array(384);
+    },
+  };
+  g18b.SbkimMatch = {
+    matchDimensions: () => ({ overall: 0.85, fachlich: { score: 0.85 }, prozess: { score: 0.85 }, skalierung: { score: 0.85 } }),
+  };
+  g18b.SbkimAnastomose = {
+    handshake: async (_targetSpore, ownDomainVector) => {
+      hsCalled = true;
+      hsArg2IsVector = (ownDomainVector instanceof Float32Array) && ownDomainVector.length === 384;
+      return { outcome: "established", score: 0.85 };
+    },
+  };
+  const T18b = g18b.SbkimToolPwa;
+  await T18b.init(VALID_OPTS);
+  await T18b.openAndockTab("https://test.local/Mein-Mixarium/");
+  await new Promise(r => setTimeout(r, 30));
+  const next2 = g18b.document.querySelector("[data-tool-pwa-step2-next]");
+  if (next2) { next2.disabled = false; next2.click(); }       // → Schritt 3 Match
+  await new Promise(r => setTimeout(r, 30));
+  const next3 = g18b.document.querySelector("[data-tool-pwa-step3-next]");
+  if (next3) { next3.disabled = false; next3.click(); }       // → Schritt 4 Handshake
+  await new Promise(r => setTimeout(r, 30));
+  record("18. Schritt 4: handshake(targetSpore, ownDomainVector) bekommt embedPassage-Float32Array(384) als Arg 2",
+    "embedPassage(String)=true + handshake aufgerufen + Arg2 Float32Array(384)=true",
+    `embedPassage=${embedPassageGotString}/hsCalled=${hsCalled}/arg2Vector=${hsArg2IsVector}`,
+    embedPassageGotString === true && hsCalled === true && hsArg2IsVector === true);
+
   // ---- Ergebnis ----
   const ok = results.filter(r => r.ok).length;
   const total = results.length;
