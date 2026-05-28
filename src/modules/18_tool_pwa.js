@@ -1180,35 +1180,15 @@
       setStep4Status("error", "Foreign-Spore nicht geladen.");
       return;
     }
-    // Pflege 2026-05-28 (Folge-Wurzel-Fix): handshake erwartet als
-    // 2. Argument einen eigenen Domain-Vektor als Float32Array(384)
-    // (Modul 05 § _doHandshake ownDomainVector-Check). Davor rief
-    // Modul 18 nur handshake(foreignSporeCache) → „ownDomainVector muss
-    // Float32Array(384) sein — Aufruf von handshake." Wir leiten den
-    // Vektor kanonisch ab wie die Spore selbst: embedPassage über die
-    // eigenen Domain-Stichworte (analog Spore-domainVector-Erzeugung,
-    // siehe tests/manual_check.html mainVec).
-    var embedding = global.SbkimEmbedding;
-    if (!embedding || typeof embedding.embedPassage !== "function") {
-      setStep4Status("error",
-        "Modul 03 (Embedding) ist nicht verfügbar — " +
-        "SbkimEmbedding.embedPassage fehlt.");
-      return;
-    }
-    var ownDomainText = Array.isArray(domainKeywords)
-      ? domainKeywords.join(", ")
-      : "";
-    if (!ownDomainText) {
-      setStep4Status("error",
-        "Handshake nicht möglich — keine eigenen Domain-Stichworte " +
-        "(domainKeywords) für den Domain-Vektor.");
-      return;
-    }
-    setStep4Status("loading", "Handshake läuft … (eigener Domain-Vektor wird erzeugt)");
-    embedding.embedPassage(ownDomainText)
-      .then(function (ownDomainVector) {
-        return anaMod.handshake(foreignSporeCache, ownDomainVector);
-      })
+    // Pflege 2026-05-28: handshake(targetSpore) ohne 2. Argument —
+    // Modul 05 löst den eigenen Domain-Vektor kanonisch aus der eigenen
+    // Spore auf (deren signierter domainVector ist dieselbe Quelle, die
+    // als senderSpore mitgesendet wird → keine Inkonsistenz). Modul 18
+    // berechnet KEINEN eigenen Vektor mehr (das ergab einen anderen
+    // Vektor als die Spore — siehe Pflege 05+18 Handshake-Eigenvektor).
+    setStep4Status("loading", "Handshake läuft …");
+    Promise.resolve()
+      .then(function () { return anaMod.handshake(foreignSporeCache); })
       .then(function () {
         setStep4Status("ok",
           "Handshake erfolgreich — Geschwister-Knoten verbunden. " +

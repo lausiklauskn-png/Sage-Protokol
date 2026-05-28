@@ -1955,6 +1955,46 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege 05+18 Handshake — Eigenvektor-Auflösung (Lösung 1, korrigiert PR #201)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-05-18-handshake-eigenvektor`. Korrigiert den Ansatz von
+PR #201 nach MM-Bausitzungs-Bericht + tieferer Wurzel-Analyse.
+
+**Wurzel:** `_doHandshake` sendet `ownDomainVector` als
+`request.domainVector` **und** die signierte eigene Spore als
+`senderSpore` — beide müssen denselben Vektor tragen. PR #201 ließ
+Modul 18 einen frischen `embedPassage(domainKeywords)` rechnen, was vom
+signierten Spore-`domainVector` (`embedPassage(domainDescription + '. '
++ domainKeywords)`) abweicht → inkonsistenter Request. Außerdem braucht
+der Handshake die eigene Spore ohnehin (Signieren), die den kanonischen
+Vektor schon trägt.
+
+**Entscheidung (Klaus): Lösung 1** — Modul 05 löst den Eigenvektor
+selbst aus der eigenen Spore auf (forker-sicher: `handshake(fremdSpore)`
+ist immer korrekt, single source of truth).
+
+**Was getan:** Modul 05 `_doHandshake`: `ownDomainVector` optional, bei
+Weglassen `loadOwnDomainVector(opSlot)` → `ownSpore.domainVector`; keine
+Spore → klare `AnastomoseDependenciesError`. Modul 18
+`triggerStepFourHandshake` wieder schlank (`handshake(foreignSpore)`,
+kein embedPassage). INTERFACES § 1 Modul 05 Tafel + Modul-05-Karte +
+Modul-18-Karte nachgezogen. Smoke Probe 18 umgestellt (handshake ohne
+2. Arg + kein embedPassage in Schritt 4) → **18/18 grün**. `node --check`
+05 + 18 grün. `smoke_bau05y` nicht lauffähig (fake-indexeddb fehlt im
+Sandbox) — Live-Pfad über Klaus' Sichttest.
+
+**Backward-kompatibel:** explizit übergebener Vektor (Test
+`manual_check.html` `mainVec`) wird weiter honoriert.
+
+**Offen:** Sage-Knoten braucht eine Laufzeit-Eigen-Spore (Sage-Andock-
+Wizard `generateOwnSpore`) — separater Setup-Schritt. Danach Schritt-4-
+Sichttest. Sporen-Reinigung/Neubildung (Klaus' Frage) = eigenes Thema
+(Modul 18 Sub f/g). Übergabeprotokoll:
+`docs/sessions/archiv/2026-05-28_pflege-05-18-handshake-eigenvektor.md`.
+
+---
+
 ### 2026-05-28 · Pflege Modul 18 Sub (a) Handshake — ownDomainVector (Folge-Wurzel-Fix)
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch
