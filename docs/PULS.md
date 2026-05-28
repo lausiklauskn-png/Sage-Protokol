@@ -1992,6 +1992,33 @@ folgt **NACH** MR + MM.
 
 ---
 
+### 2026-05-28 · Pflege Sage-Andock-Einstiege (Discoverability)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-sage-andock-einstiege`. Klaus' Befund: der Identitäts-
+Wizard (`#andock`, „Identität/Spore/Backup") hatte **keinen sichtbaren
+Einstieg** — nur die Hash-URL oder der (bedingte) Schwarz-Loch-Erst-Klick.
+Auf einem Hybrid-Knoten (Sage = Hub UND Endknoten) muss man seine
+Identität/Spore aber auffindbar erzeugen + verwalten können.
+
+**Fix (Sage-lokal, Modul 16 unangetastet):** zwei sichtbare Einstiege zum
+`openAndockWizard()`:
+1. **Untere Karte** „Sage als Knoten · eigene Identität & Spore" (über der
+   „Endknoten anschließen"-Karte) mit Knopf „🔑 Identität & Spore erzeugen
+   / verwalten →". Klärt explizit den Unterschied zur Spore-Vorlage-für-
+   fremde-PWAs-Karte.
+2. **Link im Siegel-Modal** — per MutationObserver wird in das Modul-16-
+   Siegel-Modal (`#sbkim-siegel-modal`) ein „🔑 Eigene Identität & Spore"-
+   Link injiziert, sobald es im DOM auftaucht. Das geteilte Sicherheits-
+   Modul 16 bleibt **unverändert** (#andock ist Sage-page-spezifisch). Der
+   Wizard (z-index 100000) legt sich über das Siegel-Modal (99998).
+
+`index.html`-Script-Block `node --check` grün. **KEIN** VERSION-Bump,
+**KEIN** Eingriff in Modul 16 (kein Re-Sync, kein Aspekte-Eintrag nötig).
+Sichttest ungeprüft.
+
+---
+
 ### 2026-05-28 · Pflege Handshake-Timeout-Override (interaktiv großzügig)
 
 **Sitzungs-Rolle:** Pflege-Sitzung. Branch

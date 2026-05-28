@@ -1085,6 +1085,16 @@
             <span class="einladung-hint">Klicken zum Öffnen</span>
           </a>
         </article>
+        <article class="card span-12" data-back-anchor="sage-identitaet">
+          <span class="card-tag">Sage als Knoten · eigene Identität &amp; Spore</span>
+          <h3>Deine Sage-Identität erzeugen &amp; verwalten</h3>
+          <p>Sage ist <strong>Hub und Knoten zugleich</strong> (<code>nodeType: hybrid</code>) — der dritte Endknoten neben Rezeptbuch und Mixarium. Hier erzeugst du Sages eigene Ed25519-Identität, die signierte Spore mit Domain-Vektor und ein verschlüsseltes Backup. <em>Nicht zu verwechseln</em> mit „Endknoten anschließen" weiter unten — das erzeugt nur eine Spore-Vorlage für <em>fremde</em> PWAs.</p>
+          <div class="card-cta" style="margin-top:1rem">
+            <button class="primary" onclick="openAndockWizard()">🔑 Identität &amp; Spore erzeugen / verwalten →</button>
+            <span class="card-tag" style="margin:0;align-self:center">öffnet den Andock-Wizard (#andock)</span>
+          </div>
+        </article>
+
         <article class="card span-12" data-back-anchor="andock">
           <span class="card-tag">Andock · 3 Klicks bis zum Spore-Vorschlag</span>
           <h3>Eigene PWA als Endknoten anschließen</h3>
@@ -3288,6 +3298,51 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   }
   window.addEventListener('hashchange', maybeOpenAndockFromHash);
   document.addEventListener('DOMContentLoaded', maybeOpenAndockFromHash);
+
+  // Pflege 2026-05-28: Identitäts-Wizard auch aus dem Siegel-Modal erreichbar
+  // machen (Klaus' Wunsch: mehrere Einstiege zum Spore-Erzeugen). Sage-lokal —
+  // das geteilte Sicherheits-Modul 16 bleibt unangetastet; wir injizieren nur
+  // einen Link, sobald Modul 16 sein Modal (#sbkim-siegel-modal) ins DOM hängt.
+  // Der Identitäts-Wizard hat z-index 100000 > Siegel-Modal (99998), deshalb
+  // genügt openAndockWizard() — er legt sich vor das Siegel-Modal.
+  function injectIdentityLinkIntoSiegel(modal) {
+    if (!modal || modal.querySelector('[data-sage-identity-link]')) return;
+    var panel = modal.querySelector('[role="dialog"]') || modal.firstElementChild || modal;
+    if (!panel) return;
+    var link = document.createElement('button');
+    link.setAttribute('data-sage-identity-link', '');
+    link.type = 'button';
+    link.textContent = '🔑 Eigene Identität & Spore erzeugen / verwalten →';
+    link.style.cssText = 'display:block;width:100%;margin:0 0 1rem;padding:0.6rem 0.9rem;background:rgba(124,131,253,0.16);border:1px solid rgba(124,131,253,0.5);border-radius:8px;color:#dfe0ff;font:inherit;font-size:0.86rem;cursor:pointer;text-align:left;';
+    link.addEventListener('click', function () { openAndockWizard(); });
+    var anchor = panel.querySelector('[data-siegel-bronze-hinweis]') || panel.querySelector('[data-siegel-date]');
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(link, anchor.nextSibling);
+    else panel.appendChild(link);
+  }
+  function watchForSiegelModal() {
+    var existing = document.getElementById('sbkim-siegel-modal');
+    if (existing) injectIdentityLinkIntoSiegel(existing);
+    if (typeof MutationObserver !== 'function' || !document.body) return;
+    try {
+      var obs = new MutationObserver(function (mutations) {
+        for (var i = 0; i < mutations.length; i++) {
+          var added = mutations[i].addedNodes;
+          for (var j = 0; j < added.length; j++) {
+            var node = added[j];
+            if (!node || node.nodeType !== 1) continue;
+            if (node.id === 'sbkim-siegel-modal') injectIdentityLinkIntoSiegel(node);
+            else if (node.querySelector) {
+              var inner = node.querySelector('#sbkim-siegel-modal');
+              if (inner) injectIdentityLinkIntoSiegel(inner);
+            }
+          }
+        }
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    } catch (_e) { /* fail-soft */ }
+  }
+  if (document.body) watchForSiegelModal();
+  else document.addEventListener('DOMContentLoaded', watchForSiegelModal);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
