@@ -1,4 +1,4 @@
-# Übergabeprotokoll — Bau Observatoriums-Vorteilspack (Teil 1: Werkzeug-Symbole + Bild-Spec)
+# Übergabeprotokoll — Bau Observatoriums-Vorteilspack-Truhe (vollständig)
 
 **Datum:** 2026-05-29
 **Sitzungs-Rolle:** Bau-Sitzung Observatoriums-Vorteilspack-Truhe
@@ -25,10 +25,10 @@ zwei neue Punkte zur Plansitzung 2026-05-28 ergänzt:
 - `git fetch origin` ✅
 - Branch `claude/bau-observatoriums-vorteilspack` frisch von
   `origin/main` ✅
-- **Bild-Gate geprüft:** `assets/observatorium-truhe.webp` **fehlt**,
-  ebenso `docs/einladung/vendor/img/observatorium-truhe.webp` und jedes
-  andere `*truhe*`-Asset. → Brief § Verifikations-Schritt 4 verlangt
-  hier **STOP + Nachfrage** (Bild ist Klaus' externe Lieferung).
+- **Bild-Gate geprüft:** Bild fehlte zunächst → STOP + Nachfrage
+  (Brief § Verifikations-Schritt 4). Klaus hat das Bild daraufhin
+  geliefert (1401×1123, ≈5:4) → eingebunden als
+  `assets/observatorium-truhe.png`. Gate erfüllt, Bau fortgesetzt.
 
 ## Was gebaut wurde (image-unabhängig, ohne Bild-Gate)
 
@@ -51,12 +51,41 @@ zwei neue Punkte zur Plansitzung 2026-05-28 ergänzt:
   Tier, mit Modul-Name + Bedeutungs-Anker. Klaus' Optik-Sichttest-
   Artefakt (im Browser öffnen).
 
-### Eingriff A — Truhe-Bild (nur Spec, Bau blockiert)
+### Eingriff A — Truhe-Karte in `index.html` (vollständig)
 
-- Bild **nicht** eingebunden — Bild fehlt (STOP-Gate).
-- Voller Bild-Prompt + Negativ-Hinweise + Alternativ-Variationen in
-  der Konzept-Karte § Truhe-Bild-Asset dokumentiert, damit nichts
-  verloren geht und Klaus / der Bild-Generator den Prompt parat hat.
+- **Neue Sage-Page-Karte** `#observatorium-vorteilspack` nach der
+  Browser-Observatorium-Karte (beide Schicht 4 — thematisch benachbart;
+  Bau-Sitzung-Entscheidung statt „zwischen 13/14", da diese Karten in
+  der realen Seite anders heißen).
+- **Truhe-Stage:** `<picture>` (webp-bevorzugt, png-Fallback) +
+  `.vp-lid-overlay` (Dim-Veil) + `.vp-glow` + `.vp-key-pulse`. Klick
+  (oder Enter/Space) öffnet → Tool-Grid fadet/expandiert.
+- **Tafel-Evolution:** geliefertes Bild zeigt die Truhe bereits offen
+  → literaler Deckel-Klapp (`rotateX`) ersetzt durch Veil-der-sich-hebt
+  + Goldlicht-Glow. Dokumentiert in Konzept-Karte § Festlegung 6.
+- **Tool-Grid:** 19 Tiles, sortiert nach Tier (Must-have→Basic→Pro)
+  dann Modul-Nr; je Tile Symbol-SVG (Tier-getönt) + Tier-Badge + Name
+  + Ein-Zeilen-Task + Status-Marker (🟩/🟦/🟫). Tier-Filter-Pillen.
+- **Tool-Modal:** neun Sektionen pro Werkzeug (Header, Was, Wie,
+  Einbau, Vibe-Coding-Prompt, Kopieren [Code + Vibe], Test-Modul,
+  Querverweise). ESC/Backdrop/X schließen.
+- **Clipboard:** Modul-Code per Lazy-`fetch()` (Hybrid, Brief § 6 C) +
+  Vibe-Prompt; Fallback `execCommand("copy")` für unsichere Kontexte;
+  Toast-Bestätigung.
+- **JS-Modul** `docs/observatorium/vorteilspack.js` (node-testbar
+  exportiert, DOM-Wiring document-guarded), eingebunden via
+  `<script src>` vor `</body>`. CSS inline in `index.html`.
+- Bild als `assets/observatorium-truhe.png` (kein webp-Werkzeug im
+  Container). Voller Bild-Prompt + Negativ-Hinweise + Alternativ-
+  Variationen in der Konzept-Karte § Truhe-Bild-Asset gesichert.
+
+### Tests
+
+- `node --check docs/observatorium/vorteilspack.js` grün.
+- `node tests/smoke_observatorium_truhe.mjs` → **19/19 grün**
+  (19 Tools, Tier 3/7/9, 19 Symbole, alle Code-/Karten-/Smoke-Pfade
+  existieren, Bild liegt vor, Vibe-Prompt-Aufbau).
+- Klaus' Browser-Sichttest (Animation + Optik) **steht aus**.
 
 ### Doku
 
@@ -77,21 +106,31 @@ Eingriff · KEINE externe Icon-Library.
 
 ## Offene Punkte / Befunde
 
-1. **Bild-Gate:** `assets/observatorium-truhe.webp` muss von Klaus
-   geliefert werden, dann baut die Folge-Sitzung Eingriff A (die
-   `index.html`-Truhe-Karte mit Stage + Animation + Grid + Modal +
-   Clipboard). Symbol-Set ist bereit und wird vom Grid referenziert.
-2. **19 statt 20 Tiles:** Modul 13 ist kein Modul (Eigenschutz-
+1. **Klaus' Browser-Sichttest** der Truhe-Karte steht aus (Animation +
+   Optik nicht headless prüfbar). Sichttest-Pfad: Hard-Reload Sage-Page
+   → bis Observatorium-Karte scrollen → Truhe + Schlüssel sichtbar →
+   Schlüssel/Truhe klicken → Tool-Grid mit 19 Tiles + Symbolen → Tile-
+   Klick → Modal mit neun Sektionen + Copy-Knopf.
+2. **`manual_check.html`-Panel bewusst NICHT ergänzt:** die Truhe ist
+   eine Sage-Page-Render-Feature (kein Modul mit Test-Bridge). Sichttest
+   läuft direkt auf der Sage-Page; das headless-Smoke deckt die
+   Tool-Datenbank ab. (Abweichung vom Brief § Bauer-Schritt 5,
+   begründet.)
+3. **19 statt „20" Tiles:** Modul 13 ist kein Modul (Eigenschutz-
    Sammelkarte). Brief nennt „20" als Rundung; maßgeblich sind 19.
-3. **Symbol-Optik-Sichttest** durch Klaus steht aus (nicht headless
-   prüfbar) — `_vorschau.html` im Browser öffnen.
-4. **Vorbestand-Befund (nicht in dieser Sitzung gelöst):** `PULS.md`
-   ist mit ~4156 Zeilen über der eigenen 3000-Zeilen-Schutzgrenze.
-   Braucht eine eigene Archiv-Auslagerungs-Pflege (Risiko: PULS-
-   Konflikte mit parallelen PRs — separat behandeln).
+4. **webp:** kein Konvertier-Werkzeug im Bau-Container → Bild liegt als
+   `.png`; das `<picture>` bevorzugt eine künftige `.webp`. Optionale
+   Folge-Pflege: webp erzeugen (kleiner).
+5. **Init-Globals im Vibe-Prompt generisch** (`Sbkim<Modul>.init`) statt
+   pro Modul exakt — bewusst, um keine falschen API-Namen zu behaupten;
+   der Prompt verweist auf Karte + INTERFACES für die Pflichtfelder.
+6. **Vorbestand-Befund:** `PULS.md` ist über der 3000-Zeilen-
+   Schutzgrenze. Eigene Archiv-Auslagerungs-Pflege nötig (separat,
+   Konflikt-Risiko mit parallelen PRs).
 
 ## Nächster sinnvoller Schritt
 
-Klaus liefert `assets/observatorium-truhe.webp` (oder gibt Go für
-Fallback-Bau ohne Bild) → Folge-Bau-Sitzung Eingriff A auf demselben
-Branch. Symbol-Set + Konzept-Karte sind die Vorlage.
+Klaus' Hard-Reload-Sichttest der Truhe-Karte auf der Sage-Page. Bei
+Symbol-/Optik-/Text-Korrekturwünschen ein Nachzug-Pflege-PR. Danach
+optional: webp-Konvertierung, und (eigene Sitzung) Modul-19-Bau, der
+das Platzhalter-Tile in der Truhe mit echtem Code füllt.

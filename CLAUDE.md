@@ -437,12 +437,13 @@ technische Schicht (Phase A/B/C) Pilz-Bauten ermöglicht. Zweigeteilt:
   möglich zu Phase B Schritt 7 (Modul 19 Andock-Wizard).
   Brief: `docs/sessions/BRIEF_BAU_OBSERVATORIUMS_VORTEILSPACK.md`.
   Konzept-Karte: `docs/components/_observatoriums_vorteilspack.md`.
-  **Bauzustand 2026-05-29:** 19 Werkzeug-Symbole gebaut
-  (`assets/tool-symbols/`, Vorschau `_vorschau.html`) + Truhe-Bild-
-  Asset-Spec dokumentiert (Klaus' Vision-Erweiterung 2026-05-29).
-  `index.html`-Truhe-Karte wartet auf Klaus' externes Bild
-  `assets/observatorium-truhe.webp` (STOP-Gate, Brief § Verifikation
-  Schritt 4).
+  **Bauzustand 2026-05-29:** Truhe-Karte **gebaut** (Klaus'
+  Vision-Erweiterung 2026-05-29). 19 Werkzeug-Symbole
+  (`assets/tool-symbols/`), Truhe-Bild `assets/observatorium-truhe.png`,
+  Karte `#observatorium-vorteilspack` in `index.html` + Render-Modul
+  `docs/observatorium/vorteilspack.js` (Tool-Grid + 9-Sektionen-Modal
+  + Clipboard), Smoke `tests/smoke_observatorium_truhe.mjs` 19/19.
+  **Klaus' Browser-Sichttest steht aus.**
 
 **Danach (organisch, ohne feste Reihenfolge — jeder Bau ergänzt
 einen Aspekt-Eintrag im Siegel-Modal):**

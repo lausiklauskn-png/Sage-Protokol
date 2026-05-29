@@ -82,13 +82,19 @@ eigenen Repo ein.
 Zwei additive Punkte zur Plansitzung 2026-05-28:
 
 6. **Truhe-Bild als gerendertes Asset** (statt reiner CSS-Holz-Optik).
-   Die Truhe-Stage wird als `<img>` mit `<picture>`-Fallback gebaut,
-   Asset-Pfad `assets/observatorium-truhe.webp`. Klaus liefert das
-   Bild extern (Bild-Generator). Die Klick-Mechanik (Schlüssel
-   schwebt → klickt → Deckel kippt) bleibt identisch — der Deckel ist
-   ein CSS-Overlay (`.truhe-lid-overlay`, `transform: rotateX(-95deg)`)
-   über dem oberen Bild-Teil. Reduced-motion: Bild statisch, Tool-Grid
-   fadet ein. Bild-Spec siehe § Truhe-Bild-Asset unten.
+   Die Truhe-Stage wird als `<img>` mit `<picture>`-Fallback gebaut.
+   Klaus hat das Bild 2026-05-29 geliefert (1401×1123, Ratio 1.248 ≈
+   5:4). **Tafel-Evolution beim Bau 2026-05-29:** das gelieferte Bild
+   zeigt die Truhe **bereits halb geöffnet** mit glühendem Inneren —
+   ein literaler Deckel-Klapp (`rotateX(-95deg)`) würde gegen das
+   Motiv arbeiten. Stattdessen implementiert `.vp-lid-overlay` das
+   Overlay-Konzept als **Dim-Veil, der sich beim Öffnen hebt** (Bild
+   dunkel/ruhend → Klick → Veil weg + Goldlicht-Glow + Tool-Grid
+   fadet auf). Schlüssel-Schweben via `.vp-key-pulse`. Reduced-motion:
+   keine Transitions, Grid sofort. Bild-Spec siehe § Truhe-Bild-Asset
+   unten. **Konvertierung:** im Bau-Container war kein webp-Werkzeug
+   verfügbar → Asset liegt als `assets/observatorium-truhe.png`; das
+   `<picture>` bevorzugt eine künftige `.webp` automatisch.
 7. **Werkzeug-Symbol pro Modul** (statt generischem 📦-Platzhalter im
    Tile). Jedes Tool bekommt ein gegenständliches Symbol — kein
    abstraktes Icon, sondern etwas, das man in einer alten Werkzeug-
@@ -371,11 +377,11 @@ Empfehlung Brief: **eigenes Mini-Modul** in
 |---|---|---|---|
 | Konzept-Karte angelegt | 2026-05-28 | Plansitzung Observatoriums-Vorteilspack | Brief: `docs/sessions/BRIEF_BAU_OBSERVATORIUMS_VORTEILSPACK.md`. Klaus' Vision 2026-05-28 nach grünem Sichttest Bau 18 Sub (a) Vorab. Konzept-Karte als Schablone für die Bau-Sitzung; Bau läuft NACH MR + MM Re-Migration. |
 | Werkzeug-Symbole gebaut | 2026-05-29 | Bau Observatoriums-Vorteilspack (Symbol-Teil) | 19 selbst-gezeichnete SVGs in `assets/tool-symbols/`, Vorschau-Kontaktbogen `_vorschau.html`. Klaus' Symbol-Vision 2026-05-29. Optik-Sichttest steht aus. |
-| Truhe-Bild-Asset-Spec | 2026-05-29 | Bau Observatoriums-Vorteilspack (Symbol-Teil) | Bild-Prompt + Negativ-Hinweise + Alternativ-Variationen dokumentiert (§ Truhe-Bild-Asset). **Bild fehlt noch** — Klaus' externe Lieferung, STOP-Gate für den `index.html`-Karte-Bau. |
-| Spec gefüllt | — | Bau-Sitzung Observatoriums-Vorteilspack | folgt — Tier-Liste final, Optik-Spec, Modal-Form, Tool-Datenbank-Quelle. |
-| Code geschrieben | — | Bau-Sitzung Observatoriums-Vorteilspack | folgt — Truhe-Stage in `index.html` + Inline-JS oder `docs/observatorium/vorteilspack.js` + Tool-Modal-System + Clipboard-API. |
-| In Sage-Page eingebaut | — | Bau-Sitzung Observatoriums-Vorteilspack | folgt — neue Karte zwischen 13 + 14 ODER nach 14, Anchor `#observatorium-vorteilspack`. |
-| Sichttest grün | — | Sichttest-Nachzug | folgt — Klaus' Browser-Sichttest am Galaxy Tab S6. |
+| Truhe-Bild geliefert + eingebunden | 2026-05-29 | Bau Observatoriums-Vorteilspack | Klaus' Bild `assets/observatorium-truhe.png` (1401×1123), als `<picture>` (webp-bevorzugt) eingebunden. |
+| Spec gefüllt | 2026-05-29 | Bau Observatoriums-Vorteilspack | Tier-Liste (3/7/9), Optik-Spec (Veil-Adaptation), Modal-Form (9 Sektionen), Tool-Datenbank-Quelle (statische Metadaten + Lazy-fetch Code, Hybrid). |
+| Code geschrieben | 2026-05-29 | Bau Observatoriums-Vorteilspack | `docs/observatorium/vorteilspack.js` (Tool-DB 19 Einträge + Symbole + Grid-Render + 9-Sektionen-Modal + Clipboard mit Fallback). CSS inline in `index.html`. Smoke `tests/smoke_observatorium_truhe.mjs` 19/19. |
+| In Sage-Page eingebaut | 2026-05-29 | Bau Observatoriums-Vorteilspack | Neue Karte nach der Browser-Observatorium-Karte (beide Schicht 4), Anchor `#observatorium-vorteilspack`. |
+| Sichttest grün | — | Sichttest-Nachzug | **offen** — Klaus' Browser-Sichttest am Galaxy Tab S6 (Truhe + Schlüssel sichtbar → klicken → Grid mit 19 Tiles + Symbolen → Tile-Klick → Modal + Copy). |
 
 ---
 

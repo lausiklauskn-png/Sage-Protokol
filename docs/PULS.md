@@ -1848,7 +1848,7 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
-### 2026-05-29 · Bau Observatoriums-Vorteilspack — Werkzeug-Symbole + Bild-Spec (Teil 1, Bild-Gate)
+### 2026-05-29 · Bau Observatoriums-Vorteilspack — Truhe-Karte komplett (Symbole + Bild + Grid + Modal)
 
 **Sitzungs-Rolle:** Bau-Sitzung Observatoriums-Vorteilspack-Truhe.
 Branch `claude/bau-observatoriums-vorteilspack`. Basiert auf
@@ -1869,27 +1869,40 @@ gerendertes Bild-Asset, Werkzeug-Symbol pro Modul).
 2. **Vorschau-Kontaktbogen** `assets/tool-symbols/_vorschau.html` —
    zeigt alle 19 Symbole in Tier-Färbung (Gold/Türkis/Violet) für
    Klaus' Optik-Sichttest im Browser.
-3. **Konzept-Karte `_observatoriums_vorteilspack.md`** erweitert:
-   § Klaus-Festlegungen 2026-05-29, § Werkzeug-Symbol-Liste (Tabelle
-   mit Bedeutungs-Ankern), § Truhe-Bild-Asset (voller Bild-Prompt +
-   Negativ-Hinweise + Alternativ-Variationen), Sub-(a)/(b)-
-   Entscheidungen markiert, Bauzustand-Tabelle ergänzt.
+3. **Truhe-Bild geliefert + eingebunden:** Klaus' Bild
+   `assets/observatorium-truhe.png` (1401×1123, ≈5:4). Als
+   `<picture>` (webp-bevorzugt, png-Fallback) in die neue Karte
+   eingebunden. Kein webp-Werkzeug im Container → PNG, `<picture>`
+   nimmt künftige webp automatisch.
+4. **Eingriff A — Truhe-Karte in `index.html` gebaut:** neue Karte
+   `#observatorium-vorteilspack` nach der Browser-Observatorium-Karte
+   (beide Schicht 4). Truhe-Stage (Bild + Veil-Overlay + Glow +
+   Schlüssel-Puls), Klick öffnet → Tool-Grid (19 Tiles, Tier-Badge +
+   Symbol + Status), Tile-Klick → Modal mit neun Sektionen + Vibe-
+   Prompt + Clipboard (Code lazy-fetch, Fallback execCommand). Tier-
+   Filter-Pillen. **Tafel-Evolution:** Bild ist bereits offen → Deckel
+   als Dim-Veil der sich hebt, kein `rotateX`-Klapp.
+5. **JS-Modul** `docs/observatorium/vorteilspack.js` (node-testbar
+   exportiert), CSS inline in `index.html`. **Konzept-Karte** voll
+   gefüllt (Symbol-Liste, Bild-Asset, Tier-Liste, Bauzustand).
 
-**Was offen / blockiert:**
+**Tests:** `node --check` JS grün; Smoke
+`tests/smoke_observatorium_truhe.mjs` **19/19 grün** (19 Tools,
+Tier 3/7/9, 19 Symbole, alle Code-/Karten-/Smoke-Pfade existieren,
+Vibe-Prompt-Aufbau). **Klaus' Browser-Sichttest steht aus**
+(Animation + Optik nicht headless prüfbar).
 
-- **STOP-Gate Truhe-Bild:** `assets/observatorium-truhe.webp` fehlt
-  im Repo (Klaus' externe Lieferung). Brief § Verifikations-Schritt
-  4 verlangt STOP+Nachfrage bei fehlendem Bild. Deshalb **Eingriff A
-  (`index.html`-Truhe-Karte) NICHT gebaut** — wartet auf Bild +
-  Klaus' Go (oder Go für Fallback-Bau ohne Bild).
-- 19 vs „20 Tiles": Modul 13 ist kein Modul (Sammel-Karte), die
-  maßgebliche Liste hat 19 Tools. Im Brief als Rundung notiert.
-- Klaus' Symbol-Optik-Sichttest steht aus (nicht headless prüfbar).
+**Was offen:**
 
-**Nächster sinnvoller Schritt:** Klaus liefert
-`assets/observatorium-truhe.webp` → Folge-Bau baut die `index.html`-
-Karte (Truhe-Stage `<img>` + Deckel-Overlay-Animation + 19-Tile-Grid
-mit Symbolen + 9-Sektionen-Modal + Clipboard). Symbol-Set ist bereit.
+- Klaus' Sichttest der Truhe-Karte (Sage-Page, Galaxy Tab S6).
+- `tests/manual_check.html`-Panel bewusst NICHT ergänzt: die Truhe ist
+  eine Sage-Page-Render-Feature (kein Modul), Sichttest läuft direkt
+  auf der Sage-Page; das headless-Smoke deckt die Datenbank ab.
+- 19 statt „20" Tiles: Modul 13 ist kein Modul (Sammel-Karte).
+- Vorbestand: `PULS.md` über 3000-Zeilen-Grenze (eigene Archiv-Pflege).
+
+**Nächster sinnvoller Schritt:** Klaus' Hard-Reload-Sichttest auf der
+Sage-Page; bei Symbol-/Optik-Korrekturwünschen Nachzug-Pflege.
 
 ### 2026-05-28 · Brief-Anlage MR + MM Modul-18-Einbau (Mini-Sitzungs-Briefe)
 
