@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SBKIM Werkzeug-Symbole — Vorschau (Observatoriums-Vorteilspack)</title>
+<style>
+  :root {
+    --bg: #0B0B1E; --bg-2: #10102A; --line: rgba(255,255,255,0.10);
+    --text: #E8E8F0; --muted: #9A9AB0;
+    --gold: #F4B435; --accent: #6EE7D3; --accent-2: #8B5CF6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 20px 64px;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    color: var(--text); font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 28px; max-width: 60ch; }
+  h2 { font-size: 1.05rem; margin: 32px 0 12px; display: flex; align-items: center; gap: 10px; }
+  .swatch { width: 14px; height: 14px; border-radius: 4px; }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  figure {
+    margin: 0; padding: 16px 14px; border: 1px solid var(--line); border-radius: 14px;
+    background: rgba(255,255,255,0.02); display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .icon { width: 56px; height: 56px; display: block; }
+  .mod { font-weight: 600; margin-top: 10px; }
+  .desc { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
+  .tier-must .icon { color: var(--gold); }
+  .tier-basic .icon { color: var(--accent); }
+  .tier-pro .icon { color: var(--accent-2); }
+  .badge { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
+  .tier-must .badge { color: var(--gold); }
+  .tier-basic .badge { color: var(--accent); }
+  .tier-pro .badge { color: var(--accent-2); }
+  footer { color: var(--muted); font-size: 0.8rem; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+  <h1>SBKIM Werkzeug-Symbole</h1>
+  <p class="sub">Vorschau der selbst-gezeichneten Tool-Symbole für die Observatoriums-Vorteilspack-Truhe.
+  Jedes Symbol ist monochrom (<code>currentColor</code>, stroke-width 1.5) und wird im Tile auf die
+  Tier-Farbe gefärbt — Gold (Must-have), Türkis (Basic), Violet (Pro). Klaus' Symbol-Vision 2026-05-29.</p>
+
+  <h2><span class="swatch" style="background:var(--gold)"></span>Must-have — Gold</h2>
+  <div class="grid">
+    <figure class="tier-must"><span class="badge">Must-have</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><rect x="20" y="12" width="24" height="40" rx="12"/><path d="M20 30 H44"/><path d="M32 34 L38 40 L32 48 L26 40 Z"/><path d="M26 40 H38 M32 34 V48"/></svg>
+      <div class="mod">01 · Storage</div><div class="desc">Bronze-Kapsel mit Kristall</div></figure>
+    <figure class="tier-must"><span class="badge">Must-have</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M32 10 C45 22 45 44 32 54 C19 44 19 22 32 10 Z"/><path d="M32 13 V25"/><circle cx="32" cy="38" r="7"/><path d="M28.5 40 q2 -4 4 -1 q1.5 2 3 -1"/></svg>
+      <div class="mod">02 · Spore</div><div class="desc">Samenkapsel mit Signatur-Stempel</div></figure>
+    <figure class="tier-must"><span class="badge">Must-have</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M32 11 L50 17 V32 C50 44 42 52 32 56 C22 52 14 44 14 32 V17 Z"/><path d="M23 23 L41 41 M31 21 L45 35 M19 31 L33 45"/><path d="M41 23 L23 41 M33 21 L19 35 M45 31 L31 45"/></svg>
+      <div class="mod">15 · Membran</div><div class="desc">Wappenschild mit Hyphen-Geflecht</div></figure>
+  </div>
+
+  <h2><span class="swatch" style="background:var(--accent)"></span>Basic — Türkis</h2>
+  <div class="grid">
+    <figure class="tier-basic"><span class="badge">Basic</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M32 14 L17 48"/><path d="M32 14 L47 48"/><path d="M17 48 A 32 32 0 0 0 47 48"/><circle cx="32" cy="18" r="2.5"/><path d="M22 50 L46 22"/><path d="M46 22 L39.5 23 M46 22 L45 28.5"/></svg>
+      <div class="mod">03 · Embedding</div><div class="desc">Sextant + Vektorpfeil</div></figure>
+    <figure class="tier-basic"><span class="badge">Basic</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M32 16 V46"/><path d="M24 50 H40"/><path d="M32 46 L26 50 M32 46 L38 50"/><circle cx="32" cy="15" r="2"/><path d="M14 20 H50"/><path d="M14 20 L11 32 M14 20 L17 32"/><path d="M10 32 A 5 5 0 0 0 18 32"/><path d="M50 20 L47 32 M50 20 L53 32"/><path d="M46 32 A 5 5 0 0 0 54 32"/></svg>
+      <div class="mod">04 · Match</div><div class="desc">Apotheker-Waage</div></figure>
+    <figure class="tier-basic"><span class="badge">Basic</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M8 16 C 20 24 24 28 28 31"/><path d="M8 48 C 20 40 24 36 28 33"/><path d="M56 16 C 44 24 40 28 36 31"/><path d="M56 48 C 44 40 40 36 36 33"/><path d="M14 12 C 22 20 24 26 27 30"/><path d="M50 52 C 42 44 40 38 37 34"/><circle cx="32" cy="32" r="4.5"/></svg>
+      <div class="mod">05 · Anastomose</div><div class="desc">Verflochtene Hyphen-Wurzeln</div></figure>
+    <figure class="tier-basic"><span class="badge">Basic</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M16 13 H48"/><path d="M16 51 H48"/><path d="M19 13 L33 32 L19 51"/><path d="M45 13 L31 32 L45 51"/><path d="M32 30 V38"/><path d="M27 44 q3 -4 6 0 q-3 4 -6 0 Z"/><path d="M34 47 q2.5 -3 5 0 q-2.5 3 -5 0 Z"/></svg>
+      <div class="mod">07 · Apoptose</div><div class="desc">Sanduhr mit fallenden Blättern</div></figure>
+    <figure class="tier-basic"><span class="badge">Basic</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M27 10 L37 10 L34 16 L30 16 Z"/><rect x="29.5" y="16" width="5" height="4"/><circle cx="32" cy="40" r="11"/><circle cx="32" cy="40" r="8"/><path d="M32 29 V27 M43 40 H45 M32 51 V53 M21 40 H19"/><path d="M24.2 32.2 L22.8 30.8 M39.8 32.2 L41.2 30.8 M39.8 47.8 L41.2 49.2 M24.2 47.8 L22.8 49.2"/><path d="M32 35.8 L33.06 38.54 L35.99 38.70 L33.71 40.56 L34.47 43.40 L32 41.8 L29.53 43.40 L30.29 40.56 L28.01 38.70 L30.94 38.54 Z"/></svg>
+      <div class="mod">16 · Siegel</div><div class="desc">Lack-Siegel mit Petschaft</div></figure>
+    <figure class="tier-basic"><span class="badge">Basic</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><circle cx="32" cy="26" r="12"/><path d="M27 19 a7 7 0 0 1 7 -1.5"/><path d="M37 22 V25 M35.5 23.5 H38.5"/><path d="M24 44 C 26 40 38 40 40 44"/><path d="M28 38 L26 44 M36 38 L38 44"/><path d="M22 50 H30 M34 50 H42"/></svg>
+      <div class="mod">17 · Floating Widget</div><div class="desc">Schwebende Kristallkugel</div></figure>
+    <figure class="tier-basic"><span class="badge">Basic</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><rect x="11" y="35" width="27" height="9" rx="4.5"/><circle cx="35" cy="39.5" r="1.4" fill="currentColor" stroke="none"/><path d="M36 38 C 45 32 52 31 56 33"/><path d="M37 40.5 C 45 37 51 35.5 56 33"/><path d="M36 41 L52 46"/><path d="M52 46 L48.5 45 M52 46 L51 48.5"/></svg>
+      <div class="mod">18 · Tool-PWA</div><div class="desc">Multitool / Taschenmesser</div></figure>
+  </div>
+
+  <h2><span class="swatch" style="background:var(--accent-2)"></span>Pro — Violet</h2>
+  <div class="grid">
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M32 50 L13 45 V52 L32 56 Z"/><path d="M32 50 L51 45 V52 L32 56 Z"/><path d="M32 50 V56"/><path d="M17 47.6 L28 49.6"/><path d="M36 49.6 L47 47.6"/><circle cx="36" cy="23" r="10"/><path d="M43.4 30.4 L50 37"/></svg>
+      <div class="mod">00 · Doku-Fenster</div><div class="desc">Messing-Lupe auf Buch</div></figure>
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><circle cx="32" cy="15" r="7"/><circle cx="32" cy="15" r="2.5"/><path d="M32 22 V52"/><path d="M32 42 H26 M28 42 V38"/><path d="M32 50 H38 M36 50 V46"/></svg>
+      <div class="mod">06 · Heterokaryose</div><div class="desc">Doppelschlüssel mit zwei Bärten</div></figure>
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M14 16 H50"/><path d="M32 10 V22"/><path d="M16 16 V39"/><path d="M48 16 V43"/><path d="M32 22 V42"/><circle cx="32" cy="46" r="3.5"/><circle cx="16" cy="40.5" r="1.4"/><circle cx="48" cy="44.5" r="1.4"/></svg>
+      <div class="mod">08 · UI-Demo</div><div class="desc">Marionetten-Holzkreuz mit Fäden</div></figure>
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><circle cx="20" cy="20" r="6.5"/><circle cx="20" cy="20" r="2.8"/><path d="M24.6 24.6 L40 40"/><path d="M40 40 L48 36 M40 40 L44 48 M48 36 L52 44 M44 48 L52 44"/><path d="M27 27 q5 1 4 6"/><path d="M33 33 q6 0 6 6.5"/></svg>
+      <div class="mod">09 · Einbau-PWA</div><div class="desc">Mycel-bewachsener Schraubenschlüssel</div></figure>
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M32 11 V16 M29.5 13.5 H34.5"/><path d="M23 14 V18 M21 16 H25"/><path d="M41 14 V18 M39 16 H43"/><path d="M26 20 L28 31 M38 20 L36 31"/><circle cx="32" cy="40" r="10"/><path d="M32 34 L33.47 37.98 L37.71 38.15 L34.38 40.77 L35.53 44.85 L32 42.5 L28.47 44.85 L29.62 40.77 L26.29 38.15 L30.53 37.98 Z"/></svg>
+      <div class="mod">10 · Reputation</div><div class="desc">Verdienst-Orden mit Sternen-Krone</div></figure>
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M10 22 H54"/><path d="M10 46 H54"/><path d="M32 17 V39"/><path d="M28 17 H36"/><path d="M29 23 H35 M29 28 H35 M29 33 H35"/><path d="M13 30 H26 M13 38 H24"/><path d="M40 34 H50"/></svg>
+      <div class="mod">11 · Rate-Limit</div><div class="desc">Wasserschleuse / Sand-Egge</div></figure>
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M14 24 H50"/><path d="M14 20 V30 M50 20 V30"/><rect x="25" y="32" width="14" height="12" rx="2"/><path d="M28 32 V26 a4 4 0 0 1 8 0 V32"/><circle cx="32" cy="37" r="1.4"/><path d="M32 37 V40.5"/></svg>
+      <div class="mod">12 · Blocklist</div><div class="desc">Eisen-Riegel mit Vorhängeschloss</div></figure>
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><circle cx="18" cy="46" r="2.2" fill="currentColor" stroke="none"/><path d="M18 34 A 12 12 0 0 1 30 46"/><path d="M18 26 A 20 20 0 0 1 38 46"/><path d="M18 18 A 28 28 0 0 1 46 46"/></svg>
+      <div class="mod">14 · Diffusion</div><div class="desc">Konzentrische Wellen-Ringe (Sonar)</div></figure>
+    <figure class="tier-pro"><span class="badge">Pro</span>
+      <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:10px"><path d="M14 50 L38 26"/><path d="M20 44 L23 47 M26 38 L29 41"/><circle cx="44" cy="20" r="6.5"/><path d="M44 13.5 L45.6 18.4 L50.5 20 L45.6 21.6 L44 26.5 L42.4 21.6 L37.5 20 L42.4 18.4 Z"/><path d="M53 12 V15 M51.5 13.5 H54.5"/><path d="M51 28 V30 M50 29 H52"/></svg>
+      <div class="mod">19 · Andock-Wizard</div><div class="desc">Zauberstab mit Kompass-Aufsatz</div></figure>
+  </div>
+
+  <footer>
+    19 Symbole · selbst-gezeichnet (keine Icon-Library) · Quelle: <code>assets/tool-symbols/NN_modul.svg</code><br>
+    Tier-Zuordnung nach Brief <code>BRIEF_BAU_OBSERVATORIUMS_VORTEILSPACK.md</code> § 4 (Bau-Sitzung kann anpassen).
+    Modul 13 existiert nicht (Eigenschutz-Karte ist Sammel-Karte, kein Modul).
+  </footer>
+</body>
+</html>

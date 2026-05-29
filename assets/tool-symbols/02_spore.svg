@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Modul 02 Spore — Samenkapsel mit eingeprägtem Signatur-Stempel">
+  <title>Spore — Samenkapsel mit Signatur-Stempel</title>
+  <path d="M32 10 C45 22 45 44 32 54 C19 44 19 22 32 10 Z"/>
+  <path d="M32 13 V25"/>
+  <circle cx="32" cy="38" r="7"/>
+  <path d="M28.5 40 q2 -4 4 -1 q1.5 2 3 -1"/>
+</svg>

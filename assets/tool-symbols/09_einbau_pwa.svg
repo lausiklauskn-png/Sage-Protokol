@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Modul 09 Einbau-PWA — Mycel-bewachsener Schraubenschlüssel">
+  <title>Einbau-PWA — Mycel-bewachsener Schraubenschlüssel</title>
+  <circle cx="20" cy="20" r="6.5"/>
+  <circle cx="20" cy="20" r="2.8"/>
+  <path d="M24.6 24.6 L40 40"/>
+  <path d="M40 40 L48 36 M40 40 L44 48 M48 36 L52 44 M44 48 L52 44"/>
+  <path d="M27 27 q5 1 4 6"/>
+  <path d="M33 33 q6 0 6 6.5"/>
+</svg>

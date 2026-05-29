@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Modul 17 Floating Widget — schwebende Kristallkugel">
+  <title>Floating Widget — schwebende Kristallkugel</title>
+  <circle cx="32" cy="26" r="12"/>
+  <path d="M27 19 a7 7 0 0 1 7 -1.5"/>
+  <path d="M37 22 V25 M35.5 23.5 H38.5"/>
+  <!-- Ständer -->
+  <path d="M24 44 C 26 40 38 40 40 44"/>
+  <path d="M28 38 L26 44 M36 38 L38 44"/>
+  <!-- Schwebe-Linien -->
+  <path d="M22 50 H30 M34 50 H42"/>
+</svg>
