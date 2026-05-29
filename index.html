@@ -2162,9 +2162,9 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     pwas.push({
       name: 'SB-KIMTool-Point',
       theme: 'SBKIM-Werkzeuge · Tool-Point',
-      url: 'https://github.com/lausiklauskn-png/SB-KIMTool-Point',
-      kind: 'repo', live: false,
-      note: 'Repo — die Werkzeuge separat (Verkaufs-Option), später als PWA-Tool-Point + Demo. Kommt später auch nach Sage-Protokol.'
+      url: 'https://lausiklauskn-png.github.io/SB-KIMTool-Point/',
+      kind: 'repo', live: false, pill: 'Landingpage · Tool-Point',
+      note: 'Die Werkzeuge separat (Verkaufs-Option) — Landingpage/Demo des Tool-Points. Kommt später auch nach Sage-Protokol.'
     });
     const themes = [];
     const byTheme = {};
@@ -2172,7 +2172,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     host.innerHTML = themes.map(th => {
       const cards = byTheme[th].map(p => {
         const cls = p.kind === 'repo' ? 'repo' : (p.live ? 'live' : '');
-        const pill = p.kind === 'repo' ? 'Repo · kommt als PWA' : (p.live ? 'Lebendig · angedockt' : 'PWA');
+        const pill = p.pill || (p.kind === 'repo' ? 'Repo · kommt als PWA' : (p.live ? 'Lebendig · angedockt' : 'PWA'));
         return '<a class="vp-pwa-card ' + cls + '" href="' + escapeHtml(p.url || '#') + '" target="_blank" rel="noopener">' +
           '<div class="vp-pwa-name">' + escapeHtml(p.name) + '</div>' +
           (p.note ? '<div class="vp-pwa-dom">' + escapeHtml(p.note) + '</div>' : '') +
