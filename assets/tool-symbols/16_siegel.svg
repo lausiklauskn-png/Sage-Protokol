@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Modul 16 Siegel — Lack-Siegel mit Petschaft">
+  <title>Siegel — Lack-Siegel mit Petschaft</title>
+  <!-- Petschaft (Signet-Stempel) -->
+  <path d="M27 10 L37 10 L34 16 L30 16 Z"/>
+  <rect x="29.5" y="16" width="5" height="4"/>
+  <!-- Wachs-Siegel -->
+  <circle cx="32" cy="40" r="11"/>
+  <circle cx="32" cy="40" r="8"/>
+  <!-- Präge-Kerben -->
+  <path d="M32 29 V27 M43 40 H45 M32 51 V53 M21 40 H19"/>
+  <path d="M24.2 32.2 L22.8 30.8 M39.8 32.2 L41.2 30.8 M39.8 47.8 L41.2 49.2 M24.2 47.8 L22.8 49.2"/>
+  <!-- Stern-Prägung -->
+  <path d="M32 35.8 L33.06 38.54 L35.99 38.70 L33.71 40.56 L34.47 43.40 L32 41.8 L29.53 43.40 L30.29 40.56 L28.01 38.70 L30.94 38.54 Z"/>
+</svg>

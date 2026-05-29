@@ -422,6 +422,28 @@ technische Schicht (Phase A/B/C) Pilz-Bauten ermöglicht. Zweigeteilt:
   Pipeline-Phase-frei — kann parallel zu Phase A laufen).
 - **Folge-Pflege** Mycel-Hub-Mount der Einladung (NACH Phase B
   Schritt 9 Externer Mycel-Hub Bau).
+- **Observatoriums-Vorteilspack-Truhe** (Sage-Page-Karte, Klaus'
+  Vision 2026-05-28 nach Sichttest Bau 18 Sub (a) Vorab grün).
+  Alte Seemannskiste + Schlüssel-Schritt-Mechanik (analog Einladungs-
+  Tür Scene 5/5b), Container-Größe wie `.blackhole-stage` /
+  `.sun-scene` (~280 px). Inhalt: alle SBKIM-Tools (Module 00–19) als
+  „Verpackungs"-Tiles mit Tier-Badge (Must-have / Basic / Pro),
+  Klick öffnet Tool-Modal mit neun Sektionen (Was / Wie / Einbau /
+  Vibe-Coding-Prompt-Paket / Code-Kopier-Knopf / Test-Modul / Quer-
+  verweise). Klaus' Wort: „Vorteilspack" — die Truhe ist die
+  Sage-Page-Sichtbarkeit des Starter-Bundles (Phase B Schritt 8),
+  Klick-und-Kopier-Pfad statt git-clone. Pipeline-Position: **NACH**
+  MR + MM Endknoten-Re-Migration (Phase A 5h.1-Folge), parallel
+  möglich zu Phase B Schritt 7 (Modul 19 Andock-Wizard).
+  Brief: `docs/sessions/BRIEF_BAU_OBSERVATORIUMS_VORTEILSPACK.md`.
+  Konzept-Karte: `docs/components/_observatoriums_vorteilspack.md`.
+  **Bauzustand 2026-05-29:** Truhe-Karte **gebaut** (Klaus'
+  Vision-Erweiterung 2026-05-29). 19 Werkzeug-Symbole
+  (`assets/tool-symbols/`), Truhe-Bild `assets/observatorium-truhe.png`,
+  Karte `#observatorium-vorteilspack` in `index.html` + Render-Modul
+  `docs/observatorium/vorteilspack.js` (Tool-Grid + 9-Sektionen-Modal
+  + Clipboard), Smoke `tests/smoke_observatorium_truhe.mjs` 19/19.
+  **Klaus' Browser-Sichttest steht aus.**
 
 **Danach (organisch, ohne feste Reihenfolge — jeder Bau ergänzt
 einen Aspekt-Eintrag im Siegel-Modal):**

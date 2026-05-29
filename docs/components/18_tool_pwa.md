@@ -1,16 +1,19 @@
 # Modul 18 — Tool-PWA-Container (SIEGEL-Anker)
 
-> **Status:** 🟨 Spec Sub (a) Vorab gefüllt (2026-05-28, Pipeline-Schritt
-> 5h.1) · Sub (b)–(i) Schablone (2026-05-26, Tafel-Spec-Pflege Mycel-Vision) ·
+> **Status:** 🟦 Code-Stub Sub (a) Vorab (2026-05-28, Bau-Sitzung 18 Sub
+> (a) Vorab, Pipeline-Schritt 5h.1) · Sub (b)–(i) 🟫 Schablone (2026-05-26,
+> Tafel-Spec-Pflege Mycel-Vision) ·
 > Tool-PWA-Backlog · **Priorität:** Sub (a) Vorab vor App-Freigabe
 > (Andock-Pfad für SIEGEL-Bronze-Hinweis-Block + Multisuchfeld);
 > Sub (b)–(i) NACH App-Freigabe (Pipeline-Schritt 5h.2)  ·  **Schicht:**
 > Wartungs- + Andock-Schicht für Endknoten-PWAs, getriggert durch
 > Klick auf SIEGEL-Slot im Floating-Widget (Modul 17) ODER auf den
 > Multisuchfeld-Treffer-`[Andocken]`-Knopf.
-> **Datei (Code):** `src/modules/18_tool_pwa.js` (existiert noch nicht
-> — Bau-Sitzung 18 Sub (a) Vorab folgt mit nur `init`+`openAndockTab`+
-> `close`+`isOpen`+`_meta`. Voll-Bau Modul 18 NACH App-Freigabe.)
+> **Datei (Code):** `src/modules/18_tool_pwa.js` (Bau-Sitzung 18 Sub (a)
+> Vorab vom 2026-05-28 — implementiert `init`+`openAndockTab`+`close`+
+> `isOpen`+`_meta` mit zwei benannten Errors `ToolPwaNotReadyError` +
+> `ToolPwaInvalidUrlArgError`. Voll-Bau Modul 18 Sub (b)–(i) NACH
+> App-Freigabe.)
 
 ---
 
@@ -115,7 +118,17 @@ Explizite Andock-Geste in vier Schritten:
 2. **Spore fetchen** (`fetch(url + "/sbkim/spore.json")`).
 3. **Match-Check** (`SbkimMatch.matchDimensions(ownCap, ownNeeds,
    foreignCap, foreignNeeds)` → `overall ≥ matchThreshold`).
-4. **Handshake** (`SbkimAnastomose.handshake(foreignSpore)`).
+4. **Handshake** (`SbkimAnastomose.handshake(foreignSpore)`). Modul 18
+   ruft `handshake` **ohne** 2. Argument — Modul 05 löst den eigenen
+   Domain-Vektor seit Pflege 2026-05-28 kanonisch aus der eigenen Spore
+   auf (`ownSpore.domainVector`, dieselbe Quelle, die als `senderSpore`
+   mitgesendet wird; INTERFACES § 1 Modul 05 `handshake` — `ownDomainVector`
+   optional). **Voraussetzung:** der eigene Knoten hat seine Spore bereits
+   erzeugt (`SbkimSpore.generateOwnSpore(meta)`); sonst meldet Schritt 4
+   „Eigene Spore noch nicht erzeugt … generateOwnSpore(meta) zuerst".
+   Modul 18 berechnet **keinen** eigenen Vektor selbst — ein frisch
+   eingebetteter Vektor wiche vom signierten Spore-`domainVector` ab
+   (Inkonsistenz `request.domainVector` vs. `senderSpore`).
 
 Sichtbar wie der Sage-Page-Andock-Wizard (`index.html` § Schwarz-Loch-
 Karte), aber als modulares Tool **innerhalb** der Endknoten-PWA.
@@ -252,6 +265,53 @@ NICHT bei `init()`. Begründung:
 - `"loading"` → Lazy-Load läuft
 - `true` → bereit (auch wenn über externe Init-Quelle)
 - `"failed"` → Load fehlgeschlagen, retry möglich
+
+##### Embedding-Pflicht-Aufruf vor `matchDimensions` (Pflege 2026-05-28, Wurzel-Fix)
+
+**Verbindlich:** Schritt 3 ruft **vor** `SbkimMatch.matchDimensions`
+zwingend `SbkimEmbedding.embedQueryBatch([...])` für die vier
+Textblob-Strings (`ownCap`, `ownNeeds`, `foreignCap`, `foreignNeeds`)
+auf. `matchDimensions` erwartet vier `Float32Array(384)` (Modul 04
+§ `assertVector`) — die Textblobs sind Strings. Wer sie direkt an
+`matchDimensions` reicht, bekommt synchron `InvalidVectorError`
+(„Parameter 'queryVec' muss Float32Array sein, war: String").
+
+Ablauf in `computeAndRenderMatch`:
+
+1. **Lade-Hinweis sofort setzen** (kein künstlicher Timeout, kein
+   `Promise.race` — das Modell lädt so lange wie das Netz braucht,
+   der Wizard hat zum Abbrechen das Schließen-X):
+
+   > „Embedding-Modell wird geladen (ca. 30 MB beim ersten Aufruf,
+   > kann auf langsamer Verbindung mehrere Minuten dauern). Bitte
+   > nicht abbrechen."
+
+2. **Verfügbarkeits-Check:** fehlt `SbkimEmbedding.embedQueryBatch`
+   → Fehlermeldung „Modul 03 (Embedding) ist nicht verfügbar —
+   SbkimEmbedding.embedQueryBatch fehlt." + return.
+
+3. **Null-Safe-Mapping:** `textBlob` liefert `null`, wenn eine Seite
+   keine Stichworte hat. `null` darf **nicht** in den Batch — nur die
+   nicht-null Strings werden embedded, die Vektoren danach an ihre
+   ursprüngliche Spalten-Position zurückgesetzt. `matchDimensions`
+   verträgt `null` pro Spalte (Nur-Anbieter-Modus), aber kein `null`
+   im `embedQueryBatch`-Input. Sind **alle vier** Strings null →
+   Fehlermeldung „Match nicht möglich — keine Domain-Stichworte auf
+   beiden Seiten." vorab (ohne `matchDimensions` aufzurufen, das sonst
+   `DimensionsAllNullError` würfe).
+
+4. **Embedding → Match:** `embedQueryBatch(nonNullTexts)` resolved →
+   Lade-Hinweis „Embedding fertig — Match wird berechnet …" →
+   `matchDimensions(out[0], out[1], out[2], out[3])` mit den
+   rück-gemappten Vektoren → Drei-Bars-Render + Score-Auswertung.
+   Beim **zweiten** Aufruf in derselben Tab-Session ist das Modell
+   gecacht (Re-Use-Pfad `SbkimEmbedding._meta.ready === true`), Match
+   läuft in < 1 s.
+
+Begründung: Klaus' Live-Sichttest 2026-05-28 nach PR #198 (Andock-
+Wizard öffnete erstmals sauber). Schritt 3 warf den Float32Array-
+Pflicht-Fehler reproduzierbar in Sage-Page **und** Mein-Rezeptbuch
+(1:1-Sync) → Wurzel im Sage-Quellcode, nicht im Endknoten.
 
 #### Match-Schwelle-UI (final, Spec-Sitzung 18 Sub (a) Vorab 2026-05-28)
 
@@ -1090,6 +1150,11 @@ spätere Felder via Voll-Spec 18):
 | Spec gefüllt | — | Spec-Sitzung 18 | folgt — alle Sub-Bereiche final entscheiden + Schnittstelle festlegen + Modal-Form klären. |
 | Code geschrieben | — | Bau-Sitzung 18 | folgt — `src/modules/18_tool_pwa.js` + CSS + Panel 18 in `tests/manual_check.html` + Headless-Smoke. |
 | In Endknoten eingebaut | — | Endknoten-Folge-Sitzungen | folgt — Modul 18 in Mein-Rezeptbuch / Mein-Mixarium kopieren + `init()`-Aufruf. |
+| Bau Sub (a) Vorab | 2026-05-28 | Bau-Sitzung 18 Sub (a) Vorab | Pipeline-Phase A Schritt **5h.1**. `src/modules/18_tool_pwa.js` voll angelegt mit Surface `init`+`openAndockTab`+`close`+`isOpen`+`_meta` (13 Felder, defensive Kopie pro Lese-Zugriff) + zwei Errors `ToolPwaNotReadyError` + `ToolPwaInvalidUrlArgError` (Factory-Stil analog Modul 15/16) + Selbstcheck `MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen: init/openAndockTab/close/isOpen`. `init()` fail-soft: fehlende Pflicht-Felder (`endpoint`+`domain`+`domainKeywords`) → `console.warn` + `_meta.ready=false` + `_meta.missingFields[]`, KEIN Throw; Idempotenz mit Pflicht-Feld-Sanity-Check (identische opts no-op, geänderte Pflicht-Felder + warn, geänderte Optional-Felder überschreiben). `matchThreshold > PROVIDER_MIN_MATCH` (=0.80) wird auf 0.80 geclampt + warn. `externalHubUrl` Read-Anker (KEIN Hub-Fetch in Sub (a) Vorab). `repoUrl` Auto-Erkennung aus `location.origin` + erstem Pfad-Segment (analog Modul 16). `openAndockTab(url?)` mit Sync-Validierung vor `await`: `_meta.ready !== true` → `ToolPwaNotReadyError` mit Liste der fehlenden Felder, URL-Argument-Validierung via `new URL(url)` → `ToolPwaInvalidUrlArgError`. Async: Modal-Mount in `document.body` (Override via `opts.mountTarget`) mit Self-Mount-Observer-Fallback (MutationObserver 10 s Timeout). Vier-Schritt-Stepper-UI: ① URL eingeben (Text-Input + „Weiter →"), ② Spore fetchen via `fetch(joinUrl(url, "sbkim/spore.json"))` + `verifyForeignSpore` (Signatur-Fail kein „Trotzdem"-Knopf), Foreign-Spore-Preview (Domain/Knoten-ID-kurz/Domain-Stichworte/Kategorien), ③ Match-Check mit Lazy-Embedding (Re-Use bei `SbkimEmbedding._meta.ready===true` ODER `isReady()===true`, sonst `init()` mit 30 s Time-out-Warnung + Retry-Knopf, `SbkimMatch.matchDimensions` → Drei-Schichten-Bars fachlich/prozess/skalierung mit Bar-Farben grün/gelb/rot, „Trotzdem andocken" bei `overall < matchThreshold`, `DimensionsAllNullError` kein „Trotzdem"-Knopf), ④ Handshake via `SbkimAnastomose.handshake(foreignSpore)` → grünes Häkchen + auto-Close 2 s. `close()` mit `confirm()`-Bestätigung bei offenen Wizard-Eingaben (Schritt 1 mit URL-Text ODER Schritt 2/3); no-op bei Schritt 0/4. Inline-CSS via `<style>`-Inject (Konvention analog Modul 17 — Drei-Zeilen-Einbau für Endknoten); `z-index: 10000` (> Modul-17-Modal-9999). `index.html` um `<script src="src/modules/18_tool_pwa.js"></script>` vor `sbkim-init.js` erweitert; Sage-Page macht KEINEN `SbkimToolPwa.init()`-Aufruf (Sub (a) Vorab ist Endknoten-Pflicht, Sage-Page hat keine Andock-Geste). Panel 18 in `tests/manual_check.html` mit 11 Knöpfen (Setup + Tests 1–10 + Reset + Selbstcheck-Hinweis). Headless-Smoke `tests/smoke_bau18_sub_a_vorab.mjs` 17/17 grün. Regression `smoke_bau15b` 31/31, `smoke_bau16_sub_e_bronze` 16/16, `smoke_bau17_floating_widget` 36/36 grün. `node --check src/modules/18_tool_pwa.js` grün, alle 14 inline-script-Blöcke in `tests/manual_check.html` grün. `status.json` Modul 18 von `score:"schablone"` auf `score:"stub"` gehoben (Konvention analog Modul 17 nach Bau-Sitzung 17). `scripts/update_puls_pie.py` ausgeführt. Sub (b)–(i) bleiben Schablone — Voll-Spec 18 + Voll-Bau 18 Pipeline 5h.2 nach App-Freigabe. **KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump.** KEIN Endknoten-Eingriff (MR + MM Re-Migration ist eigene Folge-Sitzung pro Endknoten-Repo). KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Modul 18 ist Wartungs-/Andock-Schicht, kein Sicherheits-Modul). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf Panel 18 Knöpfe 1–10. Brief: `docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md` (Spec) + Folge-Brief für Bau Sub (a) Vorab in dieser Sitzung. |
+| Pflege Match-embedQueryBatch-Pflicht | 2026-05-28 | Pflege-Sitzung Modul 18 Sub (a) Match-Embed | **Wurzel-Fix.** Bug-Wurzel: `computeAndRenderMatch` rief `SbkimMatch.matchDimensions(ownCap, ownNeeds, foreignCap, foreignNeeds)` mit den **String**-Outputs von `textBlob` auf. `matchDimensions` erwartet vier `Float32Array(384)` (Modul 04 § `assertVector`) → synchroner `InvalidVectorError` („Parameter 'queryVec' muss Float32Array sein, war: String"). Das Embedding (Modul 03) wurde zwar lazy initialisiert, aber die vier Textblobs nie zu Vektoren gemacht — der `embedQueryBatch`-Aufruf fehlte komplett. Fix-Kern: `computeAndRenderMatch` ruft jetzt **vor** `matchDimensions` zwingend `SbkimEmbedding.embedQueryBatch([...])` für die nicht-null Textblobs auf (Null-Safe-Mapping: `null`-Spalten bleiben `null` und werden NICHT in den Batch gegeben — `matchDimensions` verträgt `null` pro Spalte, aber `embedQueryBatch` nicht; alle vier null → Vorab-Fehlermeldung statt `DimensionsAllNullError`). Lade-Hinweis sofort: „Embedding-Modell wird geladen (ca. 30 MB beim ersten Aufruf, kann auf langsamer Verbindung mehrere Minuten dauern). Bitte nicht abbrechen." **KEIN künstlicher Timeout** (kein `Promise.race` mit `setTimeout`) — das Modell lädt so lange wie das Netz braucht, der Wizard hat zum Abbrechen das Schließen-X. Klaus' Live-Befund 2026-05-28 nach PR #198: Schritt 3 (Match) warf den Float32Array-Pflicht-Fehler reproduzierbar in Sage-Page **und** Mein-Rezeptbuch (1:1-Sync) → Wurzel im Sage-Quellcode, nicht im Endknoten. Smoke `smoke_bau18_sub_a_vorab.mjs` Probe 15 additiv verschärft: `embedQueryBatch(Strings)` läuft VOR `matchDimensions`, `matchDimensions` bekommt nur `Float32Array`/`null` (17/17 grün). **KEIN** Eingriff in Modul 03 / Modul 04 (Surfaces unverändert — die Float32Array-Pflicht ist korrekt). **KEIN** PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump, **KEIN** ZERTIFIKAT_ASPEKTE-Eintrag (Render-Schicht-Pflege, kein Sicherheits-Modul-Update), **KEIN** Endknoten-Eingriff (MR + MM ziehen die neue Modul-18-Datei in eigener Sync-Sitzung nach Sichttest grün). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf. Übergabeprotokoll: `docs/sessions/archiv/2026-05-28_pflege-modul-18-match-embed.md`. |
+| Pflege Handshake-ownDomainVector | 2026-05-28 | Pflege-Sitzung Modul 18 Sub (a) Handshake-DomainVector | **Folge-Wurzel-Fix zur Match-Embed-Pflege.** Bug-Wurzel: `triggerStepFourHandshake` rief `SbkimAnastomose.handshake(foreignSporeCache)` mit nur **einem** Argument. `handshake(targetSpore, ownDomainVector, options?)` erwartet als 2. Argument einen eigenen Domain-Vektor `Float32Array(384)` (Modul 05 § `_doHandshake`) → `AnastomoseDependenciesError` „ownDomainVector muss Float32Array(384) sein — Aufruf von handshake". Klaus' Live-Befund 2026-05-28: Schritt 3 (Match) jetzt grün (86 % Sage-Page / 85 % Mein-Mixarium + Drei-Bars), aber Schritt 4 (Handshake) warf den Domain-Vektor-Fehler reproduzierbar auf Sage-Page **und** Mein-Mixarium → Wurzel im Sage-Quellcode. Fix-Kern: `triggerStepFourHandshake` leitet den eigenen Domain-Vektor kanonisch ab via `SbkimEmbedding.embedPassage(domainKeywords.join(", "))` (analog Spore-`domainVector`-Erzeugung, siehe `tests/manual_check.html` `mainVec`) und reicht ihn als 2. Argument an `handshake`. Verfügbarkeits-Check (`embedPassage` fehlt → klare Fehlermeldung) + Leere-Stichworte-Guard. Default-Transport `"auto"` unverändert (Modul 05 § `transportDefault`). Smoke `smoke_bau18_sub_a_vorab.mjs` Probe 18 NEU: treibt bis Schritt 4, prüft `embedPassage(String)` läuft + `handshake` bekommt `Float32Array(384)` als Arg 2 (18/18 grün). **KEIN** Eingriff in Modul 03 / Modul 05 (Surfaces unverändert — die Float32Array-Pflicht ist korrekt, der Bug war Modul-18-seitig). **KEIN** PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump, **KEIN** ZERTIFIKAT_ASPEKTE-Eintrag (Render-Schicht-Pflege), **KEIN** Endknoten-Eingriff (MR + MM ziehen die neue Datei in eigener Sync-Sitzung nach Sichttest grün). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf. Übergabeprotokoll: `docs/sessions/archiv/2026-05-28_pflege-modul-18-handshake-domainvector.md`. |
+| Pflege Handshake-Eigenvektor-Auflösung (Modul 05) | 2026-05-28 | Pflege-Sitzung 05+18 Handshake-Eigenvektor | **Korrigiert den Ansatz der vorigen Zeile.** Befund der MM-Bausitzung + tiefere Wurzel-Analyse: `_doHandshake` **sendet** `ownDomainVector` als `request.domainVector` mit (Modul 05 Z. 736) **und** die signierte eigene Spore als `senderSpore` (Z. 740). Beide müssen denselben Vektor tragen. Der in der vorigen Zeile gewählte Weg (Modul 18 berechnet `embedPassage(domainKeywords.join(", "))` frisch) ergibt aber einen **anderen** Vektor als der signierte Spore-`domainVector` (der aus `embedPassage(domainDescription + '. ' + domainKeywords)` stammt, `index.html` Sage-Andock-Wizard) → inkonsistenter Request. **Neuer Ansatz (Klaus-Entscheidung „Lösung 1", 2026-05-28):** `ownDomainVector` wird in Modul 05 **optional**; bei Weglassen löst `_doHandshake` ihn kanonisch aus der eigenen Spore auf (`loadOwnDomainVector` → `ownSpore.domainVector`) — single source of truth, fehlersicher für Forker (ein bloßes `handshake(fremdSpore)` ist immer korrekt). Fehlt die eigene Spore → klare `AnastomoseDependenciesError`-Meldung „generateOwnSpore zuerst". Modul 18 `triggerStepFourHandshake` wieder schlank: `handshake(foreignSporeCache)` ohne Vektor + ohne `embedPassage`. INTERFACES § 1 Modul 05 `handshake`-Vertrag (heilige Tafel) nachgezogen: `ownDomainVector?` optional; Modul-05-Karte + Modul-18-Karte § Sub (a) Schritt 4 angepasst. Smoke `smoke_bau18_sub_a_vorab.mjs` Probe 18 umgestellt: prüft jetzt `handshake(foreignSpore)` OHNE 2. Argument + kein `embedPassage` in Schritt 4 (18/18 grün). `node --check` 05 + 18 grün. `smoke_bau05y` benötigt `fake-indexeddb` (im Sandbox nicht installiert) — Modul-05-Auflöse-Pfad headless ungeprüft, Logik trivial (vorhandener `loadOwnDomainVector`-Helfer). **Backward-kompatibel:** explizit übergebener Vektor (Test `manual_check.html` Z. 1873 `mainVec`) wird weiter honoriert. **KEIN** PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump, **KEIN** ZERTIFIKAT_ASPEKTE-Eintrag. Sage-Knoten braucht zusätzlich eine **Laufzeit-Eigen-Spore** (Sage-Andock-Wizard `generateOwnSpore`) — separater Setup-Schritt, kein Code-Bug. Übergabeprotokoll: `docs/sessions/archiv/2026-05-28_pflege-05-18-handshake-eigenvektor.md`. |
+| Sichttest grün | 2026-05-28 | Sichttest-Nachzug Bau 18 Sub (a) Vorab | Klaus' Live-Sichttest am Galaxy Tab S6 (DeX-Chrome, `localhost:8000/tests/manual_check.html` nach Hard-Reload). Panel 18 Knöpfe **1–10 alle grün** (Setup + Test 1 Surface + Test 2 fail-soft + Test 3 ready-heal + Test 4 NotReadyError + Test 5 Modal Schritt 1 sichtbar + Test 6 Live-Spore-Fetch + Test 7 InvalidUrlArgError + Test 8 close() mit confirm() + Test 9 matchThreshold-Clamp + Test 10 externalHubUrl-Spiegelung). **Live-Bestätigung:** Test 6 hat live gegen `https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json` gefetched, `SbkimSpore.verifyForeignSpore` lief durch, Foreign-Spore-Preview rendert volle Mixarium-Identität (Knoten-ID `B7Fke9CYTR1BrC3x…`, sieben Domain-Stichworte, alle Stamm-/Gast-Kategorien). Damit ist der **erste produktive Cross-Knoten-Spore-Read aus Modul 18** belegt. Test 8 hat den `confirm()`-Bestätigungs-Dialog bei offenen Wizard-Eingaben korrekt ausgelöst (Spec § Sub (a) close()). **Drei Sichttest-Screenshots** in `docs/sessions/archiv/screenshots/`: Test 5 (Modal Schritt 1 + Stepper), Test 6 (Spore geladen + verifyForeignSpore grün + Foreign-Spore-Preview), Test 8 (confirm()-Dialog). Pipeline-Phase A Schritt **5h.1 abgeschlossen**. Folge: Endknoten-Re-Migration MR + MM als eigene Sitzungen pro Endknoten-Repo (Briefe in der Bau-Sitzungs-Antwort 2026-05-28). Übergabeprotokoll: `docs/sessions/archiv/2026-05-28_sichttest-bau-18-sub-a-vorab.md`. |
 
 ---
 

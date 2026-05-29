@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Modul 05 Anastomose — verflochtene Hyphen-Wurzeln zu einem Knoten">
+  <title>Anastomose — verflochtene Hyphen-Wurzeln</title>
+  <path d="M8 16 C 20 24 24 28 28 31"/>
+  <path d="M8 48 C 20 40 24 36 28 33"/>
+  <path d="M56 16 C 44 24 40 28 36 31"/>
+  <path d="M56 48 C 44 40 40 36 36 33"/>
+  <path d="M14 12 C 22 20 24 26 27 30"/>
+  <path d="M50 52 C 42 44 40 38 37 34"/>
+  <circle cx="32" cy="32" r="4.5"/>
+</svg>

@@ -122,6 +122,12 @@
     <pre class="log">— bereit. Bau-Sitzung 17 (2026-05-25) + Pflege UX 2026-05-25: Sage-Page-Lampen-Stil (10 px Lampen mit Glow + Atmung, kompakte Pille mit border-radius:999px), keine Drei-Buchstaben-Glyphe mehr — Lampen sprechen über Farbe + Glow, Tooltip voll im title-Attribut + aria-label, SIEGEL als kleines Gold-Medaillon mit ★. Drei-Zustand-Schnittstelle: voll (alle vier Slots) → minimiert (nur SIEGEL, oder LEBT-Fallback wenn kein SIEGEL) → versteckt (X-Knopf, localStorage-persistiert). `SbkimWidget.minimize()` / `maximize()` / `isMinimized()` neu, `sbkim_widget_minimized`-localStorage-Key. Modul 17 ist NICHT protokoll-aktiv: Render-Schicht, kein Netz, kein Embedding, kein IndexedDB. Self-mountende Pille in `document.body`, Drag via Pointer-Events, X-Schließen, RAM-only VERKEHR-FIFO 10. Setup-Knopf: `SbkimWidget.init({})`. Modul-16-Stub-Knopf legt `window.SbkimSiegel` an für Test 5. Modal-Bridge nutzt Proxy-Spans `#lamp-fremd` + `#sbkim-siegel-badge` im Widget — Modul 15/16 müssen ihre Click-Handler dort attachen, daher MUSS `SbkimWidget.init()` im Endknoten VOR `SbkimMembrane.init()`/`SbkimSiegel.init()` laufen. Sage-Page behält die Navleisten-Lampen, Widget ist Endknoten-Standard. —</pre>
   </section>
 
+  <section class="panel" data-module="18_tool_pwa">
+    <h2>18 Tool-PWA — Andock (Sub a Vorab) <span class="status ok">Code-Stub 2026-05-28</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Bau-Sitzung 18 Sub (a) Vorab (2026-05-28, Pipeline-Phase A 5h.1). Andock-Wizard als modularer Endknoten-Pfad, getriggert durch Bronze-SIEGEL-Klick (Modul 16 Sub e Hook seit PR #180) oder Multisuchfeld-Treffer. Surface: `init`/`openAndockTab`/`close`/`isOpen` + 13-Feld-`_meta`. Zwei benannte Errors: `ToolPwaNotReadyError` (sync vor await aus `openAndockTab`, mit Liste der fehlenden init-Felder) und `ToolPwaInvalidUrlArgError` (url-Argument nicht gültig). `init()` ist fail-soft: fehlende Pflicht-Felder (`endpoint`+`domain`+`domainKeywords`) → `console.warn` + `_meta.ready=false`, KEIN Throw. `matchThreshold > 0.80` wird geclampt + warn. `externalHubUrl` ist Read-Anker — KEIN Hub-Fetch in Sub (a) Vorab. Stepper-UI: 1) URL eingeben → 2) Spore fetchen (`fetch(url + 'sbkim/spore.json')` + `verifyForeignSpore`) → 3) Match-Check mit Lazy-Embedding (Re-Use wenn Modul 03 `_meta.ready===true` ODER `isReady()===true`) + Drei-Schichten-Bars (fachlich/prozess/skalierung) → 4) Handshake via `SbkimAnastomose.handshake`, auto-close 2 s nach Erfolg. RAM-only, KEIN Store, KEIN PROTOCOL_VERSION-Bump. Sub (b)–(i) bleiben Voll-Spec 18 (Pipeline 5h.2 nach App-Freigabe). Setup-Knopf ruft `SbkimToolPwa.init({endpoint:'https://test.local/Mein-Rezeptbuch/', domain:'rezeptbuch', domainKeywords:['rezept','kochen','essen']})`. —</pre>
+  </section>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {
@@ -4880,6 +4886,203 @@
           "  MODUL 17 FLOATING-WIDGET bereit, Funktionen: init/show/hide/isVisible/minimize/maximize/isMinimized/getPosition");
         SbkimUI.log("17_floating_widget",
           "ℹ Hinweis: Modul 17 ist Render-Schicht, KEINE benannten Error-Klassen, KEIN PROTOCOL_VERSION-/DB_VERSION-Bump.");
+      });
+    })();
+  </script>
+
+  <!-- Modul 18 — Tool-PWA Sub (a) Vorab (Bau-Sitzung 2026-05-28) -->
+  <script src="../src/modules/18_tool_pwa.js"></script>
+  <script>
+    (function () {
+      // Panel 18 — Tool-PWA Sub (a) Vorab
+      //
+      // Disziplin: alle Knöpfe arbeiten gegen denselben SbkimToolPwa-
+      // Singleton (Sub (a) Vorab ist idempotent + RAM-only). Wer einen
+      // anderen ready-Zustand braucht, drückt Setup oder „Reset-init".
+
+      var VALID_OPTS = {
+        endpoint:       "https://test.local/Mein-Rezeptbuch/",
+        domain:         "rezeptbuch",
+        domainKeywords: ["rezept", "kochen", "essen"],
+      };
+
+      SbkimUI.addButton("18_tool_pwa", "Setup: init({…}) mit Pflicht-Feldern", async function () {
+        await SbkimToolPwa.init(VALID_OPTS);
+        SbkimUI.setStatus("18_tool_pwa", "ok", "Setup OK");
+        return {
+          ready:           SbkimToolPwa._meta.ready,
+          endpoint:        SbkimToolPwa._meta.endpoint,
+          domain:          SbkimToolPwa._meta.domain,
+          domainKeywords:  SbkimToolPwa._meta.domainKeywords,
+          matchThreshold:  SbkimToolPwa._meta.matchThreshold,
+          externalHubUrl:  SbkimToolPwa._meta.externalHubUrl,
+          repoUrl:         SbkimToolPwa._meta.repoUrl,
+          missingFields:   SbkimToolPwa._meta.missingFields,
+          erwartung: "ready=true; alle Pflicht-Felder gespiegelt; matchThreshold=0.80 (Default = PROVIDER_MIN_MATCH); missingFields leer.",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 1: Surface + Selbstcheck-Zeile", async function () {
+        SbkimUI.log("18_tool_pwa", "ℹ DevTools → Konsole öffnen und beim Laden suchen:");
+        SbkimUI.log("18_tool_pwa", "  MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen: init/openAndockTab/close/isOpen");
+        return {
+          public_surface: Object.keys(SbkimToolPwa).filter(function (k) {
+            return k !== "_meta" && k !== "ToolPwaNotReadyError" && k !== "ToolPwaInvalidUrlArgError";
+          }).sort(),
+          error_factories: ["ToolPwaNotReadyError", "ToolPwaInvalidUrlArgError"]
+            .filter(function (n) { return typeof SbkimToolPwa[n] === "function"; }),
+          meta_typeof: typeof SbkimToolPwa._meta,
+          erwartung: "init/openAndockTab/close/isOpen + zwei Error-Factories + _meta-Read-Anker.",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 2: init() ohne opts → warn + ready=false", async function () {
+        // Frische Session simulieren über Re-Init mit leerem opts.
+        // Da Idempotenz nur bei identischem Pflicht-Feld-Wechsel triggert,
+        // setzen wir bewusst fehlende Felder.
+        var beforeReady = SbkimToolPwa._meta.ready;
+        await SbkimToolPwa.init({});
+        var ok = SbkimToolPwa._meta.ready === false &&
+                 SbkimToolPwa._meta.missingFields.length === 3;
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 2 OK" : "Test 2 fehlgeschlagen");
+        return {
+          ready_vorher:    beforeReady,
+          ready_nachher:   SbkimToolPwa._meta.ready,
+          missing_fields:  SbkimToolPwa._meta.missingFields,
+          erwartung: "Konsole zeigt [SbkimToolPwa] init({…}) fail-soft: Pflicht-Felder fehlen: endpoint, domain, domainKeywords. _meta.ready=false. (Setup-Knopf danach zum Aufräumen.)",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 3: init() mit Pflicht-Feldern → ready=true", async function () {
+        await SbkimToolPwa.init(VALID_OPTS);
+        var ok = SbkimToolPwa._meta.ready === true &&
+                 SbkimToolPwa._meta.missingFields.length === 0;
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 3 OK" : "Test 3 fehlgeschlagen");
+        return {
+          ready:           SbkimToolPwa._meta.ready,
+          missing_fields:  SbkimToolPwa._meta.missingFields,
+          erwartung: "ready=true + missingFields leer; _meta.endpoint/domain/domainKeywords gespiegelt.",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 4: openAndockTab() OHNE ready → ToolPwaNotReadyError", async function () {
+        await SbkimToolPwa.init({});             // fail-soft, ready=false
+        var caught = null;
+        try { SbkimToolPwa.openAndockTab(); }
+        catch (err) { caught = { name: err.name, message: err.message }; }
+        var ok = caught && caught.name === "ToolPwaNotReadyError" &&
+                 caught.message.indexOf("endpoint") >= 0;
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 4 OK" : "Test 4 fehlgeschlagen");
+        return {
+          error_caught:  caught,
+          erwartung: "ToolPwaNotReadyError SYNC vor await; message enthält 'endpoint, domain, domainKeywords'. (Setup-Knopf danach zum Aufräumen.)",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 5: openAndockTab() mit ready → Modal Schritt 1", async function () {
+        await SbkimToolPwa.init(VALID_OPTS);
+        await SbkimToolPwa.openAndockTab();
+        var modalEl = document.getElementById("sbkim-tool-pwa-modal");
+        var styleEl = document.getElementById("sbkim-tool-pwa-style");
+        var ok = !!modalEl && !!styleEl && SbkimToolPwa._meta.currentStep === 1;
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 5 OK" : "Test 5 fehlgeschlagen");
+        return {
+          modal_im_dom:    !!modalEl,
+          style_im_head:   !!styleEl,
+          current_step:    SbkimToolPwa._meta.currentStep,
+          modal_open:      SbkimToolPwa._meta.modalOpen,
+          is_open:         SbkimToolPwa.isOpen(),
+          last_fetch_url:  SbkimToolPwa._meta.lastFetchUrl,
+          erwartung: "Andock-Wizard sichtbar; Stepper zeigt Schritt 1 hervorgehoben; URL-Eingabefeld leer; ESC oder Backdrop-Klick schließt das Modal.",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 6: openAndockTab('https://…') → Schritt 2", async function () {
+        await SbkimToolPwa.init(VALID_OPTS);
+        if (SbkimToolPwa.isOpen()) SbkimToolPwa.close();
+        await SbkimToolPwa.openAndockTab("https://lausiklauskn-png.github.io/Mein-Mixarium/");
+        var ok = SbkimToolPwa._meta.currentStep === 2 &&
+                 SbkimToolPwa._meta.lastFetchUrl ===
+                 "https://lausiklauskn-png.github.io/Mein-Mixarium/";
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 6 OK" : "Test 6 fehlgeschlagen");
+        return {
+          current_step:     SbkimToolPwa._meta.currentStep,
+          last_fetch_url:   SbkimToolPwa._meta.lastFetchUrl,
+          erwartung: "Wizard öffnet direkt in Schritt 2; Status zeigt 'Lade …sbkim/spore.json …'; Spore-Fetch versucht (Live-Netz nötig, evtl. 404 wenn URL nicht existiert).",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 7: openAndockTab('not-a-url') → ToolPwaInvalidUrlArgError", async function () {
+        await SbkimToolPwa.init(VALID_OPTS);
+        var caught = null;
+        try { SbkimToolPwa.openAndockTab("not-a-url"); }
+        catch (err) { caught = { name: err.name, message: err.message }; }
+        var ok = caught && caught.name === "ToolPwaInvalidUrlArgError";
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 7 OK" : "Test 7 fehlgeschlagen");
+        return {
+          error_caught: caught,
+          erwartung: "ToolPwaInvalidUrlArgError SYNC vor await; message zeigt das ungültige Argument.",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 8: close() schließt Modal", async function () {
+        await SbkimToolPwa.init(VALID_OPTS);
+        if (!SbkimToolPwa.isOpen()) await SbkimToolPwa.openAndockTab();
+        var wasOpen = SbkimToolPwa.isOpen();
+        SbkimToolPwa.close();
+        var modalEl = document.getElementById("sbkim-tool-pwa-modal");
+        var ok = wasOpen === true && SbkimToolPwa.isOpen() === false && !modalEl;
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 8 OK" : "Test 8 fehlgeschlagen");
+        return {
+          was_open:      wasOpen,
+          is_open_after: SbkimToolPwa.isOpen(),
+          current_step:  SbkimToolPwa._meta.currentStep,
+          dom_present:   !!modalEl,
+          erwartung: "isOpen()→false; currentStep=0; DOM-Element weg. (Bei laufenden Wizard-Eingaben kommt ein confirm()-Dialog; Test öffnet ohne URL-Eingabe → kein confirm.)",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 9: matchThreshold > 0.80 → clamp + warn", async function () {
+        await SbkimToolPwa.init(Object.assign({}, VALID_OPTS, { matchThreshold: 0.95 }));
+        var ok = SbkimToolPwa._meta.matchThreshold === 0.80;
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 9 OK" : "Test 9 fehlgeschlagen");
+        return {
+          match_threshold:  SbkimToolPwa._meta.matchThreshold,
+          erwartung: "matchThreshold geclampt auf 0.80; Konsole zeigt [SbkimToolPwa] matchThreshold 0.95 > PROVIDER_MIN_MATCH (0.80) — wird auf 0.80 geclampt.",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Test 10: externalHubUrl als string → _meta gespiegelt (KEIN Hub-Fetch)", async function () {
+        await SbkimToolPwa.init(Object.assign({}, VALID_OPTS, {
+          externalHubUrl: "https://lausiklauskn-png.github.io/SB-KIMTool-Point/",
+        }));
+        var ok = SbkimToolPwa._meta.externalHubUrl ===
+                 "https://lausiklauskn-png.github.io/SB-KIMTool-Point/";
+        SbkimUI.setStatus("18_tool_pwa", ok ? "ok" : "err", ok ? "Test 10 OK" : "Test 10 fehlgeschlagen");
+        return {
+          external_hub_url: SbkimToolPwa._meta.externalHubUrl,
+          erwartung: "externalHubUrl gespiegelt; KEIN Fetch in Sub (a) Vorab — Read-Anker für Sub (i) Spore-Discovery + Multisuchfeld.",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Reset: init({}) (sauberer Vorzustand)", async function () {
+        if (SbkimToolPwa.isOpen()) SbkimToolPwa.close();
+        await SbkimToolPwa.init({});
+        SbkimUI.setStatus("18_tool_pwa", "ok", "Reset OK");
+        return {
+          ready:          SbkimToolPwa._meta.ready,
+          missing_fields: SbkimToolPwa._meta.missingFields,
+          erwartung: "ready=false (Test-Vorzustand für Test 4). Setup-Knopf führt zurück in den voll-init Zustand.",
+        };
+      });
+
+      SbkimUI.addButton("18_tool_pwa", "Selbstcheck Konsole prüfen", async function () {
+        SbkimUI.log("18_tool_pwa",
+          "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
+        SbkimUI.log("18_tool_pwa",
+          "  MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen: init/openAndockTab/close/isOpen");
+        SbkimUI.log("18_tool_pwa",
+          "ℹ Hinweis: Sub (a) Vorab ist RAM-only Render-Schicht, KEIN PROTOCOL_VERSION-/DB_VERSION-Bump, KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Wartungs-Modul).");
       });
     })();
   </script>

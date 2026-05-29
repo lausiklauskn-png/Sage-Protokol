@@ -142,6 +142,43 @@
       });
     });
 
+    // 18 Tool-PWA (Sub a Vorab) — Andock-Wizard für SIEGEL-Bronze-Klick.
+    // Pflege 2026-05-28 (Sage-Page-init-Modul-18): Sage ist Hybrid-Endknoten
+    // (spore.json `nodeType:"hybrid"`), Modul 18 muss daher auch hier
+    // initialisiert sein, sonst wirft `openAndockTab()` ToolPwaNotReadyError
+    // beim Bronze-Klick. Werte aus eigener Sage-spore.json (domain
+    // „Mycel-Bibliothek", sechs Domain-Stichworte). externalHubUrl
+    // weggelassen — Read-Anker für Sub (i) Spore-Discovery.
+    await initModule("SbkimToolPwa", function () {
+      return window.SbkimToolPwa && window.SbkimToolPwa.init({
+        endpoint:       "https://lausiklauskn-png.github.io/Sage-Protokol/",
+        domain:         "Mycel-Bibliothek",
+        domainKeywords: [
+          "SBKIM-Glossar",
+          "Mycel-Vokabular",
+          "Protokoll-Doku",
+          "Heilige Tafeln",
+          "Karten",
+          "Schwesternetz-Beobachtungen",
+        ],
+        stammCategories: [
+          "Protokoll-Doku",
+          "Mycel-Vokabular",
+          "Heilige Tafeln",
+          "Karten",
+          "INTERFACES",
+          "ARCHITEKTUR",
+        ],
+        guestCategories: [
+          "Glossar-Wartung",
+          "Schwesternetz-Beobachtungen",
+          "Sitzungs-Briefe",
+          "Übergabeprotokolle",
+        ],
+        repoUrl: "https://github.com/lausiklauskn-png/Sage-Protokol",
+      });
+    });
+
     // 00 Doku-Fenster zuletzt — liest die anderen Module als optionale
     // Quellen. Sage-Page hat aktuell KEIN sichtbares Such-Symbol (das ist
     // ein Endknoten-PWA-UI-Element). Wir versuchen mehrere Selektoren;

@@ -21,10 +21,10 @@ auslagern statt kürzen.
 ```mermaid
 pie showData
   title Modulstand 2026-05-26 (21 Module)
-  "🟫 Schablone" : 8
+  "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 8
+  "🟦 Code-Stub" : 9
   "🟩 Fertig" : 5
 ```
 
@@ -596,6 +596,43 @@ auslösen. Sie warten auf eine Reifezeit oder einen passenden
 Auslöser. Pflege-Disziplin: Vision wird hier festgehalten, mit
 Datum + Sitzungs-Bezug + ungefährer Größenordnung. Wer sie ziehen
 will, formuliert daraus einen Spec-Sitzungs-Brief.
+
+### 2026-05-28 · Sporenpflege-Lehre — Schlüssel = Auffindbarkeit
+
+**Eingetragen:** Pflege-Sitzung 05+18 Handshake-Eigenvektor 2026-05-28,
+aus Klaus' Erkenntnis: „Sporenpflege ist wichtig, sonst kann man im
+Netz nicht wiedergefunden werden oder muss sich neu einbetten und
+handshaken."
+
+**Die Lehre (Baumeister-Klärung):** Eine SBKIM-Zelle ist **zwei
+Dinge** — das **Ed25519-Schlüsselpaar** (`sbkim_keys`, slot=main) ist
+die *wahre Identität*, die `spore.json` nur die *signierte
+Visitenkarte*. Die `nodeId` = `base64url(sha256(publicKey))` hängt
+**ausschließlich** am Schlüssel. Daraus folgt die Auffindbarkeits-
+Hierarchie:
+
+| Pflege | nodeId bleibt? | Re-Handshake nötig? | Modul |
+|---|---|---|---|
+| **Schlüssel-Backup** (kritisch) | ja | nur bei Schlüsselverlust | 02 Backup / 18 Sub (d) |
+| **Re-Spore / Re-Embedding** (Domänenwechsel) | ja | nein — Geschwister behalten dich | 18 Sub (f)+(g) |
+| **Voll-Reset** (Notfall, neuer Schlüssel) | **nein, neu** | ja, überall | — |
+
+**Drei Verlust-Fälle:**
+
+1. **Schlüsselpaar weg** (IndexedDB gelöscht, neues Gerät, **anderer
+   Browser** — DeX-Chrome ≠ Tablet-Chrome, getrennte Speicher!) →
+   neue nodeId → für alle ein Fremder, überall neu handshaken. **Die
+   eigentliche Gefahr.** Schutz: Schlüssel-Backup.
+2. **Domäne/Stichworte geändert** → `domainVector` veraltet → neu
+   einbetten + neu signieren (Sub f/g). nodeId bleibt.
+3. **Protokoll-Version springt** → Spore-Format/Signatur ungültig →
+   neu signieren.
+
+**Größenordnung:** eigene Bau-Sitzung „Modul 18 Sub (d)+(f)+(g) —
+Sporenpflege" (Brief liegt: `docs/sessions/BRIEF_PFLEGE_18_SPORENPFLEGE.md`).
+Backup-/Restore zuerst (kritisch), dann Re-Spore + Re-Embedding, alles
+über Test-Bridge-Knöpfe (kein Konsolen-Hack). Pipeline: nach App-
+Freigabe-Strang, parallel zu Modul-18-Voll-Spec (5h.2) möglich.
 
 ### 2026-05-17 · Sage als Hybrid-Knoten (Variante I)
 
@@ -1811,6 +1848,62 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-29 · Bau Observatoriums-Vorteilspack — Truhe-Karte komplett (Symbole + Bild + Grid + Modal)
+
+**Sitzungs-Rolle:** Bau-Sitzung Observatoriums-Vorteilspack-Truhe.
+Branch `claude/bau-observatoriums-vorteilspack`. Basiert auf
+Brief `BRIEF_BAU_OBSERVATORIUMS_VORTEILSPACK.md` + Klaus'
+Vision-Erweiterung 2026-05-29 (zwei additive Punkte: Truhe als
+gerendertes Bild-Asset, Werkzeug-Symbol pro Modul).
+
+**Was getan:**
+
+1. **19 selbst-gezeichnete Werkzeug-Symbole** in
+   `assets/tool-symbols/NN_modul.svg` — gegenständlich (Lupe auf
+   Buch, Bronze-Kapsel, Sextant, Apotheker-Waage, Doppelschlüssel,
+   Sanduhr mit Blättern, Marionettenkreuz, Mycel-Schraubenschlüssel,
+   Verdienst-Orden, Wasserschleuse, Eisen-Riegel, Sonar-Wellen,
+   Wappenschild, Lack-Siegel, Kristallkugel, Multitool, Zauberstab
+   mit Kompass …). Monochrom (`currentColor`, stroke 1.5, keine
+   Füllflächen), keine Icon-Library. Alle 19 XML-wohlgeformt.
+2. **Vorschau-Kontaktbogen** `assets/tool-symbols/_vorschau.html` —
+   zeigt alle 19 Symbole in Tier-Färbung (Gold/Türkis/Violet) für
+   Klaus' Optik-Sichttest im Browser.
+3. **Truhe-Bild geliefert + eingebunden:** Klaus' Bild
+   `assets/observatorium-truhe.png` (1401×1123, ≈5:4). Als
+   `<picture>` (webp-bevorzugt, png-Fallback) in die neue Karte
+   eingebunden. Kein webp-Werkzeug im Container → PNG, `<picture>`
+   nimmt künftige webp automatisch.
+4. **Eingriff A — Truhe-Karte in `index.html` gebaut:** neue Karte
+   `#observatorium-vorteilspack` nach der Browser-Observatorium-Karte
+   (beide Schicht 4). Truhe-Stage (Bild + Veil-Overlay + Glow +
+   Schlüssel-Puls), Klick öffnet → Tool-Grid (19 Tiles, Tier-Badge +
+   Symbol + Status), Tile-Klick → Modal mit neun Sektionen + Vibe-
+   Prompt + Clipboard (Code lazy-fetch, Fallback execCommand). Tier-
+   Filter-Pillen. **Tafel-Evolution:** Bild ist bereits offen → Deckel
+   als Dim-Veil der sich hebt, kein `rotateX`-Klapp.
+5. **JS-Modul** `docs/observatorium/vorteilspack.js` (node-testbar
+   exportiert), CSS inline in `index.html`. **Konzept-Karte** voll
+   gefüllt (Symbol-Liste, Bild-Asset, Tier-Liste, Bauzustand).
+
+**Tests:** `node --check` JS grün; Smoke
+`tests/smoke_observatorium_truhe.mjs` **19/19 grün** (19 Tools,
+Tier 3/7/9, 19 Symbole, alle Code-/Karten-/Smoke-Pfade existieren,
+Vibe-Prompt-Aufbau). **Klaus' Browser-Sichttest steht aus**
+(Animation + Optik nicht headless prüfbar).
+
+**Was offen:**
+
+- Klaus' Sichttest der Truhe-Karte (Sage-Page, Galaxy Tab S6).
+- `tests/manual_check.html`-Panel bewusst NICHT ergänzt: die Truhe ist
+  eine Sage-Page-Render-Feature (kein Modul), Sichttest läuft direkt
+  auf der Sage-Page; das headless-Smoke deckt die Datenbank ab.
+- 19 statt „20" Tiles: Modul 13 ist kein Modul (Sammel-Karte).
+- Vorbestand: `PULS.md` über 3000-Zeilen-Grenze (eigene Archiv-Pflege).
+
+**Nächster sinnvoller Schritt:** Klaus' Hard-Reload-Sichttest auf der
+Sage-Page; bei Symbol-/Optik-Korrekturwünschen Nachzug-Pflege.
+
 ### 2026-05-28 · Pflege Brief-Multisuchfeld — Klaus' UI-Festlegungen einarbeiten
 
 **Sitzungs-Rolle:** Pflege-Sitzung (reine Brief-Doku, KEIN Modul-
@@ -1916,6 +2009,652 @@ die Reihenfolge in seiner Antwort).
 
 **Übergabeprotokoll:**
 `docs/sessions/archiv/2026-05-28_pflege-brief-suchfeld-multi-ui-festlegungen.md`.
+
+### 2026-05-28 · Brief-Anlage MR + MM Modul-18-Einbau (Mini-Sitzungs-Briefe)
+
+**Sitzungs-Rolle:** Brief-Anlage. Branch
+`claude/briefe-mr-mm-modul-18-einbau`. Reine Doku — Klaus hat
+nachgefragt, ob die Endknoten-Re-Migration nicht schon passiert
+ist. Klärung: 5e-Re-Aktivierung (Modul 15/16/17) ist 2026-05-26 in
+MR PR #249 + MM PR #58 durch (siehe
+`2026-05-26_endknoten-sichttest-cross-knoten-sub-e.md`), aber
+**Modul 18 fehlt in MR + MM**. Klaus' Live-Screenshots 2026-05-28
+bestätigen LEBT/VERKEHR/FREMD/SIEGEL-Widget aktiv in beiden
+Endknoten — SIEGEL-Klick triggert aktuell den Fallback „Modul 18
+noch nicht verfügbar".
+
+**Was getan:**
+
+1. **`docs/sessions/BRIEF_BAU_MR_MODUL_18.md`** angelegt. Kompakter
+   Mini-Sitzungs-Brief für `lausiklauskn-png/Mein-Rezeptbuch`:
+   drei Eingriffe (Datei kopieren + Skript-Tag + `SbkimToolPwa.init`-
+   Aufruf NACH `SbkimSiegel.init`), Pflicht-Disziplin, Sichttest-
+   Schritte für Klaus' Tab.
+2. **`docs/sessions/BRIEF_BAU_MM_MODUL_18.md`** analog für
+   `lausiklauskn-png/Mein-Mixarium`.
+3. Beide Briefe explizit abgegrenzt gegen die 5e-Re-Aktivierung:
+   „Nicht zu verwechseln mit PR #249/#58 vom 2026-05-26 — die hatten
+   Modul 15+16+17; dieser Brief füllt **nur** die Modul-18-Lücke."
+4. Klare Konventions-Anker für die Endknoten-Sitzungen: KEIN
+   Modul-Code-Eingriff (1:1 Kopie), KEIN `PROTOCOL_VERSION`-Bump,
+   KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag, KEIN automatischer Andock-
+   Trigger.
+
+**Auslöser-Kontext:** Klaus hat nach dem Sichttest Bau 18 Sub (a)
+Vorab + Brief Observatoriums-Vorteilspack nachgefragt, ob die
+Re-Migration schon passiert sei (PRs #249/#58 von Mai 2026 noch
+erinnert). Klärung: die große 5e-Re-Aktivierung ist durch; jetzt
+steht nur noch der **Modul-18-Mini-Einbau** aus (Pipeline 5h.1-Folge).
+
+**Pflicht-Disziplin eingehalten (dieser PR):**
+
+- ✓ KEIN Modul-Code-Eingriff.
+- ✓ KEIN Eingriff in `src/modules/`.
+- ✓ KEIN externer Repo-Eingriff (GitHub-MCP-Tools nur auf
+  Sage-Protokol — die Mini-Sitzungen pro Endknoten startet Klaus
+  in der jeweiligen externen Repo-Sitzung mit dem Brief als Prompt).
+- ✓ KEIN `PROTOCOL_VERSION`-/Pie-Update.
+- ✓ KEINE Tafel-Umsortierung CLAUDE.md.
+
+**Nächster Schritt:** Klaus startet pro externes Repo eine eigene
+Claude-Code-Sitzung mit dem jeweiligen Brief als Prompt — analog
+zum 5e-Re-Aktivierungs-Workflow von 2026-05-25. Nach Modul-18-Einbau
++ Sichttest in beiden Endknoten ist Pipeline-Phase A Schritt 5h.1-
+Folge geschlossen. Danach: Truhe-Bau-Sitzung
+(`claude/bau-observatoriums-vorteilspack`, Brief in PR #195).
+
+---
+
+### 2026-05-28 · Plansitzung Observatoriums-Vorteilspack (Truhe-Brief)
+
+**Sitzungs-Rolle:** Brief-Anlage-Sitzung (kleine Sitzung). Branch
+`claude/brief-observatoriums-vorteilspack`. Reine Doku/Spec-Arbeit,
+KEIN Modul-Code, KEIN Sage-Page-Eingriff.
+
+**Anlass:** Klaus' Vision 2026-05-28 nach grünem Sichttest Bau 18
+Sub (a) Vorab (PR #194): eine **Toolbox-Truhe im Sage-Page-
+Observatorium** mit allen SBKIM-Tools als kopierfertige
+„Verpackungen". Alte Seemannskiste + Schlüssel-Schritt-Mechanik
+(analog Einladungs-Tür Scene 5/5b), Container-Größe wie Schwarz-
+Loch-/Sonnen-Karte (~280 px). Klaus' Wort: **„Vorteilspack"** —
+die Truhe ist die Sage-Page-Sichtbarkeit des Starter-Bundles
+(Phase B Schritt 8), Klick-und-Kopier-Pfad statt git-clone.
+
+**Was getan:**
+
+1. **Brief** `docs/sessions/BRIEF_BAU_OBSERVATORIUMS_VORTEILSPACK.md`
+   voll angelegt. Inhalt:
+   - Pflicht-Verifikations-Schritt (CLAUDE.md, Konzept-Karte,
+     Schwester-Konzept Starter-Bundle, Einladungs-Optik, Schwarz-
+     Loch-Container-Größe, alle Modul-Karten).
+   - Pflicht-Disziplin (KEIN `src/modules/`-Eingriff, KEIN
+     `PROTOCOL_VERSION`-Bump, KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag,
+     KEIN Endknoten-Eingriff, KEIN Modul-19-Bau, KEINE Tafel-
+     Umsortierung).
+   - Sage-Page-Karte-Vorschlag mit Truhe-Stage (280 px) + Schlüssel
+     davor + Klick-Mechanik in vier Phasen.
+   - Tool-Tile-Außen-Sicht (Tier-Badge + Icon + Name + Aufgabe +
+     Status-Marker) + Tool-Modal-Inhalt (neun Sektionen pro Tool).
+   - Tier-Vorschlag (Bau-Sitzung muss final entscheiden):
+     - **Must-have (3):** 01 Storage, 02 Spore, 15 Membran.
+     - **Basic (7):** 03 Embedding, 04 Match, 05 Anastomose, 07
+       Apoptose, 16 Siegel, 17 Floating-Widget, 18 Tool-PWA Sub (a)
+       Vorab.
+     - **Pro (8+):** 00 Doku-Fenster, 06 Heterokaryose, 08 UI-Demo,
+       09 Einbau-Anleitung, 10/11/12 Schutz-Backlog, 14 Diffusion-
+       Backlog, 19 Andock-Wizard (Konzept).
+   - Vibe-Coding-Prompt-Paket-Template pro Tool — Klaus copy-paste-
+     fähig in eine KI-Sitzung, die KI baut dann das Tool im Repo
+     ein.
+   - Code-Inhalt-Strategie: **Hybrid** empfohlen — statische
+     Metadaten + lazy-fetch von `src/modules/NN_modul.js` beim
+     Kopier-Klick.
+   - Klärung Beziehung zum Starter-Bundle (Phase B Schritt 8):
+     Truhe = klick-und-kopier; Starter-Bundle = git-clone.
+
+2. **Konzept-Karte** `docs/components/_observatoriums_vorteilspack.md`
+   als Schablone angelegt mit Vokabular, Klaus-Festlegungen 2026-05-28
+   (fünf Tafel-Punkte), sechs Sub-Bereiche (a–f) mit Spec-Skizze +
+   offenen Spec-Punkten, Strikte Tabus, Bauzustand-Tabelle.
+
+3. **CLAUDE.md Pflege** § „Vision-Anker-Vorbereitung":
+   - Neue Zeile für Observatoriums-Vorteilspack-Truhe.
+   - Pipeline-Position: NACH MR + MM Endknoten-Re-Migration,
+     parallel zu Phase B Schritt 7 möglich.
+   - **KEINE Tafel-Umsortierung** der Phase-A/B-Reihenfolge.
+
+**Pflicht-Disziplin eingehalten:**
+
+- ✓ KEIN Code in `src/modules/`.
+- ✓ KEIN Sage-Page-Eingriff in `index.html` (kommt erst in der
+  Bau-Sitzung).
+- ✓ KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
+  Bump.
+- ✓ KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag (Truhe ist Distributions-/
+  Render-Schicht, kein Sicherheits-Modul).
+- ✓ KEINE Pipeline-Umsortierung (Truhe ist Vision-Anker-
+  Vorbereitung, Pipeline-Phase-frei).
+- ✓ KEIN Endknoten-Eingriff.
+
+**Was offen:**
+
+1. **Bau-Sitzung Observatoriums-Vorteilspack-Truhe** — eigener
+   Branch `claude/bau-observatoriums-vorteilspack`, NACH MR + MM
+   Re-Migration. Brief liegt.
+2. **Tier-Liste final** entscheiden in der Bau-Sitzung (Vorschlag
+   im Brief, aber Klaus' Veto möglich).
+3. **Asset-Frage** (Schlüssel-WebP-Reuse oder eigene CSS-/SVG-
+   Variante) wird in der Bau-Sitzung gelöst.
+4. **Tool-Datenbank-Quelle** (Build-Time-JSON oder Runtime-Fetch)
+   wird in der Bau-Sitzung gelöst.
+
+**Nächster Schritt:** Endknoten-Re-Migration MR + MM als zwei
+eigene Sitzungen in den externen Repos starten. Truhe-Bau-Sitzung
+folgt **NACH** MR + MM.
+
+---
+
+### 2026-05-28 · Pflege Modul-18-Lade-Puls (Schritt 3 + 4)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul18-lade-puls`. Reines CSS in Modul 18: der Lade-Status
+(`.sbkim-tool-pwa-status[data-kind="loading"]`) pulsiert jetzt — deckt
+**Schritt 3** (Embedding-Download) **und Schritt 4** (Handshake-Wartezeit,
+bis 5 min) ab. Opacity-Animation auf dem Compositor (läuft trotz Haupt-
+Thread-Last, stoppt bei echtem Einfrieren). `prefers-reduced-motion`
+respektiert. Nutzt das vorhandene `data-kind`-Attribut → keine JS-Logik-
+Änderung. `node --check` grün, Smoke 19/19. **KEIN** VERSION-Bump.
+
+---
+
+### 2026-05-28 · Pflege Modul-18-Match-Schritt Embedding-Fortschritt
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul18-embedding-fortschritt`. Folge zu #205/#206: der
+Embedding-Fortschritts-Event (`sbkim:embedding-progress`, Modul 03) wird
+jetzt auch im **Modul-18-Wizard Schritt 3 (Match)** angezeigt — derselbe
+Live-Balken statt des statischen „lädt …". Genau der Pfad, den Klaus beim
+Andocken/Handshake (Siegel → Andocken) benutzt. `init()` registriert einen
+`onEmbeddingProgress`-Listener, gated auf `currentStep===3 &&
+embeddingReady==="loading"` (bedient nur das eigene Lade-Fenster, nicht den
+Sage-Identitäts-Wizard). Smoke Probe 19 NEU (Listener-Registrierung) →
+19/19 grün. `node --check` 18 grün. **KEIN** VERSION-Bump.
+
+---
+
+### 2026-05-28 · Pflege Sage-Andock-Einstiege (Discoverability)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-sage-andock-einstiege`. Klaus' Befund: der Identitäts-
+Wizard (`#andock`, „Identität/Spore/Backup") hatte **keinen sichtbaren
+Einstieg** — nur die Hash-URL oder der (bedingte) Schwarz-Loch-Erst-Klick.
+Auf einem Hybrid-Knoten (Sage = Hub UND Endknoten) muss man seine
+Identität/Spore aber auffindbar erzeugen + verwalten können.
+
+**Fix (Sage-lokal, Modul 16 unangetastet):** zwei sichtbare Einstiege zum
+`openAndockWizard()`:
+1. **Untere Karte** „Sage als Knoten · eigene Identität & Spore" (über der
+   „Endknoten anschließen"-Karte) mit Knopf „🔑 Identität & Spore erzeugen
+   / verwalten →". Klärt explizit den Unterschied zur Spore-Vorlage-für-
+   fremde-PWAs-Karte.
+2. **Link im Siegel-Modal** — per MutationObserver wird in das Modul-16-
+   Siegel-Modal (`#sbkim-siegel-modal`) ein „🔑 Eigene Identität & Spore"-
+   Link injiziert, sobald es im DOM auftaucht. Das geteilte Sicherheits-
+   Modul 16 bleibt **unverändert** (#andock ist Sage-page-spezifisch). Der
+   Wizard (z-index 100000) legt sich über das Siegel-Modal (99998).
+
+`index.html`-Script-Block `node --check` grün. **KEIN** VERSION-Bump,
+**KEIN** Eingriff in Modul 16 (kein Re-Sync, kein Aspekte-Eintrag nötig).
+Sichttest ungeprüft.
+
+---
+
+### 2026-05-28 · Pflege Handshake-Timeout-Override (interaktiv großzügig)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-handshake-timeout-override`. Auslöser: Klaus' Befund —
+der Live-Cross-Tab-Handshake bricht nach 4 s ab („Channel-Reply > 4000
+ms"); früher war der Timeout zum Testen auf 5–10 min hochgesetzt, der
+Re-Sync auf `main` (QUERY_TIMEOUT_MS=4000) hat das überschrieben.
+Wurzel-Erklärung in `docs/OBSERVATORIUM_BROWSER.md` Lehre 1 + 3:
+BroadcastChannel ist same-origin **und** same-instance, und Mobile-Chrome
+verwirft/drosselt Hintergrund-Tabs → Empfänger-Listener weg → Timeout.
+
+**Fix:** Modul 05 `handshake(targetSpore, ownDomainVector?, options?)`
+bekommt `options.timeoutMs`-Override (Channel-Reply + HTTP-Abort).
+Protokoll-Default bleibt `QUERY_TIMEOUT_MS = 4000` für automatisierte
+Pfade (forker-sicher). Threaded durch `_doHandshake` → `sendViaChannel`
+→ `postChannelEnvelope`. Modul 18 interaktiver Wizard
+`triggerStepFourHandshake` reicht `HANDSHAKE_CHANNEL_TIMEOUT_MS = 300000`
+(5 min) — Mensch wartet + Schließen-X vorhanden. Smoke Probe 18 prüft
+jetzt zusätzlich `timeoutMs > 4000` im handshake-Aufruf (18/18 grün).
+INTERFACES § 1 Modul 05 + Karte 05 nachgezogen. `node --check` 05+18 grün.
+**KEIN** VERSION-Bump. Sichttest: der eigentliche Erfolg hängt am
+Mobile-Workaround (beide Tabs sichtbar, DeX-Splitscreen) — der Timeout
+gibt nur Luft, ersetzt aber keinen verworfenen Tab.
+
+---
+
+### 2026-05-28 · Pflege Embedding-Lade-Puls (UX, Folge zu #205)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-embedding-puls`. Klaus' Wunsch: „lasse ihn pulsen solange
+es nicht eingefroren ist". Der Lade-Indikator im Sage-Andock-Wizard
+Schritt 2 pulsiert jetzt (CSS-Opacity-Animation `sage-andock-pulse`,
+Klasse `.is-loading`) während des Embedding-Ladens. Opacity läuft auf dem
+Compositor → pulsiert auch weiter, während der Haupt-Thread am Modell
+rechnet, **stoppt aber, wenn die Seite echt eingefroren ist** — genau der
+„lebt noch vs. hängt"-Indikator. Klasse wird in Success- + Catch-Pfad
+entfernt; `setAndockOutput` lässt sie unangetastet (nur ok/err). `prefers-
+reduced-motion` respektiert (kein Puls). Reines CSS+JS in index.html,
+Script-Block `node --check` grün. KEIN VERSION-Bump.
+
+---
+
+### 2026-05-28 · Pflege Embedding-Download-Fortschritt (UX)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-embedding-fortschritt`. Auslöser: Klaus' Live-Befund —
+nach tiefem Browser-Löschen lädt das 30-MB-Embedding-Modell neu, **ohne
+jeden Fortschritts-Hinweis** („lädt ewig, frustrierend, nichts zu sehen").
+
+**Fix:** Modul 03 `init()` reicht jetzt einen `progress_callback` an
+transformers.js `pipeline(...)` und sendet den Download-Fortschritt als
+window-Event **`sbkim:embedding-progress`** (`detail` = transformers.js-
+Daten: `status`/`file`/`progress`/`loaded`/`total`). Fail-soft +
+konsumentenfrei (Event-Bus-Stil analog Modul 17). Der Sage-Andock-Wizard
+(Schritt 2 „Spore erzeugen") lauscht darauf und zeigt einen Live-
+Balken („Embedding-Modell lädt … ████░░ 45 % (model.onnx, ~30 MB)").
+Listener wird in Success- + Catch-Pfad sauber entfernt.
+
+**Kein** Modell-Wechsel (Klaus' Frage): `Xenova/multilingual-e5-small`
+bleibt — 384-dim ist protokoll-fest (INTERFACES §0, Modul 04/05), und ein
+Wechsel bräuchte mycel-weite Lockstep-Migration aller Knoten + Re-
+Embedding. Der lange Ladevorgang ist einmalig (gecacht); nur nach Cache-
+Wipe sichtbar. Begründung im Chat festgehalten.
+
+**Tests:** `node --check` Modul 03 grün, index.html-Wizard-Script-Block
+grün, Regression Modul-18-Smoke 18/18 grün. **KEIN** VERSION-Bump.
+**Offen / Folge-Kandidat:** Modul-18-Wizard (Match-Schritt) kann denselben
+`sbkim:embedding-progress`-Event konsumieren — noch nicht verdrahtet.
+Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf).
+
+---
+
+### 2026-05-28 · Pflege Sage-Identitäts-Wizard z-index (UX-Fix)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-sage-andock-wizard-zindex`. Auslöser: Klaus' Live-
+Sichttest 2026-05-28 — der Sage-Identitäts-Wizard (`sage-andock-modal`,
+„Identität erzeugen / Spore erzeugen + herunterladen / Backup") war mit
+`z-index: 300` hinter dem Siegel-Modal (99998) und dem Modul-18-Wizard
+(10000) vergraben und praktisch unauffindbar. Klaus landete wiederholt
+auf den falschen Modals (Modul-18-Wizard, Siegel-Modal, „Spore-Vorlage
+erzeugen"-Karte für fremde PWAs).
+
+**Fix:** `.sage-andock-modal` z-index 300 → **100000** (über Siegel,
+Membran-Fremd-Alert 99999, Modul-18). Der Identitäts-Wizard ist eine
+bewusste User-Geste (`#andock` / Schwarz-Loch-Klick) und muss beim
+Öffnen vorn liegen. Eine CSS-Zeile in `index.html`.
+
+**Offen / nächster Schritt:** Sichttest ungeprüft — nach Merge +
+Hard-Reload `#andock` öffnet den Identitäts-Wizard vorn → Schritt 1/2
+(Identität + Spore erzeugen) → nodeId → Commit `sbkim/spore.json` →
+End-to-End-Handshake MM↔Sage. **Discoverability bleibt offen**
+(der Wizard hat keinen sichtbaren Knopf, nur Hash/Schwarz-Loch-Klick)
+— Kandidat für Folge-Pflege.
+
+---
+
+### 2026-05-28 · Pflege 05+18 Handshake — Eigenvektor-Auflösung (Lösung 1, korrigiert PR #201)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-05-18-handshake-eigenvektor`. Korrigiert den Ansatz von
+PR #201 nach MM-Bausitzungs-Bericht + tieferer Wurzel-Analyse.
+
+**Wurzel:** `_doHandshake` sendet `ownDomainVector` als
+`request.domainVector` **und** die signierte eigene Spore als
+`senderSpore` — beide müssen denselben Vektor tragen. PR #201 ließ
+Modul 18 einen frischen `embedPassage(domainKeywords)` rechnen, was vom
+signierten Spore-`domainVector` (`embedPassage(domainDescription + '. '
++ domainKeywords)`) abweicht → inkonsistenter Request. Außerdem braucht
+der Handshake die eigene Spore ohnehin (Signieren), die den kanonischen
+Vektor schon trägt.
+
+**Entscheidung (Klaus): Lösung 1** — Modul 05 löst den Eigenvektor
+selbst aus der eigenen Spore auf (forker-sicher: `handshake(fremdSpore)`
+ist immer korrekt, single source of truth).
+
+**Was getan:** Modul 05 `_doHandshake`: `ownDomainVector` optional, bei
+Weglassen `loadOwnDomainVector(opSlot)` → `ownSpore.domainVector`; keine
+Spore → klare `AnastomoseDependenciesError`. Modul 18
+`triggerStepFourHandshake` wieder schlank (`handshake(foreignSpore)`,
+kein embedPassage). INTERFACES § 1 Modul 05 Tafel + Modul-05-Karte +
+Modul-18-Karte nachgezogen. Smoke Probe 18 umgestellt (handshake ohne
+2. Arg + kein embedPassage in Schritt 4) → **18/18 grün**. `node --check`
+05 + 18 grün. `smoke_bau05y` nicht lauffähig (fake-indexeddb fehlt im
+Sandbox) — Live-Pfad über Klaus' Sichttest.
+
+**Backward-kompatibel:** explizit übergebener Vektor (Test
+`manual_check.html` `mainVec`) wird weiter honoriert.
+
+**Offen:** Sage-Knoten braucht eine Laufzeit-Eigen-Spore (Sage-Andock-
+Wizard `generateOwnSpore`) — separater Setup-Schritt. Danach Schritt-4-
+Sichttest. Sporen-Reinigung/Neubildung (Klaus' Frage) = eigenes Thema
+(Modul 18 Sub f/g). Übergabeprotokoll:
+`docs/sessions/archiv/2026-05-28_pflege-05-18-handshake-eigenvektor.md`.
+
+---
+
+### 2026-05-28 · Pflege Modul 18 Sub (a) Handshake — ownDomainVector (Folge-Wurzel-Fix)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul-18-handshake-domainvector`. Folge zum Match-Embed-
+Fix (PR #199).
+
+**Wurzel-Diagnose:** Nach dem Match-Fix lief Schritt 3 grün (Sage-Page
+86 %, Mein-Mixarium 85 % + Drei-Bars), aber Schritt 4 (Handshake) warf
+„ownDomainVector muss Float32Array(384) sein — Aufruf von handshake".
+`triggerStepFourHandshake` rief `SbkimAnastomose.handshake(foreignSpore)`
+mit nur einem Argument; `handshake(targetSpore, ownDomainVector)`
+erwartet als 2. Arg einen eigenen Domain-Vektor `Float32Array(384)`
+(Modul 05 § `_doHandshake`). Gleiche Bug-Klasse wie PR #199, eine
+Stufe weiter. Reproduzierbar auf Sage-Page **und** Mein-Mixarium.
+
+**Was getan:** `triggerStepFourHandshake` leitet den eigenen Domain-
+Vektor jetzt kanonisch ab via `SbkimEmbedding.embedPassage(
+domainKeywords.join(", "))` (analog Spore-`domainVector` /
+`manual_check.html` `mainVec`) und reicht ihn als 2. Argument an
+`handshake`. Verfügbarkeits-Check + Leere-Stichworte-Guard. Smoke Probe
+18 NEU (treibt bis Schritt 4, prüft `handshake` bekommt Float32Array(384)
+als Arg 2) → **18/18 grün**. `node --check` 18 + 05 grün.
+
+**Pflicht-Disziplin:** KEIN Eingriff in Modul 03 / Modul 05 (Surfaces
+korrekt). KEIN VERSION-Bump, KEIN ZERTIFIKAT_ASPEKTE-Eintrag, KEIN
+Endknoten-Eingriff.
+
+**Offen / nächster Schritt:** Sichttest ungeprüft — wartet auf Klaus'
+Browser-Lauf Schritt 4. Danach MR + MM Sync (Modul-18-Datei jetzt inkl.
+Match-Fix + Handshake-Fix). Übergabeprotokoll:
+`docs/sessions/archiv/2026-05-28_pflege-modul-18-handshake-domainvector.md`.
+
+---
+
+### 2026-05-28 · Pflege Modul 18 Sub (a) Match-Schritt — Embedding-Pflicht-Aufruf (Wurzel-Fix)
+
+**Sitzungs-Rolle:** Pflege-Sitzung. Branch
+`claude/pflege-modul-18-match-embed-6XM5l`. Wurzel-Fix für Klaus'
+Live-Befund in Schritt 3 (Match) nach PR #198.
+
+**Wurzel-Diagnose (Bug-Kette):** `computeAndRenderMatch` in
+`src/modules/18_tool_pwa.js` reichte die **String**-Outputs von
+`textBlob` direkt an `SbkimMatch.matchDimensions` — das erwartet aber
+vier `Float32Array(384)` (Modul 04 § `assertVector`) → synchroner
+`InvalidVectorError` („Parameter 'queryVec' muss Float32Array sein,
+war: String"). Das Embedding (Modul 03) wurde lazy initialisiert,
+aber die vier Textblobs nie zu Vektoren gemacht — der
+`embedQueryBatch`-Aufruf fehlte komplett. Reproduzierbar in Sage-Page
+UND Mein-Rezeptbuch (1:1-Sync) → Wurzel im Sage-Quellcode.
+
+**Was getan:**
+
+1. **Eingriff A** — `computeAndRenderMatch` ruft jetzt **vor**
+   `matchDimensions` zwingend `SbkimEmbedding.embedQueryBatch([...])`
+   für die nicht-null Textblobs auf. Null-Safe-Mapping (null-Spalten
+   bleiben null, gehen NICHT in den Batch; alle vier null →
+   Vorab-Fehlermeldung statt `DimensionsAllNullError`). Lade-Hinweis
+   sofort: „Embedding-Modell wird geladen (ca. 30 MB beim ersten
+   Aufruf …)". **KEIN künstlicher Timeout** (kein `Promise.race`).
+2. **Eingriff B** — Karte 18 § Sub (a) § Match-Schritt: neuer Block
+   „Embedding-Pflicht-Aufruf vor `matchDimensions`" + § Bauzustand-
+   Zeile „Pflege Match-embedQueryBatch-Pflicht — 2026-05-28".
+3. **Test** — `smoke_bau18_sub_a_vorab.mjs` Probe 15 additiv
+   verschärft (`embedQueryBatch(Strings)` VOR `matchDimensions`,
+   `matchDimensions` bekommt nur Float32Array/null) — **17/17 grün**.
+   Regression `smoke_bau15b` 31/31, `smoke_bau16_sub_e_bronze` 16/16,
+   `smoke_bau17_floating_widget` 36/36 grün. `node --check` 18 + 04
+   grün.
+
+**Pflicht-Disziplin:** KEIN Eingriff in Modul 03 / Modul 04 (Surfaces
+korrekt). KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
+Bump, KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag (Render-Schicht-Pflege), KEIN
+Endknoten-Eingriff (MR + MM eigene Sync-Sitzung nach Sichttest grün).
+
+**Offen / nächster Schritt:** Sichttest ungeprüft — wartet auf Klaus'
+Galaxy-Tab-S6-Browser-Lauf (erster echter 30-MB-Embedding-Download im
+Match-Schritt). Danach MR + MM Sync-Sitzungen. Übergabeprotokoll:
+`docs/sessions/archiv/2026-05-28_pflege-modul-18-match-embed.md`.
+
+---
+
+### 2026-05-28 · Sichttest-Nachzug Bau 18 Sub (a) Vorab — Panel 18 grün 10/10
+
+**Sitzungs-Rolle:** Sichttest-Nachzug-PR. Branch
+`claude/bau-18-sichttest-nachzug`. Reine Doku-Pflege nach Klaus'
+grünem Live-Sichttest am Tab — kein Code-Eingriff.
+
+**Was getan:**
+
+1. **Klaus' Sichttest Panel 18 Knöpfe 1–10 alle grün** am Galaxy
+   Tab S6 (DeX-Chrome, Termux-`localhost:8000/tests/manual_check.html`
+   nach Hard-Reload). Reihenfolge: Setup → Test 1 (Surface) → Test 2
+   (init fail-soft) → Test 3 (ready-heal) → Test 4 (NotReadyError) →
+   Test 5 (Modal Schritt 1 sichtbar) → Test 6 (Live-Spore-Fetch +
+   verifyForeignSpore + Foreign-Spore-Preview) → Test 7
+   (InvalidUrlArgError) → Test 8 (close() mit confirm()-Dialog) →
+   Test 9 (matchThreshold-Clamp) → Test 10 (externalHubUrl-
+   Spiegelung).
+2. **Live-Cross-Knoten-Spore-Read belegt:** Test 6 hat live gegen
+   `https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json`
+   gefetched, `SbkimSpore.verifyForeignSpore` lief durch, Foreign-
+   Spore-Preview rendert volle Mixarium-Identität:
+   - Domain `lausiklauskn-png.github.io`
+   - Knoten-ID `B7Fke9CYTR1BrC3x…` (Kurzform aus 64-Zeichen-ID)
+   - Domain-Stichworte: Cocktail, Drink, Mocktail, Limonade, Smoothie,
+     Aperitif, Sake
+   - Stamm-Kategorien: Cocktails, Mocktails, Alkfr. Cocktails,
+     Smoothies & Shakes, Limonaden, Tees & Kaffees, Bowlen, Sirup & Basis
+   - Gast-Kategorien: Knabbereien, Fingerfood
+
+   Das ist der **erste produktive Cross-Knoten-Spore-Read aus
+   Modul 18**.
+3. **Test 8 confirm()-Bestätigungs-Dialog korrekt:** weil Modal in
+   Schritt 2 war (`hasUnsubmittedInput` liefert true für Schritt 2/3),
+   feuerte `close()` den nativen Browser-`confirm("Andock-Wizard
+   schließen? Eingaben gehen verloren.")`. Klaus drückte „OK" →
+   Modal sauber geschlossen, `is_open_after: false`, `current_step: 0`.
+4. **Drei Sichttest-Screenshots** im Repo unter
+   `docs/sessions/archiv/screenshots/`:
+   - `2026-05-28_panel18_test5_modal_schritt1.jpg`
+   - `2026-05-28_panel18_test6_spore_geladen.jpg`
+   - `2026-05-28_panel18_test8_close_confirm.jpg`
+5. **Doku-Pflege:**
+   - Karte 18 § Bauzustand: neue Zeile „Sichttest grün — 2026-05-28
+     — Sichttest-Nachzug Bau 18 Sub (a) Vorab" am Listen-Ende mit
+     voller Belegung der zehn Test-Knöpfe + Live-Spore-Fetch +
+     Screenshots + Pipeline-5h.1-Abschluss.
+   - INTERFACES.md § 1 Modul 18 Geprüft-Zeile: dritte Datums-Zeile
+     für Sichttest-Nachzug.
+
+**Pflicht-Disziplin eingehalten:**
+
+- KEIN Code-Eingriff (Doku-Pflege only).
+- KEIN `status.json`-Score-Wechsel (Modul 18 bleibt `score:"stub"` —
+  Konvention analog Modul 17: nach Bau + Sichttest grün bleibt
+  `stub`, weil nur Sub (a) Vorab implementiert ist; Voll-Bau 18
+  Pipeline 5h.2 entscheidet später, ob `score:"fertig"`).
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-Bump.
+- KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag.
+
+**Pipeline-Stand:** Phase A Schritt **5h.1 abgeschlossen** (Bau 18
+Sub (a) Vorab voll-geprüft auf Tab). Nächster Schritt: Endknoten-Re-
+Migration **MR + MM** als zwei eigene Sitzungen pro Endknoten-Repo
+(Briefe in der Bau-Sitzungs-Antwort 2026-05-28).
+
+---
+
+### 2026-05-28 · Bau-Sitzung 18 Sub (a) Vorab (Andocken-Pfad allein)
+
+**Sitzungs-Rolle:** Bau-Sitzung (Pipeline-Phase A Schritt **5h.1**),
+Folge von Spec-Sitzung 18 Sub (a) Vorab (PR #190). Branch
+`claude/bau-18-sub-a-vorab-Ze6Xf`.
+
+**Anlass:** Spec-Sitzung 18 Sub (a) Vorab vom 2026-05-28 hat
+Endknoten-Init-Schema + `openAndockTab(url?)`-Signatur + Embedding-
+Lazy-Trigger + Match-Schwelle-UI + Stepper-Modal-Form festgelegt.
+Diese Bau-Sitzung schreibt den Modul-Code, der den fail-soft-Hook
+im Modul-16-Sub-(e)-Bronze-Modal (PR #180) produktiv macht und das
+Multisuchfeld mit einer realen Andock-Surface versorgt.
+
+**Was getan:**
+
+1. **`src/modules/18_tool_pwa.js`** voll angelegt (~1 000 Zeilen
+   inkl. Inline-CSS) mit:
+   - Public-Surface `SbkimToolPwa = {init, openAndockTab, close,
+     isOpen, _meta}` + Selbstcheck-Zeile
+     `MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen:
+     init/openAndockTab/close/isOpen` beim Skript-Laden.
+   - Zwei Errors (Factory-Stil analog Modul 15/16):
+     `ToolPwaNotReadyError` (mit Liste der fehlenden Felder im
+     Message) + `ToolPwaInvalidUrlArgError`.
+   - `init(options)` Promise<void>, idempotent + fail-soft.
+     Pflicht-Felder `endpoint`+`domain`+`domainKeywords` fehlen
+     → `console.warn` + `_meta.ready=false` + `_meta.missingFields[]`,
+     KEIN Throw. `matchThreshold > PROVIDER_MIN_MATCH (0.80)` →
+     clamp + warn. `externalHubUrl` Read-Anker (KEIN Hub-Fetch
+     in Sub (a) Vorab). `repoUrl` Auto-Erkennung aus
+     `location.origin` + erstem Pfad-Segment.
+   - `openAndockTab(url?)` mit Sync-Validierung **vor** await
+     (ready-Check + `new URL(url)`-Validierung). Async: Modal-
+     Self-Mount in `document.body` (Override via `opts.mountTarget`)
+     mit MutationObserver-Fallback (10 s Timeout). Bereits-offen +
+     gleiche URL → no-op; bereits-offen + andere URL → Reset auf
+     Schritt 2.
+   - Vier-Schritt-Stepper-UI (URL/Spore/Match/Handshake):
+     - Schritt 1: Text-Input + „Weiter →"-Knopf, URL-Validierung
+       sichtbar im Fehler-Label.
+     - Schritt 2: `fetch(joinUrl(url, "sbkim/spore.json"))` +
+       `SbkimSpore.verifyForeignSpore` (Signatur-Fail kein
+       „Trotzdem"-Knopf). Foreign-Spore-Preview (Domain /
+       Knoten-ID-kurz / Domain-Stichworte / Kategorien).
+     - Schritt 3: Match-Check mit Lazy-Embedding (Re-Use bei
+       `SbkimEmbedding._meta.ready===true` ODER `isReady()===true`,
+       sonst `SbkimEmbedding.init()` mit 30 s Time-out-Warnung +
+       Retry-Knopf). `SbkimMatch.matchDimensions` → Drei-Schichten-
+       Bars fachlich/prozess/skalierung mit Bar-Farben grün/gelb/rot.
+       Bei `overall >= matchThreshold` → grün + „Weiter zum
+       Handshake". Bei `overall < matchThreshold` → gelb/rot +
+       „Trotzdem andocken". Bei `DimensionsAllNullError` → Fehler
+       OHNE „Trotzdem"-Knopf.
+     - Schritt 4: `SbkimAnastomose.handshake(foreignSpore)` →
+       grünes Häkchen + auto-Close 2 s. Fehler-Fall: konkrete
+       Meldung + Retry-Knopf.
+   - `close()` mit `confirm()`-Bestätigung bei offenen Wizard-
+     Eingaben (Schritt 1 mit URL-Text ODER Schritt 2/3); no-op
+     bei Schritt 0/4.
+   - `isOpen()` boolean (aus `_meta.modalOpen`).
+   - `_meta` 13 Felder gemäß INTERFACES § 1 Modul 18, defensive
+     Kopie pro Lese-Zugriff (Array-Mutation am Snapshot beeinflusst
+     Closure-State NICHT — getestet in Smoke 11).
+   - Inline-CSS via `<style>`-Inject im `<head>` (Konvention
+     analog Modul 17 — Drei-Zeilen-Einbau-Konvention für
+     Endknoten). `z-index: 10000` (> Modul-17-Modal-9999, Spec
+     § Risiken Modal-Konflikt-Mitigation).
+
+2. **`index.html`** erweitert: NEUER `<script>`-Tag vor
+   `sbkim-init.js`. Sage-Page macht KEINEN `SbkimToolPwa.init()`-
+   Aufruf (Sub (a) Vorab ist Endknoten-Pflicht — Sage-Page hat
+   keine Andock-Geste, der Andock-Wizard auf der Schwarz-Loch-
+   Karte ist eigenständig).
+
+3. **`tests/manual_check.html` Panel 18** angelegt mit 11 Knöpfen:
+   - Setup-Knopf (`SbkimToolPwa.init({endpoint, domain,
+     domainKeywords})` mit Test-Werten).
+   - Test 1: Surface + Selbstcheck-Hinweis.
+   - Test 2: `init({})` ohne opts → warn + `ready=false`.
+   - Test 3: `init({…vollständig…})` → `ready=true`.
+   - Test 4: `openAndockTab()` ohne ready → `ToolPwaNotReadyError`.
+   - Test 5: `openAndockTab()` mit ready → Modal Schritt 1.
+   - Test 6: `openAndockTab("https://…")` → Schritt 2 direkt.
+   - Test 7: `openAndockTab("not-a-url")` → `ToolPwaInvalidUrlArgError`.
+   - Test 8: `close()` schließt Modal.
+   - Test 9: `matchThreshold > 0.80` → clamp + warn.
+   - Test 10: `externalHubUrl` als string → `_meta` gespiegelt
+     (kein Hub-Fetch).
+   - Reset-Knopf für sauberen Vorzustand vor Test 4.
+   - Selbstcheck-Hinweis.
+
+4. **Headless-Smoke `tests/smoke_bau18_sub_a_vorab.mjs`** mit 17
+   Proben (15 vom Brief gefordert + 2 zusätzliche Härtungen):
+   - Surface (Probe 1).
+   - init fail-soft (Probe 2).
+   - init grün (Probe 3).
+   - openAndockTab ohne ready → Error (Probe 4).
+   - openAndockTab mit ready → Modal Schritt 1 (Probe 5).
+   - openAndockTab mit url → Schritt 2 (Probe 6).
+   - openAndockTab mit ungültiger url → Error (Probe 7).
+   - close (Probe 8).
+   - matchThreshold-Clamp (Probe 9).
+   - externalHubUrl-Spiegelung + kein Hub-Fetch (Probe 10).
+   - _meta-Defensiv-Kopie (Probe 11).
+   - modalOpen-Toggle (Probe 12).
+   - currentStep-Bewegung (Probe 13).
+   - missingFields-Reset bei Re-Init (Probe 14).
+   - Re-Use-Test SbkimEmbedding._meta.ready (Probe 15) inkl.
+     Match-Bars + Schritt-2→3-Übergang.
+   - Idempotenz mit identischen opts (Probe 16, Zusatz).
+   - repoUrl Auto-Erkennung (Probe 17, Zusatz).
+   Lauf: **17/17 grün**.
+
+5. **Doku-Pflege:**
+   - **Karte 18 § Bauzustand:** neue Zeile „Bau Sub (a) Vorab —
+     2026-05-28 — Bau-Sitzung 18 Sub (a) Vorab" am Listen-Ende.
+     Status-Header auf 🟦 **Code-Stub Sub (a) Vorab** + Sub (b)–(i)
+     bleibt 🟫 Schablone.
+   - **INTERFACES.md § 1 Modul 18:** Status-Block auf
+     „Code-Stub (Bau Sub (a) Vorab)" geändert, Geprüft-Zeile
+     mit voll-Begründungs-Block ergänzt (alle Tabus + Pflicht-
+     Disziplinen sichtbar verankert).
+   - **`status.json` Modul 18:** von `score:"schablone"` auf
+     `score:"stub"` gehoben (Konvention analog Modul 17 nach
+     Bau-Sitzung 17). `abhaengig: ["02","03","04","05","16"]`
+     ergänzt. `scripts/update_puls_pie.py` ausgeführt — Pie zeigt
+     jetzt 7 Schablone / 9 Code-Stub / 5 Fertig (Modul 18 wechselt
+     von Schablone-7-Bucket in Code-Stub-9-Bucket).
+
+**Pflicht-Disziplin eingehalten:**
+
+- KEIN Code für Sub (b)–(i). NUR Sub (a) Vorab-Surface.
+- KEIN Endknoten-Eingriff (MR + MM Re-Migration ist eigene Folge-
+  Sitzung pro Endknoten-Repo).
+- KEIN `PROTOCOL_VERSION`-/`DB_VERSION`-/`BACKUP_FORMAT_VERSION`-
+  Bump (Sub (a) Vorab ist RAM-only Render-Schicht).
+- KEINE neuen Module (KEIN Modul 19, KEIN Vision-Anker-5-
+  Container).
+- KEINE Tafel-Umsortierung CLAUDE.md (5h → 5h.1+5h.2-Pflege ist
+  eigene Folge-Sitzung).
+- KEIN `ZERTIFIKAT_ASPEKTE`-Eintrag (Modul 18 ist Wartungs-/
+  Andock-Schicht, kein Sicherheits-Modul).
+- KEIN automatisches Andock-Triggern. KEIN Hub-Fetch. KEIN
+  `matchThreshold > PROVIDER_MIN_MATCH`.
+
+**Was offen:**
+
+- **Sichttest ungeprüft** — wartet auf Klaus' Browser-Lauf Panel 18
+  Knöpfe 1–10 (Galaxy Tab S6 / DeX-Chrome). Konvention CLAUDE.md
+  „Klaus' Browser-Sichttest ist nicht ersetzbar".
+- **Endknoten-Re-Migration MR + MM** — eigene Folge-Sitzungen pro
+  Endknoten-Repo. Sobald Klaus' Sichttest Panel 18 grün ist,
+  startet die MR-Folge-Sitzung (Brief in dieser Sitzungs-Antwort).
+- **Sub (b)–(i) Voll-Spec + Voll-Bau** — Pipeline 5h.2, NACH App-
+  Freigabe.
+- **PR #190 (Spec-Sitzung 18 Sub (a) Vorab)** noch offen — wurde
+  in diese Bau-Branch fast-forward-gemergt, damit der Bau auf der
+  Spec aufsetzt. Klaus entscheidet die Merge-Reihenfolge.
+
+**Nächster Schritt:** Klaus' Sichttest Panel 18 Knöpfe 1–10. Bei
+grünem Sichttest startet MR-Folge-Sitzung (Brief in der Chat-
+Antwort).
 
 ---
 

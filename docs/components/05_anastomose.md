@@ -147,9 +147,22 @@ init() → Promise<void>
   // Wirft AnastomoseDependenciesError, wenn ein Modul fehlt.
   // Idempotent.
 
-handshake(targetSpore, ownDomainVector, options?) → Promise<HandshakeResult>
+handshake(targetSpore, ownDomainVector?, options?) → Promise<HandshakeResult>
   // Initiiert einen ausgehenden Handshake an targetSpore.endpoint +
   // ENDPOINT.anastomosis.
+  //
+  // Pflege 2026-05-28: ownDomainVector ist OPTIONAL. Weggelassen
+  // (undefined/null) → Modul 05 löst ihn aus der eigenen Spore auf
+  // (ownSpore.domainVector → Float32Array(384), dieselbe Quelle wie
+  // senderSpore). Fehlt die eigene Spore → AnastomoseDependenciesError
+  // "Eigene Spore noch nicht erzeugt … generateOwnSpore(meta) zuerst".
+  // Explizit übergebener Vektor wird honoriert (Float32Array(384)).
+  //
+  // Pflege 2026-05-28: options.timeoutMs override für Channel-Reply-/HTTP-
+  // Abort-Timeout. Default QUERY_TIMEOUT_MS (4000) für automatisierte Pfade.
+  // Interaktiver Modul-18-Wizard reicht z.B. 300000 (5 min), damit ein in
+  // Mobile-Chrome kurz aufgeweckter Tab antworten kann (Observatorium-Lehre
+  // 3). Ungültig (≤0/NaN/kein number) → Fallback QUERY_TIMEOUT_MS.
   //
   // options.transport (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17,
   // additiv; ohne options unverändert zum Bestehenden):
