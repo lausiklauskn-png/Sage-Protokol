@@ -247,25 +247,21 @@
 
     var tiles = Array.prototype.slice.call(grid.querySelectorAll(".vp-tile"));
 
-    // Truhe öffnen / schließen
-    function setOpen(open) {
-      truhe.classList.toggle("is-open", open);
-      truhe.setAttribute("aria-expanded", open ? "true" : "false");
-      if (open) {
-        grid.hidden = false;
-        if (prefersReduced) { grid.classList.add("is-open"); }
-        else { requestAnimationFrame(function () { grid.classList.add("is-open"); }); }
-        truheBurst();
-      } else {
-        grid.classList.remove("is-open");
-      }
-      updateGlow();
+    // Klick auf die Truhe = "Eingang in die Truhe": öffnet die zweite
+    // Seite (Werkzeug-Screen) — genau wie die Einladungs-Tür der Eingang
+    // zur Einladung ist und das Schwarze Loch der Eingang zum Observatorium.
+    function enterTruhe() {
+      truheBurst();
+      var go = function () {
+        if (typeof window.goScreen === "function") window.goScreen("vorteilspack", "vorteilspack");
+        else { location.hash = "#observatorium-vorteilspack"; }
+      };
+      if (prefersReduced) go();
+      else setTimeout(go, 620);
     }
-    function isOpen() { return truhe.classList.contains("is-open"); }
-
-    truhe.addEventListener("click", function () { setOpen(!isOpen()); });
+    truhe.addEventListener("click", enterTruhe);
     truhe.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen(!isOpen()); }
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); enterTruhe(); }
     });
 
     // --- Tür-artige FX: Feenstaub folgt der Maus + Nähe-Licht am Deckel ---
@@ -274,7 +270,7 @@
     var glowHover = 0;
     var dustSpawn = null;
     function updateGlow() {
-      if (glow) glow.style.opacity = String(Math.max(isOpen() ? 1 : 0, glowHover));
+      if (glow) glow.style.opacity = String(glowHover);
     }
     function truheBurst() {
       truhe.classList.add("is-opening");
@@ -381,7 +377,6 @@
         var btn = e.target.closest(".vp-pill");
         if (!btn) return;
         var tier = btn.getAttribute("data-tier");
-        if (!isOpen()) setOpen(true);
         applyFilter(activeTier === tier ? null : tier);
       });
     }
