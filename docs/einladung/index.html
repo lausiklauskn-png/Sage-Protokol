@@ -69,7 +69,13 @@ body {
   font-weight: 350;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  /* overflow-x: clip statt hidden — hidden macht den <body> zum Scroll-
+     Container und bricht damit `position: sticky` (Tür-Bühne) auf Touch-
+     Handys: die Sektion scrollt durch, statt zu pinnen. clip klippt nur
+     horizontal, ohne Scroll-Container → Sticky pinnt wieder zuverlässig.
+     hidden bleibt als Fallback für Browser ohne clip. (Klaus 2026-05-29) */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* WebGL-Canvas fixed background. DOM-Inhalt liegt obenauf.
