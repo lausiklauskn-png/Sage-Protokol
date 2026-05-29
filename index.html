@@ -837,9 +837,11 @@
   .vp-pill { font-family: "Geist Mono", monospace; font-size: 0.72rem; padding: 0.36rem 0.85rem; border-radius: 999px; background: var(--glass); border: 1px solid currentColor; cursor: pointer; transition: background .18s; }
   .vp-pill-must { color: var(--gold); } .vp-pill-basic { color: var(--accent); } .vp-pill-pro { color: var(--accent-2); }
   .vp-pill:hover, .vp-pill.is-active { background: rgba(255,255,255,0.08); }
-  .vp-grid { margin-top: 1.6rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; opacity: 0; max-height: 0; overflow: hidden; transition: opacity .5s ease, max-height .6s ease; }
-  .vp-grid.is-open { opacity: 1; max-height: 5000px; }
-  .vp-grid[hidden] { display: none; }
+  .vp-grid { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
+  /* Werkzeug-Screen (das Innere der Truhe) */
+  .vp-screen-hero { height: 200px; border-radius: 16px; margin: 0 0 1.4rem; background: url('assets/observatorium-truhe.png') center 40% / cover no-repeat; border: 1px solid var(--line); box-shadow: inset 0 -70px 70px -24px var(--bg-2); }
+  .vorteilspack-screen .vp-tier-pills { margin-bottom: 0.4rem; }
+  @media (max-width: 640px) { .vp-screen-hero { height: 140px; } }
   .vp-tile { display: grid; grid-template-columns: 44px 1fr; grid-template-rows: auto auto auto; column-gap: 0.7rem; row-gap: 0.12rem; align-items: center; text-align: left; padding: 0.85rem; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--line); cursor: pointer; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .2s; }
   .vp-tile:hover, .vp-tile:focus-visible { transform: translateY(-2px); border-color: currentColor; box-shadow: 0 8px 22px rgba(0,0,0,0.35); outline: none; }
   .vp-tile.vp-dim { opacity: 0.28; filter: grayscale(0.6); }
@@ -1213,26 +1215,20 @@
           <div class="vp-layout">
             <div class="vp-stage-col">
               <div class="vp-truhe" id="vp-truhe" role="button" tabindex="0"
-                   aria-label="Vorteilspack-Truhe öffnen — Werkzeuge zeigen" aria-expanded="false">
+                   aria-label="In die Vorteilspack-Truhe eintreten — Werkzeuge ansehen">
                 <div class="vp-truhe-img" aria-hidden="true"></div>
                 <canvas class="vp-dust" aria-hidden="true"></canvas>
                 <div class="vp-glow" aria-hidden="true"></div>
                 <div class="vp-flash" aria-hidden="true"></div>
                 <div class="vp-key-pulse" aria-hidden="true"></div>
-                <span class="vp-hint">Klicken zum Öffnen</span>
+                <span class="vp-hint">Klicken → in die Truhe</span>
               </div>
             </div>
             <div class="vp-caption-col">
               <h3>Eine Truhe voll Werkzeug.</h3>
-              <p>Der gleiche Schlüssel, der die Einladungs-Tür öffnet, öffnet auch diese Truhe. Drinnen liegt jedes SBKIM-Werkzeug in eigener Verpackung — mit Beschreibung, Einbau-Schritten, Modul-Code zum Kopieren und einem fertigen Vibe-Coding-Prompt für deine eigene KI-Sitzung. Klick + kopieren statt git clone.</p>
-              <div class="vp-tier-pills" id="vp-tier-pills">
-                <button class="vp-pill vp-pill-must" data-tier="must" type="button">● Must-have</button>
-                <button class="vp-pill vp-pill-basic" data-tier="basic" type="button">● Basic</button>
-                <button class="vp-pill vp-pill-pro" data-tier="pro" type="button">● Pro</button>
-              </div>
+              <p>Der gleiche Schlüssel, der die Einladungs-Tür öffnet, öffnet auch diese Truhe. Klick auf die Truhe → du trittst ein: jedes SBKIM-Werkzeug in eigener Verpackung, mit Beschreibung, Einbau-Schritten, Modul-Code zum Kopieren und einem fertigen Vibe-Coding-Prompt. Klick + kopieren statt git clone.</p>
             </div>
           </div>
-          <div class="vp-grid" id="vp-grid" hidden></div>
         </article>
         <article class="card span-12 blackhole-card" data-back-anchor="blackhole">
           <span class="card-tag">Browser-Observatorium · Anziehung ins Detail</span>
@@ -1540,6 +1536,21 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         </article>
       </div>
     </main>
+    <!-- ============= VORTEILSPACK-TRUHE · Werkzeug-Inhalt ============= -->
+    <main id="screen-vorteilspack" class="screen vorteilspack-screen">
+      <button class="screen-back" onclick="goScreen('overview', 'vorteilspack')">← Zurück zur Sage</button>
+      <div class="vp-screen-hero" aria-hidden="true"></div>
+      <div class="section-head">
+        <h2 class="section-title">Im Inneren der Truhe</h2>
+        <p class="section-sub">Du bist eingetreten. Jedes SBKIM-Werkzeug liegt hier in eigener Verpackung — Klick aufs Werkzeug öffnet Beschreibung, Einbau-Schritte, Modul-Code zum Kopieren und einen fertigen Vibe-Coding-Prompt für deine eigene KI-Sitzung.</p>
+      </div>
+      <div class="vp-tier-pills" id="vp-tier-pills">
+        <button class="vp-pill vp-pill-must" data-tier="must" type="button">● Must-have</button>
+        <button class="vp-pill vp-pill-basic" data-tier="basic" type="button">● Basic</button>
+        <button class="vp-pill vp-pill-pro" data-tier="pro" type="button">● Pro</button>
+      </div>
+      <div class="vp-grid" id="vp-grid"></div>
+    </main>
     <!-- ============= SAGE-GESCHICHTS-GALERIE ============= -->
     <main id="screen-sonnen" class="screen sonnen-screen">
       <button class="screen-back sonnen-back" onclick="goScreen('overview', 'sonnen')">← Zurück zur Sage</button>
@@ -1622,7 +1633,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script>
   // ====== STATE ======
   const STATE = { status: null };
-  const SCREENS = ['overview', 'cycle', 'module', 'data', 'warum', 'observatorium', 'sonnen'];
+  const SCREENS = ['overview', 'cycle', 'module', 'data', 'warum', 'observatorium', 'sonnen', 'vorteilspack'];
   let currentScreen = 'overview';
   let lastBentoCardId = null;
 

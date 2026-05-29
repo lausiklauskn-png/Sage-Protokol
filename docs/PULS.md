@@ -1848,6 +1848,29 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-29 · Pflege Truhe — Eingang in die Truhe (zweite Seite / Werkzeug-Screen)
+
+**Sitzungs-Rolle:** Pflege-Sitzung (Sage-Page-Render, KEIN Modul-Code).
+Branch `claude/pflege-truhe-eingang`. Klaus-Wunsch 2026-05-29.
+
+**Was getan:**
+
+1. **Klick auf die Truhe = Eingang in die Truhe:** öffnet jetzt eine
+   eigene zweite Seite `#screen-vorteilspack` via `goScreen('vorteilspack')`
+   — genau wie die Einladungs-Tür zur Einladung und das Schwarze Loch
+   zum Observatorium führt. Vorher klappte das Grid inline darunter auf.
+2. **Werkzeug-Inhalt im Screen:** Tool-Grid (19 Tiles) + Tier-Pillen +
+   Bild-Hero (`.vp-screen-hero`, das gesendete PNG) leben jetzt im
+   Screen. Die Übersichts-Karte ist nur noch der Eingang (Bild +
+   Caption + Feenstaub/Nähe-Licht-FX + Klick-Flash).
+3. `'vorteilspack'` in die `SCREENS`-Liste aufgenommen; Truhe-Klick mit
+   kurzem Flash-Delay vor der Navigation (reduced-motion: sofort).
+
+**Tests:** `node --check` grün, Smoke 19/19 grün, HTML parst, IDs
+eindeutig. **Offen:** Klaus' Browser-Sichttest.
+
+**Nächster Schritt:** Klaus' Hard-Reload-Sichttest (Klick → zweite Seite).
+
 ### 2026-05-29 · Pflege Truhe — Tür-FX + Karten-Reihenfolge
 
 **Sitzungs-Rolle:** Pflege-Sitzung (Sage-Page-Render, KEIN Modul-Code).
