@@ -255,9 +255,11 @@
         grid.hidden = false;
         if (prefersReduced) { grid.classList.add("is-open"); }
         else { requestAnimationFrame(function () { grid.classList.add("is-open"); }); }
+        truheBurst();
       } else {
         grid.classList.remove("is-open");
       }
+      updateGlow();
     }
     function isOpen() { return truhe.classList.contains("is-open"); }
 
@@ -265,6 +267,101 @@
     truhe.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen(!isOpen()); }
     });
+
+    // --- Tür-artige FX: Feenstaub folgt der Maus + Nähe-Licht am Deckel ---
+    var glow = truhe.querySelector(".vp-glow");
+    var dustCanvas = truhe.querySelector(".vp-dust");
+    var glowHover = 0;
+    var dustSpawn = null;
+    function updateGlow() {
+      if (glow) glow.style.opacity = String(Math.max(isOpen() ? 1 : 0, glowHover));
+    }
+    function truheBurst() {
+      truhe.classList.add("is-opening");
+      if (dustSpawn && dustCanvas) {
+        var r = dustCanvas.getBoundingClientRect();
+        for (var i = 0; i < 70; i++) {
+          dustSpawn(r.width * (0.25 + Math.random() * 0.5), r.height * (0.3 + Math.random() * 0.35), 1);
+        }
+      }
+      setTimeout(function () { truhe.classList.remove("is-opening"); }, 700);
+    }
+
+    if (dustCanvas && !prefersReduced && dustCanvas.getContext) {
+      var ctx = dustCanvas.getContext("2d");
+      var particles = [];
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var dustResize = function () {
+        var r = dustCanvas.getBoundingClientRect();
+        if (r.width === 0) return;
+        dustCanvas.width = Math.round(r.width * dpr);
+        dustCanvas.height = Math.round(r.height * dpr);
+        dustCanvas.style.width = r.width + "px";
+        dustCanvas.style.height = r.height + "px";
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+      };
+      dustResize();
+      if (window.ResizeObserver) new ResizeObserver(dustResize).observe(dustCanvas);
+
+      dustSpawn = function (x, y, n) {
+        for (var i = 0; i < n; i++) {
+          if (particles.length > 240) particles.shift();
+          particles.push({
+            x: x + (Math.random() - 0.5) * 14, y: y + (Math.random() - 0.5) * 14,
+            vx: (Math.random() - 0.5) * 0.7, vy: -0.3 - Math.random() * 0.7,
+            life: 0, maxLife: 0.9 + Math.random() * 1.6,
+            size: 1.3 + Math.random() * 2.8, tint: Math.random()
+          });
+        }
+      };
+
+      truhe.addEventListener("pointerenter", function () { truhe.classList.add("is-near"); });
+      truhe.addEventListener("pointerleave", function () { truhe.classList.remove("is-near"); glowHover = 0; updateGlow(); });
+      truhe.addEventListener("pointermove", function (e) {
+        var r = dustCanvas.getBoundingClientRect();
+        var x = e.clientX - r.left, y = e.clientY - r.top;
+        dustSpawn(x, y, 2 + Math.floor(Math.random() * 3));
+        // Nähe zum geöffneten Deckel (Lid-Zentrum ~ 50% / 42% der Bildhöhe)
+        var dx = x / r.width - 0.5, dy = y / r.height - 0.42;
+        glowHover = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 0.55);
+        updateGlow();
+      });
+
+      var lastT = performance.now();
+      (function dustLoop() {
+        if (!dustCanvas.isConnected) return;
+        var now = performance.now();
+        var dt = Math.min(0.05, (now - lastT) / 1000);
+        lastT = now;
+        var w = dustCanvas.width / dpr, h = dustCanvas.height / dpr;
+        ctx.clearRect(0, 0, w, h);
+        if (particles.length) {
+          particles = particles.filter(function (p) {
+            p.life += dt;
+            if (p.life >= p.maxLife) return false;
+            p.x += p.vx; p.y += p.vy; p.vy -= 0.018;
+            var lr = 1 - (p.life / p.maxLife);
+            var alpha = lr * 0.9;
+            var s = p.size * (0.55 + lr * 0.55);
+            // teal-gold (Mycel-Palette): gold bzw. türkis
+            var g = p.tint < 0.5 ? 200 : 231;
+            var b = p.tint < 0.5 ? 90 : 211;
+            ctx.fillStyle = "rgba(255," + g + "," + b + "," + alpha + ")";
+            ctx.beginPath(); ctx.arc(p.x, p.y, s, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = "rgba(255," + g + "," + b + "," + (alpha * 0.55) + ")";
+            ctx.fillRect(p.x - s * 3, p.y - 0.5, s * 6, 1);
+            ctx.fillRect(p.x - 0.5, p.y - s * 3, 1, s * 6);
+            return true;
+          });
+        }
+        requestAnimationFrame(dustLoop);
+      })();
+    } else {
+      // Reduced-motion / kein Canvas: Nähe-Licht binär per Hover
+      truhe.addEventListener("pointerenter", function () { truhe.classList.add("is-near"); glowHover = 0.7; updateGlow(); });
+      truhe.addEventListener("pointerleave", function () { truhe.classList.remove("is-near"); glowHover = 0; updateGlow(); });
+    }
 
     // Tier-Filter-Pillen
     var activeTier = null;
