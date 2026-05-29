@@ -1848,6 +1848,30 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-29 · Pflege Truhe — Tür-FX + Karten-Reihenfolge
+
+**Sitzungs-Rolle:** Pflege-Sitzung (Sage-Page-Render, KEIN Modul-Code).
+Branch `claude/pflege-truhe-tuer-fx`. Klaus-Wunsch 2026-05-29.
+
+**Was getan:**
+
+1. **Truhe wie die Einladungs-Tür gestaltet:** Bild als Hintergrund-
+   Layer `.vp-truhe-img` (analog `.einladung-door`); **Feenstaub-
+   Canvas** `.vp-dust`, der der Maus folgt (teal-gold Partikel);
+   **Nähe-Licht** — der Goldlicht-Glow wird heller, je näher die Maus
+   am geöffneten Deckel ist (kontinuierlich per `pointermove`-
+   Distanz); **Klick-Flash** beim Öffnen. Logik in
+   `docs/observatorium/vorteilspack.js`, CSS in `index.html`.
+2. **Karten-Reihenfolge:** Schwarz-Loch-Karte (Browser-Observatorium)
+   ans Ende verschoben, Truhe-Karte davor.
+3. Klick öffnet weiterhin das Tool-Grid darunter.
+
+**Tests:** `node --check` grün, Smoke 19/19 grün, HTML parst.
+**Offen:** Klaus' Browser-Sichttest (Feenstaub + Nähe-Licht + Öffnen
+nicht headless prüfbar).
+
+**Nächster Schritt:** Klaus' Hard-Reload-Sichttest auf der Sage-Page.
+
 ### 2026-05-29 · Bau Observatoriums-Vorteilspack — Truhe-Karte komplett (Symbole + Bild + Grid + Modal)
 
 **Sitzungs-Rolle:** Bau-Sitzung Observatoriums-Vorteilspack-Truhe.

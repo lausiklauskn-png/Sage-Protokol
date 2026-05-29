@@ -814,17 +814,22 @@
   @media (max-width: 720px) { .vp-layout { grid-template-columns: 1fr; } }
   .vp-truhe { position: relative; width: 100%; max-width: 320px; aspect-ratio: 5 / 4; margin-inline: auto; border-radius: 16px; overflow: hidden; cursor: pointer; border: 1px solid var(--line); background: #05060f; box-shadow: 0 18px 50px rgba(0,0,0,0.5); outline: none; }
   .vp-truhe:focus-visible { box-shadow: 0 0 0 3px rgba(110,231,211,0.5), 0 18px 50px rgba(0,0,0,0.5); }
-  .vp-truhe-img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(0.82) brightness(0.82); transition: filter .6s ease, transform .8s cubic-bezier(0.25,1,0.5,1); }
-  .vp-truhe.is-open .vp-truhe-img { filter: saturate(1.1) brightness(1.06); transform: scale(1.02); }
-  /* Deckel-/Veil-Overlay: hebt sich beim Öffnen (Bild zeigt bereits offene Truhe) */
-  .vp-lid-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(2,3,12,0.55) 0%, rgba(2,3,12,0.12) 55%, rgba(2,3,12,0.6) 100%); transition: opacity .7s ease; pointer-events: none; }
-  .vp-truhe.is-open .vp-lid-overlay { opacity: 0; }
-  .vp-glow { position: absolute; left: 50%; top: 52%; width: 62%; height: 42%; transform: translate(-50%,-50%) scale(0.6); background: radial-gradient(ellipse at center, rgba(244,180,53,0.5) 0%, rgba(244,180,53,0) 70%); opacity: 0; transition: opacity .7s ease, transform .9s ease; pointer-events: none; mix-blend-mode: screen; }
-  .vp-truhe.is-open .vp-glow { opacity: 1; transform: translate(-50%,-50%) scale(1.15); }
-  .vp-key-pulse { position: absolute; right: 13%; top: 45%; width: 24%; height: 24%; border-radius: 50%; pointer-events: none; animation: vp-key-breath 2.6s ease-in-out infinite; }
+  /* Truhe-Bild als Hintergrund-Layer (genau wie .einladung-door) */
+  .vp-truhe-img { position: absolute; inset: 0; background: url('assets/observatorium-truhe.png') center/cover no-repeat; filter: saturate(0.82) brightness(0.78); transition: filter 1.2s cubic-bezier(.4,0,.25,1), transform .8s cubic-bezier(0.25,1,0.5,1); will-change: filter, transform; }
+  .vp-truhe:hover .vp-truhe-img, .vp-truhe.is-near .vp-truhe-img { filter: saturate(1.06) brightness(1.05); }
+  .vp-truhe:not(:hover):not(.is-near) .vp-truhe-img { transition: filter .55s ease-out, transform .8s cubic-bezier(0.25,1,0.5,1); }
+  .vp-truhe.is-open .vp-truhe-img { filter: saturate(1.12) brightness(1.12); transform: scale(1.02); }
+  /* Feenstaub-Canvas (folgt der Maus, wie .einladung-dust) */
+  .vp-dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: screen; z-index: 2; }
+  /* Goldlicht-Glow am geöffneten Deckel — JS steuert Opacity nach Maus-Nähe */
+  .vp-glow { position: absolute; left: 50%; top: 44%; width: 64%; height: 46%; transform: translate(-50%,-50%); background: radial-gradient(ellipse at center, rgba(244,200,120,0.6) 0%, rgba(244,180,53,0.28) 38%, rgba(244,180,53,0) 72%); opacity: 0; transition: opacity .5s ease; pointer-events: none; mix-blend-mode: screen; z-index: 1; }
+  /* Klick-Flash (warmes Aufleuchten beim Öffnen, wie .einladung-flash) */
+  .vp-flash { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 46%, rgba(255,235,190,0.95) 0%, rgba(255,210,140,0.4) 36%, rgba(255,200,130,0) 72%); opacity: 0; pointer-events: none; mix-blend-mode: screen; transition: opacity .6s ease; z-index: 3; }
+  .vp-truhe.is-opening .vp-flash { opacity: 1; }
+  .vp-key-pulse { position: absolute; right: 13%; top: 45%; width: 24%; height: 24%; border-radius: 50%; pointer-events: none; z-index: 2; animation: vp-key-breath 2.6s ease-in-out infinite; }
   @keyframes vp-key-breath { 0%,100% { box-shadow: 0 0 16px 2px rgba(110,231,211,0.35); } 50% { box-shadow: 0 0 28px 9px rgba(110,231,211,0.6); } }
   .vp-truhe.is-open .vp-key-pulse { animation: none; opacity: 0; transition: opacity .4s; }
-  .vp-hint { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font-family: "Geist Mono", monospace; font-size: 0.66rem; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-shadow: 0 1px 5px rgba(0,0,0,0.85); pointer-events: none; transition: opacity .4s; }
+  .vp-hint { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font-family: "Geist Mono", monospace; font-size: 0.66rem; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-shadow: 0 1px 5px rgba(0,0,0,0.85); pointer-events: none; z-index: 4; transition: opacity .4s; }
   .vp-truhe.is-open .vp-hint { opacity: 0; }
   .vp-caption-col h3 { margin: 0 0 0.6rem; font-size: 1.4rem; }
   .vp-caption-col p { color: var(--muted); margin: 0 0 1rem; line-height: 1.6; }
@@ -867,7 +872,8 @@
   .vp-copy-btn:disabled { opacity: 0.5; cursor: default; }
   .vp-toast { font-size: 0.8rem; color: var(--gold); }
   @media (prefers-reduced-motion: reduce) {
-    .vp-truhe-img, .vp-lid-overlay, .vp-glow, .vp-grid { transition: none; }
+    .vp-truhe-img, .vp-glow, .vp-grid { transition: none; }
+    .vp-dust, .vp-flash { display: none; }
     .vp-key-pulse { animation: none; }
     .vp-modal-card { animation: none; }
   }
@@ -1202,6 +1208,32 @@
             </div>
           </div>
         </article>
+        <article class="card span-12 vorteilspack-card" id="observatorium-vorteilspack" data-back-anchor="vorteilspack">
+          <span class="card-tag">Schicht 4 · Observatoriums-Vorteilspack</span>
+          <div class="vp-layout">
+            <div class="vp-stage-col">
+              <div class="vp-truhe" id="vp-truhe" role="button" tabindex="0"
+                   aria-label="Vorteilspack-Truhe öffnen — Werkzeuge zeigen" aria-expanded="false">
+                <div class="vp-truhe-img" aria-hidden="true"></div>
+                <canvas class="vp-dust" aria-hidden="true"></canvas>
+                <div class="vp-glow" aria-hidden="true"></div>
+                <div class="vp-flash" aria-hidden="true"></div>
+                <div class="vp-key-pulse" aria-hidden="true"></div>
+                <span class="vp-hint">Klicken zum Öffnen</span>
+              </div>
+            </div>
+            <div class="vp-caption-col">
+              <h3>Eine Truhe voll Werkzeug.</h3>
+              <p>Der gleiche Schlüssel, der die Einladungs-Tür öffnet, öffnet auch diese Truhe. Drinnen liegt jedes SBKIM-Werkzeug in eigener Verpackung — mit Beschreibung, Einbau-Schritten, Modul-Code zum Kopieren und einem fertigen Vibe-Coding-Prompt für deine eigene KI-Sitzung. Klick + kopieren statt git clone.</p>
+              <div class="vp-tier-pills" id="vp-tier-pills">
+                <button class="vp-pill vp-pill-must" data-tier="must" type="button">● Must-have</button>
+                <button class="vp-pill vp-pill-basic" data-tier="basic" type="button">● Basic</button>
+                <button class="vp-pill vp-pill-pro" data-tier="pro" type="button">● Pro</button>
+              </div>
+            </div>
+          </div>
+          <div class="vp-grid" id="vp-grid" hidden></div>
+        </article>
         <article class="card span-12 blackhole-card" data-back-anchor="blackhole">
           <span class="card-tag">Browser-Observatorium · Anziehung ins Detail</span>
           <a class="blackhole-stage"
@@ -1233,36 +1265,6 @@
               <p class="bh-hint">Klicke ins Loch → die Doku öffnet sich am anderen Ende des Ereignishorizonts.</p>
             </div>
           </a>
-        </article>
-        <article class="card span-12 vorteilspack-card" id="observatorium-vorteilspack" data-back-anchor="vorteilspack">
-          <span class="card-tag">Schicht 4 · Observatoriums-Vorteilspack</span>
-          <div class="vp-layout">
-            <div class="vp-stage-col">
-              <div class="vp-truhe" id="vp-truhe" role="button" tabindex="0"
-                   aria-label="Vorteilspack-Truhe öffnen — Schlüssel klicken" aria-expanded="false">
-                <picture>
-                  <source srcset="assets/observatorium-truhe.webp" type="image/webp">
-                  <img class="vp-truhe-img" src="assets/observatorium-truhe.png"
-                       width="1401" height="1123" loading="lazy" decoding="async"
-                       alt="Alte Seemanns-Werkzeugkiste, halb geöffnet, ein Schlüssel schwebt vor dem Schloss, im Mycel-Nebel">
-                </picture>
-                <div class="vp-lid-overlay" aria-hidden="true"></div>
-                <div class="vp-glow" aria-hidden="true"></div>
-                <div class="vp-key-pulse" aria-hidden="true"></div>
-                <span class="vp-hint">Schlüssel klicken → Truhe öffnet</span>
-              </div>
-            </div>
-            <div class="vp-caption-col">
-              <h3>Eine Truhe voll Werkzeug.</h3>
-              <p>Der gleiche Schlüssel, der die Einladungs-Tür öffnet, öffnet auch diese Truhe. Drinnen liegt jedes SBKIM-Werkzeug in eigener Verpackung — mit Beschreibung, Einbau-Schritten, Modul-Code zum Kopieren und einem fertigen Vibe-Coding-Prompt für deine eigene KI-Sitzung. Klick + kopieren statt git clone.</p>
-              <div class="vp-tier-pills" id="vp-tier-pills">
-                <button class="vp-pill vp-pill-must" data-tier="must" type="button">● Must-have</button>
-                <button class="vp-pill vp-pill-basic" data-tier="basic" type="button">● Basic</button>
-                <button class="vp-pill vp-pill-pro" data-tier="pro" type="button">● Pro</button>
-              </div>
-            </div>
-          </div>
-          <div class="vp-grid" id="vp-grid" hidden></div>
         </article>
         <div class="meta-footer">
           <div class="meta-cell"><span class="k">Branch</span><span class="v" id="ft-branch">—</span></div>
