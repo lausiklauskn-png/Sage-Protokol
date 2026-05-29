@@ -856,6 +856,23 @@
   .vp-screen-hero { height: 200px; border-radius: 16px; margin: 0 0 1.4rem; background: url('assets/observatorium-truhe.png') center 40% / cover no-repeat; border: 1px solid var(--line); box-shadow: inset 0 -70px 70px -24px var(--bg-2); }
   .vorteilspack-screen .vp-tier-pills { margin-bottom: 0.4rem; }
   @media (max-width: 640px) { .vp-screen-hero { height: 140px; } }
+  /* PWAs im Mycel (Truhe-Screen), nach Themen geordnet */
+  .vp-pwa-section { margin-top: 2.4rem; border-top: 1px solid var(--line); padding-top: 1.6rem; }
+  .vp-pwa-h { font-size: 1.2rem; margin: 0 0 0.3rem; font-weight: 500; }
+  .vp-pwa-sub { color: var(--muted); font-size: 0.88rem; margin: 0 0 1.3rem; line-height: 1.55; }
+  .vp-pwa-theme { margin-bottom: 1.4rem; }
+  .vp-pwa-theme-label { font-family: "Geist Mono", monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.55rem; }
+  .vp-pwa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.7rem; }
+  .vp-pwa-card { display: block; padding: 0.9rem 1rem; background: rgba(0,0,0,0.32); border: 1px dashed var(--line-strong); border-radius: 12px; text-decoration: none; color: inherit; transition: border-color .2s, transform .15s, background .2s; }
+  .vp-pwa-card:hover { border-color: var(--accent); transform: translateY(-2px); background: rgba(110,231,211,0.04); }
+  .vp-pwa-card.live { border-style: solid; border-color: var(--accent); }
+  .vp-pwa-card.repo { border-style: dashed; border-color: var(--gold); }
+  .vp-pwa-name { font-weight: 600; font-size: 1.02rem; letter-spacing: -0.01em; }
+  .vp-pwa-dom { color: var(--muted); font-size: 0.84rem; margin-top: 0.15rem; line-height: 1.45; }
+  .vp-pwa-pill { display: inline-block; margin-top: 0.55rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-family: "Geist Mono", monospace; font-size: 0.68rem; border: 1px solid var(--line); color: var(--muted); }
+  .vp-pwa-card.live .vp-pwa-pill { color: var(--accent); border-color: var(--accent); }
+  .vp-pwa-card.repo .vp-pwa-pill { color: var(--gold); border-color: var(--gold); }
+  .vp-pwa-url { margin-top: 0.45rem; font-family: "Geist Mono", monospace; font-size: 0.66rem; color: var(--dim); word-break: break-all; }
   .vp-tile { display: grid; grid-template-columns: 44px 1fr; grid-template-rows: auto auto auto; column-gap: 0.7rem; row-gap: 0.12rem; align-items: center; text-align: left; padding: 0.85rem; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--line); cursor: pointer; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .2s; }
   .vp-tile:hover, .vp-tile:focus-visible { transform: translateY(-2px); border-color: currentColor; box-shadow: 0 8px 22px rgba(0,0,0,0.35); outline: none; }
   .vp-tile.vp-dim { opacity: 0.28; filter: grayscale(0.6); }
@@ -1564,6 +1581,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         <button class="vp-pill vp-pill-pro" data-tier="pro" type="button">● Pro</button>
       </div>
       <div class="vp-grid" id="vp-grid"></div>
+
+      <!-- PWAs im Mycel — nach Themen geordnet (Klaus 2026-05-29) -->
+      <section class="vp-pwa-section">
+        <h3 class="vp-pwa-h">PWAs im Mycel</h3>
+        <p class="vp-pwa-sub">Eigene PWAs, nach Themen geordnet — jede neue PWA bildet ihr eigenes Thema. (Sage-Protokol selbst ist diese Seite und steht daher nicht in der Liste.)</p>
+        <div id="vp-pwa-themes"></div>
+      </section>
     </main>
     <!-- ============= SAGE-GESCHICHTS-GALERIE ============= -->
     <main id="screen-sonnen" class="screen sonnen-screen">
@@ -1745,6 +1769,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     renderModuleList(s);
     renderCyclePhases(s);
     renderEndknoten(s);
+    renderVorteilspackPwas(s);
     computeScore(s);
     renderBars(s);
   }
@@ -2123,6 +2148,43 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   }
 
   // ====== ENDKNOTEN ======
+  // PWAs im Mycel auf dem Truhe-Screen, nach Themen geordnet. Quelle:
+  // status.json-Endknoten (ohne Sage = Host) + festes Repo SB-KIMTool-Point.
+  // Neue PWA mit neuer Domäne → neues Thema (Klaus 2026-05-29).
+  function renderVorteilspackPwas(s) {
+    const host = document.getElementById('vp-pwa-themes');
+    if (!host) return;
+    const pwas = [];
+    (s.endknoten || []).forEach(e => {
+      if (/^sage/i.test(e.name || '')) return; // Sage selbst ist diese Seite
+      pwas.push({ name: e.name, theme: e.domain || 'Sonstige', url: e.url, kind: 'pwa', live: !!e.integrated });
+    });
+    pwas.push({
+      name: 'SB-KIMTool-Point',
+      theme: 'SBKIM-Werkzeuge · Tool-Point',
+      url: 'https://github.com/lausiklauskn-png/SB-KIMTool-Point',
+      kind: 'repo', live: false,
+      note: 'Repo — die Werkzeuge separat (Verkaufs-Option), später als PWA-Tool-Point + Demo. Kommt später auch nach Sage-Protokol.'
+    });
+    const themes = [];
+    const byTheme = {};
+    pwas.forEach(p => { if (!byTheme[p.theme]) { byTheme[p.theme] = []; themes.push(p.theme); } byTheme[p.theme].push(p); });
+    host.innerHTML = themes.map(th => {
+      const cards = byTheme[th].map(p => {
+        const cls = p.kind === 'repo' ? 'repo' : (p.live ? 'live' : '');
+        const pill = p.kind === 'repo' ? 'Repo · kommt als PWA' : (p.live ? 'Lebendig · angedockt' : 'PWA');
+        return '<a class="vp-pwa-card ' + cls + '" href="' + escapeHtml(p.url || '#') + '" target="_blank" rel="noopener">' +
+          '<div class="vp-pwa-name">' + escapeHtml(p.name) + '</div>' +
+          (p.note ? '<div class="vp-pwa-dom">' + escapeHtml(p.note) + '</div>' : '') +
+          '<span class="vp-pwa-pill">' + pill + '</span>' +
+          (p.url ? '<div class="vp-pwa-url">' + escapeHtml(p.url) + '</div>' : '') +
+          '</a>';
+      }).join('');
+      return '<div class="vp-pwa-theme"><div class="vp-pwa-theme-label">' + escapeHtml(th) + '</div>' +
+             '<div class="vp-pwa-grid">' + cards + '</div></div>';
+    }).join('');
+  }
+
   function renderEndknoten(s) {
     const grid = document.getElementById('endknoten-grid');
     if (!grid) return;
