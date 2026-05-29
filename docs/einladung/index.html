@@ -654,7 +654,7 @@ section.scene-doorway {
    Strecke, damit die Tür-/Kamerafahrt beim Hand-Scrollen NICHT nur kurz
    aufblitzt, sondern deutlich länger sichtbar bleibt (Klaus 2026-05-29). */
 @media (pointer: coarse) {
-  section.scene-doorway { min-height: 560vh; }
+  section.scene-doorway { min-height: 360vh; }
 }
 section.scene-doorway .doorway-stage {
   position: sticky;
@@ -1405,6 +1405,26 @@ document.querySelectorAll('section.scene').forEach(sec => {
     const total = sec.offsetHeight - window.innerHeight;
     const scrolled = Math.max(0, -rect.top);
     const progress = Math.max(0, Math.min(1, scrolled / Math.max(1, total)));
+
+    // Kleine Bildschirme (Handy, < Tablet): KEIN Seitwärts-Scrub — der fühlt
+    // sich auf Touch schlecht an. Stattdessen wie die Sage-Page-Eingangstür:
+    // Tür KOMPLETT sichtbar, dann beim Weiterscrollen sanft transparent, sodass
+    // der Wald (Lichtungs-Hintergrund der Bühne) darunter auftaucht.
+    // (Klaus 2026-05-29)
+    if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches) {
+      let imgO = 1, flashO = 0, scale = 1.0;
+      if (progress >= 0.62) {
+        const t = (progress - 0.62) / 0.38;
+        const e = t * t * (3 - 2 * t);
+        imgO   = 1 - e;            // Tür wird transparent → Wald erscheint
+        flashO = e * 0.7;          // warmer Lichtschein
+        scale  = 1.0 + e * 0.06;   // minimaler Zoom, KEIN Seitwärts (tx = 0)
+      }
+      image.style.transform = `scale(${scale.toFixed(3)}) translateX(0%)`;
+      image.style.opacity = imgO.toFixed(3);
+      flash.style.opacity = flashO.toFixed(3);
+      return;
+    }
 
     let scale = 2.5, tx = -22, flashO = 0, imgO = 1;
 
