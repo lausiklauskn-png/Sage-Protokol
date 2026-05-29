@@ -164,6 +164,11 @@
   .hero-topology { margin-top: 4rem; position: relative; background: var(--glass); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.6rem 1.5rem 1.3rem; overflow: hidden; }
   .hero-topology::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 80% at 50% 50%, rgba(110,231,211,0.06), transparent 70%); pointer-events: none; }
   .hub-demo-badge { position: absolute; top: 1.1rem; right: 1.3rem; z-index: 2; padding: 0.3rem 0.6rem; background: rgba(0,0,0,0.5); border: 1px solid var(--line); border-radius: 999px; font-family: "Geist Mono", monospace; font-size: 0.66rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; }
+  /* Hochformat: Badge in den Normal-Fluss (über den Titel), sonst
+     überlappt er „Modul-Topologie · live" (Klaus' S21-Befund 2026-05-29). */
+  @media (max-width: 760px) {
+    .hub-demo-badge { position: static; display: inline-block; top: auto; right: auto; margin: 0 0 0.9rem; }
+  }
   .topology-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.3rem; position: relative; }
   .topology-head h2 { margin: 0; font-size: 1.4rem; font-weight: 500; letter-spacing: -0.02em; }
   .topology-sub { color: var(--muted); font-size: 0.88rem; margin-top: 0.18rem; }
