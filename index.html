@@ -826,6 +826,11 @@
   /* Klick-Flash (warmes Aufleuchten beim Öffnen, wie .einladung-flash) */
   .vp-flash { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 46%, rgba(255,235,190,0.95) 0%, rgba(255,210,140,0.4) 36%, rgba(255,200,130,0) 72%); opacity: 0; pointer-events: none; mix-blend-mode: screen; transition: opacity .6s ease; z-index: 3; }
   .vp-truhe.is-opening .vp-flash { opacity: 1; }
+  /* Blaues Schlüssel-Pulsen — rein additives Licht (kein dunkler Schatten),
+     aktiviert sich erst bei Maus-Hover bzw. Touch-Nähe. */
+  .vp-key-pulse { position: absolute; right: 10%; top: 40%; width: 28%; height: 28%; border-radius: 50%; pointer-events: none; z-index: 2; mix-blend-mode: screen; opacity: 0; transform: scale(0.8); transition: opacity .35s ease; background: radial-gradient(circle, rgba(110,231,211,0.6) 0%, rgba(110,231,211,0.22) 42%, rgba(110,231,211,0) 70%); }
+  .vp-truhe:hover .vp-key-pulse, .vp-truhe.is-near .vp-key-pulse { opacity: 1; animation: vp-key-breath 2.4s ease-in-out infinite; }
+  @keyframes vp-key-breath { 0%, 100% { transform: scale(0.82); } 50% { transform: scale(1.08); } }
   .vp-hint { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font-family: "Geist Mono", monospace; font-size: 0.66rem; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-shadow: 0 1px 5px rgba(0,0,0,0.85); pointer-events: none; z-index: 4; transition: opacity .4s; }
   .vp-truhe.is-open .vp-hint { opacity: 0; }
   .vp-caption-col h3 { margin: 0 0 0.6rem; font-size: 1.4rem; }
@@ -873,6 +878,7 @@
   @media (prefers-reduced-motion: reduce) {
     .vp-truhe-img, .vp-glow, .vp-grid { transition: none; }
     .vp-dust, .vp-flash { display: none; }
+    .vp-key-pulse { animation: none; }
     .vp-modal-card { animation: none; }
   }
   </style>
@@ -1216,6 +1222,7 @@
                 <canvas class="vp-dust" aria-hidden="true"></canvas>
                 <div class="vp-glow" aria-hidden="true"></div>
                 <div class="vp-flash" aria-hidden="true"></div>
+                <div class="vp-key-pulse" aria-hidden="true"></div>
                 <span class="vp-hint">Klicken → in die Truhe</span>
               </div>
             </div>
