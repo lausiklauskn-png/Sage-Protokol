@@ -170,8 +170,13 @@
   .topology-counts { font-family: "Geist Mono", monospace; font-size: 0.78rem; color: var(--dim); letter-spacing: 0.04em; }
   .topology-counts strong { color: var(--text); font-weight: 500; }
   #topology-svg { width: 100%; height: clamp(420px, 50vw, 580px); display: block; position: relative; z-index: 1; }
-  /* Hochformat: hohes 2-Spalten-Layout füllt die Breite (Knoten max. groß) */
-  @media (max-width: 760px) { #topology-svg { height: auto; aspect-ratio: 600 / 1190; } }
+  /* Hochformat: 3-Spalten-Layout füllt die Breite (viewBox 360×600 ≈ Geräte-
+     Breite → Knoten groß), Beschriftung mindestens Legenden-Größe. */
+  @media (max-width: 760px) {
+    #topology-svg { height: auto; aspect-ratio: 360 / 600; }
+    #topology-svg .topo-node-id { font-size: 18px; }
+    #topology-svg .topo-node-label { font-size: 13px; }
+  }
   #topology-svg .topo-link { stroke: rgba(255,255,255,0.13); stroke-width: 1.1; fill: none; transition: stroke .25s, stroke-width .25s; }
   #topology-svg .topo-link.active { stroke: var(--accent); stroke-width: 1.8; }
   #topology-svg .topo-node-bg { fill: rgba(255,255,255,0.04); stroke: rgba(255,255,255,0.18); stroke-width: 1.1; cursor: pointer; transition: stroke .2s, fill .2s; }
@@ -1869,15 +1874,14 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
   // Hochformat-Layout (schmale Bildschirme): 2 Spalten, hoch gestapelt,
   // damit die Knoten bei Fit-to-width groß bleiben (Klaus' S21-Befund).
+  // Hochformat-Layout (schmale Bildschirme): 3 Spalten × 5 Zeilen = 15 Module,
+  // row-major nach ID, volle Breite, große Knoten (Klaus' S21-Befund 2026-05-29).
   const TOPO_LAYOUT_PORTRAIT = {
-    '00': { col: 0, row: 0 }, '02': { col: 1, row: 0 },
-    '01': { col: 0, row: 1 }, '08': { col: 1, row: 1 },
-    '03': { col: 0, row: 2 }, '04': { col: 1, row: 2 },
-    '09': { col: 0, row: 3 }, '05': { col: 1, row: 3 },
-    '06': { col: 0, row: 4 }, '07': { col: 1, row: 4 },
-    '10': { col: 0, row: 0 }, '11': { col: 1, row: 0 },
-    '12': { col: 0, row: 1 }, '14': { col: 1, row: 1 },
-    '15': { col: 0, row: 2 }
+    '00': { col: 0, row: 0 }, '01': { col: 1, row: 0 }, '02': { col: 2, row: 0 },
+    '03': { col: 0, row: 1 }, '04': { col: 1, row: 1 }, '05': { col: 2, row: 1 },
+    '06': { col: 0, row: 2 }, '07': { col: 1, row: 2 }, '08': { col: 2, row: 2 },
+    '09': { col: 0, row: 3 }, '10': { col: 1, row: 3 }, '11': { col: 2, row: 3 },
+    '12': { col: 0, row: 4 }, '14': { col: 1, row: 4 }, '15': { col: 2, row: 4 }
   };
   function topoIsPortrait() { return !!(window.matchMedia && window.matchMedia('(max-width: 760px)').matches); }
   // Bei Orientierungs-/Größenwechsel neu rendern, wenn sich Hoch-/Querformat ändert.
@@ -1915,7 +1919,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     all.forEach(m => { byId[m.id] = m; });
 
     const portrait = topoIsPortrait();
-    svg.setAttribute('viewBox', portrait ? '0 0 600 1190' : '0 0 1000 520');
+    svg.setAttribute('viewBox', portrait ? '0 0 360 600' : '0 0 1000 520');
 
     function addClusterLabel(x, y, t) {
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -1928,15 +1932,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
     const positions = {};
     if (portrait) {
-      const colX = [205, 395];
-      const rowY = [110, 250, 390, 530, 670];
-      const backRowY = [840, 980, 1120];
-      addClusterLabel(300, 60, 'module · foundation → data-exchange');
-      addClusterLabel(300, 772, 'backlog · schutz + diffusion + membran');
+      // 3 Spalten × 5 Zeilen, volle Breite (viewBox 360 ≈ Geräte-CSS-Breite),
+      // keine Cluster-Labels (maximaler Platz für große, lesbare Knoten).
+      const colX = [62, 180, 298];
+      const rowY = [80, 188, 296, 404, 512];
       all.forEach(m => {
         const lay = TOPO_LAYOUT_PORTRAIT[m.id]; if (!lay) return;
-        const y = BACKLOG_IDS.has(m.id) ? (backRowY[lay.row] || backRowY[0]) : (rowY[lay.row] || rowY[0]);
-        positions[m.id] = { x: colX[lay.col], y: y };
+        positions[m.id] = { x: colX[lay.col], y: rowY[lay.row] || rowY[0] };
       });
     } else {
       const colX = [180, 410, 640, 870];
@@ -1978,26 +1980,33 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       g.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ')');
       g.addEventListener('click', () => openModuleDetail(m, BACKLOG_IDS.has(m.id)));
 
+      // Hochformat: größere Knoten + tiefer gesetzte Labels (S21-Lesbarkeit).
+      const rBg = portrait ? 32 : 24;
+      const rRing = portrait ? 23 : 17;
+      const rDot = portrait ? (nextup ? 13 : 12) : (nextup ? 9 : 8);
+      const idY = portrait ? 50 : 38;
+      const nameY = portrait ? 66 : 50;
+
       const bg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      bg.setAttribute('class', 'topo-node-bg'); bg.setAttribute('r', 24);
+      bg.setAttribute('class', 'topo-node-bg'); bg.setAttribute('r', rBg);
       g.appendChild(bg);
 
       if (nextup) {
         const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        ring.setAttribute('class', 'topo-node-ring'); ring.setAttribute('r', 17);
+        ring.setAttribute('class', 'topo-node-ring'); ring.setAttribute('r', rRing);
         g.appendChild(ring);
       }
       const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      dot.setAttribute('class', 'topo-node-dot'); dot.setAttribute('r', nextup ? 9 : 8);
+      dot.setAttribute('class', 'topo-node-dot'); dot.setAttribute('r', rDot);
       g.appendChild(dot);
 
       const idLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      idLabel.setAttribute('class', 'topo-node-id'); idLabel.setAttribute('y', 38);
+      idLabel.setAttribute('class', 'topo-node-id'); idLabel.setAttribute('y', idY);
       idLabel.textContent = m.id;
       g.appendChild(idLabel);
 
       const nameLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      nameLabel.setAttribute('class', 'topo-node-label'); nameLabel.setAttribute('y', 50);
+      nameLabel.setAttribute('class', 'topo-node-label'); nameLabel.setAttribute('y', nameY);
       nameLabel.textContent = m.name;
       g.appendChild(nameLabel);
 
