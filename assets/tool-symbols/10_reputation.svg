@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Modul 10 Reputation — Verdienst-Orden mit Sternen-Krone">
+  <title>Reputation — Verdienst-Orden mit Sternen-Krone</title>
+  <!-- Sternen-Krone -->
+  <path d="M32 11 V16 M29.5 13.5 H34.5"/>
+  <path d="M23 14 V18 M21 16 H25"/>
+  <path d="M41 14 V18 M39 16 H43"/>
+  <!-- Bänder -->
+  <path d="M26 20 L28 31 M38 20 L36 31"/>
+  <!-- Orden-Scheibe -->
+  <circle cx="32" cy="40" r="10"/>
+  <!-- Stern in der Scheibe -->
+  <path d="M32 34 L33.47 37.98 L37.71 38.15 L34.38 40.77 L35.53 44.85 L32 42.5 L28.47 44.85 L29.62 40.77 L26.29 38.15 L30.53 37.98 Z"/>
+</svg>

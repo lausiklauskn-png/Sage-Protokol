@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Modul 06 Heterokaryose — Doppelschlüssel mit zwei Bärten an einem Schaft">
+  <title>Heterokaryose — Doppelschlüssel mit zwei Bärten</title>
+  <circle cx="32" cy="15" r="7"/>
+  <circle cx="32" cy="15" r="2.5"/>
+  <path d="M32 22 V52"/>
+  <path d="M32 42 H26 M28 42 V38"/>
+  <path d="M32 50 H38 M36 50 V46"/>
+</svg>

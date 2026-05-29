@@ -1848,6 +1848,49 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-29 · Bau Observatoriums-Vorteilspack — Werkzeug-Symbole + Bild-Spec (Teil 1, Bild-Gate)
+
+**Sitzungs-Rolle:** Bau-Sitzung Observatoriums-Vorteilspack-Truhe.
+Branch `claude/bau-observatoriums-vorteilspack`. Basiert auf
+Brief `BRIEF_BAU_OBSERVATORIUMS_VORTEILSPACK.md` + Klaus'
+Vision-Erweiterung 2026-05-29 (zwei additive Punkte: Truhe als
+gerendertes Bild-Asset, Werkzeug-Symbol pro Modul).
+
+**Was getan:**
+
+1. **19 selbst-gezeichnete Werkzeug-Symbole** in
+   `assets/tool-symbols/NN_modul.svg` — gegenständlich (Lupe auf
+   Buch, Bronze-Kapsel, Sextant, Apotheker-Waage, Doppelschlüssel,
+   Sanduhr mit Blättern, Marionettenkreuz, Mycel-Schraubenschlüssel,
+   Verdienst-Orden, Wasserschleuse, Eisen-Riegel, Sonar-Wellen,
+   Wappenschild, Lack-Siegel, Kristallkugel, Multitool, Zauberstab
+   mit Kompass …). Monochrom (`currentColor`, stroke 1.5, keine
+   Füllflächen), keine Icon-Library. Alle 19 XML-wohlgeformt.
+2. **Vorschau-Kontaktbogen** `assets/tool-symbols/_vorschau.html` —
+   zeigt alle 19 Symbole in Tier-Färbung (Gold/Türkis/Violet) für
+   Klaus' Optik-Sichttest im Browser.
+3. **Konzept-Karte `_observatoriums_vorteilspack.md`** erweitert:
+   § Klaus-Festlegungen 2026-05-29, § Werkzeug-Symbol-Liste (Tabelle
+   mit Bedeutungs-Ankern), § Truhe-Bild-Asset (voller Bild-Prompt +
+   Negativ-Hinweise + Alternativ-Variationen), Sub-(a)/(b)-
+   Entscheidungen markiert, Bauzustand-Tabelle ergänzt.
+
+**Was offen / blockiert:**
+
+- **STOP-Gate Truhe-Bild:** `assets/observatorium-truhe.webp` fehlt
+  im Repo (Klaus' externe Lieferung). Brief § Verifikations-Schritt
+  4 verlangt STOP+Nachfrage bei fehlendem Bild. Deshalb **Eingriff A
+  (`index.html`-Truhe-Karte) NICHT gebaut** — wartet auf Bild +
+  Klaus' Go (oder Go für Fallback-Bau ohne Bild).
+- 19 vs „20 Tiles": Modul 13 ist kein Modul (Sammel-Karte), die
+  maßgebliche Liste hat 19 Tools. Im Brief als Rundung notiert.
+- Klaus' Symbol-Optik-Sichttest steht aus (nicht headless prüfbar).
+
+**Nächster sinnvoller Schritt:** Klaus liefert
+`assets/observatorium-truhe.webp` → Folge-Bau baut die `index.html`-
+Karte (Truhe-Stage `<img>` + Deckel-Overlay-Animation + 19-Tile-Grid
+mit Symbolen + 9-Sektionen-Modal + Clipboard). Symbol-Set ist bereit.
+
 ### 2026-05-28 · Brief-Anlage MR + MM Modul-18-Einbau (Mini-Sitzungs-Briefe)
 
 **Sitzungs-Rolle:** Brief-Anlage. Branch
