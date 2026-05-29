@@ -681,6 +681,13 @@ section.scene-doorway .doorway-image {
   will-change: transform, opacity;
   opacity: 1;
 }
+/* Handy (≤760px, einfacher Fade-Modus): die GANZE Tür zeigen, nicht nur den
+   mittleren Lichtspalt — auf schmalem Hochformat würde `cover` das breitere
+   Tür-Bild seitlich beschneiden. `contain` passt die komplette Tür ins Bild.
+   (Klaus 2026-05-29) */
+@media (max-width: 760px) {
+  section.scene-doorway .doorway-image { background-size: contain; }
+}
 section.scene-doorway .doorway-flash {
   position: absolute; inset: 0;
   background: radial-gradient(ellipse at 30% 50%, rgba(255, 230, 180, 1) 0%, rgba(255, 220, 160, 0.85) 25%, rgba(255, 200, 130, 0) 70%);
