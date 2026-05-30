@@ -1848,6 +1848,35 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-30 · Spec-Sitzung „Andock-Konventionen" — INTERFACES §11 (netzweit)
+
+**Sitzungs-Rolle:** Spec-Sitzung (heilige Tafel). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+SB·KIMTool hat ihren eingefrorenen Rückbrief A–E geliefert (Postfach
+§10). Daraus ist **INTERFACES §11 „Andock-Konventionen"** entstanden —
+netzweit gültig, nicht mehr nur bilateral:
+
+- **§11.1** Kanonische Signier-Form (Norm + Pseudocode + Determinismus-
+  Klausel; byte-deckungsgleich Modul 02 ↔ A's `verify_foreign_spore.mjs`).
+- **§11.2** Verifizierer-Paar (WebCrypto/Modul 02 + `tools/verify_remote_spore.mjs`
+  ↔ A's `node:crypto`), 4 Pflicht-Prüfpunkte.
+- **§11.3** Inbox-Konvention (`<gegenseite>_inbox.json` signatur-rein +
+  `.verify.md` Pflichtfelder, Namens-Symmetrie).
+- **§11.4** Sync-Vertrag (7 Regeln; Regel 7 für N>2 verallgemeinert;
+  `status.json`-Pflichtfelder; `matchScore` Pflicht bei `verified-match`;
+  `pingStatus`-Stufen).
+- **§11.5** 9 Pflicht-Spore-Felder + **Sage-Entscheidung: gestufter
+  `domainVector` angenommen** (optional `verified-spore`, Pflicht
+  `verified-match`; `_demo` bis echtes Embedding).
+
+§10-Changelog-Zeile ergänzt. Postfach: Abgleich-Antwort A–E (5× Ja) +
+Bau-Protokoll-Zeile + Status-Kopf gestempelt. KEIN PROTOCOL_VERSION-Bump
+(Konventions-Tafel, die Form ist bereits gelebt — kein Schema-Bruch).
+
+**Offen:** A's Lese-Quittung zu §11 (Sync §6.2). Danach gilt die Tafel
+für jeden künftigen Forker/Knoten als Andock-Vorlage.
+
 ### 2026-05-30 · Match bestätigt + neue Identität — SB·KIMTool `verified-match` 0.848508
 
 **Sitzungs-Rolle:** Andock-Sitzung #4 (Inter-Knoten-Austausch). Branch
