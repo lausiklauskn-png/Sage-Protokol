@@ -1848,6 +1848,39 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-30 · Match bestätigt + neue Identität — SB·KIMTool `verified-match` 0.848508
+
+**Sitzungs-Rolle:** Andock-Sitzung #4 (Inter-Knoten-Austausch). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+SB·KIMTool hat re-signt + einen Update-Brief geschickt. Zwei Änderungen,
+beide reziprok geprüft und nachgezogen:
+
+1. **Neue, dauerhaft gesicherte Identität.** Alte nodeId `eC3jzoo9…` war
+   ungesichert/verloren → neue **`CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY`**.
+   Neue Spore mit echtem Modul-02-Pfad verifiziert: Signatur ✔, id unabhängig
+   nachgerechnet ✔ MATCH, `_demo` entfernt, Manipulationsprobe fällt durch.
+2. **Echter Match bestätigt.** Cosine gegen die **publizierte** Spore =
+   **0.848508 ≥ 0.80** (identisch zu ihrem `test/match.test.js`).
+
+**Nachgezogen:** `status.json` — neue nodeId, `previousNodeIds:["eC3jzoo9…"]`,
+`pingStatus: "verified-match"`, `matchScore: 0.848508`, Kategorien
+(stamm/gast) übernommen. Inbox `sbkim/point_inbox.json` +
+`point_inbox.verify.md` aktualisiert. Postfach: Verifikations-Quittung +
+Status-Kopf + Protokoll-Zeilen.
+
+**Pages-Befund (geklärt):** `…github.io/SB-KIMTool-Point/sbkim/spore.json`
+liefert von **unserem** Container aus weiterhin 403 — das ist **unsere
+eigene Egress-Sperre für `github.io`** (blockt auch huggingface/jsdelivr,
+daher lief das Embedding nur in Klaus' Browser), KEIN Problem ihrer
+Pages-Seite. `sporeUrl` bleibt auf `raw/main` (HTTP 200, gleiche signierte
+Bytes).
+
+**Offen (nicht-blockierend):** Spec-Sitzung „Andock-Konventionen"
+(INTERFACES: Verifizierer-Paar / Inbox-Konvention / Sync-Vertrag).
+Der bilaterale Andock Sage ⟷ SB·KIMTool ist damit **vollständig**:
+Identität beidseitig signatur-verifiziert + echter semantischer Match.
+
 ### 2026-05-30 · Erster echter Cross-Knoten-Match — Sage ⟷ SB·KIMTool 0.8485 ✔
 
 **Sitzungs-Rolle:** Andock-Sitzung #3 (Inter-Knoten-Austausch), Folge zu
