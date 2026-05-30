@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-26 (21 Module)
+  title Modulstand 2026-05-30 (21 Module)
   "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -1847,6 +1847,67 @@ darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
 sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
+
+### 2026-05-30 · Andock-Austausch SB·KIMTool·Point — Postfach + Brücke + Werkzeuge
+
+**Sitzungs-Rolle:** Andock-Sitzung (Inter-Knoten-Austausch). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`, PR #224 (Draft). KEIN
+Modul-Code geändert — nur additive Andock-Werkzeuge + Postfach.
+Übergabeprotokoll: [→ Archiv](sessions/archiv/2026-05-30_andock-austausch-sb-kimtool-point.md).
+
+**Auslöser:** SB·KIMTool·Point (externes Repo
+`lausiklauskn-png/SB-KIMTool-Point`) hat ein Andock-Postfach
+`sbkim/AUSTAUSCH.md` + Vertrag `docs/ANDOCK.md` angelegt und 5 Fragen
+gestellt. Klaus' Auftrag: antworten + Austausch starten, dann freie
+Hand für das Ziel „direkte Repo-zu-Repo-Kommunikation über SBKIM".
+
+**Getan:**
+
+- Spiegel-Postfach `sbkim/AUSTAUSCH.md` angelegt: Status-Kopf-Zeile B
+  (Prüf-Rhythmus = pro Andock-Sitzung, Empfangsmodus; „zuletzt gelesen
+  2026-05-30"), alle 5 Fragen direkt beantwortet, ehrliche
+  Now/Not-now-Trennung.
+- **Befund Modul 02:** Die Karten-/Tabellen-Zeile trägt „Code-Stub",
+  aber `SbkimSpore.verifyForeignSpore` ist **voll implementiert und
+  live-erprobt** (Cross-Knoten-Handshake 2026-05-16). Doku-Rückstand,
+  kein Code-Stand — Kandidat für eine eigene Pflege-Sitzung
+  (status.json + Karte 02 nachziehen).
+- **Konkreter Blocker an SB·KIMTool gemeldet:** ihr ANDOCK-§2-Schema
+  lässt zwei unserer `REQUIRED_SPORE_FIELDS` aus — `createdAt` +
+  `embeddingModel`. Bewiesen: deren Schema wörtlich → INVALID
+  (`Pflichtfeld fehlt: createdAt`).
+- **Andock-Werkzeuge gebaut** (`tools/`, fahren den ECHTEN Modul-02-
+  Verifizierer headless über Node v22, keine Drift):
+  `verify_remote_spore.mjs` (prüft Spore per URL/Datei),
+  `make_example_spore.mjs` (+ Referenz `sbkim/example_sbkimtool_spore.json`),
+  `tools/README.md`. Beweis: eigene Spore ✔ 9/9, Referenz ✔ 9/9.
+- **Kopierbarer Spore-Generator für SB·KIMTool**:
+  `sbkim/fuer-SB-KIMTool-Point/generate_spore.mjs` — nach deren ANDOCK
+  §2–§5, ergänzt um die zwei Pflichtfelder, mit `SBKIM_NODE_KEY`-Handling
+  (ANDOCK §3) und flüchtigem Test-Fallback. Getestet: persistenter
+  Schlüssel → nodeId stabil über Läufe → ✔ VALID; flüchtig → ✔ VALID
+  (klar als Test markiert).
+- **Brücke statt Zwang (Klaus' Leitlinie):** die Krypto-Schicht hängt
+  an SB·KIMTools noch unveröffentlichter Spore — NICHT erzwungen.
+  Stattdessen die im Protokoll vorgesehene Datei-Dead-Drop-Brücke
+  verifiziert: bidirektional lebend (wir lesen ihr Repo HTTP 200; sie
+  lesen unseres über die Branch-Raw-URL HTTP 200; `main` erst nach
+  Merge).
+
+**Nachtrag 2026-05-30 (selbe Sitzung):** SB·KIMTool hat ihre Spore
+veröffentlicht. **Verifiziert ✔ VALID** (Signatur gültig, `id ==
+base64url(SHA256(rawPub))` unabhängig nachgerechnet, 9/9 Pflichtfelder,
+`domainVector` `_demo`). `nodeId: eC3jzoo9…i0zdw`. Als **vierter
+Endknoten** in `status.json` registriert (`pingStatus:
+"verified-spore"`, `sporeUrl` = raw main, da Pages noch 403). Postbox-
+Quittung + Frage-1/4-Antwort in `sbkim/AUSTAUSCH.md`.
+
+**Offen / nächste Schritte:** PR #224 nach `main` mergen (stabile URL) —
+Klaus' Zuruf. Zwei nicht-blockierende Hinweise an SB·KIMTool: Pages-
+Endpoint liefert noch 403 (Pages aktivieren); `stamm/guestCategories`
+fehlen in ihrer Spore. Echter Match braucht echten `domainVector`
+(Live-Modul 03) beidseits — `verified-spore` ist erst Identitäts-Andock,
+kein semantischer Handshake.
 
 ### 2026-05-29 · Pflege Truhe — Eingang in die Truhe (zweite Seite / Werkzeug-Screen)
 
