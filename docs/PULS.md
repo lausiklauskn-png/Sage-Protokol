@@ -1841,6 +1841,40 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Sage-Page: SB·KIMTool als verified-match + Andock-Lehren
+
+**Sitzungs-Rolle:** Pflege-Sitzung (Sage-Page-Render-Logik + Doku). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Die heute erzielten Andock-Erfolge auf der Sage-Page sichtbar gemacht
+(data-driven aus `status.json`) + Lehren dokumentiert:
+
+- **`index.html` Render-Logik** (zwei kleine, node-check-grüne Edits):
+  `renderEndknoten` kennt jetzt `verified-match` („Lebendig · echter Match
+  0.85") und `verified-spore` („Lebendig · Identität verifiziert"); der
+  Real-Anteil-Zähler wertet `verified-match`/`verified-spore`/`live-channel`
+  als lebendig. Folge: SB·KIMTool·Point rendert in der Endknoten-Karte als
+  vierter **lebendiger** Knoten mit Score 0.85.
+- **`status.json`** SB·KIMTool-Eintrag um `landingPage` ergänzt (eigene
+  github.io-Landing-Page als zusätzlicher Verbindungs-Punkt — Werkzeug-
+  Knoten, kein PWA-Endknoten).
+- **`docs/sessions/LEHREN_ANDOCK_BROWSER_KOMPLEXITAET.md`** — Lehren für
+  Tool-Nachbau + besseren Handshake/Matching für Mein-Rezeptbuch +
+  Mein-Mixarium trotz Browser-Komplexität (headless-Embedding-403 →
+  Browser-Weg, byte-identische kanonische Form, SW-Phantom-Cache-Workaround,
+  BroadcastChannel statt Clipboard, Identitäts-Sicherung, gestufte
+  Andock-Stufen, Inbox-Konvention + MR/MM-Re-Migrations-To-dos).
+
+**Umgebungs-Befund (ehrlich):** Die Remote-Umgebung hat ihren stdout-/
+Read-Kanal über weite Strecken der Sitzung verstümmelt. Deshalb wurden
+bewusst NUR verifizierbare Änderungen vorgenommen (JSON validiert,
+inline-JS `node --check` grün). Der **visuelle Text-Überlappungs-Bug aus
+Klaus' Screenshot** (Backlog-Badges „14 Diffusion"/„15 Membran"
+überlappen) konnte NICHT sicher lokalisiert werden (weder Topology-
+`paintNode` noch `.lamp`-CSS sind die Quelle) und bleibt offen für eine
+Folge-Sitzung mit stabiler Umgebung — KEIN Blind-Edit am 271-KB-Live-File.
+
+
 **Format:** Der jüngste Eintrag steht ausführlich oben. Alle älteren
 Sitzungen sind in `docs/sessions/archiv/` abgelegt — der Index
 darunter verlinkt jedes Übergabeprotokoll. Neue Sitzungen tragen
