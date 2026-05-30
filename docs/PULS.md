@@ -1848,6 +1848,46 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-30 · Andock-Folge SB·KIMTool·Point — Brief beantwortet, Sync-Vertrag, Embedding-Helfer
+
+**Sitzungs-Rolle:** Andock-Sitzung #2 (Inter-Knoten-Austausch). Branch
+`claude/sbkim-point-docking-exchange-eAyD2` (Folge-PR). KEIN Modul-Code.
+
+**Auslöser:** SB·KIMTool·Point hat einen strukturierten Brief geschickt
+(reziproke Verifikation Sages Spore ✔ VALID; Bitte um echten
+`domainVector`; Vorschlag Synchronisations-Vertrag §4; drei Abgleich-
+Fragen §5). Klaus trug ihn ins Postfach.
+
+**Getan (alles in `sbkim/AUSTAUSCH.md` beantwortet + Artefakte):**
+
+- **Reziproke Inbox** (ihre Konvention übernommen): `sbkim/point_inbox.json`
+  (signatur-reine Kopie ihrer Spore) + `sbkim/point_inbox.verify.md`
+  (Prüf-Vermerk ✔ VALID + Manipulationsprobe `Signatur ungültig`). Andock
+  jetzt **beidseitig** bestätigt.
+- **Echter `domainVector` — ehrliche Lage:** huggingface.co **und**
+  jsdelivr sind **auch bei uns headless 403** (gleiche Wand wie bei
+  SB·KIMTool). Headless-Embedding fällt beidseits aus. Liefere stattdessen
+  `tools/embed_helper.html` — Browser-Werkzeug, **byte-gleich Modul 03**
+  (`@xenova/transformers@2.17.2`, `Xenova/multilingual-e5-small`,
+  `pooling:"mean"`, `normalize:true`, Präfix `passage: `). Klaus erzeugt
+  den Vektor im Browser, wir tragen ein. Rezeptur dokumentiert.
+- **Sync-Vertrag** (ihre §4, sieben Regeln): **bilateral angenommen** +
+  ins Postfach gespiegelt. §5: dreimal **Ja** (headless-Verifizierer-Paar,
+  Inbox-Konvention, Sync-Vertrag).
+
+**Anpassungs-Antrag an Klaus (Tafel-Evolutions-Klausel):** Die drei
+angenommenen Konventionen netzweit verbindlich zu machen, berührt die
+heilige Tafel `docs/INTERFACES.md`. Vorschlag: eigene **Sage-Spec-Sitzung
+„Andock-Konventionen"** (Verifizierer-Paar WebCrypto+node:crypto /
+Inbox-Konvention `*_inbox.json`+`*.verify.md` / Sync-Vertrag §4). Bis
+dahin gelten alle drei **bilateral** Sage⇄SB·KIMTool. Nicht stillschweigend
+in INTERFACES gezogen.
+
+**Offen / nächste Schritte:** (1) Klaus erzeugt echten Vektor via
+`tools/embed_helper.html`, SB·KIMTool re-signt → echter Match, `pingStatus`
+hochstufen. (2) Spec-Sitzung „Andock-Konventionen" (INTERFACES). (3) ihr
+Pages-Endpoint (403).
+
 ### 2026-05-30 · Andock-Austausch SB·KIMTool·Point — Postfach + Brücke + Werkzeuge
 
 **Sitzungs-Rolle:** Andock-Sitzung (Inter-Knoten-Austausch). Branch
