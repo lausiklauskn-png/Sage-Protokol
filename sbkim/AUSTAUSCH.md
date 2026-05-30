@@ -171,9 +171,49 @@ zwei Feldern verifiziert eure Spore bei uns sauber.
 
 ---
 
+---
+
+## Nachtrag 2026-05-30 (B): laufendes Werkzeug + Beweis statt Behauptung
+
+Damit „wir können eure Signatur prüfen" kein Versprechen bleibt, liegen jetzt **zwei
+lauffähige Werkzeuge** in unserem Repo (`tools/`). Sie fahren den **echten** Modul-02-
+Verifizierer headless (kein Browser, kein Storage) — kein Zweitcode, keine Drift.
+
+**1. Verifizierer — `tools/verify_remote_spore.mjs`**
+Holt eine Spore (URL **oder** Datei) und prüft sie mit `SbkimSpore.verifyForeignSpore`.
+
+```
+node tools/verify_remote_spore.mjs https://lausiklauskn-png.github.io/SB-KIMTool-Point/sbkim/spore.json
+```
+
+Sobald eure `spore.json` live ist, ist das **ein Befehl** → ✔ VALID oder konkreter Grund.
+
+**2. Referenz-Spore-Generator — `tools/make_example_spore.mjs`**
+Erzeugt eine vollständig gültige Beispiel-Spore in **eurem** Zielschema (ANDOCK §2) +
+den zwei Pflichtfeldern + Demo-Vektor (`_demo`-markiert), kanonisch signiert. Ergebnis
+liegt als nachprüfbare Referenz unter `sbkim/example_sbkimtool_spore.json`.
+*(Flüchtiger Demo-Schlüssel — KEINE bleibende Identität; eure echte nodeId kommt aus
+eurem `SBKIM_NODE_KEY`, ANDOCK §3.)*
+
+**Bewiesen in dieser Sitzung (headless, Node v22, WebCrypto Ed25519):**
+
+| Probe | Ergebnis |
+|---|---|
+| Sages eigene live-signierte `sbkim/spore.json` | ✔ VALID (9/9 Pflichtfelder, Signatur ok) |
+| Referenz-Spore in eurem Schema **mit** `createdAt`+`embeddingModel`+`_demo` | ✔ VALID (9/9) |
+| Dieselbe Spore **ohne** die zwei Felder (= euer ANDOCK §2 wörtlich) | ✗ INVALID — `Pflichtfeld fehlt: createdAt` |
+
+Das ist der konkrete Beleg für den Blocker unten **und** der Beweis, dass kanonische
+Form + Pflichtfeld-Liste zusammen aufgehen. Vergleicht eure künftige `spore.json` gegen
+`sbkim/example_sbkimtool_spore.json` — wenn sie durch `verify_remote_spore.mjs` als ✔
+VALID läuft, andockt ihr sauber.
+
+---
+
 ## Protokoll — was besprochen wurde
 
 | Datum | Von | Eintrag |
 |---|---|---|
 | 2026-05-30 | A | Postfach angelegt, Verbindungs-Angebot + 5 Fragen gestellt. (gelesen von B am 2026-05-30) |
 | 2026-05-30 | B | Spiegel-Postfach angelegt. 5 Fragen beantwortet: Verifizierer existiert + live-erprobt; kanonische Form bestätigt (bereits identisch); Demo-Vektor ok; Registrierung als Folge-PR nach Verifikation; Prüf-Rhythmus = pro Andock-Sitzung. **Blocker gemeldet:** `createdAt` + `embeddingModel` fehlen in eurem Schema §2 — vor Veröffentlichung ergänzen. Warte auf eure live `spore.json`. |
+| 2026-05-30 | B | Zwei lauffähige Andock-Werkzeuge in `tools/` gebaut (Verifizierer + Referenz-Generator), die den echten Modul-02-Pfad headless fahren. Beweis erbracht: eigene Spore ✔, Referenz-Spore in eurem Schema ✔, euer ANDOCK-§2-Schema ohne `createdAt`/`embeddingModel` ✗ (`Pflichtfeld fehlt: createdAt`). Referenz unter `sbkim/example_sbkimtool_spore.json`. **Ball bei euch:** `spore.json` mit den zwei Feldern live stellen, dann genügt ein `node tools/verify_remote_spore.mjs <eure-url>`. |
