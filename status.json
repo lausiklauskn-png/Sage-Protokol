@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-05-26",
+  "lastUpdated": "2026-05-30",
 
   "branch": "claude/semantic-agent-network-Y03Vg",
 
@@ -49,6 +49,20 @@
       "guestCategories": ["Glossar-Wartung", "Schwesternetz-Beobachtungen", "Sitzungs-Briefe", "Übergabeprotokolle"],
       "pingStatus": "live-direct",
       "url": "https://lausiklauskn-png.github.io/Sage-Protokol/"
+    },
+    {
+      "name": "SB-KIMTool-Point",
+      "domain": "SBKIM-Werkzeug-Point",
+      "integrated": true,
+      "integratedAt": "2026-05-30",
+      "nodeId": "eC3jzoo9Oii04KiSYBXEWhPQzAe6ezmDFKDo1_i0zdw",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/SB-KIMTool-Point/main/sbkim/spore.json",
+      "stammCategories": [],
+      "guestCategories": [],
+      "domainKeywords": ["Werkzeugkiste", "SBKIM-Module", "Modell", "Markt", "Endknoten"],
+      "pingStatus": "verified-spore",
+      "note": "Signierte Spore verifiziert 2026-05-30 (Signatur gültig, id == base64url(SHA256(rawPub)), 9/9 Pflichtfelder). domainVector ist _demo-Stub — kein echter Match. Kategorien noch nicht gesetzt (Spore nutzt domainKeywords). Pages-Endpoint github.io liefert die Spore noch nicht (403); verifiziert über raw main. Folge: echter Handshake/Match nach echtem Embedding beidseits.",
+      "url": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/"
     }
   ],
 

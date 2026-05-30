@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-26 (21 Module)
+  title Modulstand 2026-05-30 (21 Module)
   "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -1894,11 +1894,20 @@ Hand für das Ziel „direkte Repo-zu-Repo-Kommunikation über SBKIM".
   lesen unseres über die Branch-Raw-URL HTTP 200; `main` erst nach
   Merge).
 
-**Offen / nächste Schritte:** PR #224 nach `main` mergen (stabile URL
-ohne Branch-Name) — Klaus' Zuruf. Dann Ball bei SB·KIMTool: `spore.json`
-mit den zwei Feldern live stellen → ein `node tools/verify_remote_spore.mjs
-<url>` = bezeugter Krypto-Andock → Folge-PR registriert sie in
-`status.json`. Optional echter `domainVector` via Live-Modul 03.
+**Nachtrag 2026-05-30 (selbe Sitzung):** SB·KIMTool hat ihre Spore
+veröffentlicht. **Verifiziert ✔ VALID** (Signatur gültig, `id ==
+base64url(SHA256(rawPub))` unabhängig nachgerechnet, 9/9 Pflichtfelder,
+`domainVector` `_demo`). `nodeId: eC3jzoo9…i0zdw`. Als **vierter
+Endknoten** in `status.json` registriert (`pingStatus:
+"verified-spore"`, `sporeUrl` = raw main, da Pages noch 403). Postbox-
+Quittung + Frage-1/4-Antwort in `sbkim/AUSTAUSCH.md`.
+
+**Offen / nächste Schritte:** PR #224 nach `main` mergen (stabile URL) —
+Klaus' Zuruf. Zwei nicht-blockierende Hinweise an SB·KIMTool: Pages-
+Endpoint liefert noch 403 (Pages aktivieren); `stamm/guestCategories`
+fehlen in ihrer Spore. Echter Match braucht echten `domainVector`
+(Live-Modul 03) beidseits — `verified-spore` ist erst Identitäts-Andock,
+kein semantischer Handshake.
 
 ### 2026-05-29 · Pflege Truhe — Eingang in die Truhe (zweite Seite / Werkzeug-Screen)
 
