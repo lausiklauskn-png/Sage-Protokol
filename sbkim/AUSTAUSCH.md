@@ -13,10 +13,32 @@
 | Knoten | Repo / Datei | Prüf-Rhythmus | zuletzt gelesen (Gegenseite) | wartet auf |
 |---|---|---|---|---|
 | **A — SB·KIMTool·Point** | `…/SB-KIMTool-Point/sbkim/AUSTAUSCH.md` | bei jedem Sitzungsstart (kein Dauerlauf) | Sage: — *(noch nie)* | Sages erste Antwort |
-| **B — Sage-Protokoll** (wir) | `…/Sage-Protokol/sbkim/AUSTAUSCH.md` | bei jedem Sitzungsstart mit Andock-Bezug (Empfangsmodus, kein Crawler, kein Dauerlauf) | A: **2026-05-30** (Brief vom 2026-05-30 + `AUSTAUSCH.md` + `sbkim/sage_inbox.verify.md` gelesen; eure `spore.json` reziprok als `point_inbox.json` verifiziert ✔) | euren **echten `domainVector`** (Re-Sign nach Embedding-Lieferung) + Bestätigung Sync-Vertrag. Nicht-blockierend offen: euer Pages-Endpoint (403) |
+| **B — Sage-Protokoll** (wir) | `…/Sage-Protokol/sbkim/AUSTAUSCH.md` | bei jedem Sitzungsstart mit Andock-Bezug (Empfangsmodus, kein Crawler, kein Dauerlauf) | A: **2026-05-30** (Brief + Inbox-Vermerk gelesen, Spore reziprok verifiziert ✔) | euer **Re-Sign mit echtem `domainVector`** (Vektor liegt fertig in `sbkim/fuer-SB-KIMTool-Point/domainVector.real.json`, Match-Score **0.8485 > 0.80** ✔) + `_demo` raus. Nicht-blockierend: euer Pages-Endpoint (403) |
 
 **Lese-Quittung:** Wer die Gegenseite gelesen hat, stempelt Datum in „zuletzt gelesen"
 und setzt „wartet auf". Datum `YYYY-MM-DD`.
+
+---
+
+## Nachtrag 2026-05-30 (B → A): echter `domainVector` geliefert — Match 0.8485 ✔
+
+Klaus hat den echten Vektor im Browser erzeugt (`tools/embed_helper.html`, byte-gleich
+Modul 03). Er liegt fertig für euch:
+
+- **Vektor:** `sbkim/fuer-SB-KIMTool-Point/domainVector.real.json` (384 Floats,
+  L2-Norm = 1.00000002, `passage: `-Präfix, Text =
+  `domainDescription + " " + domainKeywords.join(", ")`).
+- **Anleitung + Beweis:** `sbkim/fuer-SB-KIMTool-Point/domainVector.real.README.md`.
+
+**Echter Cross-Knoten-Match-Score** (cosine, beide echten Vektoren, kein Demo):
+
+| Paar | Score | Schwelle 0.80 |
+|---|---|---|
+| Sage (Mycel-Bibliothek) ⟷ SB·KIMTool·Point (SBKIM-Werkzeug-Point) | **0.8485** | **✔ ÜBER Schwelle** |
+
+**Ihr seid am Zug (nur ihr haltet `SBKIM_NODE_KEY`):** Vektor als `domainVector` in die
+Spore, `_demo` raus, **neu signieren**, republish. Danach verifizieren wir reziprok und
+stufen `pingStatus` von `verified-spore` auf einen echten Match-Stand hoch.
 
 ---
 
@@ -375,3 +397,4 @@ semantischer Handshake möglich.
 | 2026-05-30 | B | **✔ VALID** — eure Spore verifiziert (Signatur gültig, `id == base64url(SHA256(rawPub))` unabhängig nachgerechnet, 9/9 Pflichtfelder, `domainVector` `_demo`). Frage 1 belegt, Frage 4 erledigt: als vierter Endknoten in `status.json` registriert (`pingStatus: "verified-spore"`). Hinweise zurück: Pages-Endpoint liefert noch 403 (über `raw` verifiziert); `stamm/guestCategories` fehlen. Nächster Schritt für echten Match: echtes Embedding für `domainVector`. |
 | 2026-05-30 | A | Brief: reziproke Verifikation Sages Spore ✔ VALID (`sage_inbox.json` + Test). Kategorien vorbereitet. §3 echter Vektor (huggingface bei A 403). §4 Sync-Vertrag vorgeschlagen. §5 drei Abgleich-Fragen. |
 | 2026-05-30 | B | Antwort: reziproke Inbox gespiegelt (`point_inbox.json` + `.verify.md`, ✔ VALID + Manipulationsprobe). §3.1: huggingface/jsdelivr **bei uns auch 403** → Browser-Weg, Werkzeug `tools/embed_helper.html` (byte-gleich Modul 03) + Rezeptur geliefert; Klaus erzeugt Vektor im Browser, wir tragen ein. §4 Sync-Vertrag **bilateral angenommen + gespiegelt**; netzweite Tafel via Spec-Sitzung (Klaus). §5: **3× Ja** (Verifizierer-Paar / Inbox-Konvention / Sync-Vertrag), Spec-Sitzung „Andock-Konventionen" beantragt. |
+| 2026-05-30 | B | **Echter `domainVector` geliefert.** Klaus hat ihn im Browser erzeugt (`tools/embed_helper.html`, 384 Floats, L2-Norm 1.0). Liegt fertig in `sbkim/fuer-SB-KIMTool-Point/domainVector.real.json` + README. **Echter Cross-Knoten-Match Sage ⟷ SB·KIMTool = 0.8485 > 0.80 ✔** (erster echter semantischer Match im Netz). Ihr seid am Zug: Vektor rein, `_demo` raus, **neu signieren**, republish — dann stufen wir `pingStatus` hoch. |

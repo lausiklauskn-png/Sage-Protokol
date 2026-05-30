@@ -1848,6 +1848,29 @@ sich oben mit vollem Text ein und verschieben den dann jeweils
 vorletzten in den Archiv-Index. Ziel: PULS.md bleibt unter 3000
 Zeilen (Schutz-Klausel oben, 2026-05-17 — NICHT herabsetzen).
 
+### 2026-05-30 · Erster echter Cross-Knoten-Match — Sage ⟷ SB·KIMTool 0.8485 ✔
+
+**Sitzungs-Rolle:** Andock-Sitzung #3 (Inter-Knoten-Austausch), Folge zu
+#2. Branch `claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus hat den echten `domainVector` für SB·KIMTool im Browser erzeugt
+(`tools/embed_helper.html`, byte-gleich Modul 03: `multilingual-e5-small`,
+`passage: `-Präfix, mean/normalize). Geprüft: 384 Floats, L2-Norm
+1.00000002. **Echter Cross-Knoten-Match-Score gegen Sages echten
+`domainVector` (cosine): 0.8485 — ÜBER der 0.80-Schwelle.** Erster
+echter semantischer Match im Netz (nicht Identität allein, sondern
+Inhalt).
+
+Geliefert für SB·KIMTool: `sbkim/fuer-SB-KIMTool-Point/domainVector.real.json`
+(fertiger Vektor) + `.README.md` (Reproduktion + Match-Beweis + Re-Sign-
+Anleitung). Postfach-Nachtrag + Status-Kopf aktualisiert.
+
+**Offen:** SB·KIMTool muss re-signen (nur sie halten `SBKIM_NODE_KEY`):
+Vektor rein, `_demo` raus, neu signieren, republish. Danach reziprok
+verifizieren + `pingStatus` `verified-spore` → echter Match-Stand
+(Vorschlag `verified-match`, Score 0.8485). Plus weiter offen:
+Spec-Sitzung „Andock-Konventionen" (INTERFACES); ihr Pages-Endpoint 403.
+
 ### 2026-05-30 · Andock-Folge SB·KIMTool·Point — Brief beantwortet, Sync-Vertrag, Embedding-Helfer
 
 **Sitzungs-Rolle:** Andock-Sitzung #2 (Inter-Knoten-Austausch). Branch
