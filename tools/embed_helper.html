@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SBKIM Embedding-Helfer — echter domainVector (Browser)</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 760px; margin: 1.2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.25rem; }
+  textarea { width: 100%; min-height: 5rem; font: inherit; padding: .5rem; box-sizing: border-box; }
+  label { display: block; margin: .8rem 0 .3rem; font-weight: 600; }
+  button { font: inherit; padding: .55rem 1rem; cursor: pointer; margin-top: .6rem; }
+  output, pre { display: block; }
+  pre { white-space: pre-wrap; word-break: break-all; background: rgba(127,127,127,.12); padding: .6rem; border-radius: 6px; max-height: 14rem; overflow: auto; }
+  .muted { opacity: .75; font-size: .9rem; }
+  .ok { color: #2e7d32; font-weight: 600; }
+  .warn { color: #c62828; }
+</style>
+</head>
+<body>
+<h1>SBKIM Embedding-Helfer — echter <code>domainVector</code></h1>
+<p class="muted">
+  Erzeugt einen echten 384-dim-Vektor mit <b>Xenova/multilingual-e5-small</b> —
+  <b>byte-gleich zu Sage-Modul 03</b> (transformers.js <code>@2.17.2</code>, feature-extraction,
+  <code>pooling:"mean"</code>, <code>normalize:true</code>, L2-normalisiert). Läuft komplett
+  im Browser; das Modell wird beim ersten Lauf vom CDN geladen (einmal Internet nötig,
+  danach Cache). Container/Headless können <code>huggingface.co</code> meist nicht laden —
+  darum dieser Browser-Weg. Wiederverwendbar für JEDEN SBKIM-Knoten.
+</p>
+
+<label for="prefix">Präfix (e5-Konvention)</label>
+<select id="prefix">
+  <option value="passage: " selected>passage:  — für domainVector / Dokument-Vektoren (Standard)</option>
+  <option value="query: ">query:  — für Such-Anfragen</option>
+</select>
+
+<label for="text">Text (Domänen-Text des Knotens)</label>
+<textarea id="text">Werkzeugkiste + headless Modell-Lauf für das SBKIM-Protokoll. Werkzeugkiste, SBKIM-Module, Modell, Markt, Endknoten</textarea>
+<p class="muted">
+  Empfohlene Rezeptur für <code>domainVector</code>: <code>domainDescription + " " + domainKeywords.join(", ")</code>.
+  Dokumentiere die genau verwendete Zeichenkette, damit Re-Embeddings reproduzierbar bleiben.
+</p>
+
+<button id="run">Vektor erzeugen</button>
+<output id="status" class="muted"></output>
+
+<label for="out">Ergebnis (384 Floats, JSON — in die Spore als <code>domainVector</code>, dann NEU signieren)</label>
+<pre id="out"></pre>
+<button id="copy" disabled>In Zwischenablage kopieren</button>
+
+<script type="module">
+const TRANSFORMERS_CDN = "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2";
+const MODEL = "Xenova/multilingual-e5-small";
+const statusEl = document.getElementById("status");
+const outEl = document.getElementById("out");
+const copyBtn = document.getElementById("copy");
+let pipePromise = null;
+
+function setStatus(msg, cls) { statusEl.textContent = msg; statusEl.className = cls || "muted"; }
+
+async function getPipe() {
+  if (!pipePromise) {
+    setStatus("Lade transformers.js + Modell (erster Lauf dauert)…");
+    pipePromise = import(TRANSFORMERS_CDN).then(({ pipeline }) =>
+      pipeline("feature-extraction", MODEL, {
+        progress_callback: (d) => { if (d && d.status) setStatus("Modell: " + d.status + (d.file ? " " + d.file : "")); },
+      })
+    );
+  }
+  return pipePromise;
+}
+
+document.getElementById("run").addEventListener("click", async () => {
+  copyBtn.disabled = true; outEl.textContent = "";
+  try {
+    const prefix = document.getElementById("prefix").value;
+    const text = document.getElementById("text").value.trim();
+    if (!text) { setStatus("Bitte Text eingeben.", "warn"); return; }
+    const pipe = await getPipe();
+    setStatus("Rechne Embedding…");
+    const out = await pipe([prefix + text], { pooling: "mean", normalize: true });
+    const vec = Array.from(out.data.slice(0, 384));
+    const norm = Math.sqrt(vec.reduce((a, x) => a + x * x, 0));
+    outEl.textContent = JSON.stringify(vec);
+    setStatus("✔ fertig — " + vec.length + " Floats, L2-Norm ≈ " + norm.toFixed(6) +
+      " (sollte ~1.0 sein). Präfix verwendet: \"" + prefix + "\"", "ok");
+    copyBtn.disabled = false;
+  } catch (err) {
+    setStatus("Fehler: " + (err && err.message ? err.message : err), "warn");
+  }
+});
+
+copyBtn.addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(outEl.textContent); setStatus("In Zwischenablage kopiert.", "ok"); }
+  catch { setStatus("Kopieren nicht erlaubt — Text manuell markieren.", "warn"); }
+});
+</script>
+</body>
+</html>
