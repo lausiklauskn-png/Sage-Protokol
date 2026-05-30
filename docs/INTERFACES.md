@@ -5360,3 +5360,144 @@ PULS § Vision-Anker 4 (Königin-Relay), PULS § Vision-Anker 5
 | 2026-05-26 | Pflege Modul 17 Widget Bronze/Gold-Render | **Folge-Pflege auf Sub-(e)-Sichttest-Bilanz vom 2026-05-26** (Befund 1 — separate Pflege-Sitzung pro Befund). Brief `BRIEF_PFLEGE_17_WIDGET_BRONZE_GOLD_RENDER.md`. **Auslöser:** sichtbarer SIEGEL-Slot im Floating-Widget rendert stufen-unabhängig als Gold-Medaillon mit ★ — Klaus visuell kein Unterschied zwischen MR (pre-Handshake, sollte Bronze sein) und MM (post-Handshake, ist Gold). Ursache: Modul 16 setzt `data-stufe="bronze"`/`"gold"` korrekt am unsichtbaren `#sbkim-siegel-badge`-Proxy-Span im Widget-Inneren (Spec-konform), aber der sichtbare Slot-Button daneben hat keine Stufen-Logik. **Architektur-Pfad (ii)** aus Brief gewählt: Modul 17 nutzt lookup auf `SbkimSiegel._meta.siegelStufe` (Modul-16-Getter aus Bau 16 Sub e) im `mountSiegelSlot()`-Aufruf — robust gegen Event-Reihenfolge (Modul 16 init vor Modul 17 dispatch). **§ 1 Modul 17 Bietet-Block** um `_meta.siegelStufeRendered` (Getter, "bronze"|"gold"|null) erweitert. **§ 1 Modul 17 Vier-Slot-Layout** SIEGEL-Zeile aktualisiert auf „Bronze/Gold (data-siegel-stufe)" + neuer Block „SIEGEL-Stufen-Render" beschreibt den Pfad (Initial-Wert via `getSiegelStufe()` aus `SbkimSiegel._meta.siegelStufe`, Re-Setting bei `sbkim:handshake outcome:"established"`, Bronze-CSS-Filter `saturate(0.6) brightness(0.85)`, Gold = Default-Render, 600 ms `.sbkim-widget-siegel-stufenwechsel`-Klasse für Animation, idempotent). **§ 1 Modul 17 Geprüft-Zeile** um Pflege-Sub-(e)-Render 2026-05-26 erweitert. **Code in `src/modules/17_floating_widget.js` additiv**: neue Konstanten `SIEGEL_STUFE_BRONZE`/`SIEGEL_STUFE_GOLD`/`SIEGEL_STUFENWECHSEL_MS=600`; neue Helper `getSiegelStufe()` (fail-soft Default `"bronze"`) + `applySiegelStufeToSlot(stufe)` (setzt `data-siegel-stufe`-Attribut + aktualisiert `siegelStufeRendered`-Closure-State) + `playSiegelStufenwechselAnimation()` (600 ms `.sbkim-widget-siegel-stufenwechsel`-Klasse mit setTimeout-Cleanup); `mountSiegelSlot()` ruft `applySiegelStufeToSlot(getSiegelStufe())` nach Slot-Mount; `buildWidget()`-Init-Pfad (SIEGEL-Slot beim init-Zeitpunkt schon zertifiziert) tut dasselbe; `onHandshake()` prüft bei `outcome:"established"` + `siegelMounted===true` + `siegelStufeRendered!=="gold"`: schaltet auf Gold + startet Animation (idempotent — kein Re-Animate bei zweitem established-Handshake). **`buildCss()`-Block** erweitert um drei Regeln + ein @keyframes: `#sbkim-widget .sbkim-widget-slot.siegel[data-siegel-stufe="bronze"]::before`+`.sbkim-widget-siegel-glyph { filter: saturate(0.6) brightness(0.85); }`; Bronze-Hover-Override mit Bronze-glow `rgba(140,110,47,0.55)`; Gold = Default-Render kein Override; `.sbkim-widget-siegel-stufenwechsel::before { animation: sbkim-widget-siegel-stufenwechsel-gold 600ms ease-out; }`; `@keyframes sbkim-widget-siegel-stufenwechsel-gold` (scale 1.00→1.15→1.00 + box-shadow Gold-Pulse, analog index.html `siegel-stufenwechsel-gold`). **Panel 17** in `tests/manual_check.html` um Test 13 (Initial-Bronze-Attribut + _meta-Spiegelung) + Test 14 (sbkim:handshake established → Gold + Animations-Klasse + 700-ms-Re-Check) erweitert; Header-Status auf „Code-Stub + Pflege Sub-(e)-Render 2026-05-26". **Headless-Smoke** `tests/smoke_bau17_floating_widget.mjs` um vier neue Proben 32–35 erweitert (Initial-Bronze, Bronze→Gold + Stufenwechsel-Klasse, Klasse-Cleanup nach 600 ms, Idempotenz beim zweiten established-Handshake), **36/36 grün**. **Modul-15-Regression** 31/31 grün; **Modul-16-Sub-(e)-Regression** `tests/smoke_bau16_sub_e_bronze.mjs` 15/15 grün; **node --check** für `17_floating_widget.js` + alle 13 Inline-`<script>`-Blöcke in `tests/manual_check.html` grün. **PROTOCOL_VERSION**/**DB_VERSION**/**BACKUP_FORMAT_VERSION** unverändert. **KEIN Modul-16-Eingriff** (Modul 16 setzt `data-stufe` korrekt am Proxy-Span — Pflege-17-Spec-Konformität bestätigt). **KEIN ZERTIFIKAT_ASPEKTE-Eintrag** (Render-Schicht-Pflege, kein Sicherheits-Modul-Update). **KEIN Endknoten-Eingriff** (Mein-Rezeptbuch + Mein-Mixarium ziehen `sbkim/17_floating_widget.js` in eigener Folge-Pflege pro Endknoten-Repo nach — eigene PRs pro Endknoten). **KEINE Sage-Page-Änderung** (`index.html` unangetastet). **KEINE Tafel-Umsortierung** in CLAUDE.md § Pipeline-Reihenfolge. `status.json` Modul 17 BLEIBT `score:"stub"` (additive Render-Pflege, kein Score-Wechsel); `python3 scripts/update_puls_pie.py` aufgerufen (Pie unverändert). Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf Panel 17 + Endknoten-Re-Migration mit visuellem Vergleich. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_pflege-17-widget-bronze-gold-render.md`. |
 
 | 2026-05-26 | Pflege 16 Modal-Local-Time (Sub-(e)-Folge-Pflege 3/3) | Folge-Pflege zum Endknoten-Sichttest Cross-Knoten Sub (e) am 2026-05-26 (Folge-Befund 3). Klaus' Befund DeX-Chrome auf Galaxy Tab S6 in MESZ-Zeitzone (UTC+2): „Datum/Uhrzeit ist nicht aktuell, ich vermute nicht Mitteleuropäische Zeit, eher Amerikan." Ursache: Modul 16 `renderModalContents()` baute die `dateLine.textContent` per `new Date(snap.certifiedAt).toISOString().slice(0, 10)` + `iso.slice(11, 16)` — UTC-ISO-Substrings, daher zeigte das Modal Klaus' lokales 21:10 MESZ als „19:10 Uhr" (UTC). **§ 1 Modul 16 Geprüft-Zeile** um Pflege-Modal-Local-Time-Eintrag erweitert. **Code in `src/modules/16_siegel.js` additiv** (sehr kleiner Eingriff, KEIN Vertrags-Bruch): `renderModalContents()` Zeilen ~872–885 ersetzt — UTC-ISO-Slice-Pfad ersetzt durch lokale Date-Methoden (`date.getFullYear()`, `String(date.getMonth() + 1).padStart(2, "0")`, `getDate()`, `getHours()`, `getMinutes()` mit `padStart(2, "0")`). Format-Konvention `YYYY-MM-DD, HH:MM Uhr` bleibt (ISO-Datum + lokale Stunden/Minuten — kein Optik-Wechsel auf `toLocaleString("de-DE", {dateStyle, timeStyle})`-Style, weil Klaus' Doku-Pattern überall ISO-Datum verwendet). Fail-soft-Fallback: falls `new Date(certifiedAt)` `NaN` (kaputter ISO-String), wird der Roh-`certifiedAt` direkt angezeigt. `_meta.certifiedAt` bleibt UTC-ISO (Spec-Vertrag aus § Persistenz unverändert — nur die Render-Schicht konvertiert). **Karte 16 § Sub (c) Modal-Body Punkt 1** um Anzeige-Konvention-Block erweitert (lokale Date-Methoden statt UTC-ISO-Slice, Begründung Klaus' MESZ-Befund). **Headless-Smoke** `tests/smoke_bau16_sub_e_bronze.mjs` um Probe 16 erweitert (Modal-Datum lokal-Konsistenz: `dateLine.textContent` muss `getHours():getMinutes()` aus der Laufzone enthalten), **16/16 grün**. **Regression** smoke_bau15b 31/31 + smoke_bau17 36/36 grün. **node --check** Modul 16 grün. **PROTOCOL_VERSION** / **DB_VERSION** / **BACKUP_FORMAT_VERSION** unverändert. **KEIN funktionaler Vertrags-Eingriff** (Public Surface von Modul 16 unverändert; `_meta.certifiedAt`-Format bleibt UTC-ISO). **KEIN ZERTIFIKAT_ASPEKTE-Eintrag** (Render-Schicht-Pflege, kein Sicherheits-Modul-Update — CLAUDE.md § „Sicherheits-Module pflegen Aspekte" greift nicht). **KEIN Endknoten-Eingriff** (Mein-Rezeptbuch + Mein-Mixarium ziehen den neuen Modul-16-Code in eigener Folge-Pflege nach — kombinierbar mit den anderen zwei Sub-(e)-Folge-Pflegen Modul 17 + Modul 05). **KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump**. **KEINE Tafel-Umsortierung CLAUDE.md**. **`status.json` Modul 16 unverändert** (bleibt `score:"stub"`; `update_puls_pie.py` NICHT aufgerufen — additive Render-Pflege, kein Score-Wechsel). Klaus' Sub-(e)-Befund 3 von 3 ist hiermit gelöst. **Damit sind alle drei Sage-Sub-(e)-Folge-Pflegen abgeschlossen** (1/3 Modul 17 Bronze/Gold-Render gemerged in PR #185, 2/3 Endknoten-Modul-05-Update läuft als externe Bau-Sitzungen MR+MM, 3/3 diese hier). Brief: `docs/sessions/BRIEF_PFLEGE_16_MODAL_LOCAL_TIME.md`. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_pflege-16-modal-local-time.md`. |
+
+| 2026-05-30 | Spec-Sitzung Andock-Konventionen | **Neuer §11 „Andock-Konventionen" (netzweit)** angelegt aus SB·KIMTool·Points eingefrorenem Rückbrief A–E. Fünf Unterabschnitte: §11.1 Kanonische Signier-Form (Norm + Pseudocode + Determinismus-Klausel), §11.2 Verifizierer-Paar (WebCrypto/Modul 02 ↔ node:crypto, 4 Pflicht-Prüfpunkte), §11.3 Inbox-Konvention (`<gegenseite>_inbox.json` signatur-rein + `.verify.md` Pflichtfelder), §11.4 Sync-Vertrag (7 Regeln, Regel 7 für N>2 verallgemeinert + `status.json`-Pflichtfelder + `matchScore` Pflicht bei `verified-match` + `pingStatus`-Stufen), §11.5 Pflicht-Spore-Felder (9 REQUIRED). **Sage-Entscheidung zu E:** `domainVector` optional für `verified-spore`, **Pflicht für `verified-match`** (Ja zum gestuften Vorschlag); `_demo`-Markierung Pflicht bis echtes Embedding. Hervorgegangen aus dem ersten vollständigen Andock Sage ⟷ SB·KIMTool (Match 0.848508). KEIN Modul-Code, KEIN PROTOCOL_VERSION-Bump (Konventions-Tafel, kein Schema-Bruch — die 9 Pflichtfelder + kanonische Form sind bereits gelebt). Postfach-Abgleich-Antwort A–E + Bau-Protokoll-Zeile in `sbkim/AUSTAUSCH.md`. |
+
+---
+
+## 11. Andock-Konventionen (netzweit, Spec-Sitzung 2026-05-30)
+
+> **Heilige Tafel, netzweit gültig** — nicht mehr nur bilateral. Sie
+> regelt, wie ein beliebiger SBKIM-Knoten an einen anderen andockt:
+> kanonische Signier-Form, Verifizierer-Paar, Inbox-Konvention,
+> Synchronisations-Vertrag, Pflicht-Spore-Felder. Hervorgegangen aus
+> dem **ersten vollständigen Knoten-zu-Knoten-Andock** Sage ⟷
+> SB·KIMTool·Point (beidseitig signatur-verifiziert + echter
+> semantischer Match 0.848508). Quelle der eingefrorenen Referenz-Texte:
+> SB·KIMTool·Points Rückbrief A–E (`SB-KIMTool-Point/sbkim/AUSTAUSCH.md`
+> §10) + `docs/ANDOCK.md` + `scripts/verify_foreign_spore.mjs`.
+>
+> Serverlos, Empfangsmodus mit Antwortrecht — kein Crawler, kein
+> Daemon, kein Live-Socket. Austausch über offene Dateien (Dead-Drop)
+> über die Repo-Grenze; ein menschlicher Vermittler je Repo-Paar
+> startet die Sitzungen.
+
+### 11.1 Kanonische Signier-Form (Norm)
+
+Signiert und geprüft werden die **UTF-8-Bytes des Spore-Objekts ohne das
+Feld `signature`**, als kompaktes JSON **ohne Whitespace** mit
+**rekursiv** alphabetisch sortierten Objekt-Schlüsseln; Unterschrift =
+**Ed25519**, kodiert als **base64url ohne Padding**.
+
+```
+canonicalize(v):
+  null           -> null
+  Array          -> map(canonicalize)            // Array-Reihenfolge bleibt!
+  Object         -> neues Objekt, Schlüssel via sort() aufsteigend,
+                    Werte rekursiv canonicalize
+  sonst (Skalar) -> v
+canonicalBytes = utf8( JSON.stringify( canonicalize( spore ohne "signature" ) ) )
+signature      = base64url_nopad( Ed25519_sign( canonicalBytes, privateKey ) )
+verify         = Ed25519_verify( canonicalBytes,
+                                 base64url_decode(signature), publicKey.x )
+```
+
+**Verbindlich für alle Knoten.** Byte-deckungsgleich mit Sage Modul 02
+(`canonicalize` in `src/modules/02_spore.js`) und SB·KIMTools
+`scripts/verify_foreign_spore.mjs`. Beleg: beide Richtungen ✔ VALID
+(Sages Spore in A's Verifizierer, A's Spore in Sages Verifizierer).
+
+**Determinismus-Klausel:** Arrays werden **nicht** umsortiert (nur
+Objekt-Schlüssel). Ein `domainVector` muss in der publizierten Datei in
+**exakt** der Reihenfolge/Float-Schreibweise stehen, in der signiert
+wurde — also genau das Objekt signieren (minus `signature`), das
+publiziert wird.
+
+### 11.2 Verifizierer-Paar (Referenz)
+
+Zwei Laufzeiten, **eine** Norm (§11.1). Beide MÜSSEN für ein- und
+dieselbe Spore dasselbe Urteil fällen.
+
+| Seite | Datei | Umgebung |
+|---|---|---|
+| WebCrypto/Browser | `src/modules/02_spore.js` `verifyForeignSpore` + headless `tools/verify_remote_spore.mjs` | WebCrypto (Browser) + Node-Headless |
+| node:crypto | `scripts/verify_foreign_spore.mjs` (SB·KIMTool-Referenz) | `node:crypto`, keine npm-Abhängigkeit |
+
+**Vier Pflicht-Prüfpunkte** (identische Reihenfolge der Wahrheit):
+
+1. **Pflichtfelder** vollständig (die 9 aus §11.5).
+2. **`id == base64url(SHA256(roher 32-Byte-Pubkey))`** — unabhängig aus
+   `publicKey.x` nachgerechnet.
+3. **Signatur** Ed25519 gültig über die kanonischen Bytes (Feld
+   `signature` ausgenommen).
+4. **Manipulationsprobe** — ein verändertes Feld (z. B. `domain`) lässt
+   die Signatur **durchfallen**.
+
+Urteil ist nur **VALID**, wenn 2 ∧ 3 ∧ 4 zutreffen (1 ist
+Vorbedingung). Ein neuer Knoten SOLL ein headless-Gegenstück seiner
+Browser-Verifikation bereitstellen (für serverlose Datei-/URL-Prüfung).
+
+### 11.3 Inbox-Konvention
+
+- **`<gegenseite>_inbox.json`** = originalgetreue, **signatur-reine**
+  1:1-Momentaufnahme der fremden Spore. **Kein Zusatzfeld** (jedes
+  Zusatzfeld zerstörte die Signatur). Sonst nichts.
+- **`<gegenseite>_inbox.verify.md`** = Begleit-Vermerk mit
+  **Pflichtfeldern**: Quelle (URL), Datum, Verifizierer (Datei/Tool +
+  Befehl), Ergebnis-Tabelle (die 4 Prüfpunkte aus §11.2), Identität
+  (`nodeName`/`nodeType`/`domain`, `nodeId`, `publicKey.x`),
+  `domainVector`-Notiz (echt vs. `_demo`), Manipulationsprobe-Zeile.
+  Reproduzierbarer Beweis als Offline-Test/Befehl daneben.
+
+**Namens-Symmetrie:** jeder Knoten legt die Kopie der Gegenseite unter
+einem sprechenden `<gegenseite>_inbox.*` ab. Gelebt: Sage ↔
+`sbkim/point_inbox.*`, SB·KIMTool ↔ `sbkim/sage_inbox.*`.
+
+### 11.4 Synchronisations-Vertrag (7 Regeln)
+
+1. **Prüf-Rhythmus:** jede Seite liest bei jedem Sitzungsstart mit
+   Andock-Bezug die `AUSTAUSCH.md` + `status.json` der Gegenseite
+   (Empfangsmodus, kein Daemon).
+2. **Lese-Quittung Pflicht:** Datum in „zuletzt gelesen" + „wartet auf".
+3. **Bau-Protokoll:** wer baut/ändert, trägt `Datum · Knoten · WAS ·
+   WO (Datei/Commit/PR) · real|demo`.
+4. **Abgleich-Frage:** zu jedem gemeldeten Bau prüft die Gegenseite
+   „kann/soll das bei uns rein?" → Ja / Nein / Wie, mit Datum.
+5. **Quelle der Wahrheit:** Identität = `spore.json`, Status =
+   `status.json`, Verträge = ANDOCK ↔ INTERFACES; Spec vor Code.
+6. **Heartbeat:** kein gemeldeter Schritt bleibt länger als eine
+   Gegen-Sitzung unquittiert.
+7. **Menschlicher Vermittler je Repo-Paar** startet die Sitzungen
+   (für N>2 Knoten verallgemeinert aus „Klaus = Taktgeber").
+
+**Pflichtfelder eines Endknoten-Eintrags in `status.json`:** `name`,
+`domain`, `integrated`, `integratedAt`, `nodeId`, `sporeUrl`,
+`stammCategories`, `guestCategories`, `pingStatus`, `url`.
+**Optional:** `previousNodeIds` (bei Schlüsselwechsel), `domainKeywords`,
+`reIntegratedAt`, `note`. **Bedingt Pflicht:** `matchScore` ist
+**Pflicht, sobald `pingStatus: "verified-match"`**.
+
+**`pingStatus`-Stufen (Andock-Kontext):** `verified-spore`
+(Identität/Signatur verifiziert, kein Match) → `verified-match`
+(zusätzlich echter Cross-Knoten-Match ≥ `PROVIDER_MIN_MATCH`, mit
+`matchScore`). Die Live-Ping-Stufen (`live-direct`/`live-channel`)
+bleiben für lokal eingebaute Endknoten gültig.
+
+### 11.5 Pflicht-Spore-Felder
+
+Die **9 `REQUIRED_SPORE_FIELDS`** sind für alle Knoten verbindlich:
+`createdAt`, `domain`, `embeddingModel`, `endpoint`, `id`, `nodeType`,
+`protocolVersion`, `publicKey`, `signature`. Eine Spore ohne eines
+dieser Felder wird abgelehnt (`Pflichtfeld fehlt: …`).
+
+**`domainVector`-Entscheidung (Sage, 2026-05-30): JA zum
+gestuften Vorschlag.** `domainVector` (384-dim, L2-normalisiert) ist
+**optional für `verified-spore`** (reines Identitäts-Andocken bleibt
+niedrigschwellig) und **Pflicht, sobald ein Knoten `verified-match`
+anstrebt** — denn ohne echten Vektor gibt es keinen ehrlichen Match.
+Ein `domainVector` MUSS, solange er nicht aus echtem Embedding stammt,
+über das Begleitfeld `_demo: ["domainVector"]` als Demo markiert sein;
+mit echtem Embedding wird `_demo` entfernt. Das Embedding-Modell ist
+`Xenova/multilingual-e5-small` (Feld `embeddingModel`), Vektor-Erzeugung
+mit `passage: `-Präfix, mean-pooled, L2-normalisiert (siehe Modul 03 +
+`tools/embed_helper.html`).
