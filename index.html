@@ -1812,7 +1812,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     modules.forEach(m => { real += types[m.score] || 0; });
     (s.endknoten || []).forEach(e => {
       if (!e.integrated) return;
-      const live = e.pingStatus === 'live' || e.pingStatus === 'live-direct';
+      const live = e.pingStatus === 'live' || e.pingStatus === 'live-direct' || e.pingStatus === 'live-channel' || e.pingStatus === 'verified-match' || e.pingStatus === 'verified-spore';
       real += live ? 15 : 8;
     });
     const max = 10 + (modules.length * 10) + ((s.endknoten || []).length * 15);
@@ -2193,7 +2193,9 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       const div = document.createElement('div');
       div.className = 'endknoten' + (e.integrated ? ' live' : '');
       div.id = 'end-' + e.name.toLowerCase().replace(/\W+/g, '');
-      const pillTxt = e.pingStatus === 'live' ? 'Lebendig · Spore antwortet'
+      const pillTxt = e.pingStatus === 'verified-match' ? ('Lebendig · echter Match' + (e.matchScore != null ? ' ' + e.matchScore.toFixed(2) : ''))
+                    : e.pingStatus === 'verified-spore' ? 'Lebendig · Identität verifiziert'
+                    : (e.pingStatus === 'live' || e.pingStatus === 'live-direct' || e.pingStatus === 'live-channel') ? 'Lebendig · Spore antwortet'
                     : e.pingStatus === 'blocked-origin-collision' ? 'Angedockt · Origin-Kollision'
                     : (e.integrated ? 'Angedockt' : 'Noch nicht angeschlossen');
       div.innerHTML =
