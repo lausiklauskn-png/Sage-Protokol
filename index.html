@@ -1965,10 +1965,17 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       // 3 Spalten × 5 Zeilen, volle Breite (viewBox 360 ≈ Geräte-CSS-Breite),
       // keine Cluster-Labels (maximaler Platz für große, lesbare Knoten).
       const colX = [62, 180, 298];
-      const rowY = [80, 188, 296, 404, 512];
+      const rowY = [80, 188, 296, 404, 496, 560];
       all.forEach(m => {
         const lay = TOPO_LAYOUT_PORTRAIT[m.id]; if (!lay) return;
+        if (BACKLOG_IDS.has(m.id)) return;
         positions[m.id] = { x: colX[lay.col], y: rowY[lay.row] || rowY[0] };
+      });
+      // Backlog: 3 pro Zeile, ab Zeile 4 umbrechen — keine Kollision (vorher
+      // teilten sich 10/14 und 11/15 dieselbe Zelle).
+      const blNodes = all.filter(m => BACKLOG_IDS.has(m.id) && TOPO_LAYOUT_PORTRAIT[m.id]);
+      blNodes.forEach((m, i) => {
+        positions[m.id] = { x: colX[i % 3], y: rowY[4 + Math.floor(i / 3)] || rowY[4] };
       });
     } else {
       const colX = [180, 410, 640, 870];
@@ -1978,11 +1985,22 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       addClusterLabel(colX[1], 38, 'identity · vector');
       addClusterLabel(colX[2], 38, 'network');
       addClusterLabel(colX[3], 38, 'data-exchange');
-      addClusterLabel(colX[0], backlogY - 38, 'backlog · reaktiv (schutz) + proaktiv (diffusion + membran)');
+      addClusterLabel(500, backlogY - 38, 'backlog · reaktiv (schutz) + proaktiv (diffusion + membran)');
+      // Nicht-Backlog: festes Spalten/Zeilen-Raster.
       all.forEach(m => {
         const layout = TOPO_LAYOUT[m.id]; if (!layout) return;
-        if (BACKLOG_IDS.has(m.id)) positions[m.id] = { x: colX[layout.col], y: backlogY };
-        else positions[m.id] = { x: colX[layout.col], y: rowY[layout.row] || 270 };
+        if (BACKLOG_IDS.has(m.id)) return;
+        positions[m.id] = { x: colX[layout.col], y: rowY[layout.row] || 270 };
+      });
+      // Backlog: gleichmäßig über die Breite verteilen — vorher lagen 14/15
+      // (und künftig 18/19) alle auf col 3 und überlappten sich. Skaliert mit
+      // beliebiger Backlog-Anzahl.
+      const blNodes = all.filter(m => BACKLOG_IDS.has(m.id) && TOPO_LAYOUT[m.id]);
+      const blMinX = 150, blMaxX = 900;
+      blNodes.forEach((m, i) => {
+        const x = blNodes.length <= 1 ? (blMinX + blMaxX) / 2
+                : blMinX + (blMaxX - blMinX) * (i / (blNodes.length - 1));
+        positions[m.id] = { x, y: backlogY };
       });
     }
 
