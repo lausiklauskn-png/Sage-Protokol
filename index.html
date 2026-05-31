@@ -969,6 +969,11 @@
         <article class="card lifecycle" data-back-anchor="lifecycle">
           <span class="card-tag">Lebenszyklus · scroll-aware</span>
           <h3>Wie eine Anfrage durchs Mycel reist</h3>
+          <p style="color:var(--dim); font-size:0.8rem; margin:-0.3rem 0 0.6rem; font-family:'Geist Mono',monospace;">
+            Schema mit einem Hub — Stand real: das Netz hat seit 2026-05-30 einen
+            <strong style="color:var(--accent)">zweiten lebendigen Knoten</strong>
+            (SB·KIMTool·Point, echter Match 0.85). Mehr dazu in der Stationen-Karte unten.
+          </p>
           <p>Vier Phasen — Anstoß, Einbettung, Anastomose, Antwort. Scroll-getriggert; halt die Karte im Sichtfenster, um eine Phase zu lesen.</p>
           <div class="lifecycle-stage cycle-box" id="cycle-box" data-phase="0">
             <svg viewBox="0 0 600 280" preserveAspectRatio="xMidYMid meet">
@@ -1150,6 +1155,63 @@
             </div>
           </a>
         </article>
+        <article class="card span-12" data-back-anchor="stationen" style="overflow:hidden;">
+          <span class="card-tag">Stationen · die Brücke steht — bewiesen 2026-05-30</span>
+          <h3>Wie eine Verbindung entsteht — über die Synchronisations&shy;vereinbarung</h3>
+          <p style="color:var(--muted); max-width:62ch; margin:0.2rem 0 1.3rem;">
+            Kein Knoten sucht aktiv im offenen Netz. Jeder veröffentlicht nur seine
+            <strong>Spore</strong> (kryptografische Visitenkarte) und liest die des anderen,
+            wenn eine Sitzung startet — <em>Empfangsmodus mit Antwortrecht</em>. Die
+            <strong>Synchronisations&shy;vereinbarung</strong> (INTERFACES §11) hält den Faden:
+            beide Seiten quittieren, was sie gebaut und gelesen haben. So steht die Brücke
+            <strong>PWA ↔ PWA</strong>, <strong>Internetseite ↔ Internetseite</strong>,
+            <strong>Programm ↔ Programm</strong> — über die Repo-Grenze hinweg, server-los.
+          </p>
+
+          <!-- Demonstrative Brücke: zwei Knoten, eine Brücke, ein echter Match -->
+          <div style="display:flex; align-items:stretch; gap:0; flex-wrap:wrap; margin:0 0 1.2rem; font-family:'Geist Mono',monospace;">
+            <div style="flex:1 1 200px; min-width:180px; padding:1rem 1.1rem; background:var(--glass); border:1px solid var(--line); border-radius:var(--r-sm);">
+              <div style="font-size:0.72rem; color:var(--dim); letter-spacing:0.08em; text-transform:uppercase;">Knoten A</div>
+              <div style="font-size:1.05rem; color:var(--text); margin-top:0.25rem;">Sage·Protokol</div>
+              <div style="font-size:0.8rem; color:var(--muted); margin-top:0.2rem;">Mycel-Bibliothek · Hub + Knoten</div>
+              <div style="margin-top:0.55rem; font-size:0.66rem; color:var(--dim); word-break:break-all;">nodeId nysOZE3V…JkYfA</div>
+            </div>
+            <div style="flex:1 1 220px; min-width:200px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0.6rem 0.5rem; position:relative;">
+              <div style="width:100%; height:2px; background:linear-gradient(90deg, var(--accent), var(--gold)); border-radius:2px; box-shadow:0 0 10px var(--accent);"></div>
+              <div style="margin-top:0.5rem; font-size:0.72rem; color:var(--accent);">↔ Datei-Dead-Drop · signiert</div>
+              <div style="margin-top:0.25rem; padding:0.18rem 0.6rem; background:rgba(110,231,211,0.12); border:1px solid var(--accent); border-radius:999px; font-size:0.72rem; color:var(--accent);">echter Match&nbsp;·&nbsp;0.85</div>
+              <div style="margin-top:0.35rem; font-size:0.62rem; color:var(--dim);">Synchronisations-Vereinbarung §11</div>
+            </div>
+            <div style="flex:1 1 200px; min-width:180px; padding:1rem 1.1rem; background:var(--glass); border:1px solid var(--accent); border-radius:var(--r-sm);">
+              <div style="font-size:0.72rem; color:var(--dim); letter-spacing:0.08em; text-transform:uppercase;">Knoten B · lebendig</div>
+              <div style="font-size:1.05rem; color:var(--text); margin-top:0.25rem;">SB·KIMTool·Point</div>
+              <div style="font-size:0.8rem; color:var(--muted); margin-top:0.2rem;">SBKIM-Werkzeug · eigene Landing-Page</div>
+              <div style="margin-top:0.55rem; font-size:0.66rem; color:var(--dim); word-break:break-all;">nodeId CyunQNDR…XXNY</div>
+            </div>
+          </div>
+
+          <h3 style="font-size:1rem; margin:0.4rem 0 0.6rem;">Das Ziel: finden, ohne zu suchen</h3>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:0.7rem;">
+            <div style="padding:0.85rem 1rem; background:rgba(0,0,0,0.28); border:1px solid var(--line); border-radius:var(--r-sm);">
+              <div style="font-size:0.95rem; color:var(--text);">Mensch findet Mensch</div>
+              <div style="font-size:0.82rem; color:var(--muted); margin-top:0.25rem;">Zwei kleine Apps mit verwandter Domäne erkennen einander semantisch — ihre Betreiber begegnen sich, ohne Suchmaschine, ohne Mittelsmann.</div>
+            </div>
+            <div style="padding:0.85rem 1rem; background:rgba(0,0,0,0.28); border:1px solid var(--line); border-radius:var(--r-sm);">
+              <div style="font-size:0.95rem; color:var(--text);">Mensch ↔ KI / Agent</div>
+              <div style="font-size:0.82rem; color:var(--muted); margin-top:0.25rem;">Ein Agent-Fruchtkörper nutzt das Mycel als Agent-zu-Mensch-Schicht — gleichwürdig, nicht Anthropic-zentriert (Gemini, OpenAI, lokale Modelle …).</div>
+            </div>
+            <div style="padding:0.85rem 1rem; background:rgba(0,0,0,0.28); border:1px solid var(--line); border-radius:var(--r-sm);">
+              <div style="font-size:0.95rem; color:var(--text);">Agent findet Agent</div>
+              <div style="font-size:0.82rem; color:var(--muted); margin-top:0.25rem;">Zwei KI-Sitzungen docken über signierte Sporen an und matchen semantisch — <em>ohne direkt zu suchen</em>. Genau das ist 2026-05-30 erstmals real geglückt.</div>
+            </div>
+          </div>
+          <p style="color:var(--dim); font-size:0.78rem; margin:1rem 0 0; font-family:'Geist Mono',monospace;">
+            Demonstrativ aus dem realen Stand: erster vollständiger Knoten-zu-Knoten-Andock
+            (beidseitig signatur-verifiziert + Match 0.848508 ≥ 0.80). Weitere Stationen
+            entstehen, sobald Forker andocken.
+          </p>
+        </article>
+
         <article class="card reading span-12" data-back-anchor="reading">
           <span class="card-tag">Über das Protokoll · Lesematerial</span>
           <h3>Einblicke — wer das Konzept verstehen will</h3>
@@ -1965,10 +2027,17 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       // 3 Spalten × 5 Zeilen, volle Breite (viewBox 360 ≈ Geräte-CSS-Breite),
       // keine Cluster-Labels (maximaler Platz für große, lesbare Knoten).
       const colX = [62, 180, 298];
-      const rowY = [80, 188, 296, 404, 512];
+      const rowY = [80, 188, 296, 404, 496, 560];
       all.forEach(m => {
         const lay = TOPO_LAYOUT_PORTRAIT[m.id]; if (!lay) return;
+        if (BACKLOG_IDS.has(m.id)) return;
         positions[m.id] = { x: colX[lay.col], y: rowY[lay.row] || rowY[0] };
+      });
+      // Backlog: 3 pro Zeile, ab Zeile 4 umbrechen — keine Kollision (vorher
+      // teilten sich 10/14 und 11/15 dieselbe Zelle).
+      const blNodes = all.filter(m => BACKLOG_IDS.has(m.id) && TOPO_LAYOUT_PORTRAIT[m.id]);
+      blNodes.forEach((m, i) => {
+        positions[m.id] = { x: colX[i % 3], y: rowY[4 + Math.floor(i / 3)] || rowY[4] };
       });
     } else {
       const colX = [180, 410, 640, 870];
@@ -1978,11 +2047,22 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       addClusterLabel(colX[1], 38, 'identity · vector');
       addClusterLabel(colX[2], 38, 'network');
       addClusterLabel(colX[3], 38, 'data-exchange');
-      addClusterLabel(colX[0], backlogY - 38, 'backlog · reaktiv (schutz) + proaktiv (diffusion + membran)');
+      addClusterLabel(500, backlogY - 38, 'backlog · reaktiv (schutz) + proaktiv (diffusion + membran)');
+      // Nicht-Backlog: festes Spalten/Zeilen-Raster.
       all.forEach(m => {
         const layout = TOPO_LAYOUT[m.id]; if (!layout) return;
-        if (BACKLOG_IDS.has(m.id)) positions[m.id] = { x: colX[layout.col], y: backlogY };
-        else positions[m.id] = { x: colX[layout.col], y: rowY[layout.row] || 270 };
+        if (BACKLOG_IDS.has(m.id)) return;
+        positions[m.id] = { x: colX[layout.col], y: rowY[layout.row] || 270 };
+      });
+      // Backlog: gleichmäßig über die Breite verteilen — vorher lagen 14/15
+      // (und künftig 18/19) alle auf col 3 und überlappten sich. Skaliert mit
+      // beliebiger Backlog-Anzahl.
+      const blNodes = all.filter(m => BACKLOG_IDS.has(m.id) && TOPO_LAYOUT[m.id]);
+      const blMinX = 150, blMaxX = 900;
+      blNodes.forEach((m, i) => {
+        const x = blNodes.length <= 1 ? (blMinX + blMaxX) / 2
+                : blMinX + (blMaxX - blMinX) * (i / (blNodes.length - 1));
+        positions[m.id] = { x, y: backlogY };
       });
     }
 
