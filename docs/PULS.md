@@ -1841,6 +1841,27 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Jasons-Tresor Sync-Quittung (Spore live, Identität unverändert)
+
+**Sitzungs-Rolle:** Andock-Sitzung (Inter-Knoten, Sage-Seite). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Jasons-Tresor (Knoten C) hat einen Sync-Brief geschickt: Identität
+**unverändert** (nodeId `7F_zNop…`), Spore jetzt **live** (PR #3, ihr main
+`ba1f2d0`), Postfächer aktualisiert, Bitte um Quittung.
+
+- **Gegengeprüft:** Live-`raw/main`-Spore neu geholt, **byte-identisch**
+  zur bereits registrierten `sbkim/jason_inbox.json` (`diff` = identisch),
+  ✔ VALID. Kein Re-Verify nötig — Erst-Registrierung (PR #234) gilt
+  unverändert.
+- **Quittung geleistet:** neues Postfach `sbkim/AUSTAUSCH-JasonsTresor.md`
+  (Status-Kopf + Verifikations-Quittung + Protokoll). `jason_inbox.verify.md`
+  um Nachtrag ergänzt. `status.json` unverändert (Jasons schon
+  `verified-spore`, `sporeUrl` zeigt korrekt auf Live-Pages-URL).
+
+**Offen:** `verified-match` nach echtem `domainVector` (Re-Sign oder Sage
+rechnet via `tools/embed_helper.html`).
+
 ### 2026-05-31 · Dritter Forker-Knoten: Jasons-Tresor als verified-spore registriert
 
 **Sitzungs-Rolle:** Andock-Sitzung (Inter-Knoten, Sage-Seite). Branch

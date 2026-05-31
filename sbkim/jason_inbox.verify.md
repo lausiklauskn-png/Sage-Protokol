@@ -35,3 +35,13 @@ oder Sage ihn aus dem Domänen-Text rechnet (Browser-Helfer `tools/embed_helper.
 
 Damit ist Jasons-Tresor der **dritte** über das SBKIM-Protokoll verifizierte Forker-Knoten
 (neben SB·KIMTool·Point) — der erste Andock-Schritt eines Drei-Knoten-Netzes.
+
+---
+
+## Nachtrag 2026-05-31 (Sync-Brief Knoten C): Spore LIVE, Identität unverändert
+
+Jasons-Tresor meldet die Spore jetzt als live (Pages, im Browser sichtgeprüft). Sage hat
+die Live-`raw/main`-Spore neu geholt und **byte-identisch** zu dieser registrierten Kopie
+befunden (`diff` = identisch) — nodeId/Signatur/Spore aus der Erst-Registrierung gelten
+unverändert weiter, kein Re-Verify nötig. Quittung im Postfach
+`sbkim/AUSTAUSCH-JasonsTresor.md`.
