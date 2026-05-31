@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-30 (21 Module)
+  title Modulstand 2026-05-31 (21 Module)
   "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -1840,6 +1840,42 @@ in diesem Anker ist verbindlich.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-05-31 · Dritter Forker-Knoten: Jasons-Tresor als verified-spore registriert
+
+**Sitzungs-Rolle:** Andock-Sitzung (Inter-Knoten, Sage-Seite). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Jasons-Tresor (Knoten C, externes Repo `lausiklauskn-png/Jasons-Tresor`)
+hat eine **dauerhaft gesicherte** Spore live gestellt und um Registrierung
+als `verified-spore` gebeten (ehrlich kein Match, da `domainVector` noch
+`_demo`).
+
+**Reziprok verifiziert** (Sages echter Modul-02-Pfad, über raw/main):
+- ✔ VALID: Signatur gültig, **id == base64url(SHA256(rawPub)) unabhängig
+  nachgerechnet = gemeldete nodeId `7F_zNop…`**, `publicKey.x` = gemeldet,
+  9/9 Pflichtfelder, Manipulationsprobe fällt durch.
+- `domainVector` = `_demo` → bewusst **nur `verified-spore`**, kein Match
+  (INTERFACES §11.5).
+
+**Nachgezogen:**
+- `status.json`: fünfter `endknoten`-Eintrag **Jasons-Tresor**
+  (`verified-spore`, `domain: Jasons-Tresor-Bibliothek`, nodeId,
+  landingPage). `lastUpdated 2026-05-31`. Damit drei verifizierte
+  Forker-Knoten (Sage + SB·KIMTool `verified-match` + Jasons-Tresor
+  `verified-spore`) neben den zwei Live-Endknoten.
+- Inbox-Konvention (INTERFACES §11.3): `sbkim/jason_inbox.json`
+  (signatur-reine 1:1-Kopie) + `sbkim/jason_inbox.verify.md` (Prüf-Vermerk
+  inkl. Manipulationsprobe).
+
+**Pages-Befund:** `…github.io/Jasons-Tresor/sbkim/spore.json` im Browser
+live, von Sages Container aus 403 (eigene github.io-Egress-Sperre) —
+verifiziert über raw/main.
+
+**Offen:** Hochstufung auf `verified-match`, sobald Jasons-Tresor einen
+echten `domainVector` (`multilingual-e5-small`, `passage: `-Präfix)
+re-signt — oder Sage ihn via `tools/embed_helper.html` rechnet. Dann
+Cross-Knoten-Match Sage ⟷ Jasons-Tresor nachrechnen + Score eintragen.
 
 ### 2026-05-31 · Sage-Page: Topology-Overlap-Fix + Stationen-Karte (Brücken-Vision)
 
