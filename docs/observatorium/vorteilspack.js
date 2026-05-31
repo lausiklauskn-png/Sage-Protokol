@@ -134,7 +134,13 @@
       task:"Kopierbarer Andock-Wizard für den Hub.",
       was:"Tool kommt — siehe Karte 19. Der Sage-Page-Andock-Wizard, extrahiert als eigenständiges, kopierbares Modul für Sage und den externen Mycel-Hub.",
       wie:"Stub/Konzept — Bau in Phase B Schritt 7.",
-      deps:"—", code:null, smoke:null, karte:"docs/components/19_andock_wizard.md" }
+      deps:"—", code:null, smoke:null, karte:"docs/components/19_andock_wizard.md" },
+
+    { id:"NETZ", name:"Netz-Wächter & Briefkasten", tier:"basic", status:"fertig",
+      task:"Knoten melden Bauten + finden Neues — server-los.",
+      was:"Die Auto-Sync-Schicht des Mycels: jeder Knoten legt einen maschinenlesbaren Briefkasten-Aushang (sbkim/SIGNAL.json) ab und erfährt von Bauten der anderen — per zeitgesteuerter GitHub-Action UND per Briefkasten-Knopf auf der Seite. Kein Server, kein Daemon, kein Push.",
+      wie:"INTERFACES §11.6: SIGNAL.json mit monoton steigender seq + ack-Symmetrie. Die Action (.github/sbkim-watch.mjs) liest die SIGNAL.json der Peers aus raw/main, vergleicht seq gegen den eigenen ack und öffnet NUR bei Neuem ein Issue. Der 📬-Knopf neben den Lampen prüft dasselbe live im Browser (CORS, kein Token). Das Pushen der Datei IST das Signal.",
+      deps:"keine (eigenständig; ergänzt 02 Spore / 05 Anastomose)", code:".github/sbkim-watch.mjs", smoke:null, karte:".github/SBKIM-WATCH-FUER-FORKER.md" }
   ];
 
   /* --- Helfer ------------------------------------------------------------- */
