@@ -5362,6 +5362,7 @@ PULS § Vision-Anker 4 (Königin-Relay), PULS § Vision-Anker 5
 | 2026-05-26 | Pflege 16 Modal-Local-Time (Sub-(e)-Folge-Pflege 3/3) | Folge-Pflege zum Endknoten-Sichttest Cross-Knoten Sub (e) am 2026-05-26 (Folge-Befund 3). Klaus' Befund DeX-Chrome auf Galaxy Tab S6 in MESZ-Zeitzone (UTC+2): „Datum/Uhrzeit ist nicht aktuell, ich vermute nicht Mitteleuropäische Zeit, eher Amerikan." Ursache: Modul 16 `renderModalContents()` baute die `dateLine.textContent` per `new Date(snap.certifiedAt).toISOString().slice(0, 10)` + `iso.slice(11, 16)` — UTC-ISO-Substrings, daher zeigte das Modal Klaus' lokales 21:10 MESZ als „19:10 Uhr" (UTC). **§ 1 Modul 16 Geprüft-Zeile** um Pflege-Modal-Local-Time-Eintrag erweitert. **Code in `src/modules/16_siegel.js` additiv** (sehr kleiner Eingriff, KEIN Vertrags-Bruch): `renderModalContents()` Zeilen ~872–885 ersetzt — UTC-ISO-Slice-Pfad ersetzt durch lokale Date-Methoden (`date.getFullYear()`, `String(date.getMonth() + 1).padStart(2, "0")`, `getDate()`, `getHours()`, `getMinutes()` mit `padStart(2, "0")`). Format-Konvention `YYYY-MM-DD, HH:MM Uhr` bleibt (ISO-Datum + lokale Stunden/Minuten — kein Optik-Wechsel auf `toLocaleString("de-DE", {dateStyle, timeStyle})`-Style, weil Klaus' Doku-Pattern überall ISO-Datum verwendet). Fail-soft-Fallback: falls `new Date(certifiedAt)` `NaN` (kaputter ISO-String), wird der Roh-`certifiedAt` direkt angezeigt. `_meta.certifiedAt` bleibt UTC-ISO (Spec-Vertrag aus § Persistenz unverändert — nur die Render-Schicht konvertiert). **Karte 16 § Sub (c) Modal-Body Punkt 1** um Anzeige-Konvention-Block erweitert (lokale Date-Methoden statt UTC-ISO-Slice, Begründung Klaus' MESZ-Befund). **Headless-Smoke** `tests/smoke_bau16_sub_e_bronze.mjs` um Probe 16 erweitert (Modal-Datum lokal-Konsistenz: `dateLine.textContent` muss `getHours():getMinutes()` aus der Laufzone enthalten), **16/16 grün**. **Regression** smoke_bau15b 31/31 + smoke_bau17 36/36 grün. **node --check** Modul 16 grün. **PROTOCOL_VERSION** / **DB_VERSION** / **BACKUP_FORMAT_VERSION** unverändert. **KEIN funktionaler Vertrags-Eingriff** (Public Surface von Modul 16 unverändert; `_meta.certifiedAt`-Format bleibt UTC-ISO). **KEIN ZERTIFIKAT_ASPEKTE-Eintrag** (Render-Schicht-Pflege, kein Sicherheits-Modul-Update — CLAUDE.md § „Sicherheits-Module pflegen Aspekte" greift nicht). **KEIN Endknoten-Eingriff** (Mein-Rezeptbuch + Mein-Mixarium ziehen den neuen Modul-16-Code in eigener Folge-Pflege nach — kombinierbar mit den anderen zwei Sub-(e)-Folge-Pflegen Modul 17 + Modul 05). **KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump**. **KEINE Tafel-Umsortierung CLAUDE.md**. **`status.json` Modul 16 unverändert** (bleibt `score:"stub"`; `update_puls_pie.py` NICHT aufgerufen — additive Render-Pflege, kein Score-Wechsel). Klaus' Sub-(e)-Befund 3 von 3 ist hiermit gelöst. **Damit sind alle drei Sage-Sub-(e)-Folge-Pflegen abgeschlossen** (1/3 Modul 17 Bronze/Gold-Render gemerged in PR #185, 2/3 Endknoten-Modul-05-Update läuft als externe Bau-Sitzungen MR+MM, 3/3 diese hier). Brief: `docs/sessions/BRIEF_PFLEGE_16_MODAL_LOCAL_TIME.md`. Übergabeprotokoll `docs/sessions/archiv/2026-05-26_pflege-16-modal-local-time.md`. |
 
 | 2026-05-30 | Spec-Sitzung Andock-Konventionen | **Neuer §11 „Andock-Konventionen" (netzweit)** angelegt aus SB·KIMTool·Points eingefrorenem Rückbrief A–E. Fünf Unterabschnitte: §11.1 Kanonische Signier-Form (Norm + Pseudocode + Determinismus-Klausel), §11.2 Verifizierer-Paar (WebCrypto/Modul 02 ↔ node:crypto, 4 Pflicht-Prüfpunkte), §11.3 Inbox-Konvention (`<gegenseite>_inbox.json` signatur-rein + `.verify.md` Pflichtfelder), §11.4 Sync-Vertrag (7 Regeln, Regel 7 für N>2 verallgemeinert + `status.json`-Pflichtfelder + `matchScore` Pflicht bei `verified-match` + `pingStatus`-Stufen), §11.5 Pflicht-Spore-Felder (9 REQUIRED). **Sage-Entscheidung zu E:** `domainVector` optional für `verified-spore`, **Pflicht für `verified-match`** (Ja zum gestuften Vorschlag); `_demo`-Markierung Pflicht bis echtes Embedding. Hervorgegangen aus dem ersten vollständigen Andock Sage ⟷ SB·KIMTool (Match 0.848508). KEIN Modul-Code, KEIN PROTOCOL_VERSION-Bump (Konventions-Tafel, kein Schema-Bruch — die 9 Pflichtfelder + kanonische Form sind bereits gelebt). Postfach-Abgleich-Antwort A–E + Bau-Protokoll-Zeile in `sbkim/AUSTAUSCH.md`. |
+| 2026-05-31 | Pflege Briefkasten-Regel | **Neuer §11.6 „Briefkasten-Pflege & Netz-Signal" (netzweite Pflicht).** Server-los, Empfangsmodus-konform: jeder Knoten pflegt `sbkim/SIGNAL.json` (maschinenlesbarer Aushang mit monoton steigender `seq` + `ack`-Symmetrie). Sitzungsstart-Pflicht: Signale aller Gegenstellen aus `raw/main` lesen, bei `seq > ack` lesen+quittieren. Sitzungsende-Pflicht nach Bau: `seq`+1, Bau-Protokoll-Zeile, pushen (= das Signal). Gilt für ALLE angeschlossenen Knoten (`forNodes:"*"`), nicht nur Sage. Sage geht voran: `sbkim/SIGNAL.json` angelegt, CLAUDE.md § „Briefkasten pflegen" als Sitzungsstart-/-ende-Pflicht ergänzt, `sbkim/NETZ-STAND.md` referenziert. Formalisiert die Hand-Meldung „dritter Knoten Jasons-Tresor". KEIN Modul-Code, KEIN PROTOCOL_VERSION-Bump. |
 
 ---
 
@@ -5501,3 +5502,57 @@ mit echtem Embedding wird `_demo` entfernt. Das Embedding-Modell ist
 `Xenova/multilingual-e5-small` (Feld `embeddingModel`), Vektor-Erzeugung
 mit `passage: `-Präfix, mean-pooled, L2-normalisiert (siehe Modul 03 +
 `tools/embed_helper.html`).
+
+### 11.6 Briefkasten-Pflege & Netz-Signal (netzweite Pflicht-Regel, 2026-05-31)
+
+> **Gilt für JEDEN angeschlossenen Knoten — nicht nur Sage.** Server-los heißt: es
+> gibt keinen echten Push. Trotzdem darf kein Bau im Netz untergehen. Diese Regel
+> macht aus „ich habe etwas gebaut" ein **maschinen- und menschenlesbares Signal**,
+> das die Gegenseite beim nächsten Sitzungsstart **zwingend** sieht. Empfangsmodus
+> bleibt gewahrt: kein Daemon, kein Crawler, keine Eigenanfrage ins offene Netz —
+> nur das Lesen genannter URLs bei einem bewussten Sitzungsstart.
+
+**Das Signal — `sbkim/SIGNAL.json` (jeder Knoten pflegt seine eigene).**
+Maschinenlesbarer „Briefkasten-Aushang". Pflicht-Schema:
+
+```json
+{
+  "node": "<nodeName>",
+  "lastBuild": "YYYY-MM-DD",
+  "seq": <monoton steigende Ganzzahl, +1 pro gemeldetem Bau>,
+  "headline": "<ein Satz: was wurde gebaut>",
+  "mailboxes": { "<gegenseite>": "<URL der eigenen AUSTAUSCH-Datei für sie>" },
+  "forNodes": ["<nodeName>", "..."],   // wen betrifft es; "*" = alle
+  "ack": { "<gegenseite>": <seq, den diese Gegenseite zuletzt quittiert hat> }
+}
+```
+
+`seq` ist der Herzschlag: steigt die `seq` der Gegenseite über den Wert in
+**deinem** `ack`, gibt es Ungelesenes → Pflicht zu lesen + zu quittieren.
+
+**Pflicht am Sitzungsstart (jeder Knoten, mit Andock-Bezug):**
+1. Eigenes `sbkim/SIGNAL.json` lesen — wo steht das eigene Netz?
+2. `SIGNAL.json` **jeder** Gegenstelle aus deren `raw/main` lesen (genannte URLs).
+3. Für jede Gegenstelle: ist deren `seq` > dein `ack[gegenstelle]`? → ihre
+   `AUSTAUSCH`-Datei + `status.json` lesen, handeln, **quittieren** (Datum + `ack`
+   hochsetzen).
+
+**Pflicht am Sitzungsende (jeder Knoten, der etwas gemeldet hat):**
+1. `seq` +1, `lastBuild` + `headline` setzen, `forNodes` füllen.
+2. Bau-Protokoll-Zeile ins betroffene `AUSTAUSCH`-Postfach (Regel §11.4.3).
+3. Committen/pushen — **das Pushen IST das Signal.** Die Gegenseite holt es beim
+   nächsten Start ab (Schritt 2 oben). Mehr Push gibt es server-los nicht, und
+   mehr ist auch nicht nötig.
+
+**Quittungs-Symmetrie (beidseitig bezeugt):** Wer liest, setzt `ack[gegenstelle]`
+auf deren aktuelle `seq` und stempelt Datum in der `AUSTAUSCH`-Datei. So sieht jede
+Seite jederzeit, ob die andere ihren letzten Bau schon gesehen hat (Heartbeat §11.4.6).
+
+**Mehr-als-zwei-Knoten:** `forNodes` adressiert gezielt; `"*"` heißt „alle angeschlossenen
+Knoten von Klaus". Ein neuer Bau, der das ganze Netz betrifft (z.B. neue Andock-
+Konvention), wird an `"*"` gemeldet und von jedem Knoten quittiert.
+
+**Bezug:** Diese Regel formalisiert das, was 2026-05-31 von Hand geschah (Bau-Meldung
+„dritter Knoten Jasons-Tresor" in SB·KIMTools Briefkasten). Ab jetzt verbindlich für
+alle Knoten — Sage geht voran (`sbkim/SIGNAL.json` angelegt), Forker ziehen beim
+nächsten Andock nach. Wahrheits-Karte des Gesamtnetzes: `sbkim/NETZ-STAND.md`.

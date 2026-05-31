@@ -1841,6 +1841,30 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Briefkasten-Pflege-Regel netzweit (INTERFACES §11.6 + SIGNAL.json)
+
+**Sitzungs-Rolle:** Pflege (heilige Tafel + Konvention). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' Auftrag: aus der Hand-Meldung eine **dauerhafte, sitzungsübergreifende
+Regel für ALLE angeschlossenen Knoten** machen — Briefkasten regelmäßig
+pflegen, und ein server-loses Signal „ich habe etwas gebaut / ich muss lesen".
+
+- **INTERFACES §11.6** (netzweite Tafel): `sbkim/SIGNAL.json` je Knoten
+  (maschinenlesbarer Aushang, monotone `seq`, `ack`-Symmetrie).
+  Sitzungsstart-Pflicht: Gegenstellen-Signale aus `raw/main` lesen, bei
+  `seq > ack` lesen+quittieren. Sitzungsende-Pflicht nach Bau: `seq`+1 +
+  Bau-Protokoll-Zeile + pushen (= das Signal; kein Daemon, Empfangsmodus).
+  Ehrliche Grenze dokumentiert: echten Push gibt es server-los nicht — das
+  Pushen + Pflicht-Leseritual ersetzt ihn.
+- **`sbkim/SIGNAL.json`** angelegt (Sage geht voran, seq 3, forNodes "*").
+- **CLAUDE.md** § „Briefkasten pflegen — sitzungsübergreifend, fürs ganze
+  Netz" als Sitzungsstart-/-ende-Pflicht-Block ergänzt.
+- **`sbkim/NETZ-STAND.md`** referenziert die Regel.
+
+**Offen:** Forker-Knoten (SB·KIMTool, Jasons-Tresor) legen ihr eigenes
+`SIGNAL.json` beim nächsten Andock an + setzen `ack` für Sage.
+
 ### 2026-05-31 · Netz-Stand-Tresor + Bau-Meldung an SB·KIMTool
 
 **Sitzungs-Rolle:** Andock-Pflege (Inter-Knoten). Branch

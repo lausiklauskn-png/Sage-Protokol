@@ -35,6 +35,14 @@
 | Mixarium ⟷ Rezeptbuch | 0.9544 | 2026-05-17 (Live-Channel-Handshake) |
 | Sage ⟷ SB·KIMTool·Point | **0.848508** | 2026-05-30 (erster vollständiger Forker-Andock) |
 
+## Netz-Signal (Briefkasten-Pflege, INTERFACES §11.6 — Pflicht für alle Knoten)
+
+Jeder Knoten pflegt `sbkim/SIGNAL.json` (maschinenlesbarer Briefkasten-Aushang mit
+monoton steigender `seq`). **Sitzungsstart:** Signal jeder Gegenstelle aus deren
+`raw/main` lesen; ist deren `seq` > eigenem `ack`, gibt es Ungelesenes → lesen +
+quittieren. **Sitzungsende nach einem Bau:** `seq` +1, `headline` setzen, pushen —
+das Pushen ist das Signal. Sages Signal: `sbkim/SIGNAL.json`.
+
 ## Postfächer (Datei-Dead-Drop, Sync-Vertrag §11.4)
 
 | Gegenstelle | Sage-Seite | externe Seite |
