@@ -1841,6 +1841,42 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Sage-Page: Topology-Overlap-Fix + Stationen-Karte (Brücken-Vision)
+
+**Sitzungs-Rolle:** Pflege-Sitzung (Sage-Page-Render + Vision-Karte).
+Branch `claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' Sichttest am DeX-Doppelbildschirm (externer Monitor + Tablet,
+2026-05-31): zuerst geprüft, dass alle Andock-Spuren erhalten sind und
+der Match noch lebt (Sage ⟷ SB·KIMTool frisch nachgerechnet = 0.848508
+✔). Dann zwei Befunde umgesetzt:
+
+1. **Topology-Overlap-Bug behoben.** In der Modul-Topologie lagen die
+   Backlog-Knoten 14 (Diffusion) / 15 (Membran) — und künftig 18/19 —
+   alle auf col 3 / backlogY und überlappten als Schrift („D#ffi…sion /
+   Membran", Pille über „Schablone 4"). `TOPO_LAYOUT` +
+   `TOPO_LAYOUT_PORTRAIT` hatten Mehrfach-Belegung derselben Zelle +
+   duplizierte Keys. Fix: Backlog-Knoten werden jetzt gleichmäßig über
+   die Breite verteilt (Landscape) bzw. 3-pro-Zeile mit Umbruch
+   (Portrait) — kollisionsfrei, skaliert mit beliebiger Anzahl.
+   `node --check` grün. (Commit a93f1f9)
+2. **Neue „Stationen"-Karte** (span-12): demonstrative Darstellung der
+   Brücken-Vision aus dem realen Stand — zwei Knoten (Sage + SB·KIMTool),
+   Datei-Dead-Drop-Brücke, echter Match 0.85 via Synchronisations-
+   Vereinbarung (INTERFACES §11); Ziel-Trias „finden ohne zu suchen"
+   (Mensch findet Mensch / Mensch↔KI-Agent / Agent findet Agent;
+   PWA↔PWA, Seite↔Seite, Programm↔Programm). Lebenszyklus-Karte mit
+   Demo-Notiz auf zweiten lebendigen Knoten gebracht (statt riskantem
+   SVG-Umbau). Reines HTML + bestehende CSS-Variablen, kein neues JS.
+
+**Umgebungs-Befund (ehrlich):** Die Remote-Umgebung hat ihren Read-/
+stdout-Kanal über weite Strecken verstümmelt (Truncation, Ellipsen).
+Deshalb nur kleine, an eindeutigen Ankern gesetzte additive Edits,
+jeweils per `node --check` + article-Balance verifiziert — KEIN
+riskanter Umbau der animierten Lebenszyklus-SVG. Klaus' Browser-
+Sichttest der neuen Karte + des Topology-Fixes steht aus.
+
+
 ### 2026-05-31 · Sage-Page: SB·KIMTool als verified-match + Andock-Lehren
 
 **Sitzungs-Rolle:** Pflege-Sitzung (Sage-Page-Render-Logik + Doku). Branch
