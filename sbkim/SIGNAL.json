@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-05-31",
-  "seq": 3,
-  "headline": "Briefkasten-Pflege-Regel (INTERFACES §11.6) + Netz-Signal eingeführt; Jasons-Tresor als 3. Knoten verified-spore registriert; NETZ-STAND.md angelegt.",
+  "seq": 4,
+  "headline": "GitHub-Action Netz-Wächter eingeführt (zeitgesteuert, meldet fremde Bauten via Issue nur bei Neuem); kopierbare Variante für alle Knoten.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
@@ -16,6 +16,7 @@
   "history": [
     { "seq": 1, "date": "2026-05-30", "headline": "SB-KIMTool-Point verified-match 0.848508; INTERFACES §11 Andock-Konventionen netzweit." },
     { "seq": 2, "date": "2026-05-31", "headline": "Jasons-Tresor (Knoten C) verified-spore registriert; Inbox-Konvention + eigenes Postfach." },
-    { "seq": 3, "date": "2026-05-31", "headline": "Briefkasten-Pflege-Regel §11.6 + sbkim/SIGNAL.json eingeführt; Bau-Meldung Jasons-Tresor an SB-KIMTool; NETZ-STAND.md." }
+    { "seq": 3, "date": "2026-05-31", "headline": "Briefkasten-Pflege-Regel §11.6 + sbkim/SIGNAL.json eingeführt; Bau-Meldung Jasons-Tresor an SB-KIMTool; NETZ-STAND.md." },
+    { "seq": 4, "date": "2026-05-31", "headline": "GitHub-Action Netz-Wächter (.github/sbkim-watch.mjs + workflow): zeitgesteuertes Lesen der Peer-Briefkästen, Issue nur bei seq>ack; kopierbare Forker-Variante." }
   ]
 }
