@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wie zwei sich finden — SBKIM-Zusammenarbeit, Schritt für Schritt</title>
+<style>
+  :root{
+    --bg:#0b0a16; --bg2:#13112a; --ink:#f3efe6; --muted:#b9b3a6; --dim:#7d7868;
+    --gold:#d6b76a; --teal:#6ee7d3; --line:rgba(255,255,255,0.14);
+    --glass:rgba(255,255,255,0.04);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:radial-gradient(120% 90% at 50% 0%, #1a1733 0%, var(--bg) 60%);color:var(--ink);font-family:Inter,system-ui,sans-serif;}
+  .wrap{max-width:880px;margin:0 auto;padding:1.4rem 1.1rem 4rem;}
+  .back{display:inline-block;color:var(--muted);text-decoration:none;font-size:0.9rem;margin-bottom:1rem;}
+  .back:hover{color:var(--gold);}
+  .eyebrow{font-family:"Geist Mono",ui-monospace,monospace;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:600;font-size:clamp(1.6rem,5vw,2.4rem);line-height:1.1;margin:0.4rem 0 0.6rem;}
+  .lede{color:var(--muted);max-width:60ch;line-height:1.55;margin:0 0 1.4rem;}
+  .stage{position:relative;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:1rem;}
+  svg{display:block;width:100%;height:auto;}
+  .panel{margin-top:1rem;min-height:5.5rem;background:rgba(0,0,0,0.3);border:1px solid var(--line);border-radius:12px;padding:0.95rem 1.1rem;}
+  .panel .step-no{font-family:"Geist Mono",ui-monospace,monospace;font-size:0.72rem;color:var(--gold);letter-spacing:0.1em;}
+  .panel h2{font-size:1.12rem;margin:0.25rem 0 0.45rem;font-weight:600;}
+  .panel p{margin:0;color:var(--muted);line-height:1.55;font-size:0.96rem;}
+  .controls{display:flex;align-items:center;gap:0.7rem;margin-top:1rem;flex-wrap:wrap;}
+  button{font:inherit;cursor:pointer;border-radius:999px;padding:0.6rem 1.2rem;border:1px solid var(--line);background:var(--glass);color:var(--ink);transition:.2s;}
+  button.primary{background:linear-gradient(90deg,var(--gold),#b8954a);color:#1a1407;border:none;font-weight:600;}
+  button:hover{transform:translateY(-1px);}
+  button:disabled{opacity:0.4;cursor:default;transform:none;}
+  .dots{display:flex;gap:0.4rem;margin-left:auto;}
+  .dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.16);transition:.25s;}
+  .dot.on{background:var(--gold);transform:scale(1.25);}
+  .closing{margin-top:1.8rem;padding:1.2rem 1.3rem;border:1px solid rgba(214,183,106,0.35);border-radius:14px;background:rgba(214,183,106,0.06);}
+  .closing h3{margin:0 0 0.5rem;font-size:1.05rem;color:var(--gold);}
+  .closing p{margin:0.4rem 0 0;color:var(--muted);line-height:1.55;font-size:0.95rem;}
+  .closing strong{color:var(--ink);}
+  /* SVG element styles driven by data-step on <svg> */
+  .nodeA,.nodeB,.nodeC{transition:opacity .5s, transform .5s;}
+  .nodeC{opacity:0;}
+  .bridge{stroke-dasharray:6 6;opacity:0;transition:opacity .5s;}
+  .pulse{opacity:0;}
+  .lbl{font-family:"Geist Mono",ui-monospace,monospace;font-size:9px;fill:var(--muted);}
+  .lblA{fill:var(--teal);}.lblB{fill:var(--gold);}
+  @keyframes flow{from{stroke-dashoffset:24;}to{stroke-dashoffset:0;}}
+  @media (prefers-reduced-motion:no-preference){
+    svg[data-step="2"] .bridge,svg[data-step="3"] .bridge,svg[data-step="4"] .bridge,svg[data-step="5"] .bridge{animation:flow 1.2s linear infinite;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./index.html">← zurück zur Einladung</a>
+  <p class="eyebrow">SBKIM · Demo</p>
+  <h1>Wie zwei sich finden — ohne zu suchen.</h1>
+  <p class="lede">
+    Das Sternenfeld zeigt: viele Knoten, kein Zentrum, keine Hierarchie. Aber wie
+    arbeiten getrennte Systeme dann zusammen, wenn keiner der Chef ist? Tipp dich
+    durch — sechs Schritte, ein echtes Beispiel.
+  </p>
+
+  <div class="stage">
+    <svg id="scene" viewBox="0 0 600 300" data-step="0" role="img" aria-label="Zwei Knoten finden sich und verbinden">
+      <!-- links: Knoten A -->
+      <g class="nodeA" transform="translate(150 150)">
+        <circle r="46" fill="rgba(110,231,211,0.10)" stroke="rgba(110,231,211,0.5)"/>
+        <circle r="16" fill="#6ee7d3"/>
+        <text class="lbl lblA" x="0" y="74" text-anchor="middle">Knoten A · Rezeptbuch</text>
+        <text class="lbl" x="0" y="88" text-anchor="middle" opacity="0.7">(Mensch betreibt)</text>
+      </g>
+      <!-- rechts: Knoten B -->
+      <g class="nodeB" transform="translate(450 150)">
+        <circle r="46" fill="rgba(214,183,106,0.10)" stroke="rgba(214,183,106,0.5)"/>
+        <circle r="16" fill="#d6b76a"/>
+        <text class="lbl lblB" x="0" y="74" text-anchor="middle">Knoten B · Mixarium</text>
+        <text class="lbl" x="0" y="88" text-anchor="middle" opacity="0.7">(KI-Agent betreibt)</text>
+      </g>
+      <!-- Brücke -->
+      <line class="bridge" x1="196" y1="150" x2="404" y2="150" stroke="#d6b76a" stroke-width="2"/>
+      <!-- Match-Pille -->
+      <g class="pulse" id="matchPill" transform="translate(300 150)" style="transition:opacity .5s;">
+        <rect x="-46" y="-15" width="92" height="30" rx="15" fill="rgba(110,231,211,0.14)" stroke="#6ee7d3"/>
+        <text x="0" y="4" text-anchor="middle" class="lbl" fill="#6ee7d3" style="font-size:11px;">Match 0.85</text>
+      </g>
+      <!-- dritter Knoten (taucht in Schritt 6 auf) -->
+      <g class="nodeC" transform="translate(300 250)">
+        <circle r="30" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.35)"/>
+        <circle r="10" fill="#f3efe6"/>
+        <text class="lbl" x="0" y="50" text-anchor="middle">Knoten C · ein neuer Forker</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="step-no" id="stepNo">Schritt 1 / 6</div>
+    <h2 id="stepTitle"></h2>
+    <p id="stepText"></p>
+  </div>
+
+  <div class="controls">
+    <button id="prev" disabled>← zurück</button>
+    <button class="primary" id="next">weiter →</button>
+    <div class="dots" id="dots" aria-hidden="true"></div>
+  </div>
+
+  <div class="closing">
+    <h3>Also — über die Nutzer oder über die Maschine?</h3>
+    <p>
+      <strong>Beides, und genau das ist der Trick.</strong> Das Protokoll <em>stellt vor</em> —
+      es entscheidet nicht. Hinter jedem Knoten sitzt ein Mensch <em>oder</em> ein Agent;
+      wer es ist, bleibt offen und gleichwürdig. SBKIM baut die Brücke und beweist die
+      Echtheit (Signatur) und die Verwandtschaft (semantischer Match). Was über die Brücke
+      geht und ob überhaupt, entscheidet der, der am Knoten sitzt.
+    </p>
+    <p>
+      Deshalb entsteht <strong>kein Machtgefüge</strong>: Es gibt keine Mitte, die andere
+      beherrschen könnte. Jeder Knoten bleibt souverän, kann jederzeit Nein sagen, kann
+      verschwinden. Zusammenarbeit ist <strong>Einladung mit Antwortrecht</strong> — nicht
+      Befehl. So findet Mensch Mensch, Mensch findet Agent, Agent findet Agent —
+      <strong>ohne aktiv zu suchen</strong>, nur indem jeder ehrlich sagt, wer er ist.
+    </p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var steps = [
+    {
+      t: "Jeder veröffentlicht nur seine „Visitenkarte“.",
+      p: "Knoten A (ein Rezeptbuch, von einem Menschen betrieben) und Knoten B (ein Cocktail-Tool, von einem KI-Agenten betrieben) sind völlig getrennt. Keiner sucht. Jeder legt nur eine signierte Spore ins offene Netz: „Das bin ich, das ist meine Domäne.“"
+    },
+    {
+      t: "Einer liest die Spore des anderen — im Empfangsmodus.",
+      p: "Wenn eine Sitzung startet, liest Knoten A die offen liegende Spore von Knoten B (oder umgekehrt). Kein Crawler, kein Server, kein Dauerlauf. Nur ein bewusster Blick auf eine genannte Adresse."
+    },
+    {
+      t: "Echtheit prüfen: ist die Spore wirklich von B?",
+      p: "Knoten A prüft die kryptografische Signatur (Ed25519) und rechnet nach, dass die nodeId zum Schlüssel passt. Manipulation fällt sofort durch. Erst Vertrauen, dann Inhalt — niemand muss sich „anmelden“."
+    },
+    {
+      t: "Verwandtschaft messen: passen die Domänen?",
+      p: "Beide Domänen-Texte werden zu Vektoren (Embeddings). Der Cosinus-Abstand sagt, wie verwandt sie sind. Rezepte und Cocktails: Match 0.85 — verwandt genug. Zwei völlig fremde Themen blieben unter der Schwelle und blieben einfach getrennt."
+    },
+    {
+      t: "Die Brücke steht — beidseitig bezeugt.",
+      p: "Beide Seiten quittieren über die Synchronisations-Vereinbarung, was sie gelesen und gebaut haben. Die Verbindung ist da: PWA ↔ PWA, Seite ↔ Seite, Programm ↔ Programm. Sie ruht, bis einer etwas Neues meldet — und wacht dann von selbst auf."
+    },
+    {
+      t: "Jetzt hilft man sich — und ein Dritter kann dazukommen.",
+      p: "Tippt jemand im Rezeptbuch „alkoholfreier Drink zu diesem Gericht“, antwortet das Mixarium über die Brücke — durch den Menschen oder den Agenten, der dort sitzt. Ein neuer Knoten C dockt genauso an. Das Netz wächst, ohne Mitte, ohne Chef."
+    }
+  ];
+
+  var i = 0;
+  var scene = document.getElementById('scene');
+  var stepNo = document.getElementById('stepNo');
+  var stepTitle = document.getElementById('stepTitle');
+  var stepText = document.getElementById('stepText');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var dotsBox = document.getElementById('dots');
+  var nodeC = scene.querySelector('.nodeC');
+  var bridge = scene.querySelector('.bridge');
+  var matchPill = document.getElementById('matchPill');
+
+  for (var d=0; d<steps.length; d++){
+    var el = document.createElement('span');
+    el.className = 'dot';
+    dotsBox.appendChild(el);
+  }
+  var dotEls = dotsBox.querySelectorAll('.dot');
+
+  function render(){
+    var s = steps[i];
+    stepNo.textContent = 'Schritt ' + (i+1) + ' / ' + steps.length;
+    stepTitle.textContent = s.t;
+    stepText.textContent = s.p;
+    scene.setAttribute('data-step', String(i));
+    // Brücke ab Schritt 5 (index 4) sichtbar; Match-Pille ab Schritt 4 (index 3)
+    bridge.style.opacity = (i >= 4) ? '1' : '0';
+    matchPill.style.opacity = (i >= 3) ? '1' : '0';
+    nodeC.style.opacity = (i >= 5) ? '1' : '0';
+    prev.disabled = (i === 0);
+    next.textContent = (i === steps.length-1) ? 'von vorne ↺' : 'weiter →';
+    for (var k=0;k<dotEls.length;k++){ dotEls[k].classList.toggle('on', k===i); }
+  }
+  next.addEventListener('click', function(){ i = (i+1) % steps.length; render(); });
+  prev.addEventListener('click', function(){ if (i>0){ i--; render(); } });
+  render();
+})();
+</script>
+</body>
+</html>
