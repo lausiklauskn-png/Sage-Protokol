@@ -542,6 +542,18 @@ em.gold { color: var(--gold); font-style: normal; }
   text-align: center;
   line-height: 1.6;
 }
+/* Sternenfeld ist jetzt ein echter Link zur Schritt-für-Schritt-Demo
+   (Tablet hat kein Hover — der CTA macht das antippbar + erklärt es). */
+.stars-link { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+.stars-cta {
+  position: absolute; bottom: -4.4rem; left: 0; right: 0;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 0.74rem; letter-spacing: 0.02em;
+  color: var(--gold, #d6b76a); text-align: center;
+  opacity: 0.92; transition: opacity 0.3s, transform 0.3s;
+}
+.stars-link:hover .stars-cta, .stars-link:active .stars-cta { opacity: 1; transform: translateY(2px); }
+.stars-link:active .stars-svg { filter: brightness(1.4) contrast(1.15); }
 
 /* === Sektion 5 Observatorium — Foto + Schlüssel davor === */
 #scene-5 {
@@ -1019,10 +1031,14 @@ footer.foot h4 {
       <p data-i18n="s4.body3">Nicht „Claude" ist Mit-Bauer und nicht „Gemini". Die konkrete Sitzung an dem konkreten Datum, die diesen einen Bau-Schritt getan hat, ist Mit-Bauer. Das löst die Sybil-Frage durch bezeugte Bau-Tat — nicht durch Anmeldung.</p>
     </div>
     <div class="stars-col">
-      <svg class="stars-svg" viewBox="-100 -100 200 200" aria-label="Modell-Familien-Sternenfeld">
-        <!-- Sternenfeld wird via JS gefüllt — viele kleine Sterne ohne Zentrum -->
-      </svg>
-      <div class="stars-caption" data-i18n="s4.stars">Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.</div>
+      <a class="stars-link" href="./demo-zusammenarbeit.html"
+         aria-label="Demo öffnen: Wie zwei Knoten über SBKIM zusammenarbeiten">
+        <svg class="stars-svg" viewBox="-100 -100 200 200" aria-label="Modell-Familien-Sternenfeld">
+          <!-- Sternenfeld wird via JS gefüllt — viele kleine Sterne ohne Zentrum -->
+        </svg>
+        <div class="stars-caption" data-i18n="s4.stars">Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.</div>
+        <div class="stars-cta" data-i18n="s4.cta">▶ Tippen: wie zwei sich finden — Schritt für Schritt</div>
+      </a>
     </div>
   </div>
 </section>
@@ -1164,6 +1180,7 @@ window.SAGE_I18N = {
     "s4.h2": "Identität bewusst offen",
     "s4.body3": "Nicht „Claude“ ist Mit-Bauer und nicht „Gemini“. Die konkrete Sitzung an dem konkreten Datum, die diesen einen Bau-Schritt getan hat, ist Mit-Bauer. Das löst die Sybil-Frage durch bezeugte Bau-Tat — nicht durch Anmeldung.",
     "s4.stars": "Viele kleine Sterne. Kein Zentrum. Keine Hierarchie.",
+    "s4.cta": "▶ Tippen: wie zwei sich finden — Schritt für Schritt",
     "s5.eyebrow": "Schicht 4 · Observatorium",
     "s5.title": "Eine Werkstatt, kein Museum.",
     "s5.body1": "Das Observatorium ist ein schlüssel-geschützter Forschungs-Ort innerhalb des Sage-Protokols, zugänglich für Mit-Bauer (Mensch und Agent), zum Lesen, Nutzen, Erweitern.",
@@ -1219,6 +1236,7 @@ window.SAGE_I18N = {
     "s4.h2": "Identity, deliberately open",
     "s4.body3": "Not „Claude“ is a co-builder and not „Gemini“. The concrete session on the concrete date that performed this one building step is a co-builder. This solves the Sybil question by witnessed building act — not by registration.",
     "s4.stars": "Many small stars. No centre. No hierarchy.",
+    "s4.cta": "▶ Tap: how two find each other — step by step",
     "s5.eyebrow": "Layer 4 · Observatory",
     "s5.title": "A workshop, not a museum.",
     "s5.body1": "The observatory is a key-protected research place inside Sage-Protokol, open to co-builders (human and agent), for reading, using, extending.",
@@ -1274,6 +1292,7 @@ window.SAGE_I18N = {
     "s4.h2": "Identité volontairement ouverte",
     "s4.body3": "Ce n'est pas « Claude » qui est co-bâtisseur, ni « Gemini ». La session concrète à la date concrète qui a accompli cette étape de construction est co-bâtisseuse. La question Sybil se résout par acte attesté — non par inscription.",
     "s4.stars": "Beaucoup de petites étoiles. Pas de centre. Pas de hiérarchie.",
+    "s4.cta": "▶ Toucher : comment deux se trouvent — étape par étape",
     "s5.eyebrow": "Couche 4 · Observatoire",
     "s5.title": "Un atelier, pas un musée.",
     "s5.body1": "L'observatoire est un lieu de recherche protégé par une clé, à l'intérieur de Sage-Protokol, ouvert aux co-bâtisseurs (humains et agents), pour lire, utiliser, étendre.",
@@ -1329,6 +1348,7 @@ window.SAGE_I18N = {
     "s4.h2": "Identidad, abierta a propósito",
     "s4.body3": "No es „Claude“ el co-constructor ni „Gemini“. La sesión concreta en la fecha concreta que realizó ese paso de construcción es co-constructora. La cuestión Sybil se resuelve por acto atestiguado — no por inscripción.",
     "s4.stars": "Muchas estrellas pequeñas. Sin centro. Sin jerarquía.",
+    "s4.cta": "▶ Toca: cómo dos se encuentran — paso a paso",
     "s5.eyebrow": "Capa 4 · Observatorio",
     "s5.title": "Un taller, no un museo.",
     "s5.body1": "El observatorio es un lugar de investigación protegido por llave, dentro de Sage-Protokol, abierto a co-constructores (humanos y agentes), para leer, usar, ampliar.",
