@@ -4031,5 +4031,65 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   </script>
   <!-- Observatoriums-Vorteilspack-Truhe (Schicht 4) -->
   <script src="docs/observatorium/vorteilspack.js"></script>
+
+  <!-- Netz-Briefkasten-Knopf: prüft live im Browser die SIGNAL.json der
+       Peer-Knoten (raw.githubusercontent.com erlaubt CORS), vergleicht seq
+       gegen Sages eigenen ack. Server-los, kein Token, instant. -->
+  <div class="netz-check-pop" id="netz-check-pop" role="dialog" aria-label="Netz-Briefkasten-Ergebnis">
+    <button class="close" id="ncp-close" aria-label="schließen">×</button>
+    <div id="ncp-body"></div>
+  </div>
+  <script>
+  (function () {
+    var SELF_SIGNAL = 'sbkim/SIGNAL.json';
+    var PEERS = [
+      { name: 'SB-KIMTool-Point', signal: 'https://raw.githubusercontent.com/lausiklauskn-png/SB-KIMTool-Point/main/sbkim/SIGNAL.json', mailbox: 'https://github.com/lausiklauskn-png/SB-KIMTool-Point/blob/main/sbkim/AUSTAUSCH.md' },
+      { name: 'Jasons-Tresor',    signal: 'https://raw.githubusercontent.com/lausiklauskn-png/Jasons-Tresor/main/sbkim/SIGNAL.json',    mailbox: 'https://github.com/lausiklauskn-png/Jasons-Tresor/blob/main/sbkim/AUSTAUSCH.md' }
+    ];
+    var btn = document.getElementById('netz-check-btn');
+    var pop = document.getElementById('netz-check-pop');
+    var body = document.getElementById('ncp-body');
+    var closeBtn = document.getElementById('ncp-close');
+    if (!btn) return;
+
+    function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
+    async function getJson(url) {
+      try { var r = await fetch(url, { cache: 'no-cache' }); if (!r.ok) return { err: r.status }; return { json: await r.json() }; }
+      catch (e) { return { err: 'netz' }; }
+    }
+
+    async function check() {
+      btn.classList.add('checking'); btn.classList.remove('has-news');
+      var ackRes = await getJson(SELF_SIGNAL);
+      var ack = (ackRes.json && ackRes.json.ack) || {};
+      var rows = [], news = 0, notes = [];
+      for (var i = 0; i < PEERS.length; i++) {
+        var p = PEERS[i];
+        var r = await getJson(p.signal);
+        if (r.err) { notes.push(esc(p.name) + ': kein SIGNAL.json (' + esc(r.err) + ')'); continue; }
+        var seq = Number(r.json.seq);
+        var acked = ack[p.name] == null ? -1 : Number(ack[p.name]);
+        if (isFinite(seq) && seq > acked) {
+          news++;
+          rows.push('<div class="row new">🔔 <b>' + esc(p.name) + '</b> · seq ' + seq +
+            ' (quittiert: ' + (acked < 0 ? '—' : acked) + ')<br><span class="muted">' +
+            esc(r.json.headline || '') + '</span><br><a href="' + p.mailbox + '" target="_blank" rel="noopener">Briefkasten lesen →</a></div>');
+        } else {
+          rows.push('<div class="row ok">✓ ' + esc(p.name) + ' · nichts Neues (seq ' + (isFinite(seq) ? seq : '?') + ')</div>');
+        }
+      }
+      var html = '<h4>' + (news ? '🔔 Neues im Netz (' + news + ')' : '✓ Netz ruhig') + '</h4>' + rows.join('');
+      if (notes.length) html += '<div class="row muted">' + notes.join('<br>') + '</div>';
+      html += '<div class="row muted">' + new Date().toLocaleString() + '</div>';
+      body.innerHTML = html;
+      pop.classList.add('show');
+      btn.classList.remove('checking');
+      btn.classList.toggle('has-news', news > 0);
+    }
+
+    btn.addEventListener('click', check);
+    closeBtn.addEventListener('click', function () { pop.classList.remove('show'); });
+  })();
+  </script>
 </body>
 </html>

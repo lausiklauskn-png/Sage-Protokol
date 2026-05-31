@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-05-31",
-  "seq": 6,
-  "headline": "Netz-Briefkasten-Knopf jetzt vollstaendig (Button-HTML + Popup + Script) in Sage-Page; vorheriger Lauf hatte nur CSS gelandet.",
+  "seq": 7,
+  "headline": "Netz-Briefkasten-Knopf jetzt KOMPLETT (Button+Popup+Script); zweiter Anlauf, da Popup/Script-Edit erneut am </body>-Anker scheiterte.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
@@ -45,6 +45,11 @@
       "seq": 6,
       "date": "2026-05-31",
       "headline": "Knopf-HTML+Popup+Script nachgezogen (PR #239 hatte nur das CSS gelandet, Button war unsichtbar)."
+    },
+    {
+      "seq": 7,
+      "date": "2026-05-31",
+      "headline": "Popup+Script vor </body> nachgezogen (exakter Anker); Knopf jetzt funktionsfaehig."
     }
   ]
 }
