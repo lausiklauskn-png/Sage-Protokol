@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-05-31",
-  "seq": 5,
-  "headline": "Netz-Briefkasten-Knopf (📬) in Sage-Page-Topbar (live Browser-Check, kein Token); Cron 6h Standard + 15-Min-Option; Knopf-Snippet für alle Knoten.",
+  "seq": 6,
+  "headline": "Netz-Briefkasten-Knopf jetzt vollstaendig (Button-HTML + Popup + Script) in Sage-Page; vorheriger Lauf hatte nur CSS gelandet.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
@@ -40,6 +40,11 @@
       "seq": 5,
       "date": "2026-05-31",
       "headline": "📬-Knopf neben den Lampen (live Browser-Check der Peer-SIGNAL.json); Cron 6h+15min-Option; kopierbares Knopf-Snippet."
+    },
+    {
+      "seq": 6,
+      "date": "2026-05-31",
+      "headline": "Knopf-HTML+Popup+Script nachgezogen (PR #239 hatte nur das CSS gelandet, Button war unsichtbar)."
     }
   ]
 }

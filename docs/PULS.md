@@ -1841,6 +1841,27 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Fix: Netz-Briefkasten-Knopf war unsichtbar (nur CSS gelandet)
+
+**Sitzungs-Rolle:** Pflege/Fix (Sage-Page). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+**Befund (Klaus, DeX):** der 📬-Briefkasten-Knopf war nicht zu sehen.
+Ursache war NICHT Cache, sondern: in PR #239 sind zwei HTML-Edits
+fehlgeschlagen (Lampen-Markup + `</body>`-Anker wichen vom erwarteten
+Text ab), gemerkt wurde es nicht — gelandet war nur das `.netz-check-btn`-
+**CSS**, ohne den `<button>` selbst und ohne Popup+Script.
+
+**Fix:** Button-HTML neben den Lampen (echter Anker: nach `lamp-fremd` +
+`lamp-label fremd`) + Popup-`div` + Browser-Check-Script vor `</body>`
+(echter Anker: nach `vorteilspack.js`) korrekt eingefügt. Verifiziert:
+Button-HTML 1×, Popup 1×, Handler 1×, alle 4 inline-JS `node --check` grün,
+body-Balance ok. `sbkim/SIGNAL.json` seq 6.
+
+**Lehre:** Edit-Fehlschläge an großem Live-File ernster nehmen — nach
+HTML-Edits IMMER auf `origin/main` gegenprüfen, dass das sichtbare Element
+wirklich da ist, nicht nur ein Teil. Sichttest am Browser steht aus.
+
 ### 2026-05-31 · Netz-Briefkasten-Knopf (📬) + Cron-Takt-Optionen
 
 **Sitzungs-Rolle:** Pflege (Sage-Page + Automatisierung). Branch
