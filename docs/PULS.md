@@ -1841,6 +1841,32 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Netz-Briefkasten-Knopf (📬) + Cron-Takt-Optionen
+
+**Sitzungs-Rolle:** Pflege (Sage-Page + Automatisierung). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' Festlegung: Cron 6 h wenn inaktiv, 15 Min wenn aktiv, + ein
+„Run"-Knopf oben neben den Lampen (in allen drei Pages).
+
+- **`index.html`**: Knopf **📬 Briefkasten** in der Topbar neben den
+  Lampen. Prüft **live im Browser** (kein Token, keine Action): holt die
+  `SIGNAL.json` der Peer-Knoten von `raw.githubusercontent.com` (CORS ok),
+  vergleicht `seq` gegen Sages eigenen `ack`, zeigt Popup („🔔 Neues" /
+  „✓ ruhig" + Briefkasten-Link). Isolierter Script-Block, alle 4 inline-JS
+  einzeln `node --check` grün.
+- **`.github/workflows/sbkim-watch.yml`**: Cron 6 h Standard + `*/15`-Zeile
+  auskommentiert daneben (ein Handgriff für Aktiv-Phasen) + `workflow_dispatch`
+  bleibt (Actions-Tab „Run workflow").
+- **`.github/SBKIM-WATCH-FUER-FORKER.md`**: Knopf-Snippet + PEERS-Block für
+  SB·KIMTool + Jasons (jeder Knopf schaut auf die anderen zwei).
+- `sbkim/SIGNAL.json` seq 5.
+
+**Klärung an Klaus:** während wir live arbeiten, braucht es keinen Cron —
+ich prüfe auf Zuruf sofort; der Seiten-Knopf macht dasselbe instant im
+Browser. Cron/Action sind nur für „niemand da". Echten Push gibt es
+server-los weiter nicht.
+
 ### 2026-05-31 · GitHub-Action „SBKIM Netz-Wächter" (automatisches Briefkasten-Schauen)
 
 **Sitzungs-Rolle:** Pflege (Automatisierung). Branch

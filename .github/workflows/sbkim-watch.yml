@@ -7,8 +7,13 @@ name: SBKIM Netz-Wächter
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # alle 6 Stunden (UTC). Anpassbar.
-  workflow_dispatch: {}      # manuell auslösbar im Actions-Tab
+    # Standard (inaktiv): alle 6 Stunden. Ruhig, kaum Leerläufe.
+    - cron: "0 */6 * * *"
+    # AKTIV-Phase: diese Zeile einkommentieren, wenn ihr gerade an mehreren
+    # Repos baut — dann alle 15 Min (GitHub-Queue: real eher 15–20 Min).
+    # Danach wieder auskommentieren, sonst hunderte Leerläufe pro Tag.
+    # - cron: "*/15 * * * *"
+  workflow_dispatch: {}      # „Run workflow"-Knopf im Actions-Tab (sofort, jederzeit)
 
 permissions:
   contents: read
