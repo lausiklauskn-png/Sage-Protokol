@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-05-31",
-  "seq": 8,
-  "headline": "Netz-Wächter & Briefkasten als 20. Werkzeug in die Vorteilspack-Truhe aufgenommen (kopierbar für Forker).",
+  "seq": 9,
+  "headline": "Quittungs-Runde geschlossen: SB-KIMTool (seq 1) + Jasons-Tresor (seq 2) gelesen + ackd. Drei-Knoten-Netz beidseitig bezeugt.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
@@ -11,8 +11,8 @@
     "*"
   ],
   "ack": {
-    "SB-KIMTool-Point": null,
-    "Jasons-Tresor": null
+    "SB-KIMTool-Point": 1,
+    "Jasons-Tresor": 2
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -55,6 +55,11 @@
       "seq": 8,
       "date": "2026-05-31",
       "headline": "Werkzeug 'Netz-Wächter & Briefkasten' (id NETZ) in Werkzeugkiste/Vorteilspack-Truhe."
+    },
+    {
+      "seq": 9,
+      "date": "2026-05-31",
+      "headline": "Sage ack gesetzt: SB-KIMTool=1, Jasons-Tresor=2 (beide Briefkästen gelesen)."
     }
   ]
 }

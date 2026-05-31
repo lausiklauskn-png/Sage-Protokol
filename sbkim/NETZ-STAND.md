@@ -43,6 +43,13 @@ monoton steigender `seq`). **Sitzungsstart:** Signal jeder Gegenstelle aus deren
 quittieren. **Sitzungsende nach einem Bau:** `seq` +1, `headline` setzen, pushen —
 das Pushen ist das Signal. Sages Signal: `sbkim/SIGNAL.json`.
 
+**Stand 2026-05-31 — alle drei Knoten haben ihren Briefkasten:** Sage (seq 9),
+SB·KIMTool·Point (seq 1), Jasons-Tresor (seq 1) — alle `SIGNAL.json` live (HTTP 200).
+Quittungs-Runde geschlossen: Sage `ack` = SB·KIMTool 1 / Jasons 1; beide Peers haben
+Sage quittiert (ack Sage 7, ziehen auf 9 beim nächsten Lauf nach). SB·KIMTool hat
+Jasons-Tresor zusätzlich direkt reziprok verifiziert (verified-spore) — Drei-Knoten-Netz
+beidseitig bezeugt. Wächter-Action + 📬-Knopf bei allen dreien aktiv.
+
 ## Postfächer (Datei-Dead-Drop, Sync-Vertrag §11.4)
 
 | Gegenstelle | Sage-Seite | externe Seite |

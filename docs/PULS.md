@@ -1841,6 +1841,29 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Quittungs-Runde geschlossen — Drei-Knoten-Netz beidseitig bezeugt
+
+**Sitzungs-Rolle:** Andock-Pflege (Sync §11.6). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Befund am Briefkasten: **beide Forker haben ihr `SIGNAL.json` bereits
+angelegt** (SB·KIMTool seq 1, Jasons-Tresor seq 1, beide HTTP 200) und
+Sage quittiert (`ack: Sage-Protokol: 7`). SB·KIMTool hat Jasons zusätzlich
+direkt reziprok verifiziert (verified-spore).
+
+**Sage-Quittung nachgezogen** (war noch `null/null`): `sbkim/SIGNAL.json`
+`ack` = SB·KIMTool 1 / Jasons 1, seq → 9. Lese-Quittungen in beide
+Postfächer (`AUSTAUSCH.md` + `AUSTAUSCH-JasonsTresor.md`). `NETZ-STAND.md`
+um Signal-Status aller drei ergänzt.
+
+Damit ist die Quittungs-Runde **beidseitig geschlossen** — jeder Knoten
+hat jeden gelesen + bestätigt. Einziger offener inhaltlicher Punkt:
+Jasons-Tresor → `verified-match` (echter `domainVector`).
+
+**Antwort auf Klaus' Frage:** Briefkasten ist Hol-Schuld, keine
+Bring-Schuld — der 📬-Knopf zieht jeweils FÜR den klickenden Knoten;
+die anderen sehen Sages Bauten erst, wenn ihr eigener Knopf/Action läuft.
+
 ### 2026-05-31 · Netz-Wächter & Briefkasten in die Werkzeugkiste (Vorteilspack-Truhe)
 
 **Sitzungs-Rolle:** Pflege (Vorteilspack-Truhe). Branch
