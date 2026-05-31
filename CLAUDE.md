@@ -274,6 +274,21 @@ ungemergten Branches lebten.
 
 ## Was du tust (Pflicht-Konventionen)
 
+- **Briefkasten pflegen — sitzungsübergreifend, fürs ganze Netz.** Du denkst
+  ab jetzt nicht nur an dieses Repo, sondern an **alle angeschlossenen Knoten
+  von Klaus**. Verbindlich in INTERFACES §11.6 (netzweite Tafel):
+  - **Bei jedem Sitzungsstart mit Andock-Bezug:** eigenes `sbkim/SIGNAL.json`
+    lesen + das `SIGNAL.json` jeder Gegenstelle aus deren `raw/main` (URLs in
+    `mailboxes`). Ist deren `seq` > eigenem `ack[gegenstelle]`, gibt es
+    Ungelesenes → deren `AUSTAUSCH`-Datei + `status.json` lesen, handeln,
+    **quittieren** (Datum + `ack` hochsetzen). Netz-Karte zuerst:
+    `sbkim/NETZ-STAND.md`.
+  - **Bei jedem Sitzungsende, das etwas gemeldet hat:** `sbkim/SIGNAL.json`
+    pflegen (`seq` +1, `headline`, `forNodes`), Bau-Protokoll-Zeile ins
+    betroffene Postfach, committen/pushen — **das Pushen IST das Signal**
+    (server-los, kein Daemon, Empfangsmodus gewahrt).
+  - `sbkim/NETZ-STAND.md` nachziehen, wenn sich Knoten/Stufen ändern.
+
 - **Sicherheits-Module pflegen Aspekte.** Jede Bau- bzw. Pflege-Sitzung
   eines Sicherheits- oder Schutz-Moduls (10 Reputation / 11 Rate-Limit
   / 12 Blocklist / 14 Diffusion / 15.B Membran Sub (a)+(b) / künftige
