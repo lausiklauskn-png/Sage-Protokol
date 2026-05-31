@@ -32,7 +32,8 @@
     "16": '<path d="M27 10 L37 10 L34 16 L30 16 Z"/><rect x="29.5" y="16" width="5" height="4"/><circle cx="32" cy="40" r="11"/><circle cx="32" cy="40" r="8"/><path d="M32 29 V27 M43 40 H45 M32 51 V53 M21 40 H19"/><path d="M24.2 32.2 L22.8 30.8 M39.8 32.2 L41.2 30.8 M39.8 47.8 L41.2 49.2 M24.2 47.8 L22.8 49.2"/><path d="M32 35.8 L33.06 38.54 L35.99 38.70 L33.71 40.56 L34.47 43.40 L32 41.8 L29.53 43.40 L30.29 40.56 L28.01 38.70 L30.94 38.54 Z"/>',
     "17": '<circle cx="32" cy="26" r="12"/><path d="M27 19 a7 7 0 0 1 7 -1.5"/><path d="M37 22 V25 M35.5 23.5 H38.5"/><path d="M24 44 C 26 40 38 40 40 44"/><path d="M28 38 L26 44 M36 38 L38 44"/><path d="M22 50 H30 M34 50 H42"/>',
     "18": '<rect x="11" y="35" width="27" height="9" rx="4.5"/><circle cx="35" cy="39.5" r="1.4" fill="currentColor" stroke="none"/><path d="M36 38 C 45 32 52 31 56 33"/><path d="M37 40.5 C 45 37 51 35.5 56 33"/><path d="M36 41 L52 46"/><path d="M52 46 L48.5 45 M52 46 L51 48.5"/>',
-    "19": '<path d="M14 50 L38 26"/><path d="M20 44 L23 47 M26 38 L29 41"/><circle cx="44" cy="20" r="6.5"/><path d="M44 13.5 L45.6 18.4 L50.5 20 L45.6 21.6 L44 26.5 L42.4 21.6 L37.5 20 L42.4 18.4 Z"/><path d="M53 12 V15 M51.5 13.5 H54.5"/><path d="M51 28 V30 M50 29 H52"/>'
+    "19": '<path d="M14 50 L38 26"/><path d="M20 44 L23 47 M26 38 L29 41"/><circle cx="44" cy="20" r="6.5"/><path d="M44 13.5 L45.6 18.4 L50.5 20 L45.6 21.6 L44 26.5 L42.4 21.6 L37.5 20 L42.4 18.4 Z"/><path d="M53 12 V15 M51.5 13.5 H54.5"/><path d="M51 28 V30 M50 29 H52"/>',
+    "NETZ": '<rect x="12" y="22" width="40" height="26" rx="3"/><path d="M12 25 L32 39 L52 25"/><path d="M12 47 L26 34 M52 47 L38 34"/><circle cx="46" cy="16" r="5"/><path d="M46 11 V13 M46 19 V21 M41 16 H43 M49 16 H51"/>'
   };
 
   /* --- Tool-Datenbank (statische Metadaten, Code lazy per fetch) ---------- */

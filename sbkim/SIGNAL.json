@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-05-31",
-  "seq": 7,
-  "headline": "Netz-Briefkasten-Knopf jetzt KOMPLETT (Button+Popup+Script); zweiter Anlauf, da Popup/Script-Edit erneut am </body>-Anker scheiterte.",
+  "seq": 8,
+  "headline": "Netz-Wächter & Briefkasten als 20. Werkzeug in die Vorteilspack-Truhe aufgenommen (kopierbar für Forker).",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
@@ -50,6 +50,11 @@
       "seq": 7,
       "date": "2026-05-31",
       "headline": "Popup+Script vor </body> nachgezogen (exakter Anker); Knopf jetzt funktionsfaehig."
+    },
+    {
+      "seq": 8,
+      "date": "2026-05-31",
+      "headline": "Werkzeug 'Netz-Wächter & Briefkasten' (id NETZ) in Werkzeugkiste/Vorteilspack-Truhe."
     }
   ]
 }

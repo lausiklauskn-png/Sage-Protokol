@@ -1841,6 +1841,29 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Netz-Wächter & Briefkasten in die Werkzeugkiste (Vorteilspack-Truhe)
+
+**Sitzungs-Rolle:** Pflege (Vorteilspack-Truhe). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' Wunsch: das Briefkasten/Netz-Wächter-Werkzeug auch in die
+Werkzeugkiste (Vorteilspack-Truhe), damit Forker es kopieren können.
+
+- **`docs/observatorium/vorteilspack.js`**: neues Werkzeug `id:"NETZ"`
+  „Netz-Wächter & Briefkasten" (tier basic, status fertig) als 20. Tool +
+  eigenes Briefkasten-Symbol `SYM.NETZ`. `code:".github/sbkim-watch.mjs"`,
+  `karte:".github/SBKIM-WATCH-FUER-FORKER.md"`. Beschreibt SIGNAL.json
+  (§11.6) + Action + 📬-Knopf, server-los.
+- Validiert: node --check grün, Modul in Node geladen — TOOLS=20,
+  genau 1 NETZ-Eintrag, alle 11 Pflichtfelder, Symbol da, referenzierte
+  Dateien existieren, `.nojekyll` vorhanden (Pages serviert `.github/`).
+- `sbkim/SIGNAL.json` seq 8.
+
+**Lehre erneut bestätigt:** Lese-Ausgabe der Umgebung war zwischendurch
+verstümmelt (zeigte eine Phantom-„Platzhalter"-Einfügung) — per
+`git status` + `node --check` + Modul-Load gegen den wahren Dateizustand
+geprüft, statt der Ausgabe zu glauben. Sichttest am Browser steht aus.
+
 ### 2026-05-31 · Fix: Netz-Briefkasten-Knopf war unsichtbar (nur CSS gelandet)
 
 **Sitzungs-Rolle:** Pflege/Fix (Sage-Page). Branch
