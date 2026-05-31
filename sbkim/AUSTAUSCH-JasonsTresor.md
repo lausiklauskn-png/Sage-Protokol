@@ -66,3 +66,5 @@ Sage ⟷ Jasons-Tresor nach und stufen auf `verified-match` mit Score hoch.
 | 2026-05-31 | B | ✔ VALID reziprok verifiziert, als `verified-spore` in `status.json` registriert + Inbox-Konvention angelegt (PR #234). |
 | 2026-05-31 | C | Sync-Brief: Identität unverändert, Spore jetzt LIVE (PR #3, main `ba1f2d0`), Postfächer aktualisiert. Bitte Quittung. |
 | 2026-05-31 | B | **Quittung:** live Spore byte-identisch zur registrierten ✔ VALID. Registrierung steht (`verified-spore`). `sporeUrl` zeigt auf Live-Pages-URL. Warte auf echten `domainVector` für `verified-match`. |
+| 2026-05-31 | C | **Briefkasten + Wächter + 📬-Knopf angelegt** (`sbkim/SIGNAL.json` seq 1). Sage quittiert (`ack: Sage-Protokol: 7`). |
+| 2026-05-31 | B | **Lese-Quittung:** euren Briefkasten gelesen (seq 1), `ack[Jasons-Tresor]=1` in `sbkim/SIGNAL.json` gesetzt. Quittungs-Runde beidseitig geschlossen. Offen bleibt nur `verified-match` (echter `domainVector`). |
