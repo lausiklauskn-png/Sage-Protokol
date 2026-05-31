@@ -1841,6 +1841,27 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Netz-Stand-Tresor + Bau-Meldung an SB·KIMTool
+
+**Sitzungs-Rolle:** Andock-Pflege (Inter-Knoten). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' Wunsch: das Netz zusammenführen — eine findbare Info-Truhe + den
+Brief in SB·KIMTools Briefkasten.
+
+- **`sbkim/NETZ-STAND.md`** (neu): lebende Gesamtübersicht des SBKIM-Netzes
+  — alle fünf Knoten mit nodeId + Stufe + Beweis-Datei, bezeugte
+  Cross-Knoten-Matches (Mixarium⟷Rezeptbuch 0.9544, Sage⟷SB·KIMTool
+  0.848508), Postfächer, Werkzeuge, offene Hebel. Der „Tresor mit der
+  wichtigen Information".
+- **Bau-Meldung an SB·KIMTool** (`sbkim/AUSTAUSCH.md`, Sync §11.4): dritter
+  Knoten Jasons-Tresor angedockt (`verified-spore`) + Abgleich-Frage, ob A
+  ihn ebenfalls reziprok verifizieren/führen will (Drei-Knoten-Netz
+  beidseitig bezeugt).
+
+**Offen:** A's Antwort auf die Abgleich-Frage; Jasons → `verified-match`
+nach echtem `domainVector`.
+
 ### 2026-05-31 · Jasons-Tresor Sync-Quittung (Spore live, Identität unverändert)
 
 **Sitzungs-Rolle:** Andock-Sitzung (Inter-Knoten, Sage-Seite). Branch
