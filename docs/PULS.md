@@ -1841,6 +1841,32 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · GitHub-Action „SBKIM Netz-Wächter" (automatisches Briefkasten-Schauen)
+
+**Sitzungs-Rolle:** Pflege (Automatisierung). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' Wunsch: automatisches Nachschauen ohne dass er da ist — alle drei
+Knoten schauen zeitgesteuert in die Briefkästen, Rückmeldung nur bei Neuem.
+
+- **`.github/sbkim-watch.mjs`** + **`.github/workflows/sbkim-watch.yml`**:
+  zeitgesteuert (cron alle 6 h) + manuell. Liest die `SIGNAL.json` der
+  Peer-Knoten aus deren `raw/main`, vergleicht `seq` gegen eigenen `ack`,
+  öffnet **nur bei Neuem** ein Issue (Label `sbkim-watch`, wiederverwendet
+  statt zuzuspammen). „Nichts Neues" → keine Rückmeldung. Server-los-
+  konform (nur lesende raw-Anfragen, kein Schreiben ins fremde Repo).
+  Lokal getestet: Negativ-Pfad (kein SIGNAL bei Peers → still + Notiz) und
+  Positiv-Pfad (seq>ack → Alarm) beide grün; `node --check` grün.
+- **`.github/SBKIM-WATCH-FUER-FORKER.md`**: kopierfertige CONFIG-Blöcke für
+  SB·KIMTool + Jasons-Tresor (jeder schaut auf die anderen zwei → alle drei
+  gleichzeitig abgedeckt). Workflow-YAML repo-neutral, 1:1 übernehmbar.
+- `sbkim/SIGNAL.json` seq 4.
+
+**Grenze (ehrlich):** echten Push gibt es weiter nicht — die Action ist der
+zeitgesteuerte Ersatz. Sage kann die Action nur ins eigene Repo legen; die
+zwei Forker-Repos müssen die kopierbare Variante selbst einlegen (Schreib-
+zugriff begrenzt).
+
 ### 2026-05-31 · Briefkasten-Pflege-Regel netzweit (INTERFACES §11.6 + SIGNAL.json)
 
 **Sitzungs-Rolle:** Pflege (heilige Tafel + Konvention). Branch
