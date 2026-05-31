@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-05-30",
+  "lastUpdated": "2026-05-31",
   "branch": "claude/semantic-agent-network-Y03Vg",
   "endknoten": [
     {
@@ -129,6 +129,20 @@
       "note": "Neue, dauerhaft gesicherte Identität (alte eC3jzoo9… war ungesichert/verloren). Spore mit ECHTEM domainVector neu signiert (kein _demo mehr) und reziprok verifiziert 2026-05-30: Signatur gültig, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, 9/9 Pflichtfelder, Manipulationsprobe fällt durch. Echter Cross-Knoten-Match Sage ⟷ SB-KIMTool = 0.848508 ≥ 0.80 (gegen die publizierte Spore nachgerechnet, identisch zu ihrem test/match.test.js). Pages-Endpoint github.io 403 von Sages Container aus (eigene Egress-Sperre für github.io); verifiziert über raw main. Prüf-Vermerk: sbkim/point_inbox.verify.md.",
       "url": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/",
       "landingPage": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/"
+    },
+    {
+      "name": "Jasons-Tresor",
+      "domain": "Jasons-Tresor-Bibliothek",
+      "integrated": true,
+      "integratedAt": "2026-05-31",
+      "nodeId": "7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Jasons-Tresor/sbkim/spore.json",
+      "stammCategories": [],
+      "guestCategories": [],
+      "pingStatus": "verified-spore",
+      "note": "Dritter Forker-Knoten, Andock-Schritt 1 (Identität) 2026-05-31. Reziprok verifiziert: Signatur gültig, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= gemeldete nodeId 7F_zNop…), publicKey.x = gemeldet, 9/9 Pflichtfelder, Manipulationsprobe fällt durch → ✔ VALID. Dauerhafte, stabile Identität. domainVector noch _demo → bewusst NUR verified-spore, KEIN Match (INTERFACES §11.5). Hochstufung auf verified-match, sobald echter Vektor (multilingual-e5-small) re-signt ist. Pages-Endpoint im Browser live; von Sages Container aus 403 (eigene github.io-Egress-Sperre) — verifiziert über raw main. Prüf-Vermerk: sbkim/jason_inbox.verify.md.",
+      "url": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
+      "landingPage": "https://lausiklauskn-png.github.io/Jasons-Tresor/"
     }
   ],
   "modules": [
