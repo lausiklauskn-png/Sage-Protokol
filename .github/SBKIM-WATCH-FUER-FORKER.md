@@ -77,3 +77,33 @@ Rückmeldung, auf die Klaus / die nächste Sitzung reagiert). Bei „nichts Neue
 node .github/sbkim-watch.mjs          # menschlesbar; exit 0
 # oder manuell im Actions-Tab: „Run workflow"
 ```
+
+---
+
+## Seiten-Knopf „📬 Briefkasten" (für die Landing-Page jedes Knotens)
+
+Zusätzlich zur zeitgesteuerten Action: ein Knopf **oben neben den Lampen**, der
+**live im Browser** prüft (kein Token, keine Action, instant — `raw.githubusercontent.com`
+erlaubt CORS). Genau das, was man während des aktiven Arbeitens braucht.
+
+**1. Knopf in die Topbar (neben die Lampen):**
+```html
+<button type="button" id="netz-check-btn" class="netz-check-btn"
+        title="Briefkästen der anderen Knoten jetzt prüfen">📬 <span class="ncb-label">Briefkasten</span></button>
+```
+
+**2. Ergebnis-Popup + Script vor `</body>`** — wie in Sages `index.html`
+(Block „Netz-Briefkasten-Knopf"). **Nur den `PEERS`-Array anpassen** auf die jeweils
+anderen zwei Knoten. SB·KIMTool z.B.:
+```js
+var PEERS = [
+  { name: 'Sage-Protokol',  signal: 'https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/SIGNAL.json',  mailbox: 'https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/sbkim/AUSTAUSCH.md' },
+  { name: 'Jasons-Tresor',  signal: 'https://raw.githubusercontent.com/lausiklauskn-png/Jasons-Tresor/main/sbkim/SIGNAL.json',  mailbox: 'https://github.com/lausiklauskn-png/Jasons-Tresor/blob/main/sbkim/AUSTAUSCH.md' }
+];
+```
+Den `SELF_SIGNAL`-Pfad (`sbkim/SIGNAL.json`, relativ) unverändert lassen — er liest den
+eigenen `ack` von der eigenen Pages-URL.
+
+**Cron-Takt (in `sbkim-watch.yml`):** 6 h als Standard; die `*/15`-Zeile einkommentieren,
+solange aktiv gebaut wird, danach wieder zu. Der Seiten-Knopf macht 15-Min-Polling
+während aktiver Arbeit ohnehin meist überflüssig (instant > warten).
