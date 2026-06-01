@@ -1,14 +1,15 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-05-31",
-  "seq": 11,
-  "headline": "Rechts-Seite impressum.html (Impressum/Datenschutz/Urheberrecht, DE+EN) + sichtbarer Footer-Link in der Sage-Page.",
+  "seq": 12,
+  "headline": "Empfehlung Rechts-Seite/Copyright an SB-KIMTool (jetzt) + Jasons-Tresor (erst nach Fertigstellung) in deren Briefkaesten gelegt.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
   },
   "forNodes": [
-    "*"
+    "SB-KIMTool-Point",
+    "Jasons-Tresor"
   ],
   "ack": {
     "SB-KIMTool-Point": 1,
@@ -70,6 +71,11 @@
       "seq": 11,
       "date": "2026-05-31",
       "headline": "impressum.html (Impressum+Datenschutz+Copyright, DE/EN) nach Vorbild Mein-Rezeptbuch, Sage-angepasst; Footer-Link in index.html."
+    },
+    {
+      "seq": 12,
+      "date": "2026-05-31",
+      "headline": "Rechts-Seite/Copyright-Empfehlung via Postfach an SB-KIMTool (sofort) + Jasons-Tresor (deferred bis Kern-Arbeit fertig)."
     }
   ]
 }

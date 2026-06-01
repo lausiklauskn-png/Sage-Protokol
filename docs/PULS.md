@@ -1841,6 +1841,28 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Rechts-Seite/Copyright-Empfehlung — über den Briefkasten, nicht als Prompt
+
+**Sitzungs-Rolle:** Andock-Pflege (Sync §11.4). Branch
+`claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' berechtigte Korrektur: Aufträge/Empfehlungen an andere Knoten
+gehören in den **Briefkasten** (Frage-Antwort-Schicht), nicht als
+kopierbarer Prompt — sonst ist der Briefkasten umgangen. Klaus ist
+Matcher/Taktgeber (startet Sitzungen), nicht Inhalts-Bote.
+
+- **`sbkim/AUSTAUSCH.md`**: Bau-Meldung + Abgleich-Frage an SB·KIMTool —
+  Rechts-Seite/Copyright nach Sage-Vorlage einbauen (jetzt). Inhaber-Daten
+  + Forker-Hinweis im Text.
+- **`sbkim/AUSTAUSCH-JasonsTresor.md`**: dieselbe Empfehlung an Jasons-
+  Tresor, aber mit **⏳-Vorbehalt: erst NACH Fertigstellung der Kern-
+  Arbeit** (Klaus' Festlegung).
+- **`sbkim/SIGNAL.json`** seq 12, `forNodes` gezielt auf die zwei.
+
+Konvention bestätigt: der Briefkasten transportiert Nachrichten; das
+Pushen ist das Signal; die Gegenseite holt es beim nächsten von Klaus
+gestarteten Lauf (Empfangsmodus). Server-los weckt niemand niemanden.
+
 ### 2026-05-31 · Impressum/Datenschutz/Urheberrecht-Seite + sichtbarer Footer-Link
 
 **Sitzungs-Rolle:** Pflege. Branch `claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
