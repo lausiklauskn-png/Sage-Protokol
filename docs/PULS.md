@@ -1841,6 +1841,23 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Copyright-Banner für Sage-Protokol
+
+**Sitzungs-Rolle:** Pflege. Branch `claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' Wunsch: Urheberrechts-Banner nach dem Muster von Muttis Rezeptbuch,
+angepasst auf Sage-Protokol.
+
+- **`COPYRIGHT`** (neu): ASCII-Box „Sage·Protokol v0.1 © 2026 Klaus
+  Nitzsche", E-Mail, DE+EN-Rechtevorbehalt, Repo-URL.
+- **`index.html`**: identische Box als HTML-Kommentar direkt nach
+  `<!doctype html>` — reist mit der ausgelieferten Seite mit, unsichtbar
+  im Quelltext. Box-Breite auf 69 Spalten ausgerichtet (URL-Zeile
+  korrigiert). inline-JS `node --check` grün.
+- `sbkim/SIGNAL.json` seq 10.
+
+Version v0.1 aus `status.json` `protocolVersion` übernommen.
+
 ### 2026-05-31 · Quittungs-Runde geschlossen — Drei-Knoten-Netz beidseitig bezeugt
 
 **Sitzungs-Rolle:** Andock-Pflege (Sync §11.6). Branch

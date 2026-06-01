@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-05-31",
-  "seq": 9,
-  "headline": "Quittungs-Runde geschlossen: SB-KIMTool (seq 1) + Jasons-Tresor (seq 2) gelesen + ackd. Drei-Knoten-Netz beidseitig bezeugt.",
+  "seq": 10,
+  "headline": "Copyright/Urheberrechts-Banner fuer Sage-Protokol eingefuegt (COPYRIGHT-Datei + index.html-Kopf).",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
@@ -60,6 +60,11 @@
       "seq": 9,
       "date": "2026-05-31",
       "headline": "Sage ack gesetzt: SB-KIMTool=1, Jasons-Tresor=2 (beide Briefkästen gelesen)."
+    },
+    {
+      "seq": 10,
+      "date": "2026-05-31",
+      "headline": "Copyright-Banner (Klaus Nitzsche, v0.1) als COPYRIGHT-Datei + index.html-HTML-Kommentar."
     }
   ]
 }
