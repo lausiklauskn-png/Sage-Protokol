@@ -1841,6 +1841,34 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-05-31 · Impressum/Datenschutz/Urheberrecht-Seite + sichtbarer Footer-Link
+
+**Sitzungs-Rolle:** Pflege. Branch `claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.
+
+Klaus' Wunsch: Impressum + Datenschutz + Copyright nach Vorbild
+Mein-Rezeptbuch, Sage-angepasst, + sichtbar machen wem es gehört.
+
+- **`impressum.html`** (neu): eigene Rechts-Seite nach dem Mehrsprach-
+  Gerüst von Mein-Rezeptbuch (`impressum.html`), aber inhaltlich auf Sage
+  angepasst: Impressum (§5 TMG, Klaus Nitzsche), eigener Abschnitt
+  **Urheberrecht & Copyright** (mit der ASCII-Box + Klausel „öffentlich
+  einsehbar ≠ gemeinfrei" + Forker-Hinweis: Module dürfen übernommen
+  werden, aber Urheber-Nennung erhalten), Haftungsausschluss (Software
+  statt Rezepte), Datenschutz (server-los, lokal, GitHub-Pages-Hosting,
+  CDN-Embedding, Netz-Anfragen an Peer-Knoten). DE + EN sauber
+  ausformuliert; Sprach-Gerüst bleibt erweiterbar. Rezeptspezifisches
+  (Allergie, KI-Scan, API-Key, PayPal) bewusst entfernt/ersetzt.
+- **`index.html`**: dezente `.legal-line` im Footer „© 2026 Klaus
+  Nitzsche · Alle Rechte vorbehalten · Impressum, Datenschutz &
+  Urheberrecht" → Link auf `impressum.html`. Damit sichtbar wem es
+  gehört, ohne die Vorderseite zu überladen. Versteckter HTML-Kommentar-
+  Banner bleibt zusätzlich im Kopf.
+- inline-JS beider Dateien `node --check` grün. `sbkim/SIGNAL.json` seq 11.
+
+**Ehrliche Einordnung:** Rechtstexte wurden NICHT maschinell in alle 8
+Mein-Rezeptbuch-Sprachen übersetzt (juristisch heikel) — DE+EN solide,
+weitere Sprachen später. Kein anwaltlich geprüfter Text; Grundgerüst.
+
 ### 2026-05-31 · Copyright-Banner für Sage-Protokol
 
 **Sitzungs-Rolle:** Pflege. Branch `claude/sbkim-point-docking-exchange-eAyD2`. KEIN Modul-Code.

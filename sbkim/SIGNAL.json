@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-05-31",
-  "seq": 10,
-  "headline": "Copyright/Urheberrechts-Banner fuer Sage-Protokol eingefuegt (COPYRIGHT-Datei + index.html-Kopf).",
+  "seq": 11,
+  "headline": "Rechts-Seite impressum.html (Impressum/Datenschutz/Urheberrecht, DE+EN) + sichtbarer Footer-Link in der Sage-Page.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
@@ -65,6 +65,11 @@
       "seq": 10,
       "date": "2026-05-31",
       "headline": "Copyright-Banner (Klaus Nitzsche, v0.1) als COPYRIGHT-Datei + index.html-HTML-Kommentar."
+    },
+    {
+      "seq": 11,
+      "date": "2026-05-31",
+      "headline": "impressum.html (Impressum+Datenschutz+Copyright, DE/EN) nach Vorbild Mein-Rezeptbuch, Sage-angepasst; Footer-Link in index.html."
     }
   ]
 }
