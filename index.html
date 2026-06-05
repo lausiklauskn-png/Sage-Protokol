@@ -480,7 +480,7 @@
   /* Sonne selbst steht still (eine echte Sonne "atmet" nicht sichtbar) —
      es pulsiert nur der äußere Korona-Ring (.sun-corona), farblich an die
      orange Außenkante der Sonne angeglichen. (Klaus 2026-06-05) */
-  .sun-img { position: absolute; inset: 0; margin: auto; width: 72%; height: 72%; object-fit: contain; z-index: 1; }
+  .sun-img { position: absolute; inset: 0; margin: auto; width: 82%; height: 82%; object-fit: contain; z-index: 1; }
   /* Äußere weiche Korona (radial, pulsierend) */
   /* Korona = äußerer Halo-Ring: über der Sonnenscheibe transparent (damit die
      Scheibe + Plasma NICHT mit aufleuchten), nur außen ein orange-Ring in der
@@ -490,20 +490,19 @@
      Sonne, warm (Gold->Orange->Rot wie die Sonnen-Außenkante, kein Regenbogen),
      über der Scheibe transparent. Pulst für sich (scale+opacity), keine
      krassen Farbsprünge. (Klaus 2026-06-05) */
-  /* Ring 1:1 nach dem Schwarzen Loch (.bh-disk): rotierende conic-Scheibe,
-     hier WARM (Gold/Orange/Rot) + per Maske als Ring um die Sonne. Klar
-     sichtbar, dreht sich wie beim Loch. (Klaus 2026-06-05) */
-  .sun-corona { position: absolute; inset: -4%; border-radius: 50%; z-index: 0;
+  /* Ring 1:1 wie .bh-disk: VOLLER rotierender conic-Teller bei inset:0 (in den
+     Container eingepasst, berührt die Kanten-Mitten -> rund, NICHT abgeschnitten),
+     hier WARM (Gold/Orange/Rot). Die Sonne liegt als Bild darüber und deckt die
+     Mitte ab -> sichtbar bleibt nur der äußere Glut-Ring rund um die Sonne, exakt
+     wie die Aggregationsscheibe. KEINE Maske mehr. (Klaus 2026-06-05) */
+  .sun-corona { position: absolute; inset: 0; border-radius: 50%; z-index: 0;
     background: conic-gradient(from 0deg, #ff7a1e, #ffd24a, #ff5e1e, #ffb347, #ff6a1e, #ffd24a, #ff7a1e);
-    -webkit-mask: radial-gradient(circle at center, transparent 55%, #000 66%, #000 90%, transparent 100%);
-            mask: radial-gradient(circle at center, transparent 55%, #000 66%, #000 90%, transparent 100%);
-    filter: blur(5px) saturate(1.25) brightness(1.05); opacity: 0.95;
+    filter: blur(10px) saturate(1.2) brightness(1.0); opacity: 0.9;
     animation: sun-corona-spin 16s linear infinite; }
   @keyframes sun-corona-spin { to { transform: rotate(360deg); } }
-  /* Zweite, GEGENLÄUFIGE warme Scheibe (1:1 wie .bh-disk-2 beim Schwarzen Loch):
-     etwas weiter innen, dreht andersherum + langsamer, screen-Blend -> Schimmer.
-     Erbt conic-Background + Ring-Maske von .sun-corona, hier nur die Overrides. */
-  .sun-corona-2 { inset: 4%; background: conic-gradient(from 180deg, #ffb347, #ff6a1e, #ffd24a, #ff5e1e, #ffb347, #ff7a1e, #ffb347); mix-blend-mode: screen; opacity: 0.6; filter: blur(6px) saturate(1.2) brightness(0.95); animation: sun-corona-spin 24s linear infinite reverse; }
+  /* Zweite, GEGENLÄUFIGE warme Scheibe (1:1 wie .bh-disk-2): weiter innen
+     (inset 8%), dreht andersherum + langsamer, screen-Blend -> Schimmer. */
+  .sun-corona-2 { inset: 8%; background: conic-gradient(from 180deg, #ffb347, #ff6a1e, #ffd24a, #ff5e1e, #ffb347, #ff7a1e, #ffb347); mix-blend-mode: screen; opacity: 0.6; filter: blur(6px) saturate(1.2) brightness(0.9); animation: sun-corona-spin 24s linear infinite reverse; }
   /* Sonnenkern — verschwommen wie Korona, kein Vollton */
   .sun-disk { position: absolute; inset: 16%; border-radius: 50%; background: radial-gradient(circle at 50% 48%, rgba(255,235,180,0.85) 0%, rgba(255,180,90,0.62) 28%, rgba(220,110,50,0.40) 55%, rgba(120,55,25,0.18) 80%, transparent 100%); filter: blur(11px); opacity: 0.95; animation: sun-disk-pulse 7s ease-in-out infinite; }
   /* Sonnenflecken — viele kleine, unterschiedliche Größen, organisch wabernde Ränder (Sommersprossen-Optik) */
