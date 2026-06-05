@@ -14,7 +14,9 @@
 
 @page {
   size: A4 portrait;
-  margin: 24mm 22mm 22mm 22mm;
+  /* T R B L — links 32mm Heft-/Lochrand zum Einheften in einen Ordner
+     (Lochung ~12mm vom Rand), rundum genug Luft (Klaus 2026-06-05). */
+  margin: 22mm 20mm 20mm 32mm;
 }
 
 @font-face {
