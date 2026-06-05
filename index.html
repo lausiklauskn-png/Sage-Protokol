@@ -490,7 +490,16 @@
      Sonne, warm (Gold->Orange->Rot wie die Sonnen-Außenkante, kein Regenbogen),
      über der Scheibe transparent. Pulst für sich (scale+opacity), keine
      krassen Farbsprünge. (Klaus 2026-06-05) */
-  .sun-corona { position: absolute; inset: 0; border-radius: 50%; z-index: 0; background: radial-gradient(circle at center, transparent 0%, transparent 72%, rgba(255,190,70,0.78) 80%, rgba(255,135,45,0.95) 89%, rgba(215,75,30,0.6) 97%, transparent 100%); filter: blur(5px); opacity: 1; animation: sun-corona-pulse 5s ease-in-out infinite; }
+  /* Ring 1:1 nach dem Schwarzen Loch (.bh-disk): rotierende conic-Scheibe,
+     hier WARM (Gold/Orange/Rot) + per Maske als Ring um die Sonne. Klar
+     sichtbar, dreht sich wie beim Loch. (Klaus 2026-06-05) */
+  .sun-corona { position: absolute; inset: -4%; border-radius: 50%; z-index: 0;
+    background: conic-gradient(from 0deg, #ff7a1e, #ffd24a, #ff5e1e, #ffb347, #ff6a1e, #ffd24a, #ff7a1e);
+    -webkit-mask: radial-gradient(circle at center, transparent 55%, #000 66%, #000 90%, transparent 100%);
+            mask: radial-gradient(circle at center, transparent 55%, #000 66%, #000 90%, transparent 100%);
+    filter: blur(5px) saturate(1.25) brightness(1.05); opacity: 0.95;
+    animation: sun-corona-spin 16s linear infinite; }
+  @keyframes sun-corona-spin { to { transform: rotate(360deg); } }
   /* Konischer Ring — NICHT drehend; pulst nur bei Hover (1:1 wie bh-chrome-Hover-Funktion: Animation läuft erst beim Mouseover) */
   .sun-corona-2 { position: absolute; inset: -2%; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255,200,100,0) 0%, rgba(255,220,140,0.55) 12%, rgba(255,150,60,0.18) 28%, rgba(255,230,150,0.45) 50%, rgba(255,160,60,0.18) 72%, rgba(255,210,130,0.55) 90%, rgba(255,200,100,0) 100%); filter: blur(7px); mix-blend-mode: screen; opacity: 0.55; }
   /* Sonnenkern — verschwommen wie Korona, kein Vollton */
@@ -510,7 +519,7 @@
   .sun-spot.s11 { top: 65%; left: 40%; width: 4%; height: 4%; border-radius: 50% 56% 58% 44% / 56% 48% 54% 46%; animation: sun-spot-wabble-b 8s  ease-in-out infinite -3s; }
   .sun-spot.s12 { top: 44%; left: 48%; width: 6%; height: 6%; border-radius: 58% 46% 54% 50% / 50% 58% 44% 56%; animation: sun-spot-wabble-c 11s ease-in-out infinite -2s; }
   /* Hover-Verstärkung — Korona pulst schneller, Ring beginnt überhaupt erst zu pulsieren (1:1 wie bh-chrome-Hover-Mechanik) */
-  .sun-stage:hover .sun-corona   { animation-duration: 3s; opacity: 1; }
+  .sun-stage:hover .sun-corona   { animation-duration: 8s; opacity: 1; }
   .sun-stage:hover .sun-corona-2 { animation: sun-corona-2-pulse 2.6s ease-in-out infinite; }
   .sun-stage:hover .sun-disk     { animation-duration: 3.5s; filter: blur(13px) brightness(1.12); }
   .sun-stage:hover .sun-spot     { animation-duration: 4.5s; }
@@ -4128,7 +4137,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   </style>
   <div id="sage-test" aria-hidden="true">
     <div class="st-head">
-      <span>TEST-FELD · <b id="st-build">BUILD 2026-06-05 · sun-ring-v6</b></span>
+      <span>TEST-FELD · <b id="st-build">BUILD 2026-06-05 · sun-ring-v7</b></span>
       <span class="st-btns">
         <button class="st-x st-go" id="st-copy" title="Bericht kopieren">Kopieren</button>
         <button class="st-x" id="st-clear" title="Log leeren">Leeren</button>
@@ -4143,7 +4152,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   </div>
   <script>
   (function () {
-    var BUILD = 'BUILD 2026-06-05 · sun-ring-v6';
+    var BUILD = 'BUILD 2026-06-05 · sun-ring-v7';
     var box = document.getElementById('sage-test');
     var logEl = document.getElementById('st-log'), out = document.getElementById('st-out'), msg = document.getElementById('st-msg');
     var lines = [];
