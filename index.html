@@ -4109,32 +4109,44 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     closeBtn.addEventListener('click', function () { pop.classList.remove('show'); });
   })();
   </script>
-  <!-- ===== TEST-FELD (Diagnose, temporär) — Build-Marke + Klick/Hover-Anzeige ===== -->
+  <!-- ===== TEST-FELD (Diagnose, temporär) — Log + Kopieren + Sonnen-Check ===== -->
   <style>
-    #sage-test { position: fixed; left: 10px; bottom: 10px; z-index: 99998; max-width: 320px;
-      font: 12px/1.4 "Geist Mono", ui-monospace, monospace; color: #e8e8f0;
-      background: rgba(8,8,22,0.92); border: 1px solid #6EE7D3; border-radius: 10px;
-      padding: 8px 10px; box-shadow: 0 8px 26px rgba(0,0,0,0.5); backdrop-filter: blur(6px); }
-    #sage-test .st-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+    #sage-test { position: fixed; left: 10px; bottom: 10px; z-index: 99998; width: 340px; max-width: calc(100vw - 20px);
+      font: 11.5px/1.45 "Geist Mono", ui-monospace, monospace; color: #e8e8f0;
+      background: rgba(8,8,22,0.95); border: 1px solid #6EE7D3; border-radius: 10px;
+      padding: 8px 10px; box-shadow: 0 8px 26px rgba(0,0,0,0.55); backdrop-filter: blur(6px); }
+    #sage-test .st-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 5px; }
     #sage-test b { color: #6EE7D3; }
-    #sage-test .st-row { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    #sage-test .st-x { cursor: pointer; border: 1px solid var(--line,#333); background: transparent; color: #e8e8f0; border-radius: 6px; padding: 0 6px; }
+    #sage-test .st-btns { display: flex; gap: 4px; flex: none; }
+    #sage-test .st-x { cursor: pointer; border: 1px solid rgba(255,255,255,0.25); background: transparent; color: #e8e8f0; border-radius: 6px; padding: 1px 7px; font: inherit; }
+    #sage-test .st-x.st-go { border-color: #6EE7D3; color: #6EE7D3; }
+    #sage-test .st-log { margin: 0; max-height: 120px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; background: rgba(0,0,0,0.4); border-radius: 6px; padding: 5px 6px; }
+    #sage-test #st-out { display: none; width: 100%; height: 110px; margin-top: 5px; background: #05050f; color: #cfe; border: 1px solid #6EE7D3; border-radius: 6px; font: inherit; padding: 5px 6px; resize: vertical; }
+    #sage-test #st-msg { color: #F4B435; min-height: 14px; }
     #sage-test.st-min .st-body { display: none; }
     @keyframes st-flash { from { transform: scale(1); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
   </style>
   <div id="sage-test" aria-hidden="true">
-    <div class="st-head"><span>TEST-FELD · <b id="st-build">BUILD 2026-06-05 · sun-ring-v4</b></span>
-      <button class="st-x" id="st-toggle" title="ein/aus">–</button></div>
+    <div class="st-head">
+      <span>TEST-FELD · <b id="st-build">BUILD 2026-06-05 · sun-ring-v5</b></span>
+      <span class="st-btns">
+        <button class="st-x st-go" id="st-copy" title="Bericht kopieren">Kopieren</button>
+        <button class="st-x" id="st-clear" title="Log leeren">Leeren</button>
+        <button class="st-x" id="st-toggle" title="ein/aus">–</button>
+      </span>
+    </div>
     <div class="st-body">
-      <div class="st-row">Klick: <span id="st-click">—</span></div>
-      <div class="st-row">Hover: <span id="st-hover">—</span></div>
-      <div class="st-row" style="color:#9a9ab0">Build-Marke lesen → mir sagen, dann wissen wir, ob du die neueste Version siehst.</div>
+      <div id="st-msg">Klicke/hovere die Seite → wird hier protokolliert. „Kopieren" → in den Chat einfügen.</div>
+      <pre class="st-log" id="st-log"></pre>
+      <textarea id="st-out" readonly></textarea>
     </div>
   </div>
   <script>
   (function () {
+    var BUILD = 'BUILD 2026-06-05 · sun-ring-v5';
     var box = document.getElementById('sage-test');
-    var cEl = document.getElementById('st-click'), hEl = document.getElementById('st-hover');
+    var logEl = document.getElementById('st-log'), out = document.getElementById('st-out'), msg = document.getElementById('st-msg');
+    var lines = [];
     function label(el) {
       if (!el || !el.tagName) return '—';
       var t = el.tagName.toLowerCase();
@@ -4145,20 +4157,74 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       }
       return t;
     }
+    function tstamp() { var d = new Date(); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2); }
+    function add(line) { lines.unshift(tstamp() + '  ' + line); if (lines.length > 40) lines.pop(); logEl.textContent = lines.join('\n'); }
+
     document.addEventListener('click', function (e) {
       if (box.contains(e.target)) return;
-      cEl.textContent = label(e.target) + '  @' + e.clientX + ',' + e.clientY;
+      add('KLICK  ' + label(e.target) + '  @' + e.clientX + ',' + e.clientY);
       var f = document.createElement('div');
       f.style.cssText = 'position:fixed;left:' + (e.clientX - 9) + 'px;top:' + (e.clientY - 9) + 'px;width:18px;height:18px;border:2px solid #6EE7D3;border-radius:50%;pointer-events:none;z-index:99999;animation:st-flash .5s ease-out forwards';
       document.body.appendChild(f);
       setTimeout(function () { f.remove(); }, 500);
     }, true);
-    var lastH = 0;
+    var lastHoverLabel = '', lastH = 0;
     document.addEventListener('mouseover', function (e) {
       if (box.contains(e.target)) return;
-      var n = Date.now(); if (n - lastH < 70) return; lastH = n;
-      hEl.textContent = label(e.target);
+      var n = Date.now(); if (n - lastH < 60) return; lastH = n;
+      var l = label(e.target);
+      if (l !== lastHoverLabel) { lastHoverLabel = l; add('hover  ' + l); }
     }, true);
+
+    // SW-Registrierungen vorab laden (für den Bericht)
+    var swRegs = '(unbekannt)';
+    try {
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+        navigator.serviceWorker.getRegistrations().then(function (rs) {
+          swRegs = rs.length ? rs.map(function (r) { return (r.active && r.active.scriptURL) || (r.installing && 'installing') || '?'; }).join(' | ') : 'keine';
+        });
+      } else { swRegs = 'serviceWorker n/a'; }
+    } catch (e) { swRegs = 'Fehler'; }
+
+    function sunCheck() {
+      var si = document.querySelector('.sun-img');
+      var sc = document.querySelector('.sun-corona');
+      var imgInfo = si ? ('ja · breite=' + Math.round(si.getBoundingClientRect().width) + 'px · src=' + (si.getAttribute('src') || '').slice(0, 24) + '…') : 'FEHLT (evtl. alte CSS-Sonne?)';
+      var corInfo = sc ? getComputedStyle(sc).backgroundImage.replace(/\s+/g, ' ').slice(0, 160) : 'FEHLT';
+      var oldSpots = document.querySelectorAll('.sun-spot').length;
+      return 'sun-img: ' + imgInfo + '\nsun-corona bg: ' + corInfo + '\nalte .sun-spot-Layer: ' + oldSpots;
+    }
+    function buildReport() {
+      var swc = (navigator.serviceWorker && navigator.serviceWorker.controller) ? navigator.serviceWorker.controller.scriptURL : 'kein Controller';
+      return '=== SAGE TEST-FELD BERICHT ===\n' +
+        BUILD + '\n' +
+        'URL: ' + location.href + '\n' +
+        'Zeit: ' + new Date().toString() + '\n' +
+        'UA: ' + navigator.userAgent + '\n' +
+        'SW-Controller: ' + swc + '\n' +
+        'SW-Registrierungen: ' + swRegs + '\n' +
+        '--- Sonnen-Check (was DEINE Seite gerade geladen hat) ---\n' + sunCheck() + '\n' +
+        '--- Log (neueste zuerst) ---\n' + (lines.join('\n') || '(noch nichts)') + '\n=== ENDE ===';
+    }
+    function copyReport() {
+      var txt = buildReport();
+      out.value = txt; out.style.display = 'block'; out.focus(); out.select();
+      var done = false;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(txt).then(
+          function () { msg.textContent = '✓ kopiert — jetzt im Chat einfügen.'; },
+          function () { fallback(); }
+        );
+        return;
+      }
+      fallback();
+      function fallback() {
+        try { done = document.execCommand('copy'); } catch (e) {}
+        msg.textContent = done ? '✓ kopiert — im Chat einfügen.' : 'Text unten ist markiert → lange drücken → „Kopieren".';
+      }
+    }
+    document.getElementById('st-copy').addEventListener('click', copyReport);
+    document.getElementById('st-clear').addEventListener('click', function () { lines = []; logEl.textContent = ''; out.style.display = 'none'; msg.textContent = 'geleert.'; });
     document.getElementById('st-toggle').addEventListener('click', function () {
       box.classList.toggle('st-min');
       this.textContent = box.classList.contains('st-min') ? '+' : '–';
