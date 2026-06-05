@@ -1378,6 +1378,25 @@ import * as THREE from 'three';
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile      = matchMedia('(max-width: 900px)').matches;
 
+// --- GPU-Schonung (Klaus' S21-Befund 2026-06-05) ---
+// Auf Touch-Geräten niedrigere Pixel-Ratio: der Video-Speicher pro WebGL-
+// Fläche wächst mit DPR² — 1.5 statt 2 spart ~44 % GPU-Speicher bei nahezu
+// gleicher Optik. Bei dennoch auftretendem Context-Loss die betroffene
+// Fläche ausblenden, damit NICHT ein weißes Rechteck stehenbleibt, sondern
+// die Foto-/Dunkel-Schicht darunter sichtbar wird (statt der überforderten
+// WebGL-Leinwand).
+const MAX_DPR = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ? 1.5 : 2;
+function guardWebGLCanvas(canvas) {
+  if (!canvas) return;
+  canvas.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();
+    canvas.style.visibility = 'hidden';
+  }, false);
+  canvas.addEventListener('webglcontextrestored', () => {
+    canvas.style.visibility = '';
+  }, false);
+}
+
 // ---------------------------------------------------------------
 // i18n — DOM-Re-Render bei Sprach-Wechsel
 // ---------------------------------------------------------------
@@ -1596,7 +1615,8 @@ const renderer = new THREE.WebGLRenderer({
   canvas: stageCanvas, antialias: true, alpha: true,
   powerPreference: 'high-performance'
 });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+guardWebGLCanvas(renderer.domElement);
 renderer.setClearColor(0x06080a, 1);
 
 const scene  = new THREE.Scene();
@@ -1855,7 +1875,7 @@ keyData.group.visible = false;
   const keyCanvas = document.getElementById('key-canvas');
   if (!keyCanvas) return;
   const kr = new THREE.WebGLRenderer({ canvas: keyCanvas, antialias: true, alpha: true });
-  kr.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  kr.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR)); guardWebGLCanvas(kr.domElement);
   kr.setSize(keyCanvas.clientWidth, keyCanvas.clientHeight, false);
   kr.setClearColor(0x000000, 0);
   const ks = new THREE.Scene();
@@ -1967,7 +1987,7 @@ keyData.group.visible = false;
   const canvas = document.querySelector('#scene-6 .lichtung-pollen');
   if (!canvas) return;
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR)); guardWebGLCanvas(r.domElement);
   r.setSize(canvas.clientWidth, canvas.clientHeight, false);
   r.setClearColor(0x000000, 0);
   const s = new THREE.Scene();
@@ -2101,7 +2121,7 @@ window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive
 function makeFruitingScene(canvas, variant) {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR)); guardWebGLCanvas(r.domElement);
   r.setSize(w, h, false);
   r.setClearColor(0x000000, 0);
   const s = new THREE.Scene();
@@ -2486,7 +2506,7 @@ document.querySelectorAll('.fruiting-canvas-host').forEach(host => {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   let particles = [];
-  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
 
   function resize() {
     const r = canvas.getBoundingClientRect();
@@ -2568,7 +2588,7 @@ document.querySelectorAll('.fruiting-canvas-host').forEach(host => {
   const canvas = document.getElementById('grad-canvas');
   if (!canvas) return;
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR)); guardWebGLCanvas(r.domElement);
   r.setSize(canvas.clientWidth, canvas.clientHeight, false);
   const s = new THREE.Scene();
   const c = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
