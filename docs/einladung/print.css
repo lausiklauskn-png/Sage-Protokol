@@ -14,9 +14,7 @@
 
 @page {
   size: A4 portrait;
-  /* T R B L — links 32mm Heft-/Lochrand zum Einheften in einen Ordner
-     (Lochung ~12mm vom Rand), rundum genug Luft (Klaus 2026-06-05). */
-  margin: 22mm 20mm 20mm 32mm;
+  margin: 0; /* Rand kommt aus dem Generator (_pdf.mjs, Puppeteer) */
 }
 
 @font-face {
@@ -48,7 +46,7 @@ html, body {
   line-height: 1.55;
 }
 
-.print-root { max-width: 165mm; margin: 0 auto; }
+.print-root { max-width: 150mm; margin: 0 auto; }
 
 /* === Titel-Seite === */
 .title-page {
