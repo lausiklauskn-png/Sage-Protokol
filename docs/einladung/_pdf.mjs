@@ -197,11 +197,14 @@ await page.pdf({
   path: pdfPath,
   format: 'A4',
   printBackground: true,
-  margin: { top: '0mm', bottom: '0mm', left: '0mm', right: '0mm' },
-  preferCSSPageSize: true,
+  // Echte Druckränder über Puppeteer (zuverlässig, anders als @page bei
+  // preferCSSPageSize). Links 28mm Heft-/Lochrand zum Einheften in einen
+  // Ordner, rundum genug Luft -> Text wird nicht abgeschnitten. (Klaus 2026-06-05)
+  margin: { top: '18mm', bottom: '18mm', left: '28mm', right: '20mm' },
+  preferCSSPageSize: false,
   displayHeaderFooter: true,
-  headerTemplate: `<div style="font-family:Inter,sans-serif;font-size:7pt;color:#8c6e2f;width:100%;text-align:right;padding:6mm 22mm 0;letter-spacing:0.12em;text-transform:uppercase;">Einladung · Sage-Protokol</div>`,
-  footerTemplate: `<div style="font-family:Inter,sans-serif;font-size:7pt;color:#8c6e2f;width:100%;text-align:center;padding:0 22mm 6mm;letter-spacing:0.08em;">— <span class="pageNumber"></span> · <span class="totalPages"></span> —</div>`
+  headerTemplate: `<div style="font-family:Inter,sans-serif;font-size:7pt;color:#8c6e2f;width:100%;text-align:right;padding:6mm 20mm 0;letter-spacing:0.12em;text-transform:uppercase;">Einladung · Sage-Protokol</div>`,
+  footerTemplate: `<div style="font-family:Inter,sans-serif;font-size:7pt;color:#8c6e2f;width:100%;text-align:center;padding:0 20mm 6mm;letter-spacing:0.08em;">— <span class="pageNumber"></span> · <span class="totalPages"></span> —</div>`
 });
 
 const stat = await fs.stat(pdfPath);
