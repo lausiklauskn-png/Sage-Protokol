@@ -1397,6 +1397,18 @@ function guardWebGLCanvas(canvas) {
   }, false);
 }
 
+// Off-Screen-Pause: rendert eine WebGL-Fläche nur, solange sie (etwa) im
+// Viewport ist. Spart GPU-Last, weil nicht alle Szenen gleichzeitig rendern.
+// Fallback ohne IntersectionObserver: immer rendern (kein Regress).
+function makeVisGate(canvas) {
+  if (!canvas || !('IntersectionObserver' in window)) return () => true;
+  let vis = true;
+  new IntersectionObserver((entries) => {
+    vis = entries.some((e) => e.isIntersecting);
+  }, { rootMargin: '150px' }).observe(canvas);
+  return () => vis;
+}
+
 // ---------------------------------------------------------------
 // i18n — DOM-Re-Render bei Sprach-Wechsel
 // ---------------------------------------------------------------
@@ -1875,6 +1887,7 @@ keyData.group.visible = false;
   const keyCanvas = document.getElementById('key-canvas');
   if (!keyCanvas) return;
   const kr = new THREE.WebGLRenderer({ canvas: keyCanvas, antialias: true, alpha: true });
+  const keyVisGate = makeVisGate(keyCanvas);
   kr.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR)); guardWebGLCanvas(kr.domElement);
   kr.setSize(keyCanvas.clientWidth, keyCanvas.clientHeight, false);
   kr.setClearColor(0x000000, 0);
@@ -1969,7 +1982,7 @@ keyData.group.visible = false;
       kc.aspect = keyCanvas.clientWidth / keyCanvas.clientHeight;
       kc.updateProjectionMatrix();
     }
-    kr.render(ks, kc);
+    if (keyVisGate()) kr.render(ks, kc);
     requestAnimationFrame(keyLoop);
   }
   keyLoop();
@@ -1987,6 +2000,7 @@ keyData.group.visible = false;
   const canvas = document.querySelector('#scene-6 .lichtung-pollen');
   if (!canvas) return;
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  const visGate = makeVisGate(canvas);
   r.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR)); guardWebGLCanvas(r.domElement);
   r.setSize(canvas.clientWidth, canvas.clientHeight, false);
   r.setClearColor(0x000000, 0);
@@ -2070,7 +2084,7 @@ keyData.group.visible = false;
       c.aspect = canvas.clientWidth / canvas.clientHeight;
       c.updateProjectionMatrix();
     }
-    r.render(s, c);
+    if (visGate()) r.render(s, c);
     requestAnimationFrame(loop);
   }
   loop();
@@ -2121,6 +2135,7 @@ window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive
 function makeFruitingScene(canvas, variant) {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  const visGate = makeVisGate(canvas);
   r.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR)); guardWebGLCanvas(r.domElement);
   r.setSize(w, h, false);
   r.setClearColor(0x000000, 0);
@@ -2488,7 +2503,7 @@ function makeFruitingScene(canvas, variant) {
       c.aspect = canvas.clientWidth / canvas.clientHeight;
       c.updateProjectionMatrix();
     }
-    r.render(s, c);
+    if (visGate()) r.render(s, c);
     requestAnimationFrame(loop);
   }
   loop();
@@ -2588,6 +2603,7 @@ document.querySelectorAll('.fruiting-canvas-host').forEach(host => {
   const canvas = document.getElementById('grad-canvas');
   if (!canvas) return;
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  const visGate = makeVisGate(canvas);
   r.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR)); guardWebGLCanvas(r.domElement);
   r.setSize(canvas.clientWidth, canvas.clientHeight, false);
   const s = new THREE.Scene();
@@ -2660,7 +2676,7 @@ document.querySelectorAll('.fruiting-canvas-host').forEach(host => {
       r.setSize(canvas.clientWidth, canvas.clientHeight, false);
       mat.uniforms.uRes.value.set(canvas.clientWidth, canvas.clientHeight);
     }
-    r.render(s, c);
+    if (visGate()) r.render(s, c);
     requestAnimationFrame(loop);
   }
   loop();
