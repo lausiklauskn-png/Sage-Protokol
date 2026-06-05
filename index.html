@@ -472,7 +472,9 @@
   .sun-card { background: radial-gradient(ellipse at 30% 50%, #0a0a18 0%, #06061a 45%, #02020c 100%); border: 1px solid var(--line-strong); overflow: hidden; isolation: isolate; }
   .sun-card .card-tag { background: rgba(255,220,150,0.08); color: #f0d8a8; border: 1px solid rgba(244,180,53,0.22); }
   .sun-stage { display: grid; grid-template-columns: minmax(220px, 320px) 1fr; gap: 2rem; align-items: center; text-decoration: none; color: inherit; padding: 0.5rem 0; cursor: pointer; }
-  .sun-scene { position: relative; width: 100%; aspect-ratio: 1; max-width: 280px; margin: 0 auto; overflow: hidden; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+  /* Container rund (border-radius:50%) -> die warme Korona wird kreisrund
+     beschnitten statt quadratisch; kein eckiger Rand mehr. (Klaus 2026-06-06) */
+  .sun-scene { position: relative; width: 100%; aspect-ratio: 1; max-width: 280px; margin: 0 auto; overflow: hidden; border-radius: 50%; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
   .sun-stage:hover .sun-scene { transform: scale(1.04); }
   /* Echtes Sonnen-Bild (eingebettet, WebP). Schwarzer Bildrand wird per Maske
      weich in die fast-schwarze Karte ausgeblendet; das Bild atmet (Puls),
