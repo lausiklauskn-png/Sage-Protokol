@@ -4109,5 +4109,61 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     closeBtn.addEventListener('click', function () { pop.classList.remove('show'); });
   })();
   </script>
+  <!-- ===== TEST-FELD (Diagnose, temporär) — Build-Marke + Klick/Hover-Anzeige ===== -->
+  <style>
+    #sage-test { position: fixed; left: 10px; bottom: 10px; z-index: 99998; max-width: 320px;
+      font: 12px/1.4 "Geist Mono", ui-monospace, monospace; color: #e8e8f0;
+      background: rgba(8,8,22,0.92); border: 1px solid #6EE7D3; border-radius: 10px;
+      padding: 8px 10px; box-shadow: 0 8px 26px rgba(0,0,0,0.5); backdrop-filter: blur(6px); }
+    #sage-test .st-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+    #sage-test b { color: #6EE7D3; }
+    #sage-test .st-row { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #sage-test .st-x { cursor: pointer; border: 1px solid var(--line,#333); background: transparent; color: #e8e8f0; border-radius: 6px; padding: 0 6px; }
+    #sage-test.st-min .st-body { display: none; }
+    @keyframes st-flash { from { transform: scale(1); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
+  </style>
+  <div id="sage-test" aria-hidden="true">
+    <div class="st-head"><span>TEST-FELD · <b id="st-build">BUILD 2026-06-05 · sun-ring-v4</b></span>
+      <button class="st-x" id="st-toggle" title="ein/aus">–</button></div>
+    <div class="st-body">
+      <div class="st-row">Klick: <span id="st-click">—</span></div>
+      <div class="st-row">Hover: <span id="st-hover">—</span></div>
+      <div class="st-row" style="color:#9a9ab0">Build-Marke lesen → mir sagen, dann wissen wir, ob du die neueste Version siehst.</div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    var box = document.getElementById('sage-test');
+    var cEl = document.getElementById('st-click'), hEl = document.getElementById('st-hover');
+    function label(el) {
+      if (!el || !el.tagName) return '—';
+      var t = el.tagName.toLowerCase();
+      if (el.id) return t + '#' + el.id;
+      if (el.className && typeof el.className === 'string') {
+        var c = el.className.trim().split(/\s+/).slice(0, 2).join('.');
+        if (c) return t + '.' + c;
+      }
+      return t;
+    }
+    document.addEventListener('click', function (e) {
+      if (box.contains(e.target)) return;
+      cEl.textContent = label(e.target) + '  @' + e.clientX + ',' + e.clientY;
+      var f = document.createElement('div');
+      f.style.cssText = 'position:fixed;left:' + (e.clientX - 9) + 'px;top:' + (e.clientY - 9) + 'px;width:18px;height:18px;border:2px solid #6EE7D3;border-radius:50%;pointer-events:none;z-index:99999;animation:st-flash .5s ease-out forwards';
+      document.body.appendChild(f);
+      setTimeout(function () { f.remove(); }, 500);
+    }, true);
+    var lastH = 0;
+    document.addEventListener('mouseover', function (e) {
+      if (box.contains(e.target)) return;
+      var n = Date.now(); if (n - lastH < 70) return; lastH = n;
+      hEl.textContent = label(e.target);
+    }, true);
+    document.getElementById('st-toggle').addEventListener('click', function () {
+      box.classList.toggle('st-min');
+      this.textContent = box.classList.contains('st-min') ? '+' : '–';
+    });
+  })();
+  </script>
 </body>
 </html>
