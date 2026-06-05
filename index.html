@@ -477,12 +477,16 @@
   /* Echtes Sonnen-Bild (eingebettet, WebP). Schwarzer Bildrand wird per Maske
      weich in die fast-schwarze Karte ausgeblendet; das Bild atmet (Puls),
      die .sun-corona dahinter pulsiert als Glut-Halo. (Klaus 2026-06-05) */
-  .sun-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; will-change: transform, filter; animation: sun-img-pulse 7s ease-in-out infinite; }
-  @keyframes sun-img-pulse { 0%, 100% { transform: scale(1); filter: brightness(1) saturate(1); } 50% { transform: scale(1.025); filter: brightness(1.09) saturate(1.05); } }
-  .sun-stage:hover .sun-img { animation-duration: 3.5s; }
-  @media (prefers-reduced-motion: reduce) { .sun-img { animation: none; } }
+  /* Sonne selbst steht still (eine echte Sonne "atmet" nicht sichtbar) —
+     es pulsiert nur der äußere Korona-Ring (.sun-corona), farblich an die
+     orange Außenkante der Sonne angeglichen. (Klaus 2026-06-05) */
+  .sun-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; }
   /* Äußere weiche Korona (radial, pulsierend) */
-  .sun-corona { position: absolute; inset: -8%; border-radius: 50%; background: radial-gradient(circle at center, rgba(255,230,170,0.95) 0%, rgba(255,180,80,0.65) 22%, rgba(255,120,40,0.35) 45%, rgba(200,80,20,0.15) 70%, transparent 100%); filter: blur(10px); opacity: 0.88; animation: sun-corona-pulse 6s ease-in-out infinite; }
+  /* Korona = äußerer Halo-Ring: über der Sonnenscheibe transparent (damit die
+     Scheibe + Plasma NICHT mit aufleuchten), nur außen ein orange-Ring in der
+     Farbe der Sonnen-Außenkante, der für sich pulsiert -> man sieht nur den
+     Ring atmen, nicht die ganze Sonne; keine krassen Farbsprünge. */
+  .sun-corona { position: absolute; inset: -8%; border-radius: 50%; z-index: 0; background: radial-gradient(circle at center, transparent 0%, transparent 70%, rgba(255,145,55,0.48) 82%, rgba(255,110,40,0.22) 92%, transparent 100%); filter: blur(9px); opacity: 0.9; animation: sun-corona-pulse 6.5s ease-in-out infinite; }
   /* Konischer Ring — NICHT drehend; pulst nur bei Hover (1:1 wie bh-chrome-Hover-Funktion: Animation läuft erst beim Mouseover) */
   .sun-corona-2 { position: absolute; inset: -2%; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255,200,100,0) 0%, rgba(255,220,140,0.55) 12%, rgba(255,150,60,0.18) 28%, rgba(255,230,150,0.45) 50%, rgba(255,160,60,0.18) 72%, rgba(255,210,130,0.55) 90%, rgba(255,200,100,0) 100%); filter: blur(7px); mix-blend-mode: screen; opacity: 0.55; }
   /* Sonnenkern — verschwommen wie Korona, kein Vollton */
@@ -507,9 +511,10 @@
   .sun-stage:hover .sun-disk     { animation-duration: 3.5s; filter: blur(13px) brightness(1.12); }
   .sun-stage:hover .sun-spot     { animation-duration: 4.5s; }
   @keyframes sun-corona-pulse {
-    0%, 100% { transform: scale(1);    opacity: 0.85; filter: blur(10px); }
-    50%      { transform: scale(1.08); opacity: 0.96; filter: blur(12px); }
+    0%, 100% { transform: scale(0.98); opacity: 0.74; filter: blur(9px); }
+    50%      { transform: scale(1.07); opacity: 1;    filter: blur(11px); }
   }
+  @media (prefers-reduced-motion: reduce) { .sun-corona { animation: none; } }
   @keyframes sun-corona-2-pulse {
     0%, 100% { transform: scale(1);    opacity: 0.55; filter: blur(7px); }
     50%      { transform: scale(1.07); opacity: 0.92; filter: blur(9px); }
