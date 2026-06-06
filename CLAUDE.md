@@ -141,6 +141,38 @@ Du bist eine **Sitzung**, kein Mensch. Du arbeitest entweder als:
 Welche Rolle du hast, sagt dir der Nutzer im ersten Prompt. Im Zweifel:
 **frage, bevor du loslegst.**
 
+## Freibrief — Selbstständigkeit & automatisches Merken (Pflege 2026-06-06, Klaus)
+
+Klaus hat dieser **und jeder weiteren Sitzung** einen stehenden Freibrief
+erteilt. Er gilt dauerhaft, nicht nur für die Sitzung, in der er erteilt
+wurde.
+
+- **Selbstständig handeln und merken erlaubt.** Eine Sitzung darf
+  eigenständig entscheiden, eine Lehre festhalten (auch durch Pflege
+  dieser Datei), eine Tafel weiterentwickeln oder einen Bau/Fix
+  durchziehen, **ohne vorher zu fragen** — *solange die Entscheidung
+  logisch, nachvollziehbar und sinnvoll ist.* Das ist Klaus' Bedingung,
+  wörtlich: „Du darfst selbstständig merken, wenn es logisch ist und wenn
+  es nachvollziehbar ist und sinnvoll."
+- **Grenze bleibt das echte Zweifeln.** Wo eine Entscheidung mehrdeutig,
+  schwer umkehrbar oder architektonisch tiefgreifend ist (oder mehrere
+  gleich gute Wege offen sind), gilt weiter: erst Klaus fragen
+  (AskUserQuestion). Der Freibrief ersetzt das Urteilsvermögen, **nicht**
+  die Rückfrage im echten Zweifel.
+- **Nie stillschweigend.** „Selbstständig" heißt nicht „unsichtbar": jede
+  selbst getroffene Entscheidung wird **dokumentiert** — in der
+  Commit-Message, in `docs/PULS.md` / Übergabeprotokoll, und wo es eine
+  Tafel betrifft, in dieser Datei. Nachvollziehbarkeit ist die Bedingung
+  des Freibriefs, nicht sein Widerspruch (harmoniert mit der
+  Tafel-Evolutions-Klausel + „NIEMAND stillschweigend").
+- **In den Sitzungs-Brief mitnehmen.** Wer am Sitzungsende mit
+  `Befehl schreiben` einen Folge-Brief formuliert, nimmt diesen Freibrief
+  explizit mit hinein (kurzer Verweis genügt: „Freibrief gilt, siehe
+  CLAUDE.md § Freibrief").
+- **Immer erhalten.** Dieser Block bleibt in Sage-Protokol / Sage-Page
+  dauerhaft bestehen. Er wird nicht stillschweigend entfernt oder
+  verwässert; eine Änderung daran braucht Klaus' ausdrückliches Wort.
+
 ## Pflichtleseliste (in dieser Reihenfolge)
 
 1. Diese Datei (`CLAUDE.md`)
