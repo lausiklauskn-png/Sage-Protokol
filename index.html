@@ -3532,6 +3532,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           <button class="sage-andock-btn" id="sage-andock-step3-btn" onclick="andockStep3Backup()" disabled>Backup-Blob erzeugen + herunterladen</button>
           <div class="sage-andock-output" id="sage-andock-step3-out"></div>
         </li>
+        <li>
+          <h3><span class="sage-andock-num">4</span>Identität wiederherstellen</h3>
+          <p>Eine zuvor gesicherte Backup-Datei (Schritt 3) zurückspielen: Datei wählen, das damals vergebene Passwort eingeben — Schlüssel <em>und</em> Vektor-Spore werden in die Browser-IndexedDB zurückgeschrieben (AES-GCM-256 entschlüsselt). So überlebt deine Identität einen App-Lösch- oder Storage-Verlust. Funktioniert auch auf einem neuen Gerät/Browser.</p>
+          <input type="file" id="sage-andock-step4-file" accept=".json,application/json" hidden onchange="andockStep4Restore(this)">
+          <button class="sage-andock-btn" id="sage-andock-step4-btn" onclick="document.getElementById('sage-andock-step4-file').click()">Backup-Datei wählen + wiederherstellen</button>
+          <div class="sage-andock-output" id="sage-andock-step4-out"></div>
+        </li>
       </ol>
 
       <div class="sage-andock-identities">
@@ -3838,6 +3845,71 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       setAndockOutput('sage-andock-step3-out', 'Fehler: ' + (err && err.message ? err.message : err), 'err');
       btn.disabled = false;
     }
+  }
+
+  // Schritt 4 — Identität wiederherstellen (Modul 02 importBackup).
+  // Spielt eine zuvor gesicherte Backup-Datei (Schritt 3) zurück: Datei +
+  // Passwort -> Schlüssel + Vektor-Spore landen wieder in der IndexedDB.
+  // Bei vorhandenem Slot wirft importBackup einen Overwrite-Fehler; dann
+  // bietet der Wizard ein bewusstes Überschreiben (force:true) an.
+  async function andockStep4Restore(input) {
+    const out = 'sage-andock-step4-out';
+    if (!window.SbkimSpore || typeof window.SbkimSpore.importBackup !== 'function') {
+      setAndockOutput(out, 'Modul 02 importBackup fehlt — Bau 02.X/02.Y nicht eingespielt.', 'err');
+      return;
+    }
+    const file = input && input.files && input.files[0];
+    if (!file) { setAndockOutput(out, 'Keine Datei gewählt.', 'err'); return; }
+    let blob;
+    try {
+      blob = JSON.parse(await file.text());
+    } catch (_e) {
+      setAndockOutput(out, 'Datei ist kein gültiges JSON-Backup.', 'err');
+      input.value = '';
+      return;
+    }
+    const password = window.prompt('Backup-Passwort eingeben (das beim Sichern in Schritt 3 vergebene):');
+    if (!password) { setAndockOutput(out, 'Abgebrochen — kein Passwort.', 'err'); input.value = ''; return; }
+    setAndockOutput(out, 'Entschlüssele Backup (AES-GCM-256) + spiele Identität zurück …');
+    try {
+      const res = await window.SbkimSpore.importBackup(blob, password);
+      andockAfterRestore(out, res);
+    } catch (err) {
+      const msg = (err && err.message) ? err.message : String(err);
+      const name = err && err.name ? err.name : '';
+      // Slot existiert schon -> bewusst überschreiben anbieten.
+      if (/Overwrite/i.test(name) || /vorhanden|überschreib|overwrite/i.test(msg)) {
+        if (window.confirm('Eine Identität mit diesem Schlüssel existiert bereits im Browser. Mit der Backup-Version überschreiben? (Die jetzige lokale Identität geht dabei verloren.)')) {
+          setAndockOutput(out, 'Überschreibe vorhandene Identität …');
+          try {
+            const res2 = await window.SbkimSpore.importBackup(blob, password, { force: true });
+            andockAfterRestore(out, res2);
+          } catch (err2) {
+            setAndockOutput(out, 'Fehler beim Überschreiben: ' + (err2 && err2.message ? err2.message : err2), 'err');
+          }
+        } else {
+          setAndockOutput(out, 'Abgebrochen — vorhandene Identität unverändert gelassen.', 'err');
+        }
+      } else {
+        setAndockOutput(out, 'Fehler: ' + msg + ' (falsches Passwort oder beschädigte Datei?)', 'err');
+      }
+    } finally {
+      input.value = '';
+    }
+  }
+
+  function andockAfterRestore(out, res) {
+    if (res && res.restored) {
+      setAndockOutput(out, 'Identität wiederhergestellt — Schlüssel + Vektor-Spore sind zurück in der Browser-IndexedDB. Du bist wieder am Mycel.', 'ok');
+    } else {
+      setAndockOutput(out, 'Nichts wiederhergestellt' + (res && res.reason ? ' — ' + res.reason : '') + '.', 'err');
+    }
+    // Folge-Schritte freischalten + Identitäts-Liste aktualisieren.
+    const s2 = document.getElementById('sage-andock-step2-btn');
+    const s3 = document.getElementById('sage-andock-step3-btn');
+    if (s2) s2.disabled = false;
+    if (s3) s3.disabled = false;
+    refreshAndockIdentities();
   }
 
   function downloadJson(filename, obj) {
