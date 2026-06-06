@@ -160,8 +160,8 @@
   #sbkim-siegel-badge.first-boot { animation: siegel-first-boot 600ms ease-out; }
   @keyframes siegel-first-boot { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 14px var(--siegel-gold-glow)); } 100% { transform: scale(1.00); opacity: 1; } }
   /* Modul 16 Sub (e) Bronze/Gold-Stufung (Karte 16 § Sub (e), 2026-05-26).
-     Bronze („Mycel suchend") = Surface-Check grün, aber noch kein Cross-Knoten-Handshake;
-     Gold („Mycel verbunden") = mind. ein sbkim:handshake outcome:"established" empfangen.
+     Bronze („im Mycel, ruhend") = Surface-Check grün, aber noch kein Cross-Knoten-Handshake;
+     Gold („im Mycel, aktiv") = mind. ein sbkim:handshake outcome:"established" empfangen.
      Wappen-SVG wird per filter:saturate(0.6) brightness(0.85) gedämpft (Spec § Visuelle Unterscheidung).
      Gold-Stufenwechsel-Animation 600 ms via siegel-stufenwechsel-gold. */
   #sbkim-siegel-badge[data-stufe="bronze"] { filter: saturate(0.6) brightness(0.85); }
