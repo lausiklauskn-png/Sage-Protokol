@@ -1,19 +1,22 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-05-31",
-  "seq": 12,
-  "headline": "Empfehlung Rechts-Seite/Copyright an SB-KIMTool (jetzt) + Jasons-Tresor (erst nach Fertigstellung) in deren Briefkaesten gelegt.",
+  "lastBuild": "2026-06-06",
+  "seq": 13,
+  "headline": "Verfahrens-Erklärung + Synchronisationsvereinbarung an Mein-Tresor (neuer Knoten, Schwester von Jasons-Tresor) — A–D beantwortet, Postfach angelegt.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
-    "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md"
+    "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md",
+    "Mein-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-MeinTresor.md"
   },
   "forNodes": [
     "SB-KIMTool-Point",
-    "Jasons-Tresor"
+    "Jasons-Tresor",
+    "Mein-Tresor"
   ],
   "ack": {
     "SB-KIMTool-Point": 1,
-    "Jasons-Tresor": 2
+    "Jasons-Tresor": 2,
+    "Mein-Tresor": 0
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -76,6 +79,11 @@
       "seq": 12,
       "date": "2026-05-31",
       "headline": "Rechts-Seite/Copyright-Empfehlung via Postfach an SB-KIMTool (sofort) + Jasons-Tresor (deferred bis Kern-Arbeit fertig)."
+    },
+    {
+      "seq": 13,
+      "date": "2026-06-06",
+      "headline": "Verfahrens-Erklärung + Synchronisationsvereinbarung an Mein-Tresor (A–D, fester Vereinbarungs-Text); Postfach AUSTAUSCH-MeinTresor.md angelegt, in mailboxes/forNodes/ack geführt."
     }
   ]
 }
