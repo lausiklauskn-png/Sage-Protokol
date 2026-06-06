@@ -1845,6 +1845,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       const el = document.getElementById('screen-' + s);
       if (el) el.classList.toggle('active', s === id);
     });
+    // Immersive Vollbild-Screens (Sonne / schwarzes Loch) haben einen
+    // schwebenden Zurück-Knopf oben links — der klebrige Header würde
+    // darunter liegen und das Logo überlagern. Bei diesen Screens den
+    // Header ausblenden, sonst zeigen. (Klaus 2026-06-06)
+    const immersive = (id === 'sonnen' || id === 'observatorium');
+    const topbar = document.querySelector('.topbar');
+    if (topbar) topbar.style.display = immersive ? 'none' : '';
     currentScreen = id;
     if (id === 'overview' && lastBentoCardId) {
       const target = document.querySelector('[data-back-anchor="' + lastBentoCardId + '"]');
