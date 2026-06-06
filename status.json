@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-05-31",
+  "lastUpdated": "2026-06-06",
   "branch": "claude/semantic-agent-network-Y03Vg",
   "endknoten": [
     {
@@ -143,6 +143,29 @@
       "note": "Dritter Forker-Knoten, Andock-Schritt 1 (Identität) 2026-05-31. Reziprok verifiziert: Signatur gültig, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= gemeldete nodeId 7F_zNop…), publicKey.x = gemeldet, 9/9 Pflichtfelder, Manipulationsprobe fällt durch → ✔ VALID. Dauerhafte, stabile Identität. domainVector noch _demo → bewusst NUR verified-spore, KEIN Match (INTERFACES §11.5). Hochstufung auf verified-match, sobald echter Vektor (multilingual-e5-small) re-signt ist. Pages-Endpoint im Browser live; von Sages Container aus 403 (eigene github.io-Egress-Sperre) — verifiziert über raw main. Prüf-Vermerk: sbkim/jason_inbox.verify.md.",
       "url": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
       "landingPage": "https://lausiklauskn-png.github.io/Jasons-Tresor/"
+    },
+    {
+      "name": "Mein-Tresor",
+      "domain": "Mein-Tresor-Bibliothek",
+      "integrated": true,
+      "integratedAt": "2026-06-06",
+      "nodeId": "wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Tresor/sbkim/spore.json",
+      "stammCategories": [
+        "JSON-Tresor",
+        "Jasons-Bibliothek",
+        "Schlüssel-Backup",
+        "AES-256-GCM-Verschlüsselung"
+      ],
+      "guestCategories": [
+        "Jason-Verwahrung",
+        "Schlüssel-Andock",
+        "Spore-Verifikation"
+      ],
+      "pingStatus": "verified-spore",
+      "note": "Vierter Forker-Knoten, design-vereinfachte Schwester von Jasons-Tresor (byte-gleicher JasonLib-Kern, neues Dreh-Safe-Gesicht). Andock-Schritt 1 (Identität) 2026-06-06. Reziprok verifiziert gegen raw/main: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= gemeldete nodeId wRsGQou…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch (Signatur ungültig) → ✔ VALID. EIGENER, dauerhafter Schlüssel (eigene nodeId, NICHT die der Schwester 7F_zNop…). domainVector folgt → bewusst NUR verified-spore, KEIN Match (INTERFACES §11.5). Hochstufung auf verified-match, sobald echter Vektor (multilingual-e5-small) eingebettet re-signt ist. Pages-Endpoint im Browser live; von Sages Container aus 403 (github.io-Egress-Sperre) — verifiziert über raw/main. Prüf-Vermerk: sbkim/meintresor_inbox.verify.md.",
+      "url": "https://lausiklauskn-png.github.io/Mein-Tresor/",
+      "landingPage": "https://lausiklauskn-png.github.io/Mein-Tresor/"
     }
   ],
   "modules": [

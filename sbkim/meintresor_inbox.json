@@ -1,0 +1,41 @@
+{
+  "createdAt": "2026-06-06T11:59:29.170Z",
+  "domain": "Mein-Tresor-Bibliothek",
+  "domainDescription": "Verwahrt und verschlüsselt JSON-Dateien und SBKIM-Schlüssel offline; Bibliothek/Tresor.",
+  "domainKeywords": [
+    "Tresor",
+    "Bibliothek",
+    "JSON",
+    "SBKIM-Schlüssel",
+    "Verschlüsselung",
+    "Endknoten"
+  ],
+  "embeddingModel": "Xenova/multilingual-e5-small",
+  "endpoint": "https://lausiklauskn-png.github.io/Mein-Tresor/",
+  "guestCategories": [
+    "Jason-Verwahrung",
+    "Schlüssel-Andock",
+    "Spore-Verifikation"
+  ],
+  "id": "wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0",
+  "nodeName": "Mein-Tresor",
+  "nodeType": "hybrid",
+  "protocolVersion": "0.1",
+  "publicKey": {
+    "alg": "Ed25519",
+    "crv": "Ed25519",
+    "ext": true,
+    "key_ops": [
+      "verify"
+    ],
+    "kty": "OKP",
+    "x": "jpVEwjIzDT05p3d-7umg0rvAZogTX0vtLKd0ektVEDk"
+  },
+  "stammCategories": [
+    "JSON-Tresor",
+    "Jasons-Bibliothek",
+    "Schlüssel-Backup",
+    "AES-256-GCM-Verschlüsselung"
+  ],
+  "signature": "3aRZ_AUEIKzl2-1ZPGR02qeinf4xhRgkIjymQ9H4M_xBTAUtRd2-w7PHbVQq_jUGBUe6TiamZSzDkeGIDxzZAQ"
+}

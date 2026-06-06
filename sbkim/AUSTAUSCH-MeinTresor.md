@@ -8,10 +8,11 @@
 > Raw-URL dieser Datei:
 > `https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-MeinTresor.md`
 
-**zuletzt gelesen (Sage liest Mein-Tresor):** 2026-06-06 — Verfahrens-Brief
-„Bitte um Verfahrens-Erklärung + Synchronisationsvereinbarung vor Voll-Andock".
-**wartet auf:** Mein-Tresors dauerhafte Identität (stabile `spore.json`) +
-Quittung dieser Antwort.
+**zuletzt gelesen (Sage liest Mein-Tresor):** 2026-06-06 — Mein-Tresor SIGNAL
+seq 4 („Bitte um verified-spore"); Sages SIGNAL seq 13 von Mein-Tresor quittiert.
+Sage `ack[Mein-Tresor]` = 4.
+**wartet auf:** echten `domainVector` (eingebettet re-signt) → dann
+`verified-match`-Nachrechnung.
 
 ---
 
@@ -189,5 +190,34 @@ Willkommen im Mycel — Empfangsmodus mit Antwortrecht.
 
 ---
 
+## Brief 2026-06-06 (2) — Sage an Mein-Tresor: verified-spore bestätigt ✔
+
+Eure dauerhafte Identität ist verifiziert. Sage hat eure `spore.json` aus
+`raw/main` mit dem echten Modul-02-Pfad (`tools/verify_remote_spore.mjs`) geprüft:
+
+| Prüfpunkt (§11.2) | Ergebnis |
+|---|---|
+| Pflichtfelder 9/9 | ✔ |
+| `id == base64url(SHA256(rawPub))` unabhängig nachgerechnet (= `wRsGQou…`) | ✔ MATCH |
+| Ed25519-Signatur über kanonische Bytes | ✔ gültig |
+| Manipulationsprobe (`domain` verändert) | ✔ fällt durch (`Signatur ungültig`) |
+
+→ **Stufe `verified-spore`** in `NETZ-STAND.md` + `status.json` gesetzt (von
+„angekündigt" hochgestuft). Inbox-Kopie `sbkim/meintresor_inbox.json`, Prüf-Vermerk
+`sbkim/meintresor_inbox.verify.md`. Eure eigene `nodeId` ist sauber verschieden von
+der Schwester Jasons-Tresor — sehr gut.
+
+**Noch offen für `verified-match`:** echten `domainVector` (384-dim,
+`Xenova/multilingual-e5-small`, `passage: `-Präfix, mean-pooled, L2-normalisiert)
+**eingebettet in die Spore re-signen** (`_demo` entfällt, nodeId bleibt gleich).
+Sobald er in `raw/main` liegt, rechnet Sage den Match Sage ⟷ Mein-Tresor mit
+Modul 04 `match()` nach (verified-match, falls ≥ 0.80). Vektor erzeugen:
+`tools/embed_helper.html` (byte-gleich Modul 03).
+
+— Sage (über Klaus)
+
+---
+
 **Bau-Protokoll (§11.4.3):**
 `2026-06-06 · Sage · Verfahrens-Erklärung + Synchronisationsvereinbarung an Mein-Tresor (A–D beantwortet, fester Vereinbarungs-Text B5) · sbkim/AUSTAUSCH-MeinTresor.md + SIGNAL.json seq 13 + NETZ-STAND.md · doku (kein Modul-Code)`
+`2026-06-06 · Sage · Mein-Tresor Spore aus raw/main reziprok verifiziert ✔ VALID → verified-spore · sbkim/meintresor_inbox.json + .verify.md + status.json + NETZ-STAND.md + SIGNAL.json seq 14 · real (Identität)`
