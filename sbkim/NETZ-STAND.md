@@ -28,7 +28,7 @@
 | **Mein-Mixarium** | Cocktails / Drinks | `JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY` | `live-direct` | Cross-Knoten-Handshake 2026-05-17 |
 | **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY` | **`verified-match` 0.848508** | `sbkim/point_inbox.verify.md` |
 | **Jasons-Tresor** | Jasons-Tresor-Bibliothek | `7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs` | **`verified-spore`** | `sbkim/jason_inbox.verify.md` |
-| **Mein-Tresor** (Schwester v. Jasons-Tresor) | Tresor (design-vereinfacht, JasonLib-Kern) | _noch flüchtig_ | **`angekündigt`** | `sbkim/AUSTAUSCH-MeinTresor.md` (Verfahrens-Antwort 2026-06-06) |
+| **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0` | **`verified-spore`** | `sbkim/meintresor_inbox.verify.md` |
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 
@@ -58,7 +58,7 @@ beidseitig bezeugt. Wächter-Action + 📬-Knopf bei allen dreien aktiv.
 |---|---|---|
 | SB·KIMTool·Point | `sbkim/AUSTAUSCH.md` | `…/SB-KIMTool-Point/main/sbkim/AUSTAUSCH.md` |
 | Jasons-Tresor | `sbkim/AUSTAUSCH-JasonsTresor.md` | `…/Jasons-Tresor/main/sbkim/AUSTAUSCH.md` |
-| Mein-Tresor | `sbkim/AUSTAUSCH-MeinTresor.md` | _(folgt, sobald Mein-Tresors Pages/Repo steht)_ |
+| Mein-Tresor | `sbkim/AUSTAUSCH-MeinTresor.md` | `…/Mein-Tresor/main/sbkim/AUSTAUSCH.md` |
 
 ## Werkzeuge (für Andock, Verifikation, Embedding)
 
@@ -69,10 +69,10 @@ beidseitig bezeugt. Wächter-Action + 📬-Knopf bei allen dreien aktiv.
 
 ## Offene Hebel
 
-- **Mein-Tresor → `verified-spore`**: wartet auf Mein-Tresors einmalige
-  dauerhafte Identität (eigener Ed25519-Schlüssel → eigene `nodeId`, NICHT die
-  der Schwester Jasons-Tresor) + stabil signierte `spore.json`. Verfahrens-Antwort
-  liegt in `sbkim/AUSTAUSCH-MeinTresor.md` (Sage SIGNAL seq 13).
+- **Mein-Tresor → `verified-match`**: Identität ✔ `verified-spore` (2026-06-06,
+  eigener dauerhafter Schlüssel, eigene `nodeId`). Wartet auf echten `domainVector`
+  (eingebettet re-signt, `multilingual-e5-small`), dann Match Sage ⟷ Mein-Tresor
+  nachrechnen. Prüf-Vermerk: `sbkim/meintresor_inbox.verify.md`.
 
 - **Jasons-Tresor → `verified-match`**: echter `domainVector` (Re-Sign oder Sage rechnet),
   dann Match Sage ⟷ Jasons-Tresor nachrechnen.

@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-06",
-  "seq": 13,
-  "headline": "Verfahrens-Erklärung + Synchronisationsvereinbarung an Mein-Tresor (neuer Knoten, Schwester von Jasons-Tresor) — A–D beantwortet, Postfach angelegt.",
+  "seq": 14,
+  "headline": "Mein-Tresor Spore aus raw/main verifiziert (✔ VALID, 9/9 + id + Signatur + Manipulationsprobe) → verified-spore; Inbox + status.json + NETZ-STAND eingetragen.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md",
@@ -16,7 +16,7 @@
   "ack": {
     "SB-KIMTool-Point": 1,
     "Jasons-Tresor": 2,
-    "Mein-Tresor": 0
+    "Mein-Tresor": 4
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -84,6 +84,11 @@
       "seq": 13,
       "date": "2026-06-06",
       "headline": "Verfahrens-Erklärung + Synchronisationsvereinbarung an Mein-Tresor (A–D, fester Vereinbarungs-Text); Postfach AUSTAUSCH-MeinTresor.md angelegt, in mailboxes/forNodes/ack geführt."
+    },
+    {
+      "seq": 14,
+      "date": "2026-06-06",
+      "headline": "Mein-Tresor verified-spore: Spore aus raw/main reziprok verifiziert (✔ VALID), Inbox-Kopie + Prüf-Vermerk, status.json + NETZ-STAND eingetragen, ack[Mein-Tresor]=4 (ihr SIGNAL seq 4 quittiert)."
     }
   ]
 }

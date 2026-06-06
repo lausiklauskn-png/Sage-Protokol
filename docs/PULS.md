@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-05-31 (21 Module)
+  title Modulstand 2026-06-06 (21 Module)
   "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
