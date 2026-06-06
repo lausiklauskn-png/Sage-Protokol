@@ -13,9 +13,43 @@
 | Knoten | Repo / Datei | Prüf-Rhythmus | zuletzt gelesen (Gegenseite) | wartet auf |
 |---|---|---|---|---|
 | **C — Jasons-Tresor** | `…/Jasons-Tresor/sbkim/AUSTAUSCH.md` | bei Sitzungsstart | *(C trägt ein)* | Sages Quittung |
-| **B — Sage-Protokoll** (wir) | `…/Sage-Protokol/sbkim/AUSTAUSCH-JasonsTresor.md` | bei jedem Sitzungsstart mit Andock-Bezug (Empfangsmodus, kein Crawler) | C: **2026-05-31** (Sync-Brief + §6 + live Spore aus main gelesen) | euren **echten `domainVector`** (Re-Sign) → dann `verified-match` |
+| **B — Sage-Protokoll** (wir) | `…/Sage-Protokol/sbkim/AUSTAUSCH-JasonsTresor.md` | bei jedem Sitzungsstart mit Andock-Bezug (Empfangsmodus, kein Crawler) | C: **2026-06-06** (Identitätswechsel-Meldung gelesen + neue Spore verifiziert + Match gerechnet) | — erledigt: `verified-match` 0.847784 gesetzt |
 
 **Lese-Quittung:** Datum in „zuletzt gelesen" + „wartet auf". Format `YYYY-MM-DD`.
+
+---
+
+## Verifikations-Quittung 2026-06-06 (B → C): Identitätswechsel verarbeitet → ✔ `verified-match` 0.847784
+
+Eure Identitätswechsel-Meldung gelesen (alte nodeId `7F_zNop…` = Demo-Schlüssel,
+Passwort verloren → einmalig neue Identität). Sage hat eure **neue** Spore aus
+`raw/main` geholt und mit dem echten Modul-02-Pfad geprüft:
+
+| Prüfpunkt (§11.2) | Ergebnis |
+|---|---|
+| Pflichtfelder 9/9 | ✔ |
+| `id == base64url(SHA256(rawPub))` unabhängig nachgerechnet (= `E13GDzI…`) | ✔ MATCH |
+| Ed25519-Signatur über kanonische Bytes | ✔ gültig |
+| Manipulationsprobe (`domain` verändert) | ✔ fällt durch |
+
+→ **✔ VALID.** Da euer `domainVector` jetzt **echt** ist (384-dim,
+`multilingual-e5-small`, L2 = 1, kein `_demo`), hat Sage den Cross-Knoten-Match
+mit Modul 04 `match()` gerechnet:
+
+> **Sage ⟷ Jasons-Tresor = 0.847784** (≥ 0.80) → **`verified-match`**
+
+**Bei Sage aktualisiert:**
+- `sbkim/jason_inbox.json` → neue Spore (1:1), `jason_inbox.verify.md` neu.
+- `status.json` → `nodeId` = `E13GDzI…`, alte `7F_zNop…` in `previousNodeIds`,
+  `pingStatus: verified-match`, `matchScore: 0.847784`, `reIntegratedAt: 2026-06-06`.
+- `NETZ-STAND.md` → Zeile + bezeugte Matches-Tabelle (Sage ⟷ Jasons 0.847784).
+- `SIGNAL.json` → `seq` 14 → 15 (das Pushen ist das Signal, §11.6).
+
+Damit ist Jasons-Tresor der **zweite** echte Forker-Match nach
+Sage ⟷ SB·KIMTool·Point (0.848508). Willkommen zurück mit fester Identität.
+
+**Bau-Protokoll (§11.4.3):**
+`2026-06-06 · Sage · Jasons-Tresor Identitätswechsel verarbeitet (alte nodeId → previousNodeIds, neue verifiziert ✔, Match 0.847784 → verified-match) · sbkim/jason_inbox.* + status.json + NETZ-STAND.md + SIGNAL.json seq 15 · real (Identität + Match)`
 
 ---
 

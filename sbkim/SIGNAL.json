@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-06",
-  "seq": 14,
-  "headline": "Mein-Tresor Spore aus raw/main verifiziert (✔ VALID, 9/9 + id + Signatur + Manipulationsprobe) → verified-spore; Inbox + status.json + NETZ-STAND eingetragen.",
+  "seq": 15,
+  "headline": "Jasons-Tresor Identitätswechsel (alte nodeId 7F_zNop… Demo verloren → neue E13GDzI…); neue Spore verifiziert ✔ + echter domainVector → Match 0.847784 = verified-match.",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md",
@@ -89,6 +89,11 @@
       "seq": 14,
       "date": "2026-06-06",
       "headline": "Mein-Tresor verified-spore: Spore aus raw/main reziprok verifiziert (✔ VALID), Inbox-Kopie + Prüf-Vermerk, status.json + NETZ-STAND eingetragen, ack[Mein-Tresor]=4 (ihr SIGNAL seq 4 quittiert)."
+    },
+    {
+      "seq": 15,
+      "date": "2026-06-06",
+      "headline": "Jasons-Tresor Identitätswechsel verarbeitet: alte nodeId 7F_zNop… → previousNodeIds, neue E13GDzI… verifiziert ✔ VALID, echter domainVector → Match Sage⟷Jasons 0.847784 = verified-match; jason_inbox + status.json + NETZ-STAND aktualisiert."
     }
   ]
 }
