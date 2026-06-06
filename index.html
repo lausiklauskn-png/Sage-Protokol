@@ -1910,7 +1910,60 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     renderVorteilspackPwas(s);
     computeScore(s);
     renderBars(s);
+    reflectMycelMembershipToSiegel();
   }
+
+  // ====== SIEGEL-STUFE AUS ECHTER MYCEL-MITGLIEDSCHAFT ======
+  // Klaus' Korrektur 2026-06-06: Das Siegel (Modul 16) schaltet bisher nur
+  // auf Gold ("im Mycel · aktiv"), wenn in DIESEM Tab ein Live-
+  // `sbkim:handshake`-Event feuert — RAM-only, nach jedem Reload wieder
+  // Bronze. Das misst das Falsche: ob ein flüchtiger Tab-Handshake lief,
+  // nicht ob der Knoten Teil des Mycels ist. Die WAHRHEIT der Mitgliedschaft
+  // steht dauerhaft in status.json (bzw. NETZ-STAND/SIGNAL): ein Nachbar mit
+  // `verified-match` oder `live*` ist ein bewiesener, lebender Hyphenfaden.
+  //
+  // Lösung ohne Eingriff in Modul 16 (bleibt reines Render-Modul): sobald
+  // (a) die Init-Kette durch ist (Modul-16-Listener registriert) UND
+  // (b) status.json einen echten aktiven Nachbarn zeigt, feuert die Page
+  // EINMALIG das Gold-Event. So spiegelt das Siegel nach jedem Reload die
+  // echte Netz-Lage statt wieder bei "ruhend" zu starten.
+  var __sageModulesReady = false;
+  var __sageMycelGoldFired = false;
+
+  function sageHasActiveNeighbor() {
+    const s = STATE.status;
+    if (!s || !Array.isArray(s.endknoten)) return false;
+    return s.endknoten.some((e) => {
+      if (!e || /^sage/i.test(e.name || '')) return false;   // Sage selbst ist kein Nachbar
+      const st = e.pingStatus;
+      return st === 'verified-match' || st === 'live' ||
+             st === 'live-direct' || st === 'live-channel';
+    });
+  }
+
+  function reflectMycelMembershipToSiegel() {
+    if (__sageMycelGoldFired || !__sageModulesReady) return;
+    if (!sageHasActiveNeighbor()) return;
+    __sageMycelGoldFired = true;
+    try {
+      window.dispatchEvent(new CustomEvent('sbkim:handshake', {
+        detail: {
+          outcome: 'established',
+          source: 'netz-stand',
+          reason: 'verified-match/live neighbor in status.json — echte Mycel-Mitgliedschaft',
+        },
+      }));
+    } catch (_e) { /* nb */ }
+  }
+
+  // Init-Kette signalisiert über sbkim-sage-ready, dass Modul 16 (und sein
+  // Handshake-Listener) bereit sind. Status kann vorher oder nachher laden —
+  // der Flag-Guard sorgt dafür, dass das Event genau dann feuert, wenn beide
+  // Bedingungen erfüllt sind, und nur einmal.
+  window.addEventListener('sbkim-sage-ready', () => {
+    __sageModulesReady = true;
+    reflectMycelMembershipToSiegel();
+  });
 
   // ====== LEBENSZYKLUS-PHASEN ↔ MODUL-STATUS (live aus status.json) ======
   // Phase-Mapping: Phase 0 Spore → Modul 02, Phase 1 Einbettung → 03,
