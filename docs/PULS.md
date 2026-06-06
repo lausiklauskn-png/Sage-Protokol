@@ -1841,6 +1841,31 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-06 · Siegel-Mitgliedschaft + Andock-Wiederherstellung + Observatorium-Hintergrund
+
+**Rolle:** Hauptsitzung (kleine Bau-/Pflege-Tätigkeiten auf Zuruf). Alle PRs gemerged.
+
+- **Siegel-Inhalt (Klaus' Konzept-Korrektur):** Wer das Siegel trägt, *ist* Teil des
+  Mycels — Mitgliedschaft ≠ Verbindung. Text neu „im Mycel · ruhend/aktiv" (PR #275),
+  Aspekt 4 → „Mycel-Aktivität". Gold kommt jetzt aus echter Netz-Lage (status.json
+  `verified-match`/`live`-Nachbar) statt flüchtigem Tab-Handshake (PR #277, Modul 16
+  unangetastet). Wappen-Band „SAGE OBSERVATORIUM" (PR #274).
+- **Andock-Wizard Schritt 4:** Identität wiederherstellen via `importBackup` (PR #276).
+- **CLAUDE.md § Freibrief** verankert (PR #278).
+- **Observatorium-Screen:** JWST „Säulen der Schöpfung" als Galaxien-Hintergrund
+  (PR #279), verkleinert 2,99 MB→362 KB (#280), leicht geschärft →648 KB (#281).
+  Galaxien/Stern-Canvas/Komet-Schweif/Hover erhalten.
+
+**Befund:** SB-KIMTool-Point + Tresore tragen eigene, ältere Modul-16-Kopien → zeigen
+noch „Mycel suchend". Modul 18 (Sub a Vorab) existiert + ist in `sbkim-init.js` init'd.
+
+**Offen:** Tresore/SB-KIMTool-Point noch nicht nachgezogen (eigene Repos). Alle
+Sichttests ungeprüft am echten Tablet (nur headless bestätigt).
+
+**Nächster Schritt:** Bau-Sitzung Mein-Tresor + Jasons-Tresor nach
+`docs/sessions/BRIEF_BAU_SIEGEL_ENDKNOTEN_TRESORE.md` (Modul 16 verbatim aus Sage +
+Band-Name + Gold-aus-Netz-Block).
+
 ### 2026-05-31 · Rechts-Seite/Copyright-Empfehlung — über den Briefkasten, nicht als Prompt
 
 **Sitzungs-Rolle:** Andock-Pflege (Sync §11.4). Branch
