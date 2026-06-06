@@ -620,7 +620,7 @@
   .observatorium-screen { position: relative; min-height: 100vh; padding: 0; background: #02020c; color: #f2f0ff; overflow: hidden; }
   .observatorium-back { position: fixed; top: 1.2rem; left: 1.2rem; z-index: 90; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.18); color: #f2f0ff; padding: 0.55rem 1rem; border-radius: 999px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .2s, border-color .2s; }
   .observatorium-back:hover { background: rgba(0,0,0,0.85); border-color: rgba(255,255,255,0.4); }
-  .observatorium-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; }
+  .observatorium-stage { position: relative; width: 100%; min-height: 100vh; overflow: hidden; background: linear-gradient(rgba(2,2,12,0.30), rgba(2,2,12,0.48)), url('assets/observatorium-galaxien-bg.png') center center / cover no-repeat; }
   /* Cursor unsichtbar — Komet-Schweif ist der einzige Zeiger */
   .observatorium-screen, .observatorium-screen *, .observatorium-stage, .observatorium-stage *, .universe-galaxy { cursor: none !important; }
   .observatorium-back, .observatorium-back * { cursor: pointer !important; }
@@ -632,7 +632,8 @@
   .universe-modal button, .universe-modal-link { cursor: pointer !important; }
 
   /* Hintergrund-Nebel (Hubble-Realfarben, dominant) */
-  .universe-nebula { position: absolute; pointer-events: none; mix-blend-mode: screen; opacity: 0.55; filter: blur(40px); will-change: transform; }
+  /* Drift-Nebel abgesenkt (2026-06-06), damit der JWST-Hintergrund dominiert. */
+  .universe-nebula { position: absolute; pointer-events: none; mix-blend-mode: screen; opacity: 0.30; filter: blur(40px); will-change: transform; }
   .universe-nebula-1 { top: -10%; left: -8%;  width: 65%; height: 65%; background: radial-gradient(ellipse at 30% 40%, rgba(255,70,180,0.55) 0%, rgba(220,60,200,0.32) 30%, rgba(110,80,255,0.18) 55%, transparent 75%); animation: nebula-drift-1 140s ease-in-out infinite alternate; }
   .universe-nebula-2 { top: 18%; right: -10%; width: 72%; height: 72%; background: radial-gradient(ellipse at 60% 50%, rgba(60,210,255,0.5) 0%, rgba(110,231,211,0.32) 28%, rgba(80,80,255,0.2) 55%, transparent 78%); animation: nebula-drift-2 165s ease-in-out infinite alternate; }
   .universe-nebula-3 { bottom: -15%; left: 18%; width: 78%; height: 60%; background: radial-gradient(ellipse at 45% 60%, rgba(244,180,53,0.32) 0%, rgba(255,120,140,0.25) 25%, rgba(140,80,220,0.18) 55%, transparent 80%); animation: nebula-drift-3 180s ease-in-out infinite alternate; }
