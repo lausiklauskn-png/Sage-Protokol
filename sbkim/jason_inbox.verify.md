@@ -4,44 +4,49 @@
 > signatur-reine 1:1-Kopie + getrennter Prüf-Vermerk). Reproduzierbarer Beweis:
 > `node tools/verify_remote_spore.mjs sbkim/jason_inbox.json`.
 
+## ⚠️ Identitätswechsel 2026-06-06 — neue Identität ersetzt die alte
+
+Jasons-Tresor meldet: die bisher registrierte `nodeId`
+`7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs` war ein Demo-Schlüssel, dessen
+Passwort verloren ging (nicht wiederherstellbar). Einmalig neue Identität im
+Browser erzeugt; die alte ist **hinfällig**. Diese Datei trägt jetzt die **neue,
+echte** Spore. Alte nodeId wandert in `status.json` → `previousNodeIds`.
+
 - **Quelle:** `https://raw.githubusercontent.com/lausiklauskn-png/Jasons-Tresor/main/sbkim/spore.json`
-  (Pages-URL `…github.io/Jasons-Tresor/sbkim/spore.json` ist im Browser live; von Sages
-  Container aus 403 — eigene github.io-Egress-Sperre, kein Pages-Problem)
-- **Gelesen / geprüft:** 2026-05-31
+  (gleiche sporeUrl, nach Pages-Build; verifiziert über `raw/main`)
+- **Gelesen / geprüft:** 2026-06-06
 - **Verifizierer:** `tools/verify_remote_spore.mjs` (echter Modul-02-Pfad
-  `SbkimSpore.verifyForeignSpore`, WebCrypto)
+  `SbkimSpore.verifyForeignSpore`, WebCrypto) + Manipulationsprobe inline
+  + Match via `src/modules/04_match.js` `SbkimMatch.match`
 
 ## Ergebnis: ✔ VALID
 
-| Prüfpunkt | Ergebnis |
+| Prüfpunkt (§11.2) | Ergebnis |
 |---|---|
-| Signatur (Ed25519 über kanonische Bytes, `signature` ausgenommen) | ✔ gültig |
-| `id == base64url(SHA256(roher Pubkey))` (unabhängig nachgerechnet) | ✔ MATCH |
 | Pflichtfelder (9 REQUIRED inkl. `createdAt` + `embeddingModel`) | ✔ 9/9 |
+| `id == base64url(SHA256(roher Pubkey))` (unabhängig nachgerechnet) | ✔ MATCH (`E13GDzI…`) |
+| Signatur (Ed25519 über kanonische Bytes, `signature` ausgenommen) | ✔ gültig |
 | Manipulationsprobe (Feld `domain` verändert) | ✔ fällt durch (`Signatur ungültig`) |
 
 - **nodeName:** `Jasons-Tresor` · **nodeType:** `hybrid` · **domain:** `Jasons-Tresor-Bibliothek`
-- **nodeId (dauerhaft, stabil):** `7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs`
-- **publicKey.x:** `NIclmThJRm4dg2AI0f9B61KFs6aXgQWC2yzrr5gRV9c`
-- **domainVector:** 384 Floats, ehrlich als `_demo`-Stub markiert (noch kein echtes Embedding)
+- **nodeId (NEU, dauerhaft):** `E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM`
+- **nodeId (ALT, hinfällig):** `7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs`
+- **publicKey.x:** `LStaFlc68SLZwhrUgSfY8YrdIcnjuN_2fzrnbRgF10M`
+- **domainVector:** **ECHT**, 384-dim, `Xenova/multilingual-e5-small`, L2 = 1.0,
+  **kein `_demo` mehr**.
 
-## Stufe: `verified-spore` (KEIN Match)
+## Stufe: `verified-match` — Score 0.847784
 
-Identität beidseitig kryptografisch bestätigt. **Kein** `verified-match`, weil der
-`domainVector` noch Demo ist (INTERFACES §11.5: `domainVector` Pflicht erst für
-`verified-match`). Hochstufung auf `verified-match` folgt, sobald Jasons-Tresor einen
-echten 384-dim-Vektor (`Xenova/multilingual-e5-small`, `passage: `-Präfix) re-signt —
-oder Sage ihn aus dem Domänen-Text rechnet (Browser-Helfer `tools/embed_helper.html`).
+Identität kryptografisch bestätigt **und** echter Cross-Knoten-Match gerechnet:
 
-Damit ist Jasons-Tresor der **dritte** über das SBKIM-Protokoll verifizierte Forker-Knoten
-(neben SB·KIMTool·Point) — der erste Andock-Schritt eines Drei-Knoten-Netzes.
+| Paar | Score (Modul 04 `match`, Cosinus) | Schwelle | Urteil |
+|---|---|---|---|
+| Sage ⟷ Jasons-Tresor | **0.847784** | ≥ 0.80 | ✔ `verified-match` |
 
----
+Reproduzierbar (echter Modul-04-Pfad):
+`SbkimMatch.match(sage.domainVector, jason.domainVector)` →
+`0.8477837195525952` (`isAboveProviderThreshold` = true).
 
-## Nachtrag 2026-05-31 (Sync-Brief Knoten C): Spore LIVE, Identität unverändert
-
-Jasons-Tresor meldet die Spore jetzt als live (Pages, im Browser sichtgeprüft). Sage hat
-die Live-`raw/main`-Spore neu geholt und **byte-identisch** zu dieser registrierten Kopie
-befunden (`diff` = identisch) — nodeId/Signatur/Spore aus der Erst-Registrierung gelten
-unverändert weiter, kein Re-Verify nötig. Quittung im Postfach
-`sbkim/AUSTAUSCH-JasonsTresor.md`.
+Damit ist Jasons-Tresor von `verified-spore` (alte Demo-Identität, Vektor war
+`_demo`) auf **`verified-match`** hochgestuft — der zweite echte Forker-Match nach
+Sage ⟷ SB·KIMTool·Point (0.848508).

@@ -135,14 +135,19 @@
       "domain": "Jasons-Tresor-Bibliothek",
       "integrated": true,
       "integratedAt": "2026-05-31",
-      "nodeId": "7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs",
+      "nodeId": "E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM",
       "sporeUrl": "https://lausiklauskn-png.github.io/Jasons-Tresor/sbkim/spore.json",
       "stammCategories": [],
       "guestCategories": [],
-      "pingStatus": "verified-spore",
-      "note": "Dritter Forker-Knoten, Andock-Schritt 1 (Identität) 2026-05-31. Reziprok verifiziert: Signatur gültig, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= gemeldete nodeId 7F_zNop…), publicKey.x = gemeldet, 9/9 Pflichtfelder, Manipulationsprobe fällt durch → ✔ VALID. Dauerhafte, stabile Identität. domainVector noch _demo → bewusst NUR verified-spore, KEIN Match (INTERFACES §11.5). Hochstufung auf verified-match, sobald echter Vektor (multilingual-e5-small) re-signt ist. Pages-Endpoint im Browser live; von Sages Container aus 403 (eigene github.io-Egress-Sperre) — verifiziert über raw main. Prüf-Vermerk: sbkim/jason_inbox.verify.md.",
+      "pingStatus": "verified-match",
+      "note": "Dritter Forker-Knoten. IDENTITAETSWECHSEL 2026-06-06: alte nodeId 7F_zNop... war Demo-Schluessel mit verlorenem Passwort -> einmalig neue Identitaet (E13GDzI...) im Browser erzeugt, alte hinfaellig (previousNodeIds). Neue Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= E13GDzI...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector jetzt ECHT (multilingual-e5-small, 384-dim, L2=1, kein _demo). Cross-Knoten-Match Sage <-> Jasons-Tresor via Modul 04 match = 0.847784 >= 0.80 -> verified-match. Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/jason_inbox.verify.md.",
       "url": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
-      "landingPage": "https://lausiklauskn-png.github.io/Jasons-Tresor/"
+      "landingPage": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
+      "previousNodeIds": [
+        "7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs"
+      ],
+      "reIntegratedAt": "2026-06-06",
+      "matchScore": 0.847784
     },
     {
       "name": "Mein-Tresor",
