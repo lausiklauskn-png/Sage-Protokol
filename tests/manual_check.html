@@ -113,7 +113,7 @@
     <h2>16 SBKIM-Siegel <span class="status ok">Code-Stub</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
     <div id="panel-16-badge-container" title="Container-Anker für Panel-16-Tests; Option β erzeugt #sbkim-siegel-badge darin"></div>
-    <pre class="log">— bereit. Bau-Sitzung 16 (2026-05-24) + Bau 16 Sub (e) Bronze/Gold-Stufung (2026-05-26). Modul 16 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding, kein Handshake — lokales Render-Modul. Self-inscribing-Selbst-Zertifikat nach Surface-Check der sieben Pflicht-Module (01/02/03/04/05/07/15); Modul 03 ist `lazy:true` (Status "deferred" gilt als bestanden). Anti-Greenwashing binär: Badge-Element ist nur im DOM, wenn isCertified()===true. Bau-Variante: Option β — `badgeSelector` zeigt auf Container (Panel-Tests: `#panel-16-badge-container`), Modul erzeugt `#sbkim-siegel-badge`-Span darin. RAM-only (kein DB_VERSION-Bump, kein neuer Store). KEINE benannten Error-Klassen — fail-soft via `console.warn`. Test-Pfad: weil `SbkimSiegel.init` idempotent ist (Karte 16 § Sub (a)), nutzen die Tests die internen Surface-Manipulationen (window.SbkimMatch=undefined etc.) und Re-Reads via getExplanation(), KEIN Re-Init. **Sub (e) Bronze/Gold-Stufung (2026-05-26):** zweistufiger SIEGEL — Bronze („Mycel suchend") wenn Surface-Check grün aber noch kein Cross-Knoten-Handshake; Gold („Mycel verbunden") sobald `sbkim:handshake outcome:"established"` empfangen wird. Knöpfe 9–12 testen Bronze-Initial / Stufenwechsel / Idempotenz / Bronze-Klick-Modal-Hinweis-Block. Test-Brücke `_resetMycelConnectedForTest()` setzt Bronze-Vorzustand ohne Tab-Reload. RAM-only, Tab-Reload startet wieder Bronze (gewollt). —</pre>
+    <pre class="log">— bereit. Bau-Sitzung 16 (2026-05-24) + Bau 16 Sub (e) Bronze/Gold-Stufung (2026-05-26). Modul 16 ist NICHT protokoll-aktiv: kein Netz, keine Signatur, kein Embedding, kein Handshake — lokales Render-Modul. Self-inscribing-Selbst-Zertifikat nach Surface-Check der sieben Pflicht-Module (01/02/03/04/05/07/15); Modul 03 ist `lazy:true` (Status "deferred" gilt als bestanden). Anti-Greenwashing binär: Badge-Element ist nur im DOM, wenn isCertified()===true. Bau-Variante: Option β — `badgeSelector` zeigt auf Container (Panel-Tests: `#panel-16-badge-container`), Modul erzeugt `#sbkim-siegel-badge`-Span darin. RAM-only (kein DB_VERSION-Bump, kein neuer Store). KEINE benannten Error-Klassen — fail-soft via `console.warn`. Test-Pfad: weil `SbkimSiegel.init` idempotent ist (Karte 16 § Sub (a)), nutzen die Tests die internen Surface-Manipulationen (window.SbkimMatch=undefined etc.) und Re-Reads via getExplanation(), KEIN Re-Init. **Sub (e) Bronze/Gold-Stufung (2026-05-26):** zweistufiger SIEGEL — Bronze („im Mycel, ruhend") wenn Surface-Check grün aber noch kein Cross-Knoten-Handshake; Gold („im Mycel, aktiv") sobald `sbkim:handshake outcome:"established"` empfangen wird. Knöpfe 9–12 testen Bronze-Initial / Stufenwechsel / Idempotenz / Bronze-Klick-Modal-Hinweis-Block. Test-Brücke `_resetMycelConnectedForTest()` setzt Bronze-Vorzustand ohne Tab-Reload. RAM-only, Tab-Reload startet wieder Bronze (gewollt). —</pre>
   </section>
 
   <section class="panel" data-module="17_floating_widget">
@@ -4320,7 +4320,7 @@
         var title = badge ? badge.getAttribute("title") : null;
         var mycelConnected = SbkimSiegel._meta.mycelConnected;
         var mycelConnectedAt = SbkimSiegel._meta.mycelConnectedAt;
-        var pass = stufe === "bronze" && ariaLabel === "SBKIM-Siegel · Mycel suchend" &&
+        var pass = stufe === "bronze" && ariaLabel === "SBKIM-Siegel · im Mycel, ruhend" &&
                    title === null && mycelConnected === false && mycelConnectedAt === null;
         SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Sub (e) Bronze-Initial OK" : "Test 9 fehlgeschlagen");
         return {
@@ -4330,7 +4330,7 @@
           mycel_connected:         mycelConnected,
           mycel_connected_at:      mycelConnectedAt,
           siegel_stufe_getter:     SbkimSiegel._meta.siegelStufe,
-          erwartung: "Bronze-Initial: data-stufe=\"bronze\", aria-label=\"SBKIM-Siegel · Mycel suchend\", KEIN title-Attribut (Doppel-Tooltip-Pflege 17). mycelConnected=false, mycelConnectedAt=null.",
+          erwartung: "Bronze-Initial: data-stufe=\"bronze\", aria-label=\"SBKIM-Siegel · im Mycel, ruhend\", KEIN title-Attribut (Doppel-Tooltip-Pflege 17). mycelConnected=false, mycelConnectedAt=null.",
         };
       });
 
@@ -4359,7 +4359,7 @@
         var mycelConnectedNach = SbkimSiegel._meta.mycelConnected;
         var mycelConnectedAtNach = SbkimSiegel._meta.mycelConnectedAt;
         var pass = stufeVor === "bronze" && stufeNach === "gold" &&
-                   ariaLabelNach === "SBKIM-Siegel · Mycel verbunden" &&
+                   ariaLabelNach === "SBKIM-Siegel · im Mycel, aktiv" &&
                    mycelConnectedNach === true &&
                    typeof mycelConnectedAtNach === "string" && mycelConnectedAtNach.length > 0 &&
                    klasseStufenwechselSetzt;
@@ -4371,7 +4371,7 @@
           mycel_connected_nach:           mycelConnectedNach,
           mycel_connected_at_nach:        mycelConnectedAtNach,
           klasse_stufenwechsel_gold:      klasseStufenwechselSetzt,
-          erwartung: "Nach Dispatch: data-stufe=\"gold\", aria-label=\"SBKIM-Siegel · Mycel verbunden\", mycelConnected=true, mycelConnectedAt ist ISO-Datum. Klasse `.stufenwechsel-gold` ist für 600 ms gesetzt (direkt nach Dispatch hier beobachtbar).",
+          erwartung: "Nach Dispatch: data-stufe=\"gold\", aria-label=\"SBKIM-Siegel · im Mycel, aktiv\", mycelConnected=true, mycelConnectedAt ist ISO-Datum. Klasse `.stufenwechsel-gold` ist für 600 ms gesetzt (direkt nach Dispatch hier beobachtbar).",
         };
       });
 
@@ -4439,7 +4439,7 @@
         var aspectsItems = modal ? modal.querySelectorAll("[data-siegel-aspects] li") : [];
         // Aspekt 4 muss in Bronze als „pending" rendern. Letzter Aspekt
         // ist Aspekt 4 (since:"2026-05-26" + module:"16" +
-        // aspect:"Mycel-Verbindung etabliert…"); seine since-Span sollte
+        // aspect:"Mycel-Aktivität…"); seine since-Span sollte
         // jetzt "pending" zeigen statt "2026-05-26".
         var letzterAspekt = aspectsItems[aspectsItems.length - 1];
         var letzterAspektText = letzterAspekt ? letzterAspekt.textContent : "";

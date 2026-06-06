@@ -379,23 +379,23 @@ async function run() {
   const stufeInitial = badge && badge.getAttribute("data-stufe");
   const ariaInitial = badge && badge.getAttribute("aria-label");
   const titleInitial = badge && badge.getAttribute("title");
-  record("4. Badge Bronze-Initial: data-stufe=\"bronze\", aria-label=\"… Mycel suchend\", KEIN title",
-    "bronze / Mycel suchend / kein title",
+  record("4. Badge Bronze-Initial: data-stufe=\"bronze\", aria-label=\"… im Mycel, ruhend\", KEIN title",
+    "bronze / im Mycel, ruhend / kein title",
     `stufe=${stufeInitial}/aria="${ariaInitial}"/title=${titleInitial}`,
     stufeInitial === "bronze" &&
-    ariaInitial === "SBKIM-Siegel · Mycel suchend" &&
+    ariaInitial === "SBKIM-Siegel · im Mycel, ruhend" &&
     titleInitial === null);
 
   // Probe 5: Aspekt 4 in der Aspekte-Liste am Ende, Schema korrekt.
   const aspects = S.getAspects();
   const aspect4 = aspects[aspects.length - 1];
   record("5. ZERTIFIKAT_ASPEKTE hat Aspekt 4 am Ende (since 2026-05-26, module 16)",
-    "4. Aspekt: since=2026-05-26, module=16, aspect mit „Mycel-Verbindung\"",
+    "4. Aspekt: since=2026-05-26, module=16, aspect mit „Mycel-Aktivität\"",
     `count=${aspects.length}/since=${aspect4 && aspect4.since}/module=${aspect4 && aspect4.module}/aspect=${aspect4 && aspect4.aspect.slice(0,30)}`,
     aspects.length >= 4 &&
     aspect4.since === "2026-05-26" &&
     aspect4.module === "16" &&
-    aspect4.aspect.indexOf("Mycel-Verbindung etabliert") === 0);
+    aspect4.aspect.indexOf("Mycel-Aktivität") === 0);
 
   // Probe 6: Dispatch sbkim:handshake outcome:"established" → Gold.
   dispatchHandshake(g, { outcome: "established", peerNodeId: "peer1", direction: "outgoing" });
@@ -403,10 +403,10 @@ async function run() {
   const ariaNachHandshake = badge && badge.getAttribute("aria-label");
   const klasseNachHandshake = badge && badge._classes.has("stufenwechsel-gold");
   record("6. sbkim:handshake outcome:\"established\" → data-stufe=\"gold\" + aria + Klasse stufenwechsel-gold",
-    "gold / Mycel verbunden / Klasse stufenwechsel-gold gesetzt",
+    "gold / im Mycel, aktiv / Klasse stufenwechsel-gold gesetzt",
     `stufe=${stufeNachHandshake}/aria="${ariaNachHandshake}"/klasse=${klasseNachHandshake}`,
     stufeNachHandshake === "gold" &&
-    ariaNachHandshake === "SBKIM-Siegel · Mycel verbunden" &&
+    ariaNachHandshake === "SBKIM-Siegel · im Mycel, aktiv" &&
     klasseNachHandshake === true);
 
   // Probe 7: _meta.mycelConnected===true + mycelConnectedAt ISO-Datum.

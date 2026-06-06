@@ -99,7 +99,7 @@
       aspect:      "Floating-Widget mit Vier-Slot-Live-Status",
       description: "Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) als Endknoten-Standard; macht den SBKIM-Lauf sichtbar ohne Navleisten-Mount-Pflicht. Render-Schicht ohne Protokoll-Eingriff.",
     },
-    // Aspekt 4 — Mycel-Verbindung etabliert (Karte 16 § Sub (e),
+    // Aspekt 4 — Mycel-Aktivität (Karte 16 § Sub (e),
     // Spec-Erweiterung 2026-05-26). Dynamisch sichtbar:
     // _meta.mycelConnected === false → Modal rendert „pending"-Marker
     // statt Datum; _meta.mycelConnected === true → Modal rendert Datum.
@@ -108,20 +108,20 @@
     {
       since:       "2026-05-26",
       module:      "16",
-      aspect:      "Mycel-Verbindung etabliert (erster Handshake)",
-      description: "Diese App hat in der aktuellen Session mindestens einen erfolgreichen Cross-Knoten-Handshake durchgeführt. SIEGEL-Stufe Gold.",
+      aspect:      "Mycel-Aktivität (erster Hyphen-Verkehr)",
+      description: "Diese Zelle hatte in dieser Sitzung mindestens einen Hyphen-Verkehr (erfolgreicher Cross-Knoten-Handshake) — Leben im Mycel. SIEGEL-Stufe Gold.",
     },
   ];
 
   // ---- Aspekt-4-Anker (Karte 16 § Sub (e) dynamische Render-Variante) ----
   //
-  // Eindeutige Identifikation des „Mycel-Verbindung etablierten"-Aspekts
+  // Eindeutige Identifikation des „Mycel-Aktivitäts"-Aspekts
   // in der ZERTIFIKAT_ASPEKTE-Liste; das Modal rendert ihn in Bronze mit
   // „pending"-Marker statt Datum.
 
   var ASPEKT_4_SINCE = "2026-05-26";
   var ASPEKT_4_MODULE = "16";
-  var ASPEKT_4_TITLE_PREFIX = "Mycel-Verbindung etabliert";
+  var ASPEKT_4_TITLE_PREFIX = "Mycel-Aktivität";
 
   function isAspect4(a) {
     return a && a.since === ASPEKT_4_SINCE && a.module === ASPEKT_4_MODULE &&
@@ -142,10 +142,10 @@
   var STUFE_GOLD = "gold";
   var STUFENWECHSEL_ANIMATION_MS = 600;
   var HANDSHAKE_EVENT = "sbkim:handshake";
-  var ARIA_LABEL_BRONZE = "SBKIM-Siegel · Mycel suchend";
-  var ARIA_LABEL_GOLD = "SBKIM-Siegel · Mycel verbunden";
+  var ARIA_LABEL_BRONZE = "SBKIM-Siegel · im Mycel, ruhend";
+  var ARIA_LABEL_GOLD = "SBKIM-Siegel · im Mycel, aktiv";
   var BRONZE_HINWEIS_HTML_FALLBACK =
-    "Modul 18 noch nicht verfügbar — Andocken via Sage-Page-Andock-Wizard.";
+    "Modul 18 noch nicht verfügbar — aktiven Hyphen-Verkehr via Sage-Page-Andock-Wizard knüpfen.";
 
   // ---- Wappen-SVG (Akkretions-Disk-Korona + Auszeichnungs-Siegel) ----
   //
@@ -811,12 +811,13 @@
     var p = doc.createElement("p");
     p.style.cssText = "margin:0 0 0.6rem;";
     var strong = doc.createElement("strong");
-    strong.textContent = "Mycel suchend";
+    strong.textContent = "Im Mycel · ruhend";
     strong.style.cssText = "color:var(--siegel-bronze, #8C6E2F);font-weight:600;";
     p.appendChild(strong);
     p.appendChild(doc.createTextNode(
-      " — diese App ist SBKIM-fähig, aber noch nicht mit Geschwister-Knoten verbunden. " +
-      "Klick auf [Andocken] (Modul 18) um eine Verbindung herzustellen.",
+      " — diese Zelle trägt das SBKIM-Siegel und ist damit Teil des Mycels, so klein sie auch ist. " +
+      "In dieser Sitzung gab es noch keinen Hyphen-Verkehr (Handshake). " +
+      "[Andocken] knüpft aktiv einen Faden zu einem Geschwister-Knoten.",
     ));
     block.appendChild(p);
 

@@ -123,7 +123,7 @@
 
   // Pflege 17 Stufen-Render 2026-05-26 (Sub-(e)-Sichttest-Befund 1):
   // Sichtbarer SIEGEL-Slot bekommt `data-siegel-stufe`-Attribut, damit
-  // Bronze (Mycel suchend) vs. Gold (Mycel verbunden) visuell unterscheidbar
+  // Bronze (im Mycel, ruhend) vs. Gold (im Mycel, aktiv) visuell unterscheidbar
   // wird. Modul 16 setzt `data-stufe` am unsichtbaren Proxy-Span — das
   // griff bisher nur am Proxy, nicht am sichtbaren Slot-Button.
   var SIEGEL_STUFE_BRONZE = "bronze";
@@ -541,8 +541,8 @@
       "  animation: sbkim-widget-siegel-first-boot 600ms ease-out;",
       "}",
       // Pflege 17 Stufen-Render 2026-05-26 (Sub-(e)-Sichttest-Befund 1):
-      // Bronze („Mycel suchend") = Surface-Check grün, aber noch kein
-      // Cross-Knoten-Handshake; Gold („Mycel verbunden") = mind. ein
+      // Bronze („im Mycel, ruhend") = Surface-Check grün, aber noch kein
+      // Cross-Knoten-Handshake; Gold („im Mycel, aktiv") = mind. ein
       // sbkim:handshake outcome:"established" empfangen. Spiegelt das
       // Spec-Pattern aus index.html § Sub (e) (dort wirkt der Filter am
       // 40 px Wappen-SVG; hier am 22 px Gold-Medaillon + ★-Glyph).
