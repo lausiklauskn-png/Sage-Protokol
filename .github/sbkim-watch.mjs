@@ -34,6 +34,11 @@ const PEERS = [
     signal: "https://raw.githubusercontent.com/lausiklauskn-png/Jasons-Tresor/main/sbkim/SIGNAL.json",
     mailbox: "https://raw.githubusercontent.com/lausiklauskn-png/Jasons-Tresor/main/sbkim/AUSTAUSCH.md",
   },
+  {
+    name: "Mein-Tresor",
+    signal: "https://raw.githubusercontent.com/lausiklauskn-png/Mein-Tresor/main/sbkim/SIGNAL.json",
+    mailbox: "https://raw.githubusercontent.com/lausiklauskn-png/Mein-Tresor/main/sbkim/AUSTAUSCH.md",
+  },
 ];
 /* ===================================================================== */
 
