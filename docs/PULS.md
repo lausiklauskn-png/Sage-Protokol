@@ -1841,6 +1841,46 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · Bau: Semantik-Beschreibungs-Textfeld im Siegel + Modul-18-Hinweis raus
+
+**Rolle:** Bau-Sitzung. Branch `claude/bau-andock-semantik-beschreibung-TiY5D`.
+Brief: `docs/sessions/BRIEF_BAU_ANDOCK_SEMANTISCHE_BESCHREIBUNG.md`.
+
+- **Klaus am Start abgenommen** (AskUserQuestion): (1) Hinweis-Wortlaut =
+  **voll** (Brief-Vorschlag, „Je konkreter, desto besser …"); (2) Umfang =
+  **Textfeld-Fokus jetzt** (Mein-Tresor-Voll-Optik der Siegel-Darstellung als
+  eigener Folge-PR).
+- **`index.html` (Sage-Page):** direkt unter dem Knopf „🔑 Eigene Identität &
+  Spore erzeugen / verwalten →" im Siegel-Modal sitzt jetzt ein
+  **auto-wachsendes Textfeld** (Placeholder „Beschreibe deine App neu oder
+  kopiere die Beschreibung / README hier hinein." + voller Hinweis). Voller
+  Pfad: Text → `domainDescription` → Modul 03 `embedPassage` (e5-small,
+  384-dim, L2) → `domainVector` → Modul 02 `generateOwnSpore` (re-sign mit
+  vorhandenem Schlüssel, **gleiche nodeId**) → Download `spore.json`. Keine
+  neue Krypto. Netzweit kopierbar gebaut: nur `SBKIM_SEMANTIK_CONFIG`
+  (+ Skin) variiert pro Knoten; Wiring (`buildSemantikBlock` /
+  `sageReSignWithDescription`) bleibt identisch. Bestehender Andock-Wizard
+  `andockStep2Spore` zieht seine Felder jetzt aus derselben CONFIG (eine
+  Quelle der Wahrheit).
+- **`src/modules/16_siegel.js`:** Modul-18-Pfad aus dem Bronze-Hinweis-Block
+  entfernt (`BRONZE_HINWEIS_HTML_FALLBACK` + `[data-siegel-andock-btn]` +
+  `SbkimToolPwa`/„Modul 18 …"-Fehlertexte raus). Bronze-Block ist reiner
+  Hinweis-Text, verweist auf den 🔑-Knopf. Neuer `ZERTIFIKAT_ASPEKTE`-Eintrag
+  „Semantische Selbst-Beschreibung im Siegel" (2026-06-07). Modul 16 bleibt
+  reines Render-Modul (nicht protokoll-aktiv).
+- **Tests:** `tests/smoke_bau16_sub_e_bronze.mjs` an neues Verhalten
+  angepasst (Probe 5/13/14/15) → **16/16 grün**. `manual_check.html` Panel-16
+  Test 12 entsprechend nachgezogen (kein Andock-Knopf, kein „Modul 18"-Text,
+  Verweis auf 🔑-Knopf, „Mycel-Aktivität"-Aspekt trägt „pending"). Übrige
+  Smokes 04/15/17/18 grün; 02y/05y/06y/07y/08y/01-Pflege scheitern nur an
+  fehlendem `fake-indexeddb` (frischer Container, kein `node_modules`) —
+  unberührt von dieser Änderung.
+- **Offen / nächster Schritt:** Sichttest des Textfeldes **ungeprüft, wartet
+  auf Klaus' Galaxy-Tab-S6-Browser** (Badge klicken → Textfeld da, wächst,
+  Beschreibung → Spore neu signiert). Danach optional: Folge-PR Mein-Tresor-
+  Voll-Optik der Siegel-Darstellung (Erklär-Prosa, Andock-Block, menschlich
+  lesbare Pflicht-Modul-Zeilen).
+
 ### 2026-06-07 · Abschluss + Vorbereitung: Siegel-/Andock-Verbesserung (Semantik-Textfeld)
 
 **Rolle:** Abschluss-/Übergabe-Sitzung. Branch `claude/sbkim-seal-vault-sync-bPfB7`.

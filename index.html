@@ -3664,6 +3664,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   @keyframes sage-andock-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   .sage-andock-output.is-loading { animation: sage-andock-pulse 1.1s ease-in-out infinite; border-color: rgba(124,131,253,0.5); }
   @media (prefers-reduced-motion: reduce) { .sage-andock-output.is-loading { animation: none; } }
+  /* Semantik-Beschreibungs-Textfeld im Siegel (Bau 2026-06-07) — nutzt
+     dieselbe Pulse-Animation wie der Andock-Wizard-Output. */
+  .sage-semantik-out:empty { display: none; }
+  .sage-semantik-out.is-loading { animation: sage-andock-pulse 1.1s ease-in-out infinite; }
+  .sage-semantik-out.ok { color: #aef0d0; }
+  .sage-semantik-out.err { color: #f8b7b7; }
+  @media (prefers-reduced-motion: reduce) { .sage-semantik-out.is-loading { animation: none; } }
   .sage-andock-identities { margin: 0 0 1.2rem; padding: 0.9rem 1.1rem; background: rgba(110,231,211,0.05); border: 1px solid rgba(110,231,211,0.18); border-radius: var(--r-sm); }
   .sage-andock-identities h3 { margin: 0 0 0.4rem; font-size: 0.95rem; font-weight: 500; color: #fff; }
   .sage-andock-mini, .sage-andock-mini-label { color: var(--muted); font-size: 0.82rem; }
@@ -3699,6 +3706,32 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   let __sageAndockOpenedOnce = false;
   let __sageAndockSpore = null;
   let __sageAndockNodeId = null;
+
+  // ============= SEMANTIK-BESCHREIBUNG (netzweit kopierbar) =============
+  // Bau 2026-06-07: ein auto-wachsendes Textfeld im Siegel (direkt unter dem
+  // Knopf „🔑 Eigene Identität & Spore erzeugen / verwalten →") nimmt eine
+  // reiche Selbst-Beschreibung (oder eine eingefügte README) entgegen. Pfad:
+  // Text → domainDescription → Modul 03 Embedding (e5-small, 384-dim, L2) →
+  // domainVector → Modul 02 generateOwnSpore (re-sign mit vorhandenem
+  // Schlüssel, gleiche nodeId). Keine neue Krypto.
+  //
+  // Netzweit kopierbar: NUR diese CONFIG (+ optional skin-Farben) variiert
+  // pro Knoten — die Wiring-Logik (buildSemantikBlock / sageReSignWith-
+  // Description) bleibt überall identisch.
+  const SBKIM_SEMANTIK_CONFIG = {
+    domain: 'Mycel-Bibliothek',
+    endpoint: 'https://lausiklauskn-png.github.io/Sage-Protokol/',
+    nodeType: 'hybrid',
+    nodeName: 'Sage',
+    domainKeywords: ['SBKIM-Glossar', 'Mycel-Vokabular', 'Protokoll-Doku', 'Heilige Tafeln', 'Karten', 'Schwesternetz-Beobachtungen'],
+    stammCategories: ['Protokoll-Doku', 'Mycel-Vokabular', 'Heilige Tafeln', 'Karten', 'INTERFACES', 'ARCHITEKTUR'],
+    guestCategories: ['Glossar-Wartung', 'Schwesternetz-Beobachtungen', 'Sitzungs-Briefe', 'Übergabeprotokolle'],
+    defaultDomainDescription: 'Lebendiges SBKIM-Vokabular und Protokoll-Doku: Glossar, INTERFACES, ARCHITEKTUR, Karten 00-15, PULS — die Karte, die sich selbst kennt.',
+    placeholder: 'Beschreibe deine App neu oder kopiere die Beschreibung / README hier hinein.',
+    hint: 'Je konkreter, desto besser findet dich das Mycel. Beschreibe in eigenen Worten: was die App/Seite ist, wofür man sie nutzt, welche Themen/Stichworte sie abdeckt, für wen sie gedacht ist. Ein gut gefüllter Absatz (ca. 3–8 Sätze) ist ideal — gern auch die README hineinkopieren, sie beschreibt das Projekt meist am treffendsten. Vermeide reine Schlagwort-Listen ohne Kontext.',
+    // Skin (Sage-Lila/Gold) — pro Knoten anpassbar.
+    skin: { accent: 'rgba(124,131,253,0.5)', accentBg: 'rgba(124,131,253,0.10)', ink: '#dfe0ff' },
+  };
 
   async function bhStageClick(event) {
     if (event) event.preventDefault();
@@ -3768,9 +3801,147 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     link.textContent = '🔑 Eigene Identität & Spore erzeugen / verwalten →';
     link.style.cssText = 'display:block;width:100%;margin:0 0 1rem;padding:0.6rem 0.9rem;background:rgba(124,131,253,0.16);border:1px solid rgba(124,131,253,0.5);border-radius:8px;color:#dfe0ff;font:inherit;font-size:0.86rem;cursor:pointer;text-align:left;';
     link.addEventListener('click', function () { openAndockWizard(); });
+    // Bau 2026-06-07: direkt unter dem 🔑-Knopf das Semantik-Beschreibungs-
+    // Textfeld (Text → Vektor → Spore neu signieren). Netzweit kopierbar.
+    var semantik = buildSemantikBlock();
     var anchor = panel.querySelector('[data-siegel-bronze-hinweis]') || panel.querySelector('[data-siegel-date]');
-    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(link, anchor.nextSibling);
-    else panel.appendChild(link);
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(link, anchor.nextSibling);
+      anchor.parentNode.insertBefore(semantik, link.nextSibling);
+    } else {
+      panel.appendChild(link);
+      panel.appendChild(semantik);
+    }
+  }
+
+  // Auto-wachsendes Textfeld: Höhe folgt dem Inhalt (min. 120px).
+  function autoGrowSemantik(ta) {
+    ta.style.height = 'auto';
+    ta.style.height = Math.max(ta.scrollHeight, 120) + 'px';
+  }
+
+  // Textfeld mit der aktuellen domainDescription vorbefüllen (oder Default),
+  // damit Klaus die bestehende Beschreibung verbessern statt neu tippen kann.
+  function prefillSemantik(ta) {
+    var fallback = SBKIM_SEMANTIK_CONFIG.defaultDomainDescription;
+    function apply(v) { if (!ta.value) { ta.value = v || fallback; autoGrowSemantik(ta); } }
+    try {
+      if (window.SbkimSpore && typeof window.SbkimSpore.getOwnSpore === 'function') {
+        window.SbkimSpore.getOwnSpore()
+          .then(function (sp) { apply(sp && typeof sp.domainDescription === 'string' && sp.domainDescription.length ? sp.domainDescription : fallback); })
+          .catch(function () { apply(fallback); });
+      } else { apply(fallback); }
+    } catch (_e) { apply(fallback); }
+  }
+
+  function buildSemantikBlock() {
+    var C = SBKIM_SEMANTIK_CONFIG;
+    var wrap = document.createElement('div');
+    wrap.setAttribute('data-sage-semantik-block', '');
+    wrap.style.cssText = 'margin:0 0 1rem;padding:0.8rem 0.9rem;background:' + C.skin.accentBg + ';border:1px solid ' + C.skin.accent + ';border-radius:8px;';
+
+    var label = document.createElement('div');
+    label.textContent = '✍ Semantische Beschreibung — macht deinen Domain-Vektor treffender';
+    label.style.cssText = 'font-weight:600;font-size:0.84rem;margin:0 0 0.5rem;color:' + C.skin.ink + ';';
+
+    var ta = document.createElement('textarea');
+    ta.setAttribute('data-sage-semantik-input', '');
+    ta.placeholder = C.placeholder;
+    ta.rows = 4;
+    ta.style.cssText = 'width:100%;box-sizing:border-box;min-height:120px;resize:vertical;overflow:hidden;font:inherit;font-size:0.84rem;line-height:1.5;color:' + C.skin.ink + ';background:rgba(0,0,0,0.35);border:1px solid ' + C.skin.accent + ';border-radius:6px;padding:0.6rem 0.7rem;';
+    ta.addEventListener('input', function () { autoGrowSemantik(ta); });
+
+    var hint = document.createElement('p');
+    hint.textContent = C.hint;
+    hint.style.cssText = 'margin:0.5rem 0 0.7rem;font-size:0.78rem;line-height:1.5;color:rgba(245,245,255,0.7);';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('data-sage-semantik-btn', '');
+    btn.textContent = 'Beschreibung übernehmen → Vektor & Spore neu signieren';
+    btn.style.cssText = 'display:block;width:100%;padding:0.55rem 0.9rem;background:' + C.skin.accent + ';border:1px solid ' + C.skin.accent + ';border-radius:7px;color:#0c0c1c;font:inherit;font-size:0.84rem;font-weight:600;cursor:pointer;';
+
+    var out = document.createElement('pre');
+    out.setAttribute('data-sage-semantik-out', '');
+    out.className = 'sage-semantik-out';
+    out.style.cssText = 'margin:0.7rem 0 0;white-space:pre-wrap;word-break:break-word;font-family:"Geist Mono",ui-monospace,monospace;font-size:0.76rem;line-height:1.5;color:rgba(245,245,255,0.78);';
+
+    btn.addEventListener('click', function () { sageReSignWithDescription(ta.value, out, btn); });
+
+    wrap.appendChild(label);
+    wrap.appendChild(ta);
+    wrap.appendChild(hint);
+    wrap.appendChild(btn);
+    wrap.appendChild(out);
+
+    prefillSemantik(ta);
+    return wrap;
+  }
+
+  // Voller Pfad: Beschreibung → Modul 03 Embedding → domainVector → Modul 02
+  // generateOwnSpore (re-sign mit vorhandenem Schlüssel, gleiche nodeId).
+  async function sageReSignWithDescription(description, outEl, btn) {
+    var C = SBKIM_SEMANTIK_CONFIG;
+    function set(t, cls) {
+      outEl.textContent = t;
+      outEl.classList.remove('ok', 'err');
+      if (cls) outEl.classList.add(cls);
+    }
+    description = (description || '').trim();
+    if (description.length < 12) {
+      set('Bitte eine etwas ausführlichere Beschreibung eingeben (mindestens ein Satz).', 'err');
+      return;
+    }
+    if (!window.SbkimEmbedding || !window.SbkimSpore) {
+      set('Module 02/03 (SbkimSpore/SbkimEmbedding) nicht geladen — Sichttest-Setup prüfen.', 'err');
+      return;
+    }
+    btn.disabled = true;
+    outEl.classList.add('is-loading');
+    var onProg = function (ev) {
+      var d = ev && ev.detail;
+      if (!d) return;
+      if (d.status === 'progress' && typeof d.progress === 'number' && isFinite(d.progress)) {
+        var pct = Math.max(0, Math.min(100, Math.round(d.progress)));
+        var file = d.file ? String(d.file).split('/').pop() : 'Modell';
+        var bar = '█'.repeat(Math.round(pct / 5)) + '░'.repeat(20 - Math.round(pct / 5));
+        set('Embedding-Modell lädt … ' + bar + ' ' + pct + ' %  (' + file + ', ~30 MB einmalig)');
+      }
+    };
+    window.addEventListener('sbkim:embedding-progress', onProg);
+    try {
+      set('Stelle Identität sicher (vorhandener Schlüssel → gleiche nodeId) …');
+      await window.SbkimSpore.getOrCreateIdentity();
+      set('Lade Modul 03 (Embedding-Modell, ~30 MB einmalig) …');
+      await window.SbkimEmbedding.init();
+      set('Erzeuge Domain-Vektor (384 floats) aus deiner Beschreibung …');
+      var vec = await window.SbkimEmbedding.embedPassage(description);
+      var arr = Array.from(vec);
+      var l2 = Math.sqrt(arr.reduce(function (a, x) { return a + x * x; }, 0));
+      set('Signiere Spore mit neuem Domain-Vektor …');
+      var spore = await window.SbkimSpore.generateOwnSpore({
+        domain: C.domain,
+        endpoint: C.endpoint,
+        nodeType: C.nodeType,
+        nodeName: C.nodeName,
+        domainDescription: description,
+        domainKeywords: C.domainKeywords,
+        domainVector: arr,
+        stammCategories: C.stammCategories,
+        guestCategories: C.guestCategories,
+      });
+      window.removeEventListener('sbkim:embedding-progress', onProg);
+      outEl.classList.remove('is-loading');
+      __sageAndockSpore = spore;
+      downloadJson('spore.json', spore);
+      set('✔ Spore neu signiert + heruntergeladen — nodeId ' + spore.id + ' (unverändert), Vektor 384-dim, L2=' + l2.toFixed(4) + '. Committe sie nach sbkim/spore.json.', 'ok');
+      btn.disabled = false;
+    } catch (err) {
+      window.removeEventListener('sbkim:embedding-progress', onProg);
+      outEl.classList.remove('is-loading');
+      set('Fehler: ' + (err && err.message ? err.message : err), 'err');
+      btn.disabled = false;
+    }
   }
   function watchForSiegelModal() {
     var existing = document.getElementById('sbkim-siegel-modal');
@@ -3864,22 +4035,20 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       window.removeEventListener('sbkim:embedding-progress', onEmbProgress);
       if (step2out) step2out.classList.remove('is-loading');
       setAndockOutput('sage-andock-step2-out', 'Erzeuge Domain-Vektor (384 floats) …');
-      const stammCategories = ['Protokoll-Doku', 'Mycel-Vokabular', 'Heilige Tafeln', 'Karten', 'INTERFACES', 'ARCHITEKTUR'];
-      const guestCategories = ['Glossar-Wartung', 'Schwesternetz-Beobachtungen', 'Sitzungs-Briefe', 'Übergabeprotokolle'];
-      const domainDescription = 'Lebendiges SBKIM-Vokabular und Protokoll-Doku: Glossar, INTERFACES, ARCHITEKTUR, Karten 00-15, PULS — die Karte, die sich selbst kennt.';
-      const domainKeywords = ['SBKIM-Glossar', 'Mycel-Vokabular', 'Protokoll-Doku', 'Heilige Tafeln', 'Karten', 'Schwesternetz-Beobachtungen'];
-      const vec = await window.SbkimEmbedding.embedPassage(domainDescription + '. ' + domainKeywords.join(', '));
+      const C = SBKIM_SEMANTIK_CONFIG;
+      const domainDescription = C.defaultDomainDescription;
+      const vec = await window.SbkimEmbedding.embedPassage(domainDescription + '. ' + C.domainKeywords.join(', '));
       setAndockOutput('sage-andock-step2-out', 'Signiere Spore …');
       const spore = await window.SbkimSpore.generateOwnSpore({
-        domain: 'Mycel-Bibliothek',
-        endpoint: 'https://lausiklauskn-png.github.io/Sage-Protokol/',
-        nodeType: 'hybrid',
-        nodeName: 'Sage',
+        domain: C.domain,
+        endpoint: C.endpoint,
+        nodeType: C.nodeType,
+        nodeName: C.nodeName,
         domainDescription: domainDescription,
-        domainKeywords: domainKeywords,
+        domainKeywords: C.domainKeywords,
         domainVector: Array.from(vec),
-        stammCategories: stammCategories,
-        guestCategories: guestCategories,
+        stammCategories: C.stammCategories,
+        guestCategories: C.guestCategories,
       });
       __sageAndockSpore = spore;
       downloadJson('spore.json', spore);
