@@ -20,16 +20,23 @@ Beschreibung** der App/Website/des Knotens; dieser Text wird die Grundlage des
 
 ---
 
-## Genauer Ort (vom Betreiber benannt)
+## Genauer Ort (vom Betreiber benannt + per Screenshot bestätigt 2026-06-07)
 
 - **Auslöser-Button:** `🔑 Eigene Identität & Spore erzeugen / verwalten →`
   (Sage-Page; in/bei der Siegel-/Andock-Ansicht). **Schritt 0 der Sitzung:** diesen Button
   in `index.html` finden (Such-Strings: „Eigene Identität", „Spore erzeugen", „andock",
   Modul 16 Siegel-Modal / Modul 18 ToolPwa / Andock-Wizard Karte 4).
-- Beim Klick öffnet sich das **Andock-Modul** mit: Export/Import (Backup),
-  ID-Erzeugung, Spore-Erzeugung mit Vektor, Verwalten/Wiederherstellen.
-- **Dort hinein** kommt das neue Beschreibungs-Textfeld — sinnvoll **vor** dem
-  „Spore erzeugen / neu signieren"-Schritt, weil der Text in den Vektor + die Spore fließt.
+- Beim Klick öffnet sich das **Andock-Modul** (bei Mein-Tresor die Seite
+  `werkzeuge/andock.html` „SBKIM-Andock — Identität & verified-match") mit: Export/Import
+  (Backup), ID-Erzeugung (Teil A), und **Teil B = echten domainVector erzeugen + Spore neu
+  signieren**.
+- **Klaus' präziser Anker („dort hinein"):** in **Teil B, Abschnitt ② „Echten domainVector
+  erzeugen (Modul 03)"** — dort steht heute „rechnet den 384-dim Vektor aus **unserem
+  Domänen-Text**" + Button **„domainVector erzeugen"**. **Genau dieser „Domänen-Text" wird
+  das neue Textfeld.** Das Feld liefert den Text, den Modul 03 einbettet — statt eines fest
+  verdrahteten/kurzen Domänentextes.
+- Reihenfolge: Textfeld **über** dem „domainVector erzeugen"-Button, sodass der eingegebene
+  Text beim Klick eingebettet → in die Spore geschrieben → neu signiert wird.
 
 ## Design-Referenz: Mein-Tresor-Repo
 
