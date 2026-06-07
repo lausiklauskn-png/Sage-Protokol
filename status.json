@@ -52,9 +52,10 @@
       "domain": "Cocktails / Drinks",
       "integrated": true,
       "integratedAt": "2026-05-16",
-      "reIntegratedAt": "2026-05-17",
-      "nodeId": "JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY",
+      "reIntegratedAt": "2026-06-07",
+      "nodeId": "B7Fke9CYTR1BrC3xOXzEY5q9RuRH8xxHPUuqRHV3utA",
       "previousNodeIds": [
+        "JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY",
         "7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4"
       ],
       "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json",
@@ -72,7 +73,9 @@
         "Knabbereien",
         "Fingerfood"
       ],
-      "pingStatus": "live-direct",
+      "pingStatus": "verified-match",
+      "matchScore": 0.806030,
+      "note": "Zweiter Endknoten (Cocktails/Drinks), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Rezeptbuch). IDENTITÄTS-ABGLEICH 2026-06-07: alte Handshake-nodeId JOlHK31X… → neuere signierte Live-Identität B7Fke9C… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= B7Fke9C…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (JOlHK31X…, 7xf0tt33…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Mixarium = 0.806030 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8060). Ehrlich: zu den Tresoren liegt Mixarium bei 0.7884 < 0.80 (andere Domäne, kein Match — nichts grün-gerechnet). Prüf-Vermerk: sbkim/mixarium_inbox.verify.md.",
       "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
     },
     {

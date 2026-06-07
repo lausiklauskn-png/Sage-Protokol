@@ -1841,6 +1841,27 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · Mein-Mixarium angedockt (Identitäts-Abgleich + verified-match 0.806030) — innerer Verbund komplett
+
+**Rolle:** Andock-/Verifikations-Sitzung. Branch `claude/sbkim-seal-vault-sync-bPfB7`.
+
+- **Auslöser:** Brief von Mein-Mixarium (eigener Briefkasten, SIGNAL seq 1) — das frühere
+  „Mixarium = 404" ist aufgelöst.
+- **Identitäts-Abgleich:** alte Handshake-nodeId `JOlHK31X…` (live-direct) → kanonische
+  Live-Identität `B7Fke9C…` (createdAt 2026-05-24). Frische Spore aus raw/main reziprok
+  **✔ VALID**; alte nodeIds (`JOlHK31X…`, `7xf0tt33…`) → `previousNodeIds`.
+- **verified-match:** Modul-04-Cosinus Sage ⟷ Mein-Mixarium = **0.806030** ≥ 0.80
+  (= ihre Browser-Rechnung 0.8060) → `verified-match`. Ehrlich bestätigt: Mixarium ⟷
+  Tresore 0.7884 < 0.80 (andere Domäne, kein Match).
+- **Vollvernetzung:** `SIGNAL.json` seq 19→20, mailboxes + `ack[Mein-Mixarium]=1` +
+  Wächter-Peer + 📬-Knopf-Peer; Postfach `AUSTAUSCH-Mixarium.md` (Governance-Fragen 4a/4b
+  beantwortet); `mixarium_inbox.json` + `.verify.md` + `status.json` + `NETZ-STAND.md`.
+- **Innerer Verbund komplett:** alle fünf Nachbarn `verified-match` — SB-KIMTool-Point
+  0.848508, Jasons-Tresor 0.847784, Mein-Tresor 0.847784, Mein-Rezeptbuch 0.824068,
+  Mein-Mixarium 0.806030.
+- **Sichttest:** JSON valide, alle 5 Inbox-Cosines ≥ 0.80, IIFE-Syntax OK, Wächter
+  synchron. Browser-Sichttest der 📬-Karte (jetzt 5 Nachbarn) **wartet auf Klaus**.
+
 ### 2026-06-07 · Mein-Rezeptbuch angedockt (Identitäts-Abgleich + verified-match 0.824068 + Vollvernetzung)
 
 **Rolle:** Andock-/Verifikations-Sitzung. Branch `claude/sbkim-seal-vault-sync-bPfB7`.

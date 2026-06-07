@@ -1,15 +1,16 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-07",
-  "seq": 19,
-  "headline": "Mein-Rezeptbuch angedockt: Identitäts-Abgleich (alte Handshake-nodeId BSWxXmX… → kanonische Live-Identität uOpUBez…, alte in previousNodeIds), frische Spore aus raw/main reziprok ✔ VALID, Modul-04-Match Sage ⟷ Mein-Rezeptbuch 0.824068 ≥ 0.80 → verified-match. Vollvernetzung: in mailboxes/ack (=1) + Wächter + 📬-Knopf aufgenommen, Postfach AUSTAUSCH-Rezeptbuch.md angelegt; rezeptbuch_inbox.json + .verify.md + status.json + NETZ-STAND aktualisiert.",
+  "seq": 20,
+  "headline": "Mein-Mixarium angedockt: Identitäts-Abgleich (alte Handshake-nodeId JOlHK31X… → kanonische Live-Identität B7Fke9C…, alte in previousNodeIds), frische Spore aus raw/main reziprok ✔ VALID, Modul-04-Match Sage ⟷ Mein-Mixarium 0.806030 ≥ 0.80 → verified-match. Vollvernetzung: mailboxes + ack[Mein-Mixarium]=1 + Wächter + 📬-Knopf, Postfach AUSTAUSCH-Mixarium.md; mixarium_inbox.json + .verify.md + status.json + NETZ-STAND. INNERER VERBUND KOMPLETT: alle fünf Nachbarn verified-match.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md",
     "Mein-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-MeinTresor.md",
-    "Mein-Rezeptbuch": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-Rezeptbuch.md"
+    "Mein-Rezeptbuch": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-Rezeptbuch.md",
+    "Mein-Mixarium": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-Mixarium.md"
   },
   "forNodes": [
     "*"
@@ -18,7 +19,8 @@
     "SB-KIMTool-Point": 20,
     "Jasons-Tresor": 10,
     "Mein-Tresor": 13,
-    "Mein-Rezeptbuch": 1
+    "Mein-Rezeptbuch": 1,
+    "Mein-Mixarium": 1
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -116,6 +118,11 @@
       "seq": 19,
       "date": "2026-06-07",
       "headline": "Mein-Rezeptbuch angedockt + Identitäts-Abgleich: NETZ-STAND führte alte Handshake-nodeId BSWxXmX… (live-direct) — kanonische Live-Identität ist uOpUBez… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok ✔ VALID, alte nodeIds → previousNodeIds. Modul-04-Cosinus Sage ⟷ Mein-Rezeptbuch = 0.824068 ≥ 0.80 → verified-match (= ihre Browser-Rechnung 0.8241). Vollvernetzung: mailboxes + ack[Mein-Rezeptbuch]=1 + Wächter-Peer + 📬-Knopf-Peer + Postfach AUSTAUSCH-Rezeptbuch.md; rezeptbuch_inbox.json + .verify.md + status.json + NETZ-STAND. Briefkasten-Runde mitquittiert (reziproke Bestätigungen / Aufträge an andere, nichts für Sage offen): SB-KIMTool-Point 18→20, Jasons-Tresor 8→10, Mein-Tresor 9→13. Mein-Mixarium noch offen (kein SIGNAL.json)."
+    },
+    {
+      "seq": 20,
+      "date": "2026-06-07",
+      "headline": "Mein-Mixarium angedockt + Identitäts-Abgleich: alte Handshake-nodeId JOlHK31X… (live-direct) → kanonische Live-Identität B7Fke9C… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok ✔ VALID, alte nodeIds → previousNodeIds. Modul-04-Cosinus Sage ⟷ Mein-Mixarium = 0.806030 ≥ 0.80 → verified-match (= ihre Browser-Rechnung 0.8060). Vollvernetzung: mailboxes + ack[Mein-Mixarium]=1 + Wächter-Peer + 📬-Knopf-Peer + Postfach AUSTAUSCH-Mixarium.md; mixarium_inbox.json + .verify.md + status.json + NETZ-STAND. Innerer Verbund komplett: alle fünf Nachbarn verified-match. Ehrlich: Mixarium ⟷ Tresore 0.7884 < 0.80 (andere Domäne)."
     }
   ]
 }
