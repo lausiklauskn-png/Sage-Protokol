@@ -20,23 +20,22 @@ Beschreibung** der App/Website/des Knotens; dieser Text wird die Grundlage des
 
 ---
 
-## Genauer Ort (vom Betreiber benannt + per Screenshot bestätigt 2026-06-07)
+## Genauer Ort (Klaus' Entscheidung 2026-06-07, final)
 
-- **Auslöser-Button:** `🔑 Eigene Identität & Spore erzeugen / verwalten →`
-  (Sage-Page; in/bei der Siegel-/Andock-Ansicht). **Schritt 0 der Sitzung:** diesen Button
-  in `index.html` finden (Such-Strings: „Eigene Identität", „Spore erzeugen", „andock",
-  Modul 16 Siegel-Modal / Modul 18 ToolPwa / Andock-Wizard Karte 4).
-- Beim Klick öffnet sich das **Andock-Modul** (bei Mein-Tresor die Seite
-  `werkzeuge/andock.html` „SBKIM-Andock — Identität & verified-match") mit: Export/Import
-  (Backup), ID-Erzeugung (Teil A), und **Teil B = echten domainVector erzeugen + Spore neu
-  signieren**.
-- **Klaus' präziser Anker („dort hinein"):** in **Teil B, Abschnitt ② „Echten domainVector
-  erzeugen (Modul 03)"** — dort steht heute „rechnet den 384-dim Vektor aus **unserem
-  Domänen-Text**" + Button **„domainVector erzeugen"**. **Genau dieser „Domänen-Text" wird
-  das neue Textfeld.** Das Feld liefert den Text, den Modul 03 einbettet — statt eines fest
-  verdrahteten/kurzen Domänentextes.
-- Reihenfolge: Textfeld **über** dem „domainVector erzeugen"-Button, sodass der eingegebene
-  Text beim Klick eingebettet → in die Spore geschrieben → neu signiert wird.
+- **Platzierung des Textfeldes:** **direkt im Siegel, in den Bereich UNTER dem Button
+  `🔑 Eigene Identität & Spore erzeugen / verwalten →`.** Das auto-wachsende Textfeld sitzt
+  also im Siegel-Modal unmittelbar unter diesem Button (nicht erst tief in der separaten
+  Andock-Seite versteckt). **Schritt 0 der Sitzung:** diesen Button im Siegel-Modal finden
+  (`index.html`; Such-Strings „Eigene Identität", „Spore erzeugen"; Modul 16 Siegel-Modal /
+  Andock-Bereich).
+- **Funktionale Verdrahtung (Referenz Mein-Tresor `werkzeuge/andock.html`, Teil B ②):**
+  Der Textfeld-Inhalt ist der **„Domänen-Text"**, den **Modul 03** einbettet — genau die
+  Stelle, die in der Referenz „rechnet den 384-dim Vektor aus unserem Domänen-Text" + Button
+  „domainVector erzeugen" heißt. Statt eines fest verdrahteten/kurzen Domänentextes liefert
+  künftig **das Textfeld** den Text. Der erzeugte Vektor → in die Spore → neu signiert.
+- D. h.: **Feld im Siegel (UI-Ort), Embedding-/Signier-Logik wie in andock.html Teil B**
+  (Verdrahtungs-Vorbild). Beides verbinden — das Feld im Siegel speist den Erzeugungs-/
+  Signier-Fluss.
 
 ## Design-Referenz: Mein-Tresor-Repo
 
@@ -84,12 +83,14 @@ in Sage-Identität re-skinnen):
 - **Ergebnis:** Wer eine neue Identität/Spore erzeugt ODER seine Beschreibung verbessert,
   bekommt einen treffenderen Vektor → bessere `verified-match`-Werte im Netz.
 
-**Entscheidung für die Sitzung (mit Klaus klären, falls unklar):** Ob das Textfeld direkt
-den vollen „re-embed + re-sign"-Pfad auslöst (braucht den privaten Schlüssel im Wizard,
-wie bei Mein-Tresors `werkzeuge/andock.html`) **oder** zunächst nur `domainDescription` +
-Vorschau erzeugt und das Signieren der bestehende Wizard-Schritt bleibt. Empfehlung:
-in den **bestehenden Erzeugen/Neu-Signieren-Schritt integrieren** (ein durchgehender Fluss),
-da genau das der Sinn ist — die bessere Beschreibung soll in die signierte Spore.
+**Entscheidung (Klaus + Empfehlung bestätigt 2026-06-07): VOLLER PFAD — re-embed + re-sign.**
+Das Textfeld löst den durchgehenden Fluss aus: Text → `domainDescription` → Modul-03-
+Embedding → neuer `domainVector` → **in die Spore eingebettet + mit dem vorhandenen Schlüssel
+neu signiert**. Begründung: Der `verified-match` rechnet gegen den **signierten** Vektor — eine
+Beschreibung, die nicht eingebettet+signiert wird, ändert am Match nichts. **Keine neue
+Krypto:** bestehenden Mechanismus „Identität aus Sicherung laden" (`node_key.enc.json` +
+Passwort, Teil B ① der Referenz) + vorhandenen Signier-Schritt wiederverwenden. Privater
+Schlüssel bleibt im Browser. Additiv, geringes Risiko.
 
 ---
 
@@ -121,12 +122,17 @@ da genau das der Sinn ist — die bessere Beschreibung soll in die signierte Spo
 - Commit + Push auf eigenen Branch (`claude/bau-andock-semantik-beschreibung` o. ä.),
   Draft-PR. Merge entscheidet Klaus.
 
-## Offene Punkte, die Klaus am Start bestätigen sollte
-1. **Hinweis-Wortlaut** (Punkt 3 oben) — final abnehmen.
-2. **Re-embed/re-sign-Tiefe** — voller Fluss (empfohlen) oder Vorschau + späteres Signieren.
-3. Ob das Textfeld **nur in Sage** gebaut wird oder direkt so, dass es **netzweit
-   kopierbar** ist (Mein-Tresor/Mixarium/Rezeptbuch/SB-KIMTool übernehmen es später —
-   passt zur „alle Knoten gleich"-Linie).
+## Entscheidungen (Stand 2026-06-07)
+- ✅ **Ort:** Textfeld im Siegel, direkt unter dem Button „🔑 Eigene Identität & Spore
+  erzeugen / verwalten →".
+- ✅ **Tiefe:** voller Pfad re-embed + re-sign (signierte Spore), bestehende Krypto.
+- ✅ **Inhalts-Quelle:** beides — Freitext ODER README einfügen (Placeholder), README empfohlen.
+
+### Noch offen (Klaus am Start kurz bestätigen)
+1. **Hinweis-Wortlaut** (Punkt 3 oben) — final abnehmen oder kürzen.
+2. **Reichweite:** nur in Sage bauen oder gleich **netzweit kopierbar** gestalten
+   (Mein-Tresor/Mixarium/Rezeptbuch/SB-KIMTool übernehmen es später — passt zur
+   „alle Knoten gleich"-Linie).
 
 ---
 
