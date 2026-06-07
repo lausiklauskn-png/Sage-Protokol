@@ -1841,6 +1841,37 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · Bau: Vertrauens-/Sicherheits-Tafel „So funktioniert das Mycel" (Schritt 1)
+
+**Rolle:** Bau-Sitzung (Fortsetzung). Branch `claude/bau-andock-semantik-beschreibung-TiY5D`.
+Auslöser: Klaus' Wunsch nach einer einfachen, ehrlichen Erklärung des Sicherheits-/
+Vertrauens-Modells — „wer sagt, dass man mir vertrauen kann?" → Antwort des Systems:
+*niemand verordnet es, du kannst es selbst nachprüfen* (self-inscribing).
+
+- **Neu: `docs/sicherheit/index.html`** — eigenständige, browser-lesbare, dunkel-gestylte
+  Erklär-Seite (Deutsch). Inhalt mit Klaus im Chat abgenommen: Was ist das / Was ist ein
+  Knoten (breit gefasst: Seite, Web-Tool, App; Visitenkarte öffentlich+signiert vs.
+  verschlüsselte Schlüssel-Sicherung) / Schritt-für-Schritt / Drei Wände (Browser-Sandkasten,
+  Daten-kein-Code, Membran) / Die eine Regel (vertraute Quelle + KI-Code-Prüfung +
+  Postfach=fremde Daten) / „Du bleibst Herr" (Apoptose positiv: sauber löschen/verlassen) /
+  Was bedeutet das Siegel (self-inscribing, „prüf mich nach") / Wörterbuch (15 Begriffe
+  übersetzt).
+- **`index.html`:** host-seitige Injektion ins Siegel-Modal um einen Schutz-/Vertrauens-Block
+  erweitert (`buildSchutzInfoBlock`): beruhigende Zeile + Link „Ausführlich erklärt →" auf die
+  neue Seite. Modul 16 bleibt unangetastet (netzweit geteilt).
+- **Bewusste Zweiteilung** (Klaus' editorische Frage „sollte man einige Sachen gar nicht
+  erwähnen?"): Einsteiger-Tafel beruhigend + ehrlich; die Abwehr-Mechanik (Blocklist/
+  Reputation/Diffusion, „kein Knoten darf einen anderen löschen", Idee eines unterschriebenen
+  Angreifer-Zeugnisses — noch nicht gebaut) kommt später in eine separate Builder-Tafel
+  „Sicherheits-Architektur".
+- **Checks:** `node --check` auf index.html-Script-Block OK, HTML-Seite wohlgeformt
+  (div-Balance, Link vorhanden). **Sichttest der Seite + des Siegel-Links ungeprüft — wartet
+  auf Klaus' Browser-Lauf.**
+- **Nächste Schritte (vereinbart):** (2) Spiegelung der Tafel in SB-KIMTool-Point (eigener
+  PR, externes Repo). (3) Builder-Tafel „Sicherheits-Architektur". (4) Übersetzungen EN/FR/ES
+  später. Optional: netzweite Siegel-Variante (kurzer Schutz-Block + Konfig-Link direkt in
+  Modul 16) statt host-seitiger Injektion.
+
 ### 2026-06-07 · Bau: Semantik-Beschreibungs-Textfeld im Siegel + Modul-18-Hinweis raus
 
 **Rolle:** Bau-Sitzung. Branch `claude/bau-andock-semantik-beschreibung-TiY5D`.

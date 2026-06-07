@@ -3801,17 +3801,50 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     link.textContent = '🔑 Eigene Identität & Spore erzeugen / verwalten →';
     link.style.cssText = 'display:block;width:100%;margin:0 0 1rem;padding:0.6rem 0.9rem;background:rgba(124,131,253,0.16);border:1px solid rgba(124,131,253,0.5);border-radius:8px;color:#dfe0ff;font:inherit;font-size:0.86rem;cursor:pointer;text-align:left;';
     link.addEventListener('click', function () { openAndockWizard(); });
+    // Bau 2026-06-07: „Was bedeutet dieses Siegel — und wie bist du geschützt?"
+    // + Link auf die ausführliche, browser-lesbare Vertrauens-/Sicherheits-
+    // Tafel. Host-seitig injiziert, damit Modul 16 (netzweit geteilt)
+    // unangetastet Render-Modul bleibt. Pro Knoten zeigt der Link auf die
+    // eigene docs/sicherheit/-Seite.
+    var schutz = buildSchutzInfoBlock();
     // Bau 2026-06-07: direkt unter dem 🔑-Knopf das Semantik-Beschreibungs-
     // Textfeld (Text → Vektor → Spore neu signieren). Netzweit kopierbar.
     var semantik = buildSemantikBlock();
     var anchor = panel.querySelector('[data-siegel-bronze-hinweis]') || panel.querySelector('[data-siegel-date]');
     if (anchor && anchor.parentNode) {
       anchor.parentNode.insertBefore(link, anchor.nextSibling);
-      anchor.parentNode.insertBefore(semantik, link.nextSibling);
+      anchor.parentNode.insertBefore(schutz, link.nextSibling);
+      anchor.parentNode.insertBefore(semantik, schutz.nextSibling);
     } else {
       panel.appendChild(link);
+      panel.appendChild(schutz);
       panel.appendChild(semantik);
     }
+  }
+
+  // Schutz-/Vertrauens-Info im Siegel: eine beruhigende Zeile + Link auf die
+  // ausführliche Erklär-Seite. Selbst-erklärend, kein Fachjargon im Siegel.
+  function buildSchutzInfoBlock() {
+    var wrap = document.createElement('div');
+    wrap.setAttribute('data-sage-schutz-block', '');
+    wrap.style.cssText = 'margin:0 0 1rem;padding:0.7rem 0.9rem;background:rgba(244,196,48,0.07);border:1px solid rgba(244,196,48,0.32);border-radius:8px;';
+    var head = document.createElement('div');
+    head.textContent = '🛡 Was bedeutet dieses Siegel — und wie bist du geschützt?';
+    head.style.cssText = 'font-weight:600;font-size:0.84rem;margin:0 0 0.35rem;color:#f4d57a;';
+    var body = document.createElement('p');
+    body.textContent = 'Das Siegel ist selbst-ausgestellt: der Knoten prüft sich beim Start selbst und legt alles offen. Es bewegt nur Daten, nie Programme — und läuft im Browser-Sandkasten. Kurz: prüf mich nach, hier ist alles offen.';
+    body.style.cssText = 'margin:0 0 0.5rem;font-size:0.8rem;line-height:1.5;color:rgba(245,245,255,0.82);';
+    var link = document.createElement('a');
+    // Relativer Pfad zur eigenen Erklär-Seite (pro Knoten dieselbe Struktur).
+    link.href = 'docs/sicherheit/index.html';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Ausführlich erklärt → So funktioniert das Mycel & wie du geschützt bist';
+    link.style.cssText = 'display:inline-block;font-size:0.82rem;color:#f4c430;text-decoration:underline;';
+    wrap.appendChild(head);
+    wrap.appendChild(body);
+    wrap.appendChild(link);
+    return wrap;
   }
 
   // Auto-wachsendes Textfeld: Höhe folgt dem Inhalt (min. 120px).
