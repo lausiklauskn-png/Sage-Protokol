@@ -3834,17 +3834,60 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     var body = document.createElement('p');
     body.textContent = 'Das Siegel ist selbst-ausgestellt: der Knoten prüft sich beim Start selbst und legt alles offen. Es bewegt nur Daten, nie Programme — und läuft im Browser-Sandkasten. Kurz: prüf mich nach, hier ist alles offen.';
     body.style.cssText = 'margin:0 0 0.5rem;font-size:0.8rem;line-height:1.5;color:rgba(245,245,255,0.82);';
-    var link = document.createElement('a');
-    // Relativer Pfad zur eigenen Erklär-Seite (pro Knoten dieselbe Struktur).
-    link.href = 'docs/sicherheit/index.html';
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
+    // In-Page-Panel statt neuem Tab (Klaus' UX-Befund 2026-06-07: ein
+    // zweiter Tab ist auf dem Tablet umständlich). Der Link öffnet die
+    // Erklär-Seite als Overlay über der Sage-Page; ✕ schließt es.
+    var link = document.createElement('button');
+    link.type = 'button';
+    link.setAttribute('data-sage-schutz-open', '');
     link.textContent = 'Ausführlich erklärt → So funktioniert das Mycel & wie du geschützt bist';
-    link.style.cssText = 'display:inline-block;font-size:0.82rem;color:#f4c430;text-decoration:underline;';
+    link.style.cssText = 'display:inline-block;padding:0;background:none;border:none;font:inherit;font-size:0.82rem;color:#f4c430;text-decoration:underline;cursor:pointer;text-align:left;';
+    link.addEventListener('click', openSchutzModal);
     wrap.appendChild(head);
     wrap.appendChild(body);
     wrap.appendChild(link);
     return wrap;
+  }
+
+  // Erklär-Seite als In-Page-Overlay öffnen (iframe auf docs/sicherheit/,
+  // eine Quelle der Wahrheit). Kein neuer Tab. ✕ / Backdrop / Esc schließen.
+  function openSchutzModal() {
+    var existing = document.getElementById('sage-schutz-modal');
+    if (existing) { existing.style.display = 'grid'; return; }
+    var modal = document.createElement('div');
+    modal.id = 'sage-schutz-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:100001;display:grid;place-items:center;padding:1.1rem;';
+    var backdrop = document.createElement('div');
+    backdrop.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);';
+    backdrop.addEventListener('click', closeSchutzModal);
+    var card = document.createElement('div');
+    card.style.cssText = 'position:relative;z-index:1;width:min(820px,96vw);height:min(88vh,100%);background:#070710;border:1px solid rgba(244,196,48,0.32);border-radius:16px;overflow:hidden;box-shadow:0 28px 60px rgba(0,0,0,0.7);display:flex;flex-direction:column;';
+    var bar = document.createElement('div');
+    bar.style.cssText = 'display:flex;justify-content:flex-end;padding:0.45rem;flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.08);';
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'Schließen');
+    close.textContent = '✕';
+    close.style.cssText = 'width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#f0f0ff;font-size:1.1rem;line-height:1;cursor:pointer;';
+    close.addEventListener('click', closeSchutzModal);
+    var frame = document.createElement('iframe');
+    frame.src = 'docs/sicherheit/index.html';
+    frame.title = 'So funktioniert das Mycel & wie du geschützt bist';
+    frame.style.cssText = 'flex:1 1 auto;width:100%;border:0;background:#070710;';
+    bar.appendChild(close);
+    card.appendChild(bar);
+    card.appendChild(frame);
+    modal.appendChild(backdrop);
+    modal.appendChild(card);
+    document.body.appendChild(modal);
+    if (!window.__sageSchutzEsc) {
+      window.__sageSchutzEsc = function (e) { if (e.key === 'Escape') closeSchutzModal(); };
+      document.addEventListener('keydown', window.__sageSchutzEsc);
+    }
+  }
+  function closeSchutzModal() {
+    var m = document.getElementById('sage-schutz-modal');
+    if (m) m.style.display = 'none';
   }
 
   // Auto-wachsendes Textfeld: Höhe folgt dem Inhalt (min. 120px).
