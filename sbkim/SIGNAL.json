@@ -1,22 +1,22 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-06-06",
-  "seq": 15,
-  "headline": "Jasons-Tresor Identitätswechsel (alte nodeId 7F_zNop… Demo verloren → neue E13GDzI…); neue Spore verifiziert ✔ + echter domainVector → Match 0.847784 = verified-match.",
+  "lastBuild": "2026-06-07",
+  "seq": 16,
+  "headline": "Briefkasten an Mein-Tresor-Referenz angeglichen (netzweite Gleichheit, INTERFACES §11.6): SIGNAL-Schema reconciled (forNodes:\"*\", sporeUrl+nodeId ergänzt), Wächter + 📬-Knopf um Mein-Tresor als Peer erweitert. Briefkasten-Runde: alle Nachbar-SIGNALs gelesen + quittiert — ack SB-KIMTool-Point 1→15, Jasons-Tresor 2→8, Mein-Tresor 4→8. Sages reicherer Wächter (Auto-Issue) bewusst behalten (kein Downgrade). Offen: verified-match Sage⟷Mein-Tresor (eigene Modul-04-Sitzung).",
+  "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
+  "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md",
     "Mein-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-MeinTresor.md"
   },
   "forNodes": [
-    "SB-KIMTool-Point",
-    "Jasons-Tresor",
-    "Mein-Tresor"
+    "*"
   ],
   "ack": {
-    "SB-KIMTool-Point": 1,
-    "Jasons-Tresor": 2,
-    "Mein-Tresor": 4
+    "SB-KIMTool-Point": 15,
+    "Jasons-Tresor": 8,
+    "Mein-Tresor": 8
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -94,6 +94,11 @@
       "seq": 15,
       "date": "2026-06-06",
       "headline": "Jasons-Tresor Identitätswechsel verarbeitet: alte nodeId 7F_zNop… → previousNodeIds, neue E13GDzI… verifiziert ✔ VALID, echter domainVector → Match Sage⟷Jasons 0.847784 = verified-match; jason_inbox + status.json + NETZ-STAND aktualisiert."
+    },
+    {
+      "seq": 16,
+      "date": "2026-06-07",
+      "headline": "Briefkasten an Mein-Tresor-Referenz angeglichen: SIGNAL-Schema reconciled (forNodes:\"*\", sporeUrl+nodeId ergänzt, ohne seq/history-Reset), Wächter (.github/sbkim-watch.mjs) + 📬-Knopf (index.html) um Mein-Tresor erweitert. Briefkasten-Runde: SB-KIMTool-Point seq 15, Jasons-Tresor seq 8, Mein-Tresor seq 8 gelesen + quittiert (ack hochgesetzt). Sages reicherer Wächter (Auto-Issue-Workflow) bewusst behalten — kein Downgrade auf die schlankere Referenz."
     }
   ]
 }

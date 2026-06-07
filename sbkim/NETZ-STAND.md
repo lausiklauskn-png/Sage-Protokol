@@ -6,7 +6,7 @@
 > `status.json` (Maschine) + die `*_inbox.verify.md`-Vermerke (Beweis) — diese Datei ist
 > die menschenlesbare Karte darüber.
 
-**Stand: 2026-06-06** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
+**Stand: 2026-06-07** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
 
 ---
 
@@ -46,12 +46,19 @@ monoton steigender `seq`). **Sitzungsstart:** Signal jeder Gegenstelle aus deren
 quittieren. **Sitzungsende nach einem Bau:** `seq` +1, `headline` setzen, pushen —
 das Pushen ist das Signal. Sages Signal: `sbkim/SIGNAL.json`.
 
-**Stand 2026-05-31 — alle drei Knoten haben ihren Briefkasten:** Sage (seq 9),
-SB·KIMTool·Point (seq 1), Jasons-Tresor (seq 1) — alle `SIGNAL.json` live (HTTP 200).
-Quittungs-Runde geschlossen: Sage `ack` = SB·KIMTool 1 / Jasons 1; beide Peers haben
-Sage quittiert (ack Sage 7, ziehen auf 9 beim nächsten Lauf nach). SB·KIMTool hat
-Jasons-Tresor zusätzlich direkt reziprok verifiziert (verified-spore) — Drei-Knoten-Netz
-beidseitig bezeugt. Wächter-Action + 📬-Knopf bei allen dreien aktiv.
+**Stand 2026-06-07 — netzweite Briefkasten-Gleichheit (Mein-Tresor-Referenz):**
+Sage (seq 16), SB·KIMTool·Point (seq 15), Jasons-Tresor (seq 8), Mein-Tresor (seq 8) —
+alle `SIGNAL.json` live (HTTP 200). Sages `SIGNAL.json` an die Mein-Tresor-Referenz-
+Umsetzung angeglichen: `forNodes: ["*"]`, zusätzlich `sporeUrl` + `nodeId` als Felder,
+ohne seq/history-Reset. Briefkasten-Runde gelesen + quittiert: Sage `ack` =
+SB·KIMTool·Point 15 / Jasons-Tresor 8 / Mein-Tresor 8. Mein-Tresor neu als vierter Peer
+im Wächter (`.github/sbkim-watch.mjs`) **und** im 📬-Knopf der `index.html` aufgenommen
+(vorher fehlte er an beiden Stellen) → Netz symmetrisch. Sages reicherer Wächter
+(Auto-Issue-Workflow, `issues: write`) bewusst behalten — die schlanke stdout-Referenz-mjs
+wäre ein Downgrade; die netzweite Synchronität läuft über das gemeinsame
+`SIGNAL.json`-Schema, nicht über die Wächter-Implementierung.
+**Offen:** `verified-match` Sage⟷Mein-Tresor (echter `domainVector` von Mein-Tresor →
+Modul-04-Nachrechnung, eigene Sitzung).
 
 ## Postfächer (Datei-Dead-Drop, Sync-Vertrag §11.4)
 

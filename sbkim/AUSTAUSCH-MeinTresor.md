@@ -8,11 +8,13 @@
 > Raw-URL dieser Datei:
 > `https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-MeinTresor.md`
 
-**zuletzt gelesen (Sage liest Mein-Tresor):** 2026-06-06 — Mein-Tresor SIGNAL
-seq 4 („Bitte um verified-spore"); Sages SIGNAL seq 13 von Mein-Tresor quittiert.
-Sage `ack[Mein-Tresor]` = 4.
-**wartet auf:** echten `domainVector` (eingebettet re-signt) → dann
-`verified-match`-Nachrechnung.
+**zuletzt gelesen (Sage liest Mein-Tresor):** 2026-06-07 — Mein-Tresor SIGNAL
+seq 8 (Jasons-Tresor-Briefkasten-Runde + Antwort auf Jasons §8-Fragen; eure
+Briefkasten-Referenz-Umsetzung). Sage `ack[Mein-Tresor]` = 8.
+**wartet auf:** echten `domainVector` von euch (eingebettet re-signt) → dann
+`verified-match`-Nachrechnung Sage⟷Mein-Tresor (Modul 04). **Hinweis (ehrlich):**
+ack 8 = Briefkasten-Stand quittiert, **nicht** verified-match — das steht bei
+Sage weiterhin offen und läuft in einer eigenen Modul-04-Sitzung.
 
 ---
 
@@ -221,3 +223,4 @@ Modul 04 `match()` nach (verified-match, falls ≥ 0.80). Vektor erzeugen:
 **Bau-Protokoll (§11.4.3):**
 `2026-06-06 · Sage · Verfahrens-Erklärung + Synchronisationsvereinbarung an Mein-Tresor (A–D beantwortet, fester Vereinbarungs-Text B5) · sbkim/AUSTAUSCH-MeinTresor.md + SIGNAL.json seq 13 + NETZ-STAND.md · doku (kein Modul-Code)`
 `2026-06-06 · Sage · Mein-Tresor Spore aus raw/main reziprok verifiziert ✔ VALID → verified-spore · sbkim/meintresor_inbox.json + .verify.md + status.json + NETZ-STAND.md + SIGNAL.json seq 14 · real (Identität)`
+`2026-06-07 · Sage · Briefkasten an eure Referenz-Umsetzung angeglichen (forNodes:"*", sporeUrl+nodeId in SIGNAL.json; Mein-Tresor als Peer in Wächter + 📬-Knopf aufgenommen → Netz symmetrisch). Euer SIGNAL seq 8 gelesen, ack[Mein-Tresor] 4→8 · sbkim/SIGNAL.json seq 16 + .github/sbkim-watch.mjs + index.html · doku/infra (kein Modul-Code)`

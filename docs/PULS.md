@@ -1841,6 +1841,37 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · Briefkasten an Mein-Tresor-Referenz angeglichen (netzweite §11.6-Gleichheit)
+
+**Rolle:** Einbau-/Pflege-Sitzung (Briefkasten-Infra in Sage). Branch
+`claude/sbkim-seal-vault-sync-bPfB7`.
+
+- **Auslöser:** Klaus möchte, dass alle Knoten denselben Briefkasten-Aufbau fahren;
+  Mein-Tresor hat die saubere Referenz-Umsetzung (INTERFACES §11.6). Reconcile mit
+  Sages bestehendem Stand — **nichts** an seq/history zurückgesetzt.
+- **`sbkim/SIGNAL.json`** (seq 15 → 16): `forNodes` von expliziter Liste auf `["*"]`,
+  zusätzlich `sporeUrl` + `nodeId` als Felder ergänzt (Schema-Symmetrie mit der
+  Referenz). `ack` hochgesetzt nach Briefkasten-Runde: SB-KIMTool-Point 1→15,
+  Jasons-Tresor 2→8, Mein-Tresor 4→8. History-Eintrag seq 16 angehängt.
+- **`.github/sbkim-watch.mjs`** + **`index.html`** 📬-Knopf: **Mein-Tresor als Peer
+  ergänzt** (fehlte an beiden Stellen!) → Netz symmetrisch. Wächter lokal gelaufen:
+  „nichts Neues — alle Peers auf quittiertem Stand".
+- **Reconcile-Entscheidung (Freibrief, dokumentiert):** Sages reicherer Wächter +
+  Workflow (`issues: write`, Auto-Issue bei Neuem) **bewusst behalten** — die
+  schlanke stdout-only-Referenz-mjs wäre ein Downgrade und verstieße gegen „nichts
+  zurücksetzen". Netzweite Synchronität läuft über das gemeinsame `SIGNAL.json`-Schema,
+  nicht über die Wächter-Implementierung. Cron (alle 6 h) ebenfalls behalten.
+- **Postfächer** AUSTAUSCH.md / AUSTAUSCH-MeinTresor.md / AUSTAUSCH-JasonsTresor.md +
+  **NETZ-STAND.md** mit Lese-Quittungen + Schema-Angleich-Vermerk nachgezogen.
+- **Offen:** `verified-match` Sage⟷Mein-Tresor (echter `domainVector` von Mein-Tresor →
+  Modul-04-Nachrechnung, eigene Sitzung). ack 8 = Briefkasten-Stand quittiert, ehrlich
+  **nicht** als Match-Bestätigung gemeint (so im Postfach vermerkt).
+- **Sichttest:** headless grün (JSON valide, Wächter läuft, alle 3 Peers im 📬-Block).
+  Browser-Sichttest des 📬-Knopfs mit Mein-Tresor-Zeile **ungeprüft, wartet auf Klaus**.
+- **Parkende Aufgabe:** Siegel-Kombi (Tresor + Sage + SBKIM-Tool) — blockiert, weil
+  Mein-Tresor/Jasons-Tresor nicht im Sitzungs-Scope sind (nur sage-protokol). Drei
+  index.html roh geholt (`/tmp`), Design wartet auf Repo-Freischaltung + Klaus' Form-Wahl.
+
 ### 2026-06-06 · Siegel-Mitgliedschaft + Andock-Wiederherstellung + Observatorium-Hintergrund
 
 **Rolle:** Hauptsitzung (kleine Bau-/Pflege-Tätigkeiten auf Zuruf). Alle PRs gemerged.
