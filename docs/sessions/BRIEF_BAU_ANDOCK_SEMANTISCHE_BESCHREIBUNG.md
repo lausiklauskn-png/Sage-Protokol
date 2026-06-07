@@ -122,17 +122,34 @@ Schlüssel bleibt im Browser. Additiv, geringes Risiko.
 - Commit + Push auf eigenen Branch (`claude/bau-andock-semantik-beschreibung` o. ä.),
   Draft-PR. Merge entscheidet Klaus.
 
-## Entscheidungen (Stand 2026-06-07)
+## Entscheidungen (Stand 2026-06-07, final)
 - ✅ **Ort:** Textfeld im Siegel, direkt unter dem Button „🔑 Eigene Identität & Spore
   erzeugen / verwalten →".
 - ✅ **Tiefe:** voller Pfad re-embed + re-sign (signierte Spore), bestehende Krypto.
 - ✅ **Inhalts-Quelle:** beides — Freitext ODER README einfügen (Placeholder), README empfohlen.
+- ✅ **Reichweite:** **netzweit kopierbar** bauen (alle fünf Knoten übernehmen es 1:1).
+  Struktur so halten, dass nur CONFIG/Skin pro Knoten variiert.
+- ✅ **Design-Führung:** **am Mein-Tresor-Siegel orientieren** und **das Beste aus beiden
+  (Sage + Mein-Tresor) zusammenbringen** — vom Design **eher Mein-Tresor**. Mein-Tresors
+  `index.html` (Siegel-Modal + Andock) roh holen + als Leitbild nehmen, Sages funktionierende
+  Teile (Modul 16 Render, reiche 📬-Karte) erhalten.
 
 ### Noch offen (Klaus am Start kurz bestätigen)
-1. **Hinweis-Wortlaut** (Punkt 3 oben) — final abnehmen oder kürzen.
-2. **Reichweite:** nur in Sage bauen oder gleich **netzweit kopierbar** gestalten
-   (Mein-Tresor/Mixarium/Rezeptbuch/SB-KIMTool übernehmen es später — passt zur
-   „alle Knoten gleich"-Linie).
+1. **Hinweis-Wortlaut** des Textfeld-Hinweises — final abnehmen oder kürzen.
+
+## Zusätzliche Aufgabe: Modul-18-Hinweis aus dem Siegel entfernen (Klaus, 2026-06-07)
+
+In den **(älteren) Siegeln** soll der **Hinweis auf Modul 18 ganz herausgenommen** werden.
+Konkret in `src/modules/16_siegel.js` (und überall, wo das Siegel das erwähnt):
+- `BRONZE_HINWEIS_HTML_FALLBACK` = „Modul 18 noch nicht verfügbar — …" → **entfernen/ersetzen**
+  (kein „Modul 18"-Wortlaut mehr; stattdessen Verweis auf den Identitäts-Button + das neue
+  Beschreibungs-Textfeld bzw. den Andock-Wizard).
+- Der „Andocken"-Knopf-Pfad mit `SbkimToolPwa`/„Modul 18 ist geladen, aber…"/„Modul 18 nicht
+  installiert" (Pfad 2/3 im Bronze-Block) → auf den **echten Identitäts-/Andock-Weg** umleiten,
+  keine Modul-18-Fehlertexte mehr zeigen. (SB·KIMTool·Point hat genau das schon gemacht —
+  „nur Identitäts-Knopf oben, wie Sage"; deren Lösung als zusätzliche Referenz ansehen.)
+- Ziel: ein einziger, sauberer Andock-/Identitäts-Pfad im Siegel (Button „🔑 …" + Textfeld),
+  ohne verwirrende Modul-18-Verweise. Netzweit gleich.
 
 ---
 
