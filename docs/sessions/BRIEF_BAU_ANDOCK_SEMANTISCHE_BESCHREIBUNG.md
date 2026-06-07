@@ -137,6 +137,40 @@ Schlüssel bleibt im Browser. Additiv, geringes Risiko.
 ### Noch offen (Klaus am Start kurz bestätigen)
 1. **Hinweis-Wortlaut** des Textfeld-Hinweises — final abnehmen oder kürzen.
 
+## Best-of-both — Siegel-Merkmals-Checkliste (Klaus, 2026-06-07)
+
+Mein-Tresors Siegel war **umfangreicher** (Darstellung), Sages Siegel hatte **ein paar
+gute Punkte**, die nicht verloren gehen dürfen (Engine). Beides zusammenbringen, Design-
+Führung Mein-Tresor. Konkret (Quellen: Mein-Tresor `index.html` `#mt-seal-dialog` Z. ~1489–1545;
+Sage `src/modules/16_siegel.js`):
+
+**Aus Mein-Tresor übernehmen (Umfang + Darstellung, Design-Leitbild):**
+- **Erklär-Prosa** „Dieses Siegel bezeugt … kryptografisch geprüfte Identität (Ed25519) …
+  fälschungssichere Visitenkarte" + Absatz **„Warum wichtig?"** (menschlich, nicht nur technisch).
+- Der **🔑-Button** „Eigene Identität & Spore erzeugen / verwalten →" (darunter das neue Textfeld).
+- Inline-Block **„🔗 Andock — Verbindung zum Werkzeug":** Endknoten / Endpunkt / nodeId /
+  Spore (✔ VALID) + „SBKIM-Werkzeug öffnen ↗".
+- **Menschlich lesbare Pflicht-Modul-Zeilen** (z. B. „01 · Storage · Tresor/Bibliothek
+  (AES-256-GCM) · bereit") statt nur Status-Label.
+- **„Bezeugt seit …"**-Datum.
+
+**Aus Sage behalten (Engine — die guten Punkte):**
+- **Echte Selbst-Prüfung beim Boot** (Surface-Check der 7 Pflicht-Module → ok/deferred/
+  missing/broken) + **Anti-Greenwashing** (kein Badge, wenn nicht zertifiziert). → Die
+  Modul-Liste wird **aus der echten Prüfung erzeugt**, NICHT hartkodiert; Mein-Tresors
+  schöne Klartext-Beschreibung kommt als zusätzliches Beschreibungsfeld dazu (best of both).
+- **Bronze/Gold-Mitgliedschaft** („im Mycel · ruhend / aktiv", `data-stufe`, Stufenwechsel
+  bei echtem Hyphen-Verkehr).
+- **self-inscribing-Aussteller-Zeile** („… hat sich beim Boot selbst geprüft. Vertrauen
+  kommt vom Repo …") — ehrliche Herkunft.
+- **Code-versionierte `ZERTIFIKAT_ASPEKTE`** (wächst mit Sicherheits-Updates, Pending-Marker)
+  — Mein-Tresors erzählender Aspekt-Stil als Vorbild für die *Formulierung*, Sages Struktur
+  als *Mechanik*.
+- **Live-Cosinus** im 📬-/Andock-Kontext (schon gebaut).
+
+Ergebnis: ein Siegel, das **aussieht/erklärt wie Mein-Tresor**, aber **verdient + selbst-
+geprüft ist wie Sage** — netzweit identisch kopierbar.
+
 ## Zusätzliche Aufgabe: Modul-18-Hinweis aus dem Siegel entfernen (Klaus, 2026-06-07)
 
 In den **(älteren) Siegeln** soll der **Hinweis auf Modul 18 ganz herausgenommen** werden.
