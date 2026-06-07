@@ -4419,7 +4419,7 @@
         };
       });
 
-      SbkimUI.addButton("16_siegel", "Test 12: Bronze-Klick öffnet Modal mit Hinweis-Block + [Andocken]", async function () {
+      SbkimUI.addButton("16_siegel", "Test 12: Bronze-Klick öffnet Modal mit Hinweis-Block (sauberer Pfad, kein Modul-18)", async function () {
         await SbkimSiegel.init({ badgeSelector: BADGE_CONTAINER });
         if (!SbkimSiegel.isCertified()) {
           SbkimUI.setStatus("16_siegel", "err", "Test 12 nicht ausführbar (isCertified=false)");
@@ -4435,21 +4435,26 @@
         var modalOffen = modal && modal.style.display === "flex";
         var hinweisBlock = modal && modal.querySelector("[data-siegel-bronze-hinweis]");
         var hinweisBlockSichtbar = hinweisBlock && hinweisBlock.style.display !== "none";
+        var hinweisText = hinweisBlock ? hinweisBlock.textContent : "";
+        // Pflege 2026-06-07: kein eigener [Andocken]-Knopf mehr, kein
+        // „Modul 18"-Text. Der Andock-/Identitäts-Pfad ist der „🔑 …"-Knopf
+        // (vom Host eingehängt) — der Hinweis-Text nennt ihn.
         var andockBtn = modal && modal.querySelector("[data-siegel-andock-btn]");
-        var aspectsItems = modal ? modal.querySelectorAll("[data-siegel-aspects] li") : [];
-        // Aspekt 4 muss in Bronze als „pending" rendern. Letzter Aspekt
-        // ist Aspekt 4 (since:"2026-05-26" + module:"16" +
-        // aspect:"Mycel-Aktivität…"); seine since-Span sollte
-        // jetzt "pending" zeigen statt "2026-05-26".
-        var letzterAspekt = aspectsItems[aspectsItems.length - 1];
-        var letzterAspektText = letzterAspekt ? letzterAspekt.textContent : "";
-        var pendingMarkerSichtbar = /pending/.test(letzterAspektText);
+        var modul18ImText = /Modul 18/.test(hinweisText);
+        var nenntIdentitaetsKnopf = /Eigene Identität & Spore/.test(hinweisText);
+        var aspectsItems = modal ? Array.prototype.slice.call(modal.querySelectorAll("[data-siegel-aspects] li")) : [];
+        // Aspekt „Mycel-Aktivität" (since:"2026-05-26" + module:"16") muss in
+        // Bronze als „pending" rendern — er ist nicht mehr der letzte Eintrag
+        // (Pflege 2026-06-07 hängt einen weiteren Aspekt an).
+        var mycelItem = aspectsItems.filter(function (li) { return /Mycel-Aktivität/.test(li.textContent); })[0];
+        var mycelText = mycelItem ? mycelItem.textContent : "";
+        var pendingMarkerSichtbar = /pending/.test(mycelText);
 
         // Modal schließen.
         document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
 
         var pass = modalOffen && !!hinweisBlock && !!hinweisBlockSichtbar &&
-                   !!andockBtn && /Andocken/.test(andockBtn.textContent || "") &&
+                   !andockBtn && !modul18ImText && nenntIdentitaetsKnopf &&
                    pendingMarkerSichtbar;
         SbkimUI.setStatus("16_siegel", pass ? "ok" : "err", pass ? "Bronze-Klick OK" : "Test 12 fehlgeschlagen");
         return {
@@ -4457,10 +4462,12 @@
           hinweis_block_im_dom:       !!hinweisBlock,
           hinweis_block_sichtbar:     !!hinweisBlockSichtbar,
           andock_button_im_modal:     !!andockBtn,
-          aspekt_4_pending_marker:    pendingMarkerSichtbar,
-          letzter_aspekt_text_kopf:   letzterAspektText.slice(0, 60),
+          kein_modul_18_text:         !modul18ImText,
+          nennt_identitaets_knopf:    nenntIdentitaetsKnopf,
+          aspekt_mycel_pending_marker: pendingMarkerSichtbar,
+          mycel_aspekt_text_kopf:     mycelText.slice(0, 60),
           aspekte_anzahl:             aspectsItems.length,
-          erwartung: "Bronze-Klick öffnet Modal; Hinweis-Block `[data-siegel-bronze-hinweis]` ist sichtbar (display!=none); [Andocken]-Knopf im Block; Aspekt 4 in der Aspekte-Liste rendert mit „pending\"-Marker statt Datum (letzter Aspekt-Eintrag).",
+          erwartung: "Bronze-Klick öffnet Modal; Hinweis-Block `[data-siegel-bronze-hinweis]` sichtbar (display!=none); KEIN [Andocken]-Knopf, KEIN „Modul 18\"-Text, Hinweis nennt den „🔑 Eigene Identität & Spore …\"-Knopf; Aspekt „Mycel-Aktivität\" rendert mit „pending\"-Marker statt Datum.",
         };
       });
 
@@ -4470,7 +4477,7 @@
         SbkimUI.log("16_siegel",
           "  MODUL 16 SIEGEL bereit, Funktionen: init/isCertified/getExplanation/getCertifiedModules/getAspects");
         SbkimUI.log("16_siegel",
-          "ℹ Hinweis: PFLICHT_MODULE (7 Einträge) und ZERTIFIKAT_ASPEKTE (Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24\" + drei weitere Aspekte 15/17/16) sind modul-lokal — NICHT in der Selbstcheck-Zeile.");
+          "ℹ Hinweis: PFLICHT_MODULE (7 Einträge) und ZERTIFIKAT_ASPEKTE (Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24\" + vier weitere Aspekte 15/17/16/16, zuletzt „Semantische Selbst-Beschreibung 2026-06-07\") sind modul-lokal — NICHT in der Selbstcheck-Zeile.");
         SbkimUI.log("16_siegel",
           "ℹ Sub (e) Bronze/Gold-Stufung (Bau 16 Sub e, 2026-05-26): Knöpfe 9–12 testen den Stufenwechsel. _meta.mycelConnected (boolean, RAM-only) + _meta.mycelConnectedAt (ISO-Datum|null) + _meta.siegelStufe (\"bronze\"|\"gold\").");
       });

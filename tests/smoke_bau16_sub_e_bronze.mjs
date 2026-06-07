@@ -386,16 +386,17 @@ async function run() {
     ariaInitial === "SBKIM-Siegel · im Mycel, ruhend" &&
     titleInitial === null);
 
-  // Probe 5: Aspekt 4 in der Aspekte-Liste am Ende, Schema korrekt.
+  // Probe 5: Der dynamische „Mycel-Aktivität"-Aspekt (since 2026-05-26,
+  // module 16) ist in ZERTIFIKAT_ASPEKTE vorhanden. Er muss NICHT mehr der
+  // letzte Eintrag sein (Pflege 2026-06-07 hängt einen weiteren Aspekt an),
+  // wird aber über since/module identifiziert (entspricht isAspect4).
   const aspects = S.getAspects();
-  const aspect4 = aspects[aspects.length - 1];
-  record("5. ZERTIFIKAT_ASPEKTE hat Aspekt 4 am Ende (since 2026-05-26, module 16)",
-    "4. Aspekt: since=2026-05-26, module=16, aspect mit „Mycel-Aktivität\"",
-    `count=${aspects.length}/since=${aspect4 && aspect4.since}/module=${aspect4 && aspect4.module}/aspect=${aspect4 && aspect4.aspect.slice(0,30)}`,
-    aspects.length >= 4 &&
-    aspect4.since === "2026-05-26" &&
-    aspect4.module === "16" &&
-    aspect4.aspect.indexOf("Mycel-Aktivität") === 0);
+  const aspect4 = aspects.find(a => a.since === "2026-05-26" && a.module === "16" &&
+    a.aspect.indexOf("Mycel-Aktivität") === 0);
+  record("5. ZERTIFIKAT_ASPEKTE enthält Aspekt „Mycel-Aktivität\" (since 2026-05-26, module 16)",
+    "Aspekt mit since=2026-05-26, module=16, aspect beginnt mit „Mycel-Aktivität\"",
+    `count=${aspects.length}/gefunden=${!!aspect4}/since=${aspect4 && aspect4.since}/module=${aspect4 && aspect4.module}`,
+    aspects.length >= 4 && !!aspect4);
 
   // Probe 6: Dispatch sbkim:handshake outcome:"established" → Gold.
   dispatchHandshake(g, { outcome: "established", peerNodeId: "peer1", direction: "outgoing" });
@@ -481,54 +482,56 @@ async function run() {
     S._meta.mycelConnected === false &&
     S._meta.mycelConnectedAt === null);
 
-  // Probe 13: Modal-Bronze-Hinweis-Block sichtbar in Bronze, Aspekt-4
-  // mit "pending"-Marker in der Aspekte-Liste.
+  // Probe 13: Modal-Bronze-Hinweis-Block sichtbar in Bronze, KEIN
+  // [Andocken]-Knopf mehr und kein „Modul 18"-Text (Pflege 2026-06-07:
+  // Modul-18-Pfad entfernt). Der „Mycel-Aktivität"-Aspekt trägt den
+  // „pending"-Marker (nicht mehr zwingend der letzte Listen-Eintrag).
   badge.click();
   await new Promise(r => setTimeout(r, 20));
   const modal = g.document.querySelector("#sbkim-siegel-modal");
   const hinweisBlock = modal && modal.querySelector("[data-siegel-bronze-hinweis]");
   const hinweisDisplay = hinweisBlock && hinweisBlock.style.display;
   const andockBtn = modal && modal.querySelector("[data-siegel-andock-btn]");
-  // Aspekt-4-pending-Marker: in der Aspekte-Liste schauen wir nach dem
-  // letzten Eintrag und ob „pending" im Text vorkommt.
-  const aspectItems = modal ? modal.querySelectorAll("[data-siegel-aspects] li") : [];
-  const letzterAspektText = aspectItems.length > 0 ? aspectItems[aspectItems.length - 1].textContent : "";
-  record("13. Modal in Bronze: Hinweis-Block sichtbar + [Andocken]-Knopf + Aspekt-4 „pending\"",
-    "Hinweis sichtbar (display!=none), Andock-Knopf da, letzter Aspekt enthält „pending\"",
-    `hinweis_da=${!!hinweisBlock}/display=${hinweisDisplay}/andock=${!!andockBtn}/pending_in_text=${/pending/.test(letzterAspektText)}`,
+  const hinweisText = hinweisBlock ? hinweisBlock.textContent : "";
+  const aspectItems = modal ? Array.from(modal.querySelectorAll("[data-siegel-aspects] li")) : [];
+  const mycelItem = aspectItems.find(li => /Mycel-Aktivität/.test(li.textContent));
+  record("13. Modal in Bronze: Hinweis sichtbar, KEIN Andock-Knopf, kein „Modul 18\", Aspekt „pending\"",
+    "Hinweis sichtbar (display!=none), kein [data-siegel-andock-btn], kein „Modul 18\", Mycel-Aspekt enthält „pending\"",
+    `hinweis_da=${!!hinweisBlock}/display=${hinweisDisplay}/andock=${!!andockBtn}/modul18=${/Modul 18/.test(hinweisText)}/pending=${mycelItem && /pending/.test(mycelItem.textContent)}`,
     !!hinweisBlock && hinweisDisplay !== "none" &&
-    !!andockBtn && /Andocken/.test(andockBtn.textContent || "") &&
-    /pending/.test(letzterAspektText));
+    !andockBtn && !/Modul 18/.test(hinweisText) &&
+    !!mycelItem && /pending/.test(mycelItem.textContent));
 
-  // Probe 14: Nach Gold-Wechsel: Hinweis-Block ausgeblendet, Aspekt-4
-  // rendert mit Datum (statt pending).
+  // Probe 14: Nach Gold-Wechsel: Hinweis-Block ausgeblendet, der
+  // „Mycel-Aktivität"-Aspekt rendert mit Datum (statt pending).
   dispatchHandshake(g, { outcome: "established", peerNodeId: "peer4", direction: "outgoing" });
   // Modal ist noch offen — renderModalContents() wird im Handler
   // gerufen wenn modalOpen===true.
   const hinweisDisplayGold = hinweisBlock && hinweisBlock.style.display;
-  const aspectItemsGold = modal ? modal.querySelectorAll("[data-siegel-aspects] li") : [];
-  const letzterAspektTextGold = aspectItemsGold.length > 0
-    ? aspectItemsGold[aspectItemsGold.length - 1].textContent : "";
-  record("14. Modal nach Gold: Hinweis-Block ausgeblendet, Aspekt-4 rendert Datum",
-    "Hinweis display:none, letzter Aspekt enthält Datum 2026-05-26 statt „pending\"",
-    `display=${hinweisDisplayGold}/datum_in_text=${/2026-05-26/.test(letzterAspektTextGold)}/pending_weg=${!/pending/.test(letzterAspektTextGold)}`,
+  const aspectItemsGold = modal ? Array.from(modal.querySelectorAll("[data-siegel-aspects] li")) : [];
+  const mycelItemGold = aspectItemsGold.find(li => /Mycel-Aktivität/.test(li.textContent));
+  const mycelTextGold = mycelItemGold ? mycelItemGold.textContent : "";
+  record("14. Modal nach Gold: Hinweis-Block ausgeblendet, Aspekt „Mycel-Aktivität\" rendert Datum",
+    "Hinweis display:none, Mycel-Aspekt enthält Datum 2026-05-26 statt „pending\"",
+    `display=${hinweisDisplayGold}/datum_in_text=${/2026-05-26/.test(mycelTextGold)}/pending_weg=${!/pending/.test(mycelTextGold)}`,
     hinweisDisplayGold === "none" &&
-    /2026-05-26/.test(letzterAspektTextGold) &&
-    !/pending/.test(letzterAspektTextGold));
+    /2026-05-26/.test(mycelTextGold) &&
+    !/pending/.test(mycelTextGold));
 
-  // Probe 15: Fail-soft mit fehlendem Modul 18 — Andock-Knopf-Click in
-  // Bronze (vorher Reset auf Bronze + Modal noch offen).
+  // Probe 15: Pflege 2026-06-07 — sauberer Andock-/Identitäts-Pfad. Der
+  // Bronze-Hinweis-Block trägt KEINEN eigenen Andock-Knopf, KEINE
+  // Info-Notiz und KEINEN „Modul 18"-Verweis mehr; er weist nur auf den
+  // „🔑 …"-Identitäts-Knopf hin (vom Host eingehängt).
   S._resetMycelConnectedForTest();
-  // Modal ist offen, renderBronzeHinweisBlock hat Andock-Knopf neu
-  // angelegt. Click → ohne SbkimToolPwa: Info-Notiz im Block.
   const andockBtnNew = modal && modal.querySelector("[data-siegel-andock-btn]");
-  if (andockBtnNew) andockBtnNew.click();
   const infoNotiz = modal && modal.querySelector("[data-siegel-andock-info]");
-  record("15. Fail-soft: Andock-Click ohne SbkimToolPwa → Info-Notiz im Block",
-    "Info-Notiz „Modul 18 noch nicht verfügbar…\" sichtbar",
-    `andockBtn=${!!andockBtnNew}/infoNotiz=${!!infoNotiz}/text=${infoNotiz && infoNotiz.textContent.slice(0,40)}`,
-    !!andockBtnNew && !!infoNotiz &&
-    /Modul 18 noch nicht verfügbar/.test(infoNotiz.textContent));
+  const hinweisTextClean = hinweisBlock ? hinweisBlock.textContent : "";
+  record("15. Sauberer Pfad: kein Andock-Knopf, kein „Modul 18\", Verweis auf 🔑-Knopf",
+    "kein [data-siegel-andock-btn], keine Info-Notiz, kein „Modul 18\", Text nennt Identitäts-Knopf",
+    `andockBtn=${!!andockBtnNew}/infoNotiz=${!!infoNotiz}/modul18=${/Modul 18/.test(hinweisTextClean)}/nennt_knopf=${/Eigene Identität & Spore/.test(hinweisTextClean)}`,
+    !andockBtnNew && !infoNotiz &&
+    !/Modul 18/.test(hinweisTextClean) &&
+    /Eigene Identität & Spore/.test(hinweisTextClean));
 
   // Probe 16: Pflege Modal-Local-Time 2026-05-26 (Sub-(e)-Folge-Pflege 3/3).
   // Modal-Datum „Bezeugt seit YYYY-MM-DD, HH:MM Uhr" muss aus LOKALEN

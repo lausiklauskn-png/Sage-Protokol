@@ -2,6 +2,22 @@
 
 > **Status:** 🟦 Code-Stub (2026-05-24, Bau-Sitzung 16) · Siegel-Backlog · **Priorität hoch** (vor App-Freigabe)  ·  **Schicht:** Selbst-Bezeugung der PWA-Zelle nach erfolgter Integration der SBKIM-Pflicht-Module  ·  **Anker:** Header-Badge in der Navleiste (vierte Plakette nach `#lamp-alive` / `#lamp-traffic` / `#lamp-fremd`), Click öffnet eigenständiges Erklärungs-Modal in `document.body`
 > **Datei (Code):** `src/modules/16_siegel.js` (Bau-Sitzung 16 vom 2026-05-24)
+>
+> **Pflege 2026-06-07 (Code geschrieben — Bau Andock-Semantik-Beschreibung):**
+> Der Modul-18-Pfad ist aus dem Bronze-Hinweis-Block entfernt
+> (`BRONZE_HINWEIS_HTML_FALLBACK` + `[data-siegel-andock-btn]` +
+> `SbkimToolPwa`/„Modul 18 …"-Fehlertexte raus). Der Bronze-Block ist jetzt
+> reiner Hinweis-Text und verweist auf den „🔑 Eigene Identität & Spore
+> erzeugen / verwalten →"-Knopf, den der Host (Sage-Page / Endknoten) oben
+> ins Modal einhängt — ein einziger, sauberer Identitäts-/Andock-Pfad.
+> Neuer `ZERTIFIKAT_ASPEKTE`-Eintrag „Semantische Selbst-Beschreibung im
+> Siegel" (2026-06-07, module 16). Die eigentliche Textfeld-/Embedding-/
+> Re-Sign-Wiring (Text → `domainDescription` → Modul 03 → `domainVector` →
+> Modul 02 `generateOwnSpore`) liegt host-seitig in `index.html`
+> (`SBKIM_SEMANTIK_CONFIG` + `buildSemantikBlock` / `sageReSignWith­Description`),
+> damit Modul 16 reines Render-Modul bleibt (nicht protokoll-aktiv).
+> Smoke `tests/smoke_bau16_sub_e_bronze.mjs` 16/16 grün. **Sichttest des
+> Textfeldes ungeprüft — wartet auf Klaus' Galaxy-Tab-S6-Browser.**
 
 ---
 

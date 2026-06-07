@@ -111,6 +111,12 @@
       aspect:      "Mycel-Aktivität (erster Hyphen-Verkehr)",
       description: "Diese Zelle hatte in dieser Sitzung mindestens einen Hyphen-Verkehr (erfolgreicher Cross-Knoten-Handshake) — Leben im Mycel. SIEGEL-Stufe Gold.",
     },
+    {
+      since:       "2026-06-07",
+      module:      "16",
+      aspect:      "Semantische Selbst-Beschreibung im Siegel",
+      description: "Direkt im Siegel lässt sich die App in eigenen Worten (oder per eingefügter README) beschreiben; der Text wird per Modul 03 (e5-small, 384-dim, L2-normalisiert) zum Domain-Vektor und mit dem vorhandenen Schlüssel neu in die Spore signiert — gleiche nodeId, treffenderer verified-match. Ein einziger, sauberer Identitäts-/Andock-Pfad ohne Modul-18-Verweis.",
+    },
   ];
 
   // ---- Aspekt-4-Anker (Karte 16 § Sub (e) dynamische Render-Variante) ----
@@ -144,8 +150,6 @@
   var HANDSHAKE_EVENT = "sbkim:handshake";
   var ARIA_LABEL_BRONZE = "SBKIM-Siegel · im Mycel, ruhend";
   var ARIA_LABEL_GOLD = "SBKIM-Siegel · im Mycel, aktiv";
-  var BRONZE_HINWEIS_HTML_FALLBACK =
-    "Modul 18 noch nicht verfügbar — aktiven Hyphen-Verkehr via Sage-Page-Andock-Wizard knüpfen.";
 
   // ---- Wappen-SVG (Akkretions-Disk-Korona + Auszeichnungs-Siegel) ----
   //
@@ -682,9 +686,10 @@
     header.appendChild(closeBtn);
 
     // Sub (e) Bronze-Hinweis-Block (Karte 16 § Sub (e) Klick-Verhalten in
-    // Bronze). Sichtbar nur wenn _meta.mycelConnected === false. Enthält
-    // den Hinweis-Text + einen [Andocken]-Knopf, der Modul 18 Sub (a)
-    // öffnet (fail-soft: wenn Modul 18 nicht da, Info-Notiz im Modal).
+    // Bronze). Sichtbar nur wenn _meta.mycelConnected === false. Reiner
+    // Hinweis-Text; der Andock-/Identitäts-Pfad ist der „🔑 …"-Knopf, den
+    // der Host (Sage-Page / Endknoten) oben ins Modal einhängt (Pflege
+    // 2026-06-07: kein Modul-18-Verweis mehr, ein Pfad statt mehrerer).
     var bronzeHinweisBlock = doc.createElement("div");
     bronzeHinweisBlock.setAttribute("data-siegel-bronze-hinweis", "");
     bronzeHinweisBlock.style.cssText = [
@@ -809,88 +814,18 @@
     block.style.display = "block";
 
     var p = doc.createElement("p");
-    p.style.cssText = "margin:0 0 0.6rem;";
+    p.style.cssText = "margin:0;";
     var strong = doc.createElement("strong");
     strong.textContent = "Im Mycel · ruhend";
     strong.style.cssText = "color:var(--siegel-bronze, #8C6E2F);font-weight:600;";
     p.appendChild(strong);
     p.appendChild(doc.createTextNode(
       " — diese Zelle trägt das SBKIM-Siegel und ist damit Teil des Mycels, so klein sie auch ist. " +
-      "In dieser Sitzung gab es noch keinen Hyphen-Verkehr (Handshake). " +
-      "[Andocken] knüpft aktiv einen Faden zu einem Geschwister-Knoten.",
+      "In dieser Sitzung gab es noch keinen Hyphen-Verkehr (Handshake). Über den Knopf " +
+      "„🔑 Eigene Identität & Spore erzeugen / verwalten →“ oben knüpfst du aktiv einen Faden " +
+      "zu einem Geschwister-Knoten.",
     ));
     block.appendChild(p);
-
-    var andockBtn = doc.createElement("button");
-    andockBtn.type = "button";
-    andockBtn.setAttribute("data-siegel-andock-btn", "");
-    andockBtn.textContent = "Andocken";
-    andockBtn.style.cssText = [
-      "padding:0.4rem 0.9rem",
-      "background:var(--siegel-bronze, #8C6E2F)",
-      "color:#1A1306",
-      "border:1px solid var(--siegel-line, rgba(201,169,97,0.45))",
-      "border-radius:6px",
-      "font-family:'Geist', system-ui, sans-serif",
-      "font-size:0.86rem",
-      "font-weight:500",
-      "cursor:pointer",
-    ].join(";");
-    andockBtn.addEventListener("click", function () {
-      // Drei-Pfad-Logik (Pflege 2026-05-28 Refinement von PR #197):
-      //   Pfad 1 — toolPwa.openAndockTab existiert + Aufruf wirft NICHT
-      //            → Wizard startet → Bronze-Modal schließt sich.
-      //   Pfad 2 — toolPwa.openAndockTab existiert + Aufruf wirft (z.B.
-      //            ToolPwaNotReadyError weil init() im Andocker fehlt)
-      //            → Bronze-Modal BLEIBT OFFEN + Info-Hinweis im Block.
-      //   Pfad 3 — toolPwa fehlt komplett (Modul 18 nicht geladen)
-      //            → Fallback BRONZE_HINWEIS_HTML_FALLBACK.
-      var toolPwa = global.SbkimToolPwa;
-      if (toolPwa && typeof toolPwa.openAndockTab === "function") {
-        var threw = false;
-        var thrownErr = null;
-        try { toolPwa.openAndockTab(); }
-        catch (err) {
-          threw = true;
-          thrownErr = err;
-          warn("Modul 18 openAndockTab fehlgeschlagen.", err);
-        }
-        if (!threw) {
-          // Pfad 1 — Erfolg: Wizard ist im Mount, Bronze-Modal weg.
-          closeModal();
-          return;
-        }
-        // Pfad 2 — Throw: Modal bleibt offen, Info-Hinweis im Block.
-        var existing2 = block.querySelector("[data-siegel-andock-info]");
-        if (existing2) return;
-        var info2 = doc.createElement("p");
-        info2.setAttribute("data-siegel-andock-info", "");
-        var errName = (thrownErr && thrownErr.name) || "Error";
-        if (errName === "ToolPwaNotReadyError") {
-          info2.textContent =
-            "Modul 18 ist geladen, aber im Andocker nicht initialisiert " +
-            "(SbkimToolPwa.init() fehlt). Bauer muss init() im sbkim-init " +
-            "nach SbkimSiegel.init ergänzen.";
-        } else {
-          info2.textContent =
-            "Andock-Wizard konnte nicht starten — " +
-            (thrownErr && thrownErr.message ? thrownErr.message : errName) +
-            ".";
-        }
-        info2.style.cssText = "margin:0.6rem 0 0;font-size:0.82rem;color:rgba(245,245,255,0.7);font-style:italic;";
-        block.appendChild(info2);
-        return;
-      }
-      // Pfad 3 — Fallback: Modul 18 fehlt komplett.
-      var existing = block.querySelector("[data-siegel-andock-info]");
-      if (existing) return;        // idempotent
-      var info = doc.createElement("p");
-      info.setAttribute("data-siegel-andock-info", "");
-      info.textContent = BRONZE_HINWEIS_HTML_FALLBACK;
-      info.style.cssText = "margin:0.6rem 0 0;font-size:0.82rem;color:rgba(245,245,255,0.7);font-style:italic;";
-      block.appendChild(info);
-    });
-    block.appendChild(andockBtn);
   }
 
   function renderModalContents() {
