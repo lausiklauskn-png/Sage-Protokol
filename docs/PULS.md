@@ -1841,6 +1841,29 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · Mein-Rezeptbuch angedockt (Identitäts-Abgleich + verified-match 0.824068 + Vollvernetzung)
+
+**Rolle:** Andock-/Verifikations-Sitzung. Branch `claude/sbkim-seal-vault-sync-bPfB7`.
+
+- **Auslöser:** Brief von Mein-Rezeptbuch (eigener Briefkasten gebaut, SIGNAL seq 1) — vier
+  Punkte: Identitäts-Divergenz, Vollvernetzung, Match-Abgleich, Konventionen.
+- **Identitäts-Abgleich:** NETZ-STAND/status führten die alte Handshake-nodeId `BSWxXmX…`
+  (live-direct). Kanonische Live-Identität ist `uOpUBez…` (createdAt 2026-05-24). Frische
+  Spore aus raw/main reziprok **✔ VALID** → `uOpUBez…` bestätigt, `BSWxXmX…` + `RHhposP0…`
+  → `previousNodeIds` (SYNC-VEREINBARUNG §7: Krypto-Spore gewinnt bei Divergenz).
+- **verified-match:** Modul-04-Cosinus Sage ⟷ Mein-Rezeptbuch = **0.824068** ≥ 0.80
+  (= ihre Browser-Rechnung 0.8241) → Stufe `verified-match` (vorher `live-direct`).
+- **Vollvernetzung:** Mein-Rezeptbuch in `SIGNAL.json` mailboxes + `ack=1` + Wächter-Peer
+  + 📬-Knopf-Peer; Postfach `AUSTAUSCH-Rezeptbuch.md` (alle 4 Fragen beantwortet).
+  `rezeptbuch_inbox.json` + `.verify.md` + `status.json` + `NETZ-STAND.md` nachgezogen.
+- **Briefkasten-Runde mitquittiert** (reziproke Bestätigungen / Aufträge an andere, nichts
+  für Sage offen): SB-KIMTool-Point 18→20, Jasons-Tresor 8→10, Mein-Tresor 9→13. Wächter
+  danach „alles synchron". `SIGNAL.json` seq 18→19.
+- **Netz-Stand:** vier `verified-match` (SB-KIMTool 0.848508, Jasons 0.847784, Mein-Tresor
+  0.847784, Mein-Rezeptbuch 0.824068). **Offen:** Mein-Mixarium hat noch kein `SIGNAL.json`.
+- **Sichttest:** JSON valide, alle 4 Inbox-Cosines ≥ 0.80, IIFE-Syntax OK, Wächter synchron.
+  Browser-Sichttest der 📬-Karte (jetzt 4 Nachbarn) **wartet auf Klaus**.
+
 ### 2026-06-07 · Sicherheits-Tafel Briefkasten (Bedrohungsmodell + Leser-Regel)
 
 **Rolle:** Sicherheits-/Doku-Sitzung. Branch `claude/sbkim-seal-vault-sync-bPfB7`.

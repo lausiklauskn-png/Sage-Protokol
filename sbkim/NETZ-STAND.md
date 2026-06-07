@@ -24,7 +24,7 @@
 | Knoten | Domäne | nodeId | Stufe | Beweis |
 |---|---|---|---|---|
 | **Sage-Protokol** (Hub + Knoten) | Mycel-Bibliothek | `nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA` | `live-direct` | eigene Spore `sbkim/spore.json` |
-| **Mein-Rezeptbuch** | Kochrezepte | `BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY` | `live-direct` | Cross-Knoten-Handshake 2026-05-16/17 |
+| **Mein-Rezeptbuch** | Kochrezepte | `uOpUBezUVbOMsVd2C9BkHW80agnLx5tCx_nIRy2KkXg` | **`verified-match` 0.824068** (auch `live-direct`) | `sbkim/rezeptbuch_inbox.verify.md` |
 | **Mein-Mixarium** | Cocktails / Drinks | `JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY` | `live-direct` | Cross-Knoten-Handshake 2026-05-17 |
 | **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY` | **`verified-match` 0.848508** | `sbkim/point_inbox.verify.md` |
 | **Jasons-Tresor** | Jasons-Tresor-Bibliothek | `E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM` | **`verified-match` 0.847784** | `sbkim/jason_inbox.verify.md` |
@@ -38,6 +38,7 @@
 | Sage ⟷ SB·KIMTool·Point | **0.848508** | 2026-05-30 (erster vollständiger Forker-Andock) |
 | Sage ⟷ Jasons-Tresor | **0.847784** | 2026-06-06 (nach Identitätswechsel, echter Vektor) |
 | Sage ⟷ Mein-Tresor | **0.847784** | 2026-06-07 (echter Vektor; = Jasons, Schwester wortgleich) |
+| Sage ⟷ Mein-Rezeptbuch | **0.824068** | 2026-06-07 (Identitäts-Abgleich uOpUBez…, echter Vektor) |
 
 ## Netz-Signal (Briefkasten-Pflege, INTERFACES §11.6 — Pflicht für alle Knoten)
 
@@ -58,8 +59,10 @@ im Wächter (`.github/sbkim-watch.mjs`) **und** im 📬-Knopf der `index.html` a
 (Auto-Issue-Workflow, `issues: write`) bewusst behalten — die schlanke stdout-Referenz-mjs
 wäre ein Downgrade; die netzweite Synchronität läuft über das gemeinsame
 `SIGNAL.json`-Schema, nicht über die Wächter-Implementierung.
-**Offen:** `verified-match` Sage⟷Mein-Tresor (echter `domainVector` von Mein-Tresor →
-Modul-04-Nachrechnung, eigene Sitzung).
+**Update 2026-06-07:** Mein-Tresor (0.847784) **und** Mein-Rezeptbuch (0.824068,
+Identitäts-Abgleich BSWxXmX… → uOpUBez…) sind jetzt `verified-match`; beide als Peer im
+Wächter + 📬-Knopf + Postfach. **Offen:** Mein-Mixarium hat noch kein `SIGNAL.json` (404) →
+sobald vorhanden, als Peer aufnehmen + Match rechnen.
 
 ## Postfächer (Datei-Dead-Drop, Sync-Vertrag §11.4)
 
@@ -68,6 +71,7 @@ Modul-04-Nachrechnung, eigene Sitzung).
 | SB·KIMTool·Point | `sbkim/AUSTAUSCH.md` | `…/SB-KIMTool-Point/main/sbkim/AUSTAUSCH.md` |
 | Jasons-Tresor | `sbkim/AUSTAUSCH-JasonsTresor.md` | `…/Jasons-Tresor/main/sbkim/AUSTAUSCH.md` |
 | Mein-Tresor | `sbkim/AUSTAUSCH-MeinTresor.md` | `…/Mein-Tresor/main/sbkim/AUSTAUSCH.md` |
+| Mein-Rezeptbuch | `sbkim/AUSTAUSCH-Rezeptbuch.md` | `…/Mein-Rezeptbuch/main/sbkim/AUSTAUSCH-Sage.md` |
 
 ## Werkzeuge (für Andock, Verifikation, Embedding)
 
