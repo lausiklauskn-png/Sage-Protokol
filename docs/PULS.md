@@ -1841,6 +1841,24 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · Abschluss + Vorbereitung: Siegel-/Andock-Verbesserung (Semantik-Textfeld)
+
+**Rolle:** Abschluss-/Übergabe-Sitzung. Branch `claude/sbkim-seal-vault-sync-bPfB7`.
+
+- **Abschluss** der Netz-Vollvernetzungs-Sitzung dokumentiert:
+  `docs/sessions/archiv/2026-06-07_netz-vollvernetzung-und-siegel-vorbereitung.md` (was
+  grundlegend gemacht wurde — Briefkasten-Angleich, reiche Karten-Ansicht, Sicherheits-Tafel,
+  fünf verified-match-Andocks, innerer Verbund komplett).
+- **Nächste Sitzung vorbereitet** (Klaus' Wunsch): Bau-Brief
+  `docs/sessions/BRIEF_BAU_ANDOCK_SEMANTISCHE_BESCHREIBUNG.md`. Inhalt: im Andock-/
+  Identitäts-Modul (Button „🔑 Eigene Identität & Spore erzeugen / verwalten →") ein
+  **auto-wachsendes Textfeld** für die **semantische Beschreibung**, Placeholder „Beschreibe
+  deine App neu oder kopiere die Beschreibung / README hier hinein" + Hinweis zu Inhalt/Länge.
+  Der Text → `domainDescription` + Modul-03-Embedding → besserer `domainVector` in der
+  signierten Spore → bessere semantische Auffindbarkeit. **Design-Referenz: Mein-Tresor-Repo.**
+- Offene Punkte für den Start der Bau-Sitzung im Brief markiert (Hinweis-Wortlaut,
+  re-embed/re-sign-Tiefe, Sage-only vs. netzweit kopierbar).
+
 ### 2026-06-07 · Mein-Mixarium angedockt (Identitäts-Abgleich + verified-match 0.806030) — innerer Verbund komplett
 
 **Rolle:** Andock-/Verifikations-Sitzung. Branch `claude/sbkim-seal-vault-sync-bPfB7`.
