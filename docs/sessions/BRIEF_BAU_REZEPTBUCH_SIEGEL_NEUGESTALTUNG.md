@@ -64,6 +64,30 @@ den Spore-Vektor speist, (C) Vertrauens-/Schutz-Block im Siegel, (D) Erklär-Sei
 In-Page-Overlay. KEINE neue Krypto, kein PII, Lampen/Widget-Slots unangetastet, Modul 16
 bleibt reines Render-Modul.
 
+SCHRITT 0 — RICHTIGES REPO UND RICHTIGEN BRANCH BESTÄTIGEN (PFLICHT, vor allem anderen):
+Diese Aufgabe gilt für lausiklauskn-png/Mein-Rezeptbuch. ZWEI FALLEN (beide haben schon
+Vorgänger-Sitzungen in die Irre geführt):
+ (1) Es gibt ein ähnlich benanntes blanco-Repo lausiklauskn-png/Muttis-Rezeptbuch OHNE SBKIM
+     — NICHT gemeint.
+ (2) Mein-Rezeptbuch hat ~37 Branches. Der Branch, auf dem ein frischer Klon landet, kann ein
+     ALTER claude/*-Branch OHNE sbkim/ sein (z.B. claude/recipe-book-app-… von vor Monaten).
+     Das volle SBKIM liegt auf dem Branch, der auch live über GitHub Pages läuft — i.d.R. main.
+Führe ZUERST aus:
+  git remote -v
+  git branch -a
+  ls sbkim/ 2>/dev/null || echo "KEIN sbkim/ auf aktuellem Branch"
+Wenn sbkim/ fehlt:
+  git fetch origin && git checkout main && git pull --ff-only && ls sbkim/
+Falls auch main kein sbkim/ hat, finde den richtigen Branch:
+  git fetch --all
+  for b in $(git branch -r | sed 's| *origin/||'); do git ls-tree --name-only "origin/$b" -- sbkim/16_siegel.js 2>/dev/null | grep -q . && echo "sbkim/ liegt auf: $b"; done
+Erwartung: ein Branch (i.d.R. main) listet sbkim/ mit 16_siegel.js, sbkim-init.js, 02_spore.js,
+03_embedding.js (~33 Dateien) — DAS ist dein Arbeitsstand. Belegt: Mein-Rezeptbuch ist live ein
+voller SBKIM-Endknoten (verified-match 0.8320, Siegel im Floating-Widget); es ist NICHTS „von
+Grund auf" zu bauen — du musst nur auf dem richtigen Branch sein.
+- Wenn remote = Muttis-Rezeptbuch / ein anderes Repo → STOPP, falsches Repo: melde zurück.
+- Erst wenn sbkim/ mit den Modulen sichtbar ist, weiter.
+
 ZUERST DEINE EIGENE STRUKTUR LESEN (nicht raten — Lehre aus einer Vorgänger-Sitzung):
 - index.html (Single-File-PWA), sbkim/sbkim-init.js, sbkim/16_siegel.js, sbkim/18_tool_pwa.js,
   sbkim/spore.json, status.json. Finde: das Siegel-Modal (#sbkim-siegel-modal), wo/ob ein
