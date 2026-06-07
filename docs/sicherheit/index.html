@@ -129,5 +129,14 @@
     <a href="../../index.html">Sage-Protokol-Repos</a>. Dort kannst du alles nachprüfen; genau das ist der Sinn.
   </footer>
 </div>
+<script>
+  // Wird die Seite als In-Page-Overlay (iframe) im Siegel gezeigt, ist der
+  // „zurück zu Sage"-Link überflüssig — dort schließt das ✕ des Overlays.
+  // Als eigenständige Seite (eigener Tab/Direktaufruf) bleibt er sichtbar.
+  if (window.self !== window.top) {
+    var b = document.querySelector('.back');
+    if (b) b.style.display = 'none';
+  }
+</script>
 </body>
 </html>

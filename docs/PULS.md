@@ -1841,6 +1841,20 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · UX-Pflege: Vertrauens-Tafel als In-Page-Overlay statt neuem Tab
+
+**Rolle:** Bau-Sitzung (Fortsetzung). Branch `claude/bau-andock-semantik-beschreibung-TiY5D`.
+Auslöser: Klaus' Befund — der „Ausführlich erklärt →"-Link im Siegel öffnete einen **neuen
+Browser-Tab**, der auf dem Tablet umständlich wieder zu schließen ist.
+
+- **`index.html`:** Der Link im Siegel-Schutz-Block ist jetzt ein Knopf, der die Erklär-Seite
+  als **In-Page-Overlay** öffnet (`openSchutzModal` / `closeSchutzModal`): Vollbild-Karte mit
+  iframe auf `docs/sicherheit/index.html` (eine Quelle der Wahrheit), ✕ / Backdrop / Esc
+  schließen. Kein neuer Tab mehr. z-index 100001 (über Siegel-Modal 99998).
+- **`docs/sicherheit/index.html`:** „zurück zu Sage"-Link wird ausgeblendet, wenn die Seite
+  im iframe-Overlay läuft (`window.self !== window.top`); als eigenständige Seite bleibt er.
+- **Checks:** `node --check` Script-Block OK. **Sichttest ungeprüft — wartet auf Klaus.**
+
 ### 2026-06-07 · Bau: Vertrauens-/Sicherheits-Tafel „So funktioniert das Mycel" (Schritt 1)
 
 **Rolle:** Bau-Sitzung (Fortsetzung). Branch `claude/bau-andock-semantik-beschreibung-TiY5D`.
