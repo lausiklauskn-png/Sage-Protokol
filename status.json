@@ -13,9 +13,10 @@
       "domain": "Kochrezepte",
       "integrated": true,
       "integratedAt": "2026-05-16",
-      "reIntegratedAt": "2026-05-17",
-      "nodeId": "BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY",
+      "reIntegratedAt": "2026-06-07",
+      "nodeId": "uOpUBezUVbOMsVd2C9BkHW80agnLx5tCx_nIRy2KkXg",
       "previousNodeIds": [
+        "BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY",
         "RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI"
       ],
       "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json",
@@ -41,7 +42,9 @@
         "Knabbereien",
         "Fingerfood"
       ],
-      "pingStatus": "live-direct",
+      "pingStatus": "verified-match",
+      "matchScore": 0.824068,
+      "note": "Erster Endknoten (Kochrezepte), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Mixarium). IDENTITÄTS-ABGLEICH 2026-06-07: NETZ-STAND führte die alte Handshake-nodeId BSWxXmX… — Mein-Rezeptbuch hat aber eine neuere signierte Live-Identität uOpUBez… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= uOpUBez…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (BSWxXmX…, RHhposP0…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Rezeptbuch = 0.824068 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8241). Prüf-Vermerk: sbkim/rezeptbuch_inbox.verify.md.",
       "url": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/"
     },
     {

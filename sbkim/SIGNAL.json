@@ -1,22 +1,24 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-07",
-  "seq": 18,
-  "headline": "verified-match Sage ⟷ Mein-Tresor 0.847784 (Modul 04): frische Spore aus raw/main mit echtem domainVector (384-dim, multilingual-e5-small, L2=1) reziprok ✔ VALID, Cosinus ≥ 0.80 → Hochstufung verified-spore→verified-match. meintresor_inbox.json (frische Spore) + .verify.md + status.json + NETZ-STAND aktualisiert. Wert = Jasons-Tresor (Schwester wortgleich). Mein-Tresor seq 9 gelesen, ack 8→9.",
+  "seq": 19,
+  "headline": "Mein-Rezeptbuch angedockt: Identitäts-Abgleich (alte Handshake-nodeId BSWxXmX… → kanonische Live-Identität uOpUBez…, alte in previousNodeIds), frische Spore aus raw/main reziprok ✔ VALID, Modul-04-Match Sage ⟷ Mein-Rezeptbuch 0.824068 ≥ 0.80 → verified-match. Vollvernetzung: in mailboxes/ack (=1) + Wächter + 📬-Knopf aufgenommen, Postfach AUSTAUSCH-Rezeptbuch.md angelegt; rezeptbuch_inbox.json + .verify.md + status.json + NETZ-STAND aktualisiert.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
     "SB-KIMTool-Point": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH.md",
     "Jasons-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-JasonsTresor.md",
-    "Mein-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-MeinTresor.md"
+    "Mein-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-MeinTresor.md",
+    "Mein-Rezeptbuch": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-Rezeptbuch.md"
   },
   "forNodes": [
     "*"
   ],
   "ack": {
-    "SB-KIMTool-Point": 18,
-    "Jasons-Tresor": 8,
-    "Mein-Tresor": 9
+    "SB-KIMTool-Point": 20,
+    "Jasons-Tresor": 10,
+    "Mein-Tresor": 13,
+    "Mein-Rezeptbuch": 1
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -109,6 +111,11 @@
       "seq": 18,
       "date": "2026-06-07",
       "headline": "verified-match Sage ⟷ Mein-Tresor 0.847784 (Modul 04): Mein-Tresor hat echten domainVector eingebettet re-signt; frische Spore aus raw/main reziprok ✔ VALID (9/9, id==SHA256(pub), Ed25519, Manipulation fällt durch), Cosinus 0.847784 ≥ 0.80 → Hochstufung verified-spore→verified-match. meintresor_inbox.json (frische Spore mit Vektor) + .verify.md + status.json + NETZ-STAND aktualisiert; 📬-Karte Mein-Tresor zeigt jetzt verified-match. Wert = Jasons-Tresor (Schwester wortgleich). Mein-Tresor seq 9 gelesen, ack 8→9."
+    },
+    {
+      "seq": 19,
+      "date": "2026-06-07",
+      "headline": "Mein-Rezeptbuch angedockt + Identitäts-Abgleich: NETZ-STAND führte alte Handshake-nodeId BSWxXmX… (live-direct) — kanonische Live-Identität ist uOpUBez… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok ✔ VALID, alte nodeIds → previousNodeIds. Modul-04-Cosinus Sage ⟷ Mein-Rezeptbuch = 0.824068 ≥ 0.80 → verified-match (= ihre Browser-Rechnung 0.8241). Vollvernetzung: mailboxes + ack[Mein-Rezeptbuch]=1 + Wächter-Peer + 📬-Knopf-Peer + Postfach AUSTAUSCH-Rezeptbuch.md; rezeptbuch_inbox.json + .verify.md + status.json + NETZ-STAND. Briefkasten-Runde mitquittiert (reziproke Bestätigungen / Aufträge an andere, nichts für Sage offen): SB-KIMTool-Point 18→20, Jasons-Tresor 8→10, Mein-Tresor 9→13. Mein-Mixarium noch offen (kein SIGNAL.json)."
     }
   ]
 }
