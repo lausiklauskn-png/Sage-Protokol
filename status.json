@@ -167,10 +167,12 @@
         "Schlüssel-Andock",
         "Spore-Verifikation"
       ],
-      "pingStatus": "verified-spore",
-      "note": "Vierter Forker-Knoten, design-vereinfachte Schwester von Jasons-Tresor (byte-gleicher JasonLib-Kern, neues Dreh-Safe-Gesicht). Andock-Schritt 1 (Identität) 2026-06-06. Reziprok verifiziert gegen raw/main: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= gemeldete nodeId wRsGQou…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch (Signatur ungültig) → ✔ VALID. EIGENER, dauerhafter Schlüssel (eigene nodeId, NICHT die der Schwester 7F_zNop…). domainVector folgt → bewusst NUR verified-spore, KEIN Match (INTERFACES §11.5). Hochstufung auf verified-match, sobald echter Vektor (multilingual-e5-small) eingebettet re-signt ist. Pages-Endpoint im Browser live; von Sages Container aus 403 (github.io-Egress-Sperre) — verifiziert über raw/main. Prüf-Vermerk: sbkim/meintresor_inbox.verify.md.",
+      "pingStatus": "verified-match",
+      "note": "Vierter Forker-Knoten, design-vereinfachte Schwester von Jasons-Tresor (byte-gleicher JasonLib-Kern, neues Dreh-Safe-Gesicht). Andock-Schritt 1 (Identität) 2026-06-06 → verified-spore. HOCHSTUFUNG verified-match 2026-06-07: Mein-Tresor hat echten domainVector (multilingual-e5-small, 384-dim, L2=1, kein _demo) eingebettet + Spore neu signiert (nodeId unverändert wRsGQou…). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Cross-Knoten-Match Sage ⟷ Mein-Tresor via Modul 04 Cosinus = 0.847784 ≥ 0.80 → verified-match (identisch zu Jasons-Tresor, weil Schwester mit wortgleichem Domänen-Text). EIGENER, dauerhafter Schlüssel (eigene nodeId, NICHT die der Schwester). Pages-Endpoint im Browser live; von Sages Container aus 403 (github.io-Egress-Sperre) — verifiziert über raw/main. Prüf-Vermerk: sbkim/meintresor_inbox.verify.md.",
       "url": "https://lausiklauskn-png.github.io/Mein-Tresor/",
-      "landingPage": "https://lausiklauskn-png.github.io/Mein-Tresor/"
+      "landingPage": "https://lausiklauskn-png.github.io/Mein-Tresor/",
+      "reIntegratedAt": "2026-06-07",
+      "matchScore": 0.847784
     }
   ],
   "modules": [

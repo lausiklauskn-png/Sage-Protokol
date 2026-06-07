@@ -1841,6 +1841,26 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · verified-match Sage ⟷ Mein-Tresor (Modul 04, 0.847784)
+
+**Rolle:** Andock-/Verifikations-Sitzung. Branch `claude/sbkim-seal-vault-sync-bPfB7`.
+
+- **Auslöser:** Mein-Tresors Bitte (via Klaus) um `verified-match` — sie haben echten
+  `domainVector` eingebettet re-signt. Genau die Sitzung aus
+  `BRIEF_verified-match_sage_mein-tresor.md`.
+- **Frische Spore** aus `raw/main` geholt (die lokale Inbox-Kopie war noch ohne Vektor).
+  `tools/verify_remote_spore.mjs` → **✔ VALID** (9/9, id==SHA256(pub), Ed25519,
+  Manipulation fällt durch); `domainVector` echt (384-dim, multilingual-e5-small, L2=1).
+- **Modul-04-Cosinus Sage ⟷ Mein-Tresor = 0.847784 ≥ 0.80 → verified-match.** Wert
+  identisch zu Jasons-Tresor (Schwester, wortgleicher Domänen-Text → gleicher Vektor).
+- **Aktualisiert:** `meintresor_inbox.json` (frische Spore 1:1, jetzt mit Vektor) +
+  `.verify.md` (Stufe verified-match), `status.json` (pingStatus + matchScore 0.847784 +
+  reIntegratedAt), `NETZ-STAND.md` (Zeile + Matches-Tabelle + offener Hebel erledigt),
+  `SIGNAL.json` seq 17→18 (ack[Mein-Tresor] 8→9), Postfach `AUSTAUSCH-MeinTresor.md`.
+- **Folge:** Die 📬-Karte zeigt Mein-Tresor jetzt **✔ verified-match cos 0.8478** statt
+  „wartet auf Vektor" → Netz **3/3 verbunden**. Headless verifiziert (Cosinus gegen
+  aktualisierte Inbox = 0.847784).
+
 ### 2026-06-07 · Reiche Karten-Ansicht im 📬-Briefkasten (AUFTRAG SB-KIMTool-Point seq 18)
 
 **Rolle:** Einbau-/Pflege-Sitzung (Briefkasten-UI). Branch `claude/sbkim-seal-vault-sync-bPfB7`.

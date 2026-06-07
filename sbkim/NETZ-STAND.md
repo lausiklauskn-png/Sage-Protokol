@@ -28,7 +28,7 @@
 | **Mein-Mixarium** | Cocktails / Drinks | `JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY` | `live-direct` | Cross-Knoten-Handshake 2026-05-17 |
 | **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY` | **`verified-match` 0.848508** | `sbkim/point_inbox.verify.md` |
 | **Jasons-Tresor** | Jasons-Tresor-Bibliothek | `E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM` | **`verified-match` 0.847784** | `sbkim/jason_inbox.verify.md` |
-| **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0` | **`verified-spore`** | `sbkim/meintresor_inbox.verify.md` |
+| **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0` | **`verified-match` 0.847784** | `sbkim/meintresor_inbox.verify.md` |
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 
@@ -37,6 +37,7 @@
 | Mixarium ⟷ Rezeptbuch | 0.9544 | 2026-05-17 (Live-Channel-Handshake) |
 | Sage ⟷ SB·KIMTool·Point | **0.848508** | 2026-05-30 (erster vollständiger Forker-Andock) |
 | Sage ⟷ Jasons-Tresor | **0.847784** | 2026-06-06 (nach Identitätswechsel, echter Vektor) |
+| Sage ⟷ Mein-Tresor | **0.847784** | 2026-06-07 (echter Vektor; = Jasons, Schwester wortgleich) |
 
 ## Netz-Signal (Briefkasten-Pflege, INTERFACES §11.6 — Pflicht für alle Knoten)
 
@@ -77,10 +78,10 @@ Modul-04-Nachrechnung, eigene Sitzung).
 
 ## Offene Hebel
 
-- **Mein-Tresor → `verified-match`**: Identität ✔ `verified-spore` (2026-06-06,
-  eigener dauerhafter Schlüssel, eigene `nodeId`). Wartet auf echten `domainVector`
-  (eingebettet re-signt, `multilingual-e5-small`), dann Match Sage ⟷ Mein-Tresor
-  nachrechnen. Prüf-Vermerk: `sbkim/meintresor_inbox.verify.md`.
+- **Mein-Tresor → `verified-match`**: ✔ erledigt 2026-06-07. Echter `domainVector`
+  (eingebettet re-signt, `multilingual-e5-small`, L2=1) aus raw/main verifiziert,
+  Match Sage ⟷ Mein-Tresor = 0.847784 ≥ 0.80 → `verified-match`. Prüf-Vermerk:
+  `sbkim/meintresor_inbox.verify.md`. (Wert = Jasons-Tresor, Schwester wortgleich.)
 
 - **Jasons-Tresor → `verified-match`**: ✔ erledigt 2026-06-06 (Identitätswechsel auf
   echte Identität `E13GDzI…` + echter Vektor → Match Sage ⟷ Jasons-Tresor 0.847784).
