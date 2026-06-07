@@ -132,7 +132,7 @@
   .netz-check-btn.checking { opacity: 0.65; cursor: progress; }
   .netz-check-btn.has-news { color: var(--gold); border-color: var(--gold); box-shadow: 0 0 10px rgba(244,180,53,0.35); }
   @media (max-width: 560px) { .netz-check-btn .ncb-label { display: none; } }
-  .netz-check-pop { position: fixed; top: 3.6rem; right: 1rem; z-index: 120; max-width: 340px; padding: 0.85rem 1rem; background: rgba(12,10,30,0.97); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 18px 50px rgba(0,0,0,0.6); font-size: 0.85rem; color: var(--text); display: none; }
+  .netz-check-pop { position: fixed; top: 3.6rem; right: 1rem; z-index: 120; width: 360px; max-width: calc(100vw - 1.4rem); max-height: 78vh; overflow-y: auto; padding: 0.85rem 1rem; background: rgba(12,10,30,0.97); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 18px 50px rgba(0,0,0,0.6); font-size: 0.85rem; color: var(--text); display: none; }
   .netz-check-pop.show { display: block; }
   .netz-check-pop h4 { margin: 0 0 0.5rem; font-size: 0.9rem; }
   .netz-check-pop .row { margin: 0.3rem 0; line-height: 1.4; }
@@ -141,6 +141,22 @@
   .netz-check-pop .muted { color: var(--muted); font-size: 0.78rem; }
   .netz-check-pop a { color: var(--gold); }
   .netz-check-pop .close { position: absolute; top: 0.5rem; right: 0.6rem; cursor: pointer; color: var(--muted); background: none; border: none; font-size: 1rem; }
+  /* Reiche Karten-Ansicht (SBKIM-Briefkasten, AUFTRAG SB-KIMTool-Point seq 18) */
+  .netz-check-pop .nm-head { text-align: center; padding-bottom: 0.5rem; margin-bottom: 0.4rem; border-bottom: 1px solid var(--line); }
+  .netz-check-pop .nm-self { font-weight: 600; color: var(--text); }
+  .netz-check-pop .nm-id { color: var(--muted); font-size: 0.7rem; font-family: ui-monospace, monospace; margin-top: 0.1rem; }
+  .netz-check-pop .peer { padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+  .netz-check-pop .peer:last-of-type { border-bottom: none; }
+  .netz-check-pop .nm-name { font-weight: 600; margin-bottom: 0.25rem; color: var(--accent); }
+  .netz-check-pop .nm-rows > div { display: flex; gap: 0.4rem; margin: 0.15rem 0; line-height: 1.35; font-size: 0.78rem; }
+  .netz-check-pop .nm-k { color: var(--muted); min-width: 4.4rem; flex: none; }
+  .netz-check-pop .nm-ok { color: var(--accent); }
+  .netz-check-pop .nm-warn { color: var(--gold); }
+  .netz-check-pop .nm-muted { color: var(--muted); }
+  .netz-check-pop .nm-foot { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--line); }
+  .netz-check-pop .nm-note { color: var(--muted); font-size: 0.7rem; margin: 0.3rem 0 0; }
+  .netz-check-pop code { font-family: ui-monospace, monospace; font-size: 0.72rem; color: var(--text); }
+  .ncb-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 1.05rem; height: 1.05rem; margin-left: 0.1rem; padding: 0 0.25rem; border-radius: 999px; background: var(--gold); color: #1a1306; font-size: 0.66rem; font-weight: 700; }
   .lamp { position: relative; width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.12); transition: background .2s; }
   .lamp.alive { background: var(--accent); box-shadow: 0 0 8px rgba(110,231,211,0.7); }
   .lamp.alive::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--accent); opacity: 0.45; animation: lamp-breath 3.2s ease-in-out infinite; }
@@ -1006,7 +1022,7 @@
       </div>
       <button type="button" id="netz-check-btn" class="netz-check-btn"
               title="Briefkästen der anderen Knoten jetzt prüfen (SIGNAL.json, live im Browser)"
-              aria-label="Netz-Briefkasten jetzt prüfen">📬 <span class="ncb-label">Briefkasten</span></button>
+              aria-label="Netz-Briefkasten jetzt prüfen">📬 <span class="ncb-label">Briefkasten</span><span class="ncb-badge" id="ncb-badge" hidden></span></button>
       <div class="topbar-meta mono" id="topbar-meta">—</div>
     </div>
   </header>
@@ -4226,55 +4242,114 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   </div>
   <script>
   (function () {
+    // Reiche Karten-Ansicht (AUFTRAG SB-KIMTool-Point seq 18, INTERFACES §11.6):
+    // pro Nachbar ① Spore (verified-spore + nodeId), ② Match (Cosinus LIVE im
+    // Browser: Sages domainVector ⟷ Nachbar-Spore, ≥0.80 = verified-match),
+    // ③ Sync (Nachbar-seq ↔ Sage-ack), ④ Brief (Postfach). Server-los, raw-CORS.
+    var SELF = 'Sage-Protokol';
     var SELF_SIGNAL = 'sbkim/SIGNAL.json';
+    var SELF_SPORE = 'sbkim/spore.json';
     var PEERS = [
-      { name: 'SB-KIMTool-Point', signal: 'https://raw.githubusercontent.com/lausiklauskn-png/SB-KIMTool-Point/main/sbkim/SIGNAL.json', mailbox: 'https://github.com/lausiklauskn-png/SB-KIMTool-Point/blob/main/sbkim/AUSTAUSCH.md' },
-      { name: 'Jasons-Tresor',    signal: 'https://raw.githubusercontent.com/lausiklauskn-png/Jasons-Tresor/main/sbkim/SIGNAL.json',    mailbox: 'https://github.com/lausiklauskn-png/Jasons-Tresor/blob/main/sbkim/AUSTAUSCH.md' },
-      { name: 'Mein-Tresor',      signal: 'https://raw.githubusercontent.com/lausiklauskn-png/Mein-Tresor/main/sbkim/SIGNAL.json',      mailbox: 'https://github.com/lausiklauskn-png/Mein-Tresor/blob/main/sbkim/AUSTAUSCH.md' }
+      { name: 'SB-KIMTool-Point', label: 'SB·KIMTool·Point', inbox: 'sbkim/point_inbox.json',
+        signal: 'https://raw.githubusercontent.com/lausiklauskn-png/SB-KIMTool-Point/main/sbkim/SIGNAL.json',
+        mailbox: 'https://github.com/lausiklauskn-png/SB-KIMTool-Point/blob/main/sbkim/AUSTAUSCH.md' },
+      { name: 'Jasons-Tresor',    label: 'Jasons-Tresor',    inbox: 'sbkim/jason_inbox.json',
+        signal: 'https://raw.githubusercontent.com/lausiklauskn-png/Jasons-Tresor/main/sbkim/SIGNAL.json',
+        mailbox: 'https://github.com/lausiklauskn-png/Jasons-Tresor/blob/main/sbkim/AUSTAUSCH.md' },
+      { name: 'Mein-Tresor',      label: 'Mein-Tresor',      inbox: 'sbkim/meintresor_inbox.json',
+        signal: 'https://raw.githubusercontent.com/lausiklauskn-png/Mein-Tresor/main/sbkim/SIGNAL.json',
+        mailbox: 'https://github.com/lausiklauskn-png/Mein-Tresor/blob/main/sbkim/AUSTAUSCH.md' }
     ];
     var btn = document.getElementById('netz-check-btn');
     var pop = document.getElementById('netz-check-pop');
     var body = document.getElementById('ncp-body');
     var closeBtn = document.getElementById('ncp-close');
+    var badge = document.getElementById('ncb-badge');
     if (!btn) return;
 
-    function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
     async function getJson(url) {
       try { var r = await fetch(url, { cache: 'no-cache' }); if (!r.ok) return { err: r.status }; return { json: await r.json() }; }
       catch (e) { return { err: 'netz' }; }
     }
-
-    async function check() {
-      btn.classList.add('checking'); btn.classList.remove('has-news');
-      var ackRes = await getJson(SELF_SIGNAL);
-      var ack = (ackRes.json && ackRes.json.ack) || {};
-      var rows = [], news = 0, notes = [];
-      for (var i = 0; i < PEERS.length; i++) {
-        var p = PEERS[i];
-        var r = await getJson(p.signal);
-        if (r.err) { notes.push(esc(p.name) + ': kein SIGNAL.json (' + esc(r.err) + ')'); continue; }
-        var seq = Number(r.json.seq);
-        var acked = ack[p.name] == null ? -1 : Number(ack[p.name]);
-        if (isFinite(seq) && seq > acked) {
-          news++;
-          rows.push('<div class="row new">🔔 <b>' + esc(p.name) + '</b> · seq ' + seq +
-            ' (quittiert: ' + (acked < 0 ? '—' : acked) + ')<br><span class="muted">' +
-            esc(r.json.headline || '') + '</span><br><a href="' + p.mailbox + '" target="_blank" rel="noopener">Briefkasten lesen →</a></div>');
-        } else {
-          rows.push('<div class="row ok">✓ ' + esc(p.name) + ' · nichts Neues (seq ' + (isFinite(seq) ? seq : '?') + ')</div>');
-        }
-      }
-      var html = '<h4>' + (news ? '🔔 Neues im Netz (' + news + ')' : '✓ Netz ruhig') + '</h4>' + rows.join('');
-      if (notes.length) html += '<div class="row muted">' + notes.join('<br>') + '</div>';
-      html += '<div class="row muted">' + new Date().toLocaleString() + '</div>';
-      body.innerHTML = html;
-      pop.classList.add('show');
-      btn.classList.remove('checking');
-      btn.classList.toggle('has-news', news > 0);
+    function cosine(a, b) {
+      if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return null;
+      var dot = 0, na = 0, nb = 0;
+      for (var i = 0; i < a.length; i++) { dot += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+      if (!na || !nb) return null;
+      return dot / (Math.sqrt(na) * Math.sqrt(nb));
+    }
+    function setBadge(n) {
+      if (badge) { if (n > 0) { badge.textContent = String(n); badge.hidden = false; } else { badge.hidden = true; } }
+      btn.classList.toggle('has-news', n > 0);
     }
 
-    btn.addEventListener('click', check);
+    async function check(silent) {
+      if (!silent) { body.innerHTML = '<p class="muted">Lese Nachbarn & rechne die Verbindung live nach …</p>'; pop.classList.add('show'); }
+      else { btn.classList.add('checking'); }
+
+      var selfRes = await getJson(SELF_SIGNAL);
+      var ack = (selfRes.json && selfRes.json.ack) || {};
+      var selfVec = null, selfId = '';
+      if (!silent) {
+        var sp = await getJson(SELF_SPORE);
+        if (sp.json) { if (Array.isArray(sp.json.domainVector)) selfVec = sp.json.domainVector; selfId = sp.json.id || ''; }
+      }
+
+      var cards = [], unread = 0, connected = 0, total = PEERS.length;
+      for (var i = 0; i < PEERS.length; i++) {
+        var p = PEERS[i];
+        var sig = await getJson(p.signal);
+        var seq = sig.json ? (Number(sig.json.seq) || 0) : null;
+        var seen = Number(ack[p.name]) || 0;
+
+        var sync;
+        if (seq === null) sync = '<span class="nm-muted">SIGNAL nicht lesbar</span>';
+        else if (seq > seen) { unread++; sync = '<b class="nm-warn">⏳ ' + (seq - seen) + ' ungelesen</b> (seq ' + seq + ')'; }
+        else sync = '<span class="nm-ok">✔ synchron</span> (seq ' + seq + ', quittiert ' + seen + ')';
+
+        var spore = '—', match = '—';
+        if (!silent) {
+          var inbox = await getJson(p.inbox);
+          if (inbox.json) {
+            spore = '<span class="nm-ok">✔ verified-spore</span> · <code>' + esc((inbox.json.id || '').slice(0, 16)) + '…</code>';
+            var c = selfVec && Array.isArray(inbox.json.domainVector) ? cosine(selfVec, inbox.json.domainVector) : null;
+            if (c === null) match = '<span class="nm-muted">wartet auf Vektor</span>';
+            else if (c >= 0.8) { connected++; match = '<span class="nm-ok">✔ verified-match</span> · cos <b>' + c.toFixed(4) + '</b>'; }
+            else match = '<span class="nm-muted">cos ' + c.toFixed(4) + ' — unter 0.80</span>';
+          } else { spore = '<span class="nm-muted">Spore nicht lesbar</span>'; }
+        }
+
+        cards.push(
+          '<div class="peer">' +
+          '<div class="nm-name">' + esc(p.label || p.name) + '</div>' +
+          '<div class="nm-rows">' +
+          '<div><span class="nm-k">① Spore</span><span>' + spore + '</span></div>' +
+          '<div><span class="nm-k">② Match</span><span>' + match + '</span></div>' +
+          '<div><span class="nm-k">③ Sync</span><span>' + sync + '</span></div>' +
+          '<div><span class="nm-k">④ Brief</span><span><a href="' + esc(p.mailbox) + '" target="_blank" rel="noopener">Postfach öffnen ↗</a></span></div>' +
+          '</div></div>');
+      }
+
+      setBadge(unread);
+
+      if (!silent) {
+        var head = '<div class="nm-head"><div class="nm-self">' + esc(SELF) + ' — SBKIM-Endknoten</div>' +
+          '<div class="nm-id">' + (selfId ? 'nodeId ' + esc(selfId.slice(0, 20)) + '… · verified-spore ✔' : 'Identität: sbkim/spore.json') + '</div></div>';
+        var foot = '<div class="nm-foot"><b class="nm-ok">' + connected + '/' + total + ' verbunden</b> · ' +
+          (unread ? '<b class="nm-warn">' + unread + ' ungelesen</b>' : '📭 alles synchron') +
+          '<p class="nm-note">Match <b>live im Browser</b> nachgerechnet (Cosinus Sages ⟷ Nachbar-Spore). Quittieren via <code>ack</code> in sbkim/SIGNAL.json.</p>' +
+          '<p class="nm-note">' + esc(new Date().toLocaleString()) + '</p></div>';
+        body.innerHTML = head + cards.join('') + foot;
+      }
+
+      btn.classList.remove('checking');
+    }
+
+    btn.addEventListener('click', function () { check(false); });
     closeBtn.addEventListener('click', function () { pop.classList.remove('show'); });
+    // Beim Laden still prüfen → nur Badge setzen (kein Modal).
+    check(true);
   })();
   </script>
 </body>

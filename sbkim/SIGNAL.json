@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-07",
-  "seq": 16,
-  "headline": "Briefkasten an Mein-Tresor-Referenz angeglichen (netzweite Gleichheit, INTERFACES §11.6): SIGNAL-Schema reconciled (forNodes:\"*\", sporeUrl+nodeId ergänzt), Wächter + 📬-Knopf um Mein-Tresor als Peer erweitert. Briefkasten-Runde: alle Nachbar-SIGNALs gelesen + quittiert — ack SB-KIMTool-Point 1→15, Jasons-Tresor 2→8, Mein-Tresor 4→8. Sages reicherer Wächter (Auto-Issue) bewusst behalten (kein Downgrade). Offen: verified-match Sage⟷Mein-Tresor (eigene Modul-04-Sitzung).",
+  "seq": 17,
+  "headline": "Reiche Karten-Ansicht im 📬-Briefkasten (AUFTRAG SB-KIMTool-Point seq 18): pro Nachbar Spore (verified-spore + nodeId) / Match (Cosinus LIVE im Browser, ≥0.80 = verified-match) / Sync (seq↔ack) / Brief (Postfach), Sage-Identität re-geskinnt + Lade-Badge. Auto-Issue-Wächter + pro-Nachbar-Postfächer + Mein-Tresor-Peer waren bereits da (seq 16). SB-KIMTool-Point seq 18 gelesen, ack 15→18.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -14,7 +14,7 @@
     "*"
   ],
   "ack": {
-    "SB-KIMTool-Point": 15,
+    "SB-KIMTool-Point": 18,
     "Jasons-Tresor": 8,
     "Mein-Tresor": 8
   },
@@ -99,6 +99,11 @@
       "seq": 16,
       "date": "2026-06-07",
       "headline": "Briefkasten an Mein-Tresor-Referenz angeglichen: SIGNAL-Schema reconciled (forNodes:\"*\", sporeUrl+nodeId ergänzt, ohne seq/history-Reset), Wächter (.github/sbkim-watch.mjs) + 📬-Knopf (index.html) um Mein-Tresor erweitert. Briefkasten-Runde: SB-KIMTool-Point seq 15, Jasons-Tresor seq 8, Mein-Tresor seq 8 gelesen + quittiert (ack hochgesetzt). Sages reicherer Wächter (Auto-Issue-Workflow) bewusst behalten — kein Downgrade auf die schlankere Referenz."
+    },
+    {
+      "seq": 17,
+      "date": "2026-06-07",
+      "headline": "Reiche Karten-Ansicht im 📬-Briefkasten gebaut (AUFTRAG SB-KIMTool-Point seq 18): pro Nachbar Spore/Match/Sync/Brief, Match als Cosinus LIVE im Browser (Sages domainVector ⟷ Nachbar-Inbox-Spore), ≥0.80 = verified-match; Sage-Identität re-geskinnt, Lade-Badge mit Ungelesen-Zahl. Live-Vorschau: SB-KIMTool-Point 0.848508 ✔ / Jasons-Tresor 0.847784 ✔ / Mein-Tresor wartet auf Vektor. Auto-Issue-Wächter + pro-Nachbar-Postfächer + Mein-Tresor-Peer schon vorhanden (seq 16). SB-KIMTool-Point seq 18 gelesen, ack 15→18."
     }
   ]
 }

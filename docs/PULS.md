@@ -1841,6 +1841,27 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-07 · Reiche Karten-Ansicht im 📬-Briefkasten (AUFTRAG SB-KIMTool-Point seq 18)
+
+**Rolle:** Einbau-/Pflege-Sitzung (Briefkasten-UI). Branch `claude/sbkim-seal-vault-sync-bPfB7`.
+
+- **Auslöser:** Brief von SB-KIMTool-Point (deren `SIGNAL.json` seq 18, `AUSTAUSCH.md`
+  „AUFTRAG an Sage"): Briefkasten auf gemeinsamen Stand bringen — (1) reiche Karten-Ansicht,
+  (2) Auto-Issue-Wächter, (3) pro-Nachbar-Postfächer + Mein-Tresor-Peer.
+- **Punkt 2 + 3 waren schon da** (Sage seq 16, vorheriger PR #283). Verbleibende „kleine
+  Änderung" = **Punkt 1, reiche Karten-Ansicht.**
+- **`index.html` 📬-Knopf** von schlichtem Log auf **reiche Karten** umgebaut: pro Nachbar
+  ① Spore (verified-spore + nodeId), ② **Match — Cosinus LIVE im Browser** (Sages
+  `domainVector` ⟷ Nachbar-Inbox-Spore, ≥0.80 = verified-match), ③ Sync (seq↔ack),
+  ④ Brief (Postfach). Sage-Identität (CSS-Variablen) re-geskinnt, Lade-Badge mit
+  Ungelesen-Zahl + stiller Initial-Check. Vorlage: SB-KIMTool `assets/netz-briefkasten.js`,
+  in Sages bestehenden Inline-Knopf eingearbeitet (kein doppeltes Modal).
+- **Live-Vorschau headless:** SB-KIMTool-Point 0.848508 ✔, Jasons-Tresor 0.847784 ✔,
+  Mein-Tresor „wartet auf Vektor" (verified-match noch offen — ehrlich).
+- **`sbkim/SIGNAL.json`** seq 16→17, `ack[SB-KIMTool-Point]` 15→18; Postfach quittiert.
+- **Sichttest:** IIFE-Syntax OK, Cosinus-Vorschau stimmt mit NETZ-STAND überein, Wächter
+  „alles synchron". **Browser-Sichttest der Karten-Optik ungeprüft, wartet auf Klaus.**
+
 ### 2026-06-07 · Briefkasten an Mein-Tresor-Referenz angeglichen (netzweite §11.6-Gleichheit)
 
 **Rolle:** Einbau-/Pflege-Sitzung (Briefkasten-Infra in Sage). Branch
