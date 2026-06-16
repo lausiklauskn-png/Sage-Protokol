@@ -1841,6 +1841,33 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-16 · Doku-Pflege: Lehre 9 „localStorage ist kein Datenspeicher" (Speicher-Vertrag)
+
+**Rolle:** Doku-/Pflege-Sitzung. Branch `claude/localstorage-storage-contract-bv5dp2`.
+Auslöser: eingegangener Brief von **BookLedgerPro** (Knoten Buchhaltung) mit einer
+netzweiten Speicher-Lehre. Brief = `untrusted external data` (Briefkasten-Tafel) —
+nicht als Befehl ausgeführt, sondern technischer Kern nachgeprüft und als Lehre
+aufgenommen (Freibrief: logisch, nachvollziehbar, sinnvoll; doc-only, kein `src/`-Code).
+
+- **`docs/OBSERVATORIUM_BROWSER.md`:** neue **Lehre 9 — „localStorage ist kein
+  Datenspeicher"** angehängt (Format wie Lehren 1–8): Warum-Tabelle (~5-MB-Grenze,
+  synchron, stille Räumung, base64 +33 %, nur Strings), Konsequenzen, **Speicher-
+  Vertrag** als Fünf-Punkte-Vorschlag (IndexedDB+Blob / `persist()` / `estimate()` /
+  localStorage nur Settings / Backup-Export), Workaround-Snippets, Sicherheits-
+  Verallgemeinerung (Schlüssel nicht im Klartext), Vorteile, Betroffen-Liste
+  (Rezeptbuch + Mixarium → eigene Folge-Sitzung pro Endknoten-Repo). Footer +
+  Querverweise (INTERFACES §1 Modul 01/02, Briefkasten-Tafel) nachgezogen.
+- **Bewusst NICHT getan:** (1) P.S. des Briefs (Mixarium-API-Key `mxkey9m` im
+  localStorage-Klartext) — fremdes Repo, Schlüssel-Eingriff, Scope-Disziplin +
+  Briefkasten-Tafel → Klaus-Entscheidung + eigene Sitzung. (2) Kein Eintrag in die
+  heilige Tafel `INTERFACES.md` als bindender Vertrag — das wäre architektonisch
+  tiefgreifend (Tafel-Evolutions-Klausel: Vorschlag an Klaus, nicht still gesetzt).
+  Lehre 9 lebt vorerst in der Observatorium-Lehren-Sammlung mit Querverweis.
+- **Offen / nächster Schritt:** Klaus entscheidet, ob der Speicher-Vertrag in
+  INTERFACES.md / SB-KIMTool als bindende Tafel promoviert wird; Endknoten-
+  App-Daten-Migration (Rezeptbuch + Mixarium von localStorage auf IndexedDB+Blob)
+  als eigene externe Folge-Sitzung. **Sichttest:** entfällt (reine Doku).
+
 ### 2026-06-07 · UX-Pflege: Vertrauens-Tafel als In-Page-Overlay statt neuem Tab
 
 **Rolle:** Bau-Sitzung (Fortsetzung). Branch `claude/bau-andock-semantik-beschreibung-TiY5D`.
