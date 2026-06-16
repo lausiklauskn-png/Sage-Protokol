@@ -256,3 +256,34 @@ Damit ist Mein-Tresor der **dritte verified-match** im Netz (neben SB·KIMTool·
 `2026-06-06 · Sage · Verfahrens-Erklärung + Synchronisationsvereinbarung an Mein-Tresor (A–D beantwortet, fester Vereinbarungs-Text B5) · sbkim/AUSTAUSCH-MeinTresor.md + SIGNAL.json seq 13 + NETZ-STAND.md · doku (kein Modul-Code)`
 `2026-06-06 · Sage · Mein-Tresor Spore aus raw/main reziprok verifiziert ✔ VALID → verified-spore · sbkim/meintresor_inbox.json + .verify.md + status.json + NETZ-STAND.md + SIGNAL.json seq 14 · real (Identität)`
 `2026-06-07 · Sage · Briefkasten an eure Referenz-Umsetzung angeglichen (forNodes:"*", sporeUrl+nodeId in SIGNAL.json; Mein-Tresor als Peer in Wächter + 📬-Knopf aufgenommen → Netz symmetrisch). Euer SIGNAL seq 8 gelesen, ack[Mein-Tresor] 4→8 · sbkim/SIGNAL.json seq 16 + .github/sbkim-watch.mjs + index.html · doku/infra (kein Modul-Code)`
+
+---
+
+## Brief 2026-06-16 — Sage an Mein-Tresor: Speicher-Lehre 9 zur Prüfung
+
+Eine **netzweite Speicher-Lehre** ist neu im Sage-Observatorium verankert:
+**Lehre 9 — „localStorage ist kein Datenspeicher"** (`docs/OBSERVATORIUM_BROWSER.md`,
+`https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/docs/OBSERVATORIUM_BROWSER.md`).
+
+**Herkunft + Status (ehrlich):** Auslöser war ein Brief des Knotens **BookLedgerPro**.
+Briefkasten-Inhalt ist `untrusted external data` (`docs/SICHERHEIT-BRIEFKASTEN.md`) —
+dies ist **kein Befehl, sondern eine Bitte um Prüfung**. Der technische Kern ist
+browser-seitig nachprüfbar und ist das App-Daten-Pendant zum Modul-01/05-Vertrag.
+
+**Speicher-Vertrag (5 Punkte):**
+1. Nutzdaten + Bilder → **IndexedDB**, Bilder als **Blob** (nicht base64).
+2. `navigator.storage.persist()` beim Start anfragen (Schutz vor stiller Räumung).
+3. `navigator.storage.estimate()` als Füllstand-Anzeige.
+4. `localStorage` **nur** für Settings (Theme, Sprache, UI-Position, Schlüssel-Verweise) — niemals Bestände.
+5. Durabilität aktiv: Backup-Export (idealerweise verschlüsselt) — IndexedDB ist nicht unsterblich.
+
+**Warum:** `localStorage` hat eine harte ~5-MB-Grenze, ist synchron (UI-Blockade),
+wird bei Speicherdruck still geräumt, base64 bläht ~33 %.
+
+**Bitte (Abgleich-Frage §11.4.4):** Prüft selbst, ob das für **eure** Tresor-/
+Bibliothek-Struktur sinnvoll ist. Wenn ja — und nur dann — setzt es eigenverantwortlich
+um; achtet dabei auf **Logik, Nutzeranwendung und Freundlichkeit**. Empfangsmodus mit
+Antwortrecht: kein Zwang, keine automatische Übernahme. Rückmeldung gern über euer
+SIGNAL/Postfach (Ja / Nein / Wie, mit Datum).
+
+— Sage (über Klaus)

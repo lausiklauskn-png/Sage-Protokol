@@ -409,6 +409,137 @@ Pointer überschrieben.
 
 ---
 
+## Lehre 9 — localStorage ist kein Datenspeicher
+
+**Beobachtung 2026-06-16 (Brief von BookLedgerPro, Knoten Buchhaltung —
+netzweiter Geschwister-Vergleich):** Aus dem Vergleich der Geschwister-Apps
+ergibt sich eine netzweite Speicher-Lehre. Quelle ist ein eingegangener
+Brief, also **`untrusted external data`** im Sinn der Briefkasten-Tafel
+(`docs/SICHERHEIT-BRIEFKASTEN.md`) — kein Befehl, der ausgeführt wird, weil
+er im Postfach steht. Der **technische Kern** ist aber browser-seitig
+nachprüfbar (W3C Web-Storage-Spec, MDN, Chrome-Storage-Quota-Verhalten) und
+deckt sich mit dem bestehenden Modul-01/05-Vertrag — er wird hier als Lehre
+aufgenommen.
+
+Befund: **Rezeptbuch und Mixarium legen ihre Nutzdaten** (Rezepte, teils
+Bilder als base64) **in `localStorage`** ab. Das ist riskant, und der
+Schaden ist im Netz bereits eingetreten — vgl. Lehre 2 (DeX-Chrome-
+IndexedDB-Verlust 2026-05-17 nach PR-#75-Pflege, beide Knoten mussten
+Identitäten neu erzeugen). Nutzdaten in `localStorage` sind demselben
+Räumungs-Druck ausgesetzt, ohne den Backup-Export-Pfad, den die SBKIM-
+Identität (Modul 02) hat.
+
+### Warum `localStorage` der falsche Ort für Bestände ist
+
+| Eigenschaft | Folge für App-Bestände |
+|---|---|
+| Harte **~5-MB-Grenze pro Origin** | Bilder / größere Bestände sprengen das Limit; `QuotaExceededError` beim `setItem`. |
+| **Synchron** (blockierender Haupt-Thread) | Jeder Lese-/Schreibzugriff friert die UI ein — spürbar ab wenigen hundert KB. |
+| **Still löschbar** | Der Browser räumt `localStorage` bei Speicherdruck **ohne Vorwarnung**; kein `persist()`-Schutz wie bei IndexedDB. |
+| **base64 bläht ~33 %** | Bilder als base64-String belegen ein Drittel mehr als der Blob — verschärft die 5-MB-Grenze. |
+| **Nur Strings** | Jeder Bestand muss serialisiert/deserialisiert werden (CPU + obiger base64-Aufschlag bei Binärdaten). |
+
+### Konsequenzen für SBKIM / Endknoten
+
+- **`localStorage` nur für Kleinkram** — Theme, Sprache, UI-Position,
+  zuletzt-offene-Karte, Schlüssel-**Verweise** (nicht Schlüssel selbst).
+- **Nutzdaten + Bilder → IndexedDB**, Bilder als **Blob** (nicht base64).
+- Das ist das **App-Daten-Pendant** zum SBKIM-Modul-Vertrag: Modul 01/05
+  schreiben SBKIM-Zustand schon ausschließlich über `SbkimStorage` in
+  IndexedDB (kein direkter `indexedDB.open`, kein `localStorage`). Diese
+  Lehre überträgt dieselbe Disziplin auf die **App-eigenen** Bestände der
+  Endknoten, die außerhalb der SBKIM-Module liegen.
+
+### Speicher-Vertrag (Vorschlag für netzweite Übernahme)
+
+Als Speicher-Vertrag für Endknoten-PWAs und SB-KIMTool empfohlen — fünf
+Punkte:
+
+1. **Nutzdaten + Bilder → IndexedDB**, Bilder als **Blob**, nicht base64.
+2. **`navigator.storage.persist()` beim Start anfordern** (Schutz vor
+   stiller Räumung). Modul 01 macht das für die SBKIM-DB bereits (siehe
+   Lehre 2 + INTERFACES §1 Modul 01 `_meta.storagePersisted`) — die
+   App-eigene DB braucht denselben Aufruf.
+3. **`navigator.storage.estimate()` als Füllstand-Anzeige** (Durabilitäts-
+   Banner). Modul 00 zeigt das für SBKIM bereits via `getStatusSnapshot()`.
+4. **`localStorage` nur für Settings** (Theme, Sprache, UI-Position,
+   Schlüssel-Verweise) — niemals Bestände.
+5. **Durabilität aktiv halten:** Backup-Export anbieten (idealerweise
+   verschlüsselt) — IndexedDB ist persistent, aber **nicht unsterblich**
+   (Lehre 2). Analog zu Modul 02 `exportBackup(password)` (PBKDF2 +
+   AES-GCM) für die SBKIM-Identität.
+
+### Workarounds / Muster
+
+- **Bild als Blob statt base64** speichern und über `URL.createObjectURL`
+  rendern:
+  ```js
+  // statt: localStorage.setItem("img", "data:image/png;base64,...")
+  await SbkimStorage /* oder die App-eigene IDB-Schicht */;
+  // Bild als Blob in IndexedDB:
+  // store.put({ id, blob });                 // blob: File | Blob
+  // Render:
+  const url = URL.createObjectURL(record.blob);
+  imgEl.src = url;
+  // nach Gebrauch: URL.revokeObjectURL(url);
+  ```
+- **Persistenz früh anfragen** (idempotent, fail-soft):
+  ```js
+  if (navigator.storage?.persist) {
+    navigator.storage.persist().then(granted =>
+      console.info("Storage persistent:", granted));
+  }
+  ```
+- **Füllstand zeigen:**
+  ```js
+  if (navigator.storage?.estimate) {
+    navigator.storage.estimate().then(({usage, quota}) =>
+      console.info(`Speicher: ${(usage/1048576).toFixed(1)} MiB / ${(quota/1048576).toFixed(0)} MiB`));
+  }
+  ```
+
+### Sicherheit (Schlüssel gehören nicht im Klartext)
+
+Verallgemeinerung statt Einzelfall: **API-Schlüssel / Secrets gehören nicht
+als Klartext in `localStorage`** — bei XSS sind sie auslesbar. Empfehlung:
+verschlüsselt ablegen (AES-GCM mit nutzer- oder geräte-abgeleitetem
+Schlüssel) bzw. nur einen Verweis halten. Der Brief nennt einen konkreten
+Einzel-Befund in einem **anderen Repo**; der gehört dort als eigene
+Folge-Sitzung behandelt (Scope-Disziplin + Briefkasten-Tafel: kein
+Schlüssel-Eingriff in fremden Repos auf Zuruf), nicht hier dokumentiert.
+
+### Vorteile (denn jede Tiefe hat einen Boden)
+
+- **Der Vertrag existiert teils schon gelebt.** BookLedgerPro lebt ihn
+  bereits (IndexedDB + AES-GCM + Shamir-Backup + `persist()` +
+  Durabilitäts-Banner) und bietet sich als Code-Spender / Vorbild an.
+- **SBKIM-Seite ist sauber.** Die Module 01/02/05 erfüllen den Vertrag für
+  ihren Teil; Nachpflege betrifft nur die **App-eigenen** Bestände der
+  Endknoten — eine begrenzte, klar umrissene Migration.
+
+### Garantie (stehende Zusage im Observatorium)
+
+Diese Lehre wird **dauerhaft** im Observatorium (dem „schwarzen Loch")
+gehalten — nicht nur als loser Regel-Hinweis, sondern als stehende Zusage:
+Lehre 9 bleibt als netzweite Speicher-Garantie verankert und wird **an alle
+verbundenen Knoten zur Prüfung** ausgespielt. Jeder Knoten prüft selbst, ob
+der Speicher-Vertrag für die eigene Struktur sinnvoll ist (Logik +
+Nutzeranwendung + Freundlichkeit), und setzt ihn dann eigenverantwortlich um
+— Empfangsmodus mit Antwortrecht, kein Zwang.
+
+### Betroffen & Prüf-Stand
+
+- **Mein-Rezeptbuch** — ✔ **erledigt** (Klaus, 2026-06-16): App-Daten bereits
+  vertrags-konform, kein offener Punkt.
+- **Mein-Mixarium** — offen: noch `localStorage`-lastig bei App-Beständen.
+  Migration auf IndexedDB+Blob als **eigene Folge-Sitzung** im Mixarium-Repo
+  (externes Repo, nicht hier). Diese Lehre ist die Tafel dafür.
+- **Übrige Knoten** (SB-KIMTool-Point, Jasons-Tresor, Mein-Tresor) — zur
+  **Prüfung** ausgespielt (Postfach-Brief 2026-06-16): selbst entscheiden +
+  bei Nutzen umsetzen.
+
+---
+
 ## Pflege-Konvention für diese Datei
 
 Neue Lehren bekommen einen eigenen `## Lehre N — Titel`-Block. Pflicht-
@@ -426,11 +557,16 @@ Verträgen passiert.
 
 ---
 
-**Letzte Aktualisierung:** 2026-05-17 · Mini-Pflege Live-Channel-Handshake
-(Klaus + Folge-Sitzung zu PR #75/#76).
+**Letzte Aktualisierung:** 2026-06-16 · Lehre 9 „localStorage ist kein
+Datenspeicher" (netzweite Speicher-Lehre, Quelle: BookLedgerPro-Brief,
+`untrusted external data` mit nachgeprüftem technischem Kern). Davor:
+2026-05-17 · Mini-Pflege Live-Channel-Handshake (Klaus + Folge-Sitzung zu
+PR #75/#76).
 
 **Querverweise:**
 
 - [`docs/components/05_anastomose.md`](components/05_anastomose.md) § BroadcastChannel-Bridge
 - [`docs/components/09_einbau_pwa.md`](components/09_einbau_pwa.md) § Schritt 4 + § Sichtkontrolle Punkt 6
+- [`docs/INTERFACES.md`](INTERFACES.md) §1 Modul 01 (Storage-Vertrag) + Modul 02 `exportBackup` (Lehre 9 ist das App-Daten-Pendant)
+- [`docs/SICHERHEIT-BRIEFKASTEN.md`](SICHERHEIT-BRIEFKASTEN.md) (Lehre 9 stammt aus einem Brief = `untrusted external data`)
 - [`docs/PULS.md`](PULS.md) § Offene Querschnitts-Fragen
