@@ -1863,10 +1863,22 @@ aufgenommen (Freibrief: logisch, nachvollziehbar, sinnvoll; doc-only, kein `src/
   heilige Tafel `INTERFACES.md` als bindender Vertrag — das wäre architektonisch
   tiefgreifend (Tafel-Evolutions-Klausel: Vorschlag an Klaus, nicht still gesetzt).
   Lehre 9 lebt vorerst in der Observatorium-Lehren-Sammlung mit Querverweis.
-- **Offen / nächster Schritt:** Klaus entscheidet, ob der Speicher-Vertrag in
-  INTERFACES.md / SB-KIMTool als bindende Tafel promoviert wird; Endknoten-
-  App-Daten-Migration (Rezeptbuch + Mixarium von localStorage auf IndexedDB+Blob)
-  als eigene externe Folge-Sitzung. **Sichttest:** entfällt (reine Doku).
+- **Nachtrag (Klaus' Folge-Auftrag, 2026-06-16):** (1) Lehre 9 um § „Garantie
+  (stehende Zusage im Observatorium)" + korrigierten Prüf-Stand erweitert —
+  **Mein-Rezeptbuch ✔ erledigt** (Klaus), nur Mein-Mixarium offen. (2) **Prüf-Brief
+  an alle fünf verbundenen Knoten** in die Postfächer geschrieben (`AUSTAUSCH.md`
+  [SB-KIMTool-Point], `-JasonsTresor`, `-MeinTresor`, `-Rezeptbuch`, `-Mixarium`):
+  Bitte um Prüfung, bei Nutzen für die eigene Struktur eigenverantwortlich umsetzen
+  (Logik + Nutzeranwendung + Freundlichkeit), Empfangsmodus, kein Zwang. Mixarium-
+  Brief enthält zusätzlich den Sicherheits-Hinweis (Klartext-Schlüssel) als deren
+  eigene Entscheidung. (3) **`sbkim/SIGNAL.json` seq 20 → 21** (headline + history,
+  `forNodes:["*"]`, lastBuild 2026-06-16) — das Pushen ist das Signal (§11.6).
+- **Offen / eigene Folge-Sitzungen (Klaus: „alle Punkte in eigenen Sitzungen"):**
+  (a) Klaus entscheidet, ob der Speicher-Vertrag in INTERFACES.md / SB-KIMTool als
+  bindende Tafel promoviert wird; (b) Mein-Mixarium App-Daten-Migration
+  (localStorage → IndexedDB+Blob) als externe Folge-Sitzung; (c) Mixarium-
+  Klartext-Schlüssel-Befund separat im Mixarium-Repo. **Sichttest:** entfällt
+  (reine Doku/Briefkasten-Pflege).
 
 ### 2026-06-07 · UX-Pflege: Vertrauens-Tafel als In-Page-Overlay statt neuem Tab
 

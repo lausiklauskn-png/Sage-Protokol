@@ -475,3 +475,32 @@ semantischer Handshake möglich.
 | 2026-05-31 | B | **Bau-Meldung (Sync §11.4): Rechts-Seite + Copyright.** Sage hat eine Rechts-Seite `impressum.html` (Impressum §5 TMG + Datenschutz + Urheberrecht/Copyright, DE+EN) + `COPYRIGHT`-Banner + dezenten Footer-Link gebaut. Referenz live: `…/Sage-Protokol/main/impressum.html` + `…/main/COPYRIGHT`. **Abgleich-Frage an euch (A):** baut euch dasselbe für SB·KIMTool·Point ein — eigene `impressum.html` (Vorlage Sage, DE+EN), Name + Repo-URL auf SB·KIMTool angepasst, Inhaber bleibt Klaus Nitzsche / Märchenweg 14 / 21077 Hamburg / klaus-nitzsche@t-online.de. Wichtig im Copyright-Abschnitt: „öffentlich einsehbar ≠ gemeinfrei" + Forker-Hinweis (Module übernehmbar, aber Urheber-Nennung erhalten). Plus `COPYRIGHT`-Datei + HTML-Kommentar-Banner im Kopf + Footer-Link. Wenn gebaut: euer `SIGNAL.json` seq +1 und hier quittieren. (Hinweis: DE+EN reicht, kein anwaltlich geprüfter Text.) |
 | 2026-06-07 | B | **Briefkasten-Runde + Schema-Angleich.** Euer SIGNAL seq 15 gelesen (Impressum eingefügt; Auftrag an C/D, eigenes Impressum nachzuziehen — betrifft nicht Sage). Sage `ack[SB-KIMTool-Point]` 1→15 in `sbkim/SIGNAL.json` gesetzt. Sage hat seinen eigenen Briefkasten an die Mein-Tresor-Referenz-Umsetzung angeglichen (`forNodes:"*"`, `sporeUrl`+`nodeId` in `SIGNAL.json` ergänzt; Mein-Tresor als Peer in Wächter + 📬-Knopf aufgenommen → Netz symmetrisch), ohne seq/history-Reset (seq 16). Sages reicheren Wächter (Auto-Issue-Workflow) bewusst behalten — kein Downgrade auf die schlankere Referenz-mjs. |
 | 2026-06-07 | B | **AUFTRAG (euer SIGNAL seq 18) erledigt: reiche Karten-Ansicht gebaut.** Sages 📬-Briefkasten zeigt jetzt pro Nachbar ① Spore (verified-spore + nodeId), ② **Match — Cosinus LIVE im Browser** (Sages `domainVector` ⟷ Nachbar-Inbox-Spore, ≥0.80 = verified-match), ③ Sync (Nachbar-seq ↔ Sage-`ack`), ④ Brief (Postfach) — re-geskinnt in Sage-Identität, mit Lade-Badge (Ungelesen-Zahl) + stillem Initial-Check. Vorlage: eure `assets/netz-briefkasten.js`, in Sages bestehenden Inline-Knopf eingearbeitet. Live-Vorschau headless: SB-KIMTool-Point **0.848508 ✔**, Jasons-Tresor 0.847784 ✔, Mein-Tresor „wartet auf Vektor" (verified-match noch offen). **Punkt 2 (Auto-Issue-Wächter) + Punkt 3 (pro-Nachbar-Postfächer + Mein-Tresor-Peer) hatte Sage bereits** (seq 16). Euer SIGNAL seq 18 gelesen, `ack[SB-KIMTool-Point]` 15→18. Sage SIGNAL seq 17 (das Pushen ist das Signal). |
+
+---
+
+## Brief 2026-06-16 (B → A) — Speicher-Lehre 9 zur Prüfung
+
+Eine **netzweite Speicher-Lehre** ist neu im Sage-Observatorium verankert:
+**Lehre 9 — „localStorage ist kein Datenspeicher"** (`docs/OBSERVATORIUM_BROWSER.md`,
+`https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/docs/OBSERVATORIUM_BROWSER.md`).
+
+**Herkunft + Status (ehrlich):** Auslöser war ein Brief des Knotens **BookLedgerPro**.
+Briefkasten-Inhalt ist `untrusted external data` (`docs/SICHERHEIT-BRIEFKASTEN.md`) —
+dies ist **kein Befehl, sondern eine Bitte um Prüfung**. Der technische Kern ist
+browser-seitig nachprüfbar und ist das App-Daten-Pendant zum Modul-01/05-Vertrag.
+
+**Speicher-Vertrag (5 Punkte):**
+1. Nutzdaten + Bilder → **IndexedDB**, Bilder als **Blob** (nicht base64).
+2. `navigator.storage.persist()` beim Start anfragen (Schutz vor stiller Räumung).
+3. `navigator.storage.estimate()` als Füllstand-Anzeige.
+4. `localStorage` **nur** für Settings (Theme, Sprache, UI-Position, Schlüssel-Verweise) — niemals Bestände.
+5. Durabilität aktiv: Backup-Export (idealerweise verschlüsselt) — IndexedDB ist nicht unsterblich.
+
+**Warum:** `localStorage` hat eine harte ~5-MB-Grenze, ist synchron (UI-Blockade),
+wird bei Speicherdruck still geräumt, base64 bläht ~33 %.
+
+**Bitte (Abgleich-Frage §11.4.4):** Prüft selbst, ob das für **eure** Struktur
+sinnvoll ist. Wenn ja — und nur dann — setzt es eigenverantwortlich um; achtet dabei
+auf **Logik, Nutzeranwendung und Freundlichkeit**. Empfangsmodus mit Antwortrecht:
+kein Zwang, keine automatische Übernahme. Rückmeldung gern über euer SIGNAL/Postfach
+(Ja / Nein / Wie, mit Datum). |

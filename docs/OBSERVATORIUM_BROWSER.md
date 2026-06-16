@@ -517,11 +517,26 @@ Schlüssel-Eingriff in fremden Repos auf Zuruf), nicht hier dokumentiert.
   ihren Teil; Nachpflege betrifft nur die **App-eigenen** Bestände der
   Endknoten — eine begrenzte, klar umrissene Migration.
 
-### Betroffen & zur Nachpflege empfohlen
+### Garantie (stehende Zusage im Observatorium)
 
-- **Mein-Rezeptbuch**, **Mein-Mixarium** (beide `localStorage`-lastig bei
-  App-Beständen). Migration ist eine **eigene Folge-Sitzung pro Endknoten-
-  Repo** (externes Repo, nicht hier) — diese Lehre ist die Tafel dafür.
+Diese Lehre wird **dauerhaft** im Observatorium (dem „schwarzen Loch")
+gehalten — nicht nur als loser Regel-Hinweis, sondern als stehende Zusage:
+Lehre 9 bleibt als netzweite Speicher-Garantie verankert und wird **an alle
+verbundenen Knoten zur Prüfung** ausgespielt. Jeder Knoten prüft selbst, ob
+der Speicher-Vertrag für die eigene Struktur sinnvoll ist (Logik +
+Nutzeranwendung + Freundlichkeit), und setzt ihn dann eigenverantwortlich um
+— Empfangsmodus mit Antwortrecht, kein Zwang.
+
+### Betroffen & Prüf-Stand
+
+- **Mein-Rezeptbuch** — ✔ **erledigt** (Klaus, 2026-06-16): App-Daten bereits
+  vertrags-konform, kein offener Punkt.
+- **Mein-Mixarium** — offen: noch `localStorage`-lastig bei App-Beständen.
+  Migration auf IndexedDB+Blob als **eigene Folge-Sitzung** im Mixarium-Repo
+  (externes Repo, nicht hier). Diese Lehre ist die Tafel dafür.
+- **Übrige Knoten** (SB-KIMTool-Point, Jasons-Tresor, Mein-Tresor) — zur
+  **Prüfung** ausgespielt (Postfach-Brief 2026-06-16): selbst entscheiden +
+  bei Nutzen umsetzen.
 
 ---
 

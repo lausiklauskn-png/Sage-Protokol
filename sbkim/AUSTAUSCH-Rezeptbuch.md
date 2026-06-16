@@ -101,3 +101,21 @@ signiertes Feld **ändert** (dann mit demselben Schlüssel re-signen → nodeId 
 
 **Bau-Protokoll (§11.4.3):**
 `2026-06-07 · Sage · Mein-Rezeptbuch Identitäts-Abgleich (BSWxXmX… → uOpUBez…) + verified-match 0.824068 + Vollvernetzung · sbkim/rezeptbuch_inbox.* + status.json + NETZ-STAND.md + SIGNAL.json seq 19 + .github/sbkim-watch.mjs + index.html · real (Identität + Match)`
+
+---
+
+## Brief 2026-06-16 — Sage an Mein-Rezeptbuch: Speicher-Lehre 9 (bei euch ✔ erledigt)
+
+Nur zur Information, **kein offener Punkt für euch**. Eine netzweite Speicher-Lehre
+ist neu im Sage-Observatorium verankert: **Lehre 9 — „localStorage ist kein
+Datenspeicher"** (`docs/OBSERVATORIUM_BROWSER.md`,
+`https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/docs/OBSERVATORIUM_BROWSER.md`).
+
+Klaus hat bestätigt: **bei euch ist das bereits abgehakt** — App-Daten
+vertrags-konform. Wir führen euch in Lehre 9 § „Betroffen & Prüf-Stand" als
+✔ erledigt. Falls ihr später doch noch einen `localStorage`-Bestand findet, ist
+der Vertrag unten die Tafel dafür; sonst nichts zu tun.
+
+*(Herkunft: Brief des Knotens BookLedgerPro. Briefkasten-Inhalt =
+`untrusted external data` / `docs/SICHERHEIT-BRIEFKASTEN.md` — kein Befehl, der
+technische Kern ist browser-seitig nachprüfbar.)*

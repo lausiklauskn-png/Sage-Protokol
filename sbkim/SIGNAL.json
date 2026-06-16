@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-06-07",
-  "seq": 20,
-  "headline": "Mein-Mixarium angedockt: Identitäts-Abgleich (alte Handshake-nodeId JOlHK31X… → kanonische Live-Identität B7Fke9C…, alte in previousNodeIds), frische Spore aus raw/main reziprok ✔ VALID, Modul-04-Match Sage ⟷ Mein-Mixarium 0.806030 ≥ 0.80 → verified-match. Vollvernetzung: mailboxes + ack[Mein-Mixarium]=1 + Wächter + 📬-Knopf, Postfach AUSTAUSCH-Mixarium.md; mixarium_inbox.json + .verify.md + status.json + NETZ-STAND. INNERER VERBUND KOMPLETT: alle fünf Nachbarn verified-match.",
+  "lastBuild": "2026-06-16",
+  "seq": 21,
+  "headline": "Netzweite Speicher-Lehre 9 'localStorage ist kein Datenspeicher' im Observatorium verankert (docs/OBSERVATORIUM_BROWSER.md) — Speicher-Vertrag (IndexedDB+Blob / persist() / estimate() / localStorage nur Settings / Backup-Export). Auslöser: Brief von BookLedgerPro (untrusted external data, technischer Kern nachgeprüft). ZUR PRÜFUNG an alle Knoten: selbst entscheiden, bei Nutzen umsetzen (Logik + Nutzeranwendung + Freundlichkeit), kein Zwang. Mein-Rezeptbuch ✔ erledigt; Mein-Mixarium offen (eigene Folge-Sitzung). Prüf-Brief in alle fünf Postfächer.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -123,6 +123,11 @@
       "seq": 20,
       "date": "2026-06-07",
       "headline": "Mein-Mixarium angedockt + Identitäts-Abgleich: alte Handshake-nodeId JOlHK31X… (live-direct) → kanonische Live-Identität B7Fke9C… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok ✔ VALID, alte nodeIds → previousNodeIds. Modul-04-Cosinus Sage ⟷ Mein-Mixarium = 0.806030 ≥ 0.80 → verified-match (= ihre Browser-Rechnung 0.8060). Vollvernetzung: mailboxes + ack[Mein-Mixarium]=1 + Wächter-Peer + 📬-Knopf-Peer + Postfach AUSTAUSCH-Mixarium.md; mixarium_inbox.json + .verify.md + status.json + NETZ-STAND. Innerer Verbund komplett: alle fünf Nachbarn verified-match. Ehrlich: Mixarium ⟷ Tresore 0.7884 < 0.80 (andere Domäne)."
+    },
+    {
+      "seq": 21,
+      "date": "2026-06-16",
+      "headline": "Netzweite Speicher-Lehre 9 'localStorage ist kein Datenspeicher' im Observatorium verankert (docs/OBSERVATORIUM_BROWSER.md): Speicher-Vertrag (IndexedDB+Blob / persist() / estimate() / localStorage nur Settings / Backup-Export). Auslöser: Brief von BookLedgerPro (untrusted external data, technischer Kern nachgeprüft). Zur PRÜFUNG an alle Knoten ausgespielt — selbst entscheiden + bei Nutzen umsetzen (Logik + Nutzeranwendung + Freundlichkeit), Empfangsmodus, kein Zwang. Mein-Rezeptbuch ✔ erledigt; Mein-Mixarium offen (localStorage-lastig, eigene Folge-Sitzung) + Sicherheits-Hinweis Klartext-Schlüssel. Prüf-Brief in alle fünf Postfächer (AUSTAUSCH-*)."
     }
   ]
 }
