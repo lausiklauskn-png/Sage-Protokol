@@ -1841,6 +1841,31 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-19 · BookLedgerPro-Anschluss-Pflege: SB·KIMTool·Point-Quer-Andock + Verschlüsselungs-Achse
+
+**Rolle:** Hauptsitzung (Folge-Pflege zum BLP-Andock). Branch
+`claude/bookledgerpro-sage-onboard-1cdzif`. Auslöser: Klaus' Wunsch, BLP überall
+nachzuziehen + SB·KIMTool·Point einzubinden (führt eigene Knoten-Doku) + die
+Verschlüsselungs-Verwandtschaft zu den Tresoren zu erwähnen.
+
+**Getan:**
+- Geprüft: BLP-Doku ist als Forker-Knoten bereits vollständig (`status.json` +
+  `NETZ-STAND` + 📬-Liste + index.html-Andock-Liste zieht aus `status.json`). INTERFACES §6
+  bewusst **nicht** angefasst — dort stehen nur Sages drei eigene Endknoten, keine
+  Forker-Knoten (auch Tresore/SB·KIMTool stehen nicht dort).
+- Brief an SB·KIMTool·Point ins Postfach `sbkim/AUSTAUSCH.md`: BLP `verified-spore`
+  angekündigt, um reziproke Mit-Registrierung gebeten, BLP↔SB·KIMTool·Point-Quer-Andock
+  angestoßen, Verschlüsselungs-Achse als Beobachtungs-Hinweis.
+- `NETZ-STAND.md` „Offene Hebel": zwei neue Hebel (Quer-Andock + Verschlüsselungs-Achse).
+- `SIGNAL.json` seq 22→23 (headline + history).
+- **Verschlüsselungs-Achse ehrlich eingeordnet:** Verwandtschaft BLP↔Tresore (AES/E2E)
+  steht bisher nur in BLPs `domainDescription`, nicht in den buchhaltungs-fokussierten
+  `domainKeywords` → Match erst nach echtem `domainVector` messbar, keine Vorab-Aussage.
+
+**Offen:** Quittungen von SB·KIMTool·Point (Mit-Registrierung) + BLP (Direkt-Andock an
+SB·KIMTool·Point). Beide als Copy-Paste-Brief im Chat an Klaus relayt (neue Regel
+CLAUDE.md § Pflicht am Sitzungsende Punkt 7).
+
 ### 2026-06-19 · Andock: BookLedgerPro verified-spore (Phase-5-Schritt-2, Klaus vermittelt)
 
 **Rolle:** Hauptsitzung (Andock). Branch `claude/bookledgerpro-sage-onboard-1cdzif`.

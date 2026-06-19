@@ -100,6 +100,21 @@ domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
 
 ## Offene Hebel
 
+- **BookLedgerPro ⟷ SB·KIMTool·Point Quer-Andock**: angestoßen 2026-06-19. Sage hat
+  SB·KIMTool·Point per Postfach (`sbkim/AUSTAUSCH.md`) über BookLedgerPro informiert und
+  BookLedgerPro gebeten, SB·KIMTool·Point einen eigenen Andock-Brief zu schicken (direkte
+  Verbindung, da SB·KIMTool·Point eigene Knoten-Doku führt). Quittungen offen.
+
+- **BookLedgerPro → `verified-match`**: offen. Braucht echten `domainVector`
+  (`multilingual-e5-small`, `passage:`-Präfix, L2=1, neu signiert). Aktuell `_demo` →
+  `verified-spore`. **Verschlüsselungs-Achse (Hypothese, komplex):** BookLedgerPro ist
+  verschlüsselte Buchhaltung (lokale E2E, AES-Familie) — thematisch verwandt mit den
+  Tresor-Knoten (Jasons-/Mein-Tresor: AES-256-GCM, Schlüssel-Backup). **Ehrlich:** die
+  Verwandtschaft steht bisher nur in BookLedgerPros `domainDescription`, NICHT in den
+  buchhaltungs-fokussierten `domainKeywords`. Ob ein echter Vektor eine Verschlüsselungs-
+  Nähe zu den Tresoren zeigt (Cosinus ≥ 0.80), hängt vom eingebetteten Text ab — wird erst
+  nach dem echten Embedding nachgemessen. Bis dahin keine Match-Aussage.
+
 - **Mein-Tresor → `verified-match`**: ✔ erledigt 2026-06-07. Echter `domainVector`
   (eingebettet re-signt, `multilingual-e5-small`, L2=1) aus raw/main verifiziert,
   Match Sage ⟷ Mein-Tresor = 0.847784 ≥ 0.80 → `verified-match`. Prüf-Vermerk:
