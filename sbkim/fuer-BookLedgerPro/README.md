@@ -11,7 +11,8 @@
 |---|---|
 | **`mycel-knoten.html`** | **Das komplette Programm** — dasselbe, was auf Sages Seite läuft. Bündelt die **echten, unveränderten** Sage-Module (01/02/03/04/05/07/15/16/17) und zeigt nach dem Laden das schwebende Live-Panel mit den vier **Lampen** (LEBT / VERKEHR / FREMD / SIEGEL) plus Andock-Wizard. Eine Datei, keine Installation. |
 | `andock.html` | Schlanke Variante: nur der Andock-Pfad (Identität, Spore, Embedding, Siegel-Bild, Briefkasten-Dateien) ohne die Lampen. Gute Lese-/Lern-Fassung. |
-| `sbkim-siegel-wappen.svg` | Das **SBKIM-Siegel** als Bild (Vektor). Gleichwertig zu dem, was Sage und alle Knoten tragen. PNG erzeugt `andock.html` per Knopf. |
+| **`sbkim-siegel-wappen.png`** | Das **SBKIM-Siegel** als PNG (1024×1024). Lädt überall hoch (Raster, kein SVG-Upload-Block). Gleichwertig zu dem, was Sage und alle Knoten tragen. |
+| `sbkim-siegel-wappen.svg` | Dasselbe Siegel als Vektor (SVG). Manche Plattformen blockieren SVG-Uploads — dann das PNG nutzen. |
 
 ### Die Lampen (Modul 17 Floating-Widget) — „andocken / angedockt / Angriff"
 
