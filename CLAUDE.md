@@ -267,6 +267,26 @@ Bevor du `END` machst:
    kopiere ich ihn?"). Auch wenn der Brief schon als PR gemerged ist —
    der Codeblock kommt nochmal in die Chat-Antwort. Klaus' Tab ist
    der Einstiegspunkt für die nächste Sitzung, nicht ein Datei-Browser.
+7. **Copy-Paste-Brief an ein anderes Repo, wenn offene Fragen bestehen**
+   (Pflege 2026-06-19, Klaus' Regel). Wann immer am Sitzungsende eine
+   **offene Frage / Bitte / Rückmeldung an ein ANDERES Repo** offen ist
+   (anderer SBKIM-Knoten, Forker, externes Tool-Repo), gibt die Sitzung
+   einen **vollständigen, copy-paste-fähigen Brief als Markdown-Fenced-
+   Code-Block** in der finalen Chat-Antwort aus. Klaus ist der menschliche
+   Vermittler (§11.4.7): er kopiert den Brief, relayt ihn an die Gegenstelle,
+   und schickt deren Antwort zurück — **insbesondere muss der Brief die
+   Gegenstelle ausdrücklich auffordern, ihre Antwort/Quittung zurückzu-
+   senden**, damit Klaus weiß, dass eine Rückmeldung erwartet wird.
+   - **Solange noch KEIN Briefkasten existiert** (kein gegenseitiges
+     `AUSTAUSCH-*.md` + `SIGNAL.json`-Paar zwischen den beiden Repos), ist
+     dieser Chat-Copy-Paste-Brief der **einzige** Kanal — Pflicht.
+   - **Sobald ein Briefkasten existiert,** lebt der Brief-Inhalt zusätzlich
+     im Postfach (`sbkim/AUSTAUSCH-<Gegenstelle>.md`, der Push IST das
+     Signal, §11.6); der Copy-Paste-Block im Chat bleibt trotzdem als
+     Klaus-Relay-Bequemlichkeit erlaubt/erwünscht, wenn Klaus eine
+     schnelle Rückmeldung anstoßen will.
+   - Der Brief ist nüchtern, vollständig, selbst-erklärend (Absender,
+     Datum, Bitte, erwartete Rück-Aktion, nachprüfbare Fundstellen-URLs).
 
 ## Vor dem nächsten Sitzungs-Brief (`Befehl schreiben`)
 
