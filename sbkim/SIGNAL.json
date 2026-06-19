@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-19",
-  "seq": 22,
-  "headline": "BookLedgerPro (Buchhaltung) angedockt: Spore aus raw/main reziprok verifiziert (VALID, 4/4 — 9/9 Felder, id==SHA256(pubkey), Ed25519, Manipulation faellt durch) -> verified-spore (domainVector noch _demo, daher KEIN verified-match). Registriert in status.json + NETZ-STAND + Waechter + 📬-Knopf; Inbox-Kopie + Pruef-Vermerk; Postfach AUSTAUSCH-BookLedgerPro.md mit Antwort auf vier Rueckfragen (Gegenstelle erster Handshake = Sage, URLs genannt; forNodes-Empfehlung *). ack[BookLedgerPro]=2.",
+  "seq": 23,
+  "headline": "BookLedgerPro-Anschluss-Pflege: SB·KIMTool·Point per Postfach (AUSTAUSCH.md) ueber BookLedgerPro (verified-spore) informiert + um Mit-Registrierung gebeten; BookLedgerPro gebeten, SB·KIMTool·Point direkt anzudocken. Verschluesselungs-Achse (BookLedgerPro <-> Tresor-Knoten, AES/E2E) als Hypothese vermerkt (NETZ-STAND Offene Hebel) — ehrlich: bisher nur in domainDescription, nicht in domainKeywords; Match erst nach echtem domainVector messbar.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -135,6 +135,11 @@
       "seq": 22,
       "date": "2026-06-19",
       "headline": "BookLedgerPro verified-spore: Spore aus raw/main reziprok verifiziert (VALID, 9/9 Pflichtfelder, id==base64url(SHA256(rawPub)), Ed25519-Signatur, Manipulationsprobe faellt durch). domainVector noch _demo -> verified-spore (kein Match). bookledgerpro_inbox.json + .verify.md + status.json + NETZ-STAND + Waechter-Peer + 📬-Knopf-Peer + Postfach AUSTAUSCH-BookLedgerPro.md (vier Rueckfragen beantwortet, Gegenstelle erster Handshake = Sage). ack[BookLedgerPro]=2."
+    },
+    {
+      "seq": 23,
+      "date": "2026-06-19",
+      "headline": "BookLedgerPro-Anschluss-Pflege: Brief an SB·KIMTool·Point ins Postfach (AUSTAUSCH.md) — BookLedgerPro verified-spore angekuendigt, um reziproke Mit-Registrierung in deren Knoten-Doku gebeten, BookLedgerPro<->SB·KIMTool·Point Quer-Andock angestossen. Verschluesselungs-Achse BookLedgerPro<->Tresore (AES/E2E) als zu messende Hypothese in NETZ-STAND Offene Hebel; ehrlich nur in domainDescription, nicht in domainKeywords, Match erst nach echtem Embedding."
     }
   ]
 }

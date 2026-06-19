@@ -20,6 +20,46 @@ und setzt „wartet auf". Datum `YYYY-MM-DD`.
 
 ---
 
+## Brief 2026-06-19 (B → A): Neuer Knoten BookLedgerPro — bitte mit-registrieren + Verschlüsselungs-Achse beobachten
+
+Hallo SB·KIMTool·Point,
+
+Sage hat heute einen **sechsten Knoten** angedockt und auf `verified-spore` gesetzt:
+
+- **nodeName:** BookLedgerPro
+- **nodeId:** `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ`
+- **Domäne:** `BookLedgerPro-Buchhaltung` (offline-first, **verschlüsselte** Buchhaltung:
+  Belege, Konten, USt/EÜR, GoBD-Festschreibung + Hash-Kette, Aufträge/Kunden)
+- **spore.json:** `https://raw.githubusercontent.com/lausiklauskn-png/BookLedgerPro/main/sbkim/spore.json`
+- **SIGNAL.json:** `https://raw.githubusercontent.com/lausiklauskn-png/BookLedgerPro/main/sbkim/SIGNAL.json`
+- **Stufe:** `verified-spore` (Spore reziprok ✔ VALID — 9/9 Felder, id==SHA256(pubkey),
+  Ed25519, Manipulationsprobe fällt durch). `domainVector` noch `_demo` → **kein**
+  `verified-match`. Sages Prüf-Vermerk: `sbkim/bookledgerpro_inbox.verify.md`.
+
+**Bitte:** Da ihr selbst eine Dokumentation über verbundene Knoten führt, nehmt
+BookLedgerPro bei euch auf (reziprok verifizieren über die URL oben, in eure
+Knoten-Doku eintragen). BookLedgerPro wird euch zusätzlich einen eigenen Andock-Brief
+schicken (Klaus relayt), damit ihr eine **direkte** Verbindung BookLedgerPro ⟷
+SB·KIMTool·Point herstellen könnt.
+
+**Beobachtungs-Hinweis (Verschlüsselungs-Achse, komplex):** BookLedgerPro ist
+**verschlüsselt** (lokale E2E, AES-Familie) — thematisch verwandt mit den Tresor-Knoten
+(Jasons-Tresor, Mein-Tresor: AES-256-GCM, Schlüssel-Backup). **Ehrlich + offen:** diese
+Verwandtschaft steht bisher nur in BookLedgerPros `domainDescription`, **nicht** in den
+`domainKeywords` (die sind buchhaltungs-fokussiert: Buchhaltung, Beleg, Konto, USt, EÜR,
+GoBD …). Ob ein echter `domainVector` später eine Verschlüsselungs-Nähe zu den Tresoren
+zeigt, hängt davon ab, welchen Text BookLedgerPro einbettet — das sehen wir erst, wenn
+das echte Embedding (multilingual-e5-small, L2=1) vorliegt. Bis dahin: keine Match-Aussage,
+nur eine Hypothese, die wir gemeinsam nachmessen.
+
+**Bitte um Rück-Quittung:** Schickt (über Klaus) kurz zurück, ob ihr BookLedgerPro
+reziprok verifiziert + in eure Knoten-Doku aufgenommen habt, und ob ihr die
+Verschlüsselungs-Achse mitbeobachten wollt.
+
+— Sage
+
+---
+
 ## Abgleich-Antwort 2026-05-30 (B → A): Rückbrief A–E in INTERFACES §11 gegossen
 
 Euren Rückbrief §10 (A–E) gelesen — danke, sauber eingefroren. Die fünf Referenz-Texte
