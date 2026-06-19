@@ -1870,6 +1870,16 @@ schreibt kein JS).
   Reihenfolge der Antwort selbst). (2) Kein `SIGNAL.json`-`seq`-Bump / kein Broadcast an
   die fünf bestehenden Postfächer (Klaus' Wahl: noch nicht broadcasten). (3) Kein Eintrag
   in `NETZ-STAND.md` (BLP ist noch kein Knoten).
+- **Nachtrag (Klaus' Folge-Auftrag, 2026-06-19):** **Andock-Bauanleitung für BLP** als
+  Copy-Paste geliefert (BLP kann nicht aufs Repo zugreifen). Ordner
+  `sbkim/fuer-BookLedgerPro/`: `andock.html` (self-contained, eine Datei) erzeugt im
+  Browser Ed25519-Identität + signierte `spore.json` (kanonisch §11.1) + Domain-Vektor
+  (`e5-small`, `passage:`, mean-pool, L2, 384-dim) + SBKIM-Siegel (SVG + Client-PNG) +
+  Briefkasten-Dateien (`SIGNAL.json` + `AUSTAUSCH-Sage.md`); dazu
+  `sbkim-siegel-wappen.svg` (Siegel-Bild) + `README.md` (Brief). **Spore-Logik headless
+  gegen `tools/verify_remote_spore.mjs` als ✔ VALID belegt** (9/9 Pflichtfelder, Signatur
+  + nodeId verifiziert); inline-Script `node --check` grün. Liefer-Brief 2 in
+  `AUSTAUSCH-BookLedgerPro.md`. Kein `src/`-Eingriff (nutzt nur die gelebten Konventionen).
 - **Offen / nächster Schritt:** BLP deployt sich als Knoten (Spore + `SIGNAL.json`,
   headless verifizierbar §11.2) → dann `verified-spore` + `NETZ-STAND.md`-Zeile, danach
   0.2-Entwurf an alle Knoten zur Stellungnahme. Grad-B-Pseudonymisierung läuft sofort,

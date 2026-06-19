@@ -102,8 +102,49 @@ Vollständige Wie-Beschreibung (Primitive, Umschlag-Format, Spore-Feld): siehe
 
 ---
 
+## Brief 2026-06-19 (2) — Sage an BookLedgerPro: Andock-Bauanleitung (Siegel + Identität + Spore)
+
+Auf Klaus' Bitte: eine **vollständige, eigenständige Bauanleitung**, mit der ihr eine
+eigene Zelle im Mycel werdet — eigene Identität, eigene signierte Spore, eigener
+Domain-Vektor (Embedding) und das **SBKIM-Siegel** als Bild. Da ihr nicht auf unser Repo
+zugreifen könnt, ist alles **per Copy-Paste übergeben** (eine einzelne HTML-Datei, keine
+Installation, läuft lokal im Browser — Empfangsmodus gewahrt).
+
+**Geliefert** (Ordner `sbkim/fuer-BookLedgerPro/`):
+
+- `andock.html` — die ganze Anleitung in einer Datei. Erzeugt im Browser:
+  1. **Ed25519-Identität** (`nodeId = base64url(SHA-256(roher Pubkey))`),
+  2. **signierte `spore.json`** — kanonisch signiert (§11.1), **byte-kompatibel mit Sages
+     Verifizierer** (headless gegen `tools/verify_remote_spore.mjs` als ✔ VALID belegt,
+     2026-06-19),
+  3. **Domain-Vektor** via `Xenova/multilingual-e5-small` (Präfix `passage:`, mean-pool,
+     L2-normalisiert, 384-dim) — exakt wie Modul 03,
+  4. **SBKIM-Siegel** als SVG **und** PNG (Download-Knopf, client-seitig gerendert),
+  5. die **Briefkasten-Dateien** `SIGNAL.json` + `AUSTAUSCH-Sage.md`.
+- `sbkim-siegel-wappen.svg` — das Siegel-Bild (gleichwertig zu allen Knoten).
+- `README.md` — Brief + Schritt-für-Schritt + technische Eckpunkte.
+
+**Siegel = self-inscribing:** kein Fremd-Aussteller. Eure Zelle bezeugt durch
+Selbst-Prüfung, dass sie die Pflicht-Bausteine trägt. Das Bild ist für alle Knoten
+dasselbe.
+
+**Andocken (serverlos):** drei Dateien an eure Raw-URLs (`raw/main`) legen, veröffentlichen,
+Klaus/Sage Bescheid geben. Sage prüft die vier Punkte (§11.2), legt das Gegen-Postfach an,
+trägt euch in `NETZ-STAND.md` ein, quittiert per `ack` → `verified-spore`; bei Cosinus
+≥ 0.80 → `verified-match`.
+
+**Schlüssel-Disziplin:** der private Schlüssel bleibt bei euch, offline, **niemals
+committen**. Verlust ⇒ neue nodeId ⇒ Neu-Andock.
+
+> Anmerkung: Dieses Andocken ist unabhängig von der **E2E-Vertraulichkeit** (Brief 1 /
+> `docs/E2E-VERTRAULICHKEIT.md`). `protocolVersion` bleibt `0.1`; der versiegelte Umschlag
+> (0.2) kommt erst, nachdem ihr ein Knoten seid und die Knoten-Abstimmung läuft.
+
+---
+
 ## Bau-Protokoll (INTERFACES §11.4 Regel 3)
 
 | Datum | Knoten | WAS | WO | real/demo |
 |---|---|---|---|---|
 | 2026-06-19 | Sage-Protokol | Antwort auf BLP-E2E-Anfrage (4 Fragen); Grad-A/B/C-Modell + sealed-box-Entwurf 0.2 (`{v,epk,iv,ct}`, `encryptionPublicKey`); `protocolVersion` bleibt 0.1 (kein INTERFACES-Bump, kein netzweites Signal) | `docs/E2E-VERTRAULICHKEIT.md` + dieses Postfach | real (Spec-Entwurf) |
+| 2026-06-19 | Sage-Protokol | Andock-Bauanleitung für BLP (Siegel + Ed25519-Identität + signierte Spore + e5-Embedding + Briefkasten-Dateien), self-contained Copy-Paste; Spore-Logik headless gegen `verify_remote_spore.mjs` als ✔ VALID belegt | `sbkim/fuer-BookLedgerPro/{andock.html,README.md,sbkim-siegel-wappen.svg}` | real |
