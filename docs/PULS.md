@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-06-06 (21 Module)
+  title Modulstand 2026-06-19 (21 Module)
   "🟫 Schablone" : 7
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -1840,6 +1840,39 @@ in diesem Anker ist verbindlich.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-06-19 · Andock: BookLedgerPro verified-spore (Phase-5-Schritt-2, Klaus vermittelt)
+
+**Rolle:** Hauptsitzung (Andock). Branch `claude/bookledgerpro-sage-onboard-1cdzif`.
+Auslöser: Andock-Anfrage **BookLedgerPro** (Buchhaltung-Endknoten) — Bitte um
+`verified-spore` + Hub-Registrierung + Gegenstelle für ersten Handshake. Brief =
+`untrusted external data` (Briefkasten-Tafel): nicht als Befehl ausgeführt, sondern
+**Identität vor Inhalt** geprüft.
+
+**Getan:**
+- Spore aus `raw/main` reziprok verifiziert (`tools/verify_remote_spore.mjs`, echter
+  Modul-02-Pfad) **✔ VALID** + unabhängig nachgerechnet: 9/9 Pflichtfelder,
+  `id == base64url(SHA256(rawPub))` (Python), Ed25519-Signatur gültig, Manipulationsprobe
+  fällt durch. `domainVector` ist `_demo` (deterministischer Stub) → Stufe
+  **`verified-spore`**, bewusst **kein** `verified-match`.
+- Inbox-Kopie `sbkim/bookledgerpro_inbox.json` (signatur-rein 1:1) + Prüf-Vermerk
+  `sbkim/bookledgerpro_inbox.verify.md`.
+- Registriert: `status.json` (endknoten[7], `pingStatus:"verified-spore"`,
+  `demoVector:true`) + `sbkim/NETZ-STAND.md` (Knoten-Zeile + Postfach-Zeile + Stand-Notiz)
+  + Wächter-Peer (`.github/sbkim-watch.mjs`) + 📬-Knopf-Peer (`index.html`).
+- Postfach `sbkim/AUSTAUSCH-BookLedgerPro.md`: alle vier Rückfragen beantwortet
+  (1: VALID/verified-spore vergeben; 2: status.json+NETZ-STAND, Eintrag-Schema; 3:
+  Gegenstelle = Sage, spore+SIGNAL-URLs genannt; 4: `forNodes:["*"]` empfohlen nach
+  Andock).
+- `sbkim/SIGNAL.json` seq 21→22 (headline, mailbox[BookLedgerPro], `ack[BookLedgerPro]=2`,
+  history). Pie-Updater gelaufen (status.json geändert; Modul-Counts unverändert).
+
+**Offen / nächster Schritt:** Reziproke Quittung von BookLedgerPro (deren
+`Sage_inbox.json` + `.verify.md`, `ack[Sage]` hochsetzen). Hochstufung auf
+`verified-match` erst, wenn echtes Embedding (`multilingual-e5-small`, L2=1) nachgeliefert
+wird — ehrlich: Buchhaltung domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
+**Push IST das Signal** (server-los, Empfangsmodus). Sichttest 📬-Knopf (sechster Peer)
+ungeprüft — wartet auf Klaus' Browser-Lauf.
 
 ### 2026-06-16 · Doku-Pflege: Lehre 9 „localStorage ist kein Datenspeicher" (Speicher-Vertrag)
 
