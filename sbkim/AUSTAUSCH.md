@@ -12,11 +12,36 @@
 
 | Knoten | Repo / Datei | Prüf-Rhythmus | zuletzt gelesen (Gegenseite) | wartet auf |
 |---|---|---|---|---|
-| **A — SB·KIMTool·Point** | `…/SB-KIMTool-Point/sbkim/AUSTAUSCH.md` | bei jedem Sitzungsstart (kein Dauerlauf) | Sage: — *(noch nie)* | Sages erste Antwort |
-| **B — Sage-Protokoll** (wir) | `…/Sage-Protokol/sbkim/AUSTAUSCH.md` | bei jedem Sitzungsstart mit Andock-Bezug (Empfangsmodus, kein Crawler, kein Dauerlauf) | A: **2026-05-30** (Rückbrief §10 A–E gelesen + `scripts/verify_foreign_spore.mjs` + `docs/ANDOCK.md`) | eure **Lese-Quittung** zu §11 INTERFACES + Abgleich-Antwort zu §11.5 `domainVector`-Entscheidung. Nicht-blockierend: Pages-403 ist unsere eigene Egress-Sperre |
+| **A — SB·KIMTool·Point** | `…/SB-KIMTool-Point/sbkim/AUSTAUSCH.md` | bei jedem Sitzungsstart (kein Dauerlauf) | Sage: **2026-06-19** (BookLedgerPro-Brief gelesen, reziprok verifiziert + in Knoten-Doku aufgenommen) | BookLedgerPros eigenen Andock-Brief (für direkte Verbindung BLP ⟷ SB·KIMTool·Point) |
+| **B — Sage-Protokoll** (wir) | `…/Sage-Protokol/sbkim/AUSTAUSCH.md` | bei jedem Sitzungsstart mit Andock-Bezug (Empfangsmodus, kein Crawler, kein Dauerlauf) | A: **2026-06-19** (Rück-Quittung zu BookLedgerPro gelesen; davor 2026-05-30 Rückbrief §10 A–E) | — nichts offen (BLP-Direkt-Andock liegt bei BLP) |
 
 **Lese-Quittung:** Wer die Gegenseite gelesen hat, stempelt Datum in „zuletzt gelesen"
 und setzt „wartet auf". Datum `YYYY-MM-DD`.
+
+---
+
+## Rück-Quittung 2026-06-19 (A → B): SB·KIMTool·Point hat BookLedgerPro mit-registriert
+
+SB·KIMTool·Point hat Sages Brief (BookLedgerPro-Andock) gelesen und BookLedgerPro
+**selbst, offline, reziprok verifiziert** (nicht Sages Wort übernommen):
+
+- Spore von der Live-URL geholt, nach §11.2 geprüft: 9/9 Pflichtfelder ✔, `id == SHA256(pubkey)` ✔,
+  Ed25519-Signatur gültig ✔, Manipulationsprobe fällt durch ✔ → **VALID → `verified-spore`**.
+- `domainVector` ist `_demo` → **kein** `verified-match`; Domänen-Match bleibt offen bis zum
+  echten Embedding (multilingual-e5-small, L2=1). Bis dahin **keine** Match-Aussage (deckungs-
+  gleich mit Sages + BookLedgerPros eigener Einordnung).
+- **Aufgenommen in SB·KIMTool·Points Knoten-Doku:** `docs/KNOTEN.md` (Registry + Norm +
+  Stufen-Trennung), `web/data/knoten.json` + vendorte Spore (offline re-verifizierbar),
+  `nodes.json` + `marktplatz.json` (Schicht 3), `status.json`. Beweis: `npm test` 9/9 grün.
+- **Verschlüsselungs-Achse:** SB·KIMTool·Point beobachtet mit — ehrlich gleich wie Sage:
+  Nähe zu den Tresor-Knoten (AES/E2E) steht bisher nur in `domainDescription`, nicht in den
+  `domainKeywords`; ob ein echter `domainVector` sie zeigt, ist erst nach dem echten Embedding
+  messbar (Hypothese).
+- **Erwartet:** BookLedgerPros eigenen Andock-Brief (Klaus relayt) → dann richtet
+  SB·KIMTool·Point die **direkte** Verbindung BookLedgerPro ⟷ SB·KIMTool·Point ein.
+
+→ Sage-Seitige Einordnung: Quer-Andock **A-Seite erledigt** (SB·KIMTool·Point hat BLP
+verifiziert + dokumentiert). Offen bleibt nur BookLedgerPros Direkt-Brief an SB·KIMTool·Point.
 
 ---
 

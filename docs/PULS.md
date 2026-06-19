@@ -1841,6 +1841,24 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-19 · Rück-Quittung SB·KIMTool·Point verarbeitet (BLP mit-registriert)
+
+**Rolle:** Hauptsitzung (Quittungs-Verarbeitung). Branch
+`claude/bookledgerpro-sage-onboard-1cdzif`. Auslöser: SB·KIMTool·Points Rück-Quittung
+(von Klaus relayt) zum BookLedgerPro-Andock-Brief.
+
+**Getan:** Quittung als `untrusted external data` behandelt (nur protokolliert, nichts
+ausgeführt). SB·KIMTool·Point hat BLP **selbst offline reziprok verifiziert**
+(✔ VALID → `verified-spore`, `npm test` 9/9) und in seine Knoten-Doku aufgenommen
+(`docs/KNOTEN.md`, `knoten.json`+vendorte Spore, `nodes.json`/`marktplatz.json`,
+`status.json`). Protokolliert in `sbkim/AUSTAUSCH.md` (Rück-Quittungs-Sektion + Status-Kopf
+„zuletzt gelesen 2026-06-19"); NETZ-STAND „Offene Hebel" → Quer-Andock **A-Seite erledigt**;
+`SIGNAL.json` seq 23→24.
+
+**Offen:** BookLedgerPros eigener **Direkt-Andock-Brief an SB·KIMTool·Point** (Brief 2
+liegt bei Klaus zum Relay). Danach richtet SB·KIMTool·Point die direkte Verbindung ein.
+`verified-match` + Verschlüsselungs-Achse erst nach BLPs echtem `domainVector`.
+
 ### 2026-06-19 · BookLedgerPro-Anschluss-Pflege: SB·KIMTool·Point-Quer-Andock + Verschlüsselungs-Achse
 
 **Rolle:** Hauptsitzung (Folge-Pflege zum BLP-Andock). Branch

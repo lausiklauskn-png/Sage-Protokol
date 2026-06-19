@@ -100,10 +100,13 @@ domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
 
 ## Offene Hebel
 
-- **BookLedgerPro ⟷ SB·KIMTool·Point Quer-Andock**: angestoßen 2026-06-19. Sage hat
-  SB·KIMTool·Point per Postfach (`sbkim/AUSTAUSCH.md`) über BookLedgerPro informiert und
-  BookLedgerPro gebeten, SB·KIMTool·Point einen eigenen Andock-Brief zu schicken (direkte
-  Verbindung, da SB·KIMTool·Point eigene Knoten-Doku führt). Quittungen offen.
+- **BookLedgerPro ⟷ SB·KIMTool·Point Quer-Andock**: **A-Seite erledigt 2026-06-19** —
+  SB·KIMTool·Point hat BookLedgerPro selbst offline reziprok verifiziert (✔ VALID →
+  `verified-spore`) und in seine Knoten-Doku aufgenommen (`docs/KNOTEN.md`,
+  `web/data/knoten.json` + vendorte Spore, `nodes.json`/`marktplatz.json`, `status.json`;
+  `npm test` 9/9). Rück-Quittung in `sbkim/AUSTAUSCH.md`. **Offen:** BookLedgerPros eigener
+  Direkt-Andock-Brief an SB·KIMTool·Point (Klaus relayt) → dann richtet SB·KIMTool·Point die
+  direkte Verbindung ein.
 
 - **BookLedgerPro → `verified-match`**: offen. Braucht echten `domainVector`
   (`multilingual-e5-small`, `passage:`-Präfix, L2=1, neu signiert). Aktuell `_demo` →
