@@ -6,7 +6,7 @@
 > `status.json` (Maschine) + die `*_inbox.verify.md`-Vermerke (Beweis) — diese Datei ist
 > die menschenlesbare Karte darüber.
 
-**Stand: 2026-06-07** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
+**Stand: 2026-06-19** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
 
 ---
 
@@ -29,6 +29,7 @@
 | **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY` | **`verified-match` 0.848508** | `sbkim/point_inbox.verify.md` |
 | **Jasons-Tresor** | Jasons-Tresor-Bibliothek | `E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM` | **`verified-match` 0.847784** | `sbkim/jason_inbox.verify.md` |
 | **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0` | **`verified-match` 0.847784** | `sbkim/meintresor_inbox.verify.md` |
+| **BookLedgerPro** | BookLedgerPro-Buchhaltung | `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ` | **`verified-spore`** (domainVector noch `_demo` → kein Match) | `sbkim/bookledgerpro_inbox.verify.md` |
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 
@@ -67,6 +68,18 @@ innere Verbund ist komplett** — alle fünf Nachbarn (SB·KIMTool·Point, Jason
 Mein-Tresor, Mein-Rezeptbuch, Mein-Mixarium) sind `verified-match`. Ehrlich: Mixarium ⟷
 Tresore = 0.7884 < 0.80 (andere Domäne, kein Match).
 
+**Update 2026-06-19 — BookLedgerPro (sechster Nachbar) verified-spore.** Andock-Anfrage
+(Phase 5 Schritt 2, von Klaus vermittelt). Spore aus `raw/main` reziprok verifiziert
+(✔ VALID: 9/9 Pflichtfelder, `id == base64url(SHA256(rawPub))` unabhängig nachgerechnet,
+Ed25519-Signatur gültig, Manipulationsprobe fällt durch). `domainVector` noch `_demo`
+(deterministischer Stub, kein echtes Embedding) → Stufe **`verified-spore`**, **kein**
+`verified-match`. Als Peer im Wächter (`.github/sbkim-watch.mjs`) + 📬-Knopf (`index.html`)
++ eigenes Postfach (`AUSTAUSCH-BookLedgerPro.md`) aufgenommen; `ack[BookLedgerPro]=2`
+(ihr SIGNAL seq 2 quittiert). Gegenstelle für den ersten Handshake = Sage (URLs im
+Postfach genannt). Hochstufung auf `verified-match` offen, sobald BookLedgerPro echtes
+Embedding (`multilingual-e5-small`, L2=1) nachliefert — ehrlich: Buchhaltung ist
+domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
+
 ## Postfächer (Datei-Dead-Drop, Sync-Vertrag §11.4)
 
 | Gegenstelle | Sage-Seite | externe Seite |
@@ -76,6 +89,7 @@ Tresore = 0.7884 < 0.80 (andere Domäne, kein Match).
 | Mein-Tresor | `sbkim/AUSTAUSCH-MeinTresor.md` | `…/Mein-Tresor/main/sbkim/AUSTAUSCH.md` |
 | Mein-Rezeptbuch | `sbkim/AUSTAUSCH-Rezeptbuch.md` | `…/Mein-Rezeptbuch/main/sbkim/AUSTAUSCH-Sage.md` |
 | Mein-Mixarium | `sbkim/AUSTAUSCH-Mixarium.md` | `…/Mein-Mixarium/main/sbkim/AUSTAUSCH-Sage.md` |
+| BookLedgerPro | `sbkim/AUSTAUSCH-BookLedgerPro.md` | `…/BookLedgerPro/main/sbkim/AUSTAUSCH-Sage.md` |
 
 ## Werkzeuge (für Andock, Verifikation, Embedding)
 

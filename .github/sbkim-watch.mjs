@@ -49,6 +49,11 @@ const PEERS = [
     signal: "https://raw.githubusercontent.com/lausiklauskn-png/Mein-Mixarium/main/sbkim/SIGNAL.json",
     mailbox: "https://raw.githubusercontent.com/lausiklauskn-png/Mein-Mixarium/main/sbkim/AUSTAUSCH-Sage.md",
   },
+  {
+    name: "BookLedgerPro",
+    signal: "https://raw.githubusercontent.com/lausiklauskn-png/BookLedgerPro/main/sbkim/SIGNAL.json",
+    mailbox: "https://raw.githubusercontent.com/lausiklauskn-png/BookLedgerPro/main/sbkim/AUSTAUSCH-Sage.md",
+  },
 ];
 /* ===================================================================== */
 

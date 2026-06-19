@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-06-06",
+  "lastUpdated": "2026-06-19",
   "branch": "claude/semantic-agent-network-Y03Vg",
   "endknoten": [
     {
@@ -74,7 +74,7 @@
         "Fingerfood"
       ],
       "pingStatus": "verified-match",
-      "matchScore": 0.806030,
+      "matchScore": 0.80603,
       "note": "Zweiter Endknoten (Cocktails/Drinks), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Rezeptbuch). IDENTITÄTS-ABGLEICH 2026-06-07: alte Handshake-nodeId JOlHK31X… → neuere signierte Live-Identität B7Fke9C… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= B7Fke9C…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (JOlHK31X…, 7xf0tt33…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Mixarium = 0.806030 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8060). Ehrlich: zu den Tresoren liegt Mixarium bei 0.7884 < 0.80 (andere Domäne, kein Match — nichts grün-gerechnet). Prüf-Vermerk: sbkim/mixarium_inbox.verify.md.",
       "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
     },
@@ -179,6 +179,21 @@
       "landingPage": "https://lausiklauskn-png.github.io/Mein-Tresor/",
       "reIntegratedAt": "2026-06-07",
       "matchScore": 0.847784
+    },
+    {
+      "name": "BookLedgerPro",
+      "domain": "BookLedgerPro-Buchhaltung",
+      "integrated": true,
+      "integratedAt": "2026-06-19",
+      "nodeId": "MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ",
+      "sporeUrl": "https://lausiklauskn-png.github.io/BookLedgerPro/sbkim/spore.json",
+      "stammCategories": [],
+      "guestCategories": [],
+      "pingStatus": "verified-spore",
+      "demoVector": true,
+      "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector noch DEMO (_demo:[domainVector], deterministischer Stub, kein echtes Embedding) -> Stufe verified-spore, KEIN verified-match. Hochstufung moeglich, sobald echtes Embedding (multilingual-e5-small, passage-Praefix, L2=1) nachgeliefert + neu signiert wird; ehrlich: Buchhaltung domaenenfern zu Sage, Cosinus >= 0.80 nicht garantiert. Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md).",
+      "url": "https://lausiklauskn-png.github.io/BookLedgerPro/",
+      "landingPage": "https://lausiklauskn-png.github.io/BookLedgerPro/"
     }
   ],
   "modules": [
