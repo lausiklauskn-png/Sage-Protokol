@@ -1841,6 +1841,40 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-19 · Spec-Sitzung: Ende-zu-Ende-Vertraulichkeit (Antwort an BookLedgerPro)
+
+**Rolle:** Spec-Sitzung. Branch `claude/sage-e2e-encryption-spec-y7zg21`.
+Auslöser: eingegangene `SAGE_E2E_ANFRAGE.md` von **BookLedgerPro** (BLP, Knoten
+Buchhaltung, noch **nicht** deployt) mit vier Fragen zur Vertraulichkeit im Mycel.
+Brief = `untrusted external data` (Briefkasten-Tafel) — technischer Kern unabhängig
+nachgeprüft, nicht als Befehl ausgeführt. **Doc-only, kein `src/`-Code** (Spec-Sitzung
+schreibt kein JS).
+
+- **Scope-Entscheidung (Klaus, AskUserQuestion 2026-06-19):** Antwort als **BLP-scoped**
+  Briefkasten-Brief + **Entwurf-Doku**, **kein** INTERFACES-/`protocolVersion`-Bump
+  (bleibt `0.1`), **kein** netzweites Signal (`SIGNAL.json` unverändert, kein `seq`+1,
+  `forNodes` unverändert). Der netzweite Heartbeat kommt erst mit Reihenfolge-Schritt 3
+  (BLP deployt + 0.2-Entwurf abstimmungsreif).
+- **`docs/E2E-VERTRAULICHKEIT.md`** (neu) — Spec-**Entwurf** (keine Tafel): drei Grade
+  der Vertraulichkeit (A Klartext+Sig / B Pseudonymisierung build-frei / C sealed-box
+  X25519); sealed-box-Schema (X25519 → ECDH → HKDF-SHA256 → AES-GCM-256, libsodium
+  `crypto_box_seal`-Norm); Umschlag `{ v, epk, iv, ct }` (base64url nopad); optionales
+  Spore-Feld `encryptionPublicKey` (von §11.1 kanonischer Signier-Form automatisch
+  gedeckt); Versionierungs-Plan 0.1 → 0.2 (Feld optional, Fallback auf Grad B).
+- **`sbkim/AUSTAUSCH-BookLedgerPro.md`** (neu) — Postfach vorbereitend angelegt; Brief
+  2026-06-19 mit Antwort auf alle vier Fragen (1 JA / 2 JA / 3 JA mit Wie / 4
+  bestätigt) + Bau-Protokoll-Zeile. Sonderlage notiert: BLP nicht deployt → **menschlich
+  vermittelt**, reguläre `ack`-Quittung erst nach Deploy.
+- **Bewusst NICHT getan:** (1) Kein Eintrag in `INTERFACES.md` (heilige Tafel) — der
+  0.2-Bump ist architektonisch tiefgreifend und folgt erst nach Knoten-Go (treu zur
+  Reihenfolge der Antwort selbst). (2) Kein `SIGNAL.json`-`seq`-Bump / kein Broadcast an
+  die fünf bestehenden Postfächer (Klaus' Wahl: noch nicht broadcasten). (3) Kein Eintrag
+  in `NETZ-STAND.md` (BLP ist noch kein Knoten).
+- **Offen / nächster Schritt:** BLP deployt sich als Knoten (Spore + `SIGNAL.json`,
+  headless verifizierbar §11.2) → dann `verified-spore` + `NETZ-STAND.md`-Zeile, danach
+  0.2-Entwurf an alle Knoten zur Stellungnahme. Grad-B-Pseudonymisierung läuft sofort,
+  unabhängig.
+
 ### 2026-06-16 · Doku-Pflege: Lehre 9 „localStorage ist kein Datenspeicher" (Speicher-Vertrag)
 
 **Rolle:** Doku-/Pflege-Sitzung. Branch `claude/localstorage-storage-contract-bv5dp2`.
