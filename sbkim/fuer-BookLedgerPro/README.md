@@ -9,8 +9,27 @@
 
 | Datei | Zweck |
 |---|---|
-| `andock.html` | **Die ganze Bauanleitung in einer Datei.** Öffnen im Browser → Identität, Spore, Embedding, Siegel-Bild, Briefkasten-Dateien. Keine Installation. |
+| **`mycel-knoten.html`** | **Das komplette Programm** — dasselbe, was auf Sages Seite läuft. Bündelt die **echten, unveränderten** Sage-Module (01/02/03/04/05/07/15/16/17) und zeigt nach dem Laden das schwebende Live-Panel mit den vier **Lampen** (LEBT / VERKEHR / FREMD / SIEGEL) plus Andock-Wizard. Eine Datei, keine Installation. |
+| `andock.html` | Schlanke Variante: nur der Andock-Pfad (Identität, Spore, Embedding, Siegel-Bild, Briefkasten-Dateien) ohne die Lampen. Gute Lese-/Lern-Fassung. |
 | `sbkim-siegel-wappen.svg` | Das **SBKIM-Siegel** als Bild (Vektor). Gleichwertig zu dem, was Sage und alle Knoten tragen. PNG erzeugt `andock.html` per Knopf. |
+
+### Die Lampen (Modul 17 Floating-Widget) — „andocken / angedockt / Angriff"
+
+`mycel-knoten.html` mountet unten rechts ein kleines schwebendes Panel mit vier Lampen
+(dieselbe Render-Schicht wie auf Sages Seite):
+
+- **LEBT** — die Zelle ist initialisiert und identitätsfähig → **andocken möglich**.
+- **VERKEHR** — pulst bei jedem Hyphen-Verkehr (Cross-Knoten-Handshake / `postMessage`) →
+  **angedockt & aktiv**.
+- **FREMD** — wird **rot bei fremdem Zugriff / Angriff** (KI-Browser-Agent, fremde
+  `postMessage`-Quelle). Klick öffnet das Fremdzugriff-Fenster. (Modul 15 Membran; im
+  Fenster ein Test-Knopf, der einen Fremdzugriff simuliert.)
+- **SIEGEL** — erscheint **nur**, wenn die Selbst-Prüfung besteht (alle Pflicht-Module
+  geladen). Klick öffnet das Zertifikat mit den bezeugten Aspekten. (Modul 16.)
+
+Das Siegel ist also **kein eigenständiges Bild**, sondern in das laufende Programm
+integriert — eine Lampe neben den anderen, die nur leuchtet, wenn die Zelle wirklich
+vollständig ist (Anti-Greenwashing).
 
 ## Was ihr werdet (in einer halben Stunde)
 
