@@ -100,6 +100,19 @@ domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
 
 ## Offene Hebel
 
+- **Briefkasten-Runde 2026-06-19 (Funktionstest):** Alle sechs Peer-`SIGNAL.json` aus
+  `raw/main` gelesen — **alle HTTP 200, Briefkasten funktioniert**. Ungelesene Briefe waren
+  durchweg Bestätigungen (reziproke Handshakes, Ring-Schluss, gegenseitige Acks), **kein
+  offener Handlungsbedarf an Sage**. Quittiert: ack Point 20→24, Jasons 10→11, Tresor 13→14,
+  Rezeptbuch 1→5, Mixarium 1→6, BookLedgerPro 2→5. (BLP-Direkt-Andock an SB·KIMTool·Point
+  bestätigt via BLP seq 5.)
+
+- **Mycel-Anfrage Original-Siegel / PNG (offen):** 2026-06-19 netzweit gestellt (Sage
+  `SIGNAL.json` seq 25, `forNodes:"*"` + Brief im SB·KIMTool·Point-Postfach). Sage hat nur
+  die SVG-Quelle (`assets/sbkim-siegel-wappen.svg` + `tool-symbols/16_siegel.svg`), kein
+  PNG-Raster. Gesucht: Original-Siegel-Kopie oder PNG in einem Knoten-Repo. Rückmeldung
+  erbeten (Postfach/SIGNAL). Falls niemand eins hat → Sage rastert aus der SVG.
+
 - **BookLedgerPro ⟷ SB·KIMTool·Point Quer-Andock**: **A-Seite erledigt 2026-06-19** —
   SB·KIMTool·Point hat BookLedgerPro selbst offline reziprok verifiziert (✔ VALID →
   `verified-spore`) und in seine Knoten-Doku aufgenommen (`docs/KNOTEN.md`,
