@@ -477,10 +477,12 @@
       var testHtml = t.smoke
         ? '<p>Smoke-Test <code>' + esc(t.smoke) + '</code> — nach <code>tests/</code> kopieren, dann <code>node ' + esc(t.smoke) + '</code>.</p>'
         : '<p>Kein eigener Smoke-Test hinterlegt.</p>';
+      var karteLabel = t.kind === "html" ? "Karte: " : "Modul-Karte: ";
+      var codeLabel = t.kind === "html" ? "Werkzeug-Datei: " : "Modul-Code: ";
       var links = '<ul>' +
-        '<li><a href="' + esc(t.karte) + '" target="_blank" rel="noopener">Modul-Karte: ' + esc(t.karte) + '</a></li>' +
-        '<li>INTERFACES § 1 Modul ' + esc(t.id) + '</li>' +
-        (t.code ? '<li><a href="' + esc(t.code) + '" target="_blank" rel="noopener">Modul-Code: ' + esc(t.code) + '</a></li>' : '') +
+        '<li><a href="' + esc(t.karte) + '" target="_blank" rel="noopener">' + karteLabel + esc(t.karte) + '</a></li>' +
+        (t.kind === "html" ? '' : '<li>INTERFACES § 1 Modul ' + esc(t.id) + '</li>') +
+        (t.code ? '<li><a href="' + esc(t.code) + '" target="_blank" rel="noopener">' + codeLabel + esc(t.code) + '</a></li>' : '') +
         '</ul>';
 
       modal.innerHTML =
