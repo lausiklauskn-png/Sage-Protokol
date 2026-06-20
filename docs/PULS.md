@@ -1841,6 +1841,39 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Vorteilspack-Truhe: Komplett-Werkzeuge + Download + „Werkzeuge"-Filter (Klaus)
+
+**Rolle:** Hauptsitzung (Pflege Observatoriums-Vorteilspack). Klaus' Befund: in der
+Werkzeugkiste sind nicht alle Werkzeuge „nutzbar"/aktuell — „Andock" ließ sich nicht
+kopieren (Kachel 19 ist Schablone, `code:null`), und es fehlte die Kategorie **fertiger
+Ein-Datei-Werkzeuge**. Ziel: alle Werkzeuge sollen 1:1 kopier- UND herunterladbar sein.
+
+**Befund (warum „nicht live"):** Der Service-Worker `sbkim-sw.js` cached bewusst nichts
+(nur die `/sbkim/*`-Brücke) — „veraltet"-Eindruck kommt vom Browser-HTTP-Cache
+(Hard-Reload, Lehre 4). Die Truhe holt Modul-Code bereits live per `fetch()` → was im Repo
+liegt, ist immer der kopierte Stand.
+
+**Getan:**
+- Zwei fertige **Ein-Datei-PWAs** ins Repo: `docs/observatorium/tools/andock.html`
+  (Andock-Werkzeug) + `mycelknoten.html` (Komplett-Knoten mit Live-Lampen). **BLP-Branding
+  entfernt → generisch** (`MeinKnoten`-Platzhalter), **Siegel-Band leer** (netzweite Regel
+  2026-06-20). `docs/observatorium/tools/README.md` als Karte/Doku.
+- `vorteilspack.js`: neuer Tier **`komplett`** (sortiert zuerst), beide Werkzeuge als
+  `kind:"html"`-Tiles (live-`fetch` für Kopieren + Download). Neuer **Download-Knopf**
+  („Datei herunterladen") im Modal für ALLE Tools mit Code. `buildEinbau`/`buildVibe`
+  haben jetzt einen html-Zweig (Ein-Datei-PWA-Wortlaut statt Andocker-Skript).
+- `index.html`: neue Filter-Pillen **„Werkzeuge (alle)"** (Default) + **„Komplett-Werkzeug"**
+  neben Must-have/Basic/Pro; Filter-Logik auf „alle"-Default umgestellt; CSS-Farben +
+  Tier-Farbe `komplett`.
+- Smoke `tests/smoke_observatorium_truhe.mjs` auf **22/22 grün** nachgezogen — dabei fiel
+  auf, dass der NETZ-Eintrag schon vorher **nicht** im Test berücksichtigt war (Test stand
+  auf 19, Array hatte 20); jetzt korrekt 20 Modul-Tools + 2 Komplett-Werkzeuge.
+
+**Offen / nächster Schritt:** Klaus' Browser-Sichttest am Galaxy Tab S6 (Truhe öffnen →
+Filter „Werkzeuge (alle)"/„Komplett-Werkzeug" → Komplett-Werkzeug-Kachel → Kopieren +
+Herunterladen). Relay-Brief an SB·KIMTool·Point (externer Mycel-Hub), damit dessen
+Werkzeugliste dieselben zwei Komplett-Werkzeuge führt (Chat-Brief unten ausgegeben).
+
 ### 2026-06-20 · Modul 20 umbenannt „Tresor" → „Safe" + kein Startup-Prompt (Klaus)
 
 **Rolle:** Hauptsitzung (Pflege/Umbenennung). Klaus-Klarstellung: der App-interne

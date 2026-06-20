@@ -941,6 +941,7 @@
   .vp-tier-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .vp-pill { font-family: "Geist Mono", monospace; font-size: 0.72rem; padding: 0.36rem 0.85rem; border-radius: 999px; background: var(--glass); border: 1px solid currentColor; cursor: pointer; transition: background .18s; }
   .vp-pill-must { color: var(--gold); } .vp-pill-basic { color: var(--accent); } .vp-pill-pro { color: var(--accent-2); }
+  .vp-pill-komplett { color: #7ee0a8; } .vp-pill-all { color: var(--text); }
   .vp-pill:hover, .vp-pill.is-active { background: rgba(255,255,255,0.08); }
   .vp-grid { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
   /* Werkzeug-Screen (das Innere der Truhe) */
@@ -969,7 +970,7 @@
   .vp-tile.vp-dim { opacity: 0.28; filter: grayscale(0.6); }
   .vp-tile-icon { grid-row: 1 / 4; width: 40px; height: 40px; }
   .vp-tile-icon svg { width: 100%; height: 100%; display: block; }
-  .vp-tier-must { color: var(--gold); } .vp-tier-basic { color: var(--accent); } .vp-tier-pro { color: var(--accent-2); }
+  .vp-tier-must { color: var(--gold); } .vp-tier-basic { color: var(--accent); } .vp-tier-pro { color: var(--accent-2); } .vp-tier-komplett { color: #7ee0a8; }
   .vp-badge { grid-column: 2; justify-self: start; font-family: "Geist Mono", monospace; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; }
   .vp-tile-name { grid-column: 2; font-weight: 600; color: var(--text); font-size: 0.92rem; }
   .vp-tile-task { grid-column: 2; color: var(--muted); font-size: 0.78rem; line-height: 1.35; }
@@ -1720,9 +1721,11 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       <div class="vp-screen-hero" aria-hidden="true"></div>
       <div class="section-head">
         <h2 class="section-title">Im Inneren der Truhe</h2>
-        <p class="section-sub">Du bist eingetreten. Jedes SBKIM-Werkzeug liegt hier in eigener Verpackung — Klick aufs Werkzeug öffnet Beschreibung, Einbau-Schritte, Modul-Code zum Kopieren und einen fertigen Vibe-Coding-Prompt für deine eigene KI-Sitzung.</p>
+        <p class="section-sub">Du bist eingetreten. Jedes SBKIM-Werkzeug liegt hier in eigener Verpackung — Klick aufs Werkzeug öffnet Beschreibung, Einbau-Schritte, Code zum Kopieren <em>oder Herunterladen</em> und einen fertigen Vibe-Coding-Prompt für deine eigene KI-Sitzung. Die <strong>Komplett-Werkzeuge</strong> oben (Andock-Werkzeug, Komplett-Knoten) sind fertige Ein-Datei-PWAs, die du 1:1 ins eigene Repo legen kannst.</p>
       </div>
       <div class="vp-tier-pills" id="vp-tier-pills">
+        <button class="vp-pill vp-pill-all" data-tier="" type="button">● Werkzeuge (alle)</button>
+        <button class="vp-pill vp-pill-komplett" data-tier="komplett" type="button">● Komplett-Werkzeug</button>
         <button class="vp-pill vp-pill-must" data-tier="must" type="button">● Must-have</button>
         <button class="vp-pill vp-pill-basic" data-tier="basic" type="button">● Basic</button>
         <button class="vp-pill vp-pill-pro" data-tier="pro" type="button">● Pro</button>

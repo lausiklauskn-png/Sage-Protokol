@@ -2,9 +2,9 @@
  *
  * Headless: prüft die statische Tool-Datenbank von
  * docs/observatorium/vorteilspack.js ohne Browser-DOM. Bestätigt
- * Modul-Logik (19 Tools, Tier-Verteilung, Symbol-Vollständigkeit,
- * existierende Code-/Karten-/Smoke-Pfade, Vibe-Prompt-Aufbau).
- * Klaus' Browser-Sichttest bleibt Pflicht (Animation + Optik).
+ * Modul-Logik (19 Modul-Tools + 2 Komplett-Werkzeuge, Tier-Verteilung,
+ * Symbol-Vollständigkeit, existierende Code-/Karten-/Smoke-Pfade,
+ * Vibe-Prompt-Aufbau). Klaus' Browser-Sichttest bleibt Pflicht.
  *
  * Lauf:  node tests/smoke_observatorium_truhe.mjs   (erwartet alle grün)
  */
@@ -23,19 +23,25 @@ function ok(name, cond, extra) {
   else { fail++; console.log("  ✗ " + name + (extra ? "  — " + extra : "")); }
 }
 
-const EXPECTED_IDS = ["00","01","02","03","04","05","06","07","08","09","10","11","12","14","15","16","17","18","19"];
-const VALID_TIERS = ["must","basic","pro"];
+// 19 Modul-IDs (00–19 ohne 13) + NETZ ist als Modul-ID-Liste gepflegt.
+const MODULE_IDS = ["00","01","02","03","04","05","06","07","08","09","10","11","12","14","15","16","17","18","19","NETZ"];
+// 2 Komplett-Werkzeuge (Ein-Datei-PWAs).
+const TOOL_IDS = ["andock","knoten"];
+const VALID_TIERS = ["komplett","must","basic","pro"];
 const VALID_STATUS = ["fertig","stub","schablone"];
 
 console.log("Smoke: Observatoriums-Vorteilspack-Truhe");
 
 const TOOLS = vp.TOOLS, SYM = vp.SYM;
 
-ok("19 Tools in der Datenbank", TOOLS.length === 19, "ist " + TOOLS.length);
+ok("22 Tools in der Datenbank (20 Modul-Tools inkl. NETZ + 2 Komplett-Werkzeuge)",
+  TOOLS.length === 22, "ist " + TOOLS.length);
 
 const ids = TOOLS.map(t => t.id);
-ok("alle erwarteten Modul-IDs vorhanden (00–19 ohne 13)",
-  EXPECTED_IDS.every(id => ids.includes(id)) && ids.length === EXPECTED_IDS.length,
+ok("alle erwarteten IDs vorhanden (19 Module + 2 Komplett-Werkzeuge)",
+  MODULE_IDS.every(id => ids.includes(id)) &&
+  TOOL_IDS.every(id => ids.includes(id)) &&
+  ids.length === MODULE_IDS.length + TOOL_IDS.length,
   ids.join(","));
 ok("keine doppelten IDs", new Set(ids).size === ids.length);
 ok("Modul 13 nicht enthalten (kein Modul)", !ids.includes("13"));
@@ -50,25 +56,35 @@ for (const t of TOOLS) {
   if (t.task.length > 80) taskOk = false;
 }
 ok("jedes Tool hat Pflichtfelder (id/name/task/was/wie/karte)", fieldsOk);
-ok("jedes Tool hat gültigen Tier (must/basic/pro)", tierOk);
+ok("jedes Tool hat gültigen Tier (komplett/must/basic/pro)", tierOk);
 ok("jedes Tool hat gültigen Status (fertig/stub/schablone)", statusOk);
 ok("jedes Tool hat ein Werkzeug-Symbol (SYM)", symOk);
 ok("Tasks sind knapp (≤ 80 Zeichen)", taskOk);
 
-// Tier-Verteilung (Brief § 4)
-const byTier = { must:0, basic:0, pro:0 };
+// Tier-Verteilung (2 Komplett / 3 Must-have / 7 Basic / 9 Pro)
+const byTier = { komplett:0, must:0, basic:0, pro:0 };
 TOOLS.forEach(t => byTier[t.tier]++);
-ok("Tier-Verteilung 3 Must-have / 7 Basic / 9 Pro",
-  byTier.must === 3 && byTier.basic === 7 && byTier.pro === 9,
+ok("Tier-Verteilung 2 Komplett / 3 Must-have / 8 Basic / 9 Pro",
+  byTier.komplett === 2 && byTier.must === 3 && byTier.basic === 8 && byTier.pro === 9,
   JSON.stringify(byTier));
 
-// Symbol-Dateien auf Platte
+// Komplett-Werkzeuge: kind:"html" + .html-Code
+let htmlOk = true;
+for (const id of TOOL_IDS) {
+  const t = TOOLS.find(x => x.id === id);
+  if (!t || t.kind !== "html" || !t.code || !t.code.endsWith(".html")) htmlOk = false;
+}
+ok("Komplett-Werkzeuge sind kind:'html' mit .html-Code", htmlOk);
+
+// Symbol-Dateien auf Platte (nur Modul-Tools mit Modul-Karten-.md)
 let svgFilesOk = true;
-for (const id of EXPECTED_IDS) {
-  const name = TOOLS.find(t => t.id === id).karte.split("/").pop().replace(".md", ".svg");
+for (const id of MODULE_IDS) {
+  const t = TOOLS.find(x => x.id === id);
+  if (!t.karte.endsWith(".md") || !t.karte.includes("/components/")) continue; // NETZ etc.
+  const name = t.karte.split("/").pop().replace(".md", ".svg");
   if (!existsSync(join(ROOT, "assets/tool-symbols", name))) { svgFilesOk = false; }
 }
-ok("19 Symbol-SVG-Dateien in assets/tool-symbols/", svgFilesOk);
+ok("Modul-Symbol-SVG-Dateien in assets/tool-symbols/", svgFilesOk);
 
 // Truhe-Bild
 ok("Truhe-Bild assets/observatorium-truhe.png liegt vor",
@@ -81,15 +97,15 @@ for (const t of TOOLS) {
   if (!existsSync(join(ROOT, t.karte))) { karteOk = false; console.log("    fehlt karte: " + t.karte); }
   if (t.smoke && !existsSync(join(ROOT, t.smoke))) { smokeOk = false; console.log("    fehlt smoke: " + t.smoke); }
 }
-ok("alle hinterlegten Modul-Code-Pfade existieren", codeOk);
-ok("alle Modul-Karten-Pfade existieren", karteOk);
+ok("alle hinterlegten Code-Pfade existieren", codeOk);
+ok("alle Karten-Pfade existieren", karteOk);
 ok("alle hinterlegten Smoke-Test-Pfade existieren", smokeOk);
 
-// Tools mit Code = 13 (00,01,02,03,04,05,06,07,08,15,16,17,18)
+// Tools mit Code = 16 (13 Modul-Code + NETZ-Action + 2 Komplett-Werkzeuge)
 const withCode = TOOLS.filter(t => t.code).length;
-ok("13 Tools mit kopierbarem Modul-Code", withCode === 13, "ist " + withCode);
+ok("16 Tools mit kopierbarem/herunterladbarem Code", withCode === 16, "ist " + withCode);
 
-// Vibe-Prompt-Aufbau
+// Vibe-Prompt-Aufbau (Modul-Tool)
 const m04 = TOOLS.find(t => t.id === "04");
 const vibe04 = vp.buildVibe(m04);
 ok("Vibe-Prompt (04) nennt Modul-ID + Quelle + Tabus",
@@ -98,7 +114,16 @@ const m19 = TOOLS.find(t => t.id === "19");
 ok("Vibe-Prompt (19, ohne Code) verweist auf die Karte",
   vp.buildVibe(m19).includes("Karte"));
 
-// Einbau-Schritte
+// Vibe-Prompt + Einbau für Komplett-Werkzeug (html)
+const tAndock = TOOLS.find(t => t.id === "andock");
+const vibeA = vp.buildVibe(tAndock);
+ok("Vibe-Prompt (Andock-Werkzeug) nennt Ein-Datei-PWA + Zielpfad + Tabus",
+  vibeA.includes("Ein-Datei-PWA") && vibeA.includes("Zielpfad:") && vibeA.includes("Tabus:"));
+const einbauA = vp.buildEinbau(tAndock);
+ok("Einbau-Schritte (Andock-Werkzeug) nennen Herunterladen + 1:1 kopieren",
+  Array.isArray(einbauA) && einbauA.join(" ").includes("herunterladen") && einbauA.join(" ").includes("1:1"));
+
+// Einbau-Schritte (Modul)
 ok("Einbau-Schritte (04) sind eine nicht-leere Liste",
   Array.isArray(vp.buildEinbau(m04)) && vp.buildEinbau(m04).length >= 3);
 

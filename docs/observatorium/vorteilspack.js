@@ -33,11 +33,24 @@
     "17": '<circle cx="32" cy="26" r="12"/><path d="M27 19 a7 7 0 0 1 7 -1.5"/><path d="M37 22 V25 M35.5 23.5 H38.5"/><path d="M24 44 C 26 40 38 40 40 44"/><path d="M28 38 L26 44 M36 38 L38 44"/><path d="M22 50 H30 M34 50 H42"/>',
     "18": '<rect x="11" y="35" width="27" height="9" rx="4.5"/><circle cx="35" cy="39.5" r="1.4" fill="currentColor" stroke="none"/><path d="M36 38 C 45 32 52 31 56 33"/><path d="M37 40.5 C 45 37 51 35.5 56 33"/><path d="M36 41 L52 46"/><path d="M52 46 L48.5 45 M52 46 L51 48.5"/>',
     "19": '<path d="M14 50 L38 26"/><path d="M20 44 L23 47 M26 38 L29 41"/><circle cx="44" cy="20" r="6.5"/><path d="M44 13.5 L45.6 18.4 L50.5 20 L45.6 21.6 L44 26.5 L42.4 21.6 L37.5 20 L42.4 18.4 Z"/><path d="M53 12 V15 M51.5 13.5 H54.5"/><path d="M51 28 V30 M50 29 H52"/>',
-    "NETZ": '<rect x="12" y="22" width="40" height="26" rx="3"/><path d="M12 25 L32 39 L52 25"/><path d="M12 47 L26 34 M52 47 L38 34"/><circle cx="46" cy="16" r="5"/><path d="M46 11 V13 M46 19 V21 M41 16 H43 M49 16 H51"/>'
+    "NETZ": '<rect x="12" y="22" width="40" height="26" rx="3"/><path d="M12 25 L32 39 L52 25"/><path d="M12 47 L26 34 M52 47 L38 34"/><circle cx="46" cy="16" r="5"/><path d="M46 11 V13 M46 19 V21 M41 16 H43 M49 16 H51"/>',
+    "andock": '<rect x="22" y="30" width="20" height="16" rx="3"/><path d="M28 30 V21 M36 30 V21"/><path d="M32 46 V55"/><path d="M25 55 H39"/><path d="M27 38 H37"/>',
+    "knoten": '<rect x="12" y="14" width="40" height="36" rx="4"/><path d="M12 24 H52"/><circle cx="18" cy="19" r="1.5"/><circle cx="23" cy="19" r="1.5"/><circle cx="28" cy="19" r="1.5"/><circle cx="32" cy="39" r="6"/><path d="M32 33 V30 M27 42 L20 46 M37 42 L44 46"/>'
   };
 
   /* --- Tool-Datenbank (statische Metadaten, Code lazy per fetch) ---------- */
   var TOOLS = [
+    { id:"andock", name:"Andock-Werkzeug", tier:"komplett", status:"fertig", kind:"html",
+      task:"Ein-Datei-PWA: Identität + Spore + Siegel + Briefkasten erzeugen.",
+      was:"Ein vollständiges, eigenständiges Andock-Werkzeug in einer einzigen HTML-Datei: erzeugt im Browser eine eigene Ed25519-Identität, eine signierte Spore (byte-kompatibel mit Sages Verifizierer), ein echtes e5-small-Domain-Embedding, das SBKIM-Siegel (SVG + PNG) und die Briefkasten-Dateien.",
+      wie:"Datei öffnen, Eckdaten ausfüllen, vier Schritte durchklicken, Dateien herunterladen und ins eigene Repo legen. Keine Installation, keine Abhängigkeiten, kein Build — alles läuft lokal im Browser. Einzige Netz-Aktion: optionaler Modell-Download beim Embedding.",
+      deps:"keine (eigenständige Ein-Datei-PWA)", code:"docs/observatorium/tools/andock.html", smoke:null, karte:"docs/observatorium/tools/README.md" },
+    { id:"knoten", name:"Komplett-Knoten", tier:"komplett", status:"fertig", kind:"html",
+      task:"Ein-Datei-PWA: alle echten Sage-Module + Live-Lampen in einer Datei.",
+      was:"Der komplette SBKIM-Knoten in einer einzigen HTML-Datei: dieselben echten, unveränderten Sage-Module 01/02/03/04/05/07/15/16/17, inklusive Live-Lampen-Widget (LEBT / VERKEHR / FREMD / SIEGEL). Referenz-Knoten zum Anschauen und Andocken.",
+      wie:"Datei öffnen — unten rechts erscheint das schwebende Panel mit den vier Live-Lampen. Über die echten Module andocken (Identität, Embedding, Spore, Handshake). Vollständig lokal; einzige Netz-Aktion ist der optionale Embedding-Modell-Download.",
+      deps:"keine (Ein-Datei-PWA, bündelt die Module selbst)", code:"docs/observatorium/tools/mycelknoten.html", smoke:null, karte:"docs/observatorium/tools/README.md" },
+
     { id:"01", name:"Storage", tier:"must", status:"stub",
       task:"IndexedDB-Wrapper für alle Knoten-Daten.",
       was:"Das Fundament jedes Knotens: ein versionierter IndexedDB-Wrapper mit festen Stores für Identität, Sporen, Logs und Konfiguration.",
@@ -144,8 +157,8 @@
   ];
 
   /* --- Helfer ------------------------------------------------------------- */
-  var TIER_LABEL = { must:"Must-have", basic:"Basic", pro:"Pro" };
-  var TIER_ORDER = { must:0, basic:1, pro:2 };
+  var TIER_LABEL = { komplett:"Komplett-Werkzeug", must:"Must-have", basic:"Basic", pro:"Pro" };
+  var TIER_ORDER = { komplett:-1, must:0, basic:1, pro:2 };
   var STATUS = {
     fertig:    { mark:"🟩", label:"Fertig" },
     stub:      { mark:"🟦", label:"Code-Stub" },
@@ -162,6 +175,15 @@
   function fileOf(path) { return path ? path.split("/").pop() : ""; }
 
   function buildEinbau(t) {
+    if (t.kind === "html") {
+      var hf = fileOf(t.code);
+      return [
+        "Werkzeug herunterladen (Knopf »Datei herunterladen«) oder den Code kopieren.",
+        "Die Datei " + hf + " 1:1 ins eigene Repo legen (z.B. ins Repo-Root) — nicht verändern.",
+        "Über GitHub Pages o.ä. veröffentlichen und im Browser öffnen — es läuft eigenständig, ohne Installation.",
+        "Eigenen Knoten-Namen + Domäne eintragen und den Schritten in der Datei folgen."
+      ];
+    }
     if (!t.code) {
       return ["Dieses Werkzeug ist noch Konzept bzw. reine Anleitung — siehe Modul-Karte. Kein 1:1-kopierbarer Modul-Code."];
     }
@@ -179,6 +201,18 @@
   }
 
   function buildVibe(t) {
+    if (t.kind === "html") {
+      var hf = fileOf(t.code);
+      return "" +
+        "Du baust das eigenständige SBKIM-Werkzeug \"" + t.name + "\" in mein Repo ein.\n\n" +
+        "Quelle: https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/" + t.code + "\n" +
+        "Zielpfad: " + hf + " (1:1 kopieren, nicht verändern).\n\n" +
+        "Es ist eine vollständige Ein-Datei-PWA — keine Abhängigkeiten, kein Build, keine Installation.\n" +
+        "Veröffentlichen (GitHub Pages o.ä.), im Browser öffnen, eigenen Knoten-Namen + Domäne eintragen.\n\n" +
+        "Tabus:\n" +
+        "- KEIN Eingriff in den Code (1:1 Kopie) — Krypto + Kanonisierung müssen byte-kompatibel mit Sage bleiben.\n" +
+        "- KEIN PROTOCOL_VERSION-Bump.";
+    }
     if (!t.code) {
       return "Dieses Werkzeug hat noch keinen Modul-Code (Stand: Schablone/Konzept).\n" +
         "Stand + Plan: siehe Karte " + t.karte + ".";
@@ -222,6 +256,19 @@
       document.body.removeChild(ta);
       return ok;
     } catch (e) { return false; }
+  }
+  function downloadFile(path) {
+    return fetch(path).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.blob();
+    }).then(function (blob) {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = path.split("/").pop();
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      return true;
+    });
   }
 
   /* --- DOM-Aufbau --------------------------------------------------------- */
@@ -369,13 +416,15 @@
     // Tier-Filter-Pillen
     var activeTier = null;
     function applyFilter(tier) {
+      tier = tier || null;
       activeTier = tier;
       tiles.forEach(function (el) {
         el.classList.toggle("vp-dim", !!tier && el.getAttribute("data-tier") !== tier);
       });
       if (pillBox) {
         Array.prototype.slice.call(pillBox.querySelectorAll(".vp-pill")).forEach(function (p) {
-          p.classList.toggle("is-active", p.getAttribute("data-tier") === tier);
+          var pt = p.getAttribute("data-tier") || null;
+          p.classList.toggle("is-active", pt === activeTier);
         });
       }
     }
@@ -383,9 +432,10 @@
       pillBox.addEventListener("click", function (e) {
         var btn = e.target.closest(".vp-pill");
         if (!btn) return;
-        var tier = btn.getAttribute("data-tier");
+        var tier = btn.getAttribute("data-tier") || null;
         applyFilter(activeTier === tier ? null : tier);
       });
+      applyFilter(null); // "Werkzeuge (alle)" ist Default-Ansicht
     }
 
     // Tile → Modal
@@ -414,19 +464,25 @@
       var st = STATUS[t.status];
       var einbau = '<ol>' + buildEinbau(t).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") + '</ol>';
       var vibe = buildVibe(t);
+      var copyLabel = t.kind === "html" ? "Werkzeug-Code kopieren" : "Modul-Code kopieren";
       var codeBtn = t.code
-        ? '<button type="button" class="vp-copy-btn" id="vp-copy-code">Modul-Code kopieren</button>'
-        : '<button type="button" class="vp-copy-btn" disabled title="kein Modul-Code">Kein Modul-Code</button>';
-      var copyRow = '<div class="vp-copy-row">' + codeBtn +
+        ? '<button type="button" class="vp-copy-btn" id="vp-copy-code">' + copyLabel + '</button>'
+        : '<button type="button" class="vp-copy-btn" disabled title="kein Code">Kein Code</button>';
+      var dlBtn = t.code
+        ? '<button type="button" class="vp-copy-btn secondary" id="vp-dl-file">Datei herunterladen</button>'
+        : '';
+      var copyRow = '<div class="vp-copy-row">' + codeBtn + dlBtn +
         '<button type="button" class="vp-copy-btn secondary" id="vp-copy-vibe">Vibe-Prompt kopieren</button>' +
         '<span class="vp-toast" id="vp-toast" role="status"></span></div>';
       var testHtml = t.smoke
         ? '<p>Smoke-Test <code>' + esc(t.smoke) + '</code> — nach <code>tests/</code> kopieren, dann <code>node ' + esc(t.smoke) + '</code>.</p>'
         : '<p>Kein eigener Smoke-Test hinterlegt.</p>';
+      var karteLabel = t.kind === "html" ? "Karte: " : "Modul-Karte: ";
+      var codeLabel = t.kind === "html" ? "Werkzeug-Datei: " : "Modul-Code: ";
       var links = '<ul>' +
-        '<li><a href="' + esc(t.karte) + '" target="_blank" rel="noopener">Modul-Karte: ' + esc(t.karte) + '</a></li>' +
-        '<li>INTERFACES § 1 Modul ' + esc(t.id) + '</li>' +
-        (t.code ? '<li><a href="' + esc(t.code) + '" target="_blank" rel="noopener">Modul-Code: ' + esc(t.code) + '</a></li>' : '') +
+        '<li><a href="' + esc(t.karte) + '" target="_blank" rel="noopener">' + karteLabel + esc(t.karte) + '</a></li>' +
+        (t.kind === "html" ? '' : '<li>INTERFACES § 1 Modul ' + esc(t.id) + '</li>') +
+        (t.code ? '<li><a href="' + esc(t.code) + '" target="_blank" rel="noopener">' + codeLabel + esc(t.code) + '</a></li>' : '') +
         '</ul>';
 
       modal.innerHTML =
@@ -462,6 +518,17 @@
           }).catch(function () {
             toast("⚠ Konnte Code nicht laden — Link unten nutzen");
           }).then(function () { cc.disabled = false; });
+        });
+      }
+      var dl = modal.querySelector("#vp-dl-file");
+      if (dl && t.code) {
+        dl.addEventListener("click", function () {
+          dl.disabled = true;
+          downloadFile(t.code).then(function () {
+            toast("✓ Heruntergeladen: " + fileOf(t.code));
+          }).catch(function () {
+            toast("⚠ Download fehlgeschlagen — Link unten nutzen");
+          }).then(function () { dl.disabled = false; });
         });
       }
       var cv = modal.querySelector("#vp-copy-vibe");
