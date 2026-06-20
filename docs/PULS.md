@@ -1875,8 +1875,17 @@ queryLocal (separater Anisotropie-Hebel, koordinierte Klaus-Entscheidung); KEIN 
 DB_VERSION-Bump; KEIN Modul-Eingriff außer 04. `status.json` unverändert (Modul 04 war + bleibt
 `fertig`; additiv).
 
+**Folge (gleiche Sitzung):** kopierbare Einbau-Anleitung `docs/HYBRID-MATCH-EINBAU.md`
+angelegt (Helfer `sbkimHybridSearch` = Vorfilter + Richter + Fail-soft; BLP-Pilot, Klaus'
+Wahl 2026-06-20). **Befund dabei:** Modul 02 hat heute KEINE öffentliche „signiere-
+beliebiges-Objekt"-Funktion (Signieren lebt nur intern in `generateOwnSpore`) — die
+Bezeugung (`attestation` signiert in die Inbox) braucht eine kleine Folge-Sitzung Modul 02
+(`SbkimSpore.signPayload(obj)` o.ä.). Bis dahin `attestation` roh ablegen; der Richter
+läuft auch ohne Signatur voll.
+
 **Offen / nächster Schritt:** **Klaus' Browser-Sichttest Panel 04 Knöpfe 16–19** (Headless
-ersetzt ihn nicht). Danach offen: Anisotropie-Hebel (Whitening + Schwellen-Neukalibrierung,
+ersetzt ihn nicht), DANN BLP-Pilot per `HYBRID-MATCH-EINBAU.md`. Weiter offen: Modul-02-
+Signier-Helfer (Bezeugung); Anisotropie-Hebel (Whitening + Schwellen-Neukalibrierung,
 netzweit, eigene koordinierte Entscheidung); Bau-Zeit-Authoring-Helfer (Konzept § Bau-Parameter 6).
 
 ### 2026-06-20 · Brainstorming + Konzept: Hybrid-Match (KI-Richter + lokaler Fallback)
