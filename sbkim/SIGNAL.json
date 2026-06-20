@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-19",
-  "seq": 23,
-  "headline": "BookLedgerPro-Anschluss-Pflege: SB·KIMTool·Point per Postfach (AUSTAUSCH.md) ueber BookLedgerPro (verified-spore) informiert + um Mit-Registrierung gebeten; BookLedgerPro gebeten, SB·KIMTool·Point direkt anzudocken. Verschluesselungs-Achse (BookLedgerPro <-> Tresor-Knoten, AES/E2E) als Hypothese vermerkt (NETZ-STAND Offene Hebel) — ehrlich: bisher nur in domainDescription, nicht in domainKeywords; Match erst nach echtem domainVector messbar.",
+  "seq": 24,
+  "headline": "Rueck-Quittung SB·KIMTool·Point verarbeitet: hat BookLedgerPro selbst offline reziprok verifiziert (VALID -> verified-spore) + in seine Knoten-Doku aufgenommen (docs/KNOTEN.md, knoten.json+vendorte Spore, nodes.json/marktplatz.json, status.json; npm test 9/9). Quer-Andock BLP<->SB·KIMTool·Point A-Seite erledigt; offen bleibt BLPs eigener Direkt-Brief. Verschluesselungs-Achse beidseits als Hypothese (nur domainDescription, nicht domainKeywords) — Match erst nach echtem Vektor.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -140,6 +140,11 @@
       "seq": 23,
       "date": "2026-06-19",
       "headline": "BookLedgerPro-Anschluss-Pflege: Brief an SB·KIMTool·Point ins Postfach (AUSTAUSCH.md) — BookLedgerPro verified-spore angekuendigt, um reziproke Mit-Registrierung in deren Knoten-Doku gebeten, BookLedgerPro<->SB·KIMTool·Point Quer-Andock angestossen. Verschluesselungs-Achse BookLedgerPro<->Tresore (AES/E2E) als zu messende Hypothese in NETZ-STAND Offene Hebel; ehrlich nur in domainDescription, nicht in domainKeywords, Match erst nach echtem Embedding."
+    },
+    {
+      "seq": 24,
+      "date": "2026-06-19",
+      "headline": "SB·KIMTool·Point Rueck-Quittung in Postfach AUSTAUSCH.md protokolliert + NETZ-STAND Offene Hebel aktualisiert: BLP<->SB·KIMTool·Point Quer-Andock A-Seite erledigt (SB·KIMTool·Point hat BLP offline reziprok verifiziert + dokumentiert), offen nur BLPs Direkt-Brief. Status-Kopf zuletzt-gelesen 2026-06-19."
     }
   ]
 }
