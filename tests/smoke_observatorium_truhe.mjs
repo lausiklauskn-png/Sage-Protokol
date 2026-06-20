@@ -101,9 +101,9 @@ ok("alle hinterlegten Code-Pfade existieren", codeOk);
 ok("alle Karten-Pfade existieren", karteOk);
 ok("alle hinterlegten Smoke-Test-Pfade existieren", smokeOk);
 
-// Tools mit Code = 16 (13 Modul-Code + NETZ-Action + 2 Komplett-Werkzeuge)
+// Tools mit Code = 17 (14 Modul-Code inkl. 19 + NETZ-Action + 2 Komplett-Werkzeuge)
 const withCode = TOOLS.filter(t => t.code).length;
-ok("16 Tools mit kopierbarem/herunterladbarem Code", withCode === 16, "ist " + withCode);
+ok("17 Tools mit kopierbarem/herunterladbarem Code", withCode === 17, "ist " + withCode);
 
 // Vibe-Prompt-Aufbau (Modul-Tool)
 const m04 = TOOLS.find(t => t.id === "04");

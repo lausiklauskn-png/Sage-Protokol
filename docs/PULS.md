@@ -20,12 +20,12 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-06-19 (21 Module)
-  "🟫 Schablone" : 7
+  title Modulstand 2026-06-20 (21 Module)
+  "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 9
-  "🟩 Fertig" : 5
+  "🟦 Code-Stub" : 6
+  "🟩 Fertig" : 9
 ```
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
@@ -1840,6 +1840,36 @@ in diesem Anker ist verbindlich.
 ---
 
 ## Sitzungs-Einträge
+
+### 2026-06-20 · Live-Module 16/17/18/19 fertig + erste Seite vervollständigt + Modul 19 gebaut (Klaus)
+
+**Rolle:** Hauptsitzung. Klaus-Befund: in der Truhe (und auf der ersten Seite) waren
+16/17/18/19 nicht als fertig sichtbar, obwohl sie in BLP / Mein-Rezeptbuch / Mein-Mixarium
+deployt sind. Auftrag: prüfen, dann „nach Regeln oder aktualisieren"; außerdem „baue alle
+Extraktionen, sobald ein Werkzeug nachweislich funktioniert".
+
+**Geprüft (echte Deployments):** BLP-Komplett-Knoten (`mycelknoten.html`) bündelt live
+`SbkimSiegel` (16) + `SbkimWidget` (17) — beide laufen. Modul 18 (Tool-PWA-Andock-Container
+Sub a) ist gebaut + im Einsatz. Andock-Funktion (19) läuft via andock.html + Sage-Page-Wizard.
+
+**Getan:**
+- `status.json`: **16/17/18 stub → fertig, 19 schablone → fertig** (mit ehrlichen Notizen:
+  18 = Andock-Container Sub (a) fertig, Sub (b)–(i) späterer Ausbau). Pie neu via
+  `update_puls_pie.py` → **Fertig 9 / Code-Stub 6 / Schablone 6** (vorher 5/9/7). `lastUpdated`
+  2026-06-20.
+- **Erste Seite (`renderModuleList`)** rendert jetzt auch `siegelBacklog` (16),
+  `toolPwaBacklog` (18) und `mycelHubBacklog` (nur Modul 19, Konzept-Repos gefiltert) —
+  vorher fehlten 16/18/19 dort ganz. Module werden mit **Namen** (nicht nur Nummer) gezeigt;
+  bei Wort-IDs entfällt die Nummern-Box.
+- **Modul 19 gebaut** (Phase-B-Vorzug, Klaus-Auftrag): `src/modules/19_andock_wizard.js`
+  aus der Sage-Page extrahiert — reine Eingabe→Text-Hilfe (Spore-Vorlage + status.json-Zeile
+  + PR-Link), kein Signieren/Storage/Netz, `mount()` Browser-only. Smoke
+  `tests/smoke_bau19_andock_wizard.mjs` **15/15 grün**. Truhe-Kachel 19 zeigt jetzt auf den
+  Code (kopier-/herunterladbar, nicht mehr Schablone).
+
+**Offen / nächster Schritt:** Klaus' Browser-Sichttest (Truhe + erste Seite nach Hard-Reload;
+Modul-19-`mount()`-UI). Optional: Panel 19 in `manual_check.html`, Sage-Page-Wizard auf das
+Modul 19 umstellen (statt inline `generateSpore`).
 
 ### 2026-06-20 · Vorteilspack-Truhe: Komplett-Werkzeuge + Download + „Werkzeuge"-Filter (Klaus)
 

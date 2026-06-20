@@ -1,13 +1,19 @@
 # Modul 19 — Andock-Wizard (kopierbar)
 
-> **Status:** 🟫 Schablone (2026-05-26, Tafel-Spec-Pflege Mycel-Vision) ·
-> Mycel-Hub-Backlog · **Priorität niedrig** (nach App-Freigabe)  ·
+> **Status:** 🟩 Fertig (Bau 2026-06-20 — Klaus-Vorziehen aus Phase B, weil
+> die Andock-Funktion nachweislich läuft) ·
 > **Schicht:** Andock-UI-Komponente als kopierbares JS-Modul, extrahiert
-> aus dem bestehenden Sage-Page-Andock-Wizard (`index.html` Karte 4,
-> Z. ~969–991). Einsatz: Sage-Protokol UND **Externer Mycel-Hub** (siehe
-> [`_mycel_hub.md`](_mycel_hub.md)).
-> **Datei (Code):** `src/modules/19_andock_wizard.js` (existiert noch nicht
-> — Spec-Sitzung 19 folgt nach App-Freigabe, Pipeline-Phase B).
+> aus dem bestehenden Sage-Page-Andock-Wizard. Einsatz: Sage-Protokol UND
+> **Externer Mycel-Hub** (siehe [`_mycel_hub.md`](_mycel_hub.md)).
+> **Datei (Code):** `src/modules/19_andock_wizard.js` (gebaut 2026-06-20).
+> Reine Eingabe→Text-Hilfe: Repo-URL + Domain + Knotentyp → unsignierte
+> Spore-Vorlage + `status.json`-Zeile + vorgelinkter PR. **Kein Signieren**
+> (Modul 02), **kein Storage, kein Netz**. Public surface
+> `repoToPagesUrl / repoToNodeName / buildSporeTemplate / buildStatusLine /
+> buildPrUrl / generate / mount / _meta`; `mount()` ist Browser-only, die
+> Kern-Funktionen sind headless testbar. Headless-Smoke
+> `tests/smoke_bau19_andock_wizard.mjs` **15/15 grün**. Browser-Sichttest
+> der `mount()`-UI steht aus.
 
 ---
 
