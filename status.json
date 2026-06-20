@@ -189,9 +189,9 @@
       "sporeUrl": "https://lausiklauskn-png.github.io/BookLedgerPro/sbkim/spore.json",
       "stammCategories": [],
       "guestCategories": [],
-      "pingStatus": "verified-spore",
-      "demoVector": true,
-      "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector noch DEMO (_demo:[domainVector], deterministischer Stub, kein echtes Embedding) -> Stufe verified-spore, KEIN verified-match. Hochstufung moeglich, sobald echtes Embedding (multilingual-e5-small, passage-Praefix, L2=1) nachgeliefert + neu signiert wird; ehrlich: Buchhaltung domaenenfern zu Sage, Cosinus >= 0.80 nicht garantiert. Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md).",
+      "pingStatus": "verified-match",
+      "matchScore": 0.810579,
+      "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 2026-06-20 ECHT nachgeliefert (multilingual-e5-small, passage-Praefix, L2=1) + Spore neu signiert -> Cross-Knoten-Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match (knapp, aber sauber ueber der Schwelle; Buchhaltung domaenenfern, kein Gruen-Rechnen). Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md).",
       "url": "https://lausiklauskn-png.github.io/BookLedgerPro/",
       "landingPage": "https://lausiklauskn-png.github.io/BookLedgerPro/"
     }

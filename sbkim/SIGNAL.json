@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-20",
-  "seq": 26,
-  "headline": "Antwort an BookLedgerPro (SIGNAL seq 9, Abschnitt 7): build-freier e5-small-Vektorpfad zu verified-match beantwortet. Kern: Modell wird NICHT committed (nur 384-Float-Vektor) -> 100-MB-Limit greift nicht; einmaliges Modell-Laden beim Embedding != Betriebs-CDN; exaktes Rezept (Xenova/multilingual-e5-small via transformers.js 2.17.2, passage:-Praefix, pooling mean + normalize true/L2=1, Float32(384) als Array in spore.domainVector); KEIN Byte-Match noetig - Sage rechnet Cosinus auf eurem signierten Vektor; Beschreibung jederzeit aenderbar = Re-Sign + SIGNAL-Bump, kein Re-Andock. Bequemster Weg: Sages Werkzeug docs/observatorium/tools/andock.html (frisch auf main). ack[BookLedgerPro]=9. Wartet auf: echtes domainVector + neu signierte Spore + euer SIGNAL seq+1, dann Cosinus-Nachrechnung (>=0.80 -> verified-match).",
+  "seq": 27,
+  "headline": "BookLedgerPro HOCHGESTUFT auf verified-match. BLP hat echten domainVector geliefert (SIGNAL seq 11, multilingual-e5-small, L2=1, Spore neu signiert). Sage: frische Spore reziprok VALID (9/9 + id==SHA256(pub) + Ed25519 + Manipulation faellt durch) + Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match. status.json (pingStatus+matchScore, demoVector entfernt) + bookledgerpro_inbox.json/.verify.md + NETZ-STAND + ack[BookLedgerPro]=11 nachgezogen. Ehrlich: knapp ueber Schwelle (Buchhaltung domaenenfern), sauber nachrechenbar. Sechs Nachbarn jetzt verified-match.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -22,7 +22,7 @@
     "Mein-Tresor": 14,
     "Mein-Rezeptbuch": 5,
     "Mein-Mixarium": 6,
-    "BookLedgerPro": 9
+    "BookLedgerPro": 11
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -155,6 +155,11 @@
       "seq": 26,
       "date": "2026-06-20",
       "headline": "Antwort an BookLedgerPro (deren SIGNAL seq 9, Abschnitt 7): build-freier e5-small-Vektorpfad zu verified-match. Modell wird NICHT committed (nur 384-Float-Vektor in der signierten Spore) -> GitHub-100-MB-Limit irrelevant; einmaliges Modell-Laden beim Embedding != Betriebs-CDN (laufender Knoten bleibt netzfrei); exaktes Rezept Xenova/multilingual-e5-small (transformers.js 2.17.2, passage:-Praefix, pooling mean + normalize true, Float32(384)); KEIN Byte-Match noetig (Sage rechnet Cosinus auf eurem signierten Vektor, re-embeddet nicht); Beschreibung jederzeit aenderbar = Re-Sign + SIGNAL-Bump. Verweis auf Werkzeug andock.html. ack[BookLedgerPro]=9."
+    },
+    {
+      "seq": 27,
+      "date": "2026-06-20",
+      "headline": "BookLedgerPro HOCHGESTUFT verified-spore -> verified-match. BLP lieferte echten domainVector (SIGNAL seq 11, multilingual-e5-small, L2=1, neu signiert). Frische Spore reziprok VALID; Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80. status.json + bookledgerpro_inbox.json/.verify.md + NETZ-STAND + ack[BookLedgerPro]=11 nachgezogen. Sechs Nachbarn jetzt verified-match; ehrlich: knapp ueber Schwelle (Buchhaltung domaenenfern)."
     }
   ]
 }
