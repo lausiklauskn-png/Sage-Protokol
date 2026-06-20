@@ -1841,6 +1841,40 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Bau Modul 16: optionaler Andock-Knopf (KI-unabhängig) + Freibrief-Erneuerung
+
+**Rolle:** Hauptsitzung (Bau Modul 16). Branch
+`claude/bookledgerpro-sage-onboard-1cdzif`. Auslöser: Klaus' Wunsch — separates
+Andocken als **zusätzliche** Option im Siegel, **KI-unabhängiger Handshake**.
+Richtungsentscheid (AskUserQuestion): Modul 18 wiederverwenden; erst #308 mergen,
+dann bauen (beides erfüllt).
+
+**Getan (additiv, opt-in):** Modul 16 `init({andockTool:true})` → optionaler
+Knopf „🔌 Fremden Knoten andocken →" im Modal, öffnet den Modul-18-Wizard
+`SbkimToolPwa.openAndockTab()` (URL → Spore → verify → match → Handshake via
+Modul 05). Reiner Browser-Pfad, keine KI nötig. Fail-soft wenn Modul 18 fehlt
+(Hinweis statt Throw). Default `false` → DOM-Element nur bei opt-in; der „🔑"-
+Identitäts-Pfad bleibt unberührt (zwei Richtungen: 🔑 = Selbst/erzeugen,
+Andock = Gegenstelle/verbinden). `_meta.andockToolEnabled`-Getter. INTERFACES §1
+Modul 16 (options-Form + _meta) + Karte 16 § Sub (b) nachgezogen. Smoke
+`tests/smoke_bau16_andock.mjs` 9/9 grün; Regression Ribbon 9/9 + Sub-(e) 16/16
+grün; `node --check` grün.
+
+**Identitäts-Entscheid (Klaus 2026-06-20):** stabile Einzel-Identität pro App
+bleibt Leitbild (eine App = eine nodeId). Multi-Identität (Modul 02, gebaut)
+bleibt Reserve für die spätere Agenten-Schicht — **nicht** im Siegel sichtbar.
+
+**Freibrief erneuert (Klaus 2026-06-20):** automatisches Merken erlaubt, wenn
+sinnvoll + nützlich für die App, ohne Nachfrage; an jede Folge-Sitzung
+weiterzugeben. In `CLAUDE.md § Freibrief` als Bekräftigung verankert.
+
+**Offen / nächster Schritt:** (1) Sichttest durch Klaus (Sage-Page Siegel-Modal
+mit `andockTool:true` — wartet auf Browser-Lauf; headless grün). (2) Sage-Page +
+Endknoten: Modul 18 laden + `andockTool:true` setzen, damit der Knopf real
+sichtbar wird (eigene Folge-/Migrations-Sitzungen). (3) Fix-/Nachrüst-Briefe
+(Siegel-Band, BLP-Wächter) relayen. (4) Vision: downloadbarer Komplett-Siegel-
+Block aus Sage (ein Copy-Paste, richtig konfiguriert).
+
 ### 2026-06-19 · Design-Fix Modul 16: konfigurierbarer Siegel-Band-Text + Siegel-Befund
 
 **Rolle:** Hauptsitzung (Bau Modul 16, Design-Fix). Branch

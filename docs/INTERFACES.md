@@ -2812,6 +2812,10 @@ Bietet (öffentlich):
                                     //                                  Wappen; Default
                                     //                                  "SAGE OBSERVATORIUM",
                                     //                                  via init ribbonText)
+                                    //   andockToolEnabled: boolean  (opt-in Andock-
+                                    //                                  Knopf; via init
+                                    //                                  andockTool, Default
+                                    //                                  false)
 
   _resetMycelConnectedForTest()   → void (sync, Bau Sub e)
                                     // Test-Brücke (KEIN Public-Use): setzt
@@ -2855,6 +2859,17 @@ Bietet (öffentlich):
       // "MEIN-TRESOR", weil die SVG-Datei kopiert + nie angepasst wurde —
       // dieser Parameter verhindert die Wiederholung.
       ribbonText?: string,
+
+      // Default false. true → optionaler "Fremden Knoten andocken"-Knopf
+      // im Modal (KI-unabhängiger Handshake): öffnet den Modul-18-Wizard
+      // SbkimToolPwa.openAndockTab() (Repo-URL → Spore holen →
+      // verifyForeignSpore → Match → Handshake via Modul 05). Fail-soft:
+      // fehlt Modul 18, zeigt der Knopf einen Hinweis statt zu werfen.
+      // Der "🔑"-Identitäts-Pfad (eigene Spore/Vektor) bleibt unberührt;
+      // Andocken ist die ZUSÄTZLICHE Gegenstellen-Richtung (Klaus
+      // 2026-06-19). Nur bei true entsteht das DOM-Element
+      // [data-siegel-andock-tool] — Default-Render trägt es nicht.
+      andockTool?: boolean,
     }
 
   ExplanationSnapshot (Karte 16 § Schnittstelle, verbindlich):

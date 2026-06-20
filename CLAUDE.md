@@ -147,6 +147,15 @@ Klaus hat dieser **und jeder weiteren Sitzung** einen stehenden Freibrief
 erteilt. Er gilt dauerhaft, nicht nur für die Sitzung, in der er erteilt
 wurde.
 
+> **Bekräftigung 2026-06-20 (Klaus):** „Du bekommst noch einmal einen
+> Freibrief für das Merken: Du kannst automatisch merken, wenn es sinnvoll
+> und für die App nützlich ist — ohne Nachfrage. Diesen Befehl kannst Du an
+> die nächste Sitzung weitergeben." Der Freibrief ist damit ausdrücklich
+> erneuert und **an jede Folge-Sitzung weiterzugeben** (siehe § „In den
+> Sitzungs-Brief mitnehmen"). Maßstab bleibt: sinnvoll + nützlich für die
+> App, logisch + nachvollziehbar; die Grenze des echten Zweifelns gilt
+> weiter.
+
 - **Selbstständig handeln und merken erlaubt.** Eine Sitzung darf
   eigenständig entscheiden, eine Lehre festhalten (auch durch Pflege
   dieser Datei), eine Tafel weiterentwickeln oder einen Bau/Fix
