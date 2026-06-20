@@ -1841,6 +1841,15 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Fix: Andock-Wizard war hinter dem Siegel-Modal verdeckt (z-index)
+
+**Rolle:** Hauptsitzung (Bugfix). Branch `claude/bookledgerpro-sage-onboard-1cdzif`.
+Befund Klaus (Browser-Sichttest): „🔌 Fremden Knoten andocken"-Knopf ist da, Klick öffnet
+sichtbar nichts. **Ursache:** Modul-18-Wizard `z-index:10000`, Siegel-Modal `z-index:99998`
+→ der Wizard mountete hinter dem Siegel-Modal. **Fix:** `onAndockClick` schließt das
+Siegel-Modal (`closeModal()`) beim Öffnen des Wizards → Wizard wird sichtbar. Smokes grün
+(Andock 9/9, Sub-(e) 16/16, Ribbon 9/9), `node --check` grün. **Sichttest erneut durch Klaus.**
+
 ### 2026-06-20 · Sage-Page-Verdrahtung: Andock-Knopf live (andockTool:true)
 
 **Rolle:** Hauptsitzung (Verdrahtung). Branch
