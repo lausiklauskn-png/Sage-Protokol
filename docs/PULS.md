@@ -1841,6 +1841,31 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Architektur-Befund: e5-Anisotropie — Match-Schwelle misst den Boden (Klaus)
+
+**Rolle:** Hauptsitzung (Analyse + Doku). Klaus' Skepsis: warum erzielt eine Buchhaltungs-App
+(BookLedgerPro) 0.81 zur Mycel-Bibliothek (Sage), obwohl inhaltlich nichts gemein? Befund:
+**berechtigt.**
+
+**Beleg (`tools/match_baseline.mjs`, echte Knoten-Vektoren):** roher e5-Cosinus hat einen
+hohen **Boden** — unverwandte Domänen mean **0.8215** (sd 0.0223). Schwelle 0.80 liegt
+**unter** dem Boden. Nach Mittelwert-Abzug (Whitening-light) bleiben nur die Tresor-Schwestern
+(1.0) und Rezeptbuch↔Mixarium (0.70) positiv; **alle Sage↔Endknoten gehen negativ** (BookLedger
+−0.16, Rezeptbuch −0.25). Ursache: **Anisotropie** von `multilingual-e5-small` (+ gleiche
+Sprache/Stil/`passage:`-Präfix). Der hohe Roh-Wert misst das Modell, nicht die Themen-Nähe.
+
+**Getan (nichts stillschweigend umgestempelt — Verfahren ist netzweit, Klaus entscheidet):**
+- `tools/match_baseline.mjs` — headless Boden-Analyse (roh + zentriert + Stats), reproduzierbar.
+- `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md` — Lehre + Fix-Konzept (Whitening-Referenz-Impl
+  + Schwellen-Kalibrierung + Browser-Instrument für Zufallstext-Boden) für nachfolgende Bauten.
+- `sbkim/NETZ-STAND.md` „Offene Hebel": Befund + Drei-Stufen-Plan eingetragen.
+- Sage-Page Sonnen-Galaxie: neue Geschichts-Station „Der hohe Boden" (Entstehungsgeschichte).
+
+**Offen / nächster Schritt (Klaus' Entscheidung, netzweit):** (1) Schwelle mit Zufallstext-
+Boden neu kalibrieren, (2) Modul 04 auf whitened Cosinus (Mean-Vektor als netzweite Konstante),
+(3) alle Matches einmal sauber neu rechnen. Bis dahin: Sage↔X-Matches als „boden-nah/schwach"
+markiert, nicht umgestempelt.
+
 ### 2026-06-20 · BookLedgerPro → verified-match (Cosinus 0.810579)
 
 **Rolle:** Hauptsitzung (Briefkasten). BLP hat auf Sages e5-small-Antwort reagiert: echten
