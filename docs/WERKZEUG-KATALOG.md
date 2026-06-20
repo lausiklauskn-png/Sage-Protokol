@@ -82,4 +82,3 @@
 Entwickler kopiert in seine App → **Einbau-Snippet**. #1–#5 lohnen sich als **beides**.
 Alle acht sind „jetzt schon" machbar, weil die Modul-Logik existiert — es entsteht
 **keine neue Kern-Logik**, nur eine generische Single-File-Verpackung mit Smoke + Download.
-
