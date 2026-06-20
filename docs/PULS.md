@@ -1841,6 +1841,26 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Spec-Karte Modul 20 Schlüssel-Tresor (Identitäts-Tresor + Shamir)
+
+**Rolle:** Hauptsitzung (Spec). Auslöser: Klaus' Auftrag — jeder Knoten soll seine
+SBKIM-Identität (nodeId + privater Schlüssel + Spore) in einem lokal verschlüsselten
+Tresor IM Repo sichern (Auto-Abfrage, zweistufiges Passwort), Recovery via Shamir über
+das Passwort. Vorbilder: Mein-Tresor, BLP „Geheim-Fach" (Screenshots 2026-06-20).
+Richtungsentscheid (AskUserQuestion): **Spec zuerst**, **Shamir über das Passwort**.
+
+**Getan:** Spec-/Konzept-Karte `docs/components/20_schluessel_tresor.md` geschrieben
+(Zweck/Problem Identitäts-Wandern; Krypto-Kern = Modul 02 PBKDF2+AES-GCM; Auto-Prompt
+zweistufig; Shamir k-von-N über das Passwort mit aktiver Einforderung; Datenschutz-Klausel;
+vorgeschlagene Schnittstelle `SbkimVault`; Verhältnis zu Modul 01/02/16/09; offene Bau-
+Punkte; Pipeline). CLAUDE.md Modultabelle Zeile 20 ergänzt. **Befund:** BLP-App zeigt
+nodeId `ZrBxTuAr…` vs. bei Sage registriert `MyHVM7Pd…` → Identitäts-Wandern, genau das
+Problem, das der Tresor löst (in BLP-Sonderbrief zur Klärung aufgenommen).
+
+**Offen / nächster Schritt:** **Klaus prüft die Spec-Karte** → dann Bau-Sitzung Modul 20
+(`claude/bau-20-schluessel-tresor`). Relay: BLP-Sonderbrief + Mycel-/Datenschutz-Klärung
+(im Chat ausgegeben). Schritt 2 weiter offen: Mixarium-Band, BLP-Wächter-Quittungen.
+
 ### 2026-06-20 · Siegel-Band: offen lassen statt Auto-Label (Klaus-Entscheidung)
 
 **Rolle:** Hauptsitzung (Bau Modul 16). Mein-Rezeptbuch hatte upstream eine
