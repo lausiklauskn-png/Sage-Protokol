@@ -1841,6 +1841,27 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Brainstorming + Konzept: Hybrid-Match (KI-Richter + lokaler Fallback)
+
+**Rolle:** Hauptsitzung (Brainstorming → Konzept-Spec, kein Code). Anschluss an den
+Anisotropie-Befund: Klaus' Lösung — SBKIM war als *KI-Matching* gedacht; der echte Sinn-
+Richter ist eine **LLM**, nicht das kleine e5-Modell.
+
+**Konsens (Hybrid, Option C):** dreigeteilte Rollen — (1) **Bau-Zeit-Authoring** mit der
+besten KI des Entwicklers (DSGVO-unkritisch, Entwickler-Akt), (2) **geteilte Vergleichs-
+Koordinate** immer vom EINEN netzweiten Embedding-Modell (lokal e5, sonst nicht vergleichbar),
+(3) **Match-Zeit-LLM-Richter** opt-in/BYOK, Knoten-eigener EU-Anbieter (Mistral etc.).
+**Fail-soft (Klaus' Anker):** LLM nicht erreichbar → lokales Modell entscheidet weiter.
+**Bidirektional:** jede Seite urteilt mit ihrer eigenen KI. **Keim existiert:** Modul 04
+Sub-B `explainMatchLLM` vom Erklärer zum Richter hochstufen.
+
+**Getan:** `docs/HYBRID-MATCH-KONZEPT.md` (Konzept-Spec mit Rollen-Tafel + Ablauf + offenen
+Bau-Parametern), `docs/sessions/BRIEF_BAU_HYBRID_MATCH.md` (Bau-Brief, copy-paste).
+
+**Offen / nächster Schritt:** Bau-Sitzung `claude/bau-04d-hybrid-match` (additiv, fail-soft,
+Anbieter-Abstraktion + Mock-Smoke). Separater netzweiter Hebel bleibt: Whitening +
+Schwellen-Neukalibrierung von Modul 04 (eigene Entscheidung).
+
 ### 2026-06-20 · Architektur-Befund: e5-Anisotropie — Match-Schwelle misst den Boden (Klaus)
 
 **Rolle:** Hauptsitzung (Analyse + Doku). Klaus' Skepsis: warum erzielt eine Buchhaltungs-App
