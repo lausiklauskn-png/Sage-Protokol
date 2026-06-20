@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /*
- * Smoke — Modul 20 Schlüssel-Tresor: Shamir (2 von 3) + Tresor-Logik.
+ * Smoke — Modul 20 Schlüssel-Safe: Shamir (2 von 3) + Safe-Logik.
  *
  * Prüft die sicherheitskritische Kern-Logik headless:
  *  - Shamir split/combine über GF(256): k=2 von N=3, jede 2er-Teilmenge
  *    rekonstruiert das Geheimnis; 1 Anteil reicht NICHT.
- *  - Tresor create/unlock/recover mit gemocktem SbkimSpore (exportBackup/
+ *  - Safe create/unlock/recover mit gemocktem SbkimSpore (exportBackup/
  *    importBackup) + In-Memory-SbkimStorage.
  *
- * Aufruf:  node tests/smoke_bau20_tresor.mjs   ·   Exit 0 = grün.
+ * Aufruf:  node tests/smoke_bau20_safe.mjs   ·   Exit 0 = grün.
  */
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
@@ -48,8 +48,8 @@ globalThis.SbkimSpore = {
 };
 
 const require = createRequire(import.meta.url);
-require(resolve(repoRoot, "src/modules/20_schluessel_tresor.js"));
-const V = globalThis.SbkimVault;
+require(resolve(repoRoot, "src/modules/20_schluessel_safe.js"));
+const V = globalThis.SbkimSafe;
 
 function eqBytes(a, b) {
   if (a.length !== b.length) return false;
@@ -88,12 +88,12 @@ async function main() {
   const dec = V._decodeShare(enc);
   ok(dec.x === shareObjs[0].x && eqBytes(dec.bytes, shareObjs[0].bytes), "Anteil encode→decode round-trip");
 
-  // ---- Tresor-Logik ----
-  ok((await V.hasVault()) === false, "vor createVault: kein Tresor");
-  const pw = "tresor-pw-2026";
+  // ---- Safe-Logik ----
+  ok((await V.hasVault()) === false, "vor createVault: kein Safe");
+  const pw = "safe-pw-2026";
   const res = await V.createVault(pw);
   ok(Array.isArray(res.shares) && res.shares.length === 3, "createVault → 3 Anteile");
-  ok((await V.hasVault()) === true, "nach createVault: Tresor vorhanden");
+  ok((await V.hasVault()) === true, "nach createVault: Safe vorhanden");
   ok(V.isUnlocked() === true, "nach createVault: entsperrt");
 
   V.lock();

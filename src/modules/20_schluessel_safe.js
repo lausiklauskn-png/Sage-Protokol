@@ -1,18 +1,19 @@
 /*
- * SBKIM — Modul 20: Schlüssel-Tresor (SBKIM-Identitäts-Tresor)
+ * SBKIM — Modul 20: Schlüssel-Safe (SBKIM-Identitäts-Safe)
  *
  * Sichert die SBKIM-Identität (nodeId + privater Knotenschlüssel + Spore)
  * lokal verschlüsselt, gegen Identitäts-Wandern. Krypto-Kern wiederverwendet
  * Modul 02 (exportBackup/importBackup: PBKDF2-SHA256 ≥600k + AES-GCM-256) —
- * der Tresor speichert NUR den verschlüsselten Backup-Blob (kein Klartext-
+ * der Safe speichert NUR den verschlüsselten Backup-Blob (kein Klartext-
  * Schlüssel at rest). Recovery via Shamir's Secret Sharing ÜBER DAS PASSWORT
  * (k von N, Default 2 von 3 — Klaus 2026-06-20). Der Nutzer verwahrt die
  * Anteile selbst; das System fordert die Sicherung aktiv ein.
  *
- * Spec: docs/components/20_schluessel_tresor.md · INTERFACES.md §1 Modul 20.
+ * Spec: docs/components/20_schluessel_safe.md · INTERFACES.md §1 Modul 20.
  *
- * Schnittstelle (window.SbkimVault):
- *   init(options?)            -> Promise<void>
+ * Schnittstelle (window.SbkimSafe):
+ *   init(options?)            -> Promise<void>   // autoPrompt Default false
+ *   open()                   -> Promise<void>   // Safe-Modal auf Abruf
  *   hasVault()               -> Promise<boolean>
  *   isUnlocked()             -> boolean (sync)
  *   createVault(password)    -> Promise<{ shares: string[] }>
@@ -27,7 +28,7 @@
   "use strict";
 
   // ---- Konstanten ----
-  var STORE_NAME = "sbkim_vault";
+  var STORE_NAME = "sbkim_safe";
   var VAULT_KEY = "backup";
   var MIN_PASSWORD_LEN = 8;          // analog Modul 02 BACKUP_PASSWORD_MIN_LEN
   var DEFAULT_SHAMIR_N = 3;
@@ -39,13 +40,13 @@
   var unlocked = false;
   var shamirN = DEFAULT_SHAMIR_N;
   var shamirK = DEFAULT_SHAMIR_K;
-  var autoPromptFlag = true;
+  var autoPromptFlag = false;
   var mountSelector = null;
 
   function warn(msg, err) {
     if (typeof console !== "undefined" && console.warn) {
-      if (err !== undefined) console.warn("[SbkimVault] " + msg, err);
-      else console.warn("[SbkimVault] " + msg);
+      if (err !== undefined) console.warn("[SbkimSafe] " + msg, err);
+      else console.warn("[SbkimSafe] " + msg);
     }
   }
 
@@ -196,7 +197,7 @@
     return global.Buffer ? global.Buffer.from(bytes).toString("utf8") : "";
   }
 
-  // ================= Öffentliche Tresor-Logik ============================
+  // ================= Öffentliche Safe-Logik ============================
 
   function getStorage() { return global.SbkimStorage || null; }
   function getSpore() { return global.SbkimSpore || null; }
@@ -224,7 +225,7 @@
 
   function isUnlocked() { return unlocked === true; }
 
-  // Erzeugt den Tresor aus der aktuellen Identität + die Shamir-Anteile.
+  // Erzeugt den Safe aus der aktuellen Identität + die Shamir-Anteile.
   async function createVault(password) {
     if (typeof password !== "string" || password.length < MIN_PASSWORD_LEN) {
       throw makeError("WeakPasswordError",
@@ -236,7 +237,7 @@
     }
     if (await hasVault()) {
       throw makeError("VaultExistsError",
-        "Tresor existiert bereits — erst entsperren oder löschen, statt neu anzulegen.");
+        "Safe existiert bereits — erst entsperren oder löschen, statt neu anzulegen.");
     }
     // Krypto-Kern: Modul 02 verschlüsselt Identität + Geschwister passwortbasiert.
     var blob = await sp.exportBackup(password);
@@ -251,7 +252,7 @@
     return { shares: shares };
   }
 
-  // Entsperrt/stellt die Identität aus dem Tresor wieder her.
+  // Entsperrt/stellt die Identität aus dem Safe wieder her.
   async function unlock(password) {
     if (typeof password !== "string" || password.length === 0) return false;
     var sp = getSpore();
@@ -264,10 +265,10 @@
       await ensureVaultStore();
       var blob = await st.get(STORE_NAME, VAULT_KEY);
       if (!blob) {
-        warn("unlock: kein Tresor vorhanden.");
+        warn("unlock: kein Safe vorhanden.");
         return false;
       }
-      // force:true — die im Tresor gesicherte Identität ist maßgeblich.
+      // force:true — die im Safe gesicherte Identität ist maßgeblich.
       await sp.importBackup(blob, password, { force: true });
       unlocked = true;
       return true;
@@ -358,7 +359,7 @@
   }
 
   function showCreateModal(doc) {
-    var ui = buildModalShell(doc, "Schlüssel-Tresor einrichten");
+    var ui = buildModalShell(doc, "Schlüssel-Safe einrichten");
     var info = doc.createElement("p");
     info.style.cssText = "margin:0 0 0.9rem;font-size:0.86rem;line-height:1.5;color:rgba(245,245,255,0.85);";
     info.textContent =
@@ -368,7 +369,7 @@
     var pw2 = makeInput(doc, "Passwort wiederholen");
     var msg = doc.createElement("p");
     msg.style.cssText = "margin:0 0 0.6rem;font-size:0.8rem;color:#e0a; min-height:1em;";
-    var btn = makeButton(doc, "Tresor einrichten");
+    var btn = makeButton(doc, "Safe einrichten");
     ui.panel.appendChild(info);
     ui.panel.appendChild(pw1);
     ui.panel.appendChild(pw2);
@@ -386,7 +387,7 @@
         if (ui.root.parentNode) ui.root.parentNode.removeChild(ui.root);
       }).catch(function (e) {
         btn.disabled = false;
-        msg.textContent = (e && e.message) ? e.message : "Tresor konnte nicht angelegt werden.";
+        msg.textContent = (e && e.message) ? e.message : "Safe konnte nicht angelegt werden.";
       });
     });
   }
@@ -398,7 +399,7 @@
     info.textContent =
       "Bewahre diese " + shares.length + " Anteile getrennt auf. Mit " + shamirK +
       " davon kannst du dein Passwort wiederherstellen, falls du es vergisst. " +
-      "Ohne Passwort UND ohne genug Anteile ist der Tresor nicht wiederherstellbar.";
+      "Ohne Passwort UND ohne genug Anteile ist der Safe nicht wiederherstellbar.";
     var box = doc.createElement("textarea");
     box.readOnly = true;
     box.value = shares.join("\n");
@@ -434,10 +435,10 @@
   }
 
   function showUnlockModal(doc) {
-    var ui = buildModalShell(doc, "Schlüssel-Tresor entsperren");
+    var ui = buildModalShell(doc, "Schlüssel-Safe entsperren");
     var info = doc.createElement("p");
     info.style.cssText = "margin:0 0 0.9rem;font-size:0.86rem;line-height:1.5;color:rgba(245,245,255,0.85);";
-    info.textContent = "Gib dein Tresor-Passwort ein, um deine SBKIM-Identität zu laden.";
+    info.textContent = "Gib dein Safe-Passwort ein, um deine SBKIM-Identität zu laden.";
     var pw = makeInput(doc, "Passwort");
     var msg = doc.createElement("p");
     msg.style.cssText = "margin:0 0 0.6rem;font-size:0.8rem;color:#e0a;min-height:1em;";
@@ -453,19 +454,23 @@
       btn.disabled = true;
       unlock(pw.value).then(function (okv) {
         if (okv) { if (ui.root.parentNode) ui.root.parentNode.removeChild(ui.root); }
-        else { btn.disabled = false; msg.textContent = "Falsches Passwort oder Tresor defekt."; }
+        else { btn.disabled = false; msg.textContent = "Falsches Passwort oder Safe defekt."; }
       });
     });
   }
 
-  async function runAutoPrompt() {
+  // Öffnet das Safe-Modal auf Abruf (Einrichten, wenn kein Safe; sonst
+  // Entsperren). Das ist der EINZIGE übliche Einstieg: der Host hängt einen
+  // Knopf in seine Einstellungen/Tool-Ansicht, der SbkimSafe.open() ruft.
+  // KEINE Abfrage beim Seitenstart (Klaus 2026-06-20: App startet immer normal).
+  async function open() {
     var doc = global.document;
     if (!doc || !doc.body) return;
     try {
       if (await hasVault()) showUnlockModal(doc);
       else showCreateModal(doc);
     } catch (e) {
-      warn("Auto-Abfrage fehlgeschlagen.", e);
+      warn("Safe-Öffnen fehlgeschlagen.", e);
     }
   }
 
@@ -476,14 +481,17 @@
     if (typeof opts.shamirN === "number" && opts.shamirN >= 2 && opts.shamirN <= 255) shamirN = opts.shamirN | 0;
     if (typeof opts.shamirK === "number" && opts.shamirK >= 2) shamirK = opts.shamirK | 0;
     if (shamirK > shamirN) { warn("shamirK > shamirN — auf Default 2/3 zurückgesetzt."); shamirN = DEFAULT_SHAMIR_N; shamirK = DEFAULT_SHAMIR_K; }
-    autoPromptFlag = (opts.autoPrompt !== false);
+    // autoPrompt Default FALSE — der Safe wird NICHT beim Seitenstart
+    // abgefragt, sondern nur auf Abruf via open() (Klaus 2026-06-20).
+    autoPromptFlag = (opts.autoPrompt === true);
     if (typeof opts.mountSelector === "string") mountSelector = opts.mountSelector;
     ready = true;
-    if (autoPromptFlag) { try { await runAutoPrompt(); } catch (e) { warn("init Auto-Prompt", e); } }
+    if (autoPromptFlag) { try { await open(); } catch (e) { warn("init Auto-Prompt", e); } }
   }
 
-  var SbkimVault = {
+  var SbkimSafe = {
     init: init,
+    open: open,
     hasVault: hasVault,
     isUnlocked: isUnlocked,
     createVault: createVault,
@@ -505,11 +513,11 @@
     },
   };
 
-  global.SbkimVault = SbkimVault;
+  global.SbkimSafe = SbkimSafe;
 
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 20 SCHLUESSEL-TRESOR bereit, Funktionen: init/hasVault/isUnlocked/createVault/unlock/lock/recoverPassword",
+      "MODUL 20 SCHLUESSEL-SAFE bereit, Funktionen: init/open/hasVault/isUnlocked/createVault/unlock/lock/recoverPassword",
     );
   }
 })(typeof window !== "undefined" ? window : globalThis);

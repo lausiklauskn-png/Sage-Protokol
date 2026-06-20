@@ -1841,6 +1841,31 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Modul 20 umbenannt „Tresor" → „Safe" + kein Startup-Prompt (Klaus)
+
+**Rolle:** Hauptsitzung (Pflege/Umbenennung). Klaus-Klarstellung: der App-interne
+SBKIM-Identitäts-Speicher soll **„Safe"** heißen (NICHT „Tresor"), um Verwechslung mit
+dem bestehenden JSON-Backup-„Tresor" (Mein-Rezeptbuch/Mein-Mixarium) und BLPs eigenem
+„Tresor"/Geheim-Fach zu vermeiden — die bleiben „Tresor". Außerdem: **keine Abfrage beim
+Seitenstart**, der Safe wird auf Abruf aus den Einstellungen geöffnet.
+
+**Getan (Modul frisch, keine Live-Daten → sauberer Zeitpunkt):**
+- Dateien umbenannt: `20_schluessel_tresor.{js,md}` → `…_safe.*`,
+  `smoke_bau20_tresor.mjs` → `…_safe.mjs`. Global `SbkimVault` → **`SbkimSafe`**,
+  Store `sbkim_vault` → `sbkim_safe`. Alle deutschen „Tresor"→„Safe" für unser Modul
+  (Mein-Tresor/Jasons-Tresor/„Tresor-im-Tresor"/BLP bewusst geschützt).
+- Verhalten: `autoPrompt` Default **false**; neues **`open()`** öffnet das Safe-Modal
+  auf Abruf (Host hängt einen „Safe"-Knopf in seine Einstellungen). `init` löst KEIN
+  Startup-Modal mehr aus.
+- INTERFACES §1 Modul 20 + Karte 20 (§3 „auf Abruf" + Namens-Klarstellung + §6 Schnittstelle)
+  + CLAUDE.md Zeile 20 + `index.html`/`manual_check.html` nachgezogen.
+- Smoke `tests/smoke_bau20_safe.mjs` **19/19 grün**; Modul-16-Regression 16/16 grün.
+
+**Offen / nächster Schritt:** Klaus' Browser-Sichttest (Panel 20). Sage-Page-Einbau eines
+„Safe"-Knopfs in die Einstellungen (auf Abruf) — eigene Folge-Sitzung. Relay-Briefe
+(netzweite Verteilung, BLP zuerst) verwenden „Safe" für unser Modul, „Tresor" für deren
+eigene. Offen aus Schritt 2: Mixarium-Band, BLP-Wächter-Quittungen.
+
 ### 2026-06-20 · Bau-Sitzung Modul 20 Schlüssel-Tresor (Code-Stub, Shamir 2/3)
 
 **Rolle:** Hauptsitzung (Bau). Klaus-OK: „315 mergen + bauen", Shamir **2 von 3**,
