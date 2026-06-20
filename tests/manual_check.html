@@ -134,6 +134,13 @@
     <pre class="log">— bereit. Bau-Sitzung 18 Sub (a) Vorab (2026-05-28, Pipeline-Phase A 5h.1). Andock-Wizard als modularer Endknoten-Pfad, getriggert durch Bronze-SIEGEL-Klick (Modul 16 Sub e Hook seit PR #180) oder Multisuchfeld-Treffer. Surface: `init`/`openAndockTab`/`close`/`isOpen` + 13-Feld-`_meta`. Zwei benannte Errors: `ToolPwaNotReadyError` (sync vor await aus `openAndockTab`, mit Liste der fehlenden init-Felder) und `ToolPwaInvalidUrlArgError` (url-Argument nicht gültig). `init()` ist fail-soft: fehlende Pflicht-Felder (`endpoint`+`domain`+`domainKeywords`) → `console.warn` + `_meta.ready=false`, KEIN Throw. `matchThreshold > 0.80` wird geclampt + warn. `externalHubUrl` ist Read-Anker — KEIN Hub-Fetch in Sub (a) Vorab. Stepper-UI: 1) URL eingeben → 2) Spore fetchen (`fetch(url + 'sbkim/spore.json')` + `verifyForeignSpore`) → 3) Match-Check mit Lazy-Embedding (Re-Use wenn Modul 03 `_meta.ready===true` ODER `isReady()===true`) + Drei-Schichten-Bars (fachlich/prozess/skalierung) → 4) Handshake via `SbkimAnastomose.handshake`, auto-close 2 s nach Erfolg. RAM-only, KEIN Store, KEIN PROTOCOL_VERSION-Bump. Sub (b)–(i) bleiben Voll-Spec 18 (Pipeline 5h.2 nach App-Freigabe). Setup-Knopf ruft `SbkimToolPwa.init({endpoint:'https://test.local/Mein-Rezeptbuch/', domain:'rezeptbuch', domainKeywords:['rezept','kochen','essen']})`. —</pre>
   </section>
 
+  <section class="panel" data-module="19_andock_wizard">
+    <h2>19 Andock-Wizard <span class="status ok">Fertig 2026-06-20</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <div id="panel-19-mount" style="margin:.6rem 0;"></div>
+    <pre class="log">— bereit. Modul 19 (kopierbarer Andock-Wizard), extrahiert aus der Sage-Page. Reine Eingabe→Text-Hilfe: Repo-URL + Domain + Knotentyp → unsignierte Spore-Vorlage + status.json-Zeile + vorgelinkter PR. KEIN Signieren/Storage/Netz. Knöpfe: „mount() im Panel" zeigt die Live-Wizard-UI in #panel-19-mount (Felder ausfüllen → „Spore-Vorlage erzeugen"); „generate() Test" + „Pages-URL-Ableitung" prüfen die reinen Funktionen. —</pre>
+  </section>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {
@@ -5167,6 +5174,29 @@
         lastShares = null;
         SbkimUI.setStatus("20_schluessel_safe", "ok", "zurückgesetzt");
         return { hasVault: await SbkimSafe.hasVault(), erwartung: "false" };
+      });
+    })();
+  </script>
+  <script src="../src/modules/19_andock_wizard.js"></script>
+  <script>
+    (function () {
+      // Panel 19 — Andock-Wizard (kopierbar). Reine Funktionen + optionales mount().
+      SbkimUI.addButton("19_andock_wizard", "mount() Wizard im Panel", function () {
+        var el = SbkimAndockWizard.mount({ container: "#panel-19-mount" });
+        SbkimUI.setStatus("19_andock_wizard", el ? "ok" : "err", el ? "gemountet" : "Container fehlt");
+        return { gemountet: !!el, hinweis: "Felder ausfüllen + 'Spore-Vorlage erzeugen' klicken — Ausgabe erscheint im Panel." };
+      });
+      SbkimUI.addButton("19_andock_wizard", "generate() Test", function () {
+        var res = SbkimAndockWizard.generate({ repo: "https://github.com/user/mein-knoten", domain: "Kochrezepte", nodeType: "hybrid" });
+        SbkimUI.setStatus("19_andock_wizard", "ok", "generate OK");
+        return res;
+      });
+      SbkimUI.addButton("19_andock_wizard", "Pages-URL-Ableitung", function () {
+        return {
+          github: SbkimAndockWizard.repoToPagesUrl("https://github.com/lausiklauskn-png/Mein-Rezeptbuch"),
+          name: SbkimAndockWizard.repoToNodeName("https://github.com/lausiklauskn-png/Mein-Rezeptbuch"),
+          nicht_github: SbkimAndockWizard.repoToPagesUrl("https://example.org/foo")
+        };
       });
     })();
   </script>
