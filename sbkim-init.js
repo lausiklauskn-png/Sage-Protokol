@@ -136,9 +136,16 @@
     // nach #lamp-fremd erzeugt — und zwar NUR wenn `isCertified()===true`
     // (Anti-Greenwashing-Klausel binär). repoUrl bleibt Auto-Erkennung:
     // `https://lausiklauskn-png.github.io/Sage-Protokol/`.
+    //
+    // andockTool:true (2026-06-20, Klaus): optionaler „🔌 Fremden Knoten
+    // andocken"-Knopf im Siegel-Modal — KI-unabhängiger Handshake über den
+    // Modul-18-Wizard (SbkimToolPwa.openAndockTab, unten initialisiert).
+    // Der „🔑"-Identitäts-Pfad bleibt daneben unberührt (zwei Richtungen:
+    // 🔑 = eigene Spore erzeugen, 🔌 = fremden Knoten verbinden).
     await initModule("SbkimSiegel", function () {
       return window.SbkimSiegel && window.SbkimSiegel.init({
         badgeSelector: ".lamps",
+        andockTool: true,
       });
     });
 

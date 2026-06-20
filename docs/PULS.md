@@ -1841,6 +1841,23 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Sage-Page-Verdrahtung: Andock-Knopf live (andockTool:true)
+
+**Rolle:** Hauptsitzung (Verdrahtung). Branch
+`claude/bookledgerpro-sage-onboard-1cdzif`. Schritt 1 der „der Reihe nach"-Liste.
+
+**Getan:** `sbkim-init.js` — `SbkimSiegel.init({…})` um `andockTool: true` erweitert.
+Modul 18 (`SbkimToolPwa`) war bereits eingebunden (`index.html` Z. 4367) und mit Sages
+endpoint/domain/keywords initialisiert. Der Andock-Knopf „🔌 Fremden Knoten andocken"
+erscheint damit live im Siegel-Modal der Sage-Page; Klick öffnet den KI-unabhängigen
+Modul-18-Wizard. Ordering unkritisch (Knopf prüft Modul 18 lazy beim Klick).
+`node --check` grün.
+
+**Offen / nächster Schritt:** **Sichttest durch Klaus** (Sage-Page Siegel-Badge klicken
+→ Modal → „🔌"-Knopf sichtbar → Repo-URL eingeben → Handshake durchspielen). Nicht
+headless — wartet auf Galaxy-Tab-S6-Browser. Danach Schritt 2 (Briefe relayen) / Schritt 3
+(downloadbarer Siegel-Block).
+
 ### 2026-06-20 · Bau Modul 16: optionaler Andock-Knopf (KI-unabhängig) + Freibrief-Erneuerung
 
 **Rolle:** Hauptsitzung (Bau Modul 16). Branch
