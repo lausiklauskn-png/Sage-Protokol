@@ -166,6 +166,16 @@ wurde.
 >   dokumentiert (Commit / PULS / hier in der Tafel).
 > - **Weitergabe:** dieser Freibrief gilt für **jede Folge-Sitzung** und
 >   wird im Sitzungs-Brief mitgenommen (§ „In den Sitzungs-Brief mitnehmen").
+> - **Eigene PRs selbst mergen (Klaus-Klärung 2026-06-20):** die Sitzung
+>   merget ihre **eigenen** PRs **selbstständig** in `main`, sobald sie
+>   getestet (Headless-Smoke grün), abgegrenzt und nicht architektonisch
+>   zweifelhaft sind — **ohne auf ein „X mergen" zu warten.** Konvention:
+>   Draft-PR anlegen → ready setzen → squash-mergen → bei Branch-Versatz
+>   `git rebase --onto origin/main <alte-Basis>` → Ergebnis melden. NICHT
+>   automatisch mergen bei echtem Zweifel (Richtungsentscheid, schwer
+>   umkehrbar über einen normalen Merge hinaus, mehrere gleich gute Wege)
+>   ODER wenn Klaus ausdrücklich vorher draufschauen will. Klaus' Sichttest
+>   im Browser bleibt davon unberührt (headless ersetzt ihn nicht).
 
 - **Selbstständig handeln und merken erlaubt.** Eine Sitzung darf
   eigenständig entscheiden, eine Lehre festhalten (auch durch Pflege
