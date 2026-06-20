@@ -122,6 +122,12 @@
     <pre class="log">— bereit. Bau-Sitzung 17 (2026-05-25) + Pflege UX 2026-05-25: Sage-Page-Lampen-Stil (10 px Lampen mit Glow + Atmung, kompakte Pille mit border-radius:999px), keine Drei-Buchstaben-Glyphe mehr — Lampen sprechen über Farbe + Glow, Tooltip voll im title-Attribut + aria-label, SIEGEL als kleines Gold-Medaillon mit ★. Drei-Zustand-Schnittstelle: voll (alle vier Slots) → minimiert (nur SIEGEL, oder LEBT-Fallback wenn kein SIEGEL) → versteckt (X-Knopf, localStorage-persistiert). `SbkimWidget.minimize()` / `maximize()` / `isMinimized()` neu, `sbkim_widget_minimized`-localStorage-Key. Modul 17 ist NICHT protokoll-aktiv: Render-Schicht, kein Netz, kein Embedding, kein IndexedDB. Self-mountende Pille in `document.body`, Drag via Pointer-Events, X-Schließen, RAM-only VERKEHR-FIFO 10. Setup-Knopf: `SbkimWidget.init({})`. Modul-16-Stub-Knopf legt `window.SbkimSiegel` an für Test 5. Modal-Bridge nutzt Proxy-Spans `#lamp-fremd` + `#sbkim-siegel-badge` im Widget — Modul 15/16 müssen ihre Click-Handler dort attachen, daher MUSS `SbkimWidget.init()` im Endknoten VOR `SbkimMembrane.init()`/`SbkimSiegel.init()` laufen. Sage-Page behält die Navleisten-Lampen, Widget ist Endknoten-Standard. —</pre>
   </section>
 
+  <section class="panel" data-module="20_schluessel_tresor">
+    <h2>20 Schlüssel-Tresor <span class="status ok">Code-Stub 2026-06-20</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Bau-Sitzung 20 (2026-06-20). Lokal verschlüsselter Tresor für die SBKIM-Identität (nodeId + privater Schlüssel + Spore). Krypto-Kern = Modul 02 exportBackup/importBackup (PBKDF2+AES-GCM); Tresor speichert nur den Blob (Store sbkim_vault). Shamir-Recovery 2 von 3 über das Passwort. Knöpfe: Setup → Shamir-Selbsttest → Tresor anlegen (zeigt Anteile) → entsperren (richtig/falsch) → Passwort aus 2 Anteilen wiederherstellen → Tresor löschen (Reset). Modal-UI (Auto-Abfrage) wird separat auf der Sage-Page sichtgetestet. —</pre>
+  </section>
+
   <section class="panel" data-module="18_tool_pwa">
     <h2>18 Tool-PWA — Andock (Sub a Vorab) <span class="status ok">Code-Stub 2026-05-28</span></h2>
     <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
@@ -5090,6 +5096,77 @@
           "  MODUL 18 TOOL-PWA bereit, Sub (a) Vorab, Funktionen: init/openAndockTab/close/isOpen");
         SbkimUI.log("18_tool_pwa",
           "ℹ Hinweis: Sub (a) Vorab ist RAM-only Render-Schicht, KEIN PROTOCOL_VERSION-/DB_VERSION-Bump, KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Wartungs-Modul).");
+      });
+    })();
+  </script>
+
+  <!-- Modul 20 — Schlüssel-Tresor (Bau-Sitzung 2026-06-20) -->
+  <script src="../src/modules/20_schluessel_tresor.js"></script>
+  <script>
+    (function () {
+      // Panel 20 — Schlüssel-Tresor. Tests gegen den echten Modul-02-/01-Pfad
+      // (exportBackup + IndexedDB). Shares aus „Tresor anlegen" werden für die
+      // Recovery-/Entsperr-Tests im Panel-Scope gemerkt.
+      var TEST_PW = "tresor-test-passwort-2026";
+      var lastShares = null;
+
+      SbkimUI.addButton("20_schluessel_tresor", "Setup: Storage + Spore + Vault init", async function () {
+        if (window.SbkimStorage && SbkimStorage.init) await SbkimStorage.init();
+        if (window.SbkimSpore && SbkimSpore.init) await SbkimSpore.init();
+        await SbkimVault.init({ autoPrompt: false });
+        SbkimUI.setStatus("20_schluessel_tresor", "ok", "Setup OK");
+        return { ready: SbkimVault._meta.ready, shamirN: SbkimVault._meta.shamirN, shamirK: SbkimVault._meta.shamirK, hasVault: await SbkimVault.hasVault() };
+      });
+
+      SbkimUI.addButton("20_schluessel_tresor", "Shamir 2/3 Selbsttest (pur)", async function () {
+        var secret = new TextEncoder().encode("Probe-Geheimnis-äöü-123");
+        var sh = SbkimVault._shamirSplitBytes(secret, 3, 2);
+        function eq(a, b) { if (a.length !== b.length) return false; for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; }
+        var rec01 = SbkimVault._shamirCombineBytes([sh[0], sh[1]]);
+        var rec12 = SbkimVault._shamirCombineBytes([sh[1], sh[2]]);
+        var one = SbkimVault._shamirCombineBytes([sh[0]]);
+        var pass = eq(rec01, secret) && eq(rec12, secret) && !eq(one, secret);
+        SbkimUI.setStatus("20_schluessel_tresor", pass ? "ok" : "err", pass ? "Shamir OK" : "Shamir FEHLER");
+        return { jede_2er_Teilmenge_ok: eq(rec01, secret) && eq(rec12, secret), ein_Anteil_reicht_nicht: !eq(one, secret), erwartung: "beide true" };
+      });
+
+      SbkimUI.addButton("20_schluessel_tresor", "Tresor anlegen (zeigt Anteile)", async function () {
+        if (await SbkimVault.hasVault()) return { hinweis: "Tresor existiert schon — erst 'Tresor löschen' drücken." };
+        var res = await SbkimVault.createVault(TEST_PW);
+        lastShares = res.shares;
+        SbkimUI.setStatus("20_schluessel_tresor", "ok", "Tresor angelegt");
+        return { passwort: TEST_PW, anteile: res.shares, entsperrt: SbkimVault.isUnlocked() };
+      });
+
+      SbkimUI.addButton("20_schluessel_tresor", "Entsperren (richtiges Passwort)", async function () {
+        SbkimVault.lock();
+        var okv = await SbkimVault.unlock(TEST_PW);
+        SbkimUI.setStatus("20_schluessel_tresor", okv ? "ok" : "err", okv ? "entsperrt" : "FEHLER");
+        return { unlock_ergebnis: okv, isUnlocked: SbkimVault.isUnlocked(), erwartung: "true" };
+      });
+
+      SbkimUI.addButton("20_schluessel_tresor", "Entsperren (falsches Passwort → false)", async function () {
+        SbkimVault.lock();
+        var okv = await SbkimVault.unlock("falsch-falsch-falsch");
+        SbkimUI.setStatus("20_schluessel_tresor", okv === false ? "ok" : "err", okv === false ? "korrekt abgelehnt" : "FEHLER");
+        return { unlock_ergebnis: okv, isUnlocked: SbkimVault.isUnlocked(), erwartung: "false" };
+      });
+
+      SbkimUI.addButton("20_schluessel_tresor", "Passwort aus 2 Anteilen wiederherstellen", async function () {
+        if (!lastShares) return { hinweis: "Erst 'Tresor anlegen' drücken (Anteile fehlen)." };
+        var rec = SbkimVault.recoverPassword([lastShares[0], lastShares[2]]);
+        var one = SbkimVault.recoverPassword([lastShares[1]]);
+        var pass = rec === TEST_PW && one === null;
+        SbkimUI.setStatus("20_schluessel_tresor", pass ? "ok" : "err", pass ? "Recovery OK" : "FEHLER");
+        return { wiederhergestellt: rec, stimmt: rec === TEST_PW, ein_Anteil_null: one === null, erwartung: "stimmt=true, ein_Anteil_null=true" };
+      });
+
+      SbkimUI.addButton("20_schluessel_tresor", "Tresor löschen (Reset)", async function () {
+        if (window.SbkimStorage && SbkimStorage.clear) { try { await SbkimStorage.clear("sbkim_vault"); } catch (e) {} }
+        SbkimVault.lock();
+        lastShares = null;
+        SbkimUI.setStatus("20_schluessel_tresor", "ok", "zurückgesetzt");
+        return { hasVault: await SbkimVault.hasVault(), erwartung: "false" };
       });
     })();
   </script>
