@@ -1,10 +1,19 @@
 # Konzept — Hybrid-Match (Bau-Zeit-KI-Authoring + geteiltes Embedding + EU-LLM-Richter)
 
-> **Status:** Konzept-Spec 2026-06-20 (Brainstorming Klaus + Sage). **Noch kein Code.**
+> **Status:** Konzept-Spec 2026-06-20 (Brainstorming Klaus + Sage).
+> **Match-Zeit-Richter gebaut 2026-06-20 (Bau 04.D, `SbkimMatch.hybridMatch`)** —
+> additiv, fail-soft, opt-in; siehe `src/modules/04_match.js` +
+> `docs/components/04_match.md` § Hybrid-Match-Schicht + INTERFACES.md § 7.1.
+> Headless-Smoke 62/62 grün, Browser-Sichttest ausstehend.
 > Baut auf dem Anisotropie-Befund auf
 > ([`LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`](LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md)).
 > Umsetzung: eigene Bau-Sitzung, Brief `docs/sessions/BRIEF_BAU_HYBRID_MATCH.md`.
 > Netzweite Änderung → erst Spec, dann koordinierter Bau, nichts stillschweigend.
+> **Noch offen (separater Anisotropie-Hebel, NICHT in Bau 04.D):** der
+> Whitening-Flip + die netzweite Schwellen-Neusetzung von
+> `matchDimensions`/`queryLocal` (koordinierte Klaus-Entscheidung). Bau 04.D
+> baut den Richter NEBEN den bestehenden Vorfilter-Pfaden, ändert deren
+> Default nicht.
 
 ## Warum
 
@@ -71,16 +80,21 @@ heute nur eine *Erklärung* zum Cosinus. Hybrid-Match = dieses Modul vom **Erkl�
 **Richter** hochstufen + EU-Anbieter-Abstraktion + Fallback-Verdrahtung. Wir drehen eine
 vorhandene Schraube, erfinden nichts neu.
 
-## Offene Bau-Parameter (Klaus entscheidet beim Bau)
+## Offene Bau-Parameter — Bau-04.D-Entscheidungen (2026-06-20)
 
-1. Richter **Pflicht oder opt-in**? (Empfehlung: opt-in/BYOK — Basis-Mycel bleibt server-los.)
-2. **Anbieter-Abstraktion:** einheitliche Schnittstelle (Claude / Mistral / OpenAI / lokal),
-   Knoten wählt. EU-Default für DSGVO-Knoten.
-3. **Bidirektional-Regel:** eine Seite genügt vs. beide nötig.
-4. **Vorfilter:** schon gewhitened (Anisotropie-Fix) oder vorerst roh mit höherer Schwelle?
-5. **Bezeugung:** Urteil-Format in der Inbox (signiert, Begründung, Anbieter-Marker, Datum).
-6. **Bau-Zeit-Workflow:** Helfer/Doku, wie ein Entwickler die Beschreibung mit seiner KI
-   optimiert, bevor das geteilte Modell einbettet.
+1. Richter **Pflicht oder opt-in**? → **opt-in/BYOK** (gebaut). Leerer
+   apiKey → fail-soft, Vorfilter gilt; Basis-Mycel bleibt server-los.
+2. **Anbieter-Abstraktion:** → **gebaut** (`HYBRID_PROVIDERS`: Claude /
+   Mistral / OpenAI / lokal). EU-Default `"mistral"` für DSGVO-Knoten via
+   `options.euOnly`.
+3. **Bidirektional-Regel:** → **streng „both" als Default** (Klaus
+   2026-06-20; `bidirectionalVerdict(passtA, passtB, "one"|"both")`).
+4. **Vorfilter:** → **unverändert** in Bau 04.D (Tabu). Roh vs. gewhitened
+   bleibt der separate Anisotropie-Hebel (eigene koordinierte Entscheidung).
+5. **Bezeugung:** → **gebaut** (`attestation`-Objekt: `kind` + `judgedAt` +
+   Anbieter-Marker + `verdicts`; Aufrufer signiert via Modul 02).
+6. **Bau-Zeit-Workflow:** → **offen** (Bau-Zeit-Authoring-Helfer/Doku; eigene
+   Folge-Sitzung, berührt Bau 04.D nicht).
 
 ## Querverweise
 - Anisotropie-Befund: [`LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`](LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md)
