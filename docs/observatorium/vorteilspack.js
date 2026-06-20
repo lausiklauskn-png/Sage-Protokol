@@ -61,13 +61,13 @@
       was:"Erzeugt die kryptographische Identität des Knotens und eine signierte Spore, an der Geschwister ihn wiedererkennen.",
       wie:"Generiert ein Schlüsselpaar, leitet die nodeId deterministisch aus dem Public Key ab, signiert die eigene Spore und verifiziert fremde Sporen. Multi-Identitäts-fähig (mehrere Personas pro Knoten).",
       deps:"01 Storage", code:"src/modules/02_spore.js", smoke:"tests/smoke_bau02y.mjs", karte:"docs/components/02_spore.md" },
-    { id:"15", name:"Membran", tier:"must", status:"stub",
+    { id:"15", name:"Membran", tier:"must", status:"fertig",
       task:"Außenhülle: Fremdzugriff + postMessage.",
       was:"Die Außenhülle zur Browser-Umgebung: erkennt Fremdzugriff (KI-Browser-Agenten, App-zu-App-Brücken) und bedient die postMessage-Brücke ohne Server.",
       wie:"Sub (a) Read-API liefert einen Snapshot (mit Siegel-Hook), Sub (b) bedient eingehende postMessage-Ops (u.a. op:\"query\" → Modul 04 queryLocal). Ein Fremdzugriff-Detektor schaltet die FREMD-Lampe.",
       deps:"01 Storage, 02 Spore (+ 16 Siegel-Hook)", code:"src/modules/15_membran.js", smoke:"tests/smoke_bau15b_membran.mjs", karte:"docs/components/15_membran.md" },
 
-    { id:"03", name:"Embedding", tier:"basic", status:"stub",
+    { id:"03", name:"Embedding", tier:"basic", status:"fertig",
       task:"Text → Vektor (384-dim, lazy).",
       was:"Wandelt Text in einen 384-dimensionalen, L2-normierten Vektor — die Grundlage des semantischen Matchings.",
       wie:"Lädt das Embedding-Modell lazy beim ersten Aufruf und liefert danach normierte Vektoren. Nach dem Modell-Load kein Netz nötig.",
@@ -77,7 +77,7 @@
       was:"Vergleicht Sporen semantisch über Cosinus-Ähnlichkeit und beantwortet lokale Such-Anfragen mit Top-k-Treffern.",
       wie:"Drei-Schichten-Match (Cosinus + Schwellwert + optionale Stufe-B-LLM-Erklärung) plus queryLocal als lokales Such-Backend für eingehende op:\"query\"-Nachrichten der Membran.",
       deps:"03 Embedding", code:"src/modules/04_match.js", smoke:"tests/smoke_bau04c_query_local.mjs", karte:"docs/components/04_match.md" },
-    { id:"05", name:"Anastomose", tier:"basic", status:"stub",
+    { id:"05", name:"Anastomose", tier:"basic", status:"fertig",
       task:"Handshake mit Geschwister-Knoten.",
       was:"Der Handschlag des Mycels: zwei Knoten erkennen sich, tauschen Sporen und etablieren einen direkten Faden.",
       wie:"postMessage- bzw. BroadcastChannel-Handshake, slot-spezifische Sibling-Stores, Outcome \"established\". Server-los, peer-to-peer — der Hub vermittelt nur den Erstkontakt.",
@@ -118,7 +118,7 @@
       was:"Eine Werkstatt-UI, die die zwei Stellen füllt, die Heterokaryose braucht: die Anker-Outbox und das Geschwister-Opt-In.",
       wie:"Storage-only Fünf-Funktionen-API, slot-spezifisch. Keine Netz-/Embedding-Logik — die Vektor-Erzeugung bleibt Aufrufer-Pflicht.",
       deps:"01 Storage, 02 Spore, 06 Heterokaryose", code:"src/modules/08_ui_demo.js", smoke:"tests/smoke_bau08y_slot_spezifische_outbox.mjs", karte:"docs/components/08_ui_demo.md" },
-    { id:"09", name:"Einbau-PWA", tier:"pro", status:"schablone",
+    { id:"09", name:"Einbau-PWA", tier:"pro", status:"fertig",
       task:"Schritt-für-Schritt-Andock-Anleitung.",
       was:"Kein Modul-Code, sondern die Anleitung (Karte 09), wie man die SBKIM-Module in eine bestehende PWA einbaut.",
       wie:"Neun Schritte vom Datei-Kopieren über die Skript-Reihenfolge bis zum Sichtkontroll-Block. Folge der Karte 09.",
@@ -173,6 +173,42 @@
       'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (SYM[id] || "") + '</svg>';
   }
   function fileOf(path) { return path ? path.split("/").pop() : ""; }
+
+  // Live-Status aus status.json — dieselbe Quelle wie der Bau-Puls auf der
+  // ersten Seite. Verhindert, dass die fest verdrahteten status-Werte hier
+  // abdriften. Module liegen in status.json über mehrere Gruppen verteilt.
+  function gatherLiveStatus(statusJson) {
+    var groups = ["modules", "schutzBacklog", "diffusionBacklog",
+      "membranBacklog", "toolPwaBacklog", "siegelBacklog", "mycelHubBacklog"];
+    var map = {};
+    groups.forEach(function (g) {
+      var arr = statusJson && statusJson[g];
+      if (Array.isArray(arr)) arr.forEach(function (m) {
+        if (m && m.id != null && STATUS[m.score]) map[String(m.id)] = m.score;
+      });
+    });
+    return map;
+  }
+  function applyLiveStatus(tiles) {
+    if (typeof fetch !== "function") return;
+    fetch("status.json", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (data) {
+      var map = gatherLiveStatus(data);
+      // 1) Daten patchen, damit auch das Modal den Live-Stand zeigt.
+      TOOLS.forEach(function (t) { if (map[t.id]) t.status = map[t.id]; });
+      // 2) Sichtbare Badges patchen (Tiles sind schon gerendert).
+      tiles.forEach(function (el) {
+        var id = el.getAttribute("data-tool");
+        var st = map[id] && STATUS[map[id]];
+        if (st) {
+          var s = el.querySelector(".vp-status");
+          if (s) s.textContent = st.mark + " " + st.label;
+        }
+      });
+    }).catch(function () { /* fail-soft: fest verdrahteter Status bleibt */ });
+  }
 
   function buildEinbau(t) {
     if (t.kind === "html") {
@@ -300,6 +336,9 @@
     }).join("");
 
     var tiles = Array.prototype.slice.call(grid.querySelectorAll(".vp-tile"));
+
+    // Status live aus status.json nachziehen (Bau-Puls-Quelle der ersten Seite).
+    applyLiveStatus(tiles);
 
     // Klick auf die Truhe = "Eingang in die Truhe": öffnet die zweite
     // Seite (Werkzeug-Screen) — genau wie die Einladungs-Tür der Eingang
