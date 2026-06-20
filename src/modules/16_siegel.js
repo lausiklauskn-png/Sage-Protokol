@@ -48,7 +48,10 @@
  *   { badgeSelector?: string,     // Default '.lamps' (Container, Option β)
  *     visible?: "visible"|"hidden", // Default "visible"
  *     mountModal?: boolean,        // Default true
- *     repoUrl?: string | null }    // Default null → Auto-Erkennung
+ *     repoUrl?: string | null,     // Default null → Auto-Erkennung
+ *     ribbonText?: string }        // Default "SAGE OBSERVATORIUM" → Band-Text
+ *                                  // im Wappen unten; Forker setzen ihren
+ *                                  // eigenen Knoten-Namen, KEIN SVG-Edit nötig.
  *
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). Siehe INTERFACES.md §1 Modul 16 und
@@ -143,6 +146,15 @@
   var FIRST_BOOT_ANIMATION_MS = 600;
   var MOUNT_OBSERVER_TIMEOUT_MS = 10000;
 
+  // Band-Text im Wappen (unteres Ribbon). Default = Sages eigener Wert,
+  // damit der inlined WAPPEN_SVG für Sage byte-identisch bleibt. Forker
+  // setzen via init({ribbonText:"…"}) ihren Knoten-Namen — KEIN SVG-Edit
+  // mehr nötig (Befund 2026-06-19: Rezeptbuch/Mixarium trugen statisch
+  // "MEIN-TRESOR", weil die SVG-Datei kopiert + nie angepasst wurde).
+  var DEFAULT_RIBBON_TEXT = "SAGE OBSERVATORIUM";
+  // Eindeutiger Anker im WAPPEN_SVG (genau ein Vorkommen, im Ribbon-textPath).
+  var RIBBON_MARKER = ">" + DEFAULT_RIBBON_TEXT + "</textPath>";
+
   // Sub (e) Bronze/Gold-Stufung (Spec-Erweiterung 2026-05-26).
   var STUFE_BRONZE = "bronze";
   var STUFE_GOLD = "gold";
@@ -171,6 +183,7 @@
   var visibleMode = "visible";
   var mountModalFlag = true;
   var repoUrlOverride = null;
+  var ribbonText = DEFAULT_RIBBON_TEXT;
 
   var moduleStatuses = null;        // Array<{id, name, globalName, surfaceFn, lazy, status}>
   var certifiedFlag = false;
@@ -450,6 +463,24 @@
     }
   }
 
+  // XML-Text-Escaping für den Band-Text (defensiv — Forker-Eingabe).
+  function escapeXmlText(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  // Liefert den WAPPEN_SVG mit dem konfigurierten Band-Text. Bei
+  // Default-Wert byte-identisch zur inlined Quelle (kein Replace).
+  function renderWappenSvg() {
+    if (ribbonText === DEFAULT_RIBBON_TEXT) return WAPPEN_SVG;
+    return WAPPEN_SVG.replace(
+      RIBBON_MARKER,
+      ">" + escapeXmlText(ribbonText) + "</textPath>",
+    );
+  }
+
   function buildBadgeElement() {
     var doc = global.document;
     var span = doc.createElement("span");
@@ -466,7 +497,8 @@
     // die 40-px-Badge-Box; bei 40 px sind Text-Bänder mikro-klein, das
     // Medaillon ist als visueller Anker erkennbar. aria-hidden auf dem
     // SVG — `title`/`aria-label` am Span trägt das a11y-Label.
-    span.innerHTML = WAPPEN_SVG;
+    // renderWappenSvg() setzt den konfigurierten Band-Text (init ribbonText).
+    span.innerHTML = renderWappenSvg();
     return span;
   }
 
@@ -1023,6 +1055,11 @@
     } else if (opts.repoUrl === null) {
       repoUrlOverride = null;
     }
+    // Band-Text im Wappen (Forker setzen ihren Knoten-Namen). Fail-soft:
+    // leerer/Nicht-String-Wert lässt den Default "SAGE OBSERVATORIUM".
+    if (typeof opts.ribbonText === "string" && opts.ribbonText.trim().length > 0) {
+      ribbonText = opts.ribbonText.trim();
+    }
 
     // Surface-Check: Snapshot zur init()-Zeit.
     moduleStatuses = buildModuleStatuses();
@@ -1179,6 +1216,7 @@
       get visibleMode()       { return visibleMode; },
       get mountModalFlag()    { return mountModalFlag; },
       get badgeSelector()     { return badgeSelector; },
+      get ribbonText()        { return ribbonText; },
       // Sub (e) Bronze/Gold-Stufung (Karte 16 § Sub (e)).
       get mycelConnected()    { return mycelConnected; },
       get mycelConnectedAt()  { return mycelConnectedAt; },

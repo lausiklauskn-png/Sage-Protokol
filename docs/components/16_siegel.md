@@ -184,6 +184,27 @@ für die Bezeugung als **OK**. `isCertified()` liefert `true`.
 
 ### Sub (b) — Badge-Rendering (Auszeichnungs-Optik)
 
+#### Konfigurierbarer Band-Text (`ribbonText`, Design-Fix 2026-06-19)
+
+Das untere Wappen-Band (SVG-`textPath`) ist über
+`init({ ribbonText: "…" })` konfigurierbar. Default `"SAGE OBSERVATORIUM"`
+(für Sage byte-identisch zum inlined `WAPPEN_SVG`). Forker setzen ihren
+eigenen Knoten-Namen (z.B. `"MEIN-REZEPTBUCH"`); das Modul ersetzt den
+Band-Text **zur Render-Zeit** (`renderWappenSvg()`, XML-escaped) —
+**kein SVG-Edit mehr nötig.** Fail-soft: leerer/Nicht-String-Wert lässt
+den Default.
+
+**Befund-Anlass (2026-06-19):** Mein-Rezeptbuch und Mein-Mixarium trugen
+sichtbar `MEIN-TRESOR` im Band, weil sie die statische Datei
+`assets/sbkim-siegel-wappen.svg` von Mein-Tresor kopiert + nie angepasst
+hatten (das Siegel passt sich NICHT von selbst an — der Band-Text steht
+statisch im SVG). Der `ribbonText`-Parameter verhindert die Wiederholung,
+sofern das Siegel **über das Modul** gerendert wird (nicht als statisches
+`<img src=…svg>`). Für die `<img>`-Variante bleibt die SVG-Datei
+hand-zu-pflegen — die saubere Lösung ist Modul-Render statt statischer Datei.
+
+### Sub (b) — Badge-Rendering (Auszeichnungs-Optik)
+
 #### DOM-Anker und Position
 
 - **DOM-Anker:** `#sbkim-siegel-badge` (CSS-Selektor, konfigurierbar

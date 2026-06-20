@@ -1841,6 +1841,41 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-19 · Design-Fix Modul 16: konfigurierbarer Siegel-Band-Text + Siegel-Befund
+
+**Rolle:** Hauptsitzung (Bau Modul 16, Design-Fix). Branch
+`claude/bookledgerpro-sage-onboard-1cdzif`. Auslöser: Klaus' Befund — Siegel
+in Mein-Rezeptbuch + Mein-Mixarium zeigt „MEIN-TRESOR".
+
+**Befund (netzweit, belegt):** Das Siegel passt sich NICHT automatisch an. Der
+Band-Text (unteres SVG-`textPath`) ist statisch. Ausgelesene Bänder:
+Mein-Rezeptbuch `MEIN-TRESOR` ❌, Mein-Mixarium `MEIN-TRESOR` ❌, Mein-Tresor
+`MEIN-TRESOR` ✔, Jasons-Tresor `JASONS-TRESOR` ✔, Sage `SAGE OBSERVATORIUM` ✔.
+Ursache: Rezeptbuch/Mixarium rendern das Siegel als statisches
+`<img src="assets/sbkim-siegel-wappen.svg">` und haben die SVG-Datei von
+Mein-Tresor kopiert, das Band nie angepasst. (Mein-Tresors `sbkim/16_siegel.js`
+ist leer/14 B — Mein-Tresor hat Siegel + Andocken bespoke inline gebaut.)
+
+**Briefkasten-Aktivierungs-Audit (alle Knoten):** Wächter (`sbkim-watch.yml`)
+vorhanden bei MR/MM/Mein-Tresor/Jasons/Point, **fehlt bei BookLedgerPro**.
+📬-Leser (liest beim Browser-Öffnen) vorhanden bei MR/MM/Mein-Tresor/Jasons,
+**fehlt bei Point (Hub) + BookLedgerPro**.
+
+**Getan (Design-Fix, additiv):** Modul 16 `init({ribbonText})` — Band wird zur
+Render-Zeit gesetzt (`renderWappenSvg()`, XML-escaped), Default
+„SAGE OBSERVATORIUM" (für Sage byte-identisch). `_meta.ribbonText`-Getter.
+INTERFACES §1 Modul 16 (options-Form + _meta) + Karte 16 § Sub (b) nachgezogen.
+Smoke `tests/smoke_bau16_ribbon.mjs` 9/9 grün, Regression Sub-(e) 16/16 grün,
+`node --check` grün. Marker im WAPPEN_SVG ist eindeutig (genau 1 Vorkommen).
+
+**Offen / nächster Schritt:** (1) Fix-Briefe relayen — MR/MM müssen ihre
+statische `assets/sbkim-siegel-wappen.svg` korrigieren (oder auf Modul-Render
+umstellen). (2) Klaus' Wunsch: **separates Andocken als zusätzliche Option im
+Siegel, KI-unabhängiger Handshake** — eigene Bau-Sitzung (kehrt die frühere
+„Andock entfernt"-Entscheidung um; Modul-18-Wizard wieder in das Siegel-Modal
+einbinden). Scope-Bestätigung von Klaus ausstehend. (3) Vision: downloadbarer
+Komplett-Siegel-Block aus Sage (ein Copy-Paste, richtig konfiguriert).
+
 ### 2026-06-19 · Briefkasten-Runde (Funktionstest) + netzweite Siegel-PNG-Anfrage
 
 **Rolle:** Hauptsitzung (Briefkasten-Pflege). Branch
