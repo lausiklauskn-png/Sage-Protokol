@@ -29,7 +29,7 @@
 | **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY` | **`verified-match` 0.848508** | `sbkim/point_inbox.verify.md` |
 | **Jasons-Tresor** | Jasons-Tresor-Bibliothek | `E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM` | **`verified-match` 0.847784** | `sbkim/jason_inbox.verify.md` |
 | **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0` | **`verified-match` 0.847784** | `sbkim/meintresor_inbox.verify.md` |
-| **BookLedgerPro** | BookLedgerPro-Buchhaltung | `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ` | **`verified-spore`** (domainVector noch `_demo` → kein Match) | `sbkim/bookledgerpro_inbox.verify.md` |
+| **BookLedgerPro** | BookLedgerPro-Buchhaltung | `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ` | **`verified-match` 0.810579** | `sbkim/bookledgerpro_inbox.verify.md` |
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 
@@ -129,15 +129,14 @@ domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
   Direkt-Andock-Brief an SB·KIMTool·Point (Klaus relayt) → dann richtet SB·KIMTool·Point die
   direkte Verbindung ein.
 
-- **BookLedgerPro → `verified-match`**: offen. Braucht echten `domainVector`
-  (`multilingual-e5-small`, `passage:`-Präfix, L2=1, neu signiert). Aktuell `_demo` →
-  `verified-spore`. **Verschlüsselungs-Achse (Hypothese, komplex):** BookLedgerPro ist
-  verschlüsselte Buchhaltung (lokale E2E, AES-Familie) — thematisch verwandt mit den
-  Tresor-Knoten (Jasons-/Mein-Tresor: AES-256-GCM, Schlüssel-Backup). **Ehrlich:** die
-  Verwandtschaft steht bisher nur in BookLedgerPros `domainDescription`, NICHT in den
-  buchhaltungs-fokussierten `domainKeywords`. Ob ein echter Vektor eine Verschlüsselungs-
-  Nähe zu den Tresoren zeigt (Cosinus ≥ 0.80), hängt vom eingebetteten Text ab — wird erst
-  nach dem echten Embedding nachgemessen. Bis dahin keine Match-Aussage.
+- **BookLedgerPro → `verified-match`**: ✔ **erledigt 2026-06-20.** Betreiber hat das
+  Modell einmalig in der App geladen, echten `domainVector` eingebettet
+  (`multilingual-e5-small`, `passage:`-Präfix, L2=1) + Spore neu signiert (SIGNAL seq 11).
+  Frische Spore reziprok ✔ VALID; Cosinus Sage ⟷ BookLedgerPro = **0.810579 ≥ 0.80** →
+  `verified-match`. `ack[BookLedgerPro]=11`. Prüf-Vermerk: `sbkim/bookledgerpro_inbox.verify.md`.
+  Ehrlich: knapp über der Schwelle (Buchhaltung domänenfern), aber sauber nachrechenbar.
+  **Verschlüsselungs-Achse zu den Tresoren (Hypothese):** weiter offen — wäre eine eigene
+  Cosinus-Messung BookLedgerPro ⟷ Jasons-/Mein-Tresor; bisher nicht gemessen.
 
 - **Mein-Tresor → `verified-match`**: ✔ erledigt 2026-06-07. Echter `domainVector`
   (eingebettet re-signt, `multilingual-e5-small`, L2=1) aus raw/main verifiziert,

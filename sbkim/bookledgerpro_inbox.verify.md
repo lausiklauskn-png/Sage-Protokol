@@ -8,48 +8,51 @@
   (Pages-URL `…github.io/BookLedgerPro/sbkim/spore.json` ist im Browser live; von Sages
   Container aus typischerweise 403 — eigene github.io-Egress-Sperre, kein Pages-Problem.
   Verifikation läuft zuverlässig über die `raw/main`-URL.)
-- **Gelesen / geprüft:** 2026-06-19
-- **Vermittelt durch:** Klaus (menschlicher Vermittler, §11.4.7) — Andock-Anfrage
-  BookLedgerPro Phase 5 Schritt 2.
+- **Gelesen / geprüft:** 2026-06-20 (Hochstufung verified-spore → verified-match)
+- **Vermittelt durch:** Klaus (menschlicher Vermittler, §11.4.7).
 - **Verifizierer:** `tools/verify_remote_spore.mjs` (echter Modul-02-Pfad
-  `SbkimSpore.verifyForeignSpore`, WebCrypto) + unabhängige Nachrechnung
-  (`id`-Ableitung + Manipulationsprobe) inline mit `python3`/`node`.
+  `SbkimSpore.verifyForeignSpore`, WebCrypto) + Cosinus-Nachrechnung gegen Sages
+  `domainVector` (Modul 04, Skalarprodukt zweier L2-normierter Vektoren).
 
 ## Ergebnis: ✔ VALID
 
 | Prüfpunkt (§11.2) | Ergebnis |
 |---|---|
 | Pflichtfelder (9 REQUIRED inkl. `createdAt` + `embeddingModel`) | ✔ 9/9 |
-| `id == base64url(SHA256(roher 32-Byte-Pubkey))` (unabhängig nachgerechnet) | ✔ MATCH (= `MyHVM7Pd…`) |
+| `id == base64url(SHA256(roher 32-Byte-Pubkey))` | ✔ MATCH (= `MyHVM7Pd…`) |
 | Signatur (Ed25519 über kanonische Bytes, `signature` ausgenommen) | ✔ gültig |
 | Manipulationsprobe (Feld `domain` → `TAMPERED`) | ✔ fällt durch (`Signatur ungültig`) |
 
 - **nodeName:** `BookLedgerPro` · **nodeType:** `hybrid` · **domain:** `BookLedgerPro-Buchhaltung`
 - **nodeId (kanonisch):** `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ`
-- **publicKey.x:** `Ju_gKVy-s58TsQ7SG_IZdB3hgQYc4911Ca1ofAHbDM4` (Ed25519, base64url)
-- **createdAt:** `2026-06-19T19:32:46.331Z`
-- **endpoint:** `https://lausiklauskn-png.github.io/BookLedgerPro/`
+- **publicKey.x:** `Ju_gKVy-s58TsQ7SG_IZdB3hgQYc4911Ca1ofAHbDM4` (Ed25519, base64url) — Schlüssel unverändert
+- **createdAt:** `2026-06-20T20:34:33.416Z` (neu signiert mit echtem Vektor)
 - **embeddingModel:** `Xenova/multilingual-e5-small`
 - **domainKeywords:** `Buchhaltung, Beleg, Konto, Rechnung, USt, EÜR, Kostenstelle, GoBD, Mitarbeiter, Auftrag`
 
-## domainVector: noch DEMO (ehrlich gekennzeichnet)
+## domainVector: jetzt ECHT (kein `_demo` mehr)
 
-`domainVector` ist mit `_demo: ["domainVector"]` markiert (384-dim deterministischer Stub,
-**kein echtes Embedding**). BookLedgerPro hat das in seinem Brief selbst offengelegt. Das
-genügt für `verified-spore` (Identitäts-Andock), **nicht** für `verified-match` (echter
-Cross-Knoten-Match braucht ein echtes Embedding beidseits, §11.5 / NETZ-STAND Stufen-Legende).
+`domainVector` ist ein echtes `Xenova/multilingual-e5-small`-Embedding (384-dim, `passage:`-Präfix,
+mean-pooled, **L2 = 1.000000**) — kein `_demo`-Stub mehr. BookLedgerPros Betreiber hat das Modell
+einmalig in der App geladen und die Spore neu signiert.
 
-## Stufe: `verified-spore`
+## Cross-Knoten-Match (Modul 04)
 
-Identität kryptografisch bestätigt (Signatur + nodeId + Manipulations-Resistenz), aber
-**kein** echter `domainVector` → **kein** Match. Hochstufung auf `verified-match` ist
-möglich, sobald BookLedgerPro ein echtes Embedding (Transformers.js,
-`Xenova/multilingual-e5-small`, `passage:`-Präfix, mean-pooled, L2=1) nachliefert und die
-Spore neu signiert.
+| Größe | Wert |
+|---|---|
+| Sage `domainVector` | 384-dim, L2 = 1.000000 |
+| BookLedgerPro `domainVector` | 384-dim, L2 = 1.000000 |
+| **Cosinus Sage ⟷ BookLedgerPro** | **0.810579** |
+| Schwelle `PROVIDER_MIN_MATCH` | 0.80 |
 
-**Ehrlicher Domänen-Hinweis:** BookLedgerPro (Buchhaltung) liegt domänenfern zu Sage
-(Mycel-Bibliothek). Selbst mit echtem Vektor ist ein Cosinus ≥ 0.80 nicht garantiert —
-das wäre dann ein ehrliches „kein Match, andere Domäne" (analog Mixarium ⟷ Tresore
-0.7884), kein Mangel. `verified-spore` steht davon unberührt.
+**0.810579 ≥ 0.80 → ✔ `verified-match`.**
 
-Reproduzierbar: `node tools/verify_remote_spore.mjs sbkim/bookledgerpro_inbox.json`.
+## Stufe: `verified-match`
+
+Identität kryptografisch bestätigt **und** echter semantischer Cross-Knoten-Match ≥ 0.80.
+Bemerkenswert ehrlich: Buchhaltung liegt domänenfern zur Mycel-Bibliothek, der Wert liegt
+knapp, aber sauber über der Schwelle (kein Grün-Rechnen — nachrechenbar unten).
+
+Reproduzierbar:
+`node tools/verify_remote_spore.mjs sbkim/bookledgerpro_inbox.json` (Signatur)
++ Cosinus aus `sbkim/spore.json` ⟷ `sbkim/bookledgerpro_inbox.json` (`domainVector`-Skalarprodukt).

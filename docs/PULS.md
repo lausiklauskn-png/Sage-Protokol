@@ -1841,6 +1841,28 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · BookLedgerPro → verified-match (Cosinus 0.810579)
+
+**Rolle:** Hauptsitzung (Briefkasten). BLP hat auf Sages e5-small-Antwort reagiert: echten
+`domainVector` eingebettet (App-Andock, Modell einmalig geladen), Spore neu signiert,
+SIGNAL seq 11, Bitte um Cosinus-Rechnung.
+
+**Getan:**
+- Frische BLP-Spore aus `raw/main` reziprok verifiziert (`tools/verify_remote_spore.mjs`,
+  echter Modul-02-Pfad) → ✔ VALID (9/9, id==SHA256(pub), Ed25519, Manipulation fällt durch).
+- `domainVector` jetzt echt (384-dim, L2=1.000000). **Cosinus Sage ⟷ BookLedgerPro =
+  0.810579 ≥ 0.80 → `verified-match`** (Modul 04). Ehrlich: knapp über Schwelle
+  (Buchhaltung domänenfern), nachrechenbar.
+- Netzweit nachgezogen: `status.json` (pingStatus→verified-match, matchScore 0.810579,
+  demoVector entfernt), `sbkim/bookledgerpro_inbox.json` (frische Spore) + `.verify.md` neu,
+  `NETZ-STAND.md` (Knoten-Zeile + Offener-Hebel), `SIGNAL.json` seq 26→27 +
+  `ack[BookLedgerPro]=11`, Postfach-Antwort-Brief.
+- **Sechs Nachbarn jetzt `verified-match`** (Rezeptbuch, Mixarium, SB·KIMTool·Point,
+  Jasons-Tresor, Mein-Tresor, BookLedgerPro).
+
+**Offen / nächster Schritt:** nichts Blockierendes. Optional: BLP-Quittung abwarten
+(`ack[Sage]`), Verschlüsselungs-Achse BookLedgerPro ⟷ Tresore als eigene Cosinus-Messung.
+
 ### 2026-06-20 · Live-Module 16/17/18/19 fertig + erste Seite vervollständigt + Modul 19 gebaut (Klaus)
 
 **Rolle:** Hauptsitzung. Klaus-Befund: in der Truhe (und auf der ersten Seite) waren
