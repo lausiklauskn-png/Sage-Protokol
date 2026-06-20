@@ -563,7 +563,7 @@
         SbkimUI.log("04_match",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("04_match",
-          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, " +
+          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, " +
           "Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
       });
 
@@ -917,6 +917,131 @@
           ohne_provider: out2.length,
           provider_registriert: SbkimMatch._meta.localCorpusRegistered,
           erwartung: "beide leer (kein Throw), Provider entfernt",
+        };
+      });
+
+      // ---- Bau 04.D (2026-06-20): hybridMatch — Match-Zeit-LLM-Richter ----
+      //
+      // Tests 16–19 nutzen einen Mock-LLM (window.fetch wird im Handler
+      // temporär überschrieben + danach restauriert). KEIN echter
+      // Netz-Aufruf, KEIN API-Key nötig — der Sichttest beweist die drei
+      // Konzept-Eigenschaften (Richter / Fail-soft / Opt-in-aus) plus
+      // Bezeugung + Anbieter-Abstraktion.
+
+      var hybridCandidates04D = [
+        { label: "Wein-Verkostung",   text: "Notizen zu Weinen, Tannin, Speisebegleitung.", cosine: 0.83, anchorId: "wein-1" },
+        { label: "Auspuff-Reparatur", text: "KFZ-Werkstatt, Auspuff, Schweißen, Endrohr.",   cosine: 0.81, anchorId: "kfz-1" },
+        { label: "Käsekunde",         text: "Hartkäse, Reifung, Aromen, Hauptgang.",          cosine: 0.80, anchorId: "kaese-1" },
+      ];
+
+      // Installiert einen Mock-fetch, der eine Anthropic-Form-Antwort mit
+      // dem gegebenen verdicts-Array liefert (oder einen Fehler simuliert),
+      // ruft fn() und restauriert window.fetch garantiert.
+      async function withMockLLM04D(mode, verdicts, fn) {
+        var realFetch = window.fetch;
+        window.fetch = async function () {
+          if (mode === "network-error") throw new Error("getaddrinfo ENOTFOUND (Mock)");
+          var text = JSON.stringify({ verdicts: verdicts });
+          return {
+            ok: true, status: 200, statusText: "",
+            json: async function () {
+              return { content: [{ type: "text", text: text }], usage: { input_tokens: 120, output_tokens: 40 } };
+            },
+          };
+        };
+        try { return await fn(); }
+        finally { window.fetch = realFetch; }
+      }
+
+      // Knopf 16 — Hybrid Happy-Path Richter (Mock-LLM) + Bezeugung
+      SbkimUI.addButton("04_match", "Test 16: hybridMatch Richter Happy-Path (Mock-LLM)", async function () {
+        var verdicts = [
+          { passt: true,  score: 0.91, begruendung: "Wein passt direkt zur Speisebegleitung-Suche." },
+          { passt: false, score: 0.05, begruendung: "KFZ-Auspuff hat keinen inhaltlichen Bezug." },
+          { passt: true,  score: 0.74, begruendung: "Käse passt teilweise zum Hauptgang-Kontext." },
+        ];
+        var out = await withMockLLM04D("ok", verdicts, function () {
+          return SbkimMatch.hybridMatch(
+            { text: "Wein-Empfehlungen, die zum Hauptgang passen", label: "Klaus privat" },
+            hybridCandidates04D,
+            { apiKey: "sk-test-mock", provider: "claude" },
+          );
+        });
+        var ok = out.available === true &&
+                 out.verdicts.length === 3 &&
+                 out.verdicts[0].passt === true && out.verdicts[1].passt === false &&
+                 out.attestation && out.attestation.kind === "sbkim-hybrid-match-judgment" &&
+                 /^\d{4}-\d{2}-\d{2}$/.test(out.attestation.judgedAt);
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Richter OK (Urteil + Bezeugung)" : "Richter-Form falsch");
+        return {
+          available: out.available, provider: out.provider, region: out.region, model: out.model,
+          verdicts: out.verdicts.map(function (v) {
+            return { label: v.label, passt: v.passt, score: Number(v.score.toFixed(2)), cosine: v.cosine };
+          }),
+          attestation_kind: out.attestation && out.attestation.kind,
+          judgedAt: out.attestation && out.attestation.judgedAt,
+          erwartung: "available:true, 3 Verdicts, Wein passt / Auspuff passt-nicht, attestation signierbar",
+        };
+      });
+
+      // Knopf 17 — Fail-soft auf lokal (Mock-Netz-Fehler)
+      SbkimUI.addButton("04_match", "Test 17: hybridMatch Fail-soft → Vorfilter gilt (Netz-Fehler)", async function () {
+        var out = await withMockLLM04D("network-error", null, function () {
+          return SbkimMatch.hybridMatch("Suche", hybridCandidates04D,
+                                        { apiKey: "sk-test-mock", provider: "claude" });
+        });
+        var ok = out.available === false &&
+                 typeof out.reason === "string" && out.reason.length > 0 &&
+                 out.verdicts === null &&
+                 out.fallbackCandidates.length === 3 &&
+                 out.attestation === null;
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Fail-soft OK (kein Throw, Vorfilter gilt)" : "Fail-soft falsch");
+        return {
+          available: out.available, reason: out.reason,
+          fallback_anzahl: out.fallbackCandidates.length,
+          verdicts: out.verdicts, attestation: out.attestation,
+          erwartung: "available:false, reason gesetzt, fallbackCandidates (3), KEIN Throw",
+        };
+      });
+
+      // Knopf 18 — Opt-in aus (leerer apiKey) → Vorfilter gilt
+      SbkimUI.addButton("04_match", "Test 18: hybridMatch Opt-in aus (kein apiKey)", async function () {
+        // KEIN Mock nötig — leerer apiKey wird vor jedem fetch abgefangen.
+        var out = await SbkimMatch.hybridMatch("Suche", hybridCandidates04D,
+                                               { apiKey: "", provider: "claude" });
+        var ok = out.available === false && /opt-in/i.test(out.reason || "") &&
+                 out.fallbackCandidates.length === 3;
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Opt-in-aus OK (Vorfilter gilt)" : "Opt-in-Pfad falsch");
+        return {
+          available: out.available, reason: out.reason,
+          fallback_anzahl: out.fallbackCandidates.length,
+          erwartung: "available:false, reason nennt opt-in, KEIN Netz-Aufruf, KEIN Throw",
+        };
+      });
+
+      // Knopf 19 — Bidirektional-Kombinator + Anbieter-Liste (reine Funktion)
+      SbkimUI.addButton("04_match", "Test 19: Bidirektional-Regel (streng) + Anbieter-Liste", function () {
+        var strengTrueFalse = SbkimMatch.bidirectionalVerdict(true, false);          // Default both
+        var grosszuegig     = SbkimMatch.bidirectionalVerdict(true, false, "one");
+        var beide           = SbkimMatch.bidirectionalVerdict(true, true);
+        var euDefault       = SbkimMatch.pickJudgeProvider({ euOnly: true });
+        var usDefault       = SbkimMatch.pickJudgeProvider({});
+        var ok = strengTrueFalse === false && grosszuegig === true && beide === true &&
+                 euDefault === "mistral" && usDefault === "claude";
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Bidir + Anbieter OK" : "Regel/Anbieter falsch");
+        return {
+          streng_true_false: strengTrueFalse,
+          grosszuegig_true_false: grosszuegig,
+          beide_zustimmung: beide,
+          eu_default_anbieter: euDefault,
+          us_default_anbieter: usDefault,
+          anbieter: SbkimMatch._meta.hybridProviders,
+          bidirektional_default: SbkimMatch._meta.hybridBidirectionalDefault,
+          erwartung: "streng: true&false=false; großzügig: true&false=true; EU-Default mistral",
         };
       });
     })();

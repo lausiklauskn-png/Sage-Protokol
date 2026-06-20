@@ -824,6 +824,52 @@ Bietet (öffentlich):
                                                                        // entfernt. Idempotent (mehrfach
                                                                        // rufbar). Wirft InvalidCorpusError
                                                                        // sync bei anderem Argument-Typ.
+  hybridMatch(query: string | { text: string, label?: string },
+              candidates: Array<{ label: string, text: string,
+                                  cosine?: number, anchorId?: string }>,
+              options?: { apiKey?: string, provider?: "claude"|"mistral"|"openai"|"local",
+                          euOnly?: boolean, model?: string, maxTokens?: number,
+                          endpoint?: string, abortSignal?: AbortSignal })
+                                                          → Promise<HybridJudgment>
+                                                                       // async; Bau 04.D (2026-06-20).
+                                                                       // Match-Zeit-LLM-RICHTER über die
+                                                                       // Vorfilter-Kandidaten (passt /
+                                                                       // passt-nicht + Begründung + Score
+                                                                       // pro Kandidat). Vorfilter (match /
+                                                                       // queryLocal) bleibt lokal + server-
+                                                                       // los und liefert die Kandidaten;
+                                                                       // hybridMatch ändert deren Default
+                                                                       // NICHT. Anbieter-abstrahiert (Claude /
+                                                                       // Mistral / OpenAI / lokal); EU-Default
+                                                                       // „mistral" für DSGVO-Knoten
+                                                                       // (options.euOnly); BYOK (Key pro Call,
+                                                                       // nie im Code). FAIL-SOFT: leerer
+                                                                       // apiKey (kein opt-in) ODER LLM nicht
+                                                                       // erreichbar/HTTP-/Schema-Fehler →
+                                                                       // KEIN Throw, available:false +
+                                                                       // fallbackCandidates (Vorfilter gilt).
+                                                                       // Erfolg liefert signierbares
+                                                                       // attestation-Objekt (Bezeugung —
+                                                                       // Aufrufer signiert via Modul 02 +
+                                                                       // legt es in die Inbox; Modul 04
+                                                                       // signiert NICHT selbst). Zwei sync
+                                                                       // Throws (InvalidCandidatesError /
+                                                                       // InvalidProviderError = Aufrufer-
+                                                                       // Konfig). Siehe § 7 LLM-Stufe-B-/
+                                                                       // Hybrid-Richter-Ehrlichkeits-Klausel.
+  pickJudgeProvider(options?: { provider?: string, euOnly?: boolean }) → string
+                                                                       // sync; Bau 04.D. Default-Anbieter-
+                                                                       // Wahl: options.provider hat Vorrang
+                                                                       // (wirft InvalidProviderError bei
+                                                                       // Unbekanntem); sonst euOnly=true →
+                                                                       // "mistral", sonst "claude".
+  bidirectionalVerdict(passtA: boolean, passtB: boolean,
+                       rule?: "both" | "one")             → boolean
+                                                                       // sync; Bau 04.D. Kombiniert die zwei
+                                                                       // Seiten-Urteile (jede Seite urteilt
+                                                                       // mit eigener KI). Default "both"
+                                                                       // (streng — beide nötig, Klaus
+                                                                       // 2026-06-20); "one" = großzügig.
   PROVIDER_MIN_MATCH                                       : number    // 0.80, aus §0 hierher gespiegelt
   SCHICHT_MIN_MATCH                                        : number    // 0.60, aus §0 hierher gespiegelt (M04-Erweiterung)
 
@@ -834,7 +880,10 @@ Bietet (öffentlich):
   kein Promise. `explainMatchLLM` ist der einzige async-Pfad, der Netz
   berührt. `queryLocal` ist async (wegen Modul 03 lazy), aber rein
   lokal — KEIN Netz-Aufruf, KEINE Korpus-Persistierung. `setLocalCorpus`
-  ist sync.
+  ist sync. `hybridMatch` ist async und berührt Netz — aber NUR den
+  bewusst vom Knoten konfigurierten Richter-Call (opt-in, BYOK;
+  Empfangsmodus gewahrt — kein Default-Aufruf ins offene Netz).
+  `pickJudgeProvider` und `bidirectionalVerdict` sind sync + rein lokal.
 
 Nutzt:
   (keine SBKIM-Module zur Laufzeit — vertraut auf die L2-Norm-Garantie
@@ -849,9 +898,9 @@ Events:
 
 Selbstcheck:
   Beim Skript-Laden (synchron, sofort beim <script>-Tag-Auswerten):
-    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
+    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
   Wie Modul 01 — Modul 04 hat keinen asynchronen Lade-Schritt.
-  (Format-Stand seit Bau 04.C 2026-05-26 — fünf Funktionen, zwei Schwellen.)
+  (Format-Stand seit Bau 04.D 2026-06-20 — sechs Funktionen, zwei Schwellen.)
 
 Fehlerverhalten:
   - Eingabe ist nicht Float32Array            → InvalidVectorError  (sync throw)
@@ -907,6 +956,26 @@ Fehlerverhalten:
                                               → EmbeddingFailedError (async).
   - setLocalCorpus: Argument kein Array / Function / null
                                               → InvalidCorpusError (sync throw).
+  - hybridMatch: query kein String/{text} bzw. query.text leer
+                                              → EmptyQueryError (sync throw). query.text > 4096 Zeichen
+                                                → QueryTooLongError (sync throw).
+  - hybridMatch: candidates kein Array / leer / > HYBRID_MAX_CANDIDATES (20)
+    / Item ohne label oder text             → InvalidCandidatesError (sync throw, Aufrufer-Konfig).
+  - hybridMatch: options.provider unbekannt   → InvalidProviderError (sync throw, Aufrufer-Konfig).
+  - hybridMatch: leerer/fehlender apiKey (kein opt-in)
+                                              → KEIN Throw. Resolved mit HybridJudgment{ available:false,
+                                                reason:"Richter nicht opt-in …", fallbackCandidates }.
+                                                Das IST der fail-soft-„kein opt-in"-Pfad (Vorfilter gilt).
+  - hybridMatch: provider:"local" ohne options.endpoint
+                                              → KEIN Throw. available:false (Endpoint fehlt) — Vorfilter gilt.
+  - hybridMatch: LLM HTTP-Fehler (4xx/5xx, 429 sondergetaggt), Netz-Fehler,
+    kein valides JSON, falsche Anbieter-Form, Richter-Schema-Mismatch
+                                              → KEIN Throw. Resolved mit HybridJudgment{ available:false,
+                                                reason:"<deutsch>", verdicts:null, fallbackCandidates }.
+                                                Aufrufer fällt auf die Vorfilter-Kandidaten zurück.
+  - hybridMatch: abortSignal triggert          → AbortError (durchgereicht, Aufrufer fängt selbst).
+  - bidirectionalVerdict: passtA/passtB kein Boolean
+                                              → InvalidCandidatesError (sync throw).
 
 Garantien für Modul 05 / 06 / 07 / 08:
   - match() ist deterministisch und reproduzierbar (kein RNG, kein Zeit-Effekt).
@@ -937,8 +1006,25 @@ Garantien für Modul 05 / 06 / 07 / 08:
     bleiben Referenzen — Float32Array zu kopieren wäre teuer und
     semantisch unnötig). Function-Variante: lazy-lookup zur queryLocal-
     Zeit. null entfernt den Provider.
+  - hybridMatch() ändert den Vorfilter-Default NICHT — match() /
+    queryLocal() bleiben die lokale, server-lose Kandidaten-Quelle
+    (kein Whitening-Flip, kein Schwellen-Eingriff in dieser Schicht;
+    das ist der separate Anisotropie-Hebel, koordinierte Klaus-
+    Entscheidung). hybridMatch baut NEBEN den bestehenden Pfaden.
+  - hybridMatch() ist opt-in (BYOK) und fail-soft: ohne apiKey oder bei
+    LLM-/Netz-/Schema-Fehler resolved es mit available:false +
+    fallbackCandidates statt zu werfen. Ein Knoten ohne Richter bleibt
+    vollwertiger Mycel-Teilnehmer (siehe § 7).
+  - hybridMatch() signiert NICHT selbst. Das Erfolgs-`attestation`-Objekt
+    (Bezeugung — kind/judgedAt/provider/region/model + verdicts) ist
+    serialisierbar; der Aufrufer signiert es via Modul 02 und legt es in
+    die Inbox. Modul 04 hat keinen Identitäts-Zugriff (analog Stufe B).
+  - hybridMatch() macht KEINEN Default-Netz-Aufruf — nur der bewusst vom
+    Knoten konfigurierte Richter-Call geht raus (Empfangsmodus). Anbieter-
+    Abstraktion (Claude/Mistral/OpenAI/lokal) hartcodiert keinen Key;
+    EU-Default „mistral" für DSGVO-Knoten (options.euOnly).
 
-Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04), 2026-05-19 (Spec-Sitzung M04-Erweiterung — Brief 03 der V1-Sammelspec-Kaskade — drei Schichten, Brücken-Feld, Stufe-A/Stufe-B-Pipeline additiv), 2026-05-19 (Bau 04.A `matchDimensions` sync), 2026-05-20 (Bau 04.B `explainMatchLLM` produktiv — Stufe-B-LLM-Pass gegen Anthropic-API, JSON-only-Output, strikte Schema-Validierung, fail-soft; zwei sync Throws InvalidApiKeyError + InvalidMatchResultError; candidateScope:"netz" still auf "lokal" korrigiert), 2026-05-26 (Bau 04.C `queryLocal` produktiv — lokales Such-Feld-Backend, async via Modul 03 lazy, Default k=5, hartcodierte Schwelle 0.80, Korpus zwei Pfade options.corpus + setLocalCorpus-Provider, fünf neue Sync-Throws, leerer Korpus + unter-Schwelle → leere Liste ohne Throw, Cross-Knoten-Hook auf Modul 15 Sub (b) ohne Code-Update; Headless-Smoke 43/43 grün; Sichttest ungeprüft)
+Geprüft: 2026-05-14 (Spec+Bau-Sitzung 04), 2026-05-19 (Spec-Sitzung M04-Erweiterung — Brief 03 der V1-Sammelspec-Kaskade — drei Schichten, Brücken-Feld, Stufe-A/Stufe-B-Pipeline additiv), 2026-05-19 (Bau 04.A `matchDimensions` sync), 2026-05-20 (Bau 04.B `explainMatchLLM` produktiv — Stufe-B-LLM-Pass gegen Anthropic-API, JSON-only-Output, strikte Schema-Validierung, fail-soft; zwei sync Throws InvalidApiKeyError + InvalidMatchResultError; candidateScope:"netz" still auf "lokal" korrigiert), 2026-05-26 (Bau 04.C `queryLocal` produktiv — lokales Such-Feld-Backend, async via Modul 03 lazy, Default k=5, hartcodierte Schwelle 0.80, Korpus zwei Pfade options.corpus + setLocalCorpus-Provider, fünf neue Sync-Throws, leerer Korpus + unter-Schwelle → leere Liste ohne Throw, Cross-Knoten-Hook auf Modul 15 Sub (b) ohne Code-Update; Headless-Smoke 43/43 grün; Sichttest ungeprüft), 2026-06-20 (Bau 04.D `hybridMatch` produktiv — Match-Zeit-LLM-Richter über die Vorfilter-Kandidaten, additiv. Provider-Abstraktion Claude/Mistral/OpenAI/lokal mit EU-Default „mistral" für DSGVO-Knoten, BYOK; opt-in/fail-soft — leerer apiKey oder LLM-/Netz-/Schema-Fehler → available:false + fallbackCandidates ohne Throw; signierbares attestation-Objekt als Bezeugung; zwei sync Throws InvalidCandidatesError + InvalidProviderError; bidirectionalVerdict-Helfer Default „both" streng. Vorfilter-Default UNVERÄNDERT — kein Whitening-Flip/Schwellen-Eingriff. Headless-Smoke 62/62 grün; Sichttest ungeprüft. Siehe § 7 + Karte 04 § Hybrid-Match-Schicht.)
 
 #### Drei-Schichten-Modell (M04-Erweiterung)
 
@@ -5061,6 +5147,32 @@ PULS § Vision-Anker, eigene Spec-Sitzung).
 Bezugs-Dokumente: PULS § Vision-Anker 9 § Match-Pipeline § Stufe B;
 `docs/papers/sbkim-paper-en.html` § 3.4 „Protocol Properties" („Stateless"
 + „Evaluator agnosticism"); § 6.2 Plattform-Matrix Spalte „Stufe B".
+
+### 7.1 Hybrid-Match-Richter-Ergänzung (Bau 04.D, 2026-06-20)
+
+`hybridMatch` (§ 1 Modul 04) hebt den Stufe-B-Keim `explainMatchLLM` vom
+**Erklärer** zum **Richter** über die Vorfilter-Kandidaten hoch
+(`docs/HYBRID-MATCH-KONZEPT.md`). Die vier Ehrlichkeits-Sätze von § 7
+gelten **wörtlich** auch hier — `hybridMatch` ist dieselbe opt-in-/BYOK-/
+fail-soft-Schicht, nur mit Urteils- statt Erklär-Rolle. Drei Präzisierungen:
+
+1. **Der Vorfilter bleibt das Rückgrat.** Der lokale, server-lose Cosinus
+   (`match` / `queryLocal`) liefert die Kandidaten und entscheidet allein
+   weiter, wenn der Richter aus ist. `hybridMatch` ändert **keinen**
+   Vorfilter-Default (keine Schwellen-Änderung, kein Whitening-Flip — das
+   ist der separate Anisotropie-Hebel, koordinierte Klaus-Entscheidung).
+2. **Anbieter-Agnostik + EU-Default.** Modul 04 hartcodiert keinen
+   Schlüssel; der Knoten wählt Claude / Mistral / OpenAI / einen
+   selbst-gehosteten (`provider:"local"` + `endpoint`). DSGVO-Knoten
+   bekommen per `options.euOnly` den EU-Default „mistral". Bidirektional
+   urteilt jede Seite mit **ihrer eigenen** KI; `bidirectionalVerdict`
+   kombiniert die zwei Urteile (Default streng „both", Klaus 2026-06-20).
+3. **Bezeugung, nicht Selbst-Signatur.** Der Erfolgs-Pfad liefert ein
+   serialisierbares `attestation`-Objekt (Anbieter-Marker + Datum +
+   Urteil). Der **Aufrufer** signiert es via Modul 02 und legt es in die
+   Inbox — Modul 04 hält keinen Identitäts-Schlüssel und signiert nie
+   selbst. Empfangsmodus bleibt gewahrt: der einzige Netz-Aufruf ist der
+   bewusst konfigurierte Richter-Call, kein Default ins offene Netz.
 
 ---
 

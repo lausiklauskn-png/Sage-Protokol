@@ -12,6 +12,9 @@
  *   explainMatchLLM(matchResult, apiKey, options?) -> Promise<ExplainResult>
  *   queryLocal(text, k?, options?) -> Promise<Array<{label, score, anchorId}>>
  *   setLocalCorpus(corpus | provider) -> void   (Bau 04.C registriert Korpus-Quelle)
+ *   hybridMatch(query, candidates, options?) -> Promise<HybridJudgment>  (Bau 04.D Match-Zeit-Richter)
+ *   pickJudgeProvider(options?) -> providerId   (Bau 04.D Anbieter-Wahl, EU-Default)
+ *   bidirectionalVerdict(passtA, passtB, rule?) -> boolean   (Bau 04.D streng/großzügig)
  *   PROVIDER_MIN_MATCH -> number   (0.80, gespiegelt aus INTERFACES.md §0)
  *   SCHICHT_MIN_MATCH -> number    (0.60, Bau 04.A, gespiegelt aus INTERFACES.md §0)
  *   DimensionsAllNullError -> ErrorFactory
@@ -22,6 +25,8 @@
  *   InvalidKError -> ErrorFactory            (Bau 04.C sync throw)
  *   EmbeddingNotAvailableError -> ErrorFactory (Bau 04.C sync throw)
  *   InvalidCorpusError -> ErrorFactory       (Bau 04.C sync throw)
+ *   InvalidCandidatesError -> ErrorFactory   (Bau 04.D sync throw)
+ *   InvalidProviderError -> ErrorFactory     (Bau 04.D sync throw)
  *
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). Modul 04 has no async load step. See INTERFACES.md
@@ -66,6 +71,28 @@
  * mit [] ohne Throw. KEIN Netz-Aufruf, KEINE Korpus-Persistierung in
  * Modul 04 (Endknoten-Pflicht). Spec-Quelle Karte 04 § Sub (c) +
  * Tafel-Spec-Pflege Mycel-Vision 2026-05-26.
+ *
+ * Bau 04.D `hybridMatch` (2026-06-20): Match-Zeit-LLM-Richter, additiv.
+ * Hebt den explainMatchLLM-Keim vom Erklärer zum RICHTER über
+ * Vorfilter-Kandidaten hoch (docs/HYBRID-MATCH-KONZEPT.md). Drei
+ * Eigenschaften: (1) VORFILTER bleibt lokal/server-los (match/queryLocal
+ * liefern Kandidaten; deren Default ist UNVERÄNDERT — kein Whitening-Flip,
+ * kein Schwellen-Eingriff, das ist der separate Anisotropie-Hebel). (2)
+ * RICHTER opt-in: provider-abstrahierter LLM-Pass urteilt pro Kandidat
+ * (passt/passt-nicht + Begründung + Score). Anbieter Claude/Mistral/OpenAI/
+ * lokal (HYBRID_PROVIDERS), EU-Default "mistral" für DSGVO-Knoten
+ * (options.euOnly), BYOK (kein Key im Code). (3) FAIL-SOFT: leerer apiKey
+ * (kein opt-in) ODER LLM nicht erreichbar/HTTP-/Schema-Fehler → kein Throw,
+ * `available:false` + `fallbackCandidates` (Vorfilter gilt weiter). Zwei
+ * sync Throws (InvalidCandidatesError / InvalidProviderError = Aufrufer-
+ * Konfig); query.text-Vor-Checks reusen EmptyQueryError / QueryTooLongError.
+ * BEZEUGUNG: Erfolg liefert ein signierbares `attestation`-Objekt
+ * (kind/judgedAt/provider/region/model + verdicts), das der Aufrufer via
+ * Modul 02 signiert in die Inbox legt — Modul 04 signiert NICHT selbst.
+ * Bidirektional-Default STRENG ("both", Klaus 2026-06-20) via
+ * bidirectionalVerdict-Helfer. KEIN PROTOCOL_VERSION-/DB_VERSION-Bump,
+ * KEIN Netz-Default-Aufruf (Empfangsmodus — nur der bewusst konfigurierte
+ * Richter-Call).
  */
 (function (global) {
   "use strict";
@@ -752,6 +779,477 @@
     return scored.slice(0, effectiveK);
   }
 
+  // ---- Bau 04.D: Hybrid-Match — Match-Zeit-LLM-Richter (additiv) ----
+  //
+  // Hebt den vorhandenen Stufe-B-Keim (explainMatchLLM, Erklärer) zum
+  // RICHTER über Vorfilter-Kandidaten hoch. Drei Eigenschaften aus
+  // docs/HYBRID-MATCH-KONZEPT.md:
+  //   1. VORFILTER bleibt lokal + server-los (match() / queryLocal) und
+  //      liefert die Kandidaten. Hybrid ändert deren Default NICHT.
+  //   2. RICHTER (neu, opt-in): ein provider-abstrahierter LLM-Pass
+  //      urteilt über jeden Kandidaten (passt / passt-nicht + Begründung
+  //      + Score). Anbieter wählbar (Claude / Mistral / OpenAI / lokal);
+  //      EU-Default für DSGVO-Knoten; BYOK (kein hartcodierter Key).
+  //   3. FAIL-SOFT: LLM nicht erreichbar ODER kein opt-in (leerer apiKey)
+  //      → Vorfilter-Ergebnis gilt weiter, KEIN Throw.
+  // Plus BEZEUGUNG: ein signierbares `attestation`-Objekt (Score +
+  // Begründung + Anbieter-Marker + Datum), das der Aufrufer in die Inbox
+  // legen kann.
+
+  var HYBRID_DEFAULT_MAX_TOKENS = 1024;
+  // EU-Default für DSGVO-Knoten (Konzept § Bidirektional / EU-Anbieter).
+  var HYBRID_EU_DEFAULT_PROVIDER = "mistral";
+  var HYBRID_US_DEFAULT_PROVIDER = "claude";
+  // Defensiv: Begrenzt die Kandidaten-Liste pro Richter-Call (Prompt-
+  // Größe + Token-Schutz). Aufrufer schneidet die Vorfilter-Finalisten
+  // vorher zu — der Richter urteilt über eine kleine Spitzenmenge.
+  var HYBRID_MAX_CANDIDATES = 20;
+  var MAX_VERDICT_BEGRUENDUNG_LEN = 200;
+  // Klaus-Festlegung 2026-06-20 (Bau 04.D): Default-Bidirektional-Regel
+  // ist STRENG — ein Paar-Match gilt erst als etabliert, wenn BEIDE
+  // Seiten zustimmen. Per Parameter auf "one" (großzügig) stellbar.
+  var HYBRID_BIDIRECTIONAL_DEFAULT = "both";
+
+  // Bau 04.D: sync Throws aus hybridMatch-Vor-Check (Aufrufer-Konfig).
+  function InvalidCandidatesError(message) {
+    return makeError("InvalidCandidatesError", message);
+  }
+  function InvalidProviderError(message) {
+    return makeError("InvalidProviderError", message);
+  }
+
+  // Anbieter-Abstraktion. Jeder Adapter weiß, wie er (a) den fetch-Request
+  // baut, (b) den Antwort-Text extrahiert, (c) die Token-Zahl liest.
+  // Anthropic spricht /v1/messages; Mistral / OpenAI / lokal sprechen das
+  // OpenAI-kompatible /chat/completions. KEIN Key hartcodiert — der Key
+  // kommt pro Call vom Aufrufer (BYOK).
+  function openAiCompatBuild(o) {
+    return {
+      url: o.url,
+      init: {
+        method: "POST",
+        headers: {
+          "authorization": "Bearer " + o.apiKey,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          model: o.model,
+          max_tokens: o.maxTokens,
+          messages: [{ role: "user", content: o.prompt }],
+        }),
+      },
+    };
+  }
+  function openAiCompatExtractText(body) {
+    if (body && Array.isArray(body.choices) && body.choices[0] &&
+        body.choices[0].message && typeof body.choices[0].message.content === "string") {
+      return body.choices[0].message.content;
+    }
+    return null;
+  }
+  function openAiCompatExtractTokens(body) {
+    if (body && body.usage && typeof body.usage === "object") {
+      var p = body.usage.prompt_tokens, c = body.usage.completion_tokens;
+      if (typeof p === "number" && typeof c === "number" && isFinite(p) && isFinite(c)) return p + c;
+      if (typeof body.usage.total_tokens === "number" && isFinite(body.usage.total_tokens)) return body.usage.total_tokens;
+    }
+    return null;
+  }
+
+  var HYBRID_PROVIDERS = {
+    claude: {
+      label: "Claude (Anthropic)",
+      region: "us",
+      defaultModel: STUFE_B_DEFAULT_MODEL,
+      defaultUrl: ANTHROPIC_API_URL,
+      buildRequest: function (o) {
+        return {
+          url: o.url,
+          init: {
+            method: "POST",
+            headers: {
+              "x-api-key": o.apiKey,
+              "anthropic-version": ANTHROPIC_API_VERSION,
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({
+              model: o.model,
+              max_tokens: o.maxTokens,
+              messages: [{ role: "user", content: o.prompt }],
+            }),
+          },
+        };
+      },
+      extractText: function (body) {
+        if (body && Array.isArray(body.content) && body.content[0] &&
+            typeof body.content[0].text === "string") {
+          return body.content[0].text;
+        }
+        return null;
+      },
+      extractTokens: function (body) {
+        if (body && body.usage && typeof body.usage === "object") {
+          var inT = body.usage.input_tokens, outT = body.usage.output_tokens;
+          if (typeof inT === "number" && typeof outT === "number" && isFinite(inT) && isFinite(outT)) {
+            return inT + outT;
+          }
+        }
+        return null;
+      },
+    },
+    mistral: {
+      label: "Mistral (EU)",
+      region: "eu",
+      defaultModel: "mistral-small-latest",
+      defaultUrl: "https://api.mistral.ai/v1/chat/completions",
+      buildRequest: openAiCompatBuild,
+      extractText: openAiCompatExtractText,
+      extractTokens: openAiCompatExtractTokens,
+    },
+    openai: {
+      label: "OpenAI",
+      region: "us",
+      defaultModel: "gpt-4o-mini",
+      defaultUrl: "https://api.openai.com/v1/chat/completions",
+      buildRequest: openAiCompatBuild,
+      extractText: openAiCompatExtractText,
+      extractTokens: openAiCompatExtractTokens,
+    },
+    local: {
+      label: "Lokal / selbst-gehostet (OpenAI-kompatibel)",
+      region: "local",
+      defaultModel: "local-model",
+      defaultUrl: null,   // Aufrufer MUSS options.endpoint setzen
+      buildRequest: openAiCompatBuild,
+      extractText: openAiCompatExtractText,
+      extractTokens: openAiCompatExtractTokens,
+    },
+  };
+
+  // Wählt den Default-Anbieter. DSGVO-Knoten (options.euOnly === true,
+  // typisch für europäische Knoten wie BLP) bekommen den EU-Anbieter;
+  // sonst Claude. Aufrufer überschreibt jederzeit via options.provider.
+  function pickJudgeProvider(options) {
+    var opts = options || {};
+    if (typeof opts.provider === "string" && opts.provider.length > 0) {
+      if (!HYBRID_PROVIDERS[opts.provider]) {
+        throw InvalidProviderError(
+          "Unbekannter Anbieter '" + opts.provider + "'. Erlaubt: " +
+            Object.keys(HYBRID_PROVIDERS).join(" / ") + ".",
+        );
+      }
+      return opts.provider;
+    }
+    return opts.euOnly === true ? HYBRID_EU_DEFAULT_PROVIDER : HYBRID_US_DEFAULT_PROVIDER;
+  }
+
+  // Sync-Validierung der Kandidaten-Liste (Vorfilter-Finalisten). Jeder
+  // Kandidat braucht label (anzeigbar) + text (was der Richter inhaltlich
+  // beurteilt). cosine/anchorId optional.
+  function validateCandidates(candidates) {
+    if (!Array.isArray(candidates)) {
+      throw InvalidCandidatesError(
+        "candidates muss ein Array sein, war: " + describe(candidates) + ".",
+      );
+    }
+    if (candidates.length === 0) {
+      throw InvalidCandidatesError(
+        "candidates ist leer — der Vorfilter muss mindestens einen Kandidaten liefern, " +
+          "bevor der Richter urteilt (sonst gibt es nichts zu beurteilen).",
+      );
+    }
+    if (candidates.length > HYBRID_MAX_CANDIDATES) {
+      throw InvalidCandidatesError(
+        "candidates hat " + candidates.length + " Einträge, max " + HYBRID_MAX_CANDIDATES +
+          ". Aufrufer schneidet die Vorfilter-Finalisten vorher zu (Top-k).",
+      );
+    }
+    for (var i = 0; i < candidates.length; i++) {
+      var c = candidates[i];
+      if (!c || typeof c !== "object" || Array.isArray(c)) {
+        throw InvalidCandidatesError(
+          "candidates[" + i + "] muss ein Objekt sein, war: " + describe(c) + ".",
+        );
+      }
+      if (typeof c.label !== "string" || c.label.length === 0) {
+        throw InvalidCandidatesError(
+          "candidates[" + i + "].label muss nicht-leerer String sein.",
+        );
+      }
+      if (typeof c.text !== "string" || c.text.length === 0) {
+        throw InvalidCandidatesError(
+          "candidates[" + i + "].text muss nicht-leerer String sein (der Richter " +
+            "beurteilt den Bedeutungs-Text, nicht nur das Label).",
+        );
+      }
+    }
+  }
+
+  // Baut den Richter-Prompt. Deutscher Prompt, nummerierte Kandidaten,
+  // JSON-only-Output mit verdicts-Array in derselben Reihenfolge.
+  function buildJudgePrompt(queryText, queryLabel, candidates) {
+    var lines = [];
+    lines.push("Du bist der Match-Richter im SBKIM-Protokoll. Ein Knoten sucht semantische");
+    lines.push("Partner. Ein lokaler Vorfilter (Embedding-Cosinus) hat bereits grob gefiltert;");
+    lines.push("deine Aufgabe ist das ECHTE Bedeutungs-Urteil über jeden Kandidaten — auch aus");
+    lines.push("unsauberem Text. Urteile streng nach inhaltlicher Passung, nicht nach Sprach-");
+    lines.push("Oberfläche.");
+    lines.push("");
+    lines.push("Suchender Knoten" + (queryLabel ? " (" + queryLabel + ")" : "") + " sucht:");
+    lines.push(queryText);
+    lines.push("");
+    lines.push("Kandidaten:");
+    for (var i = 0; i < candidates.length; i++) {
+      var c = candidates[i];
+      var cosNote = (typeof c.cosine === "number" && isFinite(c.cosine))
+        ? " [Vorfilter-Cosinus " + c.cosine.toFixed(3) + "]"
+        : "";
+      lines.push((i + 1) + ". " + c.label + cosNote + ": " + c.text);
+    }
+    lines.push("");
+    lines.push("Antworte AUSSCHLIESSLICH mit JSON nach diesem Schema, kein Prosa-Text drumherum.");
+    lines.push("Das verdicts-Array hat genau " + candidates.length + " Einträge in DERSELBEN");
+    lines.push("Reihenfolge wie die Kandidaten oben:");
+    lines.push("{");
+    lines.push("  \"verdicts\": [");
+    lines.push("    { \"passt\": true|false, \"score\": <number in [0,1]>, \"begruendung\": <string, max " + MAX_VERDICT_BEGRUENDUNG_LEN + " Zeichen> }");
+    lines.push("  ]");
+    lines.push("}");
+    return lines.join("\n");
+  }
+
+  // Strikte Validierung + Normalisierung der Richter-Antwort. Mappt das
+  // verdicts-Array per Index auf die Kandidaten zurück. Bei Mismatch
+  // {result:null, reason:"<deutsch>"}.
+  function validateJudgeResponseSchema(parsedJson, candidates) {
+    if (!parsedJson || typeof parsedJson !== "object" || Array.isArray(parsedJson)) {
+      return { result: null, reason: "Antwort ist kein Objekt" };
+    }
+    var verdicts = parsedJson.verdicts;
+    if (!Array.isArray(verdicts)) {
+      return { result: null, reason: "Feld 'verdicts' fehlt oder ist kein Array" };
+    }
+    if (verdicts.length !== candidates.length) {
+      return {
+        result: null,
+        reason: "verdicts-Länge " + verdicts.length + " != Kandidaten-Anzahl " + candidates.length,
+      };
+    }
+    var out = [];
+    for (var i = 0; i < verdicts.length; i++) {
+      var v = verdicts[i];
+      if (!v || typeof v !== "object" || Array.isArray(v)) {
+        return { result: null, reason: "verdicts[" + i + "] ist kein Objekt" };
+      }
+      if (typeof v.passt !== "boolean") {
+        return { result: null, reason: "verdicts[" + i + "].passt ist kein Boolean" };
+      }
+      var score = v.score;
+      if (typeof score !== "number" || !isFinite(score) || score < 0 || score > 1) {
+        return { result: null, reason: "verdicts[" + i + "].score nicht im Bereich [0, 1]" };
+      }
+      var begruendung = v.begruendung;
+      if (typeof begruendung !== "string") {
+        return { result: null, reason: "verdicts[" + i + "].begruendung ist kein String" };
+      }
+      if (begruendung.length > MAX_VERDICT_BEGRUENDUNG_LEN) {
+        return { result: null, reason: "verdicts[" + i + "].begruendung > " + MAX_VERDICT_BEGRUENDUNG_LEN + " Zeichen" };
+      }
+      var c = candidates[i];
+      out.push({
+        label: c.label,
+        anchorId: (typeof c.anchorId === "string") ? c.anchorId : null,
+        passt: v.passt,
+        score: score,
+        begruendung: begruendung,
+        cosine: (typeof c.cosine === "number" && isFinite(c.cosine)) ? c.cosine : null,
+      });
+    }
+    return { result: out, reason: null };
+  }
+
+  // hybridMatch — der Match-Zeit-LLM-Richter. Vorfilter-Kandidaten rein,
+  // ein bezeugtes Urteil raus. Fail-soft auf allen Pfaden:
+  //   - kein/leerer apiKey  → opt-in aus → available:false (Vorfilter gilt)
+  //   - LLM nicht erreichbar/HTTP-/Schema-Fehler → available:false
+  // KEIN Throw außer Aufrufer-Konfig-Fehlern (Kandidaten-Form / Provider).
+  async function hybridMatch(query, candidates, options) {
+    // 1. Sync-Vor-Checks (Aufrufer-Konfig — diese werfen bewusst).
+    var queryText, queryLabel = null;
+    if (typeof query === "string") {
+      queryText = query;
+    } else if (query && typeof query === "object" && !Array.isArray(query)) {
+      queryText = query.text;
+      if (typeof query.label === "string" && query.label.length > 0) queryLabel = query.label;
+    } else {
+      throw EmptyQueryError(
+        "hybridMatch: 'query' muss String oder { text, label? } sein, war: " + describe(query) + ".",
+      );
+    }
+    if (typeof queryText !== "string" || queryText.length === 0) {
+      throw EmptyQueryError(
+        "hybridMatch: query.text muss nicht-leerer String sein.",
+      );
+    }
+    if (queryText.length > LLM_MAX_OUTPUT_CHARS) {
+      throw QueryTooLongError(
+        "hybridMatch: query.text ist " + queryText.length + " Zeichen, max " + LLM_MAX_OUTPUT_CHARS + ".",
+      );
+    }
+    validateCandidates(candidates);
+
+    var opts = options || {};
+    var providerId = pickJudgeProvider(opts);   // wirft InvalidProviderError bei Unfug
+    var provider = HYBRID_PROVIDERS[providerId];
+    var model = (typeof opts.model === "string" && opts.model.length > 0)
+      ? opts.model : provider.defaultModel;
+    var maxTokens = (typeof opts.maxTokens === "number" && opts.maxTokens > 0)
+      ? opts.maxTokens : HYBRID_DEFAULT_MAX_TOKENS;
+    var url = (typeof opts.endpoint === "string" && opts.endpoint.length > 0)
+      ? opts.endpoint : provider.defaultUrl;
+    var abortSignal = opts.abortSignal || null;
+    var apiKey = opts.apiKey;
+
+    // Defensive Kopie der Vorfilter-Kandidaten für den Fail-soft-Pfad
+    // (Aufrufer fällt auf die rohe Cosinus-Reihenfolge zurück).
+    var fallbackCandidates = candidates.map(function (c) {
+      return {
+        label: c.label,
+        anchorId: (typeof c.anchorId === "string") ? c.anchorId : null,
+        cosine: (typeof c.cosine === "number" && isFinite(c.cosine)) ? c.cosine : null,
+      };
+    });
+
+    function failSoft(reason) {
+      return {
+        available: false,
+        reason: reason,
+        provider: providerId,
+        model: model,
+        region: provider.region,
+        judgedAt: null,
+        verdicts: null,
+        fallbackCandidates: fallbackCandidates,
+        tokensUsed: null,
+        attestation: null,
+      };
+    }
+
+    // 2. Opt-in-Gate: kein/leerer Key → Richter ist aus, Vorfilter gilt.
+    //    KEIN Throw (Unterschied zu explainMatchLLM) — das IST der
+    //    fail-soft-„kein opt-in"-Pfad aus dem Konzept.
+    if (typeof apiKey !== "string" || apiKey.length === 0) {
+      return failSoft("Richter nicht opt-in (kein apiKey) — Vorfilter-Ergebnis gilt");
+    }
+    // 3. Lokaler Anbieter ohne Endpoint kann nicht aufgerufen werden.
+    if (!url) {
+      return failSoft("Anbieter '" + providerId + "' ohne Endpoint (options.endpoint setzen) — Vorfilter-Ergebnis gilt");
+    }
+
+    // 4. Prompt + Request bauen.
+    var prompt = buildJudgePrompt(queryText, queryLabel, candidates);
+    var req = provider.buildRequest({
+      url: url, apiKey: apiKey, model: model, maxTokens: maxTokens, prompt: prompt,
+    });
+    if (abortSignal) req.init.signal = abortSignal;
+
+    // 5. fetch. AbortError durchreichen, alle anderen Fehler fail-soft.
+    var response;
+    try {
+      response = await fetch(req.url, req.init);
+    } catch (err) {
+      if (err && err.name === "AbortError") throw err;
+      return failSoft("Netz nicht erreichbar (" + (err && err.message ? err.message : String(err)) + ")");
+    }
+    if (!response.ok) {
+      if (response.status === 429) {
+        return failSoft("API HTTP 429 (Rate-Limit) — Aufrufer-Drossel-Pflicht");
+      }
+      return failSoft("API HTTP " + response.status + " (" + (response.statusText || "?") + ")");
+    }
+
+    // 6. Body parsen + Anbieter-spezifischen Text extrahieren.
+    var body;
+    try {
+      body = await response.json();
+    } catch (err) {
+      return failSoft("Antwort war kein valides JSON");
+    }
+    var llmText = provider.extractText(body);
+    if (typeof llmText !== "string") {
+      return failSoft("Antwort entsprach nicht der Anbieter-API-Form (" + providerId + ")");
+    }
+    if (llmText.length > LLM_MAX_OUTPUT_CHARS) {
+      llmText = llmText.slice(0, LLM_MAX_OUTPUT_CHARS);
+    }
+
+    // 7. Richter-JSON parsen + strikt validieren.
+    var llmJson;
+    try {
+      llmJson = JSON.parse(llmText);
+    } catch (err) {
+      return failSoft("Richter-Output war kein valides JSON");
+    }
+    var schemaCheck = validateJudgeResponseSchema(llmJson, candidates);
+    if (schemaCheck.result === null) {
+      return failSoft("Antwort entsprach nicht dem Schema: " + schemaCheck.reason);
+    }
+
+    var tokensUsed = provider.extractTokens(body);
+    var judgedAt = new Date().toISOString().slice(0, 10);   // YYYY-MM-DD (Bezeugung)
+
+    // 8. BEZEUGUNG: signierbares attestation-Objekt (Anbieter-Marker +
+    //    Datum + Urteil-Kern). Der Aufrufer signiert das via Modul 02 und
+    //    legt es in die Inbox — Modul 04 signiert NICHT selbst (kein
+    //    Identitäts-Zugriff im Match-Modul).
+    var attestation = {
+      kind: "sbkim-hybrid-match-judgment",
+      version: 1,
+      judgedAt: judgedAt,
+      provider: providerId,
+      model: model,
+      region: provider.region,
+      queryLabel: queryLabel,
+      verdicts: schemaCheck.result.map(function (v) {
+        return {
+          label: v.label,
+          anchorId: v.anchorId,
+          passt: v.passt,
+          score: Number(v.score.toFixed(4)),
+          begruendung: v.begruendung,
+        };
+      }),
+    };
+
+    // 9. Erfolg.
+    return {
+      available: true,
+      reason: null,
+      provider: providerId,
+      model: model,
+      region: provider.region,
+      judgedAt: judgedAt,
+      verdicts: schemaCheck.result,
+      fallbackCandidates: fallbackCandidates,
+      tokensUsed: tokensUsed,
+      attestation: attestation,
+    };
+  }
+
+  // Bidirektional-Kombinator (Konzept § Bidirektional). Jede Seite urteilt
+  // mit ihrer eigenen KI; dieser Helfer kombiniert die zwei booleschen
+  // Urteile. Default „both" (streng — beide nötig, Klaus 2026-06-20);
+  // „one" = großzügig (eine Seite genügt). Reine Funktion, kein Netz.
+  function bidirectionalVerdict(passtA, passtB, rule) {
+    var r = (rule === "one" || rule === "both") ? rule : HYBRID_BIDIRECTIONAL_DEFAULT;
+    if (typeof passtA !== "boolean" || typeof passtB !== "boolean") {
+      throw InvalidCandidatesError(
+        "bidirectionalVerdict: passtA und passtB müssen Boolean sein.",
+      );
+    }
+    return r === "both" ? (passtA && passtB) : (passtA || passtB);
+  }
+
   var SbkimMatch = {
     match: match,
     isAboveProviderThreshold: isAboveProviderThreshold,
@@ -759,6 +1257,9 @@
     explainMatchLLM: explainMatchLLM,
     queryLocal: queryLocal,
     setLocalCorpus: setLocalCorpus,
+    hybridMatch: hybridMatch,
+    pickJudgeProvider: pickJudgeProvider,
+    bidirectionalVerdict: bidirectionalVerdict,
     PROVIDER_MIN_MATCH: PROVIDER_MIN_MATCH,
     SCHICHT_MIN_MATCH: SCHICHT_MIN_MATCH,
     DimensionsAllNullError: DimensionsAllNullError,
@@ -769,6 +1270,8 @@
     InvalidKError: InvalidKError,
     EmbeddingNotAvailableError: EmbeddingNotAvailableError,
     InvalidCorpusError: InvalidCorpusError,
+    InvalidCandidatesError: InvalidCandidatesError,
+    InvalidProviderError: InvalidProviderError,
     _meta: {
       embeddingDim: EMBEDDING_DIM,
       providerMinMatch: PROVIDER_MIN_MATCH,
@@ -781,6 +1284,14 @@
       queryLocalDefaultK: 5,
       queryLocalMaxTextLen: LLM_MAX_OUTPUT_CHARS,
       get localCorpusRegistered() { return typeof _localCorpusProvider === "function"; },
+      // Bau 04.D Hybrid-Match (Richter) Read-Anker.
+      hybridProviders: Object.keys(HYBRID_PROVIDERS).map(function (id) {
+        return { id: id, label: HYBRID_PROVIDERS[id].label, region: HYBRID_PROVIDERS[id].region };
+      }),
+      hybridEuDefaultProvider: HYBRID_EU_DEFAULT_PROVIDER,
+      hybridUsDefaultProvider: HYBRID_US_DEFAULT_PROVIDER,
+      hybridMaxCandidates: HYBRID_MAX_CANDIDATES,
+      hybridBidirectionalDefault: HYBRID_BIDIRECTIONAL_DEFAULT,
     },
   };
 
@@ -792,7 +1303,7 @@
   // Block nennt PROVIDER_MIN_MATCH und SCHICHT_MIN_MATCH.
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, " +
+      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, " +
         "Schwellen: PROVIDER_MIN_MATCH=" + PROVIDER_MIN_MATCH +
         ", SCHICHT_MIN_MATCH=" + SCHICHT_MIN_MATCH,
     );

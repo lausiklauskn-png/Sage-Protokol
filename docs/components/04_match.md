@@ -187,7 +187,7 @@ Laufzeit-Schalter.
 Beim **Skript-Laden** (synchron, vor jeglichem Aufruf):
 
 ```
-console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
+console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
 ```
 
 Anders als Modul 03 (das nach `init()` meldet, weil der Modell-Download
@@ -627,7 +627,7 @@ eine Folge-Pflege-Sitzung einen Index hinzufügen.
 `queryLocal`-Bau ergänzt die Selbstcheck-Zeile um die fünfte Funktion:
 
 ```
-console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
+console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
 ```
 
 #### Cross-Knoten-Search-Pfad (Hook auf Modul 15 Sub b)
@@ -681,6 +681,115 @@ KEIN Code-Update.
 Default-Vorschlag der Spec-Pflege 2026-05-26: Erst-Iteration
 schlicht (hartcodierte Schwelle 0.80, hartcodiert `embedQuery`,
 beide Korpus-Pfade). Spätere Pflege-Sitzungen verfeinern.
+
+---
+
+### Hybrid-Match-Schicht — `hybridMatch` (Bau 04.D, 2026-06-20)
+
+`hybridMatch` ist der **Match-Zeit-LLM-Richter**. Er hebt den
+vorhandenen Stufe-B-Keim `explainMatchLLM` vom *Erklärer* zum *Richter*
+über die Vorfilter-Kandidaten hoch. Spec-Quelle:
+[`docs/HYBRID-MATCH-KONZEPT.md`](../HYBRID-MATCH-KONZEPT.md) (baut auf
+dem Anisotropie-Befund [`LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`](../LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md)
+auf). **Additiv** — nichts Bestehendes bricht, kein Default ändert sich.
+
+**Ablauf (Konzept § Ablauf eines Matches):**
+
+```
+1. VORFILTER (lokal, server-los, immer):
+   match() / queryLocal() liefern grobe Kandidaten (Cosinus).
+   Default UNVERÄNDERT — kein Whitening-Flip, kein Schwellen-Eingriff
+   (das ist der separate Anisotropie-Hebel, koordinierte Klaus-Entscheidung).
+2. RICHTER (opt-in, LLM, fail-soft):
+   hybridMatch(query, candidates, {apiKey, provider, ...})
+   → LLM urteilt pro Kandidat: passt / passt-nicht + Begründung + Score.
+   kein apiKey ODER LLM nicht erreichbar → available:false, Vorfilter gilt.
+3. BEZEUGEN:
+   Erfolg liefert ein signierbares `attestation`-Objekt — Aufrufer
+   signiert via Modul 02 und legt es in die Inbox.
+```
+
+**Signatur:**
+
+```
+hybridMatch(
+  query:      string | { text: string, label?: string },
+  candidates: Array<{ label: string, text: string, cosine?: number, anchorId?: string }>,
+  options?:   { apiKey?: string,
+                provider?: "claude" | "mistral" | "openai" | "local",
+                euOnly?: boolean,        // DSGVO-Knoten → EU-Default "mistral"
+                model?: string,
+                maxTokens?: number,
+                endpoint?: string,       // Pflicht für provider:"local"
+                abortSignal?: AbortSignal }
+) → Promise<HybridJudgment>
+```
+
+`candidates` sind die **Vorfilter-Finalisten** (Aufrufer schneidet vorher
+auf Top-k zu, max. `HYBRID_MAX_CANDIDATES = 20`). Jeder Kandidat braucht
+`label` (anzeigbar) **und** `text` (den Bedeutungs-Text, den der Richter
+beurteilt) — `cosine`/`anchorId` optional und werden durchgereicht.
+
+**`HybridJudgment`-Rückgabe:**
+
+```jsonc
+{
+  "available":  true | false,        // false = fail-soft, Vorfilter gilt
+  "reason":     "<deutsch>" | null,  // gesetzt wenn available:false
+  "provider":   "claude" | "mistral" | "openai" | "local",
+  "model":      "<modell-id>",
+  "region":     "us" | "eu" | "local",
+  "judgedAt":   "YYYY-MM-DD" | null,
+  "verdicts":   [ { "label", "anchorId", "passt": bool, "score": [0,1],
+                    "begruendung": "<deutsch, ≤200>", "cosine" } ] | null,
+  "fallbackCandidates": [ { "label", "anchorId", "cosine" } ],  // immer da
+  "tokensUsed": <number> | null,
+  "attestation": {                   // Bezeugung — null wenn available:false
+    "kind": "sbkim-hybrid-match-judgment", "version": 1,
+    "judgedAt", "provider", "model", "region", "queryLabel",
+    "verdicts": [ { "label", "anchorId", "passt", "score", "begruendung" } ]
+  } | null
+}
+```
+
+**Anbieter-Abstraktion (`HYBRID_PROVIDERS`):** jeder Adapter weiß, wie er
+den fetch-Request baut + den Antwort-Text extrahiert. `claude` spricht
+die Anthropic-`/v1/messages`-Form (`x-api-key`); `mistral` / `openai` /
+`local` sprechen die OpenAI-kompatible `/chat/completions`-Form
+(`Authorization: Bearer`). **Kein Schlüssel im Code** — der Key kommt pro
+Call (BYOK). EU-Default `"mistral"` für DSGVO-Knoten via `options.euOnly`.
+`provider:"local"` braucht ein `options.endpoint` (selbst-gehostete
+OpenAI-kompatible API).
+
+**Fail-soft (Konzept § Fail-soft / Resilienz):** `hybridMatch` wirft nur
+bei Aufrufer-Konfig-Fehlern (`InvalidCandidatesError` /
+`InvalidProviderError`; plus `EmptyQueryError` / `QueryTooLongError` für
+`query.text`). Alle Laufzeit-Pfade — leerer apiKey (kein opt-in), Netz-
+Fehler, HTTP-4xx/5xx (429 sondergetaggt), kaputtes JSON, falsche Anbieter-
+Form, Richter-Schema-Mismatch — resolved mit `available:false` +
+`fallbackCandidates`, **ohne Throw**. Ein Knoten ohne Richter bleibt
+vollwertiger Mycel-Teilnehmer (INTERFACES.md § 7 + § 7.1).
+
+**Bidirektional (Konzept § Bidirektional):** beim Richter urteilt jede
+Seite mit **ihrer eigenen** KI (BLP mit Mistral, Sage mit Claude). Der
+reine Helfer `bidirectionalVerdict(passtA, passtB, rule?)` kombiniert die
+zwei Urteile — Default `"both"` (**streng**, beide nötig; Klaus-Festlegung
+2026-06-20), `"one"` = großzügig (eine Seite genügt).
+
+**Bezeugung:** Modul 04 signiert **nicht** selbst (kein Identitäts-
+Zugriff). Das `attestation`-Objekt ist serialisierbar; der Aufrufer
+signiert es via Modul 02 und legt es in die Inbox (bezeugte Match-Tat).
+
+**Strikte Tabus (diese Bau-Sitzung):**
+
+- **KEINE netzweite Schwellen-Änderung, KEIN Whitening-Flip** von
+  `matchDimensions` / `queryLocal` — das ist der separate Anisotropie-
+  Hebel (eigene koordinierte Entscheidung). Hybrid baut **neben** den
+  bestehenden Pfaden.
+- **Empfangsmodus:** kein Default-Aufruf ins offene Netz — nur der
+  bewusst vom Knoten konfigurierte Richter-Call geht raus.
+- **BYOK, opt-in, kein Schlüssel im Code, kein PII** — Modul 04 ist
+  blind für Inhalt, hält keinen Key, persistiert nichts.
 
 ---
 
@@ -821,9 +930,9 @@ laufen aus dem Cache.
    kein stilles `NaN`.
 6. **Selbstcheck Konsole prüfen** — Hinweisknopf ohne Aktion: weist den
    Tester an, DevTools → Konsole zu öffnen und die Zeile
-   `MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60`
-   zu suchen (erscheint **beim Laden**, vor jedem Klick; Bau-04.C-
-   Format mit fünf Funktionen und zwei Schwellen).
+   `MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60`
+   zu suchen (erscheint **beim Laden**, vor jedem Klick; Bau-04.D-
+   Format mit sechs Funktionen und zwei Schwellen).
 7. **`matchDimensions` bidirektional** (Bau 04.A, 2026-05-19) — vier
    384-dim-Float32Arrays (`qCap`/`qNeeds`/`pCap`/`pNeeds`) via
    deterministischem LCG erzeugt + L2-normalisiert (KEIN
@@ -867,6 +976,31 @@ laufen aus dem Cache.
     []` UND zusätzlich ohne Provider (Cleanup vor Test). Erwartung:
     beide Aufrufe liefern leere Liste, KEIN Throw, `_meta.localCorpusRegistered
     === false`.
+16. **`hybridMatch` Richter Happy-Path** (Bau 04.D, 2026-06-20) — der
+    Mock-LLM (window.fetch im Handler temporär überschrieben + danach
+    restauriert) liefert ein `verdicts`-Array über drei Vorfilter-
+    Kandidaten (Wein / Auspuff / Käse). Aufruf `hybridMatch({text,label},
+    candidates, {apiKey:"sk-test-mock", provider:"claude"})`. Erwartung:
+    `available:true`, drei Verdicts (Wein passt / Auspuff passt-nicht),
+    `cosine`/`anchorId` durchgereicht, signierbares `attestation`-Objekt
+    mit `kind:"sbkim-hybrid-match-judgment"` + `judgedAt` (YYYY-MM-DD).
+    KEIN echter Netz-Aufruf, KEIN API-Key nötig.
+17. **`hybridMatch` Fail-soft → Vorfilter gilt** (Bau 04.D) — Mock-LLM
+    simuliert einen Netz-Fehler. Erwartung: `available:false`, `reason`
+    gesetzt, `verdicts:null`, `fallbackCandidates` (3) erhalten,
+    `attestation:null`, **KEIN Throw** — der Aufrufer fällt auf die
+    rohen Vorfilter-Kandidaten zurück.
+18. **`hybridMatch` Opt-in aus (kein apiKey)** (Bau 04.D) — Aufruf mit
+    `apiKey:""`. Erwartung: `available:false`, `reason` nennt „opt-in",
+    `fallbackCandidates` (3), **KEIN Netz-Aufruf** (leerer Key wird vor
+    fetch abgefangen), KEIN Throw. Das ist der server-lose Default-Pfad:
+    ohne Richter entscheidet der lokale Vorfilter weiter.
+19. **Bidirektional-Regel (streng) + Anbieter-Liste** (Bau 04.D, reine
+    Funktion ohne Netz) — `bidirectionalVerdict(true,false)` (Default
+    `"both"`) = `false`, mit `"one"` = `true`; `pickJudgeProvider({euOnly:
+    true})` = `"mistral"`, `pickJudgeProvider({})` = `"claude"`. Erwartung:
+    streng schlägt einseitige Zustimmung ab, EU-Default ist Mistral,
+    `_meta.hybridProviders` listet vier Anbieter.
 
 Die Schwellwerte 0.92 / 0.90 / 0.80 sind die im Sichttest 2026-05-14
 empirisch ermittelten Trennlinien — siehe Beleg-Block unten. Sie
@@ -945,6 +1079,8 @@ Modell-Lade braucht.
 | Bau Sub (c) `queryLocal` | 2026-05-26 | Bau-Sitzung 04.C Such-Feld + Hub-Vorlage | **Code in `src/modules/04_match.js` additiv** (keine bestehende Funktion verändert). Neue async-Funktion `queryLocal(text, k?, options?) → Promise<Array<{label,score,anchorId}>>` gemäß Karte 04 § Sub (c): Sync-Vor-Checks (EmptyQueryError leerer/nicht-String, QueryTooLongError > `LLM_MAX_OUTPUT_CHARS=4096`, InvalidKError k kein Integer >= 1, EmbeddingNotAvailableError wenn `window.SbkimEmbedding.embedQuery` fehlt), Korpus-Auflösung zwei Pfade (options.corpus hat Vorrang, dann registrierter Provider via `setLocalCorpus`), InvalidCorpusError sync (Array-Check + pro Item label-String + passageVec-Float32Array(384)-Check), leerer Korpus → leere Liste KEIN Throw (kein Embedding-Call), Embedding via `SbkimEmbedding.embedQuery(text)` mit EmbeddingFailedError-rethrow (cause durchgereicht) + Bad-Shape-Check, `match(queryVec, item.passageVec)` pro Korpus-Item, filter ≥ `PROVIDER_MIN_MATCH=0.80`, sort descending, slice(0, k). Default `k = 5`. Schwelle hartcodiert (konsistent mit `isAboveProviderThreshold`). **Neue Public-Funktion `setLocalCorpus(corpusOrProvider)`** — akzeptiert Array (defensive Array-Kopie via `Array.from`, Items bleiben Referenzen), Funktion (lazy-lookup zur queryLocal-Zeit), null/undefined (entfernt Provider, Idempotenz). Wirft InvalidCorpusError sync bei anderem Argument-Typ. **Fünf neue Fehler-Factories** im Closure-Factory-Stil analog `DimensionsAllNullError`: `EmptyQueryError`, `QueryTooLongError`, `InvalidKError`, `EmbeddingNotAvailableError`, `InvalidCorpusError`. **Selbstcheck-Zeile auf fünf Funktionen erweitert:** `MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60`. `_meta` um `queryLocalDefaultK:5` + `queryLocalMaxTextLen:4096` + Live-Getter `localCorpusRegistered` erweitert. **Karte 04** § Bauzustand neue Zeile + § Sub (c) bleibt voll spec'd (Bau folgt Spec, keine neuen Detail-Entscheidungen). **Panel 04** in `tests/manual_check.html` um fünf Knöpfe erweitert (Test 11 Happy-Path Mini-Korpus / Test 12 Schwelle-Cut alle unter 0.80 / Test 13 Top-k-Cut k=2 von 5 / Test 14 Provider-Pfad via setLocalCorpus / Test 15 leerer Korpus kein Throw). SbkimEmbedding wird im Test-Setup gemockt (deterministischer LCG-Referenz-Vektor 384-dim, NO Modell-Download). Korpus-Vektoren via `mixedVec04C(ref, target, seed)` mit exakt vorhersagbarem Cosinus zum Referenz-Vektor. Selbstcheck-Hinweis-Knopf-Text aktualisiert auf fünf Funktionen. **Headless-Smoke** `tests/smoke_bau04c_query_local.mjs` mit 12 Probengruppen (Export-Anker + Happy-Path + Schwelle + Top-k + Default-k + Leerer-Korpus + Provider-Pfad + Provider-Funktion + Provider-Vorrang + Sync-Throws + Async-Embedding-Fehler + Provider-Cleanup + defensive Kopie): **43 Sub-Proben, 43 grün, 0 rot.** Regression: smoke_bau04a 19/19, smoke_bau04b 30/30, smoke_bau15b 31/31, smoke_bau17 32/32 weiterhin grün. `node --check src/modules/04_match.js` grün; alle 13 Inline-`<script>`-Blöcke in `tests/manual_check.html` syntaktisch validiert. **PROTOCOL_VERSION** / **DB_VERSION** / **BACKUP_FORMAT_VERSION** unverändert. KEIN Modul-15-Eingriff (Sub (b) fail-soft-Pattern `typeof window.SbkimMatch.queryLocal === "function"` greift jetzt automatisch — `error:"module-04c-not-available"` wird durch echte Treffer ersetzt). KEIN Modul-03-Eingriff (nur consumer-Aufruf). KEINE Korpus-Persistierung in Modul 04 (Endknoten-Pflicht). KEINE eigene Embedding-Variante. KEIN Endknoten-Eingriff. **`status.json` Modul 04 bleibt `score:"stub"`** — analog Bau 04.B, Score-Wechsel folgt nach Klaus' Sichttest Panel 04 Knöpfe 11–15. Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf). |
 | In Endknoten eingebaut | — | — | — |
 | Sichttest (Bau 04.C) | 2026-05-26 | Klaus + Pflege Sichttest 04.C grün | **5/5 grün geprüft 2026-05-26 (Klaus, DeX-Chrome auf Galaxy Tab S6, Termux-`python3 -m http.server 8000`-Setup, nach Hard-Reload):** Panel 04 alle fünf neuen Knöpfe live grün. (i) **Test 11 Happy-Path grün** — `treffer_anzahl:2`, Top (Score 0.9501, anchorId "rez-1") + Mittel (0.8627, "rez-2"), Unter-Schwelle-Item (Ziel-Cosinus 0.50) wie erwartet weggefiltert. Status-Chip „queryLocal Happy-Path OK". (ii) **Test 12 Schwelle-Cut grün** — alle drei Korpus-Items unter 0.80 (Ziel-Cosinus 0.30/0.55/0.78), `treffer_anzahl:0`, KEIN Throw. Status-Chip „Schwelle-Cut OK (leere Liste, kein Throw)". Konsistent mit `isAboveProviderThreshold` — Modul 04 schweigt unter Schwelle. (iii) **Test 13 Top-k-Cut grün** — fünf Items über Schwelle (Ziel-Cosinus 0.95/0.92/0.88/0.85/0.82), Aufruf mit k=2, Ergebnis genau T1 (0.9488) + T2 (0.9144), die anderen drei verworfen. Status-Chip „Top-k-Cut OK (T1+T2)". (iv) **Test 14 Provider-Pfad grün** — `setLocalCorpus(corpus)` registriert, `queryLocal(...)` OHNE `options.corpus` ruft Provider, Treffer „Über Provider" (0.9318) + „Auch da" (0.8643), `provider_registriert:true` live bestätigt (`_meta.localCorpusRegistered`-Live-Getter). Status-Chip „Provider-Pfad OK". (v) **Test 15 Leerer Korpus grün** — beide Pfade liefern leere Liste (`mit_options_corpus_leer:0`, `ohne_provider:0`), `provider_registriert:false` (Cleanup von Test 14 + expliziter Reset in Test 15). Status-Chip „leerer Korpus OK (kein Throw)". **Vorgeschichte (Sichttest-Setup-Befund):** Klaus' lokales `main` war divergiert nach Squash-Merge von PR #177 (alte Feature-Branch-Reste `claude/pflege-17-tooltips-und-heartbeat` als HEAD + zwei lokale Modul-17-UX-Pflege-Commits 2026-05-25 `19a8a66`+`3b10a9d`, die als gemergede PRs auf origin/main mit anderem SHA lagen). Lösung: `git checkout main` + Diagnose `git log --oneline origin/main..main` + `git reset --hard origin/main` (sicher, weil Inhalte beweisbar schon auf origin lagen). Danach `python3 -m http.server 8000` + Browser-Hard-Reload → Panel 04 zeigt 15 Knöpfe statt 10. **Konsequenz:** Modul 04 `status.json` `score:"stub"` → `"fertig"` (analog Modul 05/15 nach Sichttest-Grün); `siegel`-Text aktualisiert. `update_puls_pie.py` re-aufgerufen — Pie regeneriert (21 Module, 🟫 8 / 🟧 0 / 🟨 0 / 🟦 8 / 🟩 5). **Cross-Knoten-Such-Lücke geschlossen:** Modul 15 Sub (b) `op:"query"`-Empfänger ruft jetzt automatisch das live `queryLocal` (fail-soft-Pattern greift), `error:"module-04c-not-available"`-Antwort entfällt. |
+| Bau 04.D `hybridMatch` | 2026-06-20 | Bau-Sitzung 04.D Hybrid-Match (Match-Zeit-LLM-Richter) | **Code in `src/modules/04_match.js` additiv** (keine bestehende Funktion verändert). Neue async-Funktion `hybridMatch(query, candidates, options?) → Promise<HybridJudgment>` gemäß [`docs/HYBRID-MATCH-KONZEPT.md`](../HYBRID-MATCH-KONZEPT.md) + Karte 04 § Hybrid-Match-Schicht: Vorfilter (match/queryLocal) liefert Kandidaten, der Richter urteilt pro Kandidat (passt/passt-nicht + Begründung + Score). **Provider-Abstraktion `HYBRID_PROVIDERS`** — `claude` (Anthropic `/v1/messages`, `x-api-key`), `mistral`/`openai`/`local` (OpenAI-kompatibel `/chat/completions`, `Authorization: Bearer`). EU-Default `"mistral"` für DSGVO-Knoten (`options.euOnly`), BYOK (kein Key im Code), `provider:"local"` braucht `options.endpoint`. **Opt-in/fail-soft:** leerer apiKey ODER LLM-/Netz-/HTTP-(429 sondergetaggt)/Schema-Fehler → `available:false` + `fallbackCandidates` OHNE Throw (Vorfilter gilt). **Zwei sync Throws** `InvalidCandidatesError` + `InvalidProviderError` (Aufrufer-Konfig) + reuse `EmptyQueryError`/`QueryTooLongError` für `query.text`. **AbortError durchgereicht.** **Bezeugung:** Erfolg liefert signierbares `attestation`-Objekt (`kind:"sbkim-hybrid-match-judgment"`, version 1, judgedAt YYYY-MM-DD, provider/region/model, verdicts) — Modul 04 signiert NICHT selbst (kein Identitäts-Zugriff), Aufrufer signiert via Modul 02 + legt in Inbox. **Zwei Public-Helfer:** `pickJudgeProvider(options?)` (EU-Default-Logik, wirft InvalidProviderError bei Unbekanntem) + `bidirectionalVerdict(passtA, passtB, rule?)` (Default `"both"` STRENG — Klaus-Festlegung 2026-06-20; `"one"` großzügig). **Selbstcheck-Zeile auf SECHS Funktionen erweitert** (`…/queryLocal/hybridMatch`). `_meta` um `hybridProviders` (vier) + `hybridEuDefaultProvider` + `hybridUsDefaultProvider` + `hybridMaxCandidates` (20) + `hybridBidirectionalDefault` ("both") erweitert. **Karte 04** § Hybrid-Match-Schicht voll + § Manueller Test Knöpfe 16–19 + § Selbstcheck-Format + § Bauzustand neue Zeile. **INTERFACES.md** § 1 Modul 04 (Bietet + Fehlerverhalten + Garantien + Selbstcheck + Geprüft) + § 7.1 Hybrid-Match-Richter-Ergänzung. **Panel 04** in `tests/manual_check.html` um vier Knöpfe (Test 16 Richter Happy-Path / 17 Fail-soft Netz-Fehler / 18 Opt-in-aus / 19 Bidir-Regel + Anbieter-Liste); Mock-LLM via temporärem `window.fetch`-Override (KEIN echter Netz-Aufruf, KEIN API-Key). **Headless-Smoke** `tests/smoke_bau04d_hybrid_match.mjs` mit fetch-Stub (Mock-LLM Anthropic- + OpenAI-Form): **62 Sub-Proben, 62 grün, 0 rot.** Regression smoke_bau04a 19/19 + smoke_bau04b 30/30 + smoke_bau04c 43/43 grün. `node --check` grün; 16 Inline-`<script>`-Blöcke validiert. **TABU eingehalten:** KEINE Schwellen-Änderung, KEIN Whitening-Flip von matchDimensions/queryLocal (separater Anisotropie-Hebel), KEIN PROTOCOL_VERSION-/DB_VERSION-Bump, KEIN Modul-Eingriff außer 04. **Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf Panel 04 Knöpfe 16–19).** |
+| Sichttest (Bau 04.D) | — | Klaus | **ausstehend** — Panel 04 Knöpfe 16–19 (Richter Happy-Path / Fail-soft / Opt-in-aus / Bidir-Regel), wartet auf Klaus' Browser-Lauf. Headless 62/62 grün ersetzt den Browser-Sichttest nicht. |
 
 ---
 
@@ -955,4 +1091,5 @@ Modell-Lade braucht.
 - **Site-Karte:** [Karte 4 · Module-Bento](../../index.html#screen-overview), Eintrag 04 · [Karte 11 · Wanderung](../../index.html#screen-overview) (A1–B3-Pfade)
 - **Glossar:** [Cosine-Sim](../GLOSSAR.md), [Domänen-Vektor](../GLOSSAR.md), [Schwellwert](../GLOSSAR.md)
 - **Integration:** `sbkim_integration.md` §6 (Bewertungsfunktion)
-- **Interfaces:** [`INTERFACES.md` §1 → Modul 04_match](../INTERFACES.md)
+- **Hybrid-Match:** [`HYBRID-MATCH-KONZEPT.md`](../HYBRID-MATCH-KONZEPT.md) (Match-Zeit-LLM-Richter) · [`LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`](../LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md) (Anisotropie-Befund)
+- **Interfaces:** [`INTERFACES.md` §1 → Modul 04_match](../INTERFACES.md) · § 7.1 Hybrid-Match-Richter-Ergänzung
