@@ -4046,6 +4046,62 @@ Geprüft: 2026-05-28 (Spec-Sitzung 18 Sub (a) Vorab — Sub (a)
 
 ---
 
+### Modul: 20_schluessel_tresor
+Status: code-stub (Bau-Sitzung 2026-06-20, Headless-Smoke 19/19 grün;
+        Sichttest durch Klaus ausstehend). Spec: docs/components/
+        20_schluessel_tresor.md.
+Datei:  src/modules/20_schluessel_tresor.js · docs/components/20_schluessel_tresor.md
+
+Zweck:  Lokal verschlüsselter Tresor für die SBKIM-Identität (nodeId +
+        privater Knotenschlüssel + Spore) gegen Identitäts-Wandern.
+        Krypto-Kern wiederverwendet Modul 02 (exportBackup/importBackup,
+        PBKDF2-SHA256 ≥600k + AES-GCM-256); der Tresor speichert NUR den
+        verschlüsselten Backup-Blob (Store sbkim_vault, Modul 01 ensureStore).
+        Recovery via Shamir's Secret Sharing ÜBER DAS PASSWORT (GF(256),
+        k von N, Default 2 von 3). Reines Lokal-Modul, KEIN Netz.
+
+Bietet (öffentlich):
+  init(options?)            → Promise<void>   // idempotent; autoPrompt zeigt
+                                              // Einrichten-/Entsperr-Modal.
+  hasVault()               → Promise<boolean> // Blob im Store vorhanden?
+  isUnlocked()             → boolean (sync)
+  createVault(password)    → Promise<{ shares: string[] }>
+                                              // exportBackup → Store; Shamir-
+                                              // Anteile (N Stück) zurück.
+  unlock(password)         → Promise<boolean> // importBackup(force) restauriert
+                                              // Identität; false bei falschem PW.
+  lock()                   → void
+  recoverPassword(shares)  → string | null    // Shamir-Kombination ≥ k Anteile.
+  _meta                    // { storeName, minPasswordLen, ready, unlocked,
+                           //   shamirN, shamirK }
+
+options-Form (init):
+  {
+    autoPrompt?:    boolean,   // Default true — Modal beim Sitzungsstart
+    shamirN?:       number,    // Default 3
+    shamirK?:       number,    // Default 2 (2 von 3, Klaus 2026-06-20)
+    mountSelector?: string,
+  }
+
+Fehler (Factory-Stil, .name gesetzt): WeakPasswordError,
+  SporeNotAvailableError, StorageNotAvailableError, VaultExistsError,
+  InvalidShareError. (unlock fail-soft: false statt Throw bei falschem PW.)
+
+Garantien:
+  - Kein Klartext-Schlüssel at rest (nur AES-GCM-Blob im Store).
+  - Passwort, Schlüssel und Shamir-Anteile verlassen NIE das Gerät / das Netz.
+  - Speichert NUR SBKIM-Identität — keine App-/PII-Daten (Datenschutz, BLP).
+  - Shamir deterministisch: split→combine round-trip, < k Anteile reichen nicht.
+  - Verlust von Passwort UND ausreichend Anteilen → nicht wiederherstellbar
+    (by design, Zero-Knowledge, kein Hintertür-Server).
+  - Anteil-Format: "v1.<index>.<base64url(bytes)>".
+
+Geprüft: Headless-Smoke tests/smoke_bau20_tresor.mjs 19/19 (Shamir 2/3 +
+  Tresor create/unlock/recover mit gemocktem Modul 02 + In-Memory-Storage).
+  Browser-Sichttest (Modal-UI) durch Klaus ausstehend.
+
+---
+
 ## 2. Datenformate (Querschnitt)
 
 ### Spore-JSON

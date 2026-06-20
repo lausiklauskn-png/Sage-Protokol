@@ -1,8 +1,14 @@
 # Modul 20 — Schlüssel-Tresor (SBKIM-Identitäts-Tresor)
 
-> **Status: Spec / Konzept-Karte** (Spec-Sitzung 2026-06-20, Klaus-Auftrag).
-> Noch KEIN Code in `src/modules/20_schluessel_tresor.js`. Diese Karte ist der
-> Bau-Vertrag; nach Klaus' Prüfung folgt die Bau-Sitzung.
+> **Status: Code-Stub** (Spec 2026-06-20 PR #315 gemerged; Bau-Sitzung
+> 2026-06-20, `src/modules/20_schluessel_tresor.js` angelegt, Headless-Smoke
+> `tests/smoke_bau20_tresor.mjs` 19/19 grün). **Browser-Sichttest der Modal-UI
+> durch Klaus ausstehend.**
+>
+> **Festgelegt (Klaus 2026-06-20):** Shamir **2 von 3** (N=3, k=2). Key-
+> Extractability über das Passwort gelöst durch Modul 02 `exportBackup`
+> (verschlüsselt die Identität passwortbasiert; der Tresor speichert nur den
+> Blob). BLP kanonische nodeId `MyHVM7Pd…` (wird festgeschrieben).
 >
 > **Auslöser (Klaus 2026-06-20):** Jeder Knoten soll seine SBKIM-Identität
 > (nodeId + privater Knotenschlüssel + eigene Spore) in einem **lokal

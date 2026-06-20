@@ -1841,6 +1841,29 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Bau-Sitzung Modul 20 Schlüssel-Tresor (Code-Stub, Shamir 2/3)
+
+**Rolle:** Hauptsitzung (Bau). Klaus-OK: „315 mergen + bauen", Shamir **2 von 3**,
+Key-Extractability über Passwort, BLP-nodeId `MyHVM7Pd…` kanonisch.
+
+**Getan:** `src/modules/20_schluessel_tresor.js` voll angelegt. Krypto-Kern
+wiederverwendet Modul 02 `exportBackup`/`importBackup` (PBKDF2+AES-GCM) — der Tresor
+speichert nur den Blob (Store `sbkim_vault`, Modul 01 `ensureStore`). **Shamir's Secret
+Sharing über GF(256)** (eigene Implementierung), `recoverPassword` (2 von 3). Auto-Abfrage-
+Modal (zweistufiges Passwort + „Anteile gesichert"-Bestätigung vor Schließen). Schnittstelle
+`SbkimVault`. Headless-Smoke `tests/smoke_bau20_tresor.mjs` **19/19 grün** (Shamir jede
+2er-Teilmenge rekonstruiert, 1 Anteil nicht; Tresor create/unlock/recover mit gemocktem
+Modul 02 + In-Memory-Storage). INTERFACES §1 Modul 20 + Karte 20 (Code-Stub) + CLAUDE.md
+Zeile 20 nachgezogen. `index.html` lädt das Skript (KEIN Auto-Init), Panel 20 in
+`manual_check.html` (7 Sichttest-Knöpfe).
+
+**Offen / nächster Schritt:** **Klaus' Browser-Sichttest** (Panel 20: Shamir-Selbsttest +
+Tresor anlegen/entsperren/recover; Modal-UI). Danach Entscheidung **Sage-Page-Auto-Prompt-
+Wiring** (`SbkimVault.init({autoPrompt:true})` in `sbkim-init.js` — bewusst noch NICHT
+aktiv, weil es bei jedem Seitenstart ein Passwort verlangt). Dann netzweite Verteilung
+(Relay-Briefe, BLP zuerst). `status.json`-Score bleibt vorerst (Konvention: erst nach
+Klaus' Sichttest). Offen aus Schritt 2: Mixarium-Band, BLP-Wächter-Quittungen.
+
 ### 2026-06-20 · Spec-Karte Modul 20 Schlüssel-Tresor (Identitäts-Tresor + Shamir)
 
 **Rolle:** Hauptsitzung (Spec). Auslöser: Klaus' Auftrag — jeder Knoten soll seine
