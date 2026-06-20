@@ -675,10 +675,14 @@
     if (hint) { hint.style.display = "none"; hint.textContent = ""; }
     try {
       var p = tp.openAndockTab();
+      // Siegel-Modal schließen, damit der Modul-18-Wizard sichtbar ist:
+      // der Wizard hat einen niedrigeren z-index (10000) als das Siegel-
+      // Modal (99998) und läge sonst dahinter (Befund Klaus 2026-06-20:
+      // „Knopf da, Klick öffnet nichts" — Wizard war verdeckt).
+      closeModal();
       if (p && typeof p.catch === "function") {
         p.catch(function (err) {
-          warn("Andock-Werkzeug-Start fehlgeschlagen.", err);
-          showAndockHint("Andock-Werkzeug nicht bereit: " + (err && err.message ? err.message : String(err)));
+          warn("Andock-Wizard-Start fehlgeschlagen.", err);
         });
       }
     } catch (err) {
