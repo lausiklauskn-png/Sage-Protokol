@@ -215,6 +215,42 @@
     }).catch(function () { /* fail-soft: fest verdrahteter Status bleibt */ });
   }
 
+  // Live-Status aus status.json — dieselbe Quelle wie der Bau-Puls auf der
+  // ersten Seite. Verhindert, dass die fest verdrahteten status-Werte hier
+  // abdriften. Module liegen in status.json über mehrere Gruppen verteilt.
+  function gatherLiveStatus(statusJson) {
+    var groups = ["modules", "schutzBacklog", "diffusionBacklog",
+      "membranBacklog", "toolPwaBacklog", "siegelBacklog", "mycelHubBacklog"];
+    var map = {};
+    groups.forEach(function (g) {
+      var arr = statusJson && statusJson[g];
+      if (Array.isArray(arr)) arr.forEach(function (m) {
+        if (m && m.id != null && STATUS[m.score]) map[String(m.id)] = m.score;
+      });
+    });
+    return map;
+  }
+  function applyLiveStatus(tiles) {
+    if (typeof fetch !== "function") return;
+    fetch("status.json", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (data) {
+      var map = gatherLiveStatus(data);
+      // 1) Daten patchen, damit auch das Modal den Live-Stand zeigt.
+      TOOLS.forEach(function (t) { if (map[t.id]) t.status = map[t.id]; });
+      // 2) Sichtbare Badges patchen (Tiles sind schon gerendert).
+      tiles.forEach(function (el) {
+        var id = el.getAttribute("data-tool");
+        var st = map[id] && STATUS[map[id]];
+        if (st) {
+          var s = el.querySelector(".vp-status");
+          if (s) s.textContent = st.mark + " " + st.label;
+        }
+      });
+    }).catch(function () { /* fail-soft: fest verdrahteter Status bleibt */ });
+  }
+
   function buildEinbau(t) {
     if (t.kind === "html") {
       var hf = fileOf(t.code);
