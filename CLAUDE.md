@@ -147,6 +147,26 @@ Klaus hat dieser **und jeder weiteren Sitzung** einen stehenden Freibrief
 erteilt. Er gilt dauerhaft, nicht nur für die Sitzung, in der er erteilt
 wurde.
 
+> **Bekräftigung 2026-06-20 (Klaus, zweifach bekräftigt):**
+> „Du kannst automatisch / selbstständig merken, wenn es **logisch** und
+> **für die App nützlich** ist und auch **für den Nutzer Nützliches** —
+> ohne Nachfrage. **Selbstständiges Merken ist ausdrücklich erwünscht.**
+> Diesen Befehl kannst Du an die nächste Sitzung weitergeben."
+>
+> Daraus folgt verbindlich:
+> - **Maßstab (drei Kriterien):** die Entscheidung ist logisch +
+>   nachvollziehbar, nützlich für die **App** UND nützlich für den
+>   **Nutzer**. Erfüllt sie das, ist selbstständiges Merken **erwünscht**,
+>   nicht nur erlaubt — Zurückhaltung aus Vorsicht ist hier der Fehler,
+>   nicht das Handeln.
+> - **Grenze unverändert:** echtes Zweifeln (mehrdeutig, schwer umkehrbar,
+>   architektonisch tiefgreifend, mehrere gleich gute Wege) → erst Klaus
+>   fragen. Der Freibrief ersetzt das Urteilsvermögen nicht.
+> - **Nie stillschweigend:** jede selbst getroffene Merk-Entscheidung wird
+>   dokumentiert (Commit / PULS / hier in der Tafel).
+> - **Weitergabe:** dieser Freibrief gilt für **jede Folge-Sitzung** und
+>   wird im Sitzungs-Brief mitgenommen (§ „In den Sitzungs-Brief mitnehmen").
+
 - **Selbstständig handeln und merken erlaubt.** Eine Sitzung darf
   eigenständig entscheiden, eine Lehre festhalten (auch durch Pflege
   dieser Datei), eine Tafel weiterentwickeln oder einen Bau/Fix

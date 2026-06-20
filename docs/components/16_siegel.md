@@ -203,6 +203,29 @@ sofern das Siegel **über das Modul** gerendert wird (nicht als statisches
 `<img src=…svg>`). Für die `<img>`-Variante bleibt die SVG-Datei
 hand-zu-pflegen — die saubere Lösung ist Modul-Render statt statischer Datei.
 
+#### Optionaler Andock-Knopf (`andockTool`, 2026-06-19)
+
+`init({ andockTool: true })` (Default `false`) hängt einen **zusätzlichen**
+Knopf „🔌 Fremden Knoten andocken →" ins Modal. Er öffnet den **KI-unabhängigen**
+Modul-18-Wizard `SbkimToolPwa.openAndockTab()` (Repo-/App-URL eingeben → Spore
+holen → `verifyForeignSpore` → Match → Handshake via Modul 05) — reiner
+Browser-Pfad (WebCrypto + fetch), **keine Claude-Sitzung nötig**.
+
+- **Zwei Richtungen, kein Gegeneinander** (Klaus 2026-06-19): der bestehende
+  „🔑"-Knopf bleibt unberührt — er ist die **Selbst**-Seite (eigene Identität,
+  Spore, Vektor, signieren). Der Andock-Knopf ist die **Gegenstellen**-Seite
+  (fremde URL → Handshake). Die eine erzeugt, die andere verbindet.
+- **Opt-in + fail-soft:** Nur bei `andockTool:true` entsteht das DOM-Element
+  `[data-siegel-andock-tool]`. Fehlt Modul 18 zur Klick-Zeit, zeigt der Knopf
+  einen Hinweis statt zu werfen. Default-Render (ohne Flag) ist unverändert —
+  die Sub-(e)-Tafel-Tests („kein Andock-Knopf") bleiben gültig.
+- **Stabile Identität** bleibt das Leitbild (Klaus 2026-06-19): eine App = eine
+  nodeId. Multi-Identität ist gebaut (Modul 02), aber für Endknoten bewusst
+  nicht im Siegel sichtbar — reserviert für die spätere Agenten-Schicht.
+
+Smoke: `tests/smoke_bau16_andock.mjs` (9/9), `tests/smoke_bau16_ribbon.mjs` (9/9),
+Regression Sub-(e) 16/16.
+
 ### Sub (b) — Badge-Rendering (Auszeichnungs-Optik)
 
 #### DOM-Anker und Position

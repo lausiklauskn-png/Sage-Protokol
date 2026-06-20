@@ -49,9 +49,13 @@
  *     visible?: "visible"|"hidden", // Default "visible"
  *     mountModal?: boolean,        // Default true
  *     repoUrl?: string | null,     // Default null → Auto-Erkennung
- *     ribbonText?: string }        // Default "SAGE OBSERVATORIUM" → Band-Text
+ *     ribbonText?: string,         // Default "SAGE OBSERVATORIUM" → Band-Text
  *                                  // im Wappen unten; Forker setzen ihren
  *                                  // eigenen Knoten-Namen, KEIN SVG-Edit nötig.
+ *     andockTool?: boolean }       // Default false. true → optionaler
+ *                                  // „Fremden Knoten andocken"-Knopf im Modal,
+ *                                  // öffnet Modul-18-Wizard (KI-unabhängiger
+ *                                  // Handshake). „🔑"-Pfad bleibt unberührt.
  *
  * Self-check: emits a console.info line on script load (synchronous,
  * before any call). Siehe INTERFACES.md §1 Modul 16 und
@@ -184,6 +188,12 @@
   var mountModalFlag = true;
   var repoUrlOverride = null;
   var ribbonText = DEFAULT_RIBBON_TEXT;
+  // Optionaler Andock-Knopf im Modal (opt-in, Default aus). Wenn true,
+  // hängt mountSiegelModal() einen „Fremden Knoten andocken"-Knopf ins
+  // Modal, der den KI-unabhängigen Modul-18-Wizard (SbkimToolPwa.
+  // openAndockTab) öffnet. Der bestehende „🔑"-Identitäts-Pfad bleibt
+  // unberührt (Klaus 2026-06-19: Andocken als ZUSÄTZLICHE Option).
+  var andockToolEnabled = false;
 
   var moduleStatuses = null;        // Array<{id, name, globalName, surfaceFn, lazy, status}>
   var certifiedFlag = false;
@@ -635,6 +645,105 @@
 
   // ---- Modal-Mount (Karte 16 § Sub (c)) ----
 
+  // ---- Optionaler Andock-Knopf (opt-in, Modul 18 wiederverwendet) ----
+  //
+  // KI-unabhängiger Handshake: öffnet den Modul-18-Wizard
+  // (SbkimToolPwa.openAndockTab: Repo-URL → Spore holen → verifyForeignSpore
+  // → Match → Handshake via Modul 05). Reiner Browser-Pfad (WebCrypto+fetch),
+  // keine Claude-Sitzung nötig. Fail-soft: fehlt Modul 18, zeigt der Knopf
+  // einen Hinweis statt zu werfen. Der „🔑"-Identitäts-Pfad bleibt unberührt.
+
+  function showAndockHint(text) {
+    if (!modalRoot) return;
+    var hint = modalRoot.querySelector("[data-siegel-andock-tool-hint]");
+    if (!hint) return;
+    hint.style.display = "block";
+    hint.textContent = text;
+  }
+
+  function onAndockClick() {
+    var tp = global.SbkimToolPwa;
+    if (!tp || typeof tp.openAndockTab !== "function") {
+      showAndockHint(
+        "Andock-Werkzeug (Modul 18 SbkimToolPwa) ist nicht geladen — " +
+        "bitte src/modules/18_tool_pwa.js einbinden und SbkimToolPwa.init({…}) aufrufen.",
+      );
+      warn("Andock-Knopf geklickt, aber Modul 18 (SbkimToolPwa) ist nicht geladen.");
+      return;
+    }
+    var hint = modalRoot ? modalRoot.querySelector("[data-siegel-andock-tool-hint]") : null;
+    if (hint) { hint.style.display = "none"; hint.textContent = ""; }
+    try {
+      var p = tp.openAndockTab();
+      if (p && typeof p.catch === "function") {
+        p.catch(function (err) {
+          warn("Andock-Werkzeug-Start fehlgeschlagen.", err);
+          showAndockHint("Andock-Werkzeug nicht bereit: " + (err && err.message ? err.message : String(err)));
+        });
+      }
+    } catch (err) {
+      warn("Andock-Werkzeug-Start fehlgeschlagen.", err);
+      showAndockHint("Andock-Werkzeug nicht bereit: " + (err && err.message ? err.message : String(err)));
+    }
+  }
+
+  function buildAndockBlock(doc) {
+    var block = doc.createElement("div");
+    block.setAttribute("data-siegel-andock-tool", "");
+    block.style.cssText = [
+      "margin:0 0 1.2rem",
+      "padding:0.85rem 0.9rem",
+      "background:rgba(201,169,97,0.08)",
+      "border:1px solid var(--siegel-line, rgba(201,169,97,0.45))",
+      "border-radius:8px",
+    ].join(";");
+
+    var lead = doc.createElement("p");
+    lead.style.cssText = [
+      "margin:0 0 0.6rem",
+      "font-family:'Geist', system-ui, sans-serif",
+      "font-size:0.86rem",
+      "line-height:1.5",
+      "color:rgba(245,245,255,0.86)",
+    ].join(";");
+    lead.textContent =
+      "Fremden Knoten verbinden — ohne KI, direkt im Browser: Repo-/App-URL " +
+      "eingeben → Spore prüfen → Match → Handshake.";
+
+    var btn = doc.createElement("button");
+    btn.type = "button";
+    btn.setAttribute("data-siegel-andock-tool-btn", "");
+    btn.textContent = "🔌 Fremden Knoten andocken →";
+    btn.style.cssText = [
+      "display:inline-block",
+      "background:var(--siegel-gold, #C9A961)",
+      "color:#1A1306",
+      "border:none",
+      "border-radius:8px",
+      "padding:0.5rem 0.9rem",
+      "font-family:'Geist', system-ui, sans-serif",
+      "font-size:0.9rem",
+      "font-weight:600",
+      "cursor:pointer",
+    ].join(";");
+
+    var hint = doc.createElement("p");
+    hint.setAttribute("data-siegel-andock-tool-hint", "");
+    hint.style.cssText = [
+      "display:none",
+      "margin:0.55rem 0 0",
+      "font-size:0.8rem",
+      "line-height:1.45",
+      "color:rgba(245,245,255,0.6)",
+    ].join(";");
+
+    block.appendChild(lead);
+    block.appendChild(btn);
+    block.appendChild(hint);
+    btn.addEventListener("click", onAndockClick);
+    return block;
+  }
+
   function mountSiegelModal() {
     if (modalMounted) return;
     if (!mountModalFlag) return;
@@ -792,6 +901,11 @@
     panel.appendChild(header);
     panel.appendChild(bronzeHinweisBlock);     // Sub (e) — sichtbar nur in Bronze
     panel.appendChild(dateLine);
+    // Optionaler Andock-Knopf (opt-in via init({andockTool:true})). Nur
+    // dann im DOM — Default-Render trägt KEIN [data-siegel-andock-tool].
+    if (andockToolEnabled) {
+      panel.appendChild(buildAndockBlock(doc));
+    }
     panel.appendChild(modulesHeader);
     panel.appendChild(modulesList);
     panel.appendChild(aspectsHeader);
@@ -1060,6 +1174,11 @@
     if (typeof opts.ribbonText === "string" && opts.ribbonText.trim().length > 0) {
       ribbonText = opts.ribbonText.trim();
     }
+    // Optionaler Andock-Knopf (KI-unabhängiger Handshake via Modul 18).
+    // Strikt boolean true → opt-in; alles andere lässt den Default (aus).
+    if (opts.andockTool === true) {
+      andockToolEnabled = true;
+    }
 
     // Surface-Check: Snapshot zur init()-Zeit.
     moduleStatuses = buildModuleStatuses();
@@ -1217,6 +1336,7 @@
       get mountModalFlag()    { return mountModalFlag; },
       get badgeSelector()     { return badgeSelector; },
       get ribbonText()        { return ribbonText; },
+      get andockToolEnabled() { return andockToolEnabled; },
       // Sub (e) Bronze/Gold-Stufung (Karte 16 § Sub (e)).
       get mycelConnected()    { return mycelConnected; },
       get mycelConnectedAt()  { return mycelConnectedAt; },
