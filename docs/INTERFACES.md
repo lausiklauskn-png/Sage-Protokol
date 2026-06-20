@@ -2808,6 +2808,10 @@ Bietet (öffentlich):
                                     //                                  in Bronze-Stufe)
                                     //   siegelStufe:       "bronze"|"gold"  (Bau Sub e,
                                     //                                  Live-Getter)
+                                    //   ribbonText:        string   (Band-Text im
+                                    //                                  Wappen; Default
+                                    //                                  "SAGE OBSERVATORIUM",
+                                    //                                  via init ribbonText)
 
   _resetMycelConnectedForTest()   → void (sync, Bau Sub e)
                                     // Test-Brücke (KEIN Public-Use): setzt
@@ -2840,6 +2844,17 @@ Bietet (öffentlich):
       // Endknoten setzen typischerweise den Source-Repo-URL
       // (z.B. "https://github.com/lausiklauskn-png/Mein-Mixarium").
       repoUrl?: string | null,
+
+      // Band-Text im Wappen (unteres Ribbon des SVG-Siegels). Default
+      // "SAGE OBSERVATORIUM" → für Sage byte-identisch zum inlined
+      // WAPPEN_SVG. Forker setzen ihren Knoten-Namen (z.B. "MEIN-
+      // REZEPTBUCH"); das Modul ersetzt den Band-Text zur Render-Zeit
+      // (renderWappenSvg), XML-escaped. KEIN SVG-Edit mehr nötig.
+      // Fail-soft: leerer/Nicht-String-Wert lässt den Default.
+      // Befund 2026-06-19: Rezeptbuch/Mixarium trugen statisch
+      // "MEIN-TRESOR", weil die SVG-Datei kopiert + nie angepasst wurde —
+      // dieser Parameter verhindert die Wiederholung.
+      ribbonText?: string,
     }
 
   ExplanationSnapshot (Karte 16 § Schnittstelle, verbindlich):
