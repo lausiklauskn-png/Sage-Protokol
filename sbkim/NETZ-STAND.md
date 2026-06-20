@@ -100,6 +100,19 @@ domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
 
 ## Offene Hebel
 
+- **Match-Kalibrierung / e5-Anisotropie (Befund 2026-06-20, Klaus-Skepsis):** Der **rohe**
+  Cosinus von `multilingual-e5-small` hat einen hohen Boden — unverwandte Domänen liegen
+  schon bei **mean 0.8215** (sd 0.0223, Spanne 0.787–0.854). Die Schwelle `PROVIDER_MIN_MATCH
+  = 0.80` liegt damit **unter** dem Rauschboden; fast jedes Paar „matcht". Nach Mittelwert-
+  Abzug (Whitening-light) werden **alle Sage↔Endknoten-Paare negativ** — echt sind nur die
+  Tresor-Schwestern (1.0) und Rezeptbuch↔Mixarium (0.70). Heißt: die Sage↔X-`verified-match`-
+  Stempel (inkl. BookLedger 0.811) sind **boden-nah/schwach**, kein echter Themen-Bezug.
+  **Kein Fehler der Knoten**, sondern des Verfahrens — **nicht stillschweigend umstempeln.**
+  Plan (Klaus' Entscheidung, netzweit): (1) Schwelle mit Zufallstext-Boden neu kalibrieren,
+  (2) Modul 04 auf **whitened Cosinus** umstellen (Mean-Vektor netzweit als Konstante),
+  (3) alle Matches einmal sauber neu rechnen. Beleg: `tools/match_baseline.mjs`. Vollständige
+  Lehre + Fix-Konzept: `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`.
+
 - **Siegel-Band-Fix (Befund 2026-06-19):** Endknoten zeigten falschen Band-Text im
   Siegel (statische `assets/sbkim-siegel-wappen.svg` von Mein-Tresor kopiert, nie
   angepasst). **Mein-Rezeptbuch ✔ erledigt 2026-06-20** (Band `MEIN-TRESOR` →

@@ -3364,6 +3364,11 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       tag: 'Station 5',
       summary: 'Das deutsche SBKIM-Paper, parallel zum englischen aufgebaut. Sieben Sektionen: Einleitung, verwandte Arbeiten und Lückenanalyse, das SBKIM-Protokoll mit den drei orthogonalen Dimensionen (fachlich / prozess / skalierung), Zwei-Ebenen-Architektur (Layer 1 menschliche Netzwerke + Layer 2 Agentennetzwerke), Referenz-Implementierung, offene Probleme, Schlussfolgerung. Der Print-Knopf am unteren Rand erzeugt eine PDF-Version on-demand im Browser.',
       href: 'docs/papers/sbkim-paper-de.html'
+    },
+    { idx: 5, status: 'text-only', shape: 'galaxy-elliptical', size: 'medium',
+      title: 'Der hohe Boden — was Matching wirklich misst',
+      tag: 'Station 6',
+      summary: 'Klaus stutzte: Wieso „matcht" eine Buchhaltungs-App (BookLedgerPro) zu 0.81 mit Sages Mycel-Bibliothek, obwohl beide inhaltlich nichts teilen? Der Zweifel war goldrichtig.|Das Embedding-Modell `multilingual-e5-small` ist **anisotrop**: es legt alle Texte in einen engen Kegel, statt sie über die Kugel zu verteilen. Folge — zwei beliebige deutsche Domänen-Texte liegen schon bei **~0.82 Cosinus**. Der „Boden" ist hoch; die Schwelle 0.80 sitzt **darunter**. Fast alles „matcht".|Der Beweis (`tools/match_baseline.mjs`): zieht man den Mittelwert-Vektor ab, bleiben nur echte Verwandtschaften übrig — die Tresor-Schwestern (1.0) und Rezeptbuch↔Mixarium (0.70). **Alle Sage↔Endknoten-Paare werden negativ.** Der hohe Roh-Wert maß das Modell, nicht das Thema.|Die ehrliche Konsequenz: nichts grün-rechnen, nichts heimlich umstempeln. Der Fix kommt bewusst und netzweit — Schwelle neu kalibrieren, Modul 04 auf *whitened* Cosinus umstellen, dann alle Werte einmal sauber neu rechnen. Festgehalten in `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`.|Diese Galaxie steht für eine Lehre der Entstehung: ein gutes Netz erträgt den Zweifel an seinen eigenen Zahlen.'
     }
   ];
 
