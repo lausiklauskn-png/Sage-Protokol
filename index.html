@@ -2155,7 +2155,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     const svg = document.getElementById('topology-svg');
     if (!svg) return;
     svg.innerHTML = '';
-    const all = [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || [])];
+    const all = [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || []), ...(s.siegelBacklog || []), ...(s.toolPwaBacklog || []), ...((s.mycelHubBacklog || []).filter(m => /^[0-9]+$/.test(m.id)))];
     const byId = {};
     all.forEach(m => { byId[m.id] = m; });
 
@@ -2213,6 +2213,27 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
                 : blMinX + (blMaxX - blMinX) * (i / (blNodes.length - 1));
         positions[m.id] = { x, y: backlogY };
       });
+    }
+
+    // Auto-Platzierung: KEIN Modul aus `all` wird stillschweigend ausgelassen.
+    // Module ohne explizites Layout (z.B. 16/17/18/19) kommen in eine
+    // Zusatz-Zeile unter den vorhandenen Knoten; die viewBox-Höhe wächst mit.
+    {
+      const cols = portrait ? [62, 180, 298] : [180, 410, 640, 870];
+      const rowH = portrait ? 104 : 95;
+      let maxY = 0;
+      Object.keys(positions).forEach(id => { if (positions[id].y > maxY) maxY = positions[id].y; });
+      const rest = all.filter(m => !positions[m.id]);
+      if (rest.length) {
+        addClusterLabel(cols[Math.floor((cols.length - 1) / 2)], maxY + rowH * 0.55, 'weitere Module');
+        rest.forEach((m, i) => {
+          positions[m.id] = { x: cols[i % cols.length], y: maxY + rowH * (Math.floor(i / cols.length) + 1) };
+        });
+        const rowsNeeded = Math.ceil(rest.length / cols.length);
+        const needY = maxY + rowH * (rowsNeeded + 0.6);
+        const vb = svg.getAttribute('viewBox').split(' ');
+        if (needY > parseFloat(vb[3])) { vb[3] = String(Math.ceil(needY)); svg.setAttribute('viewBox', vb.join(' ')); }
+      }
     }
 
     all.forEach(m => {

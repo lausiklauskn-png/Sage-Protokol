@@ -1866,6 +1866,12 @@ Sub a) ist gebaut + im Einsatz. Andock-Funktion (19) läuft via andock.html + Sa
   + PR-Link), kein Signieren/Storage/Netz, `mount()` Browser-only. Smoke
   `tests/smoke_bau19_andock_wizard.mjs` **15/15 grün**. Truhe-Kachel 19 zeigt jetzt auf den
   Code (kopier-/herunterladbar, nicht mehr Schablone).
+- **Topologie-Grafik (Nachzug, Klaus-Befund):** `renderTopology` ließ Module ohne
+  `TOPO_LAYOUT`-Eintrag still weg — 16/17/18/19 (auch 17!) fehlten in der Grafik. Fix:
+  alle Modul-Gruppen einbezogen + **Auto-Platzierung** für Module ohne festes Layout
+  (Zusatz-Zeile „weitere Module" unten, viewBox wächst mit, zukunftssicher). Modul-Liste
+  war bereits komplett + benannt (gegen status.json verifiziert: 19 Zeilen, alle benannt,
+  16/17/18/19 = fertig) — der sichtbare Rest ist Pages-/Browser-Cache (Hard-Reload).
 
 **Offen / nächster Schritt:** Klaus' Browser-Sichttest (Truhe + erste Seite nach Hard-Reload;
 Modul-19-`mount()`-UI). Optional: Panel 19 in `manual_check.html`, Sage-Page-Wizard auf das
