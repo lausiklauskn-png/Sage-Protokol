@@ -1841,6 +1841,15 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Quittung: Mein-Rezeptbuch Siegel-Band korrigiert (Schritt 2)
+
+**Rolle:** Hauptsitzung (Quittungs-Verarbeitung). Mein-Rezeptbuch hat (von Klaus relayt)
+den Siegel-Band-Fix umgesetzt: `assets/sbkim-siegel-wappen.svg` Band `MEIN-TRESOR` →
+`MEIN-REZEPTBUCH` (PR #262 → main `f0278ab`). **Live auf raw/main verifiziert** (Band =
+`MEIN-REZEPTBUCH`). In NETZ-STAND „Offene Hebel" vermerkt. **Mein-Mixarium offen** (Brief
+relayt). BookLedgerPro-Wächter-Nachrüstung offen. Dauerlösung via Modul-16 `ribbonText`
+optional pro Endknoten.
+
 ### 2026-06-20 · Fix: Andock-Wizard war hinter dem Siegel-Modal verdeckt (z-index)
 
 **Rolle:** Hauptsitzung (Bugfix). Branch `claude/bookledgerpro-sage-onboard-1cdzif`.

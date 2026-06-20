@@ -100,6 +100,14 @@ domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
 
 ## Offene Hebel
 
+- **Siegel-Band-Fix (Befund 2026-06-19):** Endknoten zeigten falschen Band-Text im
+  Siegel (statische `assets/sbkim-siegel-wappen.svg` von Mein-Tresor kopiert, nie
+  angepasst). **Mein-Rezeptbuch ✔ erledigt 2026-06-20** (Band `MEIN-TRESOR` →
+  `MEIN-REZEPTBUCH`, PR #262 → main `f0278ab`, live auf raw/main verifiziert).
+  **Mein-Mixarium offen** (Brief relayt, Band soll `MEIN-MIXARIUM` werden). Dauerlösung
+  (konfigurierbarer Band via Modul 16 `ribbonText` statt statischer `<img>`) optional pro
+  Endknoten. Sage selbst: `ribbonText`-Option gebaut + Andock-Knopf live (Stand main).
+
 - **Briefkasten-Runde 2026-06-19 (Funktionstest):** Alle sechs Peer-`SIGNAL.json` aus
   `raw/main` gelesen — **alle HTTP 200, Briefkasten funktioniert**. Ungelesene Briefe waren
   durchweg Bestätigungen (reziproke Handshakes, Ring-Schluss, gegenseitige Acks), **kein
