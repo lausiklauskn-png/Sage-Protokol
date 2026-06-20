@@ -53,3 +53,33 @@
   Krypto byte-kompatibel, Headless-Smoke, Download-Knopf — wie Andock-Werkzeug / Mycel-Knoten.
 
 > Reihenfolge ist ein Vorschlag, keine Tafel — Klaus entscheidet, welches zuerst gebaut wird.
+
+## Sofort baubar als Upload-Werkzeug (Code existiert schon)
+
+> „Upload-Werkzeug" = **Ein-Datei-PWA**, die der Nutzer aus der Truhe herunterlädt
+> und auf den **eigenen** Host hochlädt/deployt (wie `andock.html`) — und/oder ein
+> **Einbau-Snippet** zum Kopieren in die eigene App. Hier nur Werkzeuge, deren Logik
+> **bereits gebaut + getestet** ist; der Rest-Aufwand ist nur **Verpacken** (generisch
+> fassen, Siegel-Band leer, Smoke, Download-Knopf).
+>
+> **Tresor-Klärung 2026-06-20:** Klaus ist Betreiber + Besitzer **beider** Tresore
+> (Mein-Tresor + Jasons-Tresor). Damit ist die echte Verschlüsselungs-Dynamik frei
+> verwendbar — kein Einwilligungs-Vorbehalt; der Tresor-Bau kann die vorhandene
+> AES-/Shamir-Mechanik direkt übernehmen.
+
+| # | Werkzeug | Module (vorhanden) | Upload-Form | Was der Nutzer damit macht | Sofort-Aufwand |
+|---|---|---|---|---|---|
+| 1 | **PWA-Security-Monitor** | 15 + 17 | PWA + Einbau-Snippet | eigene App auf Fremdzugriff/Angriff überwachen (postMessage, Fetch-Proben, KI-Agenten) | Verpacken + Origin-Allowlist generisch |
+| 2 | **Semantik-Rechner** | 03 + 04 | PWA + Einbau-Snippet | Text→Vektor, Ähnlichkeit, Cluster — lokal, ohne Cloud | Verpacken (Modell-Download ~einmalig) |
+| 3 | **Signatur-/Spore-Prüfer** | 02 | PWA + Einbau-Snippet | signiertes JSON / fremde Spore offline auf Echtheit prüfen | Verpacken (kleinster Aufwand) |
+| 4 | **Verschlüsselungs-Tresor** | 20 + 02 (+ Tresor-Dynamik) | PWA + Einbau-Snippet | Geheimnisse/Schlüssel lokal verschlüsseln, 2-von-3-Shamir-Recovery | Verpacken + generisch fassen |
+| 5 | **Identitäts-/Daten-Backup** | 02 + 20 | PWA + Einbau-Snippet | verschlüsselten Backup-Blob + Wiederherstellungs-Anteile erzeugen/einlesen | Verpacken |
+| 6 | **Siegel-Generator** | 16 | PWA | eigenes Auszeichnungs-Siegel (SVG/PNG) erzeugen | Verpacken (Kern in andock.html) |
+| 7 | **Verstecktes Debug-/Status-Fenster** | 00 | Einbau-Snippet | 5-Klick-Diagnose (Speicher/Quota/Version) in die eigene PWA | Verpacken |
+| 8 | **IndexedDB-Speicher-Wrapper** | 01 | Einbau-Snippet | schlanker getesteter lokaler Speicher in der eigenen App | Verpacken |
+
+**Faustregel Upload-Form:** Endnutzer lädt herunter + deployt → **Ein-Datei-PWA**;
+Entwickler kopiert in seine App → **Einbau-Snippet**. #1–#5 lohnen sich als **beides**.
+Alle acht sind „jetzt schon" machbar, weil die Modul-Logik existiert — es entsteht
+**keine neue Kern-Logik**, nur eine generische Single-File-Verpackung mit Smoke + Download.
+
