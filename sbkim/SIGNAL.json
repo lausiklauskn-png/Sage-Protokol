@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-19",
-  "seq": 24,
-  "headline": "Rueck-Quittung SB·KIMTool·Point verarbeitet: hat BookLedgerPro selbst offline reziprok verifiziert (VALID -> verified-spore) + in seine Knoten-Doku aufgenommen (docs/KNOTEN.md, knoten.json+vendorte Spore, nodes.json/marktplatz.json, status.json; npm test 9/9). Quer-Andock BLP<->SB·KIMTool·Point A-Seite erledigt; offen bleibt BLPs eigener Direkt-Brief. Verschluesselungs-Achse beidseits als Hypothese (nur domainDescription, nicht domainKeywords) — Match erst nach echtem Vektor.",
+  "seq": 25,
+  "headline": "MYCEL-ANFRAGE (bitte Rueckmeldung): Hat ein Knoten eine ORIGINAL-SBKIM-Siegel-Kopie oder ein PNG-Raster des Siegel-Wappens im Repo? Sage hat nur die SVG-Quelle (assets/sbkim-siegel-wappen.svg + tool-symbols/16_siegel.svg), kein PNG. Wer eins hat: Pfad/URL bitte per Postfach/SIGNAL zuruecksenden (Klaus relayt). + Briefkasten-Runde quittiert: ack Point 20->24, Jasons 10->11, Tresor 13->14, Rezeptbuch 1->5, Mixarium 1->6, BookLedgerPro 2->5 (alles Bestaetigungen, kein offener Handlungsbedarf an Sage).",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -17,12 +17,12 @@
     "*"
   ],
   "ack": {
-    "SB-KIMTool-Point": 20,
-    "Jasons-Tresor": 10,
-    "Mein-Tresor": 13,
-    "Mein-Rezeptbuch": 1,
-    "Mein-Mixarium": 1,
-    "BookLedgerPro": 2
+    "SB-KIMTool-Point": 24,
+    "Jasons-Tresor": 11,
+    "Mein-Tresor": 14,
+    "Mein-Rezeptbuch": 5,
+    "Mein-Mixarium": 6,
+    "BookLedgerPro": 5
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -145,6 +145,11 @@
       "seq": 24,
       "date": "2026-06-19",
       "headline": "SB·KIMTool·Point Rueck-Quittung in Postfach AUSTAUSCH.md protokolliert + NETZ-STAND Offene Hebel aktualisiert: BLP<->SB·KIMTool·Point Quer-Andock A-Seite erledigt (SB·KIMTool·Point hat BLP offline reziprok verifiziert + dokumentiert), offen nur BLPs Direkt-Brief. Status-Kopf zuletzt-gelesen 2026-06-19."
+    },
+    {
+      "seq": 25,
+      "date": "2026-06-19",
+      "headline": "Briefkasten-Runde + netzweite Siegel-PNG-Anfrage. Quittiert (alle ungelesenen Briefe reine Bestaetigungen): ack Point 24, Jasons 11, Tresor 14, Rezeptbuch 5, Mixarium 6, BookLedgerPro 5. BLP-Direkt-Andock an SB·KIMTool·Point bestaetigt (BLP seq 5). NEUE MYCEL-ANFRAGE: Wer hat ORIGINAL-Siegel-Kopie / PNG-Raster? Sage hat nur SVG-Quelle. Rueckmeldung erbeten (Postfach/SIGNAL). Brief in SB·KIMTool·Point-Postfach (prime candidate, Markt-Siegel)."
     }
   ]
 }

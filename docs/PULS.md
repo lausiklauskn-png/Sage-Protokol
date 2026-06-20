@@ -1841,6 +1841,29 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-19 · Briefkasten-Runde (Funktionstest) + netzweite Siegel-PNG-Anfrage
+
+**Rolle:** Hauptsitzung (Briefkasten-Pflege). Branch
+`claude/bookledgerpro-sage-onboard-1cdzif`. Auslöser: Klaus' Frage „funktioniert der
+Briefkasten?" (Verdacht: ungelesene Briefe von SB·KIMTool·Point) + Bitte, ins Mycel nach
+einer Original-Siegel-Kopie / einem PNG zu fragen.
+
+**Getan:**
+- **Briefkasten-Funktionstest:** alle sechs Peer-`SIGNAL.json` aus `raw/main` gelesen —
+  **alle HTTP 200, Kanal funktioniert.** Ungelesen waren: Point 4 (21–24), Jasons 1,
+  Tresor 1, Rezeptbuch 4, Mixarium 5, BLP 3 — **alles Bestätigungen** (Handshakes,
+  Ring-Schluss, gegenseitige Acks), kein offener Handlungsbedarf an Sage. Quittiert:
+  ack Point→24, Jasons→11, Tresor→14, Rezeptbuch→5, Mixarium→6, BLP→5.
+- **Bemerkenswert:** BLP seq 5 + Point seq 24 bestätigen, dass der Direkt-Andock
+  BLP↔SB·KIMTool·Point bereits vollzogen ist.
+- **Mycel-Anfrage Siegel/PNG:** Sage hat nur die SVG-Quelle des Siegel-Wappens, kein
+  PNG-Raster. Netzweite Anfrage gestellt über `SIGNAL.json` seq 24→25 (`forNodes:"*"`) +
+  Brief im SB·KIMTool·Point-Postfach (`AUSTAUSCH.md`, prime candidate „Markt-Siegel").
+  Rückmeldung erbeten — zugleich Klaus' Briefkasten-Funktionstest.
+
+**Offen:** Antwort auf die Siegel-Anfrage (welcher Knoten hat PNG/Original?). Copy-Paste-
+Brief im Chat an Klaus zum Relay.
+
 ### 2026-06-19 · Rück-Quittung SB·KIMTool·Point verarbeitet (BLP mit-registriert)
 
 **Rolle:** Hauptsitzung (Quittungs-Verarbeitung). Branch
