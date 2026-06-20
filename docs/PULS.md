@@ -1874,6 +1874,15 @@ Filter „Werkzeuge (alle)"/„Komplett-Werkzeug" → Komplett-Werkzeug-Kachel �
 Herunterladen). Relay-Brief an SB·KIMTool·Point (externer Mycel-Hub), damit dessen
 Werkzeugliste dieselben zwei Komplett-Werkzeuge führt (Chat-Brief unten ausgegeben).
 
+**Nachtrag (Klaus-Befund 2026-06-20, Sichttest):** In der Truhe zeigten nur 04 + NETZ
+„Fertig", obwohl der Bau-Puls (status.json) **5 fertige Module** führt (03/04/05/09/15).
+Ursache: die `status`-Werte in `vorteilspack.js` waren fest verdrahtet + abgedriftet.
+Fix: (1) die vier stale Werte (03/05/15 stub→fertig, 09 schablone→fertig) korrigiert,
+(2) **`applyLiveStatus()` ergänzt** — die Truhe holt den Status jetzt live aus `status.json`
+(dieselbe Quelle wie die erste Seite, alle Modul-Gruppen) und patcht Badges + Modal-Daten;
+fail-soft, fest verdrahteter Wert bleibt Fallback. Damit kann der Truhe-Status nicht mehr
+von der ersten Seite abweichen. Smoke 22/22 grün.
+
 ### 2026-06-20 · Modul 20 umbenannt „Tresor" → „Safe" + kein Startup-Prompt (Klaus)
 
 **Rolle:** Hauptsitzung (Pflege/Umbenennung). Klaus-Klarstellung: der App-interne
