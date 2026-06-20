@@ -146,6 +146,11 @@
       return window.SbkimSiegel && window.SbkimSiegel.init({
         badgeSelector: ".lamps",
         andockTool: true,
+        // Explizit, weil Sages Band die Marke „SAGE OBSERVATORIUM" trägt —
+        // ohne diesen Wert würde die neue Auto-Ableitung den Repo-Namen
+        // („SAGE-PROTOKOL") ins Band schreiben. Forker OHNE ribbonText
+        // bekommen automatisch ihren eigenen Repo-/Pages-Namen.
+        ribbonText: "SAGE OBSERVATORIUM",
       });
     });
 

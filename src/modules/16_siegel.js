@@ -49,9 +49,10 @@
  *     visible?: "visible"|"hidden", // Default "visible"
  *     mountModal?: boolean,        // Default true
  *     repoUrl?: string | null,     // Default null → Auto-Erkennung
- *     ribbonText?: string,         // Default "SAGE OBSERVATORIUM" → Band-Text
- *                                  // im Wappen unten; Forker setzen ihren
- *                                  // eigenen Knoten-Namen, KEIN SVG-Edit nötig.
+ *     ribbonText?: string,         // Band-Text im Wappen unten (SELF-INSCRIBING).
+ *                                  // Ohne Wert bleibt das Band OFFEN (leer) +
+ *                                  // ein console.info-Vermerk; kein Auto-Label.
+ *                                  // Host graviert seinen Namen via ribbonText.
  *     andockTool?: boolean }       // Default false. true → optionaler
  *                                  // „Fremden Knoten andocken"-Knopf im Modal,
  *                                  // öffnet Modul-18-Wizard (KI-unabhängiger
@@ -150,11 +151,14 @@
   var FIRST_BOOT_ANIMATION_MS = 600;
   var MOUNT_OBSERVER_TIMEOUT_MS = 10000;
 
-  // Band-Text im Wappen (unteres Ribbon). Default = Sages eigener Wert,
-  // damit der inlined WAPPEN_SVG für Sage byte-identisch bleibt. Forker
-  // setzen via init({ribbonText:"…"}) ihren Knoten-Namen — KEIN SVG-Edit
-  // mehr nötig (Befund 2026-06-19: Rezeptbuch/Mixarium trugen statisch
-  // "MEIN-TRESOR", weil die SVG-Datei kopiert + nie angepasst wurde).
+  // Band-Text im Wappen (unteres Ribbon, SELF-INSCRIBING). DEFAULT_RIBBON_TEXT
+  // ist der im inlined WAPPEN_SVG eingebackene Wert ("SAGE OBSERVATORIUM") —
+  // er dient als (a) Sages explizite Marke und (b) No-Replace-Sentinel
+  // (byte-identisch). Der Laufzeit-Default OHNE init({ribbonText}) ist NICHT
+  // dieser Wert, sondern ein OFFENES (leeres) Band (Klaus-Entscheidung
+  // 2026-06-20): kein geratenes Auto-Label, der Host graviert seinen Namen
+  // bewusst ein. Befund-Anlass 2026-06-19: Rezeptbuch/Mixarium trugen statisch
+  // "MEIN-TRESOR", weil die SVG-Datei kopiert + nie angepasst wurde.
   var DEFAULT_RIBBON_TEXT = "SAGE OBSERVATORIUM";
   // Eindeutiger Anker im WAPPEN_SVG (genau ein Vorkommen, im Ribbon-textPath).
   var RIBBON_MARKER = ">" + DEFAULT_RIBBON_TEXT + "</textPath>";
@@ -188,6 +192,12 @@
   var mountModalFlag = true;
   var repoUrlOverride = null;
   var ribbonText = DEFAULT_RIBBON_TEXT;
+  // true sobald init({ribbonText}) einen expliziten Wert gesetzt hat.
+  // Ohne expliziten Wert wird der Band-Text aus dem Repo-/Pages-Namen
+  // automatisch abgeleitet (deriveRibbonFromRepo), damit jeder Endknoten
+  // ohne Config seinen EIGENEN Namen trägt und nie ein mitkopiertes
+  // Fremd-Label zeigt (Mein-Rezeptbuch-Bitte 2026-06-20).
+  var ribbonTextExplicit = false;
   // Optionaler Andock-Knopf im Modal (opt-in, Default aus). Wenn true,
   // hängt mountSiegelModal() einen „Fremden Knoten andocken"-Knopf ins
   // Modal, der den KI-unabhängigen Modul-18-Wizard (SbkimToolPwa.
@@ -481,13 +491,27 @@
       .replace(/>/g, "&gt;");
   }
 
-  // Liefert den WAPPEN_SVG mit dem konfigurierten Band-Text. Bei
-  // Default-Wert byte-identisch zur inlined Quelle (kein Replace).
+  // Effektiver Band-Text. Bewusst KEINE Auto-Ableitung aus dem Repo-Namen
+  // (Klaus-Entscheidung 2026-06-20): das untere Ribbon ist das SELF-
+  // INSCRIBING-Element des Siegels — ein geratener Repo-Slug wirkt auf einer
+  // Auszeichnung schnell falsch. Ohne expliziten `ribbonText` bleibt das Band
+  // OFFEN (leer); ein Vermerk (console.info einmalig + Doku) bittet den Host,
+  // seinen Namen via init({ribbonText}) einzugravieren. Der explizite Wert
+  // übersteuert; ein mitkopiertes Fremd-Label entsteht so nie.
+  function effectiveRibbonText() {
+    return ribbonTextExplicit ? ribbonText : "";
+  }
+
+  // Liefert den WAPPEN_SVG mit dem effektiven Band-Text. Entspricht der
+  // effektive Text der inlined Konstante (Sage: "SAGE OBSERVATORIUM"),
+  // bleibt das SVG byte-identisch; sonst wird der Ribbon-Text ersetzt
+  // (leerer Wert → offenes Band).
   function renderWappenSvg() {
-    if (ribbonText === DEFAULT_RIBBON_TEXT) return WAPPEN_SVG;
+    var eff = effectiveRibbonText();
+    if (eff === DEFAULT_RIBBON_TEXT) return WAPPEN_SVG;
     return WAPPEN_SVG.replace(
       RIBBON_MARKER,
-      ">" + escapeXmlText(ribbonText) + "</textPath>",
+      ">" + escapeXmlText(eff) + "</textPath>",
     );
   }
 
@@ -1173,10 +1197,17 @@
     } else if (opts.repoUrl === null) {
       repoUrlOverride = null;
     }
-    // Band-Text im Wappen (Forker setzen ihren Knoten-Namen). Fail-soft:
-    // leerer/Nicht-String-Wert lässt den Default "SAGE OBSERVATORIUM".
+    // Band-Text im Wappen (Forker gravieren ihren Knoten-Namen ein). Fail-
+    // soft: leerer/Nicht-String-Wert lässt das Band OFFEN (kein Auto-Label).
     if (typeof opts.ribbonText === "string" && opts.ribbonText.trim().length > 0) {
       ribbonText = opts.ribbonText.trim();
+      ribbonTextExplicit = true;
+    } else if (typeof console !== "undefined" && console.info) {
+      // Vermerk (einmalig, init ist idempotent): Band bleibt bewusst offen.
+      console.info(
+        "[SbkimSiegel] Band offen gelassen — init({ ribbonText: \"DEIN-KNOTEN\" }) " +
+        "setzen, um den eigenen Namen ins Siegel zu gravieren (kein Auto-Label).",
+      );
     }
     // Optionaler Andock-Knopf (KI-unabhängiger Handshake via Modul 18).
     // Strikt boolean true → opt-in; alles andere lässt den Default (aus).
@@ -1339,7 +1370,7 @@
       get visibleMode()       { return visibleMode; },
       get mountModalFlag()    { return mountModalFlag; },
       get badgeSelector()     { return badgeSelector; },
-      get ribbonText()        { return ribbonText; },
+      get ribbonText()        { return effectiveRibbonText(); },
       get andockToolEnabled() { return andockToolEnabled; },
       // Sub (e) Bronze/Gold-Stufung (Karte 16 § Sub (e)).
       get mycelConnected()    { return mycelConnected; },

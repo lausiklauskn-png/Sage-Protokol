@@ -2808,10 +2808,10 @@ Bietet (öffentlich):
                                     //                                  in Bronze-Stufe)
                                     //   siegelStufe:       "bronze"|"gold"  (Bau Sub e,
                                     //                                  Live-Getter)
-                                    //   ribbonText:        string   (Band-Text im
-                                    //                                  Wappen; Default
-                                    //                                  "SAGE OBSERVATORIUM",
-                                    //                                  via init ribbonText)
+                                    //   ribbonText:        string   (effektiver Band-
+                                    //                                  Text; "" wenn offen
+                                    //                                  gelassen, sonst der
+                                    //                                  via init gesetzte Wert)
                                     //   andockToolEnabled: boolean  (opt-in Andock-
                                     //                                  Knopf; via init
                                     //                                  andockTool, Default
@@ -2855,9 +2855,14 @@ Bietet (öffentlich):
       // REZEPTBUCH"); das Modul ersetzt den Band-Text zur Render-Zeit
       // (renderWappenSvg), XML-escaped. KEIN SVG-Edit mehr nötig.
       // Fail-soft: leerer/Nicht-String-Wert lässt den Default.
-      // Befund 2026-06-19: Rezeptbuch/Mixarium trugen statisch
-      // "MEIN-TRESOR", weil die SVG-Datei kopiert + nie angepasst wurde —
-      // dieser Parameter verhindert die Wiederholung.
+      // Band-Text im Wappen unten (SELF-INSCRIBING-Ribbon). OHNE Wert bleibt
+      // das Band OFFEN (leer) + ein einmaliger console.info-Vermerk bittet den
+      // Host, seinen Namen via ribbonText einzugravieren — KEINE Auto-Ableitung
+      // aus dem Repo-Namen (Klaus-Entscheidung 2026-06-20: ein geratener Slug
+      // wirkt auf einer Auszeichnung falsch). Expliziter Wert wird zur
+      // Render-Zeit XML-escaped ins Ribbon gesetzt. So entsteht nie ein
+      // mitkopiertes Fremd-Label (Befund 2026-06-19: Rezeptbuch/Mixarium
+      // trugen statisch "MEIN-TRESOR"). Sage setzt explizit "SAGE OBSERVATORIUM".
       ribbonText?: string,
 
       // Default false. true → optionaler "Fremden Knoten andocken"-Knopf
