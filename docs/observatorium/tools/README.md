@@ -12,7 +12,7 @@
 | Datei | Was es ist | Nutzung |
 |---|---|---|
 | `andock.html` | **Andock-Werkzeug** — erzeugt im Browser eine eigene Ed25519-Identität, eine signierte `spore.json` (byte-kompatibel mit Sages Verifizierer), ein echtes `e5-small`-Domain-Embedding, das SBKIM-Siegel (SVG + PNG) und die Briefkasten-Dateien (`SIGNAL.json` + `AUSTAUSCH-Sage.md`). | Datei öffnen → Eckdaten ausfüllen → vier Schritte durchklicken → Dateien herunterladen → ins eigene Repo legen → veröffentlichen. |
-| `mycelknoten.html` | **Komplett-Knoten** — dieselben echten, unveränderten Sage-Module 01/02/03/04/05/07/15/16/17 in einer Datei, inklusive Live-Lampen-Widget (LEBT / VERKEHR / FREMD / SIEGEL). Referenz-Knoten zum Anschauen + Andocken. | Datei öffnen → schwebendes Panel unten rechts zeigt den Live-Zustand → andocken über die echten Module. |
+| `mycelknoten.html` | **Mycel-Knoten** — dieselben echten, unveränderten Sage-Module 01/02/03/04/05/07/15/16/17 in einer Datei, inklusive Live-Lampen-Widget (LEBT / VERKEHR / FREMD / SIEGEL). Referenz-Knoten zum Anschauen + Andocken. | Datei öffnen → schwebendes Panel unten rechts zeigt den Live-Zustand → andocken über die echten Module. |
 
 ## Konventionen
 
