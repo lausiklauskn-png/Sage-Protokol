@@ -4046,23 +4046,30 @@ Geprüft: 2026-05-28 (Spec-Sitzung 18 Sub (a) Vorab — Sub (a)
 
 ---
 
-### Modul: 20_schluessel_tresor
+### Modul: 20_schluessel_safe
 Status: code-stub (Bau-Sitzung 2026-06-20, Headless-Smoke 19/19 grün;
         Sichttest durch Klaus ausstehend). Spec: docs/components/
-        20_schluessel_tresor.md.
-Datei:  src/modules/20_schluessel_tresor.js · docs/components/20_schluessel_tresor.md
+        20_schluessel_safe.md.
+Datei:  src/modules/20_schluessel_safe.js · docs/components/20_schluessel_safe.md
 
-Zweck:  Lokal verschlüsselter Tresor für die SBKIM-Identität (nodeId +
+Zweck:  Lokal verschlüsselter "Safe" für die SBKIM-Identität (nodeId +
         privater Knotenschlüssel + Spore) gegen Identitäts-Wandern.
+        NAME bewusst "Safe" (NICHT "Tresor", Klaus 2026-06-20) — zur
+        Abgrenzung vom JSON-Backup-"Tresor" der Endknoten (Mein-Rezeptbuch/
+        Mein-Mixarium) und BLPs eigenem "Tresor"/Geheim-Fach.
         Krypto-Kern wiederverwendet Modul 02 (exportBackup/importBackup,
-        PBKDF2-SHA256 ≥600k + AES-GCM-256); der Tresor speichert NUR den
-        verschlüsselten Backup-Blob (Store sbkim_vault, Modul 01 ensureStore).
+        PBKDF2-SHA256 ≥600k + AES-GCM-256); der Safe speichert NUR den
+        verschlüsselten Backup-Blob (Store sbkim_safe, Modul 01 ensureStore).
         Recovery via Shamir's Secret Sharing ÜBER DAS PASSWORT (GF(256),
         k von N, Default 2 von 3). Reines Lokal-Modul, KEIN Netz.
+        WIRD AUF ABRUF geöffnet (open(), Einstellungen/Tool), NICHT beim
+        Seitenstart — die App startet immer normal.
 
 Bietet (öffentlich):
-  init(options?)            → Promise<void>   // idempotent; autoPrompt zeigt
-                                              // Einrichten-/Entsperr-Modal.
+  init(options?)            → Promise<void>   // idempotent; autoPrompt Default
+                                              // false (KEIN Startup-Modal).
+  open()                   → Promise<void>   // zeigt Einrichten-/Entsperr-Modal
+                                              // AUF ABRUF (Host-Einstellungen).
   hasVault()               → Promise<boolean> // Blob im Store vorhanden?
   isUnlocked()             → boolean (sync)
   createVault(password)    → Promise<{ shares: string[] }>
@@ -4077,7 +4084,8 @@ Bietet (öffentlich):
 
 options-Form (init):
   {
-    autoPrompt?:    boolean,   // Default true — Modal beim Sitzungsstart
+    autoPrompt?:    boolean,   // Default FALSE — kein Modal beim Seitenstart;
+                               // true nur, wenn ein Host es bewusst will.
     shamirN?:       number,    // Default 3
     shamirK?:       number,    // Default 2 (2 von 3, Klaus 2026-06-20)
     mountSelector?: string,
@@ -4096,8 +4104,8 @@ Garantien:
     (by design, Zero-Knowledge, kein Hintertür-Server).
   - Anteil-Format: "v1.<index>.<base64url(bytes)>".
 
-Geprüft: Headless-Smoke tests/smoke_bau20_tresor.mjs 19/19 (Shamir 2/3 +
-  Tresor create/unlock/recover mit gemocktem Modul 02 + In-Memory-Storage).
+Geprüft: Headless-Smoke tests/smoke_bau20_safe.mjs 19/19 (Shamir 2/3 +
+  Safe create/unlock/recover mit gemocktem Modul 02 + In-Memory-Storage).
   Browser-Sichttest (Modal-UI) durch Klaus ausstehend.
 
 ---
