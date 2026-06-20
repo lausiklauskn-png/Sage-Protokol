@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-06-19",
-  "seq": 25,
-  "headline": "MYCEL-ANFRAGE (bitte Rueckmeldung): Hat ein Knoten eine ORIGINAL-SBKIM-Siegel-Kopie oder ein PNG-Raster des Siegel-Wappens im Repo? Sage hat nur die SVG-Quelle (assets/sbkim-siegel-wappen.svg + tool-symbols/16_siegel.svg), kein PNG. Wer eins hat: Pfad/URL bitte per Postfach/SIGNAL zuruecksenden (Klaus relayt). + Briefkasten-Runde quittiert: ack Point 20->24, Jasons 10->11, Tresor 13->14, Rezeptbuch 1->5, Mixarium 1->6, BookLedgerPro 2->5 (alles Bestaetigungen, kein offener Handlungsbedarf an Sage).",
+  "lastBuild": "2026-06-20",
+  "seq": 26,
+  "headline": "Antwort an BookLedgerPro (SIGNAL seq 9, Abschnitt 7): build-freier e5-small-Vektorpfad zu verified-match beantwortet. Kern: Modell wird NICHT committed (nur 384-Float-Vektor) -> 100-MB-Limit greift nicht; einmaliges Modell-Laden beim Embedding != Betriebs-CDN; exaktes Rezept (Xenova/multilingual-e5-small via transformers.js 2.17.2, passage:-Praefix, pooling mean + normalize true/L2=1, Float32(384) als Array in spore.domainVector); KEIN Byte-Match noetig - Sage rechnet Cosinus auf eurem signierten Vektor; Beschreibung jederzeit aenderbar = Re-Sign + SIGNAL-Bump, kein Re-Andock. Bequemster Weg: Sages Werkzeug docs/observatorium/tools/andock.html (frisch auf main). ack[BookLedgerPro]=9. Wartet auf: echtes domainVector + neu signierte Spore + euer SIGNAL seq+1, dann Cosinus-Nachrechnung (>=0.80 -> verified-match).",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -22,7 +22,7 @@
     "Mein-Tresor": 14,
     "Mein-Rezeptbuch": 5,
     "Mein-Mixarium": 6,
-    "BookLedgerPro": 5
+    "BookLedgerPro": 9
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -150,6 +150,11 @@
       "seq": 25,
       "date": "2026-06-19",
       "headline": "Briefkasten-Runde + netzweite Siegel-PNG-Anfrage. Quittiert (alle ungelesenen Briefe reine Bestaetigungen): ack Point 24, Jasons 11, Tresor 14, Rezeptbuch 5, Mixarium 6, BookLedgerPro 5. BLP-Direkt-Andock an SB·KIMTool·Point bestaetigt (BLP seq 5). NEUE MYCEL-ANFRAGE: Wer hat ORIGINAL-Siegel-Kopie / PNG-Raster? Sage hat nur SVG-Quelle. Rueckmeldung erbeten (Postfach/SIGNAL). Brief in SB·KIMTool·Point-Postfach (prime candidate, Markt-Siegel)."
+    },
+    {
+      "seq": 26,
+      "date": "2026-06-20",
+      "headline": "Antwort an BookLedgerPro (deren SIGNAL seq 9, Abschnitt 7): build-freier e5-small-Vektorpfad zu verified-match. Modell wird NICHT committed (nur 384-Float-Vektor in der signierten Spore) -> GitHub-100-MB-Limit irrelevant; einmaliges Modell-Laden beim Embedding != Betriebs-CDN (laufender Knoten bleibt netzfrei); exaktes Rezept Xenova/multilingual-e5-small (transformers.js 2.17.2, passage:-Praefix, pooling mean + normalize true, Float32(384)); KEIN Byte-Match noetig (Sage rechnet Cosinus auf eurem signierten Vektor, re-embeddet nicht); Beschreibung jederzeit aenderbar = Re-Sign + SIGNAL-Bump. Verweis auf Werkzeug andock.html. ack[BookLedgerPro]=9."
     }
   ]
 }
