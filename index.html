@@ -2312,7 +2312,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (!list) return;
     list.innerHTML = '';
     const byId = {};
-    [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || [])].forEach(m => byId[m.id] = m);
+    [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || []), ...(s.siegelBacklog || []), ...(s.toolPwaBacklog || []), ...(s.mycelHubBacklog || [])].forEach(m => byId[m.id] = m);
     (s.modules || []).forEach(m => list.appendChild(buildModRow(m, byId, false)));
     if ((s.schutzBacklog || []).length) {
       const d = document.createElement('div');
@@ -2335,6 +2335,28 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       list.appendChild(d);
       s.membranBacklog.forEach(m => list.appendChild(buildModRow(m, byId, true)));
     }
+    if ((s.siegelBacklog || []).length) {
+      const d = document.createElement('div');
+      d.className = 'module-list-divider';
+      d.textContent = 'Siegel · Selbst-Zertifikat';
+      list.appendChild(d);
+      s.siegelBacklog.forEach(m => list.appendChild(buildModRow(m, byId, true)));
+    }
+    if ((s.toolPwaBacklog || []).length) {
+      const d = document.createElement('div');
+      d.className = 'module-list-divider';
+      d.textContent = 'Tool-PWA-Container · Andocken + Wartung';
+      list.appendChild(d);
+      s.toolPwaBacklog.forEach(m => list.appendChild(buildModRow(m, byId, true)));
+    }
+    const hubModules = (s.mycelHubBacklog || []).filter(m => /^[0-9]+$/.test(m.id));
+    if (hubModules.length) {
+      const d = document.createElement('div');
+      d.className = 'module-list-divider';
+      d.textContent = 'Mycel-Hub · Andock-Wizard';
+      list.appendChild(d);
+      hubModules.forEach(m => list.appendChild(buildModRow(m, byId, true)));
+    }
   }
   function buildModRow(m, byId, backlog) {
     const score = m.score || 'schablone';
@@ -2345,7 +2367,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     row.addEventListener('click', () => openModuleDetail(m, backlog));
     const kurzClean = (m.kurz || '').replace(/<[^>]+>/g, '').replace(/[<>]/g, '');
     row.innerHTML =
-      '<div class="mod-num">' + m.id + '</div>' +
+      '<div class="mod-num">' + (/^[0-9]+$/.test(m.id) ? m.id : '') + '</div>' +
       '<div>' +
         '<div class="mod-name">' + m.name + (nextup ? ' <span style="color:var(--gold)" title="alle Vorbedingungen erfüllt">✨</span>' : '') + '</div>' +
         '<div class="mod-kurz">' + kurzClean + '</div>' +
@@ -4301,7 +4323,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     if (!list || !__sageLampsStatus) return;
     const s = __sageLampsStatus;
     const byId = {};
-    [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || [])].forEach(m => byId[m.id] = m);
+    [...(s.modules || []), ...(s.schutzBacklog || []), ...(s.diffusionBacklog || []), ...(s.membranBacklog || []), ...(s.siegelBacklog || []), ...(s.toolPwaBacklog || []), ...(s.mycelHubBacklog || [])].forEach(m => byId[m.id] = m);
     const rows = list.querySelectorAll('.mod-row');
     rows.forEach((row) => {
       if (row.querySelector('.mod-lamps')) return;
