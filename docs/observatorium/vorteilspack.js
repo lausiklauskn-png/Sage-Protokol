@@ -41,12 +41,12 @@
   /* --- Tool-Datenbank (statische Metadaten, Code lazy per fetch) ---------- */
   var TOOLS = [
     { id:"andock", name:"Andock-Werkzeug", tier:"komplett", status:"fertig", kind:"html",
-      task:"Ein-Datei-PWA: Identität + Spore + Siegel + Briefkasten erzeugen.",
+      task:"Identität, Spore, Siegel & Briefkasten im Browser erzeugen.",
       was:"Ein vollständiges, eigenständiges Andock-Werkzeug in einer einzigen HTML-Datei: erzeugt im Browser eine eigene Ed25519-Identität, eine signierte Spore (byte-kompatibel mit Sages Verifizierer), ein echtes e5-small-Domain-Embedding, das SBKIM-Siegel (SVG + PNG) und die Briefkasten-Dateien.",
       wie:"Datei öffnen, Eckdaten ausfüllen, vier Schritte durchklicken, Dateien herunterladen und ins eigene Repo legen. Keine Installation, keine Abhängigkeiten, kein Build — alles läuft lokal im Browser. Einzige Netz-Aktion: optionaler Modell-Download beim Embedding.",
       deps:"keine (eigenständige Ein-Datei-PWA)", code:"docs/observatorium/tools/andock.html", smoke:null, karte:"docs/observatorium/tools/README.md" },
-    { id:"knoten", name:"Komplett-Knoten", tier:"komplett", status:"fertig", kind:"html",
-      task:"Ein-Datei-PWA: alle echten Sage-Module + Live-Lampen in einer Datei.",
+    { id:"knoten", name:"Mycel-Knoten", tier:"komplett", status:"fertig", kind:"html",
+      task:"Alle echten Sage-Module + Live-Lampen in einer Datei.",
       was:"Der komplette SBKIM-Knoten in einer einzigen HTML-Datei: dieselben echten, unveränderten Sage-Module 01/02/03/04/05/07/15/16/17, inklusive Live-Lampen-Widget (LEBT / VERKEHR / FREMD / SIEGEL). Referenz-Knoten zum Anschauen und Andocken.",
       wie:"Datei öffnen — unten rechts erscheint das schwebende Panel mit den vier Live-Lampen. Über die echten Module andocken (Identität, Embedding, Spore, Handshake). Vollständig lokal; einzige Netz-Aktion ist der optionale Embedding-Modell-Download.",
       deps:"keine (Ein-Datei-PWA, bündelt die Module selbst)", code:"docs/observatorium/tools/mycelknoten.html", smoke:null, karte:"docs/observatorium/tools/README.md" },
@@ -157,7 +157,7 @@
   ];
 
   /* --- Helfer ------------------------------------------------------------- */
-  var TIER_LABEL = { komplett:"Komplett-Werkzeug", must:"Must-have", basic:"Basic", pro:"Pro" };
+  var TIER_LABEL = { komplett:"Ein-Datei-PWA", must:"Must-have", basic:"Basic", pro:"Pro" };
   var TIER_ORDER = { komplett:-1, must:0, basic:1, pro:2 };
   var STATUS = {
     fertig:    { mark:"🟩", label:"Fertig" },
@@ -173,6 +173,47 @@
       'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (SYM[id] || "") + '</svg>';
   }
   function fileOf(path) { return path ? path.split("/").pop() : ""; }
+  // Numerische Modul-IDs werden als "NN · Name" gezeigt; Wort-IDs (andock,
+  // knoten, NETZ) nur als Name — sonst doppelt die ID den Namen.
+  function displayName(t) {
+    return /^[0-9]+$/.test(t.id) ? (t.id + " · " + t.name) : t.name;
+  }
+
+  // Live-Status aus status.json — dieselbe Quelle wie der Bau-Puls auf der
+  // ersten Seite. Verhindert, dass die fest verdrahteten status-Werte hier
+  // abdriften. Module liegen in status.json über mehrere Gruppen verteilt.
+  function gatherLiveStatus(statusJson) {
+    var groups = ["modules", "schutzBacklog", "diffusionBacklog",
+      "membranBacklog", "toolPwaBacklog", "siegelBacklog", "mycelHubBacklog"];
+    var map = {};
+    groups.forEach(function (g) {
+      var arr = statusJson && statusJson[g];
+      if (Array.isArray(arr)) arr.forEach(function (m) {
+        if (m && m.id != null && STATUS[m.score]) map[String(m.id)] = m.score;
+      });
+    });
+    return map;
+  }
+  function applyLiveStatus(tiles) {
+    if (typeof fetch !== "function") return;
+    fetch("status.json", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (data) {
+      var map = gatherLiveStatus(data);
+      // 1) Daten patchen, damit auch das Modal den Live-Stand zeigt.
+      TOOLS.forEach(function (t) { if (map[t.id]) t.status = map[t.id]; });
+      // 2) Sichtbare Badges patchen (Tiles sind schon gerendert).
+      tiles.forEach(function (el) {
+        var id = el.getAttribute("data-tool");
+        var st = map[id] && STATUS[map[id]];
+        if (st) {
+          var s = el.querySelector(".vp-status");
+          if (s) s.textContent = st.mark + " " + st.label;
+        }
+      });
+    }).catch(function () { /* fail-soft: fest verdrahteter Status bleibt */ });
+  }
 
   // Live-Status aus status.json — dieselbe Quelle wie der Bau-Puls auf der
   // ersten Seite. Verhindert, dass die fest verdrahteten status-Werte hier
@@ -329,7 +370,7 @@
         '" data-tier="' + t.tier + '" aria-label="' + esc(t.id + " " + t.name + " — " + t.task) + '">' +
         '<span class="vp-tile-icon">' + svgFor(t.id) + '</span>' +
         '<span class="vp-badge">' + esc(TIER_LABEL[t.tier]) + '</span>' +
-        '<span class="vp-tile-name">' + esc(t.id + " · " + t.name) + '</span>' +
+        '<span class="vp-tile-name">' + esc(displayName(t)) + '</span>' +
         '<span class="vp-tile-task">' + esc(t.task) + '</span>' +
         '<span class="vp-status">' + st.mark + " " + esc(st.label) + '</span>' +
         '</button>';
@@ -530,7 +571,7 @@
           '<button type="button" class="vp-modal-close" id="vp-modal-close" aria-label="Schließen">×</button>' +
           '<div class="vp-modal-head">' +
             '<span class="vp-tile-icon">' + svgFor(t.id) + '</span>' +
-            '<div><h2 class="vp-modal-title">' + esc(t.id + " · " + t.name) + '</h2>' +
+            '<div><h2 class="vp-modal-title">' + esc(displayName(t)) + '</h2>' +
             '<div class="vp-modal-meta">' + esc(TIER_LABEL[t.tier]) + ' · ' + st.mark + " " + esc(st.label) + '</div></div>' +
           '</div>' +
           section("Was das ist", '<p>' + esc(t.was) + '</p>') +
