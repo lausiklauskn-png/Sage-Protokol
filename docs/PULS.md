@@ -1841,6 +1841,22 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-20 · Siegel-Band: offen lassen statt Auto-Label (Klaus-Entscheidung)
+
+**Rolle:** Hauptsitzung (Bau Modul 16). Mein-Rezeptbuch hatte upstream eine
+**Auto-Ableitung** des Band-Texts aus dem Repo-Namen erbeten; ich hatte sie zunächst
+gebaut. **Klaus-Entscheidung 2026-06-20:** lieber **offen lassen statt vorausfüllen**
+(„Vermerk müsste reichen") — ein geratener Repo-Slug (`SAGE-PROTOKOL`) wirkt auf einer
+Auszeichnung falsch; das Ribbon ist das SELF-INSCRIBING-Element.
+
+**Getan:** Auto-Ableitung wieder entfernt. Ohne `init({ribbonText})` bleibt das Band
+**offen (leer)** + einmaliger `console.info`-Vermerk („Band offen gelassen — ribbonText
+setzen"). Expliziter Wert übersteuert (XML-escaped, Render-Zeit). Sage setzt explizit
+`"SAGE OBSERVATORIUM"` in `sbkim-init.js`. So entsteht nie ein mitkopiertes Fremd-Label,
+ohne zu raten. `_meta.ribbonText` = effektiver Wert (`""` wenn offen). INTERFACES §1 M16 +
+Karte 16 § Sub (b) nachgezogen. Smokes: offen-Default 5/5, ribbon 9/9, andock 9/9,
+Sub-(e) 16/16 grün; `node --check` grün.
+
 ### 2026-06-20 · Quittung: Mein-Rezeptbuch Siegel-Band korrigiert (Schritt 2)
 
 **Rolle:** Hauptsitzung (Quittungs-Verarbeitung). Mein-Rezeptbuch hat (von Klaus relayt)

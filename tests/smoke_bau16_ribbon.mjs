@@ -76,7 +76,7 @@ const SbkimSiegel = globalThis.SbkimSiegel;
 
 async function main() {
   ok(!!SbkimSiegel, "Modul 16 geladen");
-  ok(SbkimSiegel._meta.ribbonText === "SAGE OBSERVATORIUM", "Default ribbonText = SAGE OBSERVATORIUM");
+  ok(SbkimSiegel._meta.ribbonText === "", "Default: Band offen (leer), kein Auto-Label");
 
   await SbkimSiegel.init({ ribbonText: "MEIN-REZEPTBUCH" });
 

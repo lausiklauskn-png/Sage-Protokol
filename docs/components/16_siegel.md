@@ -186,13 +186,20 @@ für die Bezeugung als **OK**. `isCertified()` liefert `true`.
 
 #### Konfigurierbarer Band-Text (`ribbonText`, Design-Fix 2026-06-19)
 
-Das untere Wappen-Band (SVG-`textPath`) ist über
-`init({ ribbonText: "…" })` konfigurierbar. Default `"SAGE OBSERVATORIUM"`
-(für Sage byte-identisch zum inlined `WAPPEN_SVG`). Forker setzen ihren
-eigenen Knoten-Namen (z.B. `"MEIN-REZEPTBUCH"`); das Modul ersetzt den
-Band-Text **zur Render-Zeit** (`renderWappenSvg()`, XML-escaped) —
-**kein SVG-Edit mehr nötig.** Fail-soft: leerer/Nicht-String-Wert lässt
-den Default.
+Das untere Wappen-Band (SVG-`textPath`) ist das **SELF-INSCRIBING**-Element
+des Siegels und über `init({ ribbonText: "…" })` setzbar. Der Host graviert
+seinen Knoten-Namen ein (z.B. `"MEIN-REZEPTBUCH"`); das Modul setzt den Text
+**zur Render-Zeit** (`renderWappenSvg()`, XML-escaped) — **kein SVG-Edit nötig.**
+
+**Ohne `ribbonText` bleibt das Band OFFEN (leer)** — kein Auto-Label
+(Klaus-Entscheidung 2026-06-20). Begründung: eine **Auto-Ableitung** aus dem
+Repo-/Pages-Namen würde einen Slug wie `SAGE-PROTOKOL` ins Band schreiben, was
+auf einer Auszeichnung schnell falsch/unsauber wirkt. Stattdessen ein
+**Vermerk**: das Modul gibt beim `init()` ohne `ribbonText` eine einmalige
+`console.info`-Zeile aus („Band offen gelassen — `init({ribbonText})` setzen").
+So entsteht **nie ein mitkopiertes Fremd-Label**, und der Name wird bewusst
+eingraviert. Sage selbst setzt explizit `"SAGE OBSERVATORIUM"`
+(`sbkim-init.js`). `_meta.ribbonText` liefert den effektiven Wert (`""` wenn offen).
 
 **Befund-Anlass (2026-06-19):** Mein-Rezeptbuch und Mein-Mixarium trugen
 sichtbar `MEIN-TRESOR` im Band, weil sie die statische Datei
