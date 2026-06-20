@@ -1091,5 +1091,5 @@ Modell-Lade braucht.
 - **Site-Karte:** [Karte 4 · Module-Bento](../../index.html#screen-overview), Eintrag 04 · [Karte 11 · Wanderung](../../index.html#screen-overview) (A1–B3-Pfade)
 - **Glossar:** [Cosine-Sim](../GLOSSAR.md), [Domänen-Vektor](../GLOSSAR.md), [Schwellwert](../GLOSSAR.md)
 - **Integration:** `sbkim_integration.md` §6 (Bewertungsfunktion)
-- **Hybrid-Match:** [`HYBRID-MATCH-KONZEPT.md`](../HYBRID-MATCH-KONZEPT.md) (Match-Zeit-LLM-Richter) · [`LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`](../LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md) (Anisotropie-Befund)
+- **Hybrid-Match:** [`HYBRID-MATCH-KONZEPT.md`](../HYBRID-MATCH-KONZEPT.md) (Match-Zeit-LLM-Richter) · [`HYBRID-MATCH-EINBAU.md`](../HYBRID-MATCH-EINBAU.md) (kopierbare Einbau-Anleitung) · [`LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`](../LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md) (Anisotropie-Befund)
 - **Interfaces:** [`INTERFACES.md` §1 → Modul 04_match](../INTERFACES.md) · § 7.1 Hybrid-Match-Richter-Ergänzung

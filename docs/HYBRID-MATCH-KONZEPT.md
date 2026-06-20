@@ -97,6 +97,7 @@ vorhandene Schraube, erfinden nichts neu.
    Folge-Sitzung, berührt Bau 04.D nicht).
 
 ## Querverweise
+- Einbau-Anleitung (kopierbar, BLP-Pilot): [`HYBRID-MATCH-EINBAU.md`](HYBRID-MATCH-EINBAU.md)
 - Anisotropie-Befund: [`LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`](LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md)
 - Modul 04 (Match) + Sub-B: `docs/components/04_match.md` · `src/modules/04_match.js`
 - Vision-Schichten (Agent-Schicht / Layer 2): `CLAUDE.md` § Vier-Schichten-Lesart
