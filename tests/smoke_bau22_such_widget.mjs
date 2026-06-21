@@ -456,6 +456,16 @@ async function run() {
   record("Probe 27: Klick öffnet URL (window.open)", "true",
     String(typeof opened === "string" && /duckduckgo/.test(opened)),
     typeof opened === "string" && /duckduckgo/.test(opened));
+
+  // ---- Probe 28: Web-Suchmaschine frei wählbar (Default DuckDuckGo, Wahl Google) ----
+  eq("Probe 28: _meta.webEngine Default", "duckduckgo", W._meta.webEngine);
+  await W.init({ areas: { app: false, knoten: false, internet: true }, webSearchEngine: "google" });
+  eq("Probe 28: webEngine auf google gesetzt", "google", W._meta.webEngine);
+  res = await W.search("wetter berlin");
+  record("Probe 28: webLink nutzt Google", "true",
+    String(!!(res.webLink && /google\.com\/search/.test(res.webLink.url))),
+    !!(res.webLink && /google\.com\/search/.test(res.webLink.url)));
+  await W.init({ webSearchEngine: "duckduckgo" }); // zurück
 }
 
 const finalize = () => {

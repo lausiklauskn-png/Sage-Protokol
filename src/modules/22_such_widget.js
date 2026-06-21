@@ -56,6 +56,18 @@
   var LS_KEY_VISIBLE = "sbkim_search_widget_visible";
   var LS_KEY_POSITION = "sbkim_search_widget_position";
   var LS_KEY_STATE = "sbkim_search_widget_state"; // "collapsed" | "expanded"
+  var LS_KEY_ENGINE = "sbkim_search_widget_engine"; // gewählte Web-Suchmaschine
+
+  // Frei wählbare Web-Suchmaschinen für den Internet-Neuer-Tab-Weg (Klaus
+  // 2026-06-21: DuckDuckGo ODER eine andere). Query wird angehängt (URL-encoded).
+  var WEB_ENGINES = [
+    { id: "duckduckgo", label: "DuckDuckGo", url: "https://duckduckgo.com/?q=" },
+    { id: "startpage",  label: "Startpage",  url: "https://www.startpage.com/sp/search?query=" },
+    { id: "ecosia",     label: "Ecosia",     url: "https://www.ecosia.org/search?q=" },
+    { id: "brave",      label: "Brave",      url: "https://search.brave.com/search?q=" },
+    { id: "google",     label: "Google",     url: "https://www.google.com/search?q=" },
+    { id: "bing",       label: "Bing",       url: "https://www.bing.com/search?q=" },
+  ];
 
   var DRAG_THRESHOLD_PX = 5;
   var DEFAULT_CORNER = "bottom-right";
@@ -88,6 +100,7 @@
   var areaRowEl = null;        // Bereichs-Checkboxen (App/Knoten/Internet)
   var richterToggleEl = null;  // KI-Richter an/aus
   var searxngFieldEl = null;   // SearXNG-URL-Feld (für Web-Treffer im Widget)
+  var engineSelectEl = null;   // Web-Suchmaschine-Auswahl (Neuer-Tab-Weg)
 
   // Position + Sichtbarkeit (localStorage-persistiert).
   var currentCorner = DEFAULT_CORNER;
@@ -146,6 +159,7 @@
   // suchen"-Karte (neuer Tab, kein Fetch). Öffentliche Instanzen blocken JSON/CORS
   // meist → praktisch die eigene SearXNG-Instanz (Pilz-Server).
   var searxngUrl = "";
+  var optWebEngine = "duckduckgo";  // gewählte Web-Suchmaschine (Neuer-Tab-Weg)
   // Knoten-Korpus (verbundene Knoten) — analog localCorpus, eigene Lazy-Prep.
   var nodeCorpus = null;
   var nodeCorpusPreparer = null;
@@ -396,6 +410,19 @@
       "  padding: 0.3rem 0.45rem;",
       "  outline: none;",
       "}",
+      "#" + WIDGET_ID + " .sbkim-sw-engine {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.35rem;",
+      "  background: rgba(0, 0, 0, 0.24);",
+      "  border: 1px solid rgba(255, 255, 255, 0.14);",
+      "  border-radius: 8px;",
+      "  color: #F5F5FF;",
+      "  font-size: 0.72rem;",
+      "  padding: 0.3rem 0.45rem;",
+      "  outline: none;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-engine option { color: #1A1A1A; }",
       "#" + WIDGET_ID + " .sbkim-sw-result .sbkim-sw-badge {",
       "  display: inline-block;",
       "  font-size: 0.58rem;",
@@ -544,8 +571,9 @@
   }
 
   function updateSearxngFieldVisibility() {
-    if (!searxngFieldEl) return;
-    searxngFieldEl.style.display = areas.internet.enabled ? "block" : "none";
+    var show = areas.internet.enabled ? "block" : "none";
+    if (searxngFieldEl) searxngFieldEl.style.display = show;
+    if (engineSelectEl) engineSelectEl.style.display = show;
   }
 
   function buildWidget(doc) {
@@ -669,6 +697,25 @@
     searxngFieldEl.value = searxngUrl;
     searxngFieldEl.addEventListener("input", function () { searxngUrl = searxngFieldEl.value.trim(); });
     panelEl.appendChild(searxngFieldEl);
+
+    // Web-Suchmaschine frei wählbar (Neuer-Tab-Weg). Nur sichtbar, wenn Internet
+    // aktiv ist (gemeinsam mit dem SearXNG-Feld).
+    engineSelectEl = doc.createElement("select");
+    engineSelectEl.className = "sbkim-sw-engine";
+    engineSelectEl.setAttribute("aria-label", "Web-Suchmaschine für den Internet-Bereich");
+    for (var ei = 0; ei < WEB_ENGINES.length; ei++) {
+      var opt = doc.createElement("option");
+      opt.value = WEB_ENGINES[ei].id;
+      opt.textContent = "Suchmaschine: " + WEB_ENGINES[ei].label;
+      if (WEB_ENGINES[ei].id === optWebEngine) opt.selected = true;
+      engineSelectEl.appendChild(opt);
+    }
+    engineSelectEl.addEventListener("change", function () {
+      optWebEngine = engineSelectEl.value;
+      persistEngine();
+    });
+    engineSelectEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    panelEl.appendChild(engineSelectEl);
 
     // Hinweis-Zeile + Treffer-Liste.
     hintEl = doc.createElement("div");
@@ -809,10 +856,22 @@
     return out;
   }
 
-  // DuckDuckGo als datenschutzfreundlicher Default für den Neuer-Tab-Weg.
-  function webSearchUrl(query) {
-    return "https://duckduckgo.com/?q=" + encodeURIComponent(query);
+  function engineById(id) {
+    for (var i = 0; i < WEB_ENGINES.length; i++) { if (WEB_ENGINES[i].id === id) return WEB_ENGINES[i]; }
+    return WEB_ENGINES[0]; // DuckDuckGo-Fallback
   }
+
+  // Web-Suchmaschine frei wählbar (Klaus 2026-06-21); DuckDuckGo Default.
+  function webSearchUrl(query) {
+    return engineById(optWebEngine).url + encodeURIComponent(query);
+  }
+
+  function loadEngineFromLs() {
+    var raw = lsGet(LS_KEY_ENGINE);
+    if (raw) { for (var i = 0; i < WEB_ENGINES.length; i++) { if (WEB_ENGINES[i].id === raw) { optWebEngine = raw; return; } } }
+  }
+
+  function persistEngine() { lsSet(LS_KEY_ENGINE, optWebEngine); }
 
   // Stufe 2 (Sortiermaschine): Modul 04 queryLocal-Cosinus über EINEN Korpus,
   // Treffer mit Quelle (source) + Bedeutungs-Text + URL angereichert.
@@ -1152,8 +1211,8 @@
     var el = target;
     var depth = 0;
     while (el && el !== widgetRoot && depth < 10) {
-      if (el.tagName === "A" || el.tagName === "INPUT" ||
-          el.tagName === "BUTTON" || el.tagName === "LABEL") return true;
+      if (el.tagName === "A" || el.tagName === "INPUT" || el.tagName === "BUTTON" ||
+          el.tagName === "LABEL" || el.tagName === "SELECT" || el.tagName === "OPTION") return true;
       if (el.classList && (
           el.classList.contains("sbkim-sw-input") ||
           el.classList.contains("sbkim-sw-btn") ||
@@ -1397,6 +1456,11 @@
     if (Array.isArray(options.nodeCorpus)) { nodeCorpus = options.nodeCorpus.slice(); nodeCorpusReady = true; }
     if (typeof options.prepareNodeCorpus === "function") nodeCorpusPreparer = options.prepareNodeCorpus;
     if (typeof options.searxngUrl === "string") searxngUrl = options.searxngUrl.trim();
+    if (typeof options.webSearchEngine === "string") {
+      for (var wi = 0; wi < WEB_ENGINES.length; wi++) {
+        if (WEB_ENGINES[wi].id === options.webSearchEngine) { optWebEngine = options.webSearchEngine; break; }
+      }
+    }
     if (options.richter !== undefined) richterOn = !!options.richter;
     if (options.areas && typeof options.areas === "object") {
       ["app", "knoten", "internet"].forEach(function (id) {
@@ -1420,6 +1484,7 @@
     loadVisibleFromLs();
     loadStateFromLs();
     loadPositionFromLs();
+    loadEngineFromLs();   // persistierte Suchmaschinen-Wahl (User-Wahl heilig)
     if (options.startExpanded === true) expandedFlag = true;
 
     if (ready) {
@@ -1458,6 +1523,7 @@
       get areas() { return { app: areas.app.enabled, knoten: areas.knoten.enabled, internet: areas.internet.enabled }; },
       get richterOn() { return richterOn; },
       get hasSearxng() { return !!searxngUrl; },
+      get webEngine() { return optWebEngine; },
       get visible() { return isVisible(); },
       get expanded() { return !!expandedFlag; },
       get widgetMounted() { return !!(widgetRoot && widgetRoot.parentNode); },
