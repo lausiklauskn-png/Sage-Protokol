@@ -111,6 +111,13 @@
 
   // Korpus (lokal gehalten; an SbkimMatch durchgereicht).
   var localCorpus = null;
+  // Lazy-Korpus-Vorbereitung (z.B. Embedding via Modul 03 beim ersten Gebrauch).
+  // corpusPreparer: async () => Array<corpusEntry mit passageVec>. Wird EINMAL
+  // ausgeführt (beim ersten expand() oder bei der ersten Suche), danach gecacht.
+  // So bleibt die Host-Seite leicht beim Start (kein Modell-Download im Boot).
+  var corpusPreparer = null;
+  var corpusReady = false;
+  var corpusPrepPromise = null;
 
   // Drag + Mount.
   var dragState = null;
@@ -609,6 +616,30 @@
     return runSearch(text);
   }
 
+  // Lazy-Korpus-Vorbereitung: führt corpusPreparer EINMAL aus (Embedding etc.),
+  // setzt den Korpus und cacht das Ergebnis. Parallele Aufrufe teilen sich eine
+  // in-flight-Promise. Fehler lassen corpusReady false (nächster Versuch darf neu
+  // vorbereiten). Zeigt während der Vorbereitung einen Hinweis.
+  function ensureCorpusPrepared() {
+    if (corpusReady) return Promise.resolve();
+    if (typeof corpusPreparer !== "function") return Promise.resolve();
+    if (corpusPrepPromise) return corpusPrepPromise;
+    setHint("Suchindex wird vorbereitet … (einmalig, kann etwas dauern)");
+    corpusPrepPromise = Promise.resolve()
+      .then(function () { return corpusPreparer(); })
+      .then(function (prepared) {
+        if (Array.isArray(prepared)) setCorpus(prepared);
+        corpusReady = true;
+        corpusPrepPromise = null;
+        setHint("");
+      })
+      .catch(function (err) {
+        corpusPrepPromise = null;
+        throw err;
+      });
+    return corpusPrepPromise;
+  }
+
   function runSearch(text) {
     var match = global.SbkimMatch;
     if (!match || typeof match.queryLocal !== "function") {
@@ -621,10 +652,12 @@
       return Promise.resolve({ mode: lastSearchMode, treffer: [] });
     }
     var query = text.trim();
-    var corpusOpt = (localCorpus != null) ? { corpus: localCorpus } : undefined;
 
-    return Promise.resolve()
-      .then(function () { return match.queryLocal(query, optK, corpusOpt); })
+    return ensureCorpusPrepared()
+      .then(function () {
+        var corpusOpt = (localCorpus != null) ? { corpus: localCorpus } : undefined;
+        return match.queryLocal(query, optK, corpusOpt);
+      })
       .then(function (prelim) {
         prelim = prelim || [];
         if (prelim.length === 0) {
@@ -927,6 +960,14 @@
     expandedFlag = true;
     persistState();
     applyState();
+    // Korpus vorwärmen, damit die Suche beim ersten Tippen bereit ist
+    // (fire-and-forget; der Hinweis zeigt einen evtl. Fehler).
+    if (typeof corpusPreparer === "function" && !corpusReady) {
+      ensureCorpusPrepared().catch(function (err) {
+        setHint("Suchindex-Vorbereitung fehlgeschlagen — bitte erneut versuchen.");
+        warn("Korpus-Vorbereitung (expand-Warmup) fehlgeschlagen.", err);
+      });
+    }
   }
 
   function collapse() {
@@ -965,6 +1006,7 @@
     if (typeof options.zIndex === "number" && isFinite(options.zIndex)) optZIndex = options.zIndex;
 
     if (options.corpus !== undefined) setCorpus(options.corpus);
+    if (typeof options.prepareCorpus === "function") corpusPreparer = options.prepareCorpus;
 
     if (options.defaultCorner !== undefined &&
         ALLOWED_CORNERS.indexOf(options.defaultCorner) >= 0) {
@@ -1015,6 +1057,7 @@
     _meta: {
       get euPolicy() { return optEuPolicy; },
       get corpusSize() { return Array.isArray(localCorpus) ? localCorpus.length : 0; },
+      get corpusReady() { return corpusReady; },
       get visible() { return isVisible(); },
       get expanded() { return !!expandedFlag; },
       get widgetMounted() { return !!(widgetRoot && widgetRoot.parentNode); },

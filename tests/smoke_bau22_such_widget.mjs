@@ -344,6 +344,33 @@ async function run() {
   mountMatch("treffer");
   res = await W.search("   ");
   eq("Probe 19: Whitespace-Text → vorfilter-leer", "vorfilter-leer", res.mode);
+
+  // ---- Probe 20: prepareCorpus wirft → fail-soft vorfilter-fehler (corpusReady bleibt false) ----
+  mountMatch("treffer");
+  await W.init({ prepareCorpus: async function () { throw new Error("Modell-Download fehlgeschlagen"); } });
+  eq("Probe 20: corpusReady vor Vorbereitung false", "false", String(W._meta.corpusReady));
+  let prepThrew = false;
+  try { res = await W.search("lasagne"); } catch (e) { prepThrew = true; }
+  record("Probe 20: werfender Preparer wird gefangen (kein Throw)", "false", String(prepThrew), prepThrew === false);
+  eq("Probe 20: → vorfilter-fehler", "vorfilter-fehler", res.mode);
+  eq("Probe 20: corpusReady bleibt false (Retry möglich)", "false", String(W._meta.corpusReady));
+
+  // ---- Probe 21: prepareCorpus — lazy, einmalig, gesetzter Korpus, Treffer ----
+  let prepCalls = 0;
+  const preparedCorpus = [
+    { label: "Lasagne", text: "Nudelauflauf", passageVec: new Float32Array(384), anchorId: "r1" },
+  ];
+  await W.init({ prepareCorpus: async function () { prepCalls++; return preparedCorpus; } });
+  res = await W.search("lasagne");
+  eq("Probe 21: prepareCorpus genau 1× gerufen", "1", String(prepCalls));
+  eq("Probe 21: corpusReady nach Suche true", "true", String(W._meta.corpusReady));
+  eq("Probe 21: Korpus an Widget gesetzt (corpusSize)", "1", String(W._meta.corpusSize));
+  record("Probe 21: Suche nach Vorbereitung liefert Treffer", "true",
+    String(res.treffer.length >= 1), res.treffer.length >= 1);
+
+  // ---- Probe 22: zweite Suche bereitet NICHT erneut vor (Cache) ----
+  res = await W.search("lasagne nochmal");
+  eq("Probe 22: prepareCorpus weiterhin nur 1× (gecacht)", "1", String(prepCalls));
 }
 
 const finalize = () => {

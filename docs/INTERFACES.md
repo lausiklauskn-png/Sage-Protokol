@@ -4242,8 +4242,9 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         // reicht an SbkimMatch.setLocalCorpus durch.
   search(text)       → Promise<SearchResult>  // komponierte Suche, auch direkt
                                         // aufrufbar (Tests).
-  _meta              // { euPolicy, corpusSize, visible, expanded, widgetMounted,
-                     //   lastSearchMode, searchCount, hasApiKey, coupled:false }
+  _meta              // { euPolicy, corpusSize, corpusReady, visible, expanded,
+                     //   widgetMounted, lastSearchMode, searchCount, hasApiKey,
+                     //   coupled:false }
 
 options-Form (init):
   {
@@ -4255,6 +4256,10 @@ options-Form (init):
                                         // bindend erzwingt true
     queryLabel?:  string,               // Knoten-Name für die Attestation
     k?:           number,               // Top-k Vorfilter (Default 5)
+    prepareCorpus?: () => Promise<Array<corpusEntry>>,  // LAZY-Korpus-Provider: läuft EINMAL
+                                        // beim ersten expand()/erster Suche, baut den Korpus
+                                        // (z.B. Embedding via Modul 03), ruft setCorpus + cacht.
+                                        // Fehler → fail-soft (corpusReady bleibt false).
     defaultCorner?: "top-left"|"top-right"|"bottom-left"|"bottom-right",  // Default "bottom-right"
     defaultOffset?: { x:number, y:number },                              // Default {x:16,y:16}
     allowDrag?:     boolean,            // Default true
@@ -4300,12 +4305,19 @@ UX-Lehre „Eingabe-Erhalt" (BLP/Modul 21): das Textfeld wird EINMAL angelegt un
   NIE mit value:'' neu gebaut; erkannter Sprach-Text wird an den LIVE-Feldwert
   angehängt; Treffer-Re-Render berührt das Feld nicht.
 
-Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 55/55 (Surface,
+Sage-Page-Mount (Bau 22 B-Schritt 2026-06-21): in sbkim-init.js am Ende der
+  Init-Kette gemountet mit prepareCorpus=sageBuildSuchkorpus. Korpus =
+  sbkim/sage-suchkorpus.js (window.SAGE_SUCHKORPUS, Module 00–22 als
+  {label,text,anchorId}); Vektoren lazy via Modul 03 embedPassageBatch beim
+  ersten Gebrauch. Kein Richter-Schlüssel auf der Sage-Page → reiner Vorfilter.
+
+Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 64/64 (Surface,
   Mount, expand/collapse/show/hide + localStorage, EU-Politik frei/bindend +
   euOnly an hybridMatch, alle sechs Such-Modi, setCorpus-Durchreichung,
   Spracheingabe fail-soft + Browser-Pfad, Drag-Persistenz, UX-Erhalt,
-  init-Throw bei ungültiger euPolicy). Browser-Sichttest (Drag + Sprache am
-  Tablet) durch Klaus ausstehend.
+  init-Throw bei ungültiger euPolicy, prepareCorpus lazy/einmalig/fail-soft).
+  Browser-Sichttest (Drag + Sprache + Sage-Korpus-Suche am Tablet) durch Klaus
+  ausstehend.
 
 ---
 

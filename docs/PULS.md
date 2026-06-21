@@ -1841,6 +1841,51 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-21 · Bau 22 B-Schritt: Sage-Page-Korpus + Widget-Mount + Lazy-Embedding
+
+**Rolle:** Bau-Sitzung Modul 22 (Folge zu Increment 1). Klaus' Wahl **B**: erst
+einen echten Such-Korpus bauen, dann das Widget auf der Sage-Page mounten.
+Branch `claude/bau-22-sage-korpus`.
+
+**Getan:**
+- **`sbkim/sage-suchkorpus.js`** — durchsuchbarer Korpus der Sage „Mycel-
+  Bibliothek" = SBKIM-Werkzeuge (Module 00–22) als `{label,text,anchorId}`,
+  Bedeutungs-Text mit Alltags-Synonymen (Recall-Lehre 3). 22 Einträge.
+  Klaus' Festlegung 2026-06-21 (erster Korpus = Tool-Bibliothek; Glossar/Doku
+  später). KEIN `passageVec` hier — lazy zur Laufzeit.
+- **Modul 22 additiv erweitert** (`prepareCorpus`-Lazy-Provider): läuft EINMAL
+  beim ersten `expand()` oder der ersten Suche, baut den Korpus (Embedding via
+  Modul 03), ruft `setCorpus` + cacht; fail-soft (Hinweis, `corpusReady` bleibt
+  false bei Fehler → Retry). `_meta.corpusReady` ergänzt. Generisch/reusable
+  für alle Endknoten.
+- **`sbkim-init.js`** — Widget am Ende der Init-Kette gemountet:
+  `SbkimSearchWidget.init({euPolicy:"frei", queryLabel:"Sage", prepareCorpus:
+  sageBuildSuchkorpus})`. `sageBuildSuchkorpus()` embeddet die Korpus-Texte via
+  Modul 03 `embedPassageBatch` (löst den einmaligen ~30-MB-Modell-Download erst
+  beim ersten Gebrauch aus — Seitenstart bleibt leicht). Kein Richter-Schlüssel
+  → reiner Vorfilter (`nur-vorfilter`).
+- **`index.html`** lädt `sbkim/sage-suchkorpus.js` (vor `sbkim-init.js`).
+- **Headless-Smoke 64/64** (9 neue Proben: prepareCorpus lazy/einmalig/Cache/
+  fail-soft). Karte 22 + INTERFACES gespiegelt.
+
+**Nebenbei (Klaus' Auftrag): Briefkasten BookLedgerPro** — eigener PR #344
+(gemerged). BLP SIGNAL seq 16–18 quittiert (ack=18): Drei-Schichten cap/needs
+LIVE (BLP-Spore trägt nun signierte capVector+needsVector je 384-dim). Reziprok
+✔ VALID, domainVector-Cosinus neu 0.813525 ≥ 0.80 → verified-match hält. Vertrag
+`matchDimensions` akzeptiert; Sage-eigene cap/needs offen (Spore Re-Sign via
+Modul 02, privater Schlüssel in Klaus' Browser → eigene Folge-Sitzung). Bis
+dahin domainVector-Rückfall (Nur-Anbieter-Modus).
+
+**Offen:** (1) **Klaus' Browser-Sichttest** Sage-Page: 🔍-Blase erscheint, erste
+Suche zeigt „Suchindex wird vorbereitet …" (Modell-Download), dann findet z.B.
+„wie schütze ich mich vor fremden Zugriffen" → Modul 15 Membran. (2) **Sage cap/
+needs** in die Spore (Drei-Schichten, BLP-Bitte) — Spore Re-Sign am Tablet.
+(3) Increment 2 Widget-Kopplung über Modul 15. (4) Korpus-Erweiterung um Glossar/
+Doku (Klaus' Option B/C, später).
+
+**Nächster sinnvoller Schritt:** Klaus' Sage-Page-Sichttest (Blase + erste Suche
+mit Modell-Download). Danach Korpus-Erweiterung oder Increment 2.
+
 ### 2026-06-21 · Bau 22: Such-Widget (Increment 1 — Widget-Shell, Schritt 2 des Such-Werkzeugs)
 
 **Rolle:** Bau-Sitzung Modul 22 (neu). Schritt 2 des SBKIM-Such-Werkzeugs nach
