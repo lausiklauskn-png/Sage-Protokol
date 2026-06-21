@@ -84,6 +84,10 @@ beidseitiger Handshake) folgen mit Modul 04.C / 05 / dem Mycel-Hub.
 ---
 
 ## Status
-Vision-Karte. **Proto-gebaut:** „Bedeutung zuerst"-Prompt. **Native Mechanik
-vorhanden:** Spore (02), Match (04), Anastomose (05). **Nächster Schritt:**
-Visitenkarten-Präambel (Abschnitt 3) — auf Klaus' Zuruf.
+Vision-Karte. **Gebaut:** „Bedeutung zuerst"-Prompt **+ Visitenkarten-Präambel**
+(Abschnitt 3, `buildAiPrompt` führt jetzt mit der Agenten-Visitenkarte an —
+Smoke Probe 29). **Native Mechanik vorhanden:** Spore (02), Match (04),
+Anastomose (05). **Nächste Stufen:** maschinenlesbare Agent-Card (= Tool-Spore,
+an MCP/Agent-Card-Norm) + echter beidseitiger Handshake via Modul 04.C/05;
+**Agenten-Einladung** (`llms.txt` / `.well-known/agent-card.json`) als symmetrische
+Hälfte der Menschen-Einladung (Klaus 2026-06-21, Schicht 3 Mit-Bauer).

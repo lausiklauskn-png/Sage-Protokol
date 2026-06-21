@@ -1164,12 +1164,20 @@
     return AI_PROVIDERS.slice();
   }
 
-  // Prompt aus der Such-Frage bauen. Code-Block-Regel → ChatGPT zeigt einen
-  // „Copy"-Knopf UND liefert saubere URLs (keine Zitat-Artefakte).
+  // Prompt aus der Such-Frage bauen. Führt mit der Agenten-Visitenkarte
+  // (Klaus' Vision 2026-06-21): das Tool stellt ZUERST sein Ziel vor — das
+  // semantische Verstehen beginnt am Handschlag, nicht erst bei der Frage.
+  // Code-Block-Regel → ChatGPT zeigt einen „Copy"-Knopf + liefert saubere URLs.
   function buildAiPrompt(query, context) {
     var q = (typeof query === "string" ? query : "").trim();
     var ctx = (typeof context === "string" ? context : "").trim();
     var lines = [
+      "— SBKIM-Such-Agent · Visitenkarte —",
+      "Ich bin ein semantisches Such-Werkzeug des SBKIM-Mycels (server-los, peer-to-peer).",
+      "Mein Ziel: nach BEDEUTUNG/Absicht finden, nicht nach Stichwörtern.",
+      "Ich biete eine strukturierte JSON-Treffer-Liste, die ich selbst nach Bedeutung sortiere.",
+      "Prüfe als Gegen-Agent zuerst, ob du zu diesem Ziel beitragen kannst — und arbeite dann in diesem Sinn.",
+      "",
       "Suche im Internet zu meiner Frage und gib mir möglichst viele ECHTE, verschiedene Quellseiten.",
       "",
       "Meine Frage: " + q,
