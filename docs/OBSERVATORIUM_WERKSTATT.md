@@ -1,4 +1,4 @@
-# Bau-Observatorium
+# Observatorium-Werkstatt
 
 > **Geschwister-Doku zum [Browser-Observatorium](OBSERVATORIUM_BROWSER.md).**
 > Hier liegen die **Lehren** und **offenen Problematiken** aus dem realen
