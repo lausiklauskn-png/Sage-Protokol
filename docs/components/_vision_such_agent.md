@@ -89,5 +89,7 @@ Vision-Karte. **Gebaut:** „Bedeutung zuerst"-Prompt **+ Visitenkarten-Präambe
 Smoke Probe 29). **Native Mechanik vorhanden:** Spore (02), Match (04),
 Anastomose (05). **Nächste Stufen:** maschinenlesbare Agent-Card (= Tool-Spore,
 an MCP/Agent-Card-Norm) + echter beidseitiger Handshake via Modul 04.C/05;
-**Agenten-Einladung** (`llms.txt` / `.well-known/agent-card.json`) als symmetrische
-Hälfte der Menschen-Einladung (Klaus 2026-06-21, Schicht 3 Mit-Bauer).
+**Agenten-Einladung** als symmetrische Hälfte der Menschen-Einladung (Klaus
+2026-06-21, Schicht 3 Mit-Bauer): **`llms.txt` an der Wurzel gebaut** (schlichte,
+sofort lesbare Türschwelle für Agenten); `.well-known/agent-card.json`
+(Agent-Card / MCP-konform, beidseitiger Handshake) folgt mit Modul 19.
