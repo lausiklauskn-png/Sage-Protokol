@@ -4243,7 +4243,7 @@ Bietet (öffentlich, window.SbkimSearchWidget):
   search(text)       → Promise<SearchResult>  // komponierte Suche, auch direkt
                                         // aufrufbar (Tests).
   _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
-                     //   richterOn, hasSearxng, visible, expanded, widgetMounted,
+                     //   richterOn, hasSearxng, webEngine, visible, expanded, widgetMounted,
                      //   lastSearchMode, searchCount, hasApiKey, coupled:false }
 
 options-Form (init):
@@ -4264,7 +4264,10 @@ options-Form (init):
     richter?:     boolean,              // KI-Richter an/aus. DEFAULT FALSE (gratis, rein
                                         // semantisch). AN nur sinnvoll mit apiKey.
     searxngUrl?:  string,               // SearXNG-Instanz für Web-Treffer. Leer → Internet =
-                                        // „↗ neuer Tab" (DuckDuckGo); gesetzt → Re-Ranker.
+                                        // „↗ neuer Tab"; gesetzt → Re-Ranker.
+    webSearchEngine?: "duckduckgo"|"startpage"|"ecosia"|"brave"|"google"|"bing",
+                                        // Suchmaschine für den Neuer-Tab-Weg (frei wählbar,
+                                        // Default "duckduckgo"; im Widget umstellbar, persistiert).
     nodeCorpus?:  Array<corpusEntry>,            // Knoten-Bereich-Korpus (verbundene Knoten)
     prepareNodeCorpus?: () => Promise<Array<corpusEntry>>,  // LAZY Knoten-Korpus-Provider
     defaultCorner?: "top-left"|"top-right"|"bottom-left"|"bottom-right",  // Default "bottom-right"

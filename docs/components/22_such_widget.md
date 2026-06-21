@@ -337,7 +337,8 @@ nutzer-gewählte Internet-Bereich. Festgehalten in CLAUDE.md § „Was du nicht 
 ### Surface-Erweiterung (Mehrfach-Suche)
 
 `init()`-Optionen zusätzlich: `areas?: {app?,knoten?,internet?: boolean}`,
-`richter?: boolean` (Default false), `searxngUrl?: string`,
+`richter?: boolean` (Default false), `searxngUrl?: string`, `webSearchEngine?: "duckduckgo"|…` (frei wählbar,
+Default DuckDuckGo, im Widget umstellbar + persistiert),
 `nodeCorpus?: Array` / `prepareNodeCorpus?: () => Promise<Array>`.
 `_meta` zusätzlich: `areas`, `richterOn`, `hasSearxng`, `nodeCorpusSize`.
 `SearchResult.mode` ∈ `"leer" | "semantisch" | "richter" | "modul-04-fehlt" |
