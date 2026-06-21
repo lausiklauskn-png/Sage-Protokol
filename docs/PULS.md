@@ -1906,8 +1906,23 @@ Lehre 1 (Interop ist Vertrag) → **VALIDIERT**; vier Prompt-Härtungs-Lehren ge
 (Werkstatt Lehre 3 + Einbau-Anleitung § Richter-Prompt-Härtung). Erster Knoten mit
 laufendem Mistral-Richter im Mycel.
 
-**Offen / nächster Schritt:** Modul-02-Signier-Helfer (Werkstatt offene Bau-Problematik 1,
-schaltet Bezeugung frei); optional OCR-Vorstufe-Spec (BLP-getrieben: Vision → Embedding →
+**Bau 21 Spracheingabe (2026-06-21, Klaus-Wahl „Modul 21 zuerst" + EU-Politik „frei"):**
+`src/modules/21_spracheingabe.js` neu — input-agnostische Sprach-Eingabe-Schicht (BLP-Muster
+SIGNAL seq 15 nachgebaut, Sage-native nach Vertrag). Dual-Engine Browser Web-Speech + EU Cloud
+Speech-to-Text (BYOK), mehrsprachig DE/EN/RU (`SPEECH_LANGS` + `alternativeLanguageCodes`),
+konsequent fail-soft. **EU-Politik per Knoten:** `bindend` (nur EU, z.B. BLP) ↔ `frei` (Default,
+EU wählbar — Sage/Mixarium/Rezeptbuch). Surface `SbkimSpeech` (init/getLanguages/availableEngines/
+pickEngine/makeBrowserRecognizer/startRecording/recognizeEU/speechErrorHint). Headless-Smoke
+`tests/smoke_bau21_spracheingabe.mjs` **45/45 grün**; `index.html` lädt das Skript (KEIN Auto-Init),
+Panel 21 in `manual_check.html`; Karte `docs/components/21_spracheingabe.md`. **Browser-Sichttest
+(Live-Mic + EU-Engine) wartet auf Klaus.** Nächste Schritte des Such-Werkzeugs: Such-Ansicht
+(komponiert 03/04/21 + Knoten-Suche + EU-Politik-Auswahl), dann Einbau in PWAs + Landing-Pages.
+
+**Offen / nächster Schritt:** **Sichttest 21** (Klaus, Browser — Panel 21 Logik-Knöpfe sofort,
+Live-Mic + EU optional); dann Such-Ansicht (Schritt 2 des Such-Werkzeugs). Weiter offen:
+Modul-02-Signier-Helfer (Werkstatt offene Bau-Problematik 1,
+schaltet Bezeugung frei); Drei-Schichten-Differenzierung im Live-Richter (Werkstatt Bau-Problematik 2);
+optional OCR-Vorstufe-Spec (BLP-getrieben: Vision → Embedding →
 Richter); Anisotropie-Hebel (Whitening +
 Schwellen-Neukalibrierung, netzweit, eigene koordinierte Entscheidung); Bau-Zeit-
 Authoring-Helfer (Konzept § Bau-Parameter 6).

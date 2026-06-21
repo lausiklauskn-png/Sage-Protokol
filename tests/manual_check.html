@@ -141,6 +141,13 @@
     <pre class="log">— bereit. Modul 19 (kopierbarer Andock-Wizard), extrahiert aus der Sage-Page. Reine Eingabe→Text-Hilfe: Repo-URL + Domain + Knotentyp → unsignierte Spore-Vorlage + status.json-Zeile + vorgelinkter PR. KEIN Signieren/Storage/Netz. Knöpfe: „mount() im Panel" zeigt die Live-Wizard-UI in #panel-19-mount (Felder ausfüllen → „Spore-Vorlage erzeugen"); „generate() Test" + „Pages-URL-Ableitung" prüfen die reinen Funktionen. —</pre>
   </section>
 
+  <section class="panel" data-module="21_spracheingabe">
+    <h2>21 Spracheingabe <span class="status ok">Code-Stub 2026-06-21</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <input id="panel-21-text" type="text" placeholder="Erkannter Text erscheint hier (oder tippen)" style="width:100%;margin:.4rem 0;padding:.4rem;" />
+    <pre class="log">— bereit. Modul 21 (Spracheingabe, BLP-Muster nachgebaut). Dual-Engine: Browser Web-Speech + EU Cloud Speech-to-Text (BYOK). EU-Politik frei/bindend (Klaus 2026-06-21): bindend = nur EU-Engine, frei = beide wählbar. Mehrsprachig DE/EN/RU, fail-soft (kein Mic/Key/Netz → Textfeld bleibt). Logik-Knöpfe (headless-äquivalent): Sprachen + alternativeCodes, EU-Politik-Engines (frei/bindend), pickEngine, Browser-Support. Live-Knöpfe (brauchen Browser/Mic): „Browser-Erkennung starten" (spricht ins Textfeld) und „EU-Erkennung (Key)" (Mikrofon-Aufnahme → EU-STT, Key via prompt — nur testen, wenn EU-Schlüssel vorhanden). —</pre>
+  </section>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {
@@ -5322,6 +5329,92 @@
           name: SbkimAndockWizard.repoToNodeName("https://github.com/lausiklauskn-png/Mein-Rezeptbuch"),
           nicht_github: SbkimAndockWizard.repoToPagesUrl("https://example.org/foo")
         };
+      });
+    })();
+  </script>
+
+  <!-- Modul 21 — Spracheingabe (Bau-Sitzung 2026-06-21) -->
+  <script src="../src/modules/21_spracheingabe.js"></script>
+  <script>
+    (function () {
+      // Panel 21 — Spracheingabe. Logik-Knöpfe sind headless-äquivalent
+      // (Sprachen / EU-Politik / pickEngine / Support). Die zwei Live-Knöpfe
+      // brauchen Browser + Mikrofon (und für EU einen Schlüssel) — sie schreiben
+      // den erkannten Text ins Eingabefeld #panel-21-text, das beim Neuzeichnen
+      // NICHT geleert wird (UX-Lehre „Eingabe-Erhalt", BLP).
+      var field = function () { return document.getElementById("panel-21-text"); };
+
+      SbkimUI.addButton("21_spracheingabe", "Sprachen + alternativeCodes", function () {
+        SbkimUI.setStatus("21_spracheingabe", "ok", "Sprachen OK");
+        return {
+          sprachen: SbkimSpeech.getLanguages(),
+          alternativeCodes_zu_de: SbkimSpeech.alternativeCodes("de-DE"),
+          erwartung: "3 Sprachen DE/EN/RU; alt zu de-DE = [en-US, ru-RU]"
+        };
+      });
+
+      SbkimUI.addButton("21_spracheingabe", "EU-Politik: Engines (frei vs bindend)", function () {
+        var frei = SbkimSpeech.availableEngines("frei");
+        var bindend = SbkimSpeech.availableEngines("bindend");
+        var pass = frei.join() === "browser,eu" && bindend.join() === "eu";
+        SbkimUI.setStatus("21_spracheingabe", pass ? "ok" : "err", pass ? "EU-Politik OK" : "EU-Politik FEHLER");
+        return { frei: frei, bindend: bindend, erwartung: "frei=[browser,eu] (EU wählbar), bindend=[eu] (erzwungen)" };
+      });
+
+      SbkimUI.addButton("21_spracheingabe", "pickEngine + Browser-Support", function () {
+        SbkimUI.setStatus("21_spracheingabe", "ok", "pickEngine OK");
+        return {
+          pick_frei_eu: SbkimSpeech.pickEngine("frei", "eu"),
+          pick_bindend_browser_faellt_auf: SbkimSpeech.pickEngine("bindend", "browser"),
+          pick_frei_default: SbkimSpeech.pickEngine("frei"),
+          browserSupport: SbkimSpeech.isBrowserSupported(),
+          erwartung: "eu / eu (browser nicht erlaubt) / browser; Support je nach Browser"
+        };
+      });
+
+      SbkimUI.addButton("21_spracheingabe", "Browser-Erkennung starten (live, Mic)", function () {
+        var f = field();
+        if (!SbkimSpeech.isBrowserSupported()) {
+          SbkimUI.setStatus("21_spracheingabe", "err", "Kein Browser-Support");
+          return { hinweis: "Dieser Browser kann keine Web-Speech-Erkennung — bitte tippen." };
+        }
+        var lang = (SbkimSpeech.getLanguages()[0] || ["de-DE"])[0];
+        var recer = SbkimSpeech.makeBrowserRecognizer({
+          lang: lang,
+          onResult: function (t) {
+            // UX-Lehre: bestehenden Text erhalten, erkannten anhängen.
+            f.value = (f.value ? f.value + " " : "") + t;
+            SbkimUI.setStatus("21_spracheingabe", "ok", "Erkannt: " + t);
+          },
+          onError: function (h) { SbkimUI.setStatus("21_spracheingabe", "err", h); },
+          onEnd: function () { /* Erkennung beendet */ }
+        });
+        recer.start();
+        return { gestartet: true, sprache: lang, hinweis: "Jetzt sprechen — Text erscheint im Feld oben." };
+      });
+
+      SbkimUI.addButton("21_spracheingabe", "EU-Erkennung (Key, Mic-Aufnahme)", async function () {
+        var f = field();
+        var key = window.prompt("EU Cloud Speech-to-Text — API-Schlüssel (nur Test, kein localStorage):");
+        if (!key) return { abgebrochen: true };
+        var recorder = await SbkimSpeech.startRecording();
+        if (!recorder.available) {
+          SbkimUI.setStatus("21_spracheingabe", "err", recorder.reason);
+          return { hinweis: recorder.reason };
+        }
+        SbkimUI.setStatus("21_spracheingabe", "ok", "Aufnahme läuft … 3 s");
+        await new Promise(function (r) { setTimeout(r, 3000); });
+        var audio = await recorder.stop();
+        if (!audio.available) { SbkimUI.setStatus("21_spracheingabe", "err", audio.reason); return audio; }
+        var lang = (SbkimSpeech.getLanguages()[0] || ["de-DE"])[0];
+        var out = await SbkimSpeech.recognizeEU(audio, { apiKey: key, languageCode: lang });
+        if (out.available) {
+          f.value = (f.value ? f.value + " " : "") + out.transcript;
+          SbkimUI.setStatus("21_spracheingabe", "ok", "EU erkannt: " + out.transcript);
+        } else {
+          SbkimUI.setStatus("21_spracheingabe", "err", out.reason);
+        }
+        return out;
       });
     })();
   </script>
