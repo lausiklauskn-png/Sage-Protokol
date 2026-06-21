@@ -1145,6 +1145,7 @@
   var AI_PROVIDERS = [
     { id: "chatgpt",    label: "ChatGPT (OpenAI)",   openUrl: "https://chatgpt.com/?q=",             euBased: false, webSearch: true },
     { id: "claude",     label: "Claude (Anthropic)", openUrl: "https://claude.ai/new?q=",            euBased: false, webSearch: true },
+    { id: "gemini",     label: "Gemini (Google)",    openUrl: "https://gemini.google.com/app?q=",    euBased: false, webSearch: true },
     { id: "perplexity", label: "Perplexity",         openUrl: "https://www.perplexity.ai/search?q=", euBased: false, webSearch: true },
   ];
 

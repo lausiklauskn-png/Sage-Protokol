@@ -512,15 +512,17 @@ async function run() {
   // ---- Probe 32: KI-Anbieter — Mistral/Aleph Alpha raus (Klaus 2026-06-21) ----
   await W.init({ euPolicy: "frei" });
   const provs = W._meta.aiProviders;
-  record("Probe 32: nur chatgpt/claude/perplexity", "true",
-    String(provs.length === 3 && provs.indexOf("mistral") < 0 && provs.indexOf("alephalpha") < 0
-      && provs.indexOf("chatgpt") >= 0 && provs.indexOf("claude") >= 0 && provs.indexOf("perplexity") >= 0),
-    provs.length === 3 && provs.indexOf("mistral") < 0 && provs.indexOf("alephalpha") < 0
-      && provs.indexOf("chatgpt") >= 0 && provs.indexOf("claude") >= 0 && provs.indexOf("perplexity") >= 0);
-  // bindend → kein EU-Anbieter mehr da → Fallback auf alle (kein leeres Dropdown).
+  record("Probe 32: chatgpt/claude/gemini/perplexity, kein mistral/alephalpha", "true",
+    String(provs.length === 4 && provs.indexOf("mistral") < 0 && provs.indexOf("alephalpha") < 0
+      && provs.indexOf("chatgpt") >= 0 && provs.indexOf("claude") >= 0
+      && provs.indexOf("gemini") >= 0 && provs.indexOf("perplexity") >= 0),
+    provs.length === 4 && provs.indexOf("mistral") < 0 && provs.indexOf("alephalpha") < 0
+      && provs.indexOf("chatgpt") >= 0 && provs.indexOf("claude") >= 0
+      && provs.indexOf("gemini") >= 0 && provs.indexOf("perplexity") >= 0);
+  // bindend → kein EU-Anbieter da → Fallback auf alle (kein leeres Dropdown).
   await W.init({ euPolicy: "bindend" });
-  record("Probe 32: bindend → Fallback auf alle 3 (kein leeres Set)", "3", String(W._meta.aiProviders.length),
-    W._meta.aiProviders.length === 3);
+  record("Probe 32: bindend → Fallback auf alle 4 (kein leeres Set)", "4", String(W._meta.aiProviders.length),
+    W._meta.aiProviders.length === 4);
   await W.init({ euPolicy: "frei" }); // zurück
 
   // ---- Probe 33: SearXNG als Neuer-Tab-Suchmaschine wählbar ----
