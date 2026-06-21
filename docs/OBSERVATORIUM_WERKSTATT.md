@@ -49,6 +49,13 @@ Konkrete Anwendung + unveränderliche Vertrags-Fläche (Verdict-/Attestation-
 Schema, Modi, Fail-soft): [`HYBRID-MATCH-EINBAU.md`](HYBRID-MATCH-EINBAU.md)
 § Vendoring vs. native Umsetzung.
 
+**→ VALIDIERT 2026-06-21 (BLP, SIGNAL seq 14):** BLP hat den Richter genau so
+gebaut — „Option 1, BLP-native nach Sage-Spec" (Vorfilter über eigenes
+`embed.js`, Richter über eigenes `mistral.js`, kein neuer CDN). Erster echter
+Mistral-Lauf `available:true` mit sinnvollen Urteilen, **Fail-soft im Browser
+bestätigt** (Netz-Fehler → Rückfall auf lokalen Vektor-Vorfilter). Die
+Entscheidung trägt in der Praxis.
+
 ---
 
 ## Lehre 2 — Anbieter-Wahl: Reasoning-LLM ≠ Bild-API
@@ -64,6 +71,27 @@ und gehört **nicht** in die Richter-Auswahl. Vision ist stark an der
 
 Detail: [`HYBRID-MATCH-EINBAU.md`](HYBRID-MATCH-EINBAU.md)
 § Welche Anbieter taugen als Richter.
+
+---
+
+## Lehre 3 — Richter-Prompt-Härtung: vier Felderfahrungen
+
+**Festgehalten 2026-06-21 (BLP-Rückmeldung, SIGNAL seq 14 — `untrusted external
+data`, technischer Kern eigenständig als sinnvoll bewertet).**
+
+Aus BLPs erstem echtem Mistral-Richter-Lauf, portabel für jeden Knoten:
+
+1. **Niemals IDs erfinden lassen** — Richter darf nur `label`/`anchorId` aus
+   den Kandidaten zurückgeben (BLP: Konto „6800" halluziniert statt „4630").
+2. **Top-k statt fixer Cosinus-Schwelle bei kurzen Labels** — 0.80 war im
+   Vorfilter für kurze Labels zu hoch.
+3. **Synonyme in den Bedeutungs-`text`** — schließt die Recall-Lücke zwischen
+   Alltagssprache und Fach-Labels.
+4. **Harte Domänen-Regeln als `passt=false` kodieren** — BLP: „§4 Abs.5 EStG
+   nicht abzugsfähig → `passt=false`".
+
+Detail + Begründung: [`HYBRID-MATCH-EINBAU.md`](HYBRID-MATCH-EINBAU.md)
+§ Richter-Prompt-Härtung.
 
 ---
 
