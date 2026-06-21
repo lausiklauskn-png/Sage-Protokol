@@ -27,6 +27,8 @@ function ok(name, cond, extra) {
 const MODULE_IDS = ["00","01","02","03","04","05","06","07","08","09","10","11","12","14","15","16","17","18","19","NETZ"];
 // 2 Komplett-Werkzeuge (Ein-Datei-PWAs).
 const TOOL_IDS = ["andock","knoten"];
+// Featured-Tools (eigenständige Werkzeuge, nicht in der 00–19-Modul-Reihe).
+const EXTRA_IDS = ["22"];
 const VALID_TIERS = ["komplett","must","basic","pro"];
 const VALID_STATUS = ["fertig","stub","schablone"];
 
@@ -34,14 +36,15 @@ console.log("Smoke: Observatoriums-Vorteilspack-Truhe");
 
 const TOOLS = vp.TOOLS, SYM = vp.SYM;
 
-ok("22 Tools in der Datenbank (20 Modul-Tools inkl. NETZ + 2 Komplett-Werkzeuge)",
-  TOOLS.length === 22, "ist " + TOOLS.length);
+ok("23 Tools in der Datenbank (20 Modul-Tools inkl. NETZ + 2 Komplett + 1 Featured)",
+  TOOLS.length === 23, "ist " + TOOLS.length);
 
 const ids = TOOLS.map(t => t.id);
-ok("alle erwarteten IDs vorhanden (19 Module + 2 Komplett-Werkzeuge)",
+ok("alle erwarteten IDs vorhanden (19 Module + 2 Komplett + 1 Featured)",
   MODULE_IDS.every(id => ids.includes(id)) &&
   TOOL_IDS.every(id => ids.includes(id)) &&
-  ids.length === MODULE_IDS.length + TOOL_IDS.length,
+  EXTRA_IDS.every(id => ids.includes(id)) &&
+  ids.length === MODULE_IDS.length + TOOL_IDS.length + EXTRA_IDS.length,
   ids.join(","));
 ok("keine doppelten IDs", new Set(ids).size === ids.length);
 ok("Modul 13 nicht enthalten (kein Modul)", !ids.includes("13"));
@@ -64,8 +67,8 @@ ok("Tasks sind knapp (≤ 80 Zeichen)", taskOk);
 // Tier-Verteilung (2 Komplett / 3 Must-have / 7 Basic / 9 Pro)
 const byTier = { komplett:0, must:0, basic:0, pro:0 };
 TOOLS.forEach(t => byTier[t.tier]++);
-ok("Tier-Verteilung 2 Komplett / 3 Must-have / 8 Basic / 9 Pro",
-  byTier.komplett === 2 && byTier.must === 3 && byTier.basic === 8 && byTier.pro === 9,
+ok("Tier-Verteilung 2 Komplett / 3 Must-have / 9 Basic / 9 Pro",
+  byTier.komplett === 2 && byTier.must === 3 && byTier.basic === 9 && byTier.pro === 9,
   JSON.stringify(byTier));
 
 // Komplett-Werkzeuge: kind:"html" + .html-Code
@@ -101,9 +104,9 @@ ok("alle hinterlegten Code-Pfade existieren", codeOk);
 ok("alle Karten-Pfade existieren", karteOk);
 ok("alle hinterlegten Smoke-Test-Pfade existieren", smokeOk);
 
-// Tools mit Code = 17 (14 Modul-Code inkl. 19 + NETZ-Action + 2 Komplett-Werkzeuge)
+// Tools mit Code = 18 (14 Modul-Code inkl. 19 + 22 Such-Werkzeug + NETZ-Action + 2 Komplett)
 const withCode = TOOLS.filter(t => t.code).length;
-ok("17 Tools mit kopierbarem/herunterladbarem Code", withCode === 17, "ist " + withCode);
+ok("18 Tools mit kopierbarem/herunterladbarem Code", withCode === 18, "ist " + withCode);
 
 // Vibe-Prompt-Aufbau (Modul-Tool)
 const m04 = TOOLS.find(t => t.id === "04");

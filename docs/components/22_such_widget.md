@@ -165,6 +165,12 @@ Quellen gesammelt, 10 mit 88/88/87 % + Beschreibung gezeigt, Pfeil „noch 16".
 unten) + Hunde-Zecken im Hund-UND-Katze-Haushalt (Permethrin/Katzen-Sicherheit,
 B3-Goldstandard). Änderungen werden daran gemessen, nicht am Bauchgefühl.
 
+**Werkzeugkiste (2026-06-21):** Modul 22 ist als eigene Kachel „Such-Werkzeug"
+(eigenes 🔍-Symbol, tier basic, status fertig) in der Observatoriums-Vorteilspack-
+Truhe (`docs/observatorium/vorteilspack.js`) geführt — eigenständiges Werkzeug mit
+kopierbarem Modul-Code + Einbau-Anleitung, zur Verteilung an Forker und das
+SBKIM-Tool. Smoke `tests/smoke_observatorium_truhe.mjs` 22/22.
+
 **Vision — Such-Tool als Mycel-Agent:**
 [`_vision_such_agent.md`](_vision_such_agent.md) hält Klaus' Vision 2026-06-21 fest
 (Manifestation/Brücke der Mycel-Idee, sieben Mycel-Möglichkeiten, die **Agenten-

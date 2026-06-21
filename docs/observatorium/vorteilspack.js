@@ -14,6 +14,7 @@
 
   /* --- Werkzeug-Symbole (selbst gezeichnet, monochrom currentColor) ------- */
   var SYM = {
+    "22": '<circle cx="27" cy="27" r="13"/><path d="M37 37 L51 51"/><path d="M27 21 V33 M21 27 H33"/><circle cx="27" cy="27" r="3"/>',
     "00": '<path d="M32 50 L13 45 V52 L32 56 Z"/><path d="M32 50 L51 45 V52 L32 56 Z"/><path d="M32 50 V56"/><path d="M17 47.6 L28 49.6"/><path d="M36 49.6 L47 47.6"/><circle cx="36" cy="23" r="10"/><path d="M43.4 30.4 L50 37"/>',
     "01": '<rect x="20" y="12" width="24" height="40" rx="12"/><path d="M20 30 H44"/><path d="M32 34 L38 40 L32 48 L26 40 Z"/><path d="M26 40 H38 M32 34 V48"/>',
     "02": '<path d="M32 10 C45 22 45 44 32 54 C19 44 19 22 32 10 Z"/><path d="M32 13 V25"/><circle cx="32" cy="38" r="7"/><path d="M28.5 40 q2 -4 4 -1 q1.5 2 3 -1"/>',
@@ -66,6 +67,12 @@
       was:"Die Außenhülle zur Browser-Umgebung: erkennt Fremdzugriff (KI-Browser-Agenten, App-zu-App-Brücken) und bedient die postMessage-Brücke ohne Server.",
       wie:"Sub (a) Read-API liefert einen Snapshot (mit Siegel-Hook), Sub (b) bedient eingehende postMessage-Ops (u.a. op:\"query\" → Modul 04 queryLocal). Ein Fremdzugriff-Detektor schaltet die FREMD-Lampe.",
       deps:"01 Storage, 02 Spore (+ 16 Siegel-Hook)", code:"src/modules/15_membran.js", smoke:"tests/smoke_bau15b_membran.mjs", karte:"docs/components/15_membran.md" },
+
+    { id:"22", name:"Such-Werkzeug", tier:"basic", status:"fertig",
+      task:"Semantische Bedeutungs-Suche (App · Knoten · Netz), server-los.",
+      was:"Ein frei bewegliches Floating-Such-Tool, das die BEDEUTUNG hinter den Worten versteht — nicht Stichwörter. Drei getrennt ankreuzbare Bereiche: App (eigener Werkzeug-Korpus), Knoten (verbundene Mycel-Knoten, rein lokal) und Internet (Pilz-Egress: KI-Such-Brücke). Mit eigenem Schlüssel-Tresor (Shamir 2/3 + 🔐), automatischem KI-Aufruf mit Web-Suche (Claude direkt aus dem Browser, CORS live bestätigt), Schärfen-Feld, Agenten-Visitenkarte, Treffern als Prozent + 10+▾-Pfeil + 🖨 Block-Kopieren + Fortschrittsbalken. Läuft eigenständig — auch ohne Mycel-Anschluss.",
+      wie:"Skript laden (KEIN Auto-Init), SbkimSearchWidget.init({...}) aufrufen — es self-mountet als 🔍-Blase und wächst bei Interaktion zum Panel. Komponiert Modul 03 (Embedding) + 04 (Match) für die Bedeutungs-Sortierung, optional Modul 21 (Sprache). Der Kopier-Weg ist gratis; der automatische Aufruf braucht einen BYOK-Schlüssel im Tresor.",
+      deps:"03 Embedding, 04 Match (+ 21 Spracheingabe optional)", code:"src/modules/22_such_widget.js", smoke:"tests/smoke_bau22_such_widget.mjs", karte:"docs/components/22_such_widget.md" },
 
     { id:"03", name:"Embedding", tier:"basic", status:"fertig",
       task:"Text → Vektor (384-dim, lazy).",
