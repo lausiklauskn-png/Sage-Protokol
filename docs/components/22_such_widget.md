@@ -53,12 +53,47 @@ in Kombination mit dieser PWA.
 
 | Increment | Inhalt | Status |
 |---|---|---|
-| **1** | **Widget-Shell** — Self-Mount, Drag, klein→groß, leicht transparent, eigenes Textfeld (UX-Erhalt), Sprach-Knopf (Modul 21), interne Suche (Modul 04 `queryLocal`) + Richter (Modul 04 `hybridMatch`), EU-Politik-Auswahl, X-Schließen, Persistenz. | ✅ **diese Sitzung** |
-| **2** | **PWA-/Suchfeld-Kopplung** über Modul 15 Membran — Host-Suchfeld erkennen, Inhalt lesen, aus dem Suchfeld interagieren. **Sicherheits-sensibel** (Host-Inhalt = `untrusted external data`). | ⏳ eigene Folge-Sitzung |
+| **1** | **Widget-Shell** — Self-Mount, Drag, klein→groß, leicht transparent, eigenes Textfeld (UX-Erhalt), Sprach-Knopf (Modul 21), interne Suche (Modul 04 `queryLocal`) + Richter (Modul 04 `hybridMatch`), EU-Politik-Auswahl, X-Schließen, Persistenz. | ✅ |
+| **2 A** | **KI-Such-Brücke · Gratis-Kopier-Pfad** — Suchfeld baut Prompt → KI-Anbieter-Wahl (Claude/ChatGPT/Perplexity + EU: Mistral/Aleph Alpha) → Prompt kopieren + Anbieter öffnen → KI-Antwort (JSON) einfügen → `parseAiAnswer` (Code-Fence + URL-Müll säubern) → semantisch sortieren. Kein Schlüssel. | ✅ **diese Sitzung** |
+| **2 B** | **KI-Such-Brücke · API-Modus + Widget-Tresor** — eigener Widget-Tresor (Shamir 2/3 + eigenes Passwort + 🔐-Symbol, Krypto-Kern aus Modul 20/02), direkter Browser-API-Aufruf mit Websuche → Antwort **automatisch** ins Widget. App-Schlüssel-Durchreichung (`init({apiKey})`) zuerst, sonst Tresor. **Sicherheits-sensibel.** | ⏳ eigene Folge-Sitzung |
+| **3** | **PWA-/Suchfeld-Kopplung** über Modul 15 Membran — Host-Suchfeld erkennen, Inhalt lesen, aus dem Suchfeld interagieren. **Sicherheits-sensibel** (Host-Inhalt = `untrusted external data`). | ⏳ eigene Folge-Sitzung |
 
-Increment 1 baut ein **vollständig nutzbares Standalone-Such-Tool**. Die
-Kopplung (Increment 2) ist additiv: sie erweitert die Korpus-Quelle + die
-Interaktions-Richtung, ohne die Shell umzubauen.
+Increment 1 baut ein **vollständig nutzbares Standalone-Such-Tool**. Increment 2
+löst Klaus' Internet-Vision (2026-06-21): das Widget **sucht nicht selbst**, es
+**baut den Prompt und ordnet die Antwort** — die KI ist die Suchmaschine der Wahl,
+der Nutzer (Stufe A) oder ein Schlüssel (Stufe B) ist die Brücke. Increment 3 ist
+additiv (Korpus-Quelle + Interaktions-Richtung), ohne die Shell umzubauen.
+
+### Increment 2 — KI-Such-Brücke (Klaus' Festlegung 2026-06-21)
+
+**Warum:** Echte Inline-Web-Treffer scheiterten an der Browser-Wand (CORS) und an
+gesperrten öffentlichen SearXNG-Instanzen. Eine KI mit Websuche liefert die
+Quellen aber als **Text** — der per Einfügen (Stufe A) oder per API (Stufe B)
+hereinkommt, ohne CORS-Problem. Erst wenn die Antwort **zurück ins Widget**
+kommt, zündet das Vektor-Sortieren (am realen Test 2026-06-21 bestätigt: 15
+ChatGPT-Quellen wurden nach Bedeutung sortiert, die „Nest entfernen"-Seite
+korrekt nach unten, obwohl sie „Wespen"+„Hausmittel" enthielt).
+
+**Stufe A (gebaut):** `buildPrompt(query)` (Code-Block-Regel → ChatGPT-Copy-Knopf
++ saubere URLs) · KI-Anbieter-`<select>` (`AI_PROVIDERS`, bei `euPolicy:"bindend"`
+nur EU-Anbieter) · „🤖 Prompt → KI" (Clipboard + Anbieter best-effort öffnen) ·
+Einfüge-`<textarea>` + „↓ Antwort sortieren" → `parseAiAnswer` → in die vorhandene
+Sortiermaschine. `parseAiAnswer` verträgt Code-Fences + säubert URL-Müll
+(unsichtbare Zitat-Artefakte, im Test gesehen).
+
+**Stufe B (Spec, NICHT gebaut):** eigener **Widget-Tresor** wie BLPs Geheimfach —
+eigenes Passwort + **Shamir 2-von-3**, kleines **🔐-Symbol**; Krypto-Kern aus
+Modul 20 (`exportBackup`/`importBackup`, PBKDF2 ≥600k + AES-GCM-256). Direkter
+Browser-Aufruf der gewählten KI **mit Websuche** (Claude Web-Search-Tool ·
+Perplexity `sonar` · OpenAI Responses · Mistral) → Antwort **automatisch** ins
+Widget, sortiert. **App-Schlüssel-Durchreichung:** läuft das Widget in einer App
+mit eigenem Schlüssel, reicht sie ihn via `init({apiKey})` durch; sonst der
+Widget-Tresor. **Sicherheit:** Schlüssel nur lokal, nie ins Mycel, nie auf
+GitHub, nur an den gewählten Anbieter; bei verteilten Apps trägt jeder seinen
+eigenen ein (nie im Code).
+
+**EU/DSGVO:** Anbieter-Liste kennt EU-gehostete (`euBased`) — **Mistral** (Paris)
++ **Aleph Alpha** (Heidelberg). Bei `euPolicy:"bindend"` erscheinen **nur** diese.
 
 ---
 
