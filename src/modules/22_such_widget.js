@@ -113,6 +113,8 @@
   var aiPasteEl = null;        // Einfüge-Feld für die KI-Antwort (JSON)
   var aiSortBtnEl = null;      // „Antwort sortieren"-Knopf
   var internetCheckboxEl = null; // Referenz auf die Internet-Bereichs-Checkbox
+  var vaultSectionEl = null;   // Tresor-Bedien-Sektion (🔐)
+  var vaultSectionOpen = false;// Tresor-Sektion ein-/ausgeklappt
 
   // Position + Sichtbarkeit (localStorage-persistiert).
   var currentCorner = DEFAULT_CORNER;
@@ -632,6 +634,53 @@
       "  cursor: pointer;",
       "}",
       "#" + WIDGET_ID + " .sbkim-sw-more:hover { background: rgba(255, 255, 255, 0.12); }",
+      "#" + WIDGET_ID + " .sbkim-sw-vault {",
+      "  margin-top: 0.4rem;",
+      "  padding: 0.45rem 0.5rem;",
+      "  background: rgba(255, 255, 255, 0.05);",
+      "  border: 1px solid rgba(167, 139, 250, 0.3);",
+      "  border-radius: 10px;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-vnote { color: rgba(245, 245, 255, 0.72); font-size: 0.68rem; line-height: 1.3; margin: 0.15rem 0; }",
+      "#" + WIDGET_ID + " .sbkim-sw-vinput {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.3rem;",
+      "  background: rgba(0, 0, 0, 0.28);",
+      "  border: 1px solid rgba(255, 255, 255, 0.16);",
+      "  border-radius: 8px;",
+      "  color: #F5F5FF;",
+      "  font-size: 0.72rem;",
+      "  padding: 0.32rem 0.45rem;",
+      "  outline: none;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-vbtn {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.32rem;",
+      "  background: rgba(167, 139, 250, 0.18);",
+      "  border: 1px solid rgba(167, 139, 250, 0.4);",
+      "  border-radius: 8px;",
+      "  color: #EDE9FE;",
+      "  font-size: 0.72rem;",
+      "  padding: 0.34rem 0.45rem;",
+      "  cursor: pointer;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-vbtn:hover { background: rgba(167, 139, 250, 0.28); }",
+      "#" + WIDGET_ID + " .sbkim-sw-vdelete { background: rgba(255, 120, 120, 0.12); border-color: rgba(255, 120, 120, 0.35); color: rgba(255, 200, 200, 0.9); }",
+      "#" + WIDGET_ID + " .sbkim-sw-vshares {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.3rem;",
+      "  background: rgba(0, 0, 0, 0.32);",
+      "  border: 1px solid rgba(255, 255, 255, 0.16);",
+      "  border-radius: 8px;",
+      "  color: #F5F5FF;",
+      "  font-size: 0.62rem;",
+      "  font-family: 'Geist Mono', ui-monospace, monospace;",
+      "  padding: 0.35rem 0.45rem;",
+      "  resize: vertical;",
+      "}",
     ].join("\n");
   }
 
@@ -726,6 +775,13 @@
     title.className = "sbkim-sw-title";
     title.textContent = "SBKIM-Suche";
     head.appendChild(title);
+    var vaultBtn = makeBtn(doc, "sbkim-sw-btn sbkim-sw-vaultbtn", "🔐", "Schlüssel-Tresor (KI-Schlüssel sicher speichern)");
+    vaultBtn.addEventListener("click", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      vaultSectionOpen = !vaultSectionOpen;
+      renderVaultSection();
+    });
+    head.appendChild(vaultBtn);
     var minBtn = makeBtn(doc, "sbkim-sw-btn sbkim-sw-min", "–", "Minimieren — zurück zur Such-Blase");
     minBtn.addEventListener("click", function (ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -866,6 +922,14 @@
       handleAiSortClick();
     });
     panelEl.appendChild(aiSortBtnEl);
+
+    // Tresor-Sektion (🔐, standardmäßig zu) — füllt sich je nach Zustand.
+    vaultSectionEl = doc.createElement("div");
+    vaultSectionEl.className = "sbkim-sw-vault";
+    vaultSectionEl.style.display = "none";
+    vaultSectionEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    panelEl.appendChild(vaultSectionEl);
+    renderVaultSection();
 
     // Hinweis-Zeile + Treffer-Liste.
     hintEl = doc.createElement("div");
@@ -1430,6 +1494,104 @@
       if (objs.length < VAULT_SHAMIR_K) return null;
       return vBytesToText(vaultCombineBytes(objs.slice(0, VAULT_SHAMIR_K)));
     } catch (e) { return null; }
+  }
+
+  // ---- B1b: Tresor-Bedien-Sektion (🔐) ----
+  var vaultShownShares = null;  // nach Anlegen kurz die Anteile zeigen
+
+  function vMakeInput(type, placeholder) {
+    var d = global.document, i = d.createElement("input");
+    i.type = type; i.className = "sbkim-sw-vinput";
+    i.setAttribute("placeholder", placeholder);
+    i.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    return i;
+  }
+  function vMakeBtn(label) {
+    var d = global.document, b = d.createElement("button");
+    b.type = "button"; b.className = "sbkim-sw-vbtn"; b.textContent = label;
+    b.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    return b;
+  }
+  function vMakeNote(text) {
+    var d = global.document, n = d.createElement("div");
+    n.className = "sbkim-sw-vnote"; n.textContent = text; return n;
+  }
+
+  function renderVaultSection() {
+    if (!vaultSectionEl) return;
+    var d = global.document;
+    vaultSectionEl.style.display = vaultSectionOpen ? "block" : "none";
+    while (vaultSectionEl.firstChild) vaultSectionEl.removeChild(vaultSectionEl.firstChild);
+    if (!vaultSectionOpen) return;
+
+    // Nach dem Anlegen: Anteile sichern lassen.
+    if (vaultShownShares) {
+      vaultSectionEl.appendChild(vMakeNote("Tresor angelegt. Bewahre diese 3 Anteile GETRENNT auf — mit 2 davon stellst du dein Passwort wieder her:"));
+      var ta = d.createElement("textarea");
+      ta.className = "sbkim-sw-vshares"; ta.setAttribute("rows", "3"); ta.setAttribute("readonly", "readonly");
+      ta.value = vaultShownShares.join("\n");
+      ta.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+      vaultSectionEl.appendChild(ta);
+      var done = vMakeBtn("Anteile gesichert — fertig");
+      done.addEventListener("click", function () { vaultShownShares = null; renderVaultSection(); });
+      vaultSectionEl.appendChild(done);
+      return;
+    }
+
+    if (!hasVault()) {
+      vaultSectionEl.appendChild(vMakeNote("Schlüssel-Tresor anlegen (für „" + aiProviderById(optAiProvider).label + "“). Passwort + Schlüssel bleiben verschlüsselt nur auf diesem Gerät."));
+      var pw1 = vMakeInput("password", "Tresor-Passwort (min. 8 Zeichen)");
+      var key1 = vMakeInput("password", "API-Schlüssel (z. B. sk-…)");
+      var createBtn = vMakeBtn("🔐 Tresor anlegen");
+      var status1 = vMakeNote("");
+      createBtn.addEventListener("click", function () {
+        var secrets = {}; secrets[optAiProvider] = key1.value;
+        status1.textContent = "Verschlüssele …";
+        createVault(pw1.value, secrets).then(function (res) {
+          vaultShownShares = res.shares; renderVaultSection();
+        }).catch(function (e) {
+          status1.textContent = e && e.name === "WeakPasswordError"
+            ? "Passwort braucht mindestens 8 Zeichen." : "Anlegen fehlgeschlagen.";
+        });
+      });
+      vaultSectionEl.appendChild(pw1);
+      vaultSectionEl.appendChild(key1);
+      vaultSectionEl.appendChild(createBtn);
+      vaultSectionEl.appendChild(status1);
+      return;
+    }
+
+    if (!vaultUnlocked) {
+      vaultSectionEl.appendChild(vMakeNote("Tresor entsperren:"));
+      var pw2 = vMakeInput("password", "Tresor-Passwort");
+      var unlockBtn = vMakeBtn("🔓 Entsperren");
+      var status2 = vMakeNote("");
+      unlockBtn.addEventListener("click", function () {
+        status2.textContent = "Prüfe …";
+        unlockVault(pw2.value).then(function (ok) {
+          if (ok) { renderVaultSection(); }
+          else { status2.textContent = "Falsches Passwort."; }
+        });
+      });
+      vaultSectionEl.appendChild(pw2);
+      vaultSectionEl.appendChild(unlockBtn);
+      vaultSectionEl.appendChild(status2);
+      var delLink = vMakeBtn("Tresor löschen");
+      delLink.className = "sbkim-sw-vbtn sbkim-sw-vdelete";
+      delLink.addEventListener("click", function () { deleteVault(); renderVaultSection(); });
+      vaultSectionEl.appendChild(delLink);
+      return;
+    }
+
+    // entsperrt
+    vaultSectionEl.appendChild(vMakeNote("🔓 Tresor entsperrt — Schlüssel aktiv (KI-Richter / automatischer Aufruf können ihn nutzen)."));
+    var lockBtn = vMakeBtn("🔒 Sperren");
+    lockBtn.addEventListener("click", function () { lockVault(); renderVaultSection(); });
+    vaultSectionEl.appendChild(lockBtn);
+    var delLink2 = vMakeBtn("Tresor löschen");
+    delLink2.className = "sbkim-sw-vbtn sbkim-sw-vdelete";
+    delLink2.addEventListener("click", function () { deleteVault(); renderVaultSection(); });
+    vaultSectionEl.appendChild(delLink2);
   }
 
 
