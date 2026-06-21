@@ -155,6 +155,12 @@ Quellen gesammelt, 10 mit 88/88/87 % + Beschreibung gezeigt, Pfeil „noch 16".
 unten) + Hunde-Zecken im Hund-UND-Katze-Haushalt (Permethrin/Katzen-Sicherheit,
 B3-Goldstandard). Änderungen werden daran gemessen, nicht am Bauchgefühl.
 
+**Vision — Such-Tool als Mycel-Agent:**
+[`_vision_such_agent.md`](_vision_such_agent.md) hält Klaus' Vision 2026-06-21 fest
+(Manifestation/Brücke der Mycel-Idee, sieben Mycel-Möglichkeiten, die **Agenten-
+Visitenkarte**: das Tool beschreibt vor jeder Anfrage sein Ziel; Verstehen beginnt
+am Handschlag; eine Identität = Spore; nächster Schritt Visitenkarten-Präambel).
+
 **Lehre Recall vs. Ranking (Klaus' NoBite-Befund 2026-06-21):** Das Werkzeug
 arbeitet zweistufig — **Sammeln (Eingang)** + **Sortieren (Bedeutungs-Maschine)**.
 Die Sortier-Maschine kann nur ordnen, was das Sammeln liefert; ein gutes, aber
