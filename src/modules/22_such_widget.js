@@ -133,6 +133,12 @@
   var optEuOnly = false;       // nur bei euPolicy:"frei" relevant
   var optQueryLabel = null;
   var optK = DEFAULT_K;
+  // Treffer-Anzeige (Klaus 2026-06-21): viel sammeln + ranken, 10 zeigen, der
+  // Rest hinter einem ▾-Pfeil, je Klick 10 mehr.
+  var RESULT_PAGE_SIZE = 10;
+  var MAX_RANK = 100;          // so viele Kandidaten werden semantisch gerankt
+  var resultsVisibleCount = RESULT_PAGE_SIZE;
+  var lastRenderRes = null;    // letztes Ergebnis, fürs Nachladen ohne neue Suche
   var optAllowDrag = true;
   var optRememberHidden = true;
   var optZIndex = DEFAULT_Z_INDEX;
@@ -601,6 +607,25 @@
       "  font-size: 0.7rem;",
       "  margin-top: 0.15rem;",
       "}",
+      "#" + WIDGET_ID + " .sbkim-sw-result .sbkim-sw-snippet {",
+      "  color: rgba(245, 245, 255, 0.72);",
+      "  font-size: 0.7rem;",
+      "  line-height: 1.3;",
+      "  margin-top: 0.12rem;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-more {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.4rem;",
+      "  background: rgba(255, 255, 255, 0.06);",
+      "  border: 1px solid rgba(255, 255, 255, 0.16);",
+      "  border-radius: 8px;",
+      "  color: rgba(245, 245, 255, 0.85);",
+      "  font-size: 0.72rem;",
+      "  padding: 0.32rem 0.45rem;",
+      "  cursor: pointer;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-more:hover { background: rgba(255, 255, 255, 0.12); }",
     ].join("\n");
   }
 
@@ -1038,7 +1063,7 @@
       "- Erfinde KEINE URLs, nur echte Treffer. Keine Dubletten.",
       "- Format pro Eintrag:",
       '  {"titel": "...", "url": "https://...", "quelle": "domain.de", "text": "ein bis zwei Sätze"}',
-      "- So viele echte Einträge wie möglich (Ziel bis 50).",
+      "- So viele echte Einträge wie möglich (Ziel bis 100).",
     ].join("\n");
   }
 
@@ -1160,7 +1185,8 @@
     var texts = entries.map(function (e) { return e.titel + (e.text ? " — " + e.text : ""); });
     return Promise.resolve(embedding.embedPassageBatch(texts)).then(function (vecs) {
       return entries.map(function (e, i) {
-        return { label: e.titel, text: texts[i], anchorId: e.url || e.titel, url: e.url || null, passageVec: vecs[i] };
+        return { label: e.titel, text: texts[i], snippet: e.text || null,
+                 anchorId: e.url || e.titel, url: e.url || null, passageVec: vecs[i] };
       });
     });
   }
@@ -1171,7 +1197,8 @@
     var match = global.SbkimMatch;
     if (!match || typeof match.queryLocal !== "function") return Promise.resolve([]);
     if (!Array.isArray(corpus) || corpus.length === 0) return Promise.resolve([]);
-    return Promise.resolve(match.queryLocal(query, optK, { corpus: corpus })).then(function (res) {
+    var k = Math.min(corpus.length, MAX_RANK); // viel ranken, UI paginiert
+    return Promise.resolve(match.queryLocal(query, k, { corpus: corpus })).then(function (res) {
       res = res || [];
       var byKey = {};
       for (var i = 0; i < corpus.length; i++) { var c = corpus[i]; byKey[c.anchorId || c.label] = c; }
@@ -1179,7 +1206,7 @@
         var src = byKey[r.anchorId || r.label] || {};
         return {
           label: r.label, score: r.score, anchorId: r.anchorId, source: source,
-          text: src.text || r.label, url: src.url || null,
+          text: src.text || r.label, snippet: src.snippet || null, url: src.url || null,
         };
       });
     });
@@ -1337,7 +1364,7 @@
       lists.forEach(function (l) { if (Array.isArray(l)) all = all.concat(l); });
       if (Array.isArray(internet.candidates)) all = all.concat(internet.candidates);
       all.sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
-      var top = all.slice(0, Math.max(optK, 8));
+      var top = all.slice(0, MAX_RANK);
       var webLink = internet.webLink;
 
       if (top.length === 0) {
@@ -1368,6 +1395,7 @@
     queryValue = text;
     setHint("Suche läuft …");
     searchCount++;
+    resultsVisibleCount = RESULT_PAGE_SIZE; // neue Suche → wieder die ersten 10
     expand(); // Ergebnis ist da bzw. kommt — Widget wächst.
     return runMultiSearch(text).then(function (res) {
       renderResults(res);
@@ -1415,9 +1443,12 @@
       "richter": "KI-Richter-Urteil." + (res.reason ? " (Hinweis: " + res.reason + ")" : ""),
     };
     setHint(modeHint[res.mode] || "");
+    lastRenderRes = res;
 
-    // Erst die echten Treffer (Klaus-Politur 2026-06-21: Web-Karte ans Ende).
-    for (var i = 0; i < treffer.length; i++) {
+    // Nur die ersten resultsVisibleCount zeigen, Rest hinter dem ▾-Pfeil
+    // (Klaus 2026-06-21: 10 zeigen, je Klick 10 mehr).
+    var shown = Math.min(treffer.length, resultsVisibleCount);
+    for (var i = 0; i < shown; i++) {
       var t = treffer[i];
       var el = doc.createElement("div");
       el.className = "sbkim-sw-result";
@@ -1443,10 +1474,19 @@
         line.appendChild(doc.createTextNode(" "));
         var scoreEl = doc.createElement("span");
         scoreEl.className = "sbkim-sw-score";
-        scoreEl.textContent = t.score.toFixed(2);
+        // Cosinus → Prozent Bedeutungs-Übereinstimmung (anschaulich für Klaus).
+        scoreEl.textContent = Math.round(t.score * 100) + " %";
         line.appendChild(scoreEl);
       }
       el.appendChild(line);
+      // Inhalt (KI-Snippet) zeigen, damit man SIEHT, worum es geht.
+      if (t.snippet) {
+        var snipEl = doc.createElement("div");
+        snipEl.className = "sbkim-sw-snippet";
+        snipEl.textContent = t.snippet;
+        el.appendChild(snipEl);
+      }
+      // Begründung nur beim KI-Richter (erklärt das „worin").
       if (t.begruendung) {
         var reasonEl = doc.createElement("div");
         reasonEl.className = "sbkim-sw-reason";
@@ -1454,6 +1494,22 @@
         el.appendChild(reasonEl);
       }
       resultsEl.appendChild(el);
+    }
+
+    // ▾-Pfeil: die nächsten 10 aufklappen (ohne neue Suche).
+    if (treffer.length > shown) {
+      var moreBtn = doc.createElement("button");
+      moreBtn.type = "button";
+      moreBtn.className = "sbkim-sw-more";
+      var rest = treffer.length - shown;
+      moreBtn.textContent = "▾ weitere " + Math.min(RESULT_PAGE_SIZE, rest) + " zeigen (noch " + rest + ")";
+      moreBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+      moreBtn.addEventListener("click", function (ev) {
+        if (ev && ev.preventDefault) ev.preventDefault();
+        resultsVisibleCount += RESULT_PAGE_SIZE;
+        if (lastRenderRes) renderResults(lastRenderRes);
+      });
+      resultsEl.appendChild(moreBtn);
     }
 
     // Web-Karte (Internet ohne SearXNG-URL / Fallback) ans ENDE.

@@ -88,6 +88,7 @@ function makeStubElement(tagName, doc) {
   el.setPointerCapture = () => {};
   el.releasePointerCapture = () => {};
   Object.defineProperty(el, "innerHTML", { get: () => "", set: (v) => { if (v === "") el.children.length = 0; } });
+  Object.defineProperty(el, "firstChild", { get: () => el.children[0] || null });
   return el;
 }
 
@@ -107,6 +108,7 @@ function queryAll(root, sel) { const out = []; walkAll(root, (el) => { if (el !=
 function makeStubDocument() {
   const doc = { nodeType: 9 };
   doc.createElement = (tag) => makeStubElement(tag, doc);
+  doc.createTextNode = (str) => { const t = makeStubElement("#text", doc); t.nodeType = 3; t.textContent = String(str); return t; };
   doc.body = makeStubElement("body", doc);
   doc.head = makeStubElement("head", doc);
   doc.documentElement = makeStubElement("html", doc);
@@ -545,6 +547,42 @@ async function run() {
     String(W.isVisible()), W.isVisible() === true);
   eq("Probe 36: localStorage geheilt auf true", "true",
     stub.localStorage.getItem("sbkim_search_widget_visible"));
+
+  // ---- Probe 37: Treffer-Wert als Prozent + Snippet (Klaus-Wunsch) ----
+  mountMatch("treffer");
+  stub.SbkimEmbedding = { embedPassageBatch: async (texts) => texts.map(() => new Float32Array(384)) };
+  await W.init({ areas: { app: false, knoten: false, internet: true } });
+  W.setAiAnswer('[{"titel":"Alpha","url":"https://a.de","quelle":"a.de","text":"Inhalt A"},' +
+    '{"titel":"Beta","url":"https://b.de","quelle":"b.de","text":"Inhalt B"}]');
+  let field37 = queryFirst(root, ".sbkim-sw-input");
+  field37.value = "frage";
+  let btn37 = queryFirst(root, ".sbkim-sw-search");
+  btn37.dispatchEvent({ type: "click", target: btn37, stopPropagation: () => {} });
+  for (let _t = 0; _t < 8; _t++) await new Promise((r) => setTimeout(r, 0));
+  const scoreEl = queryFirst(root, ".sbkim-sw-score");
+  record("Probe 37: Wert als Prozent gerendert", "true",
+    String(!!scoreEl && /%$/.test(scoreEl.textContent)), !!scoreEl && /%$/.test(scoreEl.textContent));
+  const snipEl = queryFirst(root, ".sbkim-sw-snippet");
+  record("Probe 37: Snippet (Inhalt) gezeigt", "true",
+    String(!!snipEl && /Inhalt/.test(snipEl.textContent)), !!snipEl && /Inhalt/.test(snipEl.textContent));
+
+  // ---- Probe 38: 10 zeigen, Rest hinter ▾-Pfeil, Klick lädt 10 nach ----
+  const bigCorpus = [];
+  for (let i = 0; i < 12; i++) bigCorpus.push({ label: "T" + i, score: 0.9 - i * 0.01, anchorId: "k" + i });
+  const savedQL = stub.SbkimMatch.queryLocal;
+  stub.SbkimMatch.queryLocal = async () => bigCorpus.map(c => ({ label: c.label, score: c.score, anchorId: c.anchorId }));
+  let field38 = queryFirst(root, ".sbkim-sw-input");
+  field38.value = "frage";
+  let btn38 = queryFirst(root, ".sbkim-sw-search");
+  btn38.dispatchEvent({ type: "click", target: btn38, stopPropagation: () => {} });
+  for (let _t = 0; _t < 8; _t++) await new Promise((r) => setTimeout(r, 0));
+  eq("Probe 38: zunächst 10 Treffer sichtbar", 10, queryAll(root, ".sbkim-sw-result").length);
+  const moreBtn = queryFirst(root, ".sbkim-sw-more");
+  record("Probe 38: ▾-Pfeil vorhanden", "true", String(!!moreBtn), !!moreBtn);
+  if (moreBtn) moreBtn.dispatchEvent({ type: "click", target: moreBtn, preventDefault: () => {}, stopPropagation: () => {} });
+  eq("Probe 38: nach Klick alle 12 sichtbar", 12, queryAll(root, ".sbkim-sw-result").length);
+  stub.SbkimMatch.queryLocal = savedQL;
+  delete stub.SbkimEmbedding;
 }
 
 const finalize = () => {
