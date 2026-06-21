@@ -122,7 +122,12 @@ App-Schlüssel-Durchreichung + Sicherheit: Schlüssel nur lokal, **nie ins Mycel
 nie auf GitHub**, nur an den gewählten Anbieter; bei verteilten Apps trägt jeder
 seinen eigenen ein (nie im Code).
 
-**KI-Anbieter (Klaus-Entscheidung 2026-06-21): nur ChatGPT · Claude · Perplexity.**
+**KI-Anbieter (Klaus-Entscheidung 2026-06-21): ChatGPT · Claude · Gemini · Perplexity.**
+**Gemini (Google) 2026-06-21 dazu** als semantisch starker „KI-Freund" — führt
+Anfang 2026 die Benchmarks für abstraktes Schließen (ARC-AGI-2) + MMLU-Pro an, ist
+explizit auf „Bedeutung jenseits der bloßen Wörter" gebaut und mehrsprachig stark
+(Deutsch). Empfehlung am Referenzfall 2 (Hund+Katze) zu validieren — Benchmark ≠
+Garantie (vgl. Mistral: gut in Sprach-Benchmarks, real schwach).
 **Mistral + Aleph Alpha bewusst RAUS** aus diesem Widget — Aleph Alpha kann keine
 Web-Suche (für ein Such-Werkzeug nutzlos), Mistral lieferte in mehreren Tests
 schwach (vgl. Hunde-Zecken-Test: Permethrin/Advantix ohne Katzen-Warnung). **Nur
