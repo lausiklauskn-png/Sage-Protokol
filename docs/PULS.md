@@ -1889,6 +1889,13 @@ attestation), 17 Fail-soft (kein Throw, 3 Fallback), 18 Opt-in-aus (kein Netz-Au
 19 Bidir streng true&false=false + EU-Default mistral / US-Default claude. Der Richter ist
 damit browser-bewiesen, nicht nur headless.
 
+**Bau-Observatorium angelegt (2026-06-21, Klaus' Wahl):** neue Geschwister-Doku
+`docs/OBSERVATORIUM_BAU.md` für Nicht-Browser-Bau-Lehren + offene Bau-Problematiken
+(parallel zum Browser-Observatorium, Schicht-4-Werkstattraum). Saat: Lehre 1 „Interop ist
+Vertrag, nicht Kopie" (BLP), Lehre 2 „Reasoning-LLM ≠ Bild-API" (Vision an OCR-Vorstufe),
+offene Bau-Problematik 1 „Modul 02 hat keinen öffentlichen Signier-Helfer". Reziproker
+Cross-Link im Browser-Observatorium-Kopf.
+
 **Offen / nächster Schritt:** **BLP-Pilot** — `HYBRID-MATCH-EINBAU.md`-Helfer mit BLPs
 echtem Mistral-Schlüssel ans Such-Feld hängen (eigene Sitzung im BLP-Repo, da extern).
 Weiter offen: Modul-02-Signier-Helfer (Bezeugung); Anisotropie-Hebel (Whitening +
