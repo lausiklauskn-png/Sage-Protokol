@@ -1456,11 +1456,17 @@
           .ms-top { position: relative; z-index: 2; padding: 0.85rem 1rem 1.5rem; background: linear-gradient(180deg, rgba(7,5,18,0.93) 0%, rgba(7,5,18,0.66) 52%, rgba(7,5,18,0) 100%); }
           .ms-date { display: block; text-align: right; font-family: "Geist Mono", monospace; font-size: 0.68rem; letter-spacing: 0.05em; color: rgba(244,180,53,0.72); margin-bottom: 0.4rem; }
           .ms-h { font-size: clamp(1.04rem, 1.5vw, 1.28rem); font-weight: 600; line-height: 1.16; margin: 0; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 55%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-          /* Unterer Streifen: weißer Fließtext auf dunklem Verlauf (unterhalb der Steine) */
-          .ms-bot { position: relative; z-index: 2; padding: 1.5rem 1rem 1rem; background: linear-gradient(0deg, rgba(7,5,18,0.95) 0%, rgba(7,5,18,0.74) 55%, rgba(7,5,18,0) 100%); }
-          .ms-p { color: rgba(255,255,255,0.9); line-height: 1.55; margin: 0; font-size: 0.88rem; }
+          /* Unterer Streifen: weißer Fließtext, klein gehalten, verdeckt das Bild kaum.
+             Bei Hover (Maus) oder Antippen (.is-open) wächst der Text und wird voll lesbar. */
+          .ms-bot { position: relative; z-index: 2; cursor: pointer; padding: 1.4rem 0.85rem 0.7rem; background: linear-gradient(0deg, rgba(7,5,18,0.88) 0%, rgba(7,5,18,0.5) 70%, rgba(7,5,18,0) 100%); transition: background .25s ease; }
+          .ms-p { color: rgba(255,255,255,0.92); line-height: 1.38; margin: 0; font-size: 0.6rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; transition: font-size .2s ease; }
           .ms-p strong { color: #fff; font-weight: 600; }
-          .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.84rem; margin-top: 0.7rem; }
+          /* Aufklappen: größer + voller Text, kräftigerer Schleier für Lesbarkeit */
+          .ms-tile:hover .ms-p, .ms-tile.is-open .ms-p { font-size: 0.84rem; line-height: 1.5; -webkit-line-clamp: 99; }
+          .ms-tile:hover .ms-bot, .ms-tile.is-open .ms-bot { background: linear-gradient(0deg, rgba(7,5,18,0.97) 0%, rgba(7,5,18,0.9) 62%, rgba(7,5,18,0.35) 100%); }
+          .ms-more { display: block; margin-top: 0.35rem; font-family: "Geist Mono", monospace; font-size: 0.58rem; letter-spacing: 0.04em; color: rgba(244,180,53,0.7); }
+          .ms-tile:hover .ms-more, .ms-tile.is-open .ms-more { display: none; }
+          .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.72rem; margin-top: 0.6rem; }
           .ms-link:hover { color: var(--accent); }
           /* Footer-Zeilen liegen ebenfalls im 12-Spalten-Bento — volle Breite erzwingen */
           .meta-footer.span-12, .legal-line.span-12 { grid-column: span 12; }
@@ -1478,11 +1484,12 @@
                 <span class="ms-date">17.05.2026</span>
                 <h2 class="ms-h">Das Mycel verbindet sich nach Bedeutung</h2>
               </div>
-              <div class="ms-bot">
+              <div class="ms-bot" onclick="this.closest('.ms-tile').classList.toggle('is-open')">
                 <p class="ms-p">Zwei getrennte Knoten — <strong>Mein-Mixarium</strong> und
                   <strong>Mein-Rezeptbuch</strong> — gaben sich server-los im Browser die Hand. Der
                   Abgleich gelang über die <strong>verwandte Bedeutung der Domänen</strong> (Cosinus
                   0.95), nicht über gleiche Wörter. Der erste bezeugte Cross-Knoten-Handschlag.</p>
+                <span class="ms-more">↕ tippen für mehr</span>
               </div>
             </article>
 
@@ -1493,13 +1500,14 @@
               <span class="ms-emoji">🌐</span>
               <div class="ms-top">
                 <span class="ms-date">20.06.2026</span>
-                <h2 class="ms-h">Über den Schöpfer hinaus</h2>
+                <h2 class="ms-h">Über den Ursprung hinaus</h2>
               </div>
-              <div class="ms-bot">
+              <div class="ms-bot" onclick="this.closest('.ms-tile').classList.toggle('is-open')">
                 <p class="ms-p">Mit <strong>BookLedgerPro</strong> — einer Buchhaltungs-App, die nicht
                   von hier gebaut wurde — dockte der erste <strong>eigenständige Fremd-Knoten</strong>
                   an. Identität kryptografisch verifiziert (Ed25519-Signatur, nodeId nachgerechnet).
                   Das Mycel wuchs über die eigenen Apps hinaus.</p>
+                <span class="ms-more">↕ tippen für mehr</span>
               </div>
             </article>
 
@@ -1512,10 +1520,11 @@
                 <span class="ms-date">21.06.2026</span>
                 <h2 class="ms-h">⭐ Bedeutung wird suchbar</h2>
               </div>
-              <div class="ms-bot">
+              <div class="ms-bot" onclick="if(event.target.closest('.ms-link'))return; this.closest('.ms-tile').classList.toggle('is-open')">
                 <p class="ms-p">Das Such-Werkzeug versteht die <strong>Bedeutung hinter den Worten</strong> —
                   nicht Stichwörter — und ordnet Treffer danach. Server-los im Browser, mit eigenem
                   Schlüssel-Tresor und automatischem KI-Aufruf. An Referenz-Fällen bewiesen.</p>
+                <span class="ms-more">↕ tippen für mehr</span>
                 <a class="ms-link" href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md"
                    target="_blank" rel="noopener">Den ganzen Werdegang lesen →</a>
               </div>
