@@ -1440,12 +1440,12 @@
           </a>
         </article>
         <style>
-          .ms-series { margin-top: 1.8rem; }
-          .ms-series-head { font-family: "Geist Mono", monospace; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.9rem; }
-          /* Drei Bild-Container nebeneinander (Werkzeugkiste-Stil) */
+          /* Meilenstein-Container — EIN Card-Container wie die Werkzeugkiste, drei Bilder darin */
+          .ms-series-head { font-family: "Geist Mono", monospace; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 1rem; }
           .ms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
           @media (max-width: 760px) { .ms-grid { grid-template-columns: 1fr; } }
-          .ms-tile { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: clamp(380px, 30vw, 460px); border-radius: 16px; overflow: hidden; border: 1px solid rgba(244,180,53,0.34); background: #05060f; box-shadow: 0 14px 44px rgba(0,0,0,0.42); }
+          /* Jede Kachel quadratisch wie das Quell-Bild — nicht langgezogen */
+          .ms-tile { position: relative; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; border: 1px solid rgba(244,180,53,0.34); background: #05060f; box-shadow: 0 14px 44px rgba(0,0,0,0.42); }
           .ms-tile.is-star { border-color: rgba(244,180,53,0.6); box-shadow: 0 0 0 1px rgba(244,180,53,0.22), 0 16px 50px rgba(0,0,0,0.5); }
           .ms-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
           .ms-tile.ms-noimg .ms-img { display: none; }
@@ -1462,8 +1462,10 @@
           .ms-p strong { color: #fff; font-weight: 600; }
           .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.84rem; margin-top: 0.7rem; }
           .ms-link:hover { color: var(--accent); }
+          /* Footer-Zeilen liegen ebenfalls im 12-Spalten-Bento — volle Breite erzwingen */
+          .meta-footer.span-12, .legal-line.span-12 { grid-column: span 12; }
         </style>
-        <section class="ms-series" id="meilenstein" aria-label="Meilensteine im Werdegang">
+        <article class="card span-12 ms-card" id="meilenstein" aria-label="Meilensteine im Werdegang">
           <p class="ms-series-head">Wendepunkte · Meilensteine im Werdegang</p>
           <div class="ms-grid">
 
@@ -1520,14 +1522,14 @@
             </article>
 
           </div>
-        </section>
-        <div class="meta-footer">
+        </article>
+        <div class="meta-footer span-12">
           <div class="meta-cell"><span class="k">Branch</span><span class="v" id="ft-branch">—</span></div>
           <div class="meta-cell"><span class="k">Protokoll</span><span class="v" id="ft-proto">—</span></div>
           <div class="meta-cell"><span class="k">Schema</span><span class="v" id="ft-schema">—</span></div>
           <div class="meta-cell"><span class="k">Update</span><span class="v" id="ft-update">—</span></div>
         </div>
-        <p class="legal-line">© 2026 Klaus Nitzsche · Alle Rechte vorbehalten ·
+        <p class="legal-line span-12">© 2026 Klaus Nitzsche · Alle Rechte vorbehalten ·
           <a href="impressum.html">Impressum, Datenschutz &amp; Urheberrecht</a></p>
       </div>
     </main>
