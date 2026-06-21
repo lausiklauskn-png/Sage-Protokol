@@ -1883,10 +1883,17 @@ Bezeugung (`attestation` signiert in die Inbox) braucht eine kleine Folge-Sitzun
 (`SbkimSpore.signPayload(obj)` o.ä.). Bis dahin `attestation` roh ablegen; der Richter
 läuft auch ohne Signatur voll.
 
-**Offen / nächster Schritt:** **Klaus' Browser-Sichttest Panel 04 Knöpfe 16–19** (Headless
-ersetzt ihn nicht), DANN BLP-Pilot per `HYBRID-MATCH-EINBAU.md`. Weiter offen: Modul-02-
-Signier-Helfer (Bezeugung); Anisotropie-Hebel (Whitening + Schwellen-Neukalibrierung,
-netzweit, eigene koordinierte Entscheidung); Bau-Zeit-Authoring-Helfer (Konzept § Bau-Parameter 6).
+**Sichttest GRÜN (Klaus, Browser, 2026-06-20):** Panel 04 Knöpfe 16–19 alle vier grün
+am Galaxy Tab S6 bestätigt — 16 Richter Happy-Path (Wein passt / Auspuff passt-nicht +
+attestation), 17 Fail-soft (kein Throw, 3 Fallback), 18 Opt-in-aus (kein Netz-Aufruf),
+19 Bidir streng true&false=false + EU-Default mistral / US-Default claude. Der Richter ist
+damit browser-bewiesen, nicht nur headless.
+
+**Offen / nächster Schritt:** **BLP-Pilot** — `HYBRID-MATCH-EINBAU.md`-Helfer mit BLPs
+echtem Mistral-Schlüssel ans Such-Feld hängen (eigene Sitzung im BLP-Repo, da extern).
+Weiter offen: Modul-02-Signier-Helfer (Bezeugung); Anisotropie-Hebel (Whitening +
+Schwellen-Neukalibrierung, netzweit, eigene koordinierte Entscheidung); Bau-Zeit-
+Authoring-Helfer (Konzept § Bau-Parameter 6).
 
 ### 2026-06-20 · Brainstorming + Konzept: Hybrid-Match (KI-Richter + lokaler Fallback)
 
