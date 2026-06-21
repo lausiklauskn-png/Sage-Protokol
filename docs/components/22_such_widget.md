@@ -81,16 +81,38 @@ Einfüge-`<textarea>` + „↓ Antwort sortieren" → `parseAiAnswer` → in die
 Sortiermaschine. `parseAiAnswer` verträgt Code-Fences + säubert URL-Müll
 (unsichtbare Zitat-Artefakte, im Test gesehen).
 
-**Stufe B (Spec, NICHT gebaut):** eigener **Widget-Tresor** wie BLPs Geheimfach —
-eigenes Passwort + **Shamir 2-von-3**, kleines **🔐-Symbol**; Krypto-Kern aus
-Modul 20 (`exportBackup`/`importBackup`, PBKDF2 ≥600k + AES-GCM-256). Direkter
-Browser-Aufruf der gewählten KI **mit Websuche** (Claude Web-Search-Tool ·
-Perplexity `sonar` · OpenAI Responses · Mistral) → Antwort **automatisch** ins
-Widget, sortiert. **App-Schlüssel-Durchreichung:** läuft das Widget in einer App
-mit eigenem Schlüssel, reicht sie ihn via `init({apiKey})` durch; sonst der
-Widget-Tresor. **Sicherheit:** Schlüssel nur lokal, nie ins Mycel, nie auf
-GitHub, nur an den gewählten Anbieter; bei verteilten Apps trägt jeder seinen
-eigenen ein (nie im Code).
+**Stufe B (Spec, NICHT gebaut) — drei Sub-Schritte:**
+
+- **B1 — Widget-Tresor (Fundament).** Eigenes, **getrenntes** Schloss wie BLPs
+  Geheimfach: eigenes Passwort + **Shamir 2-von-3** + kleines **🔐-Symbol**.
+  Speichert die API-Schlüssel verschlüsselt (PBKDF2 ≥600k + AES-GCM-256). Modul 20
+  `SbkimSafe` hat diesen Krypto-Kern schon (`_shamirSplitBytes`/
+  `_shamirCombineBytes`, `createVault`/`unlock`/`recoverPassword` über Modul 02),
+  ist aber ein **Singleton für die App-Identität** — der Widget-Tresor braucht eine
+  **eigene Instanz / eigenen Store**. **Offene Architektur-Frage (Klaus):**
+  Modul-20-Krypto mitbenutzen (weniger Risiko, koppelt das Widget an Modul 20)
+  ODER ein in-Widget-eigenes Schloss (portabel für Copy-Paste in PWAs, aber neues
+  Sicherheits-Stück). Sicherheits-Modul → Pflicht-`ZERTIFIKAT_ASPEKTE`-Eintrag in
+  Modul 16.
+- **B2 — Automatischer KI-Aufruf.** Direkter Browser-Aufruf der gewählten KI **mit
+  Websuche** → Antwort automatisch ins Widget (kein Kopieren mehr). Schlüssel aus
+  B1-Tresor ODER App-Durchreichung `init({apiKey})`. **Reale Hürde (CORS / Browser-
+  Schlüssel):** nicht jeder Anbieter erlaubt Direktaufrufe aus dem Browser
+  (Anthropic braucht `anthropic-dangerous-direct-browser-access`; OpenAI rät von
+  Browser-Schlüsseln ab). Der **Kopier-Pfad (Stufe A) bleibt immer als Fallback**.
+- **B3 — „Warum/worin"-Begründung mit eigenen Such-Schichten.** Pro Treffer ein
+  Satz „passt, weil …" + Aufschlüsselung, **worin** Übereinstimmung (Klaus' Frage:
+  warum 82 % vs 70 %). Braucht den KI-Richter (Modul 04 `hybridMatch`, BYOK).
+  **Wichtig:** die heutigen drei Richter-Schichten (`fachlich`/`prozess`/
+  `skalierung`) sind fürs **Knoten-Andocken** getunt, NICHT für Web-Treffer — für
+  die Suche brauchen wir **eigene Schichten** (z.B. *Thema · Absicht · Angebot*).
+  Das ist eine Modul-04-Änderung (Querschnitt → bewusst, eigener Schritt). Außerdem
+  filtert der heutige Richter auf `passt` — fürs „alle 10 erklären" muss er einen
+  Erklär-Modus ohne Filter bekommen.
+
+App-Schlüssel-Durchreichung + Sicherheit: Schlüssel nur lokal, **nie ins Mycel,
+nie auf GitHub**, nur an den gewählten Anbieter; bei verteilten Apps trägt jeder
+seinen eigenen ein (nie im Code).
 
 **EU/DSGVO:** Anbieter-Liste kennt EU-gehostete (`euBased`) — **Mistral** (Paris)
 + **Aleph Alpha** (Heidelberg). Bei `euPolicy:"bindend"` erscheinen **nur** diese.
