@@ -4243,6 +4243,9 @@ Bietet (öffentlich, window.SbkimSearchWidget):
   dockToTop()        → void (sync)      // X-Knopf: als Lupe oben rechts „in der Navleiste"
                                         //   parken. Versteckt NICHT — bleibt sichtbar +
                                         //   antippbar (Klaus 2026-06-21: X = weg war ein Bug).
+                                        //   LEERT den Such-Inhalt (Frage/KI-Antwort/Kontext/
+                                        //   Treffer) für frischen Start; Minimieren (–) BEHÄLT
+                                        //   ihn. Tresor bleibt unberührt (Identität, kein Inhalt).
   isExpanded()       → boolean (sync)
   getPosition()      → PositionSnapshot // defensive Kopie {corner,offsetX,offsetY,x,y}
   setCorpus(corpus)  → void             // lokaler Such-Korpus

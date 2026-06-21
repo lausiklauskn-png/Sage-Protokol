@@ -717,6 +717,27 @@ async function run() {
   delete stub.fetch;
   delete stub.SbkimEmbedding;
   stub.localStorage.removeItem("sbkim_search_widget_vault");
+
+  // ---- Probe 43: X (dockToTop) leert Inhalt, – (collapse) behält ihn ----
+  mountMatch("treffer");
+  await W.init({ areas: { app: true, knoten: false, internet: false } });
+  W.setCorpus(APP_CORPUS);
+  W.expand();
+  let inp = queryFirst(root, ".sbkim-sw-input");
+  // Minimieren behält den Feld-Inhalt.
+  inp.value = "behalten bitte";
+  W.collapse();
+  inp = queryFirst(root, ".sbkim-sw-input");
+  eq("Probe 43: Minimieren (–) behält Feld-Inhalt", "behalten bitte", inp.value);
+  // X (dockToTop) leert Feld + Treffer + eingefügte KI-Antwort.
+  W.expand();
+  inp = queryFirst(root, ".sbkim-sw-input");
+  inp.value = "weg damit";
+  W.setAiAnswer('[{"titel":"X","url":"https://x.de","quelle":"x.de"}]');
+  W.dockToTop();
+  inp = queryFirst(root, ".sbkim-sw-input");
+  eq("Probe 43: X leert Feld-Inhalt", "", inp.value);
+  record("Probe 43: X leert eingefügte KI-Antwort", "true", String(W._meta.hasPastedAi === false), W._meta.hasPastedAi === false);
 }
 
 const finalize = () => {
