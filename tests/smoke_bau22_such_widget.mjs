@@ -528,6 +528,23 @@ async function run() {
     typeof p34.x === "number" && p34.x >= 8 && p34.x <= 1024 - 8);
   record("Probe 34: Mittelpunkt-Halten → Frei-Position (corner null)", "true",
     String(p34.corner === null), p34.corner === null);
+
+  // ---- Probe 35: X parkt oben als Lupe statt zu verstecken (Klaus-Befund) ----
+  await W.init({ areas: { app: false, knoten: false, internet: true } });
+  W.expand();
+  W.dockToTop();
+  eq("Probe 35: dockToTop → eingeklappt (Lupe)", "false", String(W.isExpanded()));
+  record("Probe 35: bleibt sichtbar (nicht versteckt)", "true", String(W.isVisible()), W.isVisible() === true);
+  const p35 = W.getPosition();
+  eq("Probe 35: oben rechts verankert (corner)", "top-right", p35.corner);
+
+  // ---- Probe 36: alter „versteckt"-Zustand wird beim Laden geheilt ----
+  stub.localStorage.setItem("sbkim_search_widget_visible", "false");
+  await W.init({}); // re-init liest localStorage
+  record("Probe 36: gestrandetes hidden=false → wieder sichtbar", "true",
+    String(W.isVisible()), W.isVisible() === true);
+  eq("Probe 36: localStorage geheilt auf true", "true",
+    stub.localStorage.getItem("sbkim_search_widget_visible"));
 }
 
 const finalize = () => {
