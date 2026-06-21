@@ -138,8 +138,16 @@ vorsortieren, **erste 10 zeigen**, Rest hinter „▾ weitere 10 zeigen (noch N)
 Wert als **Prozent** (Cosinus·100, echte Unterschiede); **Inhalts-Snippet** unter
 dem Titel. Live bestätigt mit „ich suche ein wirksames Zeckenmittel": 26 NETZ-
 Quellen gesammelt, 10 mit 88/88/87 % + Beschreibung gezeigt, Pfeil „noch 16".
-Das **WARUM/worin-Übereinstimmung** + eigene Such-Schichten brauchen den
-KI-Richter (BYOK) — gehört zu Stufe B, nicht in den Gratis-Cosinus-Pfad.
+**Lehre Recall vs. Ranking (Klaus' NoBite-Befund 2026-06-21):** Das Werkzeug
+arbeitet zweistufig — **Sammeln (Eingang)** + **Sortieren (Bedeutungs-Maschine)**.
+Die Sortier-Maschine kann nur ordnen, was das Sammeln liefert; ein gutes, aber
+nicht eingesammeltes Produkt (NoBite/Permethrin) kann sie nicht nach oben holen.
+Der Miss lag also in **Stufe 1 (Recall)**, nicht in Stufe 2. Gegenmittel:
+`buildAiPrompt` fordert jetzt **breites, vollständiges Sammeln** (Nischen-/Spezial-
+Anbieter, Marken-/Produktnamen, Fachbegriffe/Wirkstoffe, mehrere Blickwinkel) —
+NICHT engere Stichwörter (das wäre die alte Keyword-Denke, die semantische Suche
+gerade überflüssig macht). Hohe Recall beim Sammeln → die Bedeutungs-Sortierung
+kann ihre Stärke ausspielen.
 
 ---
 
