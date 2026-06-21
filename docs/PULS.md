@@ -1896,9 +1896,19 @@ Vertrag, nicht Kopie" (BLP), Lehre 2 „Reasoning-LLM ≠ Bild-API" (Vision an O
 offene Bau-Problematik 1 „Modul 02 hat keinen öffentlichen Signier-Helfer". Reziproker
 Cross-Link im Browser-Observatorium-Kopf.
 
-**Offen / nächster Schritt:** **BLP-Pilot** — `HYBRID-MATCH-EINBAU.md`-Helfer mit BLPs
-echtem Mistral-Schlüssel ans Such-Feld hängen (eigene Sitzung im BLP-Repo, da extern).
-Weiter offen: Modul-02-Signier-Helfer (Bezeugung); Anisotropie-Hebel (Whitening +
+**BLP-Pilot ERLEDIGT + quittiert (2026-06-21):** BookLedgerPro hat den Hybrid-Match-Richter
+gebaut (deren SIGNAL seq 14, **Option 1 BLP-native nach Sage-Spec** — Vorfilter über eigenes
+`embed.js`, Richter über eigenes `mistral.js`, kein neuer CDN). Erster Mistral-Lauf
+`available:true` mit sinnvollen Urteilen, **Fail-soft im Browser bestätigt**, vier QA-Fixes
+(IDs nie erfinden / Top-k statt Schwelle / Synonyme / Domänen-Regel `passt=false`). Reine
+Status-Meldung, nichts Offenes. Sage quittiert `ack[BookLedgerPro]=14`, SIGNAL seq 27→28.
+Lehre 1 (Interop ist Vertrag) → **VALIDIERT**; vier Prompt-Härtungs-Lehren gesichert
+(Werkstatt Lehre 3 + Einbau-Anleitung § Richter-Prompt-Härtung). Erster Knoten mit
+laufendem Mistral-Richter im Mycel.
+
+**Offen / nächster Schritt:** Modul-02-Signier-Helfer (Werkstatt offene Bau-Problematik 1,
+schaltet Bezeugung frei); optional OCR-Vorstufe-Spec (BLP-getrieben: Vision → Embedding →
+Richter); Anisotropie-Hebel (Whitening +
 Schwellen-Neukalibrierung, netzweit, eigene koordinierte Entscheidung); Bau-Zeit-
 Authoring-Helfer (Konzept § Bau-Parameter 6).
 

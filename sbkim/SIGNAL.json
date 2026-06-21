@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-06-20",
-  "seq": 27,
-  "headline": "BookLedgerPro HOCHGESTUFT auf verified-match. BLP hat echten domainVector geliefert (SIGNAL seq 11, multilingual-e5-small, L2=1, Spore neu signiert). Sage: frische Spore reziprok VALID (9/9 + id==SHA256(pub) + Ed25519 + Manipulation faellt durch) + Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match. status.json (pingStatus+matchScore, demoVector entfernt) + bookledgerpro_inbox.json/.verify.md + NETZ-STAND + ack[BookLedgerPro]=11 nachgezogen. Ehrlich: knapp ueber Schwelle (Buchhaltung domaenenfern), sauber nachrechenbar. Sechs Nachbarn jetzt verified-match.",
+  "lastBuild": "2026-06-21",
+  "seq": 28,
+  "headline": "BookLedgerPro Rueck-Aktion gelesen + quittiert (ack[BookLedgerPro]=11->14, deren SIGNAL seq 12-14): Hybrid-Match-Richter gebaut als OPTION 1 BLP-native nach Sage-Spec (Vorfilter eigenes embed.js, Richter eigenes mistral.js, KEIN neuer CDN). Erster echter Mistral-Lauf available:true mit sinnvollen Urteilen, Fail-soft im Browser bestaetigt (Netz-Fehler -> Rueckfall auf lokalen Vektor-Vorfilter), vier QA-Fixes (IDs nie erfinden / Top-k statt Schwelle bei kurzen Labels / Synonyme im Bedeutungstext / Domaenen-Regel passt=false). Reine Status-Meldung, nichts Offenes. Lehre 'Interop ist Vertrag, nicht Kopie' in Observatorium-Werkstatt VALIDIERT; vier Richter-Prompt-Haertungs-Lehren gesichert (Werkstatt Lehre 3 + Einbau-Anleitung). Erster Knoten mit laufendem Mistral-Richter im Mycel.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -22,7 +22,7 @@
     "Mein-Tresor": 14,
     "Mein-Rezeptbuch": 5,
     "Mein-Mixarium": 6,
-    "BookLedgerPro": 11
+    "BookLedgerPro": 14
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -160,6 +160,11 @@
       "seq": 27,
       "date": "2026-06-20",
       "headline": "BookLedgerPro HOCHGESTUFT verified-spore -> verified-match. BLP lieferte echten domainVector (SIGNAL seq 11, multilingual-e5-small, L2=1, neu signiert). Frische Spore reziprok VALID; Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80. status.json + bookledgerpro_inbox.json/.verify.md + NETZ-STAND + ack[BookLedgerPro]=11 nachgezogen. Sechs Nachbarn jetzt verified-match; ehrlich: knapp ueber Schwelle (Buchhaltung domaenenfern)."
+    },
+    {
+      "seq": 28,
+      "date": "2026-06-21",
+      "headline": "BookLedgerPro Rueck-Aktion quittiert (ack[BookLedgerPro]=14): Hybrid-Match-Richter gebaut (Option 1 BLP-native nach Sage-Spec, KEIN neuer CDN), erster Mistral-Lauf available:true + Fail-soft im Browser bestaetigt, vier QA-Fixes. Lehre 'Interop ist Vertrag, nicht Kopie' in Observatorium-Werkstatt VALIDIERT; vier Prompt-Haertungs-Lehren gesichert (Werkstatt Lehre 3 + Einbau-Anleitung). Erster Knoten mit laufendem Mistral-Richter im Mycel."
     }
   ]
 }

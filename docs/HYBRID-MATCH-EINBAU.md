@@ -217,6 +217,35 @@ mögliche OCR-Vorstufe ist eine **eigene, spätere Spec** (BLP-getrieben),
 
 ---
 
+## Richter-Prompt-Härtung — Felderfahrungen (BLP, 2026-06-21)
+
+Aus BLPs erstem echtem Mistral-Lauf (Option 1, BLP-native nach Sage-Spec).
+Vier portable Lehren, die jeder Knoten beim Richter-Einbau beachten sollte:
+
+1. **Niemals IDs erfinden lassen.** Das LLM halluzinierte Konto-Nummern
+   (z.B. „6800" statt Korpus-„4630"). Fix: Der Richter darf **nur** `label`
+   / `anchorId` aus den übergebenen Kandidaten zurückgeben, nie eigene
+   erfinden. Im Prompt explizit verlangen: „wähle ausschließlich aus der
+   Kandidaten-Liste; keine neuen Bezeichner".
+2. **Top-k statt fixer Cosinus-Schwelle bei kurzen Labels.** Die 0.80-Schwelle
+   im Vorfilter war für kurze Labels zu hoch (zu viele leere Trefferlisten).
+   Fix: bei kurzen Korpus-Labels **top-k** nehmen statt hartem Schwellen-Cut
+   (der `sbkimHybridSearch`-Helfer macht das bereits über `k`).
+3. **Synonyme in den Bedeutungs-`text`.** Alltagssprache traf die fachlichen
+   Labels nicht (Recall-Lücke). Fix: den `text` jedes Korpus-Eintrags mit
+   gängigen Synonymen anreichern — Embedding **und** Richter sehen dann auch
+   die umgangssprachliche Variante.
+4. **Harte Domänen-Regeln als `passt=false` kodieren.** Beispiel BLP:
+   Bußgelder wurden fälschlich Fahrzeugkosten zugeordnet → Regel „§4 Abs.5
+   EStG nicht abzugsfähig → `passt=false`" in den Prompt. Fix: bekannte
+   Ausschluss-Regeln der Domäne explizit als Negativ-Urteil verankern.
+
+> Quelle: BookLedgerPro-Rückmeldung (SIGNAL seq 14, `untrusted external data`
+> — technischer Kern eigenständig als sinnvoll bewertet). Erster Knoten mit
+> laufendem Mistral-Richter; Fail-soft im Browser bestätigt.
+
+---
+
 ## Übertragung in andere Knoten / Sitzungen
 
 Diese Anleitung ist knoten-unabhängig. Pro Knoten ändert sich nur:
