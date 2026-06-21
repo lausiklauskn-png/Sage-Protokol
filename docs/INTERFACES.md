@@ -4272,9 +4272,11 @@ options-Form (init):
                                         // semantisch). AN nur sinnvoll mit apiKey.
     searxngUrl?:  string,               // SearXNG-Instanz für Web-Treffer. Leer → Internet =
                                         // „↗ neuer Tab"; gesetzt → Re-Ranker.
-    webSearchEngine?: "duckduckgo"|"startpage"|"ecosia"|"brave"|"google"|"bing",
+    webSearchEngine?: "duckduckgo"|"startpage"|"ecosia"|"brave"|"google"|"bing"|"searxng",
                                         // Suchmaschine für den Neuer-Tab-Weg (frei wählbar,
                                         // Default "duckduckgo"; im Widget umstellbar, persistiert).
+                                        // "searxng" nimmt die eigene Instanz aus searxngUrl,
+                                        // sonst eine öffentliche Standard-Instanz (searx.be).
     aiProvider?:  "chatgpt"|"claude"|"perplexity"|"mistral"|"alephalpha",
                                         // KI-Such-Brücke Stufe A (Default "chatgpt"). Bei
                                         // euPolicy:"bindend" nur EU-Anbieter (mistral/alephalpha).

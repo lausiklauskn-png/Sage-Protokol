@@ -503,6 +503,16 @@ async function run() {
     String(euProv.length === 2 && euProv.indexOf("mistral") >= 0 && euProv.indexOf("alephalpha") >= 0),
     euProv.length === 2 && euProv.indexOf("mistral") >= 0 && euProv.indexOf("alephalpha") >= 0);
   await W.init({ euPolicy: "frei" }); // zurück
+
+  // ---- Probe 33: SearXNG als Neuer-Tab-Suchmaschine wählbar ----
+  await W.init({ areas: { app: false, knoten: false, internet: true }, webSearchEngine: "searxng" });
+  eq("Probe 33: webEngine auf searxng", "searxng", W._meta.webEngine);
+  W.setAiAnswer(""); // keine KI-Antwort → Neuer-Tab-Weg
+  res = await W.search("wespen tisch");
+  record("Probe 33: ohne eigene Instanz → öffentliche searx.be", "true",
+    String(!!(res.webLink && /searx\.be\/search\?q=/.test(res.webLink.url))),
+    !!(res.webLink && /searx\.be\/search\?q=/.test(res.webLink.url)));
+  await W.init({ webSearchEngine: "duckduckgo" }); // zurück
 }
 
 const finalize = () => {

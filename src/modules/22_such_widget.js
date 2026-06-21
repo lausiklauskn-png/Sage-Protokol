@@ -67,7 +67,11 @@
     { id: "brave",      label: "Brave",      url: "https://search.brave.com/search?q=" },
     { id: "google",     label: "Google",     url: "https://www.google.com/search?q=" },
     { id: "bing",       label: "Bing",       url: "https://www.bing.com/search?q=" },
+    { id: "searxng",    label: "SearXNG",    url: "https://searx.be/search?q=" },
   ];
+  // Öffentliche Standard-SearXNG-Instanz für den Neuer-Tab-Weg; durch eine
+  // im SearXNG-Feld gesetzte eigene Instanz überschrieben (siehe webSearchUrl).
+  var SEARXNG_PUBLIC_DEFAULT = "https://searx.be";
 
   var DRAG_THRESHOLD_PX = 5;
   var DEFAULT_CORNER = "bottom-right";
@@ -945,7 +949,12 @@
   }
 
   // Web-Suchmaschine frei wählbar (Klaus 2026-06-21); DuckDuckGo Default.
+  // SearXNG nimmt die eigene Instanz aus dem SearXNG-Feld, sonst öffentliche.
   function webSearchUrl(query) {
+    if (optWebEngine === "searxng") {
+      var base = (searxngUrl ? searxngUrl : SEARXNG_PUBLIC_DEFAULT).replace(/\/+$/, "");
+      return base + "/search?q=" + encodeURIComponent(query);
+    }
     return engineById(optWebEngine).url + encodeURIComponent(query);
   }
 
