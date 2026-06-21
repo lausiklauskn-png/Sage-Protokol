@@ -142,12 +142,18 @@ Quellen gesammelt, 10 mit 88/88/87 % + Beschreibung gezeigt, Pfeil „noch 16".
 arbeitet zweistufig — **Sammeln (Eingang)** + **Sortieren (Bedeutungs-Maschine)**.
 Die Sortier-Maschine kann nur ordnen, was das Sammeln liefert; ein gutes, aber
 nicht eingesammeltes Produkt (NoBite/Permethrin) kann sie nicht nach oben holen.
-Der Miss lag also in **Stufe 1 (Recall)**, nicht in Stufe 2. Gegenmittel:
-`buildAiPrompt` fordert jetzt **breites, vollständiges Sammeln** (Nischen-/Spezial-
-Anbieter, Marken-/Produktnamen, Fachbegriffe/Wirkstoffe, mehrere Blickwinkel) —
-NICHT engere Stichwörter (das wäre die alte Keyword-Denke, die semantische Suche
-gerade überflüssig macht). Hohe Recall beim Sammeln → die Bedeutungs-Sortierung
-kann ihre Stärke ausspielen.
+Der Miss lag also in **Stufe 1 (Recall)**, nicht in Stufe 2.
+
+**Schärfung der Lehre (Klaus 2026-06-21): Bedeutung zuerst, nicht Breite.** Nicht
+„sammle breit" ist der Kern, sondern „**verstehe zuerst die Absicht, suche dann
+nach der Bedeutung**". `buildAiPrompt` weist die KI jetzt an, erst herauszulesen,
+was der Nutzer WIRKLICH meint (Ziel, Kontext, Land, Form), und dann nach dieser
+**Bedeutung/Semantik** zu suchen — ausdrücklich auch Treffer, die die Wörter nicht
+enthalten, aber die Absicht erfüllen (Marken, Wirkstoffe, Nischen-/Spezial-
+Anbieter). „Nicht die Breite zählt, sondern die Bedeutungsnähe." Das ist KEINE
+Keyword-Denke; die Breite folgt aus dem vollständigen Abdecken der Bedeutung, nicht
+umgekehrt. So zündet die Bedeutungs-Sortierung (Stufe 2) auf einem semantisch
+gesammelten Korpus.
 
 **Schärfen-Schritt (Klaus 2026-06-21):** Wenige Worte tragen die Absicht oft
 nicht. Ein **lokales, gratis Schärfen-Feld** fordert vor dem Prompt aktiv zum

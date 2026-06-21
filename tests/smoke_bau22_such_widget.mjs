@@ -476,8 +476,9 @@ async function run() {
     String(/Wespen am Esstisch/.test(prompt)), /Wespen am Esstisch/.test(prompt));
   record("Probe 29: Prompt verlangt Code-Block", "true",
     String(/Code-Block/.test(prompt) && /JSON/.test(prompt)), /Code-Block/.test(prompt) && /JSON/.test(prompt));
-  record("Probe 29: Prompt verlangt breites Sammeln (Recall)", "true",
-    String(/BREIT/.test(prompt) && /Nischen/.test(prompt)), /BREIT/.test(prompt) && /Nischen/.test(prompt));
+  record("Probe 29: Prompt verlangt Bedeutungs-/Absicht-Suche (Semantik)", "true",
+    String(/BEDEUTUNG/.test(prompt) && /Absicht/.test(prompt) && /Nischen/.test(prompt)),
+    /BEDEUTUNG/.test(prompt) && /Absicht/.test(prompt) && /Nischen/.test(prompt));
   // Schärfen: optionaler Kontext wird in den Prompt gewoben.
   const promptCtx = W.buildPrompt("Mittel gegen Zecken", "als Spray, in Deutschland kaufen");
   record("Probe 29: Schärfen-Kontext im Prompt", "true",
