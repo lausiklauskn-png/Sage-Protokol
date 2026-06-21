@@ -323,6 +323,33 @@ Ein **Schalter** im Widget, **Default aus**:
   (Klaus' Idee: aus ~100 Antworten per Bedeutung die besten herausholen).
   Öffentliche SearXNG-Instanzen blocken JSON/CORS meist → praktisch die **eigene**
   Instanz (Pilz-Server). Fehlt/scheitert der Fetch → Fallback „↗ neuer Tab".
+- **Suchmaschine frei wählbar** (`init({webSearchEngine})` oder `<select>` im Widget):
+  DuckDuckGo (Default) · Startpage · Ecosia · Brave · Google · Bing. Gilt für den
+  „↗ neuer Tab"-Weg; Wahl persistiert (`sbkim_search_widget_engine`).
+
+### Internet-Status + Zukunftsoptionen (Klaus 2026-06-21)
+
+**Entscheidung 2026-06-21 (Klaus):** der Internet-Bereich bleibt **vorerst beim
+„↗ neuer Tab"-Link** (Anfrage wird mit der gewählten Suchmaschine als URL
+generiert; Klaus testet: Rechtsklick → „in Tab öffnen" funktioniert). **Echte
+Inline-Web-Treffer sind aufgeschoben**, bis eine browser-erreichbare Quelle
+existiert — alle 7 getesteten öffentlichen SearXNG-Instanzen blocken JSON/CORS
+(`HTTP 403`), eine browser-native Web-Suche ist also nicht möglich. Default
+`Internet` = **aus**; `App` + `Knoten` = **an** (die lokalen, gratis,
+funktionierenden Bereiche — Knoten-Suche im eigenen Netz ist die Priorität).
+
+**Zukunftsoptionen (für eine eigene Folge-Sitzung, NICHT jetzt gebaut):**
+1. **Eigener SearXNG-/Proxy-Server** (Pilz-Server, gratis aber Einrichtung) →
+   echte Roh-Treffer, semantisch re-rankt (Pfad oben schon gebaut).
+2. **Browser-native Konnektoren** zu CORS-offenen Open-Data-APIs (OpenStreetMap
+   Orte/Adressen, Open-Meteo Wetter, Wikipedia Wissen) — kein Server, kein
+   Schlüssel; nur für diese konkreten Domänen, nicht für allgemeine Web-Suche.
+3. **Freie KI-Modelle als wählbare „Such-Engine"** (Klaus' Idee 2026-06-21):
+   mehrere kostenlose KI-Modelle zur Auswahl, die die wenigen wirklich nötigen
+   Antworten holen und als **prüfbare Quell-Links** bereitstellen (statt einer
+   Roh-Trefferliste). Klaus: „vielleicht sogar die bessere Lösung." Offen für
+   die Internet-Folge-Sitzung — Abwägung gratis-Kontingent / BYOK / Browser-CORS
+   je Anbieter.
 
 ### Empfangsmodus-Versöhnung (verbindlich)
 
