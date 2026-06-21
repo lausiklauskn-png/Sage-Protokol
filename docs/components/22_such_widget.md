@@ -110,10 +110,14 @@ Fluss). **Browser-Sichttest wartet auf Klaus.** ZERTIFIKAT_ASPEKTE-Eintrag (Modu
   `anthropic-dangerous-direct-browser-access` + `web_search`-Tool) — der einzige
   Anbieter mit dokumentiertem Browser-Direkt-Weg. Alles **fail-soft**: CORS/Key/
   Netz-Fehler → ruhiger Hinweis + Fallback auf den **Kopier-Pfad (Stufe A)**, kein
-  Throw. Headless-Smoke 140/140 (Probe 42: Request-Form + Parse/Sort + fail-soft).
-  **Der echte Beweis (lässt der Browser den Aufruf via CORS zu?) ist Klaus'
-  Live-Lauf mit echtem Schlüssel.** Gehen weitere Anbieter (Gemini etc.) im
-  Browser, folgen sie als eigener Schritt.
+  Throw. Headless-Smoke 145/145 (Probe 42: Request-Form + Parse/Sort + fail-soft +
+  Rohantwort-Diagnose). **✅ Browser-Sichttest grün (Klaus 2026-06-21):** ⚡
+  Automatisch → Claude rief sich selbst auf, durchsuchte live das Netz, lieferte
+  JSON → 30 NETZ-Treffer automatisch sortiert (90–85 %), ganz ohne Kopieren.
+  **CORS funktioniert** (Browser darf Claude direkt anrufen) — die große offene
+  B2-Frage ist positiv beantwortet. `max_tokens` auf 8192 nötig (4096 schnitt die
+  Antwort ab). Gehen weitere Anbieter (Gemini etc.) im Browser, folgen sie als
+  eigener Schritt.
 - **B3 — „Warum/worin"-Begründung mit eigenen Such-Schichten.** Pro Treffer ein
   Satz „passt, weil …" + Aufschlüsselung, **worin** Übereinstimmung (Klaus' Frage:
   warum 82 % vs 70 %). Braucht den KI-Richter (Modul 04 `hybridMatch`, BYOK).
