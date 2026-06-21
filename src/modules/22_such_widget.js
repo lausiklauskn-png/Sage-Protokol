@@ -1347,7 +1347,7 @@
       },
       body: JSON.stringify({
         model: optAiModel || "claude-sonnet-4-5",
-        max_tokens: 4096,
+        max_tokens: 8192,
         messages: [{ role: "user", content: prompt }],
         tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }],
       }),
@@ -1393,7 +1393,20 @@
       .then(function (data) {
         var text = extractClaudeText(data);
         var entries = parseAiAnswer(text);
-        if (!entries.length) { setHint("Claude lieferte keine verwertbare Liste — Kopier-Weg versuchen."); return false; }
+        if (!entries.length) {
+          // Diagnose sichtbar machen: Rohantwort ins Einfüge-Feld (prose?
+          // Rückfrage? pause_turn?), damit Klaus sie sehen + schicken kann.
+          var dump = text;
+          if (!dump) {
+            var kinds = (data && Array.isArray(data.content))
+              ? data.content.map(function (b) { return b && b.type; }).join(", ") : "?";
+            dump = "[keine Text-Antwort. stop_reason=" + (data && data.stop_reason) +
+              ", content-Blöcke: " + kinds + "]";
+          }
+          if (aiPasteEl) aiPasteEl.value = dump;
+          setHint("Claude antwortete, aber ohne JSON-Liste — die Rohantwort steht jetzt im Einfüge-Feld. Schau/kopiere sie.");
+          return false;
+        }
         pastedAiText = text;
         if (!areas.internet.enabled) {
           areas.internet.enabled = true;

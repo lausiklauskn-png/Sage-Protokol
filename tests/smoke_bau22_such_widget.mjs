@@ -714,6 +714,17 @@ async function run() {
   // CORS/Netzfehler → fail-soft false, kein Throw.
   stub.fetch = async () => { throw new TypeError("Failed to fetch"); };
   eq("Probe 42: CORS-Fehler → false (fail-soft)", false, await W.autoSearch("x"));
+  // Antwort ohne JSON-Liste → Rohantwort landet im Einfüge-Feld (Diagnose).
+  stub.fetch = async () => ({ ok: true, status: 200, json: async () => ({
+    stop_reason: "end_turn",
+    content: [{ type: "text", text: "Magst du es eher als Spray oder als Tablette?" }],
+  }) });
+  const aiPaste = queryFirst(root, ".sbkim-sw-aipaste");
+  eq("Probe 42: Antwort ohne Liste → false", false, await W.autoSearch("zecken"));
+  await new Promise((r) => setTimeout(r, 0));
+  record("Probe 42: Rohantwort ins Einfüge-Feld gelegt", "true",
+    String(!!aiPaste && /Spray oder als Tablette/.test(aiPaste.value)),
+    !!aiPaste && /Spray oder als Tablette/.test(aiPaste.value));
   delete stub.fetch;
   delete stub.SbkimEmbedding;
   stub.localStorage.removeItem("sbkim_search_widget_vault");
