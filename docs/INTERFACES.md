@@ -4262,8 +4262,9 @@ Bietet (öffentlich, window.SbkimSearchWidget):
   deleteVault()      → void (sync)      // Tresor aus localStorage entfernen + lock.
   setVaultSecret(password, provider, key) → Promise<boolean>  // im entsperrten Tresor neu verschlüsseln.
   recoverVaultPassword(shares) → string|null  // ≥2 Anteile → Passwort (rein lokal).
-  buildPrompt(query) → string (sync)    // KI-Such-Brücke Stufe A: Prompt aus der
-                                        // Frage (Code-Block-Regel → saubere URLs).
+  buildPrompt(query, context?) → string (sync)  // KI-Such-Brücke Stufe A: Prompt aus
+                                        // Frage + optionalem Schärfen-Kontext (Code-Block-
+                                        // Regel, breites Sammeln/Recall → saubere URLs).
   parseAiAnswer(text)→ Array (sync)     // eingefügte KI-Antwort → [{titel,url,quelle,text}];
                                         // verträgt Code-Fences, säubert URL-Müll; [] wenn kein Array.
   setAiAnswer(text)  → boolean (sync)   // KI-Antwort übernehmen; true wenn gültige Quellen.

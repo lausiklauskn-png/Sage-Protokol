@@ -478,6 +478,13 @@ async function run() {
     String(/Code-Block/.test(prompt) && /JSON/.test(prompt)), /Code-Block/.test(prompt) && /JSON/.test(prompt));
   record("Probe 29: Prompt verlangt breites Sammeln (Recall)", "true",
     String(/BREIT/.test(prompt) && /Nischen/.test(prompt)), /BREIT/.test(prompt) && /Nischen/.test(prompt));
+  // Schärfen: optionaler Kontext wird in den Prompt gewoben.
+  const promptCtx = W.buildPrompt("Mittel gegen Zecken", "als Spray, in Deutschland kaufen");
+  record("Probe 29: Schärfen-Kontext im Prompt", "true",
+    String(/Kontext\): als Spray, in Deutschland kaufen/.test(promptCtx)),
+    /Kontext\): als Spray, in Deutschland kaufen/.test(promptCtx));
+  record("Probe 29: ohne Kontext keine Kontext-Zeile", "true",
+    String(!/Kontext\)/.test(W.buildPrompt("nur frage"))), !/Kontext\)/.test(W.buildPrompt("nur frage")));
 
   // ---- Probe 30: parseAiAnswer — Code-Fence + URL-Müll säubern ----
   const messy = '```json\n[{"titel":"A","url":"https://a.de/x⁠�","quelle":"a.de","text":"eins"},' +

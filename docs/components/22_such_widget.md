@@ -149,6 +149,14 @@ NICHT engere Stichwörter (das wäre die alte Keyword-Denke, die semantische Suc
 gerade überflüssig macht). Hohe Recall beim Sammeln → die Bedeutungs-Sortierung
 kann ihre Stärke ausspielen.
 
+**Schärfen-Schritt (Klaus 2026-06-21):** Wenige Worte tragen die Absicht oft
+nicht. Ein **lokales, gratis Schärfen-Feld** fordert vor dem Prompt aktiv zum
+Präzisieren auf (Placeholder: Zweck? · Region/Land? · Art/Form? · Marke/Budget?);
+der Kontext wird als „Was ich genau meine" in den Prompt gewoben
+(`buildPrompt(query, context)`). Die **tailored** KI-Rückfragen („meinst du Spray
+oder Deutschland?") brauchen ein KI-Verständnis der Frage → gehören zu **B2**
+(automatischer KI-Aufruf): die KI stellt 1–3 Rückfragen, bevor sie sucht.
+
 ---
 
 ## Drei-Stufen-Such-Pipeline (komponiert)
