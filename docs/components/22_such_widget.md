@@ -202,6 +202,12 @@ window.SbkimSearchWidget = {
   euOnly?:   boolean,                // nur bei euPolicy:"frei" relevant (Default false); bindend erzwingt true
   queryLabel?: string,               // Knoten-Name für die Attestation
   k?:        number,                 // Top-k Vorfilter (Default 5)
+  prepareCorpus?: () => Promise<Array<{label,text?,passageVec,anchorId?}>>,
+                                     // LAZY-Korpus-Provider: läuft EINMAL beim ersten
+                                     // expand() oder bei der ersten Suche, baut den Korpus
+                                     // (z.B. Embedding via Modul 03), ruft intern setCorpus
+                                     // + cacht. Hält die Host-Seite leicht beim Start.
+                                     // Fehler → fail-soft (Hinweis, corpusReady bleibt false).
 
   defaultCorner?: "top-left"|"top-right"|"bottom-left"|"bottom-right",  // Default "bottom-right"
   defaultOffset?: { x:number, y:number },                              // Default {x:16,y:16}
@@ -217,6 +223,7 @@ window.SbkimSearchWidget = {
 ```
 euPolicy:       "frei" | "bindend"
 corpusSize:     number          // Einträge im aktuellen Korpus
+corpusReady:    boolean         // wurde prepareCorpus erfolgreich ausgeführt?
 visible:        boolean
 expanded:       boolean
 widgetMounted:  boolean
@@ -249,6 +256,34 @@ Surface-Vorgriff (Increment 2): `couple(opts)` / `decouple()` / `isCoupled()`.
 In Increment 1 ist `_meta.coupled === false` und keine Kopplungs-API exponiert.
 
 ---
+
+## Sage-Page-Mount + Korpus (Bau 22 B-Schritt, 2026-06-21)
+
+Auf der **Sage-Page** ist das Widget gemountet (Klaus' Wahl B: erst Korpus, dann
+sichtbar). Verdrahtung in `sbkim-init.js` am Ende der Init-Kette:
+
+```js
+await SbkimSearchWidget.init({
+  euPolicy: "frei",
+  queryLabel: "Sage",
+  prepareCorpus: sageBuildSuchkorpus,   // lazy: embeddet beim ersten Gebrauch
+});
+```
+
+- **Korpus** = die SBKIM-Werkzeug-Bibliothek (`sbkim/sage-suchkorpus.js`,
+  `window.SAGE_SUCHKORPUS` — Module 00–22 als `{label,text,anchorId}`,
+  Bedeutungs-Text mit Alltags-Synonymen für besseren Recall). Klaus' Festlegung
+  2026-06-21: erster Korpus = die Tool-Bibliothek (Glossar/Doku später).
+- **Lazy:** `sageBuildSuchkorpus()` erzeugt die `passageVec` pro Eintrag via
+  Modul 03 `embedPassageBatch` **erst beim ersten Gebrauch** (löst den einmaligen
+  ~30-MB-Modell-Download aus) — so bleibt der Seitenstart leicht (Sage-Page-
+  Konvention: Modul 03 ist `lazy`). Das Widget zeigt „Suchindex wird
+  vorbereitet …", bis die Vektoren da sind.
+- **Kein Richter-Schlüssel** auf der Sage-Page → reiner lokaler Vorfilter
+  (server-los, `mode:"nur-vorfilter"`). Ein Endknoten mit eigenem BYOK-Schlüssel
+  reicht ihn über `init({apiKey})` durch und bekommt den Richter dazu.
+- Z-Index 9985 — koexistiert mit den Navleisten-Lampen der Sage-Page (kein
+  Modul-17-Widget auf der Sage-Page).
 
 ## Strikte Tabus (verbindlich)
 

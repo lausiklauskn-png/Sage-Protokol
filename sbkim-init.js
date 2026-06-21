@@ -55,6 +55,28 @@
     }
   }
 
+  // Lazy-Korpus-Builder für das Such-Widget (Modul 22). Nimmt die rohen
+  // Korpus-Einträge (window.SAGE_SUCHKORPUS, {label,text,anchorId}) und erzeugt
+  // pro Eintrag einen passageVec via Modul 03 (embedPassageBatch — löst den
+  // einmaligen Modell-Download aus). Wird vom Widget beim ersten Gebrauch
+  // gerufen (prepareCorpus). Fail-soft: wirft, wenn Modul 03 oder der Korpus
+  // fehlt — das Widget fängt das ab und zeigt einen Hinweis (kein Page-Bruch).
+  async function sageBuildSuchkorpus() {
+    var raw = window.SAGE_SUCHKORPUS || [];
+    if (!raw.length) {
+      throw new Error("SAGE_SUCHKORPUS leer oder nicht geladen (sbkim/sage-suchkorpus.js?).");
+    }
+    var embedding = window.SbkimEmbedding;
+    if (!embedding || typeof embedding.embedPassageBatch !== "function") {
+      throw new Error("Modul 03 (Embedding) nicht geladen — Suchindex kann nicht gebaut werden.");
+    }
+    var texts = raw.map(function (e) { return e.text; });
+    var vecs = await embedding.embedPassageBatch(texts);
+    return raw.map(function (e, i) {
+      return { label: e.label, text: e.text, anchorId: e.anchorId, passageVec: vecs[i] };
+    });
+  }
+
   async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) {
       warn("ServiceWorker", new Error("navigator.serviceWorker fehlt — Browser zu alt."));
@@ -199,6 +221,24 @@
     await initModule("SbkimDoku", function () {
       return window.SbkimDoku && window.SbkimDoku.init({
         searchIconSelector: "#sage-search-icon",
+      });
+    });
+
+    // 22 Such-Widget — frei bewegliches Floating-Such-Tool (Bau 22, Klaus'
+    // Vision 2026-06-21). Self-mountet die 🔍-Blase unten rechts; klein im
+    // Ruhezustand, wächst nur bei Interaktion. Korpus = SBKIM-Werkzeug-
+    // Bibliothek (window.SAGE_SUCHKORPUS, Module 00–22). LAZY: die Vektoren
+    // werden erst beim ersten Gebrauch via Modul 03 erzeugt (prepareCorpus),
+    // damit der Seitenstart leicht bleibt (kein ~30-MB-Modell im Boot). EU-
+    // Politik "frei" (EU wählbar). KEIN Richter-Schlüssel hier — reiner
+    // lokaler Vorfilter (server-los); ein Endknoten mit BYOK-Schlüssel
+    // reicht ihn über init({apiKey}) durch.
+    await initModule("SbkimSearchWidget", function () {
+      if (!window.SbkimSearchWidget) return false;
+      return window.SbkimSearchWidget.init({
+        euPolicy: "frei",
+        queryLabel: "Sage",
+        prepareCorpus: sageBuildSuchkorpus,
       });
     });
 
