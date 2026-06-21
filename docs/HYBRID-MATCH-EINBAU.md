@@ -183,6 +183,40 @@ funktioniert auch ohne Signatur voll.
 
 ---
 
+## Welche Anbieter taugen als Richter — und welche NICHT
+
+Der Richter braucht ein **Sprach-Reasoning-Modell**: es liest die
+Kandidaten-Texte und fällt ein begründetes Urteil (`passt` / `passt-nicht`
++ `score` + Begründung). Genau dafür ist die Anbieter-Liste gedacht:
+
+| Anbieter | Region | Als Richter? |
+|---|---|---|
+| `claude` (Anthropic) | US | ✅ Reasoning-LLM |
+| `mistral` (EU) | EU | ✅ Reasoning-LLM — EU-Default (BLP) |
+| `openai` | US | ✅ Reasoning-LLM |
+| `local` (selbst-gehostet, OpenAI-kompatibel) | lokal | ✅ Reasoning-LLM |
+
+**Google Vision gehört NICHT in diese Liste.** Vision ist eine **Bild-API**
+(OCR + Bild-Labels), kein Text-Urteiler — es kann „passt/passt-nicht mit
+Begründung" gar nicht liefern und würde an der Richter-Schnittstelle nichts
+Brauchbares zurückgeben. Auch das Sortieren fertiger Vektoren macht Vision
+nicht (das machen Modul 03 Embedding + Cosinus).
+
+**Wo Vision RICHTIG stark ist: die OCR-Vorstufe — vor Modul 03, nicht im
+Richter.** Besonders für BLP (Beleg-/Rechnungsfotos):
+
+```
+[Beleg-Foto] → Google Vision (OCR: Bild → Text)
+             → Modul 03 Embedding (Text → Vektor)
+             → Richter Mistral (urteilt: passt der Beleg zur Kategorie?)
+```
+
+Vision = Augen (Bild → Text), Richter = Verstand (Text → Urteil). Eine
+mögliche OCR-Vorstufe ist eine **eigene, spätere Spec** (BLP-getrieben),
+**nicht** Teil von Modul 04. (Klaus' Befund 2026-06-21.)
+
+---
+
 ## Übertragung in andere Knoten / Sitzungen
 
 Diese Anleitung ist knoten-unabhängig. Pro Knoten ändert sich nur:
