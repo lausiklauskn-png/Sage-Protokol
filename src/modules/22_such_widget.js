@@ -101,6 +101,11 @@
   var richterToggleEl = null;  // KI-Richter an/aus
   var searxngFieldEl = null;   // SearXNG-URL-Feld (für Web-Treffer im Widget)
   var engineSelectEl = null;   // Web-Suchmaschine-Auswahl (Neuer-Tab-Weg)
+  var aiSelectEl = null;       // KI-Anbieter-Auswahl (KI-Such-Brücke Stufe A)
+  var aiPromptBtnEl = null;    // „Prompt → KI"-Knopf (kopiert + öffnet Anbieter)
+  var aiPasteEl = null;        // Einfüge-Feld für die KI-Antwort (JSON)
+  var aiSortBtnEl = null;      // „Antwort sortieren"-Knopf
+  var internetCheckboxEl = null; // Referenz auf die Internet-Bereichs-Checkbox
 
   // Position + Sichtbarkeit (localStorage-persistiert).
   var currentCorner = DEFAULT_CORNER;
@@ -160,6 +165,8 @@
   // meist → praktisch die eigene SearXNG-Instanz (Pilz-Server).
   var searxngUrl = "";
   var optWebEngine = "duckduckgo";  // gewählte Web-Suchmaschine (Neuer-Tab-Weg)
+  var optAiProvider = "chatgpt";    // gewählter KI-Anbieter (KI-Such-Brücke)
+  var pastedAiText = "";            // zuletzt eingefügte KI-Antwort (RAM-only, nie persistiert)
   // Knoten-Korpus (verbundene Knoten) — analog localCorpus, eigene Lazy-Prep.
   var nodeCorpus = null;
   var nodeCorpusPreparer = null;
@@ -423,6 +430,45 @@
       "  outline: none;",
       "}",
       "#" + WIDGET_ID + " .sbkim-sw-engine option { color: #1A1A1A; }",
+      "#" + WIDGET_ID + " .sbkim-sw-ai {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.35rem;",
+      "  background: rgba(0, 0, 0, 0.24);",
+      "  border: 1px solid rgba(167, 139, 250, 0.35);",
+      "  border-radius: 8px;",
+      "  color: #F5F5FF;",
+      "  font-size: 0.72rem;",
+      "  padding: 0.3rem 0.45rem;",
+      "  outline: none;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-ai option { color: #1A1A1A; }",
+      "#" + WIDGET_ID + " .sbkim-sw-aibtn {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.35rem;",
+      "  background: rgba(167, 139, 250, 0.18);",
+      "  border: 1px solid rgba(167, 139, 250, 0.4);",
+      "  border-radius: 8px;",
+      "  color: #EDE9FE;",
+      "  font-size: 0.72rem;",
+      "  padding: 0.34rem 0.45rem;",
+      "  cursor: pointer;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-aibtn:hover { background: rgba(167, 139, 250, 0.28); }",
+      "#" + WIDGET_ID + " .sbkim-sw-aipaste {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.35rem;",
+      "  background: rgba(0, 0, 0, 0.28);",
+      "  border: 1px solid rgba(255, 255, 255, 0.14);",
+      "  border-radius: 8px;",
+      "  color: #F5F5FF;",
+      "  font-size: 0.7rem;",
+      "  padding: 0.35rem 0.45rem;",
+      "  resize: vertical;",
+      "  outline: none;",
+      "}",
       "#" + WIDGET_ID + " .sbkim-sw-result .sbkim-sw-badge {",
       "  display: inline-block;",
       "  font-size: 0.58rem;",
@@ -574,6 +620,10 @@
     var show = areas.internet.enabled ? "block" : "none";
     if (searxngFieldEl) searxngFieldEl.style.display = show;
     if (engineSelectEl) engineSelectEl.style.display = show;
+    if (aiSelectEl) aiSelectEl.style.display = show;
+    if (aiPromptBtnEl) aiPromptBtnEl.style.display = show;
+    if (aiPasteEl) aiPasteEl.style.display = show;
+    if (aiSortBtnEl) aiSortBtnEl.style.display = show;
   }
 
   function buildWidget(doc) {
@@ -664,6 +714,7 @@
             areas[id].enabled = checked;
             updateSearxngFieldVisibility();
           });
+        if (id === "internet") internetCheckboxEl = box;
         areaRowEl.appendChild(box);
       })(areaIds[ai]);
     }
@@ -717,6 +768,37 @@
     engineSelectEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
     panelEl.appendChild(engineSelectEl);
 
+    // ---- KI-Such-Brücke Stufe A: Anbieter-Wahl + Prompt-Knopf + Einfüge-Feld ----
+    aiSelectEl = doc.createElement("select");
+    aiSelectEl.className = "sbkim-sw-ai";
+    aiSelectEl.setAttribute("aria-label", "KI-Anbieter für die Internet-Suche");
+    rebuildAiProviderOptions();
+    aiSelectEl.addEventListener("change", function () { optAiProvider = aiSelectEl.value; });
+    aiSelectEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    panelEl.appendChild(aiSelectEl);
+
+    aiPromptBtnEl = makeBtn(doc, "sbkim-sw-aibtn", "🤖 Prompt → KI", "Prompt bauen, kopieren und KI öffnen");
+    aiPromptBtnEl.addEventListener("click", function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      handleAiPromptClick();
+    });
+    panelEl.appendChild(aiPromptBtnEl);
+
+    aiPasteEl = doc.createElement("textarea");
+    aiPasteEl.className = "sbkim-sw-aipaste";
+    aiPasteEl.setAttribute("rows", "3");
+    aiPasteEl.setAttribute("placeholder", "KI-Antwort (JSON) hier einfügen …");
+    aiPasteEl.setAttribute("aria-label", "KI-Antwort einfügen");
+    aiPasteEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    panelEl.appendChild(aiPasteEl);
+
+    aiSortBtnEl = makeBtn(doc, "sbkim-sw-aibtn", "↓ Antwort sortieren", "KI-Antwort übernehmen und semantisch sortieren");
+    aiSortBtnEl.addEventListener("click", function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      handleAiSortClick();
+    });
+    panelEl.appendChild(aiSortBtnEl);
+
     // Hinweis-Zeile + Treffer-Liste.
     hintEl = doc.createElement("div");
     hintEl.className = "sbkim-sw-hint";
@@ -760,6 +842,7 @@
   function setEuPolicy(p) {
     optEuPolicy = normalizeEuPolicy(p);
     updateEuChip();
+    rebuildAiProviderOptions(); // EU-bindend → nur EU-KI-Anbieter (DSGVO)
   }
 
   // bindend → euOnly:true erzwungen; frei → optEuOnly (Default false, EU wählbar).
@@ -872,6 +955,173 @@
   }
 
   function persistEngine() { lsSet(LS_KEY_ENGINE, optWebEngine); }
+
+  // ---- KI-Such-Brücke (Increment 2 Stufe A — Gratis-Kopier-Pfad) ----
+  // Der Nutzer fragt eine KI mit Websuche; deren JSON-Quellen werden eingefügt
+  // und semantisch sortiert. KEIN Schlüssel hier (Stufe A); Stufe B (Tresor +
+  // automatischer API-Aufruf) ist eine eigene Folge-Sitzung. openUrl bettet den
+  // Prompt best-effort in die Such-URL des Anbieters ein (Clipboard bleibt die
+  // verlässliche Quelle). euBased = im EU-Raum gehostet (DSGVO).
+  var AI_PROVIDERS = [
+    { id: "chatgpt",    label: "ChatGPT (OpenAI)",      openUrl: "https://chatgpt.com/?q=",              euBased: false, webSearch: true },
+    { id: "claude",     label: "Claude (Anthropic)",    openUrl: "https://claude.ai/new?q=",             euBased: false, webSearch: true },
+    { id: "perplexity", label: "Perplexity",            openUrl: "https://www.perplexity.ai/search?q=",  euBased: false, webSearch: true },
+    { id: "mistral",    label: "Le Chat (Mistral · EU)", openUrl: "https://chat.mistral.ai/chat?q=",      euBased: true,  webSearch: true },
+    { id: "alephalpha", label: "Aleph Alpha (DE · EU)",  openUrl: "https://app.aleph-alpha.com/?q=",      euBased: true,  webSearch: false },
+  ];
+
+  function aiProviderById(id) {
+    for (var i = 0; i < AI_PROVIDERS.length; i++) { if (AI_PROVIDERS[i].id === id) return AI_PROVIDERS[i]; }
+    return AI_PROVIDERS[0];
+  }
+  // Bei EU-bindender Politik nur EU-gehostete Anbieter (DSGVO-Kopplung an Modul 21/22).
+  function aiProvidersForPolicy() {
+    return optEuPolicy === "bindend"
+      ? AI_PROVIDERS.filter(function (p) { return p.euBased; })
+      : AI_PROVIDERS.slice();
+  }
+
+  // Prompt aus der Such-Frage bauen. Code-Block-Regel → ChatGPT zeigt einen
+  // „Copy"-Knopf UND liefert saubere URLs (keine Zitat-Artefakte).
+  function buildAiPrompt(query) {
+    var q = (typeof query === "string" ? query : "").trim();
+    return [
+      "Suche im Internet zu meiner Frage und gib mir möglichst viele ECHTE, verschiedene Quellseiten.",
+      "",
+      "Meine Frage: " + q,
+      "",
+      "WICHTIG für die Ausgabe:",
+      "- Lege die Antwort in EINEN Code-Block (```), damit ich sie mit einem Klick kopieren kann.",
+      "- Im Code-Block NUR gültiges JSON, sonst nichts.",
+      "- Erfinde KEINE URLs, nur echte Treffer. Keine Dubletten.",
+      "- Format pro Eintrag:",
+      '  {"titel": "...", "url": "https://...", "quelle": "domain.de", "text": "ein bis zwei Sätze"}',
+      "- So viele echte Einträge wie möglich (Ziel bis 50).",
+    ].join("\n");
+  }
+
+  // URL-Müll säubern: ChatGPT hängt im Render manchmal unsichtbare Zitat-Zeichen
+  // ans URL-Ende (im Test 2026-06-21 gesehen). Nur bis zum ersten Whitespace/
+  // Anführungszeichen nehmen, dann hinten alles abschneiden, was nicht URL ist.
+  function cleanUrl(u) {
+    if (typeof u !== "string") return "";
+    var s = u.trim().split(/[\s"'<>]/)[0];
+    s = s.replace(/[^A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;=%]+$/g, "");
+    return s;
+  }
+
+  // Eingefügte KI-Antwort → saubere Eintrags-Liste. Verträgt Code-Fences
+  // (```json … ```), Text drumherum und gesäuberte URLs. [] wenn kein Array.
+  function parseAiAnswer(text) {
+    if (typeof text !== "string" || !text.trim()) return [];
+    var raw = text.trim();
+    var fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fence) raw = fence[1].trim();
+    var start = raw.indexOf("[");
+    var end = raw.lastIndexOf("]");
+    if (start < 0 || end <= start) return [];
+    var arr;
+    try { arr = JSON.parse(raw.slice(start, end + 1)); }
+    catch (e) { return []; }
+    if (!Array.isArray(arr)) return [];
+    var out = [];
+    for (var i = 0; i < arr.length; i++) {
+      var it = arr[i] || {};
+      var url = cleanUrl(it.url || it.link || "");
+      var titel = String(it.titel || it.title || it.quelle || url || "").trim();
+      var quelle = String(it.quelle || it.source || "").trim();
+      var txt = String(it.text || it.snippet || it.beschreibung || "").trim();
+      if (!titel && !url) continue;
+      out.push({ titel: titel || url, url: url, quelle: quelle, text: txt });
+    }
+    return out;
+  }
+
+  function hasPastedAi() { return !!(pastedAiText && parseAiAnswer(pastedAiText).length); }
+
+  // Anbieter-Dropdown nach EU-Politik (neu) befüllen; gewählten Eintrag halten.
+  function rebuildAiProviderOptions() {
+    if (!aiSelectEl) return;
+    var d = global.document;
+    var list = aiProvidersForPolicy();
+    var keep = optAiProvider;
+    var stillThere = false;
+    while (aiSelectEl.children.length) aiSelectEl.removeChild(aiSelectEl.children[0]);
+    for (var i = 0; i < list.length; i++) {
+      var o = d.createElement("option");
+      o.value = list[i].id;
+      o.textContent = "KI: " + list[i].label + (list[i].webSearch ? "" : " (ohne Websuche)");
+      if (list[i].id === keep) { o.selected = true; stillThere = true; }
+      aiSelectEl.appendChild(o);
+    }
+    if (!stillThere && list.length) { optAiProvider = list[0].id; aiSelectEl.children[0].selected = true; }
+  }
+
+  function copyToClipboard(text) {
+    try {
+      if (global.navigator && global.navigator.clipboard && global.navigator.clipboard.writeText) {
+        return Promise.resolve(global.navigator.clipboard.writeText(text)).then(function () { return true; })
+          .catch(function () { return false; });
+      }
+    } catch (_e) { /* nb */ }
+    return Promise.resolve(false);
+  }
+
+  // „Prompt → KI": Prompt aus der aktuellen Frage bauen, in die Zwischenablage
+  // kopieren, gewählten Anbieter best-effort mit Prompt öffnen.
+  function handleAiPromptClick() {
+    var query = (inputEl ? inputEl.value : queryValue) || "";
+    query = String(query).trim();
+    if (!query) { setHint("Erst eine Frage eintippen, dann den KI-Knopf nutzen."); return; }
+    var prompt = buildAiPrompt(query);
+    var prov = aiProviderById(optAiProvider);
+    copyToClipboard(prompt).then(function (ok) {
+      setHint(ok
+        ? "Prompt kopiert → bei " + prov.label + " einfügen, Antwort hierher zurück."
+        : "Prompt im Feld unten — manuell kopieren, bei " + prov.label + " einfügen.");
+      if (!ok && aiPasteEl) { /* Sichtbar machen, falls Clipboard verboten ist. */ }
+    });
+    try {
+      if (typeof global.open === "function") {
+        global.open(prov.openUrl + encodeURIComponent(prompt), "_blank", "noopener");
+      }
+    } catch (_e) { /* nb — Clipboard reicht als verlässlicher Weg */ }
+  }
+
+  // „Antwort sortieren": eingefügte KI-Antwort übernehmen und Suche auslösen.
+  function handleAiSortClick() {
+    var txt = aiPasteEl ? aiPasteEl.value : "";
+    var entries = parseAiAnswer(txt);
+    if (!entries.length) {
+      setHint("Keine gültige KI-Antwort erkannt — JSON-Liste mit url/titel einfügen.");
+      return;
+    }
+    pastedAiText = txt;
+    if (!areas.internet.enabled) {
+      areas.internet.enabled = true;
+      if (internetCheckboxEl && internetCheckboxEl._input) internetCheckboxEl._input.checked = true;
+      updateSearxngFieldVisibility();
+    }
+    setHint(entries.length + " KI-Quellen erkannt — sortiere …");
+    runAndRender();
+  }
+
+  // Eingefügte KI-Quellen → einbetten (Modul 03) → Korpus, damit die
+  // Sortiermaschine sie semantisch ranken kann (wie App/Knoten/SearXNG).
+  function buildAiCorpus() {
+    var entries = parseAiAnswer(pastedAiText);
+    if (!entries.length) return Promise.resolve([]);
+    var embedding = global.SbkimEmbedding;
+    if (!embedding || typeof embedding.embedPassageBatch !== "function") {
+      return Promise.reject(new Error("Modul 03 (Embedding) nicht geladen — KI-Treffer können nicht sortiert werden."));
+    }
+    var texts = entries.map(function (e) { return e.titel + (e.text ? " — " + e.text : ""); });
+    return Promise.resolve(embedding.embedPassageBatch(texts)).then(function (vecs) {
+      return entries.map(function (e, i) {
+        return { label: e.titel, text: texts[i], anchorId: e.url || e.titel, url: e.url || null, passageVec: vecs[i] };
+      });
+    });
+  }
 
   // Stufe 2 (Sortiermaschine): Modul 04 queryLocal-Cosinus über EINEN Korpus,
   // Treffer mit Quelle (source) + Bedeutungs-Text + URL angereichert.
@@ -988,8 +1238,9 @@
         reason: "Kein Such-Bereich gewählt — App, Knoten oder Internet ankreuzen." });
     }
     var match = global.SbkimMatch;
+    var aiReady = hasPastedAi();
     var needsMatch = areas.app.enabled || areas.knoten.enabled ||
-      (areas.internet.enabled && !!searxngUrl);
+      (areas.internet.enabled && (!!searxngUrl || aiReady));
     if (needsMatch && (!match || typeof match.queryLocal !== "function")) {
       // App/Knoten/Internet-Re-Ranker brauchen Modul 04. Internet-Neuer-Tab geht
       // trotzdem (kein Matcher nötig).
@@ -1010,7 +1261,19 @@
     // Internet-Bereich separat (kann Kandidaten ODER einen webLink liefern).
     var internetP = Promise.resolve({ candidates: [], webLink: null });
     if (areas.internet.enabled) {
-      if (searxngUrl) {
+      if (aiReady) {
+        // Eingefügte KI-Antwort hat Vorrang vor SearXNG/Neuer-Tab — sie ist die
+        // bewusst geholte Quelle, die das Vektor-Sortieren zündet.
+        internetP = buildAiCorpus()
+          .then(function (corpus) { return queryCorpus(query, corpus, "internet"); })
+          .then(function (c) {
+            return { candidates: c, webLink: c.length ? null : { query: query, url: webSearchUrl(query) } };
+          })
+          .catch(function (err) {
+            warn("KI-Antwort-Sortierung fehlgeschlagen — Neuer-Tab-Weg angeboten.", err);
+            return { candidates: [], webLink: { query: query, url: webSearchUrl(query) } };
+          });
+      } else if (searxngUrl) {
         internetP = buildInternetCorpus(query)
           .then(function (corpus) { return queryCorpus(query, corpus, "internet"); })
           .then(function (c) {
@@ -1212,7 +1475,8 @@
     var depth = 0;
     while (el && el !== widgetRoot && depth < 10) {
       if (el.tagName === "A" || el.tagName === "INPUT" || el.tagName === "BUTTON" ||
-          el.tagName === "LABEL" || el.tagName === "SELECT" || el.tagName === "OPTION") return true;
+          el.tagName === "LABEL" || el.tagName === "SELECT" || el.tagName === "OPTION" ||
+          el.tagName === "TEXTAREA") return true;
       if (el.classList && (
           el.classList.contains("sbkim-sw-input") ||
           el.classList.contains("sbkim-sw-btn") ||
@@ -1461,6 +1725,11 @@
         if (WEB_ENGINES[wi].id === options.webSearchEngine) { optWebEngine = options.webSearchEngine; break; }
       }
     }
+    if (typeof options.aiProvider === "string") {
+      for (var pj = 0; pj < AI_PROVIDERS.length; pj++) {
+        if (AI_PROVIDERS[pj].id === options.aiProvider) { optAiProvider = options.aiProvider; break; }
+      }
+    }
     if (options.richter !== undefined) richterOn = !!options.richter;
     if (options.areas && typeof options.areas === "object") {
       ["app", "knoten", "internet"].forEach(function (id) {
@@ -1515,6 +1784,9 @@
     getPosition: getPosition,
     setCorpus: setCorpus,
     search: search,
+    buildPrompt: buildAiPrompt,
+    parseAiAnswer: parseAiAnswer,
+    setAiAnswer: function (text) { pastedAiText = (typeof text === "string" ? text : ""); return hasPastedAi(); },
     _meta: {
       get euPolicy() { return optEuPolicy; },
       get corpusSize() { return Array.isArray(localCorpus) ? localCorpus.length : 0; },
@@ -1524,6 +1796,9 @@
       get richterOn() { return richterOn; },
       get hasSearxng() { return !!searxngUrl; },
       get webEngine() { return optWebEngine; },
+      get aiProvider() { return optAiProvider; },
+      get aiProviders() { return aiProvidersForPolicy().map(function (p) { return p.id; }); },
+      get hasPastedAi() { return hasPastedAi(); },
       get visible() { return isVisible(); },
       get expanded() { return !!expandedFlag; },
       get widgetMounted() { return !!(widgetRoot && widgetRoot.parentNode); },

@@ -466,6 +466,43 @@ async function run() {
     String(!!(res.webLink && /google\.com\/search/.test(res.webLink.url))),
     !!(res.webLink && /google\.com\/search/.test(res.webLink.url)));
   await W.init({ webSearchEngine: "duckduckgo" }); // zurück
+
+  // ---- Probe 29: KI-Such-Brücke Stufe A — Prompt bauen ----
+  const prompt = W.buildPrompt("Wespen am Esstisch");
+  record("Probe 29: Prompt enthält Frage", "true",
+    String(/Wespen am Esstisch/.test(prompt)), /Wespen am Esstisch/.test(prompt));
+  record("Probe 29: Prompt verlangt Code-Block", "true",
+    String(/Code-Block/.test(prompt) && /JSON/.test(prompt)), /Code-Block/.test(prompt) && /JSON/.test(prompt));
+
+  // ---- Probe 30: parseAiAnswer — Code-Fence + URL-Müll säubern ----
+  const messy = '```json\n[{"titel":"A","url":"https://a.de/x⁠�","quelle":"a.de","text":"eins"},' +
+    '{"titel":"B","url":"https://b.de/y","quelle":"b.de","text":"zwei"}]\n```';
+  const parsed = W.parseAiAnswer(messy);
+  eq("Probe 30: zwei Einträge geparst", 2, parsed.length);
+  eq("Probe 30: URL-Müll abgeschnitten", "https://a.de/x", parsed[0].url);
+  eq("Probe 30: leerer Text → []", 0, W.parseAiAnswer("kein json hier").length);
+
+  // ---- Probe 31: eingefügte KI-Antwort wird semantisch sortiert ----
+  stub.SbkimEmbedding = { embedPassageBatch: async (texts) => texts.map(() => new Float32Array(384)) };
+  await W.init({ areas: { app: false, knoten: false, internet: true }, richter: false });
+  W.setCorpus([]); // App leer
+  const ok = W.setAiAnswer('[{"titel":"Wespen vertreiben","url":"https://x.de/w","quelle":"x.de","text":"Hausmittel am Tisch"},' +
+    '{"titel":"Nest entfernen","url":"https://y.de/n","quelle":"y.de","text":"Wespennest"}]');
+  record("Probe 31: setAiAnswer erkennt Quellen", "true", String(ok), ok === true);
+  record("Probe 31: _meta.hasPastedAi", "true", String(W._meta.hasPastedAi), W._meta.hasPastedAi === true);
+  res = await W.search("Hausmittel gegen Wespen");
+  const fromAi = (res.treffer || []).filter(t => t.source === "internet");
+  record("Probe 31: KI-Quellen als internet-Treffer sortiert", "true",
+    String(fromAi.length >= 1), fromAi.length >= 1);
+  delete stub.SbkimEmbedding;
+
+  // ---- Probe 32: EU-Politik bindend → nur EU-KI-Anbieter ----
+  await W.init({ euPolicy: "bindend" });
+  const euProv = W._meta.aiProviders;
+  record("Probe 32: bindend → nur EU-Anbieter (mistral/alephalpha)", "true",
+    String(euProv.length === 2 && euProv.indexOf("mistral") >= 0 && euProv.indexOf("alephalpha") >= 0),
+    euProv.length === 2 && euProv.indexOf("mistral") >= 0 && euProv.indexOf("alephalpha") >= 0);
+  await W.init({ euPolicy: "frei" }); // zurück
 }
 
 const finalize = () => {

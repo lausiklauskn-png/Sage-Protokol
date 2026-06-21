@@ -4242,9 +4242,16 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         // reicht an SbkimMatch.setLocalCorpus durch.
   search(text)       → Promise<SearchResult>  // komponierte Suche, auch direkt
                                         // aufrufbar (Tests).
+  buildPrompt(query) → string (sync)    // KI-Such-Brücke Stufe A: Prompt aus der
+                                        // Frage (Code-Block-Regel → saubere URLs).
+  parseAiAnswer(text)→ Array (sync)     // eingefügte KI-Antwort → [{titel,url,quelle,text}];
+                                        // verträgt Code-Fences, säubert URL-Müll; [] wenn kein Array.
+  setAiAnswer(text)  → boolean (sync)   // KI-Antwort übernehmen; true wenn gültige Quellen.
+                                        //   Nächste search() sortiert sie als source:"internet".
   _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
-                     //   richterOn, hasSearxng, webEngine, visible, expanded, widgetMounted,
-                     //   lastSearchMode, searchCount, hasApiKey, coupled:false }
+                     //   richterOn, hasSearxng, webEngine, aiProvider, aiProviders, hasPastedAi,
+                     //   visible, expanded, widgetMounted, lastSearchMode, searchCount,
+                     //   hasApiKey, coupled:false }
 
 options-Form (init):
   {
@@ -4268,6 +4275,10 @@ options-Form (init):
     webSearchEngine?: "duckduckgo"|"startpage"|"ecosia"|"brave"|"google"|"bing",
                                         // Suchmaschine für den Neuer-Tab-Weg (frei wählbar,
                                         // Default "duckduckgo"; im Widget umstellbar, persistiert).
+    aiProvider?:  "chatgpt"|"claude"|"perplexity"|"mistral"|"alephalpha",
+                                        // KI-Such-Brücke Stufe A (Default "chatgpt"). Bei
+                                        // euPolicy:"bindend" nur EU-Anbieter (mistral/alephalpha).
+                                        // Stufe B (Tresor + automatischer API-Aufruf) = Folge-Sitzung.
     nodeCorpus?:  Array<corpusEntry>,            // Knoten-Bereich-Korpus (verbundene Knoten)
     prepareNodeCorpus?: () => Promise<Array<corpusEntry>>,  // LAZY Knoten-Korpus-Provider
     defaultCorner?: "top-left"|"top-right"|"bottom-left"|"bottom-right",  // Default "bottom-right"
