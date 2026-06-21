@@ -676,6 +676,47 @@ async function run() {
     !!sharesTa && sharesTa.value.split("\n").length === 3);
   stub.localStorage.removeItem("sbkim_search_widget_vault");
   W.lockVault();
+
+  // ---- Probe 42: B2-Probe — automatischer Claude-Aufruf (gemockter fetch) ----
+  mountMatch("treffer");
+  stub.SbkimEmbedding = { embedPassageBatch: async (texts) => texts.map(() => new Float32Array(384)) };
+  // ohne Schlüssel → fail-soft false, kein Throw.
+  await W.init({ areas: { app: false, knoten: false, internet: true }, aiProvider: "claude" });
+  const noKey = await W.autoSearch("zeckenmittel hund");
+  eq("Probe 42: ohne Schlüssel → false (fail-soft)", false, noKey);
+  // nicht-Claude-Anbieter → false (nur Claude unterstützt).
+  await W.init({ aiProvider: "chatgpt", apiKey: "sk-test" });
+  eq("Probe 42: nicht-Claude → autoSearch false", false, await W.autoSearch("x"));
+  record("Probe 42: aiAutoSupported nur bei claude", "true",
+    String(W.aiAutoSupported() === false), W.aiAutoSupported() === false);
+  // Claude + Schlüssel + gemockter fetch → Treffer sortiert.
+  let captured = null;
+  stub.fetch = async (url, opts) => {
+    captured = { url, opts };
+    return { ok: true, status: 200, json: async () => ({
+      content: [{ type: "text", text: '```json\n[{"titel":"Bravecto","url":"https://a.de","quelle":"a.de","text":"oral, katzensicher"},' +
+        '{"titel":"Advantix","url":"https://b.de","quelle":"b.de","text":"Permethrin, für Katzen tödlich"}]\n```' }],
+    }) };
+  };
+  await W.init({ aiProvider: "claude", apiKey: "sk-test-key" });
+  const autoOk = await W.autoSearch("zeckenmittel hund");
+  await new Promise((r) => setTimeout(r, 0));
+  eq("Probe 42: Claude-Auto → true", true, autoOk);
+  record("Probe 42: ruft api.anthropic.com mit Browser-Header", "true",
+    String(!!captured && /api\.anthropic\.com/.test(captured.url)
+      && captured.opts.headers["anthropic-dangerous-direct-browser-access"] === "true"),
+    !!captured && /api\.anthropic\.com/.test(captured.url)
+      && captured.opts.headers["anthropic-dangerous-direct-browser-access"] === "true");
+  record("Probe 42: Web-Suche-Tool im Body", "true",
+    String(!!captured && /web_search/.test(captured.opts.body)), !!captured && /web_search/.test(captured.opts.body));
+  record("Probe 42: Treffer gerendert", "true",
+    String(queryAll(root, ".sbkim-sw-result").length >= 1), queryAll(root, ".sbkim-sw-result").length >= 1);
+  // CORS/Netzfehler → fail-soft false, kein Throw.
+  stub.fetch = async () => { throw new TypeError("Failed to fetch"); };
+  eq("Probe 42: CORS-Fehler → false (fail-soft)", false, await W.autoSearch("x"));
+  delete stub.fetch;
+  delete stub.SbkimEmbedding;
+  stub.localStorage.removeItem("sbkim_search_widget_vault");
 }
 
 const finalize = () => {

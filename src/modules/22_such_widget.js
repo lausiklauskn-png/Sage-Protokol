@@ -113,6 +113,7 @@
   var aiPromptBtnEl = null;    // „Prompt → KI"-Knopf (kopiert + öffnet Anbieter)
   var aiPasteEl = null;        // Einfüge-Feld für die KI-Antwort (JSON)
   var aiSortBtnEl = null;      // „Antwort sortieren"-Knopf
+  var aiAutoBtnEl = null;      // „⚡ Automatisch"-Knopf (B2-Probe, Claude)
   var internetCheckboxEl = null; // Referenz auf die Internet-Bereichs-Checkbox
   var vaultSectionEl = null;   // Tresor-Bedien-Sektion (🔐)
   var vaultSectionOpen = false;// Tresor-Sektion ein-/ausgeklappt
@@ -520,6 +521,8 @@
       "  cursor: pointer;",
       "}",
       "#" + WIDGET_ID + " .sbkim-sw-aibtn:hover { background: rgba(167, 139, 250, 0.28); }",
+      "#" + WIDGET_ID + " .sbkim-sw-aiauto { background: rgba(110, 231, 211, 0.16); border-color: rgba(110, 231, 211, 0.42); color: #CFFcF4; }",
+      "#" + WIDGET_ID + " .sbkim-sw-aiauto:hover { background: rgba(110, 231, 211, 0.26); }",
       "#" + WIDGET_ID + " .sbkim-sw-aipaste {",
       "  width: 100%;",
       "  box-sizing: border-box;",
@@ -766,6 +769,7 @@
     if (aiSelectEl) aiSelectEl.style.display = show;
     if (aiContextEl) aiContextEl.style.display = show;
     if (aiPromptBtnEl) aiPromptBtnEl.style.display = show;
+    if (aiAutoBtnEl) aiAutoBtnEl.style.display = show;
     if (aiPasteEl) aiPasteEl.style.display = show;
     if (aiSortBtnEl) aiSortBtnEl.style.display = show;
   }
@@ -944,6 +948,14 @@
       handleAiPromptClick();
     });
     panelEl.appendChild(aiPromptBtnEl);
+
+    // B2-Probe: automatischer Aufruf (nur Claude, braucht Schlüssel im Tresor).
+    aiAutoBtnEl = makeBtn(doc, "sbkim-sw-aibtn sbkim-sw-aiauto", "⚡ Automatisch (Claude, Tresor)", "Direkt aufrufen — braucht entsperrten Tresor / Schlüssel; nur Claude (Probe)");
+    aiAutoBtnEl.addEventListener("click", function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      handleAutoClick();
+    });
+    panelEl.appendChild(aiAutoBtnEl);
 
     aiPasteEl = doc.createElement("textarea");
     aiPasteEl.className = "sbkim-sw-aipaste";
@@ -1312,6 +1324,96 @@
     setHint(entries.length + " KI-Quellen erkannt — sortiere …");
     runAndRender();
   }
+
+  // ===================================================================
+  // Stufe B · B2 (Probe) — automatischer KI-Aufruf, EIN Anbieter: Claude.
+  // CORS-Realität: nur Anbieter mit dokumentiertem Browser-Direkt-Weg gehen.
+  // Claude: api.anthropic.com + Header anthropic-dangerous-direct-browser-access
+  // + eingebautes web_search-Tool. Alles fail-soft; der echte Beweis (CORS ja/
+  // nein) ist Klaus' Live-Lauf. Schlüssel aus Tresor (B1) ODER init({apiKey}).
+  // ===================================================================
+  var optAiModel = null; // Modell-Override (Default je Anbieter)
+
+  function aiAutoSupported() { return optAiProvider === "claude"; }
+
+  function buildClaudeRequest(prompt, key) {
+    return {
+      url: "https://api.anthropic.com/v1/messages",
+      headers: {
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: optAiModel || "claude-sonnet-4-5",
+        max_tokens: 4096,
+        messages: [{ role: "user", content: prompt }],
+        tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }],
+      }),
+    };
+  }
+
+  function extractClaudeText(data) {
+    if (!data || !Array.isArray(data.content)) return "";
+    var out = "";
+    for (var i = 0; i < data.content.length; i++) {
+      var b = data.content[i];
+      if (b && b.type === "text" && typeof b.text === "string") out += b.text + "\n";
+    }
+    return out.trim();
+  }
+
+  // Automatischer Aufruf: Prompt bauen → Anbieter-API mit Web-Suche → Text →
+  // parseAiAnswer → sortieren. Fail-soft (CORS/Key/Netz → ruhiger Hinweis).
+  function autoSearch(query) {
+    query = (typeof query === "string" ? query : "").trim();
+    if (!query) { setHint("Erst eine Frage eintippen."); return Promise.resolve(false); }
+    if (!optApiKey) {
+      setHint("Kein Schlüssel — Tresor (🔐) entsperren oder Schlüssel hinterlegen.");
+      return Promise.resolve(false);
+    }
+    if (!aiAutoSupported()) {
+      setHint("Automatischer Aufruf bisher nur für Claude (Probe). Für " +
+        aiProviderById(optAiProvider).label + " den Kopier-Weg nutzen.");
+      return Promise.resolve(false);
+    }
+    if (typeof global.fetch !== "function") {
+      setHint("Kein fetch verfügbar — Kopier-Weg nutzen.");
+      return Promise.resolve(false);
+    }
+    var context = aiContextEl ? aiContextEl.value : "";
+    var req = buildClaudeRequest(buildAiPrompt(query, context), optApiKey);
+    setHint("Frage Claude (mit Web-Suche) … (kann etwas dauern)");
+    return Promise.resolve(global.fetch(req.url, { method: "POST", headers: req.headers, body: req.body }))
+      .then(function (resp) {
+        if (!resp || !resp.ok) throw new Error("HTTP " + (resp && resp.status));
+        return resp.json();
+      })
+      .then(function (data) {
+        var text = extractClaudeText(data);
+        var entries = parseAiAnswer(text);
+        if (!entries.length) { setHint("Claude lieferte keine verwertbare Liste — Kopier-Weg versuchen."); return false; }
+        pastedAiText = text;
+        if (!areas.internet.enabled) {
+          areas.internet.enabled = true;
+          if (internetCheckboxEl && internetCheckboxEl._input) internetCheckboxEl._input.checked = true;
+          updateSearxngFieldVisibility();
+        }
+        setHint(entries.length + " Treffer von Claude — sortiere …");
+        runAndRender();
+        return true;
+      })
+      .catch(function (err) {
+        var m = (err && err.message) || String(err);
+        setHint(/fetch|NetworkError|CORS/i.test(m)
+          ? "Browser-Aufruf blockiert (vermutlich CORS) — nutze den Kopier-Weg (🤖 Prompt → KI)."
+          : "Automatischer Aufruf fehlgeschlagen (" + m + ") — Kopier-Weg nutzen.");
+        return false;
+      });
+  }
+
+  function handleAutoClick() { autoSearch((inputEl ? inputEl.value : queryValue) || ""); }
 
   // Eingefügte KI-Quellen → einbetten (Modul 03) → Korpus, damit die
   // Sortiermaschine sie semantisch ranken kann (wie App/Knoten/SearXNG).
@@ -2340,6 +2442,7 @@
     }
 
     if (typeof options.apiKey === "string" && options.apiKey.length > 0) optApiKey = options.apiKey;
+    if (typeof options.aiModel === "string" && options.aiModel.length > 0) optAiModel = options.aiModel;
     if (typeof options.provider === "string" && options.provider.length > 0) optProvider = options.provider;
     if (options.euOnly !== undefined) optEuOnly = !!options.euOnly;
     if (typeof options.queryLabel === "string") optQueryLabel = options.queryLabel;
@@ -2424,6 +2527,8 @@
     parseAiAnswer: parseAiAnswer,
     setAiAnswer: function (text) { pastedAiText = (typeof text === "string" ? text : ""); return hasPastedAi(); },
     resultsAsText: function () { return buildResultsText(lastRenderRes); },
+    autoSearch: autoSearch,                 // B2-Probe: automatischer KI-Aufruf (Claude)
+    aiAutoSupported: function () { return aiAutoSupported(); },
     // Stufe B · B1 — Widget-Tresor (self-contained).
     hasVault: hasVault,
     isVaultUnlocked: isVaultUnlocked,
