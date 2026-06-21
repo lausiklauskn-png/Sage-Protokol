@@ -1440,84 +1440,86 @@
           </a>
         </article>
         <style>
-          .milestone-card { margin-top: 1.8rem; display: grid; grid-template-columns: 200px 1fr; gap: 1.7rem; align-items: center; padding: 1.7rem 1.9rem; background: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(244,180,53,0.07) 100%); border: 1px solid rgba(244,180,53,0.36); border-radius: var(--r); box-shadow: 0 0 0 1px rgba(139,92,246,0.10), 0 18px 50px rgba(0,0,0,0.35), inset 0 0 70px rgba(139,92,246,0.06); }
-          .ms-figure { position: relative; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.14); background: radial-gradient(ellipse at 50% 34%, rgba(244,180,53,0.30) 0%, rgba(139,92,246,0.18) 46%, rgba(10,8,24,0.92) 100%); display: grid; place-items: center; }
-          .ms-figure img { width: 100%; height: 100%; object-fit: cover; display: block; }
-          .ms-figure.ms-noimg img { display: none; }
-          .ms-figure .ms-star { position: absolute; font-size: 2.8rem; filter: drop-shadow(0 0 14px rgba(244,180,53,0.65)); opacity: 0.92; pointer-events: none; }
-          .ms-figure:not(.ms-noimg) .ms-star { display: none; }
-          .ms-eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; font-family: "Geist Mono", monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.55rem; }
-          .ms-title { font-size: clamp(1.3rem, 2.4vw, 1.95rem); font-weight: 600; line-height: 1.12; margin: 0 0 0.65rem; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 55%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-          .ms-body { color: var(--muted); line-height: 1.62; margin: 0 0 0.95rem; font-size: 0.98rem; }
-          .ms-body strong { color: var(--text); font-weight: 500; }
-          .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.86rem; }
-          .ms-link:hover { color: var(--accent); }
           .ms-series { margin-top: 1.8rem; }
-          .ms-series-head { font-family: "Geist Mono", monospace; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.2rem; }
-          .ms-series .milestone-card { margin-top: 1rem; }
-          .ms-series .milestone-card.is-star { border-color: rgba(244,180,53,0.5); box-shadow: 0 0 0 1px rgba(244,180,53,0.18), 0 18px 50px rgba(0,0,0,0.4), inset 0 0 70px rgba(139,92,246,0.08); }
-          .ms-figure .ms-num { position: absolute; top: 8px; left: 10px; font-family: "Geist Mono", monospace; font-size: 0.74rem; color: var(--gold); background: rgba(10,8,24,0.66); border: 1px solid rgba(244,180,53,0.3); border-radius: 999px; padding: 1px 8px; pointer-events: none; }
-          @media (max-width: 640px) { .milestone-card { grid-template-columns: 1fr; } .ms-figure { max-width: 220px; margin: 0 auto; } }
+          .ms-series-head { font-family: "Geist Mono", monospace; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.9rem; }
+          /* Drei Bild-Container nebeneinander (Werkzeugkiste-Stil) */
+          .ms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+          @media (max-width: 760px) { .ms-grid { grid-template-columns: 1fr; } }
+          .ms-tile { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: clamp(380px, 30vw, 460px); border-radius: 16px; overflow: hidden; border: 1px solid rgba(244,180,53,0.34); background: #05060f; box-shadow: 0 14px 44px rgba(0,0,0,0.42); }
+          .ms-tile.is-star { border-color: rgba(244,180,53,0.6); box-shadow: 0 0 0 1px rgba(244,180,53,0.22), 0 16px 50px rgba(0,0,0,0.5); }
+          .ms-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+          .ms-tile.ms-noimg .ms-img { display: none; }
+          .ms-emoji { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 3rem; z-index: 1; display: none; filter: drop-shadow(0 0 14px rgba(244,180,53,0.6)); }
+          .ms-tile.ms-noimg { background: radial-gradient(ellipse at 50% 38%, rgba(244,180,53,0.26) 0%, rgba(139,92,246,0.16) 46%, rgba(10,8,24,0.95) 100%); }
+          .ms-tile.ms-noimg .ms-emoji { display: block; }
+          /* Oberer Streifen: Datum (dezent) + Überschrift in Farbe, auf dunklem Verlauf */
+          .ms-top { position: relative; z-index: 2; padding: 0.85rem 1rem 1.5rem; background: linear-gradient(180deg, rgba(7,5,18,0.93) 0%, rgba(7,5,18,0.66) 52%, rgba(7,5,18,0) 100%); }
+          .ms-date { display: block; text-align: right; font-family: "Geist Mono", monospace; font-size: 0.68rem; letter-spacing: 0.05em; color: rgba(244,180,53,0.72); margin-bottom: 0.4rem; }
+          .ms-h { font-size: clamp(1.04rem, 1.5vw, 1.28rem); font-weight: 600; line-height: 1.16; margin: 0; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 55%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+          /* Unterer Streifen: weißer Fließtext auf dunklem Verlauf (unterhalb der Steine) */
+          .ms-bot { position: relative; z-index: 2; padding: 1.5rem 1rem 1rem; background: linear-gradient(0deg, rgba(7,5,18,0.95) 0%, rgba(7,5,18,0.74) 55%, rgba(7,5,18,0) 100%); }
+          .ms-p { color: rgba(255,255,255,0.9); line-height: 1.55; margin: 0; font-size: 0.88rem; }
+          .ms-p strong { color: #fff; font-weight: 600; }
+          .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.84rem; margin-top: 0.7rem; }
+          .ms-link:hover { color: var(--accent); }
         </style>
         <section class="ms-series" id="meilenstein" aria-label="Meilensteine im Werdegang">
           <p class="ms-series-head">Wendepunkte · Meilensteine im Werdegang</p>
+          <div class="ms-grid">
 
-          <article class="milestone-card">
-            <figure class="ms-figure ms-noimg">
-              <span class="ms-num">01 · 2026-05-17</span>
-              <span class="ms-star">🤝</span>
-              <img src="assets/meilenstein-1.png" alt="Meilenstein — erster Cross-Knoten-Handschlag nach Bedeutung"
-                   onload="var f=this.closest('.ms-figure'); if(f){f.classList.remove('ms-noimg');}"
-                   onerror="var f=this.closest('.ms-figure'); if(f){f.classList.add('ms-noimg');} this.remove();">
-            </figure>
-            <div class="ms-text">
-              <span class="ms-eyebrow">Meilenstein · 2026-05-17</span>
-              <h2 class="ms-title">Das Mycel verbindet sich nach Bedeutung</h2>
-              <p class="ms-body">Zwei getrennte Knoten — <strong>Mein-Mixarium</strong> und
-                <strong>Mein-Rezeptbuch</strong> — gaben sich server-los im Browser die Hand. Der
-                Abgleich gelang nicht über gleiche Wörter, sondern über die <strong>verwandte
-                Bedeutung der Domänen</strong> (Cosinus 0.95). Der erste bezeugte
-                Cross-Knoten-Handschlag des Netzes.</p>
-            </div>
-          </article>
+            <article class="ms-tile ms-noimg">
+              <img class="ms-img" src="assets/meilenstein-1.png" alt="Erster Cross-Knoten-Handschlag nach Bedeutung"
+                   onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
+                   onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <span class="ms-emoji">🤝</span>
+              <div class="ms-top">
+                <span class="ms-date">17.05.2026</span>
+                <h2 class="ms-h">Das Mycel verbindet sich nach Bedeutung</h2>
+              </div>
+              <div class="ms-bot">
+                <p class="ms-p">Zwei getrennte Knoten — <strong>Mein-Mixarium</strong> und
+                  <strong>Mein-Rezeptbuch</strong> — gaben sich server-los im Browser die Hand. Der
+                  Abgleich gelang über die <strong>verwandte Bedeutung der Domänen</strong> (Cosinus
+                  0.95), nicht über gleiche Wörter. Der erste bezeugte Cross-Knoten-Handschlag.</p>
+              </div>
+            </article>
 
-          <article class="milestone-card">
-            <figure class="ms-figure ms-noimg">
-              <span class="ms-num">02 · 2026-06-20</span>
-              <span class="ms-star">🌐</span>
-              <img src="assets/meilenstein-2.png" alt="Meilenstein — erster eigenständiger Fremd-Knoten"
-                   onload="var f=this.closest('.ms-figure'); if(f){f.classList.remove('ms-noimg');}"
-                   onerror="var f=this.closest('.ms-figure'); if(f){f.classList.add('ms-noimg');} this.remove();">
-            </figure>
-            <div class="ms-text">
-              <span class="ms-eyebrow">Meilenstein · 2026-06-20</span>
-              <h2 class="ms-title">Über den Schöpfer hinaus</h2>
-              <p class="ms-body">Mit <strong>BookLedgerPro</strong> — einer Buchhaltungs-App, die
-                nicht von hier gebaut wurde — dockte der erste <strong>eigenständige Fremd-Knoten</strong>
-                an. Seine Identität ist kryptografisch verifiziert (Ed25519-Signatur, nodeId unabhängig
-                nachgerechnet). Das Mycel wuchs über die eigenen Apps hinaus.</p>
-            </div>
-          </article>
+            <article class="ms-tile ms-noimg">
+              <img class="ms-img" src="assets/meilenstein-2.png" alt="Erster eigenständiger Fremd-Knoten"
+                   onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
+                   onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <span class="ms-emoji">🌐</span>
+              <div class="ms-top">
+                <span class="ms-date">20.06.2026</span>
+                <h2 class="ms-h">Über den Schöpfer hinaus</h2>
+              </div>
+              <div class="ms-bot">
+                <p class="ms-p">Mit <strong>BookLedgerPro</strong> — einer Buchhaltungs-App, die nicht
+                  von hier gebaut wurde — dockte der erste <strong>eigenständige Fremd-Knoten</strong>
+                  an. Identität kryptografisch verifiziert (Ed25519-Signatur, nodeId nachgerechnet).
+                  Das Mycel wuchs über die eigenen Apps hinaus.</p>
+              </div>
+            </article>
 
-          <article class="milestone-card is-star" id="meilenstein-suche">
-            <figure class="ms-figure ms-noimg">
-              <span class="ms-num">03 · 2026-06-21</span>
-              <span class="ms-star">⭐</span>
-              <img src="assets/meilenstein.png" alt="Meilenstein — semantische Bedeutungs-Suche"
-                   onload="var f=this.closest('.ms-figure'); if(f){f.classList.remove('ms-noimg');}"
-                   onerror="var f=this.closest('.ms-figure'); if(f){f.classList.add('ms-noimg');} this.remove();">
-            </figure>
-            <div class="ms-text">
-              <span class="ms-eyebrow">⭐ Meilenstein · 2026-06-21</span>
-              <h2 class="ms-title">Bedeutung wird suchbar</h2>
-              <p class="ms-body">Das Such-Werkzeug versteht die <strong>Bedeutung hinter den Worten</strong> —
-                nicht Stichwörter — und ordnet Treffer danach. Server-los im Browser, mit eigenem
-                Schlüssel-Tresor und automatischem KI-Aufruf. An festen Referenz-Fällen bewiesen;
-                die volle Cross-Knoten-Suche wächst weiter.</p>
-              <a class="ms-link" href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md"
-                 target="_blank" rel="noopener">Den ganzen Werdegang lesen →</a>
-            </div>
-          </article>
+            <article class="ms-tile ms-noimg is-star" id="meilenstein-suche">
+              <img class="ms-img" src="assets/meilenstein.png" alt="Semantische Bedeutungs-Suche"
+                   onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
+                   onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <span class="ms-emoji">⭐</span>
+              <div class="ms-top">
+                <span class="ms-date">21.06.2026</span>
+                <h2 class="ms-h">⭐ Bedeutung wird suchbar</h2>
+              </div>
+              <div class="ms-bot">
+                <p class="ms-p">Das Such-Werkzeug versteht die <strong>Bedeutung hinter den Worten</strong> —
+                  nicht Stichwörter — und ordnet Treffer danach. Server-los im Browser, mit eigenem
+                  Schlüssel-Tresor und automatischem KI-Aufruf. An Referenz-Fällen bewiesen.</p>
+                <a class="ms-link" href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md"
+                   target="_blank" rel="noopener">Den ganzen Werdegang lesen →</a>
+              </div>
+            </article>
+
+          </div>
         </section>
         <div class="meta-footer">
           <div class="meta-cell"><span class="k">Branch</span><span class="v" id="ft-branch">—</span></div>
