@@ -147,7 +147,7 @@
   //              zum Empfangsmodus (CLAUDE.md § Vier-Schichten-Lesart Schicht 2).
   var areas = {
     app:      { enabled: true,  label: "App" },
-    knoten:   { enabled: false, label: "Knoten" },
+    knoten:   { enabled: true,  label: "Knoten" },
     internet: { enabled: false, label: "Netz" },
   };
   // KI-Richter an/aus. DEFAULT AUS (gratis: reine semantische Cosinus-Suche „über
