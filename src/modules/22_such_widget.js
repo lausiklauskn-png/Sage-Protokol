@@ -1016,11 +1016,30 @@
 
   var SOURCE_LABELS = { app: "App", knoten: "Knoten", internet: "Netz" };
 
+  // Neuen Tab öffnen — explizit, weil ein <a target="_blank"> auf Touch durch
+  // setPointerCapture verschluckt werden kann. window.open im click-Handler
+  // gilt als Nutzer-Geste (kein Popup-Block).
+  function openUrl(url) {
+    if (!url) return;
+    try {
+      var w = global.open ? global.open(url, "_blank", "noopener,noreferrer") : null;
+      if (!w && global.location) { /* Fallback nur, wenn open blockiert wäre */ }
+    } catch (e) { warn("Konnte Link nicht öffnen: " + url, e); }
+  }
+
+  function makeBadge(doc, srcKey) {
+    var badge = doc.createElement("span");
+    badge.className = "sbkim-sw-badge " + srcKey;
+    badge.textContent = SOURCE_LABELS[srcKey] || srcKey;
+    return badge;
+  }
+
   function renderResults(res) {
     if (!resultsEl) return;
-    // Treffer-Liste neu zeichnen — berührt das Textfeld NICHT (UX-Erhalt).
-    resultsEl.innerHTML = "";
     var doc = global.document;
+    // Treffer-Liste neu zeichnen (createElement, kein innerHTML) — berührt das
+    // Textfeld NICHT (UX-Erhalt).
+    while (resultsEl.firstChild) resultsEl.removeChild(resultsEl.firstChild);
     var treffer = res.treffer || [];
     var modeHint = {
       "modul-04-fehlt": "Modul 04 (Match) nicht geladen.",
@@ -1033,45 +1052,73 @@
     };
     setHint(modeHint[res.mode] || "");
 
-    // Optionaler „↗ Im Netz suchen"-Eintrag (Internet ohne SearXNG-URL oder Fallback).
+    // Erst die echten Treffer (Klaus-Politur 2026-06-21: Web-Karte ans Ende).
+    for (var i = 0; i < treffer.length; i++) {
+      var t = treffer[i];
+      var el = doc.createElement("div");
+      el.className = "sbkim-sw-result";
+      var line = doc.createElement("div");
+      line.appendChild(makeBadge(doc, t.source || "app"));
+
+      var titleEl;
+      if (t.url) {
+        titleEl = doc.createElement("a");
+        titleEl.className = "sbkim-sw-result-link";
+        titleEl.href = t.url;
+        titleEl.target = "_blank";
+        titleEl.rel = "noopener noreferrer";
+        titleEl.textContent = t.label;
+        attachOpenHandler(titleEl, t.url);
+      } else {
+        titleEl = doc.createElement("span");
+        titleEl.textContent = t.label;
+      }
+      line.appendChild(titleEl);
+
+      if (typeof t.score === "number") {
+        line.appendChild(doc.createTextNode(" "));
+        var scoreEl = doc.createElement("span");
+        scoreEl.className = "sbkim-sw-score";
+        scoreEl.textContent = t.score.toFixed(2);
+        line.appendChild(scoreEl);
+      }
+      el.appendChild(line);
+      if (t.begruendung) {
+        var reasonEl = doc.createElement("div");
+        reasonEl.className = "sbkim-sw-reason";
+        reasonEl.textContent = t.begruendung;
+        el.appendChild(reasonEl);
+      }
+      resultsEl.appendChild(el);
+    }
+
+    // Web-Karte (Internet ohne SearXNG-URL / Fallback) ans ENDE.
     if (res.webLink && res.webLink.url) {
       var linkEl = doc.createElement("div");
       linkEl.className = "sbkim-sw-result";
+      linkEl.appendChild(makeBadge(doc, "internet"));
       var a = doc.createElement("a");
       a.className = "sbkim-sw-result-link";
       a.href = res.webLink.url;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
       a.textContent = "↗ Im Netz suchen: " + (res.webLink.query || "");
-      var badge = doc.createElement("span");
-      badge.className = "sbkim-sw-badge internet";
-      badge.textContent = "Netz";
-      linkEl.appendChild(badge);
+      attachOpenHandler(a, res.webLink.url);
       linkEl.appendChild(a);
       resultsEl.appendChild(linkEl);
     }
+  }
 
-    for (var i = 0; i < treffer.length; i++) {
-      var t = treffer[i];
-      var el = doc.createElement("div");
-      el.className = "sbkim-sw-result";
-      var score = (typeof t.score === "number") ? t.score.toFixed(2) : "";
-      var srcKey = t.source || "app";
-      var badgeHtml = "<span class=\"sbkim-sw-badge " + esc(srcKey) + "\">" +
-        esc(SOURCE_LABELS[srcKey] || srcKey) + "</span>";
-      var titleHtml;
-      if (t.url) {
-        titleHtml = "<a class=\"sbkim-sw-result-link\" href=\"" + esc(t.url) +
-          "\" target=\"_blank\" rel=\"noopener noreferrer\">" + esc(t.label) + "</a>";
-      } else {
-        titleHtml = "<span>" + esc(t.label) + "</span>";
-      }
-      var html = "<div>" + badgeHtml + titleHtml + " " +
-        (score ? "<span class=\"sbkim-sw-score\">" + score + "</span>" : "") + "</div>";
-      if (t.begruendung) html += "<div class=\"sbkim-sw-reason\">" + esc(t.begruendung) + "</div>";
-      el.innerHTML = html;
-      resultsEl.appendChild(el);
-    }
+  // Klick/Tap auf einen Link: Drag verhindern + explizit öffnen (Touch-fest).
+  function attachOpenHandler(linkEl, url) {
+    linkEl.addEventListener("pointerdown", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+    });
+    linkEl.addEventListener("click", function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      openUrl(url);
+    });
   }
 
   // ---- Korpus ----
@@ -1098,17 +1145,28 @@
   }
 
   function isInteractiveTarget(target) {
-    if (!target || !target.classList) return false;
-    return target.classList.contains("sbkim-sw-input") ||
-      target.classList.contains("sbkim-sw-btn") ||
-      target.classList.contains("sbkim-sw-iconbtn") ||
-      target.classList.contains("sbkim-sw-euchip") ||
-      target.classList.contains("sbkim-sw-result") ||
-      target.classList.contains("sbkim-sw-check") ||
-      target.classList.contains("sbkim-sw-searxng") ||
-      (target.tagName === "INPUT") ||
-      (target.tagName === "SPAN" && target.parentNode &&
-        target.parentNode.classList && target.parentNode.classList.contains("sbkim-sw-check"));
+    // Bis zum Widget-Root hochlaufen: jeder Tap innerhalb eines Treffers, Links,
+    // einer Checkbox oder eines Knopfs ist Bedienung, kein Drag. Wichtig gegen
+    // setPointerCapture, das sonst auf Touch den Link-/Button-Klick frisst
+    // (Klaus' Befund 2026-06-21: Netz-Link ließ sich nicht öffnen).
+    var el = target;
+    var depth = 0;
+    while (el && el !== widgetRoot && depth < 10) {
+      if (el.tagName === "A" || el.tagName === "INPUT" ||
+          el.tagName === "BUTTON" || el.tagName === "LABEL") return true;
+      if (el.classList && (
+          el.classList.contains("sbkim-sw-input") ||
+          el.classList.contains("sbkim-sw-btn") ||
+          el.classList.contains("sbkim-sw-iconbtn") ||
+          el.classList.contains("sbkim-sw-euchip") ||
+          el.classList.contains("sbkim-sw-result") ||
+          el.classList.contains("sbkim-sw-result-link") ||
+          el.classList.contains("sbkim-sw-check") ||
+          el.classList.contains("sbkim-sw-searxng"))) return true;
+      el = el.parentNode;
+      depth++;
+    }
+    return false;
   }
 
   function onPointerDown(ev) {

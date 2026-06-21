@@ -435,6 +435,27 @@ async function run() {
   root2.dispatchEvent({ type: "pointermove", target: root2, pointerId: 8, clientX: 140, clientY: 160 });
   root2.dispatchEvent({ type: "pointerup", target: root2, pointerId: 8, clientX: 140, clientY: 160 });
   eq("Probe 26: Drag (mit Move) öffnet NICHT", "false", String(W.isExpanded()));
+
+  // ---- Probe 27: Netz-Link öffnet per Klick (Touch-fest, window.open) ----
+  // Regression-Schutz für Klaus' Befund 2026-06-21: Netz-Link ließ sich nicht öffnen.
+  let opened = null;
+  stub.open = (url) => { opened = url; return {}; };
+  mountMatch("treffer");
+  await W.init({ areas: { app: false, knoten: false, internet: true }, searxngUrl: "" });
+  W.show(); W.expand();
+  const field = queryFirst(root, ".sbkim-sw-input");
+  field.value = "wetter berlin";
+  const searchBtn = queryFirst(root, ".sbkim-sw-search");
+  searchBtn.dispatchEvent({ type: "click", target: searchBtn, stopPropagation: () => {} });
+  await new Promise((r) => setTimeout(r, 0));
+  const link = queryFirst(root, ".sbkim-sw-result-link");
+  record("Probe 27: Netz-Link gerendert", "true", String(!!link), !!link);
+  if (link) {
+    link.dispatchEvent({ type: "click", target: link, preventDefault: () => {}, stopPropagation: () => {} });
+  }
+  record("Probe 27: Klick öffnet URL (window.open)", "true",
+    String(typeof opened === "string" && /duckduckgo/.test(opened)),
+    typeof opened === "string" && /duckduckgo/.test(opened));
 }
 
 const finalize = () => {
