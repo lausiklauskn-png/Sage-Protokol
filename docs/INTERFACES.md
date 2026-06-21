@@ -4250,6 +4250,18 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         // reicht an SbkimMatch.setLocalCorpus durch.
   search(text)       → Promise<SearchResult>  // komponierte Suche, auch direkt
                                         // aufrufbar (Tests).
+  // ---- Stufe B · B1 Widget-Tresor (self-contained, portabel; Krypto wie Modul
+  //      20/02: PBKDF2-SHA256 ≥600k → AES-GCM-256, Recovery Shamir 2-von-3) ----
+  hasVault()         → boolean (sync)   // localStorage sbkim_search_widget_vault da?
+  isVaultUnlocked()  → boolean (sync)
+  createVault(password, secrets) → Promise<{shares: string[]}>  // secrets = {provider:key};
+                                        // verschlüsselt + speichert, gibt 3 Shamir-Anteile zurück.
+                                        // WeakPasswordError (<8) / VaultExistsError.
+  unlockVault(password) → Promise<boolean>   // Schlüssel in RAM; falsches Passwort → false (kein Oracle).
+  lockVault()        → void (sync)      // RAM-Schlüssel löschen.
+  deleteVault()      → void (sync)      // Tresor aus localStorage entfernen + lock.
+  setVaultSecret(password, provider, key) → Promise<boolean>  // im entsperrten Tresor neu verschlüsseln.
+  recoverVaultPassword(shares) → string|null  // ≥2 Anteile → Passwort (rein lokal).
   buildPrompt(query) → string (sync)    // KI-Such-Brücke Stufe A: Prompt aus der
                                         // Frage (Code-Block-Regel → saubere URLs).
   parseAiAnswer(text)→ Array (sync)     // eingefügte KI-Antwort → [{titel,url,quelle,text}];

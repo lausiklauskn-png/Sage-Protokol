@@ -139,6 +139,7 @@ stub.document = makeStubDocument();
 stub.localStorage = makeStubLocalStorage();
 stub.innerWidth = 1024;
 stub.innerHeight = 768;
+stub.crypto = globalThis.crypto; // Node WebCrypto (PBKDF2 + AES-GCM) für den Tresor
 stub.console = console;
 stub.setTimeout = setTimeout;
 stub.clearTimeout = clearTimeout;
@@ -583,6 +584,43 @@ async function run() {
   eq("Probe 38: nach Klick alle 12 sichtbar", 12, queryAll(root, ".sbkim-sw-result").length);
   stub.SbkimMatch.queryLocal = savedQL;
   delete stub.SbkimEmbedding;
+
+  // ---- Probe 39: Widget-Tresor (Stufe B · B1) — Krypto-Roundtrip + Shamir ----
+  stub.localStorage.removeItem("sbkim_search_widget_vault");
+  await W.init({});
+  record("Probe 39: kein Tresor vor Anlegen", "true", String(!W._meta.hasVault), !W._meta.hasVault);
+  // Schwaches Passwort → Reject.
+  let weakRejected = false;
+  try { await W.createVault("kurz", { chatgpt: "sk-x" }); } catch (e) { weakRejected = (e.name === "WeakPasswordError"); }
+  record("Probe 39: schwaches Passwort abgelehnt", "true", String(weakRejected), weakRejected);
+  // Anlegen mit gutem Passwort → 3 Anteile, entsperrt, Schlüssel in optApiKey.
+  const created = await W.createVault("gutes-passwort-123", { chatgpt: "sk-geheim-42" });
+  eq("Probe 39: 3 Shamir-Anteile zurück", 3, created.shares.length);
+  record("Probe 39: Tresor existiert + entsperrt", "true",
+    String(W._meta.hasVault && W._meta.vaultUnlocked), W._meta.hasVault && W._meta.vaultUnlocked);
+  record("Probe 39: Schlüssel in optApiKey gespiegelt", "true", String(W._meta.hasApiKey), W._meta.hasApiKey === true);
+  // Klartext-Schlüssel NICHT in localStorage.
+  const stored = stub.localStorage.getItem("sbkim_search_widget_vault");
+  record("Probe 39: Klartext-Schlüssel nicht im Speicher", "true",
+    String(stored.indexOf("sk-geheim-42") < 0), stored.indexOf("sk-geheim-42") < 0);
+  // Sperren → entsperrt false.
+  W.lockVault();
+  record("Probe 39: lockVault → gesperrt", "true", String(!W._meta.vaultUnlocked), !W._meta.vaultUnlocked);
+  // Falsches Passwort → false (kein Oracle).
+  const badUnlock = await W.unlockVault("falsch-falsch-99");
+  eq("Probe 39: falsches Passwort → false", false, badUnlock);
+  // Richtiges Passwort → true.
+  const goodUnlock = await W.unlockVault("gutes-passwort-123");
+  eq("Probe 39: richtiges Passwort → true", true, goodUnlock);
+
+  // ---- Probe 40: Shamir 2-von-3 Passwort-Recovery ----
+  const r2 = W.recoverVaultPassword([created.shares[0], created.shares[2]]);
+  eq("Probe 40: 2 Anteile rekonstruieren Passwort", "gutes-passwort-123", r2);
+  const r1 = W.recoverVaultPassword([created.shares[1]]);
+  eq("Probe 40: 1 Anteil reicht NICHT", null, r1);
+  const r3 = W.recoverVaultPassword([created.shares[0], created.shares[1], created.shares[2]]);
+  eq("Probe 40: alle 3 Anteile auch ok", "gutes-passwort-123", r3);
+  stub.localStorage.removeItem("sbkim_search_widget_vault");
 }
 
 const finalize = () => {

@@ -83,17 +83,21 @@ Sortiermaschine. `parseAiAnswer` verträgt Code-Fences + säubert URL-Müll
 
 **Stufe B (Spec, NICHT gebaut) — drei Sub-Schritte:**
 
-- **B1 — Widget-Tresor (Fundament).** Eigenes, **getrenntes** Schloss wie BLPs
-  Geheimfach: eigenes Passwort + **Shamir 2-von-3** + kleines **🔐-Symbol**.
-  Speichert die API-Schlüssel verschlüsselt (PBKDF2 ≥600k + AES-GCM-256). Modul 20
-  `SbkimSafe` hat diesen Krypto-Kern schon (`_shamirSplitBytes`/
-  `_shamirCombineBytes`, `createVault`/`unlock`/`recoverPassword` über Modul 02),
-  ist aber ein **Singleton für die App-Identität** — der Widget-Tresor braucht eine
-  **eigene Instanz / eigenen Store**. **Offene Architektur-Frage (Klaus):**
-  Modul-20-Krypto mitbenutzen (weniger Risiko, koppelt das Widget an Modul 20)
-  ODER ein in-Widget-eigenes Schloss (portabel für Copy-Paste in PWAs, aber neues
-  Sicherheits-Stück). Sicherheits-Modul → Pflicht-`ZERTIFIKAT_ASPEKTE`-Eintrag in
-  Modul 16.
+- **B1 — Widget-Tresor (Fundament). ✅ B1a Kern gebaut (2026-06-21).** Eigenes,
+  **getrenntes, in-Widget portables** Schloss (Klaus' Entscheidung 2026-06-21):
+  eigenes Passwort + **Shamir 2-von-3** + (B1b) **🔐-Symbol**. Speichert die
+  API-Schlüssel verschlüsselt in localStorage (`sbkim_search_widget_vault`),
+  **keine** Abhängigkeit zu Modul 01/02/20 → überall hin kopierbar. Krypto
+  spiegelt Modul 20/02: PBKDF2-SHA256 (≥600k) → AES-GCM-256, Salt 16 / IV 12,
+  base64url; Recovery via Shamir 2-von-3 (GF256, eigene Portierung). Surface
+  `hasVault/isVaultUnlocked/createVault/unlockVault/lockVault/deleteVault/
+  setVaultSecret/recoverVaultPassword`, `_meta.hasVault/vaultUnlocked`. Passwort
+  wird **nie gehalten**, Schlüssel nur im RAM nach Entsperren, falsches Passwort →
+  `false` (kein Oracle), Klartext-Schlüssel nie im Speicher. Headless-Smoke 119/119
+  (Probe 39 Roundtrip + kein Leck + fail-soft, Probe 40 Shamir 2/3). **Offen B1b:**
+  Modal-UI (Passwort anlegen/entsperren + Anteile-Sicherung) + 🔐-Knopf →
+  Klaus-Sichttest. Sicherheits-Modul → Pflicht-`ZERTIFIKAT_ASPEKTE`-Eintrag in
+  Modul 16 (mit B1b).
 - **B2 — Automatischer KI-Aufruf.** Direkter Browser-Aufruf der gewählten KI **mit
   Websuche** → Antwort automatisch ins Widget (kein Kopieren mehr). Schlüssel aus
   B1-Tresor ODER App-Durchreichung `init({apiKey})`. **Reale Hürde (CORS / Browser-
