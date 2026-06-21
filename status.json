@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-06-20",
+  "lastUpdated": "2026-06-21",
   "branch": "claude/semantic-agent-network-Y03Vg",
   "endknoten": [
     {
@@ -190,8 +190,8 @@
       "stammCategories": [],
       "guestCategories": [],
       "pingStatus": "verified-match",
-      "matchScore": 0.810579,
-      "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 2026-06-20 ECHT nachgeliefert (multilingual-e5-small, passage-Praefix, L2=1) + Spore neu signiert -> Cross-Knoten-Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match (knapp, aber sauber ueber der Schwelle; Buchhaltung domaenenfern, kein Gruen-Rechnen). Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md).",
+      "matchScore": 0.813525,
+      "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 2026-06-20 ECHT nachgeliefert (multilingual-e5-small, passage-Praefix, L2=1) + Spore neu signiert -> Cross-Knoten-Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match (knapp, aber sauber ueber der Schwelle; Buchhaltung domaenenfern, kein Gruen-Rechnen). Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md). Drei-Schichten 2026-06-21: BLP-Spore traegt nun signierte capVector+needsVector (384-dim); reziprok VALID, domainVector-Cosinus neu 0.813525>=0.80 verified-match haelt. Sage-eigene cap/needs offen (Spore Re-Sign via Modul 02 in Klaus' Browser) -> bis dahin domainVector-Rueckfall.",
       "url": "https://lausiklauskn-png.github.io/BookLedgerPro/",
       "landingPage": "https://lausiklauskn-png.github.io/BookLedgerPro/"
     }
