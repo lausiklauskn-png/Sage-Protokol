@@ -241,6 +241,12 @@
     try { ls.setItem(key, value); } catch (_e) { /* fail-soft (Quota/Inkognito) */ }
   }
 
+  function lsRemove(key) {
+    var ls = safeGetLocalStorage();
+    if (!ls) return;
+    try { ls.removeItem(key); } catch (_e) { /* fail-soft */ }
+  }
+
   function loadVisibleFromLs() {
     // Das Widget startet IMMER sichtbar — es darf nie unauffindbar verschwinden
     // (Klaus 2026-06-21: X = komplett weg, kam auch nach Hard-Reload nicht
@@ -1191,6 +1197,242 @@
     });
   }
 
+  // ===================================================================
+  // Stufe B · B1 — Widget-Tresor (self-contained, portabel).
+  // Eigenes Schloss im Widget (Klaus 2026-06-21): speichert die API-Schlüssel
+  // verschlüsselt in localStorage. Krypto spiegelt Modul 20/02 — PBKDF2-SHA256
+  // (≥600k) → AES-GCM-256, Passwort-Recovery via Shamir 2-von-3 (GF256). KEINE
+  // Abhängigkeit zu Modul 01/02/20, damit das Widget überall hin kopierbar ist.
+  // Passwort wird NIE gehalten; Schlüssel nur im RAM nach Entsperren; nichts
+  // verlässt je das Gerät.
+  // ===================================================================
+  var VAULT_LS_KEY = "sbkim_search_widget_vault";
+  var VAULT_KDF_ITER = 600000;   // OWASP 2023+ (wie Modul 02 BACKUP_KDF_ITERATIONS)
+  var VAULT_SALT_BYTES = 16;
+  var VAULT_IV_BYTES = 12;
+  var VAULT_SHAMIR_N = 3;
+  var VAULT_SHAMIR_K = 2;
+  var VAULT_SHARE_PREFIX = "sw1";
+  var VAULT_MIN_PW_LEN = 8;
+
+  var vaultKeys = null;          // entschlüsselte { provider: key } — RAM-only
+  var vaultUnlocked = false;
+
+  function vaultErr(name, message) { var e = new Error(message); e.name = name; return e; }
+
+  // ---- GF(256) (Poly 0x11b, Generator 3) — portiert aus Modul 20 ----
+  var V_GF_EXP = new Uint8Array(512);
+  var V_GF_LOG = new Uint8Array(256);
+  (function buildVaultTables() {
+    function rawMul(a, b) {
+      var p = 0;
+      for (var i = 0; i < 8; i++) {
+        if (b & 1) p ^= a;
+        var hi = a & 0x80; a = (a << 1) & 0xff; if (hi) a ^= 0x1b; b >>= 1;
+      }
+      return p;
+    }
+    var x = 1;
+    for (var i = 0; i < 255; i++) { V_GF_EXP[i] = x; V_GF_LOG[x] = i; x = rawMul(x, 3); }
+    for (var j = 255; j < 512; j++) V_GF_EXP[j] = V_GF_EXP[j - 255];
+  })();
+  function vGfMul(a, b) { if (a === 0 || b === 0) return 0; return V_GF_EXP[V_GF_LOG[a] + V_GF_LOG[b]]; }
+  function vGfInv(a) { return V_GF_EXP[255 - V_GF_LOG[a]]; }
+
+  function vaultRandomBytes(n) {
+    var out = new Uint8Array(n);
+    if (global.crypto && typeof global.crypto.getRandomValues === "function") global.crypto.getRandomValues(out);
+    else for (var i = 0; i < n; i++) out[i] = Math.floor(Math.random() * 256);
+    return out;
+  }
+  function vaultSplitBytes(secret, n, k) {
+    var shares = [];
+    for (var s = 0; s < n; s++) shares.push({ x: s + 1, bytes: new Uint8Array(secret.length) });
+    for (var bi = 0; bi < secret.length; bi++) {
+      var coeffs = new Uint8Array(k);
+      coeffs[0] = secret[bi];
+      var rnd = vaultRandomBytes(k - 1);
+      for (var c = 1; c < k; c++) coeffs[c] = rnd[c - 1];
+      for (var si = 0; si < n; si++) {
+        var x = shares[si].x, y = 0;
+        for (var d = k - 1; d >= 0; d--) y = vGfMul(y, x) ^ coeffs[d];
+        shares[si].bytes[bi] = y;
+      }
+    }
+    return shares;
+  }
+  function vaultCombineBytes(objs) {
+    var len = objs[0].bytes.length, out = new Uint8Array(len), m = objs.length;
+    for (var bi = 0; bi < len; bi++) {
+      var acc = 0;
+      for (var i = 0; i < m; i++) {
+        var xi = objs[i].x, yi = objs[i].bytes[bi], num = 1, den = 1;
+        for (var j = 0; j < m; j++) {
+          if (j === i) continue;
+          var xj = objs[j].x; num = vGfMul(num, xj); den = vGfMul(den, xj ^ xi);
+        }
+        acc ^= vGfMul(yi, vGfMul(num, vGfInv(den)));
+      }
+      out[bi] = acc;
+    }
+    return out;
+  }
+
+  // ---- base64url + Text <-> Bytes ----
+  function vB64Encode(bytes) {
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    var b64 = (typeof btoa === "function") ? btoa(bin)
+      : (global.Buffer ? global.Buffer.from(bytes).toString("base64") : "");
+    return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function vB64Decode(str) {
+    var b64 = String(str).replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    if (typeof atob === "function") {
+      var bin = atob(b64), out = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return out;
+    }
+    return global.Buffer ? new Uint8Array(global.Buffer.from(b64, "base64")) : new Uint8Array(0);
+  }
+  function vTextToBytes(s) {
+    if (typeof TextEncoder !== "undefined") return new TextEncoder().encode(s);
+    return global.Buffer ? new Uint8Array(global.Buffer.from(s, "utf8")) : new Uint8Array(0);
+  }
+  function vBytesToText(bytes) {
+    if (typeof TextDecoder !== "undefined") return new TextDecoder().decode(bytes);
+    return global.Buffer ? global.Buffer.from(bytes).toString("utf8") : "";
+  }
+  function vEncodeShare(share) { return VAULT_SHARE_PREFIX + "." + share.x + "." + vB64Encode(share.bytes); }
+  function vDecodeShare(str) {
+    var parts = String(str).trim().split(".");
+    if (parts.length !== 3 || parts[0] !== VAULT_SHARE_PREFIX) {
+      throw vaultErr("InvalidShareError", "Anteil-Format ungültig (erwartet sw1.<index>.<base64url>).");
+    }
+    var x = parseInt(parts[1], 10);
+    if (!(x >= 1 && x <= 255)) throw vaultErr("InvalidShareError", "Anteil-Index ungültig: " + parts[1]);
+    return { x: x, bytes: vB64Decode(parts[2]) };
+  }
+
+  // ---- WebCrypto: PBKDF2 → AES-GCM (generisch, für beliebigen Klartext) ----
+  function vaultSubtle() {
+    if (global.crypto && global.crypto.subtle) return global.crypto.subtle;
+    throw vaultErr("CryptoUnavailableError", "WebCrypto (crypto.subtle) ist nicht verfügbar.");
+  }
+  function vDeriveKey(password, salt) {
+    var subtle = vaultSubtle();
+    return Promise.resolve(subtle.importKey("raw", vTextToBytes(password), { name: "PBKDF2" }, false, ["deriveKey"]))
+      .then(function (baseKey) {
+        return subtle.deriveKey(
+          { name: "PBKDF2", salt: salt, iterations: VAULT_KDF_ITER, hash: "SHA-256" },
+          baseKey, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+      });
+  }
+  function vEncrypt(password, plaintext) {
+    var salt = vaultRandomBytes(VAULT_SALT_BYTES), iv = vaultRandomBytes(VAULT_IV_BYTES);
+    return vDeriveKey(password, salt).then(function (key) {
+      return vaultSubtle().encrypt({ name: "AES-GCM", iv: iv }, key, vTextToBytes(plaintext));
+    }).then(function (ct) {
+      return { v: 1, salt: vB64Encode(salt), iv: vB64Encode(iv), ct: vB64Encode(new Uint8Array(ct)) };
+    });
+  }
+  function vDecrypt(password, blob) {
+    var salt = vB64Decode(blob.salt), iv = vB64Decode(blob.iv), ct = vB64Decode(blob.ct);
+    return vDeriveKey(password, salt).then(function (key) {
+      return vaultSubtle().decrypt({ name: "AES-GCM", iv: iv }, key, ct);
+    }).then(function (pt) { return vBytesToText(new Uint8Array(pt)); });
+  }
+
+  // ---- Öffentliche Tresor-Logik ----
+  function hasVault() { return !!lsGet(VAULT_LS_KEY); }
+  function isVaultUnlocked() { return vaultUnlocked === true; }
+
+  // Nach Entsperren: passenden Schlüssel in optApiKey spiegeln (KI-Richter/B2).
+  function applyVaultKey() {
+    if (!vaultKeys) { return; }
+    var k = vaultKeys[optAiProvider] || vaultKeys[optProvider];
+    if (!k) { for (var p in vaultKeys) { if (vaultKeys[p]) { k = vaultKeys[p]; break; } } }
+    if (k) optApiKey = k;
+  }
+
+  // Tresor anlegen: secrets = { provider: key, ... }. Gibt die Shamir-Anteile
+  // zurück (der Nutzer sichert sie getrennt — Recovery ohne Passwort).
+  function createVault(password, secrets) {
+    if (typeof password !== "string" || password.length < VAULT_MIN_PW_LEN) {
+      return Promise.reject(vaultErr("WeakPasswordError",
+        "Passwort braucht mindestens " + VAULT_MIN_PW_LEN + " Zeichen."));
+    }
+    if (hasVault()) {
+      return Promise.reject(vaultErr("VaultExistsError",
+        "Tresor existiert schon — erst entsperren oder löschen."));
+    }
+    var clean = (secrets && typeof secrets === "object") ? secrets : {};
+    return vEncrypt(password, JSON.stringify(clean)).then(function (blob) {
+      lsSet(VAULT_LS_KEY, JSON.stringify(blob));
+      vaultKeys = clean;
+      vaultUnlocked = true;
+      applyVaultKey();
+      var shareObjs = vaultSplitBytes(vTextToBytes(password), VAULT_SHAMIR_N, VAULT_SHAMIR_K);
+      return { shares: shareObjs.map(vEncodeShare) };
+    });
+  }
+
+  // Entsperren: Schlüssel in den RAM laden. Falsches Passwort → false (kein Oracle).
+  function unlockVault(password) {
+    if (typeof password !== "string" || password.length === 0) return Promise.resolve(false);
+    var raw = lsGet(VAULT_LS_KEY);
+    if (!raw) return Promise.resolve(false);
+    var blob;
+    try { blob = JSON.parse(raw); } catch (e) { return Promise.resolve(false); }
+    return vDecrypt(password, blob).then(function (payload) {
+      var secrets = JSON.parse(payload);
+      vaultKeys = (secrets && typeof secrets === "object") ? secrets : {};
+      vaultUnlocked = true;
+      applyVaultKey();
+      return true;
+    }).catch(function () { vaultUnlocked = false; vaultKeys = null; return false; });
+  }
+
+  function lockVault() { vaultUnlocked = false; vaultKeys = null; }
+
+  function deleteVault() { lsRemove(VAULT_LS_KEY); lockVault(); }
+
+  // Schlüssel in einem ENTSPERRTEN Tresor setzen/ändern (Passwort zum Neu-
+  // Verschlüsseln nötig — wir halten es bewusst nicht im RAM).
+  function setVaultSecret(password, provider, key) {
+    if (!hasVault()) return Promise.reject(vaultErr("NoVaultError", "Kein Tresor vorhanden."));
+    return unlockVault(password).then(function (ok) {
+      if (!ok) return false;
+      var next = {};
+      for (var p in vaultKeys) next[p] = vaultKeys[p];
+      next[String(provider)] = String(key);
+      return vEncrypt(password, JSON.stringify(next)).then(function (blob) {
+        lsSet(VAULT_LS_KEY, JSON.stringify(blob));
+        vaultKeys = next;
+        applyVaultKey();
+        return true;
+      });
+    });
+  }
+
+  // Passwort aus ≥ k Shamir-Anteilen rekonstruieren (rein lokal). null bei zu
+  // wenigen/ungültigen Anteilen.
+  function recoverVaultPassword(shares) {
+    if (!Array.isArray(shares) || shares.length < VAULT_SHAMIR_K) return null;
+    try {
+      var objs = [], seen = {};
+      for (var i = 0; i < shares.length; i++) {
+        var o = vDecodeShare(shares[i]);
+        if (seen[o.x]) continue;
+        seen[o.x] = true; objs.push(o);
+      }
+      if (objs.length < VAULT_SHAMIR_K) return null;
+      return vBytesToText(vaultCombineBytes(objs.slice(0, VAULT_SHAMIR_K)));
+    } catch (e) { return null; }
+  }
+
+
   // Stufe 2 (Sortiermaschine): Modul 04 queryLocal-Cosinus über EINEN Korpus,
   // Treffer mit Quelle (source) + Bedeutungs-Text + URL angereichert.
   function queryCorpus(query, corpus, source) {
@@ -1911,6 +2153,15 @@
     buildPrompt: buildAiPrompt,
     parseAiAnswer: parseAiAnswer,
     setAiAnswer: function (text) { pastedAiText = (typeof text === "string" ? text : ""); return hasPastedAi(); },
+    // Stufe B · B1 — Widget-Tresor (self-contained).
+    hasVault: hasVault,
+    isVaultUnlocked: isVaultUnlocked,
+    createVault: createVault,
+    unlockVault: unlockVault,
+    lockVault: lockVault,
+    deleteVault: deleteVault,
+    setVaultSecret: setVaultSecret,
+    recoverVaultPassword: recoverVaultPassword,
     _meta: {
       get euPolicy() { return optEuPolicy; },
       get corpusSize() { return Array.isArray(localCorpus) ? localCorpus.length : 0; },
@@ -1923,6 +2174,8 @@
       get aiProvider() { return optAiProvider; },
       get aiProviders() { return aiProvidersForPolicy().map(function (p) { return p.id; }); },
       get hasPastedAi() { return hasPastedAi(); },
+      get hasVault() { return hasVault(); },
+      get vaultUnlocked() { return vaultUnlocked; },
       get visible() { return isVisible(); },
       get expanded() { return !!expandedFlag; },
       get widgetMounted() { return !!(widgetRoot && widgetRoot.parentNode); },
