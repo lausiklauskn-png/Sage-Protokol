@@ -647,6 +647,19 @@
       "  cursor: pointer;",
       "}",
       "#" + WIDGET_ID + " .sbkim-sw-more:hover { background: rgba(255, 255, 255, 0.12); }",
+      "#" + WIDGET_ID + " .sbkim-sw-copyall {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-bottom: 0.4rem;",
+      "  background: rgba(110, 231, 211, 0.14);",
+      "  border: 1px solid rgba(110, 231, 211, 0.4);",
+      "  border-radius: 8px;",
+      "  color: #CFFcF4;",
+      "  font-size: 0.72rem;",
+      "  padding: 0.32rem 0.45rem;",
+      "  cursor: pointer;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-copyall:hover { background: rgba(110, 231, 211, 0.22); }",
       "#" + WIDGET_ID + " .sbkim-sw-vault {",
       "  margin-top: 0.4rem;",
       "  padding: 0.45rem 0.5rem;",
@@ -1870,6 +1883,27 @@
     return badge;
   }
 
+  // Alle gerankten Treffer als nüchterner Text-Block (zum Kopieren/Schicken).
+  function buildResultsText(res) {
+    var t = (res && res.treffer) || [];
+    var q = (queryValue || "").trim();
+    var head = "SBKIM-Suche" + (q ? " — \"" + q + "\"" : "") +
+      "  (" + t.length + " Treffer, sortiert nach Bedeutung)";
+    var lines = [head, ""];
+    for (var i = 0; i < t.length; i++) {
+      var r = t[i];
+      var pct = (typeof r.score === "number") ? (Math.round(r.score * 100) + "%  ") : "";
+      var src = r.source ? "[" + (SOURCE_LABELS[r.source] || r.source) + "] " : "";
+      lines.push((i + 1) + ". " + src + pct + (r.label || ""));
+      if (r.url) lines.push("    " + r.url);
+      if (r.snippet) lines.push("    " + r.snippet);
+      if (r.begruendung) lines.push("    → " + r.begruendung);
+      lines.push("");
+    }
+    if (res && res.webLink && res.webLink.url) lines.push("↗ Im Netz weitersuchen: " + res.webLink.url);
+    return lines.join("\n").replace(/\n+$/, "\n");
+  }
+
   function renderResults(res) {
     if (!resultsEl) return;
     var doc = global.document;
@@ -1888,6 +1922,23 @@
     };
     setHint(modeHint[res.mode] || "");
     lastRenderRes = res;
+
+    // 🖨 Block kopieren: ALLE gerankten Treffer als Text in die Zwischenablage,
+    // damit Klaus den ganzen Block auf einen Klick rüberschicken kann.
+    if (treffer.length > 0) {
+      var copyBtn = doc.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "sbkim-sw-copyall";
+      copyBtn.textContent = "🖨 Block kopieren (" + treffer.length + ")";
+      copyBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+      copyBtn.addEventListener("click", function (ev) {
+        if (ev && ev.preventDefault) ev.preventDefault();
+        copyToClipboard(buildResultsText(lastRenderRes)).then(function (ok) {
+          setHint(ok ? "Treffer-Block kopiert — einfügen und losschicken." : "Kopieren nicht möglich (Browser blockiert).");
+        });
+      });
+      resultsEl.appendChild(copyBtn);
+    }
 
     // Nur die ersten resultsVisibleCount zeigen, Rest hinter dem ▾-Pfeil
     // (Klaus 2026-06-21: 10 zeigen, je Klick 10 mehr).
@@ -2355,6 +2406,7 @@
     buildPrompt: buildAiPrompt,
     parseAiAnswer: parseAiAnswer,
     setAiAnswer: function (text) { pastedAiText = (typeof text === "string" ? text : ""); return hasPastedAi(); },
+    resultsAsText: function () { return buildResultsText(lastRenderRes); },
     // Stufe B · B1 — Widget-Tresor (self-contained).
     hasVault: hasVault,
     isVaultUnlocked: isVaultUnlocked,
