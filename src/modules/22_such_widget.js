@@ -2403,8 +2403,24 @@
     persistPosition();
   }
 
+  // Such-Inhalt leeren (Frage, eingefügte KI-Antwort, Schärfen-Kontext, Treffer).
+  // Der Tresor bleibt unberührt — das ist Identität, kein „Inhalt".
+  function clearContent() {
+    queryValue = "";
+    if (inputEl) inputEl.value = "";
+    pastedAiText = "";
+    if (aiContextEl) aiContextEl.value = "";
+    if (aiPasteEl) aiPasteEl.value = "";
+    resultsVisibleCount = RESULT_PAGE_SIZE;
+    lastRenderRes = null;
+    if (resultsEl) { while (resultsEl.firstChild) resultsEl.removeChild(resultsEl.firstChild); }
+    setHint("");
+  }
+
   // X-Knopf: NICHT verstecken, sondern als Lupe oben rechts „in der Navleiste"
   // parken (Klaus 2026-06-21). Bleibt sichtbar und antippbar — nie verloren.
+  // X LEERT den Inhalt (frischer Start beim nächsten Öffnen); Minimieren (–)
+  // BEHÄLT ihn (Klaus 2026-06-21).
   function dockToTop() {
     if (!ready) { warn("dockToTop() vor init() — no-op."); return; }
     expandedFlag = false;
@@ -2414,6 +2430,7 @@
     currentOffsetY = NAV_DOCK_OFFSET.y;
     currentFreeX = null;
     currentFreeY = null;
+    clearContent();
     persistState();
     persistVisible();
     persistPosition();
