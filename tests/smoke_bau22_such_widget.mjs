@@ -592,6 +592,13 @@ async function run() {
   record("Probe 38: ▾-Pfeil vorhanden", "true", String(!!moreBtn), !!moreBtn);
   if (moreBtn) moreBtn.dispatchEvent({ type: "click", target: moreBtn, preventDefault: () => {}, stopPropagation: () => {} });
   eq("Probe 38: nach Klick alle 12 sichtbar", 12, queryAll(root, ".sbkim-sw-result").length);
+  // 🖨 Block-Kopieren: Knopf da + Text-Block enthält alle 12 Treffer als Text.
+  const copyAllBtn = queryFirst(root, ".sbkim-sw-copyall");
+  record("Probe 38: 🖨 Block-kopieren-Knopf da", "true", String(!!copyAllBtn), !!copyAllBtn);
+  const blockText = W.resultsAsText();
+  record("Probe 38: Text-Block listet alle 12 Treffer", "true",
+    String(/T0/.test(blockText) && /T11/.test(blockText) && /12 Treffer/.test(blockText)),
+    /T0/.test(blockText) && /T11/.test(blockText) && /12 Treffer/.test(blockText));
   stub.SbkimMatch.queryLocal = savedQL;
   delete stub.SbkimEmbedding;
 

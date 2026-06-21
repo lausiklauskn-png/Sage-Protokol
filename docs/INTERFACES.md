@@ -4269,6 +4269,9 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         // verträgt Code-Fences, säubert URL-Müll; [] wenn kein Array.
   setAiAnswer(text)  → boolean (sync)   // KI-Antwort übernehmen; true wenn gültige Quellen.
                                         //   Nächste search() sortiert sie als source:"internet".
+  resultsAsText()    → string (sync)    // ALLE gerankten Treffer als nüchterner Text-Block
+                                        //   (Nr · Quelle · Prozent · Titel · URL · Snippet);
+                                        //   🖨-Knopf in der Treffer-Liste kopiert ihn (Klaus-Relay).
   _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
                      //   richterOn, hasSearxng, webEngine, aiProvider, aiProviders, hasPastedAi,
                      //   visible, expanded, widgetMounted, lastSearchMode, searchCount,
