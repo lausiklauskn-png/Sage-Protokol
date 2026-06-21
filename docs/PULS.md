@@ -1841,6 +1841,60 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-21 · Bau 22: Such-Widget (Increment 1 — Widget-Shell, Schritt 2 des Such-Werkzeugs)
+
+**Rolle:** Bau-Sitzung Modul 22 (neu). Schritt 2 des SBKIM-Such-Werkzeugs nach
+Modul 21 Spracheingabe. Branch `claude/bau-22-such-widget-ws7xfh`.
+
+**Vision (Klaus 2026-06-21):** ein **separates**, frei bewegliches Floating-Such-
+Tool (eigenes Modul, weitere Pläne) — klein im Ruhezustand, wächst nur bei
+Interaktion, erzeugt ein eigenes Textfeld, leicht transparent, lässt sich über
+andere Suchfelder/PWAs legen und koppelt sich dann mit der Wirts-PWA (Host lesen
++ aus dem Suchfeld interagieren). Komponiert Sprache (21) + interne Suche (04
+queryLocal) + Richter (04 hybridMatch) + EU-Politik-Auswahl.
+
+**Getan (Increment 1 — Widget-Shell):**
+- **Komponenten-Karte** `docs/components/22_such_widget.md` gefüllt (Architektur,
+  Zustände klein/groß, Transparenz, Drag/Self-Mount/X/Persistenz, EU-Politik,
+  Kopplungs-Modell für Increment 2, Risiken, Strikte Tabus). INTERFACES § 1
+  Modul 22 gespiegelt (Surface + options + SearchResult + localStorage-Schema +
+  Tabus + Smoke-Stand).
+- **`src/modules/22_such_widget.js`** (`window.SbkimSearchWidget`): self-mountende
+  Pille in `<body>` (MutationObserver-Fallback), **Ruhezustand 🔍-Blase →
+  Interaktions-Panel** via `data-state`, leicht transparent (`rgba(...,0.90/0.92)`
+  + backdrop-blur), **Drag** (Pointer-Events, 5 px Threshold, Viewport-Clamping —
+  Mechanik aus Modul 17 wiederverwendet, 17 unangetastet), **X-Schließen** +
+  `show`/`hide`, `expand`/`collapse`, **eigenes Textfeld mit UX-Erhalt** (Feld nie
+  mit `value:''` neu gebaut; erkannter Text an LIVE-Wert angehängt). **Komponierte
+  Suche** `runSearch` (Spiegelung `sbkimHybridSearch`): Vorfilter `queryLocal` →
+  opt-in Richter `hybridMatch` → fail-soft, sechs Modi. **EU-Politik** `frei`/
+  `bindend` einheitlich für Sprach-Engine (Modul 21 `pickEngine`) UND Richter
+  (`euOnly`); Klick-Chip wechselt. Sprach-Knopf (Modul 21 Browser-Engine →
+  Textfeld, EU-Engine fail-soft Hinweis). localStorage-Persistenz (Position/
+  Sichtbarkeit/Zustand). **KEIN Auto-Init** — `init()` mountet.
+- **Headless-Smoke** `tests/smoke_bau22_such_widget.mjs` **55/55 grün** (Surface,
+  Mount, Zustände, Persistenz, EU-Politik + euOnly, alle sechs Such-Modi,
+  setCorpus, Sprache fail-soft + Browser-Pfad, Drag-Persistenz, UX-Erhalt,
+  init-Throw bei ungültiger euPolicy).
+- **`index.html`** lädt `22_such_widget.js` (vor `sbkim-init.js`, KEIN Auto-Init).
+  **Panel 22** in `tests/manual_check.html` (init/expand/collapse/show/hide +
+  Demo-Korpus-Suche + `_meta`). Inline-Script `node --check` grün.
+- **CLAUDE.md** Modul-Tabelle Zeile 22 ergänzt (selbstständig gemerkt, Freibrief).
+
+**Sicherheit gewahrt:** Render-/Kompositions-Schicht — keine eigene Identität/
+Krypto/Signatur, kein IndexedDB, kein Crawler/Eigenanfrage ins Netz (einziger
+Netz-Pfad: opt-in Richter, BYOK, vom Nutzer ausgelöst). Host-Inhalt (Increment 2)
+ist `untrusted external data`. Modul 21/17/15/04 nur über Schnittstellen genutzt.
+
+**Offen:** (1) **Browser-Sichttest durch Klaus** (Drag + Sprache am Galaxy-Tab-S6
+— headless ersetzt ihn nicht). (2) **Increment 2** PWA-/Suchfeld-Kopplung über
+Modul 15 Membran (Host lesen + aus dem Suchfeld interagieren) — eigene Folge-
+Sitzung, sicherheits-sensibel. (3) Korpus-Quelle im Standalone-Betrieb: bis zur
+Kopplung registriert der Andocker den Korpus (`init({corpus})`/`setCorpus`).
+
+**Nächster sinnvoller Schritt:** Klaus' Browser-Sichttest Panel 22 + Sage-Page-
+Blase; danach Increment 2 (Kopplung über Modul 15) als eigene Bau-Sitzung.
+
 ### 2026-06-20 · Bau 04.D: Hybrid-Match — Match-Zeit-LLM-Richter (`SbkimMatch.hybridMatch`)
 
 **Rolle:** Bau-Sitzung Modul 04 (additiv, fail-soft). Setzt das Hybrid-Match-Konzept um —

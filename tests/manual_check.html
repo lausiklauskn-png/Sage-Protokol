@@ -148,6 +148,12 @@
     <pre class="log">— bereit. Modul 21 (Spracheingabe, BLP-Muster nachgebaut). Dual-Engine: Browser Web-Speech + EU Cloud Speech-to-Text (BYOK). EU-Politik frei/bindend (Klaus 2026-06-21): bindend = nur EU-Engine, frei = beide wählbar. Mehrsprachig DE/EN/RU, fail-soft (kein Mic/Key/Netz → Textfeld bleibt). Logik-Knöpfe (headless-äquivalent): Sprachen + alternativeCodes, EU-Politik-Engines (frei/bindend), pickEngine, Browser-Support. Live-Knöpfe (brauchen Browser/Mic): „Browser-Erkennung starten" (spricht ins Textfeld) und „EU-Erkennung (Key)" (Mikrofon-Aufnahme → EU-STT, Key via prompt — nur testen, wenn EU-Schlüssel vorhanden). —</pre>
   </section>
 
+  <section class="panel" data-module="22_such_widget">
+    <h2>22 Such-Widget <span class="status ok">Code-Stub 2026-06-21</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Modul 22 (Such-Widget, Increment 1 Widget-Shell). SEPARATES, frei bewegliches Floating-Such-Tool, self-mountend in &lt;body&gt;. Klein im Ruhezustand (🔍-Blase), wächst bei Interaktion zum Eingabe-Panel mit eigenem Textfeld (UX-Erhalt: Feld wird nie mit value:'' neu gebaut). Leicht transparent, Drag (Pointer-Events, Mechanik aus Modul 17), X-Schließen, localStorage-Persistenz (Position/Sichtbarkeit/Zustand). Komponiert: Sprache (Modul 21) + Vorfilter (Modul 04 queryLocal) + Richter (Modul 04 hybridMatch), EU-Politik frei/bindend (gilt für Sprach-Engine UND Richter euOnly). Knöpfe: „init() + mounten" (Widget erscheint unten rechts), „expand/collapse", „show/hide", „Demo-Korpus + Suche (nur-vorfilter)" prüft die komponierte Pipeline ohne Schlüssel, „_meta zeigen". Increment 2 (PWA-Kopplung über Modul 15) ist eigene Folge-Sitzung. **Live-Sichttest (Drag + Sprache am Tablet) wartet auf Klaus.** —</pre>
+  </section>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {
@@ -5415,6 +5421,69 @@
           SbkimUI.setStatus("21_spracheingabe", "err", out.reason);
         }
         return out;
+      });
+    })();
+  </script>
+
+  <!-- Modul 22 — Such-Widget (Bau-Sitzung 22, Increment 1) -->
+  <script src="../src/modules/22_such_widget.js"></script>
+  <script>
+    (function () {
+      // Panel 22 — Such-Widget. init() mountet das Floating-Tool in <body>
+      // (erscheint unten rechts). Die komponierte Suche wird mit einem
+      // Demo-Korpus + gestubbtem Modul 04 geprüft (headless-äquivalent), die
+      // Drag-/Sprach-Mechanik braucht Klaus' Browser-Sichttest am Tablet.
+
+      SbkimUI.addButton("22_such_widget", "init() + mounten (Widget erscheint)", async function () {
+        await SbkimSearchWidget.init({ euPolicy: "frei", queryLabel: "Sage" });
+        SbkimUI.setStatus("22_such_widget", "ok", "gemountet");
+        return { gemountet: SbkimSearchWidget._meta.widgetMounted, hinweis: "Such-Blase erscheint unten rechts — antippen öffnet das Panel, ziehen verschiebt." };
+      });
+
+      SbkimUI.addButton("22_such_widget", "expand / collapse", function () {
+        if (SbkimSearchWidget.isExpanded()) SbkimSearchWidget.collapse();
+        else SbkimSearchWidget.expand();
+        return { expanded: SbkimSearchWidget.isExpanded() };
+      });
+
+      SbkimUI.addButton("22_such_widget", "show / hide", function () {
+        if (SbkimSearchWidget.isVisible()) SbkimSearchWidget.hide();
+        else SbkimSearchWidget.show();
+        return { sichtbar: SbkimSearchWidget.isVisible() };
+      });
+
+      SbkimUI.addButton("22_such_widget", "Demo-Korpus + Suche (nur-vorfilter)", async function () {
+        // Stub Modul 04, falls echtes Modul 04 keinen Korpus hat — headless-
+        // äquivalenter Beweis der komponierten Pipeline ohne Schlüssel.
+        var realMatch = window.SbkimMatch;
+        window.SbkimMatch = {
+          setLocalCorpus: function () {},
+          queryLocal: async function () {
+            return [
+              { label: "Lasagne", score: 0.91, anchorId: "r1" },
+              { label: "Tomatensuppe", score: 0.84, anchorId: "r2" },
+            ];
+          },
+        };
+        SbkimSearchWidget.setCorpus([
+          { label: "Lasagne", text: "Nudelauflauf", passageVec: new Float32Array(384), anchorId: "r1" },
+          { label: "Tomatensuppe", text: "Suppe", passageVec: new Float32Array(384), anchorId: "r2" },
+        ]);
+        var res = await SbkimSearchWidget.search("was passt zu lasagne");
+        window.SbkimMatch = realMatch; // zurücksetzen
+        SbkimUI.setStatus("22_such_widget", res.mode === "nur-vorfilter" ? "ok" : "err", "Modus: " + res.mode);
+        return { modus: res.mode, treffer: res.treffer.map(function (t) { return t.label + " (" + (t.score || 0).toFixed(2) + ")"; }),
+          erwartung: "Modus nur-vorfilter (kein Richter-Schlüssel), 2 Treffer" };
+      });
+
+      SbkimUI.addButton("22_such_widget", "_meta zeigen", function () {
+        var m = SbkimSearchWidget._meta;
+        return {
+          euPolicy: m.euPolicy, corpusSize: m.corpusSize, visible: m.visible,
+          expanded: m.expanded, widgetMounted: m.widgetMounted,
+          lastSearchMode: m.lastSearchMode, searchCount: m.searchCount,
+          hasApiKey: m.hasApiKey, coupled: m.coupled,
+        };
       });
     })();
   </script>
