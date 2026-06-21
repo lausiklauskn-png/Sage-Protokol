@@ -305,6 +305,30 @@
     else                                { widgetRoot.style.bottom = oy + "px"; widgetRoot.style.right = ox + "px"; }
   }
 
+  // Beim Wechsel klein↔groß den Mittelpunkt halten und in den sichtbaren Bereich
+  // klemmen — sonst schnappt die Blase beim Minimieren in die Ecke / aus dem Bild
+  // (Klaus' Befund 2026-06-21: Such-Tool rutschte beim Minimieren nach rechts raus).
+  function keepCenterAcrossResize(before) {
+    if (!widgetRoot || !before) return;
+    var vw = global.innerWidth || 1024;
+    var vh = global.innerHeight || 768;
+    var cx = before.left + before.width / 2;
+    var cy = before.top + before.height / 2;
+    var rect = widgetRoot.getBoundingClientRect(); // neue Größe nach Zustands-Wechsel
+    var x = cx - rect.width / 2;
+    var y = cy - rect.height / 2;
+    var maxX = vw - rect.width - 8;
+    var maxY = vh - rect.height - 8;
+    if (x > maxX) x = maxX;
+    if (x < 8) x = 8;
+    if (y > maxY) y = maxY;
+    if (y < 8) y = 8;
+    currentFreeX = x;
+    currentFreeY = y;
+    currentCorner = null;
+    applyPositionToRoot();
+  }
+
   // ---- CSS-Injektion ----
 
   function buildCss() {
@@ -1674,9 +1698,12 @@
 
   function expand() {
     if (!ready) { warn("expand() vor init() — no-op."); return; }
+    var before = widgetRoot ? widgetRoot.getBoundingClientRect() : null;
     expandedFlag = true;
     persistState();
     applyState();
+    keepCenterAcrossResize(before);
+    persistPosition();
     // Korpus vorwärmen, damit die Suche beim ersten Tippen bereit ist
     // (fire-and-forget; der Hinweis zeigt einen evtl. Fehler).
     if (typeof corpusPreparer === "function" && !corpusReady) {
@@ -1689,9 +1716,12 @@
 
   function collapse() {
     if (!ready) { warn("collapse() vor init() — no-op."); return; }
+    var before = widgetRoot ? widgetRoot.getBoundingClientRect() : null;
     expandedFlag = false;
     persistState();
     applyState();
+    keepCenterAcrossResize(before);
+    persistPosition();
   }
 
   function isExpanded() { return !!expandedFlag; }
