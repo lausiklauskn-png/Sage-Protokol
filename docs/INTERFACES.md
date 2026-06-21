@@ -4305,9 +4305,13 @@ SearchResult (Rückgabe von search()/runMultiSearch):
              // semantisch = reine Cosinus-Suche (Richter aus ODER kein Key ODER
              //   Richter fail-soft); richter = KI-Urteil; leer = keine Treffer/
              //   kein Bereich; modul-04-fehlt = Matcher fehlt; fehler = unerwartet.
-    treffer: Array<{ label, score, anchorId, source, text?, url?, begruendung? }>,
+    treffer: Array<{ label, score, anchorId, source, text?, snippet?, url?, begruendung? }>,
              // source ∈ "app"|"knoten"|"internet"; url = Link (Knoten/Internet);
-             // begruendung nur bei mode:"richter".
+             // snippet = Inhalts-Text (KI-/Web-Beschreibung), in der UI unter dem
+             //   Titel gezeigt; begruendung nur bei mode:"richter".
+             // Bis zu MAX_RANK (100) Kandidaten werden semantisch gerankt und
+             //   zurückgegeben; die UI zeigt die ersten 10, der ▾-Pfeil je 10 mehr.
+             //   score wird als Prozent (Math.round(score*100)) gerendert.
     webLink?:     { query, url } | null,  // Internet-Bereich ohne SearXNG-URL → „↗ neuer Tab"
     reason?:      string,               // bei Fehler/Fallback-Modi
     attestation?: object,               // nur bei mode:"richter" (signierbares Urteil)
