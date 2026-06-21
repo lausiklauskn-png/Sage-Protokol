@@ -103,6 +103,14 @@ Werte sind korrekt, wenn alle Quellen thematisch passen; die Bedeutungs-
 Trennung (Off-Topic nach unten) zeigt sich am Referenz-Datensatz mit gemischtem
 Intent.
 
+**Treffer-Anzeige (Klaus 2026-06-21, Browser-Sichttest grün):** Viel sammeln +
+vorsortieren, **erste 10 zeigen**, Rest hinter „▾ weitere 10 zeigen (noch N)";
+Wert als **Prozent** (Cosinus·100, echte Unterschiede); **Inhalts-Snippet** unter
+dem Titel. Live bestätigt mit „ich suche ein wirksames Zeckenmittel": 26 NETZ-
+Quellen gesammelt, 10 mit 88/88/87 % + Beschreibung gezeigt, Pfeil „noch 16".
+Das **WARUM/worin-Übereinstimmung** + eigene Such-Schichten brauchen den
+KI-Richter (BYOK) — gehört zu Stufe B, nicht in den Gratis-Cosinus-Pfad.
+
 ---
 
 ## Drei-Stufen-Such-Pipeline (komponiert)
