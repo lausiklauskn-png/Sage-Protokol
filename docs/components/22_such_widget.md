@@ -97,7 +97,11 @@ Sortiermaschine. `parseAiAnswer` verträgt Code-Fences + säubert URL-Müll
   (Probe 39 Roundtrip + kein Leck + fail-soft, Probe 40 Shamir 2/3). **Offen B1b:**
   Modal-UI (Passwort anlegen/entsperren + Anteile-Sicherung) + 🔐-Knopf →
   Klaus-Sichttest. Sicherheits-Modul → Pflicht-`ZERTIFIKAT_ASPEKTE`-Eintrag in
-  Modul 16 (mit B1b).
+  Modul 16 (mit B1b). **✅ B1b UI gebaut (2026-06-21):** 🔐-Knopf im Kopf öffnet die
+Tresor-Sektion; je nach Zustand Anlegen (Passwort + Schlüssel → 3 Anteile zum
+Sichern), Entsperren, oder Sperren/Löschen. Headless-Smoke 125/125 (Probe 41 UI-
+Fluss). **Browser-Sichttest wartet auf Klaus.** ZERTIFIKAT_ASPEKTE-Eintrag (Modul
+16) noch offen — eigener kleiner Schritt.
 - **B2 — Automatischer KI-Aufruf.** Direkter Browser-Aufruf der gewählten KI **mit
   Websuche** → Antwort automatisch ins Widget (kein Kopieren mehr). Schlüssel aus
   B1-Tresor ODER App-Durchreichung `init({apiKey})`. **Reale Hürde (CORS / Browser-

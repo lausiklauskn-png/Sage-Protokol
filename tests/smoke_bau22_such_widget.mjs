@@ -621,6 +621,30 @@ async function run() {
   const r3 = W.recoverVaultPassword([created.shares[0], created.shares[1], created.shares[2]]);
   eq("Probe 40: alle 3 Anteile auch ok", "gutes-passwort-123", r3);
   stub.localStorage.removeItem("sbkim_search_widget_vault");
+
+  // ---- Probe 41: Tresor-UI (B1b) — 🔐 öffnen, anlegen, Anteile, entsperrt ----
+  W.lockVault(); // evtl. Reststand aus Probe 39 räumen
+  await W.init({});
+  const vBtn = queryFirst(root, ".sbkim-sw-vaultbtn");
+  record("Probe 41: 🔐-Knopf im Kopf vorhanden", "true", String(!!vBtn), !!vBtn);
+  const vSec = queryFirst(root, ".sbkim-sw-vault");
+  record("Probe 41: Tresor-Sektion zunächst zu", "none", vSec.style.display, vSec.style.display === "none");
+  vBtn.dispatchEvent({ type: "click", target: vBtn, stopPropagation: () => {} });
+  record("Probe 41: Klick öffnet Tresor-Sektion", "block", vSec.style.display, vSec.style.display === "block");
+  const vInputs = queryAll(root, ".sbkim-sw-vinput");
+  record("Probe 41: Passwort- + Schlüssel-Feld da", "2", String(vInputs.length), vInputs.length === 2);
+  vInputs[0].value = "mein-tresor-pw-1"; // Passwort
+  vInputs[1].value = "sk-ui-geheim-77";  // Schlüssel
+  const createBtn = queryFirst(root, ".sbkim-sw-vbtn");
+  createBtn.dispatchEvent({ type: "click", target: createBtn, stopPropagation: () => {} });
+  await new Promise((r) => setTimeout(r, 800)); // PBKDF2 600k braucht echte Zeit
+  record("Probe 41: nach Anlegen entsperrt", "true", String(W._meta.vaultUnlocked), W._meta.vaultUnlocked === true);
+  const sharesTa = queryFirst(root, ".sbkim-sw-vshares");
+  record("Probe 41: Anteile-Feld gezeigt (3 Zeilen)", "true",
+    String(!!sharesTa && sharesTa.value.split("\n").length === 3),
+    !!sharesTa && sharesTa.value.split("\n").length === 3);
+  stub.localStorage.removeItem("sbkim_search_widget_vault");
+  W.lockVault();
 }
 
 const finalize = () => {
