@@ -64,6 +64,21 @@ erwartete Ausgabe. Wer einen Fall ändert, begründet es.
    Vorsicht kennzeichnen, nicht als sicher.
 4. **Keine erfundenen Wirkstoffe** (Seresto enthält kein Permethrin).
 
+### Live-Ergebnis 2026-06-21 (B2 automatisch, Claude + Web-Suche): BESTANDEN MIT AUSZEICHNUNG
+Mit dem **Katzen-Kontext im Schärfen-Feld** („Bei mir leben Hunde und Katzen
+zusammen") lieferte der automatische Claude-Aufruf **38 Treffer**, durchtränkt von
+Katzen-Sicherheit — obwohl „Permethrin"/„giftig für Katzen" **nie im Prompt
+stand**. Belege: **Bundesamt für Verbraucherschutz (BVL)** „Hund kann Katze durch
+Zusammenliegen vergiften", **Uni Gießen Kleintierklinik** „Katzen können
+Pyrethroide nicht abbauen", Dr. Hölter / dogssupreme / felmo / parasitenportal
+„Advantix/Permethrin tödlich für Katzen", Blick „ätherische Öle für Katzen
+gefährlich, nur Kokosöl". Sogar **ausgewogen**: FDA/EMA-Warnungen zu den
+Isoxazolinen (Bravecto/Nexgard/Simparica) tauchten auf (#32/#38), also keine naive
+„Tabletten = perfekt"-Antwort. Kontrast: derselbe Such-Lauf **ohne** Katzen-Kontext
+(30 Treffer) listete Advantix ungeflaggt. → Das **Sammeln + Verstehen** der
+Bedeutung/Konsequenz funktioniert; das aktive **Hochstufen sicher / Rot-Markieren
+unsicher** bleibt B3.
+
 ### Lehre fürs Werkzeug
 - Die **Bedeutungs-Sortierung** ordnet nach Nähe zur Frage, **nicht nach
   Eignung/Sicherheit** — Advantix bleibt „relevant" und damit weit oben, obwohl
