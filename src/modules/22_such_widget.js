@@ -109,6 +109,7 @@
   var searxngFieldEl = null;   // SearXNG-URL-Feld (für Web-Treffer im Widget)
   var engineSelectEl = null;   // Web-Suchmaschine-Auswahl (Neuer-Tab-Weg)
   var aiSelectEl = null;       // KI-Anbieter-Auswahl (KI-Such-Brücke Stufe A)
+  var aiContextEl = null;      // „Schärfen"-Feld (optionaler Kontext vor dem Prompt)
   var aiPromptBtnEl = null;    // „Prompt → KI"-Knopf (kopiert + öffnet Anbieter)
   var aiPasteEl = null;        // Einfüge-Feld für die KI-Antwort (JSON)
   var aiSortBtnEl = null;      // „Antwort sortieren"-Knopf
@@ -494,6 +495,18 @@
       "  outline: none;",
       "}",
       "#" + WIDGET_ID + " .sbkim-sw-ai option { color: #1A1A1A; }",
+      "#" + WIDGET_ID + " .sbkim-sw-aicontext {",
+      "  width: 100%;",
+      "  box-sizing: border-box;",
+      "  margin-top: 0.35rem;",
+      "  background: rgba(0, 0, 0, 0.24);",
+      "  border: 1px dashed rgba(167, 139, 250, 0.45);",
+      "  border-radius: 8px;",
+      "  color: #F5F5FF;",
+      "  font-size: 0.7rem;",
+      "  padding: 0.32rem 0.45rem;",
+      "  outline: none;",
+      "}",
       "#" + WIDGET_ID + " .sbkim-sw-aibtn {",
       "  width: 100%;",
       "  box-sizing: border-box;",
@@ -738,6 +751,7 @@
     if (searxngFieldEl) searxngFieldEl.style.display = show;
     if (engineSelectEl) engineSelectEl.style.display = show;
     if (aiSelectEl) aiSelectEl.style.display = show;
+    if (aiContextEl) aiContextEl.style.display = show;
     if (aiPromptBtnEl) aiPromptBtnEl.style.display = show;
     if (aiPasteEl) aiPasteEl.style.display = show;
     if (aiSortBtnEl) aiSortBtnEl.style.display = show;
@@ -900,6 +914,16 @@
     aiSelectEl.addEventListener("change", function () { optAiProvider = aiSelectEl.value; });
     aiSelectEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
     panelEl.appendChild(aiSelectEl);
+
+    // Schärfen-Feld: aktiv zum Präzisieren auffordern (Klaus 2026-06-21 —
+    // wenige Worte tragen die Absicht oft nicht; vgl. NoBite-Befund).
+    aiContextEl = doc.createElement("input");
+    aiContextEl.type = "text";
+    aiContextEl.className = "sbkim-sw-aicontext";
+    aiContextEl.setAttribute("placeholder", "Schärfen (optional): Zweck? · Region/Land? · Art/Form? · Marke/Budget?");
+    aiContextEl.setAttribute("aria-label", "Suche schärfen — optionaler Kontext");
+    aiContextEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    panelEl.appendChild(aiContextEl);
 
     aiPromptBtnEl = makeBtn(doc, "sbkim-sw-aibtn", "🤖 Prompt → KI", "Prompt bauen, kopieren und KI öffnen");
     aiPromptBtnEl.addEventListener("click", function (ev) {
@@ -1120,12 +1144,16 @@
 
   // Prompt aus der Such-Frage bauen. Code-Block-Regel → ChatGPT zeigt einen
   // „Copy"-Knopf UND liefert saubere URLs (keine Zitat-Artefakte).
-  function buildAiPrompt(query) {
+  function buildAiPrompt(query, context) {
     var q = (typeof query === "string" ? query : "").trim();
-    return [
+    var ctx = (typeof context === "string" ? context : "").trim();
+    var lines = [
       "Suche im Internet zu meiner Frage und gib mir möglichst viele ECHTE, verschiedene Quellseiten.",
       "",
       "Meine Frage: " + q,
+    ];
+    if (ctx) lines.push("Was ich genau meine (Kontext): " + ctx);
+    return lines.concat([
       "",
       "SAMMLE BREIT UND VOLLSTÄNDIG (das ist mir wichtig):",
       "- Nicht nur die offensichtlichen/bekanntesten Treffer, sondern auch Nischen- und",
@@ -1142,7 +1170,7 @@
       "- Format pro Eintrag:",
       '  {"titel": "...", "url": "https://...", "quelle": "domain.de", "text": "ein bis zwei Sätze"}',
       "- So viele echte Einträge wie möglich (Ziel bis 100).",
-    ].join("\n");
+    ]).join("\n");
   }
 
   // URL-Müll säubern: ChatGPT hängt im Render manchmal unsichtbare Zitat-Zeichen
@@ -1218,7 +1246,8 @@
     var query = (inputEl ? inputEl.value : queryValue) || "";
     query = String(query).trim();
     if (!query) { setHint("Erst eine Frage eintippen, dann den KI-Knopf nutzen."); return; }
-    var prompt = buildAiPrompt(query);
+    var context = aiContextEl ? aiContextEl.value : "";
+    var prompt = buildAiPrompt(query, context);
     var prov = aiProviderById(optAiProvider);
     copyToClipboard(prompt).then(function (ok) {
       setHint(ok
