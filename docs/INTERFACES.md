@@ -4301,10 +4301,11 @@ options-Form (init):
                                         // Default "duckduckgo"; im Widget umstellbar, persistiert).
                                         // "searxng" nimmt die eigene Instanz aus searxngUrl,
                                         // sonst eine öffentliche Standard-Instanz (searx.be).
-    aiProvider?:  "chatgpt"|"claude"|"perplexity"|"mistral"|"alephalpha",
-                                        // KI-Such-Brücke Stufe A (Default "chatgpt"). Bei
-                                        // euPolicy:"bindend" nur EU-Anbieter (mistral/alephalpha).
-                                        // Stufe B (Tresor + automatischer API-Aufruf) = Folge-Sitzung.
+    aiProvider?:  "chatgpt"|"claude"|"perplexity",
+                                        // KI-Such-Brücke (Default "chatgpt"). Mistral + Aleph Alpha
+                                        // bewusst RAUS (Klaus 2026-06-21: Aleph Alpha ohne Web-Suche,
+                                        // Mistral schwach). euPolicy:"bindend" fällt auf alle zurück,
+                                        // solange es keinen web-such-fähigen EU-Anbieter gibt.
     nodeCorpus?:  Array<corpusEntry>,            // Knoten-Bereich-Korpus (verbundene Knoten)
     prepareNodeCorpus?: () => Promise<Array<corpusEntry>>,  // LAZY Knoten-Korpus-Provider
     defaultCorner?: "top-left"|"top-right"|"bottom-left"|"bottom-right",  // Default "bottom-right"

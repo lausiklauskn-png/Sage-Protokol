@@ -1136,23 +1136,31 @@
   // automatischer API-Aufruf) ist eine eigene Folge-Sitzung. openUrl bettet den
   // Prompt best-effort in die Such-URL des Anbieters ein (Clipboard bleibt die
   // verlässliche Quelle). euBased = im EU-Raum gehostet (DSGVO).
+  // Anbieter-Set für die KI-Such-Brücke. Mistral + Aleph Alpha bewusst RAUS
+  // (Klaus-Entscheidung 2026-06-21): Aleph Alpha kann keine Web-Suche (für ein
+  // Such-Werkzeug nutzlos), Mistral lieferte in mehreren Tests schwach. Das gilt
+  // NUR für dieses Widget — BLP nutzt Mistral weiter intern für seine eigene
+  // Sache. euBased bleibt als Mechanik erhalten, falls je ein brauchbarer
+  // EU-Web-Such-Anbieter dazukommt.
   var AI_PROVIDERS = [
-    { id: "chatgpt",    label: "ChatGPT (OpenAI)",      openUrl: "https://chatgpt.com/?q=",              euBased: false, webSearch: true },
-    { id: "claude",     label: "Claude (Anthropic)",    openUrl: "https://claude.ai/new?q=",             euBased: false, webSearch: true },
-    { id: "perplexity", label: "Perplexity",            openUrl: "https://www.perplexity.ai/search?q=",  euBased: false, webSearch: true },
-    { id: "mistral",    label: "Le Chat (Mistral · EU)", openUrl: "https://chat.mistral.ai/chat?q=",      euBased: true,  webSearch: true },
-    { id: "alephalpha", label: "Aleph Alpha (DE · EU)",  openUrl: "https://app.aleph-alpha.com/?q=",      euBased: true,  webSearch: false },
+    { id: "chatgpt",    label: "ChatGPT (OpenAI)",   openUrl: "https://chatgpt.com/?q=",             euBased: false, webSearch: true },
+    { id: "claude",     label: "Claude (Anthropic)", openUrl: "https://claude.ai/new?q=",            euBased: false, webSearch: true },
+    { id: "perplexity", label: "Perplexity",         openUrl: "https://www.perplexity.ai/search?q=", euBased: false, webSearch: true },
   ];
 
   function aiProviderById(id) {
     for (var i = 0; i < AI_PROVIDERS.length; i++) { if (AI_PROVIDERS[i].id === id) return AI_PROVIDERS[i]; }
     return AI_PROVIDERS[0];
   }
-  // Bei EU-bindender Politik nur EU-gehostete Anbieter (DSGVO-Kopplung an Modul 21/22).
+  // Bei EU-bindender Politik EU-Anbieter bevorzugen — solange es welche gibt.
+  // Aktuell gibt es keinen (web-such-fähigen) EU-Anbieter mehr, also Fallback auf
+  // alle, statt ein leeres Dropdown zu zeigen.
   function aiProvidersForPolicy() {
-    return optEuPolicy === "bindend"
-      ? AI_PROVIDERS.filter(function (p) { return p.euBased; })
-      : AI_PROVIDERS.slice();
+    if (optEuPolicy === "bindend") {
+      var eu = AI_PROVIDERS.filter(function (p) { return p.euBased; });
+      if (eu.length) return eu;
+    }
+    return AI_PROVIDERS.slice();
   }
 
   // Prompt aus der Such-Frage bauen. Code-Block-Regel → ChatGPT zeigt einen
