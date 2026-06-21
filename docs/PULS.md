@@ -1841,6 +1841,45 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-21 · Bau 22 Such-Werkzeug: Stufe A→B (KI-Brücke · Tresor · Auto-Aufruf · Meilenstein · Verteilung)
+
+**Rolle:** Bau/Pflege Modul 22, langer Increment-Marathon. Alle PRs gemerged
+(#351–#379). Detail im Übergabeprotokoll
+`docs/sessions/archiv/2026-06-21_bau-22-stufe-b-und-verteilung.md`.
+
+**Getan (Kurzfassung):**
+- **Stufe A — KI-Such-Brücke** (Gratis-Kopier-Pfad): `buildPrompt`/`parseAiAnswer`/
+  `setAiAnswer`; KI-Anbieter ChatGPT/Claude/**Gemini**/Perplexity (Mistral +
+  Aleph Alpha bewusst RAUS, Klaus-Entscheid). Live grün.
+- **Prompt-Reife:** **Bedeutung-zuerst** (nicht Breite), **Schärfen-Feld**,
+  **Recall-Lehre** (NoBite-Befund), **Agenten-Visitenkarte**-Präambel.
+- **Treffer-UI:** 10 + ▾-Pfeil, **Prozent**, Inhalts-**Snippet**, **🖨 Block
+  kopieren**, **Fortschrittsbalken**.
+- **Stufe B1 — Widget-Tresor** (self-contained, Klaus: „eigenes Schloss"):
+  PBKDF2 ≥600k + AES-GCM-256 + Shamir 2/3, 🔐-Modal-UI. **B2 — automatischer
+  Claude-Aufruf** mit Web-Suche, **CORS LIVE bestätigt** (große offene Frage
+  positiv beantwortet); Referenzfall **Hund + Katze bestanden** (Permethrin/
+  Katzen-Konsequenz selbst erkannt, amtliche Quellen).
+- **X leert Inhalt / – behält.** Such-Tool als **Kachel in der Werkzeugkiste**.
+  **`llms.txt`** (Agenten-Einladung). **Meilenstein-Doku**
+  `docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md` + ⭐-Anker in CLAUDE.md. Referenz-Fälle-
+  Karte. **`impressum.html`** Datenschutz um Such-Tool/KI-Aufrufe ergänzt.
+- Headless-Smoke Modul 22 **148/148**; Vorteilspack-Truhe **22/22**.
+
+**Offen:** (1) Klaus-Browser-Sichttests der neuen Felder (Tresor-UI,
+Fortschrittsbalken). (2) **B3** sicherheits-/eignungs-bewusster Richter
+(Unsicheres rot/herabstufen, Sicheres hoch). (3) **Such-Panel breiter ziehbar**
+(Klaus: Lesefeld eng). (4) **Standalone-Single-File-PWA-Download** + eigene
+Fußzeile. (5) **Endknoten-Einbau-Test** (Mixarium/Rezeptbuch, extern). (6) volle
+**bidirektionale Cross-Knoten-Suche** server-los noch NICHT end-to-end
+(Meilenstein §4). (7) **PULS-Überlauf** 5882 > 3000 — Archiv-Auslagerung als
+Wartung. (8) **PR #302** (BLP-E2E-Antwort, Draft 2026-06-19) offen — Klaus-
+Entscheid. (9) **SB-KIMTool-Point-Brief** (Such-Tool + Breitziehen + Impressum) —
+Klaus relayt (siehe Folge-Brief).
+
+**Nächster sinnvoller Schritt:** B3 (Richter) ODER Breitziehen ODER Standalone-
+PWA — siehe `docs/sessions/BRIEF_BAU_22_B3_UND_VERTEILUNG.md`.
+
 ### 2026-06-21 · Bau 22 Mehrfach-Suche: drei Bereiche (App/Knoten/Internet) + Richter-Schalter
 
 **Rolle:** Bau-Sitzung Modul 22 (Folge). Klaus' Vision: **Mehrfach-Suche** — drei
