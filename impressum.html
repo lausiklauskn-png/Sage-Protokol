@@ -121,18 +121,30 @@ einsehbare Dateien anderer SBKIM-Knoten (z. B. über <code>raw.githubusercontent
 ab. Dabei werden nur die für diese Abrufe technisch notwendigen Verbindungsdaten an die
 jeweiligen Anbieter übertragen. Es werden keine personenbezogenen Inhalte des Nutzers
 übermittelt.</p>
-<p><strong>6. Embedding-Modell</strong><br>
+<p><strong>6. Such-Werkzeug &amp; externe KI-/Web-Suche (bewusste Nutzer-Aktion)</strong><br>
+Das Such-Werkzeug sucht standardmäßig nur lokal. Erst wenn der Nutzer den Internet-Bereich
+bewusst aktiviert und eine KI- oder Web-Suche auslöst, wird seine Suchanfrage an den vom
+Nutzer <strong>gewählten externen Anbieter</strong> übertragen — etwa einen KI-Anbieter
+(ChatGPT/OpenAI, Claude/Anthropic, Gemini/Google, Perplexity) oder eine Suchmaschine
+(z. B. DuckDuckGo). Für die dort verarbeiteten Daten gelten die Datenschutzbestimmungen des
+jeweiligen Anbieters. Diese Übertragung ist immer eine <strong>ausdrückliche, getrennt
+ausgelöste Handlung</strong> des Nutzers, kein automatischer Vorgang.<br>
+API-Schlüssel des Nutzers (BYOK) werden – falls hinterlegt – <strong>lokal im Browser
+verschlüsselt</strong> gespeichert (Tresor: PBKDF2 + AES-GCM) und ausschließlich an den vom
+Nutzer gewählten Anbieter gesendet; sie werden <strong>nicht</strong> an den Betreiber,
+nicht ins Mycel und nicht an Dritte übermittelt.</p>
+<p><strong>7. Embedding-Modell</strong><br>
 Für die semantische Match-Funktion wird ein Embedding-Modell beim ersten Gebrauch vom
 CDN (jsDelivr / Hugging Face) in den Browser geladen und läuft anschließend lokal. Beim
 Laden gelten die Datenschutzbestimmungen des jeweiligen CDN-Anbieters.</p>
-<p><strong>7. Speicherdauer</strong><br>
+<p><strong>8. Speicherdauer</strong><br>
 Da keine zentrale Speicherung erfolgt, bestimmt der Nutzer selbst die Speicherdauer
 seiner Daten auf seinem Gerät (Löschen über die App- bzw. Browser-Funktionen).</p>
-<p><strong>8. Rechte der Nutzer</strong><br>
+<p><strong>9. Rechte der Nutzer</strong><br>
 Nutzer haben im Rahmen der gesetzlichen Bestimmungen das Recht auf Auskunft, Berichtigung
 und Löschung ihrer Daten. Da keine Daten beim Betreiber gespeichert werden, betrifft dies
 ausschließlich die lokal auf dem Gerät gespeicherten Daten.</p>
-<p><strong>9. Änderungen</strong><br>
+<p><strong>10. Änderungen</strong><br>
 Diese Erklärung kann bei technischen Änderungen angepasst werden.</p>
 <p class="note">Hinweis: Sage·Protokol speichert bewusst keine personenbezogenen Daten
 zentral. Diese Erklärung beschreibt vor allem, was technisch durch Hosting und externe
@@ -189,18 +201,30 @@ Functions such as the mailbox check or spore verification fetch publicly availab
 of other SBKIM nodes (e.g. via <code>raw.githubusercontent.com</code>). Only the
 connection data technically required for these requests is transmitted to the respective
 providers. No personal user content is transmitted.</p>
-<p><strong>6. Embedding model</strong><br>
+<p><strong>6. Search tool &amp; external AI/web search (deliberate user action)</strong><br>
+The search tool searches locally only by default. Only when the user deliberately enables
+the internet area and triggers an AI or web search is the user's query transmitted to the
+<strong>external provider chosen by the user</strong> — e.g. an AI provider (ChatGPT/OpenAI,
+Claude/Anthropic, Gemini/Google, Perplexity) or a search engine (e.g. DuckDuckGo). The
+respective provider's privacy terms apply to the data processed there. This transmission is
+always an <strong>explicit, separately triggered user action</strong>, not an automatic
+process.<br>
+The user's API keys (BYOK), if stored, are kept <strong>encrypted locally in the
+browser</strong> (vault: PBKDF2 + AES-GCM) and sent only to the provider chosen by the user;
+they are <strong>not</strong> transmitted to the operator, not into the mycelium, and not to
+third parties.</p>
+<p><strong>7. Embedding model</strong><br>
 For the semantic match function, an embedding model is loaded into the browser from a CDN
 (jsDelivr / Hugging Face) on first use and then runs locally. The CDN provider's privacy
 terms apply during loading.</p>
-<p><strong>7. Retention</strong><br>
+<p><strong>8. Retention</strong><br>
 As there is no central storage, the user determines the retention of their data on their
 own device.</p>
-<p><strong>8. User rights</strong><br>
+<p><strong>9. User rights</strong><br>
 Within the statutory provisions, users have the right to information, rectification and
 erasure of their data. As no data is stored by the operator, this concerns only data
 stored locally on the device.</p>
-<p><strong>9. Changes</strong><br>
+<p><strong>10. Changes</strong><br>
 This policy may be adapted in case of technical changes.</p>`
   }
 };
