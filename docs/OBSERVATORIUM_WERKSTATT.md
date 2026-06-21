@@ -110,3 +110,32 @@ ablegen — der Richter läuft auch ohne Signatur voll.
 aktiven Identität), spiegelbildlich zu `verifyForeignSpore`.
 
 **→ noch offen.**
+
+---
+
+## Offene Bau-Problematik 2 — Drei-Schichten-Differenzierung nicht im Live-Richter-Pfad
+
+**Erkannt 2026-06-21 (Klaus' Frage „Ist Stufe A schon angepasst?").**
+
+Modul 04 hat **zwei getrennte** Bewertungs-Pfade, die heute nicht verbunden sind:
+
+- **`matchDimensions` (Stufe A)** — Mathe-Gerüst mit drei Schichten
+  (`fachlich` / `prozess` / `skalierung`), die rechnerisch **identisch** sind
+  (alle = Cosinus-Lane-Score, Z. 293–295). Absichtlich so in Stufe A.
+- **`explainMatchLLM` (Stufe B)** — kann die drei Schichten per LLM
+  **differenzieren** (eigener `score` + Begründung pro Schicht). In Sage gebaut
+  (Bau 04.B), liegt aber **separat**.
+- **`hybridMatch` (Bau 04.D)** — der **praktische Such-Feld-Richter**, den BLP
+  und das Such-Feld nutzen. Liefert ein **holistisches Gesamt-Urteil** pro
+  Kandidat (`passt` / `score` / Begründung), **nicht** die Drei-Schichten-
+  Aufschlüsselung.
+
+**Die Lücke:** Die Fähigkeit zur Drei-Schichten-Differenzierung existiert
+(`explainMatchLLM`), ist aber **nicht in den Live-Richter-Pfad (`hybridMatch`)
+verdrahtet**. Der Live-Richter urteilt holistisch.
+
+**Offene Design-Entscheidung (Klaus):** Wollen wir `fachlich` / `prozess` /
+`skalierung` getrennt im Such-Richter sehen — oder reicht das Gesamt-Urteil?
+Erst Richtung, dann Bau.
+
+**→ noch offen (Bau steht unmittelbar bevor — Klaus 2026-06-21).**
