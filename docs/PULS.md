@@ -1914,12 +1914,16 @@ konsequent fail-soft. **EU-Politik per Knoten:** `bindend` (nur EU, z.B. BLP) �
 EU wählbar — Sage/Mixarium/Rezeptbuch). Surface `SbkimSpeech` (init/getLanguages/availableEngines/
 pickEngine/makeBrowserRecognizer/startRecording/recognizeEU/speechErrorHint). Headless-Smoke
 `tests/smoke_bau21_spracheingabe.mjs` **45/45 grün**; `index.html` lädt das Skript (KEIN Auto-Init),
-Panel 21 in `manual_check.html`; Karte `docs/components/21_spracheingabe.md`. **Browser-Sichttest
-(Live-Mic + EU-Engine) wartet auf Klaus.** Nächste Schritte des Such-Werkzeugs: Such-Ansicht
+Panel 21 in `manual_check.html`; Karte `docs/components/21_spracheingabe.md`. **Sichttest 21
+LOGIK GRÜN (Klaus, Browser, 2026-06-21):** Panel 21 drei Logik-Knöpfe bestätigt — Sprachen
+DE/EN/RU + alternativeCodes, EU-Politik frei=[browser,eu]/bindend=[eu], pickEngine (frei→eu /
+bindend→eu / default→browser), `browserSupport:true` (Galaxy Tab Chrome kann Web-Speech).
+Live-Mic + EU-Engine optional/ungetestet. Nächste Schritte des Such-Werkzeugs: Such-Ansicht
 (komponiert 03/04/21 + Knoten-Suche + EU-Politik-Auswahl), dann Einbau in PWAs + Landing-Pages.
 
-**Offen / nächster Schritt:** **Sichttest 21** (Klaus, Browser — Panel 21 Logik-Knöpfe sofort,
-Live-Mic + EU optional); dann Such-Ansicht (Schritt 2 des Such-Werkzeugs). Weiter offen:
+**Offen / nächster Schritt:** **Such-Ansicht (Schritt 2 des Such-Werkzeugs)** — komponiert
+Spracheingabe (21) + interne Suche (03/04 queryLocal) + externe KI (04 hybridMatch) + Knoten-Suche,
+mit EU-Politik-Auswahl. Weiter offen:
 Modul-02-Signier-Helfer (Werkstatt offene Bau-Problematik 1,
 schaltet Bezeugung frei); Drei-Schichten-Differenzierung im Live-Richter (Werkstatt Bau-Problematik 2);
 optional OCR-Vorstufe-Spec (BLP-getrieben: Vision → Embedding →
