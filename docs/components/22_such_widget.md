@@ -285,6 +285,65 @@ await SbkimSearchWidget.init({
 - Z-Index 9985 — koexistiert mit den Navleisten-Lampen der Sage-Page (kein
   Modul-17-Widget auf der Sage-Page).
 
+## Mehrfach-Suche: drei getrennte Bereiche (Bau 22 Mehrfach, 2026-06-21)
+
+Klaus' Vision: das Werkzeug durchsucht **drei getrennt wählbare Bereiche**
+(mehrere zugleich ankreuzbar, Treffer zusammengeführt + Herkunfts-Badge). Alle
+drei münden in **dieselbe Sortiermaschine** (Modul 03 Embedding + Modul 04
+Matcher) — exakt das Zwei-Stufen-Muster von BLP (Eingang teils KI → in-App-
+Matcher; bei BLP: Beleg-Foto → OCR → Embedding+Matcher → Konto).
+
+| Bereich | Eingang (Stufe 1) | Sortiermaschine (Stufe 2) | Empfangsmodus |
+|---|---|---|---|
+| **App** | lokaler Korpus / Host-Inhalt | Cosinus + optional Richter | lokal, server-los ✓ |
+| **Knoten** | verbundene Knoten (deren Sporen, lokal bekannt) | Cosinus + optional Richter | lokal, **keine** Netz-Anfrage ✓ |
+| **Internet** | ~50 Roh-Web-Treffer (SearXNG) **oder** „↗ neuer Tab" | Cosinus + optional Richter | **Pilz-Egress** (bewusst, nutzer-ausgelöst) |
+
+### KI-Richter an/aus (Klaus 2026-06-21)
+
+Ein **Schalter** im Widget, **Default aus**:
+
+- **Richter AUS** → reine **semantische Suche „über die Bedeutung"** (Embedding-
+  Cosinus, Modul 03+04 `queryLocal`). **Gratis, kein Schlüssel, server-los.** Für
+  alle, die „nicht so viel Geld haben".
+- **Richter AN** (nur sinnvoll mit BYOK-Schlüssel) → KI urteilt zusätzlich
+  bidirektional (`hybridMatch`) über die zusammengeführten besten Kandidaten
+  (ein Aufruf über die Spitze — die ~100 lokal zu sortieren ist gratis, nur die
+  Spitze kostet). Bei Schlüssel-Fehlen/Fehler **fail-soft** zurück auf semantisch.
+
+### Internet-Bereich (Pilz-Egress, semantischer Web-Re-Ranker)
+
+- **Ohne SearXNG-URL:** Internet-Bereich liefert eine **„↗ Im Netz suchen"-Karte**
+  (neuer Tab zu DuckDuckGo). Das Widget selbst lädt nichts — sauberster
+  „Pilz, kein Crawler".
+- **Mit eigener SearXNG-URL** (`init({searxngUrl})` oder Feld im Widget): das
+  Widget holt ~`SEARXNG_MAX_RESULTS` Roh-Treffer (`/search?q=…&format=json`),
+  **bettet sie ein** (Modul 03) und **sortiert sie semantisch** (Modul 04) — so
+  erscheinen **nur die besten** Treffer im Widget statt der überladenen Such-Seite
+  (Klaus' Idee: aus ~100 Antworten per Bedeutung die besten herausholen).
+  Öffentliche SearXNG-Instanzen blocken JSON/CORS meist → praktisch die **eigene**
+  Instanz (Pilz-Server). Fehlt/scheitert der Fetch → Fallback „↗ neuer Tab".
+
+### Empfangsmodus-Versöhnung (verbindlich)
+
+Der Internet-Bereich macht eine **Eigen-Anfrage ins Netz** — das wäre für einen
+**Mycel-Knoten (Schicht 1)** verboten (Empfangsmodus). Modul 22 ist aber ein
+**Pilz-Werkzeug (Schicht 2)**, kein Knoten. Die Vier-Schichten-Lesart (CLAUDE.md)
+erlaubt der Pilz-Schicht ausdrücklich Außenwelt-Zugriff, **wenn er benannt,
+sichtbar und nutzer-ausgelöst** ist — genau das ist der getrennt angekreuzte,
+nutzer-gewählte Internet-Bereich. Festgehalten in CLAUDE.md § „Was du nicht tust"
+(Tafel-Versöhnung 2026-06-21). App + Knoten bleiben rein lokal.
+
+### Surface-Erweiterung (Mehrfach-Suche)
+
+`init()`-Optionen zusätzlich: `areas?: {app?,knoten?,internet?: boolean}`,
+`richter?: boolean` (Default false), `searxngUrl?: string`,
+`nodeCorpus?: Array` / `prepareNodeCorpus?: () => Promise<Array>`.
+`_meta` zusätzlich: `areas`, `richterOn`, `hasSearxng`, `nodeCorpusSize`.
+`SearchResult.mode` ∈ `"leer" | "semantisch" | "richter" | "modul-04-fehlt" |
+"fehler"`; `SearchResult.treffer[*].source` ∈ `"app"|"knoten"|"internet"`;
+`SearchResult.webLink` = `{query,url}` (Internet ohne SearXNG) oder `null`.
+
 ## Strikte Tabus (verbindlich)
 
 - **KEINE eigene Identität / Spore / Krypto / Signatur.** Render-/Kompositions-
