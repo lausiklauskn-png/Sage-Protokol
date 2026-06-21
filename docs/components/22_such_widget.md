@@ -145,6 +145,11 @@ vorsortieren, **erste 10 zeigen**, Rest hinter „▾ weitere 10 zeigen (noch N)
 Wert als **Prozent** (Cosinus·100, echte Unterschiede); **Inhalts-Snippet** unter
 dem Titel. Live bestätigt mit „ich suche ein wirksames Zeckenmittel": 26 NETZ-
 Quellen gesammelt, 10 mit 88/88/87 % + Beschreibung gezeigt, Pfeil „noch 16".
+**Referenz-Fälle (Maßstab):** feste Test-Fälle in
+[`_such_referenzfaelle.md`](_such_referenzfaelle.md) — Wespen (Off-Topic nach
+unten) + Hunde-Zecken im Hund-UND-Katze-Haushalt (Permethrin/Katzen-Sicherheit,
+B3-Goldstandard). Änderungen werden daran gemessen, nicht am Bauchgefühl.
+
 **Lehre Recall vs. Ranking (Klaus' NoBite-Befund 2026-06-21):** Das Werkzeug
 arbeitet zweistufig — **Sammeln (Eingang)** + **Sortieren (Bedeutungs-Maschine)**.
 Die Sortier-Maschine kann nur ordnen, was das Sammeln liefert; ein gutes, aber
