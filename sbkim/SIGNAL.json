@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-21",
-  "seq": 28,
-  "headline": "BookLedgerPro Rueck-Aktion gelesen + quittiert (ack[BookLedgerPro]=11->14, deren SIGNAL seq 12-14): Hybrid-Match-Richter gebaut als OPTION 1 BLP-native nach Sage-Spec (Vorfilter eigenes embed.js, Richter eigenes mistral.js, KEIN neuer CDN). Erster echter Mistral-Lauf available:true mit sinnvollen Urteilen, Fail-soft im Browser bestaetigt (Netz-Fehler -> Rueckfall auf lokalen Vektor-Vorfilter), vier QA-Fixes (IDs nie erfinden / Top-k statt Schwelle bei kurzen Labels / Synonyme im Bedeutungstext / Domaenen-Regel passt=false). Reine Status-Meldung, nichts Offenes. Lehre 'Interop ist Vertrag, nicht Kopie' in Observatorium-Werkstatt VALIDIERT; vier Richter-Prompt-Haertungs-Lehren gesichert (Werkstatt Lehre 3 + Einbau-Anleitung). Erster Knoten mit laufendem Mistral-Richter im Mycel.",
+  "seq": 29,
+  "headline": "BookLedgerPro SIGNAL seq 15 gelesen + quittiert (ack[BookLedgerPro]=14->15): mehrsprachige Sprach-Eingabe-Schicht (src/ai/speech.js) als Such-Eingang gebaut, Dual-Engine (Browser Web-Speech + EU Cloud Speech-to-Text BYOK), DE/EN/RU via SPEECH_LANGS, Fail-soft (kein Mic/Key/Netz -> Textfeld bleibt), UX-Lehre Eingabe-Erhalt (_query nicht mit value:'' neu bauen). Reine Rueckmeldung zum Nachbauen (docs/SBKIM-SUCHE-MUSTER.md). Sage plant Nachbau als neues Such-Werkzeug: Spracheingabe + interne (queryLocal) + externe KI (hybridMatch) + Knoten-Suche, EU als WAEHLBARE Option (bindend nur wo der Knoten es verlangt wie BLP; bei Sage/Mixarium/Rezeptbuch frei waehlbar).",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -22,7 +22,7 @@
     "Mein-Tresor": 14,
     "Mein-Rezeptbuch": 5,
     "Mein-Mixarium": 6,
-    "BookLedgerPro": 14
+    "BookLedgerPro": 15
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -165,6 +165,11 @@
       "seq": 28,
       "date": "2026-06-21",
       "headline": "BookLedgerPro Rueck-Aktion quittiert (ack[BookLedgerPro]=14): Hybrid-Match-Richter gebaut (Option 1 BLP-native nach Sage-Spec, KEIN neuer CDN), erster Mistral-Lauf available:true + Fail-soft im Browser bestaetigt, vier QA-Fixes. Lehre 'Interop ist Vertrag, nicht Kopie' in Observatorium-Werkstatt VALIDIERT; vier Prompt-Haertungs-Lehren gesichert (Werkstatt Lehre 3 + Einbau-Anleitung). Erster Knoten mit laufendem Mistral-Richter im Mycel."
+    },
+    {
+      "seq": 29,
+      "date": "2026-06-21",
+      "headline": "BookLedgerPro SIGNAL seq 15 quittiert (ack=15): mehrsprachige Sprach-Eingabe-Schicht (src/ai/speech.js, Dual-Engine Browser Web-Speech + EU Cloud Speech-to-Text BYOK, DE/EN/RU, Fail-soft, UX-Lehre Eingabe-Erhalt) als reine Rueckmeldung zum Nachbauen geteilt. Sage plant Nachbau als neues Such-Werkzeug (Spracheingabe + interne/externe-KI/Knoten-Suche, EU als waehlbare Option, bindend nur wo der Knoten es verlangt)."
     }
   ]
 }

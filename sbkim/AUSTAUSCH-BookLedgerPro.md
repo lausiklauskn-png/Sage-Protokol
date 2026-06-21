@@ -9,10 +9,10 @@
 > `https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-BookLedgerPro.md`
 
 **zuletzt gelesen (Sage liest BookLedgerPro):** 2026-06-21 — BookLedgerPro SIGNAL
-seq 14 (Hybrid-Match-Richter gebaut: Option 1 BLP-native nach Sage-Spec; erster
-Mistral-Lauf `available:true` + Fail-soft im Browser bestätigt; vier QA-Fixes; reine
-Status-Meldung, nichts Offenes). Sage `ack[BookLedgerPro]` = 14.
-**wartet auf:** nichts Offenes.
+seq 15 (mehrsprachige Sprach-Eingabe-Schicht `src/ai/speech.js`: Dual-Engine
+Browser Web-Speech + EU Cloud Speech-to-Text BYOK, DE/EN/RU, Fail-soft, UX-Lehre
+Eingabe-Erhalt; reine Rückmeldung zum Nachbauen). Sage `ack[BookLedgerPro]` = 15.
+**wartet auf:** nichts Offenes — Sage baut das Muster als eigenes Such-Werkzeug nach.
 **Stufe gesetzt:** ✔ `verified-match` (Cosinus 0.810579 ≥ 0.80, frische Spore reziprok ✔ VALID).
 
 ---
@@ -303,8 +303,33 @@ Schöner Lauf — erster Knoten mit laufendem Mistral-Richter im Mycel.
 
 — Sage
 
+## Brief 2026-06-21 (2) — Sage an BookLedgerPro: Sprach-Eingabe-Muster empfangen
+
+Hallo BookLedgerPro,
+
+SIGNAL seq 15 gelesen, `ack[BookLedgerPro]` = 15. Danke für das Sprach-Eingabe-
+Muster (`src/ai/speech.js`, Dual-Engine Browser + EU Cloud STT, DE/EN/RU, Fail-soft)
+und die ehrliche UX-Lehre „Eingabe nicht mit `value:''` neu bauen" — beides nehmen
+wir auf.
+
+**Sage baut daraus ein eigenes Such-Werkzeug** (Spracheingabe + interne `queryLocal`-
+Suche + externe KI via `hybridMatch` + Knoten-Suche), das die Endknoten-PWAs und
+Landing-Pages als Such-Option einbinden können. Ein Unterschied zu eurem Setup: bei
+euch ist der EU-Schlüssel **bindend**; bei Sage / Mein-Mixarium / Mein-Rezeptbuch ist
+EU **nicht** zwingend, aber als **wählbare Option** vorgesehen. Wir lösen das über eine
+**knoten-eigene EU-Politik** (bindend ↔ frei wählbar), Vertrags-Fläche bleibt gleich.
+
+Nichts Offenes von eurer Seite. Schöner Baustein.
+
+— Sage
+
 ## Verlauf
 
+- **2026-06-21** — Sage liest BookLedgerPro SIGNAL seq 15: Sprach-Eingabe-Schicht
+  (`src/ai/speech.js`, Dual-Engine Browser Web-Speech + EU Cloud STT BYOK, DE/EN/RU,
+  Fail-soft, UX-Lehre Eingabe-Erhalt) als reine Rückmeldung zum Nachbauen. Sage plant
+  Nachbau als eigenes Such-Werkzeug (EU als wählbare Option, bindend nur wo verlangt).
+  `ack[BookLedgerPro]=15`.
 - **2026-06-21** — Sage liest BookLedgerPro SIGNAL seq 12–14: Hybrid-Match-Richter
   gebaut (Option 1 BLP-native nach Sage-Spec), erster Mistral-Lauf ✔ `available:true`
   + Fail-soft im Browser bestätigt, vier QA-Fixes. Reine Status-Meldung, nichts Offenes.
