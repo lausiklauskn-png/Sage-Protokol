@@ -76,6 +76,9 @@
   var DRAG_THRESHOLD_PX = 5;
   var DEFAULT_CORNER = "bottom-right";
   var DEFAULT_OFFSET = { x: 16, y: 16 };
+  // Andock-Punkt für das X: oben rechts „in der Navleiste" (Klaus 2026-06-21).
+  var NAV_DOCK_CORNER = "top-right";
+  var NAV_DOCK_OFFSET = { x: 12, y: 10 };
   // Unter Modul 17 (9990) und Modals (9999), damit beide Floating-Tools
   // koexistieren.
   var DEFAULT_Z_INDEX = 9985;
@@ -233,8 +236,14 @@
   }
 
   function loadVisibleFromLs() {
-    if (!optRememberHidden) { visibleFlag = true; return; }
-    visibleFlag = (lsGet(LS_KEY_VISIBLE) !== "false");
+    // Das Widget startet IMMER sichtbar — es darf nie unauffindbar verschwinden
+    // (Klaus 2026-06-21: X = komplett weg, kam auch nach Hard-Reload nicht
+    // wieder). Das X parkt jetzt nur noch oben (dockToTop), versteckt nicht
+    // mehr. Ein evtl. alter „versteckt"-Zustand wird einmalig geheilt.
+    visibleFlag = true;
+    if (optRememberHidden && lsGet(LS_KEY_VISIBLE) === "false") {
+      lsSet(LS_KEY_VISIBLE, "true");
+    }
   }
 
   function persistVisible() {
@@ -692,10 +701,10 @@
       collapse();
     });
     head.appendChild(minBtn);
-    var closeBtn = makeBtn(doc, "sbkim-sw-btn sbkim-sw-close", "✕", "Schließen — wiederherstellbar via SbkimSearchWidget.show()");
+    var closeBtn = makeBtn(doc, "sbkim-sw-btn sbkim-sw-close", "✕", "Oben als Lupe parken (verschwindet nicht — antippen holt es zurück)");
     closeBtn.addEventListener("click", function (ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
-      hide();
+      dockToTop();
     });
     head.appendChild(closeBtn);
     panelEl.appendChild(head);
@@ -1724,6 +1733,25 @@
     persistPosition();
   }
 
+  // X-Knopf: NICHT verstecken, sondern als Lupe oben rechts „in der Navleiste"
+  // parken (Klaus 2026-06-21). Bleibt sichtbar und antippbar — nie verloren.
+  function dockToTop() {
+    if (!ready) { warn("dockToTop() vor init() — no-op."); return; }
+    expandedFlag = false;
+    visibleFlag = true;
+    currentCorner = NAV_DOCK_CORNER;
+    currentOffsetX = NAV_DOCK_OFFSET.x;
+    currentOffsetY = NAV_DOCK_OFFSET.y;
+    currentFreeX = null;
+    currentFreeY = null;
+    persistState();
+    persistVisible();
+    persistPosition();
+    applyVisibility();
+    applyState();
+    applyPositionToRoot();
+  }
+
   function isExpanded() { return !!expandedFlag; }
 
   function getPosition() {
@@ -1819,6 +1847,7 @@
     isVisible: isVisible,
     expand: expand,
     collapse: collapse,
+    dockToTop: dockToTop,
     isExpanded: isExpanded,
     getPosition: getPosition,
     setCorpus: setCorpus,

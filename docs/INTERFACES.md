@@ -4230,11 +4230,19 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         // liest localStorage, setzt EU-Politik
                                         // + Korpus + Richter-Optionen.
                                         // Idempotent (zweiter Aufruf re-appliziert).
-  show()             → void (sync)      // einblenden + persistieren
-  hide()             → void (sync)      // ausblenden + persistieren (User-Wahl heilig)
+  show()             → void (sync)      // einblenden
+  hide()             → void (sync)      // programmatisch ausblenden (KEIN UI-Knopf ruft
+                                        //   das mehr — das X parkt via dockToTop). Ein
+                                        //   versteckter Zustand wird beim nächsten init()
+                                        //   geheilt → Widget startet immer sichtbar.
   isVisible()        → boolean (sync)   // aus DOM-State
-  expand()           → void (sync)      // klein → groß
-  collapse()         → void (sync)      // groß → klein
+  expand()           → void (sync)      // klein → groß (Mittelpunkt bleibt, in den
+                                        //   Viewport geklemmt)
+  collapse()         → void (sync)      // groß → klein (Mittelpunkt bleibt; minimiert
+                                        //   an Ort und Stelle, springt nicht in die Ecke)
+  dockToTop()        → void (sync)      // X-Knopf: als Lupe oben rechts „in der Navleiste"
+                                        //   parken. Versteckt NICHT — bleibt sichtbar +
+                                        //   antippbar (Klaus 2026-06-21: X = weg war ein Bug).
   isExpanded()       → boolean (sync)
   getPosition()      → PositionSnapshot // defensive Kopie {corner,offsetX,offsetY,x,y}
   setCorpus(corpus)  → void             // lokaler Such-Korpus
