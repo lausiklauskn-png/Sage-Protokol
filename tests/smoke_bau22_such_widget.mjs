@@ -476,6 +476,8 @@ async function run() {
     String(/Wespen am Esstisch/.test(prompt)), /Wespen am Esstisch/.test(prompt));
   record("Probe 29: Prompt verlangt Code-Block", "true",
     String(/Code-Block/.test(prompt) && /JSON/.test(prompt)), /Code-Block/.test(prompt) && /JSON/.test(prompt));
+  record("Probe 29: Prompt verlangt breites Sammeln (Recall)", "true",
+    String(/BREIT/.test(prompt) && /Nischen/.test(prompt)), /BREIT/.test(prompt) && /Nischen/.test(prompt));
 
   // ---- Probe 30: parseAiAnswer — Code-Fence + URL-Müll säubern ----
   const messy = '```json\n[{"titel":"A","url":"https://a.de/x⁠�","quelle":"a.de","text":"eins"},' +
