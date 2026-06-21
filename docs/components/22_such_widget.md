@@ -95,6 +95,14 @@ eigenen ein (nie im Code).
 **EU/DSGVO:** Anbieter-Liste kennt EU-gehostete (`euBased`) — **Mistral** (Paris)
 + **Aleph Alpha** (Heidelberg). Bei `euPolicy:"bindend"` erscheinen **nur** diese.
 
+**Browser-Sichttest Stufe A grün (Klaus 2026-06-21):** Auf der Sage-Page mit
+nur **Netz** angekreuzt eine echte ChatGPT-Antwort ins Einfüge-Feld → „↓ Antwort
+sortieren" → fünf NETZ-Treffer absteigend sortiert (0.90–0.87, „Hausmittel gegen
+Wespen" oben). Der Gratis-Kopier-Pfad arbeitet live. Eng beieinander liegende
+Werte sind korrekt, wenn alle Quellen thematisch passen; die Bedeutungs-
+Trennung (Off-Topic nach unten) zeigt sich am Referenz-Datensatz mit gemischtem
+Intent.
+
 ---
 
 ## Drei-Stufen-Such-Pipeline (komponiert)
