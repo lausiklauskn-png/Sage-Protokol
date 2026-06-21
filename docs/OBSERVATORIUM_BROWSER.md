@@ -15,7 +15,7 @@
 >
 > **Geschwister-Doku:** Bau-/Architektur-Lehren, die **nichts** mit dem Browser
 > zu tun haben (Schnittstellen-Verträge, Vendoring, Modul-Bau) → das
-> [Bau-Observatorium](OBSERVATORIUM_BAU.md).
+> die [Observatorium-Werkstatt](OBSERVATORIUM_WERKSTATT.md).
 
 ---
 
