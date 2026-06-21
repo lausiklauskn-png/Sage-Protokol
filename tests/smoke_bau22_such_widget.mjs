@@ -513,6 +513,21 @@ async function run() {
     String(!!(res.webLink && /searx\.be\/search\?q=/.test(res.webLink.url))),
     !!(res.webLink && /searx\.be\/search\?q=/.test(res.webLink.url)));
   await W.init({ webSearchEngine: "duckduckgo" }); // zurück
+
+  // ---- Probe 34: Minimieren hält das Widget im Bild (Klaus-Befund 2026-06-21) ----
+  await W.init({ areas: { app: false, knoten: false, internet: true } });
+  W.expand();
+  const origRect = root.getBoundingClientRect;
+  // Panel ragt rechts aus dem 1024er-Viewport (left 1000, width 320 → bis 1320).
+  root.getBoundingClientRect = () => ({ left: 1000, top: 100, right: 1320, bottom: 300, width: 320, height: 200, x: 1000, y: 100 });
+  W.collapse();
+  root.getBoundingClientRect = origRect;
+  const p34 = W.getPosition();
+  record("Probe 34: nach Minimieren x in den Viewport geklemmt", "true",
+    String(typeof p34.x === "number" && p34.x >= 8 && p34.x <= 1024 - 8),
+    typeof p34.x === "number" && p34.x >= 8 && p34.x <= 1024 - 8);
+  record("Probe 34: Mittelpunkt-Halten → Frei-Position (corner null)", "true",
+    String(p34.corner === null), p34.corner === null);
 }
 
 const finalize = () => {
