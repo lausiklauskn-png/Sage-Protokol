@@ -4272,6 +4272,12 @@ Bietet (öffentlich, window.SbkimSearchWidget):
   resultsAsText()    → string (sync)    // ALLE gerankten Treffer als nüchterner Text-Block
                                         //   (Nr · Quelle · Prozent · Titel · URL · Snippet);
                                         //   🖨-Knopf in der Treffer-Liste kopiert ihn (Klaus-Relay).
+  autoSearch(query)  → Promise<boolean> // Stufe B · B2 (Probe): direkter Browser-API-Aufruf mit
+                                        //   Web-Suche → parseAiAnswer → sortieren. NUR Claude
+                                        //   (api.anthropic.com + anthropic-dangerous-direct-browser-
+                                        //   access + web_search-Tool). Schlüssel aus Tresor/init.
+                                        //   Fail-soft (CORS/Key/Netz → Hinweis + false, kein Throw).
+  aiAutoSupported()  → boolean (sync)   // ob der gewählte Anbieter den Auto-Aufruf kann (z.Z. claude).
   _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
                      //   richterOn, hasSearxng, webEngine, aiProvider, aiProviders, hasPastedAi,
                      //   visible, expanded, widgetMounted, lastSearchMode, searchCount,

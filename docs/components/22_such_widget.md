@@ -102,12 +102,18 @@ Tresor-Sektion; je nach Zustand Anlegen (Passwort + Schlüssel → 3 Anteile zum
 Sichern), Entsperren, oder Sperren/Löschen. Headless-Smoke 125/125 (Probe 41 UI-
 Fluss). **Browser-Sichttest wartet auf Klaus.** ZERTIFIKAT_ASPEKTE-Eintrag (Modul
 16) noch offen — eigener kleiner Schritt.
-- **B2 — Automatischer KI-Aufruf.** Direkter Browser-Aufruf der gewählten KI **mit
-  Websuche** → Antwort automatisch ins Widget (kein Kopieren mehr). Schlüssel aus
-  B1-Tresor ODER App-Durchreichung `init({apiKey})`. **Reale Hürde (CORS / Browser-
-  Schlüssel):** nicht jeder Anbieter erlaubt Direktaufrufe aus dem Browser
-  (Anthropic braucht `anthropic-dangerous-direct-browser-access`; OpenAI rät von
-  Browser-Schlüsseln ab). Der **Kopier-Pfad (Stufe A) bleibt immer als Fallback**.
+- **B2 — Automatischer KI-Aufruf. ✅ Probe gebaut (2026-06-21, nur Claude).**
+  Direkter Browser-Aufruf der gewählten KI **mit Websuche** → Antwort automatisch
+  ins Widget (kein Kopieren mehr). `autoSearch(query)` + „⚡ Automatisch"-Knopf;
+  Schlüssel aus B1-Tresor ODER `init({apiKey})`; Modell via `init({aiModel})`.
+  **Probe-Umfang:** nur **Claude** (`api.anthropic.com` + Header
+  `anthropic-dangerous-direct-browser-access` + `web_search`-Tool) — der einzige
+  Anbieter mit dokumentiertem Browser-Direkt-Weg. Alles **fail-soft**: CORS/Key/
+  Netz-Fehler → ruhiger Hinweis + Fallback auf den **Kopier-Pfad (Stufe A)**, kein
+  Throw. Headless-Smoke 140/140 (Probe 42: Request-Form + Parse/Sort + fail-soft).
+  **Der echte Beweis (lässt der Browser den Aufruf via CORS zu?) ist Klaus'
+  Live-Lauf mit echtem Schlüssel.** Gehen weitere Anbieter (Gemini etc.) im
+  Browser, folgen sie als eigener Schritt.
 - **B3 — „Warum/worin"-Begründung mit eigenen Such-Schichten.** Pro Treffer ein
   Satz „passt, weil …" + Aufschlüsselung, **worin** Übereinstimmung (Klaus' Frage:
   warum 82 % vs 70 %). Braucht den KI-Richter (Modul 04 `hybridMatch`, BYOK).
