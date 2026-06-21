@@ -5452,37 +5452,46 @@
         return { sichtbar: SbkimSearchWidget.isVisible() };
       });
 
-      SbkimUI.addButton("22_such_widget", "Demo-Korpus + Suche (nur-vorfilter)", async function () {
-        // Stub Modul 04, falls echtes Modul 04 keinen Korpus hat — headless-
-        // äquivalenter Beweis der komponierten Pipeline ohne Schlüssel.
+      SbkimUI.addButton("22_such_widget", "Demo-Korpus + App-Suche (semantisch)", async function () {
+        // Stub Modul 04 (echo des Korpus) — headless-äquivalenter Beweis der
+        // Mehrfach-Such-Pipeline ohne Schlüssel (Richter aus → semantisch).
         var realMatch = window.SbkimMatch;
         window.SbkimMatch = {
           setLocalCorpus: function () {},
-          queryLocal: async function () {
-            return [
-              { label: "Lasagne", score: 0.91, anchorId: "r1" },
-              { label: "Tomatensuppe", score: 0.84, anchorId: "r2" },
-            ];
+          queryLocal: async function (text, k, options) {
+            var c = (options && options.corpus) || [];
+            return c.slice(0, 2).map(function (e, i) { return { label: e.label, score: 0.9 - i * 0.05, anchorId: e.anchorId }; });
           },
         };
+        await SbkimSearchWidget.init({ areas: { app: true, knoten: false, internet: false }, richter: false });
         SbkimSearchWidget.setCorpus([
           { label: "Lasagne", text: "Nudelauflauf", passageVec: new Float32Array(384), anchorId: "r1" },
           { label: "Tomatensuppe", text: "Suppe", passageVec: new Float32Array(384), anchorId: "r2" },
         ]);
         var res = await SbkimSearchWidget.search("was passt zu lasagne");
         window.SbkimMatch = realMatch; // zurücksetzen
-        SbkimUI.setStatus("22_such_widget", res.mode === "nur-vorfilter" ? "ok" : "err", "Modus: " + res.mode);
-        return { modus: res.mode, treffer: res.treffer.map(function (t) { return t.label + " (" + (t.score || 0).toFixed(2) + ")"; }),
-          erwartung: "Modus nur-vorfilter (kein Richter-Schlüssel), 2 Treffer" };
+        var ok = res.mode === "semantisch" && res.treffer.length === 2;
+        SbkimUI.setStatus("22_such_widget", ok ? "ok" : "err", "Modus: " + res.mode);
+        return { modus: res.mode, treffer: res.treffer.map(function (t) { return "[" + t.source + "] " + t.label + " (" + (t.score || 0).toFixed(2) + ")"; }),
+          erwartung: "Modus semantisch (Richter aus), 2 Treffer mit Quelle app" };
+      });
+
+      SbkimUI.addButton("22_such_widget", "Internet-Bereich ohne SearXNG → webLink", async function () {
+        await SbkimSearchWidget.init({ areas: { app: false, knoten: false, internet: true }, searxngUrl: "" });
+        var res = await SbkimSearchWidget.search("lasagne rezept");
+        var ok = !!(res.webLink && res.webLink.url);
+        SbkimUI.setStatus("22_such_widget", ok ? "ok" : "err", ok ? "webLink OK" : "kein webLink");
+        await SbkimSearchWidget.init({ areas: { app: true, knoten: false, internet: false } }); // zurück
+        return { modus: res.mode, webLink: res.webLink, erwartung: "neuer-Tab-Link (DuckDuckGo), kein Inline-Treffer ohne SearXNG-URL" };
       });
 
       SbkimUI.addButton("22_such_widget", "_meta zeigen", function () {
         var m = SbkimSearchWidget._meta;
         return {
-          euPolicy: m.euPolicy, corpusSize: m.corpusSize, visible: m.visible,
-          expanded: m.expanded, widgetMounted: m.widgetMounted,
-          lastSearchMode: m.lastSearchMode, searchCount: m.searchCount,
-          hasApiKey: m.hasApiKey, coupled: m.coupled,
+          euPolicy: m.euPolicy, areas: m.areas, richterOn: m.richterOn, hasSearxng: m.hasSearxng,
+          corpusSize: m.corpusSize, corpusReady: m.corpusReady, nodeCorpusSize: m.nodeCorpusSize,
+          visible: m.visible, expanded: m.expanded, widgetMounted: m.widgetMounted,
+          lastSearchMode: m.lastSearchMode, searchCount: m.searchCount, hasApiKey: m.hasApiKey, coupled: m.coupled,
         };
       });
     })();

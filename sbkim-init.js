@@ -77,6 +77,25 @@
     });
   }
 
+  // Lazy-Builder für den Knoten-Bereich (verbundene Mycel-Knoten). Analog zum
+  // App-Korpus, Quelle window.SAGE_KNOTEN_KORPUS. Rein lokale Daten (bekannte
+  // Nachbar-Sporen) — keine Netz-Anfrage.
+  async function sageBuildKnotenKorpus() {
+    var raw = window.SAGE_KNOTEN_KORPUS || [];
+    if (!raw.length) {
+      throw new Error("SAGE_KNOTEN_KORPUS leer oder nicht geladen (sbkim/sage-knoten-korpus.js?).");
+    }
+    var embedding = window.SbkimEmbedding;
+    if (!embedding || typeof embedding.embedPassageBatch !== "function") {
+      throw new Error("Modul 03 (Embedding) nicht geladen — Knoten-Index kann nicht gebaut werden.");
+    }
+    var texts = raw.map(function (e) { return e.text; });
+    var vecs = await embedding.embedPassageBatch(texts);
+    return raw.map(function (e, i) {
+      return { label: e.label, text: e.text, anchorId: e.anchorId, passageVec: vecs[i] };
+    });
+  }
+
   async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) {
       warn("ServiceWorker", new Error("navigator.serviceWorker fehlt — Browser zu alt."));
@@ -238,7 +257,10 @@
       return window.SbkimSearchWidget.init({
         euPolicy: "frei",
         queryLabel: "Sage",
-        prepareCorpus: sageBuildSuchkorpus,
+        prepareCorpus: sageBuildSuchkorpus,       // App-Bereich = Werkzeug-Bibliothek
+        prepareNodeCorpus: sageBuildKnotenKorpus, // Knoten-Bereich = verbundene Knoten
+        // Richter Default aus (gratis). Internet-Bereich: ohne SearXNG-URL
+        // = neuer Tab; Klaus kann später eine eigene Instanz eintragen.
       });
     });
 

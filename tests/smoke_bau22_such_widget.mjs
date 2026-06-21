@@ -159,10 +159,10 @@ function mountMatch(behavior) {
     async queryLocal(text, k, options) {
       if (behavior === "wirft") { const e = new Error("Modul 03 fehlt"); e.name = "EmbeddingNotAvailableError"; throw e; }
       if (behavior === "leer") return [];
-      return [
-        { label: "Lasagne", score: 0.91, anchorId: "r1" },
-        { label: "Tomatensuppe", score: 0.84, anchorId: "r2" },
-      ];
+      // Echo: Top-2 des übergebenen Korpus mit absteigenden Scores (so klappt
+      // die Quellen-Rückzuordnung in queryCorpus).
+      const corpus = (options && options.corpus) || [];
+      return corpus.slice(0, 2).map((c, i) => ({ label: c.label, score: 0.9 - i * 0.05, anchorId: c.anchorId }));
     },
     _lastHybridOpts: null,
     async hybridMatch(query, candidates, opts) {
@@ -170,17 +170,26 @@ function mountMatch(behavior) {
       if (behavior === "richter-failsoft") {
         return { available: false, reason: "API HTTP 429" };
       }
+      // Erster Kandidat passt, Rest nicht — behält label/anchorId der Kandidaten.
       return {
         available: true,
-        verdicts: [
-          { label: "Lasagne", anchorId: "r1", passt: true, score: 0.95, begruendung: "passt direkt" },
-          { label: "Tomatensuppe", anchorId: "r2", passt: false, score: 0.3, begruendung: "passt nicht" },
-        ],
+        verdicts: candidates.map((c, i) => ({
+          label: c.label, anchorId: c.anchorId, passt: i === 0,
+          score: 0.95 - i * 0.1, begruendung: i === 0 ? "passt direkt" : "passt nicht",
+        })),
         attestation: { kind: "sbkim-hybrid-match-judgment", version: 1 },
       };
     },
   };
 }
+
+const APP_CORPUS = [
+  { label: "Lasagne", text: "Nudelauflauf", passageVec: new Float32Array(384), anchorId: "r1" },
+  { label: "Tomatensuppe", text: "Suppe", passageVec: new Float32Array(384), anchorId: "r2" },
+];
+const NODE_CORPUS = [
+  { label: "Mein-Mixarium", text: "Cocktails Drinks", passageVec: new Float32Array(384), anchorId: "https://mix" },
+];
 
 // ---- Test-Harness ----
 
@@ -230,74 +239,83 @@ async function run() {
   chip.dispatchEvent({ type: "click", target: chip, stopPropagation: () => {} });
   eq("Probe 5: Chip-Klick zurück → frei", "frei", W._meta.euPolicy);
 
-  // ---- Probe 6: Suche modul-04-fehlt ----
+  // App-Korpus für die Such-Proben setzen (Default-Bereich = app).
+  mountMatch("treffer");
+  W.setCorpus(APP_CORPUS);
+
+  // ---- Probe 6: nur App-Bereich + kein Modul 04 → modul-04-fehlt ----
   mountMatch("fehlt");
+  await W.init({ areas: { app: true, knoten: false, internet: false }, richter: false });
   let res = await W.search("lasagne");
   eq("Probe 6: ohne Modul 04 → modul-04-fehlt", "modul-04-fehlt", res.mode);
   eq("Probe 6: treffer leer", "0", String(res.treffer.length));
 
-  // ---- Probe 7: Suche vorfilter-leer ----
+  // ---- Probe 7: leerer Korpus-Treffer → leer ----
   mountMatch("leer");
   res = await W.search("nichtsfindbar");
-  eq("Probe 7: leerer Vorfilter → vorfilter-leer", "vorfilter-leer", res.mode);
+  eq("Probe 7: leeres Ergebnis → leer", "leer", res.mode);
 
-  // ---- Probe 8: Suche nur-vorfilter (kein Key) ----
+  // ---- Probe 8: App-Suche ohne Richter → semantisch, Treffer mit Quelle app ----
   mountMatch("treffer");
   res = await W.search("lasagne");
-  eq("Probe 8: kein Key → nur-vorfilter", "nur-vorfilter", res.mode);
-  eq("Probe 8: 2 Vorfilter-Treffer", "2", String(res.treffer.length));
+  eq("Probe 8: ohne Richter → semantisch", "semantisch", res.mode);
+  eq("Probe 8: 2 semantische Treffer", "2", String(res.treffer.length));
+  eq("Probe 8: Quelle app", "app", res.treffer[0].source);
 
-  // ---- Probe 9: Suche richter (mit Key via init) ----
+  // ---- Probe 9: Richter AN + Key → richter ----
   mountMatch("treffer");
-  await W.init({ apiKey: "test-key", provider: "mistral", queryLabel: "Sage" });
+  await W.init({ apiKey: "test-key", provider: "mistral", queryLabel: "Sage", richter: true });
   eq("Probe 9: _meta.hasApiKey", "true", String(W._meta.hasApiKey));
+  eq("Probe 9: _meta.richterOn", "true", String(W._meta.richterOn));
   res = await W.search("lasagne");
-  eq("Probe 9: mit Key → richter", "richter", res.mode);
+  eq("Probe 9: Richter an + Key → richter", "richter", res.mode);
   eq("Probe 9: nur passende Treffer (1)", "1", String(res.treffer.length));
   eq("Probe 9: Top-Treffer Lasagne", "Lasagne", res.treffer[0].label);
+  eq("Probe 9: Quelle bleibt app", "app", res.treffer[0].source);
   record("Probe 9: attestation vorhanden", "true", String(!!res.attestation), !!res.attestation);
 
-  // ---- Probe 10: euOnly an hybridMatch (frei → false, bindend → true) ----
-  eq("Probe 10: euPolicy frei → euOnly false", "false", String(stub.SbkimMatch._lastHybridOpts.euOnly));
+  // ---- Probe 10: Richter-Schalter AUS → trotz Key nur semantisch (gratis) ----
+  await W.init({ richter: false });
+  res = await W.search("lasagne");
+  eq("Probe 10: Richter aus → semantisch trotz Key", "semantisch", res.mode);
+
+  // ---- Probe 11: euOnly an hybridMatch (frei → false, bindend → true) ----
+  await W.init({ richter: true });
+  await W.search("lasagne");
+  eq("Probe 11: euPolicy frei → euOnly false", "false", String(stub.SbkimMatch._lastHybridOpts.euOnly));
   await W.init({ euPolicy: "bindend" });
   await W.search("lasagne");
-  eq("Probe 10: euPolicy bindend → euOnly true", "true", String(stub.SbkimMatch._lastHybridOpts.euOnly));
+  eq("Probe 11: euPolicy bindend → euOnly true", "true", String(stub.SbkimMatch._lastHybridOpts.euOnly));
   await W.init({ euPolicy: "frei" }); // zurück
 
-  // ---- Probe 11: Richter fail-soft → fail-soft-vorfilter ----
+  // ---- Probe 12: Richter fail-soft → fällt auf semantisch zurück ----
   mountMatch("richter-failsoft");
-  await W.init({ apiKey: "test-key" });
   res = await W.search("lasagne");
-  eq("Probe 11: Richter nicht verfügbar → fail-soft-vorfilter", "fail-soft-vorfilter", res.mode);
-  eq("Probe 11: Vorfilter-Treffer bleiben (2)", "2", String(res.treffer.length));
-  record("Probe 11: reason gesetzt", "true", String(!!res.reason), !!res.reason);
+  eq("Probe 12: Richter nicht verfügbar → semantisch (Fallback)", "semantisch", res.mode);
+  eq("Probe 12: semantische Treffer bleiben (2)", "2", String(res.treffer.length));
+  record("Probe 12: reason gesetzt", "true", String(!!res.reason), !!res.reason);
 
-  // ---- Probe 12: queryLocal wirft → vorfilter-fehler (fail-soft, kein Throw) ----
+  // ---- Probe 13: queryLocal wirft → App-Bereich fängt ab → leer (kein Throw) ----
   mountMatch("wirft");
+  await W.init({ richter: false });
   let threw = false;
   try { res = await W.search("lasagne"); } catch (e) { threw = true; }
-  record("Probe 12: queryLocal-Throw wird gefangen", "false", String(threw), threw === false);
-  eq("Probe 12: → vorfilter-fehler", "vorfilter-fehler", res.mode);
+  record("Probe 13: queryLocal-Throw wird gefangen", "false", String(threw), threw === false);
+  eq("Probe 13: → leer (App-Bereich fail-soft)", "leer", res.mode);
 
-  // ---- Probe 13: setCorpus reicht an SbkimMatch durch + _meta ----
+  // ---- Probe 14: setCorpus + _meta ----
   mountMatch("treffer");
-  const corpus = [
-    { label: "Lasagne", text: "Nudelauflauf", passageVec: new Float32Array(384), anchorId: "r1" },
-    { label: "Tomatensuppe", text: "Suppe", passageVec: new Float32Array(384), anchorId: "r2" },
-  ];
-  W.setCorpus(corpus);
-  eq("Probe 13: _meta.corpusSize", "2", String(W._meta.corpusSize));
-  record("Probe 13: an SbkimMatch durchgereicht", "true", String(stub.SbkimMatch._corpus && stub.SbkimMatch._corpus.length === 2),
+  W.setCorpus(APP_CORPUS);
+  eq("Probe 14: _meta.corpusSize", "2", String(W._meta.corpusSize));
+  record("Probe 14: an SbkimMatch durchgereicht", "true", String(stub.SbkimMatch._corpus && stub.SbkimMatch._corpus.length === 2),
     stub.SbkimMatch._corpus && stub.SbkimMatch._corpus.length === 2);
 
-  // ---- Probe 14: UX-Erhalt — Re-Render der Treffer leert das Feld NICHT ----
+  // ---- Probe 14b: UX-Erhalt — Re-Render der Treffer leert das Feld NICHT ----
   const input = queryFirst(root, ".sbkim-sw-input");
   input.value = "mein gesprochener text";
   input.dispatchEvent({ type: "input", target: input });
-  // Suche rendert Treffer neu:
-  await W.init({ apiKey: "test-key" });
   await W.search("lasagne");
-  eq("Probe 14: Textfeld-Wert bleibt nach Treffer-Render", "mein gesprochener text", input.value);
+  eq("Probe 14b: Textfeld-Wert bleibt nach Treffer-Render", "mein gesprochener text", input.value);
 
   // ---- Probe 15: Spracheingabe fail-soft (Modul 21 fehlt → Hinweis, kein Throw) ----
   delete stub.SbkimSpeech;
@@ -340,55 +358,83 @@ async function run() {
   try { W.init({ euPolicy: "halbeu" }); } catch (e) { initThrew = e.name === "InvalidEuPolicyError"; }
   record("Probe 18: init('halbeu') wirft InvalidEuPolicyError", "true", String(initThrew), initThrew === true);
 
-  // ---- Probe 19: search() mit leerem/whitespace Text → vorfilter-leer (kein Throw) ----
+  // ---- Probe 19: Whitespace-Text → leer (kein Throw) ----
   mountMatch("treffer");
   res = await W.search("   ");
-  eq("Probe 19: Whitespace-Text → vorfilter-leer", "vorfilter-leer", res.mode);
+  eq("Probe 19: Whitespace-Text → leer", "leer", res.mode);
 
-  // ---- Probe 20: prepareCorpus wirft → fail-soft vorfilter-fehler (corpusReady bleibt false) ----
-  mountMatch("treffer");
-  await W.init({ prepareCorpus: async function () { throw new Error("Modell-Download fehlgeschlagen"); } });
-  eq("Probe 20: corpusReady vor Vorbereitung false", "false", String(W._meta.corpusReady));
-  let prepThrew = false;
-  try { res = await W.search("lasagne"); } catch (e) { prepThrew = true; }
-  record("Probe 20: werfender Preparer wird gefangen (kein Throw)", "false", String(prepThrew), prepThrew === false);
-  eq("Probe 20: → vorfilter-fehler", "vorfilter-fehler", res.mode);
-  eq("Probe 20: corpusReady bleibt false (Retry möglich)", "false", String(W._meta.corpusReady));
-
-  // ---- Probe 21: prepareCorpus — lazy, einmalig, gesetzter Korpus, Treffer ----
-  let prepCalls = 0;
-  const preparedCorpus = [
-    { label: "Lasagne", text: "Nudelauflauf", passageVec: new Float32Array(384), anchorId: "r1" },
-  ];
-  await W.init({ prepareCorpus: async function () { prepCalls++; return preparedCorpus; } });
+  // ---- Probe 20: kein Bereich gewählt → leer + Hinweis ----
+  await W.init({ areas: { app: false, knoten: false, internet: false } });
   res = await W.search("lasagne");
-  eq("Probe 21: prepareCorpus genau 1× gerufen", "1", String(prepCalls));
-  eq("Probe 21: corpusReady nach Suche true", "true", String(W._meta.corpusReady));
-  eq("Probe 21: Korpus an Widget gesetzt (corpusSize)", "1", String(W._meta.corpusSize));
-  record("Probe 21: Suche nach Vorbereitung liefert Treffer", "true",
-    String(res.treffer.length >= 1), res.treffer.length >= 1);
+  eq("Probe 20: kein Bereich → leer", "leer", res.mode);
+  record("Probe 20: Hinweis gesetzt", "true", String(!!res.reason), !!res.reason);
+  await W.init({ areas: { app: true } }); // app zurück an
 
-  // ---- Probe 22: zweite Suche bereitet NICHT erneut vor (Cache) ----
+  // ---- Probe 21: Knoten-Bereich — eigener Korpus, Quelle knoten ----
+  mountMatch("treffer");
+  await W.init({ areas: { app: false, knoten: true, internet: false }, nodeCorpus: NODE_CORPUS, richter: false });
+  eq("Probe 21: _meta.nodeCorpusSize", "1", String(W._meta.nodeCorpusSize));
+  res = await W.search("cocktail");
+  eq("Probe 21: Knoten-Suche → semantisch", "semantisch", res.mode);
+  eq("Probe 21: Quelle knoten", "knoten", res.treffer[0].source);
+
+  // ---- Probe 22: Internet-Bereich ohne SearXNG-URL → webLink (neuer Tab) ----
+  await W.init({ areas: { app: false, knoten: false, internet: true } });
+  res = await W.search("lasagne rezept");
+  record("Probe 22: webLink vorhanden", "true", String(!!(res.webLink && res.webLink.url)), !!(res.webLink && res.webLink.url));
+  record("Probe 22: webLink-URL ist DuckDuckGo", "true",
+    String(/duckduckgo/.test(res.webLink.url)), /duckduckgo/.test(res.webLink.url));
+  eq("Probe 22: _meta.hasSearxng false", "false", String(W._meta.hasSearxng));
+
+  // ---- Probe 23: Internet-Bereich mit SearXNG-URL → fetch + embed + Quelle internet ----
+  let fetchCalled = false, embedCalled = false;
+  stub.fetch = async (url) => {
+    fetchCalled = true;
+    return { ok: true, status: 200, json: async () => ({ results: [
+      { title: "Lasagne Rezept", url: "https://ex.com/1", content: "Nudelauflauf Klassiker" },
+      { title: "Tomatensuppe", url: "https://ex.com/2", content: "Suppe" },
+    ] }) };
+  };
+  stub.SbkimEmbedding = { embedPassageBatch: async (texts) => { embedCalled = true; return texts.map(() => new Float32Array(384)); } };
+  mountMatch("treffer");
+  await W.init({ areas: { app: false, knoten: false, internet: true }, searxngUrl: "https://my.searxng", richter: false });
+  eq("Probe 23: _meta.hasSearxng true", "true", String(W._meta.hasSearxng));
+  res = await W.search("lasagne");
+  record("Probe 23: fetch aufgerufen", "true", String(fetchCalled), fetchCalled);
+  record("Probe 23: embed aufgerufen", "true", String(embedCalled), embedCalled);
+  eq("Probe 23: Internet-Treffer → semantisch", "semantisch", res.mode);
+  eq("Probe 23: Quelle internet", "internet", res.treffer[0].source);
+  record("Probe 23: Treffer trägt URL", "true", String(!!res.treffer[0].url), !!res.treffer[0].url);
+  delete stub.SbkimEmbedding;
+
+  // ---- Probe 24: prepareCorpus lazy/einmalig/Cache (App-Bereich) ----
+  mountMatch("treffer");
+  let prepCalls = 0;
+  await W.init({ areas: { app: true, knoten: false, internet: false }, richter: false,
+    prepareCorpus: async function () { prepCalls++; return APP_CORPUS; } });
+  res = await W.search("lasagne");
+  eq("Probe 24: prepareCorpus genau 1× gerufen", "1", String(prepCalls));
+  eq("Probe 24: corpusReady nach Suche true", "true", String(W._meta.corpusReady));
   res = await W.search("lasagne nochmal");
-  eq("Probe 22: prepareCorpus weiterhin nur 1× (gecacht)", "1", String(prepCalls));
+  eq("Probe 24: zweite Suche gecacht (1×)", "1", String(prepCalls));
 
-  // ---- Probe 23: Tap auf die Blase (pointerup OHNE Move) öffnet im Ruhezustand ----
+  // ---- Probe 25: Tap auf die Blase (pointerup OHNE Move) öffnet im Ruhezustand ----
   // Regression-Schutz für Klaus' Befund 2026-06-21: setPointerCapture unterdrückte
   // auf Touch das click-Event → Blase ließ sich nicht wieder antippen. Fix: Tap im
   // pointerup behandeln.
   W.collapse();
-  eq("Probe 23: collapse → isExpanded false", "false", String(W.isExpanded()));
+  eq("Probe 25: collapse → isExpanded false", "false", String(W.isExpanded()));
   const root2 = stub.document.getElementById("sbkim-search-widget");
   root2.dispatchEvent({ type: "pointerdown", target: root2, pointerId: 7, clientX: 50, clientY: 50 });
   root2.dispatchEvent({ type: "pointerup", target: root2, pointerId: 7, clientX: 50, clientY: 50 });
-  eq("Probe 23: Tap (pointerup ohne Move) öffnet das Panel", "true", String(W.isExpanded()));
+  eq("Probe 25: Tap (pointerup ohne Move) öffnet das Panel", "true", String(W.isExpanded()));
 
-  // ---- Probe 24: echter Drag (mit Move) öffnet NICHT (nur verschieben) ----
+  // ---- Probe 26: echter Drag (mit Move) öffnet NICHT (nur verschieben) ----
   W.collapse();
   root2.dispatchEvent({ type: "pointerdown", target: root2, pointerId: 8, clientX: 50, clientY: 50 });
   root2.dispatchEvent({ type: "pointermove", target: root2, pointerId: 8, clientX: 140, clientY: 160 });
   root2.dispatchEvent({ type: "pointerup", target: root2, pointerId: 8, clientX: 140, clientY: 160 });
-  eq("Probe 24: Drag (mit Move) öffnet NICHT", "false", String(W.isExpanded()));
+  eq("Probe 26: Drag (mit Move) öffnet NICHT", "false", String(W.isExpanded()));
 }
 
 const finalize = () => {

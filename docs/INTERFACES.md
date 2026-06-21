@@ -4242,24 +4242,31 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         // reicht an SbkimMatch.setLocalCorpus durch.
   search(text)       → Promise<SearchResult>  // komponierte Suche, auch direkt
                                         // aufrufbar (Tests).
-  _meta              // { euPolicy, corpusSize, corpusReady, visible, expanded,
-                     //   widgetMounted, lastSearchMode, searchCount, hasApiKey,
-                     //   coupled:false }
+  _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
+                     //   richterOn, hasSearxng, visible, expanded, widgetMounted,
+                     //   lastSearchMode, searchCount, hasApiKey, coupled:false }
 
 options-Form (init):
   {
     euPolicy?:    "frei" | "bindend",   // Default "frei"
-    corpus?:      Array<{label,text?,passageVec,anchorId?}>,
-    apiKey?:      string,               // BYOK Richter-Schlüssel (opt-in; ohne → nur Vorfilter)
+    corpus?:      Array<{label,text?,passageVec,anchorId?}>,   // App-Bereich-Korpus
+    apiKey?:      string,               // BYOK Richter-Schlüssel (opt-in)
     provider?:    "mistral"|"claude"|"openai"|"local",  // Default "mistral"
     euOnly?:      boolean,              // nur bei euPolicy:"frei" relevant (Default false);
                                         // bindend erzwingt true
     queryLabel?:  string,               // Knoten-Name für die Attestation
     k?:           number,               // Top-k Vorfilter (Default 5)
-    prepareCorpus?: () => Promise<Array<corpusEntry>>,  // LAZY-Korpus-Provider: läuft EINMAL
-                                        // beim ersten expand()/erster Suche, baut den Korpus
-                                        // (z.B. Embedding via Modul 03), ruft setCorpus + cacht.
-                                        // Fehler → fail-soft (corpusReady bleibt false).
+    prepareCorpus?: () => Promise<Array<corpusEntry>>,  // LAZY App-Korpus-Provider (einmalig,
+                                        // Embedding via Modul 03, setCorpus + cacht; fail-soft).
+    // ---- Mehrfach-Suche (Bau 22 Mehrfach 2026-06-21) ----
+    areas?:       { app?:boolean, knoten?:boolean, internet?:boolean },  // Bereichs-Default
+                                        // (Default app:true, knoten:false, internet:false)
+    richter?:     boolean,              // KI-Richter an/aus. DEFAULT FALSE (gratis, rein
+                                        // semantisch). AN nur sinnvoll mit apiKey.
+    searxngUrl?:  string,               // SearXNG-Instanz für Web-Treffer. Leer → Internet =
+                                        // „↗ neuer Tab" (DuckDuckGo); gesetzt → Re-Ranker.
+    nodeCorpus?:  Array<corpusEntry>,            // Knoten-Bereich-Korpus (verbundene Knoten)
+    prepareNodeCorpus?: () => Promise<Array<corpusEntry>>,  // LAZY Knoten-Korpus-Provider
     defaultCorner?: "top-left"|"top-right"|"bottom-left"|"bottom-right",  // Default "bottom-right"
     defaultOffset?: { x:number, y:number },                              // Default {x:16,y:16}
     allowDrag?:     boolean,            // Default true
@@ -4268,14 +4275,17 @@ options-Form (init):
     zIndex?:        number,             // Default 9985 (unter Modul 17 9990 + Modals 9999)
   }
 
-SearchResult (Rückgabe von search()/runSearch — Interop-Vertrag 1:1 zum Helfer
-  sbkimHybridSearch aus docs/HYBRID-MATCH-EINBAU.md):
+SearchResult (Rückgabe von search()/runMultiSearch):
   {
-    mode:    "modul-04-fehlt" | "vorfilter-fehler" | "vorfilter-leer" |
-             "nur-vorfilter" | "fail-soft-vorfilter" | "richter",
-    treffer: Array<...>,                // Vorfilter-Treffer {label,score,anchorId}
-                                        // ODER Richter-Verdicts {label,anchorId,passt,score,begruendung}
-    reason?:      string,               // bei fail-soft/Fehler-Modi
+    mode:    "leer" | "semantisch" | "richter" | "modul-04-fehlt" | "fehler",
+             // semantisch = reine Cosinus-Suche (Richter aus ODER kein Key ODER
+             //   Richter fail-soft); richter = KI-Urteil; leer = keine Treffer/
+             //   kein Bereich; modul-04-fehlt = Matcher fehlt; fehler = unerwartet.
+    treffer: Array<{ label, score, anchorId, source, text?, url?, begruendung? }>,
+             // source ∈ "app"|"knoten"|"internet"; url = Link (Knoten/Internet);
+             // begruendung nur bei mode:"richter".
+    webLink?:     { query, url } | null,  // Internet-Bereich ohne SearXNG-URL → „↗ neuer Tab"
+    reason?:      string,               // bei Fehler/Fallback-Modi
     attestation?: object,               // nur bei mode:"richter" (signierbares Urteil)
   }
 
@@ -4311,7 +4321,9 @@ Sage-Page-Mount (Bau 22 B-Schritt 2026-06-21): in sbkim-init.js am Ende der
   {label,text,anchorId}); Vektoren lazy via Modul 03 embedPassageBatch beim
   ersten Gebrauch. Kein Richter-Schlüssel auf der Sage-Page → reiner Vorfilter.
 
-Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 64/64 (Surface,
+Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 79/79 (Mehrfach-Suche
+  App/Knoten/Internet, Richter-Schalter, SearXNG-Re-Ranker + neuer-Tab, Quellen-
+  Badge; Surface,
   Mount, expand/collapse/show/hide + localStorage, EU-Politik frei/bindend +
   euOnly an hybridMatch, alle sechs Such-Modi, setCorpus-Durchreichung,
   Spracheingabe fail-soft + Browser-Pfad, Drag-Persistenz, UX-Erhalt,

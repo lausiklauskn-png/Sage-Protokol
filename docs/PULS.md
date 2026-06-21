@@ -1841,6 +1841,47 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-21 · Bau 22 Mehrfach-Suche: drei Bereiche (App/Knoten/Internet) + Richter-Schalter
+
+**Rolle:** Bau-Sitzung Modul 22 (Folge). Klaus' Vision: **Mehrfach-Suche** — drei
+getrennt ankreuzbare Such-Bereiche, dazu der KI-Richter als abschaltbarer Schalter.
+Branch `claude/bau-22-mehrfachsuche`. **Sichttest Increment-1 + Sage-Korpus vorab
+grün** (Klaus, Browser: Blase, Sprache, semantische Treffer Membran 0.88).
+
+**Getan:**
+- **Modul 22 erweitert** auf Mehrfach-Suche: drei Bereiche `app`/`knoten`/`internet`
+  (Checkboxen, mehrere zugleich, Treffer zusammengeführt + Herkunfts-Badge), alle
+  über **dieselbe Sortiermaschine** (Modul 03 Embedding + Modul 04 Matcher) — das
+  BLP-Zwei-Stufen-Muster (Eingang → in-App-Matcher).
+- **KI-Richter an/aus-Schalter, Default AUS** (gratis, rein semantisch „über die
+  Bedeutung" = Cosinus; AN nur mit BYOK-Schlüssel → bidirektionales `hybridMatch`
+  über die zusammengeführte Spitze, ein Aufruf, fail-soft zurück auf semantisch).
+- **Internet-Bereich (Pilz-Egress):** ohne SearXNG-URL → „↗ neuer Tab" (DuckDuckGo,
+  Widget lädt nichts); mit eigener SearXNG-URL → ~50 Roh-Treffer holen → einbetten
+  (Modul 03) → semantisch sortieren → nur die besten inline (Klaus' 100-Treffer-
+  Re-Ranker-Idee). Fetch/CORS scheitert → Fallback neuer Tab.
+- **Knoten-Bereich:** `sbkim/sage-knoten-korpus.js` (6 verbundene Knoten, rein
+  lokale Sporen-Daten → KEINE Netz-Anfrage). Lazy-Embedding via Modul 03.
+- **Tafel-Versöhnung Empfangsmodus/Pilz** in CLAUDE.md § „Was du nicht tust"
+  ausdrücklich festgehalten (Klaus 2026-06-21): Empfangsmodus beschränkt die
+  Mycel-Schicht 1; ein Pilz-Werkzeug (Schicht 2) darf auf bewusste, getrennt
+  gewählte Nutzer-Aktion ins Netz suchen. App+Knoten bleiben rein lokal.
+- `sbkim-init.js` mountet das Widget jetzt mit `prepareCorpus` (App) +
+  `prepareNodeCorpus` (Knoten); `index.html` lädt beide Korpus-Dateien.
+- **Headless-Smoke 79/79** (Bereiche, Richter-Schalter, Internet neuer-Tab +
+  SearXNG-Re-Ranker, Quellen-Badge, fail-soft). Karte 22 + INTERFACES gespiegelt,
+  Panel 22 aktualisiert.
+
+**Offen:** (1) **Klaus' Browser-Sichttest** der Mehrfach-UI (Checkboxen, Richter-
+Schalter, Internet-neuer-Tab). (2) **Eigene SearXNG-Instanz** für den Internet-
+Re-Ranker (Anleitung als Folge-Notiz möglich). (3) Sage cap/needs (BLP-Bitte).
+(4) Increment 2 Widget-Kopplung über Modul 15.
+
+**Nächster sinnvoller Schritt:** Klaus' Sichttest der drei Bereiche + Richter-
+Schalter; danach SearXNG-Instanz-Anleitung oder Increment 2.
+
+
+
 ### 2026-06-21 · Bau 22 B-Schritt: Sage-Page-Korpus + Widget-Mount + Lazy-Embedding
 
 **Rolle:** Bau-Sitzung Modul 22 (Folge zu Increment 1). Klaus' Wahl **B**: erst
