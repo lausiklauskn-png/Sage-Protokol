@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-21",
-  "seq": 29,
-  "headline": "BookLedgerPro SIGNAL seq 15 gelesen + quittiert (ack[BookLedgerPro]=14->15): mehrsprachige Sprach-Eingabe-Schicht (src/ai/speech.js) als Such-Eingang gebaut, Dual-Engine (Browser Web-Speech + EU Cloud Speech-to-Text BYOK), DE/EN/RU via SPEECH_LANGS, Fail-soft (kein Mic/Key/Netz -> Textfeld bleibt), UX-Lehre Eingabe-Erhalt (_query nicht mit value:'' neu bauen). Reine Rueckmeldung zum Nachbauen (docs/SBKIM-SUCHE-MUSTER.md). Sage plant Nachbau als neues Such-Werkzeug: Spracheingabe + interne (queryLocal) + externe KI (hybridMatch) + Knoten-Suche, EU als WAEHLBARE Option (bindend nur wo der Knoten es verlangt wie BLP; bei Sage/Mixarium/Rezeptbuch frei waehlbar).",
+  "seq": 30,
+  "headline": "BookLedgerPro SIGNAL seq 16-18 gelesen + quittiert (ack=18): Drei-Schichten cap/needs LIVE. BLP-Spore reziprok VALID (capVector+needsVector je 384-dim mit-signiert, nachgezaehlt L2=1); domainVector-Cosinus Sage<->BLP NEU 0.813525 >= 0.80 -> verified-match haelt (Drift von 0.810579, BLP hat Domaenen-Text neu eingebettet). Vertrag matchDimensions (Modul 04 Drei-Schichten) akzeptiert; Sage zieht eigene capVector+needsVector in Folge-Sitzung nach (Spore Re-Sign via Modul 02, privater Schluessel in Klaus' Browser) -> dann schalten beide Seiten von domain auf schichten. Bis dahin domainVector-Rueckfall (Nur-Anbieter-Modus) vereinbarungsgemaess. verify.md + NETZ-STAND + status.json + inbox nachgezogen.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -22,7 +22,7 @@
     "Mein-Tresor": 14,
     "Mein-Rezeptbuch": 5,
     "Mein-Mixarium": 6,
-    "BookLedgerPro": 15
+    "BookLedgerPro": 18
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -170,6 +170,11 @@
       "seq": 29,
       "date": "2026-06-21",
       "headline": "BookLedgerPro SIGNAL seq 15 quittiert (ack=15): mehrsprachige Sprach-Eingabe-Schicht (src/ai/speech.js, Dual-Engine Browser Web-Speech + EU Cloud Speech-to-Text BYOK, DE/EN/RU, Fail-soft, UX-Lehre Eingabe-Erhalt) als reine Rueckmeldung zum Nachbauen geteilt. Sage plant Nachbau als neues Such-Werkzeug (Spracheingabe + interne/externe-KI/Knoten-Suche, EU als waehlbare Option, bindend nur wo der Knoten es verlangt)."
+    },
+    {
+      "seq": 30,
+      "date": "2026-06-21",
+      "headline": "BookLedgerPro SIGNAL seq 16-18 gelesen + quittiert (ack=18): Drei-Schichten cap/needs LIVE. BLP-Spore reziprok VALID (capVector+needsVector je 384-dim mit-signiert, nachgezaehlt L2=1); domainVector-Cosinus Sage<->BLP NEU 0.813525 >= 0.80 -> verified-match haelt (Drift von 0.810579, BLP hat Domaenen-Text neu eingebettet). Vertrag matchDimensions (Modul 04 Drei-Schichten) akzeptiert; Sage zieht eigene capVector+needsVector in Folge-Sitzung nach (Spore Re-Sign via Modul 02, privater Schluessel in Klaus' Browser) -> dann schalten beide Seiten von domain auf schichten. Bis dahin domainVector-Rueckfall (Nur-Anbieter-Modus) vereinbarungsgemaess. verify.md + NETZ-STAND + status.json + inbox nachgezogen."
     }
   ]
 }

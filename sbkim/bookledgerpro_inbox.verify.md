@@ -8,7 +8,10 @@
   (Pages-URL `…github.io/BookLedgerPro/sbkim/spore.json` ist im Browser live; von Sages
   Container aus typischerweise 403 — eigene github.io-Egress-Sperre, kein Pages-Problem.
   Verifikation läuft zuverlässig über die `raw/main`-URL.)
-- **Gelesen / geprüft:** 2026-06-20 (Hochstufung verified-spore → verified-match)
+- **Gelesen / geprüft:** 2026-06-20 (Hochstufung verified-spore → verified-match);
+  **2026-06-21 aktualisiert** (Drei-Schichten: BLP-Spore trägt nun signierte
+  `capVector` + `needsVector`, `createdAt` `2026-06-21T04:02:05.393Z`, Cosinus neu nachgerechnet;
+  Inbox-Kopie auf den aktuellen Stand gebracht)
 - **Vermittelt durch:** Klaus (menschlicher Vermittler, §11.4.7).
 - **Verifizierer:** `tools/verify_remote_spore.mjs` (echter Modul-02-Pfad
   `SbkimSpore.verifyForeignSpore`, WebCrypto) + Cosinus-Nachrechnung gegen Sages
@@ -42,10 +45,22 @@ einmalig in der App geladen und die Spore neu signiert.
 |---|---|
 | Sage `domainVector` | 384-dim, L2 = 1.000000 |
 | BookLedgerPro `domainVector` | 384-dim, L2 = 1.000000 |
-| **Cosinus Sage ⟷ BookLedgerPro** | **0.810579** |
+| **Cosinus Sage ⟷ BookLedgerPro** | **0.813525** (2026-06-21; vorher 0.810579) |
 | Schwelle `PROVIDER_MIN_MATCH` | 0.80 |
 
-**0.810579 ≥ 0.80 → ✔ `verified-match`.**
+**0.813525 ≥ 0.80 → ✔ `verified-match`.** (Kleine Drift, weil BookLedgerPro den
+Domänen-Text neu eingebettet hat; weiter sauber über der Schwelle.)
+
+## Drei-Schichten: cap/needs jetzt mit-signiert (2026-06-21)
+
+BookLedgerPros Spore trägt nun **`capVector` + `needsVector`** (je 384-dim,
+`Xenova/multilingual-e5-small`, `passage:`, mean-pool + L2 = 1.000000) **neben**
+`domainVector` — alle drei Teil der signierten Bytes (Modul 02 `verifyForeignSpore`
+→ VALID, Manipulation fällt durch). Damit ist BLP bereit für das **Drei-Schichten-
+Matching** (Modul 04 `matchDimensions`). **Sages eigene Spore trägt noch kein
+cap/needs** → der Abgleich läuft vereinbarungsgemäß im `domainVector`-Rückfall
+(Nur-Anbieter-Modus), bis Sage cap/needs in einer Folge-Sitzung nachträgt
+(Spore Re-Sign via Modul 02, privater Schlüssel in Klaus' Browser).
 
 ## Stufe: `verified-match`
 
