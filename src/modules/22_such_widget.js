@@ -114,6 +114,7 @@
   var aiPasteEl = null;        // Einfüge-Feld für die KI-Antwort (JSON)
   var aiSortBtnEl = null;      // „Antwort sortieren"-Knopf
   var aiAutoBtnEl = null;      // „⚡ Automatisch"-Knopf (B2-Probe, Claude)
+  var aiProgressEl = null;     // Fortschrittsbalken während des Web-Such-Aufrufs
   var internetCheckboxEl = null; // Referenz auf die Internet-Bereichs-Checkbox
   var vaultSectionEl = null;   // Tresor-Bedien-Sektion (🔐)
   var vaultSectionOpen = false;// Tresor-Sektion ein-/ausgeklappt
@@ -523,6 +524,32 @@
       "#" + WIDGET_ID + " .sbkim-sw-aibtn:hover { background: rgba(167, 139, 250, 0.28); }",
       "#" + WIDGET_ID + " .sbkim-sw-aiauto { background: rgba(110, 231, 211, 0.16); border-color: rgba(110, 231, 211, 0.42); color: #CFFcF4; }",
       "#" + WIDGET_ID + " .sbkim-sw-aiauto:hover { background: rgba(110, 231, 211, 0.26); }",
+      "#" + WIDGET_ID + " .sbkim-sw-progress {",
+      "  position: relative;",
+      "  height: 6px;",
+      "  margin-top: 0.4rem;",
+      "  border-radius: 4px;",
+      "  background: rgba(255, 255, 255, 0.08);",
+      "  overflow: hidden;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-progress .bar {",
+      "  position: absolute;",
+      "  top: 0;",
+      "  height: 100%;",
+      "  width: 38%;",
+      "  left: -38%;",
+      "  border-radius: 4px;",
+      "  background: linear-gradient(90deg, rgba(167,139,250,0), rgba(167,139,250,0.95) 45%, rgba(110,231,211,0.95) 75%, rgba(110,231,211,0));",
+      "  box-shadow: 0 0 10px rgba(167,139,250,0.55);",
+      "  animation: sbkimSweep 1.3s ease-in-out infinite;",
+      "}",
+      "@keyframes sbkimSweep { 0% { left: -38%; } 100% { left: 100%; } }",
+      "#" + WIDGET_ID + " .sbkim-sw-progress.done .bar {",
+      "  width: 100%;",
+      "  left: 0;",
+      "  animation: none;",
+      "  background: linear-gradient(90deg, rgba(110,231,211,0.95), rgba(167,139,250,0.95));",
+      "}",
       "#" + WIDGET_ID + " .sbkim-sw-aipaste {",
       "  width: 100%;",
       "  box-sizing: border-box;",
@@ -957,6 +984,16 @@
     });
     panelEl.appendChild(aiAutoBtnEl);
 
+    // Fortschrittsbalken (über dem Einfüge-Feld) — läuft während Claude im Netz
+    // sucht, füllt sich, wenn die Antwort da ist (Klaus 2026-06-21).
+    aiProgressEl = doc.createElement("div");
+    aiProgressEl.className = "sbkim-sw-progress";
+    aiProgressEl.style.display = "none";
+    var progBar = doc.createElement("div");
+    progBar.className = "bar";
+    aiProgressEl.appendChild(progBar);
+    panelEl.appendChild(aiProgressEl);
+
     aiPasteEl = doc.createElement("textarea");
     aiPasteEl.className = "sbkim-sw-aipaste";
     aiPasteEl.setAttribute("rows", "3");
@@ -1336,6 +1373,24 @@
 
   function aiAutoSupported() { return optAiProvider === "claude"; }
 
+  // Fortschrittsbalken steuern (während des Web-Such-Aufrufs).
+  function showProgress() {
+    if (!aiProgressEl) return;
+    aiProgressEl.classList.remove("done");
+    aiProgressEl.style.display = "block";
+  }
+  function finishProgress() {
+    if (!aiProgressEl) return;
+    aiProgressEl.classList.add("done"); // Balken füllt sich voll
+    var el = aiProgressEl;
+    global.setTimeout(function () { if (el) { el.style.display = "none"; el.classList.remove("done"); } }, 600);
+  }
+  function hideProgress() {
+    if (!aiProgressEl) return;
+    aiProgressEl.style.display = "none";
+    aiProgressEl.classList.remove("done");
+  }
+
   function buildClaudeRequest(prompt, key) {
     return {
       url: "https://api.anthropic.com/v1/messages",
@@ -1385,6 +1440,7 @@
     var context = aiContextEl ? aiContextEl.value : "";
     var req = buildClaudeRequest(buildAiPrompt(query, context), optApiKey);
     setHint("Frage Claude (mit Web-Suche) … (kann etwas dauern)");
+    showProgress();
     return Promise.resolve(global.fetch(req.url, { method: "POST", headers: req.headers, body: req.body }))
       .then(function (resp) {
         if (!resp || !resp.ok) throw new Error("HTTP " + (resp && resp.status));
@@ -1404,6 +1460,7 @@
               ", content-Blöcke: " + kinds + "]";
           }
           if (aiPasteEl) aiPasteEl.value = dump;
+          hideProgress();
           setHint("Claude antwortete, aber ohne JSON-Liste — die Rohantwort steht jetzt im Einfüge-Feld. Schau/kopiere sie.");
           return false;
         }
@@ -1413,11 +1470,13 @@
           if (internetCheckboxEl && internetCheckboxEl._input) internetCheckboxEl._input.checked = true;
           updateSearxngFieldVisibility();
         }
+        finishProgress(); // Balken füllt sich voll, dann verschwindet er
         setHint(entries.length + " Treffer von Claude — sortiere …");
         runAndRender();
         return true;
       })
       .catch(function (err) {
+        hideProgress();
         var m = (err && err.message) || String(err);
         setHint(/fetch|NetworkError|CORS/i.test(m)
           ? "Browser-Aufruf blockiert (vermutlich CORS) — nutze den Kopier-Weg (🤖 Prompt → KI)."

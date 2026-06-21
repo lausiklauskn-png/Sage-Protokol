@@ -725,6 +725,20 @@ async function run() {
   record("Probe 42: Rohantwort ins Einfüge-Feld gelegt", "true",
     String(!!aiPaste && /Spray oder als Tablette/.test(aiPaste.value)),
     !!aiPaste && /Spray oder als Tablette/.test(aiPaste.value));
+  // Fortschrittsbalken: sichtbar WÄHREND des Aufrufs, füllt sich danach.
+  const progEl = queryFirst(root, ".sbkim-sw-progress");
+  record("Probe 42: Fortschrittsbalken-Element vorhanden", "true", String(!!progEl), !!progEl);
+  let releaseFetch;
+  stub.fetch = () => new Promise((r) => { releaseFetch = () => r({ ok: true, status: 200, json: async () => ({
+    content: [{ type: "text", text: '```json\n[{"titel":"Y","url":"https://y.de","quelle":"y.de"}]\n```' }],
+  }) }); });
+  const pending = W.autoSearch("zecken");
+  await new Promise((r) => setTimeout(r, 0));
+  record("Probe 42: Balken sichtbar während des Aufrufs", "block", progEl.style.display, progEl.style.display === "block");
+  releaseFetch();
+  await pending;
+  record("Probe 42: Balken füllt sich (done) nach Erfolg", "true",
+    String(progEl._classes.has("done")), progEl._classes.has("done"));
   delete stub.fetch;
   delete stub.SbkimEmbedding;
   stub.localStorage.removeItem("sbkim_search_widget_vault");
