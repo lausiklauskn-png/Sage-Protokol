@@ -122,8 +122,15 @@ App-Schlüssel-Durchreichung + Sicherheit: Schlüssel nur lokal, **nie ins Mycel
 nie auf GitHub**, nur an den gewählten Anbieter; bei verteilten Apps trägt jeder
 seinen eigenen ein (nie im Code).
 
-**EU/DSGVO:** Anbieter-Liste kennt EU-gehostete (`euBased`) — **Mistral** (Paris)
-+ **Aleph Alpha** (Heidelberg). Bei `euPolicy:"bindend"` erscheinen **nur** diese.
+**KI-Anbieter (Klaus-Entscheidung 2026-06-21): nur ChatGPT · Claude · Perplexity.**
+**Mistral + Aleph Alpha bewusst RAUS** aus diesem Widget — Aleph Alpha kann keine
+Web-Suche (für ein Such-Werkzeug nutzlos), Mistral lieferte in mehreren Tests
+schwach (vgl. Hunde-Zecken-Test: Permethrin/Advantix ohne Katzen-Warnung). **Nur
+widget-scoped:** BLP nutzt Mistral weiter intern für seine eigene Sache (Steuer-
+Daten) — das bleibt unberührt. Die `euBased`-Mechanik bleibt im Code; käme je ein
+brauchbarer web-such-fähiger EU-Anbieter, lässt er sich wieder eintragen. Bei
+`euPolicy:"bindend"` fällt die Auswahl mangels EU-Anbieter auf alle zurück (kein
+leeres Dropdown).
 
 **Browser-Sichttest Stufe A grün (Klaus 2026-06-21):** Auf der Sage-Page mit
 nur **Netz** angekreuzt eine echte ChatGPT-Antwort ins Einfüge-Feld → „↓ Antwort
