@@ -234,6 +234,38 @@ das `opts`-Objekt am Aufruf wird pro Knoten angepasst. Das ist die
 
 ---
 
+## Vendoring vs. native Umsetzung — Interoperabilität ist Vertrag, nicht Kopie
+
+Ein Knoten muss die SBKIM-Module **nicht byte-genau vendoren**, um Teil des
+Mycels zu sein. Was zwei Knoten verbindet, ist der **Vertrag** (INTERFACES:
+Urteil-Schema, Attestation-Format, Provider/EU-Semantik, Fail-soft-Verhalten)
+— **nicht** identischer Quelltext.
+
+**Regel:** Hat ein Knoten bereits **gleichwertige Bordmittel** (eigenen
+Embedder, eigenen LLM-Aufruf), ist eine **spec-treue Eigenumsetzung** die
+saubere Lösung — kein zweiter Embedder, kein neuer CDN, keine Dopplung.
+Ehrlich markieren als „native Umsetzung nach Sage-Spec PROTOCOL_VERSION X",
+**nicht** als verbatim Sage-Kopie ausgeben.
+
+**Was dabei 1:1 bleiben MUSS** (sonst nicht interoperabel):
+
+- Verdict-Schema `{ label, anchorId, passt, score, begruendung }`
+- Rückgabe-Modi `"richter" | "fail-soft-vorfilter" | "nur-vorfilter" | "vorfilter-leer"`
+- Fail-soft: Richter nie Eintritts-Barriere, **kein Throw**
+- Attestation-Schema (siehe § Bezeugung oben)
+
+**Build-frei bevorzugt verbatim:** Der Richter-Kern (Modul 04) ist build-frei
+(nur `fetch` + Prompt + Parse) — den so **verbatim wie praktisch** übernehmen,
+damit er bei Spec-Updates leicht synchron bleibt. Nur die Embedder-/LLM-
+Anbindung wird knoten-nativ.
+
+> Erstmals entschieden für **BLP, 2026-06-21:** BLP hat `embed.js` (identisches
+> Modell) + `mistral.js` (EU-Aufruf) bereits an Bord → Weg „BLP-native nach
+> Sage-Spec" statt CDN-Vendoring. Vendoring (Modul 09) bleibt der richtige Weg
+> für Knoten **ohne** eigene Bordmittel.
+
+---
+
 ## Reihenfolge (verbindlich, Klaus 2026-06-20)
 
 1. **Sage-Sichttest** Panel 04 Knöpfe 16–19 (Mock-LLM, kein Schlüssel) —
