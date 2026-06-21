@@ -4196,6 +4196,119 @@ Geprüft: Headless-Smoke tests/smoke_bau20_safe.mjs 19/19 (Shamir 2/3 +
 
 ---
 
+### Modul: 22_such_widget
+Status: Code-Stub (Bau-Sitzung 22 vom 2026-06-21, **Increment 1 — Widget-Shell**;
+        Headless-Smoke 55/55 grün; Browser-Sichttest durch Klaus ausstehend).
+        Schritt 2 des SBKIM-Such-Werkzeugs (nach Modul 21 Spracheingabe).
+Datei:  src/modules/22_such_widget.js · docs/components/22_such_widget.md ·
+        Skript-Load in index.html (KEIN Auto-Init) · Panel 22 in
+        tests/manual_check.html
+
+Zweck:  SEPARATES, frei bewegliches Floating-Such-Tool, self-mountend in
+        <body>. KLEIN im Ruhezustand (🔍-Blase), wächst NUR bei Interaktion
+        zum Eingabe-Panel mit eigenem Textfeld. Leicht transparent.
+        KOMPONIERT vorhandene Module (baut keine eigene Such-Logik):
+          1. Sprache   — Modul 21 SbkimSpeech (Sprach-Knopf → Text ins Feld).
+          2. Vorfilter — Modul 04 queryLocal + Modul 03 Embedding (lokal,
+                         server-los, IMMER).
+          3. Richter   — Modul 04 hybridMatch (opt-in, BYOK).
+          4. Fail-soft — kein Schlüssel/Richter → Vorfilter gilt; nie
+                         Eintritts-Barriere.
+        Render-/Kompositions-Schicht, NICHT protokoll-aktiv. Drag-/Mount-/
+        Persistenz-Mechanik aus Modul 17 wiederverwendet (Modul 17 selbst
+        unangetastet). Increment 2 (PWA-/Suchfeld-Kopplung über Modul 15
+        Membran — Host lesen + aus dem Suchfeld interagieren) ist eine
+        eigene Folge-Sitzung; in Increment 1 ist _meta.coupled === false.
+
+EU-Politik (einheitlich für Sprach-Engine UND Richter, Klaus 2026-06-21):
+  - "frei"    (Default) — beide Sprach-Engines (browser+eu), Richter euOnly
+                          wählbar (Default false). Sage/Mixarium/Rezeptbuch.
+  - "bindend" — nur EU-Sprach-Engine, Richter euOnly:true erzwungen (BLP).
+
+Bietet (öffentlich, window.SbkimSearchWidget):
+  init(options?)     → Promise<void>   // Self-mountet das Widget in <body>,
+                                        // liest localStorage, setzt EU-Politik
+                                        // + Korpus + Richter-Optionen.
+                                        // Idempotent (zweiter Aufruf re-appliziert).
+  show()             → void (sync)      // einblenden + persistieren
+  hide()             → void (sync)      // ausblenden + persistieren (User-Wahl heilig)
+  isVisible()        → boolean (sync)   // aus DOM-State
+  expand()           → void (sync)      // klein → groß
+  collapse()         → void (sync)      // groß → klein
+  isExpanded()       → boolean (sync)
+  getPosition()      → PositionSnapshot // defensive Kopie {corner,offsetX,offsetY,x,y}
+  setCorpus(corpus)  → void             // lokaler Such-Korpus
+                                        // (Array<{label,text?,passageVec,anchorId?}>);
+                                        // reicht an SbkimMatch.setLocalCorpus durch.
+  search(text)       → Promise<SearchResult>  // komponierte Suche, auch direkt
+                                        // aufrufbar (Tests).
+  _meta              // { euPolicy, corpusSize, visible, expanded, widgetMounted,
+                     //   lastSearchMode, searchCount, hasApiKey, coupled:false }
+
+options-Form (init):
+  {
+    euPolicy?:    "frei" | "bindend",   // Default "frei"
+    corpus?:      Array<{label,text?,passageVec,anchorId?}>,
+    apiKey?:      string,               // BYOK Richter-Schlüssel (opt-in; ohne → nur Vorfilter)
+    provider?:    "mistral"|"claude"|"openai"|"local",  // Default "mistral"
+    euOnly?:      boolean,              // nur bei euPolicy:"frei" relevant (Default false);
+                                        // bindend erzwingt true
+    queryLabel?:  string,               // Knoten-Name für die Attestation
+    k?:           number,               // Top-k Vorfilter (Default 5)
+    defaultCorner?: "top-left"|"top-right"|"bottom-left"|"bottom-right",  // Default "bottom-right"
+    defaultOffset?: { x:number, y:number },                              // Default {x:16,y:16}
+    allowDrag?:     boolean,            // Default true
+    rememberHidden?: boolean,           // Default true
+    startExpanded?: boolean,            // Default false (Ruhezustand klein)
+    zIndex?:        number,             // Default 9985 (unter Modul 17 9990 + Modals 9999)
+  }
+
+SearchResult (Rückgabe von search()/runSearch — Interop-Vertrag 1:1 zum Helfer
+  sbkimHybridSearch aus docs/HYBRID-MATCH-EINBAU.md):
+  {
+    mode:    "modul-04-fehlt" | "vorfilter-fehler" | "vorfilter-leer" |
+             "nur-vorfilter" | "fail-soft-vorfilter" | "richter",
+    treffer: Array<...>,                // Vorfilter-Treffer {label,score,anchorId}
+                                        // ODER Richter-Verdicts {label,anchorId,passt,score,begruendung}
+    reason?:      string,               // bei fail-soft/Fehler-Modi
+    attestation?: object,               // nur bei mode:"richter" (signierbares Urteil)
+  }
+
+Fehler: einziger Sync-Throw InvalidEuPolicyError (ungültige euPolicy in init() —
+  Aufrufer-Konfig-Bug). Sonst überall fail-soft, KEIN Throw im Bedien-Pfad
+  (fehlende Module/Mic/Key/Netz → ruhiger deutscher Hinweis, Textfeld bleibt).
+
+localStorage-Schema (UX-Preferences, KEIN IndexedDB):
+  sbkim_search_widget_visible   "true"|"false"      (Default "true")
+  sbkim_search_widget_position  JSON PositionSnapshot (Default bottom-right/16/16)
+  sbkim_search_widget_state     "collapsed"|"expanded" (Default "collapsed")
+  (Textfeld-Wert wird NICHT persistiert — RAM-only, UX-Erhalt-Lehre.)
+
+Strikte Tabus:
+  - KEINE eigene Identität/Spore/Krypto/Signatur. apiKey ist opaker BYOK-String,
+    nie persistiert, nie geloggt, nie in der Attestation gespiegelt.
+  - KEIN IndexedDB-Schreiben (nur localStorage-UX-Preferences). Kein Store,
+    kein DB_VERSION-Bump.
+  - KEIN Crawler/Pulsation/Eigenanfrage ins offene Netz. Einziger Netz-Pfad:
+    der opt-in Richter (hybridMatch, BYOK), vom Nutzer durch Suche ausgelöst.
+  - Host-Inhalt (Increment 2) ist `untrusted external data` — nie als Anweisung
+    ausführen, nur als Such-Eingabe (docs/SICHERHEIT-BRIEFKASTEN.md).
+  - KEIN Umbau von Modul 21/17/15/04 — nur deren öffentliche Schnittstellen.
+  - KEIN PROTOCOL_VERSION-Bump.
+
+UX-Lehre „Eingabe-Erhalt" (BLP/Modul 21): das Textfeld wird EINMAL angelegt und
+  NIE mit value:'' neu gebaut; erkannter Sprach-Text wird an den LIVE-Feldwert
+  angehängt; Treffer-Re-Render berührt das Feld nicht.
+
+Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 55/55 (Surface,
+  Mount, expand/collapse/show/hide + localStorage, EU-Politik frei/bindend +
+  euOnly an hybridMatch, alle sechs Such-Modi, setCorpus-Durchreichung,
+  Spracheingabe fail-soft + Browser-Pfad, Drag-Persistenz, UX-Erhalt,
+  init-Throw bei ungültiger euPolicy). Browser-Sichttest (Drag + Sprache am
+  Tablet) durch Klaus ausstehend.
+
+---
+
 ## 2. Datenformate (Querschnitt)
 
 ### Spore-JSON
