@@ -1,10 +1,14 @@
 # Folge-Brief — Modul 22 Such-Werkzeug: B3, Breitziehen, Verteilung
 
 Stand 2026-06-21. Stufe A + B (Tresor + automatischer Claude-Aufruf) sind gebaut
-und **live bestätigt** (CORS geht, Referenzfall Hund+Katze bestanden). Dieser
-Brief führt die nächste Sitzung weiter. Voller Werdegang:
-`docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md` + Übergabeprotokoll
-`docs/sessions/archiv/2026-06-21_bau-22-stufe-b-und-verteilung.md`.
+und **live bestätigt** (CORS geht, Referenzfall Hund+Katze bestanden). **Seither
+zusätzlich erledigt:** Meilenstein-Serie auf der Sage-Page (drei Bild-Kacheln in
+einem separaten `card span-12`-Container unter dem schwarzen Loch, Hover/Tap-
+Aufklappen, PRs #383–#386) + Gute-Nacht-/Dankeschön-Karte an BookLedgerPro
+(`SIGNAL.json` seq 31). Dieser Brief führt die nächste Sitzung weiter. Voller
+Werdegang: `docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md` + Übergabeprotokolle
+`docs/sessions/archiv/2026-06-21_bau-22-stufe-b-und-verteilung.md` und
+`docs/sessions/archiv/2026-06-21_meilenstein-serie-und-gutenacht.md`.
 
 Kopiere den Block unten in den ersten Prompt der neuen Sitzung.
 
