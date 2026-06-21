@@ -371,6 +371,24 @@ async function run() {
   // ---- Probe 22: zweite Suche bereitet NICHT erneut vor (Cache) ----
   res = await W.search("lasagne nochmal");
   eq("Probe 22: prepareCorpus weiterhin nur 1× (gecacht)", "1", String(prepCalls));
+
+  // ---- Probe 23: Tap auf die Blase (pointerup OHNE Move) öffnet im Ruhezustand ----
+  // Regression-Schutz für Klaus' Befund 2026-06-21: setPointerCapture unterdrückte
+  // auf Touch das click-Event → Blase ließ sich nicht wieder antippen. Fix: Tap im
+  // pointerup behandeln.
+  W.collapse();
+  eq("Probe 23: collapse → isExpanded false", "false", String(W.isExpanded()));
+  const root2 = stub.document.getElementById("sbkim-search-widget");
+  root2.dispatchEvent({ type: "pointerdown", target: root2, pointerId: 7, clientX: 50, clientY: 50 });
+  root2.dispatchEvent({ type: "pointerup", target: root2, pointerId: 7, clientX: 50, clientY: 50 });
+  eq("Probe 23: Tap (pointerup ohne Move) öffnet das Panel", "true", String(W.isExpanded()));
+
+  // ---- Probe 24: echter Drag (mit Move) öffnet NICHT (nur verschieben) ----
+  W.collapse();
+  root2.dispatchEvent({ type: "pointerdown", target: root2, pointerId: 8, clientX: 50, clientY: 50 });
+  root2.dispatchEvent({ type: "pointermove", target: root2, pointerId: 8, clientX: 140, clientY: 160 });
+  root2.dispatchEvent({ type: "pointerup", target: root2, pointerId: 8, clientX: 140, clientY: 160 });
+  eq("Probe 24: Drag (mit Move) öffnet NICHT", "false", String(W.isExpanded()));
 }
 
 const finalize = () => {

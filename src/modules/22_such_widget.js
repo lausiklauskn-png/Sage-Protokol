@@ -858,7 +858,15 @@
       widgetRoot.removeEventListener("pointerup", onPointerUp);
       widgetRoot.removeEventListener("pointercancel", onPointerUp);
     }
-    if (moved) persistPosition();
+    if (moved) {
+      persistPosition();
+    } else if (!expandedFlag && (!ev || ev.type !== "pointercancel")) {
+      // Tap ohne Bewegung im Ruhezustand → öffnen. Direkt hier statt im
+      // click-Handler, weil setPointerCapture auf Touch-Geräten das
+      // synthetische click-Event der Blase unterdrücken kann (Klaus' Befund
+      // 2026-06-21: Blase ließ sich minimieren, aber nicht wieder antippen).
+      expand();
+    }
     var consumed = dragState;
     setTimeout(function () { if (dragState === consumed) dragState = null; }, 0);
   }
