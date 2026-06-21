@@ -12,6 +12,10 @@
 > Pflege-Disziplin: neue Befunde **unten** anhängen mit Datum + Reproduzierbarkeits-
 > Skizze + ggf. Workaround. Bestehende Einträge nicht überschreiben — Befund
 > bleibt Befund, auch wenn er später anders zu verstehen ist.
+>
+> **Geschwister-Doku:** Bau-/Architektur-Lehren, die **nichts** mit dem Browser
+> zu tun haben (Schnittstellen-Verträge, Vendoring, Modul-Bau) → das
+> [Bau-Observatorium](OBSERVATORIUM_BAU.md).
 
 ---
 
