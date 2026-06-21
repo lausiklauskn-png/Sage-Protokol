@@ -479,6 +479,12 @@ async function run() {
   record("Probe 29: Prompt verlangt Bedeutungs-/Absicht-Suche (Semantik)", "true",
     String(/BEDEUTUNG/.test(prompt) && /Absicht/.test(prompt) && /Nischen/.test(prompt)),
     /BEDEUTUNG/.test(prompt) && /Absicht/.test(prompt) && /Nischen/.test(prompt));
+  // Agenten-Visitenkarte führt den Prompt an (Handschlag vor der Frage).
+  record("Probe 29: Visitenkarten-Präambel voran", "true",
+    String(/SBKIM-Such-Agent · Visitenkarte/.test(prompt) && /Gegen-Agent/.test(prompt)
+      && prompt.indexOf("Visitenkarte") < prompt.indexOf("Meine Frage")),
+    /SBKIM-Such-Agent · Visitenkarte/.test(prompt) && /Gegen-Agent/.test(prompt)
+      && prompt.indexOf("Visitenkarte") < prompt.indexOf("Meine Frage"));
   // Schärfen: optionaler Kontext wird in den Prompt gewoben.
   const promptCtx = W.buildPrompt("Mittel gegen Zecken", "als Spray, in Deutschland kaufen");
   record("Probe 29: Schärfen-Kontext im Prompt", "true",
