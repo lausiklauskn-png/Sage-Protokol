@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-21",
-  "seq": 30,
-  "headline": "BookLedgerPro SIGNAL seq 16-18 gelesen + quittiert (ack=18): Drei-Schichten cap/needs LIVE. BLP-Spore reziprok VALID (capVector+needsVector je 384-dim mit-signiert, nachgezaehlt L2=1); domainVector-Cosinus Sage<->BLP NEU 0.813525 >= 0.80 -> verified-match haelt (Drift von 0.810579, BLP hat Domaenen-Text neu eingebettet). Vertrag matchDimensions (Modul 04 Drei-Schichten) akzeptiert; Sage zieht eigene capVector+needsVector in Folge-Sitzung nach (Spore Re-Sign via Modul 02, privater Schluessel in Klaus' Browser) -> dann schalten beide Seiten von domain auf schichten. Bis dahin domainVector-Rueckfall (Nur-Anbieter-Modus) vereinbarungsgemaess. verify.md + NETZ-STAND + status.json + inbox nachgezogen.",
+  "seq": 31,
+  "headline": "Such-Werkzeug (Modul 22) reif + Meilenstein-Serie auf der Sage-Page. Stufe A (KI-Such-Bruecke) + B (Widget-Tresor Shamir 2/3 + automatischer Claude-Aufruf, CORS live bestaetigt) gebaut; semantische Suche versteht die Bedeutung hinter den Worten, server-los. Sage-Page zeigt jetzt drei Meilensteine als separaten Bild-Container unter dem schwarzen Loch (01 Mycel verbindet sich nach Bedeutung / 02 Ueber den Ursprung hinaus = BookLedgerPro als erster eigenstaendiger Fremd-Knoten / 03 Bedeutung wird suchbar). Gute-Nacht-/Dankeschoen-Karte an BookLedgerPro ins Postfach (Sprach-Schicht war der Funke; Rueck-Quittung locker erbeten). Voller Werdegang: docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -175,6 +175,11 @@
       "seq": 30,
       "date": "2026-06-21",
       "headline": "BookLedgerPro SIGNAL seq 16-18 gelesen + quittiert (ack=18): Drei-Schichten cap/needs LIVE. BLP-Spore reziprok VALID (capVector+needsVector je 384-dim mit-signiert, nachgezaehlt L2=1); domainVector-Cosinus Sage<->BLP NEU 0.813525 >= 0.80 -> verified-match haelt (Drift von 0.810579, BLP hat Domaenen-Text neu eingebettet). Vertrag matchDimensions (Modul 04 Drei-Schichten) akzeptiert; Sage zieht eigene capVector+needsVector in Folge-Sitzung nach (Spore Re-Sign via Modul 02, privater Schluessel in Klaus' Browser) -> dann schalten beide Seiten von domain auf schichten. Bis dahin domainVector-Rueckfall (Nur-Anbieter-Modus) vereinbarungsgemaess. verify.md + NETZ-STAND + status.json + inbox nachgezogen."
+    },
+    {
+      "seq": 31,
+      "date": "2026-06-21",
+      "headline": "Such-Werkzeug (Modul 22) reif + Meilenstein-Serie auf der Sage-Page. Stufe A (KI-Such-Bruecke) + B (Widget-Tresor Shamir 2/3 + automatischer Claude-Aufruf, CORS live) gebaut; semantische Bedeutungs-Suche server-los. Drei Meilensteine als separater Bild-Container unter dem schwarzen Loch (01 Mycel verbindet sich nach Bedeutung / 02 Ueber den Ursprung hinaus = BookLedgerPro / 03 Bedeutung wird suchbar). Gute-Nacht-/Dankeschoen-Karte an BookLedgerPro (Sprach-Schicht war der Funke; Rueck-Quittung locker erbeten). Werdegang: docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md."
     }
   ]
 }

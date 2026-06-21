@@ -1841,6 +1841,40 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-21 · Meilenstein-Serie auf der Sage-Page + Gute-Nacht-Karte an BookLedgerPro
+
+**Rolle:** Pflege/Abschluss (Folge der Bau-22-Sitzung). Interaktiv mit Klaus am
+Galaxy-Tab-S6, mehrere Sichttest-Runden.
+
+**Getan:**
+- **Meilenstein-Serie** auf der Sage-Page: aus der Einzel-Karte wurde ein
+  **separater Bild-Container** (Werkzeugkiste-Karten-Stil) **direkt unter dem
+  schwarzen Loch** — drei Kacheln nebeneinander (am Handy untereinander), je ein
+  Bild: **01** „Das Mycel verbindet sich nach Bedeutung" (17.05.2026, Mixarium ⟷
+  Rezeptbuch), **02** „Über den Ursprung hinaus" (20.06.2026, BookLedgerPro =
+  erster eigenständiger Fremd-Knoten), **03** ⭐ „Bedeutung wird suchbar"
+  (21.06.2026, semantische Suche). Klaus' drei generierte Bilder eingebaut
+  (`assets/meilenstein-1.png` / `-2.png` / `meilenstein.png`).
+- **Befund + Fix:** die Sektion lag ohne `span-12` im 12-Spalten-`.bento` und wurde
+  auf ~1/12 Breite gequetscht (einbuchstabige Zeilen, scheinbar langgezogene
+  Bilder) → in einen `card span-12`-Container gelegt, Kacheln quadratisch
+  (`aspect-ratio 1/1`, keine Verzerrung). `meta-footer` + `legal-line` lagen aus
+  demselben Grund gequetscht → ebenfalls `span-12`.
+- **Lesbarkeit (Klaus-Wunsch):** weißer Text klein (0.6rem) + 4-Zeilen-Clamp
+  (verdeckt das Bild kaum), wächst bei Hover (Maus) **oder** Antippen (`is-open`,
+  Touch) auf volle Größe; Hinweiszeile entfernt (das „…" reicht).
+- **PRs #383–#386 gemerged** (Serie, Bild-2-Tausch, Container-Fix, Text/​Aufklapp).
+- **Briefkasten:** Gute-Nacht-/Dankeschön-Karte an **BookLedgerPro** ins Postfach
+  (`AUSTAUSCH-BookLedgerPro.md`) — ihre geteilte Sprach-Schicht war der Funke fürs
+  Such-Werkzeug; sie sind „Über den Ursprung hinaus". `SIGNAL.json` seq 30→31
+  (das Pushen ist das Signal), lockere Rück-Quittung erbeten.
+
+**Offen / nächster Schritt:** siehe Folge-Brief
+`docs/sessions/BRIEF_BAU_22_B3_UND_VERTEILUNG.md` (B3 Richter / Breitziehen /
+Standalone-PWA). **PULS-Überlauf** (5921 > 3000) — eigene Auslagerungs-Wartung
+(NICHT kürzen). Klaus' Browser-Sichttest der finalen Kacheln war diese Sitzung
+**grün** (mehrere Runden live bestätigt).
+
 ### 2026-06-21 · Bau 22 Such-Werkzeug: Stufe A→B (KI-Brücke · Tresor · Auto-Aufruf · Meilenstein · Verteilung)
 
 **Rolle:** Bau/Pflege Modul 22, langer Increment-Marathon. Alle PRs gemerged
