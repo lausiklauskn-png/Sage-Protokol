@@ -4,6 +4,22 @@
 
 ---
 
+## ⭐ Meilenstein — Semantische, bidirektionale, server-lose Bedeutungs-Suche (2026-06-21)
+
+**Besonderer Punkt, nicht unterschwellig behandeln — hierauf wird aufgebaut**
+(Klaus). Am 2026-06-21 ist das **Such-Werkzeug (Modul 22)** zu einer
+**semantischen Suche** gereift, die die **Bedeutung/Absicht** hinter den Worten
+versteht (nicht Stichwörter), server-los im Browser. Bewiesen an festen
+Referenz-Fällen (Wespen-Off-Topic, Hund-und-Katze-Permethrin-Konsequenz);
+B2-Browser-Direkt-Aufruf an eine KI mit Web-Suche live bestätigt (CORS geht).
+**Ehrlich offen:** die volle **bidirektionale Cross-Knoten-Suche** (Knoten fragt
+Knoten server-los) ist noch nicht end-to-end gezeigt — die KI-Brücke war der
+Behelfs-Beweis-Träger, bis das Mycel genug Knoten hat. Voller Werdegang,
+Fundament, was bewiesen ist und was nicht:
+[`docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md`](docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md).
+
+---
+
 ## Was dieses Repo ist
 
 Sage-Protokol ist **Hub und Knoten zugleich** für das SBKIM-Protokoll
