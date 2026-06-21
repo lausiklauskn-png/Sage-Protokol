@@ -1921,9 +1921,15 @@ bindend→eu / default→browser), `browserSupport:true` (Galaxy Tab Chrome kann
 Live-Mic + EU-Engine optional/ungetestet. Nächste Schritte des Such-Werkzeugs: Such-Ansicht
 (komponiert 03/04/21 + Knoten-Suche + EU-Politik-Auswahl), dann Einbau in PWAs + Landing-Pages.
 
-**Offen / nächster Schritt:** **Such-Ansicht (Schritt 2 des Such-Werkzeugs)** — komponiert
-Spracheingabe (21) + interne Suche (03/04 queryLocal) + externe KI (04 hybridMatch) + Knoten-Suche,
-mit EU-Politik-Auswahl. Weiter offen:
+**Offen / nächster Schritt:** **Schritt 2 = SBKIM-Such-Widget (Floating-Tool), eigene Bau-Sitzung**
+— Klaus' Vision 2026-06-21: Schritt 2 wird NICHT eine statische Ansicht, sondern ein **separates,
+frei bewegliches Floating-Widget** (Klaus hat weitere Pläne damit). Klein im Ruhezustand, wächst nur
+bei Interaktion, erzeugt eigenes Textfeld, leicht transparent, lässt sich **über fremde Suchfelder /
+PWAs legen** und koppelt sich dann mit der Host-PWA (liest Inhalt + interagiert aus dem Suchfeld) —
+Modul-15-Membran-Territorium. Komponiert Spracheingabe (21) + interne Suche (03/04 queryLocal) +
+externe KI (04 hybridMatch) + Knoten-Suche, EU-Politik „frei". Drag-Mechanik aus Modul 17
+wiederverwenden. **Brief: `docs/sessions/BRIEF_BAU_SUCH_WIDGET.md`** (Modul 22, spec-first dann bauen).
+Weiter offen:
 Modul-02-Signier-Helfer (Werkstatt offene Bau-Problematik 1,
 schaltet Bezeugung frei); Drei-Schichten-Differenzierung im Live-Richter (Werkstatt Bau-Problematik 2);
 optional OCR-Vorstufe-Spec (BLP-getrieben: Vision → Embedding →
