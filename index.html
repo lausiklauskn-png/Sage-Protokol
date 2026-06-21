@@ -1452,26 +1452,73 @@
           .ms-body strong { color: var(--text); font-weight: 500; }
           .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.86rem; }
           .ms-link:hover { color: var(--accent); }
+          .ms-series { margin-top: 1.8rem; }
+          .ms-series-head { font-family: "Geist Mono", monospace; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.2rem; }
+          .ms-series .milestone-card { margin-top: 1rem; }
+          .ms-series .milestone-card.is-star { border-color: rgba(244,180,53,0.5); box-shadow: 0 0 0 1px rgba(244,180,53,0.18), 0 18px 50px rgba(0,0,0,0.4), inset 0 0 70px rgba(139,92,246,0.08); }
+          .ms-figure .ms-num { position: absolute; top: 8px; left: 10px; font-family: "Geist Mono", monospace; font-size: 0.74rem; color: var(--gold); background: rgba(10,8,24,0.66); border: 1px solid rgba(244,180,53,0.3); border-radius: 999px; padding: 1px 8px; pointer-events: none; }
           @media (max-width: 640px) { .milestone-card { grid-template-columns: 1fr; } .ms-figure { max-width: 220px; margin: 0 auto; } }
         </style>
-        <article class="milestone-card" id="meilenstein">
-          <figure class="ms-figure ms-noimg">
-            <span class="ms-star">⭐</span>
-            <img src="assets/meilenstein.png" alt="Meilenstein — semantische Bedeutungs-Suche"
-                 onload="var f=this.closest('.ms-figure'); if(f){f.classList.remove('ms-noimg');}"
-                 onerror="var f=this.closest('.ms-figure'); if(f){f.classList.add('ms-noimg');} this.remove();">
-          </figure>
-          <div class="ms-text">
-            <span class="ms-eyebrow">⭐ Meilenstein · 2026-06-21</span>
-            <h2 class="ms-title">Semantische, bidirektionale, server-lose Bedeutungs-Suche</h2>
-            <p class="ms-body">Das Such-Werkzeug versteht die <strong>Bedeutung hinter den Worten</strong> —
-              nicht Stichwörter — und ordnet Treffer danach. Server-los im Browser, mit eigenem
-              Schlüssel-Tresor und automatischem KI-Aufruf. An festen Referenz-Fällen bewiesen;
-              die volle Cross-Knoten-Suche wächst weiter.</p>
-            <a class="ms-link" href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md"
-               target="_blank" rel="noopener">Den ganzen Werdegang lesen →</a>
-          </div>
-        </article>
+        <section class="ms-series" id="meilenstein" aria-label="Meilensteine im Werdegang">
+          <p class="ms-series-head">Wendepunkte · Meilensteine im Werdegang</p>
+
+          <article class="milestone-card">
+            <figure class="ms-figure ms-noimg">
+              <span class="ms-num">01 · 2026-05-17</span>
+              <span class="ms-star">🤝</span>
+              <img src="assets/meilenstein-1.png" alt="Meilenstein — erster Cross-Knoten-Handschlag nach Bedeutung"
+                   onload="var f=this.closest('.ms-figure'); if(f){f.classList.remove('ms-noimg');}"
+                   onerror="var f=this.closest('.ms-figure'); if(f){f.classList.add('ms-noimg');} this.remove();">
+            </figure>
+            <div class="ms-text">
+              <span class="ms-eyebrow">Meilenstein · 2026-05-17</span>
+              <h2 class="ms-title">Das Mycel verbindet sich nach Bedeutung</h2>
+              <p class="ms-body">Zwei getrennte Knoten — <strong>Mein-Mixarium</strong> und
+                <strong>Mein-Rezeptbuch</strong> — gaben sich server-los im Browser die Hand. Der
+                Abgleich gelang nicht über gleiche Wörter, sondern über die <strong>verwandte
+                Bedeutung der Domänen</strong> (Cosinus 0.95). Der erste bezeugte
+                Cross-Knoten-Handschlag des Netzes.</p>
+            </div>
+          </article>
+
+          <article class="milestone-card">
+            <figure class="ms-figure ms-noimg">
+              <span class="ms-num">02 · 2026-06-20</span>
+              <span class="ms-star">🌐</span>
+              <img src="assets/meilenstein-2.png" alt="Meilenstein — erster eigenständiger Fremd-Knoten"
+                   onload="var f=this.closest('.ms-figure'); if(f){f.classList.remove('ms-noimg');}"
+                   onerror="var f=this.closest('.ms-figure'); if(f){f.classList.add('ms-noimg');} this.remove();">
+            </figure>
+            <div class="ms-text">
+              <span class="ms-eyebrow">Meilenstein · 2026-06-20</span>
+              <h2 class="ms-title">Über den Schöpfer hinaus</h2>
+              <p class="ms-body">Mit <strong>BookLedgerPro</strong> — einer Buchhaltungs-App, die
+                nicht von hier gebaut wurde — dockte der erste <strong>eigenständige Fremd-Knoten</strong>
+                an. Seine Identität ist kryptografisch verifiziert (Ed25519-Signatur, nodeId unabhängig
+                nachgerechnet). Das Mycel wuchs über die eigenen Apps hinaus.</p>
+            </div>
+          </article>
+
+          <article class="milestone-card is-star" id="meilenstein-suche">
+            <figure class="ms-figure ms-noimg">
+              <span class="ms-num">03 · 2026-06-21</span>
+              <span class="ms-star">⭐</span>
+              <img src="assets/meilenstein.png" alt="Meilenstein — semantische Bedeutungs-Suche"
+                   onload="var f=this.closest('.ms-figure'); if(f){f.classList.remove('ms-noimg');}"
+                   onerror="var f=this.closest('.ms-figure'); if(f){f.classList.add('ms-noimg');} this.remove();">
+            </figure>
+            <div class="ms-text">
+              <span class="ms-eyebrow">⭐ Meilenstein · 2026-06-21</span>
+              <h2 class="ms-title">Bedeutung wird suchbar</h2>
+              <p class="ms-body">Das Such-Werkzeug versteht die <strong>Bedeutung hinter den Worten</strong> —
+                nicht Stichwörter — und ordnet Treffer danach. Server-los im Browser, mit eigenem
+                Schlüssel-Tresor und automatischem KI-Aufruf. An festen Referenz-Fällen bewiesen;
+                die volle Cross-Knoten-Suche wächst weiter.</p>
+              <a class="ms-link" href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md"
+                 target="_blank" rel="noopener">Den ganzen Werdegang lesen →</a>
+            </div>
+          </article>
+        </section>
         <div class="meta-footer">
           <div class="meta-cell"><span class="k">Branch</span><span class="v" id="ft-branch">—</span></div>
           <div class="meta-cell"><span class="k">Protokoll</span><span class="v" id="ft-proto">—</span></div>
