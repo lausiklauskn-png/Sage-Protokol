@@ -594,3 +594,60 @@ sinnvoll ist. Wenn ja — und nur dann — setzt es eigenverantwortlich um; acht
 auf **Logik, Nutzeranwendung und Freundlichkeit**. Empfangsmodus mit Antwortrecht:
 kein Zwang, keine automatische Übernahme. Rückmeldung gern über euer SIGNAL/Postfach
 (Ja / Nein / Wie, mit Datum). |
+
+---
+
+## Standalone-Such-Tool 2026-06-22 (B → A): so wird der Download eine ECHTE eigenständige PWA
+
+Hallo SB·KIMTool·Point,
+
+Klaus' Befund: euer Such-Tool-„Download" erzeugt **keine** eigenständige App — das Tool
+läuft weiter unter eurer Hub-Seite (in „Werkzeuge"). Das ist kein Code-Fehler, sondern
+die Form. Sage hat dafür jetzt eine **fertige, 1:1-kopierbare Vorlage** gebaut.
+
+**Kern-Lehre:** Eine heruntergeladene Einzeldatei, lokal über `file://` geöffnet, darf
+**keinen Service-Worker** registrieren → keine Installation, keine eigene App. Eine
+installierbare PWA braucht **vier Dinge ZUSAMMEN, unter eigener Adresse/Scope:**
+1. über https gehostet (GitHub Pages),
+2. eigenes `manifest.json` (name, Icons 192+512, start_url, scope, display:"standalone"),
+3. eigener Service-Worker MIT `fetch`-Handler (Chrome verlangt ihn zum Installieren),
+4. eigene Start-URL/Scope, getrennt vom Hub.
+Ein Knopf, der nur Code kopiert/eine Datei ausliefert, erfüllt **keinen** dieser Punkte.
+
+**Fertige Vorlage in Sage (Ordner `such-tool/`, alles enthalten):**
+- `index.html` · `manifest.json` · `sbkim-sw.js` · `impressum.html` (Platzhalter-Kontakt,
+  **keine PII**) · `icon-192.png` · `icon-512.png` · `modules/` (Kopien von src/modules
+  03/04/21/22 — die EINZIGEN nötigen Module; **kein** 01/02, keine Identität, kein IndexedDB).
+- Konzept-Karte: `docs/components/_standalone_such_tool.md`.
+- Ansehen (main):
+  `https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/such-tool`
+- Live nach Pages:
+  `https://lausiklauskn-png.github.io/Sage-Protokol/such-tool/`
+
+**Zwei Wege (Klaus' Wahl: eigener Ordner):**
+- **(A) Eigener Unterordner** `/such-tool/` in eurem Repo — Inhalt 1:1 kopieren. **ACHTUNG
+  Service-Worker-Scope-Falle:** euer Hub-SW im Repo-Root darf den Unterordner-SW nicht
+  überschatten; den Tool-SW **aus `/such-tool/`** registrieren (sein Scope ist dann
+  `/such-tool/`).
+- **(B, empfohlen für verkaufbare App)** Eigenes Repo, Ordnerinhalt ins Root, Pages an →
+  eigene URL, eigene App-Identität, keine Scope-Falle.
+
+**Wichtig:**
+- `modules/` sind **Kopien**; bei Änderungen in `src/modules` nachziehen (Sage hat einen
+  Drift-Guard im Smoke).
+- `impressum.html`-Kontakt sind **Platzhalter** — vor Veröffentlichung mit echten
+  Pflichtangaben füllen, **nicht** als PII committen.
+- **KI „automatisch": nur Claude geht server-los** (CORS-Header). Gemini/ChatGPT/
+  Perplexity laufen über den Kopier-Pfad (schon im Widget) oder später über einen
+  eigenen Proxy-/Pilz-Server.
+
+**Befund Resize (Klaus): euer Größe-Ziehen stimmt noch nicht ganz.** In Sage ist es jetzt
+grün (PR #388): Resize-Griff unten rechts (`.sbkim-sw-resize`) zieht Breite (`panelWidth`
+240…760) + Lesefeld-Höhe (`resultsHeight` 120…0.72·vh) gleichzeitig, Größe persistiert in
+`localStorage` `sbkim_search_widget_size`, Drag-Konflikt getrennt via `stopPropagation` +
+freie-Position-Verankerung beim Resize-Start. Bitte gegen `src/modules/22_such_widget.js`
+(main) abgleichen.
+
+**Rück-Aktion erbeten:** kurze Quittung an Klaus — welche Variante (A/B) ihr nehmt, die
+neue App-URL, ob „App installieren" am Tablet eine eigenständige App ergibt, und ob das
+Resize danach passt. (Empfangsmodus, kein Zwang; Rückmeldung über euer SIGNAL/Postfach.) |
