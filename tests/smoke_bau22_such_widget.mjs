@@ -446,10 +446,12 @@ async function run() {
   root2.dispatchEvent({ type: "pointerup", target: root2, pointerId: 8, clientX: 140, clientY: 160 });
   eq("Probe 26: Drag (mit Move) öffnet NICHT", "false", String(W.isExpanded()));
 
-  // ---- Probe 27: Netz-Link öffnet per Klick (Touch-fest, window.open) ----
-  // Regression-Schutz für Klaus' Befund 2026-06-21: Netz-Link ließ sich nicht öffnen.
+  // ---- Probe 27: Netz-Karte KOPIERT die Frage (öffnet NICHT, Klaus 2026-06-22) ----
+  // Direkt-Öffnen würde die PWA in den Hintergrund schieben → Inhalt verloren.
   let opened = null;
   stub.open = (url) => { opened = url; return {}; };
+  let copied27 = null;
+  stub.navigator = { clipboard: { writeText: (t) => { copied27 = t; return Promise.resolve(); } } };
   mountMatch("treffer");
   await W.init({ areas: { app: false, knoten: false, internet: true }, searxngUrl: "" });
   W.show(); W.expand();
@@ -458,14 +460,24 @@ async function run() {
   const searchBtn = queryFirst(root, ".sbkim-sw-search");
   searchBtn.dispatchEvent({ type: "click", target: searchBtn, stopPropagation: () => {} });
   await new Promise((r) => setTimeout(r, 0));
-  const link = queryFirst(root, ".sbkim-sw-result-link");
-  record("Probe 27: Netz-Link gerendert", "true", String(!!link), !!link);
-  if (link) {
-    link.dispatchEvent({ type: "click", target: link, preventDefault: () => {}, stopPropagation: () => {} });
+  const webcopy = queryFirst(root, ".sbkim-sw-webcopy");
+  record("Probe 27: Netz-Kopier-Knopf gerendert", "true", String(!!webcopy), !!webcopy);
+  if (webcopy) {
+    webcopy.dispatchEvent({ type: "click", target: webcopy, preventDefault: () => {}, stopPropagation: () => {} });
   }
-  record("Probe 27: Klick öffnet URL (window.open)", "true",
+  await new Promise((r) => setTimeout(r, 0));
+  eq("Probe 27: Kopier-Knopf kopiert die Frage (kein window.open)", "wetter berlin", String(copied27));
+  record("Probe 27: Kopieren öffnet nichts", "true", String(opened === null), opened === null);
+  // Zweiter Weg zur Wahl: Im-Browser-öffnen-Knopf öffnet die Suchmaschine.
+  const webopen = queryFirst(root, ".sbkim-sw-webopen");
+  record("Probe 27: Im-Browser-öffnen-Knopf vorhanden", "true", String(!!webopen), !!webopen);
+  if (webopen) {
+    webopen.dispatchEvent({ type: "click", target: webopen, preventDefault: () => {}, stopPropagation: () => {} });
+  }
+  record("Probe 27: Öffnen-Knopf öffnet die Suchmaschine", "true",
     String(typeof opened === "string" && /duckduckgo/.test(opened)),
     typeof opened === "string" && /duckduckgo/.test(opened));
+  delete stub.navigator;
 
   // ---- Probe 28: Web-Suchmaschine frei wählbar (Default DuckDuckGo, Wahl Google) ----
   eq("Probe 28: _meta.webEngine Default", "duckduckgo", W._meta.webEngine);
@@ -983,6 +995,82 @@ async function run() {
   W5b.dockToTop(); // ✕ = frischer Start → gespeicherte Suche löschen
   eq("Probe 48: dockToTop löscht gespeicherte Suche", "null",
     String(ls5.getItem("sbkim_search_widget_lastsearch")));
+  globalThis.window = stub;
+
+  // ---- Probe 49: KI-Prompt öffnet die KI + kopiert; Frage sofort gesichert ----
+  const stub6 = makeStubDocument();
+  const ls6 = makeStubLocalStorage();
+  let opened6 = null, copied6 = null;
+  const w6 = Object.assign({}, stub);
+  w6.document = stub6; w6.localStorage = ls6; delete w6.SbkimSearchWidget;
+  w6.open = (u) => { opened6 = u; return {}; };
+  w6.navigator = { clipboard: { writeText: (t) => { copied6 = t; return Promise.resolve(); } } };
+  globalThis.window = w6;
+  new Function("global", "window", "globalThis", "console",
+    readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8"))(w6, w6, w6, console);
+  const W6 = w6.SbkimSearchWidget;
+  await W6.init({ areas: { app: false, knoten: false, internet: true } });
+  W6.expand();
+  const root6 = stub6.getElementById("sbkim-search-widget");
+  const inp6 = queryFirst(root6, ".sbkim-sw-input");
+  inp6.value = "honig aus der walachei";
+  inp6.dispatchEvent({ type: "input", target: inp6 });
+  const last6 = JSON.parse(ls6.getItem("sbkim_search_widget_lastsearch") || "{}");
+  eq("Probe 49: getippte Frage sofort gesichert", "honig aus der walachei", String(last6.query));
+  let promptBtn = null;
+  for (const b of queryAll(root6, ".sbkim-sw-aibtn")) {
+    if ((b.textContent || "").indexOf("Prompt → KI") >= 0) { promptBtn = b; break; }
+  }
+  record("Probe 49: Prompt-kopieren-Knopf vorhanden", "true", String(!!promptBtn), !!promptBtn);
+  promptBtn.dispatchEvent({ type: "click", target: promptBtn, preventDefault: () => {}, stopPropagation: () => {} });
+  await new Promise(r => setTimeout(r, 0));
+  record("Probe 49: Prompt kopiert", "true",
+    String(typeof copied6 === "string" && copied6.indexOf("SBKIM-Such-Agent") >= 0),
+    typeof copied6 === "string" && copied6.indexOf("SBKIM-Such-Agent") >= 0);
+  // KI hat eine eigene App (App-Link) → öffnen ist gewollt (parallel, PWA bleibt).
+  record("Probe 49: KI-Prompt öffnet die KI (parallel-App-Weg)", "true",
+    String(typeof opened6 === "string" && /chatgpt/.test(opened6)),
+    typeof opened6 === "string" && /chatgpt/.test(opened6));
+  // Neustart: Frage steht wieder im Feld (auch ohne gerenderte Treffer).
+  delete w6.SbkimSearchWidget;
+  new Function("global", "window", "globalThis", "console",
+    readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8"))(w6, w6, w6, console);
+  const W6b = w6.SbkimSearchWidget;
+  await W6b.init({ areas: { app: false, knoten: false, internet: true } });
+  const root6b = stub6.getElementById("sbkim-search-widget");
+  eq("Probe 49: Frage nach Neustart wieder im Feld", "honig aus der walachei",
+    queryFirst(root6b, ".sbkim-sw-input").value);
+  globalThis.window = stub;
+
+  // ---- Probe 50: App-aktualisieren (🔄 Hard-Reload), opt-in ----
+  record("Probe 50: reload exportiert", "function", typeof W.reload, typeof W.reload === "function");
+  // Default: KEIN 🔄-Knopf (Widget-Kern bleibt contained).
+  record("Probe 50: Default kein 🔄-Knopf", "true",
+    String(!queryFirst(root, ".sbkim-sw-reloadbtn")), !queryFirst(root, ".sbkim-sw-reloadbtn"));
+  // Mit reloadButton:true → Knopf da; Klick leert Cache + meldet SW ab + reload.
+  const stub7 = makeStubDocument();
+  const ls7 = makeStubLocalStorage();
+  let reloaded7 = false; const deleted7 = []; let unreg7 = 0;
+  const w7 = Object.assign({}, stub);
+  w7.document = stub7; w7.localStorage = ls7; delete w7.SbkimSearchWidget;
+  w7.caches = { keys: async () => ["sbkim-shell-v1", "x"], delete: async (k) => { deleted7.push(k); return true; } };
+  w7.navigator = { serviceWorker: { getRegistrations: async () => [{ unregister: async () => { unreg7++; return true; } }] } };
+  w7.location = { reload: () => { reloaded7 = true; } };
+  globalThis.window = w7;
+  new Function("global", "window", "globalThis", "console",
+    readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8"))(w7, w7, w7, console);
+  const W7 = w7.SbkimSearchWidget;
+  await W7.init({ areas: { app: true, knoten: false, internet: false }, reloadButton: true });
+  W7.expand();
+  const root7 = stub7.getElementById("sbkim-search-widget");
+  const reloadBtn = queryFirst(root7, ".sbkim-sw-reloadbtn");
+  record("Probe 50: mit Option ist 🔄-Knopf da", "true", String(!!reloadBtn), !!reloadBtn);
+  reloadBtn.dispatchEvent({ type: "click", target: reloadBtn, stopPropagation: () => {} });
+  await new Promise(r => setTimeout(r, 0));
+  await new Promise(r => setTimeout(r, 0));
+  record("Probe 50: Cache-Einträge geleert", "true", String(deleted7.length >= 1), deleted7.length >= 1);
+  record("Probe 50: Service-Worker abgemeldet", "true", String(unreg7 >= 1), unreg7 >= 1);
+  record("Probe 50: Seite neu geladen", "true", String(reloaded7), reloaded7);
   globalThis.window = stub;
 }
 

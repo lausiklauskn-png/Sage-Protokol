@@ -136,6 +136,9 @@
   var merkOverlayOpen = false;
   var detailOverlayOpen = false;
   var detailItem = null;       // aktuell in der Detail-Karte gezeigter Treffer
+  var reloadBtnEl = null;      // 🔄 App-aktualisieren-Knopf (Hard-Reload, opt-in)
+  var optShowReload = false;   // nur wenn init({reloadButton:true}) — z.B. such-tool/
+  var reloadInFlight = false;
 
   // Position + Sichtbarkeit (localStorage-persistiert).
   var currentCorner = DEFAULT_CORNER;
@@ -1025,6 +1028,14 @@
     title.className = "sbkim-sw-title";
     title.textContent = "SBKIM-Suche";
     head.appendChild(title);
+    if (optShowReload) {
+      reloadBtnEl = makeBtn(doc, "sbkim-sw-btn sbkim-sw-reloadbtn", "🔄", "App aktualisieren — Cache leeren und neu laden (holt die neueste Version)");
+      reloadBtnEl.addEventListener("click", function (ev) {
+        if (ev && ev.stopPropagation) ev.stopPropagation();
+        hardReload();
+      });
+      head.appendChild(reloadBtnEl);
+    }
     merkBtnEl = makeBtn(doc, "sbkim-sw-btn sbkim-sw-merkbtn", "📌", "Merkliste — Gemerktes, gruppiert nach Suchfrage");
     merkBtnEl.addEventListener("click", function (ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -1069,7 +1080,7 @@
     inputEl.setAttribute("aria-label", "Such-Eingabe");
     // UX-Erhalt: Wert lebt zusätzlich in queryValue; Feld wird nie neu gebaut.
     inputEl.value = queryValue;
-    inputEl.addEventListener("input", function () { queryValue = inputEl.value; });
+    inputEl.addEventListener("input", function () { queryValue = inputEl.value; persistQuery(); });
     inputEl.addEventListener("keydown", function (ev) {
       if (ev && ev.key === "Enter") { ev.preventDefault(); runAndRender(); }
     });
@@ -1174,7 +1185,7 @@
     aiContextEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
     panelEl.appendChild(aiContextEl);
 
-    aiPromptBtnEl = makeBtn(doc, "sbkim-sw-aibtn", "🤖 Prompt → KI", "Prompt bauen, kopieren und KI öffnen");
+    aiPromptBtnEl = makeBtn(doc, "sbkim-sw-aibtn", "🤖 Prompt → KI (öffnen + kopieren)", "Prompt bauen, kopieren und die KI öffnen (eigene App läuft parallel)");
     aiPromptBtnEl.addEventListener("click", function (ev) {
       if (ev && ev.preventDefault) ev.preventDefault();
       handleAiPromptClick();
@@ -1285,6 +1296,7 @@
     var base = inputEl ? inputEl.value : queryValue;
     queryValue = (base ? base + " " : "") + text;
     if (inputEl) inputEl.value = queryValue;
+    persistQuery();
   }
 
   // ---- EU-Politik ----
@@ -1563,17 +1575,24 @@
     var context = aiContextEl ? aiContextEl.value : "";
     var prompt = buildAiPrompt(query, context);
     var prov = aiProviderById(optAiProvider);
+    // Kopieren UND öffnen (Klaus 2026-06-22, Befund App-Link): Anbieter wie
+    // ChatGPT/Claude/Gemini haben oft eine EIGENE App — Android öffnet die URL dann
+    // als parallele App in eigenem Task; die PWA läuft ungestört weiter (kein
+    // Reload, Inhalt bleibt). Ist KEINE App installiert, öffnet die URL in Chrome
+    // (gleiche Engine wie die PWA → mögliche Kollision) — darum bleibt der Prompt
+    // zusätzlich in der Zwischenablage als verlässlicher Weg, und persistQuery +
+    // Reload-Schutz sichern den Inhalt. Nur die reine Web-Suche (ohne eigene App)
+    // ist konsequent copy-only.
     copyToClipboard(prompt).then(function (ok) {
       setHint(ok
-        ? "Prompt kopiert → bei " + prov.label + " einfügen, Antwort hierher zurück."
-        : "Prompt im Feld unten — manuell kopieren, bei " + prov.label + " einfügen.");
-      if (!ok && aiPasteEl) { /* Sichtbar machen, falls Clipboard verboten ist. */ }
+        ? "Prompt kopiert + " + prov.label + " wird geöffnet (eigene App läuft parallel) — Antwort hierher zurück einfügen."
+        : prov.label + " wird geöffnet — Prompt im Feld unten markieren/kopieren, falls nötig.");
     });
     try {
       if (typeof global.open === "function") {
         global.open(prov.openUrl + encodeURIComponent(prompt), "_blank", "noopener");
       }
-    } catch (_e) { /* nb — Clipboard reicht als verlässlicher Weg */ }
+    } catch (_e) { /* nb — Clipboard bleibt der verlässliche Weg */ }
   }
 
   // „Antwort sortieren": eingefügte KI-Antwort übernehmen und Suche auslösen.
@@ -2440,19 +2459,59 @@
       resultsEl.appendChild(moreBtn);
     }
 
-    // Web-Karte (Internet ohne SearXNG-URL / Fallback) ans ENDE.
+    // Web-Karte (Internet ohne SearXNG-URL / Fallback) ans ENDE. KOPIEREN statt
+    // öffnen (Klaus 2026-06-22): ein Direkt-Link würde die PWA in den Hintergrund
+    // schieben und der Inhalt ginge verloren. Der Knopf kopiert die Frage; der
+    // Nutzer öffnet die Suchmaschine selbst (Splitscreen) und fügt sie ein.
     if (res.webLink && res.webLink.url) {
       var linkEl = doc.createElement("div");
       linkEl.className = "sbkim-sw-result";
-      linkEl.appendChild(makeBadge(doc, "internet"));
-      var a = doc.createElement("a");
-      a.className = "sbkim-sw-result-link";
-      a.href = res.webLink.url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.textContent = "↗ Im Netz suchen: " + (res.webLink.query || "");
-      attachOpenHandler(a, res.webLink.url);
-      linkEl.appendChild(a);
+      var wline = doc.createElement("div");
+      wline.className = "sbkim-sw-resultline";
+      wline.appendChild(makeBadge(doc, "internet"));
+      var wq = doc.createElement("span");
+      wq.className = "sbkim-sw-result-title";
+      wq.textContent = res.webLink.query || "";
+      wline.appendChild(wq);
+      linkEl.appendChild(wline);
+      // Zwei Wege zur Wahl (Klaus 2026-06-22): kopieren (App bleibt offen) ODER
+      // direkt im Browser öffnen (kann die App neu laden — Frage/Treffer sind
+      // aber gesichert). So entscheidet der Nutzer selbst.
+      var webActions = doc.createElement("div");
+      webActions.className = "sbkim-sw-merk-actions";
+      var webCopyBtn = doc.createElement("button");
+      webCopyBtn.type = "button";
+      webCopyBtn.className = "sbkim-sw-more sbkim-sw-webcopy";
+      webCopyBtn.textContent = "📋 Frage kopieren";
+      webCopyBtn.setAttribute("title", "Frage kopieren; Suchmaschine selbst öffnen (Splitscreen) und einfügen — App bleibt offen");
+      webCopyBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+      (function (q) {
+        webCopyBtn.addEventListener("click", function (ev) {
+          if (ev && ev.preventDefault) ev.preventDefault();
+          if (ev && ev.stopPropagation) ev.stopPropagation();
+          copyToClipboard(q).then(function (ok) {
+            setHint(ok
+              ? "Frage kopiert — Suchmaschine selbst öffnen (Splitscreen) und einfügen. Die App bleibt offen."
+              : "Konnte nicht kopieren — Frage oben markieren und kopieren.");
+          });
+        });
+      })(res.webLink.query || "");
+      webActions.appendChild(webCopyBtn);
+      var webOpenBtn = doc.createElement("button");
+      webOpenBtn.type = "button";
+      webOpenBtn.className = "sbkim-sw-more sbkim-sw-webopen";
+      webOpenBtn.textContent = "↗ Im Browser öffnen";
+      webOpenBtn.setAttribute("title", "Suchmaschine direkt öffnen — kann die App neu laden, Frage/Treffer sind aber gesichert");
+      webOpenBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+      (function (url) {
+        webOpenBtn.addEventListener("click", function (ev) {
+          if (ev && ev.preventDefault) ev.preventDefault();
+          if (ev && ev.stopPropagation) ev.stopPropagation();
+          openUrl(url);
+        });
+      })(res.webLink.url);
+      webActions.appendChild(webOpenBtn);
+      linkEl.appendChild(webActions);
       resultsEl.appendChild(linkEl);
     }
 
@@ -2865,6 +2924,23 @@
     } catch (_e) { /* fail-soft */ }
   }
 
+  // Nur die eingetippte Frage sofort sichern (Klaus 2026-06-22): auch OHNE
+  // gerenderte Trefferliste (z.B. wenn man nur den KI-Prompt kopiert) soll die
+  // Frage einen App-Neustart überleben. Mergt in den lastsearch-Eintrag, ohne
+  // vorhandene Treffer zu verlieren.
+  function persistQuery() {
+    try {
+      var raw = lsGet(LS_KEY_LAST);
+      var p = {};
+      if (raw) { try { p = JSON.parse(raw) || {}; } catch (_e) { p = {}; } }
+      p.query = queryValue || "";
+      var hasTreffer = Array.isArray(p.treffer) && p.treffer.length;
+      var hasWeb = p.webLink && p.webLink.url;
+      if (!p.query && !hasTreffer && !hasWeb) { lsRemove(LS_KEY_LAST); return; }
+      lsSet(LS_KEY_LAST, JSON.stringify(p));
+    } catch (_e) { /* fail-soft */ }
+  }
+
   // ---- Korpus ----
 
   function setCorpus(corpus) {
@@ -3152,6 +3228,42 @@
     }
   }
 
+  // App aktualisieren (Hard-Reload, Klaus 2026-06-22): leert Cache Storage + meldet
+  // den Service-Worker ab, dann neu laden — so holt die installierte PWA die
+  // neueste Version, ohne dass der Nutzer im Browser-Menü „Cache leeren" sucht.
+  // Opt-in (optShowReload), weil es Host-Caches betrifft; in such-tool/ aktiv.
+  function hardReload() {
+    if (reloadInFlight) return;
+    reloadInFlight = true;
+    setHint("App wird aktualisiert — Cache leeren und neu laden …");
+    var reloaded = false;
+    var doReload = function () {
+      if (reloaded) return;
+      reloaded = true;
+      try { if (global.location && typeof global.location.reload === "function") global.location.reload(); }
+      catch (_e) { reloadInFlight = false; }
+    };
+    var tasks = [];
+    try {
+      if (global.caches && typeof global.caches.keys === "function") {
+        tasks.push(Promise.resolve(global.caches.keys())
+          .then(function (keys) { return Promise.all((keys || []).map(function (k) { return global.caches.delete(k); })); })
+          .catch(function () {}));
+      }
+    } catch (_e) { /* nb */ }
+    try {
+      var sw = global.navigator && global.navigator.serviceWorker;
+      if (sw && typeof sw.getRegistrations === "function") {
+        tasks.push(Promise.resolve(sw.getRegistrations())
+          .then(function (regs) { return Promise.all((regs || []).map(function (r) { return r.unregister ? r.unregister() : null; })); })
+          .catch(function () {}));
+      }
+    } catch (_e) { /* nb */ }
+    Promise.all(tasks).then(doReload, doReload);
+    // Sicherheits-Timeout, falls eine Promise hängt — trotzdem neu laden.
+    try { if (global.setTimeout) global.setTimeout(doReload, 1500); } catch (_e) { /* nb */ }
+  }
+
   // ---- Öffentliche Sync-Methoden ----
 
   function show() {
@@ -3332,6 +3444,7 @@
     if (typeof options.k === "number" && isFinite(options.k) && options.k >= 1) optK = Math.floor(options.k);
     if (options.allowDrag !== undefined) optAllowDrag = !!options.allowDrag;
     if (options.rememberHidden !== undefined) optRememberHidden = !!options.rememberHidden;
+    if (options.reloadButton !== undefined) optShowReload = !!options.reloadButton;
     if (typeof options.zIndex === "number" && isFinite(options.zIndex)) optZIndex = options.zIndex;
     // Optionale Start-Größe (localStorage = User-Wahl überschreibt sie unten).
     if (typeof options.panelWidth === "number" && isFinite(options.panelWidth)) panelWidth = clampPanelWidth(options.panelWidth);
@@ -3417,6 +3530,7 @@
     closeOverlays: closeOverlays,
     getMerkliste: getMerkliste,
     clearMerkliste: clearMerkliste,
+    reload: hardReload,
     getPosition: getPosition,
     getSize: getSize,
     setSize: setSize,

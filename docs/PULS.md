@@ -1841,6 +1841,39 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-22 · Bau 22 Folge-Fix 2: Lehre App-Link, KI öffnen + Web kopieren + Frage sichern (PR #393)
+
+**Rolle:** Bau-Sitzung Modul 22, nach Klaus' Live-Sichttest (PR #392 gemerged).
+**Schlüssel-Befund (Klaus, am Tablet gezeigt):** ob ein externer Link die PWA
+killt, hängt davon ab, **welche App das Ziel öffnet** — nicht „Prompt vs. Link":
+- Ziel mit eigener App (`chatgpt.com` → ChatGPT-App) → öffnet als **App-Link in
+  eigenem Task**, parallel; die PWA läuft weiter, Inhalt bleibt.
+- Ziel ohne eigene App (`google.com/search`) → öffnet in **Chrome** = gleiche
+  Engine wie die PWA → Kollision im Splitscreen → PWA neu geladen, Inhalt weg.
+
+**Klaus-Entscheidung (AskUserQuestion): „KI öffnen + Web kopieren".** Umgesetzt:
+- **„🤖 Prompt → KI (öffnen + kopieren)"** öffnet die KI **und** kopiert den Prompt
+  (App-Weg parallel; ohne App sichern Clipboard + persistQuery + Reload-Schutz).
+- **Netz-Karte** bietet **beide Wege zur Wahl** (Klaus: App soll mich selbst wählen
+  lassen): 📋 Frage kopieren UND ↗ Im Browser öffnen.
+- **`persistQuery`:** getippte Frage sofort in `localStorage` (`…lastsearch.query`)
+  gesichert → überlebt Neustart auch ohne gerenderte Treffer.
+- **Unangetastet:** Öffnen echter Treffer-Artikel (Reload-Schutz holt Liste zurück);
+  Splitscreen manuell; Vollbild ⛶ bleibt.
+- **🔄 App-aktualisieren-Knopf (neu, Klaus' Wunsch):** leert Cache Storage + meldet
+  den Service-Worker ab + lädt neu (`hardReload`) — die installierte PWA holt die
+  neueste Version ohne Browser-Menü. Opt-in (`init({reloadButton:true})`), in
+  `such-tool/` an; Surface `reload()`.
+
+**Tests:** `smoke_bau22_such_widget.mjs` **227/227** (Probe 27 = Netz-Karte
+kopieren ODER öffnen; Probe 49 = KI-Prompt öffnet KI + kopiert + Frage-Sicherung/
+Restore; Probe 50 = 🔄 Hard-Reload opt-in), Standalone **46/46**. Karte 22 (Lehre
+App-Link + 🔄) + INTERFACES + PULS nachgezogen.
+
+**Was offen:** Klaus' Sichttest nach App-Update — KI öffnet parallel + Prompt
+kopiert; Web-Karte kopiert; Frage nach Neustart wieder da. Vergleich (Form 1/2/3)
++ Pilz-Server/Geld weiterhin offen.
+
 ### 2026-06-22 · Bau 22 Folge-Fix: Reload-Schutz (letzte Suche überlebt PWA-Neustart) + Such-Tool-Lupe
 
 **Rolle:** Bau-Sitzung Modul 22, direkte Folge nach Merge PR #391 + Klaus' Live-
