@@ -1841,6 +1841,38 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-22 · Strang C: eigenständige Such-Tool-PWA (such-tool/, Vorlage)
+
+**Rolle:** Bau-Sitzung (Folge der Resize-Pflege). Klaus' Wahl: „Vorlage als
+eigener Ordner".
+
+**Was getan:** Self-contained Ordner `such-tool/` als **eigenständige,
+installierbare PWA** und 1:1-kopierbare Vorlage (für SB-KIMTool-Point + Forker):
+`index.html` (lädt die 4 komponierten Module, registriert SW, mountet das Widget
+mit Internet/KI-Brücke an), `manifest.json` (display standalone, Icons 192+512
+any+maskable), `sbkim-sw.js` (App-Schale cache-first, Fremd-Origin durchgereicht,
+fetch-Handler für Installierbarkeit), `impressum.html` (Datenschutz + Impressum-
+**Vorlage mit Platzhaltern**, keine PII hartcodiert), `icon-192/512.png` (Lupe,
+per Node-zlib generiert), `modules/` (byte-genaue Kopien von src/modules
+03/04/21/22). **Kern-Lehre dokumentiert:** ein bloßer Download (file://) wird nie
+eine App — eine echte PWA braucht Hosting + Manifest + SW + eigenen Scope (Befund
+am SB-KIMTool-Point). Konzept-Karte `docs/components/_standalone_such_tool.md`
+(inkl. Scope-Falle + Monetarisierung-Vorgriff Phase D.2). **KI-Anbieter-
+Recherche:** nur **Claude** geht server-los automatisch (CORS-Header); Gemini/
+ChatGPT/Perplexity CORS-blockiert → Kopier-Pfad (schon da) oder späterer Proxy.
+
+**Was offen:** Klaus' **Installations-Sichttest** am Tablet (App installieren →
+eigenes Fenster, Offline-Start). Brief an SB-KIMTool-Point (Reproduktions-Rezept)
+im Chat ausgegeben. Stränge B (B3-Richter) bleibt offen.
+
+**Test:** `tests/smoke_standalone_such_tool.mjs` **46/46 grün** (Pflicht-Dateien,
+Drift-Guard Modul-Kopien byte-identisch, Manifest installierbar-tauglich, SW
+fetch-Handler + App-Schale, index.html-Verdrahtung, Impressum-Platzhalter).
+Modul-22-Smoke unverändert 162/162.
+
+**Nächster Schritt:** Installations-Sichttest; SB-KIMTool-Point übernimmt die
+Vorlage; danach Strang B oder Pilz-Server-Konzept (Phase D.2).
+
 ### 2026-06-22 · Pflege Modul 22: Such-Panel größer ziehbar (Resize-Griff)
 
 **Rolle:** Pflege-Sitzung Modul 22 (Strang A aus Klaus' Drei-Wege-Wahl —

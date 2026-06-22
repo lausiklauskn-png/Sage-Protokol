@@ -1,0 +1,150 @@
+<!doctype html>
+<!--
+  ╔═════════════════════════════════════════════════════════════════╗
+  ║  SBKIM Such-Werkzeug — eigenständige PWA (Standalone-Vorlage)    ║
+  ║  Sage·Protokol  v0.1  ©  2026                                    ║
+  ║  Server-los · BYOK · keine Tracker. Schlüssel bleiben lokal.    ║
+  ║  https://github.com/lausiklauskn-png/Sage-Protokol              ║
+  ╚═════════════════════════════════════════════════════════════════╝
+
+  EIGENSTÄNDIGE, INSTALLIERBARE PWA — Vorlage zum 1:1-Kopieren.
+  Dieser Ordner ist self-contained: index.html + manifest.json +
+  sbkim-sw.js + modules/ (Kopien von src/modules 03/04/21/22) + Icons.
+  In ein eigenes Repo kopiert (GitHub Pages an), wird es eine eigene App
+  mit eigener URL, eigenem Service-Worker und eigener „Zum Startbildschirm
+  hinzufügen"-Installation. Siehe docs/components/_standalone_such_tool.md.
+-->
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SBKIM Such-Werkzeug</title>
+  <meta name="description" content="Semantisches Such-Werkzeug — versteht die Bedeutung hinter den Worten. Server-los, im Browser, eigener Schlüssel bleibt lokal.">
+  <meta name="theme-color" content="#10102A">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100dvh;
+      font-family: 'Geist', system-ui, -apple-system, Arial, sans-serif;
+      color: #F5F5FF;
+      background:
+        radial-gradient(1100px 600px at 78% -10%, rgba(167,139,250,0.18), transparent 60%),
+        radial-gradient(900px 500px at 10% 110%, rgba(110,231,211,0.14), transparent 60%),
+        #0B0B1A;
+      display: flex; flex-direction: column;
+    }
+    main { flex: 1; max-width: 680px; margin: 0 auto; padding: 13vh 22px 40px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(110,231,211,0.9);
+      border: 1px solid rgba(110,231,211,0.32); border-radius: 999px;
+      padding: 0.25rem 0.7rem; margin-bottom: 1.4rem;
+    }
+    h1 { font-size: clamp(1.8rem, 6vw, 2.7rem); line-height: 1.1; margin: 0 0 0.6rem; }
+    h1 .accent { color: #6EE7D3; }
+    .lead { font-size: 1.04rem; line-height: 1.55; color: rgba(245,245,255,0.82); margin: 0 0 1.6rem; }
+    .points { list-style: none; padding: 0; margin: 0 0 2rem; display: grid; gap: 0.6rem; }
+    .points li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.94rem; color: rgba(245,245,255,0.78); }
+    .points li b { color: #F5F5FF; font-weight: 600; }
+    .points .dot { flex-shrink: 0; width: 1.4rem; text-align: center; }
+    .hint {
+      font-size: 0.9rem; color: rgba(245,245,255,0.6);
+      border-left: 2px solid rgba(110,231,211,0.5); padding: 0.2rem 0 0.2rem 0.8rem;
+    }
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 18px 22px 28px; font-size: 0.78rem; color: rgba(245,245,255,0.5);
+      max-width: 680px; margin: 0 auto; width: 100%;
+    }
+    footer a { color: #6EE7D3; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer details { margin-top: 0.6rem; }
+    footer summary { cursor: pointer; color: rgba(245,245,255,0.7); }
+    footer p { line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="badge">🍄 SBKIM · server-los</span>
+    <h1>Such-Werkzeug — sucht nach <span class="accent">Bedeutung</span>, nicht nach Stichwörtern.</h1>
+    <p class="lead">
+      Ein kleines, eigenständiges Such-Tool, das die <b>Absicht</b> hinter deiner
+      Frage versteht. Es läuft komplett im Browser — kein Server, kein Konto.
+      Optional sprichst du deine Frage, lässt eine KI mit Web-Suche die Quellen
+      holen und sortierst sie nach Bedeutung.
+    </p>
+    <ul class="points">
+      <li><span class="dot">🔍</span><span><b>Semantisch &amp; gratis.</b> Treffer werden nach Bedeutungs-Nähe geordnet (Embedding-Cosinus) — ohne Schlüssel, ohne Kosten.</span></li>
+      <li><span class="dot">🎤</span><span><b>Sprich oder tippe.</b> Spracheingabe Deutsch/Englisch/Russisch (Browser oder EU-Cloud, dein Schlüssel).</span></li>
+      <li><span class="dot">🤖</span><span><b>KI-Brücke.</b> Prompt bauen → bei ChatGPT/Claude/Gemini/Perplexity laufen lassen → Antwort einfügen → nach Bedeutung sortiert.</span></li>
+      <li><span class="dot">🔐</span><span><b>Dein Schlüssel bleibt lokal.</b> BYOK im verschlüsselten Widget-Tresor (Shamir 2-von-3). Nie ins Netz, nie auf GitHub.</span></li>
+    </ul>
+    <p class="hint">Tipp: Das Such-Werkzeug erscheint als 🔍-Blase. Antippen öffnet es; den Griff unten rechts ziehen macht es größer.</p>
+  </main>
+
+  <footer>
+    <span>© 2026 · SBKIM Such-Werkzeug · server-los, keine Tracker.</span>
+    <a href="./impressum.html">Impressum &amp; Datenschutz</a>
+    <details>
+      <summary>Datenschutz in einem Satz</summary>
+      <p>
+        Dieses Werkzeug arbeitet <b>server-los</b>: Es gibt keinen eigenen Server,
+        keine Analyse-Tracker und kein Nutzerkonto. Ein optionaler API-Schlüssel
+        (für Sprach-Cloud oder KI-Richter) wird <b>nur lokal</b> im Browser
+        gespeichert (verschlüsselter Tresor) und ausschließlich an den von dir
+        gewählten Anbieter gesendet — nie an uns, nie ins Mycel, nie auf GitHub.
+        Das Embedding-Modell wird einmalig von einem öffentlichen CDN geladen.
+      </p>
+    </details>
+  </footer>
+
+  <!-- Die vier komponierten Module (Kopien von src/modules; bei Pflege dort
+       nachziehen). KEIN Auto-Init — die Init unten mountet das Widget. -->
+  <script src="./modules/03_embedding.js"></script>
+  <script src="./modules/04_match.js"></script>
+  <script src="./modules/21_spracheingabe.js"></script>
+  <script src="./modules/22_such_widget.js"></script>
+  <script>
+    // Service-Worker registrieren → macht die Seite installierbar (eigene App).
+    // Scope ist dieser Ordner; in einem eigenen Repo-Root ist es die ganze App.
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./sbkim-sw.js").catch(function (err) {
+          console.warn("[such-tool] Service-Worker-Registrierung fehlgeschlagen:", err);
+        });
+      });
+    }
+
+    // Widget mounten. Standalone-Default: Internet-Bereich (KI-Brücke) an,
+    // App/Knoten aus (es gibt hier keinen Host-Korpus); Richter aus (gratis,
+    // semantisch); EU-Politik frei; startet aufgeklappt, damit es sofort da ist.
+    (function () {
+      function start() {
+        if (!window.SbkimSearchWidget) {
+          console.warn("[such-tool] Modul 22 nicht geladen.");
+          return;
+        }
+        window.SbkimSearchWidget.init({
+          euPolicy: "frei",
+          queryLabel: "Such-Werkzeug",
+          areas: { app: false, knoten: false, internet: true },
+          richter: false,
+          startExpanded: true,
+        }).catch(function (err) {
+          console.warn("[such-tool] Widget-Init fehlgeschlagen:", err);
+        });
+      }
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start, { once: true });
+      } else {
+        start();
+      }
+    })();
+  </script>
+</body>
+</html>
