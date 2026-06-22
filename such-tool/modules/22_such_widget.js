@@ -58,6 +58,7 @@
   var LS_KEY_STATE = "sbkim_search_widget_state"; // "collapsed" | "expanded"
   var LS_KEY_ENGINE = "sbkim_search_widget_engine"; // gewählte Web-Suchmaschine
   var LS_KEY_SIZE = "sbkim_search_widget_size"; // {w,h} ziehbare Panel-Größe
+  var LS_KEY_MERK = "sbkim_search_widget_merkliste"; // Merkliste (Text+Link, gruppiert)
 
   // Frei wählbare Web-Suchmaschinen für den Internet-Neuer-Tab-Weg (Klaus
   // 2026-06-21: DuckDuckGo ODER eine andere). Query wird angehängt (URL-encoded).
@@ -126,6 +127,14 @@
   var internetCheckboxEl = null; // Referenz auf die Internet-Bereichs-Checkbox
   var vaultSectionEl = null;   // Tresor-Bedien-Sektion (🔐)
   var vaultSectionOpen = false;// Tresor-Sektion ein-/ausgeklappt
+  var fullscreenBtnEl = null;  // ⛶ Vollbild-Umschalter
+  var fullscreenFlag = false;  // Vollbild-Modus (NICHT persistiert — Pille bleibt Standard)
+  var merkBtnEl = null;        // 📌 Merkliste-Knopf
+  var merkOverlayEl = null;    // Merkliste-Overlay (gruppiert nach Suchfrage)
+  var detailOverlayEl = null;  // Tool-eigene Detail-Karte (Overlay über einem Treffer)
+  var merkOverlayOpen = false;
+  var detailOverlayOpen = false;
+  var detailItem = null;       // aktuell in der Detail-Karte gezeigter Treffer
 
   // Position + Sichtbarkeit (localStorage-persistiert).
   var currentCorner = DEFAULT_CORNER;
@@ -409,6 +418,52 @@
     applyPositionToRoot();
   }
 
+  // Splitscreen-Fix (Klaus' Befund 2026-06-22): im geteilten Bildschirm rutscht
+  // die Pille aus dem Sichtfeld. Bei jeder Viewport-Änderung (resize /
+  // orientationchange) die GEZOGENE (freie) Position ins sichtbare Feld
+  // zurück-klemmen. Ecken-verankerte Widgets bleiben durch CSS am Rand und
+  // brauchen keine Korrektur. Mindestens VIEWPORT_VISIBLE_MARGIN px bleiben am
+  // Rand sichtbar (mirror der Drag-Clamp-Reserve von 24 px).
+  var VIEWPORT_VISIBLE_MARGIN = 24;
+  var viewportListenerAttached = false;
+
+  function clampPositionIntoView() {
+    if (!widgetRoot) return;
+    if (currentFreeX === null || currentFreeY === null) return; // nur freie Position
+    var vw = global.innerWidth || 1024;
+    var vh = global.innerHeight || 768;
+    var rect = widgetRoot.getBoundingClientRect();
+    var w = rect.width || 44;
+    var x = currentFreeX;
+    var y = currentFreeY;
+    var minX = -w + VIEWPORT_VISIBLE_MARGIN;
+    var maxX = vw - VIEWPORT_VISIBLE_MARGIN;
+    var minY = 0;
+    var maxY = vh - VIEWPORT_VISIBLE_MARGIN;
+    if (x > maxX) x = maxX;
+    if (x < minX) x = minX;
+    if (y > maxY) y = maxY;
+    if (y < minY) y = minY;
+    if (x !== currentFreeX || y !== currentFreeY) {
+      currentFreeX = x;
+      currentFreeY = y;
+      applyPositionToRoot();
+      persistPosition();
+    }
+  }
+
+  function onViewportChange() { clampPositionIntoView(); }
+
+  function attachViewportListener() {
+    if (viewportListenerAttached) return;
+    if (!global || typeof global.addEventListener !== "function") return;
+    try {
+      global.addEventListener("resize", onViewportChange);
+      global.addEventListener("orientationchange", onViewportChange);
+      viewportListenerAttached = true;
+    } catch (_e) { /* fail-soft — ohne Listener bleibt nur die statische Position */ }
+  }
+
   // ---- CSS-Injektion ----
 
   function buildCss() {
@@ -462,6 +517,35 @@
       // Zustand-Umschaltung via data-state.
       "#" + WIDGET_ID + "[data-state=\"collapsed\"] .sbkim-sw-panel { display: none; }",
       "#" + WIDGET_ID + "[data-state=\"expanded\"] .sbkim-sw-bubble { display: none; }",
+      // Vollbild-Modus (⛶, Klaus 2026-06-22): zweite Anzeige derselben Treffer —
+      // das Panel füllt den ganzen Viewport (kein Kern-Umbau, gleicher Inhalt).
+      // !important schlägt die Inline-Position/-Größe (left/top/width).
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen {",
+      "  left: 0 !important;",
+      "  top: 0 !important;",
+      "  right: 0 !important;",
+      "  bottom: 0 !important;",
+      "  width: 100% !important;",
+      "  height: 100% !important;",
+      "  z-index: 9996;",
+      "}",
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen .sbkim-sw-bubble { display: none; }",
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen .sbkim-sw-panel {",
+      "  display: block;",
+      "  width: 100% !important;",
+      "  height: 100%;",
+      "  max-width: none;",
+      "  border-radius: 0;",
+      "  box-sizing: border-box;",
+      "  display: flex;",
+      "  flex-direction: column;",
+      "  overflow: auto;",
+      "}",
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen .sbkim-sw-results {",
+      "  max-height: none !important;",
+      "  flex: 1 1 auto;",
+      "}",
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen .sbkim-sw-resize { display: none; }",
       // Resize-Griff unten rechts (ziehbar — Breite + Lesefeld-Höhe).
       "#" + WIDGET_ID + " .sbkim-sw-resize {",
       "  position: absolute;",
@@ -807,6 +891,43 @@
       "  padding: 0.35rem 0.45rem;",
       "  resize: vertical;",
       "}",
+      // Merken-Haken pro Treffer (kleiner als die Bereichs-Pillen).
+      "#" + WIDGET_ID + " .sbkim-sw-resultline { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merkbox { border: none; padding: 0 0.1rem 0 0; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merkbox span { font-size: 0.7rem; }",
+      "#" + WIDGET_ID + " .sbkim-sw-result-title { cursor: pointer; }",
+      "#" + WIDGET_ID + " .sbkim-sw-result-title:hover { text-decoration: underline; }",
+      // 📌-Kopf-Knopf hebt sich ab, wenn etwas gemerkt ist.
+      "#" + WIDGET_ID + " .sbkim-sw-merkbtn.sbkim-sw-has-merk { background: rgba(244, 180, 53, 0.28); border-color: rgba(244, 180, 53, 0.6); opacity: 1; }",
+      // Overlays (Detail-Karte + Merkliste) — über dem Panel, in Tool-Farben.
+      "#" + WIDGET_ID + " .sbkim-sw-overlay {",
+      "  position: absolute;",
+      "  inset: 0;",
+      "  z-index: 6;",
+      "  display: flex;",
+      "  flex-direction: column;",
+      "  gap: 0.45rem;",
+      "  padding: 0.6rem 0.65rem 0.7rem;",
+      "  background: rgba(12, 12, 30, 0.97);",
+      "  backdrop-filter: blur(8px);",
+      "  -webkit-backdrop-filter: blur(8px);",
+      "  border-radius: 14px;",
+      "  overflow: auto;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-overlay-head { display: flex; align-items: center; gap: 0.45rem; }",
+      "#" + WIDGET_ID + " .sbkim-sw-overlay-title { flex: 1; font-size: 0.8rem; letter-spacing: 0.03em; color: #F5F5FF; }",
+      "#" + WIDGET_ID + " .sbkim-sw-back { width: 24px; height: 24px; font-size: 0.95rem; opacity: 0.9; }",
+      "#" + WIDGET_ID + " .sbkim-sw-detail-titel { font-size: 0.86rem; color: #F5F5FF; }",
+      "#" + WIDGET_ID + " .sbkim-sw-detail-desc { font-size: 0.76rem; line-height: 1.35; color: rgba(245, 245, 255, 0.82); }",
+      "#" + WIDGET_ID + " .sbkim-sw-detail-url { font-size: 0.68rem; color: #8EE7FF; word-break: break-all; }",
+      "#" + WIDGET_ID + " .sbkim-sw-detail-open { background: rgba(110, 231, 211, 0.16); border-color: rgba(110, 231, 211, 0.42); color: #CFFcF4; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merk-empty { font-size: 0.74rem; color: rgba(245, 245, 255, 0.65); line-height: 1.35; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merk-group { border-top: 1px solid rgba(255,255,255,0.12); padding-top: 0.4rem; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merk-group-title { font-size: 0.78rem; font-weight: 600; color: #F4B435; margin-bottom: 0.3rem; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merk-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.35rem 0.5rem; margin-bottom: 0.3rem; font-size: 0.8rem; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merk-actions { display: flex; gap: 0.35rem; margin-top: 0.25rem; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merk-actions .sbkim-sw-more { width: auto; margin-top: 0; flex: 1; }",
+      "#" + WIDGET_ID + " .sbkim-sw-merk-remove { background: rgba(255, 120, 120, 0.12); border-color: rgba(255, 120, 120, 0.35); color: rgba(255, 200, 200, 0.9); }",
     ].join("\n");
   }
 
@@ -903,6 +1024,13 @@
     title.className = "sbkim-sw-title";
     title.textContent = "SBKIM-Suche";
     head.appendChild(title);
+    merkBtnEl = makeBtn(doc, "sbkim-sw-btn sbkim-sw-merkbtn", "📌", "Merkliste — Gemerktes, gruppiert nach Suchfrage");
+    merkBtnEl.addEventListener("click", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      if (merkOverlayOpen) closeOverlays();
+      else openMerkliste();
+    });
+    head.appendChild(merkBtnEl);
     var vaultBtn = makeBtn(doc, "sbkim-sw-btn sbkim-sw-vaultbtn", "🔐", "Schlüssel-Tresor (KI-Schlüssel sicher speichern)");
     vaultBtn.addEventListener("click", function (ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -910,6 +1038,12 @@
       renderVaultSection();
     });
     head.appendChild(vaultBtn);
+    fullscreenBtnEl = makeBtn(doc, "sbkim-sw-btn sbkim-sw-fs", "⛶", "Vollbild — Suchraum groß (verkleinern: nochmal tippen)");
+    fullscreenBtnEl.addEventListener("click", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      toggleFullscreen();
+    });
+    head.appendChild(fullscreenBtnEl);
     var minBtn = makeBtn(doc, "sbkim-sw-btn sbkim-sw-min", "–", "Minimieren — zurück zur Such-Blase");
     minBtn.addEventListener("click", function (ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -1106,12 +1240,27 @@
       panelEl.appendChild(resizeHandleEl);
     }
 
+    // Overlays (Detail-Karte + Merkliste) — absolut über dem Panel, anfangs zu.
+    detailOverlayEl = doc.createElement("div");
+    detailOverlayEl.className = "sbkim-sw-overlay sbkim-sw-detail";
+    detailOverlayEl.style.display = "none";
+    detailOverlayEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    panelEl.appendChild(detailOverlayEl);
+
+    merkOverlayEl = doc.createElement("div");
+    merkOverlayEl.className = "sbkim-sw-overlay sbkim-sw-merk";
+    merkOverlayEl.style.display = "none";
+    merkOverlayEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    panelEl.appendChild(merkOverlayEl);
+
     root.appendChild(panelEl);
 
     if (optAllowDrag) attachDragHandlers(root);
     updateEuChip();
     updateSearxngFieldVisibility();
     applySizeToPanel();
+    updateMerkBtn();
+    renderOverlays();
     return root;
   }
 
@@ -2215,26 +2364,36 @@
 
     // Nur die ersten resultsVisibleCount zeigen, Rest hinter dem ▾-Pfeil
     // (Klaus 2026-06-21: 10 zeigen, je Klick 10 mehr).
+    var gkey = currentGroupKey();
     var shown = Math.min(treffer.length, resultsVisibleCount);
     for (var i = 0; i < shown; i++) {
       var t = treffer[i];
       var el = doc.createElement("div");
       el.className = "sbkim-sw-result";
+      // Tippen auf die Treffer-Zeile (außer Haken/Titel) → Tool-eigene Detail-Karte.
+      var detailItemForRow = merkItemOf(t);
+      attachDetailHandler(el, detailItemForRow);
       var line = doc.createElement("div");
+      line.className = "sbkim-sw-resultline";
+      // Merken-Haken pro Treffer (Klaus 2026-06-22). Gemerktes → localStorage,
+      // gruppiert unter der Suchfrage; funktioniert für alle Treffer-Arten.
+      line.appendChild(makeMerkCheckbox(doc, t, gkey));
       line.appendChild(makeBadge(doc, t.source || "app"));
 
       var titleEl;
       if (t.url) {
         titleEl = doc.createElement("a");
         titleEl.className = "sbkim-sw-result-link";
-        titleEl.href = t.url;
+        titleEl.href = t.url; // rechte Maustaste → „in neuem Tab öffnen" bleibt
         titleEl.target = "_blank";
         titleEl.rel = "noopener noreferrer";
         titleEl.textContent = t.label;
-        attachOpenHandler(titleEl, t.url);
+        attachDetailHandler(titleEl, detailItemForRow); // Linksklick → Detail-Karte
       } else {
         titleEl = doc.createElement("span");
+        titleEl.className = "sbkim-sw-result-title";
         titleEl.textContent = t.label;
+        attachDetailHandler(titleEl, detailItemForRow);
       }
       line.appendChild(titleEl);
 
@@ -2309,6 +2468,356 @@
     });
   }
 
+  // Klick/Tap auf einen Treffer → Tool-eigene Detail-Karte (Klaus 2026-06-22).
+  function attachDetailHandler(el, item) {
+    el.addEventListener("pointerdown", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+    });
+    el.addEventListener("click", function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      openDetail(item);
+    });
+  }
+
+  // ===================================================================
+  // Merken-Liste (Klaus 2026-06-22) — pro Treffer ein Haken; das Gemerkte landet
+  // in localStorage, GRUPPIERT unter der Suchfrage als Überschrift. Nur Text +
+  // Link (+ Quelle/Datum für Anzeige) — keine Vektoren, keine PII, kein Protokoll.
+  // Funktioniert für alle Treffer-Arten (App/Knoten/Netz) mit Badge je Art.
+  // ===================================================================
+
+  // Heading-Schlüssel = die Suchfrage (nicht der Seitenname). Aktuell laufende
+  // Frage; leere Frage → Sammel-Gruppe.
+  function currentGroupKey() {
+    var q = (queryValue || "").trim();
+    return q || "(ohne Frage)";
+  }
+
+  // Treffer → schlankes Merk-/Detail-Objekt (nur Text + Link + Anzeige-Felder).
+  function merkItemOf(t) {
+    return {
+      titel: t.label || t.titel || t.url || "",
+      url: t.url || null,
+      text: t.snippet || t.text || null,
+      source: t.source || "app",
+      score: typeof t.score === "number" ? t.score : null,
+      begruendung: t.begruendung || null,
+    };
+  }
+
+  function merkKeyOf(item) {
+    return String((item && (item.url || item.titel || item.label)) || "");
+  }
+
+  function loadMerkliste() {
+    var raw = lsGet(LS_KEY_MERK);
+    if (!raw) return {};
+    try {
+      var o = JSON.parse(raw);
+      return (o && typeof o === "object" && !Array.isArray(o)) ? o : {};
+    } catch (_e) { return {}; }
+  }
+
+  function saveMerkliste(obj) {
+    try { lsSet(LS_KEY_MERK, JSON.stringify(obj || {})); } catch (_e) { /* fail-soft */ }
+  }
+
+  function merkCount() {
+    var m = loadMerkliste(), n = 0;
+    for (var q in m) { if (Array.isArray(m[q])) n += m[q].length; }
+    return n;
+  }
+
+  function isMerkt(groupKey, item) {
+    var arr = loadMerkliste()[groupKey];
+    if (!Array.isArray(arr)) return false;
+    var key = merkKeyOf(item);
+    for (var i = 0; i < arr.length; i++) { if (merkKeyOf(arr[i]) === key) return true; }
+    return false;
+  }
+
+  function addMerk(groupKey, item) {
+    var m = loadMerkliste();
+    if (!Array.isArray(m[groupKey])) m[groupKey] = [];
+    var key = merkKeyOf(item);
+    for (var i = 0; i < m[groupKey].length; i++) { if (merkKeyOf(m[groupKey][i]) === key) return; }
+    m[groupKey].push({
+      titel: String(item.titel || item.label || item.url || "").slice(0, 300),
+      url: item.url ? String(item.url) : null,
+      text: item.text ? String(item.text).slice(0, 600) : null,
+      source: item.source || "app",
+      addedAt: Date.now(),
+    });
+    saveMerkliste(m);
+    updateMerkBtn();
+  }
+
+  function removeMerk(groupKey, key) {
+    var m = loadMerkliste();
+    if (!Array.isArray(m[groupKey])) return;
+    m[groupKey] = m[groupKey].filter(function (it) { return merkKeyOf(it) !== key; });
+    if (m[groupKey].length === 0) delete m[groupKey];
+    saveMerkliste(m);
+    updateMerkBtn();
+  }
+
+  function toggleMerk(groupKey, item) {
+    if (isMerkt(groupKey, item)) removeMerk(groupKey, merkKeyOf(item));
+    else addMerk(groupKey, item);
+  }
+
+  function clearMerkliste() {
+    lsRemove(LS_KEY_MERK);
+    updateMerkBtn();
+    if (merkOverlayOpen) renderMerkOverlay();
+  }
+
+  function getMerkliste() {
+    try { return JSON.parse(JSON.stringify(loadMerkliste())); } catch (_e) { return {}; }
+  }
+
+  // Kleiner Haken pro Treffer-Zeile (📌). Klick togglet Merken; stopPropagation,
+  // damit weder der Drag noch die Detail-Karte mit anspringt.
+  function makeMerkCheckbox(doc, t, groupKey) {
+    var item = merkItemOf(t);
+    var wrap = doc.createElement("label");
+    wrap.className = "sbkim-sw-check sbkim-sw-merkbox";
+    wrap.setAttribute("title", "Merken — in die Merkliste legen");
+    var input = doc.createElement("input");
+    input.type = "checkbox";
+    input.checked = isMerkt(groupKey, item);
+    input.addEventListener("change", function () { toggleMerk(groupKey, item); });
+    wrap.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    wrap.addEventListener("click", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    var pin = doc.createElement("span");
+    pin.textContent = "📌";
+    wrap.appendChild(input);
+    wrap.appendChild(pin);
+    wrap._input = input;
+    return wrap;
+  }
+
+  function updateMerkBtn() {
+    if (!merkBtnEl) return;
+    var n = merkCount();
+    merkBtnEl.textContent = "📌";
+    merkBtnEl.setAttribute("aria-label", "Merkliste" + (n ? " (" + n + " gemerkt)" : " (leer)"));
+    merkBtnEl.setAttribute("title", "Merkliste — Gemerktes, gruppiert nach Suchfrage" + (n ? " (" + n + ")" : ""));
+    if (merkBtnEl.classList) {
+      if (n) merkBtnEl.classList.add("sbkim-sw-has-merk");
+      else merkBtnEl.classList.remove("sbkim-sw-has-merk");
+    }
+  }
+
+  // ---- Overlays (Detail-Karte + Merkliste) ----
+
+  function renderOverlays() {
+    if (detailOverlayEl) detailOverlayEl.style.display = detailOverlayOpen ? "flex" : "none";
+    if (merkOverlayEl) merkOverlayEl.style.display = merkOverlayOpen ? "flex" : "none";
+  }
+
+  function hideOverlays() {
+    detailOverlayOpen = false;
+    merkOverlayOpen = false;
+    renderOverlays();
+  }
+
+  // „Zurück": Overlay schließen; Treffer neu zeichnen, damit die Haken den evtl.
+  // im Overlay geänderten Merk-Zustand spiegeln.
+  function closeOverlays() {
+    hideOverlays();
+    if (lastRenderRes) renderResults(lastRenderRes);
+  }
+
+  function openDetail(item) {
+    if (!item) return;
+    detailItem = item;
+    detailOverlayOpen = true;
+    merkOverlayOpen = false;
+    if (!expandedFlag) expand();
+    renderDetailOverlay();
+    renderOverlays();
+  }
+
+  function openMerkliste() {
+    merkOverlayOpen = true;
+    detailOverlayOpen = false;
+    if (!expandedFlag) expand();
+    renderMerkOverlay();
+    renderOverlays();
+  }
+
+  function makeOverlayHead(doc, titleText) {
+    var head = doc.createElement("div");
+    head.className = "sbkim-sw-overlay-head";
+    var backBtn = makeBtn(doc, "sbkim-sw-btn sbkim-sw-back", "‹", "Zurück");
+    backBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    backBtn.addEventListener("click", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      closeOverlays();
+    });
+    head.appendChild(backBtn);
+    var title = doc.createElement("span");
+    title.className = "sbkim-sw-overlay-title";
+    title.textContent = titleText;
+    head.appendChild(title);
+    return head;
+  }
+
+  // Tool-eigene Detail-Karte (in den Tool-Farben) für EINEN Treffer.
+  function renderDetailOverlay() {
+    if (!detailOverlayEl) return;
+    var doc = global.document;
+    while (detailOverlayEl.firstChild) detailOverlayEl.removeChild(detailOverlayEl.firstChild);
+    detailOverlayEl.appendChild(makeOverlayHead(doc, "Treffer"));
+    var item = detailItem || {};
+    var gkey = currentGroupKey();
+
+    var badgeLine = doc.createElement("div");
+    badgeLine.appendChild(makeBadge(doc, item.source || "app"));
+    var titleEl = doc.createElement("span");
+    titleEl.className = "sbkim-sw-detail-titel";
+    titleEl.textContent = item.titel || "(ohne Titel)";
+    badgeLine.appendChild(titleEl);
+    detailOverlayEl.appendChild(badgeLine);
+
+    if (item.text) {
+      var desc = doc.createElement("div");
+      desc.className = "sbkim-sw-detail-desc";
+      desc.textContent = item.text;
+      detailOverlayEl.appendChild(desc);
+    }
+    if (item.url) {
+      var urlEl = doc.createElement("div");
+      urlEl.className = "sbkim-sw-detail-url";
+      urlEl.textContent = item.url;
+      detailOverlayEl.appendChild(urlEl);
+    }
+
+    // [📌 Merken] / [📌 Gemerkt ✓] — Merken aus dem Overlay; gilt sofort.
+    var merkBtn = makeBtn(doc, "sbkim-sw-aibtn sbkim-sw-detail-merk", "", "Merken");
+    function refreshMerkBtnLabel() {
+      var on = isMerkt(gkey, item);
+      merkBtn.textContent = on ? "📌 Gemerkt ✓ (entfernen)" : "📌 Merken";
+    }
+    refreshMerkBtnLabel();
+    merkBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    merkBtn.addEventListener("click", function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      toggleMerk(gkey, item);
+      refreshMerkBtnLabel();
+    });
+    detailOverlayEl.appendChild(merkBtn);
+
+    // [↗ Seite öffnen] — echte Seite im neuen Tab (nur wenn es eine URL gibt).
+    if (item.url) {
+      var openBtn = makeBtn(doc, "sbkim-sw-aibtn sbkim-sw-detail-open", "↗ Seite öffnen", "Echte Seite im neuen Tab öffnen");
+      openBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+      openBtn.addEventListener("click", function (ev) {
+        if (ev && ev.preventDefault) ev.preventDefault();
+        if (ev && ev.stopPropagation) ev.stopPropagation();
+        openUrl(item.url);
+      });
+      detailOverlayEl.appendChild(openBtn);
+    }
+  }
+
+  // Merkliste-Overlay: gemerkte Treffer, gruppiert unter der Suchfrage.
+  function renderMerkOverlay() {
+    if (!merkOverlayEl) return;
+    var doc = global.document;
+    while (merkOverlayEl.firstChild) merkOverlayEl.removeChild(merkOverlayEl.firstChild);
+    merkOverlayEl.appendChild(makeOverlayHead(doc, "Merkliste"));
+
+    var m = loadMerkliste();
+    var groups = Object.keys(m);
+    if (groups.length === 0) {
+      var empty = doc.createElement("div");
+      empty.className = "sbkim-sw-merk-empty";
+      empty.textContent = "Noch nichts gemerkt — Treffer ankreuzen (📌) oder in der Detail-Karte per 📌 Merken.";
+      merkOverlayEl.appendChild(empty);
+      return;
+    }
+
+    var clearBtn = makeBtn(doc, "sbkim-sw-aibtn sbkim-sw-merk-clear", "Alles entfernen", "Ganze Merkliste leeren");
+    clearBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    clearBtn.addEventListener("click", function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      clearMerkliste();
+    });
+    merkOverlayEl.appendChild(clearBtn);
+
+    groups.forEach(function (groupKey) {
+      var items = m[groupKey];
+      if (!Array.isArray(items) || items.length === 0) return;
+      var groupEl = doc.createElement("div");
+      groupEl.className = "sbkim-sw-merk-group";
+      var gt = doc.createElement("div");
+      gt.className = "sbkim-sw-merk-group-title";
+      gt.textContent = groupKey; // die Suchfrage als Überschrift
+      groupEl.appendChild(gt);
+
+      items.forEach(function (it) {
+        var row = doc.createElement("div");
+        row.className = "sbkim-sw-merk-item";
+        var l = doc.createElement("div");
+        l.className = "sbkim-sw-resultline";
+        l.appendChild(makeBadge(doc, it.source || "app"));
+        var titleEl;
+        if (it.url) {
+          titleEl = doc.createElement("a");
+          titleEl.className = "sbkim-sw-result-link";
+          titleEl.href = it.url;
+          titleEl.target = "_blank";
+          titleEl.rel = "noopener noreferrer";
+          titleEl.textContent = it.titel || it.url;
+          attachOpenHandler(titleEl, it.url);
+        } else {
+          titleEl = doc.createElement("span");
+          titleEl.className = "sbkim-sw-result-title";
+          titleEl.textContent = it.titel || "(ohne Titel)";
+        }
+        l.appendChild(titleEl);
+        row.appendChild(l);
+        if (it.text) {
+          var sn = doc.createElement("div");
+          sn.className = "sbkim-sw-snippet";
+          sn.textContent = it.text;
+          row.appendChild(sn);
+        }
+        var actions = doc.createElement("div");
+        actions.className = "sbkim-sw-merk-actions";
+        if (it.url) {
+          var openA = makeBtn(doc, "sbkim-sw-more sbkim-sw-merk-open", "↗ öffnen", "Seite im neuen Tab öffnen");
+          openA.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+          (function (url) {
+            openA.addEventListener("click", function (ev) {
+              if (ev && ev.preventDefault) ev.preventDefault();
+              if (ev && ev.stopPropagation) ev.stopPropagation();
+              openUrl(url);
+            });
+          })(it.url);
+          actions.appendChild(openA);
+        }
+        var rm = makeBtn(doc, "sbkim-sw-more sbkim-sw-merk-remove", "✕ entfernen", "Aus der Merkliste entfernen");
+        rm.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+        (function (gk, key) {
+          rm.addEventListener("click", function (ev) {
+            if (ev && ev.preventDefault) ev.preventDefault();
+            if (ev && ev.stopPropagation) ev.stopPropagation();
+            removeMerk(gk, key);  // Haken weg → Eintrag weg
+            renderMerkOverlay();
+          });
+        })(groupKey, merkKeyOf(it));
+        actions.appendChild(rm);
+        row.appendChild(actions);
+        groupEl.appendChild(row);
+      });
+      merkOverlayEl.appendChild(groupEl);
+    });
+  }
+
   // ---- Korpus ----
 
   function setCorpus(corpus) {
@@ -2350,7 +2859,10 @@
           el.classList.contains("sbkim-sw-euchip") ||
           el.classList.contains("sbkim-sw-result") ||
           el.classList.contains("sbkim-sw-result-link") ||
+          el.classList.contains("sbkim-sw-result-title") ||
           el.classList.contains("sbkim-sw-check") ||
+          el.classList.contains("sbkim-sw-merkbox") ||
+          el.classList.contains("sbkim-sw-overlay") ||
           el.classList.contains("sbkim-sw-resize") ||
           el.classList.contains("sbkim-sw-searxng"))) return true;
       el = el.parentNode;
@@ -2532,6 +3044,10 @@
     applyVisibility();
     applyState();
     applySizeToPanel();
+    attachViewportListener();
+    // Heilung: eine auf großem Schirm gezogene Position kann auf kleinem Schirm
+    // (oder im Splitscreen) schon beim Mount aus dem Bild liegen.
+    clampPositionIntoView();
   }
 
   function setupMountObserver(doc) {
@@ -2628,6 +3144,8 @@
 
   function collapse() {
     if (!ready) { warn("collapse() vor init() — no-op."); return; }
+    hideOverlays();                        // Minimieren schließt offene Overlays
+    if (fullscreenFlag) exitFullscreen();  // Minimieren beendet auch Vollbild
     var before = widgetRoot ? widgetRoot.getBoundingClientRect() : null;
     expandedFlag = false;
     persistState();
@@ -2635,6 +3153,48 @@
     keepCenterAcrossResize(before);
     persistPosition();
   }
+
+  // ---- Vollbild-Modus (⛶, Klaus 2026-06-22) ----
+  // Zweite Anzeige DERSELBEN Treffer (kein Kern-Umbau): das vorhandene Panel
+  // füllt den ganzen Viewport. Bewusst NICHT persistiert — die Pille bleibt der
+  // Standard-Start, Vollbild ist immer eine bewusste Nutzer-Aktion.
+
+  function applyFullscreen() {
+    if (!widgetRoot) return;
+    if (fullscreenFlag) widgetRoot.classList.add("sbkim-sw-fullscreen");
+    else widgetRoot.classList.remove("sbkim-sw-fullscreen");
+    updateFullscreenBtn();
+  }
+
+  function updateFullscreenBtn() {
+    if (!fullscreenBtnEl) return;
+    fullscreenBtnEl.textContent = fullscreenFlag ? "🗗" : "⛶";
+    fullscreenBtnEl.setAttribute("aria-label",
+      fullscreenFlag ? "Vollbild verlassen — zurück zum Panel" : "Vollbild — Suchraum groß");
+  }
+
+  function enterFullscreen() {
+    if (!ready) { warn("enterFullscreen() vor init() — no-op."); return; }
+    fullscreenFlag = true;
+    expandedFlag = true;   // Vollbild zeigt immer das Panel
+    persistState();
+    applyState();
+    applyFullscreen();
+  }
+
+  function exitFullscreen() {
+    if (!ready) { warn("exitFullscreen() vor init() — no-op."); return; }
+    fullscreenFlag = false;
+    applyFullscreen();
+    // Inline-Position/-Größe wieder herstellen (Klasse mit !important ist weg).
+    applyPositionToRoot();
+    applySizeToPanel();
+    clampPositionIntoView();
+  }
+
+  function toggleFullscreen() { if (fullscreenFlag) exitFullscreen(); else enterFullscreen(); }
+
+  function isFullscreen() { return !!fullscreenFlag; }
 
   // Such-Inhalt leeren (Frage, eingefügte KI-Antwort, Schärfen-Kontext, Treffer).
   // Der Tresor bleibt unberührt — das ist Identität, kein „Inhalt".
@@ -2656,6 +3216,8 @@
   // BEHÄLT ihn (Klaus 2026-06-21).
   function dockToTop() {
     if (!ready) { warn("dockToTop() vor init() — no-op."); return; }
+    if (fullscreenFlag) { fullscreenFlag = false; applyFullscreen(); }
+    hideOverlays();
     expandedFlag = false;
     visibleFlag = true;
     currentCorner = NAV_DOCK_CORNER;
@@ -2796,6 +3358,14 @@
     collapse: collapse,
     dockToTop: dockToTop,
     isExpanded: isExpanded,
+    enterFullscreen: enterFullscreen,
+    exitFullscreen: exitFullscreen,
+    toggleFullscreen: toggleFullscreen,
+    isFullscreen: isFullscreen,
+    openMerkliste: openMerkliste,
+    closeOverlays: closeOverlays,
+    getMerkliste: getMerkliste,
+    clearMerkliste: clearMerkliste,
     getPosition: getPosition,
     getSize: getSize,
     setSize: setSize,
@@ -2832,6 +3402,10 @@
       get vaultUnlocked() { return vaultUnlocked; },
       get visible() { return isVisible(); },
       get expanded() { return !!expandedFlag; },
+      get fullscreen() { return !!fullscreenFlag; },
+      get merkCount() { return merkCount(); },
+      get merkOverlayOpen() { return !!merkOverlayOpen; },
+      get detailOverlayOpen() { return !!detailOverlayOpen; },
       get panelWidth() { return panelWidth; },
       get resultsHeight() { return resultsHeight; },
       get widgetMounted() { return !!(widgetRoot && widgetRoot.parentNode); },

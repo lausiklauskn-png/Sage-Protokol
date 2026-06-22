@@ -1841,6 +1841,50 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-22 · Bau 22 Folge: Splitscreen-Fix + Vollbild-Modus + Merken-Liste
+
+**Rolle:** Bau-Sitzung Modul 22 (Folge des Brainstorms 2026-06-22,
+`BRIEF_BAU_22_VOLLBILD_MERKEN.md`). Freibrief.
+
+**Was getan:** drei abgegrenzte Features (je eigener Commit), alle auf
+`src/modules/22_such_widget.js` + byte-genaue Standalone-Kopie
+`such-tool/modules/22_such_widget.js` (Drift-Guard):
+
+1. **Splitscreen-Fix.** Ein einmaliger Window-Listener (`resize` +
+   `orientationchange`) klemmt die gezogene (freie) Position über
+   `clampPositionIntoView` zurück in den sichtbaren Bereich (24 px Rand-Reserve).
+   Heilung schon beim Mount; geklemmte Position persistiert; fail-soft ohne
+   `addEventListener`. Smoke Probe 45.
+2. **Vollbild-Modus (⛶).** „Ein Werkzeug, zwei Gestalten": Pille bleibt
+   Standard-Start; ⛶-Knopf im Panel-Kopf lässt das Panel den Viewport füllen
+   (CSS `.sbkim-sw-fullscreen`, zweite Anzeige derselben Treffer, kein
+   Kern-Umbau). NICHT persistiert (kein Auto-Vollbild). Verlassen via ⛶→🗗,
+   Minimieren (–), X. Auf `such-tool/` automatisch verfügbar. Surface
+   `enterFullscreen/exitFullscreen/toggleFullscreen/isFullscreen`,
+   `_meta.fullscreen`. Smoke Probe 46.
+3. **Merken-Liste (📌).** Haken pro Treffer → Gemerktes in `localStorage`
+   (`sbkim_search_widget_merkliste`, nur Text+Link, KEINE PII, kein Protokoll),
+   **gruppiert unter der Suchfrage** als Überschrift; Haken weg → Eintrag weg;
+   alle Treffer-Arten mit Badge. Tool-eigene **Detail-Karte** (Overlay) beim
+   Tippen: Titel/Beschreibung/URL + [📌 Merken] + [↗ Seite öffnen neuer Tab];
+   Linksklick öffnet Karte, Rechtsklick bleibt „in neuem Tab". **Merkliste-
+   Overlay** (📌-Kopf-Knopf), gruppiert, je Eintrag öffnen/entfernen + „Alles
+   entfernen". Surface `openMerkliste/closeOverlays/getMerkliste/clearMerkliste`,
+   `_meta.merkCount/merkOverlayOpen/detailOverlayOpen`. Smoke Probe 47.
+
+INTERFACES § Modul 22 + Karte 22 + `manual_check` Panel 22 (Vollbild- +
+Merken-Knöpfe) nachgezogen. Headless-Smoke `smoke_bau22_such_widget.mjs`
+**208/208**, Standalone `smoke_standalone_such_tool.mjs` **46/46**.
+
+**Was offen:** **Klaus' Browser-Sichttest** aller drei Features am Galaxy Tab S6
+(headless ersetzt ihn nicht) — Splitscreen-Rückklemmung im DeX-Fenster,
+⛶-Vollbild, 📌-Merken + Detail-Karte. **Vergleich/Splitscreen-zwei-Spalten**
+(Form 1/2/3) und **Pilz-Server/Geld-Modell** (Phase D.2) bleiben offen für Klaus
+(Richtungsentscheid, nicht in dieser Sitzung).
+
+**Nächster Schritt:** Klaus testet im Browser → bei grün pro Feature mergen.
+Danach Klaus' Form-Wahl für den Vergleich.
+
 ### 2026-06-22 · Sitzungs-Abschluss: Briefkasten + Brainstorm-Brief (Vollbild/Merken/Pilz-Wirtschaft)
 
 **Rolle:** Abschluss der Such-Werkzeug-Sitzung (nach PR #388 Resize + PR #389

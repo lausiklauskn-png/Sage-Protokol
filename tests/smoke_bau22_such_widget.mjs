@@ -144,6 +144,13 @@ stub.console = console;
 stub.setTimeout = setTimeout;
 stub.clearTimeout = clearTimeout;
 stub.MutationObserver = undefined; // body existiert sofort, Observer nicht nötig
+// Window-Event-System (für den Splitscreen-Fix: resize/orientationchange).
+stub._listeners = {};
+stub.addEventListener = (type, cb) => { (stub._listeners[type] = stub._listeners[type] || []).push(cb); };
+stub.removeEventListener = (type, cb) => {
+  const a = stub._listeners[type]; if (!a) return; const i = a.indexOf(cb); if (i >= 0) a.splice(i, 1);
+};
+stub.dispatchEvent = (ev) => { (stub._listeners[ev.type] || []).slice().forEach(cb => { try { cb(ev); } catch (e) { console.error(e); } }); return true; };
 globalThis.window = stub;
 
 const src = readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8");
@@ -812,6 +819,123 @@ async function run() {
   record("Probe 44: Reset löscht localStorage-Größe", "true",
     String(ls4.getItem("sbkim_search_widget_size") === null), ls4.getItem("sbkim_search_widget_size") === null);
   globalThis.window = stub; // zurück für evtl. Folge-Proben
+
+  // ---- Probe 45: Splitscreen-Fix — Pille bei Viewport-Änderung zurück-klemmen ----
+  // Erst weit nach unten-rechts ziehen (bei 1024×768 auf die Clamp-Reserve), dann
+  // den Viewport auf 400×400 schrumpfen und resize feuern → Position muss in den
+  // sichtbaren Bereich (vw-24 / vh-24) zurück-geklemmt werden.
+  stub.innerWidth = 1024; stub.innerHeight = 768;
+  root.dispatchEvent({ type: "pointerdown", target: root, pointerId: 11, clientX: 100, clientY: 100 });
+  root.dispatchEvent({ type: "pointermove", target: root, pointerId: 11, clientX: 2100, clientY: 2100 });
+  root.dispatchEvent({ type: "pointerup", target: root, pointerId: 11, clientX: 2100, clientY: 2100 });
+  const posBefore = W.getPosition();
+  eq("Probe 45: gezogen an rechte Clamp-Reserve (x=1000)", "1000", String(posBefore.x));
+  eq("Probe 45: gezogen an untere Clamp-Reserve (y=744)", "744", String(posBefore.y));
+  stub.innerWidth = 400; stub.innerHeight = 400;
+  stub.dispatchEvent({ type: "resize" });
+  const posAfter = W.getPosition();
+  eq("Probe 45: x ins kleine Feld geklemmt (400-24)", "376", String(posAfter.x));
+  eq("Probe 45: y ins kleine Feld geklemmt (400-24)", "376", String(posAfter.y));
+  const posPersist = JSON.parse(stub.localStorage.getItem("sbkim_search_widget_position") || "{}");
+  eq("Probe 45: geklemmte Position persistiert", "376", String(posPersist.x));
+  // orientationchange greift denselben Pfad: noch kleiner → erneut klemmen.
+  stub.innerWidth = 200; stub.innerHeight = 200;
+  stub.dispatchEvent({ type: "orientationchange" });
+  eq("Probe 45: orientationchange klemmt erneut (200-24)", "176", String(W.getPosition().x));
+  stub.innerWidth = 1024; stub.innerHeight = 768; // Viewport zurücksetzen
+
+  // ---- Probe 46: Vollbild-Modus (⛶) — zweite Anzeige, nicht persistiert ----
+  for (const fn of ["enterFullscreen", "exitFullscreen", "toggleFullscreen", "isFullscreen"]) {
+    record("Probe 46: " + fn + " exportiert", "function", typeof W[fn], typeof W[fn] === "function");
+  }
+  eq("Probe 46: Default kein Vollbild", "false", String(W.isFullscreen()));
+  eq("Probe 46: _meta.fullscreen Default", "false", String(W._meta.fullscreen));
+  W.expand();
+  const fsBtn = queryFirst(root, ".sbkim-sw-fs");
+  record("Probe 46: ⛶-Knopf existiert", "true", String(!!fsBtn), !!fsBtn);
+  fsBtn.dispatchEvent({ type: "click", target: fsBtn, stopPropagation: () => {} });
+  eq("Probe 46: Klick → Vollbild an", "true", String(W.isFullscreen()));
+  eq("Probe 46: Root hat Vollbild-Klasse", "true", String(root._classes.has("sbkim-sw-fullscreen")));
+  eq("Probe 46: Knopf wechselt auf verkleinern (🗗)", "🗗", fsBtn.textContent);
+  eq("Probe 46: Vollbild zeigt Panel (expanded)", "true", String(W.isExpanded()));
+  eq("Probe 46: nicht persistiert (kein fullscreen-LS-Key)", "null",
+    String(stub.localStorage.getItem("sbkim_search_widget_fullscreen")));
+  fsBtn.dispatchEvent({ type: "click", target: fsBtn, stopPropagation: () => {} });
+  eq("Probe 46: zweiter Klick → Vollbild aus", "false", String(W.isFullscreen()));
+  eq("Probe 46: Vollbild-Klasse entfernt", "false", String(root._classes.has("sbkim-sw-fullscreen")));
+  // Minimieren (–) beendet auch Vollbild.
+  W.enterFullscreen();
+  eq("Probe 46: enterFullscreen → an", "true", String(W.isFullscreen()));
+  W.collapse();
+  eq("Probe 46: collapse beendet Vollbild", "false", String(W.isFullscreen()));
+  eq("Probe 46: collapse → nicht expanded", "false", String(W.isExpanded()));
+  // X (dockToTop) beendet ebenfalls Vollbild.
+  W.expand(); W.enterFullscreen();
+  W.dockToTop();
+  eq("Probe 46: dockToTop beendet Vollbild", "false", String(W.isFullscreen()));
+
+  // ---- Probe 47: Merken-Liste (Haken + Detail-Karte + Merkliste-Overlay) ----
+  for (const fn of ["openMerkliste", "closeOverlays", "getMerkliste", "clearMerkliste"]) {
+    record("Probe 47: " + fn + " exportiert", "function", typeof W[fn], typeof W[fn] === "function");
+  }
+  stub.localStorage.removeItem("sbkim_search_widget_merkliste");
+  const URL_CORPUS = [
+    { label: "Imkerei Walachei", text: "Honig direkt vom Imker", url: "https://imker.example/honig", passageVec: new Float32Array(384), anchorId: "https://imker.example/honig" },
+    { label: "Honig-Shop", text: "Karpaten-Honig kaufen", url: "https://shop.example/honig", passageVec: new Float32Array(384), anchorId: "https://shop.example/honig" },
+  ];
+  mountMatch("treffer");
+  await W.init({ areas: { app: true, knoten: false, internet: false }, richter: false });
+  W.setCorpus(URL_CORPUS);
+  eq("Probe 47: Merkliste anfangs leer", "0", String(W._meta.merkCount));
+  const inp47 = queryFirst(root, ".sbkim-sw-input");
+  inp47.value = "leckerer honig aus der walachei";
+  const searchBtn47 = queryFirst(root, ".sbkim-sw-search");
+  searchBtn47.dispatchEvent({ type: "click", target: searchBtn47, stopPropagation: () => {}, preventDefault: () => {} });
+  await new Promise(r => setTimeout(r, 0));
+  await new Promise(r => setTimeout(r, 0));
+  const rEl47 = queryFirst(root, ".sbkim-sw-results");
+  const merkbox = queryFirst(rEl47, ".sbkim-sw-merkbox");
+  record("Probe 47: Merken-Haken pro Treffer existiert", "true", String(!!merkbox), !!merkbox);
+  // Haken setzen → in die Merkliste, gruppiert unter der Suchfrage.
+  merkbox._input.dispatchEvent({ type: "change", target: merkbox._input });
+  eq("Probe 47: Haken setzen → 1 gemerkt", "1", String(W._meta.merkCount));
+  const ml47 = W.getMerkliste();
+  eq("Probe 47: gruppiert unter Suchfrage", "true",
+    String(Array.isArray(ml47["leckerer honig aus der walachei"]) && ml47["leckerer honig aus der walachei"].length === 1));
+  const stored47 = ml47["leckerer honig aus der walachei"][0];
+  eq("Probe 47: nur Text+Link (kein passageVec)", "false", String("passageVec" in stored47));
+  eq("Probe 47: nur Text+Link (kein score)", "false", String("score" in stored47));
+  record("Probe 47: Link gespeichert", "true", String(!!stored47.url), !!stored47.url);
+  eq("Probe 47: Badge-Art (source) gespeichert", "app", stored47.source);
+  // Haken weg → Eintrag weg.
+  merkbox._input.dispatchEvent({ type: "change", target: merkbox._input });
+  eq("Probe 47: Haken weg → 0", "0", String(W._meta.merkCount));
+  // Detail-Karte: Klick auf den Treffer-Titel öffnet das Overlay.
+  const titleLink = queryFirst(rEl47, ".sbkim-sw-result-link");
+  titleLink.dispatchEvent({ type: "click", target: titleLink, stopPropagation: () => {}, preventDefault: () => {} });
+  eq("Probe 47: Treffer-Klick öffnet Detail-Karte", "true", String(W._meta.detailOverlayOpen));
+  const detail = queryFirst(root, ".sbkim-sw-detail");
+  const detailMerk = queryFirst(detail, ".sbkim-sw-detail-merk");
+  record("Probe 47: Detail-Karte hat Merken-Knopf", "true", String(!!detailMerk), !!detailMerk);
+  record("Probe 47: Detail-Karte hat Seite-öffnen-Knopf", "true",
+    String(!!queryFirst(detail, ".sbkim-sw-detail-open")), !!queryFirst(detail, ".sbkim-sw-detail-open"));
+  detailMerk.dispatchEvent({ type: "click", target: detailMerk, stopPropagation: () => {}, preventDefault: () => {} });
+  eq("Probe 47: Merken aus Detail-Karte → 1", "1", String(W._meta.merkCount));
+  const back = queryFirst(detail, ".sbkim-sw-back");
+  back.dispatchEvent({ type: "click", target: back, stopPropagation: () => {} });
+  eq("Probe 47: Zurück schließt Detail-Karte", "false", String(W._meta.detailOverlayOpen));
+  // Merkliste-Overlay: 📌-Knopf öffnet, Suchfrage ist die Überschrift.
+  const merkBtn47 = queryFirst(root, ".sbkim-sw-merkbtn");
+  merkBtn47.dispatchEvent({ type: "click", target: merkBtn47, stopPropagation: () => {} });
+  eq("Probe 47: 📌-Knopf öffnet Merkliste", "true", String(W._meta.merkOverlayOpen));
+  const groupTitle = queryFirst(queryFirst(root, ".sbkim-sw-merk"), ".sbkim-sw-merk-group-title");
+  eq("Probe 47: Frage als Gruppen-Überschrift", "leckerer honig aus der walachei",
+    groupTitle ? groupTitle.textContent : "");
+  // clearMerkliste leert alles + localStorage.
+  W.clearMerkliste();
+  eq("Probe 47: clearMerkliste → 0", "0", String(W._meta.merkCount));
+  eq("Probe 47: localStorage-Merkliste entfernt", "null",
+    String(stub.localStorage.getItem("sbkim_search_widget_merkliste")));
 }
 
 const finalize = () => {

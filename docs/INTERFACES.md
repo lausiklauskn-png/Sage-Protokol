@@ -4247,6 +4247,22 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         //   Treffer) für frischen Start; Minimieren (–) BEHÄLT
                                         //   ihn. Tresor bleibt unberührt (Identität, kein Inhalt).
   isExpanded()       → boolean (sync)
+  enterFullscreen()  → void (sync)      // Vollbild-Modus (⛶, 2026-06-22): das Panel füllt
+                                        //   den ganzen Viewport — zweite Anzeige DERSELBEN
+                                        //   Treffer (kein Kern-Umbau). Setzt expanded.
+  exitFullscreen()   → void (sync)      // zurück zum Panel (Position/Größe wiederhergestellt).
+  toggleFullscreen() → void (sync)      // ⛶-Knopf im Kopf. NICHT persistiert — die Pille
+                                        //   bleibt Standard-Start (kein Auto-Vollbild).
+  isFullscreen()     → boolean (sync)
+  // ---- Merken-Liste (Klaus 2026-06-22; nur Text+Link, localStorage, kein Protokoll) ----
+  openMerkliste()    → void (sync)      // 📌-Knopf im Kopf: Merkliste-Overlay (gemerkte
+                                        //   Treffer, GRUPPIERT unter der Suchfrage als Überschrift).
+  closeOverlays()    → void (sync)      // Detail-Karte / Merkliste schließen ("Zurück").
+  getMerkliste()     → Object (sync)    // defensive Kopie { "<suchfrage>": [{titel,url,text,source,addedAt}] }
+  clearMerkliste()   → void (sync)      // ganze Merkliste leeren (localStorage-Eintrag weg).
+                                        //   Pro Treffer ein 📌-Haken; Klick auf einen Treffer
+                                        //   öffnet die Tool-eigene Detail-Karte ([📌 Merken] /
+                                        //   [↗ Seite öffnen im neuen Tab]). Badge je Art (App/Knoten/Netz).
   getPosition()      → PositionSnapshot // defensive Kopie {corner,offsetX,offsetY,x,y}
   getSize()          → {panelWidth,resultsHeight}  // px oder null (CSS-Default)
   setSize(opts)      → void             // {panelWidth?,resultsHeight?} px; null=Reset;
@@ -4287,8 +4303,9 @@ Bietet (öffentlich, window.SbkimSearchWidget):
   aiAutoSupported()  → boolean (sync)   // ob der gewählte Anbieter den Auto-Aufruf kann (z.Z. claude).
   _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
                      //   richterOn, hasSearxng, webEngine, aiProvider, aiProviders, hasPastedAi,
-                     //   visible, expanded, widgetMounted, lastSearchMode, searchCount,
-                     //   hasApiKey, coupled:false }
+                     //   visible, expanded, fullscreen, merkCount, merkOverlayOpen, detailOverlayOpen,
+                     //   widgetMounted, lastSearchMode, searchCount, hasApiKey, coupled:false }
+                     //   localStorage zusätzlich: sbkim_search_widget_merkliste (Text+Link, gruppiert)
 
 options-Form (init):
   {

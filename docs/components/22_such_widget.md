@@ -293,6 +293,7 @@ Mapping:
 | `sbkim_search_widget_position` | JSON eines `PositionSnapshot` | `{corner:"bottom-right",offsetX:16,offsetY:16}` |
 | `sbkim_search_widget_state` | `"collapsed"` \| `"expanded"` | `"collapsed"` |
 | `sbkim_search_widget_size` | JSON `{w,h}` (Panel-Breite / Lesefeld-Höhe in px) | nicht gesetzt → CSS-Default |
+| `sbkim_search_widget_merkliste` | JSON `{ "<suchfrage>": [{titel,url,text,source,addedAt}] }` | nicht gesetzt → leer |
 
 ## Ziehbare Panel-Größe (Resize-Griff, 2026-06-22)
 
@@ -319,6 +320,73 @@ bleibt nach Hard-Reload erhalten** (Persistenz live bestätigt). Die Lesefeld-H�
 ist eine **Maximal-Höhe** (`max-height`): mit wenig Treffern bleibt das Feld kurz,
 mit vielen wächst es bis zur gezogenen Höhe und scrollt dann — von Klaus als
 gewünschtes Verhalten bestätigt (kein leerer Platz bei wenig Treffern).
+
+## Merken-Liste / „Mein Korb" (📌, 2026-06-22)
+
+Klaus' Wunsch: Suchtreffer durchgehen, die guten **behalten**. Drei Bausteine:
+
+- **Haken pro Treffer (📌).** Jede Treffer-Zeile trägt einen kleinen Merk-Haken.
+  Gesetzt → der Treffer landet in der Merkliste, **gruppiert unter der Suchfrage
+  als Überschrift** (nicht dem Seitennamen — die Frage „leckerer Honig aus der
+  Walachei" ist die Überschrift, die Quelle steht darunter). Haken weg → Eintrag
+  weg. Funktioniert für **alle** Treffer-Arten (App/Knoten/Netz), Badge je Art.
+- **Tool-eigene Detail-Karte (Overlay).** Tippen auf einen Treffer öffnet eine
+  Karte in den Tool-Farben: Titel + Beschreibung + URL + **[📌 Merken]** +
+  **[↗ Seite öffnen]**. „‹ Zurück" schließt sie. Merken aus dem Overlay gilt
+  sofort (die URL ist gespeichert). **[↗ Seite öffnen]** öffnet die echte Seite
+  **im neuen Tab** — bei Treffern mit Link bleibt der Rechtsklick auf den Titel
+  („in neuem Tab öffnen") zusätzlich erhalten; der Linksklick öffnet die Karte.
+  - **Ehrliche Grenze:** die fremde Seite lässt sich nicht im Tool einbetten/
+    umfärben und kein Merken-Knopf in sie injizieren (Browser/Origin verbieten
+    es). Darum passiert Merken in **unserer** Detail-Karte, nicht auf der Seite.
+- **Merkliste-Overlay (📌-Kopf-Knopf).** Zeigt das Gemerkte, gruppiert nach
+  Suchfrage; je Eintrag „↗ öffnen" + „✕ entfernen"; „Alles entfernen" leert alles.
+
+**Speicher:** nur `localStorage` `sbkim_search_widget_merkliste`, **nur Text +
+Link** (+ Quelle/Datum für Anzeige) — keine Vektoren, **keine PII**, kein
+IndexedDB, kein Protokoll-Bump. Surface: `openMerkliste()` · `closeOverlays()` ·
+`getMerkliste()` · `clearMerkliste()`; `_meta.merkCount` / `merkOverlayOpen` /
+`detailOverlayOpen`. Headless-Smoke Probe 47.
+
+## Vollbild-Modus „Suchraum" (⛶, 2026-06-22)
+
+Klaus' Kern-Entscheidung „ein Werkzeug, zwei Gestalten": der **Begleiter** (die
+Pille) bleibt der Standard-Start; auf Wunsch wächst das Tool per **⛶-Knopf** im
+Panel-Kopf zum **Suchraum** — Vollbild, Suchfeld oben, Treffer füllen die Fläche.
+
+- **Zweite Anzeige derselben Treffer, kein Kern-Umbau.** Vollbild ist nur eine
+  CSS-Vergrößerung des **vorhandenen** Panels (`.sbkim-sw-fullscreen` auf dem
+  Root: `inset:0`, Panel `width/height:100%`, Treffer-Liste `max-height:none`).
+  Dieselbe Such-Maschine, derselbe `resultsEl` — nichts wird dupliziert.
+- **NICHT persistiert / kein Auto-Start** (Klaus: manche wollen erst klein). Nach
+  Reload startet das Tool wieder als Pille. Vollbild ist immer eine bewusste Geste.
+- **Verlassen:** ⛶-Knopf wechselt auf 🗗 (verkleinern); zusätzlich beenden
+  **Minimieren (–)** und **X (dockToTop)** den Vollbild-Modus.
+- **Z-Index 9996** im Vollbild (über den anderen Floating-Tools, unter App-Modals
+  9999).
+- **Auf `such-tool/` automatisch verfügbar** (byte-genaue Modul-Kopie) — ⛶ ist
+  ein Knopf, kein Auto-Verhalten.
+- Surface: `enterFullscreen()` · `exitFullscreen()` · `toggleFullscreen()` ·
+  `isFullscreen()`; `_meta.fullscreen`. Headless-Smoke Probe 46.
+
+## Splitscreen-Fix — Position bei Viewport-Änderung zurück-klemmen (2026-06-22)
+
+Klaus' Befund: Im geteilten Bildschirm (Splitscreen / DeX-Fenster-Resize /
+Geräte-Drehung) rutscht die Pille aus dem Sichtfeld. **Fix:** ein einmaliger
+Window-Listener auf `resize` **und** `orientationchange` klemmt die **gezogene
+(freie) Position** bei jeder Viewport-Änderung zurück in den sichtbaren Bereich
+(`clampPositionIntoView`). Mindestens 24 px bleiben am Rand sichtbar (spiegelt
+die Drag-Clamp-Reserve).
+
+- **Nur freie Positionen** werden korrigiert — ecken-verankerte Widgets bleiben
+  durch CSS ohnehin am Rand sichtbar.
+- **Heilung schon beim Mount:** eine auf großem Schirm gezogene Position, die auf
+  kleinem Schirm (Inkognito-Wechsel, anderes Gerät) aus dem Bild läge, wird beim
+  ersten Mount sofort geklemmt.
+- Die geklemmte Position **persistiert** (`localStorage`), damit sie nicht beim
+  nächsten Start wieder aus dem Bild springt.
+- Fail-soft: fehlt `window.addEventListener` (Headless), bleibt nur die statische
+  Position — kein Throw. Headless-Smoke Probe 45.
 
 ## UX-Lehre „Eingabe-Erhalt" (von BLP/Modul 21 übernommen)
 
