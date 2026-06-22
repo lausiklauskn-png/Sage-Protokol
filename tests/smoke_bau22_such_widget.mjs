@@ -873,6 +873,69 @@ async function run() {
   W.expand(); W.enterFullscreen();
   W.dockToTop();
   eq("Probe 46: dockToTop beendet Vollbild", "false", String(W.isFullscreen()));
+
+  // ---- Probe 47: Merken-Liste (Haken + Detail-Karte + Merkliste-Overlay) ----
+  for (const fn of ["openMerkliste", "closeOverlays", "getMerkliste", "clearMerkliste"]) {
+    record("Probe 47: " + fn + " exportiert", "function", typeof W[fn], typeof W[fn] === "function");
+  }
+  stub.localStorage.removeItem("sbkim_search_widget_merkliste");
+  const URL_CORPUS = [
+    { label: "Imkerei Walachei", text: "Honig direkt vom Imker", url: "https://imker.example/honig", passageVec: new Float32Array(384), anchorId: "https://imker.example/honig" },
+    { label: "Honig-Shop", text: "Karpaten-Honig kaufen", url: "https://shop.example/honig", passageVec: new Float32Array(384), anchorId: "https://shop.example/honig" },
+  ];
+  mountMatch("treffer");
+  await W.init({ areas: { app: true, knoten: false, internet: false }, richter: false });
+  W.setCorpus(URL_CORPUS);
+  eq("Probe 47: Merkliste anfangs leer", "0", String(W._meta.merkCount));
+  const inp47 = queryFirst(root, ".sbkim-sw-input");
+  inp47.value = "leckerer honig aus der walachei";
+  const searchBtn47 = queryFirst(root, ".sbkim-sw-search");
+  searchBtn47.dispatchEvent({ type: "click", target: searchBtn47, stopPropagation: () => {}, preventDefault: () => {} });
+  await new Promise(r => setTimeout(r, 0));
+  await new Promise(r => setTimeout(r, 0));
+  const rEl47 = queryFirst(root, ".sbkim-sw-results");
+  const merkbox = queryFirst(rEl47, ".sbkim-sw-merkbox");
+  record("Probe 47: Merken-Haken pro Treffer existiert", "true", String(!!merkbox), !!merkbox);
+  // Haken setzen → in die Merkliste, gruppiert unter der Suchfrage.
+  merkbox._input.dispatchEvent({ type: "change", target: merkbox._input });
+  eq("Probe 47: Haken setzen → 1 gemerkt", "1", String(W._meta.merkCount));
+  const ml47 = W.getMerkliste();
+  eq("Probe 47: gruppiert unter Suchfrage", "true",
+    String(Array.isArray(ml47["leckerer honig aus der walachei"]) && ml47["leckerer honig aus der walachei"].length === 1));
+  const stored47 = ml47["leckerer honig aus der walachei"][0];
+  eq("Probe 47: nur Text+Link (kein passageVec)", "false", String("passageVec" in stored47));
+  eq("Probe 47: nur Text+Link (kein score)", "false", String("score" in stored47));
+  record("Probe 47: Link gespeichert", "true", String(!!stored47.url), !!stored47.url);
+  eq("Probe 47: Badge-Art (source) gespeichert", "app", stored47.source);
+  // Haken weg → Eintrag weg.
+  merkbox._input.dispatchEvent({ type: "change", target: merkbox._input });
+  eq("Probe 47: Haken weg → 0", "0", String(W._meta.merkCount));
+  // Detail-Karte: Klick auf den Treffer-Titel öffnet das Overlay.
+  const titleLink = queryFirst(rEl47, ".sbkim-sw-result-link");
+  titleLink.dispatchEvent({ type: "click", target: titleLink, stopPropagation: () => {}, preventDefault: () => {} });
+  eq("Probe 47: Treffer-Klick öffnet Detail-Karte", "true", String(W._meta.detailOverlayOpen));
+  const detail = queryFirst(root, ".sbkim-sw-detail");
+  const detailMerk = queryFirst(detail, ".sbkim-sw-detail-merk");
+  record("Probe 47: Detail-Karte hat Merken-Knopf", "true", String(!!detailMerk), !!detailMerk);
+  record("Probe 47: Detail-Karte hat Seite-öffnen-Knopf", "true",
+    String(!!queryFirst(detail, ".sbkim-sw-detail-open")), !!queryFirst(detail, ".sbkim-sw-detail-open"));
+  detailMerk.dispatchEvent({ type: "click", target: detailMerk, stopPropagation: () => {}, preventDefault: () => {} });
+  eq("Probe 47: Merken aus Detail-Karte → 1", "1", String(W._meta.merkCount));
+  const back = queryFirst(detail, ".sbkim-sw-back");
+  back.dispatchEvent({ type: "click", target: back, stopPropagation: () => {} });
+  eq("Probe 47: Zurück schließt Detail-Karte", "false", String(W._meta.detailOverlayOpen));
+  // Merkliste-Overlay: 📌-Knopf öffnet, Suchfrage ist die Überschrift.
+  const merkBtn47 = queryFirst(root, ".sbkim-sw-merkbtn");
+  merkBtn47.dispatchEvent({ type: "click", target: merkBtn47, stopPropagation: () => {} });
+  eq("Probe 47: 📌-Knopf öffnet Merkliste", "true", String(W._meta.merkOverlayOpen));
+  const groupTitle = queryFirst(queryFirst(root, ".sbkim-sw-merk"), ".sbkim-sw-merk-group-title");
+  eq("Probe 47: Frage als Gruppen-Überschrift", "leckerer honig aus der walachei",
+    groupTitle ? groupTitle.textContent : "");
+  // clearMerkliste leert alles + localStorage.
+  W.clearMerkliste();
+  eq("Probe 47: clearMerkliste → 0", "0", String(W._meta.merkCount));
+  eq("Probe 47: localStorage-Merkliste entfernt", "null",
+    String(stub.localStorage.getItem("sbkim_search_widget_merkliste")));
 }
 
 const finalize = () => {

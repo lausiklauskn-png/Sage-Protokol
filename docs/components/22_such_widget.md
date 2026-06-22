@@ -293,6 +293,7 @@ Mapping:
 | `sbkim_search_widget_position` | JSON eines `PositionSnapshot` | `{corner:"bottom-right",offsetX:16,offsetY:16}` |
 | `sbkim_search_widget_state` | `"collapsed"` \| `"expanded"` | `"collapsed"` |
 | `sbkim_search_widget_size` | JSON `{w,h}` (Panel-Breite / Lesefeld-Höhe in px) | nicht gesetzt → CSS-Default |
+| `sbkim_search_widget_merkliste` | JSON `{ "<suchfrage>": [{titel,url,text,source,addedAt}] }` | nicht gesetzt → leer |
 
 ## Ziehbare Panel-Größe (Resize-Griff, 2026-06-22)
 
@@ -319,6 +320,33 @@ bleibt nach Hard-Reload erhalten** (Persistenz live bestätigt). Die Lesefeld-H�
 ist eine **Maximal-Höhe** (`max-height`): mit wenig Treffern bleibt das Feld kurz,
 mit vielen wächst es bis zur gezogenen Höhe und scrollt dann — von Klaus als
 gewünschtes Verhalten bestätigt (kein leerer Platz bei wenig Treffern).
+
+## Merken-Liste / „Mein Korb" (📌, 2026-06-22)
+
+Klaus' Wunsch: Suchtreffer durchgehen, die guten **behalten**. Drei Bausteine:
+
+- **Haken pro Treffer (📌).** Jede Treffer-Zeile trägt einen kleinen Merk-Haken.
+  Gesetzt → der Treffer landet in der Merkliste, **gruppiert unter der Suchfrage
+  als Überschrift** (nicht dem Seitennamen — die Frage „leckerer Honig aus der
+  Walachei" ist die Überschrift, die Quelle steht darunter). Haken weg → Eintrag
+  weg. Funktioniert für **alle** Treffer-Arten (App/Knoten/Netz), Badge je Art.
+- **Tool-eigene Detail-Karte (Overlay).** Tippen auf einen Treffer öffnet eine
+  Karte in den Tool-Farben: Titel + Beschreibung + URL + **[📌 Merken]** +
+  **[↗ Seite öffnen]**. „‹ Zurück" schließt sie. Merken aus dem Overlay gilt
+  sofort (die URL ist gespeichert). **[↗ Seite öffnen]** öffnet die echte Seite
+  **im neuen Tab** — bei Treffern mit Link bleibt der Rechtsklick auf den Titel
+  („in neuem Tab öffnen") zusätzlich erhalten; der Linksklick öffnet die Karte.
+  - **Ehrliche Grenze:** die fremde Seite lässt sich nicht im Tool einbetten/
+    umfärben und kein Merken-Knopf in sie injizieren (Browser/Origin verbieten
+    es). Darum passiert Merken in **unserer** Detail-Karte, nicht auf der Seite.
+- **Merkliste-Overlay (📌-Kopf-Knopf).** Zeigt das Gemerkte, gruppiert nach
+  Suchfrage; je Eintrag „↗ öffnen" + „✕ entfernen"; „Alles entfernen" leert alles.
+
+**Speicher:** nur `localStorage` `sbkim_search_widget_merkliste`, **nur Text +
+Link** (+ Quelle/Datum für Anzeige) — keine Vektoren, **keine PII**, kein
+IndexedDB, kein Protokoll-Bump. Surface: `openMerkliste()` · `closeOverlays()` ·
+`getMerkliste()` · `clearMerkliste()`; `_meta.merkCount` / `merkOverlayOpen` /
+`detailOverlayOpen`. Headless-Smoke Probe 47.
 
 ## Vollbild-Modus „Suchraum" (⛶, 2026-06-22)
 

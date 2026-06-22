@@ -5502,12 +5502,50 @@
           erwartung: "460/300, dann auf 240/120 geklemmt, dann null/null (CSS-Default). Am Tablet: Griff unten rechts ziehen." };
       });
 
+      SbkimUI.addButton("22_such_widget", "Vollbild (⛶) umschalten", function () {
+        if (!SbkimSearchWidget.isExpanded()) SbkimSearchWidget.expand();
+        SbkimSearchWidget.toggleFullscreen();
+        var on = SbkimSearchWidget.isFullscreen();
+        SbkimUI.setStatus("22_such_widget", "ok", on ? "Vollbild an" : "Vollbild aus");
+        return { fullscreen: on, hinweis: "Am Tablet: ⛶ im Panel-Kopf — Panel füllt den Schirm, 🗗 verkleinert. Nicht persistiert." };
+      });
+
+      SbkimUI.addButton("22_such_widget", "Merken: Demo-Treffer + Merkliste öffnen", async function () {
+        // Programmatischer Beweis der Merk-Persistenz (am Tablet: 📌-Haken pro
+        // Treffer + Detail-Karte). Wir füllen die Merkliste über die search()-
+        // Treffer simuliert via clear → öffnen; der echte Haken-Pfad ist visuell.
+        var realMatch = window.SbkimMatch;
+        window.SbkimMatch = {
+          setLocalCorpus: function () {},
+          queryLocal: async function (text, k, options) {
+            var c = (options && options.corpus) || [];
+            return c.slice(0, 2).map(function (e, i) { return { label: e.label, score: 0.9 - i * 0.05, anchorId: e.anchorId }; });
+          },
+        };
+        await SbkimSearchWidget.init({ areas: { app: true, knoten: false, internet: false }, richter: false });
+        SbkimSearchWidget.setCorpus([
+          { label: "Imkerei Walachei", text: "Honig direkt", url: "https://imker.example/honig", passageVec: new Float32Array(384), anchorId: "https://imker.example/honig" },
+          { label: "Honig-Shop", text: "Karpaten-Honig", url: "https://shop.example/honig", passageVec: new Float32Array(384), anchorId: "https://shop.example/honig" },
+        ]);
+        await SbkimSearchWidget.search("leckerer honig aus der walachei");
+        window.SbkimMatch = realMatch;
+        SbkimSearchWidget.openMerkliste();
+        return { merkCount: SbkimSearchWidget._meta.merkCount, merkliste: SbkimSearchWidget.getMerkliste(),
+          hinweis: "Am Tablet: 📌-Haken pro Treffer setzt Merken (gruppiert nach Suchfrage); Tippen auf einen Treffer öffnet die Detail-Karte ([📌 Merken]/[↗ Seite öffnen]); 📌-Kopf-Knopf öffnet die Merkliste." };
+      });
+
+      SbkimUI.addButton("22_such_widget", "Merkliste leeren (clearMerkliste)", function () {
+        SbkimSearchWidget.clearMerkliste();
+        return { merkCount: SbkimSearchWidget._meta.merkCount };
+      });
+
       SbkimUI.addButton("22_such_widget", "_meta zeigen", function () {
         var m = SbkimSearchWidget._meta;
         return {
           euPolicy: m.euPolicy, areas: m.areas, richterOn: m.richterOn, hasSearxng: m.hasSearxng,
           corpusSize: m.corpusSize, corpusReady: m.corpusReady, nodeCorpusSize: m.nodeCorpusSize,
-          visible: m.visible, expanded: m.expanded, panelWidth: m.panelWidth, resultsHeight: m.resultsHeight,
+          visible: m.visible, expanded: m.expanded, fullscreen: m.fullscreen, panelWidth: m.panelWidth, resultsHeight: m.resultsHeight,
+          merkCount: m.merkCount, merkOverlayOpen: m.merkOverlayOpen, detailOverlayOpen: m.detailOverlayOpen,
           widgetMounted: m.widgetMounted, lastSearchMode: m.lastSearchMode, searchCount: m.searchCount,
           hasApiKey: m.hasApiKey, coupled: m.coupled,
         };
