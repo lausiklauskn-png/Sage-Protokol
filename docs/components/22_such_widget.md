@@ -322,6 +322,55 @@ ist eine **Maximal-Höhe** (`max-height`): mit wenig Treffern bleibt das Feld ku
 mit vielen wächst es bis zur gezogenen Höhe und scrollt dann — von Klaus als
 gewünschtes Verhalten bestätigt (kein leerer Platz bei wenig Treffern).
 
+## Lehre „App-Link vs. Browser-Kollision" + Web-Suche kopieren (Klaus 2026-06-22)
+
+**Klaus' Schlüssel-Befund (am Tablet live gezeigt):** Ob ein externer Link die PWA
+killt, hängt davon ab, **welche App die Ziel-Adresse öffnet** — nicht ob es
+„Prompt" oder „Link" ist:
+
+- **Ziel hat eine eigene App** (z.B. `chatgpt.com` → ChatGPT-App): Android öffnet
+  sie als **App-Link in eigenem Task**, parallel. Die SBKIM-PWA läuft in ihrem
+  eigenen Task ungestört weiter (wird beim Zurückwechseln nur *fortgesetzt*, nicht
+  neu geladen) → **Inhalt bleibt**.
+- **Ziel hat keine eigene App** (normale `google.com/search`): landet im **Browser
+  (Chrome)**. Die SBKIM-PWA ist selbst eine **Chrome**-PWA → gleiche Engine →
+  auf dem Tablet im Splitscreen wirft Chrome die PWA raus / lädt sie neu →
+  **Inhalt weg**.
+
+**Folge-Entscheidung (Klaus 2026-06-22): „KI öffnen + Web kopieren".**
+
+- **„🤖 Prompt → KI (öffnen + kopieren)"** öffnet die gewählte KI **und** kopiert den
+  Prompt. Bei installierter KI-App läuft sie parallel (bestätigt mit ChatGPT-App);
+  ist keine App da, öffnet sie in Chrome — dann sichern Clipboard + `persistQuery` +
+  Reload-Schutz den Inhalt.
+- Die **Netz-Karte** (Web-Suche ohne eigene App) bietet **beide Wege zur Wahl**
+  (Klaus 2026-06-22 — „die App soll mich selbst wählen lassen"): **📋 Frage
+  kopieren** (App bleibt offen) **und** **↗ Im Browser öffnen** (öffnet direkt,
+  kann die App neu laden — Frage/Treffer sind aber via `persistQuery` +
+  Reload-Schutz gesichert). Kein erzwungener Direkt-Link mehr, aber auch kein
+  Verlust der Öffnen-Möglichkeit.
+- **Frage sofort gesichert:** schon beim Tippen wird die Frage in `localStorage`
+  (`sbkim_search_widget_lastsearch.query`, `persistQuery`) gespiegelt — überlebt
+  einen App-Neustart auch ohne gerenderte Treffer und steht danach wieder im Feld.
+- **Echte Treffer-Artikel** (Detail-Karte „↗ Seite öffnen" / Treffer-Titel) öffnen
+  weiterhin direkt (zum Lesen) — der Reload-Schutz holt die Trefferliste danach
+  zurück. Splitscreen richtet der Nutzer selbst ein; Vollbild ⛶ bleibt.
+- Headless-Smoke Proben 27 (Netz-Karte kopiert, kein Open) + 49 (KI-Prompt öffnet
+  die KI **und** kopiert; Frage-Sicherung + Neustart-Restore).
+
+## App-aktualisieren-Knopf (🔄 Hard-Reload, 2026-06-22)
+
+Klaus' Wunsch: nach einem Update nicht im Browser-Menü „Cache leeren und neu laden"
+suchen müssen. Ein **🔄-Knopf** in der Kopfzeile leert die **Cache Storage** und
+**meldet den Service-Worker ab**, dann lädt die Seite neu — die installierte PWA
+holt so die neueste Version (`hardReload`, idempotent, Sicherheits-Timeout falls
+eine Promise hängt).
+
+- **Opt-in:** nur sichtbar bei `init({reloadButton:true})` — weil es Host-Caches
+  betrifft, bleibt der Widget-Kern auf fremden Seiten contained. In der
+  eigenständigen **`such-tool/`-PWA ist er an**.
+- Surface `reload()`; Headless-Smoke Probe 50.
+
 ## Letzte Suche überlebt einen Neustart (Reload-Schutz, 2026-06-22)
 
 Klaus' Befund: tippt man im Splitscreen auf einen Web-Treffer („in Google

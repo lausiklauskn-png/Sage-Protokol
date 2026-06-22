@@ -4260,6 +4260,9 @@ Bietet (öffentlich, window.SbkimSearchWidget):
   closeOverlays()    → void (sync)      // Detail-Karte / Merkliste schließen ("Zurück").
   getMerkliste()     → Object (sync)    // defensive Kopie { "<suchfrage>": [{titel,url,text,source,addedAt}] }
   clearMerkliste()   → void (sync)      // ganze Merkliste leeren (localStorage-Eintrag weg).
+  reload()           → void (sync)      // App aktualisieren: Cache Storage leeren + Service-Worker
+                                        // abmelden, dann neu laden (holt neueste Version). Nur als
+                                        // 🔄-Knopf sichtbar bei init({reloadButton:true}) — z.B. such-tool/.
                                         //   Pro Treffer ein 📌-Haken; Klick auf einen Treffer
                                         //   öffnet die Tool-eigene Detail-Karte ([📌 Merken] /
                                         //   [↗ Seite öffnen im neuen Tab]). Badge je Art (App/Knoten/Netz).
@@ -4346,6 +4349,8 @@ options-Form (init):
     allowDrag?:     boolean,            // Default true
     rememberHidden?: boolean,           // Default true
     startExpanded?: boolean,            // Default false (Ruhezustand klein)
+    reloadButton?:  boolean,            // Default false. true → 🔄-Knopf im Kopf (App
+                                        // aktualisieren: Cache + SW leeren, neu laden). In such-tool/ an.
     zIndex?:        number,             // Default 9985 (unter Modul 17 9990 + Modals 9999)
   }
 
