@@ -126,6 +126,8 @@
   var internetCheckboxEl = null; // Referenz auf die Internet-Bereichs-Checkbox
   var vaultSectionEl = null;   // Tresor-Bedien-Sektion (🔐)
   var vaultSectionOpen = false;// Tresor-Sektion ein-/ausgeklappt
+  var fullscreenBtnEl = null;  // ⛶ Vollbild-Umschalter
+  var fullscreenFlag = false;  // Vollbild-Modus (NICHT persistiert — Pille bleibt Standard)
 
   // Position + Sichtbarkeit (localStorage-persistiert).
   var currentCorner = DEFAULT_CORNER;
@@ -508,6 +510,35 @@
       // Zustand-Umschaltung via data-state.
       "#" + WIDGET_ID + "[data-state=\"collapsed\"] .sbkim-sw-panel { display: none; }",
       "#" + WIDGET_ID + "[data-state=\"expanded\"] .sbkim-sw-bubble { display: none; }",
+      // Vollbild-Modus (⛶, Klaus 2026-06-22): zweite Anzeige derselben Treffer —
+      // das Panel füllt den ganzen Viewport (kein Kern-Umbau, gleicher Inhalt).
+      // !important schlägt die Inline-Position/-Größe (left/top/width).
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen {",
+      "  left: 0 !important;",
+      "  top: 0 !important;",
+      "  right: 0 !important;",
+      "  bottom: 0 !important;",
+      "  width: 100% !important;",
+      "  height: 100% !important;",
+      "  z-index: 9996;",
+      "}",
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen .sbkim-sw-bubble { display: none; }",
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen .sbkim-sw-panel {",
+      "  display: block;",
+      "  width: 100% !important;",
+      "  height: 100%;",
+      "  max-width: none;",
+      "  border-radius: 0;",
+      "  box-sizing: border-box;",
+      "  display: flex;",
+      "  flex-direction: column;",
+      "  overflow: auto;",
+      "}",
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen .sbkim-sw-results {",
+      "  max-height: none !important;",
+      "  flex: 1 1 auto;",
+      "}",
+      "#" + WIDGET_ID + ".sbkim-sw-fullscreen .sbkim-sw-resize { display: none; }",
       // Resize-Griff unten rechts (ziehbar — Breite + Lesefeld-Höhe).
       "#" + WIDGET_ID + " .sbkim-sw-resize {",
       "  position: absolute;",
@@ -956,6 +987,12 @@
       renderVaultSection();
     });
     head.appendChild(vaultBtn);
+    fullscreenBtnEl = makeBtn(doc, "sbkim-sw-btn sbkim-sw-fs", "⛶", "Vollbild — Suchraum groß (verkleinern: nochmal tippen)");
+    fullscreenBtnEl.addEventListener("click", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      toggleFullscreen();
+    });
+    head.appendChild(fullscreenBtnEl);
     var minBtn = makeBtn(doc, "sbkim-sw-btn sbkim-sw-min", "–", "Minimieren — zurück zur Such-Blase");
     minBtn.addEventListener("click", function (ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -2678,6 +2715,7 @@
 
   function collapse() {
     if (!ready) { warn("collapse() vor init() — no-op."); return; }
+    if (fullscreenFlag) exitFullscreen();  // Minimieren beendet auch Vollbild
     var before = widgetRoot ? widgetRoot.getBoundingClientRect() : null;
     expandedFlag = false;
     persistState();
@@ -2685,6 +2723,48 @@
     keepCenterAcrossResize(before);
     persistPosition();
   }
+
+  // ---- Vollbild-Modus (⛶, Klaus 2026-06-22) ----
+  // Zweite Anzeige DERSELBEN Treffer (kein Kern-Umbau): das vorhandene Panel
+  // füllt den ganzen Viewport. Bewusst NICHT persistiert — die Pille bleibt der
+  // Standard-Start, Vollbild ist immer eine bewusste Nutzer-Aktion.
+
+  function applyFullscreen() {
+    if (!widgetRoot) return;
+    if (fullscreenFlag) widgetRoot.classList.add("sbkim-sw-fullscreen");
+    else widgetRoot.classList.remove("sbkim-sw-fullscreen");
+    updateFullscreenBtn();
+  }
+
+  function updateFullscreenBtn() {
+    if (!fullscreenBtnEl) return;
+    fullscreenBtnEl.textContent = fullscreenFlag ? "🗗" : "⛶";
+    fullscreenBtnEl.setAttribute("aria-label",
+      fullscreenFlag ? "Vollbild verlassen — zurück zum Panel" : "Vollbild — Suchraum groß");
+  }
+
+  function enterFullscreen() {
+    if (!ready) { warn("enterFullscreen() vor init() — no-op."); return; }
+    fullscreenFlag = true;
+    expandedFlag = true;   // Vollbild zeigt immer das Panel
+    persistState();
+    applyState();
+    applyFullscreen();
+  }
+
+  function exitFullscreen() {
+    if (!ready) { warn("exitFullscreen() vor init() — no-op."); return; }
+    fullscreenFlag = false;
+    applyFullscreen();
+    // Inline-Position/-Größe wieder herstellen (Klasse mit !important ist weg).
+    applyPositionToRoot();
+    applySizeToPanel();
+    clampPositionIntoView();
+  }
+
+  function toggleFullscreen() { if (fullscreenFlag) exitFullscreen(); else enterFullscreen(); }
+
+  function isFullscreen() { return !!fullscreenFlag; }
 
   // Such-Inhalt leeren (Frage, eingefügte KI-Antwort, Schärfen-Kontext, Treffer).
   // Der Tresor bleibt unberührt — das ist Identität, kein „Inhalt".
@@ -2706,6 +2786,7 @@
   // BEHÄLT ihn (Klaus 2026-06-21).
   function dockToTop() {
     if (!ready) { warn("dockToTop() vor init() — no-op."); return; }
+    if (fullscreenFlag) { fullscreenFlag = false; applyFullscreen(); }
     expandedFlag = false;
     visibleFlag = true;
     currentCorner = NAV_DOCK_CORNER;
@@ -2846,6 +2927,10 @@
     collapse: collapse,
     dockToTop: dockToTop,
     isExpanded: isExpanded,
+    enterFullscreen: enterFullscreen,
+    exitFullscreen: exitFullscreen,
+    toggleFullscreen: toggleFullscreen,
+    isFullscreen: isFullscreen,
     getPosition: getPosition,
     getSize: getSize,
     setSize: setSize,
@@ -2882,6 +2967,7 @@
       get vaultUnlocked() { return vaultUnlocked; },
       get visible() { return isVisible(); },
       get expanded() { return !!expandedFlag; },
+      get fullscreen() { return !!fullscreenFlag; },
       get panelWidth() { return panelWidth; },
       get resultsHeight() { return resultsHeight; },
       get widgetMounted() { return !!(widgetRoot && widgetRoot.parentNode); },

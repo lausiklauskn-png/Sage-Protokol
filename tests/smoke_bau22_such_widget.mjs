@@ -843,6 +843,36 @@ async function run() {
   stub.dispatchEvent({ type: "orientationchange" });
   eq("Probe 45: orientationchange klemmt erneut (200-24)", "176", String(W.getPosition().x));
   stub.innerWidth = 1024; stub.innerHeight = 768; // Viewport zurücksetzen
+
+  // ---- Probe 46: Vollbild-Modus (⛶) — zweite Anzeige, nicht persistiert ----
+  for (const fn of ["enterFullscreen", "exitFullscreen", "toggleFullscreen", "isFullscreen"]) {
+    record("Probe 46: " + fn + " exportiert", "function", typeof W[fn], typeof W[fn] === "function");
+  }
+  eq("Probe 46: Default kein Vollbild", "false", String(W.isFullscreen()));
+  eq("Probe 46: _meta.fullscreen Default", "false", String(W._meta.fullscreen));
+  W.expand();
+  const fsBtn = queryFirst(root, ".sbkim-sw-fs");
+  record("Probe 46: ⛶-Knopf existiert", "true", String(!!fsBtn), !!fsBtn);
+  fsBtn.dispatchEvent({ type: "click", target: fsBtn, stopPropagation: () => {} });
+  eq("Probe 46: Klick → Vollbild an", "true", String(W.isFullscreen()));
+  eq("Probe 46: Root hat Vollbild-Klasse", "true", String(root._classes.has("sbkim-sw-fullscreen")));
+  eq("Probe 46: Knopf wechselt auf verkleinern (🗗)", "🗗", fsBtn.textContent);
+  eq("Probe 46: Vollbild zeigt Panel (expanded)", "true", String(W.isExpanded()));
+  eq("Probe 46: nicht persistiert (kein fullscreen-LS-Key)", "null",
+    String(stub.localStorage.getItem("sbkim_search_widget_fullscreen")));
+  fsBtn.dispatchEvent({ type: "click", target: fsBtn, stopPropagation: () => {} });
+  eq("Probe 46: zweiter Klick → Vollbild aus", "false", String(W.isFullscreen()));
+  eq("Probe 46: Vollbild-Klasse entfernt", "false", String(root._classes.has("sbkim-sw-fullscreen")));
+  // Minimieren (–) beendet auch Vollbild.
+  W.enterFullscreen();
+  eq("Probe 46: enterFullscreen → an", "true", String(W.isFullscreen()));
+  W.collapse();
+  eq("Probe 46: collapse beendet Vollbild", "false", String(W.isFullscreen()));
+  eq("Probe 46: collapse → nicht expanded", "false", String(W.isExpanded()));
+  // X (dockToTop) beendet ebenfalls Vollbild.
+  W.expand(); W.enterFullscreen();
+  W.dockToTop();
+  eq("Probe 46: dockToTop beendet Vollbild", "false", String(W.isFullscreen()));
 }
 
 const finalize = () => {

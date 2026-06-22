@@ -320,6 +320,27 @@ ist eine **Maximal-Höhe** (`max-height`): mit wenig Treffern bleibt das Feld ku
 mit vielen wächst es bis zur gezogenen Höhe und scrollt dann — von Klaus als
 gewünschtes Verhalten bestätigt (kein leerer Platz bei wenig Treffern).
 
+## Vollbild-Modus „Suchraum" (⛶, 2026-06-22)
+
+Klaus' Kern-Entscheidung „ein Werkzeug, zwei Gestalten": der **Begleiter** (die
+Pille) bleibt der Standard-Start; auf Wunsch wächst das Tool per **⛶-Knopf** im
+Panel-Kopf zum **Suchraum** — Vollbild, Suchfeld oben, Treffer füllen die Fläche.
+
+- **Zweite Anzeige derselben Treffer, kein Kern-Umbau.** Vollbild ist nur eine
+  CSS-Vergrößerung des **vorhandenen** Panels (`.sbkim-sw-fullscreen` auf dem
+  Root: `inset:0`, Panel `width/height:100%`, Treffer-Liste `max-height:none`).
+  Dieselbe Such-Maschine, derselbe `resultsEl` — nichts wird dupliziert.
+- **NICHT persistiert / kein Auto-Start** (Klaus: manche wollen erst klein). Nach
+  Reload startet das Tool wieder als Pille. Vollbild ist immer eine bewusste Geste.
+- **Verlassen:** ⛶-Knopf wechselt auf 🗗 (verkleinern); zusätzlich beenden
+  **Minimieren (–)** und **X (dockToTop)** den Vollbild-Modus.
+- **Z-Index 9996** im Vollbild (über den anderen Floating-Tools, unter App-Modals
+  9999).
+- **Auf `such-tool/` automatisch verfügbar** (byte-genaue Modul-Kopie) — ⛶ ist
+  ein Knopf, kein Auto-Verhalten.
+- Surface: `enterFullscreen()` · `exitFullscreen()` · `toggleFullscreen()` ·
+  `isFullscreen()`; `_meta.fullscreen`. Headless-Smoke Probe 46.
+
 ## Splitscreen-Fix — Position bei Viewport-Änderung zurück-klemmen (2026-06-22)
 
 Klaus' Befund: Im geteilten Bildschirm (Splitscreen / DeX-Fenster-Resize /

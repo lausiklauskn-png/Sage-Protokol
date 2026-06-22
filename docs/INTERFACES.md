@@ -4247,6 +4247,13 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         //   Treffer) für frischen Start; Minimieren (–) BEHÄLT
                                         //   ihn. Tresor bleibt unberührt (Identität, kein Inhalt).
   isExpanded()       → boolean (sync)
+  enterFullscreen()  → void (sync)      // Vollbild-Modus (⛶, 2026-06-22): das Panel füllt
+                                        //   den ganzen Viewport — zweite Anzeige DERSELBEN
+                                        //   Treffer (kein Kern-Umbau). Setzt expanded.
+  exitFullscreen()   → void (sync)      // zurück zum Panel (Position/Größe wiederhergestellt).
+  toggleFullscreen() → void (sync)      // ⛶-Knopf im Kopf. NICHT persistiert — die Pille
+                                        //   bleibt Standard-Start (kein Auto-Vollbild).
+  isFullscreen()     → boolean (sync)
   getPosition()      → PositionSnapshot // defensive Kopie {corner,offsetX,offsetY,x,y}
   getSize()          → {panelWidth,resultsHeight}  // px oder null (CSS-Default)
   setSize(opts)      → void             // {panelWidth?,resultsHeight?} px; null=Reset;
@@ -4287,7 +4294,7 @@ Bietet (öffentlich, window.SbkimSearchWidget):
   aiAutoSupported()  → boolean (sync)   // ob der gewählte Anbieter den Auto-Aufruf kann (z.Z. claude).
   _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
                      //   richterOn, hasSearxng, webEngine, aiProvider, aiProviders, hasPastedAi,
-                     //   visible, expanded, widgetMounted, lastSearchMode, searchCount,
+                     //   visible, expanded, fullscreen, widgetMounted, lastSearchMode, searchCount,
                      //   hasApiKey, coupled:false }
 
 options-Form (init):
