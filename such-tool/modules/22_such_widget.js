@@ -409,6 +409,52 @@
     applyPositionToRoot();
   }
 
+  // Splitscreen-Fix (Klaus' Befund 2026-06-22): im geteilten Bildschirm rutscht
+  // die Pille aus dem Sichtfeld. Bei jeder Viewport-Änderung (resize /
+  // orientationchange) die GEZOGENE (freie) Position ins sichtbare Feld
+  // zurück-klemmen. Ecken-verankerte Widgets bleiben durch CSS am Rand und
+  // brauchen keine Korrektur. Mindestens VIEWPORT_VISIBLE_MARGIN px bleiben am
+  // Rand sichtbar (mirror der Drag-Clamp-Reserve von 24 px).
+  var VIEWPORT_VISIBLE_MARGIN = 24;
+  var viewportListenerAttached = false;
+
+  function clampPositionIntoView() {
+    if (!widgetRoot) return;
+    if (currentFreeX === null || currentFreeY === null) return; // nur freie Position
+    var vw = global.innerWidth || 1024;
+    var vh = global.innerHeight || 768;
+    var rect = widgetRoot.getBoundingClientRect();
+    var w = rect.width || 44;
+    var x = currentFreeX;
+    var y = currentFreeY;
+    var minX = -w + VIEWPORT_VISIBLE_MARGIN;
+    var maxX = vw - VIEWPORT_VISIBLE_MARGIN;
+    var minY = 0;
+    var maxY = vh - VIEWPORT_VISIBLE_MARGIN;
+    if (x > maxX) x = maxX;
+    if (x < minX) x = minX;
+    if (y > maxY) y = maxY;
+    if (y < minY) y = minY;
+    if (x !== currentFreeX || y !== currentFreeY) {
+      currentFreeX = x;
+      currentFreeY = y;
+      applyPositionToRoot();
+      persistPosition();
+    }
+  }
+
+  function onViewportChange() { clampPositionIntoView(); }
+
+  function attachViewportListener() {
+    if (viewportListenerAttached) return;
+    if (!global || typeof global.addEventListener !== "function") return;
+    try {
+      global.addEventListener("resize", onViewportChange);
+      global.addEventListener("orientationchange", onViewportChange);
+      viewportListenerAttached = true;
+    } catch (_e) { /* fail-soft — ohne Listener bleibt nur die statische Position */ }
+  }
+
   // ---- CSS-Injektion ----
 
   function buildCss() {
@@ -2532,6 +2578,10 @@
     applyVisibility();
     applyState();
     applySizeToPanel();
+    attachViewportListener();
+    // Heilung: eine auf großem Schirm gezogene Position kann auf kleinem Schirm
+    // (oder im Splitscreen) schon beim Mount aus dem Bild liegen.
+    clampPositionIntoView();
   }
 
   function setupMountObserver(doc) {

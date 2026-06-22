@@ -320,6 +320,25 @@ ist eine **Maximal-Höhe** (`max-height`): mit wenig Treffern bleibt das Feld ku
 mit vielen wächst es bis zur gezogenen Höhe und scrollt dann — von Klaus als
 gewünschtes Verhalten bestätigt (kein leerer Platz bei wenig Treffern).
 
+## Splitscreen-Fix — Position bei Viewport-Änderung zurück-klemmen (2026-06-22)
+
+Klaus' Befund: Im geteilten Bildschirm (Splitscreen / DeX-Fenster-Resize /
+Geräte-Drehung) rutscht die Pille aus dem Sichtfeld. **Fix:** ein einmaliger
+Window-Listener auf `resize` **und** `orientationchange` klemmt die **gezogene
+(freie) Position** bei jeder Viewport-Änderung zurück in den sichtbaren Bereich
+(`clampPositionIntoView`). Mindestens 24 px bleiben am Rand sichtbar (spiegelt
+die Drag-Clamp-Reserve).
+
+- **Nur freie Positionen** werden korrigiert — ecken-verankerte Widgets bleiben
+  durch CSS ohnehin am Rand sichtbar.
+- **Heilung schon beim Mount:** eine auf großem Schirm gezogene Position, die auf
+  kleinem Schirm (Inkognito-Wechsel, anderes Gerät) aus dem Bild läge, wird beim
+  ersten Mount sofort geklemmt.
+- Die geklemmte Position **persistiert** (`localStorage`), damit sie nicht beim
+  nächsten Start wieder aus dem Bild springt.
+- Fail-soft: fehlt `window.addEventListener` (Headless), bleibt nur die statische
+  Position — kein Throw. Headless-Smoke Probe 45.
+
 ## UX-Lehre „Eingabe-Erhalt" (von BLP/Modul 21 übernommen)
 
 Das Textfeld wird **einmal** angelegt und **nie** mit `value:''` neu gebaut.

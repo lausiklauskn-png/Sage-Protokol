@@ -144,6 +144,13 @@ stub.console = console;
 stub.setTimeout = setTimeout;
 stub.clearTimeout = clearTimeout;
 stub.MutationObserver = undefined; // body existiert sofort, Observer nicht nötig
+// Window-Event-System (für den Splitscreen-Fix: resize/orientationchange).
+stub._listeners = {};
+stub.addEventListener = (type, cb) => { (stub._listeners[type] = stub._listeners[type] || []).push(cb); };
+stub.removeEventListener = (type, cb) => {
+  const a = stub._listeners[type]; if (!a) return; const i = a.indexOf(cb); if (i >= 0) a.splice(i, 1);
+};
+stub.dispatchEvent = (ev) => { (stub._listeners[ev.type] || []).slice().forEach(cb => { try { cb(ev); } catch (e) { console.error(e); } }); return true; };
 globalThis.window = stub;
 
 const src = readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8");
@@ -812,6 +819,30 @@ async function run() {
   record("Probe 44: Reset löscht localStorage-Größe", "true",
     String(ls4.getItem("sbkim_search_widget_size") === null), ls4.getItem("sbkim_search_widget_size") === null);
   globalThis.window = stub; // zurück für evtl. Folge-Proben
+
+  // ---- Probe 45: Splitscreen-Fix — Pille bei Viewport-Änderung zurück-klemmen ----
+  // Erst weit nach unten-rechts ziehen (bei 1024×768 auf die Clamp-Reserve), dann
+  // den Viewport auf 400×400 schrumpfen und resize feuern → Position muss in den
+  // sichtbaren Bereich (vw-24 / vh-24) zurück-geklemmt werden.
+  stub.innerWidth = 1024; stub.innerHeight = 768;
+  root.dispatchEvent({ type: "pointerdown", target: root, pointerId: 11, clientX: 100, clientY: 100 });
+  root.dispatchEvent({ type: "pointermove", target: root, pointerId: 11, clientX: 2100, clientY: 2100 });
+  root.dispatchEvent({ type: "pointerup", target: root, pointerId: 11, clientX: 2100, clientY: 2100 });
+  const posBefore = W.getPosition();
+  eq("Probe 45: gezogen an rechte Clamp-Reserve (x=1000)", "1000", String(posBefore.x));
+  eq("Probe 45: gezogen an untere Clamp-Reserve (y=744)", "744", String(posBefore.y));
+  stub.innerWidth = 400; stub.innerHeight = 400;
+  stub.dispatchEvent({ type: "resize" });
+  const posAfter = W.getPosition();
+  eq("Probe 45: x ins kleine Feld geklemmt (400-24)", "376", String(posAfter.x));
+  eq("Probe 45: y ins kleine Feld geklemmt (400-24)", "376", String(posAfter.y));
+  const posPersist = JSON.parse(stub.localStorage.getItem("sbkim_search_widget_position") || "{}");
+  eq("Probe 45: geklemmte Position persistiert", "376", String(posPersist.x));
+  // orientationchange greift denselben Pfad: noch kleiner → erneut klemmen.
+  stub.innerWidth = 200; stub.innerHeight = 200;
+  stub.dispatchEvent({ type: "orientationchange" });
+  eq("Probe 45: orientationchange klemmt erneut (200-24)", "176", String(W.getPosition().x));
+  stub.innerWidth = 1024; stub.innerHeight = 768; // Viewport zurücksetzen
 }
 
 const finalize = () => {
