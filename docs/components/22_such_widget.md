@@ -314,6 +314,12 @@ gleichzeitig **Breite** (`panelWidth`) **und Lesefeld-Höhe** (`resultsHeight`,
 - **Reset:** `setSize({panelWidth:null, resultsHeight:null})` setzt auf den
   CSS-Default zurück und löscht den localStorage-Eintrag.
 
+**Browser-Sichttest grün (Klaus 2026-06-22):** Größe ziehbar, **gezogene Größe
+bleibt nach Hard-Reload erhalten** (Persistenz live bestätigt). Die Lesefeld-Höhe
+ist eine **Maximal-Höhe** (`max-height`): mit wenig Treffern bleibt das Feld kurz,
+mit vielen wächst es bis zur gezogenen Höhe und scrollt dann — von Klaus als
+gewünschtes Verhalten bestätigt (kein leerer Platz bei wenig Treffern).
+
 ## UX-Lehre „Eingabe-Erhalt" (von BLP/Modul 21 übernommen)
 
 Das Textfeld wird **einmal** angelegt und **nie** mit `value:''` neu gebaut.

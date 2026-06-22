@@ -1861,15 +1861,20 @@ bei `allowDrag:true` (gepinnte Widgets bleiben fest). Surface `+getSize/setSize`
 (Karte 22, INTERFACES § Modul 22, CLAUDE.md-Zeile 22), Panel-22-Knopf
 „Größe ziehbar: setSize + Reset" in `manual_check.html`.
 
-**Was offen:** Klaus' **Browser-Sichttest** des Resize-Griffs am Galaxy-Tab-S6
-(Ziehen mit dem Finger, Persistenz nach Hard-Reload) — headless ersetzt ihn
-nicht. Stränge B (B3 Sicherheits-Richter, architektonisch — Modul-04-Querschnitt,
-mit Klaus abstimmen) und C (Standalone-PWA-Download) bleiben offen.
+**Browser-Sichttest grün (Klaus 2026-06-22, Galaxy-Tab-S6):** Griff ziehbar,
+**gezogene Größe bleibt nach Hard-Reload erhalten** (Persistenz live bestätigt).
+Lesefeld-Höhe ist eine Maximal-Höhe (wächst mit der Treffermenge) — von Klaus
+als gewollt bestätigt. PR #388 gemerged.
+
+**Was offen:** Stränge B (B3 Sicherheits-Richter, architektonisch —
+Modul-04-Querschnitt, mit Klaus abstimmen) und C (Standalone-PWA-Download)
+bleiben offen.
 
 **Test:** Headless-Smoke `tests/smoke_bau22_such_widget.mjs` **162/162 grün**
-(Probe 44 neu: Resize-Pfad + Persistenz über Re-Init + Min-Klemmung + Reset).
+(Probe 44 neu: Resize-Pfad + Persistenz über Re-Init + Min-Klemmung + Reset) +
+Browser-Sichttest grün.
 
-**Nächster Schritt:** Sichttest am Tablet; danach Klaus' Wahl Strang B oder C.
+**Nächster Schritt:** Klaus' Wahl Strang B oder C.
 
 ### 2026-06-21 · Meilenstein-Serie auf der Sage-Page + Gute-Nacht-Karte an BookLedgerPro
 
