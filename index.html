@@ -2519,6 +2519,16 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       if (/^sage/i.test(e.name || '')) return; // Sage selbst ist diese Seite
       pwas.push({ name: e.name, theme: e.domain || 'Sonstige', url: e.url, kind: 'pwa', live: !!e.integrated });
     });
+    // Eigenständiges Such-Werkzeug (Modul 22) — eigene installierbare PWA im
+    // selben Repo (Ordner such-tool/). Relativer Link → funktioniert auf der
+    // Pages-Seite wie im lokalen Sichttest. Später ins Mycel einpflegbar.
+    pwas.push({
+      name: '🔍 Such-Werkzeug',
+      theme: 'SBKIM-Werkzeuge · Such-Tool',
+      url: 'such-tool/',
+      kind: 'pwa', live: false, pill: 'PWA · öffnen + installieren',
+      note: 'Eigenständiges semantisches Such-Tool. Öffnen → im Browser-Menü „Zum Startbildschirm/App installieren". Eigene App, später ins Mycel einpflegbar.'
+    });
     pwas.push({
       name: 'SB-KIMTool-Point',
       theme: 'SBKIM-Werkzeuge · Tool-Point',
