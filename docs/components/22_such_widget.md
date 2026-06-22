@@ -294,6 +294,7 @@ Mapping:
 | `sbkim_search_widget_state` | `"collapsed"` \| `"expanded"` | `"collapsed"` |
 | `sbkim_search_widget_size` | JSON `{w,h}` (Panel-Breite / Lesefeld-Höhe in px) | nicht gesetzt → CSS-Default |
 | `sbkim_search_widget_merkliste` | JSON `{ "<suchfrage>": [{titel,url,text,source,addedAt}] }` | nicht gesetzt → leer |
+| `sbkim_search_widget_lastsearch` | JSON `{ query, mode, treffer:[…], webLink }` (letzte Suche, nur Text+Link) | nicht gesetzt → keine Wiederherstellung |
 
 ## Ziehbare Panel-Größe (Resize-Griff, 2026-06-22)
 
@@ -320,6 +321,28 @@ bleibt nach Hard-Reload erhalten** (Persistenz live bestätigt). Die Lesefeld-H�
 ist eine **Maximal-Höhe** (`max-height`): mit wenig Treffern bleibt das Feld kurz,
 mit vielen wächst es bis zur gezogenen Höhe und scrollt dann — von Klaus als
 gewünschtes Verhalten bestätigt (kein leerer Platz bei wenig Treffern).
+
+## Letzte Suche überlebt einen Neustart (Reload-Schutz, 2026-06-22)
+
+Klaus' Befund: tippt man im Splitscreen auf einen Web-Treffer („in Google
+öffnen"), wirft Android die PWA gern aus dem Speicher → **Neustart**. Position,
+Größe, Zustand und Merkliste liegen in `localStorage` und bleiben — die
+**Trefferliste** und die **Frage** lebten aber nur im RAM und waren weg (Panel
+blank).
+
+**Fix:** die **letzte Suche** (Frage + Trefferliste + ggf. `webLink`) wird nach
+jedem Render in `localStorage` `sbkim_search_widget_lastsearch` gespiegelt — **nur
+Text+Link** (Label, Score, Quelle, URL, Snippet, Begründung), **keine Vektoren,
+keine PII**. Beim nächsten `init()`/Mount wird sie **vor** dem Aufbau geladen
+(`restoreLastSearch`), das Textfeld zeigt die Frage wieder, und die Treffer werden
+automatisch erneut angezeigt. So überlebt der Vergleichs-Ablauf einen PWA-Neustart.
+
+- **✕ (dockToTop) löscht** die gespeicherte Suche (frischer Start); Minimieren (–)
+  behält sie.
+- Gekappt auf die ersten 50 Treffer; fail-soft (Quota/Inkognito → kein Throw).
+- Ergänzt — ersetzt nicht — die **Merkliste**: 📌-Merken ist die bewusste
+  Dauer-Ablage, der Reload-Schutz ist die automatische Kurzzeit-Rettung.
+  Headless-Smoke Probe 48.
 
 ## Merken-Liste / „Mein Korb" (📌, 2026-06-22)
 

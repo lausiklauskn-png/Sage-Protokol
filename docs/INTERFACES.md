@@ -4306,6 +4306,8 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                      //   visible, expanded, fullscreen, merkCount, merkOverlayOpen, detailOverlayOpen,
                      //   widgetMounted, lastSearchMode, searchCount, hasApiKey, coupled:false }
                      //   localStorage zusätzlich: sbkim_search_widget_merkliste (Text+Link, gruppiert)
+                     //   + sbkim_search_widget_lastsearch (letzte Suche: Frage+Treffer, Reload-Schutz,
+                     //     beim Mount automatisch wiederhergestellt; ✕/dockToTop löscht sie)
 
 options-Form (init):
   {

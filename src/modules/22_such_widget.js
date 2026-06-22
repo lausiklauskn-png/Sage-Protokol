@@ -59,6 +59,7 @@
   var LS_KEY_ENGINE = "sbkim_search_widget_engine"; // gewählte Web-Suchmaschine
   var LS_KEY_SIZE = "sbkim_search_widget_size"; // {w,h} ziehbare Panel-Größe
   var LS_KEY_MERK = "sbkim_search_widget_merkliste"; // Merkliste (Text+Link, gruppiert)
+  var LS_KEY_LAST = "sbkim_search_widget_lastsearch"; // letzte Suche (Frage+Treffer), Reload-Schutz
 
   // Frei wählbare Web-Suchmaschinen für den Internet-Neuer-Tab-Weg (Klaus
   // 2026-06-21: DuckDuckGo ODER eine andere). Query wird angehängt (URL-encoded).
@@ -2454,6 +2455,9 @@
       linkEl.appendChild(a);
       resultsEl.appendChild(linkEl);
     }
+
+    // Letzte Suche lokal merken (Reload-Schutz) — überlebt einen PWA-Neustart.
+    persistLastSearch(res);
   }
 
   // Klick/Tap auf einen Link: Drag verhindern + explizit öffnen (Touch-fest).
@@ -2818,6 +2822,49 @@
     });
   }
 
+  // ===================================================================
+  // Letzte Suche merken (Reload-Schutz, Klaus 2026-06-22). Beim Öffnen eines
+  // Web-Treffers im Splitscreen wirft Android die PWA gern aus dem Speicher →
+  // Neustart, Trefferliste (RAM) weg. Darum die letzte Suche (Frage + Treffer,
+  // nur Text+Link, keine Vektoren/PII) in localStorage spiegeln und beim Mount
+  // wiederherstellen — so bleibt der Vergleichs-Ablauf erhalten.
+  // ===================================================================
+
+  function persistLastSearch(res) {
+    try {
+      if (!res) return;
+      var treffer = (res.treffer || []).slice(0, 50).map(function (t) {
+        return {
+          label: t.label, score: typeof t.score === "number" ? t.score : null,
+          source: t.source || "app", url: t.url || null, snippet: t.snippet || null,
+          begruendung: t.begruendung || null, anchorId: t.anchorId || null, text: t.text || null,
+        };
+      });
+      var hasWeb = !!(res.webLink && res.webLink.url);
+      if (!treffer.length && !hasWeb) { lsRemove(LS_KEY_LAST); return; }
+      lsSet(LS_KEY_LAST, JSON.stringify({
+        query: queryValue || "", mode: res.mode || "semantisch",
+        treffer: treffer, webLink: res.webLink || null,
+      }));
+    } catch (_e) { /* fail-soft (Quota/Inkognito) */ }
+  }
+
+  // Beim Mount aufrufen (NACH localStorage-Prefs): setzt queryValue + lastRenderRes
+  // aus der gespeicherten Suche, damit das Panel die Treffer wieder zeigen kann.
+  function restoreLastSearch() {
+    var raw = lsGet(LS_KEY_LAST);
+    if (!raw) return;
+    try {
+      var p = JSON.parse(raw);
+      if (!p || typeof p !== "object") return;
+      if (typeof p.query === "string") queryValue = p.query;
+      if (Array.isArray(p.treffer)) {
+        lastRenderRes = { mode: p.mode || "semantisch", treffer: p.treffer,
+                          webLink: p.webLink || null, restored: true };
+      }
+    } catch (_e) { /* fail-soft */ }
+  }
+
   // ---- Korpus ----
 
   function setCorpus(corpus) {
@@ -3048,6 +3095,8 @@
     // Heilung: eine auf großem Schirm gezogene Position kann auf kleinem Schirm
     // (oder im Splitscreen) schon beim Mount aus dem Bild liegen.
     clampPositionIntoView();
+    // Letzte Suche wiederherstellen (Reload-Schutz): Treffer wieder anzeigen.
+    if (lastRenderRes && resultsEl) renderResults(lastRenderRes);
   }
 
   function setupMountObserver(doc) {
@@ -3206,6 +3255,7 @@
     if (aiPasteEl) aiPasteEl.value = "";
     resultsVisibleCount = RESULT_PAGE_SIZE;
     lastRenderRes = null;
+    lsRemove(LS_KEY_LAST);   // frischer Start: gespeicherte Suche auch löschen
     if (resultsEl) { while (resultsEl.firstChild) resultsEl.removeChild(resultsEl.firstChild); }
     setHint("");
   }
@@ -3343,6 +3393,7 @@
     }
 
     ready = true;
+    restoreLastSearch();   // letzte Suche aus localStorage (vor dem Mount), Reload-Schutz
     mountWidget();
     return Promise.resolve();
   }
