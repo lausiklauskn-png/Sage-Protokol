@@ -4248,6 +4248,10 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         //   ihn. Tresor bleibt unberührt (Identität, kein Inhalt).
   isExpanded()       → boolean (sync)
   getPosition()      → PositionSnapshot // defensive Kopie {corner,offsetX,offsetY,x,y}
+  getSize()          → {panelWidth,resultsHeight}  // px oder null (CSS-Default)
+  setSize(opts)      → void             // {panelWidth?,resultsHeight?} px; null=Reset;
+                                        // geklemmt (240…760 / 120…0.72·vh) + persistiert.
+                                        // Ziehbar am Resize-Griff unten rechts (2026-06-22).
   setCorpus(corpus)  → void             // lokaler Such-Korpus
                                         // (Array<{label,text?,passageVec,anchorId?}>);
                                         // reicht an SbkimMatch.setLocalCorpus durch.
@@ -4352,6 +4356,7 @@ localStorage-Schema (UX-Preferences, KEIN IndexedDB):
   sbkim_search_widget_visible   "true"|"false"      (Default "true")
   sbkim_search_widget_position  JSON PositionSnapshot (Default bottom-right/16/16)
   sbkim_search_widget_state     "collapsed"|"expanded" (Default "collapsed")
+  sbkim_search_widget_size      JSON {w,h} px (ziehbare Panel-Größe; nicht gesetzt → CSS-Default)
   (Textfeld-Wert wird NICHT persistiert — RAM-only, UX-Erhalt-Lehre.)
 
 Strikte Tabus:
