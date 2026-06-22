@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-06-21",
-  "seq": 31,
-  "headline": "Such-Werkzeug (Modul 22) reif + Meilenstein-Serie auf der Sage-Page. Stufe A (KI-Such-Bruecke) + B (Widget-Tresor Shamir 2/3 + automatischer Claude-Aufruf, CORS live bestaetigt) gebaut; semantische Suche versteht die Bedeutung hinter den Worten, server-los. Sage-Page zeigt jetzt drei Meilensteine als separaten Bild-Container unter dem schwarzen Loch (01 Mycel verbindet sich nach Bedeutung / 02 Ueber den Ursprung hinaus = BookLedgerPro als erster eigenstaendiger Fremd-Knoten / 03 Bedeutung wird suchbar). Gute-Nacht-/Dankeschoen-Karte an BookLedgerPro ins Postfach (Sprach-Schicht war der Funke; Rueck-Quittung locker erbeten). Voller Werdegang: docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md.",
+  "lastBuild": "2026-06-22",
+  "seq": 32,
+  "headline": "Such-Werkzeug-Pflege + eigenstaendige Such-Tool-PWA (Vorlage). Modul 22: Such-Panel groesser ziehbar (Resize-Griff, PR #388, Browser-Sichttest gruen). NEU such-tool/ als eigenstaendige, installierbare PWA + 1:1-kopierbare Vorlage (index.html + manifest + Service-Worker + impressum + Icons + modules/ Kopien 03/04/21/22), PR #389. Kern-Lehre: ein Download (file://) wird nie eine App — echte PWA braucht Hosting + Manifest + Service-Worker + eigenen Scope. Brief an SB-KIMTool-Point ins Postfach (AUSTAUSCH.md): eigener-Ordner-Bau + Resize-Abgleich, Rueck-Quittung erbeten. KI automatisch nur Claude server-los (CORS). Brainstorm Vollbild/Merken-Liste/Vergleich/Pilz-Server/Geld-Modell in BRIEF fuer Folge-Sitzung festgehalten.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -180,6 +180,11 @@
       "seq": 31,
       "date": "2026-06-21",
       "headline": "Such-Werkzeug (Modul 22) reif + Meilenstein-Serie auf der Sage-Page. Stufe A (KI-Such-Bruecke) + B (Widget-Tresor Shamir 2/3 + automatischer Claude-Aufruf, CORS live) gebaut; semantische Bedeutungs-Suche server-los. Drei Meilensteine als separater Bild-Container unter dem schwarzen Loch (01 Mycel verbindet sich nach Bedeutung / 02 Ueber den Ursprung hinaus = BookLedgerPro / 03 Bedeutung wird suchbar). Gute-Nacht-/Dankeschoen-Karte an BookLedgerPro (Sprach-Schicht war der Funke; Rueck-Quittung locker erbeten). Werdegang: docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md."
+    },
+    {
+      "seq": 32,
+      "date": "2026-06-22",
+      "headline": "Such-Werkzeug-Pflege + eigenstaendige Such-Tool-PWA (Vorlage). Modul 22 Such-Panel groesser ziehbar (Resize-Griff, PR #388, Browser-Sichttest gruen: gezogene Groesse bleibt nach Hard-Reload). NEU such-tool/ als eigenstaendige installierbare PWA + 1:1-kopierbare Vorlage (index.html + manifest + Service-Worker + impressum-Platzhalter + Icons + modules/ Kopien 03/04/21/22; kein 01/02), PR #389. Kern-Lehre: ein Download (file://) wird nie eine App — echte PWA braucht Hosting + Manifest + Service-Worker + eigenen Scope. Brief an SB-KIMTool-Point ins Postfach (AUSTAUSCH.md): eigener-Ordner-Bau (Scope-Falle) + Resize-Abgleich, Rueck-Quittung erbeten. KI automatisch nur Claude server-los (CORS); Gemini/ChatGPT/Perplexity per Kopier-Pfad oder spaeter Proxy. Brainstorm fuer Folge-Sitzung (BRIEF_BAU_22_VOLLBILD_MERKEN.md): Vollbild-Modus (zwei Gestalten), Merken-Liste nach Suchfrage, Vergleich/Splitscreen-Realitaet, Pilz-Server-Infra + Geld-Modell (Dienst verkaufen, nicht Code)."
     }
   ]
 }

@@ -1841,6 +1841,33 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-22 · Sitzungs-Abschluss: Briefkasten + Brainstorm-Brief (Vollbild/Merken/Pilz-Wirtschaft)
+
+**Rolle:** Abschluss der Such-Werkzeug-Sitzung (nach PR #388 Resize + PR #389
+Standalone-PWA, beide gemerged).
+
+**Was getan:** (1) **Briefkasten** an SB-KIMTool-Point gepflegt — Brief „Standalone-
+Such-Tool: so wird der Download eine echte eigenständige PWA" in `sbkim/AUSTAUSCH.md`
+(eigener-Ordner-Bau + Scope-Falle + Resize-Abgleich, Rück-Quittung erbeten),
+`sbkim/SIGNAL.json` seq 31→32 (Push IST das Signal). (2) **Brainstorm mit Klaus** für
+die Folge-Sitzung festgehalten in `docs/sessions/BRIEF_BAU_22_VOLLBILD_MERKEN.md`:
+„ein Werkzeug, zwei Gestalten" (Begleiter klein / Suchraum Vollbild, NICHT auto-start),
+**Merken-Liste** (Haken pro Treffer, gruppiert nach Suchfrage, localStorage Text+Link,
+für Web/App/Knoten), **Treffer-Detail-Karten-Overlay** ([Merken]/[Seite öffnen neuer
+Tab]; echte Seite nicht einbettbar), **Splitscreen-Fix** (Pille ins Sichtfeld
+zurück-klemmen), **Vergleich** (Form 1 zwei Spalten/Server vs. Form 2 neuer Tab vs.
+Form 3 eigener eingebetteter Server — Klaus' Wahl offen), **KI-Recherche** (automatisch
+nur Claude server-los, Rest CORS-blockiert), **Pilz-Server + Geld-Modell** (serverless,
+BYOK gratis / Pro = Server-Dienst, PayPal-Einmalkauf statt Pro-Klick; Kopier-Schutz =
+Dienst verkaufen, nicht Code).
+
+**Was offen:** Klaus' **Installations-Sichttest** `such-tool/` am Tablet (Seite rendert
+live; „App installieren"-Geste final bestätigen). **Vergleichs-Form** (1/2/3) =
+Richtungsentscheid für Klaus. Folge-Sitzung baut Splitscreen-Fix → Vollbild → Merken.
+
+**Nächster Schritt:** Folge-Sitzung mit `BRIEF_BAU_22_VOLLBILD_MERKEN.md` (Codeblock im
+Brief). Vorher Klaus' Vergleichs-Form-Wahl.
+
 ### 2026-06-22 · Strang C: eigenständige Such-Tool-PWA (such-tool/, Vorlage)
 
 **Rolle:** Bau-Sitzung (Folge der Resize-Pflege). Klaus' Wahl: „Vorlage als
