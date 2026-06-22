@@ -1841,6 +1841,41 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-22 · Pflege Modul 22: Such-Panel größer ziehbar (Resize-Griff)
+
+**Rolle:** Pflege-Sitzung Modul 22 (Strang A aus Klaus' Drei-Wege-Wahl —
+bestätigt: „A — Panel größer ziehbar").
+
+**Was getan:** Klaus' Befund — das untere Lesefeld (Treffer-Liste) im Such-Widget
+ist zu eng. Ein **Resize-Griff unten rechts** (`.sbkim-sw-resize`,
+`cursor: nwse-resize`) zieht jetzt gleichzeitig **Panel-Breite** (`panelWidth`,
+240…760 px) und **Lesefeld-Höhe** (`resultsHeight`, 120…0.72·vh px). Größe
+**persistiert** in `localStorage` `sbkim_search_widget_size` (User-Wahl heilig —
+übersteht Re-Init, überschreibt `init({panelWidth,resultsHeight})`).
+**Drag-Konflikt sauber getrennt:** Griff-`pointerdown` ruft `stopPropagation()`
+(Verschiebe-Drag springt nicht zugleich an), `.sbkim-sw-resize` zählt als
+interaktives Ziel, und beim Resize-Start stellt das Widget auf **freie Position**
+um (obere-linke Ecke verankert → Griff wächst natürlich nach unten-rechts). Nur
+bei `allowDrag:true` (gepinnte Widgets bleiben fest). Surface `+getSize/setSize`,
+`_meta.panelWidth/resultsHeight`. Modul 17 unangetastet. Doku nachgezogen
+(Karte 22, INTERFACES § Modul 22, CLAUDE.md-Zeile 22), Panel-22-Knopf
+„Größe ziehbar: setSize + Reset" in `manual_check.html`.
+
+**Browser-Sichttest grün (Klaus 2026-06-22, Galaxy-Tab-S6):** Griff ziehbar,
+**gezogene Größe bleibt nach Hard-Reload erhalten** (Persistenz live bestätigt).
+Lesefeld-Höhe ist eine Maximal-Höhe (wächst mit der Treffermenge) — von Klaus
+als gewollt bestätigt. PR #388 gemerged.
+
+**Was offen:** Stränge B (B3 Sicherheits-Richter, architektonisch —
+Modul-04-Querschnitt, mit Klaus abstimmen) und C (Standalone-PWA-Download)
+bleiben offen.
+
+**Test:** Headless-Smoke `tests/smoke_bau22_such_widget.mjs` **162/162 grün**
+(Probe 44 neu: Resize-Pfad + Persistenz über Re-Init + Min-Klemmung + Reset) +
+Browser-Sichttest grün.
+
+**Nächster Schritt:** Klaus' Wahl Strang B oder C.
+
 ### 2026-06-21 · Meilenstein-Serie auf der Sage-Page + Gute-Nacht-Karte an BookLedgerPro
 
 **Rolle:** Pflege/Abschluss (Folge der Bau-22-Sitzung). Interaktiv mit Klaus am

@@ -5485,13 +5485,31 @@
         return { modus: res.mode, webLink: res.webLink, erwartung: "neuer-Tab-Link (DuckDuckGo), kein Inline-Treffer ohne SearXNG-URL" };
       });
 
+      SbkimUI.addButton("22_such_widget", "Größe ziehbar: setSize + Reset", function () {
+        // Programmatischer Beweis des Resize-Pfads (am Tablet zieht der Griff
+        // unten rechts). setSize klemmt auf Min/Max + persistiert; null = Reset.
+        if (!SbkimSearchWidget.isExpanded()) SbkimSearchWidget.expand();
+        SbkimSearchWidget.setSize({ panelWidth: 460, resultsHeight: 300 });
+        var grown = SbkimSearchWidget.getSize();
+        SbkimSearchWidget.setSize({ panelWidth: 10, resultsHeight: 10 }); // unter Min → geklemmt
+        var clamped = SbkimSearchWidget.getSize();
+        var ok = grown.panelWidth === 460 && grown.resultsHeight === 300 &&
+                 clamped.panelWidth === 240 && clamped.resultsHeight === 120;
+        SbkimUI.setStatus("22_such_widget", ok ? "ok" : "err",
+          ok ? "Resize + Klemmung OK" : "Resize-Fehler");
+        SbkimSearchWidget.setSize({ panelWidth: null, resultsHeight: null }); // zurück auf CSS-Default
+        return { gewachsen: grown, geklemmt: clamped, nach_reset: SbkimSearchWidget.getSize(),
+          erwartung: "460/300, dann auf 240/120 geklemmt, dann null/null (CSS-Default). Am Tablet: Griff unten rechts ziehen." };
+      });
+
       SbkimUI.addButton("22_such_widget", "_meta zeigen", function () {
         var m = SbkimSearchWidget._meta;
         return {
           euPolicy: m.euPolicy, areas: m.areas, richterOn: m.richterOn, hasSearxng: m.hasSearxng,
           corpusSize: m.corpusSize, corpusReady: m.corpusReady, nodeCorpusSize: m.nodeCorpusSize,
-          visible: m.visible, expanded: m.expanded, widgetMounted: m.widgetMounted,
-          lastSearchMode: m.lastSearchMode, searchCount: m.searchCount, hasApiKey: m.hasApiKey, coupled: m.coupled,
+          visible: m.visible, expanded: m.expanded, panelWidth: m.panelWidth, resultsHeight: m.resultsHeight,
+          widgetMounted: m.widgetMounted, lastSearchMode: m.lastSearchMode, searchCount: m.searchCount,
+          hasApiKey: m.hasApiKey, coupled: m.coupled,
         };
       });
     })();

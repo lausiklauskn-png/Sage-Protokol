@@ -763,6 +763,55 @@ async function run() {
   inp = queryFirst(root, ".sbkim-sw-input");
   eq("Probe 43: X leert Feld-Inhalt", "", inp.value);
   record("Probe 43: X leert eingefügte KI-Antwort", "true", String(W._meta.hasPastedAi === false), W._meta.hasPastedAi === false);
+
+  // ---- Probe 44: ziehbare Panel-Größe (Resize-Griff) ----
+  // Frischer Mount mit eigenem Stub, damit kein Größen-Rest aus init-Optionen
+  // anderer Proben mitspielt.
+  const stub4 = makeStubDocument();
+  const ls4 = makeStubLocalStorage();
+  const w4 = Object.assign({}, stub);
+  w4.document = stub4; w4.localStorage = ls4; delete w4.SbkimSearchWidget;
+  globalThis.window = w4;
+  new Function("global", "window", "globalThis", "console",
+    readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8"))(w4, w4, w4, console);
+  const W4 = w4.SbkimSearchWidget;
+  for (const fn of ["getSize", "setSize"]) {
+    record("Probe 44: " + fn + " exportiert", "function", typeof W4[fn], typeof W4[fn] === "function");
+  }
+  await W4.init({ areas: { app: true, knoten: false, internet: false } });
+  eq("Probe 44: Default-Größe panelWidth null", "null", String(W4._meta.panelWidth));
+  eq("Probe 44: Default-Größe resultsHeight null", "null", String(W4._meta.resultsHeight));
+  W4.expand();
+  const root4 = stub4.getElementById("sbkim-search-widget");
+  const handle = queryFirst(root4, ".sbkim-sw-resize");
+  record("Probe 44: Resize-Griff existiert", "true", String(!!handle), !!handle);
+  // Ziehen: pointerdown auf den Griff (clientX/Y), dann move +120/+90, dann up.
+  handle.dispatchEvent({ type: "pointerdown", target: handle, pointerId: 9, clientX: 320, clientY: 200, stopPropagation: () => {}, preventDefault: () => {} });
+  handle.dispatchEvent({ type: "pointermove", target: handle, pointerId: 9, clientX: 440, clientY: 290 });
+  handle.dispatchEvent({ type: "pointerup", target: handle, pointerId: 9, clientX: 440, clientY: 290 });
+  // Stub-getBoundingClientRect: Panel-Breite 220, Lesefeld-Höhe 100. +120/+90.
+  eq("Probe 44: panelWidth nach Resize", "340", String(W4._meta.panelWidth));
+  eq("Probe 44: resultsHeight nach Resize", "190", String(W4._meta.resultsHeight));
+  const sizeRaw = ls4.getItem("sbkim_search_widget_size");
+  record("Probe 44: Größe persistiert in localStorage", "true", String(!!sizeRaw), !!sizeRaw);
+  // Persistenz übersteht einen Re-Init (User-Wahl heilig).
+  delete w4.SbkimSearchWidget;
+  new Function("global", "window", "globalThis", "console",
+    readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8"))(w4, w4, w4, console);
+  const W4b = w4.SbkimSearchWidget;
+  await W4b.init({ areas: { app: true, knoten: false, internet: false } });
+  eq("Probe 44: panelWidth aus localStorage geladen", "340", String(W4b._meta.panelWidth));
+  eq("Probe 44: resultsHeight aus localStorage geladen", "190", String(W4b._meta.resultsHeight));
+  // Min-Klemmung: zu kleiner Wert wird auf MIN_PANEL_WIDTH (240) geklemmt.
+  W4b.setSize({ panelWidth: 50, resultsHeight: 10 });
+  eq("Probe 44: panelWidth Min-Klemmung", "240", String(W4b._meta.panelWidth));
+  eq("Probe 44: resultsHeight Min-Klemmung", "120", String(W4b._meta.resultsHeight));
+  // Reset auf CSS-Default via null.
+  W4b.setSize({ panelWidth: null, resultsHeight: null });
+  eq("Probe 44: Reset panelWidth → null", "null", String(W4b._meta.panelWidth));
+  record("Probe 44: Reset löscht localStorage-Größe", "true",
+    String(ls4.getItem("sbkim_search_widget_size") === null), ls4.getItem("sbkim_search_widget_size") === null);
+  globalThis.window = stub; // zurück für evtl. Folge-Proben
 }
 
 const finalize = () => {

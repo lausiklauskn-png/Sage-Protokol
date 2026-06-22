@@ -57,6 +57,7 @@
   var LS_KEY_POSITION = "sbkim_search_widget_position";
   var LS_KEY_STATE = "sbkim_search_widget_state"; // "collapsed" | "expanded"
   var LS_KEY_ENGINE = "sbkim_search_widget_engine"; // gewählte Web-Suchmaschine
+  var LS_KEY_SIZE = "sbkim_search_widget_size"; // {w,h} ziehbare Panel-Größe
 
   // Frei wählbare Web-Suchmaschinen für den Internet-Neuer-Tab-Weg (Klaus
   // 2026-06-21: DuckDuckGo ODER eine andere). Query wird angehängt (URL-encoded).
@@ -74,6 +75,13 @@
   var SEARXNG_PUBLIC_DEFAULT = "https://searx.be";
 
   var DRAG_THRESHOLD_PX = 5;
+  // Ziehbare Panel-Größe (Klaus' Befund 2026-06-22: unteres Lesefeld zu eng).
+  // panelWidth = Gesamt-Panel-Breite, resultsHeight = Höhe des Treffer-Lesefelds.
+  // Ein Resize-Griff unten rechts zieht beide; Größe persistiert in localStorage.
+  var MIN_PANEL_WIDTH = 240;
+  var MAX_PANEL_WIDTH = 760;
+  var MIN_RESULTS_HEIGHT = 120;
+  var RESIZE_MAX_VH = 0.72;   // Lesefeld-Höhe max. Anteil der Viewport-Höhe
   var DEFAULT_CORNER = "bottom-right";
   var DEFAULT_OFFSET = { x: 16, y: 16 };
   // Andock-Punkt für das X: oben rechts „in der Navleiste" (Klaus 2026-06-21).
@@ -194,6 +202,11 @@
 
   // Drag + Mount.
   var dragState = null;
+  // Resize (ziehbare Panel-Größe). panelWidth/resultsHeight === null → CSS-Default.
+  var resizeHandleEl = null;
+  var resizeState = null;
+  var panelWidth = null;      // px, null = CSS-Default min(320px, 88vw)
+  var resultsHeight = null;   // px, null = CSS-Default max-height 40vh
   var mountObserver = null;
   var mountObserverTimeoutId = null;
 
@@ -331,6 +344,47 @@
     else                                { widgetRoot.style.bottom = oy + "px"; widgetRoot.style.right = ox + "px"; }
   }
 
+  // ---- Ziehbare Panel-Größe (localStorage-persistiert) ----
+
+  function clampPanelWidth(w) {
+    var vw = global.innerWidth || 1024;
+    var max = Math.min(MAX_PANEL_WIDTH, vw - 16);
+    if (max < MIN_PANEL_WIDTH) max = MIN_PANEL_WIDTH;
+    if (w < MIN_PANEL_WIDTH) w = MIN_PANEL_WIDTH;
+    if (w > max) w = max;
+    return Math.round(w);
+  }
+
+  function clampResultsHeight(h) {
+    var vh = global.innerHeight || 768;
+    var max = Math.max(MIN_RESULTS_HEIGHT, Math.round(vh * RESIZE_MAX_VH));
+    if (h < MIN_RESULTS_HEIGHT) h = MIN_RESULTS_HEIGHT;
+    if (h > max) h = max;
+    return Math.round(h);
+  }
+
+  function loadSizeFromLs() {
+    var raw = lsGet(LS_KEY_SIZE);
+    if (!raw) return;
+    try {
+      var parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return;
+      if (typeof parsed.w === "number" && isFinite(parsed.w)) panelWidth = clampPanelWidth(parsed.w);
+      if (typeof parsed.h === "number" && isFinite(parsed.h)) resultsHeight = clampResultsHeight(parsed.h);
+    } catch (_e) { /* fail-soft — CSS-Default bleibt */ }
+  }
+
+  function persistSize() {
+    if (panelWidth === null && resultsHeight === null) { lsRemove(LS_KEY_SIZE); return; }
+    try { lsSet(LS_KEY_SIZE, JSON.stringify({ w: panelWidth, h: resultsHeight })); }
+    catch (_e) { /* fail-soft */ }
+  }
+
+  function applySizeToPanel() {
+    if (panelEl && panelWidth !== null) panelEl.style.width = panelWidth + "px";
+    if (resultsEl && resultsHeight !== null) resultsEl.style.maxHeight = resultsHeight + "px";
+  }
+
   // Beim Wechsel klein↔groß den Mittelpunkt halten und in den sichtbaren Bereich
   // klemmen — sonst schnappt die Blase beim Minimieren in die Ecke / aus dem Bild
   // (Klaus' Befund 2026-06-21: Such-Tool rutschte beim Minimieren nach rechts raus).
@@ -395,6 +449,7 @@
       "#" + WIDGET_ID + " .sbkim-sw-bubble:hover { background: rgba(24, 24, 58, 0.94); }",
       // Interaktions-Zustand: Panel (expanded). Leicht transparent.
       "#" + WIDGET_ID + " .sbkim-sw-panel {",
+      "  position: relative;",
       "  width: min(320px, 88vw);",
       "  background: rgba(16, 16, 42, 0.92);",
       "  border: 1px solid rgba(255, 255, 255, 0.18);",
@@ -407,6 +462,21 @@
       // Zustand-Umschaltung via data-state.
       "#" + WIDGET_ID + "[data-state=\"collapsed\"] .sbkim-sw-panel { display: none; }",
       "#" + WIDGET_ID + "[data-state=\"expanded\"] .sbkim-sw-bubble { display: none; }",
+      // Resize-Griff unten rechts (ziehbar — Breite + Lesefeld-Höhe).
+      "#" + WIDGET_ID + " .sbkim-sw-resize {",
+      "  position: absolute;",
+      "  right: 2px;",
+      "  bottom: 2px;",
+      "  width: 18px;",
+      "  height: 18px;",
+      "  cursor: nwse-resize;",
+      "  touch-action: none;",
+      "  opacity: 0.55;",
+      "  background: linear-gradient(135deg, transparent 0 44%, rgba(245,245,255,0.5) 44% 52%, transparent 52% 66%, rgba(245,245,255,0.5) 66% 74%, transparent 74%);",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-resize:hover { opacity: 1; }",
+      "#" + WIDGET_ID + ".sbkim-sw-resizing { user-select: none; -webkit-user-select: none; }",
+      "#" + WIDGET_ID + ".sbkim-sw-resizing .sbkim-sw-panel { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5); }",
       // Kopfzeile: Drag-Griff + Knöpfe.
       "#" + WIDGET_ID + " .sbkim-sw-head {",
       "  display: flex;",
@@ -1025,11 +1095,23 @@
     resultsEl.className = "sbkim-sw-results";
     panelEl.appendChild(resultsEl);
 
+    // Resize-Griff unten rechts — Panel ziehbar (Breite + Lesefeld-Höhe). Nur
+    // wenn Drag erlaubt ist (gepinnte Widgets bleiben unverändert in Größe/Ort).
+    if (optAllowDrag) {
+      resizeHandleEl = doc.createElement("div");
+      resizeHandleEl.className = "sbkim-sw-resize";
+      resizeHandleEl.setAttribute("aria-label", "Größe ziehen — Breite und Lesefeld-Höhe");
+      resizeHandleEl.setAttribute("title", "Ziehen, um das Such-Panel breiter/höher zu machen");
+      attachResizeHandlers(resizeHandleEl);
+      panelEl.appendChild(resizeHandleEl);
+    }
+
     root.appendChild(panelEl);
 
     if (optAllowDrag) attachDragHandlers(root);
     updateEuChip();
     updateSearxngFieldVisibility();
+    applySizeToPanel();
     return root;
   }
 
@@ -2269,6 +2351,7 @@
           el.classList.contains("sbkim-sw-result") ||
           el.classList.contains("sbkim-sw-result-link") ||
           el.classList.contains("sbkim-sw-check") ||
+          el.classList.contains("sbkim-sw-resize") ||
           el.classList.contains("sbkim-sw-searxng"))) return true;
       el = el.parentNode;
       depth++;
@@ -2355,6 +2438,83 @@
     setTimeout(function () { if (dragState === consumed) dragState = null; }, 0);
   }
 
+  // ---- Resize (ziehbare Panel-Größe, Griff unten rechts) ----
+
+  function attachResizeHandlers(handle) {
+    handle.addEventListener("pointerdown", onResizeDown);
+  }
+
+  function onResizeDown(ev) {
+    // Resize ist KEIN Verschieben: Propagation stoppen, damit der Move-Drag
+    // (root pointerdown) nicht zugleich anspringt.
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    if (ev && ev.preventDefault) ev.preventDefault();
+    if (!optAllowDrag || !panelEl || !widgetRoot) return;
+    // Auf freie Position umstellen, damit die obere-linke Ecke verankert bleibt
+    // und der untere-rechte Griff natürlich nach unten-rechts wächst (sonst
+    // wüchse ein ecken-verankertes Panel in die „falsche" Richtung).
+    var rootRect = widgetRoot.getBoundingClientRect();
+    currentFreeX = rootRect.left;
+    currentFreeY = rootRect.top;
+    currentCorner = null;
+    applyPositionToRoot();
+    var panelRect = panelEl.getBoundingClientRect();
+    var startResH = resultsHeight !== null
+      ? resultsHeight
+      : (resultsEl ? resultsEl.getBoundingClientRect().height : MIN_RESULTS_HEIGHT);
+    resizeState = {
+      pointerId: ev ? ev.pointerId : undefined,
+      startX: ev ? ev.clientX : 0,
+      startY: ev ? ev.clientY : 0,
+      startW: panelWidth !== null ? panelWidth : panelRect.width,
+      startResH: startResH,
+    };
+    try {
+      if (ev && resizeHandleEl && typeof resizeHandleEl.setPointerCapture === "function") {
+        resizeHandleEl.setPointerCapture(ev.pointerId);
+      }
+    } catch (_e) { /* fail-soft */ }
+    if (resizeHandleEl) {
+      resizeHandleEl.addEventListener("pointermove", onResizeMove);
+      resizeHandleEl.addEventListener("pointerup", onResizeUp);
+      resizeHandleEl.addEventListener("pointercancel", onResizeUp);
+    }
+    try { widgetRoot.classList.add("sbkim-sw-resizing"); } catch (_e) { /* nb */ }
+  }
+
+  function onResizeMove(ev) {
+    if (!resizeState) return;
+    try {
+      var dx = ev.clientX - resizeState.startX;
+      var dy = ev.clientY - resizeState.startY;
+      panelWidth = clampPanelWidth(resizeState.startW + dx);
+      resultsHeight = clampResultsHeight(resizeState.startResH + dy);
+      applySizeToPanel();
+    } catch (err) {
+      warn("Resize-Pointer-Fehler — Resize abgebrochen.", err);
+      onResizeUp(ev);
+    }
+  }
+
+  function onResizeUp(_ev) {
+    if (!resizeState) return;
+    try {
+      if (resizeHandleEl && typeof resizeHandleEl.releasePointerCapture === "function" &&
+          resizeState.pointerId !== undefined) {
+        resizeHandleEl.releasePointerCapture(resizeState.pointerId);
+      }
+    } catch (_e) { /* nb */ }
+    if (resizeHandleEl) {
+      resizeHandleEl.removeEventListener("pointermove", onResizeMove);
+      resizeHandleEl.removeEventListener("pointerup", onResizeUp);
+      resizeHandleEl.removeEventListener("pointercancel", onResizeUp);
+    }
+    if (widgetRoot) { try { widgetRoot.classList.remove("sbkim-sw-resizing"); } catch (_e) { /* nb */ } }
+    persistSize();
+    persistPosition(); // freie Position wurde beim Resize-Start gesetzt
+    resizeState = null;
+  }
+
   // ---- Mount (mit MutationObserver-Fallback, Pattern aus Modul 17) ----
 
   function mountWidget() {
@@ -2371,6 +2531,7 @@
     applyPositionToRoot();
     applyVisibility();
     applyState();
+    applySizeToPanel();
   }
 
   function setupMountObserver(doc) {
@@ -2520,6 +2681,27 @@
     return buildPositionSnapshot();
   }
 
+  // Aktuelle ziehbare Größe (defensive Kopie). null = CSS-Default.
+  function getSize() {
+    return { panelWidth: panelWidth, resultsHeight: resultsHeight };
+  }
+
+  // Programmatische Größe (Tests / Reset / manual_check-Knopf). null setzt aufs
+  // CSS-Default zurück; Zahlen werden auf die Min-/Maxmaße geklemmt.
+  function setSize(opts) {
+    opts = opts || {};
+    if (opts.panelWidth === null) panelWidth = null;
+    else if (typeof opts.panelWidth === "number" && isFinite(opts.panelWidth)) panelWidth = clampPanelWidth(opts.panelWidth);
+    if (opts.resultsHeight === null) resultsHeight = null;
+    else if (typeof opts.resultsHeight === "number" && isFinite(opts.resultsHeight)) resultsHeight = clampResultsHeight(opts.resultsHeight);
+    if (panelEl) {
+      if (panelWidth === null) panelEl.style.width = "";
+      if (resultsHeight === null && resultsEl) resultsEl.style.maxHeight = "";
+    }
+    applySizeToPanel();
+    persistSize();
+  }
+
   // ---- Init ----
 
   function init(options) {
@@ -2539,6 +2721,9 @@
     if (options.allowDrag !== undefined) optAllowDrag = !!options.allowDrag;
     if (options.rememberHidden !== undefined) optRememberHidden = !!options.rememberHidden;
     if (typeof options.zIndex === "number" && isFinite(options.zIndex)) optZIndex = options.zIndex;
+    // Optionale Start-Größe (localStorage = User-Wahl überschreibt sie unten).
+    if (typeof options.panelWidth === "number" && isFinite(options.panelWidth)) panelWidth = clampPanelWidth(options.panelWidth);
+    if (typeof options.resultsHeight === "number" && isFinite(options.resultsHeight)) resultsHeight = clampResultsHeight(options.resultsHeight);
 
     if (options.corpus !== undefined) setCorpus(options.corpus);
     if (typeof options.prepareCorpus === "function") corpusPreparer = options.prepareCorpus;
@@ -2581,6 +2766,7 @@
     loadStateFromLs();
     loadPositionFromLs();
     loadEngineFromLs();   // persistierte Suchmaschinen-Wahl (User-Wahl heilig)
+    loadSizeFromLs();     // persistierte Panel-Größe (User-Wahl heilig)
     if (options.startExpanded === true) expandedFlag = true;
 
     if (ready) {
@@ -2589,6 +2775,7 @@
       applyPositionToRoot();
       applyVisibility();
       applyState();
+      applySizeToPanel();
       updateEuChip();
       return Promise.resolve();
     }
@@ -2610,6 +2797,8 @@
     dockToTop: dockToTop,
     isExpanded: isExpanded,
     getPosition: getPosition,
+    getSize: getSize,
+    setSize: setSize,
     setCorpus: setCorpus,
     search: search,
     buildPrompt: buildAiPrompt,
@@ -2643,6 +2832,8 @@
       get vaultUnlocked() { return vaultUnlocked; },
       get visible() { return isVisible(); },
       get expanded() { return !!expandedFlag; },
+      get panelWidth() { return panelWidth; },
+      get resultsHeight() { return resultsHeight; },
       get widgetMounted() { return !!(widgetRoot && widgetRoot.parentNode); },
       get lastSearchMode() { return lastSearchMode; },
       get searchCount() { return searchCount; },

@@ -292,6 +292,33 @@ Mapping:
 | `sbkim_search_widget_visible` | `"true"` \| `"false"` | `"true"` |
 | `sbkim_search_widget_position` | JSON eines `PositionSnapshot` | `{corner:"bottom-right",offsetX:16,offsetY:16}` |
 | `sbkim_search_widget_state` | `"collapsed"` \| `"expanded"` | `"collapsed"` |
+| `sbkim_search_widget_size` | JSON `{w,h}` (Panel-Breite / Lesefeld-Höhe in px) | nicht gesetzt → CSS-Default |
+
+## Ziehbare Panel-Größe (Resize-Griff, 2026-06-22)
+
+Klaus' Befund: das untere Lesefeld (Treffer-Liste) ist zu eng. Ein **Resize-Griff
+unten rechts** (`.sbkim-sw-resize`, `cursor: nwse-resize`) zieht das Panel größer —
+gleichzeitig **Breite** (`panelWidth`) **und Lesefeld-Höhe** (`resultsHeight`,
+`max-height` der Treffer-Liste). Die Größe **persistiert** in `localStorage`
+(`sbkim_search_widget_size`, User-Wahl heilig — übersteht Re-Init, überschreibt
+`init({panelWidth,resultsHeight})`).
+
+- **Min/Max:** Breite `240 … min(760, Viewport-16)` px, Lesefeld-Höhe
+  `120 … 0.72·Viewport` px. Werte werden geklemmt.
+- **Drag-Konflikt sauber getrennt:** der Griff-`pointerdown` ruft
+  `stopPropagation()` — der Verschiebe-Drag (root) springt nicht zugleich an;
+  zusätzlich zählt `.sbkim-sw-resize` als interaktives Ziel (kein Drag). Beim
+  Resize-Start stellt das Widget auf **freie Position** um (obere-linke Ecke
+  verankert), damit der untere-rechte Griff natürlich nach unten-rechts wächst.
+- **Nur bei `allowDrag:true`** (gepinnte Widgets bleiben in Größe/Ort fest).
+- **Reset:** `setSize({panelWidth:null, resultsHeight:null})` setzt auf den
+  CSS-Default zurück und löscht den localStorage-Eintrag.
+
+**Browser-Sichttest grün (Klaus 2026-06-22):** Größe ziehbar, **gezogene Größe
+bleibt nach Hard-Reload erhalten** (Persistenz live bestätigt). Die Lesefeld-Höhe
+ist eine **Maximal-Höhe** (`max-height`): mit wenig Treffern bleibt das Feld kurz,
+mit vielen wächst es bis zur gezogenen Höhe und scrollt dann — von Klaus als
+gewünschtes Verhalten bestätigt (kein leerer Platz bei wenig Treffern).
 
 ## UX-Lehre „Eingabe-Erhalt" (von BLP/Modul 21 übernommen)
 
@@ -320,6 +347,9 @@ window.SbkimSearchWidget = {
   isExpanded: function () {},    // boolean
 
   getPosition: function () {},   // PositionSnapshot (defensive Kopie)
+
+  getSize: function () {},       // { panelWidth, resultsHeight } (px oder null=CSS-Default)
+  setSize: function (opts) {},   // { panelWidth?, resultsHeight? } px setzen; null=Reset; geklemmt + persistiert
 
   // Korpus-Quelle setzen (Array von {label, text?, passageVec, anchorId?}).
   // Reicht an SbkimMatch durch + hält eine lokale Kopie für queryLocal.
@@ -353,7 +383,9 @@ window.SbkimSearchWidget = {
 
   defaultCorner?: "top-left"|"top-right"|"bottom-left"|"bottom-right",  // Default "bottom-right"
   defaultOffset?: { x:number, y:number },                              // Default {x:16,y:16}
-  allowDrag?:     boolean,           // Default true
+  panelWidth?:    number,            // Start-Panel-Breite px (localStorage überschreibt); geklemmt 240…760
+  resultsHeight?: number,            // Start-Lesefeld-Höhe px (localStorage überschreibt); geklemmt 120…0.72·vh
+  allowDrag?:     boolean,           // Default true (auch Voraussetzung für den Resize-Griff)
   rememberHidden?: boolean,          // Default true (User-Wahl heilig)
   startExpanded?:  boolean,          // Default false (Ruhezustand klein)
   zIndex?:        number,            // Default 9985
@@ -368,6 +400,8 @@ corpusSize:     number          // Einträge im aktuellen Korpus
 corpusReady:    boolean         // wurde prepareCorpus erfolgreich ausgeführt?
 visible:        boolean
 expanded:       boolean
+panelWidth:     number | null   // ziehbare Panel-Breite (null = CSS-Default)
+resultsHeight:  number | null   // ziehbare Lesefeld-Höhe (null = CSS-Default)
 widgetMounted:  boolean
 lastSearchMode: string | null   // letzter runSearch-Modus
 searchCount:    number
