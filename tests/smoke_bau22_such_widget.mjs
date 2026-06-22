@@ -936,6 +936,54 @@ async function run() {
   eq("Probe 47: clearMerkliste → 0", "0", String(W._meta.merkCount));
   eq("Probe 47: localStorage-Merkliste entfernt", "null",
     String(stub.localStorage.getItem("sbkim_search_widget_merkliste")));
+
+  // ---- Probe 48: letzte Suche überlebt einen PWA-Neustart (Reload-Schutz) ----
+  const stub5 = makeStubDocument();
+  const ls5 = makeStubLocalStorage();
+  const w5 = Object.assign({}, stub);
+  w5.document = stub5; w5.localStorage = ls5; delete w5.SbkimSearchWidget;
+  w5.SbkimMatch = {
+    setLocalCorpus() {},
+    async queryLocal(text, k, options) {
+      const c = (options && options.corpus) || [];
+      return c.slice(0, 2).map((e, i) => ({ label: e.label, score: 0.9 - i * 0.05, anchorId: e.anchorId }));
+    },
+  };
+  globalThis.window = w5;
+  new Function("global", "window", "globalThis", "console",
+    readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8"))(w5, w5, w5, console);
+  const W5 = w5.SbkimSearchWidget;
+  await W5.init({ areas: { app: true, knoten: false, internet: false }, richter: false });
+  W5.setCorpus([
+    { label: "Eisdiele Hamburg", text: "italienisches Eis", url: "https://eis.example/hh", passageVec: new Float32Array(384), anchorId: "https://eis.example/hh" },
+    { label: "Gelateria", text: "Gelato", url: "https://eis.example/g", passageVec: new Float32Array(384), anchorId: "https://eis.example/g" },
+  ]);
+  const root5 = stub5.getElementById("sbkim-search-widget");
+  queryFirst(root5, ".sbkim-sw-input").value = "italienischer eishersteller hamburg";
+  const sb5 = queryFirst(root5, ".sbkim-sw-search");
+  sb5.dispatchEvent({ type: "click", target: sb5, stopPropagation: () => {}, preventDefault: () => {} });
+  await new Promise(r => setTimeout(r, 0));
+  await new Promise(r => setTimeout(r, 0));
+  record("Probe 48: letzte Suche in localStorage gespeichert", "true",
+    String(!!ls5.getItem("sbkim_search_widget_lastsearch")), !!ls5.getItem("sbkim_search_widget_lastsearch"));
+  // Neustart simulieren: frische Modul-Instanz, GLEICHER localStorage (kein RAM).
+  delete w5.SbkimSearchWidget;
+  new Function("global", "window", "globalThis", "console",
+    readFileSync(resolve(repoRoot, "src/modules/22_such_widget.js"), "utf8"))(w5, w5, w5, console);
+  const W5b = w5.SbkimSearchWidget;
+  await W5b.init({ areas: { app: true, knoten: false, internet: false }, richter: false });
+  const root5b = stub5.getElementById("sbkim-search-widget");
+  eq("Probe 48: Frage nach Neustart wiederhergestellt", "italienischer eishersteller hamburg",
+    queryFirst(root5b, ".sbkim-sw-input").value);
+  const rows5 = queryAll(queryFirst(root5b, ".sbkim-sw-results"), ".sbkim-sw-result");
+  record("Probe 48: Treffer nach Neustart wieder angezeigt", "true", String(rows5.length >= 1), rows5.length >= 1);
+  const txt5 = W5b.resultsAsText();
+  record("Probe 48: wiederhergestellter Treffer-Text enthält Label", "true",
+    String(txt5.indexOf("Eisdiele") >= 0), txt5.indexOf("Eisdiele") >= 0);
+  W5b.dockToTop(); // ✕ = frischer Start → gespeicherte Suche löschen
+  eq("Probe 48: dockToTop löscht gespeicherte Suche", "null",
+    String(ls5.getItem("sbkim_search_widget_lastsearch")));
+  globalThis.window = stub;
 }
 
 const finalize = () => {

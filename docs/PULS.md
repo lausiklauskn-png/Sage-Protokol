@@ -1841,6 +1841,34 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-22 · Bau 22 Folge-Fix: Reload-Schutz (letzte Suche überlebt PWA-Neustart) + Such-Tool-Lupe
+
+**Rolle:** Bau-Sitzung Modul 22, direkte Folge nach Merge PR #391 + Klaus' Live-
+Sichttest der installierten `such-tool/`-PWA.
+
+**Was getan:** (1) **Such-Werkzeug-Lupe** in der Sage-Page-Liste *PWAs im Mycel*
+(`renderVorteilspackPwas`, relativer Link `such-tool/`, „PWA · öffnen +
+installieren") — Klaus' Wunsch, die App mit einem Klick zu öffnen/installieren
+(war Teil von PR #391). (2) **Reload-Schutz (neuer Fix):** Klaus' Live-Befund — im
+Splitscreen auf einen Web-Treffer („in Google öffnen") tippen → Android startet die
+PWA neu → Trefferliste (RAM) weg, Panel blank. Fix: die **letzte Suche** (Frage +
+Treffer + `webLink`, nur Text+Link, keine PII) wird nach jedem Render in
+`localStorage` `sbkim_search_widget_lastsearch` gespiegelt und beim Mount
+(`restoreLastSearch`) automatisch wiederhergestellt — Treffer + Frage sind nach dem
+Neustart wieder da. ✕ (dockToTop) löscht sie (frischer Start), – behält sie. Ergänzt
+die Merkliste (bewusste Dauer-Ablage), ersetzt sie nicht.
+
+**Tests:** `smoke_bau22_such_widget.mjs` **213/213** (Probe 48 neu), Standalone
+`smoke_standalone_such_tool.mjs` **46/46** (Drift-Guard). Karte 22 + INTERFACES
+nachgezogen.
+
+**Was offen:** Klaus' Browser-Sichttest des Reload-Schutzes (nach Hard-Reload der
+PWA): Web-Treffer öffnen im Splitscreen → zurück → Treffer wieder da. Vergleich
+(Form 1/2/3) + Pilz-Server/Geld (Phase D.2) weiterhin Klaus-Entscheid.
+
+**Nächster Schritt:** Reload-Schutz-PR mergen (nach Klaus' OK / Sichttest), App
+aktualisieren, gegentesten.
+
 ### 2026-06-22 · Bau 22 Folge: Splitscreen-Fix + Vollbild-Modus + Merken-Liste
 
 **Rolle:** Bau-Sitzung Modul 22 (Folge des Brainstorms 2026-06-22,
