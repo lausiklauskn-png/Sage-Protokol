@@ -1865,6 +1865,11 @@ iterativ an Klaus' Galaxy-Tab-S6-Browser feinjustiert. **Auf `main` gemerged**
   ununterbrochen über die Erde, liegt vor ihr (renderOrder 8).
 - **Klick-Funken/Halo** genau am Klickpunkt (`burstAtScreen`, verglüht wieder).
 - **Kamera** zentriert, weniger Abwärts-Blick → Erde voll im Bild.
+- **Scroll-Glättung** (#411): scroll-gesteuerte Effekte über sanft nachgezogenen
+  `smoothScroll` (Lerp) → weiche statt zackige Übergänge.
+- **Sage-Page-Einbettung** (#410): eigene Discovery-Karte in `index.html` neben
+  der Einladungs-Karte — Galaxie-Hintergrund + Erde im Dauerwechsel dunkel↔blau
+  (CSS) + Hero-Text + Link auf die Discovery-Seite.
 - Neue Hero-Assets: `erde-dunkel.webp`, `erde-blau.webp`, `galaxie-hintergrund.webp`
   (altes `planet-blau.webp` entfernt). Headless-Smoke `docs/discovery/_smoke.mjs`
   durchgehend **11/11 grün**.
@@ -1872,9 +1877,9 @@ iterativ an Klaus' Galaxy-Tab-S6-Browser feinjustiert. **Auf `main` gemerged**
 **Was offen / nächster Schritt:** **Texte** mit Klaus durchgehen (Hero-Titel,
 Untertitel, Galerie, versteckte Botschaften) — Klaus wollte das „gleich"
 besprechen, Sitzung endete vorher. Brief liegt:
-`docs/sessions/BRIEF_DISCOVERY_TEXTE_FEINSCHLIFF.md`. Danach optional:
-Sage-Page-Verlinkung der Discovery-Seite; ob die 4 Storyboard-Standbilder
-zusätzlich eingewoben werden.
+`docs/sessions/BRIEF_DISCOVERY_TEXTE_FEINSCHLIFF.md`. Sage-Page-Verlinkung ist
+**erledigt** (#410); optional bleibt: die 4 Storyboard-Standbilder zusätzlich
+einweben.
 
 ### 2026-06-23 · Discovery-Expedition: Bau der WebGL-Schöpfungs-Seite + 15 KI-Bilder
 

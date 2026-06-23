@@ -30,6 +30,13 @@ Anschauen.
 7. **#407** — dunkle Erde heller + garantiert vorn (renderOrder Erde 5 / Nebel −10);
    Klick-Funken/Halo zurück, jetzt **am Klickpunkt** (`burstAtScreen`).
 8. **#408** — Schweif/Schnebel wieder vor der Erde (dust renderOrder 8 > Erde 5).
+9. **#409** — Sitzungs-Doku (PULS + dieses Protokoll + Text-Feinschliff-Brief).
+10. **#410** — **Sage-Page-Einbettung**: eigene Discovery-Karte neben der
+    Einladungs-Karte (`index.html`) — Galaxie-Hintergrund + Erde im Dauerwechsel
+    dunkel↔blau (CSS-Crossfade) + Hero-Text + Link auf die Discovery-Seite.
+11. **#411** — **Scroll-Glättung**: scroll-gesteuerte Effekte (Erde dunkel→blau,
+    Schleier) über sanft nachgezogenen `smoothScroll` (Lerp 0.09/Frame) → weiche
+    statt zackige Übergänge.
 
 ## Endstand der Hero-Animation
 
@@ -49,8 +56,10 @@ Anschauen.
 - **Texte** mit Klaus durchgehen (Hero-Titel, Untertitel, Galerie-Texte,
   versteckte Botschaften) — war ausdrücklich als nächstes angekündigt, Sitzung
   endete davor. Brief: `docs/sessions/BRIEF_DISCOVERY_TEXTE_FEINSCHLIFF.md`.
-- Optional: Sage-Page-Verlinkung der Discovery-Seite; Storyboard-Standbilder
-  zusätzlich einweben.
+- ✅ **Sage-Page-Einbettung erledigt** (#410) — Discovery-Karte neben der
+  Einladung.
+- Optional: Storyboard-Standbilder (galaxien/elemente-erde/kosmos-mycel)
+  zusätzlich in Hero/Anker einweben.
 
 ## Konventions-Notiz für Folge-Sitzungen
 
