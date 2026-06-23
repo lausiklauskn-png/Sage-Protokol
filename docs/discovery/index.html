@@ -753,7 +753,7 @@ if (renderer) {
   // ausgekeyt. Halbschatten + Atmosphären-Saum sind im Foto schon enthalten.
   const earthMat = new THREE.ShaderMaterial({
     uniforms: {
-      uAppear: { value: 0 }, uHabitable: { value: 0 }, uDarkZoom: { value: 1.3 },
+      uAppear: { value: 0 }, uHabitable: { value: 0 }, uDarkZoom: { value: 1.15 },
       uDark: { value: blankTex }, uBlue: { value: blankTex },
       uHasDark: { value: 0 }, uHasBlue: { value: 0 }
     },
@@ -777,7 +777,7 @@ if (renderer) {
         // es wird NICHT ausgekeyt; nur die schwarzen Ecken außerhalb der Scheibe.
         vec3 col = mix(dCol, bCol, uHabitable);
         float r = distance(vUv, vec2(0.5));
-        float mask = 1.0 - smoothstep(0.45, 0.49, r);  // runde Maske, Planet bleibt VOLL
+        float mask = 1.0 - smoothstep(0.425, 0.445, r);  // enge Maske an der Planeten-Kante (kein schwarzer Halo)
         float a = mask * uAppear * max(uHasDark, uHasBlue);
         if (a < 0.004) discard;
         gl_FragColor = vec4(col, a);
@@ -833,9 +833,11 @@ if (renderer) {
         float core = smoothstep(0.5, 0.0, d);
         gl_FragColor = vec4(vCol, core * vA);
       }`,
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+    transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending
   });
-  scene.add(new THREE.Points(cometGeo, sparkMat));
+  const cometPoints = new THREE.Points(cometGeo, sparkMat);
+  cometPoints.renderOrder = 20;                 // Kometen VOR der Erde
+  scene.add(cometPoints);
 
   function randomCometStart(out){
     const ang = Math.random()*Math.PI*2;
@@ -863,7 +865,9 @@ if (renderer) {
   burstGeo.setAttribute('aColor', new THREE.BufferAttribute(bCol, 3));
   burstGeo.setAttribute('aAlpha', new THREE.BufferAttribute(bAlpha, 1));
   burstGeo.setAttribute('aSize',  new THREE.BufferAttribute(bSize, 1));
-  scene.add(new THREE.Points(burstGeo, sparkMat));
+  const burstPoints = new THREE.Points(burstGeo, sparkMat);
+  burstPoints.renderOrder = 21;                 // Einschlag-Funken VOR der Erde
+  scene.add(burstPoints);
   const bursts = [];
   for (let i=0;i<BURST_MAX;i++) bursts.push({ active:false, age:0, life:1, color: COMET_PALETTE[0], parts:[] });
   function spawnBurst(at, color){
@@ -1123,6 +1127,14 @@ if (renderer) {
     updateBursts(dt);
     dustMat.uniforms.uTime.value = elapsed;
     dustMat.uniforms.uProgress.value = p;
+    // „Schnebel": der Sternenstaub-Auftreffpunkt wandert ununterbrochen über
+    // die Erde (Lissajous) statt immer dieselbe Stelle zu treffen, und liegt
+    // leicht vor der Erde, damit er ÜBER ihr zieht (Klaus' Wunsch).
+    dustMat.uniforms.uEnd.value.set(
+      EARTH_POS.x + Math.cos(elapsed*0.45)*0.85 + Math.sin(elapsed*0.27)*0.35,
+      EARTH_POS.y + Math.sin(elapsed*0.38)*0.7  + Math.cos(elapsed*0.21)*0.3,
+      EARTH_POS.z + 0.25
+    );
     mycMat.uniforms.uTime.value = elapsed;
     mycMat.uniforms.uGrow.value = smoothstep01(p, 0.58, 0.95);
     applyCamera(p);
