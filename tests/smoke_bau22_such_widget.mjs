@@ -1072,6 +1072,38 @@ async function run() {
   record("Probe 50: Service-Worker abgemeldet", "true", String(unreg7 >= 1), unreg7 >= 1);
   record("Probe 50: Seite neu geladen", "true", String(reloaded7), reloaded7);
   globalThis.window = stub;
+
+  // ---- Probe 51: Schärfen-Mikro + KI-Zusammenfassung („warum diese Reihenfolge") ----
+  // SbkimSpeech-Stub ist seit Probe 16 aktiv → Schärfen-Mikro hängt Text ans Feld.
+  const ctxField = queryFirst(root, ".sbkim-sw-aicontext");
+  const ctxMic = queryFirst(root, ".sbkim-sw-ctxvoice");
+  record("Probe 51: Schärfen-Mikro vorhanden", "true", String(!!ctxMic), !!ctxMic);
+  ctxField.value = "zweck";
+  ctxMic.dispatchEvent({ type: "click", target: ctxMic, stopPropagation: () => {} });
+  record("Probe 51: erkannter Text ans Schärfen-Feld angehängt", "true",
+    String(ctxField.value === "zweck erkannt"), ctxField.value === "zweck erkannt");
+  // parseAiSummary + Objekt-Form von parseAiAnswer.
+  const aiObj = '```json\n{"zusammenfassung":"Hamburg-Quellen zuerst, weil ortsbezogen.","treffer":[{"titel":"Hamburg Integration","url":"https://hh.example/int","quelle":"hh.example","text":"Beratung"}]}\n```';
+  eq("Probe 51: parseAiSummary zieht Zusammenfassung", "Hamburg-Quellen zuerst, weil ortsbezogen.", W.parseAiSummary(aiObj));
+  eq("Probe 51: parseAiAnswer (Objekt-Form) liefert Treffer", "1", String(W.parseAiAnswer(aiObj).length));
+  // Render: Zusammenfassung erscheint über den Treffern + 🔊-Knopf.
+  W.setAiAnswer(aiObj);
+  await W.init({ areas: { app: false, knoten: false, internet: true }, richter: false });
+  queryFirst(root, ".sbkim-sw-input").value = "neuer mitarbeiter hamburg";
+  const sb51 = queryFirst(root, ".sbkim-sw-search");
+  sb51.dispatchEvent({ type: "click", target: sb51, stopPropagation: () => {}, preventDefault: () => {} });
+  await new Promise(r => setTimeout(r, 0));
+  await new Promise(r => setTimeout(r, 0));
+  const sumEl = queryFirst(root, ".sbkim-sw-summary");
+  record("Probe 51: Zusammenfassungs-Block gerendert", "true", String(!!sumEl), !!sumEl);
+  const sumText = sumEl ? queryFirst(sumEl, ".sbkim-sw-summary-text") : null;
+  record("Probe 51: Zusammenfassungs-Text korrekt", "true",
+    String(!!sumText && /ortsbezogen/.test(sumText.textContent)), !!sumText && /ortsbezogen/.test(sumText.textContent));
+  const sayBtn51 = sumEl ? queryFirst(sumEl, ".sbkim-sw-saybtn") : null;
+  record("Probe 51: 🔊 Vorlesen-Knopf da", "true", String(!!sayBtn51), !!sayBtn51);
+  let sayThrew = false;
+  try { if (sayBtn51) sayBtn51.dispatchEvent({ type: "click", target: sayBtn51, preventDefault: () => {}, stopPropagation: () => {} }); } catch (e) { sayThrew = true; }
+  record("Probe 51: Vorlesen ohne TTS wirft nicht", "false", String(sayThrew), sayThrew === false);
 }
 
 const finalize = () => {

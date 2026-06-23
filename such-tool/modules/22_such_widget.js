@@ -120,6 +120,7 @@
   var engineSelectEl = null;   // Web-Suchmaschine-Auswahl (Neuer-Tab-Weg)
   var aiSelectEl = null;       // KI-Anbieter-Auswahl (KI-Such-Brücke Stufe A)
   var aiContextEl = null;      // „Schärfen"-Feld (optionaler Kontext vor dem Prompt)
+  var aiContextRowEl = null;   // Zeile um das Schärfen-Feld (+ 🎤 Sprach-Knopf)
   var aiPromptBtnEl = null;    // „Prompt → KI"-Knopf (kopiert + öffnet Anbieter)
   var aiPasteEl = null;        // Einfüge-Feld für die KI-Antwort (JSON)
   var aiSortBtnEl = null;      // „Antwort sortieren"-Knopf
@@ -835,6 +836,29 @@
       "  cursor: pointer;",
       "}",
       "#" + WIDGET_ID + " .sbkim-sw-more:hover { background: rgba(255, 255, 255, 0.12); }",
+      // KI-Zusammenfassung („warum diese Reihenfolge") oben über den Treffern.
+      "#" + WIDGET_ID + " .sbkim-sw-summary {",
+      "  margin-bottom: 0.5rem;",
+      "  padding: 0.45rem 0.55rem;",
+      "  background: rgba(167, 139, 250, 0.12);",
+      "  border: 1px solid rgba(167, 139, 250, 0.4);",
+      "  border-left: 3px solid rgba(167, 139, 250, 0.85);",
+      "  border-radius: 8px;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-summary-head { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem; }",
+      "#" + WIDGET_ID + " .sbkim-sw-summary-head span { flex: 1; font-size: 0.64rem; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(237, 233, 254, 0.85); }",
+      "#" + WIDGET_ID + " .sbkim-sw-saybtn {",
+      "  flex-shrink: 0;",
+      "  background: rgba(167, 139, 250, 0.22);",
+      "  border: 1px solid rgba(167, 139, 250, 0.45);",
+      "  border-radius: 999px;",
+      "  color: #EDE9FE;",
+      "  font-size: 0.66rem;",
+      "  padding: 0.12rem 0.5rem;",
+      "  cursor: pointer;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-saybtn:hover { background: rgba(167, 139, 250, 0.32); }",
+      "#" + WIDGET_ID + " .sbkim-sw-summary-text { font-size: 0.78rem; line-height: 1.4; color: rgba(245, 245, 255, 0.9); }",
       "#" + WIDGET_ID + " .sbkim-sw-copyall {",
       "  width: 100%;",
       "  box-sizing: border-box;",
@@ -895,6 +919,9 @@
       "  padding: 0.35rem 0.45rem;",
       "  resize: vertical;",
       "}",
+      // Schärfen-Zeile: Feld + 🎤 nebeneinander.
+      "#" + WIDGET_ID + " .sbkim-sw-ctxrow { margin-top: 0.35rem; }",
+      "#" + WIDGET_ID + " .sbkim-sw-ctxrow .sbkim-sw-aicontext { flex: 1; min-width: 0; width: auto; margin-top: 0; }",
       // Merken-Haken pro Treffer (kleiner als die Bereichs-Pillen).
       "#" + WIDGET_ID + " .sbkim-sw-resultline { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }",
       "#" + WIDGET_ID + " .sbkim-sw-merkbox { border: none; padding: 0 0.1rem 0 0; }",
@@ -989,7 +1016,7 @@
     if (searxngFieldEl) searxngFieldEl.style.display = show;
     if (engineSelectEl) engineSelectEl.style.display = show;
     if (aiSelectEl) aiSelectEl.style.display = show;
-    if (aiContextEl) aiContextEl.style.display = show;
+    if (aiContextRowEl) aiContextRowEl.style.display = show ? "flex" : "none";
     if (aiPromptBtnEl) aiPromptBtnEl.style.display = show;
     if (aiAutoBtnEl) aiAutoBtnEl.style.display = show;
     if (aiPasteEl) aiPasteEl.style.display = show;
@@ -1176,14 +1203,25 @@
     panelEl.appendChild(aiSelectEl);
 
     // Schärfen-Feld: aktiv zum Präzisieren auffordern (Klaus 2026-06-21 —
-    // wenige Worte tragen die Absicht oft nicht; vgl. NoBite-Befund).
+    // wenige Worte tragen die Absicht oft nicht; vgl. NoBite-Befund). Mit eigenem
+    // 🎤 Sprach-Knopf (Klaus 2026-06-23): das Schärfen lässt sich auch einsprechen.
+    var ctxRow = doc.createElement("div");
+    ctxRow.className = "sbkim-sw-inrow sbkim-sw-ctxrow";
     aiContextEl = doc.createElement("input");
     aiContextEl.type = "text";
     aiContextEl.className = "sbkim-sw-aicontext";
     aiContextEl.setAttribute("placeholder", "Schärfen (optional): Zweck? · Region/Land? · Art/Form? · Marke/Budget?");
     aiContextEl.setAttribute("aria-label", "Suche schärfen — optionaler Kontext");
     aiContextEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
-    panelEl.appendChild(aiContextEl);
+    ctxRow.appendChild(aiContextEl);
+    var ctxVoiceBtn = makeBtn(doc, "sbkim-sw-iconbtn sbkim-sw-ctxvoice", "🎤", "Schärfen einsprechen (Spracheingabe)");
+    ctxVoiceBtn.addEventListener("click", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      onVoiceClick(aiContextEl);
+    });
+    ctxRow.appendChild(ctxVoiceBtn);
+    aiContextRowEl = ctxRow;
+    panelEl.appendChild(ctxRow);
 
     aiPromptBtnEl = makeBtn(doc, "sbkim-sw-aibtn", "🤖 Prompt → KI (öffnen + kopieren)", "Prompt bauen, kopieren und die KI öffnen (eigene App läuft parallel)");
     aiPromptBtnEl.addEventListener("click", function (ev) {
@@ -1299,6 +1337,14 @@
     persistQuery();
   }
 
+  // Erkannten Text an ein beliebiges Feld anhängen (Such-Feld ODER Schärfen-Feld).
+  function appendToField(el, text) {
+    if (!text) return;
+    if (el === inputEl || !el) { appendToInput(text); return; }
+    var base = el.value || "";
+    el.value = (base ? base + " " : "") + text;
+  }
+
   // ---- EU-Politik ----
 
   function setEuPolicy(p) {
@@ -1314,7 +1360,8 @@
 
   // ---- Spracheingabe (Modul 21) ----
 
-  function onVoiceClick() {
+  function onVoiceClick(targetEl) {
+    var target = targetEl || inputEl;
     var speech = global.SbkimSpeech;
     if (!speech || typeof speech.pickEngine !== "function") {
       setHint("Modul 21 (Spracheingabe) nicht geladen — bitte tippen.");
@@ -1330,7 +1377,7 @@
       try {
         activeRecognizer = speech.makeBrowserRecognizer({
           lang: lang,
-          onResult: function (t) { appendToInput(t); setHint("Erkannt: " + t); },
+          onResult: function (t) { appendToField(target, t); setHint("Erkannt: " + t); },
           onError: function (h) { setHint(h); },
           onEnd: function () { activeRecognizer = null; },
         });
@@ -1491,11 +1538,14 @@
       "",
       "WICHTIG für die Ausgabe:",
       "- Lege die Antwort in EINEN Code-Block (```), damit ich sie mit einem Klick kopieren kann.",
-      "- Im Code-Block NUR gültiges JSON, sonst nichts.",
-      "- Erfinde KEINE URLs, nur echte Treffer. Keine Dubletten.",
-      "- Format pro Eintrag:",
-      '  {"titel": "...", "url": "https://...", "quelle": "domain.de", "text": "ein bis zwei Sätze"}',
-      "- So viele echte Einträge wie möglich (Ziel bis 100).",
+      "- Im Code-Block NUR gültiges JSON, sonst nichts. EIN JSON-Objekt:",
+      '  {"zusammenfassung": "...", "treffer": [ {"titel":"...","url":"https://...","quelle":"domain.de","text":"ein bis zwei Sätze"} ]}',
+      "- zusammenfassung: 2–4 kurze Sätze IN DER SPRACHE MEINER FRAGE, die ERKLÄREN,",
+      "  WARUM diese Reihenfolge/Auswahl sinnvoll ist (kurze inhaltliche Begründung — z.B. warum",
+      "  bestimmte Quellen zuerst kommen, worauf zu achten ist), damit ich die Seiten NICHT alle",
+      "  öffnen muss. Nüchtern, keine Werbung.",
+      "- treffer: nach Bedeutungsnähe geordnet; erfinde KEINE URLs, nur echte Treffer, keine Dubletten.",
+      "- So viele echte Treffer wie möglich (Ziel bis 100).",
     ]).join("\n");
   }
 
@@ -1510,18 +1560,30 @@
   }
 
   // Eingefügte KI-Antwort → saubere Eintrags-Liste. Verträgt Code-Fences
-  // (```json … ```), Text drumherum und gesäuberte URLs. [] wenn kein Array.
+  // (```json … ```), Text drumherum und gesäuberte URLs. Akzeptiert ein blankes
+  // Array ODER ein Objekt {zusammenfassung, treffer:[…]}. [] wenn nichts brauchbar.
   function parseAiAnswer(text) {
     if (typeof text !== "string" || !text.trim()) return [];
     var raw = text.trim();
     var fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
     if (fence) raw = fence[1].trim();
-    var start = raw.indexOf("[");
-    var end = raw.lastIndexOf("]");
-    if (start < 0 || end <= start) return [];
-    var arr;
-    try { arr = JSON.parse(raw.slice(start, end + 1)); }
-    catch (e) { return []; }
+    var arr = null;
+    // Form 1: Objekt mit treffer-Array (neues Format mit Zusammenfassung).
+    try {
+      var os = raw.indexOf("{"), oe = raw.lastIndexOf("}");
+      if (os >= 0 && oe > os) {
+        var obj = JSON.parse(raw.slice(os, oe + 1));
+        if (obj && Array.isArray(obj.treffer)) arr = obj.treffer;
+      }
+    } catch (_e) { /* nb — Fallback unten */ }
+    // Form 2: blankes Array (altes Format).
+    if (!arr) {
+      var start = raw.indexOf("[");
+      var end = raw.lastIndexOf("]");
+      if (start < 0 || end <= start) return [];
+      try { arr = JSON.parse(raw.slice(start, end + 1)); }
+      catch (e) { return []; }
+    }
     if (!Array.isArray(arr)) return [];
     var out = [];
     for (var i = 0; i < arr.length; i++) {
@@ -1534,6 +1596,24 @@
       out.push({ titel: titel || url, url: url, quelle: quelle, text: txt });
     }
     return out;
+  }
+
+  // Kurze KI-Zusammenfassung („warum diese Reihenfolge") aus der Antwort ziehen.
+  // "" wenn keine vorhanden (altes Array-Format / Mensch hat nur Treffer geliefert).
+  function extractAiSummary(text) {
+    if (typeof text !== "string" || !text.trim()) return "";
+    var raw = text.trim();
+    var fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fence) raw = fence[1].trim();
+    try {
+      var os = raw.indexOf("{"), oe = raw.lastIndexOf("}");
+      if (os >= 0 && oe > os) {
+        var obj = JSON.parse(raw.slice(os, oe + 1));
+        if (obj && typeof obj.zusammenfassung === "string") return obj.zusammenfassung.trim();
+        if (obj && typeof obj.summary === "string") return obj.summary.trim();
+      }
+    } catch (_e) { /* fail-soft */ }
+    return "";
   }
 
   function hasPastedAi() { return !!(pastedAiText && parseAiAnswer(pastedAiText).length); }
@@ -2318,6 +2398,22 @@
     } catch (e) { warn("Konnte Link nicht öffnen: " + url, e); }
   }
 
+  // Text vorlesen (Browser-Sprachausgabe, server-los, gratis). Toggle: läuft schon
+  // etwas → stoppen. Fail-soft, wenn speechSynthesis fehlt.
+  function readAloud(text) {
+    try {
+      var synth = global.speechSynthesis;
+      if (!synth || typeof global.SpeechSynthesisUtterance !== "function") {
+        setHint("Vorlesen wird vom Browser nicht unterstützt.");
+        return;
+      }
+      if (synth.speaking) { synth.cancel(); return; }
+      if (!text) return;
+      var u = new global.SpeechSynthesisUtterance(String(text));
+      synth.speak(u);
+    } catch (e) { warn("Vorlesen fehlgeschlagen.", e); }
+  }
+
   function makeBadge(doc, srcKey) {
     var badge = doc.createElement("span");
     badge.className = "sbkim-sw-badge " + srcKey;
@@ -2363,7 +2459,43 @@
       "richter": "KI-Richter-Urteil." + (res.reason ? " (Hinweis: " + res.reason + ")" : ""),
     };
     setHint(modeHint[res.mode] || "");
+
+    // Kurze KI-Zusammenfassung („warum diese Reihenfolge") ganz oben — aus der
+    // eingefügten/geholten KI-Antwort, sonst aus der wiederhergestellten Suche.
+    var summary = "";
+    if (hasPastedAi()) summary = extractAiSummary(pastedAiText);
+    if (!summary && res && typeof res.summary === "string") summary = res.summary;
+    res.summary = summary; // für Persistenz/Restore
     lastRenderRes = res;
+    if (summary) {
+      var sumEl = doc.createElement("div");
+      sumEl.className = "sbkim-sw-summary";
+      var sumHead = doc.createElement("div");
+      sumHead.className = "sbkim-sw-summary-head";
+      var sumLabel = doc.createElement("span");
+      sumLabel.textContent = "Kurz erklärt — warum diese Reihenfolge";
+      sumHead.appendChild(sumLabel);
+      var sayBtn = doc.createElement("button");
+      sayBtn.type = "button";
+      sayBtn.className = "sbkim-sw-saybtn";
+      sayBtn.textContent = "🔊 Vorlesen";
+      sayBtn.setAttribute("title", "Zusammenfassung vorlesen (nochmal tippen stoppt)");
+      sayBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+      (function (txt) {
+        sayBtn.addEventListener("click", function (ev) {
+          if (ev && ev.preventDefault) ev.preventDefault();
+          if (ev && ev.stopPropagation) ev.stopPropagation();
+          readAloud(txt);
+        });
+      })(summary);
+      sumHead.appendChild(sayBtn);
+      sumEl.appendChild(sumHead);
+      var sumText = doc.createElement("div");
+      sumText.className = "sbkim-sw-summary-text";
+      sumText.textContent = summary;
+      sumEl.appendChild(sumText);
+      resultsEl.appendChild(sumEl);
+    }
 
     // 🖨 Block kopieren: ALLE gerankten Treffer als Text in die Zwischenablage,
     // damit Klaus den ganzen Block auf einen Klick rüberschicken kann.
@@ -2904,6 +3036,7 @@
       lsSet(LS_KEY_LAST, JSON.stringify({
         query: queryValue || "", mode: res.mode || "semantisch",
         treffer: treffer, webLink: res.webLink || null,
+        summary: (typeof res.summary === "string" ? res.summary : ""),
       }));
     } catch (_e) { /* fail-soft (Quota/Inkognito) */ }
   }
@@ -2919,7 +3052,9 @@
       if (typeof p.query === "string") queryValue = p.query;
       if (Array.isArray(p.treffer)) {
         lastRenderRes = { mode: p.mode || "semantisch", treffer: p.treffer,
-                          webLink: p.webLink || null, restored: true };
+                          webLink: p.webLink || null,
+                          summary: (typeof p.summary === "string" ? p.summary : ""),
+                          restored: true };
       }
     } catch (_e) { /* fail-soft */ }
   }
@@ -3538,6 +3673,7 @@
     search: search,
     buildPrompt: buildAiPrompt,
     parseAiAnswer: parseAiAnswer,
+    parseAiSummary: extractAiSummary,
     setAiAnswer: function (text) { pastedAiText = (typeof text === "string" ? text : ""); return hasPastedAi(); },
     resultsAsText: function () { return buildResultsText(lastRenderRes); },
     autoSearch: autoSearch,                 // B2-Probe: automatischer KI-Aufruf (Claude)

@@ -358,6 +358,26 @@ killt, hängt davon ab, **welche App die Ziel-Adresse öffnet** — nicht ob es
 - Headless-Smoke Proben 27 (Netz-Karte kopiert, kein Open) + 49 (KI-Prompt öffnet
   die KI **und** kopiert; Frage-Sicherung + Neustart-Restore).
 
+## Schärfen-Mikrofon + KI-Zusammenfassung „warum diese Reihenfolge" (Klaus 2026-06-23)
+
+Zwei Wünsche aus Klaus' Nutzung:
+
+- **🎤 am Schärfen-Feld.** Das „Schärfen"-Feld (optionaler Kontext) hat jetzt einen
+  eigenen Sprach-Knopf — der Kontext lässt sich **einsprechen** (Modul 21, gleiche
+  Engine wie das Such-Feld). `onVoiceClick(targetEl)` ist verallgemeinert;
+  `appendToField` hängt den erkannten Text ans jeweilige Feld.
+- **Kurze semantische Zusammenfassung mit Begründung.** `buildAiPrompt` fordert die
+  KI jetzt auf, **ein JSON-Objekt** `{"zusammenfassung": "...", "treffer": [...]}`
+  zu liefern: 2–4 Sätze **in der Sprache der Frage**, die erklären, **warum diese
+  Reihenfolge/Auswahl** sinnvoll ist (kurze inhaltliche Begründung), damit man die
+  Seiten nicht alle öffnen muss. `parseAiAnswer` verträgt beide Formen (Objekt mit
+  `treffer` **oder** blankes Array — rückwärtskompatibel); `parseAiSummary`
+  (`extractAiSummary`) zieht die Zusammenfassung. Sie wird als hervorgehobener
+  Block **über** den Treffern gezeigt, mit **🔊 Vorlesen** (Browser-Sprachausgabe
+  `speechSynthesis`, server-los, gratis; nochmal tippen stoppt; fail-soft ohne TTS).
+  Die Zusammenfassung wird mit der letzten Suche persistiert (überlebt den
+  Reload-Schutz). Headless-Smoke Probe 51.
+
 ## App-aktualisieren-Knopf (🔄 Hard-Reload, 2026-06-22)
 
 Klaus' Wunsch: nach einem Update nicht im Browser-Menü „Cache leeren und neu laden"
