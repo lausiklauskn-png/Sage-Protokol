@@ -1104,6 +1104,16 @@ async function run() {
   let sayThrew = false;
   try { if (sayBtn51) sayBtn51.dispatchEvent({ type: "click", target: sayBtn51, preventDefault: () => {}, stopPropagation: () => {} }); } catch (e) { sayThrew = true; }
   record("Probe 51: Vorlesen ohne TTS wirft nicht", "false", String(sayThrew), sayThrew === false);
+  // Mit TTS-Stub: erkennt die Sprache der (deutschen) Zusammenfassung → de-Stimme.
+  let spoken51 = null;
+  stub.SpeechSynthesisUtterance = function (t) { this.text = t; this.lang = ""; this.voice = null; };
+  stub.speechSynthesis = { speaking: false, cancel() {}, speak(u) { spoken51 = u; }, getVoices: () => [{ lang: "de-DE" }, { lang: "en-US" }, { lang: "ru-RU" }] };
+  if (sayBtn51) sayBtn51.dispatchEvent({ type: "click", target: sayBtn51, preventDefault: () => {}, stopPropagation: () => {} });
+  eq("Probe 51: Vorlesen wählt die deutsche Sprache", "de-DE", spoken51 ? spoken51.lang : "");
+  record("Probe 51: passende Stimme gewählt", "true",
+    String(!!(spoken51 && spoken51.voice && spoken51.voice.lang === "de-DE")),
+    !!(spoken51 && spoken51.voice && spoken51.voice.lang === "de-DE"));
+  delete stub.SpeechSynthesisUtterance; delete stub.speechSynthesis;
 }
 
 const finalize = () => {

@@ -375,6 +375,12 @@ Zwei Wünsche aus Klaus' Nutzung:
   (`extractAiSummary`) zieht die Zusammenfassung. Sie wird als hervorgehobener
   Block **über** den Treffern gezeigt, mit **🔊 Vorlesen** (Browser-Sprachausgabe
   `speechSynthesis`, server-los, gratis; nochmal tippen stoppt; fail-soft ohne TTS).
+  **Sprachbewusst (Klaus 2026-06-23):** `detectLangCode` erkennt grob DE/EN/RU
+  (Kyrillisch / deutsche Sonderzeichen+Stoppwörter / englische Stoppwörter) und
+  `pickVoiceFor` wählt die passende System-Stimme, damit die richtige Sprache
+  gesprochen wird. **Klang = Geräte-Stimmen-Qualität** (keine KI-Stimme) — eine
+  natürliche KI-/Neural-Stimme (ChatGPT/Gemini/ElevenLabs-Niveau) bliebe BYOK +
+  Proxy/Pilz-Server + kostenpflichtig (offene Opt-in-Option, nicht gebaut).
   Die Zusammenfassung wird mit der letzten Suche persistiert (überlebt den
   Reload-Schutz). Headless-Smoke Probe 51.
 
