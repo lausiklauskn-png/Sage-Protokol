@@ -1112,9 +1112,11 @@ if (renderer) {
     const ap = smoothstep01(p, 0.3, 0.46);
     earthMat.uniforms.uAppear.value = ap;
     earthGroup.scale.setScalar(0.72 + ap*0.28);
-    const habIntro = smoothstep01(p, 0.82, 1.0) * 0.5;
-    const habScroll = Math.min(1, window.scrollY / (window.innerHeight * 0.55));
-    earthMat.uniforms.uHabitable.value = reducedMotion ? 1.0 : Math.max(habIntro, habScroll);
+    // Erde bleibt im Hero als DUNKLE, unbewohnliche Früh-Erde stehen (während
+    // der Einschläge) und wird ERST BEIM HOCHSCROLLEN blau/bewohnlich — der
+    // Schatten bleibt. (reduced-motion: gleich blau.)
+    const habScroll = Math.min(1, window.scrollY / (window.innerHeight * 0.6));
+    earthMat.uniforms.uHabitable.value = reducedMotion ? 1.0 : habScroll;
     // Kometen + Einschlag-Funken (ab „Hinwendung", in Reduced-Motion aus)
     const cometsOn = reducedMotion ? 0 : smoothstep01(p, 0.18, 0.4) * (1 - smoothstep01(p, 0.82, 1.0)*0.7);
     updateComets(dt, cometsOn);
