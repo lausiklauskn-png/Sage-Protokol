@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06080a">
+<meta name="description" content="Discovery-Expedition — was wir von den Pilzen lernen. Vom Sternenstaub zum lebendigen Geflecht: eine staunende Dokumentation der Schöpfung. Sage-Protokol / SBKIM.">
+<title>Discovery-Expedition — vom Sternenstaub zum Geflecht · Sage-Protokol</title>
+
+<style>
+/* === Lokal vendorierte Variable Fonts (kein CDN, kein Tracker) ===
+   Wiederverwendet aus der Einladungs-Site (docs/einladung/vendor/fonts),
+   damit kein zweites Schrift-Paket das Repo aufbläht. Lizenz: SIL OFL. */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../einladung/vendor/fonts/fraunces-full.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../einladung/vendor/fonts/fraunces-full-italic.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../einladung/vendor/fonts/inter-wght.woff2') format('woff2-variations');
+}
+</style>
+
+<style>
+/* === Discovery-Expedition · Stylesheet ===
+   Eine Schöpfungs-Dokumentation: Kosmos → Element-Wanderung → Mycel →
+   Pilz-Galerie. Palette und Material-Sprache wie die Einladungs-Site
+   (goldenes Pilz-Icon des Such-Werkzeugs als Leitfarbe), damit die beiden
+   Seiten als ein Werk wirken. Würdevoll, andeutend, nicht plakativ. */
+
+:root {
+  --bg-deep:  #050709;
+  --bg-ink:   #0a0d10;
+  --ink-pri:  #f0e9dd;
+  --ink-sec:  rgba(240, 233, 221, 0.66);
+  --ink-mute: rgba(240, 233, 221, 0.34);
+  --gold:     #d6b76a;
+  --gold-hi:  #f3dca0;
+  --gold-soft:rgba(214, 183, 106, 0.60);
+  --bronze:   #8c6e2f;
+  --moss:     #4a7152;
+  --rust:     #b9602d;
+  --violet:   #6b5b95;
+  --line:     rgba(240, 233, 221, 0.14);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg-deep); color: var(--ink-pri); }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-weight: 350;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* WebGL-Canvas als fester Hintergrund — der Kosmos. DOM liegt obenauf. */
+#cosmos-canvas {
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  display: block;
+  background: radial-gradient(ellipse at 52% 36%, #0b0f15 0%, #06080c 64%, #030409 100%);
+  z-index: 0;
+}
+/* Scrim verdunkelt den Kosmos beim Hinunterscrollen, damit die Galerie-Texte
+   ruhig lesbar werden. Opazität wird per JS am Scroll-Fortschritt gesetzt. */
+#cosmos-scrim {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background:
+    radial-gradient(ellipse at center, transparent 30%, rgba(4,6,9,0.55) 78%, rgba(3,4,8,0.86) 100%),
+    linear-gradient(180deg, rgba(5,7,9,0.0) 0%, rgba(5,7,9,0.35) 60%, rgba(5,7,9,0.55) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+main { position: relative; z-index: 2; }
+
+section {
+  position: relative;
+  padding: 6.5rem 1.6rem;
+}
+.inner { max-width: 70rem; margin: 0 auto; width: 100%; }
+.narrow { max-width: 44rem; }
+
+/* === Typografie === */
+h1, h2, h3, .display {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: "opsz" 144, "SOFT" 28;
+  font-weight: 360;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+  color: var(--ink-pri);
+  text-shadow: 0 2px 26px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.45);
+}
+em { font-style: italic; color: var(--gold-hi); }
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--gold-soft);
+  margin: 0 0 1.1rem;
+}
+p { color: var(--ink-sec); }
+.lead {
+  font-size: clamp(1.05rem, 1rem + 0.6vw, 1.32rem);
+  color: var(--ink-pri);
+  font-weight: 360;
+}
+
+/* === Hero / Eröffnungs-Animation === */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 6rem 1.6rem 4rem;
+}
+#hero .display {
+  font-size: clamp(2.4rem, 1.6rem + 5vw, 5.2rem);
+  font-variation-settings: "opsz" 144, "SOFT" 40;
+  font-weight: 340;
+  max-width: 18ch;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 1.4s ease 0.2s, transform 1.4s ease 0.2s;
+}
+#hero.revealed .display { opacity: 1; transform: none; }
+#hero .hero-sub {
+  margin-top: 1.4rem; max-width: 36rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 1.4s ease 0.6s, transform 1.4s ease 0.6s;
+}
+#hero.revealed .hero-sub { opacity: 1; transform: none; }
+
+/* Storyboard-Untertitel, die während der Eröffnungs-Animation ein- und
+   ausblenden. Vier Phasen, je eine Zeile. */
+.storyline {
+  position: fixed; left: 0; right: 0; bottom: 18vh;
+  text-align: center; pointer-events: none; z-index: 3;
+  padding: 0 1.6rem;
+}
+.storyline .line {
+  position: absolute; left: 0; right: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: "opsz" 96, "SOFT" 30;
+  font-size: clamp(1.1rem, 0.9rem + 1.2vw, 1.7rem);
+  font-style: italic;
+  color: var(--gold-hi);
+  text-shadow: 0 2px 22px rgba(0,0,0,0.85);
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+
+/* Eröffnungs-Steuerung (Überspringen) + Scroll-Hinweis */
+.intro-skip {
+  position: fixed; top: 1.2rem; right: 1.2rem; z-index: 6;
+  background: rgba(10,13,16,0.5); color: var(--ink-sec);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 0.4rem 0.95rem; font: inherit; font-size: 0.8rem;
+  letter-spacing: 0.04em; cursor: pointer; backdrop-filter: blur(6px);
+  transition: opacity 0.6s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.intro-skip:hover { color: var(--gold-hi); border-color: var(--gold-soft); }
+.scroll-hint {
+  position: fixed; left: 50%; bottom: 1.6rem; transform: translateX(-50%);
+  z-index: 5; color: var(--ink-mute); font-size: 0.74rem;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  opacity: 0; transition: opacity 1s ease;
+  pointer-events: none;
+}
+.scroll-hint.show { opacity: 1; animation: hintPulse 2.6s ease-in-out infinite; }
+@keyframes hintPulse { 0%,100% { transform: translateX(-50%) translateY(0);} 50% { transform: translateX(-50%) translateY(6px);} }
+
+/* === Element-Anker-Sektion (Sternenstaub → Geflecht) === */
+.anchor-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.6rem; margin-top: 2.6rem;
+}
+.anchor-card {
+  border: 1px solid var(--line); border-radius: 14px;
+  padding: 1.5rem 1.4rem;
+  background: linear-gradient(160deg, rgba(20,18,14,0.5), rgba(8,8,10,0.32));
+  backdrop-filter: blur(3px);
+}
+.anchor-card h3 {
+  font-size: 1.12rem; margin: 0 0 0.5rem;
+  font-variation-settings: "opsz" 40, "SOFT" 20;
+}
+.anchor-card .num {
+  font-family: 'Fraunces', serif; color: var(--gold-soft);
+  font-size: 0.85rem; letter-spacing: 0.1em;
+}
+.anchor-card p { font-size: 0.95rem; margin: 0; }
+
+/* === Pilz-Galerie === */
+.gallery-head { text-align: center; margin-bottom: 3.2rem; }
+.gallery-head h2 { font-size: clamp(2rem, 1.4rem + 3vw, 3.4rem); }
+
+.fungus {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2.6rem;
+  align-items: center;
+  max-width: 64rem; margin: 0 auto 5.5rem;
+  opacity: 0; transform: translateY(26px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+.fungus.in-view { opacity: 1; transform: none; }
+.fungus:nth-child(even) .fungus-figure { order: 2; }
+
+.fungus-figure {
+  position: relative; aspect-ratio: 4 / 3;
+  border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 40% 30%, rgba(214,183,106,0.14), transparent 60%),
+    linear-gradient(155deg, #14110c 0%, #0a0a0c 70%);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.4);
+}
+.fungus-figure img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  opacity: 0; transition: opacity 0.8s ease;
+}
+.fungus-figure img.loaded { opacity: 1; }
+/* Graceful Platzhalter, solange das KI-Bild noch nicht abgelegt ist:
+   museales, dunkles Kachel-Motiv mit goldenem Namen. Kein 404-Bruchbild. */
+.fungus-figure .placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.6rem;
+  text-align: center; padding: 1.5rem;
+  color: var(--gold-soft);
+}
+.fungus-figure.has-image .placeholder { display: none; }
+.fungus-figure .placeholder .glyph { font-size: 2.2rem; opacity: 0.7; }
+.fungus-figure .placeholder .ph-name {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 1.15rem; color: var(--gold-hi);
+}
+.fungus-figure .placeholder .ph-note {
+  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.fungus-figure figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 0.5rem 0.8rem; font-size: 0.68rem;
+  letter-spacing: 0.06em; color: var(--ink-mute);
+  background: linear-gradient(to top, rgba(4,5,8,0.82), transparent);
+  text-align: right;
+}
+
+.fungus-body h3 {
+  font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2rem);
+  margin: 0 0 0.4rem;
+  font-variation-settings: "opsz" 72, "SOFT" 26;
+}
+.fungus-body .kicker {
+  font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--gold-soft); margin: 0 0 0.7rem;
+}
+.fungus-body p { margin: 0 0 0.9rem; }
+.fungus-body .mirror {
+  font-size: 0.92rem; color: var(--ink-pri);
+  font-style: italic;
+}
+.fungus-body .caveat { font-size: 0.8rem; color: var(--ink-mute); }
+
+/* === Schluss-Bild === */
+#schluss { text-align: center; padding-top: 4rem; }
+.schluss-figure {
+  position: relative; max-width: 62rem; margin: 2.6rem auto 0;
+  aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 30% 70%, rgba(74,113,82,0.22), transparent 55%),
+    radial-gradient(ellipse at 70% 40%, rgba(214,183,106,0.16), transparent 60%),
+    linear-gradient(180deg, #0a1410 0%, #060809 100%);
+  box-shadow: 0 28px 80px rgba(0,0,0,0.55);
+}
+.schluss-figure img { position: absolute; inset: 0; width:100%; height:100%; object-fit: cover; opacity:0; transition: opacity 1s ease; }
+.schluss-figure img.loaded { opacity: 1; }
+.schluss-figure .placeholder {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.5rem; color: var(--gold-soft);
+}
+.schluss-figure.has-image .placeholder { display: none; }
+
+/* === Versteckte Botschaften (würdevoll, andeutend) === */
+.whisper {
+  font-family: 'Fraunces', Georgia, serif; font-style: italic;
+  color: var(--gold-soft); text-align: center;
+  font-size: clamp(1rem, 0.9rem + 0.6vw, 1.3rem);
+  margin: 3.2rem auto; max-width: 40rem;
+  opacity: 0.0; transform: translateY(8px);
+  transition: opacity 1.4s ease, transform 1.4s ease;
+}
+.whisper.in-view { opacity: 0.85; transform: none; }
+
+/* === Footer / Rück-Wege === */
+footer {
+  position: relative; z-index: 2;
+  border-top: 1px solid var(--line);
+  padding: 3.5rem 1.6rem 4rem; text-align: center;
+  background: linear-gradient(180deg, transparent, rgba(4,5,8,0.6));
+}
+footer .links { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; margin-top: 1.4rem; }
+footer a {
+  color: var(--ink-sec); text-decoration: none;
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 0.5rem 1.1rem; font-size: 0.85rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+footer a:hover { color: var(--gold-hi); border-color: var(--gold-soft); }
+footer .colophon { color: var(--ink-mute); font-size: 0.78rem; margin-top: 1.8rem; }
+
+/* === Responsive === */
+@media (max-width: 760px) {
+  section { padding: 4.5rem 1.2rem; }
+  .fungus { grid-template-columns: 1fr; gap: 1.4rem; }
+  .fungus:nth-child(even) .fungus-figure { order: 0; }
+  .storyline { bottom: 14vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #hero .display, #hero .hero-sub { transition: none; opacity: 1; transform: none; }
+  .fungus, .whisper { transition: none; opacity: 1; transform: none; }
+  .scroll-hint.show { animation: none; }
+}
+</style>
+</head>
+
+<body>
+<canvas id="cosmos-canvas"></canvas>
+<div id="cosmos-scrim"></div>
+
+<button class="intro-skip" id="intro-skip" type="button" aria-label="Eröffnungs-Animation überspringen">Überspringen ›</button>
+
+<div class="storyline" aria-hidden="true">
+  <div class="line" data-phase="0">Galaxien entzünden sich im Dunkel — und finden zueinander.</div>
+  <div class="line" data-phase="1">Die Elemente, in Sternen geschmiedet, suchen den Weg zur Erde.</div>
+  <div class="line" data-phase="2">Aus Sternenstaub wird ein lebendiges, golden glühendes Geflecht.</div>
+  <div class="line" data-phase="3">Und das Leben findet einen Weg.</div>
+</div>
+
+<div class="scroll-hint" id="scroll-hint">Scrollen</div>
+
+<main>
+
+  <!-- ====== HERO ====== -->
+  <section id="hero">
+    <div class="inner">
+      <p class="eyebrow">Discovery-Expedition</p>
+      <h1 class="display">Wie das Leben einen Weg findet — und was wir von den Pilzen lernen.</h1>
+      <p class="hero-sub lead">Eine staunende Dokumentation: vom Sternenstaub bis zum unterirdischen Geflecht. Keine Behauptung — eine Einladung zum Staunen.</p>
+    </div>
+  </section>
+
+  <!-- ====== WISSENSCHAFTS-ANKER: STERNENSTAUB → GEFLECHT ====== -->
+  <section id="anker">
+    <div class="inner narrow">
+      <p class="eyebrow">Vom Sternenstaub zum Geflecht</p>
+      <h2>Wir bestehen aus dem, was in den Sternen geschmiedet wurde.</h2>
+      <p class="lead">Wasserstoff und Helium stammen aus dem frühen Universum; Kohlenstoff, Sauerstoff und Stickstoff entstanden im Inneren von Sternen; schwere Elemente in Sternexplosionen und der Verschmelzung von Neutronensternen. Diese Elemente fanden den Weg zur Erde — und wurden zu den Bausteinen des Lebens.</p>
+      <p>Und als das Leben das Land erobern wollte, waren die Pilze schon da: die Symbiose von Pilz und Pflanze — die Mykorrhiza — gilt als einer der Schlüssel, der den Pflanzen die Besiedlung des Landes ermöglichte. Pilze schließen Nährstoffe auf und halten die Kreisläufe lebendig. Sie sind, bis heute, stille Ermöglicher.</p>
+    </div>
+    <div class="inner">
+      <div class="anchor-grid">
+        <div class="anchor-card">
+          <span class="num">I.</span>
+          <h3>In Sternen geschmiedet</h3>
+          <p>Die Elemente entstehen „da draußen“ — in Sternen und Supernovae — und wandern langsam zusammen. Wir sind, im Wortsinn, aus Sternenstaub.</p>
+        </div>
+        <div class="anchor-card">
+          <span class="num">II.</span>
+          <h3>Zur Erde gefunden</h3>
+          <p>Die Gesetze der Physik fügen sich so, dass Leben überhaupt möglich wird. Die Bausteine kommen zusammen — als hätte alles einen Weg gesucht.</p>
+        </div>
+        <div class="anchor-card">
+          <span class="num">III.</span>
+          <h3>Lebendig geblieben</h3>
+          <p>Die Pilze zeigen, dass Leben flexibel bleibt: anpassungsfähig, verbunden, in Symbiose. Sie machen Leben mit möglich.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="whisper">„Das Leben findet einen Weg.“ — keine Angst vor Wachstum, vor Weiterentwicklung, vor dem Unbekannten.</p>
+  </section>
+
+  <!-- ====== PILZ-GALERIE ====== -->
+  <section id="galerie">
+    <div class="gallery-head">
+      <p class="eyebrow">Die Galerie der Fähigkeiten</p>
+      <h2>Elf Mal Staunen — und elf Mal ein Spiegel.</h2>
+      <p class="lead narrow" style="margin:1rem auto 0;">Jede Pilz-Fähigkeit ist faszinierend für sich. Und jede ist ein Spiegel dessen, was wir im Mycel zu bauen versuchen. Wo etwas noch erforscht wird, steht es dabei — das Staunen braucht keine Übertreibung.</p>
+    </div>
+    <div class="inner" id="fungus-list"><!-- per JS gefüllt --></div>
+  </section>
+
+  <!-- ====== SCHLUSS-BILD ====== -->
+  <section id="schluss">
+    <div class="inner">
+      <p class="eyebrow">Das gelebte Leben</p>
+      <h2>Wie tief das Leben miteinander verbunden ist.</h2>
+      <p class="lead narrow" style="margin:1rem auto 0;">Am Ende ein Wald voller Leben — Bäume, Tiere, Bäche — durchzogen von leuchtenden Pilzen und feinen goldenen Fäden zwischen allem. Stärker als in echt, damit man sieht, was sonst verborgen bleibt.</p>
+      <figure class="schluss-figure" data-image="schlussbild">
+        <img alt="Traumhafte Waldlandschaft voller Leben mit fluoreszierenden Pilzen und goldenen Verbindungsfäden (KI-generiert)" loading="lazy">
+        <div class="placeholder">
+          <span class="glyph">🌲✦🍄</span>
+          <span class="ph-name">Schluss-Bild — das gelebte Leben</span>
+          <span class="ph-note">KI-Bild folgt</span>
+        </div>
+      </figure>
+      <p class="whisper">Diese Seite ist auch ein Dank — an den, der das Leben so erfindungsreich gemacht hat. Wo die Wissenschaft endet, beginnt das Staunen.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p class="eyebrow" style="margin-bottom:0.6rem;">Sage-Protokol · SBKIM</p>
+  <p class="narrow" style="margin:0 auto; color:var(--ink-sec);">Die Discovery-Schicht (Modul 14) lässt das Netz wachsen wie ein Pilz: erkunden entlang bestehender Fäden, verstärken bei Fund, zurückbauen bei Leere — ohne zu crawlen, im Empfangsmodus. Diese Seite erzählt das <em>Warum</em>; die Mechanik ist eine eigene Bau-Sitzung.</p>
+  <div class="links">
+    <a href="../../index.html">Sage-Seite</a>
+    <a href="../einladung/index.html">Einladung in das Mycel</a>
+    <a href="../components/_discovery_expedition.md">Discovery-Konzept (Doku)</a>
+    <a href="../components/14_diffusion.md">Modul 14 · Diffusion</a>
+  </div>
+  <p class="colophon">Bilder, sofern abgelegt: KI-generiert. Keine Tracker, keine Eigenanfragen ins offene Netz. Empfangsmodus mit Antwortrecht.</p>
+</footer>
+
+<!-- === Lokal vendorierte Module (geteilt mit der Einladungs-Site) === -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "../einladung/vendor/three.module.min.js"
+  }
+}
+</script>
+<script src="../einladung/vendor/gsap.min.js"></script>
+
+<!-- === Galerie-Inhalt (Daten) === -->
+<script>
+window.DISCOVERY_FUNGI = [
+  { id:'mykorrhiza', kicker:'Wood Wide Web', title:'Das unterirdische Verbindungsnetz',
+    body:'Pilzgeflechte verbinden Baumwurzeln und tauschen Wasser, Nährstoffe und sogar Warnsignale aus — ein dezentrales Netz unter dem Waldboden, ohne Zentrale.',
+    mirror:'Unser Spiegelbild: das Mycel als server-loses Verbindungsnetz unabhängiger Knoten.',
+    caveat:'Populärer Begriff; der genaue Umfang wird wissenschaftlich noch diskutiert.' },
+  { id:'physarum', kicker:'Physarum polycephalum', title:'Der Denker ohne Gehirn',
+    body:'Ein einzelliger Schleimpilz löst Labyrinthe und bildet effiziente Netze nach — berühmt das Tokioter Bahnnetz — indem er überallhin wächst und die unergiebigen Stränge wieder zurückbaut.',
+    mirror:'Unser Spiegelbild: Netz-Optimierung ohne Zentrale — das foraging- und Discovery-Prinzip selbst.',
+    caveat:'Kein echter Pilz (Amöbozoen), aber das Paradebeispiel.' },
+  { id:'radiotroph', kicker:'Tschernobyl · ISS', title:'Leben, das die Strahlung sucht',
+    body:'Melaninreiche Pilze wachsen Richtung Strahlung; ob sie über Melanin Gammastrahlung in nutzbare Energie wandeln, wird erforscht. 2020 als lebender Strahlenschild auf der ISS getestet.',
+    mirror:'Unser Spiegelbild: in „unmöglichen“ Umgebungen Wert finden — Empfangsmodus statt Angst.',
+    caveat:'Die Energie-Gewinnung über Melanin ist noch Forschungsgegenstand.' },
+  { id:'weissfaeule', kicker:'Lignin-Abbau', title:'Die Entzauberung des Holzes',
+    body:'Weißfäulepilze sind nahezu die einzigen Organismen, die Lignin — das, was Holz hart macht — effizient zersetzen. Ohne sie erstickte die Welt unter totem Holz.',
+    mirror:'Unser Spiegelbild: das Unzersetzbare zugänglich machen — Bedeutung aus „hartem“ Material holen.',
+    caveat:'' },
+  { id:'plastik', kicker:'Mykoremediation', title:'Neue Nahrung',
+    body:'Manche Pilze bauen Polyurethan ab — auch ohne Sauerstoff; andere zersetzen Kunststoff, Öl und Gifte. Anpassung an etwas, das es vor Kurzem noch gar nicht gab.',
+    mirror:'Unser Spiegelbild: Anpassung an ganz neue „Nahrung“ — neue Domänen, Evolution in Aktion.',
+    caveat:'' },
+  { id:'flechte', kicker:'Extremophile', title:'Pioniere auf nacktem Stein',
+    body:'Als Flechten-Partner besiedeln Pilze nacktes Gestein und die trockensten Wüsten — Atacama, Antarktis-Endolithen. Erstes Leben dort, „wo nichts geht“.',
+    mirror:'Unser Spiegelbild: Pionier-Knoten in unerschlossenen Domänen.',
+    caveat:'' },
+  { id:'armillaria', kicker:'Armillaria ostoyae', title:'Das größte Lebewesen der Erde',
+    body:'Ein Hallimasch in Oregon erstreckt sich über mehrere Quadratkilometer und ist tausende Jahre alt — ein einziges, zusammenhängendes Geflecht.',
+    mirror:'Unser Spiegelbild: Größe durch Verbindung vieler kleiner Teile, nicht durch eine große Zentrale.',
+    caveat:'' },
+  { id:'biolumineszenz', kicker:'Foxfire', title:'Lebendes Licht',
+    body:'Über 80 Arten leuchten im Dunkeln — ein sanftes, eigenes Glühen auf dem Waldboden.',
+    mirror:'Unser Spiegelbild: sichtbar machen, was im Verborgenen wächst — die Lampen und Plaketten der Sage-Seite.',
+    caveat:'' },
+  { id:'ophiocordyceps', kicker:'Eine Mahnung', title:'Einfluss ohne Konsens',
+    body:'Der „Zombie-Ameisen-Pilz“ steuert das Verhalten seines Wirts gezielt. Faszinierend — und zugleich eine Warnung.',
+    mirror:'Unser Spiegelbild durch Gegenbeispiel: Einfluss ohne Konsens ist genau das, was unser Empfangsmodus ausschließt.',
+    caveat:'' },
+  { id:'mitbauer', kicker:'Kultur', title:'Mit-Bauer der Zivilisation',
+    body:'Penicillin, Brot, Bier, Wein, Fermentation — Pilze haben unsere Kultur mitgebaut, meist ungenannt im Hintergrund.',
+    mirror:'Unser Spiegelbild: die Mit-Bauer-Schicht — Mensch, Agent und stille Helfer am selben Werk, in gleicher Würde.',
+    caveat:'' },
+  { id:'hyphendruck', kicker:'Stille Kraft', title:'Was durch den Asphalt bricht',
+    body:'Wachsende Hyphen entwickeln genug Druck, um Asphalt zu durchbrechen — leise, beharrlich, unaufhaltsam.',
+    mirror:'Unser Spiegelbild: leise, beharrliche Ausbreitung schlägt Brachialgewalt.',
+    caveat:'' }
+];
+</script>
+
+<!-- === Galerie-Aufbau + sanftes Einblenden === -->
+<script>
+(function buildGallery(){
+  const list = document.getElementById('fungus-list');
+  if (!list) return;
+  const frag = document.createDocumentFragment();
+  (window.DISCOVERY_FUNGI || []).forEach((f) => {
+    const art = document.createElement('article');
+    art.className = 'fungus';
+    art.innerHTML = `
+      <figure class="fungus-figure" data-image="${f.id}">
+        <img alt="${f.title} — ${f.kicker} (KI-generiert)" loading="lazy">
+        <div class="placeholder">
+          <span class="glyph">🍄</span>
+          <span class="ph-name">${f.title}</span>
+          <span class="ph-note">KI-Bild folgt</span>
+        </div>
+        <figcaption>KI-generiert</figcaption>
+      </figure>
+      <div class="fungus-body">
+        <p class="kicker">${f.kicker}</p>
+        <h3>${f.title}</h3>
+        <p>${f.body}</p>
+        <p class="mirror">${f.mirror}</p>
+        ${f.caveat ? `<p class="caveat">${f.caveat}</p>` : ''}
+      </div>`;
+    frag.appendChild(art);
+  });
+  list.appendChild(frag);
+
+  // Bilder versuchen zu laden; bei Erfolg Platzhalter ausblenden, sonst bleibt
+  // die museale Kachel stehen (kein 404-Bruchbild). Real-Bild → swap genügt.
+  document.querySelectorAll('.fungus-figure, .schluss-figure').forEach((fig) => {
+    const base = fig.getAttribute('data-image');
+    const img  = fig.querySelector('img');
+    if (!base || !img) return;
+    img.addEventListener('load', () => { fig.classList.add('has-image'); img.classList.add('loaded'); });
+    img.addEventListener('error', () => { /* Platzhalter bleibt sichtbar */ });
+    img.src = `../../assets/discovery/${base}.webp`;
+  });
+
+  // Sanftes Einblenden beim Scrollen
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -12% 0px' });
+    document.querySelectorAll('.fungus, .whisper').forEach((el) => io.observe(el));
+  } else {
+    document.querySelectorAll('.fungus, .whisper').forEach((el) => el.classList.add('in-view'));
+  }
+})();
+</script>
+
+<!-- === Kosmos-Animation (three.js) — Kosmos → Element-Wanderung → Mycel === -->
+<script type="module">
+import * as THREE from 'three';
+
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile      = matchMedia('(max-width: 900px)').matches;
+const coarse        = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+const MAX_DPR       = coarse ? 1.5 : 2;
+
+const canvas = document.getElementById('cosmos-canvas');
+let renderer, scene, camera;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+} catch (err) {
+  // Kein WebGL → der CSS-Radial-Gradient-Hintergrund bleibt stehen. Kein Bruch.
+  console.warn('WebGL nicht verfügbar — statischer Hintergrund.', err);
+}
+
+if (renderer) {
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+  renderer.setClearColor(0x05070a, 1);
+  // Context-Loss abfangen (kein weißes Rechteck)
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); canvas.style.visibility = 'hidden'; }, false);
+  canvas.addEventListener('webglcontextrestored', () => { canvas.style.visibility = ''; }, false);
+
+  scene  = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 0, 11);
+
+  function resize() {
+    renderer.setSize(window.innerWidth, window.innerHeight, false);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resize); resize();
+
+  // Anker-Punkte der Erzählung
+  const EARTH_POS = new THREE.Vector3(0.0, 0.4, -0.5);   // Planet zentral
+  const MYCEL_ANCHOR = new THREE.Vector3(0.0, -4.4, -0.8);
+
+  // ---------------------------------------------------------------
+  // 0) Nebel-/Galaxien-Hintergrund — großes, langsam bewegtes Bild tief
+  //    hinter allem (Klaus' Wunsch 2026-06-23: vergrößerte Galaxie als
+  //    bewegte Hintergrund-Animation der Eröffnungssequenz). Graceful:
+  //    fehlt das Bild, bleibt der dunkle Kosmos-Hintergrund.
+  // ---------------------------------------------------------------
+  const nebulaMat = new THREE.MeshBasicMaterial({
+    color: 0x8890a0, transparent: true, opacity: 0.0, depthWrite: false
+  });
+  const nebula = new THREE.Mesh(new THREE.PlaneGeometry(96, 54), nebulaMat);
+  nebula.position.set(0, 0, -38);
+  scene.add(nebula);
+  new THREE.TextureLoader().load(
+    '../../assets/discovery/galaxie-hintergrund.webp',
+    (t) => { if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace; nebulaMat.map = t; nebulaMat.needsUpdate = true; },
+    undefined, () => { /* kein Bild → dunkler Kosmos bleibt */ }
+  );
+
+  // ---------------------------------------------------------------
+  // 1) Galaxien — Punkt-Wolke aus Cluster-Zentren, die nacheinander
+  //    aufblitzen (aBirth) und sich zu Nebeln formen.
+  // ---------------------------------------------------------------
+  const CLUSTERS = isMobile ? 11 : 16;
+  const PER      = isMobile ? 420 : 900;
+  const GAL_COUNT = CLUSTERS * PER;
+  const gPos   = new Float32Array(GAL_COUNT * 3);
+  const gSeed  = new Float32Array(GAL_COUNT);
+  const gSize  = new Float32Array(GAL_COUNT);
+  const gBirth = new Float32Array(GAL_COUNT);
+  const gMix   = new Float32Array(GAL_COUNT);
+  const centers = [];
+  for (let c = 0; c < CLUSTERS; c++) {
+    const cx = (Math.random() * 2 - 1) * 22;
+    const cy = (Math.random() * 2 - 1) * 12 + 1.5;
+    const cz = (Math.random() * 2 - 1) * 16 - 6;
+    const birth = c / CLUSTERS;                 // gestaffelt aufblitzen
+    const tilt = Math.random() * Math.PI;
+    centers.push(new THREE.Vector3(cx, cy, cz));
+    for (let i = 0; i < PER; i++) {
+      const idx = c * PER + i;
+      // flache, leicht spiralige Scheibe je Galaxie
+      const r  = Math.pow(Math.random(), 0.6) * (2.2 + Math.random() * 1.6);
+      const a  = Math.random() * Math.PI * 2 + r * 0.6;
+      let x = Math.cos(a) * r;
+      let y = (Math.random() - 0.5) * 0.6;
+      let z = Math.sin(a) * r;
+      // Scheibe kippen
+      const yy = y * Math.cos(tilt) - z * Math.sin(tilt);
+      const zz = y * Math.sin(tilt) + z * Math.cos(tilt);
+      gPos[idx*3]   = cx + x;
+      gPos[idx*3+1] = cy + yy;
+      gPos[idx*3+2] = cz + zz;
+      gSeed[idx]  = Math.random();
+      gSize[idx]  = 0.5 + Math.random() * 1.8;
+      gBirth[idx] = birth + (Math.random() - 0.5) * 0.04;
+      gMix[idx]   = Math.random();
+    }
+  }
+  const galGeo = new THREE.BufferGeometry();
+  galGeo.setAttribute('position', new THREE.BufferAttribute(gPos, 3));
+  galGeo.setAttribute('aSeed',  new THREE.BufferAttribute(gSeed, 1));
+  galGeo.setAttribute('aSize',  new THREE.BufferAttribute(gSize, 1));
+  galGeo.setAttribute('aBirth', new THREE.BufferAttribute(gBirth, 1));
+  galGeo.setAttribute('aMix',   new THREE.BufferAttribute(gMix, 1));
+  const galMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 }, uProgress: { value: 0 }, uPx: { value: renderer.getPixelRatio() },
+      uTwinkle: { value: 0 },
+      uCool: { value: new THREE.Color(0x9fb4e8) }, uWarm: { value: new THREE.Color(0xe9c984) },
+      uViolet: { value: new THREE.Color(0x6b5b95) }
+    },
+    vertexShader: /* glsl */`
+      uniform float uTime; uniform float uProgress; uniform float uPx; uniform float uTwinkle;
+      attribute float aSeed; attribute float aSize; attribute float aBirth; attribute float aMix;
+      varying float vMix; varying float vBright;
+      void main(){
+        vec3 p = position;
+        float t = uTime * 0.15 + aSeed * 6.283;
+        p.x += sin(t*0.6 + p.y*0.3) * 0.18;
+        p.y += cos(t*0.7 + p.z*0.25) * 0.12;
+        // Geburt: erscheint, sobald uProgress > aBirth
+        float born = smoothstep(aBirth, aBirth + 0.05, uProgress);
+        float dt = uProgress - aBirth;
+        float flash = exp(-dt*dt*900.0);          // scharfer Blitz bei Geburt
+        // beim Übergang zur Erde dimmen die Galaxien etwas
+        float recede = 1.0 - smoothstep(0.5, 0.82, uProgress) * 0.55;
+        // Grund-Funkeln + verstärktes Funkeln, wenn der Planet in den
+        // Mittelpunkt rückt (uTwinkle, Klaus' Wunsch 2026-06-23): schnellere,
+        // schärfere Glitzer-Spitzen pro Stern mit eigener Phase.
+        float twinkle = 0.6 + 0.4 * sin(t*2.2 + aSeed*31.4);
+        float spark = pow(max(sin(t*6.0 + aSeed*97.13), 0.0), 8.0);
+        twinkle += uTwinkle * (0.8 + spark*2.4);
+        vBright = born * recede * (0.5 + twinkle*0.5) + flash*2.2*born;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        float size = aSize * (born*0.7 + 0.3) * (1.0 + flash*3.0);
+        gl_PointSize = size * (170.0 / -mv.z) * uPx;
+        gl_Position = projectionMatrix * mv;
+        vMix = aMix;
+      }`,
+    fragmentShader: /* glsl */`
+      uniform vec3 uCool; uniform vec3 uWarm; uniform vec3 uViolet;
+      varying float vMix; varying float vBright;
+      void main(){
+        vec2 c = gl_PointCoord - 0.5;
+        float d = length(c);
+        if (d > 0.5) discard;
+        vec3 col = mix(uCool, uWarm, vMix);
+        col = mix(col, uViolet, 0.25);
+        float core = smoothstep(0.5, 0.0, d);
+        float vRay = smoothstep(0.5,0.0,abs(c.x)*7.0)*smoothstep(0.5,0.0,abs(c.y)*1.5);
+        float hRay = smoothstep(0.5,0.0,abs(c.y)*7.0)*smoothstep(0.5,0.0,abs(c.x)*1.5);
+        float star = core + (vRay+hRay)*0.5;
+        gl_FragColor = vec4(col, clamp(star*vBright*0.5, 0.0, 1.0));
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  scene.add(new THREE.Points(galGeo, galMat));
+
+  // Filament-Linien zwischen benachbarten Galaxien-Zentren
+  const linkPairs = [];
+  for (let i = 0; i < centers.length; i++) {
+    let best = -1, bestD = 1e9;
+    for (let j = 0; j < centers.length; j++) {
+      if (i === j) continue;
+      const dd = centers[i].distanceTo(centers[j]);
+      if (dd < bestD) { bestD = dd; best = j; }
+    }
+    if (best >= 0) linkPairs.push([i, best]);
+  }
+  const linkPos = new Float32Array(linkPairs.length * 2 * 3);
+  linkPairs.forEach((pair, i) => {
+    const a = centers[pair[0]], b = centers[pair[1]];
+    linkPos[i*6]   = a.x; linkPos[i*6+1] = a.y; linkPos[i*6+2] = a.z;
+    linkPos[i*6+3] = b.x; linkPos[i*6+4] = b.y; linkPos[i*6+5] = b.z;
+  });
+  const linkGeo = new THREE.BufferGeometry();
+  linkGeo.setAttribute('position', new THREE.BufferAttribute(linkPos, 3));
+  const linkMat = new THREE.LineBasicMaterial({ color: 0xd6b76a, transparent: true, opacity: 0.0, blending: THREE.AdditiveBlending, depthWrite: false });
+  scene.add(new THREE.LineSegments(linkGeo, linkMat));
+
+  // ---------------------------------------------------------------
+  // 2) Blauer Planet — texturiert aus Klaus' KI-Bild, im Halbschatten.
+  //    Zentral, rückt beim Erscheinen sanft in den Mittelpunkt. Zeigt sich
+  //    NUR, wenn ein Bild geladen ist — sonst unsichtbar, kein
+  //    „blauer Spiegel"-Ball (Klaus' Sichttest-Befund 2026-06-23).
+  // ---------------------------------------------------------------
+  const earthGroup = new THREE.Group();
+  earthGroup.position.copy(EARTH_POS);
+  scene.add(earthGroup);
+  // 1x1-Platzhalter, damit der Sampler immer gültig ist (kein null-Texture-Bruch)
+  const blankTex = new THREE.DataTexture(new Uint8Array([0,0,0,255]), 1, 1, THREE.RGBAFormat);
+  blankTex.needsUpdate = true;
+  // Billboard-Ebene: das Planeten-Foto steht frei vor dem Kosmos; der
+  // schwarze Weltraum-Hintergrund des Fotos wird über die Helligkeit
+  // ausgekeyt. Halbschatten + Atmosphären-Saum sind im Foto schon enthalten.
+  const earthMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uAppear: { value: 0 }, uHabitable: { value: 0 }, uDarkZoom: { value: 1.3 },
+      uDark: { value: blankTex }, uBlue: { value: blankTex },
+      uHasDark: { value: 0 }, uHasBlue: { value: 0 }
+    },
+    vertexShader: /* glsl */`
+      varying vec2 vUv;
+      void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: /* glsl */`
+      uniform sampler2D uDark; uniform sampler2D uBlue;
+      uniform float uHasDark; uniform float uHasBlue;
+      uniform float uAppear; uniform float uHabitable; uniform float uDarkZoom;
+      varying vec2 vUv;
+      void main(){
+        // Dunkel-Erde etwas herangezoomt, damit ihr Planet die Scheibe füllt
+        vec2 uvD = (vUv - 0.5) / uDarkZoom + 0.5;
+        vec3 dCol = texture2D(uDark, uvD).rgb;
+        vec3 bCol = texture2D(uBlue, vUv).rgb;
+        if (uHasDark < 0.5) dCol = bCol * 0.18;    // kein Dunkel-Bild → blau abgedunkelt
+        if (uHasBlue < 0.5) bCol = dCol;           // kein Blau-Bild → Dunkel bleibt
+        // dunkle, unbewohnliche Früherde → blaue, bewohnliche Erde.
+        // Das Dunkle im Bild ist nur der Schatten (Terminator) und BLEIBT —
+        // es wird NICHT ausgekeyt; nur die schwarzen Ecken außerhalb der Scheibe.
+        vec3 col = mix(dCol, bCol, uHabitable);
+        float r = distance(vUv, vec2(0.5));
+        float mask = 1.0 - smoothstep(0.45, 0.49, r);  // runde Maske, Planet bleibt VOLL
+        float a = mask * uAppear * max(uHasDark, uHasBlue);
+        if (a < 0.004) discard;
+        gl_FragColor = vec4(col, a);
+      }`,
+    transparent: true, depthWrite: false
+  });
+  const earth = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 3.4), earthMat);
+  earthGroup.add(earth);
+  // Zwei Stufen: dunkle Früherde (während der Einschläge) → blaue Erde
+  const _texLoader = new THREE.TextureLoader();
+  _texLoader.load('../../assets/discovery/erde-dunkel.webp',
+    (t) => { if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace; earthMat.uniforms.uDark.value = t; earthMat.uniforms.uHasDark.value = 1; },
+    undefined, () => {});
+  _texLoader.load('../../assets/discovery/erde-blau.webp',
+    (t) => { if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace; earthMat.uniforms.uBlue.value = t; earthMat.uniforms.uHasBlue.value = 1; },
+    undefined, () => {});
+
+  // ---------------------------------------------------------------
+  // 2b) Kometen / Meteoriten — fliegen mit Feenstaub-Schweif auf den
+  //     Planeten zu und schlagen ein (Funken). Klaus' Hero-Vision 2026-06-23.
+  // ---------------------------------------------------------------
+  const COMET_PALETTE = [
+    new THREE.Color(0xe9c984), new THREE.Color(0xfff0d0), new THREE.Color(0xbfe0ff),
+    new THREE.Color(0xffb066), new THREE.Color(0xffd0c0), new THREE.Color(0xd6f0a0)
+  ];
+  const N_COMETS = isMobile ? 2 : 3;
+  const TAIL = isMobile ? 16 : 24;                 // Schweif-Länge (Feenstaub)
+  const C_VERTS = N_COMETS * (TAIL + 1);
+  const cPos = new Float32Array(C_VERTS*3), cCol = new Float32Array(C_VERTS*3);
+  const cAlpha = new Float32Array(C_VERTS), cSize = new Float32Array(C_VERTS);
+  const cometGeo = new THREE.BufferGeometry();
+  cometGeo.setAttribute('position', new THREE.BufferAttribute(cPos, 3));
+  cometGeo.setAttribute('aColor', new THREE.BufferAttribute(cCol, 3));
+  cometGeo.setAttribute('aAlpha', new THREE.BufferAttribute(cAlpha, 1));
+  cometGeo.setAttribute('aSize',  new THREE.BufferAttribute(cSize, 1));
+  // gemeinsames Material für Kometen + Funken (liest aColor/aAlpha/aSize)
+  const sparkMat = new THREE.ShaderMaterial({
+    uniforms: { uPx: { value: renderer.getPixelRatio() } },
+    vertexShader: /* glsl */`
+      uniform float uPx; attribute vec3 aColor; attribute float aAlpha; attribute float aSize;
+      varying vec3 vCol; varying float vA;
+      void main(){
+        vCol = aColor; vA = aAlpha;
+        vec4 mv = modelViewMatrix * vec4(position,1.0);
+        gl_PointSize = aSize * (200.0 / -mv.z) * uPx;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: /* glsl */`
+      varying vec3 vCol; varying float vA;
+      void main(){
+        vec2 c = gl_PointCoord - 0.5; float d = length(c);
+        if (d > 0.5) discard;
+        float core = smoothstep(0.5, 0.0, d);
+        gl_FragColor = vec4(vCol, core * vA);
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  scene.add(new THREE.Points(cometGeo, sparkMat));
+
+  function randomCometStart(out){
+    const ang = Math.random()*Math.PI*2;
+    const R = 13 + Math.random()*7;
+    out.set(Math.cos(ang)*R, 3 + Math.random()*R*0.5, Math.sin(ang)*R*0.5 - 4);
+    return out;
+  }
+  const comets = [];
+  for (let i=0;i<N_COMETS;i++){
+    comets.push({
+      start: randomCometStart(new THREE.Vector3()),
+      head: new THREE.Vector3(), hist: [],
+      t: Math.random(), speed: 0.11 + Math.random()*0.13,
+      color: COMET_PALETTE[i % COMET_PALETTE.length],
+      size: 2.2 + Math.random()*2.8, active: true, delay: 0
+    });
+  }
+
+  // Einschlag-Funken (Pool)
+  const BURST_MAX = 8, BURST_P = 26, B_VERTS = BURST_MAX*BURST_P;
+  const bPos = new Float32Array(B_VERTS*3), bCol = new Float32Array(B_VERTS*3);
+  const bAlpha = new Float32Array(B_VERTS), bSize = new Float32Array(B_VERTS);
+  const burstGeo = new THREE.BufferGeometry();
+  burstGeo.setAttribute('position', new THREE.BufferAttribute(bPos, 3));
+  burstGeo.setAttribute('aColor', new THREE.BufferAttribute(bCol, 3));
+  burstGeo.setAttribute('aAlpha', new THREE.BufferAttribute(bAlpha, 1));
+  burstGeo.setAttribute('aSize',  new THREE.BufferAttribute(bSize, 1));
+  scene.add(new THREE.Points(burstGeo, sparkMat));
+  const bursts = [];
+  for (let i=0;i<BURST_MAX;i++) bursts.push({ active:false, age:0, life:1, color: COMET_PALETTE[0], parts:[] });
+  function spawnBurst(at, color){
+    const b = bursts.find(x=>!x.active); if(!b) return;
+    b.active = true; b.age = 0; b.life = 0.7 + Math.random()*0.4; b.color = color; b.parts.length = 0;
+    for (let i=0;i<BURST_P;i++){
+      const dir = new THREE.Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1).normalize();
+      b.parts.push({ p: at.clone(), v: dir.multiplyScalar(1.4 + Math.random()*3.2), size: 1.5 + Math.random()*2.4 });
+    }
+  }
+  const _vU = new THREE.Vector3();
+  function launchCometFromScreen(clientX, clientY){
+    _vU.set((clientX/window.innerWidth)*2-1, -(clientY/window.innerHeight)*2+1, 0.5).unproject(camera);
+    let c = comets.find(x=>!x.active) || comets.reduce((a,b)=>a.t>b.t?a:b);
+    c.start.copy(_vU); c.t = 0; c.active = true; c.delay = 0; c.hist.length = 0;
+    c.color = COMET_PALETTE[(Math.random()*COMET_PALETTE.length)|0];
+  }
+
+  function updateComets(dt, cometsOn){
+    let vi = 0;
+    for (const c of comets){
+      if (!c.active){ c.delay -= dt; if (c.delay <= 0){ randomCometStart(c.start); c.t = 0; c.active = true; c.color = COMET_PALETTE[(Math.random()*COMET_PALETTE.length)|0]; c.hist.length = 0; } }
+      if (c.active){
+        c.t += dt * c.speed;
+        const tt = Math.min(1, c.t);
+        c.head.copy(c.start).lerp(EARTH_POS, tt*tt);     // beschleunigt in den Einschlag
+        c.hist.unshift(c.head.clone());
+        if (c.hist.length > TAIL+1) c.hist.pop();
+        if (c.t >= 1){ spawnBurst(EARTH_POS, c.color); c.active = false; c.delay = 2.2 + Math.random()*4.0; }
+      }
+      for (let k=0;k<=TAIL;k++){
+        const hp = c.hist[k] || c.head;
+        cPos[vi*3]=hp.x; cPos[vi*3+1]=hp.y; cPos[vi*3+2]=hp.z;
+        cCol[vi*3]=c.color.r; cCol[vi*3+1]=c.color.g; cCol[vi*3+2]=c.color.b;
+        const tail = 1 - k/(TAIL+1);
+        cAlpha[vi] = (c.active?1:0) * cometsOn * (k===0 ? 1.0 : tail*0.65);
+        cSize[vi]  = (k===0 ? c.size*1.5 : c.size*tail*0.8);
+        vi++;
+      }
+    }
+    cometGeo.attributes.position.needsUpdate = true;
+    cometGeo.attributes.aColor.needsUpdate = true;
+    cometGeo.attributes.aAlpha.needsUpdate = true;
+    cometGeo.attributes.aSize.needsUpdate = true;
+  }
+  function updateBursts(dt){
+    let vi = 0;
+    for (const b of bursts){
+      if (b.active){ b.age += dt; if (b.age >= b.life) b.active = false; for (const pt of b.parts){ pt.p.addScaledVector(pt.v, dt); pt.v.multiplyScalar(0.9); } }
+      for (let i=0;i<BURST_P;i++){
+        const pt = b.parts[i];
+        if (b.active && pt){
+          bPos[vi*3]=pt.p.x; bPos[vi*3+1]=pt.p.y; bPos[vi*3+2]=pt.p.z;
+          bCol[vi*3]=b.color.r; bCol[vi*3+1]=b.color.g; bCol[vi*3+2]=b.color.b;
+          const k = 1 - b.age/b.life; bAlpha[vi] = Math.max(0,k); bSize[vi] = pt.size*(0.5+k*0.5);
+        } else { bAlpha[vi]=0; bSize[vi]=0; }
+        vi++;
+      }
+    }
+    burstGeo.attributes.position.needsUpdate = true;
+    burstGeo.attributes.aColor.needsUpdate = true;
+    burstGeo.attributes.aAlpha.needsUpdate = true;
+    burstGeo.attributes.aSize.needsUpdate = true;
+  }
+
+  // ---------------------------------------------------------------
+  // 3) Sternenstaub-Strom — Elemente fließen zum Entstehungs-Ort
+  // ---------------------------------------------------------------
+  const DUST = isMobile ? 700 : 1600;
+  const dPos = new Float32Array(DUST * 3);  // wird im Shader berechnet, hier nur Platzhalter
+  const dOff = new Float32Array(DUST);
+  const dLat = new Float32Array(DUST);
+  for (let i = 0; i < DUST; i++) { dOff[i] = Math.random(); dLat[i] = (Math.random()-0.5); }
+  const dustGeo = new THREE.BufferGeometry();
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+  dustGeo.setAttribute('aOff', new THREE.BufferAttribute(dOff, 1));
+  dustGeo.setAttribute('aLat', new THREE.BufferAttribute(dLat, 1));
+  const dustMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 }, uProgress: { value: 0 }, uPx: { value: renderer.getPixelRatio() },
+      uStart: { value: new THREE.Vector3(-9, 6, -3) },
+      uCtrl:  { value: new THREE.Vector3(-1, 4, 3) },
+      uEnd:   { value: EARTH_POS.clone() }
+    },
+    vertexShader: /* glsl */`
+      uniform float uTime; uniform float uProgress; uniform float uPx;
+      uniform vec3 uStart; uniform vec3 uCtrl; uniform vec3 uEnd;
+      attribute float aOff; attribute float aLat;
+      varying float vFade;
+      void main(){
+        float speed = 0.05 + aOff*0.04;
+        float t = fract(aOff + uTime*speed);
+        vec3 b = mix(mix(uStart,uCtrl,t), mix(uCtrl,uEnd,t), t);   // quadratische Bezier
+        // seitliche Streuung quer zur Bahn
+        b.y += aLat * 1.2 * (1.0 - t);
+        b.z += aLat * 0.8 * (1.0 - t);
+        float streamVis = smoothstep(0.36, 0.52, uProgress) * (1.0 - smoothstep(0.9, 1.0, uProgress)*0.5);
+        vFade = streamVis * (1.0 - t) * (0.4 + 0.6*sin(t*3.14159));
+        vec4 mv = modelViewMatrix * vec4(b, 1.0);
+        gl_PointSize = (1.2 + aLat*0.6) * (150.0 / -mv.z) * uPx;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: /* glsl */`
+      varying float vFade;
+      void main(){
+        vec2 c = gl_PointCoord - 0.5; float d = length(c);
+        if (d > 0.5) discard;
+        float core = smoothstep(0.5, 0.0, d);
+        vec3 col = mix(vec3(0.95,0.78,0.42), vec3(1.0,0.95,0.8), core);
+        gl_FragColor = vec4(col, core*vFade);
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  scene.add(new THREE.Points(dustGeo, dustMat));
+
+  // ---------------------------------------------------------------
+  // 4) Mycel — goldenes Geflecht, das am Erd-Horizont wächst
+  // ---------------------------------------------------------------
+  const MYC = isMobile ? 4500 : 9000;
+  const mPos = new Float32Array(MYC * 3);
+  const mSeed = new Float32Array(MYC);
+  const mSize = new Float32Array(MYC);
+  for (let i = 0; i < MYC; i++) {
+    // verzweigtes Volumen unter der Erde, nach unten ziehend
+    const r = Math.pow(Math.random(), 0.55) * 6.5;
+    const a = Math.random() * Math.PI * 2;
+    const branch = Math.sin(a * 5.0 + r) * 0.6;       // hyphen-artige Adern
+    mPos[i*3]   = MYCEL_ANCHOR.x + Math.cos(a) * r * (0.6 + branch*0.3);
+    mPos[i*3+1] = MYCEL_ANCHOR.y + (Math.random()*r*0.5) - r*0.15;
+    mPos[i*3+2] = MYCEL_ANCHOR.z + Math.sin(a) * r * 0.5;
+    mSeed[i] = Math.random();
+    mSize[i] = 0.5 + Math.random()*1.6;
+  }
+  const mycGeo = new THREE.BufferGeometry();
+  mycGeo.setAttribute('position', new THREE.BufferAttribute(mPos, 3));
+  mycGeo.setAttribute('aSeed', new THREE.BufferAttribute(mSeed, 1));
+  mycGeo.setAttribute('aSize', new THREE.BufferAttribute(mSize, 1));
+  const mycMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 }, uGrow: { value: 0 }, uPx: { value: renderer.getPixelRatio() },
+      uWarm: { value: new THREE.Color(0xd6b76a) }, uMoss: { value: new THREE.Color(0x6f8d5a) }
+    },
+    vertexShader: /* glsl */`
+      uniform float uTime; uniform float uGrow; uniform float uPx;
+      attribute float aSeed; attribute float aSize;
+      varying float vA; varying float vMix;
+      void main(){
+        vec3 p = position;
+        float t = uTime*0.2 + aSeed*6.283;
+        p.x += sin(t*0.6 + p.y*0.5)*0.22;
+        p.y += cos(t*0.5 + p.x*0.4)*0.16;
+        // Wachstum von unten: nur der Teil bis uGrow-Höhe ist sichtbar
+        float here = smoothstep(0.0, 1.0, uGrow * (1.4) - aSeed*0.4);
+        float breath = 0.7 + 0.3*sin(t*1.6 + aSeed*20.0);
+        vec4 mv = modelViewMatrix * vec4(p,1.0);
+        gl_PointSize = aSize * here * breath * (180.0/-mv.z) * uPx;
+        gl_Position = projectionMatrix * mv;
+        vA = here * (0.2 + 0.8*pow(max(sin(t*2.0+aSeed*31.0),0.0),3.0));
+        vMix = aSeed;
+      }`,
+    fragmentShader: /* glsl */`
+      uniform vec3 uWarm; uniform vec3 uMoss; varying float vA; varying float vMix;
+      void main(){
+        vec2 c = gl_PointCoord-0.5; float d = length(c);
+        if (d>0.5) discard;
+        float core = smoothstep(0.5,0.0,d);
+        vec3 col = mix(uMoss, uWarm, vMix);
+        gl_FragColor = vec4(col, core*vA*0.55);
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  scene.add(new THREE.Points(mycGeo, mycMat));
+
+  // ---------------------------------------------------------------
+  // Zustand + Steuerung
+  // ---------------------------------------------------------------
+  const state = { progress: 0 };
+  const _tmpTarget = new THREE.Vector3();
+  const _origin = new THREE.Vector3(0,0,0);
+
+  function applyCamera(p) {
+    // zentriert (Planet in der Mitte): nur sanftes Heranfahren + Blick hinab
+    // zum Mycel am Ende.
+    camera.position.x = 0;
+    camera.position.y = 0.5 - smoothstep01(p, 0.0, 0.7) * 0.9;
+    camera.position.z = 12 - Math.min(1, p/0.7) * 5.0;
+    _tmpTarget.copy(_origin).lerp(EARTH_POS, smoothstep01(p, 0.2, 0.55));
+    _tmpTarget.lerp(MYCEL_ANCHOR, smoothstep01(p, 0.75, 1.0) * 0.45);
+    camera.lookAt(_tmpTarget);
+  }
+  function smoothstep01(x, a, b){ const t = Math.max(0, Math.min(1, (x-a)/(b-a))); return t*t*(3-2*t); }
+
+  // Storyboard-Untertitel
+  const storyLines = Array.from(document.querySelectorAll('.storyline .line'));
+  function updateStory(p) {
+    let active = -1;
+    if (p < 0.30) active = 0;
+    else if (p < 0.56) active = 1;
+    else if (p < 0.84) active = 2;
+    else if (p < 0.995) active = 3;
+    storyLines.forEach((el, i) => { el.style.opacity = (i === active) ? '0.95' : '0'; });
+  }
+
+  const heroEl = document.getElementById('hero');
+  const scrollHint = document.getElementById('scroll-hint');
+  let introDone = false;
+  function finishIntro() {
+    if (introDone) return; introDone = true;
+    heroEl.classList.add('revealed');
+    scrollHint.classList.add('show');
+    storyLines.forEach((el) => el.style.opacity = '0');
+    document.getElementById('intro-skip').style.opacity = '0';
+  }
+
+  // Scrim verdunkelt den Kosmos beim Hinunterscrollen
+  const scrim = document.getElementById('cosmos-scrim');
+  function onScroll() {
+    const vh = window.innerHeight;
+    const o = Math.max(0, Math.min(1, window.scrollY / (vh*0.8)));
+    scrim.style.opacity = (o*0.92).toFixed(3);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // Render-Schleife
+  const clock = new THREE.Clock();
+  function frame() {
+    const dt = clock.getDelta();
+    const elapsed = clock.elapsedTime;
+    const p = state.progress;
+    // Nebel-Hintergrund: sanft einblenden, langsam driften + zoomen ("bewegt")
+    if (nebulaMat.map) {
+      nebulaMat.opacity = (reducedMotion ? 0.62 : (0.18 + smoothstep01(p, 0.0, 0.28) * 0.5));
+      nebula.rotation.z = elapsed * 0.004;
+      nebula.scale.setScalar(1.0 + smoothstep01(p, 0, 1) * 0.14 + Math.sin(elapsed * 0.05) * 0.01);
+      nebula.position.x = Math.sin(elapsed * 0.02) * 1.2;
+      nebula.position.y = Math.cos(elapsed * 0.015) * 0.8;
+    }
+    galMat.uniforms.uTime.value = elapsed;
+    galMat.uniforms.uProgress.value = p;
+    // Sterne funkeln stärker, während der Planet in den Mittelpunkt rückt
+    galMat.uniforms.uTwinkle.value = smoothstep01(p, 0.5, 0.72) * (1 - smoothstep01(p, 0.88, 1.0)*0.5);
+    linkMat.opacity = smoothstep01(p, 0.12, 0.4) * (1 - smoothstep01(p, 0.5, 0.85)*0.6) * 0.5;
+    // Erde erscheint FRÜH (während der Einschläge) als dunkle Früherde und
+    // rückt skalierend in den Mittelpunkt; über Verlauf + Hochscrollen wird
+    // sie blau/bewohnlich (Schatten bleibt).
+    const ap = smoothstep01(p, 0.3, 0.46);
+    earthMat.uniforms.uAppear.value = ap;
+    earthGroup.scale.setScalar(0.72 + ap*0.28);
+    // Erde bleibt im Hero als DUNKLE, unbewohnliche Früh-Erde stehen (während
+    // der Einschläge) und wird ERST BEIM HOCHSCROLLEN blau/bewohnlich — der
+    // Schatten bleibt. (reduced-motion: gleich blau.)
+    const habScroll = Math.min(1, window.scrollY / (window.innerHeight * 0.6));
+    earthMat.uniforms.uHabitable.value = reducedMotion ? 1.0 : habScroll;
+    // Kometen + Einschlag-Funken (ab „Hinwendung", in Reduced-Motion aus)
+    const cometsOn = reducedMotion ? 0 : smoothstep01(p, 0.18, 0.4) * (1 - smoothstep01(p, 0.82, 1.0)*0.7);
+    updateComets(dt, cometsOn);
+    updateBursts(dt);
+    dustMat.uniforms.uTime.value = elapsed;
+    dustMat.uniforms.uProgress.value = p;
+    mycMat.uniforms.uTime.value = elapsed;
+    mycMat.uniforms.uGrow.value = smoothstep01(p, 0.58, 0.95);
+    applyCamera(p);
+    updateStory(p);
+    renderer.render(scene, camera);
+    if (!reducedMotion) requestAnimationFrame(frame);
+  }
+  // Klick/Tipp im Hero schießt einen Kometen auf den Planeten (Klaus' Idee)
+  window.addEventListener('pointerdown', (e) => {
+    if (reducedMotion) return;
+    if (window.scrollY > window.innerHeight*0.85) return;   // nur im Hero
+    if (e.target.closest && e.target.closest('a,button')) return;
+    launchCometFromScreen(e.clientX, e.clientY);
+  });
+
+  if (reducedMotion) {
+    // Statische, würdevolle Komposition: alles fertig gewachsen, kein Loop.
+    state.progress = 1;
+    finishIntro();
+    frame();
+  } else {
+    // Eröffnungs-Animation: Storyboard in ~13 s durchspielen.
+    requestAnimationFrame(frame);
+    const gsap = window.gsap;
+    const skipBtn = document.getElementById('intro-skip');
+    if (gsap) {
+      const tl = gsap.timeline({ onComplete: finishIntro });
+      tl.to(state, { progress: 1, duration: 13, ease: 'power1.inOut' });
+      const skip = () => { tl.kill(); gsap.to(state, { progress: 1, duration: 1.1, ease: 'power2.out', onComplete: finishIntro }); };
+      skipBtn.addEventListener('click', skip);
+      // Erstes Scrollen überspringt die Eröffnung sanft
+      window.addEventListener('wheel', () => { if (!introDone) skip(); }, { once: true, passive: true });
+      window.addEventListener('touchmove', () => { if (!introDone) skip(); }, { once: true, passive: true });
+    } else {
+      // Ohne GSAP: simple Zeit-Rampe
+      const t0 = performance.now();
+      (function ramp(){
+        const p = Math.min(1, (performance.now()-t0)/13000);
+        state.progress = p;
+        if (p < 1) requestAnimationFrame(ramp); else finishIntro();
+      })();
+      document.getElementById('intro-skip').addEventListener('click', () => { state.progress = 1; finishIntro(); });
+    }
+  }
+}
+</script>
+
+</body>
+</html>
