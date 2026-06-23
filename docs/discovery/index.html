@@ -753,7 +753,7 @@ if (renderer) {
   // ausgekeyt. Halbschatten + Atmosphären-Saum sind im Foto schon enthalten.
   const earthMat = new THREE.ShaderMaterial({
     uniforms: {
-      uAppear: { value: 0 }, uHabitable: { value: 0 }, uDarkZoom: { value: 1.15 },
+      uAppear: { value: 0 }, uHabitable: { value: 0 }, uDarkZoom: { value: 1.0 },
       uDark: { value: blankTex }, uBlue: { value: blankTex },
       uHasDark: { value: 0 }, uHasBlue: { value: 0 }
     },
