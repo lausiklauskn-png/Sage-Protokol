@@ -1841,6 +1841,55 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · Discovery-Expedition: Bau der WebGL-Schöpfungs-Seite + 15 KI-Bilder
+
+**Rolle:** Bau-Sitzung (Freibrief). PR #402 (Draft). Branch
+`claude/discovery-expedition-imagery-3t3dya`.
+
+**Was getan:**
+- **Neue eigenständige Seite `docs/discovery/index.html`** in Einladungs-Qualität:
+  vendorierte three.js + GSAP + Fonts werden aus `docs/einladung/vendor`
+  **geteilt** (kein zweites Paket, Repo bleibt schlank). Eröffnungs-Animation
+  (prozedurales WebGL): Kosmos-Tiefe → Galaxien entzünden sich gestaffelt +
+  verbinden sich (Filament-Linien) → Element-Wanderung (Sternenstaub-Strom
+  Richtung Erde) → goldenes Mycel wächst am Erd-Horizont. Storyboard-Untertitel
+  in vier Phasen, „Überspringen"-Knopf, erstes Scrollen überspringt sanft.
+  Danach Wissenschafts-Anker (Nukleosynthese/Sternenstaub, Pilze halfen dem
+  Leben an Land) → Pilz-Galerie (11 Fähigkeiten, Staun-Text + leiser
+  SBKIM-Spiegel + ehrliche Caveats) → Schluss-Bild → würdevolle, andeutende
+  „versteckte Botschaften". Robust: `prefers-reduced-motion` (statische
+  Komposition, kein Loop), WebGL-Context-Loss-Guard, Tablet-DPR-Deckel,
+  graceful Bild-Fallback (museale Platzhalter-Kachel statt 404-Bruchbild).
+- **15 KI-Bilder** von Klaus entgegengenommen, mit Pillow auf ≤1600px/webp q82
+  verkleinert (je ~70–460 KB statt ~2,9 MB PNG, gesamt 3,6 MB) und in
+  `assets/discovery/` abgelegt: 11 Pilz-Motive (mykorrhiza, physarum,
+  radiotroph, weissfaeule, plastik, flechte, armillaria, biolumineszenz,
+  ophiocordyceps, mitbauer, hyphendruck) + 4 Storyboard-Szenen (galaxien,
+  elemente-erde, kosmos-mycel, schlussbild). Ophiocordyceps auf Klaus'
+  Korrektur neu generiert (naturgetreue Ameise + schlanker Fruchtkörper-Stiel
+  statt „Monsterkäfer" mit Schirm-Pilz).
+- **Doku-Karte** `_discovery_expedition.md`: alle 15 Bilder eingebettet
+  (inline an den Fähigkeiten + Storyboard-Block), als „KI-generiert"
+  gekennzeichnet, Status-Header auf „✅ vorhanden" + Verweis auf die Seite.
+- **Headless-Smoke** `docs/discovery/_smoke.mjs` **11/11 grün** (Canvas,
+  11 Galerie-Kacheln, Storyboard, Hero-Reveal, keine unerwarteten Fehler/404;
+  geduldete fehlende-Bild-404 werden über den Response-Status gefiltert).
+
+**Leitplanken eingehalten:** nur Doku + Assets + Vision-Seite, **kein**
+Modul-Code, **kein** Protokoll-Bump; keine PII; Bilder als „KI-generiert".
+Discovery-**Mechanik** (Verzeichnis/Gossip) bleibt eine spätere Spec/Bau-Sitzung
+Modul 14.
+
+**Was offen / nächster Schritt:**
+- **Klaus' Browser-Sichttest** (Galaxy Tab S6, Tablet- und DeX-Modus):
+  Eröffnungs-Animation flüssig? Galerie-Bilder + Schluss-Bild laden? Reduced-
+  Motion-Pfad? Performance? — headless ersetzt das nicht.
+- Optional (Folge-Pflege): Sage-Page-Mount/Verlinkung der Discovery-Seite;
+  ob die 4 Storyboard-Standbilder zusätzlich in die Hero-/Anker-Sektionen der
+  Seite eingewoben werden sollen (aktuell rein prozedurales WebGL + nur
+  schlussbild als Foto auf der Seite).
+- Nach grünem Sichttest: PR #402 ready setzen + mergen (Freibrief).
+
 ### 2026-06-23 · Discovery-Expedition: Storyboard der Eröffnungs-Animation + Schluss-Bild
 
 **Rolle:** Vision-Pflege (Klaus' Erweiterung). Hintergrund-Animation erzählt:
