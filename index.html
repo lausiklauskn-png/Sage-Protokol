@@ -911,6 +911,54 @@
     .einladung-hint { opacity: 1; }
   }
 
+  /* ===== Discovery-Expedition · Vorschau-Karte (2026-06-23) ===== */
+  .discovery-card { isolation: isolate; }
+  .discovery-stage {
+    position: relative; display: block; overflow: hidden;
+    height: 360px; border-radius: 16px; margin-top: 1rem;
+    text-decoration: none; color: inherit;
+    border: 1px solid var(--line-strong); background: #03040a;
+    transition: border-color .25s, box-shadow .25s;
+  }
+  .discovery-stage:hover { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(110,231,211,0.25), 0 24px 60px rgba(0,0,0,0.5); }
+  .discovery-bg {
+    position: absolute; inset: 0;
+    background: url('assets/discovery/galaxie-hintergrund.webp') center/cover no-repeat;
+    filter: saturate(0.95) brightness(0.55);
+    transform: scale(1.06);
+    animation: discoDrift 42s ease-in-out infinite alternate;
+  }
+  @keyframes discoDrift {
+    from { transform: scale(1.06) translate(-1.4%, -0.8%); }
+    to   { transform: scale(1.13) translate(1.4%, 1.0%); }
+  }
+  .discovery-earth {
+    position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%);
+    width: 188px; height: 188px; border-radius: 50%; overflow: hidden;
+    box-shadow: 0 0 64px rgba(90,140,230,0.28), inset 0 0 30px rgba(0,0,0,0.5);
+  }
+  .discovery-earth img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.18); }
+  .discovery-earth .earth-blue { opacity: 0; animation: discoEarth 11s ease-in-out infinite; }
+  @keyframes discoEarth {            /* dunkle Früherde → blau → zurück, immer hin und her */
+    0%, 14% { opacity: 0; }
+    46%, 62% { opacity: 1; }
+    94%, 100% { opacity: 0; }
+  }
+  .discovery-overlay {
+    position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1.4rem 1.5rem;
+    background: linear-gradient(to top, rgba(3,4,10,0.88) 0%, rgba(3,4,10,0.35) 42%, rgba(3,4,10,0.05) 66%, transparent 82%);
+  }
+  .discovery-eyebrow { font-family: "Geist Mono", monospace; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin: 0 0 0.5rem; }
+  .discovery-title { font-size: clamp(1.25rem, 1rem + 1.5vw, 1.9rem); line-height: 1.14; margin: 0 0 0.45rem; color: #f3eede; max-width: 30ch; }
+  .discovery-sub { font-size: 0.92rem; line-height: 1.5; color: rgba(243,238,222,0.78); margin: 0 0 0.85rem; max-width: 52ch; }
+  .discovery-hint { align-self: flex-start; font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--line-strong); border-radius: 999px; padding: 0.45rem 1rem; transition: border-color .2s, color .2s; }
+  .discovery-stage:hover .discovery-hint { border-color: var(--accent); color: var(--text); }
+  @media (prefers-reduced-motion: reduce) {
+    .discovery-bg { animation: none; }
+    .discovery-earth .earth-blue { animation: none; opacity: 1; }
+  }
+
   /* ===== Observatoriums-Vorteilspack-Truhe (Schicht 4) ===== */
   .vorteilspack-card { overflow: hidden; }
   .vp-layout { display: grid; grid-template-columns: minmax(220px, 320px) 1fr; gap: 1.6rem; align-items: center; }
@@ -1332,6 +1380,25 @@
             <canvas class="einladung-dust" aria-hidden="true"></canvas>
             <div class="einladung-flash"></div>
             <span class="einladung-hint">Klicken zum Öffnen</span>
+          </a>
+        </article>
+        <article class="card span-12 discovery-card" data-back-anchor="discovery">
+          <span class="card-tag">Discovery-Expedition · was wir von den Pilzen lernen</span>
+          <h3>Vom Sternenstaub zum Geflecht</h3>
+          <p>Eine eigene Schöpfungs-Seite, neben der Einladung: vom Urknall-Staub bis zum lebendigen Mycel. Klick auf das Fenster, dann öffnet sich die ganze Reise.</p>
+          <a class="discovery-stage" href="docs/discovery/index.html"
+             aria-label="Discovery-Expedition öffnen">
+            <div class="discovery-bg" aria-hidden="true"></div>
+            <div class="discovery-earth" aria-hidden="true">
+              <img class="earth-dark" src="assets/discovery/erde-dunkel.webp" alt="">
+              <img class="earth-blue" src="assets/discovery/erde-blau.webp" alt="">
+            </div>
+            <div class="discovery-overlay">
+              <p class="discovery-eyebrow">Discovery-Expedition</p>
+              <h4 class="discovery-title">Wie das Leben einen Weg findet — und was wir von den Pilzen lernen.</h4>
+              <p class="discovery-sub">Eine staunende Dokumentation: vom Sternenstaub bis zum unterirdischen Geflecht.</p>
+              <span class="discovery-hint">Öffnen →</span>
+            </div>
           </a>
         </article>
         <article class="card span-12" data-back-anchor="sage-identitaet">
