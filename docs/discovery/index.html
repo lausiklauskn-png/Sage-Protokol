@@ -739,7 +739,7 @@ if (renderer) {
   // ---------------------------------------------------------------
   // 2) Blauer Planet — texturiert aus Klaus' KI-Bild, im Halbschatten.
   //    Zentral, rückt beim Erscheinen sanft in den Mittelpunkt. Zeigt sich
-  //    NUR, wenn das Bild geladen ist (uHasMap) — sonst unsichtbar, kein
+  //    NUR, wenn ein Bild geladen ist — sonst unsichtbar, kein
   //    „blauer Spiegel"-Ball (Klaus' Sichttest-Befund 2026-06-23).
   // ---------------------------------------------------------------
   const earthGroup = new THREE.Group();
@@ -752,32 +752,48 @@ if (renderer) {
   // schwarze Weltraum-Hintergrund des Fotos wird über die Helligkeit
   // ausgekeyt. Halbschatten + Atmosphären-Saum sind im Foto schon enthalten.
   const earthMat = new THREE.ShaderMaterial({
-    uniforms: { uAppear: { value: 0 }, uHasMap: { value: 0 }, uMap: { value: blankTex } },
+    uniforms: {
+      uAppear: { value: 0 }, uHabitable: { value: 0 }, uDarkZoom: { value: 1.3 },
+      uDark: { value: blankTex }, uBlue: { value: blankTex },
+      uHasDark: { value: 0 }, uHasBlue: { value: 0 }
+    },
     vertexShader: /* glsl */`
       varying vec2 vUv;
       void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
     fragmentShader: /* glsl */`
-      uniform sampler2D uMap; uniform float uHasMap; uniform float uAppear;
+      uniform sampler2D uDark; uniform sampler2D uBlue;
+      uniform float uHasDark; uniform float uHasBlue;
+      uniform float uAppear; uniform float uHabitable; uniform float uDarkZoom;
       varying vec2 vUv;
       void main(){
-        vec4 tx = texture2D(uMap, vUv);
-        float lum = max(tx.r, max(tx.g, tx.b));
-        float mask = smoothstep(0.02, 0.11, lum);          // schwarzen Raum auskeyen
-        float a = mask * uAppear * uHasMap;
+        // Dunkel-Erde etwas herangezoomt, damit ihr Planet die Scheibe füllt
+        vec2 uvD = (vUv - 0.5) / uDarkZoom + 0.5;
+        vec3 dCol = texture2D(uDark, uvD).rgb;
+        vec3 bCol = texture2D(uBlue, vUv).rgb;
+        if (uHasDark < 0.5) dCol = bCol * 0.18;    // kein Dunkel-Bild → blau abgedunkelt
+        if (uHasBlue < 0.5) bCol = dCol;           // kein Blau-Bild → Dunkel bleibt
+        // dunkle, unbewohnliche Früherde → blaue, bewohnliche Erde.
+        // Das Dunkle im Bild ist nur der Schatten (Terminator) und BLEIBT —
+        // es wird NICHT ausgekeyt; nur die schwarzen Ecken außerhalb der Scheibe.
+        vec3 col = mix(dCol, bCol, uHabitable);
+        float r = distance(vUv, vec2(0.5));
+        float mask = 1.0 - smoothstep(0.45, 0.49, r);  // runde Maske, Planet bleibt VOLL
+        float a = mask * uAppear * max(uHasDark, uHasBlue);
         if (a < 0.004) discard;
-        gl_FragColor = vec4(tx.rgb, a);
+        gl_FragColor = vec4(col, a);
       }`,
     transparent: true, depthWrite: false
   });
   const earth = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 3.4), earthMat);
   earthGroup.add(earth);
-  // Planeten-Bild laden (graceful: fehlt es, bleibt der Planet unsichtbar)
-  new THREE.TextureLoader().load(
-    '../../assets/discovery/planet-blau.webp',
-    (t) => { if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace; earthMat.uniforms.uMap.value = t; earthMat.uniforms.uHasMap.value = 1; },
-    undefined,
-    () => { /* kein Bild → Planet bleibt unsichtbar */ }
-  );
+  // Zwei Stufen: dunkle Früherde (während der Einschläge) → blaue Erde
+  const _texLoader = new THREE.TextureLoader();
+  _texLoader.load('../../assets/discovery/erde-dunkel.webp',
+    (t) => { if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace; earthMat.uniforms.uDark.value = t; earthMat.uniforms.uHasDark.value = 1; },
+    undefined, () => {});
+  _texLoader.load('../../assets/discovery/erde-blau.webp',
+    (t) => { if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace; earthMat.uniforms.uBlue.value = t; earthMat.uniforms.uHasBlue.value = 1; },
+    undefined, () => {});
 
   // ---------------------------------------------------------------
   // 2b) Kometen / Meteoriten — fliegen mit Feenstaub-Schweif auf den
@@ -787,8 +803,8 @@ if (renderer) {
     new THREE.Color(0xe9c984), new THREE.Color(0xfff0d0), new THREE.Color(0xbfe0ff),
     new THREE.Color(0xffb066), new THREE.Color(0xffd0c0), new THREE.Color(0xd6f0a0)
   ];
-  const N_COMETS = isMobile ? 5 : 6;
-  const TAIL = isMobile ? 14 : 22;                 // Schweif-Länge (Feenstaub)
+  const N_COMETS = isMobile ? 2 : 3;
+  const TAIL = isMobile ? 16 : 24;                 // Schweif-Länge (Feenstaub)
   const C_VERTS = N_COMETS * (TAIL + 1);
   const cPos = new Float32Array(C_VERTS*3), cCol = new Float32Array(C_VERTS*3);
   const cAlpha = new Float32Array(C_VERTS), cSize = new Float32Array(C_VERTS);
@@ -876,7 +892,7 @@ if (renderer) {
         c.head.copy(c.start).lerp(EARTH_POS, tt*tt);     // beschleunigt in den Einschlag
         c.hist.unshift(c.head.clone());
         if (c.hist.length > TAIL+1) c.hist.pop();
-        if (c.t >= 1){ spawnBurst(EARTH_POS, c.color); c.active = false; c.delay = 0.6 + Math.random()*2.4; }
+        if (c.t >= 1){ spawnBurst(EARTH_POS, c.color); c.active = false; c.delay = 2.2 + Math.random()*4.0; }
       }
       for (let k=0;k<=TAIL;k++){
         const hp = c.hist[k] || c.head;
@@ -1090,11 +1106,15 @@ if (renderer) {
     // Sterne funkeln stärker, während der Planet in den Mittelpunkt rückt
     galMat.uniforms.uTwinkle.value = smoothstep01(p, 0.5, 0.72) * (1 - smoothstep01(p, 0.88, 1.0)*0.5);
     linkMat.opacity = smoothstep01(p, 0.12, 0.4) * (1 - smoothstep01(p, 0.5, 0.85)*0.6) * 0.5;
-    // Planet (Billboard) erscheint nach der Kometen-Phase und rückt
-    // skalierend in den Mittelpunkt.
-    const ap = smoothstep01(p, 0.5, 0.78);
+    // Erde erscheint FRÜH (während der Einschläge) als dunkle Früherde und
+    // rückt skalierend in den Mittelpunkt; über Verlauf + Hochscrollen wird
+    // sie blau/bewohnlich (Schatten bleibt).
+    const ap = smoothstep01(p, 0.3, 0.46);
     earthMat.uniforms.uAppear.value = ap;
-    earthGroup.scale.setScalar(0.62 + ap*0.38);
+    earthGroup.scale.setScalar(0.72 + ap*0.28);
+    const habIntro = smoothstep01(p, 0.82, 1.0) * 0.5;
+    const habScroll = Math.min(1, window.scrollY / (window.innerHeight * 0.55));
+    earthMat.uniforms.uHabitable.value = reducedMotion ? 1.0 : Math.max(habIntro, habScroll);
     // Kometen + Einschlag-Funken (ab „Hinwendung", in Reduced-Motion aus)
     const cometsOn = reducedMotion ? 0 : smoothstep01(p, 0.18, 0.4) * (1 - smoothstep01(p, 0.82, 1.0)*0.7);
     updateComets(dt, cometsOn);

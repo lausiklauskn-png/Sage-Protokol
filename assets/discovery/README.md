@@ -26,9 +26,20 @@ richtigen Namen abgelegt ist, erscheint das Bild ohne weitere Code-Änderung.
 | `hyphendruck.webp`    | 11 · Hyphen-Druck |
 | `schlussbild.webp`    | 15 · Schluss-Bild „gelebtes Leben" (Herz-Bild) |
 
-Optional, für die Eröffnungs-Animation (aktuell prozedural per WebGL gelöst,
-Bilder nicht nötig, aber als Standbilder willkommen):
+Optional, für die Eröffnungs-Animation (Storyboard-Standbilder):
 `galaxien.webp` · `elemente-erde.webp` · `kosmos-mycel.webp`.
+
+### Hero-Animations-Assets (Eröffnungssequenz `docs/discovery/index.html`)
+
+| Dateiname | Rolle |
+|---|---|
+| `galaxie-hintergrund.webp` | Vergrößerter, langsam bewegter Nebel-/Galaxien-Hintergrund tief hinter allem |
+| `erde-dunkel.webp`         | Dunkle, noch unbewohnliche Früh-Erde während der Kometen-Einschläge |
+| `erde-blau.webp`           | Blaue, bewohnliche Erde — Überblendung über den Verlauf/beim Hochscrollen (das Dunkle ist nur der Schatten und bleibt) |
+
+> Die Erde wird als **volles, rundes Billboard** gezeigt (Rund-Maske keyt nur
+> die schwarzen Bild-Ecken aus — der Planet bleibt solide, der Schatten bleibt).
+> Kometen (prozedurales WebGL) schlagen mit Feenstaub-Schweif ein.
 
 ## Konventionen
 
