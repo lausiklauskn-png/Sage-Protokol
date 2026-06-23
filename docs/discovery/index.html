@@ -1054,6 +1054,7 @@ if (renderer) {
   // Zustand + Steuerung
   // ---------------------------------------------------------------
   const state = { progress: 0 };
+  let smoothScroll = 0;   // sanft nachgezogener Scroll-Wert (gegen zackige Übergänge)
   const _tmpTarget = new THREE.Vector3();
   const _origin = new THREE.Vector3(0,0,0);
 
@@ -1093,13 +1094,17 @@ if (renderer) {
 
   // Scrim verdunkelt den Kosmos beim Hinunterscrollen
   const scrim = document.getElementById('cosmos-scrim');
-  function onScroll() {
+  function setScrimFrom(scrollVal) {
     const vh = window.innerHeight;
     // Schleier langsamer, damit die Erde während des Blau-Werdens sichtbar bleibt
-    const o = Math.max(0, Math.min(1, window.scrollY / (vh*1.5)));
+    const o = Math.max(0, Math.min(1, scrollVal / (vh*1.5)));
     scrim.style.opacity = (o*0.9).toFixed(3);
   }
-  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  // Im Normalfall glättet die Render-Schleife (smoothScroll). Reduced-Motion hat
+  // keine Schleife → Scrim direkt am Scroll setzen.
+  function onScroll() { if (reducedMotion) setScrimFrom(window.scrollY); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  setScrimFrom(0);
 
   // Render-Schleife
   const clock = new THREE.Clock();
@@ -1132,9 +1137,13 @@ if (renderer) {
     // Übergang dunkel→blau FLIESSEND über ~2–3 Scroll-Bewegungen (Easing),
     // nicht schlagartig wie ein Dia-Wechsel. Die Erde wird Schicht für Schicht
     // heller, bis sie ganz blau erscheint.
-    const hraw = Math.min(1, window.scrollY / (window.innerHeight * 1.7));
+    // Scroll-Glättung: Nachzieh-Wert statt direktem scrollY → weiche, nicht
+    // zackige Übergänge beim Scrollen (Klaus 2026-06-23).
+    smoothScroll += (window.scrollY - smoothScroll) * 0.09;
+    const hraw = Math.min(1, smoothScroll / (window.innerHeight * 1.7));
     const hab = hraw*hraw*(3.0 - 2.0*hraw);   // smoothstep-Easing
     earthMat.uniforms.uHabitable.value = reducedMotion ? 1.0 : hab;
+    setScrimFrom(smoothScroll);               // Schleier ebenfalls geglättet
     // Kometen + Einschlag-Funken (ab „Hinwendung", in Reduced-Motion aus)
     const cometsOn = reducedMotion ? 0 : smoothstep01(p, 0.18, 0.4) * (1 - smoothstep01(p, 0.82, 1.0)*0.7);
     updateComets(dt, cometsOn);
