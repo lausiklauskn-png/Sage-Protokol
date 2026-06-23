@@ -1841,6 +1841,29 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · Discovery-Expeditionskonzept (Modul-14-Erweiterung + Vision-Karte + Pilz-Doku)
+
+**Rolle:** Doku/Vision. Klaus' Wunsch: das Discovery-Konzept (wie Knoten einander
+finden, ohne Empfangsmodus zu brechen) schriftlich + eine Vision-Karte mit
+faszinierenden Pilz-Fähigkeiten als Mitmach-Motivation.
+
+**Was getan:**
+- **Modul 14 (Diffusion)** um Abschnitt „Discovery / Expedition — foraging-Bild"
+  erweitert: erkunden→verstärken→absterben = Modul 14 + Apoptose (07) + Reputation
+  (10); Empfangsmodus-Auflösung (kein Knoten-Crawler — Empfehlung entlang Fäden
+  ODER freiwilliges Verzeichnis als Pilz-Organ); drei Discovery-Formen.
+- **Neue Vision-Karte** `docs/components/_discovery_expedition.md`: kuratierte,
+  ehrliche Pilz-Fähigkeiten-Doku (Mykorrhiza/„Wood Wide Web", Schleimpilz/Physarum,
+  radiotrophe Pilze, Weißfäule, Plastik-Fresser, Flechten/Extremophile, Armillaria,
+  Biolumineszenz, Ophiocordyceps als Gegenbeispiel, Mit-Bauer-Kultur, Hyphen-Druck)
+  + Spiegel-Tabelle zu SBKIM + **fertige Bild-Prompts pro Pilzart** (einheitlicher
+  Gold-/Dunkel-Stil). Querverweis aus Modul 14.
+- **Folge-Brief** `docs/sessions/BRIEF_DISCOVERY_EXPEDITION_BILDER.md` für die
+  Bild-Sitzung (Klaus generiert Bilder → einbetten + Einladungs-Site verfeinern).
+
+**Was offen:** Bildmaterial (eigene Folge-Sitzung, Brief liegt). Discovery-MECHANIK
+(Verzeichnis/Gossip) bleibt spätere Spec/Bau Modul 14. Kein Code geändert.
+
 ### 2026-06-23 · Positionierung „Warum diese App statt KI?" + Server-Seiten-Frage (Doku)
 
 **Rolle:** Doku/Strategie. Klaus' ehrliche Frage: man kann die Web-Suche auch in
