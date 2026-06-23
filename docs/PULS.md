@@ -1841,6 +1841,27 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · Positionierung „Warum diese App statt KI?" + Server-Seiten-Frage (Doku)
+
+**Rolle:** Doku/Strategie. Klaus' ehrliche Frage: man kann die Web-Suche auch in
+jeder KI machen — was ist das Alleinstellungsmerkmal? Soll Mitmachen motivieren.
+
+**Was getan:** Neue Doku [`docs/WARUM_SBKIM_STATT_KI.md`](WARUM_SBKIM_STATT_KI.md)
+— ehrliche Positionierung: (1) Solo-Web-Suche ist KEIN USP; (2) echte Unterschiede:
+server-los/privat + lokale Bedeutungs-Maschine (gratis ohne KI), anbieter-neutral/
+forkbar, **dezentrale Knoten-Suche (Mycel)** ohne zentralen Index; (3) Wert
+entsteht erst **eingebaut in Fach-Apps** + mit wachsendem Netz. **Server-Seiten-
+Frage beantwortet:** ja, jede Internetseite kann mitmachen — die Module sind
+Client-JS (egal ob GitHub Pages/PHP/Node/WordPress), Server hostet nur Dateien +
+`spore.json` + SW; optional eigener Pilz-Server (Proxy/SearXNG). Ehrliche Grenze:
+volle Cross-Origin-Live-Vernetzung server-los + **Discovery** (wie findet ein
+Knoten fremde Knoten) noch offen. Geld/öffentlich bleibt Klaus' offene Entscheidung
+(Phase D.2; offen-forkbar passt zur Philosophie, Geld in der Pilz-Schicht).
+Querverweis aus dem Meilenstein-Dokument ergänzt.
+
+**Was offen:** Discovery-Schicht-Konzept (Verzeichnis/Gossip) als künftige
+Design-Frage; Geschäftsmodell (Phase D.2). Kein Code geändert.
+
 ### 2026-06-23 · Modul 22: 🔊 Vorlesen sprachbewusst (DE/EN/RU automatisch)
 
 **Rolle:** Pflege Modul 22. Klaus' Frage: das Vorlesen klingt „intern" — geht

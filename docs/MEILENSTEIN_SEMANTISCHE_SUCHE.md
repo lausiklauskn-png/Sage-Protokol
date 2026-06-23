@@ -9,6 +9,10 @@ Stichwörter zählt. Und zwar **ohne Server**, im Browser, peer-to-peer gedacht.
 Dieser Meilenstein hält fest, **auf welchen Spuren** das gewachsen ist, **was
 bewiesen** wurde und **was noch zu beweisen** bleibt.
 
+> **Siehe auch:** [`WARUM_SBKIM_STATT_KI.md`](WARUM_SBKIM_STATT_KI.md) — die
+> ehrliche Positionierung „Warum diese App statt einfach eine KI?" (Alleinstellung,
+> wo der Wert wirklich entsteht, ob auch Server-Seiten mitmachen können).
+
 ---
 
 ## 1. Was das Besondere ist
