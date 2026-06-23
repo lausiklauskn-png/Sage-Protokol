@@ -776,6 +776,7 @@ if (renderer) {
         // Das Dunkle im Bild ist nur der Schatten (Terminator) und BLEIBT —
         // es wird NICHT ausgekeyt; nur die schwarzen Ecken außerhalb der Scheibe.
         vec3 col = mix(dCol, bCol, uHabitable);
+        col *= mix(0.72, 1.0, uHabitable);   // wird Schicht für Schicht heller
         float r = distance(vUv, vec2(0.5));
         float mask = 1.0 - smoothstep(0.425, 0.445, r);  // enge Maske an der Planeten-Kante (kein schwarzer Halo)
         float a = mask * uAppear * max(uHasDark, uHasBlue);
@@ -1086,8 +1087,9 @@ if (renderer) {
   const scrim = document.getElementById('cosmos-scrim');
   function onScroll() {
     const vh = window.innerHeight;
-    const o = Math.max(0, Math.min(1, window.scrollY / (vh*0.8)));
-    scrim.style.opacity = (o*0.92).toFixed(3);
+    // Schleier langsamer, damit die Erde während des Blau-Werdens sichtbar bleibt
+    const o = Math.max(0, Math.min(1, window.scrollY / (vh*1.5)));
+    scrim.style.opacity = (o*0.9).toFixed(3);
   }
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
@@ -1119,8 +1121,12 @@ if (renderer) {
     // Erde bleibt im Hero als DUNKLE, unbewohnliche Früh-Erde stehen (während
     // der Einschläge) und wird ERST BEIM HOCHSCROLLEN blau/bewohnlich — der
     // Schatten bleibt. (reduced-motion: gleich blau.)
-    const habScroll = Math.min(1, window.scrollY / (window.innerHeight * 0.6));
-    earthMat.uniforms.uHabitable.value = reducedMotion ? 1.0 : habScroll;
+    // Übergang dunkel→blau FLIESSEND über ~2–3 Scroll-Bewegungen (Easing),
+    // nicht schlagartig wie ein Dia-Wechsel. Die Erde wird Schicht für Schicht
+    // heller, bis sie ganz blau erscheint.
+    const hraw = Math.min(1, window.scrollY / (window.innerHeight * 1.7));
+    const hab = hraw*hraw*(3.0 - 2.0*hraw);   // smoothstep-Easing
+    earthMat.uniforms.uHabitable.value = reducedMotion ? 1.0 : hab;
     // Kometen + Einschlag-Funken (ab „Hinwendung", in Reduced-Motion aus)
     const cometsOn = reducedMotion ? 0 : smoothstep01(p, 0.18, 0.4) * (1 - smoothstep01(p, 0.82, 1.0)*0.7);
     updateComets(dt, cometsOn);
