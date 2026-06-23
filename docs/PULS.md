@@ -1841,6 +1841,24 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · Modul 22: 🔊 Vorlesen sprachbewusst (DE/EN/RU automatisch)
+
+**Rolle:** Pflege Modul 22. Klaus' Frage: das Vorlesen klingt „intern" — geht
+Multi-Language? **Klärung:** das 🔊 nutzt die **Browser-Sprachausgabe**
+(`speechSynthesis`, lokale Geräte-Stimmen) — gratis/offline, aber Geräte-Qualität,
+nicht KI. Eine natürliche KI-Stimme bräuchte BYOK + Proxy + Geld (Opt-in, später).
+**Klaus-Wahl: „Browser-Stimme: Sprache fixen"** → umgesetzt: `detectLangCode`
+(Kyrillisch→ru / deutsche Sonderzeichen+Stoppwörter→de / englische Stoppwörter→en)
++ `pickVoiceFor` wählt die passende System-Stimme; `readAloud` setzt `u.lang` +
+`u.voice`. So wird die Zusammenfassung in der **richtigen Sprache** gesprochen.
+
+**Tests:** `smoke_bau22_such_widget.mjs` **237/237** (Probe 51 erweitert: TTS-Stub,
+de-Sprache + passende Stimme), Standalone **46/46**. Karte 22 nachgezogen.
+Selbstständig gemerged (Freibrief).
+
+**Was offen:** Klaus' Sichttest (Vorlesen in korrekter Sprache). KI-Neural-Stimme
+als Opt-in bleibt offene Folge-Option (BYOK + Pilz-Server).
+
 ### 2026-06-23 · Modul 22: Schärfen-Mikrofon + KI-Zusammenfassung „warum diese Reihenfolge" (+ 🔊 Vorlesen)
 
 **Rolle:** Pflege/Bau Modul 22 + `such-tool/`. Zwei Klaus-Wünsche aus der Nutzung.

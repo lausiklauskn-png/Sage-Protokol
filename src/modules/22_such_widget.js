@@ -2398,8 +2398,36 @@
     } catch (e) { warn("Konnte Link nicht öffnen: " + url, e); }
   }
 
-  // Text vorlesen (Browser-Sprachausgabe, server-los, gratis). Toggle: läuft schon
-  // etwas → stoppen. Fail-soft, wenn speechSynthesis fehlt.
+  // Sprache der Zusammenfassung grob erkennen (DE/EN/RU — wie Modul 21 SPEECH_LANGS),
+  // damit die Vorlese-Stimme die RICHTIGE Sprache/Stimme nimmt (Klaus 2026-06-23).
+  // Leichte Heuristik, server-los: Kyrillisch → ru; deutsche Sonderzeichen/Stoppwörter
+  // → de; englische Stoppwörter → en; sonst Default de.
+  function detectLangCode(text) {
+    var t = String(text || "");
+    if (/[Ѐ-ӿ]/.test(t)) return "ru-RU";
+    var lower = " " + t.toLowerCase().replace(/[^\p{L}\s]/gu, " ") + " ";
+    if (/[äöüß]/.test(lower)) return "de-DE";
+    var de = (lower.match(/ (der|die|das|und|nicht|weil|eine|einen|für|ist|ich|mit|auch|wird|werden|zum|zur|sind|wurde|warum|reihenfolge|gewählt) /g) || []).length;
+    var en = (lower.match(/ (the|and|because|why|this|with|are|was|were|of|to|is|for|that|chosen|order|first|should) /g) || []).length;
+    if (en > de) return "en-US";
+    return "de-DE";
+  }
+
+  function pickVoiceFor(lang) {
+    try {
+      var synth = global.speechSynthesis;
+      if (!synth || typeof synth.getVoices !== "function") return null;
+      var voices = synth.getVoices() || [];
+      var two = lang.slice(0, 2).toLowerCase();
+      // Exakte Sprach-Region zuerst, sonst gleiche Sprache.
+      for (var i = 0; i < voices.length; i++) { if ((voices[i].lang || "").toLowerCase().replace("_", "-") === lang.toLowerCase()) return voices[i]; }
+      for (var j = 0; j < voices.length; j++) { if ((voices[j].lang || "").toLowerCase().indexOf(two) === 0) return voices[j]; }
+    } catch (_e) { /* nb */ }
+    return null;
+  }
+
+  // Text vorlesen (Browser-Sprachausgabe, server-los, gratis), in der erkannten
+  // Sprache. Toggle: läuft schon etwas → stoppen. Fail-soft ohne speechSynthesis.
   function readAloud(text) {
     try {
       var synth = global.speechSynthesis;
@@ -2409,7 +2437,11 @@
       }
       if (synth.speaking) { synth.cancel(); return; }
       if (!text) return;
+      var lang = detectLangCode(text);
       var u = new global.SpeechSynthesisUtterance(String(text));
+      u.lang = lang;
+      var v = pickVoiceFor(lang);
+      if (v) u.voice = v;
       synth.speak(u);
     } catch (e) { warn("Vorlesen fehlgeschlagen.", e); }
   }
