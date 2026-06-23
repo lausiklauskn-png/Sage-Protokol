@@ -593,7 +593,7 @@ if (renderer) {
   window.addEventListener('resize', resize); resize();
 
   // Anker-Punkte der Erzählung
-  const EARTH_POS = new THREE.Vector3(0.0, 0.4, -0.5);   // Planet zentral
+  const EARTH_POS = new THREE.Vector3(0.0, 0.15, -0.5);   // Planet zentral, leicht über Bildmitte
   const MYCEL_ANCHOR = new THREE.Vector3(0.0, -4.4, -0.8);
 
   // ---------------------------------------------------------------
@@ -605,7 +605,7 @@ if (renderer) {
   const nebulaMat = new THREE.MeshBasicMaterial({
     color: 0x8890a0, transparent: true, opacity: 0.0, depthWrite: false
   });
-  const nebula = new THREE.Mesh(new THREE.PlaneGeometry(96, 54), nebulaMat);
+  const nebula = new THREE.Mesh(new THREE.PlaneGeometry(104, 44), nebulaMat);  // flach/breit wie das Foto, nicht in die Höhe gestreckt
   nebula.position.set(0, 0, -38);
   scene.add(nebula);
   new THREE.TextureLoader().load(
@@ -1053,10 +1053,10 @@ if (renderer) {
     // zentriert (Planet in der Mitte): nur sanftes Heranfahren + Blick hinab
     // zum Mycel am Ende.
     camera.position.x = 0;
-    camera.position.y = 0.5 - smoothstep01(p, 0.0, 0.7) * 0.9;
+    camera.position.y = 0.35 - smoothstep01(p, 0.0, 0.7) * 0.45;   // weniger Abwärts-Blick → Erde voll im Bild
     camera.position.z = 12 - Math.min(1, p/0.7) * 5.0;
     _tmpTarget.copy(_origin).lerp(EARTH_POS, smoothstep01(p, 0.2, 0.55));
-    _tmpTarget.lerp(MYCEL_ANCHOR, smoothstep01(p, 0.75, 1.0) * 0.45);
+    _tmpTarget.lerp(MYCEL_ANCHOR, smoothstep01(p, 0.8, 1.0) * 0.15);
     camera.lookAt(_tmpTarget);
   }
   function smoothstep01(x, a, b){ const t = Math.max(0, Math.min(1, (x-a)/(b-a))); return t*t*(3-2*t); }
@@ -1102,10 +1102,10 @@ if (renderer) {
     // Nebel-Hintergrund: sanft einblenden, langsam driften + zoomen ("bewegt")
     if (nebulaMat.map) {
       nebulaMat.opacity = (reducedMotion ? 0.62 : (0.18 + smoothstep01(p, 0.0, 0.28) * 0.5));
-      nebula.rotation.z = elapsed * 0.004;
-      nebula.scale.setScalar(1.0 + smoothstep01(p, 0, 1) * 0.14 + Math.sin(elapsed * 0.05) * 0.01);
-      nebula.position.x = Math.sin(elapsed * 0.02) * 1.2;
-      nebula.position.y = Math.cos(elapsed * 0.015) * 0.8;
+      nebula.rotation.z = elapsed * 0.0022;
+      nebula.scale.setScalar(1.0 + smoothstep01(p, 0, 1) * 0.08 + Math.sin(elapsed * 0.04) * 0.008);
+      nebula.position.x = Math.sin(elapsed * 0.014) * 0.7;
+      nebula.position.y = Math.cos(elapsed * 0.011) * 0.4;
     }
     galMat.uniforms.uTime.value = elapsed;
     galMat.uniforms.uProgress.value = p;
