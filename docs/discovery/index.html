@@ -988,7 +988,9 @@ if (renderer) {
       }`,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
   });
-  scene.add(new THREE.Points(dustGeo, dustMat));
+  const dustPoints = new THREE.Points(dustGeo, dustMat);
+  dustPoints.renderOrder = 8;                    // Schweif/Schnebel VOR der Erde (5)
+  scene.add(dustPoints);
 
   // ---------------------------------------------------------------
   // 4) Mycel — goldenes Geflecht, das am Erd-Horizont wächst
