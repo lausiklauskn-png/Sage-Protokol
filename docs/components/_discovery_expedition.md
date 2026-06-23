@@ -137,6 +137,54 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
 
 ---
 
+## Gestaltung & Hintergrund-Vision (Klaus 2026-06-23) — verbindlich für die Bau-Sitzung
+
+**Anspruch:** Die Discovery-Expeditions-Seite soll der Einladungs-Site **in nichts
+nachstehen — eher besser sein**. Begründung in Klaus' Worten: sie ist eine
+**Dokumentation der Schöpfung** — der Schöpfer (Jehova) soll **gewürdigt und
+gepriesen** werden. Darum: Gestaltung sehr ansprechend, Hintergrund-Animationen,
+dezente „versteckte Botschaften", alles, was den **Wert dieser Schöpfung**
+hervorhebt. Würdevoll, nicht kitschig; andeutend, nicht plakativ.
+
+**Der rote Faden (Hintergrund-Gedanke): vom Universum zum Leben — und Pilze als
+Ermöglicher.** Klaus' Bild: unser Universum ist der Ursprung des Lebens; die
+**Elemente** entstehen „da draußen" und finden den Weg zur Erde; die Gesetze der
+Physik fügen sich so, dass **Leben überhaupt möglich** wird; und die **Pilze** sind
+ein Beispiel dafür, dass Leben **flexibel und am Leben bleibt** — sie sind
+**Symbiose** mit dem Leben eingegangen und machen Leben mit möglich.
+
+**Wissenschaftlicher Anker (damit die Andeutungen tragen, nicht erfunden sind):**
+- Die **Elemente** wurden in **Sternen und Supernovae** geschmiedet (Nukleosynthese);
+  Wasserstoff/Helium aus dem frühen Universum, Kohlenstoff/Sauerstoff/Stickstoff in
+  Sternen, schwere Elemente u. a. in Sternexplosionen/Neutronenstern-Verschmelzungen
+  — „**wir bestehen aus Sternenstaub**".
+- Diese Elemente sind die **Bausteine des Lebens** auf der Erde.
+- **Pilze halfen dem Leben an Land:** die Symbiose von Pilzen und Pflanzen
+  (Mykorrhiza) gilt als ein Schlüssel, der Pflanzen die **Besiedlung des Landes**
+  ermöglichte; Pilze schließen Nährstoffe auf und halten Kreisläufe lebendig.
+
+**Gestaltungs-Ebenen (Vorschlag, andeutend):**
+1. **Kosmos-Tiefe** als Hintergrund — ruhiger Sternenraum, ferne Nebel.
+2. **Element-Wanderung** — feine Lichtpartikel/„Elemente" lösen sich aus Sternen,
+   wandern langsam Richtung eines warmen Erd-Horizonts (kein lautes Effekt-Feuer,
+   eher ein leises Strömen — „Schätze der Physik", die zusammenfinden).
+3. **Übergang ins Mycel** — die Partikel werden am Boden zu goldenen Pilzfäden, die
+   sich verzweigen (foraging) — die Brücke vom Kosmos zum Leben.
+4. **Pilz-Galerie** — die kuratierten Fähigkeiten (oben) als Sektionen, jede mit
+   ihrem Bild + zwei, drei Sätzen Staunen + dem leisen SBKIM-Bezug.
+5. **Dezente versteckte Botschaften** — würdevolle, kurze Sätze/Details, die den
+   Wert der Schöpfung andeuten (z. B. beim Verweilen sichtbar werdend), nie
+   aufdringlich; Ton wie die Einladung (ein Satz, kein Sermon).
+
+**Technik-Anker:** Die Einladungs-Site nutzt bereits three.js + GSAP + WebGL-Shader
+(lokal vendoriert) — dieselbe Werkzeug-Basis ist die Messlatte. Performance/
+Tablet-tauglich (Klaus' Galaxy Tab S6), Reduced-Motion-Fallback respektieren.
+
+**Haltung:** würdevoll, staunend, ehrlich. Wo Wissenschaft endet und Glaube
+beginnt, wird nichts behauptet, nur **angedeutet** — das Staunen trägt die Seite.
+
+---
+
 ## Bild-Prompts pro Pilz-Fähigkeit (für Klaus zum Generieren)
 
 > **Ziel:** einheitlicher, edler Look passend zum goldenen Pilz-Icon des

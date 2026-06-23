@@ -1841,6 +1841,24 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · Discovery-Expedition: Gestaltungs-/Hintergrund-Vision festgehalten (Schöpfungs-Doku)
+
+**Rolle:** Vision/Doku-Pflege. Klaus' Richtung für die künftige Discovery-Seite:
+soll der Einladungs-Site **in nichts nachstehen, eher besser** — es ist eine
+**Dokumentation der Schöpfung** (Schöpfer/Jehova würdigen). Hintergrund-Gedanke:
+**Kosmos → Elemente (Nukleosynthese, „Sternenstaub") → Erde → Leben → Pilze als
+Symbiose-Ermöglicher.** Andeutend, würdevoll, mit Hintergrund-Animationen +
+dezenten „versteckten Botschaften".
+
+**Was getan:** In `docs/components/_discovery_expedition.md` Abschnitt
+„Gestaltung & Hintergrund-Vision" ergänzt (Anspruch, roter Faden, wissenschaftlicher
+Anker, fünf Gestaltungs-Ebenen, Technik-Anker three.js+GSAP, Haltung). Bau-Brief
+`BRIEF_DISCOVERY_EXPEDITION_BILDER.md` erweitert: Ziel ist eine **eigenständige,
+hochwertige Discovery-Seite** (z. B. `docs/discovery/index.html`, WebGL wie die
+Einladung), nicht nur Markdown; Phasen (Bilder → Seite), teilbar in zwei Sitzungen.
+
+**Was offen:** Bilder generieren (Klaus) → Folge-Sitzung baut Seite. Kein Code.
+
 ### 2026-06-23 · Discovery-Expeditionskonzept (Modul-14-Erweiterung + Vision-Karte + Pilz-Doku)
 
 **Rolle:** Doku/Vision. Klaus' Wunsch: das Discovery-Konzept (wie Knoten einander
