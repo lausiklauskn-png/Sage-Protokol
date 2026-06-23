@@ -45,6 +45,10 @@
       border: 1px solid rgba(110,231,211,0.32); border-radius: 999px;
       padding: 0.25rem 0.7rem; margin-bottom: 1.4rem;
     }
+    .badge .badge-mush {
+      width: 1.5em; height: 1.5em; border-radius: 50%; object-fit: cover;
+      box-shadow: 0 0 6px rgba(244,196,80,0.45);
+    }
     h1 { font-size: clamp(1.8rem, 6vw, 2.7rem); line-height: 1.1; margin: 0 0 0.6rem; }
     h1 .accent { color: #6EE7D3; }
     .lead { font-size: 1.04rem; line-height: 1.55; color: rgba(245,245,255,0.82); margin: 0 0 1.6rem; }
@@ -70,7 +74,7 @@
 </head>
 <body>
   <main>
-    <span class="badge">🍄 SBKIM · server-los</span>
+    <span class="badge"><img class="badge-mush" src="./icon-192.png" alt="" aria-hidden="true"> SBKIM · server-los</span>
     <h1>Such-Werkzeug — sucht nach <span class="accent">Bedeutung</span>, nicht nach Stichwörtern.</h1>
     <p class="lead">
       Ein kleines, eigenständiges Such-Tool, das die <b>Absicht</b> hinter deiner
