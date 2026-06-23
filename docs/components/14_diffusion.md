@@ -31,6 +31,52 @@ Netz.
 
 ---
 
+## Discovery / Expedition — das „foraging"-Bild (2026-06-23, Klaus)
+
+Modul 14 ist die **Discovery-Schicht** des Mycels — und das biologische
+Vorbild ist das **Erkundungs-Wachstum der Pilze** (Klaus 2026-06-23):
+Pilze schicken Erkundungs-Hyphen ungerichtet ins Unbekannte, **ohne
+gezielt zu suchen**. Treffen sie auf Nährstoffe, **verdichten** sie sich
+dort; wo nichts ist, **ziehen sie sich zurück / sterben ab**. Kein
+zentraler Plan, sondern viele kleine, sich **verstärkende oder
+absterbende** Versuche.
+
+Wichtig — die **ehrliche Empfangsmodus-Auflösung:** das biologische
+Wandern ist ein *Hinausgreifen*, und genau das verbietet der
+Empfangsmodus für den **Knoten (Schicht 1)**. Darum lebt Discovery bei
+uns **nicht** als heimliches Hinaustasten des Knotens, sondern:
+
+- **entlang bestehender Fäden** — Empfehlung im Handshake (Pfad 2 oben),
+  also Wandern entlang schon-berührter Verbindungen, nicht ins Leere;
+- **oder als Pilz-Organ (Schicht 2)** — ein **freiwilliges Verzeichnis**,
+  in das Knoten sich selbst eintragen und das andere nur **lesen**
+  (Empfangsmodus gewahrt), sichtbar/benannt, kein Crawler.
+
+Die **Verstärken/Absterben-Dynamik** ist im Modul-Geflecht schon angelegt
+und muss nicht neu erfunden werden:
+
+- **Apoptose (Modul 07)** = der Faden, der nichts findet / nicht
+  antwortet, wird sauber **abgebaut** (das „Absterben").
+- **Diffusion (dieses Modul) / Reputation (Modul 10)** = der Faden, der
+  trägt, wird **verstärkt** (weiterempfohlen, höher gewichtet).
+- **Heterokaryose (Modul 06)** = Austausch zwischen tragfähigen Strängen.
+
+**Drei Mycel-treue Discovery-Formen** (Auswahl/Spec später):
+
+1. **Empfehlung/Gossip im Handshake** — reifes Modul 14 (Pfad 2). Am
+   meisten Mycel: Wachstum entlang Vertrauen, kein Crawler.
+2. **Freiwilliges Verzeichnis** (Pilz-Organ) — Knoten tragen ihre Spore
+   selbst ein, andere lesen (Empfangsmodus). Offene Design-Frage:
+   Verzeichnis vs. Gossip, Vergiftungs-/Sybil-Schutz.
+3. **Browser-native Konnektoren** zu wenigen offenen, erlaubten Quellen —
+   eng begrenzt, kein allgemeines Web-Crawlen.
+
+Das Konzept + die Pilz-Faszination, aus der es gewachsen ist, steht
+ausführlicher in der Vision-Karte
+[`_discovery_expedition.md`](_discovery_expedition.md).
+
+---
+
 ## Visualisierung
 
 ```mermaid
