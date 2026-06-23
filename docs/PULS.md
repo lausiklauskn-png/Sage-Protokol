@@ -1841,6 +1841,30 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · Modul 22: Schärfen-Mikrofon + KI-Zusammenfassung „warum diese Reihenfolge" (+ 🔊 Vorlesen)
+
+**Rolle:** Pflege/Bau Modul 22 + `such-tool/`. Zwei Klaus-Wünsche aus der Nutzung.
+
+**Was getan:**
+1. **🎤 am Schärfen-Feld** — `onVoiceClick(targetEl)` verallgemeinert +
+   `appendToField`; eigener Sprach-Knopf neben dem „Schärfen"-Feld (Modul 21),
+   Kontext einsprechbar wie das Such-Feld.
+2. **KI-Zusammenfassung mit Begründung** — `buildAiPrompt` fordert jetzt ein
+   JSON-Objekt `{"zusammenfassung","treffer":[…]}`: 2–4 Sätze in der Sprache der
+   Frage, **warum** diese Reihenfolge/Auswahl (kurze inhaltliche Begründung), damit
+   man nicht alle Seiten öffnen muss. `parseAiAnswer` verträgt Objekt **und**
+   Array (rückwärtskompatibel); `parseAiSummary`/`extractAiSummary` zieht die
+   Zusammenfassung; Render als Block **über** den Treffern mit **🔊 Vorlesen**
+   (`speechSynthesis`, server-los, fail-soft). Zusammenfassung wird mit der letzten
+   Suche persistiert (Reload-Schutz).
+
+**Tests:** `smoke_bau22_such_widget.mjs` **235/235** (Probe 51 neu), Standalone
+`smoke_standalone_such_tool.mjs` **46/46**. Karte 22 + INTERFACES nachgezogen.
+Selbstständig gemerged (Klaus' Freibrief „merge ohne Rückfrage").
+
+**Was offen:** Klaus' Sichttest am Tablet — Schärfen einsprechen; bei einer
+Internet-/KI-Suche erscheint oben die Zusammenfassung + 🔊 Vorlesen.
+
 ### 2026-06-23 · such-tool: goldener Pilz als Badge-Symbol + Favicon + PWA-Icons (Klaus-Bild)
 
 **Rolle:** Pflege Modul 22 / `such-tool/`. Klaus schickte ein Bild eines goldenen

@@ -4292,7 +4292,11 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         // Frage + optionalem Schärfen-Kontext (Code-Block-
                                         // Regel, breites Sammeln/Recall → saubere URLs).
   parseAiAnswer(text)→ Array (sync)     // eingefügte KI-Antwort → [{titel,url,quelle,text}];
-                                        // verträgt Code-Fences, säubert URL-Müll; [] wenn kein Array.
+                                        // verträgt Code-Fences + Objekt-Form {zusammenfassung,treffer:[…]}
+                                        // ODER blankes Array (rückwärtskompatibel); säubert URL-Müll.
+  parseAiSummary(text)→ string (sync)   // kurze KI-Zusammenfassung „warum diese Reihenfolge"
+                                        // aus der Antwort; "" wenn keine. Wird über den Treffern
+                                        // gezeigt (🔊 Vorlesen via speechSynthesis, fail-soft).
   setAiAnswer(text)  → boolean (sync)   // KI-Antwort übernehmen; true wenn gültige Quellen.
                                         //   Nächste search() sortiert sie als source:"internet".
   resultsAsText()    → string (sync)    // ALLE gerankten Treffer als nüchterner Text-Block
