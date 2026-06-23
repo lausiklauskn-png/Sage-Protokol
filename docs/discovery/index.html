@@ -593,8 +593,8 @@ if (renderer) {
   window.addEventListener('resize', resize); resize();
 
   // Anker-Punkte der Erzählung
-  const EARTH_POS = new THREE.Vector3(3.0, -0.6, -1.5);
-  const MYCEL_ANCHOR = new THREE.Vector3(3.0, -4.6, -1.0);
+  const EARTH_POS = new THREE.Vector3(0.0, 0.4, -0.5);   // Planet zentral
+  const MYCEL_ANCHOR = new THREE.Vector3(0.0, -4.4, -0.8);
 
   // ---------------------------------------------------------------
   // 1) Galaxien — Punkt-Wolke aus Cluster-Zentren, die nacheinander
@@ -645,11 +645,12 @@ if (renderer) {
   const galMat = new THREE.ShaderMaterial({
     uniforms: {
       uTime: { value: 0 }, uProgress: { value: 0 }, uPx: { value: renderer.getPixelRatio() },
+      uTwinkle: { value: 0 },
       uCool: { value: new THREE.Color(0x9fb4e8) }, uWarm: { value: new THREE.Color(0xe9c984) },
       uViolet: { value: new THREE.Color(0x6b5b95) }
     },
     vertexShader: /* glsl */`
-      uniform float uTime; uniform float uProgress; uniform float uPx;
+      uniform float uTime; uniform float uProgress; uniform float uPx; uniform float uTwinkle;
       attribute float aSeed; attribute float aSize; attribute float aBirth; attribute float aMix;
       varying float vMix; varying float vBright;
       void main(){
@@ -663,7 +664,12 @@ if (renderer) {
         float flash = exp(-dt*dt*900.0);          // scharfer Blitz bei Geburt
         // beim Übergang zur Erde dimmen die Galaxien etwas
         float recede = 1.0 - smoothstep(0.5, 0.82, uProgress) * 0.55;
+        // Grund-Funkeln + verstärktes Funkeln, wenn der Planet in den
+        // Mittelpunkt rückt (uTwinkle, Klaus' Wunsch 2026-06-23): schnellere,
+        // schärfere Glitzer-Spitzen pro Stern mit eigener Phase.
         float twinkle = 0.6 + 0.4 * sin(t*2.2 + aSeed*31.4);
+        float spark = pow(max(sin(t*6.0 + aSeed*97.13), 0.0), 8.0);
+        twinkle += uTwinkle * (0.8 + spark*2.4);
         vBright = born * recede * (0.5 + twinkle*0.5) + flash*2.2*born;
         vec4 mv = modelViewMatrix * vec4(p, 1.0);
         float size = aSize * (born*0.7 + 0.3) * (1.0 + flash*3.0);
@@ -713,56 +719,181 @@ if (renderer) {
   scene.add(new THREE.LineSegments(linkGeo, linkMat));
 
   // ---------------------------------------------------------------
-  // 2) Erde — warme Kugel + Atmosphären-Schale
+  // 2) Blauer Planet — texturiert aus Klaus' KI-Bild, im Halbschatten.
+  //    Zentral, rückt beim Erscheinen sanft in den Mittelpunkt. Zeigt sich
+  //    NUR, wenn das Bild geladen ist (uHasMap) — sonst unsichtbar, kein
+  //    „blauer Spiegel"-Ball (Klaus' Sichttest-Befund 2026-06-23).
   // ---------------------------------------------------------------
   const earthGroup = new THREE.Group();
   earthGroup.position.copy(EARTH_POS);
   scene.add(earthGroup);
+  // 1x1-Platzhalter, damit der Sampler immer gültig ist (kein null-Texture-Bruch)
+  const blankTex = new THREE.DataTexture(new Uint8Array([0,0,0,255]), 1, 1, THREE.RGBAFormat);
+  blankTex.needsUpdate = true;
+  // Billboard-Ebene: das Planeten-Foto steht frei vor dem Kosmos; der
+  // schwarze Weltraum-Hintergrund des Fotos wird über die Helligkeit
+  // ausgekeyt. Halbschatten + Atmosphären-Saum sind im Foto schon enthalten.
   const earthMat = new THREE.ShaderMaterial({
-    uniforms: { uTime: { value: 0 }, uAppear: { value: 0 } },
+    uniforms: { uAppear: { value: 0 }, uHasMap: { value: 0 }, uMap: { value: blankTex } },
     vertexShader: /* glsl */`
-      varying vec3 vN; varying vec3 vView;
+      varying vec2 vUv;
+      void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    fragmentShader: /* glsl */`
+      uniform sampler2D uMap; uniform float uHasMap; uniform float uAppear;
+      varying vec2 vUv;
       void main(){
-        vN = normalize(normalMatrix * normal);
+        vec4 tx = texture2D(uMap, vUv);
+        float lum = max(tx.r, max(tx.g, tx.b));
+        float mask = smoothstep(0.02, 0.11, lum);          // schwarzen Raum auskeyen
+        float a = mask * uAppear * uHasMap;
+        if (a < 0.004) discard;
+        gl_FragColor = vec4(tx.rgb, a);
+      }`,
+    transparent: true, depthWrite: false
+  });
+  const earth = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 3.4), earthMat);
+  earthGroup.add(earth);
+  // Planeten-Bild laden (graceful: fehlt es, bleibt der Planet unsichtbar)
+  new THREE.TextureLoader().load(
+    '../../assets/discovery/planet-blau.webp',
+    (t) => { if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace; earthMat.uniforms.uMap.value = t; earthMat.uniforms.uHasMap.value = 1; },
+    undefined,
+    () => { /* kein Bild → Planet bleibt unsichtbar */ }
+  );
+
+  // ---------------------------------------------------------------
+  // 2b) Kometen / Meteoriten — fliegen mit Feenstaub-Schweif auf den
+  //     Planeten zu und schlagen ein (Funken). Klaus' Hero-Vision 2026-06-23.
+  // ---------------------------------------------------------------
+  const COMET_PALETTE = [
+    new THREE.Color(0xe9c984), new THREE.Color(0xfff0d0), new THREE.Color(0xbfe0ff),
+    new THREE.Color(0xffb066), new THREE.Color(0xffd0c0), new THREE.Color(0xd6f0a0)
+  ];
+  const N_COMETS = isMobile ? 5 : 6;
+  const TAIL = isMobile ? 14 : 22;                 // Schweif-Länge (Feenstaub)
+  const C_VERTS = N_COMETS * (TAIL + 1);
+  const cPos = new Float32Array(C_VERTS*3), cCol = new Float32Array(C_VERTS*3);
+  const cAlpha = new Float32Array(C_VERTS), cSize = new Float32Array(C_VERTS);
+  const cometGeo = new THREE.BufferGeometry();
+  cometGeo.setAttribute('position', new THREE.BufferAttribute(cPos, 3));
+  cometGeo.setAttribute('aColor', new THREE.BufferAttribute(cCol, 3));
+  cometGeo.setAttribute('aAlpha', new THREE.BufferAttribute(cAlpha, 1));
+  cometGeo.setAttribute('aSize',  new THREE.BufferAttribute(cSize, 1));
+  // gemeinsames Material für Kometen + Funken (liest aColor/aAlpha/aSize)
+  const sparkMat = new THREE.ShaderMaterial({
+    uniforms: { uPx: { value: renderer.getPixelRatio() } },
+    vertexShader: /* glsl */`
+      uniform float uPx; attribute vec3 aColor; attribute float aAlpha; attribute float aSize;
+      varying vec3 vCol; varying float vA;
+      void main(){
+        vCol = aColor; vA = aAlpha;
         vec4 mv = modelViewMatrix * vec4(position,1.0);
-        vView = normalize(-mv.xyz);
+        gl_PointSize = aSize * (200.0 / -mv.z) * uPx;
         gl_Position = projectionMatrix * mv;
       }`,
     fragmentShader: /* glsl */`
-      uniform float uAppear; varying vec3 vN; varying vec3 vView;
+      varying vec3 vCol; varying float vA;
       void main(){
-        // warmer Ozean-Blau zu Land-Gold Verlauf nach Breitengrad
-        vec3 ocean = vec3(0.13, 0.27, 0.42);
-        vec3 land  = vec3(0.32, 0.40, 0.24);
-        vec3 base = mix(ocean, land, smoothstep(-0.2, 0.6, sin(vN.x*4.0)+vN.y));
-        float lamb = clamp(dot(vN, normalize(vec3(-0.5,0.4,0.8))), 0.0, 1.0);
-        base *= 0.4 + 0.8*lamb;
-        float fres = pow(1.0 - max(dot(vN, vView), 0.0), 2.5);
-        vec3 atmo = vec3(0.45, 0.62, 0.95) * fres * 1.4;
-        vec3 col = base + atmo + vec3(0.8,0.6,0.3)*fres*0.3;
-        gl_FragColor = vec4(col, uAppear);
+        vec2 c = gl_PointCoord - 0.5; float d = length(c);
+        if (d > 0.5) discard;
+        float core = smoothstep(0.5, 0.0, d);
+        gl_FragColor = vec4(vCol, core * vA);
       }`,
-    transparent: true
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
   });
-  const earth = new THREE.Mesh(new THREE.SphereGeometry(2.0, 48, 48), earthMat);
-  // Erd-Kugel auf Klaus' Sichttest-Befund (2026-06-23) NICHT gerendert —
-  // der große blaue Planet wirkte wie ein „blauer Spiegel"-Ball und dominierte
-  // den Hero. Der Sternenstaub-Strom konvergiert weiterhin zum Entstehungs-Ort
-  // (EARTH_POS), an dem das Mycel erblüht — nur ohne sichtbaren Planeten.
-  // (earthGroup.add(earth) + Atmosphäre bewusst weggelassen; Objekte bleiben
-  // definiert, damit die Render-Schleife nicht bricht.)
-  // Atmosphäre (Backside, additiv) — ebenfalls nicht gerendert
-  const atmoMat = new THREE.ShaderMaterial({
-    uniforms: { uAppear: { value: 0 } },
-    vertexShader: /* glsl */`
-      varying vec3 vN; varying vec3 vView;
-      void main(){ vN = normalize(normalMatrix*normal); vec4 mv = modelViewMatrix*vec4(position,1.0); vView = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }`,
-    fragmentShader: /* glsl */`
-      uniform float uAppear; varying vec3 vN; varying vec3 vView;
-      void main(){ float fres = pow(1.0 - max(dot(vN,vView),0.0), 3.0); vec3 col = vec3(0.42,0.6,0.95)*fres; gl_FragColor = vec4(col, fres*uAppear*0.8); }`,
-    transparent: true, side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false
-  });
-  // earthGroup.add(new THREE.Mesh(new THREE.SphereGeometry(2.32, 48, 48), atmoMat));
+  scene.add(new THREE.Points(cometGeo, sparkMat));
+
+  function randomCometStart(out){
+    const ang = Math.random()*Math.PI*2;
+    const R = 13 + Math.random()*7;
+    out.set(Math.cos(ang)*R, 3 + Math.random()*R*0.5, Math.sin(ang)*R*0.5 - 4);
+    return out;
+  }
+  const comets = [];
+  for (let i=0;i<N_COMETS;i++){
+    comets.push({
+      start: randomCometStart(new THREE.Vector3()),
+      head: new THREE.Vector3(), hist: [],
+      t: Math.random(), speed: 0.11 + Math.random()*0.13,
+      color: COMET_PALETTE[i % COMET_PALETTE.length],
+      size: 2.2 + Math.random()*2.8, active: true, delay: 0
+    });
+  }
+
+  // Einschlag-Funken (Pool)
+  const BURST_MAX = 8, BURST_P = 26, B_VERTS = BURST_MAX*BURST_P;
+  const bPos = new Float32Array(B_VERTS*3), bCol = new Float32Array(B_VERTS*3);
+  const bAlpha = new Float32Array(B_VERTS), bSize = new Float32Array(B_VERTS);
+  const burstGeo = new THREE.BufferGeometry();
+  burstGeo.setAttribute('position', new THREE.BufferAttribute(bPos, 3));
+  burstGeo.setAttribute('aColor', new THREE.BufferAttribute(bCol, 3));
+  burstGeo.setAttribute('aAlpha', new THREE.BufferAttribute(bAlpha, 1));
+  burstGeo.setAttribute('aSize',  new THREE.BufferAttribute(bSize, 1));
+  scene.add(new THREE.Points(burstGeo, sparkMat));
+  const bursts = [];
+  for (let i=0;i<BURST_MAX;i++) bursts.push({ active:false, age:0, life:1, color: COMET_PALETTE[0], parts:[] });
+  function spawnBurst(at, color){
+    const b = bursts.find(x=>!x.active); if(!b) return;
+    b.active = true; b.age = 0; b.life = 0.7 + Math.random()*0.4; b.color = color; b.parts.length = 0;
+    for (let i=0;i<BURST_P;i++){
+      const dir = new THREE.Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1).normalize();
+      b.parts.push({ p: at.clone(), v: dir.multiplyScalar(1.4 + Math.random()*3.2), size: 1.5 + Math.random()*2.4 });
+    }
+  }
+  const _vU = new THREE.Vector3();
+  function launchCometFromScreen(clientX, clientY){
+    _vU.set((clientX/window.innerWidth)*2-1, -(clientY/window.innerHeight)*2+1, 0.5).unproject(camera);
+    let c = comets.find(x=>!x.active) || comets.reduce((a,b)=>a.t>b.t?a:b);
+    c.start.copy(_vU); c.t = 0; c.active = true; c.delay = 0; c.hist.length = 0;
+    c.color = COMET_PALETTE[(Math.random()*COMET_PALETTE.length)|0];
+  }
+
+  function updateComets(dt, cometsOn){
+    let vi = 0;
+    for (const c of comets){
+      if (!c.active){ c.delay -= dt; if (c.delay <= 0){ randomCometStart(c.start); c.t = 0; c.active = true; c.color = COMET_PALETTE[(Math.random()*COMET_PALETTE.length)|0]; c.hist.length = 0; } }
+      if (c.active){
+        c.t += dt * c.speed;
+        const tt = Math.min(1, c.t);
+        c.head.copy(c.start).lerp(EARTH_POS, tt*tt);     // beschleunigt in den Einschlag
+        c.hist.unshift(c.head.clone());
+        if (c.hist.length > TAIL+1) c.hist.pop();
+        if (c.t >= 1){ spawnBurst(EARTH_POS, c.color); c.active = false; c.delay = 0.6 + Math.random()*2.4; }
+      }
+      for (let k=0;k<=TAIL;k++){
+        const hp = c.hist[k] || c.head;
+        cPos[vi*3]=hp.x; cPos[vi*3+1]=hp.y; cPos[vi*3+2]=hp.z;
+        cCol[vi*3]=c.color.r; cCol[vi*3+1]=c.color.g; cCol[vi*3+2]=c.color.b;
+        const tail = 1 - k/(TAIL+1);
+        cAlpha[vi] = (c.active?1:0) * cometsOn * (k===0 ? 1.0 : tail*0.65);
+        cSize[vi]  = (k===0 ? c.size*1.5 : c.size*tail*0.8);
+        vi++;
+      }
+    }
+    cometGeo.attributes.position.needsUpdate = true;
+    cometGeo.attributes.aColor.needsUpdate = true;
+    cometGeo.attributes.aAlpha.needsUpdate = true;
+    cometGeo.attributes.aSize.needsUpdate = true;
+  }
+  function updateBursts(dt){
+    let vi = 0;
+    for (const b of bursts){
+      if (b.active){ b.age += dt; if (b.age >= b.life) b.active = false; for (const pt of b.parts){ pt.p.addScaledVector(pt.v, dt); pt.v.multiplyScalar(0.9); } }
+      for (let i=0;i<BURST_P;i++){
+        const pt = b.parts[i];
+        if (b.active && pt){
+          bPos[vi*3]=pt.p.x; bPos[vi*3+1]=pt.p.y; bPos[vi*3+2]=pt.p.z;
+          bCol[vi*3]=b.color.r; bCol[vi*3+1]=b.color.g; bCol[vi*3+2]=b.color.b;
+          const k = 1 - b.age/b.life; bAlpha[vi] = Math.max(0,k); bSize[vi] = pt.size*(0.5+k*0.5);
+        } else { bAlpha[vi]=0; bSize[vi]=0; }
+        vi++;
+      }
+    }
+    burstGeo.attributes.position.needsUpdate = true;
+    burstGeo.attributes.aColor.needsUpdate = true;
+    burstGeo.attributes.aAlpha.needsUpdate = true;
+    burstGeo.attributes.aSize.needsUpdate = true;
+  }
 
   // ---------------------------------------------------------------
   // 3) Sternenstaub-Strom — Elemente fließen zum Entstehungs-Ort
@@ -880,14 +1011,13 @@ if (renderer) {
   const _origin = new THREE.Vector3(0,0,0);
 
   function applyCamera(p) {
-    const a = Math.min(1, p / 0.6);
-    const ce = a*a*(3-2*a);
-    camera.position.x = ce * 2.4;
-    camera.position.y = 0.6 - ce * 1.0;
-    camera.position.z = 11 - Math.min(1, p/0.7) * 4.5;
-    // Blickziel wandert: Ursprung → Erde → hinab zum Mycel
-    _tmpTarget.copy(_origin).lerp(EARTH_POS, smoothstep01(p, 0.28, 0.6));
-    _tmpTarget.lerp(MYCEL_ANCHOR, smoothstep01(p, 0.72, 1.0) * 0.5);
+    // zentriert (Planet in der Mitte): nur sanftes Heranfahren + Blick hinab
+    // zum Mycel am Ende.
+    camera.position.x = 0;
+    camera.position.y = 0.5 - smoothstep01(p, 0.0, 0.7) * 0.9;
+    camera.position.z = 12 - Math.min(1, p/0.7) * 5.0;
+    _tmpTarget.copy(_origin).lerp(EARTH_POS, smoothstep01(p, 0.2, 0.55));
+    _tmpTarget.lerp(MYCEL_ANCHOR, smoothstep01(p, 0.75, 1.0) * 0.45);
     camera.lookAt(_tmpTarget);
   }
   function smoothstep01(x, a, b){ const t = Math.max(0, Math.min(1, (x-a)/(b-a))); return t*t*(3-2*t); }
@@ -931,11 +1061,18 @@ if (renderer) {
     const p = state.progress;
     galMat.uniforms.uTime.value = elapsed;
     galMat.uniforms.uProgress.value = p;
+    // Sterne funkeln stärker, während der Planet in den Mittelpunkt rückt
+    galMat.uniforms.uTwinkle.value = smoothstep01(p, 0.5, 0.72) * (1 - smoothstep01(p, 0.88, 1.0)*0.5);
     linkMat.opacity = smoothstep01(p, 0.12, 0.4) * (1 - smoothstep01(p, 0.5, 0.85)*0.6) * 0.5;
-    earthMat.uniforms.uAppear.value = smoothstep01(p, 0.34, 0.58);
-    earthMat.uniforms.uTime.value = elapsed;
-    atmoMat.uniforms.uAppear.value = smoothstep01(p, 0.34, 0.6);
-    earth.rotation.y += dt * 0.05;
+    // Planet (Billboard) erscheint nach der Kometen-Phase und rückt
+    // skalierend in den Mittelpunkt.
+    const ap = smoothstep01(p, 0.5, 0.78);
+    earthMat.uniforms.uAppear.value = ap;
+    earthGroup.scale.setScalar(0.62 + ap*0.38);
+    // Kometen + Einschlag-Funken (ab „Hinwendung", in Reduced-Motion aus)
+    const cometsOn = reducedMotion ? 0 : smoothstep01(p, 0.18, 0.4) * (1 - smoothstep01(p, 0.82, 1.0)*0.7);
+    updateComets(dt, cometsOn);
+    updateBursts(dt);
     dustMat.uniforms.uTime.value = elapsed;
     dustMat.uniforms.uProgress.value = p;
     mycMat.uniforms.uTime.value = elapsed;
@@ -945,6 +1082,13 @@ if (renderer) {
     renderer.render(scene, camera);
     if (!reducedMotion) requestAnimationFrame(frame);
   }
+  // Klick/Tipp im Hero schießt einen Kometen auf den Planeten (Klaus' Idee)
+  window.addEventListener('pointerdown', (e) => {
+    if (reducedMotion) return;
+    if (window.scrollY > window.innerHeight*0.85) return;   // nur im Hero
+    if (e.target.closest && e.target.closest('a,button')) return;
+    launchCometFromScreen(e.clientX, e.clientY);
+  });
 
   if (reducedMotion) {
     // Statische, würdevolle Komposition: alles fertig gewachsen, kein Loop.
