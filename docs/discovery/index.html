@@ -607,6 +607,7 @@ if (renderer) {
   });
   const nebula = new THREE.Mesh(new THREE.PlaneGeometry(104, 44), nebulaMat);  // flach/breit wie das Foto, nicht in die Höhe gestreckt
   nebula.position.set(0, 0, -38);
+  nebula.renderOrder = -10;                      // ganz hinten
   scene.add(nebula);
   new THREE.TextureLoader().load(
     '../../assets/discovery/galaxie-hintergrund.webp',
@@ -776,7 +777,7 @@ if (renderer) {
         // Das Dunkle im Bild ist nur der Schatten (Terminator) und BLEIBT —
         // es wird NICHT ausgekeyt; nur die schwarzen Ecken außerhalb der Scheibe.
         vec3 col = mix(dCol, bCol, uHabitable);
-        col *= mix(0.72, 1.0, uHabitable);   // wird Schicht für Schicht heller
+        col *= mix(0.82, 1.0, uHabitable);   // wird Schicht für Schicht heller
         float r = distance(vUv, vec2(0.5));
         float mask = 1.0 - smoothstep(0.425, 0.445, r);  // enge Maske an der Planeten-Kante (kein schwarzer Halo)
         float a = mask * uAppear * max(uHasDark, uHasBlue);
@@ -786,6 +787,7 @@ if (renderer) {
     transparent: true, depthWrite: false
   });
   const earth = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 3.4), earthMat);
+  earth.renderOrder = 5;                         // vor dem Nebel-Hintergrund
   earthGroup.add(earth);
   // Zwei Stufen: dunkle Früherde (während der Einschläge) → blaue Erde
   const _texLoader = new THREE.TextureLoader();
@@ -871,20 +873,24 @@ if (renderer) {
   scene.add(burstPoints);
   const bursts = [];
   for (let i=0;i<BURST_MAX;i++) bursts.push({ active:false, age:0, life:1, color: COMET_PALETTE[0], parts:[] });
-  function spawnBurst(at, color){
+  function spawnBurst(at, color, power){
+    power = power || 1;
     const b = bursts.find(x=>!x.active); if(!b) return;
-    b.active = true; b.age = 0; b.life = 0.7 + Math.random()*0.4; b.color = color; b.parts.length = 0;
+    b.active = true; b.age = 0; b.life = (0.7 + Math.random()*0.4) * (power>1 ? 1.3 : 1);
+    b.color = color; b.parts.length = 0;
     for (let i=0;i<BURST_P;i++){
       const dir = new THREE.Vector3(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1).normalize();
-      b.parts.push({ p: at.clone(), v: dir.multiplyScalar(1.4 + Math.random()*3.2), size: 1.5 + Math.random()*2.4 });
+      b.parts.push({ p: at.clone(), v: dir.multiplyScalar((1.4 + Math.random()*3.2)*power), size: (1.5 + Math.random()*2.4)*power });
     }
   }
   const _vU = new THREE.Vector3();
-  function launchCometFromScreen(clientX, clientY){
+  // Klick/Tipp → heller Funken-/Halo-Ausbruch genau am Klickpunkt (verglüht wieder)
+  function burstAtScreen(clientX, clientY){
     _vU.set((clientX/window.innerWidth)*2-1, -(clientY/window.innerHeight)*2+1, 0.5).unproject(camera);
-    let c = comets.find(x=>!x.active) || comets.reduce((a,b)=>a.t>b.t?a:b);
-    c.start.copy(_vU); c.t = 0; c.active = true; c.delay = 0; c.hist.length = 0;
-    c.color = COMET_PALETTE[(Math.random()*COMET_PALETTE.length)|0];
+    const dir = _vU.sub(camera.position).normalize();
+    const pt = camera.position.clone().addScaledVector(dir, camera.position.z - EARTH_POS.z);
+    const bright = (Math.random() < 0.5) ? new THREE.Color(0xfff0d0) : COMET_PALETTE[(Math.random()*COMET_PALETTE.length)|0];
+    spawnBurst(pt, bright, 1.8);
   }
 
   function updateComets(dt, cometsOn){
@@ -1148,12 +1154,12 @@ if (renderer) {
     renderer.render(scene, camera);
     if (!reducedMotion) requestAnimationFrame(frame);
   }
-  // Klick/Tipp im Hero schießt einen Kometen auf den Planeten (Klaus' Idee)
+  // Klick/Tipp im Hero → heller Funken-/Halo-Ausbruch genau am Klickpunkt
   window.addEventListener('pointerdown', (e) => {
     if (reducedMotion) return;
     if (window.scrollY > window.innerHeight*0.85) return;   // nur im Hero
     if (e.target.closest && e.target.closest('a,button')) return;
-    launchCometFromScreen(e.clientX, e.clientY);
+    burstAtScreen(e.clientX, e.clientY);
   });
 
   if (reducedMotion) {
