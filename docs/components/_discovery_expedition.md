@@ -63,7 +63,7 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
 1. **Mykorrhiza-Netz / „Wood Wide Web".** Pilzgeflechte verbinden Pflanzen-
    wurzeln und tauschen Wasser, Nährstoffe und sogar Warnsignale aus — ein
    unterirdisches, dezentrales Verbindungsnetz. *Populärer Begriff; der genaue
-   Umfang wird wissenschaftlich noch diskutiert.* **Unser Spiegel:** das Mycel als
+   Umfang wird wissenschaftlich noch diskutiert.* **Unser Spiegelbild:** das Mycel als
    server-loses Verbindungsnetz unabhängiger Knoten.
 
    ![Mykorrhiza-Netz / Wood Wide Web (KI-generiert)](../../assets/discovery/mykorrhiza.webp)
@@ -73,7 +73,7 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
    aber das Paradebeispiel: ein einzelliges Wesen ohne Gehirn **löst Labyrinthe**
    und bildet ein **effizientes Netz nach** (berühmt: dem Tokioter Bahnnetz
    nachempfunden) — durch Hinwachsen überallhin und Zurückbauen der unergiebigen
-   Stränge. **Unser Spiegel:** Netz-Optimierung ohne Zentrale — genau das
+   Stränge. **Unser Spiegelbild:** Netz-Optimierung ohne Zentrale — genau das
    foraging-/Discovery-Prinzip.
 
    ![Schleimpilz Physarum als Adernetz über dunklem Stein (KI-generiert)](../../assets/discovery/physarum.webp)
@@ -82,7 +82,7 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
 3. **Radiotrophe Pilze (Tschernobyl).** Melaninreiche Pilze (z. B. *Cladosporium
    sphaerospermum*) wachsen Richtung Strahlung; es **wird erforscht**, ob sie über
    Melanin Gammastrahlung in nutzbare Energie umwandeln. 2020 als lebender
-   Strahlenschild auf der ISS getestet. **Unser Spiegel:** in „unmöglichen"
+   Strahlenschild auf der ISS getestet. **Unser Spiegelbild:** in „unmöglichen"
    Umgebungen Wert finden — Empfangsmodus statt Angst.
 
    ![Melaninschwarzer Pilz mit goldenen Energie-Linien (KI-generiert)](../../assets/discovery/radiotroph.webp)
@@ -90,7 +90,7 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
 
 4. **Weißfäule / Lignin-Abbau.** Weißfäulepilze sind nahezu die einzigen
    Organismen, die **Lignin** (das, was Holz hart macht) effizient zersetzen —
-   ohne sie erstickte die Welt unter totem Holz. **Unser Spiegel:** das
+   ohne sie erstickte die Welt unter totem Holz. **Unser Spiegelbild:** das
    Unzersetzbare zugänglich machen (Bedeutung aus „hartem" Material holen).
 
    ![Pilze mit golden glühenden Fäden aus morschem Material (KI-generiert)](../../assets/discovery/weissfaeule.webp)
@@ -98,7 +98,7 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
 
 5. **Plastik-/Schadstoff-Fresser (Mykoremediation).** *Pestalotiopsis microspora*
    baut **Polyurethan** ab (auch sauerstofffrei); *Aspergillus tubingensis*
-   zersetzt Kunststoff; andere Pilze bauen Öl und Gifte ab. **Unser Spiegel:**
+   zersetzt Kunststoff; andere Pilze bauen Öl und Gifte ab. **Unser Spiegelbild:**
    Anpassung an ganz neue „Nahrung" (neue Domänen) — Evolution in Aktion.
 
    ![Goldene Pilzfäden zersetzen Material in Lichtpartikel (KI-generiert)](../../assets/discovery/plastik.webp)
@@ -106,7 +106,7 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
 
 6. **Flechten & Extremophile.** Als Flechten-Partner besiedeln Pilze **nacktes
    Gestein** und die trockensten Wüsten (Atacama, Antarktis-Endolithen) — Pioniere
-   dort, „wo nichts geht". **Unser Spiegel:** Pionier-Knoten in unerschlossenen
+   dort, „wo nichts geht". **Unser Spiegelbild:** Pionier-Knoten in unerschlossenen
    Domänen.
 
    ![Goldene Flechte auf nacktem dunklem Gestein (KI-generiert)](../../assets/discovery/flechte.webp)
@@ -114,14 +114,14 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
 
 7. **Das größte Lebewesen der Erde.** Ein *Armillaria ostoyae* (Hallimasch) in
    Oregon erstreckt sich über **mehrere Quadratkilometer** und ist **tausende
-   Jahre** alt — ein einziges, verbundenes Geflecht. **Unser Spiegel:** Größe durch
+   Jahre** alt — ein einziges, verbundenes Geflecht. **Unser Spiegelbild:** Größe durch
    Verbindung vieler kleiner Teile, nicht durch eine große Zentrale.
 
    ![Luftbild: riesiges golden glühendes Pilzgeflecht unter dunklem Wald (KI-generiert)](../../assets/discovery/armillaria.webp)
    *KI-generiert*
 
 8. **Biolumineszenz („Foxfire").** Über 80 Arten **leuchten** (z. B. *Omphalotus*,
-   *Mycena*) — lebendes Licht im Dunkeln. **Unser Spiegel:** sichtbar machen, was
+   *Mycena*) — lebendes Licht im Dunkeln. **Unser Spiegelbild:** sichtbar machen, was
    im Verborgenen wächst (die Lampen/Plaketten der Sage-Page).
 
    ![Grün-golden leuchtende Pilze auf einem Waldboden, Foxfire (KI-generiert)](../../assets/discovery/biolumineszenz.webp)
@@ -136,7 +136,7 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
    *KI-generiert — naturgetreu (Ameise, kein Schirm-Pilz), nicht entstellend*
 
 10. **Pilze als Mit-Bauer der Zivilisation.** Penicillin (Medizin), Hefe (Brot,
-    Bier, Wein), Fermentation — Pilze haben Kultur mitgebaut. **Unser Spiegel:**
+    Bier, Wein), Fermentation — Pilze haben Kultur mitgebaut. **Unser Spiegelbild:**
     Mit-Bauer-Schicht (Schicht 3): Menschen, Agenten und „stille Helfer" am selben
     Werk.
 
@@ -144,7 +144,7 @@ Ausführliche Empfangsmodus-Auflösung + die drei Discovery-Formen stehen in
     *KI-generiert*
 
 11. **Hyphen-Druck.** Wachsende Hyphen entwickeln genug Druck, um **Asphalt** zu
-    durchbrechen. **Unser Spiegel:** leise, beharrliche Ausbreitung schlägt
+    durchbrechen. **Unser Spiegelbild:** leise, beharrliche Ausbreitung schlägt
     Brachialgewalt.
 
     ![Zarter goldener Pilz bricht durch dunklen Asphalt, leuchtender Riss (KI-generiert)](../../assets/discovery/hyphendruck.webp)
