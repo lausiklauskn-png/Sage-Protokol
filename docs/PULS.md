@@ -1841,6 +1841,23 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · Discovery-Expedition: Storyboard der Eröffnungs-Animation + Schluss-Bild
+
+**Rolle:** Vision-Pflege (Klaus' Erweiterung). Hintergrund-Animation erzählt:
+**Galaxien-Geburt (aufblitzen, verbinden, Nebel — Schöpfungs-Prinzip) → Hinwendung
+zur Erde → Leben durch Mensch+Pilze+Organismen → traumhaftes Schluss-Bild** mit
+fluoreszierenden Pilzen (tiefe Verbundenheit allen Lebens). Künstlerische Freiheit:
+etwas übertrieben/fantasievoll, Abstände/Tempo verdichtet, aber wissenschaftlich
+nicht falsch; teleologische Andeutung („das Universum wollte die Erde") bleibt
+emotionale Andeutung, keine Behauptung.
+
+**Was getan:** `_discovery_expedition.md` § Gestaltung um „Storyboard der
+Eröffnungs-Animation" (4 Schritte) + „Künstlerische Freiheit" erweitert; vier neue
+Hintergrund-/Szenen-Bild-Prompts (Galaxien-Geburt, Elemente Richtung Erde, Übergang
+Kosmos→Mycel, Schluss-Bild „gelebtes Leben"). Kein Code.
+
+**Was offen:** Bilder generieren (Klaus) → Bau-Sitzung baut Seite.
+
 ### 2026-06-23 · Discovery-Expedition: Gestaltungs-/Hintergrund-Vision festgehalten (Schöpfungs-Doku)
 
 **Rolle:** Vision/Doku-Pflege. Klaus' Richtung für die künftige Discovery-Seite:

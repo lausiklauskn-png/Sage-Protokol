@@ -176,6 +176,30 @@ ein Beispiel dafür, dass Leben **flexibel und am Leben bleibt** — sie sind
    Wert der Schöpfung andeuten (z. B. beim Verweilen sichtbar werdend), nie
    aufdringlich; Ton wie die Einladung (ein Satz, kein Sermon).
 
+**Storyboard der Eröffnungs-Animation (Klaus 2026-06-23):**
+1. **Galaxien entstehen.** Im dunklen Raum **blitzen** einzelne Galaxien auf,
+   wachsen Stück für Stück (Blitz … Blitz …), **stellen Verbindungen her**, werden
+   zu **Nebeln** — man spürt: *hier ist ein Schöpfungs-Prinzip am Werk.*
+2. **Hinwendung zur Erde.** Die Bewegung geht **langsam Richtung Erde**, immer
+   näher — bis sich die Erzählung verdichtet: *als hätte das Universum gewollt,
+   dass die Erde entsteht.* (Das ist die **emotionale Andeutung** der Seite, keine
+   wissenschaftliche Behauptung — siehe Haltung.)
+3. **Leben auf der Erde.** Auf der Erde machen **Mensch, Pilze und andere
+   Organismen zusammen** Leben überhaupt möglich — der Bogen schließt warm:
+   *„gut, dass wir zusammen auf diesem Planeten leben dürfen."*
+4. **Schluss-Bild — das gelebte Leben.** Am Ende eine **traumhafte Wald-/
+   Landschaft** voller Leben: Pilze, Tiere, alles drum und dran — mit **leuchtenden,
+   fluoreszierenden** Pilzen/Elementen (stärker als in echt), die sichtbar machen,
+   **wie tief das Leben miteinander verbunden ist.**
+
+**Künstlerische Freiheit (Klaus' ausdrückliche Erlaubnis):** ruhig **etwas
+übertrieben** und **fantasievoll** — aber **wissenschaftlich nicht falsch**.
+Geschwindigkeiten und **Abstände** dürfen **verdichtet** sein (Sterne/Planeten
+näher, Tempo so, dass man die Reise „schafft" und anschaulich mitverfolgt). Ziel:
+eine **bildliche Fantasie** (nicht kindlich), in der man staunend sieht *„so entstand
+die Erde, so das Leben, so die Pilze und der Mensch"*. Echte Physik als Anker (siehe
+oben), aber poetisch erzählt.
+
 **Technik-Anker:** Die Einladungs-Site nutzt bereits three.js + GSAP + WebGL-Shader
 (lokal vendoriert) — dieselbe Werkzeug-Basis ist die Messlatte. Performance/
 Tablet-tauglich (Klaus' Galaxy Tab S6), Reduced-Motion-Fallback respektieren.
@@ -224,6 +248,25 @@ beginnt, wird nichts behauptet, nur **angedeutet** — das Staunen trägt die Se
     Penicillin-Schale — verbunden durch feine goldene Pilzfäden, museal beleuchtet."
 11. **Hyphen-Druck:** „Ein zarter goldener Pilz, der durch dunklen Asphalt bricht,
     feiner Riss mit Licht darin, Sinnbild stiller Kraft."
+
+### Hintergrund-/Storyboard-Szenen (für die Eröffnungs-Animation)
+
+> Etwas übertrieben & fantasievoll erlaubt, aber wissenschaftlich nicht falsch;
+> Abstände/Tempo verdichtet (siehe § Künstlerische Freiheit).
+
+12. **Galaxien-Geburt:** „Im tiefen dunklen Raum blitzen einzelne Galaxien auf und
+    wachsen Stück für Stück, feine goldene Lichtfäden verbinden sie zu Nebeln —
+    ein stilles, ehrfürchtiges Aufleuchten, als entstünde Ordnung aus dem Dunkel."
+13. **Elemente Richtung Erde:** „Aus fernen Sternen lösen sich warme, goldene
+    Element-Partikel und strömen langsam und anmutig auf eine ferne blaue Erde zu;
+    Sterne und Planeten dichter beieinander als real, poetisch, ruhig."
+14. **Übergang Kosmos → Mycel:** „Goldene Sternenstaub-Partikel berühren einen
+    dunklen Erd-Horizont und werden zu sich verzweigenden, golden glühenden
+    Pilzfäden — die Brücke vom Kosmos zum Leben."
+15. **Schluss-Bild „gelebtes Leben":** „Eine traumhafte Waldlandschaft voller
+    Leben — Bäume, Tiere, Bäche — durchzogen von **fluoreszierend leuchtenden
+    Pilzen** und feinen goldenen Verbindungsfäden zwischen allem; warm, lebendig,
+    ehrfürchtig, zeigt die tiefe Verbundenheit allen Lebens. Das Herz-Bild der Seite."
 
 ---
 
