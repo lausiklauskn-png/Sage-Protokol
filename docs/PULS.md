@@ -1841,6 +1841,41 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · Discovery-Expedition: Hero-Animation-Feinschliff (Live-Sichttest mit Klaus)
+
+**Rolle:** Bau-Sitzung (Freibrief). Direkt im Anschluss an den Seiten-Bau,
+iterativ an Klaus' Galaxy-Tab-S6-Browser feinjustiert. **Auf `main` gemerged**
+(PRs #402–#408, je squash). Klaus' Schluss-Urteil: „sehr gut gearbeitet".
+
+**Was getan (Hero-Eröffnungssequenz, alles WebGL + Bild-Assets):**
+- **Kometen statt Spiegel-Kugel:** 5–6 → **3 Kometen** mit Feenstaub-Schweif,
+  fliegen auf die zentrale Erde zu und schlagen ein (Funken-Bursts), längere
+  Pausen (weniger ablenkend). `depthTest:false`+`renderOrder` → Kometen VOR der
+  Erde.
+- **Zwei-Stufen-Erde:** dunkle, unbewohnliche Früh-Erde (`erde-dunkel.webp`,
+  **aus `erde-blau.webp` abgeleitet** = deckungsgleich, glutrot) während der
+  Einschläge → **fließende Überblendung zu Blau beim Hochscrollen** (uHabitable
+  scroll-gesteuert, ~1.7 vh, smoothstep, Schicht-für-Schicht heller). Voller
+  runder Planet via Rund-Maske (kein „zerschossener Fußball", kein schwarzer
+  Halo). Erde sichtbar & vorn (renderOrder 5 vor Nebel −10).
+- **Vergrößerter Nebel-Hintergrund** (`galaxie-hintergrund.webp`, JWST-Motiv),
+  langsam driftend/zoomend; flach/breit (104×44) statt vertikal gestreckt.
+- **Galaxien-Sterne funkeln** verstärkt, wenn die Erde zentriert (uTwinkle).
+- **Wandernder Schnebel:** Sternenstaub-Auftreffpunkt wandert per Lissajous
+  ununterbrochen über die Erde, liegt vor ihr (renderOrder 8).
+- **Klick-Funken/Halo** genau am Klickpunkt (`burstAtScreen`, verglüht wieder).
+- **Kamera** zentriert, weniger Abwärts-Blick → Erde voll im Bild.
+- Neue Hero-Assets: `erde-dunkel.webp`, `erde-blau.webp`, `galaxie-hintergrund.webp`
+  (altes `planet-blau.webp` entfernt). Headless-Smoke `docs/discovery/_smoke.mjs`
+  durchgehend **11/11 grün**.
+
+**Was offen / nächster Schritt:** **Texte** mit Klaus durchgehen (Hero-Titel,
+Untertitel, Galerie, versteckte Botschaften) — Klaus wollte das „gleich"
+besprechen, Sitzung endete vorher. Brief liegt:
+`docs/sessions/BRIEF_DISCOVERY_TEXTE_FEINSCHLIFF.md`. Danach optional:
+Sage-Page-Verlinkung der Discovery-Seite; ob die 4 Storyboard-Standbilder
+zusätzlich eingewoben werden.
+
 ### 2026-06-23 · Discovery-Expedition: Bau der WebGL-Schöpfungs-Seite + 15 KI-Bilder
 
 **Rolle:** Bau-Sitzung (Freibrief). PR #402 (Draft). Branch
