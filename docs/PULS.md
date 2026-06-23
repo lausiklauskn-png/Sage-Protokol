@@ -1841,6 +1841,25 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-23 · such-tool: goldener Pilz als Badge-Symbol + Favicon + PWA-Icons (Klaus-Bild)
+
+**Rolle:** Pflege Modul 22 / `such-tool/`. Klaus schickte ein Bild eines goldenen
+Pilzes und bat, den Fliegenpilz (🍄) im Badge zu ersetzen und ihn als Favicon +
+PWA-App-Icon (Desktop-Installation) zu nehmen.
+
+**Was getan:** Aus Klaus' Bild (1448×1086) per Pillow zentriert quadratisch
+zugeschnitten + skaliert → `such-tool/icon-192.png` + `icon-512.png` neu (ersetzen
+die alten zlib-Platzhalter; Favicon + apple-touch-icon + Manifest-Icons zeigen jetzt
+den goldenen Pilz). Badge in `such-tool/index.html`: `🍄`-Emoji → rundes
+`<img class="badge-mush" src="./icon-192.png">` (1.5em, dezenter Gold-Glow).
+
+**Tests:** Standalone-Smoke `smoke_standalone_such_tool.mjs` **46/46** (Icons
+vorhanden, Manifest 192/512 + maskable). Module unberührt.
+
+**Was offen:** Klaus' Sichttest am Tablet (Badge + Favicon + Installations-Icon
+Desktop). Hinweis: nach Merge die PWA per 🔄 / Cache-leeren aktualisieren, damit
+das neue Icon greift (Icons werden vom Browser/Service-Worker gecacht).
+
 ### 2026-06-22 · Bau 22 Folge-Fix 2: Lehre App-Link, KI öffnen + Web kopieren + Frage sichern (PR #393)
 
 **Rolle:** Bau-Sitzung Modul 22, nach Klaus' Live-Sichttest (PR #392 gemerged).
