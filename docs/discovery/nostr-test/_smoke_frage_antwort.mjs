@@ -96,7 +96,9 @@ ok("Probe 4: fail-soft (Status err bei Modell-Fehler)", /status err/.test(html))
 ok("Probe 5: Richter-Auswahl + Schlüssel-Feld + Knopf (judgeprov/judgekey/judgerun)",
   /id="judgeprov"/.test(html) && /id="judgekey"/.test(html) && /id="judgerun"/.test(html));
 ok("Probe 5: Richter Default AUS (gratis bleibt Voreinstellung)", /KI-Richter: aus/.test(html));
-ok("Probe 5: Provider-Abstraktion claude + mistral", /claude:/.test(html) && /mistral:/.test(html));
+ok("Probe 5: Provider claude vorhanden", /claude:/.test(html));
+ok("Probe 5: Mistral entfernt (Klaus: hat sich nicht bewährt)", !/mistral-small-latest/.test(html) && !/api\.mistral\.ai/.test(html));
+ok("Probe 5: Direktlink zur Anthropic-Schlüsselseite", /console\.anthropic\.com\/settings\/keys/.test(html));
 ok("Probe 5: Anthropic Browser-CORS-Header", /anthropic-dangerous-direct-browser-access/.test(html));
 ok("Probe 5: Schlüssel NUR im Speicher (kein localStorage für key)", !/localStorage\.setItem\([^)]*judgekey/.test(html) && /type="password"/.test(html));
 ok("Probe 5: Prompt trimmt auf Verneinung/Absicht", /buildJudgePrompt/.test(html) && /VERNEINUNG/.test(html));

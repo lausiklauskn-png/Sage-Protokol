@@ -134,10 +134,10 @@
       <select id="judgeprov">
         <option value="">⚖️ KI-Richter: aus (gratis bleibt Voreinstellung)</option>
         <option value="claude">Cloud: Claude (Anthropic) — eigener Schlüssel</option>
-        <option value="mistral">Cloud: Mistral (EU) — eigener Schlüssel</option>
         <option value="webllm" disabled>frei: KI im Browser (WebLLM) — nächster Stich</option>
       </select>
       <input id="judgekey" type="password" placeholder="API-Schlüssel (bleibt im Speicher)" style="display:none;" autocomplete="off">
+      <a id="judgekeylink" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="display:none; color:#6aa6e0; font-size:0.8rem;">🔑 Schlüssel erstellen ↗</a>
       <button id="judgerun" class="ghost" style="display:none;">⚖️ Richter anwenden</button>
       <span class="status" id="judgestatus"></span>
     </div>
@@ -420,7 +420,9 @@ $('semantic').addEventListener('click', () => { semanticOn ? disableSemantic() :
 // "Alkohol". Der Richter (ein Sprachmodell) versteht die ABSICHT/VERNEINUNG. Er
 // ist OPT-IN: der gratis Embedding-Weg bleibt Voreinstellung. Der Schlüssel
 // bleibt NUR im Speicher (kein localStorage, kein Code) — beim Neuladen weg.
-// Spiegelt die Provider-Abstraktion von Modul 04 hybridMatch (claude/mistral).
+// Spiegelt die Provider-Abstraktion von Modul 04 hybridMatch (hier nur claude —
+// Mistral bewusst raus: hat sich weder in Text- noch Bedeutungs-Erkennung
+// bewährt, Klaus 2026-06-24; deckt sich mit der Widget-Festlegung "Mistral RAUS").
 const JUDGE = {
   claude: {
     url: 'https://api.anthropic.com/v1/messages',
@@ -434,15 +436,6 @@ const JUDGE = {
       messages: [{ role: 'user', content: prompt }],
     }),
     pick: (data) => data && data.content && data.content[0] && data.content[0].text,
-  },
-  mistral: {
-    url: 'https://api.mistral.ai/v1/chat/completions',
-    headers: (key) => ({ 'content-type': 'application/json', 'authorization': 'Bearer ' + key }),
-    body: (prompt) => JSON.stringify({
-      model: 'mistral-small-latest', temperature: 0,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-    pick: (data) => data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content,
   },
 };
 
@@ -503,13 +496,13 @@ async function judgeView(view, provider, key) {
 
 // UI-Verdrahtung.
 $('judgeprov').addEventListener('change', () => {
-  const p = $('judgeprov').value;
-  const cloud = p === 'claude' || p === 'mistral';
+  const cloud = $('judgeprov').value === 'claude';
   $('judgekey').style.display = cloud ? '' : 'none';
+  $('judgekeylink').style.display = cloud ? '' : 'none';
   $('judgerun').style.display = cloud ? '' : 'none';
   $('judgestatus').className = 'status';
   $('judgestatus').textContent = cloud
-    ? 'Schlüssel eingeben, dann „Richter anwenden" (bleibt nur im Speicher)'
+    ? 'Schlüssel eingeben (oder „Schlüssel erstellen ↗"), dann „Richter anwenden" (bleibt nur im Speicher)'
     : 'aus — gratis Embedding-Weg bleibt aktiv';
 });
 

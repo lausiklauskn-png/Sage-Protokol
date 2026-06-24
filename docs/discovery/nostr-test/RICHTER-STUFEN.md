@@ -37,11 +37,16 @@ grenzwertig. **Status: nächster Bau-Stich** (in der Testseite vorgemerkt,
 
 ## Stufe 3 — bezahlt & am stärksten
 
-**Cloud-Richter mit eigenem Schlüssel (BYOK):** Claude (Anthropic) oder Mistral
-(EU). Stärkste Qualität, aber kostet pro Aufruf. **Opt-in**, der Schlüssel
-bleibt nur im Speicher der Seite (kein `localStorage`, kein Code, kein Tracker)
-und verschwindet beim Neuladen. Spiegelt die Provider-Abstraktion von Modul 04
-`hybridMatch`.
+**Cloud-Richter mit eigenem Schlüssel (BYOK):** Claude (Anthropic). Stärkste
+Qualität, aber kostet pro Aufruf. **Opt-in**, der Schlüssel bleibt nur im
+Speicher der Seite (kein `localStorage`, kein Code, kein Tracker) und
+verschwindet beim Neuladen. Ein Direktlink „🔑 Schlüssel erstellen ↗" führt zur
+Anthropic-Konsole. Spiegelt die Provider-Abstraktion von Modul 04 `hybridMatch`.
+
+*Mistral wurde bewusst NICHT aufgenommen (Klaus 2026-06-24): hat sich weder in
+der Text- noch in der Bedeutungs-Erkennung bewährt — deckt sich mit der früheren
+Widget-Festlegung „Mistral RAUS". Andere/EU-Anbieter können später ergänzt
+werden, wenn sie sich bewähren.*
 
 ## Niemand muss *allein* zahlen (Vision)
 
