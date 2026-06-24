@@ -1,3 +1,8 @@
+<!-- NOTIZ / PARKPLATZ (Klaus 2026-06-24): bewusst NICHT in die Seite eingebaut
+     und NIRGENDWO verlinkt — nur als Notiz aufbewahrt. Klaus hat „noch andere
+     Ideen"; dieses Blatt ist Rohstoff/Vorschau dafür, kein veröffentlichtes
+     Dokument. Nicht ohne Klaus' Wort verlinken oder einbetten. -->
+
 # Vorsehungsblatt — Die Suche, die Bedeutung versteht
 
 ## und die Sprache, die Mensch und Agent miteinander teilen
