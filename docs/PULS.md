@@ -1841,6 +1841,33 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Pinnwand-PWA: Baum-Icon + löschbare Suchen + Werkzeug-Knöpfe + Cache-Fix
+
+**Rolle:** Bau-Sitzung (Freibrief, Klaus zweifach „selbstständig merken"). Klaus'
+Befund „alte Version hängt" war **kein Branch-Problem** (verifiziert: kein
+gh-pages, Pages liest `main`, moderne Marker nachweislich in `main`) — sondern
+der **Service-Worker cachte cache-first ohne Versions-Bump**. Behoben:
+- **SW Cache-Bust + Navigation netz-zuerst** (#438), Cache-Version jetzt **v4**
+  (jeder Asset-Wechsel zählt hoch). „Alte Schale hängt" damit dauerhaft gelöst.
+- **Hard-Reload-Knopf 🔄** in der App: Service-Worker abmelden + alle Caches
+  leeren + neu laden — Klaus kann den Cache jederzeit selbst sprengen.
+
+**Icon:** Klaus wählte zuletzt das **Lebensbaum-Icon** (ohne Text-Variante);
+vorher Pin-Spore A. Pillow LANCZOS 512+192, App-Icon + Favicon (#436/#439/dieser).
+
+**Bedien-Wünsche (alle in `pinnwand/index.html`, Render-Schicht):**
+- **Suchen löschbar:** ✕-Kreuz pro Frage blendet lokal aus + `🧹 leeren` blendet
+  alle aktuellen aus; persistent (`localStorage` `sbkim_pinnwand_hidden`), Filter
+  in `renderQuestion`. EHRLICH: öffentliche Relay-Notizen sind nicht echt
+  löschbar — lokales, persistentes Ausblenden (im UI/Footer benannt).
+- **Vergrößern-Knopf 🔍:** 3 Text-Stufen, persistent (`data-scale`).
+- **Vollbild-Knopf ⛶:** Fullscreen-API-Toggle.
+
+Smoke `pinnwand/_smoke.mjs` **49/49**, `node --check` sauber.
+
+**Offen:** Klaus' Sichttest der neuen Knöpfe + Optik (Effekte ihm noch zu dezent
+→ ggf. Aurora kräftiger). Cross-Knoten/Relevanz-Rückmeldung weiter als Folge.
+
 ### 2026-06-24 · SITZUNGS-ABSCHLUSS Pinnwand (Klaus macht morgen weiter)
 
 **Stand:** Pinnwand-PWA fertig auf `main` (PRs #421–#436, alle squash). Voller

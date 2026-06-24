@@ -75,6 +75,15 @@ ok("Probe 5: Whitening (Inhalt statt Hülle)", /function whiten\(/.test(html));
 ok("Probe 5: Richter steckbar (claude + webllm)", /function getVerdicts/.test(html) && /callWebllmJudge/.test(html));
 ok("Probe 5: ehrlich öffentlich", /öffentlich/.test(html));
 
+// ---- Probe 6: neue Bedien-Funktionen (Klaus' Wünsche) ----
+ok("Probe 6: Suchen lokal löschbar (hideQuestion + localStorage)", /function hideQuestion/.test(html) && /sbkim_pinnwand_hidden/.test(html));
+ok("Probe 6: ausgeblendete bleiben weg (hidden.has Filter in renderQuestion)", /if \(hidden\.has\(ev\.id\)\) return;/.test(html));
+ok("Probe 6: Brett leeren (clearBoard + Knopf)", /function clearBoard/.test(html) && /id="board-clear"/.test(html));
+ok("Probe 6: Löschen-Kreuz pro Frage", /class="q-del"/.test(html) || /'q-del'/.test(html));
+ok("Probe 6: Vergrößern-Knopf (data-scale, 3 Stufen)", /id="tb-zoom"/.test(html) && /data-scale/.test(html));
+ok("Probe 6: Vollbild-Knopf (requestFullscreen)", /id="tb-full"/.test(html) && /requestFullscreen/.test(html));
+ok("Probe 6: Hard-Reload-Knopf (SW unregister + caches leeren)", /id="tb-reload"/.test(html) && /getRegistrations/.test(html) && /caches\.delete/.test(html));
+
 // ---- Auswertung ----
 let pass = 0;
 for (const r of results) { console.log(`[${r.ok ? "OK " : "FAIL"}] ${r.probe}`); if (r.ok) pass++; }
