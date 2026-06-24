@@ -1841,6 +1841,28 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Pinnwand-PWA: moderner Look aus den ChatGPT-Mockups (ohne Messenger-Optik)
+
+**Rolle:** Bau-Sitzung (Freibrief). Klaus schickte 5 ChatGPT-Mockups (dunkel-
+türkis / hell-warm / hell+dunkel-clean) + Wunsch „kombiniere alle, NICHT wie
+WhatsApp, modern mit Effekten/Animation, da steckt mehr dahinter".
+
+**Was getan (`pinnwand/index.html`, nur Render-Schicht — Engine unberührt):**
+Kombinierter moderner Skin in echtem CSS: **animierter holografischer Aurora-
+Hintergrund** (`body::before`, langsam wandernde Verläufe, GPU-schonend),
+pulsierendes Logo, glasige Karten mit Hover-Lift, **leuchtender „?"-Knoten** +
+Akzent-Kante an Frage-Karten, **farb-gestufte Score-Pillen** (grün/amber/rot
+nach Wert, JS setzt Ton), lebendiger Gradient-Button, Fokus-Glow. **Anti-
+WhatsApp:** statt Gesichts-Avataren ein **Netz-Knoten-Punkt** vor der Identität
+(`.who::before`, Farbe = Frage violett / Antwort blau) — on-theme, kein
+Messenger. `prefers-reduced-motion` schaltet Animationen ab. Smoke **41/41**,
+`node --check` sauber.
+
+**Offen:** Optik-Sichttest wartet auf Klaus (Geschmack). Icon-Prompts + Stil-
+Prompts laufen separat — Klaus testet ChatGPT-Bilder, wir wählen Icon + ob noch
+näher an einen Mockup. Mögliche Folge: Graph als zweite Gestalt, Relevanz-
+Rückmeldung, Optik-Feinschliff nach Klaus' Bild-Wahl.
+
 ### 2026-06-24 · Pinnwand als eigene installierbare PWA (`pinnwand/`)
 
 **Rolle:** Bau-Sitzung (Freibrief). Klaus' Wunsch: die fertige Pinnwand als
