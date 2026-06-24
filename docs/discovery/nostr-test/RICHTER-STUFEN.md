@@ -38,10 +38,14 @@ grenzwertig. **Status: nächster Bau-Stich** (in der Testseite vorgemerkt,
 ## Stufe 3 — bezahlt & am stärksten
 
 **Cloud-Richter mit eigenem Schlüssel (BYOK):** Claude (Anthropic). Stärkste
-Qualität, aber kostet pro Aufruf. **Opt-in**, der Schlüssel bleibt nur im
-Speicher der Seite (kein `localStorage`, kein Code, kein Tracker) und
-verschwindet beim Neuladen. Ein Direktlink „🔑 Schlüssel erstellen ↗" führt zur
-Anthropic-Konsole. Spiegelt die Provider-Abstraktion von Modul 04 `hybridMatch`.
+Qualität, aber kostet pro Aufruf. **Opt-in.** Der Schlüssel wird **nur mit
+Häkchen „auf diesem Gerät merken"** lokal gespeichert (`localStorage`, im
+Klartext, nur auf diesem Gerät — kein Server, kein Tracker); ohne Häkchen bleibt
+er nur im Speicher und ist beim Neuladen weg, Häkchen entfernen löscht ihn
+sofort. Ein Direktlink „🔑 Schlüssel erstellen ↗" führt zur Anthropic-Konsole.
+Spiegelt die Provider-Abstraktion von Modul 04 `hybridMatch`. *(Der
+verschlüsselte Weg wäre der Tresor — Modul 20, Shamir 2/3 + Passwort —, hier
+bewusst die einfache Geräte-Bequemlichkeit für eine Testseite.)*
 
 *Mistral wurde bewusst NICHT aufgenommen (Klaus 2026-06-24): hat sich weder in
 der Text- noch in der Bedeutungs-Erkennung bewährt — deckt sich mit der früheren
