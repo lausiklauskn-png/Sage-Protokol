@@ -66,6 +66,17 @@
   .a-head .who { color: var(--mine); }
   .answers li.mine .a-head .who::after { content: " (ich)"; color: var(--accent); }
   .a-text { white-space: pre-wrap; word-break: break-word; }
+  .a-score {
+    display: inline-block; margin-left: 6px; padding: 1px 7px;
+    border-radius: 999px; font-size: 0.72rem; font-weight: 600;
+    background: rgba(93,214,160,0.16); color: var(--accent);
+  }
+  .sort-ctl { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center;
+    margin-bottom: 10px; }
+  .sort-ctl button { padding: 7px 13px; font-size: 0.85rem; }
+  .sort-ctl .status { font-size: 0.78rem; color: var(--dim); }
+  .sort-ctl .status.on { color: var(--accent); }
+  .sort-ctl .status.err { color: var(--bad); }
   .answer-form { margin-top: 8px; display: flex; gap: 8px; align-items: flex-end; }
   .answer-form textarea { min-height: 38px; }
   .empty { color: var(--dim); font-style: italic; }
@@ -103,6 +114,10 @@
   <div class="card">
     <div class="label" style="margin-bottom: 8px;">Fragen &amp; Antworten
       (Tag <code>#sbkim-frage-antwort-test</code>)</div>
+    <div class="sort-ctl">
+      <button id="semantic" class="ghost">🧠 Antworten nach Bedeutung sortieren</button>
+      <span class="status" id="semstatus">aus — sortiert nach Ankunft (lädt Modell ~30&nbsp;MB beim Einschalten)</span>
+    </div>
     <ul id="threads"><li class="empty">Noch keine Frage empfangen…</li></ul>
   </div>
 
@@ -110,12 +125,15 @@
     <b>Ehrlich:</b> Beweist, dass <i>Frage→Antwort</i> über das geborgte Brett
     läuft (NIP-01-Reply via <code>e</code>-Tag). Immer noch <b>öffentlich</b>
     (jeder Relay-Leser sieht Fragen + Antworten), <b>keine garantierte
-    Haltbarkeit</b>, <b>kein Spam-Schutz</b> — und noch <b>keine</b>
-    Bedeutungs-Sortierung: Antworten erscheinen in Ankunfts-Reihenfolge, nicht
-    nach Passung. Das Sortieren nach Bedeutung (Modul 03/04) bleibt der nächste
-    Schritt. Krypto lokal vendoriert, kein CDN, kein Tracker.
+    Haltbarkeit</b>, <b>kein Spam-Schutz</b>. <b>Bedeutungs-Sortierung</b>
+    (Knopf oben) ist <b>optional</b>: erst auf bewusste Nutzer-Aktion lädt das
+    Embedding-Modell (Modul 03, <code>Xenova/multilingual-e5-small</code>) — das
+    ist der <i>einzige</i> Teil, der ein CDN/Internet nutzt (einmalig ~30&nbsp;MB,
+    dann im Browser-Cache); es sortiert nach Nähe zur Frage und filtert nichts
+    weg, fail-soft. Krypto bleibt lokal vendoriert, kein Tracker.
   </footer>
 
+<script src="./03_embedding.js"></script>
 <script type="module">
 import { schnorr, utils } from './noble-secp256k1.js';
 
@@ -181,7 +199,7 @@ function refOf(ev) {
 // ---- Thread-Anzeige ----
 const seen = new Set();
 const threads = $('threads');           // <ul>
-const qViews = new Map();                // frageId -> { answersUl, answerIds:Set }
+const qViews = new Map();                // frageId -> { answersUl, answerIds:Set, qEv, qVec, answers:[] }
 const pendingAnswers = new Map();        // frageId -> [ev,...] (Antwort vor Frage angekommen)
 
 function timeStr(ts) { return new Date(ts * 1000).toLocaleTimeString('de-DE'); }
@@ -228,10 +246,13 @@ function renderQuestion(ev, relay) {
   li.appendChild(card);
   threads.insertBefore(li, threads.firstChild); // neueste Frage oben
 
-  qViews.set(ev.id, { answersUl, answerIds: new Set() });
+  const view = { answersUl, answerIds: new Set(), qEv: ev, qVec: null, answers: [] };
+  qViews.set(ev.id, view);
   // gepufferte Antworten nachreichen
   const pend = pendingAnswers.get(ev.id);
   if (pend) { for (const a of pend) renderAnswer(a.ev, a.relay); pendingAnswers.delete(ev.id); }
+  // Bedeutungs-Sortierung: Frage einbetten + sortieren, falls eingeschaltet.
+  if (semanticOn) embedQuestion(view).then(() => resort(view));
 }
 
 function renderAnswer(ev, relay) {
@@ -252,11 +273,80 @@ function renderAnswer(ev, relay) {
   who.className = 'who mono'; who.textContent = short(ev.pubkey);
   head.appendChild(who);
   head.append(` · ${timeStr(ev.created_at)} · via ${relay.replace('wss://', '')}`);
+  const badge = document.createElement('span');
+  badge.className = 'a-score'; badge.style.display = 'none'; // erst mit Bedeutungs-Sortierung
+  head.appendChild(badge);
   const text = document.createElement('div');
   text.className = 'a-text'; text.textContent = ev.content;
   li.appendChild(head); li.appendChild(text);
-  view.answersUl.appendChild(li); // Antworten älteste oben (Lesefluss)
+  const entry = { ev, li, badge, vec: null, score: null };
+  view.answers.push(entry);                 // Ankunfts-Reihenfolge bleibt erhalten
+  view.answersUl.appendChild(li);           // Antworten älteste oben (Lesefluss)
+  // Bedeutungs-Sortierung: neue Antwort einbetten + neu sortieren, falls an.
+  if (semanticOn && view.qVec) embedAnswer(entry).then(() => resort(view));
 }
+
+// ---- Bedeutungs-Sortierung (Modul 03 Embedding; Cosinus wie Modul 04) ----
+// EHRLICH: sortiert die Antworten eines Threads nach Nähe zur Frage — es wird
+// NICHTS weggefiltert (anders als Modul 04 queryLocal mit 0.80-Schwelle: das
+// ist „Korpus durchsuchen", hier ist „Thread sortieren"). Modell lädt erst auf
+// bewusste Nutzer-Aktion (Pilz-Schicht-Prinzip), fail-soft.
+let semanticOn = false;
+const EMB = () => window.SbkimEmbedding;
+function dot(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
+
+async function embedQuestion(view) {
+  if (!view.qVec) view.qVec = await EMB().embedQuery(view.qEv.content);
+  return view.qVec;
+}
+async function embedAnswer(entry) {
+  if (!entry.vec) entry.vec = await EMB().embedPassage(entry.ev.content);
+  return entry.vec;
+}
+
+async function resort(view) {
+  if (!semanticOn || !view.qVec) {
+    // Aus → Ankunfts-Reihenfolge wiederherstellen, Badges verbergen.
+    for (const e of view.answers) { e.badge.style.display = 'none'; view.answersUl.appendChild(e.li); }
+    return;
+  }
+  // Fehlende Antwort-Vektoren nachziehen.
+  for (const e of view.answers) { if (!e.vec) { try { await embedAnswer(e); } catch { /* fail-soft */ } } }
+  for (const e of view.answers) {
+    e.score = e.vec ? dot(view.qVec, e.vec) : -1;
+    if (e.vec) { e.badge.textContent = e.score.toFixed(2); e.badge.style.display = ''; }
+  }
+  const ordered = view.answers.slice().sort((a, b) => b.score - a.score);
+  for (const e of ordered) view.answersUl.appendChild(e.li); // höchste Passung oben
+}
+
+async function enableSemantic() {
+  const st = $('semstatus');
+  st.className = 'status'; st.textContent = 'Modell lädt… (einmalig ~30 MB, dann im Cache)';
+  $('semantic').disabled = true;
+  try {
+    if (!EMB() || typeof EMB().init !== 'function') throw new Error('Modul 03 nicht geladen');
+    await EMB().init();
+    semanticOn = true;
+    st.className = 'status on'; st.textContent = 'an — Antworten nach Bedeutung (Zahl = Nähe zur Frage)';
+    $('semantic').textContent = '🧠 Bedeutungs-Sortierung aus';
+    for (const view of qViews.values()) { await embedQuestion(view); await resort(view); }
+  } catch (e) {
+    semanticOn = false;
+    st.className = 'status err';
+    st.textContent = 'Modell konnte nicht laden (' + (e.message || e) + ') — bleibt nach Ankunft sortiert';
+  } finally {
+    $('semantic').disabled = false;
+  }
+}
+function disableSemantic() {
+  semanticOn = false;
+  $('semantic').textContent = '🧠 Antworten nach Bedeutung sortieren';
+  $('semstatus').className = 'status';
+  $('semstatus').textContent = 'aus — sortiert nach Ankunft';
+  for (const view of qViews.values()) resort(view);
+}
+$('semantic').addEventListener('click', () => { semanticOn ? disableSemantic() : enableSemantic(); });
 
 function dispatch(ev, relay) {
   if (seen.has(ev.id)) return;

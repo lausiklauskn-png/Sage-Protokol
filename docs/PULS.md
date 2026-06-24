@@ -1841,6 +1841,42 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr Frage→Antwort: Bedeutungs-Sortierung eingebaut (Hälften verdrahtet)
+
+**Rolle:** Bau-Sitzung (Freibrief). Auf Klaus' „lass uns das einbauen" — die
+beiden im Meilenstein bewiesenen Hälften (Semantik + Medium) erstmals **in
+einer Seite verdrahtet**.
+
+**Was getan (`frage-antwort.html` + vendoriertes Modul 03):**
+- **Modul 03 Embedding byte-kopiert** nach `docs/discovery/nostr-test/03_embedding.js`
+  (Drift-Guard im Smoke). Seite lädt es als klassisches Script.
+- **Antworten nach Bedeutung sortieren:** Modul 03 bettet Frage (`embedQuery`) +
+  Antworten (`embedPassage`) ein, Cosinus = Skalarprodukt normierter Vektoren
+  (gleiche Mathematik wie Modul 04, **ohne** dessen 0.80-Korpus-Schwelle —
+  im Thread wird **sortiert, nicht weggefiltert**). Score-Badge pro Antwort
+  (Nähe zur Frage), höchste oben. Re-Sort bei neuer Antwort/Frage.
+- **Architektur-Entscheidung (passt zur Pilz-/Empfangsmodus-Tafel):** das
+  Embedding-Modell (~30 MB, CDN) lädt **erst auf bewusste Nutzer-Aktion**
+  (Knopf „🧠 nach Bedeutung sortieren"). Ohne Knopfdruck bleibt die Seiten-Schale
+  CDN-frei; alles fail-soft (Modell-Fehler → bleibt Ankunfts-Reihenfolge,
+  Status-Hinweis). Footer ehrlich nachgezogen.
+- Smoke `_smoke_frage_antwort.mjs` **35/35** (Drift-Guard Modul 03 + semantische
+  Anker + „sortiert, filtert nicht"). Boden-Smoke 31/31. Inline-Module +
+  Modul 03 `node --check`-sauber.
+
+**Tafel-Spannung benannt (nicht still umgangen):** der Nostr-Test galt als
+„kein Runtime-CDN". Bedeutungs-Sortierung braucht das Modell zwingend (genau wie
+Such-Tool/Sage-Page). Gelöst über **nutzer-ausgelöstes** Laden — die Schale
+bleibt CDN-frei, das CDN ist benannt + sichtbar + opt-in (Pilz-Schicht-Prinzip).
+
+**Was offen:** Browser-Sichttest der Sortierung wartet auf Klaus (Modell-Download
++ Reihenfolge live). Weiter öffentlich, keine Haltbarkeit, kein Spam-Schutz,
+kein Sende-Queue.
+
+**Nächster Schritt:** Klaus' Sichttest — Frage stellen, mehrere verschieden gute
+Antworten, „nach Bedeutung sortieren" → passendste oben. Danach ggf. Cross-Knoten
+(Modul 04.C `queryLocal` gegen echten App-Korpus, `notiz-bauplan-live-suche.md`).
+
 ### 2026-06-24 · Nostr Frage→Antwort GRÜN + Auto-Reconnect (Klaus' Gerätetest)
 
 **Rolle:** Bau-Sitzung (Freibrief).
