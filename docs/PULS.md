@@ -1841,6 +1841,21 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr-Test: Geräte-Check (kann mein Gerät WebLLM?)
+
+**Rolle:** Bau-Sitzung (Freibrief). Klaus' Frage „checke mein System / was sind
+die Voraussetzungen". Ehrlich: die Sitzung läuft in der Cloud, kann Klaus'
+Tablet NICHT messen — daher ein Browser-Werkzeug, das auf SEINEM Gerät misst.
+
+`geraete-check.html` (self-contained, kein CDN): misst WebGPU-Adapter (echter
+`requestAdapter`, nicht nur Präsenz), `deviceMemory`, `hardwareConcurrency`,
+`storage.estimate`. Verdikt je Stufe: Stufe 1 (Embedding) + Cloud-Richter laufen
+fast überall (Klaus' Tablet bewiesen); **Stufe 2 WebLLM** braucht WebGPU +
+~2–4 GB → auf dem Galaxy Tab S6 (2019) grenzwertig/unwahrscheinlich. Ehrlich:
+Werte sind Näherungen; Dateien löschen hilft beim Modell-Download, aber WebGPU/
+GPU-Alter kann man nicht „freilöschen". Verlinkt aus `frage-antwort.html`.
+Smoke `_smoke_geraete_check.mjs` **10/10**; Regress 53/53 + 31/31.
+
 ### 2026-06-24 · Nostr KI-Richter: Sichttest GRÜN + Schlüssel merken (opt-in)
 
 **Rolle:** Bau-Sitzung (Freibrief).

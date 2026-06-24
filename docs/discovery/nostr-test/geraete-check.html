@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Geräte-Check · SBKIM</title>
+<style>
+  :root {
+    --bg:#11151c; --panel:#1a212b; --panel2:#222c39; --ink:#e6edf3;
+    --dim:#8b98a8; --line:#2e3a4a; --ok:#5dd6a0; --warn:#e0a24a; --bad:#e06a5a; --mine:#6aa6e0;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); padding:16px; max-width:760px;
+    margin:0 auto; font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  h1 { font-size:1.25rem; margin:0 0 4px; }
+  .sub { color:var(--dim); font-size:0.85rem; margin:0 0 16px; }
+  .sub a { color:var(--mine); }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; margin-bottom:14px; }
+  .label { color:var(--dim); font-size:0.8rem; margin-bottom:8px; }
+  .row { display:flex; justify-content:space-between; gap:10px; padding:7px 0;
+    border-bottom:1px solid var(--line); }
+  .row:last-child { border-bottom:0; }
+  .row .k { color:var(--dim); }
+  .row .v { font-weight:600; text-align:right; }
+  .v.ok { color:var(--ok); } .v.warn { color:var(--warn); } .v.bad { color:var(--bad); }
+  .verdict { padding:10px 12px; border-radius:8px; margin-top:8px; font-size:0.9rem; }
+  .verdict.ok { background:rgba(93,214,160,0.14); color:var(--ok); }
+  .verdict.warn { background:rgba(224,162,74,0.14); color:var(--warn); }
+  .verdict.bad { background:rgba(224,106,90,0.14); color:var(--bad); }
+  .tier { font-weight:600; }
+  button { background:var(--mine); color:#08130d; border:0; border-radius:8px;
+    padding:10px 16px; font:inherit; font-weight:600; cursor:pointer; }
+  footer { color:var(--dim); font-size:0.78rem; line-height:1.5; border-top:1px solid var(--line);
+    margin-top:18px; padding-top:12px; }
+  footer b { color:var(--warn); }
+</style>
+</head>
+<body>
+  <h1>🔧 Geräte-Check</h1>
+  <p class="sub">Misst <b>in diesem Browser auf diesem Gerät</b>, was für die drei
+    Stufen der Bedeutungs-Suche reicht. ·
+    <a href="./frage-antwort.html">← zur Frage→Antwort-Seite</a></p>
+
+  <div class="card">
+    <div class="label">Gemessen</div>
+    <div id="facts"><div class="row"><span class="k">…</span><span class="v">prüfe…</span></div></div>
+    <div style="margin-top:10px;"><button id="recheck">Neu prüfen</button></div>
+  </div>
+
+  <div class="card">
+    <div class="label">Reicht es für …?</div>
+    <div id="verdicts"></div>
+  </div>
+
+  <footer>
+    <b>Ehrlich:</b> Diese Werte sind <b>Näherungen</b>. „Arbeitsspeicher" meldet
+    der Browser nur grob (oft bei 8&nbsp;GB gedeckelt). „Freier Speicher" ist das
+    Kontingent <i>dieser Website</i>, nicht der ganze Gerätespeicher — den siehst
+    du genau in den Android-Einstellungen → Gerätewartung → Speicher. Der einzige
+    wirklich sichere WebLLM-Test ist, ein Modell zu laden. <b>Dateien löschen</b>
+    hilft beim Modell-<i>Download</i> (Speicher), aber <b>WebGPU</b> und das
+    <b>Alter der Grafikeinheit</b> kann man nicht „freilöschen" — das ist die
+    eigentliche Hürde für den freien KI-Pfad.
+  </footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmtGB = (g) => (g == null ? '—' : g.toFixed(g < 10 ? 1 : 0) + ' GB');
+
+async function probe() {
+  const f = {};
+  // WebGPU: Präsenz + echter Adapter (Präsenz allein genügt nicht).
+  f.gpuApi = !!navigator.gpu;
+  f.gpuAdapter = false;
+  if (navigator.gpu) {
+    try { f.gpuAdapter = !!(await navigator.gpu.requestAdapter()); } catch { f.gpuAdapter = false; }
+  }
+  // RAM (grob, Chrome; bei 8 gedeckelt) + Kerne.
+  f.ram = (typeof navigator.deviceMemory === 'number') ? navigator.deviceMemory : null;
+  f.cores = (typeof navigator.hardwareConcurrency === 'number') ? navigator.hardwareConcurrency : null;
+  // Speicher-Kontingent dieser Website (nicht Gerät gesamt).
+  f.quota = null; f.usage = null;
+  if (navigator.storage && navigator.storage.estimate) {
+    try { const e = await navigator.storage.estimate(); f.quota = e.quota / 1e9; f.usage = e.usage / 1e9; } catch { /* */ }
+  }
+  return f;
+}
+
+function render(f) {
+  const rows = [
+    ['Browser-WebGPU vorhanden', f.gpuApi ? 'ja' : 'nein', f.gpuApi ? 'ok' : 'bad'],
+    ['WebGPU-Adapter nutzbar', f.gpuAdapter ? 'ja' : 'nein', f.gpuAdapter ? 'ok' : 'bad'],
+    ['Arbeitsspeicher (grob)', fmtGB(f.ram), f.ram == null ? 'warn' : (f.ram >= 8 ? 'ok' : f.ram >= 4 ? 'warn' : 'bad')],
+    ['CPU-Kerne', f.cores == null ? '—' : String(f.cores), f.cores == null ? 'warn' : (f.cores >= 6 ? 'ok' : 'warn')],
+    ['Speicher-Kontingent (Website)', f.quota == null ? '—' : fmtGB(f.quota), f.quota == null ? 'warn' : (f.quota >= 4 ? 'ok' : f.quota >= 1 ? 'warn' : 'bad')],
+  ];
+  $('facts').innerHTML = rows.map((r) =>
+    `<div class="row"><span class="k">${r[0]}</span><span class="v ${r[2]}">${r[1]}</span></div>`).join('');
+
+  // Verdikte je Stufe.
+  const v = [];
+  v.push(['Stufe 1 — gratis Bedeutungs-Suche (Embedding ~30 MB)', 'ok',
+    'Reicht praktisch überall mit modernem Browser — auch auf älteren Tablets. (Du hast es schon laufen lassen.)']);
+  v.push(['Cloud-Richter (eigener Schlüssel)', 'ok',
+    'Braucht lokal fast nichts, nur Internet. Läuft auf jedem Gerät.']);
+  // Stufe 2 WebLLM: WebGPU-Adapter + genug RAM/Speicher.
+  let t2cls, t2msg;
+  if (!f.gpuAdapter) {
+    t2cls = 'bad';
+    t2msg = 'Kein nutzbares WebGPU — der freie KI-Richter im Browser läuft hier voraussichtlich NICHT. Dateien löschen ändert das nicht; das hängt an Browser/Grafikeinheit. Nutze hier den Cloud-Richter oder einen neueren Rechner.';
+  } else if ((f.ram != null && f.ram < 4) || (f.quota != null && f.quota < 2)) {
+    t2cls = 'warn';
+    t2msg = 'WebGPU da, aber RAM/Speicher knapp. Höchstens ein sehr kleines Modell (~0,5 GB) wäre einen Versuch wert; Speicher freimachen hilft beim Download.';
+  } else {
+    t2cls = 'ok';
+    t2msg = 'WebGPU + genug RAM/Speicher — ein kleines bis mittleres Modell (0,5–3 GB) sollte laufen.';
+  }
+  v.push(['Stufe 2 — freier KI-Richter im Browser (WebLLM)', t2cls, t2msg]);
+
+  $('verdicts').innerHTML = v.map((x) =>
+    `<div class="verdict ${x[1]}"><span class="tier">${x[0]}</span><br>${x[2]}</div>`).join('');
+}
+
+async function run() { $('recheck').disabled = true; render(await probe()); $('recheck').disabled = false; }
+$('recheck').addEventListener('click', run);
+run();
+</script>
+</body>
+</html>
