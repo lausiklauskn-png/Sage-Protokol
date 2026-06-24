@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Nostr Frage→Antwort-Test · SBKIM</title>
+<style>
+  :root {
+    --bg: #11151c; --panel: #1a212b; --panel2: #222c39;
+    --ink: #e6edf3; --dim: #8b98a8; --line: #2e3a4a;
+    --accent: #5dd6a0; --warn: #e0a24a; --bad: #e06a5a;
+    --mine: #6aa6e0; --q: #c9a0e0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 16px; max-width: 760px; margin: 0 auto;
+  }
+  h1 { font-size: 1.25rem; margin: 0 0 4px; }
+  .sub { color: var(--dim); font-size: 0.85rem; margin: 0 0 16px; }
+  .sub a { color: var(--mine); }
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+  .label { color: var(--dim); font-size: 0.8rem; }
+  code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 999px; padding: 3px 10px; font-size: 0.8rem;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dim); flex: 0 0 auto; }
+  .dot.up { background: var(--accent); }
+  .dot.down { background: var(--bad); }
+  .dot.try { background: var(--warn); }
+  textarea {
+    width: 100%; min-height: 56px; resize: vertical;
+    background: var(--panel2); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: inherit;
+  }
+  button {
+    background: var(--accent); color: #08130d; border: 0;
+    border-radius: 8px; padding: 9px 15px; font: inherit; font-weight: 600; cursor: pointer;
+  }
+  button.ghost { background: transparent; color: var(--mine); border: 1px solid var(--line); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  #selftest.ok { color: var(--accent); }
+  #selftest.fail { color: var(--bad); }
+  #threads { list-style: none; margin: 0; padding: 0; }
+  .q-card {
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 12px; background: var(--panel2);
+  }
+  .q-head { font-size: 0.78rem; color: var(--dim); margin-bottom: 3px; }
+  .q-head .who { color: var(--q); }
+  .q-card.mine .q-head .who::after { content: " (ich)"; color: var(--accent); }
+  .q-text { white-space: pre-wrap; word-break: break-word; font-weight: 600; }
+  .answers { list-style: none; margin: 10px 0 0; padding: 0 0 0 12px;
+    border-left: 2px solid var(--line); }
+  .answers li { padding: 7px 0; }
+  .a-head { font-size: 0.74rem; color: var(--dim); margin-bottom: 2px; }
+  .a-head .who { color: var(--mine); }
+  .answers li.mine .a-head .who::after { content: " (ich)"; color: var(--accent); }
+  .a-text { white-space: pre-wrap; word-break: break-word; }
+  .answer-form { margin-top: 8px; display: flex; gap: 8px; align-items: flex-end; }
+  .answer-form textarea { min-height: 38px; }
+  .empty { color: var(--dim); font-style: italic; }
+  footer {
+    color: var(--dim); font-size: 0.78rem; line-height: 1.5;
+    border-top: 1px solid var(--line); margin-top: 18px; padding-top: 12px;
+  }
+  footer b { color: var(--warn); }
+</style>
+</head>
+<body>
+  <h1>💬 Nostr Frage→Antwort-Test</h1>
+  <p class="sub">Nächster Stich nach dem Boden-Beweis: nicht nur Zettel hängen,
+    sondern eine <b>Frage</b> aufs geborgte Brett legen und <b>Antworten</b>
+    darauf einsammeln — server-los, geräteübergreifend. ·
+    <a href="./index.html">← zum Pinnwand-Test</a></p>
+
+  <div class="card">
+    <div class="row" style="justify-content: space-between;">
+      <span class="pill">Meine Spore: <code id="me">…</code></span>
+      <span class="pill">Krypto-Selbsttest: <span id="selftest">läuft…</span></span>
+    </div>
+    <div class="row" id="relays" style="margin-top: 10px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="label" style="margin-bottom: 6px;">Neue Frage aufs Brett legen</div>
+    <textarea id="qmsg" placeholder="z. B. Was ist ein leichtes Sommeressen?" maxlength="280"></textarea>
+    <div class="row" style="margin-top: 8px; justify-content: space-between;">
+      <span class="label" id="sendhint">&nbsp;</span>
+      <button id="ask" disabled>Frage stellen</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label" style="margin-bottom: 8px;">Fragen &amp; Antworten
+      (Tag <code>#sbkim-frage-antwort-test</code>)</div>
+    <ul id="threads"><li class="empty">Noch keine Frage empfangen…</li></ul>
+  </div>
+
+  <footer>
+    <b>Ehrlich:</b> Beweist, dass <i>Frage→Antwort</i> über das geborgte Brett
+    läuft (NIP-01-Reply via <code>e</code>-Tag). Immer noch <b>öffentlich</b>
+    (jeder Relay-Leser sieht Fragen + Antworten), <b>keine garantierte
+    Haltbarkeit</b>, <b>kein Spam-Schutz</b> — und noch <b>keine</b>
+    Bedeutungs-Sortierung: Antworten erscheinen in Ankunfts-Reihenfolge, nicht
+    nach Passung. Das Sortieren nach Bedeutung (Modul 03/04) bleibt der nächste
+    Schritt. Krypto lokal vendoriert, kein CDN, kein Tracker.
+  </footer>
+
+<script type="module">
+import { schnorr, utils } from './noble-secp256k1.js';
+
+// ---- Helpers ----
+const $ = (id) => document.getElementById(id);
+const toHex = (b) => Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
+const fromHex = (h) => {
+  const a = new Uint8Array(h.length / 2);
+  for (let i = 0; i < a.length; i++) a[i] = parseInt(h.slice(i * 2, i * 2 + 2), 16);
+  return a;
+};
+const short = (hex) => hex.slice(0, 8) + '…' + hex.slice(-4);
+const esc = (s) => s; // textContent wird benutzt — kein HTML-Inject
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return toHex(new Uint8Array(buf));
+}
+
+const TAG = 'sbkim-frage-antwort-test';
+const RELAYS = ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.nostr.band'];
+
+// ---- Identität (gleiche Spore wie der Pinnwand-Test, falls vorhanden) ----
+const LS_KEY = 'sbkim_nostr_test_priv';
+let privHex = localStorage.getItem(LS_KEY);
+if (!privHex || privHex.length !== 64) {
+  privHex = toHex(utils.randomPrivateKey());
+  localStorage.setItem(LS_KEY, privHex);
+}
+const priv = fromHex(privHex);
+const pubHex = toHex(schnorr.getPublicKey(priv));
+$('me').textContent = short(pubHex);
+
+// ---- Krypto-Selbsttest ----
+(async () => {
+  const el = $('selftest');
+  try {
+    const probe = await sha256Hex('sbkim-nostr-fa-selftest');
+    const sig = await schnorr.sign(fromHex(probe), priv);
+    const ok = await schnorr.verify(sig, fromHex(probe), fromHex(pubHex));
+    el.textContent = ok ? 'OK' : 'FAIL';
+    el.className = ok ? 'ok' : 'fail';
+  } catch (e) {
+    el.textContent = 'FAIL (' + e.message + ')';
+    el.className = 'fail';
+  }
+})();
+
+// ---- Event bauen (NIP-01). extraTags z.B. [["e", frageId]] für Antworten ----
+async function buildEvent(content, extraTags = []) {
+  const created_at = Math.floor(Date.now() / 1000);
+  const kind = 1;
+  const tags = [['t', TAG], ...extraTags];
+  const id = await sha256Hex(JSON.stringify([0, pubHex, created_at, kind, tags, content]));
+  const sig = toHex(await schnorr.sign(fromHex(id), priv));
+  return { id, pubkey: pubHex, created_at, kind, tags, content, sig };
+}
+// Eine Notiz ist eine ANTWORT, wenn sie ein e-Tag trägt → die referenzierte Frage-id.
+function refOf(ev) {
+  const e = (ev.tags || []).find((t) => t[0] === 'e');
+  return e ? e[1] : null;
+}
+
+// ---- Thread-Anzeige ----
+const seen = new Set();
+const threads = $('threads');           // <ul>
+const qViews = new Map();                // frageId -> { answersUl, answerIds:Set }
+const pendingAnswers = new Map();        // frageId -> [ev,...] (Antwort vor Frage angekommen)
+
+function timeStr(ts) { return new Date(ts * 1000).toLocaleTimeString('de-DE'); }
+
+function renderQuestion(ev, relay) {
+  const empty = threads.querySelector('.empty');
+  if (empty) empty.remove();
+  const li = document.createElement('li');
+  const card = document.createElement('div');
+  card.className = 'q-card' + (ev.pubkey === pubHex ? ' mine' : '');
+  const head = document.createElement('div');
+  head.className = 'q-head';
+  const who = document.createElement('span');
+  who.className = 'who mono'; who.textContent = short(ev.pubkey);
+  head.appendChild(who);
+  head.append(` · ${timeStr(ev.created_at)} · via ${relay.replace('wss://', '')}`);
+  const text = document.createElement('div');
+  text.className = 'q-text'; text.textContent = ev.content;
+  const answersUl = document.createElement('ul');
+  answersUl.className = 'answers';
+
+  // Antwort-Formular pro Frage
+  const form = document.createElement('div');
+  form.className = 'answer-form';
+  const ta = document.createElement('textarea');
+  ta.placeholder = 'Antwort…'; ta.maxLength = 280;
+  const btn = document.createElement('button');
+  btn.className = 'ghost'; btn.textContent = 'Antworten';
+  btn.addEventListener('click', async () => {
+    const a = ta.value.trim();
+    if (!a) return;
+    btn.disabled = true;
+    const aev = await buildEvent(a, [['e', ev.id]]);
+    const live = liveSockets();
+    for (const ws of live) ws.send(JSON.stringify(['EVENT', aev]));
+    ta.value = '';
+    renderAnswer(aev, live[0] ? live[0].url : 'lokal'); // sofort lokal zeigen
+    btn.disabled = false;
+  });
+  form.appendChild(ta); form.appendChild(btn);
+
+  card.appendChild(head); card.appendChild(text);
+  card.appendChild(answersUl); card.appendChild(form);
+  li.appendChild(card);
+  threads.insertBefore(li, threads.firstChild); // neueste Frage oben
+
+  qViews.set(ev.id, { answersUl, answerIds: new Set() });
+  // gepufferte Antworten nachreichen
+  const pend = pendingAnswers.get(ev.id);
+  if (pend) { for (const a of pend) renderAnswer(a.ev, a.relay); pendingAnswers.delete(ev.id); }
+}
+
+function renderAnswer(ev, relay) {
+  const qid = refOf(ev);
+  const view = qViews.get(qid);
+  if (!view) { // Frage noch nicht da → puffern
+    if (!pendingAnswers.has(qid)) pendingAnswers.set(qid, []);
+    pendingAnswers.get(qid).push({ ev, relay });
+    return;
+  }
+  if (view.answerIds.has(ev.id)) return;
+  view.answerIds.add(ev.id);
+  const li = document.createElement('li');
+  if (ev.pubkey === pubHex) li.className = 'mine';
+  const head = document.createElement('div');
+  head.className = 'a-head';
+  const who = document.createElement('span');
+  who.className = 'who mono'; who.textContent = short(ev.pubkey);
+  head.appendChild(who);
+  head.append(` · ${timeStr(ev.created_at)} · via ${relay.replace('wss://', '')}`);
+  const text = document.createElement('div');
+  text.className = 'a-text'; text.textContent = ev.content;
+  li.appendChild(head); li.appendChild(text);
+  view.answersUl.appendChild(li); // Antworten älteste oben (Lesefluss)
+}
+
+function dispatch(ev, relay) {
+  if (seen.has(ev.id)) return;
+  seen.add(ev.id);
+  if (refOf(ev)) renderAnswer(ev, relay);
+  else renderQuestion(ev, relay);
+}
+
+// ---- Relays ----
+const SUB_ID = 'sbkim-fa';
+const sockets = [];
+const dots = {};
+function relayPills() {
+  const wrap = $('relays');
+  for (const url of RELAYS) {
+    const pill = document.createElement('span'); pill.className = 'pill';
+    const dot = document.createElement('span'); dot.className = 'dot try';
+    dots[url] = dot; pill.appendChild(dot);
+    pill.append(url.replace('wss://', '')); wrap.appendChild(pill);
+  }
+}
+const setDot = (url, s) => { const d = dots[url]; if (d) d.className = 'dot ' + s; };
+
+function connect(url) {
+  let ws;
+  try { ws = new WebSocket(url); } catch { setDot(url, 'down'); return; }
+  ws.onopen = () => {
+    setDot(url, 'up');
+    ws.send(JSON.stringify(['REQ', SUB_ID, { kinds: [1], '#t': [TAG], limit: 200 }]));
+    updateSendState();
+  };
+  ws.onmessage = (e) => {
+    let m; try { m = JSON.parse(e.data); } catch { return; }
+    if (Array.isArray(m) && m[0] === 'EVENT' && m[1] === SUB_ID && m[2]) dispatch(m[2], url);
+  };
+  ws.onclose = () => { setDot(url, 'down'); updateSendState(); };
+  ws.onerror = () => { setDot(url, 'down'); };
+  sockets.push(ws);
+}
+const liveSockets = () => sockets.filter((w) => w.readyState === WebSocket.OPEN);
+function updateSendState() {
+  const n = liveSockets().length;
+  $('ask').disabled = n === 0;
+  $('sendhint').textContent = n > 0
+    ? `${n} Relay${n > 1 ? 's' : ''} verbunden`
+    : 'kein Relay verbunden…';
+}
+
+// ---- Frage stellen ----
+$('ask').addEventListener('click', async () => {
+  const content = $('qmsg').value.trim();
+  if (!content) return;
+  $('ask').disabled = true;
+  const ev = await buildEvent(content); // keine e-Tags → Frage
+  const live = liveSockets();
+  for (const ws of live) ws.send(JSON.stringify(['EVENT', ev]));
+  $('qmsg').value = '';
+  dispatch(ev, live[0] ? live[0].url : 'lokal');
+  updateSendState();
+});
+
+// ---- Start ----
+relayPills();
+RELAYS.forEach(connect);
+updateSendState();
+</script>
+</body>
+</html>
