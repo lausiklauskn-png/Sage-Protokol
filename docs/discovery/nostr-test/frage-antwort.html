@@ -136,8 +136,11 @@
         <option value="claude">Cloud: Claude (Anthropic) — eigener Schlüssel</option>
         <option value="webllm" disabled>frei: KI im Browser (WebLLM) — nächster Stich</option>
       </select>
-      <input id="judgekey" type="password" placeholder="API-Schlüssel (bleibt im Speicher)" style="display:none;" autocomplete="off">
+      <input id="judgekey" type="password" placeholder="API-Schlüssel" style="display:none;" autocomplete="off">
       <a id="judgekeylink" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="display:none; color:#6aa6e0; font-size:0.8rem;">🔑 Schlüssel erstellen ↗</a>
+      <label id="judgeremember-l" style="display:none; font-size:0.8rem; color:var(--dim);">
+        <input type="checkbox" id="judgeremember" checked> auf diesem Gerät merken
+      </label>
       <button id="judgerun" class="ghost" style="display:none;">⚖️ Richter anwenden</button>
       <span class="status" id="judgestatus"></span>
     </div>
@@ -164,8 +167,10 @@
     erzwingt Bezahlung: <b>(1)</b> gratis &amp; überall — lokales Embedding;
     <b>(2)</b> gratis, gerät-hungrig — KI im Browser (WebLLM, nächster Stich);
     <b>(3)</b> bezahlt &amp; am stärksten — Cloud mit eigenem Schlüssel. Der
-    Schlüssel bleibt nur im Speicher (kein Tracker, kein <code>localStorage</code>).
-    Krypto bleibt lokal vendoriert.
+    Schlüssel wird <b>nur mit Häkchen „auf diesem Gerät merken"</b> lokal
+    gespeichert (<code>localStorage</code>, im Klartext, nur auf diesem Gerät —
+    kein Server, kein Tracker); Häkchen weg = sofort gelöscht. Krypto bleibt
+    lokal vendoriert.
   </footer>
 
 <script src="./03_embedding.js"></script>
@@ -495,16 +500,47 @@ async function judgeView(view, provider, key) {
 }
 
 // UI-Verdrahtung.
+// Schlüssel-Persistenz: NUR wenn das Häkchen gesetzt ist, im localStorage
+// dieses Geräts (im Klartext — kein Server, kein Tracker). Häkchen weg →
+// sofort gelöscht. Der verschlüsselte Weg wäre der Tresor (Modul 20), hier
+// bewusst die einfache Geräte-Bequemlichkeit für eine Testseite.
+const LS_JUDGE_KEY = 'sbkim_nostr_judge_key';
+const LS_JUDGE_PROV = 'sbkim_nostr_judge_prov';
+function persistJudge() {
+  const remember = $('judgeremember').checked;
+  const key = $('judgekey').value.trim();
+  if (remember && $('judgeprov').value === 'claude' && key) {
+    localStorage.setItem(LS_JUDGE_PROV, 'claude');
+    localStorage.setItem(LS_JUDGE_KEY, key);
+  } else {
+    localStorage.removeItem(LS_JUDGE_PROV);
+    localStorage.removeItem(LS_JUDGE_KEY);
+  }
+}
+
 $('judgeprov').addEventListener('change', () => {
   const cloud = $('judgeprov').value === 'claude';
   $('judgekey').style.display = cloud ? '' : 'none';
   $('judgekeylink').style.display = cloud ? '' : 'none';
+  $('judgeremember-l').style.display = cloud ? '' : 'none';
   $('judgerun').style.display = cloud ? '' : 'none';
   $('judgestatus').className = 'status';
   $('judgestatus').textContent = cloud
-    ? 'Schlüssel eingeben (oder „Schlüssel erstellen ↗"), dann „Richter anwenden" (bleibt nur im Speicher)'
+    ? 'Schlüssel eingeben (oder „Schlüssel erstellen ↗"), dann „Richter anwenden"'
     : 'aus — gratis Embedding-Weg bleibt aktiv';
+  persistJudge();
 });
+$('judgekey').addEventListener('input', persistJudge);
+$('judgeremember').addEventListener('change', persistJudge);
+
+// Beim Laden: gemerkten Schlüssel wiederherstellen (falls vorhanden).
+(function restoreJudge() {
+  if (localStorage.getItem(LS_JUDGE_PROV) === 'claude' && localStorage.getItem(LS_JUDGE_KEY)) {
+    $('judgeprov').value = 'claude';
+    $('judgekey').value = localStorage.getItem(LS_JUDGE_KEY);
+    $('judgeprov').dispatchEvent(new Event('change'));
+  }
+})();
 
 $('judgerun').addEventListener('click', async () => {
   const provider = $('judgeprov').value;

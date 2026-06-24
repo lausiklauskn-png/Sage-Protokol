@@ -1841,6 +1841,36 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr KI-Richter: Sichttest GRÜN + Schlüssel merken (opt-in)
+
+**Rolle:** Bau-Sitzung (Freibrief).
+
+**SICHTTEST CLOUD-RICHTER GRÜN (Klaus 2026-06-24):** Claude-Haiku-Richter live
+über eigenen Schlüssel. „echte Alkoholcocktails" fiel ans Ende (0.10) mit Grund
+*„NICHT alkoholfrei – direkte Verneinung der Bedingung"*. **Krön-Beleg
+(Weltwissen):** dieselbe Speise, drei Essig-Formulierungen → drei Werte:
+„naturtrüber, garantiert alkoholfrei" **0.80**, „verlorenes Essigwasser" **0.60**,
+**„vergorener Essig" 0.20** mit Grund *„Vergorener Essig enthält Alkohol,
+widerspricht alkoholfrei-Anforderung"*. Sogar „Bierbrause enthält oft
+Alkoholspuren" (0.30). Genau Klaus' Vorhersage, bestätigt durch das Modell.
+Damit ist der ganze Bogen sichtbar: Medium + Vektor-Kalibrierung + Absicht/
+Verneinung/Weltwissen.
+
+**Schlüssel-Persistenz (Klaus' Befund: Key nach Reload weg):** Häkchen „auf
+diesem Gerät merken" (Default an) → Schlüssel im `localStorage` (Klartext, nur
+Gerät), Wiederherstellung beim Laden (`restoreJudge`), Häkchen weg → sofort
+gelöscht (`persistJudge`). Ehrlich: Klartext; der verschlüsselte Weg wäre der
+Tresor (Modul 20), für die Testseite bewusst die einfache Bequemlichkeit.
+Smoke **53/53**, Boden 31/31, `node --check`-sauber.
+
+**Kosten-Klärung (Klaus' Sorge „teuer"):** die 2,69 USD auf dem Schlüssel sind
+der kumulierte Gesamt-Verbrauch seit 21.06, NICHT ein Such-Aufruf; ein
+Haiku-Richter-Aufruf über wenige kurze Antworten ist ein Bruchteil eines Cents.
+Der gratis Weg dagegen: Stufe 2 WebLLM (nächster Stich).
+
+**Nächster Schritt:** freier WebLLM-Pfad (Stufe 2, kein Cent/Suche) ODER
+Relevanz-Rückmeldung.
+
 ### 2026-06-24 · Nostr Frage→Antwort: KI-Richter Stufe 1 (Cloud BYOK) + drei freie Stufen
 
 **Rolle:** Bau-Sitzung (Freibrief). Anschluss an den Whitening-Fix: Klaus sah,
