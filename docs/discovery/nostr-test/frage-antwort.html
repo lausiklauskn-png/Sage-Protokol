@@ -265,9 +265,10 @@ function dispatch(ev, relay) {
   else renderQuestion(ev, relay);
 }
 
-// ---- Relays ----
+// ---- Relays (mit Auto-Reconnect) ----
 const SUB_ID = 'sbkim-fa';
-const sockets = [];
+const conns = {};       // url -> WebSocket (aktuell)
+const backoff = {};     // url -> ms (wächst bei Fehlschlag)
 const dots = {};
 function relayPills() {
   const wrap = $('relays');
@@ -280,10 +281,23 @@ function relayPills() {
 }
 const setDot = (url, s) => { const d = dots[url]; if (d) d.className = 'dot ' + s; };
 
+function scheduleReconnect(url) {
+  const cur = backoff[url] || 0;
+  const next = Math.min(cur ? cur * 2 : 2000, 20000); // 2s,4s,…,20s gedeckelt
+  backoff[url] = next;
+  setTimeout(() => {
+    const ws = conns[url];
+    if (!ws || ws.readyState === WebSocket.CLOSED) connect(url);
+  }, next);
+}
+
 function connect(url) {
+  setDot(url, 'try');
   let ws;
-  try { ws = new WebSocket(url); } catch { setDot(url, 'down'); return; }
+  try { ws = new WebSocket(url); } catch { setDot(url, 'down'); scheduleReconnect(url); return; }
+  conns[url] = ws;
   ws.onopen = () => {
+    backoff[url] = 0; // Erfolg → Backoff zurücksetzen
     setDot(url, 'up');
     ws.send(JSON.stringify(['REQ', SUB_ID, { kinds: [1], '#t': [TAG], limit: 200 }]));
     updateSendState();
@@ -292,11 +306,23 @@ function connect(url) {
     let m; try { m = JSON.parse(e.data); } catch { return; }
     if (Array.isArray(m) && m[0] === 'EVENT' && m[1] === SUB_ID && m[2]) dispatch(m[2], url);
   };
-  ws.onclose = () => { setDot(url, 'down'); updateSendState(); };
-  ws.onerror = () => { setDot(url, 'down'); };
-  sockets.push(ws);
+  ws.onclose = () => { setDot(url, 'down'); updateSendState(); scheduleReconnect(url); };
+  ws.onerror = () => { setDot(url, 'down'); }; // onclose folgt → Reconnect dort
 }
-const liveSockets = () => sockets.filter((w) => w.readyState === WebSocket.OPEN);
+
+// Tab wieder sichtbar (Handy aus dem Hintergrund) → tote Sockets sofort neu.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  for (const url of RELAYS) {
+    const ws = conns[url];
+    if (!ws || ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
+      backoff[url] = 0;
+      connect(url);
+    }
+  }
+});
+
+const liveSockets = () => Object.values(conns).filter((w) => w.readyState === WebSocket.OPEN);
 function updateSendState() {
   const n = liveSockets().length;
   $('ask').disabled = n === 0;

@@ -73,6 +73,8 @@ for (const r of ["relay.damus.io", "nos.lol", "relay.nostr.band"]) {
 ok("Probe 4: sendet EVENT", /\['EVENT', ev\]|\["EVENT", ev\]/.test(html));
 ok("Probe 4: abonniert REQ", /'REQ'|"REQ"/.test(html));
 ok("Probe 4: Krypto-Selbsttest beim Laden", /schnorr\.verify/.test(html));
+ok("Probe 4: Auto-Reconnect (scheduleReconnect)", /scheduleReconnect/.test(html));
+ok("Probe 4: Reconnect bei Tab-Sichtbarkeit", /visibilitychange/.test(html));
 ok("Probe 4: ehrlicher Footer (öffentlich/kein Spam-Schutz)", /öffentlich/.test(html) && /Spam-Schutz/.test(html));
 
 // ---- Auswertung ----

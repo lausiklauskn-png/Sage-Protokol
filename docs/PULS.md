@@ -1841,6 +1841,33 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr Frage→Antwort GRÜN + Auto-Reconnect (Klaus' Gerätetest)
+
+**Rolle:** Bau-Sitzung (Freibrief).
+
+**FRAGE→ANTWORT-BEWEIS GRÜN (Klaus' Gerätetest 2026-06-24, 19:54):** Tablet
+(Spore `2e084f93…7fae`) stellt Frage „was ist ein leichtes Sommeressen…" →
+erscheint auf dem Handy → Handy (Spore `e87a1618…b365`) antwortet „Salat mit
+gurken Melonenbowle" → Antwort erscheint **korrekt eingerückt unter der Frage**
+auf dem Tablet (über NIP-01 `e`-Tag-Threading). Geräteübergreifend, server-los,
+über ein geborgtes Brett. Klaus: „sobald die Relais verbunden sind, ist die
+Antwort schlagartig da."
+
+**Befund + Fix (Auto-Reconnect):** Klaus beobachtete, dass bei Relay-Abbruch
+manuell aktualisiert werden musste (Mobil: Tab im Hintergrund → Socket stirbt,
+kein Selbst-Reconnect). Behoben auf BEIDEN Seiten (`index.html` +
+`frage-antwort.html`): Relay-Verbindungen jetzt als `conns`-Map mit
+**Backoff-Reconnect** (2s→4s→…→20s gedeckelt, Backoff bei `onopen` zurück) +
+`scheduleReconnect` aus `onclose`/`onerror` + **`visibilitychange`-Reconnect**
+(Tab wieder sichtbar → tote Sockets sofort neu). `liveSockets` über
+`Object.values(conns)`. Smokes verankern den Reconnect (Boden 31/31,
+Frage→Antwort 25/25). Inline-Module `node --check`-sauber.
+
+**Ehrlich offen:** Wer postet, während kein Relay verbunden ist, muss die
+Eingabe weiter wiederholen (kein Sende-Queue/Re-Broadcast — bewusst nicht
+gebaut, Test-Scope). Antworten weiter ohne Bedeutungs-Sortierung (Modul 03/04 =
+nächster Stich). Weiter öffentlich, keine Haltbarkeit, kein Spam-Schutz.
+
 ### 2026-06-24 · Nostr Frage→Antwort übers Brett (Stich 2 nach Boden-Beweis)
 
 **Rolle:** Bau-Sitzung (Freibrief). Auf Klaus' „beides — Doku, dann bauen".

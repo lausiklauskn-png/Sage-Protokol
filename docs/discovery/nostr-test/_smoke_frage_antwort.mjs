@@ -64,6 +64,8 @@ ok("Probe 3: Tag sbkim-frage-antwort-test", html.includes(TAG));
 ok("Probe 3: Antwort trägt e-Tag (Reply-Bezug)", /\['e', ev\.id\]|\["e", ev\.id\]/.test(html));
 ok("Probe 3: partitioniert per refOf (e-Tag)", /function refOf/.test(html) && /renderQuestion/.test(html) && /renderAnswer/.test(html));
 ok("Probe 3: puffert verwaiste Antworten", /pendingAnswers/.test(html));
+ok("Probe 3: Auto-Reconnect (scheduleReconnect)", /scheduleReconnect/.test(html));
+ok("Probe 3: Reconnect bei Tab-Sichtbarkeit", /visibilitychange/.test(html));
 ok("Probe 3: teilt Identität mit Pinnwand (sbkim_nostr_test_priv)", /sbkim_nostr_test_priv/.test(html));
 ok("Probe 3: Rück-Link zum Pinnwand-Test", /href="\.\/index\.html"/.test(html));
 ok("Probe 3: ehrlicher Footer (öffentlich + keine Bedeutungs-Sortierung)",
