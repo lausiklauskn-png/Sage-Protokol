@@ -945,13 +945,15 @@
     94%, 100% { opacity: 0; }
   }
   .discovery-overlay {
-    position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end;
-    padding: 1.4rem 1.5rem;
-    background: linear-gradient(to top, rgba(3,4,10,0.88) 0%, rgba(3,4,10,0.35) 42%, rgba(3,4,10,0.05) 66%, transparent 82%);
+    position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
+    padding: 1.6rem 1.7rem;
+    background:
+      linear-gradient(to right, rgba(3,4,10,0.80) 0%, rgba(3,4,10,0.45) 44%, rgba(3,4,10,0.06) 74%, transparent 90%),
+      linear-gradient(to bottom, rgba(3,4,10,0.30) 0%, transparent 28%, transparent 72%, rgba(3,4,10,0.32) 100%);
   }
-  .discovery-eyebrow { font-family: "Geist Mono", monospace; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin: 0 0 0.5rem; }
-  .discovery-title { font-size: clamp(1.25rem, 1rem + 1.5vw, 1.9rem); line-height: 1.14; margin: 0 0 0.45rem; color: #f3eede; max-width: 30ch; }
-  .discovery-sub { font-size: 0.92rem; line-height: 1.5; color: rgba(243,238,222,0.78); margin: 0; max-width: 52ch; }
+  .discovery-eyebrow { font-family: "Geist Mono", monospace; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin: 0 0 0.5rem; text-shadow: 0 1px 8px rgba(0,0,0,0.75); }
+  .discovery-title { font-size: clamp(1.25rem, 1rem + 1.5vw, 1.9rem); line-height: 1.14; margin: 0 0 0.45rem; color: #f3eede; max-width: 30ch; text-shadow: 0 2px 16px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.6); }
+  .discovery-sub { font-size: 0.92rem; line-height: 1.5; color: rgba(243,238,222,0.82); margin: 0; max-width: 52ch; text-shadow: 0 1px 10px rgba(0,0,0,0.7); }
   @media (prefers-reduced-motion: reduce) {
     .discovery-bg { animation: none; }
     .discovery-earth .earth-blue { animation: none; opacity: 1; }
