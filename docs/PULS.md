@@ -1870,11 +1870,17 @@ Pinnwand (siehe `notiz-briefkasten-pinnwand.md`).
   NICHT vorausgesetzt (Repo hat kein Playwright; Browser-DOM-Lauf via echtem
   Modul-Import + Datei-Analyse ersetzt).
 
-**Was offen:** Der eigentliche **Boden-Beweis ist headless NICHT erbracht** —
-er braucht Klaus' Gerätetest: URL (über GitHub Pages) auf Tablet UND Handy
-öffnen → „Salate" tippen → taucht beim anderen binnen Sekunden auf. Ehrlich:
-beweist nur das Medium (öffentlich, keine Haltbarkeit, kein Spam-Schutz).
-Nicht in Sage-Page/Discovery verlinkt (Notiz-Charakter, Brief-Leitplanke).
+**BODEN-BEWEIS GRÜN (Klaus' Gerätetest 2026-06-24, 19:27):** Handy (Spore
+`e87a1618…b365`) tippt „Salate" → erscheint live im Tablet-Browser (andere
+Spore `2e084f93…7fae`, andere Identität) als eingehender Zettel via
+`relay.damus.io`. Zwei getrennte Geräte, zwei Schlüsselpaare, ein geborgtes
+dummes Brett dazwischen — Klaus betreibt nichts. Damit steht die im Meilenstein
+(`MEILENSTEIN_SEMANTISCHE_SUCHE.md`) noch als „offen" markierte Vorbedingung
+(Browser fragt Browser server-los) **direkt über das Medium** — nicht mehr nur
+über die KI-Brücke als Behelf. Krypto-Selbsttest OK, 2/3 Relays verbunden
+(`relay.nostr.band` drosselte — egal, ein Relay reicht). Ehrlich: beweist nur
+das Medium (öffentlich, keine Haltbarkeit, kein Spam-Schutz). Nicht in
+Sage-Page/Discovery verlinkt (Notiz-Charakter, Brief-Leitplanke).
 
 **Nächster sinnvoller Schritt:** Klaus' geräteübergreifender Sichttest. Bei
 grün: Frage→Antwort übers Brett + grobe Tags fürs Vorfiltern (Sortierung bleibt

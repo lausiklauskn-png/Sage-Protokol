@@ -2,7 +2,18 @@
 
 **Rolle:** Bau-Sitzung (Freibrief). Eigenständiger Test-Stich, KEIN Produktiv-Modul.
 **Ergebnis:** auf `main` gemerged (PR #421, squash). Headless 29/29 grün.
-Geräteübergreifender Sichttest wartet auf Klaus.
+**Geräteübergreifender Boden-Beweis GRÜN** (Klaus' Test 2026-06-24, 19:27).
+
+## BODEN-BEWEIS GRÜN (Klaus' Gerätetest, 2026-06-24 19:27)
+
+Handy (Spore `e87a1618…b365`) tippt „Salate" → erscheint live im
+**Tablet**-Browser (andere Spore `2e084f93…7fae`, andere Identität) als
+eingehender Zettel via `relay.damus.io`. **Zwei getrennte Geräte, zwei
+Schlüsselpaare, ein geborgtes dummes Brett dazwischen — Klaus betreibt nichts.**
+Krypto-Selbsttest auf beiden „OK", 2/3 Relays verbunden (`relay.nostr.band`
+drosselte; ein Relay reicht). Damit steht die im Meilenstein noch als „offen"
+markierte Vorbedingung (Browser fragt Browser server-los) **direkt über das
+Medium** — nicht mehr nur über die KI-Brücke als Behelf.
 
 ## Auftrag
 
