@@ -1841,6 +1841,21 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · SITZUNGS-ABSCHLUSS Pinnwand (Klaus macht morgen weiter)
+
+**Stand:** Pinnwand-PWA fertig auf `main` (PRs #421–#436, alle squash). Voller
+Bogen: Boden-Beweis Medium → Frage→Antwort → Whitening → KI-Richter (Cloud +
+gratis WebLLM) → eigenständige installierbare PWA `pinnwand/` (moderne Optik +
+echtes Pin-Spore-Icon). Übergabe:
+`docs/sessions/archiv/2026-06-24_nostr-pinnwand-test.md`. Folge-Brief:
+`docs/sessions/BRIEF_PINNWAND_FOLGE.md`.
+
+**Offen (Klaus' Sichttest, morgen):** PWA-Optik/Animation flüssig + Geschmack;
+Icon/Favicon live; WebLLM-Gerätelauf (welche Modell-Klasse trägt das Tab S6).
+**Smokes grün:** nostr-test 31 + 57 + 10, pinnwand 41. Sage-Smokes unberührt.
+**Offene Fremd-PRs:** #401 (Discovery-Bilder), #302 (E2E-Spec) — alt, andere
+Sitzungen, unberührt gelassen; nur möglicher PULS-Rebase-Konflikt.
+
 ### 2026-06-24 · Pinnwand-PWA: moderner Look aus den ChatGPT-Mockups (ohne Messenger-Optik)
 
 **Rolle:** Bau-Sitzung (Freibrief). Klaus schickte 5 ChatGPT-Mockups (dunkel-
