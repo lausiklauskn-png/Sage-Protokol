@@ -16,7 +16,7 @@
  */
 "use strict";
 
-var CACHE_VERSION = "sbkim-pinnwand-v4";
+var CACHE_VERSION = "sbkim-pinnwand-v5";
 
 var APP_SHELL = [
   "./",
