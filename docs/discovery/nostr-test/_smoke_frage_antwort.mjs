@@ -84,6 +84,10 @@ ok("Probe 4: 03_embedding.js byte-identisch zu src/modules", srcEmb.equals(copyE
 ok("Probe 4: Sortier-Knopf + Status (semantic/semstatus)", /id="semantic"/.test(html) && /id="semstatus"/.test(html));
 ok("Probe 4: nutzt Modul 03 embedQuery/embedPassage", /embedQuery/.test(html) && /embedPassage/.test(html));
 ok("Probe 4: Cosinus über Skalarprodukt (dot)", /function dot\(/.test(html));
+// Anisotropie-Fix (LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md): zentrierter Cosinus.
+ok("Probe 4: Whitening/Zentrierung (Mittelwert-Abzug)", /function whiten\(/.test(html) && /function meanVec\(/.test(html));
+ok("Probe 4: Score = whitened Cosinus (relevance)", /function relevance\(/.test(html) && /whiten\(qVec, mean\)/.test(html));
+ok("Probe 4: wachsender Referenz-Schwerpunkt (accumulate)", /function accumulate\(/.test(html));
 ok("Probe 4: sortiert (resort), filtert nicht weg", /function resort\(/.test(html) && /sort\(\(a, b\) => b\.score - a\.score\)/.test(html));
 ok("Probe 4: Modell lädt erst auf Nutzer-Aktion (enableSemantic + init)", /enableSemantic/.test(html) && /\.init\(\)/.test(html));
 ok("Probe 4: fail-soft (Status err bei Modell-Fehler)", /status err/.test(html));

@@ -130,7 +130,13 @@
     Embedding-Modell (Modul 03, <code>Xenova/multilingual-e5-small</code>) — das
     ist der <i>einzige</i> Teil, der ein CDN/Internet nutzt (einmalig ~30&nbsp;MB,
     dann im Browser-Cache); es sortiert nach Nähe zur Frage und filtert nichts
-    weg, fail-soft. Krypto bleibt lokal vendoriert, kein Tracker.
+    weg, fail-soft. Der Score ist ein <b>zentrierter (whitened) Cosinus</b>:
+    der gemeinsame Mittelwert-Vektor wird abgezogen, damit der <i>Inhalt</i>
+    entscheidet und nicht die Hülle (gleiche Sprache/Stil) — Hintergrund:
+    Anisotropie-Befund, <code>docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md</code>.
+    Hier mit lokal wachsendem Referenz-Schwerpunkt (die netzweite Konstante
+    liefert erst Bau „Modul&nbsp;04 Whitening"). Krypto bleibt lokal vendoriert,
+    kein Tracker.
   </footer>
 
 <script src="./03_embedding.js"></script>
@@ -286,21 +292,47 @@ function renderAnswer(ev, relay) {
   if (semanticOn && view.qVec) embedAnswer(entry).then(() => resort(view));
 }
 
-// ---- Bedeutungs-Sortierung (Modul 03 Embedding; Cosinus wie Modul 04) ----
+// ---- Bedeutungs-Sortierung (Modul 03 Embedding; WHITENED Cosinus) ----
 // EHRLICH: sortiert die Antworten eines Threads nach Nähe zur Frage — es wird
 // NICHTS weggefiltert (anders als Modul 04 queryLocal mit 0.80-Schwelle: das
 // ist „Korpus durchsuchen", hier ist „Thread sortieren"). Modell lädt erst auf
 // bewusste Nutzer-Aktion (Pilz-Schicht-Prinzip), fail-soft.
+//
+// WICHTIG — Anisotropie-Fix (docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md):
+// roher e5-Cosinus hat einen hohen Boden (~0.82) — zwei beliebige deutsche
+// Texte „matchen" scheinbar, weil das Modell alle Vektoren in einen engen Kegel
+// legt (gleiche Sprache/Stil/passage:-Präfix = die „Hülle"). Lösung der Lehre:
+// vor dem Cosinus den Mittelwert-Vektor abziehen (Zentrierung ≈ Whitening-light),
+// dann heißt 0 wieder „unverwandt" und der INHALT entscheidet, nicht die Hülle.
+// Hier server-los/self-contained: statt einer netzweiten Konstante (die erst
+// Bau „Modul 04 Whitening" liefert) sammeln wir einen WACHSENDEN Referenz-
+// Schwerpunkt aus allen auf dieser Seite eingebetteten Texten. Je mehr Text,
+// desto stabiler der Boden-Abzug.
 let semanticOn = false;
 const EMB = () => window.SbkimEmbedding;
 function dot(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
+function l2norm(v) { let n = 0; for (let i = 0; i < v.length; i++) n += v[i] * v[i]; n = Math.sqrt(n) || 1; const o = new Float32Array(v.length); for (let i = 0; i < v.length; i++) o[i] = v[i] / n; return o; }
+
+// Wachsender Referenz-Schwerpunkt (μ-Schätzer der Anisotropie-Richtung).
+let sumVec = null, vecCount = 0;
+function accumulate(vec) {
+  if (!sumVec) sumVec = new Float32Array(vec.length);
+  for (let i = 0; i < vec.length; i++) sumVec[i] += vec[i];
+  vecCount++;
+}
+function meanVec() { return (sumVec && vecCount >= 3) ? l2norm(sumVec) : null; } // erst ab genug Text
+function whiten(v, mean) { const w = new Float32Array(v.length); for (let i = 0; i < v.length; i++) w[i] = v[i] - mean[i]; return l2norm(w); }
+// Score: zentrierter (whitened) Cosinus, sonst roher Cosinus als Fallback.
+function relevance(qVec, aVec, mean) {
+  return mean ? dot(whiten(qVec, mean), whiten(aVec, mean)) : dot(qVec, aVec);
+}
 
 async function embedQuestion(view) {
-  if (!view.qVec) view.qVec = await EMB().embedQuery(view.qEv.content);
+  if (!view.qVec) { view.qVec = await EMB().embedQuery(view.qEv.content); accumulate(view.qVec); }
   return view.qVec;
 }
 async function embedAnswer(entry) {
-  if (!entry.vec) entry.vec = await EMB().embedPassage(entry.ev.content);
+  if (!entry.vec) { entry.vec = await EMB().embedPassage(entry.ev.content); accumulate(entry.vec); }
   return entry.vec;
 }
 
@@ -312,8 +344,9 @@ async function resort(view) {
   }
   // Fehlende Antwort-Vektoren nachziehen.
   for (const e of view.answers) { if (!e.vec) { try { await embedAnswer(e); } catch { /* fail-soft */ } } }
+  const mean = meanVec(); // zentrieren, sobald genug Text gesammelt ist
   for (const e of view.answers) {
-    e.score = e.vec ? dot(view.qVec, e.vec) : -1;
+    e.score = e.vec ? relevance(view.qVec, e.vec, mean) : -2;
     if (e.vec) { e.badge.textContent = e.score.toFixed(2); e.badge.style.display = ''; }
   }
   const ordered = view.answers.slice().sort((a, b) => b.score - a.score);

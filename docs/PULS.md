@@ -1841,6 +1841,38 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr Frage→Antwort: Anisotropie-Fix (whitened Cosinus) — Klaus' Befund
+
+**Rolle:** Bau-Sitzung (Freibrief). Klaus' Sichttest der Bedeutungs-Sortierung
+zeigte das erwartete Problem: Scores klebten bei 0.80–0.84, Reihenfolge verkehrt
+(„Alkoholcocktails" 0.84 oben, „Salat+Melonenbowle" 0.80 unten, obwohl die Frage
+„leicht + alkoholfrei" war). Klaus erkannte: es misst die **Hülle** (gleiche
+Sprache/Stil), nicht den Inhalt — und erinnerte korrekt an die frühere
+„Rechenproblematik" + Lösung.
+
+**Diagnose:** genau der Befund aus `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`
+(**Anisotropie**): roher e5-Cosinus hat einen hohen Boden (~0.82), weil das
+Modell alle Vektoren in einen engen Kegel legt. Mein `dot()` rechnete rohen
+Cosinus — mathematisch korrekt, aber das von der Lehre als untauglich entlarvte
+Verfahren.
+
+**Fix (whitened Cosinus, self-contained):** vor dem Cosinus den Mittelwert-
+Vektor abziehen + re-normieren (`whiten`/`meanVec`/`relevance`), Score = zentriert.
+Statt einer netzweiten Konstante (liefert erst Bau „Modul 04 Whitening") ein
+**wachsender Referenz-Schwerpunkt** (`accumulate`) aus allen eingebetteten Texten
+der Seite. Fallback auf rohen Cosinus, solange < 3 Vektoren gesammelt.
+**Numerisch belegt** (synthetische Anisotropie-Probe): roh 0.91–0.999 → zentriert
++0.997 (passend) … −0.93 (Alkohol/schwer) — Spreizung + korrekte Reihenfolge.
+Footer nennt Whitening + Lehre. Smoke `_smoke_frage_antwort.mjs` **38/38**,
+Boden 31/31. `node --check`-sauber.
+
+**Ehrlich:** lokaler Schwerpunkt aus wenigen Texten ist ein grober μ-Schätzer
+(die saubere, netzweite Konstante kommt mit Modul 04 Whitening). Browser-
+Sichttest der neuen Reihenfolge wartet auf Klaus.
+
+**Nächster Schritt:** Klaus' Sichttest — passende Antwort sollte jetzt oben,
+Alkohol/schwer unten stehen, Scores gespreizt (auch negativ möglich = unverwandt).
+
 ### 2026-06-24 · Nostr Frage→Antwort: Bedeutungs-Sortierung eingebaut (Hälften verdrahtet)
 
 **Rolle:** Bau-Sitzung (Freibrief). Auf Klaus' „lass uns das einbauen" — die
