@@ -187,15 +187,43 @@
   @media (prefers-reduced-motion: reduce) {
     body::before, .logo { animation: none; }
   }
+  /* Werkzeug-Knöpfe (Topbar + leeren). */
+  .toolbar { display: flex; gap: 6px; align-items: center; }
+  .tbtn {
+    background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 10px; padding: 7px 10px; font-size: 0.9rem; line-height: 1;
+    cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+  .tbtn:hover { border-color: var(--accent); background: rgba(93,214,160,0.08); }
+  .tbtn:active { transform: translateY(1px); }
+  #board-clear { font-size: 0.78rem; padding: 5px 9px; }
+  /* Löschen-Kreuz pro Frage. */
+  .q-del {
+    position: absolute; right: 10px; top: 10px; width: 24px; height: 24px;
+    border-radius: 8px; border: 1px solid var(--line); background: var(--panel2);
+    color: var(--dim); font-size: 0.85rem; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .q-del:hover { color: var(--bad); border-color: var(--bad); }
+  /* Text-Vergrößerung (per data-scale am <html>). */
+  html[data-scale="1"] body { font-size: 16px; }
+  html[data-scale="2"] body { font-size: 18px; }
+  html[data-scale="3"] body { font-size: 20.5px; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="topbar">
     <div class="logo" aria-hidden="true"></div>
-    <div>
+    <div style="flex:1;">
       <h1>Pinnwand</h1>
       <div class="sub" style="margin:0;">Impulse · Verbindungen · Erkenntnisse</div>
+    </div>
+    <div class="toolbar">
+      <button id="tb-zoom" class="tbtn" title="Text vergrößern / verkleinern">🔍</button>
+      <button id="tb-full" class="tbtn" title="Vollbild / Vollansicht">⛶</button>
+      <button id="tb-reload" class="tbtn" title="Neu laden (Cache leeren)">🔄</button>
     </div>
   </div>
   <p class="sub">Eine <b>Frage</b> aufs geborgte, dumme Brett (Nostr) legen und
@@ -221,8 +249,10 @@
   </div>
 
   <div class="card">
-    <div class="label" style="margin-bottom: 8px;">Fragen &amp; Antworten
-      (Tag <code>#sbkim-frage-antwort-test</code>)</div>
+    <div class="row" style="justify-content: space-between; margin-bottom: 8px;">
+      <span class="label">Fragen &amp; Antworten (Tag <code>#sbkim-frage-antwort-test</code>)</span>
+      <button id="board-clear" class="tbtn" title="Angezeigte Suchen ausblenden (lokal, bleibt nach Neuladen weg)">🧹 leeren</button>
+    </div>
     <div class="sort-ctl">
       <button id="semantic" class="ghost">🧠 Antworten nach Bedeutung sortieren</button>
       <span class="status" id="semstatus">aus — sortiert nach Ankunft (lädt Modell ~30&nbsp;MB beim Einschalten)</span>
@@ -350,14 +380,46 @@ const threads = $('threads');           // <ul>
 const qViews = new Map();                // frageId -> { answersUl, answerIds:Set, qEv, qVec, answers:[] }
 const pendingAnswers = new Map();        // frageId -> [ev,...] (Antwort vor Frage angekommen)
 
+// Lokal ausgeblendete Suchen (persistent). EHRLICH: öffentliche Relay-Notizen
+// kann man nicht zuverlässig löschen — hier werden sie lokal weggeblendet,
+// bleiben aber nach Neuladen weg (Liste im localStorage dieses Geräts).
+const LS_HIDDEN = 'sbkim_pinnwand_hidden';
+let hidden = new Set();
+try { hidden = new Set(JSON.parse(localStorage.getItem(LS_HIDDEN) || '[]')); } catch { /* fail-soft */ }
+function saveHidden() { try { localStorage.setItem(LS_HIDDEN, JSON.stringify([...hidden])); } catch { /* */ } }
+function hideQuestion(id, li) {
+  hidden.add(id); saveHidden();
+  if (li && li.parentNode) li.parentNode.removeChild(li);
+  qViews.delete(id);
+  if (!threads.children.length) {
+    const e = document.createElement('li'); e.className = 'empty';
+    e.textContent = 'Brett leer — neue Fragen erscheinen hier.'; threads.appendChild(e);
+  }
+}
+function clearBoard() {
+  for (const id of [...qViews.keys()]) hidden.add(id);
+  saveHidden();
+  threads.innerHTML = '';
+  const e = document.createElement('li'); e.className = 'empty';
+  e.textContent = 'Brett geleert — neue Fragen erscheinen wieder hier.'; threads.appendChild(e);
+  qViews.clear();
+}
+
 function timeStr(ts) { return new Date(ts * 1000).toLocaleTimeString('de-DE'); }
 
 function renderQuestion(ev, relay) {
+  if (hidden.has(ev.id)) return; // lokal ausgeblendete Suchen nicht zeigen
   const empty = threads.querySelector('.empty');
   if (empty) empty.remove();
   const li = document.createElement('li');
   const card = document.createElement('div');
   card.className = 'q-card' + (ev.pubkey === pubHex ? ' mine' : '');
+  // Löschen-Kreuz: blendet diese Suche lokal aus (persistent, kein Relay-Eingriff).
+  const del = document.createElement('button');
+  del.className = 'q-del'; del.textContent = '✕';
+  del.title = 'Diese Suche ausblenden (bleibt nach Neuladen weg)';
+  del.addEventListener('click', () => { hideQuestion(ev.id, li); });
+  card.appendChild(del);
   const head = document.createElement('div');
   head.className = 'q-head';
   const who = document.createElement('span');
@@ -822,6 +884,53 @@ $('ask').addEventListener('click', async () => {
   $('qmsg').value = '';
   dispatch(ev, live[0] ? live[0].url : 'lokal');
   updateSendState();
+});
+
+// ---- Werkzeug-Knöpfe (leeren / vergrößern / vollbild / neu laden) ----
+$('board-clear').addEventListener('click', clearBoard);
+
+// Text-Vergrößerung: 3 Stufen, persistent.
+const LS_SCALE = 'sbkim_pinnwand_scale';
+function applyScale(s) { document.documentElement.setAttribute('data-scale', String(s)); }
+let scale = parseInt(localStorage.getItem(LS_SCALE) || '1', 10) || 1;
+applyScale(scale);
+$('tb-zoom').addEventListener('click', () => {
+  scale = scale >= 3 ? 1 : scale + 1;
+  applyScale(scale);
+  try { localStorage.setItem(LS_SCALE, String(scale)); } catch { /* */ }
+});
+
+// Vollbild / Vollansicht.
+$('tb-full').addEventListener('click', () => {
+  const d = document;
+  if (!d.fullscreenElement) {
+    (d.documentElement.requestFullscreen ? d.documentElement.requestFullscreen() : Promise.reject()).catch(() => {});
+    $('tb-full').textContent = '🗗';
+  } else {
+    (d.exitFullscreen ? d.exitFullscreen() : Promise.resolve()).catch(() => {});
+    $('tb-full').textContent = '⛶';
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  $('tb-full').textContent = document.fullscreenElement ? '🗗' : '⛶';
+});
+
+// Hard-Reload: Service-Worker + alle Caches leeren, dann frisch laden.
+// Behebt das „alte Version hängt"-Problem dauerhaft per Knopfdruck.
+$('tb-reload').addEventListener('click', async () => {
+  $('tb-reload').disabled = true;
+  $('tb-reload').textContent = '⏳';
+  try {
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((r) => r.unregister()));
+    }
+    if (window.caches) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => caches.delete(k)));
+    }
+  } catch { /* fail-soft */ }
+  location.reload();
 });
 
 // ---- Start ----
