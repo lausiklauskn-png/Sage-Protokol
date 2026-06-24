@@ -1841,6 +1841,39 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr Frage→Antwort übers Brett (Stich 2 nach Boden-Beweis)
+
+**Rolle:** Bau-Sitzung (Freibrief). Auf Klaus' „beides — Doku, dann bauen".
+Zwei Teile, je eigener PR: (1) Meilenstein-Doku nachgezogen (Medium-Hälfte
+bewiesen, PR #424); (2) dieser Bau.
+
+**Was getan (`docs/discovery/nostr-test/frage-antwort.html`, self-contained):**
+- Nächster Stich auf dem grünen Medium: nicht nur posten/lesen, sondern eine
+  **Frage** aufs Brett legen und **Antworten** einsammeln. NIP-01-konform:
+  Antwort = Notiz mit zusätzlichem `["e", frageId]`-Tag (Standard-Reply-Bezug).
+  Client partitioniert eingehende Notizen: ohne e-Tag = Frage (Top-Level), mit
+  e-Tag = Antwort (gruppiert unter ihre Frage). Verwaiste Antworten (Antwort vor
+  Frage angekommen) werden gepuffert und nachgereicht.
+- Eigenes Topic-Tag `#sbkim-frage-antwort-test` (getrennt vom Pinnwand-Brett).
+  **Teilt die Identität** mit dem Pinnwand-Test (`localStorage`-Key
+  `sbkim_nostr_test_priv`) → gleiche Spore über beide Seiten. Krypto erneut
+  lokal vendoriert (geteilte `noble-secp256k1.js`). Pro-Frage-Antwortfeld,
+  Krypto-Selbsttest, Relay-Status, ehrlicher Footer. Quer-Links beide Seiten.
+- Smoke `_smoke_frage_antwort.mjs` **23/23 grün** (NIP-01-Reply-Mechanik
+  kryptographisch belegt: Frage ohne e-Tag, Antwort referenziert Frage-id, beide
+  Signaturen verifiziert, zwei verschiedene Identitäten + Seiten-Struktur).
+  Boden-Smoke weiter **29/29 grün**.
+
+**Was offen / ehrlich:** Antworten erscheinen in **Ankunfts-Reihenfolge, noch
+nicht nach Bedeutung** — die semantische Sortierung (Modul 03/04) über das Brett
+ist der nächste Stich. Weiter öffentlich, keine Haltbarkeit, kein Spam-Schutz.
+**Geräteübergreifender Sichttest wartet auf Klaus** (Handy fragt → Tablet
+antwortet → erscheint beim Frager).
+
+**Nächster sinnvoller Schritt:** Klaus' Frage→Antwort-Gerätetest. Bei grün:
+Antworten nach Bedeutung sortieren (lokal Modul 03/04) + grobe Tags am Pin fürs
+Vorfiltern → Anschluss `notiz-bauplan-live-suche.md`.
+
 ### 2026-06-24 · Nostr-Pinnwand-Test — gerätegreifender Boden-Beweis (Medium)
 
 **Rolle:** Bau-Sitzung (Freibrief). **Auf `main` gemerged** (PR #421, squash).
