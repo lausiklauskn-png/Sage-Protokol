@@ -28,12 +28,15 @@ Hebt den Boden später zusätzlich:
 
 ## Stufe 2 — gratis, aber gerät-hungrig
 
-**Ein kleines Sprachmodell im Browser (WebLLM / WebGPU).** Versteht
-Absicht/Verneinung, kostet nichts, kein Schlüssel, server-los. Haken: braucht
-ein **leistungsfähiges Gerät** (WebGPU) + einen einmaligen Modell-Download
-(mehrere hundert MB). Auf einem normalen PC machbar; auf alten Tablets
-grenzwertig. **Status: nächster Bau-Stich** (in der Testseite vorgemerkt,
-`webllm`-Eintrag, noch deaktiviert).
+**Ein Sprachmodell im Browser (WebLLM / WebGPU).** Versteht Absicht/Verneinung,
+kostet nichts, kein Schlüssel, server-los. Haken: braucht **WebGPU** + einen
+einmaligen Download (Bibliothek über `esm.run` + Modell-Gewichte, je nach Klasse
+~0,4–5 GB), dann im Browser-Cache. **Status: gebaut** — in `frage-antwort.html`
+als Richter-Option „frei: KI im Browser" mit **Modell-Wahl Trabant→Mercedes**
+(Qwen2.5 0.5B / 1.5B / 3B / 7B, Llama 3.1 8B). Das alte Gerät ist die
+**Untergrenze**: läuft es dort (kleine/mittlere Klasse), haben neuere Geräte
+Luft für größere Modelle. **Nicht gleichwertig zur Cloud** und auf alter
+Hardware **deutlich langsamer** — gut genug als gratis Boden, nicht „dasselbe".
 
 ## Stufe 3 — bezahlt & am stärksten
 

@@ -135,13 +135,21 @@
       <select id="judgeprov">
         <option value="">⚖️ KI-Richter: aus (gratis bleibt Voreinstellung)</option>
         <option value="claude">Cloud: Claude (Anthropic) — eigener Schlüssel</option>
-        <option value="webllm" disabled>frei: KI im Browser (WebLLM) — nächster Stich</option>
+        <option value="webllm">frei: KI im Browser (WebLLM) — kein Cent, lädt Modell</option>
       </select>
       <input id="judgekey" type="password" placeholder="API-Schlüssel" style="display:none;" autocomplete="off">
       <a id="judgekeylink" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="display:none; color:#6aa6e0; font-size:0.8rem;">🔑 Schlüssel erstellen ↗</a>
       <label id="judgeremember-l" style="display:none; font-size:0.8rem; color:var(--dim);">
         <input type="checkbox" id="judgeremember" checked> auf diesem Gerät merken
       </label>
+      <select id="webllmmodel" style="display:none;">
+        <option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Trabant — Qwen2.5 0.5B (winzig, fast überall)</option>
+        <option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC" selected>VW Golf — Qwen2.5 1.5B (sichere Mittelklasse)</option>
+        <option value="Qwen2.5-3B-Instruct-q4f16_1-MLC">Großer VW — Qwen2.5 3B (am Limit alter Geräte)</option>
+        <option value="Qwen2.5-7B-Instruct-q4f16_1-MLC">Mercedes — Qwen2.5 7B (nur starke Rechner/PC)</option>
+        <option value="Llama-3.1-8B-Instruct-q4f32_1-MLC">Mercedes — Llama 3.1 8B (nur starke Rechner/PC)</option>
+      </select>
+      <button id="webllmload" class="ghost" style="display:none;">⬇️ Modell laden</button>
       <button id="judgerun" class="ghost" style="display:none;">⚖️ Richter anwenden</button>
       <span class="status" id="judgestatus"></span>
     </div>
@@ -166,7 +174,9 @@
     eine zweite, <b>optionale</b> Stufe: er versteht <i>Absicht/Verneinung</i>
     („alkoholfrei = KEIN Alkohol"), was der Vektor nicht kann. Drei Stufen, keine
     erzwingt Bezahlung: <b>(1)</b> gratis &amp; überall — lokales Embedding;
-    <b>(2)</b> gratis, gerät-hungrig — KI im Browser (WebLLM, nächster Stich);
+    <b>(2)</b> gratis, gerät-hungrig — KI im Browser (WebLLM, Modell-Wahl
+    Trabant→Mercedes; lädt Bibliothek + Modell einmalig aus dem Netz, dann im
+    Cache; langsamer + nicht ganz so stark wie die Cloud);
     <b>(3)</b> bezahlt &amp; am stärksten — Cloud mit eigenem Schlüssel. Der
     Schlüssel wird <b>nur mit Häkchen „auf diesem Gerät merken"</b> lokal
     gespeichert (<code>localStorage</code>, im Klartext, nur auf diesem Gerät —
@@ -483,9 +493,48 @@ async function callJudge(provider, key, prompt) {
   return parsed;
 }
 
-async function judgeView(view, provider, key) {
+// ---- Freier Richter: WebLLM (KI im Browser, kein Cent, kein Schlüssel) ----
+// EHRLICH: lädt die Bibliothek (esm.run) + die Modell-Gewichte einmalig aus dem
+// Netz (CDN/HuggingFace) — derselbe „Pilz-Egress auf bewusste Nutzer-Aktion" wie
+// das Embedding-Modell. Danach im Browser-Cache, kein Server, kein Konto. Auf
+// alter Hardware deutlich langsamer + nicht gleichwertig zur Cloud (kleines
+// Modell). Dein Gerät entscheidet beim Laden, welche „Klasse" trägt.
+let webllmLib = null, webllmEngine = null, webllmEngineModel = null;
+async function ensureWebllmLib() {
+  if (!webllmLib) webllmLib = await import('https://esm.run/@mlc-ai/web-llm');
+  return webllmLib;
+}
+async function loadWebllm(modelId, onProgress) {
+  if (webllmEngine && webllmEngineModel === modelId) return webllmEngine;
+  const lib = await ensureWebllmLib();
+  webllmEngine = await lib.CreateMLCEngine(modelId, {
+    initProgressCallback: (p) => onProgress(p && (p.text || (Math.round((p.progress || 0) * 100) + ' %'))),
+  });
+  webllmEngineModel = modelId;
+  return webllmEngine;
+}
+async function callWebllmJudge(prompt) {
+  if (!webllmEngine) throw new Error('Modell nicht geladen');
+  const reply = await webllmEngine.chat.completions.create({
+    messages: [{ role: 'user', content: prompt }], temperature: 0, max_tokens: 1024,
+  });
+  const txt = reply && reply.choices && reply.choices[0] && reply.choices[0].message && reply.choices[0].message.content;
+  const parsed = parseJudgeJson(txt);
+  if (!parsed) throw new Error('Antwort nicht als JSON lesbar');
+  return parsed;
+}
+
+// Steckbar: Cloud (claude) ODER frei (webllm). Beide liefern dasselbe Verdikt-Schema.
+async function getVerdicts(prompt) {
+  const p = $('judgeprov').value;
+  if (p === 'claude') return callJudge('claude', $('judgekey').value.trim(), prompt);
+  if (p === 'webllm') return callWebllmJudge(prompt);
+  throw new Error('kein Anbieter gewählt');
+}
+
+async function judgeView(view) {
   if (!view.answers.length) return;
-  const verdicts = await callJudge(provider, key, buildJudgePrompt(view.qEv.content, view.answers.map((e) => e.ev.content)));
+  const verdicts = await getVerdicts(buildJudgePrompt(view.qEv.content, view.answers.map((e) => e.ev.content)));
   for (const v of verdicts) {
     const e = view.answers[v.i];
     if (!e) continue;
@@ -520,15 +569,21 @@ function persistJudge() {
 }
 
 $('judgeprov').addEventListener('change', () => {
-  const cloud = $('judgeprov').value === 'claude';
+  const p = $('judgeprov').value;
+  const cloud = p === 'claude';
+  const free = p === 'webllm';
   $('judgekey').style.display = cloud ? '' : 'none';
   $('judgekeylink').style.display = cloud ? '' : 'none';
   $('judgeremember-l').style.display = cloud ? '' : 'none';
-  $('judgerun').style.display = cloud ? '' : 'none';
+  $('webllmmodel').style.display = free ? '' : 'none';
+  $('webllmload').style.display = free ? '' : 'none';
+  $('judgerun').style.display = (cloud || free) ? '' : 'none';
   $('judgestatus').className = 'status';
   $('judgestatus').textContent = cloud
     ? 'Schlüssel eingeben (oder „Schlüssel erstellen ↗"), dann „Richter anwenden"'
-    : 'aus — gratis Embedding-Weg bleibt aktiv';
+    : free
+      ? 'Modell-Klasse wählen → „Modell laden" (einmaliger Download), dann „Richter anwenden". Gratis, langsamer, nicht ganz so stark wie die Cloud.'
+      : 'aus — gratis Embedding-Weg bleibt aktiv';
   persistJudge();
 });
 $('judgekey').addEventListener('input', persistJudge);
@@ -543,16 +598,36 @@ $('judgeremember').addEventListener('change', persistJudge);
   }
 })();
 
+// Freies Modell laden (WebLLM). Einmaliger Download, dann im Cache.
+$('webllmload').addEventListener('click', async () => {
+  const st = $('judgestatus');
+  const modelId = $('webllmmodel').value;
+  $('webllmload').disabled = true;
+  st.className = 'status'; st.textContent = 'Modell lädt… (einmaliger Download, kann auf altem Gerät dauern)';
+  try {
+    if (!navigator.gpu) throw new Error('kein WebGPU in diesem Browser');
+    await loadWebllm(modelId, (t) => { st.className = 'status'; st.textContent = 'Lädt: ' + (t || '…'); });
+    st.className = 'status on'; st.textContent = 'Modell bereit — „Richter anwenden"';
+  } catch (e) {
+    st.className = 'status err'; st.textContent = 'Modell-Laden fehlgeschlagen: ' + (e.message || e) + ' — kleinere Klasse probieren oder Cloud nutzen';
+  }
+  $('webllmload').disabled = false;
+});
+
 $('judgerun').addEventListener('click', async () => {
   const provider = $('judgeprov').value;
-  const key = $('judgekey').value.trim();
   const st = $('judgestatus');
-  if (!key) { st.className = 'status err'; st.textContent = 'kein Schlüssel eingegeben'; return; }
+  if (provider === 'claude' && !$('judgekey').value.trim()) {
+    st.className = 'status err'; st.textContent = 'kein Schlüssel eingegeben'; return;
+  }
+  if (provider === 'webllm' && !webllmEngine) {
+    st.className = 'status err'; st.textContent = 'erst „Modell laden" drücken'; return;
+  }
   $('judgerun').disabled = true;
   st.className = 'status'; st.textContent = 'Richter denkt nach…';
   let okCount = 0, failCount = 0;
   for (const view of qViews.values()) {
-    try { await judgeView(view, provider, key); okCount++; }
+    try { await judgeView(view); okCount++; }
     catch (e) { failCount++; st.dataset.lastErr = e.message || String(e); }
   }
   if (okCount && !failCount) { st.className = 'status on'; st.textContent = 'an — Antworten nach Absicht bewertet (⚖️ = KI-Urteil)'; }
