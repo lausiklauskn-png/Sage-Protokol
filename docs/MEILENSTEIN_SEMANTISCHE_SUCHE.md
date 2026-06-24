@@ -84,15 +84,30 @@ volle bidirektionale, server-lose Cross-Knoten-Suche funktioniert?** — **Noch
 nicht vollständig.** Sauber getrennt:
 
 - ✅ **Semantik-Hälfte bewiesen** — Bedeutung verstehen + ranken.
-- ⏳ **Bidirektional-Cross-Knoten-Hälfte noch nicht end-to-end gezeigt** — dass
-  Knoten A (in einem Tab/Repo) Knoten B (in einem anderen) **server-los** nach
-  Bedeutung fragt und eine bedeutungs-sortierte Antwort zurückbekommt. Dafür
-  brauchen wir **≥ 2 echte, andockende Knoten**; bisher sind es Klaus' eigene.
-- **Warum der Umweg über die KI-Brücke?** Weil wir (noch) kein Knoten-Netz und
+- ✅ **Medium-Hälfte bewiesen (NEU, 2026-06-24)** — der **server-lose Transport
+  zwischen zwei getrennten Geräten** steht. Boden-Beweis über ein geborgtes
+  dummes Brett (Nostr-Relays): Klaus' Handy (Spore `e87a1618…b365`) tippt einen
+  Zettel → er taucht live im Tablet-Browser (andere Spore `2e084f93…7fae`, andere
+  Identität) via `relay.damus.io` auf, und umgekehrt. **Zwei echte Browser, zwei
+  Schlüsselpaare, ein machtloses Brett dazwischen — Klaus betreibt nichts.** Damit
+  ist „Browser fragt Browser server-los" **nicht mehr nur über die KI-Brücke**
+  belegt, sondern direkt über ein Medium. Test (Notiz-Charakter, nicht verlinkt):
+  [`discovery/nostr-test/`](discovery/nostr-test/), Protokoll
+  [`sessions/archiv/2026-06-24_nostr-pinnwand-test.md`](sessions/archiv/2026-06-24_nostr-pinnwand-test.md).
+- ⏳ **Was noch fehlt — die zwei Hälften verdrahten.** Bewiesen sind jetzt
+  *Semantik* (lokal) und *Medium* (server-loser Cross-Geräte-Transport) — aber
+  **getrennt**. Noch nicht gezeigt: dass eine **Frage** als solche übers Brett
+  geht und eine **bedeutungs-sortierte Antwort aus dem aktuellen Inhalt** eines
+  anderen Knotens zurückkommt (Frage→Antwort statt nur posten/lesen; Modul 04.C
+  `queryLocal` + Modul 15 Membran `op:"query"`). Plus: das Nostr-Brett trägt
+  bisher nur **öffentliche** Zettel ohne Haltbarkeitsgarantie und ohne
+  Spam-Schutz — das Medium ist bewiesen, nicht gehärtet.
+- **Warum der Umweg über die KI-Brücke war?** Weil wir (noch) kein Knoten-Netz und
   keinen Server hatten, haben wir die **semantische Qualität** über eine externe
   KI (Pilz-Egress) getestet — als **Beweis-Träger und Brücke**, bis das Mycel
-  selbst genug Fruchtkörper hat. Das ist ein **großer Fortschritt**, aber bewusst
-  ein Zwischenschritt, kein Endzustand.
+  selbst genug Fruchtkörper hat. Mit dem Medium-Beweis ist die Brücke nun nicht
+  mehr der **einzige** Weg, server-los zwischen Browsern zu reden — ein echter
+  Schritt vom Zwischenstand zum Fundament.
 
 Das ist genau die Lücke, die die nächsten Bauten schließen (Modul 04.C
 Cross-Knoten-Antwort, Modul 15 Membran `op:"query"`, der Cross-Knoten-Such-Test
