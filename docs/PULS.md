@@ -1841,6 +1841,45 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr-Pinnwand-Test — gerätegreifender Boden-Beweis (Medium)
+
+**Rolle:** Bau-Sitzung (Freibrief). **Auf `main` gemerged** (PR #421, squash).
+Eigenständiger Test-Stich, KEIN Produktiv-Modul.
+
+**Ziel:** beweisen, dass ein Zettel aus Browser A über ein geborgtes dummes
+Brett (Nostr-Relays) in Browser B / auf einem anderen Gerät auftaucht —
+server-los, Klaus betreibt nichts. Vorbedingung für die offene Cross-Knoten-
+Pinnwand (siehe `notiz-briefkasten-pinnwand.md`).
+
+**Was getan (alles unter `docs/discovery/nostr-test/`):**
+- **`noble-secp256k1.js`** lokal vendoriert (kein Runtime-CDN). **Befund &
+  Abweichung vom Brief:** der Brief nennt „@noble/secp256k1 v2, async Schnorr"
+  — aber **v2 hat Schnorr/BIP340 entfernt** (ausgelagert nach `@noble/curves`,
+  kein `schnorr`-Export mehr). Nostr (NIP-01) braucht Schnorr mit x-only
+  pubkeys. Daher **v1.7.1** vendoriert: letzte Single-File-, dependency-freie
+  ESM-Variante mit async Schnorr via WebCrypto. Einzige Anpassung ggü.
+  Original: Bare-Import `'crypto'` entfernt + Node-Zweig `node: undefined`
+  (browser-tauglich). Begründung im Datei-Kopf.
+- **`index.html`** — minimaler NIP-01-Client: Schlüsselpaar in `localStorage`
+  (x-only pubkey), Event mit sha256-id + Schnorr-Sig, drei freie Relays
+  (damus/nos.lol/nostr.band) mit Status-Punkten, Textfeld + „Aufs Brett legen",
+  Live-Liste eingehender Zettel, Krypto-Selbsttest beim Laden, ehrlicher Footer.
+- **`_smoke.mjs`** — **29/29 grün**: Krypto dependency-frei + voller Nostr-
+  Krypto-Roundtrip (x-only/sha256/Schnorr sign+verify + Negativprobe) + Seite
+  self-contained mit UI-Ankern und Relay-/Tag-Konfiguration. Relay-Round-Trip
+  NICHT vorausgesetzt (Repo hat kein Playwright; Browser-DOM-Lauf via echtem
+  Modul-Import + Datei-Analyse ersetzt).
+
+**Was offen:** Der eigentliche **Boden-Beweis ist headless NICHT erbracht** —
+er braucht Klaus' Gerätetest: URL (über GitHub Pages) auf Tablet UND Handy
+öffnen → „Salate" tippen → taucht beim anderen binnen Sekunden auf. Ehrlich:
+beweist nur das Medium (öffentlich, keine Haltbarkeit, kein Spam-Schutz).
+Nicht in Sage-Page/Discovery verlinkt (Notiz-Charakter, Brief-Leitplanke).
+
+**Nächster sinnvoller Schritt:** Klaus' geräteübergreifender Sichttest. Bei
+grün: Frage→Antwort übers Brett + grobe Tags fürs Vorfiltern (Sortierung bleibt
+lokal, Modul 03/04) — Anschluss an `notiz-bauplan-live-suche.md`.
+
 ### 2026-06-23 · Discovery-Expedition: Hero-Animation-Feinschliff (Live-Sichttest mit Klaus)
 
 **Rolle:** Bau-Sitzung (Freibrief). Direkt im Anschluss an den Seiten-Bau,
