@@ -1,0 +1,79 @@
+/*
+ * Pinnwand — Service-Worker (Standalone-PWA).
+ *
+ * Macht die Seite installierbar (Chrome verlangt einen fetch-Handler) und cacht
+ * die App-Schale (dieser Ordner), damit die Pinnwand offline startet.
+ *
+ * Strategie:
+ *   - Eigene App-Schale (same-origin, in diesem Scope): CACHE-FIRST, dann Netz.
+ *   - Navigationen offline: Fallback auf ./index.html.
+ *   - Alles andere (Nostr-Relays via WebSocket, CDN-Embedding-Modell,
+ *     WebLLM-Bibliothek/Gewichte, KI-API): DURCHREICHEN, nicht cachen — gehört
+ *     nicht in den SW-Cache (WebSockets fängt der SW ohnehin nicht ab; Modelle
+ *     sind zu groß; Schlüssel/Antworten haben im Cache nichts verloren).
+ *
+ * Bei einer Änderung der App-Schale CACHE_VERSION erhöhen (Cache-Bust).
+ */
+"use strict";
+
+var CACHE_VERSION = "sbkim-pinnwand-v1";
+
+var APP_SHELL = [
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./impressum.html",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./modules/noble-secp256k1.js",
+  "./modules/03_embedding.js",
+];
+
+self.addEventListener("install", function (event) {
+  event.waitUntil(
+    caches.open(CACHE_VERSION).then(function (cache) {
+      return Promise.all(APP_SHELL.map(function (url) {
+        return cache.add(url).catch(function (err) {
+          console.warn("[pinnwand-sw] Precache übersprungen:", url, err);
+        });
+      }));
+    }).then(function () { return self.skipWaiting(); })
+  );
+});
+
+self.addEventListener("activate", function (event) {
+  event.waitUntil(
+    caches.keys().then(function (keys) {
+      return Promise.all(keys.map(function (k) {
+        if (k !== CACHE_VERSION) return caches.delete(k);
+      }));
+    }).then(function () { return self.clients.claim(); })
+  );
+});
+
+self.addEventListener("fetch", function (event) {
+  var req = event.request;
+  if (req.method !== "GET") return;
+
+  var url;
+  try { url = new URL(req.url); } catch (_e) { return; }
+
+  // Fremd-Origin (Relays, CDN-Modell, WebLLM, KI-API): durchreichen, nicht cachen.
+  if (url.origin !== self.location.origin) return;
+
+  event.respondWith(
+    caches.match(req).then(function (cached) {
+      if (cached) return cached;
+      return fetch(req).then(function (res) {
+        if (res && res.status === 200 && res.type === "basic") {
+          var copy = res.clone();
+          caches.open(CACHE_VERSION).then(function (cache) { cache.put(req, copy); });
+        }
+        return res;
+      }).catch(function () {
+        if (req.mode === "navigate") return caches.match("./index.html");
+        return new Response("", { status: 504, statusText: "Offline" });
+      });
+    })
+  );
+});

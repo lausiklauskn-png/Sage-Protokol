@@ -1841,6 +1841,36 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Pinnwand als eigene installierbare PWA (`pinnwand/`)
+
+**Rolle:** Bau-Sitzung (Freibrief). Klaus' Wunsch: die fertige Pinnwand als
+**eigene, downloadbare PWA** in eigenem Ordner (wie `such-tool/`), moderner Look
+(inspiriert vom MYZEL-Mockup, aber nicht steampunk — modern, mehrere Geschmäcker),
+weiter hier verbesserbar.
+
+**Was getan (neuer Ordner `pinnwand/`, Geschwister zu `such-tool/`):**
+- Vollständige **installierbare PWA**: `index.html` (Engine der Frage→Antwort-Seite
+  1:1 übernommen — Nostr/Krypto/Auto-Reconnect/Whitening/Richter cloud+webllm),
+  `manifest.json` (display standalone, Icons 192/512 + maskable), `sw.js`
+  (App-Schale cache-first, Fremd-Origin durchgereicht — Relays/CDN/WebLLM/API),
+  `impressum.html` (Datenschutz-Vorlage, **keine PII**, „Brett ist öffentlich"-Warnung),
+  Icons per Node-zlib generiert (moderner Knoten-Netz-Look), `modules/`
+  (byte-Kopien noble + 03_embedding, Drift-Guard).
+- **Moderner Skin:** Verlaufs-Hintergrund, Topbar mit Logo, weichere Karten —
+  bewusst aufgeräumt statt Steampunk. SW-Registrierung, `viewport-fit=cover`,
+  Apple-PWA-Meta.
+- Smoke `pinnwand/_smoke.mjs` **41/41** (Installierbarkeit + Drift-Guard + SW +
+  Engine mitgekommen). `node --check` index/sw/03 sauber. Sage-Smokes unberührt
+  (such-tool 46/46).
+
+**Ehrlich offen:** Installations-Sichttest (PWA „zum Startbildschirm",
+Offline-Start) + die WebLLM-Stufe warten auf Klaus' Gerät. NICHT in Sage-Page
+verlinkt (Klaus' Wort abwarten). Folge möglich: Graph-Ansicht als „zweite
+Gestalt" (später, Klaus' Mockup), Relevanz-Rückmeldung.
+
+**Nächster Schritt:** Klaus öffnet `pinnwand/` über Pages, prüft Optik + „zum
+Startbildschirm hinzufügen" (Installierbarkeit), meldet Geschmack/Feinschliff.
+
 ### 2026-06-24 · Nostr KI-Richter Stufe 2: freier WebLLM-Pfad (Modell-Wahl Trabant→Mercedes)
 
 **Rolle:** Bau-Sitzung (Freibrief). Klaus' Geräte-Check ergab überraschend
