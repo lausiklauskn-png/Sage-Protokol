@@ -1841,6 +1841,35 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr KI-Richter Stufe 2: freier WebLLM-Pfad (Modell-Wahl Trabant→Mercedes)
+
+**Rolle:** Bau-Sitzung (Freibrief). Klaus' Geräte-Check ergab überraschend
+**WebGPU-Adapter nutzbar = ja** auf dem Galaxy Tab S6 (8 Kerne, ~4 GB grob,
+11 GB Kontingent). Klaus' Argument: sein altes Gerät ist die **Untergrenze** —
+läuft es dort, haben neuere Geräte Luft → Modell-Wahl bis hoch, nicht nur klein.
+
+**Was getan (`frage-antwort.html`):** dritter, **gratis** Richter-Backend WebLLM
+(KI im Browser, kein Schlüssel, kein Cent). Steckbar neben Cloud (`getVerdicts`
+verzweigt claude|webllm, gleiches Verdikt-Schema, gleiche Verneinungs-Prompt +
+`parseJudgeJson`). Lazy-Import `esm.run/@mlc-ai/web-llm`, `CreateMLCEngine` mit
+Fortschritts-Callback, `engine.chat.completions`. **Modell-Auswahl
+Trabant→Mercedes:** Qwen2.5 0.5B/1.5B(Default)/3B/7B + Llama 3.1 8B.
+„Modell laden"-Knopf (einmaliger Download → Cache), fail-soft (kein WebGPU /
+Lade-Fehler → Hinweis, gratis Embedding bleibt). Footer + RICHTER-STUFEN.md
+(Stufe 2 „gebaut") nachgezogen.
+
+**EHRLICH — nicht headless testbar:** mein Cloud-Container hat keine GPU/Browser,
+ich konnte WebLLM NICHT real laufen lassen (nur Struktur-Smoke + `node --check`).
+WebLLM hat geräte-/modell-spezifische Eigenheiten (f16-Support, exakte Modell-
+Kennungen) — der **erste Browser-Lauf bei Klaus ist der echte Test**, wir tunen
+Modell-ID/Klasse mit seinem Feedback. Nicht gleichwertig zur Cloud (kleines
+Modell, langsamer) — gratis Boden, nicht „dasselbe". Smoke `_smoke_frage_antwort`
+**57/57**, Boden 31/31, Geräte-Check 10/10.
+
+**Nächster Schritt:** Klaus lädt auf dem Tablet erst „VW Golf" (1.5B, sicher),
+dann „großer VW" (3B, am Limit) → meldet, ob/wie schnell es läuft. Danach
+Modell-Liste justieren. Optional später: Relevanz-Rückmeldung.
+
 ### 2026-06-24 · Nostr-Test: Geräte-Check (kann mein Gerät WebLLM?)
 
 **Rolle:** Bau-Sitzung (Freibrief). Klaus' Frage „checke mein System / was sind

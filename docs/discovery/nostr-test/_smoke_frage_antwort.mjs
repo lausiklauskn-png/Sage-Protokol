@@ -108,7 +108,11 @@ ok("Probe 5: Prompt trimmt auf Verneinung/Absicht", /buildJudgePrompt/.test(html
 ok("Probe 5: robustes JSON-Parsen (parseJudgeJson)", /function parseJudgeJson/.test(html));
 ok("Probe 5: Richter-Urteil hat Vorrang (judgeScore-Sortierung)", /judgeScore/.test(html));
 ok("Probe 5: fail-soft (gratis Sortierung bleibt bei Fehler)", /gratis Sortierung bleibt/.test(html));
-ok("Probe 5: WebLLM als nächster Stich vermerkt", /webllm|WebLLM/.test(html));
+ok("Probe 5: WebLLM-Option aktiv (nicht disabled)", /value="webllm">/.test(html) && !/value="webllm" disabled/.test(html));
+ok("Probe 5: WebLLM lädt Bibliothek lazy via esm.run", /import\('https:\/\/esm\.run\/@mlc-ai\/web-llm'\)/.test(html));
+ok("Probe 5: Modell-Wahl Trabant→Mercedes (0.5B…8B)", /Qwen2\.5-0\.5B/.test(html) && /Qwen2\.5-3B/.test(html) && /Llama-3\.1-8B/.test(html));
+ok("Probe 5: getVerdicts steckbar (claude ODER webllm)", /function getVerdicts/.test(html) && /callWebllmJudge/.test(html));
+ok("Probe 5: WebLLM fail-soft ohne WebGPU", /kein WebGPU in diesem Browser/.test(html));
 
 // Gegenprobe in index.html: Vorwärts-Link gesetzt.
 const indexHtml = readFileSync(resolve(dir, "index.html"), "utf8");
