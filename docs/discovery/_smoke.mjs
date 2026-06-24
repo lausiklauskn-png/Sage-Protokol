@@ -103,7 +103,7 @@ console.log('Bild-Figuren:     ', figureCount, '(erwartet 11)');
 console.log('Storyboard-Zeilen:', storyLines, '(erwartet 4)');
 console.log('Whisper-Zeilen:   ', whispers, '(erwartet 2)');
 console.log('Schluss-Figur:    ', schlussFig, '(erwartet 1)');
-console.log('Footer-Links:     ', footerLinks, '(erwartet 4)');
+console.log('Footer-Links:     ', footerLinks, '(erwartet 6)');
 console.log('Hero revealed:    ', heroRevealed);
 
 const checks = {
@@ -114,7 +114,7 @@ const checks = {
   storyLines:   storyLines === 4,
   whispers:     whispers === 2,
   schlussFig:   schlussFig === 1,
-  footerLinks:  footerLinks === 4,
+  footerLinks:  footerLinks === 6,
   heroRevealed: heroRevealed === true,
   zeroErrors:   errs.length === 0,
   noUnexpected404: bad404.length === 0
