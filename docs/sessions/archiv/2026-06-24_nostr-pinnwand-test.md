@@ -1,102 +1,83 @@
-# Übergabeprotokoll — 2026-06-24 · Nostr-Pinnwand-Test (Boden-Beweis)
+# Übergabeprotokoll — 2026-06-24 · Nostr-Pinnwand: vom Boden-Beweis zur PWA
 
-**Rolle:** Bau-Sitzung (Freibrief). Eigenständiger Test-Stich, KEIN Produktiv-Modul.
-**Ergebnis:** auf `main` gemerged (PR #421, squash). Headless 29/29 grün.
-**Geräteübergreifender Boden-Beweis GRÜN** (Klaus' Test 2026-06-24, 19:27).
+**Rolle:** Bau-Sitzung (Freibrief), sehr lang, viele kleine PRs (alle squash auf
+`main`, #421–#436). Klaus testete durchgehend geräteübergreifend live mit.
+**Charakter:** Discovery/Notiz — NICHT in Sage-Page verlinkt (Klaus' Wort
+abwarten). Kein `src/`-Modul-Code, kein Protokoll-Bump, keine PII.
 
-## BODEN-BEWEIS GRÜN (Klaus' Gerätetest, 2026-06-24 19:27)
+## Der Bogen in einem Satz
 
-Handy (Spore `e87a1618…b365`) tippt „Salate" → erscheint live im
-**Tablet**-Browser (andere Spore `2e084f93…7fae`, andere Identität) als
-eingehender Zettel via `relay.damus.io`. **Zwei getrennte Geräte, zwei
-Schlüsselpaare, ein geborgtes dummes Brett dazwischen — Klaus betreibt nichts.**
-Krypto-Selbsttest auf beiden „OK", 2/3 Relays verbunden (`relay.nostr.band`
-drosselte; ein Relay reicht). Damit steht die im Meilenstein noch als „offen"
-markierte Vorbedingung (Browser fragt Browser server-los) **direkt über das
-Medium** — nicht mehr nur über die KI-Brücke als Behelf.
+Aus einem reinen Medium-Test (driftet ein Zettel server-los von Browser A zu B?)
+wurde eine eigenständige, installierbare **Pinnwand-PWA** mit semantischer
+Frage→Antwort-Suche (Embedding + Whitening + KI-Richter Cloud/WebLLM).
 
-## Auftrag
+## Was gebaut + bewiesen wurde (chronologisch)
 
-Beweisen, dass ein Zettel aus Browser A über ein geborgtes, dummes Brett
-(Nostr-Relays) in Browser B / auf einem anderen Gerät auftaucht — server-los,
-Klaus betreibt nichts. Beweist NUR das Medium (Vorbedingung für die offene
-Cross-Knoten-Pinnwand, `notiz-briefkasten-pinnwand.md`). Brief:
-`docs/sessions/BRIEF_BAU_NOSTR_PINNWAND_TEST.md`.
+1. **Boden-Beweis Medium (PR #421):** `docs/discovery/nostr-test/` — minimaler
+   NIP-01-Nostr-Client, Krypto **lokal vendoriert** (`noble-secp256k1.js`
+   **v1.7.1** — Befund: v2 hat Schnorr entfernt; einzige Anpassung Bare-Import
+   raus). **GRÜN** (Klaus' Handy↔Tablet, „Salate" driftet via relay.damus.io).
+2. **Meilenstein nachgezogen (#424):** `MEILENSTEIN_SEMANTISCHE_SUCHE.md` §4 —
+   Medium-Hälfte ✅ bewiesen, ehrlich getrennt von der Semantik-Hälfte.
+3. **Frage→Antwort (#425):** `frage-antwort.html` — NIP-01-Reply via `e`-Tag,
+   Thread-Gruppierung, gepufferte verwaiste Antworten. **GRÜN** (Tablet fragt,
+   Handy antwortet, erscheint korrekt eingerückt).
+4. **Auto-Reconnect (#426):** Relays verbinden bei Abbruch neu (Backoff +
+   `visibilitychange`) — Klaus' Mobil-Befund.
+5. **Bedeutungs-Sortierung (#427):** Modul 03 Embedding byte-vendoriert, Cosinus,
+   Modell lädt nur auf Knopfdruck (Pilz-Prinzip).
+6. **Anisotropie-Fix / Whitening (#428):** Klaus' Befund „Scores kleben 0.80–0.84,
+   misst die Hülle". Lösung aus `LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`:
+   zentrierter (whitened) Cosinus, wachsender Referenz-Schwerpunkt. Numerisch
+   belegt. **GRÜN** — passender Treffer stieg nach oben.
+7. **KI-Richter Stufe 1 Cloud (#429, #430, #431):** steckbar (`getVerdicts`),
+   Claude (Mistral RAUS — Klaus), Verneinungs-Prompt, `parseJudgeJson`, ⚖️-Badge
+   + Begründung, Vorrang vor Cosinus. Schlüssel-Link + opt-in „merken". **GRÜN
+   mit Glanz:** „vergorener Essig 0.20 — enthält Alkohol, widerspricht
+   alkoholfrei" (Weltwissen + Verneinung, das der Vektor nicht kann).
+8. **Geräte-Check (#432):** `geraete-check.html` — misst WebGPU/RAM/Speicher auf
+   Klaus' Gerät (ich kann es aus der Cloud nicht). Ergebnis: WebGPU **ja**.
+9. **KI-Richter Stufe 2 WebLLM frei (#433):** dritter Backend, gratis, lokal im
+   Browser, Modell-Wahl Trabant→Mercedes (Qwen 0.5/1.5/3/7B, Llama 8B). **NICHT
+   headless testbar** (Container ohne GPU) — wartet auf Klaus' Gerätelauf.
+10. **Pinnwand-PWA (#434):** eigener Ordner `pinnwand/` (wie `such-tool/`) —
+    installierbar (manifest + SW + Icons), Engine 1:1, eigener Download.
+11. **Moderner Look (#435):** aus Klaus' 5 ChatGPT-Mockups kombiniert, **ohne
+    WhatsApp-Avatare** (Netz-Knoten-Punkt statt Gesicht), Aurora-Hintergrund,
+    glasige Karten, „?"-Knoten, farb-gestufte Score-Pillen, `prefers-reduced-motion`.
+12. **Echtes Icon (#436):** Klaus' Pin-Spore-Icon (kein Text, maskable) →
+    Pillow LANCZOS auf 512+192, App-Icon + Favicon.
 
-## Was gebaut wurde (`docs/discovery/nostr-test/`)
+## Drei freie Stufen (Klaus' „arme Oma"-Frage, dokumentiert in `RICHTER-STUFEN.md`)
 
-- **`noble-secp256k1.js`** — lokal vendoriert, kein Runtime-CDN, kein Tracker.
-- **`index.html`** — minimaler NIP-01-Client (vanilla, ES-Module).
-- **`_smoke.mjs`** — Headless-Smoke, reines Node (Repo-Stil), 29/29 grün.
+1. gratis/überall: lokales Embedding + Whitening.
+2. gratis/gerät-hungrig: WebLLM im Browser (kein Cent, lokal, langsamer/schwächer).
+3. bezahlt/stärkste: Cloud (Claude, eigener Schlüssel, Bruchteil-Cent/Suche).
+Plus Vision: Pilz-Schicht trägt Kosten für die, die nicht können.
 
-## Zentraler Befund (Abweichung vom Brief — bewusst, dokumentiert)
+## Ehrliche offene Punkte (Klaus' Sichttests)
 
-Der Brief nennt „@noble/secp256k1 **v2**, single file, async Schnorr". Faktisch:
-**v2 hat Schnorr/BIP340 entfernt** (in `@noble/curves` ausgelagert, kein
-`schnorr`-Export im Single-File-Build mehr — geprüft an `@noble/secp256k1@2.3.0`
-und dessen README § „Upgrading v1 to v2": „Disable some features … Schnorr
-signatures … switch to curves if you need them").
+- **Optik der PWA** (Aurora/Animation flüssig auf dem Tablet? Geschmack?) — wartet.
+- **Icon + Favicon** live — wartet.
+- **WebLLM-Gerätelauf** (erst „VW Golf" 1.5B, dann 3B): lädt es? wie schnell?
+  welche Modell-Kennung trägt sein Tab S6? — **headless nicht testbar**, Modell-
+  Liste/IDs mit seinem Feedback justieren.
+- **Smokes grün:** `nostr-test/_smoke.mjs` 31, `_smoke_frage_antwort.mjs` 57,
+  `_smoke_geraete_check.mjs` 10, `pinnwand/_smoke.mjs` 41. Sage-Smokes unberührt.
 
-Nostr (NIP-01) braucht aber Schnorr mit **x-only pubkeys** (BIP340). Daher
-**v1.7.1** vendoriert — die letzte Single-File-, dependency-freie ESM-Variante
-mit async Schnorr via WebCrypto. Das erfüllt die eigentliche Brief-Absicht
-(„single file, async Schnorr via WebCrypto, x-only"), nur unter korrekter
-Versionsnummer.
+## Wichtige Lehren für die nächste Sitzung
 
-**Einzige Anpassung ggü. dem npm-Original** (browser-tauglich machen, im
-Datei-Kopf dokumentiert):
-- Zeile `import * as nodeCrypto from 'crypto';` entfernt (Bare-Import, bricht
-  im Browser-ESM — der Brief warnt ausdrücklich davor).
-- `node: nodeCrypto,` → `node: undefined,` (Node-Zweig entfällt; der Browser
-  nutzt ohnehin `crypto.web = self.crypto.subtle`).
+- **Pages-Deploy-Verzug:** mehrere schnelle Merges → Pages verwirft Zwischen-
+  Builds, neue Seiten brauchen 1–2 min + Hard-Reload (Klaus' 404 war das).
+- **WebLLM ist von der Cloud-Session nicht testbar** (keine GPU/Browser) — alles
+  WebLLM-bezogene ist „blind gebaut", Klaus' Lauf ist der Wahrheitstest.
+- **Embedding ≠ Absicht:** Vektor misst Thema (auch whitened), Verneinung/Welt-
+  wissen kann nur der Richter. Tiefer Inhalt (Klaus' Erkenntnis) hebt beides.
+- **Keine Gesichts-Avatare** (WhatsApp-Look) — Identität als Knoten-Punkt.
 
-Kryptographischer Kern sonst byte-für-byte unverändert. Roundtrip in Node
-(mit `globalThis.self`-Shim) bestätigt: 32-Byte priv, 32-Byte x-only pub,
-sha256-id, 64-Byte Schnorr-Sig, verify=true, Negativprobe schlägt fehl.
+## Nächster sinnvoller Schritt
 
-## index.html — Verhalten
-
-- Identität: 32 Zufallsbytes (`crypto.getRandomValues` via noble `randomPrivateKey`),
-  hex in `localStorage` (`sbkim_nostr_test_priv`) → Wiederkehr = gleiche Spore.
-- Event `{pubkey, created_at, kind:1, tags:[["t","sbkim-pinnwand-test"]], content}`,
-  `id = sha256(JSON.stringify([0,pubkey,created_at,kind,tags,content]))`,
-  `sig = schnorr.sign(idBytes, priv)`.
-- Senden `["EVENT", ev]`; Abo `["REQ", subId, {kinds:[1],"#t":[TAG],limit:50}]`;
-  Empfang `["EVENT", subId, ev]` → Dedup per `id` → Liste (Autor-Kurz-pubkey +
-  Uhrzeit + Relay), eigene Zettel markiert.
-- Drei freie Relays mit Status-Punkten: `relay.damus.io`, `nos.lol`,
-  `relay.nostr.band`.
-- Krypto-Selbsttest beim Laden (sign+verify einer Konstante) → „OK"/„FAIL",
-  belegt die Krypto auch offline.
-- Eigener Zettel wird nach dem Senden sofort lokal gezeigt (Relay-Echo verzögert).
-
-## Smoke — was er prüft / was nicht
-
-Repo hat **kein Playwright** (trotz Brief-Wortlaut „Playwright wie die anderen"
-— die echten Sage-Smokes sind reines Node). Daher: Datei-/Struktur-Analyse +
-**echter Modul-Import** der vendorierten Krypto mit vollem Nostr-Roundtrip.
-Geprüft: Dateien da, kein Bare-Import, schnorr-Export, voller Krypto-Roundtrip
-+ Negativprobe, Seite self-contained (kein `https://`-Script), UI-Anker
-(`#me #selftest #msg #post #board #relays`), Tag + Relays + EVENT/REQ + Footer.
-**Relay-Round-Trip NICHT vorausgesetzt** — gehört in Klaus' Gerätetest.
-
-## Leitplanken eingehalten
-
-Kein Modul-Code in `src/`, kein Protokoll-Bump, keine PII, Krypto lokal
-vendoriert. Nicht in Sage-Page/Discovery verlinkt (Notiz-Charakter). CI
-(`sbkim-watch.yml`) führt keinen Smoke-Runner → Sage-Smokes unberührt.
-
-## Was offen / nächster sinnvoller Schritt
-
-1. **Klaus' geräteübergreifender Sichttest** (nicht headless ersetzbar):
-   URL über GitHub Pages auf Tablet UND Handy/Freund öffnen → „Salate" tippen
-   → taucht beim anderen binnen Sekunden auf, und umgekehrt. = Boden-Beweis.
-2. Bei grün (nur benennen, nicht gebaut): Frage→Antwort übers Brett; grobe Tags
-   am Pin fürs Vorfiltern, Bedeutungs-Sortierung bleibt lokal (Modul 03/04);
-   Anschluss an `notiz-bauplan-live-suche.md`.
-
-## Verweise
-
-- Brief: `docs/sessions/BRIEF_BAU_NOSTR_PINNWAND_TEST.md`
-- Notizen (unverlinkt): `notiz-briefkasten-pinnwand.md`, `notiz-bauplan-live-suche.md`
-- Sachstand: `docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md`
+Klaus' Sichttest-Rückmeldung abwarten (Optik/Icon/WebLLM), dann je nachdem:
+(a) Optik-Feinschliff, (b) WebLLM-Modell-Liste justieren, (c) Graph-Ansicht als
+„zweite Gestalt", (d) Relevanz-Rückmeldung („lernt mit jeder Antwort"),
+(e) Cross-Knoten `queryLocal` gegen echten App-Inhalt (`notiz-bauplan-live-suche.md`).
