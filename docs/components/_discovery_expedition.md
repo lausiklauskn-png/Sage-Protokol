@@ -15,6 +15,15 @@
 > Alle Bilder liegen in [`assets/discovery/`](../../assets/discovery/) und sind
 > **KI-generiert**.
 
+> 🪞 **Spiegeldokument (Vorschau):**
+> [`docs/discovery/vorsehung-suche.md`](../discovery/vorsehung-suche.md) +
+> [PDF](../discovery/vorsehung-suche.pdf) — *Vorsehungsblatt: die semantische
+> Suche und die Sprache, die Mensch und Agent teilen.* Wie das Leben einen Weg
+> findet, so findet die Bedeutung einen Weg; das Blatt holt das Mycel in die
+> Mensch-und-KI-Welt. Gegründet auf [`MEILENSTEIN_SEMANTISCHE_SUCHE.md`](../MEILENSTEIN_SEMANTISCHE_SUCHE.md);
+> Bewiesenes/Vorschau sauber getrennt. PDF-Generator:
+> `docs/discovery/_vorsehung_pdf.mjs`.
+
 ---
 
 ## Warum diese Karte
