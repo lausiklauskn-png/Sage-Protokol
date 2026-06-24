@@ -785,18 +785,27 @@ $('judgerun').addEventListener('click', async () => {
     st.className = 'status err'; st.textContent = 'kein Schlüssel eingegeben'; return;
   }
   if (provider === 'webllm' && !webllmEngine) {
-    st.className = 'status err'; st.textContent = 'erst „Modell laden" drücken'; return;
+    st.className = 'status err'; st.textContent = 'erst „⬇️ Modell laden" drücken'; return;
+  }
+  // Leeres Brett: nichts zu bewerten (sonst irreführende „nicht erreichbar"-Meldung).
+  let answersCount = 0;
+  for (const v of qViews.values()) answersCount += v.answers.length;
+  if (qViews.size === 0 || answersCount === 0) {
+    st.className = 'status err';
+    st.textContent = 'keine Fragen mit Antworten auf dem Brett — erst Frage + Antworten anlegen';
+    return;
   }
   $('judgerun').disabled = true;
   st.className = 'status'; st.textContent = 'Richter denkt nach…';
   let okCount = 0, failCount = 0;
+  st.dataset.lastErr = '';
   for (const view of qViews.values()) {
     try { await judgeView(view); okCount++; }
-    catch (e) { failCount++; st.dataset.lastErr = e.message || String(e); }
+    catch (e) { failCount++; st.dataset.lastErr = (e && e.message) ? e.message : String(e); }
   }
   if (okCount && !failCount) { st.className = 'status on'; st.textContent = 'an — Antworten nach Absicht bewertet (⚖️ = KI-Urteil)'; }
-  else if (okCount) { st.className = 'status on'; st.textContent = 'teils bewertet (' + failCount + ' Fehler: ' + (st.dataset.lastErr || '') + ')'; }
-  else { st.className = 'status err'; st.textContent = 'Richter nicht erreichbar (' + (st.dataset.lastErr || '') + ') — gratis Sortierung bleibt'; }
+  else if (okCount) { st.className = 'status on'; st.textContent = 'teils bewertet (' + failCount + ' Fehler: ' + (st.dataset.lastErr || 'unbekannt') + ')'; }
+  else { st.className = 'status err'; st.textContent = 'Richter nicht erreichbar (' + (st.dataset.lastErr || 'unbekannt') + ') — gratis Sortierung bleibt'; }
   $('judgerun').disabled = false;
 });
 
