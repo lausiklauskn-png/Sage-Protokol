@@ -1841,6 +1841,45 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-24 · Nostr Frage→Antwort: KI-Richter Stufe 1 (Cloud BYOK) + drei freie Stufen
+
+**Rolle:** Bau-Sitzung (Freibrief). Anschluss an den Whitening-Fix: Klaus sah,
+dass der Vektor „Alkoholcocktails" bei einer „alkoholfrei"-Frage nicht aussortiert
+(Embedding misst Thema, nicht Absicht/Verneinung). Lange Klaus-Diskussion über
+(a) tiefen Inhalt schlägt Hülle, (b) ob das System „von selbst lernt" (nein —
+e5 ist eingefroren; was sich besserte war der Mittelwert-Schätzer; echtes Lernen
+nur via Relevanz-Rückmeldung/Query-Schärfung, bewusst gebaut), (c) Bezahl-Frage
+(„arme Oma").
+
+**Was getan (`frage-antwort.html`):**
+- **KI-Richter Stufe 1 (Cloud, BYOK):** steckbare Provider-Abstraktion (gespiegelt
+  aus Modul 04 `hybridMatch`) — `claude` (Anthropic, Browser-CORS-Header) +
+  `mistral` (EU). Prompt bewusst auf **Verneinung/Absicht** getrimmt
+  (`buildJudgePrompt`), robustes `parseJudgeJson` (Code-Fence/Prosa-tolerant),
+  Richter-Urteil (⚖️-Badge + Begründung) hat Vorrang vor dem Cosinus. **Opt-in,
+  Default aus** — gratis Embedding-Weg bleibt Voreinstellung. **Schlüssel NUR
+  im Speicher** (kein localStorage, kein Code, kein Tracker).
+- **Drei-Stufen-Doku öffentlich** (`RICHTER-STUFEN.md`): (1) gratis/überall
+  lokales Embedding+Whitening, (2) gratis/gerät-hungrig WebLLM im Browser
+  (nächster Stich, im UI vorgemerkt+deaktiviert), (3) bezahlt/stärkste Cloud.
+  Plus Vision: Pilz-Schicht trägt Kosten für die, die nicht können.
+- **Embedding-Modell-Einordnung** (Klaus' Frage „gibt's bessere, z.B. chinesische?"):
+  ja — BGE-M3/GTE (China), Jina (EU), e5-base/large; netzweit-koordinierter Hebel,
+  ersetzt aber nicht den Richter. Festgehalten in der Chat-Antwort.
+
+**Tests:** Headless `_smoke_frage_antwort.mjs` **48/48** (Richter-UI, Provider,
+CORS-Header, Key-nur-im-Speicher, Verneinungs-Prompt, fail-soft). Parse+Ranking
+separat numerisch geprüft (5/5 + Ranking). Boden 31/31. `node --check`-sauber.
+
+**Was offen:** Browser-Sichttest des Cloud-Richters wartet auf Klaus (eigener
+Schlüssel). **WebLLM-Pfad (Stufe 2)** ist der nächste Bau — läuft nicht auf dem
+Galaxy Tab S6 (WebGPU), daher auf PC zu testen. **Relevanz-Rückmeldung** als
+„lernt mit jeder Antwort" ist ein eigener Folge-Stich.
+
+**Nächster Schritt:** Klaus testet den Cloud-Richter (Schlüssel eingeben →
+„Richter anwenden" → „Alkoholcocktails" sollte trotz Themen-Nähe nach unten).
+Danach WebLLM (Stufe 2) oder Relevanz-Rückmeldung.
+
 ### 2026-06-24 · Nostr Frage→Antwort: Anisotropie-Fix (whitened Cosinus) — Klaus' Befund
 
 **Rolle:** Bau-Sitzung (Freibrief). Klaus' Sichttest der Bedeutungs-Sortierung

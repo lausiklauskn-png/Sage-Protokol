@@ -71,12 +71,24 @@
     border-radius: 999px; font-size: 0.72rem; font-weight: 600;
     background: rgba(93,214,160,0.16); color: var(--accent);
   }
+  .a-judge {
+    display: inline-block; margin-left: 6px; padding: 1px 7px;
+    border-radius: 999px; font-size: 0.72rem; font-weight: 600;
+    background: rgba(201,160,224,0.18); color: var(--q);
+  }
+  .a-grund { font-size: 0.74rem; color: var(--dim); margin-top: 2px; font-style: italic; }
   .sort-ctl { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center;
     margin-bottom: 10px; }
   .sort-ctl button { padding: 7px 13px; font-size: 0.85rem; }
+  .sort-ctl select, .sort-ctl input {
+    background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 8px; padding: 7px 9px; font: inherit; font-size: 0.85rem;
+  }
+  .sort-ctl input { min-width: 200px; }
   .sort-ctl .status { font-size: 0.78rem; color: var(--dim); }
   .sort-ctl .status.on { color: var(--accent); }
   .sort-ctl .status.err { color: var(--bad); }
+  .judge-ctl { border-top: 1px dashed var(--line); padding-top: 10px; }
   .answer-form { margin-top: 8px; display: flex; gap: 8px; align-items: flex-end; }
   .answer-form textarea { min-height: 38px; }
   .empty { color: var(--dim); font-style: italic; }
@@ -118,6 +130,17 @@
       <button id="semantic" class="ghost">🧠 Antworten nach Bedeutung sortieren</button>
       <span class="status" id="semstatus">aus — sortiert nach Ankunft (lädt Modell ~30&nbsp;MB beim Einschalten)</span>
     </div>
+    <div class="sort-ctl judge-ctl">
+      <select id="judgeprov">
+        <option value="">⚖️ KI-Richter: aus (gratis bleibt Voreinstellung)</option>
+        <option value="claude">Cloud: Claude (Anthropic) — eigener Schlüssel</option>
+        <option value="mistral">Cloud: Mistral (EU) — eigener Schlüssel</option>
+        <option value="webllm" disabled>frei: KI im Browser (WebLLM) — nächster Stich</option>
+      </select>
+      <input id="judgekey" type="password" placeholder="API-Schlüssel (bleibt im Speicher)" style="display:none;" autocomplete="off">
+      <button id="judgerun" class="ghost" style="display:none;">⚖️ Richter anwenden</button>
+      <span class="status" id="judgestatus"></span>
+    </div>
     <ul id="threads"><li class="empty">Noch keine Frage empfangen…</li></ul>
   </div>
 
@@ -135,8 +158,14 @@
     entscheidet und nicht die Hülle (gleiche Sprache/Stil) — Hintergrund:
     Anisotropie-Befund, <code>docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md</code>.
     Hier mit lokal wachsendem Referenz-Schwerpunkt (die netzweite Konstante
-    liefert erst Bau „Modul&nbsp;04 Whitening"). Krypto bleibt lokal vendoriert,
-    kein Tracker.
+    liefert erst Bau „Modul&nbsp;04 Whitening"). Der <b>KI-Richter</b> (⚖️) ist
+    eine zweite, <b>optionale</b> Stufe: er versteht <i>Absicht/Verneinung</i>
+    („alkoholfrei = KEIN Alkohol"), was der Vektor nicht kann. Drei Stufen, keine
+    erzwingt Bezahlung: <b>(1)</b> gratis &amp; überall — lokales Embedding;
+    <b>(2)</b> gratis, gerät-hungrig — KI im Browser (WebLLM, nächster Stich);
+    <b>(3)</b> bezahlt &amp; am stärksten — Cloud mit eigenem Schlüssel. Der
+    Schlüssel bleibt nur im Speicher (kein Tracker, kein <code>localStorage</code>).
+    Krypto bleibt lokal vendoriert.
   </footer>
 
 <script src="./03_embedding.js"></script>
@@ -282,10 +311,15 @@ function renderAnswer(ev, relay) {
   const badge = document.createElement('span');
   badge.className = 'a-score'; badge.style.display = 'none'; // erst mit Bedeutungs-Sortierung
   head.appendChild(badge);
+  const judgeBadge = document.createElement('span');
+  judgeBadge.className = 'a-judge'; judgeBadge.style.display = 'none'; // erst mit KI-Richter
+  head.appendChild(judgeBadge);
   const text = document.createElement('div');
   text.className = 'a-text'; text.textContent = ev.content;
-  li.appendChild(head); li.appendChild(text);
-  const entry = { ev, li, badge, vec: null, score: null };
+  const grund = document.createElement('div');
+  grund.className = 'a-grund'; grund.style.display = 'none'; // Richter-Begründung
+  li.appendChild(head); li.appendChild(text); li.appendChild(grund);
+  const entry = { ev, li, badge, judgeBadge, grund, vec: null, score: null, judgeScore: null };
   view.answers.push(entry);                 // Ankunfts-Reihenfolge bleibt erhalten
   view.answersUl.appendChild(li);           // Antworten älteste oben (Lesefluss)
   // Bedeutungs-Sortierung: neue Antwort einbetten + neu sortieren, falls an.
@@ -380,6 +414,122 @@ function disableSemantic() {
   for (const view of qViews.values()) resort(view);
 }
 $('semantic').addEventListener('click', () => { semanticOn ? disableSemantic() : enableSemantic(); });
+
+// ---- KI-Richter (Stufe 1: Cloud, BYOK; WebLLM = nächster Stich) ----
+// EHRLICH: Der Vektor misst Thema, nicht Absicht — "alkoholfrei" ist ihm nah an
+// "Alkohol". Der Richter (ein Sprachmodell) versteht die ABSICHT/VERNEINUNG. Er
+// ist OPT-IN: der gratis Embedding-Weg bleibt Voreinstellung. Der Schlüssel
+// bleibt NUR im Speicher (kein localStorage, kein Code) — beim Neuladen weg.
+// Spiegelt die Provider-Abstraktion von Modul 04 hybridMatch (claude/mistral).
+const JUDGE = {
+  claude: {
+    url: 'https://api.anthropic.com/v1/messages',
+    headers: (key) => ({
+      'content-type': 'application/json', 'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true', // Browser-CORS (Meilenstein B2)
+    }),
+    body: (prompt) => JSON.stringify({
+      model: 'claude-haiku-4-5-20251001', max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+    pick: (data) => data && data.content && data.content[0] && data.content[0].text,
+  },
+  mistral: {
+    url: 'https://api.mistral.ai/v1/chat/completions',
+    headers: (key) => ({ 'content-type': 'application/json', 'authorization': 'Bearer ' + key }),
+    body: (prompt) => JSON.stringify({
+      model: 'mistral-small-latest', temperature: 0,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+    pick: (data) => data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content,
+  },
+};
+
+// Prompt: bewusst auf ABSICHT + VERNEINUNG getrimmt.
+function buildJudgePrompt(question, answers) {
+  const list = answers.map((a, i) => `${i}: ${a}`).join('\n');
+  return 'Du bewertest, wie gut jede Antwort die ABSICHT der Frage erfüllt.\n' +
+    'Achte besonders auf VERNEINUNG und Bedingungen: "alkoholfrei" bedeutet KEIN ' +
+    'Alkohol; "leicht" ist das Gegenteil von schwer/fettig. Eine Antwort, die das ' +
+    'Gegenteil enthält (z.B. echte Alkoholcocktails bei einer alkoholfrei-Frage), ' +
+    'bekommt eine NIEDRIGE Bewertung, auch wenn das Thema ähnlich ist.\n\n' +
+    'Frage: ' + question + '\n\nAntworten:\n' + list + '\n\n' +
+    'Antworte NUR mit JSON, ein Array, je Antwort {"i":<index>,"score":<0..1>,' +
+    '"grund":"<kurz>"}. Kein weiterer Text.';
+}
+
+// Robustes Parsen: Code-Fences strippen, das JSON-Array herauslösen.
+function parseJudgeJson(text) {
+  if (typeof text !== 'string') return null;
+  let s = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+  const a = s.indexOf('['), b = s.lastIndexOf(']');
+  if (a === -1 || b === -1 || b < a) return null;
+  try {
+    const arr = JSON.parse(s.slice(a, b + 1));
+    if (!Array.isArray(arr)) return null;
+    return arr.filter((x) => x && typeof x.i === 'number' && typeof x.score === 'number');
+  } catch { return null; }
+}
+
+async function callJudge(provider, key, prompt) {
+  const spec = JUDGE[provider];
+  if (!spec) throw new Error('Unbekannter Anbieter');
+  const res = await fetch(spec.url, { method: 'POST', headers: spec.headers(key), body: spec.body(prompt) });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  const txt = spec.pick(data);
+  const parsed = parseJudgeJson(txt);
+  if (!parsed) throw new Error('Antwort nicht als JSON lesbar');
+  return parsed;
+}
+
+async function judgeView(view, provider, key) {
+  if (!view.answers.length) return;
+  const verdicts = await callJudge(provider, key, buildJudgePrompt(view.qEv.content, view.answers.map((e) => e.ev.content)));
+  for (const v of verdicts) {
+    const e = view.answers[v.i];
+    if (!e) continue;
+    e.judgeScore = v.score;
+    e.judgeBadge.textContent = '⚖️ ' + v.score.toFixed(2);
+    e.judgeBadge.style.display = '';
+    if (v.grund) { e.grund.textContent = v.grund; e.grund.style.display = ''; }
+  }
+  // Richter-Urteil hat Vorrang vor dem Cosinus; höchste Bewertung oben.
+  const ordered = view.answers.slice().sort((a, b) =>
+    (b.judgeScore == null ? -1 : b.judgeScore) - (a.judgeScore == null ? -1 : a.judgeScore));
+  for (const e of ordered) view.answersUl.appendChild(e.li);
+}
+
+// UI-Verdrahtung.
+$('judgeprov').addEventListener('change', () => {
+  const p = $('judgeprov').value;
+  const cloud = p === 'claude' || p === 'mistral';
+  $('judgekey').style.display = cloud ? '' : 'none';
+  $('judgerun').style.display = cloud ? '' : 'none';
+  $('judgestatus').className = 'status';
+  $('judgestatus').textContent = cloud
+    ? 'Schlüssel eingeben, dann „Richter anwenden" (bleibt nur im Speicher)'
+    : 'aus — gratis Embedding-Weg bleibt aktiv';
+});
+
+$('judgerun').addEventListener('click', async () => {
+  const provider = $('judgeprov').value;
+  const key = $('judgekey').value.trim();
+  const st = $('judgestatus');
+  if (!key) { st.className = 'status err'; st.textContent = 'kein Schlüssel eingegeben'; return; }
+  $('judgerun').disabled = true;
+  st.className = 'status'; st.textContent = 'Richter denkt nach…';
+  let okCount = 0, failCount = 0;
+  for (const view of qViews.values()) {
+    try { await judgeView(view, provider, key); okCount++; }
+    catch (e) { failCount++; st.dataset.lastErr = e.message || String(e); }
+  }
+  if (okCount && !failCount) { st.className = 'status on'; st.textContent = 'an — Antworten nach Absicht bewertet (⚖️ = KI-Urteil)'; }
+  else if (okCount) { st.className = 'status on'; st.textContent = 'teils bewertet (' + failCount + ' Fehler: ' + (st.dataset.lastErr || '') + ')'; }
+  else { st.className = 'status err'; st.textContent = 'Richter nicht erreichbar (' + (st.dataset.lastErr || '') + ') — gratis Sortierung bleibt'; }
+  $('judgerun').disabled = false;
+});
 
 function dispatch(ev, relay) {
   if (seen.has(ev.id)) return;
