@@ -92,9 +92,22 @@ ok("Probe 4: sortiert (resort), filtert nicht weg", /function resort\(/.test(htm
 ok("Probe 4: Modell lädt erst auf Nutzer-Aktion (enableSemantic + init)", /enableSemantic/.test(html) && /\.init\(\)/.test(html));
 ok("Probe 4: fail-soft (Status err bei Modell-Fehler)", /status err/.test(html));
 
+// ---- Probe 5: KI-Richter (Stufe 1, Cloud BYOK) korrekt + gratis bleibt Default ----
+ok("Probe 5: Richter-Auswahl + Schlüssel-Feld + Knopf (judgeprov/judgekey/judgerun)",
+  /id="judgeprov"/.test(html) && /id="judgekey"/.test(html) && /id="judgerun"/.test(html));
+ok("Probe 5: Richter Default AUS (gratis bleibt Voreinstellung)", /KI-Richter: aus/.test(html));
+ok("Probe 5: Provider-Abstraktion claude + mistral", /claude:/.test(html) && /mistral:/.test(html));
+ok("Probe 5: Anthropic Browser-CORS-Header", /anthropic-dangerous-direct-browser-access/.test(html));
+ok("Probe 5: Schlüssel NUR im Speicher (kein localStorage für key)", !/localStorage\.setItem\([^)]*judgekey/.test(html) && /type="password"/.test(html));
+ok("Probe 5: Prompt trimmt auf Verneinung/Absicht", /buildJudgePrompt/.test(html) && /VERNEINUNG/.test(html));
+ok("Probe 5: robustes JSON-Parsen (parseJudgeJson)", /function parseJudgeJson/.test(html));
+ok("Probe 5: Richter-Urteil hat Vorrang (judgeScore-Sortierung)", /judgeScore/.test(html));
+ok("Probe 5: fail-soft (gratis Sortierung bleibt bei Fehler)", /gratis Sortierung bleibt/.test(html));
+ok("Probe 5: WebLLM als nächster Stich vermerkt", /webllm|WebLLM/.test(html));
+
 // Gegenprobe in index.html: Vorwärts-Link gesetzt.
 const indexHtml = readFileSync(resolve(dir, "index.html"), "utf8");
-ok("Probe 4: index.html verlinkt auf frage-antwort.html", /href="\.\/frage-antwort\.html"/.test(indexHtml));
+ok("Probe 5: index.html verlinkt auf frage-antwort.html", /href="\.\/frage-antwort\.html"/.test(indexHtml));
 
 // ---- Auswertung ----
 let pass = 0;
