@@ -48,6 +48,7 @@ const sw = readFileSync(resolve(dir, "sw.js"), "utf8");
 ok("Probe 4: SW fetch-Listener (Installierbarkeit)", /addEventListener\(\s*["']fetch["']/.test(sw));
 ok("Probe 4: SW install-Listener", /addEventListener\(\s*["']install["']/.test(sw));
 ok("Probe 4: SW reicht Fremd-Origin durch (Relays/CDN/API)", /url\.origin !== self\.location\.origin/.test(sw));
+ok("Probe 4: Navigation NETZ-ZUERST (kein Hängenbleiben alter Schale)", /req\.mode === "navigate"/.test(sw) && /NETZ ZUERST/.test(sw));
 const shell = sw.match(/var APP_SHELL = \[([\s\S]*?)\];/);
 ok("Probe 4: APP_SHELL-Liste gefunden", !!shell);
 if (shell) {

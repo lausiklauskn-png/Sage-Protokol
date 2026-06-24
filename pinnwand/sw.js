@@ -16,7 +16,7 @@
  */
 "use strict";
 
-var CACHE_VERSION = "sbkim-pinnwand-v1";
+var CACHE_VERSION = "sbkim-pinnwand-v2";
 
 var APP_SHELL = [
   "./",
@@ -61,6 +61,25 @@ self.addEventListener("fetch", function (event) {
   // Fremd-Origin (Relays, CDN-Modell, WebLLM, KI-API): durchreichen, nicht cachen.
   if (url.origin !== self.location.origin) return;
 
+  // Navigationen (die Seite selbst): NETZ ZUERST → immer der frische Stand,
+  // offline Fallback auf den Cache. Verhindert, dass eine alte App-Schale
+  // hängenbleibt (Bauphasen-Lehre 2026-06-24).
+  if (req.mode === "navigate") {
+    event.respondWith(
+      fetch(req).then(function (res) {
+        if (res && res.status === 200) {
+          var copy = res.clone();
+          caches.open(CACHE_VERSION).then(function (cache) { cache.put(req, copy); });
+        }
+        return res;
+      }).catch(function () {
+        return caches.match(req).then(function (c) { return c || caches.match("./index.html"); });
+      })
+    );
+    return;
+  }
+
+  // Übrige App-Schale (Skripte/Icons/Manifest): CACHE-FIRST, dann Netz.
   event.respondWith(
     caches.match(req).then(function (cached) {
       if (cached) return cached;
