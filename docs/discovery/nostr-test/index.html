@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Nostr-Pinnwand-Test · SBKIM Boden-Beweis</title>
+<style>
+  :root {
+    --bg: #11151c; --panel: #1a212b; --panel2: #222c39;
+    --ink: #e6edf3; --dim: #8b98a8; --line: #2e3a4a;
+    --accent: #5dd6a0; --warn: #e0a24a; --bad: #e06a5a; --mine: #6aa6e0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 16px; max-width: 760px; margin: 0 auto;
+  }
+  h1 { font-size: 1.25rem; margin: 0 0 4px; }
+  .sub { color: var(--dim); font-size: 0.85rem; margin: 0 0 16px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+  .label { color: var(--dim); font-size: 0.8rem; }
+  code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 999px; padding: 3px 10px; font-size: 0.8rem;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dim); flex: 0 0 auto; }
+  .dot.up { background: var(--accent); }
+  .dot.down { background: var(--bad); }
+  .dot.try { background: var(--warn); }
+  textarea {
+    width: 100%; min-height: 64px; resize: vertical;
+    background: var(--panel2); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px;
+    font: inherit;
+  }
+  button {
+    background: var(--accent); color: #08130d; border: 0;
+    border-radius: 8px; padding: 10px 16px; font: inherit; font-weight: 600;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; cursor: default; }
+  #selftest.ok { color: var(--accent); }
+  #selftest.fail { color: var(--bad); }
+  #board { list-style: none; margin: 0; padding: 0; }
+  #board li {
+    border-bottom: 1px solid var(--line); padding: 10px 2px;
+  }
+  #board li:last-child { border-bottom: 0; }
+  .meta { font-size: 0.78rem; color: var(--dim); margin-bottom: 3px; }
+  .meta .who { color: var(--mine); }
+  .mine .meta .who::after { content: " (ich)"; color: var(--accent); }
+  .note-text { white-space: pre-wrap; word-break: break-word; }
+  .empty { color: var(--dim); font-style: italic; }
+  footer {
+    color: var(--dim); font-size: 0.78rem; line-height: 1.5;
+    border-top: 1px solid var(--line); margin-top: 18px; padding-top: 12px;
+  }
+  footer b { color: var(--warn); }
+</style>
+</head>
+<body>
+  <h1>🪵 Nostr-Pinnwand-Test</h1>
+  <p class="sub">Boden-Beweis: ein Zettel aus Browser&nbsp;A taucht über ein
+    geborgtes, dummes Brett (Nostr-Relays) in Browser&nbsp;B auf. Server-los —
+    niemand betreibt hier etwas.</p>
+
+  <div class="card">
+    <div class="row" style="justify-content: space-between;">
+      <span class="pill">Meine Spore: <code id="me">…</code></span>
+      <span class="pill">Krypto-Selbsttest: <span id="selftest">läuft…</span></span>
+    </div>
+    <div class="row" id="relays" style="margin-top: 10px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="label" style="margin-bottom: 6px;">Zettel aufs Brett legen</div>
+    <textarea id="msg" placeholder="z. B. Salate" maxlength="280"></textarea>
+    <div class="row" style="margin-top: 8px; justify-content: space-between;">
+      <span class="label" id="sendhint">&nbsp;</span>
+      <button id="post" disabled>Aufs Brett legen</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label" style="margin-bottom: 8px;">Eingehende Zettel
+      (Tag <code>#sbkim-pinnwand-test</code>)</div>
+    <ul id="board"><li class="empty">Noch nichts empfangen…</li></ul>
+  </div>
+
+  <footer>
+    <b>Ehrlich:</b> Dieser Test beweist <i>nur das Medium</i>. Die Zettel sind
+    <b>öffentlich</b> — jeder, der diese Relays liest, sieht sie. Es gibt
+    <b>keine garantierte Haltbarkeit</b> (Relays dürfen verwerfen oder drosseln)
+    und <b>keinen Spam-Schutz</b>. Keine semantische Sortierung, keine
+    Frage→Antwort, keine Privatheit — das sind spätere Schritte.
+    Krypto ist lokal vendoriert (noble-secp256k1 v1.7.1), kein CDN, kein Tracker.
+    Identität = Schlüsselpaar im <code>localStorage</code> dieses Browsers.
+  </footer>
+
+<script type="module">
+import { schnorr, utils } from './noble-secp256k1.js';
+
+// ---- Helpers ----
+const $ = (id) => document.getElementById(id);
+const toHex = (b) => Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
+const fromHex = (h) => {
+  const a = new Uint8Array(h.length / 2);
+  for (let i = 0; i < a.length; i++) a[i] = parseInt(h.slice(i * 2, i * 2 + 2), 16);
+  return a;
+};
+const short = (hex) => hex.slice(0, 8) + '…' + hex.slice(-4);
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return toHex(new Uint8Array(buf));
+}
+
+const TAG = 'sbkim-pinnwand-test';
+const RELAYS = ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.nostr.band'];
+
+// ---- Identität (persistent in diesem Browser) ----
+const LS_KEY = 'sbkim_nostr_test_priv';
+let privHex = localStorage.getItem(LS_KEY);
+if (!privHex || privHex.length !== 64) {
+  privHex = toHex(utils.randomPrivateKey());
+  localStorage.setItem(LS_KEY, privHex);
+}
+const priv = fromHex(privHex);
+const pubHex = toHex(schnorr.getPublicKey(priv)); // x-only, 32-Byte-hex
+$('me').textContent = short(pubHex);
+
+// ---- Krypto-Selbsttest (offline-Beleg, beim Laden) ----
+(async () => {
+  const el = $('selftest');
+  try {
+    const probe = await sha256Hex('sbkim-nostr-pinnwand-selftest');
+    const sig = await schnorr.sign(fromHex(probe), priv);
+    const ok = await schnorr.verify(sig, fromHex(probe), fromHex(pubHex));
+    el.textContent = ok ? 'OK' : 'FAIL';
+    el.className = ok ? 'ok' : 'fail';
+  } catch (e) {
+    el.textContent = 'FAIL (' + e.message + ')';
+    el.className = 'fail';
+  }
+})();
+
+// ---- Nostr-Event bauen + signieren (NIP-01) ----
+async function buildEvent(content) {
+  const created_at = Math.floor(Date.now() / 1000);
+  const kind = 1;
+  const tags = [['t', TAG]];
+  const id = await sha256Hex(JSON.stringify([0, pubHex, created_at, kind, tags, content]));
+  const sig = toHex(await schnorr.sign(fromHex(id), priv));
+  return { id, pubkey: pubHex, created_at, kind, tags, content, sig };
+}
+
+// ---- Brett-Anzeige ----
+const seen = new Set();
+const board = $('board');
+function render(ev, relay) {
+  if (seen.has(ev.id)) return;
+  seen.add(ev.id);
+  const empty = board.querySelector('.empty');
+  if (empty) empty.remove();
+  const li = document.createElement('li');
+  if (ev.pubkey === pubHex) li.className = 'mine';
+  const time = new Date(ev.created_at * 1000).toLocaleTimeString('de-DE');
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  const who = document.createElement('span');
+  who.className = 'who mono';
+  who.textContent = short(ev.pubkey);
+  meta.appendChild(who);
+  meta.append(` · ${time} · via ${relay.replace('wss://', '')}`);
+  const text = document.createElement('div');
+  text.className = 'note-text';
+  text.textContent = ev.content;
+  li.appendChild(meta);
+  li.appendChild(text);
+  // neueste oben
+  board.insertBefore(li, board.firstChild);
+}
+
+// ---- Relay-Verbindungen ----
+const SUB_ID = 'sbkim-test';
+const sockets = [];
+const dots = {};
+
+function relayPills() {
+  const wrap = $('relays');
+  for (const url of RELAYS) {
+    const pill = document.createElement('span');
+    pill.className = 'pill';
+    const dot = document.createElement('span');
+    dot.className = 'dot try';
+    dots[url] = dot;
+    pill.appendChild(dot);
+    pill.append(url.replace('wss://', ''));
+    wrap.appendChild(pill);
+  }
+}
+function setDot(url, state) {
+  const d = dots[url];
+  if (d) d.className = 'dot ' + state;
+}
+
+function connect(url) {
+  let ws;
+  try { ws = new WebSocket(url); }
+  catch { setDot(url, 'down'); return; }
+  ws.onopen = () => {
+    setDot(url, 'up');
+    ws.send(JSON.stringify(['REQ', SUB_ID,
+      { kinds: [1], '#t': [TAG], limit: 50 }]));
+    updateSendState();
+  };
+  ws.onmessage = (e) => {
+    let m;
+    try { m = JSON.parse(e.data); } catch { return; }
+    if (!Array.isArray(m)) return;
+    if (m[0] === 'EVENT' && m[1] === SUB_ID && m[2]) render(m[2], url);
+    // EOSE / OK / NOTICE: für diesen Test ignorierbar
+  };
+  ws.onclose = () => { setDot(url, 'down'); updateSendState(); };
+  ws.onerror = () => { setDot(url, 'down'); };
+  sockets.push(ws);
+}
+
+// ---- Senden ----
+function liveSockets() {
+  return sockets.filter((w) => w.readyState === WebSocket.OPEN);
+}
+function updateSendState() {
+  const n = liveSockets().length;
+  $('post').disabled = n === 0;
+  $('sendhint').textContent = n > 0
+    ? `${n} Relay${n > 1 ? 's' : ''} verbunden`
+    : 'kein Relay verbunden…';
+}
+
+$('post').addEventListener('click', async () => {
+  const content = $('msg').value.trim();
+  if (!content) return;
+  $('post').disabled = true;
+  const ev = await buildEvent(content);
+  const live = liveSockets();
+  for (const ws of live) ws.send(JSON.stringify(['EVENT', ev]));
+  $('msg').value = '';
+  // eigener Zettel sofort lokal zeigen (Relay-Echo kann verzögern)
+  render(ev, live[0] ? live[0].url : 'lokal');
+  updateSendState();
+});
+
+// ---- Start ----
+relayPills();
+RELAYS.forEach(connect);
+updateSendState();
+</script>
+</body>
+</html>
