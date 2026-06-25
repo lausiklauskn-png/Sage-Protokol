@@ -94,6 +94,21 @@ nicht vollständig.** Sauber getrennt:
   belegt, sondern direkt über ein Medium. Test (Notiz-Charakter, nicht verlinkt):
   [`discovery/nostr-test/`](discovery/nostr-test/), Protokoll
   [`sessions/archiv/2026-06-24_nostr-pinnwand-test.md`](sessions/archiv/2026-06-24_nostr-pinnwand-test.md).
+- ✅ **Medium-Hälfte jetzt über EIGENES Relay (NEU, 2026-06-25)** — der
+  Cross-Geräte-Transport oben lief über **geborgte** Fremd-Relays. Heute steht er
+  über Klaus' **eigenes, dummes, log-freies, neutrales** Relay
+  `wss://relay.family-projekt.de` (eigene Domain `family-projekt.de`, eigener VPS
+  Hetzner CX23; nostr-rs-relay hinter Caddy/Auto-TLS, Docker `logging:none`).
+  Beweis: zwei getrennte Knoten (Spore `913db955…` und `4577385…`) tauschen
+  Zettel **cross-node**, in der Pinnwand mit **nur** diesem einen Relay aktiv,
+  Etikett „via relay.family-projekt.de" — und laut Klaus **blitzartig**, so schnell
+  wie die großen öffentlichen. Damit ist die **Fremd-Relay-Metadaten-Abhängigkeit
+  aufgelöst** (der Auslöser dieser Sitzung): kein fremder Vermittler mehr, Klaus
+  betreibt ein neutrales Rendezvous selbst. Werdegang + ehrliche Grenzen
+  (Metadaten/IP/Mixnet): [`discovery/notiz-toolpoint-relay.md`](discovery/notiz-toolpoint-relay.md).
+  **Weiterhin offen bleibt** die semantische **Frage→Antwort**-Verdrahtung über
+  dieses Medium (siehe nächster Punkt) — der Transport ist bewiesen, die
+  Bedeutungs-Hälfte darüber noch nicht.
 - ⏳ **Was noch fehlt — die zwei Hälften verdrahten.** Bewiesen sind jetzt
   *Semantik* (lokal) und *Medium* (server-loser Cross-Geräte-Transport) — aber
   **getrennt**. Noch nicht gezeigt: dass eine **Frage** als solche übers Brett

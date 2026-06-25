@@ -1875,8 +1875,15 @@ Beweis NIP-11 über https grün (`{"name":"Toolpoint-Relay", restricted_writes:f
 Pinnwand verdrahtet: eigenes Relay als erster föderierter `RELAY_POOL`-Eintrag
 (`pinnwand/index.html:355`), Smoke 58/58 grün.
 
-**Offen (Folge):** (1) **Cross-Knoten-Beweis** — Pinnwand auf zwei getrennten
-Geräten mit NUR eigenem Relay (der offene Meilenstein). (2) Log-Freiheit
+**✅ CROSS-KNOTEN-TRANSPORT BEWIESEN (selbe Sitzung, Klaus' Sichttest):** zwei
+getrennte Knoten (Spore `913db955…` + `4577385…`) tauschen Zettel cross-node in
+der Pinnwand mit NUR `relay.family-projekt.de` aktiv — Klaus: „blitzartig, so
+schnell wie die öffentlichen". Fremd-Relay-Metadaten-Abhängigkeit aufgelöst.
+Meilenstein-Doku §4 nachgezogen. **Weiterhin offen:** semantische
+**Frage→Antwort** über dieses Medium (Modul 04.C `queryLocal` + 15 `op:"query"`).
+
+**Offen (Folge):** (1) semantische Frage→Antwort übers eigene Relay verdrahten
+(die Bedeutungs-Hälfte über den nun bewiesenen Transport). (2) Log-Freiheit
 **öffentlich prüfbar** machen (Konfig ins `SB-KIMTool-Point` spiegeln + `RUST_LOG`
 klein). (3) Toolpoint-Seite mit getrennten Räumen (braucht Repo-Zugriff). (4)
 ufw-Firewall auf dem VPS nachziehen (in der Live-Sitzung zugunsten Tempo defer'd).
