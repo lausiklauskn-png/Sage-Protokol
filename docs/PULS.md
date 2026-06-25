@@ -1841,6 +1841,48 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-25 · Toolpoint-Relay (Relay-zuerst) — Architektur-Notiz + Betreiber-Anleitung
+
+Bau-/Umsetzungs-Sitzung zum Brief „Eigenes Relay als Fundament des Toolpoint".
+Klaus' Entscheide live geklärt: **Hosting = VPS** (Heim-Pi verworfen:
+Heim-IP/CGNAT/Bastelei), **Versprechen-Wortlaut = „server-los" mit Erklärung**,
+**Custom-Relay-Eingabe in der Pinnwand-UI = Folge-Bau** (jetzt nur eigenes Relay
+fest in `RELAY_POOL`), **Relay-Domain-Name noch offen** (Platzhalter
+`relay.<deine-domain>`).
+
+**Kern-Klärung (gehört prominent in die Doku):** zwei Versprechen sauber trennen —
+(1) **App-Versprechen** local-first bleibt unangetastet wahr (App-Daten erreichen
+das Relay nie); (2) **Netz-Transport** war nie server-los (heute fremde Relays),
+eigenes Relay *verlagert* die Metadaten vom Fremden zu Klaus statt sie zu brechen.
+Ehrliche Garantie-Lage: Inhalt per E2E **garantiert blind**, Metadaten nur
+**log-frei + prüfbar** (volle Garantie erst per Mixnet), IP nur per Tor (Nutzer,
+nicht Betreiber). → **Dreistufiges, prüfbares Versprechen** („prüf mich" statt
+„vertrau mir").
+
+**Gebaut (zwei Discovery-Notizen, unverlinkt/Parkplatz):**
+`docs/discovery/notiz-toolpoint-relay.md` (Architektur/Entscheidungen, ganzer
+Bogen, Garantie-Tabelle, Andock-Punkt) + `docs/discovery/anleitung-eigenes-relay.md`
+(VPS-Betreiber-Anleitung: strfry via Docker + Caddy Auto-TLS, log-freie Konfig,
+öffentlich-prüfbar machen, `wss://`-Test, Pinnwand-Andock). Pinnwand spricht
+Nostr (NIP-01); Andock-Punkt `RELAY_POOL` `pinnwand/index.html:355` (föderiert
+dazu), Pool-Filter `:364` blockt Custom-Relays (Folge-Bau). KEIN Code geändert.
+
+**✅ RELAY IST LIVE (gemeinsam mit Klaus aufgesetzt, selbe Sitzung):**
+Domain `family-projekt.de` (INWX) + VPS Hetzner CX23 Falkenstein (~7 €/Mo) →
+`wss://relay.family-projekt.de`. **nostr-rs-relay** (container-freundlicher als
+strfry) hinter **Caddy** (Auto-TLS Let's Encrypt), beide in Docker `logging:none`.
+Beweis NIP-11 über https grün (`{"name":"Toolpoint-Relay", restricted_writes:false}`).
+Pinnwand verdrahtet: eigenes Relay als erster föderierter `RELAY_POOL`-Eintrag
+(`pinnwand/index.html:355`), Smoke 58/58 grün.
+
+**Offen (Folge):** (1) **Cross-Knoten-Beweis** — Pinnwand auf zwei getrennten
+Geräten mit NUR eigenem Relay (der offene Meilenstein). (2) Log-Freiheit
+**öffentlich prüfbar** machen (Konfig ins `SB-KIMTool-Point` spiegeln + `RUST_LOG`
+klein). (3) Toolpoint-Seite mit getrennten Räumen (braucht Repo-Zugriff). (4)
+ufw-Firewall auf dem VPS nachziehen (in der Live-Sitzung zugunsten Tempo defer'd).
+**Nächster sinnvoller Schritt:** Pinnwand mit dem neuen Relay deployen, dann
+Zwei-Geräte-Cross-Node-Test.
+
 ### 2026-06-25 · PARKPLATZ Verschlüsselung/Privatheit — Brainstorm-Brief für Folge-Sitzung
 
 Lange Pinnwand-Fortsetzung (PRs #439–#448, alle squash auf `main`): Baum-Icon +
