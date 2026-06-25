@@ -29,10 +29,19 @@
 
 ## Schritt 0 — Was du brauchst
 
-- Ein VPS (Ubuntu 24.04 LTS). Empfohlen Hetzner CX22 (~4–5 €/Mo) oder Oracle
-  Free Tier (gratis, etwas mehr Einrichtung). Beim Anlegen deinen
-  **SSH-Public-Key** hinterlegen.
-- Eine Domain (~10–15 €/Jahr). Irgendein Registrar.
+> **Domain und Server sind zwei getrennte Dinge** und müssen NICHT beim selben
+> Anbieter sein. Domain = der Name, VPS = der Rechner. Du kannst sie frei mischen.
+
+- **Ein VPS** (Ubuntu 24.04 LTS), **beliebiger Anbieter** — Hetzner, Strato
+  („V-Server"), IONOS, Netcup, Contabo, DigitalOcean … alle bieten VPS, alle
+  gehen. ~4–5 €/Mo. Klaus' Wahl 2026-06-25: **günstig + eigene seriöse Adresse**
+  (nicht der Gratis-Weg Oracle/DuckDNS). Beim Anlegen deinen **SSH-Public-Key**
+  hinterlegen.
+- **Eine Domain**, **beliebiger Registrar** (Strato, IONOS, Namecheap,
+  Cloudflare …). Einzige Anforderung: du kannst einen **DNS-A-Eintrag** setzen —
+  das können alle. Die **1-€-Angebote** sind meist nur das **erste Jahr**
+  (danach ~10–15 €/Jahr); für unseren Zweck völlig ausreichend, der Name muss
+  nur „zeigen".
 - Die öffentliche **IPv4** deines VPS (zeigt der Anbieter nach dem Anlegen).
 
 ## Schritt 1 — DNS: Subdomain auf den VPS zeigen
