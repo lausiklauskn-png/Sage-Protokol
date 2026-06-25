@@ -83,6 +83,7 @@ ok("Probe 6: Löschen-Kreuz pro Frage", /class="q-del"/.test(html) || /'q-del'/.
 ok("Probe 6: Vergrößern-Knopf (data-scale, 3 Stufen)", /id="tb-zoom"/.test(html) && /data-scale/.test(html));
 ok("Probe 6: Vollbild-Knopf (requestFullscreen)", /id="tb-full"/.test(html) && /requestFullscreen/.test(html));
 ok("Probe 6: Hard-Reload-Knopf (SW unregister + caches leeren)", /id="tb-reload"/.test(html) && /getRegistrations/.test(html) && /caches\.delete/.test(html));
+ok("Probe 6: Mikrofon-Knopf (Spracheingabe, fail-soft)", /id="mic"/.test(html) && /SpeechRecognition/.test(html) && /lang = 'de-DE'/.test(html));
 
 // ---- Auswertung ----
 let pass = 0;

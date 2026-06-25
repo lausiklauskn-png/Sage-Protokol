@@ -196,6 +196,8 @@
   }
   .tbtn:hover { border-color: var(--accent); background: rgba(93,214,160,0.08); }
   .tbtn:active { transform: translateY(1px); }
+  .tbtn.mic-on { color: #fff; border-color: var(--bad); background: rgba(224,106,90,0.25); animation: micpulse 1s ease-in-out infinite; }
+  @keyframes micpulse { 0%,100% { box-shadow: 0 0 0 0 rgba(224,106,90,0.5); } 50% { box-shadow: 0 0 0 6px rgba(224,106,90,0); } }
   #board-clear { font-size: 0.78rem; padding: 5px 9px; }
   /* Löschen-Kreuz pro Frage. */
   .q-del {
@@ -244,7 +246,9 @@
     <textarea id="qmsg" placeholder="z. B. Was ist ein leichtes Sommeressen?" maxlength="280"></textarea>
     <div class="row" style="margin-top: 8px; justify-content: space-between;">
       <span class="label" id="sendhint">&nbsp;</span>
-      <button id="ask" disabled>Frage stellen</button>
+      <span style="display:flex; gap:8px; align-items:center;">
+        <button id="mic" class="tbtn" title="Frage einsprechen">🎤</button>
+        <button id="ask" disabled>Frage stellen</button></span>
     </div>
   </div>
 
@@ -897,6 +901,37 @@ $('ask').addEventListener('click', async () => {
 
 // ---- Werkzeug-Knöpfe (leeren / vergrößern / vollbild / neu laden) ----
 $('board-clear').addEventListener('click', clearBoard);
+
+// Mikrofon: Frage einsprechen (Browser-Spracherkennung, gratis, server-los,
+// kein Schlüssel). Fail-soft, wenn der Browser es nicht kann.
+(function setupMic() {
+  const mic = $('mic');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    mic.disabled = true;
+    mic.title = 'Spracheingabe in diesem Browser nicht verfügbar';
+    mic.style.opacity = '0.5';
+    return;
+  }
+  let rec = null, listening = false, base = '';
+  mic.addEventListener('click', () => {
+    if (listening) { try { rec.stop(); } catch { /* */ } return; }
+    rec = new SR();
+    rec.lang = 'de-DE';
+    rec.interimResults = true;
+    rec.continuous = false;
+    base = $('qmsg').value ? $('qmsg').value.replace(/\s*$/, '') + ' ' : '';
+    rec.onstart = () => { listening = true; mic.classList.add('mic-on'); mic.textContent = '⏹'; $('sendhint').textContent = 'höre zu… sprich deine Frage'; };
+    rec.onresult = (e) => {
+      let txt = '';
+      for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript;
+      $('qmsg').value = (base + txt).slice(0, 280);
+    };
+    rec.onerror = (e) => { $('sendhint').textContent = 'Spracheingabe-Fehler: ' + (e.error || 'unbekannt'); };
+    rec.onend = () => { listening = false; mic.classList.remove('mic-on'); mic.textContent = '🎤'; if (!/Fehler/.test($('sendhint').textContent)) $('sendhint').textContent = ' '; updateSendState(); };
+    try { rec.start(); } catch (err) { $('sendhint').textContent = 'Mikrofon nicht verfügbar (' + (err.message || err) + ')'; }
+  });
+})();
 
 // Text-Vergrößerung: 3 Stufen, persistent.
 const LS_SCALE = 'sbkim_pinnwand_scale';
