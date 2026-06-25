@@ -280,6 +280,7 @@
         <option value="Llama-3.1-8B-Instruct-q4f32_1-MLC">Mercedes — Llama 3.1 8B (nur starke Rechner/PC)</option>
       </select>
       <button id="webllmload" class="ghost" style="display:none;">⬇️ Modell laden</button>
+      <button id="webllm-clear" class="tbtn" title="Heruntergeladene KI-Modelle vom Gerät löschen (Speicher freigeben)">🗑 KI-Modelle löschen</button>
       <button id="judgerun" class="ghost" style="display:none;">⚖️ Richter anwenden</button>
       <span class="status" id="judgestatus"></span>
     </div>
@@ -783,6 +784,33 @@ $('webllmload').addEventListener('click', async () => {
     st.className = 'status err'; st.textContent = 'Modell-Laden fehlgeschlagen: ' + (e.message || e) + ' — kleinere Klasse probieren oder Cloud nutzen';
   }
   $('webllmload').disabled = false;
+});
+
+// KI-Modelle vom Gerät löschen: WebLLM legt die Gewichte im Browser-Cache der
+// Seite ab (KEINE Dateien im Dateisystem). Wir löschen alle Caches AUSSER der
+// App-Schale (sbkim-pinnwand-*) → entfernt alle heruntergeladenen Modelle, ohne
+// Identität/Schlüssel (localStorage) anzutasten. Meldet die freigewordene Größe.
+$('webllm-clear').addEventListener('click', async () => {
+  const st = $('judgestatus');
+  $('webllm-clear').disabled = true;
+  st.className = 'status'; st.textContent = 'Lösche KI-Modelle vom Gerät…';
+  let before = 0, after = 0;
+  try { if (navigator.storage && navigator.storage.estimate) before = (await navigator.storage.estimate()).usage || 0; } catch { /* */ }
+  try {
+    webllmEngine = null; webllmEngineModel = null; // Engine freigeben
+    if (window.caches) {
+      const keys = await caches.keys();
+      await Promise.all(keys
+        .filter((k) => !k.startsWith('sbkim-pinnwand-')) // App-Schale behalten
+        .map((k) => caches.delete(k)));
+    }
+  } catch { /* fail-soft */ }
+  try { if (navigator.storage && navigator.storage.estimate) after = (await navigator.storage.estimate()).usage || 0; } catch { /* */ }
+  const freedMB = Math.max(0, before - after) / 1e6;
+  st.className = 'status on';
+  st.textContent = 'KI-Modelle gelöscht' + (freedMB >= 1 ? ' (~' + freedMB.toFixed(0) + ' MB frei)' : '') +
+    '. Jetzt ein kleineres Modell wählen + „⬇️ Modell laden".';
+  $('webllm-clear').disabled = false;
 });
 
 $('judgerun').addEventListener('click', async () => {
