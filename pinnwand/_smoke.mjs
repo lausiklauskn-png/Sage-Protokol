@@ -90,6 +90,9 @@ ok("Probe 6: mehrere Richter-Anbieter (claude/gemini/openrouter)", /gemini:/.tes
 ok("Probe 6: OpenRouter Gratis-Modelle live ladbar", /id="orFree"/.test(html) && /openrouter\.ai\/api\/v1\/models/.test(html) && /String\(pr\.prompt\) === '0'/.test(html));
 ok("Probe 6: Schlüssel pro Anbieter gemerkt (keys-Map)", /store\.keys\[p\]/.test(html));
 ok("Probe 6: mehrere wählbare Relays (Pool + Toggle, breit gestreut)", /RELAY_POOL/.test(html) && /function toggleRelay/.test(html) && /relay\.primal\.net/.test(html) && /sbkim_pinnwand_relays/.test(html));
+ok("Probe 6: privates Brett verschlüsselt (AES-GCM + PBKDF2, Schlüssel nur im Speicher)",
+  /id="boardkey"/.test(html) && /deriveBoardKey/.test(html) && /AES-GCM/.test(html) && /PBKDF2/.test(html) && !/localStorage\.[gs]etItem\([^)]*boardkey/.test(html));
+ok("Probe 6: verschlüsselte Notiz ohne Schlüssel wird übersprungen", /if \(isEnc\(ev\.content\)\)/.test(html) && /if \(!boardKey\) return;/.test(html));
 
 // ---- Auswertung ----
 let pass = 0;

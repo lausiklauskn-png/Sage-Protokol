@@ -108,8 +108,9 @@
   }
   .sort-ctl input { min-width: 200px; }
   .sort-ctl .status { font-size: 0.78rem; color: var(--dim); }
-  .sort-ctl .status.on { color: var(--accent); }
-  .sort-ctl .status.err { color: var(--bad); }
+  .status { font-size: 0.78rem; color: var(--dim); }
+  .status.on { color: var(--accent); }
+  .status.err { color: var(--bad); }
   .judge-ctl { border-top: 1px dashed var(--line); padding-top: 10px; }
   .answer-form { margin-top: 8px; display: flex; gap: 8px; align-items: flex-end; }
   .answer-form textarea { min-height: 38px; }
@@ -239,6 +240,11 @@
       <span class="pill">Krypto-Selbsttest: <span id="selftest">läuft…</span></span>
     </div>
     <div class="row" id="relays" style="margin-top: 10px;"></div>
+    <div class="row" style="margin-top: 10px; gap: 8px;">
+      <input id="boardkey" type="password" placeholder="🔒 Privates Brett: Passwort (leer = offen)" autocomplete="off" style="flex:1; min-width:200px;">
+      <button id="boardkey-set" class="tbtn">Setzen</button>
+    </div>
+    <div class="status" id="boardkey-status" style="margin-top:4px;">Offenes Brett — alle Zettel sind öffentlich lesbar.</div>
   </div>
 
   <div class="card">
@@ -387,13 +393,45 @@ $('me').textContent = short(pubHex);
 })();
 
 // ---- Event bauen (NIP-01). extraTags z.B. [["e", frageId]] für Antworten ----
+// ---- Privates Brett: Verschlüsselung (gemeinsames Passwort, AES-GCM-256) ----
+// EHRLICH: das Relay sieht dann nur Geheimtext. Wer dasselbe Passwort hat (deine
+// Gruppe), kann lesen; alle anderen sehen Unsinn und überspringen. Fester
+// Gruppen-Salt (Sicherheit kommt aus Passwort-Stärke + AES-256, nicht aus dem
+// Salt). Schlüssel bleibt NUR im Speicher (kein localStorage) — pro Sitzung neu.
+const ENC_PREFIX = 'sbkimenc1:';
+const ENC_SALT = new TextEncoder().encode('sbkim-pinnwand-shared-salt-v1');
+let boardKey = null; // CryptoKey | null (null = offenes Brett)
+const b64 = (buf) => btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+const isEnc = (s) => typeof s === 'string' && s.startsWith(ENC_PREFIX);
+async function deriveBoardKey(pass) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: ENC_SALT, iterations: 150000, hash: 'SHA-256' },
+    base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function encryptContent(text) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, boardKey, new TextEncoder().encode(text));
+  return ENC_PREFIX + b64(iv) + ':' + b64(ct);
+}
+async function decryptContent(s) {
+  try {
+    const parts = s.split(':'); // sbkimenc1 : iv : ct
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(parts[1]) }, boardKey, unb64(parts[2]));
+    return new TextDecoder().decode(pt);
+  } catch { return null; }
+}
+
 async function buildEvent(content, extraTags = []) {
   const created_at = Math.floor(Date.now() / 1000);
   const kind = 1;
   const tags = [['t', TAG], ...extraTags];
-  const id = await sha256Hex(JSON.stringify([0, pubHex, created_at, kind, tags, content]));
+  let outContent = content;
+  if (boardKey) { outContent = await encryptContent(content); tags.push(['enc', 'sbkim1']); }
+  const id = await sha256Hex(JSON.stringify([0, pubHex, created_at, kind, tags, outContent]));
   const sig = toHex(await schnorr.sign(fromHex(id), priv));
-  return { id, pubkey: pubHex, created_at, kind, tags, content, sig };
+  return { id, pubkey: pubHex, created_at, kind, tags, content: outContent, sig };
 }
 // Eine Notiz ist eine ANTWORT, wenn sie ein e-Tag trägt → die referenzierte Frage-id.
 function refOf(ev) {
@@ -475,7 +513,7 @@ function renderQuestion(ev, relay) {
     const live = liveSockets();
     for (const ws of live) ws.send(JSON.stringify(['EVENT', aev]));
     ta.value = '';
-    renderAnswer(aev, live[0] ? live[0].url : 'lokal'); // sofort lokal zeigen
+    dispatch(aev, live[0] ? live[0].url : 'lokal'); // sofort lokal zeigen (entschlüsselt bei privatem Brett)
     btn.disabled = false;
   });
   form.appendChild(ta); form.appendChild(amic); form.appendChild(btn);
@@ -934,8 +972,17 @@ $('judgerun').addEventListener('click', async () => {
   $('judgerun').disabled = false;
 });
 
-function dispatch(ev, relay) {
+async function dispatch(ev, relay) {
   if (seen.has(ev.id)) return;
+  // Verschlüsselte Notiz: nur zeigen, wenn wir sie mit dem Brett-Passwort lesen
+  // können. Sonst (kein/falsches Passwort) überspringen — kein Geheimtext-Müll.
+  if (isEnc(ev.content)) {
+    if (!boardKey) return;
+    const plain = await decryptContent(ev.content);
+    if (plain == null) return;
+    ev.content = plain; // ab hier intern Klartext (wird nie wieder gesendet)
+  }
+  if (seen.has(ev.id)) return; // nach await erneut prüfen
   seen.add(ev.id);
   if (refOf(ev)) renderAnswer(ev, relay);
   else renderQuestion(ev, relay);
@@ -1028,6 +1075,40 @@ function updateSendState() {
     ? `${n} Relay${n > 1 ? 's' : ''} verbunden`
     : 'kein Relay verbunden…';
 }
+
+// Ansicht zurücksetzen + erneut abonnieren (z. B. nach Passwort-Wechsel, damit
+// die Brett-Historie mit dem neuen Schlüssel neu bewertet/entschlüsselt wird).
+function resubscribe() {
+  seen.clear(); qViews.clear(); pendingAnswers.clear();
+  threads.innerHTML = '';
+  const e = document.createElement('li'); e.className = 'empty';
+  e.textContent = 'lade…'; threads.appendChild(e);
+  for (const ws of liveSockets()) {
+    try { ws.send(JSON.stringify(['REQ', SUB_ID, { kinds: [1], '#t': [TAG], limit: 200 }])); } catch { /* */ }
+  }
+}
+
+// Privates Brett: Passwort setzen/entfernen.
+$('boardkey-set').addEventListener('click', async () => {
+  const pass = $('boardkey').value;
+  const st = $('boardkey-status');
+  if (!pass) {
+    boardKey = null;
+    st.className = 'status'; st.textContent = 'Offenes Brett — alle Zettel sind öffentlich lesbar.';
+    resubscribe();
+    return;
+  }
+  st.className = 'status'; st.textContent = 'Schlüssel wird abgeleitet…';
+  try {
+    boardKey = await deriveBoardKey(pass);
+    st.className = 'status on';
+    st.textContent = '🔒 Privates Brett aktiv — nur wer dieses Passwort hat, kann lesen/schreiben. (Relay sieht nur Geheimtext.)';
+    resubscribe();
+  } catch (e) {
+    boardKey = null;
+    st.className = 'status err'; st.textContent = 'Schlüssel-Fehler: ' + (e.message || e);
+  }
+});
 
 // ---- Frage stellen ----
 $('ask').addEventListener('click', async () => {
