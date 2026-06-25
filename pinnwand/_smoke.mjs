@@ -89,6 +89,7 @@ ok("Probe 6: KI-Modelle löschbar (Cache außer App-Schale)", /id="webllm-clear"
 ok("Probe 6: mehrere Richter-Anbieter (claude/gemini/openrouter)", /gemini:/.test(html) && /openrouter:/.test(html) && /CLOUD_PROVIDERS/.test(html));
 ok("Probe 6: OpenRouter Gratis-Modelle live ladbar", /id="orFree"/.test(html) && /openrouter\.ai\/api\/v1\/models/.test(html) && /String\(pr\.prompt\) === '0'/.test(html));
 ok("Probe 6: Schlüssel pro Anbieter gemerkt (keys-Map)", /store\.keys\[p\]/.test(html));
+ok("Probe 6: mehrere wählbare Relays (Pool + Toggle, breit gestreut)", /RELAY_POOL/.test(html) && /function toggleRelay/.test(html) && /relay\.primal\.net/.test(html) && /sbkim_pinnwand_relays/.test(html));
 
 // ---- Auswertung ----
 let pass = 0;

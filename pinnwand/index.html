@@ -344,7 +344,21 @@ async function sha256Hex(str) {
 }
 
 const TAG = 'sbkim-frage-antwort-test';
-const RELAYS = ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.nostr.band'];
+// Breit gestreute öffentliche Relays (verschiedene Betreiber/Regionen). Wählbar.
+// Fällt eins aus, tragen die anderen weiter — kein Umschalten, alle parallel.
+const RELAY_POOL = [
+  'wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.nostr.band',
+  'wss://relay.primal.net', 'wss://relay.snort.social', 'wss://nostr.mom',
+  'wss://offchain.pub', 'wss://relay.mostr.pub',
+];
+const LS_RELAYS = 'sbkim_pinnwand_relays';
+let activeRelays;
+try {
+  const saved = JSON.parse(localStorage.getItem(LS_RELAYS) || 'null');
+  activeRelays = (Array.isArray(saved) && saved.length) ? saved.filter((u) => RELAY_POOL.includes(u)) : null;
+} catch { activeRelays = null; }
+if (!activeRelays || !activeRelays.length) activeRelays = RELAY_POOL.slice(0, 5); // Default: 5 gestreut
+function saveRelays() { try { localStorage.setItem(LS_RELAYS, JSON.stringify(activeRelays)); } catch { /* */ } }
 
 // ---- Identität (gleiche Spore wie der Pinnwand-Test, falls vorhanden) ----
 const LS_KEY = 'sbkim_nostr_test_priv';
@@ -934,16 +948,38 @@ const backoff = {};     // url -> ms (wächst bei Fehlschlag)
 const dots = {};
 function relayPills() {
   const wrap = $('relays');
-  for (const url of RELAYS) {
-    const pill = document.createElement('span'); pill.className = 'pill';
-    const dot = document.createElement('span'); dot.className = 'dot try';
+  wrap.innerHTML = '';
+  for (const url of RELAY_POOL) {
+    const on = activeRelays.includes(url);
+    const pill = document.createElement('span');
+    pill.className = 'pill'; pill.style.cursor = 'pointer';
+    pill.style.opacity = on ? '1' : '0.45';
+    pill.title = on ? 'aktiv — klicken zum Abschalten' : 'aus — klicken zum Zuschalten';
+    const dot = document.createElement('span'); dot.className = 'dot ' + (on ? 'try' : '');
     dots[url] = dot; pill.appendChild(dot);
-    pill.append(url.replace('wss://', '')); wrap.appendChild(pill);
+    pill.append((on ? '' : '+ ') + url.replace('wss://', ''));
+    pill.addEventListener('click', () => toggleRelay(url));
+    wrap.appendChild(pill);
   }
+}
+function toggleRelay(url) {
+  const i = activeRelays.indexOf(url);
+  if (i >= 0) {
+    activeRelays.splice(i, 1);
+    const ws = conns[url];
+    if (ws) { try { ws.close(); } catch { /* */ } delete conns[url]; }
+  } else {
+    activeRelays.push(url);
+    connect(url);
+  }
+  saveRelays();
+  relayPills();
+  updateSendState();
 }
 const setDot = (url, s) => { const d = dots[url]; if (d) d.className = 'dot ' + s; };
 
 function scheduleReconnect(url) {
+  if (!activeRelays.includes(url)) return; // abgeschaltete Relays nicht neu verbinden
   const cur = backoff[url] || 0;
   const next = Math.min(cur ? cur * 2 : 2000, 20000); // 2s,4s,…,20s gedeckelt
   backoff[url] = next;
@@ -975,7 +1011,7 @@ function connect(url) {
 // Tab wieder sichtbar (Handy aus dem Hintergrund) → tote Sockets sofort neu.
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
-  for (const url of RELAYS) {
+  for (const url of activeRelays) {
     const ws = conns[url];
     if (!ws || ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
       backoff[url] = 0;
@@ -1114,7 +1150,7 @@ $('tb-reload').addEventListener('click', async () => {
 
 // ---- Start ----
 relayPills();
-RELAYS.forEach(connect);
+activeRelays.forEach(connect);
 updateSendState();
 </script>
 
