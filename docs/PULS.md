@@ -1841,6 +1841,26 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-25 · PARKPLATZ Verschlüsselung/Privatheit — Brainstorm-Brief für Folge-Sitzung
+
+Lange Pinnwand-Fortsetzung (PRs #439–#448, alle squash auf `main`): Baum-Icon +
+Topbar-Logo, löschbare Suchen, Vergrößern/Vollbild/Hard-Reload-Knöpfe, Mikrofon
+an allen Texteingabe-Feldern, „KI-Modelle löschen", mehr Richter-Anbieter
+(Gemini + OpenRouter mit Live-Gratis-Liste), mehrere wählbare breit gestreute
+Relays, und privates Brett per **gemeinsamem Passwort** (AES-GCM + PBKDF2).
+
+**Parkplatz/Brainstorm:** Klaus' treffender Befund — das gemeinsame Passwort hat
+das **Verteilungs-Problem** (Passwort muss out-of-band geschickt werden →
+Schwachstelle). Er will den **Public-Key-Weg (WhatsApp/Signal-Stil)** untersuchen:
+jeder hat ein Schlüsselpaar (die **Spore IST schon eins**; noble kann
+`getSharedSecret`/ECDH), man tauscht nur öffentliche Schlüssel, kein Passwort.
+Ehrliche Gabelung: **offenes Entdeckungs-Brett ⟂ Ende-zu-Ende-Geheimhaltung**
+(Fremde-Finden braucht lesbaren Inhalt) vs. **privat-an-Bekannte** (Public-Key
+voll möglich). Relevanter Alt-Entwurf: offener **PR #302 E2E-Vertraulichkeit**
+(sealed-box X25519). **Bewusst KEIN Code** bis Klaus' Richtungsentscheid (Krypto
+sicherheits-sensibel). Brief:
+`docs/sessions/BRIEF_PINNWAND_VERSCHLUESSELUNG_BRAINSTORM.md`.
+
 ### 2026-06-24 · Pinnwand-PWA: Baum-Icon + löschbare Suchen + Werkzeug-Knöpfe + Cache-Fix
 
 **Rolle:** Bau-Sitzung (Freibrief, Klaus zweifach „selbstständig merken"). Klaus'
