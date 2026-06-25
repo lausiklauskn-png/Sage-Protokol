@@ -440,6 +440,8 @@ function renderQuestion(ev, relay) {
   form.className = 'answer-form';
   const ta = document.createElement('textarea');
   ta.placeholder = 'Antwort…'; ta.maxLength = 280;
+  const amic = document.createElement('button');
+  amic.className = 'tbtn'; amic.textContent = '🎤'; amic.title = 'Antwort einsprechen';
   const btn = document.createElement('button');
   btn.className = 'ghost'; btn.textContent = 'Antworten';
   btn.addEventListener('click', async () => {
@@ -453,7 +455,8 @@ function renderQuestion(ev, relay) {
     renderAnswer(aev, live[0] ? live[0].url : 'lokal'); // sofort lokal zeigen
     btn.disabled = false;
   });
-  form.appendChild(ta); form.appendChild(btn);
+  form.appendChild(ta); form.appendChild(amic); form.appendChild(btn);
+  attachMic(amic, ta, null); // Antwort ebenfalls einsprechbar
 
   card.appendChild(head); card.appendChild(text);
   card.appendChild(answersUl); card.appendChild(form);
@@ -932,6 +935,34 @@ $('board-clear').addEventListener('click', clearBoard);
     try { rec.start(); } catch (err) { $('sendhint').textContent = 'Mikrofon nicht verfügbar (' + (err.message || err) + ')'; }
   });
 })();
+
+// Wiederverwendbares Mikrofon für JEDES weitere Text-Eingabefeld (z. B. jede
+// Antwort). Gleiche Browser-Spracherkennung, fail-soft. Von renderQuestion
+// pro Antwort-Feld aufgerufen (Funktions-Deklaration → hoisted).
+function attachMic(mic, target, hint) {
+  if (!mic || !target) return;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const setHint = (t) => { if (hint) hint.textContent = t; };
+  if (!SR) { mic.disabled = true; mic.title = 'Spracheingabe in diesem Browser nicht verfügbar'; mic.style.opacity = '0.5'; return; }
+  const max = target.maxLength > 0 ? target.maxLength : 280;
+  let rec = null, listening = false, base = '';
+  mic.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (listening) { try { rec.stop(); } catch { /* */ } return; }
+    rec = new SR();
+    rec.lang = 'de-DE'; rec.interimResults = true; rec.continuous = false;
+    base = target.value ? target.value.replace(/\s*$/, '') + ' ' : '';
+    rec.onstart = () => { listening = true; mic.classList.add('mic-on'); mic.textContent = '⏹'; setHint('höre zu… sprich jetzt'); };
+    rec.onresult = (ev2) => {
+      let txt = '';
+      for (let i = 0; i < ev2.results.length; i++) txt += ev2.results[i][0].transcript;
+      target.value = (base + txt).slice(0, max);
+    };
+    rec.onerror = (ev2) => { setHint('Spracheingabe-Fehler: ' + (ev2.error || 'unbekannt')); };
+    rec.onend = () => { listening = false; mic.classList.remove('mic-on'); mic.textContent = '🎤'; };
+    try { rec.start(); } catch (err) { setHint('Mikrofon nicht verfügbar'); }
+  });
+}
 
 // Text-Vergrößerung: 3 Stufen, persistent.
 const LS_SCALE = 'sbkim_pinnwand_scale';
