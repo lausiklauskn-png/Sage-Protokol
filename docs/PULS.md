@@ -1841,6 +1841,38 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-25 · Toolpoint-Relay (Relay-zuerst) — Architektur-Notiz + Betreiber-Anleitung
+
+Bau-/Umsetzungs-Sitzung zum Brief „Eigenes Relay als Fundament des Toolpoint".
+Klaus' Entscheide live geklärt: **Hosting = VPS** (Heim-Pi verworfen:
+Heim-IP/CGNAT/Bastelei), **Versprechen-Wortlaut = „server-los" mit Erklärung**,
+**Custom-Relay-Eingabe in der Pinnwand-UI = Folge-Bau** (jetzt nur eigenes Relay
+fest in `RELAY_POOL`), **Relay-Domain-Name noch offen** (Platzhalter
+`relay.<deine-domain>`).
+
+**Kern-Klärung (gehört prominent in die Doku):** zwei Versprechen sauber trennen —
+(1) **App-Versprechen** local-first bleibt unangetastet wahr (App-Daten erreichen
+das Relay nie); (2) **Netz-Transport** war nie server-los (heute fremde Relays),
+eigenes Relay *verlagert* die Metadaten vom Fremden zu Klaus statt sie zu brechen.
+Ehrliche Garantie-Lage: Inhalt per E2E **garantiert blind**, Metadaten nur
+**log-frei + prüfbar** (volle Garantie erst per Mixnet), IP nur per Tor (Nutzer,
+nicht Betreiber). → **Dreistufiges, prüfbares Versprechen** („prüf mich" statt
+„vertrau mir").
+
+**Gebaut (zwei Discovery-Notizen, unverlinkt/Parkplatz):**
+`docs/discovery/notiz-toolpoint-relay.md` (Architektur/Entscheidungen, ganzer
+Bogen, Garantie-Tabelle, Andock-Punkt) + `docs/discovery/anleitung-eigenes-relay.md`
+(VPS-Betreiber-Anleitung: strfry via Docker + Caddy Auto-TLS, log-freie Konfig,
+öffentlich-prüfbar machen, `wss://`-Test, Pinnwand-Andock). Pinnwand spricht
+Nostr (NIP-01); Andock-Punkt `RELAY_POOL` `pinnwand/index.html:355` (föderiert
+dazu), Pool-Filter `:364` blockt Custom-Relays (Folge-Bau). KEIN Code geändert.
+
+**Offen (wartet, nicht in dieser Sitzung machbar):** Relay live aufsetzen (Klaus
+mietet VPS + Domain), Pinnwand-URL eintragen (Domain nötig), Toolpoint-Seite mit
+getrennten Räumen (braucht Repo-Zugriff `SB-KIMTool-Point`, erst Datei-Audit).
+**Nächster sinnvoller Schritt:** VPS + Domain bestellen, Anleitung abarbeiten,
+gemeinsam `wss://`-Connect testen → dann zwei-Geräte-Cross-Node-Beweis.
+
 ### 2026-06-25 · PARKPLATZ Verschlüsselung/Privatheit — Brainstorm-Brief für Folge-Sitzung
 
 Lange Pinnwand-Fortsetzung (PRs #439–#448, alle squash auf `main`): Baum-Icon +
