@@ -74,8 +74,50 @@ Anleitung Schritt 2–7 abarbeiten → gemeinsam `wss://`-Connect testen. Sobald
 grün: URL in `RELAY_POOL`, dann **zwei getrennte Geräte (nur eigenes Relay) →
 Cross-Node-Sicht** = der bisher offene Meilenstein-Beweis.
 
+## ✅ NACHTRAG — Relay LIVE + Cross-Knoten-Transport bewiesen (selbe Sitzung)
+
+Die Sitzung ging weit über Doku hinaus. Gemeinsam mit Klaus Schritt für Schritt:
+
+1. **Domain** `family-projekt.de` (+ `.com`) bei INWX gekauft (Inhaber Klaus,
+   Whois-Privacy auf .com, Treuhand auf .de abgewählt). DNS-A-Eintrag
+   `relay` → Server-IP gesetzt.
+2. **VPS** Hetzner CX23 (Falkenstein, Ubuntu 26.04, ~7 €/Mo inkl. IPv4), SSH-Key
+   (ed25519 in Termux) hinterlegt.
+3. **Relay** installiert: Docker + `nostr-rs-relay` hinter `caddy:2` (Auto-TLS).
+   Statt strfry → nostr-rs-relay (container-freundlich, bindet `0.0.0.0`).
+   Beide Container `logging:none`. NIP-11-Beweis über https grün
+   (`{"name":"Toolpoint-Relay", restricted_writes:false}`).
+4. **Pinnwand verdrahtet:** `wss://relay.family-projekt.de` als erster
+   föderierter `RELAY_POOL`-Eintrag (`pinnwand/index.html:355`), Smoke 58/58.
+   PR #451 nach `main` gemerged → GitHub Pages liefert es aus.
+5. **Cross-Knoten-Beweis (Klaus' Sichttest):** zwei getrennte Knoten (Spore
+   `913db955…` + `4577385…`) tauschen Zettel cross-node mit NUR dem eigenen
+   Relay aktiv. Klaus: „blitzartig, so schnell wie die öffentlichen".
+   → Fremd-Relay-Metadaten-Abhängigkeit aufgelöst; Meilenstein-Doku §4 nachgezogen.
+
+## Was JETZT noch offen ist (für die nächste Sitzung)
+
+- **Semantische Frage→Antwort übers eigene Relay** — die Bedeutungs-Hälfte über
+  den nun bewiesenen Transport (Modul 04.C `queryLocal` + Modul 15 `op:"query"`).
+  Das ist die letzte Verdrahtung im Meilenstein.
+- **Log-Freiheit öffentlich prüfbar machen** — `docker-compose.yml` + `Caddyfile`
+  + `config.toml` ins öffentliche `SB-KIMTool-Point` spiegeln + `RUST_LOG` klein
+  stellen (heute verwirft Docker `logging:none` die Logs, „prüfbar" verlangt die
+  offene Konfig).
+- **ufw-Firewall** auf dem VPS nachziehen (in der Live-Sitzung fürs Tempo
+  weggelassen; nur 22/80/443 zulassen).
+- **Toolpoint-Seite mit getrennten Räumen** (Relay-Raum / Andock / Marktplatz) —
+  braucht erweiterten Repo-Zugriff auf `SB-KIMTool-Point`, erst Datei-Audit.
+
+## Server-Eckdaten (für die nächste Sitzung; KEINE Geheimnisse)
+
+- VPS: Hetzner CX23, Falkenstein, Ubuntu 26.04. Login: `ssh root@<IP>` (IP in der
+  Hetzner-Console; SSH-Key liegt in Klaus' Termux). Relay-Ordner: `/opt/relay/`
+  (`docker compose ps` / `logs` / `restart` dort). Relay: `wss://relay.family-projekt.de`.
+
 ## Freibrief
 
-Galt (CLAUDE.md § Freibrief). Reine Doku-Sitzung, kein Code, kein Krypto-Eingriff
-→ keine zweifelhaften Merk-Entscheidungen. Hosting/Wortlaut/Scope/Name bewusst
-mit Klaus geklärt (richtungs- und kostenrelevant).
+Galt (CLAUDE.md § Freibrief). Hosting/Wortlaut/Scope/Name + der Merge nach `main`
+bewusst mit Klaus geklärt bzw. auf sein „mergen" hin ausgeführt (tested, Smoke
+grün, low-risk Ein-Zeilen-Wiring). Krypto unangetastet (Pinnwand-AES/Spore
+nur föderativ um eine Relay-URL ergänzt).
