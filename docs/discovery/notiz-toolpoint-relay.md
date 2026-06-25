@@ -9,6 +9,30 @@
 > „Wie server-los ist die Pinnwand wirklich — und was ist der größte ehrliche
 > Hebel?" Antwort: **ein eigenes, dummes, neutrales Relay.**
 
+## ✅ NACHTRAG 2026-06-25 — Relay ist LIVE
+
+In derselben Sitzung gemeinsam mit Klaus aufgesetzt und **bewiesen erreichbar**:
+
+- **Adresse:** `wss://relay.family-projekt.de` (eigene Domain `family-projekt.de`
+  bei INWX, eigener VPS bei Hetzner CX23 in Falkenstein, ~7 €/Monat inkl. IPv4).
+- **Software:** **nostr-rs-relay** (statt strfry — container-freundlicher, bindet
+  von Haus aus `0.0.0.0`; die Anleitung nennt beide als gleichwertig) hinter
+  **Caddy** (Auto-TLS via Let's Encrypt). Beide in Docker, `logging: none`.
+- **Beweis (NIP-11 über `https`):** `curl -s https://relay.family-projekt.de
+  -H "Accept: application/nostr+json"` →
+  `{"name":"Toolpoint-Relay", … "payment_required":false,
+  "restricted_writes":false}`. Volle Kette DNS → TLS → Caddy → Relay grün.
+- **Pinnwand verdrahtet:** `wss://relay.family-projekt.de` als **erster
+  (föderierter)** Eintrag in `RELAY_POOL` (`pinnwand/index.html:355`), im
+  Default-Aktiv-Satz. Smoke 58/58 grün.
+
+**Noch offen (Folge):** (1) Cross-Knoten-Beweis in der Pinnwand-UI mit **nur**
+dem eigenen Relay auf **zwei getrennten Geräten** (der Meilenstein-Beweis). (2)
+Log-Freiheit **öffentlich prüfbar** machen — `docker-compose.yml` + `Caddyfile`
++ `config.toml` ins öffentliche `SB-KIMTool-Point` spiegeln + `RUST_LOG`
+ausdrücklich klein stellen (heute verwirft Docker `logging:none` die Logs, aber
+„prüfbar" verlangt die offene Konfig). (3) Toolpoint-Seite mit getrennten Räumen.
+
 ## Der Bogen (wie wir hierher kamen)
 
 - Start bei der Pinnwand-Verschlüsselung → „wie server-los ist das eigentlich?"

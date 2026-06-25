@@ -1867,11 +1867,21 @@ Bogen, Garantie-Tabelle, Andock-Punkt) + `docs/discovery/anleitung-eigenes-relay
 Nostr (NIP-01); Andock-Punkt `RELAY_POOL` `pinnwand/index.html:355` (föderiert
 dazu), Pool-Filter `:364` blockt Custom-Relays (Folge-Bau). KEIN Code geändert.
 
-**Offen (wartet, nicht in dieser Sitzung machbar):** Relay live aufsetzen (Klaus
-mietet VPS + Domain), Pinnwand-URL eintragen (Domain nötig), Toolpoint-Seite mit
-getrennten Räumen (braucht Repo-Zugriff `SB-KIMTool-Point`, erst Datei-Audit).
-**Nächster sinnvoller Schritt:** VPS + Domain bestellen, Anleitung abarbeiten,
-gemeinsam `wss://`-Connect testen → dann zwei-Geräte-Cross-Node-Beweis.
+**✅ RELAY IST LIVE (gemeinsam mit Klaus aufgesetzt, selbe Sitzung):**
+Domain `family-projekt.de` (INWX) + VPS Hetzner CX23 Falkenstein (~7 €/Mo) →
+`wss://relay.family-projekt.de`. **nostr-rs-relay** (container-freundlicher als
+strfry) hinter **Caddy** (Auto-TLS Let's Encrypt), beide in Docker `logging:none`.
+Beweis NIP-11 über https grün (`{"name":"Toolpoint-Relay", restricted_writes:false}`).
+Pinnwand verdrahtet: eigenes Relay als erster föderierter `RELAY_POOL`-Eintrag
+(`pinnwand/index.html:355`), Smoke 58/58 grün.
+
+**Offen (Folge):** (1) **Cross-Knoten-Beweis** — Pinnwand auf zwei getrennten
+Geräten mit NUR eigenem Relay (der offene Meilenstein). (2) Log-Freiheit
+**öffentlich prüfbar** machen (Konfig ins `SB-KIMTool-Point` spiegeln + `RUST_LOG`
+klein). (3) Toolpoint-Seite mit getrennten Räumen (braucht Repo-Zugriff). (4)
+ufw-Firewall auf dem VPS nachziehen (in der Live-Sitzung zugunsten Tempo defer'd).
+**Nächster sinnvoller Schritt:** Pinnwand mit dem neuen Relay deployen, dann
+Zwei-Geräte-Cross-Node-Test.
 
 ### 2026-06-25 · PARKPLATZ Verschlüsselung/Privatheit — Brainstorm-Brief für Folge-Sitzung
 
