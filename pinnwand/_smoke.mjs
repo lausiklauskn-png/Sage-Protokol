@@ -86,6 +86,9 @@ ok("Probe 6: Hard-Reload-Knopf (SW unregister + caches leeren)", /id="tb-reload"
 ok("Probe 6: Mikrofon-Knopf (Spracheingabe, fail-soft)", /id="mic"/.test(html) && /SpeechRecognition/.test(html) && /lang = 'de-DE'/.test(html));
 ok("Probe 6: Mikrofon auch an Antwort-Feldern (attachMic)", /function attachMic/.test(html) && /attachMic\(amic, ta/.test(html));
 ok("Probe 6: KI-Modelle löschbar (Cache außer App-Schale)", /id="webllm-clear"/.test(html) && /!k\.startsWith\('sbkim-pinnwand-'\)/.test(html));
+ok("Probe 6: mehrere Richter-Anbieter (claude/gemini/openrouter)", /gemini:/.test(html) && /openrouter:/.test(html) && /CLOUD_PROVIDERS/.test(html));
+ok("Probe 6: OpenRouter Gratis-Modelle live ladbar", /id="orFree"/.test(html) && /openrouter\.ai\/api\/v1\/models/.test(html) && /String\(pr\.prompt\) === '0'/.test(html));
+ok("Probe 6: Schlüssel pro Anbieter gemerkt (keys-Map)", /store\.keys\[p\]/.test(html));
 
 // ---- Auswertung ----
 let pass = 0;

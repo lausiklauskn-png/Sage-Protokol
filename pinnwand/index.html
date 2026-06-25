@@ -265,6 +265,8 @@
       <select id="judgeprov">
         <option value="">⚖️ KI-Richter: aus (gratis bleibt Voreinstellung)</option>
         <option value="claude">Cloud: Claude (Anthropic) — eigener Schlüssel</option>
+        <option value="gemini">Cloud: Gemini (Google) — Gratis-Stufe</option>
+        <option value="openrouter">Cloud: OpenRouter — viele Modelle, auch gratis</option>
         <option value="webllm">frei: KI im Browser (WebLLM) — kein Cent, lädt Modell</option>
       </select>
       <input id="judgekey" type="password" placeholder="API-Schlüssel" style="display:none;" autocomplete="off">
@@ -272,6 +274,12 @@
       <label id="judgeremember-l" style="display:none; font-size:0.8rem; color:var(--dim);">
         <input type="checkbox" id="judgeremember" checked> auf diesem Gerät merken
       </label>
+      <select id="orModel" style="display:none;" title="OpenRouter-Modell (gratis-Modelle enden auf :free)">
+        <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (gratis)</option>
+        <option value="google/gemini-2.0-flash-exp:free">Gemini 2.0 Flash (gratis)</option>
+        <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (gratis)</option>
+      </select>
+      <button id="orFree" class="tbtn" style="display:none;" title="Aktuelle Gratis-Modelle von OpenRouter laden">🔄 Gratis-Modelle laden</button>
       <select id="webllmmodel" style="display:none;">
         <option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Trabant — Qwen2.5 0.5B (winzig, fast überall)</option>
         <option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC" selected>VW Golf — Qwen2.5 1.5B (sichere Mittelklasse)</option>
@@ -610,9 +618,14 @@ $('semantic').addEventListener('click', () => { semanticOn ? disableSemantic() :
 // Spiegelt die Provider-Abstraktion von Modul 04 hybridMatch (hier nur claude —
 // Mistral bewusst raus: hat sich weder in Text- noch Bedeutungs-Erkennung
 // bewährt, Klaus 2026-06-24; deckt sich mit der Widget-Festlegung "Mistral RAUS").
+// Anbieter steckbar. Jeder liefert dasselbe Verdikt-Schema (via parseJudgeJson).
+// Gemini + OpenRouter haben großzügige Gratis-Stufen; OpenRouter bündelt viele
+// Modelle inkl. einer wechselnden Liste kostenloser (live ladbar).
 const JUDGE = {
   claude: {
-    url: 'https://api.anthropic.com/v1/messages',
+    label: 'Claude (Anthropic)',
+    keyUrl: 'https://console.anthropic.com/settings/keys',
+    url: () => 'https://api.anthropic.com/v1/messages',
     headers: (key) => ({
       'content-type': 'application/json', 'x-api-key': key,
       'anthropic-version': '2023-06-01',
@@ -624,7 +637,31 @@ const JUDGE = {
     }),
     pick: (data) => data && data.content && data.content[0] && data.content[0].text,
   },
+  gemini: {
+    label: 'Gemini (Google, Gratis-Stufe)',
+    keyUrl: 'https://aistudio.google.com/apikey',
+    url: () => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    headers: (key) => ({ 'content-type': 'application/json', 'x-goog-api-key': key }),
+    body: (prompt) => JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0 },
+    }),
+    pick: (data) => data && data.candidates && data.candidates[0] && data.candidates[0].content &&
+      data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text,
+  },
+  openrouter: {
+    label: 'OpenRouter (viele Modelle, auch gratis)',
+    keyUrl: 'https://openrouter.ai/keys',
+    url: () => 'https://openrouter.ai/api/v1/chat/completions',
+    headers: (key) => ({ 'content-type': 'application/json', 'authorization': 'Bearer ' + key }),
+    body: (prompt, model) => JSON.stringify({
+      model: model || 'meta-llama/llama-3.3-70b-instruct:free',
+      messages: [{ role: 'user', content: prompt }], temperature: 0,
+    }),
+    pick: (data) => data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content,
+  },
 };
+const CLOUD_PROVIDERS = ['claude', 'gemini', 'openrouter'];
 
 // Prompt: bewusst auf ABSICHT + VERNEINUNG getrimmt.
 function buildJudgePrompt(question, answers) {
@@ -655,7 +692,8 @@ function parseJudgeJson(text) {
 async function callJudge(provider, key, prompt) {
   const spec = JUDGE[provider];
   if (!spec) throw new Error('Unbekannter Anbieter');
-  const res = await fetch(spec.url, { method: 'POST', headers: spec.headers(key), body: spec.body(prompt) });
+  const model = provider === 'openrouter' ? ($('orModel').value || '') : '';
+  const res = await fetch(spec.url(key), { method: 'POST', headers: spec.headers(key), body: spec.body(prompt, model) });
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const data = await res.json();
   const txt = spec.pick(data);
@@ -698,8 +736,8 @@ async function callWebllmJudge(prompt) {
 // Steckbar: Cloud (claude) ODER frei (webllm). Beide liefern dasselbe Verdikt-Schema.
 async function getVerdicts(prompt) {
   const p = $('judgeprov').value;
-  if (p === 'claude') return callJudge('claude', $('judgekey').value.trim(), prompt);
   if (p === 'webllm') return callWebllmJudge(prompt);
+  if (CLOUD_PROVIDERS.includes(p)) return callJudge(p, $('judgekey').value.trim(), prompt);
   throw new Error('kein Anbieter gewählt');
 }
 
@@ -726,46 +764,84 @@ async function judgeView(view) {
 // dieses Geräts (im Klartext — kein Server, kein Tracker). Häkchen weg →
 // sofort gelöscht. Der verschlüsselte Weg wäre der Tresor (Modul 20), hier
 // bewusst die einfache Geräte-Bequemlichkeit für eine Testseite.
-const LS_JUDGE_KEY = 'sbkim_nostr_judge_key';
-const LS_JUDGE_PROV = 'sbkim_nostr_judge_prov';
+// Pro Anbieter ein eigener Schlüssel, nur mit Häkchen gespeichert (Klartext,
+// nur dieses Gerät). Häkchen weg → alles gelöscht.
+const LS_JUDGE = 'sbkim_pinnwand_judge';
+function loadJudgeStore() { try { return JSON.parse(localStorage.getItem(LS_JUDGE) || '{}'); } catch { return {}; } }
 function persistJudge() {
-  const remember = $('judgeremember').checked;
+  const p = $('judgeprov').value;
+  if (!$('judgeremember').checked) { localStorage.removeItem(LS_JUDGE); return; }
+  if (!CLOUD_PROVIDERS.includes(p)) return;
+  const store = loadJudgeStore();
+  store.prov = p; store.keys = store.keys || {};
   const key = $('judgekey').value.trim();
-  if (remember && $('judgeprov').value === 'claude' && key) {
-    localStorage.setItem(LS_JUDGE_PROV, 'claude');
-    localStorage.setItem(LS_JUDGE_KEY, key);
-  } else {
-    localStorage.removeItem(LS_JUDGE_PROV);
-    localStorage.removeItem(LS_JUDGE_KEY);
-  }
+  if (key) store.keys[p] = key; else delete store.keys[p];
+  try { localStorage.setItem(LS_JUDGE, JSON.stringify(store)); } catch { /* */ }
 }
 
 $('judgeprov').addEventListener('change', () => {
   const p = $('judgeprov').value;
-  const cloud = p === 'claude';
+  const cloud = CLOUD_PROVIDERS.includes(p);
   const free = p === 'webllm';
+  const isOR = p === 'openrouter';
   $('judgekey').style.display = cloud ? '' : 'none';
   $('judgekeylink').style.display = cloud ? '' : 'none';
   $('judgeremember-l').style.display = cloud ? '' : 'none';
+  $('orModel').style.display = isOR ? '' : 'none';
+  $('orFree').style.display = isOR ? '' : 'none';
   $('webllmmodel').style.display = free ? '' : 'none';
   $('webllmload').style.display = free ? '' : 'none';
   $('judgerun').style.display = (cloud || free) ? '' : 'none';
+  if (cloud) {
+    $('judgekeylink').href = JUDGE[p].keyUrl;
+    const store = loadJudgeStore();
+    $('judgekey').value = (store.keys && store.keys[p]) || '';
+  }
   $('judgestatus').className = 'status';
   $('judgestatus').textContent = cloud
-    ? 'Schlüssel eingeben (oder „Schlüssel erstellen ↗"), dann „Richter anwenden"'
+    ? 'Schlüssel für ' + JUDGE[p].label + ' eingeben (oder „🔑 Schlüssel erstellen ↗"), dann „Richter anwenden".'
+      + (isOR ? ' Tipp: „🔄 Gratis-Modelle laden" holt die aktuellen kostenlosen Modelle.' : '')
     : free
-      ? 'Modell-Klasse wählen → „Modell laden" (einmaliger Download), dann „Richter anwenden". Gratis, langsamer, nicht ganz so stark wie die Cloud.'
+      ? 'Modell-Klasse wählen → „⬇️ Modell laden", dann „Richter anwenden". Gratis, langsamer, nicht ganz so stark.'
       : 'aus — gratis Embedding-Weg bleibt aktiv';
   persistJudge();
 });
 $('judgekey').addEventListener('input', persistJudge);
 $('judgeremember').addEventListener('change', persistJudge);
 
-// Beim Laden: gemerkten Schlüssel wiederherstellen (falls vorhanden).
+// OpenRouter: aktuelle GRATIS-Modelle live laden (Liste ändert sich über die Zeit).
+$('orFree').addEventListener('click', async () => {
+  const st = $('judgestatus');
+  $('orFree').disabled = true;
+  st.className = 'status'; st.textContent = 'lade aktuelle Gratis-Modelle…';
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/models');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const free = (data.data || []).filter((m) => {
+      const pr = m.pricing || {};
+      return String(pr.prompt) === '0' && String(pr.completion) === '0';
+    });
+    if (!free.length) throw new Error('keine gefunden');
+    const sel = $('orModel');
+    sel.innerHTML = '';
+    free.slice(0, 50).forEach((m) => {
+      const o = document.createElement('option');
+      o.value = m.id; o.textContent = (m.name || m.id) + ' (gratis)';
+      sel.appendChild(o);
+    });
+    st.className = 'status on'; st.textContent = free.length + ' Gratis-Modelle geladen — eines wählen, dann „Richter anwenden".';
+  } catch (e) {
+    st.className = 'status err'; st.textContent = 'Gratis-Liste nicht ladbar (' + (e.message || e) + ') — Standard-Auswahl bleibt.';
+  }
+  $('orFree').disabled = false;
+});
+
+// Beim Laden: zuletzt gewählten Anbieter + dessen Schlüssel wiederherstellen.
 (function restoreJudge() {
-  if (localStorage.getItem(LS_JUDGE_PROV) === 'claude' && localStorage.getItem(LS_JUDGE_KEY)) {
-    $('judgeprov').value = 'claude';
-    $('judgekey').value = localStorage.getItem(LS_JUDGE_KEY);
+  const store = loadJudgeStore();
+  if (store.prov && CLOUD_PROVIDERS.includes(store.prov)) {
+    $('judgeprov').value = store.prov;
     $('judgeprov').dispatchEvent(new Event('change'));
   }
 })();
