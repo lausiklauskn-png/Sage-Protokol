@@ -70,8 +70,19 @@ globalThis.fetch = async (url, init) => {
     // verdicts-Länge passt nicht
     return jsonResponse(200, anthropicWrap(JSON.stringify({ verdicts: [] })));
   }
-  // ok-anthropic / ok-openai: gültiges verdicts-JSON in der jeweiligen Form.
+  // ok-anthropic / ok-openai / ok-gemini: gültiges verdicts-JSON in der jeweiligen Form.
   const text = JSON.stringify({ verdicts: stubVerdicts });
+  if (stubBehavior === "ok-gemini") {
+    // resolveModel: GET der Modell-Liste (URL endet auf /models)
+    if (/\/models$/.test(String(url))) {
+      return jsonResponse(200, { models: [
+        { name: "models/gemini-flash-latest", supportedGenerationMethods: ["generateContent"] },
+        { name: "models/gemini-pro", supportedGenerationMethods: ["generateContent"] },
+      ] });
+    }
+    // generateContent: JSON in ```-Code-Fence (Gemini-typisch) → Fence-Strip-Test
+    return jsonResponse(200, geminiWrap("```json\n" + text + "\n```"));
+  }
   if (stubBehavior === "ok-openai") {
     return jsonResponse(200, openAiWrap(text));
   }
@@ -88,6 +99,12 @@ function openAiWrap(text) {
   return {
     choices: [{ message: { role: "assistant", content: text } }],
     usage: { prompt_tokens: 120, completion_tokens: 40, total_tokens: 160 },
+  };
+}
+function geminiWrap(text) {
+  return {
+    candidates: [{ content: { parts: [{ text }] } }],
+    usageMetadata: { totalTokenCount: 150 },
   };
 }
 
@@ -114,8 +131,8 @@ async function run() {
     typeof M.InvalidCandidatesError, typeof M.InvalidCandidatesError === "function");
   record("Probe 1: InvalidProviderError exportiert", "function",
     typeof M.InvalidProviderError, typeof M.InvalidProviderError === "function");
-  record("Probe 1: _meta.hybridProviders (4 Anbieter)", "4",
-    String(M._meta.hybridProviders.length), M._meta.hybridProviders.length === 4);
+  record("Probe 1: _meta.hybridProviders (6 Anbieter)", "6",
+    String(M._meta.hybridProviders.length), M._meta.hybridProviders.length === 6);
   record("Probe 1: _meta.hybridEuDefaultProvider", "mistral",
     M._meta.hybridEuDefaultProvider, M._meta.hybridEuDefaultProvider === "mistral");
   record("Probe 1: _meta.hybridBidirectionalDefault", "both",
@@ -207,6 +224,25 @@ async function run() {
   record("Probe 5: Mistral default-Modell", "mistral-small-latest",
     out5.model, out5.model === "mistral-small-latest");
 
+  // ---- Probe 5b: Gemini-Anbieter (dynamische Modell-Wahl + Fence-Strip) ----
+  stubBehavior = "ok-gemini";
+  stubVerdicts = [
+    { passt: true, score: 0.9, begruendung: "passt" },
+    { passt: false, score: 0.1, begruendung: "passt nicht" },
+    { passt: true, score: 0.6, begruendung: "teils" },
+  ];
+  const out5b = await M.hybridMatch("Suche G", candidates3, { apiKey: "g-key", provider: "gemini" });
+  record("Probe 5b: Gemini available true", "true", String(out5b.available), out5b.available === true);
+  record("Probe 5b: Gemini provider", "gemini", out5b.provider, out5b.provider === "gemini");
+  record("Probe 5b: Modell dynamisch aufgelöst", "gemini-flash-latest",
+    out5b.model, out5b.model === "gemini-flash-latest");
+  record("Probe 5b: Request-URL :generateContent", "true",
+    String(/:generateContent$/.test(lastRequest.url)), /:generateContent$/.test(lastRequest.url));
+  record("Probe 5b: x-goog-api-key-Header", "g-key",
+    lastRequest.init.headers["x-goog-api-key"], lastRequest.init.headers["x-goog-api-key"] === "g-key");
+  record("Probe 5b: Fence-Strip → verdicts geparst", "3",
+    String(out5b.verdicts?.length), out5b.verdicts?.length === 3);
+
   // ---- Probe 6: EU-Default via euOnly, ohne provider ----
   record("Probe 6: pickJudgeProvider euOnly → mistral", "mistral",
     M.pickJudgeProvider({ euOnly: true }), M.pickJudgeProvider({ euOnly: true }) === "mistral");
@@ -285,7 +321,7 @@ async function run() {
     e10d?.name, e10d?.name === "InvalidCandidatesError");
   // 10e unbekannter Anbieter
   let e10e = null;
-  try { await M.hybridMatch("S", candidates3, { apiKey: "k", provider: "gemini" }); } catch (e) { e10e = e; }
+  try { await M.hybridMatch("S", candidates3, { apiKey: "k", provider: "kein-solcher-anbieter" }); } catch (e) { e10e = e; }
   record("Probe 10e: unbekannter Anbieter → InvalidProviderError", "InvalidProviderError",
     e10e?.name, e10e?.name === "InvalidProviderError");
   // 10f zu viele Kandidaten
