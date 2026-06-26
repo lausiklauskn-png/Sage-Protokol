@@ -116,6 +116,10 @@
   var euChipEl = null;
   var areaRowEl = null;        // Bereichs-Checkboxen (App/Knoten/Internet)
   var richterToggleEl = null;  // KI-Richter an/aus
+  var richterRowEl = null;            // Zeile: Richter-Anbieter + Schlüssel + Modell
+  var richterProviderSelectEl = null; // KI-Richter-Anbieter-Auswahl (Sortierung)
+  var richterKeyEl = null;            // API-Schlüssel-Feld (RAM-only, nicht persistiert)
+  var richterModelEl = null;          // optionales Modell-Feld (leer = Standard/auto)
   var searxngFieldEl = null;   // SearXNG-URL-Feld (für Web-Treffer im Widget)
   var engineSelectEl = null;   // Web-Suchmaschine-Auswahl (Neuer-Tab-Weg)
   var aiSelectEl = null;       // KI-Anbieter-Auswahl (KI-Such-Brücke Stufe A)
@@ -157,6 +161,7 @@
   var optEuPolicy = EU_POLICY_DEFAULT;
   var optApiKey = null;
   var optProvider = DEFAULT_PROVIDER;
+  var optRichterModel = "";    // optionales KI-Richter-Modell (leer = Standard/auto)
   var optEuOnly = false;       // nur bei euPolicy:"frei" relevant
   var optQueryLabel = null;
   var optK = DEFAULT_K;
@@ -630,6 +635,26 @@
       "  padding: 0.3rem 0.45rem;",
       "  outline: none;",
       "}",
+      "#" + WIDGET_ID + " .sbkim-sw-richterrow {",
+      "  display: flex;",
+      "  gap: 0.3rem;",
+      "  margin-top: 0.4rem;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-richterprov, #" + WIDGET_ID + " .sbkim-sw-richterkey, #" + WIDGET_ID + " .sbkim-sw-richtermodel {",
+      "  box-sizing: border-box;",
+      "  min-width: 0;",
+      "  background: rgba(0, 0, 0, 0.24);",
+      "  border: 1px solid rgba(167, 139, 250, 0.35);",
+      "  border-radius: 8px;",
+      "  color: #F5F5FF;",
+      "  font-size: 0.72rem;",
+      "  padding: 0.3rem 0.45rem;",
+      "  outline: none;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-richterprov { flex: 0 0 auto; }",
+      "#" + WIDGET_ID + " .sbkim-sw-richterkey { flex: 1 1 auto; }",
+      "#" + WIDGET_ID + " .sbkim-sw-richtermodel { flex: 1 1 auto; }",
+      "#" + WIDGET_ID + " .sbkim-sw-richterprov option { color: #1A1A1A; }",
       "#" + WIDGET_ID + " .sbkim-sw-engine {",
       "  width: 100%;",
       "  box-sizing: border-box;",
@@ -1163,6 +1188,44 @@
     optRow.appendChild(euChipEl);
     panelEl.appendChild(optRow);
 
+    // KI-Richter-Anbieter (gratis: Gemini/OpenRouter) + Schlüssel + optionales
+    // Modell. Greift, wenn KI-Richter an ist. Schlüssel bleibt NUR im Speicher
+    // (nicht persistiert) — wie die Pinnwand (BYOK, kein Key im Code/Storage).
+    richterRowEl = doc.createElement("div");
+    richterRowEl.className = "sbkim-sw-richterrow";
+
+    richterProviderSelectEl = doc.createElement("select");
+    richterProviderSelectEl.className = "sbkim-sw-richterprov";
+    richterProviderSelectEl.setAttribute("aria-label", "KI-Richter-Anbieter (Antwort-Sortierung)");
+    rebuildRichterProviderOptions();
+    richterProviderSelectEl.addEventListener("change", function () {
+      optProvider = richterProviderSelectEl.value;
+      updateRichterModelPlaceholder();
+    });
+    richterProviderSelectEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    richterRowEl.appendChild(richterProviderSelectEl);
+
+    richterKeyEl = doc.createElement("input");
+    richterKeyEl.type = "password";
+    richterKeyEl.className = "sbkim-sw-richterkey";
+    richterKeyEl.setAttribute("placeholder", "API-Schlüssel (bleibt nur auf diesem Gerät)");
+    richterKeyEl.setAttribute("aria-label", "API-Schlüssel für den KI-Richter");
+    richterKeyEl.setAttribute("autocomplete", "off");
+    richterKeyEl.addEventListener("input", function () { optApiKey = richterKeyEl.value.trim() || null; });
+    richterKeyEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    richterRowEl.appendChild(richterKeyEl);
+
+    richterModelEl = doc.createElement("input");
+    richterModelEl.type = "text";
+    richterModelEl.className = "sbkim-sw-richtermodel";
+    richterModelEl.setAttribute("aria-label", "KI-Richter-Modell (optional)");
+    richterModelEl.addEventListener("input", function () { optRichterModel = richterModelEl.value.trim(); });
+    richterModelEl.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+    richterRowEl.appendChild(richterModelEl);
+    updateRichterModelPlaceholder();
+
+    panelEl.appendChild(richterRowEl);
+
     // SearXNG-URL-Feld (nur sichtbar, wenn Internet-Bereich aktiv). Leer →
     // Internet = neuer Tab; gesetzt → semantischer Web-Re-Ranker.
     searxngFieldEl = doc.createElement("input");
@@ -1350,12 +1413,55 @@
   function setEuPolicy(p) {
     optEuPolicy = normalizeEuPolicy(p);
     updateEuChip();
-    rebuildAiProviderOptions(); // EU-bindend → nur EU-KI-Anbieter (DSGVO)
+    rebuildAiProviderOptions();        // EU-bindend → nur EU-KI-Anbieter (DSGVO)
+    rebuildRichterProviderOptions();   // dasselbe für den KI-Richter (Sortierung)
   }
 
   // bindend → euOnly:true erzwungen; frei → optEuOnly (Default false, EU wählbar).
   function euOnlyForPolicy() {
     return optEuPolicy === "bindend" ? true : !!optEuOnly;
+  }
+
+  // ---- KI-Richter-Anbieter (Sortierung) ----
+  // Spiegelt Modul 04 HYBRID_PROVIDERS (Auswahl). EU-Politik "bindend" → nur
+  // EU-Anbieter (DSGVO). Gemini/OpenRouter sind die gratis-tauglichen.
+  var RICHTER_PROVIDERS = [
+    { id: "gemini",     label: "Richter: Gemini (gratis)",     eu: false },
+    { id: "openrouter", label: "Richter: OpenRouter (gratis)", eu: false },
+    { id: "claude",     label: "Richter: Claude",              eu: false },
+    { id: "mistral",    label: "Richter: Mistral (EU)",        eu: true },
+  ];
+  function richterProvidersForPolicy() {
+    if (optEuPolicy === "bindend") {
+      return RICHTER_PROVIDERS.filter(function (p) { return p.eu; });
+    }
+    return RICHTER_PROVIDERS.slice();
+  }
+  function richterModelDefaultFor(id) {
+    if (id === "gemini") return "automatisch";
+    if (id === "openrouter") return "meta-llama/llama-3.3-70b-instruct:free";
+    if (id === "claude") return "claude-haiku-4-5";
+    if (id === "mistral") return "mistral-small-latest";
+    return "Standard";
+  }
+  function updateRichterModelPlaceholder() {
+    if (!richterModelEl) return;
+    richterModelEl.setAttribute("placeholder", "Modell (optional) · Standard: " + richterModelDefaultFor(optProvider));
+  }
+  function rebuildRichterProviderOptions() {
+    if (!richterProviderSelectEl) return;
+    var d = global.document;
+    var list = richterProvidersForPolicy();
+    var keep = optProvider, stillThere = false, i;
+    while (richterProviderSelectEl.children.length) richterProviderSelectEl.removeChild(richterProviderSelectEl.children[0]);
+    for (i = 0; i < list.length; i++) {
+      var o = d.createElement("option");
+      o.value = list[i].id; o.textContent = list[i].label;
+      if (list[i].id === keep) { o.selected = true; stillThere = true; }
+      richterProviderSelectEl.appendChild(o);
+    }
+    if (!stillThere && list.length) { optProvider = list[0].id; richterProviderSelectEl.children[0].selected = true; }
+    updateRichterModelPlaceholder();
   }
 
   // ---- Spracheingabe (Modul 21) ----
@@ -2247,9 +2353,10 @@
     var forJudge = candidates.map(function (c) {
       return { label: c.label, text: c.text || c.label, cosine: c.score, anchorId: c.anchorId };
     });
+    var judgeOpts = { apiKey: optApiKey, provider: optProvider, euOnly: euOnlyForPolicy() };
+    if (optRichterModel) judgeOpts.model = optRichterModel;  // leer = Standard/auto (z.B. Gemini)
     return Promise.resolve(match.hybridMatch(
-        { text: query, label: optQueryLabel || null }, forJudge,
-        { apiKey: optApiKey, provider: optProvider, euOnly: euOnlyForPolicy() }))
+        { text: query, label: optQueryLabel || null }, forJudge, judgeOpts))
       .then(function (judgment) {
         if (!judgment || !judgment.available) {
           return { mode: "semantisch", treffer: candidates, reason: judgment && judgment.reason };

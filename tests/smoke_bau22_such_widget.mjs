@@ -249,6 +249,22 @@ async function run() {
   chip.dispatchEvent({ type: "click", target: chip, stopPropagation: () => {} });
   eq("Probe 5: Chip-Klick zurück → frei", "frei", W._meta.euPolicy);
 
+  // ---- Probe 5b: KI-Richter-Anbieter-Auswahl (Gemini & Co.) + EU-Politik-Filter ----
+  const richterProv = queryFirst(root, ".sbkim-sw-richterprov");
+  record("Probe 5b: Richter-Anbieter-Select existiert", "true", String(!!richterProv), !!richterProv);
+  const provIds = () => (richterProv ? richterProv.children.map((o) => o.value) : []);
+  record("Probe 5b: Gemini wählbar (frei)", "true", String(provIds().includes("gemini")), provIds().includes("gemini"));
+  record("Probe 5b: OpenRouter wählbar (frei)", "true", String(provIds().includes("openrouter")), provIds().includes("openrouter"));
+  record("Probe 5b: Schlüsselfeld existiert", "true",
+    String(!!queryFirst(root, ".sbkim-sw-richterkey")), !!queryFirst(root, ".sbkim-sw-richterkey"));
+  record("Probe 5b: Modellfeld existiert", "true",
+    String(!!queryFirst(root, ".sbkim-sw-richtermodel")), !!queryFirst(root, ".sbkim-sw-richtermodel"));
+  chip.dispatchEvent({ type: "click", target: chip, stopPropagation: () => {} }); // → bindend
+  record("Probe 5b: EU-bindend → kein Gemini", "true", String(!provIds().includes("gemini")), !provIds().includes("gemini"));
+  record("Probe 5b: EU-bindend → Mistral (EU) bleibt", "true", String(provIds().includes("mistral")), provIds().includes("mistral"));
+  chip.dispatchEvent({ type: "click", target: chip, stopPropagation: () => {} }); // → frei zurück
+  record("Probe 5b: zurück frei → Gemini wieder wählbar", "true", String(provIds().includes("gemini")), provIds().includes("gemini"));
+
   // App-Korpus für die Such-Proben setzen (Default-Bereich = app).
   mountMatch("treffer");
   W.setCorpus(APP_CORPUS);

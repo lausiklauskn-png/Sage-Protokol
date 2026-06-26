@@ -856,6 +856,72 @@
     return null;
   }
 
+  // Gemini (Google generativelanguage). Eigenes Request-Format (x-goog-api-key,
+  // contents/parts, generateContent — Modell steckt im URL-Pfad). Modellnamen
+  // ändern sich (alte Namen -> HTTP 404), darum dynamische Auflösung aus dem Konto.
+  function geminiBuild(o) {
+    var base = String(o.url).replace(/\/+$/, "");
+    return {
+      url: base + "/" + o.model + ":generateContent",
+      init: {
+        method: "POST",
+        headers: {
+          "x-goog-api-key": o.apiKey,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: o.prompt }] }],
+          generationConfig: { temperature: 0, maxOutputTokens: o.maxTokens },
+        }),
+      },
+    };
+  }
+  function geminiExtractText(body) {
+    if (body && Array.isArray(body.candidates) && body.candidates[0] &&
+        body.candidates[0].content && Array.isArray(body.candidates[0].content.parts) &&
+        body.candidates[0].content.parts[0] &&
+        typeof body.candidates[0].content.parts[0].text === "string") {
+      return body.candidates[0].content.parts[0].text;
+    }
+    return null;
+  }
+  function geminiExtractTokens(body) {
+    if (body && body.usageMetadata &&
+        typeof body.usageMetadata.totalTokenCount === "number" &&
+        isFinite(body.usageMetadata.totalTokenCount)) {
+      return body.usageMetadata.totalTokenCount;
+    }
+    return null;
+  }
+  // Fragt EINMAL die Modell-Liste des Kontos ab und nimmt ein verfügbares
+  // "flash"-Modell mit generateContent. Überlebt Modell-Wechsel; fester Fallback.
+  var _geminiModelCache = null;
+  async function geminiResolveModel(apiKey, baseUrl) {
+    if (_geminiModelCache) return _geminiModelCache;
+    try {
+      var r = await fetch(String(baseUrl).replace(/\/+$/, ""), {
+        headers: { "x-goog-api-key": apiKey },
+      });
+      if (r.ok) {
+        var d = await r.json();
+        var ms = (d && Array.isArray(d.models) ? d.models : []).filter(function (m) {
+          return m && Array.isArray(m.supportedGenerationMethods) &&
+            m.supportedGenerationMethods.indexOf("generateContent") !== -1;
+        });
+        var nm = function (m) { return String(m.name).replace(/^models\//, ""); };
+        var pick = null, i;
+        for (i = 0; i < ms.length; i++) {
+          if (/flash/i.test(ms[i].name) && !/(thinking|exp|vision|image|tts|live|embedding)/i.test(ms[i].name)) { pick = ms[i]; break; }
+        }
+        if (!pick) for (i = 0; i < ms.length; i++) { if (/flash/i.test(ms[i].name)) { pick = ms[i]; break; } }
+        if (!pick && ms.length) pick = ms[0];
+        if (pick) { _geminiModelCache = nm(pick); return _geminiModelCache; }
+      }
+    } catch (e) { /* offline/CORS -> Fallback */ }
+    _geminiModelCache = "gemini-flash-latest";
+    return _geminiModelCache;
+  }
+
   var HYBRID_PROVIDERS = {
     claude: {
       label: "Claude (Anthropic)",
@@ -911,6 +977,25 @@
       region: "us",
       defaultModel: "gpt-4o-mini",
       defaultUrl: "https://api.openai.com/v1/chat/completions",
+      buildRequest: openAiCompatBuild,
+      extractText: openAiCompatExtractText,
+      extractTokens: openAiCompatExtractTokens,
+    },
+    gemini: {
+      label: "Gemini (Google, Gratis-Stufe)",
+      region: "us",
+      defaultModel: "gemini-flash-latest",
+      defaultUrl: "https://generativelanguage.googleapis.com/v1beta/models",
+      resolveModel: geminiResolveModel,
+      buildRequest: geminiBuild,
+      extractText: geminiExtractText,
+      extractTokens: geminiExtractTokens,
+    },
+    openrouter: {
+      label: "OpenRouter (viele Modelle, auch gratis)",
+      region: "us",
+      defaultModel: "meta-llama/llama-3.3-70b-instruct:free",
+      defaultUrl: "https://openrouter.ai/api/v1/chat/completions",
       buildRequest: openAiCompatBuild,
       extractText: openAiCompatExtractText,
       extractTokens: openAiCompatExtractTokens,
@@ -1146,6 +1231,18 @@
       return failSoft("Anbieter '" + providerId + "' ohne Endpoint (options.endpoint setzen) — Vorfilter-Ergebnis gilt");
     }
 
+    // 3b. Dynamische Modell-Auflösung (z.B. Gemini: Modellnamen ändern sich ->
+    //     HTTP 404). Nur wenn der Anbieter einen resolveModel-Hook hat und der
+    //     Aufrufer KEIN festes Modell vorgegeben hat. Fail-soft: bei Fehler bleibt
+    //     defaultModel.
+    if (typeof provider.resolveModel === "function" &&
+        !(typeof opts.model === "string" && opts.model.length > 0)) {
+      try {
+        var resolved = await provider.resolveModel(apiKey, url);
+        if (typeof resolved === "string" && resolved.length > 0) model = resolved;
+      } catch (e) { /* defaultModel bleibt */ }
+    }
+
     // 4. Prompt + Request bauen.
     var prompt = buildJudgePrompt(queryText, queryLabel, candidates);
     var req = provider.buildRequest({
@@ -1186,7 +1283,10 @@
     // 7. Richter-JSON parsen + strikt validieren.
     var llmJson;
     try {
-      llmJson = JSON.parse(llmText);
+      // Manche Anbieter (z.B. Gemini) verpacken JSON in ```-Code-Fences —
+      // vor dem Parsen entfernen. Reine-JSON-Antworten bleiben unberührt.
+      var cleaned = llmText.replace(/```json/gi, "").replace(/```/g, "").trim();
+      llmJson = JSON.parse(cleaned);
     } catch (err) {
       return failSoft("Richter-Output war kein valides JSON");
     }

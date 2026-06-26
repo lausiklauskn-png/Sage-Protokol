@@ -1841,6 +1841,31 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-26 · Such-Tool KI-Richter: mehrere Gratis-Anbieter (Gemini + OpenRouter) + Pinnwand-Gemini-404-Fix + Icon
+
+Live-Sitzung mit Klaus (Fortsetzung Toolpoint). Mehrere Auslieferungen, alle nach
+`main` gemerged:
+
+- **Pinnwand Gemini-Richter 404-Fix** (PR #455): fester veralteter Modellname
+  `gemini-2.0-flash` → HTTP 404. `resolveGeminiModel()` wählt nun dynamisch ein
+  `flash`-Modell aus dem Konto (`v1beta/models`), Fallback `gemini-flash-latest`.
+- **Pinnwand-Baum-Icon** (PRs #451–#455): Glas-Squircle (Samsung-Form, schmaler
+  grüner Rand + 45°-Glaskante + Spiegelstreifen), von Klaus freigegeben.
+- **Such-Tool KI-Richter Mehr-Anbieter** (dieser Eintrag): Modul 04
+  `HYBRID_PROVIDERS` + **Gemini** (dynamische Modell-Wahl, 404-fest, Fence-Strip
+  vor JSON.parse) + **OpenRouter** (Gratis-Modelle) → 6 Anbieter; `hybridMatch`
+  löst `provider.resolveModel` async auf. Modul 22 UI: Richter-Anbieter-Dropdown
+  (EU-Politik-gefiltert) + RAM-only Schlüsselfeld (BYOK) + optionales Modellfeld;
+  `richterRerank` reicht `model` durch. Byte-identische `such-tool/modules/04+22`
+  aktualisiert. Smokes: 04d **68/68** (Gemini-Probe), bau22 **245/245** (Probe 5b),
+  Standalone **46/46**, alle 04a/b/c grün.
+
+**Offen:** Tresor-Auto-Speicher der Richter-Schlüssel (sicherheits-sensibel,
+Increment 2 B — eigene Folge-Sitzung). Browser-Sichttests (Gemini live im
+Such-Tool + Icon auf dem Startbildschirm) warten auf Klaus. **Nächster Schritt
+Toolpoint-Strang:** semantische Frage→Antwort übers eigene Relay (Brief
+`BRIEF_TOOLPOINT_SEMANTIK_UEBER_EIGENES_RELAY.md`).
+
 ### 2026-06-25 · Toolpoint-Relay (Relay-zuerst) — Architektur-Notiz + Betreiber-Anleitung
 
 Bau-/Umsetzungs-Sitzung zum Brief „Eigenes Relay als Fundament des Toolpoint".
