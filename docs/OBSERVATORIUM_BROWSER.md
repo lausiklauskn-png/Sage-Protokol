@@ -544,6 +544,72 @@ Nutzeranwendung + Freundlichkeit), und setzt ihn dann eigenverantwortlich um
 
 ---
 
+## Lehre 10 — Mehrere Repos pro Sitzung schaltet man beim START frei
+
+**Beobachtung 2026-06-26 (Klaus + Folge-Sitzung, Toolpoint-Vorbereitung):**
+Eine Claude-Code-Web-Sitzung war auf genau **ein** Repo (`sage-protokol`)
+beschränkt — der Versuch, ein zweites Repo (`SB-KIMTool-Point`) datei-für-datei
+zu auditieren, scheiterte mit „Access denied: repository … is not configured for
+this session. Allowed repositories: …". Der Zugriffs-Umfang einer Sitzung steht
+**zum Startzeitpunkt fest** und lässt sich **mitten in der laufenden Sitzung
+nicht** erweitern (die Repo-Verwaltungs-Werkzeuge `list_repos`/`add_repo` waren
+in dieser Sitzung gar nicht verfügbar).
+
+Dies ist eine **Sitzungs-/Workflow-Lehre** (Claude Code on the web), keine
+Browser-Eigenheit — sie steht hier, weil sie denselben Adressaten dient:
+Sitzungen, die SBKIM über mehrere Repos hinweg bauen.
+
+### Wie man es richtig macht (beim Sitzungs-Start)
+
+Beim Anlegen einer Sitzung auf **claude.ai/code** (Browser oder Handy-App):
+
+1. **Repo-Auswahl** unter dem Eingabefeld öffnen (das Feld, in dem das primäre
+   Repo steht).
+2. Dort **mehrere Repos hinzufügen** („add repository") — alle, die die Sitzung
+   anfassen soll. Jedes Repo hat einen eigenen **Branch-Wähler**.
+3. **Erst dann** die Aufgabe abschicken. Die Sitzung kann dann über **alle**
+   ausgewählten Repos lesen, suchen, committen, pushen.
+
+Voraussetzung: das verbundene GitHub-Konto muss die Repos sehen können — bei
+eigenen Repos (`lausiklauskn-png/…`) automatisch erfüllt.
+
+### Abkürzung: Repo-Auswahl per Link vorbefüllen
+
+Der Query-Parameter `repositories=` (Alias `repo=`) nimmt eine **komma-getrennte
+Liste** `owner/repo` und wählt sie vor:
+
+```
+https://claude.ai/code?repositories=lausiklauskn-png/Sage-Protokol,lausiklauskn-png/SB-KIMTool-Point
+```
+
+Weitere Parameter: `prompt=` (bzw. `q=`) befüllt den ersten Prompt, `prompt_url=`
+lädt einen langen Prompt von einer CORS-offenen URL, `environment=` wählt die
+Umgebung. Werte URL-kodieren. (Quelle: code.claude.com/docs/en/web-quickstart
+§ Start a task + § Pre-fill sessions, geprüft 2026-06-26.)
+
+### Konsequenzen für SBKIM-Bau
+
+- **Repo-übergreifende Arbeit von Anfang an planen.** Wer den Toolpoint
+  (`SB-KIMTool-Point`) aus den Sage-Modulen baut, ODER mehrere Endknoten in
+  einem Rutsch pflegt, wählt **alle** betroffenen Repos schon beim Start.
+- **Datei-für-datei-Audit schlägt Doku-Schluss.** Mit allen Repos im Zugriff
+  liest die Sitzung den echten Stand, statt aus Karten/PULS zu raten.
+- **Blockade-Befund sauber abschließen, nicht umgehen.** Fehlt ein Repo, ist die
+  ehrliche Geste: Sitzung produktiv im erlaubten Repo weiterführen (z.B. Brief /
+  Konzept / Prototyp), den Multi-Repo-Bau als Folge-Sitzung mit korrekter
+  Repo-Auswahl ansetzen — kein Workaround-Klonen fremder Repo-Inhalte.
+
+### Vorteile
+
+- **Parallel-Bau ohne Worktree-Jonglage.** Eine Sitzung mit mehreren Repos
+  ersetzt das lokale Mehr-Worktree-Setup — Quelle (Sage-Module) und Ziel
+  (Toolpoint / Endknoten) liegen gleichzeitig vor.
+- **Der Vorbefüll-Link ist ein Sitzungs-Starter zum Copy-Paste.** Man kann ihn
+  in einem Brief / einer Notiz hinterlegen, damit die Folge-Sitzung mit genau
+  der richtigen Repo-Auswahl startet — eine Frage weniger.
+
+---
+
 ## Pflege-Konvention für diese Datei
 
 Neue Lehren bekommen einen eigenen `## Lehre N — Titel`-Block. Pflicht-
@@ -561,11 +627,13 @@ Verträgen passiert.
 
 ---
 
-**Letzte Aktualisierung:** 2026-06-16 · Lehre 9 „localStorage ist kein
-Datenspeicher" (netzweite Speicher-Lehre, Quelle: BookLedgerPro-Brief,
-`untrusted external data` mit nachgeprüftem technischem Kern). Davor:
-2026-05-17 · Mini-Pflege Live-Channel-Handshake (Klaus + Folge-Sitzung zu
-PR #75/#76).
+**Letzte Aktualisierung:** 2026-06-26 · Lehre 10 „Mehrere Repos pro Sitzung
+schaltet man beim START frei" (Sitzungs-/Workflow-Lehre, Claude Code on the web;
+Auslöser: Toolpoint-Vorbereitung, SB-KIMTool-Point außerhalb der Sitzungs-
+Freigabe). Davor: 2026-06-16 · Lehre 9 „localStorage ist kein Datenspeicher"
+(netzweite Speicher-Lehre, Quelle: BookLedgerPro-Brief, `untrusted external
+data` mit nachgeprüftem technischem Kern). Davor: 2026-05-17 · Mini-Pflege
+Live-Channel-Handshake (Klaus + Folge-Sitzung zu PR #75/#76).
 
 **Querverweise:**
 
