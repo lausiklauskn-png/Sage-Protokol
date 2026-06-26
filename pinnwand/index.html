@@ -696,7 +696,7 @@ const JUDGE = {
   gemini: {
     label: 'Gemini (Google, Gratis-Stufe)',
     keyUrl: 'https://aistudio.google.com/apikey',
-    url: () => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    url: () => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',
     headers: (key) => ({ 'content-type': 'application/json', 'x-goog-api-key': key }),
     body: (prompt) => JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
@@ -745,11 +745,38 @@ function parseJudgeJson(text) {
   } catch { return null; }
 }
 
+// Gemini-Modellnamen ändern sich (alte Namen -> HTTP 404). Wir fragen EINMAL die
+// Modell-Liste des Kontos ab und nehmen ein verfügbares "flash"-Modell, das
+// generateContent kann. Überlebt künftige Modell-Wechsel; fester Fallback, falls
+// die Liste nicht erreichbar ist.
+let geminiModelCache = null;
+async function resolveGeminiModel(key) {
+  if (geminiModelCache) return geminiModelCache;
+  try {
+    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models', { headers: { 'x-goog-api-key': key } });
+    if (r.ok) {
+      const d = await r.json();
+      const ms = (d.models || []).filter((m) => (m.supportedGenerationMethods || []).includes('generateContent'));
+      const name = (m) => m.name.replace(/^models\//, '');
+      const pick = ms.find((m) => /flash/i.test(m.name) && !/(thinking|exp|vision|image|tts|live|embedding)/i.test(m.name))
+        || ms.find((m) => /flash/i.test(m.name)) || ms[0];
+      if (pick) { geminiModelCache = name(pick); return geminiModelCache; }
+    }
+  } catch { /* offline/CORS -> Fallback */ }
+  geminiModelCache = 'gemini-flash-latest';
+  return geminiModelCache;
+}
+
 async function callJudge(provider, key, prompt) {
   const spec = JUDGE[provider];
   if (!spec) throw new Error('Unbekannter Anbieter');
   const model = provider === 'openrouter' ? ($('orModel').value || '') : '';
-  const res = await fetch(spec.url(key), { method: 'POST', headers: spec.headers(key), body: spec.body(prompt, model) });
+  let url = spec.url(key);
+  if (provider === 'gemini') {
+    const gm = await resolveGeminiModel(key);
+    url = 'https://generativelanguage.googleapis.com/v1beta/models/' + gm + ':generateContent';
+  }
+  const res = await fetch(url, { method: 'POST', headers: spec.headers(key), body: spec.body(prompt, model) });
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const data = await res.json();
   const txt = spec.pick(data);
