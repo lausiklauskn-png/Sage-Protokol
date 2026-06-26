@@ -16,7 +16,7 @@
  */
 "use strict";
 
-var CACHE_VERSION = "sbkim-pinnwand-v13";
+var CACHE_VERSION = "sbkim-pinnwand-v14";
 
 var APP_SHELL = [
   "./",
@@ -25,8 +25,6 @@ var APP_SHELL = [
   "./impressum.html",
   "./icon-192.png",
   "./icon-512.png",
-  "./icon-maskable-192.png",
-  "./icon-maskable-512.png",
   "./modules/noble-secp256k1.js",
   "./modules/03_embedding.js",
 ];
