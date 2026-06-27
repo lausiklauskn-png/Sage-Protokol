@@ -704,6 +704,147 @@ mit ausdrücklicher Pflege-Sitzung änderbar.
 
 ---
 
+## Nostr-Relais-Transport (Stufe 2, additiv)
+
+> **Status:** Code-Stub, additiver Transport ·  **Schicht:** Netzwerk
+> (server-loser Cross-Knoten-Pfad) ·  **Bau-Sitzung:** 2026-06-27
+>
+> _Wenn zwei Knoten NICHT same-origin sind und keiner einen erreichbaren
+> HTTP-Endpunkt hat (statische Pages-Hoster), trägt weder der HTTP- noch
+> der BroadcastChannel-Pfad. Der Nostr-Transport schickt den Handshake
+> server-los über ein öffentliches Nostr-Relais — der Browser spricht
+> direkt mit dem Relais (WebSocket), kein eigener Backend-Server._
+
+### Motivation
+
+HTTP braucht einen Server, der `POST /sbkim/anastomosis` beantwortet —
+GitHub Pages liefert nur 404. BroadcastChannel trägt nur same-origin (ein
+Browser, gleiche Domain). Für den **echten Cross-Knoten-Handshake**
+(zwei verschiedene Geräte, verschiedene Origins) fehlte bisher ein
+server-loser Weg. Ein **Nostr-Relais** ist ein simpler, öffentlich
+betriebener WebSocket-Briefkasten (NIP-01): jeder Browser kann
+`["EVENT", …]` posten und auf `["REQ", …]`-Filter lauschen. Klaus
+betreibt seit 2026-06-25 ein eigenes, log-freies Relais
+`wss://relay.family-projekt.de` (live, neben den öffentlichen
+föderiert).
+
+### Krypto-Trennung (verbindlich)
+
+Das Nostr-Event ist **nur ein Transport-Umschlag**, signiert mit einem
+**ephemeren** secp256k1/schnorr-Schlüssel (pro Sitzung neu). Dieser
+Schlüssel beweist **nichts** über die SBKIM-Identität. Die echte
+Identität ist ausschließlich die **Ed25519-Signatur im `content`** (das
+bestehende, von Modul 02 signierte HandshakeRequest/HandshakeResponse).
+Der Empfänger verifiziert wie immer über `verifyForeignSpore` +
+`verifyEnvelope` gegen die Spore — der Nostr-pubkey wird **nicht**
+geprüft und ist für die Identität bedeutungslos.
+
+### Event-Format (NIP-01, kind:1)
+
+```jsonc
+// Anfrage (Sender → Relais → Ziel):
+{
+  "kind": 1,
+  "tags": [
+    ["t", "sbkim-anastomosis"],   // Typ-Marker
+    ["d", "<ZielNodeId>"],         // Routing: an wen
+    ["x", "<requestNonce>"]        // Bindung an genau diese Anfrage
+  ],
+  "content": "<JSON.stringify(signedRequest)>"   // Ed25519-signiert (Modul 02)
+}
+
+// Antwort (Empfänger → Relais → Anfrager):
+{
+  "kind": 1,
+  "tags": [
+    ["t", "sbkim-anastomosis-reply"],
+    ["d", "<AnfragerNodeId>"],      // Routing zurück
+    ["x", "<requestNonce>"]         // nonce-Bindung
+  ],
+  "content": "<JSON.stringify(signedResponse)>"  // nonceEcho = request.nonce
+}
+```
+
+Das innere HandshakeRequest/HandshakeResponse-Schema bleibt
+**unverändert** (wie HTTP/Channel). Der Nostr-Umschlag ist reines
+Transport-Routing, kein zweites Datenformat. `PROTOCOL_VERSION` bleibt
+`"0.1"`.
+
+### Sender-Pfad (`handshake({transport:"nostr"})`)
+
+1. Signierten Request bauen — **derselbe** Pfad wie HTTP/Channel
+   (`toNodeId` Pflicht, das `["d"]`-Routing-Tag).
+2. Reply-Events abonnieren (`#t=sbkim-anastomosis-reply`,
+   `#d=eigene nodeId`) — **vor** dem Publishen (gegen Race).
+3. Request-Event publizieren.
+4. Auf Reply mit Timeout `NOSTR_REPLY_TIMEOUT_MS` (8000 ms,
+   relais-tauglich großzügiger als HTTP/Channel) warten.
+5. content parsen, `nonceEcho === request.nonce` prüfen
+   (Doppelt-Bindung), dann **verifyEnvelope gegen target-Spore-pubkey**
+   (bestehender `consumeResponse`-Pfad) → sibling-put, Log,
+   `dispatchHandshakeEvent`.
+6. Timeout → `HandshakeTimeoutError`, Log `"timeout-nostr"`. Kein
+   Relay-Client → **kein Throw**, sondern `{outcome:"rejected",
+   reason:"Kein Nostr-Relay-Client …"}`.
+
+### Empfänger-Pfad (`listenNostr()`)
+
+`listenNostr()` ist **additiv und explizit** — **NICHT** in `init()`
+auto-gestartet. Empfangsmodus: der Knoten lauscht nur, wenn der
+Betreiber es bewusst auslöst (kein Crawl, keine Pulsation,
+Empfangsmodus gewahrt). Ablauf:
+
+1. Filter `#t=sbkim-anastomosis`, `#d=[alle eigenen nodeIds]`.
+2. Pro Event: `content` als **untrusted external data** behandeln.
+3. `created_at`-Zeitfenster prüfen (±15 min Clock-Skew), Self-Hit
+   ignorieren (eigener `fromNodeId`), Replay (doppelte nonce) ablehnen.
+4. `receiveHandshake(request)` — verifiziert Spore + Ed25519-Signatur +
+   Hauptversion + toNodeId-Map + Score **bevor** etwas gespeichert oder
+   beantwortet wird (wirft per Spec nie).
+5. Antwort-Event publizieren (an `request.fromNodeId`). nonce wird erst
+   nach erfolgreicher, beantworteter Anfrage gemerkt (Müll-Events
+   fluten den Replay-Cache nicht).
+
+### `transport:"auto"` wählt NIEMALS nostr
+
+Auto bleibt HTTP-zuerst-dann-Channel. Der Nostr-Pfad wird **nur
+explizit** (`transport:"nostr"`) gewählt — kein überraschender
+Netz-Egress, weil Nostr eine bewusste Außenwelt-Verbindung ist
+(föderiertes öffentliches Relais). Das passt zur Vier-Schichten-Lesart:
+ein gezielter, benannter, nutzer-ausgelöster Egress, nicht das
+Empfangsmodus-Mycel.
+
+### Einspielbarer Relay-Client (Testbarkeit)
+
+Modul 05 kennt **kein** WebSocket direkt, nur ein abstraktes Interface:
+
+```js
+{ publish(eventBody) -> Promise, subscribe(filter, onEvent) -> unsubscribeFn }
+```
+
+- Test-Brücke `SbkimAnastomose._setNostrRelayClient(client|null)`.
+- Default: ohne expliziten Client greift `global.SbkimNostrRelay`
+  (Modul 05b), falls geladen.
+- Der **echte** Client ist `src/modules/05b_nostr_relay.js`
+  (browser-only): WebSocket + `schnorr` aus der lokal vendorierten
+  `src/modules/noble-secp256k1.js`, sha256 via WebCrypto, Relais-URL
+  konfigurierbar (Default `wss://relay.family-projekt.de`).
+
+### Ehrlich: was bewiesen ist, was nicht
+
+- **Bewiesen (headless):** die Modul-05-Logik gegen ein In-Memory-
+  Mock-Relais — `tests/smoke_bau05_nostr.mjs` (established Round-Trip
+  inkl. nonceEcho/Verify/Sibling, verfälschter content abgelehnt,
+  Replay abgelehnt, fremde nodeId ignoriert, kein Relay-Client →
+  sauberer Fehler ohne Throw).
+- **NICHT bewiesen (wartet auf Klaus' Browser-Lauf):** der echte
+  WebSocket+schnorr-Client (Modul 05b) gegen das live laufende Relais.
+  Das Relais ist aus der Bau-Sandbox **nicht erreichbar** (wss
+  blockiert). Modul 05b trägt den Kopf-Kommentar „Browser-Sichttest
+  wartet auf Klaus" und ist hier ungeprüft.
+
+---
+
 ## Fehlerverhalten
 
 | Lage | Reaktion |
@@ -717,6 +858,11 @@ mit ausdrücklicher Pflege-Sitzung änderbar.
 | `handshake()`: Channel-Reply bleibt > `QUERY_TIMEOUT_MS` aus (Spec-Sitzung BroadcastChannel-Bridge 2026-05-17) | wirft `HandshakeTimeoutError`. Log-Zeile `"timeout-channel"`. Bei Auto-Fallback (`transport:"auto"`) trägt der Error den vorherigen HTTP-Fehler als `cause`. |
 | `handshake()`: Channel-Reply `nonceEcho` ≠ `request.nonce` | wirft `HandshakeSignatureInvalidError` (Doppelt-Bindung verletzt). |
 | `handshake({transport:"channel"})`: `request.toNodeId` fehlt | wirft synchron `MissingToNodeIdError` vor dem Posten (Channel-Pfad kann ohne `toNodeId` nicht filtern). |
+| `handshake({transport:"nostr"})`: kein Relay-Client (weder `_setNostrRelayClient` noch `global.SbkimNostrRelay`) | **kein** Throw. Log-Zeile `"abgelehnt: kein-relay"`, return `{outcome:"rejected", reason:"Kein Nostr-Relay-Client …"}`. |
+| `handshake({transport:"nostr"})`: Reply bleibt > `NOSTR_REPLY_TIMEOUT_MS` (8000 ms) aus | wirft `HandshakeTimeoutError`. Log-Zeile `"timeout-nostr"`. |
+| `handshake({transport:"nostr"})`: Relais-Publish/Subscribe scheitert | wirft `HandshakeNetworkError` mit Original-Error in `cause`. |
+| `handshake({transport:"nostr"})`: `request.toNodeId` fehlt | wirft `MissingToNodeIdError` (das `["d"]`-Routing-Tag fehlt sonst). |
+| `listenNostr()`: kein Relay-Client | wirft `AnastomoseDependenciesError`. (Empfänger braucht einen Client zum Lauschen.) |
 | `handshake()`: Response-Signatur gegen `receiverSpore.publicKey` ungültig | wirft `HandshakeSignatureInvalidError`. Log-Zeile `"abgelehnt: invalid-peer"`. |
 | `handshake()`: Antwort kommt mit `outcome:"rejected"` zurück | **kein** Throw. Log-Zeile `"abgelehnt: peer"`, return `{outcome:"rejected", reason, score?}`. |
 | `receiveHandshake()`: jegliche Verifikations- / Form-/ Signatur-/ Versions-/ Schwellen-Verletzung | **wirft niemals**. Alles als `HandshakeResponse{outcome:"rejected", reason:"<deutsch>"}` zurück (analog `verifyForeignSpore`). |
