@@ -370,6 +370,20 @@ async function run() {
     W._meta.lebtSince === "2026-05-25T12:00:00.000Z" &&
     W._meta.lebtNodeIdPrefix === "test_node_id");
 
+  // Probe 5b (Stufe 2): sbkim:nostr-listening {active:true} → VERKEHR ruhig grün
+  // OHNE Verkehr (Lausch-Zustand sichtbar), {active:false} → wieder aus.
+  dispatchWindowEvent(g, "sbkim:nostr-listening", { active: true });
+  record("5b. sbkim:nostr-listening{active:true} → VERKEHR.active OHNE Handschlag",
+    "active=true, nostrListening=true, trafficLogSize=0",
+    `active=${verkehrSlot._classes.has("active")}/listening=${W._meta.nostrListening}/log=${W._meta.trafficLogSize}`,
+    verkehrSlot._classes.has("active") === true && W._meta.nostrListening === true &&
+    W._meta.trafficLogSize === 0);
+  dispatchWindowEvent(g, "sbkim:nostr-listening", { active: false });
+  record("5b. sbkim:nostr-listening{active:false} → VERKEHR aus (kein Verkehr)",
+    "active=false, nostrListening=false",
+    `active=${verkehrSlot._classes.has("active")}/listening=${W._meta.nostrListening}`,
+    verkehrSlot._classes.has("active") === false && W._meta.nostrListening === false);
+
   // Probe 6: sbkim:handshake → VERKEHR.active + traffic-log+1.
   dispatchWindowEvent(g, "sbkim:handshake", { outcome: "established", peerNodeId: "peer1", direction: "outgoing" });
   record("6. sbkim:handshake → VERKEHR.active + trafficLogSize=1",
