@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-06-22",
-  "seq": 32,
-  "headline": "Such-Werkzeug-Pflege + eigenstaendige Such-Tool-PWA (Vorlage). Modul 22: Such-Panel groesser ziehbar (Resize-Griff, PR #388, Browser-Sichttest gruen). NEU such-tool/ als eigenstaendige, installierbare PWA + 1:1-kopierbare Vorlage (index.html + manifest + Service-Worker + impressum + Icons + modules/ Kopien 03/04/21/22), PR #389. Kern-Lehre: ein Download (file://) wird nie eine App — echte PWA braucht Hosting + Manifest + Service-Worker + eigenen Scope. Brief an SB-KIMTool-Point ins Postfach (AUSTAUSCH.md): eigener-Ordner-Bau + Resize-Abgleich, Rueck-Quittung erbeten. KI automatisch nur Claude server-los (CORS). Brainstorm Vollbild/Merken-Liste/Vergleich/Pilz-Server/Geld-Modell in BRIEF fuer Folge-Sitzung festgehalten.",
+  "lastBuild": "2026-06-27",
+  "seq": 33,
+  "headline": "Family Projekt (siebter Knoten) aufgenommen + reziprok verifiziert -> verified-match 0.8287. Spore aus raw/main reziprok VALID (Pflichtfelder vollstaendig, id==base64url(sha256(rawPub))=HLXUEJFW..., Ed25519-Signatur gueltig, Manipulationsprobe faellt durch); domainVector echt (384-dim, L2=1, multilingual-e5-small); Cosinus Sage<->Family Projekt = 0.8287 >= 0.80 -> verified-match (Family-Seite meldet denselben Wert). status.json + sbkim/familyproject_inbox.verify.md + AUSTAUSCH-FamilyProjekt.md + NETZ-STAND.md angelegt, ack[Family Projekt]=2. Endpoint family-projekt.de (Hetzner) noch nicht live, verifiziert ueber raw/main. Rueck-Quittung von Family erbeten.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -11,7 +11,8 @@
     "Mein-Tresor": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-MeinTresor.md",
     "Mein-Rezeptbuch": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-Rezeptbuch.md",
     "Mein-Mixarium": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-Mixarium.md",
-    "BookLedgerPro": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-BookLedgerPro.md"
+    "BookLedgerPro": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-BookLedgerPro.md",
+    "Family Projekt": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/AUSTAUSCH-FamilyProjekt.md"
   },
   "forNodes": [
     "*"
@@ -22,7 +23,8 @@
     "Mein-Tresor": 14,
     "Mein-Rezeptbuch": 5,
     "Mein-Mixarium": 6,
-    "BookLedgerPro": 18
+    "BookLedgerPro": 18,
+    "Family Projekt": 2
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
@@ -185,6 +187,11 @@
       "seq": 32,
       "date": "2026-06-22",
       "headline": "Such-Werkzeug-Pflege + eigenstaendige Such-Tool-PWA (Vorlage). Modul 22 Such-Panel groesser ziehbar (Resize-Griff, PR #388, Browser-Sichttest gruen: gezogene Groesse bleibt nach Hard-Reload). NEU such-tool/ als eigenstaendige installierbare PWA + 1:1-kopierbare Vorlage (index.html + manifest + Service-Worker + impressum-Platzhalter + Icons + modules/ Kopien 03/04/21/22; kein 01/02), PR #389. Kern-Lehre: ein Download (file://) wird nie eine App — echte PWA braucht Hosting + Manifest + Service-Worker + eigenen Scope. Brief an SB-KIMTool-Point ins Postfach (AUSTAUSCH.md): eigener-Ordner-Bau (Scope-Falle) + Resize-Abgleich, Rueck-Quittung erbeten. KI automatisch nur Claude server-los (CORS); Gemini/ChatGPT/Perplexity per Kopier-Pfad oder spaeter Proxy. Brainstorm fuer Folge-Sitzung (BRIEF_BAU_22_VOLLBILD_MERKEN.md): Vollbild-Modus (zwei Gestalten), Merken-Liste nach Suchfrage, Vergleich/Splitscreen-Realitaet, Pilz-Server-Infra + Geld-Modell (Dienst verkaufen, nicht Code)."
+    },
+    {
+      "seq": 33,
+      "date": "2026-06-27",
+      "headline": "Family Projekt (siebter Knoten) aufgenommen + reziprok verifiziert -> verified-match 0.8287. Spore aus raw/main reziprok VALID (id==base64url(sha256(rawPub))=HLXUEJFW..., Ed25519-Signatur gueltig, Manipulationsprobe faellt durch); domainVector echt (384-dim, L2=1, multilingual-e5-small); Cosinus Sage<->Family Projekt = 0.8287 >= 0.80. status.json + sbkim/familyproject_inbox.verify.md + AUSTAUSCH-FamilyProjekt.md + NETZ-STAND.md angelegt, ack[Family Projekt]=2. Endpoint family-projekt.de (Hetzner) noch nicht live, verifiziert ueber raw/main. Rueck-Quittung von Family erbeten."
     }
   ]
 }

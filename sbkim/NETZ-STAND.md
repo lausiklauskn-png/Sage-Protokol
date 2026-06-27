@@ -6,7 +6,7 @@
 > `status.json` (Maschine) + die `*_inbox.verify.md`-Vermerke (Beweis) — diese Datei ist
 > die menschenlesbare Karte darüber.
 
-**Stand: 2026-06-19** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
+**Stand: 2026-06-27** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
 
 ---
 
@@ -30,6 +30,7 @@
 | **Jasons-Tresor** | Jasons-Tresor-Bibliothek | `E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM` | **`verified-match` 0.847784** | `sbkim/jason_inbox.verify.md` |
 | **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0` | **`verified-match` 0.847784** | `sbkim/meintresor_inbox.verify.md` |
 | **BookLedgerPro** | BookLedgerPro-Buchhaltung | `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ` | **`verified-match` 0.813525** (2026-06-21; cap/needs signiert → Drei-Schichten-bereit) | `sbkim/bookledgerpro_inbox.verify.md` |
+| **Family Projekt** | Werkzeuge / Apps / Marktplatz (`family-projekt.de`) | `HLXUEJFWHGt6DlRFgzvN4d_YdHRfnrehlVdRb4BHvAE` | **`verified-match` 0.8287** (2026-06-27; echter `domainVector`, L2=1) | `sbkim/familyproject_inbox.verify.md` |
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 
@@ -41,6 +42,7 @@
 | Sage ⟷ Mein-Tresor | **0.847784** | 2026-06-07 (echter Vektor; = Jasons, Schwester wortgleich) |
 | Sage ⟷ Mein-Rezeptbuch | **0.824068** | 2026-06-07 (Identitäts-Abgleich uOpUBez…, echter Vektor) |
 | Sage ⟷ Mein-Mixarium | **0.806030** | 2026-06-07 (Identitäts-Abgleich B7Fke9C…, echter Vektor) |
+| Sage ⟷ Family Projekt | **0.8287** | 2026-06-27 (siebter Knoten, echter Vektor; reziprok bestätigt) |
 
 ## Netz-Signal (Briefkasten-Pflege, INTERFACES §11.6 — Pflicht für alle Knoten)
 
@@ -80,6 +82,18 @@ Postfach genannt). Hochstufung auf `verified-match` offen, sobald BookLedgerPro 
 Embedding (`multilingual-e5-small`, L2=1) nachliefert — ehrlich: Buchhaltung ist
 domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
 
+**Update 2026-06-27 — Family Projekt (siebter Nachbar) `verified-match`.** Andock-Anfrage
+(von Klaus vermittelt, Family SIGNAL seq 2). Spore aus `raw/main` reziprok verifiziert
+(✔ VALID: Pflichtfelder vollständig, `id == base64url(SHA256(rawPub))` unabhängig
+nachgerechnet = `HLXUEJFW…`, Ed25519-Signatur gültig, Manipulationsprobe fällt durch).
+`domainVector` echt (384-dim, L2=1, `multilingual-e5-small`); Cosinus Sage ⟷ Family Projekt
+= **0.8287 ≥ 0.80** → **`verified-match`** (Family-Seite meldet denselben Wert, reziprok
+bestätigt). Eigenes Postfach (`AUSTAUSCH-FamilyProjekt.md`) + `status.json` + Prüf-Vermerk
+(`familyproject_inbox.verify.md`) angelegt; `ack[Family Projekt]=2`. Endpoint
+`family-projekt.de` (Hetzner) noch nicht live → Verifikation über `raw/main`. Domäne
+(Werkzeug-/App-Bündelung + Marktplatz + semantische Suche) liegt thematisch nah an Sages
+Mycel-Bibliothek — daher der etwas höhere Wert (0.8287) als bei den domänenfernen Knoten.
+
 ## Postfächer (Datei-Dead-Drop, Sync-Vertrag §11.4)
 
 | Gegenstelle | Sage-Seite | externe Seite |
@@ -90,6 +104,7 @@ domänenfern zu Sage, Cosinus ≥ 0.80 nicht garantiert.
 | Mein-Rezeptbuch | `sbkim/AUSTAUSCH-Rezeptbuch.md` | `…/Mein-Rezeptbuch/main/sbkim/AUSTAUSCH-Sage.md` |
 | Mein-Mixarium | `sbkim/AUSTAUSCH-Mixarium.md` | `…/Mein-Mixarium/main/sbkim/AUSTAUSCH-Sage.md` |
 | BookLedgerPro | `sbkim/AUSTAUSCH-BookLedgerPro.md` | `…/BookLedgerPro/main/sbkim/AUSTAUSCH-Sage.md` |
+| Family Projekt | `sbkim/AUSTAUSCH-FamilyProjekt.md` | `…/family-project/main/sbkim/AUSTAUSCH-Sage.md` |
 
 ## Werkzeuge (für Andock, Verifikation, Embedding)
 
