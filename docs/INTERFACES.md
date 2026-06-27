@@ -1369,7 +1369,7 @@ Datei:  src/modules/05_anastomose.js
 Bietet (öffentlich):
   init()                                                       → Promise<void>
   handshake(targetSpore: SporeJson, ownDomainVector?: Float32Array(384),
-            options?: { transport?: "auto"|"http"|"channel" })
+            options?: { transport?: "auto"|"http"|"channel"|"nostr" })
                                                                → Promise<HandshakeResult>
     // Pflege 2026-05-28: ownDomainVector ist OPTIONAL. Wird er weggelassen
     // (undefined/null), löst Modul 05 ihn kanonisch aus der eigenen Spore
@@ -1384,6 +1384,13 @@ Bietet (öffentlich):
   receiveHandshake(incomingRequest: HandshakeRequest)          → Promise<HandshakeResponse>
   listSiblings()                                               → Promise<Array<{ nodeId, domain, since, pubKey }>>
   forgetSibling(nodeId: string)                                → Promise<void>
+  listenNostr()                                                → Promise<void>
+    // Stufe 2 (2026-06-27, additiv). Startet den Empfänger für den Nostr-
+    // Relais-Transport (Empfangsmodus: NUR auf explizite Betreiber-Aktion,
+    // KEIN Auto-Start in init(), kein Crawl). Idempotent. Wirft
+    // AnastomoseDependenciesError, wenn kein Relay-Client verfügbar ist.
+  stopListenNostr()                                            → void
+    // Beendet die Nostr-Empfänger-Subscription.
 
   `options.timeoutMs` (Pflege 2026-05-28): optionaler Override für den
     Channel-Reply- bzw. HTTP-Abort-Timeout. Default QUERY_TIMEOUT_MS (4000)
@@ -1402,8 +1409,24 @@ Bietet (öffentlich):
     "http"    nur HTTP-Pfad (bestehendes Verhalten, kein Fallback).
     "channel" nur BroadcastChannel-Pfad (kein HTTP-Versuch; für same-origin-
               Test-Setups, in denen HTTP-Bridge konzeptuell nicht trägt).
+    "nostr"   (Stufe 2, 2026-06-27, additiv) server-loser Cross-Knoten-Pfad
+              über ein öffentliches Nostr-Relais (NIP-01, WebSocket; kein
+              eigener Backend-Server). NUR explizit wählbar — "auto" wählt
+              NIEMALS nostr (kein überraschender Netz-Egress, Empfangsmodus
+              gewahrt). Event-Format kind:1 mit tags
+              [["t","sbkim-anastomosis"],["d",<ZielNodeId>],["x",<nonce>]],
+              content = JSON.stringify(signedRequest); Antwort analog mit
+              t="sbkim-anastomosis-reply". Timeout NOSTR_REPLY_TIMEOUT_MS
+              (8000 ms). toNodeId ist Pflicht (Routing-Tag "d"). Echter
+              WebSocket+schnorr-Client = Modul 05b (browser-only).
+  KRYPTO-TRENNUNG: der Nostr-Event-Schlüssel (ephemerer secp256k1/schnorr)
+    ist NUR ein Transport-Umschlag und beweist NICHTS über die SBKIM-
+    Identität. Die echte Identität ist ausschließlich die Ed25519-Signatur
+    im `content` (Modul 02), die der Empfänger über verifyEnvelope gegen
+    die Spore prüft. Der Nostr-pubkey wird NICHT verifiziert.
   HandshakeRequest/HandshakeResponse-Schema bleibt **unverändert** —
-  BroadcastChannel ist eine Transport-Schicht, kein zweites Datenformat.
+  BroadcastChannel UND Nostr sind Transport-Schichten, kein zweites
+  Datenformat.
 
   Anastomose ist die *Komposition* aus 01/02/04. Modul 05 rechnet nicht
   selbst, sondern ruft `SbkimSpore.verifyForeignSpore`,
@@ -1437,6 +1460,18 @@ Nutzt:
     schließt den Reply-Channel im finally-Block. Wenn options.transport != "http"
     und (Auto-Fallback-Bedingung erfüllt ODER transport === "channel"): Channel-Pfad.
     Same-origin-only (Browser-Standard); cross-domain läuft weiterhin nur über HTTP.
+  Nostr-Relay-Client (Stufe 2, 2026-06-27, additiv):
+    Modul 05 kennt nur ein ABSTRAKTES Interface, KEIN WebSocket direkt:
+      { publish(eventBody) -> Promise, subscribe(filter, onEvent) -> unsubscribeFn }
+    Einspielbar via _setNostrRelayClient(client|null) (Test-Mock ODER Produktiv).
+    Default: ohne expliziten Client greift global.SbkimNostrRelay (Modul 05b),
+    falls geladen; fehlt er, liefert der Nostr-Sender ein sauberes Result
+    {outcome:"rejected", reason:"Kein Nostr-Relay-Client …"} (KEIN Throw).
+    Der echte Client (src/modules/05b_nostr_relay.js, browser-only) nutzt
+    WebSocket + schnorr aus src/modules/noble-secp256k1.js (lokal vendoriert),
+    sha256 via WebCrypto, Relais-URL konfigurierbar (Default
+    wss://relay.family-projekt.de). 05b ist headless NICHT testbar (Relais aus
+    der Bau-Sandbox unerreichbar) — Browser-Sichttest wartet auf Klaus.
 
 Storage:
   Stores (alle aus Modul 01 — als Pattern ab Brief 04 der V1-Sammelspec-
