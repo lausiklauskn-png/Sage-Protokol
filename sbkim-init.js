@@ -143,6 +143,22 @@
     // auf eingehende Handshakes und ANTWORTET nur; er initiiert NIE von sich aus
     // (kein Crawler, keine Eigenanfrage). Nicht-blockierend + fail-soft: ohne
     // Relais-Client (05b, type=module) oder bei Netz-Fehler passiert nichts.
+    // Echter Verkehr sichtbar machen: bei jedem Handschlag (sbkim:handshake)
+    // die Navleisten-Lampe „verkehr" kurz pulsen lassen — nicht nur bei
+    // status.json-Abrufen. So zeigt die Lampe ehrlich an, wenn wirklich ein
+    // Cross-Knoten-Handschlag passiert ist. Einmalig registriert, fail-soft.
+    try {
+      window.addEventListener("sbkim:handshake", function () {
+        try {
+          var t = document.getElementById("lamp-traffic");
+          if (!t) return;
+          t.classList.remove("traffic-pulse");
+          void t.offsetWidth; // reflow -> Animation neu starten
+          t.classList.add("traffic-pulse");
+        } catch (e) {}
+      });
+    } catch (e) {}
+
     if (window.SbkimAnastomose && typeof window.SbkimAnastomose.listenNostr === "function" && window.SbkimNostrRelay) {
       try {
         window.SbkimAnastomose.listenNostr()
