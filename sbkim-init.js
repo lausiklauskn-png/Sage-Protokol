@@ -138,6 +138,19 @@
       return window.SbkimAnastomose && window.SbkimAnastomose.init();
     });
 
+    // 05b Relais — Auto-Lauschen am Nostr-Relais beim Öffnen (Klaus 2026-06-27:
+    // „Lauschen in allen Repos"). Empfangsmodus MIT Antwortrecht: der Knoten hört
+    // auf eingehende Handshakes und ANTWORTET nur; er initiiert NIE von sich aus
+    // (kein Crawler, keine Eigenanfrage). Nicht-blockierend + fail-soft: ohne
+    // Relais-Client (05b, type=module) oder bei Netz-Fehler passiert nichts.
+    if (window.SbkimAnastomose && typeof window.SbkimAnastomose.listenNostr === "function" && window.SbkimNostrRelay) {
+      try {
+        window.SbkimAnastomose.listenNostr()
+          .then(function () { info("Auto-Lauschen aktiv (Empfangsmodus mit Antwortrecht)."); })
+          .catch(function (e) { warn("Auto-Lauschen", e); });
+      } catch (e) { warn("Auto-Lauschen", e); }
+    }
+
     // 06 Heterokaryose.
     await initModule("SbkimHeterokaryose", function () {
       return window.SbkimHeterokaryose && window.SbkimHeterokaryose.init();

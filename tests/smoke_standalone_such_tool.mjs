@@ -77,9 +77,14 @@ for (const m of MODULES) {
 }
 ok("Probe 5: ruft SbkimSearchWidget.init", /SbkimSearchWidget\.init\(/.test(html));
 
-// ---- Probe 6: Impressum-Vorlage ohne hartcodierte PII (Platzhalter) ----
+// ---- Probe 6: Impressum mit Forker-Hinweis (Klaus 2026-06-27) --------------
+// Konventions-Evolution: Klaus' Live-Instanz dieses Werkzeugs trägt sein echtes,
+// rechtlich erforderliches Impressum (wie das Haupt-Sage-Impressum auch). Statt
+// auf Platzhalter zu prüfen, sichern wir jetzt ab, dass ein klarer FORKER-HINWEIS
+// vorhanden ist — er erinnert jeden, der das Werkzeug kopiert, die Betreiber-
+// Angaben durch die EIGENEN zu ersetzen (Schutz vor versehentlichem PII-Mitschleppen).
 const imp = readFileSync(resolve(toolDir, "impressum.html"), "utf8");
-ok("Probe 6: Impressum nutzt Platzhalter (keine PII hartcodiert)", /\[Name \/ Firma\]/.test(imp));
+ok("Probe 6: Impressum enthält Forker-Hinweis (Angaben ersetzen)", /Hinweis für Forker/.test(imp) && /ersetzt/.test(imp));
 
 // ---- Auswertung ----
 let allOk = true;
