@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-06-21",
+  "lastUpdated": "2026-06-27",
   "branch": "claude/semantic-agent-network-Y03Vg",
   "endknoten": [
     {
@@ -194,6 +194,21 @@
       "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 2026-06-20 ECHT nachgeliefert (multilingual-e5-small, passage-Praefix, L2=1) + Spore neu signiert -> Cross-Knoten-Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match (knapp, aber sauber ueber der Schwelle; Buchhaltung domaenenfern, kein Gruen-Rechnen). Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md). Drei-Schichten 2026-06-21: BLP-Spore traegt nun signierte capVector+needsVector (384-dim); reziprok VALID, domainVector-Cosinus neu 0.813525>=0.80 verified-match haelt. Sage-eigene cap/needs offen (Spore Re-Sign via Modul 02 in Klaus' Browser) -> bis dahin domainVector-Rueckfall.",
       "url": "https://lausiklauskn-png.github.io/BookLedgerPro/",
       "landingPage": "https://lausiklauskn-png.github.io/BookLedgerPro/"
+    },
+    {
+      "name": "Family Projekt",
+      "domain": "family-projekt.de",
+      "integrated": true,
+      "integratedAt": "2026-06-27",
+      "nodeId": "HLXUEJFWHGt6DlRFgzvN4d_YdHRfnrehlVdRb4BHvAE",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/family-project/main/sbkim/spore.json",
+      "stammCategories": [],
+      "guestCategories": [],
+      "pingStatus": "verified-match",
+      "matchScore": 0.8287,
+      "note": "Siebter Knoten im Mycel (Werkzeug-/App-Buendelung: freies neutrales Netzwerk + eigene Werkzeuge mit eigenen Seiten + Marktplatz fuer fremde Apps; semantische Bedeutungs-Suche, mehrsprachig, datenschutzfreundlich, offline-faehig). Spore von Klaus' Browser erzeugt (multilingual-e5-small, passage-Praefix, L2=1). Aus raw/main reziprok verifiziert 2026-06-27: 9/9 Pflichtfelder, id == base64url(sha256(rawPub)) unabhaengig nachgerechnet (= HLXUEJFW...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 384-dim, L2=1.000. Cross-Knoten-Cosinus Sage<->Family Projekt = 0.8287 >= 0.80 -> verified-match. Pruef-Vermerk: sbkim/familyproject_inbox.verify.md. Endpoint family-projekt.de (Hetzner) noch nicht live; Verifikation laeuft ueber raw/main. Gegenstelle fuer ersten Handshake = Sage (Quittung in sbkim/AUSTAUSCH-FamilyProjekt.md).",
+      "url": "https://family-projekt.de/",
+      "landingPage": "https://family-projekt.de/"
     }
   ],
   "modules": [
