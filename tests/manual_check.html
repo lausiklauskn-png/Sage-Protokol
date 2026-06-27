@@ -1489,6 +1489,48 @@
 
   <!-- Modul 05 — Anastomose (Bau-Sitzung 2026-05-14) -->
   <script src="../src/modules/05_anastomose.js"></script>
+  <!-- Modul 05b — Nostr-Relais-Client (browser-only, Stufe 2) + Live-Selbsttest -->
+  <script type="module" src="../src/modules/05b_nostr_relay.js"></script>
+  <script>
+    (function () {
+      function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+      // Stufe-2-LIVE-Test: beweist, dass der echte 05b-Client das laufende
+      // Relais (wss://relay.family-projekt.de) spricht — publish→subscribe
+      // Round-Trip in EINEM Browser. Geht NICHT aus einer Sandbox (wss
+      // gesperrt), nur im echten Browser. Der volle "established"-Handshake
+      // mit echten Sporen ist die Generalprobe mit zwei echten Knoten
+      // (zwei getrennte Browser-Instanzen, z.B. DeX-Chrome + Tablet-Chrome).
+      SbkimUI.addButton("05_anastomose", "Nostr: Relais-Selbsttest (LIVE)", async function () {
+        var R = window.SbkimNostrRelay;
+        if (!R || typeof R.publish !== "function" || typeof R.subscribe !== "function") {
+          SbkimUI.setStatus("05_anastomose", "fail", "05b (SbkimNostrRelay) nicht geladen");
+          SbkimUI.log("05_anastomose", "✗ Modul 05b nicht verfügbar (type=module geladen?).");
+          return;
+        }
+        var tag = "sbkim-selftest-" + Math.random().toString(36).slice(2, 10);
+        SbkimUI.log("05_anastomose", "→ Verbinde mit wss://relay.family-projekt.de, publiziere Test-Event (tag " + tag + ") und warte auf Echo (max 10 s) …");
+        var got = false, gotId = null, unsub = null;
+        try {
+          unsub = R.subscribe({ kinds: [1], "#t": [tag] }, function (ev) { got = true; gotId = ev && ev.id; });
+          await R.publish({ kind: 1, created_at: Math.floor(Date.now() / 1000), tags: [["t", tag]], content: "sbkim relay selftest" });
+        } catch (e) {
+          if (unsub) { try { unsub(); } catch (_e) {} }
+          SbkimUI.setStatus("05_anastomose", "fail", "Relais-Fehler");
+          SbkimUI.log("05_anastomose", "✗ " + (e && e.message ? e.message : e));
+          return;
+        }
+        for (var i = 0; i < 50 && !got; i++) { await sleep(200); }
+        if (unsub) { try { unsub(); } catch (_e) {} }
+        if (got) {
+          SbkimUI.setStatus("05_anastomose", "ok", "Relais-Round-Trip OK");
+          SbkimUI.log("05_anastomose", "✓ Echo vom Live-Relais empfangen (event " + gotId + "). Der 05b-Client und dein Relais sprechen miteinander — Stufe-2-Transport LIVE bestätigt.");
+        } else {
+          SbkimUI.setStatus("05_anastomose", "fail", "kein Echo in 10 s");
+          SbkimUI.log("05_anastomose", "✗ Kein Echo in 10 s. Prüfen: Internet aktiv, Relais läuft (relay.family-projekt.de), Browser erlaubt wss. (Aus einer Sandbox geht es nicht — nur echter Browser.)");
+        }
+      });
+    })();
+  </script>
   <script>
     (function () {
       // Zwei Knoten, ein Tab:
