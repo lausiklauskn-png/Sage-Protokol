@@ -146,7 +146,20 @@
     if (window.SbkimAnastomose && typeof window.SbkimAnastomose.listenNostr === "function" && window.SbkimNostrRelay) {
       try {
         window.SbkimAnastomose.listenNostr()
-          .then(function () { info("Auto-Lauschen aktiv (Empfangsmodus mit Antwortrecht)."); })
+          .then(function () {
+            info("Auto-Lauschen aktiv (Empfangsmodus mit Antwortrecht).");
+            // Sichtbar machen: kanonisches Event (Modul 17 Floating-Widget) +
+            // Sage-Navleisten-Lampe „verkehr" ruhig grün (= am Relais verbunden,
+            // lauscht). Beides fail-soft.
+            try { window.dispatchEvent(new CustomEvent("sbkim:nostr-listening", { detail: { active: true } })); } catch (e) {}
+            try {
+              var lt = document.getElementById("lamp-traffic");
+              if (lt) {
+                lt.classList.add("alive");
+                lt.title = "Verkehr — grün: am Relais verbunden, lauscht (Empfangsmodus, antwortet nur). Pulst bei echtem Verkehr.";
+              }
+            } catch (e) {}
+          })
           .catch(function (e) { warn("Auto-Lauschen", e); });
       } catch (e) { warn("Auto-Lauschen", e); }
     }
