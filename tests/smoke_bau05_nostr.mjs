@@ -400,7 +400,10 @@ async function run() {
   }
   console.log("");
   console.log(`Summe: ${pass} grün, ${fail} rot · ${pass + fail} insgesamt`);
-  if (fail > 0) process.exit(1);
+  // Sauber beenden: der Nostr-Empfänger-Pfad (listenNostr/Subscription) hält die
+  // Event-Loop sonst offen → der Test würde bei Erfolg nicht terminieren (hängt CI).
+  try { if (SbkimAnastomose.stopListenNostr) SbkimAnastomose.stopListenNostr(); } catch (e) {}
+  process.exit(fail > 0 ? 1 : 0);
 }
 
 run().catch((err) => {
