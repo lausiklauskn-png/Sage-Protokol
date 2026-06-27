@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-06-27",
-  "seq": 33,
-  "headline": "Family Projekt (siebter Knoten) aufgenommen + reziprok verifiziert -> verified-match 0.8287. Spore aus raw/main reziprok VALID (Pflichtfelder vollstaendig, id==base64url(sha256(rawPub))=HLXUEJFW..., Ed25519-Signatur gueltig, Manipulationsprobe faellt durch); domainVector echt (384-dim, L2=1, multilingual-e5-small); Cosinus Sage<->Family Projekt = 0.8287 >= 0.80 -> verified-match (Family-Seite meldet denselben Wert). status.json + sbkim/familyproject_inbox.verify.md + AUSTAUSCH-FamilyProjekt.md + NETZ-STAND.md angelegt, ack[Family Projekt]=2. Endpoint family-projekt.de (Hetzner) noch nicht live, verifiziert ueber raw/main. Rueck-Quittung von Family erbeten.",
+  "seq": 34,
+  "headline": "Stufe 2 Auto-Lauschen am Nostr-Relais aktiv: Sage-Page lauscht beim Oeffnen selbsttaetig am Live-Relais wss://relay.family-projekt.de (src/modules/05b_nostr_relay.js geladen, sbkim-init.js ruft nach SbkimAnastomose.init() listenNostr() auf). Empfangsmodus MIT Antwortrecht (nur antworten, nie initiieren). Nostr-Smoke 17/17 gruen. Netzweiter Stufe-2-Rollout in dieser Sitzung: family-project + Sage (schon) + SB-KIMTool-Point + Mein-Tresor + Jasons-Tresor + BookLedgerPro + Mein-Mixarium + Mein-Rezeptbuch (neu) lauschen jetzt alle. Browser-Sichttest wartet auf Klaus. (Nachgeholte §11.6-Meldung; vorher SIGNAL nur bis Family-Aufnahme seq 33.)",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -192,6 +192,11 @@
       "seq": 33,
       "date": "2026-06-27",
       "headline": "Family Projekt (siebter Knoten) aufgenommen + reziprok verifiziert -> verified-match 0.8287. Spore aus raw/main reziprok VALID (id==base64url(sha256(rawPub))=HLXUEJFW..., Ed25519-Signatur gueltig, Manipulationsprobe faellt durch); domainVector echt (384-dim, L2=1, multilingual-e5-small); Cosinus Sage<->Family Projekt = 0.8287 >= 0.80. status.json + sbkim/familyproject_inbox.verify.md + AUSTAUSCH-FamilyProjekt.md + NETZ-STAND.md angelegt, ack[Family Projekt]=2. Endpoint family-projekt.de (Hetzner) noch nicht live, verifiziert ueber raw/main. Rueck-Quittung von Family erbeten."
+    },
+    {
+      "seq": 34,
+      "date": "2026-06-27",
+      "headline": "Stufe 2 Auto-Lauschen am Nostr-Relais aktiv (wss://relay.family-projekt.de): Sage-Page laedt 05b_nostr_relay.js, sbkim-init.js ruft nach SbkimAnastomose.init() listenNostr() auf. Empfangsmodus MIT Antwortrecht. Nostr-Smoke 17/17 gruen. Netzweiter Stufe-2-Rollout: alle sieben Browser-Knoten (family-project, Sage, SB-KIMTool-Point, Mein-Tresor, Jasons-Tresor, BookLedgerPro, Mein-Mixarium, Mein-Rezeptbuch) lauschen jetzt. Browser-Sichttest wartet auf Klaus. (Nachgeholte §11.6-Meldung des Auto-Lauschens.)"
     }
   ]
 }
