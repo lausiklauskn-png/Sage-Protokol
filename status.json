@@ -6,7 +6,7 @@
   "protocolVersion": "0.1",
   "schemaVersion": "1",
   "lastUpdated": "2026-06-29",
-  "branch": "claude/semantic-agent-network-Y03Vg",
+  "branch": "main",
   "endknoten": [
     {
       "name": "Rezeptbuch",
@@ -341,8 +341,8 @@
     {
       "id": "22",
       "name": "Such-Widget",
-      "score": "stub",
-      "siegel": "Code-Stub seit 2026-06-21, in vielen Folge-Bauten gereift. Headless-Smoke umfangreich grün (smoke_bau22 257/257, smoke_bau22e_waehlen 45/45, Standalone-Drift-Guard 46/46). ✅ Browser-Sichttest mehrfach GRÜN (Klaus 2026-06-21/22): Blase + semantische Treffer (Membran 0.88), ziehbares Panel + Persistenz, KI-Such-Brücke (eingefügte ChatGPT-Antwort live geparst + semantisch sortiert). Verwandt·KI + Wählen-UI gebaut. KI-Schlüssel-live + Wählen-Umschalter-Sichttest noch offen.",
+      "score": "fertig",
+      "siegel": "Fertig 2026-06-29 (auf Klaus' Browser-Sichttest grün hochgestuft, analog 04/05/15). Code-Stub seit 2026-06-21, in vielen Folge-Bauten gereift. Headless-Smoke umfangreich grün (smoke_bau22 257/257, smoke_bau22e_waehlen 45/45, Standalone-Drift-Guard 46/46). ✅ Browser-Sichttest mehrfach GRÜN (Klaus 2026-06-21/22): Blase + semantische Treffer (Membran 0.88), ziehbares Panel + Persistenz, KI-Such-Brücke (eingefügte ChatGPT-Antwort live geparst + semantisch sortiert). Verwandt·KI + Wählen-UI gebaut. KI-Schlüssel-live + Wählen-Umschalter-Sichttest noch offen.",
       "abhaengig": [
         "03",
         "04",
@@ -353,8 +353,8 @@
     {
       "id": "23",
       "name": "Rendezvous (gemeinsamer Raum)",
-      "score": "stub",
-      "siegel": "Code-Stub 2026-06-28 (Bau-Sitzung). Headless-Smoke tests/smoke_bau23_rendezvous.mjs 55/55 + smoke_bau23_rendezvous_ui.mjs 32/32 grün, Drift-Guard byte-1:1. ✅ LIVE Cross-App-Sichttest GRÜN (Klaus 2026-06-28): Sage ↔ Mein-Mixarium beidseitig '✓ ANDOCK ETABLIERT' über das echte Relais (server-loser Live-Cross-Knoten-Handshake); Verwandtschafts-Badge im Raum GRÜN. Die Adress-Wand ist gelöst.",
+      "score": "fertig",
+      "siegel": "Fertig 2026-06-29 (auf Klaus' LIVE Cross-App-Sichttest grün hochgestuft, analog 05/15). Code-Stub 2026-06-28 (Bau-Sitzung). Headless-Smoke tests/smoke_bau23_rendezvous.mjs 55/55 + smoke_bau23_rendezvous_ui.mjs 32/32 grün, Drift-Guard byte-1:1. ✅ LIVE Cross-App-Sichttest GRÜN (Klaus 2026-06-28): Sage ↔ Mein-Mixarium beidseitig '✓ ANDOCK ETABLIERT' über das echte Relais (server-loser Live-Cross-Knoten-Handshake); Verwandtschafts-Badge im Raum GRÜN. Die Adress-Wand ist gelöst.",
       "abhaengig": [
         "02",
         "05"

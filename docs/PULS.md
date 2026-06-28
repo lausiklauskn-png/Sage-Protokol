@@ -24,8 +24,8 @@ pie showData
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 10
-  "🟩 Fertig" : 9
+  "🟦 Code-Stub" : 8
+  "🟩 Fertig" : 11
 ```
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
@@ -137,9 +137,17 @@ Sprache / 22 Such-Widget / 23 Rendezvous**.
 - Sage-Page (`index.html`) liest `status.json` **live** (`fetch` + „MODUL-STATUS live aus
   status.json") → spiegelt die neuen Module automatisch, kein hartcodierter Zähler zu ändern.
 
-**Offen / Sichttest:** Sage-Page-Anzeige der vier neuen Module wartet auf Klaus' Browser-Lauf
-(Pages deployt von `main`). Kein Protokoll-/Modul-Code berührt, keine netzweite Konstante → kein
-SIGNAL-Bump.
+**Nachgezogen (gleicher Tag, Klaus-Befund auf der Live-Seite):** (a) Erst-Eintrag aller vier
+Module als `stub` ließ den **Demo-Anteil 8 → 11 %** steigen. Korrektur: **22 Such-Widget + 23
+Rendezvous → `fertig`** hochgestuft (beide auf Klaus' Browser-/LIVE-Cross-App-Sichttest grün,
+analog 04/05/15) → Demo-Anteil zurück auf **9 %**, Pie Fertig 9 → 11 / Code-Stub 10 → 8. 20/21
+bleiben `stub` (nur headless, kein Browser-Test). (b) Stale Anzeige-Feld `status.json.branch`
+`claude/semantic-agent-network-Y03Vg` → **`main`** (zeigt im Sage-Page-Header; die echte Arbeit
+lief immer über `main`-PRs, das Feld war nur kosmetisch und stiftete Verwirrung).
+
+**Offen / Sichttest:** Sage-Page zeigt die vier Module bereits (Klaus 2026-06-29, Screenshot:
+20/21/22/23 im Graph, „15 Module"). Test der Modul-Logik 20–23 über `tests/manual_check.html`
+(Panels 20–23 liegen). Kein Protokoll-Code berührt, kein SIGNAL-Bump.
 
 ## 2026-06-28 (tiefe Nacht, Folge²) · Pinnwand — ehrliche Beschriftung (Cosinus = Rangfolge) + Drift-Guard geheilt
 
