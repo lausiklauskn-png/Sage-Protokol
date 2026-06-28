@@ -184,7 +184,12 @@ nichts**:
     geschärfte Lesart wie Such-Widget (Modul 22) + Raum (Modul 23): **Cosinus =
     Rangfolge, KI-Richter = Wahrheit.** Reine Anzeige, kein Kontrakt berührt.
     Nebenbei den vorbestehenden Drift-Guard `pinnwand/modules/03_embedding.js`
-    (hinter PR #477 zurück) byte-1:1 geheilt (`_smoke.mjs` 58/58).
+    (hinter PR #477 zurück) byte-1:1 geheilt (`_smoke.mjs` 58/58). **✅ Klaus-
+    Sichttest GRÜN (2026-06-29):** live in der Pinnwand sortiert der gratis
+    Cosinus „… echte Alkoholcocktails" (0.16) ÜBER harmlose alkoholfreie Treffer
+    — der sichtbare Beweis, dass der Cosinus eine Rangfolge ist und kein
+    Absichts-Urteil. Damit ist die geschärfte Lesart an allen drei Anzeige-Orten
+    (Modul 22 / 23 / Pinnwand) auch praktisch belegt.
 
 ---
 

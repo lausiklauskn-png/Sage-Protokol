@@ -64,9 +64,15 @@ Eine frühere Sitzung kam deshalb zum Schluss „an der Pinnwand bewusst KEIN Ei
 - Schnipsel-Mittel-Lead bleibt liegen.
 - INTERFACES / Modul-04-Code unberührt (nur öffentliche Flächen gelesen).
 
-## Nächster sinnvoller Schritt
+## Browser-Sichttest — ✅ GRÜN (Klaus 2026-06-29)
 
-- **Browser-Sichttest** der geänderten Pinnwand-Texte durch Klaus (Live-Seite nach Merge;
-  GitHub Pages deployt von `main`).
+Klaus hat die gemergte Pinnwand live geöffnet (Hard-Reload, Bedeutungs-Sortierung an): die
+Cosinus-Sortierung läuft mit Score-Badges. Härtefall „…was kann ich **alkoholfreies** dazu
+trinken" → „Hänchen in Cocktailsahnesoße und **echte Alkoholcocktails**" landet bei **0.16**
+ÜBER mehreren harmlosen alkoholfreien Treffern. Das ist der **sichtbare Beweis**, dass der
+gratis Cosinus eine **Rangfolge** ist (Thema-Nähe), kein Absichts-/Verwandt-Urteil — genau die
+geschärfte Beschriftung. KI-Richter-Lauf an der Pinnwand selbst noch offen (Default aus).
+
+## Nächster sinnvoller Schritt
 - Optional: Pinnwand-Doku-Karte anlegen, falls gewünscht (heute existiert keine numerierte
   Komponenten-Karte für die Pinnwand — sie lebt als eigenständige PWA unter `pinnwand/`).

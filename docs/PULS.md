@@ -148,8 +148,11 @@ weiter liegen lassen**.
   zurück (PR #477 `embedContentVector` nur in `src/`) → byte-1:1 re-synct. Pinnwand nutzt die
   Funktion nicht (inert), aber `_smoke.mjs` jetzt **58/58 grün** (vorher 57/58).
 
-**Offen / Sichttest:** Browser-Sichttest der geänderten Texte wartet auf Klaus (Live-Seite nach
-Merge). Kern-Logik (Embedding/Richter/Relays) unverändert.
+**✅ Browser-Sichttest GRÜN (Klaus 2026-06-29):** Cosinus-Sortierung live mit Score-Badges;
+„Hänchen … echte Alkoholcocktails" 0.16 steht über harmlosen Treffern → beweist sichtbar, dass
+der gratis Cosinus eine **Rangfolge** ist, kein Absichts-Urteil (genau die geschärfte Lesart).
+KI-Richter-Lauf an der Pinnwand selbst noch offen (Default aus). Kern-Logik
+(Embedding/Richter/Relays) unverändert.
 
 ## 2026-06-28 (tiefe Nacht, Folge) · Bau 22 „verwandt · KI" — Verwandtschafts-Maß opt-in vom KI-Richter
 
