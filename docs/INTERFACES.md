@@ -17,7 +17,12 @@ PROTOCOL_VERSION       = "0.1"
 NODE_TYPE_DEFAULT      = "hybrid"
 EMBEDDING_MODEL        = "Xenova/multilingual-e5-small"
 EMBEDDING_DIM          = 384
-PROVIDER_MIN_MATCH     = 0.80
+PROVIDER_MIN_MATCH     = 0.80     // ANDOCK-Boden (gatet Handshake/Provider). Messung 2026-06-28: roher
+                                  // e5-Cosinus-Boden mean 0.8214 sd 0.0236 — alle Hub<->Endknoten 0.79–0.85.
+                                  // BEWUSST NICHT angehoben: höher (z.B. mean+2sd 0.87) bräche jeden
+                                  // Hub<->Endknoten-Andock. Siehe docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md.
+RELATEDNESS_MIN        = 0.30     // Schwelle für relatedness() (zentrierter Cosinus, echte Verwandtschaft).
+                                  // NUR Anzeige/Ranking — gatet NICHTS. Bau 04.E 2026-06-28.
 LOCAL_RESULT_THRESHOLD = 3
 QUERY_TIMEOUT_MS       = 4000
 SBKIM_STORE_PREFIX     = "sbkim_"
@@ -772,8 +777,14 @@ Status: entwurf
 Datei:  src/modules/04_match.js
 
 Bietet (öffentlich):
-  match(queryVec: Float32Array, passageVec: Float32Array) → number     // sync; [-1, 1] für L2-norm. Eingaben
+  match(queryVec: Float32Array, passageVec: Float32Array) → number     // sync; [-1, 1] für L2-norm. ROHER Cosinus.
+                                                                       //   PROVIDER_MIN_MATCH ist der ANDOCK-BODEN (gatet Handshake).
   isAboveProviderThreshold(score: number)                  → boolean   // sync; score >= PROVIDER_MIN_MATCH (0.80)
+  relatedness(aVec: Float32Array, bVec: Float32Array)      → number    // sync; ZENTRIERTER (whitened-light) Cosinus —
+                                                                       //   echte Verwandtschaft (Mittelwert-Vektor abgezogen,
+                                                                       //   re-normalisiert). NUR Anzeige/Ranking, GATET NICHTS
+                                                                       //   (Bau 04.E, 2026-06-28; LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md).
+  isRelated(score: number)                                 → boolean   // sync; score >= RELATEDNESS_MIN (0.30)
   matchDimensions(queryCap: Float32Array | null,
                   queryNeeds: Float32Array | null,
                   passageCap: Float32Array | null,
@@ -898,7 +909,7 @@ Events:
 
 Selbstcheck:
   Beim Skript-Laden (synchron, sofort beim <script>-Tag-Auswerten):
-    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
+    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
   Wie Modul 01 — Modul 04 hat keinen asynchronen Lade-Schritt.
   (Format-Stand seit Bau 04.D 2026-06-20 — sechs Funktionen, zwei Schwellen.)
 

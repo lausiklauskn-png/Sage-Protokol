@@ -128,6 +128,19 @@ Mycel-Bibliothek — daher der etwas höhere Wert (0.8287) als bei den domänenf
   (3) alle Matches einmal sauber neu rechnen. Beleg: `tools/match_baseline.mjs`. Vollständige
   Lehre + Fix-Konzept: `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`.
 
+  **✔ Kalibrierung abgeschlossen 2026-06-28 (Bau 04.E, Klaus' Entscheidung „zentrierten
+  Cosinus jetzt bauen"):** Neu-Messung `mean 0.8214 · sd 0.0236`. **Schwelle bewusst NICHT
+  angehoben** — `PROVIDER_MIN_MATCH = 0.80` ist der **Andock-Boden** (gatet den Handshake,
+  Modul 05); eine Anhebung auf mean+2sd (≈0.87) würde **jeden Hub↔Endknoten-Andock abreißen**
+  (alle roh 0.79–0.85, inkl. des live bewiesenen BLP↔Sage). Stattdessen **additiv** in Modul 04:
+  `relatedness()` = **zentrierter Cosinus** (Verwandtschafts-Maß, **gatet nichts**) +
+  `isRelated()` gegen `RELATEDNESS_MIN = 0.30`. Smoke `tests/smoke_bau04e_relatedness.mjs`
+  **29/29 grün** (echt verwandt zentriert 0.72–1.0, Boden −0.20…0.002 — klarer Spalt).
+  **Ehrliche Lesart der Stempel:** Sage↔X-`verified-match` bleiben gültig als **Andock-Beleg**
+  (die Knoten verbinden sich real), sind aber **keine** Domänen-Verwandtschaft; echt verwandt
+  zentriert nur Jason↔Mein-Tresor (1.0) und Mixarium↔Rezeptbuch (0.72). `MEAN_VECTOR` v1 aus 7
+  Vektoren (additiv durch größeres Korpus ersetzbar). Browser-Live-Anzeige des Scores: Folge-Schritt.
+
 - **Siegel-Band-Fix (Befund 2026-06-19):** Endknoten zeigten falschen Band-Text im
   Siegel (statische `assets/sbkim-siegel-wappen.svg` von Mein-Tresor kopiert, nie
   angepasst). **Mein-Rezeptbuch ✔ erledigt 2026-06-20** (Band `MEIN-TRESOR` →

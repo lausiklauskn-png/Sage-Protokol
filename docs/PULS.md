@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-06-20 (21 Module)
+  title Modulstand 2026-06-27 (21 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -118,6 +118,29 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 |---|---|---|---|
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
+
+## 2026-06-28 (Abend) · Kalibrierung abgeschlossen — zentrierter Cosinus (Bau 04.E) + BLP-Rollout + Mixarium-Merge
+
+**Rolle:** Hauptsitzung (Branch `claude/rest-rollout-threshold-calibration-l6c92u`).
+
+- **BookLedgerPro Inhalts-Vektor** ausgerollt + **gemergt** (PR #240): byte-1:1 sbkim/02+03
+  aus Sage, `sampleContent()` aus statischen Standard-Konto-Labels (SKR03 + KS_SEED, kein PII).
+  Live BLP↔Sage-Handshake beidseitig „ETABLIERT" (Klaus, Browser).
+- **Kalibrierung abgeschlossen (Bau 04.E, Klaus' Entscheidung „zentrierten Cosinus jetzt bauen"):**
+  Messung roh-Boden `mean 0.8214 sd 0.0236`. **Schwelle 0.80 bewusst NICHT angehoben** — sie ist
+  der **Andock-Boden** (gatet den Handshake, Modul 05); anheben würde jeden Hub↔Endknoten-Andock
+  abreißen. Stattdessen **additiv** `SbkimMatch.relatedness()` (zentrierter Cosinus, **gatet nichts**)
+  + `isRelated()` gegen `RELATEDNESS_MIN = 0.30`. `match()`/`PROVIDER_MIN_MATCH` unverändert.
+  Smoke `tests/smoke_bau04e_relatedness.mjs` **29/29** (echt 0.72–1.0, Boden −0.20…0.002).
+  Drift-Kopien `such-tool/` + `sbkim-bundle/` byte-1:1 (auch 03 nachgezogen — war vor-bestehend ab).
+  INTERFACES §0/§1 + LEHRE-Stand + NETZ-STAND + status.json (`RELATEDNESS_MIN`) nachgezogen.
+- **Mein-Mixarium** war das fehlende Rollout-Repo → PR #80 geprüft + gemergt.
+- **Offen:** `MEAN_VECTOR` v1 aus 7 Vektoren (größeres Korpus = Folge); `relatedness`-Score in
+  UI/Ranking verdrahten (Folge). **Browser-Live-Match wartet auf Klaus** (Score in echter Anzeige).
+- **Manual-Check:** `tests/manual_check.html` von dieser Änderung nicht berührt (Modul 04 additiv,
+  kein Panel-Umbau) — headless-Smoke ist der Beleg; Score-Anzeige im Browser wartet auf Klaus.
+
+---
 
 ## 2026-06-28 · Inhalts-Vektor-Rollout (Rezeptbuch) + Schwellen-Kalibrier-Instrument
 
