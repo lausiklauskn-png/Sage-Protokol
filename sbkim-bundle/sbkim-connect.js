@@ -14,6 +14,12 @@
  *     domainKeywords:    ["Stichwort", "…"],  // Themen/Stichworte
  *     // optional: stammCategories, guestCategories, nodeType ("hybrid"),
  *     //           corner ("bl"|"br"|"tl"|"tr"), allowedOrigins:[…]
+ *     // optional: sampleContent: async () => [ "Inhalt 1", {label, text}, … ]
+ *     //           — liefert echte lokale Inhalts-Schnipsel; der domainVector
+ *     //           entsteht dann INHALTS-TREU (Modul 03 embedContentVector)
+ *     //           statt aus der Selbstbeschreibung. Fail-soft Fallback auf
+ *     //           die Beschreibung, wenn leer/Fehler. NUR unkritische, nicht-
+ *     //           personenbezogene Labels sampeln (kein PII, keine Geheimnisse).
  *   });
  *
  * Was init() tut (alles fail-soft, nichts wirft):
@@ -58,8 +64,31 @@
         ? cfg.domainDescription
         : ((cfg.nodeName || "SBKIM-Knoten") + " — ein Knoten im SBKIM-Mycel.");
       var kw = Array.isArray(cfg.domainKeywords) ? cfg.domainKeywords : [];
-      var passage = desc + (kw.length ? ". " + kw.join(", ") : "");
-      var vec = await global.SbkimEmbedding.embedPassage(passage);
+
+      // Inhalts-treuer Domänen-Vektor (2026-06-28): wenn die App einen
+      // sampleContent()-Callback mitgibt (liefert echte lokale Inhalts-
+      // Schnipsel — Rezepte / Cocktails / unkritische Fach-Labels), entscheidet
+      // der INHALT statt der Selbstbeschreibung („Hülle"). Fail-soft: kein
+      // Callback / keine Inhalte / Fehler → Fallback auf den Beschreibungs-
+      // Vektor (leerer/neuer Knoten). embeddingSource markiert, was passierte.
+      var vec = null;
+      var source = "description";
+      if (typeof cfg.sampleContent === "function") {
+        try {
+          var samples = await cfg.sampleContent();
+          if (Array.isArray(samples) && samples.length &&
+              typeof global.SbkimEmbedding.embedContentVector === "function") {
+            var res = await global.SbkimEmbedding.embedContentVector(samples);
+            if (res && res.vector) { vec = res.vector; source = "content"; }
+          }
+        } catch (e) { warn("sampleContent/embedContentVector — Fallback auf Beschreibung", e); }
+      }
+      if (!vec) {
+        var passage = desc + (kw.length ? ". " + kw.join(", ") : "");
+        vec = await global.SbkimEmbedding.embedPassage(passage);
+        source = "description";
+      }
+
       await global.SbkimSpore.generateOwnSpore({
         domain: cfg.domain || cfg.endpoint || "sbkim-knoten",
         endpoint: cfg.endpoint || "",
@@ -68,6 +97,8 @@
         domainDescription: desc,
         domainKeywords: kw,
         domainVector: Array.from(vec),
+        embeddingSource: source,
+        embeddingVersion: 1,
         stammCategories: cfg.stammCategories,
         guestCategories: cfg.guestCategories,
       });

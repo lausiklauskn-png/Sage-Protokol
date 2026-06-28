@@ -119,6 +119,51 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 · Inhalts-treuer Domänen-Vektor (von der Hülle zum Inhalt)
+
+**Rolle:** Bausitzung. · **Branch:** `claude/content-based-domain-vector-w3qx62`
+
+**Was getan:**
+- **Modul 03 `embedContentVector(samples, opts?)`** — baut EINEN repräsentativen,
+  L2-normalisierten Vektor aus bis zu 32 echten Inhalts-Schnipseln (Schwerpunkt
+  auf der Einheits-Kugel). Fail-soft (leere Einträge übersprungen, alle leer →
+  `EmptyInputError`, Nicht-Array → `EmbeddingError`), Deckel via `opts.max`.
+  KEINE Match-Rechnung (Modul-Grenze klar dokumentiert — bleibt Modul 04).
+- **Modul 02 `regenerateOwnSpore(updates, key?)`** — gleiche `nodeId`, neu
+  signiert; nicht genannte Felder bleiben erhalten. Additive, signaturpflichtige
+  Spore-Felder `embeddingSource` (`content|description`) + `embeddingVersion`
+  (Re-Embedding-Zähler/Drift) in die `generateOwnSpore`-Allow-List aufgenommen
+  (auch `embeddingCapabilities`/`embeddingNeeds`, sonst Datenverlust beim
+  Re-Sign). PROTOCOL_VERSION bleibt `"0.1"` (rein additiv).
+- **Bundle `sbkim-connect.js`** — `createIdentity` nimmt optionalen
+  `sampleContent()`-Callback; Inhalts-Vektor so leicht wie der Beschreibungs-
+  Vektor, fail-soft Fallback auf die Beschreibung. Byte-1:1-Kopien 02/03
+  nachgezogen (Drift-Guard grün).
+- **Spec-Karten** 02 + 03 nachgezogen, **Meilenstein-Doku** angelegt
+  (`docs/MEILENSTEIN_VON_DER_HUELLE_ZUM_INHALT.md`, Bild-Platzhalter für Klaus).
+- **Headless-Smoke** `tests/smoke_inhaltstreuer_domainvektor.mjs` **25/25 grün**
+  (inkl. Demo Kuchen-vs-Sushi: Inhalts-Cosinus 0.03 bei identischer Beschreibung).
+  `smoke_bundle_connect` 21/21 + `smoke_bau02y` 33/33 weiter grün.
+
+**Klaus' Entscheide diese Sitzung (auf „keine Präferenz" → empfohlene Defaults):**
+Inhalt entscheidend + Beschreibung nur Fallback bei leerem Knoten · bis 32
+Einträge sampeln, nur unkritische Labels (sensible Apps nur Fach-Namen) ·
+0.80-Schwelle nach Umstellung bewusst neu kalibrieren (zentrierter Cosinus) —
+als eigene Folge-Sitzung mit Browser-Messwerten.
+
+**Was offen:**
+- **Browser-Live-Match** mit dem echten e5-Modell (~30 MB) — wartet auf Klaus'
+  Browser-Lauf. Headless beweist Mathematik + Spore-Verdrahtung, nicht echte
+  Vektor-Lagen.
+- **0.80-Schwelle neu kalibrieren** (zentrierter Cosinus) — eigene Folge-Sitzung.
+- **Netzweiter Rollout**: jeder Knoten reicht `sampleContent()` durch + re-signt
+  im Browser (Reihenfolge wie Modul 23: Mixarium → Rezeptbuch → Tresore → BLP →
+  SB-KIMTool-Point). Verified-match vorher/nachher ehrlich vergleichen.
+
+**Nächster sinnvoller Schritt:** Klaus' Browser-Sichttest in Sage (Andock-Wizard
+mit `sampleContent` aus dem Glossar-/Tafel-Korpus), dann Schwellen-Kalibrierung,
+dann Endknoten-Rollout.
+
 ## 2026-06-28 · SBKIM-Verbinden-Bundle (Drop-in-Kit) gebaut
 
 **Rolle:** Bausitzung (Rollout-Enabler, Klaus' Festlegung „erst Bundle"). ·
