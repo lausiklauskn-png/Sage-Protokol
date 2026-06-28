@@ -119,6 +119,29 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## ✅ 2026-06-28 · Rendezvous LIVE CROSS-APP BEWIESEN (Sage ↔ Mixarium, beidseitig)
+
+**Klaus' Browser-Sichttest grün** — der server-lose Live-Cross-Knoten-Handshake
+läuft jetzt **zwischen zwei Apps, die beide das geteilte Modul 23 fahren**:
+
+- **Sage → Mein Mixarium:** „✓ ANDOCK ETABLIERT mit Mein Mixarium! 🎉"
+- **Mein Mixarium → Sage:** „✓ ANDOCK ETABLIERT mit Sage-Protokoll! 🎉"
+- Alle drei Knoten (Sage, Mixarium, family) sahen sich gegenseitig im gemeinsamen
+  Raum (`sbkim-rdv`); jeweils die **lebende** ID gehandshaket. Adress-Wand gelöst.
+- Der 0.80-Bedeutungs-Riegel trennt korrekt: Mixarium ↔ family 0.7753 →
+  rejected-local (kein Fehler, Drinks vs. Werkzeuge).
+
+Damit ist das Akzeptanzkriterium des Modul-23-Briefs erfüllt: Modul 23 in Sage
+spec'd + gebaut (Smoke 40/40 + UI 23/23), family-project als Konsument (Smoke
+77/77), **mindestens ein Endknoten ausgerollt + cross-App-Rendezvous LIVE
+bewiesen**. Hebt zugleich Sages Meilenstein-Doku-Vorbehalt („bidirektionale
+Cross-Knoten-Verbindung noch nicht end-to-end gezeigt") auf — jetzt app-zu-app
+über das produktive Modul gezeigt. §11.6 SIGNAL seq 37.
+
+**Offen:** family #16 (Refactor auf das geteilte Modul) — Klaus' Wort; family
+läuft live unverändert auf Inline-Code. Stack-lose Endknoten (Rezeptbuch,
+SB-KIMTool-Point, Tresore, BookLedgerPro) brauchen erst den Andock-Stack.
+
 ## Pflege 2026-06-28 · Sage-Page-Mount des Rendezvous-Knopfs
 
 **Rolle:** Folge-Pflege (Live-Test-Enabler) · **Branch:** `claude/module-23-rendezvous-rollout-zqaa8u`
