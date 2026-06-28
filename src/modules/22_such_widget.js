@@ -224,6 +224,11 @@
   // Knoten-Bereich bleibt rein lokal (fail-soft, kein Bruch).
   var queryNodeFn = null;
   var LIVE_NODE_MAX = 2;          // top-N Nachbarn pro Suche live fragen (Deckel)
+  var LIVE_NODE_SOFT_MS = 2000;   // UX-Boden (Pflege 2026-06-28): lokale Knoten-
+                                  //   Treffer spätestens nach 2 s zeigen; die Live-
+                                  //   Antwort nur dazumischen, wenn sie bis dahin da
+                                  //   ist — sonst läuft sie fail-soft im Hintergrund
+                                  //   aus und blockiert die Suche NICHT.
   var SEARXNG_MAX_RESULTS = 50;   // wie viele Roh-Treffer wir holen + sortieren
 
   // Drag + Mount.
@@ -2381,11 +2386,19 @@
               })
               .catch(function (err) { warn("Live-Frage an Knoten " + t.label + " fehlgeschlagen.", err); return []; });
           });
-          return Promise.all(liveTasks).then(function (lists) {
+          var liveMerge = Promise.all(liveTasks).then(function (lists) {
             var merged = localHits.slice();
             for (var j = 0; j < lists.length; j++) merged = merged.concat(lists[j]);
             return merged;
           });
+          // UX-Boden: die lokalen Knoten-Treffer NIE hinter der Live-Frage
+          // zurückhalten. Kommt die Live-Antwort innerhalb LIVE_NODE_SOFT_MS,
+          // wird sie dazugemischt; sonst zeigen wir die lokalen Treffer und
+          // lassen die Live-Frage im Hintergrund auslaufen (fail-soft).
+          var liveFloor = new Promise(function (resolve) {
+            setTimeout(function () { resolve(localHits); }, LIVE_NODE_SOFT_MS);
+          });
+          return Promise.race([liveMerge, liveFloor]);
         })
         .catch(function (err) { warn("Knoten-Bereich-Suche fehlgeschlagen.", err); return []; });
     }

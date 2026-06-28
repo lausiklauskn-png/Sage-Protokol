@@ -404,6 +404,24 @@ async function run() {
   eq("Probe 21: Knoten-Suche → semantisch", "semantisch", res.mode);
   eq("Probe 21: Quelle knoten", "knoten", res.treffer[0].source);
 
+  // ---- Probe 21b: hängende Live-Frage → UX-Boden liefert lokale Knoten-Treffer ----
+  // Regression-Schutz (2026-06-28): eine nie-auflösende queryNode darf die Suche
+  // NICHT blockieren. Vor dem Fix wartete die Knoten-Suche bis zu 5 min und zeigte
+  // nichts; jetzt kommen nach LIVE_NODE_SOFT_MS die lokalen Treffer (fail-soft).
+  const NODE_CORPUS_LIVE = [
+    { label: "Mein-Mixarium", text: "Cocktails Drinks", passageVec: new Float32Array(384),
+      anchorId: "https://mix", nodeId: "node-mix-1" },
+  ];
+  mountMatch("treffer");
+  let hangCalled = false;
+  await W.init({ areas: { app: false, knoten: true, internet: false }, nodeCorpus: NODE_CORPUS_LIVE,
+    richter: false, queryNode: function () { hangCalled = true; return new Promise(function () {}); } });
+  res = await W.search("cocktail");
+  eq("Probe 21b: hängende Live-Frage blockiert nicht → semantisch", "semantisch", res.mode);
+  eq("Probe 21b: lokaler Knoten-Treffer trotzdem da", "1", String(res.treffer.length));
+  eq("Probe 21b: Quelle knoten", "knoten", res.treffer[0].source);
+  eq("Probe 21b: Live-Frage wurde versucht", "true", String(hangCalled));
+
   // ---- Probe 22: Internet-Bereich ohne SearXNG-URL → webLink (neuer Tab) ----
   await W.init({ areas: { app: false, knoten: false, internet: true } });
   res = await W.search("lasagne rezept");
