@@ -119,6 +119,50 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 (Nacht) · „Wählen"-UI Folge — Verwandtschafts-Badge im Rendezvous-Raum (Modul 23) + Pinnwand-Befund
+
+**Rolle:** Bausitzung (Branch `claude/waehlen-ui-relatedness-display-xatbi1`). Brief
+`docs/sessions/BRIEF_WAEHLEN_UI_FOLGE_PINNWAND_M23.md`. Freibrief gilt (CLAUDE.md § Freibrief).
+
+**Was getan (zwei abgegrenzte Stränge, reine Anzeige):**
+
+- **Strang B — Modul 23 (Rendezvous-Raum) Verwandtschafts-Badge: gebaut.** Der
+  Zwei-Maß-Schalter aus Bau 04.E jetzt am zweiten Einbau-Ort.
+  - Modul 23 (`src/modules/23_rendezvous.js`): neue pure Funktion
+    `relatednessForCards(cards, ownSpore)` hängt je Karte einen **zentrierten**
+    Verwandtschafts-Score (`SbkimMatch.relatedness`, whitened-light) + `isRelated`
+    (≥ `RELATEDNESS_MIN` 0.30) an; `discover()` reicht das durch. Modul 04 ist
+    **optionale** Anzeige-Abhängigkeit (`_meta.hasMatch`), fail-soft ohne sie /
+    ohne `domainVector`. Mutiert die Karten-Liste nicht. Surface
+    `+relatednessForCards`.
+  - UI (`src/modules/23_rendezvous_ui.js`): Badge pro Knoten
+    („🧬 verwandt 0.72" vs „· verbunden …") + „🧬 nur verwandte"-Schalter
+    (Default aus, `_meta.relatedOnly`).
+  - **REINE Anzeige — gatet nichts, 0.80-Andock-Riegel (Modul 05) unberührt,
+    Kern-Module 02/05/05b unangetastet, Modul 04 nur gelesen.** Byte-1:1-Kopien
+    `sbkim-bundle/modules/23…` nachgezogen (Drift-Guard grün).
+  - Smoke `tests/smoke_bau23_rendezvous.mjs` **55/55** (echte Knoten-Vektoren:
+    Schwester Rezeptbuch verwandt, Hub Sage/BookLedger nicht + fail-soft +
+    Andock-Regression), `tests/smoke_bau23_rendezvous_ui.mjs` **32/32**,
+    `tests/smoke_bundle_connect.mjs` 21/21.
+- **Strang A — Pinnwand: bewusst KEIN Eingriff (begründet).** Die Pinnwand
+  zentriert bereits (`relevance`/`whiten` mit wachsendem, **seiten-lokalem**
+  Schwerpunkt) — das ist für freien Q&A-Text **passender** als der netzweite
+  `RELATEDNESS_CENTER` (Mittel über 7 Domänen-Vektoren). Der KI-Richter ist dort
+  schon opt-in. Den netzweiten Mittelwert aufzudrücken würde es **verschlechtern**.
+  Dokumentiert in `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md` (Stand 2026-06-28
+  Nacht) statt stillschweigend umgangen.
+
+**Was offen:** Browser-Sichttest des Badges + des Filters wartet auf Klaus
+(zwei Geräte am echten Relais, Raum lesen → Badge je Knoten). Pinnwand bleibt
+unverändert. `RELATEDNESS_CENTER` weiterhin v1 aus 7 Vektoren (eigener
+Folge-Schritt „größeres Referenz-Korpus", unberührt).
+
+**Nächster sinnvoller Schritt:** Klaus' Browser-Sichttest des Raum-Badges; danach
+Rollout des Badge-UI in die anderen PWAs (Modul 23 wird ohnehin byte-1:1 kopiert).
+
+---
+
 ## 2026-06-28 (Nacht) · E2E-Vertraulichkeits-Doku aus PR #302 gerettet (reine Doku)
 
 **Rolle:** Pflege (Branch `claude/e2e-doku-uebernahme`). Auf Klaus' Wunsch.

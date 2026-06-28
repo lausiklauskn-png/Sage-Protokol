@@ -159,6 +159,41 @@ async function run() {
     stub.SbkimRendezvous._calls.handshake[0] && stub.SbkimRendezvous._calls.handshake[0].nodeId,
     stub.SbkimRendezvous._calls.handshake[0] && stub.SbkimRendezvous._calls.handshake[0].nodeId === "PEER-1");
 
+  // ── Verwandtschafts-Badge + „nur verwandte"-Filter (REINE ANZEIGE) ──
+  // Karten tragen relatedness/isRelated (von Modul 23 angereichert) — die UI
+  // zeigt ein Badge je Karte und kann auf „nur verwandte" filtern.
+  const txtOf = (node) => { let s = ""; (function w(n) { if (n.textContent && n.children.length === 0) s += n.textContent + " "; for (const c of n.children) w(c); })(node); return s; };
+  stub.SbkimRendezvous._setDiscover([
+    { nodeId: "REZ", nodeName: "Rezeptbuch", spore: { id: "REZ" }, ts: 200, ageSec: 10, relatedness: 0.72, isRelated: true },
+    { nodeId: "SAGE", nodeName: "Sage", spore: { id: "SAGE" }, ts: 199, ageSec: 10, relatedness: -0.21, isRelated: false },
+  ]);
+  discoverButton.click();
+  await sleep(20);
+  const cards2 = stub.document.querySelector("#sbkim-rdv-cards");
+  record("Badge 🧬 verwandt 0.72 für verwandte Karte", "ja",
+    txtOf(cards2).includes("🧬 verwandt 0.72") ? "ja" : "nein", txtOf(cards2).includes("🧬 verwandt 0.72"));
+  record("Badge · verbunden -0.21 für fremde Karte", "ja",
+    txtOf(cards2).includes("verbunden -0.21") ? "ja" : "nein", txtOf(cards2).includes("verbunden -0.21"));
+  record("ohne Filter: beide Karten sichtbar (Rezeptbuch + Sage)", "ja",
+    (txtOf(cards2).includes("Rezeptbuch") && txtOf(cards2).includes("Sage")) ? "ja" : "nein",
+    txtOf(cards2).includes("Rezeptbuch") && txtOf(cards2).includes("Sage"));
+
+  // „🧬 nur verwandte" einschalten → nur Rezeptbuch bleibt.
+  const allBtns = [];
+  (function collect(n) { for (const c of n.children) { if (c.tagName === "BUTTON") allBtns.push(c); collect(c); } })(panel);
+  const relBtn = allBtns.find((b) => b.textContent.includes("nur verwandte"));
+  record("🧬 nur-verwandte-Schalter vorhanden", "ja", relBtn ? "ja" : "nein", !!relBtn);
+  record("_meta.relatedOnly initial false", "false", String(UI._meta.relatedOnly), UI._meta.relatedOnly === false);
+  relBtn.click();
+  await sleep(5);
+  record("_meta.relatedOnly nach Klick true", "true", String(UI._meta.relatedOnly), UI._meta.relatedOnly === true);
+  const cards3 = stub.document.querySelector("#sbkim-rdv-cards");
+  record("Filter an: Rezeptbuch bleibt", "ja", txtOf(cards3).includes("Rezeptbuch") ? "ja" : "nein", txtOf(cards3).includes("Rezeptbuch"));
+  record("Filter an: Sage (fremd) ausgeblendet", "ja", !txtOf(cards3).includes("Sage") ? "ja" : "nein", !txtOf(cards3).includes("Sage"));
+  relBtn.click(); // zurück auf „aus"
+  await sleep(5);
+  record("Filter wieder aus → _meta.relatedOnly false", "false", String(UI._meta.relatedOnly), UI._meta.relatedOnly === false);
+
   // fail-soft: ohne Modul 23.
   const savedRdv = stub.SbkimRendezvous;
   stub.SbkimRendezvous = null;
