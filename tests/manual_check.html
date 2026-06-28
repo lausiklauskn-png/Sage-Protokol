@@ -740,6 +740,142 @@
         };
       });
 
+      // --- SCHWELLEN-ANALYSE (Strang D-Folge, 2026-06-28) ---------------------
+      // Klaus' Befund: der v2-Center fiel durch freigabeReif, weil unter den
+      // gemittelten INHALTS-Vektoren ALLES zentriert bei ~0.70 liegt (verwandt
+      // UND unverwandt) — das Problem ist NICHT der Center, sondern die feste
+      // Schwelle RELATEDNESS_MIN=0.30 (für einzelne Texte kalibriert, nicht für
+      // gemittelte Domänen-Vektoren). Dieser Knopf rechnet die VOLLE paarweise
+      // Matrix über alle echten Knoten-Domänen (v1 = eingebauter Center, v2 =
+      // frischer Kandidat), kennzeichnet bekannt-verwandte vs. unverwandte Paare
+      // und prüft, OB eine einzige Schwelle sauber trennt (min(verwandt) >
+      // max(unverwandt)) — und wenn ja, WELCHE (Mittelpunkt der Lücke). Reine
+      // Messung, setzt KEINE Konstante. Liefert die Belege für die Schwellen-
+      // Entscheidung (netzweit, dokumentiert).
+      SbkimUI.addButton("04_match", "SCHWELLEN-ANALYSE: trennt EINE Schwelle verwandt/unverwandt? (volle Matrix, v1+v2)", async function () {
+        var dim = 384;
+        // v2-Kandidat-Center: gleiches 32-Text-Korpus wie der v2-Mess-Knopf
+        // (bewusst dupliziert — Mess-Referenz, kein Produktiv-Code).
+        var corpus = [
+          "Kochrezepte: Backen, Kuchen, Brot, Hefeteig, Zutaten und Mengen.",
+          "Cocktails und Drinks: Mocktails, Smoothies, Limonaden, Sirupe, Tees.",
+          "Buchhaltung: Beleg, Konto, Rechnung, Umsatzsteuer, EÜR, Kostenstelle.",
+          "Verschlüsselung: Schlüssel, Passwort, AES, Tresor, sichere Ablage.",
+          "Mycel-Bibliothek: SBKIM-Protokoll, Glossar, Knoten, Spore, Handshake.",
+          "Das Wetter wird morgen wechselhaft mit einzelnen Schauern und Wind.",
+          "Die Quantenmechanik beschreibt das Verhalten subatomarer Teilchen.",
+          "Ein Fahrradreifen braucht regelmäßig den richtigen Luftdruck.",
+          "Der Mietvertrag regelt Kündigungsfristen und die Kaution.",
+          "Das Orchester stimmte die Instrumente vor dem Konzert.",
+          "Im Herbst färben sich die Blätter der Ahornbäume rot.",
+          "Die Tabellenkalkulation summiert die Spalten automatisch.",
+          "Der Wanderweg führt steil über Geröll zum Gipfelkreuz.",
+          "Die Mannschaft gewann das Spiel in der Nachspielzeit.",
+          "Der Astronom beobachtete den Ringnebel durch das Teleskop.",
+          "Die Pflanze braucht im Sommer mehr Wasser und Halbschatten.",
+          "Der Roman erzählt von einer Reise durch das alte Persien.",
+          "Die Ärztin verschrieb ein Antibiotikum gegen die Infektion.",
+          "Der Zug hatte wegen einer Weichenstörung Verspätung.",
+          "Die Wahlbeteiligung lag dieses Jahr deutlich höher als erwartet.",
+          "Der Gitarrist stimmte die sechs Saiten vor dem Auftritt.",
+          "Die Programmiererin schrieb einen Test für die neue Funktion.",
+          "Der Maler mischte Ocker und Umbra für den Hintergrund.",
+          "Die Brücke wurde aus vorgespanntem Stahlbeton errichtet.",
+          "Der Imker erntete im Spätsommer den Lindenhonig.",
+          "Die Tänzerin probte die Pirouette vor dem großen Spiegel.",
+          "Der Geologe datierte das Gestein auf mehrere Millionen Jahre.",
+          "Die Schülerin löste die quadratische Gleichung mit der Formel.",
+          "Der Förster markierte die Bäume für den nächsten Einschlag.",
+          "Die Segeljolle kreuzte gegen den auffrischenden Nordwind.",
+          "Der Koch flambierte das Dessert direkt am Tisch des Gastes.",
+          "Die Historikerin verglich zwei Quellen aus dem 14. Jahrhundert.",
+        ];
+        var cvecs = await SbkimEmbedding.embedPassageBatch(corpus);
+        var sum = new Float32Array(dim);
+        for (var i = 0; i < cvecs.length; i++) {
+          var v = cvecs[i], nn = 0;
+          for (var d = 0; d < dim; d++) nn += v[d] * v[d];
+          nn = Math.sqrt(nn) || 1;
+          for (var d2 = 0; d2 < dim; d2++) sum[d2] += v[d2] / nn;
+        }
+        var cn = 0;
+        for (var k = 0; k < dim; k++) cn += sum[k] * sum[k];
+        cn = Math.sqrt(cn) || 1;
+        var centerV2 = new Float32Array(dim);
+        for (var m = 0; m < dim; m++) centerV2[m] = sum[m] / cn;
+
+        function relWith(center, aVec, bVec) {
+          var a = new Float32Array(dim), b = new Float32Array(dim), na = 0, nb = 0;
+          for (var i2 = 0; i2 < dim; i2++) { a[i2] = aVec[i2] - center[i2]; b[i2] = bVec[i2] - center[i2]; na += a[i2] * a[i2]; nb += b[i2] * b[i2]; }
+          na = Math.sqrt(na); nb = Math.sqrt(nb);
+          if (na === 0 || nb === 0) return 0;
+          var dot = 0; for (var j = 0; j < dim; j++) dot += (a[j] / na) * (b[j] / nb);
+          return dot;
+        }
+        async function domainVec(samples) { return (await SbkimEmbedding.embedContentVector(samples)).vector; }
+
+        // Echte Knoten-Domänen (Inhalts-Schnipsel). 'rezept2' = zweites
+        // Essen-Paar (Backen/Süßspeisen) als ZWEITES bekannt-verwandtes Paar
+        // mit 'rezept', damit die Verwandt-Seite nicht nur auf einem Punkt steht.
+        var nodes = {
+          sage: await domainVec(["SBKIM-Protokoll und Mycel-Bibliothek", "Glossar, Knoten, Spore, Handshake", "Spezifikation der Inter-Knoten-Verträge", "heilige Tafeln und Protokoll-Doku"]),
+          blp: await domainVec(["Buchhaltung und Beleg-Erfassung", "Umsatzsteuer, EÜR, Kostenstelle", "Rechnung, Konto, Bilanz, GoBD", "doppelte Buchführung für Deutschland"]),
+          rezept: await domainVec(["Kochrezepte und Backen", "Hefeteig, Kuchen, Brot, Zutaten", "Mengenangaben und Zubereitung", "Gerichte für Mittag und Abend"]),
+          rezept2: await domainVec(["Backrezepte für Kuchen und Torten", "Mürbeteig, Biskuit, Streusel", "Süßspeisen und Desserts", "Zutaten, Backzeit und Ofen"]),
+          mix: await domainVec(["Cocktails und Mixgetränke", "Mocktails, Smoothies, Limonaden", "Sirupe, Tees und Säfte", "Drinks mit und ohne Alkohol"]),
+          tresor: await domainVec(["Verschlüsselung und Schlüssel-Safe", "AES, Passwort, sichere Ablage", "Tresor-Fächer und Tarnfach", "lokale Geheimnis-Verwaltung"]),
+          point: await domainVec(["Werkzeugkiste und Mycel-Hub", "Andock-Wizard und Modul-Bündel", "Forker-Observatorium light", "kopierbare SBKIM-Werkzeuge"]),
+        };
+
+        // Bekannt-verwandte Paare (ground truth): Essen/Trinken-Familie.
+        var relatedSet = {
+          "rezept|mix": true, "rezept|rezept2": true, "rezept2|mix": true,
+        };
+        var keys = Object.keys(nodes);
+        var f = function (x) { return Number(x.toFixed(4)); };
+        var rows = [];
+        for (var a3 = 0; a3 < keys.length; a3++) {
+          for (var b3 = a3 + 1; b3 < keys.length; b3++) {
+            var ka = keys[a3], kb = keys[b3];
+            var related = !!(relatedSet[ka + "|" + kb] || relatedSet[kb + "|" + ka]);
+            rows.push({
+              paar: ka + " ↔ " + kb,
+              verwandtErwartet: related,
+              v1: f(SbkimMatch.relatedness(nodes[ka], nodes[kb])),
+              v2: f(relWith(centerV2, nodes[ka], nodes[kb])),
+            });
+          }
+        }
+        function analyse(scoreKey) {
+          var rel = rows.filter(function (r) { return r.verwandtErwartet; }).map(function (r) { return r[scoreKey]; });
+          var unrel = rows.filter(function (r) { return !r.verwandtErwartet; }).map(function (r) { return r[scoreKey]; });
+          var minRel = Math.min.apply(null, rel), maxUnrel = Math.max.apply(null, unrel);
+          var clean = minRel > maxUnrel;
+          return {
+            minVerwandt: f(minRel),
+            maxUnverwandt: f(maxUnrel),
+            luecke: f(minRel - maxUnrel),
+            saubereTrennung: clean,
+            empfohleneSchwelle: clean ? f((minRel + maxUnrel) / 2) : null,
+            aktuelleSchwelle030trennt: SbkimMatch.RELATEDNESS_MIN > maxUnrel && SbkimMatch.RELATEDNESS_MIN <= minRel,
+          };
+        }
+        var v1A = analyse("v1"), v2A = analyse("v2");
+        var bestClean = v1A.saubereTrennung || v2A.saubereTrennung;
+        SbkimUI.setStatus("04_match", bestClean ? "ok" : "warn", bestClean ? "Schwelle trennbar" : "keine saubere Schwelle");
+        return {
+          frage: "Trennt EINE feste Schwelle die verwandten von den unverwandten Paaren?",
+          aktuelleSchwelle: SbkimMatch.RELATEDNESS_MIN,
+          v1_Analyse: v1A,
+          v2_Analyse: v2A,
+          empfehlung: bestClean
+            ? ("Saubere Trennung möglich — siehe 'empfohleneSchwelle' (v1: " + v1A.empfohleneSchwelle + ", v2: " + v2A.empfohleneSchwelle + "). Netzweit + dokumentiert setzen (Klaus' Freigabe).")
+            : "KEINE saubere Schwelle (verwandt und unverwandt überlappen) — der zentrierte Cosinus über gemittelte Domänen-Vektoren trennt diese Knoten nicht zuverlässig. Dann NICHT die Schwelle hochsetzen, sondern Verfahren überdenken (eigene Sitzung).",
+          matrix: rows.sort(function (p, q) { return q.v1 - p.v1; }),
+          hinweis: "Reine Messung — setzt KEINE Konstante. Mehrfach klicken bestätigt Stabilität. 'aktuelleSchwelle030trennt' zeigt, ob die heutige 0.30 schon trennen würde (erwartet: false bei gemittelten Vektoren).",
+        };
+      });
+
       SbkimUI.addButton("04_match", "Ähnlich: Käsekuchen vs. Käsetorte (> 0.92)", async function () {
         var vecs = await SbkimEmbedding.embedPassageBatch(["Käsekuchen", "Käsetorte"]);
         var score = SbkimMatch.match(vecs[0], vecs[1]);
