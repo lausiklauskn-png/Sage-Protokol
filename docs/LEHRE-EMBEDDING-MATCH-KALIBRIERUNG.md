@@ -6,6 +6,50 @@
 > haben. **Doku für nachfolgende Bauten** — verbindlich zu lesen, bevor jemand die
 > Match-Schwelle (`PROVIDER_MIN_MATCH = 0.80`) oder Modul 04 anfasst.
 
+## Stand 2026-06-28 (Abend) — Kalibrierung abgeschlossen: 0.80 bleibt Andock-Boden, zentrierter Cosinus als Verwandtschafts-Score (Bau 04.E)
+
+**Entscheidung Klaus 2026-06-28:** „zentrierten Cosinus jetzt als Bau bauen (Modul 04)".
+
+**Messung (headless, `node tools/match_baseline.mjs`, reproduzierbar):** Roh-Cosinus-
+Boden über 7 echte Knoten-Vektoren = **mean 0.8214 · sd 0.0236 · Spanne 0.7725–0.8537**.
+Echte Verwandtschaft nur Jason↔Mein-Tresor 1.0 und Mixarium↔Rezeptbuch 0.954.
+
+**Schlüssel-Befund (warum die Schwelle NICHT angehoben wurde):** `PROVIDER_MIN_MATCH`
+(0.80) ist **dieselbe** Schwelle, die der **Andock-Handshake** benutzt (Modul 05
+`isAboveProviderThreshold` → `rejected-local`). Eine Anhebung auf mean+2sd (≈0.87)
+würde **jeden Hub↔Endknoten-Handshake ablehnen** (alle liegen roh 0.79–0.85), inkl.
+des am selben Tag live bewiesenen BLP↔Sage-Andocks. Der rohe e5-Cosinus **kann fremde
+von verwandten Domänen nicht trennen** — 0.80 ist also ein **Andock-Boden** (Identitäts-/
+Peer-Tor), **kein** Verwandtschafts-Maß.
+
+**Gebaut (Bau 04.E, additiv, gatet NICHTS):**
+- `relatedness(aVec, bVec)` in Modul 04 — **zentrierter (whitened-light) Cosinus**:
+  Mittelwert-Vektor `RELATEDNESS_CENTER` (L2-normierter Mittel über die 7 Referenz-
+  Vektoren, v1 illustrativ) abziehen, re-normalisieren, dann Cosinus. `isRelated(score)`
+  gegen `RELATEDNESS_MIN = 0.30`.
+- `match()` / `isAboveProviderThreshold()` / `PROVIDER_MIN_MATCH = 0.80` **unverändert** —
+  der Andock-/Provider-Gate-Pfad ist nicht berührt (Smoke beweist: alle Hub↔Endknoten
+  bleiben roh ≥0.80).
+- Headless `tests/smoke_bau04e_relatedness.mjs` **29/29 grün**: echt verwandt zentriert
+  0.72–1.0, Boden −0.20…0.002 — klarer Spalt (min echt 0.72 > max Boden 0.002).
+  Drift-Guard-Kopien `such-tool/` + `sbkim-bundle/` byte-1:1 nachgezogen.
+
+**Ehrliche Konsequenz für die Stempel:** Die boden-nahen `verified-match`-Werte
+(Sage↔Rezeptbuch 0.824, ↔Mixarium 0.806, ↔Point 0.849, ↔Tresore 0.848, ↔BookLedger 0.814)
+sind **Andock-Boden-Treffer**, **keine** Domänen-Verwandtschaft — zentriert fallen sie auf
+~0/negativ. **Echt** verwandt sind nur Jason↔Mein-Tresor (Schwestern) und Mixarium↔Rezeptbuch
+(Essen/Trinken). Das ist **kein Fehler der Knoten**, sondern die Modell-Anisotropie. Die
+Stempel bleiben gültig als **Andock-Beleg** (die Knoten verbinden sich real); der
+zentrierte Score ist ab jetzt das ehrliche **Verwandtschafts-Maß** (Anzeige/Ranking).
+
+**Offen (eigene Folge-Sitzung):** `RELATEDNESS_CENTER` ist v1 aus nur 7 Domänen-Vektoren
+(LEHRE-Caveat) — additiv durch einen Mittelwert aus größerem Referenz-Korpus ersetzbar,
+ohne Vertrag/PROTOCOL_VERSION zu brechen. Optionale Verdrahtung des `relatedness`-Scores
+in UI/Ranking (Such-Widget, Andock-Anzeige) ebenfalls Folge-Schritt. **Browser-Live-Match
+wartet auf Klaus** (zentrierter Score in einer echten Andock-Anzeige).
+
+---
+
 ## Stand 2026-06-28 — Kalibrier-Instrument gebaut, Schwelle wartet auf Browser-Messung
 
 Die netzweite Umstellung auf **Inhalts-Vektoren** (Meilenstein „Von der Hülle zum

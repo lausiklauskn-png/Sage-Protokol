@@ -6,8 +6,10 @@
  * Aehnlichkeit. Reine Funktion, kein async, kein Zustand.
  *
  * Public surface (registered on window.SbkimMatch):
- *   match(queryVec, passageVec) -> number
+ *   match(queryVec, passageVec) -> number   (roher Cosinus; ANDOCK-Boden via PROVIDER_MIN_MATCH)
  *   isAboveProviderThreshold(score) -> boolean
+ *   relatedness(aVec, bVec) -> number       (zentrierter Cosinus; echte Verwandtschaft, gatet NICHTS)
+ *   isRelated(score) -> boolean             (score >= RELATEDNESS_MIN)
  *   matchDimensions(queryCap, queryNeeds, passageCap, passageNeeds) -> MatchDimensionsResult
  *   explainMatchLLM(matchResult, apiKey, options?) -> Promise<ExplainResult>
  *   queryLocal(text, k?, options?) -> Promise<Array<{label, score, anchorId}>>
@@ -206,6 +208,104 @@
 
   function isAboveProviderThreshold(score) {
     return score >= PROVIDER_MIN_MATCH;
+  }
+
+  // --- Zentrierter (whitened-light) Cosinus — Verwandtschafts-Score (2026-06-28) -----
+  // LEHRE docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md: der ROHE e5-Cosinus hat einen
+  // hohen Anisotropie-Boden (~0.82) — zwei UNVERWANDTE Domänen liegen schon nahe der
+  // Andock-Schwelle 0.80. match()/PROVIDER_MIN_MATCH bleiben davon UNBERÜHRT: 0.80 ist
+  // der ANDOCK-Boden (Identitäts-/Peer-Tor, Modul 05 isAboveProviderThreshold) und MUSS
+  // niedrig bleiben, sonst bräche jeder Hub↔Endknoten-Handshake (Messung 2026-06-28:
+  // alle Hub↔Endknoten roh 0.79–0.85, also über 0.80).
+  //
+  // relatedness() ist ADDITIV + DIAGNOSTISCH: es zieht den Mittelwert-Vektor (die
+  // gemeinsame Anisotropie-Richtung) ab und re-normalisiert, dann Cosinus. ERST dann
+  // heißt 0 "unverwandt": echte Verwandtschaft bleibt hoch (Schwestern ~1.0,
+  // Essen/Trinken ~0.70), fremde Domänen fallen auf ~0/negativ. NUR Anzeige/Ranking —
+  // es GATET NICHTS (kein Aufrufer im Handshake/Provider-Pfad).
+  //
+  // RELATEDNESS_CENTER (MEAN_VECTOR): einmal vorab gemittelter, L2-normierter e5-Vektor
+  // über das Referenz-Korpus (7 Knoten-Domänen-Vektoren, 2026-06-28). v1, illustrativ —
+  // sauberes Whitening braucht ein größeres Korpus (LEHRE-Caveat). Additiv ersetzbar,
+  // ohne Vertrag/PROTOCOL_VERSION zu brechen.
+  var RELATEDNESS_CENTER = new Float32Array([
+    0.072849, -0.012892, -0.039543, -0.081636, 0.054174, -0.051481, 0.044509, 0.054632,
+    0.020353, -0.012345, 0.036567, 0.028845, 0.063881, -0.035261, -0.035739, 0.043703,
+    0.031231, -0.043608, -0.02488, -0.043558, 0.057558, -0.023875, -0.047727, -0.009844,
+    0.067867, 0.055715, -0.052105, 0.015301, 0.043903, -0.062814, -0.072505, -0.02895,
+    0.054828, -0.095637, 0.070388, 0.018328, -0.04905, -0.056507, 0.062878, -0.081007,
+    0.000057, 0.026106, 0.054144, 0.067578, 0.023585, 0.076127, -0.022871, 0.031206,
+    -0.034654, -0.04787, -0.043435, 0.072748, 0.016011, 0.02264, 0.027207, -0.058184,
+    -0.064092, -0.052798, -0.06719, 0.008657, 0.053638, -0.025978, 0.038749, 0.021846,
+    0.080548, 0.080472, 0.045793, 0.043234, -0.081523, -0.040388, -0.047951, 0.052269,
+    0.004947, -0.036636, 0.006293, 0.026241, 0.019788, -0.053102, 0.021077, -0.028727,
+    -0.079603, -0.048187, -0.05293, 0.04123, -0.043611, 0.060918, 0.059286, -0.041559,
+    0.058735, -0.016282, 0.043083, 0.055459, -0.054073, -0.069448, -0.117343, -0.094852,
+    -0.048264, 0.072785, 0.01705, -0.043272, 0.060332, -0.053966, 0.013333, -0.066647,
+    -0.024604, 0.067778, 0.020262, -0.029783, 0.044672, -0.067088, -0.079189, 0.020705,
+    0.093594, 0.05703, -0.069997, -0.057747, -0.019709, -0.0358, 0.050675, -0.078948,
+    0.050898, -0.016881, -0.056561, -0.066327, -0.06222, -0.042978, 0.049824, 0.058311,
+    -0.003419, 0.016235, 0.027214, 0.038062, 0.014969, 0.070877, 0.049555, 0.091244,
+    -0.095579, 0.011485, 0.00583, -0.018634, -0.035399, 0.063875, -0.018628, 0.02873,
+    0.054464, 0.053093, 0.081461, -0.022948, 0.039368, -0.038853, 0.04297, 0.000353,
+    0.073839, 0.033601, 0.062314, -0.066126, -0.025088, -0.042459, 0.057128, 0.044785,
+    -0.058858, -0.079299, -0.073565, -0.018761, -0.04378, -0.012193, 0.05483, 0.062567,
+    -0.052515, -0.037688, -0.037511, 0.077538, -0.017955, 0.055511, -0.011111, 0.066638,
+    -0.065233, 0.021416, 0.074515, 0.064143, -0.029699, -0.0428, -0.075233, -0.069012,
+    -0.060089, -0.029225, -0.026447, 0.020839, 0.017684, -0.012196, -0.004805, 0.025714,
+    -0.043651, -0.105895, -0.06195, 0.031401, -0.025594, 0.045441, 0.047552, 0.07498,
+    -0.001347, -0.03711, 0.043219, 0.04583, 0.061667, 0.03075, -0.083391, 0.058037,
+    -0.057771, 0.055301, 0.08062, -0.078809, -0.040182, 0.052638, -0.061573, -0.032796,
+    0.020186, 0.060251, -0.057845, 0.035826, 0.023479, -0.037095, 0.051308, -0.097761,
+    -0.060549, 0.065302, 0.03882, -0.058015, -0.043009, 0.047748, -0.078017, -0.041192,
+    -0.054518, -0.071464, -0.063712, -0.073038, -0.028292, 0.037332, 0.022069, -0.040821,
+    -0.018661, -0.001792, 0.04989, -0.067535, 0.052569, -0.043729, -0.047084, 0.046774,
+    -0.062755, 0.062095, 0.031343, -0.049343, -0.070053, -0.040427, -0.023502, 0.0424,
+    0.05178, 0.089305, -0.067341, 0.027265, 0.011272, -0.02918, 0.078241, 0.058312,
+    0.038544, 0.040039, -0.024449, -0.01627, -0.05531, -0.034875, -0.03116, 0.024896,
+    0.037855, -0.042199, -0.054072, -0.013583, 0.039508, 0.084721, -0.019442, -0.046265,
+    0.015945, 0.043729, 0.062357, 0.018071, 0.061816, -0.011538, -0.04805, 0.067388,
+    -0.023622, -0.047508, -0.054851, -0.060533, 0.03697, -0.044871, 0.101787, 0.048231,
+    -0.009851, 0.063793, -0.030704, 0.047061, 0.012712, -0.092098, 0.025606, 0.036172,
+    -0.05885, 0.026019, -0.000048, 0.003122, 0.010827, 0.042024, 0.041648, 0.08151,
+    -0.050076, -0.024539, 0.076283, 0.042423, 0.00563, 0.04405, -0.085145, -0.041592,
+    -0.069708, -0.053447, 0.005615, -0.058475, 0.054413, 0.060588, -0.051479, -0.024852,
+    0.057925, 0.008081, 0.054944, -0.040432, -0.003496, 0.049985, -0.059906, -0.016247,
+    -0.053834, 0.05571, -0.073306, -0.046085, 0.010823, 0.052388, -0.073711, 0.067009,
+    -0.043092, -0.078313, 0.081544, -0.043436, -0.016913, 0.031273, 0.043937, -0.100875,
+    0.045753, 0.057051, -0.037883, 0.044493, -0.040335, -0.023951, 0.074565, 0.04768,
+    -0.042407, -0.023928, 0.03948, 0.072449, 0.062676, 0.020118, -0.027013, -0.016562,
+    0.007436, -0.028368, 0.064212, 0.071613, -0.066955, 0.014177, -0.039106, -0.068354,
+    -0.036767, 0.061028, -0.039993, -0.065251, 0.040611, 0.028804, 0.04467, 0.077607,
+  ]);
+  // Empirisch (Messung 2026-06-28, tools/match_baseline.mjs zentriert): echte Paare
+  // ≥0.70, höchstes unverwandtes Paar ~ -0.04. 0.30 trennt mit großem Sicherheits-Rand.
+  var RELATEDNESS_MIN = 0.30;
+
+  // Zentrierter Cosinus zweier Domänen-Vektoren. Additiv, gatet nichts.
+  function relatedness(aVec, bVec) {
+    assertVector(aVec, "aVec");
+    assertVector(bVec, "bVec");
+    var a = new Float32Array(EMBEDDING_DIM);
+    var b = new Float32Array(EMBEDDING_DIM);
+    var na = 0, nb = 0;
+    for (var i = 0; i < EMBEDDING_DIM; i++) {
+      a[i] = aVec[i] - RELATEDNESS_CENTER[i];
+      b[i] = bVec[i] - RELATEDNESS_CENTER[i];
+      na += a[i] * a[i];
+      nb += b[i] * b[i];
+    }
+    na = Math.sqrt(na);
+    nb = Math.sqrt(nb);
+    if (na === 0 || nb === 0) return 0; // entartet → unverwandt
+    var dot = 0;
+    for (var j = 0; j < EMBEDDING_DIM; j++) dot += (a[j] / na) * (b[j] / nb);
+    return dot;
+  }
+
+  // Schwelle für "echt verwandt" auf dem zentrierten Score. Reine Anzeige-Hilfe.
+  function isRelated(score) {
+    return typeof score === "number" && isFinite(score) && score >= RELATEDNESS_MIN;
   }
 
   // Bau 04.A: null-safe wrapper um match(). Returns null, wenn eine
@@ -1353,6 +1453,9 @@
   var SbkimMatch = {
     match: match,
     isAboveProviderThreshold: isAboveProviderThreshold,
+    relatedness: relatedness,
+    isRelated: isRelated,
+    RELATEDNESS_MIN: RELATEDNESS_MIN,
     matchDimensions: matchDimensions,
     explainMatchLLM: explainMatchLLM,
     queryLocal: queryLocal,
@@ -1376,6 +1479,9 @@
       embeddingDim: EMBEDDING_DIM,
       providerMinMatch: PROVIDER_MIN_MATCH,
       schichtMinMatch: SCHICHT_MIN_MATCH,
+      relatednessMin: RELATEDNESS_MIN,
+      relatednessCentered: true, // zentrierter (whitened-light) Score; gatet nichts
+      schichtMinMatchNote: "0.80 = ANDOCK-Boden (gatet Handshake), relatednessMin = echte Verwandtschaft (nur Anzeige)",
       matchDimensionsLanes: MATCH_DIMENSIONS_LANES.slice(),
       stufeBDefaultModel: STUFE_B_DEFAULT_MODEL,
       stufeBMaxTokens: STUFE_B_MAX_TOKENS,
@@ -1403,7 +1509,7 @@
   // Block nennt PROVIDER_MIN_MATCH und SCHICHT_MIN_MATCH.
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, " +
+      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, " +
         "Schwellen: PROVIDER_MIN_MATCH=" + PROVIDER_MIN_MATCH +
         ", SCHICHT_MIN_MATCH=" + SCHICHT_MIN_MATCH,
     );
