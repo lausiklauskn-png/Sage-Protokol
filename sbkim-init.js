@@ -73,7 +73,7 @@
     var texts = raw.map(function (e) { return e.text; });
     var vecs = await embedding.embedPassageBatch(texts);
     return raw.map(function (e, i) {
-      return { label: e.label, text: e.text, anchorId: e.anchorId, passageVec: vecs[i] };
+      return { label: e.label, text: e.text, anchorId: e.anchorId, nodeId: e.nodeId || null, passageVec: vecs[i] };
     });
   }
 
@@ -92,8 +92,25 @@
     var texts = raw.map(function (e) { return e.text; });
     var vecs = await embedding.embedPassageBatch(texts);
     return raw.map(function (e, i) {
-      return { label: e.label, text: e.text, anchorId: e.anchorId, passageVec: vecs[i] };
+      return { label: e.label, text: e.text, anchorId: e.anchorId, nodeId: e.nodeId || null, passageVec: vecs[i] };
     });
+  }
+
+  // Live-Cross-Knoten-Frage übers Relais (Bau Query-über-Relais 2026-06-28).
+  // Wird Modul 22 als options.queryNode übergeben: der Knoten-Bereich des
+  // Such-Widgets fragt den top-rangierten Nachbarn LIVE übers Brett und mischt
+  // dessen echte Inhalts-Treffer dazu. BEWUSSTE Nutzer-Aktion (Suche = Pilz-
+  // Schicht-Egress), kein Crawler. Fail-soft: ohne Modul 05/Relais oder bei
+  // Timeout → leere Liste, der lokale Knoten-Spiegel-Treffer bleibt.
+  async function sageQueryNode(nodeId, text) {
+    try {
+      if (!window.SbkimAnastomose || typeof window.SbkimAnastomose.queryNostr !== "function") return [];
+      var res = await window.SbkimAnastomose.queryNostr(nodeId, text, { timeoutMs: 12000 });
+      if (res && res.outcome === "answered" && Array.isArray(res.results)) return res.results;
+      return [];
+    } catch (e) {
+      return [];
+    }
   }
 
   async function registerServiceWorker() {
@@ -301,6 +318,7 @@
         queryLabel: "Sage",
         prepareCorpus: sageBuildSuchkorpus,       // App-Bereich = Werkzeug-Bibliothek
         prepareNodeCorpus: sageBuildKnotenKorpus, // Knoten-Bereich = verbundene Knoten
+        queryNode: sageQueryNode,                 // Knoten-Bereich LIVE übers Relais (Modul 05 queryNostr)
         // Richter Default aus (gratis). Internet-Bereich: ohne SearXNG-URL
         // = neuer Tab; Klaus kann später eine eigene Instanz eintragen.
       });

@@ -217,6 +217,13 @@
   var nodeCorpusPreparer = null;
   var nodeCorpusReady = false;
   var nodeCorpusPrepPromise = null;
+  // Live-Cross-Knoten-Frage (Bau Query-über-Relais 2026-06-28): optional via
+  // options.queryNode injizierte Funktion (nodeId, text) -> Array<{label,score,
+  // anchorId}>. Auf der Sage-Seite verdrahtet mit SbkimAnastomose.queryNostr
+  // (Modul 05 + Relais). Im Standalone-Such-Tool ohne Modul 05 = null → der
+  // Knoten-Bereich bleibt rein lokal (fail-soft, kein Bruch).
+  var queryNodeFn = null;
+  var LIVE_NODE_MAX = 2;          // top-N Nachbarn pro Suche live fragen (Deckel)
   var SEARXNG_MAX_RESULTS = 50;   // wie viele Roh-Treffer wir holen + sortieren
 
   // Drag + Mount.
@@ -2292,6 +2299,7 @@
         return {
           label: r.label, score: r.score, anchorId: r.anchorId, source: source,
           text: src.text || r.label, snippet: src.snippet || null, url: src.url || null,
+          nodeId: src.nodeId || null,   // für den Live-Cross-Knoten-Pfad (Knoten-Bereich)
         };
       });
     });
@@ -2340,7 +2348,45 @@
         .catch(function (err) { warn("App-Bereich-Suche fehlgeschlagen.", err); return []; });
     }
     if (area === "knoten") {
-      return ensureNodeCorpusPrepared().then(function () { return queryCorpus(query, nodeCorpus, "knoten"); })
+      return ensureNodeCorpusPrepared()
+        .then(function () { return queryCorpus(query, nodeCorpus, "knoten"); })
+        .then(function (localHits) {
+          // Live-Pfad (Bau Query-über-Relais): wenn eine queryNode-Funktion
+          // injiziert ist (Sage-Seite mit Modul 05 + Relais), die top-rangierten
+          // Nachbarn MIT nodeId LIVE übers Brett fragen und ihre echten Inhalts-
+          // Treffer dazumischen. Der lokale Spiegel-Treffer findet WELCHER Knoten
+          // passt; die Live-Frage holt WAS dieser Knoten aktuell dazu hat.
+          // Fail-soft: ohne queryNode (Standalone) oder bei Fehler bleibt es
+          // beim lokalen Treffer.
+          if (typeof queryNodeFn !== "function" || !Array.isArray(localHits)) return localHits;
+          var targets = [], seen = {};
+          for (var i = 0; i < localHits.length && targets.length < LIVE_NODE_MAX; i++) {
+            var h = localHits[i];
+            if (h && h.nodeId && !seen[h.nodeId]) { seen[h.nodeId] = 1; targets.push(h); }
+          }
+          if (!targets.length) return localHits;
+          var liveTasks = targets.map(function (t) {
+            return Promise.resolve(queryNodeFn(t.nodeId, query))
+              .then(function (rows) {
+                if (!Array.isArray(rows)) return [];
+                return rows.map(function (r) {
+                  return {
+                    label: (r && r.label) ? r.label : "",
+                    score: (r && typeof r.score === "number") ? r.score : 0,
+                    anchorId: (r && r.anchorId) ? r.anchorId : (t.anchorId || null),
+                    source: "knoten", text: (r && r.label) ? r.label : "",
+                    live: true, viaNode: t.label,
+                  };
+                }).filter(function (x) { return x.label; });
+              })
+              .catch(function (err) { warn("Live-Frage an Knoten " + t.label + " fehlgeschlagen.", err); return []; });
+          });
+          return Promise.all(liveTasks).then(function (lists) {
+            var merged = localHits.slice();
+            for (var j = 0; j < lists.length; j++) merged = merged.concat(lists[j]);
+            return merged;
+          });
+        })
         .catch(function (err) { warn("Knoten-Bereich-Suche fehlgeschlagen.", err); return []; });
     }
     return Promise.resolve([]);
@@ -3730,6 +3776,8 @@
     // Mehrfach-Suche: Knoten-Korpus + SearXNG + Bereiche + Richter-Default.
     if (Array.isArray(options.nodeCorpus)) { nodeCorpus = options.nodeCorpus.slice(); nodeCorpusReady = true; }
     if (typeof options.prepareNodeCorpus === "function") nodeCorpusPreparer = options.prepareNodeCorpus;
+    // Live-Cross-Knoten-Frage (Bau Query-über-Relais): (nodeId, text) -> Promise<Array<{label,score,anchorId}>>.
+    if (typeof options.queryNode === "function") queryNodeFn = options.queryNode;
     if (typeof options.searxngUrl === "string") searxngUrl = options.searxngUrl.trim();
     if (typeof options.webSearchEngine === "string") {
       for (var wi = 0; wi < WEB_ENGINES.length; wi++) {
@@ -3831,6 +3879,7 @@
       get corpusSize() { return Array.isArray(localCorpus) ? localCorpus.length : 0; },
       get corpusReady() { return corpusReady; },
       get nodeCorpusSize() { return Array.isArray(nodeCorpus) ? nodeCorpus.length : 0; },
+      get liveNodeQuery() { return typeof queryNodeFn === "function"; },
       get areas() { return { app: areas.app.enabled, knoten: areas.knoten.enabled, internet: areas.internet.enabled }; },
       get richterOn() { return richterOn; },
       get hasSearxng() { return !!searxngUrl; },
