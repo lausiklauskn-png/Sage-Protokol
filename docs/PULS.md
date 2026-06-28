@@ -119,6 +119,31 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 · SBKIM-Verbinden-Bundle (Drop-in-Kit) gebaut
+
+**Rolle:** Bausitzung (Rollout-Enabler, Klaus' Festlegung „erst Bundle"). ·
+**Branch:** `claude/module-23-rendezvous-rollout-zqaa8u`
+
+Damit die 5 stack-losen Repos (Rezeptbuch, SB-KIMTool-Point, Mein-/Jasons-Tresor,
+BookLedgerPro) das „🌐 Mit dem Netz verbinden" **einheitlich und leicht** bekommen,
+gibt es jetzt ein kopier-fertiges **Drop-in-Bundle**: `sbkim-bundle/`.
+
+- `sbkim-bundle/modules/` — **byte-1:1**-Kopien der 9 nötigen Module (01/02/03/04/
+  05/05b/noble-secp256k1/23/23_ui). Drift-Guard im Smoke.
+- `sbkim-bundle/sbkim-connect.js` — **Ein-Aufruf-Glue** `SbkimConnect.init({nodeName,
+  endpoint, domain, domainDescription, domainKeywords, …})`: Storage→Spore→
+  Anastomose→Auto-Lauschen (Empfangsmodus) + öffentlicher Rendezvous-Knopf
+  (createIdentity aus der Konfig gebaut). Fail-soft, nichts wirft.
+- `sbkim-bundle/README.md` (2-Schritt-Anleitung + Eigenheiten je App-Typ) +
+  `beispiel.html` (Minimal-Seite).
+- Smoke `tests/smoke_bundle_connect.mjs` **21/21 grün** (Drift-Guard 9/9 +
+  Verdrahtung + createIdentity + fail-soft).
+
+**Folge (nächste Sitzungen, je eigener PR):** Repo-für-Repo den Bundle einbauen
+(Reihenfolge offen — Klaus), dann **Sage + SB-KIMTool-Point aktualisieren** (alter
+committeter Pfad → Randnotiz, **neuer Meilenstein** „server-los nur mit Tablet+Handy,
+simuliert → live"). §11.6 SIGNAL seq 38.
+
 ## ✅ 2026-06-28 · Rendezvous LIVE CROSS-APP BEWIESEN (Sage ↔ Mixarium, beidseitig)
 
 **Klaus' Browser-Sichttest grün** — der server-lose Live-Cross-Knoten-Handshake
