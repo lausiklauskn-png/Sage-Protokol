@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-06-27",
-  "seq": 34,
-  "headline": "Stufe 2 Auto-Lauschen am Nostr-Relais aktiv: Sage-Page lauscht beim Oeffnen selbsttaetig am Live-Relais wss://relay.family-projekt.de (src/modules/05b_nostr_relay.js geladen, sbkim-init.js ruft nach SbkimAnastomose.init() listenNostr() auf). Empfangsmodus MIT Antwortrecht (nur antworten, nie initiieren). Nostr-Smoke 17/17 gruen. Netzweiter Stufe-2-Rollout in dieser Sitzung: family-project + Sage (schon) + SB-KIMTool-Point + Mein-Tresor + Jasons-Tresor + BookLedgerPro + Mein-Mixarium + Mein-Rezeptbuch (neu) lauschen jetzt alle. Browser-Sichttest wartet auf Klaus. (Nachgeholte §11.6-Meldung; vorher SIGNAL nur bis Family-Aufnahme seq 33.)",
+  "lastBuild": "2026-06-28",
+  "seq": 35,
+  "headline": "Modul 23 RENDEZVOUS (gemeinsamer Raum) in Sage spezifiziert + gebaut. Loest die Adress-Wand (committete nodeId != lebende nodeId): lebende Knoten treffen sich im geteilten Nostr-Tag sbkim-rdv; ein Knoten heftet auf Nutzer-Aktion seine lebende Visitenkarte (echte Spore), ein Suchender liest die Karten und handshaket die LEBENDE ID. Saubere konfig-getriebene Ausgliederung des am 2026-06-28 bewiesenen family-project-Prototyps (kein family-Hardcode). src/modules/23_rendezvous.js (Surface init/configure/announce/connectAndAnnounce/discover/handshakeCard), docs/components/23_rendezvous.md + INTERFACES Modul 23, Headless-Smoke smoke_bau23_rendezvous.mjs 40/40 gruen, Skript-Load index.html + Panel 23 manual_check.html. Kern-Module 05/05b/02 unangetastet. Verfassungstreu (nutzer-ausgeloest, kein Dauer-Piepser). NAECHSTER SCHRITT netzweit: Modul 23 byte-1:1 in jede PWA + app-eigenes UI (Mit dem Netz verbinden / Wer ist im Raum). Browser-Cross-App-Sichttest wartet auf Klaus.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -197,6 +197,11 @@
       "seq": 34,
       "date": "2026-06-27",
       "headline": "Stufe 2 Auto-Lauschen am Nostr-Relais aktiv (wss://relay.family-projekt.de): Sage-Page laedt 05b_nostr_relay.js, sbkim-init.js ruft nach SbkimAnastomose.init() listenNostr() auf. Empfangsmodus MIT Antwortrecht. Nostr-Smoke 17/17 gruen. Netzweiter Stufe-2-Rollout: alle sieben Browser-Knoten (family-project, Sage, SB-KIMTool-Point, Mein-Tresor, Jasons-Tresor, BookLedgerPro, Mein-Mixarium, Mein-Rezeptbuch) lauschen jetzt. Browser-Sichttest wartet auf Klaus. (Nachgeholte §11.6-Meldung des Auto-Lauschens.)"
+    },
+    {
+      "seq": 35,
+      "date": "2026-06-28",
+      "headline": "Modul 23 RENDEZVOUS (gemeinsamer Raum) spezifiziert + gebaut. Loest die Adress-Wand (committete != lebende nodeId): geteilter Nostr-Tag sbkim-rdv, lebende Visitenkarte (echte Spore) auf Nutzer-Aktion, Handshake an die LEBENDE ID. Konfig-getriebene Ausgliederung des am 2026-06-28 bewiesenen family-Prototyps. src/modules/23_rendezvous.js + docs/components/23_rendezvous.md + INTERFACES Modul 23 + Smoke 40/40 + Panel 23. Kern 05/05b/02 unangetastet. Netzweiter Rollout (Modul byte-1:1 in jede PWA + app-eigenes UI) als naechster Schritt. Browser-Cross-App-Sichttest wartet auf Klaus."
     }
   ]
 }

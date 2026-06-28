@@ -119,6 +119,55 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## Bau-Sitzung 2026-06-28 · Modul 23 Rendezvous (gemeinsamer Raum)
+
+**Rolle:** Bausitzung (Spec + Bau Modul 23) · **Branch:** `claude/module-23-rendezvous-rollout-zqaa8u`
+
+**Auslöser:** am 2026-06-28 wurde der server-lose Live-Cross-Knoten-Handshake
+bewiesen (Klaus' Browser-Lauf Tablet↔Handy: „✓ ANDOCK ETABLIERT mit Family
+Projekt (lebende ID)"). Der Durchbruch war das **Rendezvous** (Klaus' Entwurf) —
+es lebte aber nur als family-spezifischer Inline-Code in
+`family-project/sbkim/sbkim-init.js`. Alle anderen Knoten lauschen zwar (Stufe 2),
+sind aber nicht auffindbar. Ziel: das Rendezvous zu einem sauberen, geteilten
+**Modul 23** machen und ins ganze Netz ausrollen.
+
+**Was getan (Sage-Keystone, Schritt 1+2 des Briefs):**
+- **Spec:** `docs/components/23_rendezvous.md` + INTERFACES.md §1 Modul 23
+  (Surface, Tag `sbkim-rdv`, Presence-Schema, Verfassungs-Klausel, Daten-
+  verträge 1:1 aus dem Prototyp).
+- **Bau:** `src/modules/23_rendezvous.js` — konfig-getrieben (nodeName + Clients
+  injiziert, KEINE family-Hardcodes), DOM-frei, fail-soft. Surface
+  `SbkimRendezvous = { init/configure/announce/connectAndAnnounce/discover/
+  handshakeCard/_meta }`. Reiner Tool-Code über die öffentlichen Flächen von
+  Modul 05 (handshake/listenNostr) + 05b (publish/subscribe) + 02 (getOwnSpore);
+  diese Kern-Module **unangetastet**.
+- **Test:** Headless-Smoke `tests/smoke_bau23_rendezvous.mjs` **40/40 grün**
+  (Mock-Relais + Mock-Spore + Mock-Anastomose; Karte heften, Raum lesen/dedupen/
+  eigene filtern, Handshake an lebende Karte, fail-soft ohne Relais/bei Timeout).
+- **Geteiltes UI** `src/modules/23_rendezvous_ui.js` (`SbkimRendezvousUI`) —
+  Klaus-Entscheid 2026-06-28: öffentlicher, einheitlicher **Floating-Knopf**
+  (kein `?dev`-Gate), byte-1:1 kopierbar, parametrisiert via
+  `init({nodeName, createIdentity?})`. DOM-only, fail-soft, idempotent,
+  createElement-basiert (stub-/real-DOM-fest). Komponiert nur Modul 23.
+  Headless-Smoke `tests/smoke_bau23_rendezvous_ui.mjs` **23/23 grün**.
+- **Mount:** Skript-Load beider in `index.html` (KEIN Auto-Init) + Panel 23 in
+  `tests/manual_check.html` (Knöpfe mit Mock-Relais + „UI 🌐-Knopf mounten").
+
+**Was offen:**
+- **family-project refaktorieren** — Inline-Rendezvous-Code durch
+  `SbkimRendezvous`-Aufrufe ersetzen (family wird Konsument). ⑥ + 🌐 müssen live
+  weiterlaufen.
+- **Endknoten-Ausrollung** — Modul 23 byte-1:1 in jede PWA + app-eigenes UI.
+  Reihenfolge: Mein-Rezeptbuch zuerst, dann Mixarium, SB-KIMTool-Point,
+  BookLedgerPro, Tresore. **Ein PR pro Repo.**
+- **Klaus-Entscheidungen vor dem Rollout** (Brief §6): Andock-Tool öffentlich
+  oder erst nach Rollout? UI-Einstiegspunkt pro App? nodeNames bestätigen?
+- **Live-Cross-App-Sichttest** (zwei Geräte/Tabs, echtes Relais) — wartet auf
+  Klaus. Headless ersetzt ihn nicht.
+
+**Nächster sinnvoller Schritt:** family-project auf Modul 23 umstellen (Smoke
+grün halten), dann Mein-Rezeptbuch ausrollen — nach Klärung der UI-Entscheidungen.
+
 ## Bau-Sitzung 2026-06-27 · Modul 05 Nostr-Relais-Transport (Stufe 2)
 
 **Branch:** `claude/spore-generation-network-receipt-eyzz27` · **DRAFT-PR**
