@@ -876,6 +876,74 @@
         };
       });
 
+      // --- VERFAHREN-VERGLEICH (Strang D-Folge 2, 2026-06-28) ----------------
+      // Klaus' Wahl: "Alternative untersuchen". Hypothese: das MITTELN mehrerer
+      // Schnipsel zu einem Knoten-Vektor bläht den Cosinus auf (KALIBRIER-BODEN:
+      // einzelne Texte zentriert ~-0.14, gemittelte Domänen-Vektoren ~0.70).
+      // Dieser Knopf vergleicht DREI Aggregat-Verfahren nebeneinander, alle
+      // zentriert (v1 via SbkimMatch.relatedness):
+      //   (A) mitteln        = heutiges Verfahren (Schnipsel mitteln, dann rel)
+      //   (B) schnipselMax    = max paarweiser zentrierter Cosinus über Schnipsel
+      //   (C) schnipselMittel = Mittel aller paarweisen zentrierten Cosinus
+      // und macht je die Lücken-Analyse (min verwandt > max unverwandt?). Reine
+      // Messung, setzt KEINE Konstante.
+      SbkimUI.addButton("04_match", "VERFAHREN-VERGLEICH: welche Methode trennt? (mitteln vs. Schnipsel-Max vs. Schnipsel-Mittel)", async function () {
+        var nodeSnips = {
+          sage: ["SBKIM-Protokoll und Mycel-Bibliothek", "Glossar, Knoten, Spore, Handshake", "Spezifikation der Inter-Knoten-Verträge", "heilige Tafeln und Protokoll-Doku"],
+          blp: ["Buchhaltung und Beleg-Erfassung", "Umsatzsteuer, EÜR, Kostenstelle", "Rechnung, Konto, Bilanz, GoBD", "doppelte Buchführung für Deutschland"],
+          rezept: ["Kochrezepte und Backen", "Hefeteig, Kuchen, Brot, Zutaten", "Mengenangaben und Zubereitung", "Gerichte für Mittag und Abend"],
+          rezept2: ["Backrezepte für Kuchen und Torten", "Mürbeteig, Biskuit, Streusel", "Süßspeisen und Desserts", "Zutaten, Backzeit und Ofen"],
+          mix: ["Cocktails und Mixgetränke", "Mocktails, Smoothies, Limonaden", "Sirupe, Tees und Säfte", "Drinks mit und ohne Alkohol"],
+          tresor: ["Verschlüsselung und Schlüssel-Safe", "AES, Passwort, sichere Ablage", "Tresor-Fächer und Tarnfach", "lokale Geheimnis-Verwaltung"],
+          point: ["Werkzeugkiste und Mycel-Hub", "Andock-Wizard und Modul-Bündel", "Forker-Observatorium light", "kopierbare SBKIM-Werkzeuge"],
+        };
+        var keys = Object.keys(nodeSnips);
+        var avg = {}, snips = {};
+        for (var i = 0; i < keys.length; i++) {
+          avg[keys[i]] = (await SbkimEmbedding.embedContentVector(nodeSnips[keys[i]])).vector;
+          snips[keys[i]] = await SbkimEmbedding.embedPassageBatch(nodeSnips[keys[i]]);
+        }
+        var rel = SbkimMatch.relatedness;
+        function crossScores(a, b) {
+          var out = [], sa = snips[a], sb = snips[b];
+          for (var x = 0; x < sa.length; x++) for (var y = 0; y < sb.length; y++) out.push(rel(sa[x], sb[y]));
+          return out;
+        }
+        function methodA(a, b) { return rel(avg[a], avg[b]); }
+        function methodBmax(a, b) { return Math.max.apply(null, crossScores(a, b)); }
+        function methodCmean(a, b) { var s = crossScores(a, b), t = 0; for (var k = 0; k < s.length; k++) t += s[k]; return t / s.length; }
+        var relatedSet = { "rezept|mix": true, "rezept|rezept2": true, "rezept2|mix": true };
+        var f = function (x) { return Number(x.toFixed(4)); };
+        var rows = [];
+        for (var a2 = 0; a2 < keys.length; a2++) {
+          for (var b2 = a2 + 1; b2 < keys.length; b2++) {
+            var ka = keys[a2], kb = keys[b2];
+            var related = !!(relatedSet[ka + "|" + kb] || relatedSet[kb + "|" + ka]);
+            rows.push({
+              paar: ka + " ↔ " + kb, verwandtErwartet: related,
+              mitteln: f(methodA(ka, kb)), schnipselMax: f(methodBmax(ka, kb)), schnipselMittel: f(methodCmean(ka, kb)),
+            });
+          }
+        }
+        function analyse(key) {
+          var relS = rows.filter(function (r) { return r.verwandtErwartet; }).map(function (r) { return r[key]; });
+          var unrelS = rows.filter(function (r) { return !r.verwandtErwartet; }).map(function (r) { return r[key]; });
+          var minRel = Math.min.apply(null, relS), maxUnrel = Math.max.apply(null, unrelS);
+          var clean = minRel > maxUnrel;
+          return { minVerwandt: f(minRel), maxUnverwandt: f(maxUnrel), luecke: f(minRel - maxUnrel), saubereTrennung: clean, empfohleneSchwelle: clean ? f((minRel + maxUnrel) / 2) : null };
+        }
+        var A = analyse("mitteln"), B = analyse("schnipselMax"), C = analyse("schnipselMittel");
+        var anyClean = A.saubereTrennung || B.saubereTrennung || C.saubereTrennung;
+        SbkimUI.setStatus("04_match", anyClean ? "ok" : "warn", anyClean ? "ein Verfahren trennt" : "keins trennt sauber");
+        return {
+          frage: "Welches Aggregat-Verfahren trennt verwandt/unverwandt sauber? (alle zentriert, v1)",
+          mitteln_aktuell: A, schnipselMax: B, schnipselMittel: C,
+          gewinner: anyClean ? (B.saubereTrennung ? "Schnipsel-Max" : (C.saubereTrennung ? "Schnipsel-Mittel" : "Mitteln")) : "keins",
+          matrix: rows.sort(function (p, q) { return q.schnipselMax - p.schnipselMax; }),
+          hinweis: "Reine Messung — setzt KEINE Konstante. 'mitteln' = heutiges Verfahren (Referenz). 'schnipselMax'/'schnipselMittel' = Schnipsel NICHT mitteln, sondern paarweise vergleichen. Mehrfach klicken bestätigt Stabilität.",
+        };
+      });
+
       SbkimUI.addButton("04_match", "Ähnlich: Käsekuchen vs. Käsetorte (> 0.92)", async function () {
         var vecs = await SbkimEmbedding.embedPassageBatch(["Käsekuchen", "Käsetorte"]);
         var score = SbkimMatch.match(vecs[0], vecs[1]);
