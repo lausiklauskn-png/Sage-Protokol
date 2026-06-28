@@ -119,6 +119,27 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 (Nacht) · E2E-Vertraulichkeits-Doku aus PR #302 gerettet (reine Doku)
+
+**Rolle:** Pflege (Branch `claude/e2e-doku-uebernahme`). Auf Klaus' Wunsch.
+
+- **PR #302 war nicht mergereif:** unverwandte Git-Historie zum heutigen `main`
+  (kein gemeinsamer Vorfahr, verschiedene Wurzel-Commits → `refusing to merge
+  unrelated histories`) **und** Scope-Widerspruch (Beschreibung „doc-only, 4
+  Dateien", real 10 Dateien inkl. 10.231-Zeilen-`mycel-knoten.html` + andock.html
+  + Siegel-PNG/SVG = ganzes BLP-App-Bundle).
+- **Klaus' Entscheid:** nur den **Doku-Teil** behalten (E2E-Verschlüsselung war
+  geplant), nichts an der App. → **nur** `docs/E2E-VERTRAULICHKEIT.md` (Spec-
+  Entwurf, Protokoll bleibt `0.1`, keine Tafel) + Sitzungs-Archiv übernommen,
+  sauber ab aktuellem `main`. Das App-Bundle + Mailbox-Brief (`AUSTAUSCH-`,
+  `fuer-BookLedgerPro/`) bewusst **nicht** übernommen (würden auf nicht
+  existierende Dateien zeigen / die App ändern). Toter Datei-Link in der Doku
+  neutralisiert (Hinweis auf PR-#302-Branch).
+- **Folge:** PR #302 kann geschlossen werden (Inhalt gerettet bzw. bewusst
+  verworfen). E2E bleibt Entwurf bis Knoten-Go (BLP deployt) — unverändert.
+
+---
+
 ## 2026-06-28 (Nacht) · „Wählen"-UI — Umschalter verbunden ↔ verwandt im Such-Widget (Modul 22)
 
 **Rolle:** Bausitzung (Branch `claude/brief-ui-selection-neh6gx`). Brief
