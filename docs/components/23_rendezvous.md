@@ -1,8 +1,10 @@
 # Modul 23 — Rendezvous (gemeinsamer Raum)
 
-> **Status:** Code-Stub 2026-06-28 (Bau-Sitzung 23). `src/modules/23_rendezvous.js`,
-> Headless-Smoke `tests/smoke_bau23_rendezvous.mjs` **40/40 grün**, Panel 23 in
-> `tests/manual_check.html`, Skript-Load in `index.html` (KEIN Auto-Init).
+> **Status:** Code-Stub 2026-06-28 (Bau-Sitzung 23). Kern `src/modules/23_rendezvous.js`
+> (Headless-Smoke `tests/smoke_bau23_rendezvous.mjs` **40/40 grün**) + geteiltes UI
+> `src/modules/23_rendezvous_ui.js` (`SbkimRendezvousUI`, öffentlicher Floating-Knopf,
+> Headless-Smoke `tests/smoke_bau23_rendezvous_ui.mjs` **23/23 grün**). Panel 23 in
+> `tests/manual_check.html`, Skript-Load beider in `index.html` (KEIN Auto-Init).
 > **Live-Cross-App-Sichttest (zwei Geräte/Tabs, echtes Relais) wartet auf Klaus.**
 >
 > Auslöser: am **2026-06-28** wurde der server-lose Live-Cross-Knoten-Handshake
@@ -101,17 +103,39 @@ Kein Relais-Client / keine Identität / Netz weg / Handshake-Timeout → ruhiges
 Ergebnis-Objekt (`ok:false` bzw. `outcome:"timeout"/"error"` mit `reason`),
 **nie** ein Throw. Die App-UI bleibt immer bedienbar.
 
-## UI-Stück (app-eigen — nicht im Modul)
+## UI-Stück — geteiltes Modul 23 UI (`SbkimRendezvousUI`)
 
-Jede PWA baut ein kleines, eigenes UI um das Modul:
+Klaus' Festlegung 2026-06-28: ein **eigener kleiner Floating-Knopf**,
+**öffentlich** (kein `?dev`-Gate), **einheitlich** über alle Apps. Damit das
+nicht 6× neu gebaut wird, gibt es ein **geteiltes UI-Modul**
+`src/modules/23_rendezvous_ui.js` (`window.SbkimRendezvousUI`), das — wie Modul
+23 selbst — **byte-1:1 in jede PWA kopiert** wird. Es self-mountet einen
+dezenten 🌐-Knopf, der ein Mini-Panel mit den drei Gesten öffnet:
 
-- **🌐 Mit dem Netz verbinden** → `connectAndAnnounce({ createIdentity })`
-- **👥 Wer ist im Raum?** → `discover()` → pro Karte ein **🤝 Andocken** →
-  `handshakeCard(card)`
-- (optional) **📌 Nur anmelden** → `announce()`
+- **🌐 Mit dem Netz verbinden** → `SbkimRendezvous.connectAndAnnounce({ createIdentity })`
+- **👥 Wer ist im Raum?** → `discover()` → pro Karte ein **🤝 Andocken** → `handshakeCard(card)`
+- **📌 Nur neu anmelden** → `announce()`
 
-Vorlage für die Karten-Darstellung: family-project `renderRoomCards`
-(`sbkim/sbkim-init.js`).
+Die App parametrisiert nur:
+
+```js
+SbkimRendezvousUI.init({
+  nodeName: "Mein Rezeptbuch",        // Anzeigename der Visitenkarte
+  createIdentity: async () => { ... }, // app-eigen (Domänen-Stichworte!), optional
+  corner: "bl",                        // bl|br|tl|tr (Default unten links)
+});
+```
+
+Surface: `init/show/hide/isOpen/_meta`. DOM-only, fail-soft, idempotent, baut
+die Elemente per `createElement` (kein `innerHTML` für abgefragte Knoten) →
+stub- und real-DOM-fest. Komponiert **ausschliesslich** Modul 23 (keine direkten
+02/03/05/05b-Aufrufe). Headless-Smoke `tests/smoke_bau23_rendezvous_ui.mjs`
+**23/23 grün** (DOM-Stub + Mock-Rendezvous).
+
+`createIdentity` ist app-eigen, weil die Domänen-Stichworte app-spezifisch sind.
+Hat die App schon eine lebende Identität (bereits angedockt), genügt `announce`
+ohne `createIdentity`. Vorlage für den family-Pfad: `__fpErzeugeSpore` (mit
+Modell-Download-Fortschritt) in `family-project/sbkim/sbkim-init.js`.
 
 ## Tests
 

@@ -4562,6 +4562,16 @@ Konsumiert: Modul 05 (SbkimAnastomose.handshake/listenNostr), Modul 05b
 Feuert: sbkim:nostr-listening (detail.active) für die VERKEHR-Lampe (Modul 17 /
         Status-Widget), fail-soft.
 
+UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
+        (window.SbkimRendezvousUI) — öffentlicher, app-agnostischer Floating-
+        Knopf (Klaus 2026-06-28). Self-mountet einen 🌐-Knopf + Mini-Panel mit
+        den drei Gesten (🌐 connectAndAnnounce / 👥 discover→🤝 handshakeCard /
+        📌 announce). Parametrisiert via SbkimRendezvousUI.init({ nodeName,
+        createIdentity?, corner?, accent? }). DOM-only, fail-soft, idempotent,
+        createElement-basiert. Komponiert NUR Modul 23. Surface
+        init/show/hide/isOpen/_meta. Headless-Smoke smoke_bau23_rendezvous_ui.mjs
+        23/23 grün. createIdentity ist app-eigen (Domänen-Stichworte app-spezifisch).
+
 ---
 
 ## 2. Datenformate (Querschnitt)

@@ -5603,6 +5603,7 @@
 
   <!-- Modul 23 — Rendezvous (Bau-Sitzung 2026-06-28) -->
   <script src="../src/modules/23_rendezvous.js"></script>
+  <script src="../src/modules/23_rendezvous_ui.js"></script>
   <script>
     (function () {
       // Panel 23 — Rendezvous. Modul 23 ist DOM-frei + dependency-injizierbar.
@@ -5700,6 +5701,17 @@
 
       SbkimUI.addButton(mod, "_meta zeigen", function () {
         return SbkimRendezvous._meta;
+      });
+
+      // UI-Modul (Floating-Knopf) gegen das Mock-Relais mounten — Klaus sieht
+      // den echten öffentlichen 🌐-Knopf unten links + Panel mit den Gesten.
+      SbkimUI.addButton(mod, "UI: 🌐-Floating-Knopf mounten (Mock)", async function () {
+        if (!window.SbkimRendezvousUI) return { fehler: "Modul 23 UI nicht geladen." };
+        SbkimRendezvous.init({ nodeName: "Sage (Panel)", relayClient: sharedRelay, anastomose: mockAna, spore: mockSpore, listenMs: 400 });
+        await SbkimRendezvousUI.init({ nodeName: "Sage (Panel)" });
+        SbkimRendezvousUI.show();
+        SbkimUI.setStatus(mod, "ok", "UI gemountet");
+        return { hinweis: "Unten links erscheint „🌐 Mit dem Netz verbinden“. Klick öffnet das Panel; die Gesten laufen gegen das Mock-Relais dieses Panels (lege vorher „Fremde Karte ins Mock-Relais legen“, dann im Floating-Panel „👥 Wer ist im Raum?“ → 🤝).", meta: SbkimRendezvousUI._meta };
       });
     })();
   </script>

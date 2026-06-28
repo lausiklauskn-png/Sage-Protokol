@@ -144,8 +144,14 @@ sind aber nicht auffindbar. Ziel: das Rendezvous zu einem sauberen, geteilten
 - **Test:** Headless-Smoke `tests/smoke_bau23_rendezvous.mjs` **40/40 grün**
   (Mock-Relais + Mock-Spore + Mock-Anastomose; Karte heften, Raum lesen/dedupen/
   eigene filtern, Handshake an lebende Karte, fail-soft ohne Relais/bei Timeout).
-- **Mount:** Skript-Load in `index.html` (KEIN Auto-Init) + Panel 23 in
-  `tests/manual_check.html` (Knöpfe mit Mock-Relais, headless-äquivalent).
+- **Geteiltes UI** `src/modules/23_rendezvous_ui.js` (`SbkimRendezvousUI`) —
+  Klaus-Entscheid 2026-06-28: öffentlicher, einheitlicher **Floating-Knopf**
+  (kein `?dev`-Gate), byte-1:1 kopierbar, parametrisiert via
+  `init({nodeName, createIdentity?})`. DOM-only, fail-soft, idempotent,
+  createElement-basiert (stub-/real-DOM-fest). Komponiert nur Modul 23.
+  Headless-Smoke `tests/smoke_bau23_rendezvous_ui.mjs` **23/23 grün**.
+- **Mount:** Skript-Load beider in `index.html` (KEIN Auto-Init) + Panel 23 in
+  `tests/manual_check.html` (Knöpfe mit Mock-Relais + „UI 🌐-Knopf mounten").
 
 **Was offen:**
 - **family-project refaktorieren** — Inline-Rendezvous-Code durch
