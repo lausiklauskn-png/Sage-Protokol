@@ -224,11 +224,6 @@
   // Knoten-Bereich bleibt rein lokal (fail-soft, kein Bruch).
   var queryNodeFn = null;
   var LIVE_NODE_MAX = 2;          // top-N Nachbarn pro Suche live fragen (Deckel)
-  var LIVE_NODE_SOFT_MS = 2000;   // UX-Boden (Pflege 2026-06-28): lokale Knoten-
-                                  //   Treffer spätestens nach 2 s zeigen; die Live-
-                                  //   Antwort nur dazumischen, wenn sie bis dahin da
-                                  //   ist — sonst läuft sie fail-soft im Hintergrund
-                                  //   aus und blockiert die Suche NICHT.
   var SEARXNG_MAX_RESULTS = 50;   // wie viele Roh-Treffer wir holen + sortieren
 
   // Drag + Mount.
@@ -1513,8 +1508,8 @@
   // ---- Komponierte Suche (Vorfilter → Richter → Fail-soft) ----
   // Spiegelung des Helfers sbkimHybridSearch aus HYBRID-MATCH-EINBAU.md.
 
-  function search(text) {
-    return runMultiSearch(text);
+  function search(text, onLive) {
+    return runMultiSearch(text, onLive);
   }
 
   // Lazy-Korpus-Vorbereitung: führt corpusPreparer EINMAL aus (Embedding etc.),
@@ -2347,7 +2342,7 @@
     });
   }
 
-  function areaCandidates(area, query) {
+  function areaCandidates(area, query, onLive) {
     if (area === "app") {
       return ensureCorpusPrepared().then(function () { return queryCorpus(query, localCorpus, "app"); })
         .catch(function (err) { warn("App-Bereich-Suche fehlgeschlagen.", err); return []; });
@@ -2356,49 +2351,48 @@
       return ensureNodeCorpusPrepared()
         .then(function () { return queryCorpus(query, nodeCorpus, "knoten"); })
         .then(function (localHits) {
-          // Live-Pfad (Bau Query-über-Relais): wenn eine queryNode-Funktion
-          // injiziert ist (Sage-Seite mit Modul 05 + Relais), die top-rangierten
-          // Nachbarn MIT nodeId LIVE übers Brett fragen und ihre echten Inhalts-
-          // Treffer dazumischen. Der lokale Spiegel-Treffer findet WELCHER Knoten
-          // passt; die Live-Frage holt WAS dieser Knoten aktuell dazu hat.
-          // Fail-soft: ohne queryNode (Standalone) oder bei Fehler bleibt es
-          // beim lokalen Treffer.
-          if (typeof queryNodeFn !== "function" || !Array.isArray(localHits)) return localHits;
-          var targets = [], seen = {};
-          for (var i = 0; i < localHits.length && targets.length < LIVE_NODE_MAX; i++) {
-            var h = localHits[i];
-            if (h && h.nodeId && !seen[h.nodeId]) { seen[h.nodeId] = 1; targets.push(h); }
+          if (!Array.isArray(localHits)) localHits = [];
+          // Live-Pfad (Bau Query-über-Relais) — NICHT-BLOCKIEREND (Pflege 2026-06-28):
+          // den top-rangierten Nachbarn MIT nodeId LIVE übers Brett fragen. Die
+          // lokalen Treffer (WELCHER Knoten passt) gehen SOFORT zurück; die Live-
+          // Antwort (WAS der Knoten gerade dazu hat) wird — auch Minuten später bei
+          // schwachem Netz / kaltem Embedding-Modell — über onLive in die Liste
+          // NACHGEREICHT, statt die ganze Suche zu blockieren. Fail-soft: ohne
+          // queryNode (Standalone) oder ohne onLive (programmatisch ohne Sink) bleibt
+          // es beim lokalen Treffer; ohne/zu späte Antwort bleibt die Liste, wie sie ist.
+          if (typeof queryNodeFn === "function" && typeof onLive === "function") {
+            var targets = [], seen = {};
+            for (var i = 0; i < localHits.length && targets.length < LIVE_NODE_MAX; i++) {
+              var h = localHits[i];
+              if (h && h.nodeId && !seen[h.nodeId]) { seen[h.nodeId] = 1; targets.push(h); }
+            }
+            if (targets.length) {
+              var liveTasks = targets.map(function (t) {
+                return Promise.resolve(queryNodeFn(t.nodeId, query))
+                  .then(function (rows) {
+                    if (!Array.isArray(rows)) return [];
+                    return rows.map(function (r) {
+                      return {
+                        label: (r && r.label) ? r.label : "",
+                        score: (r && typeof r.score === "number") ? r.score : 0,
+                        anchorId: (r && r.anchorId) ? r.anchorId : (t.anchorId || null),
+                        source: "knoten", text: (r && r.label) ? r.label : "",
+                        live: true, viaNode: t.label,
+                      };
+                    }).filter(function (x) { return x.label; });
+                  })
+                  .catch(function (err) { warn("Live-Frage an Knoten " + t.label + " fehlgeschlagen.", err); return []; });
+              });
+              // Fire-and-forget: sobald die (evtl. späten) Live-Antworten da sind,
+              // über onLive nachreichen — der Aufrufer mischt sie in die Anzeige.
+              Promise.all(liveTasks).then(function (lists) {
+                var liveRows = [];
+                for (var j = 0; j < lists.length; j++) liveRows = liveRows.concat(lists[j]);
+                if (liveRows.length) { try { onLive(liveRows); } catch (e) {} }
+              });
+            }
           }
-          if (!targets.length) return localHits;
-          var liveTasks = targets.map(function (t) {
-            return Promise.resolve(queryNodeFn(t.nodeId, query))
-              .then(function (rows) {
-                if (!Array.isArray(rows)) return [];
-                return rows.map(function (r) {
-                  return {
-                    label: (r && r.label) ? r.label : "",
-                    score: (r && typeof r.score === "number") ? r.score : 0,
-                    anchorId: (r && r.anchorId) ? r.anchorId : (t.anchorId || null),
-                    source: "knoten", text: (r && r.label) ? r.label : "",
-                    live: true, viaNode: t.label,
-                  };
-                }).filter(function (x) { return x.label; });
-              })
-              .catch(function (err) { warn("Live-Frage an Knoten " + t.label + " fehlgeschlagen.", err); return []; });
-          });
-          var liveMerge = Promise.all(liveTasks).then(function (lists) {
-            var merged = localHits.slice();
-            for (var j = 0; j < lists.length; j++) merged = merged.concat(lists[j]);
-            return merged;
-          });
-          // UX-Boden: die lokalen Knoten-Treffer NIE hinter der Live-Frage
-          // zurückhalten. Kommt die Live-Antwort innerhalb LIVE_NODE_SOFT_MS,
-          // wird sie dazugemischt; sonst zeigen wir die lokalen Treffer und
-          // lassen die Live-Frage im Hintergrund auslaufen (fail-soft).
-          var liveFloor = new Promise(function (resolve) {
-            setTimeout(function () { resolve(localHits); }, LIVE_NODE_SOFT_MS);
-          });
-          return Promise.race([liveMerge, liveFloor]);
+          return localHits;
         })
         .catch(function (err) { warn("Knoten-Bereich-Suche fehlgeschlagen.", err); return []; });
     }
@@ -2439,7 +2433,7 @@
   // Mehrfach-Suche: gewählte Bereiche → je Cosinus-Kandidaten → zusammenführen →
   // optional KI-Richter → gerankte Treffer mit Quellen-Badge. Internet ohne
   // SearXNG-URL → Neuer-Tab-Karte (webLink) statt Inline-Treffer.
-  function runMultiSearch(text) {
+  function runMultiSearch(text, onLive) {
     if (typeof text !== "string" || text.trim().length === 0) {
       lastSearchMode = "leer";
       return Promise.resolve({ mode: "leer", treffer: [], webLink: null });
@@ -2470,7 +2464,7 @@
 
     var tasks = [];
     if (areas.app.enabled) tasks.push(areaCandidates("app", query));
-    if (areas.knoten.enabled) tasks.push(areaCandidates("knoten", query));
+    if (areas.knoten.enabled) tasks.push(areaCandidates("knoten", query, onLive));
 
     // Internet-Bereich separat (kann Kandidaten ODER einen webLink liefern).
     var internetP = Promise.resolve({ candidates: [], webLink: null });
@@ -2540,9 +2534,32 @@
     queryValue = text;
     setHint("Suche läuft …");
     searchCount++;
+    var myToken = searchCount;                // gegen veraltete Live-Antworten
     resultsVisibleCount = RESULT_PAGE_SIZE; // neue Suche → wieder die ersten 10
     expand(); // Ergebnis ist da bzw. kommt — Widget wächst.
-    return runMultiSearch(text).then(function (res) {
+    var baseRes = null;
+    // Live-Antwort vom Knoten kommt evtl. erst Minuten später (schwaches Netz,
+    // kaltes Embedding-Modell). Wir reichen sie dann in die schon gezeigte Liste
+    // nach (einsortiert nach Score), statt die Suche so lange zu blockieren.
+    function onLiveKnoten(liveRows) {
+      if (myToken !== searchCount || !baseRes) return;   // neue Suche gestartet → verwerfen
+      if (!Array.isArray(liveRows) || !liveRows.length) return;
+      var merged = (baseRes.treffer || []).slice();
+      var keyset = {};
+      merged.forEach(function (t) { keyset[(t.anchorId || "") + "|" + t.label] = 1; });
+      liveRows.forEach(function (r) {
+        var k = (r.anchorId || "") + "|" + r.label;
+        if (!keyset[k]) { keyset[k] = 1; merged.push(r); }
+      });
+      merged.sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+      if (merged.length > MAX_RANK) merged = merged.slice(0, MAX_RANK);
+      baseRes = { mode: baseRes.mode, treffer: merged, webLink: baseRes.webLink,
+                  reason: baseRes.reason, attestation: baseRes.attestation };
+      renderResults(baseRes);
+      setHint("Live-Antwort vom Knoten ergänzt.");
+    }
+    return runMultiSearch(text, onLiveKnoten).then(function (res) {
+      baseRes = res;
       renderResults(res);
       return res;
     }).catch(function (err) {
