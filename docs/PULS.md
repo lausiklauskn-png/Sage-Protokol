@@ -119,6 +119,66 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 (Nacht) · „Wählen"-UI Folge: Strang D Mess-Knopf + Strang C als blockiert dokumentiert
+
+**Rolle:** Pflege/Bau (Branch `claude/relatedness-badge-rollout-84fg17`).
+Brief: Badge-UI netzweit ausrollen (C) + `RELATEDNESS_CENTER` v2 aus größerem
+Korpus (D). Freibrief galt.
+
+**Befund vorab (gegen `origin/main` geprüft, nicht aus dem Working-Tree):**
+Der Brief nimmt an, der Vorgänger-PR #483 (Strang-B-Badge in Modul 23) sei
+„nach Merge auf main". **Er ist NICHT gemerged** — offener Draft auf
+`claude/waehlen-ui-relatedness-display-xatbi1`. Damit lebt `relatednessForCards`
++ das Badge-UI nur im ungemergten Branch (Sage-main-`smoke_bau23` = 40, nicht
+55). Klaus per AskUserQuestion gefragt → „keine Präferenz" → Urteil unter
+Freibrief.
+
+**Strang C (Badge netzweit ausrollen) — als blockiert dokumentiert, NICHT
+live gerollt:**
+- md5-Befund: Sage-main Modul-23-Dateien (`23_rendezvous.js`,
+  `23_rendezvous_ui.js`) sind **bereits byte-identisch** mit Mixariums Kopien
+  → eine Kopie HEUTE ändert nichts; das Badge kommt erst rein, wenn #483 in
+  Sage main ist.
+- **Eigentliche Lücke:** Mixariums `sbkim/04_match.js` **driftet** gegen
+  Sage main (alte Version OHNE `relatedness()`/`RELATEDNESS_CENTER`). Selbst
+  mit Badge-Code bliebe das Badge in Mixarium **stumm**, bis dieses Modul
+  nachgezogen wird — das ist der echte Strang-C-Kern, nicht die Lade-Reihenfolge.
+- **Lade-Reihenfolge ist überall schon korrekt** (Modul 04 vor Modul 23):
+  Mixarium `index.html` (04 Z.13077 < 23 Z.13087), family-project
+  `index.html`/`netzwerk.html` (04 < 23). family-project fährt sein **eigenes**
+  Raum-UI (kein `23_rendezvous_ui.js`) → Badge dort = Teil des Consumer-Refactors
+  (eigener Folge-Schritt). Rezeptbuch fährt den Raum noch gar nicht.
+- **Entscheidung:** kein Live-Push unverifizierten Badge-UI in die deployte
+  Mixarium-PWA vor Klaus' Browser-Sichttest. Remediation (mechanisch, sobald
+  #483 in main): in Mixarium `04_match.js` + beide Modul-23-Dateien auf
+  Sage-main-Stand ziehen, Drift-Guard, eigener Rollout-PR.
+
+**Strang D (`RELATEDNESS_CENTER` v2) — Mess-Knopf gebaut, Konstante NICHT
+geändert:**
+- `tests/manual_check.html` Panel 04: neuer Knopf **„RELATEDNESS_CENTER v2
+  messen (größeres Korpus → Literal + Referenz-Fälle)"**. Bettet einen breiten,
+  diversen 32-Text-Korpus ein (Modul 03 `embedPassageBatch`), L2-mittelt +
+  re-normiert → v2-Kandidat; gibt das **kopierfertige Float32Array-Literal**
+  (48 Zeilen / 384 Zahlen, 1:1 in `04_match.js` einsetzbar) ins `<pre>` aus,
+  plus eine **Referenz-Fall-Tabelle** (Schwestern Rezeptbuch↔Mixarium oben,
+  Hub↔Endknoten Sage↔BLP unten) unter v1 UND v2 nebeneinander +
+  Freigabe-Flag `freigabeReif`. **Reine Messung — ÄNDERT KEINE Konstante**,
+  kein Vertrag/`PROTOCOL_VERSION` berührt, Modul 04 nur gelesen.
+- Headless-Smoke unverändert grün (nur `manual_check.html` angefasst): 04a 19,
+  04b 30, 04c 43, 04d 68, 04e 29, 23 40 — alle 0 rot. Button-Logik headless
+  mit Stub-Vektoren strukturell geprüft (48 Zeilen, 384 Zahlen, 4 Referenz-
+  Zeilen, Ordnungs-Objekt).
+
+**Offen / nächster Schritt:**
+1. Klaus' Browser-Lauf: Mess-Knopf klicken → v2-Literal + Referenz-Tabelle
+   lesen; bei `freigabeReif:true` Konstante bewusst netzweit setzen (SIGNAL
+   §11.6, dann ALLE Knoten identisch nachziehen).
+2. **#483 ist inzwischen gemerged** (2026-06-28 19:43, b972454) → Sage main hat
+   das Badge. DANACH Strang-C-Rollout (Mixarium `04_match` + Modul-23-Dateien
+   byte-1:1) — jetzt nicht mehr blockiert, eigene Folge-Sitzung.
+3. Browser-Sichttest beider Stränge wartet auf Klaus.
+
+
 ## 2026-06-28 (Nacht) · „Wählen"-UI Folge — Verwandtschafts-Badge im Rendezvous-Raum (Modul 23) + Pinnwand-Befund
 
 **Rolle:** Bausitzung (Branch `claude/waehlen-ui-relatedness-display-xatbi1`). Brief

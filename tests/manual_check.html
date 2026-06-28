@@ -576,6 +576,170 @@
         };
       });
 
+      // --- RELATEDNESS_CENTER v2 messen (Strang D, 2026-06-28) ---------------
+      // Misst einen KANDIDATEN für RELATEDNESS_CENTER aus einem GRÖSSEREN, breiter
+      // gestreuten Referenz-Korpus (v1 mittelt nur 7 Knoten-Domänen → LEHRE-Caveat:
+      // zu klein für eine saubere Anisotropie-Schätzung). Verfahren: viele diverse
+      // Domänen-/Inhaltstexte als Passage einbetten (Modul 03), L2-normieren,
+      // mitteln, erneut L2-normieren → v2-Kandidat. Headless NICHT messbar
+      // (transformers.js lädt nur im Browser) — darum dieser Knopf.
+      //
+      // WICHTIG: Dieser Knopf ÄNDERT NICHTS. Er gibt nur (a) das fertige
+      // Float32Array-Literal zum Einsetzen in src/modules/04_match.js aus und
+      // (b) eine Referenz-Fall-Tabelle (Schwestern müssen oben bleiben,
+      // Hub↔Endknoten unten) unter v1 UND v2 nebeneinander — die
+      // Ordnungs-Erhaltung ist die Freigabe-Bedingung. Die netzweite Konstante
+      // setzt erst eine bewusste Folge-Entscheidung (alle Knoten identisch).
+      SbkimUI.addButton("04_match", "RELATEDNESS_CENTER v2 messen (größeres Korpus → Literal + Referenz-Fälle)", async function () {
+        // Breiter, diverser Referenz-Korpus (32 Texte) — bewusst NICHT nur die
+        // Knoten-Domänen, sondern quer durch viele Felder, damit der Mittelwert
+        // die gemeinsame Anisotropie-Richtung des Embedding-Raums besser trifft.
+        var corpus = [
+          // SBKIM-Knoten-Domänen (im Netz real vorkommend)
+          "Kochrezepte: Backen, Kuchen, Brot, Hefeteig, Zutaten und Mengen.",
+          "Cocktails und Drinks: Mocktails, Smoothies, Limonaden, Sirupe, Tees.",
+          "Buchhaltung: Beleg, Konto, Rechnung, Umsatzsteuer, EÜR, Kostenstelle.",
+          "Verschlüsselung: Schlüssel, Passwort, AES, Tresor, sichere Ablage.",
+          "Mycel-Bibliothek: SBKIM-Protokoll, Glossar, Knoten, Spore, Handshake.",
+          // breit gestreute Allgemein-Domänen (Anisotropie-Schätzung)
+          "Das Wetter wird morgen wechselhaft mit einzelnen Schauern und Wind.",
+          "Die Quantenmechanik beschreibt das Verhalten subatomarer Teilchen.",
+          "Ein Fahrradreifen braucht regelmäßig den richtigen Luftdruck.",
+          "Der Mietvertrag regelt Kündigungsfristen und die Kaution.",
+          "Das Orchester stimmte die Instrumente vor dem Konzert.",
+          "Im Herbst färben sich die Blätter der Ahornbäume rot.",
+          "Die Tabellenkalkulation summiert die Spalten automatisch.",
+          "Der Wanderweg führt steil über Geröll zum Gipfelkreuz.",
+          "Die Mannschaft gewann das Spiel in der Nachspielzeit.",
+          "Der Astronom beobachtete den Ringnebel durch das Teleskop.",
+          "Die Pflanze braucht im Sommer mehr Wasser und Halbschatten.",
+          "Der Roman erzählt von einer Reise durch das alte Persien.",
+          "Die Ärztin verschrieb ein Antibiotikum gegen die Infektion.",
+          "Der Zug hatte wegen einer Weichenstörung Verspätung.",
+          "Die Wahlbeteiligung lag dieses Jahr deutlich höher als erwartet.",
+          "Der Gitarrist stimmte die sechs Saiten vor dem Auftritt.",
+          "Die Programmiererin schrieb einen Test für die neue Funktion.",
+          "Der Maler mischte Ocker und Umbra für den Hintergrund.",
+          "Die Brücke wurde aus vorgespanntem Stahlbeton errichtet.",
+          "Der Imker erntete im Spätsommer den Lindenhonig.",
+          "Die Tänzerin probte die Pirouette vor dem großen Spiegel.",
+          "Der Geologe datierte das Gestein auf mehrere Millionen Jahre.",
+          "Die Schülerin löste die quadratische Gleichung mit der Formel.",
+          "Der Förster markierte die Bäume für den nächsten Einschlag.",
+          "Die Segeljolle kreuzte gegen den auffrischenden Nordwind.",
+          "Der Koch flambierte das Dessert direkt am Tisch des Gastes.",
+          "Die Historikerin verglich zwei Quellen aus dem 14. Jahrhundert.",
+        ];
+
+        var dim = 384;
+
+        // 1) v2-Kandidat: L2-normierte Passage-Vektoren mitteln, dann L2-normieren.
+        var vecs = await SbkimEmbedding.embedPassageBatch(corpus);
+        var sum = new Float32Array(dim);
+        for (var i = 0; i < vecs.length; i++) {
+          var v = vecs[i];
+          var n = 0;
+          for (var d = 0; d < dim; d++) n += v[d] * v[d];
+          n = Math.sqrt(n) || 1;
+          for (var d2 = 0; d2 < dim; d2++) sum[d2] += v[d2] / n;
+        }
+        var cn = 0;
+        for (var k = 0; k < dim; k++) cn += sum[k] * sum[k];
+        cn = Math.sqrt(cn) || 1;
+        var centerV2 = new Float32Array(dim);
+        for (var m = 0; m < dim; m++) centerV2[m] = sum[m] / cn;
+
+        // 2) Paste-fertiges Literal (8 Zahlen je Zeile, 6 Nachkommastellen) —
+        //    1:1 in src/modules/04_match.js als RELATEDNESS_CENTER einsetzbar.
+        var lines = [];
+        for (var r = 0; r < dim; r += 8) {
+          var chunk = [];
+          for (var c = r; c < r + 8 && c < dim; c++) chunk.push(centerV2[c].toFixed(6));
+          lines.push("    " + chunk.join(", ") + ",");
+        }
+        var literal = "  var RELATEDNESS_CENTER = new Float32Array([\n" + lines.join("\n") + "\n  ]);";
+        SbkimUI.log("04_match", "── RELATEDNESS_CENTER v2 (kopierfertig, " + corpus.length + " Texte) ──\n" + literal + "\n── Ende Literal ──");
+
+        // 3) Referenz-Knoten-Domänenvektoren (mehrere Inhalts-Schnipsel je Knoten).
+        async function domainVec(samples) {
+          var res = await SbkimEmbedding.embedContentVector(samples);
+          return res.vector; // bereits L2-normiert
+        }
+        var sage = await domainVec([
+          "SBKIM-Protokoll und Mycel-Bibliothek", "Glossar, Knoten, Spore, Handshake",
+          "Spezifikation der Inter-Knoten-Verträge", "heilige Tafeln und Protokoll-Doku",
+        ]);
+        var blp = await domainVec([
+          "Buchhaltung und Beleg-Erfassung", "Umsatzsteuer, EÜR, Kostenstelle",
+          "Rechnung, Konto, Bilanz, GoBD", "doppelte Buchführung für Deutschland",
+        ]);
+        var rezept = await domainVec([
+          "Kochrezepte und Backen", "Hefeteig, Kuchen, Brot, Zutaten",
+          "Mengenangaben und Zubereitung", "Gerichte für Mittag und Abend",
+        ]);
+        var mix = await domainVec([
+          "Cocktails und Mixgetränke", "Mocktails, Smoothies, Limonaden",
+          "Sirupe, Tees und Säfte", "Drinks mit und ohne Alkohol",
+        ]);
+        var tresor = await domainVec([
+          "Verschlüsselung und Schlüssel-Safe", "AES, Passwort, sichere Ablage",
+          "Tresor-Fächer und Tarnfach", "lokale Geheimnis-Verwaltung",
+        ]);
+
+        // 4) Zentrierter Cosinus mit BELIEBIGEM Center (v2-Pfad, inline) —
+        //    gleiche Mathematik wie SbkimMatch.relatedness, nur anderer Center.
+        function relWith(center, aVec, bVec) {
+          var a = new Float32Array(dim), b = new Float32Array(dim), na = 0, nb = 0;
+          for (var i = 0; i < dim; i++) { a[i] = aVec[i] - center[i]; b[i] = bVec[i] - center[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+          na = Math.sqrt(na); nb = Math.sqrt(nb);
+          if (na === 0 || nb === 0) return 0;
+          var dot = 0; for (var j = 0; j < dim; j++) dot += (a[j] / na) * (b[j] / nb);
+          return dot;
+        }
+        var f = function (x) { return Number(x.toFixed(4)); };
+        var min = SbkimMatch.RELATEDNESS_MIN;
+        function refRow(label, x, y) {
+          var v1 = SbkimMatch.relatedness(x, y); // eingebauter v1-Center
+          var v2 = relWith(centerV2, x, y);      // frischer v2-Kandidat
+          return {
+            paar: label,
+            v1: f(v1), v1_verwandt: v1 >= min,
+            v2: f(v2), v2_verwandt: v2 >= min,
+          };
+        }
+        var schwester = refRow("Rezeptbuch ↔ Mixarium (Schwestern, Essen/Trinken)", rezept, mix);
+        var hubEnd = refRow("Sage ↔ BookLedgerPro (Hub ↔ Endknoten)", sage, blp);
+        var tabelle = [
+          schwester,
+          hubEnd,
+          refRow("Sage ↔ Rezeptbuch (Hub ↔ Endknoten)", sage, rezept),
+          refRow("Tresor ↔ BookLedgerPro (fern)", tresor, blp),
+        ];
+
+        // 5) Freigabe-Bedingung: Schwestern verwandt UND über Hub↔Endknoten,
+        //    Hub↔Endknoten NICHT verwandt — unter v2 genauso wie unter v1.
+        var ordnungV1 = schwester.v1 > hubEnd.v1;
+        var ordnungV2 = schwester.v2 > hubEnd.v2;
+        var erhalten = ordnungV1 && ordnungV2 && schwester.v2_verwandt && !hubEnd.v2_verwandt;
+        SbkimUI.setStatus("04_match", erhalten ? "ok" : "warn", erhalten ? "v2 erhält Ordnung" : "v2 prüfen");
+        return {
+          verfahren: "v2-Kandidat aus " + corpus.length + " breit gestreuten Texten (L2-Mittel, re-normiert)",
+          literalOben: "vollständiges Float32Array-Literal steht im Log darüber (kopierfertig)",
+          referenzFaelle: tabelle,
+          ordnungErhalten: {
+            schwesterUeberHubEnd_v1: ordnungV1,
+            schwesterUeberHubEnd_v2: ordnungV2,
+            schwesterVerwandt_v2: schwester.v2_verwandt,
+            hubEndNichtVerwandt_v2: !hubEnd.v2_verwandt,
+            freigabeReif: erhalten,
+          },
+          schwelle: "RELATEDNESS_MIN = " + min,
+          hinweis: "Reine Messung — setzt KEINE Konstante. Bei 'freigabeReif:true' kann das " +
+            "Literal bewusst als RELATEDNESS_CENTER netzweit gesetzt werden (SIGNAL §11.6). " +
+            "Erster Klick lädt Modul 03 (~30 MB einmalig); mehrfach klicken bestätigt Stabilität.",
+        };
+      });
+
       SbkimUI.addButton("04_match", "Ähnlich: Käsekuchen vs. Käsetorte (> 0.92)", async function () {
         var vecs = await SbkimEmbedding.embedPassageBatch(["Käsekuchen", "Käsetorte"]);
         var score = SbkimMatch.match(vecs[0], vecs[1]);
