@@ -105,13 +105,14 @@
   async function sageQueryNode(nodeId, text) {
     try {
       if (!window.SbkimAnastomose || typeof window.SbkimAnastomose.queryNostr !== "function") return [];
-      // Pflege 2026-06-28: die Live-Frage ist nur eine BESTE-MÜHE-Beigabe. Modul 22
-      // hält die lokalen Knoten-Treffer NICHT mehr dahinter zurück (UX-Boden
-      // LIVE_NODE_SOFT_MS) — deshalb darf der Timeout kurz sein. 12 s: ein WARMER
-      // Nachbar antwortet in Sekunden; ein kalter (erst-Laden des Embedding-Modells)
-      // verpasst diese Runde, das ist ok (fail-soft, lokaler Treffer bleibt). KEIN
-      // 5-Min-Hänger mehr, der die ganze Suche blockiert.
-      var res = await window.SbkimAnastomose.queryNostr(nodeId, text, { timeoutMs: 12000 });
+      // 5 min OBERGRENZE — bewusst großzügig (Klaus 2026-06-28): das erste, KALTE
+      // Laden des Embedding-Modells beim Nachbarn (~30 MB, einmalig pro Gerät) kann
+      // auf schwachem Netz / langsamem Tablet realistisch bis ~5 min dauern; danach
+      // (warm) kommt die Antwort in Sekunden. Das blockiert die Suche NICHT mehr:
+      // Modul 22 zeigt die lokalen Knoten-Treffer sofort und reicht diese Live-
+      // Antwort progressiv nach, sobald sie kommt (onLive). Die Frist löst sofort
+      // aus, wenn die Antwort da ist; sie wartet nur so lange, wie der Nachbar braucht.
+      var res = await window.SbkimAnastomose.queryNostr(nodeId, text, { timeoutMs: 300000 });
       if (res && res.outcome === "answered" && Array.isArray(res.results)) return res.results;
       return [];
     } catch (e) {

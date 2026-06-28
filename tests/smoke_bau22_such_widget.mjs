@@ -404,23 +404,44 @@ async function run() {
   eq("Probe 21: Knoten-Suche → semantisch", "semantisch", res.mode);
   eq("Probe 21: Quelle knoten", "knoten", res.treffer[0].source);
 
-  // ---- Probe 21b: hängende Live-Frage → UX-Boden liefert lokale Knoten-Treffer ----
-  // Regression-Schutz (2026-06-28): eine nie-auflösende queryNode darf die Suche
-  // NICHT blockieren. Vor dem Fix wartete die Knoten-Suche bis zu 5 min und zeigte
-  // nichts; jetzt kommen nach LIVE_NODE_SOFT_MS die lokalen Treffer (fail-soft).
+  // ---- Probe 21b: hängende Live-Frage blockiert die Suche NICHT (lokale Treffer sofort) ----
+  // Regression-Schutz (2026-06-28): vor dem Fix wartete die Knoten-Suche bis zu
+  // 5 min und zeigte nichts. Jetzt kommen die lokalen Treffer sofort; eine nie-
+  // auflösende queryNode wird im Hintergrund gefeuert, blockiert aber nichts und
+  // liefert (mangels Antwort) auch nichts über onLive nach.
   const NODE_CORPUS_LIVE = [
     { label: "Mein-Mixarium", text: "Cocktails Drinks", passageVec: new Float32Array(384),
       anchorId: "https://mix", nodeId: "node-mix-1" },
   ];
   mountMatch("treffer");
   let hangCalled = false;
+  let hangDelivered = null;
   await W.init({ areas: { app: false, knoten: true, internet: false }, nodeCorpus: NODE_CORPUS_LIVE,
     richter: false, queryNode: function () { hangCalled = true; return new Promise(function () {}); } });
-  res = await W.search("cocktail");
+  res = await W.search("cocktail", function (rows) { hangDelivered = rows; });
   eq("Probe 21b: hängende Live-Frage blockiert nicht → semantisch", "semantisch", res.mode);
-  eq("Probe 21b: lokaler Knoten-Treffer trotzdem da", "1", String(res.treffer.length));
+  eq("Probe 21b: lokaler Knoten-Treffer sofort da", "1", String(res.treffer.length));
   eq("Probe 21b: Quelle knoten", "knoten", res.treffer[0].source);
-  eq("Probe 21b: Live-Frage wurde versucht", "true", String(hangCalled));
+  eq("Probe 21b: Live-Frage im Hintergrund versucht", "true", String(hangCalled));
+  eq("Probe 21b: nichts nachgereicht (hängt)", "null", String(hangDelivered));
+
+  // ---- Probe 21c: späte Live-Antwort wird über onLive NACHGEREICHT ----
+  // Beweist den progressiven Pfad: lokale Treffer sofort, Live-Antwort des Knotens
+  // kommt (auch verzögert) und wird per onLive zum Nachmischen geliefert.
+  mountMatch("treffer");
+  let delivered = null;
+  await W.init({ areas: { app: false, knoten: true, internet: false }, nodeCorpus: NODE_CORPUS_LIVE,
+    richter: false, queryNode: function () {
+      return new Promise(function (r) { setTimeout(function () {
+        r([{ label: "Live-Treffer vom Knoten", score: 0.91, anchorId: "https://mix/live" }]); }, 20); });
+    } });
+  res = await W.search("cocktail", function (rows) { delivered = rows; });
+  eq("Probe 21c: lokaler Treffer sofort (vor Live)", "1", String(res.treffer.length));
+  await new Promise(function (r) { setTimeout(r, 80); });   // auf die späte Live-Antwort warten
+  eq("Probe 21c: Live-Antwort nachgereicht", "Live-Treffer vom Knoten",
+     String(delivered && delivered[0] && delivered[0].label));
+  eq("Probe 21c: nachgereichter Treffer als live markiert", "true",
+     String(!!(delivered && delivered[0] && delivered[0].live)));
 
   // ---- Probe 22: Internet-Bereich ohne SearXNG-URL → webLink (neuer Tab) ----
   await W.init({ areas: { app: false, knoten: false, internet: true } });
