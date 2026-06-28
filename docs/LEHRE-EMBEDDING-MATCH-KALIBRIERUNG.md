@@ -6,6 +6,83 @@
 > haben. **Doku für nachfolgende Bauten** — verbindlich zu lesen, bevor jemand die
 > Match-Schwelle (`PROVIDER_MIN_MATCH = 0.80`) oder Modul 04 anfasst.
 
+## Stand 2026-06-28 (tiefe Nacht) — Kalibrier-Abschluss: das „verwandt"-Maß qualifiziert sich für den KI-Richter (Browser-Messreihe + Klaus' Richtungs-Entscheid)
+
+**Kurz:** Eine vierteilige Browser-Messreihe (Klaus' Galaxy-Tab, `tests/manual_check.html`
+Panel 04, mit echten transformers.js-Inhalts-Vektoren) hat die Frage „kann der **gratis,
+server-lose** zentrierte Cosinus die Knoten zuverlässig in *verwandt/unverwandt* trennen?"
+**empirisch verneint** — und damit den `RELATEDNESS_CENTER`-v2-Rollout aus
+`BRIEF_KALIBRIERUNG_ROLLOUT_DREI_KNOTEN.md` (Schritt 1) **gestoppt, bevor** irgendeine
+netzweite Konstante verteilt wurde. **Entscheid Klaus (2026-06-28):** der Cosinus bleibt der
+gratis/offline **„verbunden"-Vorfilter** (ehrliche **Rangfolge**, kein Wahrheits-Stempel),
+das echte **„verwandt"** liefert der **KI-Richter** (Modul 04 `hybridMatch`, opt-in/BYOK) —
+zurück zur Ur-Idee **„Semantisches Bidirektionales KI-Matching"**. Evolutions-Klausel
+gelebt: *der bessere Weg qualifiziert sich, nicht das Dogma.*
+
+### Die Messreihe (reproduzierbar, Panel 04)
+
+Vier Knöpfe, je reine Messung (setzen **keine** Konstante):
+
+1. **`RELATEDNESS_CENTER v2 messen`** → v2-Kandidat-Literal aus 32 breit gestreuten Texten
+   ist **stabil** über mehrere Läufe, aber `freigabeReif: false`: unter den gemittelten
+   Inhalts-Vektoren liegen verwandte UND unverwandte Paare alle bei ~0.70 zentriert
+   (`hubEndNichtVerwandt_v2: false`). Der v2-Center **verbessert die Trennung nicht**.
+2. **`SCHWELLEN-ANALYSE` (volle Matrix v1+v2)** → **keine** einzige Schwelle trennt: bei v1
+   `min(verwandt) 0.8014 < max(unverwandt) 0.8149`, bei v2 `0.7728 < 0.7782` — **negative
+   Lücke = Überlappung**. Konkret schlägt das **unverwandte** `tresor↔point` (0.8149) das
+   **verwandte** `rezept↔mix` (0.8014). Kein Tuning rettet das.
+3. **`KALIBRIER-BODEN`** → Kontrast-Beleg: **einzelne** Zufallstexte zentriert mean **−0.14**
+   (max +0.04), aber **gemittelte** Domänen-Vektoren ~0.70. ⇒ **Das Mitteln mehrerer
+   Schnipsel zu einem Knoten-Vektor bläht den zentrierten Cosinus auf** (Anisotropie + die
+   Mittelung schiebt alle Domänen-Vektoren zur gemeinsamen Richtung).
+4. **`VERFAHREN-VERGLEICH`** (mitteln vs. Schnipsel-Max vs. Schnipsel-Mittel) → bestätigt die
+   Ursache und findet die Grenze des Gratis-Wegs:
+
+   | Verfahren | min(verwandt) | max(unverwandt) | Lücke | trennt? |
+   |---|---|---|---|---|
+   | **mitteln** (heute, Bau 04.E) | 0.8014 | 0.8149 | −0.0135 | nein |
+   | **Schnipsel-Max** | 0.7303 | 0.7413 | −0.0110 | nein (ein einzelner Zufalls-Treffer hebt Fremde) |
+   | **Schnipsel-Mittel** | 0.5617 | 0.5429 | **+0.0188** | **ja** (Schwelle ~0.55) |
+
+   `Schnipsel-Mittel` (Schnipsel **nicht** mitteln, sondern alle Paar-Cosinus mitteln) trennt
+   die 3 echten Verwandt-Paare sauber auf die Plätze 1–3 — aber die **Marge ist winzig
+   (0.0188)** an nur 3 Verwandt-Paaren / 7 synthetischen Knoten / 4 kurzen Schnipseln.
+
+### Warum nicht der freie Schnipsel-Mittel-Weg (jetzt)
+
+Zwei Gründe, **dokumentiert statt stillschweigend** umgangen:
+- **Dünne, ungesicherte Marge** (0.0188) — Hinweis, kein Stabilitäts-Beweis bei echtem Maßstab.
+- **Datenvertrag-Eingriff:** das Raum-Badge (Modul 23) vergleicht **Spore↔Spore**, und eine
+  Spore trägt **einen** gemittelten `domainVector`, nicht die Schnipsel. „Schnipsel-Mittel"
+  netzweit hieße: Schnipsel-Vektoren in die Spore legen (Modul 02) **+ alle Knoten neu
+  signieren**. Großer Eingriff für ein **reines Anzeige-Maß**.
+
+Der `Schnipsel-Mittel`-Befund bleibt als **Lead** festgehalten (falls das „verwandt" später
+doch gratis werden soll — dann erst an mehr echten Knoten absichern).
+
+### Konsequenz (verbindlich, netzweit)
+
+- **`RELATEDNESS_CENTER` bleibt v1.** Der v2-Kandidat ist **verworfen** (durch eigene
+  Freigabe-Prüfung gefallen). **Keine** netzweite Konstante geändert ⇒ **kein** SIGNAL/
+  Rollout nötig (Brief-Schritte 2+3 entfallen, weil keine neue Konstante).
+- **`PROVIDER_MIN_MATCH = 0.80` unverändert** (Andock-Boden, Modul 05; war nie Teil dieses
+  Entscheids).
+- **„verbunden" (grob) = roher/zentrierter Cosinus**, gratis/offline, ehrliche **Rangfolge**
+  (Back-Paar oben, blp↔mix unten) — **kein** Ja/Nein-Wahrheits-Stempel.
+- **„verwandt" (genau) = KI-Richter** (`hybridMatch`, opt-in, BYOK, schon im Such-Widget +
+  Pinnwand). Bidirektionales KI-Matching nach **Bedeutung** — die Rolle, für die der rohe
+  e5-Cosinus prinzipiell zu schwach ist (Form ≠ Bedeutung).
+- **Reine Anzeige bleibt reine Anzeige:** `relatedness()` gatet weiter **nichts**; der
+  0.80-Andock-Riegel ist unberührt. Das Zwei-Maß-UI (Bau 22e/23) bleibt gültig — nur die
+  Lesart ist jetzt ehrlich geschärft (Cosinus = Rangfolge, KI-Richter = Wahrheit).
+
+### Mess-Instrumente (bleiben in Panel 04, reproduzierbar)
+`RELATEDNESS_CENTER v2 messen` · `SCHWELLEN-ANALYSE` · `VERFAHREN-VERGLEICH` — alle reine
+Messung, dokumentieren die obige Kette. Cache-Bust an den Modul-03/04-Skript-Tags
+(`?v=kal-20260628`) sorgt für frische Module beim Browser-Lauf.
+
+---
+
 ## Stand 2026-06-28 (Abend) — Kalibrierung abgeschlossen: 0.80 bleibt Andock-Boden, zentrierter Cosinus als Verwandtschafts-Score (Bau 04.E)
 
 **Entscheidung Klaus 2026-06-28:** „zentrierten Cosinus jetzt als Bau bauen (Modul 04)".

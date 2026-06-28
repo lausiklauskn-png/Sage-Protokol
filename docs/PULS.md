@@ -119,6 +119,42 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 (tiefe Nacht) · Kalibrier-Abschluss: „verwandt" → KI-Richter (Ur-Vision), v2-Center verworfen
+
+**Rolle:** Bau/Diagnose (Branch `claude/kalibrierung-rollout-drei-knoten-p1e3i3`).
+Brief: `BRIEF_KALIBRIERUNG_ROLLOUT_DREI_KNOTEN.md` (Schritt 1 BLOCKER = Klaus' Panel-04-Messung). Freibrief galt.
+
+**Getan (Messreihe im Browser, Klaus' Galaxy-Tab, mit echten Inhalts-Vektoren):**
+- Drei Mess-Knöpfe in Panel 04 gebaut/gemergt (reine Messung, setzen keine Konstante):
+  `RELATEDNESS_CENTER v2 messen` (PR #485 vorhanden) → ergänzt um **`SCHWELLEN-ANALYSE`**
+  (PR #493, volle Matrix v1+v2) + **`VERFAHREN-VERGLEICH`** (PR #494, mitteln/Schnipsel-Max/
+  Schnipsel-Mittel). Cache-Bust an Modul-03/04-Skript-Tags (PR #492) — Browser lud sonst
+  altes `03_embedding.js` ohne `embedContentVector`.
+- **Befund:** v2-Center `freigabeReif: false`; **keine** Schwelle trennt verwandt/unverwandt
+  (Überlappung: unverwandt `tresor↔point` 0.81 > verwandt `rezept↔mix` 0.80, sowohl v1 als
+  v2). Ursache: **Mitteln** der Schnipsel zu einem Domänen-Vektor bläht den zentrierten
+  Cosinus auf (einzelne Texte zentriert ~−0.14, gemittelt ~0.70). `Schnipsel-Mittel` trennt
+  zwar (Lücke +0.0188 @ ~0.55), aber **dünne Marge** + bräuchte **Schnipsel-Vektoren in der
+  Spore** (Datenvertrag-Eingriff Modul 02).
+
+**Klaus' Richtungs-Entscheid (2026-06-28):** Cosinus bleibt der gratis/offline **„verbunden"-
+Vorfilter** (ehrliche Rangfolge, kein Wahrheits-Stempel); das echte **„verwandt"** liefert
+der **KI-Richter** (Modul 04 `hybridMatch`, opt-in/BYOK) — zurück zur Ur-Idee „Semantisches
+Bidirektionales KI-Matching" (Evolutions-Klausel: der bessere Weg qualifiziert sich). Voll
+dokumentiert in [`docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`](LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md)
+§ „Stand 2026-06-28 (tiefe Nacht)".
+
+**Konsequenz:** `RELATEDNESS_CENTER` bleibt **v1** (v2 verworfen). **Keine netzweite
+Konstante geändert** ⇒ **kein** SIGNAL/Rollout (Brief-Schritte 2+3 entfallen — sie setzten
+einen neuen Center voraus). `PROVIDER_MIN_MATCH = 0.80` unverändert. Reine Anzeige bleibt
+reine Anzeige (0.80-Andock-Riegel unberührt).
+
+**Offen / nächster Schritt:** (1) Optional: das „verwandt"-Badge (Modul 22/23) auf den
+KI-Richter-Pfad umstellen (opt-in) — eigene Bau-Sitzung, sicherheits-/UX-sensibel. (2)
+`Schnipsel-Mittel`-Lead an mehr echten Knoten gegenprüfen, falls „verwandt" doch gratis
+werden soll. (3) Hygiene: netzweite md5-Konsistenz `04_match.js` (unverändert v1) als reiner
+Drift-Check. **Browser-Sichttest der drei Mess-Knöpfe lief grün (Klaus 2026-06-28).**
+
 ## 2026-06-28 (Nacht) · „Wählen"-UI Folge: Strang D Mess-Knopf + Strang C als blockiert dokumentiert
 
 **Rolle:** Pflege/Bau (Branch `claude/relatedness-badge-rollout-84fg17`).
