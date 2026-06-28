@@ -105,10 +105,12 @@
   async function sageQueryNode(nodeId, text) {
     try {
       if (!window.SbkimAnastomose || typeof window.SbkimAnastomose.queryNostr !== "function") return [];
-      // 25 s: großzügig genug, dass ein „kalt" geöffneter Nachbar sein
-      // Embedding-Modell (~30 MB einmalig) laden + den Korpus bauen kann,
-      // bevor er antwortet. Danach (warm) kommt die Antwort viel schneller.
-      var res = await window.SbkimAnastomose.queryNostr(nodeId, text, { timeoutMs: 25000 });
+      // 5 min OBERGRENZE: die Frist löst SOFORT aus, sobald die Antwort kommt —
+      // sie hängt nur so lange, wie der Nachbar wirklich braucht. Aus Erfahrung
+      // dauert das erste, KALTE Laden des Embedding-Modells (~30 MB, einmalig
+      // pro Gerät/Browser, danach gecacht) realistisch bis zu ~5 min auf dem
+      // Tablet. Danach (warm) kommt die Antwort in Sekunden. Fail-soft bleibt.
+      var res = await window.SbkimAnastomose.queryNostr(nodeId, text, { timeoutMs: 300000 });
       if (res && res.outcome === "answered" && Array.isArray(res.results)) return res.results;
       return [];
     } catch (e) {
