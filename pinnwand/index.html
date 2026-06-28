@@ -265,7 +265,7 @@
     </div>
     <div class="sort-ctl">
       <button id="semantic" class="ghost">🧠 Antworten nach Bedeutung sortieren</button>
-      <span class="status" id="semstatus">aus — sortiert nach Ankunft (lädt Modell ~30&nbsp;MB beim Einschalten)</span>
+      <span class="status" id="semstatus">aus — sortiert nach Ankunft (Bedeutungs-Rangfolge lädt Modell ~30&nbsp;MB beim Einschalten)</span>
     </div>
     <div class="sort-ctl judge-ctl">
       <select id="judgeprov">
@@ -315,8 +315,12 @@
     entscheidet und nicht die Hülle (gleiche Sprache/Stil) — Hintergrund:
     Anisotropie-Befund, <code>docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md</code>.
     Hier mit lokal wachsendem Referenz-Schwerpunkt (die netzweite Konstante
-    liefert erst Bau „Modul&nbsp;04 Whitening"). Der <b>KI-Richter</b> (⚖️) ist
-    eine zweite, <b>optionale</b> Stufe: er versteht <i>Absicht/Verneinung</i>
+    liefert erst Bau „Modul&nbsp;04 Whitening"). <b>Ehrlich:</b> dieser Cosinus
+    ist eine <b>Rangfolge</b> (was näher dran ist, steht oben) — <i>kein</i>
+    Verwandt-/Unverwandt-Urteil; die Messreihe (LEHRE-Doc) zeigt, dass der
+    gratis Cosinus verwandt von unverwandt nicht zuverlässig trennt. Das echte
+    Urteil liefert der <b>KI-Richter</b> (⚖️), eine zweite, <b>optionale</b>
+    Stufe: er versteht <i>Absicht/Verneinung</i>
     („alkoholfrei = KEIN Alkohol"), was der Vektor nicht kann. Drei Stufen, keine
     erzwingt Bezahlung: <b>(1)</b> gratis &amp; überall — lokales Embedding;
     <b>(2)</b> gratis, gerät-hungrig — KI im Browser (WebLLM, Modell-Wahl
@@ -646,7 +650,7 @@ async function enableSemantic() {
     if (!EMB() || typeof EMB().init !== 'function') throw new Error('Modul 03 nicht geladen');
     await EMB().init();
     semanticOn = true;
-    st.className = 'status on'; st.textContent = 'an — Antworten nach Bedeutung (Zahl = Nähe zur Frage)';
+    st.className = 'status on'; st.textContent = 'an — Bedeutungs-Rangfolge (Zahl = Nähe zur Frage, kein Verwandt-Urteil — das liefert der ⚖️ KI-Richter)';
     $('semantic').textContent = '🧠 Bedeutungs-Sortierung aus';
     for (const view of qViews.values()) { await embedQuestion(view); await resort(view); }
   } catch (e) {
