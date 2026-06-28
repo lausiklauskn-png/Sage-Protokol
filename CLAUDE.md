@@ -192,6 +192,14 @@ wurde.
 >   umkehrbar über einen normalen Merge hinaus, mehrere gleich gute Wege)
 >   ODER wenn Klaus ausdrücklich vorher draufschauen will. Klaus' Sichttest
 >   im Browser bleibt davon unberührt (headless ersetzt ihn nicht).
+> - **Netzweit für ALLE Repos (Klaus 2026-06-28):** dieser Selbst-Merge-
+>   Freibrief gilt ausdrücklich **nicht nur für Sage**, sondern für **jedes
+>   Repo von Klaus** — Mixarium, Rezeptbuch, Mein-Tresor, Jasons-Tresor,
+>   SB-KIMTool-Point, BookLedgerPro, family-project. Klaus' Wort: „merke ab
+>   jetzt jedes Repo selbständig mergen, wenn es angebracht und sinnvoll ist,
+>   auch Mixarium und andere — ich will keins mehr übersehen." Kein
+>   Liegenlassen offener eigener PRs mehr; gleiche Grenze (echtes Zweifeln →
+>   erst fragen). Die einzelnen Repo-CLAUDE.md sind 2026-06-28 nachgezogen.
 
 - **Selbstständig handeln und merken erlaubt.** Eine Sitzung darf
   eigenständig entscheiden, eine Lehre festhalten (auch durch Pflege
