@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.1",
   "schemaVersion": "1",
-  "lastUpdated": "2026-06-27",
+  "lastUpdated": "2026-06-29",
   "branch": "claude/semantic-agent-network-Y03Vg",
   "endknoten": [
     {
@@ -318,6 +318,48 @@
         "16"
       ],
       "kurz": "Floating Mini-Panel im Eruda-Stil als Endknoten-Standard für Modul-15-+-16-Render-Schicht. Vier-Slot-Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) als finale Form. Self-mountend in <body>, Drag via Pointer-Events (5 px Threshold, freies Drag mit Pixel-Präzision, Viewport-Clamp), X-Schließen + vier Wiederherstellungs-Pfade (show()/5-Klick-Geste/Doku-Knopf/Tab-Reload bei rememberHidden:false), localStorage-persistierte Visible + Position (UX-only, kein Protokoll), RAM-only VERKEHR-FIFO 10. **Event-Bus-Schema** mit fünf Custom-Events auf window: sbkim:alive (Modul 02 dispatcht nach getOrCreateIdentity einmalig), sbkim:handshake (Modul 05 dispatcht in handshake/receiveHandshake-Wrappern), sbkim:postmessage (Modul 15 Sub b dispatcht in recordPostMessageEntry für VALID_OPS), sbkim:fremd-alert (Modul 15 Sub e dispatcht in recordEntry nach Buffer-Push), sbkim:siegel-certified (Modul 16 dispatcht am Ende von init() wenn isCertified===true). Modul 17 lauscht passiv auf window, kennt keine Modul-Referenz. Anti-Greenwashing pro Slot binär für SIEGEL (KEIN DOM-Render ohne isCertified()===true, doppelte Defensive-Prüfung) und transparent für LEBT/VERKEHR/FREMD (grau wenn kein Event aktiviert). Modal-Bridge via Proxy-DOM-Element (Option 1 aus Brief): Widget legt unsichtbare Spans #lamp-fremd + #sbkim-siegel-badge in seinem Inneren an; Modul 15/16 attachen ihre Click-Handler dort, deshalb MUSS SbkimWidget.init() VOR SbkimMembrane.init()/SbkimSiegel.init() im Endknoten-Andocker stehen. LEBT-Modal (Uptime-Counter + Modul-02-Init-Status + nodeId-Präfix 12 Zeichen) und VERKEHR-Modal (Mini-Log Tabelle [Zeit, Quelle, Richtung, Decision]) baut Modul 17 selbst. Modul-15-+-16-Backends UNVERÄNDERT. Sage-Page-Pfad (Navleisten-Lampen + Siegel-Badge) bleibt erhalten. Endknoten-Einbau auf drei Zeilen reduziert (Modul-Datei-Kopie + <script>-Tag + EIN SbkimWidget.init({allowedOrigins, repoUrl})-Aufruf). KEINE benannten Error-Klassen (Render-Schicht, fail-soft via console.warn). KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump (nicht protokoll-aktiv). Bau-Sitzung 17 vom 2026-05-25: src/modules/17_floating_widget.js angelegt mit Standalone-CSS-Injektion (<style>-Element in <head>) + IIFE + Public Surface init/show/hide/isVisible/getPosition + _meta-Read-Anker. DispatchEvent-Hooks additiv in Modul 02/05/15/16 (vier Code-Stellen, Selbstcheck-Zeilen UNVERÄNDERT). ZERTIFIKAT_ASPEKTE-Eintrag in Modul 16 ergänzt (Konvention CLAUDE.md § Sicherheits-Module pflegen Aspekte). Panel 17 in tests/manual_check.html mit 10 Test-Knöpfen + Mock-Modul-16-Knopf + Setup + Selbstcheck-Hinweis. Headless-Smoke tests/smoke_bau17_floating_widget.mjs 19/19 grün. Modul-15-Smoke 31/31 grün (Regression). node --check für alle fünf Module + alle 13 inline-script-Blöcke in manual_check.html grün. Brief Bau-Sitzung 17: docs/sessions/BRIEF_BAU_17_FLOATING_WIDGET.md."
+    },
+    {
+      "id": "20",
+      "name": "Schlüssel-Safe",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-06-20 (Spec PR #315 + Bau-Sitzung). Headless-Smoke tests/smoke_bau20_safe.mjs 19/19 grün. Browser-Sichttest der Modal-UI ausstehend (wartet auf Klaus).",
+      "abhaengig": [
+        "01",
+        "02"
+      ],
+      "kurz": "Lokal verschlüsselter Safe für die SBKIM-Identität (nodeId + privater Schlüssel + Spore). Krypto-Kern wiederverwendet Modul 02 exportBackup/importBackup (PBKDF2-SHA256 ≥600k + AES-GCM-256), Store sbkim_safe über Modul 01 ensureStore. Shamir-Recovery 2-von-3 über das Passwort (GF(256)). Öffnet auf Abruf (SbkimSafe.open(), autoPrompt Default false — App startet normal). Name bewusst 'Safe' (nicht 'Tresor'). Nur Identität/Schlüssel, kein PII, nie übers Netz."
+    },
+    {
+      "id": "21",
+      "name": "Spracheingabe",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-06-21 (Schritt 1 des Such-Werkzeugs). Headless-Smoke tests/smoke_bau21_spracheingabe.mjs 45/45 grün. Browser-Sichttest (Live-Mic + EU-Engine) wartet auf Klaus.",
+      "abhaengig": [],
+      "kurz": "Input-agnostische Sprach-Eingabe-Schicht. Dual-Engine: Browser Web-Speech + EU Cloud Speech-to-Text (eu-speech.googleapis.com, BYOK), mehrsprachig DE/EN/RU. Konsequent fail-soft (kein Mic/Key/Netz → Textfeld bleibt, speechErrorHint, kein Throw außer InvalidEuPolicyError). EU-Politik per Knoten: bindend (nur EU-Engine, z.B. BookLedgerPro) ↔ frei (Default, EU wählbar). Komponiert vom Such-Widget (Modul 22)."
+    },
+    {
+      "id": "22",
+      "name": "Such-Widget",
+      "score": "stub",
+      "siegel": "Code-Stub seit 2026-06-21, in vielen Folge-Bauten gereift. Headless-Smoke umfangreich grün (smoke_bau22 257/257, smoke_bau22e_waehlen 45/45, Standalone-Drift-Guard 46/46). ✅ Browser-Sichttest mehrfach GRÜN (Klaus 2026-06-21/22): Blase + semantische Treffer (Membran 0.88), ziehbares Panel + Persistenz, KI-Such-Brücke (eingefügte ChatGPT-Antwort live geparst + semantisch sortiert). Verwandt·KI + Wählen-UI gebaut. KI-Schlüssel-live + Wählen-Umschalter-Sichttest noch offen.",
+      "abhaengig": [
+        "03",
+        "04",
+        "21"
+      ],
+      "kurz": "Frei bewegliches Floating-Such-Tool (🔍-Blase → Eingabe-Panel), self-mountend in <body>. Semantische, server-lose Bedeutungs-Suche über drei getrennt wählbare Bereiche: App-Korpus / verbundene Knoten (rein lokal) / Internet (Pilz-Egress: KI-Such-Brücke BYOK oder neuer Tab). Komponiert Sprache (21) + Vorfilter/Richter (04 queryLocal/hybridMatch). KI-Richter opt-in (Default aus, gratis = Embedding-Cosinus). Wählen-UI verbunden↔verwandt + verwandt·KI: gratis Cosinus = Rangfolge, KI-Richter = Urteil. Reine Anzeige, gatet nichts (PROVIDER_MIN_MATCH 0.80 unberührt). EU-Politik frei/bindend. Drag/Self-Mount/X aus Modul 17 wiederverwendet (17 unangetastet)."
+    },
+    {
+      "id": "23",
+      "name": "Rendezvous (gemeinsamer Raum)",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-06-28 (Bau-Sitzung). Headless-Smoke tests/smoke_bau23_rendezvous.mjs 55/55 + smoke_bau23_rendezvous_ui.mjs 32/32 grün, Drift-Guard byte-1:1. ✅ LIVE Cross-App-Sichttest GRÜN (Klaus 2026-06-28): Sage ↔ Mein-Mixarium beidseitig '✓ ANDOCK ETABLIERT' über das echte Relais (server-loser Live-Cross-Knoten-Handshake); Verwandtschafts-Badge im Raum GRÜN. Die Adress-Wand ist gelöst.",
+      "abhaengig": [
+        "02",
+        "05"
+      ],
+      "kurz": "Löst die Adress-Wand (committete nodeId ≠ lebende nodeId): lebende Knoten treffen sich im geteilten Nostr-Tag sbkim-rdv, heften auf Nutzer-Aktion ihre lebende Visitenkarte (echte Spore) ans Brett; ein Suchender liest die Karten und handshaket die LEBENDE ID. DOM-frei + fail-soft, reiner Tool-Code über die öffentlichen Flächen von Modul 05 (handshake/listenNostr) + 05b (publish/subscribe) + 02 (getOwnSpore) — Kern-Module unangetastet. Verfassungstreu: nutzer-ausgelöst, keine Pulsation, init() baut nichts auf (Empfangsmodus). In jede App kopieren (lebende Identität pro Origin getrennt). Verwandtschafts-Badge im Raum (reine Anzeige, 0.80-Riegel unberührt)."
     }
   ],
   "schutzBacklog": [
