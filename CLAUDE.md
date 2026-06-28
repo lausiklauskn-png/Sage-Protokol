@@ -200,6 +200,15 @@ wurde.
 >   auch Mixarium und andere — ich will keins mehr übersehen." Kein
 >   Liegenlassen offener eigener PRs mehr; gleiche Grenze (echtes Zweifeln →
 >   erst fragen). Die einzelnen Repo-CLAUDE.md sind 2026-06-28 nachgezogen.
+> - **Erst mergen, dann prüft Klaus auf der Live-Seite (Klaus 2026-06-28):**
+>   manche Repos kann Klaus **erst nach dem Merge auf `main`** prüfen — GitHub
+>   Pages deployt von `main`, der Browser-Sichttest am Tablet läuft also auf der
+>   live-deployten Seite. Darum **nicht** auf Klaus' Browser-Test warten, bevor
+>   getestete (Headless/Smoke/Drift-Guard grün), abgegrenzte, nicht-zweifelhafte
+>   Änderungen gemergt werden — **erst mergen, dann sieht Klaus es**. Findet er
+>   danach etwas, ist das ein Folge-Fix, kein Grund, den Merge vorher
+>   aufzuhalten. (Der Browser-Sichttest ersetzt den Headless-Beweis nicht und
+>   umgekehrt — beide bleiben, nur in dieser Reihenfolge.)
 
 - **Selbstständig handeln und merken erlaubt.** Eine Sitzung darf
   eigenständig entscheiden, eine Lehre festhalten (auch durch Pflege
