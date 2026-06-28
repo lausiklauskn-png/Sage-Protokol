@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a0c14" />
+  <title>SBKIM-Verbinden — Beispiel</title>
+  <style>
+    :root { --accent: #6ee7d3; --line: #2a3340; }
+    body { margin: 0; background: #0a0c14; color: #eef2f8;
+      font: 16px/1.6 system-ui, sans-serif; padding: 2rem; }
+    main { max-width: 640px; margin: 0 auto; }
+    h1 { color: var(--accent); font-size: 1.3rem; }
+    code { background: rgba(255,255,255,.06); padding: .1em .35em; border-radius: 4px; }
+    .hint { color: #9aa7b6; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>SBKIM-Verbinden — Minimal-Beispiel</h1>
+    <p>Diese Seite lädt das Bundle und ruft <code>SbkimConnect.init(...)</code> auf.
+       Unten links erscheint der Knopf <b>„🌐 Mit dem Netz verbinden"</b>.</p>
+    <p class="hint">Hinweis: Der echte Relais-Handschlag läuft nur in einem echten
+       Browser über <code>wss://relay.family-projekt.de</code>; aus einer Sandbox
+       ist das Relais nicht erreichbar. Der erste „Verbinden"-Klick lädt einmalig
+       das ~30-MB-Embedding-Modell (für die Identität).</p>
+  </main>
+
+  <!-- SBKIM-Verbinden-Bundle — Reihenfolge ist wichtig -->
+  <script src="modules/01_storage.js"></script>
+  <script src="modules/02_spore.js"></script>
+  <script src="modules/03_embedding.js"></script>
+  <script src="modules/04_match.js"></script>
+  <script src="modules/05_anastomose.js"></script>
+  <script type="module" src="modules/05b_nostr_relay.js"></script>
+  <script src="modules/23_rendezvous.js"></script>
+  <script src="modules/23_rendezvous_ui.js"></script>
+  <script src="sbkim-connect.js"></script>
+  <script>
+    SbkimConnect.init({
+      dbSuffix: "sbkim_beispiel",
+      nodeName: "Beispiel-Knoten",
+      endpoint: "https://example.org/beispiel/",
+      domain: "beispiel-domaene",
+      domainDescription: "Eine Beispiel-App, die zeigt, wie man sich mit dem SBKIM-Mycel verbindet. Sie demonstriert den gemeinsamen Raum, den Handshake und den öffentlichen Verbinden-Knopf.",
+      domainKeywords: ["Beispiel", "Demo", "SBKIM", "Mycel", "Verbinden"],
+    });
+  </script>
+</body>
+</html>
