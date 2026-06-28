@@ -19,17 +19,26 @@
   "use strict";
 
   var SAGE_KNOTEN_KORPUS = [
+    // nodeId (Bau Query-über-Relais 2026-06-28): ermöglicht die LIVE-Cross-
+    // Knoten-Frage übers Relais (Modul 22 queryNode → Modul 05 queryNostr).
+    // Öffentliche Spore-nodeIds aus jedem sbkim/spore.json — kein PII.
     { label: "Mein-Rezeptbuch", anchorId: "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/",
+      nodeId: "uOpUBezUVbOMsVd2C9BkHW80agnLx5tCx_nIRy2KkXg",
       text: "Kochrezepte, Kochen, Essen, Gerichte, Zutaten, Mahlzeiten, Küche, Backen. Verbundener Knoten (verified-match)." },
     { label: "Mein-Mixarium", anchorId: "https://lausiklauskn-png.github.io/Mein-Mixarium/",
+      nodeId: "B7Fke9CYTR1BrC3xOXzEY5q9RuRH8xxHPUuqRHV3utA",
       text: "Cocktails, Drinks, Mocktails, Mixgetränke, Bar, Longdrinks, Aperitif. Verbundener Knoten (verified-match)." },
     { label: "BookLedgerPro", anchorId: "https://lausiklauskn-png.github.io/BookLedgerPro/",
+      nodeId: "MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ",
       text: "Buchhaltung, Belege, Konten, Rechnungen, Umsatzsteuer, EÜR, GoBD, Kostenstellen, Aufträge, verschlüsselt offline-first. Verbundener Knoten (verified-match)." },
     { label: "SB·KIMTool·Point", anchorId: "https://lausiklauskn-png.github.io/SB-KIMTool-Point/",
+      nodeId: "CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY",
       text: "SBKIM-Werkzeuge, Tool-Point, Modul-Sammlung, Observatorium light für Forker, Werkzeugkiste. Verbundener Knoten (verified-match)." },
     { label: "Jasons-Tresor", anchorId: null,
+      nodeId: "E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM",
       text: "Jasons-Tresor-Bibliothek, Tresor, sichere Ablage, geschützte Sammlung. Verbundener Knoten (verified-match)." },
     { label: "Mein-Tresor", anchorId: null,
+      nodeId: "wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0",
       text: "Mein-Tresor-Bibliothek, Tresor, sichere Ablage, geschützte Sammlung, Schwester von Jasons-Tresor. Verbundener Knoten (verified-match)." },
   ];
 
