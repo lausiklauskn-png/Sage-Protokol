@@ -26,6 +26,46 @@ Smoke: `tests/smoke_bau04e_relatedness.mjs` 29/29. Lehre/Tafel:
 `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md` (Stand 2026-06-28 Abend),
 `INTERFACES.md` §0/§1 Modul 04.
 
+## Erweiterung (Klaus 2026-06-28) — diese Erkenntnis AUF DIE SUCHE anwenden
+
+Klaus' Auftrag: die gerade entworfene Erkenntnis **anwenden** — vor allem auf
+das **Such-Werkzeug / die Suchmaschine (Modul 22)**, und bei der **Pinnwand**
+**prüfen, ob sie davon profitiert** (Klaus war unsicher; **Befund dieser
+Brief-Pflege: ja, die Pinnwand sortiert ebenfalls „nach Bedeutung"** — sie nutzt
+`embedQuery`/`embedPassage` + einen `.a-score` (Cosinus) + optionalen
+`.a-judge` (KI-Richter); funktioniert also semantisch sehr ähnlich zur Suche).
+
+**Klaus' Kern-Gedanke (wörtlich sinngemäß):** Beim Suchen braucht es einen
+**Vergleichswert** zwischen *dem, was ich suche* und *dem, was eine
+Internetseite anbietet* — „wie genau stimmt der **Inhalt der Seite** mit meinem
+**Gesuchten** überein?". Wenn dieser Vergleich **schon allein über den Cosinus
+gut funktioniert**, ist **nicht zwingend ein zusätzliches Tool / eine KI nötig** —
+die Einordnung/Sortierung ist schon relativ genau. **Die zwei Schlüsselpunkte,
+an denen die Suche besser wird:**
+
+1. **Der (zentrierte) Cosinus** als Vergleichswert — `relatedness()` über
+   `match()` hinaus liefert ein *ehrliches* „wie nah ist das wirklich".
+2. **Die inhaltsgetreue Vektor-/Sporen-Erzeugung** (`embedContentVector` — der
+   Vektor entsteht aus dem **echten Inhalt** der Seite/des Knotens, nicht aus
+   einer Hüllen-Beschreibung).
+
+Zusammen ergeben sie einen **gratis, KI-freien, schon recht genauen
+Vergleichswert**. Der **KI-Richter bleibt optional** — er ist die *Kür* (für
+Grenzfälle / Erklärtext), nicht die *Pflicht*. Das senkt Kosten + Abhängigkeit
+und macht die Suche server-los/offline stark.
+
+**Konkret für diese Folge-Sitzung — zusätzlich zum Umschalter (unten):**
+- **Modul 22 (Such-Werkzeug):** den **gratis semantischen Pfad als
+  vollwertigen Default** behandeln — Query-Vektor ↔ Treffer-Inhalts-Vektor via
+  (zentriertem) Cosinus als Vergleichswert/Sortierung; KI-Richter ausdrücklich
+  **opt-in**, nicht Voraussetzung. Wo Treffer-Inhalte vorliegen, deren Vektor
+  inhaltsgetreu bilden (`embedContentVector`), nicht aus Titeln/Hüllen allein.
+- **Pinnwand prüfen + ggf. anwenden:** schaut, ob `.a-score` vom rohen auf den
+  **zentrierten** Cosinus gehoben werden soll (ehrlichere Bedeutungs-Sortierung)
+  und ob der Richter dort ebenfalls *opt-in* statt automatisch laufen kann.
+  **Nur anwenden, wenn es dort wirklich besser wird** — Pinnwand-Mechanik (Nostr
+  Q&A-Brett) erst lesen, dann entscheiden (kein Zwang).
+
 ## Aufgabe dieser Sitzung
 
 Einen **Umschalter** dort einbauen, wo Treffer/Knoten angezeigt werden, mit
