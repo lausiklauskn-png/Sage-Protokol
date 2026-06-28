@@ -379,6 +379,7 @@
       return window.SbkimRendezvousUI.init({
         nodeName: "Sage-Protokoll",
         createIdentity: sageCreateRendezvousIdentity,
+        corner: "tr",
       });
     });
 
