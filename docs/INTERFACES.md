@@ -4492,6 +4492,78 @@ Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 79/79 (Mehrfach-Suche
 
 ---
 
+### Modul: 23_rendezvous
+Status: Code-Stub (Bau-Sitzung 23 vom 2026-06-28; Headless-Smoke 40/40 grün;
+        Live-Cross-App-Sichttest durch Klaus ausstehend). Saubere, konfig-
+        getriebene Ausgliederung des family-project-Rendezvous-Prototyps
+        (bewiesen 2026-06-28, „✓ ANDOCK ETABLIERT mit lebender ID").
+Datei:  src/modules/23_rendezvous.js · docs/components/23_rendezvous.md ·
+        Skript-Load in index.html (KEIN Auto-Init) · Panel 23 in
+        tests/manual_check.html
+
+Zweck:  Löst die Adress-Wand (committete nodeId ≠ lebende nodeId). Lebende
+        Knoten treffen sich im geteilten Nostr-Tag "sbkim-rdv" (gemeinsamer
+        Raum): ein Knoten heftet auf NUTZER-AKTION seine lebende Visitenkarte
+        (echte Spore) ans Brett, ein Suchender liest die Karten und handshaket
+        die LEBENDE ID — genau die, die der Gegenknoten via listenNostr wirklich
+        belauscht. Reiner Tool-Code über die öffentlichen Flächen von Modul 05
+        (handshake/listenNostr) + 05b (publish/subscribe) + 02 (getOwnSpore);
+        diese Kern-Module bleiben UNANGETASTET. DOM-frei — die Knöpfe sind
+        app-eigen. Konfig-getrieben (nodeName + Clients injiziert), damit jede
+        PWA das Modul byte-1:1 kopieren kann.
+
+Verfassung (Empfangsmodus, Mycel-Schicht 1): Anmelden UND Suchen sind nutzer-
+        ausgelöst. KEIN Dauer-Piepser (Pulsation verboten), KEIN Crawl, KEINE
+        Eigenanfrage beim Laden. init() baut nichts auf.
+
+Datenverträge (1:1 aus dem bewiesenen Prototyp):
+  - Raum    = Nostr-Tag ["t","sbkim-rdv"], Event kind:1.
+  - Karte   = content JSON { kind:"sbkim-presence", nodeId:<lebend>,
+              nodeName:<App-Name>, spore:<volle eigene Spore>, ts:<unix-sec> }.
+  - Lesen   = subscribe({kinds:[1],"#t":["sbkim-rdv"],since:now-1800}), ~4 s
+              sammeln, dedupe nach nodeId (frischeste), eigene nodeId filtern.
+  - Andock  = Modul 05 handshake(card.spore, null, {transport:"nostr",
+              timeoutMs:12000}) an die lebende ID.
+  Konstanten: RDV_TAG="sbkim-rdv", RDV_PRESENCE_KIND="sbkim-presence",
+  RDV_FRESH_SEC=1800, RDV_LISTEN_MS=4000, RDV_HANDSHAKE_TIMEOUT_MS=12000.
+
+Bietet (öffentlich, window.SbkimRendezvous):
+  init(opts?)              → Promise<void>   // Konfig setzen (idempotent);
+                                              // opts={nodeName,relayClient,
+                                              // anastomose,spore,freshSec,listenMs}
+  configure(opts)          → void            // Teil-Update der Konfig
+  announce()               → Promise<{ ok, nodeId?, reason? }>
+                                              // lauschen + Visitenkarte heften
+                                              // (setzt Identität voraus)
+  connectAndAnnounce(opts?) → Promise<{ ok, created, nodeId?, reason? }>
+                                              // wie announce; erzeugt Identität
+                                              // via opts.createIdentity (app-eigen),
+                                              // falls keine da
+  discover(opts?)          → Promise<{ ok, cards, reason? }>
+                                              // cards=[{nodeId,nodeName,spore,
+                                              // ts,ageSec}], ts-absteigend
+  handshakeCard(card,opts?) → Promise<{ outcome, score?, reason?, raw? }>
+                                              // outcome ∈ {established,rejected,
+                                              // rejected-local,timeout,error},
+                                              // fail-soft (nie Throw)
+  _meta                    → { version, tag, presenceKind, freshSec, listenMs,
+                               nodeName, hasRelay, hasAnastomose, hasSpore }
+
+Architektur-Wahrheit (nicht verhandelbar): das Anmelden MUSS aus dem eigenen
+        Browser jeder App laufen — lebende Identität + privater Schlüssel liegen
+        pro App/Origin getrennt. Ein Knoten kann NICHT für einen anderen
+        anmelden. Darum: Modul in JEDE App kopieren, nicht zentral.
+
+Fail-soft: kein Relais/keine Identität/Netz weg/Timeout → ruhiges Ergebnis-
+        Objekt mit reason, nie Throw.
+
+Konsumiert: Modul 05 (SbkimAnastomose.handshake/listenNostr), Modul 05b
+        (SbkimNostrRelay.publish/subscribe), Modul 02 (SbkimSpore.getOwnSpore).
+Feuert: sbkim:nostr-listening (detail.active) für die VERKEHR-Lampe (Modul 17 /
+        Status-Widget), fail-soft.
+
+---
+
 ## 2. Datenformate (Querschnitt)
 
 ### Spore-JSON

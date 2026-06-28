@@ -154,6 +154,12 @@
     <pre class="log">— bereit. Modul 22 (Such-Widget, Increment 1 Widget-Shell). SEPARATES, frei bewegliches Floating-Such-Tool, self-mountend in &lt;body&gt;. Klein im Ruhezustand (🔍-Blase), wächst bei Interaktion zum Eingabe-Panel mit eigenem Textfeld (UX-Erhalt: Feld wird nie mit value:'' neu gebaut). Leicht transparent, Drag (Pointer-Events, Mechanik aus Modul 17), X-Schließen, localStorage-Persistenz (Position/Sichtbarkeit/Zustand). Komponiert: Sprache (Modul 21) + Vorfilter (Modul 04 queryLocal) + Richter (Modul 04 hybridMatch), EU-Politik frei/bindend (gilt für Sprach-Engine UND Richter euOnly). Knöpfe: „init() + mounten" (Widget erscheint unten rechts), „expand/collapse", „show/hide", „Demo-Korpus + Suche (nur-vorfilter)" prüft die komponierte Pipeline ohne Schlüssel, „_meta zeigen". Increment 2 (PWA-Kopplung über Modul 15) ist eigene Folge-Sitzung. **Live-Sichttest (Drag + Sprache am Tablet) wartet auf Klaus.** —</pre>
   </section>
 
+  <section class="panel" data-module="23_rendezvous">
+    <h2>23 Rendezvous (gemeinsamer Raum) <span class="status ok">Code-Stub 2026-06-28</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <pre class="log">— bereit. Modul 23 (Rendezvous). Löst die Adress-Wand: committete nodeId ≠ lebende nodeId. Lebende Knoten treffen sich im geteilten Nostr-Tag „sbkim-rdv" (gemeinsamer Raum); ein Knoten heftet auf Nutzer-Aktion seine LEBENDE Visitenkarte (echte Spore), ein Suchender liest die Karten und handshaket die LEBENDE ID. Verfassungstreu: nutzer-ausgelöst, KEIN Dauer-Piepser (Empfangsmodus gewahrt). DOM-frei (Knöpfe sind app-eigen). Konfig-getrieben (nodeName + Relais-Client injiziert, KEINE family-Hardcodes). Die Knöpfe hier spielen ein MOCK-Relais ein (kein Live-Netz nötig), um announce/discover/handshakeCard headless-äquivalent zu zeigen. Surface: init/configure/announce/connectAndAnnounce/discover/handshakeCard. **Live-Cross-App-Sichttest (zwei Geräte/Tabs, echtes Relais) wartet auf Klaus.** —</pre>
+  </section>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {
@@ -5591,6 +5597,109 @@
           widgetMounted: m.widgetMounted, lastSearchMode: m.lastSearchMode, searchCount: m.searchCount,
           hasApiKey: m.hasApiKey, coupled: m.coupled,
         };
+      });
+    })();
+  </script>
+
+  <!-- Modul 23 — Rendezvous (Bau-Sitzung 2026-06-28) -->
+  <script src="../src/modules/23_rendezvous.js"></script>
+  <script>
+    (function () {
+      // Panel 23 — Rendezvous. Modul 23 ist DOM-frei + dependency-injizierbar.
+      // Ohne Live-Relais (Sandbox-Browser hat keins) spielen wir ein MOCK-Relais
+      // + Mock-Spore + Mock-Anastomose ein, um announce/discover/handshakeCard
+      // headless-äquivalent zu zeigen. Der echte Relais-Pfad (Modul 05b, zwei
+      // Geräte/Tabs) ist Klaus' Live-Sichttest.
+      var mod = "23_rendezvous";
+
+      function makeMockRelay() {
+        var store = [], subs = [], seq = 0;
+        function matches(f, ev) {
+          if (f.kinds && f.kinds.indexOf(ev.kind) === -1) return false;
+          if (typeof f.since === "number" && ev.created_at < f.since) return false;
+          for (var k in f) {
+            if (k === "kinds" || k === "since") continue;
+            if (k.charAt(0) === "#") {
+              var tn = k.slice(1), want = f[k];
+              var have = (ev.tags || []).filter(function (t) { return t[0] === tn; }).map(function (t) { return t[1]; });
+              if (!have.some(function (v) { return want.indexOf(v) !== -1; })) return false;
+            }
+          }
+          return true;
+        }
+        return {
+          published: [],
+          publish: function (body) {
+            var ev = { id: "mock-" + (++seq), pubkey: "p", kind: body.kind, created_at: body.created_at, tags: body.tags, content: body.content, sig: "s" };
+            store.push(ev); this.published.push(body);
+            subs.slice().forEach(function (su) { if (matches(su.filter, ev)) Promise.resolve().then(function () { try { su.onEvent(ev); } catch (e) {} }); });
+            return Promise.resolve();
+          },
+          subscribe: function (filter, onEvent) {
+            var su = { filter: filter, onEvent: onEvent }; subs.push(su);
+            store.slice().forEach(function (ev) { if (matches(filter, ev)) Promise.resolve().then(function () { try { onEvent(ev); } catch (e) {} }); });
+            return function () { var i = subs.indexOf(su); if (i !== -1) subs.splice(i, 1); };
+          },
+        };
+      }
+      // Geteiltes Mock-Relais (eine "Pinnwand" für alle Panel-Knöpfe).
+      var sharedRelay = makeMockRelay();
+      function sp(id, name) { return { id: id, domain: name + ".example.org", publicKey: { x: "stub" }, signature: "stub" }; }
+      var ownSpore = sp("OWN-PANEL-ID", "sage-panel");
+      var mockSpore = { getOwnSpore: function () { return Promise.resolve(ownSpore); } };
+      var mockAna = {
+        listenNostr: function () { return Promise.resolve(); },
+        handshake: function () { return Promise.resolve({ outcome: "established", score: 0.8642 }); },
+      };
+
+      SbkimUI.addButton(mod, "init() (Mock-Relais einspielen)", async function () {
+        await SbkimRendezvous.init({ nodeName: "Sage (Panel)", relayClient: sharedRelay, anastomose: mockAna, spore: mockSpore, listenMs: 400 });
+        SbkimUI.setStatus(mod, "ok", "init OK (Mock)");
+        return SbkimRendezvous._meta;
+      });
+
+      SbkimUI.addButton(mod, "🌐 announce (Visitenkarte heften)", async function () {
+        var r = await SbkimRendezvous.announce();
+        SbkimUI.setStatus(mod, r.ok ? "ok" : "err", r.ok ? "im Raum" : "nicht angemeldet");
+        return r;
+      });
+
+      SbkimUI.addButton(mod, "Fremde Karte ins Mock-Relais legen", function () {
+        var id = "PEER-" + Math.floor(Math.random() * 1e6);
+        var ts = Math.floor(Date.now() / 1000);
+        sharedRelay.publish({ kind: 1, created_at: ts, tags: [["t", "sbkim-rdv"]],
+          content: JSON.stringify({ kind: "sbkim-presence", nodeId: id, nodeName: "Demo-Peer", spore: sp(id, "peer"), ts: ts }) });
+        return { gelegt: id, hinweis: "Jetzt „👥 discover" drücken." };
+      });
+
+      SbkimUI.addButton(mod, "👥 discover (Wer ist im Raum?)", async function () {
+        var r = await SbkimRendezvous.discover({ listenMs: 400 });
+        SbkimUI.setStatus(mod, r.ok ? "ok" : "err", r.ok ? (r.cards.length + " Karte(n)") : "Fehler");
+        return r;
+      });
+
+      SbkimUI.addButton(mod, "🤝 handshakeCard (an lebende ID)", async function () {
+        var r = await SbkimRendezvous.discover({ listenMs: 400 });
+        if (!r.cards.length) return { hinweis: "Keine Karte im Raum — erst „Fremde Karte ins Mock-Relais legen"." };
+        var res = await SbkimRendezvous.handshakeCard(r.cards[0]);
+        SbkimUI.setStatus(mod, res.outcome === "established" ? "ok" : "err", res.outcome);
+        return { ziel: r.cards[0].nodeName, ergebnis: res };
+      });
+
+      SbkimUI.addButton(mod, "connectAndAnnounce (ohne Identität → erzeugt)", async function () {
+        var fresh = null;
+        var freshSpore = { getOwnSpore: function () { return Promise.resolve(fresh); } };
+        SbkimRendezvous.configure({ spore: freshSpore });
+        var r = await SbkimRendezvous.connectAndAnnounce({
+          createIdentity: async function () { fresh = sp("FRESH-PANEL-ID", "frisch"); },
+        });
+        SbkimRendezvous.configure({ spore: mockSpore });   // zurücksetzen für die anderen Knöpfe
+        SbkimUI.setStatus(mod, r.ok ? "ok" : "err", r.ok ? "erzeugt + angemeldet" : "fehlgeschlagen");
+        return r;
+      });
+
+      SbkimUI.addButton(mod, "_meta zeigen", function () {
+        return SbkimRendezvous._meta;
       });
     })();
   </script>
