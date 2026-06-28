@@ -20,11 +20,11 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-06-27 (21 Module)
+  title Modulstand 2026-06-29 (25 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 6
+  "🟦 Code-Stub" : 10
   "🟩 Fertig" : 9
 ```
 
@@ -118,6 +118,28 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 |---|---|---|---|
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
+
+## 2026-06-29 · status.json auf neuesten Stand — Module 20–23 ergänzt (live laufende Module sichtbar)
+
+**Rolle:** Pflege (Branch `claude/pinnwand-verwandt-ki-iyzpi7`). Auf Klaus' Zuruf „Sage auf
+den neuesten Stand, an die live laufenden Module denken".
+
+**Befund:** `status.json` (die maschinenlesbare Quelle der Wahrheit, von der Sage-Page +
+PULS-Pie + andere Repos gespiegelt werden) war hinter dem Code zurück — die `modules`-Liste
+endete bei 17, dated 2026-06-27, **ohne** die neueren/live laufenden Module **20 Safe / 21
+Sprache / 22 Such-Widget / 23 Rendezvous**.
+
+**Getan:**
+- `status.json`: vier `modules`-Einträge ergänzt (20/21/22/23, je `score:"stub"`, mit ehrlichem
+  `siegel`-Stand inkl. der **Live-Beweise** — 22 Browser-Sichttest mehrfach grün, **23 LIVE
+  Cross-App Sage↔Mixarium „ANDOCK ETABLIERT"**). `lastUpdated` → 2026-06-29.
+- `scripts/update_puls_pie.py` ausgeführt → Pie **21 → 25 Module** (Code-Stub 6 → 10).
+- Sage-Page (`index.html`) liest `status.json` **live** (`fetch` + „MODUL-STATUS live aus
+  status.json") → spiegelt die neuen Module automatisch, kein hartcodierter Zähler zu ändern.
+
+**Offen / Sichttest:** Sage-Page-Anzeige der vier neuen Module wartet auf Klaus' Browser-Lauf
+(Pages deployt von `main`). Kein Protokoll-/Modul-Code berührt, keine netzweite Konstante → kein
+SIGNAL-Bump.
 
 ## 2026-06-28 (tiefe Nacht, Folge²) · Pinnwand — ehrliche Beschriftung (Cosinus = Rangfolge) + Drift-Guard geheilt
 
