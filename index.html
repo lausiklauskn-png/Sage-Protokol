@@ -206,6 +206,11 @@
   /* Werkzeug-Schnellstart: feste Lasche am rechten Rand (eigenständige PWAs,
      als Knoten NICHT verbunden — reiner Direkt-Link, damit man sie von der
      Sage-Page aus ohne GitHub-Umweg öffnen kann). */
+  /* Andock-Knopf (Modul 23, corner "tr") knapp unter die Kopfzeile schieben,
+     damit er Briefkasten/Datum nicht überlappt. Modul-Code bleibt unangetastet
+     (er setzt top:14px inline) — hier nur Sage-Page-lokale Verschiebung. */
+  #sbkim-rdv-btn { top: 4rem !important; }
+  @media (max-width: 640px) { #sbkim-rdv-btn { top: 4.7rem !important; } }
   .tool-launcher { position: fixed; right: 0; top: 42%; z-index: 60; display: flex; flex-direction: column; gap: 2px; }
   .tool-launch-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 3.1rem; padding: 0.5rem 0.3rem; background: rgba(12,10,30,0.86); border: 1px solid var(--line); border-right: none; border-radius: 12px 0 0 12px; color: var(--muted); font-size: 1.15rem; line-height: 1; text-decoration: none; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: -4px 4px 16px rgba(0,0,0,0.4); transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease; }
   .tool-launch-btn span { font-family: "Geist Mono", monospace; font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.05em; }
