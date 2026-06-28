@@ -140,5 +140,49 @@ W.setViewMode("verbunden");
 W.setRelatedOnly(false);
 ok(W.getViewMode() === "verbunden" && W._meta.relatedOnly === false, "zurückgesetzt auf Default");
 
+console.log("\nProbe 8 — „· KI“: rankView nach KI-Urteil (kiByKey) statt Cosinus");
+// Drei Treffer; das KI-Urteil dreht die Reihenfolge gegenüber dem rohen Score um
+// und liefert das passt-Flag (isRelated). REINE Anzeige — gatet nichts.
+const kiTreffer = [
+  { label: "Alpha", score: 0.91, anchorId: "n:Alpha" },
+  { label: "Beta",  score: 0.88, anchorId: "n:Beta" },
+  { label: "Gamma", score: 0.85, anchorId: "n:Gamma" },
+];
+const kiByKey = {
+  "n:Alpha|Alpha": { score: 0.20, passt: false, begruendung: "Anderes Thema." },
+  "n:Beta|Beta":   { score: 0.95, passt: true,  begruendung: "Genau verwandt." },
+  "n:Gamma|Gamma": { score: 0.60, passt: true },
+};
+const kiRanked = W.rankView(kiTreffer, null, { mode: "verwandt", kiByKey: kiByKey });
+ok(kiRanked.length === 3, "alle drei bleiben (ohne relatedOnly)");
+ok(kiRanked[0].label === "Beta", "höchster KI-Score (Beta) steht oben");
+ok(kiRanked[2].label === "Alpha", "niedrigster KI-Score (Alpha) steht unten");
+ok(kiRanked[0].kiJudged === true, "kiJudged-Flag gesetzt (Anzeige: „· KI“)");
+ok(Math.abs(kiRanked[0].relatedness - 0.95) < 1e-9, "relatedness = KI-Score (nicht Cosinus)");
+ok(kiRanked[0].isRelated === true && kiRanked[2].isRelated === false, "isRelated kommt aus passt-Flag");
+ok(kiRanked[0].begruendung === "Genau verwandt.", "Begründung aus dem KI-Urteil übernommen");
+
+console.log("\nProbe 9 — „· KI“ mit „nur verwandte“ filtert nach passt");
+const kiOnly = W.rankView(kiTreffer, null, { mode: "verwandt", relatedOnly: true, kiByKey: kiByKey });
+ok(kiOnly.length === 2, "nur die zwei passt===true bleiben");
+ok(kiOnly.map(t => t.label).join(",") === "Beta,Gamma", "Beta + Gamma (Alpha ausgeblendet)");
+
+console.log("\nProbe 10 — „· KI“ fail-soft: fehlendes Urteil → relatedness null, ans Ende");
+const kiPartial = { "n:Beta|Beta": { score: 0.95, passt: true } };
+const kiGap = W.rankView(kiTreffer, null, { mode: "verwandt", kiByKey: kiPartial });
+ok(kiGap[0].label === "Beta", "der einzige beurteilte Treffer steht oben");
+ok(kiGap[1].relatedness === null && kiGap[2].relatedness === null, "unbeurteilte → relatedness null");
+ok(kiTreffer[0].relatedness === undefined, "Eingabe-Array NICHT mutiert (reine Anzeige)");
+
+console.log("\nProbe 11 — Surface „· KI“");
+ok(typeof W.setKiRelated === "function", "setKiRelated ist eine Funktion");
+ok(typeof W.getKiRelated === "function", "getKiRelated ist eine Funktion");
+ok(W._meta.kiRelated === false, "Default kiRelated = false (opt-in)");
+W.setKiRelated(true);
+ok(W.getKiRelated() === true && W._meta.kiRelated === true, "setKiRelated(true) greift + _meta spiegelt");
+ok(W._meta.kiRelatedActive === false, "kiRelatedActive false ohne Schlüssel/Urteil (gatet nichts)");
+W.setKiRelated(false);
+ok(W.getKiRelated() === false, "zurückgesetzt auf Default (opt-in bleibt opt-in)");
+
 console.log("\nTotal: " + (pass + fail) + " Proben, " + pass + " grün, " + fail + " rot.");
 process.exit(fail === 0 ? 0 : 1);

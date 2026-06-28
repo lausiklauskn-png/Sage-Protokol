@@ -4368,13 +4368,26 @@ Bietet (öffentlich, window.SbkimSearchWidget):
   getViewMode()      → "verbunden"|"verwandt" (sync)
   setRelatedOnly(on) → boolean          // im "verwandt"-Modus: nicht-isRelated-Treffer
                                         //   (fremde Domänen) ganz ausblenden. Persistiert.
-  rankView(treffer, queryVec, {mode?,relatedOnly?}) → Array  // REINE Funktion (keine
-                                        //   Seiteneffekte, headless testbar): wendet die Sicht
-                                        //   auf eine Trefferliste an. Fail-soft: ohne Modul 04 /
-                                        //   queryVec → Liste unverändert; Treffer ohne passageVec
-                                        //   → relatedness null (wandert nach unten / fällt bei
-                                        //   relatedOnly raus). relatedness() InvalidVectorError
-                                        //   pro Treffer abgefangen.
+  rankView(treffer, queryVec, {mode?,relatedOnly?,kiByKey?}) → Array  // REINE Funktion
+                                        //   (keine Seiteneffekte, headless testbar): wendet die
+                                        //   Sicht auf eine Trefferliste an. Fail-soft: ohne Modul
+                                        //   04 / queryVec → Liste unverändert; Treffer ohne
+                                        //   passageVec → relatedness null (wandert nach unten /
+                                        //   fällt bei relatedOnly raus). relatedness()
+                                        //   InvalidVectorError pro Treffer abgefangen.
+                                        //   kiByKey (optional): {"anchorId|label":{score,passt,
+                                        //   begruendung}} — liegt ein KI-Richter-Urteil vor, wird
+                                        //   im "verwandt"-Modus DANACH gerankt (KI-Score statt
+                                        //   Cosinus, isRelated aus passt, kiJudged:true).
+  // ---- „verwandt · KI" (Kalibrier-Abschluss 2026-06-28) ----
+  // OPT-IN, BYOK, fail-soft, REINE ANZEIGE (gatet NICHTS). Im "verwandt"-Modus das
+  // Maß wahlweise vom KI-Richter (Modul 04 hybridMatch) statt vom zentrierten
+  // Cosinus. Nutzt das vorhandene Richter-Anbieter/Schlüssel-Feld. Ohne Schlüssel
+  // /Urteil → degradiert auf den gratis Cosinus. Urteil RAM-only, an die Frage
+  // gebunden, nicht persistiert (nur die Schalter-Wahl persistiert). Der bestehende
+  // "KI-Richter"-Schalter (ganze Liste re-ranken) bleibt unberührt daneben.
+  setKiRelated(on)   → boolean          // "· KI" an/aus (Default aus). Persistiert, re-rendert.
+  getKiRelated()     → boolean (sync)
   // ---- Stufe B · B1 Widget-Tresor (self-contained, portabel; Krypto wie Modul
   //      20/02: PBKDF2-SHA256 ≥600k → AES-GCM-256, Recovery Shamir 2-von-3) ----
   hasVault()         → boolean (sync)   // localStorage sbkim_search_widget_vault da?
@@ -4408,11 +4421,12 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         //   Fail-soft (CORS/Key/Netz → Hinweis + false, kein Throw).
   aiAutoSupported()  → boolean (sync)   // ob der gewählte Anbieter den Auto-Aufruf kann (z.Z. claude).
   _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
-                     //   richterOn, viewMode, relatedOnly, hasQueryVec, hasSearxng, webEngine,
+                     //   richterOn, viewMode, relatedOnly, kiRelated, kiRelatedActive,
+                     //   hasQueryVec, hasSearxng, webEngine,
                      //   aiProvider, aiProviders, hasPastedAi,
                      //   visible, expanded, fullscreen, merkCount, merkOverlayOpen, detailOverlayOpen,
                      //   widgetMounted, lastSearchMode, searchCount, hasApiKey, coupled:false }
-                     //   localStorage zusätzlich: sbkim_search_widget_view ({mode,relatedOnly}, User-Wahl)
+                     //   localStorage zusätzlich: sbkim_search_widget_view ({mode,relatedOnly,kiRelated}, User-Wahl)
                      //   + sbkim_search_widget_merkliste (Text+Link, gruppiert)
                      //   + sbkim_search_widget_lastsearch (letzte Suche: Frage+Treffer, Reload-Schutz,
                      //     beim Mount automatisch wiederhergestellt; ✕/dockToTop löscht sie)
@@ -4437,6 +4451,8 @@ options-Form (init):
     viewMode?:    "verbunden"|"verwandt",  // Anzeige-Sicht-Default (Default "verbunden").
                                         // localStorage (User-Wahl) überschreibt es.
     relatedOnly?: boolean,              // "nur verwandte" im verwandt-Modus (Default false).
+    kiRelated?:   boolean,              // "· KI": verwandt-Maß vom KI-Richter (Default false,
+                                        // opt-in/BYOK). localStorage (User-Wahl) überschreibt es.
     searxngUrl?:  string,               // SearXNG-Instanz für Web-Treffer. Leer → Internet =
                                         // „↗ neuer Tab"; gesetzt → Re-Ranker.
     webSearchEngine?: "duckduckgo"|"startpage"|"ecosia"|"brave"|"google"|"bing"|"searxng",
@@ -4520,11 +4536,13 @@ Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 257/257 (Mehrfach-Suc
   euOnly an hybridMatch, alle sechs Such-Modi, setCorpus-Durchreichung,
   Spracheingabe fail-soft + Browser-Pfad, Drag-Persistenz, UX-Erhalt,
   init-Throw bei ungültiger euPolicy, prepareCorpus lazy/einmalig/fail-soft).
-  Anzeige-Sicht verbunden↔verwandt (Brief Wählen-UI 2026-06-28):
-  tests/smoke_bau22e_waehlen.mjs 27/27 (rankView an echten Knoten-Domänen-Vektoren —
-  Schwestern/Essen-Trinken oben, Sage↔BLP raus; fail-soft; Andock-Pfad unberührt).
-  Browser-Sichttest (Drag + Sprache + Sage-Korpus-Suche + Umschalter am Tablet)
-  durch Klaus ausstehend.
+  Anzeige-Sicht verbunden↔verwandt (Brief Wählen-UI 2026-06-28) + „verwandt · KI"
+  (Kalibrier-Abschluss 2026-06-28, opt-in/BYOK, fail-soft, reine Anzeige):
+  tests/smoke_bau22e_waehlen.mjs 45/45 (rankView an echten Knoten-Domänen-Vektoren —
+  Schwestern/Essen-Trinken oben, Sage↔BLP raus; KI-Urteil via kiByKey sortiert/filtert
+  nach Score+passt; fail-soft; Andock-Pfad unberührt). Browser-Sichttest (Drag +
+  Sprache + Sage-Korpus-Suche + Umschalter + KI-Schlüssel am Tablet) durch Klaus
+  ausstehend.
 
 ---
 

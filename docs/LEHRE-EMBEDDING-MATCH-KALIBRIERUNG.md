@@ -81,6 +81,17 @@ doch gratis werden soll — dann erst an mehr echten Knoten absichern).
 Messung, dokumentieren die obige Kette. Cache-Bust an den Modul-03/04-Skript-Tags
 (`?v=kal-20260628`) sorgt für frische Module beim Browser-Lauf.
 
+### Umsetzung (Folge-Bau 2026-06-28, Modul 22 „verwandt · KI")
+Der Entscheid ist verdrahtet: das Such-Widget (Modul 22) hat im „verwandt"-Modus einen
+opt-in-Schalter **„· KI"**, der das Verwandtschafts-Maß vom **KI-Richter** (`hybridMatch`,
+BYOK) liefern lässt statt vom zentrierten Cosinus. Gratis „verwandt" bleibt der Cosinus,
+jetzt ehrlich als **Rangfolge** beschriftet. **Reine Anzeige** — gatet nichts, kein
+Eingriff in Modul 04/05, keine netzweite Konstante geändert. **Modul 23 (Raum-Badge)**
+bleibt bewusst beim gratis Cosinus (Klaus' Entscheid: kurze Domänen-Texte, Kosten je Karte).
+**Schnipsel-Mittel** bleibt als notierter Lead liegen (erst nur KI-Richter). Details:
+`docs/components/22_such_widget.md` § „verwandt · KI". Headless `smoke_bau22e_waehlen.mjs`
+45/45. Browser-Sichttest (KI-Schlüssel live) wartet auf Klaus.
+
 ---
 
 ## Stand 2026-06-28 (Abend) — Kalibrierung abgeschlossen: 0.80 bleibt Andock-Boden, zentrierter Cosinus als Verwandtschafts-Score (Bau 04.E)

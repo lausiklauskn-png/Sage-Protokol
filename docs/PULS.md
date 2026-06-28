@@ -119,6 +119,38 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 (tiefe Nacht, Folge) · Bau 22 „verwandt · KI" — Verwandtschafts-Maß opt-in vom KI-Richter
+
+**Rolle:** Bau (Branch `claude/relatedness-ki-richter-optin-vn8x40`).
+Brief: `BRIEF_RELATEDNESS_KI_RICHTER_OPTIN.md`. Freibrief galt. Plan-vor-Code:
+drei Richtungs-Entscheide vorab an Klaus gestellt (AskUserQuestion) — Antworten:
+„· KI" unter „verwandt", alt bleibt · Modul 23 vorerst nur Cosinus · erst nur
+KI-Richter.
+
+**Getan (Modul 22 only, gemäß Klaus' Entscheid):**
+- Dritter Schalter **„· KI"** im Such-Widget (nur im verwandt-Modus sichtbar,
+  Default aus). An + Schlüssel → das „verwandt"-Ranking kommt vom **KI-Richter**
+  (`hybridMatch`, vorhandenes Anbieter/Schlüssel-Feld wiederverwendet) statt vom
+  zentrierten Cosinus; Anzeige nach KI-Score, `isRelated` aus `passt`, Badge
+  „🧬 NN % · KI", `begruendung` als Zeile, Block-Kopf „(KI-Richter)". Aus →
+  gratis Cosinus, jetzt ehrlich als **Rangfolge** beschriftet.
+- **REINE Anzeige — gatet nichts:** `PROVIDER_MIN_MATCH` 0.80 + Andock + Modul
+  04/05 unberührt (nur öffentliche `hybridMatch`-Fläche, war schon da). Urteil
+  RAM-only, an die Frage gebunden, bei neuer Suche zurückgesetzt, **nicht**
+  persistiert (nur die Schalter-Wahl `kiRelated`). EU-Politik gilt, fail-soft
+  (kein Schlüssel/Urteil → Cosinus). Alter „KI-Richter"-Schalter unberührt daneben.
+- Surface `+setKiRelated/getKiRelated`, `rankView(…, {…, kiByKey?})`,
+  `_meta.kiRelated/kiRelatedActive`, `init({kiRelated?})`.
+- Smoke `smoke_bau22e_waehlen.mjs` **45/45** (neue Proben 8–11), `smoke_bau22`
+  257/257, Standalone-Drift-Guard 46/46. Byte-Kopie `such-tool/modules/22…`
+  byte-1:1. Doku: Karte 22 § „verwandt · KI", INTERFACES §1 Modul 22, LEHRE-Doc.
+
+**Offen / nächster Schritt:** (1) **Browser-Sichttest (KI-Schlüssel live)** wartet
+auf Klaus — erst nach Merge auf der live-deployten Seite prüfbar. (2) Pinnwand
+(eigener `.a-judge`) auf dasselbe „· KI"-Muster bringen — eigene Folge-Sitzung.
+(3) `Schnipsel-Mittel`-Lead bleibt liegen (erst nur KI-Richter). Modul 23
+(Raum-Badge) bewusst bei Cosinus belassen (Klaus-Entscheid).
+
 ## 2026-06-28 (tiefe Nacht) · Kalibrier-Abschluss: „verwandt" → KI-Richter (Ur-Vision), v2-Center verworfen
 
 **Rolle:** Bau/Diagnose (Branch `claude/kalibrierung-rollout-drei-knoten-p1e3i3`).
