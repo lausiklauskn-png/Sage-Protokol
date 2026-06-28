@@ -2285,6 +2285,12 @@
 
   // Stufe 2 (Sortiermaschine): Modul 04 queryLocal-Cosinus über EINEN Korpus,
   // Treffer mit Quelle (source) + Bedeutungs-Text + URL angereichert.
+  // Eine echte, extern öffenbare Adresse (http/https) — KEIN interner Seiten-Anker
+  // wie "modul-06". Knoten-/Internet-Treffer tragen ihre App-URL im anchorId.
+  function isExternalUrl(s) {
+    return typeof s === "string" && /^https?:\/\//i.test(s);
+  }
+
   function queryCorpus(query, corpus, source) {
     var match = global.SbkimMatch;
     if (!match || typeof match.queryLocal !== "function") return Promise.resolve([]);
@@ -2298,7 +2304,11 @@
         var src = byKey[r.anchorId || r.label] || {};
         return {
           label: r.label, score: r.score, anchorId: r.anchorId, source: source,
-          text: src.text || r.label, snippet: src.snippet || null, url: src.url || null,
+          text: src.text || r.label, snippet: src.snippet || null,
+          // Öffnen-Link: explizite url ODER ein anchorId, das eine echte externe
+          // Adresse ist (Knoten-Treffer → App-URL im anchorId). So zeigen Zeilen-
+          // Link, Detail-Karte „↗ Seite öffnen", Merkliste + Text-Export den Link.
+          url: src.url || (isExternalUrl(r.anchorId) ? r.anchorId : null),
           nodeId: src.nodeId || null,   // für den Live-Cross-Knoten-Pfad (Knoten-Bereich)
         };
       });
@@ -2372,10 +2382,12 @@
                   .then(function (rows) {
                     if (!Array.isArray(rows)) return [];
                     return rows.map(function (r) {
+                      var aId = (r && r.anchorId) ? r.anchorId : (t.anchorId || null);
                       return {
                         label: (r && r.label) ? r.label : "",
                         score: (r && typeof r.score === "number") ? r.score : 0,
-                        anchorId: (r && r.anchorId) ? r.anchorId : (t.anchorId || null),
+                        anchorId: aId,
+                        url: isExternalUrl(aId) ? aId : null,   // „↗ Seite öffnen" auch für Live-Treffer
                         source: "knoten", text: (r && r.label) ? r.label : "",
                         live: true, viaNode: t.label,
                       };
