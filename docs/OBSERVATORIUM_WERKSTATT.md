@@ -95,6 +95,36 @@ Detail + Begründung: [`HYBRID-MATCH-EINBAU.md`](HYBRID-MATCH-EINBAU.md)
 
 ---
 
+## Lehre 4 — Erst gegen `origin/main` prüfen, dann behaupten
+
+**Festgehalten 2026-06-28 (Klaus' Befund an einer Schwester-Sitzung).**
+
+Eine Folge-Sitzung („Threshold calibration and content vector rollout") schrieb
+als Tatsache: „Mein-Rezeptbuch — dieser Checkout hat kein echtes `origin/main`
+und **null SBKIM-Code** (nur alte Umbenenn-Commits); ich kann die App nicht
+sehen." **Falsch.** `origin/main` von Mein-Rezeptbuch trägt das volle
+`sbkim/`-Verzeichnis (`02_spore.js`, `03_embedding.js`, `sbkim-init.js` mit
+`__sbkimErzeugeSpore` → `embedPassage` → `generateOwnSpore`, Modul 23, Siegel)
+— es ist ein **byte-1:1-Rollout-Fall wie Mixarium**. Die live App zeigt es auch.
+
+Ursache: die Sitzung beurteilte einen **veralteten lokalen Checkout** (sie hat
+„local checkout looks stale" sogar notiert) und zog trotzdem eine Tatsachen-
+Schlussfolgerung — **ohne `git fetch origin main` + Prüfung gegen `origin/main`
+auszuführen.**
+
+**Regel (verbindlich, harmoniert mit „nie stillschweigend"):**
+
+1. **VOR jeder Beurteilung/jedem Bau:** `git fetch origin main` + Arbeits-Branch
+   auf den frischen `origin/main` setzen (ACHTSAMKEIT-Regel, Klaus 2026-06-28).
+   Niemals aus dem Working-Tree eines veralteten Checkouts auf „existiert nicht"
+   schließen.
+2. **Keine Tatsachen-Aussage ohne ausgeführte Prüfung.** „Repo X hat keinen
+   SBKIM-Code" braucht `git ls-tree -r origin/main` / `git grep … origin/main`
+   als Beleg — nicht eine Inferenz. Im Zweifel: prüfen, dann sagen.
+3. **Unsicheres als unsicher markieren** („zu verifizieren"), statt es als
+   Befund zu verkaufen. Ein falscher „Befund" verschickt eine vergiftete
+   Grundlage an die nächste Sitzung.
+
 ## Offene Bau-Problematik 1 — Modul 02 hat keinen öffentlichen Signier-Helfer
 
 **Erkannt 2026-06-21 (Hybrid-Match-Einbau).**
