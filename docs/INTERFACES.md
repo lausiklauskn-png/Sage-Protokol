@@ -1390,7 +1390,18 @@ Bietet (öffentlich):
     // KEIN Auto-Start in init(), kein Crawl). Idempotent. Wirft
     // AnastomoseDependenciesError, wenn kein Relay-Client verfügbar ist.
   stopListenNostr()                                            → void
-    // Beendet die Nostr-Empfänger-Subscription.
+    // Beendet die Nostr-Empfänger-Subscription (Handshake UND Query).
+  queryNostr(targetNodeId: string, text: string, options?: {    → Promise<{ outcome, results, fromNodeId, nonceEcho }>
+               k?: number, timeoutMs?: number, fromNodeId?: string })
+    // Query-über-Relais (Bau 2026-06-28, additiv). Stellt EINE Frage an
+    // einen Ziel-Knoten über das Nostr-Brett und gibt dessen bedeutungs-
+    // sortierte Treffer zurück (der Empfänger beantwortet sie über
+    // SbkimMatch.queryLocal aus seinem AKTUELLEN Korpus). Das ist die
+    // BEWUSSTE Frage-Aktion eines Knotens (Pilz-Schicht-Egress, kein
+    // Crawler) — der Empfangsmodus-Knoten ANTWORTET nur, initiiert nie.
+    // Ohne Relay-Client: { outcome:"rejected", reason } (KEIN Throw).
+    // Timeout (NOSTR_QUERY_TIMEOUT_MS, 12000 ms) → wirft QueryTimeoutError.
+    // Der Query-Empfänger-Zweig läuft additiv in listenNostr() mit.
 
   `options.timeoutMs` (Pflege 2026-05-28): optionaler Override für den
     Channel-Reply- bzw. HTTP-Abort-Timeout. Default QUERY_TIMEOUT_MS (4000)
@@ -1427,6 +1438,31 @@ Bietet (öffentlich):
   HandshakeRequest/HandshakeResponse-Schema bleibt **unverändert** —
   BroadcastChannel UND Nostr sind Transport-Schichten, kein zweites
   Datenformat.
+
+  QUERY-ÜBER-RELAIS (Bau 2026-06-28, additiv — Frage→Antwort über das Brett):
+    Verdrahtet die zwei bisher getrennten Hälften — Semantik (Modul 04.C
+    queryLocal) und Medium (Nostr-Relais) — zu einer echten Frage→Antwort
+    über das server-lose Brett. Spiegelt nur, was Modul 15 op:"query"/
+    op:"queryResult" über postMessage (same-browser) schon tut, auf das
+    Cross-Gerät-Relais.
+      Frage:   kind:1, tags [["t","sbkim-query"],["d",<ZielNodeId>],["x",<nonce>]],
+               content = {type:"sbkim-query", fromNodeId, toNodeId, text, k, nonce,
+               protocolVersion, timestamp}.
+      Antwort: kind:1, tags [["t","sbkim-query-reply"],["d",<FragerNodeId>],["x",<nonce>]],
+               content = {type:"sbkim-query-reply", nonceEcho, fromNodeId, toNodeId,
+               results:[{label, score, anchorId}], protocolVersion, timestamp}.
+    Die Frage trägt KEINE Identität/Krypto (nur Klartext + nonce); die Antwort
+    ist ein ÖFFENTLICHER, UNSIGNIERTER Treffer-Zettel (nur Korpus-Labels/Scores
+    — KEINE PII, KEINE Buchhaltungs-/Klartext-Daten). Empfänger-Schutz wie beim
+    Handshake: Self-Hit ignorieren, Replay (doppelte nonce) ablehnen, created_at-
+    Zeitfenster (NOSTR_CLOCK_SKEW_MS). Fehlt Modul 04 oder wirft queryLocal →
+    leere Treffer-Liste (fail-soft, kein Throw).
+    HÄRTUNGS-VORBEHALT (ehrlich): das Brett trägt öffentliche Zettel OHNE
+    Haltbarkeitsgarantie UND OHNE Spam-Schutz — das Medium ist bewiesen, nicht
+    gehärtet. Persistenz/Spam-Härtung = eigene Folge-Sitzung.
+    Headless-Beweis: tests/smoke_query_ueber_relais.mjs (18/18, Mock-Relais +
+    deterministischer Embedding-Stub). Live-Browser-Sichttest (echtes Relais +
+    e5-small) wartet auf Klaus.
 
   Anastomose ist die *Komposition* aus 01/02/04. Modul 05 rechnet nicht
   selbst, sondern ruft `SbkimSpore.verifyForeignSpore`,
