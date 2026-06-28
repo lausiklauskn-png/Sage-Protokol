@@ -6,6 +6,31 @@
 > haben. **Doku für nachfolgende Bauten** — verbindlich zu lesen, bevor jemand die
 > Match-Schwelle (`PROVIDER_MIN_MATCH = 0.80`) oder Modul 04 anfasst.
 
+## Stand 2026-06-28 — Kalibrier-Instrument gebaut, Schwelle wartet auf Browser-Messung
+
+Die netzweite Umstellung auf **Inhalts-Vektoren** (Meilenstein „Von der Hülle zum
+Inhalt") hat begonnen: Mixarium (PR #80) + Mein-Rezeptbuch (PR #269) als
+Draft-Rollouts, Re-Sign im Browser ist Klaus' Schritt. Damit muss die
+0.80-Schwelle **bewusst neu kalibriert** werden (dieser Brief).
+
+- **Instrument gebaut:** `tests/manual_check.html` → Panel „Modul 04 — Match" →
+  Knopf **„KALIBRIER-BODEN messen (Zufallstexte → Schwellen-Empfehlung)"**. Er
+  misst im Browser den ROH-Boden + ZENTRIERTEN Boden aus 8 unverwandten
+  Zufallstexten und gibt eine Schwellen-Empfehlung `mean + 2·sd` aus (genau die
+  Messung, die § „Boden aus ECHTEN Zufallstexten messen" unten verlangt).
+- **Noch offen (wartet auf Klaus' Browser-Lauf):** den Knopf laufen lassen, die
+  Zahlen ablesen, dann `status.json` → `config.PROVIDER_MIN_MATCH` **bewusst**
+  setzen. Headless nicht messbar (transformers.js lädt nur im Browser) — diese
+  Sitzung setzt die Schwelle daher **nicht blind**.
+- **Verfahrens-Wahl (Klaus' Entscheid):** entweder (1) absolute Schwelle =
+  gemessenes `mean+2·sd` (nur `status.json`, kein Code-Bruch) **oder** (2)
+  zentrierter Cosinus in Modul 04 (netzweiter `MEAN_VECTOR`, größerer Eingriff).
+  Der Knopf liefert die Zahlen für beide Wege. Empfehlung dieser Sitzung: erst
+  messen, dann mit Klaus den Weg festlegen.
+- **Vorher/Nachher pro Knoten:** sobald ein Knoten mit Inhalts-Vektor re-signt
+  ist, den Cosinus gegen Sage neu rechnen (alte Beschreibungs-Werte: Rezeptbuch
+  0.824068, Mixarium 0.806030) und in `NETZ-STAND` ehrlich gegenüberstellen.
+
 ## Der Befund in einem Satz
 
 Der **rohe Cosinus** von `multilingual-e5-small` hat einen **hohen Boden**: zwei

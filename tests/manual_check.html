@@ -508,6 +508,74 @@
   <script src="../src/modules/04_match.js"></script>
   <script>
     (function () {
+      // --- Schwellen-Kalibrier-Instrument (2026-06-28) ----------------------
+      // Misst den Rausch-BODEN aus echten Zufallstexten (nicht-Domänen-Stil) im
+      // Browser — genau die Messung, die docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md
+      // § „Boden aus ECHTEN Zufallstexten messen" verlangt. Headless nicht möglich
+      // (transformers.js lädt nur im Browser). Gibt ROH-Boden (aktuelles Modul-04-
+      // Verfahren) + ZENTRIERTEN Boden (Mean-Abzug ≈ Whitening-light) + eine
+      // empirisch faire Schwelle (mean+2·sd) aus. Nach der netzweiten Umstellung
+      // auf Inhalts-Vektoren ist die 0.80-Schwelle BEWUSST neu zu setzen — diese
+      // Zahlen sind die Entscheidungs-Grundlage (Klaus' Browser-Lauf).
+      SbkimUI.addButton("04_match", "KALIBRIER-BODEN messen (Zufallstexte → Schwellen-Empfehlung)", async function () {
+        // Unverwandte Zufallstexte aus verschiedenen Domänen = echter Boden.
+        var ctrl = [
+          "Das Wetter wird morgen wechselhaft mit einzelnen Schauern und Wind.",
+          "Die Quantenmechanik beschreibt das Verhalten subatomarer Teilchen.",
+          "Ein Fahrradreifen braucht regelmäßig den richtigen Luftdruck.",
+          "Der Mietvertrag regelt Kündigungsfristen und die Kaution.",
+          "Das Orchester stimmte die Instrumente vor dem Konzert.",
+          "Im Herbst färben sich die Blätter der Ahornbäume rot.",
+          "Die Tabellenkalkulation summiert die Spalten automatisch.",
+          "Der Wanderweg führt steil über Geröll zum Gipfelkreuz.",
+        ];
+        var vecs = await SbkimEmbedding.embedPassageBatch(ctrl);
+
+        function cosRaw(a, b) {
+          var d = 0, na = 0, nb = 0;
+          for (var i = 0; i < a.length; i++) { d += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+          return d / Math.sqrt(na * nb);
+        }
+        function pairStats(list) {
+          var n = list.length;
+          var xs = [];
+          for (var i = 0; i < n; i++) for (var j = i + 1; j < n; j++) xs.push(list[i][j]);
+          var mean = xs.reduce(function (s, x) { return s + x; }, 0) / xs.length;
+          var sd = Math.sqrt(xs.reduce(function (s, x) { return s + (x - mean) * (x - mean); }, 0) / xs.length);
+          return { mean: mean, sd: sd, min: Math.min.apply(null, xs), max: Math.max.apply(null, xs), n: xs.length };
+        }
+
+        // ROH-Boden
+        var rawM = [];
+        for (var a = 0; a < vecs.length; a++) { rawM[a] = []; for (var b = 0; b < vecs.length; b++) rawM[a][b] = cosRaw(vecs[a], vecs[b]); }
+        var raw = pairStats(rawM);
+
+        // ZENTRIERT (live MEAN_VECTOR = Mittel aller Vektoren abziehen, dann Cosinus)
+        var dim = vecs[0].length;
+        var mean = new Float32Array(dim);
+        for (var v = 0; v < vecs.length; v++) for (var d = 0; d < dim; d++) mean[d] += vecs[v][d] / vecs.length;
+        var cen = vecs.map(function (vv) { var w = new Float32Array(dim); for (var i = 0; i < dim; i++) w[i] = vv[i] - mean[i]; return w; });
+        var cenM = [];
+        for (var p = 0; p < cen.length; p++) { cenM[p] = []; for (var q = 0; q < cen.length; q++) cenM[p][q] = cosRaw(cen[p], cen[q]); }
+        var centered = pairStats(cenM);
+
+        var recommend = raw.mean + 2 * raw.sd;
+        var f = function (x) { return Number(x.toFixed(4)); };
+        return {
+          verfahren: "Boden aus " + ctrl.length + " unverwandten Zufallstexten (paarweiser Cosinus)",
+          rohBoden: { mean: f(raw.mean), sd: f(raw.sd), min: f(raw.min), max: f(raw.max), paare: raw.n },
+          aktuelleSchwelle: SbkimMatch.PROVIDER_MIN_MATCH,
+          schwelleImBoden: SbkimMatch.PROVIDER_MIN_MATCH < raw.mean + raw.sd,
+          empfehlungAbsolut: f(recommend) + "  (= mean+2·sd des Boden; PROVIDER_MIN_MATCH bewusst hierauf setzen)",
+          zentrierterBoden: { mean: f(centered.mean), sd: f(centered.sd), min: f(centered.min), max: f(centered.max) },
+          lesart: "Roh ist alles in einer schmalen Spanne nahe ~0.8 gequetscht (Anisotropie). " +
+            "Zentriert (Mean-Abzug) fällt der Boden auf ~0 — dann hieße 0 wieder 'unverwandt'. " +
+            "Mit Inhalts-Vektoren erwartet niedrigerer Roh-Boden als die alten Beschreibungs-Vektoren (0.8215). " +
+            "Entscheidung netzweit + dokumentiert (Tafel-Evolutions-Klausel), siehe LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md.",
+          hinweis: "Erster Klick lädt Modul 03 (~30 MB einmalig). Mehrfach klicken bestätigt Stabilität.",
+        };
+      });
+
       SbkimUI.addButton("04_match", "Ähnlich: Käsekuchen vs. Käsetorte (> 0.92)", async function () {
         var vecs = await SbkimEmbedding.embedPassageBatch(["Käsekuchen", "Käsetorte"]);
         var score = SbkimMatch.match(vecs[0], vecs[1]);

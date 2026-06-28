@@ -74,9 +74,29 @@ Re-Sign korrekt verifiziert, die `nodeId` bleibt stabil, Felder bleiben erhalten
 
 Nur **unkritische, nicht-personenbezogene** Inhalts-Schnipsel werden gesampelt
 (Labels/Titel/Kategorien). Niemals Klartext-Beträge, Belege oder Geheim-Fach-
-Inhalt. Sensible Apps (Mein-Tresor / BookLedgerPro) sampeln nur Fach-Namen /
-Kategorien. Der private Schlüssel bleibt lokal; nur die öffentliche Spore
-erscheint im Netz.
+Inhalt. Der private Schlüssel bleibt lokal; nur die öffentliche Spore erscheint
+im Netz.
+
+**Sensible Apps — differenzierter Folge-Entscheid (2026-06-28, festgelegt):**
+Die frühere Pauschal-Regel „sensible Apps sampeln nur Fach-Namen" war zu grob.
+Präzisierung (Tafel-Evolutions-Klausel, ausdrücklich):
+
+- **Mein-Rezeptbuch / Mein-Mixarium** (unkritische Domäne) — Inhalts-Vektor aus
+  Rezept-/Drink-Namen + Kategorien. Ausgerollt (Mixarium PR #80, Rezeptbuch
+  PR #269).
+- **BookLedgerPro** — Inhalts-Vektor **nur** aus den **Konto-/Kategorie-Labels**
+  des Standard-Kontenrahmens (non-PII). **Niemals** Beträge, Belege,
+  Buchungstexte, Geschäftspartner-Namen.
+- **Mein-Tresor / Jasons-Tresor** — **kein** Fach-Inhalt-Sampling. Ein
+  verschlüsselter Tresor hat bewusst **keine öffentliche Domäne**, und frei vom
+  Nutzer vergebene Fach-Namen (z.B. „Steuer 2025") könnten verraten. Die Tresore
+  behalten den **Beschreibungs-Vektor** (`embeddingSource:"description"`), bis
+  Klaus ausdrücklich eine **unkritische, fest vorgegebene Kategorie-Taxonomie**
+  (keine freien Nutzer-Namen) freigibt.
+
+Begründung: die öffentliche Spore wird ins Netz committet (server-los, von jedem
+lesbar) — was hineinfließt, ist dauerhaft öffentlich. Für einen Tresor ist das
+Gegenteil der Zweck.
 
 ## Querverweise
 

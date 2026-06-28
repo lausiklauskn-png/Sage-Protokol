@@ -119,6 +119,49 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 · Inhalts-Vektor-Rollout (Rezeptbuch) + Schwellen-Kalibrier-Instrument
+
+**Rolle:** Hauptsitzung (Branch `claude/threshold-calibration-rollout-0rq08m`).
+
+**Was getan:**
+- **Mein-Rezeptbuch ausgerollt** (Draft-PR #269, wartet auf Klaus' Merge + Browser-Re-Sign):
+  `sbkim/02_spore.js` + `sbkim/03_embedding.js` **byte-1:1 aus Sage** `src/modules/`
+  (md5-geprüft identisch; Diff zur Vorversion = **exakt** der Inhalts-Vektor-Block, kein
+  Repo-Drift). `sbkim-init.js` `__sbkimErzeugeSpore` sampelt jetzt bis zu 32 echte Rezepte
+  (`window.R`: Kategorie+Name, nur unkritische Labels, **kein PII**) → `embedContentVector`
+  → domainVector aus dem Inhalt. Greift **nur im Auto-Pfad** (öffentlicher Knopf „Mit dem
+  Netz verbinden" via `createIdentity`); das Siegel-Semantik-Textfeld bleibt bewusst
+  Beschreibungs-Vektor (Hülle nach Nutzer-Wahl). `embeddingSource`/`embeddingVersion`
+  mit-signiert, fail-soft, `index.html` unverändert (externes `<script>`, `app-sw`
+  network-first → kein Cache-Bust). SIGNAL Rezeptbuch seq 7→8.
+- **Schwellen-Kalibrier-Instrument gebaut** (Sage): Test-Bridge-Knopf
+  „KALIBRIER-BODEN messen" im Modul-04-Panel (`tests/manual_check.html`) misst im Browser
+  den Rausch-Boden aus 8 unverwandten Zufallstexten (roh + zentriert/Mean-Abzug) + gibt
+  eine Schwellen-Empfehlung `mean+2·sd` aus. `LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`
+  Stand-2026-06-28-Block ergänzt (Tafel-Evolutions-Klausel, explizit).
+- **Korrektur eines eigenen Fehlers (Achtsamkeit):** zunächst aus einem **veralteten
+  lokalen Checkout** behauptet, Mein-Rezeptbuch habe „kein origin/main / null SBKIM-Code".
+  Falsch. Nach `git fetch origin main` + `git ls-tree` je Repo verifiziert: Rezeptbuch ist
+  ein sauberer byte-1:1-Fall; **Mein-Tresor + Jasons-Tresor + BookLedgerPro ebenso** (alle
+  haben `sbkim/02+03` = clean pre-content Sage-Module + `sbkim-init.js` mit Browser-e5-
+  Spore-Pfad). Aussage „bespoke / kein Browser-e5" zurückgezogen.
+
+**Was offen:**
+- **Schwelle 0.80 neu setzen:** wartet auf Klaus' Browser-Messung (Knopf laufen lassen →
+  `status.json` `config.PROVIDER_MIN_MATCH` bewusst setzen). Headless nicht messbar.
+- **Re-Sign Rezeptbuch im Browser** (Klaus) → dann verified-match vorher (0.824068)/nachher.
+- **Tresore + BLP ausrollen:** byte-1:1 wie Rezeptbuch möglich; offen ist der **Daten-
+  Entscheid**, was `sampleContent()` bei sensiblen Apps liefert (Brief erlaubt Fach-Namen/
+  Kategorien; freie Fach-Namen bei Tresoren bleiben heikel — eigene Folge-Sitzung). BLP
+  (Konto-Kategorien, non-PII) ist der nächste klare Kandidat.
+- **SB-KIMTool-Point:** Demo-Hub (`sandbox/`, aufgezeichneter Lauf) — Inhalts-Vektor-
+  Anwendbarkeit am echten Pfad bestätigen, nicht annehmen.
+- **PULS-Überlauf:** Datei ist 7066 Zeilen (> 3000-Schutzgrenze) — Archivierung steht aus
+  (eigene Pflege-Sitzung, nicht in dieser).
+
+**Nächster sinnvoller Schritt:** Klaus mergt PR #269 + re-signt Rezeptbuch im Browser;
+parallel Kalibrier-Boden messen; dann BLP ausrollen + Tresor-Daten-Entscheid.
+
 ## 2026-06-28 · Inhalts-treuer Domänen-Vektor (von der Hülle zum Inhalt)
 
 **Rolle:** Bausitzung. · **Branch:** `claude/content-based-domain-vector-w3qx62`
