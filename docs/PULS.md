@@ -2282,6 +2282,29 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-28 (Sichttest) · ✅ Badge Browser-Sichttest GRÜN (Klaus) — Sage ↔ Mixarium
+
+Klaus' Live-Cross-App-Sichttest (Galaxy Tab S6, Splitscreen, beide auf
+deployter `main`): das **Verwandtschafts-Badge / „Wählen"-Tool** ist in
+**Sage UND Mein-Mixarium grün**. Schließt die offenen „wartet auf Klaus"-
+Punkte für PR #483 (Sage Badge) und PR #81 (Mixarium-Rollout).
+
+Belegt (7 Screenshots):
+- **Anmelden** beidseits („✓ Du bist im Raum"; Sage `FQhis3sdg…`,
+  Mixarium `7ikXSF1785…`).
+- **„Wer ist im Raum?"** → jeder sieht den anderen mit Badge
+  **„· verbunden -0.17"** + Andocken-Knopf.
+- **Andocken** → beidseitig **„✓ ANDOCK ETABLIERT"** (server-loser
+  Live-Cross-Knoten-Handshake).
+- **„nur verwandte: an"** → „Keiner der 1 Knoten ist (im engen Maß)
+  verwandt …" — Filter blendet korrekt aus.
+
+Bestätigt die Verträge: (1) **reine Anzeige, gatet nichts** — Andock klappt
+trotz -0.17 (Match 0.848 ≥ 0.80, 0.80-Riegel unberührt); (2) **korrekte
+Diskriminierung** — Hub (Sage) ↔ Endknoten (Mixarium) = „verbunden, nicht
+verwandt" (verschiedene Domänen). Läuft noch auf `RELATEDNESS_CENTER` **v1**;
+v2-Kalibrierung weiter offen (wartet auf Klaus' Panel-04-Mess-Lauf).
+
 ### 2026-06-28 (Folge) · „Wählen"-UI Badge: C.1 eingeordnet + C.2 Mixarium-Rollout (PR) · D blockiert
 
 Folge-Sitzung zum Brief `BRIEF_WAEHLEN_BADGE_RELATEDNESS_V2` (Branch
