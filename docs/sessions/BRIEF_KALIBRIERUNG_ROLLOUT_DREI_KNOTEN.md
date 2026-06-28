@@ -63,19 +63,33 @@ unterschiedlich „verwandt".
 - **SIGNAL §11.6 Pflicht** (netzweite Konstante): `sbkim/SIGNAL.json` `seq`+1,
   `headline`/`forNodes`, Bau-Protokoll-Zeile ins betroffene Postfach, push.
 
-## Schritt 2 — „Neues Modul" in Such-Werkzeug & Pinnwand bestätigen/nachziehen
+## Schritt 2 — Die zwei eigenständigen PWAs im Sage-Repo (eigener SW!) · Klaus 2026-06-28
 
-- **Such-Werkzeug (Modul 22):** trägt den „Wählen"-Umschalter (verbunden ↔
-  verwandt) bereits (Bau 22e). Nach Schritt 1 läuft er auf dem **kalibrierten**
-  Center automatisch (liest Modul 04). Prüfen: Such-Tool-Kopie
-  (`such-tool/modules/22…` + `04…`) byte-1:1, Drift-Guard grün.
-- **Pinnwand-PWA:** Strang A war bewusst KEIN Eingriff (sie zentriert seiten-
-  lokal/wachsend, passender als der netzweite Center für freien Q&A-Text —
-  siehe LEHRE-Doc 2026-06-28 Nacht). **Klaus' neue Bitte prüfen:** soll die
-  Pinnwand denselben „Wählen"-Schalter / dasselbe Modul bekommen? Falls ja:
-  **erst Plan an Klaus** (Pinnwand-UI-Architektur betroffen), dann reine
-  Anzeige-Schicht ergänzen (gatet nichts). Falls die seiten-lokale Zentrierung
-  bleibt: das ausdrücklich als bewusste Abweichung dokumentieren.
+Im Sage-Repo laufen **zwei separate PWAs mit eigenem Service Worker** — sie
+müssen **mit-umgeschrieben** werden, und ihr **SW braucht einen Cache-Bust**
+(`CACHE_VERSION` hochzählen), sonst liefert der SW die alten Module weiter.
+
+- **Such-Werkzeug (`such-tool/`)** — eigener SW `sbkim-such-tool-v1`. Trägt das
+  Tool **bereits** (`such-tool/modules/04_match.js` + `22_such_widget.js`,
+  „Wählen"-Umschalter, Bau 22e). **To-do beim v2-Rollout:** `04_match.js`
+  (+ ggf. `22…`) byte-1:1 auf den kalibrierten Sage-main-Stand ziehen
+  (Drift-Guard grün) **und** `CACHE_VERSION` in `such-tool/sbkim-sw.js`
+  hochzählen (`…-v1` → `…-v2`).
+- **Pinnwand (`pinnwand/`)** — eigener SW `sbkim-pinnwand-v15`. Hat **kein**
+  `04_match.js`; nutzt **eigene Inline-Match-Logik** in `pinnwand/index.html`
+  (seiten-lokale/whitened Zentrierung, „der INHALT entscheidet", Z. ~587–633).
+  **Klaus-Entscheid 2026-06-28: BEIDES anbieten — Umschalter.** Die Pinnwand
+  bekommt eine wählbare **Zentrierungs-Quelle**:
+  - **seiten-lokal (Default)** — die bestehende mitwachsende Zentrierung bleibt
+    (laut LEHRE-doc besser für freien Q&A-Text);
+  - **netzweiter v2-Center** — optional zuschaltbar: nutzt denselben
+    `RELATEDNESS_CENTER` v2 wie die anderen Knoten (gleiche Vektorengenauigkeit).
+  Umsetzung: reine **Anzeige-/Mess-Schicht** (gatet nichts), Umschalter
+  persistiert (localStorage), fail-soft (ohne Vektor → Default). **Plan-vor-
+  Code** (Pinnwand-UI/Match-Architektur betroffen) + `CACHE_VERSION` hochzählen
+  (`…-v15` → `…-v16`). Der v2-Center muss als Konstante in die Pinnwand
+  (byte-gleich zu Modul 04) wandern bzw. aus einer geteilten Kopie gelesen
+  werden — **netzweite Identität der Konstante wahren** (SIGNAL §11.6).
 
 ## Schritt 3 — Netzweiter Rollout (NACH Schritt 1+2)
 
@@ -120,8 +134,11 @@ messen „verwandt" unterschiedlich).
 1. (Schritt 1) v2-Konstante nur bei `freigabeReif`, netzweit identisch (alle
    byte-Kopien), `smoke_bau04e` grün, SIGNAL gesetzt, Referenz-Fälle
    dokumentiert.
-2. (Schritt 2) Such-Werkzeug + Pinnwand tragen das Wählen-Modul (oder
-   dokumentierte bewusste Abweichung), Drift-Guard grün.
+2. (Schritt 2) **Such-Werkzeug** byte-1:1 auf v2-Center + SW `CACHE_VERSION`
+   hochgezählt; **Pinnwand** mit Zentrierungs-Umschalter (seiten-lokal Default ↔
+   netzweiter v2-Center, Klaus-Entscheid), reine Anzeige (gatet nichts), SW
+   `CACHE_VERSION` hochgezählt. Beide: nach Update im Browser hart neu laden
+   (SW-Cache-Bust greift).
 3. (Schritt 3) Sage / SB-KIMTool-Point / family-projekt.de **und alle weiteren
    Knoten mit `04_match`/Andock-Pfad** byte-1:1 auf kalibriertem Stand (v2-Center
    + Zwei-Maß), je Drift-Guard grün, Lade-Reihenfolge bestätigt, `npm test`/Smoke
