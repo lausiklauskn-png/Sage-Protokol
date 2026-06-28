@@ -161,6 +161,20 @@ generateOwnSpore(meta, key?: string) → Promise<SporeJson>
   // meta-Pflichtfelder: domain, nodeType, endpoint.
   // Wirft InvalidSporeMetaError bei Form-/Wertefehlern in meta.
 
+regenerateOwnSpore(updates, key?: string) → Promise<SporeJson>
+  // Sporen-Regeneration (Modul 18 Sub f, 2026-06-28). Erzeugt die Spore mit
+  // der BESTEHENDEN Identität (gleiche nodeId) neu — KEIN neuer Schlüssel.
+  // `updates` überschreibt einzelne Felder; alle NICHT genannten Felder werden
+  // aus der vorhandenen Spore übernommen (sonst gingen z.B. embeddingNeeds beim
+  // Neu-Signieren verloren). Default-Parameter key=getActiveIdentityKey().
+  // Typischer Einsatz: der Endknoten hat seinen domainVector inhalts-treu neu
+  // gerechnet (Modul 03 embedContentVector) und reicht ihn als
+  // updates.domainVector + embeddingSource:"content" herein.
+  // embeddingVersion-Logik: ändert sich der domainVector (updates.domainVector
+  // ist ein Array), wird die Version hochgezählt (Drift-Marker); sonst bleibt
+  // sie erhalten. Ein explizites updates.embeddingVersion gewinnt immer.
+  // Intern: baut die gemergte meta + ruft generateOwnSpore(meta, key).
+
 getOwnSpore(key?: string) → Promise<SporeJson | null>
   // Default-Parameter key=getActiveIdentityKey(). Lädt die persistierte
   // Spore der angegebenen Identität. null, wenn der Slot leer ist.
@@ -345,6 +359,8 @@ ein und sind damit signaturpflichtig):
   "domainVector":          [/* 384 floats, optional bei kleinen Spores */],
   "embeddingCapabilities": [/* 384 floats, NEU additiv aus Spec-Sitzung M04-Erweiterung */],
   "embeddingNeeds":        [/* 384 floats, NEU additiv aus Spec-Sitzung M04-Erweiterung */],
+  "embeddingSource":       "content",   // "content" | "description" — wie der domainVector entstand (2026-06-28)
+  "embeddingVersion":      2,           // Re-Embedding-Zähler / Drift-Marker, +1 bei Vektor-Wechsel (2026-06-28)
   "endpointPaths":         { /* override für INTERFACES.md §3, falls Hoster ohne .well-known */ },
   "stammCategories":       ["Vorspeisen", "Fleisch", "Fisch", "Vegetarisch"],   // Kerngebiet (ARCHITEKTUR.md §8)
   "guestCategories":       ["Begleitgetränke", "Weinkarte"]                     // UI-Label: "Überraschungs-Plus"
@@ -359,6 +375,40 @@ Reihenfolge — die ist Teil der Signatur). Disjunktheit (kein Element
 in beiden Listen) ist Hosting-Pflicht des Knotens, **kein**
 `verifyForeignSpore`-Abbruch-Grund — Empfänger nehmen die Listen so an,
 wie sie kommen.
+
+### Inhalts-treuer domainVector + Provenienz (2026-06-28)
+
+Bis 2026-06-28 entstand der `domainVector` aus der **Selbstbeschreibung**
+(`domainDescription` + `domainKeywords`) — der „Hülle". Drei Knoten, die
+sich alle „Rezeptbuch" nennen, aber Kuchen / Sushi / Getränke führen, lagen
+damit nahezu identisch im Bedeutungs-Raum. **Klaus' Entscheid:** der
+**Inhalt** muss entscheiden. Der `domainVector` wird darum aus dem echten
+App-Inhalt gerechnet (Modul 03 `embedContentVector` über bis zu 32 echte
+Einträge), sobald Inhalt vorhanden ist; ein **leerer/neuer Knoten** fällt
+auf den Beschreibungs-Vektor zurück.
+
+Zwei additive, optionale, **signaturpflichtige** Felder machen das
+nachvollziehbar (PROTOCOL_VERSION bleibt `"0.1"`):
+
+- **`embeddingSource`** (`"content" | "description"`) — woraus der
+  `domainVector` gebaut wurde. Fehlt das Feld, ist die Quelle unbekannt
+  (Alt-Spore) und Konsumenten behandeln den Vektor wie bisher.
+- **`embeddingVersion`** (number) — Re-Embedding-Zähler. `regenerateOwnSpore`
+  zählt ihn bei jedem domainVector-Wechsel um 1 hoch (Drift-Erkennung: ein
+  Empfänger sieht, dass sich der Inhalt eines Knotens geändert hat).
+
+**Datenschutz (verbindlich):** nur **unkritische, nicht-personenbezogene**
+Inhalts-Schnipsel (Labels/Titel/Kategorien) dürfen gesampelt werden — niemals
+Klartext-Beträge, Belege oder Geheim-Fach-Inhalt (sensible Apps wie
+Mein-Tresor/BookLedgerPro: nur Fach-Namen/Kategorien). Das Sampling liefert
+die **App** über einen `sampleContent()`-Callback (Bundle `createIdentity` /
+Modul 18) — Modul 02/03 kennen den App-Inhalt nicht selbst.
+
+**Schwellen-Hinweis:** Inhalts-Vektoren liegen anders im Raum als
+Beschreibungs-Vektoren. Die `PROVIDER_MIN_MATCH = 0.80`-Schwelle ist nach der
+netzweiten Umstellung **bewusst neu zu kalibrieren** (zentrierter Cosinus,
+siehe `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`) — eigene Folge-Sitzung mit
+echten Vorher/Nachher-Browser-Messwerten, nicht still.
 
 ### M04-Erweiterung: embeddingCapabilities + embeddingNeeds (Brief 03)
 

@@ -90,9 +90,10 @@ für die Endknoten-Domänen (Kochrezepte / Cocktails).
 
 ## Schnittstelle
 
-Modul 03 exportiert **sechs** öffentliche Funktionen. Jede Embed-
-Funktion liefert ein `Promise` auf eine bereits L2-normalisierte
-`Float32Array(384)`.
+Modul 03 exportiert **sieben** öffentliche Funktionen (sechs Embed-
+Funktionen + `isReady`). Jede Embed-Funktion liefert ein `Promise` auf eine
+bereits L2-normalisierte `Float32Array(384)` (bzw. `embedContentVector` ein
+`{ vector, count, source }`-Objekt).
 
 ```
 init() → Promise<void>
@@ -120,7 +121,31 @@ embedQueryBatch(texts: string[]) → Promise<Float32Array[]>
 
 embedPassageBatch(texts: string[]) → Promise<Float32Array[]>
   // Mehrere Inhalte in einem Modell-Pass. Reihenfolge bleibt erhalten.
+
+embedContentVector(samples, opts?) → Promise<{ vector: Float32Array(384), count: number, source: "content" }>
+  // Inhalts-treuer Domänen-Vektor (2026-06-28). Baut EINEN repräsentativen,
+  // L2-normalisierten Passage-Vektor aus vielen echten Inhalts-Schnipseln:
+  // jeden Schnipsel einbetten (gedeckelt), den Schwerpunkt (Mittelwert)
+  // bilden, wieder normalisieren. samples = Array aus Strings ODER
+  // { label, text }-Objekten (Label+Text werden verkettet). opts.max
+  // (Default 32 = CONTENT_SAMPLE_MAX) deckelt die Anzahl. Leere Einträge
+  // werden fail-soft übersprungen; sind ALLE leer → EmptyInputError;
+  // Nicht-Array → EmbeddingError. Das ist der „beschreibe den Knoten durch
+  // seinen INHALT statt durch seine Hülle"-Pfad (Modul 18 Sub f/g, Modul 02
+  // regenerateOwnSpore). Modul-Grenze: Verketten/Mitteln von EINGABE-Texten
+  // zu einem Bedeutungs-Punkt ist KEINE Ähnlichkeits-Rechnung — die bleibt
+  // Modul 04.
 ```
+
+### Modul-Grenze: warum embedContentVector hier liegt (2026-06-28)
+
+Modul 03 „macht nicht: Keine Ähnlichkeitsberechnung". Das bleibt wahr:
+`embedContentVector` rechnet **keinen Cosinus und keinen Match** — es
+kombiniert mehrere Eingabe-Texte zu **einem** L2-normalisierten Bedeutungs-
+Punkt (Schwerpunkt auf der Einheits-Kugel), exakt das, was `embedPassage`
+für einen einzelnen Text tut, nur über einen kleinen Korpus. Das Kombinieren
+liegt **vor** der Bewertung; das Bewerten (Schwelle, Schicht-Scores) bleibt
+ausschließlich Modul 04. Diese Grenze ist verbindlich.
 
 ### Warum vier Funktionen statt eines `mode`-Parameters
 
