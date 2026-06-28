@@ -105,7 +105,10 @@
   async function sageQueryNode(nodeId, text) {
     try {
       if (!window.SbkimAnastomose || typeof window.SbkimAnastomose.queryNostr !== "function") return [];
-      var res = await window.SbkimAnastomose.queryNostr(nodeId, text, { timeoutMs: 12000 });
+      // 25 s: großzügig genug, dass ein „kalt" geöffneter Nachbar sein
+      // Embedding-Modell (~30 MB einmalig) laden + den Korpus bauen kann,
+      // bevor er antwortet. Danach (warm) kommt die Antwort viel schneller.
+      var res = await window.SbkimAnastomose.queryNostr(nodeId, text, { timeoutMs: 25000 });
       if (res && res.outcome === "answered" && Array.isArray(res.results)) return res.results;
       return [];
     } catch (e) {
