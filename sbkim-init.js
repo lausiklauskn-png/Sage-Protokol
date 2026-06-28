@@ -120,6 +120,40 @@
     }
   }
 
+  // createIdentity-Callback für Modul 23 (Rendezvous): erzeugt die LEBENDE
+  // Sage-Spore, falls im aktuellen Browser noch keine da ist — gleiche CONFIG
+  // wie der Andock-Wizard (window-lexikalisch geteiltes SBKIM_SEMANTIK_CONFIG,
+  // mit Fallback). Wird nur aufgerufen, wenn getOwnSpore() leer ist; sonst
+  // meldet sich der Knoten mit der vorhandenen Identität an. Modul 03 lädt dabei
+  // einmalig das ~30-MB-Embedding-Modell.
+  async function sageCreateRendezvousIdentity() {
+    if (!window.SbkimEmbedding || !window.SbkimSpore) {
+      throw new Error("Module 02/03 nicht geladen — Identität kann nicht erzeugt werden.");
+    }
+    var C = (typeof SBKIM_SEMANTIK_CONFIG !== "undefined" && SBKIM_SEMANTIK_CONFIG) || {
+      domain: "Mycel-Bibliothek",
+      endpoint: "https://lausiklauskn-png.github.io/Sage-Protokol/",
+      nodeType: "hybrid",
+      nodeName: "Sage",
+      domainKeywords: ["SBKIM-Glossar", "Mycel-Vokabular", "Protokoll-Doku", "Heilige Tafeln", "Karten", "Schwesternetz-Beobachtungen"],
+      defaultDomainDescription: "Lebendiges SBKIM-Vokabular und Protokoll-Doku: Glossar, INTERFACES, ARCHITEKTUR, Karten, PULS.",
+    };
+    await window.SbkimEmbedding.init();
+    var desc = C.defaultDomainDescription || "Sage-Protokoll — SBKIM-Mycel-Bibliothek.";
+    var vec = await window.SbkimEmbedding.embedPassage(desc + ". " + (C.domainKeywords || []).join(", "));
+    await window.SbkimSpore.generateOwnSpore({
+      domain: C.domain,
+      endpoint: C.endpoint,
+      nodeType: C.nodeType,
+      nodeName: C.nodeName,
+      domainDescription: desc,
+      domainKeywords: C.domainKeywords,
+      domainVector: Array.from(vec),
+      stammCategories: C.stammCategories,
+      guestCategories: C.guestCategories,
+    });
+  }
+
   async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) {
       warn("ServiceWorker", new Error("navigator.serviceWorker fehlt — Browser zu alt."));
@@ -328,6 +362,23 @@
         queryNode: sageQueryNode,                 // Knoten-Bereich LIVE übers Relais (Modul 05 queryNostr)
         // Richter Default aus (gratis). Internet-Bereich: ohne SearXNG-URL
         // = neuer Tab; Klaus kann später eine eigene Instanz eintragen.
+      });
+    });
+
+    // 23 Rendezvous — öffentlicher Floating-Knopf „🌐 Mit dem Netz verbinden"
+    // (Klaus' Festlegung 2026-06-28: sofort öffentlich, eigener kleiner
+    // Floating-Knopf). Sage ist Hybrid (Hub UND Knoten) und matcht sowohl
+    // family (0.829) als auch Mixarium (0.806) >= 0.80 — damit kann Sage der
+    // Gegenpart für einen GRÜNEN Cross-App-„ETABLIERT"-Test sein. Das geteilte
+    // UI-Modul (SbkimRendezvousUI) mountet den Knopf; die Mechanik liegt in
+    // Modul 23 (SbkimRendezvous), das Relais/Anastomose/Spore lazy zur Klick-
+    // Zeit auflöst. createIdentity reicht Sages eigene generateOwnSpore-Geste
+    // durch. Verfassungstreu: nutzer-ausgelöst, init mountet nur den Knopf.
+    await initModule("SbkimRendezvousUI", function () {
+      if (!window.SbkimRendezvousUI) return false;
+      return window.SbkimRendezvousUI.init({
+        nodeName: "Sage-Protokoll",
+        createIdentity: sageCreateRendezvousIdentity,
       });
     });
 

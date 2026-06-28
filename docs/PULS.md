@@ -119,6 +119,27 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## Pflege 2026-06-28 · Sage-Page-Mount des Rendezvous-Knopfs
+
+**Rolle:** Folge-Pflege (Live-Test-Enabler) · **Branch:** `claude/module-23-rendezvous-rollout-zqaa8u`
+
+Klaus' Live-Test (Mixarium ↔ family) hat das Rendezvous-Verfahren live bestätigt:
+Mixarium fand family's **lebende** Visitenkarte im Raum und handshakte die lebende
+ID — der Handshake lief korrekt in den lokalen Bedeutungs-Riegel (Mixarium↔family
+0.7753 < 0.80, kein Fehler, Drinks vs. Werkzeuge zu verschieden). Für ein grünes
+„✓ ETABLIERT" fehlte ein **≥0.80-Partner**, der auch live im Raum ist.
+
+**Getan:** `sbkim-init.js` mountet jetzt `SbkimRendezvousUI` (öffentlicher 🌐-Knopf,
+nodeName „Sage-Protokoll", `createIdentity` = `sageCreateRendezvousIdentity` über
+`generateOwnSpore` mit der Andock-Wizard-CONFIG). Sage ist Hybrid und matcht
+**family 0.829** und **Mixarium 0.806** (beide ≥0.80) → Sage kann der grüne
+Gegenpart sein. Modul-Skripte lagen seit #473 schon geladen; nur der `init`-Aufruf
+kam dazu. Headless-Chromium (SW geblockt) **6/6 grün** (Knopf mountet, Panel
+toggelt, _meta.nodeName „Sage-Protokoll"). §11.6 SIGNAL seq 36.
+
+**Offen:** Live-Test **Sage ↔ family** (oder Sage ↔ Mixarium) für das grüne
+„ETABLIERT" — nach Merge + Pages-Deploy, Hard-Reload. Wartet auf Klaus.
+
 ## Bau-Sitzung 2026-06-28 · Modul 23 Rendezvous (gemeinsamer Raum)
 
 **Rolle:** Bausitzung (Spec + Bau Modul 23) · **Branch:** `claude/module-23-rendezvous-rollout-zqaa8u`
