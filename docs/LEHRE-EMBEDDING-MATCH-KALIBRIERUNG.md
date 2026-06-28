@@ -168,9 +168,23 @@ nichts**:
   Vektoren** — der falsche Schwerpunkt für freien Antworttext. Den netzweiten
   Mittelwert hier aufzudrücken würde den Boden-Abzug **verschlechtern**. Der
   KI-Richter ist dort ebenfalls schon **opt-in** (Anbieter-Dropdown + Schlüssel
-  + Knopf, Default aus). **Konsequenz: an der Pinnwand bewusst KEIN Eingriff**
-  (der Brief erlaubt das ausdrücklich: „nur anwenden, wenn es dort wirklich
-  besser wird"). Sauber dokumentiert statt stillschweigend umgangen.
+  + Knopf, Default aus). **Konsequenz: an der Pinnwand bewusst KEIN
+  struktureller Eingriff** (der Brief erlaubt das ausdrücklich: „nur anwenden,
+  wenn es dort wirklich besser wird"). Sauber dokumentiert statt
+  stillschweigend umgangen.
+
+  - **Folge (2026-06-28, tiefe Nacht Folge²) — ehrliche Beschriftung
+    nachgezogen.** Der Brief `BRIEF_PINNWAND_VERWANDT_KI.md` hat den Befund
+    re-geprüft; Klaus' Entscheid (AskUserQuestion): **kein neuer „· KI"-Schalter**
+    (redundant zum schon-opt-in-Richter), aber die **Beschriftung geschärft** —
+    der gratis Cosinus heißt jetzt auch in der Pinnwand-UI explizit
+    **Rangfolge** („Nähe zur Frage, kein Verwandt-Urteil — das liefert der
+    ⚖️ KI-Richter"), Footer um den Cosinus=Rangfolge-vs-Richter=Urteil-Kontrast
+    ergänzt. Damit trägt der zweite Anzeige-Ort (Pinnwand) dieselbe ehrlich
+    geschärfte Lesart wie Such-Widget (Modul 22) + Raum (Modul 23): **Cosinus =
+    Rangfolge, KI-Richter = Wahrheit.** Reine Anzeige, kein Kontrakt berührt.
+    Nebenbei den vorbestehenden Drift-Guard `pinnwand/modules/03_embedding.js`
+    (hinter PR #477 zurück) byte-1:1 geheilt (`_smoke.mjs` 58/58).
 
 ---
 

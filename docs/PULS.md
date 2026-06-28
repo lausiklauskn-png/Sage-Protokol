@@ -119,6 +119,38 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 (tiefe Nacht, Folge²) · Pinnwand — ehrliche Beschriftung (Cosinus = Rangfolge) + Drift-Guard geheilt
+
+**Rolle:** Pflege (Branch `claude/pinnwand-verwandt-ki-iyzpi7`).
+
+**Auftrag** (Brief `BRIEF_PINNWAND_VERWANDT_KI.md`): Die Pinnwand aufs „verwandt · KI"-
+Muster bringen wie Modul 22. **Befund nach Code-Lesen:** die Pinnwand hat das Muster im
+Kern **schon** — und ist sogar weiter als Modul 22:
+- **Gratis-Pfad:** opt-in „🧠 nach Bedeutung sortieren", schon **zentrierter (whitened)
+  Cosinus** (`relevance()`→`whiten()`), mit **seiten-lokalem, wachsendem** Schwerpunkt
+  (`accumulate`/`meanVec`, ab ≥3 Texten) — bewusst **nicht** der netzweite
+  `RELATEDNESS_CENTER` (für freien Q&A-Text korrekt+besser, siehe LEHRE 2026-06-28 Nacht).
+- **KI-Richter:** schon **opt-in/BYOK/fail-soft** — Dropdown Claude/Gemini/OpenRouter (Cloud)
+  + WebLLM (gratis im Browser), Schlüssel RAM-only (nur mit Häkchen lokal), Urteil hat Vorrang
+  vor Cosinus, Begründung je Treffer. **Gatet nichts.**
+
+**Klaus-Entscheid (AskUserQuestion):** (1) **nur ehrliche Beschriftung**, KEIN neuer
+„· KI"-Schalter (wäre redundant zum bestehenden Richter-Dropdown); (2) **Schnipsel-Mittel-Lead
+weiter liegen lassen**.
+
+**Getan (reine Anzeige + Test-Health, kein Kontrakt berührt):**
+- **Ehrliche Beschriftung** in `pinnwand/index.html`: Cosinus-Status jetzt klar als
+  **Bedeutungs-Rangfolge** (an: „Zahl = Nähe zur Frage, kein Verwandt-Urteil — das liefert
+  der ⚖️ KI-Richter"); Footer um den ehrlichen Cosinus=Rangfolge-vs-Richter=Urteil-Kontrast
+  geschärft (Messreihe trennt verwandt/unverwandt gratis nicht zuverlässig → Urteil = Richter).
+  Deckt sich mit LEHRE „Cosinus = Rangfolge, KI-Richter = Wahrheit".
+- **Drift-Guard geheilt:** `pinnwand/modules/03_embedding.js` war hinter `src/modules/03_embedding.js`
+  zurück (PR #477 `embedContentVector` nur in `src/`) → byte-1:1 re-synct. Pinnwand nutzt die
+  Funktion nicht (inert), aber `_smoke.mjs` jetzt **58/58 grün** (vorher 57/58).
+
+**Offen / Sichttest:** Browser-Sichttest der geänderten Texte wartet auf Klaus (Live-Seite nach
+Merge). Kern-Logik (Embedding/Richter/Relays) unverändert.
+
 ## 2026-06-28 (tiefe Nacht, Folge) · Bau 22 „verwandt · KI" — Verwandtschafts-Maß opt-in vom KI-Richter
 
 **Rolle:** Bau (Branch `claude/relatedness-ki-richter-optin-vn8x40`).
