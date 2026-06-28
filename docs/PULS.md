@@ -119,6 +119,47 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-06-28 (Nacht) · „Wählen"-UI — Umschalter verbunden ↔ verwandt im Such-Widget (Modul 22)
+
+**Rolle:** Bausitzung (Branch `claude/brief-ui-selection-neh6gx`). Brief
+`docs/sessions/BRIEF_WAEHLEN_UI_GROB_GENAU.md`. Freibrief gilt (CLAUDE.md § Freibrief).
+
+- **Das Zwei-Maß-Design aus Bau 04.E in eine sichtbare Auswahl verdrahtet** (Klaus'
+  Idee „zwei Messungen wählen"). Modul 22 bekommt einen **Umschalter** in der
+  Optionen-Zeile: **„🧬 verwandt (genau)"** + **„nur verwandte"**.
+  - **„verbunden" (grob, Default):** Treffer in roher Cosinus-Reihenfolge (gewohnt).
+  - **„verwandt" (genau):** nach **zentriertem** Cosinus (Modul 04 `relatedness()`)
+    umsortiert — echte Themen-Verwandte oben, fremde Domänen unten; 🧬-Badge je
+    Treffer; „nur verwandte" blendet Fremde ganz aus.
+- **Reine Anzeige-Schicht** — `relatedness()` **gatet nichts**, Andock-Handshake
+  (Modul 05, `PROVIDER_MIN_MATCH` 0.80) **unberührt** (Regressionscheck grün).
+  **Modul 04 nicht angefasst** (nur die öffentliche Fläche genutzt). Query-Vektor
+  (Modul 03 `embedQuery`, RAM-only) + Treffer-`passageVec` reisen durch die
+  Kandidaten; **nichts davon persistiert** (kein PII, keine Vektor-Last in LS).
+  Konsequent **fail-soft** (ohne Modul 04 / queryVec / passageVec → degradiert auf
+  „verbunden"). User-Wahl persistiert in `sbkim_search_widget_view`.
+- **Surface** `+setViewMode/getViewMode/setRelatedOnly/rankView` (rankView = reine,
+  headless testbare Funktion), `_meta.viewMode/relatedOnly/hasQueryVec`,
+  `init({viewMode?,relatedOnly?})`.
+- **Smoke** neu `tests/smoke_bau22e_waehlen.mjs` **27/27** — an den **echten**
+  committeten Knoten-Domänen-Vektoren: Schwestern (Jason↔MeinTresor) /
+  Essen-Trinken (Mixarium↔Rezeptbuch) oben, Hub↔Endknoten (Sage↔BLP) raus.
+  Regression grün: `smoke_bau22` 257/257, `smoke_bau04e` 29/29, `smoke_bau04d`
+  68/68, Standalone-Drift-Guard 46/46. Byte-identische Kopie `such-tool/modules/22…`
+  mitgezogen. INTERFACES §1 Modul 22 + Karte 22 nachgezogen.
+- **Pinnwand-Befund (nicht gebaut, Folge-Sitzung):** sortiert ebenfalls „nach
+  Bedeutung" (`.a-score`-Cosinus + opt. `.a-judge`) → würde vom selben Zwei-Maß-
+  Schalter profitieren; bewusst abgegrenzt (kein Zwang laut Brief, saubere PR-Grenze).
+- **Offen / nächster Schritt:** **Browser-Sichttest des Umschalters wartet auf Klaus**
+  (headless ersetzt ihn nicht) — Widget öffnen, „🧬 verwandt" ankreuzen, prüfen ob
+  echte Verwandte hochsortieren. Danach optional Pinnwand-Folge-Sitzung + Modul-23-
+  UI-Verwandtschafts-Badge.
+- **Manual-Check:** `tests/manual_check.html` Panel 22 lädt das geänderte Modul
+  unverändert; der Umschalter ist Teil der Live-Widget-UI (kein neuer Panel-Knopf
+  nötig) — Sichttest läuft am echten Widget, wartet auf Klaus.
+
+---
+
 ## 2026-06-28 (Abend) · Kalibrierung abgeschlossen — zentrierter Cosinus (Bau 04.E) + BLP-Rollout + Mixarium-Merge
 
 **Rolle:** Hauptsitzung (Branch `claude/rest-rollout-threshold-calibration-l6c92u`).

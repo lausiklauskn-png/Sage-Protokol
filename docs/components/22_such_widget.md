@@ -627,6 +627,65 @@ await SbkimSearchWidget.init({
 - Z-Index 9985 — koexistiert mit den Navleisten-Lampen der Sage-Page (kein
   Modul-17-Widget auf der Sage-Page).
 
+## Anzeige-Sicht „verbunden" (grob) ↔ „verwandt" (genau) (Brief Wählen-UI, 2026-06-28)
+
+Klaus' Idee (2026-06-28): „Was wäre, wenn man **zwei Messungen wählen könnte** —
+eine mit niedrigem und eine mit genauerem Cosinus-Wert?" Das traf das in Bau 04.E
+gebaute **Zwei-Maß-Design** (Modul 04 `match()` roh ↔ `relatedness()` zentriert).
+Diese Folge-Sitzung **verdrahtet** das zweite Maß in eine **sichtbare Auswahl** im
+Such-Widget.
+
+**Ein Umschalter in der Optionen-Zeile, zwei Häkchen:**
+
+- **„🧬 verwandt (genau)"** — schaltet die Anzeige-Sicht:
+  - **aus → „verbunden" (grob, Default):** alle gefundenen Treffer in ihrer
+    gewohnten rohen Cosinus-Reihenfolge (PROVIDER_MIN_MATCH-Boden). Nichts
+    überrascht an der bekannten Sicht.
+  - **an → „verwandt" (genau):** Treffer nach dem **zentrierten** Cosinus
+    (Modul 04 `relatedness()`) **absteigend** umsortiert — echte Themen-Verwandte
+    oben, fremde Domänen unten. Jeder Treffer trägt zusätzlich einen
+    **🧬-Verwandtschafts-Badge** (lila, wenn `isRelated` ≥ `RELATEDNESS_MIN`).
+- **„nur verwandte"** (nur im verwandt-Modus sichtbar) — blendet nicht-verwandte
+  (fremde) Domänen ganz aus.
+
+**Verträge / Disziplin:**
+
+- **Reine Anzeige-Schicht.** `relatedness()` **gatet nichts**. Der Andock-Handshake
+  (Modul 05, `PROVIDER_MIN_MATCH` 0.80) bleibt **unverändert** — der Umschalter
+  filtert/sortiert NUR die Darstellung. Modul 04 wird **nicht** angefasst (nur
+  seine öffentliche Fläche `relatedness`/`isRelated` genutzt).
+- **Query-Vektor** wird pro Suche einmal über Modul 03 `embedQuery` gebildet
+  (RAM-only, `lastQueryVec`); **Treffer-Inhalts-Vektor** (`passageVec`) reist durch
+  die Kandidaten. Beides wird **nicht** persistiert (keine Vektor-Last in
+  localStorage, kein PII). Wiederhergestellte Treffer (Reload) haben keinen
+  `passageVec` → die Sicht degradiert sauber auf „verbunden".
+- **Fail-soft.** Ohne Modul 04 / ohne Query-Vektor → Liste unverändert. Treffer
+  ohne `passageVec` → `relatedness` null (wandern nach unten bzw. fallen bei „nur
+  verwandte" raus). `relatedness()` `InvalidVectorError` wird **pro Treffer**
+  abgefangen — nie bricht die ganze Liste.
+- **User-Wahl heilig.** Sicht + „nur verwandte" persistieren in
+  `localStorage` `sbkim_search_widget_view` und überstehen Re-Init; Default bleibt
+  „verbunden".
+
+**Surface:** `setViewMode("verbunden"|"verwandt")` · `getViewMode()` ·
+`setRelatedOnly(bool)` · `rankView(treffer, queryVec, {mode,relatedOnly})` (reine,
+headless testbare Funktion). `_meta.viewMode` / `_meta.relatedOnly` /
+`_meta.hasQueryVec`. `init({viewMode?, relatedOnly?})`.
+
+**Geprüft:** `tests/smoke_bau22e_waehlen.mjs` **27/27** — an den echten committeten
+Knoten-Domänen-Vektoren: Schwestern (Jason↔MeinTresor) / Essen-Trinken
+(Mixarium↔Rezeptbuch) oben, Hub↔Endknoten (Sage↔BLP) raus; Andock-Pfad
+(`PROVIDER_MIN_MATCH` 0.80) im Regressionscheck unberührt. **Browser-Sichttest des
+Umschalters wartet auf Klaus.** Byte-identische Kopie `such-tool/modules/22…`
+mitgezogen (Drift-Guard grün).
+
+**Pinnwand (Befund, NICHT in dieser Sitzung gebaut):** die Pinnwand sortiert
+ebenfalls „nach Bedeutung" (`embedQuery`/`embedPassage` + `.a-score`-Cosinus +
+optionaler `.a-judge`). Sie würde vom selben Zwei-Maß-Schalter profitieren
+(rohen `.a-score` → zentrierten Cosinus heben, Richter opt-in). Bewusst als
+**eigene Folge-Sitzung** abgegrenzt gelassen (kein Zwang laut Brief, saubere
+PR-Grenze) — siehe Folge-Brief.
+
 ## Mehrfach-Suche: drei getrennte Bereiche (Bau 22 Mehrfach, 2026-06-21)
 
 Klaus' Vision: das Werkzeug durchsucht **drei getrennt wählbare Bereiche**

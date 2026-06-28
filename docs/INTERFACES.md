@@ -4358,6 +4358,23 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         // reicht an SbkimMatch.setLocalCorpus durch.
   search(text)       → Promise<SearchResult>  // komponierte Suche, auch direkt
                                         // aufrufbar (Tests).
+  // ---- Anzeige-Sicht „verbunden" (grob) ↔ „verwandt" (genau) (Brief Wählen-UI 2026-06-28) ----
+  // REINE ANZEIGE — gatet NICHTS (Andock-Handshake Modul 05 / PROVIDER_MIN_MATCH
+  // 0.80 unberührt). Sortiert/filtert nur die schon gefundene Trefferliste.
+  setViewMode(mode)  → "verbunden"|"verwandt"  // "verbunden"=rohe Cosinus-Reihenfolge
+                                        //   (Default, gewohnt); "verwandt"=nach zentriertem
+                                        //   Cosinus (Modul 04 relatedness()) umsortiert.
+                                        //   Persistiert, re-rendert. Ungültig → no-op.
+  getViewMode()      → "verbunden"|"verwandt" (sync)
+  setRelatedOnly(on) → boolean          // im "verwandt"-Modus: nicht-isRelated-Treffer
+                                        //   (fremde Domänen) ganz ausblenden. Persistiert.
+  rankView(treffer, queryVec, {mode?,relatedOnly?}) → Array  // REINE Funktion (keine
+                                        //   Seiteneffekte, headless testbar): wendet die Sicht
+                                        //   auf eine Trefferliste an. Fail-soft: ohne Modul 04 /
+                                        //   queryVec → Liste unverändert; Treffer ohne passageVec
+                                        //   → relatedness null (wandert nach unten / fällt bei
+                                        //   relatedOnly raus). relatedness() InvalidVectorError
+                                        //   pro Treffer abgefangen.
   // ---- Stufe B · B1 Widget-Tresor (self-contained, portabel; Krypto wie Modul
   //      20/02: PBKDF2-SHA256 ≥600k → AES-GCM-256, Recovery Shamir 2-von-3) ----
   hasVault()         → boolean (sync)   // localStorage sbkim_search_widget_vault da?
@@ -4391,10 +4408,12 @@ Bietet (öffentlich, window.SbkimSearchWidget):
                                         //   Fail-soft (CORS/Key/Netz → Hinweis + false, kein Throw).
   aiAutoSupported()  → boolean (sync)   // ob der gewählte Anbieter den Auto-Aufruf kann (z.Z. claude).
   _meta              // { euPolicy, corpusSize, corpusReady, nodeCorpusSize, areas,
-                     //   richterOn, hasSearxng, webEngine, aiProvider, aiProviders, hasPastedAi,
+                     //   richterOn, viewMode, relatedOnly, hasQueryVec, hasSearxng, webEngine,
+                     //   aiProvider, aiProviders, hasPastedAi,
                      //   visible, expanded, fullscreen, merkCount, merkOverlayOpen, detailOverlayOpen,
                      //   widgetMounted, lastSearchMode, searchCount, hasApiKey, coupled:false }
-                     //   localStorage zusätzlich: sbkim_search_widget_merkliste (Text+Link, gruppiert)
+                     //   localStorage zusätzlich: sbkim_search_widget_view ({mode,relatedOnly}, User-Wahl)
+                     //   + sbkim_search_widget_merkliste (Text+Link, gruppiert)
                      //   + sbkim_search_widget_lastsearch (letzte Suche: Frage+Treffer, Reload-Schutz,
                      //     beim Mount automatisch wiederhergestellt; ✕/dockToTop löscht sie)
 
@@ -4415,6 +4434,9 @@ options-Form (init):
                                         // (Default app:true, knoten:false, internet:false)
     richter?:     boolean,              // KI-Richter an/aus. DEFAULT FALSE (gratis, rein
                                         // semantisch). AN nur sinnvoll mit apiKey.
+    viewMode?:    "verbunden"|"verwandt",  // Anzeige-Sicht-Default (Default "verbunden").
+                                        // localStorage (User-Wahl) überschreibt es.
+    relatedOnly?: boolean,              // "nur verwandte" im verwandt-Modus (Default false).
     searxngUrl?:  string,               // SearXNG-Instanz für Web-Treffer. Leer → Internet =
                                         // „↗ neuer Tab"; gesetzt → Re-Ranker.
     webSearchEngine?: "duckduckgo"|"startpage"|"ecosia"|"brave"|"google"|"bing"|"searxng",
@@ -4491,15 +4513,18 @@ Sage-Page-Mount (Bau 22 B-Schritt 2026-06-21): in sbkim-init.js am Ende der
   {label,text,anchorId}); Vektoren lazy via Modul 03 embedPassageBatch beim
   ersten Gebrauch. Kein Richter-Schlüssel auf der Sage-Page → reiner Vorfilter.
 
-Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 79/79 (Mehrfach-Suche
+Geprüft: Headless-Smoke tests/smoke_bau22_such_widget.mjs 257/257 (Mehrfach-Suche
   App/Knoten/Internet, Richter-Schalter, SearXNG-Re-Ranker + neuer-Tab, Quellen-
   Badge; Surface,
   Mount, expand/collapse/show/hide + localStorage, EU-Politik frei/bindend +
   euOnly an hybridMatch, alle sechs Such-Modi, setCorpus-Durchreichung,
   Spracheingabe fail-soft + Browser-Pfad, Drag-Persistenz, UX-Erhalt,
   init-Throw bei ungültiger euPolicy, prepareCorpus lazy/einmalig/fail-soft).
-  Browser-Sichttest (Drag + Sprache + Sage-Korpus-Suche am Tablet) durch Klaus
-  ausstehend.
+  Anzeige-Sicht verbunden↔verwandt (Brief Wählen-UI 2026-06-28):
+  tests/smoke_bau22e_waehlen.mjs 27/27 (rankView an echten Knoten-Domänen-Vektoren —
+  Schwestern/Essen-Trinken oben, Sage↔BLP raus; fail-soft; Andock-Pfad unberührt).
+  Browser-Sichttest (Drag + Sprache + Sage-Korpus-Suche + Umschalter am Tablet)
+  durch Klaus ausstehend.
 
 ---
 

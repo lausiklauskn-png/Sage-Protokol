@@ -60,6 +60,7 @@
   var LS_KEY_SIZE = "sbkim_search_widget_size"; // {w,h} ziehbare Panel-Größe
   var LS_KEY_MERK = "sbkim_search_widget_merkliste"; // Merkliste (Text+Link, gruppiert)
   var LS_KEY_LAST = "sbkim_search_widget_lastsearch"; // letzte Suche (Frage+Treffer), Reload-Schutz
+  var LS_KEY_VIEW = "sbkim_search_widget_view"; // Anzeige-Sicht {mode,relatedOnly} (verbunden/verwandt)
 
   // Frei wählbare Web-Suchmaschinen für den Internet-Neuer-Tab-Weg (Klaus
   // 2026-06-21: DuckDuckGo ODER eine andere). Query wird angehängt (URL-encoded).
@@ -115,6 +116,9 @@
   var searchBtnEl = null;
   var euChipEl = null;
   var areaRowEl = null;        // Bereichs-Checkboxen (App/Knoten/Internet)
+  var viewRowEl = null;            // Anzeige-Sicht-Zeile: verbunden ↔ verwandt + nur-verwandte
+  var viewModeCheckboxEl = null;   // „🧬 verwandt (genau)" — schaltet die Sicht
+  var viewRelatedOnlyCheckboxEl = null; // „nur verwandte" — blendet Fremde aus
   var richterToggleEl = null;  // KI-Richter an/aus
   var richterRowEl = null;            // Zeile: Richter-Anbieter + Schlüssel + Modell
   var richterProviderSelectEl = null; // KI-Richter-Anbieter-Auswahl (Sortierung)
@@ -171,6 +175,19 @@
   var MAX_RANK = 100;          // so viele Kandidaten werden semantisch gerankt
   var resultsVisibleCount = RESULT_PAGE_SIZE;
   var lastRenderRes = null;    // letztes Ergebnis, fürs Nachladen ohne neue Suche
+
+  // ---- Anzeige-Sicht: „verbunden" (grob) ↔ „verwandt" (genau) ----
+  // (Brief „Wählen"-UI, 2026-06-28). REINE ANZEIGE-SCHICHT — gatet NICHTS. Der
+  // Andock-Handshake (Modul 05, PROVIDER_MIN_MATCH 0.80) bleibt unberührt. Der
+  // Umschalter sortiert/filtert NUR die schon gefundene Trefferliste:
+  //   "verbunden" (Default) — alle Treffer in ihrer rohen Cosinus-Reihenfolge
+  //                           (PROVIDER_MIN_MATCH-Boden), das gewohnte Verhalten.
+  //   "verwandt"            — nach dem ZENTRIERTEN Cosinus (Modul 04 relatedness())
+  //                           absteigend; echte Themen-Verwandte oben, fremde
+  //                           Domänen unten (mit „nur verwandte" ganz ausgeblendet).
+  var viewMode = "verbunden";       // "verbunden" | "verwandt"
+  var viewRelatedOnly = false;      // im "verwandt"-Modus: fremde (nicht isRelated) ausblenden
+  var lastQueryVec = null;          // Query-Embedding der letzten Suche (RAM-only, für relatedness)
   var optAllowDrag = true;
   var optRememberHidden = true;
   var optZIndex = DEFAULT_Z_INDEX;
@@ -611,13 +628,14 @@
       "}",
       "#" + WIDGET_ID + " .sbkim-sw-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.16); }",
       // Bereichs-Auswahl + Optionen-Zeile (Checkbox-Pillen).
-      "#" + WIDGET_ID + " .sbkim-sw-areas, #" + WIDGET_ID + " .sbkim-sw-optrow {",
+      "#" + WIDGET_ID + " .sbkim-sw-areas, #" + WIDGET_ID + " .sbkim-sw-optrow, #" + WIDGET_ID + " .sbkim-sw-viewrow {",
       "  display: flex;",
       "  align-items: center;",
       "  gap: 0.35rem;",
       "  flex-wrap: wrap;",
       "  margin-top: 0.4rem;",
       "}",
+      "#" + WIDGET_ID + " .sbkim-sw-viewrow .sbkim-sw-check.on { border-color: rgba(196, 181, 253, 0.6); color: rgba(196, 181, 253, 0.95); }",
       "#" + WIDGET_ID + " .sbkim-sw-check {",
       "  display: inline-flex;",
       "  align-items: center;",
@@ -844,6 +862,14 @@
       "  font-family: 'Geist Mono', ui-monospace, monospace;",
       "  font-size: 0.68rem;",
       "}",
+      "#" + WIDGET_ID + " .sbkim-sw-result .sbkim-sw-relscore {",
+      "  color: rgba(245, 245, 255, 0.45);",
+      "  font-family: 'Geist Mono', ui-monospace, monospace;",
+      "  font-size: 0.68rem;",
+      "}",
+      "#" + WIDGET_ID + " .sbkim-sw-result .sbkim-sw-relscore.is-related {",
+      "  color: rgba(196, 181, 253, 0.95);",
+      "}",
       "#" + WIDGET_ID + " .sbkim-sw-result .sbkim-sw-reason {",
       "  color: rgba(245, 245, 255, 0.6);",
       "  font-size: 0.7rem;",
@@ -1043,6 +1069,16 @@
     return wrap;
   }
 
+  // „nur verwandte" ist nur im verwandt-Modus sinnvoll → sonst ausblenden. Hält
+  // die Checkbox-Häkchen mit dem State synchron (z.B. nach setViewMode/Restore).
+  function updateViewRowState() {
+    if (viewModeCheckboxEl && viewModeCheckboxEl._input) viewModeCheckboxEl._input.checked = (viewMode === "verwandt");
+    if (viewRelatedOnlyCheckboxEl) {
+      if (viewRelatedOnlyCheckboxEl._input) viewRelatedOnlyCheckboxEl._input.checked = !!viewRelatedOnly;
+      viewRelatedOnlyCheckboxEl.style.display = (viewMode === "verwandt") ? "" : "none";
+    }
+  }
+
   function updateSearxngFieldVisibility() {
     var show = areas.internet.enabled ? "block" : "none";
     if (searxngFieldEl) searxngFieldEl.style.display = show;
@@ -1176,6 +1212,34 @@
       })(areaIds[ai]);
     }
     panelEl.appendChild(areaRowEl);
+
+    // Anzeige-Sicht-Zeile (Brief „Wählen"-UI): „verbunden" (grob, alle erreichbaren)
+    // ↔ „verwandt" (genau, nach zentriertem Cosinus sortiert). REINE ANZEIGE — der
+    // Andock-Handshake (0.80) bleibt unberührt.
+    viewRowEl = doc.createElement("div");
+    viewRowEl.className = "sbkim-sw-viewrow";
+    viewModeCheckboxEl = makeCheckbox(doc, "sbkim-sw-view-verwandt", "🧬 verwandt (genau)",
+      viewMode === "verwandt", function (checked) {
+        viewMode = checked ? "verwandt" : "verbunden";
+        persistViewPref();
+        updateViewRowState();
+        if (lastRenderRes) renderResults(lastRenderRes);
+      });
+    viewModeCheckboxEl.setAttribute("title",
+      "Aus: verbunden (grob) — alle erreichbaren Treffer. An: verwandt (genau) — nach echtem Themen-Bezug (zentrierter Cosinus) sortiert.");
+    viewRowEl.appendChild(viewModeCheckboxEl);
+
+    viewRelatedOnlyCheckboxEl = makeCheckbox(doc, "sbkim-sw-view-onlyrelated", "nur verwandte",
+      viewRelatedOnly, function (checked) {
+        viewRelatedOnly = checked;
+        persistViewPref();
+        if (lastRenderRes) renderResults(lastRenderRes);
+      });
+    viewRelatedOnlyCheckboxEl.setAttribute("title",
+      "Nur im verwandt-Modus: blendet fremde Domänen (nicht wirklich verwandt) ganz aus.");
+    viewRowEl.appendChild(viewRelatedOnlyCheckboxEl);
+    panelEl.appendChild(viewRowEl);
+    updateViewRowState();
 
     // Optionen-Zeile: KI-Richter-Schalter + EU-Politik-Chip.
     var optRow = doc.createElement("div");
@@ -2291,6 +2355,20 @@
     return typeof s === "string" && /^https?:\/\//i.test(s);
   }
 
+  // Query einmal einbetten (Modul 03), damit der „verwandt"-Modus relatedness()
+  // gegen die Treffer-Inhalts-Vektoren rechnen kann. Fail-soft: ohne Modul 03 /
+  // bei Fehler → null (dann degradiert die Sicht sauber auf „verbunden").
+  function computeQueryVec(query) {
+    var embedding = global.SbkimEmbedding;
+    if (!embedding || typeof embedding.embedQuery !== "function") return Promise.resolve(null);
+    return Promise.resolve()
+      .then(function () { return embedding.embedQuery(query); })
+      .then(function (vec) {
+        return (vec && vec.length) ? vec : null;
+      })
+      .catch(function (err) { warn("Query-Embedding für 'verwandt'-Sicht fehlgeschlagen — Sicht bleibt 'verbunden'.", err); return null; });
+  }
+
   function queryCorpus(query, corpus, source) {
     var match = global.SbkimMatch;
     if (!match || typeof match.queryLocal !== "function") return Promise.resolve([]);
@@ -2310,6 +2388,9 @@
           // Link, Detail-Karte „↗ Seite öffnen", Merkliste + Text-Export den Link.
           url: src.url || (isExternalUrl(r.anchorId) ? r.anchorId : null),
           nodeId: src.nodeId || null,   // für den Live-Cross-Knoten-Pfad (Knoten-Bereich)
+          // Inhalts-Vektor durchreichen — der „verwandt"-Modus braucht ihn für
+          // relatedness(queryVec, passageVec). RAM-only, wird NICHT persistiert.
+          passageVec: src.passageVec || null,
         };
       });
     });
@@ -2432,7 +2513,7 @@
           .map(function (v) {
             var c = byKey[v.anchorId || v.label] || {};
             return { label: v.label, score: v.score, anchorId: v.anchorId, source: c.source,
-                     text: c.text, url: c.url, begruendung: v.begruendung };
+                     text: c.text, url: c.url, begruendung: v.begruendung, passageVec: c.passageVec || null };
           })
           .sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
         return { mode: "richter", treffer: treffer, attestation: judgment.attestation };
@@ -2508,9 +2589,14 @@
       }
     }
 
-    return Promise.all([Promise.all(tasks), internetP]).then(function (both) {
+    // Query-Vektor parallel einbetten (für den „verwandt"-Modus). Blockiert die
+    // Suche nicht zusätzlich — läuft neben den Bereichs-Tasks.
+    var qvecP = computeQueryVec(query);
+
+    return Promise.all([Promise.all(tasks), internetP, qvecP]).then(function (both) {
       var lists = both[0];
       var internet = both[1];
+      lastQueryVec = both[2] || null;
       var all = [];
       lists.forEach(function (l) { if (Array.isArray(l)) all = all.concat(l); });
       if (Array.isArray(internet.candidates)) all = all.concat(internet.candidates);
@@ -2650,14 +2736,17 @@
 
   // Alle gerankten Treffer als nüchterner Text-Block (zum Kopieren/Schicken).
   function buildResultsText(res) {
-    var t = (res && res.treffer) || [];
+    var t = displayTreffer(res);
     var q = (queryValue || "").trim();
+    var sortNote = (viewMode === "verwandt") ? "sortiert nach Verwandtschaft" : "sortiert nach Bedeutung";
     var head = "SBKIM-Suche" + (q ? " — \"" + q + "\"" : "") +
-      "  (" + t.length + " Treffer, sortiert nach Bedeutung)";
+      "  (" + t.length + " Treffer, " + sortNote + ")";
     var lines = [head, ""];
     for (var i = 0; i < t.length; i++) {
       var r = t[i];
-      var pct = (typeof r.score === "number") ? (Math.round(r.score * 100) + "%  ") : "";
+      var relPct = (viewMode === "verwandt" && typeof r.relatedness === "number")
+        ? ("~" + Math.round(r.relatedness * 100) + "%  ") : "";
+      var pct = relPct + ((typeof r.score === "number") ? (Math.round(r.score * 100) + "%  ") : "");
       var src = r.source ? "[" + (SOURCE_LABELS[r.source] || r.source) + "] " : "";
       lines.push((i + 1) + ". " + src + pct + (r.label || ""));
       if (r.url) lines.push("    " + r.url);
@@ -2669,13 +2758,71 @@
     return lines.join("\n").replace(/\n+$/, "\n");
   }
 
+  function shallowCopyTreffer(t) {
+    var copy = {};
+    for (var key in t) { if (Object.prototype.hasOwnProperty.call(t, key)) copy[key] = t[key]; }
+    return copy;
+  }
+
+  // REINE Funktion (keine Seiteneffekte, headless testbar): wendet die Anzeige-Sicht
+  // auf eine Trefferliste an.
+  //   mode "verbunden" → Liste unverändert (gewohnte rohe Cosinus-Reihenfolge).
+  //   mode "verwandt"  → je Treffer relatedness(queryVec, t.passageVec) (Modul 04,
+  //                      zentrierter Cosinus) anhängen, absteigend sortieren;
+  //                      opts.relatedOnly blendet nicht-isRelated-Treffer aus.
+  // Fail-soft: ohne Modul 04 / ohne queryVec → Liste unverändert (degradiert auf
+  // "verbunden"). Treffer ohne passageVec (z.B. wiederhergestellte Suche, Live-
+  // Knoten-Antwort ohne Vektor) bekommen relatedness=null und wandern nach unten
+  // (bzw. werden bei relatedOnly ausgeblendet). relatedness() wirft bei falscher
+  // Eingabe InvalidVectorError → pro Treffer abgefangen, kein Bruch der ganzen Liste.
+  function rankView(treffer, queryVec, opts) {
+    opts = opts || {};
+    var mode = opts.mode || "verbunden";
+    var relatedOnly = !!opts.relatedOnly;
+    var list = Array.isArray(treffer) ? treffer.slice() : [];
+    if (mode !== "verwandt") return list;
+    var match = global.SbkimMatch;
+    if (!match || typeof match.relatedness !== "function" || !queryVec) return list;
+    var enriched = list.map(function (t) {
+      var rel = null;
+      if (t && t.passageVec) {
+        try { rel = match.relatedness(queryVec, t.passageVec); }
+        catch (_e) { rel = null; } // InvalidVectorError o.ä. → fail-soft, Treffer bleibt
+      }
+      var copy = shallowCopyTreffer(t);
+      copy.relatedness = (typeof rel === "number" && isFinite(rel)) ? rel : null;
+      copy.isRelated = copy.relatedness !== null &&
+        (typeof match.isRelated === "function" ? match.isRelated(copy.relatedness) : copy.relatedness >= 0.30);
+      return copy;
+    });
+    enriched.sort(function (a, b) {
+      var ra = (a.relatedness === null) ? -Infinity : a.relatedness;
+      var rb = (b.relatedness === null) ? -Infinity : b.relatedness;
+      if (rb !== ra) return rb - ra;
+      return (b.score || 0) - (a.score || 0);
+    });
+    if (relatedOnly) enriched = enriched.filter(function (t) { return t.isRelated; });
+    return enriched;
+  }
+
+  // Die für die ANZEIGE aufbereitete Trefferliste (Sicht angewandt). Genutzt von
+  // renderResults UND buildResultsText, damit Anzeige und „Block kopieren" gleich
+  // sortiert sind.
+  function displayTreffer(res) {
+    return rankView((res && res.treffer) || [], lastQueryVec,
+      { mode: viewMode, relatedOnly: viewRelatedOnly });
+  }
+
   function renderResults(res) {
     if (!resultsEl) return;
     var doc = global.document;
     // Treffer-Liste neu zeichnen (createElement, kein innerHTML) — berührt das
     // Textfeld NICHT (UX-Erhalt).
     while (resultsEl.firstChild) resultsEl.removeChild(resultsEl.firstChild);
-    var treffer = res.treffer || [];
+    // Anzeige-Sicht anwenden (verbunden = unverändert, verwandt = nach relatedness
+    // umsortiert / optional gefiltert). Rein für die Darstellung — res.treffer (roh)
+    // bleibt unangetastet, ebenso die Persistenz.
+    var treffer = displayTreffer(res);
     var modeHint = {
       "modul-04-fehlt": "Modul 04 (Match) nicht geladen.",
       "fehler": "Suche fehlgeschlagen" + (res.reason ? " (" + res.reason + ")" : "") + ".",
@@ -2783,6 +2930,16 @@
         // Cosinus → Prozent Bedeutungs-Übereinstimmung (anschaulich für Klaus).
         scoreEl.textContent = Math.round(t.score * 100) + " %";
         line.appendChild(scoreEl);
+      }
+      // Im "verwandt"-Modus zusätzlich den zentrierten Verwandtschafts-Wert zeigen
+      // (🧬 = echter Themen-Bezug, getrennt vom rohen Andock-Cosinus).
+      if (viewMode === "verwandt" && typeof t.relatedness === "number") {
+        line.appendChild(doc.createTextNode(" "));
+        var relEl = doc.createElement("span");
+        relEl.className = "sbkim-sw-relscore" + (t.isRelated ? " is-related" : "");
+        relEl.setAttribute("title", "Verwandtschaft (zentrierter Cosinus) — echter Themen-Bezug, gatet nichts");
+        relEl.textContent = "🧬 " + Math.round(t.relatedness * 100) + " %";
+        line.appendChild(relEl);
       }
       el.appendChild(line);
       // Inhalt (KI-Snippet) zeigen, damit man SIEHT, worum es geht.
@@ -3282,6 +3439,25 @@
                           webLink: p.webLink || null,
                           summary: (typeof p.summary === "string" ? p.summary : ""),
                           restored: true };
+      }
+    } catch (_e) { /* fail-soft */ }
+  }
+
+  // Anzeige-Sicht (verbunden/verwandt + nur-verwandte) persistieren/wiederherstellen.
+  // User-Wahl ist heilig und übersteht Re-Init; Default bleibt "verbunden" (grob),
+  // damit nichts an der gewohnten Sicht überrascht.
+  function persistViewPref() {
+    try { lsSet(LS_KEY_VIEW, JSON.stringify({ mode: viewMode, relatedOnly: viewRelatedOnly })); }
+    catch (_e) { /* fail-soft (Quota/Inkognito) */ }
+  }
+  function restoreViewPref() {
+    var raw = lsGet(LS_KEY_VIEW);
+    if (!raw) return;
+    try {
+      var p = JSON.parse(raw);
+      if (p && typeof p === "object") {
+        if (p.mode === "verbunden" || p.mode === "verwandt") viewMode = p.mode;
+        if (typeof p.relatedOnly === "boolean") viewRelatedOnly = p.relatedOnly;
       }
     } catch (_e) { /* fail-soft */ }
   }
@@ -3832,6 +4008,9 @@
       }
     }
     if (options.richter !== undefined) richterOn = !!options.richter;
+    // Anzeige-Sicht-Default (localStorage = User-Wahl überschreibt sie unten).
+    if (options.viewMode === "verbunden" || options.viewMode === "verwandt") viewMode = options.viewMode;
+    if (options.relatedOnly !== undefined) viewRelatedOnly = !!options.relatedOnly;
     if (options.areas && typeof options.areas === "object") {
       ["app", "knoten", "internet"].forEach(function (id) {
         if (typeof options.areas[id] === "boolean") areas[id].enabled = options.areas[id];
@@ -3870,6 +4049,7 @@
     }
 
     ready = true;
+    restoreViewPref();     // Anzeige-Sicht (verbunden/verwandt) aus localStorage — vor dem Mount
     restoreLastSearch();   // letzte Suche aus localStorage (vor dem Mount), Reload-Schutz
     mountWidget();
     return Promise.resolve();
@@ -3900,6 +4080,24 @@
     setSize: setSize,
     setCorpus: setCorpus,
     search: search,
+    // Anzeige-Sicht „verbunden" (grob) ↔ „verwandt" (genau). Reine Anzeige.
+    setViewMode: function (mode) {
+      if (mode !== "verbunden" && mode !== "verwandt") return viewMode;
+      viewMode = mode;
+      persistViewPref();
+      updateViewRowState();
+      if (lastRenderRes) renderResults(lastRenderRes);
+      return viewMode;
+    },
+    getViewMode: function () { return viewMode; },
+    setRelatedOnly: function (on) {
+      viewRelatedOnly = !!on;
+      persistViewPref();
+      updateViewRowState();
+      if (lastRenderRes) renderResults(lastRenderRes);
+      return viewRelatedOnly;
+    },
+    rankView: rankView,   // reine Funktion (treffer, queryVec, {mode,relatedOnly}) — headless testbar
     buildPrompt: buildAiPrompt,
     parseAiAnswer: parseAiAnswer,
     parseAiSummary: extractAiSummary,
@@ -3924,6 +4122,9 @@
       get liveNodeQuery() { return typeof queryNodeFn === "function"; },
       get areas() { return { app: areas.app.enabled, knoten: areas.knoten.enabled, internet: areas.internet.enabled }; },
       get richterOn() { return richterOn; },
+      get viewMode() { return viewMode; },
+      get relatedOnly() { return viewRelatedOnly; },
+      get hasQueryVec() { return !!lastQueryVec; },
       get hasSearxng() { return !!searxngUrl; },
       get webEngine() { return optWebEngine; },
       get aiProvider() { return optAiProvider; },
