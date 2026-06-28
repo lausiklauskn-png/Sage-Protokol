@@ -443,6 +443,24 @@ async function run() {
   eq("Probe 21c: nachgereichter Treffer als live markiert", "true",
      String(!!(delivered && delivered[0] && delivered[0].live)));
 
+  // ---- Probe 21d: Knoten-Treffer bekommt eine Öffnen-URL aus anchorId ----
+  // Klaus' Befund 2026-06-28: Detail-Karte zeigte kein „↗ Seite öffnen", weil der
+  // Link im anchorId steckt (url war null). Jetzt leitet queryCorpus die url aus
+  // einem externen anchorId ab → Zeilen-Link + Detail-Karte + Merkliste haben ihn.
+  mountMatch("treffer");
+  await W.init({ areas: { app: false, knoten: true, internet: false }, nodeCorpus: NODE_CORPUS_LIVE, richter: false });
+  res = await W.search("cocktail");
+  eq("Probe 21d: Knoten-Treffer hat Öffnen-URL aus anchorId", "https://mix", String(res.treffer[0].url));
+  eq("Probe 21d: anchorId bleibt erhalten", "https://mix", String(res.treffer[0].anchorId));
+
+  // ---- Probe 21e: interner App-Anker bekommt KEINE Öffnen-URL ----
+  mountMatch("treffer");
+  W.setCorpus([{ label: "Modul 06", text: "Heterokaryose Zellkerne", passageVec: new Float32Array(384), anchorId: "modul-06" }]);
+  await W.init({ areas: { app: true, knoten: false, internet: false }, richter: false });
+  res = await W.search("modul");
+  eq("Probe 21e: interner App-Anker → keine Öffnen-URL", "null", String(res.treffer[0].url));
+  eq("Probe 21e: anchorId (intern) bleibt erhalten", "modul-06", String(res.treffer[0].anchorId));
+
   // ---- Probe 22: Internet-Bereich ohne SearXNG-URL → webLink (neuer Tab) ----
   await W.init({ areas: { app: false, knoten: false, internet: true } });
   res = await W.search("lasagne rezept");
