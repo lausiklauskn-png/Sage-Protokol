@@ -5,7 +5,13 @@
 > `src/modules/23_rendezvous_ui.js` (`SbkimRendezvousUI`, öffentlicher Floating-Knopf,
 > Headless-Smoke `tests/smoke_bau23_rendezvous_ui.mjs` **23/23 grün**). Panel 23 in
 > `tests/manual_check.html`, Skript-Load beider in `index.html` (KEIN Auto-Init).
-> **Live-Cross-App-Sichttest (zwei Geräte/Tabs, echtes Relais) wartet auf Klaus.**
+> **✅ LIVE-CROSS-APP-SICHTTEST GRÜN (Klaus 2026-06-28):** Sage ↔ Mein Mixarium
+> **beidseitig** „✓ ANDOCK ETABLIERT" über das echte Relais — server-loser
+> Live-Cross-Knoten-Handshake zwischen zwei Apps, die **beide das geteilte
+> Modul 23** fahren (Sage-Page-Mount in `sbkim-init.js`, Mixarium-Rollout PR #79).
+> Alle drei Knoten (Sage, Mixarium, family) sahen sich gegenseitig im Raum; die
+> Adress-Wand ist gelöst. Bestätigt auch, dass der 0.80-Bedeutungs-Riegel korrekt
+> trennt (Mixarium ↔ family 0.7753 = rejected-local, kein Fehler).
 >
 > Auslöser: am **2026-06-28** wurde der server-lose Live-Cross-Knoten-Handshake
 > BEWIESEN (Klaus' Browser-Lauf Tablet↔Handy: „✓ ANDOCK ETABLIERT mit Family
