@@ -2282,6 +2282,43 @@ in diesem Anker ist verbindlich.
 
 ## Sitzungs-Einträge
 
+### 2026-06-28 (Folge) · „Wählen"-UI Badge: C.1 eingeordnet + C.2 Mixarium-Rollout (PR) · D blockiert
+
+Folge-Sitzung zum Brief `BRIEF_WAEHLEN_BADGE_RELATEDNESS_V2` (Branch
+`claude/waehlen-badge-relatedness-v2-bww1q5`). Drei Stränge:
+
+- **Strang C.1 — #483 einsortieren: erledigt (war bereits gemerged).** Beim
+  Sitzungsstart `git fetch origin main` zeigte: PR #483 (Verwandtschafts-Badge
+  Modul 23, Strang B) **ist** in Sage main (Commit `b972454`), ebenso #485
+  (Strang-D-Mess-Knopf, `a3bf1a9`). Die Brief-„Stand"-Annahme („#483 nicht
+  gemerged") war zum Brief-Zeitpunkt richtig, ist überholt. Sage main ist
+  intern konsistent: `src/modules/{04_match,23_rendezvous,23_rendezvous_ui}.js`
+  byte-identisch zu `sbkim-bundle/modules/…` (Drift-Guard grün), enthält
+  `relatedness`/`RELATEDNESS_CENTER`/`relatednessForCards`/Badge-UI. → C.1 hat
+  keine offene Aktion; Sage main trägt das Badge.
+- **Strang C.2 — Mixarium-Rollout: gebaut, Draft-PR, wartet auf Klaus.**
+  In `Mein-Mixarium` drei `sbkim/`-Module byte-1:1 auf Sage-main-Stand gezogen:
+  `04_match.js` (behebt den **Drift** — alte Version hatte kein `relatedness`),
+  `23_rendezvous.js`, `23_rendezvous_ui.js`. md5-Drift-Guard gegen Sage main
+  grün für alle drei. Lade-Reihenfolge bestätigt (04 Z. 13077 vor 23 Z. 13087
+  in `index.html`). QC ↔ index byte-Parität unberührt (sbkim/-Module außerhalb
+  der Spiegelung; Script-Tags unverändert). **Reine Anzeige — gatet nichts,
+  0.80-Riegel unberührt, kein Funktions-Eingriff.** Draft-PR
+  `Mein-Mixarium#81` (Merge entscheidet Klaus; Browser-Sichttest Badge je
+  Knoten im Raum wartet auf Klaus).
+- **Strang C.3 — family-project: bewusst nicht angefasst.** family fährt ein
+  eigenes Raum-UI (kein `23_rendezvous_ui.js`) → Badge dort = Consumer-Refactor,
+  eigener Brief/Scope.
+- **Strang D — `RELATEDNESS_CENTER` v2: blockiert.** Setzt Klaus' Mess-Knopf-
+  Ergebnis (Panel 04, „RELATEDNESS_CENTER v2 messen …", `freigabeReif:true`)
+  voraus. Ohne sein Browser-Mess-Ergebnis keine Konstanten-Änderung. SIGNAL
+  §11.6 (netzweit) erst bei tatsächlicher Konstanten-Setzung Pflicht — diese
+  Sitzung änderte keine Konstante, also kein SIGNAL nötig.
+
+**Offen / nächster Schritt:** (1) Klaus Sichttest Badge in Sage-Page (Strang B,
+schon in main) + Mixarium-PR #81 (nach Merge). (2) Klaus' v2-Mess-Lauf →
+Strang D Konstante netzweit setzen. (3) family-Badge eigener Brief.
+
 ### 2026-06-26 · Such-Tool KI-Richter: mehrere Gratis-Anbieter (Gemini + OpenRouter) + Pinnwand-Gemini-404-Fix + Icon
 
 Live-Sitzung mit Klaus (Fortsetzung Toolpoint). Mehrere Auslieferungen, alle nach
