@@ -143,14 +143,41 @@ Hat die App schon eine lebende Identität (bereits angedockt), genügt `announce
 ohne `createIdentity`. Vorlage für den family-Pfad: `__fpErzeugeSpore` (mit
 Modell-Download-Fortschritt) in `family-project/sbkim/sbkim-init.js`.
 
+## Verwandtschafts-Score der Raum-Karten (REINE ANZEIGE, 2026-06-28)
+
+Folge zur „Wählen"-UI (Bau 04.E / Modul 22): der Rendezvous-Raum zeigt pro
+Knoten einen **zentrierten Verwandtschafts-Score** zur eigenen Domäne — genau
+das Zwei-Maß-Prinzip aus `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`, jetzt am
+zweiten Einbau-Ort.
+
+- **Modul 23 (`discover` + `relatednessForCards`)** hängt je Karte
+  `relatedness` (zentrierter Cosinus, `SbkimMatch.relatedness`, whitened-light)
+  + `isRelated` (≥ `RELATEDNESS_MIN` 0.30) an. `relatednessForCards(cards,
+  ownSpore)` ist eine **pure**, DOM-freie Funktion (headless testbar), mutiert
+  die Eingabe nicht. Modul 04 ist eine **optionale** Anzeige-Abhängigkeit —
+  fehlt es (oder ein `domainVector`), bleibt `relatedness` `null` und der Raum
+  voll funktionsfähig.
+- **UI (`23_rendezvous_ui.js`)** rendert pro Karte ein Badge
+  („🧬 verwandt 0.72" wenn `isRelated`, sonst „· verbunden …") und bietet einen
+  **„🧬 nur verwandte"-Schalter** (Default aus), der die Karten-Liste auf echte
+  Verwandte filtert.
+- **Verfassungstreu:** das ist **reine Anzeige**. Der 0.80-Andock-Riegel
+  (Modul 05 Handshake / `PROVIDER_MIN_MATCH`) bleibt **unberührt** — der Score
+  gatet **nichts**, er sortiert/filtert nur die Darstellung. Die Kern-Module
+  02/05/05b sind unangetastet; Modul 04 wird nur gelesen.
+
 ## Tests
 
-- **Headless:** `tests/smoke_bau23_rendezvous.mjs` (40/40) — Mock-Relais +
+- **Headless:** `tests/smoke_bau23_rendezvous.mjs` (55/55) — Mock-Relais +
   Mock-Spore + Mock-Anastomose, beweist die Rendezvous-Logik (Karte heften,
-  Raum lesen/dedupen/eigene filtern, Handshake an lebende Karte, fail-soft).
+  Raum lesen/dedupen/eigene filtern, Handshake an lebende Karte, fail-soft) +
+  den Verwandtschafts-Score an **echten** Knoten-Domänen-Vektoren (Schwester
+  Rezeptbuch `isRelated`, Hub Sage / BookLedger `isRelated:false`) + fail-soft.
+- **Headless UI:** `tests/smoke_bau23_rendezvous_ui.mjs` (32/32) — Badge-Render
+  + „nur verwandte"-Filter + Andock-Verdrahtung.
 - **Browser-Sichttest (wartet auf Klaus):** zwei Geräte/Tabs am echten Relais
   `wss://relay.family-projekt.de`: ein Gerät 🌐, das andere 👥 → 🤝 →
-  „ETABLIERT".
+  „ETABLIERT". Jetzt zusätzlich: Verwandtschafts-Badge je Karte sichtbar.
 
 ## Risiken / offene Punkte
 

@@ -50,6 +50,42 @@ wartet auf Klaus** (zentrierter Score in einer echten Andock-Anzeige).
 
 ---
 
+## Stand 2026-06-28 (Nacht) — Zwei-Maß-Verdrahtung in der Anzeige: Modul 23 (Raum) + Befund Pinnwand
+
+Der zentrierte Score (Bau 04.E) ist jetzt an einem **zweiten** Anzeige-Ort
+verdrahtet (nach dem Such-Widget Modul 22) — **reine Anzeige, gatet weiter
+nichts**:
+
+- **Modul 23 (Rendezvous-Raum) — gebaut.** `discover()` reicht je Karte einen
+  zentrierten Verwandtschafts-Score durch (`relatednessForCards(cards,
+  ownSpore)`, Modul 04 `relatedness`/`isRelated`). Das UI zeigt pro Knoten ein
+  Badge („🧬 verwandt 0.72" vs „· verbunden …") + einen „🧬 nur
+  verwandte"-Schalter. Modul 04 ist **optionale** Anzeige-Abhängigkeit
+  (fail-soft ohne sie). Der 0.80-Andock-Riegel (Modul 05) ist **unberührt** —
+  Smoke beweist: Hub↔Endknoten-`match()` bleibt ≥ 0.80, der Score sortiert nur
+  die Karten. Tests: `smoke_bau23_rendezvous.mjs` 55/55 (echte Knoten-Vektoren:
+  Schwester Rezeptbuch `isRelated`, Hub Sage/BookLedger `isRelated:false`),
+  `smoke_bau23_rendezvous_ui.mjs` 32/32.
+
+- **Pinnwand (Nostr-Q&A-Brett) — Befund: zentriert ist schon drin, der
+  netzweite `RELATEDNESS_CENTER` wäre hier FALSCH.** Die Pinnwand
+  (`pinnwand/index.html`) sortiert die Antworten eines Threads bereits nach
+  **zentriertem** Cosinus (`relevance(qVec, aVec, mean)` → `whiten()`-Abzug, der
+  LEHRE-Kern-Fix). Der Unterschied zum Such-Widget/Raum: die Pinnwand mittelt
+  den Schwerpunkt aus einem **wachsenden, seiten-lokalen** Korpus (`accumulate`
+  / `meanVec`, ab ≥ 3 Texten) — **nicht** aus der netzweiten Konstante
+  `RELATEDNESS_CENTER`. Das ist hier **korrekt und besser**: die Pinnwand-Texte
+  sind **beliebige Q&A-Antworten**, nicht Domänen-Beschreibungen.
+  `RELATEDNESS_CENTER` ist aber genau ein Mittel über **7 Knoten-Domänen-
+  Vektoren** — der falsche Schwerpunkt für freien Antworttext. Den netzweiten
+  Mittelwert hier aufzudrücken würde den Boden-Abzug **verschlechtern**. Der
+  KI-Richter ist dort ebenfalls schon **opt-in** (Anbieter-Dropdown + Schlüssel
+  + Knopf, Default aus). **Konsequenz: an der Pinnwand bewusst KEIN Eingriff**
+  (der Brief erlaubt das ausdrücklich: „nur anwenden, wenn es dort wirklich
+  besser wird"). Sauber dokumentiert statt stillschweigend umgangen.
+
+---
+
 ## Stand 2026-06-28 — Kalibrier-Instrument gebaut, Schwelle wartet auf Browser-Messung
 
 Die netzweite Umstellung auf **Inhalts-Vektoren** (Meilenstein „Von der Hülle zum

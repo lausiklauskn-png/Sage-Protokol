@@ -4577,13 +4577,22 @@ Bietet (öffentlich, window.SbkimRendezvous):
                                               // falls keine da
   discover(opts?)          → Promise<{ ok, cards, reason? }>
                                               // cards=[{nodeId,nodeName,spore,
-                                              // ts,ageSec}], ts-absteigend
+                                              // ts,ageSec,relatedness,isRelated}],
+                                              // ts-absteigend. relatedness/isRelated
+                                              // = zentrierter Verwandtschafts-Score
+                                              // zur eigenen Domäne (Modul 04, REINE
+                                              // ANZEIGE; null ohne Modul 04/Vektor)
+  relatednessForCards(cards, ownSpore) → cards'  // pure; hängt je Karte
+                                              // relatedness (zentrierter Cosinus,
+                                              // Modul 04) + isRelated an. Gatet
+                                              // NICHTS, mutiert Eingabe nicht,
+                                              // fail-soft (reine Anzeige)
   handshakeCard(card,opts?) → Promise<{ outcome, score?, reason?, raw? }>
                                               // outcome ∈ {established,rejected,
                                               // rejected-local,timeout,error},
                                               // fail-soft (nie Throw)
   _meta                    → { version, tag, presenceKind, freshSec, listenMs,
-                               nodeName, hasRelay, hasAnastomose, hasSpore }
+                               nodeName, hasRelay, hasAnastomose, hasSpore, hasMatch }
 
 Architektur-Wahrheit (nicht verhandelbar): das Anmelden MUSS aus dem eigenen
         Browser jeder App laufen — lebende Identität + privater Schlüssel liegen
@@ -4594,7 +4603,10 @@ Fail-soft: kein Relais/keine Identität/Netz weg/Timeout → ruhiges Ergebnis-
         Objekt mit reason, nie Throw.
 
 Konsumiert: Modul 05 (SbkimAnastomose.handshake/listenNostr), Modul 05b
-        (SbkimNostrRelay.publish/subscribe), Modul 02 (SbkimSpore.getOwnSpore).
+        (SbkimNostrRelay.publish/subscribe), Modul 02 (SbkimSpore.getOwnSpore),
+        Modul 04 (SbkimMatch.relatedness/isRelated) OPTIONAL — nur für den
+        Verwandtschafts-Score der Raum-Karten (reine Anzeige; fehlt es, bleibt
+        der Raum voll funktionsfähig, Karten ohne Score).
 Feuert: sbkim:nostr-listening (detail.active) für die VERKEHR-Lampe (Modul 17 /
         Status-Widget), fail-soft.
 
@@ -4606,7 +4618,11 @@ UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
         createIdentity?, corner?, accent? }). DOM-only, fail-soft, idempotent,
         createElement-basiert. Komponiert NUR Modul 23. Surface
         init/show/hide/isOpen/_meta. Headless-Smoke smoke_bau23_rendezvous_ui.mjs
-        23/23 grün. createIdentity ist app-eigen (Domänen-Stichworte app-spezifisch).
+        32/32 grün. createIdentity ist app-eigen (Domänen-Stichworte app-spezifisch).
+        Pro Karte zeigt das Panel ein Verwandtschafts-Badge („🧬 verwandt 0.72"
+        vs „· verbunden …") + einen „🧬 nur verwandte"-Schalter (Default aus) —
+        REINE ANZEIGE über discover()'s relatedness/isRelated; gatet NICHTS, der
+        0.80-Andock-Riegel bleibt unberührt. _meta.relatedOnly spiegelt den Schalter.
 
 ---
 
