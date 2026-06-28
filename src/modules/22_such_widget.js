@@ -60,7 +60,7 @@
   var LS_KEY_SIZE = "sbkim_search_widget_size"; // {w,h} ziehbare Panel-Größe
   var LS_KEY_MERK = "sbkim_search_widget_merkliste"; // Merkliste (Text+Link, gruppiert)
   var LS_KEY_LAST = "sbkim_search_widget_lastsearch"; // letzte Suche (Frage+Treffer), Reload-Schutz
-  var LS_KEY_VIEW = "sbkim_search_widget_view"; // Anzeige-Sicht {mode,relatedOnly} (verbunden/verwandt)
+  var LS_KEY_VIEW = "sbkim_search_widget_view"; // Anzeige-Sicht {mode,relatedOnly,kiRelated} (verbunden/verwandt)
 
   // Frei wählbare Web-Suchmaschinen für den Internet-Neuer-Tab-Weg (Klaus
   // 2026-06-21: DuckDuckGo ODER eine andere). Query wird angehängt (URL-encoded).
@@ -119,6 +119,7 @@
   var viewRowEl = null;            // Anzeige-Sicht-Zeile: verbunden ↔ verwandt + nur-verwandte
   var viewModeCheckboxEl = null;   // „🧬 verwandt (genau)" — schaltet die Sicht
   var viewRelatedOnlyCheckboxEl = null; // „nur verwandte" — blendet Fremde aus
+  var viewKiCheckboxEl = null;     // „· KI" — verwandt-Maß vom KI-Richter (opt-in)
   var richterToggleEl = null;  // KI-Richter an/aus
   var richterRowEl = null;            // Zeile: Richter-Anbieter + Schlüssel + Modell
   var richterProviderSelectEl = null; // KI-Richter-Anbieter-Auswahl (Sortierung)
@@ -187,6 +188,16 @@
   //                           Domänen unten (mit „nur verwandte" ganz ausgeblendet).
   var viewMode = "verbunden";       // "verbunden" | "verwandt"
   var viewRelatedOnly = false;      // im "verwandt"-Modus: fremde (nicht isRelated) ausblenden
+  // „· KI" (Kalibrier-Abschluss 2026-06-28): das „verwandt"-Maß wahlweise vom
+  // KI-Richter (Modul 04 hybridMatch) liefern lassen statt vom zentrierten Cosinus.
+  // OPT-IN, BYOK, fail-soft: ohne Schlüssel / ohne Urteil → gratis Cosinus-Rangfolge.
+  // REINE ANZEIGE — gatet nichts (Andock-Riegel 0.80 unberührt). Der bestehende
+  // „KI-Richter"-Schalter (ganze Liste re-ranken) bleibt davon unberührt daneben.
+  var viewKiRelated = false;        // „· KI": verwandt-Ranking per KI-Richter (opt-in)
+  // Letztes KI-Verwandtschafts-Urteil, an die Suchfrage gebunden (RAM-only, kein PII,
+  // nicht persistiert). { query, byKey:{ "anchorId|label": {score,passt,begruendung} },
+  // available, running }. Wird bei jeder neuen Suche zurückgesetzt.
+  var kiRelatedState = { query: null, byKey: {}, available: false, running: false };
   var lastQueryVec = null;          // Query-Embedding der letzten Suche (RAM-only, für relatedness)
   var optAllowDrag = true;
   var optRememberHidden = true;
@@ -1077,6 +1088,10 @@
       if (viewRelatedOnlyCheckboxEl._input) viewRelatedOnlyCheckboxEl._input.checked = !!viewRelatedOnly;
       viewRelatedOnlyCheckboxEl.style.display = (viewMode === "verwandt") ? "" : "none";
     }
+    if (viewKiCheckboxEl) {
+      if (viewKiCheckboxEl._input) viewKiCheckboxEl._input.checked = !!viewKiRelated;
+      viewKiCheckboxEl.style.display = (viewMode === "verwandt") ? "" : "none";
+    }
   }
 
   function updateSearxngFieldVisibility() {
@@ -1226,7 +1241,7 @@
         if (lastRenderRes) renderResults(lastRenderRes);
       });
     viewModeCheckboxEl.setAttribute("title",
-      "Aus: verbunden (grob) — alle erreichbaren Treffer. An: verwandt (genau) — nach echtem Themen-Bezug (zentrierter Cosinus) sortiert.");
+      "Aus: verbunden (grob) — alle erreichbaren Treffer. An: verwandt (genau) — eine Rangfolge nach Themen-Bezug (gratis zentrierter Cosinus). Mit „· KI“ urteilt der KI-Richter über die Bedeutung.");
     viewRowEl.appendChild(viewModeCheckboxEl);
 
     viewRelatedOnlyCheckboxEl = makeCheckbox(doc, "sbkim-sw-view-onlyrelated", "nur verwandte",
@@ -1237,7 +1252,23 @@
       });
     viewRelatedOnlyCheckboxEl.setAttribute("title",
       "Nur im verwandt-Modus: blendet fremde Domänen (nicht wirklich verwandt) ganz aus.");
+
+    // „· KI" — verwandt-Maß vom KI-Richter beurteilen lassen (opt-in, BYOK).
+    // Nutzt das vorhandene Richter-Anbieter-Dropdown + Schlüsselfeld (unten).
+    // Ohne Schlüssel → fail-soft auf den gratis Cosinus. REINE ANZEIGE.
+    viewKiCheckboxEl = makeCheckbox(doc, "sbkim-sw-view-ki", "· KI",
+      viewKiRelated, function (checked) {
+        viewKiRelated = checked;
+        persistViewPref();
+        if (checked && !optApiKey) {
+          setHint("„· KI“ braucht einen Schlüssel — Tresor (🔐) entsperren oder unten eintragen. Bis dahin: gratis Cosinus.");
+        }
+        if (lastRenderRes) renderResults(lastRenderRes);
+      });
+    viewKiCheckboxEl.setAttribute("title",
+      "Nur im verwandt-Modus: das echte Verwandtschafts-Maß vom KI-Richter (über die Bedeutung) beurteilen lassen. Braucht einen Schlüssel; ohne Schlüssel bleibt der gratis zentrierte Cosinus.");
     viewRowEl.appendChild(viewRelatedOnlyCheckboxEl);
+    viewRowEl.appendChild(viewKiCheckboxEl);
     panelEl.appendChild(viewRowEl);
     updateViewRowState();
 
@@ -2523,6 +2554,74 @@
       });
   }
 
+  function kiRelKey(t) { return (t.anchorId || "") + "|" + (t.label || ""); }
+
+  // „· KI"-Verwandtschaft: dieselbe hybridMatch-Brücke wie der Richter, aber das
+  // Urteil wird NICHT auf passt gefiltert — wir wollen ALLE Verdikte (Score +
+  // passt-Flag), um die ANZEIGE nach dem KI-Bedeutungs-Maß zu sortieren. Liefert
+  // eine byKey-Karte, fail-soft (available:false bei Fehler / ohne Schlüssel).
+  function kiRelatedness(query, treffer) {
+    var match = global.SbkimMatch;
+    if (!match || typeof match.hybridMatch !== "function") {
+      return Promise.resolve({ available: false, byKey: {}, reason: "Modul 04 hybridMatch fehlt." });
+    }
+    var forJudge = treffer.map(function (c) {
+      return { label: c.label, text: c.text || c.label, cosine: c.score, anchorId: c.anchorId };
+    });
+    var judgeOpts = { apiKey: optApiKey, provider: optProvider, euOnly: euOnlyForPolicy() };
+    if (optRichterModel) judgeOpts.model = optRichterModel;
+    return Promise.resolve(match.hybridMatch(
+        { text: query, label: optQueryLabel || null }, forJudge, judgeOpts))
+      .then(function (j) {
+        if (!j || !j.available) return { available: false, byKey: {}, reason: j && j.reason };
+        var byKey = {};
+        (j.verdicts || []).forEach(function (v) {
+          byKey[(v.anchorId || "") + "|" + (v.label || "")] =
+            { score: v.score, passt: v.passt, begruendung: v.begruendung };
+        });
+        return { available: true, byKey: byKey, attestation: j.attestation };
+      })
+      .catch(function (err) {
+        return { available: false, byKey: {}, reason: (err && err.message) || String(err) };
+      });
+  }
+
+  // Stößt das KI-Verwandtschafts-Urteil an, wenn (und nur wenn) „verwandt" + „· KI"
+  // + Schlüssel da sind und für die aktuelle Frage noch kein Urteil vorliegt. Zeigt
+  // währenddessen weiter den gratis Cosinus (fail-soft); nach dem Urteil ein
+  // Re-Render. Cache-Guard (query + available) verhindert eine Schleife/Doppelruf.
+  function ensureKiRelated(res) {
+    if (viewMode !== "verwandt" || !viewKiRelated || !optApiKey) return;
+    var match = global.SbkimMatch;
+    if (!match || typeof match.hybridMatch !== "function") return;
+    var q = (queryValue || "").trim();
+    if (!q) return;
+    var treffer = (res && res.treffer) || [];
+    if (!treffer.length) return;
+    if (kiRelatedState.running) return;
+    if (kiRelatedState.query === q && kiRelatedState.available) return;
+    kiRelatedState.running = true;
+    setHint("KI-Richter beurteilt die Verwandtschaft … (kann etwas dauern)");
+    kiRelatedness(q, treffer).then(function (out) {
+      kiRelatedState = { query: q, byKey: out.byKey || {}, available: !!out.available, running: false };
+      if ((queryValue || "").trim() !== q) return;   // veraltet (neue Suche) → nicht zeichnen
+      setHint(out.available
+        ? "KI-Richter hat nach Verwandtschaft sortiert."
+        : "KI-Richter nicht verfügbar — gratis Cosinus-Rangfolge." + (out.reason ? " (" + out.reason + ")" : ""));
+      if (lastRenderRes) renderResults(lastRenderRes);
+    }).catch(function (err) {
+      kiRelatedState = { query: q, byKey: {}, available: false, running: false };
+      warn("KI-Verwandtschaft fehlgeschlagen — gratis Cosinus.", err);
+    });
+  }
+
+  // Greift das KI-Urteil gerade für die ANZEIGE (verwandt + KI + Schlüssel + Urteil
+  // zur aktuellen Frage vorhanden)? Genutzt von displayTreffer + buildResultsText.
+  function kiRelatedActive() {
+    return viewMode === "verwandt" && viewKiRelated && !!optApiKey &&
+      kiRelatedState.available && kiRelatedState.query === (queryValue || "").trim();
+  }
+
   // Mehrfach-Suche: gewählte Bereiche → je Cosinus-Kandidaten → zusammenführen →
   // optional KI-Richter → gerankte Treffer mit Quellen-Badge. Internet ohne
   // SearXNG-URL → Neuer-Tab-Karte (webLink) statt Inline-Treffer.
@@ -2631,6 +2730,7 @@
     var text = inputEl ? inputEl.value : queryValue;
     queryValue = text;
     setHint("Suche läuft …");
+    kiRelatedState = { query: null, byKey: {}, available: false, running: false }; // neue Frage → KI-Urteil neu holen
     searchCount++;
     var myToken = searchCount;                // gegen veraltete Live-Antworten
     resultsVisibleCount = RESULT_PAGE_SIZE; // neue Suche → wieder die ersten 10
@@ -2738,7 +2838,9 @@
   function buildResultsText(res) {
     var t = displayTreffer(res);
     var q = (queryValue || "").trim();
-    var sortNote = (viewMode === "verwandt") ? "sortiert nach Verwandtschaft" : "sortiert nach Bedeutung";
+    var sortNote = (viewMode === "verwandt")
+      ? (kiRelatedActive() ? "sortiert nach Verwandtschaft (KI-Richter)" : "sortiert nach Verwandtschaft (Rangfolge)")
+      : "sortiert nach Bedeutung";
     var head = "SBKIM-Suche" + (q ? " — \"" + q + "\"" : "") +
       "  (" + t.length + " Treffer, " + sortNote + ")";
     var lines = [head, ""];
@@ -2779,9 +2881,33 @@
     opts = opts || {};
     var mode = opts.mode || "verbunden";
     var relatedOnly = !!opts.relatedOnly;
+    var kiByKey = opts.kiByKey || null;
     var list = Array.isArray(treffer) ? treffer.slice() : [];
     if (mode !== "verwandt") return list;
     var match = global.SbkimMatch;
+    // „· KI": liegt ein KI-Richter-Urteil vor (byKey), danach ranken — das echte
+    // Bedeutungs-Maß (Score 0..1, passt-Flag) statt des zentrierten Cosinus.
+    // Fail-soft: ohne Urteil fällt es unten auf den Cosinus-Pfad zurück.
+    if (kiByKey) {
+      var ek = list.map(function (t) {
+        var v = kiByKey[(t.anchorId || "") + "|" + (t.label || "")];
+        var copy = shallowCopyTreffer(t);
+        var s = (v && typeof v.score === "number" && isFinite(v.score)) ? v.score : null;
+        copy.relatedness = s;
+        copy.isRelated = !!(v && v.passt);
+        copy.kiJudged = true;
+        if (v && v.begruendung && !copy.begruendung) copy.begruendung = v.begruendung;
+        return copy;
+      });
+      ek.sort(function (a, b) {
+        var ra = (a.relatedness === null) ? -Infinity : a.relatedness;
+        var rb = (b.relatedness === null) ? -Infinity : b.relatedness;
+        if (rb !== ra) return rb - ra;
+        return (b.score || 0) - (a.score || 0);
+      });
+      if (relatedOnly) ek = ek.filter(function (t) { return t.isRelated; });
+      return ek;
+    }
     if (!match || typeof match.relatedness !== "function" || !queryVec) return list;
     var enriched = list.map(function (t) {
       var rel = null;
@@ -2809,8 +2935,9 @@
   // renderResults UND buildResultsText, damit Anzeige und „Block kopieren" gleich
   // sortiert sind.
   function displayTreffer(res) {
+    var kiByKey = kiRelatedActive() ? kiRelatedState.byKey : null;
     return rankView((res && res.treffer) || [], lastQueryVec,
-      { mode: viewMode, relatedOnly: viewRelatedOnly });
+      { mode: viewMode, relatedOnly: viewRelatedOnly, kiByKey: kiByKey });
   }
 
   function renderResults(res) {
@@ -2841,6 +2968,9 @@
     if (!summary && res && typeof res.summary === "string") summary = res.summary;
     res.summary = summary; // für Persistenz/Restore
     lastRenderRes = res;
+    // „· KI": Urteil bei Bedarf anstoßen (nur verwandt + KI + Schlüssel). Zeigt bis
+    // dahin den gratis Cosinus; bei Eintreffen folgt ein Re-Render. Fail-soft.
+    ensureKiRelated(res);
     if (summary) {
       var sumEl = doc.createElement("div");
       sumEl.className = "sbkim-sw-summary";
@@ -2937,8 +3067,11 @@
         line.appendChild(doc.createTextNode(" "));
         var relEl = doc.createElement("span");
         relEl.className = "sbkim-sw-relscore" + (t.isRelated ? " is-related" : "");
-        relEl.setAttribute("title", "Verwandtschaft (zentrierter Cosinus) — echter Themen-Bezug, gatet nichts");
-        relEl.textContent = "🧬 " + Math.round(t.relatedness * 100) + " %";
+        var kiJudged = t.kiJudged === true;
+        relEl.setAttribute("title", kiJudged
+          ? "Verwandtschaft — vom KI-Richter über die Bedeutung beurteilt, gatet nichts"
+          : "Verwandtschaft (zentrierter Cosinus) — Rangfolge nach Themen-Bezug, gatet nichts");
+        relEl.textContent = "🧬 " + Math.round(t.relatedness * 100) + " %" + (kiJudged ? " · KI" : "");
         line.appendChild(relEl);
       }
       el.appendChild(line);
@@ -3447,7 +3580,7 @@
   // User-Wahl ist heilig und übersteht Re-Init; Default bleibt "verbunden" (grob),
   // damit nichts an der gewohnten Sicht überrascht.
   function persistViewPref() {
-    try { lsSet(LS_KEY_VIEW, JSON.stringify({ mode: viewMode, relatedOnly: viewRelatedOnly })); }
+    try { lsSet(LS_KEY_VIEW, JSON.stringify({ mode: viewMode, relatedOnly: viewRelatedOnly, kiRelated: viewKiRelated })); }
     catch (_e) { /* fail-soft (Quota/Inkognito) */ }
   }
   function restoreViewPref() {
@@ -3458,6 +3591,7 @@
       if (p && typeof p === "object") {
         if (p.mode === "verbunden" || p.mode === "verwandt") viewMode = p.mode;
         if (typeof p.relatedOnly === "boolean") viewRelatedOnly = p.relatedOnly;
+        if (typeof p.kiRelated === "boolean") viewKiRelated = p.kiRelated;
       }
     } catch (_e) { /* fail-soft */ }
   }
@@ -4011,6 +4145,7 @@
     // Anzeige-Sicht-Default (localStorage = User-Wahl überschreibt sie unten).
     if (options.viewMode === "verbunden" || options.viewMode === "verwandt") viewMode = options.viewMode;
     if (options.relatedOnly !== undefined) viewRelatedOnly = !!options.relatedOnly;
+    if (options.kiRelated !== undefined) viewKiRelated = !!options.kiRelated;
     if (options.areas && typeof options.areas === "object") {
       ["app", "knoten", "internet"].forEach(function (id) {
         if (typeof options.areas[id] === "boolean") areas[id].enabled = options.areas[id];
@@ -4097,7 +4232,16 @@
       if (lastRenderRes) renderResults(lastRenderRes);
       return viewRelatedOnly;
     },
-    rankView: rankView,   // reine Funktion (treffer, queryVec, {mode,relatedOnly}) — headless testbar
+    // „· KI": verwandt-Maß vom KI-Richter (opt-in, BYOK). Reine Anzeige.
+    setKiRelated: function (on) {
+      viewKiRelated = !!on;
+      persistViewPref();
+      updateViewRowState();
+      if (lastRenderRes) renderResults(lastRenderRes);
+      return viewKiRelated;
+    },
+    getKiRelated: function () { return viewKiRelated; },
+    rankView: rankView,   // reine Funktion (treffer, queryVec, {mode,relatedOnly,kiByKey}) — headless testbar
     buildPrompt: buildAiPrompt,
     parseAiAnswer: parseAiAnswer,
     parseAiSummary: extractAiSummary,
@@ -4124,6 +4268,8 @@
       get richterOn() { return richterOn; },
       get viewMode() { return viewMode; },
       get relatedOnly() { return viewRelatedOnly; },
+      get kiRelated() { return viewKiRelated; },
+      get kiRelatedActive() { return kiRelatedActive(); },
       get hasQueryVec() { return !!lastQueryVec; },
       get hasSearxng() { return !!searxngUrl; },
       get webEngine() { return optWebEngine; },

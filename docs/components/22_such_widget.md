@@ -686,6 +686,71 @@ optionaler `.a-judge`). Sie würde vom selben Zwei-Maß-Schalter profitieren
 **eigene Folge-Sitzung** abgegrenzt gelassen (kein Zwang laut Brief, saubere
 PR-Grenze) — siehe Folge-Brief.
 
+## „verwandt · KI" — das Verwandtschafts-Maß vom KI-Richter (Kalibrier-Abschluss, 2026-06-28)
+
+Die vierteilige Browser-Messreihe (Panel 04, Klaus' Galaxy-Tab) hat empirisch
+gezeigt: der **gratis zentrierte Cosinus trennt verwandt/unverwandt nicht
+zuverlässig** (Überlappung; v1 wie v2; Details in
+`docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md` § „Stand 2026-06-28 (tiefe Nacht)").
+**Klaus' Richtungs-Entscheid:** der Cosinus bleibt der gratis/offline
+**„verbunden"-Vorfilter** (ehrliche **Rangfolge**, kein Wahrheits-Stempel); das
+echte **„verwandt"** liefert der **KI-Richter** (Modul 04 `hybridMatch`, opt-in,
+BYOK) — zurück zur Ur-Vision „Semantisches Bidirektionales KI-Matching".
+
+**Dritter Schalter „· KI" (nur im verwandt-Modus sichtbar):**
+
+- **aus (Default):** das gratis **„verwandt" bleibt der zentrierte Cosinus** —
+  jetzt ehrlich als **Rangfolge** beschriftet (Tooltip + Block-Kopf
+  „sortiert nach Verwandtschaft (Rangfolge)"), nicht als Ja/Nein-Wahrheit.
+- **an (+ Schlüssel):** der **KI-Richter** beurteilt die Verwandtschaft *über die
+  Bedeutung*. Die Anzeige wird nach dem KI-Score (0..1) sortiert, `isRelated` kommt
+  aus dem `passt`-Flag des Urteils, jeder Treffer-Badge zeigt „🧬 NN % · KI", und
+  die KI-`begruendung` erscheint als Treffer-Zeile. Block-Kopf: „sortiert nach
+  Verwandtschaft (KI-Richter)".
+
+**Wiederverwendung, kein Neubau:** „· KI" nutzt das schon vorhandene
+**Richter-Anbieter-Dropdown + Schlüsselfeld + optionale Modellzeile** (Bau
+2026-06-26) und dieselbe `hybridMatch`-Brücke. Der bestehende **„KI-Richter"-
+Schalter** (re-rankt die ganze Liste während der Suche) bleibt **unverändert
+daneben** (Klaus' Entscheid: „· KI" unter „verwandt", alt bleibt).
+
+**Verträge / Disziplin:**
+
+- **Reine Anzeige.** Das KI-Maß **gatet nichts**; `PROVIDER_MIN_MATCH` (0.80) +
+  Andock-Handshake (Modul 05) unverändert. Modul 04 wird **nicht** angefasst
+  (nur die öffentliche Fläche `hybridMatch` genutzt — die schon da war).
+- **Opt-in, BYOK, fail-soft.** Ohne Schlüssel / ohne erreichbares Urteil →
+  **degradiert auf den gratis Cosinus** (kein Throw, ein Hinweis im Status-Text).
+  Ohne Schlüssel beim Anhaken: nüchterner Hinweis „braucht einen Schlüssel".
+- **EU-Politik gilt.** Anbieter-Filter (`bindend` → nur EU/Mistral) + `euOnly`
+  reisen mit (`euOnlyForPolicy()`), wie beim bestehenden Richter.
+- **RAM-only, kein PII.** Das Urteil (`kiRelatedState`) lebt nur im Speicher, ist
+  an die aktuelle Suchfrage gebunden und wird bei jeder neuen Suche zurückgesetzt
+  — **nicht** persistiert. Nur die **Schalter-Wahl** (`kiRelated`) persistiert in
+  `localStorage` `sbkim_search_widget_view` (User-Wahl heilig, Default aus).
+- **Kein Doppel-Feuer.** Das Urteil wird nur angestoßen, wenn verwandt + „· KI" +
+  Schlüssel da sind und für die Frage noch keins vorliegt (Cache-Guard `query` +
+  `available`, `running`-Sperre). Bis das Urteil eintrifft, zeigt das Widget den
+  gratis Cosinus; danach folgt ein Re-Render.
+
+**Surface (Erweiterung):** `setKiRelated(bool)` · `getKiRelated()` ·
+`rankView(treffer, queryVec, {mode, relatedOnly, kiByKey?})` (das KI-Urteil als
+`kiByKey`-Karte reingereicht → reine, headless testbare Funktion).
+`_meta.kiRelated` (Schalter) / `_meta.kiRelatedActive` (Urteil greift gerade).
+`init({kiRelated?})`.
+
+**Geprüft:** `tests/smoke_bau22e_waehlen.mjs` **45/45** (Proben 8–11: KI-Urteil
+sortiert/filtert nach Score+`passt`, fail-soft bei fehlendem Urteil, Eingabe nicht
+mutiert, Surface/Default opt-in), `smoke_bau22_such_widget.mjs` 257/257,
+Standalone-Drift-Guard 46/46. Byte-Kopie `such-tool/modules/22…` byte-1:1
+mitgezogen. **Browser-Sichttest (KI-Schlüssel live) wartet auf Klaus.**
+
+**Modul 23 (Raum-Badge): bewusst nur Cosinus.** Klaus' Entscheid 2026-06-28: der
+KI-Richter kommt **vorerst nicht** ins Rendezvous-Badge (kurze Domänen-Texte
+Spore↔Spore, Kosten/Aufruf je Karte); dort bleibt der gratis zentrierte Cosinus,
+nur ehrlicher beschriftet. **Schnipsel-Mittel-Lead** (gratis, trennt knapp, bräuchte
+Spore-Vertragseingriff) bleibt als notierter Lead liegen — erst nur KI-Richter.
+
 ## Mehrfach-Suche: drei getrennte Bereiche (Bau 22 Mehrfach, 2026-06-21)
 
 Klaus' Vision: das Werkzeug durchsucht **drei getrennt wählbare Bereiche**
