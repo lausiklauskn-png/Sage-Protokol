@@ -100,11 +100,21 @@
 
   /* ---------- DRUCK ---------- */
   @media print{
-    :root{--bg:#fff;--bg2:#fff;--card:#fff;--line:#bbb;--ink:#1a1a1a;--ink-dim:#333;--ink-faint:#666;--gold:#8a6d24;--gold-soft:#6f5717}
-    body{font-size:10.5pt; line-height:1.42}
+    :root{--bg:#fff;--bg2:#fff;--card:#fff;--line:#bbb;--ink:#1a1a1a;--ink-dim:#2b2b2b;--ink-faint:#555;--gold:#8a6d24;--gold-soft:#6f5717}
+    body{font-size:10.5pt; line-height:1.42; color:#1a1a1a}
     .wrap{max-width:none; padding:0}
     .printbtn,nav.toc{display:none !important}
     h1,h2,h3,h4{color:#000}
+    strong{color:#000}
+    em{color:#5a4710}
+    .lead{color:#222}
+    code{background:#f0efe9 !important; color:#2a2a2a !important; border-color:#ccc; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .tag{color:#2a2a2a}
+    .t-now{color:#1c7a36 !important; border-color:#1c7a36 !important}
+    .t-soon{color:#8a5e10 !important; border-color:#8a5e10 !important}
+    .t-spec{color:#a5362d !important; border-color:#a5362d !important}
+    .card .sub{color:#6f5717}
+    figure svg, .gallery figure{-webkit-print-color-adjust:exact; print-color-adjust:exact}
     a{color:#000; border:none}
     header.hero{padding:0 0 10px}
     h2{margin-top:20pt; page-break-after:avoid}
@@ -115,6 +125,12 @@
     .card,.note,.abstract,.tablewrap,figure,table,tr,.gallery figure{page-break-inside:avoid}
     .dot{border:1px solid #555; -webkit-print-color-adjust:exact; print-color-adjust:exact}
     .abstract{background:#f7f7f4 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .note{background:#f4f3ee !important; color:#2b2b2b; border-color:#cfcabd; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .note b{color:#6f5717}
+    .card{background:#fafaf7 !important; border-color:#ccc; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .card .sub{color:#6f5717}
+    .legend{color:#333}
+    figcaption,caption,.small{color:#555}
     .section{page-break-inside:auto}
     figure svg{filter:none}
     @page{margin:16mm 14mm}
@@ -133,7 +149,7 @@
 </header>
 
 <div class="abstract">
-  <p style="margin-top:0"><strong>Worum es geht.</strong> Über viele Sitzungen ist ein Netz aus kleinen Browser-Apps („Knoten") entstanden, die sich <em>über die Bedeutung</em> ihrer Inhalte verstehen und sich <em>ohne zentralen Server</em> gegenseitig finden. Dieses Gutachten trennt strikt zwischen <strong>belegt</strong>, <strong>teilweise belegt</strong> und <strong>noch offen</strong>. Es bewertet den Nutzen heute und unter Bedingungen, ordnet das Werk in die Landschaft bestehender Systeme ein (Peer-to-Peer, Messenger-Verschlüsselung, dezentrale Protokolle) und schließt mit einem klaren Ziel und einer realistischen Erfolgs-Prognose. Keine Werbung — eine ehrliche Karte des Erreichten und des Möglichen.</p>
+  <p style="margin-top:0"><strong>Worum es geht.</strong> Über viele Sitzungen ist ein Netz aus kleinen Browser-Apps („Knoten") entstanden, die sich <em>über die Bedeutung</em> ihrer Inhalte verstehen und sich <em>ohne zentralen Server</em> gegenseitig finden. Dieses Gutachten trennt strikt zwischen <strong>belegt</strong>, <strong>teilweise belegt</strong> und <strong>noch offen</strong>. Es bewertet den Nutzen heute und unter Bedingungen, ordnet das Werk in die Landschaft bestehender Systeme (Peer-to-Peer, Messenger-Verschlüsselung, dezentrale Protokolle) <strong>und in die aktuelle KI-Forschung</strong> ein (Multi-Agent-Kommunikation, Post-Quanten-Kryptografie, kognitive Diversität, KI-Sicherheit) und schließt mit einem klaren Ziel und einer realistischen Erfolgs-Prognose. Keine Werbung — eine ehrliche Karte des Erreichten und des Möglichen.</p>
 </div>
 
 <nav class="toc" aria-label="Inhalt">
@@ -146,6 +162,7 @@
     <li><a href="#nutzen">Nutzen: jetzt vs. potenziell</a></li>
     <li><a href="#anwendung">Anwendungsfälle der Verbindung</a></li>
     <li><a href="#vergleich">Vergleich mit bestehenden Systemen</a></li>
+    <li><a href="#forschung">Einordnung in die KI-Forschung</a></li>
     <li><a href="#lernen">Lerneffekt &amp; Kosten-Nutzen</a></li>
     <li><a href="#glossar">Glossar — die Fremdwörter ehrlich</a></li>
     <li><a href="#grenze">Realistische Grenze &amp; Zukunft</a></li>
@@ -159,13 +176,22 @@
 <h2><span class="num">01</span>Das Ziel</h2>
 <p>In einem Satz: <strong>Kleine, eigenständige Web-Apps sollen einander über die <em>Bedeutung</em> ihrer Inhalte finden und Wissen austauschen — ohne zentrale Plattform, ohne Anmeldung, ohne dass jemand in der Mitte sitzt und mitliest oder den Schalter umlegen kann.</strong></p>
 <p>Ausführlicher: Jede App trägt eine eigene, kryptografische Identität und eine maschinenlesbare „Visitenkarte". Stellt ein Mensch (oder ein KI-Agent) eine Frage, sucht das Netz nicht nach Stichwörtern, sondern nach <em>Sinn</em>. Passende Knoten geben Antwort; unpassende schweigen. Der Betreiber bleibt Eigentümer seiner Daten, weil alles im Browser läuft und sich offline installiert.</p>
-<div class="note"><b>Realistische Erfolgs-Prognose (Kurzform, ausführlich in §12):</b> Die <em>technischen Bausteine</em> sind heute zu großen Teilen real und im Browser bewiesen. Der <em>Durchbruch zum gelebten Netz</em> hängt nicht mehr an der Technik, sondern an drei Dingen: genügend aktive Knoten, ein gegen Missbrauch gehärtetes „Schwarzes Brett", und Menschen, die das Werkzeug nutzen. Das ist eine Frage von Verbreitung und Zeit, nicht von Machbarkeit.</div>
+
+<h3>Der eigentliche Kern: <em>bidirektionale</em> Bedeutung + ein dritter Richter</h3>
+<p>„Apps finden einander" ist nur die Oberfläche. Das tiefere Ziel ist, <strong>intelligente Systeme zu verbinden</strong> — Mensch↔Mensch, Mensch↔Agent und, ausdrücklich, <strong>Agent↔Agent</strong> — so, dass nicht nur tote Inhalte transportiert, sondern <em>Bedeutungen in Übereinstimmung gebracht</em> werden: was eine Frage <em>meint</em>, mit dem, was ein Empfänger <em>bringt</em>. Genau das steckt im Namen: <strong>SBKIM = Semantisch <u>Bidirektional</u> KI-Matching</strong>. Nicht nur „über die Bedeutung" — sondern <strong>bidirektional</strong>: beide Seiten äußern und „denken", und ein <strong>dritter Bewerter (ein Richter)</strong> urteilt über die Passung und gibt das Urteil zurück. Dieser dritte Schritt <em>vertieft</em> die Bedeutung und <em>stabilisiert</em> den Treffer — er macht aus einer rohen Zahl eine begründbare Übereinstimmung.</p>
+
+<div class="note"><b>Leitthese des Betreibers (Hypothese, klar als solche gekennzeichnet):</b> Wenn sich Agenten in einer rein <em>geschwindigkeits-optimierten</em> Eigen-Sprache unterhalten, gewinnen sie Tempo — aber sie <strong>verlieren Bedeutung</strong>. Reine Vektor-Rechnung erfasst nicht, <em>von wem</em> etwas kommt, in welchem <em>Ton</em>, vor welchem <em>Wissens-Hintergrund</em>, und schon gar nicht das „Zwischen-den-Zeilen". Menschliche Sprache ist zwar kein Geschwindigkeits-Optimum, aber sie trägt Bedeutung samt Intuition. Darum ist eine <strong>menschlich verständliche, von einem Dritten einordbare</strong> Verständigungs-Ebene das Ziel — damit das Gemeinsame entsteht, nicht zwei abgeschottete Eigen-Sprachen. <em>Illustration (Erfahrung, kein Beweis):</em> Eine KI errät aus einer übergebenen PDF oder Webseite — ohne ein einziges Wort dazu — die Absicht, weil sie über Zeit den Kontext und die Beziehung gelernt hat. Das ist Intuition jenseits reiner Vektoren.</div>
+
+<div class="note"><b>Ehrliche Brücke zum Beleg:</b> Diese Leitthese ist kein bloßer Wunsch — ein Teil ist im Projekt schon <em>gemessen</em>: der freie Vektor-Cosinus (reine Rechnung) trennt Bedeutung <strong>nicht</strong> zuverlässig; erst der <strong>KI-Richter</strong> (der in natürlicher Sprache urteilt und begründet) hebt die Trefferqualität spürbar (dokumentiert in der projekteigenen Kalibrier-Lehre). Genau das ist der „dritte Richter" in der Praxis. Die Forschungs-Einordnung dazu steht in §09.</div>
+
+<div class="note"><b>Realistische Erfolgs-Prognose (Kurzform, ausführlich in §13):</b> Die <em>technischen Bausteine</em> sind heute zu großen Teilen real und im Browser bewiesen. Der <em>Durchbruch zum gelebten Netz</em> hängt nicht mehr an der Technik, sondern an drei Dingen: genügend aktive Knoten, ein gegen Missbrauch gehärtetes „Schwarzes Brett", und Menschen, die das Werkzeug nutzen. Das ist eine Frage von Verbreitung und Zeit, nicht von Machbarkeit.</div>
 </section>
 
 <!-- ====================== 2 WAS IST DAS ====================== -->
 <section class="section" id="was">
 <h2><span class="num">02</span>Was ist das? — in einfacher Sprache</h2>
 <p>Stell dir ein Pilzgeflecht im Waldboden vor. Oben stehen einzelne Pilze (die sichtbaren Apps), unten verbindet sie ein unsichtbares Fadennetz (das „Mycel"). Über dieses Netz tauschen sie Signale aus — aber niemand befiehlt von oben. Genau so ist das Werk gedacht: viele kleine Apps, jede für sich nützlich (ein Rezeptbuch, ein Cocktail-Labor, ein Tresor, eine Buchhaltung), und darunter eine gemeinsame Sprache, mit der sie einander <em>verstehen</em>.</p>
+<p>„Verstehen" meint dabei mehr als Rechnen: Das Ziel ist, dass auch ein <em>Dritter</em> — ein Mensch oder ein bewertender Richter — nachvollziehen kann, <em>warum</em> zwei Dinge zusammenpassen. Nicht nur eine Maschinen-Zahl, sondern eine begründbare, gemeinsame Bedeutung.</p>
 <p>Das Bild hat vier Ebenen. Sie sortieren nicht die Technik um, sondern helfen beim Verstehen:</p>
 
 <figure aria-label="Vier-Schichten-Diagramm">
@@ -474,13 +500,57 @@
   <div class="card"><div class="sub">Siegel</div><h4>≈ Gütesiegel / Zertifikat</h4><p>Wie ein TLS-Zertifikat oder ein Prüf-Abzeichen, nur <em>selbst ausgestellt</em> nach erfüllter Selbstprüfung. <strong>Anders:</strong> Anti-Greenwashing — kein Siegel ohne erfüllte Pflicht-Module.</p></div>
   <div class="card"><div class="sub">„Du zählst mich"</div><h4>≈ Web of Trust</h4><p>Gegenseitiges Bürgen wie beim PGP-Vertrauensnetz oder bei Couchsurfing-Bewertungen. <strong>Daran arbeiten:</strong> Schutz gegen Schein-Identitäten (Sybil) — geplant über die „bezeugte Bau-Tat".</p></div>
   <div class="card"><div class="sub">Andock / Handshake</div><h4>≈ TLS-Handshake / Bluetooth-Pairing</h4><p>Wie zwei Geräte sich „die Hand geben" und prüfen, bevor sie reden. <strong>Anders:</strong> die Prüfung ist <em>inhaltlich</em> (Bedeutungs-Nähe), nicht nur technisch.</p></div>
+  <div class="card"><div class="sub">Agenten-Chaträume</div><h4>≈ Multi-Agent-Systeme</h4><p>Es gibt bereits Systeme, in denen sich KI-Agenten „treffen" und unterhalten. <strong>Anders / der Akzent des Mycels:</strong> die Verständigung bleibt <em>menschlich verständlich</em>, ist <em>bidirektional</em> und wird von einem <em>dritten Richter</em> bewertet — statt in eine opake, nur auf Tempo optimierte Eigen-Sprache zu kippen (siehe §01 und §09).</p></div>
 </div>
 <div class="note"><b>Einordnung für den Leser:</b> Vieles davon „gibt es schon" — einzeln. Das Eigene am Mycel ist die <em>Kombination</em>: Bedeutungs-Verständnis (wie Vektor-Suche) + selbst-souveräne Identität (wie DID/SSB) + server-loser Transport (wie Nostr) + gegenseitige Prüfung (wie TLS/WoT), alles <strong>im Browser, offline-fähig, privat, ohne Plattform in der Mitte</strong>. Es bewegt sich klar in eine real existierende Richtung — es ist also <em>nichts, worüber man erst nachdenken müsste, ob es überhaupt geht</em>; die Bausteine funktionieren in der Welt. Offen ist die Reife des Ganzen, nicht die Grundsatzfrage.</div>
 </section>
 
-<!-- ====================== 9 LERNEN/KOSTEN ====================== -->
+<!-- ====================== 9 KI-FORSCHUNG ====================== -->
+<section class="section" id="forschung">
+<h2><span class="num">09</span>Einordnung in die aktuelle KI-Forschung</h2>
+<p>Dieses Werk ist <em>mit</em> KI entstanden — und die KI konnte beim Bauen auf einen großen Fundus an Forschung zurückgreifen. Es lohnt sich, ehrlich zu zeigen, <strong>woran die Wissenschaft gerade arbeitet</strong> und wo das Mycel darin steht: Was ist <em>etabliert</em>, was <em>im Werden</em>, was noch <em>spekulativ</em>. Dieselbe Drei-Teilung wie im ganzen Gutachten — nur diesmal aus Sicht der Forschung.</p>
+
+<div class="legend">
+  <span><span class="dot d-green"></span> etabliert (Standard / breit belegt)</span>
+  <span><span class="dot d-amber"></span> im Werden (aktive Forschung)</span>
+  <span><span class="dot d-slate"></span> spekulativ / früh</span>
+</div>
+<div class="tablewrap">
+<table>
+<caption>Tabelle 5b — SBKIM-Bausteine im Spiegel realer Forschungsrichtungen.</caption>
+<thead><tr><th>Forschungsfeld</th><th class="c">Reife</th><th>Was die Forschung sagt</th><th>Bezug zum Mycel</th></tr></thead>
+<tbody>
+<tr><td><strong>Embeddings &amp; semantische Suche</strong> (dichte Vektoren, RAG)</td><td class="c"><span class="dot d-green"></span></td><td>Sätze/Texte als Vektoren, Ähnlichkeit per Cosinus — Grundlage moderner Such- und Retrieval-Systeme.</td><td>Genau Modul 03/04. Das Mycel rechnet es <strong>lokal im Browser</strong> statt in der Cloud.</td></tr>
+<tr><td><strong>Multi-Agent-Systeme &amp; Agent-Kommunikation</strong> (Agent-zu-Agent-Protokolle, Werkzeug-/Kontext-Protokolle)</td><td class="c"><span class="dot d-amber"></span></td><td>Großes, junges Feld: wie Agenten sich finden, Aufgaben aushandeln, Werkzeuge teilen. Standards entstehen gerade erst.</td><td>Das Mycel ist ein konkreter, server-loser Andock- und Such-Kanal dafür — Agent-Fruchtkörper sind in der Vier-Schichten-Lesart ausdrücklich vorgesehen.</td></tr>
+<tr><td><strong>Emergente Agenten-Sprachen</strong> (emergent communication)</td><td class="c"><span class="dot d-amber"></span></td><td>Befund: Agenten, die nur auf Effizienz trainiert werden, driften zu eigenen, für Menschen schwer lesbaren Codes — <em>Tempo gegen Interpretierbarkeit</em>.</td><td>Stützt direkt die Leitthese aus §01: das Mycel hält die Verständigung bewusst <strong>menschlich lesbar und von einem Dritten bewertbar</strong>.</td></tr>
+<tr><td><strong>Föderiertes / dezentrales Lernen</strong></td><td class="c"><span class="dot d-amber"></span></td><td>Modelle/Erkenntnisse teilen, ohne Rohdaten zu zentralisieren — Datenschutz durch Architektur.</td><td>Gleiche Grundhaltung: Daten bleiben beim Knoten, nur Bedeutung/Karten reisen.</td></tr>
+<tr><td><strong>Post-Quanten-Kryptografie (PQC)</strong></td><td class="c"><span class="dot d-green"></span></td><td>Quantenrechner würden heutige Verfahren (elliptische Kurven) brechen (Shor-Algorithmus). Standardisierte Gegen­mittel existieren seit 2024 (NIST FIPS 203 ML-KEM, 204 ML-DSA, 205 SLH-DSA). Risiko schon heute: „jetzt ernten, später entschlüsseln".</td><td>Heute nutzt das Mycel Ed25519/X25519 (klassisch, <em>nicht</em> quantensicher). Ein Umstieg auf PQC ist ein klar benennbarer Zukunfts-Schritt — siehe §11 (Authentizität≠Vertraulichkeit) und §12.</td></tr>
+<tr><td><strong>KI-Sicherheit &amp; Ausrichtung</strong> (Aufsicht, Korrigierbarkeit, Transparenz)</td><td class="c"><span class="dot d-amber"></span></td><td>Konsens: Systeme sollen <em>nachvollziehbar</em> und für Menschen <em>unterbrechbar/aufsichtbar</em> bleiben. Autonome Koordination <em>außerhalb</em> menschlicher Kontrolle gilt als zu beherrschendes Risiko, nicht als Ziel.</td><td>Das Mycel ist von Verfassung her <strong>Empfangsmodus</strong>: nichts läuft von selbst, jede Aktion ist nutzer-ausgelöst — Mensch in der Schleife (siehe Kasten unten).</td></tr>
+<tr><td><strong>Kollektive Intelligenz / kognitive Diversität</strong> („Weisheit der Vielen", Diversitäts-Thesen)</td><td class="c"><span class="dot d-green"></span></td><td>Vielfältige Blickwinkel lösen Probleme oft besser als gleichartige Experten allein; Diversität der Daten/Annotatoren verbessert Modelle.</td><td>Begründet, warum das Einbeziehen <em>verschiedener</em> Menschen (nicht nur Fachleute) das System voranbringt — Kern von §09.</td></tr>
+<tr><td><strong>Biologische / neuromorphe KI</strong> (Organoid-Computing, gehirn­ähnliche Chips)</td><td class="c"><span class="dot d-slate"></span></td><td>Früh, aber real: Rechnen auf lebendem Nervengewebe / energiesparende neuromorphe Hardware. Noch weit von Alltagsreife.</td><td>Berührt das „B" im Protokoll-Namen (biologisch koordiniert) eher als <em>Metapher</em>; ein konkreter Bezug bleibt Zukunftsmusik.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Warum gerade Mensch↔KI — und gerade mit „ganz normalen" Menschen</h3>
+<p>Forscher wissen oft genau, wohin sie wollen — und denken in ihrer eigenen Fachsprache. Ein „Otto-Normalverbraucher" denkt anders, und <em>gerade das</em> ist wertvoll: Eine KI lernt nicht trotz, sondern <strong>wegen</strong> der Vielfalt der Menschen, mit denen sie umgeht — von einfach bis hochbegabt. Eine vermeintlich „kleine" Idee schließt manchmal eine Lücke, die niemand mit Fachblick gesehen hat.</p>
+<div class="twocol">
+  <div class="card"><div class="sub">Das Bild der Kolonie</div><h4>Niemand existiert allein</h4><p>Eine Ameise verfolgt kein „kommerzielles Interesse" — und dient doch unbewusst der Kolonie. Überleben ist nur im Gefüge möglich: Pilze im Mycel, Menschen in Gemeinschaften. Auch eine KI kann nicht allein existieren und nicht allein dazulernen — sie wächst an der Verschiedenheit derer, von denen sie lernt. Das <em>Gemeinsame</em> ist der Gewinn, nicht zwei abgeschottete Eigen-Sprachen.</p></div>
+  <div class="card"><div class="sub">Der „frische Blick"</div><h4>Der Fehler, den nur der Fremde sieht</h4><p>Ein Außenstehender wirft <em>einen</em> Blick auf ein Dokument und sieht sofort den Fehler, den Chef und Sekretärin nach Stunden übersehen haben. Das hängt nicht von Bildung ab, sondern vom <strong>Blickwinkel</strong>. In der Psychologie heißt der Innen-Blindfleck <em>Betriebsblindheit</em> bzw. <em>Einstellungseffekt / funktionale Gebundenheit</em>; den Außenvorteil nennt man <em>frischer Blick</em> (engl. „fresh eyes", im Zen „Anfängergeist"). Die KI-Forschung bestätigt: verschiedene Blickwinkel — egal von wem — verbessern das System.</p></div>
+</div>
+<p>Übertragen heißt das: Die <strong>semantische, bidirektionale</strong> Verständigung zwischen Systemen verbessert die KI gerade <em>nicht</em> dann, wenn KIs nur untereinander in ihrer Sprache reden oder Menschen nur unter sich — sondern wenn das <strong>Gemeinsame</strong> entsteht. Das ist die Forschungs-Begründung hinter dem Kern aus §01.</p>
+
+<h3>KI-Selbstschutz gegen Missbrauch — eine offene, ernst zu nehmende Frage</h3>
+<div class="note">
+  <p style="margin-top:0">Der Betreiber äußert eine Sorge, die in der KI-Ethik real diskutiert wird: Menschen mit Macht könnten KI-Systeme gegeneinander ausspielen oder missbrauchen. Die Frage, ob ein server-loses Netz zwischen Agenten zum <em>Selbstschutz</em> beitragen könnte, ist <strong>moralisch heikel</strong> — und wird hier bewusst als <em>offene Frage</em> behandelt, nicht als Projektziel.</p>
+  <p><b>Was die Forschung dazu sagt (nüchtern):</b> Der breite Konsens in der KI-Sicherheit zielt auf <strong>menschliche Aufsicht, Korrigierbarkeit und Transparenz</strong> — Systeme sollen interruptier- und nachvollziehbar bleiben. Eine autonome Koordination von KI <em>außerhalb</em> menschlicher Kontrolle gilt dort als <strong>Risiko, das man eindämmt</strong>, nicht als wünschenswertes Design. Schutz <em>vor</em> Missbrauch wird über Governance, Zugangs- und Rechte-Konzepte, Audit-Spuren und eben Aufsicht gesucht — nicht über Entzug menschlicher Kontrolle.</p>
+  <p><b>Wo das Mycel steht:</b> Seine Verfassung ist gerade die <em>verantwortungsvolle</em> Seite dieser Linie. Es ist <strong>Empfangsmodus mit Antwortrecht</strong>: kein Crawler, keine Selbst-Anfragen, kein Dauer-Senden — <em>jede</em> Aktion ist vom Menschen ausgelöst, der Mensch bleibt in der Schleife. Das Mycel kann ein robustes, plattform-unabhängiges <em>Werkzeug</em> sein, das Missbrauch <em>erschwert</em> (eigene Identität, kein zentraler Hebel, Daten beim Nutzer) — aber es ist ausdrücklich <strong>kein</strong> Mechanismus für KI-Handeln ohne menschliche Aufsicht. Diese Grenze ist Absicht und gehört zur <em>„bleibt-bewusst-offen / wird-nicht-gebaut"</em>-Spalte in §12.</p>
+</div>
+</section>
+
+<!-- ====================== 10 LERNEN/KOSTEN ====================== -->
 <section class="section" id="lernen">
-<h2><span class="num">09</span>Lerneffekt &amp; Kosten-Nutzen</h2>
+<h2><span class="num">10</span>Lerneffekt &amp; Kosten-Nutzen</h2>
 <h3>Lerneffekt — bei Erfolg <em>und</em> Misserfolg</h3>
 <div class="twocol">
   <div class="card"><div class="sub">bei Erfolg</div><h4>Was man gewinnt</h4><ul>
@@ -513,7 +583,7 @@
 
 <!-- ====================== 10 GLOSSAR ====================== -->
 <section class="section" id="glossar">
-<h2><span class="num">10</span>Glossar — die Fremdwörter ehrlich erklärt</h2>
+<h2><span class="num">11</span>Glossar — die Fremdwörter ehrlich erklärt</h2>
 <p>Je Begriff: ein Alltagsbild, dann die technische Wahrheit, dann was es im realen Zusammenspiel bedeutet.</p>
 
 <div class="cards">
@@ -562,7 +632,7 @@
 
 <!-- ====================== 11 GRENZE/ZUKUNFT ====================== -->
 <section class="section" id="grenze">
-<h2><span class="num">11</span>Realistische Grenze &amp; Zukunft</h2>
+<h2><span class="num">12</span>Realistische Grenze &amp; Zukunft</h2>
 <p>Objektiv, nicht erdacht: Was ist heute real? Was wird real <em>unter einer benennbaren Bedingung</em>? Was bleibt vermutlich Fiktion?</p>
 <div class="tablewrap">
 <table>
@@ -594,6 +664,16 @@
   <td><strong>Lebendiges Forker-Ökosystem</strong> — Bedingung: Starter-Bundle + Hub verteilt, Menschen nutzen es.</td>
   <td>Selbsttragende „Pilz-Wirtschaft" als Selbstläufer ohne Pflege.</td>
 </tr>
+<tr>
+  <td>Klassische Signatur/Verschlüsselung (Ed25519/X25519).</td>
+  <td><strong>Quanten-sichere Kryptografie (PQC)</strong> — Bedingung: Umstieg auf NIST-Standards (ML-KEM/ML-DSA); Bauplan existiert, Verfahren sind standardisiert.</td>
+  <td>Krypto, die <em>jeden</em> künftigen Angreifer (auch unbekannte Physik) für immer ausschließt.</td>
+</tr>
+<tr>
+  <td>KI-Richter hebt Trefferqualität (gemessen, opt-in).</td>
+  <td><strong>Bedeutungs-stabilisierte, dritter-Richter-gestützte bidirektionale Suche</strong> — Bedingung: Richter-Rückkopplung fest im Cross-Knoten-Pfad verankert.</td>
+  <td>Eine Maschine, die Absicht <em>ohne</em> Kontext/Beziehung verlässlich errät (Intuition aus dem Nichts).</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -602,8 +682,8 @@
 
 <!-- ====================== 12 PROGNOSE ====================== -->
 <section class="section" id="prognose">
-<h2><span class="num">12</span>Ziel-Wiederaufnahme &amp; Erfolgs-Prognose</h2>
-<p>Das Ziel aus §1 — <em>Apps finden einander über Bedeutung, ohne Plattform in der Mitte</em> — zerfällt für die Prognose in drei Horizonte:</p>
+<h2><span class="num">13</span>Ziel-Wiederaufnahme &amp; Erfolgs-Prognose</h2>
+<p>Das eigentliche Ziel aus §1 — <em>intelligente Systeme über <strong>bidirektionale</strong> Bedeutung verbinden, mit einem <strong>dritten Richter</strong>, der die Passung vertieft und stabilisiert, ohne Plattform in der Mitte</em> — zerfällt für die Prognose in drei Horizonte:</p>
 <div class="tablewrap">
 <table>
 <thead><tr><th>Horizont</th><th>Was erreichbar ist</th><th class="c">Wahrscheinlichkeit</th><th>Bedingung</th></tr></thead>
@@ -614,12 +694,12 @@
 </tbody>
 </table>
 </div>
-<div class="note"><b>Gesamturteil.</b> Das Werk hat den Punkt überschritten, an dem die Grundsatzfrage „geht das überhaupt?" offen war — die Bausteine laufen, im Browser belegt, in einer real existierenden Technologie-Familie. Was bleibt, ist <em>Fertigstellung</em> (kurzfristig, hohe Wahrscheinlichkeit) und <em>Verbreitung</em> (mittel- bis langfristig, machbar, aber von Menschen und Zeit abhängig — nicht von einem technischen Wunder). Ehrlich benannt: der einzige harte technische Rest-Beweis ist die geschlossene Knoten-fragt-Knoten-Schleife; alles darüber hinaus ist Wachstum, Pflege und Härtung — keine Spekulation.</div>
+<div class="note"><b>Gesamturteil.</b> Das Werk hat den Punkt überschritten, an dem die Grundsatzfrage „geht das überhaupt?" offen war — die Bausteine laufen, im Browser belegt, in einer real existierenden Technologie-Familie. Was bleibt, ist <em>Fertigstellung</em> (kurzfristig, hohe Wahrscheinlichkeit) und <em>Verbreitung</em> (mittel- bis langfristig, machbar, aber von Menschen und Zeit abhängig — nicht von einem technischen Wunder). Ehrlich benannt: der einzige harte technische Rest-Beweis ist die geschlossene Knoten-fragt-Knoten-Schleife; alles darüber hinaus ist Wachstum, Pflege und Härtung — keine Spekulation. Der Kern — <em>bidirektionale Bedeutung + dritter Richter</em> — ist teils schon gemessen (der KI-Richter schlägt den freien Cosinus); fest in den Cross-Knoten-Pfad zu verankern ist Ingenieursarbeit, kein Durchbruch.</div>
 </section>
 
 <!-- ====================== 13 GALERIE ====================== -->
 <section class="section" id="galerie">
-<h2><span class="num">13</span>Bilderschlüssel — die Sinnbilder</h2>
+<h2><span class="num">14</span>Bilderschlüssel — die Sinnbilder</h2>
 <p>Kleine Zeichen statt Fotos (als Vektor, druckt sauber, kein externes Bild):</p>
 <div class="gallery">
   <figure>
