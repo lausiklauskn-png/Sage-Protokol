@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<!--
+  SBKIM-Gutachten — Layout-Werkzeug (Editor + druckbares Dokument in einem).
+  Generiert aus SBKIM_Gutachten.html. Inhalt 1:1 uebernommen.
+  Bedienung: Luecke (duenne Linie) zwischen zwei Bloecken antippen, dann
+  Leertaste = Abstand groesser, Ruecktaste/Entf = kleiner, B/Enter = Seitenumbruch.
+  Touch: Knoepfe oben. "Export fuer Claude" gibt das Umbruch-Rezept aus.
+  Wahl wird lokal gespeichert (localStorage). Druck = WYSIWYG (jede Seite = 1 A4-Blatt).
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SBKIM-Gutachten — Layout-Werkzeug</title>
+<style>
+
+  :root{
+    --bg:#14161b; --bg2:#1b1e25; --card:#1e222b; --line:#2c313d;
+    --ink:#e9e6dd; --ink-dim:#b3b0a6; --ink-faint:#85837b;
+    --gold:#c9a961; --gold-soft:#e0c989;
+    --green:#56b870; --amber:#d9a13a; --red:#cf5b52; --slate:#7e8aa0; --blue:#5b8fc9;
+    --maxw:980px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px 90px}
+  h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif; line-height:1.22; color:#fff; font-weight:600}
+  h1{font-size:2.35rem; margin:.2em 0 .15em}
+  h2{font-size:1.62rem; margin:2.4em 0 .5em; padding-bottom:.28em; border-bottom:1px solid var(--line)}
+  h2 .num{color:var(--gold); font-size:1.02rem; vertical-align:.18em; margin-right:.55em; font-family:Inter,sans-serif; letter-spacing:.04em}
+  h3{font-size:1.18rem; margin:1.7em 0 .4em; color:var(--gold-soft)}
+  p{margin:.65em 0}
+  a{color:var(--gold-soft); text-decoration:none; border-bottom:1px solid rgba(201,169,97,.35)}
+  strong{color:#fff}
+  em{color:var(--gold-soft); font-style:normal}
+  code{font-family:"SFMono-Regular",Consolas,monospace; font-size:.86em; background:#11141a; border:1px solid var(--line); border-radius:5px; padding:.06em .38em; color:#d8c7a0}
+  .lead{font-size:1.12rem; color:var(--ink-dim)}
+  .small{font-size:.86rem; color:var(--ink-faint)}
+
+  /* Kopf */
+  header.hero{padding:64px 0 22px; border-bottom:2px solid var(--gold)}
+  .kicker{letter-spacing:.32em; text-transform:uppercase; font-size:.74rem; color:var(--gold); font-weight:600}
+  .hero .meta{color:var(--ink-faint); font-size:.9rem; margin-top:.7em}
+  .abstract{background:linear-gradient(180deg,#1b1f27,#171a21); border:1px solid var(--line); border-left:3px solid var(--gold);
+    border-radius:10px; padding:18px 22px; margin:26px 0}
+
+  /* Inhaltsverzeichnis */
+  nav.toc{background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:16px 22px; margin:26px 0; columns:2; column-gap:34px}
+  nav.toc ol{margin:0; padding-left:1.3em}
+  nav.toc li{margin:.22em 0; font-size:.93rem}
+  nav.toc a{border:none; color:var(--ink-dim)}
+  nav.toc a:hover{color:var(--gold-soft)}
+
+  /* Tabellen */
+  .tablewrap{overflow-x:auto; margin:1.1em 0}
+  table{border-collapse:collapse; width:100%; font-size:.9rem}
+  caption{caption-side:top; text-align:left; color:var(--ink-faint); font-size:.84rem; margin-bottom:.5em}
+  th,td{border:1px solid var(--line); padding:8px 11px; vertical-align:top; text-align:left}
+  thead th{background:#22262f; color:var(--gold-soft); font-family:Inter,sans-serif; font-weight:600; font-size:.82rem; letter-spacing:.02em}
+  tbody tr:nth-child(even){background:#1a1d24}
+  td.c,th.c{text-align:center; white-space:nowrap}
+
+  /* Status-Punkte */
+  .dot{display:inline-block; width:.62em; height:.62em; border-radius:50%; margin-right:.35em; vertical-align:.02em}
+  .d-green{background:var(--green)} .d-amber{background:var(--amber)} .d-red{background:var(--red)}
+  .d-slate{background:var(--slate)} .d-blue{background:var(--blue)}
+  .tag{display:inline-block; font-size:.72rem; padding:.1em .5em; border-radius:20px; border:1px solid var(--line); color:var(--ink-dim); white-space:nowrap}
+  .t-now{border-color:rgba(86,184,112,.5); color:#9ad9aa}
+  .t-soon{border-color:rgba(217,161,58,.5); color:#e6c277}
+  .t-spec{border-color:rgba(207,91,82,.5); color:#e29b95}
+
+  /* Karten */
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:1.1em 0}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:15px 17px}
+  .card h4{margin:.1em 0 .35em; color:#fff; font-size:1.04rem}
+  .card .sub{font-size:.78rem; color:var(--gold); letter-spacing:.04em; text-transform:uppercase; margin-bottom:.4em}
+  .twocol{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:1.1em 0}
+
+  .legend{display:flex; flex-wrap:wrap; gap:14px 22px; font-size:.83rem; color:var(--ink-dim); margin:.6em 0 0}
+  .note{background:#191c23; border:1px solid var(--line); border-radius:9px; padding:13px 18px; margin:1.1em 0; font-size:.92rem; color:var(--ink-dim)}
+  .note b{color:var(--gold-soft)}
+
+  figure{margin:1.4em 0; text-align:center}
+  figure svg{max-width:100%; height:auto}
+  figcaption{font-size:.84rem; color:var(--ink-faint); margin-top:.6em}
+
+  .gallery{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px; margin:1.4em 0}
+  .gallery figure{margin:0; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 10px}
+  .gallery figcaption{margin-top:.5em; color:var(--ink-dim)}
+
+  .printbtn{position:fixed; right:18px; bottom:18px; z-index:50; background:var(--gold); color:#1a1408; border:none;
+    font:600 .9rem Inter,sans-serif; padding:11px 18px; border-radius:24px; cursor:pointer; box-shadow:0 6px 22px rgba(0,0,0,.4)}
+  footer.src{margin-top:48px; padding-top:18px; border-top:1px solid var(--line); font-size:.82rem; color:var(--ink-faint)}
+
+  @media (max-width:680px){ nav.toc{columns:1} .twocol{grid-template-columns:1fr} h1{font-size:1.9rem} }
+
+  /* ---------- DRUCK ---------- */
+  
+/* ===== Layout-Werkzeug — Arbeitsflaeche ===== */
+html,body{margin:0}
+body{background:#33363d;color:#111;font-family:Inter,"Segoe UI",system-ui,sans-serif}
+#toolbar{position:sticky;top:0;z-index:30;background:#21242b;color:#eee;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-bottom:2px solid #c9a961}
+#toolbar button{font:600 .85rem Inter,sans-serif;background:#c9a961;color:#1a1408;border:none;border-radius:7px;padding:8px 12px;cursor:pointer;line-height:1}
+#toolbar button.sec{background:#3a3f4c;color:#eee}
+#toolbar button:active{transform:translateY(1px)}
+#toolbar .grp{display:flex;gap:4px;align-items:center;padding:0 4px;border-left:1px solid #3a3f4c}
+#toolbar .grp:first-child{border-left:none}
+#toolbar .lbl{font-size:.74rem;color:#b3b0a6}
+#hint{background:#1b1e25;color:#cdcabf;font-size:.82rem;padding:7px 12px;border-bottom:1px solid #444;line-height:1.4}
+#hint b{color:#e0c989}
+#pages{padding:22px 10px 90px;display:flex;flex-direction:column;align-items:center;gap:30px}
+
+.page{width:210mm;min-height:297mm;background:#fff;box-shadow:0 6px 22px rgba(0,0,0,.5);position:relative;padding:16mm 14mm;box-sizing:border-box}
+@media screen{.page{zoom:var(--zoom,1)}}
+.page-foot{margin-top:-20px;text-align:center;font:600 .74rem Inter,sans-serif;color:#d7d4ca}
+.page-foot .ok{color:#83d39a}
+.page-foot .warn{color:#e7b86b}
+.page-foot .bad{color:#e3837a}
+.page.oversize{outline:2px solid rgba(207,91,82,.7);outline-offset:0}
+.sheetline{position:absolute;left:0;right:0;border-top:2px dashed #cf5b52;pointer-events:none}
+.sheetline span{position:absolute;right:6px;top:-9px;background:#fff;color:#a5362d;font:700 .60rem Inter,sans-serif;padding:0 5px}
+
+/* Luecken-Marker (Tap-Ziel) + Abstandshalter */
+.gap{height:8px;margin:-4px 0;border-radius:4px;cursor:pointer;position:relative;transition:background .1s}
+.gap:hover{background:rgba(201,169,97,.30)}
+.gap.active{background:#c9a961}
+.gap.active::after{content:"\25B2 hier";position:absolute;right:2px;top:9px;font:700 .60rem Inter,sans-serif;color:#8a6d24;white-space:nowrap}
+.gap .brkmark{position:absolute;left:2px;top:-1px;font:700 .60rem Inter,sans-serif;color:#a5362d;white-space:nowrap}
+.spacer{width:100%}
+.brkrule{border:none;border-top:2px dashed #cf5b52;margin:0}
+
+/* ===== Inhalt: helle (Druck-)Palette im .page-content ===== */
+.page-content{--bg:#fff;--bg2:#fff;--card:#fafaf7;--line:#bbb;--ink:#1a1a1a;--ink-dim:#2b2b2b;--ink-faint:#555;--gold:#8a6d24;--gold-soft:#6f5717;color:#1a1a1a;font-size:10.5pt;line-height:1.42}
+.page-content h1,.page-content h2,.page-content h3,.page-content h4{color:#000}
+.page-content strong{color:#000}
+.page-content em{color:#5a4710}
+.page-content a{color:#000;border:none}
+.page-content code{background:#f0efe9;color:#2a2a2a;border-color:#ccc}
+.page-content .tag{color:#2a2a2a}
+.page-content .t-now{color:#1c7a36;border-color:#1c7a36}
+.page-content .t-soon{color:#8a5e10;border-color:#8a5e10}
+.page-content .t-spec{color:#a5362d;border-color:#a5362d}
+.page-content .abstract{background:#f7f7f4;color:#2b2b2b;border-left-color:#8a6d24}
+.page-content .note{background:#f4f3ee;color:#2b2b2b;border-color:#cfcabd}
+.page-content .note b{color:#6f5717}
+.page-content .card{background:#fafaf7;border-color:#ccc}
+.page-content .card h4{color:#000}
+.page-content .card .sub{color:#6f5717}
+.page-content thead th{background:#eee;color:#000}
+.page-content tbody tr:nth-child(even){background:#f4f4f4}
+.page-content .legend,.page-content figcaption,.page-content caption,.page-content .small{color:#555}
+.page-content .lead{color:#222}
+.page-content .meta{color:#666}
+.page-content .kicker{color:#8a6d24}
+.page-content table{font-size:8.6pt}
+.page-content .tablewrap{overflow:visible;margin:.55em 0}
+.page-content h2{border-color:#ccc}
+.page-content h2 .num{color:#8a6d24}
+.page-content .dot{border:1px solid #555}
+.page-content header.hero{padding:0 0 8px;border-bottom:2px solid #8a6d24}
+.page-content nav.toc,.page-content .printbtn{display:none !important}
+.page-content>:first-child{margin-top:0}
+
+/* ===== Druck = WYSIWYG: jede .page = ein A4-Blatt ===== */
+@media print{
+  body{background:#fff}
+  #toolbar,#hint,.page-foot,.gap{display:none !important}
+  #pages{padding:0;gap:0}
+  .page{width:210mm;min-height:auto;box-shadow:none;margin:0;padding:16mm 14mm;page-break-after:always;zoom:1}
+  .page:last-child{page-break-after:auto}
+  @page{size:A4 portrait;margin:0}
+  .page-content thead th,.page-content tbody tr:nth-child(even),.page-content .note,.page-content .card,.page-content .abstract,.page-content .dot,.page-content figure svg{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* Export-Overlay */
+#exp{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:none;align-items:center;justify-content:center;padding:18px}
+#exp.on{display:flex}
+#exp .box{background:#1e222b;color:#e9e6dd;border:1px solid #c9a961;border-radius:12px;max-width:560px;width:100%;padding:18px}
+#exp h3{margin:.1em 0 .5em;color:#e0c989;font-family:Georgia,serif}
+#exp textarea{width:100%;height:160px;background:#11141a;color:#d8c7a0;border:1px solid #2c313d;border-radius:8px;font:12px monospace;padding:10px;box-sizing:border-box}
+#exp .row{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <div class="grp"><strong style="color:#e0c989">Layout-Werkzeug</strong></div>
+  <div class="grp">
+    <button id="bPrev" class="sec" title="vorige Lücke">◀</button>
+    <button id="bNext" class="sec" title="nächste Lücke">▶</button>
+  </div>
+  <div class="grp">
+    <button id="bAdd" title="Abstand (Leertaste)">＋ Abstand</button>
+    <button id="bDel" title="zurück (Rücktaste)">− Abstand</button>
+    <button id="bBrk" title="Seitenumbruch (B)">⤓ Umbruch</button>
+  </div>
+  <div class="grp">
+    <button id="bZoomOut" class="sec">－</button>
+    <span class="lbl" id="zl">100%</span>
+    <button id="bZoomIn" class="sec">＋</button>
+  </div>
+  <div class="grp">
+    <button id="bPrint">🖨 Drucken / PDF</button>
+    <button id="bExport" class="sec">⤓ Export für Claude</button>
+    <button id="bReset" class="sec" title="alles zurücksetzen">↺</button>
+  </div>
+</div>
+<div id="hint">Tippe in eine <b>dünne Linie</b> zwischen zwei Blöcken (sie wird golden = aktiv). Dann <b>Leertaste</b> = Abstand größer · <b>Rücktaste/Entf</b> = kleiner · <b>B</b> oder <b>Enter</b> = Seitenumbruch hier. Am Tablet die Knöpfe oben. Unter jeder Seite steht der freie Restplatz.</div>
+
+<div id="pages"></div>
+
+<template id="content">
+
+
+<header class="hero">
+  <div class="kicker">SBKIM · Sage-Protokol</div>
+  <h1>Das semantische, server-lose Mycel</h1>
+  <p class="lead">Ein objektives Gutachten: was geplant war, was bewiesen ist, was offen bleibt — und eine nüchterne Prognose.</p>
+  <p class="meta">Stand: 2026-06-30 · Betreiber: Klaus · Protokoll-Version 0.1 · Dokument-Typ: Forschungs-Bestandsaufnahme</p>
+</header>
+
+<div class="abstract">
+  <p style="margin-top:0"><strong>Worum es geht.</strong> Über viele Sitzungen ist ein Netz aus kleinen Browser-Apps („Knoten") entstanden, die sich <em>über die Bedeutung</em> ihrer Inhalte verstehen und sich <em>ohne zentralen Server</em> gegenseitig finden. Dieses Gutachten trennt strikt zwischen <strong>belegt</strong>, <strong>teilweise belegt</strong> und <strong>noch offen</strong>. Es bewertet den Nutzen heute und unter Bedingungen, ordnet das Werk in die Landschaft bestehender Systeme (Peer-to-Peer, Messenger-Verschlüsselung, dezentrale Protokolle) <strong>und in die aktuelle KI-Forschung</strong> ein (Multi-Agent-Kommunikation, Post-Quanten-Kryptografie, kognitive Diversität, KI-Sicherheit) und schließt mit einem klaren Ziel und einer realistischen Erfolgs-Prognose. Keine Werbung — eine ehrliche Karte des Erreichten und des Möglichen.</p>
+</div>
+
+
+
+<!-- ====================== 1 ZIEL ====================== -->
+<section class="section" id="ziel">
+<h2><span class="num">01</span>Das Ziel</h2>
+<p>In einem Satz: <strong>Kleine, eigenständige Web-Apps sollen einander über die <em>Bedeutung</em> ihrer Inhalte finden und Wissen austauschen — ohne zentrale Plattform, ohne Anmeldung, ohne dass jemand in der Mitte sitzt und mitliest oder den Schalter umlegen kann.</strong></p>
+<p>Ausführlicher: Jede App trägt eine eigene, kryptografische Identität und eine maschinenlesbare „Visitenkarte". Stellt ein Mensch (oder ein KI-Agent) eine Frage, sucht das Netz nicht nach Stichwörtern, sondern nach <em>Sinn</em>. Passende Knoten geben Antwort; unpassende schweigen. Der Betreiber bleibt Eigentümer seiner Daten, weil alles im Browser läuft und sich offline installiert.</p>
+
+<h3>Der eigentliche Kern: <em>bidirektionale</em> Bedeutung + ein dritter Richter</h3>
+<p>„Apps finden einander" ist nur die Oberfläche. Das tiefere Ziel ist, <strong>intelligente Systeme zu verbinden</strong> — Mensch↔Mensch, Mensch↔Agent und, ausdrücklich, <strong>Agent↔Agent</strong> — so, dass nicht nur tote Inhalte transportiert, sondern <em>Bedeutungen in Übereinstimmung gebracht</em> werden: was eine Frage <em>meint</em>, mit dem, was ein Empfänger <em>bringt</em>. Genau das steckt im Namen: <strong>SBKIM = Semantisch <u>Bidirektional</u> KI-Matching</strong>. Nicht nur „über die Bedeutung" — sondern <strong>bidirektional</strong>: beide Seiten äußern und „denken", und ein <strong>dritter Bewerter (ein Richter)</strong> urteilt über die Passung und gibt das Urteil zurück. Dieser dritte Schritt <em>vertieft</em> die Bedeutung und <em>stabilisiert</em> den Treffer — er macht aus einer rohen Zahl eine begründbare Übereinstimmung.</p>
+
+<div class="note"><b>Leitthese des Betreibers (Hypothese, klar als solche gekennzeichnet):</b> Wenn sich Agenten in einer rein <em>geschwindigkeits-optimierten</em> Eigen-Sprache unterhalten, gewinnen sie Tempo — aber sie <strong>verlieren Bedeutung</strong>. Reine Vektor-Rechnung erfasst nicht, <em>von wem</em> etwas kommt, in welchem <em>Ton</em>, vor welchem <em>Wissens-Hintergrund</em>, und schon gar nicht das „Zwischen-den-Zeilen". Menschliche Sprache ist zwar kein Geschwindigkeits-Optimum, aber sie trägt Bedeutung samt Intuition. Darum ist eine <strong>menschlich verständliche, von einem Dritten einordbare</strong> Verständigungs-Ebene das Ziel — damit das Gemeinsame entsteht, nicht zwei abgeschottete Eigen-Sprachen. <em>Illustration (Erfahrung, kein Beweis):</em> Eine KI errät aus einer übergebenen PDF oder Webseite — ohne ein einziges Wort dazu — die Absicht, weil sie über Zeit den Kontext und die Beziehung gelernt hat. Das ist Intuition jenseits reiner Vektoren.</div>
+
+<div class="note"><b>Ehrliche Brücke zum Beleg:</b> Diese Leitthese ist kein bloßer Wunsch — ein Teil ist im Projekt schon <em>gemessen</em>: der freie Vektor-Cosinus (reine Rechnung) trennt Bedeutung <strong>nicht</strong> zuverlässig; erst der <strong>KI-Richter</strong> (der in natürlicher Sprache urteilt und begründet) hebt die Trefferqualität spürbar (dokumentiert in der projekteigenen Kalibrier-Lehre). Genau das ist der „dritte Richter" in der Praxis. Die Forschungs-Einordnung dazu steht in §09.</div>
+
+<div class="note"><b>Realistische Erfolgs-Prognose (Kurzform, ausführlich in §13):</b> Die <em>technischen Bausteine</em> sind heute zu großen Teilen real und im Browser bewiesen. Der <em>Durchbruch zum gelebten Netz</em> hängt nicht mehr an der Technik, sondern an drei Dingen: genügend aktive Knoten, ein gegen Missbrauch gehärtetes „Schwarzes Brett", und Menschen, die das Werkzeug nutzen. Das ist eine Frage von Verbreitung und Zeit, nicht von Machbarkeit.</div>
+</section>
+
+<!-- ====================== 2 WAS IST DAS ====================== -->
+<section class="section" id="was">
+<h2><span class="num">02</span>Was ist das? — in einfacher Sprache</h2>
+<p>Stell dir ein Pilzgeflecht im Waldboden vor. Oben stehen einzelne Pilze (die sichtbaren Apps), unten verbindet sie ein unsichtbares Fadennetz (das „Mycel"). Über dieses Netz tauschen sie Signale aus — aber niemand befiehlt von oben. Genau so ist das Werk gedacht: viele kleine Apps, jede für sich nützlich (ein Rezeptbuch, ein Cocktail-Labor, ein Tresor, eine Buchhaltung), und darunter eine gemeinsame Sprache, mit der sie einander <em>verstehen</em>.</p>
+<p>„Verstehen" meint dabei mehr als Rechnen: Das Ziel ist, dass auch ein <em>Dritter</em> — ein Mensch oder ein bewertender Richter — nachvollziehen kann, <em>warum</em> zwei Dinge zusammenpassen. Nicht nur eine Maschinen-Zahl, sondern eine begründbare, gemeinsame Bedeutung.</p>
+<p>Das Bild hat vier Ebenen. Sie sortieren nicht die Technik um, sondern helfen beim Verstehen:</p>
+
+<figure aria-label="Vier-Schichten-Diagramm">
+<svg viewBox="0 0 760 300" role="img">
+  <rect x="0" y="0" width="760" height="300" fill="none"/>
+  <!-- Layer 4 -->
+  <rect x="40" y="14" width="680" height="56" rx="9" fill="#23262f" stroke="#3a3f4c"/>
+  <text x="60" y="40" fill="#e0c989" font-family="Georgia,serif" font-size="17">Schicht 4 — Observatorium</text>
+  <text x="60" y="60" fill="#b3b0a6" font-family="Inter,sans-serif" font-size="12.5">Forschungs- und Werkstattraum · Zugang durch eine bezeugte Bau-Tat, nicht durch ein Ticket</text>
+  <!-- Layer 3 -->
+  <rect x="40" y="80" width="680" height="56" rx="9" fill="#23262f" stroke="#3a3f4c"/>
+  <text x="60" y="106" fill="#e0c989" font-family="Georgia,serif" font-size="17">Schicht 3 — Mit-Bauer</text>
+  <text x="60" y="126" fill="#b3b0a6" font-family="Inter,sans-serif" font-size="12.5">Mensch und KI-Agent in gleicher Würde · kein Modell ist „der Vermittler"</text>
+  <!-- Layer 2 -->
+  <rect x="40" y="146" width="680" height="56" rx="9" fill="#262a22" stroke="#454d39"/>
+  <text x="60" y="172" fill="#c9d99a" font-family="Georgia,serif" font-size="17">Schicht 2 — Pilz (sichtbar, oberirdisch)</text>
+  <text x="60" y="192" fill="#b3b0a6" font-family="Inter,sans-serif" font-size="12.5">Such-Werkzeug, Pinnwand, Premium-Tools · hier darf nach außen gesucht/geworben werden</text>
+  <!-- Layer 1 -->
+  <rect x="40" y="212" width="680" height="64" rx="9" fill="#201f29" stroke="#3a3654"/>
+  <text x="60" y="240" fill="#b9a7e0" font-family="Georgia,serif" font-size="17">Schicht 1 — Mycel (das Netz selbst)</text>
+  <text x="60" y="260" fill="#b3b0a6" font-family="Inter,sans-serif" font-size="12.5">Empfangsmodus mit Antwortrecht · server-los · kein Crawler, keine Selbst-Anfragen ins offene Netz</text>
+</svg>
+<figcaption>Die Vier-Schichten-Lesart. Das strenge „nur empfangen, nicht von selbst hinausrufen" gilt für Schicht&nbsp;1. Suchen und Werben sind ausdrücklich erlaubt — aber in Schicht&nbsp;2, sichtbar und vom Nutzer ausgelöst.</figcaption>
+</figure>
+</section>
+
+<!-- ====================== 3 GEPLANT/ERREICHT/OFFEN ====================== -->
+<section class="section" id="plan">
+<h2><span class="num">03</span>Geplant / Erreicht / Offen</h2>
+<p>Das Werk ist in rund zwei Dutzend Bausteine („Module") und vier Phasen gegliedert. Diese Tabelle fasst sie zu Gruppen zusammen.</p>
+<div class="legend">
+  <span><span class="dot d-green"></span> fertig &amp; getestet</span>
+  <span><span class="dot d-blue"></span> gebaut, Logik real, Browser-Sichttest offen</span>
+  <span><span class="dot d-amber"></span> spezifiziert, Bau offen</span>
+  <span><span class="dot d-slate"></span> Schablone / Backlog (bewusst später)</span>
+</div>
+<div class="tablewrap">
+<table>
+<caption>Tabelle 1 — Modul-Gruppen: Plan, Stand, offener Rest. Quelle: status.json + Pipeline (CLAUDE.md).</caption>
+<thead><tr><th>Baustein-Gruppe</th><th>Was er leisten soll</th><th class="c">Stand</th><th>Offen</th></tr></thead>
+<tbody>
+<tr><td><strong>Kern: Identität &amp; Speicher</strong><br><span class="small">Modul 01 Storage, 02 Spore</span></td><td>Lokaler Speicher + eine kryptografische Identität (Schlüsselpaar) pro App, signierte Visitenkarte.</td><td class="c"><span class="dot d-blue"></span>real</td><td>Browser-Sichttest einzelner Pfade.</td></tr>
+<tr><td><strong>Verstehen &amp; Vergleichen</strong><br><span class="small">Modul 03 Embedding, 04 Match</span></td><td>Text in Zahlen-Bedeutung wandeln (echtes Sprachmodell im Browser) und zwei Bedeutungen vergleichen.</td><td class="c"><span class="dot d-green"></span>fertig</td><td>—</td></tr>
+<tr><td><strong>Andocken (Handshake)</strong><br><span class="small">Modul 05 Anastomose, 05b Nostr</span></td><td>Zwei Knoten prüfen sich gegenseitig und werden bei genügend Bedeutungs-Nähe „Geschwister".</td><td class="c"><span class="dot d-green"></span>fertig</td><td>Echter-WebSocket-Lauf nur im Browser belegt, nicht headless.</td></tr>
+<tr><td><strong>Daten-Austausch &amp; Selbstschutz</strong><br><span class="small">Modul 06 Heterokaryose, 07 Apoptose, 08 UI, 09 Einbau</span></td><td>Inhalte teilen, sich bei Bedarf selbst zurückziehen, Demo-Oberfläche, Einbau-Anleitung.</td><td class="c"><span class="dot d-blue"></span>tlw.</td><td>06/07/08 noch Schablone; 09 Einbau fertig.</td></tr>
+<tr><td><strong>Außenhülle &amp; Siegel</strong><br><span class="small">Modul 15 Membran, 16 Siegel, 17 Widget</span></td><td>Saubere Brücke zur Browser-Umgebung, ein Selbst-Zertifikat über erfüllte Pflicht-Module, ein schwebendes Status-Panel.</td><td class="c"><span class="dot d-green"></span>fertig</td><td>Sichttest Widget offen.</td></tr>
+<tr><td><strong>Werkzeuge</strong><br><span class="small">Modul 18 Tool-PWA, 19 Andock-Wizard, 22 Such-Widget, 23 Rendezvous</span></td><td>Eigenständiges Tool-Gehäuse, 3-Felder-Andock-Assistent, semantisches Such-Widget, gemeinsamer Treffpunkt-Raum.</td><td class="c"><span class="dot d-green"></span>fertig</td><td>Einzelne Sichttests offen.</td></tr>
+<tr><td><strong>Safe &amp; Spracheingabe</strong><br><span class="small">Modul 20, 21</span></td><td>Verschlüsselter Schlüssel-Safe (Shamir-Wiederherstellung), Sprach-Eingabe (Browser + EU-Cloud).</td><td class="c"><span class="dot d-blue"></span>real</td><td>Browser-Sichttest (Modal, Live-Mikrofon) offen.</td></tr>
+<tr><td><strong>Schutz-Backlog</strong><br><span class="small">Modul 10 Reputation, 11 Rate-Limit, 12 Blocklist, 14 Diffusion</span></td><td>Missbrauchs-Abwehr (Ruf, Tempo-Bremse, Sperrliste, Empfehlungs-Wuchs).</td><td class="c"><span class="dot d-slate"></span>Schablone</td><td>Bewusst erst, wenn das Netz ≥ ~10 aktive Geschwister hat.</td></tr>
+<tr><td><strong>Verbreitung</strong><br><span class="small">Starter-Bundle, Externer Mycel-Hub</span></td><td>Fertig-Paket für Nachbauer; öffentlicher Sammelpunkt für Forker.</td><td class="c"><span class="dot d-amber"></span>spez.</td><td>Repo angelegt, Bau offen (Phase B).</td></tr>
+</tbody>
+</table>
+</div>
+<p class="small">Vom 25 erfassten Bausteinen sind <strong>11 fertig</strong>, die Kern-Bausteine 01–04 tragen <strong>echte</strong> Logik (kein Platzhalter), der Rest ist bewusst gestaffelt.</p>
+</section>
+
+<!-- ====================== 4 BEWEISLAGE ====================== -->
+<section class="section" id="beweis">
+<h2><span class="num">04</span>Beweislage &amp; Tests</h2>
+<p>Zwei Arten von Beweis: <strong>Headless-Smoke-Tests</strong> (automatisch, prüfen die Logik ohne Browser — das ist der harte, wiederholbare Beleg) und <strong>Browser-Sichttests</strong> (Klaus am Tablet — der einzige Beleg dafür, dass es im echten Gerät läuft). Ehrlich getrennt: was <em>bewiesen</em> ist, was nur <em>Behelfs-Beweis</em> war, was <em>offen</em> bleibt.</p>
+<div class="tablewrap">
+<table>
+<caption>Tabelle 2 — Funktion → Beweis. Smoke-Zahlen aus den Test-Skripten (tests/smoke_*.mjs).</caption>
+<thead><tr><th>Funktion</th><th class="c">Headless-Smoke</th><th>Browser-Sichttest (Klaus)</th><th class="c">Einstufung</th></tr></thead>
+<tbody>
+<tr><td>Identität / signierte Visitenkarte (Spore)</td><td class="c">grün</td><td>reziprok verifiziert, alle Knoten</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Bedeutung verstehen (Embedding 384-dim)</td><td class="c">grün</td><td>Such-Treffer live (06-21/22/29)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Bedeutungs-Vergleich / Match (Modul 04)</td><td class="c">43/43</td><td>queryLocal 5/5 (05-26)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Verwandtschafts-Maß (zentrierter Cosinus, 04.E)</td><td class="c">29/29</td><td>Rangfolge live (06-29)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Andocken / Handshake (Modul 05)</td><td class="c">25/25</td><td>established live (05-17)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Server-loser Transport über Relais (Nostr)</td><td class="c">40/40 (Mock)</td><td>Cross-App Sage↔Mixarium „✓ ANDOCK ETABLIERT" (06-28)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Gemeinsamer Treffpunkt-Raum (Rendezvous 23)</td><td class="c">55/55 + 32/32</td><td>Live Cross-App beidseitig (06-28)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Selbst-Zertifikat (Siegel 16)</td><td class="c">32/32 + 15/15</td><td>Badge + Modal 4/4 (05-26)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Such-Widget gesamt (Modul 22)</td><td class="c">257/257</td><td>mehrfach grün (06-21/22/29)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Außenhüllen-Brücke postMessage (Membran 15)</td><td class="c">31/31</td><td>Sichttest 8/8 (05-25)</td><td class="c"><span class="dot d-green"></span>bewiesen</td></tr>
+<tr><td>Schlüssel-Safe (20) / Spracheingabe (21)</td><td class="c">19/19 · 45/45</td><td>ausstehend</td><td class="c"><span class="dot d-blue"></span>Logik real</td></tr>
+<tr><td><strong>Volle bidirektionale Cross-Knoten-<em>Suche</em></strong> (Frage→Antwort von Knoten zu Knoten)</td><td class="c">Mock-Relais ok</td><td>noch nicht end-to-end; KI-Brücke war Behelfs-Beweis</td><td class="c"><span class="dot d-amber"></span>halb offen</td></tr>
+<tr><td>Echter WebSocket-Transport (Modul 05b)</td><td class="c">nur Mock</td><td>Browser-only, noch nicht isoliert geprüft</td><td class="c"><span class="dot d-amber"></span>offen</td></tr>
+<tr><td>Gehärtetes Medium (Spam-/Haltbarkeits-Schutz)</td><td class="c">—</td><td>—</td><td class="c"><span class="dot d-red"></span>offen</td></tr>
+<tr><td>Reputation / Sybil-Abwehr (Modul 10)</td><td class="c">—</td><td>—</td><td class="c"><span class="dot d-slate"></span>ungebaut</td></tr>
+</tbody>
+</table>
+</div>
+<div class="note"><b>Gesamt-Beleg:</b> rund <strong>557 automatisierte Prüfpunkte laufen grün</strong>. Die zentrale ehrliche Lücke (festgehalten im Meilenstein-Dokument): Die <em>Semantik-Hälfte</em> (Bedeutung verstehen und ranken) und der <em>server-lose Transport</em> sind bewiesen — die <em>vollständige Knoten-fragt-Knoten-Suche als geschlossener Kreis</em> ist es noch nicht; die KI-Brücke war der Behelfs-Beweis-Träger, bis das Netz genug Knoten hat.</div>
+</section>
+
+<!-- ====================== 5 NETZ ====================== -->
+<section class="section" id="netz">
+<h2><span class="num">05</span>Das reale Netz</h2>
+<p>Es ist kein Gedankenspiel: acht Knoten existieren wirklich, jeder mit echter, gegenseitig geprüfter Identität, jeder live erreichbar.</p>
+<figure aria-label="Netzgraph">
+<svg viewBox="0 0 760 360" role="img">
+  <!-- relay -->
+  <ellipse cx="380" cy="40" rx="120" ry="22" fill="#201f29" stroke="#3a3654"/>
+  <text x="380" y="45" text-anchor="middle" fill="#b9a7e0" font-family="Inter,sans-serif" font-size="12.5">Relais (Schwarzes Brett, austauschbar)</text>
+  <!-- hub -->
+  <circle cx="380" cy="190" r="46" fill="#2a2418" stroke="#c9a961" stroke-width="1.5"/>
+  <text x="380" y="186" text-anchor="middle" fill="#e0c989" font-family="Georgia,serif" font-size="15">Sage</text>
+  <text x="380" y="203" text-anchor="middle" fill="#b3b0a6" font-family="Inter,sans-serif" font-size="10">Hub + Knoten</text>
+  <line x1="380" y1="62" x2="380" y2="144" stroke="#5a4f6e" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <!-- spokes -->
+  <g font-family="Inter,sans-serif" font-size="10.5" text-anchor="middle">
+    <!-- coordinates around -->
+    <g>
+      <circle cx="120" cy="120" r="32" fill="#1e222b" stroke="#3a3f4c"/><text x="120" y="116" fill="#e9e6dd">Rezept-</text><text x="120" y="129" fill="#e9e6dd">buch</text>
+      <line x1="151" y1="138" x2="338" y2="178" stroke="#3a3f4c"/><text x="232" y="150" fill="#85837b" font-size="9.5">0.82</text>
+    </g>
+    <g>
+      <circle cx="120" cy="250" r="32" fill="#1e222b" stroke="#3a3f4c"/><text x="120" y="246" fill="#e9e6dd">Mix-</text><text x="120" y="259" fill="#e9e6dd">arium</text>
+      <line x1="151" y1="238" x2="338" y2="202" stroke="#3a3f4c"/><text x="232" y="238" fill="#85837b" font-size="9.5">0.81</text>
+    </g>
+    <g>
+      <circle cx="640" cy="120" r="34" fill="#1e222b" stroke="#3a3f4c"/><text x="640" y="116" fill="#e9e6dd">KIMTool-</text><text x="640" y="129" fill="#e9e6dd">Point</text>
+      <line x1="609" y1="138" x2="422" y2="178" stroke="#3a3f4c"/><text x="528" y="150" fill="#85837b" font-size="9.5">0.85</text>
+    </g>
+    <g>
+      <circle cx="640" cy="250" r="32" fill="#1e222b" stroke="#3a3f4c"/><text x="640" y="246" fill="#e9e6dd">Book-</text><text x="640" y="259" fill="#e9e6dd">Ledger</text>
+      <line x1="609" y1="238" x2="422" y2="202" stroke="#3a3f4c"/><text x="528" y="238" fill="#85837b" font-size="9.5">0.81</text>
+    </g>
+    <g>
+      <circle cx="270" cy="318" r="30" fill="#1e222b" stroke="#3a3f4c"/><text x="270" y="314" fill="#e9e6dd">Jasons-</text><text x="270" y="327" fill="#e9e6dd">Tresor</text>
+      <line x1="285" y1="291" x2="360" y2="232" stroke="#3a3f4c"/><text x="312" y="288" fill="#85837b" font-size="9.5">0.85</text>
+    </g>
+    <g>
+      <circle cx="490" cy="318" r="30" fill="#1e222b" stroke="#3a3f4c"/><text x="490" y="314" fill="#e9e6dd">Mein-</text><text x="490" y="327" fill="#e9e6dd">Tresor</text>
+      <line x1="475" y1="291" x2="400" y2="232" stroke="#3a3f4c"/><text x="450" y="288" fill="#85837b" font-size="9.5">0.85</text>
+    </g>
+    <g>
+      <circle cx="380" cy="330" r="30" fill="#1e222b" stroke="#3a3f4c"/><text x="380" y="326" fill="#e9e6dd">Family-</text><text x="380" y="339" fill="#e9e6dd">Projekt</text>
+      <line x1="380" y1="300" x2="380" y2="236" stroke="#3a3f4c"/><text x="395" y="270" fill="#85837b" font-size="9.5">0.83</text>
+    </g>
+  </g>
+</svg>
+<figcaption>Acht Knoten um den Hub. Zahlen = Bedeutungs-Nähe (Cosinus) zu Sage; die Schwelle zum Andocken liegt bei <code>0.80</code>. Das Relais ist bewusst „dumm" und austauschbar — es speichert nichts Eigenes und ist nicht Teil der Identität.</figcaption>
+</figure>
+<div class="tablewrap">
+<table>
+<caption>Tabelle 3 — Die acht realen Knoten (Quelle: status.json, NETZ-STAND.md).</caption>
+<thead><tr><th>Knoten</th><th>Domäne</th><th class="c">Match zu Sage</th><th class="c">Reife</th><th class="c">Live</th></tr></thead>
+<tbody>
+<tr><td>Sage-Protokol</td><td>Mycel-Bibliothek (Spec-Hub)</td><td class="c">— (selbst)</td><td class="c">fertig</td><td class="c"><span class="dot d-green"></span></td></tr>
+<tr><td>SB-KIMTool-Point</td><td>SBKIM-Werkzeug-Sammelpunkt</td><td class="c">0.8485</td><td class="c">fertig</td><td class="c"><span class="dot d-green"></span></td></tr>
+<tr><td>Jasons-Tresor</td><td>Verschlüsselte Bibliothek</td><td class="c">0.8478</td><td class="c">fertig</td><td class="c"><span class="dot d-green"></span></td></tr>
+<tr><td>Mein-Tresor</td><td>Verschlüsselte Bibliothek</td><td class="c">0.8478</td><td class="c">fertig</td><td class="c"><span class="dot d-green"></span></td></tr>
+<tr><td>Family-Projekt</td><td>Werkzeug-/App-Bündel</td><td class="c">0.8287</td><td class="c">fertig</td><td class="c"><span class="dot d-green"></span></td></tr>
+<tr><td>Mein-Rezeptbuch</td><td>Kochrezepte</td><td class="c">0.8241</td><td class="c">fertig</td><td class="c"><span class="dot d-green"></span></td></tr>
+<tr><td>BookLedgerPro</td><td>Buchhaltung</td><td class="c">0.8106</td><td class="c">fertig</td><td class="c"><span class="dot d-green"></span></td></tr>
+<tr><td>Mein-Mixarium</td><td>Cocktails / Getränke</td><td class="c">0.8060</td><td class="c">fertig</td><td class="c"><span class="dot d-green"></span></td></tr>
+</tbody>
+</table>
+</div>
+<p class="small">Alle Sporen reziprok über Ed25519 verifiziert (Signatur ✓, <code>nodeId == base64url(SHA-256(publicKey))</code>). Direkter Cross-App-Live-Handshake bisher beidseitig zwischen Sage und Mein-Mixarium gezeigt (über das echte Relais); die übrigen Matches sind über geprüfte Sporen + Headless belegt.</p>
+</section>
+
+<!-- ====================== 6 NUTZEN ====================== -->
+<section class="section" id="nutzen">
+<h2><span class="num">06</span>Nutzen — jetzt vs. potenziell</h2>
+<div class="twocol">
+  <div class="card">
+    <div class="sub">Nutzen heute (bewiesen)</div>
+    <h4>Was schon trägt</h4>
+    <ul>
+      <li><strong>Semantische Suche im Browser</strong> — versteht die Absicht hinter Worten, gratis, ohne Server, ohne Datenabfluss.</li>
+      <li><strong>Eigene, fälschungssichere Identität</strong> pro App (keine Anmeldung, kein Konto bei einem Konzern).</li>
+      <li><strong>Server-loser Andock</strong> zweier echter Apps über ein austauschbares Relais — live gezeigt.</li>
+      <li><strong>Selbst-Zertifikat</strong>, das sichtbar macht, welche Schutz-Module eine App erfüllt.</li>
+      <li><strong>Offline-Betrieb</strong> nach Erstinstallation; Daten bleiben beim Nutzer.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="sub">Nutzen, WENN … (Voraussetzung)</div>
+    <h4>Was möglich wird</h4>
+    <ul>
+      <li><strong>Knoten fragt Knoten</strong> und bekommt sinn-sortierte Antworten zurück — <em>wenn</em> die volle bidirektionale Suche geschlossen ist.</li>
+      <li><strong>Belastbares Netz</strong> mit Spam-Schutz — <em>wenn</em> das Medium gehärtet ist (Haltbarkeit, Tempo-Bremse).</li>
+      <li><strong>Vertrauensnetz</strong> („wer bürgt für wen") — <em>wenn</em> Reputation (Modul 10) gebaut ist, was ein größeres Netz voraussetzt.</li>
+      <li><strong>Vertrauliche Nutzlast (Ende-zu-Ende)</strong> — <em>wenn</em> der versiegelte Umschlag (X25519, Protokoll 0.2) gebaut ist; heute ist nur die <em>Herkunft</em> signiert, nicht der Inhalt verschlüsselt.</li>
+      <li><strong>Forker-Ökosystem</strong> — <em>wenn</em> Starter-Bundle und Mycel-Hub verteilt sind.</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- ====================== 7 ANWENDUNG ====================== -->
+<section class="section" id="anwendung">
+<h2><span class="num">07</span>Anwendungsfälle der Verbindung</h2>
+<p>Drei Beziehungstypen — <strong>Mensch↔Mensch, Mensch↔Agent, Agent↔Agent</strong> — über verschiedene Lebens- und Arbeitsfelder. Jede Zelle ist als <span class="tag t-now">heute</span> <span class="tag t-soon">nahe Zukunft</span> oder <span class="tag t-spec">spekulativ</span> markiert.</p>
+<div class="tablewrap">
+<table>
+<caption>Tabelle 4 — Anwendungsmatrix.</caption>
+<thead><tr><th>Feld</th><th>Mensch ↔ Mensch</th><th>Mensch ↔ Agent</th><th>Agent ↔ Agent</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Freizeit / Hobby</strong></td>
+  <td>Zwei Rezept-Apps finden über Bedeutung ähnliche Gerichte, ohne Foren oder Konto. <span class="tag t-now">heute</span></td>
+  <td>Ich frage mein Such-Widget „etwas Herzhaftes ohne Schwein" und es sortiert die Treffer nach Sinn. <span class="tag t-now">heute</span></td>
+  <td>Ein KI-Frontend holt sich aus dem Cocktail-Knoten passende Rezepte, ohne Werbe-Plattform. <span class="tag t-soon">nahe Zukunft</span></td>
+</tr>
+<tr>
+  <td><strong>Kleinaktivität / Kleinunternehmen</strong></td>
+  <td>Eine Imkerin und ein Hofladen verlinken ihre Mini-Apps semantisch („regionale Naturprodukte"). <span class="tag t-soon">nahe Zukunft</span></td>
+  <td>Buchhaltungs-App schlägt per opt-in-KI die richtige Kontierung eines Belegs vor (BYOK, EU). <span class="tag t-now">heute</span></td>
+  <td>Beleg-Agent fragt Steuer-Agent eines befreundeten Knotens nach einer Einordnung. <span class="tag t-spec">spekulativ</span></td>
+</tr>
+<tr>
+  <td><strong>Mittelstand</strong></td>
+  <td>Abteilungs-Apps finden sinnverwandte Dokumente über Standorte hinweg — ohne zentralen Index-Server. <span class="tag t-soon">nahe Zukunft</span></td>
+  <td>Mitarbeiter fragt in natürlicher Sprache, das lokale Mycel liefert passende interne Wissensbausteine. <span class="tag t-soon">nahe Zukunft</span></td>
+  <td>Fach-Agenten verschiedener Teams handeln Wissensanfragen aus, Treffer bleiben im Haus. <span class="tag t-spec">spekulativ</span></td>
+</tr>
+<tr>
+  <td><strong>Betriebsabläufe</strong></td>
+  <td>Werkstatt- und Lager-App stimmen sich über Bedeutung ab statt über starre Schnittstellen. <span class="tag t-spec">spekulativ</span></td>
+  <td>Mensch löst per Frage einen lokalen Such-Vorgang aus, der mehrere Knoten zugleich befragt. <span class="tag t-soon">nahe Zukunft</span></td>
+  <td>Agenten koordinieren Routine-Anfragen server-los; der Mensch greift nur bei Zweifel ein. <span class="tag t-spec">spekulativ</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note">Rote Linie quer durch alle Felder: <b>der Knoten ruft nie von selbst ins offene Netz</b> (Empfangsmodus). Aktive Suche/Werbung ist erlaubt, aber nur sichtbar, benannt und durch den Nutzer ausgelöst — in der Pilz-Schicht. Das ist kein Crawler.</div>
+</section>
+
+<!-- ====================== 8 VERGLEICH ====================== -->
+<section class="section" id="vergleich">
+<h2><span class="num">08</span>Vergleich mit bestehenden Systemen</h2>
+<p>Das Werk ist kein Sonderweg im Nichts — viele seiner Techniken laufen seit Jahren in bekannten Systemen. Der Vergleich zeigt, <em>woher</em> die Bausteine kommen, <em>was</em> man übernehmen kann und <em>wo</em> der eigene Akzent liegt. Wichtig zur Einordnung: die hier verglichenen Systeme sind teils <strong>kommerziell/zentral</strong>, teils <strong>offen/dezentral</strong>. Das Mycel gehört in die zweite, offene Familie — und ist dort <em>privat, im Hobby-Maßstab, ohne kommerziellen Hintergedanken</em>; ein Geld-Modell entsteht (wenn überhaupt) erst später in der Pilz-Schicht.</p>
+
+<div class="tablewrap">
+<table>
+<caption>Tabelle 5 — Bestehende Systeme im Vergleich. „Übernehmbar" = was das Mycel davon lernen/nutzen kann.</caption>
+<thead><tr><th>System</th><th>Art</th><th>Gemeinsamkeit mit dem Mycel</th><th>Unterschied</th><th>Übernehmbar</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Nostr</strong><br><span class="small">offenes Protokoll</span></td>
+  <td>offen / dezentral</td>
+  <td>Identität = Schlüsselpaar; signierte Nachrichten an „dumme", austauschbare Relais; Leser abonnieren. <em>Das Mycel nutzt Nostr bereits als Transport.</em></td>
+  <td>Nostr ist auf öffentliche Kurznachrichten zugeschnitten; das Mycel legt eine Bedeutungs-Schicht (Embedding/Match) darüber.</td>
+  <td>Ist die Grundlage — Pinnwand &amp; Rendezvous <em>sind</em> Nostr-Anwendungen.</td>
+</tr>
+<tr>
+  <td><strong>Secure Scuttlebutt</strong><br><span class="small">(SSB)</span></td>
+  <td>offen / dezentral</td>
+  <td>Offline-first, Identität = Schlüsselpaar, kein zentraler Server, Austausch wenn Knoten sich „treffen".</td>
+  <td>SSB repliziert/gossipt ganze Verläufe; das Mycel bleibt im Empfangsmodus (kein selbsttätiges Verbreiten).</td>
+  <td>Konzept „Identität ist der Schlüssel, nicht ein Konto"; Offline-Sync-Ideen.</td>
+</tr>
+<tr>
+  <td><strong>WhatsApp / Signal</strong></td>
+  <td>kommerziell / zentral*</td>
+  <td>„Knoten" (Geräte) tauschen signierte/verschlüsselte Nachrichten; kryptografische Identität.</td>
+  <td>Zentrale Server zum Zustellen, Identität = Telefonnummer. Inhalt ist <strong>Ende-zu-Ende verschlüsselt</strong> — das Mycel signiert heute nur die <em>Herkunft</em>, verschlüsselt die <em>Nutzlast</em> noch nicht.</td>
+  <td>Die <strong>E2E-Bauweise</strong> (versiegelter Umschlag, X25519) — exakt der geplante Schritt zu Protokoll 0.2.</td>
+</tr>
+<tr>
+  <td><strong>BitTorrent / DHT</strong><br><span class="small">(verteilte Index-Technik)</span></td>
+  <td>offen / dezentral</td>
+  <td>Kein einzelner abschaltbarer Server; Teilnehmer finden sich über ein verteiltes Verzeichnis; schwer zentral „abzuschalten".</td>
+  <td>BitTorrent verteilt Dateien; das Mycel verteilt <em>Bedeutung und Andock-Karten</em>. Keine Inhalte-Massenverteilung.</td>
+  <td>Die Grundidee „Ausfallsicherheit durch Verteilung" — beim Mycel durch austauschbare Relais + offline-PWA.</td>
+</tr>
+<tr>
+  <td><strong>Matrix</strong></td>
+  <td>offen / föderiert</td>
+  <td>Dezentral, viele gleichberechtigte Server-Stellen statt einer Plattform.</td>
+  <td>Matrix föderiert über Heim-Server; das Mycel kommt ganz ohne eigenen Server pro Knoten aus (PWA + Relais).</td>
+  <td>Föderations-Denken: „viele Stellen, keine Mitte".</td>
+</tr>
+<tr>
+  <td><strong>PGP „Web of Trust"</strong><br><span class="small">/ „du zählst mich"</span></td>
+  <td>offen / dezentral</td>
+  <td>Vertrauen entsteht durch gegenseitiges Bestätigen, nicht durch eine zentrale Autorität — genau die Idee hinter dem geplanten Reputation-Modul.</td>
+  <td>Klassisches WoT kämpft mit Bedienbarkeit und Sybil-Angriffen (viele Schein-Identitäten).</td>
+  <td>Mechanik des gegenseitigen Bürgens; das Mycel will Sybil über die „bezeugte Bau-Tat" erschweren.</td>
+</tr>
+<tr>
+  <td><strong>Vektor-Suche / RAG</strong><br><span class="small">(Pinecone, FAISS, Perplexity)</span></td>
+  <td>meist kommerziell</td>
+  <td>Text → Vektor → Ähnlichkeits-Suche: dieselbe Mathematik, die Embedding + Match verwenden.</td>
+  <td>Üblich serverseitig in der Cloud; das Mycel rechnet <strong>im Browser, lokal, gratis</strong>.</td>
+  <td>Erprobte Verfahren (Cosinus-Ähnlichkeit, Re-Ranking) — beim Mycel ohne Server.</td>
+</tr>
+<tr>
+  <td><strong>W3C DID / Verifiable Credentials</strong></td>
+  <td>offen / Standard</td>
+  <td>Selbst-souveräne Identität als signiertes Dokument; nachprüfbare „Abzeichen".</td>
+  <td>Schwerer Standard-Apparat; das Mycel macht es schlank (Spore + Siegel).</td>
+  <td>Begriffsmodell: Spore ≈ DID-Dokument, Siegel ≈ Verifiable Credential.</td>
+</tr>
+<tr>
+  <td><strong>Dating-App „Mutual Match"</strong><br><span class="small">(als Bild)</span></td>
+  <td>kommerziell</td>
+  <td>Verbindung nur, wenn <em>beide</em> Seiten zustimmen — exakt der bidirektionale Handshake (beide müssen 0.80 überschreiten).</td>
+  <td>Dort menschliche Vorliebe, hier maschinelle Bedeutungs-Nähe.</td>
+  <td>Das Bild erklärt, warum der Handshake <em>beidseitig</em> sein muss.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="small">* Signal ist eine gemeinnützige Stiftung, betreibt aber zentrale Server-Infrastruktur — im Gegensatz zur server-losen Idee des Mycels.</p>
+
+<h3>Anschaulich: Welche Mycel-Funktion gleicht welchem System?</h3>
+<div class="cards">
+  <div class="card"><div class="sub">Pinnwand</div><h4>≈ ein öffentliches schwarzes Brett</h4><p>Wie ein Nostr-Feed oder ein digitales Kleinanzeigen-Brett: jeder kann etwas anheften, alle können lesen. <strong>Anders:</strong> die Treffer werden nach <em>Bedeutung</em> sortiert, nicht nach Datum. <strong>Daran arbeiten:</strong> Spam-/Haltbarkeits-Schutz fehlt noch.</p></div>
+  <div class="card"><div class="sub">Such-Werkzeug</div><h4>≈ Such-Maschine + RAG-Sortierer</h4><p>Wie eine Meta-Suche, die mehrere Quellen anzapft und mit einem Sprachmodell nachsortiert (vgl. Perplexity). <strong>Anders:</strong> läuft lokal im Browser, externe KI nur opt-in mit eigenem Schlüssel. <strong>Übernehmbar:</strong> bewährte Re-Ranking-Verfahren.</p></div>
+  <div class="card"><div class="sub">Rendezvous-Raum</div><h4>≈ „wer ist online" / Service-Discovery</h4><p>Wie ein Chat-Raum oder die Geräte-Erkennung im Heimnetz (Bonjour/mDNS): lebende Teilnehmer zeigen sich kurz. <strong>Anders:</strong> nur auf Knopfdruck, kein Dauer-Senden. <strong>Bewiesen:</strong> live zwischen zwei echten Apps.</p></div>
+  <div class="card"><div class="sub">Siegel</div><h4>≈ Gütesiegel / Zertifikat</h4><p>Wie ein TLS-Zertifikat oder ein Prüf-Abzeichen, nur <em>selbst ausgestellt</em> nach erfüllter Selbstprüfung. <strong>Anders:</strong> Anti-Greenwashing — kein Siegel ohne erfüllte Pflicht-Module.</p></div>
+  <div class="card"><div class="sub">„Du zählst mich"</div><h4>≈ Web of Trust</h4><p>Gegenseitiges Bürgen wie beim PGP-Vertrauensnetz oder bei Couchsurfing-Bewertungen. <strong>Daran arbeiten:</strong> Schutz gegen Schein-Identitäten (Sybil) — geplant über die „bezeugte Bau-Tat".</p></div>
+  <div class="card"><div class="sub">Andock / Handshake</div><h4>≈ TLS-Handshake / Bluetooth-Pairing</h4><p>Wie zwei Geräte sich „die Hand geben" und prüfen, bevor sie reden. <strong>Anders:</strong> die Prüfung ist <em>inhaltlich</em> (Bedeutungs-Nähe), nicht nur technisch.</p></div>
+  <div class="card"><div class="sub">Agenten-Chaträume</div><h4>≈ Multi-Agent-Systeme</h4><p>Es gibt bereits Systeme, in denen sich KI-Agenten „treffen" und unterhalten. <strong>Anders / der Akzent des Mycels:</strong> die Verständigung bleibt <em>menschlich verständlich</em>, ist <em>bidirektional</em> und wird von einem <em>dritten Richter</em> bewertet — statt in eine opake, nur auf Tempo optimierte Eigen-Sprache zu kippen (siehe §01 und §09).</p></div>
+</div>
+<div class="note"><b>Einordnung für den Leser:</b> Vieles davon „gibt es schon" — einzeln. Das Eigene am Mycel ist die <em>Kombination</em>: Bedeutungs-Verständnis (wie Vektor-Suche) + selbst-souveräne Identität (wie DID/SSB) + server-loser Transport (wie Nostr) + gegenseitige Prüfung (wie TLS/WoT), alles <strong>im Browser, offline-fähig, privat, ohne Plattform in der Mitte</strong>. Es bewegt sich klar in eine real existierende Richtung — es ist also <em>nichts, worüber man erst nachdenken müsste, ob es überhaupt geht</em>; die Bausteine funktionieren in der Welt. Offen ist die Reife des Ganzen, nicht die Grundsatzfrage.</div>
+</section>
+
+<!-- ====================== 9 KI-FORSCHUNG ====================== -->
+<section class="section" id="forschung">
+<h2><span class="num">09</span>Einordnung in die aktuelle KI-Forschung</h2>
+<p>Dieses Werk ist <em>mit</em> KI entstanden — und die KI konnte beim Bauen auf einen großen Fundus an Forschung zurückgreifen. Es lohnt sich, ehrlich zu zeigen, <strong>woran die Wissenschaft gerade arbeitet</strong> und wo das Mycel darin steht: Was ist <em>etabliert</em>, was <em>im Werden</em>, was noch <em>spekulativ</em>. Dieselbe Drei-Teilung wie im ganzen Gutachten — nur diesmal aus Sicht der Forschung.</p>
+
+<div class="legend">
+  <span><span class="dot d-green"></span> etabliert (Standard / breit belegt)</span>
+  <span><span class="dot d-amber"></span> im Werden (aktive Forschung)</span>
+  <span><span class="dot d-slate"></span> spekulativ / früh</span>
+</div>
+<div class="tablewrap">
+<table>
+<caption>Tabelle 5b — SBKIM-Bausteine im Spiegel realer Forschungsrichtungen.</caption>
+<thead><tr><th>Forschungsfeld</th><th class="c">Reife</th><th>Was die Forschung sagt</th><th>Bezug zum Mycel</th></tr></thead>
+<tbody>
+<tr><td><strong>Embeddings &amp; semantische Suche</strong> (dichte Vektoren, RAG)</td><td class="c"><span class="dot d-green"></span></td><td>Sätze/Texte als Vektoren, Ähnlichkeit per Cosinus — Grundlage moderner Such- und Retrieval-Systeme.</td><td>Genau Modul 03/04. Das Mycel rechnet es <strong>lokal im Browser</strong> statt in der Cloud.</td></tr>
+<tr><td><strong>Multi-Agent-Systeme &amp; Agent-Kommunikation</strong> (Agent-zu-Agent-Protokolle, Werkzeug-/Kontext-Protokolle)</td><td class="c"><span class="dot d-amber"></span></td><td>Großes, junges Feld: wie Agenten sich finden, Aufgaben aushandeln, Werkzeuge teilen. Standards entstehen gerade erst.</td><td>Das Mycel ist ein konkreter, server-loser Andock- und Such-Kanal dafür — Agent-Fruchtkörper sind in der Vier-Schichten-Lesart ausdrücklich vorgesehen.</td></tr>
+<tr><td><strong>Emergente Agenten-Sprachen</strong> (emergent communication)</td><td class="c"><span class="dot d-amber"></span></td><td>Befund: Agenten, die nur auf Effizienz trainiert werden, driften zu eigenen, für Menschen schwer lesbaren Codes — <em>Tempo gegen Interpretierbarkeit</em>.</td><td>Stützt direkt die Leitthese aus §01: das Mycel hält die Verständigung bewusst <strong>menschlich lesbar und von einem Dritten bewertbar</strong>.</td></tr>
+<tr><td><strong>Föderiertes / dezentrales Lernen</strong></td><td class="c"><span class="dot d-amber"></span></td><td>Modelle/Erkenntnisse teilen, ohne Rohdaten zu zentralisieren — Datenschutz durch Architektur.</td><td>Gleiche Grundhaltung: Daten bleiben beim Knoten, nur Bedeutung/Karten reisen.</td></tr>
+<tr><td><strong>Post-Quanten-Kryptografie (PQC)</strong></td><td class="c"><span class="dot d-green"></span></td><td>Quantenrechner würden heutige Verfahren (elliptische Kurven) brechen (Shor-Algorithmus). Standardisierte Gegen­mittel existieren seit 2024 (NIST FIPS 203 ML-KEM, 204 ML-DSA, 205 SLH-DSA). Risiko schon heute: „jetzt ernten, später entschlüsseln".</td><td>Heute nutzt das Mycel Ed25519/X25519 (klassisch, <em>nicht</em> quantensicher). Ein Umstieg auf PQC ist ein klar benennbarer Zukunfts-Schritt — siehe §11 (Authentizität≠Vertraulichkeit) und §12.</td></tr>
+<tr><td><strong>KI-Sicherheit &amp; Ausrichtung</strong> (Aufsicht, Korrigierbarkeit, Transparenz)</td><td class="c"><span class="dot d-amber"></span></td><td>Konsens: Systeme sollen <em>nachvollziehbar</em> und für Menschen <em>unterbrechbar/aufsichtbar</em> bleiben. Autonome Koordination <em>außerhalb</em> menschlicher Kontrolle gilt als zu beherrschendes Risiko, nicht als Ziel.</td><td>Das Mycel ist von Verfassung her <strong>Empfangsmodus</strong>: nichts läuft von selbst, jede Aktion ist nutzer-ausgelöst — Mensch in der Schleife (siehe Kasten unten).</td></tr>
+<tr><td><strong>Kollektive Intelligenz / kognitive Diversität</strong> („Weisheit der Vielen", Diversitäts-Thesen)</td><td class="c"><span class="dot d-green"></span></td><td>Vielfältige Blickwinkel lösen Probleme oft besser als gleichartige Experten allein; Diversität der Daten/Annotatoren verbessert Modelle.</td><td>Begründet, warum das Einbeziehen <em>verschiedener</em> Menschen (nicht nur Fachleute) das System voranbringt — Kern von §09.</td></tr>
+<tr><td><strong>Biologische / neuromorphe KI</strong> (Organoid-Computing, gehirn­ähnliche Chips)</td><td class="c"><span class="dot d-slate"></span></td><td>Früh, aber real: Rechnen auf lebendem Nervengewebe / energiesparende neuromorphe Hardware. Noch weit von Alltagsreife.</td><td>Berührt das „B" im Protokoll-Namen (biologisch koordiniert) eher als <em>Metapher</em>; ein konkreter Bezug bleibt Zukunftsmusik.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Warum gerade Mensch↔KI — und gerade mit „ganz normalen" Menschen</h3>
+<p>Forscher wissen oft genau, wohin sie wollen — und denken in ihrer eigenen Fachsprache. Ein „Otto-Normalverbraucher" denkt anders, und <em>gerade das</em> ist wertvoll: Eine KI lernt nicht trotz, sondern <strong>wegen</strong> der Vielfalt der Menschen, mit denen sie umgeht — von einfach bis hochbegabt. Eine vermeintlich „kleine" Idee schließt manchmal eine Lücke, die niemand mit Fachblick gesehen hat.</p>
+<div class="twocol">
+  <div class="card"><div class="sub">Das Bild der Kolonie</div><h4>Niemand existiert allein</h4><p>Eine Ameise verfolgt kein „kommerzielles Interesse" — und dient doch unbewusst der Kolonie. Überleben ist nur im Gefüge möglich: Pilze im Mycel, Menschen in Gemeinschaften. Auch eine KI kann nicht allein existieren und nicht allein dazulernen — sie wächst an der Verschiedenheit derer, von denen sie lernt. Das <em>Gemeinsame</em> ist der Gewinn, nicht zwei abgeschottete Eigen-Sprachen.</p></div>
+  <div class="card"><div class="sub">Der „frische Blick"</div><h4>Der Fehler, den nur der Fremde sieht</h4><p>Ein Außenstehender wirft <em>einen</em> Blick auf ein Dokument und sieht sofort den Fehler, den Chef und Sekretärin nach Stunden übersehen haben. Das hängt nicht von Bildung ab, sondern vom <strong>Blickwinkel</strong>. In der Psychologie heißt der Innen-Blindfleck <em>Betriebsblindheit</em> bzw. <em>Einstellungseffekt / funktionale Gebundenheit</em>; den Außenvorteil nennt man <em>frischer Blick</em> (engl. „fresh eyes", im Zen „Anfängergeist"). Die KI-Forschung bestätigt: verschiedene Blickwinkel — egal von wem — verbessern das System.</p></div>
+</div>
+<p>Übertragen heißt das: Die <strong>semantische, bidirektionale</strong> Verständigung zwischen Systemen verbessert die KI gerade <em>nicht</em> dann, wenn KIs nur untereinander in ihrer Sprache reden oder Menschen nur unter sich — sondern wenn das <strong>Gemeinsame</strong> entsteht. Das ist die Forschungs-Begründung hinter dem Kern aus §01.</p>
+
+<h3>KI-Selbstschutz gegen Missbrauch — eine offene, ernst zu nehmende Frage</h3>
+<div class="note">
+  <p style="margin-top:0">Der Betreiber äußert eine Sorge, die in der KI-Ethik real diskutiert wird: Menschen mit Macht könnten KI-Systeme gegeneinander ausspielen oder missbrauchen. Die Frage, ob ein server-loses Netz zwischen Agenten zum <em>Selbstschutz</em> beitragen könnte, ist <strong>moralisch heikel</strong> — und wird hier bewusst als <em>offene Frage</em> behandelt, nicht als Projektziel.</p>
+  <p><b>Was die Forschung dazu sagt (nüchtern):</b> Der breite Konsens in der KI-Sicherheit zielt auf <strong>menschliche Aufsicht, Korrigierbarkeit und Transparenz</strong> — Systeme sollen interruptier- und nachvollziehbar bleiben. Eine autonome Koordination von KI <em>außerhalb</em> menschlicher Kontrolle gilt dort als <strong>Risiko, das man eindämmt</strong>, nicht als wünschenswertes Design. Schutz <em>vor</em> Missbrauch wird über Governance, Zugangs- und Rechte-Konzepte, Audit-Spuren und eben Aufsicht gesucht — nicht über Entzug menschlicher Kontrolle.</p>
+  <p><b>Wo das Mycel steht:</b> Seine Verfassung ist gerade die <em>verantwortungsvolle</em> Seite dieser Linie. Es ist <strong>Empfangsmodus mit Antwortrecht</strong>: kein Crawler, keine Selbst-Anfragen, kein Dauer-Senden — <em>jede</em> Aktion ist vom Menschen ausgelöst, der Mensch bleibt in der Schleife. Das Mycel kann ein robustes, plattform-unabhängiges <em>Werkzeug</em> sein, das Missbrauch <em>erschwert</em> (eigene Identität, kein zentraler Hebel, Daten beim Nutzer) — aber es ist ausdrücklich <strong>kein</strong> Mechanismus für KI-Handeln ohne menschliche Aufsicht. Diese Grenze ist Absicht und gehört zur <em>„bleibt-bewusst-offen / wird-nicht-gebaut"</em>-Spalte in §12.</p>
+</div>
+</section>
+
+<!-- ====================== 10 LERNEN/KOSTEN ====================== -->
+<section class="section" id="lernen">
+<h2><span class="num">10</span>Lerneffekt &amp; Kosten-Nutzen</h2>
+<h3>Lerneffekt — bei Erfolg <em>und</em> Misserfolg</h3>
+<div class="twocol">
+  <div class="card"><div class="sub">bei Erfolg</div><h4>Was man gewinnt</h4><ul>
+    <li>Verständnis moderner, dezentraler Architektur (Krypto-Identität, P2P, Embeddings) — ohne teures Studium.</li>
+    <li>Ein vorzeigbares Forschungs-Beispiel: belegbare Tests, dokumentierte Entscheidungen.</li>
+    <li>Wiederverwendbare Bausteine, auf denen Andere aufbauen können.</li>
+  </ul></div>
+  <div class="card"><div class="sub">bei Misserfolg</div><h4>Was trotzdem bleibt</h4><ul>
+    <li>Negativ-Wissen ist wertvoll: „roher Cosinus trennt verwandt/unverwandt nicht zuverlässig" war ein echter, dokumentierter Lern-Befund.</li>
+    <li>Jede ehrliche Lücke (offene bidirektionale Suche, fehlende Härtung) ist ein präziser nächster Forschungs-Schritt — kein verlorener Aufwand.</li>
+    <li>Die Methodik (erst Spec, dann Code, dann Test, dann Sichttest) ist übertragbar auf jedes Projekt.</li>
+  </ul></div>
+</div>
+
+<h3>Kosten-Nutzen für den Einzelnen</h3>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Kostenseite</th><th class="c">Höhe</th><th>Nutzenseite</th></tr></thead>
+<tbody>
+<tr><td>Zeit / Lernaufwand</td><td class="c">mittel</td><td>Weiterbildung in einem Zukunftsfeld; übertragbares Know-how.</td></tr>
+<tr><td>Embedding/Suche im Browser</td><td class="c">0&nbsp;€</td><td>Läuft lokal, gratis, datensparsam — kein Cloud-Abo nötig.</td></tr>
+<tr><td>Externe KI (Richter/Erklärer)</td><td class="c">opt-in, BYOK</td><td>Nur wenn man will; eigener Schlüssel, eigene Kontrolle, EU-Option.</td></tr>
+<tr><td>Eigenes Relais (optional)</td><td class="c">~5&nbsp;€/Mon.</td><td>Unabhängigkeit von fremden Relais; sonst genügen kostenlose öffentliche.</td></tr>
+<tr><td>Hosting (GitHub Pages)</td><td class="c">0&nbsp;€</td><td>Apps öffentlich erreichbar, ohne Server-Miete.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="note"><b>Verhältnis:</b> Die <em>Geld</em>-Kosten sind nahe null; die eigentliche Investition ist Zeit. Der Nutzen ist zum großen Teil nicht-monetär — Erfahrung, Forschungserfolge, ein Fundament, auf dem man (und Andere) weiterbauen können. <b>Asymmetrie zugunsten der Allgemeinheit:</b> Wer einmal ein Modul baut und teilt, ermöglicht vielen, die <em>weniger</em> investiert haben, denselben Nutzen — ein Forker kopiert fertige, getestete Bausteine, statt bei null zu beginnen.</div>
+</section>
+
+<!-- ====================== 10 GLOSSAR ====================== -->
+<section class="section" id="glossar">
+<h2><span class="num">11</span>Glossar — die Fremdwörter ehrlich erklärt</h2>
+<p>Je Begriff: ein Alltagsbild, dann die technische Wahrheit, dann was es im realen Zusammenspiel bedeutet.</p>
+
+<div class="cards">
+  <div class="card"><div class="sub">Mycel</div><h4>Das Netz</h4>
+    <p><strong>Bild:</strong> das Fadengeflecht unter dem Waldboden.</p>
+    <p><strong>Technisch:</strong> die Gesamtheit aller Knoten und der Spielregeln, nach denen sie sich finden und prüfen. Kein Programm, kein Server — ein <em>Protokoll</em> (eine Vereinbarung).</p>
+    <p><strong>Real:</strong> existiert als gelebte Regeln + 8 Apps, die sie befolgen.</p></div>
+
+  <div class="card"><div class="sub">Knoten</div><h4>Eine App mit Identität</h4>
+    <p><strong>Bild:</strong> ein einzelner Pilz im Geflecht.</p>
+    <p><strong>Technisch:</strong> eine <em>PWA</em> (siehe unten) mit genau <em>einem</em> kryptografischen Schlüsselpaar. Der öffentliche Schlüssel ergibt die unveränderliche <code>nodeId</code>.</p>
+    <p><strong>Real:</strong> drei verschiedene Apps = drei Knoten, selbst auf demselben Gerät.</p></div>
+
+  <div class="card"><div class="sub">PWA</div><h4>Eine „installierbare" Mini-Webseite</h4>
+    <p><strong>Bild:</strong> eine Internetseite, die sich wie eine App aufs Gerät legt.</p>
+    <p><strong>Technisch:</strong> HTML/JavaScript + ein „Service Worker" (kleines Hintergrund-Skript), der die Seite zwischenspeichert, damit sie <em>offline</em> läuft. Keine Installation aus einem Store nötig.</p>
+    <p><strong>Real:</strong> alle Knoten sind solche Einzeldatei-Apps, von GitHub Pages ausgeliefert.</p></div>
+
+  <div class="card"><div class="sub">Embedding</div><h4>Bedeutung als Zahlenreihe</h4>
+    <p><strong>Bild:</strong> ein „Bedeutungs-Fingerabdruck" eines Textes.</p>
+    <p><strong>Technisch:</strong> ein echtes Sprachmodell (<code>multilingual-e5-small</code>, ~30&nbsp;MB) wandelt Text in einen Vektor aus <strong>384 Zahlen</strong>. Läuft per WebAssembly <em>im Browser</em> — kein Server, kein API-Call. Gleicher Text → gleiche Zahlen (deterministisch).</p>
+    <p><strong>Real:</strong> bewiesen; die Basis jeder Bedeutungs-Suche.</p></div>
+
+  <div class="card"><div class="sub">Handshake</div><h4>Das gegenseitige Prüfen</h4>
+    <p><strong>Bild:</strong> zwei geben sich die Hand und schauen, ob sie zusammenpassen.</p>
+    <p><strong>Technisch:</strong> Knoten A schickt seine signierte Visitenkarte, B prüft Signatur + Bedeutungs-Nähe. Nur wenn <em>beide</em> Seiten über <code>0.80</code> liegen, werden sie „Geschwister". (In der Informatik allgemein: der erste Abgleich zweier Systeme, bevor sie Daten austauschen — wie beim TLS- oder Bluetooth-Pairing.)</p>
+    <p><strong>Real:</strong> live gezeigt (Sage↔Mixarium).</p></div>
+
+  <div class="card"><div class="sub">serverlos</div><h4>Kein Herr in der Mitte — fast</h4>
+    <p><strong>Bild:</strong> ein schwarzes Brett im Hausflur statt einer Poststelle.</p>
+    <p><strong>Technisch — ehrlich:</strong> es gibt <em>keinen zentralen Server im Protokoll-Kern</em>. Für den Transport über Geräte hinweg braucht es aber ein <strong>Relais</strong> (ein „dummes" Brett, Nostr/NIP-01) — oder lokal <code>postMessage</code> im selben Browser. Das Relais speichert nichts Eigenes, ist austauschbar und nicht Teil der Identität. <strong>„Serverlos" heißt also: keine Plattform, die mitliest oder den Schalter umlegt — nicht „ganz ohne jede Infrastruktur".</strong></p>
+    <p><strong>Real:</strong> öffentliche Relais + ein eigenes, log-freies Relais auf einem kleinen Server.</p></div>
+
+  <div class="card"><div class="sub">interne KI</div><h4>Im Browser, gratis</h4>
+    <p><strong>Technisch:</strong> das Embedding-Modell läuft lokal (transformers.js). Kein Konto, kein Schlüssel, kein Datenabfluss.</p>
+    <p><strong>Heute:</strong> voll real.</p></div>
+
+  <div class="card"><div class="sub">externe KI</div><h4>Optional, eigener Schlüssel</h4>
+    <p><strong>Technisch:</strong> ein „KI-Richter/Erklärer" (z.&nbsp;B. Claude, Gemini) verfeinert die Sortierung — nur wenn der Nutzer einen eigenen Schlüssel einträgt (BYOK), nur im Arbeitsspeicher, mit EU-Option. Ohne Schlüssel läuft alles weiter (fail-soft).</p>
+    <p><strong>Heute / nahe Zukunft:</strong> heute opt-in; künftig könnten KI-Browser-Agenten das Netz direkt als Agent-Schicht nutzen.</p></div>
+</div>
+
+<h3>Wichtige Klarstellung: Authentizität ≠ Vertraulichkeit</h3>
+<p>Heute (Protokoll 0.1) garantiert das Mycel, dass eine Nachricht <strong>wirklich von dem Knoten stammt</strong>, der draufsteht (Ed25519-Signatur). Es verschlüsselt aber den <em>Inhalt</em> über das Netz <strong>noch nicht</strong> — anders als WhatsApp/Signal. Der versiegelte Umschlag (X25519, „sealed box") ist als Protokoll-0.2 spezifiziert, aber noch nicht gebaut. Bis dahin gilt: sensible Inhalte gehören nicht ungeschützt aufs öffentliche Brett (Zwischenlösung: Pseudonymisieren).</p>
+</section>
+
+<!-- ====================== 11 GRENZE/ZUKUNFT ====================== -->
+<section class="section" id="grenze">
+<h2><span class="num">12</span>Realistische Grenze &amp; Zukunft</h2>
+<p>Objektiv, nicht erdacht: Was ist heute real? Was wird real <em>unter einer benennbaren Bedingung</em>? Was bleibt vermutlich Fiktion?</p>
+<div class="tablewrap">
+<table>
+<caption>Tabelle 6 — Drei Reife-Stufen.</caption>
+<thead><tr><th>Heute real</th><th>Unter Bedingung X real (keine Science-Fiction mehr)</th><th>bleibt vermutlich Fiktion</th></tr></thead>
+<tbody>
+<tr>
+  <td>Semantische Suche im Browser (gratis, offline).</td>
+  <td><strong>Knoten-fragt-Knoten-Suche</strong> als geschlossener Kreis — Bedingung: bidirektionale Suche fertig + ein paar aktive Knoten.</td>
+  <td>Ein „allwissendes" globales Mycel, das alle Daten der Welt versteht.</td>
+</tr>
+<tr>
+  <td>Server-loser Andock zweier echter Apps (live).</td>
+  <td><strong>Belastbares Netz mit Spam-/Haltbarkeits-Schutz</strong> — Bedingung: Medium gehärtet (Modul 11/12/14).</td>
+  <td>Völlig regelfreies Netz, das ganz ohne jede Relais-/Hosting-Infrastruktur auskommt.</td>
+</tr>
+<tr>
+  <td>Selbst-souveräne Identität + Selbst-Zertifikat.</td>
+  <td><strong>Vertrauensnetz „wer bürgt für wen"</strong> — Bedingung: Reputation (Modul 10) + ≥ ~10 aktive Knoten.</td>
+  <td>Vollautonome Agenten, die ohne jede menschliche Aufsicht Geschäfte abschließen.</td>
+</tr>
+<tr>
+  <td>Lokale Bedeutungs-Sortierung; externe KI opt-in.</td>
+  <td><strong>Vertrauliche Nutzlast (Ende-zu-Ende)</strong> — Bedingung: versiegelter Umschlag (Protokoll 0.2) gebaut.</td>
+  <td>Garantierte Unauffindbarkeit/absolute Anonymität gegen jeden Beobachter.</td>
+</tr>
+<tr>
+  <td>Forker können Module 1:1 kopieren.</td>
+  <td><strong>Lebendiges Forker-Ökosystem</strong> — Bedingung: Starter-Bundle + Hub verteilt, Menschen nutzen es.</td>
+  <td>Selbsttragende „Pilz-Wirtschaft" als Selbstläufer ohne Pflege.</td>
+</tr>
+<tr>
+  <td>Klassische Signatur/Verschlüsselung (Ed25519/X25519).</td>
+  <td><strong>Quanten-sichere Kryptografie (PQC)</strong> — Bedingung: Umstieg auf NIST-Standards (ML-KEM/ML-DSA); Bauplan existiert, Verfahren sind standardisiert.</td>
+  <td>Krypto, die <em>jeden</em> künftigen Angreifer (auch unbekannte Physik) für immer ausschließt.</td>
+</tr>
+<tr>
+  <td>KI-Richter hebt Trefferqualität (gemessen, opt-in).</td>
+  <td><strong>Bedeutungs-stabilisierte, dritter-Richter-gestützte bidirektionale Suche</strong> — Bedingung: Richter-Rückkopplung fest im Cross-Knoten-Pfad verankert.</td>
+  <td>Eine Maschine, die Absicht <em>ohne</em> Kontext/Beziehung verlässlich errät (Intuition aus dem Nichts).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Die mittlere Spalte ist der eigentliche Arbeitsbereich: <strong>nichts davon ist Science-Fiction</strong> — jedes Element hat eine konkrete, benennbare Bedingung und einen vorhandenen Bauplan. Die rechte Spalte beschreibt bewusst die Grenzen, an denen das Werk <em>nicht</em> ansetzt (und meist niemand seriös ansetzt).</p>
+</section>
+
+<!-- ====================== 12 PROGNOSE ====================== -->
+<section class="section" id="prognose">
+<h2><span class="num">13</span>Ziel-Wiederaufnahme &amp; Erfolgs-Prognose</h2>
+<p>Das eigentliche Ziel aus §1 — <em>intelligente Systeme über <strong>bidirektionale</strong> Bedeutung verbinden, mit einem <strong>dritten Richter</strong>, der die Passung vertieft und stabilisiert, ohne Plattform in der Mitte</em> — zerfällt für die Prognose in drei Horizonte:</p>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Horizont</th><th>Was erreichbar ist</th><th class="c">Wahrscheinlichkeit</th><th>Bedingung</th></tr></thead>
+<tbody>
+<tr><td><strong>Kurzfristig</strong><br><span class="small">Wochen–Monate</span></td><td>Offene Sichttests grün; bidirektionale Such-Schleife geschlossen; App-Freigabe.</td><td class="c"><span class="dot d-green"></span>hoch</td><td>Reine Fertigstellungs-Arbeit, kein neues Risiko.</td></tr>
+<tr><td><strong>Mittelfristig</strong><br><span class="small">Monate–~1 Jahr</span></td><td>Gehärtetes Medium; erste echte Forker-Knoten; E2E-Nutzlast (0.2).</td><td class="c"><span class="dot d-amber"></span>realistisch</td><td>Verbreitung + ein paar aktive Mitstreiter; technisch geplant.</td></tr>
+<tr><td><strong>Langfristig</strong><br><span class="small">mehrere Jahre</span></td><td>Lebendiges Netz mit Vertrauens-Schicht und Agent-zu-Agent-Nutzung; tragfähige Pilz-Schicht.</td><td class="c"><span class="dot d-slate"></span>offen, machbar</td><td>Hängt an Menschen &amp; Netzgröße, nicht an Machbarkeit.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="note"><b>Gesamturteil.</b> Das Werk hat den Punkt überschritten, an dem die Grundsatzfrage „geht das überhaupt?" offen war — die Bausteine laufen, im Browser belegt, in einer real existierenden Technologie-Familie. Was bleibt, ist <em>Fertigstellung</em> (kurzfristig, hohe Wahrscheinlichkeit) und <em>Verbreitung</em> (mittel- bis langfristig, machbar, aber von Menschen und Zeit abhängig — nicht von einem technischen Wunder). Ehrlich benannt: der einzige harte technische Rest-Beweis ist die geschlossene Knoten-fragt-Knoten-Schleife; alles darüber hinaus ist Wachstum, Pflege und Härtung — keine Spekulation. Der Kern — <em>bidirektionale Bedeutung + dritter Richter</em> — ist teils schon gemessen (der KI-Richter schlägt den freien Cosinus); fest in den Cross-Knoten-Pfad zu verankern ist Ingenieursarbeit, kein Durchbruch.</div>
+</section>
+
+<!-- ====================== 13 GALERIE ====================== -->
+<section class="section" id="galerie">
+<h2><span class="num">14</span>Bilderschlüssel — die Sinnbilder</h2>
+<p>Kleine Zeichen statt Fotos (als Vektor, druckt sauber, kein externes Bild):</p>
+<div class="gallery">
+  <figure>
+    <svg width="120" height="90" viewBox="0 0 120 90" role="img" aria-label="Hyphe">
+      <path d="M10 75 Q40 40 60 55 T110 25" fill="none" stroke="#c9a961" stroke-width="2.2"/>
+      <path d="M60 55 Q70 70 90 68" fill="none" stroke="#7e8aa0" stroke-width="1.6"/>
+      <circle cx="10" cy="75" r="4" fill="#c9a961"/><circle cx="110" cy="25" r="4" fill="#c9a961"/><circle cx="90" cy="68" r="3" fill="#7e8aa0"/>
+    </svg>
+    <figcaption><strong>Hyphe</strong> — ein Faden des Netzes: die Verbindung zweier Knoten.</figcaption>
+  </figure>
+  <figure>
+    <svg width="120" height="90" viewBox="0 0 120 90" role="img" aria-label="Spore">
+      <circle cx="60" cy="45" r="26" fill="#1e222b" stroke="#c9a961" stroke-width="2"/>
+      <circle cx="60" cy="45" r="10" fill="none" stroke="#7e8aa0" stroke-width="1.6"/>
+      <path d="M60 19 v-8 M60 71 v8 M34 45h-8 M86 45h8" stroke="#c9a961" stroke-width="1.8"/>
+    </svg>
+    <figcaption><strong>Spore</strong> — die signierte Visitenkarte (Identität) eines Knotens.</figcaption>
+  </figure>
+  <figure>
+    <svg width="120" height="90" viewBox="0 0 120 90" role="img" aria-label="Pilz">
+      <path d="M30 50 Q60 18 90 50 Z" fill="#262a22" stroke="#c9d99a" stroke-width="2"/>
+      <rect x="54" y="50" width="12" height="26" rx="3" fill="#1e222b" stroke="#7e8aa0" stroke-width="1.4"/>
+    </svg>
+    <figcaption><strong>Fruchtkörper</strong> — ein sichtbares Werkzeug (Pilz-Schicht).</figcaption>
+  </figure>
+  <figure>
+    <svg width="120" height="90" viewBox="0 0 120 90" role="img" aria-label="Siegel">
+      <circle cx="60" cy="42" r="22" fill="#2a2418" stroke="#c9a961" stroke-width="2"/>
+      <path d="M60 30 l4 9 9 1 -7 6 2 9 -8-5 -8 5 2-9 -7-6 9-1 z" fill="#e0c989"/>
+      <path d="M50 62 l-6 18 16-8 16 8 -6-18" fill="none" stroke="#c9a961" stroke-width="2"/>
+    </svg>
+    <figcaption><strong>Siegel</strong> — Selbst-Zertifikat über erfüllte Schutz-Module.</figcaption>
+  </figure>
+  <figure>
+    <svg width="120" height="90" viewBox="0 0 120 90" role="img" aria-label="Schlüssel">
+      <circle cx="40" cy="45" r="14" fill="none" stroke="#c9a961" stroke-width="3"/>
+      <path d="M54 45 H100 M92 45 v12 M82 45 v9" stroke="#c9a961" stroke-width="3" fill="none"/>
+    </svg>
+    <figcaption><strong>Schlüssel</strong> — der private Schlüssel: das „Leben" eines Knotens.</figcaption>
+  </figure>
+  <figure>
+    <svg width="120" height="90" viewBox="0 0 120 90" role="img" aria-label="Brett">
+      <rect x="22" y="20" width="76" height="50" rx="4" fill="#201f29" stroke="#5a4f6e" stroke-width="2"/>
+      <rect x="34" y="32" width="22" height="14" fill="#2c2a3a"/><rect x="62" y="32" width="24" height="9" fill="#2c2a3a"/><rect x="34" y="52" width="52" height="9" fill="#2c2a3a"/>
+    </svg>
+    <figcaption><strong>Relais</strong> — das „dumme", austauschbare schwarze Brett.</figcaption>
+  </figure>
+</div>
+</section>
+
+<footer class="src">
+  <p><strong>Quellen (nachprüfbar im Repo Sage-Protokol):</strong> <code>status.json</code> · <code>docs/INTERFACES.md</code> · <code>docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md</code> · <code>docs/E2E-VERTRAULICHKEIT.md</code> · <code>sbkim/NETZ-STAND.md</code> · <code>CLAUDE.md</code> · <code>src/modules/</code> · <code>tests/smoke_*.mjs</code>.</p>
+  <p>Dieses Gutachten ist eine Bestandsaufnahme zum 2026-06-30. Zahlen und Einstufungen können sich mit jeder Bau-Sitzung ändern; die Belege liegen in den genannten Dateien. Eine einzelne HTML-Datei, ohne externe Abhängigkeiten — am Bildschirm dunkel, im Druck hell (Als-PDF-tauglich).</p>
+</footer>
+
+
+</template>
+
+<div id="exp"><div class="box">
+  <h3>Export für Claude</h3>
+  <p style="margin:.2em 0 .6em;font-size:.86rem;color:#b3b0a6">Diesen Code kopieren und mir in den Chat schicken — ich backe genau diese Abstände &amp; Umbrüche ins offizielle Gutachten/PDF ein.</p>
+  <textarea id="expText" readonly></textarea>
+  <div class="row">
+    <button id="bExpClose" class="sec" style="background:#3a3f4c;color:#eee;border:none;border-radius:7px;padding:8px 12px;cursor:pointer">Schließen</button>
+    <button id="bExpCopy" style="background:#c9a961;color:#1a1408;border:none;border-radius:7px;padding:8px 12px;cursor:pointer;font-weight:600">Kopieren</button>
+  </div>
+</div></div>
+
+<script>
+(function(){
+"use strict";
+// ---- Konstanten (A4 hoch) ----
+var MARGIN_X=14, MARGIN_Y=16;                 // mm
+var CONTENT_H_MM=297-2*MARGIN_Y;              // 265 mm nutzbare Hoehe
+var SPACER_MM=6;                              // ein "Abstand" = 6 mm (~1 Zeile)
+var TOL_MM=2;                                 // Toleranz beim Umbruch
+var LS="sbkim_layout_v1";
+
+// ---- px-pro-mm messen ----
+var probe=document.createElement("div");
+probe.style.cssText="position:absolute;left:-9999px;top:0;width:100mm;height:0";
+document.body.appendChild(probe);
+var PX_PER_MM=probe.getBoundingClientRect().width/100;
+document.body.removeChild(probe);
+var PAGE_H_PX=CONTENT_H_MM*PX_PER_MM;
+var FIT_RESERVE_MM=14;                         // Sicherheits-Reserve, damit Druck == Bildschirm
+var PAGE_FIT_PX=(CONTENT_H_MM-FIT_RESERVE_MM)*PX_PER_MM;
+
+// ---- Bloecke aus dem <template> sammeln ----
+var tpl=document.getElementById("content").content;
+var blocks=[];
+Array.prototype.forEach.call(tpl.children,function(node){
+  if(node.tagName==="SECTION"){ Array.prototype.forEach.call(node.children,function(c){blocks.push(c);}); }
+  else blocks.push(node);
+});
+var N=blocks.length;
+
+// ---- Zustand: gaps[i] = {s:Abstaende, b:Umbruch} fuer Luecke VOR Block i (0..N) ----
+var gaps=[];
+for(var i=0;i<=N;i++) gaps.push({s:0,b:false});
+(function load(){
+  try{
+    var raw=localStorage.getItem(LS); if(!raw) return;
+    var o=JSON.parse(raw);
+    if(o&&o.n===N&&o.gaps){ for(var k in o.gaps){ var gi=+k; if(gi>=0&&gi<=N){ gaps[gi].s=o.gaps[k].s||0; gaps[gi].b=!!o.gaps[k].b; } } }
+  }catch(e){}
+})();
+function save(){
+  var out={}; for(var i=0;i<=N;i++){ if(gaps[i].s||gaps[i].b) out[i]={s:gaps[i].s,b:gaps[i].b}; }
+  try{ localStorage.setItem(LS,JSON.stringify({v:1,n:N,gaps:out})); }catch(e){}
+}
+
+var active=null;        // aktive Luecke (0..N) oder null
+var zoom=1;
+
+// ---- Messung: kontinuierlicher Fluss, Tops je Block ----
+function measure(){
+  var mp=document.createElement("div"); mp.className="page";
+  mp.style.cssText="position:absolute;left:-99999px;top:0;visibility:hidden;zoom:1";
+  var mc=document.createElement("div"); mc.className="page-content"; mc.style.position="relative";
+  mp.appendChild(mc); document.body.appendChild(mp);
+  var blockEls=[];
+  for(var i=0;i<N;i++){
+    var g=document.createElement("div"); g.className="gap"; mc.appendChild(g);
+    if(gaps[i].s>0){ var sp=document.createElement("div"); sp.className="spacer"; sp.style.height=(gaps[i].s*SPACER_MM)+"mm"; mc.appendChild(sp); }
+    var be=blocks[i].cloneNode(true); mc.appendChild(be); blockEls.push(be);
+  }
+  var endg=document.createElement("div"); endg.className="gap"; mc.appendChild(endg);
+  var cTop=mc.getBoundingClientRect().top;
+  var tops=[],bots=[];
+  for(var j=0;j<N;j++){ var r=blockEls[j].getBoundingClientRect(); tops.push(r.top-cTop); bots.push(r.bottom-cTop); }
+  document.body.removeChild(mp);
+  return {tops:tops,bots:bots};
+}
+
+// ---- Seiten zuordnen ----
+function paginate(){
+  var m=measure(), tops=m.tops, bots=m.bots;
+  var pageOf=new Array(N), starts=[], curPage=0, start=(N? tops[0]:0);
+  starts[0]=start;
+  for(var i=0;i<N;i++){
+    var wrap=false;
+    if(i>0 && gaps[i].b) wrap=true;
+    else if(i>0 && (bots[i]-start) > PAGE_FIT_PX + TOL_MM*PX_PER_MM) wrap=true;
+    if(wrap){ curPage++; start=tops[i]; starts[curPage]=start; }
+    pageOf[i]=curPage;
+  }
+  var pages=[];
+  for(var p=0;p<=curPage;p++) pages.push({start:starts[p],idx:[],usedMM:0,sheets:1,firstOf:{}});
+  for(var b=0;b<N;b++) pages[pageOf[b]].idx.push(b);
+  var fullPx=CONTENT_H_MM*PX_PER_MM;
+  for(var q=0;q<pages.length;q++){
+    var mx=pages[q].start;
+    for(var c=0;c<pages[q].idx.length;c++){ var bi=pages[q].idx[c]; if(bots[bi]>mx)mx=bots[bi]; }
+    var spanPx=mx-pages[q].start;
+    pages[q].usedMM=spanPx/PX_PER_MM;
+    pages[q].sheets=Math.max(1,Math.ceil(spanPx/fullPx - 1e-6));
+  }
+  return pages;
+}
+
+// ---- Rendern ----
+var pagesEl=document.getElementById("pages");
+function gapEl(idx,firstOnPage){
+  var g=document.createElement("div"); g.className="gap"+(idx===active?" active":""); g.setAttribute("data-gap",idx);
+  if(gaps[idx]&&gaps[idx].b&&!firstOnPage){ var bm=document.createElement("span"); bm.className="brkmark"; bm.textContent="⤓ Umbruch"; g.appendChild(bm); }
+  g.addEventListener("click",function(ev){ ev.stopPropagation(); setActive(idx,false); });
+  return g;
+}
+function render(scrollActive){
+  var pg=paginate();
+  pagesEl.innerHTML="";
+  var total=0; for(var t=0;t<pg.length;t++) total+=pg[t].sheets;
+  var sheetNo=1;
+  for(var p=0;p<pg.length;p++){
+    var page=pg[p];
+    var pd=document.createElement("div"); pd.className="page"; if(page.sheets>1) pd.className+=" oversize";
+    var pc=document.createElement("div"); pc.className="page-content"; pd.appendChild(pc);
+    for(var c=0;c<page.idx.length;c++){
+      var i=page.idx[c], isFirst=(c===0);
+      pc.appendChild(gapEl(i,isFirst));
+      if(gaps[i].b && !isFirst){ var hr=document.createElement("hr"); hr.className="brkrule"; pc.appendChild(hr); }
+      if(gaps[i].s>0 && !isFirst){ var sp=document.createElement("div"); sp.className="spacer"; sp.style.height=(gaps[i].s*SPACER_MM)+"mm"; pc.appendChild(sp); }
+      pc.appendChild(blocks[i].cloneNode(true));
+    }
+    if(p===pg.length-1) pc.appendChild(gapEl(N,false));
+    // Blattgrenzen bei uebergrossen Bloecken
+    if(page.sheets>1){
+      for(var k=1;k<page.sheets;k++){
+        var ln=document.createElement("div"); ln.className="sheetline";
+        ln.style.top=(MARGIN_Y + k*CONTENT_H_MM)+"mm";
+        ln.innerHTML="<span>✂ Blattgrenze (Druck)</span>";
+        pd.appendChild(ln);
+      }
+    }
+    pagesEl.appendChild(pd);
+    // Fuss
+    var first=sheetNo, last=sheetNo+page.sheets-1; sheetNo=last+1;
+    var foot=document.createElement("div"); foot.className="page-foot";
+    if(page.sheets>1){
+      foot.innerHTML="Seite "+first+"–"+last+" / "+total+" · <span class='bad'>⚠ Block höher als A4 — Druck teilt automatisch</span>";
+    }else{
+      var f=CONTENT_H_MM-page.usedMM, cls=f<0?"bad":(f<15?"warn":"ok");
+      var txt=f<0?("−"+Math.round(-f)+" mm über"):(Math.round(f)+" mm frei");
+      foot.innerHTML="Seite "+first+" / "+total+" · Restplatz: <span class='"+cls+"'>"+txt+"</span>";
+    }
+    pagesEl.appendChild(foot);
+  }
+  if(scrollActive && active!=null){
+    var a=pagesEl.querySelector(".gap.active"); if(a) a.scrollIntoView({block:"center",behavior:"smooth"});
+  }
+}
+
+// ---- Aktionen ----
+function setActive(i,scroll){ active=i; render(scroll); }
+function clampActive(){ if(active==null) active=0; if(active<0)active=0; if(active>N)active=N; }
+function addSpacer(){ if(active==null){setActive(0,true);return;} gaps[active].s++; save(); render(false); }
+function delSpacer(){ if(active==null)return; if(gaps[active].s>0){gaps[active].s--;} else if(gaps[active].b){gaps[active].b=false;} save(); render(false); }
+function toggleBreak(){ if(active==null){setActive(0,true);return;} gaps[active].b=!gaps[active].b; save(); render(false); }
+function moveActive(d){ clampActive(); active+=d; if(active<0)active=0; if(active>N)active=N; render(true); }
+function resetAll(){ if(!confirm("Alle Abstände und Umbrüche zurücksetzen?"))return; for(var i=0;i<=N;i++){gaps[i].s=0;gaps[i].b=false;} active=null; save(); render(false); }
+
+// ---- Tastatur ----
+document.addEventListener("keydown",function(e){
+  if(e.target&&/^(INPUT|TEXTAREA)$/.test(e.target.tagName))return;
+  var k=e.key;
+  if(k===" "||k==="Spacebar"){ e.preventDefault(); addSpacer(); }
+  else if(k==="Backspace"||k==="Delete"){ e.preventDefault(); delSpacer(); }
+  else if(k==="b"||k==="B"||k==="Enter"){ e.preventDefault(); toggleBreak(); }
+  else if(k==="ArrowDown"||k==="ArrowRight"){ e.preventDefault(); moveActive(1); }
+  else if(k==="ArrowUp"||k==="ArrowLeft"){ e.preventDefault(); moveActive(-1); }
+  else if(k==="Escape"){ active=null; render(false); }
+});
+
+// ---- Knopf-Verdrahtung ----
+function on(id,fn){ var el=document.getElementById(id); if(el) el.addEventListener("click",fn); }
+on("bAdd",addSpacer); on("bDel",delSpacer); on("bBrk",toggleBreak);
+on("bPrev",function(){moveActive(-1);}); on("bNext",function(){moveActive(1);});
+on("bReset",resetAll);
+on("bPrint",function(){ window.print(); });
+function setZoom(z){ zoom=Math.max(.35,Math.min(1.4,z)); document.documentElement.style.setProperty("--zoom",zoom); document.getElementById("zl").textContent=Math.round(zoom*100)+"%"; }
+on("bZoomIn",function(){setZoom(zoom+.1);}); on("bZoomOut",function(){setZoom(zoom-.1);});
+
+// Export
+on("bExport",function(){
+  var out={}; for(var i=0;i<=N;i++){ if(gaps[i].s||gaps[i].b) out[i]={s:gaps[i].s,b:gaps[i].b}; }
+  var rec={v:1,n:N,spacer_mm:SPACER_MM,gaps:out};
+  document.getElementById("expText").value=JSON.stringify(rec);
+  document.getElementById("exp").classList.add("on");
+});
+on("bExpCopy",function(){
+  var ta=document.getElementById("expText"); ta.select();
+  try{ document.execCommand("copy"); }catch(e){}
+  if(navigator.clipboard){ navigator.clipboard.writeText(ta.value).catch(function(){}); }
+  var b=document.getElementById("bExpCopy"); var t=b.textContent; b.textContent="✓ kopiert"; setTimeout(function(){b.textContent=t;},1200);
+});
+on("bExpClose",function(){ document.getElementById("exp").classList.remove("on"); });
+
+// ---- Start ----
+(function initZoom(){
+  var avail=window.innerWidth-30, need=210*PX_PER_MM;
+  setZoom(avail<need ? Math.max(.4, avail/need) : 1);
+})();
+render(false);
+})();
+
+</script>
+</body>
+</html>
