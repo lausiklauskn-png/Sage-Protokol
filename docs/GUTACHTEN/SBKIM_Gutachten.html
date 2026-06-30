@@ -118,11 +118,18 @@
     a{color:#000; border:none}
     header.hero{padding:0 0 10px}
     h2{margin-top:20pt; page-break-after:avoid}
-    h3{page-break-after:avoid}
-    table{font-size:8.6pt}
+    h3,h4{page-break-after:avoid}
+    .card h4{color:#000}
+    p,li{orphans:3; widows:3}
+    table{font-size:8.6pt; page-break-inside:auto}
+    .tablewrap{overflow:visible}
+    thead{display:table-header-group}
     thead th{background:#eee !important; color:#000 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
     tbody tr:nth-child(even){background:#f4f4f4 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
-    .card,.note,.abstract,.tablewrap,figure,table,tr,.gallery figure{page-break-inside:avoid}
+    tr,td,th{page-break-inside:avoid}
+    caption{page-break-after:avoid}
+    li{page-break-inside:avoid}
+    .card,.note,.abstract,figure,.gallery figure{page-break-inside:avoid}
     .dot{border:1px solid #555; -webkit-print-color-adjust:exact; print-color-adjust:exact}
     .abstract{background:#f7f7f4 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
     .note{background:#f4f3ee !important; color:#2b2b2b; border-color:#cfcabd; -webkit-print-color-adjust:exact; print-color-adjust:exact}
