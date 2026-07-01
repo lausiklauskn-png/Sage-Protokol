@@ -847,6 +847,29 @@ Bietet (öffentlich):
                                                                        // entfernt. Idempotent (mehrfach
                                                                        // rufbar). Wirft InvalidCorpusError
                                                                        // sync bei anderem Argument-Typ.
+  queryLocalJudged(text: string, k?: number,
+                   options?: { corpus?, hybrid?: boolean, apiKey?: string,
+                               provider?, euOnly?, endpoint?, model?, queryLabel? })
+                                                          → Promise<{
+                                                                judged:     boolean,
+                                                                candidates: Array<{ label, score, anchorId,
+                                                                                    bm25?, fused?,
+                                                                                    passt?, judgeScore?,
+                                                                                    begruendung? }>,
+                                                                judgment:   HybridJudgment | null
+                                                              }>
+                                                                       // async; Bau 04.G (Strang A2, 2026-07-01).
+                                                                       // Verankert den Richter fest im Antwort-
+                                                                       // Pfad: Vorfilter (queryLocal, hybrid
+                                                                       // durchgereicht) + Richter (hybridMatch,
+                                                                       // opt-in via apiKey/BYOK). judged:true →
+                                                                       // Finalisten umsortiert (passt zuerst,
+                                                                       // dann Richter-Score). FAIL-SOFT: kein
+                                                                       // Schlüssel / leerer Vorfilter / Richter
+                                                                       // nicht erreichbar → roher Vorfilter,
+                                                                       // KEIN Throw. Berührt kein anderes Modul;
+                                                                       // PROVIDER_MIN_MATCH + Andock-Riegel
+                                                                       // (Modul 05) unverändert.
   hybridMatch(query: string | { text: string, label?: string },
               candidates: Array<{ label: string, text: string,
                                   cosine?: number, anchorId?: string }>,
@@ -921,7 +944,7 @@ Events:
 
 Selbstcheck:
   Beim Skript-Laden (synchron, sofort beim <script>-Tag-Auswerten):
-    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
+    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch/queryLocalJudged, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
   Wie Modul 01 — Modul 04 hat keinen asynchronen Lade-Schritt.
   (Format-Stand seit Bau 04.D 2026-06-20 — sechs Funktionen, zwei Schwellen.)
 
