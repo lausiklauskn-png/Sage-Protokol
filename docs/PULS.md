@@ -148,9 +148,16 @@ smoke_bau04c 43/43, 04d 68/68, 04e 29/29, standalone-Drift 46/46, bundle-connect
 17/17 (konsumiert Modul 04). (Die restlichen Smokes brauchen `fake-indexeddb`/transformers.js — im
 frischen Klon nachinstalliert, Modul-01/05–08-Tests danach grün; nichts durch Bau 04.F berührt.)
 
+**✅ Browser-Sichttest GRÜN (Klaus, 2026-07-01, Termux + `python3 -m http.server`):** Panel 04
+**Test 20** „Hybrid BM25+Vektor" live bestätigt. Frage „wespen hausmittel": Standard (nur Cosinus)
+liefert nur B (0.8645) + C (0.8369), „A (unter Boden)" (cos 0.7091) fehlt; **Hybrid** stellt A mit
+`bm25 1.3938`/`fused 0.03227` an die Spitze (vor C 0.03226 und B 0.01639). Kern-Hebel im Browser
+bewiesen — der lexikalische Pfad holt den Unter-Boden-Treffer zurück, 0.80-Andock-Riegel unberührt.
+PR #509 damit headless (32/32) UND Browser grün → merge-reif.
+
 **Was offen / nächster sinnvoller Schritt:**
-- **Schritt 0 (Baseline messen)** + **Bau-04.F-Sichttest**: Panel 04 im Browser (KALIBRIER-BODEN /
-  SCHWELLEN-ANALYSE / VERFAHREN-VERGLEICH + Hybrid-Vergleich am realen Korpus) — **wartet auf Klaus**.
+- **Schritt-0-Baseline-Messung** (KALIBRIER-BODEN / SCHWELLEN-ANALYSE / VERFAHREN-VERGLEICH) bleibt
+  als Instrument in Panel 04 — optional für die spätere A5-Modellwechsel-Entscheidung.
 - **Panel-04-Knopf für Hybrid** in `tests/manual_check.html` (Test 20: `queryLocal({hybrid:true})`
   vs. Default am Mini-Korpus) — Folge-Pflege, headless deckt die Logik schon ab.
 - **Strang A2/A3/A4** (Richter fest im Antwort-Pfad / Schnipsel-Chunking / Query-Expansion) +
