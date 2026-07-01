@@ -1101,6 +1101,91 @@
         };
       });
 
+      // --- A1-NACHMESSUNG (Strang A1, 2026-07-01) ----------------------------
+      // Misst den KERN-NUTZEN von A1 (Hybrid BM25+Vektor, Bau 04.F) als klare
+      // Zahl: wie viele echte WORT-TREFFER, die unter dem 0.80-Vektor-Boden
+      // liegen, rettet die Hybrid-Suche, die die reine Vektor-Suche VERLIERT?
+      // Mehrere Fälle, deterministisch (SbkimEmbedding-Mock aus Test 20/11–15;
+      // Cosinus je Dokument konstruiert, BM25 aus echtem text+Frage). Enthält
+      // einen KONTROLL-Fall (unter Boden, ABER kein Wort-Treffer) — der darf
+      // NICHT gerettet werden, sonst zöge Hybrid blind alles hoch.
+      // Gegenstück zur A3-NACHMESSUNG. Reine Messung, gatet nichts, 0.80-Riegel
+      // (Modul 05) unberührt.
+      SbkimUI.addButton("04_match", "A1-NACHMESSUNG: rettet Hybrid (BM25+Vektor) Wort-Treffer unter dem Vektor-Boden? (vs. nur Vektor)", async function () {
+        var ref = ensureQueryLocalSetup04C();
+        // Jeder Fall: EIN Ziel-Dokument mit exakten Frage-Wörtern, aber Cosinus
+        // UNTER dem 0.80-Boden (nur-Vektor verwirft es) + Ablenker ÜBER dem Boden
+        // ohne Wort-Bezug. targetLabel = das Dokument, das gefunden werden soll.
+        var faelle = [
+          { frage: "wespen hausmittel", targetLabel: "Ziel", wortTreffer: true, corpus: [
+            { label: "Ablenker", anchorId: "d1", text: "kuchen backen ofen teig",        passageVec: mixedVec04C(ref, 0.85, 3101) },
+            { label: "Ziel",     anchorId: "z1", text: "wespen hausmittel abwehr garten", passageVec: mixedVec04C(ref, 0.72, 3102) },
+          ] },
+          { frage: "zimtstern plätzchen", targetLabel: "Ziel", wortTreffer: true, corpus: [
+            { label: "Ablenker", anchorId: "d2", text: "nudeln kochen wasser salz",          passageVec: mixedVec04C(ref, 0.84, 3201) },
+            { label: "Ziel",     anchorId: "z2", text: "zimtstern plätzchen weihnachten",     passageVec: mixedVec04C(ref, 0.70, 3202) },
+          ] },
+          { frage: "gurken einlegen essig", targetLabel: "Ziel", wortTreffer: true, corpus: [
+            { label: "Ablenker", anchorId: "d3", text: "fleisch braten pfanne heiss",     passageVec: mixedVec04C(ref, 0.86, 3301) },
+            { label: "Ziel",     anchorId: "z3", text: "gurken sauer einlegen essig glas", passageVec: mixedVec04C(ref, 0.74, 3302) },
+          ] },
+          { frage: "hefeteig gehen lassen", targetLabel: "Ziel", wortTreffer: true, corpus: [
+            { label: "Ablenker", anchorId: "d4", text: "salat waschen schneiden schuessel", passageVec: mixedVec04C(ref, 0.83, 3401) },
+            { label: "Ziel",     anchorId: "z4", text: "hefeteig kneten gehen lassen warm",  passageVec: mixedVec04C(ref, 0.71, 3402) },
+          ] },
+          // KONTROLL-Fall: das Unter-Boden-Dokument teilt KEIN Wort mit der Frage.
+          // Hybrid darf es NICHT retten (BM25=0) — beweist, dass A1 selektiv ist.
+          { frage: "auspuff schweissen endrohr", targetLabel: "Fremd (kein Wort)", wortTreffer: false, corpus: [
+            { label: "Ablenker",           anchorId: "d5", text: "auspuff schweissen endrohr montage", passageVec: mixedVec04C(ref, 0.85, 3501) },
+            { label: "Fremd (kein Wort)",  anchorId: "z5", text: "wespen hausmittel garten abwehr",     passageVec: mixedVec04C(ref, 0.72, 3502) },
+          ] },
+        ];
+        var zeilen = [];
+        var gerettet = 0, wortFaelle = 0, fehlRettung = 0;
+        for (var i = 0; i < faelle.length; i++) {
+          var f = faelle[i];
+          var std = await SbkimMatch.queryLocal(f.frage, 5, { corpus: f.corpus });
+          var hyb = await SbkimMatch.queryLocal(f.frage, 5, { corpus: f.corpus, hybrid: true });
+          var stdL = std.map(function (r) { return r.label; });
+          var hybL = hyb.map(function (r) { return r.label; });
+          var inStd = stdL.indexOf(f.targetLabel) !== -1;
+          var inHyb = hybL.indexOf(f.targetLabel) !== -1;
+          var rettung = !inStd && inHyb;      // vorher verloren, jetzt gefunden
+          if (f.wortTreffer) {
+            wortFaelle++;
+            if (rettung) gerettet++;
+          } else {
+            // Kontroll-Fall: Rettung wäre ein FEHLER (blind hochgezogen).
+            if (rettung) fehlRettung++;
+          }
+          zeilen.push({
+            frage: f.frage,
+            wort_treffer_erwartet: f.wortTreffer,
+            nur_vektor: stdL,
+            hybrid: hybL,
+            ziel_vorher_gefunden: inStd,
+            ziel_nachher_gefunden: inHyb,
+            bewertung: f.wortTreffer
+              ? (rettung ? "✓ gerettet" : (inStd ? "· war schon da" : "✗ nicht gefunden"))
+              : (rettung ? "✗ FEHL-Rettung (blind)" : "✓ korrekt NICHT gerettet"),
+          });
+        }
+        var ok = gerettet > 0 && fehlRettung === 0;
+        SbkimUI.setStatus("04_match", ok ? "ok" : "warn",
+          ok ? ("Hybrid rettet " + gerettet + "/" + wortFaelle + " Wort-Treffer, 0 Fehl-Rettung")
+             : ("gerettet " + gerettet + "/" + wortFaelle + ", Fehl-Rettung " + fehlRettung));
+        return {
+          frage: "Rettet A1 (Hybrid BM25+Vektor) Wort-Treffer, die unter dem 0.80-Vektor-Boden liegen und die reine Vektor-Suche VERLIERT?",
+          gerettete_wort_treffer: gerettet + " von " + wortFaelle,
+          fehl_rettungen_kontrolle: fehlRettung + " (soll 0 sein — Hybrid darf nur echte Wort-Treffer heben)",
+          urteil: ok
+            ? ("✓ A1 verbessert: Hybrid findet " + gerettet + " Wort-Treffer zusätzlich, die die reine Vektor-Suche verliert — und zieht dabei NICHTS blind hoch.")
+            : ("A1-Verhalten prüfen: gerettet " + gerettet + "/" + wortFaelle + ", Fehl-Rettungen " + fehlRettung),
+          faelle: zeilen,
+          hinweis: "REINE MESSUNG — gatet nichts, 0.80-Andock-Riegel (Modul 05) unberührt. Kontrast zur A3-NACHMESSUNG: A1 fügt ein ZWEITES Signal (Wort-Treffer) hinzu und verbessert; A3 drehte am SELBEN Signal und verschlechterte. Determinist. Mock (wie Test 20) — kein Modell-Lade.",
+        };
+      });
+
       SbkimUI.addButton("04_match", "Ähnlich: Käsekuchen vs. Käsetorte (> 0.92)", async function () {
         var vecs = await SbkimEmbedding.embedPassageBatch(["Käsekuchen", "Käsetorte"]);
         var score = SbkimMatch.match(vecs[0], vecs[1]);
