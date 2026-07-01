@@ -298,7 +298,14 @@
       }
       var data = await res.json();
       var text = provider.extract(data);
-      return { available: true, provider: providerId, text: text };
+      // Tatsächlich benutzte Modell-Version aus der API-Antwort (Mistral OCR
+      // liefert das datierte Modell, z.B. "mistral-ocr-2505") — sichtbar machen,
+      // damit klar ist, welche Version lief. Fällt auf die angeforderte Version
+      // zurück (mistral-ocr-latest), wenn die Antwort keine nennt.
+      var usedModel = (data && typeof data.model === "string" && data.model)
+        ? data.model
+        : (providerId === "mistral" ? (options.model || MISTRAL_DEFAULT_MODEL) : null);
+      return { available: true, provider: providerId, text: text, model: usedModel };
     } catch (e) {
       if (timer) clearTimeout(timer);
       return { available: false, provider: providerId, reason: ocrErrorHint(e) };

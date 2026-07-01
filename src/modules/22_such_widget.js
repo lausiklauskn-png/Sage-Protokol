@@ -1206,7 +1206,7 @@
     inrow.appendChild(voiceBtnEl);
 
     // 📷 OCR-Knopf (Strang B2): Foto/Handschrift → Suchtext via Modul 24.
-    ocrBtnEl = makeBtn(doc, "sbkim-sw-iconbtn sbkim-sw-ocr", "📷", "Foto/Handschrift → Suchtext (EU-OCR, Modul 24)");
+    ocrBtnEl = makeBtn(doc, "sbkim-sw-iconbtn sbkim-sw-ocr", "📷", "Foto/Handschrift → Suchtext (Mistral OCR, EU)");
     ocrBtnEl.addEventListener("click", function (ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
       onOcrClick();
@@ -1648,7 +1648,8 @@
           .then(function (r) {
             if (r && r.available) {
               appendToField(target, r.text || "");
-              setHint(r.text ? ("Erkannt (" + r.text.length + " Zeichen).") : "Kein Text erkannt.");
+              var ver = r.model ? (" · Mistral OCR " + r.model) : "";
+              setHint((r.text ? ("Erkannt (" + r.text.length + " Zeichen)") : "Kein Text erkannt") + ver);
             } else {
               var reason = (r && r.reason) || "Texterkennung nicht möglich.";
               if (/Schlüssel/.test(reason)) ocrKey = "";
