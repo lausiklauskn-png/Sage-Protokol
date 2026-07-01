@@ -804,11 +804,14 @@ Bietet (öffentlich):
                                                                        // Vertrag und § 7 LLM-Stufe-B-
                                                                        // Ehrlichkeits-Klausel.
   queryLocal(text: string, k?: number,
-             options?: { corpus?: Array<{label,passageVec,anchorId?}> })
+             options?: { corpus?: Array<{label,passageVec,anchorId?,text?}>,
+                         hybrid?: boolean })
                                                           → Promise<Array<{
                                                                 label:    string,
                                                                 score:    number,
-                                                                anchorId: string | null
+                                                                anchorId: string | null,
+                                                                bm25?:    number,   // nur bei hybrid:true
+                                                                fused?:   number    // nur bei hybrid:true
                                                               }>>
                                                                        // async; Bau 04.C (Sub (c), 2026-05-26).
                                                                        // Lokales Such-Feld-Backend. Embedding
@@ -826,6 +829,15 @@ Bietet (öffentlich):
                                                                        // mit [] (kein Throw). Cross-Knoten-
                                                                        // Search-Hook auf Modul 15 Sub (b)
                                                                        // ohne Code-Update (typeof-Check).
+                                                                       // Bau 04.F (Strang A1, 2026-07-01):
+                                                                       // options.hybrid:true fusioniert BM25
+                                                                       // (lexikalisch, lokal) + Vektor via RRF;
+                                                                       // ohne Flag byte-gleich (nur Cosinus).
+                                                                       // PROVIDER_MIN_MATCH + Andock-Riegel
+                                                                       // (Modul 05) unberührt. Korpus-Item
+                                                                       // optional +text (BM25-Doc, Fallback
+                                                                       // label). Neue Fläche: bm25Scores /
+                                                                       // tokenizeBM25.
   setLocalCorpus(corpusOrProvider: Array | Function | null)  → void
                                                                        // sync; Bau 04.C. Registriert
                                                                        // Korpus-Quelle für queryLocal.
@@ -909,7 +921,7 @@ Events:
 
 Selbstcheck:
   Beim Skript-Laden (synchron, sofort beim <script>-Tag-Auswerten):
-    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
+    console.info("MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch, Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
   Wie Modul 01 — Modul 04 hat keinen asynchronen Lade-Schritt.
   (Format-Stand seit Bau 04.D 2026-06-20 — sechs Funktionen, zwei Schwellen.)
 
