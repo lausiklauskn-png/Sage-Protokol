@@ -360,6 +360,14 @@
         "05"
       ],
       "kurz": "Löst die Adress-Wand (committete nodeId ≠ lebende nodeId): lebende Knoten treffen sich im geteilten Nostr-Tag sbkim-rdv, heften auf Nutzer-Aktion ihre lebende Visitenkarte (echte Spore) ans Brett; ein Suchender liest die Karten und handshaket die LEBENDE ID. DOM-frei + fail-soft, reiner Tool-Code über die öffentlichen Flächen von Modul 05 (handshake/listenNostr) + 05b (publish/subscribe) + 02 (getOwnSpore) — Kern-Module unangetastet. Verfassungstreu: nutzer-ausgelöst, keine Pulsation, init() baut nichts auf (Empfangsmodus). In jede App kopieren (lebende Identität pro Origin getrennt). Verwandtschafts-Badge im Raum (reine Anzeige, 0.80-Riegel unberührt)."
+    },
+    {
+      "id": "24",
+      "name": "OCR-/Bild-Eingabe",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-07-01 (Strang B1, Brief 2026-07-01). Headless-Smoke tests/smoke_bau24_ocr_eingabe.mjs 41/41 grün. Browser-Sichttest (Panel 24 + echter Schlüssel) wartet auf Klaus.",
+      "abhaengig": [],
+      "kurz": "Input-agnostische Bild-/Handschrift-→-Text-Schicht (Geschwister von Modul 21). Drei steckbare Anbieter: mistral (Mistral OCR, EU, FAVORIT) · google (Cloud Vision EU-Endpunkt) · browser (Shape Detection, experimentell). EU-Politik frei/bindend per Knoten; konsequent fail-soft (kein Schlüssel/Bild/Netz → deutscher Hinweis, kein Throw außer InvalidEuPolicyError); BYOK, kein Schlüssel im Code, kein PII. Liefert nur Text — Suche (03/04) unberührt. Surface init/getProviders/availableProviders/pickProvider/isFileSupported/recognize/recognizeBrowser/ocrErrorHint."
     }
   ],
   "schutzBacklog": [

@@ -160,6 +160,91 @@
     <pre class="log">— bereit. Modul 23 (Rendezvous). Löst die Adress-Wand: committete nodeId ≠ lebende nodeId. Lebende Knoten treffen sich im geteilten Nostr-Tag „sbkim-rdv" (gemeinsamer Raum); ein Knoten heftet auf Nutzer-Aktion seine LEBENDE Visitenkarte (echte Spore), ein Suchender liest die Karten und handshaket die LEBENDE ID. Verfassungstreu: nutzer-ausgelöst, KEIN Dauer-Piepser (Empfangsmodus gewahrt). DOM-frei (Knöpfe sind app-eigen). Konfig-getrieben (nodeName + Relais-Client injiziert, KEINE family-Hardcodes). Die Knöpfe hier spielen ein MOCK-Relais ein (kein Live-Netz nötig), um announce/discover/handshakeCard headless-äquivalent zu zeigen. Surface: init/configure/announce/connectAndAnnounce/discover/handshakeCard. **Live-Cross-App-Sichttest (zwei Geräte/Tabs, echtes Relais) wartet auf Klaus.** —</pre>
   </section>
 
+  <section class="panel" data-module="24_ocr_eingabe">
+    <h2>24 OCR-/Bild-Eingabe <span class="status ok">Code-Stub 2026-07-01</span></h2>
+    <div class="controls"><!-- Knöpfe via SbkimUI.addButton unten registriert --></div>
+    <input id="panel-24-text" type="text" placeholder="Erkannter Text erscheint hier (oder tippen)" style="width:100%;margin:.4rem 0;padding:.4rem;" />
+    <pre class="log">— bereit. Modul 24 (OCR-/Bild-Eingabe, Geschwister von Modul 21). Bild/Handschrift → Text. Drei steckbare Anbieter: mistral (Mistral OCR, EU, FAVORIT) · google (Cloud Vision EU-Endpunkt) · browser (Shape Detection, experimentell). EU-Politik frei/bindend. Konsequent fail-soft (kein Schlüssel/Bild/Netz → deutscher Hinweis), BYOK, kein Schlüssel im Code. Logik-Knöpfe (headless-äquivalent): Anbieter + EU-Politik, isFileSupported, ocrErrorHint. Live-Knopf (braucht Bild + Schlüssel): „OCR erkennen" (Bild wählen + Anbieter/Schlüssel via prompt → Text ins Feld oben). —</pre>
+  </section>
+
+  <!-- Modul 24 — OCR-/Bild-Eingabe (Bau-Sitzung 2026-07-01, Strang B1) -->
+  <script src="../src/modules/24_ocr_eingabe.js"></script>
+  <script>
+    (function () {
+      var field = function () { return document.getElementById("panel-24-text"); };
+
+      SbkimUI.addButton("24_ocr_eingabe", "Anbieter + EU-Politik (frei vs bindend)", function () {
+        var frei = SbkimOcr.availableProviders("frei");
+        var bindend = SbkimOcr.availableProviders("bindend");
+        var pass = frei.join() === "mistral,google,browser" && bindend.join() === "mistral,google";
+        SbkimUI.setStatus("24_ocr_eingabe", pass ? "ok" : "err", pass ? "Anbieter/EU-Politik OK" : "FEHLER");
+        return {
+          anbieter: SbkimOcr.getProviders(),
+          frei: frei, bindend: bindend,
+          pick_frei_default: SbkimOcr.pickProvider("frei"),
+          pick_bindend_browser_faellt_auf: SbkimOcr.pickProvider("bindend", "browser"),
+          erwartung: "frei=[mistral,google,browser], bindend=[mistral,google]; Favorit mistral; browser fällt bei bindend auf mistral"
+        };
+      });
+
+      SbkimUI.addButton("24_ocr_eingabe", "isFileSupported prüfen", function () {
+        SbkimUI.setStatus("24_ocr_eingabe", "ok", "isFileSupported OK");
+        return {
+          png: SbkimOcr.isFileSupported("image/png"),
+          jpeg: SbkimOcr.isFileSupported("image/jpeg"),
+          pdf: SbkimOcr.isFileSupported("application/pdf"),
+          text: SbkimOcr.isFileSupported("text/plain"),
+          browserOcrSupport: SbkimOcr.isBrowserOcrSupported(),
+          erwartung: "png/jpeg/pdf = true, text = false; browserOcrSupport je nach Browser (Shape Detection)"
+        };
+      });
+
+      SbkimUI.addButton("24_ocr_eingabe", "ocrErrorHint (fail-soft-Hinweise)", function () {
+        SbkimUI.setStatus("24_ocr_eingabe", "ok", "Hinweise OK");
+        return {
+          abort: SbkimOcr.ocrErrorHint({ name: "AbortError" }),
+          key: SbkimOcr.ocrErrorHint({ message: "HTTP 401 unauthorized" }),
+          fallback: SbkimOcr.ocrErrorHint("irgendwas"),
+          erwartung: "je ein ruhiger deutscher Hinweis, nie ein Throw"
+        };
+      });
+
+      SbkimUI.addButton("24_ocr_eingabe", "OCR erkennen (Bild wählen + Schlüssel)", async function () {
+        var provider = window.prompt("Anbieter (mistral / google / browser):", "mistral");
+        if (!provider) return { abgebrochen: true };
+        var key = "";
+        if (provider !== "browser") {
+          key = window.prompt("API-Schlüssel (" + provider + ", nur Test, KEIN localStorage):");
+          if (!key) return { abgebrochen: true };
+        }
+        return await new Promise(function (resolve) {
+          var inp = document.createElement("input");
+          inp.type = "file"; inp.accept = "image/*";
+          inp.onchange = function () {
+            var file = inp.files && inp.files[0];
+            if (!file) { resolve({ abgebrochen: true }); return; }
+            var reader = new FileReader();
+            reader.onload = async function () {
+              var dataUrl = String(reader.result || "");
+              var r = await SbkimOcr.recognize(dataUrl, { provider: provider, apiKey: key, mimeType: file.type });
+              var f = field();
+              if (r.available) {
+                if (f) f.value = r.text || "";
+                SbkimUI.setStatus("24_ocr_eingabe", "ok", "Erkannt via " + r.provider + " (" + (r.text ? r.text.length : 0) + " Zeichen)");
+              } else {
+                SbkimUI.setStatus("24_ocr_eingabe", "err", r.reason);
+              }
+              resolve(r);
+            };
+            reader.onerror = function () { resolve({ available: false, reason: "Bild konnte nicht gelesen werden." }); };
+            reader.readAsDataURL(file);
+          };
+          inp.click();
+        });
+      });
+    })();
+  </script>
+
   <script>
     // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
     window.SbkimUI = {

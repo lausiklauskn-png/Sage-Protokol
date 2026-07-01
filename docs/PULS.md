@@ -20,11 +20,11 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-06-29 (25 Module)
+  title Modulstand 2026-06-29 (26 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 8
+  "🟦 Code-Stub" : 9
   "🟩 Fertig" : 11
 ```
 
@@ -118,6 +118,37 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 |---|---|---|---|
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
+
+## 2026-07-01 · Modul 24 — OCR-/Bild-Eingabe (Strang B1, Geschwister von Modul 21)
+
+**Rolle:** Bau-Sitzung (Branch `claude/b1-ocr-eingabe-modul`, von frischem `main`). Klaus: „weiter"
+→ gewählt: **Strang B1**, das OCR-Eingabe-Modul.
+
+**Was getan:** neues `src/modules/24_ocr_eingabe.js` (`SbkimOcr`) — input-agnostische Bild/Handschrift-→-
+Text-Schicht, **1:1 nach dem Muster von Modul 21**. Liefert nur Text; Suche (03/04) unberührt. Drei
+steckbare Anbieter: **`mistral`** (Mistral OCR `mistral-ocr-latest`, EU, **Favorit**) · `google` (Cloud
+Vision EU-Endpunkt, `DOCUMENT_TEXT_DETECTION`) · `browser` (Shape Detection, experimentell). EU-Politik
+`frei`/`bindend` per Knoten; konsequent **fail-soft** (kein Schlüssel/Bild/Netz/HTTP → deutscher Hinweis,
+kein Throw außer `InvalidEuPolicyError`); **BYOK, kein Schlüssel im Code, kein PII**. Surface
+`init/getProviders/availableProviders/pickProvider/isFileSupported/isBrowserOcrSupported/recognize/
+recognizeBrowser/ocrErrorHint`. `index.html` lädt das Skript (KEIN Auto-Init); Panel 24 in
+`manual_check.html` (3 Logik-Knöpfe + Live-Knopf „OCR erkennen": Bild wählen + Anbieter/Schlüssel via
+prompt → Text ins Feld). Karte 24 + `status.json` (Modul 24, `score:"stub"`) + Pie regeneriert (26 Module)
++ CLAUDE.md-Modul-Tabelle nachgezogen.
+
+**Beweis (headless):** `tests/smoke_bau24_ocr_eingabe.mjs` **41/41 grün** (Export/Meta, EU-Politik +
+pickProvider, isFileSupported, Mistral-/Google-Happy-Path + Request-Bau, data-URL-Entpackung, Fail-soft
+×4, bindend-schließt-browser-aus, InvalidEuPolicyError, ocrErrorHint, Browser-fail-soft, init-euPolicy).
+`node --check` grün, Panel-24-Inline-Skript validiert.
+
+**TABU:** `PROVIDER_MIN_MATCH`/0.80-Andock-Riegel unberührt, kein PROTOCOL_VERSION-/DB_VERSION-Bump,
+kein Eingriff in andere Module.
+
+**Offen / nächster Schritt:** (1) Browser-Sichttest Panel 24 (+ echter Mistral-Schlüssel) — wartet auf
+Klaus. (2) **INTERFACES.md §1 formaler Modul-24-Eintrag** als Folge-Pflege (Leaf-Modul, kein Modul hängt
+dran — bewusst nachgezogen, nicht stillschweigend ausgelassen). (3) **Strang B2**: Rollout byte-gleich in
+die Apps (Such-Tool/Pinnwand, Mixarium/Rezeptbuch, family-project, BLP als EU-Option) — braucht Klaus'
+Reihenfolge-Wahl.
 
 ## 2026-07-01 · Modul-15-Verdrahtung — KI-Richter im Cross-Knoten-Antwort-Pfad (Strang A2, Folge)
 
