@@ -518,7 +518,7 @@
   </script>
 
   <!-- Modul 03 — Embedding (Bau-Sitzung 2026-05-14) -->
-  <script src="../src/modules/03_embedding.js?v=kal-20260628"></script>
+  <script src="../src/modules/03_embedding.js?v=a3-20260701"></script>
   <script>
     (function () {
       function dot(a, b) {
@@ -590,7 +590,7 @@
   </script>
 
   <!-- Modul 04 — Match (Spec+Bau-Sitzung 2026-05-14) -->
-  <script src="../src/modules/04_match.js?v=kal-20260628"></script>
+  <script src="../src/modules/04_match.js?v=a3-20260701"></script>
   <script>
     (function () {
       // --- Schwellen-Kalibrier-Instrument (2026-06-28) ----------------------
@@ -1026,6 +1026,78 @@
           gewinner: anyClean ? (B.saubereTrennung ? "Schnipsel-Max" : (C.saubereTrennung ? "Schnipsel-Mittel" : "Mitteln")) : "keins",
           matrix: rows.sort(function (p, q) { return q.schnipselMax - p.schnipselMax; }),
           hinweis: "Reine Messung — setzt KEINE Konstante. 'mitteln' = heutiges Verfahren (Referenz). 'schnipselMax'/'schnipselMittel' = Schnipsel NICHT mitteln, sondern paarweise vergleichen. Mehrfach klicken bestätigt Stabilität.",
+        };
+      });
+
+      // --- A3-NACHMESSUNG (Strang A, 2026-07-01) -----------------------------
+      // Miss OB Contextual Chunking (Modul 03 embedContentVector({context})) die
+      // Domänen-Trennung verbessert. Beide Verfahren gehen durch dieselbe
+      // Mittelung + denselben zentrierten Cosinus (SbkimMatch.relatedness, v1) —
+      // der EINZIGE Unterschied ist, ob jedem Schnipsel VOR dem Einbetten ein
+      // kurzer Domänen-Vorspann (Kontext) vorangestellt wird.
+      //   Baseline = embedContentVector(snips)              (heute, ohne Kontext)
+      //   A3       = embedContentVector(snips, {context: …}) (mit Domänen-Vorspann)
+      // Vergleich: Lücke (min verwandt − max unverwandt) je Verfahren. Wird die
+      // Lücke mit Kontext GRÖSSER, trennt A3 besser. REINE MESSUNG — setzt keine
+      // Konstante, behauptet keinen %-Gewinn ohne diese Zahl. Zuerst
+      // KALIBRIER-BODEN/SCHWELLEN-ANALYSE als Baseline laufen lassen.
+      SbkimUI.addButton("04_match", "A3-NACHMESSUNG: verbessert Contextual Chunking die Trennung? (ohne vs. mit Domänen-Vorspann)", async function () {
+        var nodeSnips = {
+          sage: ["SBKIM-Protokoll und Mycel-Bibliothek", "Glossar, Knoten, Spore, Handshake", "Spezifikation der Inter-Knoten-Verträge", "heilige Tafeln und Protokoll-Doku"],
+          blp: ["Buchhaltung und Beleg-Erfassung", "Umsatzsteuer, EÜR, Kostenstelle", "Rechnung, Konto, Bilanz, GoBD", "doppelte Buchführung für Deutschland"],
+          rezept: ["Kochrezepte und Backen", "Hefeteig, Kuchen, Brot, Zutaten", "Mengenangaben und Zubereitung", "Gerichte für Mittag und Abend"],
+          rezept2: ["Backrezepte für Kuchen und Torten", "Mürbeteig, Biskuit, Streusel", "Süßspeisen und Desserts", "Zutaten, Backzeit und Ofen"],
+          mix: ["Cocktails und Mixgetränke", "Mocktails, Smoothies, Limonaden", "Sirupe, Tees und Säfte", "Drinks mit und ohne Alkohol"],
+          tresor: ["Verschlüsselung und Schlüssel-Safe", "AES, Passwort, sichere Ablage", "Tresor-Fächer und Tarnfach", "lokale Geheimnis-Verwaltung"],
+          point: ["Werkzeugkiste und Mycel-Hub", "Andock-Wizard und Modul-Bündel", "Forker-Observatorium light", "kopierbare SBKIM-Werkzeuge"],
+        };
+        var nodeCtx = {
+          sage: "Mycel-Bibliothek und SBKIM-Protokoll",
+          blp: "Buchhaltung und Steuern für Deutschland",
+          rezept: "Kochen und Backen, Rezepte",
+          rezept2: "Backen, Kuchen und Süßspeisen",
+          mix: "Getränke, Cocktails und Mixgetränke",
+          tresor: "Verschlüsselung und sichere Ablage",
+          point: "SBKIM-Werkzeugkiste und Mycel-Hub",
+        };
+        var keys = Object.keys(nodeSnips);
+        var base = {}, a3 = {};
+        for (var i = 0; i < keys.length; i++) {
+          base[keys[i]] = (await SbkimEmbedding.embedContentVector(nodeSnips[keys[i]])).vector;
+          a3[keys[i]] = (await SbkimEmbedding.embedContentVector(nodeSnips[keys[i]], { context: nodeCtx[keys[i]] })).vector;
+        }
+        var rel = SbkimMatch.relatedness;
+        var relatedSet = { "rezept|mix": true, "rezept|rezept2": true, "rezept2|mix": true };
+        var f = function (x) { return Number(x.toFixed(4)); };
+        var rows = [];
+        for (var a2 = 0; a2 < keys.length; a2++) {
+          for (var b2 = a2 + 1; b2 < keys.length; b2++) {
+            var ka = keys[a2], kb = keys[b2];
+            var related = !!(relatedSet[ka + "|" + kb] || relatedSet[kb + "|" + ka]);
+            rows.push({
+              paar: ka + " ↔ " + kb, verwandtErwartet: related,
+              baseline: f(rel(base[ka], base[kb])), a3: f(rel(a3[ka], a3[kb])),
+            });
+          }
+        }
+        function analyse(key) {
+          var relS = rows.filter(function (r) { return r.verwandtErwartet; }).map(function (r) { return r[key]; });
+          var unrelS = rows.filter(function (r) { return !r.verwandtErwartet; }).map(function (r) { return r[key]; });
+          var minRel = Math.min.apply(null, relS), maxUnrel = Math.max.apply(null, unrelS);
+          var clean = minRel > maxUnrel;
+          return { minVerwandt: f(minRel), maxUnverwandt: f(maxUnrel), luecke: f(minRel - maxUnrel), saubereTrennung: clean };
+        }
+        var B = analyse("baseline"), A = analyse("a3");
+        var delta = f(A.luecke - B.luecke);
+        var besser = delta > 0;
+        SbkimUI.setStatus("04_match", besser ? "ok" : "warn", besser ? "A3 verbessert Lücke +" + delta : "A3 verbessert nicht (Δ " + delta + ")");
+        return {
+          frage: "Verbessert Contextual Chunking (Domänen-Vorspann pro Schnipsel) die Domänen-Trennung? (zentrierter Cosinus v1)",
+          baseline_ohne_kontext: B, a3_mit_kontext: A,
+          delta_luecke: delta,
+          urteil: besser ? "✓ A3 vergrößert die Trennungs-Lücke um " + delta : "✗ A3 vergrößert die Lücke NICHT (Δ " + delta + ") — Kontext hilft hier nicht",
+          matrix: rows.sort(function (p, q) { return q.a3 - p.a3; }),
+          hinweis: "REINE MESSUNG — setzt keine Konstante, gatet nichts, 0.80-Andock-Riegel unberührt. Positives Δ = A3 trennt besser. Mehrfach klicken bestätigt Stabilität. Kontext = kurzer Domänen-Vorspann; in echten Apps käme er aus dem Knoten-/Dokument-Titel.",
         };
       });
 

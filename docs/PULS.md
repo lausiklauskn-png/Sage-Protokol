@@ -119,6 +119,41 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-01 · A3 — Contextual Chunking in Modul 03 `embedContentVector` (Strang A, additiv)
+
+**Rolle:** Bau-Sitzung (Branch `claude/semantic-matching-quality-a3-jb0aut`). Nächster Hebel
+A3 nach A1 (Hybrid BM25+Vektor) + A2 (KI-Richter im Antwort-Pfad). Klaus-Freibrief für die
+Sitzungs-Entscheidung („entscheide selber, solange sinnvoll und logisch").
+
+**Was getan:**
+- `embedContentVector` (Modul 03) bekommt **additiven Kontext-Vorspann**: `opts.context`
+  (global) + pro-Schnipsel `{ …, context }` (überschreibt global) stellt jedem Inhalts-
+  Schnipsel VOR dem Einbetten einen kurzen Domänen-/Dokument-Kontext voran (Anthropic
+  „Contextual Retrieval", deterministisch/offline/gratis). Ohne Kontext **byte-gleiches**
+  Verhalten (Rückwärts-Kompat bewiesen). Rückgabe-Feld `contextUsed`; Test-Brücke
+  `_assembleContentTexts` (reine Text-Assemblierung, headless prüfbar).
+- **Leitplanken gewahrt:** gatet nichts, `PROVIDER_MIN_MATCH = 0.80`/Andock-Riegel (Modul 05)
+  unberührt, **kein** PROTOCOL_VERSION-/DB_VERSION-Bump, **kein** Spore-Feld.
+- **Panel 04 „A3-NACHMESSUNG"**-Knopf (Browser): Baseline (ohne Kontext) vs. A3 (mit
+  Domänen-Vorspann) über dieselbe Mittelung + zentrierten Cosinus (`relatedness`, v1),
+  zeigt Lücken-Delta. Reine Messung, setzt keine Konstante. Cache-Bust `?v=a3-20260701`.
+- **Tests:** Headless `tests/smoke_a3_contextual_chunking.mjs` **20/20 grün**; Rückwärts-
+  Kompat `smoke_inhaltstreuer_domainvektor.mjs` **25/25 grün**; Drift-Guards such-tool
+  (49/49) + sbkim-bundle (21/21) + pinnwand (60/60) byte-1:1 grün (Modul 03 byte-kopiert).
+
+**Ehrlich offen:** OB der Vorspann die Domänen-Trennung real verbessert, ist **headless nicht
+messbar** (transformers.js nur im Browser; Fake-Modell beweist nur die Mechanik). **Kein
+%-Gewinn behauptet** — Klaus misst mit Panel-04-„A3-NACHMESSUNG" den echten Delta (nach
+Schritt-0-Baseline KALIBRIER-BODEN/SCHWELLEN-ANALYSE). Zeigt A3 keinen Gewinn → ehrlicher
+Negativ-Befund, Vorspann bleibt opt-in-Werkzeug ohne netzweite Verdrahtung. Doku: LEHRE
+§ „Stand 2026-07-01 — A3".
+
+**Nächster sinnvoller Schritt:** (1) Klaus: Panel 04 Baseline + A3-NACHMESSUNG im Browser
+laufen lassen → Delta ablesen. (2) Bei positivem Delta: `embedContentVector`-Aufrufer
+(Modul 02 `regenerateOwnSpore`-Pfad / Andock) optional mit Knoten-Titel als Kontext
+verdrahten (eigene Folge-Sitzung, netz-koordiniert). (3) family-project OCR-Rollout
+(Strang B2, offener „nicht vergessen"-Faden).
+
 ## 2026-07-01 · B2-Rollout — OCR ins Such-Widget (Modul 22) + Sage Such-Tool
 
 **Rolle:** Bau-Sitzung (Branch `claude/b2-ocr-suchwidget`). Strang-B2-Rollout App 3/5 (Sage

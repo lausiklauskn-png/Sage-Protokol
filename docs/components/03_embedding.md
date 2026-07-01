@@ -122,7 +122,7 @@ embedQueryBatch(texts: string[]) → Promise<Float32Array[]>
 embedPassageBatch(texts: string[]) → Promise<Float32Array[]>
   // Mehrere Inhalte in einem Modell-Pass. Reihenfolge bleibt erhalten.
 
-embedContentVector(samples, opts?) → Promise<{ vector: Float32Array(384), count: number, source: "content" }>
+embedContentVector(samples, opts?) → Promise<{ vector: Float32Array(384), count: number, source: "content", contextUsed: boolean }>
   // Inhalts-treuer Domänen-Vektor (2026-06-28). Baut EINEN repräsentativen,
   // L2-normalisierten Passage-Vektor aus vielen echten Inhalts-Schnipseln:
   // jeden Schnipsel einbetten (gedeckelt), den Schwerpunkt (Mittelwert)
@@ -135,6 +135,20 @@ embedContentVector(samples, opts?) → Promise<{ vector: Float32Array(384), coun
   // regenerateOwnSpore). Modul-Grenze: Verketten/Mitteln von EINGABE-Texten
   // zu einem Bedeutungs-Punkt ist KEINE Ähnlichkeits-Rechnung — die bleibt
   // Modul 04.
+  //
+  // A3 Contextual Chunking (2026-07-01, ADDITIV): opts.context (String) stellt
+  // JEDEM Schnipsel VOR dem Einbetten einen kurzen Domänen-/Dokument-Vorspann
+  // voran ("Contextual Retrieval"); pro-Schnipsel { …, context } überschreibt
+  // den globalen. Ohne Kontext ist das Verhalten byte-gleich zu vorher (kein
+  // Bruch). Ausgabe-Vertrag gleich + Feld contextUsed (true, wenn ein Vorspann
+  // griff). KEIN Spore-Feld, KEIN PROTOCOL_VERSION-/DB_VERSION-Bump, Match-
+  // Schwelle (Modul 04/05) unberührt. Trennungs-Nutzen misst Panel 04
+  // „A3-NACHMESSUNG" im Browser — headless nur die Chunking-Logik beweisbar.
+
+_assembleContentTexts(samples, opts?) → { texts: string[], contextUsed: boolean }
+  // Test-Brücke (A3): die reine, deterministische Text-Assemblierung VOR dem
+  // Embedding (Kontext-Vorspann, Deckel, Fail-soft). Kein Modell nötig — macht
+  // die Contextual-Chunking-Logik headless prüfbar (smoke_a3_contextual_chunking).
 ```
 
 ### Modul-Grenze: warum embedContentVector hier liegt (2026-06-28)
@@ -266,6 +280,7 @@ Plausibilitäts-Anker hier sichtbar, ist aber kein Match-Test.
 | Spec gefüllt | 2026-05-14 | Spec 01+03 | 4-Funktionen-API, L2-Norm-Garantie, Selbstcheck-Format, Truncate-Regel |
 | Code geschrieben | 2026-05-14 | Bau 03 | `src/modules/03_embedding.js`, IIFE mit `window.SbkimEmbedding`, dynamischer Import von transformers.js@2.17.2 vom CDN, fünf Knöpfe in `manual_check.html`, JS-Syntax via `node --check` grün |
 | Sichttest | 2026-05-14 | Bau 03 | geprüft 2026-05-14 (Klaus, im Browser): Modell lädt, L2-Norm exakt 1.0, Query/Passage gleicher Inhalt ≈0.95, Batch zwischen verschiedenen Themen 0.90 (überraschend hoch — Anlass für Match-Kalibrierung). |
+| A3 Contextual Chunking | 2026-07-01 | Strang A / A3 | `embedContentVector` bekommt additiven Kontext-Vorspann (`opts.context` global + pro-Schnipsel `{context}`), Rückgabe-Feld `contextUsed`, Test-Brücke `_assembleContentTexts`. Byte-gleich in such-tool/sbkim-bundle/pinnwand (Drift-Guard grün). Headless `tests/smoke_a3_contextual_chunking.mjs` 20/20 grün, Rückwärts-Kompat `smoke_inhaltstreuer_domainvektor.mjs` 25/25 grün. Panel 04 „A3-NACHMESSUNG"-Knopf für den Browser-Trennungs-Delta. **Browser-Sichttest wartet auf Klaus** (misst, ob Kontext die Domänen-Trennung real verbessert). |
 | In Endknoten eingebaut | — | — | — |
 
 ---
