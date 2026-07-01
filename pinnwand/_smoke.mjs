@@ -18,7 +18,7 @@ const eq = (probe, a, b) => results.push({ probe, ok: a === b });
 const REQUIRED = [
   "index.html", "manifest.json", "sw.js", "impressum.html",
   "icon-192.png", "icon-512.png",
-  "modules/noble-secp256k1.js", "modules/03_embedding.js",
+  "modules/noble-secp256k1.js", "modules/03_embedding.js", "modules/24_ocr_eingabe.js",
 ];
 for (const f of REQUIRED) ok("Probe 1: existiert " + f, existsSync(resolve(dir, f)));
 
@@ -29,6 +29,9 @@ ok("Probe 2: noble-secp256k1.js identisch zu nostr-test",
 ok("Probe 2: 03_embedding.js identisch zu src/modules",
   readFileSync(resolve(repoRoot, "src/modules/03_embedding.js"))
     .equals(readFileSync(resolve(dir, "modules/03_embedding.js"))));
+ok("Probe 2: 24_ocr_eingabe.js identisch zu src/modules",
+  readFileSync(resolve(repoRoot, "src/modules/24_ocr_eingabe.js"))
+    .equals(readFileSync(resolve(dir, "modules/24_ocr_eingabe.js"))));
 
 // ---- Probe 3: manifest.json installierbar-tauglich ----
 const manifest = JSON.parse(readFileSync(resolve(dir, "manifest.json"), "utf8"));

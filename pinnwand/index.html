@@ -254,6 +254,7 @@
       <span class="label" id="sendhint">&nbsp;</span>
       <span style="display:flex; gap:8px; align-items:center;">
         <button id="mic" class="tbtn" title="Frage einsprechen">🎤</button>
+        <button id="ocrbtn" class="tbtn" title="Foto/Handschrift → Frage (EU-OCR)">📷</button>
         <button id="ask" disabled>Frage stellen</button></span>
     </div>
   </div>
@@ -335,6 +336,7 @@
 </div>
 
 <script src="./modules/03_embedding.js"></script>
+<script src="./modules/24_ocr_eingabe.js"></script>
 <script type="module">
 import { schnorr, utils } from './modules/noble-secp256k1.js';
 
@@ -1189,6 +1191,49 @@ $('board-clear').addEventListener('click', clearBoard);
     rec.onerror = (e) => { $('sendhint').textContent = 'Spracheingabe-Fehler: ' + (e.error || 'unbekannt'); };
     rec.onend = () => { listening = false; mic.classList.remove('mic-on'); mic.textContent = '🎤'; if (!/Fehler/.test($('sendhint').textContent)) $('sendhint').textContent = ' '; updateSendState(); };
     try { rec.start(); } catch (err) { $('sendhint').textContent = 'Mikrofon nicht verfügbar (' + (err.message || err) + ')'; }
+  });
+})();
+
+// 📷 OCR-Eingabe (Strang B2): Foto/Handschrift → Frage via Modul 24 (Mistral OCR,
+// EU, BYOK, RAM-only). Fail-soft; füllt #qmsg (wie das Mikrofon) und enabled den
+// Frage-Knopf über updateSendState().
+(function () {
+  const ocrbtn = $('ocrbtn');
+  if (!ocrbtn) return;
+  let ocrKey = '';
+  ocrbtn.addEventListener('click', () => {
+    const ocr = window.SbkimOcr;
+    if (!ocr || typeof ocr.recognize !== 'function') { $('sendhint').textContent = 'OCR-Modul nicht geladen — bitte tippen.'; return; }
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*,application/pdf'; inp.setAttribute('capture', 'environment'); inp.style.display = 'none';
+    inp.addEventListener('change', () => {
+      const file = inp.files && inp.files[0];
+      if (inp.parentNode) inp.parentNode.removeChild(inp);
+      if (!file) return;
+      if (!ocrKey) { const k = window.prompt('OCR-Schlüssel (EU/Mistral, nur diese Sitzung — wird nicht gespeichert):'); if (!k) return; ocrKey = k.trim(); }
+      $('sendhint').textContent = '📷 Texterkennung läuft…';
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        ocr.recognize(String(ev.target.result), { provider: 'mistral', apiKey: ocrKey, mimeType: file.type })
+          .then((r) => {
+            if (r && r.available) {
+              const base = $('qmsg').value ? $('qmsg').value.replace(/\s*$/, '') + ' ' : '';
+              $('qmsg').value = (base + (r.text || '')).slice(0, 280);
+              $('sendhint').textContent = r.text ? ('Erkannt (' + r.text.length + ' Zeichen).') : 'Kein Text erkannt.';
+              updateSendState();
+            } else {
+              const reason = (r && r.reason) || 'Texterkennung nicht möglich.';
+              if (/Schlüssel/.test(reason)) ocrKey = '';
+              $('sendhint').textContent = '⚠️ ' + reason;
+            }
+          })
+          .catch((e) => { $('sendhint').textContent = '⚠️ ' + (ocr.ocrErrorHint ? ocr.ocrErrorHint(e) : 'Texterkennung nicht möglich — bitte tippen.'); });
+      };
+      reader.onerror = () => { $('sendhint').textContent = 'Bild konnte nicht gelesen werden.'; };
+      reader.readAsDataURL(file);
+    });
+    document.body.appendChild(inp);
+    inp.click();
   });
 })();
 
