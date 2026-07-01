@@ -6,7 +6,49 @@
 > haben. **Doku für nachfolgende Bauten** — verbindlich zu lesen, bevor jemand die
 > Match-Schwelle (`PROVIDER_MIN_MATCH = 0.80`) oder Modul 04 anfasst.
 
-## Stand 2026-07-01 — A3: Contextual Chunking gebaut (additiv), Trennungs-Nutzen wartet auf Browser-Messung
+## Stand 2026-07-01 (Abend) — A3 im Browser gemessen: NEGATIV (Kontext-Vorspann verbessert die Domänen-Trennung NICHT, er verschlechtert sie)
+
+**Kurz:** Klaus' Browser-Messung (Panel 04 `A3-NACHMESSUNG`, echte transformers.js-Vektoren)
+hat den A3-Hebel **empirisch verneint** — wie beim v2-Center gilt „erst messen, dann behaupten",
+und die Messung sagt nein.
+
+### Die Zahlen (reproduzierbar, Panel 04)
+| | min(verwandt) | max(unverwandt) | Lücke | trennt? |
+|---|---|---|---|---|
+| **Baseline (ohne Kontext)** | 0.8014 | 0.8149 | −0.0135 | nein |
+| **A3 (mit Domänen-Vorspann)** | 0.6295 | 0.7505 | −0.1210 | nein |
+| **Δ Lücke** | | | **−0.1075** | **A3 schlechter** |
+
+Baseline-Boden zur Einordnung (`KALIBRIER-BODEN`): roh mean **0.8297** · sd 0.0208; zentriert mean **−0.1422**.
+
+### Warum A3 hier scheitert (die Ursache)
+Der Vorspann war ein **pro-Knoten unterschiedlicher** Domänen-Text („Kochen und Backen" vs.
+„Getränke, Cocktails" …). Er zieht jeden Knoten-Zentroid in *seine eigene* Domänen-Richtung —
+und schiebt damit **auch echte Verwandte auseinander**: die verwandten Paare `rezept↔mix` /
+`rezept2↔mix` (Essen/Trinken) fielen von 0.80/0.84 auf **0.64/0.63**, stärker als viele
+unverwandte Paare. Netto wird die Lücke **größer negativ**, nicht kleiner.
+
+Ein **geteilter** Vorspann (für alle gleich) hilft ebenfalls nicht: eine gemeinsame Zusatz-
+Richtung hebt alle Cosinus uniform an, ohne die *relative* Trennung zu ändern. Damit bestätigt
+A3 nur, was diese Lehre schon zeigt: **die Anisotropie ist durch keinen gratis Cosinus-Trick am
+Domänen-Zentroid zu heilen** — der ehrliche „verwandt"-Weg bleibt der **KI-Richter** (opt-in,
+`hybridMatch`), nicht ein Embedding-Kniff.
+
+### Konsequenz (verbindlich)
+- **A3 wird NICHT netzweit verdrahtet.** Kein Aufrufer nutzt `opts.context` per Default; der
+  Code bleibt als **harmloses, additives opt-in-Werkzeug** liegen (byte-gleich ohne Kontext,
+  gatet nichts, 0.80-Riegel/PROTOCOL_VERSION unberührt) — falls ein späterer, *anderer*
+  Einsatz (z.B. chunk-level Contextual Retrieval im `queryLocal`-Korpus statt Domänen-Zentroid)
+  ihn doch braucht. Das gemessene Ergebnis für den **Domänen-Vektor** ist aber: **negativ.**
+- **Panel-04-`A3-NACHMESSUNG` bleibt** als reproduzierbares Mess-Instrument (dokumentiert diese Kette).
+- **Nächster Hebel: A4 (Query-Expansion / Multi-Query)** — ein *Recall*-Hebel (mehr richtige
+  Treffer finden), orthogonal zur hier gescheiterten *Separations*-Idee. Siehe Brief.
+
+*Evolutions-Klausel gelebt: ein Hebel qualifiziert sich durch Messung — oder fällt durch sie.*
+
+---
+
+## Stand 2026-07-01 — A3: Contextual Chunking gebaut (additiv), Trennungs-Nutzen wartet auf Browser-Messung (→ oben: gemessen, negativ)
 
 **Kurz:** Strang A, Hebel A3. `embedContentVector` (Modul 03) bekommt einen
 **additiven** Kontext-Vorspann: jedem Inhalts-Schnipsel wird VOR dem Einbetten ein

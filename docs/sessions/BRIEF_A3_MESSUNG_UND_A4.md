@@ -6,11 +6,13 @@ Freibrief gilt (Sage CLAUDE.md § Freibrief) — inkl. netzweitem Selbst-Merge-F
 Strang A:
 - A1 Hybrid BM25+Vektor (Modul 04 queryLocal) — gebaut, Klaus-Browser "Hybrid OK".
 - A2 KI-Richter (hybridMatch) fest im Cross-Knoten-Antwort-Pfad + Modul-15 — gebaut.
-- A3 Contextual Chunking (Modul 03 embedContentVector) — GEBAUT + GEMERGT (Sage PR #517/#518).
-    opts.context global + pro-Schnipsel {context}; contextUsed-Feld; _assembleContentTexts.
-    ADDITIV: ohne Kontext byte-gleich, gatet nichts, 0.80-Riegel/PROTOCOL_VERSION unberührt.
-    Panel-04 "A3-NACHMESSUNG"-Knopf, Cache-Bust ?v=a3-20260701. Byte-1:1 such-tool/sbkim-bundle/pinnwand.
-    Smoke smoke_a3_contextual_chunking.mjs 20/20 + Rückwärts-Kompat 25/25 + Drift-Guards grün.
+- A3 Contextual Chunking (Modul 03 embedContentVector) — GEBAUT + GEMERGT (Sage PR #517/#518),
+    aber im Browser GEMESSEN: NEGATIV. Panel 04 A3-NACHMESSUNG: Baseline-Lücke −0.0135, A3-Lücke
+    −0.1210, Δ −0.1075 → A3 VERSCHLECHTERT die Domänen-Trennung (pro-Knoten-Vorspänne schieben
+    auch echte Verwandte auseinander; Anisotropie nicht durch Cosinus-Trick heilbar). KONSEQUENZ:
+    A3 NICHT netzweit verdrahten, bleibt harmloses opt-in (byte-gleich ohne Kontext). Doku: LEHRE
+    § "Stand 2026-07-01 (Abend) — A3 … NEGATIV". ⇒ A3 abgeschlossen (negativ), direkt zu A4.
+    opts.context/_assembleContentTexts/contextUsed bleiben; Panel-04-Messknopf bleibt.
 - Panel-Fokus-Filter (Sage PR #519): tests/manual_check.html?only=04_match zeigt NUR Panel 04.
 Strang B (OCR):
 - family-project OCR (Strang B2) — GEBAUT + GEMERGT (family PR #21). 📷 Foto→Text neben jedem 🎤
@@ -19,12 +21,10 @@ Strang B (OCR):
   ⇒ Strang B2 damit über ALLE Apps abgeschlossen (Sage such-tool/Pinnwand, MR, MM, BLP, Muttis, family).
 
 ## OFFENE TESTS (Klaus, Browser — nach Merge live, Pages deployt von main)
-1. A3-MESSUNG (Sage): tests/manual_check.html Panel 04 — zuerst KALIBRIER-BODEN + SCHWELLEN-ANALYSE
-   (Baseline), dann A3-NACHMESSUNG → Lücken-Delta ablesen. Termux-Direkt-Link mit ?only=04_match.
-   → POSITIV: A3 lohnt netzweit (nächster Schritt unten). NULL/NEGATIV: ehrlicher Negativ-Befund
-     dokumentieren (wie v2-Center), A3 bleibt opt-in-Werkzeug ohne netzweite Verdrahtung.
+1. A3-MESSUNG (Sage): ERLEDIGT 2026-07-01 Abend — Δ −0.1075, NEGATIV (siehe STAND + LEHRE). A3
+   abgeschlossen, kein weiterer A3-Schritt. Panel-04-Messknopf bleibt für spätere Verfahren.
 2. family-project OCR-Sichttest: index.html/markt.html — 📷 neben 🎤; erster Klick → 1·2·3-Mistral-
-   Schlüssel-Fläche → Foto/Screenshot → Text landet im Feld. Hard-Reload nach Pull.
+   Schlüssel-Fläche → Foto/Screenshot → Text landet im Feld. Hard-Reload nach Pull. (OFFEN.)
 
 ## PFLICHTLEKTÜRE VOR BAU (Sage-Protokol, in dieser Reihenfolge)
 1. CLAUDE.md (§ Freibrief, § Pipeline-Reihenfolge, § Tafel-Evolutions-Klausel)
@@ -33,10 +33,11 @@ Strang B (OCR):
 4. docs/components/03_embedding.md, 04_match.md
 5. src/modules/03_embedding.js (embedContentVector + _assembleContentTexts), 04_match.js
 
-## NÄCHSTER SCHRITT (nach Klaus' A3-Messung)
-- A3-Delta POSITIV: embedContentVector-Aufrufer (Modul 02 regenerateOwnSpore / Andock) optional mit
-  Knoten-Titel als Kontext verdrahten — netz-koordiniert, Re-Sign, EIGENER Brief.
-- Dann A4 — Query-Expansion / Multi-Query im Suchfeld (Modul 22), additiv, testbar:
+## NÄCHSTER SCHRITT (A3 negativ gemessen → direkt A4)
+- A3 ist abgeschlossen (negativ gemessen) — KEINE netzweite Verdrahtung. Falls je gewünscht:
+  chunk-level Contextual Retrieval im queryLocal-KORPUS (nicht Domänen-Zentroid) wäre ein ANDERER,
+  ungemessener Einsatz — nur bei Bedarf, eigener Brief.
+- A4 — Query-Expansion / Multi-Query im Suchfeld (Modul 22), additiv, testbar:
   aus EINER Nutzer-Frage mehrere Such-Varianten (Synonyme/Umformulierungen) bilden, alle einbetten,
   Treffer zusammenführen (Reciprocal Rank Fusion). Gatet nichts, 0.80-Riegel unberührt, fail-soft.
 
