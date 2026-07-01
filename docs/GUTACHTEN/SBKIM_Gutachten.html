@@ -138,9 +138,24 @@
     .card .sub{color:#6f5717}
     .legend{color:#333}
     figcaption,caption,.small{color:#555}
-    .section{page-break-inside:auto}
+    /* ── Professionelle Satz-/PDF-Regeln ── */
+    /* Neues Thema (Abschnitt) beginnt auf neuer Seite; Titel+Abstract bilden das Deckblatt. */
+    section{page-break-before:always; break-before:page; page-break-inside:auto; break-inside:auto; margin-top:0}
+    /* Überschrift klebt an ihrem Folgetext, wird nie allein am Seitenende gelassen und nie zerrissen. */
+    h2,h3,h4{page-break-after:avoid; break-after:avoid; page-break-inside:avoid; break-inside:avoid}
+    /* Beschriftungen/Legenden bleiben bei ihrem Objekt. */
+    caption,.legend{page-break-after:avoid; break-after:avoid; page-break-inside:avoid; break-inside:avoid}
+    /* Lange Tabellen dürfen NUR zwischen Zeilen brechen; Kopf wiederholt sich, keine Zeile wird zerschnitten. */
+    table{page-break-inside:auto; break-inside:auto}
+    tr,td,th{page-break-inside:avoid; break-inside:avoid}
+    /* Unteilbare Blöcke nie über zwei Seiten reißen. */
+    li,.card,.note,.abstract,figure,.gallery figure,.twocol>.card{page-break-inside:avoid; break-inside:avoid}
+    /* Karten-/Spalten-Raster dürfen zwischen den Karten umbrechen. */
+    .cards,.twocol{page-break-inside:auto; break-inside:auto}
+    /* Keine Hurenkinder/Schusterjungen: mind. 3 Zeilen zusammenhalten. */
+    p,li{orphans:3; widows:3}
     figure svg{filter:none}
-    @page{margin:16mm 14mm}
+    @page{margin:12mm 14mm}
   }
 </style>
 </head>
