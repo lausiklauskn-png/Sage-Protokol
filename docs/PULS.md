@@ -140,10 +140,16 @@ A4 nach A1 (positiv gemessen) + A3 (negativ gemessen). Klaus wählte „1" (A4 b
   04a/04c/04d/04e/04f/04g grün; Drift-Guards such-tool (49/49) + sbkim-bundle (21/21) byte-1:1
   (Modul 04 byte-kopiert; pinnwand hat kein Modul 04). Doku: INTERFACES §1 Modul 04, Karte 04.
 
+**GEMESSEN POSITIV (Klaus, Browser 2026-07-01, Panel 04 A4-NACHMESSUNG):** Multi-Query rettet
+**4/4** Ziele, die die Einzel-Frage (andere Formulierung) verpasst (z. B. „auto reparatur" →
+„kfz reparatur"). Dritter gemessener Hebel: **A1 positiv (4/4), A3 negativ (Δ −0.11), A4 positiv
+(4/4)** — A1 und A4 wirken beide durch einen ZUSÄTZLICHEN Zugang zum Treffer, A3 drehte am selben
+Signal und verschlechterte.
+
 **Ehrlich offen:** die freie Synonym-Karte ist begrenzt; der starke Varianten-Generator wäre ein
-**opt-in LLM-Aufsatz** (BYOK) — die Fusion (`queryLocalMulti`) bleibt gleich. Browser-Sichttest
-(A4-NACHMESSUNG) wartet auf Klaus. **Nächster Schritt:** App-Integration im Suchfeld (Modul 22)
-mit Synonym-Karte und/oder opt-in LLM-Generator; oder A5/A6 bzw. App-UX-Wünsche.
+**opt-in LLM-Aufsatz** (BYOK) — die Fusion (`queryLocalMulti`) bleibt gleich. **Nächster Schritt:**
+App-Integration im Suchfeld (Modul 22) mit Synonym-Karte und/oder opt-in LLM-Generator; oder A5/A6
+bzw. App-UX-Wünsche.
 
 ## 2026-07-01 · A3 — Contextual Chunking in Modul 03 `embedContentVector` (Strang A, additiv)
 
