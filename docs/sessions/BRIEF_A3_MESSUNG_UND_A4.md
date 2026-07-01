@@ -41,7 +41,11 @@ Strang B (OCR):
 - A3 ist abgeschlossen (negativ gemessen) — KEINE netzweite Verdrahtung. Falls je gewünscht:
   chunk-level Contextual Retrieval im queryLocal-KORPUS (nicht Domänen-Zentroid) wäre ein ANDERER,
   ungemessener Einsatz — nur bei Bedarf, eigener Brief.
-- A4 — Query-Expansion / Multi-Query im Suchfeld (Modul 22), additiv, testbar:
+- A4 — GEBAUT + GEMERGT (Bau 04.H): expandQuerySimple (freie Synonym-Varianten) + queryLocalMulti
+  (RRF-Fusion über Varianten) in Modul 04; Panel-04 A4-NACHMESSUNG-Knopf; Smoke 16/16; Drift-Guards
+  such-tool/sbkim-bundle byte-1:1. Additiv, 0.80-Riegel/PROTOCOL_VERSION unberührt. OFFEN: Browser-
+  Sichttest (A4-NACHMESSUNG) + App-Integration im Suchfeld (Modul 22, Synonym-Karte und/oder opt-in
+  LLM-Varianten-Generator). Ursprüngliche A4-Skizze (bleibt als Integrations-Referenz):
   aus EINER Nutzer-Frage mehrere Such-Varianten (Synonyme/Umformulierungen) bilden, alle einbetten,
   Treffer zusammenführen (Reciprocal Rank Fusion). Gatet nichts, 0.80-Riegel unberührt, fail-soft.
 

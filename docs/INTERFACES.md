@@ -877,6 +877,23 @@ Bietet (öffentlich):
                                                                        // KEIN Throw. Berührt kein anderes Modul;
                                                                        // PROVIDER_MIN_MATCH + Andock-Riegel
                                                                        // (Modul 05) unverändert.
+  expandQuerySimple(text: string,
+                    options?: { synonyms?: { [term]: string[] }, maxVariants?: number })
+                                                          → string[]   // Bau 04.H (Strang A4, 2026-07-01).
+                                                                       // Freie/offline Varianten (Original
+                                                                       // zuerst, dedupe, Deckel). Ohne
+                                                                       // synonyms → [text]. Kein Netz/LLM.
+  queryLocalMulti(queries: string[], k?: number,
+                  options?: { corpus?, hybrid?, perQueryK?, … wie queryLocal })
+                                                          → Promise<Array<{ label, score, anchorId,
+                                                                            fused, matchedQueries }>>
+                                                                       // async; Bau 04.H (Strang A4). Sucht
+                                                                       // mit JEDER Variante (queryLocal) +
+                                                                       // verschmilzt via RRF. score = bester
+                                                                       // Cosinus, matchedQueries = #Varianten.
+                                                                       // Fail-soft je Variante. Rein additiv:
+                                                                       // PROVIDER_MIN_MATCH + Andock-Riegel
+                                                                       // (Modul 05) unberührt.
   hybridMatch(query: string | { text: string, label?: string },
               candidates: Array<{ label: string, text: string,
                                   cosine?: number, anchorId?: string }>,

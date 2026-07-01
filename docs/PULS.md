@@ -119,6 +119,32 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-01 · A4 — Query-Expansion / Multi-Query in Modul 04 (Strang A, additiv)
+
+**Rolle:** Bau-Sitzung (Branch `claude/semantic-matching-quality-a3-jb0aut`). Nächster Hebel
+A4 nach A1 (positiv gemessen) + A3 (negativ gemessen). Klaus wählte „1" (A4 bauen).
+
+**Was getan (Bau 04.H, additiv):**
+- `expandQuerySimple(text, {synonyms?, maxVariants?})` — freie/offline Varianten-Erzeugung
+  (Original zuerst, dedupe, Deckel; ohne Synonym-Karte → `[text]`; kein Netz/LLM).
+- `queryLocalMulti(queries, k, options)` — sucht mit JEDER Variante (`queryLocal`, options
+  inkl. `hybrid` durchgereicht) und verschmilzt die Rang-Listen via **RRF** (dieselbe Fusion
+  wie A1, nur über Varianten). `score` = bester Cosinus, `matchedQueries` = #Varianten;
+  fail-soft je Variante (werfende Variante übersprungen).
+- **Leitplanken:** bestehende `queryLocal`/hybrid-Pfade **byte-gleich**; `PROVIDER_MIN_MATCH`
+  (0.80) + Andock-Riegel (Modul 05) unberührt; **kein** PROTOCOL_VERSION-/DB_VERSION-Bump.
+- **Panel 04 „A4-NACHMESSUNG"**-Knopf (deterministischer Hash-Mock, lokal gesichert+restauriert,
+  andere Tests unberührt) misst, wie viele Ziele die Multi-Query rettet, die die Einzel-Frage
+  verpasst. Cache-Bust `?v=a4-20260701`.
+- **Tests:** Headless `tests/smoke_a4_query_expansion.mjs` **16/16 grün**; Regression
+  04a/04c/04d/04e/04f/04g grün; Drift-Guards such-tool (49/49) + sbkim-bundle (21/21) byte-1:1
+  (Modul 04 byte-kopiert; pinnwand hat kein Modul 04). Doku: INTERFACES §1 Modul 04, Karte 04.
+
+**Ehrlich offen:** die freie Synonym-Karte ist begrenzt; der starke Varianten-Generator wäre ein
+**opt-in LLM-Aufsatz** (BYOK) — die Fusion (`queryLocalMulti`) bleibt gleich. Browser-Sichttest
+(A4-NACHMESSUNG) wartet auf Klaus. **Nächster Schritt:** App-Integration im Suchfeld (Modul 22)
+mit Synonym-Karte und/oder opt-in LLM-Generator; oder A5/A6 bzw. App-UX-Wünsche.
+
 ## 2026-07-01 · A3 — Contextual Chunking in Modul 03 `embedContentVector` (Strang A, additiv)
 
 **Rolle:** Bau-Sitzung (Branch `claude/semantic-matching-quality-a3-jb0aut`). Nächster Hebel

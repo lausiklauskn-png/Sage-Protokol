@@ -518,7 +518,7 @@
   </script>
 
   <!-- Modul 03 — Embedding (Bau-Sitzung 2026-05-14) -->
-  <script src="../src/modules/03_embedding.js?v=a3-20260701"></script>
+  <script src="../src/modules/03_embedding.js?v=a4-20260701"></script>
   <script>
     (function () {
       function dot(a, b) {
@@ -590,7 +590,7 @@
   </script>
 
   <!-- Modul 04 — Match (Spec+Bau-Sitzung 2026-05-14) -->
-  <script src="../src/modules/04_match.js?v=a3-20260701"></script>
+  <script src="../src/modules/04_match.js?v=a4-20260701"></script>
   <script>
     (function () {
       // --- Schwellen-Kalibrier-Instrument (2026-06-28) ----------------------
@@ -1184,6 +1184,79 @@
           faelle: zeilen,
           hinweis: "REINE MESSUNG — gatet nichts, 0.80-Andock-Riegel (Modul 05) unberührt. Kontrast zur A3-NACHMESSUNG: A1 fügt ein ZWEITES Signal (Wort-Treffer) hinzu und verbessert; A3 drehte am SELBEN Signal und verschlechterte. Determinist. Mock (wie Test 20) — kein Modell-Lade.",
         };
+      });
+
+      // --- A4-NACHMESSUNG (Strang A4, 2026-07-01) ----------------------------
+      // Misst den Kern-Nutzen von A4 (Query-Expansion + Multi-Query, Bau 04.H):
+      // wie viele Ziele, die eine EINZELNE Formulierung verpasst, findet die
+      // Multi-Query (Original + Synonym-Varianten, via RRF verschmolzen)?
+      // Deterministischer Hash-Embedding-Mock (gleicher Text → cos 1.0), lokal
+      // gesichert + restauriert, damit die anderen Panel-04-Tests unberührt
+      // bleiben. Reine Messung, gatet nichts, 0.80-Riegel (Modul 05) unberührt.
+      SbkimUI.addButton("04_match", "A4-NACHMESSUNG: findet Multi-Query (Expansion) Ziele, die die Einzel-Frage verpasst?", async function () {
+        function a4HashVec(text) {
+          var dim = 384, data = new Float32Array(dim);
+          var h = 2166136261, s = String(text);
+          for (var c = 0; c < s.length; c++) { h ^= s.charCodeAt(c); h = Math.imul(h, 16777619); }
+          var seed = h >>> 0;
+          var rnd = function () { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+          var n = 0;
+          for (var d = 0; d < dim; d++) { var v = rnd() - 0.5; data[d] = v; n += v * v; }
+          n = Math.sqrt(n) || 1;
+          for (var d2 = 0; d2 < dim; d2++) data[d2] /= n;
+          return data;
+        }
+        var prevEmbed = window.SbkimEmbedding && window.SbkimEmbedding.embedQuery;
+        window.SbkimEmbedding = window.SbkimEmbedding || {};
+        window.SbkimEmbedding.embedQuery = async function (t) { return a4HashVec(t); };
+        try {
+          // Synonym-Karte (in echten Apps aus einem kleinen Domänen-Wörterbuch
+          // ODER opt-in per LLM-Generator). target = Formulierung, die NUR die
+          // Variante trifft, nicht die Original-Frage.
+          var faelle = [
+            { frage: "wespen abwehr",  syn: { wespen: ["insekten"] },  target: "insekten abwehr" },
+            { frage: "auto reparatur", syn: { auto: ["kfz"] },         target: "kfz reparatur" },
+            { frage: "kuchen backen",  syn: { kuchen: ["torte"] },     target: "torte backen" },
+            { frage: "laptop kaufen",  syn: { laptop: ["notebook"] },  target: "notebook kaufen" },
+          ];
+          var zeilen = [], gerettet = 0;
+          for (var i = 0; i < faelle.length; i++) {
+            var f = faelle[i];
+            var corpus = [
+              { label: "Ablenker", anchorId: "ab" + i, text: f.frage,  passageVec: a4HashVec(f.frage) },
+              { label: "Ziel",     anchorId: "zi" + i, text: f.target, passageVec: a4HashVec(f.target) },
+            ];
+            var varianten = SbkimMatch.expandQuerySimple(f.frage, { synonyms: f.syn });
+            var single = await SbkimMatch.queryLocalMulti([f.frage], 5, { corpus: corpus });
+            var multi  = await SbkimMatch.queryLocalMulti(varianten, 5, { corpus: corpus });
+            var sL = single.map(function (r) { return r.label; });
+            var mL = multi.map(function (r) { return r.label; });
+            var zielVorher = sL.indexOf("Ziel") !== -1;
+            var zielNachher = mL.indexOf("Ziel") !== -1;
+            var rettung = !zielVorher && zielNachher;
+            if (rettung) gerettet++;
+            zeilen.push({
+              frage: f.frage, varianten: varianten, einzel: sL, multi: mL,
+              ziel_vorher_gefunden: zielVorher, ziel_nachher_gefunden: zielNachher,
+              bewertung: rettung ? "✓ gerettet" : (zielVorher ? "· war schon da" : "✗ nicht gefunden"),
+            });
+          }
+          var ok = gerettet === faelle.length;
+          SbkimUI.setStatus("04_match", ok ? "ok" : "warn",
+            "Multi-Query rettet " + gerettet + "/" + faelle.length + " Ziele");
+          return {
+            frage: "Findet A4 (Expansion + Multi-Query) Ziele, die eine EINZELNE Formulierung verpasst?",
+            gerettete_ziele: gerettet + " von " + faelle.length,
+            urteil: ok
+              ? ("✓ A4 verbessert: Multi-Query findet " + gerettet + " Ziele zusätzlich, die die Einzel-Frage (andere Formulierung) verpasst.")
+              : ("A4 prüfen: " + gerettet + "/" + faelle.length + " gerettet"),
+            faelle: zeilen,
+            hinweis: "REINE MESSUNG — gatet nichts, 0.80-Andock-Riegel unberührt. Varianten via expandQuerySimple (freie Synonym-Karte; LLM-Generator wäre opt-in-Aufsatz), Fusion via RRF (queryLocalMulti). Deterministischer Hash-Mock, kein Modell-Lade; der Embedding-Mock wird nach der Messung restauriert.",
+          };
+        } finally {
+          if (prevEmbed) window.SbkimEmbedding.embedQuery = prevEmbed;
+          else { try { delete window.SbkimEmbedding.embedQuery; } catch (_e) {} }
+        }
       });
 
       SbkimUI.addButton("04_match", "Ähnlich: Käsekuchen vs. Käsetorte (> 0.92)", async function () {
