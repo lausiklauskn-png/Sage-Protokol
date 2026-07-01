@@ -209,6 +209,13 @@ wurde.
 >   danach etwas, ist das ein Folge-Fix, kein Grund, den Merge vorher
 >   aufzuhalten. (Der Browser-Sichttest ersetzt den Headless-Beweis nicht und
 >   umgekehrt — beide bleiben, nur in dieser Reihenfolge.)
+>
+> **Bekräftigung 2026-07-01 (Klaus):** erneut bestätigt — „merge automatisch,
+> wenn es **sinnvoll**, für die **App nützlich** und **vor allem logisch** ist;
+> das ist ein Freibrief für **diese und alle nachfolgenden Sitzungen**." Ändert
+> nichts an der Grenze (echtes Zweifeln → erst fragen) oder an „nie stillschweigend"
+> (jede Selbst-Merge-Entscheidung wird dokumentiert). Bezug: Bau 04.F / PR #509
+> selbstständig gemergt nach Headless- + Klaus-Browser-Sichttest grün.
 
 - **Selbstständig handeln und merken erlaubt.** Eine Sitzung darf
   eigenständig entscheiden, eine Lehre festhalten (auch durch Pflege
