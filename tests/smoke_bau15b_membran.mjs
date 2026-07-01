@@ -307,6 +307,59 @@ async function run() {
     lastReply && lastReply.msg.payload.results.length === 1 && lastReply.msg.payload.error === null);
   g.SbkimMatch = undefined;
 
+  // -------- Sub (b) query mit KI-Richter (Strang A2, Bau 04.G-Folge) --------
+  // Opt-in: setQueryJudge(cfg) → der Empfänger ruft queryLocalJudged statt
+  // queryLocal. Stub liefert eine erkennbar andere Trefferliste ("JUDGED"),
+  // damit die Probe beweist, dass der Richter-Pfad genommen wurde.
+  g.SbkimMatch = {
+    queryLocal: async () => [{ label: "VORFILTER", score: 0.9, anchorId: "v1" }],
+    queryLocalJudged: async (text, k, cfg) => ({
+      judged: true,
+      candidates: [{ label: "JUDGED", score: 0.72, anchorId: "j1", passt: true, judgeScore: 0.95 }],
+      judgment: { available: true },
+    }),
+  };
+  SbkimMembrane.setQueryJudge({ apiKey: "sk-test", provider: "claude" });
+  record("Strang A2: queryJudge konfiguriert (Flag, KEIN Schlüssel-Leak)",
+    true, SbkimMembrane._meta.queryJudgeConfigured, SbkimMembrane._meta.queryJudgeConfigured === true);
+  lastReply = null;
+  g.__dispatchMessageEvent(new g.MessageEvent("message", {
+    origin: "https://peer-a.example",
+    data: { type: "sbkim/membrane/v1", op: "query", fromOrigin: "https://peer-a.example",
+            nonce: "n-qj-1", payload: { text: "frage-richter", k: 2 } },
+    source: source,
+  }));
+  await new Promise(r => setImmediate(r));
+  await new Promise(r => setTimeout(r, 5));
+  record("Strang A2: Richter-Pfad genutzt → JUDGED-Treffer",
+    "JUDGED + error=null",
+    lastReply && lastReply.msg && (lastReply.msg.payload.results[0] && lastReply.msg.payload.results[0].label) + "/" + lastReply.msg.payload.error,
+    lastReply && lastReply.msg.payload.error === null &&
+    lastReply.msg.payload.results.length === 1 &&
+    lastReply.msg.payload.results[0].label === "JUDGED" &&
+    lastReply.msg.payload.results[0].passt === true);
+
+  // setQueryJudge(null) → zurück zum rohen Vorfilter (queryLocal).
+  SbkimMembrane.setQueryJudge(null);
+  record("Strang A2: setQueryJudge(null) → Flag aus",
+    false, SbkimMembrane._meta.queryJudgeConfigured, SbkimMembrane._meta.queryJudgeConfigured === false);
+  lastReply = null;
+  g.__dispatchMessageEvent(new g.MessageEvent("message", {
+    origin: "https://peer-a.example",
+    data: { type: "sbkim/membrane/v1", op: "query", fromOrigin: "https://peer-a.example",
+            nonce: "n-qj-2", payload: { text: "frage-vorfilter", k: 2 } },
+    source: source,
+  }));
+  await new Promise(r => setImmediate(r));
+  await new Promise(r => setTimeout(r, 5));
+  record("Strang A2: ohne Richter → roher Vorfilter (VORFILTER-Treffer)",
+    "VORFILTER",
+    lastReply && lastReply.msg && lastReply.msg.payload.results[0] && lastReply.msg.payload.results[0].label,
+    lastReply && lastReply.msg.payload.results.length === 1 &&
+    lastReply.msg.payload.results[0].label === "VORFILTER" &&
+    lastReply.msg.payload.error === null);
+  g.SbkimMatch = undefined;
+
   // -------- Sub (b) hint Schema-Fehler + OK ohne Modul 14 --------
   // Schema-Fehler: vector falsche Länge.
   g.__dispatchMessageEvent(new g.MessageEvent("message", {
