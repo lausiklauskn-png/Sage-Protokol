@@ -6406,5 +6406,22 @@
       });
     })();
   </script>
+  <!-- Fokus-Filter (2026-07-01): ?only=<data-module> blendet alle anderen Panels
+       aus und scrollt zum gewählten — für Klaus' Direkt-Link auf EIN Panel
+       (z.B. ?only=04_match zum A3-Messen). Rein additiv, kein Test-Einfluss. -->
+  <script>
+    (function () {
+      try {
+        var only = new URLSearchParams(location.search).get("only");
+        if (!only) return;
+        var target = null;
+        document.querySelectorAll("section.panel").forEach(function (p) {
+          if (p.getAttribute("data-module") === only) { target = p; }
+          else { p.style.display = "none"; }
+        });
+        if (target) { try { target.scrollIntoView(); } catch (_e) {} }
+      } catch (_e) { /* fail-soft: ohne Filter bleibt alles sichtbar */ }
+    })();
+  </script>
 </body>
 </html>
