@@ -4,7 +4,11 @@ Freibrief gilt (Sage CLAUDE.md § Freibrief) — inkl. netzweitem Selbst-Merge-F
 
 ## STAND — was erledigt & GEMERGT ist (nicht neu bauen)
 Strang A:
-- A1 Hybrid BM25+Vektor (Modul 04 queryLocal) — gebaut, Klaus-Browser "Hybrid OK".
+- A1 Hybrid BM25+Vektor (Modul 04 queryLocal) — gebaut + GEMESSEN POSITIV (Klaus, Browser
+    2026-07-01, Panel 04 A1-NACHMESSUNG): 4/4 Wort-Treffer unter dem 0.80-Boden gerettet, 0
+    Fehl-Rettung (Kontroll-Fall ohne Wort-Bezug korrekt NICHT gehoben). Klarer Gegensatz zu A3
+    (Δ −0.11, negativ): A1 fügt ein ZWEITES Signal (Wort-Treffer) dazu, A3 dreht am selben.
+    A1-NACHMESSUNG-Knopf bleibt in Panel 04 (deterministischer Mock, kein Modell-Lade).
 - A2 KI-Richter (hybridMatch) fest im Cross-Knoten-Antwort-Pfad + Modul-15 — gebaut.
 - A3 Contextual Chunking (Modul 03 embedContentVector) — GEBAUT + GEMERGT (Sage PR #517/#518),
     aber im Browser GEMESSEN: NEGATIV. Panel 04 A3-NACHMESSUNG: Baseline-Lücke −0.0135, A3-Lücke

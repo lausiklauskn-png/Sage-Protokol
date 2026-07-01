@@ -150,6 +150,12 @@ wird **NICHT** netzweit verdrahtet, bleibt harmloses additives opt-in-Werkzeug (
 Kontext). Ehrlicher Negativ-Befund wie beim v2-Center. Doku: LEHRE § „Stand 2026-07-01 (Abend) —
 A3 im Browser gemessen: NEGATIV". **Nächster Hebel: A4 (Query-Expansion), orthogonaler Recall-Hebel.**
 
+**Kontrast A1 GEMESSEN POSITIV (Klaus, Browser 2026-07-01, neuer Panel-04-Knopf A1-NACHMESSUNG):**
+Hybrid BM25+Vektor rettet **4/4** Wort-Treffer unter dem 0.80-Vektor-Boden, die die reine Vektor-
+Suche verliert — **0 Fehl-Rettungen** (Kontroll-Fall ohne Wort-Bezug korrekt NICHT gehoben). Der
+saubere Beweis, dass A1 verbessert (zweites Signal dazu), während A3 verschlechtert (am selben
+Signal gedreht). A1-NACHMESSUNG-Knopf deterministisch (Mock wie Test 20, kein Modell-Lade).
+
 **Nächster sinnvoller Schritt:** (1) Klaus: Panel 04 Baseline + A3-NACHMESSUNG im Browser
 laufen lassen → Delta ablesen. (2) Bei positivem Delta: `embedContentVector`-Aufrufer
 (Modul 02 `regenerateOwnSpore`-Pfad / Andock) optional mit Knoten-Titel als Kontext
