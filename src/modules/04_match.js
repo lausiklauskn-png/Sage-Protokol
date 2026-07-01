@@ -1036,6 +1036,131 @@
     return hybridResult.slice(0, effectiveK);
   }
 
+  // ---- Bau 04.H: Query-Expansion / Multi-Query (Strang A4, additiv) --------
+  //
+  // STRANG A4 (Brief 2026-07-01): Eine Nutzer-Frage trifft oft nur EINE
+  // Formulierung. Wer anders formuliert (Synonyme, Umschreibungen), verpasst
+  // Treffer, die dieselbe BEDEUTUNG anders benennen. A4 erzeugt aus der Frage
+  // mehrere Varianten, sucht mit JEDER und verschmilzt die Trefferlisten via
+  // Reciprocal Rank Fusion (RRF) — dieselbe gratis/offline Fusion wie Bau 04.F,
+  // nur über VARIANTEN statt über BM25/Vektor. Rein additiv:
+  //   - Bestehende queryLocal/hybrid-Pfade UNVERÄNDERT (byte-gleich).
+  //   - Kein Netz, kein LLM nötig (freie Synonym-Karte). Ein LLM-Generator wäre
+  //     ein späterer opt-in-Aufsatz (BYOK) — die Fusion bliebe gleich.
+  //   - PROVIDER_MIN_MATCH (0.80) + Andock-Riegel (Modul 05) unberührt: jede
+  //     Teil-Suche nutzt denselben Boden; A4 senkt keine Schwelle.
+
+  var MULTI_MAX_VARIANTS = 8;    // Deckel gegen Varianten-Explosion.
+
+  // expandQuerySimple(text, options?) -> string[]  (Original zuerst, dedupe)
+  // Freie, deterministische Varianten-Erzeugung über eine optionale Synonym-
+  // Karte options.synonyms = { term(lowercase): [alt, ...] }. Ohne Karte:
+  // nur [text] (kein Netz, kein LLM). Jede Ersetzung tauscht EIN Token gegen
+  // EINE Alternative (kombinatorisch auf maxVariants gedeckelt).
+  function expandQuerySimple(text, options) {
+    var opts = options || {};
+    if (typeof text !== "string" || text.trim().length === 0) {
+      throw EmptyQueryError(
+        "expandQuerySimple: 'text' muss nicht-leerer String sein, war: " + describe(text) + ".",
+      );
+    }
+    var base = text.trim();
+    var cap = (typeof opts.maxVariants === "number" && opts.maxVariants >= 1)
+      ? Math.floor(opts.maxVariants) : MULTI_MAX_VARIANTS;
+    var out = [base];
+    var seen = Object.create(null);
+    seen[base.toLowerCase()] = true;
+    var syn = (opts.synonyms && typeof opts.synonyms === "object") ? opts.synonyms : null;
+    if (syn) {
+      var tokens = base.split(/\s+/);
+      for (var i = 0; i < tokens.length && out.length < cap; i++) {
+        var key = tokens[i].toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+        var alts = syn[key];
+        if (!Array.isArray(alts)) continue;
+        for (var a = 0; a < alts.length && out.length < cap; a++) {
+          if (typeof alts[a] !== "string" || alts[a].trim().length === 0) continue;
+          var repl = tokens.slice();
+          repl[i] = alts[a].trim();
+          var variant = repl.join(" ");
+          var low = variant.toLowerCase();
+          if (!seen[low]) { seen[low] = true; out.push(variant); }
+        }
+      }
+    }
+    return out;
+  }
+
+  // queryLocalMulti(queries, k, options?)
+  //   -> Promise<Array<{label, score, anchorId, fused, matchedQueries}>>
+  // Sucht mit JEDER Query-Variante (queryLocal, options durchgereicht — inkl.
+  // hybrid) und verschmilzt die Rang-Listen via RRF. `score` = bester Cosinus
+  // des Treffers über alle Varianten; `matchedQueries` = wie viele Varianten
+  // ihn fanden. Deterministisch, fail-soft (eine werfende Variante wird
+  // übersprungen, die Suche bricht nicht ab).
+  async function queryLocalMulti(queries, k, options) {
+    if (!Array.isArray(queries) || queries.length === 0) {
+      throw EmptyQueryError(
+        "queryLocalMulti: 'queries' muss ein nicht-leeres Array sein, war: " + describe(queries) + ".",
+      );
+    }
+    var vars = [];
+    var seenQ = Object.create(null);
+    for (var i = 0; i < queries.length; i++) {
+      var q = queries[i];
+      if (typeof q !== "string" || q.trim().length === 0) continue;
+      var qn = q.trim();
+      if (!seenQ[qn.toLowerCase()]) { seenQ[qn.toLowerCase()] = true; vars.push(qn); }
+    }
+    if (vars.length === 0) {
+      throw EmptyQueryError("queryLocalMulti: keine nicht-leere Query-Variante.");
+    }
+    var effectiveK = (k === undefined || k === null) ? 5 : k;
+    if (typeof effectiveK !== "number" || !isFinite(effectiveK) ||
+        effectiveK < 1 || Math.floor(effectiveK) !== effectiveK) {
+      throw InvalidKError(
+        "queryLocalMulti: 'k' muss Integer >= 1 sein, war: " + describe(k) + ".",
+      );
+    }
+    var opts = options || {};
+    var perK = (typeof opts.perQueryK === "number" && opts.perQueryK >= 1)
+      ? Math.floor(opts.perQueryK) : Math.max(effectiveK * 3, 10);
+
+    var fused = Object.create(null); // key -> Treffer mit akkumuliertem RRF
+    for (var v = 0; v < vars.length; v++) {
+      var list;
+      try {
+        list = await queryLocal(vars[v], perK, opts);
+      } catch (_e) {
+        continue; // Variante übersprungen, Suche läuft weiter.
+      }
+      for (var r = 0; r < list.length; r++) {
+        var it = list[r];
+        var idKey = (typeof it.anchorId === "string" && it.anchorId)
+          ? ("id:" + it.anchorId) : ("lbl:" + it.label);
+        var contrib = 1 / (RRF_K + (r + 1));
+        if (!fused[idKey]) {
+          fused[idKey] = {
+            label: it.label,
+            score: it.score,
+            anchorId: (typeof it.anchorId === "string") ? it.anchorId : null,
+            fused: contrib,
+            matchedQueries: 1,
+          };
+        } else {
+          fused[idKey].fused += contrib;
+          fused[idKey].matchedQueries += 1;
+          if (it.score > fused[idKey].score) fused[idKey].score = it.score;
+        }
+      }
+    }
+    var merged = Object.keys(fused).map(function (kk) { return fused[kk]; });
+    merged.sort(function (a, b) {
+      if (b.fused !== a.fused) return b.fused - a.fused;
+      return b.score - a.score;
+    });
+    return merged.slice(0, effectiveK);
+  }
+
   // ---- Bau 04.D: Hybrid-Match — Match-Zeit-LLM-Richter (additiv) ----
   //
   // Hebt den vorhandenen Stufe-B-Keim (explainMatchLLM, Erklärer) zum
@@ -1734,6 +1859,8 @@
     explainMatchLLM: explainMatchLLM,
     queryLocal: queryLocal,
     queryLocalJudged: queryLocalJudged,
+    queryLocalMulti: queryLocalMulti,
+    expandQuerySimple: expandQuerySimple,
     setLocalCorpus: setLocalCorpus,
     bm25Scores: bm25Scores,
     tokenizeBM25: tokenizeBM25,
@@ -1774,6 +1901,9 @@
       hybridQueryLocalNote: "queryLocal(text,k,{hybrid:true}) fusioniert BM25+Vektor via RRF; Default (ohne hybrid) unverändert Cosinus. PROVIDER_MIN_MATCH + Andock-Riegel unberührt.",
       // Bau 04.G queryLocalJudged (Strang A2) Read-Anker.
       queryLocalJudgedNote: "queryLocalJudged(text,k,{hybrid?,apiKey?,provider?,euOnly?}) = Vorfilter (queryLocal) + Richter (hybridMatch, opt-in/BYOK, fail-soft). Sortiert Finalisten um (passt zuerst), gatet nichts, Modul 05 unberührt.",
+      // Bau 04.H Query-Expansion / Multi-Query (Strang A4) Read-Anker.
+      multiMaxVariants: MULTI_MAX_VARIANTS,
+      queryLocalMultiNote: "expandQuerySimple(text,{synonyms?,maxVariants?}) erzeugt gratis/offline Varianten (Original zuerst); queryLocalMulti(queries,k,{hybrid?,...}) sucht mit jeder + verschmilzt via RRF. Rein additiv, PROVIDER_MIN_MATCH + Andock-Riegel unberührt; LLM-Varianten-Generator wäre späterer opt-in-Aufsatz.",
       // Bau 04.D Hybrid-Match (Richter) Read-Anker.
       hybridProviders: Object.keys(HYBRID_PROVIDERS).map(function (id) {
         return { id: id, label: HYBRID_PROVIDERS[id].label, region: HYBRID_PROVIDERS[id].region };
@@ -1793,7 +1923,7 @@
   // Block nennt PROVIDER_MIN_MATCH und SCHICHT_MIN_MATCH.
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch/queryLocalJudged, " +
+      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch/queryLocalJudged/queryLocalMulti/expandQuerySimple, " +
         "Schwellen: PROVIDER_MIN_MATCH=" + PROVIDER_MIN_MATCH +
         ", SCHICHT_MIN_MATCH=" + SCHICHT_MIN_MATCH,
     );
