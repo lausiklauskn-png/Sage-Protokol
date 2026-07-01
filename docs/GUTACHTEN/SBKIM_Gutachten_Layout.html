@@ -859,7 +859,7 @@ var N=blocks.length;
 // ---- Zustand: gaps[i] = {s:Abstaende, b:Umbruch} fuer Luecke VOR Block i (0..N) ----
 // Eingebackenes Standard-Layout (Klaus' Wahl 2026-06-30). Weiter editierbar; localStorage
 // (falls vorhanden und n passt) ueberschreibt. Reset (↺) setzt auf leer, nicht auf BAKED.
-var BAKED_LAYOUT={"5":{s:7,b:true},"10":{s:12,b:true},"15":{s:0,b:true},"23":{s:1,b:false},"27":{s:0,b:true},"29":{s:0,b:true},"31":{s:0,b:true},"35":{s:0,b:true},"37":{s:2,b:false},"38":{s:5,b:true},"42":{s:30,b:false},"45":{s:2,b:false},"46":{s:4,b:false},"50":{s:136,b:false},"52":{s:16,b:false},"58":{s:26,b:false}};
+var BAKED_LAYOUT={"5":{s:0,b:true},"10":{s:0,b:true},"15":{s:0,b:true},"39":{s:0,b:true},"42":{s:29,b:false},"46":{s:0,b:true},"50":{s:13,b:false},"52":{s:16,b:false},"58":{s:4,b:true},"71":{s:0,b:true}};
 var gaps=[];
 for(var i=0;i<=N;i++) gaps.push({s:0,b:false});
 (function bake(){ for(var k in BAKED_LAYOUT){ var gi=+k; if(gi>=0&&gi<=N){ gaps[gi].s=BAKED_LAYOUT[k].s||0; gaps[gi].b=!!BAKED_LAYOUT[k].b; } } })();
