@@ -1607,6 +1607,123 @@
     return r === "both" ? (passtA && passtB) : (passtA || passtB);
   }
 
+  // ---- Bau 04.G: queryLocalJudged — Vorfilter + Richter, komponiert (additiv) ----
+  //
+  // STRANG A2 (Brief 2026-07-01): verankert den KI-Richter (`hybridMatch`) fest
+  // im ANTWORT-Pfad, als EINE komponierte, opt-in Funktion — ohne ein anderes
+  // Modul anzufassen. Ablauf:
+  //   1. VORFILTER: queryLocal(text, k, {hybrid?}) liefert lokale Top-k
+  //      (server-los; A1-Hybrid wird durchgereicht, wenn options.hybrid).
+  //   2. RICHTER (opt-in/BYOK): nur wenn options.apiKey gesetzt ist, urteilt
+  //      hybridMatch über die Finalisten (Bedeutungs-Urteil je Kandidat) und
+  //      sortiert sie um (passt zuerst, dann nach Richter-Score).
+  //   3. FAIL-SOFT: kein Schlüssel / leerer Vorfilter / Richter nicht erreichbar
+  //      → das rohe Vorfilter-Ergebnis gilt weiter, KEIN Throw.
+  // Rein additiv: queryLocal / hybridMatch / PROVIDER_MIN_MATCH / der 0.80-
+  // Andock-Riegel (Modul 05) bleiben unberührt. Der Richter beurteilt den
+  // Passage-TEXT — dafür braucht er den Korpus-Text; queryLocalJudged löst den
+  // Korpus GENAU wie queryLocal auf (options.corpus | registrierter Provider)
+  // und reicht ihn identisch an queryLocal weiter.
+  //
+  // Rückgabe: {
+  //   judged:  boolean,                 // true = Richter lief + lieferte Urteil
+  //   candidates: Array<{ label, score, anchorId, bm25?, fused?,
+  //                       passt?, judgeScore?, begruendung? }>,  // umsortiert wenn judged
+  //   judgment: HybridJudgment | null,  // rohes hybridMatch-Resultat (inkl. attestation)
+  // }
+  async function queryLocalJudged(text, k, options) {
+    var opts = options || {};
+
+    // Korpus identisch zu queryLocal auflösen (damit wir den Passage-Text
+    // für den Richter kennen). Kein eigener Embedding-/Score-Pfad.
+    var corpus;
+    if (Object.prototype.hasOwnProperty.call(opts, "corpus") && opts.corpus !== undefined) {
+      corpus = opts.corpus;
+    } else if (typeof _localCorpusProvider === "function") {
+      corpus = _localCorpusProvider();
+    } else {
+      corpus = [];
+    }
+
+    // 1. VORFILTER — queryLocal mit exakt demselben Korpus (Hybrid durchgereicht).
+    var vorfilter = await queryLocal(text, k, {
+      corpus: corpus,
+      hybrid: opts.hybrid === true,
+    });
+
+    // Kein Schlüssel ODER keine Finalisten → reiner Vorfilter, Richter aus.
+    var apiKey = opts.apiKey;
+    if (typeof apiKey !== "string" || apiKey.length === 0 || vorfilter.length === 0) {
+      return { judged: false, candidates: vorfilter, judgment: null };
+    }
+
+    // Text-Karte (anchorId bevorzugt, sonst label) → Passage-Text für den Richter.
+    function keyOf(item) {
+      return (typeof item.anchorId === "string" && item.anchorId.length > 0) ? "a:" + item.anchorId : "l:" + item.label;
+    }
+    var textByKey = Object.create(null);
+    for (var ci = 0; ci < corpus.length; ci++) {
+      var it = corpus[ci];
+      if (!it || typeof it !== "object") continue;
+      var t = (typeof it.text === "string" && it.text.length > 0) ? it.text : it.label;
+      if (typeof t === "string" && t.length > 0) textByKey[keyOf(it)] = t;
+    }
+
+    // Richter-Kandidaten in Vorfilter-Reihenfolge (max HYBRID_MAX_CANDIDATES).
+    var judgeSlice = vorfilter.slice(0, HYBRID_MAX_CANDIDATES);
+    var judgeCandidates = judgeSlice.map(function (r) {
+      var txt = textByKey[keyOf(r)];
+      return {
+        label: r.label,
+        text: (typeof txt === "string" && txt.length > 0) ? txt : r.label,
+        cosine: r.score,
+        anchorId: r.anchorId,
+      };
+    });
+
+    // 2. RICHTER — hybridMatch (opt-in via apiKey). Fail-soft integriert.
+    var judgment = await hybridMatch(
+      { text: text, label: (typeof opts.queryLabel === "string" ? opts.queryLabel : null) },
+      judgeCandidates,
+      opts,
+    );
+
+    if (!judgment || judgment.available !== true || !Array.isArray(judgment.verdicts)) {
+      // 3. FAIL-SOFT — Vorfilter gilt, Grund steckt in judgment.reason.
+      return { judged: false, candidates: vorfilter, judgment: judgment || null };
+    }
+
+    // Urteil index-gleich auf die Finalisten heften.
+    var judged = judgeSlice.map(function (r, i) {
+      var v = judgment.verdicts[i] || {};
+      var merged = {
+        label: r.label,
+        score: r.score,
+        anchorId: r.anchorId,
+        passt: (typeof v.passt === "boolean") ? v.passt : null,
+        judgeScore: (typeof v.score === "number") ? v.score : null,
+        begruendung: (typeof v.begruendung === "string") ? v.begruendung : null,
+      };
+      if (typeof r.bm25 === "number") merged.bm25 = r.bm25;
+      if (typeof r.fused === "number") merged.fused = r.fused;
+      return merged;
+    });
+    // Umsortieren: passt=true zuerst, dann nach Richter-Score absteigend,
+    // Tie-Break Vorfilter-Cosinus. REINE Anzeige-Sortierung, gatet nichts.
+    judged.sort(function (a, b) {
+      var pa = a.passt === true ? 1 : 0, pb = b.passt === true ? 1 : 0;
+      if (pb !== pa) return pb - pa;
+      var ja = (typeof a.judgeScore === "number") ? a.judgeScore : -1;
+      var jb = (typeof b.judgeScore === "number") ? b.judgeScore : -1;
+      if (jb !== ja) return jb - ja;
+      return b.score - a.score;
+    });
+    // Etwaigen ungerichteten Rest (falls Vorfilter > HYBRID_MAX_CANDIDATES)
+    // unverändert hinten anhängen.
+    var tail = vorfilter.slice(HYBRID_MAX_CANDIDATES);
+    return { judged: true, candidates: judged.concat(tail), judgment: judgment };
+  }
+
   var SbkimMatch = {
     match: match,
     isAboveProviderThreshold: isAboveProviderThreshold,
@@ -1616,6 +1733,7 @@
     matchDimensions: matchDimensions,
     explainMatchLLM: explainMatchLLM,
     queryLocal: queryLocal,
+    queryLocalJudged: queryLocalJudged,
     setLocalCorpus: setLocalCorpus,
     bm25Scores: bm25Scores,
     tokenizeBM25: tokenizeBM25,
@@ -1654,6 +1772,8 @@
       bm25B: BM25_B,
       rrfK: RRF_K,
       hybridQueryLocalNote: "queryLocal(text,k,{hybrid:true}) fusioniert BM25+Vektor via RRF; Default (ohne hybrid) unverändert Cosinus. PROVIDER_MIN_MATCH + Andock-Riegel unberührt.",
+      // Bau 04.G queryLocalJudged (Strang A2) Read-Anker.
+      queryLocalJudgedNote: "queryLocalJudged(text,k,{hybrid?,apiKey?,provider?,euOnly?}) = Vorfilter (queryLocal) + Richter (hybridMatch, opt-in/BYOK, fail-soft). Sortiert Finalisten um (passt zuerst), gatet nichts, Modul 05 unberührt.",
       // Bau 04.D Hybrid-Match (Richter) Read-Anker.
       hybridProviders: Object.keys(HYBRID_PROVIDERS).map(function (id) {
         return { id: id, label: HYBRID_PROVIDERS[id].label, region: HYBRID_PROVIDERS[id].region };
@@ -1673,7 +1793,7 @@
   // Block nennt PROVIDER_MIN_MATCH und SCHICHT_MIN_MATCH.
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch, " +
+      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch/queryLocalJudged, " +
         "Schwellen: PROVIDER_MIN_MATCH=" + PROVIDER_MIN_MATCH +
         ", SCHICHT_MIN_MATCH=" + SCHICHT_MIN_MATCH,
     );

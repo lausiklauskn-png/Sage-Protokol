@@ -1018,7 +1018,7 @@
         SbkimUI.log("04_match",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("04_match",
-          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch, " +
+          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch/queryLocalJudged, " +
           "Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
       });
 
@@ -1546,6 +1546,55 @@
           }),
           erwartung: "Standard verwirft 'A (unter Boden)' (cos 0.70). Hybrid findet A über den Wort-Treffer und stellt es vor 'B (nur Vektor)'.",
           hinweis: "Reine Anzeige/Suche — der 0.80-Andock-Riegel (Modul 05) bleibt unberührt.",
+        };
+      });
+
+      // ---- Bau 04.G (2026-07-01): queryLocalJudged — Strang A2 ----
+      //
+      // Test 21 komponiert Vorfilter (queryLocal, SbkimEmbedding-Mock aus
+      // Tests 11–15) + Richter (hybridMatch, Mock-LLM aus withMockLLM04D).
+      // Ohne Schlüssel bleibt es der reine Vorfilter (Cosinus-Reihenfolge);
+      // mit Mock-Richter urteilt der Richter und sortiert um (passt zuerst).
+      SbkimUI.addButton("04_match", "Test 21: queryLocalJudged (Vorfilter + KI-Richter, Mock-LLM)", async function () {
+        var ref = ensureQueryLocalSetup04C();
+        var corpus = [
+          { label: "X", anchorId: "x", text: "wein tannin speisebegleitung",    passageVec: mixedVec04C(ref, 0.95, 2101) },
+          { label: "Y", anchorId: "y", text: "kaese reifung aromen hauptgang",  passageVec: mixedVec04C(ref, 0.88, 2102) },
+          { label: "Z", anchorId: "z", text: "auspuff schweissen endrohr",      passageVec: mixedVec04C(ref, 0.82, 2103) },
+        ];
+        // Ohne Schlüssel → reiner Vorfilter (Cosinus-Reihenfolge X,Y,Z).
+        var ohneRichter = await SbkimMatch.queryLocalJudged("suche semantische Partner", 5, { corpus: corpus });
+        // Mit Mock-Richter: X passt NICHT, Y stark, Z mittel → Y,Z,X.
+        var verdicts = [
+          { passt: false, score: 0.10, begruendung: "thematisch fremd" },
+          { passt: true,  score: 0.90, begruendung: "starke Passung" },
+          { passt: true,  score: 0.70, begruendung: "teilweise Passung" },
+        ];
+        var mitRichter = await withMockLLM04D("ok", verdicts, async function () {
+          return await SbkimMatch.queryLocalJudged("suche semantische Partner", 5, { corpus: corpus, apiKey: "sk-mock-test" });
+        });
+        var okVor = (ohneRichter.judged === false) &&
+          JSON.stringify(ohneRichter.candidates.map(function (c) { return c.label; })) === JSON.stringify(["X", "Y", "Z"]);
+        var okJudge = (mitRichter.judged === true) &&
+          JSON.stringify(mitRichter.candidates.map(function (c) { return c.label; })) === JSON.stringify(["Y", "Z", "X"]) &&
+          mitRichter.candidates[0].passt === true;
+        var ok = okVor && okJudge;
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "queryLocalJudged OK (Richter sortiert um)" : "Richter-Verhalten falsch");
+        return {
+          ohne_richter_vorfilter: {
+            judged: ohneRichter.judged,
+            reihenfolge: ohneRichter.candidates.map(function (c) { return c.label; }),
+          },
+          mit_richter: {
+            judged: mitRichter.judged,
+            reihenfolge: mitRichter.candidates.map(function (c) {
+              return { label: c.label, passt: c.passt, judgeScore: c.judgeScore, cosinus: Number(c.score.toFixed(4)) };
+            }),
+            bezeugung: mitRichter.judgment && mitRichter.judgment.attestation ? mitRichter.judgment.attestation.kind : null,
+          },
+          erwartung: "Ohne Schlüssel: Vorfilter X,Y,Z (Cosinus). Mit Richter: Y,Z,X (passt zuerst, dann Richter-Score) — X (passt:false) rutscht nach unten.",
+          hinweis: "Opt-in/BYOK + fail-soft. Reine Anzeige-Sortierung — der 0.80-Andock-Riegel (Modul 05) bleibt unberührt.",
         };
       });
     })();

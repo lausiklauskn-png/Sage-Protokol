@@ -119,6 +119,36 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-01 · Bau 04.G — queryLocalJudged (Strang A2: KI-Richter fest im Antwort-Pfad)
+
+**Rolle:** Bau-Sitzung (Branch `claude/a2-queryjudged-verankerung`, von `main` nach A1-Merge).
+Klaus: „entscheide selber" → gewählt: **Strang A2** als direkte Fortsetzung von A1 auf demselben
+Strang (Trefferqualität, antwortende Seite), sauber in Modul 04 (keine Modul-Vermischung).
+
+**Was getan:**
+- Neue async-Funktion `queryLocalJudged(text, k, options?)` in `src/modules/04_match.js` — komponiert
+  **Vorfilter** (`queryLocal`, A1-Hybrid durchgereicht) + **Richter** (`hybridMatch`, opt-in/BYOK):
+  1. queryLocal liefert lokale Top-k (server-los). 2. Nur mit `options.apiKey` urteilt der Richter über
+  die Finalisten und sortiert um (`passt` zuerst, dann Richter-Score). 3. Fail-soft: kein Schlüssel /
+  leerer Vorfilter / Richter nicht erreichbar → roher Vorfilter, kein Throw.
+- Richter beurteilt den Passage-**Text** → queryLocalJudged löst den Korpus identisch zu queryLocal auf
+  und baut die Text-Karte (anchorId bevorzugt, sonst label). Treffer tragen additiv
+  `passt`/`judgeScore`/`begruendung`; `score` bleibt der Cosinus. Bezeugung (`attestation`) durchgereicht.
+- **Kein anderes Modul angefasst** — die Verdrahtung in Modul 15 (`op:"query"`-Empfänger) bleibt eigener,
+  klar abgegrenzter Folge-Schritt. `_meta` + Selbstcheck + Doku (Karte 04, INTERFACES §1) nachgezogen.
+  Byte-Kopien `such-tool/` + `sbkim-bundle/` mitgezogen (Drift-Guard grün). Panel 04 **Test 21**.
+
+**Beweis (headless):** neuer `tests/smoke_bau04g_query_local_judged.mjs` **28/28 grün** (Opt-in-aus ohne
+fetch-Call, leerer Vorfilter, Richter-Umsortierung + Bezeugung, Fail-soft, Passage-Text erreicht Richter,
+Hybrid-Durchreichung). Regression 04c/04d/04e/04f grün, Drift-Guard standalone 46/46 + bundle 21/21.
+
+**TABU:** `PROVIDER_MIN_MATCH` (0.80) + Andock-Riegel (Modul 05) unberührt; kein Schlüssel im Code;
+kein PROTOCOL_VERSION-/DB_VERSION-Bump; kein Modul-Eingriff außer 04.
+
+**Was offen / nächster Schritt:** Browser-Sichttest Panel 04 Test 21 (+ echter Richter-Schlüssel) —
+**wartet auf Klaus**. Danach: Modul-15-Verdrahtung von `queryLocalJudged` in den Cross-Knoten-Antwort-Pfad
+(eigener Schritt, Modul-15-Scope) ODER Strang B1 (OCR-Modul) / A3 (Schnipsel-Chunking).
+
 ## 2026-07-01 · Bau 04.F — Hybrid BM25+Vektor in Modul 04 (Strang A1 der Semantik-Matching-Werkzeugkiste)
 
 **Rolle:** Bau-Sitzung (Branch `claude/semantic-matching-mistral-ocr-raxbb9`). Auftrag:
