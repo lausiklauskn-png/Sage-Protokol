@@ -113,6 +113,8 @@
   var resultsEl = null;
   var hintEl = null;
   var voiceBtnEl = null;
+  var ocrBtnEl = null;         // 📷 Foto/Handschrift → Suchtext (Modul 24)
+  var ocrKey = "";             // EU-OCR-Schlüssel, RAM-only (nur diese Sitzung)
   var searchBtnEl = null;
   var euChipEl = null;
   var areaRowEl = null;        // Bereichs-Checkboxen (App/Knoten/Internet)
@@ -1203,6 +1205,14 @@
     });
     inrow.appendChild(voiceBtnEl);
 
+    // 📷 OCR-Knopf (Strang B2): Foto/Handschrift → Suchtext via Modul 24.
+    ocrBtnEl = makeBtn(doc, "sbkim-sw-iconbtn sbkim-sw-ocr", "📷", "Foto/Handschrift → Suchtext (EU-OCR, Modul 24)");
+    ocrBtnEl.addEventListener("click", function (ev) {
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      onOcrClick();
+    });
+    inrow.appendChild(ocrBtnEl);
+
     searchBtnEl = makeBtn(doc, "sbkim-sw-iconbtn sbkim-sw-search", "🔍", "Suchen");
     searchBtnEl.addEventListener("click", function (ev) {
       if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -1598,6 +1608,62 @@
     }
     // EU-Engine braucht Schlüssel + Aufnahme — in Increment 1 fail-soft.
     setHint("Sprach-Engine '" + engine + "' braucht einen EU-Schlüssel — bitte tippen.");
+  }
+
+  // 📷 OCR-Eingabe (Strang B2): Foto/Handschrift → Suchtext via Modul 24.
+  // Öffnet einen Datei-Wähler, lässt das Bild per Mistral OCR (EU, BYOK) erkennen
+  // und hängt den Text ans Feld. EU-Politik des Widgets gilt. Fail-soft.
+  function onOcrClick(targetEl) {
+    var target = targetEl || inputEl;
+    var ocr = global.SbkimOcr;
+    if (!ocr || typeof ocr.recognize !== "function") {
+      setHint("Modul 24 (OCR) nicht geladen — bitte tippen.");
+      return;
+    }
+    var doc = global.document;
+    if (!doc || typeof global.FileReader !== "function") {
+      setHint("OCR braucht einen Browser — bitte tippen.");
+      return;
+    }
+    var inp = doc.createElement("input");
+    inp.type = "file";
+    inp.accept = "image/*,application/pdf";
+    inp.setAttribute("capture", "environment");
+    inp.style.display = "none";
+    inp.addEventListener("change", function () {
+      var file = inp.files && inp.files[0];
+      if (inp.parentNode) inp.parentNode.removeChild(inp);
+      if (!file) return;
+      if (!ocrKey) {
+        var k = (typeof global.prompt === "function")
+          ? global.prompt("OCR-Schlüssel (EU/Mistral, nur diese Sitzung — wird nicht gespeichert):") : null;
+        if (!k) return;
+        ocrKey = String(k).trim();
+      }
+      setHint("📷 Texterkennung läuft …");
+      var reader = new global.FileReader();
+      reader.onload = function (ev) {
+        ocr.recognize(String(ev.target.result),
+          { provider: "mistral", apiKey: ocrKey, mimeType: file.type, euPolicy: optEuPolicy })
+          .then(function (r) {
+            if (r && r.available) {
+              appendToField(target, r.text || "");
+              setHint(r.text ? ("Erkannt (" + r.text.length + " Zeichen).") : "Kein Text erkannt.");
+            } else {
+              var reason = (r && r.reason) || "Texterkennung nicht möglich.";
+              if (/Schlüssel/.test(reason)) ocrKey = "";
+              setHint("⚠️ " + reason);
+            }
+          })
+          .catch(function (e) {
+            setHint("⚠️ " + (ocr.ocrErrorHint ? ocr.ocrErrorHint(e) : "Texterkennung nicht möglich — bitte tippen."));
+          });
+      };
+      reader.onerror = function () { setHint("Bild konnte nicht gelesen werden."); };
+      reader.readAsDataURL(file);
+    });
+    (doc.body || doc.documentElement).appendChild(inp);
+    inp.click();
   }
 
   // ---- Komponierte Suche (Vorfilter → Richter → Fail-soft) ----

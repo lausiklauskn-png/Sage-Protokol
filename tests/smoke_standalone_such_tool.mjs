@@ -21,12 +21,12 @@ const REQUIRED = [
   "index.html", "manifest.json", "sbkim-sw.js", "impressum.html",
   "icon-192.png", "icon-512.png",
   "modules/03_embedding.js", "modules/04_match.js",
-  "modules/21_spracheingabe.js", "modules/22_such_widget.js",
+  "modules/21_spracheingabe.js", "modules/24_ocr_eingabe.js", "modules/22_such_widget.js",
 ];
 for (const f of REQUIRED) ok("Probe 1: existiert " + f, existsSync(resolve(toolDir, f)));
 
 // ---- Probe 2: Modul-Kopien byte-identisch zu src/modules (Drift-Guard) ----
-const MODULES = ["03_embedding", "04_match", "21_spracheingabe", "22_such_widget"];
+const MODULES = ["03_embedding", "04_match", "21_spracheingabe", "24_ocr_eingabe", "22_such_widget"];
 for (const m of MODULES) {
   const src = readFileSync(resolve(repoRoot, "src/modules/" + m + ".js"));
   const copy = existsSync(resolve(toolDir, "modules/" + m + ".js"))

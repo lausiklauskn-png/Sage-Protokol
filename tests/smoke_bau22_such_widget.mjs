@@ -352,6 +352,16 @@ async function run() {
   const hint = queryFirst(root, ".sbkim-sw-hint");
   record("Probe 15: Hinweis gesetzt", "true", String(/Modul 21/.test(hint.textContent)), /Modul 21/.test(hint.textContent));
 
+  // ---- Probe 15c: OCR-Knopf (Strang B2) gerendert + fail-soft ohne Modul 24 ----
+  delete stub.SbkimOcr;
+  const ocrBtn = queryFirst(root, ".sbkim-sw-ocr");
+  record("Probe 15c: OCR-Knopf gerendert", "true", String(!!ocrBtn), !!ocrBtn);
+  let ocrThrew = false;
+  try { if (ocrBtn) ocrBtn.dispatchEvent({ type: "click", target: ocrBtn, stopPropagation: () => {} }); } catch (e) { ocrThrew = true; }
+  record("Probe 15c: OCR-Klick ohne Modul 24 wirft nicht", "false", String(ocrThrew), ocrThrew === false);
+  const ocrHint = queryFirst(root, ".sbkim-sw-hint");
+  record("Probe 15c: OCR-Hinweis (Modul 24) gesetzt", "true", String(/Modul 24/.test(ocrHint.textContent)), /Modul 24/.test(ocrHint.textContent));
+
   // ---- Probe 16: Spracheingabe Browser-Pfad hängt Text ans Feld ----
   input.value = "anfang";
   stub.SbkimSpeech = {

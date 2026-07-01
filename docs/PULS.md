@@ -119,6 +119,29 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-01 · B2-Rollout — OCR ins Such-Widget (Modul 22) + Sage Such-Tool
+
+**Rolle:** Bau-Sitzung (Branch `claude/b2-ocr-suchwidget`). Strang-B2-Rollout App 3/5 (Sage
+Such-Tool), nachdem App 1 (Mein-Rezeptbuch #273) + App 2 (Mein-Mixarium #85) live sind.
+
+**Was getan:** Modul 22 (Such-Widget) bekommt einen **📷-OCR-Knopf** neben dem 🎤-Sprach-Knopf —
+**Foto/Handschrift → Suchtext** via Modul 24 (`SbkimOcr`), im selben Muster wie die Sprach-Eingabe.
+Öffnet Datei-Wähler → Mistral OCR (EU, BYOK, Schlüssel RAM-only via prompt) → `appendToField` hängt
+den erkannten Text ans Suchfeld. EU-Politik des Widgets (`optEuPolicy`) gilt; konsequent fail-soft
+(kein Modul 24 / kein Schlüssel / Fehler → Hinweis, kein Throw). Modul 24 nach `such-tool/modules/`
+byte-kopiert + in `such-tool/index.html` geladen; Sage-Page lädt Modul 24 bereits (aus B1).
+
+**Beweis (headless):** `smoke_bau22` **260/260** (+3 Proben: OCR-Knopf gerendert / Klick ohne Modul 24
+wirft nicht / „Modul 24"-Hinweis). Drift-Guard `smoke_standalone_such_tool` **49/49** (Modul 24 als
+Pflicht-Datei + byte-1:1 + im index.html geladen). `smoke_bau22e` 45/45, `smoke_bundle_connect` 21/21.
+`node --check` 22 grün.
+
+**TABU:** rein additiv (DOM-Knopf + fail-soft-Handler), kein Eingriff in Suche/Match/Andock; Modul 24
+nur über öffentliche `recognize`-Fläche; kein Schlüssel im Code, kein PII.
+
+**Nächster Schritt:** B2 App 4 (Pinnwand) + App 5 (BookLedgerPro, EU-Option neben Google Vision).
+Browser-Sichttest (📷-Knopf im Widget + Mistral-Schlüssel) wartet auf Klaus.
+
 ## 2026-07-01 · Modul 24 — OCR-/Bild-Eingabe (Strang B1, Geschwister von Modul 21)
 
 **Rolle:** Bau-Sitzung (Branch `claude/b1-ocr-eingabe-modul`, von frischem `main`). Klaus: „weiter"
