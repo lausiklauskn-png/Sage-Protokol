@@ -141,12 +141,14 @@ Sitzungs-Entscheidung („entscheide selber, solange sinnvoll und logisch").
   Kompat `smoke_inhaltstreuer_domainvektor.mjs` **25/25 grün**; Drift-Guards such-tool
   (49/49) + sbkim-bundle (21/21) + pinnwand (60/60) byte-1:1 grün (Modul 03 byte-kopiert).
 
-**Ehrlich offen:** OB der Vorspann die Domänen-Trennung real verbessert, ist **headless nicht
-messbar** (transformers.js nur im Browser; Fake-Modell beweist nur die Mechanik). **Kein
-%-Gewinn behauptet** — Klaus misst mit Panel-04-„A3-NACHMESSUNG" den echten Delta (nach
-Schritt-0-Baseline KALIBRIER-BODEN/SCHWELLEN-ANALYSE). Zeigt A3 keinen Gewinn → ehrlicher
-Negativ-Befund, Vorspann bleibt opt-in-Werkzeug ohne netzweite Verdrahtung. Doku: LEHRE
-§ „Stand 2026-07-01 — A3".
+**GEMESSEN (Klaus, Browser, 2026-07-01 Abend): NEGATIV.** Panel 04 `A3-NACHMESSUNG` mit echten
+transformers.js-Vektoren: Baseline-Lücke −0.0135, A3-Lücke −0.1210, **Δ −0.1075 → A3
+verschlechtert die Trennung.** Ursache: pro-Knoten unterschiedliche Domänen-Vorspänne schieben
+auch echte Verwandte (rezept↔mix) auseinander; die Anisotropie ist durch keinen gratis Cosinus-
+Trick am Domänen-Zentroid heilbar (der „verwandt"-Weg bleibt der KI-Richter). **Konsequenz:** A3
+wird **NICHT** netzweit verdrahtet, bleibt harmloses additives opt-in-Werkzeug (byte-gleich ohne
+Kontext). Ehrlicher Negativ-Befund wie beim v2-Center. Doku: LEHRE § „Stand 2026-07-01 (Abend) —
+A3 im Browser gemessen: NEGATIV". **Nächster Hebel: A4 (Query-Expansion), orthogonaler Recall-Hebel.**
 
 **Nächster sinnvoller Schritt:** (1) Klaus: Panel 04 Baseline + A3-NACHMESSUNG im Browser
 laufen lassen → Delta ablesen. (2) Bei positivem Delta: `embedContentVector`-Aufrufer
