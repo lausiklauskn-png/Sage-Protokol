@@ -115,7 +115,7 @@ body{background:#33363d;color:#111;font-family:Inter,"Segoe UI",system-ui,sans-s
 #hint b{color:#e0c989}
 #pages{padding:22px 10px 90px;display:flex;flex-direction:column;align-items:center;gap:30px}
 
-.page{width:210mm;min-height:297mm;background:#fff;box-shadow:0 6px 22px rgba(0,0,0,.5);position:relative;padding:16mm 14mm;box-sizing:border-box}
+.page{width:210mm;min-height:297mm;background:#fff;box-shadow:0 6px 22px rgba(0,0,0,.5);position:relative;padding:10mm 14mm;box-sizing:border-box}
 @media screen{.page{zoom:var(--zoom,1)}}
 .page-foot{margin-top:-20px;text-align:center;font:600 .74rem Inter,sans-serif;color:#d7d4ca}
 .page-foot .ok{color:#83d39a}
@@ -171,7 +171,7 @@ body{background:#33363d;color:#111;font-family:Inter,"Segoe UI",system-ui,sans-s
   body{background:#fff}
   #toolbar,#hint,.page-foot,.gap{display:none !important}
   #pages{padding:0;gap:0}
-  .page{width:210mm;min-height:auto;box-shadow:none;margin:0;padding:16mm 14mm;page-break-after:always;zoom:1}
+  .page{width:210mm;min-height:auto;box-shadow:none;margin:0;padding:10mm 14mm;page-break-after:always;zoom:1}
   .page:last-child{page-break-after:auto}
   @page{size:A4 portrait;margin:0}
   .page-content thead th,.page-content tbody tr:nth-child(even),.page-content .note,.page-content .card,.page-content .abstract,.page-content .dot,.page-content figure svg{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -831,7 +831,7 @@ body{background:#33363d;color:#111;font-family:Inter,"Segoe UI",system-ui,sans-s
 (function(){
 "use strict";
 // ---- Konstanten (A4 hoch) ----
-var MARGIN_X=14, MARGIN_Y=16;                 // mm
+var MARGIN_X=14, MARGIN_Y=10;                 // mm (oben/unten schmaler)
 var CONTENT_H_MM=297-2*MARGIN_Y;              // 265 mm nutzbare Hoehe
 var SPACER_MM=6;                              // ein "Abstand" = 6 mm (~1 Zeile)
 var TOL_MM=2;                                 // Toleranz beim Umbruch
