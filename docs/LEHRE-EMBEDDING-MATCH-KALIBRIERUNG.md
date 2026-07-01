@@ -6,6 +6,40 @@
 > haben. **Doku für nachfolgende Bauten** — verbindlich zu lesen, bevor jemand die
 > Match-Schwelle (`PROVIDER_MIN_MATCH = 0.80`) oder Modul 04 anfasst.
 
+## Stand 2026-07-01 — A3: Contextual Chunking gebaut (additiv), Trennungs-Nutzen wartet auf Browser-Messung
+
+**Kurz:** Strang A, Hebel A3. `embedContentVector` (Modul 03) bekommt einen
+**additiven** Kontext-Vorspann: jedem Inhalts-Schnipsel wird VOR dem Einbetten ein
+kurzer Domänen-/Dokument-Kontext vorangestellt (Anthropic „Contextual Retrieval",
+deterministisch/offline/gratis), dann wie bisher gemittelt. Ziel: den gemittelten
+Domänen-Zentroid domänen-treuer und zwischen Domänen besser trennbar machen — der
+Hebel, der die in dieser Lehre dokumentierte **Anisotropie/Mittelungs-Aufblähung**
+angreift, **ohne** den Datenvertrag zu brechen (anders als der „Schnipsel-Mittel"-Lead,
+der Schnipsel-Vektoren in die Spore legen + alle Knoten neu signieren müsste).
+
+**Ehrlich offen (nicht behauptet):** OB der Vorspann die Trennung real verbessert, ist
+**headless nicht messbar** (transformers.js lädt nur im Browser; das Fake-Modell im Smoke
+hasht Text → Zufalls-Vektor, beweist nur die Chunking-Mechanik, nicht die Semantik).
+Darum wird **kein %-Gewinn** behauptet. Der Trennungs-Delta wird im Browser gemessen:
+
+- **Panel 04 „A3-NACHMESSUNG"** (neuer Knopf): vergleicht Baseline (ohne Kontext) vs.
+  A3 (mit Domänen-Vorspann) über dieselbe Mittelung + denselben zentrierten Cosinus
+  (`relatedness`, v1); zeigt die Lücke (min verwandt − max unverwandt) je Verfahren und
+  ihr Delta. Positives Δ = A3 trennt besser. **Reine Messung, setzt keine Konstante.**
+- Zuerst `KALIBRIER-BODEN` / `SCHWELLEN-ANALYSE` als Baseline laufen (Schritt 0), dann A3.
+
+**Leitplanken gewahrt:** gatet nichts, `PROVIDER_MIN_MATCH = 0.80`/Andock-Riegel (Modul 05)
+unberührt, kein PROTOCOL_VERSION-/DB_VERSION-Bump, kein Spore-Feld. Ohne Kontext ist das
+Verhalten byte-gleich zu vorher. Headless `tests/smoke_a3_contextual_chunking.mjs` 20/20,
+Rückwärts-Kompat `smoke_inhaltstreuer_domainvektor.mjs` 25/25, Drift-Guards (such-tool/
+sbkim-bundle/pinnwand) byte-1:1 grün. **Browser-Sichttest wartet auf Klaus.**
+
+Falls A3 im Browser die Lücke NICHT vergrößert, ist das ein **ehrlicher Negativ-Befund**
+(wie beim v2-Center) — dann bleibt der Vorspann als opt-in-Werkzeug liegen, ohne netzweit
+verdrahtet zu werden. „Erst messen, dann behaupten."
+
+---
+
 ## Stand 2026-06-28 (tiefe Nacht) — Kalibrier-Abschluss: das „verwandt"-Maß qualifiziert sich für den KI-Richter (Browser-Messreihe + Klaus' Richtungs-Entscheid)
 
 **Kurz:** Eine vierteilige Browser-Messreihe (Klaus' Galaxy-Tab, `tests/manual_check.html`

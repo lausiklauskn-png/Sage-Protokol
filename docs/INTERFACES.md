@@ -727,6 +727,13 @@ Bietet (öffentlich):
   embedPassage(text: string)              → Promise<Float32Array(384)>  // L2-normalisiert
   embedQueryBatch(texts: string[])        → Promise<Float32Array[]>    // Reihenfolge erhalten
   embedPassageBatch(texts: string[])      → Promise<Float32Array[]>    // Reihenfolge erhalten
+  embedContentVector(samples, opts?)      → Promise<{vector(384), count, source:"content", contextUsed}>
+                                          // (2026-06-28) inhalts-treuer Domänen-Zentroid aus Schnipseln.
+                                          // A3 (2026-07-01, ADDITIV): opts.context / pro-Schnipsel {context}
+                                          // stellt jedem Schnipsel VOR dem Einbetten einen Domänen-Vorspann
+                                          // voran (Contextual Retrieval). Ohne Kontext byte-gleich zu vorher.
+                                          // KEIN Spore-Feld, KEIN PROTOCOL_VERSION-Bump, Match-Schwelle unberührt.
+  _assembleContentTexts(samples, opts?)   → {texts, contextUsed}       // Test-Brücke (A3), reine Text-Assemblierung
 
   KEIN mode-Parameter. e5-Rollen-Prefix wird intern angewandt:
     embedQuery   → "query: "   + text
