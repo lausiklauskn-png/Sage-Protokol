@@ -2701,7 +2701,13 @@ Events:
 
 Selbstcheck:
   Beim Skript-Laden (synchron, vor jeglichem Aufruf):
-    console.info("MODUL 15 MEMBRAN bereit, Funktionen: init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}");
+    console.info("MODUL 15 MEMBRAN bereit, Funktionen: init/read/setQueryJudge/fremdzugriff.{list,subscribe,clear,_recordForTest}");
+  // Bau 04.G-Folge (Strang A2, 2026-07-01): optionaler KI-Richter im op:"query"-
+  // Antwort-Pfad. init({queryJudge:{apiKey,provider?,euOnly?,hybrid?,endpoint?,model?}})
+  // ODER setQueryJudge(cfg) → Empfänger ruft SbkimMatch.queryLocalJudged statt
+  // queryLocal (opt-in/BYOK, RAM-only, fail-soft). Default null = roher Vorfilter
+  // (byte-gleich). _meta.queryJudgeConfigured (Boolean, kein Schlüssel-Leak).
+  // PROVIDER_MIN_MATCH + 0.80-Andock-Riegel unberührt.
   Wie Modul 00/01/02/04/05/06/07/08 — keine Konstante in der Selbstcheck-
   Zeile. MEMBRANE_FREMDZUGRIFF_BUFFER_MAX steht verbindlich in §0;
   AGENT_HINT_MAX_LEN = 64 ist modul-lokal in Karte 15.

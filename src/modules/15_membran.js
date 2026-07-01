@@ -98,6 +98,16 @@
   // produktive Pfad-Erweiterung.
   var testButtonEnabled = false;
 
+  // Bau 04.G-Folge (Strang A2, 2026-07-01): optionale KI-Richter-Konfig für
+  // den `op:"query"`-Antwort-Pfad. Default `null` = Richter AUS → der Empfänger
+  // ruft wie bisher `SbkimMatch.queryLocal` (roher Vorfilter). Setzt der
+  // Betreiber `init({queryJudge:{apiKey,provider?,euOnly?,hybrid?,endpoint?,model?}})`
+  // ODER `setQueryJudge(cfg)`, ruft der Empfänger `SbkimMatch.queryLocalJudged`
+  // (Vorfilter + Richter, BYOK, fail-soft). RAM-only — kein Persist, kein Log,
+  // der Schlüssel steht NIE im Code. Opt-in, weil der antwortende Knoten mit dem
+  // Richter seinen eigenen Schlüssel für eingehende Fremd-Anfragen ausgibt.
+  var queryJudge = null;
+
   // ---- Hilfsfunktionen ----
 
   function nowIso() { return new Date().toISOString(); }
@@ -490,6 +500,27 @@
       }
       var k = (typeof payload.k === "number" && payload.k > 0) ? payload.k : 5;
       var match = global.SbkimMatch;
+      // Richter-Pfad (Strang A2) nur, wenn der Betreiber ihn opt-in konfiguriert
+      // hat UND queryLocalJudged vorhanden ist. Sonst der bisherige rohe
+      // Vorfilter-Pfad (byte-gleiches Verhalten wie vor dieser Änderung).
+      var useJudge = queryJudge &&
+        typeof queryJudge.apiKey === "string" && queryJudge.apiKey.length > 0 &&
+        match && typeof match.queryLocalJudged === "function";
+      if (useJudge) {
+        try {
+          // queryLocalJudged ist selbst fail-soft: kein/fehlerhafter Richter →
+          // roher Vorfilter in `.candidates`. Wir senden die Kandidaten-Liste.
+          var judgedRes = await match.queryLocalJudged(payload.text, k, queryJudge);
+          var jCandidates = (judgedRes && Array.isArray(judgedRes.candidates)) ? judgedRes.candidates : [];
+          sendQueryResultReply(event, nonce, jCandidates, null);
+          recordPostMessageEntry(event, op, nonce, "accepted");
+        } catch (err) {
+          warn("SbkimMatch.queryLocalJudged hat geworfen — fail-soft mit Fehler-Antwort.", err);
+          sendQueryResultReply(event, nonce, [], "module-04c-query-failed");
+          recordPostMessageEntry(event, op, nonce, "ignored");
+        }
+        return;
+      }
       if (match && typeof match.queryLocal === "function") {
         try {
           var results = await match.queryLocal(payload.text, k);
@@ -1123,6 +1154,10 @@
     if (opts.enableTestButton === true) {
       testButtonEnabled = true;
     }
+    // Optionale KI-Richter-Konfig (Strang A2). null/false löscht sie wieder.
+    if (Object.prototype.hasOwnProperty.call(opts, "queryJudge")) {
+      queryJudge = (opts.queryJudge && typeof opts.queryJudge === "object") ? opts.queryJudge : null;
+    }
     var mountModal = opts.mountModal !== false; // default true
 
     if (ready) {
@@ -1191,9 +1226,17 @@
 
   // ---- public surface ----
 
+  // setQueryJudge(cfg) — Laufzeit-Setter für die KI-Richter-Konfig des
+  // op:"query"-Antwort-Pfads (Strang A2). cfg = Objekt (opt-in, RAM-only) oder
+  // null/false (löscht → zurück zum rohen Vorfilter). Kein Persist, kein Log.
+  function setQueryJudge(cfg) {
+    queryJudge = (cfg && typeof cfg === "object") ? cfg : null;
+  }
+
   var SbkimMembrane = {
     init: init,
     read: readSnapshot,
+    setQueryJudge: setQueryJudge,
     fremdzugriff: {
       list: listFremdzugriff,
       subscribe: subscribeFremdzugriff,
@@ -1216,6 +1259,11 @@
       get modalOpen() { return modalOpen; },
       get ready() { return ready; },
       get allowedOrigins() { return allowedOrigins.slice(); },
+      // Strang A2: nur ob der Richter-Pfad opt-in konfiguriert ist — NIE der
+      // Schlüssel selbst (RAM-only, kein Leak über die Read-Fläche).
+      get queryJudgeConfigured() {
+        return !!(queryJudge && typeof queryJudge.apiKey === "string" && queryJudge.apiKey.length > 0);
+      },
       // Sub (b) Read-Anker — Größen-Getter, keine direkten Map-Referenzen
       // (Snapshot-Pattern; interne Maps bleiben modul-lokal).
       get recentSporeRefsCount() { return recentSporeRefs.size; },
@@ -1263,7 +1311,7 @@
   // Self-check (synchron, beim Skript-Laden — vor jedem Aufruf).
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 15 MEMBRAN bereit, Funktionen: init/read/fremdzugriff.{list,subscribe,clear,_recordForTest}",
+      "MODUL 15 MEMBRAN bereit, Funktionen: init/read/setQueryJudge/fremdzugriff.{list,subscribe,clear,_recordForTest}",
     );
   }
 })(typeof window !== "undefined" ? window : globalThis);
