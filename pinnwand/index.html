@@ -254,7 +254,7 @@
       <span class="label" id="sendhint">&nbsp;</span>
       <span style="display:flex; gap:8px; align-items:center;">
         <button id="mic" class="tbtn" title="Frage einsprechen">🎤</button>
-        <button id="ocrbtn" class="tbtn" title="Foto/Handschrift → Frage (EU-OCR)">📷</button>
+        <button id="ocrbtn" class="tbtn" title="Foto/Handschrift → Frage (Mistral OCR, EU)">📷</button>
         <button id="ask" disabled>Frage stellen</button></span>
     </div>
   </div>
@@ -1219,7 +1219,8 @@ $('board-clear').addEventListener('click', clearBoard);
             if (r && r.available) {
               const base = $('qmsg').value ? $('qmsg').value.replace(/\s*$/, '') + ' ' : '';
               $('qmsg').value = (base + (r.text || '')).slice(0, 280);
-              $('sendhint').textContent = r.text ? ('Erkannt (' + r.text.length + ' Zeichen).') : 'Kein Text erkannt.';
+              const ver = r.model ? (' · Mistral OCR ' + r.model) : '';
+              $('sendhint').textContent = (r.text ? ('Erkannt (' + r.text.length + ' Zeichen)') : 'Kein Text erkannt') + ver;
               updateSendState();
             } else {
               const reason = (r && r.reason) || 'Texterkennung nicht möglich.';

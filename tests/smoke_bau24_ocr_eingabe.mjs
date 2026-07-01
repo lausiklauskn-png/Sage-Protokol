@@ -33,6 +33,9 @@ globalThis.fetch = async (url, init) => {
   if (stub === "mistral-ok") {
     return { ok: true, status: 200, json: async () => ({ pages: [{ markdown: "Zeile eins" }, { markdown: "Zeile zwei" }] }) };
   }
+  if (stub === "mistral-ok-model") {
+    return { ok: true, status: 200, json: async () => ({ model: "mistral-ocr-2505", pages: [{ markdown: "Text" }] }) };
+  }
   if (stub === "google-ok") {
     return { ok: true, status: 200, json: async () => ({ responses: [{ fullTextAnnotation: { text: "Erkannter Text" } }] }) };
   }
@@ -69,6 +72,11 @@ console.log("Probe 4: Mistral Happy-Path");
   ok("available:true", r.available === true);
   ok("provider mistral", r.provider === "mistral");
   ok("Text aus pages zusammengesetzt", r.text === "Zeile eins\n\nZeile zwei", JSON.stringify(r.text));
+  ok("model-Fallback = mistral-ocr-latest (Antwort ohne model)", r.model === "mistral-ocr-latest", String(r.model));
+  stub = "mistral-ok-model";
+  const rm = await O.recognize("QUJD", { apiKey: "sk-mistral" });
+  ok("model aus API-Antwort (mistral-ocr-2505)", rm.model === "mistral-ocr-2505", String(rm.model));
+  stub = "mistral-ok";
   ok("Request an Mistral-URL", lastReq.url === O._meta.mistralOcrUrl);
   ok("Bearer-Header BYOK", lastReq.init.headers["Authorization"] === "Bearer sk-mistral");
   const body = JSON.parse(lastReq.init.body);
