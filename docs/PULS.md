@@ -119,6 +119,51 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-01 · Bau 04.F — Hybrid BM25+Vektor in Modul 04 (Strang A1 der Semantik-Matching-Werkzeugkiste)
+
+**Rolle:** Bau-Sitzung (Branch `claude/semantic-matching-mistral-ocr-raxbb9`). Auftrag:
+Brief 2026-07-01 „Semantische Matching-Qualität (Strang A) + Mistral-OCR-Eingabe (Strang B)".
+Diese Sitzung setzt **Strang A1** um — den im Brief als **größten Hebel** benannten Schritt.
+
+**Was getan:**
+- **BM25 (lokal, offline, deterministisch) + Reciprocal Rank Fusion** in `src/modules/04_match.js`
+  ergänzen den reinen e5-Cosinus (dessen Anisotropie-Boden ~0.82 Bedeutung nicht trennt, siehe
+  `LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md`). Drei neue Funktionen: `tokenizeBM25`, `bm25Scores`
+  (exportiert für Panel-04-Messung), intern `rrfScore`. `k1=1.5`/`b=0.75`/`RRF_K=60`.
+- **`queryLocal` opt-in `options.hybrid`:** ohne Flag byte-gleiches Bau-04.C-Verhalten (nur
+  Cosinus); mit `hybrid:true` fusioniert es BM25+Vektor via RRF. Aufnahme = (cos ≥ 0.80 **ODER**
+  bm25 > 0) → der **Kern-Hebel**: ein Eintrag unter dem Vektor-Boden mit exaktem Wort-Treffer wird
+  jetzt gefunden. Treffer tragen additiv `bm25`+`fused`; `score` bleibt der Cosinus.
+- **Korpus-Schema additiv:** optionales `text`-Feld (BM25-Doc; Fallback `label`), `validateCorpus`
+  prüft es nur wenn vorhanden — Bestands-Korpora bleiben gültig.
+- **Doku nachgezogen:** Karte 04 § Bauzustand (Bau 04.F + Sichttest-Zeile), INTERFACES.md §1
+  (queryLocal-Signatur + Selbstcheck-Zeile). Byte-Kopien `such-tool/` + `sbkim-bundle/` mitgezogen
+  (Drift-Guard grün).
+- **TABU eingehalten:** `PROVIDER_MIN_MATCH` (0.80) unverändert = Vektor-Pfad-Boden UND Andock-
+  Riegel (Modul 05 unberührt); kein Netz/LLM/Schlüssel in BM25; kein PROTOCOL_VERSION-/DB_VERSION-
+  Bump; kein Modul-Eingriff außer 04.
+
+**Beweis (headless):** neuer `tests/smoke_bau04f_hybrid_bm25.mjs` **32/32 grün**. Regression:
+smoke_bau04c 43/43, 04d 68/68, 04e 29/29, standalone-Drift 46/46, bundle-connect 21/21, 05_nostr
+17/17 (konsumiert Modul 04). (Die restlichen Smokes brauchen `fake-indexeddb`/transformers.js — im
+frischen Klon nachinstalliert, Modul-01/05–08-Tests danach grün; nichts durch Bau 04.F berührt.)
+
+**✅ Browser-Sichttest GRÜN (Klaus, 2026-07-01, Termux + `python3 -m http.server`):** Panel 04
+**Test 20** „Hybrid BM25+Vektor" live bestätigt. Frage „wespen hausmittel": Standard (nur Cosinus)
+liefert nur B (0.8645) + C (0.8369), „A (unter Boden)" (cos 0.7091) fehlt; **Hybrid** stellt A mit
+`bm25 1.3938`/`fused 0.03227` an die Spitze (vor C 0.03226 und B 0.01639). Kern-Hebel im Browser
+bewiesen — der lexikalische Pfad holt den Unter-Boden-Treffer zurück, 0.80-Andock-Riegel unberührt.
+PR #509 damit headless (32/32) UND Browser grün → merge-reif.
+
+**Was offen / nächster sinnvoller Schritt:**
+- **Schritt-0-Baseline-Messung** (KALIBRIER-BODEN / SCHWELLEN-ANALYSE / VERFAHREN-VERGLEICH) bleibt
+  als Instrument in Panel 04 — optional für die spätere A5-Modellwechsel-Entscheidung.
+- **Panel-04-Knopf für Hybrid** in `tests/manual_check.html` (Test 20: `queryLocal({hybrid:true})`
+  vs. Default am Mini-Korpus) — Folge-Pflege, headless deckt die Logik schon ab.
+- **Strang A2/A3/A4** (Richter fest im Antwort-Pfad / Schnipsel-Chunking / Query-Expansion) +
+  **Strang B1** (OCR-Modul, Geschwister von Modul 21) — je eigener Bau, warten auf Klaus'
+  Richtungsentscheide (Pipeline-Position, A5-Modellwechsel-Timing, B2-Rollout-Reihenfolge).
+
 ## 2026-06-29 · status.json auf neuesten Stand — Module 20–23 ergänzt (live laufende Module sichtbar)
 
 **Rolle:** Pflege (Branch `claude/pinnwand-verwandt-ki-iyzpi7`). Auf Klaus' Zuruf „Sage auf

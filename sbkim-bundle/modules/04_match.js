@@ -753,6 +753,14 @@
             ", erwartet " + EMBEDDING_DIM + " (siehe INTERFACES.md §0 EMBEDDING_DIM).",
         );
       }
+      // Bau 04.F: optionales `text`-Feld (roher Passage-Text für BM25). Nur
+      // validiert, wenn vorhanden — Bestands-Korpora ohne `text` bleiben gültig
+      // (BM25 fällt dann auf `label` zurück). Rein additiv, kein Vertrags-Bruch.
+      if (item.text !== undefined && item.text !== null && typeof item.text !== "string") {
+        throw InvalidCorpusError(
+          "Korpus[" + i + "].text muss String sein (oder fehlen), war: " + describe(item.text) + ".",
+        );
+      }
     }
   }
 
@@ -778,6 +786,102 @@
     throw InvalidCorpusError(
       "setLocalCorpus erwartet Array, Funktion oder null, war: " + describe(corpusOrProvider) + ".",
     );
+  }
+
+  // ---- Bau 04.F: BM25 lexikalischer Vorfilter + Hybrid-Fusion (additiv) ----
+  //
+  // STRANG A1 (Brief 2026-07-01): Der rohe e5-Cosinus trennt Bedeutung nicht
+  // zuverlässig (LEHRE-EMBEDDING-MATCH-KALIBRIERUNG: Anisotropie-Boden ~0.82).
+  // BM25 ist ein lokaler, offline, deterministischer LEXIKALISCHER Score, der
+  // exakte Wort-Treffer belohnt — komplementär zum Vektor-Score. Die Hybrid-
+  // Fusion (Reciprocal Rank Fusion, RRF) hebt Treffer, die EIN Verfahren allein
+  // verfehlt. Rein additiv:
+  //   - `queryLocal` bleibt ohne `options.hybrid:true` BYTE-GLEICH (nur Cosinus).
+  //   - PROVIDER_MIN_MATCH (0.80) bleibt Vektor-Pfad-Boden UND Andock-Riegel
+  //     (Modul 05) — unberührt. Der Hybrid-Modus fügt einen zweiten, lexikalischen
+  //     Kandidaten-Pfad hinzu (opt-in), er senkt keine Schwelle.
+  //   - Kein Netz, kein LLM, kein Schlüssel — reine lokale Rechnung.
+
+  var BM25_K1 = 1.5;   // Term-Frequenz-Sättigung (Standard-Literaturwert).
+  var BM25_B = 0.75;   // Längen-Normalisierung (Standard-Literaturwert).
+  var RRF_K = 60;      // Reciprocal-Rank-Fusion-Konstante (Cormack et al. 2009).
+
+  // Tokenizer: unicode-bewusst, lowercase, Wort-/Zahl-Läufe. Server-los,
+  // sprach-agnostisch (DE/EN/… ohne Stemming — bewusst simpel + deterministisch).
+  function tokenizeBM25(text) {
+    if (typeof text !== "string" || text.length === 0) return [];
+    var m = text.toLowerCase().match(/[\p{L}\p{N}]+/gu);
+    return m || [];
+  }
+
+  // bm25Scores(queryText, docTexts, options?) -> Array<number>
+  // Reiner BM25-Score je Dokument (0 = kein gemeinsamer Term). Exportiert
+  // für Panel-04-Messung (VERFAHREN-VERGLEICH) + Testbarkeit. Deterministisch.
+  function bm25Scores(queryText, docTexts, options) {
+    var opts = options || {};
+    var k1 = (typeof opts.k1 === "number" && isFinite(opts.k1)) ? opts.k1 : BM25_K1;
+    var b = (typeof opts.b === "number" && isFinite(opts.b)) ? opts.b : BM25_B;
+    if (!Array.isArray(docTexts)) {
+      throw InvalidCorpusError(
+        "bm25Scores: 'docTexts' muss ein Array sein, war: " + describe(docTexts) + ".",
+      );
+    }
+    var N = docTexts.length;
+    if (N === 0) return [];
+    // Dokument-Tokens + Längen + Dokument-Frequenzen (df).
+    var docTokens = new Array(N);
+    var docLen = new Array(N);
+    var totalLen = 0;
+    var df = Object.create(null); // document frequency je Term.
+    for (var i = 0; i < N; i++) {
+      var toks = tokenizeBM25(docTexts[i]);
+      docTokens[i] = toks;
+      docLen[i] = toks.length;
+      totalLen += toks.length;
+      var seen = Object.create(null);
+      for (var t = 0; t < toks.length; t++) {
+        var tok = toks[t];
+        if (!seen[tok]) { seen[tok] = true; df[tok] = (df[tok] || 0) + 1; }
+      }
+    }
+    var avgdl = totalLen / N || 1;
+    var qTokens = tokenizeBM25(queryText);
+    // Eindeutige Query-Terme (Wiederholung im Query zählt für BM25 nicht).
+    var qUnique = [];
+    var qSeen = Object.create(null);
+    for (var qi = 0; qi < qTokens.length; qi++) {
+      if (!qSeen[qTokens[qi]]) { qSeen[qTokens[qi]] = true; qUnique.push(qTokens[qi]); }
+    }
+    var scores = new Array(N);
+    for (var d = 0; d < N; d++) {
+      // Term-Frequenz im Dokument d.
+      var tf = Object.create(null);
+      var dt = docTokens[d];
+      for (var j = 0; j < dt.length; j++) tf[dt[j]] = (tf[dt[j]] || 0) + 1;
+      var score = 0;
+      for (var u = 0; u < qUnique.length; u++) {
+        var term = qUnique[u];
+        var f = tf[term] || 0;
+        if (f === 0) continue;
+        var n = df[term] || 0;
+        // Robertson-Sparck-Jones-IDF (mit +1 unter dem Log → nie negativ).
+        var idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
+        var denom = f + k1 * (1 - b + b * (docLen[d] / avgdl));
+        score += idf * (f * (k1 + 1)) / denom;
+      }
+      scores[d] = score;
+    }
+    return scores;
+  }
+
+  // Reciprocal Rank Fusion: verschmilzt zwei Rang-Listen ohne Score-
+  // Normalisierung. Fehlt ein Rang (kein lexikalischer Treffer) → nur der
+  // vorhandene Beitrag zählt. Rang ist 1-basiert (bester = 1).
+  function rrfScore(vektorRank, lexRank) {
+    var s = 0;
+    if (vektorRank !== null && vektorRank !== undefined) s += 1 / (RRF_K + vektorRank);
+    if (lexRank !== null && lexRank !== undefined) s += 1 / (RRF_K + lexRank);
+    return s;
   }
 
   // queryLocal — lokale semantische Such-Funktion. Karte 04 § Sub (c).
@@ -862,21 +966,74 @@
       );
     }
 
-    // 5. Score + Filter + Sort + Top-k.
-    var scored = [];
+    // 5a. Vektor-Score für JEDEN Korpus-Eintrag (Cosinus).
+    var cos = new Array(corpus.length);
     for (var i = 0; i < corpus.length; i++) {
-      var item = corpus[i];
-      var score = match(queryVec, item.passageVec);
-      if (score >= PROVIDER_MIN_MATCH) {
-        scored.push({
-          label: item.label,
-          score: score,
-          anchorId: (typeof item.anchorId === "string") ? item.anchorId : null,
-        });
+      cos[i] = match(queryVec, corpus[i].passageVec);
+    }
+
+    // 5b. DEFAULT-Pfad (kein opts.hybrid): byte-gleiches Verhalten wie Bau 04.C —
+    //     Cosinus-Filter >= PROVIDER_MIN_MATCH, absteigend, Top-k.
+    if (!opts.hybrid) {
+      var scored = [];
+      for (var s = 0; s < corpus.length; s++) {
+        if (cos[s] >= PROVIDER_MIN_MATCH) {
+          scored.push({
+            label: corpus[s].label,
+            score: cos[s],
+            anchorId: (typeof corpus[s].anchorId === "string") ? corpus[s].anchorId : null,
+          });
+        }
+      }
+      scored.sort(function (a, b) { return b.score - a.score; });
+      return scored.slice(0, effectiveK);
+    }
+
+    // 5c. HYBRID-Pfad (opt-in): BM25 (lexikalisch, lokal) + Vektor via RRF.
+    //     Additiv — der Vektor-Pfad-Boden (PROVIDER_MIN_MATCH) bleibt eine
+    //     Aufnahme-Bedingung, der lexikalische Treffer (bm25 > 0) ist die
+    //     zweite. Kein Riegel wird gesenkt, keine Andock-Schwelle berührt.
+    var docTexts = corpus.map(function (it) {
+      return (typeof it.text === "string" && it.text.length > 0) ? it.text : it.label;
+    });
+    var bm = bm25Scores(text, docTexts);
+
+    // Aufnahme-Menge: Vektor-Pfad (cos >= Boden) ODER lexikalischer Treffer.
+    var included = [];
+    for (var c = 0; c < corpus.length; c++) {
+      if (cos[c] >= PROVIDER_MIN_MATCH || bm[c] > 0) {
+        included.push({ idx: c, cos: cos[c], bm25: bm[c] });
       }
     }
-    scored.sort(function (a, b) { return b.score - a.score; });
-    return scored.slice(0, effectiveK);
+
+    // Vektor-Rang (1-basiert, höchster Cosinus = Rang 1) über die Aufnahme-Menge.
+    var byVec = included.slice().sort(function (a, b) { return b.cos - a.cos; });
+    var vecRank = Object.create(null);
+    for (var vr = 0; vr < byVec.length; vr++) vecRank[byVec[vr].idx] = vr + 1;
+
+    // Lexikalischer Rang (nur Einträge mit bm25 > 0).
+    var byLex = included.filter(function (e) { return e.bm25 > 0; })
+      .sort(function (a, b) { return b.bm25 - a.bm25; });
+    var lexRank = Object.create(null);
+    for (var lr = 0; lr < byLex.length; lr++) lexRank[byLex[lr].idx] = lr + 1;
+
+    // Fusion + Sortierung. `score` bleibt der Cosinus (unveränderte Semantik
+    // für Bestands-Aufrufer); `bm25` + `fused` sind additive Felder.
+    var hybridResult = included.map(function (e) {
+      var lx = (lexRank[e.idx] !== undefined) ? lexRank[e.idx] : null;
+      return {
+        label: corpus[e.idx].label,
+        score: e.cos,
+        anchorId: (typeof corpus[e.idx].anchorId === "string") ? corpus[e.idx].anchorId : null,
+        bm25: e.bm25,
+        fused: rrfScore(vecRank[e.idx], lx),
+      };
+    });
+    hybridResult.sort(function (a, b) {
+      if (b.fused !== a.fused) return b.fused - a.fused;
+      return b.score - a.score; // Tie-Break: höherer Cosinus zuerst.
+    });
+    return hybridResult.slice(0, effectiveK);
   }
 
   // ---- Bau 04.D: Hybrid-Match — Match-Zeit-LLM-Richter (additiv) ----
@@ -1460,6 +1617,8 @@
     explainMatchLLM: explainMatchLLM,
     queryLocal: queryLocal,
     setLocalCorpus: setLocalCorpus,
+    bm25Scores: bm25Scores,
+    tokenizeBM25: tokenizeBM25,
     hybridMatch: hybridMatch,
     pickJudgeProvider: pickJudgeProvider,
     bidirectionalVerdict: bidirectionalVerdict,
@@ -1490,6 +1649,11 @@
       queryLocalDefaultK: 5,
       queryLocalMaxTextLen: LLM_MAX_OUTPUT_CHARS,
       get localCorpusRegistered() { return typeof _localCorpusProvider === "function"; },
+      // Bau 04.F Hybrid BM25+Vektor (Strang A1) Read-Anker.
+      bm25K1: BM25_K1,
+      bm25B: BM25_B,
+      rrfK: RRF_K,
+      hybridQueryLocalNote: "queryLocal(text,k,{hybrid:true}) fusioniert BM25+Vektor via RRF; Default (ohne hybrid) unverändert Cosinus. PROVIDER_MIN_MATCH + Andock-Riegel unberührt.",
       // Bau 04.D Hybrid-Match (Richter) Read-Anker.
       hybridProviders: Object.keys(HYBRID_PROVIDERS).map(function (id) {
         return { id: id, label: HYBRID_PROVIDERS[id].label, region: HYBRID_PROVIDERS[id].region };
@@ -1509,7 +1673,7 @@
   // Block nennt PROVIDER_MIN_MATCH und SCHICHT_MIN_MATCH.
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, " +
+      "MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch, " +
         "Schwellen: PROVIDER_MIN_MATCH=" + PROVIDER_MIN_MATCH +
         ", SCHICHT_MIN_MATCH=" + SCHICHT_MIN_MATCH,
     );

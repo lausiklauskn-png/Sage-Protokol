@@ -1018,7 +1018,7 @@
         SbkimUI.log("04_match",
           "ℹ DevTools → Konsole öffnen und folgende Zeile suchen (beim Laden ausgegeben):");
         SbkimUI.log("04_match",
-          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/matchDimensions/explainMatchLLM/queryLocal/hybridMatch, " +
+          "  MODUL 04 MATCH bereit, Funktionen: match/isAboveProviderThreshold/relatedness/isRelated/matchDimensions/explainMatchLLM/queryLocal/bm25Scores/hybridMatch, " +
           "Schwellen: PROVIDER_MIN_MATCH=0.80, SCHICHT_MIN_MATCH=0.60");
       });
 
@@ -1497,6 +1497,55 @@
           anbieter: SbkimMatch._meta.hybridProviders,
           bidirektional_default: SbkimMatch._meta.hybridBidirectionalDefault,
           erwartung: "streng: true&false=false; großzügig: true&false=true; EU-Default mistral",
+        };
+      });
+
+      // ---- Bau 04.F (2026-07-01): Hybrid BM25+Vektor — Strang A1 ----
+      //
+      // Test 20 nutzt denselben SbkimEmbedding-Mock wie Tests 11–15
+      // (ensureQueryLocalSetup04C + mixedVec04C). Der Mock liefert für
+      // JEDE Anfrage denselben Referenz-Vektor — die Cosinus-Trennung
+      // steckt in den Korpus-Vektoren (per Ziel-Cosinus konstruiert),
+      // der BM25-Score kommt aus dem echten `text`-Feld + der echten
+      // Such-Frage. So zeigt der Knopf den Kern-Hebel OHNE Modell-Lade.
+      SbkimUI.addButton("04_match", "Test 20: Hybrid BM25+Vektor (Kern-Hebel: Wort-Treffer unter dem Vektor-Boden)", async function () {
+        var ref = ensureQueryLocalSetup04C();
+        // A liegt UNTER dem 0.80-Vektor-Boden (0.70), trägt aber die exakten
+        // Such-Wörter. B ist über dem Boden, aber themenfremd. C ist über dem
+        // Boden UND lexikalisch verwandt.
+        var corpus = [
+          { label: "B (nur Vektor)",  anchorId: "b", text: "unrelated kitchen recipe oven",   passageVec: mixedVec04C(ref, 0.86, 2001) },
+          { label: "C (beide)",       anchorId: "c", text: "wespen nest dachboden",           passageVec: mixedVec04C(ref, 0.83, 2002) },
+          { label: "A (unter Boden)", anchorId: "a", text: "wespen abwehr hausmittel garten", passageVec: mixedVec04C(ref, 0.70, 2003) },
+        ];
+        var frage = "wespen hausmittel";
+        var standard = await SbkimMatch.queryLocal(frage, 5, { corpus: corpus });
+        var hybrid   = await SbkimMatch.queryLocal(frage, 5, { corpus: corpus, hybrid: true });
+        var stdLabels = standard.map(function (r) { return r.label; });
+        var hybLabels = hybrid.map(function (r) { return r.label; });
+        // Erwartung: Standard verwirft A (cos 0.70 < 0.80). Hybrid nimmt A auf
+        // (Wort-Treffer) und stellt es dank RRF vor B (nur Vektor).
+        var aInStd = stdLabels.indexOf("A (unter Boden)") !== -1;
+        var aInHyb = hybLabels.indexOf("A (unter Boden)") !== -1;
+        var aOverB = hybLabels.indexOf("A (unter Boden)") < hybLabels.indexOf("B (nur Vektor)");
+        var ok = !aInStd && aInHyb && aOverB;
+        SbkimUI.setStatus("04_match", ok ? "ok" : "err",
+                          ok ? "Hybrid OK (A unter Boden wird gefunden)" : "Hybrid-Verhalten falsch");
+        return {
+          frage: frage,
+          standard_nur_cosinus: standard.map(function (r) {
+            return { label: r.label, score: Number(r.score.toFixed(4)) };
+          }),
+          hybrid_bm25_plus_vektor: hybrid.map(function (r) {
+            return {
+              label: r.label,
+              cosinus: Number(r.score.toFixed(4)),
+              bm25: Number((r.bm25 || 0).toFixed(4)),
+              fused: Number((r.fused || 0).toFixed(5)),
+            };
+          }),
+          erwartung: "Standard verwirft 'A (unter Boden)' (cos 0.70). Hybrid findet A über den Wort-Treffer und stellt es vor 'B (nur Vektor)'.",
+          hinweis: "Reine Anzeige/Suche — der 0.80-Andock-Riegel (Modul 05) bleibt unberührt.",
         };
       });
     })();
