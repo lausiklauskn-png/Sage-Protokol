@@ -61,8 +61,22 @@ So bleibt die Protokoll-Lore heilig und die Produkte trotzdem verkäuflich.
 - **App-Inhalts-Umbenennung** (`Sage-Protokol/pinnwand/` → Titel/Manifest auf
   „Kimboard") ist **aufgeschoben** — passiert später **im eigenen Kimboard-Repo**,
   nicht jetzt in Sage. Bis dahin bleibt die App unverändert „Pinnwand".
-- **Namens-Freiheit:** „Kimboard" laut Web-Check frei (keine Kollision gefunden).
-  „Kimseek" / „Kimsync" / „Kimhub" — Web-Check noch offen, vor Festlegung prüfen.
-- **Merge-Name** für die Zusammenführung (**Kim** vs **Kimhub**) — bewusst offen
-  gelassen, wird später entschieden. Tendenz: das Flaggschiff verdient den blanken
-  Marken-Namen **Kim**.
+- **Namens-Freiheit (Web-Check 2026-07-02, abgeschlossen):**
+  - **Kimboard** ✅ frei — keine Kollision.
+  - **Kimseek** ✅ frei — kein Produkt „Kimseek".
+  - **Kimsync** ✅ frei — kein Produkt „Kimsync".
+  - **Kimhub** ✅ als Produktname frei; **aber** Social-Handle **@kimhub** (Twitter/X)
+    ist von einer Privatperson belegt (kein Produkt) → Handle evtl. nicht bekommbar.
+  - **Achtung — bloßes „Kim":** im Software-Bereich **stark belegt** (Kim AI-Helpdesk,
+    KIM/Kynection, Kimonix, KIM.AI, „KIM Software"). **Nicht** als alleinstehende Marke
+    fürs Flaggschiff nehmen — Kim + Wort (z. B. Kimhub) ist distinktiver/schützbarer.
+- **„SB-KIMTool(-Point)":** exakter Name frei, sitzt aber in lauter Nachbarschaft
+  („KIM tools" = OpenKIM/`kim-tools` wissenschaftl. Projekt, KimTools UI-Kit). **Bleibt
+  der technische Hub-/Protokoll-Name** (nicht Consumer-Kim-Familie) und wird **NICHT
+  umbenannt** — SB-KIMTool-Point ist ein lebender SBKIM-Knoten (Spore/Briefkasten), und
+  andere Repos (z. B. Jasons-Tresor) kopieren per `raw.githubusercontent.com/…/SB-KIMTool-Point/…`
+  daraus → ein Rename bräche diese Verweise.
+- **Merge-Name** für die Zusammenführung: **Empfehlung Kimhub** (blankes „Kim" zu stark
+  belegt, s. o.). **Noch nicht endgültig gesetzt** — offene Kollision: „Kimhub" würde auch
+  konzeptionell zum **Mycel-Hub** passen; ein Wort kann nur eins von beidem sein
+  (Flaggschiff *oder* Hub). Klaus entscheidet später.
