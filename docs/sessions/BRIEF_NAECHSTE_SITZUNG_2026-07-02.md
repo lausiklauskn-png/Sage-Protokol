@@ -1,43 +1,67 @@
-# BRIEF — nächste Sitzung (Stand 2026-07-02, nach Folge-Bau window.R + Korpus)
+# BRIEF — nächste Sitzung (Stand 2026-07-02 Abend, nach Meilenstein-Sichttest)
 
 ```
 Neue Sitzung — Sage-Protokol. Freibrief gilt (CLAUDE.md § Freibrief).
 
-STAND (PULS oberster Eintrag 2026-07-02 „Folge-Bau: window.R-Fix + Rezept-Korpus"):
-Der A1/A4-Rollout ist in BEIDEN Endknoten (Mixarium + Rezeptbuch) komplett und
-gemergt — inkl. window.R-Live-Getter + Korpus-Provider, sodass die Cross-Knoten-
-Bedeutungs-Antwort erstmals echten Inhalt liefern KANN.
-- Mixarium: PR #89 (A1/A4-Empfänger) + PR #90 (window.R-Getter). SW v39.
-- Rezeptbuch: PR #279 (Modul-04-Sync behob fehlendes queryLocal + A1/A4) + PR #280
-  (window.R-Getter + Rezept-Korpus-Provider). CACHE mrz-v28.
-- Sage-Doku: PR #530/#531 + dieser Folge-Bau-Eintrag.
-Headless alles grün (smoke_windowr* + smoke_rollout_a1a4* + Drift-Guards).
-WICHTIG: Mein-Rezeptbuch IMMER gegen `main` prüfen — GitHub-Default-Branch ist ein
-toter Vor-SBKIM-Decoy (Regel in Mein-Rezeptbuch/CLAUDE.md).
+════════════════════════════════════════════════════════════════════
+STAND — Cross-Knoten-Antwort-Kette ist LIVE bewiesen (Klaus-Browser 2026-07-02)
+════════════════════════════════════════════════════════════════════
+Die komplette serverlose Bedeutungs-Such-Kette läuft im Browser (Rezeptbuch, Eruda):
+  window.R (47 echte Rezepte, Live-Getter) → Korpus-Provider baut faul (Modul 03
+  e5-small, 384-dim) → queryLocal("kuchen",{hybrid:true}) → echte Rezeptnamen + Score.
+Alles heute Gebaute ist live grün: window.R-Getter, queryLocal-await-Fix, Korpus-
+Provider, A1-Hybrid. Siehe PULS oberster Eintrag „✅ MEILENSTEIN".
 
-ZUERST prüfen: Hat Klaus den BROWSER-SICHTTEST gemacht? (Cross-phrased Frage von
-einem Knoten an Mixarium/Rezeptbuch → kommen echte Drinks/Rezepte bedeutungs-
-sortiert zurück?) Das ist Schritt 4 aus BRIEF_KORPUS_WINDOWR_ENDKNOTEN.md.
-- Wenn Klaus einen BEFUND meldet → diesen zuerst fixen (Folge-Fix).
-- Wenn grün → als bewiesen in PULS + status.json vermerken.
+Heute gemergt (alles in main):
+- Rezeptbuch: A1/A4-Empfänger (#279) · window.R-Getter+Korpus (#280) · Eruda sichtbar
+  (#281) · queryLocal-await-Fix (#282). SW CACHE mrz-v30.
+- Mixarium: A1/A4-Empfänger (#89) · window.R-Getter (#90) · Eruda sichtbar (#91) ·
+  await-Fix (#92). SW v41.
+- Sage: Modul-04-await-Fix + Regressions-Probe 8c (#533) · Doku/Meilenstein (#530–534).
+Headless grün: smoke_bau04c 45/45 (neue async-Probe 8c), smoke_bau22 260/260,
+Drift-Guards such-tool 49/49 + sbkim-bundle 21/21, Endknoten-Rollout-Smokes.
 
-DANN eine Aufgabe wählen (nicht alle):
-1. LLM-Varianten-Generator (A4-Aufsatz) in Sage Modul 22
-   (src/modules/22_such_widget.js): opt-in/BYOK (wie KI-Richter) statt der kleinen
-   DEFAULT_SYNONYMS-Karte optional einen LLM Query-Varianten generieren lassen;
-   Default aus, fail-soft auf die Synonym-Karte. Byte-Kopie such-tool/modules/22
-   mitziehen (Drift-Guard), SW-Cache bumpen. Headless-Smoke.
-2. Falls Browser-Test einen Korpus-/window.R-Befund zeigt: Folge-Fix in dem
-   betroffenen Endknoten (Rezeptbuch immer von main branchen!).
-3. RELATEDNESS_CENTER v2 (offen aus Modul 22/23 „verwandt"): Kalibrierung des
-   zentrierten Cosinus-Zentrums an echten Knoten-Vektoren.
+⚠️ REGEL (Rezeptbuch): IMMER gegen `main` prüfen. Der GitHub-Default-Branch ist ein
+   toter Vor-SBKIM-Decoy (claude/recipe-book-app-update-fGP7B). Session-Branch von
+   `main` neu aufsetzen: git checkout -B <branch> origin/main. Steht in Rezeptbuch/CLAUDE.md.
 
-Pflichtlektüre: CLAUDE.md · docs/PULS.md (oberster Eintrag) ·
-docs/sessions/BRIEF_KORPUS_WINDOWR_ENDKNOTEN.md ·
-docs/components/22_such_widget.md + 04_match.md ·
-docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md.
+⚠️ Deploy-Disziplin: NICHT viele Einzel-PRs schnell hintereinander mergen — GitHub
+   Pages serialisiert die Deploys pro Konto, die Warteschlange staut (heute erlebt).
+   Änderungen bündeln, dann in wenigen Merges deployen.
+
+════════════════════════════════════════════════════════════════════
+AUFGABE (eine wählen, nicht alle)
+════════════════════════════════════════════════════════════════════
+1. TRENNSCHÄRFE (empfohlen, Klaus' Beobachtung): der Gratis-Cosinus-Boden ~0.80 lässt
+   Fremdes durch — „Hühnerfrikassee" landet bei „kuchen" gleichauf mit echten Kuchen
+   (4/5 Treffer korrekt, aber Huhn rutscht rein). Bau den opt-in KI-Richter (BYOK, wie
+   in Modul 22 „verwandt · KI") in den Cross-Knoten-Antwort-Pfad ein, sodass eine echte
+   KI „ist das ein Kuchen?" entscheidet und Fremdes rausfällt. REINE Anzeige/Rerank,
+   0.80-Andock-Riegel (Modul 05) unberührt, Default aus, fail-soft auf Cosinus.
+   Modul 04 hat hybridMatch/queryLocalJudged bereits — prüfen ob wiederverwendbar.
+   Byte-Kopien (Endknoten sbkim/04, such-tool, sbkim-bundle) mitziehen, Caches bumpen.
+   Braucht Klaus' Browser-Test.
+
+2. MIXARIUM GEGENTESTEN: derselbe Live-Test mit Drinks (Fix ist dort auch live). Eruda
+   → window.R.length (echte Drinks laden falls 0/blank!) → SbkimMatch.queryLocal(
+   "zitrone",5,{hybrid:true}).then(r=>console.log(r.map(x=>x.label+" "+x.score))).
+   Bestätigt die Kette auf beiden Endknoten. Kein Bau nötig, nur Sichttest + PULS.
+
+3. LLM-VARIANTEN-GENERATOR (A4-Aufsatz) in Sage Modul 22: statt der kleinen
+   DEFAULT_SYNONYMS-Karte optional per LLM Query-Varianten generieren (opt-in/BYOK,
+   Default aus, fail-soft auf Synonym-Karte). Byte-Kopie such-tool/modules/22, SW-Cache.
+
+════════════════════════════════════════════════════════════════════
+PFLICHTLEKTÜRE (in dieser Reihenfolge)
+════════════════════════════════════════════════════════════════════
+CLAUDE.md · docs/PULS.md (oberster „✅ MEILENSTEIN"-Eintrag) ·
+docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md (erklärt den 0.80-Anisotropie-Boden!) ·
+docs/components/04_match.md + 22_such_widget.md ·
+Modul 04: src/modules/04_match.js (hybridMatch/queryLocalJudged für Aufgabe 1).
 
 Tests: Headless-Smoke + Drift-Guards such-tool/sbkim-bundle byte-1:1.
+Bei Endknoten-Änderung: Mixarium index==QC md5 + SW bumpen; Rezeptbuch QC→build.py +
+CACHE bumpen; und IMMER von origin/main branchen.
 Selbst-Merge nach grünen Tests (Draft→ready→squash), dann prüft Klaus live.
 Am Sitzungsende: PULS fortschreiben, Übergabeprotokoll, diesen Brief-Typ neu ausgeben.
 ```
