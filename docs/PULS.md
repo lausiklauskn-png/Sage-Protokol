@@ -119,6 +119,61 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-02 · A1/A4-Rollout in die Endknoten — Mixarium gebaut+gemergt, Rezeptbuch+Pinnwand geprüft/begründet
+
+**Rolle:** Bau-/Rollout-Sitzung (Branch `claude/sage-search-rollout-2tlm28`). Brief:
+Rollout der App-Integration (A1 Hybrid + A4 Multi-Query, PR #528) in die Endknoten.
+Freibrief gilt. **Kern-Befund:** die drei Rollout-Ziele haben sehr unterschiedliche
+Ausgangslagen — nur eines trägt einen SBKIM-Such-Pfad, den A1/A4 verbessern.
+
+**Investigation (die Voraussetzung fürs „prüfen ob einzubauen"):**
+- **Mein-Mixarium** — trägt Modul 04 (`sbkim/04_match.js`, war stale bei Bau 04.D). Sein
+  **einziger** SBKIM-Such-Pfad ist der **Cross-Knoten-Antwort-Empfänger** (`op:"query"` in
+  `sbkim/15_membran.js`) + der Korpus-Provider (`sbkim/sbkim-init.js`). **Kein** nutzer-
+  sichtbares SBKIM-Suchfeld (die Drink-Suche der App ist reiner Textfilter, nicht SBKIM).
+  → A1/A4 gelten dem **Antwort-Pfad** (Mycel-Kern-Nutzen: Cross-Knoten-Suche). **ROLLOUT.**
+- **Mein-Rezeptbuch** — trägt **gar kein** SBKIM (kein `sbkim/`-Verzeichnis, 0 `queryLocal`/
+  `SbkimMatch`-Treffer). → **Nichts zu rollen.** Ein A1/A4-Rollout setzt eine SBKIM-Installation
+  (Modul 09 Einbau-PWA) voraus — das ist ein eigener, großer Migrations-Auftrag, **außerhalb**
+  dieses Rollout-Scopes. Bewusst ausgelassen.
+- **Pinnwand** (`pinnwand/`) — trägt Modul 03 (Embedding) + inline **whitened Cosinus**-
+  Rangfolge + opt-in KI-Richter; **kein Modul 04**, **keine 0.80-Schwelle** (zeigt ALLE
+  Einträge, nur sortiert). → A1s Gewinn ist **INKLUSION über einen Filter-Boden** — den es
+  in der Pinnwand nicht gibt (nichts wird ausgeschlossen). A4 (Synonym-Varianten) dupliziert,
+  was das reine Bedeutungs-Embedding schon leistet, und widerspräche der Pinnwand-These
+  „Bedeutung über Stichwörter". → **Bewusst ausgelassen** (kein Nutzen, würde Design
+  verwässern). Ehrliche Beschriftung (Cosinus=Rangfolge) steht bereits (PR #498).
+
+**Was gebaut (Mixarium, additiv, minimal-invasiv) — PR #89 gemergt:**
+- **A1** — `sbkim/04_match.js` **byte-1:1 aus Sage `src/modules/04_match.js`** synchronisiert
+  (reiner additiver Superset: BM25/`queryLocalMulti`/`expandQuerySimple` dazu, keine app-
+  eigenen Änderungen — byte-bewiesen durch Sages `smoke_bau22f`/`smoke_bau04f`).
+- `sbkim/sbkim-init.js` — Korpus-Items tragen jetzt ein `text`-Feld (roher Passage-Text),
+  damit BM25 Zutaten/Geschmack trifft, nicht nur den Drink-Namen.
+- `sbkim/15_membran.js` — neuer fail-soft-Helfer `queryWithInclusion` (A4 Synonym-
+  Auffächerung über kleine getränke-eigene `MX_QUERY_SYNONYMS` → A1 Hybrid-`queryLocalMulti`
+  mit RRF; Stufe für Stufe Rückfall Multi → Hybrid-Single → einfacher Cosinus). Der
+  `op:"query"`-Empfänger nutzt ihn.
+- `app-sw.js` — `SW_VERSION` v37→v38 (Cache-Bust der geänderten Modul-Dateien).
+
+**Leitplanken gewahrt:** REINE INKLUSIONS-Verbesserung — `PROVIDER_MIN_MATCH` (0.80) =
+Vektor-Boden UND Andock-Riegel (Modul 05) **unberührt**, kein PROTOCOL_VERSION-Bump, kein
+Netz/LLM. `index.html` == `QC_Mixarium_20_04_26.html` byte-identisch **unverändert** (nur
+separate `sbkim/*.js` geändert, keine `<script>`-Tags). Kern-Module nicht angefasst.
+
+**Tests:** Neuer Headless-Smoke `Mein-Mixarium/tests/smoke_rollout_a1a4.mjs` **14/14 grün**
+(gegen Mixariums AUSGELIEFERTES Modul 04) — Cross-Phrasing-Rettung („limo"→„limonade" via
+BM25-Variante bei orthogonalem Cosinus), fail-soft bei fremder Frage, Rückwärts-Kompatibilität
+für Korpus ohne `text`. `node --check` alle geänderten Dateien grün. Sage-Quelle unberührt →
+Drift-Guards weiter grün (`smoke_standalone_such_tool` 49/49, `smoke_bundle_connect` 21/21,
+`smoke_bau22f` 17/17). **Browser-Sichttest (live Cross-Knoten-Antwort) wartet auf Klaus**
+(Mixarium `main` deployt, PR #89 gemergt).
+
+**Offen / nächster Schritt:** (1) Klaus' Live-Sichttest der Mixarium-Cross-Knoten-Antwort.
+(2) Rezeptbuch bleibt ohne SBKIM — falls es je ein Mycel-Knoten werden soll, ist das eine
+eigene Modul-09-Migrations-Sitzung. (3) Optional A4-Aufsatz LLM-Varianten-Generator (BYOK,
+opt-in) in Sage Modul 22 — als eigene Folge-Sitzung.
+
 ## 2026-07-02 · App-Integration A1 (Hybrid) + A4 (Multi-Query) ins Suchfeld (Modul 22)
 
 **Rolle:** Bau-Sitzung (Branch `claude/sage-app-integration-a1-a4-f4dy8b`). Brief:
