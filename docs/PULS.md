@@ -119,6 +119,37 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## ✅ 2026-07-02 · MEILENSTEIN: Cross-Knoten-Antwort-Kette LIVE bewiesen (Klaus-Browser, Rezeptbuch)
+
+**Rolle:** Bau-/Sichttest-Sitzung. Klaus hat die **komplette lokale Bedeutungs-Such-Kette
+live in seinem Browser** (Rezeptbuch, Eruda-Konsole) bestätigt — der Endbeweis, den kein
+Headless-Test liefern kann.
+
+**Bewiesener Pfad (echte Daten):** `window.R` (47 echte Rezepte, via Live-Getter) →
+`SbkimMatch.setLocalCorpus`-Provider baut den Korpus **faul** (Modul 03 e5-small,
+384-dim, im Browser geladen) → `queryLocal("kuchen", {hybrid:true})` liefert **echte
+Rezeptnamen** mit Score:
+```
+[MR-SBKIM] queryLocal-Korpus aus 47 Rezepten gebaut
+TREFFER: Eierschecke 0.81 · Erdbeer-Joghurt-Torte 0.78 · Karottenkuchen 0.80 · Stollen 0.80 · Hühnerfrikassee 0.80
+```
+Damit sind **alle heute gebauten Teile live grün**: window.R-Getter, der `queryLocal`-
+`await`-Fix (async-Provider), der Korpus-Provider, A1-Hybrid. Serverlos, im Browser.
+
+**Weg dahin — drei Live-Befunde nacheinander gefixt (jeder nur im Browser sichtbar):**
+1. Eruda-Blase versteckt → standardmäßig sichtbar gemacht (PR #91/#281).
+2. `queryLocal` warf `Korpus muss ein Array sein, war: Promise` → **echter Vertrags-Bug**:
+   async-Provider wurde nicht `await`et. Fix + Regressions-Probe 8c (PR #533/#92/#282).
+3. Korpus „0 Rezepte" trotz `window.R.length`=70 → **alle 70 waren blank-Slots**; nach
+   Rezept-Import 47 echte → Korpus baut korrekt. (Kein Bug — richtige Filterung.)
+
+**⚠️ Ehrlich offen — Trennschärfe (Klaus' scharfe Beobachtung):** der Gratis-Cosinus hat
+den bekannten Anisotropie-Boden ~0.80 — **„Hühnerfrikassee" landet bei 0.80 gleichauf mit
+echten Kuchen**. Das Werkzeug **findet** die Kuchen (4/5 Treffer korrekt), kann Fremdes aber
+nicht sauber **abweisen**. Trennschärfe ist die nächste Kalibrier-Baustelle (KI-Richter opt-in
+/ RELATEDNESS_CENTER v2) — **Klaus-Entscheid 2026-07-02: erstmal so lassen, Meilenstein
+sichern, Trennschärfe eigene Folge-Sitzung.** Passt zur LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.
+
 ## 2026-07-02 · Folge-Bau: window.R-Fix + Rezept-Korpus — Cross-Knoten-Antwort in beiden Endknoten funktional
 
 **Rolle:** Bau-Sitzung (Branch `claude/sage-search-rollout-2tlm28`). Umsetzung der
