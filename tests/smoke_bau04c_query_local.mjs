@@ -205,6 +205,18 @@ async function runAsyncProbes() {
   record("Probe 8b: Provider-Funktion liefert Korpus", "2",
          String(out8b.length), out8b.length === 2);
 
+  // ---- Probe 8c: ASYNC-Provider (Regression Live-Bug 2026-07-02) ----
+  // Endknoten-Provider bauen den Korpus faul (async — Embeddings via Modul 03).
+  // Vor dem await-Fix landete der Promise in validateCorpus → "Korpus muss ein
+  // Array sein, war: Promise". queryLocal MUSS den Provider awaiten.
+  M.setLocalCorpus(async () => corpus3);
+  let err8c = null, out8c = null;
+  try { out8c = await M.queryLocal("Test", 5); } catch (e) { err8c = e; }
+  record("Probe 8c: async-Provider wirft NICHT (kein Promise-in-validateCorpus)",
+         "kein Fehler", err8c ? err8c.name + ": " + err8c.message : "kein Fehler", err8c === null);
+  record("Probe 8c: async-Provider liefert Korpus", "2",
+         String(out8c ? out8c.length : "null"), !!out8c && out8c.length === 2);
+
   // ---- Probe 9: Sync-Throws ----
   // 9a EmptyQueryError
   let err9a = null;
