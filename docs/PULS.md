@@ -119,6 +119,49 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-02 · App-Integration A1 (Hybrid) + A4 (Multi-Query) ins Suchfeld (Modul 22)
+
+**Rolle:** Bau-Sitzung (Branch `claude/sage-app-integration-a1-a4-f4dy8b`). Brief:
+`docs/sessions/BRIEF_A_APP_INTEGRATION.md`. Freibrief gilt (Sofort-Start, kein „1/2/3/4?").
+Die zwei gemessen-positiven Hebel (A1 Bau 04.F, A4 Bau 04.H) endlich ins echte Suchfeld
+verdrahtet, damit Nutzer den Vorteil bekommen.
+
+**Was getan (additiv, minimal-invasiv):** In `src/modules/22_such_widget.js` die
+Sortiermaschine `queryCorpus` (bisher `queryLocal(q, k, {corpus})` — reiner Cosinus)
+umgebaut:
+- **A1:** Vorfilter auf **`{corpus, hybrid:true}`** (BM25+Vektor-Fusion) gehoben. Fail-soft:
+  ohne `text`-Feld fällt BM25 in Modul 04 auf `label` zurück.
+- **A4:** vor der Suche `expandVariants()` → `match.expandQuerySimple(q, {synonyms})` mit
+  einer **kleinen, app-eigenen Synonym-Karte** (`DEFAULT_SYNONYMS`, bidirektional, Rezept-/
+  Getränke-Domäne + allgemeine Umschreibungen), dann **`queryLocalMulti(varianten, k,
+  {corpus, hybrid:true})`** (RRF-Fusion) statt `queryLocal`. Ohne `queryLocalMulti` fällt es
+  auf hybrid-`queryLocal` zurück; bei jedem A1/A4-Fehler auf den einfachen Cosinus-Pfad.
+- Gilt einheitlich für App-, Knoten- **und** Internet-Korpus (alle über `queryCorpus`).
+- `init({synonyms})` ersetzt die Default-Karte (App kennt ihre Domäne besser);
+  `init({queryExpand:false})` schaltet A4 ab (hybrid bleibt). Neue `_meta`-Marker
+  `hybridPrefilter/queryExpand/synonymCount`.
+- Byte-Kopie `such-tool/modules/22_such_widget.js` mitgezogen (Drift-Guard byte-1:1);
+  `such-tool/sbkim-sw.js` `CACHE_VERSION` v1→v2 (Modul 22 wird cache-first precacht).
+
+**Leitplanken gewahrt:** REINE Vorfilter-/Anzeige-Verbesserung — `PROVIDER_MIN_MATCH`
+(0.80) + Andock-Riegel (Modul 05) **unberührt**, kein PROTOCOL_VERSION-/DB_VERSION-Bump,
+KI-Richter (`richterRerank`, A2) bleibt unverändert daneben (opt-in). Kern-Module 04/05
+nicht angefasst (nur öffentliche Flächen genutzt). Der Widget-End-Sort bleibt Cosinus —
+der Gewinn ist **INKLUSION** (cross-phrased Treffer, die der 0.80-Cosinus-Boden ausschließt,
+werden über den BM25-Pfad AUFGENOMMEN), nicht Umsortierung.
+
+**Tests:** Neuer Headless-Smoke `tests/smoke_bau22f_app_integration.mjs` **17/17 grün** —
+Cross-Phrasing-Rettung (Frage „torte" findet Doku „kuchen"; Kontrolle: reiner
+`queryLocal('torte',hybrid)` rettet 0) + Spy beweist `queryLocalMulti({hybrid:true})` mit
+Synonym-Variante + fail-soft (`queryExpand:false`, Leer-Frage). Regress-frei:
+`smoke_bau22` 260/260, `smoke_bau22e` 45/45, `smoke_bau04f` 32/32, `smoke_bau04d` 68/68,
+Drift-Guards `smoke_standalone_such_tool` 49/49, `smoke_bundle_connect` 21/21.
+**Browser-Sichttest wartet auf Klaus** (nach Merge live; Pages deployt von main).
+
+**Offen / nächster Schritt:** Rollout byte-gleich in `pinnwand/` (hat KEIN Modul 04 —
+prüfen ob sinnvoll) + Endknoten-PWAs Mixarium/Rezeptbuch (eigenes Suchfeld — separat
+prüfen ob A1/A4 passt). LLM-Varianten-Generator (A4 opt-in-Aufsatz, BYOK) später.
+
 ## 2026-07-02 · Namens-Tafel — „Kim"-Produktfamilie festgehalten
 
 **Rolle:** Pflege-Sitzung (Branch `claude/pinnwand-spelling-fix-2ikwzy`).

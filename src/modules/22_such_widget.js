@@ -8,7 +8,9 @@
  * Module — baut keine eigene Such-Logik:
  *
  *   1. SPRACHE   — Modul 21 SbkimSpeech (Sprach-Knopf → Text ins Feld).
- *   2. VORFILTER — Modul 04 queryLocal + Modul 03 Embedding (lokal, server-los).
+ *   2. VORFILTER — Modul 04 queryLocalMulti (Hybrid BM25+Vektor · A1 Bau 04.F,
+ *                  Query-Expansion/Multi-Query · A4 Bau 04.H) + Modul 03
+ *                  Embedding (lokal, server-los). Additiv, fail-soft.
  *   3. RICHTER   — Modul 04 hybridMatch (opt-in, BYOK).
  *   4. FAIL-SOFT — kein Schlüssel/Richter → Vorfilter gilt. Nie Eintritts-Barriere.
  *
@@ -172,6 +174,33 @@
   var optEuOnly = false;       // nur bei euPolicy:"frei" relevant
   var optQueryLabel = null;
   var optK = DEFAULT_K;
+
+  // ---- A4 (Bau 04.H) Query-Expansion / Multi-Query — kleine, app-eigene
+  //      Synonym-Karte. Schema { term(lowercase): [alt, ...] } für Modul 04
+  //      expandQuerySimple (ein Token → eine Alternative). Bidirektional
+  //      eingetragen, damit beide Frage-Richtungen denselben Treffer finden
+  //      (Frage „torte" findet Doku „kuchen" UND umgekehrt). Rein additiv:
+  //      ohne Treffer in der Karte bleibt es bei [query] (kein Regress).
+  //      Eine App darf ihre eigene Karte via init({synonyms}) setzen — sie
+  //      kennt ihre Domäne besser als diese generische Grundausstattung.
+  var DEFAULT_SYNONYMS = {
+    // Getränke / Rezept-Domäne (Endknoten Mixarium / Rezeptbuch)
+    "torte": ["kuchen"], "kuchen": ["torte"],
+    "cocktail": ["drink"], "drink": ["cocktail", "getränk"], "getränk": ["drink", "getraenk"],
+    "limo": ["limonade"], "limonade": ["limo"],
+    "smoothie": ["shake"], "shake": ["smoothie"],
+    "alkoholfrei": ["mocktail"], "mocktail": ["alkoholfrei"],
+    "plätzchen": ["keks"], "keks": ["plätzchen", "plaetzchen"],
+    // Allgemeine Umschreibungen (netzweit nützlich, harmlos)
+    "kfz": ["auto"], "auto": ["kfz", "wagen"], "wagen": ["auto"],
+    "notebook": ["laptop"], "laptop": ["notebook"],
+    "handy": ["smartphone"], "smartphone": ["handy"],
+    "arznei": ["medikament"], "medikament": ["arznei", "arzneimittel"],
+    "foto": ["bild"], "bild": ["foto"],
+  };
+  // Aktive Synonym-Karte (via init({synonyms}) überschreibbar) + A4-Schalter.
+  var optSynonyms = DEFAULT_SYNONYMS;
+  var optQueryExpand = true;   // A4 an (Default); init({queryExpand:false}) schaltet ab
   // Treffer-Anzeige (Klaus 2026-06-21): viel sammeln + ranken, 10 zeigen, der
   // Rest hinter einem ▾-Pfeil, je Klick 10 mehr.
   var RESULT_PAGE_SIZE = 10;
@@ -2467,31 +2496,71 @@
       .catch(function (err) { warn("Query-Embedding für 'verwandt'-Sicht fehlgeschlagen — Sicht bleibt 'verbunden'.", err); return null; });
   }
 
+  // A4 (Bau 04.H): Frage-Varianten über die app-eigene Synonym-Karte bilden.
+  // Fail-soft: A4 aus, kein expandQuerySimple oder Wurf → nur [query] (byte-
+  // gleich zum Einzel-Fall, kein Regress).
+  function expandVariants(match, query) {
+    if (!optQueryExpand || typeof match.expandQuerySimple !== "function") return [query];
+    try {
+      var vs = match.expandQuerySimple(query, { synonyms: optSynonyms });
+      return (Array.isArray(vs) && vs.length) ? vs : [query];
+    } catch (e) { warn("Query-Expansion fehlgeschlagen — Einzel-Frage.", e); return [query]; }
+  }
+
+  // Rang-Liste (queryLocal / queryLocalMulti) → angereicherte Treffer mit
+  // Quelle, Bedeutungs-Text, Öffnen-Link, nodeId, passageVec (aus dem Korpus
+  // rekonstruiert — queryLocalMulti gibt nur label/score/anchorId zurück).
+  function enrichRanked(res, corpus, source) {
+    res = res || [];
+    var byKey = {};
+    for (var i = 0; i < corpus.length; i++) { var c = corpus[i]; byKey[c.anchorId || c.label] = c; }
+    return res.map(function (r) {
+      var src = byKey[r.anchorId || r.label] || {};
+      return {
+        label: r.label, score: r.score, anchorId: r.anchorId, source: source,
+        text: src.text || r.label, snippet: src.snippet || null,
+        // Öffnen-Link: explizite url ODER ein anchorId, das eine echte externe
+        // Adresse ist (Knoten-Treffer → App-URL im anchorId). So zeigen Zeilen-
+        // Link, Detail-Karte „↗ Seite öffnen", Merkliste + Text-Export den Link.
+        url: src.url || (isExternalUrl(r.anchorId) ? r.anchorId : null),
+        nodeId: src.nodeId || null,   // für den Live-Cross-Knoten-Pfad (Knoten-Bereich)
+        // Inhalts-Vektor durchreichen — der „verwandt"-Modus braucht ihn für
+        // relatedness(queryVec, passageVec). RAM-only, wird NICHT persistiert.
+        passageVec: src.passageVec || null,
+      };
+    });
+  }
+
   function queryCorpus(query, corpus, source) {
     var match = global.SbkimMatch;
     if (!match || typeof match.queryLocal !== "function") return Promise.resolve([]);
     if (!Array.isArray(corpus) || corpus.length === 0) return Promise.resolve([]);
     var k = Math.min(corpus.length, MAX_RANK); // viel ranken, UI paginiert
-    return Promise.resolve(match.queryLocal(query, k, { corpus: corpus })).then(function (res) {
-      res = res || [];
-      var byKey = {};
-      for (var i = 0; i < corpus.length; i++) { var c = corpus[i]; byKey[c.anchorId || c.label] = c; }
-      return res.map(function (r) {
-        var src = byKey[r.anchorId || r.label] || {};
-        return {
-          label: r.label, score: r.score, anchorId: r.anchorId, source: source,
-          text: src.text || r.label, snippet: src.snippet || null,
-          // Öffnen-Link: explizite url ODER ein anchorId, das eine echte externe
-          // Adresse ist (Knoten-Treffer → App-URL im anchorId). So zeigen Zeilen-
-          // Link, Detail-Karte „↗ Seite öffnen", Merkliste + Text-Export den Link.
-          url: src.url || (isExternalUrl(r.anchorId) ? r.anchorId : null),
-          nodeId: src.nodeId || null,   // für den Live-Cross-Knoten-Pfad (Knoten-Bereich)
-          // Inhalts-Vektor durchreichen — der „verwandt"-Modus braucht ihn für
-          // relatedness(queryVec, passageVec). RAM-only, wird NICHT persistiert.
-          passageVec: src.passageVec || null,
-        };
+
+    // A1 (Bau 04.F): Vorfilter auf Hybrid BM25+Vektor heben — cross-phrased
+    //   Wort-Treffer, die der reine Cosinus-Boden (PROVIDER_MIN_MATCH 0.80)
+    //   ausschließt, werden über den lexikalischen Pfad AUFGENOMMEN. Fail-soft:
+    //   ohne `text`-Feld fällt BM25 in Modul 04 auf `label` zurück.
+    // A4 (Bau 04.H): mit mehreren Frage-Varianten suchen und via RRF verschmelzen
+    //   (queryLocalMulti). Rein additiv — senkt keine Schwelle, gatet nichts;
+    //   der Andock-Riegel (Modul 05) bleibt unberührt.
+    var hybridOpts = { corpus: corpus, hybrid: true };
+    var ranked;
+    if (typeof match.queryLocalMulti === "function") {
+      ranked = Promise.resolve(match.queryLocalMulti(expandVariants(match, query), k, hybridOpts));
+    } else {
+      ranked = Promise.resolve(match.queryLocal(query, k, hybridOpts));
+    }
+    return ranked
+      .then(function (res) { return enrichRanked(res, corpus, source); })
+      .catch(function (err) {
+        // Fail-soft: A1/A4-Pfad-Fehler → zurück auf den einfachen Cosinus-Pfad
+        // (Bau 04.C), damit die Suche nie an der Verbesserung scheitert.
+        warn("Hybrid/Multi-Query fehlgeschlagen — Fallback auf einfachen Vorfilter.", err);
+        return Promise.resolve(match.queryLocal(query, k, { corpus: corpus }))
+          .then(function (res) { return enrichRanked(res, corpus, source); })
+          .catch(function (err2) { warn("Vorfilter-Fallback fehlgeschlagen.", err2); return []; });
       });
-    });
   }
 
   // Stufe 1 (Eingang) für den Internet-Bereich: SearXNG-Roh-Treffer holen.
@@ -4181,6 +4250,10 @@
     if (options.euOnly !== undefined) optEuOnly = !!options.euOnly;
     if (typeof options.queryLabel === "string") optQueryLabel = options.queryLabel;
     if (typeof options.k === "number" && isFinite(options.k) && options.k >= 1) optK = Math.floor(options.k);
+    // A4: app-eigene Synonym-Karte ersetzt die generische Grundausstattung
+    // (eine App kennt ihre Domäne besser). {} = A4 praktisch aus (nur [query]).
+    if (options.synonyms && typeof options.synonyms === "object") optSynonyms = options.synonyms;
+    if (options.queryExpand !== undefined) optQueryExpand = !!options.queryExpand;
     if (options.allowDrag !== undefined) optAllowDrag = !!options.allowDrag;
     if (options.rememberHidden !== undefined) optRememberHidden = !!options.rememberHidden;
     if (options.reloadButton !== undefined) optShowReload = !!options.reloadButton;
@@ -4333,6 +4406,11 @@
       get liveNodeQuery() { return typeof queryNodeFn === "function"; },
       get areas() { return { app: areas.app.enabled, knoten: areas.knoten.enabled, internet: areas.internet.enabled }; },
       get richterOn() { return richterOn; },
+      // A1/A4-Verdrahtung (reine Diagnose): Vorfilter läuft hybrid, Multi-Query
+      // an/aus + Größe der aktiven Synonym-Karte.
+      get hybridPrefilter() { return true; },
+      get queryExpand() { return optQueryExpand; },
+      get synonymCount() { return optSynonyms ? Object.keys(optSynonyms).length : 0; },
       get viewMode() { return viewMode; },
       get relatedOnly() { return viewRelatedOnly; },
       get kiRelated() { return viewKiRelated; },
