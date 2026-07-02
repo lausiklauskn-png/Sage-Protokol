@@ -119,6 +119,40 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-02 · Folge-Bau: window.R-Fix + Rezept-Korpus — Cross-Knoten-Antwort in beiden Endknoten funktional
+
+**Rolle:** Bau-Sitzung (Branch `claude/sage-search-rollout-2tlm28`). Umsetzung der
+Schritte 1–3 aus `BRIEF_KORPUS_WINDOWR_ENDKNOTEN.md` (Klaus-Auftrag „Folgebau 1,2,3").
+
+**Behobene Lücke:** In beiden Endknoten lasen Korpus-Provider (+ Rezeptbuchs Domänen-Vektor)
+`window.R`, aber `window.R` war **nie gesetzt** (top-level `let R` hängt nicht am window) →
+Cross-Knoten-Korpus lief **live leer**. Der A1/A4-Empfänger antwortete daher trotz korrekter
+Verdrahtung mit leerer Liste.
+
+**Was gebaut (beide Endknoten, gemergt):**
+- **Mixarium (PR #90):** `R` als LIVE `window.R` via `Object.defineProperty`-Getter (QC +
+  `index.html` byte-identisch). Der bestehende Provider `buildMixariumQueryCorpus` (mit
+  `text`-Feld seit PR #89) sieht damit echte Drinks. `SW_VERSION` v38→v39. Smoke
+  `smoke_windowr.mjs` 7/7.
+- **Rezeptbuch (PR #280):** derselbe `window.R`-Getter (QC → `build.py`-Rebuild) **+ neuer
+  Rezept-Korpus-Provider** `buildRezeptbuchQueryCorpus` in `sbkim-init.js` (fehlte ganz):
+  `{label, passageVec, text, anchorId}` aus Name+Geschmack+Zutaten+Kategorie, `text` für
+  A1/BM25, lazy/fail-soft/Deckel 80/kein PII, Muster von Mixarium gespiegelt. `CACHE`
+  mrz-v27→v28. Smoke `smoke_windowr_corpus.mjs` 13/13.
+
+**Der Getter-Trick:** ein einmaliges `window.R = R` wäre stale (R wird beim Laden reassigned).
+Der Getter `Object.defineProperty(window,'R',{get:()=>R})` schließt über die Bindung → liefert
+immer das aktuelle R und repariert **alle** `window.R`-Leser (auch Rezeptbuchs `sampleContent`).
+
+**Leitplanken:** `PROVIDER_MIN_MATCH` (0.80)/Andock-Riegel (Modul 05) unberührt, kein
+PROTOCOL_VERSION-Bump, kein PII. Mixarium `index.html`==QC md5 verifiziert; Rezeptbuch
+`index.html`==deterministischer build.py-Rebuild.
+
+**⚠️ Offen — Klaus' Browser-Sichttest (Schritt 4, PFLICHT):** Von einem Knoten (Sage/
+Rendezvous) eine cross-phrased Frage an Mixarium/Rezeptbuch stellen → kommen jetzt echte
+Drinks/Rezepte bedeutungs-sortiert zurück? Erst dieser Live-Lauf beweist die Fütterung
+(window.R populiert + ~30 MB Embedding). Bis dahin: headless grün, Live „ungeprüft".
+
 ## 2026-07-02 · KORREKTUR + Rezeptbuch-A1/A4-Rollout — „Rezeptbuch hat kein SBKIM" war FALSCH (Wrong-Branch-Artefakt)
 
 **Rolle:** Bau-/Korrektur-Sitzung (Branch `claude/sage-search-rollout-2tlm28`). Auslöser:
