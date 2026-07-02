@@ -211,8 +211,11 @@ Das Widget **komponiert** vorhandene Module — es baut keine eigene Such-Logik:
 ```
 1. SPRACHE (optional, Eingang)  — Modul 21 SbkimSpeech
      Sprach-Knopf → Text ins eigene Textfeld (UX-Erhalt: Feld NIE mit value:'' neu bauen).
-2. VORFILTER (lokal, server-los, IMMER) — Modul 04 queryLocal + Modul 03 Embedding
-     Such-Text → Top-k lokale Treffer (Cosinus ≥ PROVIDER_MIN_MATCH).
+2. VORFILTER (lokal, server-los, IMMER) — Modul 04 queryLocalMulti + Modul 03 Embedding
+     Such-Text → Frage-Varianten (A4 Bau 04.H, app-eigene Synonym-Karte) → je
+     Variante Hybrid BM25+Vektor (A1 Bau 04.F, {hybrid:true}) → RRF-Fusion → Top-k.
+     Additiv: cross-phrased Wort-Treffer, die der 0.80-Cosinus-Boden ausschließt,
+     werden über den BM25-Pfad AUFGENOMMEN. Fail-soft auf queryLocal/Cosinus zurück.
 3. RICHTER (opt-in, BYOK)        — Modul 04 hybridMatch
      Kandidaten → echtes Urteil pro Treffer (passt/passt-nicht + Begründung + Score).
 4. FAIL-SOFT                     — kein Schlüssel / Richter nicht erreichbar → Vorfilter gilt.
@@ -540,6 +543,11 @@ window.SbkimSearchWidget = {
   euOnly?:   boolean,                // nur bei euPolicy:"frei" relevant (Default false); bindend erzwingt true
   queryLabel?: string,               // Knoten-Name für die Attestation
   k?:        number,                 // Top-k Vorfilter (Default 5)
+  synonyms?: { [term_lowercase: string]: string[] },  // A4 (Bau 04.H): app-eigene
+                                     // Synonym-Karte für Query-Expansion. Ersetzt die
+                                     // generische DEFAULT_SYNONYMS-Grundausstattung.
+                                     // {} = A4 praktisch aus (nur [query]).
+  queryExpand?: boolean,             // A4 an/aus (Default true); false → hybrid-Einzel-Frage
   prepareCorpus?: () => Promise<Array<{label,text?,passageVec,anchorId?}>>,
                                      // LAZY-Korpus-Provider: läuft EINMAL beim ersten
                                      // expand() oder bei der ersten Suche, baut den Korpus
@@ -572,6 +580,9 @@ widgetMounted:  boolean
 lastSearchMode: string | null   // letzter runSearch-Modus
 searchCount:    number
 hasApiKey:      boolean         // Richter aktivierbar?
+hybridPrefilter: true           // A1 verdrahtet — Vorfilter läuft {hybrid:true}
+queryExpand:    boolean         // A4 Multi-Query an/aus (Default true)
+synonymCount:   number          // Größe der aktiven Synonym-Karte
 coupled:        false           // Increment 2 — bleibt false in Increment 1
 ```
 

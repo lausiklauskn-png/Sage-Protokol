@@ -15,7 +15,7 @@
  */
 "use strict";
 
-var CACHE_VERSION = "sbkim-such-tool-v1";
+var CACHE_VERSION = "sbkim-such-tool-v2";
 
 // Relativ zum SW-Scope (diesem Ordner) — funktioniert in Sage (/such-tool/)
 // genauso wie in einem eigenen Repo-Root.
