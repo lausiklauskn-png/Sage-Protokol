@@ -119,6 +119,45 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-02 · KORREKTUR + Rezeptbuch-A1/A4-Rollout — „Rezeptbuch hat kein SBKIM" war FALSCH (Wrong-Branch-Artefakt)
+
+**Rolle:** Bau-/Korrektur-Sitzung (Branch `claude/sage-search-rollout-2tlm28`). Auslöser:
+Klaus' Hinweis, dass Rezeptbuch **immer wieder** falsch als „kein SBKIM" eingeschätzt wird.
+
+**⚠️ Richtigstellung des Eintrags direkt darunter:** Die Aussage „Mein-Rezeptbuch trägt gar
+kein SBKIM → nichts zu rollen" war **FALSCH**. Ursache — ein **wiederkehrendes Wrong-Branch-
+Artefakt**: der auf GitHub eingestellte **Default-Branch von Mein-Rezeptbuch ist NICHT `main`**,
+sondern ein toter **Vor-SBKIM-Branch** (`claude/recipe-book-app-update-fGP7B`, ohne `sbkim/`).
+Automatisch angelegte Session-Branches (auch `claude/sage-search-rollout-2tlm28`) zweigen von
+diesem Decoy ab und sind **bit-identisch** mit ihm → jede Sitzung, die den ausgecheckten Stand
+liest, „sieht" kein SBKIM. **`main` trägt die volle SBKIM-Integration** (Module 00–08, 15, 16,
+17, 18, 23, Briefkästen, Spore) — die **Modul-09-Migration hat längst stattgefunden**.
+
+**Netzweite Lehre (verankert):** In `Mein-Rezeptbuch/CLAUDE.md` steht jetzt ganz oben eine
+Pflicht-Regel „🚨 IMMER gegen `main` prüfen — der Default-Branch ist ein toter Decoy" (fetch
+`origin/main`, Branch von `main` neu aufsetzen, nie gegen Default/Session-Branch urteilen).
+
+**Was gebaut (Rezeptbuch, PR #279 gemergt) — additiv, fail-soft:**
+- **Modul 04 byte-1:1 aus Sage** synchronisiert. Rezeptbuch stand auf Bau **04.A — OHNE
+  `queryLocal`**. Der `op:"query"`-Empfänger (`15_membran.js`) rief also ein **fehlendes**
+  `queryLocal` und antwortete stets `module-04c-not-available` — **echter Vertrags-Bug, jetzt
+  behoben** + A1/A4-Fähigkeit (BM25/`queryLocalMulti`/`expandQuerySimple`) dazu.
+- `15_membran.js` — fail-soft `queryWithInclusion` (A4 koch-eigene Synonym-Karte → A1 Hybrid-
+  Multi → Cosinus) im Empfänger.
+- `app-sw.js` CACHE `mrz-v26`→`mrz-v27`. `index.html`/QC unberührt (nur separate `sbkim/*.js`,
+  Rebuild deterministisch identisch verifiziert).
+- Headless-Smoke `Mein-Rezeptbuch/tests/smoke_rollout_a1a4.mjs` **13/13 grün**.
+
+**⚠️ Offen (Folge-Bau, Klaus-Entscheid „jetzt mergen + Korpus als Folge-Bau, Mixarium mit
+aufnehmen"):** Voll funktional wird die Cross-Knoten-Antwort erst mit einem **Rezept-Korpus**,
+den `sbkim-init.js` noch **nicht** anlegt (`SbkimMatch.setLocalCorpus` fehlt). Dazu die
+**latente `window.R`-Lücke**: `window.R` wird **nirgends zugewiesen** (top-level `let R`),
+obwohl mehrere Stellen es lesen (auch der Domänen-Vektor `sampleContent`) → Korpus/Content
+sehen zur Laufzeit `[]`. **Betrifft Mein-Mixarium gleichermaßen** (dessen Korpus-Provider,
+2026-06-28 gebaut, liest ebenfalls `window.R` → vermutlich leerer Korpus live). Folge-Bau:
+`window.R` sauber exponieren (Live-Getter, übersteht Reassignment) + Rezept-Korpus-Provider
+in beiden Apps + Klaus' Browser-Test. Brief unten.
+
 ## 2026-07-02 · A1/A4-Rollout in die Endknoten — Mixarium gebaut+gemergt, Rezeptbuch+Pinnwand geprüft/begründet
 
 **Rolle:** Bau-/Rollout-Sitzung (Branch `claude/sage-search-rollout-2tlm28`). Brief:
@@ -132,10 +171,10 @@ Ausgangslagen — nur eines trägt einen SBKIM-Such-Pfad, den A1/A4 verbessern.
   `sbkim/15_membran.js`) + der Korpus-Provider (`sbkim/sbkim-init.js`). **Kein** nutzer-
   sichtbares SBKIM-Suchfeld (die Drink-Suche der App ist reiner Textfilter, nicht SBKIM).
   → A1/A4 gelten dem **Antwort-Pfad** (Mycel-Kern-Nutzen: Cross-Knoten-Suche). **ROLLOUT.**
-- **Mein-Rezeptbuch** — trägt **gar kein** SBKIM (kein `sbkim/`-Verzeichnis, 0 `queryLocal`/
-  `SbkimMatch`-Treffer). → **Nichts zu rollen.** Ein A1/A4-Rollout setzt eine SBKIM-Installation
-  (Modul 09 Einbau-PWA) voraus — das ist ein eigener, großer Migrations-Auftrag, **außerhalb**
-  dieses Rollout-Scopes. Bewusst ausgelassen.
+- **Mein-Rezeptbuch** — ~~trägt gar kein SBKIM~~ **← FALSCH, siehe Korrektur-Eintrag oben
+  (2026-07-02 Wrong-Branch-Artefakt).** Diese Aussage entstand, weil gegen den Session-/
+  Default-Branch statt gegen `main` geprüft wurde. **`main` trägt volle SBKIM-Integration;
+  Modul-09-Migration längst erfolgt. A1/A4 dort ausgerollt (PR #279).**
 - **Pinnwand** (`pinnwand/`) — trägt Modul 03 (Embedding) + inline **whitened Cosinus**-
   Rangfolge + opt-in KI-Richter; **kein Modul 04**, **keine 0.80-Schwelle** (zeigt ALLE
   Einträge, nur sortiert). → A1s Gewinn ist **INKLUSION über einen Filter-Boden** — den es
