@@ -119,6 +119,41 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-05 · Bedeutungs-Suche im normalen Suchfeld beider Endknoten (opt-in 💡, gratis/offline)
+
+**Rolle:** Feature-Bau in den Endknoten-Apps (Klaus' Richtungswunsch). **Freibrief gilt.**
+Klaus' Einwand nach dem 04.G-Fix: der Such-Nutzen gehöre **in das Suchfeld, das er
+benutzt** (die Rezept-/Drink-Suche), nicht in ein verstecktes SBKIM-Tool — „damit ich
+weniger suchen muss". Befund: das normale Suchfeld war reiner **Wort-Abgleich**
+(`matchSQ` → `.includes`), fand also „Eierschecke" bei „Kuchen" NICHT.
+
+**Gebaut (beide Apps identisch):** kleiner **💡-Schalter** (`#semBtn`) neben dem Suchfeld,
+Default **AUS**, gemerkt in `localStorage` (Rezeptbuch `mrSemOn` / Mixarium `mxsem9m`).
+AN = eine **semantische Suche** ergänzt Treffer nach **Sinn** (Modul 03 Embedding + Modul 04
+`queryLocal({hybrid:true})`). `matchSQ` in `wordMatchSQ` (exakt, unverändert) + semantischen
+Zusatz (`SEM_ON && SEM_IDS.has(r.id)`) getrennt. **Rein additiv/Inklusion** — Wortsuche
+bleibt exakt + sofort, `alcAllowed`/Andock-Riegel/`PROVIDER_MIN_MATCH` unberührt, konsequent
+**fail-soft** (jeder Fehler → reine Wortsuche).
+
+**Effizienz-Kernentscheidung:** `embedPassage` cacht NICHT → der sbkim-init-Korpus-Provider
+re-embeddet bei jedem Aufruf (langsam pro Tastendruck). Darum baut die App den Korpus **einmal
+selbst** (`SEM_CORPUS`, gecacht, Signatur über die Rezept-id-Menge; ~30 MB Modell einmalig beim
+ersten Einschalten) und reicht ihn per `options.corpus` an `queryLocal` — pro Suche wird nur die
+**Anfrage** embeddet. Debounce 350 ms + Staleness-Guard (`SQ!==term`).
+
+**Live:** Rezeptbuch **PR #288** (QC→`build.py`, `CACHE` mrz-v31→v32, index.html im SHELL-Precache)
+· Mixarium **PR #98** (QC→index byte-identisch md5 `fdbd502…`, `SW_VERSION` v44→v45). Verifikation
+headless: alle inline-`<script>` node --check sauber (Rezeptbuch 9/9, Mixarium 8/8), Semantik-Block
+standalone node --check grün.
+
+**Ehrliche Grenze:** das GRATIS-Netz wirft breiter und kann ohne den (opt-in) KI-Richter Lockeres
+reinnehmen (0.80-Anisotropie-Boden, siehe LEHRE-Doc). Wortsuche bleibt exakt.
+
+**Offen / nächster Schritt:** Klaus' **Browser-Sichttest** beider 💡-Schalter (fühlt es sich gut an?
+Trennschärfe okay?). Danach je nach Rückmeldung: Sinn-Treffer-Kennzeichnung / strengeres Netz,
+ODER KI-Richter (opt-in) an die App-Suche zum Schärfen, ODER RELATEDNESS_CENTER v2 (gratis).
+Brief: `docs/sessions/BRIEF_NAECHSTE_SITZUNG_2026-07-05.md`.
+
 ## 2026-07-05 · Trennschärfe (Aufgabe 1): async-Provider-Bug in `queryLocalJudged` (Bau 04.G) gefixt
 
 **Rolle:** Bau-/Fix-Sitzung (Branch `claude/cross-node-search-verification-nmt3bd`, von aktuellem
