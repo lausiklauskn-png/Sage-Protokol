@@ -152,11 +152,15 @@ Beweis geführt: gegen die un-gefixte Kopie wird Probe 8 rot (wirft), mit Fix **
 Regressionsfrei: Drift-Guards such-tool 49/49 + sbkim-bundle 21/21, smoke_bau04c 45/45, 04d 68/68,
 04f 32/32, 15b 35/35, 22 260/260, 22e 45/45, 22f 17/17.
 
-**Offen / nächster Schritt:** (1) Endknoten-Rollout — die Byte-Kopie `sbkim/04_match.js` in
-Rezeptbuch + Mixarium nachziehen (+ SW-Cache-Bump), damit der Fix auch dort greift; dann kann Klaus
-den KI-Richter live einschalten. (2) Klaus' Browser-Sichttest mit echtem Schlüssel („kuchen" →
-Hühnerfrikassee fällt raus). **Nur Sage-Quelle in dieser Sitzung (Klaus: „nimm nur den aktuellen
-Main").**
+**Endknoten-Rollout ERLEDIGT (gleiche Sitzung, Klaus-Freigabe „1"):** die Byte-Kopie
+`sbkim/04_match.js` byte-1:1 aus der Sage-Quelle in **Mein-Mixarium (PR #97, SW mixarium-sw-v43→v44)**
++ **Mein-Rezeptbuch (PR #287, CACHE mrz-v30→v31)** nachgezogen, beide Branches sauber von `origin/main`
+aufgesetzt (Rezeptbuch-Decoy-Falle umgangen). Diff je 0 zu Sage, await=2/non-await=0, Endknoten-Smokes
+grün (Mixarium 14/14+7/7, Rezeptbuch 13/13+13/13), Mixarium index==QC md5 unverändert. Beide gemergt.
+
+**Offen / nächster Schritt:** Klaus' **Browser-Sichttest** mit echtem Schlüssel — KI-Richter live
+einschalten, „kuchen" → „Hühnerfrikassee" muss rausfallen. Der Fix greift jetzt auf allen drei
+`main`-Deployments (Sage + beide Endknoten). Danach optional RELATEDNESS_CENTER v2 (gratis-Pfad).
 
 ## ✅ 2026-07-02 · MEILENSTEIN: Cross-Knoten-Antwort-Kette LIVE bewiesen (Klaus-Browser, Rezeptbuch)
 
