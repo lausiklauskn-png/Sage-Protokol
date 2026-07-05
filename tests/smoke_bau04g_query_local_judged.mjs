@@ -181,5 +181,40 @@ console.log("Probe 7: options.hybrid nimmt Unter-Boden-Lexik-Treffer, dann Richt
   ok("Richter-Top passt:true", r.candidates[0].passt === true);
 }
 
+// ---- Probe 8: async Korpus-Provider (setLocalCorpus) — Regressions-Probe ----
+// Spiegelt smoke_bau04c Probe 8c: der Endknoten-Provider ist async (baut den
+// Korpus faul via Modul 03, Embeddings). queryLocalJudged MUSS ihn awaiten —
+// sonst landet ein Promise in queryLocal → "Korpus muss ein Array sein, war:
+// Promise" und der Cross-Knoten-Antwort-Pfad (Modul 15 op:query) fällt auf eine
+// leere Fehler-Antwort zurück, obwohl der Richter opt-in ist. Der Fix wurde aus
+// PR #533 (der queryLocal fixte) für Bau 04.G nachgezogen. Ohne options.corpus →
+// der registrierte Provider ist die Korpus-Quelle.
+console.log("Probe 8: async Korpus-Provider (setLocalCorpus, ohne options.corpus)");
+{
+  resetFetch();
+  M.setLocalCorpus(async () => corpus3());   // async: gibt Promise<Array> zurück
+  // 8a: Opt-in AUS → reiner Vorfilter über den Provider-Korpus, KEIN Throw.
+  let threw = false, r1 = null;
+  try { r1 = await M.queryLocalJudged("suche", 5, {}); } catch (e) { threw = true; }
+  ok("8a async-Provider ohne Richter wirft NICHT", threw === false);
+  ok("8a candidates aus Provider-Korpus (X,Y,Z)", !!r1 && JSON.stringify(r1.candidates.map((c) => c.label)) === JSON.stringify(["X", "Y", "Z"]), r1 && JSON.stringify(r1.candidates.map((c) => c.label)));
+  ok("8a judged:false (kein apiKey)", !!r1 && r1.judged === false);
+  ok("8a KEIN fetch-Call", fetchCalls === 0, String(fetchCalls));
+  // 8b: Richter an → urteilt über den async-Provider-Korpus (Texte erreichen ihn).
+  resetFetch();
+  stubVerdicts = [
+    { passt: false, score: 0.10, begruendung: "fremd" },
+    { passt: true, score: 0.90, begruendung: "passt" },
+    { passt: true, score: 0.70, begruendung: "passt" },
+  ];
+  let threw2 = false, r2 = null;
+  try { r2 = await M.queryLocalJudged("suche", 5, { apiKey: "sk-test" }); } catch (e) { threw2 = true; }
+  ok("8b async-Provider mit Richter wirft NICHT", threw2 === false);
+  ok("8b judged:true über Provider-Korpus", !!r2 && r2.judged === true);
+  ok("8b umsortiert zu Y,Z,X", !!r2 && JSON.stringify(r2.candidates.map((c) => c.label)) === JSON.stringify(["Y", "Z", "X"]), r2 && JSON.stringify(r2.candidates.map((c) => c.label)));
+  ok("8b Passage-Text erreichte den Richter", lastBody.indexOf("kaese reifung aromen hauptgang") !== -1);
+  M.setLocalCorpus(null);   // Provider zurücksetzen (Test-Hygiene)
+}
+
 console.log("\nTotal: " + (pass + fail) + " Proben, " + pass + " grün, " + fail + " rot.");
 process.exit(fail === 0 ? 0 : 1);

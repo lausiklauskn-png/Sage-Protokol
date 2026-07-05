@@ -119,6 +119,45 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-05 · Trennschärfe (Aufgabe 1): async-Provider-Bug in `queryLocalJudged` (Bau 04.G) gefixt
+
+**Rolle:** Bau-/Fix-Sitzung (Branch `claude/cross-node-search-verification-nmt3bd`, von aktuellem
+`main` #535). **Freibrief gilt.** Aufgabe 1 aus `BRIEF_NAECHSTE_SITZUNG_2026-07-02.md` (Trennschärfe
+via opt-in KI-Richter).
+
+**Prüf-Befund vor dem Bau (Klaus' Auftrag „prüf genau, wir sind schon weiter"):** Der Brief
+empfahl, den KI-Richter in den Cross-Knoten-Antwort-Pfad einzubauen. Prüfung ergab: das ist
+**schon gebaut** — `queryLocalJudged` (Bau 04.G, Strang A2) komponiert Vorfilter (`queryLocal`)
++ Richter (`hybridMatch`, opt-in/BYOK, fail-soft), ist exportiert, byte-kopiert (such-tool +
+sbkim-bundle), im `op:"query"`-Empfänger von Modul 15 verdrahtet (`setQueryJudge`) und hat einen
+Siegel-Aspekt. Kein Neubau nötig.
+
+**Der echte Rest — ein LIVE-Bug (gefunden + gefixt):** `queryLocalJudged` löste den
+registrierten Korpus-Provider **ohne `await`** auf (Z. ~1773) — exakt der async-Provider-Bug,
+den PR #533 in `queryLocal` fixte, in der Schwester-Funktion 04.G aber übersehen wurde. Der
+Cross-Knoten-Empfänger (Modul 15) übergibt `queryLocalJudged` nur die Richter-Config, **keinen
+Korpus** → die Funktion nutzt den registrierten Provider, und der ist auf den Endknoten **async**
+(baut den Korpus faul via Modul 03). Folge ohne Fix: ein Promise landet als Korpus in `queryLocal`
+→ `InvalidCorpusError` → der Empfänger fällt auf eine **leere Fehler-Antwort** (`module-04c-query-failed`)
+zurück. Heißt: sobald Klaus den KI-Richter live einschaltet, käme **nichts** statt geurteilter Treffer.
+
+**Fix (rein additiv, Leitplanken unberührt):** `await` + try/catch (fail-soft parity mit
+`queryLocal`) in `queryLocalJudged`, byte-1:1 in `src/modules/04_match.js` +
+`such-tool/modules/04_match.js` + `sbkim-bundle/modules/04_match.js` (alle drei md5-gleich).
+`PROVIDER_MIN_MATCH` (0.80) / Andock-Riegel (Modul 05) / PROTOCOL_VERSION unberührt.
+
+**Tests:** Regressions-**Probe 8** (async Provider via `setLocalCorpus`, ohne `options.corpus`)
+in `smoke_bau04g_query_local_judged.mjs` — vorher blind (alle Proben nutzten explizites `corpus:`).
+Beweis geführt: gegen die un-gefixte Kopie wird Probe 8 rot (wirft), mit Fix **36/36 grün** (vorher 28).
+Regressionsfrei: Drift-Guards such-tool 49/49 + sbkim-bundle 21/21, smoke_bau04c 45/45, 04d 68/68,
+04f 32/32, 15b 35/35, 22 260/260, 22e 45/45, 22f 17/17.
+
+**Offen / nächster Schritt:** (1) Endknoten-Rollout — die Byte-Kopie `sbkim/04_match.js` in
+Rezeptbuch + Mixarium nachziehen (+ SW-Cache-Bump), damit der Fix auch dort greift; dann kann Klaus
+den KI-Richter live einschalten. (2) Klaus' Browser-Sichttest mit echtem Schlüssel („kuchen" →
+Hühnerfrikassee fällt raus). **Nur Sage-Quelle in dieser Sitzung (Klaus: „nimm nur den aktuellen
+Main").**
+
 ## ✅ 2026-07-02 · MEILENSTEIN: Cross-Knoten-Antwort-Kette LIVE bewiesen (Klaus-Browser, Rezeptbuch)
 
 **Rolle:** Bau-/Sichttest-Sitzung. Klaus hat die **komplette lokale Bedeutungs-Such-Kette
