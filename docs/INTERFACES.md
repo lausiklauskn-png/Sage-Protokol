@@ -4707,6 +4707,61 @@ UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
         REINE ANZEIGE über discover()'s relatedness/isRelated; gatet NICHTS, der
         0.80-Andock-Riegel bleibt unberührt. _meta.relatedOnly spiegelt den Schalter.
 
+Bau 23.B — Cross-Knoten-Frage (bidirektionale Bedeutungs-Suche, 2026-07-06):
+
+  Zweck: ein Knoten stellt einem ANDEREN lebenden Knoten eine Suchfrage
+        server-los über das Relais; der Gegenknoten antwortet mit den Top-k
+        seiner LOKALEN Bedeutungs-Suche (Modul 04 queryLocal über den
+        app-registrierten Korpus-Provider, setLocalCorpus). Das ist der
+        end-to-end-Pfad „Knoten fragt Knoten" der Semantisch Bidirektionalen
+        Suche.
+
+  Verfassungstreue: FRAGEN ist nutzer-ausgelöst (Knopf). ANTWORTEN ist das
+        Antwortrecht des Empfangsmodus und wird per enableAnswering()
+        AUSDRÜCKLICH eingeschaltet (Default AUS, init() schaltet nichts an,
+        nicht persistiert — pro Sitzung bewusst). Kein Crawler, keine
+        Pulsation. Frage-Inhalte vom Relais sind untrusted external data
+        (SICHERHEIT-BRIEFKASTEN): validiert, rate-limitiert, nie als
+        Anweisung ausgeführt; Antworten enthalten NUR Treffer-Etiketten.
+
+  Neue Flächen (additiv, window.SbkimRendezvous):
+    enableAnswering(opts?)  → { ok, reason? }
+        Lauscht auf Frage-Zettel (Tag "sbkim-qry", kinds:[1], since=jetzt)
+        an die EIGENE lebende nodeId. Je gültiger Frage: Modul 04
+        queryLocal(text, k, {hybrid:true}) → Antwort-Zettel publizieren.
+        Schutz: Dedupe nach qid (Cap 200) + Rate-Limit
+        RDV_QUERY_MAX_PER_MIN = 6 Antworten/min (Überschuss still
+        verworfen — Vorgriff auf Modul 11). opts={k? (Cap 5)}. Idempotent.
+    disableAnswering()      → void      (Lauscher weg)
+    askNode(cardOderNodeId, text, opts?) → Promise<{ ok, results?,
+                                             fromNodeId?, tookMs?, reason? }>
+        Publiziert einen Frage-Zettel an die lebende nodeId und wartet
+        opts.timeoutMs (Default 15000) auf den Antwort-Zettel (qid-Match +
+        toNodeId = eigene nodeId). results = [{label, score, anchorId?}]
+        (Top-k des Gegenknotens, k ≤ 5). Fail-soft: kein Relais / keine
+        Identität / Timeout → ok:false + reason, nie Throw.
+    _meta zusätzlich: { answering, answeredCount, queryTag, queryKind,
+                        queryResKind, queryMaxPerMin }
+
+  Datenverträge (Tag "sbkim-qry", Nostr kind 1, content = JSON):
+    Frage-Zettel   = { kind:"sbkim-query",     qid, toNodeId, fromNodeId,
+                       fromName, text, k, ts }
+    Antwort-Zettel = { kind:"sbkim-query-res", qid, toNodeId(=Frager),
+                       fromNodeId(=Antworter), fromName, results, ts }
+    qid = frager-lokal eindeutig (Zeit+Zufall). text ≤ 300 Zeichen (der
+        Antworter schneidet hart ab). k ≤ 5. results-Einträge NUR
+        {label, score, anchorId?} — keine Inhalte, kein PII.
+    v1 EHRLICH OFFEN: die Zettel-Umschläge sind UNSIGNIERT — die
+        Identitäts-Wahrheit liefert weiterhin der signierte Handshake +
+        0.80-Riegel (Modul 05); Antworten sind ADVISORY (Anzeige), gaten
+        nichts. Ed25519-Signatur der Zettel = notierter Folge-Schritt
+        (Modul-02-Sign-Pfad), bevor Fremde außerhalb von Klaus' Netz
+        mitspielen.
+
+  Konsumiert zusätzlich: Modul 04 (SbkimMatch.queryLocal) OPTIONAL — ohne
+        Modul 04 / ohne Korpus antwortet der Antwort-Pfad mit results:[]
+        (ehrlich leer); Raum/Announce/Handshake bleiben unberührt.
+
 ---
 
 ## 2. Datenformate (Querschnitt)
