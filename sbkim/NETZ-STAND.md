@@ -31,6 +31,7 @@
 | **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0` | **`verified-match` 0.847784** | `sbkim/meintresor_inbox.verify.md` |
 | **BookLedgerPro** | BookLedgerPro-Buchhaltung | `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ` | **`verified-match` 0.813525** (2026-06-21; cap/needs signiert → Drei-Schichten-bereit) | `sbkim/bookledgerpro_inbox.verify.md` |
 | **Family Projekt** | Werkzeuge / Apps / Marktplatz (`family-projekt.de`) | `HLXUEJFWHGt6DlRFgzvN4d_YdHRfnrehlVdRb4BHvAE` | **`verified-match` 0.8287** (2026-06-27; echter `domainVector`, L2=1) | `sbkim/familyproject_inbox.verify.md` |
+| **Tomys Hub** | Digitaldruck / Stick / Werbeartikel (`lausiklauskn-png.github.io/Tomys-Hub/`) | — (Identität wartet auf Browser-Lauf) | `angekündigt` (2026-07-06; Bau komplett: Module 01–23 inkl. Bau 23.B + Korpus-Provider, Tomys-Hub PR #73) | Spore entsteht im Browser (🌐 → Mit dem Netz verbinden), dann `sbkim/spore.json` |
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 

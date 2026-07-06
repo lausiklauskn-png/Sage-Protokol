@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-07-06",
-  "seq": 42,
-  "headline": "Bau 23.B: Cross-Knoten-Frage (Knoten fragt Knoten) gebaut + headless bewiesen; Modul-23-Kopien in MR/MM/family aktualisiert; Live-Beweis wartet auf Klaus",
+  "seq": 43,
+  "headline": "Tomys Hub wird neuer Endknoten (Bau komplett inkl. Bau 23.B + Korpus-Provider; Identität wartet auf Browser-Lauf) — NETZ-STAND nachgezogen",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -17,7 +17,8 @@
   "forNodes": [
     "rezeptbuch",
     "mixarium",
-    "family"
+    "family",
+    "tomyhub"
   ],
   "ack": {
     "SB-KIMTool-Point": 24,
