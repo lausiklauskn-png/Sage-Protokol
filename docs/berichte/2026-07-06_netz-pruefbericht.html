@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Netz-Prüfbericht 2026-07-06 — Verbindungen, Kommunikation, Reparaturen</title>
+<style>
+  :root{color-scheme:light dark}
+  body{font:15px/1.55 system-ui,sans-serif;max-width:880px;margin:24px auto;padding:0 16px;background:#0d1117;color:#e6edf3}
+  @media (prefers-color-scheme: light){body{background:#fff;color:#1f2328}}
+  h1{font-size:1.35rem} h2{font-size:1.05rem;margin-top:1.6em;border-bottom:1px solid rgba(128,128,128,.35);padding-bottom:4px}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;margin:10px 0}
+  th,td{border:1px solid rgba(128,128,128,.35);padding:6px 8px;text-align:left;vertical-align:top}
+  th{background:rgba(128,128,128,.12)}
+  .ok{color:#2ea043;font-weight:700}.warn{color:#d29922;font-weight:700}.bad{color:#f85149;font-weight:700}
+  code{background:rgba(128,128,128,.15);padding:1px 5px;border-radius:5px;font-size:.85em}
+  .box{border:1px solid rgba(128,128,128,.35);border-radius:10px;padding:10px 14px;margin:10px 0;background:rgba(128,128,128,.06)}
+</style>
+</head>
+<body>
+<h1>🔍 Netz-Prüfbericht — 2026-07-06</h1>
+<p>Auftrag (Klaus): alle angeschlossenen Repos auf Fehler und Verbesserungen in
+<b>Kommunikation und Verbindung</b> prüfen, sichere Reparaturen selbstständig durchführen
+(nur Verbesserungen, keine Verschlechterung), alles dokumentieren.</p>
+
+<h2>1. Modul-Drift (byte-Gleichheit der geteilten SBKIM-Module)</h2>
+<p><b>Prüfmethode:</b> md5-Vergleich jeder App-Kopie gegen den Sage-Kanon
+(<code>src/modules/</code>), jeweils auf <code>origin/main</code>. Vor jeder Heilung
+wurde geprüft, ob die App-Kopie eine <i>strikte Untermenge</i> des Kanons ist
+(kein App-Eigengut) — nur dann wurde geheilt.</p>
+<table>
+<tr><th>Modul</th><th>Vorher</th><th>Nachher</th></tr>
+<tr><td><code>03_embedding</code></td><td class="warn">Mixarium, Rezeptbuch, family veraltet (vor A3-Contextual-Chunking 2026-07-01)</td><td class="ok">alle 5 Träger byte-gleich zum Kanon</td></tr>
+<tr><td><code>02_spore</code></td><td class="warn">family veraltet (ohne regenerateOwnSpore)</td><td class="ok">geheilt</td></tr>
+<tr><td><code>04_match</code></td><td class="bad">family trug noch den async-Provider-BUG (Cross-Knoten-Antwort wäre mit async Korpus LEER) + ohne hybrid/Richter/CORS-Header</td><td class="ok">geheilt — echter Live-Fehler behoben</td></tr>
+<tr><td><code>05_anastomose</code></td><td class="warn">Rezeptbuch + family ohne den queryNostr-Bau (2026-06-28)</td><td class="ok">geheilt</td></tr>
+<tr><td><code>16_siegel</code></td><td class="warn">Mixarium, Rezeptbuch, family vor der Wappen/Korona-Pflege</td><td class="ok">geheilt (rückwärts-kompatibel, von Klaus auf der Sage-Page gesichtestet)</td></tr>
+<tr><td><code>23_rendezvous</code> (+UI)</td><td class="ok">bereits heute Nacht netzweit auf Kanon (Bau 23.B)</td><td class="ok">unverändert OK</td></tr>
+<tr><td><code>15_membran</code>, <code>17_floating_widget</code></td><td class="warn">DREIFACH auseinandergelaufen (Mixarium ≠ Rezeptbuch ≠ family, je eigene Weiterentwicklungen — z.B. A1/A4-Antwort-Pfad, Pro-App-Namensraum)</td><td class="warn"><b>bewusst NICHT angefasst</b> — hier wäre blindes Vereinheitlichen ein Verschlechterungs-Risiko. Braucht eigene Konsolidierungs-Sitzung: neueste Fassung als Kanon festlegen, dann alle nachziehen (mit Sichttest).</td></tr>
+<tr><td><code>20_schluessel_safe</code></td><td class="warn">fehlt in Mixarium/Rezeptbuch</td><td class="warn">kein Fehler (wird dort nicht referenziert, kein 404) — optionaler Ausbau, notiert</td></tr>
+</table>
+
+<h2>2. Briefkasten-Netz (SIGNAL.json / Quittungen)</h2>
+<table>
+<tr><th>Befund</th><th>Vorher</th><th>Nachher</th></tr>
+<tr><td>Tomys Hub ohne Briefkasten</td><td class="bad">kein <code>sbkim/SIGNAL.json</code>, kein Postfach — der neue Knoten war im Briefkasten-Netz unsichtbar</td><td class="ok"><code>SIGNAL.json</code> (seq 1, Beitritts-Ankündigung) + <code>AUSTAUSCH-Sage.md</code> angelegt</td></tr>
+<tr><td>Quittungs-Rückstand</td><td class="warn">Mixarium ack Sage=20, Rezeptbuch=19, family=33 — bei Sage seq 43 (bis zu 24 unquittierte Signale)</td><td class="ok">ack Sage=43 in allen dreien — <b>ehrlich</b>, weil diese Bau-Sitzung die Inhalte der Signale selbst erzeugt/verarbeitet hat (23.B-Rollout, Heilungen); je eigenes Signal (seq+1) dazu</td></tr>
+<tr><td>SIGNAL-Gültigkeit</td><td class="ok">alle 9 Knoten-SIGNALs valide JSON (point/jason/blp auf main geprüft)</td><td class="ok">unverändert</td></tr>
+</table>
+
+<h2>3. Referenz-Prüfung (tote Verweise)</h2>
+<table>
+<tr><th>Prüfung</th><th>Ergebnis</th></tr>
+<tr><td>Alle <code>sbkim/*</code>-Referenzen in Mixarium/Rezeptbuch/family/Tomys-Hub index.html gegen echte Dateien</td><td class="ok">alle vorhanden, keine 404-Referenzen (ein erster Verdachtsfund war ein Prüfmuster-Fehler <code>.js</code> vs <code>.json</code>)</td></tr>
+<tr><td>Script-Einbindung Tomys-Hub (heute gebaut)</td><td class="ok">ESM-Fehler (05b ohne <code>type="module"</code>) wurde vom Smoke-Test gefangen und behoben; Smokes 14/14, 9/9, 16/16, 38/38 grün</td></tr>
+</table>
+
+<h2>4. Neu: Referenz-Beispiele-Seite in Family Projekt</h2>
+<div class="box">
+<b>Klaus' Idee, umgesetzt:</b> neue Seite <code>referenzen.html</code> auf family-projekt.de
+(family-Optik, DE/EN) — <i>„so sieht eine neu gebaute Internetseite aus"</i>. Erste Referenz:
+<b>Tomys Schaufenster</b> (Tomys-Hub/showcase/), <b>live per iframe eingebettet</b> + Knopf
+„↗ In neuem Tab öffnen" als Fallback. Erreichbar über eine neue 🖼️-Karte im Werkzeuge-Grid.
+Weitere Beispiele (Seiten, gestaltete PDFs) können als weitere Karten folgen — die Seite ist
+dafür angelegt. <br><span class="warn">Sichttest am Tablet offen</span> (u.a.: blockiert
+ein Browser das iframe, greift der Neuer-Tab-Knopf).
+</div>
+
+<h2>5. Bewusst NICHT repariert (ehrliche Grenzen)</h2>
+<ul>
+<li><b>Module 15/17-Konsolidierung</b> — dreifache Divergenz, braucht eigene Sitzung + Sichttest (sonst Verschlechterungs-Risiko).</li>
+<li><b>Quittungs-Rückstände der anderen Knoten</b> (Point/Jason/Tresor/BLP untereinander) — Quittieren ohne echtes Verarbeiten wäre gelogen; bleibt Aufgabe der jeweiligen Repo-Sitzungen.</li>
+<li><b>Sage PULS.md &gt;8000 Zeilen</b> (Grenze 3000) — Archiv-Pflege-Sitzung nötig (auslagern, nicht kürzen).</li>
+<li><b>Zettel-Signatur Bau 23.B</b> — notierter Folge-Schritt, bevor Fremde mitspielen.</li>
+</ul>
+
+<h2>6. Was Klaus davon merkt</h2>
+<ul>
+<li>family-projekt.de kann Cross-Knoten-Fragen jetzt korrekt beantworten (04-Bug weg) und trägt dieselben Such-/Andock-Fähigkeiten wie die anderen Knoten.</li>
+<li>Tomys Hub ist im Briefkasten-Netz sichtbar (Beitritts-Signal).</li>
+<li>Auf family-projekt.de gibt es die neue Referenz-Seite mit Tomys Schaufenster.</li>
+<li>Nichts wurde entfernt oder umgebaut — alle Reparaturen sind additive Gleichstände mit bereits getestetem Kanon-Code.</li>
+</ul>
+
+<p style="opacity:.7;font-size:.82rem">Erstellt von der Bau-Sitzung 2026-07-06 (Branch <code>claude/semantic-search-judge-fix-bqx85p</code>, netzweit). Alle Merges nach Selbst-Merge-Freibrief; Klaus' Browser-Sichttest bleibt der finale Beweis.</p>
+</body>
+</html>
