@@ -1,4 +1,7 @@
 node_modules/
 package-lock.json
-.claude/
+# .claude/ bleibt ignoriert (lokale Sitzungs-Settings) — AUSSER .claude/skills/
+# (geteilte Agent-Skills, bewusst versioniert; Übernahme 2026-07-07, siehe PULS.md)
+.claude/*
+!.claude/skills/
 docs/einladung/_print_render.html
