@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<!-- Sage-Protokol · Mycel-Live-Karte v1.0 · 2026-07-08
+     Lebende Netz-Karte des SBKIM-Mycels: Kräfte-Graph (eigene Physik, keine
+     Fremd-Bibliothek), lauscht auf ECHTE SBKIM-Ereignisse (Fenster-Events +
+     BroadcastChannel "sbkim"/"sbkim-membrane", gleiche Origin = alle Apps).
+     Reine ANZEIGE — gatet nichts, sendet nichts, Empfangsmodus gewahrt. -->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mycel-Live-Karte · Sage-Protokol</title>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMiIgZmlsbD0iIzA4MDgxYSIgc3Ryb2tlPSIjZjRiNDM1IiBzdHJva2Utd2lkdGg9IjYiLz48Y2lyY2xlIGN4PSIzMCIgY3k9IjM4IiByPSI3IiBmaWxsPSIjOGI1Y2Y2Ii8+PGNpcmNsZSBjeD0iNjgiIGN5PSIzMCIgcj0iNyIgZmlsbD0iIzIyYzU1ZSIvPjxjaXJjbGUgY3g9IjY0IiBjeT0iNjgiIHI9IjciIGZpbGw9IiNmNGI0MzUiLz48cGF0aCBkPSJNMzAgMzggTDY4IDMwIE02OCAzMCBMNjQgNjggTTY0IDY4IEwzMCAzOCIgc3Ryb2tlPSIjNmI3MjgwIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48L3N2Zz4=">
+<style>
+  :root {
+    --bg: #08081a;
+    --card: rgba(20, 20, 42, 0.92);
+    --line: rgba(255, 255, 255, 0.12);
+    --text: #d8d8e8;
+    --dim: #8a8aa8;
+    --gold: #f4b435;
+    --node-color: #8b5cf6;
+    --edge-color: #4a4a70;
+    --ok: #22c55e;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    touch-action: none;
+  }
+  #stage { position: fixed; inset: 0; cursor: grab; }
+  #stage.dragging { cursor: grabbing; }
+
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;
+    padding: 0.55rem 0.9rem;
+    background: linear-gradient(180deg, rgba(8,8,26,0.95) 0%, rgba(8,8,26,0.75) 70%, transparent 100%);
+    pointer-events: none;
+  }
+  header > * { pointer-events: auto; }
+  header h1 { font-size: 1.02rem; font-weight: 600; color: #fff; letter-spacing: 0.01em; }
+  header h1 .sub { color: var(--dim); font-weight: 400; font-size: 0.82rem; margin-left: 0.5rem; }
+  .lamp { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--dim);
+          background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 0.18rem 0.65rem; }
+  .lamp b { color: var(--text); font-weight: 600; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #555; }
+  .dot.on { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .spacer { flex: 1; }
+  a.back { color: var(--dim); font-size: 0.8rem; text-decoration: none; border: 1px solid var(--line);
+           border-radius: 999px; padding: 0.18rem 0.65rem; background: var(--card); }
+  a.back:hover { color: #fff; }
+
+  #panel {
+    position: fixed; right: 0.9rem; bottom: 0.9rem; z-index: 10;
+    width: min(320px, calc(100vw - 1.8rem));
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  #panel .head {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.55rem 0.85rem; cursor: pointer; user-select: none;
+    border-bottom: 1px solid transparent;
+  }
+  #panel.open .head { border-bottom-color: var(--line); }
+  #panel .head .title { font-size: 0.88rem; font-weight: 600; color: #fff; flex: 1; }
+  #panel .head .chev { color: var(--dim); transition: transform 0.25s; }
+  #panel.open .head .chev { transform: rotate(180deg); }
+  #panel .body { display: none; padding: 0.75rem 0.9rem 0.9rem; max-height: min(52vh, 430px); overflow-y: auto; }
+  #panel.open .body { display: block; }
+
+  .row { margin-bottom: 0.8rem; }
+  .row:last-child { margin-bottom: 0; }
+  .row label.top { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--dim); margin-bottom: 0.25rem; }
+  .row label.top output { color: var(--text); font-variant-numeric: tabular-nums; }
+  input[type="range"] { width: 100%; accent-color: var(--gold); }
+  .colors { display: flex; gap: 0.6rem; }
+  .colors .c { flex: 1; text-align: center; font-size: 0.72rem; color: var(--dim); }
+  .colors input[type="color"] {
+    width: 100%; height: 34px; border: 1px solid var(--line); border-radius: 8px;
+    background: none; padding: 2px; cursor: pointer;
+  }
+  .btnrow { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+  button.b {
+    flex: 1; min-width: 90px;
+    background: rgba(255,255,255,0.06); color: var(--text);
+    border: 1px solid var(--line); border-radius: 9px;
+    padding: 0.45rem 0.6rem; font-size: 0.82rem; cursor: pointer;
+  }
+  button.b:hover { background: rgba(255,255,255,0.11); color: #fff; }
+  button.b.gold { border-color: rgba(244,180,53,0.5); color: var(--gold); }
+  button.b.active { background: rgba(244,180,53,0.15); border-color: var(--gold); color: var(--gold); }
+  .hint { font-size: 0.72rem; color: var(--dim); line-height: 1.45; margin-top: 0.35rem; }
+
+  #log {
+    position: fixed; left: 0.9rem; bottom: 0.9rem; z-index: 9;
+    width: min(340px, calc(100vw - 1.8rem));
+    max-height: 30vh; overflow-y: auto;
+    font-size: 0.75rem; color: var(--dim);
+    display: flex; flex-direction: column-reverse; gap: 0.25rem;
+    pointer-events: none;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 25%);
+  }
+  #log .e {
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.28rem 0.6rem; pointer-events: auto;
+  }
+  #log .e b { color: var(--text); }
+  #log .e.ok b { color: var(--ok); }
+  #log .e.bad b { color: var(--bad); }
+  #log .e.demo { border-style: dashed; opacity: 0.85; }
+
+  #demoBadge {
+    position: fixed; top: 3.4rem; left: 50%; transform: translateX(-50%); z-index: 11;
+    background: rgba(244,180,53,0.14); border: 1px dashed var(--gold); color: var(--gold);
+    border-radius: 999px; padding: 0.25rem 0.9rem; font-size: 0.8rem; display: none;
+  }
+  #demoBadge.show { display: block; }
+
+  @media (prefers-reduced-motion: reduce) { #panel .head .chev { transition: none; } }
+  @media (max-width: 640px) {
+    header h1 .sub { display: none; }
+    #log { max-height: 20vh; width: min(260px, calc(100vw - 1.8rem)); }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stage" aria-label="Mycel-Netzkarte"></canvas>
+
+<header>
+  <h1>🍄 Mycel-Live-Karte<span class="sub">Sage-Protokol · reine Anzeige, Empfangsmodus</span></h1>
+  <span class="lamp"><span class="dot" id="chanDot"></span>Kanal <b>sbkim</b></span>
+  <span class="lamp">Ereignisse <b id="evCount">0</b></span>
+  <span class="spacer"></span>
+  <a class="back" href="../index.html">← Sage-Page</a>
+</header>
+
+<div id="demoBadge">🎬 PROBELAUF — simulierte Ereignisse, kein echter Verkehr</div>
+<div id="log" aria-live="polite"></div>
+
+<div id="panel" class="open">
+  <div class="head" id="panelHead">
+    <span class="title">⚙️ Regler</span>
+    <span class="chev">▾</span>
+  </div>
+  <div class="body">
+    <div class="row">
+      <label class="top">Pillengröße <output id="sizeOut">1.0×</output></label>
+      <input type="range" id="sizeSlider" min="0.5" max="2" step="0.05" value="1">
+    </div>
+    <div class="row">
+      <label class="top">Ton-Lautstärke <output id="volOut">aus</output></label>
+      <input type="range" id="volSlider" min="0" max="100" step="1" value="0">
+      <div class="hint">0 = stumm. Töne erklingen bei Handshake (hell), Anfrage (Tick) und Ablehnung (tief).</div>
+    </div>
+    <div class="row">
+      <div class="colors">
+        <div class="c"><input type="color" id="colNode" value="#8b5cf6"><br>Pillen</div>
+        <div class="c"><input type="color" id="colEdge" value="#4a4a70"><br>Fäden</div>
+        <div class="c"><input type="color" id="colBg" value="#08081a"><br>Hintergrund</div>
+      </div>
+    </div>
+    <div class="row btnrow">
+      <button class="b gold" id="btnDemo">🎬 Probelauf</button>
+      <button class="b" id="btnFull">⛶ Vollbild</button>
+      <button class="b" id="btnReset">↺ Zurücksetzen</button>
+    </div>
+    <div class="hint">
+      Diese Karte <b>lauscht nur</b>: Fenster-Ereignisse (<code>sbkim:*</code>) und
+      BroadcastChannel <code>sbkim</code>/<code>sbkim-membrane</code>. Läuft eine deiner
+      Apps (Mixarium, Rezeptbuch …) im selben Browser, leuchtet echter Verkehr hier live auf.
+      Gestrichelt = Probelauf (simuliert). Pillen lassen sich ziehen; Rad/Pinch = Zoom.
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ================================================================
+   Mycel-Live-Karte — eigene Kräfte-Physik + Canvas-Renderer.
+   Keine Fremd-Bibliothek, kein Netz-Zugriff, keine Persistenz außer
+   den Regler-Einstellungen (localStorage sage_mycel_karte_settings).
+   ================================================================ */
+
+// ---------- Einstellungen (persistiert) ----------
+var SETTINGS_KEY = "sage_mycel_karte_settings";
+var settings = { size: 1, vol: 0, colNode: "#8b5cf6", colEdge: "#4a4a70", colBg: "#08081a" };
+try {
+  var saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
+  for (var k in settings) if (saved[k] !== undefined) settings[k] = saved[k];
+} catch (e) { /* fail-soft */ }
+function saveSettings() {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) {}
+}
+
+// ---------- Bekannter Netz-Stand (statischer Samen, ehrlich beschriftet) ----------
+// Quelle: docs/PULS.md § Endknoten + sbkim/NETZ-STAND.md (Stand 2026-07-07).
+// Live-Ereignisse ergänzen/befeuern diese Karte — sie ersetzen sie nicht.
+var SEED_NODES = [
+  { id: "sage",      label: "Sage",             hub: true  },
+  { id: "mixarium",  label: "Mein Mixarium",    hub: false },
+  { id: "rezeptbuch",label: "Mein Rezeptbuch",  hub: false },
+  { id: "family",    label: "family-project",   hub: false },
+  { id: "blp",       label: "BookLedgerPro",    hub: false },
+  { id: "toolpoint", label: "SB-KIMTool-Point", hub: false },
+  { id: "jtresor",   label: "Jasons-Tresor",    hub: false },
+  { id: "mtresor",   label: "Mein-Tresor",      hub: false }
+];
+var SEED_EDGES = [ // bekannte etablierte Andocks/Beziehungen (Anzeige, kein Urteil)
+  ["sage", "mixarium"], ["sage", "rezeptbuch"], ["sage", "family"],
+  ["sage", "blp"], ["sage", "toolpoint"], ["sage", "jtresor"], ["sage", "mtresor"],
+  ["mixarium", "rezeptbuch"], ["mixarium", "family"]
+];
+
+// ---------- Graph-Zustand ----------
+var nodes = [];   // {id,label,hub,x,y,vx,vy,r,pulse,live}
+var edges = [];   // {a,b,flash,flashColor,seenLive}
+var nodeById = {};
+
+function addNode(id, label, hub, live) {
+  if (nodeById[id]) return nodeById[id];
+  var angle = Math.random() * Math.PI * 2;
+  var dist = 120 + Math.random() * 160;
+  var n = {
+    id: id, label: label || id, hub: !!hub, live: !!live,
+    x: Math.cos(angle) * dist, y: Math.sin(angle) * dist,
+    vx: 0, vy: 0, pulse: live ? 1 : 0, fixed: false
+  };
+  nodes.push(n); nodeById[id] = n;
+  return n;
+}
+function edgeKey(a, b) { return a < b ? a + "|" + b : b + "|" + a; }
+var edgeByKey = {};
+function addEdge(aId, bId) {
+  var key = edgeKey(aId, bId);
+  if (edgeByKey[key]) return edgeByKey[key];
+  var e = { a: aId, b: bId, flash: 0, flashColor: null };
+  edges.push(e); edgeByKey[key] = e;
+  return e;
+}
+SEED_NODES.forEach(function (s) { addNode(s.id, s.label, s.hub, false); });
+SEED_EDGES.forEach(function (p) { addEdge(p[0], p[1]); });
+
+// Lebende nodeIds (Base64-artig) auf Anzeige-Knoten abbilden — ehrlich gekürzt.
+function nodeForLiveId(nodeId) {
+  if (!nodeId || typeof nodeId !== "string") return null;
+  var id = "live_" + nodeId;
+  if (nodeById[id]) { nodeById[id].pulse = 1; return nodeById[id]; }
+  var short = nodeId.length > 10 ? nodeId.slice(0, 6) + "…" + nodeId.slice(-4) : nodeId;
+  return addNode(id, "Knoten " + short, false, true);
+}
+
+// ---------- Ereignis-Protokoll (UI) ----------
+var evCount = 0;
+var logEl = document.getElementById("log");
+var evCountEl = document.getElementById("evCount");
+function logEvent(html, cls) {
+  evCount++; evCountEl.textContent = String(evCount);
+  var div = document.createElement("div");
+  div.className = "e" + (cls ? " " + cls : "");
+  div.innerHTML = html;
+  logEl.appendChild(div);
+  while (logEl.children.length > 40) logEl.removeChild(logEl.firstChild);
+}
+
+// ---------- Ton (WebAudio, erst nach Nutzer-Geste + Lautstärke > 0) ----------
+var audioCtx = null;
+function tone(freq, dur, type, when2) {
+  if (settings.vol <= 0) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    var t0 = audioCtx.currentTime + (when2 || 0);
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.type = type || "sine";
+    osc.frequency.value = freq;
+    var v = 0.25 * (settings.vol / 100);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(Math.max(v, 0.0002), t0 + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(t0); osc.stop(t0 + dur + 0.05);
+  } catch (e) { /* fail-soft: kein Ton ist kein Fehler */ }
+}
+var SOUND = {
+  request:     function () { tone(660, 0.09, "triangle"); },
+  established: function () { tone(523, 0.16, "sine"); tone(784, 0.22, "sine", 0.09); },
+  rejected:    function () { tone(140, 0.3, "sawtooth"); },
+  alive:       function () { tone(392, 0.12, "sine"); tone(523, 0.14, "sine", 0.07); },
+  fremd:       function () { tone(220, 0.12, "square"); tone(220, 0.12, "square", 0.18); }
+};
+
+// ---------- Ereignis-Verarbeitung (gemeinsam für echt + Probelauf) ----------
+function onHandshake(fromId, toId, outcome, source, isDemo) {
+  var a = fromId ? nodeForLiveId(fromId) : null;
+  var b = toId ? nodeForLiveId(toId) : null;
+  var ok = outcome === "established";
+  if (a && b) {
+    var e = addEdge(a.id, b.id);
+    e.flash = 1; e.flashColor = ok ? "ok" : "bad";
+    a.pulse = 1; b.pulse = 1;
+  }
+  logEvent((isDemo ? "🎬 " : "") + "<b>" + (ok ? "✓ Handshake" : "✗ " + (outcome || "abgelehnt")) + "</b> · " +
+           (a ? a.label : "?") + " → " + (b ? b.label : "?") + " <i>(" + source + ")</i>",
+           (ok ? "ok" : "bad") + (isDemo ? " demo" : ""));
+  if (ok) SOUND.established(); else SOUND.rejected();
+}
+function onRequest(fromId, toId, isDemo) {
+  var a = fromId ? nodeForLiveId(fromId) : null;
+  var b = toId ? nodeForLiveId(toId) : null;
+  if (a && b) { var e = addEdge(a.id, b.id); e.flash = 1; e.flashColor = null; a.pulse = 1; }
+  logEvent((isDemo ? "🎬 " : "") + "<b>Anfrage</b> · " + (a ? a.label : "?") + " → " + (b ? b.label : "?") +
+           " <i>(Kanal sbkim)</i>", isDemo ? "demo" : "");
+  SOUND.request();
+}
+
+// ---------- ECHTE Quellen anzapfen (nur lauschen, nie senden) ----------
+// 1) Fenster-Ereignisse (falls SBKIM-Module in DIESER Seite laufen)
+window.addEventListener("sbkim:alive", function (ev) {
+  var d = (ev && ev.detail) || {};
+  var n = nodeForLiveId(d.nodeId); if (n) n.pulse = 1;
+  logEvent("<b>LEBT</b> · " + (n ? n.label : "eigener Knoten") + " <i>(Fenster)</i>", "ok");
+  SOUND.alive();
+});
+window.addEventListener("sbkim:handshake", function (ev) {
+  var d = (ev && ev.detail) || {};
+  onHandshake(null, d.peerNodeId, d.outcome, "Fenster/" + (d.direction || "?"), false);
+});
+window.addEventListener("sbkim:fremd-alert", function () {
+  logEvent("<b>FREMD-Alarm</b> · Membran meldet Fremdzugriff <i>(Fenster)</i>", "bad");
+  SOUND.fremd();
+});
+window.addEventListener("sbkim:postmessage", function () {
+  logEvent("<b>Verkehr</b> · postMessage über die Membran <i>(Fenster)</i>");
+  SOUND.request();
+});
+window.addEventListener("sbkim:nostr-listening", function () {
+  logEvent("<b>Lauscht</b> · Nostr-Empfang aktiv <i>(Fenster)</i>", "ok");
+});
+
+// 2) BroadcastChannel — Verkehr ANDERER Tabs derselben Origin (alle Klaus-Apps!)
+var chanDot = document.getElementById("chanDot");
+try {
+  var chan = new BroadcastChannel("sbkim");
+  chanDot.classList.add("on");
+  chan.addEventListener("message", function (ev) {
+    var d = ev && ev.data; if (!d || !d.type) return;
+    if (d.type === "SBKIM_ANASTOMOSE_REQUEST" && d.payload) {
+      onRequest(d.payload.fromNodeId, d.payload.toNodeId, false);
+    } else if (d.type === "SBKIM_ANASTOMOSE_RESPONSE" && d.payload) {
+      logEvent("<b>Antwort</b> · " + (d.payload.outcome || "?") + " <i>(Kanal sbkim)</i>",
+               d.payload.outcome === "established" ? "ok" : "");
+      if (d.payload.outcome === "established") SOUND.established();
+    }
+  });
+} catch (e) { /* Browser ohne BroadcastChannel: Karte bleibt statisch nutzbar */ }
+try {
+  var chanM = new BroadcastChannel("sbkim-membrane");
+  chanM.addEventListener("message", function () {
+    logEvent("<b>Membran</b> · Verkehr auf sbkim-membrane <i>(Kanal)</i>");
+  });
+} catch (e) { /* fail-soft */ }
+
+// ---------- Probelauf (ausdrücklich als Simulation gekennzeichnet) ----------
+var demoTimer = null;
+var demoBadge = document.getElementById("demoBadge");
+function runDemo() {
+  if (demoTimer) return;
+  demoBadge.classList.add("show");
+  document.getElementById("btnDemo").classList.add("active");
+  var script = [
+    function () { onRequest("DemoMixariumId0001", "DemoRezeptbuchId01", true); },
+    function () { onHandshake("DemoMixariumId0001", "DemoRezeptbuchId01", "established", "Probelauf", true); },
+    function () { onRequest("DemoFamilyId000001", "DemoMixariumId0001", true); },
+    function () { onHandshake("DemoFamilyId000001", "DemoMixariumId0001", "rejected-local", "Probelauf", true); },
+    function () { onRequest("DemoSageHubId00001", "DemoBookLedgerId01", true); },
+    function () { onHandshake("DemoSageHubId00001", "DemoBookLedgerId01", "established", "Probelauf", true); }
+  ];
+  var i = 0;
+  demoTimer = setInterval(function () {
+    script[i % script.length]();
+    i++;
+    if (i >= script.length * 2) stopDemo();
+  }, 1400);
+}
+function stopDemo() {
+  if (demoTimer) { clearInterval(demoTimer); demoTimer = null; }
+  demoBadge.classList.remove("show");
+  document.getElementById("btnDemo").classList.remove("active");
+}
+
+// ---------- Physik ----------
+var REPULSION = 5200, SPRING = 0.012, SPRING_LEN = 150, CENTER_PULL = 0.012, DAMPING = 0.86;
+function stepPhysics() {
+  var i, j, a, b, dx, dy, d2, d, f;
+  for (i = 0; i < nodes.length; i++) {
+    a = nodes[i];
+    for (j = i + 1; j < nodes.length; j++) {
+      b = nodes[j];
+      dx = b.x - a.x; dy = b.y - a.y;
+      d2 = dx * dx + dy * dy; if (d2 < 1) d2 = 1;
+      f = REPULSION / d2;
+      d = Math.sqrt(d2);
+      dx /= d; dy /= d;
+      if (!a.dragging) { a.vx -= dx * f; a.vy -= dy * f; }
+      if (!b.dragging) { b.vx += dx * f; b.vy += dy * f; }
+    }
+    // sanfter Zug zur Mitte (Hub etwas stärker verankert)
+    f = CENTER_PULL * (a.hub ? 2.2 : 1);
+    if (!a.dragging) { a.vx -= a.x * f; a.vy -= a.y * f; }
+  }
+  for (i = 0; i < edges.length; i++) {
+    var e = edges[i];
+    a = nodeById[e.a]; b = nodeById[e.b];
+    if (!a || !b) continue;
+    dx = b.x - a.x; dy = b.y - a.y;
+    d = Math.sqrt(dx * dx + dy * dy) || 1;
+    f = (d - SPRING_LEN) * SPRING;
+    dx /= d; dy /= d;
+    if (!a.dragging) { a.vx += dx * f; a.vy += dy * f; }
+    if (!b.dragging) { b.vx -= dx * f; b.vy -= dy * f; }
+  }
+  for (i = 0; i < nodes.length; i++) {
+    a = nodes[i];
+    if (a.dragging) continue;
+    a.vx *= DAMPING; a.vy *= DAMPING;
+    a.x += a.vx; a.y += a.vy;
+    if (a.pulse > 0) a.pulse = Math.max(0, a.pulse - 0.012);
+  }
+  for (i = 0; i < edges.length; i++) {
+    if (edges[i].flash > 0) edges[i].flash = Math.max(0, edges[i].flash - 0.014);
+  }
+}
+
+// ---------- Renderer ----------
+var canvas = document.getElementById("stage");
+var ctx = canvas.getContext("2d");
+var view = { x: 0, y: 0, zoom: 1 };
+var dpr = 1;
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(canvas.clientWidth * dpr);
+  canvas.height = Math.round(canvas.clientHeight * dpr);
+}
+window.addEventListener("resize", resize);
+
+function worldToScreen(wx, wy) {
+  return {
+    x: (wx - view.x) * view.zoom + canvas.clientWidth / 2,
+    y: (wy - view.y) * view.zoom + canvas.clientHeight / 2
+  };
+}
+function screenToWorld(sx, sy) {
+  return {
+    x: (sx - canvas.clientWidth / 2) / view.zoom + view.x,
+    y: (sy - canvas.clientHeight / 2) / view.zoom + view.y
+  };
+}
+
+function hexToRgb(hex) {
+  var m = /^#?([0-9a-f]{6})$/i.exec(hex || "");
+  if (!m) return { r: 139, g: 92, b: 246 };
+  var v = parseInt(m[1], 16);
+  return { r: (v >> 16) & 255, g: (v >> 8) & 255, b: v & 255 };
+}
+
+function draw() {
+  var w = canvas.clientWidth, h = canvas.clientHeight;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = settings.colBg;
+  ctx.fillRect(0, 0, w, h);
+
+  var okCol = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() || "#22c55e";
+  var badCol = getComputedStyle(document.documentElement).getPropertyValue("--bad").trim() || "#ef4444";
+
+  // Fäden
+  var i, e, a, b, pa, pb;
+  for (i = 0; i < edges.length; i++) {
+    e = edges[i]; a = nodeById[e.a]; b = nodeById[e.b];
+    if (!a || !b) continue;
+    pa = worldToScreen(a.x, a.y); pb = worldToScreen(b.x, b.y);
+    ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y);
+    if (e.flash > 0) {
+      var fc = e.flashColor === "ok" ? okCol : e.flashColor === "bad" ? badCol : "#f4b435";
+      ctx.strokeStyle = fc; ctx.globalAlpha = 0.25 + 0.75 * e.flash;
+      ctx.lineWidth = 1.5 + 3 * e.flash;
+    } else {
+      ctx.strokeStyle = settings.colEdge; ctx.globalAlpha = 0.7; ctx.lineWidth = 1.2;
+    }
+    ctx.stroke(); ctx.globalAlpha = 1;
+    // Laufpunkt bei Flash
+    if (e.flash > 0) {
+      var t = 1 - e.flash;
+      var px = pa.x + (pb.x - pa.x) * t, py = pa.y + (pb.y - pa.y) * t;
+      ctx.beginPath(); ctx.arc(px, py, 3.5 + 2 * e.flash, 0, Math.PI * 2);
+      ctx.fillStyle = e.flashColor === "bad" ? badCol : "#ffe9b0";
+      ctx.fill();
+    }
+  }
+
+  // Pillen
+  var rgb = hexToRgb(settings.colNode);
+  ctx.font = (12 * Math.min(settings.size, 1.4)) + "px system-ui, sans-serif";
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  for (i = 0; i < nodes.length; i++) {
+    a = nodes[i];
+    pa = worldToScreen(a.x, a.y);
+    var baseR = (a.hub ? 20 : 13) * settings.size * view.zoom;
+    // Puls-Halo
+    if (a.pulse > 0) {
+      ctx.beginPath();
+      ctx.arc(pa.x, pa.y, baseR + 14 * a.pulse * view.zoom, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + (0.28 * a.pulse) + ")";
+      ctx.fill();
+    }
+    ctx.beginPath();
+    ctx.arc(pa.x, pa.y, baseR, 0, Math.PI * 2);
+    ctx.fillStyle = a.live
+      ? "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + ",0.95)"
+      : "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + ",0.75)";
+    ctx.fill();
+    ctx.lineWidth = a.hub ? 2.5 : 1.5;
+    ctx.strokeStyle = a.hub ? "#f4b435" : "rgba(255,255,255,0.35)";
+    ctx.stroke();
+    // Beschriftung
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.fillText(a.label, pa.x, pa.y + baseR + 12 * Math.max(view.zoom, 0.8));
+  }
+}
+
+function loop() { stepPhysics(); draw(); requestAnimationFrame(loop); }
+
+// ---------- Eingabe: Ziehen (Pille/Karte), Zoom (Rad + Pinch) ----------
+var pointer = { down: false, node: null, lastX: 0, lastY: 0 };
+var pinch = { active: false, dist: 0 };
+function nodeAt(sx, sy) {
+  for (var i = nodes.length - 1; i >= 0; i--) {
+    var p = worldToScreen(nodes[i].x, nodes[i].y);
+    var r = (nodes[i].hub ? 20 : 13) * settings.size * view.zoom + 8;
+    var dx = sx - p.x, dy = sy - p.y;
+    if (dx * dx + dy * dy <= r * r) return nodes[i];
+  }
+  return null;
+}
+canvas.addEventListener("pointerdown", function (ev) {
+  canvas.setPointerCapture(ev.pointerId);
+  pointer.down = true; pointer.lastX = ev.clientX; pointer.lastY = ev.clientY;
+  pointer.node = nodeAt(ev.clientX, ev.clientY);
+  if (pointer.node) pointer.node.dragging = true; else canvas.classList.add("dragging");
+});
+canvas.addEventListener("pointermove", function (ev) {
+  if (!pointer.down) return;
+  var dx = ev.clientX - pointer.lastX, dy = ev.clientY - pointer.lastY;
+  pointer.lastX = ev.clientX; pointer.lastY = ev.clientY;
+  if (pointer.node) {
+    var wp = screenToWorld(ev.clientX, ev.clientY);
+    pointer.node.x = wp.x; pointer.node.y = wp.y;
+    pointer.node.vx = 0; pointer.node.vy = 0;
+  } else {
+    view.x -= dx / view.zoom; view.y -= dy / view.zoom;
+  }
+});
+function endPointer() {
+  pointer.down = false;
+  if (pointer.node) { pointer.node.dragging = false; pointer.node = null; }
+  canvas.classList.remove("dragging");
+}
+canvas.addEventListener("pointerup", endPointer);
+canvas.addEventListener("pointercancel", endPointer);
+canvas.addEventListener("wheel", function (ev) {
+  ev.preventDefault();
+  var factor = ev.deltaY < 0 ? 1.1 : 0.9;
+  view.zoom = Math.min(3, Math.max(0.3, view.zoom * factor));
+}, { passive: false });
+canvas.addEventListener("touchstart", function (ev) {
+  if (ev.touches.length === 2) {
+    pinch.active = true;
+    var dx = ev.touches[0].clientX - ev.touches[1].clientX;
+    var dy = ev.touches[0].clientY - ev.touches[1].clientY;
+    pinch.dist = Math.sqrt(dx * dx + dy * dy);
+  }
+}, { passive: true });
+canvas.addEventListener("touchmove", function (ev) {
+  if (pinch.active && ev.touches.length === 2) {
+    var dx = ev.touches[0].clientX - ev.touches[1].clientX;
+    var dy = ev.touches[0].clientY - ev.touches[1].clientY;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    if (pinch.dist > 0) view.zoom = Math.min(3, Math.max(0.3, view.zoom * (d / pinch.dist)));
+    pinch.dist = d;
+  }
+}, { passive: true });
+canvas.addEventListener("touchend", function () { pinch.active = false; pinch.dist = 0; });
+
+// ---------- Regler verdrahten ----------
+function $(id) { return document.getElementById(id); }
+var sizeSlider = $("sizeSlider"), sizeOut = $("sizeOut");
+var volSlider = $("volSlider"), volOut = $("volOut");
+var colNode = $("colNode"), colEdge = $("colEdge"), colBg = $("colBg");
+
+function applySettingsToUI() {
+  sizeSlider.value = settings.size; sizeOut.textContent = Number(settings.size).toFixed(2).replace(/0$/, "") + "×";
+  volSlider.value = settings.vol; volOut.textContent = settings.vol > 0 ? settings.vol + " %" : "aus";
+  colNode.value = settings.colNode; colEdge.value = settings.colEdge; colBg.value = settings.colBg;
+  document.documentElement.style.setProperty("--node-color", settings.colNode);
+}
+sizeSlider.addEventListener("input", function () {
+  settings.size = parseFloat(sizeSlider.value); applySettingsToUI(); saveSettings();
+});
+volSlider.addEventListener("input", function () {
+  settings.vol = parseInt(volSlider.value, 10); applySettingsToUI(); saveSettings();
+  if (settings.vol > 0) SOUND.request(); // hörbare Rückmeldung beim Einstellen
+});
+[colNode, colEdge, colBg].forEach(function (inp) {
+  inp.addEventListener("input", function () {
+    settings.colNode = colNode.value; settings.colEdge = colEdge.value; settings.colBg = colBg.value;
+    applySettingsToUI(); saveSettings();
+  });
+});
+$("btnReset").addEventListener("click", function () {
+  settings = { size: 1, vol: settings.vol, colNode: "#8b5cf6", colEdge: "#4a4a70", colBg: "#08081a" };
+  applySettingsToUI(); saveSettings();
+  view.x = 0; view.y = 0; view.zoom = 1;
+});
+$("btnDemo").addEventListener("click", function () { demoTimer ? stopDemo() : runDemo(); });
+$("btnFull").addEventListener("click", function () {
+  if (document.fullscreenElement) { document.exitFullscreen(); }
+  else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
+});
+$("panelHead").addEventListener("click", function () {
+  document.getElementById("panel").classList.toggle("open");
+});
+
+// ---------- Start ----------
+applySettingsToUI();
+resize();
+logEvent("<b>Karte bereit</b> · lauscht auf sbkim-Ereignisse dieser Origin", "ok");
+loop();
+</script>
+</body>
+</html>
