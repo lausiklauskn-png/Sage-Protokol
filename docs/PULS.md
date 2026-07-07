@@ -119,6 +119,34 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-07 · Werkzeug-Übernahme: Obsidian Agent-Skills nach `.claude/skills/` (Klaus' Auftrag)
+
+**Rolle:** Pflege-Sitzung (kein Modul-Code). **Branch:** `claude/obsidian-skills-integration-8pg6xy`.
+
+**Getan:**
+- Die fünf Agent-Skills aus [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)
+  (MIT-Lizenz, Steph Ango/@kepano) **byte-gleich kopiert** nach `.claude/skills/`:
+  `obsidian-markdown` · `obsidian-bases` · `json-canvas` · `obsidian-cli` · `defuddle`
+  (je `SKILL.md` + Referenz-Dateien). Lizenz mitgenommen (`.claude/skills/LICENSE-obsidian-skills`),
+  Herkunft + Pflege-Regel in `.claude/skills/README.md`.
+- **Wirkung:** Claude-Code-Sitzungen an diesem Repo laden die Skills automatisch und können
+  damit Obsidian-Formate erzeugen/bearbeiten (Obsidian-Markdown mit Wikilinks/Callouts,
+  `.base`-Datenbank-Views, `.canvas`-Karten, Obsidian-CLI, Web→Markdown via defuddle).
+- **Verifiziert (in der Sitzung):** Skills real angewendet — Beispiel-`.md`/`.canvas`/`.base`
+  erzeugt und nach den Skill-Checklisten validiert (Canvas-JSON: IDs eindeutig + Kanten
+  aufgelöst; Base-YAML parsebar; alles grün). Beispiele gingen als Dateien an Klaus,
+  **nicht** ins Repo committet.
+- **Ziel-Wahl dokumentiert:** Klaus wollte zunächst ein neues eigenes Repo; das Anlegen
+  scheiterte an GitHub-Rechten (403, Integration darf keine Repos erstellen). Klaus'
+  Zweit-Entscheid per AskUserQuestion: **Sage-Protokol**.
+
+**Kein App-/Modul-Code berührt** — reiner `.claude/`-Zugang + diese PULS-Zeilen.
+`tests/manual_check.html` unberührt (keine Prüfung nötig, keine Code-Änderung).
+
+**Offen / nächster sinnvoller Schritt:** Nichts blockiert. Optional später: Skills-Kopie
+per Pflege-Sitzung aktualisieren, wenn kepano das Quell-Repo weiterentwickelt
+(Pflege-Regel in `.claude/skills/README.md`).
+
 ## 2026-07-06 · Bau 23.B — Cross-Knoten-Frage (Knoten fragt Knoten) + Such-UX-Runde in den Endknoten
 
 **Rolle:** Hauptsitzung (Freibrief gilt). **Branch:** `claude/semantic-search-judge-fix-bqx85p` (netzweit gleicher Name in Sage/MR/MM/family/WorkFlohs).
