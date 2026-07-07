@@ -134,6 +134,14 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 - Increment 2B (Widget-Schlüssel-Tresor + Auto-KI-Aufruf) + Increment 3 (Membran-Kopplung) = eigene Folge-Sitzungen (sicherheits-sensibel bzw. eigener Scope) — Brief liegt: `docs/sessions/BRIEF_BIDIREKTIONAL_LIVE_UND_INCREMENTE.md`.
 - Klaus' Sichttests ausstehend: 💡/⚖️/Badge in MR+MM, Kunden-Suche WorkFlohs, **Bau 23.B live** (❓/💬 im Raum-Panel, zwei Geräte).
 
+**Nachtrag 2026-07-07 — Discovery-Seite Schluss-Text (PR #543, gemergt):** Klaus fand den
+Schluss-Bild-Text (`docs/discovery/index.html` § „Das gelebte Leben") als KI-geschrieben
+erkennbar (er war die Bild-Generierungs-Beschreibung). Aus mehreren Chat-Vorschlägen hat
+Klaus diesen Wortlaut freigegeben, 1:1 eingebaut: Überschrift „Wie tief das Leben verbunden
+ist." + „Wer durch einen Wald geht, sieht viele einzelne Bäume, hört einen Bach, vielleicht
+ein Tier. Was keiner sieht: die feinen Fäden, die das alles zusammenhalten." Reine
+Text-Änderung, keine Byte-Kopien betroffen (grep leer). Sichttest = Lesen auf der Live-Seite.
+
 ## 2026-07-05 · Bedeutungs-Suche im normalen Suchfeld beider Endknoten (opt-in 💡, gratis/offline)
 
 **Rolle:** Feature-Bau in den Endknoten-Apps (Klaus' Richtungswunsch). **Freibrief gilt.**
