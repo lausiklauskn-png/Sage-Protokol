@@ -97,6 +97,35 @@ vom Menschen ausgelöst. Genaue Reihenfolge (Klaus' Reihenfolge, bestätigt):
 - [ ] Modus B ist nur hinter einem Nutzer-Knopf.
 - [ ] Nach jedem Deploy: hart neu laden (Service-Worker-Cache).
 
+## PFLICHT: Modell-Ladefortschritt IMMER anzeigen (Klaus 2026-07-08)
+
+Wenn die Identitäts-Erzeugung das **Embedding-Modell (~30 MB, einmalig, CDN)**
+lädt, MUSS **immer** eine **Prozent-Anzeige** sichtbar sein — direkt im Panel,
+nicht nur in der Konsole. Am Tablet dauert der Download 1–2 Minuten; **ohne
+Balken denkt der Nutzer, es hängt/ist eingefroren, und schließt zu, bevor es
+fertig geladen hat.** Das ist der häufigste Grund für einen falsch-negativen
+„es passiert nichts".
+
+**Verbindlich — überall, wo ein Embedding-Modell lädt:**
+
+1. **Quelle:** das Modul-03-Event `sbkim:embedding-progress` mit
+   `detail.progress` (0–100), `detail.file`, `detail.status`
+   (`"progress"`/`"done"`/`"ready"`).
+2. **Vor** `SbkimEmbedding.init()` einen `window.addEventListener(
+   "sbkim:embedding-progress", …)` setzen; nach `init()`/im Fehlerfall
+   wieder abmelden (`removeEventListener`).
+3. Den Balken in **EINER** Zeile aktualisieren (kein Log-Spam): z.B.
+   `"█".repeat(pct/5) + "░".repeat(20 - pct/5) + "  NN %"`. Fertig → `✓`.
+4. **Fail-soft:** fehlt das Panel-Element, bricht nichts — nur der Balken
+   entfällt.
+
+**Gilt für:** die Netz-Anmeldung / Spore-Erzeugung (Modus A **und** B), den
+**Siegel-Bau** (Bronze-Zertifizierung lädt zum Prüfen das Modell), das
+Such-Werkzeug und **jedes** weitere Tool, das `SbkimEmbedding` anfasst.
+
+**Referenz-Umsetzung:** `Kim-Bell/assets/rendezvous-init.js` →
+`ensureProgressEl()` + `onProg` + `stopProg()` in `createIdentity()`.
+
 ## Verfassungs-Treue (Leitplanken)
 
 - **Empfangsmodus:** Anmelden ist immer nutzer-ausgelöst, kein Dauer-Piepser,

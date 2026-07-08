@@ -111,6 +111,8 @@ Der **wichtigste** Block. Ein Knopf öffnet einen Wizard-Dialog (`<dialog>`, z-i
 2. **Spore signieren + herunterladen** — `SbkimEmbedding.init()` (~30 MB einmalig) →
    `embedPassage(beschreibung)` → **domainVector** → `SbkimSpore.generateOwnSpore({…})`
    → `spore.json` als Download. Datei nach `sbkim/spore.json` committen.
+   **PFLICHT (siehe unten): während des ~30-MB-Modell-Ladens IMMER eine
+   Prozent-Anzeige** — sonst wirkt es eingefroren und wird zu früh geschlossen.
 3. **Verschlüsseltes Backup** — `SbkimSpore.exportBackup(passwort)` (PBKDF2-SHA256
    600k + AES-GCM-256) als Download. Passwort NICHT resetbar.
 4. **Identität wiederherstellen** — `SbkimSpore.importBackup(blob, passwort)` (Datei +
@@ -140,6 +142,27 @@ Spore prüfen → Match → Handshake." Lädt die fremde `sbkim/spore.json`
 
 ---
 
+## PFLICHT: Modell-Ladefortschritt IMMER anzeigen (Klaus 2026-07-08)
+
+**Überall, wo das Siegel (oder ein Tool darin) das Embedding-Modell (~30 MB,
+einmalig, CDN) lädt, MUSS eine Prozent-Anzeige sichtbar sein.** Betrifft im
+Siegel konkret: Schritt 2 des 🔑-Wizards (Spore signieren) und den ✍ Semantik-
+Block (Beschreibung neu signieren) — beide laden das Modell. Am Tablet dauert
+das 1–2 Minuten; **ohne Balken denkt der Nutzer, es hängt, und schließt das
+Modal, bevor es fertig geladen hat.**
+
+1. **Quelle:** Modul-03-Event `sbkim:embedding-progress`, `detail.progress`
+   (0–100), `detail.file`, `detail.status` (`"progress"`/`"done"`/`"ready"`).
+2. **Vor** `SbkimEmbedding.init()` einen Listener setzen, nach `init()` / im
+   Fehlerfall wieder abmelden.
+3. Balken in **EINER** Zeile (kein Spam), fertig → `✓`. Fail-soft (fehlt das
+   Anzeige-Element, bricht nichts).
+
+**Referenz:** `Kim-Bell/assets/rendezvous-init.js` (`ensureProgressEl` / `onProg`
+/ `stopProg`) — dasselbe Muster in jeden 🔑-Wizard / ✍-Block einsetzen.
+
+---
+
 ## Datenverträge (nicht brechen)
 
 - `generateOwnSpore(meta)` meta = `{ domain, endpoint, nodeType:"hybrid", nodeName,
@@ -159,6 +182,8 @@ Spore prüfen → Match → Handshake." Lädt die fremde `sbkim/spore.json`
       domainKeywords/stamm-+guestCategories`, `allowedOrigins`, `repoUrl`, `dbSuffix`.
 - [ ] `sicherheit.html` vorhanden (für den Schutz-Overlay) — oder Block ohne Overlay-Link.
 - [ ] SW: neue Dateien in `APP_SHELL`, `CACHE_VERSION` erhöht.
+- [ ] **Modell-Ladefortschritt** (Prozent-Balken aus `sbkim:embedding-progress`)
+      in Wizard-Schritt 2 **und** ✍ Semantik — überall, wo das ~30-MB-Modell lädt.
 - [ ] Ehrlich: privater Schlüssel bleibt lokal; Lampen leuchten nur bei echtem Event.
 
 ## Leitplanken (Verfassung)
