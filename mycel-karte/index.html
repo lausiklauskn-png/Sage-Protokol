@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Sage-Protokol · Mycel-Live-Karte v1.0 · 2026-07-08
+<!-- Sage-Protokol · Mycel-Live-Karte v1.1 · 2026-07-08 (Themen + Partikel-Grund + starke Live-Fäden)
      Lebende Netz-Karte des SBKIM-Mycels: Kräfte-Graph (eigene Physik, keine
      Fremd-Bibliothek), lauscht auf ECHTE SBKIM-Ereignisse (Fenster-Events +
      BroadcastChannel "sbkim"/"sbkim-membrane", gleiche Origin = alle Apps).
@@ -47,6 +47,8 @@
   .lamp { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--dim);
           background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 0.18rem 0.65rem; }
   .lamp b { color: var(--text); font-weight: 600; }
+  .lamp.btn { cursor: pointer; user-select: none; }
+  .lamp.btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
   .dot { width: 9px; height: 9px; border-radius: 50%; background: #555; }
   .dot.on { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
   .spacer { flex: 1; }
@@ -137,6 +139,7 @@
   <h1>🍄 Mycel-Live-Karte<span class="sub">Sage-Protokol · reine Anzeige, Empfangsmodus</span></h1>
   <span class="lamp"><span class="dot" id="chanDot"></span>Kanal <b>sbkim</b></span>
   <span class="lamp">Ereignisse <b id="evCount">0</b></span>
+  <span class="lamp btn" id="themeBtn" title="Thema wechseln">◐ <b id="themeName">Dunkel</b></span>
   <span class="spacer"></span>
   <a class="back" href="../index.html">← Sage-Page</a>
 </header>
@@ -190,13 +193,41 @@
 
 // ---------- Einstellungen (persistiert) ----------
 var SETTINGS_KEY = "sage_mycel_karte_settings";
-var settings = { size: 1, vol: 0, colNode: "#8b5cf6", colEdge: "#4a4a70", colBg: "#08081a" };
+var settings = { size: 1, vol: 0, theme: 0, colNode: "#a78bfa", colEdge: "#3a4356", colBg: "#0b0d14" };
 try {
   var saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
   for (var k in settings) if (saved[k] !== undefined) settings[k] = saved[k];
 } catch (e) { /* fail-soft */ }
 function saveSettings() {
   try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) {}
+}
+
+// ---------- Themen (Farbwelten 1:1 aus family-project: Dunkel/Neon/Hell) ----------
+var THEMES = [
+  { name: "Dunkel", bg: "#0b0d14", bg2: "#11151f", node: "#a78bfa", edge: "#3a4356",
+    accent: "#6ee7d3", label: "rgba(238,242,248,0.72)",
+    vars: { "--card": "rgba(22,29,42,0.88)", "--line": "rgba(255,255,255,0.10)",
+            "--text": "#eef2f8", "--dim": "#9aa7b6", "--gold": "#e6b450" } },
+  { name: "Neon", bg: "#08081a", bg2: "#0e0e22", node: "#9d5cff", edge: "#43336e",
+    accent: "#ff3f9a", label: "rgba(236,228,255,0.75)",
+    vars: { "--card": "rgba(20,16,40,0.88)", "--line": "rgba(157,92,255,0.28)",
+            "--text": "#ece4ff", "--dim": "#a79ad0", "--gold": "#f4b435" } },
+  { name: "Hell", bg: "#f4f6fa", bg2: "#eaeef4", node: "#6a4fd0", edge: "#a8b4c8",
+    accent: "#0e8f86", label: "rgba(22,32,44,0.80)",
+    vars: { "--card": "rgba(255,255,255,0.90)", "--line": "rgba(20,30,45,0.14)",
+            "--text": "#16202c", "--dim": "#54637a", "--gold": "#8a6d1f" } }
+];
+var themeBg2 = THEMES[0].bg2, themeAccent = THEMES[0].accent, themeLabel = THEMES[0].label;
+function applyTheme(i, resetColors) {
+  settings.theme = ((i % THEMES.length) + THEMES.length) % THEMES.length;
+  var th = THEMES[settings.theme];
+  themeBg2 = th.bg2; themeAccent = th.accent; themeLabel = th.label;
+  var root = document.documentElement;
+  Object.keys(th.vars).forEach(function (k) { root.style.setProperty(k, th.vars[k]); });
+  if (resetColors) { settings.colNode = th.node; settings.colEdge = th.edge; settings.colBg = th.bg; }
+  var el = document.getElementById("themeName");
+  if (el) el.textContent = th.name;
+  saveSettings();
 }
 
 // ---------- Bekannter Netz-Stand (statischer Samen, ehrlich beschriftet) ----------
@@ -240,7 +271,7 @@ var edgeByKey = {};
 function addEdge(aId, bId) {
   var key = edgeKey(aId, bId);
   if (edgeByKey[key]) return edgeByKey[key];
-  var e = { a: aId, b: bId, flash: 0, flashColor: null };
+  var e = { a: aId, b: bId, flash: 0, flashColor: null, heat: 0, active: false };
   edges.push(e); edgeByKey[key] = e;
   return e;
 }
@@ -305,6 +336,7 @@ function onHandshake(fromId, toId, outcome, source, isDemo) {
   if (a && b) {
     var e = addEdge(a.id, b.id);
     e.flash = 1; e.flashColor = ok ? "ok" : "bad";
+    if (ok) { e.active = true; e.heat = 1; }   // etabliert: Faden bleibt stark
     a.pulse = 1; b.pulse = 1;
   }
   logEvent((isDemo ? "🎬 " : "") + "<b>" + (ok ? "✓ Handshake" : "✗ " + (outcome || "abgelehnt")) + "</b> · " +
@@ -315,7 +347,7 @@ function onHandshake(fromId, toId, outcome, source, isDemo) {
 function onRequest(fromId, toId, isDemo) {
   var a = fromId ? nodeForLiveId(fromId) : null;
   var b = toId ? nodeForLiveId(toId) : null;
-  if (a && b) { var e = addEdge(a.id, b.id); e.flash = 1; e.flashColor = null; a.pulse = 1; }
+  if (a && b) { var e = addEdge(a.id, b.id); e.flash = 1; e.flashColor = null; e.heat = Math.max(e.heat, 0.7); a.pulse = 1; }
   logEvent((isDemo ? "🎬 " : "") + "<b>Anfrage</b> · " + (a ? a.label : "?") + " → " + (b ? b.label : "?") +
            " <i>(Kanal sbkim)</i>", isDemo ? "demo" : "");
   SOUND.request();
@@ -436,6 +468,7 @@ function stepPhysics() {
   }
   for (i = 0; i < edges.length; i++) {
     if (edges[i].flash > 0) edges[i].flash = Math.max(0, edges[i].flash - 0.014);
+    if (edges[i].heat > 0) edges[i].heat = Math.max(edges[i].active ? 0.35 : 0, edges[i].heat - 0.003);
   }
 }
 
@@ -450,6 +483,17 @@ function resize() {
   canvas.height = Math.round(canvas.clientHeight * dpr);
 }
 window.addEventListener("resize", resize);
+window.addEventListener("orientationchange", resize);
+// Waechter: DeX/Zweitbildschirm feuern nicht immer "resize" (und die
+// Pixeldichte wechselt beim Monitor-Umzug) — pro Frame guenstig pruefen.
+function fitCanvas() {
+  var want = window.devicePixelRatio || 1;
+  if (dpr !== want ||
+      canvas.width !== Math.round(canvas.clientWidth * want) ||
+      canvas.height !== Math.round(canvas.clientHeight * want)) {
+    resize();
+  }
+}
 
 function worldToScreen(wx, wy) {
   return {
@@ -471,11 +515,39 @@ function hexToRgb(hex) {
   return { r: (v >> 16) & 255, g: (v >> 8) & 255, b: v & 255 };
 }
 
+// Partikel-Feld: fixe Welt-Punkte, Parallaxe + Funkeln (reduced-motion: statisch)
+var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+var stars = [];
+(function seedStars() {
+  for (var i = 0; i < 170; i++) {
+    stars.push({ x: (Math.random() - 0.5) * 3200, y: (Math.random() - 0.5) * 2200,
+                 r: 0.6 + Math.random() * 1.6, phase: Math.random() * Math.PI * 2,
+                 speed: 0.4 + Math.random() * 1.2 });
+  }
+})();
+
 function draw() {
   var w = canvas.clientWidth, h = canvas.clientHeight;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.fillStyle = settings.colBg;
+  var grad = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.1, w / 2, h / 2, Math.max(w, h) * 0.75);
+  grad.addColorStop(0, themeBg2);
+  grad.addColorStop(1, settings.colBg);
+  ctx.fillStyle = grad;
   ctx.fillRect(0, 0, w, h);
+
+  // Partikel (Parallaxe 0.35 — schweben hinter dem Netz)
+  var tNow = REDUCED ? 0 : performance.now() / 1000;
+  var srgb = hexToRgb(settings.colNode);
+  for (var si = 0; si < stars.length; si++) {
+    var st = stars[si];
+    var px = (st.x - view.x * 0.35) * (view.zoom * 0.5 + 0.5) + w / 2;
+    var py = (st.y - view.y * 0.35) * (view.zoom * 0.5 + 0.5) + h / 2;
+    if (px < -10 || px > w + 10 || py < -10 || py > h + 10) continue;
+    var tw = REDUCED ? 0.5 : 0.3 + 0.7 * Math.abs(Math.sin(tNow * st.speed + st.phase));
+    ctx.beginPath(); ctx.arc(px, py, st.r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(" + srgb.r + "," + srgb.g + "," + srgb.b + "," + (0.22 * tw) + ")";
+    ctx.fill();
+  }
 
   var okCol = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() || "#22c55e";
   var badCol = getComputedStyle(document.documentElement).getPropertyValue("--bad").trim() || "#ef4444";
@@ -491,6 +563,11 @@ function draw() {
       var fc = e.flashColor === "ok" ? okCol : e.flashColor === "bad" ? badCol : "#f4b435";
       ctx.strokeStyle = fc; ctx.globalAlpha = 0.25 + 0.75 * e.flash;
       ctx.lineWidth = 1 + 2.5 * e.flash;
+    } else if (e.active || e.heat > 0.01) {
+      // gerade verbunden: kraeftiger Faden in Themen-Akzentfarbe
+      ctx.strokeStyle = themeAccent;
+      ctx.globalAlpha = 0.55 + 0.4 * Math.max(e.heat, 0.35);
+      ctx.lineWidth = 1.6 + 1.8 * e.heat;
     } else {
       ctx.strokeStyle = settings.colEdge; ctx.globalAlpha = 0.55; ctx.lineWidth = 0.8;
     }
@@ -530,12 +607,12 @@ function draw() {
     ctx.strokeStyle = a.hub ? "#f4b435" : "rgba(255,255,255,0.35)";
     ctx.stroke();
     // Beschriftung
-    ctx.fillStyle = "rgba(255,255,255,0.72)";
+    ctx.fillStyle = themeLabel;
     ctx.fillText(a.label, pa.x, pa.y + baseR + 10 * Math.max(view.zoom, 0.8));
   }
 }
 
-function loop() { stepPhysics(); draw(); requestAnimationFrame(loop); }
+function loop() { fitCanvas(); stepPhysics(); draw(); requestAnimationFrame(loop); }
 
 // ---------- Eingabe: Ziehen (Pille/Karte), Zoom (Rad + Pinch) ----------
 var pointer = { down: false, node: null, lastX: 0, lastY: 0 };
@@ -630,9 +707,14 @@ function centerView() {
   view.x = sx / nodes.length; view.y = sy / nodes.length;
 }
 $("btnReset").addEventListener("click", function () {
-  settings = { size: 1, vol: settings.vol, colNode: "#8b5cf6", colEdge: "#4a4a70", colBg: "#08081a" };
+  settings.size = 1;
+  applyTheme(settings.theme, true);
   applySettingsToUI(); saveSettings();
   view.zoom = 1; centerView();
+});
+$("themeBtn").addEventListener("click", function () {
+  applyTheme(settings.theme + 1, true);
+  applySettingsToUI();
 });
 $("btnDemo").addEventListener("click", function () { demoTimer ? stopDemo() : runDemo(); });
 $("btnFull").addEventListener("click", function () {
@@ -644,6 +726,7 @@ $("panelHead").addEventListener("click", function () {
 });
 
 // ---------- Start ----------
+applyTheme(settings.theme || 0, false);
 applySettingsToUI();
 resize();
 setTimeout(centerView, 600);
