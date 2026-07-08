@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Sage-Protokol · Mycel-Live-Karte v1.1 · 2026-07-08 (Themen + Partikel-Grund + starke Live-Fäden)
+<!-- Sage-Protokol · Mycel-Live-Karte v1.2 · 2026-07-08 (Relais-Lauscher 📡 + App-Leiste)
      Lebende Netz-Karte des SBKIM-Mycels: Kräfte-Graph (eigene Physik, keine
      Fremd-Bibliothek), lauscht auf ECHTE SBKIM-Ereignisse (Fenster-Events +
      BroadcastChannel "sbkim"/"sbkim-membrane", gleiche Origin = alle Apps).
@@ -88,15 +88,16 @@
     background: none; padding: 2px; cursor: pointer;
   }
   .btnrow { display: flex; gap: 0.55rem; flex-wrap: wrap; }
-  button.b {
-    flex: 1; min-width: 90px;
+  .b {
+    flex: 1; min-width: 90px; display: inline-block; text-align: center; text-decoration: none;
     background: rgba(255,255,255,0.06); color: var(--text);
     border: 1px solid var(--line); border-radius: 9px;
-    padding: 0.45rem 0.6rem; font-size: 0.82rem; cursor: pointer;
+    padding: 0.45rem 0.6rem; font-size: 0.82rem; cursor: pointer; font: inherit;
   }
-  button.b:hover { background: rgba(255,255,255,0.11); color: #fff; }
-  button.b.gold { border-color: rgba(244,180,53,0.5); color: var(--gold); }
-  button.b.active { background: rgba(244,180,53,0.15); border-color: var(--gold); color: var(--gold); }
+  .b:hover { background: rgba(255,255,255,0.11); color: #fff; }
+  .b.gold { border-color: rgba(244,180,53,0.5); color: var(--gold); }
+  .b.active { background: rgba(244,180,53,0.15); border-color: var(--gold); color: var(--gold); }
+  .apps .b { min-width: 46%; font-size: 0.78rem; padding: 0.4rem 0.5rem; }
   .hint { font-size: 0.72rem; color: var(--dim); line-height: 1.45; margin-top: 0.35rem; }
 
   #log {
@@ -140,6 +141,7 @@
   <span class="lamp"><span class="dot" id="chanDot"></span>Kanal <b>sbkim</b></span>
   <span class="lamp">Ereignisse <b id="evCount">0</b></span>
   <span class="lamp btn" id="themeBtn" title="Thema wechseln">◐ <b id="themeName">Dunkel</b></span>
+  <span class="lamp btn" id="relayBtn" title="Raum am Nostr-Relais belauschen (nur lesen, auf deinen Zuruf)"><span class="dot" id="relayDot"></span>📡 <b id="relayLbl">Relais aus</b></span>
   <span class="spacer"></span>
   <a class="back" href="../index.html">← Sage-Page</a>
 </header>
@@ -168,6 +170,18 @@
         <div class="c"><input type="color" id="colEdge" value="#4a4a70"><br>Fäden</div>
         <div class="c"><input type="color" id="colBg" value="#08081a"><br>Hintergrund</div>
       </div>
+    </div>
+    <div class="row">
+      <label class="top">Mycel-Apps öffnen (nebeneinander)</label>
+      <div class="btnrow apps">
+        <a class="b" href="https://lausiklauskn-png.github.io/Mein-Mixarium/" target="_blank" rel="noopener">🍹 Mixarium</a>
+        <a class="b" href="https://lausiklauskn-png.github.io/Mein-Rezeptbuch/" target="_blank" rel="noopener">🍲 Rezeptbuch</a>
+        <a class="b" href="https://lausiklauskn-png.github.io/Sage-Protokol/" target="_blank" rel="noopener">🍄 Sage-Page</a>
+        <a class="b" href="https://family-projekt.de/" target="_blank" rel="noopener">👨‍👩‍👧 family-projekt</a>
+        <a class="b" href="https://lausiklauskn-png.github.io/BookLedgerPro/" target="_blank" rel="noopener">📒 BookLedgerPro</a>
+        <a class="b" href="https://lausiklauskn-png.github.io/SB-KIMTool-Point/" target="_blank" rel="noopener">🧰 KIMTool-Point</a>
+      </div>
+      <div class="hint">Öffnen → dort <b>„🌐 Mit dem Netz verbinden"</b> drücken (das ist das „Hier bin ich"-Signal — bewusst per Hand, kein Auto-Funk). Mit 📡 Relais an siehst du sie hier im Raum erscheinen.</div>
     </div>
     <div class="row btnrow">
       <button class="b gold" id="btnDemo">🎬 Probelauf</button>
@@ -399,6 +413,65 @@ try {
     logEvent("<b>Membran</b> · Verkehr auf sbkim-membrane <i>(Kanal)</i>");
   });
 } catch (e) { /* fail-soft */ }
+
+// ---------- Relais-Lauscher (NUR LESEN, nutzer-ausgelöst — Pilz-Werkzeug) ----------
+// Verträge: Modul 05b DEFAULT_RELAYS + Modul 23 RDV_TAG/Karte + Modul 05 Nostr-Tags.
+var RELAY_URL = "wss://relay.family-projekt.de";
+var relaySock = null;
+function relayLog(msg, cls) { logEvent(msg + " <i>(Relais)</i>", cls || ""); }
+function handleRelayEvent(evt) {
+  var content = {};
+  try { content = JSON.parse(evt.content || "{}"); } catch (e) { return; }
+  var tags = evt.tags || [], tt = "", dd = "";
+  for (var i = 0; i < tags.length; i++) {
+    if (tags[i][0] === "t") tt = tags[i][1] || "";
+    if (tags[i][0] === "d") dd = tags[i][1] || "";
+  }
+  if (tt === "sbkim-rdv" && content.kind === "sbkim-presence" && content.nodeId) {
+    var n = nodeForLiveId(content.nodeId);
+    if (n && content.nodeName) n.label = String(content.nodeName).slice(0, 28);
+    if (n) n.pulse = 1;
+    relayLog("<b>Hier bin ich</b> · " + (n ? n.label : "?") + " ist im Raum", "ok");
+    SOUND.alive();
+  } else if (tt === "sbkim-anastomosis") {
+    onRequest(content.fromNodeId || null, content.toNodeId || dd || null, false);
+  } else if (tt === "sbkim-anastomosis-reply") {
+    var ok = content.outcome === "established";
+    if (ok && dd) { var m = nodeForLiveId(dd); if (m) m.pulse = 1; }
+    relayLog("<b>" + (ok ? "✓ Handshake" : "Antwort: " + (content.outcome || "?")) + "</b>", ok ? "ok" : "");
+    if (ok) SOUND.established();
+  } else if (tt === "sbkim-query" || tt === "sbkim-query-reply") {
+    relayLog("<b>" + (tt === "sbkim-query" ? "Frage" : "Antwort") + "</b> · Cross-Knoten-Suche unterwegs");
+    SOUND.request();
+  }
+}
+function relayStart() {
+  if (relaySock) return;
+  var lbl = document.getElementById("relayLbl"), dot = document.getElementById("relayDot");
+  lbl.textContent = "verbinde…";
+  try {
+    relaySock = new WebSocket(RELAY_URL);
+  } catch (e) { lbl.textContent = "Relais aus"; relaySock = null; return; }
+  relaySock.onopen = function () {
+    dot.classList.add("on"); lbl.textContent = "Relais an";
+    var since = Math.floor(Date.now() / 1000) - 1800;
+    relaySock.send(JSON.stringify(["REQ", "mycelkarte-raum", {
+      kinds: [1],
+      "#t": ["sbkim-rdv", "sbkim-anastomosis", "sbkim-anastomosis-reply", "sbkim-query", "sbkim-query-reply"],
+      since: since
+    }]));
+    relayLog("<b>Lausche</b> · Raum sbkim-rdv + Handshake-Verkehr (nur lesen)", "ok");
+  };
+  relaySock.onmessage = function (m) {
+    var arr; try { arr = JSON.parse(m.data); } catch (e) { return; }
+    if (Array.isArray(arr) && arr[0] === "EVENT" && arr[2]) handleRelayEvent(arr[2]);
+  };
+  relaySock.onerror = function () { relayLog("<b>Relais nicht erreichbar</b> · Karte läuft normal weiter", "bad"); };
+  relaySock.onclose = function () {
+    dot.classList.remove("on"); lbl.textContent = "Relais aus"; relaySock = null;
+  };
+}
+function relayStop() { if (relaySock) { try { relaySock.close(); } catch (e) {} } }
 
 // ---------- Probelauf (ausdrücklich als Simulation gekennzeichnet) ----------
 var demoTimer = null;
@@ -715,6 +788,9 @@ $("btnReset").addEventListener("click", function () {
 $("themeBtn").addEventListener("click", function () {
   applyTheme(settings.theme + 1, true);
   applySettingsToUI();
+});
+$("relayBtn").addEventListener("click", function () {
+  relaySock ? relayStop() : relayStart();
 });
 $("btnDemo").addEventListener("click", function () { demoTimer ? stopDemo() : runDemo(); });
 $("btnFull").addEventListener("click", function () {
