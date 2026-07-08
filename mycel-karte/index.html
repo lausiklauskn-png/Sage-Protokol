@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Sage-Protokol · Mycel-Live-Karte v1.2 · 2026-07-08 (Relais-Lauscher 📡 + App-Leiste)
+<!-- Sage-Protokol · Mycel-Live-Karte v1.3 · 2026-07-08 (Namens-Fusion gegen Doppel-Pillen + Analyse-Rekorder 🔬)
      Lebende Netz-Karte des SBKIM-Mycels: Kräfte-Graph (eigene Physik, keine
      Fremd-Bibliothek), lauscht auf ECHTE SBKIM-Ereignisse (Fenster-Events +
      BroadcastChannel "sbkim"/"sbkim-membrane", gleiche Origin = alle Apps).
@@ -51,6 +51,7 @@
   .lamp.btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
   .dot { width: 9px; height: 9px; border-radius: 50%; background: #555; }
   .dot.on { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .dot.rec { background: var(--bad); box-shadow: 0 0 8px var(--bad); }
   .spacer { flex: 1; }
   a.back { color: var(--dim); font-size: 0.8rem; text-decoration: none; border: 1px solid var(--line);
            border-radius: 999px; padding: 0.18rem 0.65rem; background: var(--card); }
@@ -142,6 +143,7 @@
   <span class="lamp">Ereignisse <b id="evCount">0</b></span>
   <span class="lamp btn" id="themeBtn" title="Thema wechseln">◐ <b id="themeName">Dunkel</b></span>
   <span class="lamp btn" id="relayBtn" title="Raum am Nostr-Relais belauschen (nur lesen, auf deinen Zuruf)"><span class="dot" id="relayDot"></span>📡 <b id="relayLbl">Relais aus</b></span>
+  <span class="lamp btn" id="recBtn" title="Analyse-Rekorder: zeichnet alle Roh-Ereignisse auf; Stopp lädt eine JSON-Datei herunter"><span class="dot" id="recDot"></span>🔬 <b id="recLbl">Analyse aus</b></span>
   <span class="spacer"></span>
   <a class="back" href="../index.html">← Sage-Page</a>
 </header>
@@ -292,13 +294,98 @@ function addEdge(aId, bId) {
 SEED_NODES.forEach(function (s) { addNode(s.id, s.label, s.hub, false); });
 SEED_EDGES.forEach(function (p) { addEdge(p[0], p[1]); });
 
-// Lebende nodeIds (Base64-artig) auf Anzeige-Knoten abbilden — ehrlich gekürzt.
-function nodeForLiveId(nodeId) {
+// ---------- Namens-Fusion (v1.3, Klaus' Doppel-Befund) ----------
+// Lebende Knoten melden sich mit nodeName — der wird auf die passende
+// Seed-Pille abgebildet statt einen Zwilling zu erzeugen. Mehrere lebende
+// IDs desselben Namens (z.B. Tablet + Handy, oder frische Identität nach
+// Neuanmeldung) werden Aliasse EINER Pille (Anzeige ×N).
+var SEED_ALIASES = {
+  sage:      ["sage", "sage protokoll", "sage protokol"],
+  mixarium:  ["mein mixarium", "mixarium"],
+  rezeptbuch:["mein rezeptbuch", "rezeptbuch", "muttis rezeptbuch"],
+  family:    ["family project", "family projekt", "familyprojekt", "familyproject"],
+  blp:       ["bookledgerpro", "book ledger pro", "bookledger pro"],
+  toolpoint: ["sb kimtool point", "kimtool point", "sbkimtool point", "sb kimtoolpoint"],
+  jtresor:   ["jasons tresor", "jason tresor"],
+  mtresor:   ["mein tresor"]
+};
+function normName(x) { return String(x || "").toLowerCase().replace(/[^a-z0-9äöüß]+/g, " ").trim(); }
+function seedForName(name) {
+  var n = normName(name);
+  if (!n) return null;
+  for (var k in SEED_ALIASES) if (SEED_ALIASES[k].indexOf(n) !== -1) return nodeById[k] || null;
+  return null;
+}
+var liveIdMap = {};  // lebende nodeId -> Karten-Knoten-id
+function nodeForLiveId(nodeId, name) {
   if (!nodeId || typeof nodeId !== "string") return null;
+  if (liveIdMap[nodeId]) {
+    var known = nodeById[liveIdMap[nodeId]];
+    if (known) { known.pulse = 1; return known; }
+  }
+  var seed = name ? seedForName(name) : null;
+  if (seed) {
+    liveIdMap[nodeId] = seed.id;
+    seed.live = true; seed.pulse = 1;
+    if (!seed.aliveIds) seed.aliveIds = {};
+    seed.aliveIds[nodeId] = true;
+    recEvent("fusion", "map", { nodeId: nodeId, name: name }, "auf Seed-Pille '" + seed.label + "' fusioniert");
+    return seed;
+  }
   var id = "live_" + nodeId;
   if (nodeById[id]) { nodeById[id].pulse = 1; return nodeById[id]; }
   var short = nodeId.length > 10 ? nodeId.slice(0, 6) + "…" + nodeId.slice(-4) : nodeId;
-  return addNode(id, "Knoten " + short, false, true);
+  var made = addNode(id, name ? String(name).slice(0, 28) : "Knoten " + short, false, true);
+  liveIdMap[nodeId] = id;
+  recEvent("fusion", "new", { nodeId: nodeId, name: name || null }, "kein Seed-Treffer — eigene Pille angelegt");
+  return made;
+}
+
+// ---------- Analyse-Rekorder 🔬 (v1.3, Klaus' Wunsch: durchspielen + zuschauen) ----------
+var rec = null;
+function recEvent(source, kind, data, decision) {
+  if (!rec) return;
+  try {
+    rec.entries.push({ t: new Date().toISOString(), source: source, kind: kind,
+                       data: data, decision: decision || null });
+  } catch (e) { /* fail-soft */ }
+}
+function recSnapshot(label) {
+  if (!rec) return;
+  rec.entries.push({ t: new Date().toISOString(), source: "karte", kind: "schnappschuss", data: {
+    label: label,
+    nodes: nodes.map(function (n) { return { id: n.id, label: n.label, live: !!n.live,
+      aliveIds: n.aliveIds ? Object.keys(n.aliveIds) : [] }; }),
+    edges: edges.map(function (e) { return { a: e.a, b: e.b, active: !!e.active, heat: +e.heat.toFixed(2) }; }),
+    liveIdMap: liveIdMap
+  }});
+}
+function recStart() {
+  rec = { startedAt: new Date().toISOString(), entries: [] };
+  recSnapshot("Start");
+  document.getElementById("recDot").classList.add("rec");
+  document.getElementById("recLbl").textContent = "Analyse läuft";
+  logEvent("<b>🔬 Analyse gestartet</b> · alle Roh-Ereignisse werden aufgezeichnet", "ok");
+}
+function recStop() {
+  if (!rec) return;
+  recSnapshot("Stopp");
+  var data = { werkzeug: "Mycel-Karte Analyse-Rekorder v1.3", gestartet: rec.startedAt,
+               beendet: new Date().toISOString(), anzahl: rec.entries.length, ereignisse: rec.entries };
+  try {
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "mycel-analyse-" + new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19) + ".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+    logEvent("<b>🔬 Analyse beendet</b> · " + rec.entries.length + " Einträge als Datei heruntergeladen (Downloads-Ordner) — schick sie Claude", "ok");
+  } catch (e) {
+    logEvent("<b>🔬 Analyse beendet</b> · Download fehlgeschlagen", "bad");
+  }
+  rec = null;
+  document.getElementById("recDot").classList.remove("rec");
+  document.getElementById("recLbl").textContent = "Analyse aus";
 }
 
 // ---------- Ereignis-Protokoll (UI) ----------
@@ -346,6 +433,8 @@ var SOUND = {
 function onHandshake(fromId, toId, outcome, source, isDemo) {
   var a = fromId ? nodeForLiveId(fromId) : null;
   var b = toId ? nodeForLiveId(toId) : null;
+  recEvent("karte", "handshake", { fromId: fromId, toId: toId, outcome: outcome, source: source, demo: !!isDemo },
+           "aufgelöst zu: " + (a ? a.label : "?") + " → " + (b ? b.label : "?"));
   var ok = outcome === "established";
   if (a && b) {
     var e = addEdge(a.id, b.id);
@@ -377,6 +466,7 @@ window.addEventListener("sbkim:alive", function (ev) {
 });
 window.addEventListener("sbkim:handshake", function (ev) {
   var d = (ev && ev.detail) || {};
+  recEvent("fenster", "sbkim:handshake", d, null);
   onHandshake(null, d.peerNodeId, d.outcome, "Fenster/" + (d.direction || "?"), false);
 });
 window.addEventListener("sbkim:fremd-alert", function () {
@@ -398,6 +488,7 @@ try {
   chanDot.classList.add("on");
   chan.addEventListener("message", function (ev) {
     var d = ev && ev.data; if (!d || !d.type) return;
+    recEvent("kanal-sbkim", d.type, d.payload || {}, null);
     if (d.type === "SBKIM_ANASTOMOSE_REQUEST" && d.payload) {
       onRequest(d.payload.fromNodeId, d.payload.toNodeId, false);
     } else if (d.type === "SBKIM_ANASTOMOSE_RESPONSE" && d.payload) {
@@ -427,9 +518,9 @@ function handleRelayEvent(evt) {
     if (tags[i][0] === "t") tt = tags[i][1] || "";
     if (tags[i][0] === "d") dd = tags[i][1] || "";
   }
+  recEvent("relais", tt || "event", { content: content, d: dd }, null);
   if (tt === "sbkim-rdv" && content.kind === "sbkim-presence" && content.nodeId) {
-    var n = nodeForLiveId(content.nodeId);
-    if (n && content.nodeName) n.label = String(content.nodeName).slice(0, 28);
+    var n = nodeForLiveId(content.nodeId, content.nodeName);
     if (n) n.pulse = 1;
     relayLog("<b>Hier bin ich</b> · " + (n ? n.label : "?") + " ist im Raum", "ok");
     SOUND.alive();
@@ -681,7 +772,9 @@ function draw() {
     ctx.stroke();
     // Beschriftung
     ctx.fillStyle = themeLabel;
-    ctx.fillText(a.label, pa.x, pa.y + baseR + 10 * Math.max(view.zoom, 0.8));
+    var lbl2 = a.label;
+    if (a.aliveIds) { var cnt = Object.keys(a.aliveIds).length; if (cnt > 1) lbl2 += " ×" + cnt; }
+    ctx.fillText(lbl2, pa.x, pa.y + baseR + 10 * Math.max(view.zoom, 0.8));
   }
 }
 
@@ -791,6 +884,9 @@ $("themeBtn").addEventListener("click", function () {
 });
 $("relayBtn").addEventListener("click", function () {
   relaySock ? relayStop() : relayStart();
+});
+$("recBtn").addEventListener("click", function () {
+  rec ? recStop() : recStart();
 });
 $("btnDemo").addEventListener("click", function () { demoTimer ? stopDemo() : runDemo(); });
 $("btnFull").addEventListener("click", function () {
