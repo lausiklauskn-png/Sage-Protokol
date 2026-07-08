@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Sage-Protokol · Mycel-Live-Karte v1.3 · 2026-07-08 (Namens-Fusion gegen Doppel-Pillen + Analyse-Rekorder 🔬)
+<!-- Sage-Protokol · Mycel-Live-Karte v1.4 · 2026-07-08 (Nach-Fusion: verspätete Namen wandern in die Seed-Pille)
      Lebende Netz-Karte des SBKIM-Mycels: Kräfte-Graph (eigene Physik, keine
      Fremd-Bibliothek), lauscht auf ECHTE SBKIM-Ereignisse (Fenster-Events +
      BroadcastChannel "sbkim"/"sbkim-membrane", gleiche Origin = alle Apps).
@@ -317,13 +317,58 @@ function seedForName(name) {
   return null;
 }
 var liveIdMap = {};  // lebende nodeId -> Karten-Knoten-id
+
+// Nach-Fusion (v1.4): eine ID kam zuerst NAMENLOS an (z.B. Handshake über den
+// Kanal, bevor das Relais die Visitenkarte lieferte) und bekam eine eigene
+// Pille — trifft der Name später ein, wandert die Pille samt Fäden in die
+// richtige Seed-Pille und verschwindet.
+function migrateLiveNode(oldNode, seed, nodeId) {
+  for (var i = edges.length - 1; i >= 0; i--) {
+    var e = edges[i];
+    if (e.a !== oldNode.id && e.b !== oldNode.id) continue;
+    var na = e.a === oldNode.id ? seed.id : e.a;
+    var nb = e.b === oldNode.id ? seed.id : e.b;
+    delete edgeByKey[edgeKey(e.a, e.b)];
+    var key = edgeKey(na, nb);
+    if (na === nb || edgeByKey[key]) {
+      // Selbst-Kante oder Duplikat: Staerke in die bestehende Kante retten
+      if (edgeByKey[key]) {
+        edgeByKey[key].heat = Math.max(edgeByKey[key].heat, e.heat);
+        edgeByKey[key].active = edgeByKey[key].active || e.active;
+      }
+      edges.splice(i, 1); continue;
+    }
+    e.a = na; e.b = nb; edgeByKey[key] = e;
+  }
+  if (!seed.aliveIds) seed.aliveIds = {};
+  if (oldNode.aliveIds) for (var k in oldNode.aliveIds) seed.aliveIds[k] = true;
+  seed.aliveIds[nodeId] = true;
+  for (var lid in liveIdMap) if (liveIdMap[lid] === oldNode.id) liveIdMap[lid] = seed.id;
+  delete nodeById[oldNode.id];
+  var idx = nodes.indexOf(oldNode);
+  if (idx >= 0) nodes.splice(idx, 1);
+  seed.live = true;
+  recEvent("fusion", "nachfusion", { nodeId: nodeId, von: oldNode.label, nach: seed.label },
+           "verspaeteter Name — Pille samt Faeden in Seed-Pille verschmolzen");
+  logEvent("<b>Fusion</b> · " + oldNode.label + " → " + seed.label + " (Name kam nach)", "ok");
+}
+
 function nodeForLiveId(nodeId, name) {
   if (!nodeId || typeof nodeId !== "string") return null;
+  var seed = name ? seedForName(name) : null;
   if (liveIdMap[nodeId]) {
     var known = nodeById[liveIdMap[nodeId]];
-    if (known) { known.pulse = 1; return known; }
+    if (known) {
+      if (seed && known !== seed && known.id.indexOf("live_") === 0) {
+        migrateLiveNode(known, seed, nodeId);
+        seed.pulse = 1;
+        return seed;
+      }
+      if (name && known.id.indexOf("live_") === 0) known.label = String(name).slice(0, 28);
+      known.pulse = 1;
+      return known;
+    }
   }
-  var seed = name ? seedForName(name) : null;
   if (seed) {
     liveIdMap[nodeId] = seed.id;
     seed.live = true; seed.pulse = 1;
