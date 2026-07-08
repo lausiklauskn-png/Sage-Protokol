@@ -201,6 +201,10 @@
   .nav-pills { margin-left: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .nav-pill { background: transparent; border: 1px solid var(--line); padding: 0.55rem 0.9rem; font-size: 0.9rem; color: var(--muted); }
   .nav-pill:hover { color: var(--text); border-color: var(--accent); }
+  /* Mycel-Live-Karte-Knopf unter der Topologie (öffnet eigenes Fenster — DeX-Zweitbildschirm) */
+  .topology-cta { margin-top: 1.15rem; text-align: center; position: relative; z-index: 1; }
+  a.nav-pill.mycel-link { display: inline-block; text-decoration: none; border-radius: 999px; border-color: rgba(244,180,53,0.45); color: #f4b435; }
+  a.nav-pill.mycel-link:hover { border-color: #f4b435; color: #f4b435; box-shadow: 0 0 18px rgba(244,180,53,0.25); }
   .hero-topology { margin-top: 4rem; position: relative; background: var(--glass); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.6rem 1.5rem 1.3rem; overflow: hidden; }
   .hero-topology::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 80% at 50% 50%, rgba(110,231,211,0.06), transparent 70%); pointer-events: none; }
   /* Werkzeug-Schnellstart: feste Lasche am rechten Rand (eigenständige PWAs,
@@ -1127,6 +1131,9 @@
           </div>
           <svg id="topology-svg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet" aria-label="Modul-Topologie als Force-Graph"></svg>
           <div class="topology-legend" id="topology-legend"></div>
+          <div class="topology-cta">
+            <a class="nav-pill mycel-link" href="mycel-karte/" target="_blank" rel="noopener">🍄 Mycel-Live-Karte öffnen ↗</a>
+          </div>
         </div>
       </section>
       <div class="bento">
