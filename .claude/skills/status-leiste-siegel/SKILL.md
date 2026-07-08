@@ -53,6 +53,38 @@ zeigt — **immer sichtbar, nicht im Siegel-Modal versteckt** (Klaus 2026-07-08)
   (Anti-Greenwashing). Embedding ist nur **eines** der sieben — nicht der Auslöser.
 - **Gold — nach dem ersten Handshake** (`sbkim:handshake outcome:"established"`).
 
+## TEIL 2b — Das echte Wappen-Bild + das SELBST-GRAVIERENDE Band (App-Name)
+
+Das Siegel ist **kein flacher Text-Badge** — Modul 16 trägt ein vollständiges
+**Gold-Auszeichnungs-Wappen als inline-SVG** (`WAPPEN_SVG`: Akkretions-Korona,
+Gold-Ring, „OFFIZIELLE BESTÄTIGUNG / SBKIM / SIEGEL", drei Medaillons). Unten im
+Wappen liegt ein **Ordens-Band (Ribbon)**, das den **Namen der App/des Repos**
+trägt — das **SELF-INSCRIBING**-Element.
+
+**So füllt sich das Band (Pflicht-Wissen, häufigste Fehlerquelle):**
+
+- Der Band-Text kommt aus **`SbkimSiegel.init({ ribbonText: "<App-Name>" })`**.
+- **Ohne `ribbonText` bleibt das Band LEER** (offen) — Klaus-Entscheidung
+  2026-06-20: **kein** geratener Repo-Slug auf einer Auszeichnung. Es gibt
+  **keine** Auto-Ableitung aus `repoUrl` (auch wenn `repoUrl` gesetzt ist).
+- Technik (Modul 16): `effectiveRibbonText()` gibt `""` zurück, solange nicht
+  `ribbonTextExplicit`; `renderWappenSvg()` ersetzt den `RIBBON_MARKER`
+  (`>SAGE OBSERVATORIUM</textPath>`) durch den App-Namen (XML-escaped). Ist der
+  Wert exakt der Default `"SAGE OBSERVATORIUM"`, bleibt das SVG byte-identisch.
+- **Alt-Falle:** eine bloß kopierte SVG-Datei zeigte früher statisch
+  „MEIN-TRESOR" (Kopie nie angepasst). Darum **immer** den eigenen `ribbonText`
+  setzen — sonst leeres oder fremdes Band.
+
+**Regel: JEDE App graviert ihren eigenen Namen ein** — `ribbonText: "<App-Name>"`
+im `SbkimSiegel.init(...)`. Beispiele: Sage `"SAGE OBSERVATORIUM"` · Kim-Bell
+`"Kim-Bell"` · SB-KIMTool-Point `"SB·KIMTool·Point"` · Rezeptbuch/Mixarium ihr
+jeweiliger Name. Das Wappen mit gefülltem Band ist im Siegel-**Modal** groß und
+lesbar; im 40-px-Badge klein, aber dasselbe SVG.
+
+**Wo die SVG-Quelle liegt:** inline in `src/modules/16_siegel.js` (`WAPPEN_SVG`),
+Quelle `assets/sbkim-siegel-wappen.svg` — bei Änderungen **beide** nachziehen
+(byte-identisch, Konvention Karte 16 § Bauzustand).
+
 ## TEIL 3 — Verbindliche Lade-/Init-Reihenfolge
 
 **Modul 17 (Widget) MUSS VOR Modul 15/16 inited werden** — das Widget legt die
@@ -62,7 +94,8 @@ Proxy-Spans `#lamp-fremd` + `#sbkim-siegel-badge` an, an die Membran + Siegel h�
 1. SbkimStorage.init({ dbSuffix: "<app-suffix>" })                 // eigene Schublade
 2. await SbkimWidget.init({ allowedOrigins, repoUrl })             // 17 — Proxy-Spans
 3. SbkimMembrane.init({ allowedOrigins /* oder lampSelector */ })  // 15 — Wächter/FREMD
-4. SbkimSiegel.init({ badgeSelector:"#sbkim-siegel-badge", mountModal:true, repoUrl })  // 16
+4. SbkimSiegel.init({ badgeSelector:"#sbkim-siegel-badge", mountModal:true, repoUrl,
+                      ribbonText:"<App-Name>" })  // 16 — ribbonText graviert den Namen ins Band (Pflicht, sonst leer)
 5. SbkimApoptose.init()                                             // 07 (Pflicht-Modul)
 ```
 
@@ -207,6 +240,8 @@ Modal, bevor es fertig geladen hat.**
       ✍ Semantik · 🛡 Schutz + `sicherheit.html`-Overlay · (⛨ Fremden Knoten andocken, wo gewünscht).
 - [ ] Config angepasst: `domain/endpoint/nodeType/nodeName/domainDescription/
       domainKeywords/stamm-+guestCategories`, `allowedOrigins`, `repoUrl`, `dbSuffix`.
+- [ ] **`ribbonText: "<App-Name>"`** in `SbkimSiegel.init(...)` — sonst bleibt das
+      Wappen-Band LEER (kein Auto-Slug). Jede App graviert ihren eigenen Namen ein.
 - [ ] `sicherheit.html` vorhanden (für den Schutz-Overlay) — oder Block ohne Overlay-Link.
 - [ ] SW: neue Dateien in `APP_SHELL`, `CACHE_VERSION` erhöht.
 - [ ] **Modell-Ladefortschritt** (Prozent-Balken aus `sbkim:embedding-progress`)
