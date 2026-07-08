@@ -119,6 +119,29 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-08 · Mycel-Karte v1.2 — Relais-Lauscher 📡 + App-Leiste (Klaus' Befund: „Karte sieht meine Aktionen nicht")
+
+**Klaus' Sichttest v1.1 GRÜN** (Demo, Optik, Themen). Sein Folge-Befund: Aktionen in
+Andock-Tool/Suche/Pinnwand erscheinen nicht auf der Karte. **Diagnose (ehrlich):**
+Knoten unversehrt (diese Sitzung hat keine App angefasst; Identitäten liegen in
+Klaus' Browser-IndexedDB). Die Karte lauschte nur auf BroadcastChannel (gleiche
+Origin, gleicher Browser) — aber Rendezvous/Modul-23-Andocks + Pinnwand laufen
+übers NOSTR-RELAIS, und family-projekt.de ist eine andere Origin. Das Ohr saß
+am falschen Kanal.
+**Fix v1.2:** (1) **📡 Relais-Knopf** in der Kopfleiste — NUR LESEN, nutzer-
+ausgelöst (Pilz-Werkzeug Schicht 2, kein Auto-Start = keine Pulsation): WebSocket
+zu `wss://relay.family-projekt.de`, REQ kinds:[1] #t: sbkim-rdv/-anastomosis/
+-anastomosis-reply/-query/-query-reply, since −30 min. Presence-Karten →
+Knoten erscheint mit echtem nodeName + Puls; Handshakes → Kanten-Flash/aktiver
+Faden; fail-soft (Relais weg → Hinweis, Karte läuft weiter). (2) **App-Leiste**
+im Regler-Panel: 6 Mycel-Apps nebeneinander öffnen (je _blank) mit Hinweis,
+in jeder App „🌐 Mit dem Netz verbinden" zu drücken — das „Hier bin ich" bleibt
+bewusst Handarbeit (Verfassung: kein Auto-Funk beim Laden).
+**Headless-Browser-Test grün:** App-Leiste 6/6 _blank, Relais-Fail-Soft (Sandbox
+blockt wss — Label fällt sauber auf „Relais aus" zurück, 0 Seitenfehler), Karte
+danach voll bedienbar. **Live-Relais-Sichttest wartet auf Klaus** (Sandbox kann
+das echte Relais nicht erreichen — bekannte Grenze, siehe Modul 05b Kopf).
+
 ## 2026-07-08 · Mycel-Karte v1.1 + echter Browser-Test + Sage-Page-Knopf + PWA-Gründung
 
 **Getan (Freibrief, Fortsetzung):** (1) **v1.1 der Karte** (PR #548): family-Themen
