@@ -1,0 +1,117 @@
+---
+name: saubere-netz-anmeldung
+description: Kanonische Reihenfolge, damit eine SBKIM-PWA eine saubere, EIGENE Identität, eine saubere Spore und eine saubere Anmeldung im gemeinsamen Netz-Raum bekommt. Anwenden, wenn in eine von Klaus' PWAs (Mixarium, Rezeptbuch, BookLedgerPro, SB-KIMTool-Point, family-project, Such-Tool, Pinnwand, künftige Tools) die Netz-Anmeldung / Rendezvous / Identität eingebaut wird — ODER wenn Apps auf der Karte kollidieren (mehrere Apps zeigen dieselbe nodeId, "nur N verbinden sich", "Mixarium dockt als Rezeptbuch an"). Sichert stabile, getrennte Identitäten auf der geteilten GitHub-Pages-Adresse.
+---
+
+# Saubere Netz-Anmeldung (SBKIM-Identitäts-Hygiene)
+
+Die feste Reihenfolge, mit der eine SBKIM-PWA zu **einer eigenen, stabilen
+Identität** kommt und sich **sauber** im gemeinsamen Raum anmeldet. Diese
+Reihenfolge ist verbindlich für **jedes** Werkzeug, das ans Netz andockt — sie
+wird eingebaut, nicht jedes Mal neu erfunden.
+
+## Warum es das Problem gibt (der Browser als schwarzes Loch)
+
+Alle Endknoten-PWAs liegen unter **einer** Adresse: `lausiklauskn-png.github.io`.
+GitHub Pages gibt jedem Repo einen Unterpfad, aber **dieselbe Origin** — und
+IndexedDB, localStorage, Service-Worker und Caches hängen an der **Origin**, nicht
+am Pfad. Ohne Trennung teilen sich also **alle** Apps *eine* Datenbank `sbkim`,
+*eine* Identität, *einen* Service-Worker. Ergebnis: mehrere Apps melden sich mit
+**derselben** `nodeId` im Raum an, docken falsch an, "nur N verbinden sich". Der
+Browser verschluckt die getrennten Identitäten in einen Topf.
+
+## Der Ziel-Zustand (E1–E4) — dahin muss jede App
+
+- **E1** — die App läuft in ihrer **eigenen** Schublade `sbkim_<suffix>`, nicht in
+  der geteilten Default-DB `sbkim`.
+- **E2** — sie hat **genau eine** eigene, **stabile** Identität (nodeId + privater
+  Schlüssel) in dieser Schublade.
+- **E3** — sie hat eine **eigene gültige Spore** aus dieser Identität.
+- **E4** — sie ist mit der **lebenden** Identität im gemeinsamen Raum angemeldet.
+
+## Ehrliche Grenze (wichtig)
+
+Eine Web-Seite kann **nur die Daten ihrer eigenen Origin** löschen — NICHT den
+ganzen Browser, NICHT fremde Seiten. Das ist hier **genau richtig**: der
+vergiftete geteilte Topf (`sbkim`) liegt auf *dieser* Origin, also darf ein Knopf
+in *irgendeiner* der Apps ihn für alle säubern. Kein Server, keine Fremd-Rechte.
+
+## Zwei Modi — nie vermischen
+
+### Modus A — Normaler Start (automatisch, bei jedem Laden, NICHT zerstörend)
+
+Läuft bei jedem `init()`. **Idempotent** — beim zweiten, dritten Laden passiert
+nichts mehr. **Löscht nie von selbst.** So bleibt die Identität stabil und das Netz
+kann feste Beziehungen aufbauen.
+
+1. `SbkimStorage.init({ dbSuffix: "<app-suffix>" })` — **immer zuerst**, vor Spore
+   und Rendezvous. Öffnet `sbkim_<suffix>` statt der Default-DB `sbkim`.
+2. Prüfen, ob in dieser Schublade schon eine eigene Identität liegt
+   (Modul 02 `loadIdentity`). 
+   - **Ja** → nichts tun. Fertig.
+   - **Nein** → **einmal** anlegen (Modul 02 `getOrCreateIdentity`).
+3. **Kein** Löschen, **kein** Wipe, **kein** Auto-Anmelden ins Netz
+   (Empfangsmodus — Anmelden ist nutzer-ausgelöst).
+
+### Modus B — Reparatur / Neu-Anmelden (EIN Knopf, vom Nutzer ausgelöst)
+
+Der sichtbare Knopf im "🌐 Mit dem Netz verbinden"-Werkzeug. Kraftvoll, aber immer
+vom Menschen ausgelöst. Genaue Reihenfolge (Klaus' Reihenfolge, bestätigt):
+
+1. **Reinigen (nur diese Origin):**
+   - Default-DB `sbkim` löschen (`indexedDB.deleteDatabase("sbkim")`) — der
+     geteilte Alt-Topf, die eigentliche Kollisions-Quelle.
+   - Veraltete Service-Worker abmelden (`registration.unregister()` für alle).
+   - Alte Caches leeren (`caches.keys()` → `caches.delete(...)`).
+   - **NICHT** die eigene Schublade `sbkim_<suffix>` anfassen, außer der Nutzer
+     will ausdrücklich eine ganz neue Identität.
+2. **Neue Identität** in der eigenen Schublade `sbkim_<suffix>` frisch anlegen
+   (Modul 02 `getOrCreateIdentity`, ggf. nach Löschen des alten Schlüssels).
+3. **Spore erzeugen** aus der neuen Identität (Modul 02 `getOwnSpore`).
+4. **Im Netz anmelden** — lebende Visitenkarte in den Raum heften
+   (Modul 23 `SbkimRendezvous.connectAndAnnounce`), Karte
+   `{kind:"sbkim-presence", nodeId, nodeName, spore, ts}`, Tag `sbkim-rdv`.
+5. **Hart neu laden** (Strg+Shift+R bzw. Chrome "Cache leeren und neu laden"),
+   damit der frische Service-Worker greift.
+
+## Wo das Werkzeug lebt (Bauform — Klaus 2026-07-08)
+
+- **Erweiterung von Modul 23** ("🌐 Mit dem Netz verbinden"), das ohnehin in jede
+  PWA wandert. Die Hygiene-Schritte (Modus B, Schritt 1) kommen **vor** das
+  bestehende Anmelden. Gleiche Knopf-Familie wie Such-Tool und Pinnwand.
+- Dazu ein kleines eigenständiges **Demo-/Vorlage-Repo** (wie `such-tool/`), das
+  die Schritte vorführt und 1:1-kopierbar ist.
+- Das Werkzeug darf in der App **versteckt / in der Ecke** liegen — Hauptsache
+  Modus A läuft automatisch und der Reparatur-Knopf (Modus B) ist erreichbar.
+
+## Per-App-Checkliste (bevor eine App als "sauber" gilt)
+
+- [ ] `SbkimStorage.init({ dbSuffix: "<suffix>" })` läuft **als Erstes**, vor Spore
+      und Rendezvous. Suffix ist **eindeutig** pro App.
+- [ ] Bekannte Suffixe: Mixarium `mixarium` · Rezeptbuch `rezeptbuch` ·
+      BookLedgerPro `bookledgerpro` · Sage eigene DB · **SB-KIMTool-Point
+      `toolpoint`** (war ursprünglich ohne Suffix → Kollisions-Quelle, muss gesetzt
+      sein).
+- [ ] Rendezvous mountet mit dem **richtigen** `nodeName` der App.
+- [ ] Modus A ist idempotent (löscht nie von selbst).
+- [ ] Modus B ist nur hinter einem Nutzer-Knopf.
+- [ ] Nach jedem Deploy: hart neu laden (Service-Worker-Cache).
+
+## Verfassungs-Treue (Leitplanken)
+
+- **Empfangsmodus:** Anmelden ist immer nutzer-ausgelöst, kein Dauer-Piepser,
+  `init()` baut nichts ins offene Netz auf.
+- **Kein PII:** nur nodeId / Schlüssel / Spore, nie Klarnamen, nie ins Netz außer
+  der Spore.
+- **TABU unberührt:** `PROVIDER_MIN_MATCH` (0.80-Andock-Riegel), `DB_VERSION`,
+  `PROTOCOL_VERSION` werden von der Hygiene NICHT verändert. Kern-Module 01/02/05/23
+  werden benutzt, nicht umgebaut.
+- **Kopieren, nicht klonen:** das Modul byte-gleich in jede App, Drift-Guard im
+  Smoke-Test.
+
+## Kurz-Merksatz
+
+**Erst die eigene Schublade (Suffix), dann prüfen/anlegen (sanft, automatisch).**
+Der Nutzer-Knopf reinigt den geteilten Topf → neue Identität → Spore → anmelden →
+hart neu laden. Reinigen ist zerstörend und bleibt beim Menschen; der Start ist
+sanft und automatisch.
