@@ -89,12 +89,17 @@ vom Menschen ausgelöst. Genaue Reihenfolge (Klaus' Reihenfolge, bestätigt):
 - [ ] `SbkimStorage.init({ dbSuffix: "<suffix>" })` läuft **als Erstes**, vor Spore
       und Rendezvous. Suffix ist **eindeutig** pro App.
 - [ ] Bekannte Suffixe: Mixarium `mixarium` · Rezeptbuch `rezeptbuch` ·
-      BookLedgerPro `bookledgerpro` · Sage eigene DB · **SB-KIMTool-Point
-      `toolpoint`** (war ursprünglich ohne Suffix → Kollisions-Quelle, muss gesetzt
-      sein).
+      BookLedgerPro `bookledgerpro` · **Sage `sage`** (in `sbkim-init.js`
+      `SbkimStorage.init({dbSuffix:"sage"})` — NICHT in index.html) · Kim-Bell
+      `kimbell` · **SB-KIMTool-Point `toolpoint`** (war ursprünglich ohne Suffix →
+      Kollisions-Quelle, muss gesetzt sein).
 - [ ] Rendezvous mountet mit dem **richtigen** `nodeName` der App.
 - [ ] Modus A ist idempotent (löscht nie von selbst).
-- [ ] Modus B ist nur hinter einem Nutzer-Knopf.
+- [ ] **Modus B ist in JEDEM Panel** (Knopf „🧹 Aufräumen & neu anmelden"), nur
+      hinter Nutzer-Knopf, und **behält die stabile Identität** (neue nur auf
+      `newIdentity:true`).
+- [ ] **Modell-Ladefortschritt** sichtbar bei Verbinden/Anmelden **und „Wer ist im
+      Raum?"** (kein Doppel-Balken, siehe PFLICHT-Abschnitt).
 - [ ] Nach jedem Deploy: hart neu laden (Service-Worker-Cache).
 
 ## PFLICHT: Modell-Ladefortschritt IMMER anzeigen (Klaus 2026-07-08)
@@ -119,12 +124,45 @@ fertig geladen hat.** Das ist der häufigste Grund für einen falsch-negativen
 4. **Fail-soft:** fehlt das Panel-Element, bricht nichts — nur der Balken
    entfällt.
 
-**Gilt für:** die Netz-Anmeldung / Spore-Erzeugung (Modus A **und** B), den
+**Gilt für:** die Netz-Anmeldung / Spore-Erzeugung (Modus A **und** B), **„👥 Wer
+ist im Raum?"** (`discover()` lädt via `getOwnLiveSpore` evtl. das Modell!), den
 **Siegel-Bau** (Bronze-Zertifizierung lädt zum Prüfen das Modell), das
 Such-Werkzeug und **jedes** weitere Tool, das `SbkimEmbedding` anfasst.
 
-**Referenz-Umsetzung:** `Kim-Bell/assets/rendezvous-init.js` →
-`ensureProgressEl()` + `onProg` + `stopProg()` in `createIdentity()`.
+**Referenz-Umsetzung:** app-eigener Callback `Kim-Bell/assets/rendezvous-init.js`
+(`ensureProgressEl`/`onProg`/`stopProg` in `createIdentity`) **oder** UI-seitig
+`23_rendezvous_ui.js` (`startModelProgress`/`stopModelProgress`, in
+`onConnect`/`onAnnounce`/`onDiscover`). **Nicht doppeln:** wo der app-eigene
+`createIdentity` schon einen Balken zeigt (onConnect/onAnnounce), zeigt die UI dort
+KEINEN zweiten; `onDiscover` hat keinen createIdentity → dort zeigt die UI ihn.
+
+## Live-Handshake über das Relais — erprobte Lehren (Klaus 2026-07-08)
+
+Am 2026-07-08 lief der erste server-lose Live-Cross-Knoten-Handshake **Sage ↔
+Kim-Bell** im Browser („✓ ANDOCK ETABLIERT"). Dabei bestätigte Lehren:
+
+- **Handshake-Timeout 5 min, nicht 12 s.** `RDV_HANDSHAKE_TIMEOUT_MS = 300000`
+  (Modul 23). Beim ersten Andocken lädt eine Seite evtl. das ~30-MB-Modell; 12 s
+  liefen in den Timeout und die Meldung „Request-Signatur ungültig" war nur ein
+  **Abbruch-Artefakt** (nach 5 min verschwand sie). Dokumentierter Wert:
+  INTERFACES §Modul 05 / PULS Modul-18-Handshake.
+- **„Aufräumen & neu anmelden" (Modus B) gehört in JEDES Panel** (nicht nur ins
+  Demo-Tool). Modul 23 muss `ensureIdentity` (Modus A) + `cleanupSharedOrigin` +
+  `repairAndReconnect` (Modus B) tragen; die geteilte UI den Knopf.
+- **Stabile Identität ist Default — Modus B vermehrt NICHT.** `repairAndReconnect`
+  **behält** die eigene Identität (`sbkim_<suffix>` überlebt die Reinigung des
+  geteilten `sbkim`-Topfs) und meldet sie nur neu an. Eine **neue** Identität nur
+  auf ausdrückliches `newIdentity:true` (Notfall-Knopf). Sonst entstehen bei
+  ungeduldigem Mehrfach-Klick mehrere Identitäten → mehrere eigene Karten im Raum.
+- **Alte eigene Visitenkarten:** Nostr-Karten lassen sich **nicht sicher** aus dem
+  Relais löschen; sie **verfallen** aber nach dem Frische-Fenster
+  (`RDV_FRESH_SEC_DEFAULT = 1800` = 30 min) von selbst aus der Anzeige. Zusätzlich
+  (Klaus 2026-07-08 gewählt): (a) **Vermehrung stoppen** (siehe oben), (b) **eigene
+  frühere `nodeId`s merken + aus Raum-Ansicht UND Mycel-Karte ausblenden**
+  (relais-unabhängig), (c) **best-effort NIP-09-Löschung** (kind:5) fürs eigene
+  aktuelle Kärtchen beim Aufräumen (nur solange der Schlüssel da ist; Relais darf
+  ignorieren). Die **Mycel-Karte** (`Sage-Protokol/mycel-karte/`) ist ein LIVE-
+  Relais-Visualisierer — Dedupe/Ausblenden gehört dort mit hinein.
 
 ## Verfassungs-Treue (Leitplanken)
 
