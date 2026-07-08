@@ -1,6 +1,6 @@
 ---
 name: status-leiste-siegel
-description: Das VOLLSTÄNDIGE Rezept für das SBKIM-Siegel + die Status-Lampen-Leiste, damit niemand mehr fragen muss „wie baue ich das Siegel". Anwenden, wenn eine PWA/Page ein Siegel bekommen soll ODER ein bestehendes Siegel unvollständig ist (nur Badge/Lampen, aber ohne das Andock-Werkzeug darin). Umfasst BEIDES: (1) die immer sichtbare Lampen-Leiste (Flying-Widget Modul 17 — LEBT/VERKEHR/FREMD/SIEGEL) + Wächter (Modul 15 Membran) + Bronze/Gold (Modul 16); UND (2) den PFLICHT-INHALT des Siegel-Modals — das Andock-Werkzeug: 🔑 eigene Identität & Spore erzeugen/verwalten (Wizard: Identität · Spore signieren+Download · verschlüsseltes Backup · Wiederherstellen), ✍ Semantik-Beschreibung → Spore neu signieren, 🛡 Schutz-Block + Erklär-Overlay, ⛨ fremden Knoten andocken. Regel: JEDES Siegel wird nach diesem Muster gebaut — mit dem Andock-Werkzeug darin, nicht nur als Badge.
+description: Das VOLLSTÄNDIGE Rezept für das SBKIM-Siegel + die Status-Lampen-Leiste, damit niemand mehr fragen muss „wie baue ich das Siegel". Anwenden, wenn eine PWA/Page ein Siegel bekommen soll ODER ein bestehendes Siegel unvollständig ist (nur Badge/Lampen, aber ohne das Andock-Werkzeug darin). Umfasst BEIDES: (1) die immer sichtbare Lampen-Leiste (Flying-Widget Modul 17 — LEBT/VERKEHR/FREMD/SIEGEL) + Wächter (Modul 15 Membran) + Bronze/Gold (Modul 16); UND (2) den PFLICHT-INHALT des Siegel-Modals — das Andock-Werkzeug, allen voran der ANDOCK-WIZARD als eigenes Modal-Modul (🔑 eigene Identität & Spore erzeugen/verwalten: Identität · Spore signieren+Download · verschlüsseltes Backup · Wiederherstellen · Identitäts-Wechsler), dazu ✍ Semantik-Beschreibung → Spore neu signieren, 🛡 Schutz-Block + Erklär-Overlay, ⛨ fremden Knoten andocken. Der Andock-Wizard ist NICHT mit Modul 19 (SbkimAndockWizard, Onboarding-Vorlage ohne Krypto) zu verwechseln. Regel: JEDES Siegel wird nach diesem Muster gebaut — mit dem Andock-Wizard + Werkzeug darin, nicht nur als Badge.
 ---
 
 # SBKIM-Siegel + Status-Lampen-Leiste — das vollständige Rezept
@@ -102,24 +102,50 @@ function watchForSiegelModal() {
 `injectIntoSiegel(modal)` hängt in `modal.querySelector('[role="dialog"]')` **vier
 Blöcke** (idempotent — Guard via `data-…`-Attribut):
 
-### (1) 🔑 Eigene Identität & Spore erzeugen / verwalten — der Andock-Wizard
-Der **wichtigste** Block. Ein Knopf öffnet einen Wizard-Dialog (`<dialog>`, z-index
-über dem Siegel-Modal) mit **vier Schritten**, alle über die **echten** Module 02/03:
+### (1) 🔑 Eigene Identität & Spore erzeugen / verwalten — DER ANDOCK-WIZARD (eigenes Modul)
+
+**Das ist der Kern-Block und ein eigenes, spezielles Modul — nicht bloß ein paar
+Inline-Zeilen.** Der 🔑-Knopf öffnet **den Andock-Wizard**: ein **eigenständiges
+Modal** über dem Siegel-Modal (`<dialog>` bzw. eigenes Overlay, z-index **über**
+Siegel(16)/Membran(15)/Modul-18-Wizard). In Sage ist das `#sage-andock-modal`, per
+`openAndockWizard()`/`closeAndockWizard()` geöffnet, mit dem Titel „Andock-Wizard".
+Er führt Klaus durch die **Erst-Identität** und ist der Ort, an dem der Knoten
+überhaupt eine Identität + Spore bekommt.
+
+Fünf Bausteine, alle über die **echten** Module 02/03:
 
 1. **Identität erzeugen** — `SbkimSpore.getOrCreateIdentity()` (Ed25519, IndexedDB,
    im Browser; privater Schlüssel verlässt den Browser nie). Zeigt die `nodeId`.
+   (Sage: `andockStep1Identity()`.)
 2. **Spore signieren + herunterladen** — `SbkimEmbedding.init()` (~30 MB einmalig) →
    `embedPassage(beschreibung)` → **domainVector** → `SbkimSpore.generateOwnSpore({…})`
    → `spore.json` als Download. Datei nach `sbkim/spore.json` committen.
    **PFLICHT (siehe unten): während des ~30-MB-Modell-Ladens IMMER eine
    Prozent-Anzeige** — sonst wirkt es eingefroren und wird zu früh geschlossen.
+   (Sage: `andockStep2Spore()`.)
 3. **Verschlüsseltes Backup** — `SbkimSpore.exportBackup(passwort)` (PBKDF2-SHA256
-   600k + AES-GCM-256) als Download. Passwort NICHT resetbar.
+   600k + AES-GCM-256) als Download. Passwort NICHT resetbar. (Sage: `andockStep3Backup()`.)
 4. **Identität wiederherstellen** — `SbkimSpore.importBackup(blob, passwort)` (Datei +
    Passwort → Schlüssel + Spore zurück in die IndexedDB; `{force:true}` bei Kollision).
+   (Sage: `andockStep4Restore()`.)
+5. **Identitäts-Wechsler** — Auswahl der aktiven Identität für Knoten mit mehreren
+   Personae (`refreshAndockIdentities()` füllt das `<select>`, `andockSwitchIdentity(key)`
+   schaltet um; Multi-Identitäts-API aus Bau 02.Y). Bei Ein-Identitäts-Knoten trotzdem
+   sichtbar (zeigt nur die eine). **Diesen Baustein NICHT vergessen** — er fehlt in
+   frühen Kopien am häufigsten.
 
-Variante (Mixarium): der 🔑-Knopf öffnet stattdessen den **Modul-18-Andock-Wizard**
-`SbkimToolPwa.openAndockTab()`.
+**Zwei Öffnungs-Varianten** (je nach App, gleicher Zweck):
+- **Eigenes Modal / `<dialog>`** — Sage (`#sage-andock-modal`), SB-KIMTool-Point,
+  Kim-Bell (`buildWizardDialog()` in `assets/siegel-inhalt.js`).
+- **Modul-18-Tab** (Mixarium): der 🔑-Knopf öffnet `SbkimToolPwa.openAndockTab()`.
+
+**Nicht verwechseln mit Modul 19** (`SbkimAndockWizard`, `src/modules/19_andock_wizard.js`):
+das ist ein **separater, kopierbarer Onboarding-Helfer** (Repo-URL · Domain · Knotentyp
+→ **unsignierte** Spore-Vorlage + `status.json`-Zeile + vorgelinkter PR) für die
+„Andocken · 3 Klicks"-Karte — **kein** Krypto, **nicht** im Siegel. Der Andock-Wizard
+hier (Baustein 1) macht die **echte, signierte** eigene Identität; Modul 19 macht nur
+eine Vorlage fürs Netz-Onboarding. Beide heißen umgangssprachlich „Andock-Wizard" —
+im Siegel steckt IMMER der echte (Baustein 1), Modul 19 ist optional daneben.
 
 ### (2) ✍ Semantische Beschreibung → Vektor & Spore neu signieren
 Auto-wachsendes Textfeld (vorbefüllt aus der aktuellen Spore-`domainDescription`,
@@ -176,8 +202,9 @@ Modal, bevor es fertig geladen hat.**
 
 - [ ] Modul-Dateien byte-1:1 kopiert (17/15/16/07 + Kern 01–05), Drift-Guard-sha256 im Smoke.
 - [ ] Init-Reihenfolge Widget(17) → Membran(15) → Siegel(16) (+ Apoptose 07).
-- [ ] **Modal-Inhalt injiziert** (MutationObserver): 🔑-Wizard (4 Schritte) · ✍ Semantik ·
-      🛡 Schutz + `sicherheit.html`-Overlay · (⛨ Fremden Knoten andocken, wo gewünscht).
+- [ ] **Modal-Inhalt injiziert** (MutationObserver): 🔑 **Andock-Wizard** als eigenes Modal
+      (5 Bausteine: Identität · Spore signieren · Backup · Wiederherstellen · **Identitäts-Wechsler**) ·
+      ✍ Semantik · 🛡 Schutz + `sicherheit.html`-Overlay · (⛨ Fremden Knoten andocken, wo gewünscht).
 - [ ] Config angepasst: `domain/endpoint/nodeType/nodeName/domainDescription/
       domainKeywords/stamm-+guestCategories`, `allowedOrigins`, `repoUrl`, `dbSuffix`.
 - [ ] `sicherheit.html` vorhanden (für den Schutz-Overlay) — oder Block ohne Overlay-Link.
@@ -201,7 +228,10 @@ Modal, bevor es fertig geladen hat.**
 ## Kurz-Merksatz
 
 **Erst Widget (17), dann Membran (15) + Siegel (16).** Sieben Pflicht-Module → Bronze;
-Handshake „established" → Gold. **Ins Siegel-Modal gehört das Andock-Werkzeug**:
-🔑 Identität & Spore (erzeugen · signieren · Backup · wiederherstellen) · ✍ Beschreibung
-neu signieren · 🛡 Schutz + Erklärung · ⛨ fremden Knoten andocken. Vorlage:
-`SB-KIMTool-Point/assets/sbkim-siegel.js` (Sage-Ursprung: `index.html` ~Z. 4006–4510).
+Handshake „established" → Gold. **Ins Siegel-Modal gehört das Andock-Werkzeug** — allen
+voran **der Andock-Wizard als eigenes Modal-Modul** (🔑 Identität & Spore: erzeugen ·
+signieren · Backup · wiederherstellen · **Identitäts-Wechsler**) · ✍ Beschreibung neu
+signieren · 🛡 Schutz + Erklärung · ⛨ fremden Knoten andocken. Nicht mit **Modul 19**
+(`SbkimAndockWizard`, Onboarding-Vorlage ohne Krypto) verwechseln. Vorlage:
+`SB-KIMTool-Point/assets/sbkim-siegel.js` (Sage-Ursprung: `index.html` ~Z. 4006–4510,
+Andock-Wizard-Modal `#sage-andock-modal` / `openAndockWizard()`).
