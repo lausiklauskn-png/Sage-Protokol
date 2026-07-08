@@ -77,6 +77,35 @@
   function appendOut(text) { if (outEl) outEl.textContent += text; }
   function clear(node) { while (node && node.firstChild) node.removeChild(node.firstChild); }
 
+  // PFLICHT (Klaus 2026-07-08): jede Operation, die das ~30-MB-Embedding-Modell
+  // laden kann (Verbinden / Nur-neu-anmelden / „Wer ist im Raum?" — über
+  // getOwnLiveSpore/createIdentity), zeigt einen Prozent-Balken im Panel. Ohne
+  // ihn wirkt die Seite eingefroren (Modell-Laden > 12 s) und wird zu früh
+  // geschlossen. Quelle: Modul-03-Event sbkim:embedding-progress.
+  var _progHandler = null, _progBase = "";
+  function startModelProgress(baseText) {
+    _progBase = baseText || "";
+    if (_progHandler || !outEl) return;
+    _progHandler = function (ev) {
+      var dd = ev && ev.detail; if (!dd || !outEl) return;
+      if (typeof dd.progress === "number" && isFinite(dd.progress)) {
+        var pct = Math.max(0, Math.min(100, Math.round(dd.progress)));
+        var filled = Math.round(pct / 5);
+        var bar = new Array(filled + 1).join("█") + new Array(20 - filled + 1).join("░");
+        outEl.textContent = _progBase + "\nSprach-Modell lädt  " + bar + "  " + pct + " %" +
+          "\n(einmalig ~30 MB — kann am Tablet 1–2 Min dauern, bitte offen lassen)";
+      } else if (dd.status === "done" || dd.status === "ready") {
+        outEl.textContent = _progBase + "\nSprach-Modell geladen ✓";
+      }
+    };
+    try { global.addEventListener("sbkim:embedding-progress", _progHandler); } catch (_e) {}
+  }
+  function stopModelProgress() {
+    if (!_progHandler) return;
+    try { global.removeEventListener("sbkim:embedding-progress", _progHandler); } catch (_e) {}
+    _progHandler = null;
+  }
+
   function mount() {
     if (mounted) return;
     var d = doc();
@@ -186,7 +215,9 @@
     var r = ensureRdv();
     if (!r) return;
     setOut("→ Verbinde mit dem Netz …\n");
+    startModelProgress("→ Verbinde mit dem Netz …");
     r.connectAndAnnounce({ createIdentity: cfg.createIdentity || undefined }).then(function (res) {
+      stopModelProgress(); if (outEl) outEl.textContent = "";
       if (res.ok) {
         if (res.created) appendOut("✓ Identität erzeugt: " + res.nodeId + "\n");
         else appendOut("Identität vorhanden: " + res.nodeId + "\n");
@@ -196,27 +227,31 @@
         appendOut("✗ " + (res.reason || "Verbinden fehlgeschlagen.") +
           (cfg.createIdentity ? "\n(Bei Netz-/Modell-Fehler: Verbindung prüfen und nochmal.)" : ""));
       }
-    }).catch(function (e) { appendOut("✗ Verbinden fehlgeschlagen: " + (e && e.message ? e.message : e)); });
+    }).catch(function (e) { stopModelProgress(); setOut("✗ Verbinden fehlgeschlagen: " + (e && e.message ? e.message : e)); });
   }
 
   function onAnnounce() {
     var r = ensureRdv();
     if (!r) return;
     setOut("→ Hefte deine Visitenkarte in den gemeinsamen Raum …\n");
+    startModelProgress("→ Hefte deine Visitenkarte in den gemeinsamen Raum …");
     r.announce().then(function (res) {
+      stopModelProgress(); if (outEl) outEl.textContent = "";
       if (res.ok) appendOut("✓ Du bist im Raum (nodeId " + res.nodeId + "). Lass den Tab offen.");
       else appendOut("✗ " + (res.reason || "Anmelden fehlgeschlagen."));
-    }).catch(function (e) { appendOut("✗ Anmelden fehlgeschlagen: " + (e && e.message ? e.message : e)); });
+    }).catch(function (e) { stopModelProgress(); setOut("✗ Anmelden fehlgeschlagen: " + (e && e.message ? e.message : e)); });
   }
 
   function onDiscover() {
     var r = ensureRdv();
     if (!r) return;
     setOut("👥 Lese den gemeinsamen Raum …\n");
+    startModelProgress("👥 Lese den gemeinsamen Raum …");
     r.discover().then(function (res) {
+      stopModelProgress();
       if (!res.ok) { setOut("✗ Raum-Lesen fehlgeschlagen: " + (res.reason || "(unbekannt)")); return; }
       renderCards(res.cards);
-    }).catch(function (e) { setOut("✗ Raum-Lesen fehlgeschlagen: " + (e && e.message ? e.message : e)); });
+    }).catch(function (e) { stopModelProgress(); setOut("✗ Raum-Lesen fehlgeschlagen: " + (e && e.message ? e.message : e)); });
   }
 
   function renderCards(cards) {
