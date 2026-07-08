@@ -87,7 +87,7 @@
   var RDV_PRESENCE_KIND = "sbkim-presence";
   var RDV_FRESH_SEC_DEFAULT = 1800;     // Karten der letzten 30 min berücksichtigen
   var RDV_LISTEN_MS_DEFAULT = 4000;     // Sammelfenster beim Lesen des Raums
-  var RDV_HANDSHAKE_TIMEOUT_MS = 12000; // großzügig — Empfänger lädt evtl. Modell
+  var RDV_HANDSHAKE_TIMEOUT_MS = 300000; // 5 min (Klaus 2026-07-08; dokumentierter Wert INTERFACES §Modul 05 / PULS Modul-18-Handshake): Empfänger lädt beim ersten Andocken evtl. das ~30-MB-Modell — 12 s waren zu kurz
   var NOSTR_KIND = 1;
 
   // ---- Konfig-Zustand ----
