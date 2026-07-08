@@ -40,6 +40,9 @@
     { label: "Mein-Tresor", anchorId: null,
       nodeId: "wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0",
       text: "Mein-Tresor-Bibliothek, Tresor, sichere Ablage, geschützte Sammlung, Schwester von Jasons-Tresor. Verbundener Knoten (verified-match)." },
+    { label: "Kim-Bell", anchorId: "https://lausiklauskn-png.github.io/Kim-Bell/",
+      nodeId: "e9TlbEzxdL6UrlwCWjrTxwuWOLDXZ_AIvx12BMrhPaw",
+      text: "Netz-Anmeldung, Rendezvous, Identität, Spore erzeugen, Glocke, Mycel, Knoten, sauber im gemeinsamen SBKIM-Raum anmelden und andere Knoten finden. Neu angemeldet (verified-spore, committete Spore; Live-Handshake ausstehend; Offline-Cosinus zu Sage 0.8711)." },
   ];
 
   global.SAGE_KNOTEN_KORPUS = SAGE_KNOTEN_KORPUS;
