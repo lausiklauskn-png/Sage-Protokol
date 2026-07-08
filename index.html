@@ -1140,86 +1140,23 @@
         <article class="card lifecycle" data-back-anchor="lifecycle">
           <span class="card-tag">Lebenszyklus · scroll-aware</span>
           <h3>Wie eine Anfrage durchs Mycel reist</h3>
-          <p style="color:var(--dim); font-size:0.8rem; margin:-0.3rem 0 0.6rem; font-family:'Geist Mono',monospace;">
-            Schema mit einem Hub — Stand real: das Netz hat seit 2026-05-30 einen
-            <strong style="color:var(--accent)">zweiten lebendigen Knoten</strong>
-            (SB·KIMTool·Point, echter Match 0.85). Mehr dazu in der Stationen-Karte unten.
-          </p>
-          <p>Vier Phasen — Anstoß, Einbettung, Anastomose, Antwort. Scroll-getriggert; halt die Karte im Sichtfenster, um eine Phase zu lesen.</p>
-          <div class="lifecycle-stage cycle-box" id="cycle-box" data-phase="0">
-            <svg viewBox="0 0 600 280" preserveAspectRatio="xMidYMid meet">
-              <defs>
-                <radialGradient id="hub-grad"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.5"/><stop offset="100%" stop-color="#6366F1" stop-opacity="0.1"/></radialGradient>
-                <radialGradient id="end-grad"><stop offset="0%" stop-color="#6EE7D3" stop-opacity="0.75"/><stop offset="100%" stop-color="#6EE7D3" stop-opacity="0.1"/></radialGradient>
-                <radialGradient id="heim-grad"><stop offset="0%" stop-color="#F4B435" stop-opacity="0.9"/><stop offset="100%" stop-color="#F4B435" stop-opacity="0.15"/></radialGradient>
-              </defs>
-              <g class="mycel-base" opacity="0.35">
-                <path d="M 100,90 Q 170,30 230,55" stroke="#6EE7D3" stroke-width="1.2" fill="none"/>
-                <path d="M 230,55 Q 340,30 460,75" stroke="#6EE7D3" stroke-width="1.2" fill="none"/>
-                <path d="M 460,75 Q 510,140 540,200" stroke="#6EE7D3" stroke-width="1.1" fill="none"/>
-                <path d="M 100,90 Q 130,180 220,235" stroke="#6EE7D3" stroke-width="1.0" fill="none"/>
-                <path d="M 220,235 Q 310,250 400,245" stroke="#6EE7D3" stroke-width="1.0" fill="none"/>
-                <path d="M 400,245 Q 480,225 540,200" stroke="#6EE7D3" stroke-width="1.0" fill="none"/>
-              </g>
-              <circle cx="305" cy="155" r="17" fill="url(#hub-grad)" stroke="#8B5CF6" stroke-width="1" stroke-opacity="0.6"/>
-              <text x="305" y="158" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Geist Mono">HUB</text>
-              <text x="305" y="180" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="7" font-family="Geist">Bootstrap · kann ausfallen</text>
-              <circle cx="100" cy="90" r="20" fill="url(#heim-grad)" stroke="#F4B435" stroke-width="1.5"/>
-              <text x="100" y="93" text-anchor="middle" fill="#fff" font-size="9" font-family="Geist">Heim</text>
-              <circle cx="230" cy="55" r="14" fill="url(#end-grad)" stroke="#6EE7D3" stroke-width="1"/>
-              <text x="230" y="58" text-anchor="middle" fill="#fff" font-size="7" font-family="Geist">Rezept</text>
-              <circle cx="460" cy="75" r="15" fill="url(#end-grad)" stroke="#6EE7D3" stroke-width="1"/>
-              <text x="460" y="78" text-anchor="middle" fill="#fff" font-size="7" font-family="Geist">Mixar</text>
-              <circle cx="540" cy="200" r="13" fill="url(#end-grad)" stroke="#6EE7D3" stroke-width="1"/>
-              <text x="540" y="203" text-anchor="middle" fill="#fff" font-size="7" font-family="Geist">Buch</text>
-              <circle cx="220" cy="235" r="12" fill="url(#end-grad)" stroke="#6EE7D3" stroke-width="1"/>
-              <circle cx="400" cy="245" r="12" fill="url(#end-grad)" stroke="#6EE7D3" stroke-width="1"/>
-              <g class="phase-fx" data-phase="0">
-                <circle cx="100" cy="90" r="22" fill="none" stroke="#F4B435" stroke-opacity="0.55">
-                  <animate attributeName="r" from="22" to="70" dur="2.4s" repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" from="0.55" to="0" dur="2.4s" repeatCount="indefinite"/>
-                </circle>
-                <circle r="3" fill="#F4B435"><animateMotion dur="2.4s" repeatCount="indefinite" path="M 100,90 Q 170,30 230,55"/></circle>
-                <circle r="3" fill="#F4B435"><animateMotion dur="2.6s" begin="0.4s" repeatCount="indefinite" path="M 100,90 Q 130,180 220,235"/></circle>
-                <text x="100" y="130" text-anchor="middle" fill="rgba(244,180,53,0.85)" font-size="7" font-family="Geist Mono">Spore aussenden</text>
-              </g>
-              <g class="phase-fx" data-phase="1">
-                <circle cx="100" cy="90" r="22" fill="none" stroke="#F4B435" stroke-opacity="0.4" stroke-dasharray="2 3">
-                  <animateTransform attributeName="transform" type="rotate" from="0 100 90" to="360 100 90" dur="3.6s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="75" cy="70" r="1.8" fill="#F4B435"><animate attributeName="cy" values="70;72;70" dur="1.6s" repeatCount="indefinite"/></circle>
-                <circle cx="80" cy="115" r="1.8" fill="#F4B435"><animate attributeName="cx" values="80;82;80" dur="1.4s" repeatCount="indefinite"/></circle>
-                <circle cx="125" cy="110" r="1.8" fill="#F4B435"><animate attributeName="cy" values="110;108;110" dur="1.5s" repeatCount="indefinite"/></circle>
-                <circle cx="120" cy="68" r="1.8" fill="#F4B435"><animate attributeName="cx" values="120;118;120" dur="1.7s" repeatCount="indefinite"/></circle>
-                <text x="100" y="140" text-anchor="middle" fill="rgba(244,180,53,0.85)" font-size="7" font-family="Geist Mono">text → vec[384]</text>
-              </g>
-              <g class="phase-fx" data-phase="2">
-                <path d="M 118,82 Q 270,30 446,72" stroke="#6EE7D3" stroke-width="2.4" fill="none" opacity="0.95" stroke-dasharray="420" stroke-dashoffset="420">
-                  <animate attributeName="stroke-dashoffset" from="420" to="0" dur="1.8s" repeatCount="indefinite"/>
-                </path>
-                <circle cx="100" cy="90" r="20" fill="none" stroke="#6EE7D3"><animate attributeName="r" values="20;26;20" dur="1.2s" repeatCount="indefinite"/></circle>
-                <circle cx="460" cy="75" r="15" fill="none" stroke="#6EE7D3"><animate attributeName="r" values="15;21;15" dur="1.2s" repeatCount="indefinite"/></circle>
-                <text x="282" y="20" text-anchor="middle" fill="rgba(110,231,211,0.85)" font-size="7" font-family="Geist Mono">Anastomose · Match ≥ 0.80</text>
-              </g>
-              <g class="phase-fx" data-phase="3">
-                <path d="M 118,82 Q 270,30 446,72" stroke="#6EE7D3" stroke-width="1.8" fill="none" opacity="0.8"/>
-                <circle r="4" fill="#6EE7D3"><animateMotion dur="2.2s" repeatCount="indefinite" path="M 446,72 Q 270,30 118,82"/></circle>
-                <circle cx="100" cy="90" r="20" fill="none" stroke="#6EE7D3" stroke-opacity="0.7">
-                  <animate attributeName="r" values="20;32;20" dur="2.2s" repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" values="0.7;0;0.7" dur="2.2s" repeatCount="indefinite"/>
-                </circle>
-                <text x="300" y="20" text-anchor="middle" fill="rgba(110,231,211,0.85)" font-size="7" font-family="Geist Mono">Antwort direkt zurück</text>
-              </g>
-            </svg>
+          <p>Kein Schema mehr — <strong style="color:var(--accent)">die echte Mycel-Karte in Aktion</strong>,
+            als lebender Beleg für die Funktion des Mycels: server-los im Browser, direkt am Relais, nur lesend.</p>
+          <!-- 2026-07-08 (Klaus): schematische Demo ersetzt durch die ECHTE
+               Mycel-Karte in Aktion — 1:1-Live-Einbettung als Beleg für die
+               Funktion des Mycels. Liest das echte Relais (nur lesend,
+               Empfangsmodus) und zeigt reale Ereignisse: "Hier bin ich",
+               Anfrage Knoten->Knoten, Handshake-Verkehr. -->
+          <div class="lifecycle-stage" style="min-height:440px;padding:0;overflow:hidden">
+            <iframe src="./mycel-karte/" title="Mycel-Live-Karte — eine echte Anfrage reist durchs Mycel"
+                    loading="lazy" referrerpolicy="no-referrer"
+                    style="width:100%;height:440px;border:0;display:block;background:#0a0d16"></iframe>
           </div>
-          <div class="phase-strip">
-            <div class="phase-pill active" data-phase="0" onclick="setPhaseManual(0)">1 · Spore</div>
-            <div class="phase-pill" data-phase="1" onclick="setPhaseManual(1)">2 · Einbettung</div>
-            <div class="phase-pill" data-phase="2" onclick="setPhaseManual(2)">3 · Anastomose</div>
-            <div class="phase-pill" data-phase="3" onclick="setPhaseManual(3)">4 · Antwort</div>
-          </div>
-          <p class="lifecycle-hint">Der Hub vermittelt nur Erstkontakt — sobald der Faden steht, läuft der Fluss direkt zwischen den Knoten. Hub-Ausfall bricht das Mycel nicht.</p>
-          <div class="card-cta"><button onclick="goScreen('cycle')">Phasen einzeln erklären →</button></div>
+          <p class="lifecycle-hint">Kein Schema mehr: das ist die <strong style="color:var(--accent)">echte Mycel-Karte</strong>
+            live am Relais — eine Anfrage reist sichtbar von Knoten zu Knoten (server-los, nur lesend). Der Hub
+            vermittelt nur den Erstkontakt; steht der Faden, läuft der Fluss direkt zwischen den Knoten, ein
+            Hub-Ausfall bricht das Mycel nicht.</p>
+          <div class="card-cta"><button onclick="window.open('./mycel-karte/','_blank','noopener')">↗ Mycel-Karte in Vollbild öffnen</button></div>
         </article>
         <article class="card span-7" data-back-anchor="module-list">
           <span class="card-tag">Module · Schnellübersicht</span>
