@@ -119,6 +119,26 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-08 · Mycel-Karte v1.4 — Nach-Fusion (Klaus' Durchspiel-Befund: namenlose Knoten-Pillen)
+
+**Klaus' Durchspiel-Lauf mit v1.3:** Fusion wirkt (keine Namens-Zwillinge mehr),
+ABER zwei namenlose Pillen „Knoten SAri-w…"/„Knoten bGH3UB…" blieben stehen —
+das sind die lebenden IDs von Sage/BLP, die über den KANAL (Handshake) ankamen,
+BEVOR das Relais ihre Visitenkarte lieferte; v1.3 fusionierte nachträglich nicht.
+**Fix v1.4 `migrateLiveNode()`:** trifft der Name später ein, wandert die
+namenlose Pille samt Fäden (heat/active gerettet, Duplikat-Kanten verschmolzen)
+restlos in die Seed-Pille; liveIdMap wird umgezogen. Headless-Browser-Test am
+exakten Klaus-Szenario grün (2 namenlose Pillen → 0, Faden mitgewandert).
+**Weitere Durchspiel-Befunde eingeordnet (kein Karten-Bug):** (1) Mixarium meldet
+sich korrekt als „Mein Mixarium" an (sbkim-init.js) — „Mixarium als Rezeptbuch"
+war Alt-Stand vor v1.3 bzw. die namenlose-Pillen-Verwechslung. (2) „Wer ist im
+Raum zeigt meist nur Sage+BLP": Visitenkarten altern (30-Min-Frische) und die
+EIGENE Karte wird nie gelistet — „Nur neu anmelden" frischt auf; Verhalten,
+kein Verlust. (3) family-projekt.de: der Verbinden-Knopf sitzt auf der
+Unterseite netzwerk.html (Nav „Netzwerk"), Domain und Repo sind dieselbe Seite.
+**Analyse-JSON:** liegt in Klaus' Downloads — Sitzung kann sie erst lesen, wenn
+Klaus sie in den Chat anhängt oder in den Obsidian-Vault legt (Git-Sync).
+
 ## 2026-07-08 · Mycel-Karte v1.3 — Namens-Fusion gegen Doppel-Pillen + Analyse-Rekorder 🔬
 
 **Klaus' Live-Relais-Sichttest GRÜN mit Befunden** (7 Screenshots): Relais an,
