@@ -14,6 +14,18 @@ Modul-Dateien werden **byte-1:1 kopiert** (Drift-Guard im Smoke). Der host-seiti
 Modal-Inhalt wird pro App aus der Referenz übernommen und nur in den Config-Werten
 angepasst.
 
+## FUNDORT — nie mehr suchen (Klaus 2026-07-08)
+
+**Das echte Siegel-Bild (Gold-Wappen mit selbst-gravierendem Band):**
+- **Kanonische SVG-Quelle:** `Sage-Protokol/assets/sbkim-siegel-wappen.svg`
+  (19 KB) — DIE Datei zum **Kopieren/Clonen**. Wer ein Siegel baut, holt sie hier.
+- **Als Code (inline dupliziert, byte-identisch):** die Konstante `WAPPEN_SVG` in
+  **`Sage-Protokol/src/modules/16_siegel.js`** — das ist, was die Apps als Kopie
+  (`modules/sbkim-siegel.js`) tatsächlich rendern. Bei SVG-Änderung **beide**
+  Stellen nachziehen (SVG-Datei + `WAPPEN_SVG`).
+- **Das Band füllt sich per `ribbonText`** (siehe TEIL 2b) — ohne den Wert bleibt
+  es leer.
+
 ## Referenz-Dateien (das Original — hier steht der echte Code)
 
 - **`SB-KIMTool-Point/assets/sbkim-siegel.js`** (~506 Z.) — **self-contained**,
