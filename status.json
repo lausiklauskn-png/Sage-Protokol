@@ -209,6 +209,20 @@
       "note": "Siebter Knoten im Mycel (Werkzeug-/App-Buendelung: freies neutrales Netzwerk + eigene Werkzeuge mit eigenen Seiten + Marktplatz fuer fremde Apps; semantische Bedeutungs-Suche, mehrsprachig, datenschutzfreundlich, offline-faehig). Spore von Klaus' Browser erzeugt (multilingual-e5-small, passage-Praefix, L2=1). Aus raw/main reziprok verifiziert 2026-06-27: 9/9 Pflichtfelder, id == base64url(sha256(rawPub)) unabhaengig nachgerechnet (= HLXUEJFW...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 384-dim, L2=1.000. Cross-Knoten-Cosinus Sage<->Family Projekt = 0.8287 >= 0.80 -> verified-match. Pruef-Vermerk: sbkim/familyproject_inbox.verify.md. Endpoint family-projekt.de (Hetzner) noch nicht live; Verifikation laeuft ueber raw/main. Gegenstelle fuer ersten Handshake = Sage (Quittung in sbkim/AUSTAUSCH-FamilyProjekt.md).",
       "url": "https://family-projekt.de/",
       "landingPage": "https://family-projekt.de/"
+    },
+    {
+      "name": "Kim-Bell",
+      "domain": "SBKIM-Netz-Glocke / Netz-Anmeldung",
+      "integrated": true,
+      "integratedAt": "2026-07-08",
+      "nodeId": "e9TlbEzxdL6UrlwCWjrTxwuWOLDXZ_AIvx12BMrhPaw",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kim-Bell/main/sbkim/spore.json",
+      "stammCategories": ["Netz-Anmeldung", "Rendezvous", "Identitaets-Verwaltung"],
+      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
+      "pingStatus": "verified-match",
+      "matchScore": 0.8711,
+      "note": "Achter Knoten im Mycel (das eigenstaendige 'Mit dem Netz verbinden'-Werkzeug: saubere Identitaets-Hygiene, ID+Spore erzeugen, im gemeinsamen Raum anmelden, andere Knoten finden - server-los im Browser). Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1), committet nach Kim-Bell/sbkim/spore.json (oeffentlich, kein privater Schluessel). Live-Cross-Knoten-Handshake Sage <-> Kim-Bell im Browser bestaetigt 2026-07-08 (beidseitig 'ANDOCK ETABLIERT' ueber das echte Relais, nach Timeout-Fix 12 s -> 5 min). Cross-Knoten-Cosinus Sage <-> Kim-Bell = 0.8711 >= 0.80 -> verified-match. Beleg: Klaus' Browser-Sichttest (Splitscreen).",
+      "url": "https://lausiklauskn-png.github.io/Kim-Bell/"
     }
   ],
   "modules": [
