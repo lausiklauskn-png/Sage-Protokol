@@ -378,6 +378,7 @@
       if (!window.SbkimRendezvousUI) return false;
       return window.SbkimRendezvousUI.init({
         nodeName: "Sage-Protokoll",
+        dbSuffix: DB_SUFFIX,
         createIdentity: sageCreateRendezvousIdentity,
         corner: "tr",
       });
