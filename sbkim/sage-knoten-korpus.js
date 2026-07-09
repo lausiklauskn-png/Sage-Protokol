@@ -43,6 +43,12 @@
     { label: "Kim-Bell", anchorId: "https://lausiklauskn-png.github.io/Kim-Bell/",
       nodeId: "e9TlbEzxdL6UrlwCWjrTxwuWOLDXZ_AIvx12BMrhPaw",
       text: "Netz-Anmeldung, Rendezvous, Identität, Spore erzeugen, Glocke, Mycel, Knoten, sauber im gemeinsamen SBKIM-Raum anmelden und andere Knoten finden. Verbundener Knoten (verified-match; Live-Cross-Knoten-Handshake Sage↔Kim-Bell im Browser bestätigt 2026-07-08; Cosinus 0.8711)." },
+    { label: "Kimseek", anchorId: "https://lausiklauskn-png.github.io/Kimseek/",
+      nodeId: "I7qX13yu4BEFIi8yd_5MepkC1b7sFAk2W17d5re5x8Y",
+      text: "Semantische Suche, Bedeutung, Absicht, Embedding, Bedeutungs-Sortierung, Sprachsuche, Spracheingabe, OCR, Handschrift-Erkennung, KI-Brücke, Web-Suche, versteht die Bedeutung hinter der Frage statt nur Stichwörter. Verbundener Knoten (verified-match; Cosinus Sage↔Kimseek 0.8553; Live-Handshake wartet auf Klaus' Browser-Lauf)." },
+    { label: "Kimboard", anchorId: "https://lausiklauskn-png.github.io/Kimboard/",
+      nodeId: "Hc0t9z4te4kWoh7cBMtJAb7m6Nl17eBKxwPvbJ5Rqfk",
+      text: "Pinnwand, Notizen, Merken, Frage-Antwort, dummes Brett, Nostr, geräteübergreifend, nach Bedeutung sortiert, Impulse und Verbindungen festhalten. Verbundener Knoten (verified-match; Cosinus Sage↔Kimboard 0.8262; Live-Handshake wartet auf Klaus' Browser-Lauf)." },
   ];
 
   global.SAGE_KNOTEN_KORPUS = SAGE_KNOTEN_KORPUS;

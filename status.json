@@ -223,6 +223,34 @@
       "matchScore": 0.8711,
       "note": "Achter Knoten im Mycel (das eigenstaendige 'Mit dem Netz verbinden'-Werkzeug: saubere Identitaets-Hygiene, ID+Spore erzeugen, im gemeinsamen Raum anmelden, andere Knoten finden - server-los im Browser). Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1), committet nach Kim-Bell/sbkim/spore.json (oeffentlich, kein privater Schluessel). Live-Cross-Knoten-Handshake Sage <-> Kim-Bell im Browser bestaetigt 2026-07-08 (beidseitig 'ANDOCK ETABLIERT' ueber das echte Relais, nach Timeout-Fix 12 s -> 5 min). Cross-Knoten-Cosinus Sage <-> Kim-Bell = 0.8711 >= 0.80 -> verified-match. Beleg: Klaus' Browser-Sichttest (Splitscreen).",
       "url": "https://lausiklauskn-png.github.io/Kim-Bell/"
+    },
+    {
+      "name": "Kimseek",
+      "domain": "Semantische Bedeutungs-Suche",
+      "integrated": true,
+      "integratedAt": "2026-07-09",
+      "nodeId": "I7qX13yu4BEFIi8yd_5MepkC1b7sFAk2W17d5re5x8Y",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kimseek/main/sbkim/spore.json",
+      "stammCategories": ["Semantische Suche", "Bedeutungs-Sortierung", "Sprach-/Bild-Eingabe"],
+      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
+      "pingStatus": "verified-match",
+      "matchScore": 0.8553,
+      "note": "Neunter Knoten im Mycel (semantisches Such-Werkzeug als Endknoten: versteht die Bedeutung/Absicht hinter einer Frage und ordnet Treffer nach Bedeutungs-Naehe; Spracheingabe, OCR, KI-Bruecke - server-los im Browser). Aus dem Such-Tool (such-tool) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimseek/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimseek = 0.8553 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite.",
+      "url": "https://lausiklauskn-png.github.io/Kimseek/"
+    },
+    {
+      "name": "Kimboard",
+      "domain": "Pinnwand/Notizen/Merken",
+      "integrated": true,
+      "integratedAt": "2026-07-09",
+      "nodeId": "Hc0t9z4te4kWoh7cBMtJAb7m6Nl17eBKxwPvbJ5Rqfk",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kimboard/main/sbkim/spore.json",
+      "stammCategories": ["Pinnwand", "Notizen/Merken", "Frage-Antwort-Brett"],
+      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
+      "pingStatus": "verified-match",
+      "matchScore": 0.8262,
+      "note": "Zehnter Knoten im Mycel (semantische Pinnwand als Endknoten: Fragen/Notizen an ein geborgtes 'dummes Brett' (Nostr) heften, geraeteuebergreifend nach Bedeutung sortiert; Merken/Notizen - server-los im Browser). Aus der Pinnwand (pinnwand) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimboard/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimboard = 0.8262 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite.",
+      "url": "https://lausiklauskn-png.github.io/Kimboard/"
     }
   ],
   "modules": [
