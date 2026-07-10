@@ -4,6 +4,39 @@
 
 ---
 
+## 🚨 SITZUNGSSTART-PFLICHT — IMMER von `origin/main`, NIE auf altem Klon (Klaus 2026-07-10)
+
+**Das ist die erste Regel, jede Sitzung, ohne Ausnahme.** Die Klone im Container
+können **Monate alt** sein (real passiert: Mein-Rezeptbuch lokal war vom 19.04.,
+v9.2, ganz **ohne** SBKIM — live war v10.0). Wer ungeprüft auf dem vorgefundenen
+Klon arbeitet, baut auf totem Stand und redet an Klaus vorbei. **Das muss enden.**
+
+**Pflicht, bevor irgendetwas an einem Repo angefasst, gelesen oder beurteilt wird:**
+
+```bash
+bash "$CLAUDE_PROJECT_DIR/.claude/hooks/refresh-origin-main.sh"   # holt origin für ALLE Repos + meldet veraltete
+```
+
+Läuft automatisch als **SessionStart-Hook** (`.claude/settings.json`) — aber **verlass
+dich nicht darauf**: wenn der Hook in dieser Umgebung nicht feuert, das Skript **von
+Hand** ausführen, bevor du eine Aussage über den Stand einer App triffst.
+
+**Und für JEDE neue Arbeit an einem Repo — immer frisch abzweigen:**
+
+```bash
+git -C <repo> fetch origin --quiet
+git -C <repo> checkout -B <branch> origin/main   # bzw. origin/<default>
+```
+
+- **NIE** eine Aussage über „App X hat/hat nicht Feature Y" treffen, ohne vorher
+  gefetcht zu haben. Ein lokaler Klon ohne `fetch` ist **kein** Beweis.
+- **NIE** Commits auf einem lokalen Branch stapeln, dessen Basis nicht frisch von
+  `origin/main` kam.
+- Branches löschen ist **NICHT** die Lösung (das Problem sind die Klone, nicht die
+  Branches) — der `fetch`-vor-Arbeit-Reflex ist es.
+
+---
+
 ## ⭐ Meilenstein — Semantische, bidirektionale, server-lose Bedeutungs-Suche (2026-06-21)
 
 **Besonderer Punkt, nicht unterschwellig behandeln — hierauf wird aufgebaut**
