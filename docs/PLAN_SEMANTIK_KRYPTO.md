@@ -19,10 +19,16 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
 
 ## A) Semantik & bidirektionales Matching
 
-- [ ] **A1 — Frage → Antwort über das Netz verdrahten (größter Hebel)** · `Bau` `Test` · ⏱ ~2–3 Sitzungen
-  Die zwei bewiesenen Hälften verbinden: Modul **04.C `queryLocal`** + Modul **15 Membran (`op:"query"`)**
-  über das Relay (`wss://relay.family-projekt.de`) — Frage raus, **bedeutungs-sortierte Antwort aus dem
-  Inhalt eines anderen Knotens** zurück. _erledigt am: ____ · getestet am: _____
+- [x] **A1 — Frage → Antwort über das Netz verdrahten (größter Hebel)** · `Bau` (headless fertig) · Live = A2 · ⏱ ~2–3 Sitzungen
+  Die zwei bewiesenen Hälften verbinden: Modul **04.C `queryLocal`** + Modul **23 Rendezvous
+  (`enableAnswering`/`askNode`, Tag `sbkim-qry`)** über das Relay (`wss://relay.family-projekt.de`) — Frage
+  raus, **bedeutungs-sortierte Antwort aus dem Inhalt eines anderen Knotens** zurück.
+  **Korrektur (2026-07-10):** der Netz-Transport lebt in **Modul 23**, nicht in Modul 15 `op:"query"`
+  (das ist der Same-Browser-Zwilling, kein Netz-Pfad). Kern gebaut als **Bau 23.B** (2026-07-06); diese
+  Sitzung hat die **Korpus-leer-Falle** abgesichert (enableAnswering koppelt den lokalen Korpus jetzt
+  aktiv an Modul 04 `setLocalCorpus`, gegen leere Antworten trotz vorhandener Daten). Smokes grün:
+  `smoke_bau23b_query.mjs` 23/23, `smoke_bau23b_korpus.mjs` 24/24 (neu). **Live Sage ↔ Endknoten = A2**
+  (Relay in der Sandbox unerreichbar → Klaus' Browser-Lauf). _erledigt am: 2026-07-10 (headless) · getestet am: ____ (Live = A2)
 - [ ] **A2 — Cross-Knoten-Such-Test (Pipeline-Phase C)** · `Test` (braucht A1) · ⏱ ~1 Sitzung + Live-Test
   End-to-End mit zwei Endpunkten: Anfrage auf Knoten 1 → Treffer aus Knoten 2. _getestet am: _____
 - [ ] **A3 — Medium härten** · `Bau` · ⏱ ~1–2 Sitzungen
