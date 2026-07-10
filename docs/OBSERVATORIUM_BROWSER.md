@@ -698,6 +698,53 @@ etwas zu bieten hat (Empfangsmodus mit Antwortrecht).
 
 ---
 
+## Lehre 13 — Welche Identität ein Fenster benutzt, entscheidet der `dbSuffix`, NICHT der Pfad — und reine Anzeige-Tools erzeugen KEINE
+
+**Befund (Klaus 2026-07-10, aus der Zwei-Mycel-Karten-Frage).** Weil alle Apps
+unter **einer** Origin (`lausiklauskn-png.github.io`) liegen, taucht immer wieder
+die Sorge auf: „Wenn ein Nutzer mehrere Apps angemeldet hat — welche erzeugt
+denn jetzt *die* Spore für den Browser?" Antwort, verbindlich:
+
+### Die Regel (technisch)
+
+1. **Es gibt keine EINE „Browser-Spore".** Jede App hat ihre **eigene** Identität
+   in ihrer **eigenen Schublade** `sbkim_<suffix>` (Mixarium → `sbkim_mixarium`,
+   Sage → `sbkim_sage`, Toolpoint → `sbkim_toolpoint`). Jede App **ist** ein
+   eigener Knoten mit eigener Domäne — das ist gewollt, kein Konflikt.
+2. **Was die Identität bestimmt, ist der `dbSuffix` — NICHT der Pfad/die URL.**
+   Zwei Fenster mit **demselben** `dbSuffix` teilen sich **eine** Identität, auch
+   auf verschiedenen Pfaden. Mit **verschiedenem** `dbSuffix` sind es **zwei**.
+   → Existiert ein *echtes* Tool in zwei Fassungen (z. B. embedded-in-Sage **und**
+   Standalone-PWA): sollen beide **derselbe** Knoten sein, gleicher `dbSuffix`;
+   sollen es zwei sein, verschiedener.
+3. **Reine Anzeige-Tools (Viewer) erzeugen KEINE Identität.** Beispiel
+   Mycel-Karte: kein `SbkimStorage.init`, kein `getOrCreateIdentity`, kein
+   `generateOwnSpore`, kein `announce` — sie **lauscht** nur am Relais und zeichnet.
+   Ob aus Sage gestartet oder als Standalone-PWA: sie erzeugt **nichts**. Bei
+   solchen Tools ist die „welche Spore?"-Frage **gegenstandslos**.
+
+### In einfachen Worten (für Nicht-Programmierer)
+
+Stell Dir **jede App als eigene Person mit eigenem Ausweis** vor: Mixarium hat
+einen Ausweis, Sage einen anderen — **nicht einen gemeinsamen**. Welcher Ausweis
+zu welcher App gehört, hängt an einem **unsichtbaren Namensschild** (dem
+`dbSuffix`), **nicht** an der Internet-Adresse. Zwei Fenster mit **demselben**
+Namensschild = **dieselbe** Person; verschiedene Schilder = verschiedene Personen.
+Ein **reines Schaufenster** (wie die Mycel-Karte) hat **gar keinen** Ausweis —
+es schaut nur zu, wer gerade im Raum ist. Du musst also nie „die richtige" App
+auswählen: **jede App ist von sich aus ihr eigener Knoten.**
+
+### Konsequenzen für SBKIM
+
+- Beim Bau eines Tools **immer bewusst entscheiden:** eigener Knoten (eigener
+  `dbSuffix`) oder Anzeige-Tool (gar keine Identität)? Nie „aus Versehen" eine
+  Identität in der geteilten Default-DB `sbkim` anlegen (Skill
+  `saubere-netz-anmeldung`).
+- Die Mycel-Karte zeigt die getrennten Identitäten als getrennte Pillen — sie ist
+  der sichtbare **Beweis**, dass die Trennung sauber ist.
+
+---
+
 ## Pflege-Konvention für diese Datei
 
 Neue Lehren bekommen einen eigenen `## Lehre N — Titel`-Block. Pflicht-
@@ -715,9 +762,12 @@ Verträgen passiert.
 
 ---
 
-**Letzte Aktualisierung:** 2026-07-10 · Lehre 12 „Sauberer Cross-Knoten-Lauf
-braucht eine feste Reihenfolge (Inhalt zuerst, dann Spore)" (Auslöser: A2 live
-grün, Klaus' Reihenfolge-Befund). Davor: 2026-07-10 · Lehre 11 „Das Embedding-
+**Letzte Aktualisierung:** 2026-07-10 · Lehre 13 „Welche Identität ein Fenster
+benutzt, entscheidet der `dbSuffix`, nicht der Pfad — reine Anzeige-Tools
+erzeugen keine" (Auslöser: Klaus' Zwei-Mycel-Karten-Frage; mit Nicht-
+Programmierer-Erklärung). Davor: 2026-07-10 · Lehre 12 „Sauberer Cross-Knoten-
+Lauf braucht eine feste Reihenfolge (Inhalt zuerst, dann Spore)" (Auslöser: A2
+live grün, Klaus' Reihenfolge-Befund). Davor: 2026-07-10 · Lehre 11 „Das Embedding-
 Modell wird automatisch gecacht — Selbst-Hosten ist NICHT nötig" (Browser-Cache-
 Lehre; Auslöser: Klaus' Frage nach Modell-Selbst-Hosten, im Browser bestätigt
 ~5 s gecachter Start). Davor: 2026-06-26 · Lehre 10 „Mehrere Repos pro Sitzung
