@@ -82,32 +82,32 @@
 
 <h2>A) Semantik &amp; bidirektionales Matching</h2>
 
-<div class="item"><input type="checkbox" class="cb" data-k="A1"><div class="body">
+<div class="item"><input type="checkbox" class="cb" data-k="A1" checked><div class="body">
   <div><span class="code">A1</span><span class="time">⏱ ~2–3 Sitzungen</span> <span class="t">Frage → Antwort über das Netz verdrahten (größter Hebel)</span></div>
-  <div class="d">Die zwei bewiesenen Hälften verbinden: Modul 04.C <code>queryLocal</code> + Modul 15 Membran (<code>op:"query"</code>) über dein Relay — eine Frage geht raus, eine <b>bedeutungs-sortierte Antwort aus dem Inhalt eines anderen Knotens</b> kommt zurück.</div>
-  <div class="meta"><span class="tag">Bau</span><span class="tag">Test</span></div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"> getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+  <div class="d">Die zwei bewiesenen Hälften verbunden: Modul 04.C <code>queryLocal</code> + <b>Modul 23 Rendezvous</b> (<code>enableAnswering</code>/<code>askNode</code>, Tag <code>sbkim-qry</code>) über dein Relay — eine Frage geht raus, eine <b>bedeutungs-sortierte Antwort aus dem Inhalt eines anderen Knotens</b> kommt zurück. (Korrektur: Transport lebt in Modul 23, nicht Modul 15.)</div>
+  <div class="meta"><span class="tag">Bau</span><span class="tag">Test</span> ✅ erledigt</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="10.07.26"> getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="10.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="A2"><div class="body">
-  <div><span class="code">A2</span><span class="time">⏱ ~1 Sitzung + Live-Test</span> <span class="t">Cross-Knoten-Such-Test (Pipeline-Phase C)</span></div>
-  <div class="d">End-to-End mit zwei getrennten Endpunkten: tippt man auf Knoten 1 eine Anfrage, kommen Treffer aus Knoten 2 (oder umgekehrt). Baut auf A1 auf.</div>
-  <div class="meta"><span class="tag">Test</span> braucht A1</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"> getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+<div class="item"><input type="checkbox" class="cb" data-k="A2" checked><div class="body">
+  <div><span class="code">A2</span><span class="time">⏱ ~1 Sitzung + Live-Test</span> <span class="t">Cross-Knoten-Such-Test (Pipeline-Phase C) — ⭐ MEILENSTEIN GESCHLOSSEN</span></div>
+  <div class="d"><b>Live beidseitig bewiesen (10.07.26, Sage ↔ Mixarium, eigenes Relais):</b> Sage fragte „Cocktails mit anderen Waldfrüchten" → 5 Drinks aus Mixariums Buch (39 s); Mixarium fragte „wer weiß was über Pilze" → 4 Module aus Sages Bibliothek (0,5 s). Gebraucht: A2-Härtung II + saubere Sporen + <b>Adress-Wand-Härtung</b> (Raum zeigt pro Name nur die neueste Karte; „Antworten: an" heftet frische Karte unter der lauschenden ID). Netzweit auf 10 Knoten.</div>
+  <div class="meta"><span class="tag">Test</span> braucht A1 · ✅ LIVE GRÜN</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="10.07.26"> getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="10.07.26"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="A3"><div class="body">
-  <div><span class="code">A3</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Medium härten</span></div>
-  <div class="d">Das Nostr-Brett ist bewiesen, aber ungehärtet: Spam-Schutz + Haltbarkeitsgarantie der Zettel ergänzen.</div>
+  <div><span class="code">A3</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Medium härten <span style="color:#6ee7d3">(angefangen)</span></span></div>
+  <div class="d">Das Nostr-Brett ist bewiesen, aber ungehärtet: Spam-Schutz + Haltbarkeitsgarantie der Zettel ergänzen. <b>Teil-Schliff 10.07.26:</b> Auto-Neulesen + ein Nachschlag bei „Visitenkarte veraltet". <b>Noch offen:</b> Spam/Haltbarkeit + die Wurzel abstellen, dass „Aufräumen" neue Identitäten erzeugt.</div>
   <div class="meta"><span class="tag">Bau</span></div>
   <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="A4"><div class="body">
-  <div><span class="code">A4</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">KI-Richter B3 (Sicherheit/Eignung)</span></div>
-  <div class="d">Unsicheres rot markieren / herabstufen, Sicheres hochstufen (belegt am Hund-Katze-/Permethrin-Fall). Noch nicht gebaut.</div>
-  <div class="meta"><span class="tag">Bau</span></div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+  <div><span class="code">A4</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Constraint-/Ausschluss-Filter (Teil 1 ✅) + KI-Richter B3 (Teil 2 offen)</span></div>
+  <div class="d"><b>Teil 1 gebaut + netzweit ausgerollt (10.07.26):</b> „ohne X" / „alkoholfrei" / „allergisch gegen X" filtern deterministisch aus dem Kandidaten-Inhalt (Bau 04.I, 10 Knoten). <b>Teil 2 offen:</b> KI-Richter B3 — Unsicheres herabstufen, Sicheres hochstufen (Hund-Katze-/Permethrin-Fall).</div>
+  <div class="meta"><span class="tag">Bau</span> · Teil 1 ✅ · Teil 2 offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="Teil 1: 10.07.26"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="A5"><div class="body">
@@ -211,7 +211,7 @@
 </ol>
 
 <div class="note" style="margin-top:16px"><b>Grobe Gesamtsumme:</b> Kernpunkte zusammen ≈ <b>13–18 Bau-Durchgänge</b> (ohne die optionalen/zurückgestellten Punkte A10 &amp; B6), gut über mehrere Tage verteilbar — plus deine Sichttests, zusammen <b>~2–3&nbsp;Std am Tablet</b>. Die schnellen Tests (A7–A9, B1) bringen sofort Haken ohne Bau.</div>
-<footer>SBKIM-Arbeitsliste · erzeugt 10.07.2026 · Quelle: Sage-Protokol (PULS.md, CLAUDE.md, Meilenstein- &amp; Lehre-Dokumente)</footer>
+<footer>SBKIM-Arbeitsliste · erzeugt 10.07.2026 · <b>aktualisiert 10.07.2026</b> (A1 ✅ · A2 ✅ Meilenstein geschlossen · A4 Teil 1 ✅ · A3 angefangen) · Quelle: Sage-Protokol (PULS.md, CLAUDE.md, Meilenstein- &amp; Lehre-Dokumente)</footer>
 
 <script>
 (function(){
