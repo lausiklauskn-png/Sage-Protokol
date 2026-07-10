@@ -77,6 +77,29 @@
     });
   }
 
+  // Gecachter App-Korpus-Provider (Bau 23.B-Härtung 2026-07-10): baut den
+  // Such-Korpus HÖCHSTENS EINMAL (memoisiert) und teilt das Ergebnis zwischen
+  // dem Such-Widget (Modul 22) UND dem Rendezvous-Antwort-Pfad (Modul 23). So
+  // löst enableAnswering() die Korpus-leer-Falle (Antworten AN, aber nie
+  // gesucht → leere Liste), ohne das ~30-MB-Modell doppelt zu laden. Fail-soft:
+  // ein Fehler wird durchgereicht (Konsumenten fangen ihn ab), der Cache bleibt
+  // leer und ein späterer Aufruf darf neu bauen.
+  var _suchkorpusCache = null;
+  var _suchkorpusPromise = null;
+  function sageEnsureSuchkorpus() {
+    if (_suchkorpusCache) return Promise.resolve(_suchkorpusCache);
+    if (_suchkorpusPromise) return _suchkorpusPromise;
+    _suchkorpusPromise = Promise.resolve().then(sageBuildSuchkorpus).then(function (arr) {
+      _suchkorpusCache = arr;
+      _suchkorpusPromise = null;
+      return arr;
+    }).catch(function (err) {
+      _suchkorpusPromise = null;
+      throw err;
+    });
+    return _suchkorpusPromise;
+  }
+
   // Lazy-Builder für den Knoten-Bereich (verbundene Mycel-Knoten). Analog zum
   // App-Korpus, Quelle window.SAGE_KNOTEN_KORPUS. Rein lokale Daten (bekannte
   // Nachbar-Sporen) — keine Netz-Anfrage.
@@ -357,7 +380,7 @@
       return window.SbkimSearchWidget.init({
         euPolicy: "frei",
         queryLabel: "Sage",
-        prepareCorpus: sageBuildSuchkorpus,       // App-Bereich = Werkzeug-Bibliothek
+        prepareCorpus: sageEnsureSuchkorpus,      // App-Bereich = Werkzeug-Bibliothek (gecacht, geteilt mit Modul 23)
         prepareNodeCorpus: sageBuildKnotenKorpus, // Knoten-Bereich = verbundene Knoten
         queryNode: sageQueryNode,                 // Knoten-Bereich LIVE übers Relais (Modul 05 queryNostr)
         // Richter Default aus (gratis). Internet-Bereich: ohne SearXNG-URL
@@ -380,6 +403,10 @@
         nodeName: "Sage-Protokoll",
         dbSuffix: DB_SUFFIX,
         createIdentity: sageCreateRendezvousIdentity,
+        // Korpus-Kopplung (Bau 23.B-Härtung): „💬 Antworten AN" stellt damit
+        // aktiv den lokalen Such-Korpus sicher (geteilt/gecacht mit Modul 22),
+        // gegen die Korpus-leer-Falle. Fail-soft ohne Modul 03/Korpus.
+        prepareCorpus: sageEnsureSuchkorpus,
         corner: "tr",
       });
     });

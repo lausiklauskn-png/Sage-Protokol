@@ -119,6 +119,53 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-10 · A1-Härtung — Korpus-leer-Falle im Frage→Antwort-Pfad (Modul 23) abgesichert
+
+**Rolle:** Bau-Sitzung (Freibrief gilt). **Branch:** `claude/a1-query-answer-security-qa26ts`.
+Umsetzung von Schritt 1 aus `BRIEF` A1 (2026-07-10).
+
+**Ehrlichkeit zuerst — was A1 wirklich ist:** A1 war headless bereits ~90 % gebaut (Bau 23.B,
+2026-07-06), nur über einen besseren Weg als der Plan-Text sagte. **Der Netz-Transport für
+„Frage → Antwort über das Netz" lebt in Modul 23** (`enableAnswering`/`askNode`, Tag `sbkim-qry`),
+NICHT in Modul 15 `op:"query"` (das ist der Same-Browser-Zwilling, kein Netz-Pfad). Plan +
+Karte im PLAN_SEMANTIK_KRYPTO.md sind entsprechend korrigiert; A1 headless-fertig, Live = A2.
+
+**Der eine echte Riss (behoben):** die **Korpus-leer-Falle**. `enableAnswering()` beantwortet
+eine Frage über `queryLocal` — echte Treffer gibt es aber nur, wenn Modul 04 vorher einen lokalen
+Korpus registriert bekam (`setLocalCorpus`). Bisher tat das **ausschließlich das Such-Widget
+(Modul 22) lazy bei der ersten Widget-Suche** → wer „💬 Antworten" AN-schaltete, aber nie selbst
+suchte, antwortete mit **leerer Liste trotz vorhandener Daten** (live zugeschlagen, siehe
+2026-07-02-Eintrag).
+
+**Was gebaut (headless, per Freibrief):**
+1. **Korpus-Kopplung gehärtet (Modul 23):** neue Konfig `prepareCorpus` (app-eigener async-Provider);
+   `enableAnswering()` koppelt den lokalen Korpus jetzt **aktiv** an Modul 04 (`ensureAnswerCorpus` →
+   `setLocalCorpus`), unabhängig davon, ob je eine Widget-Suche lief. Konsequent **fail-soft** (ohne
+   Provider / ohne `setLocalCorpus` / bei Provider-Fehler → ehrlich leer, kein Bruch), idempotent,
+   rein lokal. Neue `_meta.hasPrepareCorpus`/`answerCorpusEnsured`. **Kern-Module 02/05/05b unangetastet,
+   0.80-Riegel + PROTOCOL_VERSION „0.1" unberührt, kein PII.** UI-Modul (`23_rendezvous_ui.js`) reicht
+   `prepareCorpus` durch; `sbkim-init.js` verdrahtet einen **gecachten, geteilten** Korpus-Provider
+   (`sageEnsureSuchkorpus`) für Modul 22 UND Modul 23 → kein doppelter ~30-MB-Modell-Bau.
+2. **Byte-Kopien** `sbkim-bundle/modules/23_rendezvous.js` + `23_rendezvous_ui.js` mitgezogen (Drift-Guard grün).
+3. **Neuer Smoke** `tests/smoke_bau23b_korpus.mjs` **24/24** — beweist die Falle (leer vor AN) + Heilung
+   (echte SAGE_SUCHKORPUS-Treffer nach AN, auch ohne Widget-Suche) + End-to-end askNode + drei Fail-soft-Pfade.
+4. **Panel 23** in `tests/manual_check.html`: Knopf „💬/❓ Antworten AN + Frage (Korpus-Kopplung 23.B)" —
+   zeigt Klaus die Heilung im Browser (Knopf statt Konsole).
+5. Plan A1 abgehakt (headless) + Modul-Referenz korrigiert; dieser PULS-Eintrag.
+
+**Smokes einzeln grün (ehrlich):** `smoke_bau23b_korpus.mjs` 24/24 (neu), `smoke_bau23b_query.mjs` 23/23,
+`smoke_bau23_rendezvous.mjs` 55/55, `smoke_bau23_rendezvous_ui.mjs` 32/32, `smoke_bundle_connect.mjs` 21/21.
+⚠️ `smoke_query_ueber_relais.mjs` **nicht ausgeführt** — braucht `fake-indexeddb`, in dieser Sandbox
+nicht installiert (Sage hat keine package.json/node_modules). Umgebungs-Lücke, **nicht** von dieser
+Änderung berührt; auf einer Node-Umgebung mit dem Paket läuft er wie zuvor.
+
+**Offen / nächster sinnvoller Schritt:**
+- **A2 (Live, zwingend Klaus):** zwei Apps über `wss://relay.family-projekt.de` — eine fragt „kuchen",
+  die andere hat Antworten AN → bedeutungs-sortierte Treffer aus fremdem Inhalt. Relay in der Sandbox
+  unerreichbar. Vorschlag Sage ↔ Mein-Mixarium (beide fahren Modul 23 live). Brief liegt.
+- **Rollout der Härtung** (byte-gleich) in die anderen Modul-23-Apps (MR/MM/family) + dort `prepareCorpus`
+  im Rendezvous-Init verdrahten — Folge-Schritt (diese Sitzung: Sage + Bundle).
+
 ## 2026-07-08 · Mycel-Karte v1.4 — Nach-Fusion (Klaus' Durchspiel-Befund: namenlose Knoten-Pillen)
 
 **Klaus' Durchspiel-Lauf mit v1.3:** Fusion wirkt (keine Namens-Zwillinge mehr),

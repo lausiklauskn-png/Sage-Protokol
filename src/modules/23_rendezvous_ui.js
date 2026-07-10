@@ -16,7 +16,7 @@
  *
  * Dieses UI-Modul wird — wie Modul 23 selbst — **byte-1:1 in jede PWA kopiert**.
  * Die App parametrisiert nur:
- *   SbkimRendezvousUI.init({ nodeName, createIdentity, corner?, accent? })
+ *   SbkimRendezvousUI.init({ nodeName, createIdentity, prepareCorpus?, corner?, accent? })
  * - nodeName:       Anzeigename der eigenen Visitenkarte (z.B. "Mein Rezeptbuch").
  * - createIdentity: optional async () -> void; erzeugt die lebende Identität,
  *                   falls noch keine da ist (app-spezifisch, da Domänen-
@@ -43,7 +43,7 @@
 
   var VERSION = "0.1";
 
-  var cfg = { nodeName: "SBKIM-Knoten", createIdentity: null, dbSuffix: null, corner: "bl", accent: null };
+  var cfg = { nodeName: "SBKIM-Knoten", createIdentity: null, dbSuffix: null, prepareCorpus: null, corner: "bl", accent: null };
   var mounted = false;
   var btnEl = null, panelEl = null, outEl = null, cardsEl = null, relOnlyBtn = null;
   var askInputEl = null, answerBtn = null;   // Bau 23.B — Frage-Feld + Antwortrecht-Schalter
@@ -227,6 +227,7 @@
     var o = { nodeName: cfg.nodeName };
     if (cfg.dbSuffix) o.dbSuffix = cfg.dbSuffix;
     if (typeof cfg.createIdentity === "function") o.createIdentity = cfg.createIdentity;
+    if (typeof cfg.prepareCorpus === "function") o.prepareCorpus = cfg.prepareCorpus;
     try { r.configure(o); } catch (_e) {}
   }
 
@@ -444,6 +445,7 @@
     if (!opts || typeof opts !== "object") return;
     if (typeof opts.nodeName === "string" && opts.nodeName.length > 0) cfg.nodeName = opts.nodeName;
     if (typeof opts.createIdentity === "function") cfg.createIdentity = opts.createIdentity;
+    if (typeof opts.prepareCorpus === "function") cfg.prepareCorpus = opts.prepareCorpus;
     if (typeof opts.dbSuffix === "string" && opts.dbSuffix.length > 0) cfg.dbSuffix = opts.dbSuffix;
     if (typeof opts.corner === "string") cfg.corner = opts.corner;
     if (typeof opts.accent === "string") cfg.accent = opts.accent;

@@ -6548,6 +6548,52 @@
         return r;
       });
 
+      // Bau 23.B-Härtung (2026-07-10): Korpus-Kopplung gegen die „Korpus-leer-
+      // Falle". Beweist headless im Browser, dass „💬 Antworten AN" den lokalen
+      // Such-Korpus AKTIV koppelt (cfg.prepareCorpus → Modul 04 setLocalCorpus),
+      // sodass eine eingehende Frage ECHTE Treffer bekommt — auch OHNE dass je
+      // eine Widget-Suche lief. Nutzt einen vertragstreuen Mini-Match-Mock; der
+      // Knoten fragt sich hier selbst (toNodeId = eigene ID) übers Mock-Relais.
+      SbkimUI.addButton(mod, "💬/❓ Antworten AN + Frage (Korpus-Kopplung 23.B)", async function () {
+        var mini = [
+          { label: "Kuchen backen", text: "kuchen torte backen ofen mehl zucker rühren teig", anchorId: "demo-kuchen" },
+          { label: "Cocktail mixen", text: "cocktail mixen shaker eis limette rum drink schütteln", anchorId: "demo-drink" },
+          { label: "Steuer buchen", text: "rechnung beleg konto umsatzsteuer buchen euer", anchorId: "demo-steuer" },
+        ];
+        var corpus = null;
+        var qMatch = {
+          relatedness: function () { return 0; },
+          setLocalCorpus: function (c) { corpus = Array.isArray(c) ? c.slice() : null; },
+          queryLocal: function (t, k) {
+            if (!Array.isArray(corpus) || !corpus.length) return Promise.resolve([]); // die Falle
+            var w = String(t).toLowerCase().split(/\s+/).filter(Boolean);
+            var out = corpus.map(function (c) {
+              var hay = (c.label + " " + c.text).toLowerCase(), h = 0;
+              w.forEach(function (x) { if (x.length >= 3 && hay.indexOf(x) !== -1) h++; });
+              return { label: c.label, score: h / Math.max(1, w.length), anchorId: c.anchorId, h: h };
+            }).filter(function (r) { return r.h > 0; });
+            out.sort(function (a, b) { return b.score - a.score; });
+            return Promise.resolve(out.slice(0, k).map(function (r) { return { label: r.label, score: r.score, anchorId: r.anchorId }; }));
+          },
+          _len: function () { return corpus ? corpus.length : 0; },
+        };
+        SbkimRendezvous.configure({ match: qMatch, prepareCorpus: function () { return Promise.resolve(mini.slice()); } });
+        var leerVorher = await qMatch.queryLocal("kuchen backen", 3);   // Falle: noch kein Korpus
+        var an = await SbkimRendezvous.enableAnswering();
+        var ownId = SbkimRendezvous._meta ? "OWN-PANEL-ID" : null;
+        var frage = await SbkimRendezvous.askNode(ownId, "leckeren kuchen backen ofen", { k: 3, timeoutMs: 2000 });
+        SbkimRendezvous.disableAnswering();
+        SbkimRendezvous.configure({ match: null }); // Demo-Match wieder lösen (andere Knöpfe unberührt)
+        var geheilt = frage.ok && frage.results && frage.results.length >= 1 && frage.results[0].anchorId === "demo-kuchen";
+        SbkimUI.setStatus(mod, geheilt ? "ok" : "err", geheilt ? "Korpus gekoppelt, echte Treffer" : "keine Treffer");
+        return {
+          "1_vor_enableAnswering (die Falle)": { treffer: leerVorher.length, korpus_registriert: 0 },
+          "2_enableAnswering": { ok: an.ok, answerCorpusEnsured: SbkimRendezvous._meta.answerCorpusEnsured, korpus_registriert: qMatch._len() },
+          "3_frage_ueber_relais": frage,
+          bewertung: geheilt ? "✅ Antworten AN koppelt den Korpus aktiv — Frage bekommt echte Treffer (Kuchen oben)." : "⚠️ unerwartet leer",
+        };
+      });
+
       SbkimUI.addButton(mod, "_meta zeigen", function () {
         return SbkimRendezvous._meta;
       });
