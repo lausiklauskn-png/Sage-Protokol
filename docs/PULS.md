@@ -148,9 +148,22 @@ regress-frei: 04c 45, 04d 68, 04f 32, 04g 36, 22 260, 22f 17, 23 55, 23b 23,
 Bundle-Connect 21, Standalone-Drift 49 — alle grün. Byte-Kopien
 `such-tool/modules/04+22`, `sbkim-bundle/modules/04+23` mitgezogen (Drift-Guard grün).
 
+**Netzweiter Rollout ERLEDIGT (2026-07-10, je eigener PR gemergt):** A4 + A2-Härtung II
+byte-gleich in **10 Knoten** — Mixarium, Rezeptbuch, Kimboard, Kimseek, Tomys-Hub,
+family-project, BookLedgerPro, Jasons-Tresor, Mein-Tresor, SB-KIMTool-Point (such-tool)
+— plus Sage-Kanon. Bei den weit zurückliegenden Kopien (BLP/Tresor/SBK) zugleich voller
+Modul-Sync auf `main` (reine ältere Sage-Kopien, keine App-Modifikation; BLP `node
+tests/run.mjs` 2123 grün). SW-Cache-Bumps wo cache-first (Kimboard v2/Kimseek v2/BLP
+v194/SBK such-tool v2). **„Im Netz anmelden" damit netzweit aktualisiert** (A2-Härtung II
+reiste in jedem 23-Update mit). **family-project-Website geprüft:** keine Links zu alten/
+toten Tools (Sage-Einladung, Tomys-Hub/showcase, mycel-karte — alle aktuell).
+
+**Pinnwand bewusst NICHT** (Architektur-Merke): Ausschluss-Filter gehört auf Korpus-SUCH-
+Flächen (entfernt Kandidaten), nicht auf die Q&A-Thread-Sortierung der Pinnwand („nichts
+wegfiltern" — jede Antwort bleibt sichtbar, Verneinung erledigt dort der KI-Richter).
+
 **Offen:** Browser-Sichttest (Klaus, live an Sage/Mixarium); **A4 Teil 2** KI-Richter
-B3 (Eignung/Sicherheit); **netzweiter Rollout** byte-gleich in die App-Suchfelder
-(Mixarium/Rezeptbuch/family-project/Pinnwand/BLP) + Vorgänger-Modelle.
+B3 (Eignung/Sicherheit, Hund-Katze-/Permethrin-Fall).
 
 ## 2026-07-10 · ⭐ A2 LIVE GRÜN — erster server-loser Cross-Knoten-Frage→Antwort-Lauf (Sage ↔ Mixarium)
 

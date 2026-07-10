@@ -52,10 +52,25 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   der Frage geparst) + Modul 23 (Antworter fremder Knoten-Fragen). Smoke `smoke_bau04i_exclusions.mjs`
   **34/34**; Regress-frei (04c/d/f/g, 22, 22f, 23, 23b, Bundle- + Standalone-Drift-Guard grün).
   Byte-Kopien `such-tool/modules/04+22`, `sbkim-bundle/modules/04+23` mitgezogen.
+  **Netzweiter Rollout ERLEDIGT 2026-07-10** (byte-gleich, je eigener PR gemergt): Mixarium,
+  Rezeptbuch, Kimboard, Kimseek, Tomys-Hub, family-project, BookLedgerPro, Jasons-Tresor,
+  Mein-Tresor, SB-KIMTool-Point (such-tool) — 10 Knoten + Sage-Kanon. Die A2-Härtung II
+  (Antworter vorwärmen + 60-s-Timeout) reiste in jedem Modul-23-Update mit („im Netz anmelden"
+  netzweit aktualisiert). SW-Cache-Bumps wo nötig (Kimboard/Kimseek/BLP/SBK). Bei den weit
+  zurückliegenden Kopien (BLP/Tresor/SBK) war es zugleich ein voller Modul-Sync auf `main`.
+  **Pinnwand bewusst NICHT** (siehe unten). family-project-Website geprüft: keine Links zu
+  alten/toten Tools (nur Sage-Einladung, Tomys-Hub/showcase, mycel-karte — alle aktuell).
   **Offen (Teil 2):** KI-Richter B3 — Unsicheres markieren/herabstufen, Sicheres hochstufen
-  (Hund-Katze-/Permethrin-Fall). **Netzweiter Rollout** (byte-gleich in Mixarium/Rezeptbuch/
-  family-project/Pinnwand/BLP-App-Suchfelder + Vorgänger-Modelle) = Folge-Schritt.
-  _Teil 1 erledigt am: 2026-07-10 · Browser-Sichttest wartet auf Klaus · Teil 2 offen_
+  (Hund-Katze-/Permethrin-Fall).
+  _Teil 1 + Rollout erledigt am: 2026-07-10 · Browser-Sichttest wartet auf Klaus · Teil 2 offen_
+
+  > **Architektur-Merke (2026-07-10): Ausschluss-Filter gehört NUR auf Korpus-SUCH-Flächen,
+  > nicht auf Thread-SORTIER-Flächen.** Der Filter ENTFERNT Kandidaten — richtig, wenn man
+  > „Rezepte durchsucht" (Mixarium/Rezeptbuch/Such-Tools). **Die Pinnwand** ist eine
+  > Q&A-Thread-Sortierung: sie zeigt **alle** Antworten einer Frage und ordnet nur um
+  > („es wird NICHTS weggefiltert"). Ein Entfern-Filter würde dort die Antwort eines
+  > Menschen verstecken — falsch. Verneinung an der Pinnwand erledigt korrekt der
+  > **KI-Richter** (er SCORED/ordnet um, entfernt nicht). Darum kein A4-Einbau in die Pinnwand.
 - [ ] **A5 — Rollout Hybrid-Vorfilter + Multi-Query in weitere Apps** · `Bau` · ⏱ ~1 Sitzung
   BM25+Vektor + Multi-Query byte-gleich in: Pinnwand · Mixarium · Rezeptbuch · family-project · BookLedgerPro. _erledigt am: _____
 - [ ] **A6 — Echte Embedding-Vektoren statt Demo-Stub** · `Bau` · ⏱ ~1–2 Sitzungen
