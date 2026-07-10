@@ -1,7 +1,10 @@
 node_modules/
 package-lock.json
-# .claude/ bleibt ignoriert (lokale Sitzungs-Settings) — AUSSER .claude/skills/
-# (geteilte Agent-Skills, bewusst versioniert; Übernahme 2026-07-07, siehe PULS.md)
+# .claude/ bleibt ignoriert (lokale Sitzungs-Settings) — AUSSER geteilten,
+# bewusst versionierten Teilen: skills/ (Agent-Skills, 2026-07-07) sowie dem
+# SessionStart-Hook + settings.json (origin/main-Abgleich, 2026-07-10, PULS.md).
 .claude/*
 !.claude/skills/
+!.claude/hooks/
+!.claude/settings.json
 docs/einladung/_print_render.html
