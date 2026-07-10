@@ -39,8 +39,23 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   _getestet am: 2026-07-10_
 - [ ] **A3 — Medium härten** · `Bau` · ⏱ ~1–2 Sitzungen
   Nostr-Brett ist bewiesen, aber ungehärtet: Spam-Schutz + Haltbarkeitsgarantie der Zettel. _erledigt am: _____
-- [ ] **A4 — KI-Richter B3 (Sicherheit/Eignung)** · `Bau` · ⏱ ~1 Sitzung
-  Unsicheres markieren/herabstufen, Sicheres hochstufen (Hund-Katze-/Permethrin-Fall). _erledigt am: _____
+- [~] **A4 — Constraint-/Ausschluss-Filter + KI-Richter B3** · `Bau` · ⏱ ~1 Sitzung
+  **Teil 1 (Ausschluss-/Negations-Filter) gebaut 2026-07-10 (Bau 04.I).** Klaus' Live-Befund:
+  „alkoholfrei" / „ohne Erdbeeren" (Allergie) sind **Constraints**, keine Ähnlichkeit — der
+  Cosinus rankt einen Erdbeer-Drink NAH an „Erdbeere", auch wenn man ihn ausschließen will;
+  „alkoholfrei" nennt eine Klasse (der Wodka in der Zutatenliste steht nicht im Fragetext).
+  Modul 04: `parseExclusions(text)` (erkennt „ohne X", „kein(e) X", „X-frei", „allergisch gegen X",
+  Alkohol-Klasse, EN „without/no X") + `applyExclusions(cands,ex,getText?)` + `contentExcluded(...)`;
+  `queryLocal(text,k,{exclude:true|<ex>})` filtert VOR dem Ranking über den Kandidaten-Inhalt
+  (`text`). Deterministisch, offline, KEIN LLM. Ohne `exclude` byte-gleich; PROVIDER_MIN_MATCH +
+  Andock-Riegel unberührt (nur Entfernen). **Live verdrahtet:** Modul 22 (Widget-Suche, einmal aus
+  der Frage geparst) + Modul 23 (Antworter fremder Knoten-Fragen). Smoke `smoke_bau04i_exclusions.mjs`
+  **34/34**; Regress-frei (04c/d/f/g, 22, 22f, 23, 23b, Bundle- + Standalone-Drift-Guard grün).
+  Byte-Kopien `such-tool/modules/04+22`, `sbkim-bundle/modules/04+23` mitgezogen.
+  **Offen (Teil 2):** KI-Richter B3 — Unsicheres markieren/herabstufen, Sicheres hochstufen
+  (Hund-Katze-/Permethrin-Fall). **Netzweiter Rollout** (byte-gleich in Mixarium/Rezeptbuch/
+  family-project/Pinnwand/BLP-App-Suchfelder + Vorgänger-Modelle) = Folge-Schritt.
+  _Teil 1 erledigt am: 2026-07-10 · Browser-Sichttest wartet auf Klaus · Teil 2 offen_
 - [ ] **A5 — Rollout Hybrid-Vorfilter + Multi-Query in weitere Apps** · `Bau` · ⏱ ~1 Sitzung
   BM25+Vektor + Multi-Query byte-gleich in: Pinnwand · Mixarium · Rezeptbuch · family-project · BookLedgerPro. _erledigt am: _____
 - [ ] **A6 — Echte Embedding-Vektoren statt Demo-Stub** · `Bau` · ⏱ ~1–2 Sitzungen

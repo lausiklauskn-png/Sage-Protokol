@@ -119,6 +119,39 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-10 · A4 Teil 1 — Ausschluss-/Negations-Filter (Bau 04.I): „alkoholfrei" / „ohne Erdbeeren" filtern wirklich
+
+**Klaus' Live-Befund nach A2:** Die semantische Suche liefert bei „alkoholfreies
+Erfrischungsgetränk" auch Drinks mit Wodka, und ein Allergiker, der „ohne Erdbeeren"
+sucht, bekommt trotzdem Erdbeer-Rezepte oben. Grund: **Ähnlichkeit ist kein
+Constraint.** Der Cosinus rankt einen Erdbeer-Drink NAH an „Erdbeere", auch wenn man
+ihn ausschließen will; „alkoholfrei" nennt eine **Klasse** (der Wodka steht in der
+Zutatenliste, nicht im Fragetext).
+
+**Gebaut (Modul 04, deterministisch/offline, KEIN LLM):**
+- `parseExclusions(text)` — liest Verneinungen: „ohne X", „kein(e) X", „X-frei"
+  (zuckerfrei/laktosefrei), „allergisch gegen X", Alkohol-Klasse („alkoholfrei",
+  „ohne Alkohol", „alcohol-free", „non-alcoholic", „virgin"), EN „without/no X";
+  mehrere Begriffe („ohne Erdbeeren und Himbeeren") werden alle erfasst.
+- `contentExcluded(text, ex)` / `applyExclusions(cands, ex, getText?)` — filtert
+  Kandidaten deterministisch über ihren Inhalt (Alkohol-Lexikon per Wortgrenze,
+  freie Begriffe per Stamm-Teilstring).
+- `queryLocal(text,k,{exclude:true|<ex>})` filtert **VOR** dem Ranking. Ohne
+  `exclude` **byte-gleich**; `PROVIDER_MIN_MATCH` + Andock-Riegel (Modul 05)
+  **unberührt** (der Filter entfernt nur, senkt keine Schwelle).
+
+**Live verdrahtet:** Modul 22 (Widget-Suche — einmal aus der Original-Frage geparst,
+konsistent über Multi-Query-Varianten) + Modul 23 (Antworter auf fremde Knoten-Fragen).
+
+**Tests:** `smoke_bau04i_exclusions.mjs` **34/34** grün (beide Klaus-Fälle bewiesen);
+regress-frei: 04c 45, 04d 68, 04f 32, 04g 36, 22 260, 22f 17, 23 55, 23b 23,
+Bundle-Connect 21, Standalone-Drift 49 — alle grün. Byte-Kopien
+`such-tool/modules/04+22`, `sbkim-bundle/modules/04+23` mitgezogen (Drift-Guard grün).
+
+**Offen:** Browser-Sichttest (Klaus, live an Sage/Mixarium); **A4 Teil 2** KI-Richter
+B3 (Eignung/Sicherheit); **netzweiter Rollout** byte-gleich in die App-Suchfelder
+(Mixarium/Rezeptbuch/family-project/Pinnwand/BLP) + Vorgänger-Modelle.
+
 ## 2026-07-10 · ⭐ A2 LIVE GRÜN — erster server-loser Cross-Knoten-Frage→Antwort-Lauf (Sage ↔ Mixarium)
 
 **Meilenstein (Klaus' Browser).** Sage fragte „Alkoholfreies Erfrischungsgetränk" → **Mein-Mixarium
