@@ -20,6 +20,20 @@ Fundament, was bewiesen ist und was nicht:
 
 ---
 
+## ▶ Aktuelle Arbeitsliste — was als Nächstes kommt (Pflege 2026-07-10)
+
+Vor dem Bauen an **Semantik/Matching** oder **Verschlüsselung**: zuerst
+[`docs/PLAN_SEMANTIK_KRYPTO.md`](docs/PLAN_SEMANTIK_KRYPTO.md) lesen — die lebende
+Abhak-Liste (Punkte **A1–A10** Semantik, **B1–B7** Verschlüsselung) mit Reihenfolge,
+Zeitschätzung und Stand. **Wer einen Punkt erledigt, hakt ihn dort ab** (`[ ]`→`[x]`,
+Datum) und ergänzt neue Punkte; zusätzlich in `docs/PULS.md` vermerken. Größter Hebel
+laut Liste: **A1** (Frage→Antwort verdrahten: Modul 04.C `queryLocal` + Modul 15
+`op:"query"` über das Relay), dann Cross-Knoten-Test **A2**. Schnelle Haken ohne Bau:
+Sichttests **A7 · A8 · A9 · B1**. Klaus' interaktive Ansicht:
+`docs/checkliste_semantik_krypto.html`.
+
+---
+
 ## Was dieses Repo ist
 
 Sage-Protokol ist **Hub und Knoten zugleich** für das SBKIM-Protokoll
@@ -254,6 +268,10 @@ wurde.
 6. **Nur** der Code des Moduls, an dem du arbeitest
 
 Alles andere liest du **nicht**. Token-Budget.
+
+> Arbeitest du an **Semantik/Matching** oder **Verschlüsselung**, lies zusätzlich
+> zuerst [`docs/PLAN_SEMANTIK_KRYPTO.md`](docs/PLAN_SEMANTIK_KRYPTO.md) — die
+> Arbeitsliste „was als Nächstes kommt" (siehe § Aktuelle Arbeitsliste oben).
 
 ## Heilige Tafeln
 
