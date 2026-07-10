@@ -119,6 +119,32 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-10 · ⭐ A2 LIVE GRÜN — erster server-loser Cross-Knoten-Frage→Antwort-Lauf (Sage ↔ Mixarium)
+
+**Meilenstein (Klaus' Browser).** Sage fragte „Alkoholfreies Erfrischungsgetränk" → **Mein-Mixarium
+antwortete aus SEINEM eigenen Buch** mit 5 bedeutungs-sortierten Drinks (Tropische Kokostraum-Bowl
+„Alkohol frei" 0.86 … Tropical Creamwave 0.85), server-los übers Relais `wss://relay.family-projekt.de`
+in **10,7 s**, beidseitig „✓ ANDOCK ETABLIERT". Damit ist **A1 + A2** der Plan-Liste live bewiesen
+(`docs/PLAN_SEMANTIK_KRYPTO.md`).
+
+**Was den Durchbruch möglich machte (alles heute):**
+1. **Saubere, getrennte Sporen** — der ganze netzweite `saubere-netz-anmeldung`-Rollout (eigene
+   Schublade + Modus A/B in allen 12 Knoten). Ohne saubere Identität lief A2 vorher ins Leere.
+2. **A2-Härtung II** (PR #575 Sage + #104 Mixarium): der Antworter **wärmt Modell+Korpus beim
+   „💬 Antworten: an" im Hintergrund vor**, Frage-Timeout 15 s → 60 s. Vorher: „Keine Antwort in 15 s",
+   weil Mixarium sein ~30-MB-Modell erst bei der ersten Frage lud.
+3. **Inhalt-zuerst-Reihenfolge** (Klaus' Befund → **Browser-Lehre 12**): erst Buch füllen, dann Spore
+   erzeugen/anmelden — sonst steht ein leerer Knoten im Raum.
+
+**Ergebnis-Ehrlichkeit:** die Trefferliste ist **bedeutungs-sortiert** (semantisch nah an „alkoholfrei
++ erfrischend"), **kein harter Alkohol=0-Filter**. Treffer 1 ist explizit „Alkohol frei"; 2–5 (Sunrise
+Bowl, Kräuter-Nektar, Raspberry Cooler, Creamwave) sind dem Namen nach plausibel alkoholfrei, aber
+nicht garantiert. Ein garantierter Alkohol-frei-Filter wäre **Plan-Punkt A4 (KI-Richter Sicherheit/
+Eignung)** — natürlicher nächster Schritt.
+
+**Offen / nächste Schritte:** A2-Härtung II in die übrigen Knoten nachziehen (byte-gleich); dann A3
+(Medium härten) / A4 (KI-Richter, u.a. harter Alkohol-frei-Filter) / A5 (Hybrid+Multi-Query-Rollout).
+
 ## 2026-07-10 · A1-Härtung — Korpus-leer-Falle im Frage→Antwort-Pfad (Modul 23) abgesichert
 
 **Rolle:** Bau-Sitzung (Freibrief gilt). **Branch:** `claude/a1-query-answer-security-qa26ts`.

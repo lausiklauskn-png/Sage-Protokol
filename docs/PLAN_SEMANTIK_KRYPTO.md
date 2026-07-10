@@ -28,9 +28,15 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Sitzung hat die **Korpus-leer-Falle** abgesichert (enableAnswering koppelt den lokalen Korpus jetzt
   aktiv an Modul 04 `setLocalCorpus`, gegen leere Antworten trotz vorhandener Daten). Smokes grün:
   `smoke_bau23b_query.mjs` 23/23, `smoke_bau23b_korpus.mjs` 24/24 (neu). **Live Sage ↔ Endknoten = A2**
-  (Relay in der Sandbox unerreichbar → Klaus' Browser-Lauf). _erledigt am: 2026-07-10 (headless) · getestet am: ____ (Live = A2)
-- [ ] **A2 — Cross-Knoten-Such-Test (Pipeline-Phase C)** · `Test` (braucht A1) · ⏱ ~1 Sitzung + Live-Test
-  End-to-End mit zwei Endpunkten: Anfrage auf Knoten 1 → Treffer aus Knoten 2. _getestet am: _____
+  (Relay in der Sandbox unerreichbar → Klaus' Browser-Lauf). _erledigt am: 2026-07-10 (headless) · **getestet am: 2026-07-10 (live grün, siehe A2)**
+- [x] **A2 — Cross-Knoten-Such-Test (Pipeline-Phase C)** · `Test` (braucht A1) · ✅ **LIVE GRÜN 2026-07-10**
+  End-to-End mit zwei Endpunkten: Anfrage auf Knoten 1 → Treffer aus Knoten 2.
+  **Bewiesen (Klaus' Browser, Sage ↔ Mein-Mixarium):** Sage fragte „Alkoholfreies Erfrischungsgetränk",
+  Mixarium antwortete aus SEINEM Buch mit 5 bedeutungs-sortierten Drinks (Kokostraum-Bowl 0.86 … 0.85),
+  server-los übers Relais in 10,7 s, beidseitig „✓ ANDOCK ETABLIERT". Voraussetzung war die
+  **A2-Härtung II** (Antworter vorwärmen beim „Antworten: an" + Frage-Timeout 60 s) + **saubere Sporen**
+  (der ganze `saubere-netz-anmeldung`-Rollout) + **Inhalt-zuerst-Reihenfolge** (siehe Browser-Lehre 12).
+  _getestet am: 2026-07-10_
 - [ ] **A3 — Medium härten** · `Bau` · ⏱ ~1–2 Sitzungen
   Nostr-Brett ist bewiesen, aber ungehärtet: Spam-Schutz + Haltbarkeitsgarantie der Zettel. _erledigt am: _____
 - [ ] **A4 — KI-Richter B3 (Sicherheit/Eignung)** · `Bau` · ⏱ ~1 Sitzung
