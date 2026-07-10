@@ -119,6 +119,43 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-10 · ⭐⭐ MEILENSTEIN GESCHLOSSEN — bidirektionale Cross-Knoten-Suche LIVE beidseitig + Rendezvous-Härtung netzweit
+
+**Der große Punkt.** Die volle **bidirektionale, server-lose Cross-Knoten-
+Bedeutungs-Suche** ist in Klaus' Browser **live in beide Richtungen** bewiesen
+(Splitscreen, beide deployte `main`, Relais `wss://relay.family-projekt.de`):
+- **Sage → Mixarium:** „Cocktails mit anderen Waldfrüchten" → 5 Drinks aus
+  Mixariums Buch (Tropical Creamwave 0.83 …), 39 s.
+- **Mixarium → Sage:** „wer weiß was über Pilze" → 4 Module aus Sages Bibliothek
+  (Reputation/Membran/Heterokaryose/Match), 0,5 s.
+
+Damit ist die in `MEILENSTEIN_SEMANTISCHE_SUCHE.md` als „noch nicht end-to-end
+gezeigt" geführte Hälfte **geschlossen** (Doc + CLAUDE.md-Tafel nachgezogen).
+
+**Was den Durchbruch möglich machte — Rendezvous-Härtung (Modul 23 + UI):**
+Klaus' Mycel-Karte + Analyse-JSON zeigten die Ursache der Fehlversuche:
+wiederholtes „🧹 Aufräumen & neu anmelden" hinterlässt Alt-Identitäten, deren
+Präsenz-Kärtchen ~30 min weiterleben → die Frage zielte auf eine **verwaiste,
+nicht-lauschende ID** → Timeout. Fix:
+- **`discover()` zeigt pro Knoten-NAME nur die neueste Karte** (`collapseByName`,
+  Default an) — tote Alt-Kärtchen verschwinden, „Fragen" trifft die lauschende ID.
+- **`enableAnswering()` heftet beim Einschalten eine frische Karte** unter der
+  lauschenden ID ans Brett.
+- **Flying-Widget:** „Mit dem Netz verbinden" frei verschiebbar (Kopfzeile) +
+  „–" minimierbar, Position gemerkt (Klaus' Wunsch, verdeckte sonst die Seite).
+- **Mycel-Karte** läuft als eigene installierbare PWA (`…github.io/mycel-karte/`).
+
+Smokes: `smoke_bau23_rendezvous` **58/58** (Probe 6b „Mixarium ×2 → newest-per-
+name"), 23_ui 32/32, bau23b 23+24, Bundle 21. **Netzweit ausgerollt** (byte-gleich,
+je eigener PR): Sage + Mixarium + Rezeptbuch + Jasons-Tresor + Mein-Tresor +
+Tomys-Hub + family-project + BookLedgerPro + Kimboard + Kimseek = **10 Knoten**
+(SW-Bumps Kimboard v3/Kimseek v3). Kern 02/05/05b + 0.80-Riegel unberührt.
+
+**Rest-Grenze (ehrlich):** die Antwort kommt zuverlässig nur, wenn der Antworter-
+Tab **vorn + wach** ist (Handy/Tablet drosseln Hintergrund-Tabs); Wiederhol-Frage
+auf gealterte Karte → „Visitenkarte veraltet". **Nächster Schliff:** bei
+veralteter Karte automatisch neu lesen + einmal nachfragen (Teil von A3).
+
 ## 2026-07-10 · A4 Teil 1 — Ausschluss-/Negations-Filter (Bau 04.I): „alkoholfrei" / „ohne Erdbeeren" filtern wirklich
 
 **Klaus' Live-Befund nach A2:** Die semantische Suche liefert bei „alkoholfreies

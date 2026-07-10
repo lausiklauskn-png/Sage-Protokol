@@ -45,10 +45,17 @@ git -C <repo> checkout -B <branch> origin/main   # bzw. origin/<default>
 versteht (nicht Stichwörter), server-los im Browser. Bewiesen an festen
 Referenz-Fällen (Wespen-Off-Topic, Hund-und-Katze-Permethrin-Konsequenz);
 B2-Browser-Direkt-Aufruf an eine KI mit Web-Suche live bestätigt (CORS geht).
-**Ehrlich offen:** die volle **bidirektionale Cross-Knoten-Suche** (Knoten fragt
-Knoten server-los) ist noch nicht end-to-end gezeigt — die KI-Brücke war der
-Behelfs-Beweis-Träger, bis das Mycel genug Knoten hat. Voller Werdegang,
-Fundament, was bewiesen ist und was nicht:
+**✅ GESCHLOSSEN 2026-07-10:** die volle **bidirektionale Cross-Knoten-Suche**
+(Knoten fragt Knoten server-los) ist jetzt **live beidseitig bewiesen** —
+Klaus' Browser, Sage↔Mixarium übers eigene Relais: Sage fragte „Cocktails mit
+anderen Waldfrüchten" → Mixarium antwortete aus seinem Buch (5 Drinks, 39 s);
+Mixarium fragte „wer weiß was über Pilze" → Sage antwortete aus seiner
+Bibliothek (4 Module, 0,5 s). Transport = **Modul 23** (`enableAnswering`/
+`askNode`, Tag `sbkim-qry`), nicht Modul 15. Gebraucht hat es die Härtungs-Kette
+(A2-Härtung II + saubere Sporen + Adress-Wand-Härtung: Raum newest-per-name +
+frische Karte beim Antworten). Rest-Grenze: Antworter-Tab muss vorn+wach sein
+(Hintergrund-Drosselung); A3 (Medium-Härtung) offen. Voller Werdegang, Fundament,
+was bewiesen ist und was nicht:
 [`docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md`](docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md).
 
 ---
