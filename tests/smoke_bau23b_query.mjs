@@ -143,7 +143,11 @@ await B.init({ nodeName: "Knoten B", relayClient: relay, spore: mockSpore("node-
     Array.isArray(r.results) && r.results.length === 3 && r.results[0].label === "Eierschecke" && r.results[2].label === "Marmorkuchen");
   t("4d: score + anchorId durchgereicht", r.results[0].score === 0.91 && r.results[0].anchorId === "r7" && r.results[2].anchorId === undefined);
   t("4e: tookMs vorhanden", typeof r.tookMs === "number" && r.tookMs >= 0);
-  t("4f: Bs queryLocal sah die Frage", bQueryCalls.length === 1 && bQueryCalls[0].text === "kuchen");
+  // Hinweis: enableAnswering setzt beim Einschalten eine Aufwärm-Suche ("aufwärmen")
+  // ab (Modell/Korpus vorladen), damit die erste echte Frage nicht in den Timeout
+  // läuft. Deshalb ist "kuchen" nicht zwingend der erste Aufruf — wir prüfen, dass
+  // die echte Frage bei B ankam.
+  t("4f: Bs queryLocal sah die Frage 'kuchen'", bQueryCalls.some(function (c) { return c.text === "kuchen"; }));
 }
 
 // Probe 5 — Frage an fremde nodeId → keine Antwort (kurzer Timeout)
