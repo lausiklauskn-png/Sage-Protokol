@@ -610,6 +610,52 @@ Umgebung. Werte URL-kodieren. (Quelle: code.claude.com/docs/en/web-quickstart
 
 ---
 
+## Lehre 11 — Das Embedding-Modell wird automatisch gecacht — Selbst-Hosten ist NICHT nötig
+
+**Befund (Klaus 2026-07-10, im Browser bestätigt).** Das Verstehen-Modell
+`Xenova/multilingual-e5-small` (~30 MB) lädt transformers.js beim **ersten**
+Gebrauch von Hugging Face. Danach liegt es im **Cache-Storage des Browsers**
+(`env.useBrowserCache` ist per Default an) — der **zweite** Start ist in **~4–5
+Sekunden** da (das ist Entpacken/Init, nicht mehr der Download), auch offline.
+Der Speicher ist zusätzlich durch Modul 01 `navigator.storage.persist()` gegen
+automatische Verdrängung geschützt.
+
+### Der Denkfehler, den es zu vermeiden gilt
+
+„Das Modell lädt jedes Mal ewig" ist fast immer ein **Test-Artefakt**: wer beim
+Prüfen **„Cache leeren und neu laden"** (Chrome-Menü) drückt, wirft den Modell-
+Cache jedes Mal weg → 30-MB-Download erneut. Ein **normales** Neuladen
+(Strg+Shift+R oder F5) behält das Modell.
+
+### Konsequenzen für SBKIM
+
+- **Die gewünschte „Automatik für alle Nutzer" ist bereits eingebaut** — kein
+  Vorlade-Befehl, kein Service-Worker-Umbau, kein Selbst-Hosten nötig. Ein
+  fremder Nutzer wartet **einmal** (~30 s–2 min, mit Ladebalken), danach immer ~5 s.
+- **Selbst-Hosten auf GitHub Pages bringt kaum Nutzen** und hat echte Hürden:
+  (a) die 5 s sind Init, kein Download — Selbst-Host macht sie nicht schneller;
+  (b) die Modell-Datei könnte die **100-MB-Pro-Datei-Grenze** von GitHub Pages
+  reißen (Git-LFS wird von Pages NICHT ausgeliefert); (c) aus der Claude-Code-
+  Sandbox ist Hugging Face **gesperrt** (403) — ein Selbst-Host ginge nur über
+  einen GitHub-Action-Job. Aufwand ≫ Nutzen. **Bewusst zurückgestellt.**
+
+### Workarounds / Empfehlung
+
+- Beim Identitäts-/Andock-Testen **normal neu laden**, nicht „Cache leeren".
+- Der `~30 MB`-Hinweis im Ladebalken ist eine **Schätzung** (Hinweis-Text), keine
+  Messung — nicht als exakte Größe zitieren.
+- Falls je „Warten-vor-dem-Klick ganz weg" gewünscht ist: ein **Vorlade-Befehl**
+  (Modell leise im Hintergrund nach App-Start holen) wäre möglich — Abwägung:
+  dann lädt JEDER Besucher 30 MB, auch wer die Netz-Funktion nie nutzt. Gegen die
+  Lazy-/Empfangsmodus-Linie; nur auf ausdrücklichen Wunsch bauen.
+
+### Vorteile (denn jede Tiefe hat einen Boden)
+
+- **Gratis Offline-Fähigkeit + Netzwerk-Unabhängigkeit** nach dem ersten Laden —
+  ganz ohne eigene Infrastruktur, allein durch den Browser-Cache.
+
+---
+
 ## Pflege-Konvention für diese Datei
 
 Neue Lehren bekommen einen eigenen `## Lehre N — Titel`-Block. Pflicht-
@@ -627,7 +673,10 @@ Verträgen passiert.
 
 ---
 
-**Letzte Aktualisierung:** 2026-06-26 · Lehre 10 „Mehrere Repos pro Sitzung
+**Letzte Aktualisierung:** 2026-07-10 · Lehre 11 „Das Embedding-Modell wird
+automatisch gecacht — Selbst-Hosten ist NICHT nötig" (Browser-Cache-Lehre;
+Auslöser: Klaus' Frage nach Modell-Selbst-Hosten, im Browser bestätigt ~5 s
+gecachter Start). Davor: 2026-06-26 · Lehre 10 „Mehrere Repos pro Sitzung
 schaltet man beim START frei" (Sitzungs-/Workflow-Lehre, Claude Code on the web;
 Auslöser: Toolpoint-Vorbereitung, SB-KIMTool-Point außerhalb der Sitzungs-
 Freigabe). Davor: 2026-06-16 · Lehre 9 „localStorage ist kein Datenspeicher"
