@@ -656,6 +656,48 @@ Cache jedes Mal weg → 30-MB-Download erneut. Ein **normales** Neuladen
 
 ---
 
+## Lehre 12 — Sauberer Cross-Knoten-Lauf braucht eine feste REIHENFOLGE (Inhalt zuerst, dann Spore)
+
+**Befund (Klaus 2026-07-10, A2 live grün bewiesen).** Der erste server-lose
+Cross-Knoten-Frage→Antwort-Lauf (Sage fragt „Alkoholfreies Erfrischungsgetränk"
+→ Mixarium antwortet aus seinem Buch, 5 Treffer 0.86–0.85, 10,7 s) gelang **nur
+nach einem sauberen Start in genau dieser Reihenfolge** — Schritt für Schritt,
+nicht durcheinander:
+
+1. **Sauberer Service-Worker + sauberer Browser** (alte Caches/SW weg; nach
+   Deploy hart neu laden — siehe Lehre 4).
+2. **Saubere, getrennte Identität** je App (eigene Schublade, Modus B „🧹
+   Aufräumen & neu anmelden" — siehe Skill `saubere-netz-anmeldung`).
+3. **Inhalt ZUERST laden** (die Getränke/Rezepte ins Buch), **BEVOR** die Spore
+   erzeugt + angemeldet wird.
+4. **DANN** Spore erzeugen → andocken → im Raum bereitstehen → **erst jetzt
+   findbar** und **antwortfähig**.
+
+### Die Kern-Regel
+
+**Inhalt zuerst, dann Spore.** Wer die Spore erzeugt und den Inhalt erst
+**danach** lädt, bekommt **keinen sauber antwortfähigen Knoten**: der Antwort-
+Korpus (das, woraus die Bedeutungs-Antwort gezogen wird) speist sich aus dem
+geladenen Buch — ist beim Anmelden nichts geladen, steht ein leerer Knoten im
+Raum. **Das ist gewollt so:** ein Knoten meldet sich erst an, wenn er wirklich
+etwas zu bieten hat (Empfangsmodus mit Antwortrecht).
+
+### Konsequenzen für SBKIM / Bedien-Anleitung
+
+- **Reihenfolge in Bedien-Anleitungen immer so nennen:** Browser/SW sauber →
+  Identität sauber (🧹) → **Buch füllen** → Spore/anmelden → fragen/antworten.
+- Der **Antworter** muss zusätzlich **„💬 Antworten: an"** schalten (wärmt seit
+  A2-Härtung II Modell+Korpus vor) und den Tab offen lassen.
+- Findbarkeit ist **kein Bug, wenn ein frisch-leerer Knoten nichts liefert** —
+  er hatte noch keinen Inhalt. Erst Buch, dann Spore.
+
+### Vorteile (denn jede Tiefe hat einen Boden)
+
+- **Ehrliche Knoten:** wer im Raum steht, hat auch Inhalt zum Antworten — keine
+  leeren Karteileichen, die gefunden werden, aber nichts können.
+
+---
+
 ## Pflege-Konvention für diese Datei
 
 Neue Lehren bekommen einen eigenen `## Lehre N — Titel`-Block. Pflicht-
@@ -673,10 +715,12 @@ Verträgen passiert.
 
 ---
 
-**Letzte Aktualisierung:** 2026-07-10 · Lehre 11 „Das Embedding-Modell wird
-automatisch gecacht — Selbst-Hosten ist NICHT nötig" (Browser-Cache-Lehre;
-Auslöser: Klaus' Frage nach Modell-Selbst-Hosten, im Browser bestätigt ~5 s
-gecachter Start). Davor: 2026-06-26 · Lehre 10 „Mehrere Repos pro Sitzung
+**Letzte Aktualisierung:** 2026-07-10 · Lehre 12 „Sauberer Cross-Knoten-Lauf
+braucht eine feste Reihenfolge (Inhalt zuerst, dann Spore)" (Auslöser: A2 live
+grün, Klaus' Reihenfolge-Befund). Davor: 2026-07-10 · Lehre 11 „Das Embedding-
+Modell wird automatisch gecacht — Selbst-Hosten ist NICHT nötig" (Browser-Cache-
+Lehre; Auslöser: Klaus' Frage nach Modell-Selbst-Hosten, im Browser bestätigt
+~5 s gecachter Start). Davor: 2026-06-26 · Lehre 10 „Mehrere Repos pro Sitzung
 schaltet man beim START frei" (Sitzungs-/Workflow-Lehre, Claude Code on the web;
 Auslöser: Toolpoint-Vorbereitung, SB-KIMTool-Point außerhalb der Sitzungs-
 Freigabe). Davor: 2026-06-16 · Lehre 9 „localStorage ist kein Datenspeicher"
