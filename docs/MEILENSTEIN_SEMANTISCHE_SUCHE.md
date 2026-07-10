@@ -77,11 +77,47 @@ Modul 21 Spracheingabe → Modul 22 Widget-Shell → Mehrfach-Suche (App/Knoten/
 
 ---
 
-## 4. Was NOCH NICHT bewiesen ist (ehrlich)
+## 4. Was bewiesen ist — und was noch offen bleibt (ehrlich)
 
-Klaus' offene Frage, bewusst festgehalten: **Ist der Beweis erbracht, dass die
-volle bidirektionale, server-lose Cross-Knoten-Suche funktioniert?** — **Noch
-nicht vollständig.** Sauber getrennt:
+### ✅ 2026-07-10 — Die volle bidirektionale Cross-Knoten-Suche ist LIVE bewiesen
+
+**Der Meilenstein ist geschlossen.** Klaus' offene Frage — *„Ist der Beweis
+erbracht, dass die volle bidirektionale, server-lose Cross-Knoten-Suche
+funktioniert?"* — ist **beantwortet: ja.** Am 2026-07-10 lief in Klaus' Browser
+(Splitscreen, beide deployte `main`) die **echte Frage→Antwort in beide
+Richtungen**, server-los über `wss://relay.family-projekt.de`:
+
+- **Sage → Mixarium:** Sage fragte „Cocktails mit anderen Waldfrüchten" →
+  Mixarium suchte in **seinem** Getränke-Buch und schickte 5 bedeutungs-sortierte
+  Drinks zurück (Tropical Creamwave 0.83 … Tropische Kokostraum-Bowl 0.84), in **39 s**.
+- **Mixarium → Sage:** Mixarium fragte „wer weiß was über Pilze" → Sage suchte in
+  **seiner** Mycel-Bibliothek und antwortete mit 4 Modulen (Reputation, Membran,
+  Heterokaryose, Match), in **0,5 s**.
+
+Damit ist bewiesen: eine **Frage** reist als solche übers Brett, und eine
+**bedeutungs-sortierte Antwort aus dem aktuellen Inhalt** des anderen Knotens
+kommt zurück — nicht nur posten/lesen, sondern echtes Frage→Antwort. Zwei echte
+Browser, zwei Schlüsselpaare, ein machtloses Relais dazwischen, kein Server.
+Die KI-Brücke ist damit **nicht mehr** der einzige Beweis-Träger — das Mycel
+trägt die bidirektionale Bedeutungs-Suche selbst.
+
+**Was es gebraucht hat** (die Härtungs-Kette 2026-07-10): A2-Härtung II
+(Antworter vorwärmen + Timeout), saubere Sporen (`saubere-netz-anmeldung`),
+Korpus-leer-Falle abgesichert, und die **Adress-Wand-Härtung** (Raum zeigt pro
+Knoten-Name nur die neueste Karte; „Antworten: an" heftet eine frische Karte
+unter der lauschenden ID) — sonst zielte die Frage auf eine verwaiste Identität.
+Modul 23 (`enableAnswering`/`askNode`, Tag `sbkim-qry`), nicht Modul 15.
+
+**Ehrliche Rest-Grenze:** die Antwort kommt zuverlässig nur, wenn der
+Antworter-Tab **im Vordergrund + wach** ist (Handy/Tablet drosseln Hintergrund-
+Tabs) und seine Karte frisch ist. Eine Wiederhol-Frage auf eine gealterte Karte
+lief in „Visitenkarte veraltet". Der nächste Schliff: bei veralteter Karte
+automatisch neu lesen + einmal nachfragen (A3-Medium-Härtung).
+
+### Historie — der Weg dahin (was zuvor getrennt bewiesen war)
+
+Klaus' offene Frage, wie sie **vor** dem 2026-07-10 stand — bewusst als
+Werdegang festgehalten:
 
 - ✅ **Semantik-Hälfte bewiesen** — Bedeutung verstehen + ranken.
 - ✅ **Medium-Hälfte bewiesen (NEU, 2026-06-24)** — der **server-lose Transport
@@ -109,14 +145,15 @@ nicht vollständig.** Sauber getrennt:
   **Weiterhin offen bleibt** die semantische **Frage→Antwort**-Verdrahtung über
   dieses Medium (siehe nächster Punkt) — der Transport ist bewiesen, die
   Bedeutungs-Hälfte darüber noch nicht.
-- ⏳ **Was noch fehlt — die zwei Hälften verdrahten.** Bewiesen sind jetzt
-  *Semantik* (lokal) und *Medium* (server-loser Cross-Geräte-Transport) — aber
-  **getrennt**. Noch nicht gezeigt: dass eine **Frage** als solche übers Brett
-  geht und eine **bedeutungs-sortierte Antwort aus dem aktuellen Inhalt** eines
-  anderen Knotens zurückkommt (Frage→Antwort statt nur posten/lesen; Modul 04.C
-  `queryLocal` + Modul 15 Membran `op:"query"`). Plus: das Nostr-Brett trägt
+- ✅ **Die zwei Hälften sind verdrahtet (2026-07-10, siehe oben).** Was hier als
+  „noch fehlt" stand — eine **Frage** übers Brett + **bedeutungs-sortierte
+  Antwort aus dem aktuellen Inhalt** eines anderen Knotens — ist jetzt live
+  beidseitig belegt (Sage↔Mixarium). Korrektur zum damaligen Stand: der
+  Netz-Transport lebt in **Modul 23** (`enableAnswering`/`askNode`, Tag
+  `sbkim-qry`), nicht in Modul 15 `op:"query"` (das ist der Same-Browser-Zwilling).
+  **Offen bleibt** nur noch die Härtung des Mediums: das Nostr-Brett trägt
   bisher nur **öffentliche** Zettel ohne Haltbarkeitsgarantie und ohne
-  Spam-Schutz — das Medium ist bewiesen, nicht gehärtet.
+  Spam-Schutz (A3) — das Medium ist bewiesen, nicht gehärtet.
 - **Warum der Umweg über die KI-Brücke war?** Weil wir (noch) kein Knoten-Netz und
   keinen Server hatten, haben wir die **semantische Qualität** über eine externe
   KI (Pilz-Egress) getestet — als **Beweis-Träger und Brücke**, bis das Mycel
