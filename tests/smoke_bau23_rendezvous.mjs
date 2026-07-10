@@ -213,6 +213,23 @@ async function run() {
   record("Probe 6 — eigene nodeId nicht in den Karten", "nicht da", r6.cards.some((c) => c.nodeId === "OWN-ID-6") ? "fälschlich da" : "nicht da", !r6.cards.some((c) => c.nodeId === "OWN-ID-6"));
   record("Probe 6 — ts-absteigend sortiert", "ja", (r6.cards[0].ts >= r6.cards[1].ts) ? "ja" : "nein", r6.cards[0].ts >= r6.cards[1].ts);
 
+  // ── Probe 6b: collapse-by-name — Klaus' „immer mehr Identitäten" ──
+  // Ein Knoten hinterlässt durch wiederholtes „Aufräumen" mehrere Alt-IDs mit
+  // gleichem Namen; deren Kärtchen leben ~30 min weiter. Der Raum soll pro NAME
+  // nur die NEUESTE Karte zeigen (so trifft „Fragen" die lauschende ID).
+  const relay6b = makeMockRelay();
+  const ana6b = makeMockAnastomose();
+  await putCard(relay6b, "MIX-ALT", "Mein Mixarium", tNow - 600); // ~10 min alt
+  await putCard(relay6b, "MIX-NEU", "Mein Mixarium", tNow - 3);   // gerade eben
+  await putCard(relay6b, "SAGE-1", "Sage-Protokoll", tNow - 20);
+  SbkimRendezvous.configure({ relayClient: relay6b, anastomose: ana6b, spore: makeMockSpore(makeSpore("OWN-ID-6B", "ich")) });
+  const r6b = await SbkimRendezvous.discover({ listenMs: 60 });
+  record("Probe 6b — Mixarium ×2 → EINE Karte (newest-per-name)", "2", String(r6b.cards.length), r6b.cards.length === 2);
+  const mix6b = r6b.cards.find((c) => c.nodeName === "Mein Mixarium");
+  record("Probe 6b — die frischeste Mixarium-ID gewinnt", "MIX-NEU", mix6b && mix6b.nodeId, !!(mix6b && mix6b.nodeId === "MIX-NEU"));
+  const r6bOff = await SbkimRendezvous.discover({ listenMs: 60, collapseByName: false });
+  record("Probe 6b — collapseByName:false zeigt beide Alt-IDs", "3", String(r6bOff.cards.length), r6bOff.cards.length === 3);
+
   // ── Probe 7: connectAndAnnounce ohne Identität + createIdentity ──
   const relay7 = makeMockRelay();
   const ana7 = makeMockAnastomose();
