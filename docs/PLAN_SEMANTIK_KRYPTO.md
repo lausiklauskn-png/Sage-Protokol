@@ -173,6 +173,20 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   ist kein Server; bei vielen gleichzeitigen Fragen: Warteschlange/Priorisierung? (heute Rate-Limit ~6/min, kein
   persistenter Queue, single-threaded). (3) **Eigene Frage vs. fremde Fragen** — asymmetrisch, Priorität? Berührt
   Schutz-Modul 11 (Rate-Limit) + Meilenstein-Doku. **Erst Spec/Konzept, dann Bau.** _erledigt am: _____
+  - [x] **A12 Phase 1 — Briefkasten-TRANSPORT (Modul 23)** · **erledigt 2026-07-11** (Klaus-Entscheid „Briefkasten-Prinzip"):
+    Fragen/Antworten überleben jetzt eine Zeitverzögerung, ohne Dauer-Ticker (Empfangsmodus-treu).
+    (1) **Antworter-Lookback:** `enableAnswering` lauscht `since: now − RDV_ANSWER_LOOKBACK_SEC` (30 min) statt nur
+    „ab jetzt" → holt liegengebliebene Fragen beim Einschalten nach (qidSeen-Dedupe + Rate-Limit schützen).
+    (2) **Frager-Nachlese:** neue Fläche `fetchAnswers(qids, {lookbackSec, waitMs})` liest späte Antworten über
+    dasselbe Fenster nach; `askNode`-Timeout gibt jetzt `{pending:true, qid}` zurück (Frage bleibt „offen").
+    DOM-frei, fail-soft, `PROVIDER_MIN_MATCH`/Kern 02/05/05b unberührt. Smoke `smoke_bau23b_query.mjs` **28/28**
+    (Probe 13: ganzer Ablauf ask→offline→Timeout→Antworter-online-Lookback→antwortet→fetchAnswers holt nach).
+    **Reale Grenze: Aufbewahrungsdauer des Relais** (relay.family-projekt.de) — begrenzt, wie lange eine Frage liegen darf.
+  - [ ] **A12 Phase 2 — Briefkasten-UI + netzweiter Rollout** · `Bau` · ⏱ ~1 Sitzung (Folge): in `23_rendezvous_ui.js`
+    offene Fragen in `localStorage` (app-Suffix) merken + Knopf „📬 Antworten abholen (N offen)" (ruft `fetchAnswers`)
+    + Auto-Nachlese beim Panel-Öffnen; dann `23_rendezvous.js` **und** `23_rendezvous_ui.js` byte-1:1 in alle Träger
+    (Mixarium/Rezeptbuch/family/BLP/Tomys/Kimboard/Kimseek), Kim-recorded-sha (beide Dateien) + SW-Cache-Bumps.
+    Optional Relais-Retention prüfen/erhöhen. _erledigt am: _____
 
 - [x] **A13 — Identitäts-Isolierung gehärtet (Doppel-Laden + globales App-Suffix)** · `Bau` · **erledigt 2026-07-11**
   **Klaus' Live-Sichttest 2026-07-11:** mehrere PWAs auf der geteilten github.io-Origin teilten sich EINE Identität
