@@ -115,8 +115,25 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   > („es wird NICHTS weggefiltert"). Ein Entfern-Filter würde dort die Antwort eines
   > Menschen verstecken — falsch. Verneinung an der Pinnwand erledigt korrekt der
   > **KI-Richter** (er SCORED/ordnet um, entfernt nicht). Darum kein A4-Einbau in die Pinnwand.
-- [ ] **A5 — Rollout Hybrid-Vorfilter + Multi-Query in weitere Apps** · `Bau` · ⏱ ~1 Sitzung
-  BM25+Vektor + Multi-Query byte-gleich in: Pinnwand · Mixarium · Rezeptbuch · family-project · BookLedgerPro. _erledigt am: _____
+- [x] **A5 — Rollout Hybrid-Vorfilter + Multi-Query in weitere Apps** · `Bau` · **erledigt 2026-07-11**
+  BM25+Vektor war überall schon verdrahtet (Modul 04 byte-gleich zum Kanon in allen Apps); A5 = **Multi-Query**
+  (`expandQuerySimple` über app-eigene Synonym-Karte → `queryLocalMulti`) nachziehen. **Realitäts-Abgleich beim
+  Rollout (die Apps sind heterogen, nicht ein Byte-Kopie-Ziel):**
+  - **Mixarium** (PR #119, gemergt) + **Rezeptbuch** (PR #307, gemergt): natives Sinn-Suchfeld `semRun`, **Such-Fläche**
+    → Multi-Query im Gratis-Vorfilter (Richter-Pfad `queryLocalJudged` bewusst Single-Query, Modul 04 byte-frozen).
+  - **family-project** (PR #58, gemergt): (a) **Marktplatz-Suchfeld** `markt.html` ist eine **Sortier-Fläche**
+    (ordnet alle Einträge um, versteckt nichts) → Multi-Query als Sortier-Verbesserung (bester Cosinus über die
+    Frage-Varianten, kein Filter, Klaus-Entscheid 2026-07-11); (b) **Cross-Knoten-Antwort-Pfad** `15_membran.js`
+    (`op:"query"`) → `queryWithInclusion` (A4+A1) nachgezogen (war alte Fassung ohne A4).
+  - **BookLedgerPro** (PR #263, gemergt): (a) **eigene** Nutzer-Suche (`src/sbkim/hybridSearch`+`kontoSynonyme`)
+    war **schon** hybrid+synonym-fähig → kein Eingriff; (b) Cross-Knoten-Antwort-Pfad `15_membran.js` nachgezogen.
+  - **Pinnwand**: eigene Modul-03-Sortier-Suche (kein SbkimMatch) — **bewusst gelassen** (Klaus-Entscheid: läuft gut,
+    Umbau würde ein funktionierendes Feature riskieren). Offener Folgepunkt bei Bedarf: siehe A5b.
+  Jede App: eigener Headless-Smoke grün (Verdrahtungs-Guard über die ausgelieferte Synonym-Karte). Kern (02/05/05b +
+  `PROVIDER_MIN_MATCH` 0.80) unberührt, kein PROTOCOL_VERSION-Bump. _erledigt am: 2026-07-11_
+- [ ] **A5b — (Optional) Multi-Query-Sortierung auch in Pinnwand** · `Bau` nur b. Bedarf · ⏱ ~30 Min
+  Pinnwand ist eine Sortier-Fläche wie der family-Marktplatz; dasselbe „bester-Cosinus-über-Varianten"-Muster ließe
+  sich übertragen (kein Filter, nichts versteckt). Bewusst zurückgestellt (Klaus 2026-07-11: Pinnwand läuft gut). _erledigt am: _____
 - [ ] **A6 — Echte Embedding-Vektoren statt Demo-Stub** · `Bau` · ⏱ ~1–2 Sitzungen
   Modul 03: `_demo`-`domainVector` durch echte Vektoren ersetzen → erst dann „verified-match" statt nur „verified-spore". _erledigt am: _____
 - [ ] **A7 — Sichttest: App-Integration Hybrid + Multi-Query** · `Test` · ⏱ ~15–30 Min
