@@ -83,7 +83,7 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Kern 02/05/05b unangetastet, DB_VERSION/PROTOCOL_VERSION unberührt. Smokes
   `smoke_pflege_01_repoint_migrate.mjs` **21/21** + `smoke_bau23d_migrate.mjs` **22/22**, regress-frei,
   bundle-drift 21/21. _voller Fix (headless) am: 2026-07-11 · netzweiter Rollout + Browser-Sichttest offen_
-- [~] **A4 — Constraint-/Ausschluss-Filter + KI-Richter B3** · `Bau` · ⏱ ~1 Sitzung
+- [x] **A4 — Constraint-/Ausschluss-Filter + KI-Richter B3** · `Bau` · ⏱ ~1 Sitzung
   **Teil 1 (Ausschluss-/Negations-Filter) gebaut 2026-07-10 (Bau 04.I).** Klaus' Live-Befund:
   „alkoholfrei" / „ohne Erdbeeren" (Allergie) sind **Constraints**, keine Ähnlichkeit — der
   Cosinus rankt einen Erdbeer-Drink NAH an „Erdbeere", auch wenn man ihn ausschließen will;
@@ -104,9 +104,26 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   zurückliegenden Kopien (BLP/Tresor/SBK) war es zugleich ein voller Modul-Sync auf `main`.
   **Pinnwand bewusst NICHT** (siehe unten). family-project-Website geprüft: keine Links zu
   alten/toten Tools (nur Sage-Einladung, Tomys-Hub/showcase, mycel-karte — alle aktuell).
-  **Offen (Teil 2):** KI-Richter B3 — Unsicheres markieren/herabstufen, Sicheres hochstufen
-  (Hund-Katze-/Permethrin-Fall).
-  _Teil 1 + Rollout erledigt am: 2026-07-10 · Browser-Sichttest wartet auf Klaus · Teil 2 offen_
+  **Teil 2 (KI-Richter B3 — Sicherheit/Konsequenz) gebaut 2026-07-11 (Bau 04.H).** Klaus' Wunsch:
+  „Unsicheres markieren/herabstufen, Sicheres hochstufen (Hund-Katze-/Permethrin-Fall)". Der
+  opt-in KI-Richter (`hybridMatch`/`queryLocalJudged`) wägt jetzt **Sicherheit + Konsequenz** mit,
+  nicht nur thematische Ähnlichkeit: ein thematisch naher, aber schädlicher Treffer (Permethrin =
+  für Katzen giftig, als Antwort auf „Zecken-/Flohmittel für Hund UND Katze") bekommt `passt=false`
+  → wird **herabgestuft**. Neue **optionale, additive** Verdikt-Marke `sicherheit`
+  (`"gefahr"`/`"unsicher"`/`"sicher"`) macht die Konsequenz **sichtbar** (markieren). Prompt
+  erweitert (generische Konsequenz-Anweisung, kein Hardcode), Schema + `attestation.verdicts` +
+  `queryLocalJudged`-Kandidaten tragen `sicherheit` mit. **Fail-soft + rückwärts-kompatibel:**
+  fehlt/unbekannt → `null`, NIE ein Grund das Urteil zu verwerfen (alte Richter/Kopien liefern es
+  nicht). **REINE Anzeige/Urteil — gatet nichts,** `PROVIDER_MIN_MATCH` + 0.80-Andock-Riegel
+  (Modul 05) unberührt, Modul 05 nicht angefasst. **Nur Such-Flächen** (Richter ist dort schon
+  opt-in), nicht auf Sortier-Flächen. Smoke `smoke_bau04h_safety_verdict.mjs` **22/22**;
+  Regress-frei (04d 68, 04g 36, 22 260, 22e 45, 22f 17, 23 58, Standalone 49, Bundle 21).
+  Byte-Kopien `such-tool/modules/04`, `sbkim-bundle/modules/04` mitgezogen; dabei den
+  **pre-existing Drift** `sbkim-bundle/modules/23_rendezvous(_ui)` (aus A12 #620/#582 nie
+  gesynct) byte-1:1 geheilt (Bundle-Drift-Guard wieder grün).
+  _Teil 1 + Rollout erledigt am: 2026-07-10 · Teil 2 (B3) erledigt am: 2026-07-11 ·
+  Browser-Sichttest (KI-Schlüssel live) wartet auf Klaus · UI-Anzeige des ⚠️-Markers + netzweiter
+  Byte-Rollout des 04-Updates = Folge-Schritte_
 
   > **Architektur-Merke (2026-07-10): Ausschluss-Filter gehört NUR auf Korpus-SUCH-Flächen,
   > nicht auf Thread-SORTIER-Flächen.** Der Filter ENTFERNT Kandidaten — richtig, wenn man
