@@ -61,9 +61,15 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **Migration** einer bereits im `sbkim` liegenden Alt-Identität in die eigene Schublade (bzw.
   eine Modul-01-Härtung, die einen nachträglichen Suffix noch greifen lässt) ist der optionale
   Folge-Schritt.
-  **Offen:** netzweiter byte-1:1-Rollout des neuen Modul 23 in die 10 Endknoten (+ SW-Cache-
-  Bumps wo cache-first) — eigener Folge-Durchgang. Optional: NIP-09-Retraktion eigener Alt-
-  Präsenz-Karten beim Aufräumen. _Guard erledigt am: 2026-07-11 (headless) · Rollout + Browser-Sichttest offen_
+  **Rollout 2026-07-11 (9 von 11 Knoten ERLEDIGT, je eigener PR gemergt):** Kimseek, Kimboard,
+  Mein-Mixarium, Mein-Rezeptbuch, Tomys-Hub, Jasons-Tresor, Mein-Tresor, family-project (SW v11→v12),
+  BookLedgerPro (SW v194→v195, 2123/2123 grün) — byte-1:1 aus dem Sage-Kanon, reine Guard-Delta.
+  Bei Kimseek/Kimboard zugleich den bereits **roten** Drift-Guard geheilt (aufgezeichnete sha256 aus
+  früherem Rollout veraltet → auf die tatsächlichen Kopien nachgezogen). **NICHT im Rollout: Kim-Bell +
+  SB-KIMTool-Point** — sie stehen auf einem **pre-A4-Baseline** (Kim-Bell: 9 von 13 Modulen älter als
+  Kanon), ein 23-only-Bump ergäbe einen Mischversions-Knoten → sie brauchen einen **vollen Modul-Re-Sync**
+  (eigener Durchgang). Optional weiter offen: NIP-09-Retraktion eigener Alt-Präsenz-Karten beim Aufräumen.
+  _Guard + 9-Knoten-Rollout erledigt am: 2026-07-11 (headless) · Kim-Bell/SBK-Re-Sync + Browser-Sichttest offen_
 - [~] **A4 — Constraint-/Ausschluss-Filter + KI-Richter B3** · `Bau` · ⏱ ~1 Sitzung
   **Teil 1 (Ausschluss-/Negations-Filter) gebaut 2026-07-10 (Bau 04.I).** Klaus' Live-Befund:
   „alkoholfrei" / „ohne Erdbeeren" (Allergie) sind **Constraints**, keine Ähnlichkeit — der
