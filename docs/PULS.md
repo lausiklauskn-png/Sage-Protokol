@@ -144,6 +144,17 @@ Nebenbeobachtung (harmlos, kein Befund): SB-KIMTool-Point zeigte zwei Ladebalken
 Verbinden = das ~30 MB Embedding-Modell wird einmal in die eigene Schublade geladen, **nicht**
 eine zweite Identität (Panel bestätigte „✓ Identität erzeugt" genau einmal).
 
+**Zweiter, unabhängiger Beleg — Mycel-Karten-Aufzeichnung** („Mycel-Karte Analyse-Rekorder v1.3",
+Klaus, 08:00–08:47 Uhr desselben Tages, 38 Ereignisse): die Live-Karte hat mitgeschrieben, welche
+Identität jeder Knoten im gemeinsamen Raum (`sbkim-rdv`) trägt. Maschinell ausgewertet: **(1) keine
+einzige nodeId hing je an zwei Apps** (keine Kollision), **(2) kein Knoten zeigte je mehrere/wechselnde
+IDs** (jede App durchgehend genau eine). End-Schnappschuss: 9 Knoten gleichzeitig live, jeder mit
+eigener ID — **exakt dieselben** wie im Reihen-Test (family `c-lFJKXPJ`, toolpoint `VXbd6kIqFi`,
+jtresor `FBTYVnW3i`, mtresor `PwZkKkaUm`, tomyhub `s2-oNG-Eke`, kimseek `29NnYnLK`, kimboard
+`9Xlas1Gj9`, kimbell `fRx3M_xo7`, blp `itzsPCHy2`). Dass die 08-Uhr-Aufzeichnung dieselben IDs sah
+wie der 10:25-Test, belegt zusätzlich **stabile, persistente Identitäten** (überleben Zeit + Neuladen,
+ohne zu wandern). Damit ist die Isolierung **doppelt bewiesen** — manueller Reihen-Test + Live-Karten-Log.
+
 **Offen / nächster Schritt:** **A14** (vorbestehende `ensureSlotStores`-Race, Modul 05/01 — nicht
 durch A13 verursacht) separat untersuchen · **A15** (Zwei-Stufen-Verbinden: 🔎 stöbern anonym ↔
 🌐 voll mitmachen) + **A11** (Suchergebnis→Andocken) als Marktplatz-Folge · Tomys-Hub-Spore
