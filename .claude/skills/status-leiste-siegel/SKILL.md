@@ -103,6 +103,9 @@ Quelle `assets/sbkim-siegel-wappen.svg` — bei Änderungen **beide** nachziehen
 Proxy-Spans `#lamp-fremd` + `#sbkim-siegel-badge` an, an die Membran + Siegel hängen.
 
 ```
+0. window.SBKIM_DB_SUFFIX = "<app-suffix>"  // VOR dem 1. SBKIM-Script — Härtung PR #595 (2026-07-11);
+   //                                          sichert die eigene Schublade reihenfolge-/doppellade-fest.
+   //                                          Details + Suffix-Liste: Skill »saubere-netz-anmeldung«.
 1. SbkimStorage.init({ dbSuffix: "<app-suffix>" })                 // eigene Schublade
 2. await SbkimWidget.init({ allowedOrigins, repoUrl })             // 17 — Proxy-Spans
 3. SbkimMembrane.init({ allowedOrigins /* oder lampSelector */ })  // 15 — Wächter/FREMD
