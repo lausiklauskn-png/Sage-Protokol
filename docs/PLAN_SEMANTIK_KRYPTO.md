@@ -189,7 +189,7 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
     kein Knopf-Erinnern); Knopf „📬 Antworten abholen (N)"; sichtbare Quittung offen ⏳ / beantwortet ✓. REINE
     Anzeige, fail-soft (ohne Modul-23-`fetchAnswers` → no-op). Smoke `smoke_bau23_rendezvous_ui.mjs` **50/50**
     (9 neue Briefkasten-Proben). _erledigt am: 2026-07-11_
-  - [ ] **A12 Phase 2b — netzweiter Byte-Rollout beider Module** · `Bau` (Folge): `23_rendezvous.js` (Phase 1) **und**
+  - [x] **A12 Phase 2b — netzweiter Byte-Rollout beider Module** · **erledigt 2026-07-11** · `Bau` (Folge): `23_rendezvous.js` (Phase 1) **und**
     `23_rendezvous_ui.js` (Phase 2) byte-1:1 in alle Träger (Mixarium/Rezeptbuch/family/BLP/Tomys/Kimboard/Kimseek),
     Kim-recorded-sha (beide Dateien) + SW-Cache-Bumps. Optional Relais-Retention prüfen/erhöhen. _erledigt am: _____
 
