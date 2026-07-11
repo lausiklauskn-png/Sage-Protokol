@@ -65,11 +65,13 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Mein-Mixarium, Mein-Rezeptbuch, Tomys-Hub, Jasons-Tresor, Mein-Tresor, family-project (SW v11→v12),
   BookLedgerPro (SW v194→v195, 2123/2123 grün) — byte-1:1 aus dem Sage-Kanon, reine Guard-Delta.
   Bei Kimseek/Kimboard zugleich den bereits **roten** Drift-Guard geheilt (aufgezeichnete sha256 aus
-  früherem Rollout veraltet → auf die tatsächlichen Kopien nachgezogen). **NICHT im Rollout: Kim-Bell +
-  SB-KIMTool-Point** — sie stehen auf einem **pre-A4-Baseline** (Kim-Bell: 9 von 13 Modulen älter als
-  Kanon), ein 23-only-Bump ergäbe einen Mischversions-Knoten → sie brauchen einen **vollen Modul-Re-Sync**
-  (eigener Durchgang). Optional weiter offen: NIP-09-Retraktion eigener Alt-Präsenz-Karten beim Aufräumen.
-  _Guard + 9-Knoten-Rollout erledigt am: 2026-07-11 (headless) · Kim-Bell/SBK-Re-Sync + Browser-Sichttest offen_
+  früherem Rollout veraltet → auf die tatsächlichen Kopien nachgezogen). **Kim-Bell +
+  SB-KIMTool-Point** standen auf einem **pre-A4-Baseline** (Kim-Bell: 9 von 13 Modulen älter als
+  Kanon), ein 23-only-Bump ergäbe einen Mischversions-Knoten → sie brauchten einen **vollen Modul-Re-Sync**
+  (eigener Durchgang). **✅ ERLEDIGT 2026-07-11** (voller Re-Sync jeder geladenen Modul-Datei = Kanon;
+  Kim-Bell PR #15 + SB-KIMTool-Point PR #104 gemergt) → **Rollout netzweit 11/11.** Optional weiter
+  offen: NIP-09-Retraktion eigener Alt-Präsenz-Karten beim Aufräumen.
+  _Guard + 9-Knoten-Rollout erledigt am: 2026-07-11 (headless) · Kim-Bell/SBK-Re-Sync ERLEDIGT 2026-07-11 (11/11, headless grün) · Browser-Sichttest offen_
   **✅ Voller Fix (Identitäts-Isolierung) gebaut 2026-07-11** — der oben als „optional" markierte
   Folge-Schritt ist erledigt (Klaus hat den vollen Fix gewählt). **Teil 1 Modul-01-Härtung:**
   `init({dbSuffix})` re-pointet jetzt sicher auf einen abweichenden Suffix, wenn die offene DB
