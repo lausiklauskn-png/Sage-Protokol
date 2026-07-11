@@ -654,3 +654,25 @@ Block dieser Karte (Zeile „Sichttest").
 - **Glossar:** [IndexedDB-Speicher](../GLOSSAR.md)
 - **Integration:** `sbkim_integration.md` §4.2 (Schlüsselablage), §9 (keine Vermischung mit Hauptanwendungs-Storage)
 - **Interfaces:** [`INTERFACES.md` §1 → Modul 01_storage](../INTERFACES.md)
+
+---
+
+## Härtung „Identitäts-Isolierung" (2026-07-11)
+
+Zwei additive Eingriffe im Speicher-Fundament — **DB_VERSION unberührt**, kein
+Schema-Bruch, kein PROTOCOL_VERSION-Bump:
+
+1. **`init({dbSuffix})` Re-Point.** Ein Folge-`init` mit **abweichendem** Suffix
+   wird nicht mehr blind mit `InvalidDbSuffixError` abgewiesen. Ist die offene DB
+   **identitäts-leer** (`sbkim_keys` count 0 — typisch, wenn ein früher
+   suffix-loser `init()` den geteilten Topf `sbkim` aufmachte), schließt Modul 01
+   die Verbindung sauber und öffnet mit dem gewünschten Suffix neu (sicheres
+   Re-Point). Trägt sie schon Identität ODER Probe unsicher → weiter fail-fast.
+   Gleicher/kein Suffix byte-gleich. `_meta.dbSuffixRepointPolicy = "empty-safe"`.
+2. **`migrateIdentityFrom(oldDbName)`.** Kopiert alle `sbkim_*`-Stores
+   (keys+spore+meta+identitäts-Stores) aus einer fremden DB in die aktive — nur
+   **fehlende** Schlüssel (kein Überschreiben). Raw get→put, fehlende Stores
+   additiv via `ensureStore`. Fail-soft (resolves immer Summary; sync-Wurf nur
+   bei Bad-Arg). Aufrufer: Modul 23 `repairAndReconnect` / `ensureIdentity`.
+
+Smokes: `tests/smoke_pflege_01_repoint_migrate.mjs` (21/21). Bundle byte-1:1.

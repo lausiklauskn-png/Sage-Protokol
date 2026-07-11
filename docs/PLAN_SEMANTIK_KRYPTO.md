@@ -70,6 +70,17 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Kanon), ein 23-only-Bump ergäbe einen Mischversions-Knoten → sie brauchen einen **vollen Modul-Re-Sync**
   (eigener Durchgang). Optional weiter offen: NIP-09-Retraktion eigener Alt-Präsenz-Karten beim Aufräumen.
   _Guard + 9-Knoten-Rollout erledigt am: 2026-07-11 (headless) · Kim-Bell/SBK-Re-Sync + Browser-Sichttest offen_
+  **✅ Voller Fix (Identitäts-Isolierung) gebaut 2026-07-11** — der oben als „optional" markierte
+  Folge-Schritt ist erledigt (Klaus hat den vollen Fix gewählt). **Teil 1 Modul-01-Härtung:**
+  `init({dbSuffix})` re-pointet jetzt sicher auf einen abweichenden Suffix, wenn die offene DB
+  identitäts-leer ist (`_meta.dbSuffixRepointPolicy="empty-safe"`) — der nachträgliche Suffix
+  greift also, statt abgewiesen zu werden. **Teil 2 Migration:** `SbkimStorage.migrateIdentityFrom(
+  oldDbName)` holt eine im geteilten `sbkim` liegende Alt-Identität raw in die eigene Schublade
+  (nur fehlende Schlüssel). **Guard:** `repairAndReconnect` migriert im Alt-Fall + löscht dann den
+  Topf (Kollision aufgelöst, Identität behalten); `ensureIdentity` migriert vor Neu-Erzeugung.
+  Kern 02/05/05b unangetastet, DB_VERSION/PROTOCOL_VERSION unberührt. Smokes
+  `smoke_pflege_01_repoint_migrate.mjs` **21/21** + `smoke_bau23d_migrate.mjs` **22/22**, regress-frei,
+  bundle-drift 21/21. _voller Fix (headless) am: 2026-07-11 · netzweiter Rollout + Browser-Sichttest offen_
 - [~] **A4 — Constraint-/Ausschluss-Filter + KI-Richter B3** · `Bau` · ⏱ ~1 Sitzung
   **Teil 1 (Ausschluss-/Negations-Filter) gebaut 2026-07-10 (Bau 04.I).** Klaus' Live-Befund:
   „alkoholfrei" / „ohne Erdbeeren" (Allergie) sind **Constraints**, keine Ähnlichkeit — der

@@ -119,6 +119,51 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · Identitäts-Isolierung — Modul-01-Härtung (dbSuffix-Re-Point) + Migration (voller Fix, Klaus' Wahl)
+
+**Rolle:** Bausitzung (Brief `BRIEF_IDENTITAETS_ISOLIERUNG_MODUL01_MIGRATION.md`). Freibrief galt;
+Klaus hat ausdrücklich den **vollen Fix** (Modul 01 + Migration) gewählt. Kern-Modul-Umbau
+(Modul 01 = Speicher-Fundament) — headless dreifach abgesichert, DANN netzweit.
+
+**Warum:** Der A3-Guard (unten) verhindert nur den *Verlust* der Identität, behebt die
+*Kollision* nicht — nodeId `2zgB0…` wurde von zwei Apps geteilt (eine Identität im geteilten
+Topf `sbkim`), Handshakes „Request-Signatur ungültig". Wurzel: `init()` ist init-once; ein
+späterer `init({dbSuffix})` mit abweichendem Namen wurde blind abgewiesen → landete etwas ohne
+Suffix zuerst im geteilten `sbkim`, blieb es dort.
+
+**Gebaut — Teil 1 (Modul 01 `init` Re-Point):** ein Folge-`init({dbSuffix})` mit ABWEICHENDEM
+Suffix wird nicht mehr blind abgewiesen. Ist die offene DB **identitäts-leer** (`sbkim_keys`
+count 0) → Verbindung sauber schließen (`closeConnectionAndWait`), `dbPromise=null`, mit neuem
+Suffix neu öffnen (sicheres Re-Point). Trägt sie Identität ODER Probe unsicher → weiter
+fail-fast. `DB_VERSION` unberührt, gleicher/kein Suffix byte-gleich. `_meta.dbSuffixRepointPolicy
+= "empty-safe"`.
+
+**Gebaut — Teil 2 (`SbkimStorage.migrateIdentityFrom(oldDbName)`):** raw-IndexedDB-Kopie aller
+`sbkim_*`-Stores (keys+spore+meta+identitäts-Stores) aus einer fremden DB in die aktive —
+**nur fehlende Schlüssel** (kein Überschreiben). Fehlende Stores additiv via `ensureStore`.
+Fail-soft (resolves immer Summary; sync-Wurf nur bei Bad-Arg). Identität isoliert UND behalten.
+
+**Gebaut — Guard (Modul 23):** `repairAndReconnect` **migriert** im Alt-Fall die Identität aus
+`sbkim` in die eigene Schublade und **löscht dann** den geteilten Topf (Kollision aufgelöst +
+Identität behalten); scheitert die Migration / fehlt der Pfad → reiner Schutz als Fallback.
+`ensureIdentity` (Modus A) migriert ebenfalls, bevor es eine neue Identität erzeugt. Rückgabe
+um `migratedIdentity`, `_meta` um `hasMigrate` erweitert. Kern-Module 02/05/05b UNANGETASTET.
+
+**Tests:** neu `smoke_pflege_01_repoint_migrate.mjs` **21/21** (Re-Point leer/mit-Identität/
+gleicher-Suffix + Migration kopiert/kein-Überschreiben/fehlende-Quelle/gleiche-DB/Bad-Arg) ·
+`smoke_bau23d_migrate.mjs` **22/22** (Migration erfolgreich→Topf löschen · noop/Wurf/kein-Pfad→
+Schutz-Fallback · Schublade-trägt-Identität · ensureIdentity-Migrate · `hasMigrate`). Regress-frei:
+bau23c 16/16, bau23 58/58, bau23_ui 32/32, bau23b_korpus 24/24, bau23b_query 23/23, bau02y 33/33,
+pflege_01_fail_soft 8/8, versions_bump_race 6/6, slot-Pfade 05y/06y/07y/08y, query-relais 18/18,
+bundle-drift **21/21**. `sbkim-bundle/modules/{01,23}` byte-1:1 mitgezogen.
+
+**Offen / nächster Schritt:** **netzweiter byte-1:1-Rollout** von Modul 01 + 23 (+ ggf. 02-Fläche)
+in die 10 Endknoten + SW-Bumps wo cache-first + Drift-Guards, je eigener PR. Kim-Bell +
+SB-KIMTool-Point brauchen ohnehin vollen Re-Sync (pre-A4). **Sofort-Entlastung für Klaus:** pro
+App EINMAL frische eigene Identität erzwingen (Notfall-/„nur neu anmelden") + hart neu laden löst
+die Kollision pro App bis zum Rollout. **Browser-Sichttest (jede App EINE eigene stabile ID,
+Handshake ✓ etabliert) wartet auf Klaus.**
+
 ## 2026-07-11 · A3 (Medium härten) — Identitäts-Wurzel: „Aufräumen" schützt jetzt die Identität (Weg A)
 
 **Rolle:** Bausitzung (Brief A3 Medium-Härtung + Identitäts-Wurzel). Freibrief galt;
