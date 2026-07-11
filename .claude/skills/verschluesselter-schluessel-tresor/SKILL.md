@@ -30,8 +30,9 @@ Geheimnis-Ablage — **echte Krypto, PBKDF2-SHA256 600k → AES-GCM-256**, frisc
 Salt + IV pro Geheimnis, unabhängig vom Identitäts-Vault (kein `createVault` nötig):
 
 ```
-SbkimSafe.putSecret(name, klartext, passwort) -> Promise<true>   // verschlüsselt ablegen
+SbkimSafe.putSecret(name, klartext, passwort, opts?) -> Promise<true>   // verschlüsselt ablegen; opts.hint = KLARTEXT-Merkhilfe
 SbkimSafe.getSecret(name, passwort)          -> Promise<string|null>  // null = falsch/manipuliert/fehlt
+SbkimSafe.getSecretHint(name)                -> Promise<string|null>  // Merkhilfe OHNE Passwort lesen
 SbkimSafe.hasSecret(name)                    -> Promise<boolean>
 SbkimSafe.removeSecret(name)                 -> Promise<boolean>
 ```
@@ -64,6 +65,27 @@ BYOK-Feld:
 4. **Fremdnutzer-klar benennen:** ein Passwort · verschlüsselt · überlebt Neuladen ·
    andere Apps sehen ihn nicht. Kein Auto-Speichern ohne Nutzer-Aktion.
 
+## TEIL 2b — Passwort vergessen? (Vergessen-Schutz, Klaus 2026-07-11)
+
+Ein BYOK-Schlüssel ist **gratis neu holbar** beim Anbieter (der Nutzer holt SEINEN
+selbst — der App-Betreiber gibt NIE Schlüssel aus, sieht sie nie, trägt keine
+Support-Last). Deshalb ist „Passwort vergessen" **kein Datenverlust** — anders als
+beim echten Daten-/Identitäts-Tresor. Zwei einfache, offline-taugliche Bausteine
+(KEINE E-Mail, KEIN Server, KEIN PII — beides bräche offline + Marktplatz-Tauglichkeit):
+
+1. **Ehrlicher Hinweis (`FORGOT_HINT`)** — beim Merken/beim Fehlversuch ein Satz:
+   „Passwort vergessen? Kein Drama — hol dir beim Anbieter gratis einen neuen
+   Schlüssel und leg ihn neu ab." Das ist der eigentliche Vergessen-Schutz.
+2. **Optionale Merkhilfe (`opts.hint`)** — beim Merken freiwillig abfragen (leer
+   erlaubt, NICHT das Passwort selbst). Wird **unverschlüsselt** im **app-eigenen**
+   Safe-Datensatz abgelegt (IndexedDB dbSuffix → kein Cross-App-Leck) und beim
+   Entsperren via `getSecretHint(name)` OHNE Passwort in die Passwort-Frage
+   eingeblendet.
+
+> **Shamir 2-von-3** (`recoverPassword`) gibt es im Safe bereits — der ist für
+> **wertvolle, nicht ersetzbare** Geheimnisse (Identität/Daten), NICHT für einen
+> gratis-ersetzbaren KI-Schlüssel (dort wäre er Überkandidelung).
+
 ## TEIL 3 — Voraussetzungen in der App
 
 - `index.html` lädt `20_schluessel_safe.js` (+ Abhängigkeiten `01_storage.js`,
@@ -89,6 +111,8 @@ BYOK-Feld:
       Kanon), Drift-sha256 in den Recorded-Sha-Repos mitziehen.
 - [ ] Bedien-Knöpfe „🔒 merken" / „🔓 entsperren" mit `safeMod()`-Guard (fail-soft).
 - [ ] Passwort NIE gespeichert, Klartext NIE persistiert. `null` bei falschem PW.
+- [ ] Vergessen-Schutz: ehrlicher `FORGOT_HINT` + optionale Merkhilfe (`opts.hint` /
+      `getSecretHint`, app-eigen, unverschlüsselt, NIE das Passwort). Keine E-Mail/Server.
 - [ ] Ablage-Name eindeutig (`ki_richter_key:<provider>` o.ä.).
 - [ ] `ZERTIFIKAT_ASPEKTE`-Eintrag (Sicherheits-Modul berührt).
 - [ ] `index.html` lädt Modul 20 (+ 01); ohne Modul 20 fail-soft.

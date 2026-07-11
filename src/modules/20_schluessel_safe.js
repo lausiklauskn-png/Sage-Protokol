@@ -307,6 +307,8 @@
   }
   function secretKey(name) { return SECRET_PREFIX + String(name); }
 
+  var MAX_HINT_LEN = 140;   // Merkhilfe ist ein kurzes Stichwort, kein Aufsatz.
+
   async function hasSecret(name) {
     var st = getStorage(); if (!st) return false;
     try { await ensureVaultStore(); return !!(await st.get(STORE_NAME, secretKey(name))); }
@@ -315,7 +317,11 @@
 
   // Legt `plaintext` unter `name` verschlüsselt ab. Wirft nur bei klarem
   // Aufrufer-Fehler (leerer Name/Wert, zu kurzes Passwort, kein WebCrypto).
-  async function putSecret(name, plaintext, password) {
+  // `opts.hint` (optional) ist eine KLARTEXT-Merkhilfe fürs Passwort — sie
+  // wird bewusst NICHT verschlüsselt, weil man sie ja VOR dem Passwort lesen
+  // können muss. Sie liegt im app-eigenen Speicher (Modul 01 dbSuffix), nicht
+  // netzweit; der Aufrufer sorgt dafür, dass sie NICHT das Passwort selbst ist.
+  async function putSecret(name, plaintext, password, opts) {
     if (typeof name !== "string" || name.length === 0) throw makeError("InvalidSecretNameError", "Geheimnis-Name muss ein nicht-leerer String sein.");
     if (typeof plaintext !== "string" || plaintext.length === 0) throw makeError("InvalidSecretValueError", "Geheimnis-Wert muss ein nicht-leerer String sein.");
     if (typeof password !== "string" || password.length < MIN_PASSWORD_LEN) throw makeError("WeakPasswordError", "Passwort muss mindestens " + MIN_PASSWORD_LEN + " Zeichen lang sein.");
@@ -331,8 +337,22 @@
       v: 1, kdf: "PBKDF2-SHA256", iterations: SECRET_KDF_ITERATIONS, cipher: "AES-GCM-256",
       salt: b64urlEncode(salt), iv: b64urlEncode(iv), ct: b64urlEncode(new Uint8Array(ctBuf)),
     };
+    var hint = (opts && typeof opts.hint === "string") ? opts.hint.trim().slice(0, MAX_HINT_LEN) : "";
+    if (hint) blob.hint = hint;
     await st.put(STORE_NAME, secretKey(name), blob);
     return true;
+  }
+
+  // Liest die Klartext-Merkhilfe zu `name` OHNE Passwort. null, wenn keine
+  // hinterlegt ist (oder Speicher fehlt). Nur die Merkhilfe — nie das Geheimnis.
+  async function getSecretHint(name) {
+    if (typeof name !== "string" || !name.length) return null;
+    var st = getStorage(); if (!st) return null;
+    try {
+      await ensureVaultStore();
+      var blob = await st.get(STORE_NAME, secretKey(name));
+      return (blob && typeof blob.hint === "string" && blob.hint) ? blob.hint : null;
+    } catch (e) { return null; }
   }
 
   // Entschlüsselt das Geheignis `name`. null bei fehlend / falschem Passwort /
@@ -580,6 +600,7 @@
     // überlebt Reload/App-Schließen; andere Apps lesen nur Chiffretext.
     putSecret: putSecret,
     getSecret: getSecret,
+    getSecretHint: getSecretHint,
     hasSecret: hasSecret,
     removeSecret: removeSecret,
     // Test-Brücken (KEIN Public-Use): reine Shamir-Funktionen headless prüfbar.

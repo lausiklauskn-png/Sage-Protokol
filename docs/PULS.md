@@ -119,6 +119,44 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · Schlüssel-Tresor: KI-Richter-Schlüssel verschlüsselt merken + Vergessen-Schutz, netzweit
+
+**Rolle:** Bausitzung (Modul 20 + Netz-Panel + netzweiter Rollout + neuer Skill).
+
+**Was getan:**
+- **Modul 20 (Safe) kann Geheimnisse:** `putSecret/getSecret/hasSecret/removeSecret`
+  (PBKDF2-SHA256 600k → AES-GCM-256, frisches Salt/IV, kein Klartext at rest,
+  unabhängig vom Identitäts-Vault). Bereits als PR #612 auf `main`.
+- **Vergessen-Schutz (Klaus 2026-07-11, diese Runde):** BYOK-Schlüssel ist gratis
+  neu holbar (jeder Nutzer holt SEINEN selbst — kein Support/keine Last für Klaus),
+  „Passwort vergessen" ist also **kein Datenverlust**. Zwei offline-taugliche
+  Bausteine, KEINE E-Mail/KEIN Server/KEIN PII: (1) ehrlicher `FORGOT_HINT`,
+  (2) optionale **Merkhilfe** `putSecret(...,{hint})` + `getSecretHint(name)`
+  (unverschlüsselt, app-eigen via dbSuffix → kein Cross-App-Leck, NIE das Passwort;
+  wird beim Entsperren in die Passwort-Frage eingeblendet). Shamir 2-von-3 bleibt
+  für *wertvolle, nicht ersetzbare* Geheimnisse (nicht für gratis-KI-Schlüssel).
+- **Netz-Panel (Modul 23 UI):** „🔒 im Tresor merken" / „🔓 Tresor entsperren" am
+  KI-Richter, `safeMod()`-Guard (fail-soft ohne Modul 20). E-Mail-Recovery bewusst
+  verworfen (bräche offline + kein-PII; würde Fremdnutzer eine E-Mail abverlangen).
+- **Netzweiter Rollout** byte-1:1 in alle 9 Apps (Mixarium/Rezeptbuch/Tomys/BLP/
+  family/Kimboard/Kimseek/Kim-Bell/SB-KIMTool): Modul 20 neu geladen (nach 01),
+  23_ui + 16 nachgezogen; Mixarium-QC + Rezeptbuch-QC (build.py) synchron gehalten;
+  Drift-sha256 in Kimboard/Kimseek/Kim-Bell aktualisiert.
+- **Skill** `verschluesselter-schluessel-tresor` angelegt (Sage `.claude/skills/`) —
+  Rezept fürs Merken jedes BYOK-Geheimnisses in neuen Apps (inkl. Vergessen-Schutz).
+
+**Was getestet:** `smoke_bau20_secret.mjs` 18/18, `smoke_bau23c_ki_richter.mjs` 28/28
+(echtes WebCrypto + Bedien-Verdrahtung inkl. Merkhilfe). App-Drift-Guards grün
+(Kimboard 5/5, Kimseek 4/4, Kim-Bell 4/4, Rezeptbuch 6/6, BLP 2123/0, SB-KIMTool
+node --test 103/103 — Probe 27 im Such-Widget-Smoke ist **vorbestehend rot auf main**,
+unabhängig vom Tresor).
+
+**Was offen / nächster Schritt:** Klaus' Browser-Sichttest (merken → App schließen →
+öffnen → entsperren → Schlüssel da; Merkhilfe in der Passwort-Frage). Danach ggf.
+Merkhilfe auch an anderen BYOK-Feldern (Suche/OCR).
+
+---
+
 ## 2026-07-11 · Offline-Modell-Quelle (Modul 03) upstreamed + netzweit ausgerollt (A6-Baustein)
 
 **Rolle:** Bausitzung (Upstream + byte-1:1-Rollout, Klaus' ausdrückliche Freigabe

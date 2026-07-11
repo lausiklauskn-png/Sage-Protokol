@@ -339,7 +339,7 @@
     kiSaveBtnEl.style.display = "none";
     kiUnlockBtnEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 8px", "🔓 Tresor entsperren");
     kiUnlockBtnEl.type = "button";
-    kiUnlockBtnEl.title = "Holt deinen gemerkten KI-Schlüssel aus dem verschlüsselten App-Tresor (dein Tresor-Passwort).";
+    kiUnlockBtnEl.title = "Holt deinen gemerkten KI-Schlüssel aus dem verschlüsselten App-Tresor (dein Tresor-Passwort). Passwort vergessen? Kein Drama — beim Anbieter gratis einen neuen holen und neu ablegen.";
     kiUnlockBtnEl.style.display = "none";
     kiRow.appendChild(kiToggleEl);
     kiRow.appendChild(kiProvSelEl);
@@ -584,6 +584,15 @@
     if (typeof global.prompt === "function") { try { return global.prompt(purpose); } catch (e) { return null; } }
     return null;
   }
+  // Optionale Merkhilfe-Abfrage (leer erlaubt = keine Merkhilfe). Getrennt
+  // stubbar von askVaultPassword, damit Tests beide unterscheiden können.
+  function askVaultHint(purpose) {
+    if (typeof global.prompt === "function") { try { return global.prompt(purpose); } catch (e) { return null; } }
+    return null;
+  }
+  // Ehrlicher Vergessen-Hinweis: der KI-Schlüssel ist BYOK (jeder holt seinen
+  // eigenen, gratis) — Passwort vergessen ist kein Datenverlust.
+  var FORGOT_HINT = "Passwort vergessen? Kein Drama — hol dir beim Anbieter gratis einen neuen Schlüssel und leg ihn neu ab.";
   // Tresor-Knöpfe: „merken" wenn KI an + Schlüssel getippt + Safe da;
   // „entsperren" wenn KI an + KEIN Schlüssel getippt + Safe da.
   function updateKiVaultButtons() {
@@ -599,24 +608,36 @@
     if (!(kiKey && kiKey.length)) { setVoiceHint("Erst einen Schlüssel eingeben, dann merken."); return; }
     var pw = askVaultPassword("Tresor-Passwort (min. 8 Zeichen) — verschlüsselt deinen KI-Schlüssel:");
     if (!pw) return;
-    Promise.resolve().then(function () { return safe.putSecret(kiSecretName(), kiKey, pw); })
-      .then(function () { setVoiceHint("🔒 Schlüssel verschlüsselt im Tresor gemerkt — beim nächsten Mal mit 🔓 entsperren."); })
+    // Optionale Merkhilfe (leer lassen erlaubt). NICHT das Passwort selbst
+    // hier eintragen — die Merkhilfe ist unverschlüsselt lesbar.
+    var hintRaw = askVaultHint("Merkhilfe fürs Passwort (freiwillig, leer lassen möglich) — NICHT das Passwort selbst:");
+    var opts = (hintRaw && hintRaw.trim()) ? { hint: hintRaw.trim() } : undefined;
+    return Promise.resolve().then(function () { return safe.putSecret(kiSecretName(), kiKey, pw, opts); })
+      .then(function () { setVoiceHint("🔒 Schlüssel verschlüsselt im Tresor gemerkt — beim nächsten Mal mit 🔓 entsperren. " + FORGOT_HINT); })
       .catch(function (e) { setVoiceHint("Tresor-Fehler: " + (e && e.message ? e.message : e)); });
   }
   function onKiUnlockVault() {
     var safe = safeMod();
     if (!safe) { setVoiceHint("Tresor (Modul 20) nicht geladen."); return; }
-    var pw = askVaultPassword("Tresor-Passwort — holt deinen gemerkten KI-Schlüssel:");
-    if (!pw) return;
-    Promise.resolve().then(function () { return safe.getSecret(kiSecretName(), pw); })
-      .then(function (v) {
-        if (v) {
-          kiKey = v; if (kiKeyEl) kiKeyEl.value = v;
-          updateKiKeyLink(); updateKiVaultButtons(); renderAnswer();
-          setVoiceHint("🔓 Schlüssel aus dem Tresor geholt.");
-        } else { setVoiceHint("Kein gemerkter Schlüssel oder falsches Passwort."); }
-      })
-      .catch(function (e) { setVoiceHint("Tresor-Fehler: " + (e && e.message ? e.message : e)); });
+    var name = kiSecretName();
+    // Erst die (unverschlüsselte) Merkhilfe holen und in die Passwort-Frage
+    // einblenden, damit der Nutzer eine Erinnerungsstütze hat.
+    var getHint = (typeof safe.getSecretHint === "function") ? safe.getSecretHint(name) : Promise.resolve(null);
+    return Promise.resolve(getHint).catch(function () { return null; }).then(function (hint) {
+      var prompt = "Tresor-Passwort — holt deinen gemerkten KI-Schlüssel:";
+      if (hint) prompt = "Merkhilfe: " + hint + "\n\n" + prompt;
+      var pw = askVaultPassword(prompt);
+      if (!pw) return;
+      return Promise.resolve().then(function () { return safe.getSecret(name, pw); })
+        .then(function (v) {
+          if (v) {
+            kiKey = v; if (kiKeyEl) kiKeyEl.value = v;
+            updateKiKeyLink(); updateKiVaultButtons(); renderAnswer();
+            setVoiceHint("🔓 Schlüssel aus dem Tresor geholt.");
+          } else { setVoiceHint("Kein gemerkter Schlüssel oder falsches Passwort. " + FORGOT_HINT); }
+        })
+        .catch(function (e) { setVoiceHint("Tresor-Fehler: " + (e && e.message ? e.message : e)); });
+    });
   }
 
   // „🔑 Schlüssel holen"-Link nur zeigen, wenn KI-Richter an ist, noch KEIN
@@ -884,8 +905,8 @@
       keyLink: function () { return kiKeyLinkEl ? { visible: kiKeyLinkEl.style.display !== "none", href: kiKeyLinkEl.href } : null; },
       toggleKi: function () { onToggleKiRichter(); },
       kiSecretName: function () { return kiSecretName(); },
-      saveToVault: function () { onKiSaveToVault(); },
-      unlockFromVault: function () { onKiUnlockVault(); },
+      saveToVault: function () { return onKiSaveToVault(); },
+      unlockFromVault: function () { return onKiUnlockVault(); },
       vaultBtns: function () { return { save: !!(kiSaveBtnEl && kiSaveBtnEl.style.display !== "none"), unlock: !!(kiUnlockBtnEl && kiUnlockBtnEl.style.display !== "none") }; },
     },
   };
