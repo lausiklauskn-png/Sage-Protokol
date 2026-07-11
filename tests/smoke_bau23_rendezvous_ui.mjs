@@ -385,6 +385,16 @@ async function run() {
   record("stummer Bester → Nächstbester wird auch gefragt", "R-1 und S-1",
     askedIds.join(","), askedIds.includes("R-1") && askedIds.includes("S-1"));
 
+  // Last-Schoner: Doppelklick stapelt NICHT (nur EINE Raum-Suche).
+  stub.SbkimRendezvous._setDiscover([{ nodeId: "R-1", nodeName: "Rezeptbuch", ageSec: 5, spore: { domainVector: [0, 1, 0] }, _fit: 0.8 }]);
+  stub.SbkimRendezvous._setAsk({ ok: true, tookMs: 1000, results: [{ label: "X", score: 0.8 }] });
+  if (qInputA11) qInputA11.value = "last-schoner einmalig test";
+  const discBefore = stub.SbkimRendezvous._calls.discover;
+  if (fetchBtn) { fetchBtn.click(); fetchBtn.click(); }   // zwei Klicks sofort hintereinander
+  await sleep(40);
+  record("Doppelklick löst nur EINE Raum-Suche aus (Last-Schoner)", "1",
+    String(stub.SbkimRendezvous._calls.discover - discBefore), (stub.SbkimRendezvous._calls.discover - discBefore) === 1);
+
   // ---- KI-Richter über Cross-Knoten-Antwort (B3-Fix: Titel-als-Text) ----
   // Regress: Antwort-Items tragen nur label (keine text) — der Richter darf NICHT
   // mit „candidates[0].text muss nicht-leerer String sein" scheitern.
