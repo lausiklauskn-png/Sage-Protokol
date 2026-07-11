@@ -119,6 +119,52 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · A14-Rollout ABGESCHLOSSEN — Rest-Knoten + eingebettete Kopien netzweit nachgezogen
+
+**Rolle:** Bausitzung (Rollout-Abschluss, eng abgegrenzt, byte-1:1).
+
+**Was getan:** Der A14-Fix (`ensureStore`-Race, Kanon Sage PR #600) war noch
+NICHT überall angekommen. Prüfung netzweit über die **git-Blob-SHA** auf
+`origin/main` (GitHub-Code-Suche war stale und unbrauchbar — Blob-SHA ist der
+verlässliche Vergleich): Kanon-fixiert = `66b31066…`, Vor-Fix = `43a6ad59…`.
+
+Sieben Repos trugen noch den **exakten** Vor-Fix-Stand und wurden byte-1:1 auf
+den gehärteten Kanon gehoben (alle gemergt):
+
+| Repo | Datei | PR |
+|---|---|---|
+| Sage-Protokol | `sbkim-bundle/modules/01_storage.js` | #601 — Drift-Guard war rot, jetzt grün |
+| Mein-Rezeptbuch | `sbkim/01_storage.js` | #301 |
+| BookLedgerPro | `sbkim/01_storage.js` | #257 |
+| Jasons-Tresor | `sbkim/01_storage.js` | #118 |
+| Mein-Tresor | `sbkim/01_storage.js` | #60 |
+| SB-KIMTool-Point | `web/tools/sbkim-storage.js` (+ Einbettung `jasons-bibliothek/index.html`) | #107 |
+| Kim-Bell | `modules/sbkim-storage.js` (+ Drift-sha256 in `test/smoke.test.js`) | #18 |
+
+**Verifikation:** jede geänderte Datei per Blob-SHA byte-identisch zum Kanon
+(`66b31066…`) bestätigt; jedes Repo lädt das Modul als eigene `<script src>`
+(kein verstecktes Inline-Duplikat im Haupt-App-Pfad). Repo-Tests grün:
+SB-KIMTool-Point 103/103 (inkl. Einbettungs-Drift-Guard test 32, den der Fix
+zunächst rot zog → Einbettung nachgezogen), BookLedgerPro 2123/0, Jasons 59/59,
+Mein-Tresor 53/53, Mein-Rezeptbuch 6/6, Kim-Bell 4/4 (aufgezeichneter sha256
+nachgezogen), Sage `smoke_bundle_connect` Drift-Guard wieder grün.
+
+**Bewusst NICHT angefasst (Brief „divergiert → erst Ursache klären"):** die
+**getrimmten Inline-Kopien** des Moduls in den *Knoten-Demo-Seiten*
+`BookLedgerPro/sbkim/mycelknoten.html` und `SB-KIMTool-Point/web/tools/mycelknoten.html`.
+Sie weichen von der Standalone-Serialisierung ab (Header getrimmt, ~976 vs.
+1297 Zeilen), tragen aber denselben Race und werden von keinem Drift-Guard
+gedeckt → **eigener, browser-verifizierter Folge-Fix** (chirurgisches Einsetzen
+der zwei `ensureChain`-Hunks in den Inline-Block, nicht blind überschreiben).
+
+**Nicht betroffen (kein Storage-Modul auf main):** Kimhub, Kimsync, mycel-karte,
+ISD-Page-Entwurf, Mein-WorkFloh, die `-Page`-Repos, Muttis-Rezeptbuch(-Seite),
+yamilet-Promptgenerator. Mixarium/Tomys-Hub/family-project/Kimboard/Kimseek
+waren schon in der Vorsitzung fixiert (bestätigt: Blob = `66b31066…`).
+
+**Browser-Sichttest ungeprüft** — wartet auf Klaus' Browser-Lauf (der Race
+zeigte sich am Galaxy Tab bei wiederholtem Slot-/Modul-Wechsel).
+
 ## 2026-07-11 · A14 — `ensureStore`-Race gehärtet (Modul 01, netzweit)
 
 **Rolle:** Bausitzung (Kern-Modul 01, eng abgegrenzt).
