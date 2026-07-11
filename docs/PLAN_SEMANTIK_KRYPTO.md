@@ -127,6 +127,24 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Einziges Verfahren mit messbarer Verwandt-Trennung, aber Datenvertrag-Eingriff (Schnipsel-Vektoren in die
   Spore) + **alle Knoten neu signieren**. Bewusst zurückgestellt. _erledigt am: _____
 
+- [ ] **A11 — Such-Ergebnis → Frage → optional Andocken (Marktplatz-Kopplung Modul 22 ↔ 23)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
+  **Klaus' Befund 2026-07-11:** ein fremder Nutzer dockt nicht ungefragt an — er **sucht/fragt zuerst**. Heute sind
+  Such-Widget (Modul 22) und Andocken (Modul 23) getrennte Werkzeuge; der Handshake ist ein separater Klick.
+  **Vorschlag:** Klick auf ein **positives Suchergebnis** (Marktplatz / semantische PWA-Suche, z.B. family-project.de)
+  löst zuerst eine **Frage** an den Knoten aus (Antwort holen) und bietet dann **„🤝 mit diesem Knoten verbinden"** an
+  (Andock bleibt nutzer-bestätigt). Natürlicher Erst-Kontakt-Fluss statt separatem Andock-Knopf. **Verfassungstreu:**
+  Empfangsmodus + 0.80-Riegel unberührt, Andock bleibt bewusst/konsensuell — nur der Auslöse-Fluss wird
+  nutzerfreundlicher. _erledigt am: _____
+
+- [ ] **A12 — „Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)** · `Spec` · ⏱ ~1 Sitzung
+  **Klaus' Befund 2026-07-11 (echte Grenze des server-losen Designs):** heute ist Antworten **opt-in/manuell**
+  (Default aus, `enableAnswering`/`disableAnswering`, Modul 23.B), und der Antworter-Tab muss **vorn+wach** sein
+  (Meilenstein-Rest-Grenze). Offene Fragen: (1) **Erreichbarkeit** — mit „aus" gehen eingehende Fragen verloren; soll
+  ein Knoten „immer erreichbar" sein oder der Toggle **automatisch** schalten? (2) **Reihenfolge/Flut** — ein Browser
+  ist kein Server; bei vielen gleichzeitigen Fragen: Warteschlange/Priorisierung? (heute Rate-Limit ~6/min, kein
+  persistenter Queue, single-threaded). (3) **Eigene Frage vs. fremde Fragen** — asymmetrisch, Priorität? Berührt
+  Schutz-Modul 11 (Rate-Limit) + Meilenstein-Doku. **Erst Spec/Konzept, dann Bau.** _erledigt am: _____
+
 ## B) Verschlüsselung
 
 - [ ] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · ⏱ ~20–30 Min
