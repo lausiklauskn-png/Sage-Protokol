@@ -154,7 +154,13 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   `window.SBKIM_DB_SUFFIX` (App setzt es früh) → jeder Zugriff landet reihenfolge-unabhängig in `sbkim_<suffix>`.
   Netzweit ausgerollt (11/11 Apps: Modul 01 = Kanon + `window.SBKIM_DB_SUFFIX` vor dem ersten SBKIM-Script; Mycel-Karte
   ist reiner Beobachter → kein Fix nötig). Smoke `smoke_pflege_01_shared_topf_isolation.mjs` 7/7, regress-frei.
-  **Browser-Reihen-Test (jede App eigene nodeId) wartet auf Klaus' Bestätigung.**
+  **✅ Browser-Reihen-Test GRÜN (Klaus 2026-07-11):** Browser komplett geleert, alle Apps deinstalliert außer
+  Mycel-Karte, dann jede App einzeln geöffnet → Hard-Reload → „🌐 Mit dem Netz verbinden". **11/11 Apps zeigten
+  je eine EIGENE, verschiedene nodeId** — keine Kollision. Belege (nodeId-Anfang): Mixarium `1zh_Xkqfq` ·
+  Rezeptbuch `26HBrV80y` · BookLedgerPro `itzsPCHy2` · family-project `c-lFJKXPJ` · SB-KIMTool-Point `VXbd6kIqFi` ·
+  Jasons-Tresor `FBTYVnW3i` · Mein-Tresor `PwZkKkaUm` · Kimseek `29NnYnLK` · Kimboard `9Xlas1Gj9` ·
+  Tomys-Hub `s2-oNG-Eke` · Kim-Bell `fRx3M_xo7`. Das frühere Kollisions-Paar (SB-KIMTool-Point ↔ family-project)
+  ist sauber getrennt. Isolierungs-Fix netzweit im echten Browser bewiesen — A13 vollständig geschlossen.
 
 - [ ] **A14 — ensureStore-/ensureSlotStores-Race (Modul 05/01) beheben** · `Bau` · ⏱ ~1 Sitzung · **Befund 2026-07-11**
   Vorbestehender, sporadischer Fehler in Tomys-Hubs Verbund-E2E: `NotFoundError: One of the specified object stores was
