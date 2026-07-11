@@ -229,5 +229,49 @@ await B2.enableAnswering();
   t("12: kein Ziel / leerer Text → ok:false, kein Throw", r1.ok === false && r2.ok === false);
 }
 
+// Probe 13 — A12 BRIEFKASTEN: Frage überlebt Zeitverzögerung (Antworter war zu)
+// Klaus' Fall: A fragt, während der Antworter geschlossen ist → A läuft in den
+// Timeout (pending). Der Antworter kommt SPÄTER online (enableAnswering mit
+// Lookback) → holt die liegengebliebene Frage nach → antwortet. A liest die
+// späte Antwort per fetchAnswers([qid]) nach — ohne erneut zu fragen.
+{
+  const A2 = makeNode("A2");            // Frager
+  const Bk = makeNode("Bk");            // Antworter, kommt SPÄTER
+  let bkCalls = [];
+  await A2.init({ nodeName: "Frager A2", relayClient: relay, spore: mockSpore("node-A2") });
+  await Bk.init({
+    nodeName: "Antworter Bk", relayClient: relay, spore: mockSpore("node-Bk"),
+    match: { relatedness() { return 0; }, async queryLocal(text, k) { bkCalls.push({ text, k }); return B_HITS.slice(0, k); } },
+  });
+
+  // (a) Frage stellen, während Bk NICHT antwortet → Timeout, aber pending + qid.
+  const asked = await A2.askNode("node-Bk", "briefkastenfrage", { timeoutMs: 300 });
+  t("13a: Frage bei geschlossenem Antworter → Timeout, aber pending:true + qid",
+    asked.ok === false && asked.pending === true && typeof asked.qid === "string" && asked.qid.length > 0,
+    JSON.stringify(asked));
+  const pendingQid = asked.qid;
+
+  // (b) Antworter kommt SPÄTER online → Lookback holt die liegengebliebene Frage.
+  await Bk.enableAnswering();
+  await new Promise(res => setTimeout(res, 200));
+  t("13b: Antworter holt die liegengebliebene Frage nach (Lookback) + beantwortet sie",
+    bkCalls.some(c => c.text === "briefkastenfrage"), "bkCalls=" + JSON.stringify(bkCalls.map(c => c.text)));
+
+  // (c) Frager liest die späte Antwort nach — ohne erneut zu fragen.
+  const back = await A2.fetchAnswers([pendingQid], { waitMs: 250 });
+  const hit = (back.answers || []).find(a => a.qid === pendingQid);
+  t("13c: fetchAnswers liefert die späte Antwort zur offenen Frage",
+    back.ok === true && !!hit && hit.fromNodeId === "node-Bk", JSON.stringify(back));
+  t("13d: die nachgelesene Antwort trägt die Ergebnisse (Eierschecke …)",
+    !!hit && Array.isArray(hit.results) && hit.results.length >= 1 && hit.results[0].label === "Eierschecke",
+    hit ? JSON.stringify(hit.results) : "kein Treffer");
+
+  // (e) fail-soft: leere/unbekannte qid-Liste → ok:true, keine Antworten, kein Throw.
+  const empty = await A2.fetchAnswers([], { waitMs: 50 });
+  const none = await A2.fetchAnswers(["gibt-es-nicht"], { waitMs: 150 });
+  t("13e: fetchAnswers([]) + unbekannte qid → ok:true, leer, kein Throw",
+    empty.ok === true && empty.answers.length === 0 && none.ok === true && none.answers.length === 0);
+}
+
 console.log("\nTotal: " + (ok + fail) + " Proben, " + ok + " grün, " + fail + " rot.");
 process.exit(fail ? 1 : 0);
