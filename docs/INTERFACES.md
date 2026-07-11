@@ -255,6 +255,30 @@ Bietet (öffentlich):
   all(storeName)                         → Promise<Array<{key: string, value: any}>>
   clear(storeName)                       → Promise<void>
   ensureStore(storeName: string)         → Promise<void>          // additive Anlage dynamischer Stores ab v=4
+  migrateIdentityFrom(oldDbName: string) → Promise<Summary>       // Härtung 2026-07-11; kopiert Identitäts-Stores fehlend-only aus fremder DB in die aktive
+
+  Härtung „Identitäts-Isolierung" (2026-07-11) — zwei additive Eingriffe,
+  DB_VERSION UNBERÜHRT (kein Schema-Bruch), kein PROTOCOL_VERSION-Bump:
+    (1) init({dbSuffix}) Re-Point: ein Folge-init mit ABWEICHENDEM Suffix
+        wird nicht mehr blind mit InvalidDbSuffixError abgewiesen. Ist die
+        bereits offene DB identitäts-LEER (Store `sbkim_keys` count 0 —
+        typisch, wenn ein früher suffix-loser init() den geteilten Topf
+        `sbkim` aufmachte, bevor der Andocker den Suffix setzen konnte),
+        schließt Modul 01 die Verbindung sauber (closeConnectionAndWait) und
+        öffnet sie mit dem gewünschten Suffix neu (sicheres Re-Point). Trägt
+        die offene DB schon eine Identität ODER ist die Probe unsicher →
+        weiter fail-fast (InvalidDbSuffixError). Verhalten bei gleichem /
+        keinem Suffix byte-gleich. `_meta.dbSuffixRepointPolicy = "empty-safe"`.
+    (2) migrateIdentityFrom(oldDbName): kopiert alle sbkim_*-Stores
+        (sbkim_keys + sbkim_spore + sbkim_meta + identitäts-spezifische Stores)
+        aus einer FREMDEN DB in die aktive DB — NUR fehlende Schlüssel (kein
+        Überschreiben). Raw get→put (strukturklonbar), fehlende Stores additiv
+        via ensureStore. Fail-soft: resolves IMMER ein Summary-Objekt
+        { ok, copied, skippedExisting, stores, storesTouched, reason }; wirft
+        nur synchron bei Bad-Arg (oldDbName kein String). Zweck: eine im
+        geteilten Topf `sbkim` gelandete Identität in die eigene Schublade
+        `sbkim_<suffix>` holen (Kollision auflösen + Identität behalten).
+        Aufrufer: Modul 23 repairAndReconnect / ensureIdentity.
 
   ensureStore-Garantien (Bau 01.Y, § 9.5 Option A):
     - Idempotent: existierender Store → no-op-Promise (resolve undefined),
@@ -4692,6 +4716,39 @@ Konsumiert: Modul 05 (SbkimAnastomose.handshake/listenNostr), Modul 05b
         der Raum voll funktionsfähig, Karten ohne Score).
 Feuert: sbkim:nostr-listening (detail.active) für die VERKEHR-Lampe (Modul 17 /
         Status-Widget), fail-soft.
+
+Identitäts-Hygiene (Bau 23.C 2026-07-11 + Härtung Identitäts-Isolierung
+        2026-07-11) — zusätzliche öffentliche Fläche über die Kern-Module 05/05b/02
+        hinweg (nutzt NUR Modul 01 SbkimStorage für die eigene Schublade):
+  ensureIdentity(opts?)     → Promise<{ ok, created, nodeId?, reason? }>  // Modus A:
+                                              // sanft/idempotent/nicht-zerstörend.
+                                              // Härtung: liegt die einzige Identität
+                                              // noch im geteilten Topf `sbkim` und die
+                                              // eigene Schublade ist leer, wird sie via
+                                              // SbkimStorage.migrateIdentityFrom
+                                              // herübergeholt, BEVOR eine neue erzeugt
+                                              // würde (fail-soft; ohne Migrations-Pfad
+                                              // unverändert)
+  cleanupSharedOrigin(opts?) → Promise<{ dbDeleted, dbKept, swUnregistered,
+                               cachesDeleted, notes }>  // löscht NUR die eigene Origin
+                                              // (geteilter Topf + SW + Caches; eigene
+                                              // Schublade bleibt). opts.deleteSharedDb
+                                              // (Default true) steuert das DB-Löschen
+  repairAndReconnect(opts?) → Promise<{ ok, cleaned, created, protectedIdentity,
+                               migratedIdentity, identityNote, nodeId, reason,
+                               reloadHint }>  // Modus B (nutzer-ausgelöst, zerstörend).
+                                              // Härtung Identitäts-Isolierung: Alt-Fall
+                                              // (Identität nur im geteilten Topf) wird
+                                              // MIGRIERT (migrateIdentityFrom) und dann
+                                              // der Topf gelöscht → Kollision aufgelöst
+                                              // UND Identität behalten. Scheitert die
+                                              // Migration / fehlt der Pfad → reiner
+                                              // Schutz (Topf stehen lassen) als Fallback.
+                                              // migratedIdentity/protectedIdentity zeigen
+                                              // den gewählten Weg
+  _meta zusätzlich: hasStorage, hasMigrate, dbSuffix, sharedDbName + Bau-23.B-Felder
+                    (answering/queryTag/…). Kern-Module 02/05/05b UNANGETASTET;
+                    0.80-Andock-Riegel unberührt; kein PII/kein Secret persistiert.
 
 UI (geteilt, byte-1:1 kopierbar): src/modules/23_rendezvous_ui.js
         (window.SbkimRendezvousUI) — öffentlicher, app-agnostischer Floating-

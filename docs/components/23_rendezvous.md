@@ -190,3 +190,17 @@ zweiten Einbau-Ort.
   Andocken — sauber gemeldet, kein Fehler.
 - Marktplatz-Schicht (Such-Werkzeug Modul 22 über den Raum legen) ist ein
   eigener Folge-Strang nach dem Rollout.
+
+---
+
+## Härtung „Identitäts-Isolierung" (2026-07-11)
+
+`repairAndReconnect` **löst** den geteilte-Topf-Kollisionsfall jetzt auf, statt
+ihn nur zu schützen: liegt die einzige Identität noch im geteilten `sbkim`, wird
+sie via `SbkimStorage.migrateIdentityFrom` in die eigene Schublade **migriert**,
+DANN der Topf gelöscht (Kollision weg, Identität behalten). Scheitert die
+Migration oder fehlt der Pfad (älteres Storage-Modul) → reiner Schutz-Fallback
+(Topf stehen lassen). `ensureIdentity` (Modus A) migriert ebenfalls, bevor es
+eine neue Identität erzeugt. Rückgabe: `migratedIdentity`; `_meta.hasMigrate`.
+Kern-Module 02/05/05b unangetastet. Smoke `tests/smoke_bau23d_migrate.mjs`
+(22/22). Bundle byte-1:1.
