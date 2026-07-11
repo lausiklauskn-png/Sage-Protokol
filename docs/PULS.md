@@ -119,6 +119,39 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · A14 — `ensureStore`-Race gehärtet (Modul 01, netzweit)
+
+**Rolle:** Bausitzung (Kern-Modul 01, eng abgegrenzt).
+
+**Befund (reproduziert, headless):** Zwei GLEICHZEITIGE `ensureStore`-Aufrufe
+(z.B. Modul 05 `ensureSlotStores` neben Modul 07 Apoptose im selben Tick) lasen
+beide dasselbe `db.version`, errechneten beide `db.version + 1` und öffneten
+beide `indexedDB.open(name, N)`. Der zweite Open traf die schon auf N gehobene
+DB → **kein** `onupgradeneeded`, resolved aber trotzdem → sein Store wurde nie
+angelegt, `KNOWN_STORES` behauptete ihn dennoch → nächster Zugriff warf
+`NotFoundError: One of the specified object stores was not found`. Repro:
+8/8 Trials fielen auf dem unveränderten Modul.
+
+**Fix:** Serieller Anker `ensureChain` in `src/modules/01_storage.js` reiht
+jeden Versions-Bump strikt hinter den vorigen — jeder Lauf sieht ein frisches
+`db.version` (Idempotenz-Check + korrekter nächster Bump). Rein interne
+Serialisierung, die öffentliche `ensureStore`-Signatur (`Promise<void>`) bleibt
+unberührt; ein Fehlerpfad vergiftet die Kette nicht (Rejection wird abgefangen,
+an den Aufrufer aber durchgereicht). **KEIN** DB_VERSION-/PROTOCOL_VERSION-Bump.
+
+**Beweis:** neuer Smoke `tests/smoke_a14_ensurestore_concurrent_race.mjs` **4/4
+grün** (gleichzeitig 2/3 Stores + Modul-05-`ensureSlotStores`-Muster + zwei
+Wellen). Non-vakuum verifiziert: dieselben 4 Proben fielen 4/4 auf dem
+unveränderten Modul. Regression frei: `smoke_pflege_01_init_fail_soft` 11/11,
+`_repoint_migrate` 21/21, `_shared_topf_isolation` 7/7,
+`_versions_bump_race` 6/6.
+
+**Offen / nächster Schritt:** byte-1:1-Rollout des gehärteten Modul 01 in die
+Konsumenten-Repos (Tomys-Hub, Mixarium, family-project, Kimboard, Kimseek — alle
+waren byte-identisch zum Vor-Fix-Stand). Browser-Sichttest ungeprüft — wartet
+auf Klaus' Browser-Lauf (der Race zeigte sich am Galaxy Tab bei wiederholtem
+Slot-/Modul-Wechsel).
+
 ## 2026-07-11 · ✅ Browser-Reihen-Test GRÜN — Identitäts-Isolierung 11/11 live bewiesen
 
 **Rolle:** Begleit-/Sichttest-Sitzung (Klaus am Tablet, Freibrief galt). **Abschluss von A13.**
