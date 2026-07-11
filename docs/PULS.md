@@ -119,6 +119,42 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · Modul-01 Selbst-Heilung — netzweiter Rollout 11/11 (Aufräum-Rettung repariert)
+
+**Rolle:** Bausitzung (Anschluss an den 11/11-Re-Sync, gleiche Sitzung). Freibrief galt.
+**Auslöser (Klaus' Live-Sichttest 2026-07-11):** nach dem Re-Sync + komplettem Browser-
+Speicher-Löschen brach die „🧹 Aufräumen & neu anmelden"-Rettung (Modus B) auf **Mein
+Rezeptbuch** + **BookLedgerPro** ab mit „Pflicht-Stores fehlen in existing DB (v=7): sbkim_keys,
+…"; zugleich teilten **Kim-Bell + SB-KIMTool-Point** dieselbe Identität (`28MUVbD7…`, aus dem
+geteilten `sbkim`-Topf). Weil der Speicher vorher leer war → **echter Kern-Zustand, keine
+Alt-Verschmutzung**: auf der geteilten Pages-Origin kann durch openProbe-Bump-Race eine
+versioniert-aber-store-lose DB entstehen; Modul 01 warf hart `StorageOpenError` und reparierte
+nicht → Rettung konnte nie durchlaufen.
+
+**Fix (Sage-Kanon, PR #592 gemergt):** fehlt unter den Pflicht-Stores der Identitäts-Store
+`sbkim_keys`, kann die DB **keine Identität tragen** → gefahrloser Neu-Aufbau (löschen, frisch
+unter DB_VERSION öffnen) statt Fehler. Ist `sbkim_keys` da und nur ein anderer Store fehlt →
+weiter fail-fast (kein stiller Datenverlust). Open-Körper nach `openFreshAtDbVersion()`
+ausgegliedert (Initial-Pfad unverändert). `DB_VERSION` 4 unberührt, kein Schema-Bruch.
+`sbkim-bundle/modules/01_storage.js` byte-1:1 mitgezogen. Smoke `smoke_pflege_01_init_fail_soft`
+**11/11** (Probe 3 Selbst-Heilung + Probe 4 fail-fast-Grenze neu), regress-frei.
+
+**Netzweiter Rollout ERLEDIGT — alle 11 Endknoten byte-1:1 auf die neue Kanon-Version**
+(je eigener PR, gemergt, headless grün, SW-Cache-Bumps wo cache-first):
+Mein-Mixarium (#111, SW v49→v50) · Mein-Rezeptbuch (#299, SW network-first) · family-project
+(#50, SW v13→v14) · BookLedgerPro (#255, SW v196→v197, 2123/2123) · SB-KIMTool-Point (#105,
++ Embed jasons-bibliothek) · Jasons-Tresor (#116, 2 Kopien, 59/59) · Mein-Tresor (#58, 2 Kopien,
+53/53) · Kimseek (#8, SW v6→v7) · Kimboard (#8, SW v6→v7) · Tomys-Hub (#85, SW v6→v7) ·
+Kim-Bell (#16, SW v14→v15). **Live-Beleg:** Tomys-Hub-Verbund-E2E heilt jetzt den zuvor roten
+Fall „Identität aus leerer DB laden" (16/16, vorher 15/16).
+
+**Offen / nächster Schritt:** Klaus' Browser-Reihen-Test — pro App Hard-Reload +
+„🌐 Mit dem Netz verbinden": jede App zeigt eine **eigene, verschiedene** nodeId (eigene
+Schublade `sbkim_<app>`); „🧹 Aufräumen & neu anmelden" läuft jetzt sauber durch. Tomys-Hub
+(`tomyhub`) + family-project (`familyprojekt`) bekommen ihre lebende Identität in Klaus'
+Browser (eigene Instanz; Tomys Gerät bliebe ein separater Knoten). Optionale veröffentlichte
+`sbkim/spore.json` nur auf Wunsch (öffentliche Spore committen, privater Schlüssel bleibt im Browser).
+
 ## 2026-07-11 · Identitäts-Isolierung KOMPLETT — Kim-Bell + SB-KIMTool-Point voll re-synct (11/11)
 
 **Rolle:** Bausitzung (Brief `BRIEF_KIMBELL_SBK_VOLLER_RESYNC.md`). Freibrief galt.
