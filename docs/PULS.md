@@ -157,12 +157,26 @@ bau23c 16/16, bau23 58/58, bau23_ui 32/32, bau23b_korpus 24/24, bau23b_query 23/
 pflege_01_fail_soft 8/8, versions_bump_race 6/6, slot-Pfade 05y/06y/07y/08y, query-relais 18/18,
 bundle-drift **21/21**. `sbkim-bundle/modules/{01,23}` byte-1:1 mitgezogen.
 
-**Offen / nächster Schritt:** **netzweiter byte-1:1-Rollout** von Modul 01 + 23 (+ ggf. 02-Fläche)
-in die 10 Endknoten + SW-Bumps wo cache-first + Drift-Guards, je eigener PR. Kim-Bell +
-SB-KIMTool-Point brauchen ohnehin vollen Re-Sync (pre-A4). **Sofort-Entlastung für Klaus:** pro
-App EINMAL frische eigene Identität erzwingen (Notfall-/„nur neu anmelden") + hart neu laden löst
-die Kollision pro App bis zum Rollout. **Browser-Sichttest (jede App EINE eigene stabile ID,
-Handshake ✓ etabliert) wartet auf Klaus.**
+**Netzweiter Rollout ERLEDIGT für 9 Endknoten** (byte-1:1 Modul 01 + 23 aus dem Kanon, je eigener
+PR gemergt, SW-Cache gebumpt wo cache-first, Repo-Tests grün): **Kimseek** (#7, 4/4) · **Kimboard**
+(#7, 5/5) · **Mein-Mixarium** (#110, 14/14, md5-Mirror grün, sw-v49) · **Tomys-Hub** (#84, tomy-hub-v6)
+· **family-project** (#49, smoke_spore 6/6, sw-v13) · **Mein-Rezeptbuch** (#298, 13/13, mrz-v36) ·
+**Jasons-Tresor** (#115, 59/59, 2 Modul-01-Kopien) · **Mein-Tresor** (#57, 53/53, 2 Kopien) ·
+**BookLedgerPro** (#254, 2123/2123, v196). In jedem war Modul 01 == alter Kanon → sauberes Delta.
+
+**Bewusst NICHT partiell gebumpt — Kim-Bell + SB-KIMTool-Point** (Entscheid dokumentiert, nicht
+stillschweigend): ihr Modul 01 (`sbkim-storage.js`) ist zwar sauberes Alt-Kanon-Delta, aber ihr
+**Modul 23 (`sbkim-rendezvous.js`) liegt ~237–239 Zeilen hinter dem Kanon** (fehlt u.a. die
+Bau-23.B-Korpus-Kopplung, ist prä-A4). Ein 01+23-only-Bump auf Kanon wäre ein 237-Zeilen-Multi-
+Versions-Sprung bei Modul 23, während Match/Spore/Anastomose alt bleiben → **Mischversions-Knoten**
+(genau die im A3-Eintrag benannte Falle). Darum brauchen diese zwei einen **vollen Modul-Re-Sync**
+als eigenen Durchgang (Brief `BRIEF_KIMBELL_SBK_VOLLER_RESYNC.md`). Architektur-tiefgreifend →
+Klaus-Sichttest nach dem Re-Sync Pflicht.
+
+**Sofort-Entlastung für Klaus (heute, ohne Rollout):** pro App EINMAL frische eigene Identität
+erzwingen (Notfall-/„nur neu anmelden") + hart neu laden löst die Kollision pro App. **Browser-
+Sichttest (jede App EINE eigene stabile ID, Handshake ✓ etabliert) wartet auf Klaus** — auf den
+9 gemergten Apps läuft der Fix jetzt live nach hartem Neuladen.
 
 ## 2026-07-11 · A3 (Medium härten) — Identitäts-Wurzel: „Aufräumen" schützt jetzt die Identität (Weg A)
 
