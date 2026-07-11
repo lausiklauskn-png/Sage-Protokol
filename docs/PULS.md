@@ -119,6 +119,41 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · Netzweiter Modul-Drift-Audit — BLP 03+05 nachgezogen, family-project 03 als Fork markiert
+
+**Rolle:** Bausitzung (Sauberkeits-Audit + byte-1:1-Sync, Klaus' Freibrief „entscheide
+selbst die Reihenfolge, solange die Modul-01-Fehler weg sind — sauberes Coden").
+
+**Anlass:** Nach dem A14-Abschluss die Basis netzweit geprüft — sind die übrigen
+geteilten Kern-Module (02/03/05/05b/23) noch überall byte-1:1 zum Kanon? Vergleich per
+git-Blob-SHA auf `origin/main`.
+
+**Ergebnis:** Modul 01 (A14) + 04 (Hybrid/BM25+Multi-Query) sind netzweit **synchron**.
+Zwei echte Drifts gefunden, unterschiedlicher Natur:
+
+- **BookLedgerPro — reiner Rückstand (behoben, PR #258):** `03_embedding.js` (fehlte A3
+  Contextual Chunking) + `05_anastomose.js` (fehlte der Query-über-Relais-Transport
+  `queryNostr`) waren strikte Teilmengen des Kanons (255 bzw. Netto-Rückstand, keine
+  BLP-eigene Logik). Byte-1:1 nachgezogen (03=858819b1, 05=6bb282c1), `node tests/run.mjs`
+  2123/0 grün. **Datenschutz-Hinweis:** `05` ist Empfangsmodus — aktiviert nichts von
+  selbst; BLPs Buchhaltungs-Korpus geht erst übers Relais, wenn die App das Antworten
+  ausdrücklich verdrahtet (tut sie nicht).
+
+- **family-project — echter App-Fork (NICHT angefasst, Entscheid an Klaus):**
+  `03_embedding.js` ist **Kanon + eigenes Feature** (self-hosted Offline-Modell:
+  `detectModelSource`/`getModelSource` + Body-Probe gegen SPA-`try_files`, damit
+  transformers.js das Modell vom eigenen Server statt HuggingFace lädt). family hat A3
+  Contextual Chunking bereits; die 62 Zusatzzeilen sind das Offline-Feature. Blind
+  überschreiben würde es löschen → bewusst gelassen. **Offene Frage an Klaus:** soll das
+  Offline-Self-Hosting nach oben in den Kanon `src/modules/03_embedding.js` (und damit in
+  alle Apps) gehoben werden? Das ist netzweit nützlich (offline-first), aber ein
+  Architektur-Schritt mit eigener Spec-/Bau-Sitzung.
+
+**Nächster sinnvoller Schritt:** entweder das family-Offline-Feature upstreamen (Klaus'
+Entscheid) oder A5-Rest (Multi-Query im Such**feld** der Apps verdrahten — Modul 04 trägt
+`expandQuerySimple`/`queryLocalMulti` schon überall, die App-Suchfelder rufen aber nur
+`queryLocal({hybrid:true})`, noch nicht die Multi-Query-Erweiterung).
+
 ## 2026-07-11 · A14-Rollout ABGESCHLOSSEN — Rest-Knoten + eingebettete Kopien netzweit nachgezogen
 
 **Rolle:** Bausitzung (Rollout-Abschluss, eng abgegrenzt, byte-1:1).
