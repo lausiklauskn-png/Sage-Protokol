@@ -145,6 +145,31 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   persistenter Queue, single-threaded). (3) **Eigene Frage vs. fremde Fragen** — asymmetrisch, Priorität? Berührt
   Schutz-Modul 11 (Rate-Limit) + Meilenstein-Doku. **Erst Spec/Konzept, dann Bau.** _erledigt am: _____
 
+- [x] **A13 — Identitäts-Isolierung gehärtet (Doppel-Laden + globales App-Suffix)** · `Bau` · **erledigt 2026-07-11**
+  **Klaus' Live-Sichttest 2026-07-11:** mehrere PWAs auf der geteilten github.io-Origin teilten sich EINE Identität
+  über den geteilten Topf `sbkim` (SB-KIMTool-Point + family-project zeigten dieselbe nodeId, last-writer-wins).
+  Zwei Wurzeln: (A) Doppel-Laden des Storage-Moduls (z.B. `assets/sbkim-siegel.js` zieht `web/tools/*` nach) setzte
+  den State zurück → Suffix-Verlust; (B) öffnete ein Modul Storage VOR `init({dbSuffix})`, wurde der Default `sbkim`
+  geöffnet. **Fix (Modul 01, PR #595):** Idempotenz-Guard `if (global.SbkimStorage) return;` + Default-DB-Name aus
+  `window.SBKIM_DB_SUFFIX` (App setzt es früh) → jeder Zugriff landet reihenfolge-unabhängig in `sbkim_<suffix>`.
+  Netzweit ausgerollt (11/11 Apps: Modul 01 = Kanon + `window.SBKIM_DB_SUFFIX` vor dem ersten SBKIM-Script; Mycel-Karte
+  ist reiner Beobachter → kein Fix nötig). Smoke `smoke_pflege_01_shared_topf_isolation.mjs` 7/7, regress-frei.
+  **Browser-Reihen-Test (jede App eigene nodeId) wartet auf Klaus' Bestätigung.**
+
+- [ ] **A14 — ensureStore-/ensureSlotStores-Race (Modul 05/01) beheben** · `Bau` · ⏱ ~1 Sitzung · **Befund 2026-07-11**
+  Vorbestehender, sporadischer Fehler in Tomys-Hubs Verbund-E2E: `NotFoundError: One of the specified object stores was
+  not found` (`01_storage.js` Transaktion via `05_anastomose.js` `ensureSlotStores`). **Nicht** durch A13 verursacht
+  (auf `main` ohne den Fix identisch 15/16 rot) — eine flaky Race in der ensureStore-Versions-Bump-Achse: ein Slot-Store
+  wird in einer Transaktion angefragt, bevor der Versions-Bump ihn angelegt hat. Kann im Feld gelegentlich einen
+  Andock-/Antwort-Pfad stören. Getrennt untersuchen (Modul 05 ensureSlotStores + Modul 01 ensureStore-Sequenz). _erledigt am: _____
+
+- [ ] **A15 — Zwei-Stufen-Verbinden: Stöbern (anonym) ↔ Voll mitmachen (Identität)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen · **Idee Klaus 2026-07-11**
+  Für Marktplatz-Nutzer (z.B. family-project.de) die Einstiegshürde senken: **(1) 🔎 Nur stöbern/suchen** — kein
+  Identitäts-Aufbau, kein ~30-MB-Modell-Download, man findet andere, wird aber selbst NICHT gefunden (nur Beobachter).
+  **(2) 🌐 Voll mitmachen** — eigene Identität, auffindbar, andockbar (braucht einmal Modell + Identität).
+  „Bessere Auffindbarkeit garantiert durch Modul-Design" (A13) ↔ „einfaches Verbinden, schlechtere Auffindbarkeit".
+  Gehört mit A11 (Suchergebnis→Andocken) zusammen. Verfassungstreu (Empfangsmodus). _erledigt am: _____
+
 ## B) Verschlüsselung
 
 - [ ] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · ⏱ ~20–30 Min
