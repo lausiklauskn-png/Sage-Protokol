@@ -119,6 +119,32 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · A4 Teil 2 (Bau 04.H) — KI-Richter wägt Sicherheit/Konsequenz mit
+
+**Rolle:** Bausitzung (Modul 04), Freibrief. Auslöser: Klaus „ok 1." → A4 Teil 2.
+
+Der opt-in KI-Richter (`hybridMatch`/`queryLocalJudged`) beurteilte bisher nur die
+**thematische** Passung. Klaus' Referenzfall (Hund-Katze-/**Permethrin**): ein Mittel,
+das thematisch perfekt zur Frage „Zecken-/Flohmittel für Hund UND Katze" passt, aber für
+Katzen **giftig** ist, ranke oben — falsch. Jetzt wägt der Richter **Sicherheit + Konsequenz**:
+
+- **Prompt** um generische Sicherheits-/Konsequenz-Anweisung erweitert (kein Stoff-Hardcode):
+  thematisch nah + schädlich → `passt=false` → **herabgestuft**.
+- **Neue optionale, additive Verdikt-Marke `sicherheit`** (`gefahr`/`unsicher`/`sicher`) in
+  Schema, `attestation.verdicts` + `queryLocalJudged`-Kandidaten → macht die Konsequenz
+  **sichtbar** (markieren).
+- **Fail-soft + rückwärts-kompatibel:** fehlt/unbekannt → `null`, nie ein Grund das Urteil zu
+  verwerfen (alte Richter/Kopien liefern es nicht).
+- **REINE Anzeige/Urteil — gatet nichts:** `PROVIDER_MIN_MATCH` + 0.80-Andock-Riegel (Modul 05)
+  unberührt. **Nur Such-Flächen**, nicht Sortier-Flächen.
+
+Smoke `smoke_bau04h_safety_verdict.mjs` **22/22**; voller Sweep 0 echte Fehlschläge (13 Env-Skips
+`fake-indexeddb`/`playwright`, vorbestehend). Byte-Kopien `such-tool/modules/04` +
+`sbkim-bundle/modules/04` mitgezogen; dabei den pre-existing Drift `sbkim-bundle/modules/23_rendezvous(_ui)`
+(aus A12 #620/#582 nie gesynct) byte-1:1 geheilt (Bundle-Drift-Guard wieder grün). PR #624 gemergt.
+**Offen:** Browser-Sichttest mit echtem KI-Schlüssel (Klaus); UI-Anzeige des ⚠️-Markers (Modul 22) +
+netzweiter Byte-Rollout des 04-Updates in die App-Repos. PLAN A4 auf `[x]` gesetzt.
+
 ## 2026-07-11 · Rendezvous-UX + A12 Briefkasten (Erreichbarkeit trotz Zeitverzögerung)
 
 **Rolle:** Bausitzung (Modul 23 + UI), Freibrief. Auslöser: Klaus' Live-Test Tomys ↔ family.
