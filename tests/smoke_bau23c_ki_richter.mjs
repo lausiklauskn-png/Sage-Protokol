@@ -194,6 +194,26 @@ async function run() {
     record("🎤 Browser-Engine → erkannter Text landet im Frage-Feld", UI._test.askValue() === "wer verkauft tassen", UI._test.askValue());
   }
 
+  // ---- 8. „🔑 Schlüssel holen"-Direktlink (Fremdnutzer-Hilfe) ----
+  {
+    const stub = freshStub(async () => ({ available: true, verdicts: [] }), PROVIDERS);
+    const UI = loadUI(stub); await UI.init({ nodeName: "Rezeptbuch" });
+    UI._test.toggleKi();                 // KI an → Anbieter = claude (erster), noch kein Schlüssel
+    const l1 = UI._test.keyLink();
+    record("KI an ohne Schlüssel → Link sichtbar mit Anbieter-URL",
+      l1 && l1.visible && /anthropic\.com/.test(l1.href || ""), l1 && l1.href);
+    UI._test.setKeyInput("sk-123");      // Schlüssel getippt → Link weg
+    const l2 = UI._test.keyLink();
+    record("KI an MIT Schlüssel → Link verborgen", l2 && !l2.visible);
+  }
+  {
+    const stub = freshStub(async () => ({ available: true, verdicts: [] }), PROVIDERS);
+    const UI = loadUI(stub); await UI.init({ nodeName: "BLP", euOnly: true });
+    UI._test.toggleKi();                 // euOnly → Anbieter = mistral (EU)
+    const l = UI._test.keyLink();
+    record("euOnly → Link zeigt auf EU-Anbieter (mistral)", l && l.visible && /mistral\.ai/.test(l.href || ""), l && l.href);
+  }
+
   let pass = 0;
   for (const r of results) { if (r.ok) pass++; console.log(`[${r.ok ? "OK  " : "FAIL"}] ${r.name}` + (r.ok ? "" : `  → ${r.extra}`)); }
   console.log(`\n${pass}/${results.length} Proben grün`);
