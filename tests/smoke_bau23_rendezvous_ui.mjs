@@ -72,6 +72,14 @@ function makeMockRdv() {
     connectAndAnnounce: async (o) => { calls.connect++; calls._lastConnectOpts = o; return connectImpl(o); },
     discover: async () => { calls.discover++; return { ok: true, cards: discoverCards }; },
     handshakeCard: async (card) => { calls.handshake.push(card); return { outcome: "established", score: 0.9 }; },
+    // A11: nach Frage-Passung ranken — Mock sortiert nach dem je-Karte gesetzten
+    // `_fit` (absteigend) und hängt queryFit an (wie der echte rankCardsByQuery).
+    rankCardsByQuery: (cards, qv) => {
+      calls.rank = (calls.rank || 0) + 1; calls.lastRankQv = qv;
+      const list = (Array.isArray(cards) ? cards : []).map((c) => Object.assign({}, c, { queryFit: (typeof c._fit === "number" ? c._fit : null) }));
+      list.sort((a, b) => (b.queryFit == null ? -Infinity : b.queryFit) - (a.queryFit == null ? -Infinity : a.queryFit));
+      return list;
+    },
     askNode: async (card, text) => { calls.ask.push({ card, text }); return askResult; },
     fetchAnswers: async (qids) => { calls.fetch.push(qids); return fetchResult; },
     _calls: calls,
@@ -86,6 +94,9 @@ const stub = {};
 stub.document = makeDoc();
 stub.console = console;
 stub.SbkimRendezvous = makeMockRdv();
+// A11: Frage-Einbettung (Modul 03) — Mock liefert einen Dummy-Vektor, damit
+// onAutoAsk den Rank-Pfad (canRank && qv) nimmt.
+stub.SbkimEmbedding = { embedQuery: async () => [0.1, 0.2, 0.3] };
 // Minimaler Event-Bus (das UI lauscht via global.addEventListener auf
 // sbkim:handshake) + dispatchEvent zum Auslösen im Test.
 const _bus = {};
@@ -257,8 +268,8 @@ async function run() {
   discoverButton.click();
   await sleep(20);
   const cardsM = stub.document.querySelector("#sbkim-rdv-cards");
-  const askBtn = (function () { let f = null; (function w(n) { for (const c of n.children) { if (c.tagName === "BUTTON" && c.textContent.includes("Fragen")) { f = c; return; } w(c); } })(cardsM); return f; })();
-  record("❓ Fragen-Knopf an der Karte", "ja", askBtn ? "ja" : "nein", !!askBtn);
+  const askBtn = (function () { let f = null; (function w(n) { for (const c of n.children) { if (c.tagName === "BUTTON" && c.textContent.includes("gezielt fragen")) { f = c; return; } w(c); } })(cardsM); return f; })();
+  record("❓ gezielt-fragen-Knopf an der Karte", "ja", askBtn ? "ja" : "nein", !!askBtn);
 
   // Frage stellen, während der Antworter „zu" ist → askNode liefert pending+qid.
   if (qInput) qInput.value = "kuchen";
@@ -333,6 +344,46 @@ async function run() {
   await sleep(10);
   record("🗑 leeren macht den Briefkasten leer", "ja",
     JSON.parse(_ls[KEY] || "[]").length === 0 ? "ja" : "nein", _ls[KEY]);
+
+  // ---- A11: „🔎 Antwort holen" — Auto-Knoten-Auswahl nach Frage-Passung ----
+  const allButtons = [];
+  (function collect(n) { if (n.tagName === "BUTTON") allButtons.push(n); for (const c of n.children) collect(c); })(stub.document.body);
+  const fetchBtn = allButtons.find((b) => (b.textContent || "").includes("Antwort holen"));
+  record("Antwort-holen-Knopf vorhanden", "ja", fetchBtn ? "ja" : "nein", !!fetchBtn);
+
+  // Zwei Knoten im Raum, Rezeptbuch besser passend (_fit höher) als Sage.
+  stub.SbkimRendezvous._setDiscover([
+    { nodeId: "S-1", nodeName: "Sage", ageSec: 5, spore: { domainVector: [1, 0, 0] }, _fit: 0.10 },
+    { nodeId: "R-1", nodeName: "Rezeptbuch", ageSec: 5, spore: { domainVector: [0, 1, 0] }, _fit: 0.80 },
+  ]);
+  stub.SbkimRendezvous._setAsk({ ok: true, results: [{ label: "Kuchen", score: 0.9 }] });
+  const qInputA11 = stub.document.querySelector("#sbkim-rdv-q");
+  if (qInputA11) qInputA11.value = "etwas Süßes zum Kaffee";
+  const askBefore = stub.SbkimRendezvous._calls.ask.length;
+  if (fetchBtn) fetchBtn.click();
+  await sleep(20);
+  record("Auto-Ask bettet die Frage ein + rankt", "≥1 rank", String(stub.SbkimRendezvous._calls.rank || 0),
+    (stub.SbkimRendezvous._calls.rank || 0) >= 1);
+  const lastAsk = stub.SbkimRendezvous._calls.ask[stub.SbkimRendezvous._calls.ask.length - 1];
+  record("fragt AUTOMATISCH den bestpassenden Knoten (Rezeptbuch)", "R-1",
+    lastAsk && lastAsk.card && lastAsk.card.nodeId, lastAsk && lastAsk.card && lastAsk.card.nodeId === "R-1");
+  const cardsA11 = stub.document.querySelector("#sbkim-rdv-cards");
+  record("Karten nach Passung sortiert angezeigt (Überschrift)", "ja",
+    txtOf(cardsA11).includes("Passung") ? "ja" : "nein", txtOf(cardsA11).includes("Passung"));
+  record("Frage-Passung-Badge sichtbar", "ja",
+    txtOf(cardsA11).includes("Frage-Passung") ? "ja" : "nein", txtOf(cardsA11).includes("Frage-Passung"));
+  record("mindestens eine Frage abgesetzt", "true", String(stub.SbkimRendezvous._calls.ask.length > askBefore),
+    stub.SbkimRendezvous._calls.ask.length > askBefore);
+
+  // Nächstbester-Nachfass: bester Knoten stumm → nächstbester wird gefragt.
+  stub.SbkimRendezvous._setAsk({ ok: false, pending: true, qid: "q-x", reason: "Noch keine Antwort." });
+  const asksBeforeFallback = stub.SbkimRendezvous._calls.ask.length;
+  if (qInputA11) qInputA11.value = "noch eine Frage";
+  if (fetchBtn) fetchBtn.click();
+  await sleep(30);
+  const askedIds = stub.SbkimRendezvous._calls.ask.slice(asksBeforeFallback).map((a) => a.card && a.card.nodeId);
+  record("stummer Bester → Nächstbester wird auch gefragt", "R-1 und S-1",
+    askedIds.join(","), askedIds.includes("R-1") && askedIds.includes("S-1"));
 
   // fail-soft: ohne Modul 23.
   const savedRdv = stub.SbkimRendezvous;
