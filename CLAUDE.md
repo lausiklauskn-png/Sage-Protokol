@@ -488,6 +488,24 @@ ungemergten Branches lebten.
 
 ## Was du tust (Pflicht-Konventionen)
 
+- **Fremdnutzer-/Marktplatz-Brille — IMMER mit­denken (Klaus 2026-07-11).** Bei
+  **jeder** Planung und Umsetzung gilt der stehende Hintergedanke: *„Wie kann ich
+  ein derartiges Problem für **fremde Nutzer** meiner Apps/Pages und des
+  **family-projekt.de-Marktplatzes** ausschließen/verhindern — oder, wenn nicht
+  vermeidbar, **klar benennen**?"* Konkret:
+  - **Fail-soft für Fehlendes:** ein Forker ohne Modul X / ohne Schlüssel / ohne
+    Mikrofon muss die App **voll weiter nutzen** können (das Feature degradiert
+    still, das Grundgerüst bleibt) — nie ein toter Knopf, nie ein Crash.
+  - **Klar benennen, was passiert:** Kosten (eigener Schlüssel), Daten-Abfluss
+    (was an welchen KI-Anbieter geht), wo der Schlüssel bleibt (nur im Browser).
+  - **Marktplatz-Tauglichkeit:** Werkzeuge wie das „Mit dem Netz verbinden"-Panel
+    sind **Vorlage** für den family-projekt.de-Marktplatz — andere bieten ihre
+    Apps/Links an, **mit oder ohne** Mycel-Integration. Also app-agnostisch,
+    ohne Hardcodes, kopier-tauglich, offline-first.
+  - **Geteilte-Origin-Fallen vermeiden:** localStorage-/IndexedDB-Schlüssel
+    app-spezifisch (Suffix), damit Geschwister-/Fremd-Apps auf derselben Adresse
+    sich nicht gegenseitig stören (siehe Widget-Sichtbarkeits-Kollision 2026-07-11).
+
 - **Briefkasten pflegen — sitzungsübergreifend, fürs ganze Netz.** Du denkst
   ab jetzt nicht nur an dieses Repo, sondern an **alle angeschlossenen Knoten
   von Klaus**. Verbindlich in INTERFACES §11.6 (netzweite Tafel):
