@@ -119,6 +119,24 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · A11 Teil A (Bau 23.C) — Auto-Knoten-Auswahl + „🔎 Antwort holen"
+
+**Rolle:** Bausitzung (Modul 23), Freibrief, Plan-Modus vorab (Plan freigegeben). Auslöser:
+Klaus' Live-Test KimSeek→Mixarium — „bei 100 Knoten weiß ich nicht, wen ich frage; das soll
+automatisch gehen, und der Knopf gehört unter die Frage, nicht als ❓ neben Andocken".
+
+Neu: Modul 23 `rankCardsByQuery(cards, queryVec, {raw?})` rankt die Raum-Karten nach Passung
+der getippten Frage zu jedem Knoten-`domainVector` (Modul 04 `relatedness`, zentriert; DOM-frei,
+fail-soft). UI: Primärknopf **„🔎 Antwort holen"** direkt am Frage-Feld — bettet die Frage ein
+(Modul 03), liest den Raum, zeigt die Karten **nach Passung sortiert** (🔎-Badge) und fragt den
+**bestpassenden Knoten automatisch**; bleibt er stumm → **nächstbester** als Nachfass (sonst
+A12-Briefkasten). Per-Karte-Knopf bleibt als manueller Override „❓ gezielt fragen".
+**REINE Anzeige/Auswahl** — 0.80-Andock-Riegel + Kern 02/05/05b unberührt, kein PROTOCOL-Bump,
+Empfangsmodus. Smokes `smoke_bau23c_rank_by_query` 15/15, `smoke_bau23_rendezvous_ui` 65/65,
+Regress grün, Bundle-Drift-Guard 21/21. PR #626 gemergt. **Offen:** Klaus' Browser-Sichttest +
+netzweiter Byte-Rollout Modul 23; **Teil B** = lernender Sortierer (neuer Plan-Punkt A16);
+A11-Teil-B (Suchergebnis→Andocken-Kopplung Modul 22↔23) weiter offen.
+
 ## 2026-07-11 · A4 Teil 2 (Bau 04.H) — KI-Richter wägt Sicherheit/Konsequenz mit
 
 **Rolle:** Bausitzung (Modul 04), Freibrief. Auslöser: Klaus „ok 1." → A4 Teil 2.

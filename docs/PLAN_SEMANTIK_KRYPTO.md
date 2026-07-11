@@ -180,7 +180,16 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   löst zuerst eine **Frage** an den Knoten aus (Antwort holen) und bietet dann **„🤝 mit diesem Knoten verbinden"** an
   (Andock bleibt nutzer-bestätigt). Natürlicher Erst-Kontakt-Fluss statt separatem Andock-Knopf. **Verfassungstreu:**
   Empfangsmodus + 0.80-Riegel unberührt, Andock bleibt bewusst/konsensuell — nur der Auslöse-Fluss wird
-  nutzerfreundlicher. _erledigt am: _____
+  nutzerfreundlicher.
+  **Teil A (Auto-Knoten-Auswahl) gebaut 2026-07-11 (Bau 23.C, PR #626).** Klaus' Zusatz-Befund: bei vielen Knoten
+  kann der Nutzer nicht wissen, wen er fragt. Neu Modul 23 `rankCardsByQuery(cards, queryVec)` (Passung der Frage
+  zu jedem Knoten-`domainVector`, Modul 04 `relatedness` zentriert) + UI-Primärknopf „🔎 Antwort holen" unter dem
+  Frage-Feld: bettet die Frage ein (Modul 03), liest den Raum, sortiert die Karten nach Passung (🔎-Badge), fragt
+  den bestpassenden Knoten AUTOMATISCH, Nächstbester als Nachfass (sonst A12-Briefkasten). Reine Anzeige/Auswahl,
+  0.80-Riegel + Kern 02/05/05b unberührt. Smokes `smoke_bau23c_rank_by_query` 15/15, `smoke_bau23_rendezvous_ui`
+  65/65, Bundle-Drift-Guard 21/21. **Offen (Teil A):** Browser-Sichttest (Klaus) + netzweiter Byte-Rollout Modul 23.
+  **Offen (Teil B — Suchergebnis→Andocken-Kopplung Modul 22↔23):** der ursprüngliche „Klick auf Suchergebnis →
+  Frage → 🤝 verbinden"-Fluss im Such-Widget (family-projekt.de-Marktplatz) ist noch nicht gebaut. _Teil A erledigt am: 2026-07-11_
 
 - [ ] **A12 — „Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)** · `Spec` · ⏱ ~1 Sitzung
   **Klaus' Befund 2026-07-11 (echte Grenze des server-losen Designs):** heute ist Antworten **opt-in/manuell**
@@ -251,6 +260,18 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **(2) 🌐 Voll mitmachen** — eigene Identität, auffindbar, andockbar (braucht einmal Modell + Identität).
   „Bessere Auffindbarkeit garantiert durch Modul-Design" (A13) ↔ „einfaches Verbinden, schlechtere Auffindbarkeit".
   Gehört mit A11 (Suchergebnis→Andocken) zusammen. Verfassungstreu (Empfangsmodus). _erledigt am: _____
+
+- [ ] **A16 — Lernender Sortierer (selbst-verbessernd, on-device)** · `Bau` · ⏱ ~1 Sitzung · **Idee Klaus 2026-07-11**
+  Klaus' Wunsch (Geist der BLP-„selbstlernenden Kalkulation", aber auf die SUCHE): das mitgelieferte Sortier-
+  programm soll mit jedem Ja/Nein besser werden. Heute ist der End-Sortierer statisch (roher Cosinus/RRF, e5-small
+  quetscht die Werte → schwache Rangfolge). **Bau:** ein **display-only, fail-soft Re-Ranker in Modul 22** (NEBEN
+  `rankView`, NICHT in Modul 04 — der Protokoll-Kern bleibt zustandslos/Drift-Guard-sicher). Lern-Signal (positiv):
+  die 📌-Merkliste (`sbkim_search_widget_merkliste`); gelernte Gewichte on-device in neuem localStorage-Key
+  `sbkim_search_widget_reranker` (pro App/Origin). Re-Ranker gibt den `queryCorpus`-Kandidaten einen kleinen Boost
+  nach gelernten Mustern — **Nudge auf die bestehende Reihenfolge, verändert NIE die Mitgliedschaft, kreuzt NIE den
+  0.80-Riegel.** Kalt-Start = Identität (wie heute). Ehrliche Grenzen: lernt pro Gerät (nicht netzweit geteilt),
+  Kalt-Start = heute, positives Signal zuerst (negatives „nicht passend" optional Phase B.2). Byte-Kopie
+  `such-tool/modules/22` + Drift-Guard. _erledigt am: _____
 
 ## B) Verschlüsselung
 
