@@ -58,6 +58,25 @@ frische Karte beim Antworten). Rest-Grenze: Antworter-Tab muss vorn+wach sein
 was bewiesen ist und was nicht:
 [`docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md`](docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md).
 
+**✅✅ GESCHLOSSEN 2026-07-11 — ERSTE HUB-UNABHÄNGIGE Cross-Knoten-Q&A (Klaus'
+Browser, „Beweis dass es funktionieren könnte"):** bis hierher lief jede bewiesene
+Cross-Knoten-Suche über den **Hub Sage** (Sage↔Endknoten). Am 2026-07-11 fragten
+sich zum **ersten Mal Endknoten GEGENSEITIG, ohne dass Sage im Spiel war** —
+server-los übers geteilte Relais, im gemeinsamen Rendezvous-Raum (Modul 23):
+**BookLedgerPro** fragte „wo bekomme ich bedruckte Tassen?" → **Tomys Hub**
+antwortete aus SEINEM Katalog (Tasse 15oz/11oz bedruckt 0.84, Untersetzer 0.81,
+Handtuch 0.80, 2,9 s); **Mein-Rezeptbuch** fragte „wer kann meine Steuererklärung
+machen?" → Tomys antwortete (WorkFloh 0.81), BookLedgerPro ehrlich leer (0,2 s).
+Drei Endknoten (Rezeptbuch/Tomys/BookLedgerPro) im selben Raum, `outcome:
+"established"` bidirektional (Mycel-Analyse-Rekord 11:13 Uhr). **Bedeutsam:**
+Tomys⟷Sage lag bei 0.7977 < 0.80 — der Hub hätte den Match GAR NICHT vermittelt;
+die fachverwandten Knoten fanden sich **direkt** (Tomys⟷BookLedgerPro 0.8064,
+Tomys⟷Family 0.8073). Das ist der erste Beleg, dass das Mycel **als echtes Netz
+unter Gleichen** trägt, nicht nur sternförmig über einen Hub. Detail:
+[`docs/meilenstein/2026-07-11_hub-unabhaengige-cross-knoten-qa.md`](docs/meilenstein/2026-07-11_hub-unabhaengige-cross-knoten-qa.md).
+Rest-Grenze unverändert (Antworter-Tab vorn+wach; lebende Rendezvous-ID variiert
+gg. committeter — Adress-Wand, Modul 23).
+
 ---
 
 ## ▶ Aktuelle Arbeitsliste — was als Nächstes kommt (Pflege 2026-07-10)
