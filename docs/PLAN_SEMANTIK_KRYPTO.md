@@ -37,8 +37,33 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **A2-Härtung II** (Antworter vorwärmen beim „Antworten: an" + Frage-Timeout 60 s) + **saubere Sporen**
   (der ganze `saubere-netz-anmeldung`-Rollout) + **Inhalt-zuerst-Reihenfolge** (siehe Browser-Lehre 12).
   _getestet am: 2026-07-10_
-- [ ] **A3 — Medium härten** · `Bau` · ⏱ ~1–2 Sitzungen
-  Nostr-Brett ist bewiesen, aber ungehärtet: Spam-Schutz + Haltbarkeitsgarantie der Zettel. _erledigt am: _____
+- [~] **A3 — Medium härten** · `Bau` · ⏱ ~1–2 Sitzungen
+  Nostr-Brett ist bewiesen, aber ungehärtet: Spam-Schutz + Haltbarkeitsgarantie der Zettel.
+  **Bestandsaufnahme 2026-07-11:** Spam-Schutz (`underRateLimit`, 6 Antworten/min) ist
+  bereits **live verdrahtet** in `enableAnswering().onQuery` (Modul 23 Z. ~649); Karten-
+  Frische/Haltbarkeit ebenso (`freshSec`-TTL 30 min + `collapseByName` newest-per-name in
+  `discover()`). **Neu gebaut (Weg A — Identitäts-Wurzel, Kern statt Symptom):** „🧹 Aufräumen
+  & neu anmelden" (Modus B, `repairAndReconnect`) ist jetzt **identitäts-schonend** — es löscht
+  den geteilten Alt-Topf `sbkim` NUR, wenn die eigene Schublade `sbkim_<suffix>` die Identität
+  schon trägt (read-only IndexedDB-Probe `dbHasIdentity`). Steckt die einzige Identität noch
+  im geteilten Topf (Alt-Fall / frühe Ordering-Kollision), bleibt `sbkim` stehen → **kein
+  Identitätsverlust, keine ungewollte neue Identität**. Im Zweifel (Probe-Fehler) fail-safe
+  nicht löschen. `newIdentity:true` erzwingt weiter die volle Reinigung. Kern 01/02/05
+  **unangetastet** (nur Web-IndexedDB-API + öffentliche Modul-23-Fläche). Smoke
+  `smoke_bau23c_identity_protect.mjs` **16/16** (Fälle: Identität im Topf → geschützt · in
+  eigener Schublade → sauber gelöscht · newIdentity → volle Reinigung · nichts da → frisch).
+  Regress-frei (bau23 58, bau23_ui 32, bau23b_query 23, bundle-drift 21). sbkim-bundle-Kopie
+  byte-1:1 mitgezogen.
+  **Wurzel-Diagnose (für die Doku):** die Schubladen-Trennung hängt daran, dass der suffix-
+  `init({dbSuffix})` der ERSTE `SbkimStorage.init()`-Aufruf ist (Modul 01 ist init-once, ein
+  späterer abweichender Suffix wird abgewiesen). Ruft etwas vorher `init()` ohne Suffix, landet
+  die Identität im geteilten `sbkim`. Der Guard behebt den **Datenverlust**; die vollständige
+  **Migration** einer bereits im `sbkim` liegenden Alt-Identität in die eigene Schublade (bzw.
+  eine Modul-01-Härtung, die einen nachträglichen Suffix noch greifen lässt) ist der optionale
+  Folge-Schritt.
+  **Offen:** netzweiter byte-1:1-Rollout des neuen Modul 23 in die 10 Endknoten (+ SW-Cache-
+  Bumps wo cache-first) — eigener Folge-Durchgang. Optional: NIP-09-Retraktion eigener Alt-
+  Präsenz-Karten beim Aufräumen. _Guard erledigt am: 2026-07-11 (headless) · Rollout + Browser-Sichttest offen_
 - [~] **A4 — Constraint-/Ausschluss-Filter + KI-Richter B3** · `Bau` · ⏱ ~1 Sitzung
   **Teil 1 (Ausschluss-/Negations-Filter) gebaut 2026-07-10 (Bau 04.I).** Klaus' Live-Befund:
   „alkoholfrei" / „ohne Erdbeeren" (Allergie) sind **Constraints**, keine Ähnlichkeit — der

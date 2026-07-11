@@ -119,6 +119,43 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · A3 (Medium härten) — Identitäts-Wurzel: „Aufräumen" schützt jetzt die Identität (Weg A)
+
+**Rolle:** Bausitzung (Brief A3 Medium-Härtung + Identitäts-Wurzel). Freibrief galt;
+Weg-Wahl A von Klaus bestätigt („weiter mit dem Bau").
+
+**Befund (aus dem Code verifiziert):** Das gemeldete Symptom „🧹 Aufräumen & neu anmelden
+erzeugt eine neue Identität" hat seine Wurzel in Modul 01: `SbkimStorage.init()` ist
+**init-once** (Z. 355–371) — der erste Aufruf beansprucht den DB-Namen **synchron und
+endgültig**; ein späterer `init({dbSuffix})` mit abweichendem Namen wird **abgewiesen**
+(`InvalidDbSuffixError`, in den App-Inits per `catch` verschluckt). Ruft also irgendetwas
+`init()` **ohne** Suffix zuerst, landet die Identität im **geteilten** Topf `sbkim` (Modul 02
+schreibt ausschließlich über `SbkimStorage`). `cleanupSharedOrigin()` löschte genau diesen
+Topf → Identität weg → neue beim Neu-Anmelden.
+
+**Gebaut (Modul 23, Kern 01/02/05 unangetastet):** `repairAndReconnect` ist jetzt
+**identitäts-schonend**. Neue read-only IndexedDB-Probe `dbHasIdentity(dbName)` (öffnet lesend,
+prüft nicht-leeren `sbkim_keys`, löscht eine evtl. angelegte Phantom-DB wieder). Modus B löscht
+`sbkim` **nur**, wenn die eigene Schublade `sbkim_<suffix>` die Identität schon trägt; sonst
+bleibt `sbkim` stehen (`cleanupSharedOrigin({deleteSharedDb:false})`) → kein Identitätsverlust,
+keine ungewollte neue Identität. Im Zweifel (Probe-Fehler) fail-safe nicht löschen.
+`newIdentity:true` erzwingt weiter die volle Reinigung. Rückgabe um `protectedIdentity` +
+`identityNote` erweitert. Spam-Schutz (`underRateLimit` 6/min) + Karten-Frische
+(`freshSec`-TTL + newest-per-name) waren bereits live verdrahtet — nur bestätigt.
+
+**Tests:** neuer `smoke_bau23c_identity_protect.mjs` **16/16** (4 Fälle: im Topf→geschützt ·
+eigene Schublade→gelöscht · newIdentity→volle Reinigung · nichts da→frisch). Regress-frei:
+bau23 58/58, bau23_ui 32/32, bau23b_query 23/23, bundle-drift 21/21. `sbkim-bundle/modules/
+23_rendezvous.js` byte-1:1 mitgezogen.
+
+**Offen / nächster Schritt:** **netzweiter byte-1:1-Rollout** des neuen Modul 23 in die 10
+Endknoten (Kim-Bell `sbkim-rendezvous.js`, Kimseek/Kimboard/Mixarium/family/Tomys
+`23_rendezvous.js`, + Rezeptbuch/BLP/Tresor/Point) inkl. SW-Cache-Bumps wo cache-first —
+eigener Folge-Durchgang. Optionale Vertiefung: Migration einer bereits im `sbkim` liegenden
+Alt-Identität (bzw. Modul-01-Härtung für nachträglichen Suffix) + NIP-09-Retraktion eigener
+Alt-Präsenz-Karten. **Browser-Sichttest (wiederholtes „Aufräumen" behält EINE Identität) wartet
+auf Klaus.**
+
 ## 2026-07-10 · ⭐⭐ MEILENSTEIN GESCHLOSSEN — bidirektionale Cross-Knoten-Suche LIVE beidseitig + Rendezvous-Härtung netzweit
 
 **Der große Punkt.** Die volle **bidirektionale, server-lose Cross-Knoten-
