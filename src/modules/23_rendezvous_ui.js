@@ -59,6 +59,7 @@
   // 0.80-Andock-Riegel (Modul 05) ist davon UNBERÜHRT — reine Anzeige.
   var kiOn = false, kiProvider = "", kiKey = "";
   var kiToggleEl = null, kiProvSelEl = null, kiKeyEl = null, kiKeyLinkEl = null;
+  var kiSaveBtnEl = null, kiUnlockBtnEl = null;   // 🔒 im Tresor merken / 🔓 entsperren (Modul 20)
   // Anbieter → Seite, auf der man seinen EIGENEN Schlüssel holt. Fremdnutzer-
   // Hilfe (Klaus 2026-07-11): wählt jemand den KI-Richter und hat noch keinen
   // Schlüssel, verlinken wir direkt dorthin — statt „irgendwo in einem anderen
@@ -329,14 +330,29 @@
     kiKeyLinkEl.target = "_blank"; kiKeyLinkEl.rel = "noopener noreferrer";
     kiKeyLinkEl.title = "Öffnet die Seite des gewählten KI-Anbieters, wo du deinen eigenen Schlüssel erstellst (kostenlos anlegbar; Nutzung kann dort etwas kosten).";
     kiKeyLinkEl.style.cssText = "display:none;font-size:.72rem;padding:4px 8px;border-radius:8px;border:1px solid rgba(154,167,182,.35);color:#9fd2ff;text-decoration:none;white-space:nowrap";
+    // 🔒 im Tresor merken / 🔓 entsperren (Modul 20 Safe). Nur sichtbar, wenn
+    // der Safe geladen ist (fail-soft für Forker ohne Modul 20). Sicher: der
+    // Schlüssel wird verschlüsselt abgelegt (PBKDF2+AES-GCM), nie im Klartext.
+    kiSaveBtnEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 8px", "🔒 im Tresor merken");
+    kiSaveBtnEl.type = "button";
+    kiSaveBtnEl.title = "Legt deinen KI-Schlüssel verschlüsselt im App-Tresor ab (ein Passwort). Überlebt Neuladen und App-Schließen; andere Apps können ihn nicht lesen.";
+    kiSaveBtnEl.style.display = "none";
+    kiUnlockBtnEl = el("button", bsGhost + ";font-size:.72rem;padding:4px 8px", "🔓 Tresor entsperren");
+    kiUnlockBtnEl.type = "button";
+    kiUnlockBtnEl.title = "Holt deinen gemerkten KI-Schlüssel aus dem verschlüsselten App-Tresor (dein Tresor-Passwort).";
+    kiUnlockBtnEl.style.display = "none";
     kiRow.appendChild(kiToggleEl);
     kiRow.appendChild(kiProvSelEl);
     kiRow.appendChild(kiKeyEl);
     kiRow.appendChild(kiKeyLinkEl);
+    kiRow.appendChild(kiSaveBtnEl);
+    kiRow.appendChild(kiUnlockBtnEl);
+    kiSaveBtnEl.addEventListener("click", function () { onKiSaveToVault(); });
+    kiUnlockBtnEl.addEventListener("click", function () { onKiUnlockVault(); });
     panelEl.appendChild(kiRow);
     kiToggleEl.addEventListener("click", function () { onToggleKiRichter(); });
-    kiProvSelEl.addEventListener("change", function () { kiProvider = kiProvSelEl.value; updateKiKeyLink(); renderAnswer(); });
-    kiKeyEl.addEventListener("input", function () { kiKey = kiKeyEl.value; updateKiKeyLink(); });
+    kiProvSelEl.addEventListener("change", function () { kiProvider = kiProvSelEl.value; updateKiKeyLink(); updateKiVaultButtons(); renderAnswer(); });
+    kiKeyEl.addEventListener("input", function () { kiKey = kiKeyEl.value; updateKiKeyLink(); updateKiVaultButtons(); });
 
     cardsEl = el("div", "margin-top:10px");
     cardsEl.id = "sbkim-rdv-cards";
@@ -557,6 +573,52 @@
     if (kiProvider) kiProvSelEl.value = kiProvider;
   }
 
+  // Modul 20 (Safe) nur, wenn die Geheimnis-Ablage wirklich da ist — fail-soft.
+  function safeMod() {
+    var s = global.SbkimSafe;
+    return (s && typeof s.putSecret === "function" && typeof s.getSecret === "function") ? s : null;
+  }
+  function kiSecretName() { return "ki_richter_key:" + (kiProvider || "default"); }
+  // Passwort-Abfrage (Browser-prompt; in Tests stubbar). null = abgebrochen.
+  function askVaultPassword(purpose) {
+    if (typeof global.prompt === "function") { try { return global.prompt(purpose); } catch (e) { return null; } }
+    return null;
+  }
+  // Tresor-Knöpfe: „merken" wenn KI an + Schlüssel getippt + Safe da;
+  // „entsperren" wenn KI an + KEIN Schlüssel getippt + Safe da.
+  function updateKiVaultButtons() {
+    var safe = safeMod();
+    var canSave = kiOn && !!(kiKey && kiKey.length) && !!safe;
+    var canUnlock = kiOn && !(kiKey && kiKey.length) && !!safe;
+    if (kiSaveBtnEl) kiSaveBtnEl.style.display = canSave ? "" : "none";
+    if (kiUnlockBtnEl) kiUnlockBtnEl.style.display = canUnlock ? "" : "none";
+  }
+  function onKiSaveToVault() {
+    var safe = safeMod();
+    if (!safe) { setVoiceHint("Tresor (Modul 20) nicht geladen."); return; }
+    if (!(kiKey && kiKey.length)) { setVoiceHint("Erst einen Schlüssel eingeben, dann merken."); return; }
+    var pw = askVaultPassword("Tresor-Passwort (min. 8 Zeichen) — verschlüsselt deinen KI-Schlüssel:");
+    if (!pw) return;
+    Promise.resolve().then(function () { return safe.putSecret(kiSecretName(), kiKey, pw); })
+      .then(function () { setVoiceHint("🔒 Schlüssel verschlüsselt im Tresor gemerkt — beim nächsten Mal mit 🔓 entsperren."); })
+      .catch(function (e) { setVoiceHint("Tresor-Fehler: " + (e && e.message ? e.message : e)); });
+  }
+  function onKiUnlockVault() {
+    var safe = safeMod();
+    if (!safe) { setVoiceHint("Tresor (Modul 20) nicht geladen."); return; }
+    var pw = askVaultPassword("Tresor-Passwort — holt deinen gemerkten KI-Schlüssel:");
+    if (!pw) return;
+    Promise.resolve().then(function () { return safe.getSecret(kiSecretName(), pw); })
+      .then(function (v) {
+        if (v) {
+          kiKey = v; if (kiKeyEl) kiKeyEl.value = v;
+          updateKiKeyLink(); updateKiVaultButtons(); renderAnswer();
+          setVoiceHint("🔓 Schlüssel aus dem Tresor geholt.");
+        } else { setVoiceHint("Kein gemerkter Schlüssel oder falsches Passwort."); }
+      })
+      .catch(function (e) { setVoiceHint("Tresor-Fehler: " + (e && e.message ? e.message : e)); });
+  }
+
   // „🔑 Schlüssel holen"-Link nur zeigen, wenn KI-Richter an ist, noch KEIN
   // Schlüssel getippt ist und wir für den Anbieter eine Seite kennen.
   function updateKiKeyLink() {
@@ -575,6 +637,7 @@
     if (kiKeyEl) kiKeyEl.style.display = show;
     if (kiToggleEl) kiToggleEl.textContent = "🧠 KI-Richter: " + (kiOn ? "an" : "aus");
     updateKiKeyLink();
+    updateKiVaultButtons();
     renderAnswer();   // vorhandene Antwort sofort neu beurteilen/zurückstufen
   }
 
@@ -817,9 +880,13 @@
       providers: function () { return kiProviders(); },
       voiceClick: function () { onVoiceClick(); return outEl ? outEl.textContent : null; },
       askValue: function () { return askInputEl ? askInputEl.value : null; },
-      setKeyInput: function (v) { kiKey = v || ""; updateKiKeyLink(); },
+      setKeyInput: function (v) { kiKey = v || ""; if (kiKeyEl) kiKeyEl.value = kiKey; updateKiKeyLink(); updateKiVaultButtons(); },
       keyLink: function () { return kiKeyLinkEl ? { visible: kiKeyLinkEl.style.display !== "none", href: kiKeyLinkEl.href } : null; },
       toggleKi: function () { onToggleKiRichter(); },
+      kiSecretName: function () { return kiSecretName(); },
+      saveToVault: function () { onKiSaveToVault(); },
+      unlockFromVault: function () { onKiUnlockVault(); },
+      vaultBtns: function () { return { save: !!(kiSaveBtnEl && kiSaveBtnEl.style.display !== "none"), unlock: !!(kiUnlockBtnEl && kiUnlockBtnEl.style.display !== "none") }; },
     },
   };
 

@@ -214,6 +214,52 @@ async function run() {
     record("euOnly → Link zeigt auf EU-Anbieter (mistral)", l && l.visible && /mistral\.ai/.test(l.href || ""), l && l.href);
   }
 
+  // ---- 9. Tresor: KI-Schlüssel merken/entsperren (Modul 20 Safe) ----
+  {
+    const store = {};
+    const stub = freshStub(async () => ({ available: true, verdicts: [] }), PROVIDERS);
+    stub.SbkimSafe = {
+      putSecret: async (name, val, pw) => { if (!pw || pw.length < 8) throw Object.assign(new Error("kurz"), { name: "WeakPasswordError" }); store[name] = { val, pw }; return true; },
+      getSecret: async (name, pw) => (store[name] && store[name].pw === pw) ? store[name].val : null,
+      hasSecret: async (name) => !!store[name],
+    };
+    let promptReply = "tresor-pw-123";
+    stub.prompt = () => promptReply;
+    const UI = loadUI(stub); await UI.init({ nodeName: "Rezeptbuch" });
+    UI._test.setKi({ on: true, key: "sk-geheim", provider: "mistral" });
+    UI._test.toggleKi(); UI._test.toggleKi();   // an → aus → an, damit Buttons aktualisieren
+    // KI an + Schlüssel → „merken" sichtbar, „entsperren" nicht
+    UI._test.setKeyInput ? null : null;
+    const b1 = UI._test.vaultBtns();
+    record("Tresor: KI an + Schlüssel → 'merken' sichtbar", b1.save === true && b1.unlock === false, JSON.stringify(b1));
+    UI._test.saveToVault();
+    await new Promise((r) => setTimeout(r, 0));
+    record("Tresor: putSecret abgelegt (verschlüsselt via Modul 20)", !!store[UI._test.kiSecretName()]);
+    // Schlüssel leeren → „entsperren" sichtbar
+    UI._test.setKeyInput("");
+    const b2 = UI._test.vaultBtns();
+    record("Tresor: KI an ohne Schlüssel → 'entsperren' sichtbar", b2.unlock === true && b2.save === false, JSON.stringify(b2));
+    // Entsperren mit richtigem Passwort → Schlüssel wieder da
+    UI._test.unlockFromVault();
+    await new Promise((r) => setTimeout(r, 0));
+    record("Tresor: entsperren (richtiges PW) → Schlüssel gefüllt", UI._meta.kiRichter.hasKey === true);
+    // Falsches Passwort → nicht gefüllt
+    UI._test.setKeyInput("");
+    promptReply = "falsch";
+    UI._test.unlockFromVault();
+    await new Promise((r) => setTimeout(r, 0));
+    record("Tresor: falsches PW → Schlüssel bleibt leer (fail-soft)", UI._meta.kiRichter.hasKey === false);
+  }
+  {
+    // Ohne Modul 20 (Forker) → keine Tresor-Knöpfe, kein Crash
+    const stub = freshStub(async () => ({ available: true, verdicts: [] }), PROVIDERS);
+    const UI = loadUI(stub); await UI.init({ nodeName: "Fork" });
+    UI._test.setKi({ on: true, key: "x", provider: "mistral" });
+    UI._test.toggleKi(); UI._test.toggleKi();
+    const b = UI._test.vaultBtns();
+    record("Ohne Modul 20 → keine Tresor-Knöpfe (fail-soft)", b.save === false && b.unlock === false);
+  }
+
   let pass = 0;
   for (const r of results) { if (r.ok) pass++; console.log(`[${r.ok ? "OK  " : "FAIL"}] ${r.name}` + (r.ok ? "" : `  → ${r.extra}`)); }
   console.log(`\n${pass}/${results.length} Proben grün`);
