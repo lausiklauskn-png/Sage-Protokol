@@ -119,6 +119,31 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · Identitäts-Isolierung KOMPLETT — Kim-Bell + SB-KIMTool-Point voll re-synct (11/11)
+
+**Rolle:** Bausitzung (Brief `BRIEF_KIMBELL_SBK_VOLLER_RESYNC.md`). Freibrief galt.
+Die zwei bewusst ausgelassenen Knoten (pre-A4-Baseline) auf den **vollen Sage-Kanon**
+gehoben — **kein** 01+23-only-Bump (der hätte einen Mischversions-Knoten erzeugt),
+sondern Modul für Modul jede geladene Datei = Kanon.
+
+- **Kim-Bell** (PR #15 gemergt, `c081ee5`): alle 13 geladenen `modules/sbkim-*.js` auf
+  Kanon (10 geändert; apoptose/nostr-relay/noble waren schon Kanon). Drift-Guard-sha256
+  (`test/smoke.test.js`) nachgezogen, SW `kim-bell-v13→v14`. **node --test 4/4 grün.**
+- **SB-KIMTool-Point** (PR #104 gemergt, `f27784e`): `web/tools/*` 12 Module auf Kanon;
+  `such-tool/modules/03_embedding.js` auf Kanon + SW `sbkim-such-tool-v2→v3`;
+  `jasons-bibliothek/index.html` eingebettete Module 01+02 mitgezogen (Embed-Byte-Guard
+  `test/jason_lib.test.js` gewahrt). **npm test 103/103 grün.**
+- Bringt beiden: Modul-23 Identitäts-Schutz (Weg A), Bau-23.B-Korpus-Kopplung, Spore
+  `regenerateOwnSpore` + Embedding-Felder, `embedContentVector`/Contextual-Chunking (03).
+- **Verträge unberührt:** PROTOCOL_VERSION 0.1 · DB_VERSION 4 · PROVIDER_MIN_MATCH 0.80.
+  Alt-Dateinamen bleiben, nur Inhalt = Kanon. Kein PII.
+- **Bewusst unberührt:** SBK-Ein-Datei-Spiegel `andock.html`/`mycelknoten.html` (eigene
+  sha-Guard, Kanon-Quelle = Sages Ein-Datei-Tools, nicht `src/modules`) → Folge-Schritt bei Bedarf.
+
+**Damit ist der Identitäts-Isolierungs-Rollout netzweit 11/11.** Offen: **Klaus-Sichttest**
+(eigene stabile nodeId je App + Handshake ✓) läuft post-Merge auf den deployten Seiten
+(GitHub Pages von `main`, „erst mergen, dann sieht Klaus es"). PLAN A3 (Medium-Härtung) bleibt.
+
 ## 2026-07-11 · Identitäts-Isolierung — Modul-01-Härtung (dbSuffix-Re-Point) + Migration (voller Fix, Klaus' Wahl)
 
 **Rolle:** Bausitzung (Brief `BRIEF_IDENTITAETS_ISOLIERUNG_MODUL01_MIGRATION.md`). Freibrief galt;
@@ -210,8 +235,10 @@ bau23 58/58, bau23_ui 32/32, bau23b_query 23/23, bundle-drift 21/21. `sbkim-bund
 **Rollout 2026-07-11 ERLEDIGT für 9 von 11 Knoten** (je eigener PR gemergt): Kimseek, Kimboard,
 Mein-Mixarium, Mein-Rezeptbuch, Tomys-Hub, Jasons-Tresor, Mein-Tresor, family-project (SW→v12),
 BookLedgerPro (SW→v195, 2123/2123). Bei Kimseek/Kimboard den bereits roten Drift-Guard mitgeheilt.
-**Kim-Bell + SB-KIMTool-Point** stehen auf pre-A4-Baseline (Kim-Bell 9/13 Module älter) → brauchen
-vollen Modul-Re-Sync (eigener Durchgang), kein 23-only-Bump.
+**Kim-Bell + SB-KIMTool-Point** standen auf pre-A4-Baseline (Kim-Bell 9/13 Module älter) → brauchten
+vollen Modul-Re-Sync (eigener Durchgang), kein 23-only-Bump. **✅ ERLEDIGT 2026-07-11** (voller
+Re-Sync, PR #15 Kim-Bell + PR #104 SB-KIMTool-Point gemergt — siehe obersten PULS-Eintrag). **Rollout
+damit netzweit 11/11.**
 
 **Offen / nächster Schritt:** **netzweiter byte-1:1-Rollout** des neuen Modul 23 in die 10
 Endknoten (Kim-Bell `sbkim-rendezvous.js`, Kimseek/Kimboard/Mixarium/family/Tomys
