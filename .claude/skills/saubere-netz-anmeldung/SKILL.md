@@ -20,6 +20,31 @@ am Pfad. Ohne Trennung teilen sich also **alle** Apps *eine* Datenbank `sbkim`,
 **derselben** `nodeId` im Raum an, docken falsch an, "nur N verbinden sich". Der
 Browser verschluckt die getrennten Identitäten in einen Topf.
 
+## Härtung 2026-07-11 (PR #595) — warum `init({dbSuffix})` allein NICHT reicht
+
+`SbkimStorage.init({dbSuffix})` setzt den Schublade-Namen erst **zur Aufruf-Zeit**.
+Das genügt nicht, wenn (A) das Storage-Modul **doppelt geladen** wird (z.B. ein
+Siegel-Skript zieht `web/tools/*` dynamisch nach) — die IIFE lief erneut und
+**setzte den State zurück** → Suffix verloren → Rückfall auf den geteilten Topf
+`sbkim`; oder (B) **irgendein Modul den Storage VOR `init()` öffnet** → Default
+`sbkim`. So teilten sich mehrere Apps eine nodeId (real: SB-KIMTool-Point +
+family-project, last-writer-wins).
+
+**Der Fix (verbindlich für JEDE App):**
+
+1. **`window.SBKIM_DB_SUFFIX = "<app-suffix>"`** wird **ganz früh gesetzt — VOR dem
+   ersten geladenen SBKIM-Script** (im `<head>` bzw. vor dem ersten `modules/*`-Tag).
+   Modul 01 nimmt den **Default-DB-Namen von hier**, sodass **jeder** Storage-Zugriff
+   reihenfolge-unabhängig in `sbkim_<suffix>` landet — auch ein zu früher oder aus
+   einem doppelt geladenen Modul.
+2. **Idempotenz-Guard** in Modul 01: `if (global.SbkimStorage) return;` — ein zweites
+   Laden ist ein No-Op und kann den gesetzten Suffix nicht mehr zurücksetzen.
+
+`init({dbSuffix})` bleibt zusätzlich der explizite, sichtbare Aufruf — aber der
+globale Anker + Guard sind das, was die Isolierung **wirklich** hält. Additiv,
+rückwärtskompatibel, `DB_VERSION` unberührt. **Netzweit 11/11 ausgerollt + im
+Browser bewiesen (Klaus' Reihen-Test 2026-07-11: 11 Apps, 11 verschiedene nodeIds).**
+
 ## Der Ziel-Zustand (E1–E4) — dahin muss jede App
 
 - **E1** — die App läuft in ihrer **eigenen** Schublade `sbkim_<suffix>`, nicht in
@@ -44,6 +69,8 @@ Läuft bei jedem `init()`. **Idempotent** — beim zweiten, dritten Laden passie
 nichts mehr. **Löscht nie von selbst.** So bleibt die Identität stabil und das Netz
 kann feste Beziehungen aufbauen.
 
+0. **`window.SBKIM_DB_SUFFIX = "<app-suffix>"`** ist **vor dem ersten SBKIM-Script**
+   gesetzt (Härtung PR #595, siehe oben) — der globale Anker, der `init()` absichert.
 1. `SbkimStorage.init({ dbSuffix: "<app-suffix>" })` — **immer zuerst**, vor Spore
    und Rendezvous. Öffnet `sbkim_<suffix>` statt der Default-DB `sbkim`.
 2. Prüfen, ob in dieser Schublade schon eine eigene Identität liegt
@@ -88,11 +115,16 @@ vom Menschen ausgelöst. Genaue Reihenfolge (Klaus' Reihenfolge, bestätigt):
 
 - [ ] `SbkimStorage.init({ dbSuffix: "<suffix>" })` läuft **als Erstes**, vor Spore
       und Rendezvous. Suffix ist **eindeutig** pro App.
-- [ ] Bekannte Suffixe: Mixarium `mixarium` · Rezeptbuch `rezeptbuch` ·
-      BookLedgerPro `bookledgerpro` · **Sage `sage`** (in `sbkim-init.js`
-      `SbkimStorage.init({dbSuffix:"sage"})` — NICHT in index.html) · Kim-Bell
-      `kimbell` · **SB-KIMTool-Point `toolpoint`** (war ursprünglich ohne Suffix →
-      Kollisions-Quelle, muss gesetzt sein).
+- [ ] Bekannte Suffixe (alle 11 Apps live von `origin/main` verifiziert 2026-07-11):
+      Mixarium `mixarium` · Rezeptbuch `rezeptbuch` · family-project `familyprojekt` ·
+      **BookLedgerPro `bookledgerpro-sbkim`** (Identitäts-Store; die Rendezvous-Variante
+      `bookledgerpro` wird fail-soft auf dieselbe Schublade geheilt — NICHT als Suffix
+      benutzen) · **SB-KIMTool-Point `toolpoint`** (war ursprünglich ohne Suffix →
+      Kollisions-Quelle, muss gesetzt sein) · Jasons-Tresor `jasonstresor` ·
+      Mein-Tresor `meintresor` · Kimseek `kimseek` · Kimboard `kimboard` ·
+      Tomys-Hub `tomyhub` · Kim-Bell `kimbell` · **Sage `sage`** (in `sbkim-init.js`
+      `SbkimStorage.init({dbSuffix:"sage"})` — NICHT in index.html). **Mycel-Karte**
+      setzt **keinen** Suffix (reiner Beobachter, keine Identität).
 - [ ] Rendezvous mountet mit dem **richtigen** `nodeName` der App.
 - [ ] Modus A ist idempotent (löscht nie von selbst).
 - [ ] **Modus B ist in JEDEM Panel** (Knopf „🧹 Aufräumen & neu anmelden"), nur
