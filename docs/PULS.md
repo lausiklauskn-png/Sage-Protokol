@@ -119,6 +119,49 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · Offline-Modell-Quelle (Modul 03) upstreamed + netzweit ausgerollt (A6-Baustein)
+
+**Rolle:** Bausitzung (Upstream + byte-1:1-Rollout, Klaus' ausdrückliche Freigabe
+„Ja, upstreamen"). Spec-vor-Code light: additiv, Default byte-gleich, Headless-Beweis.
+
+**Was:** Das in **family-project** bewährte **Offline-first**-Feature aus dem Fork in den
+**Kanon** `src/modules/03_embedding.js` gehoben (Klaus' Entscheid nach dem Drift-Audit).
+Das Embedding-Modell wird vom **eigenen Server** (`<origin>/models/…`) statt HuggingFace
+geladen, wenn es dort liegt — `detectModelSource()` entscheidet per **Body-Probe** (ein
+SPA-Server liefert für fehlende Dateien die index.html mit 200+HTML statt 404; nur echtes
+JSON `{`… gilt als `local`), konsequent **fail-soft** (jeder Fehler → `remote`).
+`configureModelSource()` setzt `transformers.js env` passend. Surface `+getModelSource`/
+`+_detectModelSource`, `_meta.localModelRoot`/`localModelProbe`.
+
+**Strikt additiv:** ohne lokales Modell (Default) byte-gleiches Verhalten — gleiches Modell,
+gleiche Vektoren. **Kein** Spore-Feld, **kein** PROTOCOL_VERSION-/DB_VERSION-Bump,
+Match-Schwelle (04/05) unberührt.
+
+**Beweis (headless):** neuer Smoke `tests/smoke_a6_offline_model_source.mjs` **11/11**
+(fail-soft-Kette · SPA-HTML-Falle → remote · echtes JSON → local · `!res.ok`/Throw →
+remote · Surface/`_meta`). Regressionsfrei: `smoke_a3_contextual_chunking`,
+`smoke_bundle_connect`, `smoke_standalone_such_tool`, `pinnwand/_smoke` 60/60.
+(`smoke_inhaltstreuer_domainvektor` ist unabhängig rot — fehlendes npm-Paket
+`fake-indexeddb`, schon auf main, nicht diese Sitzung.)
+
+**Kanon-Merge:** Sage PR #604 (src + sbkim-bundle + such-tool + pinnwand byte-1:1,
+Drift-Guards grün). **Neuer Kanon-03 = `36e87c26` (sha256 `60d6f516`).**
+
+**Netzweiter byte-1:1-Rollout (alle gemergt):** Mixarium #114 · Rezeptbuch #302 ·
+BookLedgerPro #259 · Tomys-Hub #90 · Kimboard #11 · Kimseek #11 · Kim-Bell #19 ·
+SB-KIMTool-Point #108 (beide Kopien: `web/tools/sbkim-embedding.js` + `such-tool/modules`).
+family-project war schon Kanon (Quelle). Jede berührte Datei per Blob-SHA `36e87c26`
+bestätigt; Repo-Tests grün (BLP 2123/0, SB-KIMTool 103/103, Rezeptbuch 6/6, Mixarium-Smokes,
+Kim-Bell 4/4, Kimboard 5/0, Kimseek 4/0).
+
+**Nebenbefund + repariert:** Kimboard/Kimseek Drift-Guard (`test/smoke.test.js`) war auf
+`main` bereits **rot** — der A14-Rollout hatte `01_storage.js` aktualisiert, aber den
+aufgezeichneten sha256 (`28299cb8`) nicht nachgezogen (Ist: `e507aec1`). In denselben PRs
+mitrepariert → beide wieder grün.
+
+**Browser-Sichttest** (echtes lokales Modell vom eigenen Server laden) ungeprüft — wartet
+auf Klaus' Browser-Lauf.
+
 ## 2026-07-11 · Netzweiter Modul-Drift-Audit — BLP 03+05 nachgezogen, family-project 03 als Fork markiert
 
 **Rolle:** Bausitzung (Sauberkeits-Audit + byte-1:1-Sync, Klaus' Freibrief „entscheide
