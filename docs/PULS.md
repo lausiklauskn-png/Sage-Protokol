@@ -148,6 +148,12 @@ eigene Schublade→gelöscht · newIdentity→volle Reinigung · nichts da→fri
 bau23 58/58, bau23_ui 32/32, bau23b_query 23/23, bundle-drift 21/21. `sbkim-bundle/modules/
 23_rendezvous.js` byte-1:1 mitgezogen.
 
+**Rollout 2026-07-11 ERLEDIGT für 9 von 11 Knoten** (je eigener PR gemergt): Kimseek, Kimboard,
+Mein-Mixarium, Mein-Rezeptbuch, Tomys-Hub, Jasons-Tresor, Mein-Tresor, family-project (SW→v12),
+BookLedgerPro (SW→v195, 2123/2123). Bei Kimseek/Kimboard den bereits roten Drift-Guard mitgeheilt.
+**Kim-Bell + SB-KIMTool-Point** stehen auf pre-A4-Baseline (Kim-Bell 9/13 Module älter) → brauchen
+vollen Modul-Re-Sync (eigener Durchgang), kein 23-only-Bump.
+
 **Offen / nächster Schritt:** **netzweiter byte-1:1-Rollout** des neuen Modul 23 in die 10
 Endknoten (Kim-Bell `sbkim-rendezvous.js`, Kimseek/Kimboard/Mixarium/family/Tomys
 `23_rendezvous.js`, + Rezeptbuch/BLP/Tresor/Point) inkl. SW-Cache-Bumps wo cache-first —
