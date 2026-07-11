@@ -131,6 +131,18 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
     Umbau würde ein funktionierendes Feature riskieren). Offener Folgepunkt bei Bedarf: siehe A5b.
   Jede App: eigener Headless-Smoke grün (Verdrahtungs-Guard über die ausgelieferte Synonym-Karte). Kern (02/05/05b +
   `PROVIDER_MIN_MATCH` 0.80) unberührt, kein PROTOCOL_VERSION-Bump. _erledigt am: 2026-07-11_
+- [x] **Rendezvous-UX: Empfänger-Hinweis bei eingehendem Handshake** · `Bau` · **erledigt 2026-07-11**
+  Klaus' Befund (Tomys ↔ family): Tomys zeigte „✓ ANDOCK ETABLIERT", family merkte nichts. Ursache-Analyse:
+  (1) der Handshake funktioniert beidseitig auf Protokoll-Ebene (Modul 05 verlangt eine Live-Antwort der
+  Gegenseite — sonst „timeout"), aber die Antworter-UI hatte **keine** „jemand hat angedockt"-Anzeige;
+  (2) „Wer ist im Raum?" schaut nur ~30 min zurück (`RDV_FRESH_SEC_DEFAULT`), der Handshake nicht → wer nicht
+  frisch neu-angemeldet ist, taucht beim anderen nicht auf. Fix: `23_rendezvous_ui.js` lauscht auf
+  `sbkim:handshake` mit `direction:"incoming"`+`outcome:"established"` und zeigt einen Hinweis „🤝 X hat sich
+  mit dir verbunden" (dedupe, Cap 5, Blasen-Titel auch minimiert). REINE Anzeige — Protokoll/0.80-Riegel
+  unberührt, Kern 02/05/05b nicht angefasst. Smoke `smoke_bau23_rendezvous_ui.mjs` **41/41**. Netzweit byte-1:1
+  in 7 Träger (Mixarium/Rezeptbuch/family/BLP/Tomys/Kimboard/Kimseek), Kim-recorded-sha + SW-Cache-Bumps
+  nachgezogen. **Befund (pre-existing):** `sbkim-bundle/modules/23_rendezvous_ui.js` ist ~332 Zeilen alt
+  (fehlt KI-Richter/Sprache) — Stale-Bundle, eigener Resync-Folgepunkt, NICHT hier angefasst. _erledigt am: 2026-07-11_
 - [ ] **A5b — (Optional) Multi-Query-Sortierung auch in Pinnwand** · `Bau` nur b. Bedarf · ⏱ ~30 Min
   Pinnwand ist eine Sortier-Fläche wie der family-Marktplatz; dasselbe „bester-Cosinus-über-Varianten"-Muster ließe
   sich übertragen (kein Filter, nichts versteckt). Bewusst zurückgestellt (Klaus 2026-07-11: Pinnwand läuft gut). _erledigt am: _____

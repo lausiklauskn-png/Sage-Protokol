@@ -80,6 +80,12 @@ const stub = {};
 stub.document = makeDoc();
 stub.console = console;
 stub.SbkimRendezvous = makeMockRdv();
+// Minimaler Event-Bus (das UI lauscht via global.addEventListener auf
+// sbkim:handshake) + dispatchEvent zum Auslösen im Test.
+const _bus = {};
+stub.addEventListener = (t, cb) => { (_bus[t] = _bus[t] || []).push(cb); };
+stub.removeEventListener = (t, cb) => { if (_bus[t]) _bus[t] = _bus[t].filter((f) => f !== cb); };
+stub.dispatchEvent = (ev) => { (_bus[ev.type] || []).slice().forEach((cb) => cb(ev)); return true; };
 
 function loadUI() {
   const src = readFileSync(resolve(repoRoot, "src/modules/23_rendezvous_ui.js"), "utf8");
@@ -193,6 +199,40 @@ async function run() {
   relBtn.click(); // zurück auf „aus"
   await sleep(5);
   record("Filter wieder aus → _meta.relatedOnly false", "false", String(UI._meta.relatedOnly), UI._meta.relatedOnly === false);
+
+  // ── Empfänger-Hinweis: eingehender Handshake (Klaus 2026-07-11) ──
+  // Wenn ein FREMDER Knoten sich verbindet, meldet Modul 05 sbkim:handshake
+  // mit direction:"incoming". Das UI soll das sichtbar machen (Klaus' Befund:
+  // Antworter merkte den Handshake nicht). REINE Anzeige.
+  const incoming = stub.document.querySelector("#sbkim-rdv-incoming");
+  record("Empfänger-Hinweis-Zeile gemountet", "vorhanden", incoming ? "vorhanden" : "fehlt", !!incoming);
+  record("Hinweis initial versteckt", "none", incoming && incoming.style.display, incoming && incoming.style.display === "none");
+
+  stub.dispatchEvent({ type: "sbkim:handshake", detail: { direction: "incoming", outcome: "established", peerNodeId: "PEER-INCOMING-123456789" } });
+  await sleep(5);
+  record("eingehender Handshake macht Hinweis sichtbar", "block", incoming && incoming.style.display, incoming && incoming.style.display === "block");
+  record("Hinweis nennt die (gekürzte) Knoten-ID", "ja", incoming && incoming.textContent.includes("PEER-INCO") ? "ja" : "nein", !!(incoming && incoming.textContent.includes("PEER-INCO")));
+  record("Hinweis mit 🤝-Marker", "ja", incoming && incoming.textContent.includes("🤝") ? "ja" : "nein", !!(incoming && incoming.textContent.includes("🤝")));
+
+  // zweiter, ANDERER Knoten → Zähler 2
+  stub.dispatchEvent({ type: "sbkim:handshake", detail: { direction: "incoming", outcome: "established", peerNodeId: "PEER-ZWEI-987654321" } });
+  await sleep(5);
+  record("zweiter eingehender Knoten → „2 Knoten“", "ja", incoming && incoming.textContent.includes("2 Knoten") ? "ja" : "nein", !!(incoming && incoming.textContent.includes("2 Knoten")));
+
+  // Dedupe: derselbe erste Knoten nochmal → bleibt 2 (nicht 3)
+  stub.dispatchEvent({ type: "sbkim:handshake", detail: { direction: "incoming", outcome: "established", peerNodeId: "PEER-INCOMING-123456789" } });
+  await sleep(5);
+  record("Dedupe: gleicher Knoten erhöht nicht auf 3", "ja", incoming && incoming.textContent.includes("2 Knoten") ? "ja" : "nein", !!(incoming && incoming.textContent.includes("2 Knoten")));
+
+  // OUTGOING-Handshake (eigenes Andocken) darf den Empfänger-Hinweis NICHT verändern
+  stub.dispatchEvent({ type: "sbkim:handshake", detail: { direction: "outgoing", outcome: "established", peerNodeId: "PEER-DREI" } });
+  await sleep(5);
+  record("outgoing-Handshake ändert den Empfänger-Hinweis nicht", "ja", incoming && !incoming.textContent.includes("PEER-DRE") ? "ja" : "nein", !!(incoming && !incoming.textContent.includes("PEER-DRE")));
+
+  // incoming aber rejected (Score zu niedrig) → kein Eintrag
+  stub.dispatchEvent({ type: "sbkim:handshake", detail: { direction: "incoming", outcome: "rejected", peerNodeId: "PEER-REJECT" } });
+  await sleep(5);
+  record("incoming rejected wird nicht als Verbindung gezeigt", "ja", incoming && !incoming.textContent.includes("PEER-REJE") ? "ja" : "nein", !!(incoming && !incoming.textContent.includes("PEER-REJE")));
 
   // fail-soft: ohne Modul 23.
   const savedRdv = stub.SbkimRendezvous;
