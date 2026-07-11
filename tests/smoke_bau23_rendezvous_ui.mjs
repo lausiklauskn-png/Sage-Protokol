@@ -61,18 +61,24 @@ function makeDoc() {
 
 // ---- Mock-SbkimRendezvous ----
 function makeMockRdv() {
-  const calls = { configure: [], announce: 0, connect: 0, discover: 0, handshake: [] };
+  const calls = { configure: [], announce: 0, connect: 0, discover: 0, handshake: [], ask: [], fetch: [] };
   let discoverCards = [];
   let connectImpl = async () => ({ ok: true, created: false, nodeId: "OWN" });
+  let askResult = { ok: false, pending: true, qid: "q-mock-1", reason: "Noch keine Antwort." };
+  let fetchResult = { ok: true, answers: [] };
   return {
     configure(o) { calls.configure.push(o); },
     announce: async () => { calls.announce++; return { ok: true, nodeId: "OWN" }; },
     connectAndAnnounce: async (o) => { calls.connect++; calls._lastConnectOpts = o; return connectImpl(o); },
     discover: async () => { calls.discover++; return { ok: true, cards: discoverCards }; },
     handshakeCard: async (card) => { calls.handshake.push(card); return { outcome: "established", score: 0.9 }; },
+    askNode: async (card, text) => { calls.ask.push({ card, text }); return askResult; },
+    fetchAnswers: async (qids) => { calls.fetch.push(qids); return fetchResult; },
     _calls: calls,
     _setDiscover(cards) { discoverCards = cards; },
     _setConnect(fn) { connectImpl = fn; },
+    _setAsk(r) { askResult = r; },
+    _setFetch(r) { fetchResult = r; },
   };
 }
 
@@ -86,6 +92,9 @@ const _bus = {};
 stub.addEventListener = (t, cb) => { (_bus[t] = _bus[t] || []).push(cb); };
 stub.removeEventListener = (t, cb) => { if (_bus[t]) _bus[t] = _bus[t].filter((f) => f !== cb); };
 stub.dispatchEvent = (ev) => { (_bus[ev.type] || []).slice().forEach((cb) => cb(ev)); return true; };
+// localStorage-Stub (A12 Briefkasten merkt offene Fragen; Panel-Position nutzt es auch).
+const _ls = {};
+stub.localStorage = { getItem: (k) => (k in _ls ? _ls[k] : null), setItem: (k, v) => { _ls[k] = String(v); }, removeItem: (k) => { delete _ls[k]; } };
 
 function loadUI() {
   const src = readFileSync(resolve(repoRoot, "src/modules/23_rendezvous_ui.js"), "utf8");
@@ -233,6 +242,52 @@ async function run() {
   stub.dispatchEvent({ type: "sbkim:handshake", detail: { direction: "incoming", outcome: "rejected", peerNodeId: "PEER-REJECT" } });
   await sleep(5);
   record("incoming rejected wird nicht als Verbindung gezeigt", "ja", incoming && !incoming.textContent.includes("PEER-REJE") ? "ja" : "nein", !!(incoming && !incoming.textContent.includes("PEER-REJE")));
+
+  // ── A12 Phase 2: Briefkasten — offene Frage merken + Antwort nachlesen ──
+  const bubble = stub.document.querySelector("#sbkim-rdv-btn");
+  const qInput = stub.document.querySelector("#sbkim-rdv-q");
+  const preOf = () => { let f = null; (function w(n) { if (f) return; for (const c of n.children) { if (c.tagName === "PRE") { f = c; return; } w(c); } })(panel); return f; };
+  record("Frage-Feld (#sbkim-rdv-q) vorhanden", "ja", qInput ? "ja" : "nein", !!qInput);
+  const allBtnsMail = []; (function collect(n) { for (const c of n.children) { if (c.tagName === "BUTTON") allBtnsMail.push(c); collect(c); } })(panel);
+  const mailButton = allBtnsMail.find((b) => b.textContent.includes("Antworten abholen"));
+  record("📬-Knopf „Antworten abholen“ im Panel", "ja", mailButton ? "ja" : "nein", !!mailButton);
+
+  // Karte rendern, an die gefragt wird
+  stub.SbkimRendezvous._setDiscover([{ nodeId: "PEER-9", nodeName: "Zielknoten", spore: { id: "PEER-9" }, ts: 300, ageSec: 5 }]);
+  discoverButton.click();
+  await sleep(20);
+  const cardsM = stub.document.querySelector("#sbkim-rdv-cards");
+  const askBtn = (function () { let f = null; (function w(n) { for (const c of n.children) { if (c.tagName === "BUTTON" && c.textContent.includes("Fragen")) { f = c; return; } w(c); } })(cardsM); return f; })();
+  record("❓ Fragen-Knopf an der Karte", "ja", askBtn ? "ja" : "nein", !!askBtn);
+
+  // Frage stellen, während der Antworter „zu" ist → askNode liefert pending+qid.
+  if (qInput) qInput.value = "kuchen";
+  stub.SbkimRendezvous._setAsk({ ok: false, pending: true, qid: "q-brief-1", reason: "Noch keine Antwort." });
+  if (askBtn) askBtn.click();
+  await sleep(40);
+  const stored1 = JSON.parse(_ls["sbkim_rdv_pending_default"] || "[]");
+  record("offene Frage im Briefkasten gemerkt (qid + status offen)", "ja",
+    stored1.some((e) => e.qid === "q-brief-1" && e.status === "offen") ? "ja" : "nein",
+    JSON.stringify(stored1));
+  record("Blasen-Zähler zeigt ungelesene Post (📬)", "ja",
+    bubble && bubble.textContent.includes("📬") ? "ja" : "nein", bubble && bubble.textContent);
+
+  // Antwort liegt jetzt vor → 📬 Antworten abholen holt sie nach.
+  stub.SbkimRendezvous._setFetch({ ok: true, answers: [{ qid: "q-brief-1", fromName: "Zielknoten", results: [{ label: "Eierschecke", score: 0.9 }, { label: "Stollen", score: 0.8 }] }] });
+  if (mailButton) mailButton.click();
+  await sleep(40);
+  const preTxt = (preOf() || {}).textContent || "";
+  record("Briefkasten zeigt die nachgelesene Antwort (Eierschecke)", "ja",
+    preTxt.includes("Eierschecke") ? "ja" : "nein", preTxt.slice(0, 120));
+  record("Frager rief fetchAnswers mit der offenen qid", "ja",
+    stub.SbkimRendezvous._calls.fetch.some((qs) => Array.isArray(qs) && qs.includes("q-brief-1")) ? "ja" : "nein",
+    JSON.stringify(stub.SbkimRendezvous._calls.fetch));
+  const stored2 = JSON.parse(_ls["sbkim_rdv_pending_default"] || "[]");
+  record("offene Frage ist jetzt beantwortet + als gesehen markiert", "ja",
+    stored2.some((e) => e.qid === "q-brief-1" && e.status === "beantwortet" && e.seen === true) ? "ja" : "nein",
+    JSON.stringify(stored2));
+  record("Zähler nach dem Lesen wieder ohne 📬 (nichts Ungelesenes)", "ja",
+    bubble && !bubble.textContent.includes("📬") ? "ja" : "nein", bubble && bubble.textContent);
 
   // fail-soft: ohne Modul 23.
   const savedRdv = stub.SbkimRendezvous;

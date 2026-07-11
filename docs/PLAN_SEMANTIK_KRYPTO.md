@@ -182,11 +182,16 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
     DOM-frei, fail-soft, `PROVIDER_MIN_MATCH`/Kern 02/05/05b unberührt. Smoke `smoke_bau23b_query.mjs` **28/28**
     (Probe 13: ganzer Ablauf ask→offline→Timeout→Antworter-online-Lookback→antwortet→fetchAnswers holt nach).
     **Reale Grenze: Aufbewahrungsdauer des Relais** (relay.family-projekt.de) — begrenzt, wie lange eine Frage liegen darf.
-  - [ ] **A12 Phase 2 — Briefkasten-UI + netzweiter Rollout** · `Bau` · ⏱ ~1 Sitzung (Folge): in `23_rendezvous_ui.js`
-    offene Fragen in `localStorage` (app-Suffix) merken + Knopf „📬 Antworten abholen (N offen)" (ruft `fetchAnswers`)
-    + Auto-Nachlese beim Panel-Öffnen; dann `23_rendezvous.js` **und** `23_rendezvous_ui.js` byte-1:1 in alle Träger
-    (Mixarium/Rezeptbuch/family/BLP/Tomys/Kimboard/Kimseek), Kim-recorded-sha (beide Dateien) + SW-Cache-Bumps.
-    Optional Relais-Retention prüfen/erhöhen. _erledigt am: _____
+  - [x] **A12 Phase 2 — Briefkasten-UI (Kanon)** · **erledigt 2026-07-11** (Lehre aus dem git-Briefkasten eingebaut:
+    ein Briefkasten scheitert am LESEN, nicht am Schreiben → Lesen sichtbar + automatisch machen). `23_rendezvous_ui.js`:
+    offene Fragen in `localStorage` (dbSuffix-Suffix, kein Fremd-PII) gemerkt; **sichtbarer 📬-Zähler an der Blase**
+    (ungelesene Post meldet sich von selbst); **Auto-Nachlese beim Öffnen** (`show()` + `mount()` rufen `fetchAnswers`,
+    kein Knopf-Erinnern); Knopf „📬 Antworten abholen (N)"; sichtbare Quittung offen ⏳ / beantwortet ✓. REINE
+    Anzeige, fail-soft (ohne Modul-23-`fetchAnswers` → no-op). Smoke `smoke_bau23_rendezvous_ui.mjs` **50/50**
+    (9 neue Briefkasten-Proben). _erledigt am: 2026-07-11_
+  - [ ] **A12 Phase 2b — netzweiter Byte-Rollout beider Module** · `Bau` (Folge): `23_rendezvous.js` (Phase 1) **und**
+    `23_rendezvous_ui.js` (Phase 2) byte-1:1 in alle Träger (Mixarium/Rezeptbuch/family/BLP/Tomys/Kimboard/Kimseek),
+    Kim-recorded-sha (beide Dateien) + SW-Cache-Bumps. Optional Relais-Retention prüfen/erhöhen. _erledigt am: _____
 
 - [x] **A13 — Identitäts-Isolierung gehärtet (Doppel-Laden + globales App-Suffix)** · `Bau` · **erledigt 2026-07-11**
   **Klaus' Live-Sichttest 2026-07-11:** mehrere PWAs auf der geteilten github.io-Origin teilten sich EINE Identität
