@@ -6,7 +6,7 @@
 > `status.json` (Maschine) + die `*_inbox.verify.md`-Vermerke (Beweis) — diese Datei ist
 > die menschenlesbare Karte darüber.
 
-**Stand: 2026-06-27** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
+**Stand: 2026-07-11** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
 
 ---
 
@@ -31,7 +31,7 @@
 | **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0` | **`verified-match` 0.847784** | `sbkim/meintresor_inbox.verify.md` |
 | **BookLedgerPro** | BookLedgerPro-Buchhaltung | `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ` | **`verified-match` 0.813525** (2026-06-21; cap/needs signiert → Drei-Schichten-bereit) | `sbkim/bookledgerpro_inbox.verify.md` |
 | **Family Projekt** | Werkzeuge / Apps / Marktplatz (`family-projekt.de`) | `HLXUEJFWHGt6DlRFgzvN4d_YdHRfnrehlVdRb4BHvAE` | **`verified-match` 0.8287** (2026-06-27; echter `domainVector`, L2=1) | `sbkim/familyproject_inbox.verify.md` |
-| **Tomys Hub** | Digitaldruck / Stick / Werbeartikel (`lausiklauskn-png.github.io/Tomys-Hub/`) | — (Identität wartet auf Browser-Lauf) | `angekündigt` (2026-07-06; Bau komplett: Module 01–23 inkl. Bau 23.B + Korpus-Provider, Tomys-Hub PR #73) | Spore entsteht im Browser (🌐 → Mit dem Netz verbinden), dann `sbkim/spore.json` |
+| **Tomys Hub** | Digitaldruck / Stick / Werbeartikel (`lausiklauskn-png.github.io/Tomys-Hub/`) | `s2-oNG-EkeNXtwAu8dQMC23OvCZkuQUyhGsXrr2kR98` | **`verified-match`** (2026-07-11; Spore im Browser über das Siegel erzeugt, reziprok verifiziert VALID; echter `domainVector`, L2=1; offline nachgerechnet: **Family 0.8073 · BookLedgerPro 0.8064** ≥ 0.80. Ehrlich: Sage 0.7977 < 0.80 → **kein** Match mit dem Hub, dafür mit den fachverwandten Werkzeug-/Buchhaltungs-Knoten. Live-Handshake wartet auf Klaus' Browser-Lauf) | `Tomys-Hub/sbkim/spore.json` (verifiziert) |
 | **Kim-Bell** | SBKIM-Netz-Glocke / Netz-Anmeldung (`lausiklauskn-png.github.io/Kim-Bell/`) | `e9TlbEzxdL6UrlwCWjrTxwuWOLDXZ_AIvx12BMrhPaw` (committet); lebende Rendezvous-ID variiert | **`verified-match`** (2026-07-08; **Live-Cross-Knoten-Handshake im Browser bestätigt** — Klaus' Sichttest Sage ↔ Kim-Bell beidseitig „✓ ANDOCK ETABLIERT" über das echte Relais, nach Timeout-Fix 12 s → 5 min; Offline-Cosinus 0.8711 ≥ 0.80) | Klaus' Browser-Sichttest 2026-07-08 (Splitscreen Sage↔Kim-Bell) + `Kim-Bell/sbkim/spore.json` |
 | **Kimseek** | Semantische Bedeutungs-Suche (`lausiklauskn-png.github.io/Kimseek/`) | `I7qX13yu4BEFIi8yd_5MepkC1b7sFAk2W17d5re5x8Y` | **`verified-match` 0.8553** (2026-07-09; echter `domainVector`, L2=1; Live-Handshake wartet auf Klaus' Browser-Lauf) | `Kimseek/sbkim/spore.json` (aus such-tool nach Kim-Bell-Muster) |
 | **Kimboard** | Pinnwand / Notizen / Merken (`lausiklauskn-png.github.io/Kimboard/`) | `Hc0t9z4te4kWoh7cBMtJAb7m6Nl17eBKxwPvbJ5Rqfk` | **`verified-match` 0.8262** (2026-07-09; echter `domainVector`, L2=1; Live-Handshake wartet auf Klaus' Browser-Lauf) | `Kimboard/sbkim/spore.json` (aus pinnwand nach Kim-Bell-Muster) |
@@ -49,6 +49,8 @@
 | Sage ⟷ Family Projekt | **0.8287** | 2026-06-27 (siebter Knoten, echter Vektor; reziprok bestätigt) |
 | Sage ⟷ Kimseek | **0.8553** | 2026-07-09 (neunter Knoten, echter Vektor; offline nachgerechnet, Live-Handshake ausstehend) |
 | Sage ⟷ Kimboard | **0.8262** | 2026-07-09 (zehnter Knoten, echter Vektor; offline nachgerechnet, Live-Handshake ausstehend) |
+| Tomys Hub ⟷ Family Projekt | **0.8073** | 2026-07-11 (erster Match **ohne** den Hub Sage — fachverwandte Werkzeug-Domänen; offline nachgerechnet, Live-Handshake ausstehend) |
+| Tomys Hub ⟷ BookLedgerPro | **0.8064** | 2026-07-11 (Werkzeug ⟷ Buchhaltung; offline nachgerechnet, Live-Handshake ausstehend) |
 
 ## Netz-Signal (Briefkasten-Pflege, INTERFACES §11.6 — Pflicht für alle Knoten)
 
