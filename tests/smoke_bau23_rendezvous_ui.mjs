@@ -385,6 +385,32 @@ async function run() {
   record("stummer Bester → Nächstbester wird auch gefragt", "R-1 und S-1",
     askedIds.join(","), askedIds.includes("R-1") && askedIds.includes("S-1"));
 
+  // ---- KI-Richter über Cross-Knoten-Antwort (B3-Fix: Titel-als-Text) ----
+  // Regress: Antwort-Items tragen nur label (keine text) — der Richter darf NICHT
+  // mit „candidates[0].text muss nicht-leerer String sein" scheitern.
+  let richterCands = null;
+  stub.SbkimMatch = {
+    hybridMatch: async (q, cands) => {
+      richterCands = cands;
+      return { available: true, provider: "claude", region: "us",
+        verdicts: cands.map((c, i) => ({ label: c.label, score: 0.9 - i * 0.1, passt: true, begruendung: "" })) };
+    },
+    _meta: { hybridProviders: [{ id: "claude", label: "Claude", region: "us" }] },
+  };
+  UI._test.setKi({ on: true, key: "sk-test", provider: "claude" });
+  UI._test.renderAnswer({ nodeName: "Rezeptbuch" },
+    { ok: true, tookMs: 3000, results: [{ label: "Melya", score: 0.81 }, { label: "", score: 0.4 }] }, "erfrischend ohne Alkohol");
+  await sleep(40);
+  const kiOut = UI._test.outText() || "";
+  record("KI-Richter über Antwort: KEIN candidates.text-Fehler", "kein Fehler",
+    /KI-Richter-Fehler/.test(kiOut) ? "Fehler!" : "ok", !/KI-Richter-Fehler/.test(kiOut));
+  record("Richter-Kandidaten tragen Titel als text", "ja",
+    (richterCands && richterCands.length && richterCands.every((c) => c.text && c.text.length)) ? "ja" : "nein",
+    !!(richterCands && richterCands.length && richterCands.every((c) => c.text && c.text.length)));
+  record("leerer Titel herausgefiltert (nur 1 Kandidat)", "1",
+    richterCands ? String(richterCands.length) : "0", !!(richterCands && richterCands.length === 1));
+  UI._test.setKi({ on: false, key: "" });
+
   // fail-soft: ohne Modul 23.
   const savedRdv = stub.SbkimRendezvous;
   stub.SbkimRendezvous = null;
