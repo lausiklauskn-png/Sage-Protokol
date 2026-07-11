@@ -119,6 +119,35 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-11 · A5 — Multi-Query-Rollout in die Apps (Mixarium · Rezeptbuch · family · BLP)
+
+**Rolle:** Bausitzung A-Serie (A5). Freibrief gilt (siehe CLAUDE.md § Freibrief).
+
+**Was getan (alle 4 PRs gemergt, Klaus prüft live):**
+- **Mixarium** (PR #119, `c36f524`) + **Rezeptbuch** (PR #307, `372b837`): natives Sinn-Suchfeld `semRun`
+  auf **Multi-Query** gehoben — Frage über app-eigene `SEM_SYN`-Karte auffächern (`expandQuerySimple`) →
+  `queryLocalMulti` (RRF) statt reinem `queryLocal`. Hybrid war schon da. Gratis-Pfad; Richter-Pfad bleibt
+  bewusst Single-Query (Modul 04 byte-frozen). Mixarium: `index.html` byte-gleich zur QC (md5). Rezeptbuch:
+  QC-Quelle + `build.py`.
+- **family-project** (PR #58, `cd9e733`): **Marktplatz-Suchfeld** `markt.html` (Klaus' Befund — im Erst-Mapping
+  übersehen!) ist eine **Sortier-Fläche** → Multi-Query als Sortier-Verbesserung (bester Cosinus über die
+  Frage-Varianten, versteckt nichts, Klaus-Entscheid). PLUS Cross-Knoten-**Antwort-Pfad** `15_membran.js`
+  (`op:"query"`) → `queryWithInclusion` (A4+A1) nachgezogen. SW-Cache v15→v16.
+- **BookLedgerPro** (PR #263, `886c57f`): eigene Nutzer-Suche war **schon** hybrid+synonym-fähig (kein Eingriff);
+  Cross-Knoten-Antwort-Pfad `15_membran.js` nachgezogen. SW-Cache v198→v199.
+- **Pinnwand:** bewusst gelassen (eigene Sortier-Suche läuft gut, Klaus-Entscheid). Offener Folgepunkt A5b.
+
+**Verifikation:** je App eigener Headless-Smoke grün (Verdrahtungs-Guard über die ausgelieferte Synonym-Karte):
+Mixarium `smoke_a5_suchfeld_multiquery` 8/0, Rezeptbuch 8/0, family `smoke_a5_markt_sortierung` 6/0 +
+`smoke_a5_antwortpfad` 6/0, BLP `smoke_a5_antwortpfad` 6/0 + Haupt-Suite 2123/0. Kern (02/05/05b +
+`PROVIDER_MIN_MATCH` 0.80) unberührt, kein PROTOCOL_VERSION-Bump. **Browser-Sichttest wartet auf Klaus (Live-Seiten).**
+
+**Realitäts-Abgleich (Tafel-Evolutions-Klausel):** der Brief nahm 5 vergleichbare Suchfelder an — die Apps sind
+heterogen (Such- vs. Sortier-Flächen, teils kein Suchfeld, teils eigener Such-Stack). Detail + A5b in
+`docs/PLAN_SEMANTIK_KRYPTO.md`.
+
+---
+
 ## 2026-07-11 · Schlüssel-Tresor: KI-Richter-Schlüssel verschlüsselt merken + Vergessen-Schutz, netzweit
 
 **Rolle:** Bausitzung (Modul 20 + Netz-Panel + netzweiter Rollout + neuer Skill).
