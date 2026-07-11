@@ -133,9 +133,18 @@ fail-soft). UI: Primärknopf **„🔎 Antwort holen"** direkt am Frage-Feld —
 A12-Briefkasten). Per-Karte-Knopf bleibt als manueller Override „❓ gezielt fragen".
 **REINE Anzeige/Auswahl** — 0.80-Andock-Riegel + Kern 02/05/05b unberührt, kein PROTOCOL-Bump,
 Empfangsmodus. Smokes `smoke_bau23c_rank_by_query` 15/15, `smoke_bau23_rendezvous_ui` 65/65,
-Regress grün, Bundle-Drift-Guard 21/21. PR #626 gemergt. **Offen:** Klaus' Browser-Sichttest +
-netzweiter Byte-Rollout Modul 23; **Teil B** = lernender Sortierer (neuer Plan-Punkt A16);
-A11-Teil-B (Suchergebnis→Andocken-Kopplung Modul 22↔23) weiter offen.
+Regress grün, Bundle-Drift-Guard 21/21. PR #626 gemergt.
+**✅ Netzweiter Rollout ERLEDIGT 2026-07-11** (byte-gleich, je eigener PR gemergt): Mixarium #123
+(SW v54→55), Rezeptbuch #311 (mrz-v39→40), family-project #62 (v19→20), BookLedgerPro #267
+(v202→203, tests/run.mjs 2123 grün), Tomys-Hub #100 (v10→11), Kimboard #19 (v11→12, Drift grün),
+Kimseek #19 (v8→9, Drift grün) — 7 Apps + Sage-Kanon/Bundle.
+**✅✅ LIVE BEWIESEN (Klaus' Browser 2026-07-11):** KimSeek fragte „Erfrischendes ohne Alkohol"
+→ „🔎 Antwort holen" wählte **automatisch** Mixarium (Frage-Passung 0.42) → Mixarium antwortete
+aus seinem Buch (Melya/Tropical Sunrise Bowl/Fruit Shake/Kräuter-Nektar/Bora Bora, 32 s). Kein
+Karten-Anklicken nötig. Rest-Grenze wie gehabt: e5-small-Cosinus flach (0.81–0.83) → Feinsortierung
+noch grob (genau der Hebel für A16). **Offen:** **Teil B** = lernender Sortierer (Plan-Punkt A16,
+Brief liegt: `docs/sessions/BRIEF_A16_LERNENDER_SORTIERER.md`); A11-Teil-B (Suchergebnis→Andocken-
+Kopplung Modul 22↔23) weiter offen.
 
 ## 2026-07-11 · A4 Teil 2 (Bau 04.H) — KI-Richter wägt Sicherheit/Konsequenz mit
 
