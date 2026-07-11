@@ -151,9 +151,15 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 node --test 103/103 — Probe 27 im Such-Widget-Smoke ist **vorbestehend rot auf main**,
 unabhängig vom Tresor).
 
-**Was offen / nächster Schritt:** Klaus' Browser-Sichttest (merken → App schließen →
-öffnen → entsperren → Schlüssel da; Merkhilfe in der Passwort-Frage). Danach ggf.
-Merkhilfe auch an anderen BYOK-Feldern (Suche/OCR).
+**✅ Browser-Sichttest GRÜN (Klaus 2026-07-11):** Tomys Hub live — KI-Richter an,
+Schlüssel eingetippt, „🔒 im Tresor merken" → Bestätigung „🔒 Schlüssel verschlüsselt
+im Tresor gemerkt … Passwort vergessen? Kein Drama — hol dir beim Anbieter gratis
+einen neuen Schlüssel und leg ihn neu ab." sichtbar wie gebaut (Vergessen-Hinweis
+live). „Alles funktioniert" (Klaus). Tresor netzweit gemergt (11 PRs auf `main`).
+
+**Was offen / nächster Schritt:** Merkhilfe/Tresor ggf. auch an anderen BYOK-Feldern
+(Suche/OCR) — bei Bedarf. Weiter mit der A-Serie (A4 Teil 2 / A5 / A6 / A7–A9) —
+Brief `docs/sessions/BRIEF_A_SERIE_A4BIS_WEITER.md`.
 
 ---
 
