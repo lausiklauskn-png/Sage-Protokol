@@ -289,6 +289,51 @@ async function run() {
   record("Zähler nach dem Lesen wieder ohne 📬 (nichts Ungelesenes)", "ja",
     bubble && !bubble.textContent.includes("📬") ? "ja" : "nein", bubble && bubble.textContent);
 
+  // ── A12 Lebenszyklus: Ablauf · Auto-Aufräumen · 🔄 nochmal fragen · 🗑 leeren ──
+  const KEY = "sbkim_rdv_pending_default";
+  const lcBtns = []; (function collect(n) { for (const c of n.children) { if (c.tagName === "BUTTON") lcBtns.push(c); collect(c); } })(panel);
+  const reAskButton = lcBtns.find((b) => b.textContent.includes("nochmal fragen"));
+  const clearButton = lcBtns.find((b) => b.textContent.includes("leeren"));
+  record("🔄-Knopf „offene nochmal fragen“ vorhanden", "ja", reAskButton ? "ja" : "nein", !!reAskButton);
+  record("🗑-Knopf „leeren“ vorhanden", "ja", clearButton ? "ja" : "nein", !!clearButton);
+
+  // Ablauf: eine alte offene Frage (ts=1) wird beim Aufräumen „abgelaufen".
+  _ls[KEY] = JSON.stringify([{ qid: "q-old", toNodeId: "NODE-Z", toName: "Z", text: "alt", ts: 1, status: "offen", seen: true }]);
+  if (mailButton) mailButton.click();
+  await sleep(30);
+  const afterExpire = JSON.parse(_ls[KEY] || "[]");
+  record("alte offene Frage wird „abgelaufen“", "ja",
+    afterExpire.some((e) => e.qid === "q-old" && e.status === "abgelaufen") ? "ja" : "nein", JSON.stringify(afterExpire));
+  record("abgelaufene Frage zählt NICHT im 📬-Zähler", "ja",
+    bubble && !bubble.textContent.includes("📬") ? "ja" : "nein", bubble && bubble.textContent);
+
+  // 🔄 nochmal fragen: abgelaufene/offene Frage neu stellen (askNode).
+  _ls[KEY] = JSON.stringify([{ qid: "q-old", toNodeId: "NODE-Z", toName: "Z", text: "alt", ts: 1, status: "offen", seen: true }]);
+  stub.SbkimRendezvous._calls.ask.length = 0;
+  stub.SbkimRendezvous._setAsk({ ok: false, pending: true, qid: "q-old-2", reason: "Noch keine Antwort." });
+  if (reAskButton) reAskButton.click();
+  await sleep(40);
+  record("🔄 stellt die offene Frage erneut (askNode mit Ziel+Text)", "ja",
+    stub.SbkimRendezvous._calls.ask.some((a) => a.text === "alt" && (a.card === "NODE-Z" || (a.card && a.card.nodeId === "NODE-Z"))) ? "ja" : "nein",
+    JSON.stringify(stub.SbkimRendezvous._calls.ask));
+  const afterReask = JSON.parse(_ls[KEY] || "[]");
+  record("Eintrag nach 🔄 wieder offen mit frischer qid", "ja",
+    afterReask.some((e) => e.text === "alt" && e.status === "offen" && e.qid === "q-old-2") ? "ja" : "nein", JSON.stringify(afterReask));
+
+  // Auto-Aufräumen: beantwortet + gesehen → beim nächsten Aufräumen weg.
+  _ls[KEY] = JSON.stringify([{ qid: "q-done", toName: "Z", text: "fertig", ts: Date.now(), status: "beantwortet", seen: true, answer: { results: [] } }]);
+  if (mailButton) mailButton.click();
+  await sleep(30);
+  record("beantwortet+gesehen wird automatisch entfernt (erledigt → weg)", "ja",
+    !JSON.parse(_ls[KEY] || "[]").some((e) => e.qid === "q-done") ? "ja" : "nein", _ls[KEY]);
+
+  // 🗑 leeren.
+  _ls[KEY] = JSON.stringify([{ qid: "x", toName: "Z", text: "y", ts: Date.now(), status: "offen", seen: true }]);
+  if (clearButton) clearButton.click();
+  await sleep(10);
+  record("🗑 leeren macht den Briefkasten leer", "ja",
+    JSON.parse(_ls[KEY] || "[]").length === 0 ? "ja" : "nein", _ls[KEY]);
+
   // fail-soft: ohne Modul 23.
   const savedRdv = stub.SbkimRendezvous;
   stub.SbkimRendezvous = null;

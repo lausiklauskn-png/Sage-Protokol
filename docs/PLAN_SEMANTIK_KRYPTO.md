@@ -189,7 +189,18 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
     kein Knopf-Erinnern); Knopf „📬 Antworten abholen (N)"; sichtbare Quittung offen ⏳ / beantwortet ✓. REINE
     Anzeige, fail-soft (ohne Modul-23-`fetchAnswers` → no-op). Smoke `smoke_bau23_rendezvous_ui.mjs` **50/50**
     (9 neue Briefkasten-Proben). _erledigt am: 2026-07-11_
-  - [x] **A12 Phase 2b — netzweiter Byte-Rollout beider Module** · **erledigt 2026-07-11** · `Bau` (Folge): `23_rendezvous.js` (Phase 1) **und**
+  - [x] **A12 Phase 2b — netzweiter Byte-Rollout beider Module** · **erledigt 2026-07-11**
+  - [x] **A12 Phase 2c — Briefkasten-Lebenszyklus (Überladungs-Schutz)** · **erledigt 2026-07-11** (Klaus' Befund
+    „der Briefkasten wird sonst überladen"): LOKALE Müllabfuhr in `23_rendezvous_ui.js` — beantwortet+gesehen wird
+    automatisch entfernt (erledigt → weg), offene Fragen laufen nach TTL (45 min, > Relais-Lookback) als „abgelaufen"
+    aus (zählen nicht im 📬-Zähler), Knopf **🔄 offene nochmal fragen** (stellt gespeicherte Suche NEU aufs Relais —
+    Marktplatz-Muster „Suche wieder aktivieren"), **🗑 leeren**, Obergrenze `RDV_MAILBOX_MAX` (Default 20, via
+    `init({mailboxMax})` per App/Browser einstellbar). **Ehrliche Grenze:** RELAIS-Aufbewahrung regelt das Relais
+    selbst — der Client kann Relais-Ereignisse nicht zuverlässig löschen; hier nur der lokale Briefkasten. Smoke
+    `smoke_bau23_rendezvous_ui.mjs` **58/58** (8 neue Lebenszyklus-Proben). Byte-Rollout von `23_rendezvous_ui.js`
+    folgt (2d). _erledigt am: 2026-07-11_
+  - [ ] **A12 Phase 2d — Rollout Briefkasten-Lebenszyklus** · `Bau`: `23_rendezvous_ui.js` byte-1:1 in die 7 Träger +
+    Kim-recorded-sha + SW-Bumps. _erledigt am: _____ · `Bau` (Folge): `23_rendezvous.js` (Phase 1) **und**
     `23_rendezvous_ui.js` (Phase 2) byte-1:1 in alle Träger (Mixarium/Rezeptbuch/family/BLP/Tomys/Kimboard/Kimseek),
     Kim-recorded-sha (beide Dateien) + SW-Cache-Bumps. Optional Relais-Retention prüfen/erhöhen. _erledigt am: _____
 
