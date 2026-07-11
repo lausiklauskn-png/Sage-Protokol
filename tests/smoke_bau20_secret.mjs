@@ -63,6 +63,19 @@ async function main() {
   const raw = JSON.stringify(blob);
   ok(raw.indexOf(SECRET) < 0 && !!blob.salt && !!blob.iv && !!blob.ct, "Blob enthält KEINEN Klartext (nur salt/iv/ct)");
 
+  // Merkhilfe (hint): unverschlüsselt, ohne Passwort lesbar, ersetzt NIE das Geheimnis
+  await V.putSecret("mitHint", SECRET, PW, { hint: "erstes Haustier" });
+  ok((await V.getSecretHint("mitHint")) === "erstes Haustier", "getSecretHint gibt Merkhilfe OHNE Passwort zurück");
+  ok((await V.getSecret("mitHint", PW)) === SECRET, "Merkhilfe stört Geheimnis-Entschlüsselung nicht");
+  ok((await V.getSecretHint(KEY)) === null, "getSecretHint null, wenn keine Merkhilfe hinterlegt");
+  ok((await V.getSecretHint("gibts-nicht")) === null, "getSecretHint null für unbekanntes Geheimnis");
+  // Merkhilfe wird gekappt (kein Aufsatz)
+  await V.putSecret("langHint", SECRET, PW, { hint: "x".repeat(300) });
+  ok((await V.getSecretHint("langHint")).length === 140, "Merkhilfe wird auf 140 Zeichen gekappt");
+  // Leere/whitespace Merkhilfe -> kein hint-Feld
+  await V.putSecret("leerHint", SECRET, PW, { hint: "   " });
+  ok((await V.getSecretHint("leerHint")) === null, "leere/whitespace Merkhilfe -> kein hint gespeichert");
+
   // Manipulierter Chiffretext -> null
   const tampered = Object.assign({}, blob, { ct: (blob.ct[0] === "A" ? "B" : "A") + blob.ct.slice(1) });
   mem["sbkim_safe"]["secret:tamper"] = tampered;

@@ -214,41 +214,68 @@ async function run() {
     record("euOnly → Link zeigt auf EU-Anbieter (mistral)", l && l.visible && /mistral\.ai/.test(l.href || ""), l && l.href);
   }
 
-  // ---- 9. Tresor: KI-Schlüssel merken/entsperren (Modul 20 Safe) ----
+  // ---- 9. Tresor: KI-Schlüssel merken/entsperren + Merkhilfe (Modul 20 Safe) ----
   {
     const store = {};
     const stub = freshStub(async () => ({ available: true, verdicts: [] }), PROVIDERS);
     stub.SbkimSafe = {
-      putSecret: async (name, val, pw) => { if (!pw || pw.length < 8) throw Object.assign(new Error("kurz"), { name: "WeakPasswordError" }); store[name] = { val, pw }; return true; },
+      putSecret: async (name, val, pw, opts) => { if (!pw || pw.length < 8) throw Object.assign(new Error("kurz"), { name: "WeakPasswordError" }); store[name] = { val, pw, hint: (opts && opts.hint) || null }; return true; },
       getSecret: async (name, pw) => (store[name] && store[name].pw === pw) ? store[name].val : null,
+      getSecretHint: async (name) => (store[name] && store[name].hint) || null,
       hasSecret: async (name) => !!store[name],
     };
-    let promptReply = "tresor-pw-123";
-    stub.prompt = () => promptReply;
+    // Purpose-bewusste prompt-Stub: Merkhilfe-Frage ↔ Passwort-Frage trennen,
+    // damit wir beide Pfade prüfen. Der zuletzt gesehene Passwort-Prompt-Text
+    // wird gemerkt (für den Merkhilfe-in-Prompt-Test).
+    let pwReply = "tresor-pw-123", hintReply = "erstes Haustier";
+    let lastPwPrompt = "";
+    stub.prompt = (txt) => { if (/Merkhilfe f.rs Passwort/.test(txt)) return hintReply; lastPwPrompt = txt; return pwReply; };
     const UI = loadUI(stub); await UI.init({ nodeName: "Rezeptbuch" });
     UI._test.setKi({ on: true, key: "sk-geheim", provider: "mistral" });
     UI._test.toggleKi(); UI._test.toggleKi();   // an → aus → an, damit Buttons aktualisieren
     // KI an + Schlüssel → „merken" sichtbar, „entsperren" nicht
-    UI._test.setKeyInput ? null : null;
     const b1 = UI._test.vaultBtns();
     record("Tresor: KI an + Schlüssel → 'merken' sichtbar", b1.save === true && b1.unlock === false, JSON.stringify(b1));
-    UI._test.saveToVault();
+    await UI._test.saveToVault();
     await new Promise((r) => setTimeout(r, 0));
     record("Tresor: putSecret abgelegt (verschlüsselt via Modul 20)", !!store[UI._test.kiSecretName()]);
+    record("Tresor: Merkhilfe mitgespeichert (unverschlüsselt, app-eigen)",
+      store[UI._test.kiSecretName()] && store[UI._test.kiSecretName()].hint === "erstes Haustier",
+      store[UI._test.kiSecretName()] && store[UI._test.kiSecretName()].hint);
     // Schlüssel leeren → „entsperren" sichtbar
     UI._test.setKeyInput("");
     const b2 = UI._test.vaultBtns();
     record("Tresor: KI an ohne Schlüssel → 'entsperren' sichtbar", b2.unlock === true && b2.save === false, JSON.stringify(b2));
-    // Entsperren mit richtigem Passwort → Schlüssel wieder da
-    UI._test.unlockFromVault();
+    // Entsperren mit richtigem Passwort → Schlüssel wieder da, Merkhilfe im Prompt
+    await UI._test.unlockFromVault();
     await new Promise((r) => setTimeout(r, 0));
     record("Tresor: entsperren (richtiges PW) → Schlüssel gefüllt", UI._meta.kiRichter.hasKey === true);
+    record("Tresor: Merkhilfe wird in der Passwort-Frage eingeblendet", /Merkhilfe: erstes Haustier/.test(lastPwPrompt), lastPwPrompt.split("\n")[0]);
     // Falsches Passwort → nicht gefüllt
     UI._test.setKeyInput("");
-    promptReply = "falsch";
-    UI._test.unlockFromVault();
+    pwReply = "falsch";
+    await UI._test.unlockFromVault();
     await new Promise((r) => setTimeout(r, 0));
     record("Tresor: falsches PW → Schlüssel bleibt leer (fail-soft)", UI._meta.kiRichter.hasKey === false);
+  }
+  {
+    // Speichern OHNE Merkhilfe (leer gelassen) → kein hint-Feld, kein Crash
+    const store = {};
+    const stub = freshStub(async () => ({ available: true, verdicts: [] }), PROVIDERS);
+    stub.SbkimSafe = {
+      putSecret: async (name, val, pw, opts) => { store[name] = { val, pw, hint: (opts && opts.hint) || null }; return true; },
+      getSecret: async (name, pw) => (store[name] && store[name].pw === pw) ? store[name].val : null,
+      getSecretHint: async (name) => (store[name] && store[name].hint) || null,
+      hasSecret: async (name) => !!store[name],
+    };
+    stub.prompt = (txt) => { if (/Merkhilfe f.rs Passwort/.test(txt)) return "  "; return "tresor-pw-123"; }; // Merkhilfe leer/Whitespace
+    const UI = loadUI(stub); await UI.init({ nodeName: "Rezeptbuch" });
+    UI._test.setKi({ on: true, key: "sk-geheim", provider: "mistral" });
+    UI._test.toggleKi(); UI._test.toggleKi();
+    await UI._test.saveToVault();
+    await new Promise((r) => setTimeout(r, 0));
+    record("Tresor: leere Merkhilfe → kein hint gespeichert (opts undefined)",
+      store[UI._test.kiSecretName()] && store[UI._test.kiSecretName()].hint === null);
   }
   {
     // Ohne Modul 20 (Forker) → keine Tresor-Knöpfe, kein Crash
