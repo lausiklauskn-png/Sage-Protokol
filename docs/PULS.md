@@ -119,6 +119,45 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-12 · Briefkasten entdoppeln (B) + Mikrofon/Modul 21 nachgezogen (C) — netzweit
+
+**Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Tablet-Screenshots nach A17 — (1) der
+Briefkasten stand voll **doppelter** Fragen (Zähler „Antworten abholen (13)"), (2) das 🎤 im
+Netz-Panel meldete „Modul 21 nicht geladen — bitte tippen" (toter Knopf).
+
+**Was getan:**
+- **B — Briefkasten (Modul 23 UI, A12) entdoppeln + 🗑/↗ je Eintrag.** `recordOpenQuestion`
+  fasst offene Fragen jetzt nach `(Frage-Text, Ziel-Name)` zusammen (normalisiert
+  trim+lowercase) statt nach der jedes Mal neuen `qid` → aus 13 identischen wird EIN Eintrag
+  mit Versuchszähler (`tries`). Der Briefkasten rendert je Gruppe eine interaktive Karte mit
+  „×N · zuletzt vor …", einem **🗑-Knopf je Eintrag** (nur diese Gruppe) und — falls die
+  Adresse bekannt ist — **„↗ App öffnen" je Eintrag** (endpoint beim Schreiben mit abgelegt,
+  Selbst-Suche ohne Warten). Reine Anzeige/Speicher: kein PROTOCOL_VERSION-Bump, kein PII,
+  Kern 02/05/05b + 0.80-Riegel unberührt. Smoke `smoke_bau23_rendezvous_ui.mjs` **81/81**;
+  Drift-Guard `smoke_bundle_connect.mjs` 21/21 (byte-1:1 `sbkim-bundle`). Kanon PR #635.
+- **C — Mikrofon/Modul 21 (Spracheingabe) fehlte in den Apps.** Audit ergab: **6 von 7 Apps**
+  luden `21_spracheingabe.js` gar nicht (nur Kimseek hatte es). Datei byte-1:1 aus dem Kanon
+  nachgezogen + `<script>`-Tag ergänzt. Jetzt startet 🎤 die Erkennung (Browser-Web-Speech)
+  oder gibt ehrlich Bescheid, wenn ein EU-Schlüssel nötig ist — kein toter Knopf mehr.
+- **Netzweiter Rollout (7 Apps, je eigener PR, alle gemergt):** Mixarium #127 (B+C, QC-Spiegel,
+  SW v58→v59), Rezeptbuch #315 (B+C, QC + build.py, SW mrz-v43→v44), family-project #66 (B+C,
+  SW v23→v24), BookLedgerPro #271 (B+C, SW v206→v207, `node tests/run.mjs` 2123/0),
+  Tomys-Hub #104 (B+C, SW tomy-hub-v14→v15, smoke-workfloh 31/31), Kimboard #23 (B+C, modules/,
+  Drift-Guard-SHA nachgezogen, smoke 5/5), Kimseek #23 (nur B — hatte 21 schon; Drift-Guard-SHA
+  23_ui nachgezogen, smoke 4/4). Alle byte-1:1 verifiziert (23_ui md5 `156d3932…`, 21 md5
+  `6912ea55…` netzweit identisch).
+
+**Kimseek-Nebenbefund (nicht gefixt, bewusst):** in Kimseek lädt `index.html` das Modul 21
+**nach** Modul 23 — funktional egal, weil `SbkimSpeech` erst zur Laufzeit im Voice-Click-Handler
+aufgelöst wird (alle Skripte dann geladen). Ein Reorder wäre eine nicht-byte-1:1-Änderung ohne
+Nutzen gewesen.
+
+**Was offen / nächster sinnvoller Schritt:** **A16 Lernender Sortierer** (eigener Brief
+`docs/sessions/BRIEF_A16_LERNENDER_SORTIERER.md`) — display-only Re-Ranker in Modul 22, lernt
+aus der 📌-Merkliste, on-device, fail-soft. Danach optional/auf Zuruf: Modell selbst hosten
+(Ladezeit/Offline, `/models/…`-Pfad in Modul 03 existiert). **Browser-Sichttest B+C wartet auf
+Klaus** (läuft nach Merge auf den live-deployten Seiten — Hard-Reload nach Pull).
+
 ## 2026-07-12 · Rendezvous UI — Partner-Link „↗ App öffnen" + Diagnose „nur wer könnte antworten"
 
 **Rolle:** Bau (Freibrief). **Klaus' Live-Befund nach A17:** friert nicht mehr ein (✅), aber
