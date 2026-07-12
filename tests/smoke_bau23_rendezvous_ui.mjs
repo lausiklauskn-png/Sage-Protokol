@@ -143,7 +143,7 @@ async function run() {
   record("zweiter Klick schliesst Panel", "false", String(UI.isOpen()), UI.isOpen() === false);
   UI.show();
 
-  // 🌐 Mit dem Netz verbinden → connectAndAnnounce mit createIdentity.
+  // 🌐 Mit dem Knotennetz verbinden → connectAndAnnounce mit createIdentity.
   const connectBtn = panel.querySelector("#sbkim-rdv-cards") ? null : null; // placeholder
   // Knöpfe sind die ersten Buttons in der Zeile; finde über Reihenfolge.
   // (Stub-querySelector findet per Tag/ID; wir klicken die bekannten Handler über die row.)
@@ -151,7 +151,7 @@ async function run() {
   const buttons = [];
   (function collect(n) { for (const c of n.children) { if (c.tagName === "BUTTON") buttons.push(c); collect(c); } })(panel);
   // buttons: [close ✕, 🌐 connect, 👥 discover, 📌 announce]
-  const connectButton = buttons.find((b) => b.textContent.includes("Mit dem Netz verbinden"));
+  const connectButton = buttons.find((b) => b.textContent.includes("Mit dem Knotennetz verbinden"));
   const discoverButton = buttons.find((b) => b.textContent.includes("Wer ist im Raum"));
   const announceButton = buttons.find((b) => b.textContent.includes("Nur neu anmelden"));
   record("Connect-Knopf im Panel", "ja", connectButton ? "ja" : "nein", !!connectButton);
