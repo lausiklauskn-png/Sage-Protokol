@@ -119,6 +119,36 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-12 · Namens-Entwirrung „Netz" — Internet vs. Knotennetz (Klaus' Verwechslungs-Befund)
+
+**Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Screenshot — im Such-Widget (Kimseek) hieß der
+**Internet-Suchbereich „Netz"**, und das schwebende Modul-23-Panel heißt **„Mit dem Netz
+verbinden"** (= Knotennetz). Zwei verschiedene Dinge, beide „Netz" → Verwechslungsgefahr.
+Klaus' Entscheid (AskUserQuestion): **beide umbenennen** + Hinweistext schärfen.
+
+**Was getan:**
+- **Modul 22:** Internet-Bereichs-Checkbox „Netz" → **„Internet"**; Treffer-Badge `SOURCE_LABELS`
+  „Netz" → „Internet"; „↗ Im Netz weitersuchen" → „↗ Im Internet weitersuchen". Neuer,
+  nur-bei-aktivem-Internet-Bereich sichtbarer **Klartext-Hinweis** („Internet = Suche im Web,
+  nicht das Knotennetz. Mit SearXNG-URL: Treffer direkt hier. Ohne: Suchmaschine im neuen Tab.").
+- **Modul 23 UI:** Panel/Blase/Knopf „🌐 Mit dem Netz verbinden" → **„🌐 Mit dem Knotennetz
+  verbinden"** (alle Anzeige-Stellen). Reine Beschriftung — Rendezvous-Logik unberührt.
+- Byte-Kopien in-repo (`such-tool/modules/22`, `sbkim-bundle/modules/23_ui`) + Smoke
+  `smoke_bau23_rendezvous_ui` an den neuen Text angepasst.
+
+**Kimseek-Audit (Klaus: „Kimseek soll Grundlage für den family-project-Machtplatz-Suchmaschine sein"):**
+Kimseek war bei **16 von 17 Modulen** byte-identisch zum Kanon — nur **Modul 04 (Richter)** hing
+zurück. **Nachgezogen (PR #26 gemergt):** Bau-04.H Sicherheits-/Konsequenz-Bewertung (Richter
+wägt „gefahr/unsicher/sicher" mit). Kimseek jetzt in allen 17 Modulen auf Kanon-Stand.
+
+**Tests:** bau22 260, bau22e 45, bau22f 17, bau22g 47, bau23_ui 81, Drift `such-tool` 49 +
+`sbkim-bundle` 21 — alle grün. **Netzweiter Rollout:** Modul 22 (4 Kopien) + Modul 23 UI
+(10 Kopien, davon Mein-Tresor + Jasons-Tresor auf älterem Stand — separat prüfen).
+
+**Was offen / nächster Schritt:** **Browser-Sichttest durch Klaus** (nicht ersetzbar). Modul-23-UI-
+Rollout an die 10 Kopien; die 2 Tresor-Apps tragen eine ältere 23-UI-Version — dort erst prüfen,
+ob byte-1:1-Kanon oder nur die Beschriftung.
+
 ## 2026-07-12 · A16 Phase B — Treffer-Bewertung (👍 sehr gut · 🙂 okay · 👎 nein) füttert den Sortierer
 
 **Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Wunsch nach A16 — nicht nur „gemerkt = gut",
