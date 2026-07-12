@@ -119,6 +119,28 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-12 · Rendezvous UI — Partner-Link „↗ App öffnen" + Diagnose „nur wer könnte antworten"
+
+**Rolle:** Bau (Freibrief). **Klaus' Live-Befund nach A17:** friert nicht mehr ein (✅), aber
+die Suche zeigt oft **nur, WER antworten könnte**, nicht die Antwort selbst; Briefkasten voll
+**doppelter** Fragen. **Diagnose (ehrlich):** server-los kommt die Antwort nur, wenn der
+Gegen-Tab offen+vorn+wach ist — auf einem Gerät unmöglich, wenn man selbst vorn ist → System
+zeigt die Rangfolge + legt die Frage in den Briefkasten (daher Doppel).
+
+**Gebaut + netzweit (Freibrief):** jede Raum-Karte trägt jetzt **„↗ App öffnen"** (Adresse aus
+Spore-`endpoint`, neuer Tab, fail-soft ohne endpoint) → Selbst-Suche ohne Warten; die „keine
+Antwort"-Meldung ist ehrlich („Knoten nicht offen/wach") + verweist auf den Link. Reine Anzeige,
+Kern 02/05/05b + 0.80-Riegel unberührt. Smoke `smoke_bau23_rendezvous_ui` **73/73** (+4).
+Kanon PR #632; Rollout 7/7: Mixarium #126 (SW v57→58), Rezeptbuch #314 (v42→43),
+family #65 (v22→23), BLP #270 (v205→206), Tomys #103 (v13→14), Kimboard #22 (v14→15, sha),
+Kimseek #22 (v11→12, sha). Der Rollout brachte auch die A17-Drosselung in die Apps mit.
+
+**Offen (Brief `docs/sessions/BRIEF_BRIEFKASTEN_DEDUP_UND_MODUL21_MIC.md`):**
+- **Briefkasten entdoppeln + Löschen je Eintrag + Partner-Link je Eintrag** (A12, Modul 23 UI).
+- **Mikrofon/Modul 21:** in Mixarium (& weiteren Apps) fehlt `21_spracheingabe.js` → 🎤 meldet
+  „Modul 21 nicht geladen". Datei + Script-Tag nachziehen, netzweit.
+- Danach A16 (lernender Sortierer). Optional: Modell selbst hosten (Ladezeit/Offline).
+
 ## 2026-07-12 · A17 Last-Schoner — Embedding im Web-Worker (gegen Tablet-Einfrieren)
 
 **Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Tablet fror mehrfach ein / stürzte ab
