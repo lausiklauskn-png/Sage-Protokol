@@ -144,8 +144,11 @@ bei JEDER Suche — bisher **im Anzeige-Faden**, der dabei steht. Klaus' Ansage:
   („Antwort holen" entprellt — kein Doppel-Start, 4 s Abkühlung) als Ergänzung.
 
 **Offen / nächster Schritt:**
-- **Netzweiter Byte-Rollout** von Modul 03 in die Apps (Mixarium, Rezeptbuch, family, BLP,
-  Tomys, Kimboard, Kimseek) — Folge-Schritt, wie bei A11 (Subagenten, SW-Bump, sha-Guards).
+- **Netzweiter Byte-Rollout** von Modul 03 in die Apps — ✅ **erledigt 2026-07-12** (7/7 gemergt,
+  Subagenten): Mixarium PR #125 (SW v56→57), Rezeptbuch #313 (v41→42), family-project #64 (v21→22),
+  BookLedgerPro #269 (v204→205), Tomys-Hub #102 (v12→13), Kimboard #21 (v13→14, sha-Guard),
+  Kimseek #21 (v10→11, sha-Guard). Alle 7 hatten Modul 03 byte-identisch zum Vor-Worker-Kanon
+  (kein Fork) → saubere Byte-Kopie.
 - **Browser-Sichttest (kein Einfrieren mehr) wartet auf Klaus** — headless beweist die Logik,
   das echte Tablet-Verhalten sieht nur Klaus.
 - **Selbst-Hosten des Modells** (Flaschenhals/Offline, `/models/…`-Pfad existiert schon in
