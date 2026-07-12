@@ -119,6 +119,18 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-12 · Tooltip-Texte gekürzt (Klaus: „viel zu lang, kein Modul-Kram")
+
+**Rolle:** Bau (Freibrief). **Auslöser:** Klaus — die Tooltips waren zu lang/technisch („Modul 21",
+Cosinus-Details). „Die meisten wollen nur wissen, WOFÜR es ist; an/aus erklärt sich selbst."
+
+**Was getan:** alle `title`-Texte in **Modul 23 UI** (23 Stück) + **Modul 22** (11 Stück) auf knappe
+„wofür"-Sätze gekürzt — kein „Modul XX", keine Technik. Beispiele: „Frage einsprechen (Spracheingabe,
+Modul 21)…" → **„Frage einsprechen"**; der lange KI-Richter-Absatz → **„KI bewertet die Antworten
+(eigener Schlüssel)"**. Byte-Kopien `such-tool/22` + `sbkim-bundle/23_ui`. Smokes bau22 260/bau22e
+45/bau22f 17/bau22g 47/bau23_ui 81, Drift 49+21 grün. **Rollout:** Modul 22 (4 Kopien) + Modul 23 UI
+(10 Kopien).
+
 ## 2026-07-12 · Eigener Tooltip statt nativem `title` (Modul 23 UI) — Split-Screen-Fix
 
 **Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Screenshot — im Rendezvous-Panel landete der
