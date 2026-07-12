@@ -832,6 +832,17 @@
       qb.title = "Optional: stellt GEZIELT diesem Knoten die Frage aus dem Feld oben (Handauswahl). Normalerweise reicht „🔎 Antwort holen“ — das wählt den bestpassenden Knoten automatisch.";
       qb.addEventListener("click", function () { onAsk(c); });
       rowEl.appendChild(qb);
+      // Partner-Link (Klaus 2026-07-12): direkt die App/PWA des Knotens öffnen,
+      // um selbst dort zu suchen — ohne auf die Cross-Knoten-Antwort zu warten
+      // (die server-los nur kommt, wenn der andere Tab offen+wach ist). Adresse
+      // aus der Spore (endpoint). Fail-soft: ohne endpoint kein Link.
+      var ep = (c.spore && typeof c.spore.endpoint === "string") ? c.spore.endpoint.trim() : "";
+      if (/^https?:\/\//i.test(ep)) {
+        var link = el("a", bs + ";margin-left:6px;font-size:.72rem;text-decoration:none;display:inline-block", "↗ App öffnen");
+        link.href = ep; link.target = "_blank"; link.rel = "noopener noreferrer";
+        link.title = "Öffnet die App/PWA dieses Knotens in einem neuen Tab — dort kannst du selbst suchen, ohne auf eine Antwort zu warten.";
+        rowEl.appendChild(link);
+      }
       cardsEl.appendChild(rowEl);
     });
   }
@@ -1083,8 +1094,11 @@
       return;
     }
     recordOpenQuestion(res, card, text);   // A12: Frage bleibt „offen"
-    outEl.textContent = "📭 " + (res && res.reason ? res.reason : "Keine Antwort.") +
-      "\nDie Frage bleibt in deinem Briefkasten offen — ich hole die Antwort automatisch beim nächsten Öffnen (oder tippe 📬 Antworten abholen).";
+    var epHint = (card && card.spore && typeof card.spore.endpoint === "string" && /^https?:\/\//i.test(card.spore.endpoint))
+      ? "\nOder hol dir die Antwort selbst: „↗ App öffnen“ in der Karte oben öffnet " + (card.nodeName || "den Knoten") + " direkt — dort suchen, ohne zu warten."
+      : "";
+    outEl.textContent = "📭 " + (res && res.reason ? res.reason : "Keine Antwort — der Knoten ist gerade nicht offen/wach.") +
+      "\nDie Frage bleibt in deinem Briefkasten offen — ich hole die Antwort automatisch beim nächsten Öffnen (oder tippe 📬 Antworten abholen)." + epHint;
   }
 
   function askWithRetry(r, card, text, allowRetry, fallbackCards) {
