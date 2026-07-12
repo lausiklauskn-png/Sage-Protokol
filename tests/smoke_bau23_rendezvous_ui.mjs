@@ -309,9 +309,12 @@ async function run() {
   stub.SbkimRendezvous._setFetch({ ok: true, answers: [{ qid: "q-brief-1", fromName: "Zielknoten", results: [{ label: "Eierschecke", score: 0.9 }, { label: "Stollen", score: 0.8 }] }] });
   if (mailButton) mailButton.click();
   await sleep(40);
-  const preTxt = (preOf() || {}).textContent || "";
+  // Briefkasten rendert jetzt interaktive Karten in #sbkim-rdv-cards (mit 🗑 +
+  // „↗ App öffnen“ je Eintrag) statt reinem Text in der PRE.
+  const cardsMail = stub.document.querySelector("#sbkim-rdv-cards");
+  const mailTxt = txtOf(cardsMail);
   record("Briefkasten zeigt die nachgelesene Antwort (Eierschecke)", "ja",
-    preTxt.includes("Eierschecke") ? "ja" : "nein", preTxt.slice(0, 120));
+    mailTxt.includes("Eierschecke") ? "ja" : "nein", mailTxt.slice(0, 120));
   record("Frager rief fetchAnswers mit der offenen qid", "ja",
     stub.SbkimRendezvous._calls.fetch.some((qs) => Array.isArray(qs) && qs.includes("q-brief-1")) ? "ja" : "nein",
     JSON.stringify(stub.SbkimRendezvous._calls.fetch));
@@ -366,6 +369,55 @@ async function run() {
   await sleep(10);
   record("🗑 leeren macht den Briefkasten leer", "ja",
     JSON.parse(_ls[KEY] || "[]").length === 0 ? "ja" : "nein", _ls[KEY]);
+
+  // ── B) Briefkasten entdoppeln + 🗑 je Eintrag + ↗ App öffnen (Klaus 2026-07-12) ──
+  const DKEY = "sbkim_rdv_pending_default";
+  _ls[DKEY] = "[]";
+  // Karte MIT endpoint rendern, an die gefragt wird.
+  stub.SbkimRendezvous._setDiscover([{ nodeId: "DUP-1", nodeName: "Mixarium", spore: { id: "DUP-1", endpoint: "https://example.org/mix/" }, ts: 500, ageSec: 5 }]);
+  discoverButton.click();
+  await sleep(20);
+  const cardsDup = stub.document.querySelector("#sbkim-rdv-cards");
+  const dupAskBtn = (function () { let f = null; (function w(n) { for (const c of n.children) { if (c.tagName === "BUTTON" && c.textContent.includes("gezielt fragen")) { f = c; return; } w(c); } })(cardsDup); return f; })();
+  const qDup = stub.document.querySelector("#sbkim-rdv-q");
+  if (qDup) qDup.value = "Erfrischungsgetränk";
+  // Dieselbe Frage 3× stellen — jedes Mal NEUE qid (Timeout) → EIN Eintrag, tries=3.
+  for (const qid of ["dq-1", "dq-2", "dq-3"]) {
+    stub.SbkimRendezvous._setAsk({ ok: false, pending: true, qid, reason: "Noch keine Antwort." });
+    if (dupAskBtn) dupAskBtn.click();
+    await sleep(30);
+  }
+  const dupStored = JSON.parse(_ls[DKEY] || "[]").filter((e) => e.toName === "Mixarium");
+  record("gleiche Frage 3× → nur EIN Briefkasten-Eintrag (entdoppelt)", "1", String(dupStored.length), dupStored.length === 1);
+  record("Eintrag zählt die Versuche (tries=3)", "3", String(dupStored[0] && dupStored[0].tries), !!(dupStored[0] && dupStored[0].tries === 3));
+  record("Eintrag trägt die neueste qid (dq-3)", "dq-3", dupStored[0] && dupStored[0].qid, !!(dupStored[0] && dupStored[0].qid === "dq-3"));
+  record("Eintrag hat den endpoint der Karte gespeichert", "https://example.org/mix/", dupStored[0] && dupStored[0].endpoint, !!(dupStored[0] && dupStored[0].endpoint === "https://example.org/mix/"));
+
+  // Briefkasten anzeigen → „↗ App öffnen“ je Eintrag (aus gespeichertem endpoint).
+  if (mailButton) mailButton.click();
+  await sleep(30);
+  const cardsMail2 = stub.document.querySelector("#sbkim-rdv-cards");
+  const mailLink = findLink(cardsMail2, "App öffnen");
+  record("Briefkasten-Eintrag zeigt „↗ App öffnen“ (endpoint)", "ja", mailLink ? "ja" : "nein", !!mailLink);
+  record("Briefkasten-Link zeigt auf den gespeicherten endpoint", "https://example.org/mix/", mailLink && mailLink.href, !!mailLink && mailLink.href === "https://example.org/mix/");
+
+  // Zwei verschiedene Gruppen → 🗑 je Eintrag entfernt NUR diese eine Gruppe.
+  _ls[DKEY] = JSON.stringify([
+    { qid: "g-a", toName: "A", text: "frage a", ts: Date.now(), tries: 1, status: "offen", seen: true },
+    { qid: "g-b", toName: "B", text: "frage b", ts: Date.now(), tries: 1, status: "offen", seen: true },
+  ]);
+  if (mailButton) mailButton.click();
+  await sleep(20);
+  const cardsDel = stub.document.querySelector("#sbkim-rdv-cards");
+  const trashBtns = [];
+  (function collect(n) { for (const c of n.children) { if (c.tagName === "BUTTON" && (c.textContent || "").includes("🗑")) trashBtns.push(c); collect(c); } })(cardsDel);
+  record("je Eintrag ein 🗑-Knopf (2 Gruppen → 2 Knöpfe)", "2", String(trashBtns.length), trashBtns.length === 2);
+  if (trashBtns[0]) trashBtns[0].click();
+  await sleep(20);
+  const afterDel = JSON.parse(_ls[DKEY] || "[]");
+  record("🗑 je Eintrag entfernt NUR diese Gruppe (a weg, b bleibt)", "ja",
+    (!afterDel.some((e) => e.qid === "g-a") && afterDel.some((e) => e.qid === "g-b")) ? "ja" : "nein", _ls[DKEY]);
+  _ls[DKEY] = "[]";
 
   // ---- A11: „🔎 Antwort holen" — Auto-Knoten-Auswahl nach Frage-Passung ----
   const allButtons = [];
