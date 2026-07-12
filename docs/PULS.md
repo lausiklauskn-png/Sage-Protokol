@@ -119,6 +119,39 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-12 · A17 Last-Schoner — Embedding im Web-Worker (gegen Tablet-Einfrieren)
+
+**Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Tablet fror mehrfach ein / stürzte ab
+bei wiederholten Cross-Knoten-Suchen mit zwei Modellen. **Ursache:** das e5-Modell rechnet
+bei JEDER Suche — bisher **im Anzeige-Faden**, der dabei steht. Klaus' Ansage: die
+„vernünftige" Variante, **kein Liliput** (Bauzeit ist nicht das Problem).
+
+**Getan:**
+- **Modul 03** rechnet Embeddings jetzt in einem **Inline-Blob-Web-Worker** (Hintergrund-
+  Faden) statt im Haupt-Faden. Neue Innereien: `makeCfg`/`workerSource`/`ensureWorker`/
+  `postToWorker`/`onWorkerMessage`/`failWorker` + `loadMainPipe` (Rückfall) + `computeVectors`
+  (zentrale Rechen-Stelle, Worker zuerst). `embedSingle`/`embedBatch`/`embedContentVector`
+  laufen alle darüber. `isReady()` kennt den Worker; `_workerState()`-Test-Brücke; `_meta.workerMode`.
+- **Streng fail-soft:** kein Worker (Node/alter Browser/CSP) → transparenter Rückfall auf den
+  Haupt-Faden = **byte-gleiche Vektoren**; Worker-Fehler mitten im Betrieb fällt sauber zurück;
+  `init({worker:false})` schaltet ab. Kern-Module 02/05/05b unberührt, kein PROTOCOL_VERSION-/
+  DB_VERSION-Bump, 0.80-Riegel nicht angefasst.
+- **Byte-1:1** in sbkim-bundle/such-tool/pinnwand (Drift-Guards grün). Neuer Smoke
+  `smoke_bau03_worker.mjs` **15/15** (Worker-Nutzung · Parität Worker==Haupt-Faden · Fail-soft ·
+  Fehler-Recovery · worker:false). Regress: `smoke_a3` 20/20, `smoke_bundle_connect` 21/21,
+  `smoke_standalone_such_tool` 49/49, `pinnwand/_smoke` 60/60.
+- Dazu (im selben Branch, PR #630 gewachsen): die kleine **Drosselung** in Modul 23 UI
+  („Antwort holen" entprellt — kein Doppel-Start, 4 s Abkühlung) als Ergänzung.
+
+**Offen / nächster Schritt:**
+- **Netzweiter Byte-Rollout** von Modul 03 in die Apps (Mixarium, Rezeptbuch, family, BLP,
+  Tomys, Kimboard, Kimseek) — Folge-Schritt, wie bei A11 (Subagenten, SW-Bump, sha-Guards).
+- **Browser-Sichttest (kein Einfrieren mehr) wartet auf Klaus** — headless beweist die Logik,
+  das echte Tablet-Verhalten sieht nur Klaus.
+- **Selbst-Hosten des Modells** (Flaschenhals/Offline, `/models/…`-Pfad existiert schon in
+  Modul 03) ist ein **separater, optionaler** Hebel — löst NICHT das Einfrieren, auf Klaus' Zuruf.
+- Danach **A16** (lernender Sortierer, Brief liegt).
+
 ## 2026-07-11 · A11 Teil A (Bau 23.C) — Auto-Knoten-Auswahl + „🔎 Antwort holen"
 
 **Rolle:** Bausitzung (Modul 23), Freibrief, Plan-Modus vorab (Plan freigegeben). Auslöser:

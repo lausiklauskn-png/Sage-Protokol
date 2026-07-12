@@ -230,6 +230,11 @@
   var askInputEl = null, answerBtn = null;   // Bau 23.B — Frage-Feld + Antwortrecht-Schalter
   var voiceBtnEl = null, activeRecognizer = null;   // 🎤 Spracheingabe (Modul 21)
   var answerFetchBtn = null;   // A11 — „🔎 Antwort holen": bestpassenden Knoten automatisch fragen
+  // A11-Last-Schoner (Klaus 2026-07-11, Tablet friert bei Mehrfach-Klick ein):
+  // eine laufende Auto-Suche sperrt weitere Klicks, und dieselbe Frage wird nicht
+  // sofort erneut eingebettet (Embedding ist teuer). Rein lokal, fail-soft.
+  var autoAskBusy = false, lastAutoAskText = null, lastAutoAskTs = 0;
+  var AUTOASK_COOLDOWN_MS = 4000;
   var relatedOnly = false;   // „nur verwandte zeigen" (reine Anzeige, Default aus)
   var lastCards = [];        // letzte gelesene Karten (für Re-Render beim Umschalten)
 
@@ -722,6 +727,16 @@
     if (typeof r.askNode !== "function") { setOut("Modul 23 mit Bau 23.B (askNode) nicht geladen."); return; }
     var text = askInputEl ? String(askInputEl.value || "").trim() : "";
     if (!text) { setOut("🔎 Zuerst oben eine Frage eintippen, dann „🔎 Antwort holen“."); return; }
+    // Last-Schoner: laufende Suche sperrt weitere Klicks (kein Stapeln auf dem
+    // einkernigen Browser-Tab); identische Frage im Cooldown nicht neu einbetten.
+    if (autoAskBusy) { setOut("🔎 Suche läuft schon — einen Moment …"); return; }
+    var nowMs = Date.now();
+    if (text === lastAutoAskText && (nowMs - lastAutoAskTs) < AUTOASK_COOLDOWN_MS) {
+      setOut("🔎 Diese Frage lief gerade — kurz warten, dann erneut."); return;
+    }
+    autoAskBusy = true; lastAutoAskText = text; lastAutoAskTs = nowMs;
+    if (answerFetchBtn) answerFetchBtn.disabled = true;
+    function autoAskDone() { autoAskBusy = false; if (answerFetchBtn) answerFetchBtn.disabled = false; }
     // Fail-soft: älteres Modul 23 ohne A11 → wie „Wer ist im Raum?" (manuell fragen).
     var canRank = typeof r.rankCardsByQuery === "function";
     setOut("🔎 Suche im Raum den Knoten, der am besten zu deiner Frage passt …");
@@ -746,7 +761,7 @@
         }
         askWithRetry(r, best, text, true, ranked.slice(1));
       });
-    }).catch(function (e) { stopModelProgress(); setOut("✗ " + (e && e.message ? e.message : e)); });
+    }).then(autoAskDone, function (e) { autoAskDone(); stopModelProgress(); setOut("✗ " + (e && e.message ? e.message : e)); });
   }
 
   function renderCards(cards, opts) {

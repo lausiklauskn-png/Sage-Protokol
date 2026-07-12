@@ -273,6 +273,20 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Kalt-Start = heute, positives Signal zuerst (negatives „nicht passend" optional Phase B.2). Byte-Kopie
   `such-tool/modules/22` + Drift-Guard. _erledigt am: _____
 
+- [x] **A17 — Last-Schoner: Embedding im Web-Worker + „Antwort holen"-Drosselung** · `Bau` · **erledigt 2026-07-12**
+  Klaus' Tablet fror mehrfach ein / stürzte ab bei wiederholten Cross-Knoten-Suchen mit zwei Modellen. Ursache: das
+  e5-Modell rechnet bei JEDER Suche **im Anzeige-Faden** → die Seite steht, während gerechnet wird. **Bau (die
+  „vernünftige" Variante, kein Liliput — Klaus 2026-07-12):** die Modell-Rechnung wandert in einen **Inline-Blob-
+  Web-Worker** (Modul 03) → der Anzeige-Faden bleibt frei. Streng fail-soft: kein Worker (Node/alter Browser/CSP) →
+  transparenter Rückfall auf den Haupt-Faden = byte-gleiche Vektoren; auch Worker-Fehler mitten im Betrieb fällt
+  sauber zurück; `init({worker:false})` schaltet ab. Dazu die kleine **Drosselung** in Modul 23 UI („Antwort holen"
+  entprellt: kein Doppel-Start, 4 s Abkühlung für identische Frage) als Ergänzung. Kern-Module 02/05/05b unberührt,
+  0.80-Riegel + kein PROTOCOL_VERSION-Bump. Smokes: `smoke_bau03_worker.mjs` **15/15** (Worker-Nutzung, Parität
+  Worker==Haupt-Faden, Fail-soft, Fehler-Recovery, Opt-out) + `smoke_bau23_rendezvous_ui.mjs` (Doppelklick). Byte-1:1
+  in sbkim-bundle/such-tool/pinnwand (Drift-Guards grün). **Netzweiter Byte-Rollout in die Apps = Folge-Schritt.**
+  **Selbst-Hosten des Modells (Flaschenhals/Offline, `/models/…`-Pfad existiert schon) ist ein SEPARATER, optionaler
+  Hebel** — löst NICHT das Einfrieren; auf Klaus' Zuruf. **Browser-Sichttest (kein Einfrieren mehr) wartet auf Klaus.**
+
 ## B) Verschlüsselung
 
 - [ ] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · ⏱ ~20–30 Min
