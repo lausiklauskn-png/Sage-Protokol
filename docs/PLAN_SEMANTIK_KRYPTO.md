@@ -279,6 +279,13 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Identität. Surface `+learnedRerank/computeRerankerModel/trainReranker/getRerankerModel`, `_meta.rerankerReady/
   rerankerTrained/rerankerTokens`. Smoke `smoke_bau22g_lern_reranker.mjs` **33/33**; bau22 260, bau22e 45, bau22f 17,
   Drift-Guard `such-tool` byte-1:1 49/49. Modul 04/05 + 0.80-Riegel unberührt, kein PROTOCOL_VERSION-Bump, kein PII.
+  **Phase B nachgezogen 2026-07-12 (Klaus wählte: nach dem Seiten-Öffnen, drei Stufen):** Treffer-
+  Bewertung 👍 sehr gut (+2) · 🙂 okay (+1) · 👎 nein (−2) erscheint an GENAU dem Treffer, dessen
+  Seite geöffnet wurde (Detail-Karte + Trefferzeile), sichtbar beim Zurückkommen (visibilitychange/
+  focus). Neue LS-Keys `sbkim_search_widget_feedback` + `_pending`; `computeRerankerModel(merkliste,
+  feedback)` verrechnet gestufte + **negative** Gewichte; Boost jetzt vorzeichen-tragend ∈[−1,1]
+  (nein → Treffer sinkt, begrenzt ≤3). Surface `+recordFeedback/getFeedback/feedbackWeight`,
+  `_meta.feedbackCount/pendingFeedbackCount`. Smoke 47/47. Reine Anzeige/Lern-Eingabe, kein PII.
 
 - [x] **A17 — Last-Schoner: Embedding im Web-Worker + „Antwort holen"-Drosselung** · `Bau` · **erledigt 2026-07-12**
   Klaus' Tablet fror mehrfach ein / stürzte ab bei wiederholten Cross-Knoten-Suchen mit zwei Modellen. Ursache: das
