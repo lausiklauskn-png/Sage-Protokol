@@ -119,6 +119,45 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-12 · A16 — Lernender Sortierer (display-only Re-Ranker, on-device) in Modul 22
+
+**Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Wunsch (Geist der BLP-„selbstlernenden
+Kalkulation", auf die SUCHE): das mitgelieferte Sortierprogramm soll mit jedem 📌-Merken
+**besser** werden. Der rohe e5-small-Cosinus sortiert flach (A11-Befund: Treffer 0.81–0.83).
+
+**Was getan (Kanon Modul 22):**
+- **Neuer LS-Key** `sbkim_search_widget_reranker` (pro App/Origin) — gelerntes Modell
+  `{tokens, sources, n}` aus der 📌-Merkliste. KEIN PII (nur Token/Quelle/Gewicht, wie die
+  Merkliste selbst schon speichert).
+- **Reine Funktionen:** `computeRerankerModel(merkliste)` (Wortzerleger auf Titel/Text →
+  Token-Gewichte + Quelle-Gewichte, Stoppwörter raus) + `learnedRerank(treffer,{model?})` —
+  **stabile, BEGRENZTE Umsortierung**: effektiver Sortier-Schlüssel `index − boost·3`, ein
+  Volltreffer steigt höchstens 3 Plätze. Boost ∈ [0,1] aus Token-Übereinstimmung (saturierend)
+  + Quelle. **Kalt-Start / leeres / kaputtes Modell → Identität** (gleiche Reihenfolge, gleiche
+  Objekte). Entfernt NICHTS, fügt NICHTS hinzu.
+- **Training-Hook:** `retrainReranker()` hängt an `addMerk`/`removeMerk`/`clearMerkliste` —
+  das Modell lernt bei jedem Merken/Entfernen neu (fail-soft, ohne localStorage kein Bruch).
+- **Angewandt in `displayTreffer`** NUR auf die grobe „verbunden"-Standardsicht; die explizite
+  „verwandt"-/KI-Sortierung bleibt unberührt. **REINE ANZEIGE — gatet nichts, 0.80-Andock-
+  Riegel (Modul 05) + Modul 04 unberührt, kein PROTOCOL_VERSION-Bump.**
+- Surface `+learnedRerank/computeRerankerModel/trainReranker/getRerankerModel`,
+  `_meta.rerankerReady/rerankerTrained/rerankerTokens`.
+- **Ehrliche Grenzen:** lernt pro Gerät (nicht netzweit geteilt); nur positives Signal (📌);
+  negatives „passt nicht" bewusst Phase B.2 (kostet ein UI-Element mehr — offene Frage an Klaus).
+
+**Tests:** neuer Smoke `smoke_bau22g_lern_reranker.mjs` **33/33** (Kalt=Identität · Pin-nudged-
+hoch · Nudge-kein-Umbruch/Aufstieg≤3 · fail-soft kaputte Gewichte · Quell-Signal). Regress-frei:
+bau22 260/260, bau22e 45/45, bau22f 17/17. Byte-Kopie `such-tool/modules/22` gezogen, Drift-Guard
+`smoke_standalone_such_tool.mjs` **49/49**.
+
+**Netzweiter Rollout (Modul 22 lebt nur an 4 Orten, nicht in den Rezept-Apps):** Kanon Sage
+`src` + `such-tool` (dieser PR) → externe Byte-Kopien **SB-KIMTool-Point** `such-tool/modules/22`
++ **Kimseek** `modules/22` (je eigener PR, SW-Cache-Bump, Kimseek Drift-Guard-SHA nachgezogen).
+
+**Was offen / nächster Schritt:** **Browser-Sichttest durch Klaus** (nicht ersetzbar) — im
+Such-Widget etwas suchen, einen Treffer 📌-merken, erneut suchen: der gemerkte/ähnliche Treffer
+steht sichtbar weiter oben. Optional Phase B.2 (sichtbares „👎 passt nicht") auf Klaus' Zuruf.
+
 ## 2026-07-12 · Briefkasten entdoppeln (B) + Mikrofon/Modul 21 nachgezogen (C) — netzweit
 
 **Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Tablet-Screenshots nach A17 — (1) der

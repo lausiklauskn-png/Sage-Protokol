@@ -261,7 +261,7 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   „Bessere Auffindbarkeit garantiert durch Modul-Design" (A13) ↔ „einfaches Verbinden, schlechtere Auffindbarkeit".
   Gehört mit A11 (Suchergebnis→Andocken) zusammen. Verfassungstreu (Empfangsmodus). _erledigt am: _____
 
-- [ ] **A16 — Lernender Sortierer (selbst-verbessernd, on-device)** · `Bau` · ⏱ ~1 Sitzung · **Idee Klaus 2026-07-11**
+- [x] **A16 — Lernender Sortierer (selbst-verbessernd, on-device)** · `Bau` · **erledigt 2026-07-12**
   Klaus' Wunsch (Geist der BLP-„selbstlernenden Kalkulation", aber auf die SUCHE): das mitgelieferte Sortier-
   programm soll mit jedem Ja/Nein besser werden. Heute ist der End-Sortierer statisch (roher Cosinus/RRF, e5-small
   quetscht die Werte → schwache Rangfolge). **Bau:** ein **display-only, fail-soft Re-Ranker in Modul 22** (NEBEN
@@ -271,7 +271,14 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   nach gelernten Mustern — **Nudge auf die bestehende Reihenfolge, verändert NIE die Mitgliedschaft, kreuzt NIE den
   0.80-Riegel.** Kalt-Start = Identität (wie heute). Ehrliche Grenzen: lernt pro Gerät (nicht netzweit geteilt),
   Kalt-Start = heute, positives Signal zuerst (negatives „nicht passend" optional Phase B.2). Byte-Kopie
-  `such-tool/modules/22` + Drift-Guard. _erledigt am: _____
+  `such-tool/modules/22` + Drift-Guard. _erledigt am: 2026-07-12._
+  **Gebaut:** neue LS-Key `sbkim_search_widget_reranker`; reine Funktionen `computeRerankerModel(merkliste)`
+  (Token/Source→Gewicht) + `learnedRerank(treffer,{model?})` (stabile, BEGRENZTE Umsortierung, max. 3 Plätze
+  Aufstieg pro Volltreffer); `retrainReranker()` an `addMerk`/`removeMerk`/`clearMerkliste` gehängt; angewandt in
+  `displayTreffer` NUR auf die grobe „verbunden"-Sicht (verwandt/KI unberührt). Fail-soft: leeres/kaputtes Modell →
+  Identität. Surface `+learnedRerank/computeRerankerModel/trainReranker/getRerankerModel`, `_meta.rerankerReady/
+  rerankerTrained/rerankerTokens`. Smoke `smoke_bau22g_lern_reranker.mjs` **33/33**; bau22 260, bau22e 45, bau22f 17,
+  Drift-Guard `such-tool` byte-1:1 49/49. Modul 04/05 + 0.80-Riegel unberührt, kein PROTOCOL_VERSION-Bump, kein PII.
 
 - [x] **A17 — Last-Schoner: Embedding im Web-Worker + „Antwort holen"-Drosselung** · `Bau` · **erledigt 2026-07-12**
   Klaus' Tablet fror mehrfach ein / stürzte ab bei wiederholten Cross-Knoten-Suchen mit zwei Modellen. Ursache: das
