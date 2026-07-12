@@ -119,6 +119,41 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-12 · A16 Phase B — Treffer-Bewertung (👍 sehr gut · 🙂 okay · 👎 nein) füttert den Sortierer
+
+**Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Wunsch nach A16 — nicht nur „gemerkt = gut",
+sondern **nach der Gegenprüfung** bewerten, *wie* gut ein Treffer war (Geist echter Lernprogramme:
+Antwort holen → Seite anschauen → zurück → zufrieden?). Klaus' Design-Wahl (AskUserQuestion):
+**Bewertung nach dem Seiten-Öffnen**, an genau dem geprüften Treffer, **drei Stufen**.
+
+**Was getan (Kanon Modul 22):**
+- **Bewertungs-Zeile „Hat's getroffen? 👍 sehr gut · 🙂 okay · 👎 nein"** erscheint an GENAU dem
+  Treffer, dessen Seite geöffnet wurde — sowohl in der Detail-Karte (nach „↗ Seite öffnen") als
+  auch an der Trefferzeile in der Liste. Sichtbar beim Zurückkommen (`visibilitychange`/`focus`).
+  Schon bewertet → „Bewertet: … (ändern)".
+- **Zwei neue LS-Keys** (kein PII, nur Text/Link/Note): `sbkim_search_widget_feedback`
+  (key→{rating,titel,text,source}) + `_pending` (geöffnet, noch nicht bewertet).
+- **Lern-Verrechnung:** `computeRerankerModel(merkliste, feedback)` verrechnet jetzt auch die
+  Bewertungen — **gestuft** (`feedbackWeight`: gut +2, okay +1, **nein −2**). Modell-Gewichte
+  dürfen negativ werden; der Boost ist jetzt **vorzeichen-tragend** ∈ [−1,1] (👎 → Treffer **sinkt**,
+  begrenzt ≤ 3 Plätze — Nudge, kein Umbruch). `retrainReranker()` lernt aus Merkliste **und**
+  Bewertungen.
+- Surface `+recordFeedback/getFeedback/feedbackWeight`, `_meta.feedbackCount/pendingFeedbackCount`.
+- **REINE ANZEIGE/Lern-Eingabe** — gatet nichts, 0.80-Riegel + Modul 04/05 unberührt, kein
+  PROTOCOL_VERSION-Bump. Fail-soft ohne localStorage.
+
+**Tests:** Smoke `smoke_bau22g_lern_reranker.mjs` **47/47** (jetzt inkl. Phase B: gestufte Gewichte,
+negatives Signal senkt begrenzt, positiv+negativ zusammen, fail-soft). Regress-frei: bau22 260,
+bau22e 45, bau22f 17. Byte-Kopie `such-tool/modules/22` gezogen, Drift-Guard **49/49**.
+
+**Netzweiter Rollout:** Kanon Sage `src` + `such-tool` → SB-KIMTool-Point `such-tool/modules/22`
++ Kimseek `modules/22` (je SW-Bump, Kimseek Drift-SHA nachgezogen).
+
+**Was offen / nächster Schritt:** **Browser-Sichttest durch Klaus** (nicht ersetzbar) — suchen →
+Treffer öffnen → zurück → 👍/🙂/👎 → erneut suchen: gut-bewertete/ähnliche Treffer stehen höher,
+👎-Treffer tiefer. Offene A16-Folgefrage (aus dem A16-Brief): soll der Lern-Boost auch die
+**Knoten-Rangfolge** (A11 „🔎 Antwort holen") beeinflussen — heute nur die lokale Treffer-Liste.
+
 ## 2026-07-12 · A16 — Lernender Sortierer (display-only Re-Ranker, on-device) in Modul 22
 
 **Rolle:** Bau (Freibrief). **Auslöser:** Klaus' Wunsch (Geist der BLP-„selbstlernenden
