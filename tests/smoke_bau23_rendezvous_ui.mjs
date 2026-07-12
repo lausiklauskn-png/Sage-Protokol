@@ -185,6 +185,28 @@ async function run() {
     stub.SbkimRendezvous._calls.handshake[0] && stub.SbkimRendezvous._calls.handshake[0].nodeId,
     stub.SbkimRendezvous._calls.handshake[0] && stub.SbkimRendezvous._calls.handshake[0].nodeId === "PEER-1");
 
+  // ── Partner-Link „↗ App öffnen" (Klaus 2026-07-12) ──
+  // Trägt die Karte einen http(s)-endpoint in der Spore, rendert die UI einen
+  // Link, der die App/PWA des Knotens öffnet (Selbst-Suche ohne Warten).
+  const findLink = (root, label) => { let f = null; (function w(n) { if (f) return; for (const c of n.children) { if (c.tagName === "A" && (c.textContent || "").includes(label)) { f = c; return; } w(c); } })(root); return f; };
+  stub.SbkimRendezvous._setDiscover([{ nodeId: "EP-1", nodeName: "Mein Mixarium", spore: { id: "EP-1", endpoint: "https://lausiklauskn-png.github.io/Mein-Mixarium/" }, ts: 100, ageSec: 5 }]);
+  discoverButton.click();
+  await sleep(20);
+  const cardsEp = stub.document.querySelector("#sbkim-rdv-cards");
+  const openLink = findLink(cardsEp, "App öffnen");
+  record("Karte mit endpoint zeigt „↗ App öffnen“-Link", "ja", openLink ? "ja" : "nein", !!openLink);
+  record("Link zeigt auf den Knoten-endpoint", "…/Mein-Mixarium/",
+    openLink && openLink.href, !!openLink && openLink.href === "https://lausiklauskn-png.github.io/Mein-Mixarium/");
+  record("Link öffnet neuen Tab (target=_blank, rel=noopener)", "ja",
+    openLink && (openLink.target + "/" + openLink.rel),
+    !!openLink && openLink.target === "_blank" && /noopener/.test(openLink.rel || ""));
+  // Ohne endpoint → KEIN Link (fail-soft, kein toter Knopf).
+  stub.SbkimRendezvous._setDiscover([{ nodeId: "NOEP", nodeName: "Ohne Adresse", spore: { id: "NOEP" }, ts: 101, ageSec: 5 }]);
+  discoverButton.click();
+  await sleep(20);
+  const cardsNo = stub.document.querySelector("#sbkim-rdv-cards");
+  record("Karte ohne endpoint zeigt KEINEN Link", "kein Link", findLink(cardsNo, "App öffnen") ? "Link!" : "kein Link", !findLink(cardsNo, "App öffnen"));
+
   // ── Verwandtschafts-Badge + „nur verwandte"-Filter (REINE ANZEIGE) ──
   // Karten tragen relatedness/isRelated (von Modul 23 angereichert) — die UI
   // zeigt ein Badge je Karte und kann auf „nur verwandte" filtern.
