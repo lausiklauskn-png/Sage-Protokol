@@ -163,15 +163,26 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
 - [ ] **A5b — (Optional) Multi-Query-Sortierung auch in Pinnwand** · `Bau` nur b. Bedarf · ⏱ ~30 Min
   Pinnwand ist eine Sortier-Fläche wie der family-Marktplatz; dasselbe „bester-Cosinus-über-Varianten"-Muster ließe
   sich übertragen (kein Filter, nichts versteckt). Bewusst zurückgestellt (Klaus 2026-07-11: Pinnwand läuft gut). _erledigt am: _____
-- [ ] **A6 — Echte Embedding-Vektoren statt Demo-Stub** · `Bau` · ⏱ ~1–2 Sitzungen
-  Modul 03: `_demo`-`domainVector` durch echte Vektoren ersetzen → erst dann „verified-match" statt nur „verified-spore". _erledigt am: _____
+- [~] **A6 — Echte Embedding-Vektoren statt Demo-Stub** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
+  Modul 03: `_demo`-`domainVector` durch echte Vektoren ersetzen → erst dann „verified-match" statt nur „verified-spore".
+  **Spec erledigt 2026-07-14** (mit A10 zusammen, Spec-Sitzung Spore v0.2, INTERFACES §0/§2/§4/Modul 02+03,
+  PROTOCOL_VERSION 0.1→0.2). **Befund beim Spec:** A6 ist im Code faktisch schon erledigt — es gibt keinen
+  `_demo`-domainVector-Pfad mehr in Modul 02/03, und `status.json` führt JEDEN Live-Knoten mit echtem 384-dim-
+  e5-Vektor (verified-match). v0.2 macht die Erwartung nur zur verbindlichen Tafel (domainVector bleibt optional /
+  Soft-Pflicht, muss aber echt sein). Die teure Neu-Signier-Welle wird real von A10 (snippetVectors) getrieben.
+  _Spec erledigt am: 2026-07-14 · Bau (Code-Schließung + Welle) = Bau-Sitzung Spore v0.2, Brief `BRIEF_BAU_SPORE_V02.md`_
 - [ ] **A7 — Sichttest: App-Integration Hybrid + Multi-Query** · `Test` · ⏱ ~15–30 Min
   Sage-Suchfeld am Tablet prüfen (headless grün). _getestet am: _____
 - [ ] **A8 — Sichttest: „Wählen"-Umschalter verbunden ↔ verwandt** · `Test` · ⏱ ~15–30 Min · _getestet am: _____
 - [ ] **A9 — Sichttest: „verwandt · KI" mit echtem Schlüssel** · `Test` · ⏱ ~15–30 Min · _getestet am: _____
-- [ ] **A10 — (Optional/später) „Schnipsel-Mittel"** · `Bau` nur b. Bedarf · ⏱ ~2 Sitzungen
+- [~] **A10 — „Schnipsel-Mittel"** · `Spec`+`Bau` · ⏱ ~2 Sitzungen
   Einziges Verfahren mit messbarer Verwandt-Trennung, aber Datenvertrag-Eingriff (Schnipsel-Vektoren in die
-  Spore) + **alle Knoten neu signieren**. Bewusst zurückgestellt. _erledigt am: _____
+  Spore) + **alle Knoten neu signieren**. **Klaus-Entscheid 2026-07-12: fest mit A6 in EINE Re-Sign-Welle** (statt
+  zweimal signieren). **Spec erledigt 2026-07-14** (Spec-Sitzung Spore v0.2): neues OPTIONALES Spore-Feld
+  `snippetVectors` (Array `{vec:number[384], text?}`), Obergrenze `SPORE_SNIPPET_MAX`=20, Granularität = SATZ
+  (Klaus 2026-07-14). Modul 03 neuer Helfer `embedSnippets`; Modul 02 `generateOwnSpore` nimmt `snippetVectors`.
+  Übergang 0.1→0.2 SANFT (gleiche Hauptversion → auto-kompatibel), Welle = Knopf pro App + Skript (Klaus 2026-07-14).
+  _Spec erledigt am: 2026-07-14 · Bau (Modul 03/02 + byte-Kopien + Welle) = Bau-Sitzung Spore v0.2, Brief `BRIEF_BAU_SPORE_V02.md`_
 
 - [ ] **A11 — Such-Ergebnis → Frage → optional Andocken (Marktplatz-Kopplung Modul 22 ↔ 23)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   **Klaus' Befund 2026-07-11:** ein fremder Nutzer dockt nicht ungefragt an — er **sucht/fragt zuerst**. Heute sind
