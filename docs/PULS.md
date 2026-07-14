@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-07-10 (26 Module)
+  title Modulstand 2026-07-14 (26 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -118,6 +118,33 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 |---|---|---|---|
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
+
+## 2026-07-14 · Welle Spore v0.2 — Sages Live-Spore neu signiert (ERSTE v0.2-Spore im Netz) + Identität aus Backup gerettet
+
+**Rolle:** Operator-Begleitung (Klaus am Browser) + Verifikation/Commit (Freibrief). **Ereignis:**
+Klaus hat Sages Spore über den Siegel-Knopf „✍ Semantik → Spore neu signieren" live auf **v0.2**
+gehoben. Diese Sitzung hat die Datei verifiziert und committet.
+
+**Verlauf (bemerkenswert — ehrlicher Netz-/Hub-Test):**
+- Klaus hatte zuvor **alle Browser-Daten gelöscht** und dabei befürchtet, Sages Identität sei weg.
+- Beim Backup-Zurückspielen (🔑-Wizard Schritt 4) meldete der Browser „Identität mit diesem Schlüssel
+  existiert bereits" → **die Identität hatte überlebt bzw. wurde aus dem verschlüsselten Backup vom
+  2026-05-21 sauber wiederhergestellt**. Der Backup-Weg (AES-GCM-256/PBKDF2) ist damit **live bewiesen**.
+- Danach v0.2-Neu-Signatur: **nodeId `nysOZE3V…` unverändert**, 11 Satz-Schnipsel, domainVector L2=1.
+
+**Verifikation dieser Sitzung (Beweis):** hochgeladene `spore.json` reziprok geprüft — protocolVersion
+**0.2** ✓, id == base64url(SHA256(rawPub)) ✓, id == committet ✓, publicKey identisch ✓, **Ed25519-Signatur
+gültig** ✓, domainVector L2=1.000000 ✓, **11/11 snippetVectors je 384-dim** ✓, kein PII. Committet nach
+`sbkim/spore.json`; `status.json` (top `protocolVersion` 0.1→0.2, Sage-Eintrag `reSignedAt`+Note),
+`NETZ-STAND.md` (Sages Live-Spore jetzt v0.2 = erste im Netz) + SIGNAL seq 45→46 nachgezogen.
+
+**Peer-Quer-Check (2026-07-14):** committete vs. live veröffentlichte nodeIds — **8/10 stimmen** live
+überein (Rezeptbuch, Mixarium, Jasons-Tresor, Mein-Tresor, SB-KIMTool-Point, Family, Kimseek, Kimboard);
+BookLedgerPro + Kim-Bell von hier nicht abrufbar (kein Beweis für Abweichung). Netz konsistent.
+
+**Was BLEIBT:** übrige Live-Sporen noch 0.1 (kompatibel) → optionaler Neu-Signatur-Knopf pro Endknoten
+(Folge-Sitzung/Repo); Verwandt-Anzeige aus Schnipseln (Consumer 04/22/23), sobald ≥ 2 Knoten v0.2 tragen
+— jetzt trägt **einer** (Sage); Tablet-Sichttests A7·A8·A9·B1.
 
 ## 2026-07-14 · Welle Spore v0.2 (Rollout-Teil) — Werkzeug verifiziert + App-Knopf emittiert jetzt Schnipsel
 
