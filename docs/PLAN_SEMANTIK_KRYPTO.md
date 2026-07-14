@@ -199,8 +199,11 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   braucht `npm install --no-save fake-indexeddb`). Sages **App-Knopf** „✍ Semantik → Spore neu signieren"
   (`index.html` `sageReSignWithDescription`) bettet die Beschreibung jetzt zusätzlich **satz-weise** ein
   (`embedSnippets`) und reicht `snippetVectors` an `generateOwnSpore` → Ein-Klick-Download = vollständige
-  v0.2-Spore MIT Schnipseln, fail-soft. Offen bleibt (Klaus): eigentliche Neu-Signatur der Live-Spore +
-  Endknoten-Rollout des Knopfs (je Folge-Sitzung/Repo).
+  v0.2-Spore MIT Schnipseln, fail-soft. **Live-Signatur 2026-07-14 (#651):** Sages eigene Spore ist als
+  **erste v0.2-Spore im Netz** neu signiert (Klaus' Browser, wiederhergestellte Identität `nysOZE3V…`
+  unverändert, 11 Satz-Schnipsel, echter e5-`domainVector` L2=1, reziprok verifiziert; status.json +
+  spore.json auf main). **Offen bleibt** nur der **Endknoten-Rollout** (Mixarium/Rezeptbuch/BLP + 2. Hub
+  SB-KIMTool-Point) + der Knopf je Repo — je Folge-Sitzung/Repo, mit Klaus' Schlüssel.
 
 - [ ] **A11 — Such-Ergebnis → Frage → optional Andocken (Marktplatz-Kopplung Modul 22 ↔ 23)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   **Klaus' Befund 2026-07-11:** ein fremder Nutzer dockt nicht ungefragt an — er **sucht/fragt zuerst**. Heute sind
