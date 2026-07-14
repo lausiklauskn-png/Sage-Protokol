@@ -140,6 +140,32 @@ PWA-Deinstallation, oder eine Storage-Quota-Reklamation.
   Wer von einem Rechner auf einen anderen wechselt: einmal exportieren,
   einmal importieren, fertig — Identität reist mit.
 
+### Live-Beweis 2026-07-14 (Klaus, Sage-Page) — zwei Schutzschichten bestätigt
+
+Klaus wollte Sages Spore auf v0.2 neu signieren und hatte davor **aggressiv
+Browser-Daten weggeworfen** (eigene Worte: „hartes Laden … alles gelöscht,
+Overkill"). Zwei Dinge wurden dabei **live bewiesen**:
+
+1. **Ein Hard-Reload (Cache-Bust) löscht die Identität NIE.** Er wirft nur den
+   HTTP-/Service-Worker-Cache weg (Lehre 4) — die IndexedDB mit Schlüssel +
+   Spore bleibt unberührt. „So oft hart neu laden wie man will" ist harmlos;
+   nur ein echtes „Cookies **und** Sitedaten löschen" für den Origin trifft die
+   IndexedDB (siehe Tabelle oben). Der gefürchtete Overkill war gar keiner.
+2. **Selbst ein echter Daten-Verlust ist über das verschlüsselte Backup sauber
+   reparierbar.** Beim Zurückspielen von Klaus' Backup vom 2026-05-21 (🔑-Wizard
+   Schritt 4, `importBackup` — AES-GCM-256/PBKDF2 600k) meldete der Browser
+   „Identität mit diesem Schlüssel existiert bereits" → die Identität war
+   wiederherstellbar, `nodeId nysOZE3V…` **unverändert**. Danach v0.2-Neu-Signatur
+   mit identischer Identität; die Sitzung hat die Ausgabe reziprok verifiziert
+   (Ed25519 gültig, id == base64url(SHA256(pub)), 11/11 Schnipsel 384-dim).
+
+**Folgerung (Fremdnutzer-/Marktplatz-Brille):** Die Empfehlungen oben (Persistenz
++ regelmäßiges Backup) sind damit im Feld erhärtet. Ein fremder Nutzer, der aus
+Versehen den Cache leert, verliert **nichts**; wer versehentlich die Sitedaten
+löscht, holt die Identität mit **einem** Backup + Passwort zurück. Der
+2026-05-17-Verlust (Ursache damals „nicht abschließend geklärt") ist damit als
+**voll reparierbar** eingeordnet — vorausgesetzt, ein Backup existiert.
+
 ---
 
 ## Lehre 3 — BroadcastChannel ist same-origin UND same-instance
