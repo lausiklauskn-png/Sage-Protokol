@@ -119,6 +119,42 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-14 · Spec-Sitzung Spore v0.2 — echte Vektoren (A6) + Schnipsel-Vektoren (A10), Protokoll 0.1→0.2
+
+**Rolle:** Spec (Spec-vor-Code, Freibrief). **Auftrag:** Brief `BRIEF Spore v0.2` (2026-07-12,
+Klaus-Entscheid: A6 + A10 in EINEN Protokoll-Sprung + EINE Neu-Signier-Welle). **NUR Tafel, KEIN
+Modul-Code** — der Bau folgt in der Bau-Sitzung.
+
+**Klaus-Entscheide (AskUserQuestion 2026-07-14):** (1) Schnipsel = **Satz, max 20**; (2) Übergang
+0.1→0.2 **sanft** (alte 0.1-Sporen kurz weiter tolerieren); (3) Neu-Signatur = **beides** (Knopf pro
+App + Termux/Node-Skript).
+
+**Was getan (nur `docs/INTERFACES.md` + Plan/Checkliste):**
+- **§0:** `PROTOCOL_VERSION "0.1" → "0.2"`; neue Konstanten `SPORE_SNIPPET_MAX=20` +
+  `SPORE_SNIPPET_GRANULARITY="sentence"`.
+- **§2 Spore-JSON:** neues **optionales** Feld `snippetVectors : object[]` (`{vec:number[384], text?}`,
+  bis 20, signaturpflichtig wenn vorhanden, fail-soft); § „Spore v0.2" (A6-Schließung + sanfter Übergang
+  + Welle-Form); `protocolVersion`-Wert in allen vier Schema-Blöcken auf `"0.2"`.
+- **§4 Versionierungs-Regeln:** Klarstellung, dass 0.1↔0.2 wechselseitig kompatibel bleiben (gleiche
+  Hauptversion „0", nur optionales Feld) → sanfter Übergang ist automatisch.
+- **Modul 02:** `generateOwnSpore` nimmt `meta.snippetVectors` (harte Kürzung auf Max, `vec`-Längen-Check).
+- **Modul 03:** neuer Helfer `embedSnippets(text|string[], opts?)` (Satz-Zerlegung → Passage-Vektoren).
+- **§10 Änderungsprotokoll:** Zeile 2026-07-14 Spore v0.2.
+- **Plan + interaktive Checkliste:** A6 + A10 auf `[~]` (Spec fertig, Bau offen).
+
+**Wichtiger Befund (ehrlich):** **A6 ist im Code faktisch schon erledigt** — kein `_demo`-domainVector-Pfad
+mehr in Modul 02/03, und `status.json` führt JEDEN Live-Knoten mit echtem 384-dim-e5-Vektor (verified-match).
+v0.2 macht die Erwartung nur zur Tafel. Die teure Neu-Signier-Welle wird **real von A10 (snippetVectors)**
+getrieben — das ist das einzige neue Feld.
+
+**Was offen (= Bau-Sitzung Spore v0.2, Brief `BRIEF_BAU_SPORE_V02.md`):** Modul 03 `embedSnippets` bauen +
+Modul 02 Assembly/Verify v0.2 + Headless-Smoke; `PROTOCOL_VERSION` im Code 0.1→0.2; byte-gleiche App-Kopien
+(Drift-Guards); Re-Sign-Automatik (Knopf pro App + `npm run`-Skript, `npm run verify` ✔); dann die EINE Welle
+(alle Knoten neu signieren) + `NETZ-STAND.md`. Kein PII, privater Schlüssel NIE ins Repo; 0.80-Riegel unberührt.
+
+**Manual-Check:** reine Doku-Änderung (kein Code) — `npm test` bleibt der bestehende grüne Baseline-Beweis
+(zur Bestätigung mitlaufen lassen). Browser-Sichttest: N/A (keine UI berührt).
+
 ## 2026-07-12 · Tooltip-Texte gekürzt (Klaus: „viel zu lang, kein Modul-Kram")
 
 **Rolle:** Bau (Freibrief). **Auslöser:** Klaus — die Tooltips waren zu lang/technisch („Modul 21",

@@ -13,10 +13,23 @@ sind in jedem Modul als `import { CONFIG } from "./00_config.js";`
 verfügbar.
 
 ```
-PROTOCOL_VERSION       = "0.1"
+PROTOCOL_VERSION       = "0.2"    // Spec-Sitzung Spore v0.2 (2026-07-14). Bump 0.1 → 0.2 (MINOR, gleiche
+                                  //   Hauptversion "0" → 0.1- und 0.2-Sporen bleiben handshake-kompatibel,
+                                  //   siehe §2 § Übergang 0.1→0.2). Trägt das Signal „echte Vektoren (A6) +
+                                  //   Schnipsel-Vektoren (A10)". snippetVectors ist OPTIONAL — der Bump ist ein
+                                  //   Koordinations-Signal für die EINE Neu-Signier-Welle, KEIN Pflichtfeld-Zwang
+                                  //   (die Versionierungs-Regel in §2 bleibt unverändert: Pflichtfeld = "1.0").
 NODE_TYPE_DEFAULT      = "hybrid"
 EMBEDDING_MODEL        = "Xenova/multilingual-e5-small"
 EMBEDDING_DIM          = 384
+SPORE_SNIPPET_MAX      = 20       // Spec-Sitzung Spore v0.2 (2026-07-14); Obergrenze für snippetVectors[]
+                                  //   (A10 „Schnipsel-Mittel"). Klaus-Entscheid 2026-07-14: SATZ-Granularität,
+                                  //   höchstens 20 Schnipsel je Spore. Jeder Schnipsel = ein Passage-Vektor
+                                  //   (384 floats, L2=1, embedPassage über EINEN Satz). Begrenzt die
+                                  //   committete spore.json-Größe (20·384 floats ~ Obergrenze). Consumer
+                                  //   (Modul 04/22/23) fällt fail-soft auf domainVector zurück, wenn leer.
+SPORE_SNIPPET_GRANULARITY = "sentence"  // Spec-Sitzung Spore v0.2 (2026-07-14); Granularität der Schnipsel
+                                  //   (Satz, nicht Absatz) — Klaus-Entscheid für feinste Verwandt-Trennschärfe.
 PROVIDER_MIN_MATCH     = 0.80     // ANDOCK-Boden (gatet Handshake/Provider). Messung 2026-06-28: roher
                                   // e5-Cosinus-Boden mean 0.8214 sd 0.0236 — alle Hub<->Endknoten 0.79–0.85.
                                   // BEWUSST NICHT angehoben: höher (z.B. mean+2sd 0.87) bräche jeden
@@ -598,8 +611,35 @@ Bietet (öffentlich):
                               Modul 04 nimmt das fail-soft an.
   Beide Felder gehen in den kanonischen Sign-/Verify-Pfad ein (Array-
   Elemente bleiben in geschriebener Reihenfolge, Object-Keys werden
-  alphabetisch sortiert — siehe § 2). PROTOCOL_VERSION bleibt "0.1" —
-  beide Felder sind optional, alte Sporen ohne sie bleiben gültig.
+  alphabetisch sortiert — siehe § 2). Der Bump auf PROTOCOL_VERSION
+  "0.2" (Spore v0.2, siehe unten) ändert an diesen beiden Feldern
+  nichts — sie bleiben optional, alte Sporen ohne sie bleiben gültig.
+
+  Spore-Schema-Erweiterung v0.2 (Spec-Sitzung Spore v0.2, 2026-07-14):
+  generateOwnSpore akzeptiert ein weiteres optionales meta-Feld, additiv
+  und signaturpflichtig wenn vorhanden:
+    - snippetVectors : Array<{ vec: number[384], text?: string }>
+                       A10 „Schnipsel-Mittel". Bis zu SPORE_SNIPPET_MAX (§0,
+                       20) satz-granulare Passage-Vektoren der Domäne — jeder
+                       `vec` L2-normalisiert (Modul 03 embedPassage über EINEN
+                       Satz). `text` OPTIONAL (kurzer Quell-Satz für Anzeige/
+                       Debug, KEIN PII — kuratierte Domänen-Sätze). Erlaubt
+                       gratis (ohne KI-Richter) eine messbar getrennte
+                       „verwandt"-Aussage: der Consumer (Modul 04/22/23)
+                       vergleicht die Frage gegen die Schnipsel statt nur gegen
+                       den gemittelten domainVector. Fehlt/leer → kein Schnipsel-
+                       Signal (fail-soft, Rückfall auf domainVector-Cosinus).
+                       Modul 02 kürzt hart auf SPORE_SNIPPET_MAX (überzählige
+                       Einträge werden VOR dem Signieren verworfen, kein Throw);
+                       jeder `vec` muss Länge 384 haben, sonst
+                       InvalidSporeMetaError (defensiver Schema-Check).
+    A6-Klarstellung (Spore v0.2): domainVector / embeddingCapabilities
+    bleiben OPTIONAL (Soft-Pflicht wie Modul 09), MÜSSEN in v0.2 aber ein
+    ECHTER Vektor sein (Modul 03 embedContentVector, kein `_demo`-Stub) —
+    erst dann stuft der Empfänger auf „verified-match" statt „verified-spore".
+    Das ist kein neues Feld, nur die verbindliche Schließung von A6.
+  snippetVectors geht in den kanonischen Sign-/Verify-Pfad ein (Array-
+  Reihenfolge erhalten, Object-Keys je Eintrag alphabetisch — siehe § 2).
 
 Nutzt:
   SbkimStorage.init / get / put / all   (sbkim_keys["main"], sbkim_spore["main"];
@@ -758,6 +798,15 @@ Bietet (öffentlich):
                                           // voran (Contextual Retrieval). Ohne Kontext byte-gleich zu vorher.
                                           // KEIN Spore-Feld, KEIN PROTOCOL_VERSION-Bump, Match-Schwelle unberührt.
   _assembleContentTexts(samples, opts?)   → {texts, contextUsed}       // Test-Brücke (A3), reine Text-Assemblierung
+  embedSnippets(text|string[], opts?)     → Promise<Array<{vec:Float32Array(384), text:string}>>
+                                          // NEU Spec-Sitzung Spore v0.2 (2026-07-14, A10). Zerlegt den
+                                          // Domänen-Text SATZ-weise (SPORE_SNIPPET_GRANULARITY, §0), bettet
+                                          // jeden Satz als Passage ein (embedPassage), gibt bis zu
+                                          // opts.max (Default SPORE_SNIPPET_MAX = 20, §0) L2-normalisierte
+                                          // Schnipsel-Vektoren zurück (in Satz-Reihenfolge). `text` = der
+                                          // gekürzte Quell-Satz (Anzeige/Debug, KEIN PII). Fail-soft:
+                                          // leerer/whitespace-Text → Promise<[]>. Reine Berechnung, KEIN
+                                          // Spore-Schreibvorgang (Modul 02 assembliert daraus die Spore).
 
   KEIN mode-Parameter. e5-Rollen-Prefix wird intern angewandt:
     embedQuery   → "query: "   + text
@@ -2549,7 +2598,7 @@ Bietet (öffentlich):
     // MembraneSnapshot-Form (finale Spec, Karte 15 § Sub (a) verbindlich):
     // {
     //   // Identitäts-Block (aus Modul 02 SbkimSpore)
-    //   protocolVersion: "0.1",                     // §0 PROTOCOL_VERSION
+    //   protocolVersion: "0.2",                     // §0 PROTOCOL_VERSION
     //   nodeId:          <eigene-base64url-sha256>, // KLARTEXT (eigene Identität)
     //   domain:          <string>,                  // Spore-Domain
     //   sporeUrl:        <string>,                  // /sbkim/spore.json-Pfad
@@ -4840,7 +4889,7 @@ endpoint         : string   Basis-URL des Knotens, mit Schema, mit trailing "/"
                             Beispiel: "https://klaus.github.io/rezeptbuch/"
 id               : string   = nodeId = base64url(sha256(rawPublicKey)), ohne Padding
 nodeType         : string   "provider" | "seeker" | "hybrid"
-protocolVersion  : string   semver-artig, z.Z. "0.1" (aus §0)
+protocolVersion  : string   semver-artig, z.Z. "0.2" (aus §0)
 publicKey        : object   JsonWebKey, kty:"OKP", crv:"Ed25519", x:<base64url>
 signature        : string   base64url ohne Padding, Ed25519 über kanonisches JSON ohne signature
 ```
@@ -4873,6 +4922,20 @@ embeddingNeeds          : number[]            384 floats, NEU additiv (Brief 03,
                                               Schichten-Modell § Nur-Anbieter-Modus). Signaturpflichtig
                                               wenn vorhanden (analog domainKeywords / stammCategories /
                                               embeddingCapabilities).
+snippetVectors          : object[]            NEU additiv, Spore v0.2 (Spec-Sitzung Spore v0.2, 2026-07-14, A10).
+                                              Bis zu SPORE_SNIPPET_MAX (§0, 20) satz-granulare Passage-Vektoren
+                                              der Domäne. Jeder Eintrag: { vec: number[384] (L2=1),
+                                              text?: string (kurzer Quell-Satz, Anzeige/Debug, KEIN PII) }.
+                                              Kanonische Sortierung ordnet nur die Object-Keys je Eintrag
+                                              (text, vec) alphabetisch — die Array-Reihenfolge (Satz-Reihenfolge)
+                                              bleibt wie geschrieben. Signaturpflichtig wenn vorhanden.
+                                              Zweck: gratis (ohne KI-Richter) eine messbar getrennte
+                                              „verwandt"-Aussage (Frage gegen die Schnipsel statt gegen den
+                                              gemittelten domainVector). Fehlt/leer → kein Schnipsel-Signal
+                                              (fail-soft, Consumer fällt auf domainVector-Cosinus zurück).
+                                              Größen-Hinweis: 20 Vektoren wachsen die spore.json spürbar —
+                                              darum die harte Obergrenze; ein Knoten mit wenig Domänen-Text
+                                              trägt entsprechend weniger (oder keine) Schnipsel.
 endpointPaths           : object              Override für §3, falls Hoster ohne .well-known
 stammCategories         : string[]            Kerngebiet-Kategorien des Knotens (siehe ARCHITEKTUR.md §8).
                                               Beispiel Mixarium: ["Cocktails", "Mocktails", "Limonaden"].
@@ -4895,6 +4958,45 @@ Wenn eine Folge-Spec-Sitzung `embeddingNeeds` zur Pflicht erhöbe (z.B.
 in einer künftigen Stufe-B-only-Variante des Protokolls), bumpte
 `PROTOCOL_VERSION` auf `"0.2"` — diese Entscheidung gehört in eine
 eigene Spec-Sitzung und ist nicht Teil von Brief 03.
+
+> **Nachtrag 2026-07-14 (Spore v0.2):** `PROTOCOL_VERSION` steht inzwischen
+> auf `"0.2"` — aber NICHT weil `embeddingNeeds` zur Pflicht wurde (es
+> bleibt optional). Der Bump kam mit Spore v0.2 (A6+A10) und fügt nur das
+> optionale Feld `snippetVectors` hinzu; alle bisherigen Felder bleiben
+> unverändert optional. Siehe § „Spore v0.2" unten + §4.
+
+**Spore v0.2 — echte Vektoren (A6) + Schnipsel-Vektoren (A10) (Spec-Sitzung
+Spore v0.2, 2026-07-14, Klaus-Entscheid 2026-07-12/14):**
+
+- **`snippetVectors` ist OPTIONAL und additiv** (siehe Feld oben). `PROTOCOL_VERSION`
+  springt trotzdem `"0.1"` → `"0.2"` — bewusst als **Koordinations-Signal** für
+  die EINE Neu-Signier-Welle (A6+A10 zusammen), NICHT weil ein Pflichtfeld
+  dazukäme. Die Versionierungs-Regel unten bleibt **unverändert**: ein neues
+  *Pflichtfeld* wäre ein Sprung auf `"1.0"`; ein *optionales* Feld verlangt
+  eigentlich gar keinen Bump — der Minor-Bump 0.1→0.2 ist eine bewusste
+  Ausnahme zur Netz-Koordination, keine Aufweichung der Regel.
+- **A6 (echte Vektoren) — verbindliche Schließung, kein neues Feld:** `domainVector`
+  (bzw. `embeddingCapabilities`) bleibt optional (Soft-Pflicht wie Modul 09),
+  MUSS in v0.2 aber ein **echter** Vektor sein (Modul 03 `embedContentVector`,
+  kein `_demo`-Stub). Erst ein echter Vektor hebt den Empfänger-Status von
+  „verified-spore" auf „verified-match". (Faktisch bereits netzweit deployt —
+  `status.json` führt jeden Live-Knoten mit echtem 384-dim-e5-Vektor; v0.2
+  macht die Erwartung zur Tafel.)
+- **Übergang 0.1 → 0.2 — SANFT (Klaus-Entscheid 2026-07-14):** alte 0.1-Sporen
+  werden während der Welle **weiter toleriert**. Das ist automatisch wahr, weil
+  der Handshake-/Verify-Pfad nur die **Hauptversion** vergleicht (§4;
+  `majorVersion("0.1") === majorVersion("0.2") === "0"`) — 0.1- und 0.2-Sporen
+  sind damit wechselseitig kompatibel, der 0.80-Andock-Riegel (PROVIDER_MIN_MATCH)
+  arbeitet auf dem unveränderten `domainVector` weiter. Kein Knoten fällt mitten
+  in der Welle aus dem Netz. **KEIN** harter 0.2-only-Schnitt.
+- **Neu-Signier-Welle — BEIDES (Klaus-Entscheid 2026-07-14):** die lebende
+  Identität + der private Schlüssel liegen pro App im jeweiligen Browser
+  (getrennt pro Origin). Daher ist der **Knopf „Spore neu signieren (v0.2)" im
+  Browser jeder App** der Pflicht-Pfad (nutzt die lebende Identität, ggf. über
+  Modul 20 Safe); ein **Termux-/Node-Skript** ist die zusätzliche Bequemlichkeit
+  für Repos, deren Schlüssel lokal im ENV liegt (`SBKIM_NODE_KEY`). Der private
+  Schlüssel kommt dabei NIE ins Repo — nur die öffentliche `spore.json` wird
+  committet.
 
 **Hinweis Spec-Sitzung Multi-Identität (Brief 04 der V1-Sammelspec-
 Kaskade, 2026-05-19) — Pages-`spore.json`-Strategie:**
@@ -4979,7 +5081,7 @@ fromNodeId       : string   = nodeId des Senders A (= base64url(sha256(rawPub)),
 nonce            : string   16 zufällige Bytes, base64url ohne Padding (Replay-Marker; Modul 05
                             prüft in der Erst-Spec noch nicht aktiv auf Wiederholung, vgl. Karte
                             05 Risiken-Block)
-protocolVersion  : string   semver-artig, z.Z. "0.1" (aus §0). Hauptversions-Mismatch zwischen
+protocolVersion  : string   semver-artig, z.Z. "0.2" (aus §0). Hauptversions-Mismatch zwischen
                             request.protocolVersion und PROTOCOL_VERSION → Abbruch, siehe §4.
 senderSpore      : object   vollständige SporeJson des Senders, vom Sender mit Ed25519 signiert
                             (siehe oben „Spore-JSON"). Empfänger verifiziert über
@@ -5008,7 +5110,7 @@ fromNodeId       : string   nodeId des Empfängers B
 nonceEcho        : string   identisch zu request.nonce (Replay-Verkettung; in Erst-Spec rein
                             informativ, in einer Folge-Spec für aktiven Replay-Schutz nutzbar)
 outcome          : string   "established" | "rejected"
-protocolVersion  : string   "0.1"
+protocolVersion  : string   "0.2"
 receiverSpore    : object   vollständige SporeJson des Empfängers B (signiert)
 signature        : string   Ed25519-Signatur über kanonisches JSON ohne signature, mit dem
                             privateKey des Empfängers.
@@ -5093,7 +5195,7 @@ fromNodeId       : string   = nodeId des sterbenden Senders A (= base64url(sha25
 nonce            : string   16 zufällige Bytes, base64url ohne Padding (Replay-Marker; Modul 07
                             prüft in der Erst-Spec noch nicht aktiv auf Wiederholung — aktiver
                             Replay-Schutz gehört in Modul 11, vgl. Karte 07 Risiken-Block).
-protocolVersion  : string   semver-artig, z.Z. "0.1" (aus §0). Hauptversions-Mismatch zwischen
+protocolVersion  : string   semver-artig, z.Z. "0.2" (aus §0). Hauptversions-Mismatch zwischen
                             incomingLegacy.protocolVersion und lokaler PROTOCOL_VERSION → outcome:
                             "rejected", reason:"Inkompatible Hauptversion: <x.y>". Siehe §4.
 reason           : string   deutschsprachiger Klartext, der erklärt, warum der Knoten stirbt
@@ -5115,7 +5217,7 @@ fromNodeId       : string   nodeId des Empfängers B
 nonceEcho        : string   identisch zu incomingLegacy.nonce (Replay-Verkettung; in Erst-Spec
                             rein informativ, in einer Folge-Spec für aktiven Replay-Schutz nutzbar)
 outcome          : string   "accepted" | "rejected"
-protocolVersion  : string   "0.1"
+protocolVersion  : string   "0.2"
 receiverSpore    : object   vollständige SporeJson des Empfängers B (signiert)
 signature        : string   Ed25519-Signatur über kanonisches JSON ohne signature, mit dem
                             privateKey des Empfängers.
@@ -5193,7 +5295,7 @@ fromNodeId       : string   = nodeId des Senders A (= base64url(sha256(rawPub)),
 nonce            : string   16 zufällige Bytes, base64url ohne Padding (Replay-Marker; Modul 06
                             prüft in der Erst-Spec noch nicht aktiv auf Wiederholung — aktiver
                             Replay-Schutz gehört in Modul 11, vgl. Karte 06 Risiken-Block).
-protocolVersion  : string   semver-artig, z.Z. "0.1" (aus §0). Hauptversions-Mismatch zwischen
+protocolVersion  : string   semver-artig, z.Z. "0.2" (aus §0). Hauptversions-Mismatch zwischen
                             incomingRequest.protocolVersion und lokaler PROTOCOL_VERSION → outcome:
                             "rejected", reason:"Inkompatible Hauptversion: <x.y>". Siehe §4.
 senderSpore      : object   vollständige SporeJson des Senders, vom Sender mit Ed25519 signiert
@@ -5217,7 +5319,7 @@ fromNodeId       : string   nodeId des Empfängers B
 nonceEcho        : string   identisch zu incomingRequest.nonce (Replay-Verkettung; in Erst-Spec
                             rein informativ, in einer Folge-Spec für aktiven Replay-Schutz nutzbar)
 outcome          : string   "shared" | "opt-out" | "rejected"
-protocolVersion  : string   "0.1"
+protocolVersion  : string   "0.2"
 receiverSpore    : object   vollständige SporeJson des Empfängers B (signiert)
 signature        : string   Ed25519-Signatur über kanonisches JSON ohne signature, mit dem
                             privateKey des Empfängers.
@@ -5329,6 +5431,11 @@ Verwendung verbindlich nur für Modul 05 (Anastomose). Heterokaryose
 
 - Hauptversionen (1.x ↔ 2.x): inkompatibel, Knoten verbinden sich nicht.
 - Nebenversionen (0.1 ↔ 0.2): kompatibel, wenn alle Pflichtfelder gleich.
+  **Spore v0.2 (2026-07-14) ist genau dieser Fall:** der Bump fügt nur das
+  *optionale* Feld `snippetVectors` hinzu (Pflichtfelder unverändert) → 0.1-
+  und 0.2-Sporen bleiben wechselseitig kompatibel; der sanfte Übergang
+  (§2 § Spore v0.2) ist automatisch. Der Minor-Bump ist ein bewusstes
+  Netz-Koordinations-Signal für die Neu-Signier-Welle, kein Pflichtfeld-Zwang.
 - Pflichtfelder pro Datenformat sind in Abschnitt 2 dieses Dokuments
   markiert (sobald die Specs gefüllt sind).
 
@@ -6199,6 +6306,7 @@ PULS § Vision-Anker 4 (Königin-Relay), PULS § Vision-Anker 5
 
 | 2026-05-30 | Spec-Sitzung Andock-Konventionen | **Neuer §11 „Andock-Konventionen" (netzweit)** angelegt aus SB·KIMTool·Points eingefrorenem Rückbrief A–E. Fünf Unterabschnitte: §11.1 Kanonische Signier-Form (Norm + Pseudocode + Determinismus-Klausel), §11.2 Verifizierer-Paar (WebCrypto/Modul 02 ↔ node:crypto, 4 Pflicht-Prüfpunkte), §11.3 Inbox-Konvention (`<gegenseite>_inbox.json` signatur-rein + `.verify.md` Pflichtfelder), §11.4 Sync-Vertrag (7 Regeln, Regel 7 für N>2 verallgemeinert + `status.json`-Pflichtfelder + `matchScore` Pflicht bei `verified-match` + `pingStatus`-Stufen), §11.5 Pflicht-Spore-Felder (9 REQUIRED). **Sage-Entscheidung zu E:** `domainVector` optional für `verified-spore`, **Pflicht für `verified-match`** (Ja zum gestuften Vorschlag); `_demo`-Markierung Pflicht bis echtes Embedding. Hervorgegangen aus dem ersten vollständigen Andock Sage ⟷ SB·KIMTool (Match 0.848508). KEIN Modul-Code, KEIN PROTOCOL_VERSION-Bump (Konventions-Tafel, kein Schema-Bruch — die 9 Pflichtfelder + kanonische Form sind bereits gelebt). Postfach-Abgleich-Antwort A–E + Bau-Protokoll-Zeile in `sbkim/AUSTAUSCH.md`. |
 | 2026-05-31 | Pflege Briefkasten-Regel | **Neuer §11.6 „Briefkasten-Pflege & Netz-Signal" (netzweite Pflicht).** Server-los, Empfangsmodus-konform: jeder Knoten pflegt `sbkim/SIGNAL.json` (maschinenlesbarer Aushang mit monoton steigender `seq` + `ack`-Symmetrie). Sitzungsstart-Pflicht: Signale aller Gegenstellen aus `raw/main` lesen, bei `seq > ack` lesen+quittieren. Sitzungsende-Pflicht nach Bau: `seq`+1, Bau-Protokoll-Zeile, pushen (= das Signal). Gilt für ALLE angeschlossenen Knoten (`forNodes:"*"`), nicht nur Sage. Sage geht voran: `sbkim/SIGNAL.json` angelegt, CLAUDE.md § „Briefkasten pflegen" als Sitzungsstart-/-ende-Pflicht ergänzt, `sbkim/NETZ-STAND.md` referenziert. Formalisiert die Hand-Meldung „dritter Knoten Jasons-Tresor". KEIN Modul-Code, KEIN PROTOCOL_VERSION-Bump. |
+| 2026-07-14 | Spec-Sitzung Spore v0.2 (A6 + A10) | **PROTOCOL_VERSION `"0.1"` → `"0.2"`** (§0) als Netz-Koordinations-Signal für die EINE Neu-Signier-Welle. **A6 (echte Vektoren) verbindlich geschlossen** — `domainVector`/`embeddingCapabilities` bleiben optional (Soft-Pflicht wie Modul 09 / §11.5-Stufung), MÜSSEN in v0.2 aber ein echter e5-Vektor sein (kein `_demo`) für „verified-match" (faktisch netzweit bereits deployt, siehe `status.json`). **A10 (Schnipsel-Mittel) neu als OPTIONALES Spore-Feld `snippetVectors`** (§2): bis zu `SPORE_SNIPPET_MAX`=20 satz-granulare Passage-Vektoren `{vec:number[384], text?}`, signaturpflichtig wenn vorhanden, fail-soft (leer → Rückfall auf domainVector). Neue §0-Konstanten `SPORE_SNIPPET_MAX=20` + `SPORE_SNIPPET_GRANULARITY="sentence"` (Klaus-Entscheid 2026-07-14: Satz, max 20). **Modul 02** `generateOwnSpore` nimmt `meta.snippetVectors` (harte Kürzung auf Max, `vec`-Längen-Check → InvalidSporeMetaError). **Modul 03** neuer Helfer `embedSnippets(text|string[], opts?)` (Satz-Zerlegung → Passage-Vektoren, reine Berechnung, kein Spore-Schreibvorgang). **Übergang 0.1→0.2 SANFT** (Klaus 2026-07-14): gleiche Hauptversion „0" → Handshake/Verify (§4, `majorVersion`-Vergleich) toleriert 0.1- und 0.2-Sporen wechselseitig automatisch; 0.80-Andock-Riegel (`PROVIDER_MIN_MATCH`) unberührt. **Neu-Signier-Welle BEIDES** (Klaus 2026-07-14): Knopf „Spore neu signieren (v0.2)" im Browser jeder App (Pflicht-Pfad, lebende Identität ggf. via Modul 20 Safe) + Termux/Node-Skript für ENV-Schlüssel-Repos; privater Schlüssel NIE ins Repo. **Versionierungs-Regel unverändert** (Pflichtfeld = „1.0"; der Minor-Bump für ein optionales Feld ist eine bewusste Koordinations-Ausnahme, keine Regel-Aufweichung). **Spec-vor-Code: NUR die Tafel (§0/§2/§4/Modul 02+03), noch KEIN Modul-Code** — Bau + byte-Kopien in alle Apps + die Welle folgen in der Bau-Sitzung (Brief `BRIEF_BAU_SPORE_V02.md`). Bezug: PLAN A6 + A10, `docs/PLAN_SEMANTIK_KRYPTO.md`. |
 
 ---
 
