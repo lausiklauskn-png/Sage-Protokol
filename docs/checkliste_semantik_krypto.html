@@ -64,7 +64,7 @@
 <body>
 
 <h1>SBKIM — Arbeitsliste: Semantik &amp; Verschlüsselung</h1>
-<p class="sub">Offene Punkte zum Anklicken &amp; Abhaken · Haken werden im Browser gespeichert · Stand: 10.07.2026</p>
+<p class="sub">Offene Punkte zum Anklicken &amp; Abhaken · Haken werden im Browser gespeichert · Stand: 12.07.2026</p>
 
 <div class="legend">
   <b>So nutzt du die Liste:</b> Kästchen ankreuzen, wenn ein Punkt <b>gebaut/erledigt</b> ist.
@@ -103,18 +103,18 @@
   <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="A4"><div class="body">
-  <div><span class="code">A4</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Constraint-/Ausschluss-Filter (Teil 1 ✅) + KI-Richter B3 (Teil 2 offen)</span></div>
-  <div class="d"><b>Teil 1 gebaut + netzweit ausgerollt (10.07.26):</b> „ohne X" / „alkoholfrei" / „allergisch gegen X" filtern deterministisch aus dem Kandidaten-Inhalt (Bau 04.I, 10 Knoten). <b>Teil 2 offen:</b> KI-Richter B3 — Unsicheres herabstufen, Sicheres hochstufen (Hund-Katze-/Permethrin-Fall).</div>
-  <div class="meta"><span class="tag">Bau</span> · Teil 1 ✅ · Teil 2 offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="Teil 1: 10.07.26"></div>
+<div class="item"><input type="checkbox" class="cb" data-k="A4" checked><div class="body">
+  <div><span class="code">A4</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Constraint-/Ausschluss-Filter + KI-Richter B3 — ✅ komplett</span></div>
+  <div class="d"><b>Teil 1 gebaut + netzweit ausgerollt (10.07.26):</b> „ohne X" / „alkoholfrei" / „allergisch gegen X" filtern deterministisch aus dem Kandidaten-Inhalt (Bau 04.I, 10 Knoten). <b>Teil 2 erledigt (Bau 04.H, 11.07.26):</b> KI-Richter B3 wägt Sicherheit/Konsequenz mit — Unsicheres herab-, Sicheres hochgestuft (Hund-Katze-/Permethrin-Fall).</div>
+  <div class="meta"><span class="tag">Bau</span> · ✅ Teil 1 (10.07) + Teil 2/B3 (11.07)</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="Teil 1: 10.07.26 · Teil 2: 11.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="A5"><div class="body">
-  <div><span class="code">A5</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Rollout in weitere Apps</span></div>
-  <div class="d">Hybrid-Vorfilter (BM25+Vektor) + Multi-Query byte-gleich übertragen in: Pinnwand · Mixarium · Rezeptbuch · family-project · BookLedgerPro.</div>
-  <div class="meta"><span class="tag">Bau</span></div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+<div class="item"><input type="checkbox" class="cb" data-k="A5" checked><div class="body">
+  <div><span class="code">A5</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Rollout in weitere Apps — ✅ erledigt</span></div>
+  <div class="d">Hybrid-Vorfilter (BM25+Vektor) war überall schon verdrahtet; A5 = <b>Multi-Query</b> byte-gleich übertragen (Pinnwand · Mixarium · Rezeptbuch · family-project · BookLedgerPro). <code>PROVIDER_MIN_MATCH</code> 0.80 unberührt, kein Protokoll-Bump.</div>
+  <div class="meta"><span class="tag">Bau</span> · ✅ erledigt</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="11.07.26"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="A6"><div class="body">
@@ -149,6 +149,8 @@
   <div class="meta"><span class="tag">Bau</span> nur bei Bedarf</div>
   <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
 </div></div>
+
+<div class="note" style="margin-top:14px"><b>Seit 10.07 zusätzlich erledigt</b> (in <code>docs/PLAN_SEMANTIK_KRYPTO.md</code> als eigene Punkte geführt — hier nur als Überblick, damit du den Gesamtstand siehst): <b>A11 Teil A</b> (Auto-Knoten-Auswahl + „Antwort holen") · <b>A12 Briefkasten</b> (Fragen überleben Zeitverzögerung · Lebenszyklus/Überladungs-Schutz · netzweit gerollt) · <b>A13</b> Identitäts-Isolierung gehärtet (Browser-Reihen-Test grün 11.07) · <b>A16</b> Lernender Sortierer (12.07) · <b>A17</b> Last-Schoner (Embedding im Web-Worker + Drosselung, 12.07). Volle Liste + Reihenfolge: <code>PLAN_SEMANTIK_KRYPTO.md</code>.</div>
 
 <h2>B) Verschlüsselung</h2>
 
@@ -211,7 +213,7 @@
 </ol>
 
 <div class="note" style="margin-top:16px"><b>Grobe Gesamtsumme:</b> Kernpunkte zusammen ≈ <b>13–18 Bau-Durchgänge</b> (ohne die optionalen/zurückgestellten Punkte A10 &amp; B6), gut über mehrere Tage verteilbar — plus deine Sichttests, zusammen <b>~2–3&nbsp;Std am Tablet</b>. Die schnellen Tests (A7–A9, B1) bringen sofort Haken ohne Bau.</div>
-<footer>SBKIM-Arbeitsliste · erzeugt 10.07.2026 · <b>aktualisiert 10.07.2026</b> (A1 ✅ · A2 ✅ Meilenstein geschlossen · A4 Teil 1 ✅ · A3 angefangen) · Quelle: Sage-Protokol (PULS.md, CLAUDE.md, Meilenstein- &amp; Lehre-Dokumente)</footer>
+<footer>SBKIM-Arbeitsliste · erzeugt 10.07.2026 · <b>aktualisiert 12.07.2026</b> (A1 ✅ · A2 ✅ · A4 komplett ✅ · A5 ✅ · A3 weiter offen · dazu A11-Teil-A/A12/A13/A16/A17 ✅ — siehe Hinweis über B) · Quelle: Sage-Protokol (PLAN_SEMANTIK_KRYPTO.md, PULS.md)</footer>
 
 <script>
 (function(){
