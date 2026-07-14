@@ -119,6 +119,50 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-14 · Bau-Sitzung Spore v0.2 — `embedSnippets` (A10) + Code-`PROTOCOL_VERSION` 0.2 (A6) + Re-Sign-Werkzeug
+
+**Rolle:** Bau (Code nach fertiger Spec, Freibrief). **Auftrag:** Brief `BRIEF_BAU_SPORE_V02.md`
+(Bau-Teil der Spec-Sitzung 2026-07-14). **Leitplanken gewahrt:** 0.80-Andock-Riegel unberührt
+(Modul 05 nicht angefasst), kein PII, kein privater Schlüssel im Repo, Headless = Beweis.
+
+**Was gebaut (Code):**
+- **Modul 03** `src/modules/03_embedding.js` — neuer Helfer `embedSnippets(text|string[], opts?)`:
+  Satz-Zerlegung (an `.!?…` + Zeilenumbrüchen, fail-soft), je Satz `embedPassage` → L2-Vektor,
+  bis `SPORE_SNIPPET_MAX`=20 in Satz-Reihenfolge, `text` = gekürzter Quell-Satz (≤160, kein PII);
+  leer → `[]`, reine Berechnung (kein Spore-Schreibvorgang). Test-Brücken `_splitIntoSentences` +
+  `_prepareSnippetTexts`, `_meta.sporeSnippetMax/Granularity`.
+- **Modul 02** `src/modules/02_spore.js` — `PROTOCOL_VERSION "0.1" → "0.2"` (A6-Code-Schließung);
+  `generateOwnSpore` nimmt optional `snippetVectors` additiv in den kanonischen Sign-/Verify-Pfad
+  (`sanitizeSnippetVectors`: harte Kürzung auf 20, `vec`-Länge≠384 → `InvalidSporeMetaError`, leer →
+  Feld weg = 0.1-kompatibel). `regenerateOwnSpore` trägt Schnipsel beim Neu-Signieren mit.
+  `verifyForeignSpore` bleibt major-tolerant (0.1 ↔ 0.2 gegenseitig gültig, sanfter Übergang).
+- **A6-Schließung:** kein `_demo`-domainVector-Pfad (Grep-belegt); Live-Knoten tragen schon echte
+  e5-Vektoren (verified-match). Der Code-Stempel wandert bei der Neu-Signatur in jede spore.json.
+
+**Byte-Kopien / Drift-Guards** nachgezogen: `sbkim-bundle/modules/02+03`, `such-tool/modules/03`,
+`pinnwand/modules/03` — alle byte-1:1, Guards grün.
+
+**Neu-Signier-Werkzeug (beides, Klaus-Entscheid):**
+- `tools/resign_spore_v02.mjs` — Termux/Node, Schlüssel aus `SBKIM_NODE_KEY` (JWK oder 32-Byte-Seed);
+  übernimmt den echten domainVector, bumpt → 0.2, hängt browser-gerechnete `snippetVectors` an,
+  signiert kanonisch, **self-verify mit dem echten Modul-02-Verifizierer** (✔ VALID). Bricht bei
+  fremdem Schlüssel/ohne Schlüssel ab. Nur öffentliche spore.json wird geschrieben.
+- `tools/embed_helper.html` — Browser-Hälfte: Abschnitt „A10 — snippetVectors" zerlegt den
+  Domänen-Text satz-weise und rechnet die echten e5-Vektoren → `snippets.json` für `--snippets`.
+
+**Headless-Beweis (grün):** `smoke_bau03_snippets.mjs` 32/32 · `smoke_bau02_spore_v02.mjs` 17/17 ·
+`smoke_resign_spore_v02.mjs` 10/10. Regress-frei: `smoke_bau02y` 33/33, `smoke_a3_contextual_chunking`
+20/20, `smoke_bau03_worker` 15/15, `smoke_bundle_connect` 21/21 (Drift-Guards), `smoke_standalone_such_tool`
+49/49, `pinnwand/_smoke` 60/60, `smoke_bau15b_membran` 35/35, `smoke_bau19_andock_wizard` 15/15,
+`smoke_bau23_rendezvous` 58/58 u.a.
+
+**Offen / nächster Schritt:** Die **eigentliche Neu-Signatur der LIVE-Sporen** braucht den privaten
+Schlüssel jedes Knotens (nur bei Klaus) — Knopf pro App bzw. `resign_spore_v02.mjs` mit `SBKIM_NODE_KEY`.
+Das ist Klaus' Operator-Schritt (wie der Browser-Sichttest). Bis dahin bleiben die Live-Sporen auf 0.1
+(handshake-kompatibel, sanfter Übergang). **Browser-Sichttest der Schnipsel-Anzeige wartet auf Klaus.**
+
+---
+
 ## 2026-07-14 · Spec-Sitzung Spore v0.2 — echte Vektoren (A6) + Schnipsel-Vektoren (A10), Protokoll 0.1→0.2
 
 **Rolle:** Spec (Spec-vor-Code, Freibrief). **Auftrag:** Brief `BRIEF Spore v0.2` (2026-07-12,

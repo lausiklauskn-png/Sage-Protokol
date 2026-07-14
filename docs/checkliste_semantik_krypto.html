@@ -117,9 +117,9 @@
   <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="11.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="A6"><div class="body">
-  <div><span class="code">A6</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Echte Embedding-Vektoren statt Demo-Stub — <b>Spec fertig 14.07.</b></span></div>
-  <div class="d">Modul 03: den <code>_demo</code>-<code>domainVector</code> durch echte Vektoren ersetzen — erst dann zählt ein Treffer als „verified-match" statt nur „verified-spore". <b>Spec fertig 2026-07-14</b> (zusammen mit A10 als „Spore v0.2", Protokoll 0.1→0.2). Befund: im Code faktisch schon erledigt (kein <code>_demo</code>-Pfad mehr, jeder Live-Knoten trägt echten e5-Vektor) — v0.2 macht es zur verbindlichen Regel. Der Bau (Code-Schließung + Neu-Signier-Welle) läuft zusammen mit A10.</div>
+<div class="item"><input type="checkbox" class="cb" data-k="A6" checked><div class="body">
+  <div><span class="code">A6</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Echte Embedding-Vektoren statt Demo-Stub — <b>✔ Code geschlossen 14.07.</b></span></div>
+  <div class="d">Modul 03: den <code>_demo</code>-<code>domainVector</code> durch echte Vektoren ersetzen — erst dann zählt ein Treffer als „verified-match" statt nur „verified-spore". <b>Spec + Code-Schließung fertig 2026-07-14</b> (zusammen mit A10 als „Spore v0.2"): <code>PROTOCOL_VERSION</code> im Code auf <b>0.2</b> gebumpt (Modul 02+03 + Byte-Kopien), kein <code>_demo</code>-Pfad mehr (Grep-belegt), jeder Live-Knoten trägt schon einen echten e5-Vektor (verified-match). Der v0.2-Stempel wandert bei der Neu-Signier-Welle (A10) in jede spore.json.</div>
   <div class="meta"><span class="tag">Spec+Bau</span></div>
   <div class="lines">Spec erledigt am: 2026-07-14 · Bau am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
 </div></div>
@@ -143,9 +143,9 @@
   <div class="lines">getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="A10"><div class="body">
-  <div><span class="code">A10</span><span class="time">⏱ ~2 Sitzungen</span> <span class="t">„Schnipsel-Mittel" — <b>Spec fertig 14.07.</b></span></div>
-  <div class="d">Damit „verwandt" gratis (ohne KI) messbar wird: das einzige Verfahren mit messbarer Trennung — mit Eingriff in den Datenvertrag (Schnipsel-Vektoren in die Spore) + <b>alle Knoten neu signieren</b>. <b>Klaus-Entscheid 12.07.: fest mit A6 in EINE Neu-Signier-Welle.</b> <b>Spec fertig 2026-07-14</b>: neues optionales Spore-Feld <code>snippetVectors</code> (bis 20 Sätze je Knoten), Übergang 0.1→0.2 sanft (alte Sporen bleiben gültig), neu signieren = Knopf in jeder App + Skript. Bau (Modul 03/02 + alle Apps + Welle) folgt.</div>
+<div class="item"><input type="checkbox" class="cb" data-k="A10" checked><div class="body">
+  <div><span class="code">A10</span><span class="time">⏱ ~2 Sitzungen</span> <span class="t">„Schnipsel-Mittel" — <b>✔ Code + Werkzeug fertig 14.07.</b></span></div>
+  <div class="d">Damit „verwandt" gratis (ohne KI) messbar wird: das einzige Verfahren mit messbarer Trennung — mit Eingriff in den Datenvertrag (Schnipsel-Vektoren in die Spore) + <b>alle Knoten neu signieren</b>. <b>Klaus-Entscheid 12.07.: fest mit A6 in EINE Neu-Signier-Welle.</b> <b>Bau fertig 2026-07-14</b>: Modul 03 <code>embedSnippets</code> (Satz-weise, max 20, L2, fail-soft) + Modul 02 <code>snippetVectors</code> (signiert+verifiziert, harte Kürzung, Längen-Check), Byte-Kopien/Drift-Guards grün, Smokes grün (03: 32/32, 02: 17/17). Übergang 0.1→0.2 sanft (alte Sporen bleiben gültig). Werkzeug: <code>tools/resign_spore_v02.mjs</code> (Skript) + <code>embed_helper.html</code> (Browser-Schnipsel) — Smoke 10/10. <b>Offen:</b> die eigentliche Neu-Signatur der Live-Sporen läuft mit deinem privaten Schlüssel (Knopf pro App / Skript) — dein Schritt.</div>
   <div class="meta"><span class="tag">Spec+Bau</span></div>
   <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
 </div></div>
