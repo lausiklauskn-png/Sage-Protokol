@@ -195,6 +195,12 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   pro Knoten mit dem privaten Schlüssel (nur bei Klaus) — Knopf pro App bzw. Skript. Bis dahin tragen die Live-
   Sporen noch 0.1 (handshake-kompatibel dank sanftem Übergang).
   _Spec + Code + Werkzeug erledigt am: 2026-07-14 (Bau Spore v0.2). Netzweite Neu-Signatur der Live-Sporen = Klaus' Lauf._
+  **Rollout-Teil 2026-07-14 (Welle):** Werkzeug end-to-end verifiziert (`smoke_resign_spore_v02.mjs` 10/10,
+  braucht `npm install --no-save fake-indexeddb`). Sages **App-Knopf** „✍ Semantik → Spore neu signieren"
+  (`index.html` `sageReSignWithDescription`) bettet die Beschreibung jetzt zusätzlich **satz-weise** ein
+  (`embedSnippets`) und reicht `snippetVectors` an `generateOwnSpore` → Ein-Klick-Download = vollständige
+  v0.2-Spore MIT Schnipseln, fail-soft. Offen bleibt (Klaus): eigentliche Neu-Signatur der Live-Spore +
+  Endknoten-Rollout des Knopfs (je Folge-Sitzung/Repo).
 
 - [ ] **A11 — Such-Ergebnis → Frage → optional Andocken (Marktplatz-Kopplung Modul 22 ↔ 23)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   **Klaus' Befund 2026-07-11:** ein fremder Nutzer dockt nicht ungefragt an — er **sucht/fragt zuerst**. Heute sind

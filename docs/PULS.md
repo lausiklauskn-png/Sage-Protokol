@@ -119,6 +119,42 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-14 · Welle Spore v0.2 (Rollout-Teil) — Werkzeug verifiziert + App-Knopf emittiert jetzt Schnipsel
+
+**Rolle:** Rollout/Test (Freibrief). **Auftrag:** Brief `BRIEF Welle Spore v0.2` (Operator + Rollout +
+Sichttests A7·A8·A9·B1). **Leitplanken gewahrt:** kein privater Schlüssel im Repo, kein PII, 0.80-Riegel
+unberührt, headless = Beweis.
+
+**Was getan:**
+- **Re-Sign-Werkzeug end-to-end verifiziert:** `tests/smoke_resign_spore_v02.mjs` **10/10 grün**
+  (nach `npm install --no-save fake-indexeddb`, wie der Test-Kopf verlangt). Beweist: JWK-Schlüssel +
+  Schnipsel → gültige v0.2-Spore (protocolVersion 0.2, echter domainVector 384 erhalten, snippetVectors
+  angehängt, id/Identität stabil, echter Modul-02-Verifizierer ✔ VALID) **und** reziproke Sicherheit
+  (falscher Schlüssel → Abbruch exit 3, ohne Schlüssel → Abbruch exit 2). Klaus' Operator-Schritt ist
+  damit ein sauberer Ein-Klick/Ein-Befehl — de-riskt.
+- **App-Knopf „✍ Semantik → Spore neu signieren" (Sage-Page `index.html`) auf v0.2 vervollständigt:**
+  `sageReSignWithDescription` bettet die Beschreibung jetzt zusätzlich **satz-weise** ein
+  (`SbkimEmbedding.embedSnippets`) und reicht `snippetVectors` an `generateOwnSpore` → der im Browser
+  erzeugte Download ist eine **vollständige v0.2-Spore mit Schnipseln** in EINER Aktion (besser als der
+  Zwei-Schritt-Operator-Pfad embed_helper + Node-Skript). **Fail-soft:** schlägt das Schnipsel-Einbetten
+  fehl, wird ohne Schnipsel weiter signiert (v0.2 bleibt). Erfolgs-Meldung nennt jetzt Protokoll-Version
+  + Schnipsel-Zahl. **REINE Anzeige/Verwandt-Messung — gatet nichts, 0.80-Riegel unberührt,
+  Kern-Module 02/03 nur über ihre öffentliche Fläche genutzt.**
+- **Smokes grün (Beweis):** `smoke_bau03_snippets` 32/32, `smoke_bau02_spore_v02` 17/17,
+  `smoke_resign_spore_v02` 10/10.
+
+**Was BLEIBT (blockiert — nicht headless machbar):**
+- **Sages Live-`spore.json` auf v0.2 neu signieren** braucht den **privaten Schlüssel** (nur bei Klaus:
+  App-Knopf im Browser mit lebender Identität ODER `SBKIM_NODE_KEY` + `tools/resign_spore_v02.mjs`).
+  Der committete Stand bleibt bis dahin **0.1 — handshake-kompatibel**, nichts ist kaputt.
+- **Endknoten-Rollout des App-Knopfs** (je eigene Folge-Sitzung/Repo, wie Modul-23-Rollout).
+- **Peer-Quittungen** (kommen, wenn Knoten neu signieren) → `ack` + NETZ-STAND/status nachziehen.
+- **Sichttests A7·A8·A9·B1** — nur Klaus' Tablet, ungeprüft.
+
+**Nächster sinnvoller Schritt:** Klaus signiert Sages Spore neu (App-Knopf **oder** Skript), committet die
+**öffentliche** `spore.json`; danach kann die Verwandt-Anzeige aus Schnipseln (Consumer 04/22/23) als
+eigener Folge-Bau gemessen werden, sobald ≥ 2 Knoten v0.2-Sporen tragen.
+
 ## 2026-07-14 · Bau-Sitzung Spore v0.2 — `embedSnippets` (A10) + Code-`PROTOCOL_VERSION` 0.2 (A6) + Re-Sign-Werkzeug
 
 **Rolle:** Bau (Code nach fertiger Spec, Freibrief). **Auftrag:** Brief `BRIEF_BAU_SPORE_V02.md`
