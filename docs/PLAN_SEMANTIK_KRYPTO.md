@@ -202,8 +202,14 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   v0.2-Spore MIT Schnipseln, fail-soft. **Live-Signatur 2026-07-14 (#651):** Sages eigene Spore ist als
   **erste v0.2-Spore im Netz** neu signiert (Klaus' Browser, wiederhergestellte Identität `nysOZE3V…`
   unverändert, 11 Satz-Schnipsel, echter e5-`domainVector` L2=1, reziprok verifiziert; status.json +
-  spore.json auf main). **Offen bleibt** nur der **Endknoten-Rollout** (Mixarium/Rezeptbuch/BLP + 2. Hub
-  SB-KIMTool-Point) + der Knopf je Repo — je Folge-Sitzung/Repo, mit Klaus' Schlüssel.
+  spore.json auf main). **SB-KIMTool-Point (2. Hub) als ZWEITER v0.2-Knoten fertig 2026-07-14:** Kanon-Identität
+  `CyunQNDR…` per „Kanon-Schlüssel importieren" (node_key → Browser-`importBackup`, kein Netz-Churn) zurückgeholt +
+  verbunden (Mycel-Karte bestätigt); Spore v0.2 mit voller Domänen-Beschreibung, 3 Satz-Schnipsel, `node --test` 120/120.
+  Dabei **ehrliche Match-Neueinstufung**: die reiche Beschreibung rückt den Werkzeug-Hub zur Infrastruktur (Sage 0.862 /
+  Jasons-/Mein-Tresor 0.862 / family 0.849 ↑), die Inhalts-Knoten trennen sich ab (Rezeptbuch 0.796 · Mixarium 0.767
+  < 0.80 → verified-spore) — das Protokoll unterscheidet nach Bedeutung (Werkzeug-Hub vs. Koch-/Getränke-Knoten). Toolpoints
+  SIGNAL seq 34 bittet Rezeptbuch/Mixarium um reziproke Neu-Einstufung. **Offen bleibt** der **Endknoten-Rollout**
+  (Mixarium/Rezeptbuch/BLP) + der Knopf je Repo — je Folge-Sitzung/Repo, mit Klaus' Schlüssel.
 
 - [ ] **A11 — Such-Ergebnis → Frage → optional Andocken (Marktplatz-Kopplung Modul 22 ↔ 23)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   **Klaus' Befund 2026-07-11:** ein fremder Nutzer dockt nicht ungefragt an — er **sucht/fragt zuerst**. Heute sind
