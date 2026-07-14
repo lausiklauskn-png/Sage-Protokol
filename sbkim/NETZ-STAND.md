@@ -6,7 +6,19 @@
 > `status.json` (Maschine) + die `*_inbox.verify.md`-Vermerke (Beweis) — diese Datei ist
 > die menschenlesbare Karte darüber.
 
-**Stand: 2026-07-11** · Protokoll-Version `0.1` · Andock-Konventionen: INTERFACES §11
+**Stand: 2026-07-14** · Protokoll-Version im Code **`0.2`** (Spore v0.2, A6+A10) · Live-Sporen
+noch `0.1` (sanfter Übergang, handshake-kompatibel — Neu-Signatur pro Knoten ist der Operator-
+Schritt) · Andock-Konventionen: INTERFACES §11
+
+> **Spore v0.2 (2026-07-14, A6+A10):** `PROTOCOL_VERSION` im Code auf `0.2` (Modul 02/03 + Byte-
+> Kopien). Neu: optionales Spore-Feld **`snippetVectors`** (bis 20 satz-granulare 384-dim-Vektoren)
+> für eine **gratis „verwandt"-Messung über die Bedeutung** — reine Anzeige, **0.80-Andock-Riegel
+> unberührt**. `verifyForeignSpore` major-tolerant → 0.1- und 0.2-Sporen bleiben gegenseitig gültig.
+> **Neu-Signier-Welle (optional, Empfangsmodus, kein Zwang):** jeder Knoten signiert bei Gelegenheit
+> seine Spore auf 0.2 neu + hängt Satz-Schnipsel an — Knopf in der App **oder**
+> `tools/resign_spore_v02.mjs` (ENV-Schlüssel `SBKIM_NODE_KEY`) + `tools/embed_helper.html`
+> (Browser rechnet `snippets.json`). Privater Schlüssel bleibt beim Knoten, nur öffentliche
+> `spore.json` committen.
 
 ---
 
@@ -117,7 +129,10 @@ Mycel-Bibliothek — daher der etwas höhere Wert (0.8287) als bei den domänenf
 ## Werkzeuge (für Andock, Verifikation, Embedding)
 
 - `tools/verify_remote_spore.mjs` — fremde Spore per URL/Datei prüfen (echter Modul-02-Pfad).
-- `tools/embed_helper.html` — echten `domainVector` im Browser erzeugen (byte-gleich Modul 03).
+- `tools/embed_helper.html` — echten `domainVector` **und** (neu, A10) `snippetVectors` im Browser
+  erzeugen (byte-gleich Modul 03; Abschnitt „A10 — snippetVectors" → `snippets.json`).
+- `tools/resign_spore_v02.mjs` — **eigene** Spore auf v0.2 neu signieren (ENV-Schlüssel
+  `SBKIM_NODE_KEY`, self-verify ✔), optional `--snippets snippets.json` anhängen.
 - `tools/make_example_spore.mjs` — Referenz-Spore erzeugen.
 - `sbkim/fuer-SB-KIMTool-Point/generate_spore.mjs` — kopierbarer Spore-Generator für Forker.
 

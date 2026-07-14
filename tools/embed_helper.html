@@ -49,6 +49,25 @@
 <pre id="out"></pre>
 <button id="copy" disabled>In Zwischenablage kopieren</button>
 
+<hr style="margin:1.6rem 0;opacity:.4">
+
+<h1 style="font-size:1.15rem">A10 — <code>snippetVectors</code> (Satz-Schnipsel)</h1>
+<p class="muted">
+  Zerlegt den Domänen-Text <b>satz-weise</b> (max. 20 Sätze) und bettet jeden Satz als
+  Passage ein — <b>byte-gleich zu Modul 03 <code>embedSnippets</code></b>. Ergebnis ist eine
+  Datei im Format <code>{ snippetVectors: [{ vec, text }] }</code>, die direkt an
+  <code>tools/resign_spore_v02.mjs --snippets &lt;datei&gt;</code> geht. Erlaubt gratis eine
+  „verwandt"-Aussage über die Bedeutung — Anzeige/Messung, gatet nichts (0.80-Riegel unberührt).
+</p>
+<label for="sniptext">Domänen-Text (Sätze) — leer = übernimmt den Text oben</label>
+<textarea id="sniptext" placeholder="Ein Satz pro Aussage. Punkt/!/? trennt. Zeilenumbruch trennt auch."></textarea>
+<button id="runSnip">Schnipsel-Vektoren erzeugen</button>
+<output id="snipStatus" class="muted"></output>
+<label for="snipOut">Ergebnis (JSON — als Datei speichern, dann <code>--snippets</code>)</label>
+<pre id="snipOut"></pre>
+<button id="copySnip" disabled>In Zwischenablage kopieren</button>
+<button id="dlSnip" disabled>Als snippets.json speichern</button>
+
 <script type="module">
 const TRANSFORMERS_CDN = "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2";
 const MODEL = "Xenova/multilingual-e5-small";
@@ -94,6 +113,65 @@ document.getElementById("run").addEventListener("click", async () => {
 copyBtn.addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(outEl.textContent); setStatus("In Zwischenablage kopiert.", "ok"); }
   catch { setStatus("Kopieren nicht erlaubt — Text manuell markieren.", "warn"); }
+});
+
+// --- A10: Satz-Schnipsel (spiegelt Modul 03 splitIntoSentences/embedSnippets) ---
+const SPORE_SNIPPET_MAX = 20;
+const SNIPPET_TEXT_MAX = 160;
+const snipTextEl = document.getElementById("sniptext");
+const snipStatusEl = document.getElementById("snipStatus");
+const snipOutEl = document.getElementById("snipOut");
+const copySnipBtn = document.getElementById("copySnip");
+const dlSnipBtn = document.getElementById("dlSnip");
+function setSnipStatus(msg, cls) { snipStatusEl.textContent = msg; snipStatusEl.className = cls || "muted"; }
+
+function splitIntoSentences(text) {
+  if (typeof text !== "string" || text.trim().length === 0) return [];
+  const out = [];
+  for (const rawLine of text.split(/[\r\n]+/)) {
+    const line = rawLine.replace(/\s+/g, " ").trim();
+    if (!line) continue;
+    for (const part of line.split(/(?<=[.!?…])\s+/)) {
+      const s = part.trim();
+      if (s) out.push(s);
+    }
+  }
+  return out;
+}
+function shorten(s) {
+  s = String(s).trim();
+  return s.length <= SNIPPET_TEXT_MAX ? s : s.slice(0, SNIPPET_TEXT_MAX - 1).trim() + "…";
+}
+
+document.getElementById("runSnip").addEventListener("click", async () => {
+  copySnipBtn.disabled = true; dlSnipBtn.disabled = true; snipOutEl.textContent = "";
+  try {
+    const raw = (snipTextEl.value.trim() || document.getElementById("text").value.trim());
+    const sentences = splitIntoSentences(raw).slice(0, SPORE_SNIPPET_MAX).map(shorten);
+    if (sentences.length === 0) { setSnipStatus("Kein Satz gefunden.", "warn"); return; }
+    const pipe = await getPipe();
+    setSnipStatus("Rechne " + sentences.length + " Schnipsel-Vektoren…");
+    const snippetVectors = [];
+    for (const s of sentences) {
+      const out = await pipe(["passage: " + s], { pooling: "mean", normalize: true });
+      snippetVectors.push({ vec: Array.from(out.data.slice(0, 384)), text: s });
+    }
+    snipOutEl.textContent = JSON.stringify({ snippetVectors });
+    setSnipStatus("✔ fertig — " + snippetVectors.length + " Satz-Schnipsel (je 384 Floats, L2≈1).", "ok");
+    copySnipBtn.disabled = false; dlSnipBtn.disabled = false;
+  } catch (err) {
+    setSnipStatus("Fehler: " + (err && err.message ? err.message : err), "warn");
+  }
+});
+copySnipBtn.addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(snipOutEl.textContent); setSnipStatus("In Zwischenablage kopiert.", "ok"); }
+  catch { setSnipStatus("Kopieren nicht erlaubt — Text manuell markieren.", "warn"); }
+});
+dlSnipBtn.addEventListener("click", () => {
+  const blob = new Blob([snipOutEl.textContent], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "snippets.json";
+  a.click(); URL.revokeObjectURL(a.href);
 });
 </script>
 </body>

@@ -163,26 +163,38 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
 - [ ] **A5b — (Optional) Multi-Query-Sortierung auch in Pinnwand** · `Bau` nur b. Bedarf · ⏱ ~30 Min
   Pinnwand ist eine Sortier-Fläche wie der family-Marktplatz; dasselbe „bester-Cosinus-über-Varianten"-Muster ließe
   sich übertragen (kein Filter, nichts versteckt). Bewusst zurückgestellt (Klaus 2026-07-11: Pinnwand läuft gut). _erledigt am: _____
-- [~] **A6 — Echte Embedding-Vektoren statt Demo-Stub** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
+- [x] **A6 — Echte Embedding-Vektoren statt Demo-Stub** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   Modul 03: `_demo`-`domainVector` durch echte Vektoren ersetzen → erst dann „verified-match" statt nur „verified-spore".
   **Spec erledigt 2026-07-14** (mit A10 zusammen, Spec-Sitzung Spore v0.2, INTERFACES §0/§2/§4/Modul 02+03,
   PROTOCOL_VERSION 0.1→0.2). **Befund beim Spec:** A6 ist im Code faktisch schon erledigt — es gibt keinen
   `_demo`-domainVector-Pfad mehr in Modul 02/03, und `status.json` führt JEDEN Live-Knoten mit echtem 384-dim-
-  e5-Vektor (verified-match). v0.2 macht die Erwartung nur zur verbindlichen Tafel (domainVector bleibt optional /
-  Soft-Pflicht, muss aber echt sein). Die teure Neu-Signier-Welle wird real von A10 (snippetVectors) getrieben.
-  _Spec erledigt am: 2026-07-14 · Bau (Code-Schließung + Welle) = Bau-Sitzung Spore v0.2, Brief `BRIEF_BAU_SPORE_V02.md`_
+  e5-Vektor (verified-match). **Code-Schließung 2026-07-14 (Bau Spore v0.2):** `PROTOCOL_VERSION` im Code
+  auf `"0.2"` gebumpt (Modul 02 + 03 + byte-Kopien) — die verbindliche Tafel gilt jetzt auch im Code. Kein
+  `_demo`-Rückfall (Grep-belegt), domainVector bleibt optional/Soft-Pflicht, muss aber echt sein. Smoke
+  `smoke_bau02_spore_v02.mjs` prüft `protocolVersion=0.2` + 0.1↔0.2-Kompat.
+  _Spec erledigt am: 2026-07-14 · Code-Schließung erledigt am: 2026-07-14 (Bau Spore v0.2). Live-Sporen tragen
+  schon echte Vektoren (verified-match); der v0.2-Stempel wandert bei der Neu-Signier-Welle (A10) in jede spore.json._
 - [ ] **A7 — Sichttest: App-Integration Hybrid + Multi-Query** · `Test` · ⏱ ~15–30 Min
   Sage-Suchfeld am Tablet prüfen (headless grün). _getestet am: _____
 - [ ] **A8 — Sichttest: „Wählen"-Umschalter verbunden ↔ verwandt** · `Test` · ⏱ ~15–30 Min · _getestet am: _____
 - [ ] **A9 — Sichttest: „verwandt · KI" mit echtem Schlüssel** · `Test` · ⏱ ~15–30 Min · _getestet am: _____
-- [~] **A10 — „Schnipsel-Mittel"** · `Spec`+`Bau` · ⏱ ~2 Sitzungen
+- [x] **A10 — „Schnipsel-Mittel"** · `Spec`+`Bau` · ⏱ ~2 Sitzungen
   Einziges Verfahren mit messbarer Verwandt-Trennung, aber Datenvertrag-Eingriff (Schnipsel-Vektoren in die
   Spore) + **alle Knoten neu signieren**. **Klaus-Entscheid 2026-07-12: fest mit A6 in EINE Re-Sign-Welle** (statt
   zweimal signieren). **Spec erledigt 2026-07-14** (Spec-Sitzung Spore v0.2): neues OPTIONALES Spore-Feld
   `snippetVectors` (Array `{vec:number[384], text?}`), Obergrenze `SPORE_SNIPPET_MAX`=20, Granularität = SATZ
-  (Klaus 2026-07-14). Modul 03 neuer Helfer `embedSnippets`; Modul 02 `generateOwnSpore` nimmt `snippetVectors`.
-  Übergang 0.1→0.2 SANFT (gleiche Hauptversion → auto-kompatibel), Welle = Knopf pro App + Skript (Klaus 2026-07-14).
-  _Spec erledigt am: 2026-07-14 · Bau (Modul 03/02 + byte-Kopien + Welle) = Bau-Sitzung Spore v0.2, Brief `BRIEF_BAU_SPORE_V02.md`_
+  (Klaus 2026-07-14). **Bau erledigt 2026-07-14 (Bau Spore v0.2):** Modul 03 `embedSnippets` (Satz-Zerlegung,
+  max 20, L2, fail-soft) + Test-Brücken `_splitIntoSentences`/`_prepareSnippetTexts`; Modul 02 `generateOwnSpore`
+  nimmt `snippetVectors` (kanonisch signiert+verifiziert, harte Kürzung 20, vec-Länge≠384 → `InvalidSporeMetaError`),
+  `regenerateOwnSpore` trägt sie beim Neu-Signieren mit. Byte-Kopien (sbkim-bundle 02+03, such-tool/pinnwand 03)
+  nachgezogen, Drift-Guards grün. Smokes `smoke_bau03_snippets.mjs` (32/32) + `smoke_bau02_spore_v02.mjs` (17/17).
+  Übergang 0.1→0.2 SANFT (gleiche Hauptversion → auto-kompatibel, im Smoke belegt). **Welle-Werkzeug:**
+  `tools/resign_spore_v02.mjs` (ENV-Schlüssel `SBKIM_NODE_KEY`, self-verify ✔) + Browser-Hälfte
+  `tools/embed_helper.html` (Abschnitt A10 → `snippets.json`); Smoke `smoke_resign_spore_v02.mjs` (10/10).
+  **Offen (Operator-Schritt Klaus, wie Browser-Sichttest):** die eigentliche Neu-Signatur der LIVE-Sporen läuft
+  pro Knoten mit dem privaten Schlüssel (nur bei Klaus) — Knopf pro App bzw. Skript. Bis dahin tragen die Live-
+  Sporen noch 0.1 (handshake-kompatibel dank sanftem Übergang).
+  _Spec + Code + Werkzeug erledigt am: 2026-07-14 (Bau Spore v0.2). Netzweite Neu-Signatur der Live-Sporen = Klaus' Lauf._
 
 - [ ] **A11 — Such-Ergebnis → Frage → optional Andocken (Marktplatz-Kopplung Modul 22 ↔ 23)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   **Klaus' Befund 2026-07-11:** ein fremder Nutzer dockt nicht ungefragt an — er **sucht/fragt zuerst**. Heute sind

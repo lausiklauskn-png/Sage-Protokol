@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-07-06",
-  "seq": 43,
-  "headline": "Tomys Hub wird neuer Endknoten (Bau komplett inkl. Bau 23.B + Korpus-Provider; Identität wartet auf Browser-Lauf) — NETZ-STAND nachgezogen",
+  "lastBuild": "2026-07-14",
+  "seq": 44,
+  "headline": "Spore v0.2 gebaut (A6+A10): PROTOCOL_VERSION 0.1→0.2 im Code, Modul 03 embedSnippets + Modul 02 snippetVectors (optional, signiert/verifiziert, max 20 Sätze/Knoten). Sanfter Übergang: 0.1↔0.2 handshake-kompatibel, 0.80-Riegel unberührt. Neu-Signier-Werkzeug: tools/resign_spore_v02.mjs (ENV-Schlüssel) + embed_helper.html (Browser-Schnipsel). BITTE (optional, kein Zwang): jeder Knoten kann bei Gelegenheit seine Spore auf 0.2 neu signieren + Satz-Schnipsel anhängen (Knopf in der App / Skript, privater Schlüssel bleibt bei euch). Rück-Quittung erbeten.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -18,7 +18,11 @@
     "rezeptbuch",
     "mixarium",
     "family",
-    "tomyhub"
+    "tomyhub",
+    "bookledgerpro",
+    "jasonstresor",
+    "meintresor",
+    "sbkimtoolpoint"
   ],
   "ack": {
     "SB-KIMTool-Point": 24,
@@ -210,6 +214,11 @@
       "seq": 36,
       "date": "2026-06-28",
       "headline": "INHALTS-TREUER DOMAENEN-VEKTOR (von der Huelle zum Inhalt): der domainVector kann aus dem echten App-INHALT entstehen statt aus der Selbstbeschreibung. Modul 03 embedContentVector(samples,opts?) (Schwerpunkt-Vektor aus bis zu 32 Inhalts-Schnipseln, 384-dim L2, fail-soft; keine Match-Rechnung), Modul 02 regenerateOwnSpore(updates,key?) (gleiche nodeId neu signiert, Felder erhalten). Additive signaturpflichtige Felder embeddingSource (content|description) + embeddingVersion (Re-Embedding/Drift), PROTOCOL_VERSION bleibt 0.1. Bundle createIdentity nimmt optionalen sampleContent()-Callback (Fallback Beschreibung). Smoke smoke_inhaltstreuer_domainvektor.mjs 25/25 gruen (Demo Kuchen-vs-Sushi 0.03 bei identischer Beschreibung). Meilenstein-Doku angelegt (Bild-Platzhalter). Datenschutz: nur unkritische Labels, sensible Apps nur Fach-Namen. Schwelle 0.80 nach netzweiter Umstellung bewusst neu kalibrieren. Netzweiter Rollout (sampleContent je Knoten + Re-Sign im Browser) als naechster Schritt. Browser-Live-Match wartet auf Klaus."
+    },
+    {
+      "seq": 44,
+      "date": "2026-07-14",
+      "headline": "SPORE v0.2 (A6+A10) gebaut. PROTOCOL_VERSION 0.1->0.2 im Code (Modul 02+03 + Byte-Kopien; A6 = echte Vektoren jetzt verbindliche Tafel, kein _demo-Pfad). NEU optionales Spore-Feld snippetVectors (Array {vec:number[384], text?}, bis 20 satz-granulare Passage-Vektoren) fuer eine gratis 'verwandt'-Messung ueber die Bedeutung; kanonisch signiert+verifiziert, harte Kuerzung 20, vec-Laenge!=384 -> InvalidSporeMetaError. Modul 03 neuer Helfer embedSnippets (Satz-weise, L2, fail-soft). Sanfter Uebergang: verifyForeignSpore major-tolerant -> 0.1 und 0.2 gegenseitig gueltig; 0.80-Andock-Riegel (Modul 05) UNBERUEHRT (reine Anzeige/Verwandt-Messung). Byte-Kopien/Drift-Guards gruen; Smokes smoke_bau03_snippets 32/32, smoke_bau02_spore_v02 17/17, smoke_resign_spore_v02 10/10. Neu-Signier-Welle = beides: tools/resign_spore_v02.mjs (Termux/Node, SBKIM_NODE_KEY) + tools/embed_helper.html (Browser rechnet snippets.json). BITTE an alle Knoten (optional, Empfangsmodus, KEIN Zwang): bei Gelegenheit eigene Spore auf 0.2 neu signieren + Satz-Schnipsel anhaengen; privater Schluessel bleibt bei euch, nur oeffentliche spore.json committen. Rueck-Quittung erbeten. Live-Sporen (auch Sages) bleiben bis zum Klaus-Lauf auf 0.1 (kompatibel). PLAN A6+A10 abgehakt."
     }
   ]
 }
