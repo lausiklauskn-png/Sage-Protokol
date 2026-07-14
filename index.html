@@ -4195,6 +4195,20 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       var vec = await window.SbkimEmbedding.embedPassage(description);
       var arr = Array.from(vec);
       var l2 = Math.sqrt(arr.reduce(function (a, x) { return a + x * x; }, 0));
+      // A10 „Schnipsel-Mittel" (Spore v0.2): den Beschreibungs-Text zusätzlich
+      // SATZ-weise einbetten, damit die Spore snippetVectors trägt (reine
+      // Anzeige/Verwandt-Messung, gatet nichts). Fail-soft — schlägt das
+      // Einbetten fehl, wird ohne Schnipsel weiter signiert (v0.2 bleibt).
+      var snippetVectors = [];
+      try {
+        set('Erzeuge Satz-Schnipsel (v0.2 snippetVectors) …');
+        var snips = await window.SbkimEmbedding.embedSnippets(description);
+        snippetVectors = (snips || []).map(function (s) {
+          return { vec: Array.from(s.vec), text: s.text };
+        });
+      } catch (snipErr) {
+        snippetVectors = [];
+      }
       set('Signiere Spore mit neuem Domain-Vektor …');
       var spore = await window.SbkimSpore.generateOwnSpore({
         domain: C.domain,
@@ -4204,6 +4218,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         domainDescription: description,
         domainKeywords: C.domainKeywords,
         domainVector: arr,
+        snippetVectors: snippetVectors,
         stammCategories: C.stammCategories,
         guestCategories: C.guestCategories,
       });
@@ -4211,7 +4226,8 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       outEl.classList.remove('is-loading');
       __sageAndockSpore = spore;
       downloadJson('spore.json', spore);
-      set('✔ Spore neu signiert + heruntergeladen — nodeId ' + spore.id + ' (unverändert), Vektor 384-dim, L2=' + l2.toFixed(4) + '. Committe sie nach sbkim/spore.json.', 'ok');
+      var snipCount = (spore.snippetVectors || []).length;
+      set('✔ Spore neu signiert + heruntergeladen — nodeId ' + spore.id + ' (unverändert), Protokoll v' + (spore.protocolVersion || '0.2') + ', Vektor 384-dim, L2=' + l2.toFixed(4) + ', ' + snipCount + ' Satz-Schnipsel. Committe sie nach sbkim/spore.json.', 'ok');
       btn.disabled = false;
     } catch (err) {
       window.removeEventListener('sbkim:embedding-progress', onProg);
