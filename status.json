@@ -3,9 +3,9 @@
   "name": "Sage-Protokol",
   "fullName": "Semantisch-Empfangendes Bidirektionales KI-Matching — Hub und Knoten zugleich",
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
-  "protocolVersion": "0.1",
+  "protocolVersion": "0.2",
   "schemaVersion": "1",
-  "lastUpdated": "2026-07-10",
+  "lastUpdated": "2026-07-14",
   "branch": "main",
   "endknoten": [
     {
@@ -83,7 +83,10 @@
       "domain": "Mycel-Bibliothek",
       "integrated": true,
       "integratedAt": "2026-05-21",
+      "reSignedAt": "2026-07-14",
+      "protocolVersion": "0.2",
       "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
+      "note": "Neu-Signier-Welle Spore v0.2 (2026-07-14, Klaus' Browser, wiederhergestellte Identität): spore.json auf protocolVersion 0.2 gehoben, 11 Satz-Schnipsel (snippetVectors) aus einer ausführlicheren Domänen-Beschreibung angehängt, echter domainVector 384-dim L2=1 neu berechnet. nodeId nysOZE3V… UNVERÄNDERT (Identität aus verschlüsseltem Backup vom 2026-05-21 wiederhergestellt, nachdem Browser-Daten gelöscht waren). Reziprok verifiziert in dieser Sitzung: id == base64url(SHA256(rawPub)), Ed25519-Signatur gültig, 11/11 Schnipsel-Vektoren 384-dim, kein PII. snippetVectors = reine Anzeige/Verwandt-Messung, 0.80-Andock-Riegel unberührt. Peer-Identitäten am 2026-07-14 quergeprüft: 8/10 Live-Sporen == committet (BookLedgerPro + Kim-Bell von hier nicht abrufbar, kein Beweis für Abweichung).",
       "sporeUrl": "https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json",
       "stammCategories": [
         "Protokoll-Doku",

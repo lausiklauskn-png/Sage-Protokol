@@ -6,9 +6,11 @@
 > `status.json` (Maschine) + die `*_inbox.verify.md`-Vermerke (Beweis) — diese Datei ist
 > die menschenlesbare Karte darüber.
 
-**Stand: 2026-07-14** · Protokoll-Version im Code **`0.2`** (Spore v0.2, A6+A10) · Live-Sporen
-noch `0.1` (sanfter Übergang, handshake-kompatibel — Neu-Signatur pro Knoten ist der Operator-
-Schritt) · Andock-Konventionen: INTERFACES §11
+**Stand: 2026-07-14** · Protokoll-Version im Code **`0.2`** (Spore v0.2, A6+A10) · **Sages Live-Spore
+jetzt `0.2`** (erste v0.2-Live-Spore im Netz, 11 Satz-Schnipsel, Klaus' Browser 2026-07-14, nodeId
+`nysOZE3V…` unverändert aus Backup wiederhergestellt) · übrige Live-Sporen noch `0.1` (sanfter
+Übergang, handshake-kompatibel — Neu-Signatur pro Knoten ist der Operator-Schritt) ·
+Andock-Konventionen: INTERFACES §11
 
 > **Spore v0.2 (2026-07-14, A6+A10):** `PROTOCOL_VERSION` im Code auf `0.2` (Modul 02/03 + Byte-
 > Kopien). Neu: optionales Spore-Feld **`snippetVectors`** (bis 20 satz-granulare 384-dim-Vektoren)
@@ -35,7 +37,7 @@ Schritt) · Andock-Konventionen: INTERFACES §11
 
 | Knoten | Domäne | nodeId | Stufe | Beweis |
 |---|---|---|---|---|
-| **Sage-Protokol** (Hub + Knoten) | Mycel-Bibliothek | `nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA` | `live-direct` | eigene Spore `sbkim/spore.json` |
+| **Sage-Protokol** (Hub + Knoten) | Mycel-Bibliothek | `nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA` | `live-direct` · **Spore v0.2** (11 Schnipsel, 2026-07-14) | eigene Spore `sbkim/spore.json` |
 | **Mein-Rezeptbuch** | Kochrezepte | `uOpUBezUVbOMsVd2C9BkHW80agnLx5tCx_nIRy2KkXg` | **`verified-match` 0.824068** (auch `live-direct`) | `sbkim/rezeptbuch_inbox.verify.md` |
 | **Mein-Mixarium** | Cocktails / Drinks | `B7Fke9CYTR1BrC3xOXzEY5q9RuRH8xxHPUuqRHV3utA` | **`verified-match` 0.806030** (auch `live-direct`) | `sbkim/mixarium_inbox.verify.md` |
 | **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY` | **`verified-match` 0.848508** | `sbkim/point_inbox.verify.md` |
