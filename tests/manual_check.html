@@ -167,6 +167,42 @@
     <pre class="log">— bereit. Modul 24 (OCR-/Bild-Eingabe, Geschwister von Modul 21). Bild/Handschrift → Text. Drei steckbare Anbieter: mistral (Mistral OCR, EU, FAVORIT) · google (Cloud Vision EU-Endpunkt) · browser (Shape Detection, experimentell). EU-Politik frei/bindend. Konsequent fail-soft (kein Schlüssel/Bild/Netz → deutscher Hinweis), BYOK, kein Schlüssel im Code. Logik-Knöpfe (headless-äquivalent): Anbieter + EU-Politik, isFileSupported, ocrErrorHint. Live-Knopf (braucht Bild + Schlüssel): „OCR erkennen" (Bild wählen + Anbieter/Schlüssel via prompt → Text ins Feld oben). —</pre>
   </section>
 
+  <script>
+    // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
+    // MUSS vor allen Panel-Knopf-Registrierungen (SbkimUI.addButton) stehen —
+    // Panel 24 + 25 registrieren früher als der Rest, sonst fehlten ihre Knöpfe.
+    window.SbkimUI = {
+      panel(module) {
+        return document.querySelector(`section.panel[data-module="${module}"]`);
+      },
+      addButton(module, label, action) {
+        const p = this.panel(module);
+        if (!p) return;
+        const btn = document.createElement("button");
+        btn.textContent = label;
+        btn.addEventListener("click", async () => {
+          this.log(module, `▶ ${label} ...`);
+          try { const out = await action(); if (out !== undefined) this.log(module, JSON.stringify(out, null, 2)); }
+          catch (err) { this.setStatus(module, "err", "Fehler"); this.log(module, "✗ " + (err && err.message || err)); }
+        });
+        p.querySelector(".controls").appendChild(btn);
+      },
+      log(module, line) {
+        const pre = this.panel(module)?.querySelector("pre.log");
+        if (!pre) return;
+        if (pre.textContent.startsWith("— noch keine Ausgabe —")) pre.textContent = "";
+        pre.textContent += line + "\n";
+        pre.scrollTop = pre.scrollHeight;
+      },
+      setStatus(module, kind, text) {
+        const s = this.panel(module)?.querySelector(".status");
+        if (!s) return;
+        s.className = "status " + kind;
+        s.textContent = text;
+      },
+    };
+  </script>
+
   <!-- Modul 24 — OCR-/Bild-Eingabe (Bau-Sitzung 2026-07-01, Strang B1) -->
   <script src="../src/modules/24_ocr_eingabe.js"></script>
   <script>
@@ -308,40 +344,6 @@
         };
       });
     })();
-  </script>
-
-  <script>
-    // Mini-Helfer für Bau-Sitzungen. Bewusst klein, kein Framework.
-    window.SbkimUI = {
-      panel(module) {
-        return document.querySelector(`section.panel[data-module="${module}"]`);
-      },
-      addButton(module, label, action) {
-        const p = this.panel(module);
-        if (!p) return;
-        const btn = document.createElement("button");
-        btn.textContent = label;
-        btn.addEventListener("click", async () => {
-          this.log(module, `▶ ${label} ...`);
-          try { const out = await action(); if (out !== undefined) this.log(module, JSON.stringify(out, null, 2)); }
-          catch (err) { this.setStatus(module, "err", "Fehler"); this.log(module, "✗ " + (err && err.message || err)); }
-        });
-        p.querySelector(".controls").appendChild(btn);
-      },
-      log(module, line) {
-        const pre = this.panel(module)?.querySelector("pre.log");
-        if (!pre) return;
-        if (pre.textContent.startsWith("— noch keine Ausgabe —")) pre.textContent = "";
-        pre.textContent += line + "\n";
-        pre.scrollTop = pre.scrollHeight;
-      },
-      setStatus(module, kind, text) {
-        const s = this.panel(module)?.querySelector(".status");
-        if (!s) return;
-        s.className = "status " + kind;
-        s.textContent = text;
-      },
-    };
   </script>
 
   <!-- Modul 01 — Storage (Bau-Sitzung 2026-05-14) -->
