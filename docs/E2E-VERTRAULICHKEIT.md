@@ -69,6 +69,18 @@ weiter (Anzahl Datensätze, Frequenz, Beträge, Korrelationsmuster). Für Grad B
 tragbar, solange der Anker-Tresor draußen bleibt. Für echte
 Korrelations-Sensibilität braucht es Grad C.
 
+**Umgesetzt 2026-07-16 (B5) — Modul 25 `SbkimPseudonym`:** Grad B ist jetzt als
+build-freier Helfer gebaut (`src/modules/25_pseudonym.js`, Karte
+`docs/components/25_pseudonym.md`, Smoke `tests/smoke_bau25_pseudonym.mjs` 36/36).
+`pseudonymize(text, options)` / `pseudonymizeObject(obj, options)` ersetzen sensible
+Werte (explizite Namen-Liste + eingebaut EMAIL/IBAN, TEL opt-in, eigene
+`customPatterns`) durch stabile Token, `rehydrate`/`rehydrateObject` kehren um;
+`serializeVault`/`parseVault` reichen den Anker-Tresor für den separaten/menschlichen
+Handover. **`protocolVersion` bleibt `0.1`**, kein neues Feld, kein Draht-Vertrag —
+diese Spec (§1.1) IST die Vorgabe, INTERFACES bleibt unberührt. Den Anker-Tresor
+verschlüsselt at-rest ablegen kann der Aufrufer über **Modul 20** `putSecret`
+(bewusst entkoppelt). Konsument zuerst: BookLedgerPro.
+
 ### 1.2 Grad C — Versiegelter Umschlag (Zielform)
 
 Passt zur Mycel-Philosophie: **serverlos, offline-first, build-frei,

@@ -386,8 +386,19 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
 - [ ] **B4 — Widget-Tresor „Increment 2 B" (sicherheits-sensibel, eigene Sitzung)** · `Bau` · ⏱ ~1–2 Sitzungen
   Eigener Tresor (Shamir 2/3 + Passwort + 🔐), automatischer KI-Aufruf mit Websuche, App-Schlüssel-Durchreichung.
   Heute KI-Schlüssel bewusst nur im RAM. _erledigt am: _____
-- [ ] **B5 — E2E Grad B: Pseudonymisierung** · `Bau` (kein Protokoll-Bump) · ⏱ ~1 Sitzung
-  Platzhalter wie `[[KUNDE_1]]` statt Klartext — sofort möglich, guter Zwischenschritt. _erledigt am: _____
+- [x] **B5 — E2E Grad B: Pseudonymisierung** · `Bau` (kein Protokoll-Bump) · **erledigt 2026-07-16**
+  Platzhalter wie `[[KUNDE_1]]` statt Klartext — sofort möglich, guter Zwischenschritt.
+  **Gebaut als Modul 25 `SbkimPseudonym`** (`src/modules/25_pseudonym.js`, Karte
+  `docs/components/25_pseudonym.md`): build-freier Text-/Objekt-Transform, `protocolVersion`
+  bleibt 0.1, KEIN Spore-Feld, KEIN Draht-Vertrag (INTERFACES unberührt). `pseudonymize`/
+  `pseudonymizeObject` ersetzen explizite Werte (Namen) + eingebaut EMAIL/IBAN (TEL opt-in) +
+  `customPatterns` durch stabile Token; `rehydrate`/`rehydrateObject` kehren um;
+  `serializeVault`/`parseVault` für den separaten Anker-Tresor-Handover; Anker-Tresor at-rest
+  optional über Modul 20 `putSecret` (entkoppelt). Fail-soft (kein Throw außer
+  `InvalidPseudonymArgError`). Headless-Smoke `tests/smoke_bau25_pseudonym.mjs` **36/36 grün**;
+  Panel 25 in `manual_check.html`; E2E-Spec §1.1 mit Umsetzungs-Notiz; status.json + Pie + CLAUDE.md
+  nachgezogen. Ehrliche Grenze bleibt: Metadaten/Beträge leaken weiter → Grad C = B6.
+  **Browser-Sichttest (Panel 25) wartet auf Klaus.** _erledigt am: 2026-07-16_
 - [ ] **B6 — E2E Grad C: versiegelter Umschlag** · `Entscheid` `Bau` später · ⏱ ~2–3 Sitzungen
   Sealed box (X25519 → ECDH → HKDF → AES-GCM-256). Braucht Protokoll-Sprung 0.1 → 0.2, eigene Spec-Sitzung,
   laufenden BLP-Knoten. _erledigt am: _____
