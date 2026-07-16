@@ -119,6 +119,22 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-16 · A18 Siegel-Wizard-Rollout — Tomys-Hub + Mein-Rezeptbuch auf den Kanon
+
+**Rolle:** Bau/Rollout (Freibrief). Fortsetzung der A18-Welle (Kanon `assets/siegel-inhalt.js`).
+**Erledigt (je eigener PR, selbst-gemergt nach headless grün + Drift-Guard):**
+- **Tomys-Hub** (PR #111): alte Selbst-Injektion aus `sbkim/sbkim-init.js` entfernt, `sbkim/siegel-inhalt.js`
+  byte-1:1 (nur `WIZ`), `__tomyErzeugeSpore` erhalten (Modul 23), `sicherheit.html` ergänzt (aus Kim-Bell re-geskinnt),
+  SW `tomy-hub-v22→v23`.
+- **Mein-Rezeptbuch** (PR #330): alte `SIEGEL-NEUGESTALTUNG`-IIFE entfernt, Kanon-Datei byte-1:1, `__sbkimErzeugeSpore`
+  **inkl. Inhalts-Vektor-Logik** erhalten, QC-Quelle + `build.py` (index.html neu), SW `mrz-v50→v51`.
+
+Damit stehen **alle 4 klassischen Endknoten** (Kim-Bell · Mixarium · Tomys · Rezeptbuch) auf dem einheitlichen Wizard.
+**Bewusst NICHT autonom angeglichen (Freibrief-Grenze — architektonisch tiefgreifend, erst Klaus):** **BLP**
+(10 000+-Zeilen inline-`mycelknoten.html`, kein geteiltes Siegel-Modal), **SB-KIMTool-Point** (schon voraus:
+per-Slot-nodeId-Wechsler, Rückportierung Point→Kanon statt Downgrade), **family-project** (Rendezvous-Ursprung, eigenes
+Muster). Details + Entscheid siehe `docs/PLAN_SEMANTIK_KRYPTO.md` A18. **Alle Sichttests: ungeprüft, wartet auf Klaus.**
+
 ## 2026-07-14 · A10-Nachzug: SB-KIMTool-Point als 2. v0.2-Knoten fertig (Doku-Sync von der Toolpoint-Sitzung)
 
 **Rolle:** Cross-Repo-Status-Sync (aus der SB-KIMTool-Point-Sitzung heraus). Nur `docs/PLAN_SEMANTIK_KRYPTO.md`
