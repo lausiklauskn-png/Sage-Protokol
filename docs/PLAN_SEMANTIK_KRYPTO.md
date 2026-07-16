@@ -355,17 +355,26 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   `__…ErzeugeSpore` erhalten (Rendezvous + bei Rezeptbuch die Inhalts-Vektor-Logik), `sicherheit.html` ergänzt/erhalten,
   SW-Bump (Tomys v22→v23, Rezeptbuch mrz-v50→v51). Damit sind **alle 4 „klassischen" Endknoten** (Kim-Bell · Mixarium ·
   Tomys · Rezeptbuch = geteiltes Modul-16-Siegel-Modal + externe `sbkim/*.js`) auf dem einheitlichen Kanon.
-  **Offen (je eigener PR + Klaus-Sichttest):**
-  - Sage-Page selbst auf die Datei umstellen (Inline-Wizard ersetzen) — Hub-Risiko, mit Klaus' Sage-Browser-Test.
-  - **BookLedgerPro · family-project · SB-KIMTool-Point — NICHT mechanisch angleichen (Klaus-Entscheid nötig).**
-    Befund 2026-07-16: diese drei haben eine **abweichende Architektur**, kein blinder Kanon-Swap:
-    · **BLP** hält SBKIM in einer 10 000+-Zeilen **standalone `sbkim/mycelknoten.html`**, die ALLE Module inline trägt
-      + eigene Andock-UI (kein geteiltes Siegel-Modal + keine externen `sbkim/*.js` wie die Endknoten) → Kanon-Übernahme
-      = tiefer Umbau, nicht Copy-Paste.
-    · **SB-KIMTool-Point** ist bereits **voraus** (per-Slot-nodeId-Wechsler, besser als Kanon) — hier eher Rückportierung
-      Point→Kanon, kein Downgrade.
-    · **family-project** = Ursprung des Rendezvous-Prototyps, eigenes Muster — Ist-Zustand erst mit Klaus klären.
-  Skills: `status-leiste-siegel` + `saubere-netz-anmeldung`. _Kim-Bell + Point erledigt am: 2026-07-16 · Tomys + Rezeptbuch: 2026-07-16_
+  **Erledigt 2026-07-16 (Folge, Klaus-Sichttest der 4 Kanon-Endknoten GRÜN):**
+  - **per-Slot-nodeId in den Kanon zurückportiert** (Point-Muster) — `refreshWizardIdentities` löst je Slot die nodeId
+    read-only via idempotentem `getOrCreateIdentity` auf (`Fach · nodeId`, volle nodeId im Hover). Kanon PR #660,
+    byte-1:1 in die 4 Endknoten nachgezogen (Kim-Bell #26 · Mixarium #144 · Tomys #112 · Rezeptbuch #331).
+  - **family-project** (PR #87): hatte KEINEN Siegel-Wizard (Identität lief nur übers Rendezvous-Panel) → Kanon-Wizard
+    **additiv** ergänzt (nichts entfernt; `__fpErzeugeSpore` + Rendezvous unangetastet), `sicherheit.html` + SW-Bump.
+  **NETZWEIT ABGESCHLOSSEN — Siegel-Wizard-Stand (Befund 2026-07-16):**
+  - **Geteilter Kanon (`siegel-inhalt.js`, byte-1:1):** Sage · Kim-Bell · Mixarium · Rezeptbuch · Tomys · family-project.
+  - **Eigene, spec-konforme Umsetzung (NICHT anfassen — vollständig + getestet):**
+    · **SB-KIMTool-Point** — `assets/sbkim-siegel.js`, voraus (per-Slot-nodeId; Quelle der Rückportierung).
+    · **Kimboard · Kimseek** — eigene 352-Zeilen-Fassung mit allen 5 Bausteinen + nodeId-Anzeige + `sicherheit.html`.
+    · **Mein-Tresor · Jasons-Tresor** — bauten ihr Siegel selbst nach Sage-Vorgabe: Siegel-Dialog im `index.html`
+      (Wappen · Pflicht-Module · ASPEKTE · 🔑/🛡-Links) + **voller Andock-Wizard auf eigener Seite `werkzeuge/andock.html`**
+      (Identität/Spore/Backup/Wiederherstellen/Wechsler mit nodeId, je 327 Z., `npm test` 53/53). Kanon-Einbau wäre reine
+      Dopplung an einer sicherheits-sensiblen Ein-Datei-App → **bewusst gelassen** (Klaus-Prüfung 2026-07-16).
+  - **Bewusst gelassen:** **BookLedgerPro** (SBKIM in 10 000+-Zeilen standalone `sbkim/mycelknoten.html`, eigene
+    Andock-UI; Kanon = tiefer Umbau ohne Nutzen).
+  - **Einzig offen:** **Sage-Page selbst** auf die Datei umstellen (Inline-Wizard ersetzen) — Hub-Risiko, nur mit
+    Klaus' Sage-Browser-Test.
+  Skills: `status-leiste-siegel` + `saubere-netz-anmeldung`. _erledigt: 2026-07-16 (Kim-Bell · Point · Tomys · Rezeptbuch · Mixarium · family-project · per-Slot-nodeId · Tresor-Befund)_
 
 ## B) Verschlüsselung
 
