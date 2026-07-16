@@ -339,6 +339,19 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **Selbst-Hosten des Modells (Flaschenhals/Offline, `/models/…`-Pfad existiert schon) ist ein SEPARATER, optionaler
   Hebel** — löst NICHT das Einfrieren; auf Klaus' Zuruf. **Browser-Sichttest (kein Einfrieren mehr) wartet auf Klaus.**
 
+- [ ] **A18 — Kanonischen Siegel-Andock-Wizard (`assets/siegel-inhalt.js`) netzweit ausrollen** · `Bau` · ⏱ ~1 Sitzung/Repo · **neu 2026-07-15**
+  Neuer Baustein (2026-07-15): EINE 1:1-kopierbare Datei `Sage-Protokol/assets/siegel-inhalt.js` trägt den **vollen
+  Andock-Wizard** im Siegel-Modal — 5 Bausteine (Identität erzeugen · Spore signieren+⬇ · verschl. Backup ·
+  Wiederherstellen · **Identitäts-Wechsler mit aktiver-nodeId-Anzeige**) als natives `<dialog>` (Top-Layer, liegt
+  VOR dem Siegel; behebt „Fenster hinter dem Siegel"). Extrahiert aus Sages Inline-Wizard + Kim-Bell-Fassung, um den
+  Wechsler + die nodeId-Anzeige erweitert. Nur das `WIZ`-Config-Objekt variiert pro App; Code byte-gleich (Drift-Guard).
+  **Erledigt:** Kanon-Datei in Sage angelegt (PR #655/#656); **Mein-Mixarium** fährt sie bereits (alte 🔑→Modul-18-
+  Fehlverdrahtung entfernt, PR #138 ff.). **Offen (je eigener PR + Klaus-Sichttest):**
+  - Sage-Page selbst auf die Datei umstellen (Inline-Wizard ersetzen) — Hub-Risiko, mit Klaus' Sage-Browser-Test.
+  - **Kim-Bell · SB-KIMTool-Point · Mein-Rezeptbuch · BookLedgerPro · family-project · Tomys-Hub** angleichen
+    (Datei kopieren, `WIZ` anpassen, alte/abweichende Injektion entfernen, SW-Bump, Drift-Guard).
+  Skills: `status-leiste-siegel` + `saubere-netz-anmeldung`. _erledigt am: _____
+
 ## B) Verschlüsselung
 
 - [ ] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · ⏱ ~20–30 Min
