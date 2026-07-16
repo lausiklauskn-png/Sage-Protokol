@@ -345,12 +345,17 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Wiederherstellen · **Identitäts-Wechsler mit aktiver-nodeId-Anzeige**) als natives `<dialog>` (Top-Layer, liegt
   VOR dem Siegel; behebt „Fenster hinter dem Siegel"). Extrahiert aus Sages Inline-Wizard + Kim-Bell-Fassung, um den
   Wechsler + die nodeId-Anzeige erweitert. Nur das `WIZ`-Config-Objekt variiert pro App; Code byte-gleich (Drift-Guard).
-  **Erledigt:** Kanon-Datei in Sage angelegt (PR #655/#656); **Mein-Mixarium** fährt sie bereits (alte 🔑→Modul-18-
-  Fehlverdrahtung entfernt, PR #138 ff.). **Offen (je eigener PR + Klaus-Sichttest):**
+  **Erledigt:** Kanon-Datei in Sage (PR #655/#656); **Mein-Mixarium** (PR #138 ff.); **Kim-Bell** auf Kanon
+  gebracht (PR #25, 2026-07-16 — es fehlten Baustein 5 + nodeId-Anzeige); **SB-KIMTool-Point** bereits aktuell
+  **und sogar voraus** — sein `assets/sbkim-siegel.js` (voll re-gesynct 2026-07-14, PR #104) hat alle 5 Bausteine
+  UND einen **besseren** Wechsler: er löst je Slot die nodeId auf (`Slot · nodeId` im Dropdown) + volle aktive
+  nodeId. **Kandidat-Rückportierung in den Kanon** (Point-Muster: per-Slot-nodeId statt nur aktiver) — Folge-Polish.
+  **Offen (je eigener PR + Klaus-Sichttest):**
   - Sage-Page selbst auf die Datei umstellen (Inline-Wizard ersetzen) — Hub-Risiko, mit Klaus' Sage-Browser-Test.
-  - **Kim-Bell · SB-KIMTool-Point · Mein-Rezeptbuch · BookLedgerPro · family-project · Tomys-Hub** angleichen
-    (Datei kopieren, `WIZ` anpassen, alte/abweichende Injektion entfernen, SW-Bump, Drift-Guard).
-  Skills: `status-leiste-siegel` + `saubere-netz-anmeldung`. _erledigt am: _____
+  - **Mein-Rezeptbuch · BookLedgerPro · family-project · Tomys-Hub** angleichen (Datei kopieren, `WIZ` anpassen,
+    alte/abweichende Injektion entfernen, SW-Bump, Drift-Guard) — je Repo eigener Ist-Zustand prüfen (manche haben
+    evtl. schon den Wechsler wie Point).
+  Skills: `status-leiste-siegel` + `saubere-netz-anmeldung`. _Kim-Bell + Point erledigt am: 2026-07-16_
 
 ## B) Verschlüsselung
 
