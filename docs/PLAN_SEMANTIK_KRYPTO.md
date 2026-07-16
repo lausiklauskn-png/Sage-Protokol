@@ -174,10 +174,27 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   `smoke_bau02_spore_v02.mjs` prüft `protocolVersion=0.2` + 0.1↔0.2-Kompat.
   _Spec erledigt am: 2026-07-14 · Code-Schließung erledigt am: 2026-07-14 (Bau Spore v0.2). Live-Sporen tragen
   schon echte Vektoren (verified-match); der v0.2-Stempel wandert bei der Neu-Signier-Welle (A10) in jede spore.json._
-- [ ] **A7 — Sichttest: App-Integration Hybrid + Multi-Query** · `Test` · ⏱ ~15–30 Min
-  Sage-Suchfeld am Tablet prüfen (headless grün). _getestet am: _____
-- [ ] **A8 — Sichttest: „Wählen"-Umschalter verbunden ↔ verwandt** · `Test` · ⏱ ~15–30 Min · _getestet am: _____
-- [ ] **A9 — Sichttest: „verwandt · KI" mit echtem Schlüssel** · `Test` · ⏱ ~15–30 Min · _getestet am: _____
+- [x] **A7 — Sichttest: App-Integration Hybrid + Multi-Query** · `Test` · **grün 2026-07-17 (Klaus)**
+  Sage-Suchfeld am Tablet geprüft: „wie schütze ich mich vor fremden Zugriffen" liefert nach Bedeutung
+  sortierte Treffer mit Prozent — die Schutz-Module oben (Membran 88 % · Rate-Limit 84 % · Schlüssel-Safe 84 %),
+  dazu **KNOTEN**-Treffer (Mein-Tresor 82 % · Jasons-Tresor 81 % · BookLedgerPro 81 % · Kimboard/Kim-Bell/Kimseek).
+  App-Hybrid+Multi-Query läuft. _getestet am: 2026-07-17 (Klaus, Live-Screenshots)._
+- [x] **A8 — Sichttest: „Wählen"-Umschalter verbunden ↔ verwandt** · `Test` · **abgehakt 2026-07-17 (Klaus' Zuruf)**
+  Das Widget läuft live, der Umschalter „🧬 verwandt (genau)" + „nur verwandte" sind sichtbar vorhanden.
+  Klaus hat auf seinen Zuruf abgehakt; der Umsortier-Effekt ist headless bewiesen (`smoke_bau22e_waehlen.mjs` 45/45).
+  _Hinweis: der Umschalt-Effekt wurde im Live-Bild nicht eigens demonstriert (Häkchen stand aus)._ _2026-07-17._
+- [x] **A9 — Sichttest: „verwandt · KI" mit echtem Schlüssel** · `Test` · **abgehakt 2026-07-17 (Klaus' Zuruf)**
+  KI-Richter-Feld (Anbieter + Schlüssel) im Widget vorhanden. Klaus hat auf seinen Zuruf abgehakt; ein echter
+  KI-Schlüssel-Lauf ist optional (BYOK, kostenpflichtig). _2026-07-17._
+- [ ] **A19 — Befunde aus Klaus' Sichttest 2026-07-17 (Fremdnutzer-Brille)** · `Bau` klein · ⏱ ~30–45 Min · **neu 2026-07-17**
+  Zwei UX-Befunde am Such-Widget (Modul 22), beide Marktplatz-/Fremdnutzer-relevant:
+  1. **„🖨 Block kopieren" gibt keine sichtbare Rückmeldung** — kopiert in die Zwischenablage, aber der Nutzer
+     sieht nichts (Klaus: „ein Link ohne sichtbares Ergebnis"). → kurze Bestätigung einbauen („✓ kopiert").
+  2. **Treffer erst nach Netz-Anmeldung sichtbar** — Klaus: „erst nachdem ich alle im Netz angemeldet habe,
+     konnte ich was sehen". Prüfen, ob **App-Treffer** (lokaler Korpus) auch OHNE Netz-Anmeldung erscheinen
+     (Fremdnutzer ohne Verbindung muss die App-Suche voll nutzen können — fail-soft). Knoten-Treffer dürfen
+     Verbindung brauchen.
+  Beides berührt Modul 22 + byte-Kopien (such-tool/pinnwand, Drift-Guard) → eigener abgegrenzter Bau. _offen._
 - [x] **A10 — „Schnipsel-Mittel"** · `Spec`+`Bau` · ⏱ ~2 Sitzungen
   Einziges Verfahren mit messbarer Verwandt-Trennung, aber Datenvertrag-Eingriff (Schnipsel-Vektoren in die
   Spore) + **alle Knoten neu signieren**. **Klaus-Entscheid 2026-07-12: fest mit A6 in EINE Re-Sign-Welle** (statt
