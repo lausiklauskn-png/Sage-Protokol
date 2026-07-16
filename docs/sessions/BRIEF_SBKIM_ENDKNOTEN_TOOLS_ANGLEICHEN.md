@@ -48,12 +48,20 @@ B5 (Pseudonymisierung) · B6 (sealed envelope) · B7 (Pinnwand-Krypto **Entschei
   Ergebnis in der Liste + `PULS.md` abhaken. (Nur Klaus, keine Sitzung nötig.)
 
 **Phase 2 — neuer Baustein netzweit (A18, das „andere Repos ausstatten"):**
-- **Sage-Page selbst** auf `siegel-inhalt.js` umstellen (Inline-Wizard ersetzen) — mit Klaus'
-  Sage-Browser-Test.
-- Dann **Kim-Bell · SB-KIMTool-Point · Mein-Rezeptbuch · BookLedgerPro · family-project** je auf den
-  kanonischen Wizard bringen (Datei 1:1 kopieren, nur `WIZ`-Config anpassen; alte/abweichende
-  Injektionen entfernen; SW-Bump; Drift-Guard). **Ein Repo pro PR**, headless `node --check` + (wo
-  vorhanden) Smoke grün, dann Klaus-Sichttest.
+- **✅ ERLEDIGT 2026-07-16:** die **4 klassischen Endknoten** stehen auf dem Kanon — **Kim-Bell** (PR #25),
+  **Mein-Mixarium**, **Tomys-Hub** (PR #111), **Mein-Rezeptbuch** (PR #330). Muster je Repo: alte Selbst-Injektion
+  aus `sbkim-init.js` raus, `sbkim/siegel-inhalt.js` byte-1:1 (nur `WIZ`), `__…ErzeugeSpore` erhalten,
+  `sicherheit.html` da, SW-Bump.
+- **Sage-Page selbst** auf `siegel-inhalt.js` umstellen (Inline-Wizard ersetzen) — **offen**, Hub-Risiko, braucht
+  Klaus' Sage-Browser-Test (Frage 2 unten).
+- **⚠️ NICHT mechanisch — erst Klaus-Entscheid (Befund 2026-07-16):** **BLP · SB-KIMTool-Point · family-project**
+  haben eine **abweichende Architektur**, kein blinder Kanon-Swap:
+  - **BLP** = 10 000+-Zeilen standalone `sbkim/mycelknoten.html`, alle Module inline + eigene Andock-UI (kein
+    geteiltes Modul-16-Modal). Kanon = tiefer Umbau, nicht Copy-Paste. Alternativ: nur wenn Klaus eine
+    Angleichung will, sonst lassen wie es ist.
+  - **SB-KIMTool-Point** = bereits **voraus** (per-Slot-nodeId-Wechsler > Kanon). Richtung: **Point → Kanon**
+    rückportieren, kein Downgrade.
+  - **family-project** = Rendezvous-Ursprung, eigenes Muster — Ist-Zustand erst mit Klaus klären.
 
 **Phase 3 — A10 v0.2-Re-Sign-Welle der Endknoten (Klaus' Schlüssel-Lauf):**
 - Pro Knoten: Beschreibung final → im Browser neu signieren (echtes v0.2 mit `snippetVectors`,

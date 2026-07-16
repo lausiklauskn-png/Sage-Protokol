@@ -350,12 +350,22 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **und sogar voraus** — sein `assets/sbkim-siegel.js` (voll re-gesynct 2026-07-14, PR #104) hat alle 5 Bausteine
   UND einen **besseren** Wechsler: er löst je Slot die nodeId auf (`Slot · nodeId` im Dropdown) + volle aktive
   nodeId. **Kandidat-Rückportierung in den Kanon** (Point-Muster: per-Slot-nodeId statt nur aktiver) — Folge-Polish.
+  **Erledigt 2026-07-16 (diese Sitzung):** **Tomys-Hub** (PR #111) + **Mein-Rezeptbuch** (PR #330) auf den Kanon
+  gebracht — je alte Selbst-Injektion aus `sbkim-init.js` entfernt, `sbkim/siegel-inhalt.js` byte-1:1 (nur `WIZ`),
+  `__…ErzeugeSpore` erhalten (Rendezvous + bei Rezeptbuch die Inhalts-Vektor-Logik), `sicherheit.html` ergänzt/erhalten,
+  SW-Bump (Tomys v22→v23, Rezeptbuch mrz-v50→v51). Damit sind **alle 4 „klassischen" Endknoten** (Kim-Bell · Mixarium ·
+  Tomys · Rezeptbuch = geteiltes Modul-16-Siegel-Modal + externe `sbkim/*.js`) auf dem einheitlichen Kanon.
   **Offen (je eigener PR + Klaus-Sichttest):**
   - Sage-Page selbst auf die Datei umstellen (Inline-Wizard ersetzen) — Hub-Risiko, mit Klaus' Sage-Browser-Test.
-  - **Mein-Rezeptbuch · BookLedgerPro · family-project · Tomys-Hub** angleichen (Datei kopieren, `WIZ` anpassen,
-    alte/abweichende Injektion entfernen, SW-Bump, Drift-Guard) — je Repo eigener Ist-Zustand prüfen (manche haben
-    evtl. schon den Wechsler wie Point).
-  Skills: `status-leiste-siegel` + `saubere-netz-anmeldung`. _Kim-Bell + Point erledigt am: 2026-07-16_
+  - **BookLedgerPro · family-project · SB-KIMTool-Point — NICHT mechanisch angleichen (Klaus-Entscheid nötig).**
+    Befund 2026-07-16: diese drei haben eine **abweichende Architektur**, kein blinder Kanon-Swap:
+    · **BLP** hält SBKIM in einer 10 000+-Zeilen **standalone `sbkim/mycelknoten.html`**, die ALLE Module inline trägt
+      + eigene Andock-UI (kein geteiltes Siegel-Modal + keine externen `sbkim/*.js` wie die Endknoten) → Kanon-Übernahme
+      = tiefer Umbau, nicht Copy-Paste.
+    · **SB-KIMTool-Point** ist bereits **voraus** (per-Slot-nodeId-Wechsler, besser als Kanon) — hier eher Rückportierung
+      Point→Kanon, kein Downgrade.
+    · **family-project** = Ursprung des Rendezvous-Prototyps, eigenes Muster — Ist-Zustand erst mit Klaus klären.
+  Skills: `status-leiste-siegel` + `saubere-netz-anmeldung`. _Kim-Bell + Point erledigt am: 2026-07-16 · Tomys + Rezeptbuch: 2026-07-16_
 
 ## B) Verschlüsselung
 
