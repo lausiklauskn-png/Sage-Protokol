@@ -119,6 +119,35 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-17 · Klaus-Sichttest A7–A9 grün + Test-Seiten-Fix (Panel-Knöpfe) + zwei UX-Befunde
+
+**Rolle:** Sichttest-Begleitung + kleiner Fix (Freibrief).
+
+**A7–A9 (Klaus, Live am Tablet, Sage-Suchfeld):**
+- **A7 ✅ grün** — „wie schütze ich mich vor fremden Zugriffen" → nach Bedeutung sortierte Treffer mit
+  Prozent, Schutz-Module oben (Membran 88 % · Rate-Limit 84 % · Schlüssel-Safe 84 %) + echte **KNOTEN**-
+  Treffer (Mein-Tresor 82 % · Jasons-Tresor 81 % · BookLedgerPro 81 % · Kimboard/Kim-Bell/Kimseek). App-
+  Hybrid+Multi-Query läuft sichtbar.
+- **A8 + A9 abgehakt (Klaus' Zuruf)** — Umschalter „🧬 verwandt (genau)" + KI-Richter-Feld sind live vorhanden;
+  ehrlich vermerkt: der Umschalt-/KI-Effekt wurde im Bild nicht eigens umgelegt (Logik headless bewiesen,
+  `smoke_bau22e` 45/45). In PLAN + `checkliste_semantik_krypto.html` abgehakt (2026-07-17).
+
+**Test-Seiten-Fix (`tests/manual_check.html`, PR #665 gemergt):** Befund aus Klaus' Sichttest — Panel 24 + 25
+zeigten **keine Knöpfe**. Ursache: beide registrieren ihre Knöpfe via `SbkimUI.addButton` **bevor** `window.SbkimUI`
+definiert war → ReferenceError. `SbkimUI`-Helfer vor Panel 24 verschoben (einmalig). Latenter Panel-24-Bug
+(nie browser-getestet) mitbehoben. **Hinweis:** Panel-25-Knöpfe erscheinen erst nach echtem Cache-Bust/Deploy —
+Klaus' Screenshot 01:07 zeigte noch die alte, gecachte Seite. **Panel-25-Browser-Sichttest (B5) bleibt offen**,
+bis die frische Seite die Knöpfe zeigt (headless 36/36 bleibt der Beweis).
+
+**Zwei UX-Befunde (Fremdnutzer-Brille, als A19 im PLAN notiert):**
+1. **„🖨 Block kopieren" ohne sichtbare Rückmeldung** (Klaus: „ein Link ohne sichtbares Ergebnis") → kurze
+   Bestätigung „✓ kopiert" einbauen.
+2. **Treffer erst nach Netz-Anmeldung sichtbar** (Klaus: „erst nachdem ich alle im Netz angemeldet habe, konnte
+   ich was sehen") → prüfen, ob **App-Treffer** (lokaler Korpus) auch ohne Verbindung erscheinen. Beides berührt
+   Modul 22 + byte-Kopien (Drift-Guard) → eigener abgegrenzter Bau (A19).
+
+**Nächster Schritt:** A19-Fix (kleiner Modul-22-Bau) oder B-Strang (B3 Modul-20-Verteilung) — Klaus' Wahl.
+
 ## 2026-07-16 · B5 — E2E Grad B Pseudonymisierung gebaut (Modul 25 `SbkimPseudonym`)
 
 **Rolle:** Bau-Sitzung (Freibrief; Klaus wählte per AskUserQuestion „B5 zuerst", Sage-Page-Wizard-Umstellung A18-Rest bewusst später/inline).
