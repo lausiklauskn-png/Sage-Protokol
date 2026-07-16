@@ -20,11 +20,11 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-07-14 (26 Module)
+  title Modulstand 2026-07-16 (27 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 9
+  "🟦 Code-Stub" : 10
   "🟩 Fertig" : 11
 ```
 
@@ -118,6 +118,43 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 |---|---|---|---|
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
+
+## 2026-07-16 · B5 — E2E Grad B Pseudonymisierung gebaut (Modul 25 `SbkimPseudonym`)
+
+**Rolle:** Bau-Sitzung (Freibrief; Klaus wählte per AskUserQuestion „B5 zuerst", Sage-Page-Wizard-Umstellung A18-Rest bewusst später/inline).
+
+**Was getan:** B5 aus `docs/PLAN_SEMANTIK_KRYPTO.md` gebaut — der „empfohlene Sofortweg"
+für Vertraulichkeit (`docs/E2E-VERTRAULICHKEIT.md §1.1`) als neues **Modul 25
+`SbkimPseudonym`** (`src/modules/25_pseudonym.js`).
+- **Reiner Text-/Objekt-Transform, BUILD-FREI:** keine Krypto-Primitive, **KEIN
+  Spore-Feld, `protocolVersion` bleibt 0.1**, **kein Draht-Vertrag** → INTERFACES
+  unberührt (die Spec §1.1 ist die Vorgabe). Briefkasten bleibt lesbar/auditierbar,
+  Ed25519-Signatur prüfbar.
+- `pseudonymize(text, options)` / `pseudonymizeObject(obj, options)` ersetzen sensible
+  Werte durch **lesbare, stabile Token** (`[[KUNDE_1]]`, `[[IBAN_1]]`, `[[EMAIL_1]]`):
+  explizite Werte (Namen) + eingebaut EMAIL/IBAN (TEL opt-in) + `customPatterns`;
+  gleicher Wert → gleiches Token (stabil über `options.map`), bestehende Token nie
+  verschachtelt. `rehydrate`/`rehydrateObject` kehren um; `serializeVault`/`parseVault`
+  für den **separaten/menschlichen Anker-Tresor-Handover** (verlässt den öffentlichen
+  Kanal NIE). Anker-Tresor at-rest optional über Modul 20 `putSecret` (entkoppelt).
+- Konsequent **fail-soft** (kein Throw außer `InvalidPseudonymArgError`). **Kein PII im Code.**
+- Karte `docs/components/25_pseudonym.md`, Panel 25 in `tests/manual_check.html`,
+  E2E-Spec §1.1 mit Umsetzungs-Notiz, status.json + Pie (26→27 Module, Code-Stub 9→10) +
+  CLAUDE.md-Modultabelle nachgezogen.
+
+**Beweis:** Headless-Smoke `tests/smoke_bau25_pseudonym.mjs` **36/36 grün**
+(Round-trip Namen/EMAIL/IBAN, stabile/aufsteigende Token, Objekt-Transform mit Zahl-Erhalt,
+Vault-Round-trip, fail-soft, Invarianten `protocolVersion 0.1`). `node --check` grün.
+
+**Ehrliche Grenze:** Pseudonymisierung ≠ Verschlüsselung — Metadaten/Beträge leaken
+weiter → echte Zielform bleibt **Grad C = B6** (versiegelter Umschlag, Protokoll-Sprung).
+
+**Manual-Check:** Panel 25 in `tests/manual_check.html` **ungeprüft, wartet auf Klaus'
+Browser-Lauf** (headless ist grün; die Modul-Logik ist bewiesen, die Panel-Optik nicht).
+
+**Nächster sinnvoller Schritt:** siehe „Vorgeschlagene nächste Schritte" im Chat —
+schnelle Tablet-Haken (A7–A9, B1), die A10-v0.2-Welle (Klaus' Schlüssel), oder A3-Rollout.
+B3 (Modul-20-Verteilung, BLP zuerst) wäre der natürliche B-Strang-Anschluss.
 
 ## 2026-07-16 · A18 Siegel-Wizard — per-Slot-nodeId zurückportiert + family-project + NETZWEIT ABGESCHLOSSEN
 

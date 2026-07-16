@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.2",
   "schemaVersion": "1",
-  "lastUpdated": "2026-07-14",
+  "lastUpdated": "2026-07-16",
   "branch": "main",
   "endknoten": [
     {
@@ -413,6 +413,14 @@
       "siegel": "Code-Stub 2026-07-01 (Strang B1, Brief 2026-07-01). Headless-Smoke tests/smoke_bau24_ocr_eingabe.mjs 41/41 grün. Browser-Sichttest (Panel 24 + echter Schlüssel) wartet auf Klaus.",
       "abhaengig": [],
       "kurz": "Input-agnostische Bild-/Handschrift-→-Text-Schicht (Geschwister von Modul 21). Drei steckbare Anbieter: mistral (Mistral OCR, EU, FAVORIT) · google (Cloud Vision EU-Endpunkt) · browser (Shape Detection, experimentell). EU-Politik frei/bindend per Knoten; konsequent fail-soft (kein Schlüssel/Bild/Netz → deutscher Hinweis, kein Throw außer InvalidEuPolicyError); BYOK, kein Schlüssel im Code, kein PII. Liefert nur Text — Suche (03/04) unberührt. Surface init/getProviders/availableProviders/pickProvider/isFileSupported/recognize/recognizeBrowser/ocrErrorHint."
+    },
+    {
+      "id": "25",
+      "name": "Pseudonymisierung (E2E Grad B)",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-07-16 (B5 aus docs/PLAN_SEMANTIK_KRYPTO.md). Headless-Smoke tests/smoke_bau25_pseudonym.mjs 36/36 grün. Browser-Sichttest (Panel 25) wartet auf Klaus.",
+      "abhaengig": [],
+      "kurz": "Der empfohlene Sofortweg für Vertraulichkeit (Grad B, docs/E2E-VERTRAULICHKEIT.md §1.1): sensible Werte in einer Nutzlast werden vor dem Versand durch lesbare Platzhalter-Token ersetzt ([[KUNDE_1]], [[IBAN_1]], [[EMAIL_1]]); der Anker-Tresor (Token → Klartext) bleibt getrennt/menschlich. Reiner Text-/Objekt-Transform: BUILD-FREI, keine Krypto-Primitive, KEIN Spore-Feld, protocolVersion bleibt 0.1 — Briefkasten bleibt lesbar/auditierbar, Signatur prüfbar. Ehrliche Grenze: Pseudonymisierung ≠ Verschlüsselung (Metadaten leaken weiter → Grad C = B6). Erkenner: explizite Werte (Namen) + eingebaut EMAIL/IBAN (TEL opt-in) + customPatterns; gleicher Wert → gleiches Token, bestehende Token nie verschachtelt; fail-soft (kein Throw außer InvalidPseudonymArgError). Surface pseudonymize/rehydrate/pseudonymizeObject/rehydrateObject/getBuiltinPatterns/makeToken/parseToken/isToken/serializeVault/parseVault. Kein PII im Code."
     }
   ],
   "schutzBacklog": [
