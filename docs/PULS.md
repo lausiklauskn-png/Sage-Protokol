@@ -119,7 +119,7 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
-## 2026-07-17 · B3 gestartet — Modul-20-Safe netzweit verteilt (Rezeptbuch + Mixarium)
+## 2026-07-17 · B3 ERLEDIGT — Modul-20-Safe netzweit verteilt (9 Knoten + Sage-Page)
 
 **Rolle:** Bausitzung (Semantik/Krypto-Checkliste, Strang B). **Freibrief gilt** (CLAUDE.md § Freibrief).
 
@@ -137,10 +137,19 @@ Init-Kette + SW-Cache-Bump + echter Headless-Smoke (WebCrypto: putSecret/getSecr
 falsches PW → null, kein Klartext im Blob, frisches Salt/IV, Heal-Beweis).
 
 **Getan (je eigener PR, selbst gemergt nach Headless grün — Freibrief):**
-- **Rezeptbuch (PR #332):** `sbkim/20` → Kanon, `SbkimSafe.init()` in `sbkim-init.js`, `app-sw.js`
-  `mrz-v52→v53`, `tests/smoke_b3_safe_secret.mjs` **11/11**. QC unangetastet → kein `build.py`.
-- **Mixarium (PR #145):** dieselbe Heilung, `app-sw.js` `mixarium-sw-v71→v72`, Smoke **11/11**;
-  md5 `index.html==QC` identisch (nur externe `sbkim/*` + `app-sw.js` geändert → Spiegel-Regel unberührt).
+**Geheilt (stale Modul 20 → Kanon), je Smoke 11/11:**
+- **Rezeptbuch #332** (`sbkim/20`→Kanon, `SbkimSafe.init()` in `sbkim-init.js`, `app-sw.js` mrz-v52→v53;
+  QC unangetastet → kein `build.py`) · **Mixarium #145** (`app-sw.js` mixarium-sw-v71→v72; md5 index==QC identisch)
+  · **family-project #88** (sw family-projekt-v50→v51; init lag schon vor; smoke_all 94/100 = pre-existing) ·
+  **Tomys-Hub #113** (sw tomy-hub-v24→v25) · **Kimboard #30** (`modules/20`, sw kimboard-v22→v23) ·
+  **Kimseek #34** (sw kimseek-v26→v27) · **SB-KIMTool-Point #129** (`web/tools/sbkim-safe.js`; kein SW-Bump —
+  Hub ohne SW; npm test 114/2 = 2 pre-existing).
+
+**Ergänzt (Modul 20 fehlte GANZ — additiv + fail-soft, Spiegel + eigener Daten-Tresor unberührt):**
+- **Mein-Tresor #65** (`sbkim/20` neu + Script-Tag; npm test 53/53) · **Jasons-Tresor #123** (dito; npm test 59/59).
+
+**Sage-Page selbst:** lädt den Kanon-Modul 20 (`src/modules/20…`, immer aktuell) + KI-Richter-UI schon →
+**keine Änderung nötig** (init an der Hub-Seite wäre Hub-Risiko, für den Geheimnis-Pfad nicht nötig).
 
 **Grenzen/bewusst NICHT:** Kern 01/02 nur genutzt; `PROVIDER_MIN_MATCH`/0.80-Riegel + `DB_VERSION` +
 `PROTOCOL_VERSION` unberührt; kein PII, kein Klartext-Schlüssel. Der **Haupt-App-KI-Schlüssel**
@@ -148,9 +157,17 @@ falsches PW → null, kein Klartext im Blob, frisches Salt/IV, Heal-Beweis).
 (persistiert schon über Hard-Reload) — dessen optionale Verschlüsselung ist ein **separater, größerer
 Härtungs-Schritt** (App liest ihn an vielen Stellen; bräuchte Passwort pro Sitzung), Klaus-Entscheid offen.
 
-**Offen (B3 bleibt `[ ]`):** übrige Knoten (Sage-Page selbst, family-project, Tomys-Hub, Kimboard,
-Kimseek, Mein-/Jasons-Tresor, SB-KIMTool-Point) — gleiche kleine Heilung, sofern dort Modul 20 stale
-ist. **BLP separat** mit eigenem Tresor. **Browser-Sichttest** (Rezeptbuch + Mixarium) wartet auf Klaus.
+**Kern-Befund (ehrlich):** die verschlüsselte KI-Richter-Schlüssel-Ablage (🔒/🔓) lag über das
+byte-Kanon-`23_rendezvous_ui.js` in fast allen Knoten **schon** verdrahtet; das Safe-Modul (20) war nur
+je eine Version alt (fehlende B1-`NoSporeError`-Härtung) ODER fehlte bei den Tresoren ganz. B3 = auf
+Kanon bringen/ergänzen, nicht neu bauen.
+
+**Offen (Folgepunkte, kein Blocker):**
+- **Browser-Sichttest** (Live-🔒/🔓 mit echtem KI-Schlüssel) je Knoten wartet auf Klaus.
+- **BLP separat** (app-eigener Tresor `core/vault.js`/`shamir.js` — kein Modul-20-Ziel).
+- **Haupt-App-KI-Schlüssel** (Rezeptbuch `claudeKey9m`, Mixarium `mxkey9m`) liegt weiter im
+  Klartext-`localStorage` (persistiert schon) — optionale Verschlüsselung = eigener, größerer
+  Härtungs-Schritt (App liest ihn an vielen Stellen; bräuchte Passwort pro Sitzung), Klaus-Entscheid offen.
 
 ## 2026-07-17 · B1-Sichttest fing echten Safe-Bug — reproduziert + behoben (Modul 20 + echter Smoke)
 

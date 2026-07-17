@@ -427,18 +427,26 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   eine fehlende Spore (regeneriert sie aus Identität+Meta). Klaus' Richtungsentscheid vor einem Kern-Eingriff. _entschieden am: _____
 - [ ] **B2 — Modul 20 Feinpunkte** · `Bau` `Entscheid` · ⏱ ~1 Sitzung
   Ed25519 „extractable"-Abwägung + N/k-Standardwerte im UI. _erledigt am: _____
-- [ ] **B3 — Modul 20 netzweite Verteilung** · `Bau` (braucht B1) · ⏱ ~1–2 Sitzungen · **in Arbeit seit 2026-07-17**
+- [x] **B3 — Modul 20 netzweite Verteilung** · `Bau` (braucht B1) · **erledigt 2026-07-17 (9 Knoten + Sage-Page; BLP separat)**
   **Klaus-Entscheid 2026-07-17 (statt „BLP zuerst"):** Kanon-Stack-Endknoten zuerst, BLP separat mit
   SEINEM eigenen Tresor (`core/vault.js`/`core/shamir.js`) — Sages Modul 20 hängt an Modul 01/02, die
   BLPs minimale SBKIM-Fassung nicht trägt (byte-1:1 unmöglich, redundant zu BLPs Krypto).
   **Befund beim Verteilen:** die verschlüsselte BYOK-KI-Schlüssel-Ablage (🔒 im Tresor merken / 🔓
-  entsperren) lag in den Endknoten über `23_rendezvous_ui.js` (byte-1:1 Kanon) **schon**; nur das
-  Safe-Modul (20) war je eine Version alt (fehlende B1-`NoSporeError`-Härtung). Verteilung = Modul 20
-  auf Kanon heilen + `SbkimSafe.init()` in die Kette + SW-Bump + echter Headless-Smoke (WebCrypto,
-  putSecret/getSecret Round-trip).
-  **✅ Rezeptbuch (PR #332) + ✅ Mixarium (PR #145)** — je 11/11 Smoke grün, gemergt. Browser-Sichttest wartet auf Klaus.
-  **Offen:** family-project · Tomys-Hub · Kimboard · Kimseek · Mein-/Jasons-Tresor · SB-KIMTool-Point · Sage-Page selbst;
-  **BLP separat** (app-eigener Tresor). _Rezeptbuch+Mixarium erledigt am: 2026-07-17 · Rest offen_
+  entsperren) lag in den Knoten über `23_rendezvous_ui.js` (byte-1:1 Kanon) **schon**; das Safe-Modul (20)
+  war je eine Version alt (fehlende B1-`NoSporeError`-Härtung) ODER fehlte ganz (Tresore). Verteilung =
+  Modul 20 auf Kanon heilen bzw. ergänzen (+ ggf. `SbkimSafe.init()`) + SW-Bump wo nötig + echter
+  Headless-Smoke (WebCrypto, putSecret/getSecret Round-trip, falsches PW→null, kein Klartext, Heal-Beweis).
+  Je 11/11 Smoke grün, je eigener PR selbst gemergt (Freibrief).
+  - **Geheilt (stale 20):** Rezeptbuch #332 · Mixarium #145 · family-project #88 · Tomys-Hub #113 ·
+    Kimboard #30 · Kimseek #34 · SB-KIMTool-Point #129 (`web/tools/sbkim-safe.js`).
+  - **Ergänzt (20 fehlte ganz, additiv + fail-soft, Spiegel/Daten-Tresor unberührt):** Mein-Tresor #65 ·
+    Jasons-Tresor #123 (je `npm test` 53/53 bzw. 59/59 grün).
+  - **Sage-Page selbst:** lädt den Kanon-Modul 20 (`src/modules/20…`, immer aktuell) + KI-Richter-UI schon
+    → **keine Änderung nötig** (init an der Hub-Seite wäre Hub-Risiko, für den Geheimnis-Pfad nicht nötig).
+  - **BLP separat** (app-eigener Tresor, kein Modul-20-Ziel).
+  **Browser-Sichttest** (Live-🔒/🔓 mit echtem KI-Schlüssel) wartet auf Klaus. **Offener Folgepunkt:**
+  Haupt-App-KI-Schlüssel (Rezeptbuch `claudeKey9m`, Mixarium `mxkey9m`) liegt weiter im Klartext-`localStorage`
+  — optionale Verschlüsselung = eigener, größerer Härtungs-Schritt (Klaus-Entscheid offen). _erledigt am: 2026-07-17_
 - [ ] **B4 — Widget-Tresor „Increment 2 B" (sicherheits-sensibel, eigene Sitzung)** · `Bau` · ⏱ ~1–2 Sitzungen
   Eigener Tresor (Shamir 2/3 + Passwort + 🔐), automatischer KI-Aufruf mit Websuche, App-Schlüssel-Durchreichung.
   Heute KI-Schlüssel bewusst nur im RAM. _erledigt am: _____
