@@ -418,7 +418,7 @@
       "id": "25",
       "name": "Pseudonymisierung (E2E Grad B)",
       "score": "stub",
-      "siegel": "Code-Stub 2026-07-16 (B5 aus docs/PLAN_SEMANTIK_KRYPTO.md). Headless-Smoke tests/smoke_bau25_pseudonym.mjs 36/36 grün. Browser-Sichttest (Panel 25) wartet auf Klaus.",
+      "siegel": "Code-Stub 2026-07-16 (B5 aus docs/PLAN_SEMANTIK_KRYPTO.md). Headless-Smoke tests/smoke_bau25_pseudonym.mjs 36/36 grün. Browser-Sichttest Panel 25 GRÜN (Klaus 2026-07-17): Round-trip live korrekt, Betrag bleibt, rehydrate == Original.",
       "abhaengig": [],
       "kurz": "Der empfohlene Sofortweg für Vertraulichkeit (Grad B, docs/E2E-VERTRAULICHKEIT.md §1.1): sensible Werte in einer Nutzlast werden vor dem Versand durch lesbare Platzhalter-Token ersetzt ([[KUNDE_1]], [[IBAN_1]], [[EMAIL_1]]); der Anker-Tresor (Token → Klartext) bleibt getrennt/menschlich. Reiner Text-/Objekt-Transform: BUILD-FREI, keine Krypto-Primitive, KEIN Spore-Feld, protocolVersion bleibt 0.1 — Briefkasten bleibt lesbar/auditierbar, Signatur prüfbar. Ehrliche Grenze: Pseudonymisierung ≠ Verschlüsselung (Metadaten leaken weiter → Grad C = B6). Erkenner: explizite Werte (Namen) + eingebaut EMAIL/IBAN (TEL opt-in) + customPatterns; gleicher Wert → gleiches Token, bestehende Token nie verschachtelt; fail-soft (kein Throw außer InvalidPseudonymArgError). Surface pseudonymize/rehydrate/pseudonymizeObject/rehydrateObject/getBuiltinPatterns/makeToken/parseToken/isToken/serializeVault/parseVault. Kein PII im Code."
     }
