@@ -147,7 +147,9 @@ reale Krypto+Storage-Runde lief nie.
 toleriert sie fehlend) liegt in **Modul 02 (Kern, TABU „nur nutzen")** — Richtungsentscheid vor einem Kern-Eingriff.
 
 **Beweis:** neuer Smoke 14/14 · Mock-Smoke 19/19 (Guard übersprungen, da Mock kein `getOwnSpore`) · putSecret 18/18 ·
-`node --check` grün. **Offen:** Klaus' Re-Sichttest Panel 20 — vorher `„Safe löschen (Reset)"`, dann 6 Knöpfe erneut.
+`node --check` grün. **✅ Klaus-Re-Sichttest Panel 20 GRÜN (2026-07-17):** Reset → Safe anlegen (3 Anteile,
+`entsperrt:true`) → „Entsperren (richtiges Passwort)" = **entsperrt** (Statusfeld grün). **B1 damit erledigt.**
+Nächster Schritt: **B3** (Modul-20-Safe netzweit verteilen, BookLedgerPro zuerst).
 
 ## 2026-07-17 · A3 abgeschlossen — netzweiter Rollout der Identitäts-Härtung verifiziert (kein Bau nötig)
 
