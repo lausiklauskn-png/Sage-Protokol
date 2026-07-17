@@ -119,6 +119,44 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-17 · B7 gebaut — Pinnwand E2E-Direktnachricht (ECDH + TOFU + Sicherheitsnummer)
+
+**Rolle:** Bausitzung (Semantik/Krypto-Strang B). **Freibrief gilt.**
+
+**Was & warum:** Die Pinnwand hatte bisher nur Passwort-Kanäle (`sbkimenc1:`, geteiltes Brett-Passwort).
+Klaus wollte **echte Ende-zu-Ende-Direktnachricht** an *einen* bekannten Empfänger — wie WhatsApp/Signal,
+wo man die Gegenseite einmal freigibt. Umgesetzt als **Grad-C-E2E** auf den **schon vorhandenen
+Nostr-Schlüsseln** (kein neuer Schlüssel-Typ): **ECDH auf secp256k1** → HKDF-SHA256 → **AES-GCM-256**.
+
+**Klaus-Entscheid (nach MITM-Aufklärung):** server-los kann man den **Erstkontakt-MITM nicht technisch
+verhindern** (kein Server, der Schlüssel beglaubigt) → **TOFU** (Trust-On-First-Use, wie SSH/Signal):
+**Ein-Klick-Freigabe** eines Kontakts + **Änderungs-Warnung**, falls derselbe Name später mit anderem
+Schlüssel auftaucht + **optionale Sicherheitsnummer** (SAS, aus SHA-256 des sortierten Schlüssel-Paars)
+zum Vorlesen über einen zweiten Kanal.
+
+**Gebaut (rein additiv, Kern-Module unberührt):**
+- **`pinnwand/modules/dm_crypto.js`** (NEU) — Krypto-Kern über die öffentliche Fläche von
+  `noble-secp256k1.js`: `dmEncrypt`/`dmDecrypt` (Umschlag `sbkimdm1:iv:ct`, ECDH symmetrisch — Sender
+  liest die eigene Nachricht mit Empfänger-Pub), `isDm` (trennt sauber vom Passwort-Weg `sbkimenc1:`),
+  `safetyNumber` (symmetrisch, verschieden je Paar → MITM sichtbar), `newIdentity`/`pubFromPriv`.
+  Konsequent fail-soft (falscher/fehlender Schlüssel, Manipulation → `null`, nie Throw).
+- **`pinnwand/index.html`** — Empfänger-Auswahl (`#dm-to`), 👤-Kontakte-Overlay (Freigabe + Namens-
+  Kollisions-Warnung + Sicherheitsnummer), „wer"-Klick zum Anheften, 🔒-Badge an entschlüsselten DMs,
+  `buildEvent`-Zweig (verschlüsselt für `dmRecipient`, Tags `p`+`enc:dm1`), Dispatch-Zweig (`isDm` →
+  `dmDecrypt` gegen den Gegen-Pubkey). Kontakte in `localStorage` `sbkim_pinnwand_contacts` (nur
+  Name+Pubkey, **kein PII, kein Klartext, kein privater Schlüssel**).
+- **`pinnwand/sw.js`** — `CACHE_VERSION` v16→v17 + `dm_crypto.js` in die APP_SHELL (Cache-Bust).
+
+**Beweis (headless, echtes WebCrypto):** `tests/smoke_pinnwand_dm.mjs` **13/13 grün** — Round-Trip A↔B,
+Sender-Selbstlesung, Fremder C → null, falscher Gegen-Pub → null, Manipulation → null, `isDm`-Trennung,
+Sicherheitsnummer symmetrisch + paar-verschieden. Pinnwand-Drift-Smoke **60/60** grün (Kern-Module
+byte-1:1 unberührt). **TABU gewahrt:** `PROVIDER_MIN_MATCH`/0.80-Riegel, DB_VERSION, PROTOCOL_VERSION
+unberührt (reine Transport-Krypto, kein Spore-Feld). **Browser-Sichttest wartet auf Klaus** (zwei Geräte,
+Kontakt gegenseitig freigeben, DM schicken, 🔒 + Sicherheitsnummer prüfen).
+
+_Nächster Punkt der Liste: B4 (Widget-Tresor, sicherheits-sensibel, eigene Sitzung) → B6 (Grad C sealed
+box / X25519-encryptionPublicKey in der Spore, Protokoll 0.1→0.2, später)._
+
 ## 2026-07-17 · B1b + B2 erledigt (Klaus-Entscheide: Weg A · „so lassen")
 
 **Rolle:** Bausitzung (Semantik/Krypto-Strang B). **Freibrief gilt.**

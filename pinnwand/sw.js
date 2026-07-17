@@ -16,7 +16,7 @@
  */
 "use strict";
 
-var CACHE_VERSION = "sbkim-pinnwand-v16";
+var CACHE_VERSION = "sbkim-pinnwand-v17";
 
 var APP_SHELL = [
   "./",
@@ -27,6 +27,7 @@ var APP_SHELL = [
   "./icon-512.png",
   "./modules/noble-secp256k1.js",
   "./modules/03_embedding.js",
+  "./modules/dm_crypto.js",
 ];
 
 self.addEventListener("install", function (event) {

@@ -480,8 +480,22 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
 - [ ] **B6 — E2E Grad C: versiegelter Umschlag** · `Entscheid` `Bau` später · ⏱ ~2–3 Sitzungen
   Sealed box (X25519 → ECDH → HKDF → AES-GCM-256). Braucht Protokoll-Sprung 0.1 → 0.2, eigene Spec-Sitzung,
   laufenden BLP-Knoten. _erledigt am: _____
-- [ ] **B7 — Pinnwand-Verschlüsselung: Richtungsentscheid** · `Entscheid` vor Bau · ⏱ ~1 Sitzung
-  Passwort-Weg gebaut. Offen: Public-Key/ECDH + **MITM beim Erstkontakt**. Erst Klaus' Wegwahl, dann bauen. _entschieden am: _____
+- [x] **B7 — Pinnwand-Verschlüsselung: E2E-Direktnachricht (ECDH + TOFU)** · `Entscheid`+`Bau` · **erledigt 2026-07-17**
+  Passwort-Weg (Brett, symmetrisch) war gebaut. Offen war Public-Key/ECDH + **MITM beim Erstkontakt**.
+  **Klaus-Entscheid:** dasselbe E2E wie Signal/WhatsApp, aber server-los — **Ein-Klick-Freigabe (TOFU)** +
+  **Änderungs-Warnung** + **optionale Sicherheitsnummer**; Pinnwand-lokal; Passwort-Weg bleibt daneben.
+  **Ehrliche Kern-Wahrheit dokumentiert:** MITM beim Erstkontakt lässt sich server-los nur über einen
+  zweiten Kanal ausschließen — hier gelöst durch „du kennst die Gegenseite" (TOFU) + Sicherheitsnummer-Vergleich.
+  **Gebaut auf den VORHANDENEN Nostr-Schlüsseln** (kein Parallel-Schlüssel): neues Modul
+  `pinnwand/modules/dm_crypto.js` — ECDH (secp256k1 `getSharedSecret`, x-only via 02-Lift, NIP-04/44-Muster)
+  → HKDF-SHA256 → AES-GCM-256; `dmEncrypt`/`dmDecrypt` (Umschlag `sbkimdm1:`), `safetyNumber` (SAS, symmetrisch),
+  `isDm`. `index.html`: Empfänger-Auswahl „🔒 Privat an", Kontakte-Overlay (TOFU + Sicherheitsnummer + Änderungs-
+  Warnung bei Namens-Kollision), Absender-Namen anklickbar = merken, `buildEvent` DM-Zweig (`p`-Tag = Empfänger,
+  `enc:dm1`), `dispatch` entschlüsselt eingehende DMs (Sender/Empfänger-Fall), 🔒-Badge. SW `sbkim-pinnwand-v16→v17`
+  + Modul in die Schale. Smoke `tests/smoke_pinnwand_dm.mjs` **13/13** (Round-trip, Fremder liest nicht, Manipulation→
+  null, SAS symmetrisch + MITM-sichtbar); Pinnwand-Drift-Smoke 60/60 (regress-frei). **REINE Anzeige/Transport —
+  Passwort-Weg + Richter + Suche unberührt.** **Voll ins Protokoll (X25519-`encryptionPublicKey` ins signierte Spore,
+  0.1→0.2) = B6** als eigener größerer Schritt später. **Browser-Sichttest wartet auf Klaus.** _entschieden + gebaut am: 2026-07-17_
 
 ---
 
