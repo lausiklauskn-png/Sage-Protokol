@@ -37,7 +37,7 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **A2-Härtung II** (Antworter vorwärmen beim „Antworten: an" + Frage-Timeout 60 s) + **saubere Sporen**
   (der ganze `saubere-netz-anmeldung`-Rollout) + **Inhalt-zuerst-Reihenfolge** (siehe Browser-Lehre 12).
   _getestet am: 2026-07-10_
-- [~] **A3 — Medium härten** · `Bau` · ⏱ ~1–2 Sitzungen
+- [x] **A3 — Medium härten** · `Bau` · **erledigt 2026-07-17 (Rollout netzweit verifiziert)**
   Nostr-Brett ist bewiesen, aber ungehärtet: Spam-Schutz + Haltbarkeitsgarantie der Zettel.
   **Bestandsaufnahme 2026-07-11:** Spam-Schutz (`underRateLimit`, 6 Antworten/min) ist
   bereits **live verdrahtet** in `enableAnswering().onQuery` (Modul 23 Z. ~649); Karten-
@@ -82,7 +82,17 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Topf (Kollision aufgelöst, Identität behalten); `ensureIdentity` migriert vor Neu-Erzeugung.
   Kern 02/05/05b unangetastet, DB_VERSION/PROTOCOL_VERSION unberührt. Smokes
   `smoke_pflege_01_repoint_migrate.mjs` **21/21** + `smoke_bau23d_migrate.mjs` **22/22**, regress-frei,
-  bundle-drift 21/21. _voller Fix (headless) am: 2026-07-11 · netzweiter Rollout + Browser-Sichttest offen_
+  bundle-drift 21/21. _voller Fix (headless) am: 2026-07-11._
+  **✅ ABGESCHLOSSEN 2026-07-17 — netzweiter Rollout verifiziert (gegen `origin/main` geprüft):** der volle
+  Fix (Modul 01 `migrateIdentityFrom` **+** Modul 23 ruft ihn in `repairAndReconnect`/`ensureIdentity`, mit
+  `hasMigrate`-Fähigkeitsprüfung) ist auf `main` deployt bei **allen 13 modularen Knoten** — Mein-Mixarium ·
+  Mein-Rezeptbuch · Tomys-Hub · family-project · Kim-Bell (`modules/sbkim-*.js`) · Kimboard · Kimseek ·
+  SB-KIMTool-Point (`web/tools/sbkim-*.js`) · Mein-Tresor · Jasons-Tresor · Company-Brain · Privat-Brain
+  (+ Sage-Kanon). **BookLedgerPro** trägt eine **eigene, selbst-isolierte** SBKIM-Fassung (`src/sbkim/*`,
+  `DB_SUFFIX='bookledgerpro'`) — nutzt den geteilten `sbkim`-Topf NIE, Migration daher N/A (kein Loch).
+  **Ziel im Feld bestätigt:** Klaus' Mycel-Analyse 2026-07-16 (Nacht) zeigt pro Knoten eine **eigene, stabile,
+  verschiedene nodeId** (Sage `nysOZE3V…` · Jasons `fnzoLJMX…` · Mein-Tresor `wS7oxsky…` · Tomys/Kim-Bell live).
+  Ein dedizierter A3-Browser-Sichttest ist damit **praktisch erbracht**; formal optional. _erledigt am: 2026-07-17._
 - [x] **A4 — Constraint-/Ausschluss-Filter + KI-Richter B3** · `Bau` · ⏱ ~1 Sitzung
   **Teil 1 (Ausschluss-/Negations-Filter) gebaut 2026-07-10 (Bau 04.I).** Klaus' Live-Befund:
   „alkoholfrei" / „ohne Erdbeeren" (Allergie) sind **Constraints**, keine Ähnlichkeit — der
