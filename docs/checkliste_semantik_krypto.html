@@ -170,11 +170,11 @@
 
 <h2>B) Verschlüsselung</h2>
 
-<div class="item"><input type="checkbox" class="cb" data-k="B1"><div class="body">
-  <div><span class="code">B1</span><span class="time" style="background:#fde68a">⚠ Bug gefunden + behoben 17.07 · Re-Test offen</span> <span class="t">Modul 20 Schlüssel-Safe — Sichttest der Modal-UI</span></div>
-  <div class="d"><b>Dein Sichttest hat einen echten Bug gefangen</b> (genau dafür der Browser-Lauf): „Entsperren (richtiges Passwort)" gab <code>false</code>. Ursache (reproduziert): die Identität hatte keine Spore — <code>importBackup</code> verlangt eine, <code>exportBackup</code> erlaubt sie fehlend. <b>Behoben:</b> (1) <code>createVault</code> wirft jetzt bei fehlender Spore einen klaren Fehler (kein stiller Fehlschlag), (2) Test-Brücke erzeugt eine Spore wie eine echte App, (3) neuer echter Smoke <code>smoke_bau20_safe_real.mjs</code> 14/14 (fake-indexeddb + reale Krypto). <b>Re-Test:</b> Panel 20 → erst „Safe löschen (Reset)", dann die 6 Knöpfe erneut — jetzt sollten alle grün werden.</div>
+<div class="item"><input type="checkbox" class="cb" data-k="B1" checked><div class="body">
+  <div><span class="code">B1</span><span class="time">✅ grün 2026-07-17 (nach Bug-Fix)</span> <span class="t">Modul 20 Schlüssel-Safe — Sichttest der Modal-UI</span></div>
+  <div class="d"><b>Dein Sichttest hat einen echten Bug gefangen</b> (genau dafür der Browser-Lauf): „Entsperren (richtiges Passwort)" gab <code>false</code>. Ursache (reproduziert): die Identität hatte keine Spore — <code>importBackup</code> verlangt eine, <code>exportBackup</code> erlaubt sie fehlend. <b>Behoben:</b> (1) <code>createVault</code> wirft jetzt bei fehlender Spore einen klaren Fehler, (2) Test-Brücke erzeugt eine Spore wie eine echte App, (3) neuer echter Smoke <code>smoke_bau20_safe_real.mjs</code> 14/14 (fake-indexeddb + reale Krypto). <b>✅ Re-Sichttest grün (17.07):</b> Reset → Safe anlegen (3 Anteile) → Entsperren = „entsperrt". Kern-Asymmetrie als B1b notiert.</div>
   <div class="meta"><span class="tag">Test</span></div>
-  <div class="lines">getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+  <div class="lines">getestet am: 2026-07-17 (Klaus)</div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="B1b"><div class="body">
@@ -227,10 +227,10 @@
 </div></div>
 
 <h2>Empfohlene Reihenfolge (aktualisiert 17.07.)</h2>
-<p class="sub">Erledigt: A1 · A2 · A3 · A4 · A5 · A6 · A7 · A8 · A9 · A10 (Code+Werkzeug) · A11 · A12 · A13 · A16 · A17 · A18 · A19 · B5. <b>Semantik-Strang A im Kern fertig.</b> Offen — sinnvolle Reihenfolge:</p>
+<p class="sub">Erledigt: A1 · A2 · A3 · A4 · A5 · A6 · A7 · A8 · A9 · A10 (Code+Werkzeug) · A11 · A12 · A13 · A16 · A17 · A18 · A19 · B1 · B5. <b>Semantik-Strang A im Kern fertig; Safe (B1) grün.</b> Offen — sinnvolle Reihenfolge:</p>
 <ol class="prio">
-  <li><span class="n">1</span><b>B1</b> <span class="time">⏱ ~20–30 Min (Tablet)</span> — Modul-20-Safe-Sichttest (einrichten / entsperren / Wiederherstellung). <i>Wartet nur auf dich; nebenbei die neue „✓ kopiert"-Rückmeldung (A19) mitprüfen. Schaltet B3 frei.</i></li>
-  <li><span class="n">2</span><b>B3 (braucht B1) → B2</b> <span class="time">⏱ ~2–3 Sitzungen</span> — Safe netzweit verteilen (BookLedgerPro zuerst), dann Feinpunkte/Entscheid.</li>
+  <li><span class="n">1</span><b>B3 → B2</b> <span class="time">⏱ ~2–3 Sitzungen</span> — Modul-20-Safe netzweit verteilen (BookLedgerPro zuerst), dann Feinpunkte (B2). <i>B1 ist grün → B3 ist frei.</i></li>
+  <li><span class="n">2</span><b>B1b</b> <span class="time">⏱ ~1 Sitzung (Entscheid)</span> — Modul-02 Backup-Asymmetrie sauber lösen (Kern-Entscheid): export verlangt Spore ODER import toleriert sie fehlend.</li>
   <li><span class="n">3</span><b>A10-Welle</b> <span class="time">⏱ dein Schlüssel-Lauf</span> — Endknoten-Sporen auf v0.2 neu signieren (Mixarium → Rezeptbuch → BLP). <i>Läuft nur mit deinem privaten Schlüssel im Browser.</i></li>
   <li><span class="n">4</span><b>B7-Entscheid → B4 / B6</b> <span class="time">⏱ Entscheid + eigene Sitzungen</span> — Pinnwand-Krypto-Weg wählen; Widget-Tresor (B4) und Grad C / sealed box (B6) als eigene, sicherheits-sensible Sitzungen.</li>
 </ol>

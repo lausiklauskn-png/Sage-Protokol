@@ -408,7 +408,7 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
 
 ## B) Verschlüsselung
 
-- [ ] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · **Bug gefunden + behoben 2026-07-17, Klaus' Re-Sichttest ausstehend**
+- [x] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · **✅ grün 2026-07-17 (nach Bug-Fix)**
   Real gebaut (AES-GCM-256, PBKDF2 600k, Shamir 2/3, headless 19/19). Einrichten/entsperren/Recovery prüfen.
   **✅ Klaus-Sichttest 2026-07-17 hat einen ECHTEN Bug gefangen** (genau dafür der Browser-Lauf): `createVault`
   gelang, aber `unlock` mit KORREKTEM Passwort gab `false`. **Ursache** (reproduziert mit fake-indexeddb):
@@ -417,9 +417,9 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   (echte Apps schon, via Andock-Wizard). **Fix (diese Sitzung):** (1) `createVault` wirft jetzt bei fehlender Spore
   einen **klaren `NoSporeError`** (Fremdnutzer-Schutz — kein stiller Fehlschlag mehr); (2) Test-Brücke „Setup" erzeugt
   eine Spore wie eine echte App; (3) **neuer echter Smoke** `tests/smoke_bau20_safe_real.mjs` **14/14** (fake-indexeddb
-  + reale Module 01/02/20 — schließt den Mock-blinden-Fleck, der den Bug durchließ). **Offen:** Klaus' Re-Sichttest
-  von Panel 20 (alle 6 Knöpfe grün) — vorher `„Safe löschen (Reset)"` drücken (der alte spore-lose Safe muss weg).
-  _getestet am: _____ (Re-Lauf ausstehend)_
+  + reale Module 01/02/20 — schließt den Mock-blinden-Fleck, der den Bug durchließ).
+  **✅ Re-Sichttest GRÜN (Klaus 2026-07-17):** nach „Safe löschen (Reset)" → „Safe anlegen" (3 Anteile, `entsperrt:true`)
+  → „Entsperren (richtiges Passwort)" = **entsperrt** (Statusfeld grün). Der Bug ist live behoben. _getestet am: 2026-07-17._
 - [ ] **B1b — (Kern-Entscheid Klaus) Modul-02 Backup-Asymmetrie sauber lösen** · `Entscheid` · ⏱ ~1 Sitzung · **neu 2026-07-17**
   `exportBackup` erlaubt eine Identität ohne Spore, `importBackup` verlangt sie — inkonsistent (ein Backup, das man
   nicht zurückspielen kann). Modul 20 fängt es jetzt ab (Guard), aber die **saubere** Lösung liegt in **Modul 02**
