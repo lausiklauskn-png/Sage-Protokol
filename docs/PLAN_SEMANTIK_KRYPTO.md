@@ -186,15 +186,18 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
 - [x] **A9 — Sichttest: „verwandt · KI" mit echtem Schlüssel** · `Test` · **abgehakt 2026-07-17 (Klaus' Zuruf)**
   KI-Richter-Feld (Anbieter + Schlüssel) im Widget vorhanden. Klaus hat auf seinen Zuruf abgehakt; ein echter
   KI-Schlüssel-Lauf ist optional (BYOK, kostenpflichtig). _2026-07-17._
-- [ ] **A19 — Befunde aus Klaus' Sichttest 2026-07-17 (Fremdnutzer-Brille)** · `Bau` klein · ⏱ ~30–45 Min · **neu 2026-07-17**
-  Zwei UX-Befunde am Such-Widget (Modul 22), beide Marktplatz-/Fremdnutzer-relevant:
-  1. **„🖨 Block kopieren" gibt keine sichtbare Rückmeldung** — kopiert in die Zwischenablage, aber der Nutzer
-     sieht nichts (Klaus: „ein Link ohne sichtbares Ergebnis"). → kurze Bestätigung einbauen („✓ kopiert").
-  2. **Treffer erst nach Netz-Anmeldung sichtbar** — Klaus: „erst nachdem ich alle im Netz angemeldet habe,
-     konnte ich was sehen". Prüfen, ob **App-Treffer** (lokaler Korpus) auch OHNE Netz-Anmeldung erscheinen
-     (Fremdnutzer ohne Verbindung muss die App-Suche voll nutzen können — fail-soft). Knoten-Treffer dürfen
-     Verbindung brauchen.
-  Beides berührt Modul 22 + byte-Kopien (such-tool/pinnwand, Drift-Guard) → eigener abgegrenzter Bau. _offen._
+- [x] **A19 — Befunde aus Klaus' Sichttest 2026-07-17 (Fremdnutzer-Brille)** · `Bau` klein · **erledigt 2026-07-17**
+  Zwei UX-Befunde am Such-Widget (Modul 22):
+  1. **„🖨 Block kopieren" ohne sichtbare Rückmeldung** — **GEBAUT:** der Knopf zeigt beim Klick jetzt kurz
+     **„✓ kopiert!"** (grün, ~1,6 s) direkt an der Klickstelle — der bestehende Hint allein wurde übersehen
+     (Klaus: „ein Link ohne sichtbares Ergebnis"). Gleiche Rückmeldung auch am „📋 Frage kopieren"-Knopf.
+     Byte-Kopie `such-tool/modules/22` mitgezogen (Drift-Guard grün). Smoke `smoke_bau22` 260/260, Standalone 49/49.
+  2. **Treffer erst nach Netz-Anmeldung** — **GEPRÜFT, kein Fix nötig (kein Bug):** die **App-Suche ist rein
+     lokal** (`window.SAGE_SUCHKORPUS`, lazy via Modul 03 eingebettet) und läuft OHNE Netz-Anmeldung; sie zeigt
+     beim ersten Gebrauch bereits den Hinweis „Suchindex wird vorbereitet …". Die Verbindung braucht nur der
+     **Knoten-Bereich für LIVE-Treffer** (`queryNode` übers Relais, Modul 05) — das ist verfassungsgemäß so
+     (Empfangsmodus). Klaus' Beobachtung bezog sich auf die (korrekt verbindungs-pflichtigen) Live-Knoten-Treffer.
+  **Browser-Sichttest der Kopier-Rückmeldung wartet auf Klaus.** _erledigt am: 2026-07-17._
 - [x] **A10 — „Schnipsel-Mittel"** · `Spec`+`Bau` · ⏱ ~2 Sitzungen
   Einziges Verfahren mit messbarer Verwandt-Trennung, aber Datenvertrag-Eingriff (Schnipsel-Vektoren in die
   Spore) + **alle Knoten neu signieren**. **Klaus-Entscheid 2026-07-12: fest mit A6 in EINE Re-Sign-Welle** (statt

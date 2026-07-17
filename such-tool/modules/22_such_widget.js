@@ -3252,12 +3252,23 @@
       var copyBtn = doc.createElement("button");
       copyBtn.type = "button";
       copyBtn.className = "sbkim-sw-copyall";
-      copyBtn.textContent = "🖨 Block kopieren (" + treffer.length + ")";
+      var copyLabel = "🖨 Block kopieren (" + treffer.length + ")";
+      copyBtn.textContent = copyLabel;
       copyBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
       copyBtn.addEventListener("click", function (ev) {
         if (ev && ev.preventDefault) ev.preventDefault();
         copyToClipboard(buildResultsText(lastRenderRes)).then(function (ok) {
           setHint(ok ? "Treffer-Block kopiert — einfügen und losschicken." : "Kopieren nicht möglich (Browser blockiert).");
+          // Sichtbare Rückmeldung DIREKT am Knopf (Klaus-Befund 2026-07-17: „ein
+          // Link ohne sichtbares Ergebnis" — der Hint allein wird leicht übersehen).
+          copyBtn.textContent = ok ? "✓ kopiert!" : "✗ nicht möglich";
+          copyBtn.style.background = ok ? "#166534" : "#7f1d1d";
+          copyBtn.style.color = "#fff";
+          if (global.setTimeout) global.setTimeout(function () {
+            copyBtn.textContent = copyLabel;
+            copyBtn.style.background = "";
+            copyBtn.style.color = "";
+          }, 1600);
         });
       });
       resultsEl.appendChild(copyBtn);
@@ -3392,6 +3403,11 @@
             setHint(ok
               ? "Frage kopiert — Suchmaschine selbst öffnen (Splitscreen) und einfügen. Die App bleibt offen."
               : "Konnte nicht kopieren — Frage oben markieren und kopieren.");
+            // Sichtbare Rückmeldung direkt am Knopf (Klaus-Befund 2026-07-17).
+            webCopyBtn.textContent = ok ? "✓ kopiert!" : "✗ nicht möglich";
+            if (global.setTimeout) global.setTimeout(function () {
+              webCopyBtn.textContent = "📋 Frage kopieren";
+            }, 1600);
           });
         });
       })(res.webLink.query || "");
