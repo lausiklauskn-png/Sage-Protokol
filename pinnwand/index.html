@@ -446,6 +446,19 @@ async function decryptContent(s) {
 // Verfahren wie Signal/WhatsApp (ECDH → AES-GCM). Vertrauen beim Erstkontakt =
 // TOFU (Ein-Klick-Freigabe, weil du die Gegenseite kennst) + Änderungs-Warnung +
 // optionale Sicherheitsnummer. Der Passwort-Weg (Brett) bleibt daneben unberührt.
+// Kleiner, selbst-enthaltener Hinweis-Balken (fail-soft) für die Kontakt-Freigabe.
+function toast(msg) {
+  try {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);' +
+      'background:rgba(20,18,16,.96);color:#eee;border:1px solid var(--acc,#c9a961);' +
+      'padding:9px 14px;border-radius:10px;z-index:130;font-size:.9rem;max-width:90vw;' +
+      'box-shadow:0 4px 16px rgba(0,0,0,.4);';
+    document.body.appendChild(t);
+    setTimeout(() => { try { document.body.removeChild(t); } catch (_e) { /* */ } }, 2600);
+  } catch (_e) { /* fail-soft: Hinweis ist optional */ }
+}
 const LS_DM_CONTACTS = 'sbkim_pinnwand_contacts';
 let dmContacts = {}; // pubHex -> { name, pinnedAt }
 try { dmContacts = JSON.parse(localStorage.getItem(LS_DM_CONTACTS) || '{}') || {}; } catch { dmContacts = {}; }
