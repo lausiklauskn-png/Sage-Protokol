@@ -1008,6 +1008,24 @@
     // setActiveIdentity validiert), nehmen wir den ersten Slot.
     if (!activeEntry) activeEntry = identities[0];
 
+    // B1b (Klaus-Entscheid 2026-07-17, „Weg A"): Export VERLANGT die Spore.
+    // importBackup wirft je Identität, wenn identities[i].spore fehlt — ein
+    // Backup ohne Spore ließe sich anlegen, aber NIE zurückspielen (stiller
+    // Fehlschlag). Statt ein unbrauchbares Backup zu erzeugen, hier ein KLARER
+    // Fehler VOR der Verschlüsselung — symmetrisch zu importBackup. Real nur
+    // bei einer frisch erzeugten Identität, die noch nie eine Spore signiert
+    // hat (nie angedockt); Behebung: zuerst Spore erzeugen, dann Backup.
+    for (var se = 0; se < identities.length; se++) {
+      if (!identities[se].spore || typeof identities[se].spore !== "object") {
+        throw makeError(
+          "SporeMissingError",
+          "Identität '" + identities[se].key + "' hat noch keine Spore — ein Backup ohne " +
+            "Spore ließe sich nicht wiederherstellen. Bitte zuerst eine Spore erzeugen " +
+            "(Andock-Wizard), dann das Backup anlegen.",
+        );
+      }
+    }
+
     var payload = {
       "active-identity": activeEntry.key,
       createdAt: new Date().toISOString(),

@@ -119,6 +119,32 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-17 · B1b + B2 erledigt (Klaus-Entscheide: Weg A · „so lassen")
+
+**Rolle:** Bausitzung (Semantik/Krypto-Strang B). **Freibrief gilt.**
+
+**B1b — Modul-02 Backup-Asymmetrie (Weg A, Kern-Eingriff):** `exportBackup` erlaubte eine Identität
+**ohne** Spore, `importBackup` verlangt sie je Identität → ein Backup, das man anlegen, aber nie
+zurückspielen kann. **Klaus-Entscheid: Weg A** — `exportBackup` verlangt die Spore jetzt auch: fehlt sie,
+wirft es **vor** der Verschlüsselung `SporeMissingError` (symmetrisch zu `importBackup`), statt ein
+unbrauchbares Backup zu erzeugen. **Spec-vor-Code:** INTERFACES §1 Modul 02 (Fehler-Sektion) zuerst
+nachgezogen, dann Guard in `exportBackup` (nach dem Bauen der Identitäten-Liste). Byte-Kopie
+`sbkim-bundle/modules/02_spore.js` mitgezogen. Smoke `smoke_bau02_b1b_export_spore.mjs` **8/8** (ohne
+Spore→SporeMissingError, mit Spore→Round-Trip export/import + falsches PW→BackupDecryptError). Regress-frei
+(bau02y 33/33, bau20_safe_real 14/14, spore_v02 17/17). Modul 20 behält seinen `NoSporeError`-Guard
+(Safe-spezifische Meldung). **Real verhaltensneutral** (Identitäten haben immer eine Spore) — es ist eine
+Ehrlichkeits-/Korrektheits-Härtung. **Folge-Schritt:** netzweiter Byte-Re-Sync von Modul 02 in die Apps
+(Kern-Modul; nur additiver Guard).
+
+**B2 — Modul-20-Feinpunkte (Klaus: „so lassen", rein dokumentarisch):** (1) Ed25519 `extractable:true`
+bleibt — nötig, damit Backup/Safe/Identitäts-Umzug den privaten Schlüssel sichern können; at-rest immer
+passwort-verschlüsselt. (2) Shamir 2-von-3-Default im Modal fest; `init({shamirN,shamirK})` app-weit
+konfigurierbar, keine Pro-Nutzer-N/k-UI. Kein Code-Eingriff — festgehalten in der Modul-20-Karte § B2.
+
+_Nächster Punkt der Liste: B7 (Pinnwand-Krypto-Entscheid) → B4 (Widget-Tresor, sicherheits-sensibel) → B6
+(Grad C sealed box, später). Offen aus B3: Browser-Sichttest je Knoten + optionale Verschlüsselung des
+Haupt-App-KI-Schlüssels; aus B1b: netzweiter Modul-02-Re-Sync._
+
 ## 2026-07-17 · B3 ERLEDIGT — Modul-20-Safe netzweit verteilt (9 Knoten + Sage-Page)
 
 **Rolle:** Bausitzung (Semantik/Krypto-Checkliste, Strang B). **Freibrief gilt** (CLAUDE.md § Freibrief).

@@ -420,13 +420,24 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   + reale Module 01/02/20 — schließt den Mock-blinden-Fleck, der den Bug durchließ).
   **✅ Re-Sichttest GRÜN (Klaus 2026-07-17):** nach „Safe löschen (Reset)" → „Safe anlegen" (3 Anteile, `entsperrt:true`)
   → „Entsperren (richtiges Passwort)" = **entsperrt** (Statusfeld grün). Der Bug ist live behoben. _getestet am: 2026-07-17._
-- [ ] **B1b — (Kern-Entscheid Klaus) Modul-02 Backup-Asymmetrie sauber lösen** · `Entscheid` · ⏱ ~1 Sitzung · **neu 2026-07-17**
-  `exportBackup` erlaubt eine Identität ohne Spore, `importBackup` verlangt sie — inkonsistent (ein Backup, das man
-  nicht zurückspielen kann). Modul 20 fängt es jetzt ab (Guard), aber die **saubere** Lösung liegt in **Modul 02**
-  (Kern, TABU „nur nutzen"): entweder `exportBackup` verlangt/erzeugt die Spore mit, ODER `importBackup` toleriert
-  eine fehlende Spore (regeneriert sie aus Identität+Meta). Klaus' Richtungsentscheid vor einem Kern-Eingriff. _entschieden am: _____
-- [ ] **B2 — Modul 20 Feinpunkte** · `Bau` `Entscheid` · ⏱ ~1 Sitzung
-  Ed25519 „extractable"-Abwägung + N/k-Standardwerte im UI. _erledigt am: _____
+- [x] **B1b — Modul-02 Backup-Asymmetrie sauber gelöst (Weg A)** · `Entscheid`+`Bau` · **erledigt 2026-07-17**
+  `exportBackup` erlaubte eine Identität ohne Spore, `importBackup` verlangt sie — ein Backup, das man nicht
+  zurückspielen kann. **Klaus-Entscheid: Weg A** — `exportBackup` **verlangt** die Spore jetzt auch: fehlt sie,
+  wirft es **VOR** der Verschlüsselung einen klaren `SporeMissingError` (symmetrisch zu `importBackup`), statt ein
+  unbrauchbares Backup zu erzeugen. Real nur bei einer frisch erzeugten Identität, die noch nie eine Spore signiert
+  hat (nie angedockt). INTERFACES §1 Modul 02 (Fehler-Sektion) nachgezogen (Spec-vor-Code); Guard in `exportBackup`
+  nach dem Bauen der Identitäten-Liste; Byte-Kopie `sbkim-bundle/modules/02_spore.js` mitgezogen. Smoke
+  `smoke_bau02_b1b_export_spore.mjs` **8/8** (ohne Spore→SporeMissingError, mit Spore→Round-Trip export/import).
+  Regress-frei (bau02y 33/33, bau20_safe_real 14/14, spore_v02 17/17). Modul 20 behält seinen eigenen `NoSporeError`-
+  Guard (Safe-spezifische Meldung vor `exportBackup`). **Netzweiter Byte-Re-Sync von Modul 02** in die Apps = Folge-
+  Schritt (Kern-Modul; nur der additive Guard, real verhaltensneutral). _entschieden + gebaut am: 2026-07-17_
+- [x] **B2 — Modul 20 Feinpunkte** · `Entscheid` · **erledigt 2026-07-17 (Klaus: „so lassen")**
+  (1) **Ed25519 „extractable"** (Modul 02 erzeugt den Schlüssel `extractable:true`): **bewusst so** — nötig, damit
+  Backup/Safe/Identitäts-Umzug den privaten Schlüssel überhaupt sichern können; at-rest liegt er **immer** passwort-
+  verschlüsselt (PBKDF2-600k+AES-GCM-256). Ein nicht-extractabler Schlüssel würde Backup unmöglich machen — der
+  Durabilitäts-/Umzugs-Nutzen wiegt schwerer. (2) **Shamir 2-von-3-Default im Modal fest**, `init({shamirN,shamirK})`
+  bleibt app-weit konfigurierbar — keine Pro-Nutzer-N/k-Auswahl im Modal (Verwirrung für Nicht-Programmierer). Rein
+  dokumentarisch, kein Code-Eingriff (Modul-20-Karte § B2-Feinpunkte). _entschieden am: 2026-07-17_
 - [x] **B3 — Modul 20 netzweite Verteilung** · `Bau` (braucht B1) · **erledigt 2026-07-17 (9 Knoten + Sage-Page; BLP separat)**
   **Klaus-Entscheid 2026-07-17 (statt „BLP zuerst"):** Kanon-Stack-Endknoten zuerst, BLP separat mit
   SEINEM eigenen Tresor (`core/vault.js`/`core/shamir.js`) — Sages Modul 20 hängt an Modul 01/02, die

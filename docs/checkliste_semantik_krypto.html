@@ -177,18 +177,18 @@
   <div class="lines">getestet am: 2026-07-17 (Klaus)</div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="B1b"><div class="body">
-  <div><span class="code">B1b</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Modul-02 Backup-Asymmetrie sauber lösen (Kern-Entscheid)</span></div>
-  <div class="d"><code>exportBackup</code> erlaubt eine Identität ohne Spore, <code>importBackup</code> verlangt sie — inkonsistent. Modul 20 fängt es jetzt ab (Guard). Die saubere Lösung liegt in <b>Modul 02 (Kern)</b>: entweder export verlangt die Spore mit, oder import toleriert sie fehlend. Dein Richtungsentscheid vor einem Kern-Eingriff.</div>
-  <div class="meta"><span class="tag">Entscheid</span></div>
-  <div class="lines">entschieden am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+<div class="item done"><input type="checkbox" class="cb" data-k="B1b" checked><div class="body">
+  <div><span class="code">B1b</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Modul-02 Backup-Asymmetrie sauber gelöst (Weg A) — ✅ erledigt</span></div>
+  <div class="d"><b>Dein Entscheid: Weg A.</b> <code>exportBackup</code> verlangt die Spore jetzt auch — fehlt sie, klarer <code>SporeMissingError</code> VOR der Verschlüsselung (symmetrisch zu <code>importBackup</code>), statt ein nicht-wiederherstellbares Backup zu erzeugen. INTERFACES nachgezogen (Spec-vor-Code), Byte-Kopie sbkim-bundle mitgezogen, Smoke 8/8, regress-frei.</div>
+  <div class="meta"><span class="tag">Entscheid</span><span class="tag">Bau</span> · ✅ 17.07</div>
+  <div class="lines">entschieden am:<input class="dt" type="text" value="17.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="B2"><div class="body">
-  <div><span class="code">B2</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Modul 20 Feinpunkte</span></div>
-  <div class="d">Ed25519-Schlüssel „extractable"-Abwägung (Sicherheit vs. Sicherbarkeit) + Standard-Werte für die Shamir-Anteile im UI festlegen.</div>
-  <div class="meta"><span class="tag">Bau</span><span class="tag">Entscheid</span></div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+<div class="item done"><input type="checkbox" class="cb" data-k="B2" checked><div class="body">
+  <div><span class="code">B2</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Modul 20 Feinpunkte — ✅ so lassen (dokumentiert)</span></div>
+  <div class="d"><b>Dein Entscheid: so lassen.</b> (1) Ed25519 „extractable"=true bleibt — nötig, damit Backup/Safe den Schlüssel sichern können; at-rest immer passwort-verschlüsselt. (2) Shamir 2-von-3-Default im Modal fest (<code>init({shamirN,shamirK})</code> app-weit konfigurierbar, keine Pro-Nutzer-UI). Rein dokumentarisch (Modul-20-Karte § B2), kein Code-Eingriff.</div>
+  <div class="meta"><span class="tag">Entscheid</span> · ✅ 17.07</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" value="17.07.26"></div>
 </div></div>
 
 <div class="item done"><input type="checkbox" class="cb" data-k="B3" checked><div class="body">
