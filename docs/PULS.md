@@ -119,6 +119,39 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-17 · B3 gestartet — Modul-20-Safe netzweit verteilt (Rezeptbuch + Mixarium)
+
+**Rolle:** Bausitzung (Semantik/Krypto-Checkliste, Strang B). **Freibrief gilt** (CLAUDE.md § Freibrief).
+
+**Klaus-Entscheid vorweg (statt „BLP zuerst"):** Kanon-Stack-Endknoten zuerst; BLP separat, weil
+BLP eine **eigene, reife Krypto** (`src/core/vault.js`/`shamir.js`/`crypto.js`) + nur eine minimale
+SBKIM-Fassung (`src/sbkim/*`, kein Modul 01/02) hat — Sages Modul 20 hängt an Modul 01/02, wäre in
+BLP byte-1:1 unmöglich und redundant. **Umfang:** Safe + verschlüsselte BYOK-KI-Schlüssel-Ablage.
+
+**Befund beim Verteilen (ehrlich):** die verschlüsselte KI-Richter-Schlüssel-Ablage (🔒 im Tresor
+merken / 🔓 entsperren, Modul 23 UI) lag in den Endknoten über `23_rendezvous_ui.js` **byte-1:1 zum
+Kanon schon** vor; `window.SbkimSafe` entsteht beim Laden (Geheimnis-Pfad braucht kein `createVault`).
+Der **einzige** Defekt war das **je eine Version alte Modul 20** (fehlende B1-`NoSporeError`-Härtung
+im Identitäts-Vault-Pfad). „Verteilung" = Modul 20 auf Kanon heilen + `SbkimSafe.init()` in die
+Init-Kette + SW-Cache-Bump + echter Headless-Smoke (WebCrypto: putSecret/getSecret Round-trip,
+falsches PW → null, kein Klartext im Blob, frisches Salt/IV, Heal-Beweis).
+
+**Getan (je eigener PR, selbst gemergt nach Headless grün — Freibrief):**
+- **Rezeptbuch (PR #332):** `sbkim/20` → Kanon, `SbkimSafe.init()` in `sbkim-init.js`, `app-sw.js`
+  `mrz-v52→v53`, `tests/smoke_b3_safe_secret.mjs` **11/11**. QC unangetastet → kein `build.py`.
+- **Mixarium (PR #145):** dieselbe Heilung, `app-sw.js` `mixarium-sw-v71→v72`, Smoke **11/11**;
+  md5 `index.html==QC` identisch (nur externe `sbkim/*` + `app-sw.js` geändert → Spiegel-Regel unberührt).
+
+**Grenzen/bewusst NICHT:** Kern 01/02 nur genutzt; `PROVIDER_MIN_MATCH`/0.80-Riegel + `DB_VERSION` +
+`PROTOCOL_VERSION` unberührt; kein PII, kein Klartext-Schlüssel. Der **Haupt-App-KI-Schlüssel**
+(Rezeptbuch `claudeKey9m`, Mixarium `mxkey9m`) liegt weiter im **Klartext-`localStorage`**
+(persistiert schon über Hard-Reload) — dessen optionale Verschlüsselung ist ein **separater, größerer
+Härtungs-Schritt** (App liest ihn an vielen Stellen; bräuchte Passwort pro Sitzung), Klaus-Entscheid offen.
+
+**Offen (B3 bleibt `[ ]`):** übrige Knoten (Sage-Page selbst, family-project, Tomys-Hub, Kimboard,
+Kimseek, Mein-/Jasons-Tresor, SB-KIMTool-Point) — gleiche kleine Heilung, sofern dort Modul 20 stale
+ist. **BLP separat** mit eigenem Tresor. **Browser-Sichttest** (Rezeptbuch + Mixarium) wartet auf Klaus.
+
 ## 2026-07-17 · B1-Sichttest fing echten Safe-Bug — reproduziert + behoben (Modul 20 + echter Smoke)
 
 **Rolle:** Sichttest-Begleitung + Bug-Fix (Freibrief). **Genau der Wert des Browser-Sichttests:** Klaus' B1-Lauf

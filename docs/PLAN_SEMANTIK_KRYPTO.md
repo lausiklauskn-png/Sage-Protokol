@@ -427,7 +427,18 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   eine fehlende Spore (regeneriert sie aus Identität+Meta). Klaus' Richtungsentscheid vor einem Kern-Eingriff. _entschieden am: _____
 - [ ] **B2 — Modul 20 Feinpunkte** · `Bau` `Entscheid` · ⏱ ~1 Sitzung
   Ed25519 „extractable"-Abwägung + N/k-Standardwerte im UI. _erledigt am: _____
-- [ ] **B3 — Modul 20 netzweite Verteilung (BLP zuerst)** · `Bau` (braucht B1) · ⏱ ~1–2 Sitzungen · _erledigt am: _____
+- [ ] **B3 — Modul 20 netzweite Verteilung** · `Bau` (braucht B1) · ⏱ ~1–2 Sitzungen · **in Arbeit seit 2026-07-17**
+  **Klaus-Entscheid 2026-07-17 (statt „BLP zuerst"):** Kanon-Stack-Endknoten zuerst, BLP separat mit
+  SEINEM eigenen Tresor (`core/vault.js`/`core/shamir.js`) — Sages Modul 20 hängt an Modul 01/02, die
+  BLPs minimale SBKIM-Fassung nicht trägt (byte-1:1 unmöglich, redundant zu BLPs Krypto).
+  **Befund beim Verteilen:** die verschlüsselte BYOK-KI-Schlüssel-Ablage (🔒 im Tresor merken / 🔓
+  entsperren) lag in den Endknoten über `23_rendezvous_ui.js` (byte-1:1 Kanon) **schon**; nur das
+  Safe-Modul (20) war je eine Version alt (fehlende B1-`NoSporeError`-Härtung). Verteilung = Modul 20
+  auf Kanon heilen + `SbkimSafe.init()` in die Kette + SW-Bump + echter Headless-Smoke (WebCrypto,
+  putSecret/getSecret Round-trip).
+  **✅ Rezeptbuch (PR #332) + ✅ Mixarium (PR #145)** — je 11/11 Smoke grün, gemergt. Browser-Sichttest wartet auf Klaus.
+  **Offen:** family-project · Tomys-Hub · Kimboard · Kimseek · Mein-/Jasons-Tresor · SB-KIMTool-Point · Sage-Page selbst;
+  **BLP separat** (app-eigener Tresor). _Rezeptbuch+Mixarium erledigt am: 2026-07-17 · Rest offen_
 - [ ] **B4 — Widget-Tresor „Increment 2 B" (sicherheits-sensibel, eigene Sitzung)** · `Bau` · ⏱ ~1–2 Sitzungen
   Eigener Tresor (Shamir 2/3 + Passwort + 🔐), automatischer KI-Aufruf mit Websuche, App-Schlüssel-Durchreichung.
   Heute KI-Schlüssel bewusst nur im RAM. _erledigt am: _____
