@@ -119,6 +119,24 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-17 · A19 — UX-Fix Such-Widget: „✓ kopiert"-Rückmeldung + App-Suche-ohne-Netz geprüft
+
+**Rolle:** Bau (Freibrief, Klaus wählte A19). Modul 22 (Such-Widget) + Byte-Kopie such-tool.
+
+**Befund 1 — „Block kopieren" ohne sichtbare Rückmeldung → gebaut:** der Knopf setzte zwar schon einen Hint,
+der wurde aber übersehen (Klaus: „ein Link ohne sichtbares Ergebnis"). Jetzt zeigt der Knopf beim Klick kurz
+**„✓ kopiert!"** (grün, ~1,6 s) direkt an der Klickstelle; dieselbe Rückmeldung am „📋 Frage kopieren"-Knopf.
+Fail-soft (`global.setTimeout`-guard), keine neue CSS-Klasse (inline).
+
+**Befund 2 — „Treffer erst nach Netz-Anmeldung" → geprüft, KEIN Bug:** die **App-Suche ist rein lokal**
+(`window.SAGE_SUCHKORPUS`, lazy via Modul 03) und läuft ohne Verbindung; sie zeigt beim ersten Gebrauch schon
+den Hinweis „Suchindex wird vorbereitet …" (`ensureCorpusPrepared`). Nur der **Knoten-Bereich holt LIVE-Treffer**
+übers Relais (`queryNode`, Modul 05) — verbindungs-pflichtig by design (Empfangsmodus). Klaus' Beobachtung
+bezog sich auf diese (korrekt) verbindungs-pflichtigen Live-Knoten-Treffer.
+
+**Beweis:** `smoke_bau22_such_widget.mjs` **260/260**, Standalone-Drift-Guard **49/49**, byte-identisch (md5 gleich),
+`node --check` grün. **Browser-Sichttest der Kopier-Rückmeldung wartet auf Klaus.**
+
 ## 2026-07-17 · Klaus-Sichttest A7–A9 grün + Test-Seiten-Fix (Panel-Knöpfe) + zwei UX-Befunde
 
 **Rolle:** Sichttest-Begleitung + kleiner Fix (Freibrief).
