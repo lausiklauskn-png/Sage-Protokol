@@ -368,7 +368,7 @@
       "id": "20",
       "name": "Schlüssel-Safe",
       "score": "stub",
-      "siegel": "Code-Stub 2026-06-20 (Spec PR #315 + Bau-Sitzung). Headless-Smoke tests/smoke_bau20_safe.mjs 19/19 grün. Browser-Sichttest der Modal-UI ausstehend (wartet auf Klaus).",
+      "siegel": "Code-Stub 2026-06-20 (Spec PR #315 + Bau-Sitzung). Headless-Smoke tests/smoke_bau20_safe.mjs 19/19 grün. Fix 2026-07-17 (Klaus-Sichttest B1 fing echten Bug): createVault wirft jetzt NoSporeError statt stillem unlock-Fehlschlag; neuer echter Smoke tests/smoke_bau20_safe_real.mjs 14/14 (fake-indexeddb + reale Module 01/02/20). Kern-Asymmetrie Modul 02 als B1b notiert. Klaus' Re-Sichttest von Panel 20 ausstehend.",
       "abhaengig": [
         "01",
         "02"

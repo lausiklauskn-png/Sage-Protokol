@@ -408,8 +408,23 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
 
 ## B) Verschlüsselung
 
-- [ ] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · ⏱ ~20–30 Min
-  Real gebaut (AES-GCM-256, PBKDF2 600k, Shamir 2/3, headless 19/19). Einrichten/entsperren/Recovery prüfen. _getestet am: _____
+- [ ] **B1 — Modul 20 Schlüssel-Safe: Sichttest der Modal-UI** · `Test` · **Bug gefunden + behoben 2026-07-17, Klaus' Re-Sichttest ausstehend**
+  Real gebaut (AES-GCM-256, PBKDF2 600k, Shamir 2/3, headless 19/19). Einrichten/entsperren/Recovery prüfen.
+  **✅ Klaus-Sichttest 2026-07-17 hat einen ECHTEN Bug gefangen** (genau dafür der Browser-Lauf): `createVault`
+  gelang, aber `unlock` mit KORREKTEM Passwort gab `false`. **Ursache** (reproduziert mit fake-indexeddb):
+  `exportBackup` sichert eine Identität **ohne Spore**, aber `importBackup` **verlangt** eine Spore je Identität
+  (Asymmetrie) → ein Safe, der sich anlegen, aber nie entsperren lässt. Die Test-Brücke erzeugte nie eine Spore
+  (echte Apps schon, via Andock-Wizard). **Fix (diese Sitzung):** (1) `createVault` wirft jetzt bei fehlender Spore
+  einen **klaren `NoSporeError`** (Fremdnutzer-Schutz — kein stiller Fehlschlag mehr); (2) Test-Brücke „Setup" erzeugt
+  eine Spore wie eine echte App; (3) **neuer echter Smoke** `tests/smoke_bau20_safe_real.mjs` **14/14** (fake-indexeddb
+  + reale Module 01/02/20 — schließt den Mock-blinden-Fleck, der den Bug durchließ). **Offen:** Klaus' Re-Sichttest
+  von Panel 20 (alle 6 Knöpfe grün) — vorher `„Safe löschen (Reset)"` drücken (der alte spore-lose Safe muss weg).
+  _getestet am: _____ (Re-Lauf ausstehend)_
+- [ ] **B1b — (Kern-Entscheid Klaus) Modul-02 Backup-Asymmetrie sauber lösen** · `Entscheid` · ⏱ ~1 Sitzung · **neu 2026-07-17**
+  `exportBackup` erlaubt eine Identität ohne Spore, `importBackup` verlangt sie — inkonsistent (ein Backup, das man
+  nicht zurückspielen kann). Modul 20 fängt es jetzt ab (Guard), aber die **saubere** Lösung liegt in **Modul 02**
+  (Kern, TABU „nur nutzen"): entweder `exportBackup` verlangt/erzeugt die Spore mit, ODER `importBackup` toleriert
+  eine fehlende Spore (regeneriert sie aus Identität+Meta). Klaus' Richtungsentscheid vor einem Kern-Eingriff. _entschieden am: _____
 - [ ] **B2 — Modul 20 Feinpunkte** · `Bau` `Entscheid` · ⏱ ~1 Sitzung
   Ed25519 „extractable"-Abwägung + N/k-Standardwerte im UI. _erledigt am: _____
 - [ ] **B3 — Modul 20 netzweite Verteilung (BLP zuerst)** · `Bau` (braucht B1) · ⏱ ~1–2 Sitzungen · _erledigt am: _____

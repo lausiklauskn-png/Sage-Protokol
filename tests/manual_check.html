@@ -6222,9 +6222,20 @@
       SbkimUI.addButton("20_schluessel_safe", "Setup: Storage + Spore + Vault init", async function () {
         if (window.SbkimStorage && SbkimStorage.init) await SbkimStorage.init();
         if (window.SbkimSpore && SbkimSpore.init) await SbkimSpore.init();
+        // B1-Fix (Klaus-Sichttest 2026-07-17): eine Spore erzeugen wie eine echte App
+        // (via Andock-Wizard) — sonst ist der Safe nicht wiederherstellbar
+        // (importBackup verlangt eine Spore je Identität). Idempotent.
+        var sporeVorhanden = false;
+        if (window.SbkimSpore && SbkimSpore.getOwnSpore) {
+          sporeVorhanden = !!(await SbkimSpore.getOwnSpore());
+          if (!sporeVorhanden && SbkimSpore.generateOwnSpore) {
+            await SbkimSpore.generateOwnSpore({ domain: "Test-Domäne (Panel 20)", endpoint: "https://test.local/panel20/", nodeType: "hybrid" });
+            sporeVorhanden = !!(await SbkimSpore.getOwnSpore());
+          }
+        }
         await SbkimSafe.init({ autoPrompt: false });
         SbkimUI.setStatus("20_schluessel_safe", "ok", "Setup OK");
-        return { ready: SbkimSafe._meta.ready, shamirN: SbkimSafe._meta.shamirN, shamirK: SbkimSafe._meta.shamirK, hasVault: await SbkimSafe.hasVault() };
+        return { ready: SbkimSafe._meta.ready, shamirN: SbkimSafe._meta.shamirN, shamirK: SbkimSafe._meta.shamirK, hasVault: await SbkimSafe.hasVault(), spore_vorhanden: sporeVorhanden };
       });
 
       SbkimUI.addButton("20_schluessel_safe", "Shamir 2/3 Selbsttest (pur)", async function () {
