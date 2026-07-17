@@ -219,11 +219,11 @@
   <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="B7"><div class="body">
-  <div><span class="code">B7</span><span class="time">⏱ ~1 Sitzung (Entscheid)</span> <span class="t">Pinnwand-Verschlüsselung — Richtungsentscheid</span></div>
-  <div class="d">Passwort-Weg ist gebaut. Offen: Public-Key/ECDH-Weg + der harte Teil <b>MITM beim Erstkontakt</b>. Erst deine Wegwahl, dann bauen.</div>
-  <div class="meta"><span class="tag">Entscheid</span> vor Bau</div>
-  <div class="lines">entschieden am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+<div class="item done"><input type="checkbox" class="cb" data-k="B7" checked><div class="body">
+  <div><span class="code">B7</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Pinnwand-E2E: Direktnachricht (ECDH + TOFU) — ✅ erledigt</span></div>
+  <div class="d"><b>Dein Entscheid:</b> dasselbe E2E wie Signal/WhatsApp, aber server-los — <b>Ein-Klick-Freigabe (TOFU)</b> + Änderungs-Warnung + optionale Sicherheitsnummer; Passwort-Weg bleibt daneben. Gebaut auf den vorhandenen Nostr-Schlüsseln (ECDH→HKDF→AES-GCM, neues <code>modules/dm_crypto.js</code>): „🔒 Privat an"-Auswahl, Kontakte-Overlay mit Sicherheitsnummer, Absender-Namen anklickbar = merken, eingehende DMs entschlüsselt + 🔒-Badge. Smoke 13/13, Drift-Smoke 60/60. Volles Protokoll-Siegel (X25519 im Spore) = B6 später. Browser-Sichttest wartet auf dich.</div>
+  <div class="meta"><span class="tag">Entscheid</span><span class="tag">Bau</span> · ✅ 17.07</div>
+  <div class="lines">entschieden am:<input class="dt" type="text" value="17.07.26"></div>
 </div></div>
 
 <h2>Empfohlene Reihenfolge (aktualisiert 17.07.)</h2>
