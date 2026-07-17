@@ -193,3 +193,23 @@ window.SbkimSafe = {
 3. **Sichttest** Klaus (Safe einrichten / entsperren / Recovery mit Anteilen).
 4. **Netzweite Verteilung** via Relay-Briefe (BLP zuerst, datenschutz-sauber),
    dann übrige Endknoten — eigener Brief pro Repo.
+
+---
+
+## § B2-Feinpunkte — Entscheid 2026-07-17 (Klaus: „so lassen")
+
+Zwei Abwägungen aus der Semantik-/Krypto-Liste (Punkt B2), bewusst **ohne Code-Eingriff**:
+
+1. **Ed25519 „extractable" = `true`** (Modul 02 erzeugt den privaten Knoten-Schlüssel
+   mit `generateKey({name:"Ed25519"}, true, …)`). Das ist **nötig**, damit
+   Backup / Safe / Identitäts-Umzug den privaten Schlüssel überhaupt serialisieren
+   können. At-rest liegt er **immer** passwort-verschlüsselt (PBKDF2-SHA256 600k →
+   AES-GCM-256, Modul 02 `exportBackup` / Modul 20 `putSecret`). Ein nicht-extractabler
+   Schlüssel würde Backup unmöglich machen — der Durabilitäts-/Umzugs-Nutzen wiegt
+   schwerer als der marginale Gewinn eines Schlüssels, der WebCrypto nie verlässt.
+   **Entscheid: so lassen.**
+2. **Shamir 2-von-3-Default im Modal fest.** `DEFAULT_SHAMIR_N=3`, `DEFAULT_SHAMIR_K=2`;
+   `init({shamirN,shamirK})` bleibt **app-weit** konfigurierbar (ein Forker kann es
+   setzen), aber es gibt **keine** Pro-Nutzer-N/k-Auswahl im Einrichten-Modal — für
+   Klaus' Nicht-Programmierer-Nutzer wäre das eher Verwirrung als Nutzen.
+   **Entscheid: fester 2-von-3-Default, keine neue UI.**

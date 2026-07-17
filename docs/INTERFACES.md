@@ -724,6 +724,12 @@ Fehlerverhalten:
   - exportBackup / importBackup: password kürzer als BACKUP_PASSWORD_MIN_LEN (§0) oder leerer String
                                           → InvalidBackupPasswordError (synchron, vor Crypto-Aufruf)
   - exportBackup: keine Identität        → NoIdentityError aus dem getOrCreateIdentity-Pfad
+  - exportBackup: eine Identität ohne Spore → SporeMissingError (B1b, Klaus-Entscheid 2026-07-17, „Weg A").
+                  importBackup verlangt je Identität eine Spore (identities[i].spore); ein Backup ohne
+                  Spore ließe sich anlegen, aber NIE zurückspielen (stiller Fehlschlag). exportBackup
+                  wirft daher symmetrisch VOR der Verschlüsselung, statt ein unbrauchbares Backup zu
+                  erzeugen. Real nur bei einer frisch erzeugten Identität, die noch nie eine Spore
+                  signiert hat (nie angedockt) — Behebung: zuerst Spore erzeugen (Andock-Wizard), dann Backup.
   - importBackup: AES-GCM-Auth-Tag-Fail (falsches Passwort) oder korrupte Blob-Form (kein valides base64url,
                   JSON-Parse scheitert auf Klartext)
                                           → BackupDecryptError (Sammel-Klasse — Modul 02 unterscheidet
