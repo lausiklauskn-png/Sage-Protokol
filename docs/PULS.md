@@ -119,6 +119,36 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-17 · B1-Sichttest fing echten Safe-Bug — reproduziert + behoben (Modul 20 + echter Smoke)
+
+**Rolle:** Sichttest-Begleitung + Bug-Fix (Freibrief). **Genau der Wert des Browser-Sichttests:** Klaus' B1-Lauf
+an Panel 20 fand einen Bug, den der Mock-Smoke (19/19) NICHT sah.
+
+**Bug:** `SbkimSafe.createVault` gelang, aber `unlock` mit **korrektem** Passwort gab `false` (Knopf 4 rot;
+Shamir/Recovery/falsch-Passwort korrekt grün). **Ursache (reproduziert mit fake-indexeddb + realen Modulen):**
+`SbkimSpore.exportBackup` sichert eine Identität **ohne Spore**, aber `importBackup` **verlangt** je Identität eine
+Spore (`BackupSchemaError: identities[0].spore fehlt`) — ein Safe, der sich anlegen, aber nie entsperren lässt. Die
+Panel-20-Test-Brücke erzeugte nie eine Spore; echte Apps tun es (Andock-Wizard) → im Feld unauffällig, aber ein
+**Fremdnutzer-Footgun**.
+
+**Warum der Mock-Smoke blind war:** `smoke_bau20_safe.mjs` **mockt** `exportBackup`/`importBackup` + Storage → die
+reale Krypto+Storage-Runde lief nie.
+
+**Fix (diese Sitzung):**
+1. **Modul 20 `createVault`**: wirft bei fehlender Spore einen klaren **`NoSporeError`** (Fremdnutzer-Schutz statt
+   stillem unlock-Fehlschlag). Fail-soft: greift nur, wenn Modul 02 `getOwnSpore` anbietet (reine `putSecret`-Nutzung
+   unberührt — Smoke 18/18). Kern-Module 01/02 **nicht** angefasst.
+2. **Test-Brücke** Panel 20 „Setup" erzeugt eine Spore wie eine echte App (idempotent).
+3. **Neuer echter Smoke** `tests/smoke_bau20_safe_real.mjs` **14/14** — fake-indexeddb + reale Module 01/02/20,
+   deckt beide Pfade (ohne Spore → NoSporeError; mit Spore → createVault→lock→unlock(korrekt)=true / (falsch)=false /
+   recover). Aufruf: `npm install --no-save fake-indexeddb && node tests/smoke_bau20_safe_real.mjs`.
+
+**Kern-Asymmetrie als B1b (Klaus-Entscheid) notiert:** die saubere Lösung (export verlangt Spore ODER import
+toleriert sie fehlend) liegt in **Modul 02 (Kern, TABU „nur nutzen")** — Richtungsentscheid vor einem Kern-Eingriff.
+
+**Beweis:** neuer Smoke 14/14 · Mock-Smoke 19/19 (Guard übersprungen, da Mock kein `getOwnSpore`) · putSecret 18/18 ·
+`node --check` grün. **Offen:** Klaus' Re-Sichttest Panel 20 — vorher `„Safe löschen (Reset)"`, dann 6 Knöpfe erneut.
+
 ## 2026-07-17 · A3 abgeschlossen — netzweiter Rollout der Identitäts-Härtung verifiziert (kein Bau nötig)
 
 **Rolle:** Verifikation + Doku-Abschluss (Freibrief; Klaus: „baue A3, dann sind wir fertig").

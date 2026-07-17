@@ -5,6 +5,15 @@
 > `tests/smoke_bau20_safe.mjs` 19/19 grün). **Browser-Sichttest der Modal-UI
 > durch Klaus ausstehend.**
 >
+> **Fix 2026-07-17 (Klaus-Sichttest B1 fing einen echten Bug):** `unlock` mit
+> korrektem Passwort gab `false`, wenn die Identität keine Spore hatte —
+> `importBackup` verlangt eine Spore, `exportBackup` erlaubt sie fehlend. `createVault`
+> wirft jetzt bei fehlender Spore einen **klaren `NoSporeError`** (Fremdnutzer-Schutz,
+> kein stiller Fehlschlag). **Neuer echter Smoke** `tests/smoke_bau20_safe_real.mjs`
+> **14/14** (fake-indexeddb + reale Module 01/02/20 — der Mock-Smoke hatte die reale
+> Krypto+Storage-Runde nicht abgedeckt). Kern-Asymmetrie in Modul 02 als **B1b**
+> (Klaus-Entscheid) notiert. Klaus' Re-Sichttest von Panel 20 ausstehend.
+>
 > **Festgelegt (Klaus 2026-06-20):** Shamir **2 von 3** (N=3, k=2). Key-
 > Extractability über das Passwort gelöst durch Modul 02 `exportBackup`
 > (verschlüsselt die Identität passwortbasiert; der Safe speichert nur den

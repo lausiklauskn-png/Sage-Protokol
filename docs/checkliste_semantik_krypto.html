@@ -171,10 +171,17 @@
 <h2>B) Verschlüsselung</h2>
 
 <div class="item"><input type="checkbox" class="cb" data-k="B1"><div class="body">
-  <div><span class="code">B1</span><span class="time">⏱ ~20–30 Min</span> <span class="t">Modul 20 Schlüssel-Safe — Sichttest der Modal-UI</span></div>
-  <div class="d">Real gebaut (AES-GCM-256, PBKDF2 600k, Shamir 2-von-3, headless 19/19). Prüfen: Safe einrichten / entsperren / Wiederherstellung mit Anteilen.</div>
+  <div><span class="code">B1</span><span class="time" style="background:#fde68a">⚠ Bug gefunden + behoben 17.07 · Re-Test offen</span> <span class="t">Modul 20 Schlüssel-Safe — Sichttest der Modal-UI</span></div>
+  <div class="d"><b>Dein Sichttest hat einen echten Bug gefangen</b> (genau dafür der Browser-Lauf): „Entsperren (richtiges Passwort)" gab <code>false</code>. Ursache (reproduziert): die Identität hatte keine Spore — <code>importBackup</code> verlangt eine, <code>exportBackup</code> erlaubt sie fehlend. <b>Behoben:</b> (1) <code>createVault</code> wirft jetzt bei fehlender Spore einen klaren Fehler (kein stiller Fehlschlag), (2) Test-Brücke erzeugt eine Spore wie eine echte App, (3) neuer echter Smoke <code>smoke_bau20_safe_real.mjs</code> 14/14 (fake-indexeddb + reale Krypto). <b>Re-Test:</b> Panel 20 → erst „Safe löschen (Reset)", dann die 6 Knöpfe erneut — jetzt sollten alle grün werden.</div>
   <div class="meta"><span class="tag">Test</span></div>
   <div class="lines">getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="B1b"><div class="body">
+  <div><span class="code">B1b</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Modul-02 Backup-Asymmetrie sauber lösen (Kern-Entscheid)</span></div>
+  <div class="d"><code>exportBackup</code> erlaubt eine Identität ohne Spore, <code>importBackup</code> verlangt sie — inkonsistent. Modul 20 fängt es jetzt ab (Guard). Die saubere Lösung liegt in <b>Modul 02 (Kern)</b>: entweder export verlangt die Spore mit, oder import toleriert sie fehlend. Dein Richtungsentscheid vor einem Kern-Eingriff.</div>
+  <div class="meta"><span class="tag">Entscheid</span></div>
+  <div class="lines">entschieden am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="B2"><div class="body">
