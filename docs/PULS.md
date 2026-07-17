@@ -135,9 +135,10 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 **Test-Seiten-Fix (`tests/manual_check.html`, PR #665 gemergt):** Befund aus Klaus' Sichttest — Panel 24 + 25
 zeigten **keine Knöpfe**. Ursache: beide registrieren ihre Knöpfe via `SbkimUI.addButton` **bevor** `window.SbkimUI`
 definiert war → ReferenceError. `SbkimUI`-Helfer vor Panel 24 verschoben (einmalig). Latenter Panel-24-Bug
-(nie browser-getestet) mitbehoben. **Hinweis:** Panel-25-Knöpfe erscheinen erst nach echtem Cache-Bust/Deploy —
-Klaus' Screenshot 01:07 zeigte noch die alte, gecachte Seite. **Panel-25-Browser-Sichttest (B5) bleibt offen**,
-bis die frische Seite die Knöpfe zeigt (headless 36/36 bleibt der Beweis).
+(nie browser-getestet) mitbehoben. Nach Cache-Bust (06:53) erscheinen die Knöpfe bei Panel 24 **und** 25 —
+Fix browser-bestätigt. **✅ B5-Browser-Sichttest Panel 25 GRÜN (Klaus 2026-07-17):** Round-trip live korrekt
+(„Max Mustermann" → `[[KUNDE_1]]`, EMAIL/IBAN als Token, **Betrag 100 EUR bleibt**, `rehydrate == Original`,
+Anker-Tresor sauber getrennt). B5 ist damit headless **und** im Browser bewiesen.
 
 **Zwei UX-Befunde (Fremdnutzer-Brille, als A19 im PLAN notiert):**
 1. **„🖨 Block kopieren" ohne sichtbare Rückmeldung** (Klaus: „ein Link ohne sichtbares Ergebnis") → kurze

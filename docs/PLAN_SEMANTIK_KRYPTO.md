@@ -415,7 +415,10 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   `InvalidPseudonymArgError`). Headless-Smoke `tests/smoke_bau25_pseudonym.mjs` **36/36 grün**;
   Panel 25 in `manual_check.html`; E2E-Spec §1.1 mit Umsetzungs-Notiz; status.json + Pie + CLAUDE.md
   nachgezogen. Ehrliche Grenze bleibt: Metadaten/Beträge leaken weiter → Grad C = B6.
-  **Browser-Sichttest (Panel 25) wartet auf Klaus.** _erledigt am: 2026-07-16_
+  **✅ Browser-Sichttest Panel 25 GRÜN (Klaus 2026-07-17):** Round-trip live korrekt — „Max Mustermann"
+  → `[[KUNDE_1]]`, EMAIL → `[[EMAIL_1]]`, IBAN → `[[IBAN_1]]`, **Betrag 100 EUR bleibt**, `rehydrate == Original`,
+  Anker-Tresor sauber getrennt. (Panel-24/25-Knopf-Fix PR #665 damit ebenfalls browser-bestätigt.)
+  _erledigt am: 2026-07-16 · Browser-Sichttest 2026-07-17_
 - [ ] **B6 — E2E Grad C: versiegelter Umschlag** · `Entscheid` `Bau` später · ⏱ ~2–3 Sitzungen
   Sealed box (X25519 → ECDH → HKDF → AES-GCM-256). Braucht Protokoll-Sprung 0.1 → 0.2, eigene Spec-Sitzung,
   laufenden BLP-Knoten. _erledigt am: _____
