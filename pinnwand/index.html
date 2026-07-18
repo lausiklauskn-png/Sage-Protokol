@@ -251,6 +251,11 @@
       <button id="dm-contacts" class="tbtn" title="Kontakte verwalten + Sicherheitsnummern">👤 Kontakte</button>
     </div>
     <div class="status" id="dm-status" style="margin-top:4px;">Tipp: Klick auf einen Absender-Namen merkt ihn als Kontakt (Freigabe). „Privat an" verschlüsselt den nächsten Zettel nur für diese Person.</div>
+    <div class="row" style="margin-top: 8px; gap: 8px; align-items:center;">
+      <label for="geraetename" style="opacity:.85;">🏷️ Gerätename:</label>
+      <input id="geraetename" type="text" maxlength="40" placeholder="z. B. Klaus-Handy (frei wählbar)" style="flex:1; min-width:140px;">
+    </div>
+    <div class="status" id="geraetename-hint" style="margin-top:4px;">Frei wählbarer Anzeige-Name auf deinen Zetteln (nur ein Hinweis, kein Vertrauens-Beweis; die Kennung bleibt daneben).</div>
   </div>
 
   <div class="card">
@@ -356,6 +361,21 @@ const fromHex = (h) => {
   return a;
 };
 const short = (hex) => hex.slice(0, 8) + '…' + hex.slice(-4);
+
+// ---- Gerätename (frei wählbarer Anzeige-Name, lokal, kein PII) ----
+// SICHERHEIT: nur Anzeige/Hinweis, NIE Vertrauen — immer zusammen mit der Kennung.
+const LS_GERAETENAME = 'sbkim_geraetename';
+function getGeraetename() { try { return (localStorage.getItem(LS_GERAETENAME) || '').trim().slice(0, 40); } catch { return ''; } }
+function setGeraetename(v) { try { localStorage.setItem(LS_GERAETENAME, String(v || '').trim().slice(0, 40)); } catch (_e) { /* */ } }
+// Absender-Anzeige: eigener Kontakt-Name (TOFU/B7) gewinnt > selbst-behaupteter
+// nick (markiert ~, „nicht geprüft") > nur Kennung — IMMER mit Kennung.
+function authorLabel(ev) {
+  const kennung = short(ev.pubkey);
+  try { if (typeof dmContacts === 'object' && dmContacts[ev.pubkey] && dmContacts[ev.pubkey].name) return dmContacts[ev.pubkey].name + ' · ' + kennung; } catch (_e) {}
+  const nk = (ev.tags || []).find((t) => t[0] === 'nick');
+  if (nk && nk[1]) return '~' + String(nk[1]).slice(0, 40) + ' · ' + kennung;
+  return kennung;
+}
 const esc = (s) => s; // textContent wird benutzt — kein HTML-Inject
 async function sha256Hex(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -543,6 +563,8 @@ async function buildEvent(content, extraTags = []) {
   const created_at = Math.floor(Date.now() / 1000);
   const kind = 1;
   const tags = [['t', TAG], ...extraTags];
+  const _nick = getGeraetename();
+  if (_nick) tags.push(['nick', _nick]);   // additiv, ignorierbar, kein PII-Zwang
   let outContent = content;
   if (dmRecipient) {
     // Privat an EINEN Empfänger (E2E). p-Tag = Empfänger (NIP-04-Konvention), damit
@@ -609,7 +631,7 @@ function renderQuestion(ev, relay) {
   const head = document.createElement('div');
   head.className = 'q-head';
   const who = document.createElement('span');
-  who.className = 'who mono'; who.textContent = short(ev.pubkey);
+  who.className = 'who mono'; who.textContent = authorLabel(ev);
   makeWhoClickable(who, ev.pubkey);
   head.appendChild(who);
   if (ev._dm) { const lk = document.createElement('span'); lk.className = 'who'; lk.style.color = 'var(--acc2,#8fd)'; lk.textContent = ' 🔒 privat · ' + contactName(ev._dm); head.appendChild(lk); }
@@ -671,7 +693,7 @@ function renderAnswer(ev, relay) {
   const head = document.createElement('div');
   head.className = 'a-head';
   const who = document.createElement('span');
-  who.className = 'who mono'; who.textContent = short(ev.pubkey);
+  who.className = 'who mono'; who.textContent = authorLabel(ev);
   makeWhoClickable(who, ev.pubkey);
   head.appendChild(who);
   if (ev._dm) { const lk = document.createElement('span'); lk.className = 'who'; lk.style.color = 'var(--acc2,#8fd)'; lk.textContent = ' 🔒 privat · ' + contactName(ev._dm); head.appendChild(lk); }
@@ -1285,6 +1307,14 @@ $('boardkey-set').addEventListener('click', async () => {
   const cb = $('dm-contacts');
   if (cb) cb.addEventListener('click', openContacts);
   refreshRecipientSelect();
+})();
+
+// Gerätename-Feld: laden + beim Tippen speichern (reist als nick-Tag am Zettel mit).
+(function wireGeraetename() {
+  const gn = $('geraetename');
+  if (!gn) return;
+  gn.value = getGeraetename();
+  gn.addEventListener('input', () => setGeraetename(gn.value));
 })();
 
 $('ask').addEventListener('click', async () => {
