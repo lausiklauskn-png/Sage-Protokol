@@ -238,8 +238,20 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Dabei **ehrliche Match-Neueinstufung**: die reiche Beschreibung rückt den Werkzeug-Hub zur Infrastruktur (Sage 0.862 /
   Jasons-/Mein-Tresor 0.862 / family 0.849 ↑), die Inhalts-Knoten trennen sich ab (Rezeptbuch 0.796 · Mixarium 0.767
   < 0.80 → verified-spore) — das Protokoll unterscheidet nach Bedeutung (Werkzeug-Hub vs. Koch-/Getränke-Knoten). Toolpoints
-  SIGNAL seq 34 bittet Rezeptbuch/Mixarium um reziproke Neu-Einstufung. **Offen bleibt** der **Endknoten-Rollout**
-  (Mixarium/Rezeptbuch/BLP) + der Knopf je Repo — je Folge-Sitzung/Repo, mit Klaus' Schlüssel.
+  SIGNAL seq 34 bittet Rezeptbuch/Mixarium um reziproke Neu-Einstufung.
+  **Netzweite Code-Welle 2026-07-18 (diese Sitzung) — Andock-Werkzeug in ALLEN Endknoten auf v0.2+Schnipsel gehoben:**
+  der geteilte Andock-Wizard (`assets/siegel-inhalt.js`) rechnet jetzt beim Neu-Signieren die Satz-Schnipsel
+  (`embedSnippets`) und reicht `snippetVectors` an `generateOwnSpore` (beide Signier-Pfade, fail-soft). Byte-1:1
+  die v0.2-Module (02_spore + 03_embedding) in jeden Endknoten kopiert. Gemergt: **Mixarium** (#147),
+  **Rezeptbuch** (#334), **Tomys-Hub** (#115), **Kimboard** (#34, Drift-Guard-SHA→v0.2), **Kimseek** (#36),
+  **Kim-Bell** (#28, embedding-Drift geheilt), **family-project** (#90, LIVE), **Mein-Tresor** (#67) +
+  **Jasons-Tresor** (#125) — bei den Tresoren war die Version inline hartcodiert (`CONFIG.protocolVersion`) +
+  ein eigenes schlankes `web/tools/sbkim-embedding.js` (ohne `embedSnippets`) → beide auf v0.2/volles Modul
+  gehoben. **BookLedgerPro** (#274): **v0.2 OHNE Schnipsel** (Klaus-Entscheid) — BLPs Domänen-Vektor ist ein
+  Demo-Stub (kein echtes Modell), Schein-Schnipsel vermieden; `src/sbkim/spore.js` PROTOCOL_VERSION→0.2, Cache-Bump.
+  Alle Headless-Beweise grün (Smokes/Drift-Guards/`npm test` je Repo). **Offen bleibt** der **Operator-Schritt
+  (Klaus' Browser)**: pro Knoten die LIVE-Spore mit dem privaten Schlüssel neu signieren (App-Knopf/Andock-Werkzeug)
+  → committete `spore.json` wird v0.2. Bis dahin tragen die Live-Sporen 0.1 (handshake-kompatibel, sanfter Übergang).
 
 - [ ] **A11 — Such-Ergebnis → Frage → optional Andocken (Marktplatz-Kopplung Modul 22 ↔ 23)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   **Klaus' Befund 2026-07-11:** ein fremder Nutzer dockt nicht ungefragt an — er **sucht/fragt zuerst**. Heute sind
