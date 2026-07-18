@@ -119,6 +119,28 @@ Statuscodes: `—` (nichts) · `Schablone` · `Stub` · `Entwurf` · `Review` ·
 | Rezeptbuch | https://lausiklauskn-png.github.io/Mein-Rezeptbuch/ | Kochrezepte (Stamm 7) — Drinks + Snacks als Überraschungs-Plus (Gast 11) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege, siehe § Offene Querschnitts-Fragen „DeX vs. Tablet-Chrome") · **aktuelle `nodeId: BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_rezeptbuch` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `RHhposP0…` archiviert in PULS-Historie) · Spore live unter `https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json` (Commit `3bcc453`) mit `domainVector[384]` · App-SW Variante 3b · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `a1b9ded`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional, kein localStorage-Bypass mehr nötig — siehe Sitzungs-Eintrag „Live-Channel-Handshake"). `pingStatus: "live-channel"`. |
 | Mixarium | https://lausiklauskn-png.github.io/Mein-Mixarium/ | Cocktails / Drinks (Stamm 8) — Knabbereien / Fingerfood (Gast 2) | **integriert 2026-05-16, eigene Identität live 2026-05-16, Re-Andock 2026-05-17** (DeX-Chrome-IndexedDB-Verlust nach PR #75-Pflege) · **aktuelle `nodeId: JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY`** (frischer Ed25519-Schlüssel 2026-05-17 in eigener IndexedDB `sbkim_mixarium` der DeX-Chrome-Instanz; alte Tablet-Chrome-Identität `7xf0tt33_…` archiviert) · Spore live unter https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json (Commit `e9d0a45`) mit `domainVector[384]` · App-SW Variante 3b (`importScripts('./sbkim-sw.js')` im bestehenden `app-sw.js`) · Modul-05-v2 mit BroadcastChannel-Bridge eingebaut (`sbkim/05_anastomose-v2.js`, Commit `9d2f127`). **Cross-Knoten-Handshake 2026-05-17 via Channel-Pfad etabliert** (`outcome:"established"`, score 0.9544 bidirektional Mixarium → Rezeptbuch). `pingStatus: "live-channel"`. |
 
+## 2026-07-18 · B7 Browser-Sichttest GRÜN (Klaus, Kimboard DeX↔Handy) + Byte-Priv-Fix
+
+**Rolle:** Bausitzung (Sichttest-Begleitung + Fix). **Freibrief gilt.**
+
+Klaus hat B7 im Browser durchgetestet (Kimboard, DeX ↔ Handy, geführt Schritt für Schritt).
+**Ergebnis: ✅ GRÜN** — private Nachricht DeX → Handy live verschlüsselt gesendet + korrekt
+entschlüsselt (🔒), „blitzschnell" übers echte Relais `relay.family-projekt.de`. Damit ist die
+Ende-zu-Ende-Direktnachricht (B7) **live beidseitig bewiesen**, nicht nur headless.
+
+**Echter Bug gefangen (den der Headless-Smoke nicht sah):** beim Senden fror „Frage stellen"
+ein, der Zettel erschien auch lokal nicht. Ursache: die App reicht den privaten Nostr-Schlüssel
+als **Uint8Array** durch (`const priv = fromHex(privHex)`), `dm_crypto` `sharedX()` rief darauf
+`fromHex()` → `.substr` auf Bytes → `TypeError`. Der Smoke lief mit Hex-Text. **Fix:**
+`asPrivBytes()`/`asPubHex()`-Normalisierer in `pinnwand/modules/dm_crypto.js` (Priv als Uint8Array
+ODER Hex) — byte-1:1 auch in Kimboard. Smoke um 3 Byte-Priv-Proben erweitert → **16/16**;
+Pinnwand-Drift 61/61, Kimboard `npm test` 5/5. PRs Sage #679 + Kimboard #32 gemergt.
+
+Nebenbei bestätigt: der `toast()`-Folgefix sitzt („Das bist du selbst."-Hinweis erschien live).
+**Klaus-UX-Befund (offen, Folge-Bau):** mehrere Instanzen derselben App (zwei „Kimboard") sind in
+der Netz-Karte/im Raum nur an der kryptischen Kennung unterscheidbar → Wunsch: ein **Gerätename**
+(„Klaus-Handy"), der in Karte/Raum + auf den Zetteln mitreist. Nächster kleiner Bau.
+
 ## 2026-07-17 · B7 gebaut — Pinnwand E2E-Direktnachricht (ECDH + TOFU + Sicherheitsnummer)
 
 **Rolle:** Bausitzung (Semantik/Krypto-Strang B). **Freibrief gilt.**
