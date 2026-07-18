@@ -433,7 +433,7 @@ nichts wird heimlich gesendet.</small></p>
   }
   function todayISO(){ return new Date().toISOString().slice(0,10); }
 
-  var state = { identity:null, domainVector:null, isDemo:false, spore:null };
+  var state = { identity:null, domainVector:null, isDemo:false, spore:null, snippets:null };
 
   // ---- Schritt 1 ----
   async function genIdentity(){
@@ -484,6 +484,23 @@ nichts wird heimlich gesendet.</small></p>
       state.isDemo = false;
       setStatus("✓ Domain-Vektor (384-dim, echtes e5-Embedding) berechnet.");
       log("✓ domainVector berechnet (echtes Embedding, " + state.domainVector.length + " dim).");
+      // A10 „Schnipsel-Mittel" (Spore v0.2): den Domänen-Text zusätzlich SATZ-weise
+      // einbetten → snippetVectors. Fail-soft: bei Fehler bleibt state.snippets leer,
+      // die Spore wird trotzdem v0.2 signiert (reine Anzeige/Verwandt-Messung).
+      state.snippets = null;
+      try {
+        var sents = text.split(/(?<=[.!?])\s+/).map(function(s){ return s.trim(); })
+          .filter(function(s){ return s.length > 0; }).slice(0, 20);
+        if (sents.length) {
+          var sres = await pipe(sents.map(function(s){ return "passage: " + s; }), { pooling:"mean", normalize:true });
+          var snips = [];
+          for (var si = 0; si < sents.length; si++) {
+            snips.push({ vec: Array.prototype.slice.call(sres.data, si*384, si*384 + 384), text: sents[si] });
+          }
+          state.snippets = snips;
+          log("✓ " + snips.length + " Satz-Schnipsel eingebettet (v0.2).");
+        }
+      } catch(se){ state.snippets = null; log("Hinweis: Schnipsel übersprungen (" + se.message + ")."); }
     } catch(e){
       log("FEHLER Embedding: " + e.message);
       setStatus("Embedding fehlgeschlagen: " + e.message);
@@ -524,7 +541,7 @@ nichts wird heimlich gesendet.</small></p>
       endpoint: endpoint,
       id: state.identity.nodeId,
       nodeType: nodeType,
-      protocolVersion: "0.1",
+      protocolVersion: "0.2",
       publicKey: state.identity.publicKeyJwk
     };
     if (nodeName) unsigned.nodeName = nodeName;
@@ -532,6 +549,9 @@ nichts wird heimlich gesendet.</small></p>
     if (keywords.length) unsigned.domainKeywords = keywords;
     if (state.domainVector) unsigned.domainVector = state.domainVector;
     if (state.domainVector && state.isDemo) unsigned._demo = ["domainVector"];
+    // A10 (Spore v0.2): echte Satz-Schnipsel additiv (nur bei echtem, nicht-leerem
+    // Vektor — kein Schein-Schnipsel auf Demo-Vektoren; leer → Feld weg, 0.1-kompatibel).
+    if (state.snippets && state.snippets.length && !state.isDemo) unsigned.snippetVectors = state.snippets;
 
     var bytes = canonicalBytes(unsigned);
     var sigBuf = await crypto.subtle.sign({ name:"Ed25519" }, state.identity.kp.privateKey, bytes);
