@@ -252,6 +252,15 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Alle Headless-Beweise grün (Smokes/Drift-Guards/`npm test` je Repo). **Offen bleibt** der **Operator-Schritt
   (Klaus' Browser)**: pro Knoten die LIVE-Spore mit dem privaten Schlüssel neu signieren (App-Knopf/Andock-Werkzeug)
   → committete `spore.json` wird v0.2. Bis dahin tragen die Live-Sporen 0.1 (handshake-kompatibel, sanfter Übergang).
+  **✅ Operator-Welle praktisch durch 2026-07-18…20 (gegen origin/main verifiziert):** die committeten `spore.json`
+  von **elf** SBKIM-Knoten sind jetzt echte v0.2-Sporen (mit Satz-Schnipseln, gültiger Signatur, echtem e5-`domainVector`):
+  Sage + SB-KIMTool-Point (14.07.), dann die Endknoten 18.–19.07. — **Mein-Mixarium · Mein-Rezeptbuch · Jasons-Tresor ·
+  Mein-Tresor · Kim-Bell · Kimboard · Kimseek · Tomys-Hub · family-project**. **Private Brain** kam am 20.07. als **12. Knoten**
+  dazu (erste eigene Identität `6rmW2Q…`, v0.2, reziprok verifiziert). **Einzig offen: BookLedgerPro** — committete Spore
+  noch v0.1 (Klaus-Entscheid: bewusst ohne Schnipsel, da BLPs Domänen-Vektor ein Demo-Stub ist; die v0.2-Neu-Signatur
+  wartet auf einen kurzen Schlüssel-Lauf im Browser). **Nebenbefund:** beim Neu-Signieren haben mehrere Knoten frische
+  nodeIds bekommen (z.B. SB-KIMTool-Point `CyunQNDR…`→`JZ7MeMt…`, Mixarium `B7Fke9C…`→`YD68l2Sc…`, Kimboard
+  `Hc0t9z4t…`→`1f9Jb7c3…`) → `sbkim/NETZ-STAND.md` nachgezogen (nodeId-Spalte + Private-Brain-Zeile, 2026-07-20).
 
 - [ ] **A11 — Such-Ergebnis → Frage → optional Andocken (Marktplatz-Kopplung Modul 22 ↔ 23)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   **Klaus' Befund 2026-07-11:** ein fremder Nutzer dockt nicht ungefragt an — er **sucht/fragt zuerst**. Heute sind
