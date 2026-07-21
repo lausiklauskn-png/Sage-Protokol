@@ -67,7 +67,14 @@ async function readOwnAck() {
 }
 
 async function fetchJson(url) {
-  const res = await fetch(url, { redirect: "follow" });
+  let res;
+  // Netz-/DNS-/TLS-Fehler bei EINEM Peer dürfen den ganzen Wächter nicht
+  // umwerfen — sie werden zur Notiz, nicht zum Absturz (fail-soft).
+  try {
+    res = await fetch(url, { redirect: "follow" });
+  } catch (e) {
+    return { ok: false, status: "netz-fehler: " + (e && e.message ? e.message : String(e)) };
+  }
   if (!res.ok) return { ok: false, status: res.status };
   try {
     return { ok: true, json: await res.json() };
