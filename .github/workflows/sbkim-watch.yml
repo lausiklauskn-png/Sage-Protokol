@@ -33,7 +33,7 @@ jobs:
       - name: Node bereitstellen
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Briefkästen der Peers prüfen
         id: watch
@@ -46,29 +46,55 @@ jobs:
           script: |
             const body = process.env.SUMMARY || "Neues im SBKIM-Netz (Details siehe Action-Log).";
             const title = "🔔 SBKIM-Netz: Neues von einem Peer-Knoten";
-            // Vorhandenes offenes Wächter-Issue wiederverwenden statt zuzuspammen.
-            const existing = await github.rest.issues.listForRepo({
-              owner: context.repo.owner, repo: context.repo.repo,
-              state: "open", labels: "sbkim-watch", per_page: 1,
-            });
-            if (existing.data.length) {
-              await github.rest.issues.createComment({
+            // Transiente GitHub-API-Aussetzer (500/502/503/429) sind kein Grund,
+            // den ganzen Lauf rot zu färben (das löst nur eine Schreck-Mail aus).
+            // Deshalb: bei transientem Fehler mehrfach wiederholen; hält es weiter
+            // nicht, nur WARNEN statt werfen — der Lauf bleibt grün, das Neue steht
+            // ohnehin im Watch-Log. Echte, dauerhafte Fehler bleiben so nicht ganz
+            // stumm (Warnung sichtbar), aber sie kippen den Wächter nicht mehr um.
+            async function withRetry(fn, label) {
+              for (let i = 0; i < 4; i++) {
+                try { return await fn(); }
+                catch (e) {
+                  const s = e && e.status;
+                  const transient = s === 500 || s === 502 || s === 503 || s === 429;
+                  if (i < 3 && transient) {
+                    core.warning(`${label}: HTTP ${s} — Versuch ${i + 1}/4 fehlgeschlagen, neuer Versuch …`);
+                    await new Promise((r) => setTimeout(r, 2000 * (i + 1)));
+                    continue;
+                  }
+                  throw e;
+                }
+              }
+            }
+            try {
+              // Vorhandenes offenes Wächter-Issue wiederverwenden statt zuzuspammen.
+              const existing = await withRetry(() => github.rest.issues.listForRepo({
                 owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: existing.data[0].number, body,
-              });
-            } else {
-              // Label anlegen (idempotent), dann Issue öffnen.
-              try {
-                await github.rest.issues.createLabel({
+                state: "open", labels: "sbkim-watch", per_page: 1,
+              }), "Issue-Liste lesen");
+              if (existing.data.length) {
+                await withRetry(() => github.rest.issues.createComment({
                   owner: context.repo.owner, repo: context.repo.repo,
-                  name: "sbkim-watch", color: "6EE7D3",
-                  description: "Automatische SBKIM-Netz-Briefkasten-Meldung",
-                });
-              } catch (e) { /* existiert schon */ }
-              await github.rest.issues.create({
-                owner: context.repo.owner, repo: context.repo.repo,
-                title, body, labels: ["sbkim-watch"],
-              });
+                  issue_number: existing.data[0].number, body,
+                }), "Kommentar schreiben");
+              } else {
+                // Label anlegen (idempotent), dann Issue öffnen.
+                try {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    name: "sbkim-watch", color: "6EE7D3",
+                    description: "Automatische SBKIM-Netz-Briefkasten-Meldung",
+                  });
+                } catch (e) { /* existiert schon */ }
+                await withRetry(() => github.rest.issues.create({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  title, body, labels: ["sbkim-watch"],
+                }), "Issue öffnen");
+              }
+            } catch (e) {
+              core.warning("SBKIM-Wächter: Hinweis-Issue konnte nach mehreren Versuchen nicht geschrieben werden (GitHub-API: " +
+                ((e && e.message) ? e.message : e) + "). Das Neue steht im Watch-Log; der Lauf wird NICHT als Fehler gewertet.");
             }
         env:
           SUMMARY: ${{ steps.watch.outputs.summary }}
