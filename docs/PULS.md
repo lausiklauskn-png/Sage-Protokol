@@ -51,6 +51,10 @@ Auf Klaus' Zuruf (Icon/Knoten/Module-Runde):
   smoke_bau19 15/15, smoke_bau23b_korpus 24/24, smoke_bau06y 25/25, korpus `node --check` grün.
 - **Icon:** family-project-Marktplatz zieht das neue Private-Brain-Icon per URL
   automatisch — kein Eingriff nötig. Browser-Sichttests (Karte am Tablet) offen.
+- **Nachtrag:** **Tomys Hub** als 11. Endknoten in `status.json` nachgezogen (war nur
+  in NETZ-STAND + Such-Korpus + Karten-Seed, fehlte im Register). Ehrlich: kein
+  Sage-Match (0.7977 < 0.80), aber verified-match zu Family (0.8073) + BLP (0.8064),
+  live bidirektional bewiesen 2026-07-11. Jetzt 13 Endknoten. smoke_bau19 15/15, Pie unverändert.
 
 ## Als nächstes ✨
 
