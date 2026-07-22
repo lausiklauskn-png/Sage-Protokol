@@ -305,6 +305,39 @@ function addEdge(aId, bId) {
 SEED_NODES.forEach(function (s) { addNode(s.id, s.label, s.hub, false); });
 SEED_EDGES.forEach(function (p) { addEdge(p[0], p[1]); });
 
+// ---------- Auto-Nachzug der Knoten aus status.json (fail-soft) ----------
+// Haelt die Karte automatisch aktuell: neu verbundene Endknoten (Register in
+// ../status.json) erscheinen beim naechsten Laden von selbst, ohne Code-Aenderung.
+// Rein additiv + Anzeige (kein Urteil). Faellt bei Offline/Fehler still auf den
+// eingebetteten Seed oben zurueck (nie schlechter als vorher).
+var STATUS_URL = "../status.json";
+function normNodeName(s) {
+  var n = String(s || "").toLowerCase().replace(/[\s\-_.·•]/g, "");
+  if (n === "familyprojekt") n = "familyproject"; // DE/EN-Schreibweise vereinheitlichen
+  return n;
+}
+(function autoSyncNodesFromRegister() {
+  if (typeof fetch !== "function") return;
+  try {
+    var known = {};
+    nodes.forEach(function (n) { known[normNodeName(n.label)] = true; });
+    fetch(STATUS_URL, { cache: "no-store" })
+      .then(function (r) { return r && r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !Array.isArray(d.endknoten)) return;
+        d.endknoten.forEach(function (k) {
+          var nm = k && k.name;
+          if (!nm) return;
+          var key = normNodeName(nm);
+          if (known[key]) return;             // schon im Seed / bereits live
+          addNode("auto-" + key, nm, false);  // edgeless — CENTER_PULL haelt ihn im Bild
+          known[key] = true;
+        });
+      })
+      .catch(function () { /* offline/Fehler -> Seed steht, fail-soft */ });
+  } catch (e) { /* fail-soft */ }
+})();
+
 // ---------- Namens-Fusion (v1.3, Klaus' Doppel-Befund) ----------
 // Lebende Knoten melden sich mit nodeName — der wird auf die passende
 // Seed-Pille abgebildet statt einen Zwilling zu erzeugen. Mehrere lebende
