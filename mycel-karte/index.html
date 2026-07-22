@@ -314,6 +314,7 @@ var STATUS_URL = "../status.json";
 function normNodeName(s) {
   var n = String(s || "").toLowerCase().replace(/[\s\-_.·•]/g, "");
   if (n === "familyprojekt") n = "familyproject"; // DE/EN-Schreibweise vereinheitlichen
+  n = n.replace(/^mein/, "");                      // "Mein Rezeptbuch" == "Rezeptbuch" (Register-Kurzform)
   return n;
 }
 (function autoSyncNodesFromRegister() {
