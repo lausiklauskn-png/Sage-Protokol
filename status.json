@@ -256,6 +256,20 @@
       "url": "https://lausiklauskn-png.github.io/Kimboard/"
     },
     {
+      "name": "Tomys Hub",
+      "domain": "Digitaldruck/Stick/Werbeartikel",
+      "integrated": true,
+      "integratedAt": "2026-07-11",
+      "nodeId": "yaerFGfy7yAajFEce-sUiE6jo263TwkUmbsjIS8Js-8",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Tomys-Hub/main/sbkim/spore.json",
+      "stammCategories": ["Digitaldruck/Textildruck", "Stick/Stickerei", "Werbeartikel/Werbemittel"],
+      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
+      "pingStatus": "verified-match",
+      "matchScore": null,
+      "note": "Elfter Knoten im Mycel (Werbetechnik-Verbund: personalisierter Digitaldruck, Stickerei, Werbeartikel - Druckvorlagen fuer Tassen, T-Shirts, Handtuecher, Kissen, Fotopuzzles; Auftraege im WorkFloh). Spore von Klaus' Browser ueber das Siegel erzeugt (multilingual-e5-small, L2=1), reziprok verifiziert -> VALID. HUB-UNABHAENGIG (bedeutsam): Tomys hat KEINEN Sage-Match (Cosinus Sage<->Tomys 0.7977 < 0.80) - der Hub haette den Match gar nicht vermittelt. Stattdessen verified-match zu den fachverwandten Knoten Family Projekt (0.8073) und BookLedgerPro (0.8064) >= 0.80, offline nachgerechnet UND live bidirektional 'established' (Klaus' Browser 2026-07-11: Cross-Knoten-Bedeutungssuche 'bedruckte Tassen?' -> 5 Treffer aus Tomys' Katalog 0.80-0.84). Erster bewiesener Match OHNE den Hub Sage. Lebende Rendezvous-ID variiert (Adress-Wand, Modul 23).",
+      "url": "https://lausiklauskn-png.github.io/Tomys-Hub/"
+    },
+    {
       "name": "Private Brain",
       "domain": "Privates Daten-Gehirn",
       "integrated": true,
