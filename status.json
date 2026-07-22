@@ -254,6 +254,20 @@
       "matchScore": 0.8262,
       "note": "Zehnter Knoten im Mycel (semantische Pinnwand als Endknoten: Fragen/Notizen an ein geborgtes 'dummes Brett' (Nostr) heften, geraeteuebergreifend nach Bedeutung sortiert; Merken/Notizen - server-los im Browser). Aus der Pinnwand (pinnwand) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimboard/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimboard = 0.8262 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite.",
       "url": "https://lausiklauskn-png.github.io/Kimboard/"
+    },
+    {
+      "name": "Private Brain",
+      "domain": "Privates Daten-Gehirn",
+      "integrated": true,
+      "integratedAt": "2026-07-20",
+      "nodeId": "6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Privat-Brain/main/sbkim/spore.json",
+      "stammCategories": ["Privates Daten-Gehirn", "Semantische kombinierende Suche", "Mail-/Dokument-/Foto-/Notiz-Katalog"],
+      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
+      "pingStatus": "verified-spore",
+      "matchScore": null,
+      "note": "Zwoelfter Knoten im Mycel (privates zweites Gehirn: laesst die eigenen Daten - Mails, Dokumente, Fotos, Notizen - einmal durchlaufen, signiert sie, behaelt nur einen kleinen Bedeutungs-Katalog (Vektor + Steckbrief + Zeiger aufs Original) und laesst die Originale unangetastet; danach semantische kombinierende Suche - liest nur, schlaegt vor, bewegt nichts). Fundament byte-kopiert aus Company-Brain, fuer die Privatperson umgewidmet. Erste eigene Identitaet 2026-07-20 in Klaus' Browser erzeugt, Spore v0.2 mit echtem domainVector (L2=1) + 2 Satz-Schnipseln; aus raw/main headless reziprok verifiziert -> VALID. Cross-Knoten-Match-Score noch offen (verified-spore). DB-Schublade sbkim_privatbrain, Verbindung server-los (Modul 23), Standard aus (offline-first).",
+      "url": "https://lausiklauskn-png.github.io/Privat-Brain/"
     }
   ],
   "modules": [
@@ -316,7 +330,7 @@
       "id": "06",
       "name": "Heterokaryose",
       "score": "stub",
-      "siegel": "Code-Stub",
+      "siegel": "Code-Stub 2026-06 (gebaut, headless-gruen) — voll implementiert (fuenf Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis), Headless-Smoke tests/smoke_bau06y_transparent_slot_pfad.mjs 25/25 gruen. 'Code-Stub' heisst hier gebaut + headless-gruen, NICHT leer; nur der Browser-Sichttest wartet auf Klaus.",
       "abhaengig": [
         "05"
       ],

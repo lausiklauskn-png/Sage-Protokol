@@ -31,6 +31,27 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-22 — Karte + Knoten-Register + Modul-Status-Klarstellung
+
+Auf Klaus' Zuruf (Icon/Knoten/Module-Runde):
+- **Mycel-Karte** `mycel-karte/index.html`: Seed von 8 auf **13 Knoten** ergänzt
+  (Tomys, Kim-Bell, Kimseek, Kimboard, Private Brain), Kanten ehrlich nach
+  NETZ-STAND (PR #690, gemergt).
+- **Knoten-Register synchronisiert:** Private Brain als **12. Endknoten** in
+  `status.json` aufgenommen (`verified-spore`, matchScore noch offen); Such-Korpus
+  `sbkim/sage-knoten-korpus.js` um **Private Brain, Family Projekt, Tomys Hub**
+  ergänzt (jetzt 12 Einträge) — echte nodeIds aus den Sporen, keine erfundenen Daten.
+- **Modul-Status ehrlich klargestellt** (Klaus-Entscheid: Code-Stub behalten, aber
+  klarstellen): 05 Anastomose = `fertig` (Live-Handshake). 06 Heterokaryose bleibt
+  `score:stub`, aber `siegel` erklärt jetzt „Code-Stub = gebaut + headless-grün
+  (Smoke 25/25), NICHT leer; nur Browser-Sichttest offen". CLAUDE.md-Modultabelle
+  (00–09) für 05/06 korrigiert (waren fälschlich „spec ausstehend"). 21/24 waren
+  schon ehrlich beschriftet.
+- Tests: status.json valide (12 Endknoten), Pie unverändert (10 Code-Stub / 11 Fertig),
+  smoke_bau19 15/15, smoke_bau23b_korpus 24/24, smoke_bau06y 25/25, korpus `node --check` grün.
+- **Icon:** family-project-Marktplatz zieht das neue Private-Brain-Icon per URL
+  automatisch — kein Eingriff nötig. Browser-Sichttests (Karte am Tablet) offen.
+
 ## Als nächstes ✨
 
 Module mit Code-Stub, **Sichttest durch Klaus 2026-05-14 erledigt** —
