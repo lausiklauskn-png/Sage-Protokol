@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SBKIM — Netzstand &amp; „Sage real" (interaktiv)</title>
+<style>
+  :root{ --ink:#111; --mut:#555; --line:#bbb; --accent:#b00; }
+  *{ box-sizing:border-box; }
+  body{ font-family:"Segoe UI",Arial,Helvetica,sans-serif; color:var(--ink);
+        margin:28px 30px; font-size:12px; line-height:1.5; }
+  h1{ font-size:19px; margin:0 0 2px; }
+  h2{ font-size:15px; margin:22px 0 8px; padding-bottom:4px;
+      border-bottom:2px solid var(--accent); color:var(--accent); }
+  .sub{ color:var(--mut); font-size:11px; margin:0 0 4px; }
+  .legend{ font-size:10.5px; color:var(--mut); border:1px solid var(--line);
+           border-radius:6px; padding:7px 10px; margin:10px 0 4px; }
+  .item{ display:flex; gap:10px; padding:9px 2px; border-bottom:1px dotted var(--line);
+         page-break-inside:avoid; }
+  .body{ flex:1; }
+  .t{ font-weight:700; }
+  .code{ display:inline-block; min-width:34px; font-weight:700; color:var(--accent); }
+  .d{ color:#222; }
+  .meta{ color:var(--mut); font-size:10.5px; margin-top:2px; }
+  .tag{ display:inline-block; border:1px solid var(--line); border-radius:10px;
+        padding:0 7px; font-size:10px; color:var(--mut); margin-right:5px; }
+  .time{ display:inline-block; background:#eee; color:#222; border-radius:8px;
+        padding:0 7px; font-size:10px; font-weight:700; margin:0 6px;
+        -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .lines{ margin-top:5px; color:var(--mut); font-size:10.5px; }
+  .note{ background:#f6f6f6; border-left:3px solid var(--accent); padding:7px 10px;
+         font-size:11px; margin:8px 0 2px; }
+  ol.prio{ margin:6px 0 0 0; padding-left:0; list-style:none; }
+  ol.prio li{ padding:7px 2px; border-bottom:1px dotted var(--line); page-break-inside:avoid; }
+  ol.prio .n{ display:inline-block; width:22px; height:22px; line-height:22px;
+              text-align:center; background:var(--accent); color:#fff;
+              border-radius:50%; font-weight:700; font-size:11px; margin-right:8px;
+              -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  footer{ margin-top:18px; color:var(--mut); font-size:10px; text-align:center;
+          border-top:1px solid var(--line); padding-top:6px; }
+  input.cb{ flex:none; width:18px; height:18px; margin-top:1px; cursor:pointer; accent-color:#b00; }
+  .item.done .t{ text-decoration:line-through; color:#8a8a8a; }
+  .item.done .d{ color:#aaa; }
+  input.dt{ border:none; border-bottom:1px solid var(--line); min-width:108px;
+            font:inherit; font-size:10.5px; color:#111; padding:0 3px; background:transparent; }
+  input.dt:focus{ outline:none; border-bottom:1.5px solid var(--accent); }
+  .toolbar{ display:flex; align-items:center; gap:14px; margin:10px 0 2px; flex-wrap:wrap; }
+  .toolbar button{ font:inherit; font-size:12px; padding:6px 13px; border:1px solid var(--line);
+                   border-radius:7px; background:#fafafa; cursor:pointer; }
+  .toolbar button:hover{ background:#f0f0f0; }
+  .prog{ font-size:12.5px; font-weight:700; }
+  .prog b{ color:var(--accent); font-size:15px; }
+  .pbar{ height:9px; background:#eee; border-radius:6px; overflow:hidden; flex:1; min-width:120px; max-width:300px; }
+  .pbar i{ display:block; height:100%; background:var(--accent); width:0; transition:width .25s;
+           -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  @media print{ body{ margin:14mm 14mm; } .toolbar{ display:none; }
+                .note{ background:#f0f0f0 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+                input.cb{ -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style>
+</head>
+<body>
+
+<h1>SBKIM — Netzstand &amp; „Sage: Demo → real funktionierendes Protokoll"</h1>
+<p class="sub">Offene Punkte zum Anklicken &amp; Abhaken · Haken werden im Browser gespeichert · Stand: 22.07.2026 · gehört zum Brief <code>BRIEF_NETZWEIT_STAND_UND_SAGE_REAL.md</code></p>
+
+<div class="legend">
+  <b>So nutzt du die Liste:</b> Kästchen ankreuzen, wenn ein Punkt <b>gebaut/erledigt</b> ist.
+  Bei „<b>Test</b>"-Punkten trägst du zusätzlich ein, <b>wann</b> der Browser-Sichttest am Tablet war.
+  <span class="tag">Bau</span> = Bau-Sitzung · <span class="tag">Test</span> = dein Browser-Sichttest ·
+  <span class="tag">Spec</span> = erst Konzept · <span class="tag">Entscheid</span> = deine Richtungswahl vorher.
+  ⏱ Zeitrahmen grob. Alle Punkte starten <b>offen</b> (nichts vorab abgehakt).
+</div>
+
+<div class="toolbar">
+  <span class="prog" id="prog"></span>
+  <span class="pbar"><i id="barfill"></i></span>
+  <button id="btnPrint" type="button">🖨️ Drucken / als PDF</button>
+  <button id="btnDownload" type="button">⬇️ Als Datei speichern</button>
+  <button id="btnReset" type="button">↺ Zurücksetzen</button>
+</div>
+
+<h2>A · Sage: Demo → real funktionierendes Protokoll (Hauptziel)</h2>
+
+<div class="item"><input type="checkbox" class="cb" data-k="S1"><div class="body">
+  <div><span class="code">S1</span><span class="time">⏱ ~30 Min</span> <span class="t">Sage-Testlauf komplett — Ist-Stand ehrlich feststellen</span></div>
+  <div class="d">Alle <code>tests/smoke_*.mjs</code> + <code>node --test</code> fahren. Ergebnis wahrheitsgemäß je Suite notieren (grün/rot). Kein „grün" ohne Lauf.</div>
+  <div class="meta"><span class="tag">Test</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="S2"><div class="body">
+  <div><span class="code">S2</span><span class="time">⏱ ~30 Min</span> <span class="t">Demo-Bestandsaufnahme — was ist noch „Demo"?</span></div>
+  <div class="d">Liste aller Knoten in <code>status.json</code> mit <code>_demo</code>-<code>domainVector</code> bzw. <code>matchScore: null</code> (aktuell u.a. <b>BookLedgerPro, Tomys Hub, Private Brain</b>). Diese Liste ist die Messlatte für „real".</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="S3"><div class="body">
+  <div><span class="code">S3</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Simulation: Multi-Knoten (Rendezvous → Handshake → Q&amp;A)</span></div>
+  <div class="d">Mehrere Knoten in einem Node-Prozess, Mock-Relay (wie <code>smoke_bau23_rendezvous.mjs</code>): anmelden, finden, handshaken (Modul 05), gegenseitig fragen (04.C <code>queryLocal</code> + 23b Query), antworten. Prüfen: <code>outcome:"established"</code>, 0.80-Riegel, Treffer &gt; Schwelle.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="S4"><div class="body">
+  <div><span class="code">S4</span><span class="time">⏱ ~30–60 Min</span> <span class="t">Simulation: Hub-unabhängige Cross-Knoten-Q&amp;A als Regressionstest</span></div>
+  <div class="d">Den 2026-07-11-Meilenstein (Endknoten fragen sich <b>ohne</b> Sage) als reproduzierbaren <code>tests/sim_*.mjs</code> festschreiben, damit er nicht zurückfällt.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="S5"><div class="body">
+  <div><span class="code">S5</span><span class="time">⏱ ~30–60 Min</span> <span class="t">Simulation: Härtungs-Fälle sichern</span></div>
+  <div class="d">Antworter-Vorwärmen, Frage-Timeout, saubere Sporen, newest-per-name im Raum als Sim-Fälle festschreiben (aus A2/A3-Historie). <b>Ehrlich:</b> Sim ≠ Live — echtes Relay bleibt Klaus' Browser-Beweis.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="S6"><div class="body">
+  <div><span class="code">S6</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Demo → real: echte Vektoren + verifizierte Match-Scores</span></div>
+  <div class="d">Für die Demo-Knoten (BLP, Tomy, PB) echten <code>domainVector</code> (multilingual-e5-small, L2=1) + <b>berechneten, reziprok signatur-verifizierten</b> Cross-Knoten-Cosinus setzen — nicht <code>null</code>, nicht <code>_demo</code>. Danach <code>status.json</code> + <code>update_puls_pie.py</code>.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="A14"><div class="body">
+  <div><span class="code">A14</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">ensureStore-/ensureSlotStores-Race (Modul 05/01) beheben</span></div>
+  <div class="d">Echter Bug-Befund 2026-07-11. <b>Zuerst</b> unter den A-Punkten — Stabilitäts-Fundament fürs Protokoll.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="A11"><div class="body">
+  <div><span class="code">A11</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Such-Ergebnis → Frage → optional Andocken (Modul 22 ↔ 23)</span></div>
+  <div class="d">Marktplatz-Kopplung: aus einem Suchtreffer eine Netz-Frage/ein Andocken machen. Schließt die Lücke Suche → Netz.</div>
+  <div class="meta"><span class="tag">Spec</span><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="A12"><div class="body">
+  <div><span class="code">A12</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">„Antworten: an/aus"-Modell überdenken</span></div>
+  <div class="d">Erreichbarkeit · Reihenfolge · Auto-Toggle. Verbessert die reale Live-Erreichbarkeit der Knoten.</div>
+  <div class="meta"><span class="tag">Spec</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="A15"><div class="body">
+  <div><span class="code">A15</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Zwei-Stufen-Verbinden: Stöbern (anonym) ↔ Voll mitmachen (Identität)</span></div>
+  <div class="d">Niedrigschwelliger Einstieg (anonym stöbern) getrennt vom vollen Andocken mit Identität.</div>
+  <div class="meta"><span class="tag">Spec</span><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="A18"><div class="body">
+  <div><span class="code">A18</span><span class="time">⏱ ~1 Sitzung/Repo</span> <span class="t">Kanonischen Siegel-Andock-Wizard netzweit ausrollen</span></div>
+  <div class="d"><code>assets/siegel-inhalt.js</code> in jede App (Skill <code>status-leiste-siegel</code>). Jede App zeigt dasselbe Siegel + Andock-Werkzeug.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="B6"><div class="body">
+  <div><span class="code">B6</span><span class="time">⏱ ~2–3 Sitzungen</span> <span class="t">E2E Grad C: versiegelter Umschlag (echte Ende-zu-Ende-Verschlüsselung)</span></div>
+  <div class="d">Der eigentliche „real"-Krypto-Baustein — echte E2E-Verschlüsselung der Nutzlast (nicht nur Pseudonymisierung B5). <b>Zuerst Entscheid:</b> Protokoll-Bump ja/nein.</div>
+  <div class="meta"><span class="tag">Entscheid</span><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="B4"><div class="body">
+  <div><span class="code">B4</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Widget-Tresor „Increment 2 B" (sicherheits-sensibel)</span></div>
+  <div class="d">Eigene Sitzung. BYOK-Schlüssel at-rest (Skill <code>verschluesselter-schluessel-tresor</code>).</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="A5b"><div class="body">
+  <div><span class="code">A5b</span><span class="time">⏱ ~30 Min</span> <span class="t">Multi-Query-Sortierung auch in der Pinnwand (optional)</span></div>
+  <div class="d">Nur bei Bedarf. Kleiner Nachzug.</div>
+  <div class="meta"><span class="tag">Bau</span> optional</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<h2>B · Muttis-Rezeptbuch auf den neuesten Stand</h2>
+
+<div class="note"><b>Befund 22.07.:</b> Muttis-Rezeptbuch (v9.2) hat Theme + Hardreload, aber <b>kein SBKIM</b> (kein <code>sbkim/</code>, keine <code>status.json</code>, kein Spore). Mein-Rezeptbuch trägt die volle Integration.</div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="M1"><div class="body">
+  <div><span class="code">M1</span><span class="time">⏱ Klaus</span> <span class="t">Entscheid: Muttis = eigener SBKIM-Knoten ODER privat/kein Knoten?</span></div>
+  <div class="d">Architektonische Richtungswahl (erst Klaus fragen). Wird es Knoten → eigene Identität nötig (nächster Punkt).</div>
+  <div class="meta"><span class="tag">Entscheid</span> offen</div>
+  <div class="lines">entschieden am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="M2"><div class="body">
+  <div><span class="code">M2</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">(falls Knoten) Eigene Identität + eigener DB-Suffix + Spore</span></div>
+  <div class="d"><b>Nicht</b> derselbe Suffix wie Mein-Rezeptbuch (sonst geteilte-Origin-Kollision — Skill <code>saubere-netz-anmeldung</code>). Eigenes <code>sbkim/spore.json</code>, Briefkasten, Eintrag in Sage <code>status.json</code> + <code>sage-knoten-korpus.js</code>.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="M3"><div class="body">
+  <div><span class="code">M3</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">(falls Knoten) Modul-Rollout byte-1:1 + Siegel-Wizard</span></div>
+  <div class="d">Module 00–08, 15–17, 23 + Siegel (A18) aus Mein-Rezeptbuch/Sage byte-kopiert, Drift-Guard grün. Build über <code>python3 build.py</code> (Muttis nutzt QC + _CR-Block).</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="M4"><div class="body">
+  <div><span class="code">M4</span><span class="time">⏱ ~30–60 Min</span> <span class="t">Parität mit Mein-Rezeptbuch verifizieren + nachziehen</span></div>
+  <div class="d">grep-Vergleich beider <code>index.html</code>: Buch-Icon (Muttis mit rotem Rand), iridescent-Lesbarkeit (app-name/nav/overlay-heads dunkel), Hardreload, Navigation/Features. Fehlendes gezielt nachziehen.</div>
+  <div class="meta"><span class="tag">Test</span><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""> getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<h2>C · Netzweite App-Pflege („alle aktuell + verbessern")</h2>
+
+<div class="item"><input type="checkbox" class="cb" data-k="N1"><div class="body">
+  <div><span class="code">N1</span><span class="time">⏱ ~30 Min</span> <span class="t">Icon-Rollout-Kontrolle netzweit</span></div>
+  <div class="d">Alle Apps + Pages + Marktplatz zeigen die neuen Icons (diese Sitzung: PB, Tomy, Mixarium, 2 Pages, Marktplatz). Sichttest-Liste für Klaus.</div>
+  <div class="meta"><span class="tag">Test</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="N2"><div class="body">
+  <div><span class="code">N2</span><span class="time">⏱ ~30 Min</span> <span class="t">Hardreload-Knopf-Parität überall</span></div>
+  <div class="d">Prüfen, dass keine App den Hardreload-Knopf vermisst (Mein-WorkFloh war zuletzt der Nachzügler).</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="N3"><div class="body">
+  <div><span class="code">N3</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Fremdnutzer-/Marktplatz-Brille je App durchgehen</span></div>
+  <div class="d">Fail-soft für Fehlendes (kein Schlüssel/Mikro/Modul → App läuft weiter, kein toter Knopf), Kosten/Datenabfluss klar benannt, app-spezifische localStorage-Suffixe, offline-first. Vorlage für family-projekt.de-Marktplatz.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="N4"><div class="body">
+  <div><span class="code">N4</span><span class="time">⏱ laufend</span> <span class="t">Briefkasten-Sync (§11.6) bei Andock-Bezug</span></div>
+  <div class="d">Peer-<code>SIGNAL.json</code> lesen, quittieren (<code>ack</code>), eigenes <code>seq</code> pflegen — das Pushen IST das Signal.</div>
+  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<h2>D · Sichttests für Klaus (Browser · Tablet, je Hard-Reload)</h2>
+
+<div class="item"><input type="checkbox" class="cb" data-k="T1"><div class="body">
+  <div><span class="code">T1</span> <span class="t">Private Brain</span></div>
+  <div class="d">Empty-State-Synapse klein + luftig, App-Icon/Favicon neu.</div>
+  <div class="meta"><span class="tag">Test</span> offen</div>
+  <div class="lines">getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="T2"><div class="body">
+  <div><span class="code">T2</span> <span class="t">Tomy Hub</span></div>
+  <div class="d">Blaues „T" im Tab-Icon UND in der App-Kopfzeile (auch workfloh/bookledger).</div>
+  <div class="meta"><span class="tag">Test</span> offen</div>
+  <div class="lines">getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="T3"><div class="body">
+  <div><span class="code">T3</span> <span class="t">Mein Mixarium</span></div>
+  <div class="d">Intro zeigt das Flaschen-Icon; Tab-/Installations-Icon neu.</div>
+  <div class="meta"><span class="tag">Test</span> offen</div>
+  <div class="lines">getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="T4"><div class="body">
+  <div><span class="code">T4</span> <span class="t">Mixarium-Page / Rezeptbuch-Page</span></div>
+  <div class="d">Hero-/Kopf-Icon neu (Flasche bzw. eigenes Buch).</div>
+  <div class="meta"><span class="tag">Test</span> offen</div>
+  <div class="lines">getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="item"><input type="checkbox" class="cb" data-k="T5"><div class="body">
+  <div><span class="code">T5</span> <span class="t">Cross-Knoten-Suche live (nach Sage-Arbeit)</span></div>
+  <div class="d">An zwei Geträten: Frage raus → bedeutungs-sortierte Antwort aus dem Inhalt eines anderen Knotens zurück.</div>
+  <div class="meta"><span class="tag">Test</span> offen</div>
+  <div class="lines">getestet am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+</div></div>
+
+<div class="note"><b>Empfohlene Reihenfolge:</b></div>
+<ol class="prio">
+  <li><span class="n">1</span><b>S1 + S2</b> — Testlauf + Demo-Bestandsaufnahme (Ist-Stand ehrlich).</li>
+  <li><span class="n">2</span><b>S3–S5</b> — Simulationen bauen (Protokoll headless beweisen).</li>
+  <li><span class="n">3</span><b>A14</b> — echter Bug (ensureStore-Race) zuerst reparieren.</li>
+  <li><span class="n">4</span><b>S6 + B6</b> — Demo→real: echte Vektoren/Scores + echte E2E-Krypto.</li>
+  <li><span class="n">5</span><b>M1</b> — Muttis-Entscheid an Klaus, dann M2–M4.</li>
+  <li><span class="n">6</span><b>A11 · A12 · A15 · A18</b> + netzweite Pflege (C) nach Bedarf.</li>
+</ol>
+
+<footer>SBKIM · Netzstand &amp; „Sage real" · zum Brief BRIEF_NETZWEIT_STAND_UND_SAGE_REAL.md · 22.07.2026 · Haken bleiben lokal im Browser gespeichert.</footer>
+
+<script>
+(function(){
+  var KEY='sbkim_checkliste_netzstand_v1', state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+  [].forEach.call(document.querySelectorAll('.item'), function(it){
+    var cb=it.querySelector('input.cb'), code=cb?cb.getAttribute('data-k'):'x';
+    [].forEach.call(it.querySelectorAll('input.dt'), function(d,i){ d.setAttribute('data-k','dt_'+code+'_'+i); });
+  });
+  function upd(){
+    var cbs=document.querySelectorAll('input.cb'), done=0;
+    [].forEach.call(cbs, function(c){ if(c.checked) done++; });
+    var n=cbs.length, p=document.getElementById('prog');
+    if(p) p.innerHTML='<b>'+done+'</b> / '+n+' erledigt';
+    var bar=document.getElementById('barfill'); if(bar) bar.style.width=(n?Math.round(done/n*100):0)+'%';
+  }
+  [].forEach.call(document.querySelectorAll('input.cb'), function(c){
+    var k='cb_'+c.getAttribute('data-k');
+    if(state[k]) c.checked=true;
+    if(c.checked) c.closest('.item').classList.add('done');
+    c.addEventListener('change', function(){
+      state[k]=c.checked?1:0; c.closest('.item').classList.toggle('done', c.checked); save(); upd();
+    });
+  });
+  [].forEach.call(document.querySelectorAll('input.dt'), function(d){
+    var k=d.getAttribute('data-k'); if(state[k]) d.value=state[k];
+    d.addEventListener('input', function(){ state[k]=d.value; save(); });
+  });
+  var pr=document.getElementById('btnPrint'); if(pr) pr.onclick=function(){ window.print(); };
+  var dl=document.getElementById('btnDownload'); if(dl) dl.onclick=function(){
+    [].forEach.call(document.querySelectorAll('input.cb'), function(c){ if(c.checked){ c.setAttribute('checked',''); } else { c.removeAttribute('checked'); } });
+    [].forEach.call(document.querySelectorAll('input.dt'), function(d){ d.setAttribute('value', d.value||''); });
+    var html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+    var blob=new Blob([html], {type:'text/html;charset=utf-8'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='SBKIM-Netzstand-Checkliste_'+new Date().toISOString().slice(0,10)+'.html';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 1000);
+  };
+  var rs=document.getElementById('btnReset'); if(rs) rs.onclick=function(){
+    if(!confirm('Alle Haken und Daten wirklich zurücksetzen?')) return;
+    state={}; save();
+    [].forEach.call(document.querySelectorAll('input.cb'), function(c){ c.checked=false; c.closest('.item').classList.remove('done'); });
+    [].forEach.call(document.querySelectorAll('input.dt'), function(d){ d.value=''; });
+    upd();
+  };
+  upd();
+})();
+</script>
+</body>
+</html>
