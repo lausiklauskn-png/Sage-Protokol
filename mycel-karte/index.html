@@ -247,22 +247,33 @@ function applyTheme(i, resetColors) {
 }
 
 // ---------- Bekannter Netz-Stand (statischer Samen, ehrlich beschriftet) ----------
-// Quelle: docs/PULS.md § Endknoten + sbkim/NETZ-STAND.md (Stand 2026-07-07).
+// Quelle: docs/PULS.md § Endknoten + sbkim/NETZ-STAND.md (Stand 2026-07-22, 13 Knoten).
 // Live-Ereignisse ergänzen/befeuern diese Karte — sie ersetzen sie nicht.
 var SEED_NODES = [
-  { id: "sage",      label: "Sage",             hub: true  },
-  { id: "mixarium",  label: "Mein Mixarium",    hub: false },
-  { id: "rezeptbuch",label: "Mein Rezeptbuch",  hub: false },
-  { id: "family",    label: "family-project",   hub: false },
-  { id: "blp",       label: "BookLedgerPro",    hub: false },
-  { id: "toolpoint", label: "SB-KIMTool-Point", hub: false },
-  { id: "jtresor",   label: "Jasons-Tresor",    hub: false },
-  { id: "mtresor",   label: "Mein-Tresor",      hub: false }
+  { id: "sage",       label: "Sage",             hub: true  },
+  { id: "mixarium",   label: "Mein Mixarium",    hub: false },
+  { id: "rezeptbuch", label: "Mein Rezeptbuch",  hub: false },
+  { id: "family",     label: "family-project",   hub: false },
+  { id: "blp",        label: "BookLedgerPro",    hub: false },
+  { id: "toolpoint",  label: "SB-KIMTool-Point", hub: false },
+  { id: "jtresor",    label: "Jasons-Tresor",    hub: false },
+  { id: "mtresor",    label: "Mein-Tresor",      hub: false },
+  { id: "tomys",      label: "Tomys Hub",        hub: false },
+  { id: "kimbell",    label: "Kim-Bell",         hub: false },
+  { id: "kimseek",    label: "Kimseek",          hub: false },
+  { id: "kimboard",   label: "Kimboard",         hub: false },
+  { id: "privatbrain",label: "Private Brain",    hub: false }
 ];
 var SEED_EDGES = [ // bekannte etablierte Andocks/Beziehungen (Anzeige, kein Urteil)
   ["sage", "mixarium"], ["sage", "rezeptbuch"], ["sage", "family"],
   ["sage", "blp"], ["sage", "toolpoint"], ["sage", "jtresor"], ["sage", "mtresor"],
-  ["mixarium", "rezeptbuch"], ["mixarium", "family"]
+  ["sage", "kimbell"], ["sage", "kimseek"], ["sage", "kimboard"],
+  ["mixarium", "rezeptbuch"], ["mixarium", "family"],
+  ["tomys", "family"], ["tomys", "blp"]
+  // Tomys Hub: kein Sage-Match (0.7977 < 0.80) — verbunden über die fachverwandten
+  //   Werkzeug-/Buchhaltungs-Knoten (Family 0.8073 · BookLedgerPro 0.8064).
+  // Private Brain: verified-spore (2026-07-20), Cross-Knoten-Match noch offen
+  //   → als Knoten sichtbar, aber (noch) ohne etablierte Andock-Kante (CENTER_PULL hält ihn im Bild).
 ];
 
 // ---------- Graph-Zustand ----------
