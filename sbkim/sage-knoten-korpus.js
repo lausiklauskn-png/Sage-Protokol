@@ -49,6 +49,15 @@
     { label: "Kimboard", anchorId: "https://lausiklauskn-png.github.io/Kimboard/",
       nodeId: "Hc0t9z4te4kWoh7cBMtJAb7m6Nl17eBKxwPvbJ5Rqfk",
       text: "Pinnwand, Notizen, Merken, Frage-Antwort, dummes Brett, Nostr, geräteübergreifend, nach Bedeutung sortiert, Impulse und Verbindungen festhalten. Verbundener Knoten (verified-match; Cosinus Sage↔Kimboard 0.8262; Live-Handshake wartet auf Klaus' Browser-Lauf)." },
+    { label: "Family Projekt", anchorId: "https://family-projekt.de/",
+      nodeId: "XoYhjpgm0F_lWqmaygHEdStBUDGAl70wcOZR--NhhR4",
+      text: "Werkzeuge, Apps, Marktplatz, family-projekt.de, App-Bündelung, fremde Apps anbieten mit oder ohne Mycel, freies neutrales Netzwerk, Netzwerk der Werkzeuge, Plattform. Verbundener Knoten (verified-match; Cosinus Sage↔Family 0.8287)." },
+    { label: "Tomys Hub", anchorId: "https://lausiklauskn-png.github.io/Tomys-Hub/",
+      nodeId: "yaerFGfy7yAajFEce-sUiE6jo263TwkUmbsjIS8Js-8",
+      text: "Digitaldruck, Textildruck, Stick, Stickerei, Werbeartikel, Werbetechnik, Werbemittel, bedruckte Tassen, Untersetzer, Handtücher, Werbeflaggen, Werbung. Verbundener Knoten (verified-match zu Family 0.8073 und BookLedgerPro 0.8064; fachverwandte Werkzeug-Domäne — kein Sage-Match; live bidirektional established 2026-07-11)." },
+    { label: "Private Brain", anchorId: "https://lausiklauskn-png.github.io/Privat-Brain/",
+      nodeId: "6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg",
+      text: "Privates zweites Gehirn, eigene Daten, Mails, Dokumente, Fotos, Notizen, semantische kombinierende Suche über gemischte Daten, Bedeutungs-Katalog, offline, verschlüsselt, liest nur und schlägt vor. Verbundener Knoten (verified-spore 2026-07-20; Cross-Knoten-Match-Score noch offen)." },
   ];
 
   global.SAGE_KNOTEN_KORPUS = SAGE_KNOTEN_KORPUS;

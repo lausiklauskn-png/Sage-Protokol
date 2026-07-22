@@ -542,8 +542,8 @@ ungemergten Branches lebten.
 | 02 | `docs/components/02_spore.md` | spec ausstehend |
 | 03 | `docs/components/03_embedding.md` | spec ausstehend |
 | 04 | `docs/components/04_match.md` | spec ausstehend |
-| 05 | `docs/components/05_anastomose.md` | spec ausstehend |
-| 06 | `docs/components/06_heterokaryose.md` | spec ausstehend |
+| 05 | `docs/components/05_anastomose.md` | **Fertig** · `src/modules/05_anastomose.js` gebaut, Cross-Knoten-Handshake live 2026-05-16 (status.json `score: fertig`) |
+| 06 | `docs/components/06_heterokaryose.md` | **Code-Stub** (gebaut + headless-grün 25/25, `src/modules/06_heterokaryose.js`) · Browser-Sichttest offen — „Code-Stub" heißt gebaut, nicht leer |
 | 07 | `docs/components/07_apoptose.md` | spec ausstehend |
 | 08 | `docs/components/08_ui_demo.md` | spec ausstehend |
 | 09 | `docs/components/09_einbau_pwa.md` | spec ausstehend |
