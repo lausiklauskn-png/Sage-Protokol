@@ -345,18 +345,24 @@ function normNodeName(s) {
 // IDs desselben Namens (z.B. Tablet + Handy, oder frische Identität nach
 // Neuanmeldung) werden Aliasse EINER Pille (Anzeige ×N).
 var SEED_ALIASES = {
-  sage:      ["sage", "sage protokoll", "sage protokol"],
-  mixarium:  ["mein mixarium", "mixarium"],
-  rezeptbuch:["mein rezeptbuch", "rezeptbuch", "muttis rezeptbuch"],
-  family:    ["family project", "family projekt", "familyprojekt", "familyproject"],
-  blp:       ["bookledgerpro", "book ledger pro", "bookledger pro"],
-  toolpoint: ["sb kimtool point", "kimtool point", "sbkimtool point", "sb kimtoolpoint"],
-  jtresor:   ["jasons tresor", "jason tresor"],
-  mtresor:   ["mein tresor"]
+  sage:       ["sage", "sage protokoll", "sage protokol"],
+  mixarium:   ["mein mixarium", "mixarium"],
+  rezeptbuch: ["mein rezeptbuch", "rezeptbuch", "muttis rezeptbuch"],
+  family:     ["family project", "family projekt", "familyprojekt", "familyproject"],
+  blp:        ["bookledgerpro", "book ledger pro", "bookledger pro"],
+  toolpoint:  ["sb kimtool point", "kimtool point", "sbkimtool point", "sb kimtoolpoint", "sbkimtoolpoint"],
+  jtresor:    ["jasons tresor", "jason tresor"],
+  mtresor:    ["mein tresor"],
+  tomys:      ["tomys hub", "tomy hub", "tomys", "tomys workfloh"],
+  kimbell:    ["kim bell", "kimbell"],
+  kimseek:    ["kimseek"],
+  kimboard:   ["kimboard"],
+  privatbrain:["private brain", "privat brain", "privatbrain"]
 };
 function normName(x) { return String(x || "").toLowerCase().replace(/[^a-z0-9äöüß]+/g, " ").trim(); }
 function seedForName(name) {
-  var n = normName(name);
+  // Geraete-/Alias-Zusatz nach "·" abtrennen: "Sage · Klaus Tablet" -> "Sage".
+  var n = normName(String(name || "").split("·")[0]);
   if (!n) return null;
   for (var k in SEED_ALIASES) if (SEED_ALIASES[k].indexOf(n) !== -1) return nodeById[k] || null;
   return null;
