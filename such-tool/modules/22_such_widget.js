@@ -3481,6 +3481,7 @@
       source: t.source || "app",
       score: typeof t.score === "number" ? t.score : null,
       begruendung: t.begruendung || null,
+      nodeId: t.nodeId || null,   // A11B — Knoten-Treffer: gezielt fragen/verbinden
     };
   }
 
@@ -4029,6 +4030,81 @@
       urlEl.className = "sbkim-sw-detail-url";
       urlEl.textContent = item.url;
       detailOverlayEl.appendChild(urlEl);
+    }
+
+    // A11B-Inc-2 — Knoten-Detail-Frage: ist der Treffer ein Mycel-KNOTEN
+    // (nodeId vorhanden), kann man DIESEN Knoten gezielt fragen — der natürliche
+    // Erst-Kontakt-Fluss (erst fragen, dann verbinden). Fail-soft: ohne Live-Pfad
+    // (queryNode nicht injiziert / noch nicht „🌐 voll mitmachen") ein ehrlicher
+    // Hinweis statt totem Knopf. REINE Anzeige/Auswahl — der 0.80-Andock-Riegel
+    // + Kern (Modul 05) bleiben unberührt (nur die öffentliche queryNode-Fläche).
+    if (item.nodeId) {
+      var askWrap = doc.createElement("div");
+      askWrap.setAttribute("style", "margin-top:10px;padding-top:9px;border-top:1px solid rgba(154,167,182,.18)");
+      var askTitle = doc.createElement("div");
+      askTitle.setAttribute("style", "font-size:.78rem;font-weight:600;margin-bottom:5px");
+      askTitle.textContent = "Frage an diesen Knoten:";
+      askWrap.appendChild(askTitle);
+      if (typeof queryNodeFn === "function") {
+        var askIn = doc.createElement("input");
+        askIn.type = "text";
+        askIn.setAttribute("style", "width:100%;box-sizing:border-box;padding:6px 9px;border-radius:8px;" +
+          "border:1px solid rgba(154,167,182,.35);background:rgba(10,16,24,.5);color:#e8eef6;font:inherit;font-size:.78rem");
+        askIn.value = (inputEl ? inputEl.value : queryValue) || "";
+        askIn.setAttribute("placeholder", "z.B. " + (item.titel || "…"));
+        askIn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+        askWrap.appendChild(askIn);
+        var askBtn = makeBtn(doc, "sbkim-sw-aibtn sbkim-sw-detail-ask", "🔎 Antwort holen", "Diesen Knoten fragen");
+        var askOut = doc.createElement("div");
+        askOut.setAttribute("style", "font-size:.76rem;color:#9aa7b6;margin-top:7px;white-space:pre-wrap;word-break:break-word");
+        askOut.style.display = "none";
+        askBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+        askBtn.addEventListener("click", function (ev) {
+          if (ev && ev.preventDefault) ev.preventDefault();
+          if (ev && ev.stopPropagation) ev.stopPropagation();
+          var frage = (askIn.value || "").trim();
+          askOut.style.display = "";
+          if (!frage) { askOut.textContent = "Zuerst eine Frage eintippen."; return; }
+          while (askOut.firstChild) askOut.removeChild(askOut.firstChild);
+          askOut.textContent = "⏳ Frage unterwegs an " + (item.titel || "den Knoten") + " …";
+          askBtn.disabled = true;
+          Promise.resolve().then(function () { return queryNodeFn(item.nodeId, frage); })
+            .then(function (hits) {
+              askBtn.disabled = false;
+              hits = Array.isArray(hits) ? hits : [];
+              while (askOut.firstChild) askOut.removeChild(askOut.firstChild);
+              if (!hits.length) {
+                askOut.textContent = "Keine Live-Antwort (Knoten evtl. gerade zu — oder du bist noch nicht angemeldet: „🌐 Voll mitmachen“). Die Frage bleibt server-los offen.";
+                return;
+              }
+              var lead = doc.createElement("div");
+              lead.setAttribute("style", "font-weight:600;color:#c7d2de;margin-bottom:4px");
+              lead.textContent = "Antwort von " + (item.titel || "dem Knoten") + " (nach Bedeutung):";
+              askOut.appendChild(lead);
+              for (var j = 0; j < Math.min(hits.length, 5); j++) {
+                var h = hits[j];
+                var hrow = doc.createElement("div");
+                hrow.setAttribute("style", "padding:2px 0");
+                var pct = (h && typeof h.score === "number") ? (" · " + Math.round(h.score * 100) + " %") : "";
+                hrow.textContent = "• " + ((h && (h.label || h.text)) || "(Treffer)") + pct;
+                askOut.appendChild(hrow);
+              }
+              // A11B-Inc-3-Anker: „🤝 mit diesem Knoten verbinden" folgt hier (nach Antwort).
+            })
+            .catch(function (e) {
+              askBtn.disabled = false;
+              askOut.textContent = "Frage fehlgeschlagen (" + ((e && e.message) || e) + "). Evtl. noch nicht angemeldet: „🌐 Voll mitmachen“.";
+            });
+        });
+        askWrap.appendChild(askBtn);
+        askWrap.appendChild(askOut);
+      } else {
+        var askHint = doc.createElement("div");
+        askHint.setAttribute("style", "font-size:.74rem;color:#9aa7b6");
+        askHint.textContent = "Live-Fragen an einen Knoten brauchen einmal „🌐 Voll mitmachen“ (eigene Identität). Danach erscheint hier „🔎 Antwort holen“.";
+        askWrap.appendChild(askHint);
+      }
+      detailOverlayEl.appendChild(askWrap);
     }
 
     // [📌 Merken] / [📌 Gemerkt ✓] — Merken aus dem Overlay; gilt sofort.

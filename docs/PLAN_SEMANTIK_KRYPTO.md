@@ -288,6 +288,13 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Kern-Entscheid: Fragen/Andocken bleiben Stufe ③ „voll mitmachen" (Identität), Beobachter stöbern nur — reiner UI-/Fluss-Bau,
   kein Kern-/`askNode`-Eingriff (Ephemeral-Fragen bewusst zurückgestellt). Bau in Increments (A15-Inc-1 Zwei-Stufen-UI →
   A11B-Inc-2 Knoten-Detail-Karte im Widget → A11B-Inc-3 „🤝 verbinden" nach Antwort → Rollout). _Spec Teil B am: 2026-07-23_
+  **✅ A15-Inc-1 gebaut 2026-07-23** (Zwei-Stufen-Hinweis, siehe A15). **✅ A11B-Inc-2 gebaut 2026-07-23:** Klick auf einen
+  KNOTEN-Treffer (nodeId) im Such-Widget (Modul 22) öffnet die Detail-Karte mit „Frage an diesen Knoten" + Feld (vorbelegt
+  mit der Suchfrage) + „🔎 Antwort holen" → fragt gezielt via `queryNodeFn(nodeId, frage)` (schon injizierter Live-Pfad,
+  Modul 05), zeigt die bedeutungs-sortierte Antwort in der Karte. REINE Anzeige/Auswahl, 0.80-Riegel + Kern unberührt;
+  fail-soft (ohne Live-Pfad → ehrlicher Hinweis „einmal 🌐 voll mitmachen"). `merkItemOf` trägt jetzt `nodeId`. Byte-1:1
+  `such-tool/modules/22`, Smoke `smoke_bau22` **264/264** (Probe 52), bau22e/f/g + Standalone grün. **A11B-Inc-3 („🤝 verbinden"
+  nach Antwort) + netzweiter Rollout offen.** Browser-Sichttest wartet auf Klaus. _Inc-2 am: 2026-07-23_
 
 - [x] **A12 — „Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)** · `Spec` · **Spec abgeschlossen 2026-07-23**
   **Klaus' Befund 2026-07-11 (echte Grenze des server-losen Designs):** heute ist Antworten **opt-in/manuell**
