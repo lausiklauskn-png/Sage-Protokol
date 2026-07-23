@@ -293,8 +293,13 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   mit der Suchfrage) + „🔎 Antwort holen" → fragt gezielt via `queryNodeFn(nodeId, frage)` (schon injizierter Live-Pfad,
   Modul 05), zeigt die bedeutungs-sortierte Antwort in der Karte. REINE Anzeige/Auswahl, 0.80-Riegel + Kern unberührt;
   fail-soft (ohne Live-Pfad → ehrlicher Hinweis „einmal 🌐 voll mitmachen"). `merkItemOf` trägt jetzt `nodeId`. Byte-1:1
-  `such-tool/modules/22`, Smoke `smoke_bau22` **264/264** (Probe 52), bau22e/f/g + Standalone grün. **A11B-Inc-3 („🤝 verbinden"
-  nach Antwort) + netzweiter Rollout offen.** Browser-Sichttest wartet auf Klaus. _Inc-2 am: 2026-07-23_
+  `such-tool/modules/22`, Smoke `smoke_bau22` (Probe 52), bau22e/f/g + Standalone grün. _Inc-2 am: 2026-07-23_
+  **✅ A11B-Inc-3 gebaut 2026-07-23:** nach einer Antwort erscheint in der Detail-Karte **„🤝 mit diesem Knoten verbinden"** →
+  ruft die injizierte `connectNode(nodeId)`-Fläche (Sage-Wire `sageConnectNode` in `sbkim-init.js`: Modul 23 `discover` Raum →
+  Karte finden → `handshakeCard`, **0.80-Riegel entscheidet unverändert**), Ergebnis ehrlich benannt (✓ verbunden NN % /
+  „unter der Andock-Schwelle" / „noch nicht angemeldet"). REINE Anzeige/Auswahl, Kern (02/05/05b) unberührt, fail-soft
+  (ohne `connectNode` kein Knopf). `_meta.liveNodeConnect`. Byte-1:1 `such-tool/modules/22`, Smoke `smoke_bau22` **268/268**
+  (Probe 53). **Offen: netzweiter Rollout** (Modul 22 + 23-UI + `connectNode`-Wire in jede App). Browser-Sichttest wartet auf Klaus. _Inc-3 am: 2026-07-23_
 
 - [x] **A12 — „Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)** · `Spec` · **Spec abgeschlossen 2026-07-23**
   **Klaus' Befund 2026-07-11 (echte Grenze des server-losen Designs):** heute ist Antworten **opt-in/manuell**

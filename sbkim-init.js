@@ -143,6 +143,43 @@
     }
   }
 
+  // A11B-Inc-3 — Verbinden aus dem Such-Widget: wird Modul 22 als
+  // options.connectNode(nodeId) übergeben. Liest den Raum (Modul 23 discover),
+  // findet die LEBENDE Visitenkarte zum nodeId und handshaked sie
+  // (handshakeCard → Modul 05, der 0.80-Andock-Riegel entscheidet UNVERÄNDERT).
+  // BEWUSSTE Nutzer-Aktion (Knopf erscheint erst NACH einer Antwort). Fail-soft:
+  // ohne Modul 23 / Karte nicht im Raum → ehrliche Meldung, kein Bruch.
+  async function sageConnectNode(nodeId) {
+    try {
+      if (!window.SbkimRendezvous || typeof window.SbkimRendezvous.discover !== "function"
+          || typeof window.SbkimRendezvous.handshakeCard !== "function") {
+        return { ok: false, reason: "Verbinden hier nicht verfügbar (Modul 23 fehlt)." };
+      }
+      var d = await window.SbkimRendezvous.discover({});
+      var cards = (d && Array.isArray(d.cards)) ? d.cards : (Array.isArray(d) ? d : []);
+      var card = null;
+      for (var i = 0; i < cards.length; i++) {
+        var c = cards[i];
+        var cid = c && (c.nodeId || (c.spore && c.spore.id));
+        if (cid === nodeId) { card = c; break; }
+      }
+      if (!card) {
+        return { ok: false, reason: "Dieser Knoten ist gerade nicht im Raum (keine frische Visitenkarte). Bitte den Gegenknoten „🌐 Mit dem Netz verbinden“ drücken lassen und erneut versuchen." };
+      }
+      var r = await window.SbkimRendezvous.handshakeCard(card);
+      var oc = r && r.outcome;
+      return {
+        ok: oc === "established",
+        outcome: oc,
+        score: (r && typeof r.score === "number") ? r.score : undefined,
+        reason: r && r.reason,
+        nodeName: card.nodeName || null,
+      };
+    } catch (e) {
+      return { ok: false, reason: (e && e.message) ? e.message : String(e) };
+    }
+  }
+
   // createIdentity-Callback für Modul 23 (Rendezvous): erzeugt die LEBENDE
   // Sage-Spore, falls im aktuellen Browser noch keine da ist — gleiche CONFIG
   // wie der Andock-Wizard (window-lexikalisch geteiltes SBKIM_SEMANTIK_CONFIG,
@@ -413,6 +450,7 @@
         prepareCorpus: sageEnsureSuchkorpus,      // App-Bereich = Werkzeug-Bibliothek (gecacht, geteilt mit Modul 23)
         prepareNodeCorpus: sageBuildKnotenKorpus, // Knoten-Bereich = verbundene Knoten
         queryNode: sageQueryNode,                 // Knoten-Bereich LIVE übers Relais (Modul 05 queryNostr)
+        connectNode: sageConnectNode,             // A11B-Inc-3: „🤝 verbinden" nach der Antwort (Modul 23 handshakeCard)
         // Richter Default aus (gratis). Internet-Bereich: ohne SearXNG-URL
         // = neuer Tab; Klaus kann später eine eigene Instanz eintragen.
       });
