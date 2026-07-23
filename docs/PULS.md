@@ -144,6 +144,19 @@ A14-Nachlese erledigt.
 - **Einzige echte Demo-Grenze:** **BookLedgerPro** — committete Spore noch v0.1, Domänen-Vektor ist
   bewusst ein Demo-Stub (Klaus-Entscheid, kein echtes Modell); v0.2-Neu-Signatur wartet auf einen
   kurzen Schlüssel-Lauf im Browser (A10-Operator-Schritt).
+- **M1/M3 — Muttis-Rezeptbuch wird eigener SBKIM-Knoten** (Klaus-Entscheid 2026-07-23, Muttis PR #153
+  gemergt): 18 Module + noble + sbkim-sw **byte-1:1** aus dem Mein-Rezeptbuch/Sage-Kanon (SHA-identisch),
+  Glue (`sbkim-init.js`/`siegel-inhalt.js`) auf **eigenen `dbSuffix "muttisrezeptbuch"`** (≠ `rezeptbuch`
+  → keine geteilte-Origin-Kollision), nodeName „Muttis Rezeptbuch", eigene URLs; QC + SBKIM-Script-Block,
+  `build.py` grün, `node --check` grün; `status.json` mit `nodeId:null` (Identität = Klaus' Browser-Schritt).
+  **M2 ✅ ERLEDIGT 2026-07-23:** Klaus hat die Identität im Browser erzeugt (nodeId **`8TVDCTAc…`**), Spore
+  v0.2 übergeben → committet (Muttis PR #154). Reziprok verifiziert (id==SHA256(pub) VALID, Ed25519-Sig
+  VALID). **verified-match zu ALLEN Nachbarn:** Sage **0.8766** · Schwester Mein-Rezeptbuch **0.878** ·
+  Mixarium 0.845 · SB-KIMTool-Point 0.864 · Tresore 0.839 · BLP 0.823. Muttis als **14. Endknoten** in
+  Sage `status.json` + `sage-knoten-korpus.js` eingetragen (verified-match, matchScore 0.8766).
+  **✅ Browser-Sichttest GRÜN (Klaus 2026-07-23):** Muttis lädt, 🌐-Panel + Status-Lampen (LEBT/VERKEHR/
+  FREMD/SIEGEL) + Gerätename „Klaus Tablet" sichtbar, Identitäts-Erzeugung lief durch. **Offen:** Klaus'
+  verschlüsseltes Identitäts-Backup (Stabilität); M4 Parität-Check; optional Briefkasten/SW-Precache.
 
 ## Als nächstes ✨
 

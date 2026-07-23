@@ -183,25 +183,25 @@
 
 <div class="note"><b>Befund 22.07.:</b> Muttis-Rezeptbuch (v9.2) hat Theme + Hardreload, aber <b>kein SBKIM</b> (kein <code>sbkim/</code>, keine <code>status.json</code>, kein Spore). Mein-Rezeptbuch trägt die volle Integration.</div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="M1"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="M1" checked><div class="body">
   <div><span class="code">M1</span><span class="time">⏱ Klaus</span> <span class="t">Entscheid: Muttis = eigener SBKIM-Knoten ODER privat/kein Knoten?</span></div>
   <div class="d">Architektonische Richtungswahl (erst Klaus fragen). Wird es Knoten → eigene Identität nötig (nächster Punkt).</div>
-  <div class="meta"><span class="tag">Entscheid</span> offen</div>
-  <div class="lines">entschieden am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Entscheid</span> ✅ 2026-07-23 — Klaus: <b>eigener SBKIM-Knoten</b>.</div>
+  <div class="lines">entschieden am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="M2"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="M2" checked><div class="body">
   <div><span class="code">M2</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">(falls Knoten) Eigene Identität + eigener DB-Suffix + Spore</span></div>
   <div class="d"><b>Nicht</b> derselbe Suffix wie Mein-Rezeptbuch (sonst geteilte-Origin-Kollision — Skill <code>saubere-netz-anmeldung</code>). Eigenes <code>sbkim/spore.json</code>, Briefkasten, Eintrag in Sage <code>status.json</code> + <code>sage-knoten-korpus.js</code>.</div>
-  <div class="meta"><span class="tag">Bau</span> offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Bau</span> ✅ 2026-07-23 — eigener <code>dbSuffix "muttisrezeptbuch"</code>; Klaus hat die Identität im Browser erzeugt (nodeId <code>8TVDCTAc…</code>, id==SHA256(pub) + Ed25519-Sig VALID), Spore v0.2 committet (Muttis PR #154); als 14. Endknoten in Sage <code>status.json</code>+<code>sage-knoten-korpus.js</code> (verified-match, Sage↔Muttis <b>0.877</b>, Schwester Mein-Rez 0.878). Offen: verschlüsseltes Identitäts-Backup + optional Briefkasten.</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="M3"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="M3" checked><div class="body">
   <div><span class="code">M3</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">(falls Knoten) Modul-Rollout byte-1:1 + Siegel-Wizard</span></div>
   <div class="d">Module 00–08, 15–17, 23 + Siegel (A18) aus Mein-Rezeptbuch/Sage byte-kopiert, Drift-Guard grün. Build über <code>python3 build.py</code> (Muttis nutzt QC + _CR-Block).</div>
-  <div class="meta"><span class="tag">Bau</span> offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Bau</span> ✅ 2026-07-23 (Muttis PR #153) — 18 Module + noble + sbkim-sw byte-1:1 (SHA-identisch zur Quelle), Glue angepasst, QC+SBKIM-Block, <code>build.py</code> grün, <code>node --check</code> grün. Browser-Sichttest offen.</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="M4"><div class="body">
