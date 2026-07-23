@@ -6,6 +6,51 @@
 > haben. **Doku für nachfolgende Bauten** — verbindlich zu lesen, bevor jemand die
 > Match-Schwelle (`PROVIDER_MIN_MATCH = 0.80`) oder Modul 04 anfasst.
 
+## Stand 2026-07-23 — RELATEDNESS_CENTER v2 gebaut (Klaus' Entscheid „V2 bauen"): der 2026-06-28-Beschluss „v1 bleibt" ist ÜBERHOLT, weil die v0.2-Re-Sign-Welle v1 kaputt-gemacht hat
+
+**Wichtig — Tafel-Evolutions-Klausel gelebt, NICHT stillschweigend:** Der Beschluss vom
+2026-06-28 (tiefe Nacht, weiter unten) lautete **„`RELATEDNESS_CENTER` bleibt v1, der
+v2-Kandidat ist verworfen"** — *verbindlich, netzweit*. Dieser Beschluss ist **überholt**.
+
+**Was sich geändert hat (neue Evidenz):** Der 2026-06-28-v2-Kandidat war aus **32 breit
+gestreuten Browser-Texten / 7 synthetischen Knoten** gemessen und wurde verworfen, weil er
+die **volle** Schwellen-Trennung (inkl. Nachbar-Domänen) nicht besserte — v1 durfte bleiben,
+weil v1 damals **wenigstens die Schwestern oben rankte**. Seither ist die **v0.2-Re-Sign-Welle
+(Schnipsel-Mittel A10) an allen 14 Knoten durchgelaufen** und hat die Vektor-Geometrie
+verschoben. Messung 2026-07-23 über die **14 Live-v0.2-Domänen-Vektoren**:
+
+| Center | Point↔Sage (unverwandt, Hub↔Werkzeug) | Mixarium↔Rezeptbuch (echte Schwestern) | Reihenfolge |
+|---|---|---|---|
+| **v1** (7 Vor-v0.2, 2026-06-28) | **0.46** | 0.38 | **kaputt** — Unverwandtes steht ÜBER Schwestern |
+| **v2** (14 Live-v0.2, 2026-07-23) | 0.18 | 0.19 | Schwestern wieder oben |
+
+v1 **mis-rankt** jetzt (der einzige Zweck des Maßes — echte Verwandte oben — bricht). Das ist
+ein neuer Fehler, den der 2026-06-28-Beschluss noch nicht vor sich hatte → gültiger Anpassungs-
+Grund. **Klaus' Richtungs-Entscheid diese Sitzung: „V2 bauen"** (nach Vorlage der Zahlen).
+
+**Was v2 leistet — und was NICHT (ehrlich, deckungsgleich mit 2026-06-28):**
+- **Leistet:** die **engen Schwestern** (nahezu gleiche kuratierte Domäne — Jason↔MeinTresor
+  0.86, Rezeptbuch↔Muttis 0.78) stehen wieder klar oben; `RELATEDNESS_MIN 0.30` sitzt in einer
+  breiten Lücke (0.19..0.78) → `isRelated` für Schwestern sauber `true`, alles andere `false`.
+- **Leistet NICHT:** eine **volle** verwandt/unverwandt-Schwelle. Nachbar-Domänen (Essen↔Trinken
+  0.19) liegen im selben Band wie Hub↔Werkzeug-Überlapp — genau der 2026-06-28-Befund, unverändert.
+  `isRelated==true` heißt darum **„klar dieselbe Domäne", NICHT „fachverwandt".** Das echte
+  Fach-Verwandt-Urteil bleibt der **opt-in KI-Richter** (`hybridMatch`) — die zentrale
+  2026-06-28-Konsequenz **gilt weiter**, sie wird durch v2 nicht angetastet.
+
+**Umfang des Baus (rein Anzeige):** `RELATEDNESS_CENTER` neu gemittelt aus den 14 Live-
+`domainVector` (ohne Schnipsel), L2-normiert; `RELATEDNESS_MIN 0.30` unverändert (Kommentar
+auf v2-Messung nachgezogen). Byte-1:1 in `such-tool/` + `sbkim-bundle/` (Drift-Guards grün).
+`smoke_bau04e` zurück auf echte Trennungs-Prüfung (27/27), `smoke_bau22e`+`smoke_bau23` auf die
+enge Schwester Rezeptbuch↔Muttis umgestellt. **`PROVIDER_MIN_MATCH = 0.80` + PROTOCOL_VERSION
+unberührt** — der 0.80-Andock-Riegel ist der **rohe** Cosinus, v2 gatet weiterhin **nichts**.
+Kein SIGNAL/Re-Andock nötig (reine, additive Konstante). Browser-Sichttest wartet auf Klaus.
+
+**Der `Schnipsel-Mittel`-Lead (2026-06-28) bleibt** der Weg, falls „verwandt" später doch
+gratis werden soll — v2 ändert daran nichts, es heilt nur das v1-Mis-Ranking.
+
+---
+
 ## Stand 2026-07-01 (Abend) — A3 im Browser gemessen: NEGATIV (Kontext-Vorspann verbessert die Domänen-Trennung NICHT, er verschlechtert sie)
 
 **Kurz:** Klaus' Browser-Messung (Panel 04 `A3-NACHMESSUNG`, echte transformers.js-Vektoren)
@@ -141,6 +186,11 @@ doch gratis werden soll — dann erst an mehr echten Knoten absichern).
 - **`RELATEDNESS_CENTER` bleibt v1.** Der v2-Kandidat ist **verworfen** (durch eigene
   Freigabe-Prüfung gefallen). **Keine** netzweite Konstante geändert ⇒ **kein** SIGNAL/
   Rollout nötig (Brief-Schritte 2+3 entfallen, weil keine neue Konstante).
+  > **⚠️ ÜBERHOLT 2026-07-23 (siehe Stand oben):** Dieser „v1 bleibt"-Punkt galt, solange v1
+  > die Schwestern wenigstens oben rankte. Nach der v0.2-Re-Sign-Welle mis-rankt v1 (Unverwandtes
+  > über Schwestern) → Klaus' Entscheid „V2 bauen", v2 aus den 14 Live-Vektoren neu gemittelt.
+  > Der Rest dieses Abschnitts (Cosinus = Rangfolge, KI-Richter = echtes „verwandt", 0.80-Riegel
+  > unberührt) **bleibt gültig** — v2 tauscht nur den Mittelpunkt, es ändert die Rollen nicht.
 - **`PROVIDER_MIN_MATCH = 0.80` unverändert** (Andock-Boden, Modul 05; war nie Teil dieses
   Entscheids).
 - **„verbunden" (grob) = roher/zentrierter Cosinus**, gratis/offline, ehrliche **Rangfolge**
