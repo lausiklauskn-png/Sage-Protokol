@@ -329,7 +329,12 @@ async function run() {
   }
   console.log("");
   console.log(`Summe: ${pass} grün, ${fail} rot · ${pass + fail} insgesamt`);
-  if (fail > 0) process.exit(1);
+  // Sauber beenden: Modul 05 `init()` öffnet eine BroadcastChannel('sbkim')
+  // (same-origin Fallback-Bridge). Ein offener BroadcastChannel-Handle hält
+  // Nodes Event-Loop wach → der Prozess beendet sich sonst NICHT von selbst
+  // (der Test „hängt", obwohl alle Proben durchlaufen sind). Explizit exiten,
+  // genau wie smoke_bau05_nostr.mjs.
+  process.exit(fail > 0 ? 1 : 0);
 }
 
 run().catch(err => {
