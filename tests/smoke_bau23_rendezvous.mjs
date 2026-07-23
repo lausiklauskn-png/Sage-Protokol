@@ -46,11 +46,15 @@ const SbkimRendezvous = globalThis.SbkimRendezvous;
 const SbkimMatch = globalThis.SbkimMatch;
 
 // Echte Knoten-Domänen-Vektoren (gleiche Quelle wie smoke_bau04e/22e) — für den
-// realistischen Verwandtschafts-Score-Test (Mixarium↔Rezeptbuch verwandt,
-// Mixarium↔Sage/BookLedger unverwandt).
+// realistischen Verwandtschafts-Score-Test. RELATEDNESS_CENTER v2 (2026-07-23):
+// isRelated==true heißt jetzt „klar dieselbe Domäne" (enge Schwestern), NICHT mehr
+// „fachverwandt". Darum ist die verwandte Karte die enge Schwester Rezeptbuch↔Muttis
+// (v2 0.784, isRelated=true); Nachbar-Domänen (Essen↔Trinken) und Hub/Buchhaltung
+// liegen bewusst unter der Schwelle (isRelated=false).
 const VEC_SOURCES = {
   Sage: "sbkim/spore.json",
   Rezeptbuch: "sbkim/rezeptbuch_inbox.json",
+  Muttis: "sbkim/muttis_inbox.json",
   Mixarium: "sbkim/mixarium_inbox.json",
   BookLedger: "sbkim/bookledgerpro_inbox.json",
   Tomys: "sbkim/tomys_inbox.json",
@@ -277,10 +281,10 @@ async function run() {
     typeof SbkimRendezvous.relatednessForCards, typeof SbkimRendezvous.relatednessForCards === "function");
   record("Probe 12 — Modul 04 vorhanden (_meta.hasMatch)", "true",
     String(SbkimRendezvous._meta.hasMatch), SbkimRendezvous._meta.hasMatch === true);
-  if (VEC.Mixarium && VEC.Rezeptbuch && VEC.Sage && VEC.BookLedger) {
-    const ownSpore = makeSporeV("OWN-MIX", "mixarium", VEC.Mixarium); // eigene Domäne: Getränke
+  if (VEC.Muttis && VEC.Rezeptbuch && VEC.Sage && VEC.BookLedger) {
+    const ownSpore = makeSporeV("OWN-REZ", "rezeptbuch", VEC.Rezeptbuch); // eigene Domäne: Kochrezepte
     const cards = [
-      { nodeId: "A", nodeName: "Rezeptbuch", spore: makeSporeV("A", "rezeptbuch", VEC.Rezeptbuch), ts: 3, ageSec: 1 },
+      { nodeId: "A", nodeName: "Muttis", spore: makeSporeV("A", "muttis", VEC.Muttis), ts: 3, ageSec: 1 },
       { nodeId: "B", nodeName: "Sage", spore: makeSporeV("B", "sage", VEC.Sage), ts: 2, ageSec: 1 },
       { nodeId: "C", nodeName: "BookLedger", spore: makeSporeV("C", "blp", VEC.BookLedger), ts: 1, ageSec: 1 },
     ];
@@ -291,15 +295,15 @@ async function run() {
     record("Probe 12 — jede Karte bekommt einen relatedness-Wert (Anzeige)", "3 Zahlen",
       String(enr.filter((c) => typeof c.relatedness === "number").length),
       enr.filter((c) => typeof c.relatedness === "number").length === 3);
-    record("Probe 12 — Schwester Rezeptbuch isRelated:true (Essen↔Trinken)", "true",
-      String(byName("Rezeptbuch").isRelated), byName("Rezeptbuch").isRelated === true);
+    record("Probe 12 — enge Schwester Muttis isRelated:true (gleiche Domäne, v2 ~0.78)", "true",
+      String(byName("Muttis").isRelated), byName("Muttis").isRelated === true);
     record("Probe 12 — Hub Sage isRelated:false (fremde Domäne, Boden)", "false",
       String(byName("Sage").isRelated), byName("Sage").isRelated === false);
     record("Probe 12 — BookLedger isRelated:false (Buchhaltung, Boden)", "false",
       String(byName("BookLedger").isRelated), byName("BookLedger").isRelated === false);
-    record("Probe 12 — Rezeptbuch verwandter als Sage (zentriert)", "true",
-      String(byName("Rezeptbuch").relatedness > byName("Sage").relatedness),
-      byName("Rezeptbuch").relatedness > byName("Sage").relatedness);
+    record("Probe 12 — Muttis verwandter als Sage (zentriert)", "true",
+      String(byName("Muttis").relatedness > byName("Sage").relatedness),
+      byName("Muttis").relatedness > byName("Sage").relatedness);
   } else {
     record("Probe 12 — Referenz-Vektoren vorhanden", "ja", "fehlen (übersprungen)", true);
   }
@@ -317,21 +321,21 @@ async function run() {
     SbkimRendezvous.relatednessForCards([], null).length === 0);
 
   // ── Probe 14: discover() reicht die Anreicherung durch (end-to-end) ──
-  if (VEC.Mixarium && VEC.Rezeptbuch) {
+  if (VEC.Rezeptbuch && VEC.Muttis) {
     const relay14 = makeMockRelay();
     const ana14 = makeMockAnastomose();
     const t = Math.floor(Date.now() / 1000);
     relay14.publish({ kind: 1, created_at: t, tags: [["t", "sbkim-rdv"]],
-      content: JSON.stringify({ kind: "sbkim-presence", nodeId: "PEER-REZ", nodeName: "Rezeptbuch",
-        spore: makeSporeV("PEER-REZ", "rezeptbuch", VEC.Rezeptbuch), ts: t }) });
+      content: JSON.stringify({ kind: "sbkim-presence", nodeId: "PEER-MUT", nodeName: "Muttis",
+        spore: makeSporeV("PEER-MUT", "muttis", VEC.Muttis), ts: t }) });
     SbkimRendezvous.configure({ relayClient: relay14, anastomose: ana14,
-      spore: makeMockSpore(makeSporeV("OWN-MIX2", "mixarium", VEC.Mixarium)) });
+      spore: makeMockSpore(makeSporeV("OWN-REZ2", "rezeptbuch", VEC.Rezeptbuch)) });
     const r14 = await SbkimRendezvous.discover({ listenMs: 60 });
-    const rez = r14.cards.find((c) => c.nodeId === "PEER-REZ");
+    const mut = r14.cards.find((c) => c.nodeId === "PEER-MUT");
     record("Probe 14 — discover-Karte trägt relatedness (Anzeige)", "Zahl",
-      typeof (rez && rez.relatedness), rez && typeof rez.relatedness === "number");
-    record("Probe 14 — Schwester-Karte isRelated:true via discover", "true",
-      String(rez && rez.isRelated), !!(rez && rez.isRelated === true));
+      typeof (mut && mut.relatedness), mut && typeof mut.relatedness === "number");
+    record("Probe 14 — enge Schwester-Karte isRelated:true via discover", "true",
+      String(mut && mut.isRelated), !!(mut && mut.isRelated === true));
   }
 
   // ── Probe 15: Andock-Pfad UNBERÜHRT (Regression) ──

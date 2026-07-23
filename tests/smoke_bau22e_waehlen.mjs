@@ -40,6 +40,7 @@ function ok(cond, msg) {
 const SOURCES = {
   Sage: "sbkim/spore.json",
   Rezeptbuch: "sbkim/rezeptbuch_inbox.json",
+  Muttis: "sbkim/muttis_inbox.json",
   Mixarium: "sbkim/mixarium_inbox.json",
   Point: "sbkim/point_inbox.json",
   Jason: "sbkim/jason_inbox.json",
@@ -67,34 +68,36 @@ ok(typeof W.setRelatedOnly === "function", "setRelatedOnly ist eine Funktion");
 ok(W._meta.viewMode === "verbunden", "Default-Sicht = 'verbunden' (grob)");
 ok(W._meta.relatedOnly === false, "Default relatedOnly = false");
 
-// Treffer mit Inhalts-Vektor. Query = Mixarium (Getränke). Erwartung im
-// "verwandt"-Modus: Rezeptbuch (Schwester, Essen↔Trinken) oben + isRelated;
-// Sage (Hub) + BookLedger (Buchhaltung) unverwandt → unten / ausgeblendet.
+// Treffer mit Inhalts-Vektor. RELATEDNESS_CENTER v2 (2026-07-23): isRelated==true
+// heißt „klar dieselbe Domäne" (enge Schwestern), NICHT „fachverwandt". Query =
+// Rezeptbuch (Kochrezepte). Erwartung im "verwandt"-Modus: die enge Schwester
+// Muttis (gleiche Domäne, v2 ~0.78) oben + isRelated; Sage (Hub) + BookLedger
+// (Buchhaltung) unverwandt → unten / ausgeblendet.
 function makeTreffer(name, score) {
   return { label: name, score: score, anchorId: "n:" + name, source: "knoten", passageVec: V[name] };
 }
 
-if (V.Mixarium && V.Rezeptbuch && V.Sage && V.BookLedger) {
-  const queryVec = V.Mixarium;
+if (V.Muttis && V.Rezeptbuch && V.Sage && V.BookLedger) {
+  const queryVec = V.Rezeptbuch;
   // Roh-Reihenfolge bewusst „falsch" (fremde oben), damit Umsortieren sichtbar wird.
   const treffer = [
     makeTreffer("Sage", 0.84),
     makeTreffer("BookLedger", 0.83),
-    makeTreffer("Rezeptbuch", 0.82),
+    makeTreffer("Muttis", 0.82),
   ];
 
   console.log("\nProbe 1 — 'verbunden' lässt die Liste unverändert");
   const grob = W.rankView(treffer, queryVec, { mode: "verbunden" });
   ok(grob.length === 3, "alle drei Treffer bleiben (kein Filter)");
-  ok(grob[0].label === "Sage" && grob[2].label === "Rezeptbuch",
-    "Reihenfolge unverändert (Sage … Rezeptbuch)");
+  ok(grob[0].label === "Sage" && grob[2].label === "Muttis",
+    "Reihenfolge unverändert (Sage … Muttis)");
   ok(grob[0].relatedness === undefined, "kein relatedness-Feld im grob-Modus angehängt");
 
   console.log("\nProbe 2 — 'verwandt' sortiert echte Verwandte nach oben");
   const genau = W.rankView(treffer, queryVec, { mode: "verwandt" });
   ok(genau.length === 3, "ohne relatedOnly bleiben alle drei (nur umsortiert)");
-  ok(genau[0].label === "Rezeptbuch", "Schwester Rezeptbuch steht oben");
-  ok(genau[0].isRelated === true, "Rezeptbuch ist isRelated === true");
+  ok(genau[0].label === "Muttis", "enge Schwester Muttis steht oben");
+  ok(genau[0].isRelated === true, "Muttis ist isRelated === true");
   const others = genau.slice(1).map(t => t.label).sort();
   ok(others[0] === "BookLedger" && others[1] === "Sage", "Sage + BookLedger darunter");
   ok(genau.every((t, i) => i === 0 || t.isRelated === false),
@@ -104,7 +107,7 @@ if (V.Mixarium && V.Rezeptbuch && V.Sage && V.BookLedger) {
   console.log("\nProbe 3 — 'nur verwandte' blendet Fremde aus");
   const nurVerwandt = W.rankView(treffer, queryVec, { mode: "verwandt", relatedOnly: true });
   ok(nurVerwandt.length === 1, "nur die echte Verwandte bleibt übrig");
-  ok(nurVerwandt[0].label === "Rezeptbuch", "und das ist Rezeptbuch");
+  ok(nurVerwandt[0].label === "Muttis", "und das ist Muttis");
 
   console.log("\nProbe 4 — Roh-Treffer unangetastet (reine Anzeige, kopiert)");
   ok(treffer[0].label === "Sage" && treffer.length === 3 && treffer[0].relatedness === undefined,
@@ -127,8 +130,10 @@ console.log("\nProbe 6 — Andock-Pfad UNBERÜHRT (Regression)");
 ok(M.PROVIDER_MIN_MATCH === 0.80, "PROVIDER_MIN_MATCH bleibt 0.80 (Handshake-Boden)");
 // Nach der v0.2-Re-Sign-Welle (A10) handshaked ein Werkzeug/Hub-naher Knoten
 // weiter (BookLedger<->Sage 0.856 >= 0.80) — der Andock-Riegel ist unberührt,
-// „verwandt/verbunden" gatet nichts. (Inhalts-Knoten wie Mixarium fielen KORREKT
-// unter 0.80 → verified-spore, siehe Probe 1; das ist gewollt, kein Regress.)
+// „verwandt/verbunden" gatet nichts. (Register-Refresh 2026-07-23: ALLE Inhalts-/
+// Werkzeug-Knoten liegen ≥ 0.80 gegen Sage, auch Mixarium 0.822; der EINZIGE
+// echte <0.80-Fall vs Sage im Netz ist Tomys 0.7917. Der „verwandt"-Umschalter
+// (v2-Center) ist REINE Anzeige und unabhängig vom 0.80-Andock-Riegel.)
 if (V.BookLedger && V.Sage) {
   ok(M.isAboveProviderThreshold(M.match(V.BookLedger, V.Sage)) === true,
     "Werkzeug/Hub-nah match() >= 0.80 → Andock bricht NICHT (Wählen-Umschalter gatet nichts)");

@@ -31,6 +31,33 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Folge²) — RELATEDNESS_CENTER v2 gebaut (Klaus' Entscheid „V2 bauen")
+
+Auftrag: Brief `BRIEF_RELATEDNESS_CENTER_V2_…` Punkt 2.1. **Klaus-Entscheid diese Sitzung: „V2 bauen"**
+(nach Vorlage der Messung + der ehrlichen Grenze).
+
+- **Befund vorgelegt, bevor gebaut wurde:** v1-`RELATEDNESS_CENTER` (7 Vor-v0.2-Vektoren) mis-rankt
+  nach der v0.2-Re-Sign-Welle — unverwandt **Point↔Sage 0.46 > echte Schwestern Mixarium↔Rezeptbuch
+  0.38**. Auch ein v2 aus den **14 Live-v0.2-Vektoren** stellt **keine volle** Schwelle her (Nachbar-
+  Domänen Essen↔Trinken bleiben im Band der Hub↔Werkzeug-Überlappung) — deckungsgleich mit dem
+  2026-06-28-Befund. **Aber:** v2 stellt die **enge-Schwester-Rangfolge** wieder her.
+- **Gebaut (reine Anzeige):** `RELATEDNESS_CENTER` neu gemittelt aus den 14 Live-`domainVector`
+  (ohne Schnipsel), L2-normiert; `RELATEDNESS_MIN 0.30` unverändert (sitzt in der Lücke 0.19..0.78 →
+  Schwestern `isRelated=true`, alles andere `false`). `isRelated==true` heißt jetzt ehrlich **„klar
+  dieselbe Domäne", NICHT „fachverwandt"** — echtes Fach-Urteil = opt-in KI-Richter (`hybridMatch`).
+- **Tafel-Evolution NICHT stillschweigend:** der 2026-06-28-Beschluss „v1 bleibt, v2 verworfen" ist
+  in `docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md` (neuer Stand 2026-07-23 + „⚠️ ÜBERHOLT"-Marke am
+  alten Punkt) sauber überschrieben — neuer Grund: v1 mis-rankt nach v0.2, das gab es 06-28 noch nicht.
+- **Tabu gewahrt:** `PROVIDER_MIN_MATCH = 0.80` + PROTOCOL_VERSION unberührt (0.80-Riegel = ROHER
+  Cosinus, v2 gatet nichts). Byte-1:1 in `such-tool/`+`sbkim-bundle/` (Drift-Guards grün).
+- **Tests:** `smoke_bau04e` zurück von „nur Invarianten" auf **echte Trennungs-Prüfung** (27/27);
+  `smoke_bau22e`+`smoke_bau23` auf die enge Schwester **Rezeptbuch↔Muttis** umgestellt (Essen↔Trinken
+  ist unter v2 bewusst nicht mehr `isRelated`). **Suite 61/61 grün.**
+- **Offen:** Klaus' Browser-Sichttest der „verwandt"-Anzeige (deployt nach Merge). BLP v0.2 (2.2),
+  S5-Härtungs-Sims (2.3), A18/A11 unberührt.
+
+---
+
 ## Stand 2026-07-23 (Folge) — Register-Refresh gegen die LIVE-Sporen + Muttis als 14. Knoten (Hauptsitzung)
 
 Auftrag: Brief `BRIEF_NETZSTAND_REGISTER_REFRESH.md` (2.1 Register-Refresh, 2.3 Muttis).
