@@ -377,6 +377,11 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **✅ Spec (gemeinsam mit A11-Teil B) geschrieben 2026-07-23** → [`docs/SPEC_A11B_A15_ZWEISTUFEN_VERBINDEN.md`](SPEC_A11B_A15_ZWEISTUFEN_VERBINDEN.md).
   Drei Sichtbarkeits-Stufen: ① Stöbern (Liste, kein Modell/Identität) · ② Stöbern semantisch (Modell on-demand) ·
   ③ Voll mitmachen (Identität → auffindbar/fragen/andocken). Bau in Increments (A15-Inc-1 Zwei-Stufen-UI zuerst). _Spec am: 2026-07-23_
+  **✅ A15-Inc-1 gebaut 2026-07-23 (Klaus' Go „setzen wir das so um"):** Zwei-Stufen-Hinweis mit ehrlicher Kosten-Benennung
+  in `23_rendezvous_ui.js` (🔎 Nur stöbern = anonym, kein Download/keine Identität, nicht auffindbar · 🌐 Voll mitmachen =
+  einmal lokale Identität → auffindbar + fragen/verbinden). REINE Anzeige, kein Verhaltens-Eingriff, kein Kern-/Riegel-Eingriff.
+  Byte-1:1 src↔sbkim-bundle, Smoke `smoke_bau23_rendezvous_ui.mjs` **83/83** (2 neue A15-Proben). Browser-Sichttest + netzweiter
+  Rollout dieser UI-Datei = mit A11B-Inc-2/3 zusammen. _Inc-1 am: 2026-07-23_
 
 - [x] **A16 — Lernender Sortierer (selbst-verbessernd, on-device)** · `Bau` · **erledigt 2026-07-12**
   Klaus' Wunsch (Geist der BLP-„selbstlernenden Kalkulation", aber auf die SUCHE): das mitgelieferte Sortier-
