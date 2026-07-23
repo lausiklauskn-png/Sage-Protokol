@@ -16,6 +16,8 @@ Andock-Konventionen: INTERFACES §11
 > 20.07. als **12. Knoten** dazu (erste eigene Identität, reziprok verifiziert). **Einzig BookLedgerPro**
 > ist noch `v0.1` committet (Klaus-Entscheid: bewusst ohne Schnipsel, Domänen-Vektor = Demo-Stub;
 > v0.2-Neu-Signatur = kurzer Schlüssel-Lauf im Browser).
+> **♻️ REGISTER-REFRESH 2026-07-23:** alle Live-Sporen erneut von `main` mit dem Produktiv-Verifizierer geprüft (**14 Knoten VALID**, +Muttis Rezeptbuch als 14.). Die **Match-Scores in beiden Tabellen sind jetzt auf die verifizierten Live-Werte nachgezogen** (durchweg höher nach der v0.2-Welle). **Tomys** ist ehrlich `verified-spore` (Sage 0.7917 < 0.80, matcht Family/BLP statt Sage); **Private Brain** stieg auf `verified-match` (0.810 ≥ 0.80).
+>
 > **⚠️ nodeId-Drift:** beim Neu-Signieren haben die meisten Knoten **neue nodeIds** bekommen (nur Sage
 > `nysOZE3V…` und BLP unverändert). Die **nodeId-Spalte der Knoten-Tabelle unten ist auf den 20.07-Stand
 > nachgezogen**; die **Match-Scores** in der Tabelle + im Abschnitt „Bezeugte Cross-Knoten-Matches" stammen
@@ -49,27 +51,28 @@ Andock-Konventionen: INTERFACES §11
 | Knoten | Domäne | nodeId | Stufe | Beweis |
 |---|---|---|---|---|
 | **Sage-Protokol** (Hub + Knoten) | Mycel-Bibliothek | `nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA` | `live-direct` · **Spore v0.2** (11 Schnipsel, 2026-07-14) | eigene Spore `sbkim/spore.json` |
-| **Mein-Rezeptbuch** | Kochrezepte | `VtvtrDV4KhQv3Q9B9jwZL5UIc9W7xrsKLduZ9xqk9T8` | **`verified-match` 0.824068** (auch `live-direct`) | `sbkim/rezeptbuch_inbox.verify.md` |
-| **Mein-Mixarium** | Cocktails / Drinks | `YD68l2ScNzd-RWS8tCrL_JAtgpoPp3i3VKc4N9GKvbo` | **`verified-match` 0.806030** (auch `live-direct`) | `sbkim/mixarium_inbox.verify.md` |
-| **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `JZ7MeMtprz5XAiXF81agCQ1mmynZUUPl_gLerqR_Zrg` | **`verified-match` 0.848508** | `sbkim/point_inbox.verify.md` |
-| **Jasons-Tresor** | Jasons-Tresor-Bibliothek | `lbUthjt-outt4ns4NJQI2TaMzubX4BzQJGp_Odx_vek` | **`verified-match` 0.847784** | `sbkim/jason_inbox.verify.md` |
-| **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `feV3o4qJF58caokPJr_oajm9dcnKwGjVXzBum8M8icM` | **`verified-match` 0.847784** | `sbkim/meintresor_inbox.verify.md` |
-| **BookLedgerPro** | BookLedgerPro-Buchhaltung | `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ` | **`verified-match` 0.813525** (2026-06-21; cap/needs signiert → Drei-Schichten-bereit) | `sbkim/bookledgerpro_inbox.verify.md` |
-| **Family Projekt** | Werkzeuge / Apps / Marktplatz (`family-projekt.de`) | `XoYhjpgm0F_lWqmaygHEdStBUDGAl70wcOZR--NhhR4` | **`verified-match` 0.8287** (2026-06-27; echter `domainVector`, L2=1) | `sbkim/familyproject_inbox.verify.md` |
-| **Tomys Hub** | Digitaldruck / Stick / Werbeartikel (`lausiklauskn-png.github.io/Tomys-Hub/`) | `yaerFGfy7yAajFEce-sUiE6jo263TwkUmbsjIS8Js-8` | **`verified-match`** (2026-07-11; Spore im Browser über das Siegel erzeugt, reziprok verifiziert VALID; echter `domainVector`, L2=1; offline nachgerechnet: **Family 0.8073 · BookLedgerPro 0.8064** ≥ 0.80. Ehrlich: Sage 0.7977 < 0.80 → **kein** Match mit dem Hub, dafür mit den fachverwandten Werkzeug-/Buchhaltungs-Knoten. **✅ LIVE bewiesen (Klaus' Browser 2026-07-11): Tomys ⟷ BookLedgerPro bidirektional `established` übers Relais** — Cross-Knoten-Bedeutungssuche live („bedruckte Tassen?" → 5 Treffer aus Tomys' Katalog 0.80–0.84). Lebende Rendezvous-ID variiert (Adress-Wand, Modul 23)) | `Tomys-Hub/sbkim/spore.json` (verifiziert) + Mycel-Analyse-Rekord 2026-07-11 |
+| **Mein-Rezeptbuch** | Kochrezepte | `VtvtrDV4KhQv3Q9B9jwZL5UIc9W7xrsKLduZ9xqk9T8` | **`verified-match` 0.881144** (auch `live-direct`) | `sbkim/rezeptbuch_inbox.verify.md` |
+| **Mein-Mixarium** | Cocktails / Drinks | `YD68l2ScNzd-RWS8tCrL_JAtgpoPp3i3VKc4N9GKvbo` | **`verified-match` 0.822299** (auch `live-direct`) | `sbkim/mixarium_inbox.verify.md` |
+| **SB·KIMTool·Point** | SBKIM-Werkzeug-Point | `JZ7MeMtprz5XAiXF81agCQ1mmynZUUPl_gLerqR_Zrg` | **`verified-match` 0.899516** | `sbkim/point_inbox.verify.md` |
+| **Jasons-Tresor** | Jasons-Tresor-Bibliothek | `lbUthjt-outt4ns4NJQI2TaMzubX4BzQJGp_Odx_vek` | **`verified-match` 0.879330** | `sbkim/jason_inbox.verify.md` |
+| **Mein-Tresor** (Schwester v. Jasons-Tresor) | Mein-Tresor-Bibliothek | `feV3o4qJF58caokPJr_oajm9dcnKwGjVXzBum8M8icM` | **`verified-match` 0.873202** | `sbkim/meintresor_inbox.verify.md` |
+| **BookLedgerPro** | BookLedgerPro-Buchhaltung | `MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ` | **`verified-match` 0.855505** (2026-06-21; cap/needs signiert → Drei-Schichten-bereit) | `sbkim/bookledgerpro_inbox.verify.md` |
+| **Family Projekt** | Werkzeuge / Apps / Marktplatz (`family-projekt.de`) | `XoYhjpgm0F_lWqmaygHEdStBUDGAl70wcOZR--NhhR4` | **`verified-match` 0.854844** (2026-06-27; echter `domainVector`, L2=1) | `sbkim/familyproject_inbox.verify.md` |
+| **Tomys Hub** | Digitaldruck / Stick / Werbeartikel (`lausiklauskn-png.github.io/Tomys-Hub/`) | `yaerFGfy7yAajFEce-sUiE6jo263TwkUmbsjIS8Js-8` | **`verified-spore`** (Sage-Cosinus 0.791717 < 0.80 → **kein Sage-Match**; 2026-07-11; Spore im Browser über das Siegel erzeugt, reziprok verifiziert VALID; echter `domainVector`, L2=1; offline nachgerechnet: **Family 0.8073 · BookLedgerPro 0.8064** ≥ 0.80. Ehrlich: Sage 0.7977 < 0.80 → **kein** Match mit dem Hub, dafür mit den fachverwandten Werkzeug-/Buchhaltungs-Knoten. **✅ LIVE bewiesen (Klaus' Browser 2026-07-11): Tomys ⟷ BookLedgerPro bidirektional `established` übers Relais** — Cross-Knoten-Bedeutungssuche live („bedruckte Tassen?" → 5 Treffer aus Tomys' Katalog 0.80–0.84). Lebende Rendezvous-ID variiert (Adress-Wand, Modul 23)) | `Tomys-Hub/sbkim/spore.json` (verifiziert) + Mycel-Analyse-Rekord 2026-07-11 |
 | **Kim-Bell** | SBKIM-Netz-Glocke / Netz-Anmeldung (`lausiklauskn-png.github.io/Kim-Bell/`) | `Xg1xKoZ9vIgimEKlqeCDL_u4ptbRT6qvKplPAppyJfI` (committet); lebende Rendezvous-ID variiert | **`verified-match`** (2026-07-08; **Live-Cross-Knoten-Handshake im Browser bestätigt** — Klaus' Sichttest Sage ↔ Kim-Bell beidseitig „✓ ANDOCK ETABLIERT" über das echte Relais, nach Timeout-Fix 12 s → 5 min; Offline-Cosinus 0.8711 ≥ 0.80) | Klaus' Browser-Sichttest 2026-07-08 (Splitscreen Sage↔Kim-Bell) + `Kim-Bell/sbkim/spore.json` |
-| **Kimseek** | Semantische Bedeutungs-Suche (`lausiklauskn-png.github.io/Kimseek/`) | `Yd8mwHSDYkcyd1meDe-7DJa5PS4KrY5bsl8VDn6x-TM` | **`verified-match` 0.8553** (2026-07-09; echter `domainVector`, L2=1; Live-Handshake wartet auf Klaus' Browser-Lauf) | `Kimseek/sbkim/spore.json` (aus such-tool nach Kim-Bell-Muster) |
-| **Kimboard** | Pinnwand / Notizen / Merken (`lausiklauskn-png.github.io/Kimboard/`) | `1f9Jb7c3SEI8dUOtGR6_meMaOaPgbz2GWXMLmPCZMv8` | **`verified-match` 0.8262** (2026-07-09; echter `domainVector`, L2=1; Live-Handshake wartet auf Klaus' Browser-Lauf) | `Kimboard/sbkim/spore.json` (aus pinnwand nach Kim-Bell-Muster) |
-| **Private Brain** | Privates Daten-Gehirn (`lausiklauskn-png.github.io/Privat-Brain/`) | `6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg` | **`verified-spore`** (2026-07-20; erste eigene Identität im Browser erzeugt, Spore v0.2 mit echtem `domainVector` L2=1 + 2 Satz-Schnipseln; headless reziprok verifiziert ✔ VALID; Cross-Knoten-Match-Score noch offen) | `Privat-Brain/sbkim/spore.json` (verifiziert 2026-07-20) |
+| **Kimseek** | Semantische Bedeutungs-Suche (`lausiklauskn-png.github.io/Kimseek/`) | `Yd8mwHSDYkcyd1meDe-7DJa5PS4KrY5bsl8VDn6x-TM` | **`verified-match` 0.858884** (2026-07-09; echter `domainVector`, L2=1; Live-Handshake wartet auf Klaus' Browser-Lauf) | `Kimseek/sbkim/spore.json` (aus such-tool nach Kim-Bell-Muster) |
+| **Kimboard** | Pinnwand / Notizen / Merken (`lausiklauskn-png.github.io/Kimboard/`) | `1f9Jb7c3SEI8dUOtGR6_meMaOaPgbz2GWXMLmPCZMv8` | **`verified-match` 0.824488** (2026-07-09; echter `domainVector`, L2=1; Live-Handshake wartet auf Klaus' Browser-Lauf) | `Kimboard/sbkim/spore.json` (aus pinnwand nach Kim-Bell-Muster) |
+| **Private Brain** | Privates Daten-Gehirn (`lausiklauskn-png.github.io/Privat-Brain/`) | `6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg` | **`verified-match` 0.810427** (REGISTER-REFRESH 2026-07-23: Sage-Cosinus 0.810427 ≥ 0.80; 2026-07-20 Identität; erste eigene Identität im Browser erzeugt, Spore v0.2 mit echtem `domainVector` L2=1 + 2 Satz-Schnipseln; headless reziprok verifiziert ✔ VALID; Cross-Knoten-Match jetzt ≥0.80 (offline nachgerechnet; Live-Handshake wartet auf Klaus)) | `Privat-Brain/sbkim/spore.json` (verifiziert 2026-07-20) |
+| **Muttis Rezeptbuch** (privates Original; Mein-Rezeptbuch = öffentl. Klon) | Kochrezepte | `8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg` | **`verified-match` 0.876583** (2026-07-23; eigene GETRENNTE Identität + DB-Suffix `muttisrezeptbuch`; Spore v0.2 im Browser erzeugt, headless reziprok verifiziert ✔ VALID; Sage-Cosinus 0.876583 ≥ 0.80; Live-Handshake wartet auf Klaus) | `sbkim/muttis_inbox.verify.md` + `Muttis-Rezeptbuch/sbkim/spore.json` |
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 
 | Paar | Score | Datum |
 |---|---|---|
 | Mixarium ⟷ Rezeptbuch | 0.9544 | 2026-05-17 (Live-Channel-Handshake) |
-| Sage ⟷ SB·KIMTool·Point | **0.848508** | 2026-05-30 (erster vollständiger Forker-Andock) |
-| Sage ⟷ Jasons-Tresor | **0.847784** | 2026-06-06 (nach Identitätswechsel, echter Vektor) |
-| Sage ⟷ Mein-Tresor | **0.847784** | 2026-06-07 (echter Vektor; = Jasons, Schwester wortgleich) |
+| Sage ⟷ SB·KIMTool·Point | **0.899516** | 2026-05-30 (erster vollständiger Forker-Andock) |
+| Sage ⟷ Jasons-Tresor | **0.879330** | 2026-06-06 (nach Identitätswechsel, echter Vektor) |
+| Sage ⟷ Mein-Tresor | **0.873202** | 2026-06-07 (echter Vektor; = Jasons, Schwester wortgleich) |
 | Sage ⟷ Mein-Rezeptbuch | **0.824068** | 2026-06-07 (Identitäts-Abgleich uOpUBez…, echter Vektor) |
 | Sage ⟷ Mein-Mixarium | **0.806030** | 2026-06-07 (Identitäts-Abgleich B7Fke9C…, echter Vektor) |
 | Sage ⟷ Family Projekt | **0.8287** | 2026-06-27 (siebter Knoten, echter Vektor; reziprok bestätigt) |

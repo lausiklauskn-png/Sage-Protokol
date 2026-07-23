@@ -53,6 +53,7 @@ const VEC_SOURCES = {
   Rezeptbuch: "sbkim/rezeptbuch_inbox.json",
   Mixarium: "sbkim/mixarium_inbox.json",
   BookLedger: "sbkim/bookledgerpro_inbox.json",
+  Tomys: "sbkim/tomys_inbox.json",
 };
 const VEC = {};
 for (const [k, f] of Object.entries(VEC_SOURCES)) {
@@ -336,20 +337,22 @@ async function run() {
   // ── Probe 15: Andock-Pfad UNBERÜHRT (Regression) ──
   record("Probe 15 — PROVIDER_MIN_MATCH bleibt 0.80 (Handshake-Boden)", "0.8",
     String(SbkimMatch.PROVIDER_MIN_MATCH), SbkimMatch.PROVIDER_MIN_MATCH === 0.80);
-  // Nach der v0.2-Re-Sign-Welle (A10) handshaked ein Werkzeug/Hub-naher Knoten
-  // weiter (BookLedger<->Sage 0.856 ≥ 0.80) → der Andock-Riegel ist unberührt,
-  // der Verwandtschafts-Badge gatet nichts. Inhalts-Knoten (Mixarium 0.767)
-  // fielen KORREKT unter den Boden (verified-spore) — gewolltes Protokoll-Verhalten.
-  if (VEC.BookLedger && VEC.Sage) {
+  // REGISTER-REFRESH 2026-07-23: nach v0.2-Re-Sign liegen ALLE Inhalts-/Werkzeug-
+  // Knoten ≥ 0.80 gegen Sage — auch der Inhalts-Knoten Mixarium (0.822, früher
+  // fälschlich als <0.80 geführt). Der Verwandtschafts-Badge gatet weiter nichts;
+  // der Andock-Riegel (0.80) ist unberührt. Der EINZIGE echte <0.80-Fall vs Sage
+  // im ganzen Netz ist Tomys (0.7917) — andere Domäne (Werbetechnik/Digitaldruck),
+  // hub-unabhängig bewiesen 2026-07-11.
+  if (VEC.Mixarium && VEC.Sage) {
     const above = SbkimMatch.isAboveProviderThreshold(
-      SbkimMatch.match(new Float32Array(VEC.BookLedger), new Float32Array(VEC.Sage)));
-    record("Probe 15 — Werkzeug/Hub-nah match() ≥ 0.80 (Badge gatet nichts)", "true",
+      SbkimMatch.match(new Float32Array(VEC.Mixarium), new Float32Array(VEC.Sage)));
+    record("Probe 15 — Inhalts-Knoten Mixarium↔Sage ≥ 0.80 (0.822, Badge gatet nichts)", "true",
       String(above), above === true);
   }
-  if (VEC.Mixarium && VEC.Sage) {
+  if (VEC.Tomys && VEC.Sage) {
     const below = SbkimMatch.isAboveProviderThreshold(
-      SbkimMatch.match(new Float32Array(VEC.Mixarium), new Float32Array(VEC.Sage)));
-    record("Probe 15 — Inhalts-Knoten Mixarium↔Sage < 0.80 (verified-spore, A10)", "false",
+      SbkimMatch.match(new Float32Array(VEC.Tomys), new Float32Array(VEC.Sage)));
+    record("Probe 15 — andere Domäne Tomys↔Sage < 0.80 (0.7917, rejected-local)", "false",
       String(below), below === false);
   }
 

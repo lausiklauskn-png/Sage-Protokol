@@ -1,659 +1,678 @@
 {
- "$schema": "https://sage-protokol.example/schemas/status.v1.json",
- "name": "Sage-Protokol",
- "fullName": "Semantisch-Empfangendes Bidirektionales KI-Matching — Hub und Knoten zugleich",
- "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
- "protocolVersion": "0.2",
- "schemaVersion": "1",
- "lastUpdated": "2026-07-16",
- "branch": "main",
- "endknoten": [
-  {
-   "name": "Rezeptbuch",
-   "domain": "Kochrezepte",
-   "integrated": true,
-   "integratedAt": "2026-05-16",
-   "reIntegratedAt": "2026-06-07",
-   "nodeId": "uOpUBezUVbOMsVd2C9BkHW80agnLx5tCx_nIRy2KkXg",
-   "previousNodeIds": [
-    "BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY",
-    "RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI"
-   ],
-   "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json",
-   "stammCategories": [
-    "Vorspeisen",
-    "Suppen",
-    "Fleisch",
-    "Fisch",
-    "Vegetarisch",
-    "Kuchen",
-    "Desserts"
-   ],
-   "guestCategories": [
-    "Getränke",
-    "Smoothies & Shakes",
-    "Mocktails",
-    "Alkfr. Cocktails",
-    "Limonaden",
-    "Tees & Kaffees",
-    "Cocktails",
-    "Bowlen",
-    "Sirup & Basis",
-    "Knabbereien",
-    "Fingerfood"
-   ],
-   "pingStatus": "verified-match",
-   "matchScore": 0.824068,
-   "note": "Erster Endknoten (Kochrezepte), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Mixarium). IDENTITÄTS-ABGLEICH 2026-06-07: NETZ-STAND führte die alte Handshake-nodeId BSWxXmX… — Mein-Rezeptbuch hat aber eine neuere signierte Live-Identität uOpUBez… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= uOpUBez…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (BSWxXmX…, RHhposP0…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Rezeptbuch = 0.824068 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8241). Prüf-Vermerk: sbkim/rezeptbuch_inbox.verify.md.",
-   "url": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/"
+  "$schema": "https://sage-protokol.example/schemas/status.v1.json",
+  "name": "Sage-Protokol",
+  "fullName": "Semantisch-Empfangendes Bidirektionales KI-Matching — Hub und Knoten zugleich",
+  "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
+  "protocolVersion": "0.2",
+  "schemaVersion": "1",
+  "lastUpdated": "2026-07-23",
+  "branch": "main",
+  "endknoten": [
+    {
+      "name": "Rezeptbuch",
+      "domain": "Kochrezepte",
+      "integrated": true,
+      "integratedAt": "2026-05-16",
+      "reIntegratedAt": "2026-06-07",
+      "nodeId": "VtvtrDV4KhQv3Q9B9jwZL5UIc9W7xrsKLduZ9xqk9T8",
+      "previousNodeIds": [
+        "BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY",
+        "RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI",
+        "uOpUBezUVbOMsVd2C9BkHW80agnLx5tCx_nIRy2KkXg"
+      ],
+      "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json",
+      "stammCategories": [
+        "Vorspeisen",
+        "Suppen",
+        "Fleisch",
+        "Fisch",
+        "Vegetarisch",
+        "Kuchen",
+        "Desserts"
+      ],
+      "guestCategories": [
+        "Getränke",
+        "Smoothies & Shakes",
+        "Mocktails",
+        "Alkfr. Cocktails",
+        "Limonaden",
+        "Tees & Kaffees",
+        "Cocktails",
+        "Bowlen",
+        "Sirup & Basis",
+        "Knabbereien",
+        "Fingerfood"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.881144,
+      "note": "Erster Endknoten (Kochrezepte), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Mixarium). IDENTITÄTS-ABGLEICH 2026-06-07: NETZ-STAND führte die alte Handshake-nodeId BSWxXmX… — Mein-Rezeptbuch hat aber eine neuere signierte Live-Identität uOpUBez… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= uOpUBez…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (BSWxXmX…, RHhposP0…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Rezeptbuch = 0.824068 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8241). Prüf-Vermerk: sbkim/rezeptbuch_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId VtvtrDV4… (alte committete uOpUBezU… war Adress-Wand-stale); Sage-Cosinus neu = 0.881144 ≥ 0.80 → verified-match (vorher Register 0.824068). v0.2, 5 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/"
+    },
+    {
+      "name": "Mixarium",
+      "domain": "Cocktails / Drinks",
+      "integrated": true,
+      "integratedAt": "2026-05-16",
+      "reIntegratedAt": "2026-06-07",
+      "nodeId": "YD68l2ScNzd-RWS8tCrL_JAtgpoPp3i3VKc4N9GKvbo",
+      "previousNodeIds": [
+        "JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY",
+        "7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4",
+        "B7Fke9CYTR1BrC3xOXzEY5q9RuRH8xxHPUuqRHV3utA"
+      ],
+      "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json",
+      "stammCategories": [
+        "Cocktails",
+        "Mocktails",
+        "Alkfr. Cocktails",
+        "Smoothies & Shakes",
+        "Limonaden",
+        "Tees & Kaffees",
+        "Bowlen",
+        "Sirup & Basis"
+      ],
+      "guestCategories": [
+        "Knabbereien",
+        "Fingerfood"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.822299,
+      "note": "Zweiter Endknoten (Cocktails/Drinks), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Rezeptbuch). IDENTITÄTS-ABGLEICH 2026-06-07: alte Handshake-nodeId JOlHK31X… → neuere signierte Live-Identität B7Fke9C… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= B7Fke9C…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (JOlHK31X…, 7xf0tt33…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Mixarium = 0.806030 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8060). Ehrlich: zu den Tresoren liegt Mixarium bei 0.7884 < 0.80 (andere Domäne, kein Match — nichts grün-gerechnet). Prüf-Vermerk: sbkim/mixarium_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId YD68l2Sc… (alte committete B7Fke9CY… war Adress-Wand-stale); Sage-Cosinus neu = 0.822299 ≥ 0.80 → verified-match (vorher Register 0.80603). v0.2, 10 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
+    },
+    {
+      "name": "Sage",
+      "domain": "Mycel-Bibliothek",
+      "integrated": true,
+      "integratedAt": "2026-05-21",
+      "reSignedAt": "2026-07-14",
+      "protocolVersion": "0.2",
+      "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
+      "note": "Neu-Signier-Welle Spore v0.2 (2026-07-14, Klaus' Browser, wiederhergestellte Identität): spore.json auf protocolVersion 0.2 gehoben, 11 Satz-Schnipsel (snippetVectors) aus einer ausführlicheren Domänen-Beschreibung angehängt, echter domainVector 384-dim L2=1 neu berechnet. nodeId nysOZE3V… UNVERÄNDERT (Identität aus verschlüsseltem Backup vom 2026-05-21 wiederhergestellt, nachdem Browser-Daten gelöscht waren). Reziprok verifiziert in dieser Sitzung: id == base64url(SHA256(rawPub)), Ed25519-Signatur gültig, 11/11 Schnipsel-Vektoren 384-dim, kein PII. snippetVectors = reine Anzeige/Verwandt-Messung, 0.80-Andock-Riegel unberührt. Peer-Identitäten am 2026-07-14 quergeprüft: 8/10 Live-Sporen == committet (BookLedgerPro + Kim-Bell von hier nicht abrufbar, kein Beweis für Abweichung).",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json",
+      "stammCategories": [
+        "Protokoll-Doku",
+        "Mycel-Vokabular",
+        "Heilige Tafeln",
+        "Karten",
+        "INTERFACES",
+        "ARCHITEKTUR"
+      ],
+      "guestCategories": [
+        "Glossar-Wartung",
+        "Schwesternetz-Beobachtungen",
+        "Sitzungs-Briefe",
+        "Übergabeprotokolle"
+      ],
+      "pingStatus": "live-direct",
+      "url": "https://lausiklauskn-png.github.io/Sage-Protokol/"
+    },
+    {
+      "name": "SB-KIMTool-Point",
+      "domain": "SBKIM-Werkzeug-Point",
+      "integrated": true,
+      "integratedAt": "2026-05-30",
+      "nodeId": "JZ7MeMtprz5XAiXF81agCQ1mmynZUUPl_gLerqR_Zrg",
+      "previousNodeIds": [
+        "eC3jzoo9Oii04KiSYBXEWhPQzAe6ezmDFKDo1_i0zdw",
+        "CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY"
+      ],
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/SB-KIMTool-Point/main/sbkim/spore.json",
+      "stammCategories": [
+        "Werkzeugkiste",
+        "SBKIM-Module",
+        "Headless-Modell-Lauf",
+        "Markt-Siegel"
+      ],
+      "guestCategories": [
+        "Werkzeug-Kopie",
+        "Modul-Andock",
+        "Spore-Verifikation"
+      ],
+      "domainKeywords": [
+        "Werkzeugkiste",
+        "SBKIM-Module",
+        "Modell",
+        "Markt",
+        "Endknoten"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.899516,
+      "note": "Neue, dauerhaft gesicherte Identität (alte eC3jzoo9… war ungesichert/verloren). Spore mit ECHTEM domainVector neu signiert (kein _demo mehr) und reziprok verifiziert 2026-05-30: Signatur gültig, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, 9/9 Pflichtfelder, Manipulationsprobe fällt durch. Echter Cross-Knoten-Match Sage ⟷ SB-KIMTool = 0.848508 ≥ 0.80 (gegen die publizierte Spore nachgerechnet, identisch zu ihrem test/match.test.js). Pages-Endpoint github.io 403 von Sages Container aus (eigene Egress-Sperre für github.io); verifiziert über raw main. Prüf-Vermerk: sbkim/point_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId JZ7MeMtp… (alte committete CyunQNDR… war Adress-Wand-stale); Sage-Cosinus neu = 0.899516 ≥ 0.80 → verified-match (vorher Register 0.848508). v0.2, 0 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/",
+      "landingPage": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/"
+    },
+    {
+      "name": "Jasons-Tresor",
+      "domain": "Jasons-Tresor-Bibliothek",
+      "integrated": true,
+      "integratedAt": "2026-05-31",
+      "nodeId": "lbUthjt-outt4ns4NJQI2TaMzubX4BzQJGp_Odx_vek",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Jasons-Tresor/sbkim/spore.json",
+      "stammCategories": [],
+      "guestCategories": [],
+      "pingStatus": "verified-match",
+      "note": "Dritter Forker-Knoten. IDENTITAETSWECHSEL 2026-06-06: alte nodeId 7F_zNop... war Demo-Schluessel mit verlorenem Passwort -> einmalig neue Identitaet (E13GDzI...) im Browser erzeugt, alte hinfaellig (previousNodeIds). Neue Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= E13GDzI...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector jetzt ECHT (multilingual-e5-small, 384-dim, L2=1, kein _demo). Cross-Knoten-Match Sage <-> Jasons-Tresor via Modul 04 match = 0.847784 >= 0.80 -> verified-match. Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/jason_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId lbUthjt-… (alte committete E13GDzIp… war Adress-Wand-stale); Sage-Cosinus neu = 0.879330 ≥ 0.80 → verified-match (vorher Register 0.847784). v0.2, 3 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
+      "landingPage": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
+      "previousNodeIds": [
+        "7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs",
+        "E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM"
+      ],
+      "reIntegratedAt": "2026-06-06",
+      "matchScore": 0.87933
+    },
+    {
+      "name": "Mein-Tresor",
+      "domain": "Mein-Tresor-Bibliothek",
+      "integrated": true,
+      "integratedAt": "2026-06-06",
+      "nodeId": "feV3o4qJF58caokPJr_oajm9dcnKwGjVXzBum8M8icM",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Tresor/sbkim/spore.json",
+      "stammCategories": [
+        "JSON-Tresor",
+        "Jasons-Bibliothek",
+        "Schlüssel-Backup",
+        "AES-256-GCM-Verschlüsselung"
+      ],
+      "guestCategories": [
+        "Jason-Verwahrung",
+        "Schlüssel-Andock",
+        "Spore-Verifikation"
+      ],
+      "pingStatus": "verified-match",
+      "note": "Vierter Forker-Knoten, design-vereinfachte Schwester von Jasons-Tresor (byte-gleicher JasonLib-Kern, neues Dreh-Safe-Gesicht). Andock-Schritt 1 (Identität) 2026-06-06 → verified-spore. HOCHSTUFUNG verified-match 2026-06-07: Mein-Tresor hat echten domainVector (multilingual-e5-small, 384-dim, L2=1, kein _demo) eingebettet + Spore neu signiert (nodeId unverändert wRsGQou…). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Cross-Knoten-Match Sage ⟷ Mein-Tresor via Modul 04 Cosinus = 0.847784 ≥ 0.80 → verified-match (identisch zu Jasons-Tresor, weil Schwester mit wortgleichem Domänen-Text). EIGENER, dauerhafter Schlüssel (eigene nodeId, NICHT die der Schwester). Pages-Endpoint im Browser live; von Sages Container aus 403 (github.io-Egress-Sperre) — verifiziert über raw/main. Prüf-Vermerk: sbkim/meintresor_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId feV3o4qJ… (alte committete wRsGQouO… war Adress-Wand-stale); Sage-Cosinus neu = 0.873202 ≥ 0.80 → verified-match (vorher Register 0.847784). v0.2, 3 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Mein-Tresor/",
+      "landingPage": "https://lausiklauskn-png.github.io/Mein-Tresor/",
+      "reIntegratedAt": "2026-06-07",
+      "matchScore": 0.873202,
+      "previousNodeIds": [
+        "wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0"
+      ]
+    },
+    {
+      "name": "BookLedgerPro",
+      "domain": "BookLedgerPro-Buchhaltung",
+      "integrated": true,
+      "integratedAt": "2026-06-19",
+      "nodeId": "MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ",
+      "sporeUrl": "https://lausiklauskn-png.github.io/BookLedgerPro/sbkim/spore.json",
+      "stammCategories": [],
+      "guestCategories": [],
+      "pingStatus": "verified-match",
+      "matchScore": 0.855505,
+      "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 2026-06-20 ECHT nachgeliefert (multilingual-e5-small, passage-Praefix, L2=1) + Spore neu signiert -> Cross-Knoten-Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match (knapp, aber sauber ueber der Schwelle; Buchhaltung domaenenfern, kein Gruen-Rechnen). Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md). Drei-Schichten 2026-06-21: BLP-Spore traegt nun signierte capVector+needsVector (384-dim); reziprok VALID, domainVector-Cosinus neu 0.813525>=0.80 verified-match haelt. Sage-eigene cap/needs offen (Spore Re-Sign via Modul 02 in Klaus' Browser) -> bis dahin domainVector-Rueckfall. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId MyHVM7Pd… unverändert; Sage-Cosinus neu = 0.855505 ≥ 0.80 → verified-match (vorher Register 0.813525). v0.1, 0 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/BookLedgerPro/",
+      "landingPage": "https://lausiklauskn-png.github.io/BookLedgerPro/"
+    },
+    {
+      "name": "Family Projekt",
+      "domain": "family-projekt.de",
+      "integrated": true,
+      "integratedAt": "2026-06-27",
+      "nodeId": "XoYhjpgm0F_lWqmaygHEdStBUDGAl70wcOZR--NhhR4",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/family-project/main/sbkim/spore.json",
+      "stammCategories": [],
+      "guestCategories": [],
+      "pingStatus": "verified-match",
+      "matchScore": 0.854844,
+      "note": "Siebter Knoten im Mycel (Werkzeug-/App-Buendelung: freies neutrales Netzwerk + eigene Werkzeuge mit eigenen Seiten + Marktplatz fuer fremde Apps; semantische Bedeutungs-Suche, mehrsprachig, datenschutzfreundlich, offline-faehig). Spore von Klaus' Browser erzeugt (multilingual-e5-small, passage-Praefix, L2=1). Aus raw/main reziprok verifiziert 2026-06-27: 9/9 Pflichtfelder, id == base64url(sha256(rawPub)) unabhaengig nachgerechnet (= HLXUEJFW...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 384-dim, L2=1.000. Cross-Knoten-Cosinus Sage<->Family Projekt = 0.8287 >= 0.80 -> verified-match. Pruef-Vermerk: sbkim/familyproject_inbox.verify.md. Endpoint family-projekt.de (Hetzner) noch nicht live; Verifikation laeuft ueber raw/main. Gegenstelle fuer ersten Handshake = Sage (Quittung in sbkim/AUSTAUSCH-FamilyProjekt.md). REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId XoYhjpgm… (alte committete HLXUEJFW… war Adress-Wand-stale); Sage-Cosinus neu = 0.854844 ≥ 0.80 → verified-match (vorher Register 0.8287). v0.2, 2 Schnipsel.",
+      "url": "https://family-projekt.de/",
+      "landingPage": "https://family-projekt.de/",
+      "previousNodeIds": [
+        "HLXUEJFWHGt6DlRFgzvN4d_YdHRfnrehlVdRb4BHvAE"
+      ]
+    },
+    {
+      "name": "Kim-Bell",
+      "domain": "SBKIM-Netz-Glocke / Netz-Anmeldung",
+      "integrated": true,
+      "integratedAt": "2026-07-08",
+      "nodeId": "Xg1xKoZ9vIgimEKlqeCDL_u4ptbRT6qvKplPAppyJfI",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kim-Bell/main/sbkim/spore.json",
+      "stammCategories": [
+        "Netz-Anmeldung",
+        "Rendezvous",
+        "Identitaets-Verwaltung"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.884829,
+      "note": "Achter Knoten im Mycel (das eigenstaendige 'Mit dem Netz verbinden'-Werkzeug: saubere Identitaets-Hygiene, ID+Spore erzeugen, im gemeinsamen Raum anmelden, andere Knoten finden - server-los im Browser). Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1), committet nach Kim-Bell/sbkim/spore.json (oeffentlich, kein privater Schluessel). Live-Cross-Knoten-Handshake Sage <-> Kim-Bell im Browser bestaetigt 2026-07-08 (beidseitig 'ANDOCK ETABLIERT' ueber das echte Relais, nach Timeout-Fix 12 s -> 5 min). Cross-Knoten-Cosinus Sage <-> Kim-Bell = 0.8711 >= 0.80 -> verified-match. Beleg: Klaus' Browser-Sichttest (Splitscreen). REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId Xg1xKoZ9… (alte committete e9TlbEzx… war Adress-Wand-stale); Sage-Cosinus neu = 0.884829 ≥ 0.80 → verified-match (vorher Register 0.8711). v0.2, 2 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Kim-Bell/",
+      "previousNodeIds": [
+        "e9TlbEzxdL6UrlwCWjrTxwuWOLDXZ_AIvx12BMrhPaw"
+      ]
+    },
+    {
+      "name": "Kimseek",
+      "domain": "Semantische Bedeutungs-Suche",
+      "integrated": true,
+      "integratedAt": "2026-07-09",
+      "nodeId": "Yd8mwHSDYkcyd1meDe-7DJa5PS4KrY5bsl8VDn6x-TM",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kimseek/main/sbkim/spore.json",
+      "stammCategories": [
+        "Semantische Suche",
+        "Bedeutungs-Sortierung",
+        "Sprach-/Bild-Eingabe"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.858884,
+      "note": "Neunter Knoten im Mycel (semantisches Such-Werkzeug als Endknoten: versteht die Bedeutung/Absicht hinter einer Frage und ordnet Treffer nach Bedeutungs-Naehe; Spracheingabe, OCR, KI-Bruecke - server-los im Browser). Aus dem Such-Tool (such-tool) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimseek/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimseek = 0.8553 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId Yd8mwHSD… (alte committete I7qX13yu… war Adress-Wand-stale); Sage-Cosinus neu = 0.858884 ≥ 0.80 → verified-match (vorher Register 0.8553). v0.2, 2 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Kimseek/",
+      "previousNodeIds": [
+        "I7qX13yu4BEFIi8yd_5MepkC1b7sFAk2W17d5re5x8Y"
+      ]
+    },
+    {
+      "name": "Kimboard",
+      "domain": "Pinnwand/Notizen/Merken",
+      "integrated": true,
+      "integratedAt": "2026-07-09",
+      "nodeId": "1f9Jb7c3SEI8dUOtGR6_meMaOaPgbz2GWXMLmPCZMv8",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kimboard/main/sbkim/spore.json",
+      "stammCategories": [
+        "Pinnwand",
+        "Notizen/Merken",
+        "Frage-Antwort-Brett"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.824488,
+      "note": "Zehnter Knoten im Mycel (semantische Pinnwand als Endknoten: Fragen/Notizen an ein geborgtes 'dummes Brett' (Nostr) heften, geraeteuebergreifend nach Bedeutung sortiert; Merken/Notizen - server-los im Browser). Aus der Pinnwand (pinnwand) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimboard/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimboard = 0.8262 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId 1f9Jb7c3… (alte committete Hc0t9z4t… war Adress-Wand-stale); Sage-Cosinus neu = 0.824488 ≥ 0.80 → verified-match (vorher Register 0.8262). v0.2, 2 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Kimboard/",
+      "previousNodeIds": [
+        "Hc0t9z4te4kWoh7cBMtJAb7m6Nl17eBKxwPvbJ5Rqfk"
+      ]
+    },
+    {
+      "name": "Tomys Hub",
+      "domain": "Digitaldruck/Stick/Werbeartikel",
+      "integrated": true,
+      "integratedAt": "2026-07-11",
+      "nodeId": "yaerFGfy7yAajFEce-sUiE6jo263TwkUmbsjIS8Js-8",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Tomys-Hub/main/sbkim/spore.json",
+      "stammCategories": [
+        "Digitaldruck/Textildruck",
+        "Stick/Stickerei",
+        "Werbeartikel/Werbemittel"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-spore",
+      "matchScore": null,
+      "note": "Elfter Knoten im Mycel (Werbetechnik-Verbund: personalisierter Digitaldruck, Stickerei, Werbeartikel - Druckvorlagen fuer Tassen, T-Shirts, Handtuecher, Kissen, Fotopuzzles; Auftraege im WorkFloh). Spore von Klaus' Browser ueber das Siegel erzeugt (multilingual-e5-small, L2=1), reziprok verifiziert -> VALID. HUB-UNABHAENGIG (bedeutsam): Tomys hat KEINEN Sage-Match (Cosinus Sage<->Tomys 0.7977 < 0.80) - der Hub haette den Match gar nicht vermittelt. Stattdessen verified-match zu den fachverwandten Knoten Family Projekt (0.8073) und BookLedgerPro (0.8064) >= 0.80, offline nachgerechnet UND live bidirektional 'established' (Klaus' Browser 2026-07-11: Cross-Knoten-Bedeutungssuche 'bedruckte Tassen?' -> 5 Treffer aus Tomys' Katalog 0.80-0.84). Erster bewiesener Match OHNE den Hub Sage. Lebende Rendezvous-ID variiert (Adress-Wand, Modul 23). REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId unverändert; Sage-Cosinus neu = 0.791717 < 0.80 → pingStatus 'verified-spore' (verified-match verlangt Sage-Match ≥0.80, INTERFACES §11.2). Tomys' ≥0.80-Match besteht weiter zu Family/BLP (hub-unabhängig), nicht zu Sage. v0.2, 1 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Tomys-Hub/"
+    },
+    {
+      "name": "Private Brain",
+      "domain": "Privates Daten-Gehirn",
+      "integrated": true,
+      "integratedAt": "2026-07-20",
+      "nodeId": "6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Privat-Brain/main/sbkim/spore.json",
+      "stammCategories": [
+        "Privates Daten-Gehirn",
+        "Semantische kombinierende Suche",
+        "Mail-/Dokument-/Foto-/Notiz-Katalog"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.810427,
+      "note": "Zwoelfter Knoten im Mycel (privates zweites Gehirn: laesst die eigenen Daten - Mails, Dokumente, Fotos, Notizen - einmal durchlaufen, signiert sie, behaelt nur einen kleinen Bedeutungs-Katalog (Vektor + Steckbrief + Zeiger aufs Original) und laesst die Originale unangetastet; danach semantische kombinierende Suche - liest nur, schlaegt vor, bewegt nichts). Fundament byte-kopiert aus Company-Brain, fuer die Privatperson umgewidmet. Erste eigene Identitaet 2026-07-20 in Klaus' Browser erzeugt, Spore v0.2 mit echtem domainVector (L2=1) + 2 Satz-Schnipseln; aus raw/main headless reziprok verifiziert -> VALID. Cross-Knoten-Match-Score noch offen (verified-spore). DB-Schublade sbkim_privatbrain, Verbindung server-los (Modul 23), Standard aus (offline-first). REGISTER-REFRESH 2026-07-23: Live-Spore von main geprüft → ✔ VALID; Sage-Cosinus neu = 0.810427 ≥ 0.80 → verified-spore→verified-match (offline nachgerechnet wie Kimseek/Kimboard; Live-Handshake wartet auf Klaus). v0.2, 2 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Privat-Brain/"
+    },
+    {
+      "name": "Muttis-Rezeptbuch",
+      "domain": "Kochrezepte (hausgemacht)",
+      "integrated": true,
+      "integratedAt": "2026-07-23",
+      "nodeId": "8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Muttis-Rezeptbuch/sbkim/spore.json",
+      "stammCategories": [
+        "Vorspeisen",
+        "Suppen",
+        "Fleisch",
+        "Fisch",
+        "Vegetarisch",
+        "Kuchen",
+        "Desserts"
+      ],
+      "guestCategories": [
+        "Getränke",
+        "Smoothies & Shakes",
+        "Mocktails",
+        "Alkfr. Cocktails",
+        "Limonaden",
+        "Tees & Kaffees",
+        "Cocktails",
+        "Bowlen",
+        "Sirup & Basis",
+        "Knabbereien",
+        "Fingerfood"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.8766,
+      "note": "14. Endknoten (Klaus-Entscheid 2026-07-23): Muttis-Rezeptbuch als EIGENER SBKIM-Knoten mit von Mein-Rezeptbuch getrennter Identitaet (dbSuffix 'muttisrezeptbuch'). Module byte-1:1 aus Mein-Rezeptbuch/Sage-Kanon, Glue/QC angepasst (Muttis PR #153), Live-Spore v0.2 von Klaus im Browser erzeugt (Muttis PR #154). Reziprok verifiziert: id==base64url(SHA256(rawPub))==8TVDCTAc unabhaengig nachgerechnet, Ed25519-Signatur ueber kanonische Spore gueltig -> VALID. domainVector echt (384-dim e5, L2=1) + 5 Satz-Schnipsel. Modul-04-Cosinus Sage<->Muttis = 0.8766 >= 0.80 -> verified-match; verified-match zu ALLEN Nachbarn (Schwester Mein-Rezeptbuch 0.878, Mixarium 0.845, SB-KIMTool-Point 0.864, Tresore 0.839, BookLedgerPro 0.823). Offen: Klaus verschluesseltes Identitaets-Backup + Browser-Sichttest.",
+      "url": "https://lausiklauskn-png.github.io/Muttis-Rezeptbuch/"
+    }
+  ],
+  "modules": [
+    {
+      "id": "00",
+      "name": "Doku-Fenster",
+      "score": "stub",
+      "siegel": "Code-Stub",
+      "abhaengig": [],
+      "kurz": "Versteckte 5-Klick-Statusanzeige in Endknoten-PWAs — Code-Stub, sechs Funktionen (init/open/close/isOpen/getStatusSnapshot/recordSighttest), Modal mit Backdrop und MutationObserver-Mount, alleiniger Schreiber von sbkim_doku_meta, Quota-Frühwarnung (80% / 50 MiB) und TTL-Sweep-Knopf andocken"
+    },
+    {
+      "id": "01",
+      "name": "Storage",
+      "score": "stub",
+      "siegel": "Code-Stub",
+      "abhaengig": [],
+      "kurz": "IndexedDB-Wrapper für sbkim_*-Stores"
+    },
+    {
+      "id": "02",
+      "name": "Spore",
+      "score": "stub",
+      "siegel": "Code-Stub",
+      "abhaengig": [
+        "01"
+      ],
+      "kurz": "Ed25519-Identität, Singleton, base64url(sha256(rawPub))"
+    },
+    {
+      "id": "03",
+      "name": "Embedding",
+      "score": "fertig",
+      "siegel": "Live im Cross-Knoten-Handshake 2026-05-16",
+      "abhaengig": [],
+      "kurz": "Text → 384-dim Vektor (Xenova multilingual-e5-small). Live-Beweis 2026-05-16: domainVector beider Endknoten erzeugt, Cross-Knoten-Handshake erreicht Match-Score ≥ 0.80."
+    },
+    {
+      "id": "04",
+      "name": "Match",
+      "score": "fertig",
+      "siegel": "Sichttest 5/5 grün 2026-05-26 (Klaus, DeX-Chrome auf Galaxy Tab S6): Panel 04 Tests 11–15 alle live grün (Happy-Path Top 0.9501 + Mittel 0.8627 / Schwelle-Cut leere Liste / Top-k-Cut T1 0.9488 + T2 0.9144 / Provider-Pfad registriert=true 2 Treffer / Leerer Korpus beide 0 + provider_registriert=false). Headless-Smoke 43/43 grün, Regression 04.A 19/19 + 04.B 30/30 + 15.B 31/31 + 17 32/32 grün. Cross-Knoten-Such-Lücke geschlossen — Modul 15 Sub (b) op:\"query\"-Empfänger ruft jetzt live queryLocal.",
+      "abhaengig": [
+        "03"
+      ],
+      "kurz": "Cosine-Sim als Skalarprodukt (modus-frei). Bau 04.A `matchDimensions` sync (drei orthogonale Schichten). Bau 04.B `explainMatchLLM` async (Stufe-B-LLM-Pass gegen Anthropic-API). Bau 04.C `queryLocal` async (lokales Such-Feld-Backend, Default k=5, Cross-Knoten-Search-Hook auf Modul 15 Sub b) — sichtgetestet 2026-05-26."
+    },
+    {
+      "id": "05",
+      "name": "Anastomose",
+      "score": "fertig",
+      "siegel": "Cross-Knoten-Handshake live 2026-05-16",
+      "abhaengig": [
+        "02",
+        "04"
+      ],
+      "kurz": "Handshake zwischen Knoten — kanonisch signiert, bidirektional, Schwelle aus Modul 04. Live-Beweis 2026-05-16: outcome:\"established\" zwischen Mein-Mixarium und Mein-Rezeptbuch (SW-Bridge-Phantom-Cache umgangen via direktem receiveHandshake-Aufruf, offene Folge-Pflege)."
+    },
+    {
+      "id": "06",
+      "name": "Heterokaryose",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-06 (gebaut, headless-gruen) — voll implementiert (fuenf Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis), Headless-Smoke tests/smoke_bau06y_transparent_slot_pfad.mjs 25/25 gruen. 'Code-Stub' heisst hier gebaut + headless-gruen, NICHT leer; nur der Browser-Sichttest wartet auf Klaus.",
+      "abhaengig": [
+        "05"
+      ],
+      "kurz": "Datenaustausch unter Geschwistern (Pull, Opt-In beidseits) — Code-Stub, fünf Funktionen (init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store sbkim_hetero_inbox (DB-Version 1→2 additiv), Service-Worker um dritten fetch-Listener-Pfad erweitert, Anker-Quelle in Erst-Iteration nur Spore-Single-Anker-Fallback (Degraded-Modus)"
+    },
+    {
+      "id": "07",
+      "name": "Apoptose",
+      "score": "stub",
+      "siegel": "Code-Stub",
+      "abhaengig": [
+        "02",
+        "01"
+      ],
+      "kurz": "Selbstlöschung mit signiertem Vermächtnis — Code-Stub, sechs Funktionen (zweistufige Self-Apoptose mit 60s-Token, Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker), Service-Worker erweitert um /sbkim/legacy"
+    },
+    {
+      "id": "08",
+      "name": "UI-Demo",
+      "score": "stub",
+      "siegel": "Code-Stub",
+      "abhaengig": [
+        "01"
+      ],
+      "kurz": "Endknoten-Pflege-UI für sbkim_hetero_outbox und sbkim_siblings.heterokaryosisOptIn — Code-Stub, fünf Funktionen (init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn), sechs benannte Error-Klassen im Factory-Stil (UiDemoDependenciesError / InvalidAnchorLabelError / InvalidAnchorVectorError / OutboxFullError / UnknownSiblingError / InvalidOptInArgError), Modul 08 alleiniger Schreiber von sbkim_hetero_outbox (DB-Version 3 aus Pflege Bau 06.1) und Co-Schreiber für sbkim_siblings.heterokaryosisOptIn (Modul 05 unangetastet), Storage-only (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht), Self-Apoptose-Knopf bewusst nicht in dieser Erst-Iteration, DOM-Form liegt beim Endknoten"
+    },
+    {
+      "id": "09",
+      "name": "Einbau-PWA",
+      "score": "fertig",
+      "siegel": "Live bei zwei Endknoten 2026-05-16",
+      "abhaengig": [],
+      "kurz": "Andock-Anleitung für Endknoten — Module kopieren, Spore mit domainVector erzeugen, Service-Worker registrieren. Live-Beweis 2026-05-16: Mein-Mixarium + Mein-Rezeptbuch jeweils mit eigener Identität angedockt, Cross-Knoten-Handshake etabliert."
+    },
+    {
+      "id": "17",
+      "name": "Floating-Widget",
+      "score": "fertig",
+      "siegel": "Fertig 2026-06-20 (Klaus-Bestätigung: live deployt im BLP-Komplett-Knoten + Mein-Rezeptbuch/Mein-Mixarium). Headless-Smoke 19/19 grün; Floating-Widget mit vier Live-Lampen (LEBT/VERKEHR/FREMD/SIEGEL) im Einsatz",
+      "abhaengig": [
+        "02",
+        "05",
+        "15",
+        "16"
+      ],
+      "kurz": "Floating Mini-Panel im Eruda-Stil als Endknoten-Standard für Modul-15-+-16-Render-Schicht. Vier-Slot-Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) als finale Form. Self-mountend in <body>, Drag via Pointer-Events (5 px Threshold, freies Drag mit Pixel-Präzision, Viewport-Clamp), X-Schließen + vier Wiederherstellungs-Pfade (show()/5-Klick-Geste/Doku-Knopf/Tab-Reload bei rememberHidden:false), localStorage-persistierte Visible + Position (UX-only, kein Protokoll), RAM-only VERKEHR-FIFO 10. **Event-Bus-Schema** mit fünf Custom-Events auf window: sbkim:alive (Modul 02 dispatcht nach getOrCreateIdentity einmalig), sbkim:handshake (Modul 05 dispatcht in handshake/receiveHandshake-Wrappern), sbkim:postmessage (Modul 15 Sub b dispatcht in recordPostMessageEntry für VALID_OPS), sbkim:fremd-alert (Modul 15 Sub e dispatcht in recordEntry nach Buffer-Push), sbkim:siegel-certified (Modul 16 dispatcht am Ende von init() wenn isCertified===true). Modul 17 lauscht passiv auf window, kennt keine Modul-Referenz. Anti-Greenwashing pro Slot binär für SIEGEL (KEIN DOM-Render ohne isCertified()===true, doppelte Defensive-Prüfung) und transparent für LEBT/VERKEHR/FREMD (grau wenn kein Event aktiviert). Modal-Bridge via Proxy-DOM-Element (Option 1 aus Brief): Widget legt unsichtbare Spans #lamp-fremd + #sbkim-siegel-badge in seinem Inneren an; Modul 15/16 attachen ihre Click-Handler dort, deshalb MUSS SbkimWidget.init() VOR SbkimMembrane.init()/SbkimSiegel.init() im Endknoten-Andocker stehen. LEBT-Modal (Uptime-Counter + Modul-02-Init-Status + nodeId-Präfix 12 Zeichen) und VERKEHR-Modal (Mini-Log Tabelle [Zeit, Quelle, Richtung, Decision]) baut Modul 17 selbst. Modul-15-+-16-Backends UNVERÄNDERT. Sage-Page-Pfad (Navleisten-Lampen + Siegel-Badge) bleibt erhalten. Endknoten-Einbau auf drei Zeilen reduziert (Modul-Datei-Kopie + <script>-Tag + EIN SbkimWidget.init({allowedOrigins, repoUrl})-Aufruf). KEINE benannten Error-Klassen (Render-Schicht, fail-soft via console.warn). KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump (nicht protokoll-aktiv). Bau-Sitzung 17 vom 2026-05-25: src/modules/17_floating_widget.js angelegt mit Standalone-CSS-Injektion (<style>-Element in <head>) + IIFE + Public Surface init/show/hide/isVisible/getPosition + _meta-Read-Anker. DispatchEvent-Hooks additiv in Modul 02/05/15/16 (vier Code-Stellen, Selbstcheck-Zeilen UNVERÄNDERT). ZERTIFIKAT_ASPEKTE-Eintrag in Modul 16 ergänzt (Konvention CLAUDE.md § Sicherheits-Module pflegen Aspekte). Panel 17 in tests/manual_check.html mit 10 Test-Knöpfen + Mock-Modul-16-Knopf + Setup + Selbstcheck-Hinweis. Headless-Smoke tests/smoke_bau17_floating_widget.mjs 19/19 grün. Modul-15-Smoke 31/31 grün (Regression). node --check für alle fünf Module + alle 13 inline-script-Blöcke in manual_check.html grün. Brief Bau-Sitzung 17: docs/sessions/BRIEF_BAU_17_FLOATING_WIDGET.md."
+    },
+    {
+      "id": "20",
+      "name": "Schlüssel-Safe",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-06-20 (Spec PR #315 + Bau-Sitzung). Headless-Smoke tests/smoke_bau20_safe.mjs 19/19 grün. Fix 2026-07-17 (Klaus-Sichttest B1 fing echten Bug): createVault wirft jetzt NoSporeError statt stillem unlock-Fehlschlag; neuer echter Smoke tests/smoke_bau20_safe_real.mjs 14/14 (fake-indexeddb + reale Module 01/02/20). Kern-Asymmetrie Modul 02 als B1b notiert. ✅ Klaus-Re-Sichttest Panel 20 GRÜN 2026-07-17 (Reset→anlegen→entsperren=entsperrt).",
+      "abhaengig": [
+        "01",
+        "02"
+      ],
+      "kurz": "Lokal verschlüsselter Safe für die SBKIM-Identität (nodeId + privater Schlüssel + Spore). Krypto-Kern wiederverwendet Modul 02 exportBackup/importBackup (PBKDF2-SHA256 ≥600k + AES-GCM-256), Store sbkim_safe über Modul 01 ensureStore. Shamir-Recovery 2-von-3 über das Passwort (GF(256)). Öffnet auf Abruf (SbkimSafe.open(), autoPrompt Default false — App startet normal). Name bewusst 'Safe' (nicht 'Tresor'). Nur Identität/Schlüssel, kein PII, nie übers Netz."
+    },
+    {
+      "id": "21",
+      "name": "Spracheingabe",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-06-21 (Schritt 1 des Such-Werkzeugs). Headless-Smoke tests/smoke_bau21_spracheingabe.mjs 45/45 grün. Browser-Sichttest (Live-Mic + EU-Engine) wartet auf Klaus.",
+      "abhaengig": [],
+      "kurz": "Input-agnostische Sprach-Eingabe-Schicht. Dual-Engine: Browser Web-Speech + EU Cloud Speech-to-Text (eu-speech.googleapis.com, BYOK), mehrsprachig DE/EN/RU. Konsequent fail-soft (kein Mic/Key/Netz → Textfeld bleibt, speechErrorHint, kein Throw außer InvalidEuPolicyError). EU-Politik per Knoten: bindend (nur EU-Engine, z.B. BookLedgerPro) ↔ frei (Default, EU wählbar). Komponiert vom Such-Widget (Modul 22)."
+    },
+    {
+      "id": "22",
+      "name": "Such-Widget",
+      "score": "fertig",
+      "siegel": "Fertig 2026-06-29 (auf Klaus' Browser-Sichttest grün hochgestuft, analog 04/05/15). Code-Stub seit 2026-06-21, in vielen Folge-Bauten gereift. Headless-Smoke umfangreich grün (smoke_bau22 257/257, smoke_bau22e_waehlen 45/45, Standalone-Drift-Guard 46/46). ✅ Browser-Sichttest mehrfach GRÜN (Klaus 2026-06-21/22): Blase + semantische Treffer (Membran 0.88), ziehbares Panel + Persistenz, KI-Such-Brücke (eingefügte ChatGPT-Antwort live geparst + semantisch sortiert). Verwandt·KI + Wählen-UI gebaut. KI-Schlüssel-live + Wählen-Umschalter-Sichttest noch offen.",
+      "abhaengig": [
+        "03",
+        "04",
+        "21"
+      ],
+      "kurz": "Frei bewegliches Floating-Such-Tool (🔍-Blase → Eingabe-Panel), self-mountend in <body>. Semantische, server-lose Bedeutungs-Suche über drei getrennt wählbare Bereiche: App-Korpus / verbundene Knoten (rein lokal) / Internet (Pilz-Egress: KI-Such-Brücke BYOK oder neuer Tab). Komponiert Sprache (21) + Vorfilter/Richter (04 queryLocal/hybridMatch). KI-Richter opt-in (Default aus, gratis = Embedding-Cosinus). Wählen-UI verbunden↔verwandt + verwandt·KI: gratis Cosinus = Rangfolge, KI-Richter = Urteil. Reine Anzeige, gatet nichts (PROVIDER_MIN_MATCH 0.80 unberührt). EU-Politik frei/bindend. Drag/Self-Mount/X aus Modul 17 wiederverwendet (17 unangetastet)."
+    },
+    {
+      "id": "23",
+      "name": "Rendezvous (gemeinsamer Raum)",
+      "score": "fertig",
+      "siegel": "Fertig 2026-06-29 (auf Klaus' LIVE Cross-App-Sichttest grün hochgestuft, analog 05/15). Code-Stub 2026-06-28 (Bau-Sitzung). Headless-Smoke tests/smoke_bau23_rendezvous.mjs 55/55 + smoke_bau23_rendezvous_ui.mjs 32/32 grün, Drift-Guard byte-1:1. ✅ LIVE Cross-App-Sichttest GRÜN (Klaus 2026-06-28): Sage ↔ Mein-Mixarium beidseitig '✓ ANDOCK ETABLIERT' über das echte Relais (server-loser Live-Cross-Knoten-Handshake); Verwandtschafts-Badge im Raum GRÜN. Die Adress-Wand ist gelöst.",
+      "abhaengig": [
+        "02",
+        "05"
+      ],
+      "kurz": "Löst die Adress-Wand (committete nodeId ≠ lebende nodeId): lebende Knoten treffen sich im geteilten Nostr-Tag sbkim-rdv, heften auf Nutzer-Aktion ihre lebende Visitenkarte (echte Spore) ans Brett; ein Suchender liest die Karten und handshaket die LEBENDE ID. DOM-frei + fail-soft, reiner Tool-Code über die öffentlichen Flächen von Modul 05 (handshake/listenNostr) + 05b (publish/subscribe) + 02 (getOwnSpore) — Kern-Module unangetastet. Verfassungstreu: nutzer-ausgelöst, keine Pulsation, init() baut nichts auf (Empfangsmodus). In jede App kopieren (lebende Identität pro Origin getrennt). Verwandtschafts-Badge im Raum (reine Anzeige, 0.80-Riegel unberührt)."
+    },
+    {
+      "id": "24",
+      "name": "OCR-/Bild-Eingabe",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-07-01 (Strang B1, Brief 2026-07-01). Headless-Smoke tests/smoke_bau24_ocr_eingabe.mjs 41/41 grün. Browser-Sichttest (Panel 24 + echter Schlüssel) wartet auf Klaus.",
+      "abhaengig": [],
+      "kurz": "Input-agnostische Bild-/Handschrift-→-Text-Schicht (Geschwister von Modul 21). Drei steckbare Anbieter: mistral (Mistral OCR, EU, FAVORIT) · google (Cloud Vision EU-Endpunkt) · browser (Shape Detection, experimentell). EU-Politik frei/bindend per Knoten; konsequent fail-soft (kein Schlüssel/Bild/Netz → deutscher Hinweis, kein Throw außer InvalidEuPolicyError); BYOK, kein Schlüssel im Code, kein PII. Liefert nur Text — Suche (03/04) unberührt. Surface init/getProviders/availableProviders/pickProvider/isFileSupported/recognize/recognizeBrowser/ocrErrorHint."
+    },
+    {
+      "id": "25",
+      "name": "Pseudonymisierung (E2E Grad B)",
+      "score": "stub",
+      "siegel": "Code-Stub 2026-07-16 (B5 aus docs/PLAN_SEMANTIK_KRYPTO.md). Headless-Smoke tests/smoke_bau25_pseudonym.mjs 36/36 grün. Browser-Sichttest Panel 25 GRÜN (Klaus 2026-07-17): Round-trip live korrekt, Betrag bleibt, rehydrate == Original.",
+      "abhaengig": [],
+      "kurz": "Der empfohlene Sofortweg für Vertraulichkeit (Grad B, docs/E2E-VERTRAULICHKEIT.md §1.1): sensible Werte in einer Nutzlast werden vor dem Versand durch lesbare Platzhalter-Token ersetzt ([[KUNDE_1]], [[IBAN_1]], [[EMAIL_1]]); der Anker-Tresor (Token → Klartext) bleibt getrennt/menschlich. Reiner Text-/Objekt-Transform: BUILD-FREI, keine Krypto-Primitive, KEIN Spore-Feld, protocolVersion bleibt 0.1 — Briefkasten bleibt lesbar/auditierbar, Signatur prüfbar. Ehrliche Grenze: Pseudonymisierung ≠ Verschlüsselung (Metadaten leaken weiter → Grad C = B6). Erkenner: explizite Werte (Namen) + eingebaut EMAIL/IBAN (TEL opt-in) + customPatterns; gleicher Wert → gleiches Token, bestehende Token nie verschachtelt; fail-soft (kein Throw außer InvalidPseudonymArgError). Surface pseudonymize/rehydrate/pseudonymizeObject/rehydrateObject/getBuiltinPatterns/makeToken/parseToken/isToken/serializeVault/parseVault. Kein PII im Code."
+    }
+  ],
+  "schutzBacklog": [
+    {
+      "id": "10",
+      "name": "Reputation",
+      "score": "schablone",
+      "siegel": "spec ausstehend, Priorität niedrig",
+      "kurz": "Knoten-Reputation gegen Sybil-Vergiftung"
+    },
+    {
+      "id": "11",
+      "name": "Rate-Limit & TTL",
+      "score": "schablone",
+      "siegel": "spec ausstehend, Priorität niedrig",
+      "kurz": "Pro-Peer Rate-Limit und Hop-Limit gegen Flooding"
+    },
+    {
+      "id": "12",
+      "name": "Blocklist",
+      "score": "schablone",
+      "siegel": "spec ausstehend, Priorität niedrig",
+      "kurz": "Manuelle Sperrliste für gezielte Angreifer"
+    }
+  ],
+  "diffusionBacklog": [
+    {
+      "id": "14",
+      "name": "Diffusion",
+      "score": "schablone",
+      "siegel": "Stub (Backlog), Priorität niedrig",
+      "kurz": "Konsensuell-empfehlende Spore-Diffusion über Handshake-Erweiterung — Pfad 2 (drehbuchkonform), Pfade 1 (passiv) und 3 (parasitär) dokumentiert; Spec ausstehend bis Netz wächst"
+    }
+  ],
+  "membranBacklog": [
+    {
+      "id": "15",
+      "name": "Membran",
+      "score": "fertig",
+      "siegel": "Sichttest 8/8 grün 2026-05-25 (Klaus, DeX-Chrome auf Galaxy Tab S6, Termux-localhost:8000 nach Hard-Reload): Panel 15 Setup + Knöpfe 10–17 alle grün; Sage-Page Bonus vier Plaketten sichtbar (LEBT/VERKEHR/FREMD/SBKIM-Siegel-Badge). Mini-Pflege Knopf-11-Anti-PII-Filter (eigene nodeId vom String-Match ausnehmen) im selben PR #159 mitgenehmigt. Code-Stub voll (Bau 15.B Sub (a)+(b) Bedien-Pfade 2026-05-25) + Bau 15 Sub (e) + Bau 15.SW SW-Probe + Pflege Sage-Page-Sichttest-Knopf (alle 2026-05-24). Bau 15.B 2026-05-25: src/modules/15_membran.js Sub (a) read() voll (MembraneSnapshot mit Identitäts-/Geschwister-anonymisiert-/Storage-/Siegel-Block, Siegel-Hook 3-Fall-Logik, Sub-(e)-Hook mit snapshotByteLen, Quota blockt nicht), Sub (b) postMessage-Bedien-Pfad voll (7-stufige Empfänger-Kette, Allowlist fail-soft via init() filter+console.warn, Nonce-Pflicht + 30 s Replay-Dedupe RAM-Map, Rate-Limit-Hook fail-soft an Modul 11 mit throttled-Marker, op-Dispatch sporeRef/query/hint/queryResult mit Schema-Validierung, recentSporeRefs FIFO max 16, pendingQueries TTL 30 s, handshake-Tabu, kein Persistent-Log, kein Auto-Handshake, Modul-14-fehlt-Info einmal pro Session frequenz-gedrosselt). _meta erweitert um recentSporeRefsCount/pendingQueriesCount/seenNoncesCount/siegelAvailable + Test-Brücke _registerPendingQueryForTest. Selbstcheck-Zeile UNVERÄNDERT (keine neuen Public-Surface-Funktionen). src/modules/16_siegel.js ZERTIFIKAT_ASPEKTE um Eintrag „2026-05-25 / Modul 15 / Sub (a) Read-API + Sub (b) postMessage-Brücke\" ergänzt (Pflicht-Konvention CLAUDE.md § „Sicherheits-Module pflegen Aspekte\"). Panel 15 in tests/manual_check.html um Knöpfe 10–17 erweitert (Setup + Tests 1–9 aus Bau 15+15.SW + Tests 10–17 für Sub (a)+(b)-Pfade + Selbstcheck). Headless-Smoke tests/smoke_bau15b_membran.mjs 31/31 grün. node --check beide Module + alle 12 inline-script-Blöcke in manual_check.html syntaktisch grün. Spec finalisiert Sub (a)+(b) 2026-05-25 (Spec-Sitzung 15.B). Sichttest 2026-05-24 grün für Sub (e) + Bau 15.SW (Klaus, DeX-Chrome). Bau 15.B Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf Panel 15 Knöpfe 10–17). Priorität hoch (Auslöser Gemini 3.5 Flash)",
+      "kurz": "Außenhülle zwischen PWA-Zelle und Browser-Umgebung — fünf Sub-Bereiche. **Sub (a)+(b) Spec finalisiert 2026-05-25** (Spec-Sitzung 15.B): MembraneSnapshot mit Identitäts-/Geschwister-anonymisiert-/Storage-/Siegel-Block (siegel-Hook drei Pflicht-Fälle null/grün/rot), Quota blockt read() nicht, Sub-(e)-Hook erweitert mit snapshotByteLen; postMessage-Envelope finalisiert mit vier `op`-Werten sporeRef/query/hint/queryResult + expliziten Payload-Schemata, `handshake` Tabu, Allowlist strict String exakter Origin-Match KEIN Wildcard KEIN *self*, Validierungs-Strenge fail-soft (console.warn pro entferntem Eintrag, KEIN sync Throw), Sender-Mechanismus KEINE Modul-Vorgabe (Modul 15 nur Empfänger), Rate-Limit-Hook für Modul 11 optional (fail-soft, throttled-Marker), Nonce-Pflicht crypto.randomUUID() + 30 s Replay-Dedupe + inReplyTo-Verkettung für queryResult, Persistenz RAM-only (kein sbkim_membrane_log-Store). **Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe** in Bau-Sitzung 15 vom 2026-05-24 implementiert: src/modules/15_membran.js mit Ringbuffer (RAM-only, MEMBRANE_FREMDZUGRIFF_BUFFER_MAX=50, FIFO-Verdrängung), Listener-Liste mit subscribe/unsubscribe (idempotent, fail-soft bei Listener-Throws), Lampen-Toggle (fremd-alert solange Buffer nicht leer + fremd-pulse pro Eintrag), eigenständigem Modal in document.body (Click-Handler an #lamp-fremd, Esc/Backdrop/✕/Aufräumen), BroadcastChannel('sbkim-membrane')-Subscription für SW-endpoint-probes. **Bau 15.SW SW-Probe-Detektor 2026-05-24**: src/sbkim-sw.js additiv erweitert (KEIN Eingriff in die drei bestehenden handleBridge-Pfade) — neuer `maybeRecordMembraneProbe(request)`-Hook als ERSTE Zeile im fetch-Listener (vor den drei isOwnEndpoint-Branches), synchron + fail-soft, KEIN respondWith. Filter über vier SBKIM-Endpunkte (`/sbkim/spore.json`, `/sbkim/anastomosis`, `/sbkim/legacy`, `/sbkim/heterokaryosis`; `/sbkim/query` bewusst weggelassen, weil Modul 04.C noch nicht da). Fremd-Bewertung nach Karte 15 § Fremd-Definition Reihenfolge 1→4 (url.origin → Sec-Fetch-Site cross-site/same-site → same-origin/none/fehlend → Referer-Fallback). Pro Probe neue BroadcastChannel-Instanz (open → postMessage → close), KEIN long-lived Channel. Sub (a) read() als Skelett, Sub (b) postMessage-Listener als Skelett — finale Spec wartet auf Spec-Sitzung 15.B. KEINE benannten Error-Klassen (rein beobachtend). index.html erweitert: :root --lamp-alert + zwei CSS-Regeln + #lamp-fremd-DOM nach #lamp-traffic + init-Aufruf in sbkim-init.js. Panel 15 in tests/manual_check.html mit jetzt neun Knöpfen (Setup + Tests 1–7 aus Bau 15 + Knopf 8 SW-Probe-Simulation via BroadcastChannel headless + Knopf 9 Live-SW-Probe-Hinweis für Klaus). Headless-Smoke 11/11 Bau-15 + 21/21 Bau-15.SW grün. Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf)."
+    }
+  ],
+  "toolPwaBacklog": [
+    {
+      "id": "18",
+      "name": "Tool-PWA-Container",
+      "score": "fertig",
+      "siegel": "Fertig 2026-06-20 (Klaus-Bestätigung: Andock-Container Sub (a) gebaut + im Einsatz — der Andock-Pfad funktioniert). Headless-Smoke 17/17 grün. Hinweis: die weiteren Sub-Bereiche (b)–(i) (Backup, Self-Apoptose, Re-Embedding, Spore-Discovery …) sind späterer Ausbau und ändern den Fertig-Status des Andock-Containers nicht.",
+      "abhaengig": [
+        "02",
+        "03",
+        "04",
+        "05",
+        "16"
+      ],
+      "kurz": "Wartungs- + Andock-Modal-Suite. **Sub (a) Vorab** implementiert AUSSCHLIESSLICH den Andock-Pfad: `SbkimToolPwa = {init, openAndockTab, close, isOpen, _meta}` mit Vier-Schritt-Wizard (URL eingeben → Spore fetchen + `verifyForeignSpore` → Match-Check mit Lazy-Embedding + Drei-Schichten-Bars fachlich/prozess/skalierung → Handshake via `SbkimAnastomose.handshake`, auto-close 2 s nach Erfolg). Macht den fail-soft-Hook im Modul-16-Sub-(e)-Bronze-Modal (PR #180) produktiv. Zwei benannte Errors `ToolPwaNotReadyError` + `ToolPwaInvalidUrlArgError` (beide sync vor await). `init()` ist fail-soft: fehlende Pflicht-Felder (`endpoint`+`domain`+`domainKeywords`) → `console.warn` + `_meta.ready=false`, KEIN Throw. `matchThreshold > 0.80` wird auf 0.80 geclampt + warn (Tabu: Endknoten-Bauer kann reduzieren, aber nicht erhöhen). `externalHubUrl` ist Read-Anker — KEIN Hub-Fetch in Sub (a) Vorab. RAM-only, kein eigener Store, kein PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump. Inline-CSS im Modul (Drei-Zeilen-Einbau-Konvention analog Modul 17). Embedding-Lazy: erster `openAndockTab` lädt Modul 03 wenn nötig, Re-Use bei `SbkimEmbedding._meta.ready===true` ODER `isReady()===true`. KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Modul 18 ist Wartungs-/Andock-Schicht, kein Sicherheits-Modul). **Sub-Bereiche (b)–(i) Spec ausstehend** für Voll-Spec 18 (Pipeline 5h.2 nach App-Freigabe): b bidirektionaler Sporen-Anker-Tausch (Heterokaryose), c Identitäts-Wechsel, d Backup-Export/-Import, e Self-Apoptose, f Sporen-Regeneration, g Re-Embedding, h Manueller Handshake-Trigger, i Spore-Discovery (Sage / Externer-Hub / Manuelle-URL). Brief Sub (a) Vorab: docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md."
+    }
+  ],
+  "mycelHubBacklog": [
+    {
+      "id": "19",
+      "name": "Andock-Wizard (kopierbar)",
+      "score": "fertig",
+      "siegel": "Fertig 2026-06-20: aus der Sage-Page extrahiert nach src/modules/19_andock_wizard.js (reine Eingabe→Text-Hilfe: Repo-URL+Domain+Knotentyp → unsignierte Spore-Vorlage + status.json-Zeile + vorgelinkter PR; kein Signieren/Storage/Netz, mount() Browser-only). Headless-Smoke tests/smoke_bau19_andock_wizard.mjs 15/15 grün.",
+      "kurz": "Sage-Page-Andock-Wizard-Code extrahiert nach `src/modules/19_andock_wizard.js` (kopierbares JS-Modul, Bau 2026-06-20). Einsatz: Sage-Protokol UND Externer Mycel-Hub. Drei Eingabe-Felder (Repo-URL · Domain · Knotentyp), Spore-JSON-Template-Output, vorgelinkter `status.json`-PR. Klaus' Vision 2026-05-26: mehrstufige Mycel-Architektur (Sage → Starter-Bundle → Externer Hub → Forker-PWAs). Brief: docs/sessions/BRIEF_SPEC_19_ANDOCK_WIZARD.md."
+    },
+    {
+      "id": "starter-bundle",
+      "name": "SBKIM-Starter-Bundle (eigenes Repo)",
+      "score": "schablone",
+      "siegel": "Konzept-Karte (Backlog), Priorität niedrig (Phase B nach App-Freigabe + nach Modul 19)",
+      "kurz": "Eigenes GitHub-Repo `<owner>/sbkim-starter` (Name-Vorschlag) mit allen SBKIM-Modulen (01–17 + 18 sobald gebaut) als kopierfertige Datei-Sammlung + Installer-Script + Konfig-Template + Forker-README. Modul-Distribution für Forker, trennt Spec (Sage) von Code-Distribution. Pflicht-Module-Kern (01/02/03/04/05/07/15/16/17) + Optional-Module (06/08/18); Modul 19 NICHT im Bundle (gehört zum Hub). Tag-basierte Versionierung statt NPM. Karte: docs/components/_starter_bundle.md."
+    },
+    {
+      "id": "mycel-hub",
+      "name": "Externer Mycel-Hub — Repo lausiklauskn-png/SB-KIMTool-Point",
+      "score": "schablone",
+      "siegel": "Konzept-Karte (Backlog) + Repo public angelegt 2026-05-26 (leer), Priorität niedrig (Phase B nach App-Freigabe + nach Modul 19 + nach Starter-Bundle)",
+      "kurz": "GitHub-Repo `lausiklauskn-png/SB-KIMTool-Point` als öffentliches Observatorium light für Forker-PWAs — Repo angelegt 2026-05-26 (public, leer): https://github.com/lausiklauskn-png/SB-KIMTool-Point. Klaus' Naming-Festlegung 2026-05-26: SB-KIM-Akronym + Tool-Point-Konzept (Sammelpunkt für Modul-18-Tool-PWAs). Eigene `status.json`, eingebetteter Modul-19-Andock-Wizard, Endknoten-Liste, optional Bau-Puls aus Sage gespiegelt. Trennt Forker-Last von Klaus' Sage-Protokol — Klaus' Sage bleibt Spec-Hub mit Klaus' Endknoten, der Externe Hub sammelt Forker-Endknoten in eigener `status.json`. Pflege-Modell A (Klaus pflegt selbst) als Erst-Iteration, organischer Übergang zu Community-Pflege wenn Mycel wächst. Karte: docs/components/_mycel_hub.md."
+    }
+  ],
+  "siegelBacklog": [
+    {
+      "id": "16",
+      "name": "SBKIM-Siegel",
+      "score": "fertig",
+      "siegel": "Code-Stub (Bau-Sitzung 16 vom 2026-05-24 + Bau Sub (e) Bronze/Gold-Stufung 2026-05-26). Headless-Smoke 32/32 + Sub (e) 15/15 grün. **Sichttest Sub (e) 4/4 grün 2026-05-26** (Klaus, DeX-Chrome auf Galaxy Tab S6, Termux `python3 -m http.server 8000` nach Hard-Reload): Panel 16 Knöpfe 9–12 alle live grün — Knopf 9 Bronze-Initial (data-stufe=\"bronze\", aria-label=\"SBKIM-Siegel · Mycel suchend\", title=null, mycelConnected=false, siegelStufe-Getter=\"bronze\"); Knopf 10 Bronze→Gold via synthetischem Handshake (stufe_vor=\"bronze\" → stufe_nach=\"gold\", aria_label_nach=\"SBKIM-Siegel · Mycel verbunden\", mycelConnectedAt=\"2026-05-26T16:27:22.973Z\", klasse_stufenwechsel_gold=true); Knopf 11 Idempotenz (erste_welle === zweite_welle === \"2026-05-26T16:27:56.565Z\", klasse_nach_zweitem_dispatch=false, stufe_nach=\"gold\"); Knopf 12 Bronze-Klick öffnet Modal mit Hinweis-Block (modal_offen=true, hinweis_block_sichtbar=true, andock_button_im_modal=true, aspekt_4_pending_marker=true, aspekte_anzahl=4). **FERTIG 2026-06-20** (Klaus-Bestätigung: SBKIM-Siegel live in BLP / Mein-Rezeptbuch / Mein-Mixarium; Sub (e) Bronze/Gold-Sichttest 4/4 + Cross-Knoten grün). **Endknoten-Cross-Knoten-Sub-(e)-Sichttest 2026-05-26 grün** (Klaus, DeX-Chrome auf Galaxy Tab S6, MR + MM in derselben Chrome-Instanz nach Merge MR PR #249 + MM PR #58 + Fix-PRs badgeSelector-Konfig): Initial-Bronze visuell + Modal + Aspekt-4-pending in beiden PWAs ✓; Cross-Knoten-Handshake via Eruda + BroadcastChannel-Spore-Bridge (Pages-spore.json-Pfad scheiterte mit InvalidPeerSporeError wegen veralteter Pages-Datei) ergab `outcome:\"established\", score:0.9544`; manueller `window.dispatchEvent('sbkim:handshake', outcome:'established')` in beiden PWAs ergab `_meta.siegelStufe:\"gold\"` + `mycelConnected:true` + Modal-Refresh (Hinweis-Block weg, Aspekt 4 datiert). **Drei eigenständige Folge-Befunde** (separate Pflegen): (a) Widget-SIEGEL-Slot visuell stufen-unabhängig (Modul 17 rendert immer gold-medaillon, `data-stufe` wirkt nur am Proxy-Span), (b) Endknoten-`sbkim/05_anastomose-v2.js` ist prä-Bau-17 und dispatcht KEIN `sbkim:handshake`-window-Event automatisch (manueller Eruda-Dispatch nur als Workaround), (c) Modal-Datum „Bezeugt seit … Uhr\" zeigt UTC statt MESZ-lokal. Priorität hoch (vor App-Freigabe)",
+      "kurz": "Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der SBKIM-Pflicht-Module — self-inscribing (kein Hub-Aussteller, kein CI-Build-Check; Runtime-Selbstprüfung beim PWA-Boot), Badge im definierten Anker (sichtbar oder unsichtbar pro PWA konfigurierbar), Click öffnet Erklär-Modal aus modul-interner ZERTIFIKAT_ASPEKTE-Liste (lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit since-Datum). Anti-Greenwashing: kein Siegel ohne erfüllte Selbst-Prüfung; wenn ein Pflicht-Modul fehlt, KEIN Badge-Render. **Bau-Sitzung 16 vom 2026-05-24:** `src/modules/16_siegel.js` voll angelegt — Public Surface `init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta`, `PFLICHT_MODULE` mit sieben Einträgen (01/02/03/04/05/07/15) + Surface-Funktions-Anker pro Modul, `ZERTIFIKAT_ASPEKTE` mit Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24“ (verbindlich aus Spec-Sitzung 16), Surface-Check + binärer Fail-Modus (genau EINE `console.warn`-Zeile mit ID-Liste, KEIN Badge, KEIN Modal), Badge-Mount mit MutationObserver-Re-Try analog Modul 00 (10 s Safety-Timeout), Modal-Mount in `document.body` analog Modul 15, First-Boot-Animation einmalig pro Session, Repo-URL Auto-Erkennung + Override, nüchterne zweizeilige Aussteller-Klärung („Dieses Siegel ist self-inscribing…“ + Repo-URL als anklickbarer Link, KEIN Disclaimer-Schwall), KEINE benannten Error-Klassen (rein lokal/beobachtend, fail-soft via `console.warn`). **Bauzustands-Wahl Option β:** `badgeSelector` zeigt auf einen CONTAINER (Default `.lamps`); Modul-Code erzeugt das `<span id=\"sbkim-siegel-badge\">`-Element via JS darin — ausschließlich wenn `isCertified()===true`. Anti-Greenwashing-Klausel damit binär erfüllt: kein DOM-Element überhaupt im Negativ-Fall. `index.html` erweitert (`:root` mit vier neuen `--siegel-*`-Variablen, Badge-CSS-Block inkl. `@keyframes siegel-first-boot`, `<script src=\"src/modules/16_siegel.js\">` vor `sbkim-init.js`). `sbkim-init.js` ergänzt um `SbkimSiegel.init({badgeSelector:\".lamps\"})`-Aufruf nach `SbkimMembrane.init`, vor `SbkimDoku.init`. Panel 16 in `tests/manual_check.html` mit acht Knöpfen (Setup + Tests 1–6 + Hinweis-Knöpfe 7/8 für Tab-Reload-Pfade + Selbstcheck). Persistenz RAM-only (kein `DB_VERSION`-Bump, kein neuer Store, kein `PROTOCOL_VERSION`-Bump). **Headless-Smoke 32/32 grün** (14 Happy-Path + 10 Anti-Greenwashing-Fail + 8 Hidden-Mode/Override). Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf in Sage-Page + Panel 16)."
+    }
+  ],
+  "nodeTypes": {
+    "schablone": 0,
+    "werkstatt": 3,
+    "spec": 5,
+    "stub": 7,
+    "fertig": 10
   },
-  {
-   "name": "Mixarium",
-   "domain": "Cocktails / Drinks",
-   "integrated": true,
-   "integratedAt": "2026-05-16",
-   "reIntegratedAt": "2026-06-07",
-   "nodeId": "B7Fke9CYTR1BrC3xOXzEY5q9RuRH8xxHPUuqRHV3utA",
-   "previousNodeIds": [
-    "JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY",
-    "7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4"
-   ],
-   "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json",
-   "stammCategories": [
-    "Cocktails",
-    "Mocktails",
-    "Alkfr. Cocktails",
-    "Smoothies & Shakes",
-    "Limonaden",
-    "Tees & Kaffees",
-    "Bowlen",
-    "Sirup & Basis"
-   ],
-   "guestCategories": [
-    "Knabbereien",
-    "Fingerfood"
-   ],
-   "pingStatus": "verified-match",
-   "matchScore": 0.80603,
-   "note": "Zweiter Endknoten (Cocktails/Drinks), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Rezeptbuch). IDENTITÄTS-ABGLEICH 2026-06-07: alte Handshake-nodeId JOlHK31X… → neuere signierte Live-Identität B7Fke9C… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= B7Fke9C…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (JOlHK31X…, 7xf0tt33…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Mixarium = 0.806030 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8060). Ehrlich: zu den Tresoren liegt Mixarium bei 0.7884 < 0.80 (andere Domäne, kein Match — nichts grün-gerechnet). Prüf-Vermerk: sbkim/mixarium_inbox.verify.md.",
-   "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
+  "scoreModel": {
+    "formula": "100 * (1 - realScore / maxScore)",
+    "hubLiveBonus": 10,
+    "modulePerStep": "siehe nodeTypes",
+    "endknotenIntegrated": 8,
+    "endknotenIntegratedAndPing": 15,
+    "maxScoreNote": "Hub(10) + 10 Module × 10 + 2 Endknoten × 15 = 140. Schutz-Backlog (10-12), Diffusion-Backlog (14) und Membran-Backlog (15) zählen nicht mit, da reaktiv/proaktiv-zukünftig."
   },
-  {
-   "name": "Sage",
-   "domain": "Mycel-Bibliothek",
-   "integrated": true,
-   "integratedAt": "2026-05-21",
-   "reSignedAt": "2026-07-14",
-   "protocolVersion": "0.2",
-   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
-   "note": "Neu-Signier-Welle Spore v0.2 (2026-07-14, Klaus' Browser, wiederhergestellte Identität): spore.json auf protocolVersion 0.2 gehoben, 11 Satz-Schnipsel (snippetVectors) aus einer ausführlicheren Domänen-Beschreibung angehängt, echter domainVector 384-dim L2=1 neu berechnet. nodeId nysOZE3V… UNVERÄNDERT (Identität aus verschlüsseltem Backup vom 2026-05-21 wiederhergestellt, nachdem Browser-Daten gelöscht waren). Reziprok verifiziert in dieser Sitzung: id == base64url(SHA256(rawPub)), Ed25519-Signatur gültig, 11/11 Schnipsel-Vektoren 384-dim, kein PII. snippetVectors = reine Anzeige/Verwandt-Messung, 0.80-Andock-Riegel unberührt. Peer-Identitäten am 2026-07-14 quergeprüft: 8/10 Live-Sporen == committet (BookLedgerPro + Kim-Bell von hier nicht abrufbar, kein Beweis für Abweichung).",
-   "sporeUrl": "https://lausiklauskn-png.github.io/Sage-Protokol/sbkim/spore.json",
-   "stammCategories": [
-    "Protokoll-Doku",
-    "Mycel-Vokabular",
-    "Heilige Tafeln",
-    "Karten",
-    "INTERFACES",
-    "ARCHITEKTUR"
-   ],
-   "guestCategories": [
-    "Glossar-Wartung",
-    "Schwesternetz-Beobachtungen",
-    "Sitzungs-Briefe",
-    "Übergabeprotokolle"
-   ],
-   "pingStatus": "live-direct",
-   "url": "https://lausiklauskn-png.github.io/Sage-Protokol/"
+  "config": {
+    "PROTOCOL_VERSION": "0.1",
+    "NODE_TYPE_DEFAULT": "hybrid",
+    "EMBEDDING_MODEL": "Xenova/multilingual-e5-small",
+    "EMBEDDING_DIM": 384,
+    "PROVIDER_MIN_MATCH": 0.8,
+    "RELATEDNESS_MIN": 0.3,
+    "LOCAL_RESULT_THRESHOLD": 3,
+    "QUERY_TIMEOUT_MS": 4000,
+    "SBKIM_STORE_PREFIX": "sbkim_",
+    "DOKU_REVEAL_CLICKS": 5,
+    "DOKU_REVEAL_WINDOW_MS": 3000,
+    "DOKU_QUOTA_WARN_RATIO": 0.8,
+    "DOKU_QUOTA_WARN_BYTES": 52428800,
+    "SIBLING_MAX_AGE_MS": 2592000000,
+    "HETERO_MAX_ANCHORS": 5,
+    "HETERO_OUTBOX_MAX_ENTRIES": 5
   },
-  {
-   "name": "SB-KIMTool-Point",
-   "domain": "SBKIM-Werkzeug-Point",
-   "integrated": true,
-   "integratedAt": "2026-05-30",
-   "nodeId": "CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY",
-   "previousNodeIds": [
-    "eC3jzoo9Oii04KiSYBXEWhPQzAe6ezmDFKDo1_i0zdw"
-   ],
-   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/SB-KIMTool-Point/main/sbkim/spore.json",
-   "stammCategories": [
-    "Werkzeugkiste",
-    "SBKIM-Module",
-    "Headless-Modell-Lauf",
-    "Markt-Siegel"
-   ],
-   "guestCategories": [
-    "Werkzeug-Kopie",
-    "Modul-Andock",
-    "Spore-Verifikation"
-   ],
-   "domainKeywords": [
-    "Werkzeugkiste",
-    "SBKIM-Module",
-    "Modell",
-    "Markt",
-    "Endknoten"
-   ],
-   "pingStatus": "verified-match",
-   "matchScore": 0.848508,
-   "note": "Neue, dauerhaft gesicherte Identität (alte eC3jzoo9… war ungesichert/verloren). Spore mit ECHTEM domainVector neu signiert (kein _demo mehr) und reziprok verifiziert 2026-05-30: Signatur gültig, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, 9/9 Pflichtfelder, Manipulationsprobe fällt durch. Echter Cross-Knoten-Match Sage ⟷ SB-KIMTool = 0.848508 ≥ 0.80 (gegen die publizierte Spore nachgerechnet, identisch zu ihrem test/match.test.js). Pages-Endpoint github.io 403 von Sages Container aus (eigene Egress-Sperre für github.io); verifiziert über raw main. Prüf-Vermerk: sbkim/point_inbox.verify.md.",
-   "url": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/",
-   "landingPage": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/"
+  "endpoints": {
+    "spore": "/.well-known/sbkim/spore.json",
+    "sporeAlias": "/sbkim/spore.json",
+    "query": "/sbkim/query",
+    "anastomosis": "/sbkim/anastomosis",
+    "heterokaryosis": "/sbkim/heterokaryosis",
+    "legacy": "/sbkim/legacy"
   },
-  {
-   "name": "Jasons-Tresor",
-   "domain": "Jasons-Tresor-Bibliothek",
-   "integrated": true,
-   "integratedAt": "2026-05-31",
-   "nodeId": "E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM",
-   "sporeUrl": "https://lausiklauskn-png.github.io/Jasons-Tresor/sbkim/spore.json",
-   "stammCategories": [],
-   "guestCategories": [],
-   "pingStatus": "verified-match",
-   "note": "Dritter Forker-Knoten. IDENTITAETSWECHSEL 2026-06-06: alte nodeId 7F_zNop... war Demo-Schluessel mit verlorenem Passwort -> einmalig neue Identitaet (E13GDzI...) im Browser erzeugt, alte hinfaellig (previousNodeIds). Neue Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= E13GDzI...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector jetzt ECHT (multilingual-e5-small, 384-dim, L2=1, kein _demo). Cross-Knoten-Match Sage <-> Jasons-Tresor via Modul 04 match = 0.847784 >= 0.80 -> verified-match. Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/jason_inbox.verify.md.",
-   "url": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
-   "landingPage": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
-   "previousNodeIds": [
-    "7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs"
-   ],
-   "reIntegratedAt": "2026-06-06",
-   "matchScore": 0.847784
-  },
-  {
-   "name": "Mein-Tresor",
-   "domain": "Mein-Tresor-Bibliothek",
-   "integrated": true,
-   "integratedAt": "2026-06-06",
-   "nodeId": "wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0",
-   "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Tresor/sbkim/spore.json",
-   "stammCategories": [
-    "JSON-Tresor",
-    "Jasons-Bibliothek",
-    "Schlüssel-Backup",
-    "AES-256-GCM-Verschlüsselung"
-   ],
-   "guestCategories": [
-    "Jason-Verwahrung",
-    "Schlüssel-Andock",
-    "Spore-Verifikation"
-   ],
-   "pingStatus": "verified-match",
-   "note": "Vierter Forker-Knoten, design-vereinfachte Schwester von Jasons-Tresor (byte-gleicher JasonLib-Kern, neues Dreh-Safe-Gesicht). Andock-Schritt 1 (Identität) 2026-06-06 → verified-spore. HOCHSTUFUNG verified-match 2026-06-07: Mein-Tresor hat echten domainVector (multilingual-e5-small, 384-dim, L2=1, kein _demo) eingebettet + Spore neu signiert (nodeId unverändert wRsGQou…). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Cross-Knoten-Match Sage ⟷ Mein-Tresor via Modul 04 Cosinus = 0.847784 ≥ 0.80 → verified-match (identisch zu Jasons-Tresor, weil Schwester mit wortgleichem Domänen-Text). EIGENER, dauerhafter Schlüssel (eigene nodeId, NICHT die der Schwester). Pages-Endpoint im Browser live; von Sages Container aus 403 (github.io-Egress-Sperre) — verifiziert über raw/main. Prüf-Vermerk: sbkim/meintresor_inbox.verify.md.",
-   "url": "https://lausiklauskn-png.github.io/Mein-Tresor/",
-   "landingPage": "https://lausiklauskn-png.github.io/Mein-Tresor/",
-   "reIntegratedAt": "2026-06-07",
-   "matchScore": 0.847784
-  },
-  {
-   "name": "BookLedgerPro",
-   "domain": "BookLedgerPro-Buchhaltung",
-   "integrated": true,
-   "integratedAt": "2026-06-19",
-   "nodeId": "MyHVM7PdwEtNzOXiZNxfP_RcEXiTLjLpAls1oUm5-cQ",
-   "sporeUrl": "https://lausiklauskn-png.github.io/BookLedgerPro/sbkim/spore.json",
-   "stammCategories": [],
-   "guestCategories": [],
-   "pingStatus": "verified-match",
-   "matchScore": 0.813525,
-   "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 2026-06-20 ECHT nachgeliefert (multilingual-e5-small, passage-Praefix, L2=1) + Spore neu signiert -> Cross-Knoten-Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match (knapp, aber sauber ueber der Schwelle; Buchhaltung domaenenfern, kein Gruen-Rechnen). Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md). Drei-Schichten 2026-06-21: BLP-Spore traegt nun signierte capVector+needsVector (384-dim); reziprok VALID, domainVector-Cosinus neu 0.813525>=0.80 verified-match haelt. Sage-eigene cap/needs offen (Spore Re-Sign via Modul 02 in Klaus' Browser) -> bis dahin domainVector-Rueckfall.",
-   "url": "https://lausiklauskn-png.github.io/BookLedgerPro/",
-   "landingPage": "https://lausiklauskn-png.github.io/BookLedgerPro/"
-  },
-  {
-   "name": "Family Projekt",
-   "domain": "family-projekt.de",
-   "integrated": true,
-   "integratedAt": "2026-06-27",
-   "nodeId": "HLXUEJFWHGt6DlRFgzvN4d_YdHRfnrehlVdRb4BHvAE",
-   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/family-project/main/sbkim/spore.json",
-   "stammCategories": [],
-   "guestCategories": [],
-   "pingStatus": "verified-match",
-   "matchScore": 0.8287,
-   "note": "Siebter Knoten im Mycel (Werkzeug-/App-Buendelung: freies neutrales Netzwerk + eigene Werkzeuge mit eigenen Seiten + Marktplatz fuer fremde Apps; semantische Bedeutungs-Suche, mehrsprachig, datenschutzfreundlich, offline-faehig). Spore von Klaus' Browser erzeugt (multilingual-e5-small, passage-Praefix, L2=1). Aus raw/main reziprok verifiziert 2026-06-27: 9/9 Pflichtfelder, id == base64url(sha256(rawPub)) unabhaengig nachgerechnet (= HLXUEJFW...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 384-dim, L2=1.000. Cross-Knoten-Cosinus Sage<->Family Projekt = 0.8287 >= 0.80 -> verified-match. Pruef-Vermerk: sbkim/familyproject_inbox.verify.md. Endpoint family-projekt.de (Hetzner) noch nicht live; Verifikation laeuft ueber raw/main. Gegenstelle fuer ersten Handshake = Sage (Quittung in sbkim/AUSTAUSCH-FamilyProjekt.md).",
-   "url": "https://family-projekt.de/",
-   "landingPage": "https://family-projekt.de/"
-  },
-  {
-   "name": "Kim-Bell",
-   "domain": "SBKIM-Netz-Glocke / Netz-Anmeldung",
-   "integrated": true,
-   "integratedAt": "2026-07-08",
-   "nodeId": "e9TlbEzxdL6UrlwCWjrTxwuWOLDXZ_AIvx12BMrhPaw",
-   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kim-Bell/main/sbkim/spore.json",
-   "stammCategories": [
-    "Netz-Anmeldung",
-    "Rendezvous",
-    "Identitaets-Verwaltung"
-   ],
-   "guestCategories": [
-    "Spore-Erzeugung",
-    "Backup",
-    "Handshake"
-   ],
-   "pingStatus": "verified-match",
-   "matchScore": 0.8711,
-   "note": "Achter Knoten im Mycel (das eigenstaendige 'Mit dem Netz verbinden'-Werkzeug: saubere Identitaets-Hygiene, ID+Spore erzeugen, im gemeinsamen Raum anmelden, andere Knoten finden - server-los im Browser). Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1), committet nach Kim-Bell/sbkim/spore.json (oeffentlich, kein privater Schluessel). Live-Cross-Knoten-Handshake Sage <-> Kim-Bell im Browser bestaetigt 2026-07-08 (beidseitig 'ANDOCK ETABLIERT' ueber das echte Relais, nach Timeout-Fix 12 s -> 5 min). Cross-Knoten-Cosinus Sage <-> Kim-Bell = 0.8711 >= 0.80 -> verified-match. Beleg: Klaus' Browser-Sichttest (Splitscreen).",
-   "url": "https://lausiklauskn-png.github.io/Kim-Bell/"
-  },
-  {
-   "name": "Kimseek",
-   "domain": "Semantische Bedeutungs-Suche",
-   "integrated": true,
-   "integratedAt": "2026-07-09",
-   "nodeId": "I7qX13yu4BEFIi8yd_5MepkC1b7sFAk2W17d5re5x8Y",
-   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kimseek/main/sbkim/spore.json",
-   "stammCategories": [
-    "Semantische Suche",
-    "Bedeutungs-Sortierung",
-    "Sprach-/Bild-Eingabe"
-   ],
-   "guestCategories": [
-    "Spore-Erzeugung",
-    "Backup",
-    "Handshake"
-   ],
-   "pingStatus": "verified-match",
-   "matchScore": 0.8553,
-   "note": "Neunter Knoten im Mycel (semantisches Such-Werkzeug als Endknoten: versteht die Bedeutung/Absicht hinter einer Frage und ordnet Treffer nach Bedeutungs-Naehe; Spracheingabe, OCR, KI-Bruecke - server-los im Browser). Aus dem Such-Tool (such-tool) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimseek/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimseek = 0.8553 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite.",
-   "url": "https://lausiklauskn-png.github.io/Kimseek/"
-  },
-  {
-   "name": "Kimboard",
-   "domain": "Pinnwand/Notizen/Merken",
-   "integrated": true,
-   "integratedAt": "2026-07-09",
-   "nodeId": "Hc0t9z4te4kWoh7cBMtJAb7m6Nl17eBKxwPvbJ5Rqfk",
-   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kimboard/main/sbkim/spore.json",
-   "stammCategories": [
-    "Pinnwand",
-    "Notizen/Merken",
-    "Frage-Antwort-Brett"
-   ],
-   "guestCategories": [
-    "Spore-Erzeugung",
-    "Backup",
-    "Handshake"
-   ],
-   "pingStatus": "verified-match",
-   "matchScore": 0.8262,
-   "note": "Zehnter Knoten im Mycel (semantische Pinnwand als Endknoten: Fragen/Notizen an ein geborgtes 'dummes Brett' (Nostr) heften, geraeteuebergreifend nach Bedeutung sortiert; Merken/Notizen - server-los im Browser). Aus der Pinnwand (pinnwand) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimboard/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimboard = 0.8262 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite.",
-   "url": "https://lausiklauskn-png.github.io/Kimboard/"
-  },
-  {
-   "name": "Tomys Hub",
-   "domain": "Digitaldruck/Stick/Werbeartikel",
-   "integrated": true,
-   "integratedAt": "2026-07-11",
-   "nodeId": "yaerFGfy7yAajFEce-sUiE6jo263TwkUmbsjIS8Js-8",
-   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Tomys-Hub/main/sbkim/spore.json",
-   "stammCategories": [
-    "Digitaldruck/Textildruck",
-    "Stick/Stickerei",
-    "Werbeartikel/Werbemittel"
-   ],
-   "guestCategories": [
-    "Spore-Erzeugung",
-    "Backup",
-    "Handshake"
-   ],
-   "pingStatus": "verified-match",
-   "matchScore": null,
-   "note": "Elfter Knoten im Mycel (Werbetechnik-Verbund: personalisierter Digitaldruck, Stickerei, Werbeartikel - Druckvorlagen fuer Tassen, T-Shirts, Handtuecher, Kissen, Fotopuzzles; Auftraege im WorkFloh). Spore von Klaus' Browser ueber das Siegel erzeugt (multilingual-e5-small, L2=1), reziprok verifiziert -> VALID. HUB-UNABHAENGIG (bedeutsam): Tomys hat KEINEN Sage-Match (Cosinus Sage<->Tomys 0.7977 < 0.80) - der Hub haette den Match gar nicht vermittelt. Stattdessen verified-match zu den fachverwandten Knoten Family Projekt (0.8073) und BookLedgerPro (0.8064) >= 0.80, offline nachgerechnet UND live bidirektional 'established' (Klaus' Browser 2026-07-11: Cross-Knoten-Bedeutungssuche 'bedruckte Tassen?' -> 5 Treffer aus Tomys' Katalog 0.80-0.84). Erster bewiesener Match OHNE den Hub Sage. Lebende Rendezvous-ID variiert (Adress-Wand, Modul 23).",
-   "url": "https://lausiklauskn-png.github.io/Tomys-Hub/"
-  },
-  {
-   "name": "Private Brain",
-   "domain": "Privates Daten-Gehirn",
-   "integrated": true,
-   "integratedAt": "2026-07-20",
-   "nodeId": "6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg",
-   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Privat-Brain/main/sbkim/spore.json",
-   "stammCategories": [
-    "Privates Daten-Gehirn",
-    "Semantische kombinierende Suche",
-    "Mail-/Dokument-/Foto-/Notiz-Katalog"
-   ],
-   "guestCategories": [
-    "Spore-Erzeugung",
-    "Backup",
-    "Handshake"
-   ],
-   "pingStatus": "verified-spore",
-   "matchScore": null,
-   "note": "Zwoelfter Knoten im Mycel (privates zweites Gehirn: laesst die eigenen Daten - Mails, Dokumente, Fotos, Notizen - einmal durchlaufen, signiert sie, behaelt nur einen kleinen Bedeutungs-Katalog (Vektor + Steckbrief + Zeiger aufs Original) und laesst die Originale unangetastet; danach semantische kombinierende Suche - liest nur, schlaegt vor, bewegt nichts). Fundament byte-kopiert aus Company-Brain, fuer die Privatperson umgewidmet. Erste eigene Identitaet 2026-07-20 in Klaus' Browser erzeugt, Spore v0.2 mit echtem domainVector (L2=1) + 2 Satz-Schnipseln; aus raw/main headless reziprok verifiziert -> VALID. Cross-Knoten-Match-Score noch offen (verified-spore). DB-Schublade sbkim_privatbrain, Verbindung server-los (Modul 23), Standard aus (offline-first).",
-   "url": "https://lausiklauskn-png.github.io/Privat-Brain/"
-  },
-  {
-   "name": "Muttis-Rezeptbuch",
-   "domain": "Kochrezepte (hausgemacht)",
-   "integrated": true,
-   "integratedAt": "2026-07-23",
-   "nodeId": "8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg",
-   "sporeUrl": "https://lausiklauskn-png.github.io/Muttis-Rezeptbuch/sbkim/spore.json",
-   "stammCategories": [
-    "Vorspeisen",
-    "Suppen",
-    "Fleisch",
-    "Fisch",
-    "Vegetarisch",
-    "Kuchen",
-    "Desserts"
-   ],
-   "guestCategories": [
-    "Getränke",
-    "Smoothies & Shakes",
-    "Mocktails",
-    "Alkfr. Cocktails",
-    "Limonaden",
-    "Tees & Kaffees",
-    "Cocktails",
-    "Bowlen",
-    "Sirup & Basis",
-    "Knabbereien",
-    "Fingerfood"
-   ],
-   "pingStatus": "verified-match",
-   "matchScore": 0.8766,
-   "note": "14. Endknoten (Klaus-Entscheid 2026-07-23): Muttis-Rezeptbuch als EIGENER SBKIM-Knoten mit von Mein-Rezeptbuch getrennter Identitaet (dbSuffix 'muttisrezeptbuch'). Module byte-1:1 aus Mein-Rezeptbuch/Sage-Kanon, Glue/QC angepasst (Muttis PR #153), Live-Spore v0.2 von Klaus im Browser erzeugt (Muttis PR #154). Reziprok verifiziert: id==base64url(SHA256(rawPub))==8TVDCTAc unabhaengig nachgerechnet, Ed25519-Signatur ueber kanonische Spore gueltig -> VALID. domainVector echt (384-dim e5, L2=1) + 5 Satz-Schnipsel. Modul-04-Cosinus Sage<->Muttis = 0.8766 >= 0.80 -> verified-match; verified-match zu ALLEN Nachbarn (Schwester Mein-Rezeptbuch 0.878, Mixarium 0.845, SB-KIMTool-Point 0.864, Tresore 0.839, BookLedgerPro 0.823). Offen: Klaus verschluesseltes Identitaets-Backup + Browser-Sichttest.",
-   "url": "https://lausiklauskn-png.github.io/Muttis-Rezeptbuch/"
-  }
- ],
- "modules": [
-  {
-   "id": "00",
-   "name": "Doku-Fenster",
-   "score": "stub",
-   "siegel": "Code-Stub",
-   "abhaengig": [],
-   "kurz": "Versteckte 5-Klick-Statusanzeige in Endknoten-PWAs — Code-Stub, sechs Funktionen (init/open/close/isOpen/getStatusSnapshot/recordSighttest), Modal mit Backdrop und MutationObserver-Mount, alleiniger Schreiber von sbkim_doku_meta, Quota-Frühwarnung (80% / 50 MiB) und TTL-Sweep-Knopf andocken"
-  },
-  {
-   "id": "01",
-   "name": "Storage",
-   "score": "stub",
-   "siegel": "Code-Stub",
-   "abhaengig": [],
-   "kurz": "IndexedDB-Wrapper für sbkim_*-Stores"
-  },
-  {
-   "id": "02",
-   "name": "Spore",
-   "score": "stub",
-   "siegel": "Code-Stub",
-   "abhaengig": [
-    "01"
-   ],
-   "kurz": "Ed25519-Identität, Singleton, base64url(sha256(rawPub))"
-  },
-  {
-   "id": "03",
-   "name": "Embedding",
-   "score": "fertig",
-   "siegel": "Live im Cross-Knoten-Handshake 2026-05-16",
-   "abhaengig": [],
-   "kurz": "Text → 384-dim Vektor (Xenova multilingual-e5-small). Live-Beweis 2026-05-16: domainVector beider Endknoten erzeugt, Cross-Knoten-Handshake erreicht Match-Score ≥ 0.80."
-  },
-  {
-   "id": "04",
-   "name": "Match",
-   "score": "fertig",
-   "siegel": "Sichttest 5/5 grün 2026-05-26 (Klaus, DeX-Chrome auf Galaxy Tab S6): Panel 04 Tests 11–15 alle live grün (Happy-Path Top 0.9501 + Mittel 0.8627 / Schwelle-Cut leere Liste / Top-k-Cut T1 0.9488 + T2 0.9144 / Provider-Pfad registriert=true 2 Treffer / Leerer Korpus beide 0 + provider_registriert=false). Headless-Smoke 43/43 grün, Regression 04.A 19/19 + 04.B 30/30 + 15.B 31/31 + 17 32/32 grün. Cross-Knoten-Such-Lücke geschlossen — Modul 15 Sub (b) op:\"query\"-Empfänger ruft jetzt live queryLocal.",
-   "abhaengig": [
-    "03"
-   ],
-   "kurz": "Cosine-Sim als Skalarprodukt (modus-frei). Bau 04.A `matchDimensions` sync (drei orthogonale Schichten). Bau 04.B `explainMatchLLM` async (Stufe-B-LLM-Pass gegen Anthropic-API). Bau 04.C `queryLocal` async (lokales Such-Feld-Backend, Default k=5, Cross-Knoten-Search-Hook auf Modul 15 Sub b) — sichtgetestet 2026-05-26."
-  },
-  {
-   "id": "05",
-   "name": "Anastomose",
-   "score": "fertig",
-   "siegel": "Cross-Knoten-Handshake live 2026-05-16",
-   "abhaengig": [
-    "02",
-    "04"
-   ],
-   "kurz": "Handshake zwischen Knoten — kanonisch signiert, bidirektional, Schwelle aus Modul 04. Live-Beweis 2026-05-16: outcome:\"established\" zwischen Mein-Mixarium und Mein-Rezeptbuch (SW-Bridge-Phantom-Cache umgangen via direktem receiveHandshake-Aufruf, offene Folge-Pflege)."
-  },
-  {
-   "id": "06",
-   "name": "Heterokaryose",
-   "score": "stub",
-   "siegel": "Code-Stub 2026-06 (gebaut, headless-gruen) — voll implementiert (fuenf Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis), Headless-Smoke tests/smoke_bau06y_transparent_slot_pfad.mjs 25/25 gruen. 'Code-Stub' heisst hier gebaut + headless-gruen, NICHT leer; nur der Browser-Sichttest wartet auf Klaus.",
-   "abhaengig": [
-    "05"
-   ],
-   "kurz": "Datenaustausch unter Geschwistern (Pull, Opt-In beidseits) — Code-Stub, fünf Funktionen (init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis), kanonisch wie 05/07 (vierter Sign-Pfad bewusst dupliziert), neuer Store sbkim_hetero_inbox (DB-Version 1→2 additiv), Service-Worker um dritten fetch-Listener-Pfad erweitert, Anker-Quelle in Erst-Iteration nur Spore-Single-Anker-Fallback (Degraded-Modus)"
-  },
-  {
-   "id": "07",
-   "name": "Apoptose",
-   "score": "stub",
-   "siegel": "Code-Stub",
-   "abhaengig": [
-    "02",
-    "01"
-   ],
-   "kurz": "Selbstlöschung mit signiertem Vermächtnis — Code-Stub, sechs Funktionen (zweistufige Self-Apoptose mit 60s-Token, Vermächtnis-Inbox, TTL-Vergessen explizit durch Andocker), Service-Worker erweitert um /sbkim/legacy"
-  },
-  {
-   "id": "08",
-   "name": "UI-Demo",
-   "score": "stub",
-   "siegel": "Code-Stub",
-   "abhaengig": [
-    "01"
-   ],
-   "kurz": "Endknoten-Pflege-UI für sbkim_hetero_outbox und sbkim_siblings.heterokaryosisOptIn — Code-Stub, fünf Funktionen (init/listOutbox/addOutboxAnchor/removeOutboxAnchor/setSiblingHeteroOptIn), sechs benannte Error-Klassen im Factory-Stil (UiDemoDependenciesError / InvalidAnchorLabelError / InvalidAnchorVectorError / OutboxFullError / UnknownSiblingError / InvalidOptInArgError), Modul 08 alleiniger Schreiber von sbkim_hetero_outbox (DB-Version 3 aus Pflege Bau 06.1) und Co-Schreiber für sbkim_siblings.heterokaryosisOptIn (Modul 05 unangetastet), Storage-only (kein Netz, kein Embedding, keine Signatur — Vektor-Erzeugung ist Aufrufer-Pflicht), Self-Apoptose-Knopf bewusst nicht in dieser Erst-Iteration, DOM-Form liegt beim Endknoten"
-  },
-  {
-   "id": "09",
-   "name": "Einbau-PWA",
-   "score": "fertig",
-   "siegel": "Live bei zwei Endknoten 2026-05-16",
-   "abhaengig": [],
-   "kurz": "Andock-Anleitung für Endknoten — Module kopieren, Spore mit domainVector erzeugen, Service-Worker registrieren. Live-Beweis 2026-05-16: Mein-Mixarium + Mein-Rezeptbuch jeweils mit eigener Identität angedockt, Cross-Knoten-Handshake etabliert."
-  },
-  {
-   "id": "17",
-   "name": "Floating-Widget",
-   "score": "fertig",
-   "siegel": "Fertig 2026-06-20 (Klaus-Bestätigung: live deployt im BLP-Komplett-Knoten + Mein-Rezeptbuch/Mein-Mixarium). Headless-Smoke 19/19 grün; Floating-Widget mit vier Live-Lampen (LEBT/VERKEHR/FREMD/SIEGEL) im Einsatz",
-   "abhaengig": [
-    "02",
-    "05",
-    "15",
-    "16"
-   ],
-   "kurz": "Floating Mini-Panel im Eruda-Stil als Endknoten-Standard für Modul-15-+-16-Render-Schicht. Vier-Slot-Live-Status-Dashboard (LEBT/VERKEHR/FREMD/SIEGEL) als finale Form. Self-mountend in <body>, Drag via Pointer-Events (5 px Threshold, freies Drag mit Pixel-Präzision, Viewport-Clamp), X-Schließen + vier Wiederherstellungs-Pfade (show()/5-Klick-Geste/Doku-Knopf/Tab-Reload bei rememberHidden:false), localStorage-persistierte Visible + Position (UX-only, kein Protokoll), RAM-only VERKEHR-FIFO 10. **Event-Bus-Schema** mit fünf Custom-Events auf window: sbkim:alive (Modul 02 dispatcht nach getOrCreateIdentity einmalig), sbkim:handshake (Modul 05 dispatcht in handshake/receiveHandshake-Wrappern), sbkim:postmessage (Modul 15 Sub b dispatcht in recordPostMessageEntry für VALID_OPS), sbkim:fremd-alert (Modul 15 Sub e dispatcht in recordEntry nach Buffer-Push), sbkim:siegel-certified (Modul 16 dispatcht am Ende von init() wenn isCertified===true). Modul 17 lauscht passiv auf window, kennt keine Modul-Referenz. Anti-Greenwashing pro Slot binär für SIEGEL (KEIN DOM-Render ohne isCertified()===true, doppelte Defensive-Prüfung) und transparent für LEBT/VERKEHR/FREMD (grau wenn kein Event aktiviert). Modal-Bridge via Proxy-DOM-Element (Option 1 aus Brief): Widget legt unsichtbare Spans #lamp-fremd + #sbkim-siegel-badge in seinem Inneren an; Modul 15/16 attachen ihre Click-Handler dort, deshalb MUSS SbkimWidget.init() VOR SbkimMembrane.init()/SbkimSiegel.init() im Endknoten-Andocker stehen. LEBT-Modal (Uptime-Counter + Modul-02-Init-Status + nodeId-Präfix 12 Zeichen) und VERKEHR-Modal (Mini-Log Tabelle [Zeit, Quelle, Richtung, Decision]) baut Modul 17 selbst. Modul-15-+-16-Backends UNVERÄNDERT. Sage-Page-Pfad (Navleisten-Lampen + Siegel-Badge) bleibt erhalten. Endknoten-Einbau auf drei Zeilen reduziert (Modul-Datei-Kopie + <script>-Tag + EIN SbkimWidget.init({allowedOrigins, repoUrl})-Aufruf). KEINE benannten Error-Klassen (Render-Schicht, fail-soft via console.warn). KEIN PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump (nicht protokoll-aktiv). Bau-Sitzung 17 vom 2026-05-25: src/modules/17_floating_widget.js angelegt mit Standalone-CSS-Injektion (<style>-Element in <head>) + IIFE + Public Surface init/show/hide/isVisible/getPosition + _meta-Read-Anker. DispatchEvent-Hooks additiv in Modul 02/05/15/16 (vier Code-Stellen, Selbstcheck-Zeilen UNVERÄNDERT). ZERTIFIKAT_ASPEKTE-Eintrag in Modul 16 ergänzt (Konvention CLAUDE.md § Sicherheits-Module pflegen Aspekte). Panel 17 in tests/manual_check.html mit 10 Test-Knöpfen + Mock-Modul-16-Knopf + Setup + Selbstcheck-Hinweis. Headless-Smoke tests/smoke_bau17_floating_widget.mjs 19/19 grün. Modul-15-Smoke 31/31 grün (Regression). node --check für alle fünf Module + alle 13 inline-script-Blöcke in manual_check.html grün. Brief Bau-Sitzung 17: docs/sessions/BRIEF_BAU_17_FLOATING_WIDGET.md."
-  },
-  {
-   "id": "20",
-   "name": "Schlüssel-Safe",
-   "score": "stub",
-   "siegel": "Code-Stub 2026-06-20 (Spec PR #315 + Bau-Sitzung). Headless-Smoke tests/smoke_bau20_safe.mjs 19/19 grün. Fix 2026-07-17 (Klaus-Sichttest B1 fing echten Bug): createVault wirft jetzt NoSporeError statt stillem unlock-Fehlschlag; neuer echter Smoke tests/smoke_bau20_safe_real.mjs 14/14 (fake-indexeddb + reale Module 01/02/20). Kern-Asymmetrie Modul 02 als B1b notiert. ✅ Klaus-Re-Sichttest Panel 20 GRÜN 2026-07-17 (Reset→anlegen→entsperren=entsperrt).",
-   "abhaengig": [
-    "01",
-    "02"
-   ],
-   "kurz": "Lokal verschlüsselter Safe für die SBKIM-Identität (nodeId + privater Schlüssel + Spore). Krypto-Kern wiederverwendet Modul 02 exportBackup/importBackup (PBKDF2-SHA256 ≥600k + AES-GCM-256), Store sbkim_safe über Modul 01 ensureStore. Shamir-Recovery 2-von-3 über das Passwort (GF(256)). Öffnet auf Abruf (SbkimSafe.open(), autoPrompt Default false — App startet normal). Name bewusst 'Safe' (nicht 'Tresor'). Nur Identität/Schlüssel, kein PII, nie übers Netz."
-  },
-  {
-   "id": "21",
-   "name": "Spracheingabe",
-   "score": "stub",
-   "siegel": "Code-Stub 2026-06-21 (Schritt 1 des Such-Werkzeugs). Headless-Smoke tests/smoke_bau21_spracheingabe.mjs 45/45 grün. Browser-Sichttest (Live-Mic + EU-Engine) wartet auf Klaus.",
-   "abhaengig": [],
-   "kurz": "Input-agnostische Sprach-Eingabe-Schicht. Dual-Engine: Browser Web-Speech + EU Cloud Speech-to-Text (eu-speech.googleapis.com, BYOK), mehrsprachig DE/EN/RU. Konsequent fail-soft (kein Mic/Key/Netz → Textfeld bleibt, speechErrorHint, kein Throw außer InvalidEuPolicyError). EU-Politik per Knoten: bindend (nur EU-Engine, z.B. BookLedgerPro) ↔ frei (Default, EU wählbar). Komponiert vom Such-Widget (Modul 22)."
-  },
-  {
-   "id": "22",
-   "name": "Such-Widget",
-   "score": "fertig",
-   "siegel": "Fertig 2026-06-29 (auf Klaus' Browser-Sichttest grün hochgestuft, analog 04/05/15). Code-Stub seit 2026-06-21, in vielen Folge-Bauten gereift. Headless-Smoke umfangreich grün (smoke_bau22 257/257, smoke_bau22e_waehlen 45/45, Standalone-Drift-Guard 46/46). ✅ Browser-Sichttest mehrfach GRÜN (Klaus 2026-06-21/22): Blase + semantische Treffer (Membran 0.88), ziehbares Panel + Persistenz, KI-Such-Brücke (eingefügte ChatGPT-Antwort live geparst + semantisch sortiert). Verwandt·KI + Wählen-UI gebaut. KI-Schlüssel-live + Wählen-Umschalter-Sichttest noch offen.",
-   "abhaengig": [
-    "03",
-    "04",
-    "21"
-   ],
-   "kurz": "Frei bewegliches Floating-Such-Tool (🔍-Blase → Eingabe-Panel), self-mountend in <body>. Semantische, server-lose Bedeutungs-Suche über drei getrennt wählbare Bereiche: App-Korpus / verbundene Knoten (rein lokal) / Internet (Pilz-Egress: KI-Such-Brücke BYOK oder neuer Tab). Komponiert Sprache (21) + Vorfilter/Richter (04 queryLocal/hybridMatch). KI-Richter opt-in (Default aus, gratis = Embedding-Cosinus). Wählen-UI verbunden↔verwandt + verwandt·KI: gratis Cosinus = Rangfolge, KI-Richter = Urteil. Reine Anzeige, gatet nichts (PROVIDER_MIN_MATCH 0.80 unberührt). EU-Politik frei/bindend. Drag/Self-Mount/X aus Modul 17 wiederverwendet (17 unangetastet)."
-  },
-  {
-   "id": "23",
-   "name": "Rendezvous (gemeinsamer Raum)",
-   "score": "fertig",
-   "siegel": "Fertig 2026-06-29 (auf Klaus' LIVE Cross-App-Sichttest grün hochgestuft, analog 05/15). Code-Stub 2026-06-28 (Bau-Sitzung). Headless-Smoke tests/smoke_bau23_rendezvous.mjs 55/55 + smoke_bau23_rendezvous_ui.mjs 32/32 grün, Drift-Guard byte-1:1. ✅ LIVE Cross-App-Sichttest GRÜN (Klaus 2026-06-28): Sage ↔ Mein-Mixarium beidseitig '✓ ANDOCK ETABLIERT' über das echte Relais (server-loser Live-Cross-Knoten-Handshake); Verwandtschafts-Badge im Raum GRÜN. Die Adress-Wand ist gelöst.",
-   "abhaengig": [
-    "02",
-    "05"
-   ],
-   "kurz": "Löst die Adress-Wand (committete nodeId ≠ lebende nodeId): lebende Knoten treffen sich im geteilten Nostr-Tag sbkim-rdv, heften auf Nutzer-Aktion ihre lebende Visitenkarte (echte Spore) ans Brett; ein Suchender liest die Karten und handshaket die LEBENDE ID. DOM-frei + fail-soft, reiner Tool-Code über die öffentlichen Flächen von Modul 05 (handshake/listenNostr) + 05b (publish/subscribe) + 02 (getOwnSpore) — Kern-Module unangetastet. Verfassungstreu: nutzer-ausgelöst, keine Pulsation, init() baut nichts auf (Empfangsmodus). In jede App kopieren (lebende Identität pro Origin getrennt). Verwandtschafts-Badge im Raum (reine Anzeige, 0.80-Riegel unberührt)."
-  },
-  {
-   "id": "24",
-   "name": "OCR-/Bild-Eingabe",
-   "score": "stub",
-   "siegel": "Code-Stub 2026-07-01 (Strang B1, Brief 2026-07-01). Headless-Smoke tests/smoke_bau24_ocr_eingabe.mjs 41/41 grün. Browser-Sichttest (Panel 24 + echter Schlüssel) wartet auf Klaus.",
-   "abhaengig": [],
-   "kurz": "Input-agnostische Bild-/Handschrift-→-Text-Schicht (Geschwister von Modul 21). Drei steckbare Anbieter: mistral (Mistral OCR, EU, FAVORIT) · google (Cloud Vision EU-Endpunkt) · browser (Shape Detection, experimentell). EU-Politik frei/bindend per Knoten; konsequent fail-soft (kein Schlüssel/Bild/Netz → deutscher Hinweis, kein Throw außer InvalidEuPolicyError); BYOK, kein Schlüssel im Code, kein PII. Liefert nur Text — Suche (03/04) unberührt. Surface init/getProviders/availableProviders/pickProvider/isFileSupported/recognize/recognizeBrowser/ocrErrorHint."
-  },
-  {
-   "id": "25",
-   "name": "Pseudonymisierung (E2E Grad B)",
-   "score": "stub",
-   "siegel": "Code-Stub 2026-07-16 (B5 aus docs/PLAN_SEMANTIK_KRYPTO.md). Headless-Smoke tests/smoke_bau25_pseudonym.mjs 36/36 grün. Browser-Sichttest Panel 25 GRÜN (Klaus 2026-07-17): Round-trip live korrekt, Betrag bleibt, rehydrate == Original.",
-   "abhaengig": [],
-   "kurz": "Der empfohlene Sofortweg für Vertraulichkeit (Grad B, docs/E2E-VERTRAULICHKEIT.md §1.1): sensible Werte in einer Nutzlast werden vor dem Versand durch lesbare Platzhalter-Token ersetzt ([[KUNDE_1]], [[IBAN_1]], [[EMAIL_1]]); der Anker-Tresor (Token → Klartext) bleibt getrennt/menschlich. Reiner Text-/Objekt-Transform: BUILD-FREI, keine Krypto-Primitive, KEIN Spore-Feld, protocolVersion bleibt 0.1 — Briefkasten bleibt lesbar/auditierbar, Signatur prüfbar. Ehrliche Grenze: Pseudonymisierung ≠ Verschlüsselung (Metadaten leaken weiter → Grad C = B6). Erkenner: explizite Werte (Namen) + eingebaut EMAIL/IBAN (TEL opt-in) + customPatterns; gleicher Wert → gleiches Token, bestehende Token nie verschachtelt; fail-soft (kein Throw außer InvalidPseudonymArgError). Surface pseudonymize/rehydrate/pseudonymizeObject/rehydrateObject/getBuiltinPatterns/makeToken/parseToken/isToken/serializeVault/parseVault. Kein PII im Code."
-  }
- ],
- "schutzBacklog": [
-  {
-   "id": "10",
-   "name": "Reputation",
-   "score": "schablone",
-   "siegel": "spec ausstehend, Priorität niedrig",
-   "kurz": "Knoten-Reputation gegen Sybil-Vergiftung"
-  },
-  {
-   "id": "11",
-   "name": "Rate-Limit & TTL",
-   "score": "schablone",
-   "siegel": "spec ausstehend, Priorität niedrig",
-   "kurz": "Pro-Peer Rate-Limit und Hop-Limit gegen Flooding"
-  },
-  {
-   "id": "12",
-   "name": "Blocklist",
-   "score": "schablone",
-   "siegel": "spec ausstehend, Priorität niedrig",
-   "kurz": "Manuelle Sperrliste für gezielte Angreifer"
-  }
- ],
- "diffusionBacklog": [
-  {
-   "id": "14",
-   "name": "Diffusion",
-   "score": "schablone",
-   "siegel": "Stub (Backlog), Priorität niedrig",
-   "kurz": "Konsensuell-empfehlende Spore-Diffusion über Handshake-Erweiterung — Pfad 2 (drehbuchkonform), Pfade 1 (passiv) und 3 (parasitär) dokumentiert; Spec ausstehend bis Netz wächst"
-  }
- ],
- "membranBacklog": [
-  {
-   "id": "15",
-   "name": "Membran",
-   "score": "fertig",
-   "siegel": "Sichttest 8/8 grün 2026-05-25 (Klaus, DeX-Chrome auf Galaxy Tab S6, Termux-localhost:8000 nach Hard-Reload): Panel 15 Setup + Knöpfe 10–17 alle grün; Sage-Page Bonus vier Plaketten sichtbar (LEBT/VERKEHR/FREMD/SBKIM-Siegel-Badge). Mini-Pflege Knopf-11-Anti-PII-Filter (eigene nodeId vom String-Match ausnehmen) im selben PR #159 mitgenehmigt. Code-Stub voll (Bau 15.B Sub (a)+(b) Bedien-Pfade 2026-05-25) + Bau 15 Sub (e) + Bau 15.SW SW-Probe + Pflege Sage-Page-Sichttest-Knopf (alle 2026-05-24). Bau 15.B 2026-05-25: src/modules/15_membran.js Sub (a) read() voll (MembraneSnapshot mit Identitäts-/Geschwister-anonymisiert-/Storage-/Siegel-Block, Siegel-Hook 3-Fall-Logik, Sub-(e)-Hook mit snapshotByteLen, Quota blockt nicht), Sub (b) postMessage-Bedien-Pfad voll (7-stufige Empfänger-Kette, Allowlist fail-soft via init() filter+console.warn, Nonce-Pflicht + 30 s Replay-Dedupe RAM-Map, Rate-Limit-Hook fail-soft an Modul 11 mit throttled-Marker, op-Dispatch sporeRef/query/hint/queryResult mit Schema-Validierung, recentSporeRefs FIFO max 16, pendingQueries TTL 30 s, handshake-Tabu, kein Persistent-Log, kein Auto-Handshake, Modul-14-fehlt-Info einmal pro Session frequenz-gedrosselt). _meta erweitert um recentSporeRefsCount/pendingQueriesCount/seenNoncesCount/siegelAvailable + Test-Brücke _registerPendingQueryForTest. Selbstcheck-Zeile UNVERÄNDERT (keine neuen Public-Surface-Funktionen). src/modules/16_siegel.js ZERTIFIKAT_ASPEKTE um Eintrag „2026-05-25 / Modul 15 / Sub (a) Read-API + Sub (b) postMessage-Brücke\" ergänzt (Pflicht-Konvention CLAUDE.md § „Sicherheits-Module pflegen Aspekte\"). Panel 15 in tests/manual_check.html um Knöpfe 10–17 erweitert (Setup + Tests 1–9 aus Bau 15+15.SW + Tests 10–17 für Sub (a)+(b)-Pfade + Selbstcheck). Headless-Smoke tests/smoke_bau15b_membran.mjs 31/31 grün. node --check beide Module + alle 12 inline-script-Blöcke in manual_check.html syntaktisch grün. Spec finalisiert Sub (a)+(b) 2026-05-25 (Spec-Sitzung 15.B). Sichttest 2026-05-24 grün für Sub (e) + Bau 15.SW (Klaus, DeX-Chrome). Bau 15.B Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf Panel 15 Knöpfe 10–17). Priorität hoch (Auslöser Gemini 3.5 Flash)",
-   "kurz": "Außenhülle zwischen PWA-Zelle und Browser-Umgebung — fünf Sub-Bereiche. **Sub (a)+(b) Spec finalisiert 2026-05-25** (Spec-Sitzung 15.B): MembraneSnapshot mit Identitäts-/Geschwister-anonymisiert-/Storage-/Siegel-Block (siegel-Hook drei Pflicht-Fälle null/grün/rot), Quota blockt read() nicht, Sub-(e)-Hook erweitert mit snapshotByteLen; postMessage-Envelope finalisiert mit vier `op`-Werten sporeRef/query/hint/queryResult + expliziten Payload-Schemata, `handshake` Tabu, Allowlist strict String exakter Origin-Match KEIN Wildcard KEIN *self*, Validierungs-Strenge fail-soft (console.warn pro entferntem Eintrag, KEIN sync Throw), Sender-Mechanismus KEINE Modul-Vorgabe (Modul 15 nur Empfänger), Rate-Limit-Hook für Modul 11 optional (fail-soft, throttled-Marker), Nonce-Pflicht crypto.randomUUID() + 30 s Replay-Dedupe + inReplyTo-Verkettung für queryResult, Persistenz RAM-only (kein sbkim_membrane_log-Store). **Sub (e) Fremdzugriff-Detektor + Navleisten-Lampe** in Bau-Sitzung 15 vom 2026-05-24 implementiert: src/modules/15_membran.js mit Ringbuffer (RAM-only, MEMBRANE_FREMDZUGRIFF_BUFFER_MAX=50, FIFO-Verdrängung), Listener-Liste mit subscribe/unsubscribe (idempotent, fail-soft bei Listener-Throws), Lampen-Toggle (fremd-alert solange Buffer nicht leer + fremd-pulse pro Eintrag), eigenständigem Modal in document.body (Click-Handler an #lamp-fremd, Esc/Backdrop/✕/Aufräumen), BroadcastChannel('sbkim-membrane')-Subscription für SW-endpoint-probes. **Bau 15.SW SW-Probe-Detektor 2026-05-24**: src/sbkim-sw.js additiv erweitert (KEIN Eingriff in die drei bestehenden handleBridge-Pfade) — neuer `maybeRecordMembraneProbe(request)`-Hook als ERSTE Zeile im fetch-Listener (vor den drei isOwnEndpoint-Branches), synchron + fail-soft, KEIN respondWith. Filter über vier SBKIM-Endpunkte (`/sbkim/spore.json`, `/sbkim/anastomosis`, `/sbkim/legacy`, `/sbkim/heterokaryosis`; `/sbkim/query` bewusst weggelassen, weil Modul 04.C noch nicht da). Fremd-Bewertung nach Karte 15 § Fremd-Definition Reihenfolge 1→4 (url.origin → Sec-Fetch-Site cross-site/same-site → same-origin/none/fehlend → Referer-Fallback). Pro Probe neue BroadcastChannel-Instanz (open → postMessage → close), KEIN long-lived Channel. Sub (a) read() als Skelett, Sub (b) postMessage-Listener als Skelett — finale Spec wartet auf Spec-Sitzung 15.B. KEINE benannten Error-Klassen (rein beobachtend). index.html erweitert: :root --lamp-alert + zwei CSS-Regeln + #lamp-fremd-DOM nach #lamp-traffic + init-Aufruf in sbkim-init.js. Panel 15 in tests/manual_check.html mit jetzt neun Knöpfen (Setup + Tests 1–7 aus Bau 15 + Knopf 8 SW-Probe-Simulation via BroadcastChannel headless + Knopf 9 Live-SW-Probe-Hinweis für Klaus). Headless-Smoke 11/11 Bau-15 + 21/21 Bau-15.SW grün. Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf)."
-  }
- ],
- "toolPwaBacklog": [
-  {
-   "id": "18",
-   "name": "Tool-PWA-Container",
-   "score": "fertig",
-   "siegel": "Fertig 2026-06-20 (Klaus-Bestätigung: Andock-Container Sub (a) gebaut + im Einsatz — der Andock-Pfad funktioniert). Headless-Smoke 17/17 grün. Hinweis: die weiteren Sub-Bereiche (b)–(i) (Backup, Self-Apoptose, Re-Embedding, Spore-Discovery …) sind späterer Ausbau und ändern den Fertig-Status des Andock-Containers nicht.",
-   "abhaengig": [
-    "02",
-    "03",
-    "04",
-    "05",
-    "16"
-   ],
-   "kurz": "Wartungs- + Andock-Modal-Suite. **Sub (a) Vorab** implementiert AUSSCHLIESSLICH den Andock-Pfad: `SbkimToolPwa = {init, openAndockTab, close, isOpen, _meta}` mit Vier-Schritt-Wizard (URL eingeben → Spore fetchen + `verifyForeignSpore` → Match-Check mit Lazy-Embedding + Drei-Schichten-Bars fachlich/prozess/skalierung → Handshake via `SbkimAnastomose.handshake`, auto-close 2 s nach Erfolg). Macht den fail-soft-Hook im Modul-16-Sub-(e)-Bronze-Modal (PR #180) produktiv. Zwei benannte Errors `ToolPwaNotReadyError` + `ToolPwaInvalidUrlArgError` (beide sync vor await). `init()` ist fail-soft: fehlende Pflicht-Felder (`endpoint`+`domain`+`domainKeywords`) → `console.warn` + `_meta.ready=false`, KEIN Throw. `matchThreshold > 0.80` wird auf 0.80 geclampt + warn (Tabu: Endknoten-Bauer kann reduzieren, aber nicht erhöhen). `externalHubUrl` ist Read-Anker — KEIN Hub-Fetch in Sub (a) Vorab. RAM-only, kein eigener Store, kein PROTOCOL_VERSION-/DB_VERSION-/BACKUP_FORMAT_VERSION-Bump. Inline-CSS im Modul (Drei-Zeilen-Einbau-Konvention analog Modul 17). Embedding-Lazy: erster `openAndockTab` lädt Modul 03 wenn nötig, Re-Use bei `SbkimEmbedding._meta.ready===true` ODER `isReady()===true`. KEIN ZERTIFIKAT_ASPEKTE-Eintrag (Modul 18 ist Wartungs-/Andock-Schicht, kein Sicherheits-Modul). **Sub-Bereiche (b)–(i) Spec ausstehend** für Voll-Spec 18 (Pipeline 5h.2 nach App-Freigabe): b bidirektionaler Sporen-Anker-Tausch (Heterokaryose), c Identitäts-Wechsel, d Backup-Export/-Import, e Self-Apoptose, f Sporen-Regeneration, g Re-Embedding, h Manueller Handshake-Trigger, i Spore-Discovery (Sage / Externer-Hub / Manuelle-URL). Brief Sub (a) Vorab: docs/sessions/BRIEF_SPEC_18_SUB_A_VORAB.md."
-  }
- ],
- "mycelHubBacklog": [
-  {
-   "id": "19",
-   "name": "Andock-Wizard (kopierbar)",
-   "score": "fertig",
-   "siegel": "Fertig 2026-06-20: aus der Sage-Page extrahiert nach src/modules/19_andock_wizard.js (reine Eingabe→Text-Hilfe: Repo-URL+Domain+Knotentyp → unsignierte Spore-Vorlage + status.json-Zeile + vorgelinkter PR; kein Signieren/Storage/Netz, mount() Browser-only). Headless-Smoke tests/smoke_bau19_andock_wizard.mjs 15/15 grün.",
-   "kurz": "Sage-Page-Andock-Wizard-Code extrahiert nach `src/modules/19_andock_wizard.js` (kopierbares JS-Modul, Bau 2026-06-20). Einsatz: Sage-Protokol UND Externer Mycel-Hub. Drei Eingabe-Felder (Repo-URL · Domain · Knotentyp), Spore-JSON-Template-Output, vorgelinkter `status.json`-PR. Klaus' Vision 2026-05-26: mehrstufige Mycel-Architektur (Sage → Starter-Bundle → Externer Hub → Forker-PWAs). Brief: docs/sessions/BRIEF_SPEC_19_ANDOCK_WIZARD.md."
-  },
-  {
-   "id": "starter-bundle",
-   "name": "SBKIM-Starter-Bundle (eigenes Repo)",
-   "score": "schablone",
-   "siegel": "Konzept-Karte (Backlog), Priorität niedrig (Phase B nach App-Freigabe + nach Modul 19)",
-   "kurz": "Eigenes GitHub-Repo `<owner>/sbkim-starter` (Name-Vorschlag) mit allen SBKIM-Modulen (01–17 + 18 sobald gebaut) als kopierfertige Datei-Sammlung + Installer-Script + Konfig-Template + Forker-README. Modul-Distribution für Forker, trennt Spec (Sage) von Code-Distribution. Pflicht-Module-Kern (01/02/03/04/05/07/15/16/17) + Optional-Module (06/08/18); Modul 19 NICHT im Bundle (gehört zum Hub). Tag-basierte Versionierung statt NPM. Karte: docs/components/_starter_bundle.md."
-  },
-  {
-   "id": "mycel-hub",
-   "name": "Externer Mycel-Hub — Repo lausiklauskn-png/SB-KIMTool-Point",
-   "score": "schablone",
-   "siegel": "Konzept-Karte (Backlog) + Repo public angelegt 2026-05-26 (leer), Priorität niedrig (Phase B nach App-Freigabe + nach Modul 19 + nach Starter-Bundle)",
-   "kurz": "GitHub-Repo `lausiklauskn-png/SB-KIMTool-Point` als öffentliches Observatorium light für Forker-PWAs — Repo angelegt 2026-05-26 (public, leer): https://github.com/lausiklauskn-png/SB-KIMTool-Point. Klaus' Naming-Festlegung 2026-05-26: SB-KIM-Akronym + Tool-Point-Konzept (Sammelpunkt für Modul-18-Tool-PWAs). Eigene `status.json`, eingebetteter Modul-19-Andock-Wizard, Endknoten-Liste, optional Bau-Puls aus Sage gespiegelt. Trennt Forker-Last von Klaus' Sage-Protokol — Klaus' Sage bleibt Spec-Hub mit Klaus' Endknoten, der Externe Hub sammelt Forker-Endknoten in eigener `status.json`. Pflege-Modell A (Klaus pflegt selbst) als Erst-Iteration, organischer Übergang zu Community-Pflege wenn Mycel wächst. Karte: docs/components/_mycel_hub.md."
-  }
- ],
- "siegelBacklog": [
-  {
-   "id": "16",
-   "name": "SBKIM-Siegel",
-   "score": "fertig",
-   "siegel": "Code-Stub (Bau-Sitzung 16 vom 2026-05-24 + Bau Sub (e) Bronze/Gold-Stufung 2026-05-26). Headless-Smoke 32/32 + Sub (e) 15/15 grün. **Sichttest Sub (e) 4/4 grün 2026-05-26** (Klaus, DeX-Chrome auf Galaxy Tab S6, Termux `python3 -m http.server 8000` nach Hard-Reload): Panel 16 Knöpfe 9–12 alle live grün — Knopf 9 Bronze-Initial (data-stufe=\"bronze\", aria-label=\"SBKIM-Siegel · Mycel suchend\", title=null, mycelConnected=false, siegelStufe-Getter=\"bronze\"); Knopf 10 Bronze→Gold via synthetischem Handshake (stufe_vor=\"bronze\" → stufe_nach=\"gold\", aria_label_nach=\"SBKIM-Siegel · Mycel verbunden\", mycelConnectedAt=\"2026-05-26T16:27:22.973Z\", klasse_stufenwechsel_gold=true); Knopf 11 Idempotenz (erste_welle === zweite_welle === \"2026-05-26T16:27:56.565Z\", klasse_nach_zweitem_dispatch=false, stufe_nach=\"gold\"); Knopf 12 Bronze-Klick öffnet Modal mit Hinweis-Block (modal_offen=true, hinweis_block_sichtbar=true, andock_button_im_modal=true, aspekt_4_pending_marker=true, aspekte_anzahl=4). **FERTIG 2026-06-20** (Klaus-Bestätigung: SBKIM-Siegel live in BLP / Mein-Rezeptbuch / Mein-Mixarium; Sub (e) Bronze/Gold-Sichttest 4/4 + Cross-Knoten grün). **Endknoten-Cross-Knoten-Sub-(e)-Sichttest 2026-05-26 grün** (Klaus, DeX-Chrome auf Galaxy Tab S6, MR + MM in derselben Chrome-Instanz nach Merge MR PR #249 + MM PR #58 + Fix-PRs badgeSelector-Konfig): Initial-Bronze visuell + Modal + Aspekt-4-pending in beiden PWAs ✓; Cross-Knoten-Handshake via Eruda + BroadcastChannel-Spore-Bridge (Pages-spore.json-Pfad scheiterte mit InvalidPeerSporeError wegen veralteter Pages-Datei) ergab `outcome:\"established\", score:0.9544`; manueller `window.dispatchEvent('sbkim:handshake', outcome:'established')` in beiden PWAs ergab `_meta.siegelStufe:\"gold\"` + `mycelConnected:true` + Modal-Refresh (Hinweis-Block weg, Aspekt 4 datiert). **Drei eigenständige Folge-Befunde** (separate Pflegen): (a) Widget-SIEGEL-Slot visuell stufen-unabhängig (Modul 17 rendert immer gold-medaillon, `data-stufe` wirkt nur am Proxy-Span), (b) Endknoten-`sbkim/05_anastomose-v2.js` ist prä-Bau-17 und dispatcht KEIN `sbkim:handshake`-window-Event automatisch (manueller Eruda-Dispatch nur als Workaround), (c) Modal-Datum „Bezeugt seit … Uhr\" zeigt UTC statt MESZ-lokal. Priorität hoch (vor App-Freigabe)",
-   "kurz": "Selbst-Zertifikat einer PWA-Zelle nach erfolgter Integration der SBKIM-Pflicht-Module — self-inscribing (kein Hub-Aussteller, kein CI-Build-Check; Runtime-Selbstprüfung beim PWA-Boot), Badge im definierten Anker (sichtbar oder unsichtbar pro PWA konfigurierbar), Click öffnet Erklär-Modal aus modul-interner ZERTIFIKAT_ASPEKTE-Liste (lebendes Dokument: jedes Sicherheits-Update ergänzt einen Aspekt mit since-Datum). Anti-Greenwashing: kein Siegel ohne erfüllte Selbst-Prüfung; wenn ein Pflicht-Modul fehlt, KEIN Badge-Render. **Bau-Sitzung 16 vom 2026-05-24:** `src/modules/16_siegel.js` voll angelegt — Public Surface `init/isCertified/getExplanation/getCertifiedModules/getAspects/_meta`, `PFLICHT_MODULE` mit sieben Einträgen (01/02/03/04/05/07/15) + Surface-Funktions-Anker pro Modul, `ZERTIFIKAT_ASPEKTE` mit Start-Eintrag „Grund-Siegel-Bezeugung 2026-05-24“ (verbindlich aus Spec-Sitzung 16), Surface-Check + binärer Fail-Modus (genau EINE `console.warn`-Zeile mit ID-Liste, KEIN Badge, KEIN Modal), Badge-Mount mit MutationObserver-Re-Try analog Modul 00 (10 s Safety-Timeout), Modal-Mount in `document.body` analog Modul 15, First-Boot-Animation einmalig pro Session, Repo-URL Auto-Erkennung + Override, nüchterne zweizeilige Aussteller-Klärung („Dieses Siegel ist self-inscribing…“ + Repo-URL als anklickbarer Link, KEIN Disclaimer-Schwall), KEINE benannten Error-Klassen (rein lokal/beobachtend, fail-soft via `console.warn`). **Bauzustands-Wahl Option β:** `badgeSelector` zeigt auf einen CONTAINER (Default `.lamps`); Modul-Code erzeugt das `<span id=\"sbkim-siegel-badge\">`-Element via JS darin — ausschließlich wenn `isCertified()===true`. Anti-Greenwashing-Klausel damit binär erfüllt: kein DOM-Element überhaupt im Negativ-Fall. `index.html` erweitert (`:root` mit vier neuen `--siegel-*`-Variablen, Badge-CSS-Block inkl. `@keyframes siegel-first-boot`, `<script src=\"src/modules/16_siegel.js\">` vor `sbkim-init.js`). `sbkim-init.js` ergänzt um `SbkimSiegel.init({badgeSelector:\".lamps\"})`-Aufruf nach `SbkimMembrane.init`, vor `SbkimDoku.init`. Panel 16 in `tests/manual_check.html` mit acht Knöpfen (Setup + Tests 1–6 + Hinweis-Knöpfe 7/8 für Tab-Reload-Pfade + Selbstcheck). Persistenz RAM-only (kein `DB_VERSION`-Bump, kein neuer Store, kein `PROTOCOL_VERSION`-Bump). **Headless-Smoke 32/32 grün** (14 Happy-Path + 10 Anti-Greenwashing-Fail + 8 Hidden-Mode/Override). Sichttest ungeprüft (wartet auf Klaus' Browser-Lauf in Sage-Page + Panel 16)."
-  }
- ],
- "nodeTypes": {
-  "schablone": 0,
-  "werkstatt": 3,
-  "spec": 5,
-  "stub": 7,
-  "fertig": 10
- },
- "scoreModel": {
-  "formula": "100 * (1 - realScore / maxScore)",
-  "hubLiveBonus": 10,
-  "modulePerStep": "siehe nodeTypes",
-  "endknotenIntegrated": 8,
-  "endknotenIntegratedAndPing": 15,
-  "maxScoreNote": "Hub(10) + 10 Module × 10 + 2 Endknoten × 15 = 140. Schutz-Backlog (10-12), Diffusion-Backlog (14) und Membran-Backlog (15) zählen nicht mit, da reaktiv/proaktiv-zukünftig."
- },
- "config": {
-  "PROTOCOL_VERSION": "0.1",
-  "NODE_TYPE_DEFAULT": "hybrid",
-  "EMBEDDING_MODEL": "Xenova/multilingual-e5-small",
-  "EMBEDDING_DIM": 384,
-  "PROVIDER_MIN_MATCH": 0.8,
-  "RELATEDNESS_MIN": 0.3,
-  "LOCAL_RESULT_THRESHOLD": 3,
-  "QUERY_TIMEOUT_MS": 4000,
-  "SBKIM_STORE_PREFIX": "sbkim_",
-  "DOKU_REVEAL_CLICKS": 5,
-  "DOKU_REVEAL_WINDOW_MS": 3000,
-  "DOKU_QUOTA_WARN_RATIO": 0.8,
-  "DOKU_QUOTA_WARN_BYTES": 52428800,
-  "SIBLING_MAX_AGE_MS": 2592000000,
-  "HETERO_MAX_ANCHORS": 5,
-  "HETERO_OUTBOX_MAX_ENTRIES": 5
- },
- "endpoints": {
-  "spore": "/.well-known/sbkim/spore.json",
-  "sporeAlias": "/sbkim/spore.json",
-  "query": "/sbkim/query",
-  "anastomosis": "/sbkim/anastomosis",
-  "heterokaryosis": "/sbkim/heterokaryosis",
-  "legacy": "/sbkim/legacy"
- },
- "datenquelleHinweis": "Diese Datei ist die maschinenlesbare Quelle der Landing Page. Andere Repos können sie via fetch() abrufen (CORS erlaubt durch GitHub Pages). Format-Versionierung über schemaVersion. Erweiterungen nur additiv, kein Brechen bestehender Felder."
+  "datenquelleHinweis": "Diese Datei ist die maschinenlesbare Quelle der Landing Page. Andere Repos können sie via fetch() abrufen (CORS erlaubt durch GitHub Pages). Format-Versionierung über schemaVersion. Erweiterungen nur additiv, kein Brechen bestehender Felder."
 }
