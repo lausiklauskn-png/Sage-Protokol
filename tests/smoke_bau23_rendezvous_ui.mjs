@@ -158,6 +158,15 @@ async function run() {
   record("Discover-Knopf im Panel", "ja", discoverButton ? "ja" : "nein", !!discoverButton);
   record("Announce-Knopf im Panel", "ja", announceButton ? "ja" : "nein", !!announceButton);
 
+  // A15-Inc-1 — Zwei-Stufen-Hinweis (ehrliche Kosten-Benennung) ist gemountet.
+  const uiSrc = readFileSync(resolve(repoRoot, "src/modules/23_rendezvous_ui.js"), "utf8");
+  record("A15 Zwei-Stufen-Hinweis: stageNote gemountet", "ja",
+    /stageNote/.test(uiSrc) && /panelEl\.appendChild\(stageNote\)/.test(uiSrc) ? "ja" : "nein",
+    /stageNote/.test(uiSrc) && /panelEl\.appendChild\(stageNote\)/.test(uiSrc));
+  record("A15 Zwei-Stufen-Hinweis: nennt Nur stöbern + Voll mitmachen", "ja",
+    /Nur stöbern/.test(uiSrc) && /Voll mitmachen/.test(uiSrc) ? "ja" : "nein",
+    /Nur stöbern/.test(uiSrc) && /Voll mitmachen/.test(uiSrc));
+
   connectButton.click();
   await sleep(20);
   record("Connect ruft connectAndAnnounce", "1", String(stub.SbkimRendezvous._calls.connect), stub.SbkimRendezvous._calls.connect === 1);

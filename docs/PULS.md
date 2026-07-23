@@ -31,6 +31,21 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Folge⁷) — A15-Inc-1 gebaut (Zwei-Stufen-Hinweis)
+
+Klaus bestätigte die Richtung („Schauen frei, Mitreden mit Identität — logisch und nachvollziehbar")
+→ **A15-Increment 1** gebaut.
+
+- **Zwei-Stufen-Hinweis** in `src/modules/23_rendezvous_ui.js` (+ byte-1:1 `sbkim-bundle`): ehrliche
+  Kosten-Benennung im „🌐 Mit dem Netz verbinden"-Panel — **🔎 Nur stöbern** (anonym, kein Download/keine
+  Identität, du wirst nicht gefunden) vs. **🌐 Voll mitmachen** (einmal lokale Identität → auffindbar +
+  fragen/verbinden). **REINE Anzeige — kein Verhaltens-Eingriff**, Kern/0.80-Riegel/PROTOCOL_VERSION unberührt.
+- Smoke `smoke_bau23_rendezvous_ui.mjs` **83/83** (2 neue A15-Proben), byte-1:1 Drift-Guard grün.
+- **Offen:** A11B-Inc-2 (Knoten-Detail-Karte im Such-Widget mit „Antwort holen") + A11B-Inc-3 („🤝 verbinden"
+  nach Antwort) + netzweiter Rollout der UI-Datei. **Browser-Sichttest wartet auf Klaus.**
+
+---
+
 ## Stand 2026-07-23 (Folge⁶) — A11-Teil B + A15 Spec geschrieben (Erst-Kontakt-Fluss)
 
 Klaus: „Weiter mit A11 und A15." Beide sind derselbe Moment (fremder Nutzer, Erst-Kontakt am
