@@ -175,10 +175,10 @@
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="A12rest"><div class="body">
-  <div><span class="code">A12</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">„Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)</span></div>
-  <div class="d"><b>Der Briefkasten-Teil ist erledigt</b> (Fragen überleben Zeitverzögerung, netzweit). <b>Offen (Spec/Konzept):</b> Antworten ist heute opt-in/manuell (Default aus) und der Antworter-Tab muss vorn+wach sein. (1) Erreichbarkeit — mit „aus" gehen Fragen verloren; „immer erreichbar" oder Auto-Toggle? (2) Reihenfolge/Flut bei vielen Fragen (Queue/Priorität, ein Browser ist kein Server)? (3) eigene vs. fremde Fragen. Berührt Schutz-Modul 11 (Rate-Limit). Erst Spec, dann Bau.</div>
-  <div class="meta"><span class="tag">Spec</span> offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ"></div>
+  <div><span class="code">A12</span><span class="time">✅ Spec abgeschlossen 23.07.</span> <span class="t">„Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)</span></div>
+  <div class="d"><b>✅ Spec abgeschlossen 2026-07-23</b> → <code>docs/SPEC_A12_ERREICHBARKEIT.md</code>. <b>Ergebnis:</b> das Modell ist <b>entschieden</b> — das <b>Briefkasten-Prinzip</b> (schon gebaut, Fragen überleben Zeitverzögerung netzweit) ist die verfassungsfeste Antwort auf „Erreichbarkeit ohne Server"; ein <b>„Immer-erreichbar"-Server wird bewusst NICHT gebaut</b> (Empfangsmodus verbietet Pulsation, Browser drosselt Hintergrund-Tabs, Ehrlichkeit). Frage (1) Erreichbarkeit = gebaut · (2) Flut = im Kern gelöst (Rate-Limit 6/min + Dedupe + Lebenszyklus) · (3) eigene vs. fremde = per Design schon erfüllt (eigene Frage = Vordergrund → Vorrang). <b>Offen bleiben nur zwei kleine, optionale Bauten (Klaus' Wahl, blockieren nichts):</b> A12-opt-1 pro-Peer-Antwort-Fairness (Modul 11-Bucket pro Frager) · A12-opt-2 lokaler „beim Öffnen gleich antworten"-Merker (opt-in, Default aus).</div>
+  <div class="meta"><span class="tag">Spec</span> ✅ erledigt 23.07. · 2 optionale Rest-Bauten</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="A15"><div class="body">

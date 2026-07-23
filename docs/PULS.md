@@ -31,6 +31,27 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Folge⁴) — A12-Spec abgeschlossen („Antworten an/aus"-Modell)
+
+Autonom weiter „die Reihe nach" (Klaus rejected die Rückfrage → Freibrief greift, kein Nachfragen).
+Nächster spec-barer, kern-freier Listenpunkt genommen: **A12**.
+
+- **A12 als Spec/Konzept ABGESCHLOSSEN** → `docs/SPEC_A12_ERREICHBARKEIT.md`. Ergebnis: das
+  „Antworten: an/aus"-Modell ist **entschieden**. Das **Briefkasten-Prinzip** (Phase 1–2d, schon
+  gebaut/netzweit) ist die verfassungsfeste Antwort auf „Erreichbarkeit ohne Server"; ein
+  **„Immer-erreichbar"-Server wird bewusst NICHT gebaut** (Empfangsmodus verbietet Pulsation +
+  Browser drosselt Hintergrund-Tabs + Ehrlichkeit). Frage (1) Erreichbarkeit = gebaut · (2) Flut =
+  im Kern gelöst (Rate-Limit 6/min + `qidSeen`-Dedupe + Lebenszyklus) · (3) eigene vs. fremde =
+  per Design schon erfüllt (eigene Frage = Vordergrund → Vorrang, kein Scheduler nötig).
+- **Offen bleiben nur zwei kleine, optionale, additive Bauten** (Klaus' Wahl, blockieren nichts,
+  0.80-Riegel/Kern 02/05/05b/INTERFACES unberührt): **A12-opt-1** pro-Peer-Antwort-Fairness
+  (Modul 23 nutzt Modul-11-Token-Bucket pro Frager statt globaler Quote) · **A12-opt-2** lokaler
+  „beim Öffnen gleich antworten"-Merker (opt-in, Default aus).
+- PLAN + Checkliste-HTML nachgezogen (A12 abgehakt, zwei Rest-Bauten ergänzt). **Doku-only, kein Code,
+  kein Test berührt.**
+
+---
+
 ## Stand 2026-07-23 (Folge³) — S5 Härtungs-Sims gebaut + A18-Status geklärt
 
 Auftrag Klaus: „S5-Härtungs-Sims und A18".
