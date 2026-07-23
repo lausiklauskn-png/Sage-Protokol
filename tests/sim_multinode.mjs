@@ -14,6 +14,9 @@
 //   Phase 3  Andock-Riegel (Modul 04 match → 0.80 trennt korrekt nach Bedeutung)
 //   Phase 4  Q&A über Hub  (Sage fragt, ein Endknoten antwortet aus seinem Korpus)
 //   Phase 5  Q&A OHNE Hub  (zwei Endknoten fragen sich direkt — Meilenstein 2026-07-11)
+//   Phase 6  Härtung       (die A2/A3-Live-Härtungsfälle als Regression festgenagelt:
+//                           Frage-Timeout · Korpus-leer-Falle · Antworter-Vorwärmen ·
+//                           Adress-Wand/newest-per-name · A12-Briefkasten · Round-Trip)
 //
 // Es ist der reproduzierbare Regressionstest für „das Mycel trägt als Netz
 // unter Gleichen", den der Brief verlangt.
@@ -300,7 +303,117 @@ async function run() {
   // Meilenstein 2026-07-11: Endknoten fragen sich GEGENSEITIG, kein Sage dabei.
   await answerQnA("Phase 5 Q&A OHNE Hub (Endknoten↔Endknoten)", mix, "erfrischendes Getränk für den Sommer");
 
+  // ── Phase 6: Härtung — die A2/A3-Live-Härtungsfälle als Regression sichern ──
+  // Diese Fälle wurden im ECHTEN Browser-Lauf (A2-Härtung II 2026-07-10, hub-
+  // unabhängig 2026-07-11) schmerzhaft gefunden; hier über den geteilten Bus +
+  // echte Knoten-Instanzen als Regression festgenagelt, damit sie nicht zurück-
+  // fallen. Anders als Phase 4/5 (queryLocal-Direktaufruf) läuft hier der ECHTE
+  // Relais-Round-Trip enableAnswering ↔ askNode (Tag sbkim-qry). EHRLICH:
+  // Mock-Bus + Embedding-Stub (siehe Kopf) — geprüft wird die VERDRAHTUNG der
+  // Härtung, nicht die Live-Latenz oder das echte Modell.
+  await hardeningPhase(rez, mix);
+
   print();
+}
+
+// Phase 6: die Antwort-Härtung (enableAnswering/askNode/fetchAnswers) über den
+// geteilten Bus mit echten Knoten-Instanzen ausüben. asker fragt, answerer
+// antwortet. Jede Probe nagelt genau einen Live-gefundenen Härtungsfall fest.
+async function hardeningPhase(asker, answerer) {
+  const tag = "Phase 6 Härtung";
+  const RDV = answerer.sb.SbkimRendezvous;
+
+  // Antworter-Korpus deterministisch um die Frage herum bauen (prepareCorpus →
+  // ensureAnswerCorpus registriert ihn via setLocalCorpus). Der Antworter bettet
+  // die Frage mit SEINEM Stub ein → Query-Vektor reproduzierbar.
+  const Q = "Sommergetraenk mit Waldbeeren";
+  const qv = await answerer.sb.SbkimEmbedding.embedQuery(Q);
+  const answererCorpus = [
+    { label: "bester Treffer", anchorId: "near", text: "Sommergetraenk mit Waldbeeren erfrischend", passageVec: mixedVec(qv, 0.96, 11) },
+    { label: "mittlerer Treffer", anchorId: "mid", text: "kuehles Getraenk fuer warme Tage", passageVec: mixedVec(qv, 0.86, 12) },
+    { label: "fern", anchorId: "far", text: "voellig anderes Thema Xylophon Statik", passageVec: mixedVec(qv, 0.40, 13) },
+  ];
+
+  // Spy: alle queryLocal-Texte des Antworters mitschreiben (fürs Vorwärmen),
+  // dann an die echte Funktion durchreichen (Korpus/Ranking unverändert).
+  const answererMatch = answerer.sb.SbkimMatch;
+  const qlCalls = [];
+  const origQL = answererMatch.queryLocal.bind(answererMatch);
+  answererMatch.queryLocal = function (text, k, opts) { qlCalls.push(String(text)); return origQL(text, k, opts); };
+
+  // prepareCorpus koppeln (Korpus-leer-Falle-Härtung: Antwort-Pfad ↔ Korpus-Aufbau).
+  RDV.configure({ prepareCorpus: async () => answererCorpus });
+
+  // ── 6a: fragen, SOLANGE der Antworter NOCH NICHT lauscht → Frage-Timeout mit
+  //        pending:true (kein Hänger). Zugleich A12-Briefkasten-Setup. ──
+  const ask1 = await asker.sb.SbkimRendezvous.askNode(answerer.nodeId, Q, { timeoutMs: 150 });
+  record(tag + " 6a — Frage-Timeout greift (kein Hänger), Frage bleibt offen (pending)",
+    "ok=false,pending=true", "ok=" + ask1.ok + ",pending=" + ask1.pending,
+    ask1.ok === false && ask1.pending === true && typeof ask1.qid === "string");
+
+  // ── 6b: eine STALE Karte gleichen Namens ans Brett (alte, tote nodeId, alter ts). ──
+  const staleTs = Math.floor(Date.now() / 1000) - 600;
+  await bus.publish({
+    kind: 1, created_at: staleTs, tags: [["t", "sbkim-rdv"]],
+    content: JSON.stringify({
+      kind: "sbkim-presence", nodeId: "STALE-DEAD-ID", nodeName: answerer.name,
+      spore: { id: "STALE-DEAD-ID", nodeName: answerer.name, domainVector: Array.from(answerer.vec) }, ts: staleTs,
+    }),
+  });
+
+  // ── 6c: Antwortrecht EINSCHALTEN — härtet dreifach: (1) Korpus aktiv gesichert,
+  //        (2) frische Präsenz-Karte unter der lauschenden ID, (3) Vorwärmen. ──
+  const en = await RDV.enableAnswering();
+  record(tag + " 6c — enableAnswering ok + _meta.answering aktiv", "ok+answering",
+    "ok=" + en.ok + ",answering=" + RDV._meta.answering,
+    en.ok === true && RDV._meta.answering === true);
+  record(tag + " 6c — Korpus-leer-Falle: Korpus beim Einschalten AKTIV gesichert",
+    "answerCorpusEnsured=true", String(RDV._meta.answerCorpusEnsured), RDV._meta.answerCorpusEnsured === true);
+  record(tag + " 6c — Vorwärmen: Aufwärm-Suche beim Einschalten abgesetzt (Modell/Korpus vorgeladen)",
+    "queryLocal('aufwärmen')", qlCalls.join("|") || "(keine)",
+    qlCalls.some((t) => t.indexOf("aufwärmen") !== -1));
+  await sleep(60); // Lookback-Replay der offenen Frage + Antwort-Publish verarbeiten
+
+  // ── 6d: Adress-Wand — der Frager sieht im Raum EINE Karte je Name, und es ist
+  //        die LEBENDE (lauschende) ID, nicht die STALE → er andockt die Richtige. ──
+  const disc = await asker.sb.SbkimRendezvous.discover({ listenMs: 60 });
+  const answererCards = (disc.cards || []).filter((c) => c.nodeName === answerer.name);
+  record(tag + " 6d — newest-per-name: genau EINE Karte für " + answerer.name + " (Duplikate entfernt)",
+    "1", String(answererCards.length), answererCards.length === 1);
+  record(tag + " 6d — Adress-Wand: Raum-Karte trägt die LEBENDE ID, nicht die STALE",
+    answerer.nodeId.slice(0, 10) + "…", ((answererCards[0] && answererCards[0].nodeId) || "?").slice(0, 10) + "…",
+    !!(answererCards[0] && answererCards[0].nodeId === answerer.nodeId));
+
+  // ── 6e: A12-Briefkasten — die offene Frage (6a) wurde beim Einschalten per
+  //        Lookback nachgeholt + beantwortet; der Frager holt die späte Antwort. ──
+  const late = await asker.sb.SbkimRendezvous.fetchAnswers([ask1.qid], { waitMs: 200 });
+  const lateHit = (late.answers || []).find((a) => a.qid === ask1.qid);
+  record(tag + " 6e — A12-Briefkasten: späte Antwort auf die Timeout-Frage nachgeholt",
+    "Antwort mit qid + Treffer", lateHit ? (lateHit.qid.slice(0, 6) + "…, " + (lateHit.results || []).length + " Treffer") : "keine",
+    !!(lateHit && Array.isArray(lateHit.results) && lateHit.results.length > 0));
+
+  // ── 6f: voller LIVE-Round-Trip über den Bus (askNode ↔ enableAnswering) —
+  //        die eigentliche Cross-Knoten-Q&A-Verdrahtung (Meilenstein 2026-07-11). ──
+  const before = RDV._meta.answeredCount;
+  const live = await asker.sb.SbkimRendezvous.askNode(answerer.nodeId, Q, { timeoutMs: 3000 });
+  record(tag + " 6f — LIVE-Round-Trip: Antwort kam über den Bus zurück (ok, nicht leer)",
+    "ok=true,>0 Treffer", "ok=" + live.ok + "," + ((live.results || []).length) + " Treffer",
+    live.ok === true && Array.isArray(live.results) && live.results.length > 0);
+  record(tag + " 6f — bester Treffer oben (bedeutungs-sortiert über den Antworter-Korpus)",
+    "near", (live.results && live.results[0] && live.results[0].anchorId) || "?",
+    !!(live.results && live.results[0] && live.results[0].anchorId === "near"));
+  record(tag + " 6f — Antworter-Zähler stieg (answeredCount++)",
+    "> " + before, String(RDV._meta.answeredCount), RDV._meta.answeredCount > before);
+
+  // ── 6g: Frage an einen NICHT lauschenden (toten) Knoten → sauber pending,
+  //        kein Hänger (Timeout-Härtung, zweiter Beleg mit fremder ID). ──
+  const dead = await asker.sb.SbkimRendezvous.askNode("NIEMAND-LEBT-HIER", "irgendwas", { timeoutMs: 150 });
+  record(tag + " 6g — Timeout zu totem Knoten: sauber pending, kein Hänger",
+    "ok=false,pending=true", "ok=" + dead.ok + ",pending=" + dead.pending,
+    dead.ok === false && dead.pending === true);
+
+  // Spy zurückbauen (Hygiene — folgende Läufe unbeeinflusst).
+  answererMatch.queryLocal = origQL;
 }
 
 // Antworter Y beantwortet eine Frage aus seinem Korpus: Y bettet die Frage mit
