@@ -155,8 +155,14 @@ A14-Nachlese erledigt.
   Mixarium 0.845 · SB-KIMTool-Point 0.864 · Tresore 0.839 · BLP 0.823. Muttis als **14. Endknoten** in
   Sage `status.json` + `sage-knoten-korpus.js` eingetragen (verified-match, matchScore 0.8766).
   **✅ Browser-Sichttest GRÜN (Klaus 2026-07-23):** Muttis lädt, 🌐-Panel + Status-Lampen (LEBT/VERKEHR/
-  FREMD/SIEGEL) + Gerätename „Klaus Tablet" sichtbar, Identitäts-Erzeugung lief durch. **Offen:** Klaus'
-  verschlüsseltes Identitäts-Backup (Stabilität); M4 Parität-Check; optional Briefkasten/SW-Precache.
+  FREMD/SIEGEL) + Gerätename „Klaus Tablet" sichtbar, Identitäts-Erzeugung lief durch.
+  **✅ M4 Parität-Check erledigt (Klaus-Entscheid „abschließen"):** Parität bestätigt (Icon/Lesbarkeit/
+  Nav/Hardreload), **2 sichere Robustheits-Gewinne nachgezogen** — Fehler-Overlay (Muttis PR #155) +
+  persistenter Speicher `navigator.storage.persist()` (PR #156). Bewusst NICHT: navTo (kollidiert mit
+  Muttis' eigenem `_scStack`/`OVERLAY_MAP`-Zurück-System), übersetzungs-bewusste Suche (schon da via
+  `matchSQ`+`rTr`); Einheiten-Übersetzung + Import-Zuordnung + KI-Kreativ-Suite bleiben dokumentierter,
+  bewusst-offener Feature-Rückstand (verschachtelt/kostenpflichtig, kein sicherer ungetesteter Batch).
+  **Offen:** Klaus' verschlüsseltes Identitäts-Backup (Stabilität der nodeId); optional Briefkasten/SW-Precache.
 
 ## Als nächstes ✨
 
