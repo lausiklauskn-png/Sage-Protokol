@@ -31,6 +31,30 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Folge³) — S5 Härtungs-Sims gebaut + A18-Status geklärt
+
+Auftrag Klaus: „S5-Härtungs-Sims und A18".
+
+- **S5 erledigt (headless):** die im echten Browser-Lauf gefundenen Antwort-Härtungsfälle
+  (A2-Härtung II 2026-07-10, hub-unabhängig 2026-07-11) sind als **Phase 6** in
+  `tests/sim_multinode.mjs` als Regression festgenagelt (echter Relais-Round-Trip
+  `enableAnswering ↔ askNode` über den geteilten Bus, echte Knoten-Instanzen):
+  6a Frage-Timeout (pending, kein Hänger) · 6c Korpus-leer-Falle (`answerCorpusEnsured`) +
+  Antworter-Vorwärmen · 6d Adress-Wand/newest-per-name (STALE verliert gegen lebende ID) ·
+  6e A12-Briefkasten (späte Antwort nachgeholt) · 6f LIVE-Round-Trip (bester Treffer oben,
+  `answeredCount++`) · 6g Timeout zu totem Knoten. **Sim 22→36 grün, über 5 Läufe stabil.**
+  Ehrlich: Mock-Bus + Embedding-Stub — geprüft ist die VERDRAHTUNG, nicht Live-Latenz/echtes Modell.
+- **A18-Status geklärt (Befund, kein Bau):** der Siegel-Andock-Wizard ist **netzweit bereits
+  abgeschlossen** (Stand 2026-07-16, PLAN A18): geteilter Kanon `siegel-inhalt.js` in
+  Sage/Kim-Bell/Mixarium/Rezeptbuch/Tomys/family-project; Point/Kimboard/Kimseek/Tresore mit
+  eigener spec-konformer Fassung; BLP bewusst gelassen. **Einzig offen:** die **Sage-Page selbst**
+  vom Inline-Wizard auf die Kanon-Datei `assets/siegel-inhalt.js` umstellen — **Hub-Risiko, braucht
+  Klaus' Sage-Browser-Test** (kein Blind-Self-Merge). **An Klaus zurückgegeben** (bauen + du testest,
+  oder Inline-Wizard lassen).
+- **Suite 61/61 grün.**
+
+---
+
 ## Stand 2026-07-23 (Folge²) — RELATEDNESS_CENTER v2 gebaut (Klaus' Entscheid „V2 bauen")
 
 Auftrag: Brief `BRIEF_RELATEDNESS_CENTER_V2_…` Punkt 2.1. **Klaus-Entscheid diese Sitzung: „V2 bauen"**
