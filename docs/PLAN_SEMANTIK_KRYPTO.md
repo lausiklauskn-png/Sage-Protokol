@@ -336,12 +336,18 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Tomys-Hub `s2-oNG-Eke` · Kim-Bell `fRx3M_xo7`. Das frühere Kollisions-Paar (SB-KIMTool-Point ↔ family-project)
   ist sauber getrennt. Isolierungs-Fix netzweit im echten Browser bewiesen — A13 vollständig geschlossen.
 
-- [ ] **A14 — ensureStore-/ensureSlotStores-Race (Modul 05/01) beheben** · `Bau` · ⏱ ~1 Sitzung · **Befund 2026-07-11**
+- [x] **A14 — ensureStore-/ensureSlotStores-Race (Modul 05/01) beheben** · `Bau` · **erledigt (Fix + Test schon auf main; verifiziert 2026-07-23)**
   Vorbestehender, sporadischer Fehler in Tomys-Hubs Verbund-E2E: `NotFoundError: One of the specified object stores was
   not found` (`01_storage.js` Transaktion via `05_anastomose.js` `ensureSlotStores`). **Nicht** durch A13 verursacht
   (auf `main` ohne den Fix identisch 15/16 rot) — eine flaky Race in der ensureStore-Versions-Bump-Achse: ein Slot-Store
-  wird in einer Transaktion angefragt, bevor der Versions-Bump ihn angelegt hat. Kann im Feld gelegentlich einen
-  Andock-/Antwort-Pfad stören. Getrennt untersuchen (Modul 05 ensureSlotStores + Modul 01 ensureStore-Sequenz). _erledigt am: _____
+  wird in einer Transaktion angefragt, bevor der Versions-Bump ihn angelegt hat.
+  **Befund 2026-07-23 (Ist-Stand-Prüfung S1):** der Fix ist **schon gebaut und auf `main`** — Modul 01 trägt die
+  A14-Härtung `ensureChain` (serieller Anker der Versions-Bump-Kette, `01_storage.js` Z. ~291–303, angewandt in
+  `ensureStore` Z. ~989–990): jeder Bump reiht sich strikt hinter den vorigen, sieht ein FRISCHES `db.version`, die
+  öffentliche Signatur (Promise<void>) bleibt unberührt. Der Regressionstest `tests/smoke_a14_ensurestore_concurrent_race.mjs`
+  (zwei/drei gleichzeitige ensureStore, doppeltes ensureSlotStores-Muster = der Modul-05-Pfad, zwei Wellen) läuft **4/4
+  grün**. Beide (Fix + Test) landeten in #648 (2026-07-14, Bau Spore v0.2), wurden aber in dieser Abhak-Liste nie
+  abgehakt — reine Doku-Nachlese, kein neuer Bau nötig. _verifiziert am: 2026-07-23._
 
 - [ ] **A15 — Zwei-Stufen-Verbinden: Stöbern (anonym) ↔ Voll mitmachen (Identität)** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen · **Idee Klaus 2026-07-11**
   Für Marktplatz-Nutzer (z.B. family-project.de) die Einstiegshürde senken: **(1) 🔎 Nur stöbern/suchen** — kein
