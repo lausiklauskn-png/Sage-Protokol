@@ -31,6 +31,22 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Folge⁸) — A11B-Inc-2 gebaut (Knoten gezielt fragen im Such-Widget)
+
+Klaus: „weiter" → **A11B-Increment 2** (der eigentliche Erst-Kontakt-Fluss).
+
+- **Knoten-Detail-Frage im Such-Widget** (`src/modules/22_such_widget.js` + byte-1:1 `such-tool/`): Klick auf einen
+  **KNOTEN-Treffer** (nodeId) öffnet die Detail-Karte jetzt mit **„Frage an diesen Knoten"** — Feld vorbelegt mit der
+  Suchfrage + **„🔎 Antwort holen"** → fragt gezielt via `queryNodeFn(nodeId, frage)` (der schon injizierte Live-Pfad,
+  Modul 05) und zeigt die bedeutungs-sortierte Antwort direkt in der Karte. `merkItemOf` trägt jetzt `nodeId`.
+- **REINE Anzeige/Auswahl — 0.80-Riegel + Kern (02/05/05b) unberührt**, kein neuer Kern-Bezug (nur die öffentliche
+  `queryNode`-Fläche), fail-soft: ohne Live-Pfad ehrlicher Hinweis „einmal 🌐 voll mitmachen" (A15-Stufe ③).
+- Smoke `smoke_bau22_such_widget.mjs` **264/264** (Probe 52), bau22e 46 / bau22f 17 / bau22g 47 / Standalone 49 grün,
+  Drift-Guard byte-1:1. **Offen: A11B-Inc-3 („🤝 verbinden" nach Antwort) + netzweiter Rollout Modul 22 + 23-UI.**
+  **Browser-Sichttest wartet auf Klaus.**
+
+---
+
 ## Stand 2026-07-23 (Folge⁷) — A15-Inc-1 gebaut (Zwei-Stufen-Hinweis)
 
 Klaus bestätigte die Richtung („Schauen frei, Mitreden mit Identität — logisch und nachvollziehbar")

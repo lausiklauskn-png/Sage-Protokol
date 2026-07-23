@@ -1197,6 +1197,17 @@ async function run() {
     String(!!(spoken51 && spoken51.voice && spoken51.voice.lang === "de-DE")),
     !!(spoken51 && spoken51.voice && spoken51.voice.lang === "de-DE"));
   delete stub.SpeechSynthesisUtterance; delete stub.speechSynthesis;
+
+  // Probe 52 (A11B-Inc-2): Knoten-Detail-Frage-Fluss im Detail-Overlay.
+  record("Probe 52: merkItemOf trägt nodeId (Knoten-Treffer)", "true",
+    String(/nodeId: t\.nodeId \|\| null/.test(src)), /nodeId: t\.nodeId \|\| null/.test(src));
+  record("Probe 52: Detail-Karte hat Knoten-Ask-Sektion (if item.nodeId)", "true",
+    String(/if \(item\.nodeId\)/.test(src) && /Frage an diesen Knoten/.test(src)),
+    /if \(item\.nodeId\)/.test(src) && /Frage an diesen Knoten/.test(src));
+  record("Probe 52: Ask fragt gezielt via queryNodeFn(item.nodeId, frage)", "true",
+    String(/queryNodeFn\(item\.nodeId, frage\)/.test(src)), /queryNodeFn\(item\.nodeId, frage\)/.test(src));
+  record("Probe 52: fail-soft ohne Live-Pfad (Hinweis auf „Voll mitmachen“)", "true",
+    String(/Voll mitmachen/.test(src)), /Voll mitmachen/.test(src));
 }
 
 const finalize = () => {
