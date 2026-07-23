@@ -57,6 +57,23 @@ Interaktiver Strang mit Klaus (parallel zum A11/A15-Strang oben). Alles gemergt:
   Schutz-Schablonen 10/11/12/14 (nur bei Angriff), B6/Grad C, Observatorium-als-Knoten.
   Klarstellung: `config.PROTOCOL_VERSION 0.1` ist **Absicht** (Wire-Version bis B6), kein Bug.
 
+## Stand 2026-07-23 (Folge¹⁰) — Erst-Kontakt-Fluss NETZWEIT ausgerollt
+
+Klaus: „Rollout" → der Erst-Kontakt-Fluss (A15-Inc-1 + A11B-Inc-2/3) byte-1:1 in die Träger-Apps.
+
+- **Voller Fluss (Modul 22 Inc-2/3 + 23-UI Inc-1 + `connectNode`-Wire):** **Kimseek** (#42, gemergt) — die App,
+  die Modul 22 + 23 trägt (Host-Wire `kimseekConnectNode`). Sage selbst trägt den vollen Fluss schon (Inc-1/2/3).
+- **Zwei-Stufen-Hinweis (23-UI Inc-1) byte-1:1 gemergt in 8 Apps:** Mein-Mixarium #159 · Mein-Rezeptbuch #345 ·
+  Muttis-Rezeptbuch #158 · Tomys-Hub #124 · family-project #107 · Jasons-Tresor #132 · Mein-Tresor #74 · Kimboard #42
+  (Kimboard: Drift-Guard-sha nachgezogen + SW `kimboard-v29`). Alle: REINE Anzeige, Kern + 0.80-Riegel unberührt,
+  fail-soft; wo kein Live-Pfad, degradiert der Ask/Connect still (die 8 tragen Modul 22 nicht, nur das Netz-Panel).
+- **Modul 22 nur in Kimseek + such-tool-Vorlagen:** Mixarium/Rezeptbuch/family/BLP haben eigene native Suchfelder
+  (kein Floating-Widget) → Inc-2/3 dort nicht anwendbar.
+- **Offen (klein, niedrige Prio):** SB-KIMTool-Point such-tool + `web/tools`-Widget-Kopie liegen eine Version hinter
+  dem Kanon (Vorlage, fail-soft) — eigener Nachzug-Schritt. **Browser-Sichttest des Flusses (Sage + Kimseek) wartet auf Klaus.**
+
+---
+
 ## Stand 2026-07-23 (Folge⁹) — A11B-Inc-3 gebaut („🤝 verbinden" nach der Antwort)
 
 Klaus: „Inc-3" → der Verbinden-Knopf nach der Antwort. Damit ist der **Erst-Kontakt-Fluss komplett**
