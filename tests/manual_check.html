@@ -3458,6 +3458,14 @@
         try { ownSpore = await SbkimSpore.getOwnSpore(); } catch (e) { /* nb */ }
         if (!ownSpore) {
           await SbkimSpore.generateOwnSpore(MAIN_META);
+        } else if (!Array.isArray(ownSpore.domainVector) || ownSpore.domainVector.length === 0) {
+          // Klick-Reihenfolge-Härtung (Sichttest 2026-07-23): Panel 02 legt die
+          // Spore mit demoMeta OHNE domainVector an. Dann liefert der Spore-
+          // Single-Anker-Fallback (Modul 06) korrekt [] und Test 1 scheitert an
+          // anchor_count:0 — nicht wegen eines Modul-06-Bugs, sondern weil die
+          // Setup-Vorbedingung (Spore MIT domainVector) fehlt. regenerateOwnSpore
+          // behält dieselbe nodeId und signiert mit dem Dummy-Vektor neu.
+          await SbkimSpore.regenerateOwnSpore({ domainVector: MAIN_META.domainVector });
         }
 
         // Pseudo-Geschwister sauber neu setzen (idempotent über _addPseudoSibling)
