@@ -280,14 +280,24 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   **Offen (Teil B — Suchergebnis→Andocken-Kopplung Modul 22↔23):** der ursprüngliche „Klick auf Suchergebnis →
   Frage → 🤝 verbinden"-Fluss im Such-Widget (family-projekt.de-Marktplatz) ist noch nicht gebaut. _Teil A erledigt am: 2026-07-11_
 
-- [ ] **A12 — „Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)** · `Spec` · ⏱ ~1 Sitzung
+- [x] **A12 — „Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)** · `Spec` · **Spec abgeschlossen 2026-07-23**
   **Klaus' Befund 2026-07-11 (echte Grenze des server-losen Designs):** heute ist Antworten **opt-in/manuell**
   (Default aus, `enableAnswering`/`disableAnswering`, Modul 23.B), und der Antworter-Tab muss **vorn+wach** sein
   (Meilenstein-Rest-Grenze). Offene Fragen: (1) **Erreichbarkeit** — mit „aus" gehen eingehende Fragen verloren; soll
   ein Knoten „immer erreichbar" sein oder der Toggle **automatisch** schalten? (2) **Reihenfolge/Flut** — ein Browser
   ist kein Server; bei vielen gleichzeitigen Fragen: Warteschlange/Priorisierung? (heute Rate-Limit ~6/min, kein
   persistenter Queue, single-threaded). (3) **Eigene Frage vs. fremde Fragen** — asymmetrisch, Priorität? Berührt
-  Schutz-Modul 11 (Rate-Limit) + Meilenstein-Doku. **Erst Spec/Konzept, dann Bau.** _erledigt am: _____
+  Schutz-Modul 11 (Rate-Limit) + Meilenstein-Doku. **Erst Spec/Konzept, dann Bau.**
+  **✅ Spec abgeschlossen 2026-07-23** → [`docs/SPEC_A12_ERREICHBARKEIT.md`](SPEC_A12_ERREICHBARKEIT.md). **Ergebnis:** das
+  Modell ist **entschieden** — das **Briefkasten-Prinzip** (Phase 1–2d) ist die verfassungsfeste Antwort auf
+  „Erreichbarkeit ohne Server"; ein **„Immer-erreichbar"-Server wird bewusst NICHT gebaut** (Empfangsmodus verbietet
+  Pulsation + Browser drosselt Hintergrund-Tabs + Ehrlichkeit: kein Versprechen, das die Plattform nicht hält).
+  Frage (1) = gebaut (Briefkasten). Frage (2) = im Kern gelöst (Rate-Limit 6/min + `qidSeen`-Dedupe + Lebenszyklus).
+  Frage (3) = per Design schon erfüllt (eigene Frage = synchrone Vordergrund-Handlung → struktureller Vorrang, kein
+  Scheduler nötig). **Offen bleiben nur ZWEI kleine, optionale, additive Bauten (Klaus' Wahl, blockieren nichts,
+  berühren 0.80-Riegel/Kern 02/05/05b NICHT):** siehe A12-opt-1 + A12-opt-2. _Spec erledigt am: 2026-07-23_
+  - [ ] **A12-opt-1 — Pro-Peer-Antwort-Fairness (Modul 23 nutzt Modul-11-Token-Bucket pro Frager statt globaler Quote)** · `Bau` klein, optional · der eigentliche „Flut-Reihenfolge"-Rest; additiv, gatet nichts. _erledigt am: _____
+  - [ ] **A12-opt-2 — Lokaler „beim Öffnen gleich antworten"-Merker** · `Bau` klein, optional · opt-in, Default aus, pro App/Origin `localStorage`; reine Bequemlichkeit, verfassungsfest (wirkt nur bei selbst geöffneter App). _erledigt am: _____
   - [x] **A12 Phase 1 — Briefkasten-TRANSPORT (Modul 23)** · **erledigt 2026-07-11** (Klaus-Entscheid „Briefkasten-Prinzip"):
     Fragen/Antworten überleben jetzt eine Zeitverzögerung, ohne Dauer-Ticker (Empfangsmodus-treu).
     (1) **Antworter-Lookback:** `enableAnswering` lauscht `since: now − RDV_ANSWER_LOOKBACK_SEC` (30 min) statt nur
