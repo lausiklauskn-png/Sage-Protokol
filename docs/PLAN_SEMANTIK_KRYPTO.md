@@ -284,6 +284,10 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   65/65, Bundle-Drift-Guard 21/21. **Offen (Teil A):** Browser-Sichttest (Klaus) + netzweiter Byte-Rollout Modul 23.
   **Offen (Teil B — Suchergebnis→Andocken-Kopplung Modul 22↔23):** der ursprüngliche „Klick auf Suchergebnis →
   Frage → 🤝 verbinden"-Fluss im Such-Widget (family-projekt.de-Marktplatz) ist noch nicht gebaut. _Teil A erledigt am: 2026-07-11_
+  **✅ Spec (Teil B, gemeinsam mit A15) geschrieben 2026-07-23** → [`docs/SPEC_A11B_A15_ZWEISTUFEN_VERBINDEN.md`](SPEC_A11B_A15_ZWEISTUFEN_VERBINDEN.md).
+  Kern-Entscheid: Fragen/Andocken bleiben Stufe ③ „voll mitmachen" (Identität), Beobachter stöbern nur — reiner UI-/Fluss-Bau,
+  kein Kern-/`askNode`-Eingriff (Ephemeral-Fragen bewusst zurückgestellt). Bau in Increments (A15-Inc-1 Zwei-Stufen-UI →
+  A11B-Inc-2 Knoten-Detail-Karte im Widget → A11B-Inc-3 „🤝 verbinden" nach Antwort → Rollout). _Spec Teil B am: 2026-07-23_
 
 - [x] **A12 — „Antworten: an/aus"-Modell überdenken (Erreichbarkeit · Reihenfolge · Auto-Toggle)** · `Spec` · **Spec abgeschlossen 2026-07-23**
   **Klaus' Befund 2026-07-11 (echte Grenze des server-losen Designs):** heute ist Antworten **opt-in/manuell**
@@ -369,7 +373,10 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   Identitäts-Aufbau, kein ~30-MB-Modell-Download, man findet andere, wird aber selbst NICHT gefunden (nur Beobachter).
   **(2) 🌐 Voll mitmachen** — eigene Identität, auffindbar, andockbar (braucht einmal Modell + Identität).
   „Bessere Auffindbarkeit garantiert durch Modul-Design" (A13) ↔ „einfaches Verbinden, schlechtere Auffindbarkeit".
-  Gehört mit A11 (Suchergebnis→Andocken) zusammen. Verfassungstreu (Empfangsmodus). _erledigt am: _____
+  Gehört mit A11 (Suchergebnis→Andocken) zusammen. Verfassungstreu (Empfangsmodus).
+  **✅ Spec (gemeinsam mit A11-Teil B) geschrieben 2026-07-23** → [`docs/SPEC_A11B_A15_ZWEISTUFEN_VERBINDEN.md`](SPEC_A11B_A15_ZWEISTUFEN_VERBINDEN.md).
+  Drei Sichtbarkeits-Stufen: ① Stöbern (Liste, kein Modell/Identität) · ② Stöbern semantisch (Modell on-demand) ·
+  ③ Voll mitmachen (Identität → auffindbar/fragen/andocken). Bau in Increments (A15-Inc-1 Zwei-Stufen-UI zuerst). _Spec am: 2026-07-23_
 
 - [x] **A16 — Lernender Sortierer (selbst-verbessernd, on-device)** · `Bau` · **erledigt 2026-07-12**
   Klaus' Wunsch (Geist der BLP-„selbstlernenden Kalkulation", aber auf die SUCHE): das mitgelieferte Sortier-

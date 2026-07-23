@@ -31,6 +31,25 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Folge⁶) — A11-Teil B + A15 Spec geschrieben (Erst-Kontakt-Fluss)
+
+Klaus: „Weiter mit A11 und A15." Beide sind derselbe Moment (fremder Nutzer, Erst-Kontakt am
+Marktplatz) → **eine gemeinsame Spec**: `docs/SPEC_A11B_A15_ZWEISTUFEN_VERBINDEN.md`.
+
+- **Entwurf:** drei Sichtbarkeits-Stufen — ① Stöbern (Raum-Liste, kein Modell/Identität) · ② Stöbern
+  semantisch (Modell on-demand) · ③ Voll mitmachen (Identität → auffindbar/fragen/andocken). A11-Teil B =
+  der Fluss „Knoten-Treffer anklicken → 🔎 Antwort holen → 🤝 verbinden (nach Antwort)".
+- **Kern-Entscheid (der einzige echte Fork):** darf ein anonymer Beobachter live fragen? **Empfehlung NEIN** —
+  Fragen/Andocken = Stufe ③ (Identität). Grund: `askNode` verlangt heute eine signierte Identität (Code geprüft);
+  das hält den Vertrag + Kern-Module **unangetastet** (reiner UI-/Fluss-Bau) und deckt sich mit Klaus' A15-Wortlaut
+  („findet andere, wird selbst nicht gefunden"). Übergang sanft: an den Interaktions-Knöpfen erscheint „einmal
+  anmelden (bleibt lokal)". **Ephemeral-Fragen bewusst zurückgestellt** (wäre Kern-Eingriff + Sybil-Vektor).
+- **Bau-Plan:** A15-Inc-1 Zwei-Stufen-UI → A11B-Inc-2 Knoten-Detail-Karte im Widget → A11B-Inc-3 „🤝 verbinden"
+  nach Antwort → netzweiter Rollout. Je eigener PR + Headless-Smoke; Kern/0.80-Riegel/PROTOCOL_VERSION unberührt.
+  **Marktplatz-Erst-Kontakt → Klaus' Browser-Sichttest je Increment.** PLAN + Spec verlinkt. Doku-only bisher.
+
+---
+
 ## Stand 2026-07-23 (Folge⁵) — A5b Multi-Query in Pinnwand + Kimboard (Klaus' Zuruf)
 
 Klaus: „und in Pinnwand und in Kimboard integrieren" → **A5b** (die frühere „Pinnwand läuft gut"-Zurückstellung
