@@ -31,6 +31,23 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Folge⁵) — A5b Multi-Query in Pinnwand + Kimboard (Klaus' Zuruf)
+
+Klaus: „und in Pinnwand und in Kimboard integrieren" → **A5b** (die frühere „Pinnwand läuft gut"-Zurückstellung
+damit aufgehoben).
+
+- **A5b Multi-Query gebaut** in Sage-**Pinnwand** (`pinnwand/index.html`) **und Kimboard** (`index.html`, eigenes Repo,
+  PR #41 gemergt). Die Bedeutungs-Sortierung bettet neben der Original-Frage jetzt ein paar **Varianten** ein
+  (`expandQuery`: Füllwörter weg + kleine erweiterbare Synonym-Karte, max 4) und nimmt je Antwort den **besten Cosinus**
+  (`bestRelevance`) über alle Varianten. So werden auch **anders formulierte** Antworten gut sortiert.
+- **REINE Sortier-Fläche wie der family-Marktplatz — es wird NICHTS gefiltert**, fail-soft (keine Variante →
+  Ein-Frage-Sortierung wie zuvor). Nur `index.html`; drift-guarded `modules/` + Kern (02/05/05b) + 0.80-Riegel +
+  PROTOCOL_VERSION **unberührt**, kein PII.
+- Sage-Pinnwand `pinnwand/_smoke.mjs` **62/62** (neue A5b-Probe). Kimboard `node --test` **6/6** (A5b-Assertions),
+  SW-Cache `kimboard-v28`. **Browser-Sichttest (Live-Rangfolge) wartet auf Klaus.** PLAN + Checkliste abgehakt.
+
+---
+
 ## Stand 2026-07-23 (Folge⁴) — A12-Spec abgeschlossen („Antworten an/aus"-Modell)
 
 Autonom weiter „die Reihe nach" (Klaus rejected die Rückfrage → Freibrief greift, kein Nachfragen).

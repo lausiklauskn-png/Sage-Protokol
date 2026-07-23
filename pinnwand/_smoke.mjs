@@ -96,6 +96,7 @@ ok("Probe 6: mehrere wählbare Relays (Pool + Toggle, breit gestreut)", /RELAY_P
 ok("Probe 6: privates Brett verschlüsselt (AES-GCM + PBKDF2, Schlüssel nur im Speicher)",
   /id="boardkey"/.test(html) && /deriveBoardKey/.test(html) && /AES-GCM/.test(html) && /PBKDF2/.test(html) && !/localStorage\.[gs]etItem\([^)]*boardkey/.test(html));
 ok("Probe 6: verschlüsselte Notiz ohne Schlüssel wird übersprungen", /if \(isEnc\(ev\.content\)\)/.test(html) && /if \(!boardKey\) return;/.test(html));
+ok("Probe 6: Multi-Query A5b (expandQuery + bestRelevance über Frage-Varianten)", /function expandQuery/.test(html) && /function bestRelevance/.test(html) && /view\.qVecs/.test(html));
 
 // ---- Auswertung ----
 let pass = 0;

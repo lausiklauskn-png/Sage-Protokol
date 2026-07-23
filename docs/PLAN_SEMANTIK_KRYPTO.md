@@ -170,9 +170,14 @@ Bau-Durchgang (~30–60 Min) + kurzer Sichttest. Grob geschätzt.
   in 7 Träger (Mixarium/Rezeptbuch/family/BLP/Tomys/Kimboard/Kimseek), Kim-recorded-sha + SW-Cache-Bumps
   nachgezogen. **Befund (pre-existing):** `sbkim-bundle/modules/23_rendezvous_ui.js` ist ~332 Zeilen alt
   (fehlt KI-Richter/Sprache) — Stale-Bundle, eigener Resync-Folgepunkt, NICHT hier angefasst. _erledigt am: 2026-07-11_
-- [ ] **A5b — (Optional) Multi-Query-Sortierung auch in Pinnwand** · `Bau` nur b. Bedarf · ⏱ ~30 Min
-  Pinnwand ist eine Sortier-Fläche wie der family-Marktplatz; dasselbe „bester-Cosinus-über-Varianten"-Muster ließe
-  sich übertragen (kein Filter, nichts versteckt). Bewusst zurückgestellt (Klaus 2026-07-11: Pinnwand läuft gut). _erledigt am: _____
+- [x] **A5b — Multi-Query-Sortierung in Pinnwand + Kimboard** · `Bau` · **erledigt 2026-07-23** (Klaus' Zuruf „und in Pinnwand und in Kimboard integrieren")
+  Pinnwand/Kimboard sind Sortier-Flächen wie der family-Marktplatz; das „bester-Cosinus-über-Varianten"-Muster übertragen (kein Filter, nichts versteckt).
+  **Gebaut:** die Bedeutungs-Sortierung bettet neben der Original-Frage jetzt ein paar **Varianten** ein — `expandQuery(text)` (Füllwörter
+  weg via `QUERY_FILLERS` + kleine, erweiterbare `QUERY_SYNONYMS`-Karte, max 4 Varianten) → `embedQuestion` sammelt `view.qVecs` → `resort`
+  nimmt je Antwort den **besten Cosinus** (`bestRelevance`) über alle Varianten. **REINE Anzeige/Sortierung — es wird NICHTS gefiltert**,
+  fail-soft (keine echte Variante → Ein-Frage-Sortierung wie zuvor). Nur `index.html`; drift-guarded `modules/` + Kern + 0.80-Riegel
+  unberührt, kein PROTOCOL_VERSION-Bump, kein PII. Sage-Pinnwand: `pinnwand/_smoke.mjs` **62/62** (neue A5b-Probe). Kimboard: `node --test`
+  **6/6** (A5b-Assertions), SW-Cache `kimboard-v28`, PR #41 gemergt. **Browser-Sichttest (Live-Rangfolge) wartet auf Klaus.** _erledigt am: 2026-07-23_
 - [x] **A6 — Echte Embedding-Vektoren statt Demo-Stub** · `Spec`+`Bau` · ⏱ ~1–2 Sitzungen
   Modul 03: `_demo`-`domainVector` durch echte Vektoren ersetzen → erst dann „verified-match" statt nur „verified-spore".
   **Spec erledigt 2026-07-14** (mit A10 zusammen, Spec-Sitzung Spore v0.2, INTERFACES §0/§2/§4/Modul 02+03,
