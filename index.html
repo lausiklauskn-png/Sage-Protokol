@@ -1473,7 +1473,7 @@
         <style>
           /* Meilenstein-Container — EIN Card-Container wie die Werkzeugkiste, drei Bilder darin */
           .ms-series-head { font-family: "Geist Mono", monospace; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 1rem; }
-          .ms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+          .ms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; align-items: start; }
           @media (max-width: 760px) { .ms-grid { grid-template-columns: 1fr; } }
           /* Jede Kachel quadratisch wie das Quell-Bild — nicht langgezogen */
           .ms-tile { position: relative; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; border: 1px solid rgba(244,180,53,0.34); background: #05060f; box-shadow: 0 14px 44px rgba(0,0,0,0.42); }
@@ -1492,9 +1492,14 @@
           .ms-bot { position: relative; z-index: 2; cursor: pointer; padding: 1.4rem 0.85rem 0.7rem; background: linear-gradient(0deg, rgba(7,5,18,0.88) 0%, rgba(7,5,18,0.5) 70%, rgba(7,5,18,0) 100%); transition: background .25s ease; }
           .ms-p { color: rgba(255,255,255,0.92); line-height: 1.38; margin: 0; font-size: 0.6rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; transition: font-size .2s ease; }
           .ms-p strong { color: #fff; font-weight: 600; }
-          /* Aufklappen: größer + voller Text, kräftigerer Schleier für Lesbarkeit */
+          /* Aufklappen: größer + voller Text, kräftigerer Schleier für Lesbarkeit.
+             WICHTIG (Klaus 2026-07-23): die Kachel gibt beim Öffnen die quadratische
+             aspect-ratio auf und WÄCHST auf die Höhe des vollen Textes — sonst würde
+             der ausgeklappte Text unten am Quadrat-Rand ABGESCHNITTEN (overflow:hidden).
+             align-items:start am Grid hält die Nachbar-Kacheln davon ab, mitzuwachsen. */
+          .ms-tile:hover, .ms-tile.is-open { aspect-ratio: auto; }
           .ms-tile:hover .ms-p, .ms-tile.is-open .ms-p { font-size: 0.84rem; line-height: 1.5; -webkit-line-clamp: 99; }
-          .ms-tile:hover .ms-bot, .ms-tile.is-open .ms-bot { background: linear-gradient(0deg, rgba(7,5,18,0.97) 0%, rgba(7,5,18,0.9) 62%, rgba(7,5,18,0.35) 100%); }
+          .ms-tile:hover .ms-bot, .ms-tile.is-open .ms-bot { background: linear-gradient(0deg, rgba(7,5,18,0.97) 0%, rgba(7,5,18,0.9) 62%, rgba(7,5,18,0.4) 100%); padding-bottom: 1rem; }
           .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.72rem; margin-top: 0.6rem; }
           .ms-link:hover { color: var(--accent); }
           /* Footer-Zeilen liegen ebenfalls im 12-Spalten-Bento — volle Breite erzwingen */
