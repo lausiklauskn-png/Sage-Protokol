@@ -190,11 +190,11 @@
   <div class="lines">entschieden am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="M2"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="M2" checked><div class="body">
   <div><span class="code">M2</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">(falls Knoten) Eigene Identität + eigener DB-Suffix + Spore</span></div>
   <div class="d"><b>Nicht</b> derselbe Suffix wie Mein-Rezeptbuch (sonst geteilte-Origin-Kollision — Skill <code>saubere-netz-anmeldung</code>). Eigenes <code>sbkim/spore.json</code>, Briefkasten, Eintrag in Sage <code>status.json</code> + <code>sage-knoten-korpus.js</code>.</div>
-  <div class="meta"><span class="tag">Bau</span> teilweise (2026-07-23, Muttis PR #153) — <b>Code-seitig fertig:</b> eigener <code>dbSuffix "muttisrezeptbuch"</code> (≠ Mein-Rezeptbuch), Glue/status.json gesetzt. <b>Offen (Klaus' Browser):</b> Identität/Spore einmal erzeugen (🌐-Knopf) → <code>sbkim/spore.json</code> committen → dann Eintrag in Sage <code>status.json</code>+<code>sage-knoten-korpus.js</code> mit echter nodeId + Briefkasten.</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Bau</span> ✅ 2026-07-23 — eigener <code>dbSuffix "muttisrezeptbuch"</code>; Klaus hat die Identität im Browser erzeugt (nodeId <code>8TVDCTAc…</code>, id==SHA256(pub) + Ed25519-Sig VALID), Spore v0.2 committet (Muttis PR #154); als 14. Endknoten in Sage <code>status.json</code>+<code>sage-knoten-korpus.js</code> (verified-match, Sage↔Muttis <b>0.877</b>, Schwester Mein-Rez 0.878). Offen: verschlüsseltes Identitäts-Backup + optional Briefkasten.</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
 <div class="item done"><input type="checkbox" class="cb" data-k="M3" checked><div class="body">

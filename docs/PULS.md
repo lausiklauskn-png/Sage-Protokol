@@ -105,9 +105,14 @@ A14-Nachlese erledigt.
   Glue (`sbkim-init.js`/`siegel-inhalt.js`) auf **eigenen `dbSuffix "muttisrezeptbuch"`** (≠ `rezeptbuch`
   → keine geteilte-Origin-Kollision), nodeName „Muttis Rezeptbuch", eigene URLs; QC + SBKIM-Script-Block,
   `build.py` grün, `node --check` grün; `status.json` mit `nodeId:null` (Identität = Klaus' Browser-Schritt).
-  **M2 offen (Klaus' Browser):** Identität/Spore via 🌐-Knopf erzeugen → `sbkim/spore.json` committen →
-  danach Muttis in Sage `status.json` + `sage-knoten-korpus.js` mit echter nodeId eintragen (14. Endknoten).
-  Muttis↔Mein sind Schwestern-Knoten (gleiche Koch-Domäne, erwarteter hoher Match). M4 (Parität-Check) offen.
+  **M2 ✅ ERLEDIGT 2026-07-23:** Klaus hat die Identität im Browser erzeugt (nodeId **`8TVDCTAc…`**), Spore
+  v0.2 übergeben → committet (Muttis PR #154). Reziprok verifiziert (id==SHA256(pub) VALID, Ed25519-Sig
+  VALID). **verified-match zu ALLEN Nachbarn:** Sage **0.8766** · Schwester Mein-Rezeptbuch **0.878** ·
+  Mixarium 0.845 · SB-KIMTool-Point 0.864 · Tresore 0.839 · BLP 0.823. Muttis als **14. Endknoten** in
+  Sage `status.json` + `sage-knoten-korpus.js` eingetragen (verified-match, matchScore 0.8766).
+  **✅ Browser-Sichttest GRÜN (Klaus 2026-07-23):** Muttis lädt, 🌐-Panel + Status-Lampen (LEBT/VERKEHR/
+  FREMD/SIEGEL) + Gerätename „Klaus Tablet" sichtbar, Identitäts-Erzeugung lief durch. **Offen:** Klaus'
+  verschlüsseltes Identitäts-Backup (Stabilität); M4 Parität-Check; optional Briefkasten/SW-Precache.
 
 ## Als nächstes ✨
 

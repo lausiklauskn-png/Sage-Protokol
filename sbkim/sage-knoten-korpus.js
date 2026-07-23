@@ -58,6 +58,9 @@
     { label: "Private Brain", anchorId: "https://lausiklauskn-png.github.io/Privat-Brain/",
       nodeId: "6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg",
       text: "Privates zweites Gehirn, eigene Daten, Mails, Dokumente, Fotos, Notizen, semantische kombinierende Suche über gemischte Daten, Bedeutungs-Katalog, offline, verschlüsselt, liest nur und schlägt vor. Verbundener Knoten (verified-spore 2026-07-20; Cross-Knoten-Match-Score noch offen)." },
+    { label: "Muttis-Rezeptbuch", anchorId: "https://lausiklauskn-png.github.io/Muttis-Rezeptbuch/",
+      nodeId: "8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg",
+      text: "Kochrezepte, Kochen, Essen, Gerichte, Zutaten, Mahlzeiten, Küche, Backen, hausgemacht, wandelbarer Rezept-Baukasten. Verbundener Knoten (verified-match 2026-07-23; Cosinus Sage↔Muttis 0.8766; Schwester von Mein-Rezeptbuch 0.878 — eigene, getrennte Identität)." },
   ];
 
   global.SAGE_KNOTEN_KORPUS = SAGE_KNOTEN_KORPUS;
