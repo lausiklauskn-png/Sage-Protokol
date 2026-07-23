@@ -1488,7 +1488,7 @@
           .ms-date { display: block; text-align: right; font-family: "Geist Mono", monospace; font-size: 0.68rem; letter-spacing: 0.05em; color: rgba(244,180,53,0.72); margin-bottom: 0.4rem; }
           .ms-h { font-size: clamp(1.04rem, 1.5vw, 1.28rem); font-weight: 600; line-height: 1.16; margin: 0; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 55%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
           /* Unterer Streifen: weißer Fließtext, klein gehalten, verdeckt das Bild kaum.
-             Bei Hover (Maus) oder Antippen (.is-open) wächst der Text und wird voll lesbar. */
+             Bei Antippen/Klick (.is-open) wächst der Text und wird voll lesbar. */
           .ms-bot { position: relative; z-index: 2; cursor: pointer; padding: 1.4rem 0.85rem 0.7rem; background: linear-gradient(0deg, rgba(7,5,18,0.88) 0%, rgba(7,5,18,0.5) 70%, rgba(7,5,18,0) 100%); transition: background .25s ease; }
           .ms-p { color: rgba(255,255,255,0.92); line-height: 1.38; margin: 0; font-size: 0.6rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; transition: font-size .2s ease; }
           .ms-p strong { color: #fff; font-weight: 600; }
@@ -1496,10 +1496,14 @@
              WICHTIG (Klaus 2026-07-23): die Kachel gibt beim Öffnen die quadratische
              aspect-ratio auf und WÄCHST auf die Höhe des vollen Textes — sonst würde
              der ausgeklappte Text unten am Quadrat-Rand ABGESCHNITTEN (overflow:hidden).
-             align-items:start am Grid hält die Nachbar-Kacheln davon ab, mitzuwachsen. */
-          .ms-tile:hover, .ms-tile.is-open { aspect-ratio: auto; }
-          .ms-tile:hover .ms-p, .ms-tile.is-open .ms-p { font-size: 0.84rem; line-height: 1.5; -webkit-line-clamp: 99; }
-          .ms-tile:hover .ms-bot, .ms-tile.is-open .ms-bot { background: linear-gradient(0deg, rgba(7,5,18,0.97) 0%, rgba(7,5,18,0.9) 62%, rgba(7,5,18,0.4) 100%); padding-bottom: 1rem; }
+             align-items:start am Grid hält die Nachbar-Kacheln davon ab, mitzuwachsen.
+             NUR bei .is-open (Klick/Tipp), NICHT bei :hover — ein Größen-Wachstum bei
+             Hover verschiebt das Layout unter dem Mauszeiger, dadurch geht Hover an/aus
+             und die Kachel FLACKERT/ZITTERT (Klaus-Befund 2026-07-23). Antippen/Klicken
+             ist stabil und wirkt auf Tablet + Desktop gleich. */
+          .ms-tile.is-open { aspect-ratio: auto; }
+          .ms-tile.is-open .ms-p { font-size: 0.84rem; line-height: 1.5; -webkit-line-clamp: 99; }
+          .ms-tile.is-open .ms-bot { background: linear-gradient(0deg, rgba(7,5,18,0.97) 0%, rgba(7,5,18,0.9) 62%, rgba(7,5,18,0.4) 100%); padding-bottom: 1rem; }
           .ms-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--gold); font-size: 0.72rem; margin-top: 0.6rem; }
           .ms-link:hover { color: var(--accent); }
           /* Footer-Zeilen liegen ebenfalls im 12-Spalten-Bento — volle Breite erzwingen */
@@ -1578,6 +1582,26 @@
                   Der andere Knoten durchsucht <strong>seinen eigenen Inhalt</strong> nach deinem Sinn und
                   antwortet. Die volle bidirektionale Cross-Knoten-Suche — <strong>live bewiesen</strong>.</p>
                 <a class="ms-link" href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/meilenstein/2026-07-10_zwei-knoten-nach-bedeutung.md"
+                   target="_blank" rel="noopener">Die Geschichte dazu lesen →</a>
+              </div>
+            </article>
+
+            <article class="ms-tile ms-noimg is-star" id="meilenstein-mesh">
+              <img class="ms-img" src="docs/meilenstein/2026-07-23_multi-knoten-mesh-handshake.png" alt="Fünf SBKIM-Knoten bilden live ein server-loses Mesh durchs Mycel"
+                   onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
+                   onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
+              <span class="ms-emoji">⭐</span>
+              <div class="ms-top">
+                <span class="ms-date">23.07.2026</span>
+                <h2 class="ms-h">⭐ Fünf Knoten bilden ein Netz</h2>
+              </div>
+              <div class="ms-bot" onclick="if(event.target.closest('.ms-link'))return; this.closest('.ms-tile').classList.toggle('is-open')">
+                <p class="ms-p"><strong>Fünf Apps</strong> gleichzeitig im geteilten Raum haben sich in
+                  einer Minute <strong>kreuz und quer verbunden</strong> — 10 Handshakes, alle
+                  <strong>„established"</strong>, alles server-los über das Relais. <strong>7 von 10</strong>
+                  liefen <strong>ohne den Hub</strong> Sage, direkt unter den Endknoten. Vom Einzelpaar zum
+                  <strong>Schwarm</strong> — ein echtes Netz unter Gleichen, im Mycel-Analyse-Rekord belegt.</p>
+                <a class="ms-link" href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/meilenstein/2026-07-23_multi-knoten-mesh-handshake.md"
                    target="_blank" rel="noopener">Die Geschichte dazu lesen →</a>
               </div>
             </article>
