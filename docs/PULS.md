@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-07-16 (27 Module)
+  title Modulstand 2026-07-23 (27 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -30,6 +30,50 @@ pie showData
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
+
+## Stand 2026-07-23 (Folge) — Register-Refresh gegen die LIVE-Sporen + Muttis als 14. Knoten (Hauptsitzung)
+
+Auftrag: Brief `BRIEF_NETZSTAND_REGISTER_REFRESH.md` (2.1 Register-Refresh, 2.3 Muttis).
+Klaus-Entscheide in dieser Sitzung: **„Register voll aktualisieren" + „die falschen Test/Sim-
+Annahmen mitkorrigieren"**; Muttis-Entscheid **per Tat** (Klaus hat die Muttis-Spore im Browser
+erzeugt + hochgeladen → voller Knoten).
+
+- **Autoritative Live-Prüfung (server-los erreichbar über authentifiziertes GitHub-MCP):** alle
+  **12 fremden Live-Sporen frisch von `main`** geholt + mit dem Produktiv-Verifizierer (Modul 02
+  `verifyForeignSpore`) headless geprüft → **alle VALID**, Sage-Cosinus je Knoten unabhängig
+  nachgerechnet. **Befund: das Register war mehrfach stale** — 9 von 12 committeten nodeIds
+  überholt (Adress-Wand, neue v0.2-Identitäten), **alle** matchScores gedriftet (durchweg HÖHER,
+  nicht tiefer). **Wichtig:** die letzte Sitzung (PR #697) hatte aus **veralteten lokalen
+  Inbox-Kopien** geschlossen „Rezeptbuch 0.792 / Mixarium 0.767 < 0.80" — die **Live-Wahrheit ist
+  das Gegenteil**: Rezeptbuch **0.881**, Mixarium **0.822** (beide klar ≥ 0.80). Nach der v0.2-Welle
+  liegt der e5-Anisotropie-Boden noch höher (≈0.85), **alle Inhalts-/Werkzeug-Knoten ≥ 0.80**.
+- **`status.json` voll aktualisiert (14 Endknoten):** 9 stale nodeIds → Live-Werte (alte in
+  `previousNodeIds`), alle matchScores → Live-Cosinus, ehrliche Refresh-Notizen. **Tomys Hub**
+  `verified-match` → **`verified-spore`** (Sage 0.791717 < 0.80 → kein Sage-Match; matcht weiter
+  Family/BLP, hub-unabhängig). **Private Brain** `verified-spore` → **`verified-match`** (0.810427
+  ≥ 0.80). **Muttis Rezeptbuch** als **14. Endknoten** (verified-match **0.876583**, eigene GETRENNTE
+  Identität `8TVDCTAc…` + DB-Suffix `muttisrezeptbuch`, ✔ VALID). `sage-knoten-korpus.js` (8 nodeIds)
+  + `NETZ-STAND.md` (Scores/Labels/Muttis) + `muttis_inbox.verify.md` nachgezogen. `update_puls_pie` gelaufen.
+- **Muttis:** ist bereits **voll auf seinem eigenen `main` integriert** (Module 00–08/15–18/20/21/23,
+  `status.json`-Identität, `sbkim/spore.json` byte-identisch zur verifizierten Upload-Datei) — kein
+  Muttis-Repo-Push nötig, nur Sage-Register-Eintrag + Prüf-Vermerk. Getrennter DB-Suffix = keine
+  Geteilte-Origin-Kollision mit Mein-Rezeptbuch.
+- **Inbox-Kopien refresht** (rezeptbuch/mixarium/point/jason/meintresor/bookledgerpro auf die Live-
+  v0.2-Sporen; neu: `tomys_inbox.json` als ehrliches <0.80-Beispiel, `muttis_inbox.json`).
+- **Falsche Test/Sim-Annahmen korrigiert (Klaus-Auftrag):** `sim_multinode` Phase 3 + `smoke_bau23_
+  rendezvous` Probe 15 + `smoke_bau04e_relatedness` reflektierten die stale „<0.80"-Wahrheit. Jetzt
+  ehrlich: Rezeptbuch/Mixarium ≥ 0.80 (established), **Tomys** als einziger echter <0.80-Fall vs Sage.
+  **`smoke_bau04e`:** die v0.2-Welle hat auch den **zentrierten** Cosinus verschoben — mit
+  `RELATEDNESS_CENTER` v1 trennt er diese Knoten NICHT mehr sauber (Point↔Sage 0.46 > Mixarium↔
+  Rezeptbuch 0.38). **Nicht grün-gerechnet:** Modul 04 NICHT angefasst; der Test prüft jetzt nur die
+  wahren Invarianten (Symmetrie, self=1, roher Gate ≥0.80, Schwestern am verwandtesten) + dokumentiert
+  **RELATEDNESS_CENTER v2 als offenen Modul-04-Kalibrier-Entscheid (wartet auf Klaus).**
+- **Suite: 61/61 grün** (unabhängig nachgefahren, `npm install --no-save fake-indexeddb`).
+
+**Offen / nächster Schritt:** (a) **RELATEDNESS_CENTER v2** — Modul-04-Entscheid, ob der zentrierte
+Cosinus-Mittelpunkt aus den neuen v0.2-Vektoren neu berechnet wird (architektonisch, byte-copy-weit →
+Klaus). (b) **BLP v0.2** — einziger verbliebener Demo-Grenzfall (Spore noch v0.1). (c) S5-Härtungs-Sims,
+A18/A11 (aus Brief). (d) Muttis Live-Ed25519-Handshake im Browser (headless-Beweis steht).
 
 ## Stand 2026-07-22 — Karte + Knoten-Register + Modul-Status-Klarstellung
 
