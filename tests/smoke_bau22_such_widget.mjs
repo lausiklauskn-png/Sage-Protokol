@@ -1208,6 +1208,19 @@ async function run() {
     String(/queryNodeFn\(item\.nodeId, frage\)/.test(src)), /queryNodeFn\(item\.nodeId, frage\)/.test(src));
   record("Probe 52: fail-soft ohne Live-Pfad (Hinweis auf „Voll mitmachen“)", "true",
     String(/Voll mitmachen/.test(src)), /Voll mitmachen/.test(src));
+
+  // Probe 53 (A11B-Inc-3): „🤝 verbinden" nach der Antwort via connectNode.
+  record("Probe 53: connectNode-Fläche (options.connectNode)", "true",
+    String(/options\.connectNode === "function"/.test(src) && /var connectNodeFn = null/.test(src)),
+    /options\.connectNode === "function"/.test(src) && /var connectNodeFn = null/.test(src));
+  record("Probe 53: Verbinden-Knopf erscheint nach Antwort (if connectNodeFn)", "true",
+    String(/typeof connectNodeFn === "function"/.test(src) && /mit diesem Knoten verbinden/.test(src)),
+    /typeof connectNodeFn === "function"/.test(src) && /mit diesem Knoten verbinden/.test(src));
+  record("Probe 53: ruft connectNodeFn(item.nodeId), 0.80-Schwelle ehrlich benannt", "true",
+    String(/connectNodeFn\(item\.nodeId\)/.test(src) && /Andock-Schwelle/.test(src)),
+    /connectNodeFn\(item\.nodeId\)/.test(src) && /Andock-Schwelle/.test(src));
+  record("Probe 53: _meta.liveNodeConnect exponiert", "true",
+    String(/get liveNodeConnect\(\)/.test(src)), /get liveNodeConnect\(\)/.test(src));
 }
 
 const finalize = () => {

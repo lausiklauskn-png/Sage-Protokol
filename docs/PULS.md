@@ -31,6 +31,24 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Folge⁹) — A11B-Inc-3 gebaut („🤝 verbinden" nach der Antwort)
+
+Klaus: „Inc-3" → der Verbinden-Knopf nach der Antwort. Damit ist der **Erst-Kontakt-Fluss komplett**
+(stöbern → Knoten fragen → verbinden).
+
+- **„🤝 mit diesem Knoten verbinden"** erscheint in der Widget-Detail-Karte **erst NACH einer Antwort**
+  (Erst-Kontakt über Neugier). Neue Widget-Fläche `options.connectNode(nodeId)` (+ `_meta.liveNodeConnect`);
+  Sage-Wire **`sageConnectNode`** in `sbkim-init.js`: Modul 23 `discover` (Raum) → Karte zum nodeId finden →
+  `handshakeCard` → **der 0.80-Andock-Riegel (Modul 05) entscheidet unverändert**. Ergebnis ehrlich benannt
+  (✓ verbunden NN % · „unter der Andock-Schwelle" · „noch nicht angemeldet: 🌐 voll mitmachen").
+- **REINE Anzeige/Auswahl — Kern (02/05/05b) + 0.80-Riegel + PROTOCOL_VERSION unberührt**, fail-soft (ohne
+  `connectNode`-Injektion kein Knopf; Standalone/Forker unberührt). Kein PII (nur öffentliche nodeId/Spore).
+- Smoke `smoke_bau22_such_widget.mjs` **268/268** (Probe 53), bau22e 46 / bau22f 17 / bau22g 47 / Standalone 49 grün,
+  byte-1:1 `such-tool/modules/22`. **Offen: netzweiter Rollout** (Modul 22 + `23_rendezvous_ui.js` A15-Inc-1 +
+  `connectNode`-Wire in jede Träger-App, in einem Rutsch). **Browser-Sichttest des ganzen Flusses wartet auf Klaus.**
+
+---
+
 ## Stand 2026-07-23 (Folge⁸) — A11B-Inc-2 gebaut (Knoten gezielt fragen im Such-Widget)
 
 Klaus: „weiter" → **A11B-Increment 2** (der eigentliche Erst-Kontakt-Fluss).

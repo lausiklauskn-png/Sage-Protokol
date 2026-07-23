@@ -286,6 +286,12 @@
   // (Modul 05 + Relais). Im Standalone-Such-Tool ohne Modul 05 = null → der
   // Knoten-Bereich bleibt rein lokal (fail-soft, kein Bruch).
   var queryNodeFn = null;
+  // A11B-Inc-3 — optional via options.connectNode injizierte Funktion (nodeId)
+  // -> {ok, outcome, score, reason, nodeName}. Auf der Sage-Seite verdrahtet mit
+  // SbkimRendezvous (discover Raum → Karte finden → handshakeCard, 0.80-Riegel
+  // entscheidet). Ohne Injektion (Standalone/Forker ohne Modul 23) = null →
+  // der „🤝 verbinden"-Knopf bleibt aus (fail-soft, kein toter Knopf).
+  var connectNodeFn = null;
   var LIVE_NODE_MAX = 2;          // top-N Nachbarn pro Suche live fragen (Deckel)
   var SEARXNG_MAX_RESULTS = 50;   // wie viele Roh-Treffer wir holen + sortieren
 
@@ -4089,7 +4095,47 @@
                 hrow.textContent = "• " + ((h && (h.label || h.text)) || "(Treffer)") + pct;
                 askOut.appendChild(hrow);
               }
-              // A11B-Inc-3-Anker: „🤝 mit diesem Knoten verbinden" folgt hier (nach Antwort).
+              // A11B-Inc-3: „🤝 mit diesem Knoten verbinden" — erscheint ERST NACH
+              // einer Antwort (Erst-Kontakt über Neugier). Der Handshake läuft über
+              // den injizierten connectNode (Sage: discover→handshakeCard); der
+              // 0.80-Andock-Riegel (Modul 05) entscheidet UNVERÄNDERT. Fail-soft:
+              // ohne connectNode kein Knopf; Ergebnis wird ehrlich benannt.
+              if (typeof connectNodeFn === "function") {
+                var connWrap = doc.createElement("div");
+                connWrap.setAttribute("style", "margin-top:9px");
+                var connBtn = makeBtn(doc, "sbkim-sw-aibtn sbkim-sw-detail-connect", "🤝 mit diesem Knoten verbinden", "Mit diesem Knoten verbinden");
+                var connOut = doc.createElement("div");
+                connOut.setAttribute("style", "font-size:.76rem;color:#9aa7b6;margin-top:6px;white-space:pre-wrap;word-break:break-word");
+                connOut.style.display = "none";
+                connBtn.addEventListener("pointerdown", function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); });
+                connBtn.addEventListener("click", function (ev) {
+                  if (ev && ev.preventDefault) ev.preventDefault();
+                  if (ev && ev.stopPropagation) ev.stopPropagation();
+                  connOut.style.display = "";
+                  connOut.textContent = "⏳ verbinde mit " + (item.titel || "dem Knoten") + " …";
+                  connBtn.disabled = true;
+                  Promise.resolve().then(function () { return connectNodeFn(item.nodeId); })
+                    .then(function (r) {
+                      connBtn.disabled = false;
+                      r = r || {};
+                      var pct = (typeof r.score === "number") ? (" (" + Math.round(r.score * 100) + " %)") : "";
+                      if (r.ok || r.outcome === "established") {
+                        connOut.textContent = "✓ Verbunden mit " + (r.nodeName || item.titel || "dem Knoten") + pct + ".";
+                      } else if (r.outcome === "rejected" || (typeof r.score === "number" && r.score < 0.80)) {
+                        connOut.textContent = "Geprüft, aber (noch) keine Verbindung — andere Domäne / unter der Andock-Schwelle" + pct + ".";
+                      } else {
+                        connOut.textContent = "Nicht verbunden: " + (r.reason || "Gegenknoten evtl. gerade zu, oder du bist noch nicht angemeldet („🌐 Voll mitmachen“).");
+                      }
+                    })
+                    .catch(function (e) {
+                      connBtn.disabled = false;
+                      connOut.textContent = "Verbinden fehlgeschlagen (" + ((e && e.message) || e) + ").";
+                    });
+                });
+                connWrap.appendChild(connBtn);
+                connWrap.appendChild(connOut);
+                askOut.appendChild(connWrap);
+              }
             })
             .catch(function (e) {
               askBtn.disabled = false;
@@ -4845,6 +4891,7 @@
     if (typeof options.prepareNodeCorpus === "function") nodeCorpusPreparer = options.prepareNodeCorpus;
     // Live-Cross-Knoten-Frage (Bau Query-über-Relais): (nodeId, text) -> Promise<Array<{label,score,anchorId}>>.
     if (typeof options.queryNode === "function") queryNodeFn = options.queryNode;
+    if (typeof options.connectNode === "function") connectNodeFn = options.connectNode;
     if (typeof options.searxngUrl === "string") searxngUrl = options.searxngUrl.trim();
     if (typeof options.webSearchEngine === "string") {
       for (var wi = 0; wi < WEB_ENGINES.length; wi++) {
@@ -4996,6 +5043,7 @@
       get corpusReady() { return corpusReady; },
       get nodeCorpusSize() { return Array.isArray(nodeCorpus) ? nodeCorpus.length : 0; },
       get liveNodeQuery() { return typeof queryNodeFn === "function"; },
+      get liveNodeConnect() { return typeof connectNodeFn === "function"; },
       get areas() { return { app: areas.app.enabled, knoten: areas.knoten.enabled, internet: areas.internet.enabled }; },
       get richterOn() { return richterOn; },
       // A1/A4-Verdrahtung (reine Diagnose): Vorfilter läuft hybrid, Multi-Query
