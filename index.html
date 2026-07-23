@@ -3999,6 +3999,12 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   // Der Identitäts-Wizard hat z-index 100000 > Siegel-Modal (99998), deshalb
   // genügt openAndockWizard() — er legt sich vor das Siegel-Modal.
   function injectIdentityLinkIntoSiegel(modal) {
+    // A18 (2026-07-23): STILLGELEGT. Den Siegel-Modal-Inhalt (🔑 Andock-Wizard +
+    // ✍ Semantik + 🛡 Schutz) injiziert jetzt der netzweite Kanon
+    // assets/siegel-inhalt.js (byte-1:1 mit allen Endknoten). Diese Sage-lokale
+    // Injektion würde sonst DOPPELT injizieren. Wird als Fallback (falls der
+    // Kanon nicht lädt) noch nicht gelöscht — Löschung folgt nach Klaus' Grün.
+    if (window.__sbkimSiegelInhalt) return;   // Kanon aktiv → hier nichts tun
     if (!modal || modal.querySelector('[data-sage-identity-link]')) return;
     var panel = modal.querySelector('[role="dialog"]') || modal.firstElementChild || modal;
     if (!panel) return;
@@ -4588,6 +4594,11 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script src="src/modules/08_ui_demo.js"></script>
   <script src="src/modules/15_membran.js"></script>
   <script src="src/modules/16_siegel.js"></script>
+  <!-- A18 (2026-07-23): kanonischer Andock-Wizard IM Siegel-Modal (byte-1:1
+       mit allen Endknoten). Ersetzt Sages alte Inline-Injektion ins Siegel
+       (injectIdentityLinkIntoSiegel ist dafür stillgelegt). Modul 16 bleibt
+       unangetastet; die Datei self-mountet via MutationObserver. -->
+  <script src="assets/siegel-inhalt.js"></script>
   <script src="src/modules/18_tool_pwa.js"></script>
   <script src="src/modules/20_schluessel_safe.js"></script>
   <script src="src/modules/21_spracheingabe.js"></script>
