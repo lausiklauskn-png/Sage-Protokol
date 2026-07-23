@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.2",
   "schemaVersion": "1",
-  "lastUpdated": "2026-07-16",
+  "lastUpdated": "2026-07-23",
   "branch": "main",
   "endknoten": [
     {
@@ -14,10 +14,11 @@
       "integrated": true,
       "integratedAt": "2026-05-16",
       "reIntegratedAt": "2026-06-07",
-      "nodeId": "uOpUBezUVbOMsVd2C9BkHW80agnLx5tCx_nIRy2KkXg",
+      "nodeId": "VtvtrDV4KhQv3Q9B9jwZL5UIc9W7xrsKLduZ9xqk9T8",
       "previousNodeIds": [
         "BSWxXmXvxF8FUR_MOx97a3l4gj1Q-JpcAJyp4BBRHyY",
-        "RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI"
+        "RHhposP0ZBXwUWDn71ffY7QISi_9LvGzlja8mAZ-LRI",
+        "uOpUBezUVbOMsVd2C9BkHW80agnLx5tCx_nIRy2KkXg"
       ],
       "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/sbkim/spore.json",
       "stammCategories": [
@@ -43,8 +44,8 @@
         "Fingerfood"
       ],
       "pingStatus": "verified-match",
-      "matchScore": 0.824068,
-      "note": "Erster Endknoten (Kochrezepte), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Mixarium). IDENTITÄTS-ABGLEICH 2026-06-07: NETZ-STAND führte die alte Handshake-nodeId BSWxXmX… — Mein-Rezeptbuch hat aber eine neuere signierte Live-Identität uOpUBez… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= uOpUBez…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (BSWxXmX…, RHhposP0…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Rezeptbuch = 0.824068 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8241). Prüf-Vermerk: sbkim/rezeptbuch_inbox.verify.md.",
+      "matchScore": 0.881144,
+      "note": "Erster Endknoten (Kochrezepte), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Mixarium). IDENTITÄTS-ABGLEICH 2026-06-07: NETZ-STAND führte die alte Handshake-nodeId BSWxXmX… — Mein-Rezeptbuch hat aber eine neuere signierte Live-Identität uOpUBez… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= uOpUBez…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (BSWxXmX…, RHhposP0…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Rezeptbuch = 0.824068 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8241). Prüf-Vermerk: sbkim/rezeptbuch_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId VtvtrDV4… (alte committete uOpUBezU… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.881144 ≥ 0.80 → verified-match (vorher Register 0.824068). v0.2, 5 Schnipsel.",
       "url": "https://lausiklauskn-png.github.io/Mein-Rezeptbuch/"
     },
     {
@@ -53,10 +54,11 @@
       "integrated": true,
       "integratedAt": "2026-05-16",
       "reIntegratedAt": "2026-06-07",
-      "nodeId": "B7Fke9CYTR1BrC3xOXzEY5q9RuRH8xxHPUuqRHV3utA",
+      "nodeId": "YD68l2ScNzd-RWS8tCrL_JAtgpoPp3i3VKc4N9GKvbo",
       "previousNodeIds": [
         "JOlHK31XEiylHOlOfe6E0_Vade6VcM0Q6Z_ADuxxdDY",
-        "7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4"
+        "7xf0tt33_sInwkqWURdpY1EYDIC9EMfkbC0XXZfoEg4",
+        "B7Fke9CYTR1BrC3xOXzEY5q9RuRH8xxHPUuqRHV3utA"
       ],
       "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Mixarium/sbkim/spore.json",
       "stammCategories": [
@@ -74,8 +76,8 @@
         "Fingerfood"
       ],
       "pingStatus": "verified-match",
-      "matchScore": 0.80603,
-      "note": "Zweiter Endknoten (Cocktails/Drinks), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Rezeptbuch). IDENTITÄTS-ABGLEICH 2026-06-07: alte Handshake-nodeId JOlHK31X… → neuere signierte Live-Identität B7Fke9C… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= B7Fke9C…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (JOlHK31X…, 7xf0tt33…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Mixarium = 0.806030 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8060). Ehrlich: zu den Tresoren liegt Mixarium bei 0.7884 < 0.80 (andere Domäne, kein Match — nichts grün-gerechnet). Prüf-Vermerk: sbkim/mixarium_inbox.verify.md.",
+      "matchScore": 0.822299,
+      "note": "Zweiter Endknoten (Cocktails/Drinks), lokal eingebaut seit 2026-05-16 (live-direct, Cross-Knoten-Handshake mit Rezeptbuch). IDENTITÄTS-ABGLEICH 2026-06-07: alte Handshake-nodeId JOlHK31X… → neuere signierte Live-Identität B7Fke9C… (createdAt 2026-05-24, eigener Briefkasten seq 1). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet (= B7Fke9C…), Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Alte nodeIds (JOlHK31X…, 7xf0tt33…) in previousNodeIds. domainVector echt (384-dim, multilingual-e5-small, L2=1). Modul-04-Cosinus Sage ⟷ Mein-Mixarium = 0.806030 ≥ 0.80 → verified-match (deckt sich mit ihrer Browser-Rechnung 0.8060). Ehrlich: zu den Tresoren liegt Mixarium bei 0.7884 < 0.80 (andere Domäne, kein Match — nichts grün-gerechnet). Prüf-Vermerk: sbkim/mixarium_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId YD68l2Sc… (alte committete B7Fke9CY… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.822299 ≥ 0.80 → verified-match (vorher Register 0.80603). v0.2, 10 Schnipsel.",
       "url": "https://lausiklauskn-png.github.io/Mein-Mixarium/"
     },
     {
@@ -110,9 +112,10 @@
       "domain": "SBKIM-Werkzeug-Point",
       "integrated": true,
       "integratedAt": "2026-05-30",
-      "nodeId": "CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY",
+      "nodeId": "JZ7MeMtprz5XAiXF81agCQ1mmynZUUPl_gLerqR_Zrg",
       "previousNodeIds": [
-        "eC3jzoo9Oii04KiSYBXEWhPQzAe6ezmDFKDo1_i0zdw"
+        "eC3jzoo9Oii04KiSYBXEWhPQzAe6ezmDFKDo1_i0zdw",
+        "CyunQNDRZZ3st8xGDYyK0ymJLNxn_S1UcIJpFKpXXNY"
       ],
       "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/SB-KIMTool-Point/main/sbkim/spore.json",
       "stammCategories": [
@@ -134,8 +137,8 @@
         "Endknoten"
       ],
       "pingStatus": "verified-match",
-      "matchScore": 0.848508,
-      "note": "Neue, dauerhaft gesicherte Identität (alte eC3jzoo9… war ungesichert/verloren). Spore mit ECHTEM domainVector neu signiert (kein _demo mehr) und reziprok verifiziert 2026-05-30: Signatur gültig, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, 9/9 Pflichtfelder, Manipulationsprobe fällt durch. Echter Cross-Knoten-Match Sage ⟷ SB-KIMTool = 0.848508 ≥ 0.80 (gegen die publizierte Spore nachgerechnet, identisch zu ihrem test/match.test.js). Pages-Endpoint github.io 403 von Sages Container aus (eigene Egress-Sperre für github.io); verifiziert über raw main. Prüf-Vermerk: sbkim/point_inbox.verify.md.",
+      "matchScore": 0.899516,
+      "note": "Neue, dauerhaft gesicherte Identität (alte eC3jzoo9… war ungesichert/verloren). Spore mit ECHTEM domainVector neu signiert (kein _demo mehr) und reziprok verifiziert 2026-05-30: Signatur gültig, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, 9/9 Pflichtfelder, Manipulationsprobe fällt durch. Echter Cross-Knoten-Match Sage ⟷ SB-KIMTool = 0.848508 ≥ 0.80 (gegen die publizierte Spore nachgerechnet, identisch zu ihrem test/match.test.js). Pages-Endpoint github.io 403 von Sages Container aus (eigene Egress-Sperre für github.io); verifiziert über raw main. Prüf-Vermerk: sbkim/point_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId JZ7MeMtp… (alte committete CyunQNDR… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.899516 ≥ 0.80 → verified-match (vorher Register 0.848508). v0.2, 0 Schnipsel.",
       "url": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/",
       "landingPage": "https://lausiklauskn-png.github.io/SB-KIMTool-Point/"
     },
@@ -144,26 +147,27 @@
       "domain": "Jasons-Tresor-Bibliothek",
       "integrated": true,
       "integratedAt": "2026-05-31",
-      "nodeId": "E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM",
+      "nodeId": "lbUthjt-outt4ns4NJQI2TaMzubX4BzQJGp_Odx_vek",
       "sporeUrl": "https://lausiklauskn-png.github.io/Jasons-Tresor/sbkim/spore.json",
       "stammCategories": [],
       "guestCategories": [],
       "pingStatus": "verified-match",
-      "note": "Dritter Forker-Knoten. IDENTITAETSWECHSEL 2026-06-06: alte nodeId 7F_zNop... war Demo-Schluessel mit verlorenem Passwort -> einmalig neue Identitaet (E13GDzI...) im Browser erzeugt, alte hinfaellig (previousNodeIds). Neue Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= E13GDzI...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector jetzt ECHT (multilingual-e5-small, 384-dim, L2=1, kein _demo). Cross-Knoten-Match Sage <-> Jasons-Tresor via Modul 04 match = 0.847784 >= 0.80 -> verified-match. Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/jason_inbox.verify.md.",
+      "note": "Dritter Forker-Knoten. IDENTITAETSWECHSEL 2026-06-06: alte nodeId 7F_zNop... war Demo-Schluessel mit verlorenem Passwort -> einmalig neue Identitaet (E13GDzI...) im Browser erzeugt, alte hinfaellig (previousNodeIds). Neue Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= E13GDzI...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector jetzt ECHT (multilingual-e5-small, 384-dim, L2=1, kein _demo). Cross-Knoten-Match Sage <-> Jasons-Tresor via Modul 04 match = 0.847784 >= 0.80 -> verified-match. Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/jason_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId lbUthjt-… (alte committete E13GDzIp… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.879330 ≥ 0.80 → verified-match (vorher Register 0.847784). v0.2, 3 Schnipsel.",
       "url": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
       "landingPage": "https://lausiklauskn-png.github.io/Jasons-Tresor/",
       "previousNodeIds": [
-        "7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs"
+        "7F_zNopFgYLPCmEFhVlRUDnQVKk3y-RHNr139Z_3hCs",
+        "E13GDzIp0c7JfeZD0jVvFarNxPde8AcoP7qz7FtmdNM"
       ],
       "reIntegratedAt": "2026-06-06",
-      "matchScore": 0.847784
+      "matchScore": 0.87933
     },
     {
       "name": "Mein-Tresor",
       "domain": "Mein-Tresor-Bibliothek",
       "integrated": true,
       "integratedAt": "2026-06-06",
-      "nodeId": "wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0",
+      "nodeId": "feV3o4qJF58caokPJr_oajm9dcnKwGjVXzBum8M8icM",
       "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Tresor/sbkim/spore.json",
       "stammCategories": [
         "JSON-Tresor",
@@ -177,11 +181,14 @@
         "Spore-Verifikation"
       ],
       "pingStatus": "verified-match",
-      "note": "Vierter Forker-Knoten, design-vereinfachte Schwester von Jasons-Tresor (byte-gleicher JasonLib-Kern, neues Dreh-Safe-Gesicht). Andock-Schritt 1 (Identität) 2026-06-06 → verified-spore. HOCHSTUFUNG verified-match 2026-06-07: Mein-Tresor hat echten domainVector (multilingual-e5-small, 384-dim, L2=1, kein _demo) eingebettet + Spore neu signiert (nodeId unverändert wRsGQou…). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Cross-Knoten-Match Sage ⟷ Mein-Tresor via Modul 04 Cosinus = 0.847784 ≥ 0.80 → verified-match (identisch zu Jasons-Tresor, weil Schwester mit wortgleichem Domänen-Text). EIGENER, dauerhafter Schlüssel (eigene nodeId, NICHT die der Schwester). Pages-Endpoint im Browser live; von Sages Container aus 403 (github.io-Egress-Sperre) — verifiziert über raw/main. Prüf-Vermerk: sbkim/meintresor_inbox.verify.md.",
+      "note": "Vierter Forker-Knoten, design-vereinfachte Schwester von Jasons-Tresor (byte-gleicher JasonLib-Kern, neues Dreh-Safe-Gesicht). Andock-Schritt 1 (Identität) 2026-06-06 → verified-spore. HOCHSTUFUNG verified-match 2026-06-07: Mein-Tresor hat echten domainVector (multilingual-e5-small, 384-dim, L2=1, kein _demo) eingebettet + Spore neu signiert (nodeId unverändert wRsGQou…). Frische Spore aus raw/main reziprok verifiziert: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhängig nachgerechnet, Ed25519-Signatur gültig, Manipulationsprobe fällt durch → ✔ VALID. Cross-Knoten-Match Sage ⟷ Mein-Tresor via Modul 04 Cosinus = 0.847784 ≥ 0.80 → verified-match (identisch zu Jasons-Tresor, weil Schwester mit wortgleichem Domänen-Text). EIGENER, dauerhafter Schlüssel (eigene nodeId, NICHT die der Schwester). Pages-Endpoint im Browser live; von Sages Container aus 403 (github.io-Egress-Sperre) — verifiziert über raw/main. Prüf-Vermerk: sbkim/meintresor_inbox.verify.md. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId feV3o4qJ… (alte committete wRsGQouO… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.873202 ≥ 0.80 → verified-match (vorher Register 0.847784). v0.2, 3 Schnipsel.",
       "url": "https://lausiklauskn-png.github.io/Mein-Tresor/",
       "landingPage": "https://lausiklauskn-png.github.io/Mein-Tresor/",
       "reIntegratedAt": "2026-06-07",
-      "matchScore": 0.847784
+      "matchScore": 0.873202,
+      "previousNodeIds": [
+        "wRsGQouOYPVBOLzAB3nBteRvyvJ-AGv461WTJMKtkS0"
+      ]
     },
     {
       "name": "BookLedgerPro",
@@ -193,8 +200,8 @@
       "stammCategories": [],
       "guestCategories": [],
       "pingStatus": "verified-match",
-      "matchScore": 0.813525,
-      "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 2026-06-20 ECHT nachgeliefert (multilingual-e5-small, passage-Praefix, L2=1) + Spore neu signiert -> Cross-Knoten-Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match (knapp, aber sauber ueber der Schwelle; Buchhaltung domaenenfern, kein Gruen-Rechnen). Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md). Drei-Schichten 2026-06-21: BLP-Spore traegt nun signierte capVector+needsVector (384-dim); reziprok VALID, domainVector-Cosinus neu 0.813525>=0.80 verified-match haelt. Sage-eigene cap/needs offen (Spore Re-Sign via Modul 02 in Klaus' Browser) -> bis dahin domainVector-Rueckfall.",
+      "matchScore": 0.855505,
+      "note": "Sechster Forker-Knoten (Buchhaltung, offline-first/verschluesselt: Belege, Konten, USt/EUR, GoBD, Auftraege). Andock Phase 5 Schritt 2, von Klaus vermittelt. Spore aus raw/main reziprok verifiziert 2026-06-19: 9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) unabhaengig nachgerechnet (= MyHVM7Pd...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 2026-06-20 ECHT nachgeliefert (multilingual-e5-small, passage-Praefix, L2=1) + Spore neu signiert -> Cross-Knoten-Cosinus Sage<->BookLedgerPro = 0.810579 >= 0.80 -> verified-match (knapp, aber sauber ueber der Schwelle; Buchhaltung domaenenfern, kein Gruen-Rechnen). Pages-Endpoint im Browser live; von Sages Container 403 (github.io-Egress) - verifiziert ueber raw/main. Pruef-Vermerk: sbkim/bookledgerpro_inbox.verify.md. Gegenstelle fuer ersten Handshake = Sage (Antwort in sbkim/AUSTAUSCH-BookLedgerPro.md). Drei-Schichten 2026-06-21: BLP-Spore traegt nun signierte capVector+needsVector (384-dim); reziprok VALID, domainVector-Cosinus neu 0.813525>=0.80 verified-match haelt. Sage-eigene cap/needs offen (Spore Re-Sign via Modul 02 in Klaus' Browser) -> bis dahin domainVector-Rueckfall. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId MyHVM7Pd… unverändert; Sage-Cosinus neu nachgerechnet = 0.855505 ≥ 0.80 → verified-match (vorher Register 0.813525). v0.1, 0 Schnipsel.",
       "url": "https://lausiklauskn-png.github.io/BookLedgerPro/",
       "landingPage": "https://lausiklauskn-png.github.io/BookLedgerPro/"
     },
@@ -203,57 +210,93 @@
       "domain": "family-projekt.de",
       "integrated": true,
       "integratedAt": "2026-06-27",
-      "nodeId": "HLXUEJFWHGt6DlRFgzvN4d_YdHRfnrehlVdRb4BHvAE",
+      "nodeId": "XoYhjpgm0F_lWqmaygHEdStBUDGAl70wcOZR--NhhR4",
       "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/family-project/main/sbkim/spore.json",
       "stammCategories": [],
       "guestCategories": [],
       "pingStatus": "verified-match",
-      "matchScore": 0.8287,
-      "note": "Siebter Knoten im Mycel (Werkzeug-/App-Buendelung: freies neutrales Netzwerk + eigene Werkzeuge mit eigenen Seiten + Marktplatz fuer fremde Apps; semantische Bedeutungs-Suche, mehrsprachig, datenschutzfreundlich, offline-faehig). Spore von Klaus' Browser erzeugt (multilingual-e5-small, passage-Praefix, L2=1). Aus raw/main reziprok verifiziert 2026-06-27: 9/9 Pflichtfelder, id == base64url(sha256(rawPub)) unabhaengig nachgerechnet (= HLXUEJFW...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 384-dim, L2=1.000. Cross-Knoten-Cosinus Sage<->Family Projekt = 0.8287 >= 0.80 -> verified-match. Pruef-Vermerk: sbkim/familyproject_inbox.verify.md. Endpoint family-projekt.de (Hetzner) noch nicht live; Verifikation laeuft ueber raw/main. Gegenstelle fuer ersten Handshake = Sage (Quittung in sbkim/AUSTAUSCH-FamilyProjekt.md).",
+      "matchScore": 0.854844,
+      "note": "Siebter Knoten im Mycel (Werkzeug-/App-Buendelung: freies neutrales Netzwerk + eigene Werkzeuge mit eigenen Seiten + Marktplatz fuer fremde Apps; semantische Bedeutungs-Suche, mehrsprachig, datenschutzfreundlich, offline-faehig). Spore von Klaus' Browser erzeugt (multilingual-e5-small, passage-Praefix, L2=1). Aus raw/main reziprok verifiziert 2026-06-27: 9/9 Pflichtfelder, id == base64url(sha256(rawPub)) unabhaengig nachgerechnet (= HLXUEJFW...), Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -> VALID. domainVector 384-dim, L2=1.000. Cross-Knoten-Cosinus Sage<->Family Projekt = 0.8287 >= 0.80 -> verified-match. Pruef-Vermerk: sbkim/familyproject_inbox.verify.md. Endpoint family-projekt.de (Hetzner) noch nicht live; Verifikation laeuft ueber raw/main. Gegenstelle fuer ersten Handshake = Sage (Quittung in sbkim/AUSTAUSCH-FamilyProjekt.md). REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId XoYhjpgm… (alte committete HLXUEJFW… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.854844 ≥ 0.80 → verified-match (vorher Register 0.8287). v0.2, 2 Schnipsel.",
       "url": "https://family-projekt.de/",
-      "landingPage": "https://family-projekt.de/"
+      "landingPage": "https://family-projekt.de/",
+      "previousNodeIds": [
+        "HLXUEJFWHGt6DlRFgzvN4d_YdHRfnrehlVdRb4BHvAE"
+      ]
     },
     {
       "name": "Kim-Bell",
       "domain": "SBKIM-Netz-Glocke / Netz-Anmeldung",
       "integrated": true,
       "integratedAt": "2026-07-08",
-      "nodeId": "e9TlbEzxdL6UrlwCWjrTxwuWOLDXZ_AIvx12BMrhPaw",
+      "nodeId": "Xg1xKoZ9vIgimEKlqeCDL_u4ptbRT6qvKplPAppyJfI",
       "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kim-Bell/main/sbkim/spore.json",
-      "stammCategories": ["Netz-Anmeldung", "Rendezvous", "Identitaets-Verwaltung"],
-      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
+      "stammCategories": [
+        "Netz-Anmeldung",
+        "Rendezvous",
+        "Identitaets-Verwaltung"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
       "pingStatus": "verified-match",
-      "matchScore": 0.8711,
-      "note": "Achter Knoten im Mycel (das eigenstaendige 'Mit dem Netz verbinden'-Werkzeug: saubere Identitaets-Hygiene, ID+Spore erzeugen, im gemeinsamen Raum anmelden, andere Knoten finden - server-los im Browser). Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1), committet nach Kim-Bell/sbkim/spore.json (oeffentlich, kein privater Schluessel). Live-Cross-Knoten-Handshake Sage <-> Kim-Bell im Browser bestaetigt 2026-07-08 (beidseitig 'ANDOCK ETABLIERT' ueber das echte Relais, nach Timeout-Fix 12 s -> 5 min). Cross-Knoten-Cosinus Sage <-> Kim-Bell = 0.8711 >= 0.80 -> verified-match. Beleg: Klaus' Browser-Sichttest (Splitscreen).",
-      "url": "https://lausiklauskn-png.github.io/Kim-Bell/"
+      "matchScore": 0.884829,
+      "note": "Achter Knoten im Mycel (das eigenstaendige 'Mit dem Netz verbinden'-Werkzeug: saubere Identitaets-Hygiene, ID+Spore erzeugen, im gemeinsamen Raum anmelden, andere Knoten finden - server-los im Browser). Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1), committet nach Kim-Bell/sbkim/spore.json (oeffentlich, kein privater Schluessel). Live-Cross-Knoten-Handshake Sage <-> Kim-Bell im Browser bestaetigt 2026-07-08 (beidseitig 'ANDOCK ETABLIERT' ueber das echte Relais, nach Timeout-Fix 12 s -> 5 min). Cross-Knoten-Cosinus Sage <-> Kim-Bell = 0.8711 >= 0.80 -> verified-match. Beleg: Klaus' Browser-Sichttest (Splitscreen). REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId Xg1xKoZ9… (alte committete e9TlbEzx… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.884829 ≥ 0.80 → verified-match (vorher Register 0.8711). v0.2, 2 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Kim-Bell/",
+      "previousNodeIds": [
+        "e9TlbEzxdL6UrlwCWjrTxwuWOLDXZ_AIvx12BMrhPaw"
+      ]
     },
     {
       "name": "Kimseek",
       "domain": "Semantische Bedeutungs-Suche",
       "integrated": true,
       "integratedAt": "2026-07-09",
-      "nodeId": "I7qX13yu4BEFIi8yd_5MepkC1b7sFAk2W17d5re5x8Y",
+      "nodeId": "Yd8mwHSDYkcyd1meDe-7DJa5PS4KrY5bsl8VDn6x-TM",
       "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kimseek/main/sbkim/spore.json",
-      "stammCategories": ["Semantische Suche", "Bedeutungs-Sortierung", "Sprach-/Bild-Eingabe"],
-      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
+      "stammCategories": [
+        "Semantische Suche",
+        "Bedeutungs-Sortierung",
+        "Sprach-/Bild-Eingabe"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
       "pingStatus": "verified-match",
-      "matchScore": 0.8553,
-      "note": "Neunter Knoten im Mycel (semantisches Such-Werkzeug als Endknoten: versteht die Bedeutung/Absicht hinter einer Frage und ordnet Treffer nach Bedeutungs-Naehe; Spracheingabe, OCR, KI-Bruecke - server-los im Browser). Aus dem Such-Tool (such-tool) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimseek/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimseek = 0.8553 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite.",
-      "url": "https://lausiklauskn-png.github.io/Kimseek/"
+      "matchScore": 0.858884,
+      "note": "Neunter Knoten im Mycel (semantisches Such-Werkzeug als Endknoten: versteht die Bedeutung/Absicht hinter einer Frage und ordnet Treffer nach Bedeutungs-Naehe; Spracheingabe, OCR, KI-Bruecke - server-los im Browser). Aus dem Such-Tool (such-tool) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimseek/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimseek = 0.8553 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId Yd8mwHSD… (alte committete I7qX13yu… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.858884 ≥ 0.80 → verified-match (vorher Register 0.8553). v0.2, 2 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Kimseek/",
+      "previousNodeIds": [
+        "I7qX13yu4BEFIi8yd_5MepkC1b7sFAk2W17d5re5x8Y"
+      ]
     },
     {
       "name": "Kimboard",
       "domain": "Pinnwand/Notizen/Merken",
       "integrated": true,
       "integratedAt": "2026-07-09",
-      "nodeId": "Hc0t9z4te4kWoh7cBMtJAb7m6Nl17eBKxwPvbJ5Rqfk",
+      "nodeId": "1f9Jb7c3SEI8dUOtGR6_meMaOaPgbz2GWXMLmPCZMv8",
       "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Kimboard/main/sbkim/spore.json",
-      "stammCategories": ["Pinnwand", "Notizen/Merken", "Frage-Antwort-Brett"],
-      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
+      "stammCategories": [
+        "Pinnwand",
+        "Notizen/Merken",
+        "Frage-Antwort-Brett"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
       "pingStatus": "verified-match",
-      "matchScore": 0.8262,
-      "note": "Zehnter Knoten im Mycel (semantische Pinnwand als Endknoten: Fragen/Notizen an ein geborgtes 'dummes Brett' (Nostr) heften, geraeteuebergreifend nach Bedeutung sortiert; Merken/Notizen - server-los im Browser). Aus der Pinnwand (pinnwand) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimboard/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimboard = 0.8262 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite.",
-      "url": "https://lausiklauskn-png.github.io/Kimboard/"
+      "matchScore": 0.824488,
+      "note": "Zehnter Knoten im Mycel (semantische Pinnwand als Endknoten: Fragen/Notizen an ein geborgtes 'dummes Brett' (Nostr) heften, geraeteuebergreifend nach Bedeutung sortiert; Merken/Notizen - server-los im Browser). Aus der Pinnwand (pinnwand) nach dem Kim-Bell-Muster zum vollen Endknoten gemacht. Spore von Klaus' Browser erzeugt (multilingual-e5-small, L2=1.0), committet nach Kimboard/sbkim/spore.json (oeffentlich, kein privater Schluessel). Cross-Knoten-Cosinus Sage <-> Kimboard = 0.8262 >= 0.80 -> verified-match (offline nachgerechnet). Live-Ed25519-Handshake wartet auf Klaus' Browser-Lauf auf der deployten Seite. REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId 1f9Jb7c3… (alte committete Hc0t9z4t… war Adress-Wand-stale); Sage-Cosinus neu nachgerechnet = 0.824488 ≥ 0.80 → verified-match (vorher Register 0.8262). v0.2, 2 Schnipsel.",
+      "url": "https://lausiklauskn-png.github.io/Kimboard/",
+      "previousNodeIds": [
+        "Hc0t9z4te4kWoh7cBMtJAb7m6Nl17eBKxwPvbJ5Rqfk"
+      ]
     },
     {
       "name": "Tomys Hub",
@@ -262,11 +305,19 @@
       "integratedAt": "2026-07-11",
       "nodeId": "yaerFGfy7yAajFEce-sUiE6jo263TwkUmbsjIS8Js-8",
       "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Tomys-Hub/main/sbkim/spore.json",
-      "stammCategories": ["Digitaldruck/Textildruck", "Stick/Stickerei", "Werbeartikel/Werbemittel"],
-      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
-      "pingStatus": "verified-match",
+      "stammCategories": [
+        "Digitaldruck/Textildruck",
+        "Stick/Stickerei",
+        "Werbeartikel/Werbemittel"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-spore",
       "matchScore": null,
-      "note": "Elfter Knoten im Mycel (Werbetechnik-Verbund: personalisierter Digitaldruck, Stickerei, Werbeartikel - Druckvorlagen fuer Tassen, T-Shirts, Handtuecher, Kissen, Fotopuzzles; Auftraege im WorkFloh). Spore von Klaus' Browser ueber das Siegel erzeugt (multilingual-e5-small, L2=1), reziprok verifiziert -> VALID. HUB-UNABHAENGIG (bedeutsam): Tomys hat KEINEN Sage-Match (Cosinus Sage<->Tomys 0.7977 < 0.80) - der Hub haette den Match gar nicht vermittelt. Stattdessen verified-match zu den fachverwandten Knoten Family Projekt (0.8073) und BookLedgerPro (0.8064) >= 0.80, offline nachgerechnet UND live bidirektional 'established' (Klaus' Browser 2026-07-11: Cross-Knoten-Bedeutungssuche 'bedruckte Tassen?' -> 5 Treffer aus Tomys' Katalog 0.80-0.84). Erster bewiesener Match OHNE den Hub Sage. Lebende Rendezvous-ID variiert (Adress-Wand, Modul 23).",
+      "note": "Elfter Knoten im Mycel (Werbetechnik-Verbund: personalisierter Digitaldruck, Stickerei, Werbeartikel - Druckvorlagen fuer Tassen, T-Shirts, Handtuecher, Kissen, Fotopuzzles; Auftraege im WorkFloh). Spore von Klaus' Browser ueber das Siegel erzeugt (multilingual-e5-small, L2=1), reziprok verifiziert -> VALID. HUB-UNABHAENGIG (bedeutsam): Tomys hat KEINEN Sage-Match (Cosinus Sage<->Tomys 0.7977 < 0.80) - der Hub haette den Match gar nicht vermittelt. Stattdessen verified-match zu den fachverwandten Knoten Family Projekt (0.8073) und BookLedgerPro (0.8064) >= 0.80, offline nachgerechnet UND live bidirektional 'established' (Klaus' Browser 2026-07-11: Cross-Knoten-Bedeutungssuche 'bedruckte Tassen?' -> 5 Treffer aus Tomys' Katalog 0.80-0.84). Erster bewiesener Match OHNE den Hub Sage. Lebende Rendezvous-ID variiert (Adress-Wand, Modul 23). REGISTER-REFRESH 2026-07-23: Live-Spore von main erneut mit Produktiv-Verifizierer geprüft → ✔ VALID; lebende nodeId unverändert; Sage-Cosinus neu nachgerechnet = 0.791717 < 0.80 → pingStatus korrekt auf 'verified-spore' gesetzt (verified-match verlangt Sage-Match ≥0.80, INTERFACES §11.2). Tomys' ≥0.80-Match besteht weiter zu Family/BLP (hub-unabhängig, 2026-07-11), nicht zu Sage. v0.2, 1 Schnipsel.",
       "url": "https://lausiklauskn-png.github.io/Tomys-Hub/"
     },
     {
@@ -276,12 +327,48 @@
       "integratedAt": "2026-07-20",
       "nodeId": "6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg",
       "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Privat-Brain/main/sbkim/spore.json",
-      "stammCategories": ["Privates Daten-Gehirn", "Semantische kombinierende Suche", "Mail-/Dokument-/Foto-/Notiz-Katalog"],
-      "guestCategories": ["Spore-Erzeugung", "Backup", "Handshake"],
-      "pingStatus": "verified-spore",
-      "matchScore": null,
-      "note": "Zwoelfter Knoten im Mycel (privates zweites Gehirn: laesst die eigenen Daten - Mails, Dokumente, Fotos, Notizen - einmal durchlaufen, signiert sie, behaelt nur einen kleinen Bedeutungs-Katalog (Vektor + Steckbrief + Zeiger aufs Original) und laesst die Originale unangetastet; danach semantische kombinierende Suche - liest nur, schlaegt vor, bewegt nichts). Fundament byte-kopiert aus Company-Brain, fuer die Privatperson umgewidmet. Erste eigene Identitaet 2026-07-20 in Klaus' Browser erzeugt, Spore v0.2 mit echtem domainVector (L2=1) + 2 Satz-Schnipseln; aus raw/main headless reziprok verifiziert -> VALID. Cross-Knoten-Match-Score noch offen (verified-spore). DB-Schublade sbkim_privatbrain, Verbindung server-los (Modul 23), Standard aus (offline-first).",
+      "stammCategories": [
+        "Privates Daten-Gehirn",
+        "Semantische kombinierende Suche",
+        "Mail-/Dokument-/Foto-/Notiz-Katalog"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.810427,
+      "note": "Zwoelfter Knoten im Mycel (privates zweites Gehirn: laesst die eigenen Daten - Mails, Dokumente, Fotos, Notizen - einmal durchlaufen, signiert sie, behaelt nur einen kleinen Bedeutungs-Katalog (Vektor + Steckbrief + Zeiger aufs Original) und laesst die Originale unangetastet; danach semantische kombinierende Suche - liest nur, schlaegt vor, bewegt nichts). Fundament byte-kopiert aus Company-Brain, fuer die Privatperson umgewidmet. Erste eigene Identitaet 2026-07-20 in Klaus' Browser erzeugt, Spore v0.2 mit echtem domainVector (L2=1) + 2 Satz-Schnipseln; aus raw/main headless reziprok verifiziert -> VALID. Cross-Knoten-Match-Score noch offen (verified-spore). DB-Schublade sbkim_privatbrain, Verbindung server-los (Modul 23), Standard aus (offline-first). REGISTER-REFRESH 2026-07-23: Live-Spore von main mit Produktiv-Verifizierer geprüft → ✔ VALID; Sage-Cosinus neu nachgerechnet = 0.810427 ≥ 0.80 → pingStatus verified-spore→verified-match (offline nachgerechnet wie Kimseek/Kimboard; Live-Ed25519-Handshake wartet auf Klaus' Browser). v0.2, 2 Schnipsel.",
       "url": "https://lausiklauskn-png.github.io/Privat-Brain/"
+    },
+    {
+      "name": "Muttis Rezeptbuch",
+      "domain": "Kochrezepte (privates Original)",
+      "integrated": true,
+      "integratedAt": "2026-07-23",
+      "nodeId": "8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg",
+      "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Muttis-Rezeptbuch/main/sbkim/spore.json",
+      "stammCategories": [
+        "Vorspeisen",
+        "Suppen",
+        "Fleisch",
+        "Fisch",
+        "Vegetarisch",
+        "Kuchen",
+        "Desserts"
+      ],
+      "guestCategories": [
+        "Getränke",
+        "Mocktails",
+        "Alkfr. Cocktails",
+        "Knabbereien",
+        "Fingerfood"
+      ],
+      "pingStatus": "verified-match",
+      "matchScore": 0.876583,
+      "note": "Vierzehnter Knoten im Mycel — Muttis Rezeptbuch, das PRIVATE Original der Kochrezept-Familie (Mein-Rezeptbuch ist der öffentliche Klon). Eigene, GETRENNTE Identität + DB-Suffix 'muttisrezeptbuch' (keine Geteilte-Origin-Kollision mit Mein-Rezeptbuch 'rezeptbuch'). Spore in Klaus' Browser erzeugt 2026-07-23 (multilingual-e5-small, L2=1.0, v0.2, 5 Schnipsel), aus der hochgeladenen Datei mit dem Produktiv-Verifizierer (Modul 02 verifyForeignSpore) headless geprüft → ✔ VALID (9/9 Pflichtfelder, id == base64url(SHA256(rawPub)) = 8TVDCTAc…, Ed25519-Signatur gültig). Cross-Knoten-Cosinus Sage ⟷ Muttis = 0.876583 ≥ 0.80 → verified-match. Live-Ed25519-Handshake wartet auf Klaus' Browser auf der deployten Seite. Prüf-Vermerk: sbkim/muttis_inbox.verify.md.",
+      "url": "https://lausiklauskn-png.github.io/Muttis-Rezeptbuch/"
     }
   ],
   "modules": [
