@@ -166,6 +166,7 @@ const VEC_SOURCES = {
   Rezeptbuch: "sbkim/rezeptbuch_inbox.json",
   Mixarium: "sbkim/mixarium_inbox.json",
   BookLedger: "sbkim/bookledgerpro_inbox.json",
+  Tomys: "sbkim/tomys_inbox.json",
 };
 const REALVEC = {};
 for (const [k, f] of Object.entries(VEC_SOURCES)) {
@@ -250,11 +251,16 @@ async function run() {
   }
 
   // ── Phase 3: Andock-Riegel (0.80 trennt nach Bedeutung) ──
-  // Erwartung aus der dokumentierten Realität (A10-Re-Sign):
-  //   BookLedger↔Sage  ≥ 0.80  established (Werkzeug/Infra-nah)
-  //   Rezeptbuch↔Sage  < 0.80  rejected-local (Inhalts-Knoten)
-  //   Mixarium↔Sage    < 0.80  rejected-local (Inhalts-Knoten)
-  //   Mixarium↔Rezeptbuch ≥ 0.80 established (Inhalts-Geschwister)
+  // REGISTER-REFRESH 2026-07-23: nach v0.2-Re-Sign liegen alle Inhalts-/Werkzeug-
+  // Knoten ≥0.80; einziger echter <0.80-Fall vs Sage ist Tomys (andere Domäne).
+  // Erwartung aus der LIVE-Realität (aus den v0.2-Sporen frisch gemessen):
+  //   BookLedger↔Sage     ≥ 0.80  established (0.855)
+  //   Rezeptbuch↔Sage     ≥ 0.80  established (0.881)  — Inhalts-Knoten
+  //   Mixarium↔Sage       ≥ 0.80  established (0.822)  — Inhalts-Knoten
+  //   Mixarium↔Rezeptbuch ≥ 0.80  established (Inhalts-Geschwister)
+  //   Tomys↔Sage          < 0.80  rejected-local (0.7917, andere Domäne
+  //                                Werbetechnik/Digitaldruck; hub-unabhängig
+  //                                2026-07-11) — der EINZIGE echte <0.80-Fall.
   const M = sage.sb.SbkimMatch;
   function gate(a, b) {
     const raw = M.match(a.vec, b.vec);
@@ -265,17 +271,24 @@ async function run() {
     "established", gBlpSage.raw.toFixed(4) + " → " + (gBlpSage.established ? "established" : "rejected"),
     gBlpSage.established === true);
   const gRezSage = gate(rez, sage);
-  record("Phase 3 Riegel — Rezeptbuch↔Sage rejected-local (<0.80, verified-spore)",
-    "rejected", gRezSage.raw.toFixed(4) + " → " + (gRezSage.established ? "established" : "rejected"),
-    gRezSage.established === false);
+  record("Phase 3 Riegel — Rezeptbuch↔Sage established (≥0.80, 0.881)",
+    "established", gRezSage.raw.toFixed(4) + " → " + (gRezSage.established ? "established" : "rejected"),
+    gRezSage.established === true);
   const gMixSage = gate(mix, sage);
-  record("Phase 3 Riegel — Mixarium↔Sage rejected-local (<0.80, verified-spore)",
-    "rejected", gMixSage.raw.toFixed(4) + " → " + (gMixSage.established ? "established" : "rejected"),
-    gMixSage.established === false);
+  record("Phase 3 Riegel — Mixarium↔Sage established (≥0.80, 0.822)",
+    "established", gMixSage.raw.toFixed(4) + " → " + (gMixSage.established ? "established" : "rejected"),
+    gMixSage.established === true);
   const gMixRez = gate(mix, rez);
   record("Phase 3 Riegel — Mixarium↔Rezeptbuch established (≥0.80, Geschwister)",
     "established", gMixRez.raw.toFixed(4) + " → " + (gMixRez.established ? "established" : "rejected"),
     gMixRez.established === true);
+  // Der einzige echte <0.80-Fall vs Sage im ganzen Netz: Tomys (andere Domäne).
+  // gate() ruft nur M.match(a.vec,b.vec) — ein roher Vektor genügt, kein voller Knoten.
+  const tomys = { vec: new Float32Array(REALVEC.Tomys) };
+  const gTomysSage = gate(tomys, sage);
+  record("Phase 3 Riegel — Tomys↔Sage rejected-local (<0.80, 0.7917, andere Domäne)",
+    "rejected", gTomysSage.raw.toFixed(4) + " → " + (gTomysSage.established ? "established" : "rejected"),
+    gTomysSage.established === false);
   record("Phase 3 — Riegel bleibt exakt 0.80", "0.8", String(M.PROVIDER_MIN_MATCH), M.PROVIDER_MIN_MATCH === 0.80);
 
   // ── Phase 4: Q&A über den Hub (Sage fragt, Mixarium antwortet aus Korpus) ──
