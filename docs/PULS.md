@@ -31,6 +31,32 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-23 (Abend, Meilenstein-Strang) — A18-Siegel-Modal + Multi-Knoten-Mesh-Meilenstein + Galerie-Fix
+
+Interaktiver Strang mit Klaus (parallel zum A11/A15-Strang oben). Alles gemergt:
+
+- **A18 Teil 1 — Sage-Siegel-Modal auf den Kanon** (PR #712): `index.html` lädt jetzt
+  `assets/siegel-inhalt.js`; Sages alte Inline-Injektion ins Siegel auf `window.__sbkimSiegelInhalt`
+  gated (kein Doppel, Fallback bleibt). Kanon-Datei UNVERÄNDERT → family-project + alle Endknoten
+  byte-1:1 in Sync. **Klaus-Entscheid: die Schwarz-Loch-Karte + der 785-Zeilen-Inline-Wizard bleiben
+  bewusst** (funktioniert, reine Aufräumarbeit ohne Demo-Nutzen). **Browser-Sichttest des Siegel-Modals
+  steht noch aus** (Klaus, goldenes Badge).
+- **Meilenstein „Erster Multi-Knoten-Mesh-Handshake"** (PR #713 Doc + #714 Bild): aus Klaus'
+  Mycel-Analyse-Rekord (Relais-Aufzeichnung eigens in der Mycel-Karte aktiviert → echter Verkehr):
+  **5 Apps, 10 Handshakes alle `established`, 7/10 hub-unabhängig, Scores 0.80–0.85, alles über das
+  Relais**. `docs/meilenstein/2026-07-23_multi-knoten-mesh-handshake.md` + `.png` (Klaus' Bild).
+  BLP established mit Demo-Stub-Vektor (bewusste Ausnahme, im echten Netz belegt).
+- **Meilenstein-Galerie-Fix** (PR #715 + #716): Kachel-Text wurde beim Öffnen unten abgeschnitten
+  (Quadrat + overflow:hidden) → Kachel wächst jetzt bei `.is-open` auf volle Text-Höhe; Hover-Zittern
+  behoben (Aufklappen nur noch bei Klick/Tipp, nicht :hover); neue ⭐-Kachel „Fünf Knoten bilden ein
+  Netz" (23.07.) ergänzt. Klaus-Sichttest GRÜN.
+- **Ehrlicher „Demo → real"-Befund** (aus der Bestandsaufnahme): Sage ist protokollarisch schon KEIN
+  Demo mehr (Identität/Spore/Andock/Cross-Knoten-Q&A live bewiesen). Rest bis „definitiv kein Demo":
+  **MUSS** = BLP-Stub als bewusste Ausnahme festschreiben + protokoll-nahe Browser-Sichttests (Kimseek/
+  Kimboard/Private Brain Live-Handshake, Muttis, B3, B7) + A18-Siegel-Sichttest. **KANN/später** =
+  Schutz-Schablonen 10/11/12/14 (nur bei Angriff), B6/Grad C, Observatorium-als-Knoten.
+  Klarstellung: `config.PROTOCOL_VERSION 0.1` ist **Absicht** (Wire-Version bis B6), kein Bug.
+
 ## Stand 2026-07-23 (Folge⁹) — A11B-Inc-3 gebaut („🤝 verbinden" nach der Antwort)
 
 Klaus: „Inc-3" → der Verbinden-Knopf nach der Antwort. Damit ist der **Erst-Kontakt-Fluss komplett**
