@@ -100,6 +100,14 @@ A14-Nachlese erledigt.
 - **Einzige echte Demo-Grenze:** **BookLedgerPro** — committete Spore noch v0.1, Domänen-Vektor ist
   bewusst ein Demo-Stub (Klaus-Entscheid, kein echtes Modell); v0.2-Neu-Signatur wartet auf einen
   kurzen Schlüssel-Lauf im Browser (A10-Operator-Schritt).
+- **M1/M3 — Muttis-Rezeptbuch wird eigener SBKIM-Knoten** (Klaus-Entscheid 2026-07-23, Muttis PR #153
+  gemergt): 18 Module + noble + sbkim-sw **byte-1:1** aus dem Mein-Rezeptbuch/Sage-Kanon (SHA-identisch),
+  Glue (`sbkim-init.js`/`siegel-inhalt.js`) auf **eigenen `dbSuffix "muttisrezeptbuch"`** (≠ `rezeptbuch`
+  → keine geteilte-Origin-Kollision), nodeName „Muttis Rezeptbuch", eigene URLs; QC + SBKIM-Script-Block,
+  `build.py` grün, `node --check` grün; `status.json` mit `nodeId:null` (Identität = Klaus' Browser-Schritt).
+  **M2 offen (Klaus' Browser):** Identität/Spore via 🌐-Knopf erzeugen → `sbkim/spore.json` committen →
+  danach Muttis in Sage `status.json` + `sage-knoten-korpus.js` mit echter nodeId eintragen (14. Endknoten).
+  Muttis↔Mein sind Schwestern-Knoten (gleiche Koch-Domäne, erwarteter hoher Match). M4 (Parität-Check) offen.
 
 ## Als nächstes ✨
 
