@@ -336,11 +336,21 @@ async function run() {
   // ── Probe 15: Andock-Pfad UNBERÜHRT (Regression) ──
   record("Probe 15 — PROVIDER_MIN_MATCH bleibt 0.80 (Handshake-Boden)", "0.8",
     String(SbkimMatch.PROVIDER_MIN_MATCH), SbkimMatch.PROVIDER_MIN_MATCH === 0.80);
-  if (VEC.Mixarium && VEC.Sage) {
+  // Nach der v0.2-Re-Sign-Welle (A10) handshaked ein Werkzeug/Hub-naher Knoten
+  // weiter (BookLedger<->Sage 0.856 ≥ 0.80) → der Andock-Riegel ist unberührt,
+  // der Verwandtschafts-Badge gatet nichts. Inhalts-Knoten (Mixarium 0.767)
+  // fielen KORREKT unter den Boden (verified-spore) — gewolltes Protokoll-Verhalten.
+  if (VEC.BookLedger && VEC.Sage) {
     const above = SbkimMatch.isAboveProviderThreshold(
-      SbkimMatch.match(new Float32Array(VEC.Mixarium), new Float32Array(VEC.Sage)));
-    record("Probe 15 — Hub↔Endknoten match() ≥ 0.80 (relatedness gatet nichts)", "true",
+      SbkimMatch.match(new Float32Array(VEC.BookLedger), new Float32Array(VEC.Sage)));
+    record("Probe 15 — Werkzeug/Hub-nah match() ≥ 0.80 (Badge gatet nichts)", "true",
       String(above), above === true);
+  }
+  if (VEC.Mixarium && VEC.Sage) {
+    const below = SbkimMatch.isAboveProviderThreshold(
+      SbkimMatch.match(new Float32Array(VEC.Mixarium), new Float32Array(VEC.Sage)));
+    record("Probe 15 — Inhalts-Knoten Mixarium↔Sage < 0.80 (verified-spore, A10)", "false",
+      String(below), below === false);
   }
 
   // Print results.

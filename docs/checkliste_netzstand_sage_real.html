@@ -81,32 +81,32 @@
 
 <h2>A · Sage: Demo → real funktionierendes Protokoll (Hauptziel)</h2>
 
-<div class="item"><input type="checkbox" class="cb" data-k="S1"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="S1" checked><div class="body">
   <div><span class="code">S1</span><span class="time">⏱ ~30 Min</span> <span class="t">Sage-Testlauf komplett — Ist-Stand ehrlich feststellen</span></div>
   <div class="d">Alle <code>tests/smoke_*.mjs</code> + <code>node --test</code> fahren. Ergebnis wahrheitsgemäß je Suite notieren (grün/rot). Kein „grün" ohne Lauf.</div>
-  <div class="meta"><span class="tag">Test</span> offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Test</span> ✅ erledigt 2026-07-23 — war 56/60, jetzt <b>60/60 grün</b> (4 rote Suiten ehrlich repariert: 3× veraltete 0.80-Annahme nach A10, 1× Harness-Hang durch offenen BroadcastChannel).</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="S2"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="S2" checked><div class="body">
   <div><span class="code">S2</span><span class="time">⏱ ~30 Min</span> <span class="t">Demo-Bestandsaufnahme — was ist noch „Demo"?</span></div>
   <div class="d">Liste aller Knoten in <code>status.json</code> mit <code>_demo</code>-<code>domainVector</code> bzw. <code>matchScore: null</code> (aktuell u.a. <b>BookLedgerPro, Tomys Hub, Private Brain</b>). Diese Liste ist die Messlatte für „real".</div>
-  <div class="meta"><span class="tag">Bau</span> offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Bau</span> ✅ erledigt 2026-07-23 — <b>KEINE echten <code>_demo</code>-Vektoren mehr im Code</b> (A6/A10 zu). 11× <code>verified-match</code>, Private Brain <code>verified-spore</code>, Sage=self. Einzige echte Demo-Grenze: <b>BLP</b> (Vektor bewusst Stub, Spore noch v0.1). Befund an Folge-Sitzung: <b>Tomys</b> steht <code>verified-match</code> mit <code>matchScore:null</code>, dokumentiert aber 0.7977&lt;0.80 → müsste <code>verified-spore</code>; Register-<code>matchScore</code>/<code>nodeId</code> teils stale ggü. Live-Sporen (Netz-Refresh nötig).</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="S3"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="S3" checked><div class="body">
   <div><span class="code">S3</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">Simulation: Multi-Knoten (Rendezvous → Handshake → Q&amp;A)</span></div>
   <div class="d">Mehrere Knoten in einem Node-Prozess, Mock-Relay (wie <code>smoke_bau23_rendezvous.mjs</code>): anmelden, finden, handshaken (Modul 05), gegenseitig fragen (04.C <code>queryLocal</code> + 23b Query), antworten. Prüfen: <code>outcome:"established"</code>, 0.80-Riegel, Treffer &gt; Schwelle.</div>
-  <div class="meta"><span class="tag">Bau</span> offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Bau</span> ✅ erledigt 2026-07-23 — <code>tests/sim_multinode.mjs</code> <b>24/24 grün</b>: 4 echte Knoten-Instanzen, Anmelden→Finden→0.80-Riegel (echte e5-Vektoren)→Q&amp;A. Admission = echter 0.80-Riegel (Modul 04); Transport-Krypto-Handshake ist in <code>smoke_bau05_nostr</code>/<code>smoke_query_ueber_relais</code> bewiesen (ehrlich im Datei-Kopf).</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="S4"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="S4" checked><div class="body">
   <div><span class="code">S4</span><span class="time">⏱ ~30–60 Min</span> <span class="t">Simulation: Hub-unabhängige Cross-Knoten-Q&amp;A als Regressionstest</span></div>
   <div class="d">Den 2026-07-11-Meilenstein (Endknoten fragen sich <b>ohne</b> Sage) als reproduzierbaren <code>tests/sim_*.mjs</code> festschreiben, damit er nicht zurückfällt.</div>
-  <div class="meta"><span class="tag">Bau</span> offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Bau</span> ✅ erledigt 2026-07-23 — als <b>Phase 5</b> in <code>sim_multinode.mjs</code> (Rezeptbuch↔Mixarium Q&amp;A ohne Sage im Spiel), grün.</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="S5"><div class="body">
@@ -119,15 +119,15 @@
 <div class="item"><input type="checkbox" class="cb" data-k="S6"><div class="body">
   <div><span class="code">S6</span><span class="time">⏱ ~1–2 Sitzungen</span> <span class="t">Demo → real: echte Vektoren + verifizierte Match-Scores</span></div>
   <div class="d">Für die Demo-Knoten (BLP, Tomy, PB) echten <code>domainVector</code> (multilingual-e5-small, L2=1) + <b>berechneten, reziprok signatur-verifizierten</b> Cross-Knoten-Cosinus setzen — nicht <code>null</code>, nicht <code>_demo</code>. Danach <code>status.json</code> + <code>update_puls_pie.py</code>.</div>
-  <div class="meta"><span class="tag">Bau</span> offen</div>
+  <div class="meta"><span class="tag">Bau</span> teilweise (Stand 2026-07-23) — Tomy + PB tragen <b>schon</b> echte e5-Vektoren (verified-match/-spore). <b>Rest:</b> nur <b>BLP</b> ist noch echter Demo-Stub (Klaus-Entscheid, v0.1) + <b>Register-Refresh</b> nötig (Tomys Status + stale matchScores gegen Live-Sporen abgleichen — braucht Netz/Klaus' Browser).</div>
   <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
 </div></div>
 
-<div class="item"><input type="checkbox" class="cb" data-k="A14"><div class="body">
+<div class="item done"><input type="checkbox" class="cb" data-k="A14" checked><div class="body">
   <div><span class="code">A14</span><span class="time">⏱ ~1 Sitzung</span> <span class="t">ensureStore-/ensureSlotStores-Race (Modul 05/01) beheben</span></div>
   <div class="d">Echter Bug-Befund 2026-07-11. <b>Zuerst</b> unter den A-Punkten — Stabilitäts-Fundament fürs Protokoll.</div>
-  <div class="meta"><span class="tag">Bau</span> offen</div>
-  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value=""></div>
+  <div class="meta"><span class="tag">Bau</span> ✅ erledigt (verifiziert 2026-07-23) — Fix (<code>ensureChain</code>-Serialisierung, Modul 01) + Test (<code>smoke_a14_…</code> 4/4) waren <b>schon auf main</b> (via #648), nur nie abgehakt. Kein Neubau nötig.</div>
+  <div class="lines">erledigt am:<input class="dt" type="text" placeholder="TT.MM.JJ" value="23.07.26"></div>
 </div></div>
 
 <div class="item"><input type="checkbox" class="cb" data-k="A11"><div class="body">

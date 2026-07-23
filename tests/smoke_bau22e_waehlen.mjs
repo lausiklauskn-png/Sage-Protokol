@@ -125,10 +125,16 @@ ok(Array.isArray(emptyRes) && emptyRes.length === 0, "leere Liste → leer (kein
 
 console.log("\nProbe 6 — Andock-Pfad UNBERÜHRT (Regression)");
 ok(M.PROVIDER_MIN_MATCH === 0.80, "PROVIDER_MIN_MATCH bleibt 0.80 (Handshake-Boden)");
-if (V.Mixarium && V.Sage) {
-  ok(M.isAboveProviderThreshold(M.match(V.Mixarium, V.Sage)) === true,
-    "Hub<->Endknoten match() >= 0.80 → Andock bricht NICHT (relatedness gatet nichts)");
+// Nach der v0.2-Re-Sign-Welle (A10) handshaked ein Werkzeug/Hub-naher Knoten
+// weiter (BookLedger<->Sage 0.856 >= 0.80) — der Andock-Riegel ist unberührt,
+// „verwandt/verbunden" gatet nichts. (Inhalts-Knoten wie Mixarium fielen KORREKT
+// unter 0.80 → verified-spore, siehe Probe 1; das ist gewollt, kein Regress.)
+if (V.BookLedger && V.Sage) {
+  ok(M.isAboveProviderThreshold(M.match(V.BookLedger, V.Sage)) === true,
+    "Werkzeug/Hub-nah match() >= 0.80 → Andock bricht NICHT (Wählen-Umschalter gatet nichts)");
 }
+ok(M.isAboveProviderThreshold(0.80) === true && M.isAboveProviderThreshold(0.7999) === false,
+  "Schwelle unverändert (0.80 → true, 0.7999 → false)");
 
 console.log("\nProbe 7 — setViewMode/getViewMode + Persistenz-Anker");
 W.setViewMode("verwandt");

@@ -56,8 +56,18 @@ console.log("Relatedness-Smoke — " + have.length + " echte Vektoren: " + have.
 
 // Echte Verwandtschaften (Belege: Schwestern wortgleich; Essen/Trinken).
 const REAL = [["Jason", "MeinTresor"], ["Mixarium", "Rezeptbuch"]];
-// Unverwandte Hub<->Endknoten-Paare (Boden).
+// Unverwandte Hub<->Endknoten-Paare (Boden der relatedness, unabhängig vom
+// Andock-match()). ALLE vier liegen unter RELATEDNESS_MIN — das prüft Probe 1.
 const FLOOR = [["BookLedger", "Sage"], ["Rezeptbuch", "Sage"], ["Mixarium", "Sage"], ["Point", "Sage"]];
+// GATE-Regression (Probe 2): nach der v0.2-Re-Sign-Welle (A10, 2026-07-14) trennt
+// der rohe match() Werkzeug-/Infrastruktur-Knoten von Inhalts-Knoten NACH BEDEUTUNG:
+//   • Werkzeug-/Hub-nah handshaked WEITER (>= 0.80): BookLedger 0.856, Point 0.871.
+//   • Inhalts-Knoten (Koch/Getränke) fielen KORREKT unter den Boden (< 0.80,
+//     „verified-spore" statt „verified-match"): Rezeptbuch 0.792, Mixarium 0.767.
+// Das ist gewolltes Protokoll-Verhalten (siehe PLAN A10 / status.json), kein
+// Regress — der Andock-Riegel selbst (0.80) bleibt unverändert.
+const GATE_ABOVE = [["BookLedger", "Sage"], ["Point", "Sage"]];
+const GATE_BELOW = [["Rezeptbuch", "Sage"], ["Mixarium", "Sage"]];
 
 function has(p) { return V[p[0]] && V[p[1]]; }
 
@@ -78,11 +88,16 @@ if (realScores.length && floorScores.length) {
     `klarer Spalt: min(echt) ${Math.min(...realScores).toFixed(4)} > max(Boden) ${Math.max(...floorScores).toFixed(4)}`);
 }
 
-console.log("\nProbe 2 — GATE-Pfad unverändert (Andock bricht NICHT)");
-for (const [a, b] of FLOOR) if (has([a, b])) {
+console.log("\nProbe 2 — GATE-Pfad unverändert (Andock-Riegel 0.80 bleibt, match() nach Bedeutung)");
+for (const [a, b] of GATE_ABOVE) if (has([a, b])) {
   const raw = M.match(V[a], V[b]);
-  ok(raw >= 0.80, `roher match() ${a}<->${b} = ${raw.toFixed(4)} >= 0.80 (Andock-Boden, Handshake bleibt)`);
+  ok(raw >= 0.80, `Werkzeug/Hub-nah ${a}<->${b} = ${raw.toFixed(4)} >= 0.80 (handshaked weiter)`);
   ok(M.isAboveProviderThreshold(raw) === true, `isAboveProviderThreshold(${raw.toFixed(4)}) === true`);
+}
+for (const [a, b] of GATE_BELOW) if (has([a, b])) {
+  const raw = M.match(V[a], V[b]);
+  ok(raw < 0.80, `Inhalts-Knoten ${a}<->${b} = ${raw.toFixed(4)} < 0.80 (korrekt verified-spore, A10)`);
+  ok(M.isAboveProviderThreshold(raw) === false, `isAboveProviderThreshold(${raw.toFixed(4)}) === false`);
 }
 ok(M.isAboveProviderThreshold(0.80) === true, "isAboveProviderThreshold(0.80) === true (Schwelle unverändert 0.80)");
 ok(M.isAboveProviderThreshold(0.7999) === false, "isAboveProviderThreshold(0.7999) === false");

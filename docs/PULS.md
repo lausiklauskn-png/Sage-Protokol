@@ -56,6 +56,51 @@ Auf Klaus' Zuruf (Icon/Knoten/Module-Runde):
   Sage-Match (0.7977 < 0.80), aber verified-match zu Family (0.8073) + BLP (0.8064),
   live bidirektional bewiesen 2026-07-11. Jetzt 13 Endknoten. smoke_bau19 15/15, Pie unverändert.
 
+## Stand 2026-07-23 — Sage „Demo → real": Ist-Stand ehrlich + Multi-Knoten-Sim (Hauptsitzung)
+
+Auftrag: Brief `BRIEF_NETZWEIT_STAND_UND_SAGE_REAL.md`. Empfohlener Einstieg 2.1 (Test +
+Bestandsaufnahme) → 2.2 (Simulationen) → A14. Diese Sitzung hat 2.1, 2.2 und die
+A14-Nachlese erledigt.
+
+- **S1 — Netzweiter Testlauf (ehrlicher Ist-Stand):** alle 60 `tests/smoke_*.mjs` gefahren
+  (`npm install --no-save fake-indexeddb`, per-Test-Timeout). **Ergebnis war 56/60 grün, 4 rot** —
+  jetzt **60/60 grün** nach ehrlicher Reparatur (KEINE Code-Bugs):
+  - `smoke_bau04e_relatedness` · `smoke_bau22e_waehlen` · `smoke_bau23_rendezvous` (Probe 15):
+    alle drei assertierten `Hub<->Endknoten match() >= 0.80` mit **Rezeptbuch/Mixarium<->Sage**.
+    Nach der v0.2-Re-Sign-Welle (A10) fielen diese **Inhalts-Knoten korrekt unter den 0.80-Boden**
+    (Rezeptbuch 0.792 / Mixarium 0.767 → `verified-spore`) — **gewolltes bedeutungs-basiertes
+    Protokoll-Verhalten, kein Regress**. Gate-Beweis nutzt jetzt einen Werkzeug/Hub-nahen Knoten
+    (BookLedger<->Sage 0.856 ≥ 0.80) + prüft explizit, dass Inhalts-Knoten korrekt darunter liegen.
+  - `smoke_bau05y_transparent_slot_pfad`: **kein Assertion-Fehler** — alle 25 Proben liefen durch,
+    aber der Prozess beendete sich nie (Modul 05 `init()` öffnet `BroadcastChannel('sbkim')` →
+    offener Handle hält Nodes Event-Loop wach; „hängt", obwohl fertig). Sauberer `process.exit(0)`
+    auf dem Erfolgspfad, genau wie `smoke_bau05_nostr`. (Commit c4530c0)
+- **S2 — Multi-Knoten-Simulation gebaut** (`tests/sim_multinode.mjs`, Brief §2.2): **vier ECHTE
+  Knoten-Instanzen gleichzeitig in einem Node-Prozess** (je eigener Modul-Namensraum via
+  Sandbox-Loader, eigene IndexedDB-Schublade, eigene Ed25519-Identität, eigene Spore mit echtem
+  e5-domainVector) über EINEN geteilten Mock-Relais-Bus — voller Lebenszyklus: **Anmelden (23) →
+  Finden (23) → 0.80-Riegel nach Bedeutung (04) → Q&A über Hub → Q&A OHNE Hub** (Endknoten↔Endknoten,
+  Meilenstein 2026-07-11 als Regression). **24/24 grün.** Ehrliche Grenzen im Datei-Kopf: Mock-Bus
+  statt echtem Relais (Live = Klaus' Browser), deterministischer Embedding-Stub headless (Modell-
+  Qualität in Klaus' Browser bewiesen), Phase 3 nutzt ECHTE Sporen-Vektoren. (Commit 0f3358e)
+- **A14 abgehakt (Nachlese, kein Neubau):** der ensureStore-Race-Fix (`ensureChain`-Serialisierung
+  in Modul 01) **ist schon auf `main`** (mit `smoke_a14_…` 4/4 grün, beide via #648 2026-07-14),
+  war in `PLAN_SEMANTIK_KRYPTO.md` nur nie abgehakt. Verifiziert + abgehakt.
+- **Demo-Bestandsaufnahme (2.1):** `status.json` führt **13 Endknoten**. Real vs. Demo ehrlich:
+  KEINE echten `_demo`-domainVektoren mehr im Code (A6/A10 geschlossen). **11 `verified-match`**
+  (Rezeptbuch/Mixarium/Point/Jasons/Mein-Tresor/BLP/Family/Kim-Bell/Kimseek/Kimboard — echter
+  ≥0.80-Match), **Private Brain `verified-spore`** (matchScore null, korrekt), **Sage** = self.
+  **Befund (an Folge-Sitzung, nicht diese Sitzung geändert):** (a) **Tomys Hub** steht als
+  `verified-match` mit `matchScore: null` — aber der dokumentierte Sage-Match ist 0.7977 < 0.80
+  (→ müsste `verified-spore` sein, wie Private Brain); (b) mehrere `matchScore`/`nodeId` im Register
+  wirken **stale gegenüber den re-signierten Live-Sporen** (Rezeptbuch-Register 0.824 vs. aktuelle
+  Inbox-Vektoren 0.792). **Nicht blind korrigiert** — die autoritative Quelle ist jede Live-`spore.json`
+  am `sporeUrl` (Netz, hier nicht sicher erreichbar); ein Register-Refresh gehört an Klaus' Browser /
+  eine gezielte Sync-Sitzung. Als offener Punkt geführt.
+- **Einzige echte Demo-Grenze:** **BookLedgerPro** — committete Spore noch v0.1, Domänen-Vektor ist
+  bewusst ein Demo-Stub (Klaus-Entscheid, kein echtes Modell); v0.2-Neu-Signatur wartet auf einen
+  kurzen Schlüssel-Lauf im Browser (A10-Operator-Schritt).
+
 ## Als nächstes ✨
 
 Module mit Code-Stub, **Sichttest durch Klaus 2026-05-14 erledigt** —
