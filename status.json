@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.2",
   "schemaVersion": "1",
-  "lastUpdated": "2026-07-23",
+  "lastUpdated": "2026-07-24",
   "branch": "main",
   "endknoten": [
     {
@@ -389,16 +389,16 @@
     {
       "id": "01",
       "name": "Storage",
-      "score": "stub",
-      "siegel": "Code-Stub",
+      "score": "fertig",
+      "siegel": "Code-Stub ✅ Klaus-Browser-Sichttest Panel 01 GRÜN 2026-07-24 (init/round-trip/UnknownStoreError/ensureStore idempotent+Validierung/versions-fail-soft alle grün).",
       "abhaengig": [],
       "kurz": "IndexedDB-Wrapper für sbkim_*-Stores"
     },
     {
       "id": "02",
       "name": "Spore",
-      "score": "stub",
-      "siegel": "Code-Stub",
+      "score": "fertig",
+      "siegel": "Code-Stub ✅ Klaus-Browser-Sichttest Panel 02 GRÜN 2026-07-24 (Identität stabil, Sign+Verify, Manipulation erkannt, Export v2/PBKDF2-600k/AES-GCM); Backup-Restore real bewiesen (netzweiter Spore-/Identitäts-Austausch mehrfach).",
       "abhaengig": [
         "01"
       ],
@@ -436,8 +436,8 @@
     {
       "id": "06",
       "name": "Heterokaryose",
-      "score": "stub",
-      "siegel": "Code-Stub 2026-06 (gebaut, headless-gruen) — voll implementiert (fuenf Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis), Headless-Smoke tests/smoke_bau06y_transparent_slot_pfad.mjs 25/25 gruen. 'Code-Stub' heisst hier gebaut + headless-gruen, NICHT leer; nur der Browser-Sichttest wartet auf Klaus.",
+      "score": "fertig",
+      "siegel": "Code-Stub 2026-06 (gebaut, headless-gruen) — voll implementiert (fuenf Funktionen: init/requestHeterokaryosis/receiveHeterokaryosis/listHeterokaryosis/forgetHeterokaryosis), Headless-Smoke tests/smoke_bau06y_transparent_slot_pfad.mjs 25/25 gruen. 'Code-Stub' heisst hier gebaut + headless-gruen, NICHT leer; nur der Browser-Sichttest wartet auf Klaus. ✅ Klaus-Browser-Sichttest Panel 06 GRÜN 2026-07-24 (Tests 1–12 alle grün: shared/opt-out/UnknownSibling/rejected-Pfade/Signatur/MAX_ANCHORS=5/list/forget/endpoint_unsupported).",
       "abhaengig": [
         "05"
       ],
@@ -446,8 +446,8 @@
     {
       "id": "07",
       "name": "Apoptose",
-      "score": "stub",
-      "siegel": "Code-Stub",
+      "score": "fertig",
+      "siegel": "Code-Stub ✅ Klaus-Browser-Sichttest Panel 07 GRÜN 2026-07-24 (Tests 1–8 alle grün: Vermächtnis-Round-Trip/Signatur/Version/TTL-Cleanup/listLegacy/Self-Apoptose/Token-Ablauf/unbekannter Sender).",
       "abhaengig": [
         "02",
         "01"
@@ -457,8 +457,8 @@
     {
       "id": "08",
       "name": "UI-Demo",
-      "score": "stub",
-      "siegel": "Code-Stub",
+      "score": "fertig",
+      "siegel": "Code-Stub ✅ Klaus-Browser-Sichttest Panel 08 GRÜN 2026-07-24 (Tests 1–6 alle grün: add+list/remove idempotent/überschreiben/OutboxFullError/Validierung 6 Fälle/setSiblingHeteroOptIn strikt).",
       "abhaengig": [
         "01"
       ],
@@ -488,7 +488,7 @@
     {
       "id": "20",
       "name": "Schlüssel-Safe",
-      "score": "stub",
+      "score": "fertig",
       "siegel": "Code-Stub 2026-06-20 (Spec PR #315 + Bau-Sitzung). Headless-Smoke tests/smoke_bau20_safe.mjs 19/19 grün. Fix 2026-07-17 (Klaus-Sichttest B1 fing echten Bug): createVault wirft jetzt NoSporeError statt stillem unlock-Fehlschlag; neuer echter Smoke tests/smoke_bau20_safe_real.mjs 14/14 (fake-indexeddb + reale Module 01/02/20). Kern-Asymmetrie Modul 02 als B1b notiert. ✅ Klaus-Re-Sichttest Panel 20 GRÜN 2026-07-17 (Reset→anlegen→entsperren=entsperrt).",
       "abhaengig": [
         "01",
@@ -538,7 +538,7 @@
     {
       "id": "25",
       "name": "Pseudonymisierung (E2E Grad B)",
-      "score": "stub",
+      "score": "fertig",
       "siegel": "Code-Stub 2026-07-16 (B5 aus docs/PLAN_SEMANTIK_KRYPTO.md). Headless-Smoke tests/smoke_bau25_pseudonym.mjs 36/36 grün. Browser-Sichttest Panel 25 GRÜN (Klaus 2026-07-17): Round-trip live korrekt, Betrag bleibt, rehydrate == Original.",
       "abhaengig": [],
       "kurz": "Der empfohlene Sofortweg für Vertraulichkeit (Grad B, docs/E2E-VERTRAULICHKEIT.md §1.1): sensible Werte in einer Nutzlast werden vor dem Versand durch lesbare Platzhalter-Token ersetzt ([[KUNDE_1]], [[IBAN_1]], [[EMAIL_1]]); der Anker-Tresor (Token → Klartext) bleibt getrennt/menschlich. Reiner Text-/Objekt-Transform: BUILD-FREI, keine Krypto-Primitive, KEIN Spore-Feld, protocolVersion bleibt 0.1 — Briefkasten bleibt lesbar/auditierbar, Signatur prüfbar. Ehrliche Grenze: Pseudonymisierung ≠ Verschlüsselung (Metadaten leaken weiter → Grad C = B6). Erkenner: explizite Werte (Namen) + eingebaut EMAIL/IBAN (TEL opt-in) + customPatterns; gleicher Wert → gleiches Token, bestehende Token nie verschachtelt; fail-soft (kein Throw außer InvalidPseudonymArgError). Surface pseudonymize/rehydrate/pseudonymizeObject/rehydrateObject/getBuiltinPatterns/makeToken/parseToken/isToken/serializeVault/parseVault. Kein PII im Code."
