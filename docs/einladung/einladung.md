@@ -133,12 +133,17 @@ geht freiwillig. Wir freuen uns über beides.
 
 ## Was offen bleibt
 
-Wir wissen nicht, ob das funktioniert. Wir wissen nicht, ob es
-genügend Mit-Bauer gibt, um ein Mycel-Netz zu tragen. Wir wissen
-nicht, ob die Pilz-Schicht in zehn Jahren eine Genossenschaft
-sein wird oder ein Lizenz-Modell oder ein Token oder etwas, das
-wir heute noch nicht benennen können. Diese Frage bleibt bewusst
-offen. Sie klärt sich, wenn Pilze da sind, an denen sich ein
+Ob es im Kleinen funktioniert, wissen wir — es ist geprobt: in
+vielen hundert automatischen Tests und in mehreren Live-Läufen
+über ein echtes, server-loses Relais, zuletzt fünf Knoten zugleich
+in einem Raum, zehn Handshakes, alle bestätigt. Was im Kleinen
+trägt und von Grund auf ohne Zentrale gebaut ist, kann im Großen
+tragen — es ist skalierbar angelegt. Offen ist darum nicht mehr die
+Technik, sondern das Mitmachen: ob genug Mit-Bauer kommen, um ein
+Mycel-Netz zu tragen. Und offen bleibt bewusst, ob die Pilz-Schicht
+in zehn Jahren eine Genossenschaft sein wird oder ein Lizenz-Modell
+oder ein Token oder etwas, das wir heute noch nicht benennen können.
+Diese Frage klärt sich, wenn Pilze da sind, an denen sich ein
 Wirtschafts-Modell bewähren kann.
 
 Wir sagen nicht: „Dies ist die Zukunft." Wir sagen: „Dies ist eine
