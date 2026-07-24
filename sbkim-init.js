@@ -479,6 +479,26 @@
       });
     });
 
+    // Sage-Page-lokale Anfangs-Position der „🌐 Mycel"-Pille: knapp unter die
+    // Kopfzeile (Briefkasten/Datum), OHNE die vertikale Drag-Bewegung zu
+    // blockieren. Früher via CSS `top:4rem !important` — das nagelte die Pille
+    // vertikal fest (nur horizontal ziehbar, Klaus 2026-07-24). Jetzt inline +
+    // NUR beim ersten Mal (keine gespeicherte Position): sobald der Nutzer
+    // zieht, gewinnt die gezogene/gespeicherte Position (Flying-Widget).
+    try {
+      var hasSavedRdvPos = false;
+      try { hasSavedRdvPos = !!window.localStorage.getItem("sbkim_rdv_ui_pos"); } catch (_e) {}
+      if (!hasSavedRdvPos) {
+        var placeRdvBubble = function () {
+          var b = document.getElementById("sbkim-rdv-btn");
+          if (!b) return false;
+          b.style.top = (window.innerWidth <= 640 ? "4.7rem" : "4rem");
+          return true;
+        };
+        if (!placeRdvBubble()) { try { requestAnimationFrame(placeRdvBubble); } catch (_e) {} }
+      }
+    } catch (_e) {}
+
     // Gerätename-Feld ins Panel injizieren + Kopplung (Namenswechsel → Anzeige neu).
     injectGeraetenameField();
     try {
