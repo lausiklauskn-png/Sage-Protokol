@@ -20,16 +20,54 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-07-23 (27 Module)
+  title Modulstand 2026-07-24 (27 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 10
-  "🟩 Fertig" : 11
+  "🟦 Code-Stub" : 3
+  "🟩 Fertig" : 18
 ```
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
+
+## Stand 2026-07-24 (Vormittag) — Demo-Anteil 8 % → 2 %: sieben Module auf „fertig" (Klaus-Browser-Sichttest)
+
+Interaktive Sichttest-Sitzung mit Klaus am Tablet (deployte
+`tests/manual_check.html`). Ziel: die stub-Module auf „fertig" bringen und damit
+den Demo-Anteil senken (die 8 % kamen **allein** von den 10 stub-Modulen — jeder
+stub verliert 3 der 10 Punkte; alle 14 Endknoten zählen schon voll live).
+
+**Fünf Module heute im Browser durchgetestet — alle Panel-Tests grün:**
+
+- **01 Storage** — init (DB v10, 14 Stores) · round-trip · UnknownStoreError · ensureStore
+  happy-path (v10→11) + idempotent + InvalidStoreNameError · **versions-fail-soft** (v11→12,
+  Re-Init nach Reload sauber, kein `VersionError` — der alte Wackel-Punkt ist bestätigt geheilt).
+- **02 Spore** — Identität stabil (gleiche nodeId) · Sign+Verify · Manipulation erkannt
+  („Signatur ungültig") · Export v2/PBKDF2-600k/AES-GCM. Backup-**Restore** nicht per Panel
+  (Klaus wollte keine Datei einlesen) — **real bewiesen** durch den netzweiten Spore-/
+  Identitäts-Austausch (mehrfach, alle Repos). „Backup einlesen"-Rot = kein Test (keine Datei gewählt).
+- **06 Heterokaryose** — Tests 1–12 alle grün (shared/`anchor_count:1` nach #724-Fix · opt-out ·
+  opt-out-local · UnknownSiblingError · alle rejected-Pfade mit richtigem Grund · Signatur ·
+  MAX_ANCHORS=5 neueste-zuerst · list ohne Vektoren · forget idempotent · endpoint_unsupported).
+- **07 Apoptose** — Tests 1–8 alle grün (Vermächtnis-Round-Trip · Signatur · Version · TTL-Cleanup ·
+  listLegacy · Self-Apoptose completed/Stores leer/`NoIdentityError` · Token-Ablauf · unbekannter Sender).
+- **08 UI-Demo** — Tests 1–6 alle grün (add+list · remove idempotent · überschreiben · OutboxFullError ·
+  Validierung 6 Fälle · setSiblingHeteroOptIn strikt boolean).
+
+**Zwei weitere geflippt (waren schon dokumentiert grün, nur nie im Score umgestellt):**
+**20 Schlüssel-Safe** (Panel 20 GRÜN 2026-07-17) · **25 Pseudonymisierung** (Panel 25 GRÜN 2026-07-17).
+
+**Ergebnis:** `status.json` — Score `stub`→`fertig` für **01·02·06·07·08·20·25** (7 Module).
+Pie: Fertig 11→**18**, Code-Stub 10→**3**. **Demo-Anteil rechnerisch 8 % → 2 %**
+(real 381 / max 390; identisch zur `index.html`-`computeScore`-Formel). Pie-Block via
+`scripts/update_puls_pie.py` neu gezogen.
+
+**Offen (die letzten ~2 %) — drei stub-Module, brauchen Sondertests am Tablet:**
+`00 Doku-Fenster` (5-Klick-Trick auf der echten Sage-Seite) · `21 Spracheingabe`
+(Live-Mikro; Logik-Knöpfe gehen ohne, echter Sprech-Test braucht Mikro — gratis) ·
+`24 OCR` (echter BYOK-OCR-Schlüssel für den Live-Erkenn-Test). **Nächster Schritt:** Panel 21
+(3 Logik-Knöpfe + gratis Browser-Mikro-Test), Panel 24 (3 Logik-Knöpfe), 00 auf der Seite → 0 %.
 
 ## Stand 2026-07-23 (Abend, Meilenstein-Strang) — A18-Siegel-Modal + Multi-Knoten-Mesh-Meilenstein + Galerie-Fix
 
