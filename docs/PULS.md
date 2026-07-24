@@ -31,6 +31,25 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-24 (Nachmittag, Folge) — OCR-Markdown-Putz (Klaus' Befund aus dem Live-Lauf)
+
+Direkt nach dem OCR-Live-Beweis fiel Klaus beim **Internet-Weg** auf: der Mistral-OCR-**Markdown-Rausch**
+(`![img-0.jpeg](img-0.jpeg)`, `#`/`##`-Überschriften) wandert wörtlich in die Google-Anfrage. Google
+ignoriert das Meiste („Es fehlt: …") und fand trotzdem das richtige Rezept — aber die Anfrage ist unsauber.
+
+- **Fix in Modul 24** (`src/modules/24_ocr_eingabe.js`): neuer Helfer `cleanOcrText` — Bild-Platzhalter
+  `![…](…)` raus, Link `[Text](url)` → nur der Text, Überschriften-Marker `#`…`######` am Zeilenanfang weg,
+  Mehrfach-Leerraum/Leerzeilen zusammengezogen; **der eigentliche Text bleibt vollständig**. Angewandt im
+  `recognize`-Pfad (mistral + google), Browser-Klartext ist praktisch No-Op. Konsequent **fail-soft**
+  (Nicht-Strings unberührt, kein Throw). Hilft **beiden** Wegen — interne Knoten-Suche UND Internet/Google.
+- **Byte-Kopien** `such-tool/` + `pinnwand/` mitgezogen (beide nutzen Modul 24), **SW-Cache** gebumpt
+  (`sbkim-such-tool-v4`, `sbkim-pinnwand-v19`). Sage-Hauptseite hat keinen SW → Hard-Reload reicht.
+- **TABU gewahrt:** `PROVIDER_MIN_MATCH`/0.80-Riegel + PROTOCOL_VERSION unberührt, additive Fläche
+  (`SbkimOcr.cleanOcrText`). Smoke `smoke_bau24` **52/52** (neue Probe 13, Klaus' echtes Rezept-Beispiel),
+  Drift-Guards `standalone_such_tool` 49/49 + `pinnwand_dm` 16/16.
+- **Browser-Sichttest des geputzten Textes wartet auf Klaus** (nach Hard-Reload: Foto → Feld sollte jetzt
+  ohne `![img…]`/`#` sein).
+
 ## Stand 2026-07-24 (Nachmittag) — Demo-Anteil 2 % → **0 %**: die letzten drei Module grün (00·21·24)
 
 Klaus hat nach der Arbeit die drei Rest-Module am Tablet durchgetestet — **Demo-Anteil steht jetzt

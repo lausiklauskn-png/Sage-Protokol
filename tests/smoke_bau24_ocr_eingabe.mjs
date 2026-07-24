@@ -36,6 +36,10 @@ globalThis.fetch = async (url, init) => {
   if (stub === "mistral-ok-model") {
     return { ok: true, status: 200, json: async () => ({ model: "mistral-ocr-2505", pages: [{ markdown: "Text" }] }) };
   }
+  if (stub === "mistral-markdown") {
+    // Realer Mistral-OCR-Rausch (Klaus' Rezept-Foto 2026-07-24): Bild-Platzhalter + Überschriften.
+    return { ok: true, status: 200, json: async () => ({ pages: [{ markdown: "# TRENDKÜCHE 2026\n\n![img-0.jpeg](img-0.jpeg)\n\n## Koreanischer Gochujang-Lachs-Bowl" }] }) };
+  }
   if (stub === "google-ok") {
     return { ok: true, status: 200, json: async () => ({ responses: [{ fullTextAnnotation: { text: "Erkannter Text" } }] }) };
   }
@@ -164,6 +168,24 @@ console.log("Probe 12: init euPolicy");
   ok("init bindend → _meta.euPolicy", O._meta.euPolicy === "bindend");
   ok("Default-Anbieter jetzt EU-only", O.availableProviders().indexOf("browser") === -1);
   O.init({ euPolicy: "frei" }); // reset
+}
+
+// ---- Probe 13: Markdown-Rausch-Putz (cleanOcrText) ----
+console.log("Probe 13: Markdown-Rausch-Putz");
+{
+  ok("cleanOcrText exportiert", typeof O.cleanOcrText === "function");
+  ok("Bild-Platzhalter raus", O.cleanOcrText("a ![x](y.jpeg) b") === "a b", O.cleanOcrText("a ![x](y.jpeg) b"));
+  ok("Link → nur Text", O.cleanOcrText("see [here](http://x) now") === "see here now");
+  ok("Überschriften-Marker weg", O.cleanOcrText("## Titel") === "Titel");
+  ok("Text bleibt vollständig", O.cleanOcrText("Nur normaler Text.") === "Nur normaler Text.");
+  ok("non-string fail-soft (kein Throw)", (() => { try { O.cleanOcrText(null); O.cleanOcrText(undefined); return true; } catch { return false; } })());
+  ok("null → leerer String", O.cleanOcrText(null) === "");
+  // Ende-zu-Ende: recognize putzt den Mistral-Markdown automatisch.
+  stub = "mistral-markdown";
+  const r = await O.recognize("QUJD", { apiKey: "sk-mistral", mimeType: "image/png" });
+  ok("recognize liefert geputzten Text", r.available === true && !/!\[|\]\(|##|# /.test(r.text), JSON.stringify(r.text));
+  ok("Inhalt erhalten (Titel + Rezeptname)", /TRENDKÜCHE 2026/.test(r.text) && /Koreanischer Gochujang-Lachs-Bowl/.test(r.text), JSON.stringify(r.text));
+  stub = "mistral-ok";
 }
 
 console.log("\nTotal: " + (pass + fail) + " Proben, " + pass + " grün, " + fail + " rot.");
