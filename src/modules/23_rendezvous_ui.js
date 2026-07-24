@@ -93,7 +93,7 @@
   // meldet ungelesene Post von selbst. Speicher app-eigen (dbSuffix-Suffix →
   // keine Kollision auf geteilter github.io-Adresse). Nur eigene Fragen/Antworten,
   // kein Fremd-PII. Grenze: Relais-Aufbewahrung (Modul 23 fetchAnswers).
-  var RDV_BUBBLE_BASE = "🌐 Netz";   // kurze Pille (Klaus 2026-07-24); voller Text bleibt in der Panel-Kopfzeile + Tooltip
+  var RDV_BUBBLE_BASE = "🌐 Mycel";   // kurze Pille (Klaus 2026-07-24, Eigenname = unverwechselbar); voller Text in Kopfzeile + Tooltip
   var mailBtn = null, reAskBtn = null, clearMailBtn = null;
   // Lebenszyklus-Regelung (Klaus 2026-07-11) — gegen Überladung, per Browser:
   //  · RDV_MAILBOX_MAX  : Obergrenze der lokalen Liste (einstellbar via init).
