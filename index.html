@@ -1173,9 +1173,9 @@
         <article class="card span-7" data-back-anchor="demoanteil">
           <span class="card-tag">Real-Anteil · live aus status.json</span>
           <h3>Wie viel ist Theater, wie viel ist real?</h3>
-          <p><strong>Das Mycel lebt.</strong> Module live bewiesen (03 Embedding, 04 Match, 05 Anastomose, 09 Einbau-PWA, 22 Suche, 23 Rendezvous), beide Endknoten direkt verbunden. <strong>10.07.2026: die bidirektionale Cross-Knoten-Bedeutungs-Suche ist live bewiesen</strong> — zwei Knoten fragen einander und antworten aus dem eigenen Inhalt. Der grüne Bogen misst die <em>Modul-Fertigstellung</em> (dein Browser-Sichttest grün); er schrumpft, sobald die noch offenen Kern-Module (00–02, 06–08) von dir am Tablet bestätigt sind — die Rechnung bleibt ehrlich, nichts wird schöngerechnet.</p>
+          <p><strong>Das Mycel lebt.</strong> Module live bewiesen (03 Embedding, 04 Match, 05 Anastomose, 09 Einbau-PWA, 22 Suche, 23 Rendezvous), beide Endknoten direkt verbunden. <strong>10.07.2026: die bidirektionale Cross-Knoten-Bedeutungs-Suche ist live bewiesen</strong> — zwei Knoten fragen einander und antworten aus dem eigenen Inhalt. Der grüne Bogen misst die <em>Modul-Fertigstellung</em> (dein Browser-Sichttest grün); seit deinem Browser-Sichttest am 24.07.2026 sind alle funktionalen Module bestätigt — der Demo-Anteil steht auf <strong>0 %</strong>. Die noch als „Schablone" geführten Schutz-Module (10–12, 14) sind bewusst reaktive Zukunfts-Bauten und zählen nicht mit; die Rechnung bleibt ehrlich, nichts wird schöngerechnet.</p>
           <div class="demoanteil-inner">
-            <div class="ring-wrap" data-tip="Hub(10) + Σ Module + Σ Endknoten / max 140">
+            <div class="ring-wrap" id="ring-wrap" data-tip="Hub(10) + Σ Module + Σ Endknoten">
               <svg viewBox="0 0 200 200">
                 <defs>
                   <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
@@ -1208,7 +1208,7 @@
             </div>
             <div>
               <div class="ring-formula">
-                100 × (1 − realScore / 140)
+                100 × (1 − realScore / <span id="ring-max-den">140</span>)
                 <span class="sub">realScore = Hub(10) + Σ Module(0..10) + Σ Endknoten(0..15)</span>
               </div>
             </div>
@@ -2196,6 +2196,13 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       real += live ? 15 : 8;
     });
     const max = 10 + (modules.length * 10) + ((s.endknoten || []).length * 15);
+    // Formel-Beschriftung ehrlich halten: der Nenner wuchs mit Modulen +
+    // Endknoten weit über die alte, fest verdrahtete 140 hinaus. Dynamisch
+    // aus dem echten max nachziehen (Beschriftung + Tooltip).
+    const den = document.getElementById('ring-max-den');
+    if (den) den.textContent = String(max);
+    const wrap = document.getElementById('ring-wrap');
+    if (wrap) wrap.setAttribute('data-tip', 'Hub(10) + Σ Module + Σ Endknoten / max ' + max);
     const realPct = Math.max(0, Math.min(100, Math.round(100 * real / max)));
     const demo = 100 - realPct;
     animateRing(realPct, demo);
