@@ -381,8 +381,8 @@
     {
       "id": "00",
       "name": "Doku-Fenster",
-      "score": "stub",
-      "siegel": "Code-Stub",
+      "score": "fertig",
+      "siegel": "Code-Stub ✅ Klaus-Browser-Sichttest Panel 00 GRÜN 2026-07-24: die 5-Klick-Geste öffnet das Doku-Fenster LIVE (SBKIM-Knotenstand mit nodeId/Domäne/Protokoll 0.2/Geschwister/Vermächtnis-Inbox/Speicher). Setup dokuReady, Test 2 Fenster öffnet + Snapshot vollständig (0 Fehler), Test 4 Quota-Warnzeile 81% sichtbar, Test 5 TTL-Sweep entfernt beide alten Geschwister.",
       "abhaengig": [],
       "kurz": "Versteckte 5-Klick-Statusanzeige in Endknoten-PWAs — Code-Stub, sechs Funktionen (init/open/close/isOpen/getStatusSnapshot/recordSighttest), Modal mit Backdrop und MutationObserver-Mount, alleiniger Schreiber von sbkim_doku_meta, Quota-Frühwarnung (80% / 50 MiB) und TTL-Sweep-Knopf andocken"
     },
@@ -499,8 +499,8 @@
     {
       "id": "21",
       "name": "Spracheingabe",
-      "score": "stub",
-      "siegel": "Code-Stub 2026-06-21 (Schritt 1 des Such-Werkzeugs). Headless-Smoke tests/smoke_bau21_spracheingabe.mjs 45/45 grün. Browser-Sichttest (Live-Mic + EU-Engine) wartet auf Klaus.",
+      "score": "fertig",
+      "siegel": "Code-Stub 2026-06-21 (Schritt 1 des Such-Werkzeugs). Headless-Smoke tests/smoke_bau21_spracheingabe.mjs 45/45 grün. Browser-Sichttest (Live-Mic + EU-Engine) wartet auf Klaus. ✅ Klaus-Browser-Sichttest Panel 21 GRÜN 2026-07-24: Logik grün (Sprachen DE/EN/RU, EU-Politik frei=[browser,eu]/bindend=[eu], pickEngine, browserSupport:true); Browser-Erkennung LIVE gestartet mit Mikro-Freigabe (de-DE); EU-Engine fail-soft abbrechbar. Web-Speech-Transkription selbst = Browser-Feature; EU-STT bleibt BYOK (optional).",
       "abhaengig": [],
       "kurz": "Input-agnostische Sprach-Eingabe-Schicht. Dual-Engine: Browser Web-Speech + EU Cloud Speech-to-Text (eu-speech.googleapis.com, BYOK), mehrsprachig DE/EN/RU. Konsequent fail-soft (kein Mic/Key/Netz → Textfeld bleibt, speechErrorHint, kein Throw außer InvalidEuPolicyError). EU-Politik per Knoten: bindend (nur EU-Engine, z.B. BookLedgerPro) ↔ frei (Default, EU wählbar). Komponiert vom Such-Widget (Modul 22)."
     },
@@ -530,8 +530,8 @@
     {
       "id": "24",
       "name": "OCR-/Bild-Eingabe",
-      "score": "stub",
-      "siegel": "Code-Stub 2026-07-01 (Strang B1, Brief 2026-07-01). Headless-Smoke tests/smoke_bau24_ocr_eingabe.mjs 41/41 grün. Browser-Sichttest (Panel 24 + echter Schlüssel) wartet auf Klaus.",
+      "score": "fertig",
+      "siegel": "Code-Stub 2026-07-01 (Strang B1, Brief 2026-07-01). Headless-Smoke tests/smoke_bau24_ocr_eingabe.mjs 41/41 grün. Browser-Sichttest (Panel 24 + echter Schlüssel) wartet auf Klaus. ✅ Klaus-Browser-Sichttest Panel 24 GRÜN 2026-07-24: Logik grün (Anbieter mistral/google/browser + EU-Politik frei/bindend, isFileSupported png/jpeg/pdf, ocrErrorHint 3 ruhige Hinweise); OCR-Erkennen fail-soft abbrechbar. EHRLICHE GRENZE: Live-OCR bewusst BYOK — mistral/google brauchen Bezahl-Schlüssel, Browser-Shape-Detection hier nicht unterstützt (browserOcrSupport:false) — der eigentliche Erkenn-Lauf ist ungetestet-aber-fail-soft.",
       "abhaengig": [],
       "kurz": "Input-agnostische Bild-/Handschrift-→-Text-Schicht (Geschwister von Modul 21). Drei steckbare Anbieter: mistral (Mistral OCR, EU, FAVORIT) · google (Cloud Vision EU-Endpunkt) · browser (Shape Detection, experimentell). EU-Politik frei/bindend per Knoten; konsequent fail-soft (kein Schlüssel/Bild/Netz → deutscher Hinweis, kein Throw außer InvalidEuPolicyError); BYOK, kein Schlüssel im Code, kein PII. Liefert nur Text — Suche (03/04) unberührt. Surface init/getProviders/availableProviders/pickProvider/isFileSupported/recognize/recognizeBrowser/ocrErrorHint."
     },
