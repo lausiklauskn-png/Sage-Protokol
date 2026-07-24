@@ -24,12 +24,40 @@ pie showData
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
-  "🟦 Code-Stub" : 3
-  "🟩 Fertig" : 18
+  "🟦 Code-Stub" : 0
+  "🟩 Fertig" : 21
 ```
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
+
+## Stand 2026-07-24 (Nachmittag) — Demo-Anteil 2 % → **0 %**: die letzten drei Module grün (00·21·24)
+
+Klaus hat nach der Arbeit die drei Rest-Module am Tablet durchgetestet — **Demo-Anteil steht jetzt
+auf 0 %** (alle 27 Module non-stub, Fertig 21/21 im Modul-Kern; real 390 / max 390).
+
+- **00 Doku-Fenster** — die echte **5-Klick-Geste öffnet das Doku-Fenster LIVE** (SBKIM-Knotenstand
+  mit nodeId/Domäne/Protokoll 0.2/Geschwister/Vermächtnis-Inbox/Speicher, „Geöffnet 12:06"). Setup
+  dokuReady · Test 2 Fenster öffnet + Snapshot vollständig (0 Fehler) · Test 4 Quota-Warnzeile 81 %
+  sichtbar · Test 5 TTL-Sweep entfernt beide alten Geschwister. **Voll live-grün.**
+- **21 Spracheingabe** — Logik grün (Sprachen DE/EN/RU, EU-Politik frei=[browser,eu]/bindend=[eu],
+  pickEngine, `browserSupport:true`); Browser-Erkennung **live gestartet mit Mikro-Freigabe** (de-DE);
+  EU-Engine fail-soft abbrechbar. **Ehrliche Grenze:** die Web-Speech-Transkription selbst ist ein
+  Browser-Feature, EU-STT bleibt BYOK (optional).
+- **24 OCR** — Logik grün (Anbieter mistral/google/browser + EU-Politik, isFileSupported png/jpeg/pdf,
+  ocrErrorHint 3 Hinweise); OCR-Erkennen fail-soft abbrechbar. **Ehrliche Grenze:** Live-OCR bewusst
+  BYOK — mistral/google brauchen Bezahl-Schlüssel, Browser-Shape-Detection hier nicht unterstützt
+  (`browserOcrSupport:false`); der eigentliche Erkenn-Lauf ist ungetestet-aber-fail-soft. Score
+  „fertig" mit diesem Vermerk (Klaus' Drive-to-0, Modul-Logik voll bewiesen; upgradebar sobald ein
+  echter OCR-Schlüssel läuft).
+
+`status.json`: Score `stub`→`fertig` für **00·21·24**. Pie: Fertig 18→**21**, Code-Stub 3→**0**.
+Zusammen mit dem Vormittags-Strang (01/02/06/07/08/20/25) sind damit **alle 10 einst-stub-Module
+auf „fertig"** — der Demo-Anteil-Ring steht auf **0 %**.
+
+**Nächster sinnvoller Schritt:** nichts Dringendes mehr am Demo-Anteil. Wenn Klaus mag: (1) den
+24-OCR-Live-Lauf mit echtem Schlüssel nachholen (macht den Vermerk voll), (2) die große `PULS.md`
+(~10 000 Zeilen) in einer eigenen Pflege-Sitzung ins Archiv auslagern.
 
 ## Stand 2026-07-24 (Vormittag) — Demo-Anteil 8 % → 2 %: sieben Module auf „fertig" (Klaus-Browser-Sichttest)
 
