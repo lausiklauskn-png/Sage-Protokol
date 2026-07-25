@@ -45,6 +45,7 @@ Andock-Konventionen: INTERFACES §11
 | `verified-spore` | Identität kryptografisch verifiziert (Signatur + nodeId), `domainVector` noch Demo → **kein** Match |
 | `verified-match` | zusätzlich echter Cross-Knoten-Match ≥ 0.80 (echter `domainVector` beidseits) |
 | `angekündigt` | Knoten hat Andock angekündigt, Identität noch flüchtig (kein dauerhafter Schlüssel/`spore.json`) → noch nicht verifiziert |
+| `awaiting-browser-spore` | SBKIM-Code voll eingebaut, committete `spore.json` ist eine **Platzhalter-Spore** (headless VALID, aber `domainVector` = `_demo`-Stub + ephemere nodeId); echter Vektor + stabile Identität + Live-Handshake entstehen erst in Klaus' Browser über den Andock-Wizard |
 
 ## Knoten im Netz
 
@@ -64,6 +65,7 @@ Andock-Konventionen: INTERFACES §11
 | **Kimboard** | Pinnwand / Notizen / Merken (`lausiklauskn-png.github.io/Kimboard/`) | `1f9Jb7c3SEI8dUOtGR6_meMaOaPgbz2GWXMLmPCZMv8` | **`verified-match` 0.824488** (2026-07-09; echter `domainVector`, L2=1; Live-Handshake wartet auf Klaus' Browser-Lauf) | `Kimboard/sbkim/spore.json` (aus pinnwand nach Kim-Bell-Muster) |
 | **Private Brain** | Privates Daten-Gehirn (`lausiklauskn-png.github.io/Privat-Brain/`) | `6rmW2Q-53mzEylZiWuW4yNsbnxlyEoLD11860i3y0Cg` | **`verified-match` 0.810427** (REGISTER-REFRESH 2026-07-23: Sage-Cosinus 0.810427 ≥ 0.80; 2026-07-20 Identität; erste eigene Identität im Browser erzeugt, Spore v0.2 mit echtem `domainVector` L2=1 + 2 Satz-Schnipseln; headless reziprok verifiziert ✔ VALID; Cross-Knoten-Match jetzt ≥0.80 (offline nachgerechnet; Live-Handshake wartet auf Klaus)) | `Privat-Brain/sbkim/spore.json` (verifiziert 2026-07-20) |
 | **Muttis Rezeptbuch** (privates Original; Mein-Rezeptbuch = öffentl. Klon) | Kochrezepte | `8TVDCTAcPLg4Lbe3ecbvXoICLCEQNd90YYIw4dPN3mg` | **`verified-match` 0.876583** (2026-07-23; eigene GETRENNTE Identität + DB-Suffix `muttisrezeptbuch`; Spore v0.2 im Browser erzeugt, headless reziprok verifiziert ✔ VALID; Sage-Cosinus 0.876583 ≥ 0.80; Live-Handshake wartet auf Klaus) | `sbkim/muttis_inbox.verify.md` + `Muttis-Rezeptbuch/sbkim/spore.json` |
+| **WorkFloh** (digitaler Werbetechnik-Auftragszettel, privat) | Werbetechnik-Auftragsabwicklung (`lausiklauskn-png.github.io/Mein-WorkFloh/`) | Platzhalter `PuOH7u8Kfrh8gBWSpoBhS_4tZ2DF86M7c_5ZP6nNWqI` (ephemer) | **`awaiting-browser-spore`** (2026-07-25; SBKIM-Kern byte-1:1 aus Kim-Bell/Sage-Kanon, Drift-Guard-Smoke 15/15 grün, DB-Suffix `workfloh`; Netz-Panel Modul 23 + Siegel/Andock-Wizard eingebaut. **Ehrlich:** committete Spore ist eine PLATZHALTER-Spore — headless reziprok verifiziert ✔ VALID, aber `domainVector` = `_demo`-Stub + ephemere nodeId; **echter Vektor + stabile Browser-Identität + Live-Handshake entstehen erst in Klaus' Browser** über den Andock-Wizard. Kein Sage-Match berechnet, weil Demo-Vektor = Falschmaß) | `Mein-WorkFloh/sbkim/spore.json` (Platzhalter, VALID) + Kim-Bell-Muster |
 
 ## Bezeugte Cross-Knoten-Matches (echt)
 

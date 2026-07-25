@@ -375,6 +375,29 @@
       "matchScore": 0.8766,
       "note": "14. Endknoten (Klaus-Entscheid 2026-07-23): Muttis-Rezeptbuch als EIGENER SBKIM-Knoten mit von Mein-Rezeptbuch getrennter Identitaet (dbSuffix 'muttisrezeptbuch'). Module byte-1:1 aus Mein-Rezeptbuch/Sage-Kanon, Glue/QC angepasst (Muttis PR #153), Live-Spore v0.2 von Klaus im Browser erzeugt (Muttis PR #154). Reziprok verifiziert: id==base64url(SHA256(rawPub))==8TVDCTAc unabhaengig nachgerechnet, Ed25519-Signatur ueber kanonische Spore gueltig -> VALID. domainVector echt (384-dim e5, L2=1) + 5 Satz-Schnipsel. Modul-04-Cosinus Sage<->Muttis = 0.8766 >= 0.80 -> verified-match; verified-match zu ALLEN Nachbarn (Schwester Mein-Rezeptbuch 0.878, Mixarium 0.845, SB-KIMTool-Point 0.864, Tresore 0.839, BookLedgerPro 0.823). Offen: Klaus verschluesseltes Identitaets-Backup + Browser-Sichttest.",
       "url": "https://lausiklauskn-png.github.io/Muttis-Rezeptbuch/"
+    },
+    {
+      "name": "WorkFloh",
+      "domain": "Werbetechnik-Auftragsabwicklung",
+      "integrated": true,
+      "integratedAt": "2026-07-25",
+      "nodeId": "PuOH7u8Kfrh8gBWSpoBhS_4tZ2DF86M7c_5ZP6nNWqI",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Mein-WorkFloh/sbkim/spore.json",
+      "stammCategories": [
+        "Auftragsabwicklung",
+        "Kundenverwaltung",
+        "Zeiterfassung",
+        "Werbetechnik-Produktion"
+      ],
+      "guestCategories": [
+        "Angebot",
+        "Rechnung",
+        "Spore-Erzeugung",
+        "Handshake"
+      ],
+      "pingStatus": "awaiting-browser-spore",
+      "note": "15. Endknoten (Klaus 2026-07-25, 'ich binde alle meine Repos ein'): Mein-WorkFloh (digitaler Werbetechnik-Auftragszettel, privat) als SBKIM-Endknoten. SBKIM-Kern-Module byte-1:1 aus Kim-Bell/Sage-Kanon (Drift-Guard-Smoke gruen, 15/15), Glue nach Kim-Bell-Muster, DB-Suffix 'workfloh'. Netz-Panel (Modul 23 Rendezvous + UI) + Siegel-Leiste (17/15/16) + Andock-Wizard eingebaut (Skills saubere-netz-anmeldung/status-leiste-siegel/geraetename). Geraetename-Vorschlag 'WorkFloh · Firmentablet'. EHRLICH: die committete sbkim/spore.json ist eine PLATZHALTER-Spore (headless erzeugt: reziprok ✔ VALID -- id==base64url(SHA256(rawPub)) nachgerechnet, Ed25519-Signatur gueltig, Manipulationsprobe faellt durch -- ABER domainVector = deterministischer _demo-Stub, ephemere Test-nodeId). Der ECHTE domainVector (384-dim e5) + die stabile Browser-Identitaet + der Live-Cross-Knoten-Handshake entstehen erst in Klaus' Browser ueber den Andock-Wizard im Siegel (Spore signieren+herunterladen -> ersetzt diese Datei). pingStatus awaiting-browser-spore, KEIN matchScore (Demo-Vektor waere Falschmass). Danach: nodeId + verified-match/live-direct nachziehen. WorkFloh bleibt privat (keine Vermarktung), Netz-Anbindung ist Klaus' eigenes Mycel.",
+      "url": "https://lausiklauskn-png.github.io/Mein-WorkFloh/"
     }
   ],
   "modules": [
