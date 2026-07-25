@@ -31,6 +31,22 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-25 — WorkFloh als 15. Endknoten registriert (Nachzug aus WorkFloh-Sitzung)
+
+**Rolle:** Registrierungs-Nachzug (Haupt-Bau lief im Repo Mein-WorkFloh). **Getan:**
+Mein-WorkFloh wurde SBKIM-Endknoten (SBKIM-Kern byte-1:1 aus Kim-Bell/Sage-Kanon,
+Netz-Panel Modul 23 + Siegel/Andock-Wizard, DB-Suffix `workfloh`). Hier in Sage:
+`status.json` um den **15. Endknoten „WorkFloh"** ergänzt (Werbetechnik-Auftrags-
+abwicklung, `https://lausiklauskn-png.github.io/Mein-WorkFloh/`) + `sbkim/NETZ-STAND.md`
+(Zeile + neue Legende `awaiting-browser-spore`). Die **Mycel-Karte liest `status.json`
+automatisch** → WorkFloh erscheint beim nächsten Laden. **Ehrlich:** `pingStatus:
+awaiting-browser-spore`, **kein** `matchScore` — die committete WorkFloh-Spore ist eine
+Platzhalter-Spore (headless VALID, aber `domainVector` = `_demo`-Stub, ephemere nodeId).
+**Offen:** Klaus erzeugt im WorkFloh-Browser über den Andock-Wizard die echte Identität +
+den echten Vektor + committet `spore.json`; danach Folge-Sitzung: echte nodeId + Cross-
+Knoten-Match/Live-Handshake nachziehen. **Nächster Schritt:** WorkFloh-PR mergen (Freibrief),
+dann Klaus' Browser-Andock.
+
 ## Stand 2026-07-24 (Abend) — PULS-Archivierung Mai (Klaus' Wahl: Option A)
 
 Die Datei war auf ~10 020 Zeilen gewachsen (Schutz-Klausel nennt 3000). Klaus wählte **Option A**:
