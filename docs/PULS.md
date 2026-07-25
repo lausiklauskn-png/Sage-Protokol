@@ -58,6 +58,21 @@ nodeId + **`verified-match` 0.833465** gehoben. **Live-Beleg** (Mycel-Analyse 18
 Matches nachgetragen. Netzweit belegt: WorkFloh auch in SB-KIMTool-Point + family-project als
 funktionierende PWA mit Siegel + Link registriert.
 
+**✅✅ RE-SIGNATUR (gleicher Tag, 19:36 — Bedeutungstext-Umbau löst den Sage-Match):** Der
+Live-Handshake WorkFloh↔Sage scheiterte zunächst (Sage-Cosinus 0.7824 < 0.80). Klaus hat den
+`domainDescription` nach dem **Rezeptbuch-Muster** umgestaltet (WorkFloh als „Endknoten im
+SBKIM-Mycel auf Grundlage des Sage-Protokolls", semantisch verbunden mit Tomys/BLP/Kimseek/Point,
+wandelbares Branchen-Tool) und die Spore **neu signiert** (nodeId unverändert `6YOPHbnK…`, neuer
+`domainVector` + 6 Schnipsel, reziprok VALID). **Wirkung gemessen:** Sage↔WorkFloh **0.7824 →
+0.906269** = direkter Hub-Match; **12 Knoten ≥ 0.80** (Sage 0.906 · Point 0.897 · Muttis 0.878 ·
+Rezeptbuch 0.876 · Tomys 0.860 · Kimseek 0.860 · Kim-Bell 0.849 · Jasons 0.849 · Family 0.846 ·
+Mein-Tresor 0.845 · Mixarium 0.826 · Kimboard 0.817; nur Private Brain 0.771 drunter). **✅ LIVE-
+HANDSHAKE** (Mycel-Analyse 2026-07-25 19:37 + 19:43): **WorkFloh ⟷ Sage BEIDSEITIG `established`**
+übers echte Relais + Tablet⟷Handy `established`. `status.json`/`NETZ-STAND` + bezeugte Matches auf
+0.906269 + Live-`established` nachgezogen. **Lehre:** die Infrastruktur-Rahmung im Domänen-Text
+hebt fachfremde Knoten zuverlässig über den 0.80-Hub-Riegel (Rezeptbuch-Beleg bestätigt am
+zweiten Fall).
+
 ## Stand 2026-07-24 (Abend) — PULS-Archivierung Mai (Klaus' Wahl: Option A)
 
 Die Datei war auf ~10 020 Zeilen gewachsen (Schutz-Klausel nennt 3000). Klaus wählte **Option A**:
