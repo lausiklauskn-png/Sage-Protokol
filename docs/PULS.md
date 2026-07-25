@@ -47,6 +47,17 @@ den echten Vektor + committet `spore.json`; danach Folge-Sitzung: echte nodeId +
 Knoten-Match/Live-Handshake nachziehen. **Nächster Schritt:** WorkFloh-PR mergen (Freibrief),
 dann Klaus' Browser-Andock.
 
+**✅ HOCHSTUFUNG (gleicher Tag, Klaus' Browser-Andock — WorkFloh ist funktionierender
+Knoten):** Klaus hat im WorkFloh-Browser über den Andock-Wizard die **echte v0.2-Spore**
+erzeugt+committet (nodeId **6YOPHbnK…**, echter `domainVector` 384-dim L2=1 + 3 Schnipsel,
+kein `_demo`; headless reziprok **✔ VALID**). `status.json` + `NETZ-STAND.md` auf echte
+nodeId + **`verified-match` 0.833465** gehoben. **Live-Beleg** (Mycel-Analyse 18:21–18:33):
+„WorkFloh · Klaus Tablet" live im Raum `sbkim-rdv` mit 13 weiteren Knoten. Echte Matches:
+**Tomys-Hub 0.8335 · Kimseek 0.8110** ≥ 0.80 (fachverwandt Werbetechnik/Druck); Sage 0.7824
+< 0.80 → kein direkter Sage-Match (fachfremd zum Hub, wie Tomys). Zwei bezeugte Cross-Knoten-
+Matches nachgetragen. Netzweit belegt: WorkFloh auch in SB-KIMTool-Point + family-project als
+funktionierende PWA mit Siegel + Link registriert.
+
 ## Stand 2026-07-24 (Abend) — PULS-Archivierung Mai (Klaus' Wahl: Option A)
 
 Die Datei war auf ~10 020 Zeilen gewachsen (Schutz-Klausel nennt 3000). Klaus wählte **Option A**:
