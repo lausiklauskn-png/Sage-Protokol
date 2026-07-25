@@ -111,6 +111,45 @@ vom Menschen ausgelöst. Genaue Reihenfolge (Klaus' Reihenfolge, bestätigt):
 - Das Werkzeug darf in der App **versteckt / in der Ecke** liegen — Hauptsache
   Modus A läuft automatisch und der Reparatur-Knopf (Modus B) ist erreichbar.
 
+## Kanonische Quelle + aktuelle Version — IMMER die frische ziehen (Pflege 2026-07-25)
+
+**Damit jeder neue Bau automatisch die aktuelle Gestalt bekommt** (Klaus' Auftrag
+2026-07-25): das Netz-Anmelde-Werkzeug hat **eine einzige Wahrheit**, und jede App
+kopiert genau die — byte-1:1, nie eine abgewandelte oder ältere Fassung.
+
+- **Kanonische Quelle (die EINE Wahrheit):**
+  `Sage-Protokol/src/modules/23_rendezvous_ui.js` — die UI-Schicht des Netz-
+  Anmeldens (Knopf, Panel, Hygiene, „Wer ist im Raum?"). Der reine Tool-Kern liegt
+  daneben in `src/modules/23_rendezvous.js`.
+  - **NICHT aus einem Downstream-Spiegel kopieren** (z.B. `SB-KIMTool-Point/web/tools`,
+    `such-tool/`, `sbkim-bundle/`, oder einer Nachbar-App) — die können hinter dem
+    Kanon **veralten**. Immer aus Sage `src/modules/` ziehen.
+
+- **Aktuelle Version (Stand 2026-07-25) — „Mycel-Pille":**
+  - Ruhezustand = kleine Pille **„🌐 Mycel"** (`RDV_BUBBLE_BASE = "🌐 Mycel"`),
+    Tooltip **„Mit dem Knotennetz verbinden"**.
+  - **`–`** (Minimieren) → klappt zur Pille zusammen (Panel zu, Pille bleibt sichtbar).
+  - **`✕`** (Schließen) → blendet das Werkzeug **aus**; es kommt beim **Neuladen**
+    (Hard-Reload) von selbst zurück.
+  - Drift-Guard-**sha256 des Kanons:**
+    `f117096e5bcdfe6161a411ed282166e181ad269a4475715ee4d880682f152cbd`.
+
+- **Regel für JEDEN neuen Bau / jede neue App:**
+  1. **Kanon frisch holen:** `src/modules/23_rendezvous_ui.js` (+ `23_rendezvous.js`)
+     aus Sage `origin/main` byte-1:1 in die App kopieren (dortiger Dateiname z.B.
+     `modules/sbkim-rendezvous-ui.js`).
+  2. **Drift-Guard-Pin auf den aktuellen Kanon-sha256 setzen** (im Smoke-Test der App,
+     Schlüssel `sbkim-rendezvous-ui.js` bzw. `23_rendezvous_ui.js`) — so fällt jede
+     versehentliche Abweichung sofort rot auf.
+  3. **Ändert sich der Kanon** (neue Optik/Feature in Sage): erst hier den sha256 +
+     die „Aktuelle Version"-Beschreibung nachziehen, dann in jede App **neu kopieren**
+     und den Pin nachziehen — **nie** eine App auf einem Alt-Spiegel hängen lassen.
+
+- **Warum diese Tafel:** am 2026-07-25 lief in den Apps noch die alte
+  „🌐 Mit dem Netz verbinden"-Gestalt, obwohl Sage schon die „Mycel"-Pille trug —
+  weil jede Kopie einzeln veraltete. Diese Sektion macht die frische Kanon-Quelle
+  zur Pflicht, damit „jeder neue Bau die aktuelle Version zieht".
+
 ## Per-App-Checkliste (bevor eine App als "sauber" gilt)
 
 - [ ] `SbkimStorage.init({ dbSuffix: "<suffix>" })` läuft **als Erstes**, vor Spore
