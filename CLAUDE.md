@@ -533,6 +533,53 @@ ungemergten Branches lebten.
   gegen diese Konvention sind Pflege-PR-Befunde und werden in der
   Folge-Sitzung nachgezogen.
 
+- **Auslieferungs-Brille: „Was liefert der Server WIRKLICH aus?" (Pflege
+  2026-07-28, Befund an family-projekt.de).** Ein statisch ausliefernder Server
+  gibt **jede Datei im Repo als Klartext heraus** — auch `.php`, wenn kein
+  PHP-Handler eingerichtet ist. `/srv/<app>` ist auf Klaus' Hetzner-Caddy ein
+  `git clone`; alles, was im Repo liegt, ist damit **öffentlich lesbar**, nicht
+  nur das, was du als Seite gedacht hast. Daraus verbindlich:
+  - **`.htaccess` schützt NUR bei Apache.** Caddy/nginx **ignorieren** sie
+    kommentarlos. Wer eine `.htaccess` ins Repo legt, hat damit **nichts**
+    gesichert, solange nicht geprüft ist, welcher Server tatsächlich ausliefert.
+    Bei Caddy ist der Schutz ein `handle /pfad/* { respond 404 }` **vor** dem
+    Auffang-`handle` (Reihenfolge zählt, `handle`-Blöcke schließen sich aus).
+  - **Ein Auffang (`try_files … /index.html`) ist KEIN Schutz.** Er greift nur,
+    solange die Datei **nicht existiert**. Sobald sie da ist, wird sie
+    ausgeliefert. Wer daraus „ist ja gesperrt" liest, irrt.
+  - **Server-seitige Geheimnisse gehören nie ins Repo** (`.gitignore`) **und**
+    hinter eine ausdrückliche Sperre — Gürtel und Hosenträger.
+  - **Prüfen statt annehmen:** die Sperre wird mit einem echten Abruf belegt
+    (`404` erwartet, nicht `200`), und die Gegenprobe zeigt, dass sie nötig war.
+
+- **Drei Maschinen auseinanderhalten — nie erraten (Pflege 2026-07-28).** Klaus'
+  Aufbau hat **drei** getrennte Orte, die in einer Anleitung leicht verwechselt
+  werden. Eine Sitzung, die einen Befehl gibt, sagt **immer dazu, wo er hingehört**:
+  - **Tablet / Termux** — Prompt `~ $`, Paketbefehl `pkg`. Lokales Android-Linux,
+    **kein** Server. Hier laufen `git`, lokaler `http.server`.
+  - **Hetzner Cloud-Server (CX23, Ubuntu)** — Prompt `root@ubuntu-…:~#`,
+    Paketbefehl `apt`. Liefert `family-projekt.de` **statisch** über **Caddy im
+    Docker** aus (`/opt/relay/Caddyfile` → Container `caddy`; daneben `relay`).
+    Erreichbar per `ssh root@<IP>` aus Termux oder über die Hetzner-Web-Konsole.
+  - **Hetzner Webhosting S (konsoleH, Apache)** — hier läuft **PHP** und liegen
+    die **echten** Geheimnisse (`freigabe-config.php` mit dem GitHub-Token). Nur
+    **hier** wirkt die `.htaccess`.
+  - **Faustregel für Ein-Zeilen-Befehle an Klaus:** Wo möglich `ssh root@<IP>
+    '<befehl>'` verwenden — dann kann der Befehl gar nicht auf dem Tablet landen.
+
+- **Fork ≠ Vorfall — ruhig einordnen (Pflege 2026-07-28).** Ein Fork ist eine
+  **bewusste Handlung eines angemeldeten GitHub-Nutzers**, niemals eine Neben-
+  wirkung davon, dass jemand eine App öffnet, installiert oder eine Seite besucht.
+  Er kopiert ausschließlich **schon Öffentliches**, gibt **keinen** Konto-Zugriff,
+  ändert am Original nichts und bleibt dauerhaft als „forked from" gekennzeichnet.
+  Bei einem Repo wie SB-KIMTool-Point („Hub für Forker") ist er sogar die
+  **vorgesehene** Reaktion. Wenn Klaus ein Fork beunruhigt: sachlich prüfen
+  (liegt ein Geheimnis im Repo?), Ergebnis nennen, **nicht** dramatisieren — und
+  den Unterschied Besucher/Fork erklären. Rechtlicher Schutz ist das **Copyright
+  + die Git-Historie**, nicht Verschleierung: **Obfuskation ist ausdrücklich
+  NICHT der Weg** (Web-Code ist immer lesbar, und Kopierbarkeit ist bei SBKIM
+  gewollt — das Protokoll und die Werkzeuge SOLLEN nachgebaut werden können).
+
 ## Die zehn Module + Schutz-Backlog 10-12 + Proaktiv-Backlog 14 + 15 + Siegel-Backlog 16 + Widget-Backlog 17 + 22
 
 | # | Datei | Status (siehe PULS.md für Details) |
