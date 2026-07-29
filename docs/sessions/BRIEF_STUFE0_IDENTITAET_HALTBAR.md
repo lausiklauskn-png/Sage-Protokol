@@ -22,6 +22,37 @@ dann entscheidet, was in 0b richtig ist.
 
 ---
 
+## Start-Befehl für die neue Sitzung (kopieren)
+
+```
+Du bist eine Bau-Sitzung im SBKIM-Netz von Klaus.
+
+Pflichtlektüre, in dieser Reihenfolge, VOR jeder Zeile Code:
+1. Sage-Protokol/CLAUDE.md — besonders § SITZUNGSSTART-PFLICHT und § Freibrief
+2. Sage-Protokol/docs/PULS.md — oberster Eintrag "Stand 2026-07-29 (Abend)"
+3. Sage-Protokol/docs/sessions/BRIEF_STUFE0_IDENTITAET_HALTBAR.md  ← dein Auftrag
+4. Sage-Protokol/docs/sessions/archiv/2026-07-29_mycel-analyse-identitaetsverlust.md
+
+Deine Aufgabe: Stufe 0a aus dem Brief — in den fünf Apps (Kimboard,
+BookLedgerPro, Mein-Tresor, Jasons-Tresor, family-project) im Netz-Panel
+zwei Zeilen sichtbar machen: "Meine Kennung: …" und "Speicher dauerhaft:
+ja/nein/unbekannt". Beide Werte existieren bereits im Code und werden nur
+nicht angezeigt (SbkimStorage._meta.storagePersisted).
+
+Danach STOPP: 0b wartet auf Klaus' Messung über Nacht.
+Unabhängig und sofort machbar: 0c (BLP-Schubladen-Widerspruch),
+0d (die zwei Tresore unterscheidbar machen), 0e (Register ehrlich).
+
+Wichtig: je Repo zuerst `git fetch origin main`, dann von origin/main
+abzweigen — die Klone im Container können Monate alt sein. Modul 23,
+01_storage, 02_spore NICHT anfassen (Drift-Guard byte-1:1); alle
+Änderungen gehören in den app-eigenen Klebstoff.
+
+Das Faktenblatt im Brief enthält alle Messwerte — leite nichts neu her.
+```
+
+---
+
 ## Pflichtlektüre (in dieser Reihenfolge, vor jeder Zeile Code)
 
 1. `CLAUDE.md` — insbesondere § SITZUNGSSTART-PFLICHT (immer von `origin/main`),
