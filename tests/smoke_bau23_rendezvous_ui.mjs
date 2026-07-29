@@ -158,6 +158,18 @@ async function run() {
   record("Discover-Knopf im Panel", "ja", discoverButton ? "ja" : "nein", !!discoverButton);
   record("Announce-Knopf im Panel", "ja", announceButton ? "ja" : "nein", !!announceButton);
 
+  // Stufe 0a — die zwei Status-Zeilen (Kennung + Speicher dauerhaft) sind
+  // gemountet und fail-soft: ohne Modul 01/02 im Stub steht „unbekannt" bzw.
+  // „noch keine" da (nie ein Fehler).
+  const idEl = panel.querySelector("#sbkim-rdv-myid");
+  const persistEl = panel.querySelector("#sbkim-rdv-persist");
+  record("0a Kennung-Zeile gemountet", "ja", idEl ? "ja" : "nein", !!idEl);
+  record("0a Speicher-Zeile gemountet", "ja", persistEl ? "ja" : "nein", !!persistEl);
+  record("0a Kennung fail-soft ohne Modul 02", "noch keine (erst verbinden)",
+    idEl && idEl.textContent, idEl && idEl.textContent === "noch keine (erst verbinden)");
+  record("0a Speicher fail-soft ohne Modul 01", "unbekannt",
+    persistEl && persistEl.textContent, persistEl && persistEl.textContent === "unbekannt");
+
   // A15-Inc-1 — Zwei-Stufen-Hinweis (ehrliche Kosten-Benennung) ist gemountet.
   const uiSrc = readFileSync(resolve(repoRoot, "src/modules/23_rendezvous_ui.js"), "utf8");
   record("A15 Zwei-Stufen-Hinweis: stageNote gemountet", "ja",
