@@ -31,6 +31,50 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-29 — Schutz-Plan **Stufe 2b**: Echtheit der Karten im Rendezvous-Raum
+
+**Rolle:** Bau-Sitzung Modul 23 (Schutz-Plan Stufe 2b, Fortsetzung von Stufe 1+2 in
+Kimboard). **Befund, der den Bau ausgelöst hat:** `discover()` hat fremde Visitenkarten
+**ungeprüft** angezeigt — es wurde nur geschaut, ob die Felder da sind, **nie** ob die
+Spore echt ist (`verifyForeignSpore` fehlte ganz) und **nie** ob die Karte überhaupt ihre
+eigene Spore trägt. Jeder konnte sich unter fremdem Namen ins Brett hängen; ein Fluter
+konnte den Raum beliebig füllen.
+
+**Gebaut (Tafeln zuerst, dann Code — CLAUDE.md § Heilige Tafeln):**
+`docs/INTERFACES.md` (neue Konstanten + verbindlicher Block „ECHTHEIT DER KARTEN") und
+`docs/components/23_rendezvous.md` (§ Echtheit der Karten) **vor** dem Eingriff nachgezogen.
+Dann `src/modules/23_rendezvous.js`:
+- **Bindungs-Prüfung** `card.spore.id === card.nodeId` — eine Karte kann keine fremde
+  Spore unter eigenem Namen tragen. Braucht keine Krypto, wirkt also **immer**.
+- **Ed25519-Prüfung je Karte** über Modul 02 `verifyForeignSpore` (neuer, getrennter
+  Resolver `resolveVerifier()` — der alte verlangt nur `getOwnSpore`, eine App darf ein
+  Spore-Modul ohne Prüfer mitbringen). Läuft **nach** dem Lauschfenster, weil die Prüfung
+  async ist und der Empfangs-Callback sie nicht abwarten kann.
+- **Mengen-Deckel:** `RDV_CARDS_MAX = 200` je Durchlauf, `RDV_CARDS_PER_SENDER_MAX = 3`
+  Identitäten je Nostr-Absender. Still verwerfen — der Fluter erfährt nichts.
+- **Ehrlich statt still:** fehlt der Prüfer, läuft der Raum weiter, meldet die Karten aber
+  als `cardsVerified: false` **UNGEPRÜFT**; `rejected` zählt, wie viele rausfielen.
+
+**TABU eingehalten:** `PROVIDER_MIN_MATCH`/0.80-Andock-Riegel unberührt, Kern-Module
+02/05/05b unangetastet (nur öffentliche Flächen genutzt), kein PROTOCOL_VERSION-Bump.
+
+**Beweis:** neuer `tests/smoke_bau23b_kartenechtheit.mjs` **16/16 grün** — mit einem
+Prüfer-Mock, der die Prüfung wirklich durchläuft. Wichtig: die bestehenden 59 Proben in
+`smoke_bau23_rendezvous.mjs` fahren einen Mock **ohne** `verifyForeignSpore` und liefen
+darum am fail-soft-Pfad vorbei; der neue Test schließt genau diese Lücke. Probe 5 ist
+zugleich die **Gegenprobe**: dieselbe faule Karte bleibt sichtbar, sobald der Prüfer fehlt.
+Regress-frei: `smoke_bau23_rendezvous` 59/59, `..._ui` 83/83, Drift-Guard
+`smoke_bundle_connect` 21/21 (Byte-Kopie `sbkim-bundle/modules/23_rendezvous.js` mitgezogen),
+Siegel-Smokes 9/9 · 9/9 · 5/5 · 16/16.
+
+**Pflicht-Konvention erfüllt:** `ZERTIFIKAT_ASPEKTE`-Eintrag 2026-07-29 / Modul 23 in
+`src/modules/16_siegel.js` ergänzt (Schutz-Modul-Pflege → Aspekt, CLAUDE.md).
+
+**Offen:** Klaus' Browser-Sichttest (Raum öffnen, Karten erscheinen weiterhin, Badge-Anzeige
+unverändert) — **ungeprüft, wartet auf Klaus' Browser-Lauf**. Nächste Stufen aus dem
+Schutz-Plan: 3 (Bekannte bevorzugen), 4 (Themen-Mycel + Steckbrief), 4d/4e (Wächter-Quorum
++ KI-Richter), 5 (Stufen-Schalter mit strikter Trennung), 6 (netzweiter Rollout).
+
 ## Stand 2026-07-25 — WorkFloh als 15. Endknoten registriert (Nachzug aus WorkFloh-Sitzung)
 
 **Rolle:** Registrierungs-Nachzug (Haupt-Bau lief im Repo Mein-WorkFloh). **Getan:**

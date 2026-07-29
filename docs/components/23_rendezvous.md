@@ -179,13 +179,54 @@ zweiten Einbau-Ort.
   `wss://relay.family-projekt.de`: ein Gerät 🌐, das andere 👥 → 🤝 →
   „ETABLIERT". Jetzt zusätzlich: Verwandtschafts-Badge je Karte sichtbar.
 
+## Echtheit der Karten (Schutz-Plan Stufe 2b, 2026-07-29)
+
+**Der Befund:** `discover()` nahm Karten bisher **ungeprüft** entgegen — es wurde
+nur geschaut, ob die Felder `kind`/`nodeId`/`spore` vorhanden sind. Jeder konnte
+eine Karte mit **beliebigem `nodeName` und fremder Identität** ins Brett hängen;
+die Prüfung griff erst beim Andocken (`handshakeCard` → Modul 05). Wer nur die
+Liste ansah, sah also Behauptungen, keine belegten Identitäten.
+
+**Neu — eine Karte wird nur aufgenommen, wenn beides stimmt:**
+
+1. **`verifyForeignSpore(card.spore)`** (Modul 02) besteht — Ed25519-Signatur
+   gültig, Pflichtfelder da, Protokoll-Hauptversion passt, und vor allem:
+   `nodeId === base64url(sha256(rawPublicKey))`, die Kennung ist also an den
+   Schlüssel gebunden und nicht frei wählbar.
+2. **`card.nodeId === card.spore.id`** — die Karte kann keine fremde Spore unter
+   eigenem Namen tragen.
+
+**Mengenschutz gegen Flutung** (Vorgriff Modul 11, wie `RDV_QUERY_MAX_PER_MIN`):
+
+| Konstante | Wert | Wogegen |
+|---|---|---|
+| `RDV_CARDS_MAX` | 200 | ein einzelner Durchlauf wird nicht beliebig groß |
+| `RDV_CARDS_PER_SENDER_MAX` | 3 | ein Nostr-Absender legt nicht beliebig viele Identitäten gleichzeitig aus |
+
+Überzähliges wird **still** verworfen — der Fluter erfährt nichts über die Grenze.
+
+**Ehrlich, wenn Modul 02 fehlt:** Der Raum bleibt funktionsfähig, aber die Karten
+sind dann **ungeprüft**. Dieser Zustand wird über **`_meta.cardsVerified === false`**
+nach außen gemeldet, statt ihn stillschweigend durchzuwinken.
+
+**Abgrenzung:** Der **0.80-Andock-Riegel** (Modul 05) bleibt unberührt. Diese
+Prüfung steht **davor**, nicht an seiner Stelle: Echtheit ist eine Identitäts-
+Frage, der Riegel eine Bedeutungs-Frage.
+
+---
+
 ## Risiken / offene Punkte
 
 - Der Raum trägt **öffentliche** Visitenkarten (jeder am Relais sieht sie). Das
-  ist Absicht (Pilz-Schicht, Akquise oberirdisch) — Härtung (Rate-Limit Modul
-  11, Blocklist Modul 12, Reputation Modul 10) folgt, wenn das Netz groß genug
-  ist. Die Visitenkarte enthält nur die **öffentliche** Spore (kein privater
-  Schlüssel, keine PII).
+  ist Absicht (Pilz-Schicht, Akquise oberirdisch) — weitere Härtung (Reputation
+  Modul 10, Blocklist Modul 12) folgt, wenn das Netz groß genug ist. Die
+  Visitenkarte enthält nur die **öffentliche** Spore (kein privater Schlüssel,
+  keine PII).
+- Die Echtheitsprüfung beweist, dass eine Karte zu **diesem Schlüssel** gehört —
+  nicht, dass der Schlüssel einem bestimmten **Menschen** gehört. Ein Fremder
+  kann weiterhin eine *eigene*, echte Identität erzeugen und sich anmelden; das
+  ist so gewollt (offenes Mycel). Verhindert wird nur das **Auftreten unter
+  fremder Identität**.
 - Eine veraltete Visitenkarte (Knoten ging offline) führt zu `timeout` beim
   Andocken — sauber gemeldet, kein Fehler.
 - Marktplatz-Schicht (Such-Werkzeug Modul 22 über den Raum legen) ist ein
