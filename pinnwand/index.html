@@ -213,6 +213,26 @@
   html[data-scale="1"] body { font-size: 16px; }
   html[data-scale="2"] body { font-size: 18px; }
   html[data-scale="3"] body { font-size: 20.5px; }
+
+  .honest-short { font-size:.86rem; opacity:.85; line-height:1.5; padding:10px 0 4px; }
+  .honest-short .fp-lvl{display:block;margin-top:5px;opacity:.8;}
+  #infdlg-x { border:1px solid rgba(255,255,255,.18); border-radius:14px; padding:0;
+    max-width:640px; width:calc(100vw - 32px); background:#111a16; color:#e8f2ec; }
+  #infdlg-x::backdrop { background:rgba(0,0,0,.6); }
+  #infdlg-x .idlg-in { padding:18px 20px 20px; max-height:82vh; overflow:auto; line-height:1.6; }
+  #infdlg-x h2 { margin:.2em 0 .6em; font-size:1.15rem; }
+  #infdlg-x h3 { margin:1.3em 0 .4em; font-size:.98rem; }
+  #infdlg-x p, #infdlg-x li { font-size:.92rem; }
+  #infdlg-x ul { margin:.4em 0; padding-left:1.2em; }
+  #infdlg-x li { margin:.45em 0; }
+  #infdlg-x .warn { border-left:3px solid #e0a35a; padding:.6em .9em;
+    background:rgba(224,163,90,.08); border-radius:0 8px 8px 0; margin:.8em 0; }
+  #infdlg-x details { margin-top:1.2em; border-top:1px solid rgba(255,255,255,.12); padding-top:.9em; }
+  #infdlg-x details summary { cursor:pointer; opacity:.75; font-size:.88rem; }
+  #infdlg-x .idlg-tech { font-size:.82rem; opacity:.72; margin-top:.7em; }
+  #infdlg-x .idlg-close { display:block; margin:1.2em 0 0 auto; padding:8px 16px;
+    border-radius:10px; border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.06); color:inherit; cursor:pointer; font:inherit; }
 </style>
 </head>
 <body>
@@ -224,6 +244,7 @@
       <div class="sub" style="margin:0;">Impulse · Verbindungen · Erkenntnisse</div>
     </div>
     <div class="toolbar">
+      <button id="tb-info" class="tbtn" title="Was ist das? Kurz erklärt">ℹ️</button>
       <button id="tb-zoom" class="tbtn" title="Text vergrößern / verkleinern">🔍</button>
       <button id="tb-full" class="tbtn" title="Vollbild / Vollansicht">⛶</button>
       <button id="tb-reload" class="tbtn" title="Neu laden (Cache leeren)">🔄</button>
@@ -313,36 +334,13 @@
     <ul id="threads"><li class="empty">Noch keine Frage empfangen…</li></ul>
   </div>
 
-  <footer>
-    <b>Ehrlich:</b> Beweist, dass <i>Frage→Antwort</i> über das geborgte Brett
-    läuft (NIP-01-Reply via <code>e</code>-Tag). Immer noch <b>öffentlich</b>
-    (jeder Relay-Leser sieht Fragen + Antworten), <b>keine garantierte
-    Haltbarkeit</b>, <b>kein Spam-Schutz</b>. <b>Bedeutungs-Sortierung</b>
-    (Knopf oben) ist <b>optional</b>: erst auf bewusste Nutzer-Aktion lädt das
-    Embedding-Modell (Modul 03, <code>Xenova/multilingual-e5-small</code>) — das
-    ist der <i>einzige</i> Teil, der ein CDN/Internet nutzt (einmalig ~30&nbsp;MB,
-    dann im Browser-Cache); es sortiert nach Nähe zur Frage und filtert nichts
-    weg, fail-soft. Der Score ist ein <b>zentrierter (whitened) Cosinus</b>:
-    der gemeinsame Mittelwert-Vektor wird abgezogen, damit der <i>Inhalt</i>
-    entscheidet und nicht die Hülle (gleiche Sprache/Stil) — Hintergrund:
-    Anisotropie-Befund, <code>docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md</code>.
-    Hier mit lokal wachsendem Referenz-Schwerpunkt (die netzweite Konstante
-    liefert erst Bau „Modul&nbsp;04 Whitening"). <b>Ehrlich:</b> dieser Cosinus
-    ist eine <b>Rangfolge</b> (was näher dran ist, steht oben) — <i>kein</i>
-    Verwandt-/Unverwandt-Urteil; die Messreihe (LEHRE-Doc) zeigt, dass der
-    gratis Cosinus verwandt von unverwandt nicht zuverlässig trennt. Das echte
-    Urteil liefert der <b>KI-Richter</b> (⚖️), eine zweite, <b>optionale</b>
-    Stufe: er versteht <i>Absicht/Verneinung</i>
-    („alkoholfrei = KEIN Alkohol"), was der Vektor nicht kann. Drei Stufen, keine
-    erzwingt Bezahlung: <b>(1)</b> gratis &amp; überall — lokales Embedding;
-    <b>(2)</b> gratis, gerät-hungrig — KI im Browser (WebLLM, Modell-Wahl
-    Trabant→Mercedes; lädt Bibliothek + Modell einmalig aus dem Netz, dann im
-    Cache; langsamer + nicht ganz so stark wie die Cloud);
-    <b>(3)</b> bezahlt &amp; am stärksten — Cloud mit eigenem Schlüssel. Der
-    Schlüssel wird <b>nur mit Häkchen „auf diesem Gerät merken"</b> lokal
-    gespeichert (<code>localStorage</code>, im Klartext, nur auf diesem Gerät —
-    kein Server, kein Tracker); Häkchen weg = sofort gelöscht. Krypto bleibt
-    lokal vendoriert.
+  <footer class="honest-short">
+    <span id="fp-mode">&#128275; <b>Offenes Brett</b> &mdash; alle, die <i>dieses</i>
+    &ouml;ffentliche Brett benutzen, k&ouml;nnen deine Zettel lesen. Wer ein anderes Brett
+    hat, sieht sie nicht.</span>
+    <span class="fp-lvl">Es gibt einen <b>Privatraum</b>: mit <b>Brett-Passwort</b> liest nur
+    mit, wer es kennt &mdash; mit <b>&#8222;Privat an&#8220;</b> nur die gew&auml;hlte Person
+    (Ende-zu-Ende, wie bei WhatsApp).</span>
   </footer>
 </div>
 
@@ -1543,5 +1541,92 @@ updateSendState();
     });
   }
 </script>
+
+  <dialog id="infdlg-x" aria-labelledby="infdlg-t"><div class="idlg-in">
+    <h2 id="infdlg-t">&#8505;&#65039; Was ist die Pinnwand?</h2>
+    <p><b>In einem Satz:</b> ein schwarzes Brett. Du heftest eine Frage an, andere
+      Ger&auml;te sehen sie und h&auml;ngen ihre Antwort daneben.</p>
+
+    <h3>Was daran anders ist als bei WhatsApp &amp; Co.</h3>
+    <p>Bei WhatsApp l&auml;uft jede Nachricht durch die Rechner <i>einer Firma</i> &mdash;
+      mit Konto, Anmeldung und jemandem, dem das alles geh&ouml;rt. <b>Hier gibt es das
+      nicht.</b> Die Pinnwand leiht sich frei zug&auml;ngliche &#8222;Bretter&#8220; im Netz
+      und h&auml;ngt den Zettel dort hin: kein Konto, keine Anmeldung, keine Firma dahinter,
+      niemand verdient daran &mdash; f&auml;llt ein Brett aus, nimmt die App ein anderes.</p>
+
+    <h3>Wer mitlesen kann &mdash; das bestimmst du</h3>
+    <p><b>Kurz gesagt:</b> das offene Brett ist wie ein &ouml;ffentlicher Beitrag auf
+      <b>Instagram oder Facebook</b> &mdash; sichtbar f&uuml;r alle, die dort sind. Daneben gibt
+      es einen <b>Privatraum</b> und den Weg an <b>einzelne Kontakte</b>.</p>
+    <p>Bei WhatsApp k&ouml;nnen ja auch <b>nicht alle</b> mitlesen, sondern nur die, die du als
+      Kontakt hast. Genauso ist es hier &mdash; du w&auml;hlst den Raum:</p>
+    <ul>
+      <li><b>&#128275; Offenes Brett (Voreinstellung).</b> Der gemeinsame, &ouml;ffentliche
+        Raum. <b>Alle, die dieses Brett benutzen, k&ouml;nnen mitlesen.</b> Das ist
+        <i>nicht</i> &#8222;das ganze Internet&#8220;: wer ein anderes Brett benutzt, sieht
+        deine Zettel gar nicht. Aber du kennst die Leute auf dem &ouml;ffentlichen Brett
+        nicht &mdash; <b>also nichts Privates hineinschreiben</b>.</li>
+      <li><b>&#128274; Privates Brett (Passwort).</b> Der <b>Privatraum</b>. Dein Zettel liegt
+        weiter auf demselben Brett, ist aber <b>verschl&uuml;sselt</b>: lesen kann ihn nur,
+        wer dein Passwort hat &mdash; alle anderen, auch das Relais, sehen nur Zeichensalat.
+        <br><i>Ehrlich dazu:</i> dass <i>ein</i> Zettel da ist und von welchem Ger&auml;t,
+        bleibt sichtbar. Gesch&uuml;tzt ist der <b>Inhalt</b>.</li>
+      <li><b>&#9993;&#65039; &#8222;Privat an&#8220; (einzelne Kontakte).</b>
+        <b>Ende-zu-Ende verschl&uuml;sselt &mdash; genau wie bei WhatsApp.</b> Nur die
+        gew&auml;hlte Person kann es &ouml;ffnen, sonst niemand.</li>
+    </ul>
+
+    <div class="warn">
+      <b>&#9888;&#65039; Zwei ehrliche Grenzen &mdash; unabh&auml;ngig vom Modus:</b>
+      <ul>
+        <li><b>Nichts bleibt garantiert.</b> Die Bretter geh&ouml;ren anderen; ein Zettel kann
+          jederzeit verschwinden. Kein Archiv, keine Sicherung.</li>
+        <li><b>Kein Spam-Schutz.</b> Auf einem offenen Brett kann auch Unsinn ankommen.</li>
+      </ul>
+    </div>
+
+    <h3>Was &#8222;nach Bedeutung sortieren&#8220; macht</h3>
+    <p>Normalerweise stehen Antworten so da, wie sie eintreffen. Auf Knopfdruck sortiert die
+      App sie danach, wie gut sie <i>zur Frage passen</i> &mdash; nicht nach Stichw&ouml;rtern,
+      sondern nach Sinn. Daf&uuml;r l&auml;dt sie <b>einmalig</b> ein kleines Sprach-Modell
+      (~30&nbsp;MB) und rechnet danach <b>auf deinem Ger&auml;t</b>. Nur auf Knopfdruck &mdash;
+      von allein nie.</p>
+    <p><b>Ehrlich dazu:</b> das ist eine <b>Rangfolge</b>, kein Urteil &mdash;
+      &#8222;passt eher&#8220;, nicht &#8222;ist richtig&#8220;. Wer ein echtes Urteil will
+      (dass &#8222;alkoholfrei&#8220; das Gegenteil von &#8222;mit Alkohol&#8220; ist), kann
+      freiwillig den <b>KI-Richter</b> zuschalten. Drei Stufen, keine zwingt zu bezahlen &mdash;
+      <b>ohne all das funktioniert die Pinnwand vollst&auml;ndig</b>. Ein eigener Schl&uuml;ssel
+      wird nur mit dem H&auml;kchen &#8222;auf diesem Ger&auml;t merken&#8220; gespeichert, und
+      dann nur dort.</p>
+
+    <details>
+      <summary>Technische Einzelheiten (f&uuml;r Interessierte)</summary>
+      <div class="idlg-tech"><b>Ehrlich:</b> Beweist, dass <i>Frage→Antwort</i> über das geborgte Brett läuft (NIP-01-Reply via <code>e</code>-Tag). Immer noch <b>öffentlich</b> (jeder Relay-Leser sieht Fragen + Antworten), <b>keine garantierte Haltbarkeit</b>, <b>kein Spam-Schutz</b>. <b>Bedeutungs-Sortierung</b> (Knopf oben) ist <b>optional</b>: erst auf bewusste Nutzer-Aktion lädt das Embedding-Modell (Modul 03, <code>Xenova/multilingual-e5-small</code>) — das ist der <i>einzige</i> Teil, der ein CDN/Internet nutzt (einmalig ~30&nbsp;MB, dann im Browser-Cache); es sortiert nach Nähe zur Frage und filtert nichts weg, fail-soft. Der Score ist ein <b>zentrierter (whitened) Cosinus</b>: der gemeinsame Mittelwert-Vektor wird abgezogen, damit der <i>Inhalt</i> entscheidet und nicht die Hülle (gleiche Sprache/Stil) — Hintergrund: Anisotropie-Befund, <code>docs/LEHRE-EMBEDDING-MATCH-KALIBRIERUNG.md</code>. Hier mit lokal wachsendem Referenz-Schwerpunkt (die netzweite Konstante liefert erst Bau „Modul&nbsp;04 Whitening"). <b>Ehrlich:</b> dieser Cosinus ist eine <b>Rangfolge</b> (was näher dran ist, steht oben) — <i>kein</i> Verwandt-/Unverwandt-Urteil; die Messreihe (LEHRE-Doc) zeigt, dass der gratis Cosinus verwandt von unverwandt nicht zuverlässig trennt. Das echte Urteil liefert der <b>KI-Richter</b> (⚖️), eine zweite, <b>optionale</b> Stufe: er versteht <i>Absicht/Verneinung</i> („alkoholfrei = KEIN Alkohol"), was der Vektor nicht kann. Drei Stufen, keine erzwingt Bezahlung: <b>(1)</b> gratis &amp; überall — lokales Embedding; <b>(2)</b> gratis, gerät-hungrig — KI im Browser (WebLLM, Modell-Wahl Trabant→Mercedes; lädt Bibliothek + Modell einmalig aus dem Netz, dann im Cache; langsamer + nicht ganz so stark wie die Cloud); <b>(3)</b> bezahlt &amp; am stärksten — Cloud mit eigenem Schlüssel. Der Schlüssel wird <b>nur mit Häkchen „auf diesem Gerät merken"</b> lokal gespeichert (<code>localStorage</code>, im Klartext, nur auf diesem Gerät — kein Server, kein Tracker); Häkchen weg = sofort gelöscht. Krypto bleibt lokal vendoriert.</div>
+    </details>
+    <button type="button" class="idlg-close" id="infdlg-c">Schlie&szlig;en</button>
+  </div></dialog>
+
+  <script>
+  (function(){
+    var dlg = document.getElementById('infdlg-x'); if (!dlg) return;
+    function open(e){ if(e) e.preventDefault(); if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open',''); }
+    function close(){ if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
+    var b = document.getElementById('tb-info'); if (b) b.addEventListener('click', open);
+    var c = document.getElementById('infdlg-c'); if (c) c.addEventListener('click', close);
+    dlg.addEventListener('click', function(ev){ if (ev.target === dlg) close(); });
+    var src = document.getElementById('boardkey-status'), out = document.getElementById('fp-mode');
+    if (src && out) {
+      var sync = function(){
+        var t = src.textContent || '';
+        if (t.indexOf('Privates Brett') !== -1)
+          out.innerHTML = '\uD83D\uDD12 <b>Privates Brett aktiv</b> \u2014 nur wer das Passwort hat, kann mitlesen. Das Relais sieht nur Geheimtext.';
+        else if (t.indexOf('Offenes Brett') !== -1)
+          out.innerHTML = '\uD83D\uDD13 <b>Offenes Brett</b> \u2014 was du hier schreibst, kann jeder mitlesen, der dasselbe Brett liest.';
+      };
+      sync();
+      try { new MutationObserver(sync).observe(src,{childList:true,characterData:true,subtree:true}); } catch(e){}
+    }
+  })();
+  </script>
 </body>
 </html>
