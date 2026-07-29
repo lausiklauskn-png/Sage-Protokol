@@ -35,6 +35,28 @@ Andock-Konventionen: INTERFACES §11
 > (Browser rechnet `snippets.json`). Privater Schlüssel bleibt beim Knoten, nur öffentliche
 > `spore.json` committen.
 
+> **🪪 COMMITTETE vs. LEBENDE Identität (Stufe 0e, 2026-07-29).** Die `nodeId`-Spalte unten ist die
+> **committete** Identität — die in der `spore.json` jedes Repos signierte, gegen `main` verifizierte
+> Wahrheitsquelle. Sie ist **nicht zwingend** die **lebende** Identität, die ein Knoten gerade im
+> Rendezvous-Raum (Modul 23) trägt. Grund: der Browser-Speicher einer nur im Tab geöffneten
+> github.io-Seite ist „best effort" und kann zwischen Sitzungen geräumt werden — dann öffnet der Knoten
+> beim nächsten Mal mit einer **neuen lebenden `nodeId`** (das ist der Befund, den Stufe 0 gerade
+> reparierbar/haltbar macht). **Modul 23 findet Knoten im Raum über den `nodeName`** und handshaket die
+> lebende `nodeId`; das Register muss dafür nicht stimmen. Konkret aus Klaus' Mycel-Analyse 2026-07-29
+> (5 live Knoten, alle Sporen kryptografisch gültig, nur der Schlüssel wechselte):
+>
+> | App | committet (Register) | lebend 29.07. | cos(live,committet) |
+> |---|---|---|---|
+> | BookLedgerPro | `MyHVM7Pd…` | `6oKgwHRp…` | 0.8337 (Register v0.1, **live v0.2**) |
+> | Jasons-Tresor | `lbUthjt-…` | `zHqjzJX5…` | 0.9155 |
+> | Mein-Tresor | `feV3o4qJ…` | `nmRebxCn…` | 0.9144 |
+> | Family Projekt | `XoYhjpgm…` | `eg23tVHt…` | 1.0000 (nur der Schlüssel weg) |
+> | Kimboard | `1f9Jb7c3…` | `vPg4z2Ci…` | 0.9880 |
+>
+> Beleg: `docs/sessions/archiv/2026-07-29_mycel-analyse-identitaetsverlust.md`. **BookLedgerPro:** das
+> Register führt noch `v0.1`, die **lebende** Spore läuft schon `v0.2` (inhaltstreuer Vektor) — hier ist
+> die Tabelle schlechter als die Wirklichkeit.
+
 ---
 
 ## Stufen-Legende

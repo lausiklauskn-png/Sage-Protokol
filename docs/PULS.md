@@ -20,7 +20,7 @@ auslagern statt kürzen.
      Aufruf-Pflicht: nach jeder status.json-Änderung. Siehe CLAUDE.md. -->
 ```mermaid
 pie showData
-  title Modulstand 2026-07-24 (27 Module)
+  title Modulstand 2026-07-29 (27 Module)
   "🟫 Schablone" : 6
   "🟧 In Werkstatt" : 0
   "🟨 Spec fertig" : 0
@@ -30,6 +30,66 @@ pie showData
 
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
+
+## Stand 2026-07-29 (Nacht) — Stufe 0a/0c/0d/0e gebaut: Kennung + Speicher sichtbar, Widersprüche geheilt
+
+**Rolle:** Bau-Sitzung (Stufe 0 aus `docs/sessions/BRIEF_STUFE0_IDENTITAET_HALTBAR.md`).
+Branch netzweit `claude/stufe-0a-identitaetskennungen-78ulx5` (je Repo frisch von `origin/main`).
+
+**Was getan.**
+
+- **0a — messen, bevor repariert wird.** Das Netz-Panel (Modul 23 UI,
+  `23_rendezvous_ui.js`) zeigt jetzt zwei ehrliche Zeilen: **„Meine Kennung: …"**
+  (aus Modul 02 `getOwnSpore()`) und **„Speicher dauerhaft: ja/nein/unbekannt"**
+  (aus Modul 01 `SbkimStorage._meta.storagePersisted`). Bei „nein" erscheint ein
+  Satz in Klaus-Sprache (installieren macht ihn dauerhaft; Sicherung schützt
+  zusätzlich). Reine Anzeige, konsequent fail-soft (fehlt ein Wert → „unbekannt"/
+  „noch keine", nie ein Fehler). Beide Werte existierten schon im Code, sie wurden
+  nur nicht gezeigt. Kern-Module **23/01/02 unangetastet** — die Änderung sitzt in
+  der UI-Glue-Datei, die byte-1:1 in allen fünf Apps liegt: **zuerst im Sage-Kanon
+  `src/modules/23_rendezvous_ui.js`**, dann byte-kopiert nach `sbkim-bundle/` +
+  BookLedgerPro + Mein-Tresor + Jasons-Tresor + family-project + Kimboard
+  (`modules/`). Kimboards sha256-Drift-Guard-Pin nachgezogen.
+- **0c — BookLedgerPro-Schubladen-Widerspruch geheilt.** `sbkim/sbkim-init.js`
+  rief Modul 23 mit `dbSuffix:"bookledgerpro"`, während die App-Identität in
+  `bookledgerpro-sbkim` liegt (`index.html:54` + `DB_SUFFIX`). Beide Modul-23-Aufrufe
+  nutzen jetzt die Variable `DB_SUFFIX` (= `bookledgerpro-sbkim`) → keine Phantom-DB
+  `sbkim_bookledgerpro` mehr, die vorhandene Identität bleibt auffindbar.
+- **0d — die zwei Tresore wieder unterscheidbar.** Der 🌐-Anmelde-Pfad in beiden
+  `sbkim/sbkim-init.js` bettete den **generischen, zeichengleichen** Satz ein →
+  Live-Cosinus exakt 1,0. Jetzt liest jeder Tresor seine **reiche, app-eigene**
+  Beschreibung (identisch zum Andock-Wizard `assets/siegel-inhalt.js` WIZ). Jasons
+  `scripts/generate_spore.mjs` mitgezogen. Gegenprobe headless: der Einbettungs-Text
+  war vorher **byte-identisch** (= gemessener Cosinus 1,0), ist jetzt **verschieden**
+  → echter e5-Cosinus < 1,0. **Der reale Browser-Cosinus wartet auf Klaus' Lauf**
+  (kein e5-Modell headless). Die committete `spore.json` wurde **nicht** überschrieben
+  (ihr echter Browser-Vektor darf nicht durch einen Demo-Stub ersetzt werden).
+- **0e — Register ehrlich.** `status.json` (neues Top-Feld `identityNote` + Notiz am
+  BLP-Eintrag) und `sbkim/NETZ-STAND.md` trennen jetzt **committete** (Register-)
+  gegenüber **lebender** (Raum-)Identität; BLP läuft **live v0.2** (Register führt
+  v0.1). Werte aus Klaus' Analyse übernommen, **nicht** neu verifiziert (Live-Sporen
+  liegen in Klaus' Downloads).
+
+**Beweis (headless).** Sage `smoke_bau23_rendezvous_ui.mjs` **87/87** (vorher 83, +4
+neue 0a-Proben) · `smoke_bundle_connect` 21/21 · `smoke_bau23_rendezvous` 59/59 ·
+`smoke_bau23b_kartenechtheit` 16/16. Kimboard `node --test` **6/6** (Drift-Guard-Pin
++ zwei vorher fehlende Modul-Kopien `echtheit.js`/`relay_rotation.js` in die Manifest-
+Liste nachgetragen — main war dort **schon rot**, jetzt grün). Mein-Tresor 53/53 ·
+Jasons-Tresor 59/59 · BookLedgerPro `tests/run.mjs` 2153/0 · family-project Nicht-
+Browser-Smokes grün (`smoke_all.mjs` braucht playwright-core, im Container nicht
+installiert — reiner Browser-Test, keine Regression durch die Anzeige-Änderung).
+
+**⛔ STOPP nach 0a — bewusst, kein Zweifel.** 0b (Identität haltbar machen:
+Installations-Hinweis + Sicherungs-Angebot + Wiederherstellen im Panel) wartet auf
+**Klaus' Messung über Nacht** (öffnen → Kennung notieren → Hard-Reload → gleich? →
+nächster Tag → gleich?). Erst das Ergebnis entscheidet, was 0b tun muss.
+
+**Browser-Sichttest ungeprüft — wartet auf Klaus' Browser-Lauf.**
+
+**Nächster sinnvoller Schritt.** Klaus misst über Nacht (0a). Ergebnis → 0b bauen
+(installieren/Sicherung/Wiederherstellen). Danach Stufe 3 „Bekannte bevorzugen".
+
+---
 
 ## Stand 2026-07-29 (Abend) — Befund aus Klaus' Mycel-Analyse: **die Identität überlebt die Sitzung nicht**
 
