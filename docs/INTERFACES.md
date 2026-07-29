@@ -4723,7 +4723,24 @@ Datenverträge (1:1 aus dem bewiesenen Prototyp):
   - Andock  = Modul 05 handshake(card.spore, null, {transport:"nostr",
               timeoutMs:12000}) an die lebende ID.
   Konstanten: RDV_TAG="sbkim-rdv", RDV_PRESENCE_KIND="sbkim-presence",
-  RDV_FRESH_SEC=1800, RDV_LISTEN_MS=4000, RDV_HANDSHAKE_TIMEOUT_MS=12000.
+  RDV_FRESH_SEC=1800, RDV_LISTEN_MS=4000, RDV_HANDSHAKE_TIMEOUT_MS=12000,
+  RDV_CARDS_MAX=200, RDV_CARDS_PER_SENDER_MAX=3.
+
+  ECHTHEIT DER KARTEN (Schutz-Plan Stufe 2b, 2026-07-29) — verbindlich:
+  Eine Karte wird nur aufgenommen, wenn ihre Spore die Ed25519-Prüfung von
+  Modul 02 `verifyForeignSpore(card.spore)` besteht UND `card.nodeId ===
+  card.spore.id` ist. Damit kann niemand mehr eine Karte mit fremder oder
+  erfundener Identität ins Brett hängen; die nodeId ist an den öffentlichen
+  Schlüssel gebunden (nodeId = base64url(sha256(rawPublicKey))).
+    - Fehlt Modul 02, bleibt der Raum funktionsfähig, aber die Karten sind
+      UNGEPRÜFT — dieser Zustand wird über `_meta.cardsVerified === false`
+      ehrlich nach außen gemeldet (kein stilles Durchwinken).
+    - Zusätzlich Mengenschutz gegen Flutung: höchstens RDV_CARDS_MAX Karten je
+      discover()-Durchlauf, höchstens RDV_CARDS_PER_SENDER_MAX je Nostr-pubkey
+      (ein Absender kann nicht beliebig viele Identitäten gleichzeitig
+      auslegen). Überzähliges wird still verworfen.
+    - Der 0.80-Andock-Riegel (Modul 05) bleibt davon UNBERÜHRT — diese Prüfung
+      steht davor, nicht an seiner Stelle.
 
 Bietet (öffentlich, window.SbkimRendezvous):
   init(opts?)              → Promise<void>   // Konfig setzen (idempotent);
