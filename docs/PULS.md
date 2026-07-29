@@ -31,6 +31,78 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-29 (Abend) — Befund aus Klaus' Mycel-Analyse: **die Identität überlebt die Sitzung nicht**
+
+**Rolle:** Analyse-Sitzung (kein Code). Klaus lieferte seinen Mycel-Analyse-Rekord
+(`mycel-analyse-20260729T174256.json`, Rekorder v1.3, 17:29:47–17:42:56 UTC, 43 Ereignisse)
+mit der Vermutung, es seien „einige Sporen verloren gegangen oder vielleicht sogar in
+Identitäten". **Die Vermutung bestätigt sich — mit einer anderen Ursache als zunächst
+angenommen.**
+
+**Was gemessen wurde.** Fünf Knoten waren live (BookLedgerPro · Jasons Tresor · Mein Tresor ·
+Family Projekt · Kimboard, alle mit Gerätenamen „· Klaus Tablet"); die zehn übrigen
+Register-Knoten waren schlicht nicht geöffnet (kein Befund). **Alle fünf Sporen sind
+kryptografisch gültig** — mit `node:crypto` nachgerechnet: 5/5 Ed25519-Signatur gültig, 5/5
+`nodeId === base64url(SHA-256(publicKey.x))`, alle `protocolVersion 0.2`, `nodeType hybrid`,
+korrekte verschiedene Endpunkte. **Nichts gefälscht** — und die am selben Tag gebaute
+Stufe-2b-Prüfung hätte keine davon fälschlich abgewiesen.
+
+**Der Befund:** **keine einzige** lebende Kennung steht im Register, auch nicht in
+`previousNodeIds` — BLP `6oKgwHRp…` (Register `MyHVM7Pd…`), Jasons `zHqjzJX5…` (`lbUthjt-…`),
+Mein-Tresor `nmRebxCn…` (`feV3o4qJ…`), Family `eg23tVHt…` (`XoYhjpgm…`), Kimboard `vPg4z2Ci…`
+(`1f9Jb7c3…`). Über die Läufe hinweg wechselt sie nachweislich: BLP 11.07. `itzsPCHy…` →
+23.07. `ZAOvf9tZ…` → 29.07. `6oKgwHRp…`; Family 23.07. `xMRGRZEw…` → 29.07. `eg23tVHt…`.
+**Der schärfste Einzelbeleg:** bei Family ist der Domänen-Vektor **exakt identisch** zum
+committeten (cos 1.0000) und die Beschreibung ebenfalls — es ist **nur der Schlüssel** weg.
+Kein Re-Embedding, keine Textänderung kann das erklären.
+
+**Korrigierte Erst-Annahme (wichtig):** die Sitzung schrieb zunächst, die Apps würden sich
+„beim Verbinden neu erfinden" — **das ist falsch und wurde gegenüber Klaus korrigiert.**
+`connectAndAnnounce` (`23_rendezvous.js:581-612`) nimmt eine vorhandene Identität und meldet
+sie an; `generateOwnSpore` (`02_spore.js:689-696`) signiert mit **derselben** nodeId neu; der
+Knopf „🧹 Aufräumen & neu anmelden" ruft `repairAndReconnect()` **ohne** `newIdentity` und ist
+**nicht** schlüssel-löschend; `cleanupSharedOrigin` löscht nur `sbkim`, nie `sbkim_<suffix>`;
+vier Apps haben vier eigene Schubladen. Klaus hat auf Rückfrage nichts zurückgesetzt.
+**Schluss:** der Schlüssel geht **zwischen** den Sitzungen aus dem Browser-Speicher verloren.
+
+**Der zu prüfende Verdacht:** `navigator.storage.persist()` wird gerufen
+(`01_storage.js:363`), das Ergebnis liegt in `_meta.storagePersisted` — und wird **nirgends
+angezeigt** (nur im Membran-Schnappschuss, `15_membran.js:1035-1041`). Auf Android-Chrome
+antwortet `persist()` für eine bloß im Tab geöffnete `github.io`-Seite typischerweise `false`;
+dann darf das System räumen. **Verdacht, kein Beweis** — messbar, sobald der Wert sichtbar ist.
+
+**Zweiter, unabhängiger Befund — die zwei Tresore sind für das Mycel EIN Knoten:**
+cos(Jasons live, Mein-Tresor live) = **exakt 1.000000** (alle anderen Live-Paare 0.82–0.86).
+Ursache gefunden: `sbkim/sbkim-init.js:107-108` ist in beiden Repos zeichengleich (derselbe
+generische `domainDescription` + dieselben neun Keywords), und der Einbettungstext besteht
+**nur** aus diesen beiden Feldern (`:116`) — der einzige Unterscheider `domain` geht nicht in
+den Vektor. Die guten, verschiedenen Beschreibungen liegen seit 19.07. in beiden Repos
+(`sbkim/spore.json`, `assets/siegel-inhalt.js:41`); der 🌐-Anmelde-Pfad liest sie **nie**.
+
+**Dritter Befund — Schubladen-Widerspruch in BookLedgerPro:**
+`window.SBKIM_DB_SUFFIX = "bookledgerpro-sbkim"` (`index.html:54`) gegen den Modul-23-Aufruf
+`dbSuffix: "bookledgerpro"` (`sbkim/sbkim-init.js:239`, `:242`). Der Schlüssel bleibt richtig
+liegen, aber die Hygiene-/Migrations-Proben fragen eine nicht existierende DB ab, legen sie
+kurz an und löschen sie wieder — der Schutzmechanismus läuft ins Leere.
+
+**Vierter Befund:** 12 Andock-Anfragen, **3 Antworten**, alle von BookLedgerPro. Bekannte
+Rest-Grenze (Antworter-Tab muss vorn und wach sein) — auf einem Tablet kann von fünf offenen
+Apps immer nur eine antworten. Eigenes Thema.
+
+**Klaus' Entscheid:** Stufe 0 **nicht** mehr in dieser Sitzung bauen, sondern detailgetreu
+festhalten und frisch starten — weil Stufe 0a eine **Messung** ist, deren Ergebnis über Nacht
+entsteht und erst dann bestimmt, was 0b tun muss. Diese Sitzung liefert daher nur
+Dokumentation, keinen Code.
+
+**Offen / nächster Schritt:** [`docs/sessions/BRIEF_STUFE0_IDENTITAET_HALTBAR.md`](sessions/BRIEF_STUFE0_IDENTITAET_HALTBAR.md)
+— vollständiger Auftrag mit Faktenblatt (alle Messwerte, damit nichts neu hergeleitet werden
+muss), Anker-Tabelle je Repo und Akzeptanzkriterien. Reihenfolge:
+`0a Kennung + Speicher-Status sichtbar machen (alle Repos) → ⛔ Klaus misst über Nacht → 0b
+Identität haltbar machen`; `0c` (BLP-Schubladen-Fix), `0d` (Tresore trennen) und `0e`
+(Register ehrlich) laufen unabhängig. **Stufe 0 kommt vor Stufe 3 des Schutz-Plans** — ohne
+stabile Identität sind „Bekannte bevorzugen", Bezeugung und der geschlossene Kreis wertlos.
+Übergabeprotokoll: `docs/sessions/archiv/2026-07-29_mycel-analyse-identitaetsverlust.md`.
+
 ## Stand 2026-07-29 — Schutz-Plan **Stufe 2b**: Echtheit der Karten im Rendezvous-Raum
 
 **Rolle:** Bau-Sitzung Modul 23 (Schutz-Plan Stufe 2b, Fortsetzung von Stufe 1+2 in
