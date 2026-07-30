@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-07-30",
-  "seq": 52,
-  "headline": "NACHTRAG ZU 0b - DIE ZWEITE, WICHTIGERE STELLE: alle fuenf Apps fuhren ensureIdentity:true bei SbkimRendezvous.init(). Damit legte die App schon BEIM SEITEN-START wortlos eine neue Kennung an, sobald die Schublade leer war - das Tor im Verbinden-Knopf (0b) kam ZU SPAET. Genau dort wurde aus einem Speicher-Problem unbemerkt ein Identitaets-Wechsel. BEHOBEN in Kimboard #59, BookLedgerPro #287, Mein-Tresor #81, Jasons-Tresor #139, family-project #124: ensureIdentity ist aus dem App-Klebstoff entfernt. Ist eine Kennung vorhanden, aendert sich NICHTS (sie wird beim Start unveraendert gelesen); ist die Schublade leer, entscheidet der Nutzer im Netz-Panel (neu anlegen ODER Sicherung einspielen). Nur Klebstoff, eine Zeile je App, Kern-Module unangetastet. Suiten gruen (6/6, 2153/0, 53/0, 59/0, node --check ueberall). AN ALLE FORKER/KNOTEN: wer Modul 23 einbaut, uebergibt ensureIdentity NICHT MEHR - eine App darf einem Besucher keine Identitaet unterschieben, und ein Speicher-Problem darf nicht stillschweigend zum Identitaets-Wechsel werden. DATEINAME der Sicherung: sbkim-sicherung-<app>-<datum>.json (app = dbSuffix, also kimboard / bookledgerpro-sbkim / meintresor / jasonstresor / familyprojekt). LEHRE FUER SITZUNGEN: ein grep mit head -N ist KEIN Beweis fuer Abwesenheit - diese Sitzung hatte deshalb zuerst faelschlich gemeldet, es gebe keine solche Stelle. Rueck-Quittung erbeten.",
+  "seq": 53,
+  "headline": "NACHZUG + NETZ-PRUEFUNG: fuenf Apps waren beim 0a/0b-Rollout VERGESSEN worden (Kimseek, Mein-Rezeptbuch, Muttis-Rezeptbuch, Mein-Mixarium, Tomys-Hub) - sie trugen den alten Panel-Stand und legten beim Seiten-Start weiter wortlos neue Kennungen an. Alle fuenf jetzt auf dem Kanon-Stand, ensureIdentity ueberall raus, Mein-Mixarium hat seine Wappen-Gravur (ribbonText) - es war die letzte App ohne. BookLedgerPro hat den Andock-Wizard im Siegel bekommen (5 Bausteine inkl. Identitaets-Wechsler) plus sicherheit.html und die fehlenden Netz-Panel-Dateien in der offline-Schale. WICHTIGER BEFUND FUER ALLE KNOTEN: Schutz-Plan STUFE 2b (Kartenechtheit + Flut-Deckel, gebaut 2026-07-29) liegt NUR in Sage - KEINE App hat sie. discover() nimmt dort Karten weiter UNGEPRUEFT entgegen: jeder kann sich unter fremdem Namen ins Brett haengen, ein Fluter kann den Raum fuellen. Drei Generationen von Modul 23 im Umlauf (Kanon 3caa0bb1, meiste Apps 9f3a2085, beide Tresore bbdf02a8). Ebenso fehlt allen Apps der Siegel-Aspekt vom 2026-07-29 (Modul 16 Kanon 4e11ef0d vs a581461a). Der Rollout ist der naechste Bau und steht vollstaendig in docs/sessions/BRIEF_MODUL23_STUFE2B_ROLLOUT.md. LEHRE: ein Auftrag, der eine App-Liste nennt, ist KEINE Erlaubnis, den Rest des Netzes stehen zu lassen - wer eine geteilte Datei anfasst, prueft ALLE Traeger per sha. Rueck-Quittung erbeten.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 53,
+      "date": "2026-07-30",
+      "headline": "0a/0b-Nachzug in fünf vergessenen Apps + Befund: Schutz-Plan Stufe 2b nur in Sage"
+    },
     {
       "seq": 52,
       "date": "2026-07-30",

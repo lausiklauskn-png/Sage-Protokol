@@ -31,6 +31,74 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-30 (Abend) — Nachzug: fünf vergessene Apps + Netz-Prüfung
+
+**Rolle:** Bau-Sitzung (Fortsetzung 0b). **Gemergt:** BookLedgerPro #290 (Wizard
+ins Siegel) · #291 (offline-Schale) · Kimseek #48 · Mein-Rezeptbuch #352 ·
+Muttis-Rezeptbuch #165 · Mein-Mixarium #166 · Tomys-Hub #129.
+
+### Der Befund, der die Sitzung verlängert hat
+
+Klaus' Frage „hast du wirklich **alle** Repos aktualisiert?" war berechtigt.
+**Nein.** Der 0a/0b-Rollout ging an fünf Apps, weil der ursprüngliche Auftrag
+fünf nannte — **fünf weitere** trugen weiter den alten Panel-Stand und legten beim
+Seiten-Start wortlos neue Kennungen an: **Kimseek, Mein-Rezeptbuch,
+Muttis-Rezeptbuch, Mein-Mixarium, Tomys-Hub**. Alle fünf sind jetzt auf
+`c78d18d0…`, `ensureIdentity` überall raus, Mixarium hat seine Wappen-Gravur
+(`ribbonText: "Mein Mixarium"` — es war die letzte App ohne).
+
+**Lehre:** ein Auftrag, der eine App-Liste nennt, ist keine Erlaubnis, den Rest
+des Netzes stehen zu lassen. Wer eine geteilte Datei anfasst, prüft **alle**
+Träger — `git ls-tree` über jedes Repo, sha vergleichen, Tabelle zeigen.
+
+### BookLedgerPro: Siegel vervollständigt (nach Skill `status-leiste-siegel`)
+
+BLP war die einzige App mit Modul 16 **ohne** Modal-Inhalt. Es bekam
+`sbkim/siegel-inhalt.js` (1:1 aus dem Sage-Kanon, nur `WIZ` angepasst) mit allen
+fünf Bausteinen inkl. **Identitäts-Wechsler**. Der Skill deckte zwei Lücken auf:
+**`ribbonText` fehlte** (Wappen-Band leer) und **`sicherheit.html` fehlte** (toter
+Knopf im Schutz-Block) — beides behoben. Dazu Nachzug: `21_spracheingabe.js` +
+beide `23_rendezvous*.js` fehlten in `CORE_ASSETS` → **offline war das ganze
+Netz-Panel weg**; nachgetragen, `CACHE_VERSION` v213 → v215.
+
+### Die Netz-Prüfung — und der eigentliche Befund
+
+**Schutz-Plan Stufe 2b (Kartenechtheit + Flut-Deckel, gebaut 2026-07-29) liegt
+NUR in Sage. Keine einzige App hat sie.** In jeder echten App nimmt `discover()`
+Karten weiterhin ungeprüft entgegen: jeder kann sich unter fremdem Namen ins Brett
+hängen, ein Fluter kann den Raum füllen. **Das ist der Spam-/Sybil-Schutz, nach dem
+Klaus gefragt hat** — er ist gebaut und getestet, nur nicht ausgerollt.
+
+**Drei Generationen von Modul 23 im Umlauf:** Kanon `3caa0bb1` · die meisten Apps
+`9f3a2085` · Mein-Tresor + Jasons-Tresor `bbdf02a8` (zwei Generationen zurück, ohne
+`rankCardsByQuery`). Ebenso fehlt **allen** Apps der Siegel-Aspekt vom 2026-07-29
+(Modul 16: Kanon `4e11ef0d`, Apps `a581461a`).
+
+**Vollständige Tabelle, Vorgehen, Test-Erwartungen je Repo, bekannte Grenzen und
+alle sha-Werte:** `docs/sessions/BRIEF_MODUL23_STUFE2B_ROLLOUT.md` — der Brief ist
+so geschrieben, dass die nächste Sitzung **ohne Rückfrage** durchziehen kann.
+
+### Schutz-Plan, Stand
+
+| Stufe | Was | Stand |
+|---|---|---|
+| 1 + 2 | Grundschutz (Kimboard) | ✅ |
+| **2b** | Kartenechtheit + Flut-Deckel | ✅ gebaut · ❌ **nur in Sage** |
+| **0a** | Kennung + Speicher sichtbar | ✅ netzweit (11 Apps) |
+| **0b** | Kennung reparierbar, keine stumme Neu-Anlage | ✅ netzweit (11 Apps) |
+| 3 | Bekannte bevorzugen | ⏳ nach 2b-Rollout |
+| 4 · 4d/4e · 5 · 6 | Themen-Mycel · Wächter-Quorum · Stufen-Schalter · Rollout | ⏳ |
+
+### Offen
+
+1. **Klaus' Browser-Sichttest 0b** — Sicherung anlegen, später einspielen.
+2. **Stufe-2b-Rollout** (der neue Brief) — vor Stufe 3.
+3. Sage fehlt `sicherheit.html`; Sages `siegel-inhalt.js` ist hinter Mein-Tresor
+   (Wizard-Init-Heilung vom 2026-07-19).
+4. PULS-Archivierung (7573 Zeilen gegen 3000er-Klausel, alt).
+
+---
+
 ## Stand 2026-07-30 (Nachmittag) — Stufe 0b gebaut: die Kennung ist jetzt REPARIERBAR
 
 **Rolle:** Bau-Sitzung (Brief `BRIEF_STUFE0B_IDENTITAET_HALTBAR.md`).
