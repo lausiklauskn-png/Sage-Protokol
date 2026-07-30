@@ -31,6 +31,87 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-30 (späte Nacht) — Die halbe Kennung heißt jetzt so (11 Repos)
+
+**Rolle:** Bau-Sitzung (Fortsetzung 0b) · **Branch:** `claude/halbe-kennung-benennen`
+**Gemergt:** Sage #759 · Kimboard #64 · Kimseek #51 · BookLedgerPro #294 ·
+Mein-Tresor #86 · Jasons-Tresor #144 · family-project #129 · Mein-Rezeptbuch #355 ·
+Muttis-Rezeptbuch #168 · Mein-Mixarium #169 · Tomys-Hub #132
+
+### Der Befund kam aus Klaus' Browser (18:54/18:55)
+
+Drei Stellen gaben **drei verschiedene Antworten auf dieselbe Frage**:
+
+| Stelle | Aussage |
+|---|---|
+| Statuszeile | `Meine Kennung: noch keine (erst verbinden)` |
+| Einspielen | „In diesem Browser liegt schon eine Kennung. Einspielen ERSETZT sie." |
+| Sicherung | erst **nach** dem Passwort: „Identität 'main' hat noch keine Spore" |
+
+Alle drei hatten recht. Es ist ein **Zwischenzustand**: der Schlüssel liegt im
+Browser, die Visitenkarte (Spore) fehlt noch. Nur hatte ihn niemand benannt —
+und ausgerechnet die Sicherung meldete ihn erst, nachdem Klaus zweimal ein
+Passwort getippt hatte.
+
+### Was gebaut wurde
+
+Alles in `src/modules/23_rendezvous_ui.js` (Kanon, jetzt sha `f2cf79c9defb`):
+
+- `readIdentityState()` liest zusätzlich `getOwnSpore()` → `hasSpore`
+- die Statuszeile nennt den Zustand — **„⚠ Angefangene Kennung: der Schlüssel
+  liegt hier, die Visitenkarte (Spore) fehlt noch."** — samt Ausweg (einmal
+  „🌐 Mit dem Knotennetz verbinden", oder im Siegel Schritt 2 „Spore erzeugen")
+- `openBackupForm()` prüft **vor** der Passwort-Eingabe statt danach
+
+REINE UI-Schicht über die **öffentlichen** Flächen von Modul 02. Kern-Module
+01/02/05/05b/23 unangetastet, kein `PROTOCOL_VERSION`-/`DB_VERSION`-Bump,
+0.80-Andock-Riegel unberührt, fail-soft ohne Modul 02.
+
+### Beweis
+
+| Lauf | Ergebnis |
+|---|---|
+| `smoke_bau23_0b_identitaet.mjs` | **49/49** (Proben `0b/8` neu) |
+| **GEGENPROBE** `SBKIM_0B_SABOTAGE_HALF=1` (neu) | **45/49 — genau die vier neuen fallen** |
+| GEGENPROBE `SBKIM_0B_SABOTAGE=1` | 45/49 |
+| GEGENPROBE `SBKIM_0B_SABOTAGE_WATCH=1` | 47/49 |
+| `smoke_bau23_rendezvous_ui` / `_rendezvous` / `bau23c` / `bundle_connect` | 87 · 59 · 28 · 21 |
+| Kimboard · Kimseek | 6/6 · 11/11 (sha-Pins nachgezogen) |
+| **GEGENPROBE Drift-Guard** (eine Zeile an die Kimboard-Kopie angehängt) | **5/6 — er beißt** |
+| BookLedgerPro · Mein-Tresor · Jasons-Tresor · Mein-Rezeptbuch | 2153/0 · 53/0 · 59/0 · 7/0 |
+| Mein-Mixarium (4 Suiten) | 8 · 11 · 14 · 7 |
+| Tomys-Hub (8 Suiten) | 35 · 38 · 19 · 15 · 9 · 16 · 31 · 11 |
+
+**Netzweite Nachprüfung auf `main`** (die Lehre aus dem Nachzug-Fehler): alle
+**12 Träger** der Datei auf `f2cf79c9defb` — Sage `src/` + `sbkim-bundle/` und
+die zehn Apps. Company-Brain, Privat-Brain, SB-KIMTool-Point und Mein-WorkFloh
+wurden **ausdrücklich mitgeprüft** und tragen die UI-Datei nicht (0 Kopien) —
+keine stillschweigende Auslassung.
+
+**Gegenprobe, dass der parallel gelaufene 2b-Rollout nicht überschrieben wurde:**
+`23_rendezvous.js` = `3caa0bb1fbe7` und `16_siegel.js` = `4e11ef0d0390` stehen
+in allen Apps unverändert auf `main`.
+
+**Nicht geprüft — ehrliche Grenzen:**
+
+- **Muttis-Rezeptbuch** hat keine Test-Suite; **family-project** braucht
+  `playwright-core` und hat keine `package.json`. Beide tragen eine per sha256
+  gegen den Kanon geprüfte byte-identische Kopie.
+- **Tomys-Hub `smoke-spore-download.cjs`** fällt weiterhin (Playwright-Timeout).
+  **Vorbestehend** — in der vorigen Runde auf blankem `origin/main` gegengeprüft.
+- **Der echte Browser-Pfad** — wartet auf Klaus.
+
+### Klaus' 0b-Sichttest ist grün (18:57)
+
+Sein Bild von 18:57 schließt den offenen Sichttest aus dem Nachmittag positiv ab:
+`Meine Kennung: zmNI_S_bB7BimoGBTmd8l_FCOAqdNRDxiKnaEt3o2B0`, `Letzte Sicherung:
+2026-07-30`, `✓ Sicherung erzeugt: sbkim-sicherung-kimboard-2026-07-30.json`,
+Chrome meldet „Datei heruntergeladen (25,42 KB)". Und: **kein Aufräum-Knopf** —
+bei einem Fach bleibt er weg, genau wie gebaut. Offen bleibt nur noch
+**📥 Sicherung einspielen** mit genau dieser Datei.
+
+Übergabeprotokoll: `docs/sessions/archiv/2026-07-30_halbe-kennung-benennen.md`.
+
 ## Stand 2026-07-30 (Nacht) — Schutz-Plan Stufe 2b NETZWEIT ausgerollt (13 Repos)
 
 **Rolle:** Bau-Sitzung (Rollout aus `BRIEF_MODUL23_STUFE2B_ROLLOUT.md`).
