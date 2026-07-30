@@ -91,14 +91,31 @@ REINE UI-Schicht über die **öffentlichen** Flächen von Modul 02. Kern-Module
 **01/02/05/23 unangetastet**, kein `PROTOCOL_VERSION`-/`DB_VERSION`-Bump,
 0.80-Andock-Riegel unberührt, fail-soft ohne Modul 02.
 
-### Korrektur am Brief
+### Nachtrag: der Brief hatte recht, die Sitzung hatte unrecht
 
-Der Brief schrieb: „legt **beim Öffnen** wortlos eine neue Identität an
-(`ensureIdentity:true`)". Geprüft: **kein** App-Klebstoff im Netz übergibt
-`ensureIdentity:true` an `SbkimRendezvous.init()`. Die Kennung entsteht **beim
-Klick auf „Mit dem Knotennetz verbinden"** (`connectAndAnnounce` → `ensureIdentity`).
-Dort sitzt jetzt das Tor. Ergebnis identisch, Fundstelle anders — hier
-festgehalten, damit die nächste Sitzung nicht an der falschen Stelle sucht.
+Diese Sitzung notierte zuerst, „kein App-Klebstoff übergibt `ensureIdentity:true`".
+**Das war falsch.** Der prüfende `grep` lief mit `head -5` und wurde von
+`ensureIdentityStores`-Treffern aus Modul 02 zugeschüttet; die echten Fundstellen
+in den Glue-Dateien fielen unter den Tisch.
+
+Tatsächlich fuhren **alle fünf** Apps `ensureIdentity: true` bei
+`SbkimRendezvous.init()`:
+
+| App | Datei |
+|---|---|
+| Kimboard | `assets/rendezvous-init.js` |
+| BookLedgerPro · Mein-Tresor · Jasons-Tresor · family-project | `sbkim/sbkim-init.js` |
+
+Damit legte die App **beim Seiten-Start** wortlos eine neue Kennung an, sobald die
+Schublade leer war — das Tor im Verbinden-Knopf kam **zu spät**.
+
+**Behoben am selben Tag** (Kimboard #59, BookLedgerPro #287, Mein-Tresor #81,
+Jasons-Tresor #139, family-project #124): `ensureIdentity` ist aus dem Klebstoff
+entfernt. Ist eine Kennung vorhanden, ändert sich nichts; ist die Schublade leer,
+entscheidet der Nutzer. Suiten grün (6/6 · 2153/0 · 53/0 · 59/0 · `node --check`).
+
+**Lehre:** ein `grep` mit `head -N` ist **kein Beweis für Abwesenheit**. Wer
+„X kommt nirgends vor" schreibt, zählt vorher ungekürzt.
 
 ## 4. Beweis
 
