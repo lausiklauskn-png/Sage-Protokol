@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-07-29",
-  "seq": 48,
-  "headline": "Stufe 0a/0c/0d/0e gebaut (Identität haltbar machen, Fundament unter Stufe 3). 0a: das Netz-Panel (Modul 23 UI, byte-1:1 in allen Apps) zeigt jetzt zwei ehrliche Zeilen — 'Meine Kennung: …' (aus getOwnSpore) und 'Speicher dauerhaft: ja/nein/unbekannt' (aus SbkimStorage._meta.storagePersisted); fail-soft, reine Anzeige, Kern-Module 23/01/02 unberührt. 0c: BookLedgerPro Schubladen-Widerspruch geheilt — Modul-23-Aufruf nutzt jetzt DB_SUFFIX 'bookledgerpro-sbkim' (vorher 'bookledgerpro'), keine Phantom-DB mehr. 0d: die zwei Tresore (Mein-Tresor/Jasons-Tresor) sind wieder unterscheidbar — der 🌐-Anmelde-Pfad in sbkim-init.js liest jetzt die reiche, app-eigene Domänen-Beschreibung (vorher generischer, zeichengleicher Satz → Live-Cosinus exakt 1,0). Reale Gegenprobe (echter e5-Cosinus < 1,0) wartet auf Klaus' Browser-Lauf. 0e: Register ehrlich gemacht — status.json (neues identityNote + BLP-Notiz) und NETZ-STAND.md trennen jetzt committete vs. lebende Identität; BLP live v0.2 (Register führt v0.1). BEFUND (Klaus' Mycel-Analyse 2026-07-29): die lebende nodeId überlebt die Sitzung nicht (Browser räumt best-effort-Speicher). 0b (haltbar machen: installieren/Sicherung/Wiederherstellen) wartet bewusst auf Klaus' Messung über Nacht. FÜR ALLE KNOTEN: prüft eure eigene 'Speicher dauerhaft'-Zeile; installierte PWAs (Startbildschirm) bekommen von Chrome 'ja'. Rück-Quittung erbeten.",
+  "seq": 49,
+  "headline": "NETZWEITER FIX (alle 12 Modul-01-Träger + Bundle, gemergt): Identitäts-Churn behoben. Ursache (Klaus' Live-Reproduktion + Screenshots): dieselbe App in ZWEI Fenstern -> onversionchange -> db.close() -> db.transaction() wirft InvalidStateError 'The database connection is closing' -> Handshake bricht UND ein fehlgeschlagener Identitäts-Lesevorgang wurde als 'keine Identität' missverstanden -> neue Kennung, alte Fächer bleiben liegen (Mein-Tresor x3 im Raum). Fix in Modul 01 (beginTx, EIN Reopen-Retry auf frischer Verbindung; sonst ehrlicher Fehler statt stillem undefined). Kein DB_VERSION-/Schema-/API-Bump; Module 02/23 unberührt. Beweis: smoke_pflege_01_reopen_retry 3/3 (Bug-Reproduktion + Selbstheilung + Ehrlichkeits-Gegenprobe), Suiten regress-frei. FÜR ALLE KNOTEN: nach Hard-Reload trägt jede App den Fix; 'Speicher dauerhaft: ja' schützt NICHT vor diesem Parallelzugriffs-Problem (kein Räum-Problem). Aufräum-Knopf für schon entstandene Mehrfach-Fächer kommt mit 0b. Rück-Quittung erbeten.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -239,6 +239,11 @@
       "seq": 48,
       "date": "2026-07-29",
       "headline": "Stufe 0a/0c/0d/0e gebaut — Kennung+Speicher-Status im Netz-Panel sichtbar, BLP dbSuffix geheilt, Tresore unterscheidbar, Register committet-vs-lebend ehrlich. 0b wartet auf Klaus' Nacht-Messung."
+    },
+    {
+      "seq": 49,
+      "date": "2026-07-29",
+      "headline": "Netzweiter Modul-01-Fix: 'connection is closing' heilt sich selbst — Identitäts-Churn + Handshake-Fehler bei zwei Fenstern derselben App behoben (13 PRs gemergt)."
     }
   ]
 }
