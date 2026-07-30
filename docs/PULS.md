@@ -31,6 +31,127 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-30 (Nachmittag) — Stufe 0b gebaut: die Kennung ist jetzt REPARIERBAR
+
+**Rolle:** Bau-Sitzung (Brief `BRIEF_STUFE0B_IDENTITAET_HALTBAR.md`).
+**Branch:** `claude/stufe-0b-identitaet-reparierbar` · **6 PRs gemergt**
+(Sage #752, Kimboard #58, BookLedgerPro #286, Mein-Tresor #80, Jasons-Tresor #138,
+family-project #123).
+
+### Zwei Belege von Klaus, die diesen Bau ausgelöst haben
+
+**Lauf 16:54–16:57 (Mycel-Rekord `20260730T145936`, erster Lauf NACH den Fixes):**
+
+- **Der Handshake läuft sauber.** Sage ⟷ SB-KIMTool-Point, **fünf** Antworten,
+  jede `outcome: "established"`, Score **0.8635**. Kein „connection is closing",
+  kein `decision: null`, keine zweite Kennung mitten im Lauf. Erster Live-Beleg,
+  dass **Fix 1** im Browser greift.
+- **Aber beide Schubladen waren LEER.** Klaus' Bild 16:54 zeigt
+  `Meine Kennung: noch keine (erst verbinden)` bei `Speicher dauerhaft: ja`;
+  16:55 dann `✓ Identität erzeugt: bAf_3wjfRXMlz3B11_v-…` (Spore 14:54:56 UTC),
+  16:57 dasselbe für den Point (`aNoV2w6NAIHDzVvl…`, 14:57:08 UTC).
+  **Die App legt wortlos neu an** — genau Punkt 3 des 0b-Briefs, an Klaus'
+  eigenem Lauf belegt. **0a hat den Fehler beim ersten Blick sichtbar gemacht.**
+
+**Lauf 14:59–15:11 (Rekord `20260730T151140`) — der ernüchternde Teil:**
+
+- **Kimboard hat SEINE Kennung erneut verloren.** `XFi3xrd7xMSuaf` (04:45 UTC,
+  noch live um 05:01) ist weg; um **15:09:38 UTC** entsteht `e8UwgMlxrmSjetpO`
+  — die **dritte** Kimboard-Kennung binnen zwei Tagen. Klaus' Bild 17:08 zeigt
+  wieder `Speicher dauerhaft: ja`.
+- **Ehrlich zur Ursache:** das ist **kein Beweis, dass die Härtung nicht wirkt**,
+  aber auch **kein Beweis, dass sie wirkt**. Zwei Wege bleiben offen: (a) das
+  Fenster vom 05:01 lief noch mit **altem** Code (Klaus hatte es nicht
+  geschlossen) und eine schon **vorgemerkte** `deleteDatabase()` ist später
+  gefallen; (b) eine andere, noch unbekannte Ursache. Die Frage lässt sich aus
+  den Rekorden **nicht** entscheiden — darum ist die Antwort nicht „noch eine
+  Ursachensuche", sondern **Reparierbarkeit**.
+- Nebenbefund: Kimboards Andock-Anfragen an Sage (Ereignis 34 + 54) blieben
+  **ohne Antwort** — dazu passt die bekannte Rest-Grenze „Antworter-Tab muss
+  vorn und wach sein". **Nicht** in diesem Auftrag, eigenes Thema.
+
+### Was gebaut wurde (Modul 23 UI, Kanon → 5 Apps + Bundle)
+
+Neuer Kasten **„🪪 Kennung sichern"** im Netz-Panel, direkt unter den
+0a-Statuszeilen:
+
+1. **💾 Sicherung anlegen** — verschlüsselte Datei über Modul 02 `exportBackup`
+   (PBKDF2-SHA256 600k + AES-GCM-256). Passwort **zweifach** eingegeben,
+   **nirgends** gespeichert (Test prüft das). Solange keine Sicherung angelegt
+   wurde, **warnt** der Hinweis: „Für diesen Knoten liegt hier noch KEINE
+   Sicherung."
+2. **📥 Sicherung einspielen** — `importBackup`. Liegt schon eine Kennung im
+   Fach, kommt **erst die Warnung**, dann das ausdrückliche „Ja, ersetzen".
+   Danach ist die **alte** Kennung zurück (das ist die Gegenprobe des Briefs).
+   Falsches Passwort → ehrliche Fehlermeldung, kein stiller Erfolg.
+3. **Schluss mit stummer Neu-Anlage** — war die Schublade leer, hat „🌐 Mit dem
+   Knotennetz verbinden" bisher **wortlos** eine neue Identität erzeugt. Jetzt
+   fragt es **einmal**: neu anlegen ODER Sicherung einspielen, mit der Warnung
+   „eine neue Kennung ist NICHT dieselbe wie eine frühere". Ist eine Kennung da,
+   ändert sich **nichts** (kein zusätzlicher Klick); lässt sich der Stand nicht
+   lesen, läuft der alte Weg unverändert (ein Lese-Problem darf keine neue Hürde
+   bauen).
+4. **🧹 Fächer aufräumen** — die schon entstandenen Mehrfach-Fächer entfernen,
+   das aktive bleibt. Mit Rückfrage, als **Knopf**, keine Konsole.
+
+**Die ehrliche Grenze steht sichtbar in der Oberfläche**, nicht nur in der Doku:
+„Eine Räumung durch den Browser lässt sich nicht verhindern — nur
+unwahrscheinlicher machen (App auf den Startbildschirm legen) und der Verlust
+reparierbar halten (Sicherung)."
+
+### Abgrenzung
+
+REINE UI-Schicht über die **öffentlichen** Flächen von Modul 02. Die Kern-Module
+**01/02/05/23 bleiben unangetastet**, kein `PROTOCOL_VERSION`-/`DB_VERSION`-Bump,
+der 0.80-Andock-Riegel unberührt. Konsequent fail-soft: ohne Modul 02 sagen die
+Knöpfe das **ehrlich** — kein toter Knopf, kein Crash (Fremdnutzer-/Marktplatz-Brille).
+
+**Korrektur am Brief:** der 0b-Brief schrieb „legt **beim Öffnen** wortlos eine
+neue Identität an (`ensureIdentity:true`)". Geprüft: **kein** App-Klebstoff im
+Netz übergibt `ensureIdentity:true` an `SbkimRendezvous.init()`. Die Kennung
+entsteht **beim Klick auf „Mit dem Knotennetz verbinden"** — dort sitzt jetzt das
+Tor. Ergebnis identisch, Fundstelle anders; hier festgehalten, damit die nächste
+Sitzung nicht an der falschen Stelle sucht.
+
+### Beweis
+
+| Lauf | Ergebnis |
+|---|---|
+| `tests/smoke_bau23_0b_identitaet.mjs` | **34/34 grün** |
+| **GEGENPROBE** `SBKIM_0B_SABOTAGE=1` (Tor ausgehebelt) | **30/34 — fällt** |
+| `smoke_bau23_rendezvous_ui.mjs` | 87/87 (regress-frei) |
+| `smoke_bau23_rendezvous.mjs` · `smoke_bau23c_ki_richter.mjs` · `smoke_bundle_connect.mjs` | 59/59 · 28/28 · 21/21 |
+| Kimboard `npm test` (Drift-Guard) | 6/6 |
+| Mein-Tresor · Jasons-Tresor · BookLedgerPro | 53/0 · 59/0 · 2153/0 |
+
+**Nicht geprüft (ehrlich):** family-projects Suite braucht `playwright-core` und
+ließ sich hier nicht installieren (kein `package.json`) — dort ist die Änderung
+eine per sha256 geprüfte byte-identische Kopie. Und: der **echte Browser-Pfad**
+(Datei-Download, Datei-Auswahl, echte AES-Krypto, IndexedDB) **wartet auf Klaus'
+Browser-Lauf**. Headless ersetzt ihn nicht.
+
+### Offen / nächster Schritt
+
+1. **Klaus' Sichttest (nicht ersetzbar):** in EINER App zuerst **💾 Sicherung
+   anlegen**, dann später **📥 einspielen** → die alte Kennung muss zurück sein.
+   Vorher alle offenen Fenster neu laden (alter Code läuft in offenen Fenstern
+   weiter — die Lehre vom 30.07.).
+2. **Stufe 0c** (neuer Brief): Sicherung **anbieten, sobald** eine Kennung
+   entsteht, statt sie nur zu erwähnen — und die Wiederherstellung an derselben
+   Stelle. Erst danach ist der Kreis wirklich zu.
+3. Der **stumme Antworter** (Kimboard→Sage ohne Antwort) bleibt eigenes Thema.
+
+Übergabeprotokoll: `docs/sessions/archiv/2026-07-30_stufe-0b-identitaet-reparierbar.md`.
+
+**Befund am Rande (nicht in diesem Auftrag, gehört aber gemeldet):** diese Datei
+hat **7573 Zeilen** — die Schutz-Klausel im Kopf nennt **3000** als Grenze und
+verlangt „auslagern statt kürzen". Der Überlauf bestand schon vor dieser Sitzung
+(7459 Zeilen auf `main`). Das Auslagern älterer Stände ins Archiv ist eine eigene
+Pflege-Sitzung — hier bewusst **nicht** nebenbei erledigt, aber auch nicht
+stillschweigend übergangen.
+
+---
+
 ## Stand 2026-07-30 (früh) — URSACHE GEFUNDEN: unser Code löschte die Identität, nicht der Browser
 
 **Rolle:** Fortsetzung derselben Bau-Sitzung (Klaus: „entscheide selber, es geht nichts verloren").

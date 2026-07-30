@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-07-30",
-  "seq": 50,
-  "headline": "URSACHE DES IDENTITAETSVERLUSTS GEFUNDEN + netzweit geheilt (13 PRs gemergt): es war UNSER Code, nicht der Browser. Die Selbst-Heilung in Modul 01 loeschte eine DB, die sie fuer identitaets-leer hielt; ein paralleler Schema-Umbau in einem ANDEREN Fenster macht objectStoreNames transient UNVOLLSTAENDIG -> Fehlurteil -> DB MIT Identitaet geloescht. Verschaerfend: deleteDatabase() ist unumkehrbar und wirkt bei onblocked VERZOEGERT (bleibt vorgemerkt bis die letzte Verbindung faellt - Tab schlaeft ueber Nacht ein), darum war NIE ein Fehler sichtbar. Ausschluss-Beweis: Sprachmodell + localStorage ueberlebten, nur die Kennungs-DB war weg -> kein Browser-Eviction. Modul 07 entlastet (kein TTL-Sweep in init). HAERTUNG: zweite unabhaengige Gegenprobe vor jedem Loeschen; im Zweifel NICHT loeschen, ehrlich ablehnen. Beweis MIT Gegenprobe: neuer Test 4/4, ohne Haertung 2/4 mit \"WEG - Datenverlust!\". Kein DB_VERSION-Bump. FUER ALLE KNOTEN: nach jedem Update ALLE offenen Fenster neu laden - alter Code laeuft in offenen Fenstern weiter. \"Speicher dauerhaft: ja\" schuetzt NICHT vor diesem Fehler. Rueck-Quittung erbeten.",
+  "seq": 51,
+  "headline": "STUFE 0b GEBAUT + netzweit gemergt (6 PRs): die Kennung ist jetzt REPARIERBAR. Im Netz-Panel steht neu \"Kennung sichern\": (1) Sicherung anlegen als verschluesselte Datei (Modul 02 exportBackup, PBKDF2 600k + AES-GCM-256, Passwort zweifach und NIRGENDS gespeichert); (2) Sicherung einspielen (importBackup) - liegt schon eine Kennung im Fach, erst Warnung, dann ausdrueckliches \"Ja, ersetzen\", danach ist die ALTE Kennung zurueck; (3) SCHLUSS MIT STUMMER NEU-ANLAGE: war die Schublade leer, hat \"Mit dem Knotennetz verbinden\" bisher WORTLOS eine neue Identitaet erzeugt - jetzt fragt es einmal (neu anlegen ODER Sicherung einspielen); ist eine Kennung da, aendert sich nichts; (4) Faecher aufraeumen (Mehrfach-Faecher weg, aktives bleibt). REINE UI-Schicht ueber die oeffentlichen Flaechen von Modul 02 - Kern-Module 01/02/05/23 UNANGETASTET, kein PROTOCOL_VERSION-/DB_VERSION-Bump, 0.80-Andock-Riegel unberuehrt, fail-soft ohne Modul 02. Beweis MIT Gegenprobe: neuer Test 34/34, mit ausgehebeltem Tor 30/34. LIVE-BELEG FUER FIX 1 (Klaus' Browser 2026-07-30 16:54-16:57): Sage <-> SB-KIMTool-Point, fuenf Antworten, jede outcome=established, Score 0.8635, kein \"connection is closing\". OFFEN UND EHRLICH: Kimboard verlor am selben Tag ERNEUT seine Kennung (XFi3xrd7 -> e8UwgMlx) - ob die Haertung dort schon lief, ist NICHT entscheidbar (Fenster seit der Nacht offen = alter Code). FUER ALLE KNOTEN: nach jedem Update ALLE offenen Fenster neu laden. Eine Raeumung durch den Browser laesst sich NICHT verhindern - nur unwahrscheinlicher machen (installieren) und reparierbar halten (Sicherung). Legt euch eine Sicherung an. Rueck-Quittung erbeten.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 51,
+      "date": "2026-07-30",
+      "headline": "Stufe 0b: Kennung sichern/wiederherstellen, keine stumme Neu-Anlage (6 PRs netzweit)"
+    },
     {
       "seq": 1,
       "date": "2026-05-30",
