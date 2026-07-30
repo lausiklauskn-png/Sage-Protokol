@@ -31,6 +31,74 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-30 (früh) — URSACHE GEFUNDEN: unser Code löschte die Identität, nicht der Browser
+
+**Rolle:** Fortsetzung derselben Bau-Sitzung (Klaus: „entscheide selber, es geht nichts verloren").
+Branch netzweit `claude/stufe-0a-identitaetskennungen-78ulx5`.
+
+**Klaus' Messung hat den Bug gefangen.** Über Nacht verloren Kimboard (`zv5jVTBnjIS…` →
+`XFi3xrd7x…`) UND Mein-Tresor (`X0Mal…` → `11hoBL…` → `50RfCiT9r…`) ihre Kennung — **obwohl
+„Speicher dauerhaft: ja" stand** und Klaus nichts gelöscht hat. Entscheidende Zusatz-Angaben:
+er war im **gleichen** Browser-Modus, die Apps waren die ganze Nacht **offen**, und heute früh
+war die Kennung noch **angezeigt** — der Hard-Reload legte den Verlust erst offen (die Anzeige
+kam aus dem Arbeitsspeicher der alten Seite; die offenen Fenster liefen zudem noch mit dem
+**alten** Code, weil neuer Code erst beim Neuladen ins Fenster kommt).
+
+**Der Ausschluss-Beweis:** „es ging sofort, kein Modell geladen." Das ~30-MB-Sprachmodell liegt
+im **selben** verwalteten Speicher wie die Kennungen. Hätte der **Browser** geräumt, wäre es
+mit weg. Es war da — und localStorage (Tresor-Fächer, Gerätename „Klaus Tablet") ebenfalls.
+Gelöscht wurde **nur** die Kennungs-Datenbank. Also: **kein Browser-Eviction.**
+Modul 07 (Apoptose) ebenfalls entlastet — dessen `init()` macht nachweislich **keinen**
+Verfalls-Sweep („keine TTL-Sweeps in init()", wörtlich im Modul).
+
+**Die Ursache (im Code gefunden, `01_storage.js`):** die Selbst-Heilung vom 11.07. löscht eine
+DB, die sie für „identitäts-leeren Schrott" hält (fehlender Store `sbkim_keys`). Fährt ein
+**anderes Fenster** derselben Origin gleichzeitig einen Schema-Umbau, ist `objectStoreNames`
+**transient unvollständig** → Fehlurteil „leer" → die DB **mit** Identität wird gelöscht.
+**Verschärfend:** `indexedDB.deleteDatabase()` ist unumkehrbar und wirkt bei `onblocked`
+**verzögert** — die Löschung bleibt im Browser **vorgemerkt** und greift, sobald die letzte
+Verbindung fällt (Tab schläft über Nacht ein). Genau der beobachtete Ablauf, und es erklärt,
+warum **nie ein Fehler sichtbar** war. Dazu fehlte am Lösch-Aufruf der Fehler-Zweig — eine
+blockierte Löschung ließ die Promise-Kette **still sterben**.
+
+**Härtung (Modul 01):** vor JEDEM Selbst-Heilungs-Löschen eine **zweite, unabhängige
+Gegenprobe** (`confirmIdentityStoreMissing`). Widerspricht sie — oder ist sie blockiert/unklar
+— wird **nicht gelöscht**, sondern ehrlich abgelehnt. **Löschen ist unumkehrbar, ein ehrlicher
+Fehler ist reparierbar.** Fehler-Zweig ergänzt. Kein `DB_VERSION`-/Schema-/API-Bump; 02/23 unberührt.
+
+**BEWEIS mit Gegenprobe (der Kern der Ehrlichkeit):** neuer
+`tests/smoke_pflege_01_kein_loeschen_im_zweifel.mjs` **4/4 grün**. Mit der Härtung **entfernt**
+fällt derselbe Test auf **2/4** mit `WEG — Datenverlust!` — der Bug ist damit **reproduziert**
+UND die Heilung **belegt**, nicht bloß plausibel. Probe 4 zeigt: der echte Leer-Fall heilt sich
+weiterhin selbst. Regress-frei: M01-Suite 11/21/7/6, reopen-retry 3/3, a14 4/4, bau02y 33/33.
+
+**Netzweit gemergt (13 PRs):** Sage #750 · Mein-Tresor #79 · Kimboard #57 · BookLedgerPro #285
+(CI grün) · Jasons-Tresor #137 · family-project #122 · Kimseek #47 · Company-Brain #9 ·
+Privat-Brain #65 · Mein-Rezeptbuch #351 · Mein-Mixarium #165 · Muttis-Rezeptbuch #164 ·
+Tomys-Hub #128. sha-Pins nachgezogen; vier Repos brauchten einen Rebase (Pin-Konflikt).
+
+**Nebenbefund geklärt (Klaus' Frage „Kimboard liest Mein-Tresors Browser?"): NEIN.** Der
+Analyse-Rekord 05:01 beweist das Gegenteil: Mein-Tresors Karte wurde **04:43** angeheftet (App
+war offen) und **18 Minuten später** gelesen — sie hängt am **Relais**, nicht im Browser. Und
+Kimboards Handshake an sie ergab `decision: null` (**keine Antwort**) — könnte Kimboard den
+Nachbar-Speicher lesen, wäre er gelungen. Apps können sich gegenseitig **nicht** in die
+Schublade schauen; der Raum zeigt Karten der letzten ~30 Min (so gebaut). Ebenso sind die
+„3 bzw. 4 Kennungen" auf der Karte **Karten-Gedächtnis** eines durchgehenden Rekorder-Laufs,
+keine 4 lebenden Identitäten.
+
+**Klaus' Entscheid:** alte Kennungen werden **nicht** gejagt (Testphase, nichts verkauft,
+nichts verloren) — Ursache beheben schlägt Identitäten retten.
+
+**Browser-Sichttest wartet auf Klaus:** dieselbe App in zwei Fenstern öffnen → Kennung muss
+stabil bleiben, kein Handshake-Fehler. **Wichtig:** nach jedem Update **alle offenen Fenster
+neu laden**, sonst arbeitet der alte Code weiter.
+
+**Offen (0b):** Sicherung + Wiederherstellen im Panel, Aufräum-Weg für die schon entstandenen
+Mehrfach-Fächer, und **Schluss mit stummer Neu-Anlage** (die App legt beim Öffnen wortlos eine
+neue Identität an, wenn die Schublade leer ist — künftig fragt sie).
+
+---
+
 ## Stand 2026-07-29 (tiefe Nacht) — Fix-Bau: Identitäts-Churn gefunden und netzweit geheilt („connection is closing")
 
 **Rolle:** Bau-Sitzung (Fortsetzung derselben Sitzung wie Stufe 0a, Klaus' ausdrückliches
