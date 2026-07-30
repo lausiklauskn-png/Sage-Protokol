@@ -94,6 +94,12 @@ Neuer Kasten **„🪪 Kennung sichern"** im Netz-Panel, direkt unter den
 4. **🧹 Fächer aufräumen** — die schon entstandenen Mehrfach-Fächer entfernen,
    das aktive bleibt. Mit Rückfrage, als **Knopf**, keine Konsole.
 
+**Dateiname der Sicherung** (Klaus' Rückfrage): `sbkim-sicherung-<app>-<datum>.json`
+— der App-Teil ist der `dbSuffix` des Knotens, also `kimboard`,
+`bookledgerpro-sbkim`, `meintresor`, `jasonstresor`, `familyprojekt`. Damit ist
+jede Datei ohne Umbenennen zuzuordnen, und mehrere Stände derselben App
+sortieren sich nach Datum.
+
 **Die ehrliche Grenze steht sichtbar in der Oberfläche**, nicht nur in der Doku:
 „Eine Räumung durch den Browser lässt sich nicht verhindern — nur
 unwahrscheinlicher machen (App auf den Startbildschirm legen) und der Verlust
@@ -106,12 +112,27 @@ REINE UI-Schicht über die **öffentlichen** Flächen von Modul 02. Die Kern-Mod
 der 0.80-Andock-Riegel unberührt. Konsequent fail-soft: ohne Modul 02 sagen die
 Knöpfe das **ehrlich** — kein toter Knopf, kein Crash (Fremdnutzer-/Marktplatz-Brille).
 
-**Korrektur am Brief:** der 0b-Brief schrieb „legt **beim Öffnen** wortlos eine
-neue Identität an (`ensureIdentity:true`)". Geprüft: **kein** App-Klebstoff im
-Netz übergibt `ensureIdentity:true` an `SbkimRendezvous.init()`. Die Kennung
-entsteht **beim Klick auf „Mit dem Knotennetz verbinden"** — dort sitzt jetzt das
-Tor. Ergebnis identisch, Fundstelle anders; hier festgehalten, damit die nächste
-Sitzung nicht an der falschen Stelle sucht.
+**Nachtrag am selben Tag — der Brief hatte recht, die Sitzung hatte unrecht.**
+Diese Sitzung hatte zunächst notiert, „kein App-Klebstoff übergibt
+`ensureIdentity:true`" — das war **falsch** (ein `grep` mit `head -5` wurde von
+`ensureIdentityStores`-Treffern aus Modul 02 zugeschüttet, die eigentlichen
+Fundstellen fielen unter den Tisch). Tatsächlich fuhren **alle fünf** Apps
+`ensureIdentity: true` bei `SbkimRendezvous.init()` — Kimboard, BookLedgerPro,
+Mein-Tresor, Jasons-Tresor, family-project. Die App legte damit **beim
+Seiten-Start** wortlos eine neue Kennung an, sobald die Schublade leer war; das
+Tor im Verbinden-Knopf kam **zu spät**.
+
+**Behoben** (5 PRs: Kimboard #59, BookLedgerPro #287, Mein-Tresor #81,
+Jasons-Tresor #139, family-project #124): `ensureIdentity` ist aus dem
+App-Klebstoff **entfernt**. Die Kennung entsteht nur noch auf ausdrückliche
+Nutzer-Entscheidung im Netz-Panel. Ist eine Kennung vorhanden, ändert sich
+nichts — sie wird beim Start unverändert gelesen. Nur Klebstoff, eine Zeile je
+App; Kern-Module unangetastet. Suiten grün (Kimboard 6/6, Mein-Tresor 53/0,
+Jasons-Tresor 59/0, BookLedgerPro 2153/0, `node --check` überall).
+
+**Lehre für die nächste Sitzung:** ein `grep`-Ergebnis mit `head -N` ist **kein
+Beweis für Abwesenheit**. Wer „X kommt nirgends vor" schreibt, zählt vorher die
+Treffer ungekürzt.
 
 ### Beweis
 
