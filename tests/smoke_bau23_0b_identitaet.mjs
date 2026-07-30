@@ -13,6 +13,8 @@
 //   + Aufräumen: Mehrfach-Fächer entfernbar, aktives Fach bleibt.
 //   + EINE Identität, zwei Türen: wird die Kennung anderswo erzeugt (Siegel-
 //     Wizard, dieselbe Schublade), zieht die Anzeige im Panel sofort nach.
+//   + Arbeitsteilung: Panel = Alltagsansicht mit Weg zur Werkstatt (Siegel);
+//     ohne Siegel bleibt der Weg weg statt als toter Knopf dazustehen.
 //
 // GEGENPROBE (Klaus-Standard dieser Sitzungsreihe): mit SBKIM_0B_SABOTAGE=1
 // wird das Identitäts-Tor in onConnect ausgehebelt, mit SBKIM_0B_SABOTAGE_WATCH=1
@@ -91,6 +93,7 @@ function makeDoc() {
   doc.head = makeEl("head");
   doc.addEventListener = () => {};
   doc.querySelector = (sel) => find(doc.body, sel);
+  doc.getElementById = (id) => find(doc.body, "#" + id);
   return doc;
 }
 
@@ -375,6 +378,28 @@ async function run() {
     idEl2 && idEl2.textContent, !!(idEl2 && idEl2.textContent === "IM-SIEGEL-ERZEUGT"));
   record("0b/5 Sicherungs-Hinweis zieht mit nach", "nicht mehr „noch keine Kennung“",
     (UI._test.idHint() || "").slice(0, 40), !/Noch keine Kennung/.test(UI._test.idHint() || ""));
+
+  // ---------- Arbeitsteilung: Panel = Alltag, Siegel = Werkstatt ----------
+  // Klaus 2026-07-30: „Im Mycel sehe ich täglich, was los ist. Sehe ich, dass
+  // eine Identität verschwunden ist, gehe ich ins Siegel — da ist das ganze
+  // Werkzeug." Also: das Panel zeigt den Weg dorthin, statt alles zu doppeln.
+  record("0b/6 ohne Siegel: kein toter Knopf", "unsichtbar",
+    UI._test.werkstattVisible() ? "sichtbar!" : "unsichtbar", UI._test.werkstattVisible() === false);
+  // Siegel mountet sein Abzeichen (wie Modul 16 es tut) …
+  const badge = stub.document.createElement("button");
+  badge.id = "sbkim-siegel-badge";
+  let badgeClicks = 0;
+  badge.addEventListener("click", () => { badgeClicks++; });
+  stub.document.body.appendChild(badge);
+  UI._test.refreshIdentityBox();
+  await sleep(20);
+  record("0b/6 mit Siegel: Weg zur Werkstatt erscheint", "sichtbar",
+    UI._test.werkstattVisible() ? "sichtbar" : "unsichtbar", UI._test.werkstattVisible() === true);
+  record("0b/6 Arbeitsteilung steht dabei", "Hinweis auf das Siegel",
+    (UI._test.werkstattText() || "").slice(0, 50),
+    /ganze Werkzeug/.test(UI._test.werkstattText() || "") && /Siegel/.test(UI._test.werkstattText() || ""));
+  record("0b/6 Knopf öffnet das Siegel", "1 Klick aufs Abzeichen",
+    (UI._test.clickWerkstatt(), String(badgeClicks)), badgeClicks === 1);
 
   // ---------- fail-soft: ohne Modul 02 ----------
   stub.SbkimSpore = null;
