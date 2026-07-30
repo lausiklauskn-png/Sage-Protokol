@@ -31,6 +31,72 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-30 (Nacht) — Schutz-Plan Stufe 2b NETZWEIT ausgerollt (13 Repos)
+
+**Rolle:** Bau-Sitzung (Rollout aus `BRIEF_MODUL23_STUFE2B_ROLLOUT.md`).
+**Branch:** `claude/modul23-stufe2b-rollout-vpzaar` (überall gleich).
+
+### Was getan — Kartenechtheit + Flut-Deckel in ALLE Apps
+
+Modul 23 (`23_rendezvous.js`, sha `3caa0bb1…`) + Modul 16 (`16_siegel.js`,
+sha `4e11ef0d…`) byte-1:1 aus dem Kanon in **13 Repos** gebracht — alle 12 aus
+dem Brief **plus** SB-KIMTool-Point (Forker-Vorlage, Befund siehe unten). Jede
+App prüft jetzt Raum-Karten vor der Anzeige: **Bindung** (`spore.id===nodeId`)
++ **Ed25519** je Karte (Modul 02) + **Flut-Deckel** (200/Durchlauf, 3/Absender),
+fail-soft (`cardsVerified:false` wenn Prüfer fehlt). Das ist der eigentliche
+Spam-/Sybil-Schutz, nach dem Klaus fragte.
+
+**Gemergt (14 PRs, alle squash, Freibrief):** Kimboard #63 · Kimseek #50 ·
+BookLedgerPro #293 · Mein-Tresor #85 · Jasons-Tresor #143 · family-project #128 ·
+Mein-Rezeptbuch #354 · Muttis-Rezeptbuch #167 · Mein-Mixarium #168 · Tomys-Hub
+#131 · Company-Brain #10 · Privat-Brain #66 · SB-KIMTool-Point #138.
+**Netz-Verifikation: 12/12 tragen den Kanon auf main, 0 Fehler.**
+
+**sha-Pins nachgezogen:** Kimboard/Kimseek `test/smoke.test.js` (16+23),
+Company-Brain `tools/drift-guard.mjs` (23). **Befund Privat-Brain:** dessen
+`tools/drift-guard.mjs` pinnt auch `16_siegel.js` — der Brief nannte nur 23;
+der 16-Pin war mechanisch zwingend mitzuziehen (sonst fällt der Drift-Guard).
+
+### Zwei Befunde
+
+1. **SB-KIMTool-Point (über den Brief-Scope hinaus, bewusst):** Der Brief nannte
+   es nur als Siegel-Aspekt-Sonderfall und warnte, `assets/sbkim-siegel.js` nicht
+   blind zu ersetzen — das ist aber nur der **Loader** (unberührt gelassen). Die
+   echte Modul-Kopie liegt in `web/tools/`, mit `sbkim-rendezvous.js` auf der
+   **alten** Gen `9f3a2085`. Nur den Siegel-Aspekt nachzutragen hätte das Siegel
+   **lügen** lassen (Anti-Greenwashing-Leitplanke). Als Forker-Vorlage gehört der
+   Schutz genau hier zuerst hin. Darum beide Dateien byte-1:1. `node --test` →
+   120/120 grün (inkl. `kanon_import.test.js`, der byte-1:1 gegen den Kanon prüft).
+2. **Parallel-Sitzung:** während des Rollouts mergte eine andere Sitzung
+   „Aufräum-Knöpfe" (#758/#759 in Sage, analog in 10 Apps) — betraf nur
+   `23_rendezvous_ui.js`, **nicht** meine Ziel-Dateien. Die 10 betroffenen App-
+   Branches sauber neu von origin/main aufgesetzt (force-with-lease), 23_ui der
+   Parallel-Sitzung unberührt übernommen. Kein Datei-Konflikt im Kern.
+
+### Tests (ehrlich)
+
+Kimboard 6/6 · Kimseek 11/11 · BookLedgerPro 2153/0 · Mein-Tresor 53/0 ·
+Jasons-Tresor 59/0 · Mein-Rezeptbuch 7/0 · Mein-Mixarium 8·11·14·7 · Tomys-Hub
+35·38·19·15·9·16·31·11 · Company-/Privat-Brain Drift-Guard grün (8 bzw. 15
+byte-1:1) · SB-KIMTool-Point 120/120. Sage-Suite 59·87·**16**·42·21. Die
+**Gegenprobe** (`smoke_bau23b_kartenechtheit.mjs` Probe 5: ohne Prüfer bleibt die
+faule Karte sichtbar, `cardsVerified:false`; Probe 2/3/4: mit Prüfer fällt die
+untergeschobene/ungültige Karte raus) grün.
+
+**Bekannte Grenzen (nicht durch Rollout verursacht):** family-project ohne
+`package.json`/playwright nicht lauffähig; Muttis-Rezeptbuch ohne Test-Suite
+(Beweis = sha256-Kopie); Tomys `smoke-spore-download.cjs` + Company-/Privat-Brain
+e2e = vorbestehender Playwright-Timeout (gegengeprüft).
+
+### Was offen / nächster Schritt
+
+- **Klaus' Browser-Sichttest** — headless ersetzt ihn nicht. Nach Deploy in
+  einer App „👥 Wer ist im Raum?" öffnen; faule/fremde Karten dürfen nicht mehr
+  erscheinen, ehrliche Zähler sichtbar.
+- Sichttest 0b (Sicherung anlegen/einspielen → alte Kennung zurück) steht noch.
+- Danach-Liste aus dem Brief (Stufe 0c, Sage `sicherheit.html`, Wizard-Init-
+  Heilung im Kanon-`siegel-inhalt.js`, PULS-Archivierung, Stufe 3).
+
 ## Stand 2026-07-30 (Abend) — Nachzug: fünf vergessene Apps + Netz-Prüfung
 
 **Rolle:** Bau-Sitzung (Fortsetzung 0b). **Gemergt:** BookLedgerPro #290 (Wizard
