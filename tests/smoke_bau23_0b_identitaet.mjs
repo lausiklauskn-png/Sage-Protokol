@@ -20,7 +20,8 @@
 //
 // GEGENPROBE (Klaus-Standard dieser Sitzungsreihe): mit SBKIM_0B_SABOTAGE=1
 // wird das Identitäts-Tor in onConnect ausgehebelt, mit SBKIM_0B_SABOTAGE_WATCH=1
-// der sbkim:alive-Horcher (der Quelltext wird vor dem Laden zurückgebogen).
+// der sbkim:alive-Horcher, mit SBKIM_0B_SABOTAGE_HALF=1 die Erkennung der
+// halben Kennung (der Quelltext wird jeweils vor dem Laden zurückgebogen).
 // Der Test MUSS dann jeweils rot werden — sonst beweist er nichts.
 
 import { readFileSync } from "node:fs";
@@ -31,6 +32,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 const SABOTAGE = process.env.SBKIM_0B_SABOTAGE === "1";
 const SABOTAGE_WATCH = process.env.SBKIM_0B_SABOTAGE_WATCH === "1";
+const SABOTAGE_HALF = process.env.SBKIM_0B_SABOTAGE_HALF === "1";
 
 // ---- Minimal-DOM-Stub (wie smoke_bau23_rendezvous_ui.mjs) ----
 function makeEl(tag) {
@@ -108,7 +110,10 @@ function makeSpore(initial) {
     async listIdentities() { return Object.keys(state.slots).sort(); },
     async getActiveIdentityKey() { return state.active; },
     async getNodeId() { return state.active ? state.slots[state.active] : null; },
-    async getOwnSpore() { return state.active ? { id: state.slots[state.active] } : null; },
+    // `noSpore` bildet den HALBEN Zustand ab: Schlüssel im Fach, aber keine
+    // Visitenkarte. Genau der Zustand aus Klaus' Sichttest 2026-07-30 (Kimboard
+    // 18:54/18:55) — getNodeId lieferte eine ID, getOwnSpore nichts.
+    async getOwnSpore() { return (state.active && !state.noSpore) ? { id: state.slots[state.active] } : null; },
     async exportBackup(pw) {
       if (typeof pw !== "string" || pw.length < 8) {
         const e = new Error("Passwort muss mindestens 8 Zeichen lang sein."); e.name = "InvalidBackupPasswordError"; throw e;
@@ -196,6 +201,13 @@ if (SABOTAGE_WATCH) {
   if (src.indexOf(anchor) === -1) { console.error("Sabotage-Anker (watch) nicht gefunden."); process.exit(1); }
   src = src.replace(anchor, "/* sabotiert */");
 }
+if (SABOTAGE_HALF) {
+  // Gegenprobe 3: die halbe Kennung (Schlüssel ohne Spore) wieder unsichtbar
+  // machen — dann muss der Zustand erneut zu widersprüchlichen Antworten führen.
+  const anchor = "hasSpore: !!(r[1] && r[1].id),";
+  if (src.indexOf(anchor) === -1) { console.error("Sabotage-Anker (half) nicht gefunden."); process.exit(1); }
+  src = src.replace(anchor, "hasSpore: true,");
+}
 new Function("window", "globalThis", "console", "document", src)(stub, stub, console, stub.document);
 const UI = stub.SbkimRendezvousUI;
 
@@ -266,6 +278,7 @@ async function run() {
     UI._test.idHint(), /KEINE Sicherung/.test(UI._test.idHint() || ""));
 
   UI._test.openBackupForm();
+  await sleep(20);   // openBackupForm prüft erst den Kennungs-Zustand (asynchron)
   const pwFields = UI._test.idFormInputs().filter((i) => i.type === "password");
   record("0b/1 zwei Passwort-Felder", "2", String(pwFields.length), pwFields.length === 2);
   // zu kurz
@@ -383,6 +396,28 @@ async function run() {
     idEl2 && idEl2.textContent, !!(idEl2 && idEl2.textContent === "IM-SIEGEL-ERZEUGT"));
   record("0b/5 Sicherungs-Hinweis zieht mit nach", "nicht mehr „noch keine Kennung“",
     (UI._test.idHint() || "").slice(0, 40), !/Noch keine Kennung/.test(UI._test.idHint() || ""));
+
+  // ---------- Halbe Kennung: Schlüssel da, Visitenkarte fehlt ----------
+  // Klaus' Sichttest 2026-07-30 (Kimboard): oben stand „noch keine Kennung",
+  // das Einspielen sagte „hier liegt schon eine", und die Sicherung scheiterte
+  // erst NACH der Passwort-Eingabe. Drei Stellen, drei Antworten. Jetzt wird
+  // der Zustand gelesen, benannt — und der Weg heraus gleich mitgesagt.
+  stub.SbkimSpore = makeSpore({ main: "HALB" });
+  stub.SbkimSpore._state.noSpore = true;
+  UI._test.refreshIdentityBox();
+  await sleep(20);
+  record("0b/8 halbe Kennung wird benannt", "Angefangene Kennung",
+    (UI._test.idHint() || "").slice(0, 45), /Angefangene Kennung/.test(UI._test.idHint() || ""));
+  record("0b/8 der Weg heraus steht dabei", "Verbinden oder Siegel",
+    (UI._test.idHint() || "").indexOf("Knotennetz verbinden") !== -1 ? "genannt" : "fehlt",
+    /Knotennetz verbinden/.test(UI._test.idHint() || ""));
+  UI._test.openBackupForm();
+  await sleep(30);
+  record("0b/8 Sicherung sagt es VOR der Passwort-Eingabe", "Hinweis statt Formular",
+    (UI._test.idFormText() || "").slice(0, 45),
+    /Noch nichts zu sichern/.test(UI._test.idFormText() || ""));
+  record("0b/8 kein Passwort-Feld im halben Zustand", "0 Felder",
+    String(UI._test.idFormInputs().length), UI._test.idFormInputs().length === 0);
 
   // ---------- Die zwei Aufräum-Knöpfe dürfen sich nicht verwechseln lassen ----------
   // Klaus' Befund 2026-07-30: „🧹 Aufräumen & neu anmelden" (Alt-Speicher dieser
