@@ -31,6 +31,57 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-29 (tiefe Nacht) — Fix-Bau: Identitäts-Churn gefunden und netzweit geheilt („connection is closing")
+
+**Rolle:** Bau-Sitzung (Fortsetzung derselben Sitzung wie Stufe 0a, Klaus' ausdrückliches
+„startet den Fixbau jetzt"). Branch netzweit `claude/stufe-0a-identitaetskennungen-78ulx5`.
+
+**Der Befund — Klaus hat den Identitätsverlust LIVE reproduziert.** Direkt nach dem
+0a-Merge maß Klaus an Mein-Tresor: Kennung `X0MalwVNjV…` → nach kurzer Zeit `11hoBLLRZ7…`,
+obwohl „Speicher dauerhaft: **ja**" stand und nichts gelöscht wurde. Seine Screenshots
+zeigen die rauchende Pistole: **`(InvalidStateError) Failed to execute 'transaction' on
+'IDBDatabase': The database connection is closing.`** Analyse-Rekord
+`mycelanalyse20260729T191549.json`: Mein-Tresor mit **drei** lebenden Kennungen gleichzeitig
+im Raum (nmRebxCn/X0Mal/11hoBL), Kimboard ×2, Handshakes an alte Karten-Fächer scheiterten.
+
+**Die Ursache (im Code belegt, `01_storage.js`):** Ist dieselbe App auf derselben Origin in
+**zwei Fenstern** offen (bei Klaus: Browser-Tab + Brett-Fenster), feuert der Browser
+`onversionchange` → `db.close()`. Modul 01 gab die **tote** gecachte Verbindung weiter;
+`db.transaction()` wirft dann synchron den InvalidStateError. Zwei Folgen: (a) der
+Handshake bricht; (b) ein so fehlgeschlagener Identitäts-**Lese**vorgang wird als „keine
+Identität" missverstanden → `getOrCreateIdentity` würfelt eine **neue** Kennung; das alte
+Fach bleibt liegen (nichts gelöscht — mehrere Fächer, nach Reload gewinnt das alte).
+Persistenz („ja") schützt davor NICHT — es ist kein Räum-, sondern ein Parallelzugriffs-Problem.
+
+**Der Fix (Modul 01, additiv — bewusste Kern-Modul-Pflege auf Klaus' „startet den Fixbau"):**
+Neuer `beginTx`-Helfer mit genau **einem Reopen-Retry**: `onversionchange` invalidiert
+`dbPromise`/`currentDb` schon immer — der zweite Versuch bekommt eine frische Verbindung.
+`get`/`put`/`del`/`all`/`clear` laufen jetzt durch `beginTx`. Schlägt auch der Retry fehl →
+**ehrlicher Fehler**, nie stilles `undefined` (kein fälschliches „keine Identität" mehr).
+Kein `DB_VERSION`-/Schema-/API-Bump; Module 02/23 unberührt.
+
+**Beweis:** Neuer `tests/smoke_pflege_01_reopen_retry.mjs` **3/3** — reproduziert den Bug
+(transaction() wirft „connection is closing") und belegt Selbstheilung + Ehrlichkeits-
+Gegenprobe. Regress-frei: M01-Pflege-Suite 11/21/6/7, bau02y 33/33, bau23 59/59,
+bundle-Drift-Guard 21/21.
+
+**Netzweiter Rollout — alle 12 Modul-01-Träger + Bundle, alle gemergt:** Sage #748 ·
+Mein-Tresor #78 · Kimboard #56 · BookLedgerPro #284 (CI grün) · family-project #121 ·
+Jasons-Tresor #136 · Mein-Rezeptbuch #350 · Mein-Mixarium #164 · Muttis-Rezeptbuch #163 ·
+Tomys-Hub #127 · Kimseek #46 · Company-Brain #8 · Privat-Brain #64. sha-Pins nachgezogen
+(Kimboard/Kimseek `test/smoke.test.js`, Company-/Privat-Brain `tools/drift-guard.mjs`).
+Ehrlich: Company-/Privat-Brain e2e-Suiten brauchen `playwright-core` (Container-Grenze,
+vorbestehend); deren Drift-Guards 8/8 bzw. 15/15 byte-identisch.
+
+**Für Klaus' Wieder-Test (nach Hard-Reload):** dieselbe App in **einem** Fenster → Kennung
+muss stabil bleiben; zweites Fenster derselben App darf keinen Handshake-Fehler und keine
+neue Kennung mehr erzeugen. Alte Geister-Karten verschwinden ~30 Min nach dem letzten
+Anheften von selbst. **Browser-Sichttest wartet auf Klaus.** Noch offen (0b): Aufräum-Weg
+für die schon entstandenen Mehrfach-Fächer (aktive Kennung behalten, alte Fächer entfernen)
+— gehört zu 0b, nach Klaus' Messung.
+
+---
+
 ## Stand 2026-07-29 (Nacht) — Stufe 0a/0c/0d/0e gebaut: Kennung + Speicher sichtbar, Widersprüche geheilt
 
 **Rolle:** Bau-Sitzung (Stufe 0 aus `docs/sessions/BRIEF_STUFE0_IDENTITAET_HALTBAR.md`).
