@@ -15,6 +15,8 @@
 //     Wizard, dieselbe Schublade), zieht die Anzeige im Panel sofort nach.
 //   + Arbeitsteilung: Panel = Alltagsansicht mit Weg zur Werkstatt (Siegel);
 //     ohne Siegel bleibt der Weg weg statt als toter Knopf dazustehen.
+//   + Die zwei Aufräum-Knöpfe (Alt-Speicher vs. Kennungs-Fächer) sind
+//     unverwechselbar benannt; der Fächer-Knopf erscheint nur bei mehreren.
 //
 // GEGENPROBE (Klaus-Standard dieser Sitzungsreihe): mit SBKIM_0B_SABOTAGE=1
 // wird das Identitäts-Tor in onConnect ausgehebelt, mit SBKIM_0B_SABOTAGE_WATCH=1
@@ -216,7 +218,10 @@ async function run() {
   const panel = stub.document.querySelector("#sbkim-rdv-panel");
   const box = panel.querySelector("#sbkim-rdv-idbox");
   record("0b Kennung-sichern-Kasten gemountet", "ja", box ? "ja" : "nein", !!box);
-  for (const lbl of ["💾 Sicherung anlegen", "📥 Sicherung einspielen", "🧹 Fächer aufräumen"]) {
+  // Der Aufräum-Knopf ist hier bewusst NICHT dabei: er erscheint erst, wenn es
+  // mehr als ein Kennungs-Fach gibt (Probe 0b/7 weiter unten). Zwei Knöpfe, die
+  // beide „aufräumen" heißen, waren Klaus' Befund vom 2026-07-30.
+  for (const lbl of ["💾 Sicherung anlegen", "📥 Sicherung einspielen"]) {
     record("0b Knopf vorhanden: " + lbl, "ja", panelButtons(panel, lbl) ? "ja" : "nein", !!panelButtons(panel, lbl));
   }
   record("0b ehrliche Grenze steht in der Oberfläche", "ja",
@@ -339,8 +344,8 @@ async function run() {
   stub.SbkimSpore._state.active = "main";
   UI._test.refreshIdentityBox();
   await sleep(10);
-  record("0b/4 Hinweis zeigt Mehrfach-Fächer", "3 Fächer",
-    UI._test.idHint(), /3 Fächer belegt/.test(UI._test.idHint() || ""));
+  record("0b/4 Hinweis zeigt Mehrfach-Fächer", "3 Kennungs-Fächer",
+    UI._test.idHint(), /3 Kennungs-Fächer belegt/.test(UI._test.idHint() || ""));
   UI._test.openCleanupForm();
   await sleep(20);
   record("0b/4 Aufräumen fragt vorher", "Rückfrage",
@@ -378,6 +383,38 @@ async function run() {
     idEl2 && idEl2.textContent, !!(idEl2 && idEl2.textContent === "IM-SIEGEL-ERZEUGT"));
   record("0b/5 Sicherungs-Hinweis zieht mit nach", "nicht mehr „noch keine Kennung“",
     (UI._test.idHint() || "").slice(0, 40), !/Noch keine Kennung/.test(UI._test.idHint() || ""));
+
+  // ---------- Die zwei Aufräum-Knöpfe dürfen sich nicht verwechseln lassen ----------
+  // Klaus' Befund 2026-07-30: „🧹 Aufräumen & neu anmelden" (Alt-Speicher dieser
+  // Adresse) und „🧹 Fächer aufräumen" (Kennungs-Fächer) taten Verschiedenes,
+  // hießen aber beide gleich. Im Code keine Doppelung — im Kopf des Nutzers schon.
+  // Lösung: eigenes Symbol + eindeutiger Name, und der Fächer-Knopf erscheint NUR,
+  // wenn es wirklich mehr als ein Fach gibt.
+  stub.SbkimSpore = makeSpore({ main: "EINZIGE" });
+  UI._test.refreshIdentityBox();
+  await sleep(20);
+  record("0b/7 ein Fach: Aufräum-Knopf steht gar nicht da", "unsichtbar",
+    UI._test.slotsBtnVisible() ? "sichtbar!" : "unsichtbar", UI._test.slotsBtnVisible() === false);
+  stub.SbkimSpore = makeSpore({ main: "A", alt: "B" });
+  stub.SbkimSpore._state.active = "main";
+  UI._test.refreshIdentityBox();
+  await sleep(20);
+  record("0b/7 mehrere Fächer: Knopf erscheint", "sichtbar",
+    UI._test.slotsBtnVisible() ? "sichtbar" : "unsichtbar", UI._test.slotsBtnVisible() === true);
+  const alleKnoepfe = (function () {
+    const out = [];
+    (function walk(n) { for (const c of n.children) { if (c.tagName === "BUTTON") out.push(c.textContent); walk(c); } })(panel);
+    return out;
+  })();
+  const putzKnoepfe = alleKnoepfe.filter((t) => /aufräumen/i.test(t));
+  record("0b/7 beide Aufräum-Knöpfe sagen, WAS sie aufräumen", "Alt-Speicher + Mehrfach-Kennungen",
+    putzKnoepfe.join(" | "),
+    putzKnoepfe.length === 2 &&
+    putzKnoepfe.some((t) => /Alt-Speicher/.test(t)) &&
+    putzKnoepfe.some((t) => /Mehrfach-Kennungen/.test(t)));
+  record("0b/7 kein doppeltes 🧹 mehr", "je ein eigenes Symbol",
+    putzKnoepfe.map((t) => t.slice(0, 2)).join(" "),
+    putzKnoepfe.filter((t) => t.indexOf("🧹") === 0).length === 1);
 
   // ---------- Arbeitsteilung: Panel = Alltag, Siegel = Werkstatt ----------
   // Klaus 2026-07-30: „Im Mycel sehe ich täglich, was los ist. Sehe ich, dass
