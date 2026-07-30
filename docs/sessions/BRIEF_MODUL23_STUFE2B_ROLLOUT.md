@@ -1,7 +1,20 @@
 # BRIEF — Schutz-Plan Stufe 2b netzweit ausrollen (+ Siegel-Aspekt nachziehen)
 
-**Angelegt:** 2026-07-30 (nach dem 0a/0b-Nachzug) · **Stand:** bereit zum Bau
+**Angelegt:** 2026-07-30 (nach dem 0a/0b-Nachzug) · **Stand:** ✅ **ERLEDIGT** 2026-07-30 (Nacht)
 **Umfang:** ein Durchgang, wenn machbar — Klaus' Wunsch: „alles in einem Zug".
+
+> ## ✅ Erledigt — der Rollout ist gelaufen (2026-07-30 Nacht, Sage PR #760)
+>
+> Stufe 2b liegt netzweit: `23_rendezvous.js` = `3caa0bb1fbe7` und
+> `16_siegel.js` = `4e11ef0d0390` in **allen 13 Repos**. Der Brief bleibt als
+> **Historie** liegen; die Tabellen unten sind der **Mess-Stand von vor dem
+> Rollout**, nicht der heutige — sie werden bewusst nicht rückwirkend
+> umgeschrieben.
+>
+> **Was sich seither noch geändert hat:** `23_rendezvous_ui.js` ist inzwischen
+> bei **`f2cf79c9defb`** (halbe Kennung benannt, Sage PR #759 + zehn App-PRs),
+> nicht mehr bei dem unten genannten `c78d18d0771c`. Wer eine Kopie prüft,
+> vergleicht gegen `f2cf79c9defb`.
 
 ---
 
