@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-07-29",
-  "seq": 49,
-  "headline": "NETZWEITER FIX (alle 12 Modul-01-Träger + Bundle, gemergt): Identitäts-Churn behoben. Ursache (Klaus' Live-Reproduktion + Screenshots): dieselbe App in ZWEI Fenstern -> onversionchange -> db.close() -> db.transaction() wirft InvalidStateError 'The database connection is closing' -> Handshake bricht UND ein fehlgeschlagener Identitäts-Lesevorgang wurde als 'keine Identität' missverstanden -> neue Kennung, alte Fächer bleiben liegen (Mein-Tresor x3 im Raum). Fix in Modul 01 (beginTx, EIN Reopen-Retry auf frischer Verbindung; sonst ehrlicher Fehler statt stillem undefined). Kein DB_VERSION-/Schema-/API-Bump; Module 02/23 unberührt. Beweis: smoke_pflege_01_reopen_retry 3/3 (Bug-Reproduktion + Selbstheilung + Ehrlichkeits-Gegenprobe), Suiten regress-frei. FÜR ALLE KNOTEN: nach Hard-Reload trägt jede App den Fix; 'Speicher dauerhaft: ja' schützt NICHT vor diesem Parallelzugriffs-Problem (kein Räum-Problem). Aufräum-Knopf für schon entstandene Mehrfach-Fächer kommt mit 0b. Rück-Quittung erbeten.",
+  "lastBuild": "2026-07-30",
+  "seq": 50,
+  "headline": "URSACHE DES IDENTITAETSVERLUSTS GEFUNDEN + netzweit geheilt (13 PRs gemergt): es war UNSER Code, nicht der Browser. Die Selbst-Heilung in Modul 01 loeschte eine DB, die sie fuer identitaets-leer hielt; ein paralleler Schema-Umbau in einem ANDEREN Fenster macht objectStoreNames transient UNVOLLSTAENDIG -> Fehlurteil -> DB MIT Identitaet geloescht. Verschaerfend: deleteDatabase() ist unumkehrbar und wirkt bei onblocked VERZOEGERT (bleibt vorgemerkt bis die letzte Verbindung faellt - Tab schlaeft ueber Nacht ein), darum war NIE ein Fehler sichtbar. Ausschluss-Beweis: Sprachmodell + localStorage ueberlebten, nur die Kennungs-DB war weg -> kein Browser-Eviction. Modul 07 entlastet (kein TTL-Sweep in init). HAERTUNG: zweite unabhaengige Gegenprobe vor jedem Loeschen; im Zweifel NICHT loeschen, ehrlich ablehnen. Beweis MIT Gegenprobe: neuer Test 4/4, ohne Haertung 2/4 mit \"WEG - Datenverlust!\". Kein DB_VERSION-Bump. FUER ALLE KNOTEN: nach jedem Update ALLE offenen Fenster neu laden - alter Code laeuft in offenen Fenstern weiter. \"Speicher dauerhaft: ja\" schuetzt NICHT vor diesem Fehler. Rueck-Quittung erbeten.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -244,6 +244,11 @@
       "seq": 49,
       "date": "2026-07-29",
       "headline": "Netzweiter Modul-01-Fix: 'connection is closing' heilt sich selbst — Identitäts-Churn + Handshake-Fehler bei zwei Fenstern derselben App behoben (13 PRs gemergt)."
+    },
+    {
+      "seq": 50,
+      "date": "2026-07-30",
+      "headline": "Ursache des Identitaetsverlusts gefunden: eigener Loesch-Pfad in Modul 01 (Fehlurteil + vorgemerkte Loeschung). Haertung mit Gegenprobe netzweit gemergt; Bug reproduziert und Heilung belegt."
     }
   ]
 }
