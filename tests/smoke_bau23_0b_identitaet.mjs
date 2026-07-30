@@ -11,10 +11,13 @@
 //   3. KEINE STUMME NEU-ANLAGE — leere Schublade → FRAGE statt wortloser
 //                       Identität; volle Schublade → unverändert ein Klick.
 //   + Aufräumen: Mehrfach-Fächer entfernbar, aktives Fach bleibt.
+//   + EINE Identität, zwei Türen: wird die Kennung anderswo erzeugt (Siegel-
+//     Wizard, dieselbe Schublade), zieht die Anzeige im Panel sofort nach.
 //
 // GEGENPROBE (Klaus-Standard dieser Sitzungsreihe): mit SBKIM_0B_SABOTAGE=1
-// wird das Identitäts-Tor in onConnect ausgehebelt (der Quelltext wird vor dem
-// Laden zurückgebogen). Der Test MUSS dann rot werden — sonst beweist er nichts.
+// wird das Identitäts-Tor in onConnect ausgehebelt, mit SBKIM_0B_SABOTAGE_WATCH=1
+// der sbkim:alive-Horcher (der Quelltext wird vor dem Laden zurückgebogen).
+// Der Test MUSS dann jeweils rot werden — sonst beweist er nichts.
 
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -23,6 +26,7 @@ import { dirname, resolve } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 const SABOTAGE = process.env.SBKIM_0B_SABOTAGE === "1";
+const SABOTAGE_WATCH = process.env.SBKIM_0B_SABOTAGE_WATCH === "1";
 
 // ---- Minimal-DOM-Stub (wie smoke_bau23_rendezvous_ui.mjs) ----
 function makeEl(tag) {
@@ -155,7 +159,8 @@ stub.SbkimRendezvous = {
 const _bus = {};
 stub.addEventListener = (t, cb) => { (_bus[t] = _bus[t] || []).push(cb); };
 stub.removeEventListener = () => {};
-stub.dispatchEvent = () => true;
+stub.dispatchEvent = (ev) => { (_bus[ev.type] || []).slice().forEach((cb) => cb(ev)); return true; };
+stub.CustomEvent = class { constructor(type, init) { this.type = type; this.detail = (init || {}).detail; } };
 const _ls = {};
 stub.localStorage = { getItem: (k) => (k in _ls ? _ls[k] : null), setItem: (k, v) => { _ls[k] = String(v); }, removeItem: (k) => { delete _ls[k]; } };
 // Datei-Download abfangen (kein echtes Blob/URL im Node-Stub → data:-Pfad).
@@ -178,6 +183,13 @@ if (SABOTAGE) {
   const gate = 'if (!(opts && opts.skipIdentityGate)) {';
   if (src.indexOf(gate) === -1) { console.error("Sabotage-Anker nicht gefunden."); process.exit(1); }
   src = src.replace(gate, "if (false) {");
+}
+if (SABOTAGE_WATCH) {
+  // Gegenprobe 2: den sbkim:alive-Horcher entfernen — eine anderswo (Siegel)
+  // erzeugte Kennung darf dann NICHT mehr in der Anzeige ankommen.
+  const anchor = 'try { global.addEventListener("sbkim:alive", _aliveHandler); } catch (_e) {}';
+  if (src.indexOf(anchor) === -1) { console.error("Sabotage-Anker (watch) nicht gefunden."); process.exit(1); }
+  src = src.replace(anchor, "/* sabotiert */");
 }
 new Function("window", "globalThis", "console", "document", src)(stub, stub, console, stub.document);
 const UI = stub.SbkimRendezvousUI;
@@ -340,6 +352,29 @@ async function run() {
   record("0b/4 nur das aktive Fach bleibt", "main", rest.join(","), rest.length === 1 && rest[0] === "main");
   record("0b/4 aktive Kennung unverändert", "AKTIV-111",
     await stub.SbkimSpore.getNodeId(), (await stub.SbkimSpore.getNodeId()) === "AKTIV-111");
+
+  // ---------- Kennung anderswo erzeugt (Siegel-Wizard) → Anzeige zieht nach ----------
+  // Klaus' Frage 2026-07-30: übernimmt das Netz-Panel die im Siegel erzeugte
+  // Kennung automatisch? Ja — dieselbe Schublade. Hier wird bewiesen, dass auch
+  // die ANZEIGE nachzieht, ohne das Panel zu schliessen.
+  record("0b/5 Identitäts-Horcher aktiv", "ja",
+    UI._test.hasIdentityWatch() ? "ja" : "nein", UI._test.hasIdentityWatch() === true);
+  stub.SbkimSpore = makeSpore({});          // leere Schublade, Panel offen
+  UI._test.refreshIdentityBox();
+  await sleep(10);
+  const vorher = UI._test.idHint() || "";
+  record("0b/5 Ausgangslage: Panel sieht keine Kennung", "Hinweis auf fehlende Kennung",
+    vorher.slice(0, 40), /Noch keine Kennung/.test(vorher));
+  // Der Siegel-Wizard legt die Identität an (dieselbe Schublade) und Modul 02
+  // feuert sbkim:alive — das Panel darf nicht auf einem alten Stand stehenbleiben.
+  stub.SbkimSpore = makeSpore({ main: "IM-SIEGEL-ERZEUGT" });
+  stub.dispatchEvent(new stub.CustomEvent("sbkim:alive", { detail: { nodeId: "IM-SIEGEL-ERZEUGT" } }));
+  await sleep(30);
+  const idEl2 = stub.document.querySelector("#sbkim-rdv-myid");
+  record("0b/5 Kennung aus dem Siegel steht sofort im Panel", "IM-SIEGEL-ERZEUGT",
+    idEl2 && idEl2.textContent, !!(idEl2 && idEl2.textContent === "IM-SIEGEL-ERZEUGT"));
+  record("0b/5 Sicherungs-Hinweis zieht mit nach", "nicht mehr „noch keine Kennung“",
+    (UI._test.idHint() || "").slice(0, 40), !/Noch keine Kennung/.test(UI._test.idHint() || ""));
 
   // ---------- fail-soft: ohne Modul 02 ----------
   stub.SbkimSpore = null;
