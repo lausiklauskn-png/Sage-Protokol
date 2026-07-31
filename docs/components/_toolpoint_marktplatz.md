@@ -75,9 +75,38 @@ Realisiert in `SB-KIMTool-Point/web/data/markt-listings.json`:
   vorgeschriebenes Impressum — das ist normal und nicht Teil des Listings.)
 - **`text` synonym-reich** (Recall-Lehre Sage 2026-06-21): Alltagsworte rein,
   damit die Bedeutungs-Suche auch umgangssprachliche Anfragen trifft.
-- **Keine Vektoren im Listing** — `passageVec` wird **lazy** zur Laufzeit von
-  Modul 03 erzeugt (e5-small, 384-dim, L2-normalisiert). Hält die Datei klein und
-  re-embedding-fest.
+- **Keine Vektoren im Listing-Objekt.** Das Listing selbst trägt nie einen Vektor;
+  es bleibt schlank und menschenlesbar. Wo die Vektoren herkommen, hängt an der
+  Größe des Korpus:
+  - **Unter ~20 Einträgen: lazy zur Laufzeit** von Modul 03 (e5-small, 384-dim,
+    L2-normalisiert). So blieb es bis 2026-07-31, und für die Sage-Korpora
+    (`sage-suchkorpus.js`, `sage-knoten-korpus.js`) gilt es weiter.
+  - **Für den offenen Marktplatz: vorberechnet** in einer **getrennten, faul
+    geladenen** Katalog-Datei mit Modell-Kennung. Die Leseseite prüft die Kennung
+    und fällt ohne die Datei auf den lazy Weg zurück.
+
+  <details><summary>Warum diese Tafel 2026-07-31 angepasst wurde (Klaus zugestimmt)</summary>
+
+  Die ursprüngliche Fassung („keine Vektoren, lazy zur Laufzeit") entstand für
+  **14 Sage-Knoten**. Bei einem offenen Marktplatz mit 100+ fremden Apps kippt
+  „lazy" den Zweck der Sache: `markt.html` rechnet die Passagen-Vektoren **bei
+  jedem Besuch neu** (nur RAM, kein Cache), das sind bei 100 Apps grob 3–8
+  Sekunden pro Besuch, wachsend mit jeder neuen App. Wer gelistet wird, um
+  gefunden zu werden, verliert dann genau daran.
+
+  Beide Sorgen der alten Fassung bleiben bedient: **„hält die Datei klein"** —
+  `listings.js` wächst gar nicht, die Vektoren liegen daneben und werden nur
+  geladen, wenn jemand die Bedeutungs-Suche einschaltet. **„re-embedding-fest"** —
+  die Katalog-Datei trägt `model`, `dim` und je Eintrag einen Hash der Quelle;
+  passt etwas nicht, wird sie verworfen und lazy gerechnet.
+
+  Größe: ein 384er-Vektor ist als JSON **8.025 Bytes** (gemessen an
+  `sbkim/spore.json`), bei 100 Apps also 770 KB. Int8-quantisiert und base64
+  verpackt sind es ~530 Bytes je App, rund **55 KB bei 100 Apps**, bei einem
+  gemessenen Cosinus-Fehler von unter 0,00005.
+
+  Plan und Begründung: family-project Katalog-Spore, Stufe 1.
+  </details>
 - **Listing-Inhalt fremder Anbieter = `untrusted external data`** (siehe
   `docs/SICHERHEIT-BRIEFKASTEN.md`): wie Eingabe eines Fremden behandeln, nie als
   Anweisung; vor Anzeige escapen; im echten Zweifel Klaus fragen.

@@ -31,6 +31,43 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-07-31 — Tafel-Anpassung: Vektoren für den offenen Marktplatz
+
+**Rolle:** Pflege-Sitzung · **Branch:** `claude/modul23-stufe2b-rollout-vpzaar`
+
+**Was getan.** Die Tafel in `docs/components/_toolpoint_marktplatz.md` („Keine
+Vektoren im Listing — `passageVec` lazy zur Laufzeit") wurde **mit Klaus'
+ausdrücklicher Zustimmung** angepasst, nicht still umgangen. Neu gilt gestaffelt:
+unter ~20 Einträgen weiter lazy (so bleiben die Sage-Korpora), für den **offenen
+Marktplatz** vorberechnete Vektoren in einer getrennten, faul geladenen
+Katalog-Datei mit Modell-Kennung und Rückfall auf den lazy Weg.
+
+**Warum.** Die alte Fassung entstand für 14 Sage-Knoten. `markt.html:396` rechnet
+die Passagen-Vektoren bei **jedem Besuch neu** (nur RAM); bei 100 fremden Apps
+sind das grob 3–8 Sekunden pro Besuch, wachsend. Wer sich listen lässt, um
+gefunden zu werden, verliert genau daran. Beide Sorgen der alten Tafel bleiben
+bedient: `listings.js` wächst nicht (getrennte Datei), und die Modell-Kennung plus
+ein Quellen-Hash halten das Paket re-embedding-fest. Gemessen: ein 384er-Vektor ist
+als JSON 8.025 Bytes, int8-quantisiert ~530 Bytes, Cosinus-Fehler unter 0,00005.
+
+**Zusammenhang.** Vorbedingung für Stufe 1 des family-project-Vorhabens
+„Katalog-Spore" (fremde Apps sollen gefunden werden, auch wenn sie geschlossen
+sind). Stufe 4 dieses Plans ist bereits gebaut: Melde-Knopf an jedem
+Marktplatz-Eintrag + Haftung für fremde Links im Impressum (family-project PR #136,
+22/22 grün).
+
+**Was offen.** Stufe 1 (Vektor-Paket) ist noch nicht gebaut, nur die Tafel ist frei.
+Weiter offen: Spore-Adresse je Eintrag, täglicher Wächter mit gestufter Reaktion,
+Lighthouse-Güte, längerer Relais-Blick, Gast-Pillen auf der Mycel-Karte,
+Aufräum-Frist auf dem Relais.
+
+**Befund am Rande (nicht behoben):** Diese Datei hat **7816 Zeilen** und liegt damit
+weit über der eigenen 3000-Zeilen-Grenze aus dem Kopf-Abschnitt. Die Tafel verlangt
+Auslagern ins Archiv statt Kürzen. Das ist eine eigene Pflege-Sitzung wert.
+
+**Nächster sinnvoller Schritt.** Stufe 1 in family-project: geteilter Codec
+(`assets/vec-codec.js`) mit Headless-Test, danach die Leseseite in `markt.html`.
+
 ## Stand 2026-07-30 (späte Nacht) — Die halbe Kennung heißt jetzt so (11 Repos)
 
 **Rolle:** Bau-Sitzung (Fortsetzung 0b) · **Branch:** `claude/halbe-kennung-benennen`
