@@ -110,10 +110,12 @@ bevor Membran/Siegel sie bedienen. `19/20/21/22/24` sind additiv, fail-soft
   einreichen") + die Werkzeug-Seiten `family-project/werkzeuge/andock-werkzeug.html`,
   `knoten-werkzeug.html`, `such-werkzeug.html`.
 - ✅ **Siegel-Bau-Rezept** als Skill: `.claude/skills/status-leiste-siegel`.
-- ⏳ **Stufe 2 „Voll-Knoten"-Kiste** als EIN konsolidierter Ordner mit einer
-  README existiert noch **nicht** — die Bausteine liegen im Kanon
-  (`src/modules/`) verstreut. Das ist der nächste Bau, wenn Klaus die obige
-  Liste freigibt (Branch-Vorschlag `claude/bau-vollknoten-bundle`).
+- ✅ **Stufe 2 „Voll-Knoten"-Kiste** existiert jetzt als EIN Ordner:
+  [`sbkim-bundle-voll/`](../sbkim-bundle-voll/) — 18 Module byte-1:1 aus dem
+  Kanon (inkl. gehärtetem Modul 23 + Siegel-Aspekt), `sbkim-connect.js`,
+  `README.md` (Einbau in 3 Schritten, Ladereihenfolge 17→15→16),
+  `beispiel-voll.html` (lauffähiges Vorbild) und ein Drift-Guard
+  (`tests/smoke_vollbundle.mjs`, 42/42 grün). Gebaut 2026-07-30.
 
 ---
 

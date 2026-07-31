@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SBKIM Voll-Knoten — Beispiel</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.3rem; }
+    .card { border: 1px solid #ccc; border-radius: 10px; padding: 1rem; margin: 1rem 0; }
+    button { font: inherit; padding: .5rem 1rem; border-radius: 8px; cursor: pointer; }
+    #andock-wizard label { display: block; margin: .4rem 0; }
+    #andock-wizard input, #andock-wizard select { width: 100%; padding: .4rem; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #f5f5f5; padding: .5rem; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>SBKIM Voll-Knoten — Beispiel-Einbau</h1>
+  <p>Diese Seite zeigt die volle Einbau-Kette der Geschenkbox. Die Status-Lampen
+    (Widget) erscheinen als schwebendes Panel; das Siegel-Badge zeigt den
+    Vertrauens-Stand; der Andock-Wizard erzeugt eine Spore-Vorlage.</p>
+
+  <div class="card">
+    <button type="button" id="btn-verbinden">🌐 Mit dem Netz verbinden</button>
+    <button type="button" id="btn-raum">👥 Wer ist im Raum?</button>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:1rem">Andock-Wizard</h2>
+    <div id="andock-wizard"></div>
+  </div>
+
+  <!-- ── Verbinden-Kern ── -->
+  <script src="modules/noble-secp256k1.js"></script>
+  <script src="modules/01_storage.js"></script>
+  <script src="modules/02_spore.js"></script>
+  <script src="modules/03_embedding.js"></script>
+  <script src="modules/04_match.js"></script>
+  <script src="modules/05_anastomose.js"></script>
+  <script src="modules/05b_nostr_relay.js"></script>
+  <script src="modules/23_rendezvous.js"></script>
+  <script src="modules/23_rendezvous_ui.js"></script>
+  <script src="sbkim-connect.js"></script>
+  <!-- ── Vertrauen + Oberfläche: 17 VOR 15 VOR 16 ── -->
+  <script src="modules/17_floating_widget.js"></script>
+  <script src="modules/15_membran.js"></script>
+  <script src="modules/siegel-inhalt.js"></script>
+  <script src="modules/16_siegel.js"></script>
+  <!-- ── Onboarding + Safe + optional Suche/Eingabe ── -->
+  <script src="modules/19_andock_wizard.js"></script>
+  <script src="modules/20_schluessel_safe.js"></script>
+  <script src="modules/21_spracheingabe.js"></script>
+  <script src="modules/22_such_widget.js"></script>
+  <script src="modules/24_ocr_eingabe.js"></script>
+
+  <script>
+  (async () => {
+    // (a) Verbinden-Kern in EINEM Aufruf. Ersetze die Werte durch deine eigenen.
+    try {
+      await SbkimConnect.init({
+        dbSuffix:          "beispielapp",
+        nodeName:          "Beispiel-App",
+        endpoint:          "https://example.github.io/BeispielApp/",
+        domain:            "beispiel",
+        domainDescription: "Eine Beispiel-App, die zeigt, wie ein voller SBKIM-Knoten eingebaut wird.",
+        domainKeywords:    ["Beispiel", "Demo", "Andock"],
+      });
+    } catch (e) { console.warn("SbkimConnect.init:", e); }
+
+    // (b) Status-Lampen ZUERST — legt die Proxy-Slots für Membran/Siegel an.
+    if (window.SbkimWidget)   { try { await SbkimWidget.init(); }   catch (e) { console.warn("SbkimWidget.init:", e); } }
+    // (c) dann Schutz-Hülle + Siegel.
+    if (window.SbkimMembrane) { try { await SbkimMembrane.init(); } catch (e) { console.warn("SbkimMembrane.init:", e); } }
+    if (window.SbkimSiegel)   { try { await SbkimSiegel.init({ ribbonText: "Beispiel-App" }); } catch (e) { console.warn("SbkimSiegel.init:", e); } }
+
+    // (d) Andock-Wizard in ein Element mounten.
+    if (window.SbkimAndockWizard) {
+      try { SbkimAndockWizard.mount({ container: "#andock-wizard" }); } catch (e) { console.warn("SbkimAndockWizard.mount:", e); }
+    }
+
+    // (e) Knöpfe verdrahten (nur wenn das Rendezvous-UI vorhanden ist).
+    var verbinden = document.getElementById("btn-verbinden");
+    var raum = document.getElementById("btn-raum");
+    if (window.SbkimRendezvousUI) {
+      verbinden && verbinden.addEventListener("click", function () {
+        try { SbkimRendezvousUI.announce ? SbkimRendezvousUI.announce() : SbkimRendezvous.connectAndAnnounce(); }
+        catch (e) { console.warn(e); }
+      });
+      raum && raum.addEventListener("click", function () {
+        try { SbkimRendezvousUI.openRoom ? SbkimRendezvousUI.openRoom() : SbkimRendezvous.discover(); }
+        catch (e) { console.warn(e); }
+      });
+    }
+
+    // (f) optional, auf Abruf — nicht beim Start:
+    //   await SbkimSafe.init();          // öffnet nichts automatisch (autoPrompt false)
+    //   await SbkimSearchWidget.init();  // 🔍-Blase, self-mount in <body>
+  })();
+  </script>
+</body>
+</html>
