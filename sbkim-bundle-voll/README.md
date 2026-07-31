@@ -54,7 +54,33 @@ Ein lauffähiges Vorbild steht in [`beispiel-voll.html`](beispiel-voll.html).
 
 ---
 
-## Einbau in 3 Schritten
+## Schnellweg: der Installer (ein Befehl)
+
+Für Terminal-Nutzer (PC oder Termux) — kopiert die Box in dein Repo **und** trägt
+die Script-Zeilen in `index.html` ein, in einem Schritt. Plattformübergreifend
+(Windows/macOS/Linux/Android), nur Node, **kein npm**.
+
+```bash
+# im Ordner deines Repos (wo die index.html liegt):
+node sbkim-bundle-voll/install.mjs
+
+# oder ohne die Box vorher zu holen — direkt aus dem Netz:
+node install.mjs --fetch --target .
+
+# nur zeigen, was passieren würde (schreibt nichts):
+node install.mjs --dry
+```
+
+Er ist **idempotent** (zweiter Lauf setzt den Block nicht doppelt), **fail-soft**
+(fehlt die `index.html`, kopiert er trotzdem die Box und sagt dir Bescheid) und
+ändert **nur** `sbkim-bundle-voll/*` und additiv deine `index.html`. Danach den
+eingesetzten `init()`-Vorlage-Block mit deinen Werten füllen und einkommentieren.
+
+Wer keinen Terminal nutzt, nimmt stattdessen den manuellen Weg:
+
+---
+
+## Einbau in 3 Schritten (manuell)
 
 ### 1. Ordner kopieren
 

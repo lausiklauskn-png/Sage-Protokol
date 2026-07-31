@@ -88,6 +88,17 @@ check("beispiel-voll.html ruft SbkimWidget.init vor SbkimSiegel.init",
   bsp.indexOf("SbkimSiegel.init") > -1 &&
   bsp.indexOf("SbkimWidget.init") < bsp.indexOf("SbkimSiegel.init"));
 
+// Installer vorhanden + korrekt (ein Befehl, Reihenfolge 17 vor 15 vor 16).
+let installer = "";
+try { installer = readFileSync(join(BOX, "install.mjs"), "utf8"); } catch (e) { installer = ""; }
+check("install.mjs vorhanden", installer.length > 0);
+check("install.mjs: Script-Block-Reihenfolge 17 vor 15 vor 16",
+  installer.indexOf("17_floating_widget") > -1 &&
+  installer.indexOf("15_membran") > installer.indexOf("17_floating_widget") &&
+  installer.indexOf("16_siegel.js") > installer.indexOf("15_membran"));
+check("install.mjs: idempotenz-Marker vorhanden", installer.includes("SBKIM Voll-Box: Anfang"));
+check("README dokumentiert den Installer", readme.includes("install.mjs"));
+
 console.log("");
 if (fail === 0) console.log("ALLE GRÜN — " + ok + " ok, 0 fail");
 else console.log("FEHLER — " + ok + " ok, " + fail + " fail");
