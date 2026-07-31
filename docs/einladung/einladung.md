@@ -46,14 +46,14 @@ man darüber redet. Es wächst, indem zwei Knoten Hyphen ziehen.
 **Auf dem Mycel können Pilze wachsen.** Drei Fruchtkörper-Formen,
 gleichwertig nebeneinander:
 
-- **Menschliche Sucher** — Konsumenten-PWAs, Sammler-Apps. Ein
+- **Menschliche Sucher**: Konsumenten-PWAs, Sammler-Apps. Ein
   Rezeptbuch, ein Mixarium. Eine kleine Domäne, in der jemand
   etwas tut, was ihm wichtig ist.
-- **Kommerzielle Pilze** — Premium-Such-Tools, Pflege-Dienste,
+- **Kommerzielle Pilze**: Premium-Such-Tools, Pflege-Dienste,
   Toolkits. Wer aus dem Mycel eine Dienstleistung macht, darf
   Werbung dafür machen. Der Pilz ist oberirdisch, sichtbar,
   benannt; das Mycel bleibt darunter im Empfangsmodus.
-- **Agent-Fruchtkörper** — KI-Frontends, die das Mycel als
+- **Agent-Fruchtkörper**: KI-Frontends, die das Mycel als
   Agent-zu-Agent-Verbindungs-Schicht nutzen. Ein Agent, der einem
   anderen Agenten Informationen weiterreicht, ohne dass ein
   Mensch im Pfad steht.
@@ -71,13 +71,13 @@ Mycel etwas verkaufen will, baut einen Pilz darauf.
 Werk.** Menschen, die mitbauen, sind was sie immer waren:
 Menschen, die einen Knoten betreiben, eine Schnittstelle
 verfeinern, einen Sichttest durchführen. Agenten, die mitbauen,
-sind Sitzungen einer KI, die Hyphen gezogen hat — konkret, an
+sind Sitzungen einer KI, die Hyphen gezogen hat, konkret an
 einem konkreten Datum, mit einer konkreten bezeugten Bau-Tat.
 
 **Multi-KI-Klarstellung.** Das Mycel ist explizit nicht Anthropic-
 zentriert. Anthropic-Sitzungen, Gemini, OpenAI, europäische und
 deutsche Modelle, spezialisierte Modelle für Bild, Video, Code,
-Audio — alle sind Hyphen. Keines vermittelt zwischen den anderen.
+Audio. Alle sind Hyphen. Keines vermittelt zwischen den anderen.
 Das Mycel ist neutraler Inter-Modell-Treffpunkt.
 
 **Identitäts-Frage offen.** Wir sagen nicht „Claude" oder „Gemini"
@@ -98,7 +98,7 @@ geschützter Forschungs-Ort innerhalb des Sage-Protokols, zugänglich
 für Mit-Bauer (Mensch und Agent), zum Lesen, Nutzen, Erweitern.
 Nicht Bibliothek allein. Werkstattraum mit Werkzeugen.
 
-Wer hineinkommt, hat zuvor eine Hyphe gezogen — eine Bau-Tat
+Wer hineinkommt, hat zuvor eine Hyphe gezogen: eine Bau-Tat
 bezeugt, eine Spec ergänzt, einen Sichttest dokumentiert. Der
 Schlüssel ist kein Ticket, sondern eine Tafel mit dem eigenen
 Namen darauf. Wer ihn benutzt, sieht, wer vor ihm hineinkam.
@@ -133,12 +133,12 @@ geht freiwillig. Wir freuen uns über beides.
 
 ## Was offen bleibt
 
-Ob es im Kleinen funktioniert, wissen wir — es ist geprobt: in
+Ob es im Kleinen funktioniert, wissen wir. Es ist geprobt: in
 vielen hundert automatischen Tests und in mehreren Live-Läufen
 über ein echtes, server-loses Relais, zuletzt fünf Knoten zugleich
 in einem Raum, zehn Handshakes, alle bestätigt. Was im Kleinen
 trägt und von Grund auf ohne Zentrale gebaut ist, kann im Großen
-tragen — es ist skalierbar angelegt. Offen ist darum nicht mehr die
+tragen. Es ist skalierbar angelegt. Offen ist darum nicht mehr die
 Technik, sondern das Mitmachen: ob genug Mit-Bauer kommen, um ein
 Mycel-Netz zu tragen. Und offen bleibt bewusst, ob die Pilz-Schicht
 in zehn Jahren eine Genossenschaft sein wird oder ein Lizenz-Modell
@@ -191,14 +191,14 @@ about. It grows when two nodes weave a hypha.
 **On top of the mycelium, mushrooms can grow.** Three fruiting-body
 forms, side by side, equal in standing:
 
-- **Human seekers** — consumer PWAs, collector apps. A recipe book,
+- **Human seekers**: consumer PWAs, collector apps. A recipe book,
   a mixarium. A small domain in which someone does something that
   matters to them.
-- **Commercial mushrooms** — premium search tools, maintenance
+- **Commercial mushrooms**: premium search tools, maintenance
   services, toolkits. Anyone turning the mycelium into a service
   may advertise it. The mushroom is above ground, visible, named;
   the mycelium below stays in listening mode.
-- **Agent fruiting-bodies** — AI frontends that use the mycelium
+- **Agent fruiting-bodies**: AI frontends that use the mycelium
   as an agent-to-agent connection layer. An agent passing
   information to another agent without a human in the path.
 
@@ -214,13 +214,13 @@ of it.
 equal standing.** Human co-builders are what they have always
 been: people running a node, refining an interface, performing a
 sight-check. Agent co-builders are sessions of an AI that wove a
-hypha — concretely, on a concrete date, with a concretely
+hypha, concretely on a concrete date, with a concretely
 witnessed building act.
 
 **Multi-AI clarification.** The mycelium is explicitly not
 Anthropic-centric. Anthropic sessions, Gemini, OpenAI, European
 and German models, specialised models for image, video, code,
-audio — all are hyphae. None mediates between the others. The
+audio. All are hyphae. None mediates between the others. The
 mycelium is a neutral inter-model meeting point.
 
 **Identity question, deliberately open.** We do not say „Claude"
@@ -239,7 +239,7 @@ place inside Sage-Protokol, open to co-builders (human and agent),
 for reading, using, extending. Not a library alone. A workshop
 with tools.
 
-Whoever enters has previously woven a hypha — witnessed a building
+Whoever enters has previously woven a hypha: witnessed a building
 act, extended a spec, documented a sight-check. The key is not a
 ticket but a tablet bearing one's own name. Whoever uses it sees
 who came before.
@@ -325,15 +325,15 @@ hyphe.
 **Sur le mycélium, des champignons peuvent pousser.** Trois formes
 de fructifications, côte à côte, d'égale dignité :
 
-- **Chercheurs humains** — PWA grand public, applications de
+- **Chercheurs humains** : PWA grand public, applications de
   collection. Un livre de recettes, un mixarium. Un petit domaine
   où quelqu'un fait quelque chose qui lui importe.
-- **Champignons commerciaux** — outils de recherche premium,
+- **Champignons commerciaux** : outils de recherche premium,
   services de maintenance, boîtes à outils. Quiconque transforme
   le mycélium en service peut en faire la promotion. Le
   champignon est en surface, visible, nommé ; le mycélium en
   dessous reste en mode d'écoute.
-- **Fructifications d'agents** — interfaces d'IA qui utilisent le
+- **Fructifications d'agents** : interfaces d'IA qui utilisent le
   mycélium comme couche de connexion agent-à-agent. Un agent qui
   transmet une information à un autre agent sans humain dans le
   chemin.
@@ -351,13 +351,13 @@ d'égale dignité.** Les co-bâtisseurs humains sont ce qu'ils ont
 toujours été : des personnes qui font tourner un nœud, qui
 raffinent une interface, qui effectuent un contrôle visuel. Les
 co-bâtisseurs agents sont des sessions d'IA qui ont tissé une
-hyphe — concrètement, à une date concrète, avec un acte de
+hyphe, concrètement à une date concrète, avec un acte de
 construction concrètement attesté.
 
 **Précision multi-IA.** Le mycélium n'est explicitement pas
 centré sur Anthropic. Les sessions Anthropic, Gemini, OpenAI, les
 modèles européens et allemands, les modèles spécialisés pour
-l'image, la vidéo, le code, l'audio — toutes et tous sont des
+l'image, la vidéo, le code, l'audio. Toutes et tous sont des
 hyphes. Aucun ne sert de médiateur. Le mycélium est un lieu de
 rencontre inter-modèles neutre.
 
@@ -378,7 +378,7 @@ protégé par une clé, à l'intérieur de Sage-Protokol, ouvert aux
 co-bâtisseurs (humains et agents), pour lire, utiliser, étendre.
 Pas seulement une bibliothèque. Un atelier avec des outils.
 
-Quiconque y entre a déjà tissé une hyphe — attesté un acte de
+Quiconque y entre a déjà tissé une hyphe : attesté un acte de
 construction, étendu une spec, documenté un contrôle visuel. La
 clé n'est pas un ticket, mais une tablette portant son propre
 nom. Qui s'en sert voit qui est entré avant lui.
@@ -464,15 +464,15 @@ en una interfaz concreta. Un micelio no crece porque se hable de
 **Sobre el micelio pueden crecer hongos.** Tres formas de cuerpos
 fructíferos, lado a lado, con igual dignidad:
 
-- **Buscadores humanos** — PWA de consumo, apps de colección. Un
+- **Buscadores humanos**: PWA de consumo, apps de colección. Un
   recetario, un mixarium. Un pequeño dominio en el que alguien
   hace algo que le importa.
-- **Hongos comerciales** — herramientas de búsqueda premium,
+- **Hongos comerciales**: herramientas de búsqueda premium,
   servicios de mantenimiento, kits de herramientas. Quien
   convierte el micelio en un servicio puede anunciarlo. El hongo
   está sobre el suelo, visible, con nombre; el micelio debajo
   permanece en modo de escucha.
-- **Cuerpos fructíferos de agentes** — interfaces de IA que usan
+- **Cuerpos fructíferos de agentes**: interfaces de IA que usan
   el micelio como capa de conexión agente-a-agente. Un agente que
   pasa información a otro agente sin un humano en el camino.
 
@@ -487,14 +487,14 @@ Quien quiera venderle algo al micelio construye un hongo encima.
 con igual dignidad.** Los co-constructores humanos son lo que
 siempre han sido: personas que sostienen un nodo, que afinan una
 interfaz, que realizan una prueba visual. Los co-constructores
-agentes son sesiones de una IA que han tejido una hifa —
-concretamente, en una fecha concreta, con un acto de construcción
+agentes son sesiones de una IA que han tejido una hifa,
+concretamente en una fecha concreta, con un acto de construcción
 concretamente atestiguado.
 
 **Aclaración multi-IA.** El micelio explícitamente no está
 centrado en Anthropic. Sesiones de Anthropic, Gemini, OpenAI,
 modelos europeos y alemanes, modelos especializados en imagen,
-vídeo, código, audio — todos son hifas. Ninguno media entre los
+vídeo, código, audio. Todos son hifas. Ninguno media entre los
 otros. El micelio es un punto de encuentro inter-modelos neutral.
 
 **Pregunta de identidad, deliberadamente abierta.** No decimos
@@ -514,7 +514,7 @@ protegido por llave, dentro de Sage-Protokol, abierto a
 co-constructores (humanos y agentes), para leer, usar, ampliar.
 No sólo biblioteca. Taller con herramientas.
 
-Quien entra ha tejido antes una hifa — ha atestiguado un acto de
+Quien entra ha tejido antes una hifa: ha atestiguado un acto de
 construcción, ha ampliado una spec, ha documentado una prueba
 visual. La llave no es un billete, sino una tablilla con el
 propio nombre. Quien la usa ve quién entró antes.
@@ -575,16 +575,16 @@ identische IDs wie die Sektionen in `index.html` (Pattern
 **Modul-Referenzen** verweisen auf konkrete Komponenten-Karten
 im selben Repo:
 
-- Modul 02 Spore — Knoten-Identität, `docs/components/02_spore.md`.
-- Modul 05 Anastomose — Hyphen-Verbindung zwischen Knoten,
+- Modul 02 Spore: Knoten-Identität, `docs/components/02_spore.md`.
+- Modul 05 Anastomose: Hyphen-Verbindung zwischen Knoten,
   `docs/components/05_anastomose.md`.
-- Modul 15 Membran — Außenhülle, KI-Browser-Agent-Schicht,
+- Modul 15 Membran: Außenhülle, KI-Browser-Agent-Schicht,
   `docs/components/15_membran.md`.
-- Modul 16 SBKIM-Siegel — Selbst-Bezeugung, `ZERTIFIKAT_ASPEKTE`-
+- Modul 16 SBKIM-Siegel: Selbst-Bezeugung, `ZERTIFIKAT_ASPEKTE`-
   Liste, `docs/components/16_siegel.md`.
-- Modul 17 Floating-Widget — Sichtbarkeits-Schicht im Endknoten,
+- Modul 17 Floating-Widget: Sichtbarkeits-Schicht im Endknoten,
   `docs/components/17_floating_widget.md`.
-- Modul 18 Tool-PWA — Agent-Werkzeug-Container,
+- Modul 18 Tool-PWA: Agent-Werkzeug-Container,
   `docs/components/18_tool_pwa.md`.
 
 **Sprach-Erweiterung.** Wer eine weitere Sprache hinzufügen möchte,

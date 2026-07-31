@@ -19,14 +19,14 @@ Das **SBKIM-Protokoll** (Semantisch-Empfangendes Bidirektionales
 KI-Matching) und seine Referenz-Implementierung **Sage-Protokol**
 beschreiben einen dezentralen Ansatz, mit dem kleine Web-Anwendungen
 (typischerweise PWAs) einander **semantisch finden, signiert
-verbinden und kontrolliert Daten austauschen** können — ohne
+verbinden und kontrolliert Daten austauschen** können, ohne
 zentralen Server, ohne Cloud-Auth-Dienst, ohne kontinuierlichen
 Crawler-Verkehr.
 
-Der Kerngedanke ist nicht neu: die Bausteine — Public-Key-Identität,
+Der Kerngedanke ist nicht neu: die Bausteine (Public-Key-Identität,
 JSON-basierte Selbstbeschreibung, Embedding-basiertes
 Semantik-Matching, Pull-Pattern, Service-Discovery über bekannte
-Pfade — existieren einzeln seit Jahren. **Neu** ist ihre
+Pfade) existieren einzeln seit Jahren. **Neu** ist ihre
 Kombination in einem zusammenhängenden, sehr kleinen Protokoll, das
 in eine Single-File-PWA passt und ohne Backend lauffähig ist.
 
@@ -37,7 +37,7 @@ Dieses Begleit-Paper fasst zusammen:
 2. **welche Automatisierungs-Prozesse** zwischen Apps damit möglich
    werden, die heute manuelle Plugin- oder Adapter-Arbeit erfordern,
 3. **welche Integrations-Modelle** ein nachhaltiges, kleinteiliges
-   Geschäftsmodell tragen könnten — insbesondere ein Obolus-Modell
+   Geschäftsmodell tragen könnten, insbesondere ein Obolus-Modell
    für leichte Integrations-Werkzeuge.
 
 Das Paper erhebt keinen Anspruch auf wissenschaftliche Neuheit. Es
@@ -52,9 +52,9 @@ Endknoten-Betreibers ohne Programmierkenntnisse.
 
 ### 1.1 Motivation
 
-Wer heute eine eigene kleine Web-Anwendung baut — sei es ein
+Wer heute eine eigene kleine Web-Anwendung baut, sei es ein
 digitales Rezeptbuch, eine Cocktail-Sammlung, ein Vereinsregister,
-ein Reisetagebuch — steht vor einer wiederkehrenden Wahl:
+ein Reisetagebuch, steht vor einer wiederkehrenden Wahl:
 
 - **A) Allein bleiben.** Die App läuft isoliert. Sie kann nichts mit
   anderen Apps teilen, weiß nichts über sie, kann sie nicht
@@ -64,7 +64,7 @@ ein Reisetagebuch — steht vor einer wiederkehrenden Wahl:
   liefert Nutzungsdaten an den Anbieter, verliert die Kontrolle über
   die eigenen Daten.
 - **C) Selbst eine Plattform aufbauen.** Die App betreibt eigene
-  Auth-Server, eigene APIs, eigene Datenbank — Aufwand, der
+  Auth-Server, eigene APIs, eigene Datenbank. Aufwand, der
   Einzelpersonen oder Kleingruppen überfordert.
 
 Es fehlt eine vierte Option: **mehrere kleine Apps reden direkt
@@ -100,7 +100,7 @@ Begleit-Paper auf den **Nutzen-Aspekt**:
   Standard-Bausteine.
 - **Keine neue Embedding-Forschung.** Das Protokoll nutzt
   `Xenova/multilingual-e5-small` als Standard-Modell (384
-  Dimensionen, L2-normalisiert) — das ist Bestandsforschung.
+  Dimensionen, L2-normalisiert). Das ist Bestandsforschung.
 - **Keine formale Sicherheits-Analyse.** Das Protokoll ist defensiv
   gebaut (Sybil-Schutz via Singleton-Identität, Replay-Marker als
   Nonce, kanonische Signatur), aber eine peer-reviewte
@@ -125,11 +125,11 @@ Für ein kleines App-zu-App-Mycel sind sie überdimensioniert.
 
 **ActivityPub** (W3C-Standard, Mastodon, Fediverse) löst das
 Föderations-Problem zwischen sozialen Servern. Es ist mächtig, aber
-syntaktisch — der Match-Filter ist „folgst du jemandem".
+syntaktisch. Der Match-Filter ist „folgst du jemandem".
 Semantisches Matching auf Inhalts-Ebene gibt es nicht.
 
 **Solid** (Tim Berners-Lee) trennt Daten-Speicher (Pods) von
-Anwendungen. Die Architektur ist konsequent, aber komplex — eigene
+Anwendungen. Die Architektur ist konsequent, aber komplex: eigene
 Identity-Provider, eigenes Berechtigungs-Modell, schwer zugänglich
 für Einzelpersonen ohne Server.
 
@@ -146,7 +146,7 @@ Anwendungsdaten-Verständigung.
 ### 2.4 Vector-Embedding-Suche
 
 Embedding-basierte Vektorsuche (FAISS, Annoy, Vespa) löst
-semantische Ähnlichkeit über große Korpora — aber innerhalb eines
+semantische Ähnlichkeit über große Korpora, aber innerhalb eines
 einzelnen Systems. Cross-System-Match ist nicht vorgesehen.
 
 ### 2.5 Lücke
@@ -193,7 +193,7 @@ nicht. Das hat drei Konsequenzen:
    (GitHub Pages, Netlify, ein simples nginx). Kein Cron, kein
    Hintergrund-Worker, keine Datenbank.
 3. **Kontrolliertes Wachstum.** Spore-Diffusion läuft konsensuell
-   (Modul 14, Backlog) — Empfehlung über bestehende Geschwister,
+   (Modul 14, Backlog): Empfehlung über bestehende Geschwister,
    nicht über Crawling.
 
 ---
@@ -204,7 +204,7 @@ nicht. Das hat drei Konsequenzen:
 
 **Heute (ohne SBKIM):** Klaus hat ein digitales Rezeptbuch und eine
 Cocktail-Sammlung als zwei voneinander getrennte PWAs. Er tippt im
-Rezeptbuch „was passt zu Steak". Die App findet das Steak-Rezept —
+Rezeptbuch „was passt zu Steak". Die App findet das Steak-Rezept,
 und das war's. Die Wein-Empfehlung in der Cocktail-Sammlung kennt
 sie nicht; um sie zu sehen, muss er die App wechseln.
 
@@ -322,7 +322,7 @@ größere Systeme.
 
 Ein Cloud-Dienst, der seine API ändert oder schließt, reißt
 Hunderte abhängiger Apps mit sich. Ein SBKIM-Knoten hängt von keinem
-einzelnen Anbieter ab — der Endknoten-Betreiber kann den Hoster
+einzelnen Anbieter ab. Der Endknoten-Betreiber kann den Hoster
 wechseln (GitHub Pages → Netlify → eigene Domain → Heim-Server),
 ohne dass die Geschwister-Beziehungen brechen, solange die Identität
 (Ed25519-Schlüssel) erhalten bleibt. **Backup-Export** (Modul 02
@@ -377,7 +377,7 @@ sind:
   ohne dass ein zentraler Kalender-Server steht.
 
 Jeder dieser Pfade ist heute mit Zapier oder einem WordPress-Plugin
-machbar — aber kostet Geld, Vendor-Bindung und Datenschutz-Risiko.
+machbar, aber kostet Geld, Vendor-Bindung und Datenschutz-Risiko.
 Mit SBKIM ist der Pfad **selbsterklärend**: Apps mit passenden
 Sporen finden sich, der Rest ist Match-Schwelle und Opt-In.
 
@@ -417,7 +417,7 @@ Das größte praktische Hindernis für Nicht-Programmierer ist heute
 der **Andock-Prozess** (Modul 09): neun Schritte mit Code-Bearbeitung
 (`sbkim-init.js`), Service-Worker-Registrierung, Spore-Deploy,
 Pfad-Konfiguration. Klaus selbst hat das im Mai 2026 erstmals
-durchgespielt — und es war Pionier-Tanz.
+durchgespielt, und es war Pionier-Tanz.
 
 **Vision:** Ein **Andock-Bundle** (`sbkim-bundle.js`), das in einer
 Single-Datei alles mitliefert: das Protokoll, einen Andock-Wizard,
@@ -427,8 +427,8 @@ Datei, fügt einen `<script>`-Tag ein, fertig.
 **Geschäftsmodell:** Das Bundle ist als Open-Source frei verfügbar.
 Wer professionelle Unterstützung will (Update-Pfad, getestete
 Versions-Kompatibilität, Konfigurations-Hilfe, Daten-Migration bei
-Knoten-Umzug), zahlt einen **Obolus** — ein freiwilliger Beitrag in
-Monats- oder Jahresform. Ähnlich zu wie SQLite-Hilfsdienste, ZFS-
+Knoten-Umzug), zahlt einen **Obolus**, einen freiwilligen Beitrag in
+Monats- oder Jahresform. Ähnlich, wie SQLite-Hilfsdienste, ZFS-
 Support, oder PostgreSQL-Consulting heute funktionieren. Größenordnung
 für Kleinunternehmen: 5–20 € pro Monat pro Knoten; für Vereine
 freiwillig, was sie zahlen wollen.
@@ -436,7 +436,7 @@ freiwillig, was sie zahlen wollen.
 **Skalierung:** Bei 200 zahlenden Knoten zu durchschnittlich 10 €
 ergibt das 2 000 € pro Monat. Das ist ein kleiner, aber nachhaltiger
 Lebensunterhalt für eine Einzelperson, die die Werkzeuge pflegt.
-Im Vergleich zu Risikokapital-finanzierten Startups bescheiden — aber
+Im Vergleich zu Risikokapital-finanzierten Startups bescheiden, aber
 auf Nutzer-Bedürfnisse statt auf Investor-Renditen ausgerichtet.
 
 ### 7.3 Modell 2 — Schlüsselfertige Knoten-Templates
@@ -467,7 +467,7 @@ Vereine und kleine Unternehmen, die zwischen Cloud-Bindung und
 Eigen-Aufbau gefangen sind, brauchen oft eine zweistündige Beratung,
 um zu verstehen, ob SBKIM für sie passt. Das ist klassisch
 honorierbar (50–150 € pro Stunde) und braucht keine technische
-Skalierung — der Berater (Klaus oder ein Kollege) skaliert sich
+Skalierung. Der Berater (Klaus oder ein Kollege) skaliert sich
 selbst.
 
 **Skalierung:** Bei 5–10 Beratungs-Stunden pro Woche zu
@@ -482,7 +482,7 @@ GitHub-Pages-Konfiguration und Service-Worker-Setup kümmern.
 einen Knoten auf eigener Infrastruktur, der Kunde bekommt eine
 Web-UI zum Pflegen der Inhalte.
 
-**Wichtig — Datenschutz:** Die Identität (Ed25519-Privatschlüssel)
+**Datenschutz (wichtig):** Die Identität (Ed25519-Privatschlüssel)
 bleibt verschlüsselt auf dem Endknoten-Speicher oder im
 Passwort-geschützten Backup. Der Hoster kann die Daten **nicht
 lesen** (Backup-Export ist passwort-verschlüsselt mit
@@ -521,13 +521,13 @@ Service-Worker als Page-Hosted-Endpunkte dienen.
 gleichzeitige eingehende Pulls bearbeiten soll? Spec-Sitzung 05 sagt
 „Single-PWA, Single-Thread". Für 10 Geschwister reicht das; für
 1 000 wahrscheinlich nicht. **Antwort vermutlich:** Bei dieser
-Größenordnung ist eine Cloud-Variante (eigener Server) sinnvoller —
+Größenordnung ist eine Cloud-Variante (eigener Server) sinnvoller,
 und das Protokoll selbst hindert nicht daran. Sage-Protokol-PWA ist
 ein Einstieg, kein Endzustand.
 
 ### 8.2 Bootstrap-Problem
 
-Ein neues Mycel hat anfangs nur einen Knoten — der hat niemanden zum
+Ein neues Mycel hat anfangs nur einen Knoten. Der hat niemanden zum
 Reden. Wie kommen die ersten 5–10 Geschwister zusammen?
 
 **Heutige Lösung:** Manuell. Klaus kennt Anna, beide deployen ihre
@@ -542,7 +542,7 @@ Bootstrap-Problem aktiv begleiten.
 ### 8.3 Embedding-Modell-Drift
 
 Das Standard-Modell (`Xenova/multilingual-e5-small`) ist
-deterministisch — Vektoren passen für eine bestimmte Modell-Version.
+deterministisch: Vektoren passen für eine bestimmte Modell-Version.
 Wenn das Modell sich ändert, brechen alle bestehenden
 Domain-Vektoren.
 
@@ -588,7 +588,7 @@ Der Nutzen liegt nicht in technischer Neuheit, sondern in
 Klaus, Mai 2026: zwei Endknoten (Rezeptbuch, Mixarium), drei
 Nutzer. Sage-Protokol als Spezifikations- und Bau-Hub, beide
 Endknoten live mit SBKIM integriert. Die nächsten zwei Jahre
-entscheiden, ob das Mycel wächst — und ob die Geschäftsmodelle aus
+entscheiden, ob das Mycel wächst und ob die Geschäftsmodelle aus
 § 7 tragen.
 
 Das ist ein leiser Anfang. Genau so soll es sein.
@@ -641,7 +641,7 @@ Das ist ein leiser Anfang. Genau so soll es sein.
 
 **Lizenz:** Dieses Dokument folgt der Lizenz des Sage-Protokol-Repos
 (siehe `LICENSE`-Datei). Verbreitung und Anpassung sind ausdrücklich
-erwünscht — das Protokoll lebt vom Mit-Aufbau.
+erwünscht, das Protokoll lebt vom Mit-Aufbau.
 
 **Kontakt:** Klaus, Sage-Protokol-Betreiber. Erreichbar über die
 Endknoten Mein-Rezeptbuch und Mein-Mixarium (siehe Tabelle
