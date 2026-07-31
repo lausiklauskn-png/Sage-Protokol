@@ -51,6 +51,32 @@ vermeiden: sag direkt, was ist.
 - Statt: „Es ist keine Erweiterung — es ist ein Umbau."
 - Besser: „Das ist ein Umbau, keine Erweiterung."
 
+## Hervorheben statt Striche (Klaus 2026-07-31)
+
+Wichtiges wird **fett**, nicht mit Strichen oder Pünktchen betont. Aber richtig:
+
+- **Nur ganze Wörter fett, nie ein Satzzeichen.** Kein `**.**`, kein Fett um ein
+  Komma. Das ergibt vier Sternchen hintereinander und verwirrt beim Lesen.
+- **Sparsam.** Der eine Kern-Gedanke pro Satz, nicht drei Fetzen. Zu viel Fett
+  ist so schlimm wie kein Fett.
+- **Ein Gedanke, ein Punkt, ein neuer Satz.** Danach ganz normal weiter, ohne
+  Trick.
+- **Pünktchen (…) nur, wenn wirklich** „hier könnte jemand etwas einschieben"
+  gemeint ist und der Gedanke danach weiterläuft. Sonst Punkt.
+- **Doppelpunkt nur,** wenn danach eine Aufzählung oder ein angekündigter
+  zweiter Gedanke folgt. Wo keiner folgt, ist der Doppelpunkt falsch.
+- **Wo kein Fett geht** (reiner Text, z. B. Marktplatz-Karten): saubere kurze
+  Sätze, kein Strich-Anhängsel.
+
+Beispiel (Marktplatz-Beschreibung, mit Fett auf einer Seite):
+
+> Dieselbe Suche wie das Such-Werkzeug, **aber als eigener Knoten im Netz**.
+> Findet nach Bedeutung, mit Sprache und Bild-Erkennung. Und **sie kann selbst
+> andere Knoten fragen**.
+
+Fett steht nur auf dem Neuen (eigener Knoten) und auf dem, was das Ding kann.
+Der Rest ist ein normaler Satz.
+
 ## Verbannte Wörter und Wendungen (Deutsch)
 
 nahtlos · robust · ganzheitlich · leistungsstark · im Handumdrehen · eintauchen ·
