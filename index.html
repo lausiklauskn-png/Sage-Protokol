@@ -1091,6 +1091,13 @@
       <button type="button" id="netz-check-btn" class="netz-check-btn"
               title="Briefkästen der anderen Knoten jetzt prüfen (SIGNAL.json, live im Browser)"
               aria-label="Netz-Briefkasten jetzt prüfen">📬 <span class="ncb-label">Briefkasten</span><span class="ncb-badge" id="ncb-badge" hidden></span></button>
+      <!-- Frisch-Knopf. Auf dem Tablet/Handy gibt es keine Tastenkombination
+           fuer den harten Neuladen; nach jedem Pull haengt sonst die alte
+           Fassung im Zwischenspeicher. Gleiches Zeichen und gleiche Stelle wie
+           in Kimboard und der Pinnwand — Klaus 2026-08-01. -->
+      <button type="button" id="hard-reload-btn" class="netz-check-btn"
+              title="Frisch laden — Zwischenspeicher leeren und neueste Fassung holen"
+              aria-label="Seite frisch laden">🔄 <span class="ncb-label">Frisch laden</span></button>
       <div class="topbar-meta mono" id="topbar-meta">—</div>
     </div>
   </header>
@@ -4887,5 +4894,43 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     check(true);
   })();
   </script>
+
+<script>
+// 🔄 Frisch laden: Service-Worker abmelden, alle Zwischenspeicher leeren,
+// dann neu laden. Behebt das „alte Fassung haengt"-Problem per Knopfdruck,
+// ohne dass jemand eine Tastenkombination kennen muss.
+// Fail-soft: schlaegt etwas fehl, wird trotzdem neu geladen — und eine
+// Notbremse nach 2,5 s sorgt dafuer, dass der Knopf nie haengen bleibt.
+(function () {
+  var btn = document.getElementById('hard-reload-btn');
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    btn.disabled = true;
+    btn.classList.add('checking');
+    var fertig = false;
+    var los = function () {
+      if (fertig) return;
+      fertig = true;
+      try { location.reload(); } catch (e) { /* fail-soft */ }
+    };
+    var notbremse = setTimeout(los, 2500);
+    var arbeit = [];
+    try {
+      if ('serviceWorker' in navigator) {
+        arbeit.push(navigator.serviceWorker.getRegistrations()
+          .then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); })
+          .catch(function () {}));
+      }
+      if (window.caches && caches.keys) {
+        arbeit.push(caches.keys()
+          .then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); })
+          .catch(function () {}));
+      }
+    } catch (e) { /* fail-soft */ }
+    Promise.all(arbeit).then(function () { clearTimeout(notbremse); los(); },
+                             function () { clearTimeout(notbremse); los(); });
+  });
+})();
+</script>
 </body>
 </html>
