@@ -6,6 +6,25 @@ die die Lighthouse-Runde für die übrigen Apps übernimmt.
 
 ---
 
+## 0. Zuerst: frisch holen, bevor irgendetwas gebaut wird
+
+**Am 2026-08-01 haben vier Repos je vier bis sechs Merges bekommen** —
+Mein-Rezeptbuch, Muttis-Rezeptbuch, Mein-Mixarium und Sage-Protokol. Wer auf einem
+Klon von vorher aufsetzt, baut auf totem Stand und wundert sich, dass Aenderungen
+„nicht ankommen". Also **vor jeder Arbeit an einem dieser Repos**:
+
+```bash
+git -C <repo> fetch origin main --quiet
+git -C <repo> checkout -B <branch> origin/main
+```
+
+Das gilt doppelt, wenn zwei Sitzungen parallel an denselben Repos arbeiten. Und es
+gilt auch fuer die **Aussage ueber** einen Stand: nie „App X hat Feature Y nicht"
+schreiben, ohne vorher gefetcht zu haben. Ein lokaler Klon ohne `fetch` ist kein
+Beweis. (Steht so auch in Sages `CLAUDE.md` unter „Sitzungsstart-Pflicht".)
+
+---
+
 ## 1. Was schon erledigt ist (alles gemergt, nichts offen)
 
 Gemessen mit **Lighthouse 13.4.1**, Desktop-Preset, gegen die lokal ausgelieferte
