@@ -4,6 +4,19 @@
 die die Lighthouse-Runde für die übrigen Apps übernimmt.
 **Von:** der Sitzung, die die drei Küchen-Apps und die Sage-Page gemacht hat.
 
+> **Es gibt genau ZWEI Dateien zur Lighthouse-Runde — mehr nicht:**
+>
+> | Datei | Was sie ist |
+> |---|---|
+> | **dieser Brief** | der Stand: was gemessen, gefunden und behoben wurde, und wie man weitermisst. Fang hier an. |
+> | `BRIEF_LIGHTHOUSE_SBKIM_MODULE.md` | ein **Arbeitsauftrag**, kein Bericht: die zwei Befunde in den geteilten SBKIM-Modulen, mit fertigem Fix und Rollout-Reihenfolge. Erst lesen, wenn diese Runde dran ist (§ 4.1). |
+>
+> Ein dritter Brief (`BRIEF_NACH_LIGHTHOUSE_RUNDE.md`) wurde am 2026-08-01 hier
+> **eingeschmolzen und gelöscht** — er war ein älteres Teilstück dieses Briefes und
+> kannte die Muttis-Klammern und die Mixarium-Runde noch nicht. In der Git-Historie
+> liegt er weiter; im Arbeitsverzeichnis würde er nur die Frage aufwerfen, welcher
+> von beiden gilt.
+
 ---
 
 ## 0. Zuerst: frisch holen, bevor irgendetwas gebaut wird
@@ -278,7 +291,14 @@ Alis-Moderaum, mycel-karte, die Perfect-Skin-Repos und die `*-Page`-Repos.
 **Klaus' Ausnahme 2026-08-01: Kimhub und Küchenzettel auslassen** — die liegen
 auf Eis.
 
-### 4.3 Die Ladezeit
+### 4.3 Eine Kleinigkeit
+
+In Mein-Rezeptbuch ist auf dem Server ein Zweig `claude/lesbare-nebenschrift`
+stehengeblieben. Er zeigt auf denselben Stand wie das Gemergte; löschen ließ er sich
+aus der Sitzung heraus nicht (die Gegenstelle nimmt keine Lösch-Pushes an). Schadet
+nichts, kann bei Gelegenheit über die GitHub-Oberfläche weg.
+
+### 4.4 Die Ladezeit
 
 `index.html` ist bei Mein-Rezeptbuch **4,8 MB in einer Datei**. Das ist der Preis
 der Offline-Fähigkeit und wurde bewusst nicht angetastet. Wer daran will, braucht
