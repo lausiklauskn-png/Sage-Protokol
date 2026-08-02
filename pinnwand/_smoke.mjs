@@ -98,6 +98,48 @@ ok("Probe 6: privates Brett verschlüsselt (AES-GCM + PBKDF2, Schlüssel nur im 
 ok("Probe 6: verschlüsselte Notiz ohne Schlüssel wird übersprungen", /if \(isEnc\(ev\.content\)\)/.test(html) && /if \(!boardKey\) return;/.test(html));
 ok("Probe 6: Multi-Query A5b (expandQuery + bestRelevance über Frage-Varianten)", /function expandQuery/.test(html) && /function bestRelevance/.test(html) && /view\.qVecs/.test(html));
 
+// ---- Probe 7: vorgezeichnetes HTML gegen den Code ----
+// WARUM: Die Relais-Leiste steht seit 2026-08-02 fertig im HTML, statt erst von
+// relayPills() gefüllt zu werden. Grund war ein Layout-Sprung — die Karte war
+// sekundenlang zu kurz, dann rutschte alles darunter weg (an Kimboard gemessen:
+// 0,433; gut ist unter 0,1). Das ist wirksam, hat aber einen Preis: dieselbe
+// Liste steht jetzt an ZWEI Stellen. Wer eine ändert und die andere vergisst,
+// baut eine stille Lüge in die Seite — sie zeigte beim Start etwas anderes als
+// eine Sekunde später. Diese Probe ist der Preis für die Lösung.
+{
+  const poolRoh = /const RELAY_POOL = \[([\s\S]*?)\];/.exec(html);
+  const pool = poolRoh ? Array.from(poolRoh[1].matchAll(/'(wss:\/\/[^']+)'/g)).map((m) => m[1]) : [];
+  ok("Probe 7: RELAY_POOL gefunden", pool.length > 0);
+
+  const sliceRoh = /activeRelays = RELAY_POOL\.slice\(0,\s*(\d+)\)/.exec(html);
+  const anZahl = sliceRoh ? Number(sliceRoh[1]) : null;
+  ok("Probe 7: Voreinstellung im Code gefunden (die ersten N sind an)", anZahl !== null);
+
+  const block = /<div class="row" id="relays"[^>]*>([\s\S]*?)<\/div>/.exec(html);
+  const pillen = block
+    ? Array.from(block[1].matchAll(/<span class="pill"[^>]*opacity:([\d.]+);"[^>]*>\s*<span class="dot([^"]*)"><\/span>([^<]*)<\/span>/g))
+        .map((m) => ({ deckkraft: Number(m[1]), punkt: m[2].trim(), text: m[3] }))
+    : [];
+  eq("Probe 7: gleich viele vorgezeichnete Pillen wie Relais", pillen.length, pool.length);
+
+  let textOk = true, zustandOk = true;
+  pool.forEach((url, i) => {
+    const pi = pillen[i];
+    if (!pi) { textOk = zustandOk = false; return; }
+    const an = i < anZahl;
+    if (pi.text !== (an ? "" : "+ ") + url.replace("wss://", "")) textOk = false;
+    if (an ? !(pi.deckkraft === 1 && pi.punkt === "try") : !(pi.deckkraft < 1 && pi.punkt === "")) zustandOk = false;
+  });
+  ok("Probe 7: Beschriftung + Reihenfolge stimmen mit RELAY_POOL überein", textOk);
+  ok("Probe 7: die ersten " + anZahl + " sind als »an« gezeichnet, der Rest als »aus«", zustandOk);
+
+  // Und die Breiten-Reservierung, die den zweiten Teil des Sprungs beseitigt:
+  // #me wächst von „…" (1 Zeichen) auf short(pubHex) (13 Zeichen).
+  ok("Probe 7: Breite für die Kennung ist freigehalten (#me min-width)",
+    /#me \{[^}]*min-width:\s*13ch/.test(html));
+  ok("Probe 7: die Seite hat einen <main>-Bereich", /<main>/.test(html) && /<\/main>/.test(html));
+}
+
 // ---- Auswertung ----
 let pass = 0;
 for (const r of results) { console.log(`[${r.ok ? "OK " : "FAIL"}] ${r.probe}`); if (r.ok) pass++; }

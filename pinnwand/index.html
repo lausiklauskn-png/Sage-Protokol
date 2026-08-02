@@ -7,7 +7,14 @@
 <meta name="description" content="Frage→Antwort über ein geborgtes dummes Brett (Nostr). Server-los, geräteübergreifend, nach Bedeutung sortiert.">
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#0e1620">
-<link rel="icon" href="./icon-192.png">
+<!-- Tab-Symbol und Logo oben benutzen ABSICHTLICH dieselbe Datei (icon-128.png).
+     Gleiche Adresse = ein einziger Download für beides. Vorher hing hier das
+     192er (77 KiB) und oben im Kopf das 512er (474 KiB) — zusammen 551 KiB für
+     ein Bild, das im Tab 16 px und oben 64 px groß ist (Lighthouse 2026-08-02,
+     an Kimboard gemessen; die Pinnwand hat dieselbe Stelle). Die großen
+     Dateien bleiben unberührt: sie gehören ins Manifest, wo das Betriebssystem
+     sie beim Installieren wirklich in voller Größe braucht. -->
+<link rel="icon" href="./icon-128.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -50,6 +57,16 @@
   .row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
   .label { color: var(--dim); font-size: 0.8rem; }
   code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  /* Platz für die Kennung freihalten, BEVOR sie da ist (Lighthouse 2026-08-02).
+     #me steht beim ersten Aufbau auf „…" und wird gleich darauf durch
+     short(pubHex) ersetzt — genau 13 Zeichen (8 + … + 4). Ohne Reservierung
+     wuchs die Pille um zwölf Zeichen, sprang in die zweite Zeile und schob
+     alles darunter nach unten. 13ch in einer Festbreiten-Schrift ist exakt die
+     Endbreite, also springt nichts mehr; sichtbar ändert sich nichts.
+     #selftest geht den umgekehrten Weg („läuft…" → „OK", also kürzer) — auch
+     das verrückt die Zeile, darum ebenfalls festgehalten. */
+  #me { display: inline-block; min-width: 13ch; }
+  #selftest { display: inline-block; min-width: 6ch; }
   .pill {
     display: inline-flex; align-items: center; gap: 6px;
     background: var(--panel2); border: 1px solid var(--line);
@@ -238,7 +255,7 @@
 <body>
 <div class="wrap">
   <div class="topbar">
-    <img class="logo" src="./icon-512.png" alt="Pinnwand-Baum" width="512" height="512">
+    <img class="logo" src="./icon-128.png" alt="Pinnwand-Baum" width="128" height="128">
     <div style="flex:1;">
       <h1>Pinnwand</h1>
       <div class="sub" style="margin:0;">Impulse · Verbindungen · Erkenntnisse</div>
@@ -255,14 +272,46 @@
     <b>Bedeutung</b> sortiert. ·
     <a class="link" href="./impressum.html">Impressum &amp; Datenschutz</a></p>
 
+  <!-- <main> um den eigentlichen Inhalt (Lighthouse: „Dokument hat keinen
+       Haupt-Bereich"). Vorlese-Programme und Tastatur-Navigation können damit
+       direkt zum Inhalt springen, statt sich durch Kopfzeile und Werkzeug-
+       Knöpfe zu arbeiten. Kopfzeile und Fußzeile bleiben bewusst AUSSERHALB —
+       sie sind kein Inhalt, sondern Rahmen. -->
+  <main>
   <div class="card">
     <div class="row" style="justify-content: space-between;">
       <span class="pill">Meine Spore: <code id="me">…</code></span>
       <span class="pill">Krypto-Selbsttest: <span id="selftest">läuft…</span></span>
     </div>
-    <div class="row" id="relays" style="margin-top: 10px;"></div>
+    <!-- Die Relais-Leiste steht ABSICHTLICH schon fertig im HTML (Lighthouse
+         2026-08-02). Vorher war sie leer und wurde erst von relayPills()
+         gefüllt — und das passiert erst, wenn die Modul-Kette geladen ist. Auf
+         einem langsamen Gerät waren das mehrere Sekunden, in denen die Karte
+         zu kurz war; sobald die Pillen kamen, rutschte alles darunter nach
+         unten. An Kimboard gemessen war das der größte Teil eines Sprungs von
+         0,433 (gut ist unter 0,1).
+         Hier steht der VOREINGESTELLTE Zustand: alle neun Relais aus
+         RELAY_POOL, die ersten fünf an (= RELAY_POOL.slice(0, 5)). Genau das
+         baut relayPills() gleich darauf nochmal — mit Klick-Verhalten und,
+         wenn gespeichert, mit der eigenen Auswahl des Nutzers. Wer eine
+         abweichende Auswahl hat, sieht dabei noch eine kleine Korrektur; das
+         sind ein paar Pixel statt der ganzen Leiste.
+         WICHTIG: Diese Liste muss zu RELAY_POOL passen. _smoke.mjs (Probe 7)
+         vergleicht beides und wird rot, wenn eines von beiden geändert wird
+         und das andere nicht. -->
+    <div class="row" id="relays" style="margin-top: 10px;">
+      <span class="pill" style="cursor:pointer;opacity:1;" title="aktiv — klicken zum Abschalten"><span class="dot try"></span>relay.family-projekt.de</span>
+      <span class="pill" style="cursor:pointer;opacity:1;" title="aktiv — klicken zum Abschalten"><span class="dot try"></span>relay.damus.io</span>
+      <span class="pill" style="cursor:pointer;opacity:1;" title="aktiv — klicken zum Abschalten"><span class="dot try"></span>nos.lol</span>
+      <span class="pill" style="cursor:pointer;opacity:1;" title="aktiv — klicken zum Abschalten"><span class="dot try"></span>relay.nostr.band</span>
+      <span class="pill" style="cursor:pointer;opacity:1;" title="aktiv — klicken zum Abschalten"><span class="dot try"></span>relay.primal.net</span>
+      <span class="pill" style="cursor:pointer;opacity:0.45;" title="aus — klicken zum Zuschalten"><span class="dot"></span>+ relay.snort.social</span>
+      <span class="pill" style="cursor:pointer;opacity:0.45;" title="aus — klicken zum Zuschalten"><span class="dot"></span>+ nostr.mom</span>
+      <span class="pill" style="cursor:pointer;opacity:0.45;" title="aus — klicken zum Zuschalten"><span class="dot"></span>+ offchain.pub</span>
+      <span class="pill" style="cursor:pointer;opacity:0.45;" title="aus — klicken zum Zuschalten"><span class="dot"></span>+ relay.mostr.pub</span>
+    </div>
     <div class="row" style="margin-top: 10px; gap: 8px;">
-      <input id="boardkey" type="password" placeholder="🔒 Privates Brett: Passwort (leer = offen)" autocomplete="off" style="flex:1; min-width:200px;">
+      <input id="boardkey" aria-label="Passwort für ein privates Brett (leer lassen = offenes Brett)" type="password" placeholder="🔒 Privates Brett: Passwort (leer = offen)" autocomplete="off" style="flex:1; min-width:200px;">
       <button id="boardkey-set" class="tbtn">Setzen</button>
     </div>
     <div class="status" id="boardkey-status" style="margin-top:4px;">Offenes Brett — alle Zettel sind öffentlich lesbar.</div>
@@ -281,7 +330,7 @@
 
   <div class="card">
     <div class="label" style="margin-bottom: 6px;">Neue Frage aufs Brett legen</div>
-    <textarea id="qmsg" placeholder="z. B. Was ist ein leichtes Sommeressen?" maxlength="280"></textarea>
+    <textarea id="qmsg" aria-label="Deine Frage für das Brett" placeholder="z. B. Was ist ein leichtes Sommeressen?" maxlength="280"></textarea>
     <div class="row" style="margin-top: 8px; justify-content: space-between;">
       <span class="label" id="sendhint">&nbsp;</span>
       <span style="display:flex; gap:8px; align-items:center;">
@@ -301,14 +350,14 @@
       <span class="status" id="semstatus">aus — sortiert nach Ankunft (Bedeutungs-Rangfolge lädt Modell ~30&nbsp;MB beim Einschalten)</span>
     </div>
     <div class="sort-ctl judge-ctl">
-      <select id="judgeprov">
+      <select id="judgeprov" aria-label="KI-Richter: Anbieter wählen">
         <option value="">⚖️ KI-Richter: aus (gratis bleibt Voreinstellung)</option>
         <option value="claude">Cloud: Claude (Anthropic) — eigener Schlüssel</option>
         <option value="gemini">Cloud: Gemini (Google) — Gratis-Stufe</option>
         <option value="openrouter">Cloud: OpenRouter — viele Modelle, auch gratis</option>
         <option value="webllm">frei: KI im Browser (WebLLM) — kein Cent, lädt Modell</option>
       </select>
-      <input id="judgekey" type="password" placeholder="API-Schlüssel" style="display:none;" autocomplete="off">
+      <input id="judgekey" aria-label="API-Schlüssel für den gewählten KI-Anbieter" type="password" placeholder="API-Schlüssel" style="display:none;" autocomplete="off">
       <a id="judgekeylink" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" style="display:none; color:#6aa6e0; font-size:0.8rem;">🔑 Schlüssel erstellen ↗</a>
       <label id="judgeremember-l" style="display:none; font-size:0.8rem; color:var(--dim);">
         <input type="checkbox" id="judgeremember" checked> auf diesem Gerät merken
@@ -319,7 +368,7 @@
         <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (gratis)</option>
       </select>
       <button id="orFree" class="tbtn" style="display:none;" title="Aktuelle Gratis-Modelle von OpenRouter laden">🔄 Gratis-Modelle laden</button>
-      <select id="webllmmodel" style="display:none;">
+      <select id="webllmmodel" aria-label="KI-Modell für den Browser (WebLLM)" style="display:none;">
         <option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Trabant — Qwen2.5 0.5B (winzig, fast überall)</option>
         <option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC" selected>VW Golf — Qwen2.5 1.5B (sichere Mittelklasse)</option>
         <option value="Qwen2.5-3B-Instruct-q4f16_1-MLC">Großer VW — Qwen2.5 3B (am Limit alter Geräte)</option>
@@ -333,6 +382,7 @@
     </div>
     <ul id="threads"><li class="empty">Noch keine Frage empfangen…</li></ul>
   </div>
+  </main>
 
   <footer class="honest-short">
     <span id="fp-mode">&#128275; <b>Offenes Brett</b> &mdash; alle, die <i>dieses</i>
