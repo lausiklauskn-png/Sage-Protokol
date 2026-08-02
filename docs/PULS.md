@@ -31,6 +31,86 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-02 — Pinnwand: Lighthouse-Verbesserungen aus Kimboard nachgezogen
+
+**Rolle:** Pflege-Sitzung · **Branch:** `claude/mein-rezeptbuch-lighthouse-w26lsr`
+
+**Was getan.** Die drei Befunde aus Klaus' Kimboard-Lighthouse-Bericht (dort PR
+#83) auf die **Pinnwand** übertragen — sie hatte dieselben Stellen, weil
+Kimboard aus ihr hervorgegangen ist.
+
+1. **Das Logo war 474 KiB groß für ein 64-Pixel-Bild.** Oben hing
+   `icon-512.png`, dargestellt mit 64 px; dazu `icon-192.png` (77 KiB) als
+   Tab-Symbol. Neu: **`icon-128.png` (37 KiB) für beides** — gleiche Adresse,
+   ein Download. Die Datei ist **byte-gleich** zu Kimboards (die Symbole sind
+   in beiden Repos dieselben, sha256 stimmt überein). Die großen Dateien
+   bleiben unberührt; sie gehören ins Manifest, wo das Betriebssystem sie beim
+   Installieren wirklich braucht.
+2. **Die Seite sprang beim Laden.** Die Relais-Leiste stand **leer** im HTML
+   und wurde erst von `relayPills()` gefüllt — also erst, wenn die Modul-Kette
+   geladen war. Neu steht sie fertig im HTML, im voreingestellten Zustand,
+   wörtlich so wie der Code sie gleich darauf erzeugt. Dazu `#me`/`#selftest`
+   auf ihre Endbreite festgehalten (die Kennung wächst von 1 auf 13 Zeichen).
+3. **Die App-Schale holte Dinge doppelt.** Das Dokument kam dreimal
+   (Navigation auf `/`, plus `./` und `./index.html` im Vorrat — für den Cache
+   drei Adressen, dieselbe Datei), und der Vorrat holte beide großen Symbole,
+   die die Seite gar nicht zeigt. `CACHE_VERSION` v19 → v20.
+
+Nebenbei: fünf Bedienelemente hatten keinen Namen für Vorlese-Programme
+(`boardkey`, `qmsg`, `judgeprov`, `judgekey`, `webllmmodel`), und die Seite
+hatte keinen `<main>`-Bereich. Beides ergänzt, sichtbar ändert sich nichts.
+
+**Gemessen** (Erstbesuch, leeres Profil, Server mit GitHub-Pages-Kopfzeilen —
+`max-age` + ETag):
+
+| | vorher | nachher |
+|---|---|---|
+| vom Server ausgeliefert | 820 KiB | **227 KiB** (−593, −72 %) |
+| Layout-Sprung (CLS) | 0,178 | **0,002** |
+
+**Gegenproben.** (a) Offline starten `/`, `/index.html` und `/impressum.html`
+alle drei aus dem Cache, Relais-Leiste sofort da. (b) Ein zusätzliches Relais
+im `RELAY_POOL`, ohne das HTML nachzuziehen, macht **drei Proben rot** — die
+neue Probe 7 schlägt also wirklich an, sie ist nicht nur grün. (c) Das
+Vorher/Nachher wurde am **selben** Server gemessen, per `git stash` umgeschaltet.
+
+**Preis der Lösung, offen benannt.** Die Relais-Liste steht jetzt an **zwei**
+Stellen (HTML + `RELAY_POOL`). Wer eine ändert und die andere vergisst, baut
+eine stille Lüge in die Seite — sie zeigte beim Start etwas anderes als eine
+Sekunde später. `pinnwand/_smoke.mjs` **Probe 7** vergleicht beide und wird
+rot. Diese Probe gehört untrennbar zur Lösung.
+
+**Eine eigene Fehlannahme, korrigiert.** In Kimboard war zwischenzeitlich eine
+Verzögerung eingebaut (Vorrat erst nach `load`). Grundlage war eine Messung von
+3529 KiB — gegen einen Prüf-Server **ohne** Cache-Kopfzeilen. Gegen einen
+Pages-ähnlichen Server war der Unterschied dann **exakt null**: der Browser legt
+gleichzeitige Anfragen für dieselbe Adresse von selbst zusammen. Die
+Verzögerung wurde wieder ausgebaut. **Merksatz** (steht im Kopf beider `sw.js`):
+*einen Prüf-Server ohne Cache-Kopfzeilen zu benutzen, misst nicht die Seite,
+sondern den Prüf-Server.*
+
+**Was offen bleibt.**
+- **Klaus' Browser-Lauf** — headless ersetzt ihn nicht, und ob die Lighthouse-
+  Zahl steigt, sagt erst die nächste Messung.
+- **Die Relais-Fehler in der Konsole** (`nos.lol`, `damus`, `nostr.band`,
+  `primal`, `family-projekt.de`) wurden **nicht** angefasst: die Meldung
+  „WebSocket connection failed" kommt vom Browser selbst und ist aus dem Code
+  nicht zu unterdrücken. Vier der fünf sind bekannte, funktionierende
+  öffentliche Relais. `relay.family-projekt.de` ist das bekannte tote eigene
+  und liegt weiter bei Klaus.
+- Ein Rest-Sprung von 0,002 kommt von zwei Auswahlfeldern, die beim Füllen ein
+  paar Pixel breiter werden. Dafür müsste eine Breite geraten werden.
+
+**Nächster sinnvoller Schritt.** Klaus misst die Pinnwand bei PageSpeed nach.
+Danach dieselben drei Stellen an den übrigen Endknoten prüfen — das Muster
+(zu großes Logo · leere Bereiche, die später gefüllt werden · `./` und
+`./index.html` beide im Vorrat) ist offenbar netzweit kopiert worden.
+
+**Prüfungen:** `node pinnwand/_smoke.mjs` **67/67** (vorher 62/62, fünf neue),
+`node tests/smoke_pinnwand_dm.mjs` 16/16.
+
+---
+
 ## Stand 2026-07-31 — Tafel-Anpassung: Vektoren für den offenen Marktplatz
 
 **Rolle:** Pflege-Sitzung · **Branch:** `claude/modul23-stufe2b-rollout-vpzaar`
