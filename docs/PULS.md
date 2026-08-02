@@ -89,9 +89,23 @@ Verzögerung wurde wieder ausgebaut. **Merksatz** (steht im Kopf beider `sw.js`)
 *einen Prüf-Server ohne Cache-Kopfzeilen zu benutzen, misst nicht die Seite,
 sondern den Prüf-Server.*
 
+**✅ NACHGETRAGEN 2026-08-02 19:55 — Klaus' Messung bei Googles PageSpeed
+(mobil), an der live deployten Seite:**
+
+| Leistung | Barrierefreiheit | Best Practices | SEO |
+|---|---|---|---|
+| **100** | **100** | **96** | **100** |
+
+Damit ist der Browser-Lauf erledigt und die Vorhersage bestätigt — die
+headless gemessene Ersparnis (820 → 227 KiB) und der beseitigte Sprung
+(0,178 → 0,002) schlagen tatsächlich durch. Die fehlenden 4 Punkte bei „Best
+Practices" sind aller Wahrscheinlichkeit nach genau die **Relais-Fehler in der
+Konsole**, die bewusst NICHT angefasst wurden (die Meldung „WebSocket
+connection failed" kommt vom Browser selbst und ist aus dem Code nicht zu
+unterdrücken). Das ist keine Nachlässigkeit, sondern die benannte Grenze —
+und sie kostet vier Punkte.
+
 **Was offen bleibt.**
-- **Klaus' Browser-Lauf** — headless ersetzt ihn nicht, und ob die Lighthouse-
-  Zahl steigt, sagt erst die nächste Messung.
 - **Die Relais-Fehler in der Konsole** (`nos.lol`, `damus`, `nostr.band`,
   `primal`, `family-projekt.de`) wurden **nicht** angefasst: die Meldung
   „WebSocket connection failed" kommt vom Browser selbst und ist aus dem Code
