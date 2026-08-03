@@ -31,6 +31,78 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-03 — Lampen-Leiste barrierefrei (netzweit) + Sage-Page-Bilder 16,2 MB → 0,7 MB
+
+**Rolle:** Bau-/Pflege-Sitzung (Kanon Modul 17 + 23 UI, netzweiter Rollout, Bild-Pflege).
+
+**Was getan.**
+
+*Modul 17 + 23 UI — drei Mängel, jeder einzeln gemessen.* Lighthouse meldete an
+BookLedgerPro Kontrast und Berührungsziele an der Lampen-Leiste.
+1. **Berührungsziele:** Lampen-Knöpfe 54,5 × 18,6 px, die kleinen `−`/`✕` 18 × 18 px —
+   Norm ist 24 × 24. Jetzt `min-height: 24px` an den Slots (NUR die Höhe; ein `min-width`
+   bräche das Zusammenschieben im minimierten Zustand) und 24 × 24 an den Knöpfen.
+2. **Der 🌐-Knopf lag AUF der Leiste.** Auf 412 px Breite reicht die Leiste bis nach links;
+   der Knopf unten links lag mitten auf der LEBT-Lampe, nur 8,2 px blieben frei. Das war die
+   eigentliche Ursache dafür, dass der Prüfer beide Elemente zugleich meldete. **Klaus'
+   Entscheid:** der Knopf rückt unter 560 px hoch (Modul 23 UI, eingehängte Medien-Abfrage
+   mit `!important`, weil die Position inline am Element steht).
+3. **Dadurch wurde ein verdeckter Mangel sichtbar:** der Knopf schrieb in der Akzentfarbe
+   der App — bei BookLedgerPro dunkles Petrol auf dunklem Grund, **1,35:1** statt 4,5:1.
+   Jetzt dieselbe Schriftfarbe wie das Panel, Akzent bleibt als Rahmen.
+
+*Befund beim Rollout (wichtig).* Mein-Rezeptbuch, Muttis-Rezeptbuch und Mein-Mixarium trugen
+seit 2026-06-28 einen **eigenen** Fix, der nie in den Kanon zurückkam: app-eigene
+`localStorage`-Schlüssel (`WIDGET_SCOPE`). Ein byte-1:1-Rollout hätte ihn stillschweigend
+ausgebaut. Er wurde **zuerst in den Kanon geholt** — der Kanon ist jetzt die Obermenge, die
+übrigen zehn Träger bekommen den Fix mit dazu. (CLAUDE.md § Fremdnutzer-Brille verlangt genau
+das.) Gefunden wurden zwei Träger übrigens **nur** über einen Inhalts-Abgleich aller
+`.js`-Dateien: Kim-Bell und Mein-WorkFloh führen das Modul unter dem Namen
+`sbkim-floating-widget.js` — die Suche nach Dateinamen hätte sie übersehen.
+
+*Sage-Page-Bilder.* Klaus' Bericht: 17,4 MB Gesamt-Nutzlast, davon 16,2 MB Bilder. Die
+Meilenstein-Kacheln luden Bildschirmfotos mit 1254 × 1254 und je ~2,2 MB — dargestellt als
+312 × 312 große Kachel-Hintergründe. Über den vorhandenen Chromium in WebP umgerechnet
+(kein cwebp/PIL/sharp in dieser Umgebung): **16.236 KiB → 688 KiB**. Die Originale bleiben
+liegen, sie sind aus Doku-Dateien verlinkt; geändert wurde nur, worauf die Seite zeigt.
+
+**Zahlen.**
+
+| | vorher | nachher |
+|---|---|---|
+| BookLedgerPro Barrierefreiheit | 92 | **100** |
+| BookLedgerPro Leistung (Median aus 3) | 88 | **91** |
+| BookLedgerPro LCP (echt gedrosselt, je 5 Läufe) | 1.748 ms | **1.028 ms** |
+| Sage-Page LCP | 48,8 s | **7,1 s** |
+| Sage-Page Bilder | 16,2 MB | **0,7 MB** |
+
+**Tests.** `smoke_bau17` 38/38, `smoke_bau23_rendezvous_ui` **91/91** (4 neue Proben für die
+Ausweich-Regel; **Gegenprobe**: ohne den Fix fallen genau diese 4), `smoke_bau23_rendezvous`
+59/59, `smoke_bundle_connect` 21/21. Die DOM-Attrappe im 23-UI-Smoke kannte kein
+`setAttribute`/`getElementById` — nachgezogen. Netzweite Verifikation nach den Merges:
+**29/29 Dateien in 15 Repos tragen den Kanon, 0 Abweichungen.**
+
+**Was offen blieb.**
+- **Klaus' Browser-Sichttest** überall. Besonders: sitzt der 🌐-Knopf auf dem Handy gut, und
+  sehen die verkleinerten Sage-Page-Kacheln noch scharf aus?
+- **Der Ausgangs-Proxy dieser Umgebung verweigert `github.io` (403)** — die Nachmessung am
+  echten Server konnte ich nicht selbst machen. Alle Zahlen stammen von der Bau-Maschine.
+- **Sage-Page CLS 0,328** — das ist jetzt der mit Abstand größte Posten (ein Viertel der
+  Note) und der Grund, warum die Leistung trotz LCP 48,8 s → 7,1 s nur von 44 auf 45 steigt.
+  Der Sprung kommt laut Bericht aus `div.wrap`; der Verdacht liegt auf der **Google-Fonts-
+  Einbindung** (blockiert 780 ms, Schrift tauscht nach dem ersten Anstrich). Nicht angefasst
+  — das gehört gemessen, nicht geraten.
+- **Sage-Page lädt ~25 Modul-Dateien und Dutzende `spore.json`/`SIGNAL.json` sofort**
+  (kritischer Pfad 2.662 ms). Eigene Sitzung wert.
+- **BookLedgerPro:** die Konsole meldet `wss://relay.family-projekt.de/` als nicht
+  auflösbar. Kostet Punkte bei „Gute Praxis"; **Infrastruktur-Frage an Klaus**, bewusst
+  nichts geändert.
+
+**Nächster sinnvoller Schritt.** Sage-Page CLS 0,328 einkreisen (zuerst messen, welches
+Element wann springt), dann die Schrift-Einbindung entscheiden.
+
+---
+
 ## Stand 2026-08-02 — Pinnwand: Lighthouse-Verbesserungen aus Kimboard nachgezogen
 
 **Rolle:** Pflege-Sitzung · **Branch:** `claude/mein-rezeptbuch-lighthouse-w26lsr`
