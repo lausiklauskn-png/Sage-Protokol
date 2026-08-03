@@ -856,7 +856,7 @@
   }
   .einladung-door {
     position: absolute; inset: 0;
-    background: url('docs/einladung/vendor/img/scene-5-door.webp') center/cover no-repeat;
+    background: url('assets/scene-5-door-web.webp') center/cover no-repeat;
     /* Start-Zustand: schwach sichtbar, entsättigt. Bei Maus-Nähe wird
        sie LANGSAM (1.8s) voll sichtbar — erst bei längerem Drauf-
        bleiben kommt der volle Detail-Kontrast (Klaus 2026-05-28). */
@@ -942,7 +942,7 @@
   .discovery-stage:hover { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(110,231,211,0.25), 0 24px 60px rgba(0,0,0,0.5); }
   .discovery-bg {
     position: absolute; inset: 0;
-    background: url('assets/discovery/galaxie-hintergrund.webp') center/cover no-repeat;
+    background: url('assets/discovery/galaxie-hintergrund-web.webp') center/cover no-repeat;
     filter: saturate(0.95) brightness(0.55);
     transform: scale(1.06);
     animation: discoDrift 42s ease-in-out infinite alternate;
@@ -985,7 +985,7 @@
   .vp-truhe { position: relative; width: 100%; max-width: 320px; aspect-ratio: 5 / 4; margin-inline: auto; border-radius: 16px; overflow: hidden; cursor: pointer; border: 1px solid var(--line); background: #05060f; box-shadow: 0 18px 50px rgba(0,0,0,0.5); outline: none; }
   .vp-truhe:focus-visible { box-shadow: 0 0 0 3px rgba(110,231,211,0.5), 0 18px 50px rgba(0,0,0,0.5); }
   /* Truhe-Bild als Hintergrund-Layer (genau wie .einladung-door) */
-  .vp-truhe-img { position: absolute; inset: 0; background: url('assets/observatorium-truhe.png') center/cover no-repeat; filter: saturate(0.82) brightness(0.78); transition: filter 1.2s cubic-bezier(.4,0,.25,1), transform .8s cubic-bezier(0.25,1,0.5,1); will-change: filter, transform; }
+  .vp-truhe-img { position: absolute; inset: 0; background: url('assets/observatorium-truhe-web.webp') center/cover no-repeat; filter: saturate(0.82) brightness(0.78); transition: filter 1.2s cubic-bezier(.4,0,.25,1), transform .8s cubic-bezier(0.25,1,0.5,1); will-change: filter, transform; }
   .vp-truhe:hover .vp-truhe-img, .vp-truhe.is-near .vp-truhe-img { filter: saturate(1.06) brightness(1.05); }
   .vp-truhe:not(:hover):not(.is-near) .vp-truhe-img { transition: filter .55s ease-out, transform .8s cubic-bezier(0.25,1,0.5,1); }
   .vp-truhe.is-open .vp-truhe-img { filter: saturate(1.12) brightness(1.12); transform: scale(1.02); }
@@ -1012,7 +1012,7 @@
   .vp-pill:hover, .vp-pill.is-active { background: rgba(255,255,255,0.08); }
   .vp-grid { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
   /* Werkzeug-Screen (das Innere der Truhe) */
-  .vp-screen-hero { height: 200px; border-radius: 16px; margin: 0 0 1.4rem; background: url('assets/observatorium-truhe.png') center 40% / cover no-repeat; border: 1px solid var(--line); box-shadow: inset 0 -70px 70px -24px var(--bg-2); }
+  .vp-screen-hero { height: 200px; border-radius: 16px; margin: 0 0 1.4rem; background: url('assets/observatorium-truhe-web.webp') center 40% / cover no-repeat; border: 1px solid var(--line); box-shadow: inset 0 -70px 70px -24px var(--bg-2); }
   .vorteilspack-screen .vp-tier-pills { margin-bottom: 0.4rem; }
   @media (max-width: 640px) { .vp-screen-hero { height: 140px; } }
   /* PWAs im Mycel (Truhe-Screen), nach Themen geordnet */
@@ -1364,8 +1364,8 @@
              aria-label="Discovery-Expedition öffnen">
             <div class="discovery-bg" aria-hidden="true"></div>
             <div class="discovery-earth" aria-hidden="true">
-              <img class="earth-dark" src="assets/discovery/erde-dunkel.webp" alt="">
-              <img class="earth-blue" src="assets/discovery/erde-blau.webp" alt="">
+              <img class="earth-dark" src="assets/discovery/erde-dunkel-web.webp" alt="">
+              <img class="earth-blue" src="assets/discovery/erde-blau-web.webp" alt="">
             </div>
             <div class="discovery-overlay">
               <p class="discovery-eyebrow">Discovery-Expedition</p>
@@ -1523,7 +1523,7 @@
           <div class="ms-grid">
 
             <article class="ms-tile ms-noimg">
-              <img class="ms-img" src="assets/meilenstein-1.png" alt="Erster Cross-Knoten-Handschlag nach Bedeutung"
+              <img class="ms-img" src="assets/meilenstein-1-web.webp" alt="Erster Cross-Knoten-Handschlag nach Bedeutung"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
               <span class="ms-emoji">🤝</span>
@@ -1540,7 +1540,7 @@
             </article>
 
             <article class="ms-tile ms-noimg">
-              <img class="ms-img" src="assets/meilenstein-2.png" alt="Erster eigenständiger Fremd-Knoten"
+              <img class="ms-img" src="assets/meilenstein-2-web.webp" alt="Erster eigenständiger Fremd-Knoten"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
               <span class="ms-emoji">🌐</span>
@@ -1557,7 +1557,7 @@
             </article>
 
             <article class="ms-tile ms-noimg" id="meilenstein-suche">
-              <img class="ms-img" src="assets/meilenstein.png" alt="Semantische Bedeutungs-Suche"
+              <img class="ms-img" src="assets/meilenstein-web.webp" alt="Semantische Bedeutungs-Suche"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
               <span class="ms-emoji">⭐</span>
@@ -1575,7 +1575,7 @@
             </article>
 
             <article class="ms-tile ms-noimg is-star" id="meilenstein-bidirektional">
-              <img class="ms-img" src="docs/meilenstein/2026-07-10_zwei-knoten-nach-bedeutung.png" alt="Zwei Knoten unterhalten sich nach Bedeutung durchs Mycel"
+              <img class="ms-img" src="assets/meilenstein-2026-07-10-web.webp" alt="Zwei Knoten unterhalten sich nach Bedeutung durchs Mycel"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
               <span class="ms-emoji">⭐</span>
@@ -1596,7 +1596,7 @@
             </article>
 
             <article class="ms-tile ms-noimg is-star" id="meilenstein-mesh">
-              <img class="ms-img" src="docs/meilenstein/2026-07-23_multi-knoten-mesh-handshake.png" alt="Fünf SBKIM-Knoten bilden live ein server-loses Mesh durchs Mycel"
+              <img class="ms-img" src="assets/meilenstein-2026-07-23-web.webp" alt="Fünf SBKIM-Knoten bilden live ein server-loses Mesh durchs Mycel"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
               <span class="ms-emoji">⭐</span>
