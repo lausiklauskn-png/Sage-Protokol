@@ -38,6 +38,12 @@ function makeEl(tag, doc) {
   e.addEventListener = (t, cb) => { (e._listeners[t] = e._listeners[t] || []).push(cb); };
   e.click = () => (e._listeners.click || []).slice().forEach((cb) => cb({ type: "click" }));
   e.querySelector = (sel) => find(e, sel);
+  // Attribute (2026-08-03): der Stub kannte nur Eigenschaften. Modul 23 UI setzt
+  // seit der Beruehrungsziel-Runde `data-ecke-unten` am 🌐-Knopf — ohne diese
+  // beiden Methoden warf der Smoke "setAttribute is not a function".
+  e._attrs = {};
+  e.setAttribute = (k, v) => { e._attrs[k] = String(v); };
+  e.getAttribute = (k) => (k in e._attrs ? e._attrs[k] : null);
   return e;
 }
 function find(root, sel) {
@@ -56,6 +62,8 @@ function makeDoc() {
   doc.head = makeEl("head", doc);
   doc.addEventListener = () => {};
   doc.querySelector = (sel) => find(doc.body, sel);
+  // getElementById braucht das Modul, um sein Stylesheet nur EINMAL einzuhaengen.
+  doc.getElementById = (id) => find(doc.body, "#" + id) || find(doc.head, "#" + id);
   return doc;
 }
 
@@ -135,6 +143,23 @@ async function run() {
   record("Floating-Knopf gemountet", "vorhanden", btn ? "vorhanden" : "fehlt", !!btn);
   record("Panel gemountet", "vorhanden", panel ? "vorhanden" : "fehlt", !!panel);
   record("Panel initial versteckt", "none", panel && panel.style.display, panel && panel.style.display === "none");
+
+  // ── Ueberlappung mit der Lampen-Leiste (Modul 17), Befund 2026-08-03 ────────
+  // Auf 412 px Breite wird die Lampen-Leiste (unten rechts) so breit, dass sie
+  // bis nach links reicht — der 🌐-Knopf (unten links) lag MITTEN AUF der
+  // LEBT-Lampe (gemessen an BookLedgerPro: nur 8,2 px der Lampe blieben frei).
+  // Klaus' Entscheid: der 🌐-Knopf rueckt auf schmalen Schirmen hoch.
+  // Ohne den Fix fallen beide Proben.
+  record("🌐-Knopf als untere Ecke markiert", "1", btn && btn.getAttribute("data-ecke-unten"),
+    btn && btn.getAttribute("data-ecke-unten") === "1");
+  const stil = stub.document.getElementById("sbkim-rdv-stil");
+  record("Ausweich-Regel im Kopf eingehaengt", "vorhanden", stil ? "vorhanden" : "fehlt", !!stil);
+  record("Regel greift nur unter 560 px", "ja",
+    stil && /max-width:\s*560px/.test(stil.textContent) ? "ja" : "nein",
+    !!stil && /max-width:\s*560px/.test(stil.textContent));
+  record("Regel hebt den Knopf ueber die Leiste", "bottom:78px",
+    stil && (stil.textContent.match(/bottom:\s*78px/) || ["fehlt"])[0],
+    !!stil && /bottom:\s*78px\s*!important/.test(stil.textContent));
 
   // Toggle über Knopf-Klick.
   btn.click();
