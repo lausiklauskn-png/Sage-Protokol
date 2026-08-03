@@ -98,8 +98,43 @@ Ausweich-Regel; **Gegenprobe**: ohne den Fix fallen genau diese 4), `smoke_bau23
   auflösbar. Kostet Punkte bei „Gute Praxis"; **Infrastruktur-Frage an Klaus**, bewusst
   nichts geändert.
 
-**Nächster sinnvoller Schritt.** Sage-Page CLS 0,328 einkreisen (zuerst messen, welches
-Element wann springt), dann die Schrift-Einbindung entscheiden.
+### Nachtrag — Klaus' Server-Messung der Sage-Page (2026-08-03, 23:03, mobil)
+
+Die erste Messung **am echten Server** nach dem Merge (PageSpeed Insights,
+`lausiklauskn-png.github.io/Sage-Protokol/`, Mobil):
+
+| | Server 23:03 | Bau-Maschine |
+|---|---|---|
+| Leistung | **47** | 45 |
+| Barrierefreiheit | 93 | 93 |
+| Best Practices | 96 | 96 |
+| SEO | 100 | 100 |
+| FCP | 4,2 s | — |
+| LCP | 9,2 s | 7,1 s |
+| TBT | **0 ms** | 50 ms |
+| CLS | **0,326** | 0,328 |
+
+**Was das belegt — und was nicht.**
+
+- **Server und Bau-Maschine liegen für diese Seite eng beieinander** (47 gegen 45,
+  CLS 0,326 gegen 0,328). Damit ist die lokale Messanlage für die Sage-Page
+  belastbar; man muss nicht für jeden Schritt auf Klaus warten. Das ist dasselbe
+  Bild wie beim Schaufenster (zwei Punkte Abstand).
+- **Der CLS ist am Server bestätigt.** 0,326 — das ist ein Viertel der Note und
+  mit Abstand der größte verbliebene Posten. Die Diagnose stimmt also, sie war
+  kein Artefakt der Bau-Maschine.
+- **TBT ist am Server 0 ms** (lokal 50). Der Hauptthread ist nicht das Problem.
+- **Ehrlich offen:** es gibt **keine** Server-Zahl von VOR der Bild-Pflege. Die
+  Verbesserung LCP 48,8 s → 7,1 s ist damit **nur auf der Bau-Maschine belegt**,
+  nicht am Server. Was ohne Messung feststeht: die Seite holt jetzt **0,7 MB statt
+  16,2 MB** Bilder — das ist eine Eigenschaft der Dateien, keine Schätzung.
+- Der LCP liegt am Server 2 s höher als lokal (9,2 gegen 7,1 s). Das passt zu
+  echter Latenz und dem, was der kritische Pfad zeigt (2.662 ms, ~25 Modul-Dateien
+  und Dutzende `spore.json`-Abrufe beim Start).
+
+**Nächster sinnvoller Schritt.** Sage-Page CLS 0,326 einkreisen (zuerst messen, welches
+Element wann springt), dann die Schrift-Einbindung entscheiden. Der Wert ist jetzt
+beidseitig — lokal und am Server — bestätigt.
 
 ---
 
