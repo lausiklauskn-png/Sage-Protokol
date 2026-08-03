@@ -458,10 +458,10 @@ async function run() {
   // Probe 13: hide()/show()/isVisible() + localStorage-Persistierung.
   W.hide();
   const visibleAfterHide = W.isVisible();
-  const lsVisAfterHide = g.localStorage.getItem("sbkim_widget_visible");
+  const lsVisAfterHide = g.localStorage.getItem("sbkim_widget_visible__root");
   W.show();
   const visibleAfterShow = W.isVisible();
-  const lsVisAfterShow = g.localStorage.getItem("sbkim_widget_visible");
+  const lsVisAfterShow = g.localStorage.getItem("sbkim_widget_visible__root");
   record("13. hide/show/isVisible + localStorage-Persistierung",
     "hide→false+ls=false; show→true+ls=true",
     `hide=${visibleAfterHide}/lsHide=${lsVisAfterHide}/show=${visibleAfterShow}/lsShow=${lsVisAfterShow}`,
@@ -508,7 +508,7 @@ async function run() {
 
   // -------- Dritter Test-Lauf: defekter localStorage-Eintrag fail-soft --------
   const g3 = makeStubGlobal();
-  g3.localStorage.setItem("sbkim_widget_position", "{not valid json");
+  g3.localStorage.setItem("sbkim_widget_position__root", "{not valid json");
   loadModuleInto(g3, "src/modules/17_floating_widget.js");
   const W3 = g3.SbkimWidget;
   await W3.init({});
@@ -548,7 +548,7 @@ async function run() {
     "drei Funktionen + lsKeyMinimized im _meta",
     "min=" + typeof W5.minimize + "/max=" + typeof W5.maximize + "/is=" + typeof W5.isMinimized + "/ls=" + W5._meta.lsKeyMinimized,
     typeof W5.minimize === "function" && typeof W5.maximize === "function" &&
-    typeof W5.isMinimized === "function" && W5._meta.lsKeyMinimized === "sbkim_widget_minimized");
+    typeof W5.isMinimized === "function" && W5._meta.lsKeyMinimized === "sbkim_widget_minimized__root");
 
   // minimize() ohne SIEGEL → data-minimized + data-fallback="lebt" am Root.
   const widget5 = g5.document.getElementById("sbkim-widget");
@@ -557,7 +557,7 @@ async function run() {
     isMinimized: W5.isMinimized(),
     dataMinimized: widget5.getAttribute("data-minimized"),
     dataFallback: widget5.getAttribute("data-fallback"),
-    lsValue: g5.localStorage.getItem("sbkim_widget_minimized"),
+    lsValue: g5.localStorage.getItem("sbkim_widget_minimized__root"),
   };
   record("21. minimize() ohne SIEGEL → data-minimized=true + data-fallback=lebt + localStorage",
     "minimized true, fallback lebt, ls true",
@@ -578,13 +578,13 @@ async function run() {
   W5.maximize();
   record("23. maximize() → data-minimized weg + localStorage false",
     "minimized false, attr null, ls false",
-    "min=" + W5.isMinimized() + "/attr=" + widget5.getAttribute("data-minimized") + "/ls=" + g5.localStorage.getItem("sbkim_widget_minimized"),
+    "min=" + W5.isMinimized() + "/attr=" + widget5.getAttribute("data-minimized") + "/ls=" + g5.localStorage.getItem("sbkim_widget_minimized__root"),
     W5.isMinimized() === false && widget5.getAttribute("data-minimized") === null &&
-    g5.localStorage.getItem("sbkim_widget_minimized") === "false");
+    g5.localStorage.getItem("sbkim_widget_minimized__root") === "false");
 
   // localStorage-Persistierung: frische Init mit gesetztem Wert.
   const g6 = makeStubGlobal();
-  g6.localStorage.setItem("sbkim_widget_minimized", "true");
+  g6.localStorage.setItem("sbkim_widget_minimized__root", "true");
   loadModuleInto(g6, "src/modules/17_floating_widget.js");
   await g6.SbkimWidget.init({});
   record("24. localStorage minimized=true wird beim init() gelesen",
