@@ -91,3 +91,33 @@ dessen Drift-Guard ist 15/15 grün).
 Grund, warum die Leistung trotz LCP 48,8 s → 7,1 s nur von 44 auf 45 steigt. Der Sprung kommt
 aus `div.wrap`; Verdacht auf die Google-Fonts-Einbindung (blockiert 780 ms). **Erst messen,
 welches Element wann springt** — nicht raten.
+
+---
+
+## Nachtrag — Klaus' Server-Messung der Sage-Page (2026-08-03, 23:03, mobil)
+
+Erste Messung **am echten Server** nach dem Merge (PageSpeed Insights, Mobil):
+**Leistung 47** · Barrierefreiheit 93 · Best Practices 96 · SEO 100 ·
+FCP 4,2 s · **LCP 9,2 s** · **TBT 0 ms** · **CLS 0,326**.
+
+Zum Vergleich die Bau-Maschine im selben Zustand: 45 · LCP 7,1 s · TBT 50 ms ·
+CLS 0,328.
+
+**Drei Schlüsse:**
+
+1. **Server und Bau-Maschine liegen eng beieinander** (47 gegen 45). Für die
+   Sage-Page ist die lokale Messanlage also belastbar — man muss nicht für jeden
+   Zwischenschritt auf Klaus warten. Gleiches Bild wie beim Schaufenster von
+   Tomys-Hub (zwei Punkte Abstand).
+2. **Der CLS ist am Server bestätigt** (0,326). Die Diagnose war kein Artefakt der
+   Bau-Maschine. Er ist ein Viertel der Note und damit der klare nächste Hebel.
+3. **TBT ist am Server 0 ms.** Der Hauptthread ist nicht das Problem — der LCP ist es.
+
+**Was NICHT belegt ist:** Es gibt keine Server-Zahl von VOR der Bild-Pflege. Die
+Verbesserung LCP 48,8 s → 7,1 s ist deshalb nur auf der Bau-Maschine gemessen.
+Ohne Messung feststeht dagegen: die Seite holt jetzt 0,7 MB statt 16,2 MB Bilder.
+Das ist eine Eigenschaft der Dateien, keine Schätzung.
+
+Der LCP liegt am Server 2 s über dem lokalen Wert. Das passt zu echter Latenz und
+zum kritischen Pfad (2.662 ms, rund 25 Modul-Dateien und Dutzende
+`spore.json`-Abrufe beim Seitenstart) — Aufgabe 2 des Folge-Briefs.
