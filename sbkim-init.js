@@ -375,7 +375,13 @@
     // 🔑 = eigene Spore erzeugen, 🔌 = fremden Knoten verbinden).
     await initModule("SbkimSiegel", function () {
       return window.SbkimSiegel && window.SbkimSiegel.init({
-        badgeSelector: ".lamps",
+        // Zeigt auf den LEEREN Platz-Anker, der in index.html schon im
+        // `.lamps`-Container steht (Modul 16 Option β, Zweig "vor-injiziert").
+        // Frueher stand hier ".lamps"; das Badge entstand dann erst nach dem
+        // ganzen Modul-Stapel und liess die Topbar um eine Zeile wachsen —
+        // CLS 0,326 (gemessen 2026-08-04). Anti-Greenwashing unveraendert:
+        // ohne isCertified() fuellt Modul 16 den Anker nicht.
+        badgeSelector: "#sbkim-siegel-badge",
         andockTool: true,
         // Explizit, weil Sages Band die Marke „SAGE OBSERVATORIUM" trägt —
         // ohne diesen Wert würde die neue Auto-Ableitung den Repo-Namen

@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-08-03",
-  "seq": 56,
-  "headline": "LAMPEN-LEISTE BARRIEREFREI, netzweit (Modul 17 sha a1c0b399, Modul 23 UI sha c67b2942 - 29/29 Dateien in 15 Repos auf Kanon, 0 Abweichungen). Drei Maengel, jeder gemessen: (1) Beruehrungsziele 54,5x18,6 px statt 24x24, kleine Knoepfe 18x18 -> min-height 24px an den Slots (NUR Hoehe, min-width braeche das Zusammenschieben) und 24x24 an den Knoepfen. (2) Der Netz-Knopf lag AUF der LEBT-Lampe (nur 8,2 px frei) - auf 412 px Breite reicht die Leiste bis nach links; Klaus' Entscheid: Knopf rueckt unter 560 px hoch. (3) Dadurch sichtbar geworden: der Knopf schrieb in der App-Akzentfarbe, bei BookLedgerPro 1,35:1 statt 4,5:1 - jetzt Panel-Schriftfarbe, Akzent als Rahmen. WICHTIG fuer Forker: der Kanon hat jetzt app-eigene localStorage-Schluessel (WIDGET_SCOPE) - Rezeptbuch/Muttis/Mixarium trugen den Fix seit 2026-06-28 selbst, ein byte-1:1-Rollout haette ihn ausgebaut; zuerst in den Kanon geholt. Einmaliger Nebeneffekt: gemerkte Widget-Position startet einmal neu. Gemessen an BookLedgerPro: Barrierefreiheit 92 -> 100. Beweis smoke_bau17 38/38, smoke_bau23_rendezvous_ui 91/91 mit GEGENPROBE (ohne Fix 4 rot). Dazu Sage-Page-Bilder 16,2 MB -> 0,7 MB (LCP 48,8 s -> 7,1 s). OFFEN: Klaus' Browser-Sichttest (sitzt der Netz-Knopf am Handy gut?). Rueck-Quittung erbeten.",
+  "lastBuild": "2026-08-04",
+  "seq": 57,
+  "headline": "SAGE-PAGE CLS 0,328 -> 0, Leistung 45 -> 67 (Bau-Maschine, je 3 Laeufe). BEFUND, der jeden Knoten mit Lampen-Leiste betrifft: der Sprung kam NICHT von der Schrift, sondern vom EIGENEN SIEGEL. Modul 16 haengt sein 40-px-Badge erst nach dem ganzen Modul-Stapel in .lamps (gemessen: 17,4 s; fonts.ready lag bei 15,5 s, also davor). Die Topbar waechst dadurch um eine Zeile - der Frisch-laden-Knopf rutscht 72 px nach unten in eine neue Reihe - und schiebt div.wrap um 32 px. Ein einziger Sprung, ein Viertel der Leistungsnote. LOESUNG steht schon im Modul: Option beta, vor-injizierter Anker. index.html legt <span id=\"sbkim-siegel-badge\"></span> LEER in .lamps, sbkim-init.js zeigt mit badgeSelector darauf statt auf den Container. Platz steht ab der ersten Zeichnung. Modul 16 UNANGETASTET, Anti-Greenwashing gilt weiter (ohne Zertifizierung bleibt der Anker leer). BITTE an alle Knoten mit Siegel in einer umbrechenden Leiste (Empfangsmodus, KEIN Zwang): pruefen, ob euer Badge ebenfalls spaet einhaengt - der Fix ist zwei Zeilen und kostet nichts. Dazu: Schriften selbst gehostet (vier woff2 in assets/fonts, variable Schriften, nur die zwei latin vorabgeholt = 52 KiB). Der <link> auf fonts.googleapis.com blockierte das erste Zeichnen ~750 ms; Klaus' Server nannte 1.950 ms Rendering-Verzoegerung am Textelement p.hero-claim. Nebenbefund: die Bau-Maschine erreicht Google Fonts gar nicht - vorher war KEINE Schrift geladen, jetzt beide nach 789 ms. VERWORFEN weil gemessen schlechter: den Modul-Stapel ans load-Ereignis haengen (BLP-Muster) - kostet 0,8 s LCP und bringt keinen Punkt; die Skripte stehen schon am Body-Ende, der Hebel ist die Menge, nicht der Zeitpunkt. Beweise: CLS-Gegenprobe 0,0000 aus 0 Spruengen; Siegel funktional gegengeprueft (gefuellt, Gold, Modal oeffnet, keine Seitenfehler); Tests 64/66, die zwei roten auch auf origin/main rot. HINWEIS fuer Test-Laeufe in Sage: ohne 'npm install fake-indexeddb --no-save' sind 21 Tests rot, die gesund sind. OFFEN: Klaus' Browser-Sichttest + Server-Nachmessung (Proxy hier verweigert github.io). Rueck-Quittung erbeten.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -269,6 +269,11 @@
       "seq": 50,
       "date": "2026-07-30",
       "headline": "Ursache des Identitaetsverlusts gefunden: eigener Loesch-Pfad in Modul 01 (Fehlurteil + vorgemerkte Loeschung). Haertung mit Gegenprobe netzweit gemergt; Bug reproduziert und Heilung belegt."
+    },
+    {
+      "seq": 56,
+      "date": "2026-08-03",
+      "headline": "LAMPEN-LEISTE BARRIEREFREI, netzweit (Modul 17 sha a1c0b399, Modul 23 UI sha c67b2942 - 29/29 Dateien in 15 Repos auf Kanon, 0 Abweichungen). Drei Maengel, jeder gemessen: (1) Beruehrungsziele 54,5x18,6 px statt 24x24, kleine Knoepfe 18x18 -> min-height 24px an den Slots (NUR Hoehe, min-width braech"
     }
   ]
 }

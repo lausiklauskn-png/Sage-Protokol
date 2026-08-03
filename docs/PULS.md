@@ -31,6 +31,111 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-04 — Sage-Page: CLS 0,328 → 0, Leistung 45 → 67
+
+**Rolle:** Bau-/Pflege-Sitzung (Sage-Page-Leistung). Zwei Eingriffe, jeder einzeln gemessen.
+
+### 1. Der CLS kam nicht von der Schrift — er kam vom eigenen Siegel
+
+Der Bericht nannte nur `div.wrap 0,326`. Das ist der Container, nicht die Ursache.
+Ein `PerformanceObserver` auf `layout-shift`, der **vor** dem Laden hängt und das Feld
+`sources` ausliest (gedrosselt wie die echte Messung), zeigte etwas Eindeutiges:
+**ein einziger Sprung, bei 17,4 s.**
+
+`fonts.ready` lag bei **15,5 s** — also *davor*. Der Verdacht auf die Google-Fonts-
+Einbindung war damit **widerlegt**, bevor eine Zeile Code geschrieben wurde.
+
+Der Sprung kam vom **SBKIM-Siegel selbst**. Modul 16 hängt sein 40 px hohes Badge erst
+nach dem ganzen Modul-Stapel in `.lamps`. Die Topbar (`flex-wrap`) wuchs dadurch um eine
+Zeile — die Messung zeigt den „Frisch laden"-Knopf um **72 px nach unten** in eine neue
+Reihe rutschen — und schob `div.wrap` um **32 px**. Ein Viertel der Leistungsnote, aus
+einem Element, das die Seite sich selbst anheftet.
+
+Modul 16 kennt für genau diesen Fall einen **vor-injizierten Anker** (Option β, im
+Modul-Kopf dokumentiert). `index.html` legt ihn jetzt leer in `.lamps`, `sbkim-init.js`
+zeigt mit `badgeSelector` darauf. Der Platz steht ab der ersten Zeichnung.
+
+**Das Sicherheits-Modul bleibt unangetastet.** Anti-Greenwashing gilt weiter: ohne
+Zertifizierung füllt Modul 16 den Anker nicht — es wird kein Siegel gezeigt, nur Platz
+gehalten.
+
+### 2. Schriften selbst gehostet
+
+Vorher blockierte ein `<link>` auf `fonts.googleapis.com` das erste Zeichnen um rund
+750 ms, samt DNS/TLS und einem **zweiten** Ursprung für die Dateien selbst. Genau das
+steckte in Klaus' Server-Messung als „Verzögerung beim Rendering des Elements"
+**1.950 ms** am LCP-Element `p.hero-claim` — reiner Text.
+
+Jetzt liegen vier `woff2` unter `assets/fonts/` (es sind **variable** Schriften, eine
+Datei je Schnitt deckt 300–700 bzw. 400–500 ab), die `@font-face`-Regeln stehen im
+vorhandenen `<style>`. Vorabgeholt werden nur die beiden `latin`-Dateien (52 KiB); die
+`latin-ext`-Fassung holt der Browser nur, wenn ein Zeichen aus ihrem `unicode-range`
+vorkommt — bei deutschem Text nie.
+
+**Nebenbefund, der die alte Messlage erklärt:** auf der Bau-Maschine kam Google Fonts
+**nie an**. `fonts.ready` bei 15,5 s, und *keine einzige* Schrift geladen. Die Seite hat
+also durchweg in der Systemschrift gezeichnet. Jetzt sind beide Schriften nach **789 ms**
+da. Die Seite hält ihr Offline-Versprechen erstmals auch bei den Schriften.
+
+### 3. Verworfen — den Modul-Stapel zurückstellen
+
+Aufgabe 2 des Briefs (BLP-Muster: 25 Modul-Dateien ans `load`-Ereignis, `async=false` für
+die Reihenfolge) wurde gebaut und gemessen: **LCP 7,6 s → 8,4 s, kein Punkt gewonnen**,
+reproduzierbar über drei Läufe. **Zurückgenommen.** Der Grund gehört in den nächsten Brief:
+der kritische Pfad ist real, aber am Ende des `<body>` blockieren die Skripte das Zeichnen
+schon heute nicht — sie später zu holen verschiebt nur ihre Kosten hinter den LCP-Zeitpunkt.
+
+### Zahlen (Bau-Maschine, je 3 Läufe, gleiche Maschinenlage)
+
+| Zustand | Leistung | CLS | LCP |
+|---|---|---|---|
+| `origin/main` | 45 · 45 · 45 | 0,328 | 7,1 s |
+| nur Platz-Anker | 61 · 61 · 59 | **0** | 7,1 s |
+| + Schriften selbst gehostet | **66 · 67 · 69** | **0** | 7,6 s |
+| (verworfen) + Stapel zurückgestellt | 62 · 63 · 64 | 0 | 8,4 s |
+
+Der Ausgangswert wurde in derselben Maschinenlage frisch nachgemessen (`git archive
+origin/main`), nicht aus dem alten Protokoll übernommen — eine erste Messreihe hatte
+zwischen 34 und 60 geschwankt, das war Maschinenlärm.
+
+### Beweise
+
+- **CLS-Ursache:** ein einziger Sprung, mit Quell-Element und Zeitpunkt. Gegenprobe nach
+  dem Eingriff: **0,0000 aus 0 Sprüngen.**
+- **Siegel funktional gegengeprüft** (Chromium, `serviceWorkers: "block"`): Anker gefüllt,
+  `role=button`, `tabindex=0`, `data-stufe="gold"`, 40 × 40 px, Modal öffnet auf Klick,
+  **keine Seitenfehler**.
+- **Tests 64 von 66 grün.** Die zwei roten (`smoke_bau23_0b_identitaet`,
+  `smoke_bau23c_ki_richter`) sind per Gegenprobe **auch auf blankem `origin/main` rot** —
+  vorbestehend. Nebenbei: 21 Tests scheiterten zunächst nur an der fehlenden
+  Test-Abhängigkeit `fake-indexeddb`; nach `npm install fake-indexeddb --no-save` laufen sie.
+  **Das gehört in die Sitzungs-Vorbereitung** — sonst hält man 21 gesunde Tests für kaputt.
+
+### Was offen blieb / nicht geprüft
+
+- **Klaus' Browser-Sichttest.** Besonders: sitzt das Siegel in der Topbar noch richtig, und
+  wirkt die Seite mit der jetzt wirklich geladenen Geist-Schrift wie gewohnt?
+- **Nachmessung am echten Server** — der Ausgangs-Proxy dieser Umgebung verweigert
+  `github.io` (403). Alle Zahlen stammen von der Bau-Maschine.
+- **Der Schrift-Gewinn ist lokal untertrieben.** Die Bau-Maschine erreichte Google Fonts
+  gar nicht, der Ausgangszustand hat die 52 KiB also nie bezahlt. Trotzdem stieg die Note
+  von 61 auf 67. Am Server, wo die Schriften wirklich über den fremden Ursprung kommen,
+  sollte der Gewinn **größer** sein — belegt ist das aber erst nach Klaus' Messung.
+- **`docs/papers/sbkim-paper-de.html` und `-en.html`** binden weiterhin Google Fonts ein
+  (andere Familien: Source Serif 4, Source Code Pro, Inter). Bewusst nicht angefasst —
+  eigener Umfang.
+- **BookLedgerPro `wss://relay.family-projekt.de/` nicht auflösbar:** Klaus' Antwort
+  (2026-08-04) — **das Relais soll wieder aufgesetzt werden, nichts ändern.** Bleibt
+  unverändert stehen.
+- **Kritischer Pfad / Hauptthread** der Sage-Page bleibt offen (Klaus' Bericht: 2.662 ms
+  bzw. 4,4 s). Der einfache Weg (Zurückstellen) ist gemessen widerlegt; der nächste Ansatz
+  müsste an der Menge ansetzen, nicht am Zeitpunkt.
+
+**Nächster sinnvoller Schritt.** Klaus' Server-Messung abwarten und gegen die 67 halten —
+erst danach lohnt der nächste Leistungs-Eingriff.
+
+---
+
 ## Stand 2026-08-03 — Lampen-Leiste barrierefrei (netzweit) + Sage-Page-Bilder 16,2 MB → 0,7 MB
 
 **Rolle:** Bau-/Pflege-Sitzung (Kanon Modul 17 + 23 UI, netzweiter Rollout, Bild-Pflege).
