@@ -16,6 +16,22 @@
 > **Geschwister-Doku:** Bau-/Architektur-Lehren, die **nichts** mit dem Browser
 > zu tun haben (Schnittstellen-Verträge, Vendoring, Modul-Bau) → das
 > die [Observatorium-Werkstatt](OBSERVATORIUM_WERKSTATT.md).
+>
+> **Dritte Geschwister-Doku — die Forschungsstation (2026-08-04, Klaus).** Wo
+> Browser-Observatorium und Werkstatt *Befunde* sammeln, sammelt die
+> Forschungsstation **Messwerte über die Zeit** — und daneben die Erklärung,
+> *wodurch* sich eine Seite verbessert hat. Sie liegt im Repo `family-project`
+> (dort läuft der nächtliche Messlauf, dort liegen die Ziel-Adressen):
+>
+> - [`forschung/README.md`](https://github.com/lausiklauskn-png/family-project/blob/main/forschung/README.md) — wie sie aufgebaut ist und wie man sie abfragt
+> - [`forschung/JOURNAL.md`](https://github.com/lausiklauskn-png/family-project/blob/main/forschung/JOURNAL.md) — *was* sich geändert hat (Maschine) und *warum* (Sitzung)
+> - [`forschung/LEHREN.md`](https://github.com/lausiklauskn-png/family-project/blob/main/forschung/LEHREN.md) — was daraus für die **nächste** Seite folgt
+>
+> Ziel ist ausdrücklich nicht das Nachbessern einzelner Seiten, sondern die
+> Frage: *wie baut man von vornherein so, dass die Werte gleich stimmen?* Der
+> Maßstab ist Perfect Skin Beauty — vom ersten Tag an gut, ohne Nachbesserung.
+> Sage-Protokols eigene Sprünge (CLS 0,328 → 0, Barrierefreiheit 93 → 100)
+> stehen dort als Fälle mit ihrer Begründung.
 
 ---
 
