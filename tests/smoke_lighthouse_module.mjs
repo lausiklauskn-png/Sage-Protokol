@@ -203,5 +203,71 @@ console.log("\nTeil 2 — Modul 23 UI: der Schlüssel-Link ist nie ein Link ins 
   }
 }
 
+/* ── Befund 4 · Status-Farben als Badge-SCHRIFT (2026-08-04) ────────────────
+ * Nach dem `--dim`-Fix blieben vier Beanstandungen übrig, alle an `.badge`.
+ * Der Grund: die Status-Farben (INTERFACES §5) tragen zwei Rollen — Füllung
+ * von Punkt/Lampe/Mermaid-Knoten UND *Schrift* im Badge. Als Schrift auf
+ * `rgba(0,0,0,0.5)` über `--bg` fielen die zwei dunkelsten durch
+ * (schablone 2,88:1 · stub 3,95:1). Beide sind aufgehellt worden.
+ *
+ * Dieser Wächter liest die sechs Werte AUS index.html und rechnet sie nach —
+ * eine hier wiederholte Liste wäre eine zweite Wahrheit. Er prüft drei Dinge:
+ *   1. jede Farbe ≥ 4,5:1 als Badge-Schrift,
+ *   2. die CSS-Variable und die JS-Karte STATUS_META sagen dasselbe
+ *      (sie stehen 2000 Zeilen auseinander und driften sonst lautlos),
+ *   3. schablone und werkstatt bleiben unterscheidbar — sonst „repariert"
+ *      eine spätere Sitzung das Braun, indem sie es zu Orange macht.
+ *
+ * Gegenprobe beim Bauen: --status-schablone auf #92400E zurückgesetzt →
+ * Probe 1 fiel mit 2,88:1, Probe 2 meldete zusätzlich die Abweichung zur
+ * JS-Karte. Beide Richtungen greifen also wirklich. */
+{
+  const seite = readFileSync(resolve(repoRoot, "index.html"), "utf8");
+  const NAMEN = ["schablone", "werkstatt", "spec", "stub", "fertig"];
+  const hexZuRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+
+  /* Der Badge-Grund ist rgba(0,0,0,0.5) über der Seitenfarbe. */
+  const bgTreffer = /--bg\s*:\s*([^;]+);/.exec(seite);
+  const seitenGrund = bgTreffer ? farbe(bgTreffer[1].trim()).slice(0, 3) : null;
+  const badgeGrund = seitenGrund && ueber([0, 0, 0, 0.5], seitenGrund);
+  ok(!!badgeGrund, `Badge-Grund gerechnet (${badgeGrund && badgeGrund.join(",")})`);
+
+  /* Abstand im Lab-Raum — reicht, um „ist das noch Braun oder schon Orange?"
+   * zu beantworten; eine volle CIEDE2000 braucht es dafür nicht. */
+  const lab = ([r, g, b]) => {
+    const L = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+    const R = L(r), G = L(g), B = L(b);
+    const f = (t) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116);
+    const x = f((0.4124 * R + 0.3576 * G + 0.1805 * B) / 0.95047);
+    const y = f(0.2126 * R + 0.7152 * G + 0.0722 * B);
+    const z = f((0.0193 * R + 0.1192 * G + 0.9505 * B) / 1.08883);
+    return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
+  };
+  const abstand = (a, b) => { const A = lab(a), B = lab(b); return Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]); };
+
+  const gelesen = {};
+  for (const name of NAMEN) {
+    const cssTreffer = new RegExp("--status-" + name + "\\s*:\\s*(#[0-9A-Fa-f]{6})\\s*;").exec(seite);
+    const jsTreffer = new RegExp(name + "\\s*:\\s*\\{[^}]*color:\\s*'(#[0-9A-Fa-f]{6})'").exec(seite);
+    ok(!!cssTreffer, `--status-${name} aus index.html gelesen (${cssTreffer && cssTreffer[1]})`);
+    ok(!!(cssTreffer && jsTreffer) && cssTreffer[1].toUpperCase() === jsTreffer[1].toUpperCase(),
+      `CSS-Variable und STATUS_META sagen dasselbe für ${name} (${cssTreffer && cssTreffer[1]} = ${jsTreffer && jsTreffer[1]})`);
+    if (cssTreffer) gelesen[name] = hexZuRgb(cssTreffer[1]);
+  }
+
+  if (badgeGrund) {
+    for (const name of NAMEN) {
+      if (!gelesen[name]) continue;
+      const k = kontrast(gelesen[name], badgeGrund);
+      ok(k >= NORM, `Status-Farbe ${name} als Badge-Schrift ${k.toFixed(2)}:1 (Soll ${NORM})`);
+    }
+  }
+
+  if (gelesen.schablone && gelesen.werkstatt) {
+    const d = abstand(gelesen.schablone, gelesen.werkstatt);
+    ok(d >= 25, `schablone bleibt von werkstatt unterscheidbar (ΔE ${d.toFixed(1)}, Soll ≥ 25)`);
+  }
+}
+
 console.log(`\n${fail === 0 ? "✓" : "✗"} smoke_lighthouse_module: ${pass} grün, ${fail} rot`);
 process.exit(fail === 0 ? 0 : 1);

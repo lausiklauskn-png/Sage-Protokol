@@ -72,10 +72,20 @@
     --dim: rgba(245,245,255,0.50);
     --line: rgba(255,255,255,0.08);
     --line-strong: rgba(255,255,255,0.18);
-    --status-schablone: #92400E;
+    /* Status-Farben — eine Quelle, siehe docs/INTERFACES.md §5.
+     * Sie tragen zwei Rollen: Text im .badge (auf rgba(0,0,0,.5) über #08081A)
+     * UND Füllung von Punkt/Lampe/Mermaid-Knoten. Gemessen 2026-08-04:
+     * als Badge-Text fielen schablone (2,88:1) und stub (3,95:1) durch —
+     * Braun und Sattblau sind zu dunkel für Schrift auf Dunkel. Beide auf
+     * denselben Farbton aufgehellt: schablone #92400E→#A9714B (5,01:1),
+     * stub #2563EB→#4479EE (5,07:1). Der Reife-Gradient bleibt lesbar
+     * (Erdbraun → Orange → Gelb → Blau → Grün), der Farbabstand zur
+     * Nachbarfarbe bleibt groß (ΔE 49,7 schablone↔werkstatt).
+     * Wer sie wieder abdunkelt, holt den Mangel zurück. */
+    --status-schablone: #A9714B;
     --status-werkstatt: #EA580C;
     --status-spec: #CA8A04;
-    --status-stub: #2563EB;
+    --status-stub: #4479EE;
     --status-fertig: #16A34A;
     --status-nextup: #F4B435;
     --r-lg: 22px; --r: 16px; --r-sm: 10px; --max: 1280px;
@@ -421,7 +431,12 @@
   .bars-legend { font-family: "Geist Mono", monospace; font-size: 0.72rem; color: var(--dim); margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
   .meta-footer { margin-top: 4rem; padding: 1.6rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid var(--line); border-radius: var(--r); display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
   .legal-line { margin: 1rem 0 0; text-align: center; font-size: 0.78rem; color: var(--dim); font-family: "Geist Mono", monospace; }
-  .legal-line a { color: rgba(244,180,53,0.78); }
+  /* Unterstrichen, nicht nur eingefärbt: ein Verweis mitten im Fließtext, der
+   * sich allein durch die Farbe abhebt, ist für farbfehlsichtige Leser kein
+   * Verweis (Lighthouse `link-in-text-block`, Gewicht 7 — die letzten drei
+   * Punkte der Barrierefreiheit 2026-08-04). Der Abstand hält den Strich von
+   * den Unterlängen weg. */
+  .legal-line a { color: rgba(244,180,53,0.78); text-decoration: underline; text-underline-offset: 0.18em; }
   .legal-line a:hover { color: var(--accent); }
   .meta-cell .k { font-family: "Geist Mono", monospace; font-size: 0.68rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 0.25rem; }
   .meta-cell .v { font-family: "Geist Mono", monospace; font-size: 0.84rem; color: var(--text); word-break: break-all; }
@@ -2061,10 +2076,10 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   };
 
   const STATUS_META = {
-    schablone: { label: 'Schablone',    color: '#92400E' },
+    schablone: { label: 'Schablone',    color: '#A9714B' },
     werkstatt: { label: 'In Werkstatt', color: '#EA580C' },
     spec:      { label: 'Spec fertig',  color: '#CA8A04' },
-    stub:      { label: 'Code-Stub',    color: '#2563EB' },
+    stub:      { label: 'Code-Stub',    color: '#4479EE' },
     fertig:    { label: 'Fertig',       color: '#16A34A' }
   };
   const BACKLOG_IDS = new Set(['10', '11', '12', '14', '15']);
@@ -3989,11 +4004,11 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   .mod-row { grid-template-columns: 42px minmax(0, 1fr) auto auto; }
   .mod-lamps { display: inline-flex; align-items: center; gap: 0.32rem; padding: 0.2rem 0.45rem; background: rgba(0,0,0,0.4); border: 1px solid var(--line); border-radius: 999px; }
   .mod-lamp { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.16); display: inline-block; }
-  .mod-lamp.stub { background: var(--status-stub); box-shadow: 0 0 4px rgba(37,99,235,0.55); }
+  .mod-lamp.stub { background: var(--status-stub); box-shadow: 0 0 4px rgba(68,121,238,0.55); }
   .mod-lamp.werkstatt { background: var(--status-werkstatt); box-shadow: 0 0 4px rgba(234,88,12,0.55); }
   .mod-lamp.spec { background: var(--status-spec); box-shadow: 0 0 4px rgba(202,138,4,0.55); }
   .mod-lamp.fertig { background: var(--status-fertig); box-shadow: 0 0 4px rgba(22,163,74,0.65); }
-  .mod-lamp.schablone { background: var(--status-schablone); box-shadow: 0 0 4px rgba(146,64,14,0.55); }
+  .mod-lamp.schablone { background: var(--status-schablone); box-shadow: 0 0 4px rgba(169,113,75,0.55); }
   .mod-lamp-tooltip { display: none; }
   @media (max-width: 540px) {
     .mod-row { grid-template-columns: 42px minmax(0, 1fr) auto; }

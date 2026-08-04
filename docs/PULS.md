@@ -112,8 +112,68 @@ Gemessen gegen `#08081A`:
 
 Zwei von sechs Farben sind auf dunklem Grund nicht lesbar genug. **Nicht
 stillschweigend geändert** — die Tafel bindet die Werte. Klaus entscheidet;
-drei Wege stehen in der Chat-Antwort (Farben aufhellen / Abzeichen umbauen /
+drei Wege standen in der Chat-Antwort (Farben aufhellen / Abzeichen umbauen /
 liegen lassen).
+
+### ✅ Erledigt am selben Tag — Klaus: „machen wir bei Sage Protokoll die Statusfarben"
+
+**Barrierefreiheit jetzt 100** (von 93 über 97 auf 100, drei Läufe bestätigt).
+
+**Was gemacht wurde.** Der Kern des Befundes war eine **Doppelrolle**: dieselbe
+Farbe ist *Füllung* (Punkt, Modul-Lampe, Mermaid-Knoten) **und** *Schrift* im
+`.badge`. Als Füllung ist ein dunkles Braun gut; als Schrift auf Dunkel fällt es
+durch. Ein Hexwert kann beide Rollen nicht gleich gut bedienen — das ist keine
+Meinung, sondern die Rechnung.
+
+Beide durchgefallenen Farben sind auf **demselben Farbton** aufgehellt worden:
+
+| Status | alt | neu | Badge-Schrift | Weiß auf Füllung |
+|---|---|---|---|---|
+| schablone | `#92400E` | **`#A9714B`** | 2,88 → **5,01 : 1** | 7,09 → 4,08 |
+| stub | `#2563EB` | **`#4479EE`** | 3,95 → **5,07 : 1** | 5,17 → 4,03 |
+
+Die anderen vier bleiben unverändert. Zwei Nebenbedingungen wurden mitgeprüft:
+
+- **Unterscheidbarkeit.** Braun wird beim Aufhellen zu Orange — und Orange ist
+  schon `werkstatt`. Deshalb ein gedämpftes Erdbraun (ΔE 49,7 zu `#EA580C`),
+  kein helles Orange.
+- **Weiß auf Füllung** (Mermaid) sinkt zwar, liegt mit 4,08 / 4,03 aber
+  **über** `werkstatt` (3,56), `fertig` (3,30), `spec` (2,94) und `nextup`
+  (2,15). Die Diagramme werden dadurch nicht schlechter, sondern gleichmäßiger.
+
+**Tafel zuerst, dann Code** (INTERFACES-Regel eingehalten): `docs/INTERFACES.md
+§5` trägt jetzt die neuen Werte, die Messung, die Regel für Folge-Sitzungen
+(„eine Status-Farbe wird in **beiden** Rollen gemessen") und eine **Abgrenzung**
+— die `classDef`-Zeilen in den Komponenten-Karten (00/03/08/12/14/15) benutzen
+dieselben Hexwerte für *Diagramm-Rollen* (`agent`, `pwa`, `store`, …), haben mit
+Modul-Status nichts zu tun und bleiben unangetastet. Nachgezogen wurden
+`index.html` (CSS-Variablen + `STATUS_META` + Lampen-Schein) und
+`docs/ARCHITEKTUR.md` (Bau-DAG). Der PULS-Pie führt keine Hexwerte.
+
+**Die letzten drei Punkte** (97 → 100) waren etwas anderes:
+`link-in-text-block` (Gewicht 7) — der Verweis in `.legal-line` hob sich
+**allein durch die Farbe** ab. Jetzt unterstrichen. Übrig bleibt nur
+`label-content-name-mismatch` mit **Gewicht 0** — kostet keinen Punkt.
+
+**Wächter** (`tests/smoke_lighthouse_module.mjs`, 23 → **40 Proben**): liest die
+sechs Werte **aus `index.html`** (keine zweite Liste = keine zweite Wahrheit),
+rechnet jede als Badge-Schrift nach, vergleicht CSS-Variable gegen `STATUS_META`
+(die stehen 2000 Zeilen auseinander und driften sonst lautlos) und prüft den
+Farbabstand schablone↔werkstatt.
+
+**Gegenprobe, beide Richtungen:** `#92400E` zurückgesetzt → 2 rot (Kontrast +
+Abweichung zur JS-Karte). Braun „repariert" zu Orange `#E86A18` → 1 rot
+(ΔE 9,4). Der Wächter greift also wirklich, nicht nur formal.
+
+**Nebenbefund, nicht geändert:** `--status-nextup` steht in `index.html` auf
+`#F4B435`, die Tafel nennt `#F59E0B`. Beide bestehen den Kontrast; es ist eine
+reine Doku-Drift. Nicht angefasst, weil es eine Farbe ändern würde, die Klaus
+sieht — eigener kleiner Folge-Schritt.
+
+**Werkzeug verbessert:** `family-project/tools/lh-messen.mjs` nennt jetzt **alle**
+durchgefallenen Prüfungen der Barrierefreiheit statt einer fest eingebauten
+Auswahl. Die alte Liste hat genau die Beanstandung versteckt, die man noch nicht
+kannte — bei 97 statt 100 suchte man im Dunkeln.
 
 ---
 

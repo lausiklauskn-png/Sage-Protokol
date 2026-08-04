@@ -57,12 +57,12 @@ flowchart TB
   M00 -.-> M12
   M07 -.-> M10
 
-  classDef schablone fill:#92400E,color:#fff,stroke:#fff,stroke-width:1px
+  classDef schablone fill:#A9714B,color:#fff,stroke:#fff,stroke-width:1px
   classDef werkstatt fill:#EA580C,color:#fff,stroke:#fff,stroke-width:1px
   classDef spec      fill:#CA8A04,color:#fff,stroke:#fff,stroke-width:1px
-  classDef stub      fill:#2563EB,color:#fff,stroke:#fff,stroke-width:1px
+  classDef stub      fill:#4479EE,color:#fff,stroke:#fff,stroke-width:1px
   classDef fertig    fill:#16A34A,color:#fff,stroke:#fff,stroke-width:1px
-  classDef nextup    fill:#92400E,color:#fff,stroke:#F59E0B,stroke-width:3px
+  classDef nextup    fill:#A9714B,color:#fff,stroke:#F59E0B,stroke-width:3px
   classDef nextupw   fill:#EA580C,color:#fff,stroke:#F59E0B,stroke-width:3px
 
   class M02,M04,M05,M06,M07,M10,M11,M12 schablone
