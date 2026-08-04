@@ -31,6 +31,92 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-04 (später) — Kontrast: 21 von 26 Beanstandungen behoben
+
+**Rolle:** Pflege-Sitzung (Klaus' Auftrag: „die 12 MB Bilder mit dem Kontrast").
+
+### Die 12 MB Bilder gibt es nicht mehr — sie waren schon erledigt
+
+Der Auftrag stammte aus einem Befund am **alten** Stand: fünf PNG-Dateien mit
+rund 12 MB hingen in der Startseite. Auf `origin/main` liegen dort längst
+WebP-Fassungen — **zusammen 408 KiB**:
+
+| Datei | Größe |
+|---|---|
+| `assets/meilenstein-2026-07-23-web.webp` | 117 KiB |
+| `assets/meilenstein-2026-07-10-web.webp` | 97 KiB |
+| `assets/meilenstein-2-web.webp` | 67 KiB |
+| `assets/meilenstein-1-web.webp` | 63 KiB |
+| `assets/meilenstein-web.webp` | 61 KiB |
+
+Nichts zu tun. Festgehalten, damit die nächste Sitzung nicht dieselbe Sackgasse
+sucht — und als Beleg für die Sitzungsstart-Pflicht ganz oben in CLAUDE.md: der
+Befund war eine Aussage über einen Stand, der schon nicht mehr galt.
+
+### Der Kontrast: `--dim` war die Ursache für 21 der 26 Fundstellen
+
+Gemessen gegen den Seitengrund `#08081A`:
+
+| | vorher | Verhältnis | nötig | jetzt |
+|---|---|---|---|---|
+| `--dim` | 0.36 | **3,08 : 1** | 4,5 : 1 (ab 0.47) | **0.50 → 4,99 : 1** |
+
+Betroffen waren `.card-tag`, `.mod-num` und `.module-list-divider`. Der Wert
+0.50 statt der nötigen 0.47 gibt etwas Luft und hält die Abstufung sauber:
+voll 1.0 > `--muted` 0.62 > `--dim` 0.50.
+
+### Neuer Wächter — und warum es ihn brauchte
+
+`tests/smoke_lighthouse_module.mjs` rechnete schon Kontrast, aber über
+`--sbkim-widget-fg-dim` — die Variable des **Widget-Moduls**. Die Seite hat eine
+eigene, gleichnamige Idee (`--dim` in `index.html`), und die war **nie gedeckt**.
+Der Test liest sie jetzt direkt aus `index.html` (keine zweite Zahlenliste, die
+auseinanderläuft) und prüft dreierlei: `--dim` ≥ 4,5 : 1, `--muted` ≥ 4,5 : 1,
+und dass `--dim` leichter bleibt als `--muted` — sonst „repariert" eine spätere
+Sitzung den Kontrast, indem sie beide gleichzieht, und die Seite verliert ihre
+Tiefe.
+
+**Gegenprobe:** `--dim` auf 0.36 zurück → die Probe fällt durch mit
+„abgeblendete Seiten-Schrift 3.08:1 (Soll 4.5)". 23 grün statt 17.
+
+### Gemessen (drei Läufe, Bau-Maschine)
+
+| | Wert |
+|---|---|
+| Leistung | 72 · 72 · 72 |
+| Barrierefreiheit | 93 (unverändert — siehe unten) |
+| CLS | 0 |
+
+Die Zahl bleibt bei 93, weil vier Fundstellen offen sind. Das ist **kein**
+Fehlschlag der Reparatur: 21 von 26 sind weg, die restlichen vier hängen an
+einer heiligen Tafel.
+
+### ⚠ OFFEN — Anpassungs-Antrag an Klaus (Tafel-Evolutions-Klausel)
+
+Die vier verbliebenen Fundstellen sind `.badge`-Elemente in der Modul-Liste.
+Sie tragen die **Status-Farben** aus `docs/INTERFACES.md §5` — der Tafel, die
+sich selbst als „die **eine Quelle**" bezeichnet und exakte Hex-Werte nennt,
+„identisch verwendet" in Markdown-Karten, Mermaid-Diagrammen, dem PULS-Pie und
+der Sage-Page.
+
+Gemessen gegen `#08081A`:
+
+| Status | Hex | Verhältnis | |
+|---|---|---|---|
+| schablone | `#92400E` | **2,79 : 1** | zu dunkel |
+| stub | `#2563EB` | **3,83 : 1** | zu dunkel |
+| werkstatt | `#EA580C` | 5,57 : 1 | ok |
+| fertig | `#16A34A` | 6,01 : 1 | ok |
+| spec | `#CA8A04` | 6,74 : 1 | ok |
+| nextup | `#F4B435` | 10,78 : 1 | ok |
+
+Zwei von sechs Farben sind auf dunklem Grund nicht lesbar genug. **Nicht
+stillschweigend geändert** — die Tafel bindet die Werte. Klaus entscheidet;
+drei Wege stehen in der Chat-Antwort (Farben aufhellen / Abzeichen umbauen /
+liegen lassen).
+
+---
+
 ## Stand 2026-08-04 — Sage-Page: CLS 0,328 → 0, Leistung 45 → 67
 
 **Rolle:** Bau-/Pflege-Sitzung (Sage-Page-Leistung). Zwei Eingriffe, jeder einzeln gemessen.

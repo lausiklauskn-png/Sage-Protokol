@@ -63,7 +63,13 @@
     --gold: #F4B435;
     --text: #F5F5FF;
     --muted: rgba(245,245,255,0.62);
-    --dim: rgba(245,245,255,0.36);
+    /* Gemessen 2026-08-04: bei 0.36 stand `--dim` gegen den Seitengrund
+     * rgb(8,8,26) bei 3,08 : 1 — verlangt sind 4,5 : 1. Das war die Ursache
+     * für 21 der 26 Kontrast-Beanstandungen (`.card-tag`, `.mod-num`,
+     * `.module-list-divider`). Nötig wären 0.47; 0.50 gibt etwas Luft und
+     * hält die Abstufung sauber: voll 1.0 > --muted 0.62 > --dim 0.50.
+     * Wer den Wert senkt, holt den Mangel zurück. */
+    --dim: rgba(245,245,255,0.50);
     --line: rgba(255,255,255,0.08);
     --line-strong: rgba(255,255,255,0.18);
     --status-schablone: #92400E;
