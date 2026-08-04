@@ -5473,11 +5473,45 @@ Sage-Page `index.html` (CSS-Variablen + Bau-Puls-Karte).
 
 | Status | Emoji | Farbe (hex) | Markdown-Badge | Site-CSS-Var |
 |---|---|---|---|---|
-| schablone | 🟫 | `#92400E` braun | `🟫 Schablone` | `--status-schablone` |
+| schablone | 🟫 | `#A9714B` erdbraun | `🟫 Schablone` | `--status-schablone` |
 | werkstatt | 🟧 | `#EA580C` orange | `🟧 In Werkstatt` | `--status-werkstatt` |
 | spec | 🟨 | `#CA8A04` gelb | `🟨 Spec fertig` | `--status-spec` |
-| stub | 🟦 | `#2563EB` blau | `🟦 Code-Stub` | `--status-stub` |
+| stub | 🟦 | `#4479EE` blau | `🟦 Code-Stub` | `--status-stub` |
 | fertig | 🟩 | `#16A34A` grün | `🟩 Fertig` | `--status-fertig` |
+
+**Lesbarkeits-Untergrenze (Tafel-Anpassung 2026-08-04, gemessen).** Die Farben
+tragen auf der Sage-Page **zwei** Rollen: sie sind **Schrift** im `.badge`
+(auf `rgba(0,0,0,0.5)` über `#08081A`) und **Füllung** von Punkt, Modul-Lampe
+und Mermaid-Knoten. Als Schrift fielen die zwei dunkelsten durch —
+`schablone` `#92400E` bei **2,88 : 1** und `stub` `#2563EB` bei **3,95 : 1**,
+beide unter der WCAG-AA-Grenze von 4,5 : 1 (Lighthouse-Barrierefreiheit 93).
+Braun und Sattblau *können* als Schrift auf Dunkel nicht hell genug sein,
+ohne aufgehellt zu werden; darum sind genau diese zwei Werte auf demselben
+Farbton angehoben worden: `#92400E` → `#A9714B` (**5,01 : 1**),
+`#2563EB` → `#4479EE` (**5,07 : 1**). Die anderen vier bleiben unverändert.
+
+Zwei Nebenbedingungen wurden dabei mitgeprüft, damit die Tafel nicht an
+anderer Stelle bricht:
+
+- **Unterscheidbarkeit** — das aufgehellte Braun darf nicht zum Orange von
+  `werkstatt` werden. Abstand ΔE 49,7 zu `#EA580C` und 38,3 zu `#CA8A04`;
+  es bleibt erkennbar ein eigenes Erdbraun.
+- **Weiß auf Füllung** (Mermaid `color:#fff`) — vorher 7,09 bzw. 5,17, jetzt
+  4,08 bzw. 4,03. Damit liegen beide immer noch **über** `werkstatt` (3,56),
+  `fertig` (3,30), `spec` (2,94) und `nextup` (2,15); die Änderung
+  verschlechtert die Diagramme also nicht, sie gleicht sie an.
+
+**Regel für Folge-Sitzungen:** wer eine Status-Farbe ändert, misst sie in
+**beiden** Rollen (Schrift auf `#08081A`-Badge ≥ 4,5 : 1 · Weiß auf Füllung)
+und hält den Farbabstand zu den Nachbarn. Der Wächter dazu steht in
+`tests/smoke_lighthouse_module.mjs`.
+
+**Abgrenzung — nicht jedes `#92400E` im Repo ist eine Status-Farbe.** Die
+`classDef`-Zeilen in den Komponenten-Karten (`docs/components/00`, `03`, `08`,
+`12`, `14`, `15`) verwenden dieselben Hexwerte für *Diagramm-Rollen*
+(`agent`, `pwa`, `store`, `trig`, `leaf`, `klaus`) — die haben mit Modul-Status
+nichts zu tun und bleiben unangetastet. Status-Farben stehen in
+`docs/ARCHITEKTUR.md` (Bau-DAG), in `PULS.md` (Pie) und in der Sage-Page.
 
 Zusätzlich der abgeleitete Sonderzustand `nextup` (kein eigener Score,
 nur visuelle Hervorhebung):
@@ -5499,7 +5533,7 @@ sitzt. Wer in den Bau-DAG (`ARCHITEKTUR.md`) oder die Bau-Puls-Karte
 (Sage-Page) schaut, sieht goldene Kanten/Outlines genau dort, wo eine
 Sitzung sinnvoll loslegen könnte.
 
-**Reife-Gradient**: braun (im Boden) → orange (Werkstatt-Hitze) →
+**Reife-Gradient**: erdbraun (im Boden) → orange (Werkstatt-Hitze) →
 gelb (Lichtblick) → blau (kühler Code-Stub) → grün (lebendig). Bewusst
 kein Site-Akzent (Indigo/Violett/Teal), weil die Site-Akzente keinen
 Reife-Sinn haben — sie sind dekorativ, nicht semantisch.
