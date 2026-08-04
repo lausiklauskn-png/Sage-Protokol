@@ -163,5 +163,45 @@ console.log("\nTeil 2 — Modul 23 UI: der Schlüssel-Link ist nie ein Link ins 
     "Sichtbarkeit hängt weiterhin an der echten Anbieter-Kenntnis (fail-soft unberührt)");
 }
 
+/* ── Befund 3 · die Sage-Page selbst: `--dim` zu blass (2026-08-04) ─────────
+ * Der Wächter oben rechnet über `--sbkim-widget-fg-dim` — die Variable des
+ * WIDGET-MODULS. Die Seite hat eine eigene, gleichnamige Idee (`--dim` in
+ * index.html), und die war nie gedeckt. Lighthouse fand sie: 21 von 26
+ * Kontrast-Beanstandungen kamen aus dieser einen Zeile (`.card-tag`,
+ * `.mod-num`, `.module-list-divider`).
+ *
+ * Gemessen bei 0.36: 3,08:1 gegen den Seitengrund #08081A. Verlangt 4,5:1.
+ * Nötig wären 0.47; gesetzt ist 0.50, damit etwas Luft bleibt.
+ *
+ * Gegenprobe beim Bauen: `--dim` auf 0.36 zurückgesetzt → diese Probe fiel
+ * durch mit „abgeblendete Seiten-Schrift 3.08:1 (Soll 4.5)".
+ *
+ * Gerechnet wird mit dem, was in index.html WIRKLICH steht — nicht mit einer
+ * hier wiederholten Zahl. Eine zweite Liste wäre eine zweite Wahrheit. */
+{
+  const seite = readFileSync(resolve(repoRoot, "index.html"), "utf8");
+  const holeVar = (name) => {
+    const m = new RegExp("--" + name + "\\s*:\\s*([^;]+);").exec(seite);
+    return m ? farbe(m[1].trim()) : null;
+  };
+  const grund = holeVar("bg");
+  const dim = holeVar("dim");
+  const muted = holeVar("muted");
+  ok(!!grund, `Seiten-Grund --bg aus index.html gelesen (${grund && grund.slice(0,3).join(",")})`);
+  ok(!!dim, `Seiten-Variable --dim gelesen (Deckkraft ${dim && dim[3]})`);
+  ok(!!muted, `Seiten-Variable --muted gelesen (Deckkraft ${muted && muted[3]})`);
+  if (grund && dim && muted) {
+    const g = grund.slice(0, 3);
+    const kDim = kontrast(ueber(dim, g), g);
+    const kMuted = kontrast(ueber(muted, g), g);
+    ok(kDim >= NORM, `abgeblendete Seiten-Schrift ${kDim.toFixed(2)}:1 (Soll ${NORM})`);
+    ok(kMuted >= NORM, `gedämpfte Seiten-Schrift ${kMuted.toFixed(2)}:1 (Soll ${NORM})`);
+    /* Die Abstufung muss erhalten bleiben — sonst „repariert" eine spätere
+     * Sitzung den Kontrast, indem sie beide auf denselben Wert zieht, und die
+     * Seite verliert ihre Tiefe. */
+    ok(dim[3] < muted[3], `--dim bleibt leichter als --muted (${dim[3]} < ${muted[3]})`);
+  }
+}
+
 console.log(`\n${fail === 0 ? "✓" : "✗"} smoke_lighthouse_module: ${pass} grün, ${fail} rot`);
 process.exit(fail === 0 ? 0 : 1);
