@@ -31,6 +31,78 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-07 — LCP 7,3 → 4,6 s: es war das Einblenden des Bildschirms
+
+**Rolle:** Mess-/Pflege-Sitzung. Auslöser war die offene Frage aus dem
+Übergabe-Brief in family-project: die gemeldete Skript-Zeit
+(`docs/observatorium/vorteilspack.js`, 24,5 s) passe nicht zur gemeldeten
+Blockierzeit (100 ms), eine der beiden Zahlen müsse in die Irre führen.
+
+### Der Widerspruch war keiner — drei Fallen
+
+- **Die 24,5 s sind keine Ausführungszeit.** Die Spalte `total` in
+  „Skript-Ausführungszeit reduzieren" ist die Hauptthread-Zeit, die dem
+  **Aufgabenbaum** des Skripts zugerechnet wird, samt Layout und Malen. Die
+  Ausführung steht daneben: **1.052 ms**, Parsen 5 ms.
+- **TBT deckt nur ein Fenster ab** (zwischen FCP und TTI). Klein heißt nicht
+  „Hauptthread frei".
+- **Lighthouse misst voreingestellt `simulate`.** Im selben Bericht steht LCP
+  **7.563 ms simuliert** neben **847 ms beobachtet**; die LCP-Aufschlüsselung
+  rechnet beobachtet, die Kennzahl oben simuliert.
+
+### Die Ursache: eine einzige CSS-Regel
+
+Der LCP ist `p.hero-claim`, **reiner Text**, TTFB 22 ms — die ganze Zeit ist
+Render-Verzögerung. Der Text liegt in `.screen.active`, und dessen
+`fade-in`-Animation startet bei `opacity: 0`. Der größte Anstrich wartet also
+auf das Ende der Einblendung.
+
+`<main id="screen-overview">` trägt `active` **fest im HTML**, und **kein
+einziges Skript** setzt die Klasse je auf einen anderen Bildschirm. Die
+Einblendung spielt also genau einmal: auf der Seite, die ohnehin schon da ist.
+Ein Übergang *in die Sicht hinein* für etwas, das nicht von außen kommt.
+
+**Behoben** mit einer Regel + einer Klasse: `.screen.active.erstanzeige {
+animation: none }`, Marker am Start-Bildschirm. Bildschirme, die später aktiv
+werden, blenden unverändert ein.
+
+| gegen `origin/main`, Handy, im Wechsel | Leistung | FCP | LCP |
+|---|---|---|---|
+| vorher | 69 · 71 | 2,6 · 2,7 s | 7,6 · 7,3 s |
+| nachher | **77 · 77** | 2,7 · 2,7 s | **4,6 · 4,7 s** |
+
+Der **erste** Anstrich ist unverändert. Nur der **größte** rückt um 2,7 s vor.
+
+### Zwei Fehlschlüsse auf dem Weg — festgehalten, damit sie niemand wiederholt
+
+Der Verdacht fiel zuerst auf die acht dauernd laufenden Animationen
+(`non-composited-animations`). Alle abzuschalten brachte tatsächlich 82 statt
+66. Die naheliegenden Schuldigen waren es aber **beide Male nicht**:
+
+| Fassung (Wegwerf-Kopie unter `/tmp`) | Leistung | LCP |
+|---|---|---|
+| nur die 6 Animationen unterhalb des Bildschirms aus | 72 · 72 | 7,3–7,5 s — **unverändert** |
+| nur der Puls der Verkehrs-Lampe aus | 70 · 71 · 70 | 7,3–7,6 s — **unverändert** |
+| nur das Einblenden aus | **77 · 79 · 76 · 77** | **4,5–5,0 s** |
+
+Die Lampen-Animation über `box-shadow` sah teuer aus (wachsender Schein,
+nicht kompositierbar) und ist auf 9 × 9 Pixeln schlicht zu klein, um zu zählen.
+**Vom Mechanismus auf die Größenordnung zu schließen ist der Fehler**, der
+zweimal hintereinander passiert ist. Nur die Gegenprobe entscheidet — und
+zwar auch die auf den *Vorschlag*, nicht nur die auf die Ursache.
+
+### Offen
+
+- **Klaus' Browser-Sichttest.** Die Seite erscheint jetzt ohne die halbe
+  Sekunde Einblenden. Wirkt das zu abrupt?
+- **PageSpeed** an der live ausgelieferten Seite. Alle Zahlen hier sind lokal.
+- Die zwei Lampen-Animationen (Verkehr, Siegel) bleiben unangetastet — sie
+  kosten messbar nichts. Klaus' Wunsch, den Verkehrs-Puls durch einen kurzen
+  Farbwechsel zu ersetzen, steht als **Geschmacks**-Änderung offen, nicht als
+  Reparatur.
+
+---
+
 ## Stand 2026-08-04 (später) — Kontrast: 21 von 26 Beanstandungen behoben
 
 **Rolle:** Pflege-Sitzung (Klaus' Auftrag: „die 12 MB Bilder mit dem Kontrast").
