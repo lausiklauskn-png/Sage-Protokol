@@ -35,6 +35,43 @@ git -C <repo> checkout -B <branch> origin/main   # bzw. origin/<default>
 - Branches löschen ist **NICHT** die Lösung (das Problem sind die Klone, nicht die
   Branches) — der `fetch`-vor-Arbeit-Reflex ist es.
 
+### ⚠ Die Falle im Abzweigen selbst: `checkout -B` hängt den Upstream um
+
+**Befund 2026-08-08 (Klaus' Anweisung, diesen Absatz aufzunehmen).** Genau der
+Befehl oben hat eine Nebenwirkung, die man nicht sieht: `git checkout -B <branch>
+origin/main` setzt den **Upstream** des Branches auf `origin/main` — nicht auf
+`origin/<branch>`.
+
+Wer danach prüft „habe ich alles veröffentlicht?" und dabei gegen
+`@{upstream}` rechnet, **vergleicht mit `main`** und bekommt „sauber"
+gemeldet, während der gleichnamige Remote-Branch noch einen ganz anderen Stand
+trägt. Real passiert: die Sitzung meldete alle 31 Repos sauber, der Stop-Hook
+fand im selben Moment einen unveröffentlichten Commit. Die Prüfung war nicht
+falsch gerechnet — sie zielte aufs Falsche und gab der Sitzung recht.
+
+**Also immer gegen den gleichnamigen Remote-Branch prüfen, nicht gegen den
+eingetragenen Upstream:**
+
+```bash
+git -C <repo> rev-list --count origin/<branch>..HEAD   # 0 = wirklich alles oben
+git -C <repo> status --porcelain                       # leer = nichts liegen geblieben
+```
+
+**Und nach einem Squash-Merge:** der Remote-Branch zeigt weiter auf die
+Commits **vor** dem Squash. Ihn auf den gemergten Stand zu heben ist ein
+`--force-with-lease`-Push — erlaubt und richtig, **weil der Branch dann nur
+noch bereits gemergte Historie enthält**. Trägt er dagegen eigene, noch nicht
+gemergte Commits, wird nicht überschrieben, sondern umgebaut.
+
+```bash
+git -C <repo> checkout -B <branch> origin/main
+git -C <repo> push --force-with-lease -u origin <branch>
+```
+
+**Merksatz:** eine Prüfung, die dir recht gibt, ist der Ort, an dem du am
+genauesten hinsehen musst. Der Fehler steckte nicht im Ergebnis, sondern im
+Maßstab.
+
 ---
 
 ## ⭐ Meilenstein — Semantische, bidirektionale, server-lose Bedeutungs-Suche (2026-06-21)

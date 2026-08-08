@@ -31,6 +31,34 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-08 — CLAUDE.md: die Falle im Abzweigen selbst
+
+**Rolle:** Pflege-Sitzung (Klaus' Anweisung: „CLAUDE.md Absatz auch noch machen").
+
+`git checkout -B <branch> origin/main` — der Befehl, den die Sitzungsstart-Pflicht
+oben verlangt — hängt den **Upstream** des Branches auf `origin/main` um. Eine
+Prüfung „habe ich alles veröffentlicht?", die gegen `@{upstream}` rechnet,
+vergleicht danach mit `main` und meldet **sauber**, während der gleichnamige
+Remote-Branch einen anderen Stand trägt.
+
+Real passiert am 2026-08-08: die Sitzung meldete alle 31 Repos sauber, der
+Stop-Hook fand im selben Moment einen unveröffentlichten Commit. Die Prüfung war
+nicht falsch gerechnet — sie zielte aufs Falsche und gab der Sitzung recht.
+
+Aufgenommen als eigener Unterabschnitt in CLAUDE.md § Sitzungsstart-Pflicht, mit
+den zwei Befehlen, die wirklich tragen (`rev-list origin/<branch>..HEAD` +
+`status --porcelain`) und der Einordnung des `--force-with-lease`-Pushes nach
+einem Squash-Merge (erlaubt, solange der Branch nur gemergte Historie trägt).
+
+**Tafel-Änderung, nicht stillschweigend:** CLAUDE.md ist eine heilige Tafel. Der
+Absatz kam auf Klaus' ausdrückliche Anweisung; die Sitzung hatte den Befund
+vorher benannt und um Erlaubnis gefragt (Tafel-Evolutions-Klausel).
+
+**Gilt netzweit**, steht aber vorerst nur hier — die Übertragung in die anderen
+Repo-CLAUDE.md ist ein eigener Schritt und wurde nicht mitgemacht.
+
+---
+
 ## Stand 2026-08-07 — LCP 7,3 → 4,6 s: es war das Einblenden des Bildschirms
 
 **Rolle:** Mess-/Pflege-Sitzung. Auslöser war die offene Frage aus dem
