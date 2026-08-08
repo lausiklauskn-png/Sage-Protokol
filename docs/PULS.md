@@ -31,6 +31,58 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-08 (2) — Postfach-Verjährung: Sages zwei größte Briefkästen von 1091 auf 324 Zeilen
+
+**Rolle:** Pflege-Sitzung (Klaus' Freigabe: „Verjährung anwenden — kein Vorzug, Vorschlag
+Sage zuerst"). Erste Anwendung von **INTERFACES §11.6.1** außerhalb von Mein-Tresor, wo die
+Regel entstanden ist. Sage ist der Kanon-Knoten und trug die beiden größten Postfächer des
+ganzen Netzes.
+
+| Postfach | vorher | nachher | zusammengefasst |
+|---|---|---|---|
+| `sbkim/AUSTAUSCH.md` (⇄ SB·KIMTool·Point) | 653 | **204** | 11 Abschnitte + 17 Verlaufs-Zeilen |
+| `sbkim/AUSTAUSCH-BookLedgerPro.md` | 438 | **120** | 8 Briefe + 6 Verlaufs-Einträge |
+
+**Zusammengefasst wurde nur, was beide Bedingungen erfüllt:** älter als 30 Tage (alle
+Einträge 2026-05-30 bis 2026-06-22) **und** von der Gegenstelle quittiert — Point führt
+`ack["Sage-Protokol"] = 46`, BookLedgerPro führt `ack["Sage"] = 31`. Beides nachgesehen,
+nicht angenommen.
+
+**Nicht angetastet:** die Datenverträge (`SIGNAL.json`, `spore.json`, `*_inbox.json`,
+`*.verify.md` — `git diff` darauf ist leer), die Status-Köpfe, der **Sync-Vertrag** in
+`AUSTAUSCH.md` (ein Vertrag, keine Quittung) und **drei offene Bitten** an
+SB·KIMTool·Point, auf die nie geantwortet wurde: Siegel-PNG gesucht · Speicher-Lehre 9 zur
+Prüfung · Standalone-Such-Tool. Im Postfach der Gegenstelle nachgesehen — keine Antwort,
+also bleiben sie stehen.
+
+### Befund beim Nachprüfen (nicht nur umgeschichtet)
+
+- **Sage schuldet BookLedgerPro noch `capVector`/`needsVector`.** Am 2026-06-21 zugesagt;
+  die committete `sbkim/spore.json` trägt bis heute **weder das eine noch das andere**
+  (nachgesehen: `domainVector` + `snippetVectors`, sonst nichts). Der Punkt stand bisher als
+  Nebensatz in zwei Briefen — jetzt steht er als eigener **OFFEN-Block ganz oben** im
+  Postfach, mit dem Weg dahin (Re-Sign über Modul 02 an Klaus' Tablet, der private Schlüssel
+  lebt in der Browser-Identität). Solange gilt der vereinbarte `domainVector`-Rückfall.
+- **Der Status-Kopf log leicht:** er nannte `ack[BookLedgerPro] = 15`, während `SIGNAL.json`
+  18 führt. Auf 18 berichtigt.
+
+### Hinweis an Klaus (nicht stillschweigend übergangen)
+
+**Diese Datei ist bei 8405 Zeilen** — die Schutz-Klausel im Kopf nennt 3000 als Grenze und
+sagt: „auslagern statt kürzen". Der Überlauf ist also nicht neu und nicht durch diese
+Sitzung entstanden, aber er steht seit Längerem unbenannt da. Eine eigene Auslagerungs-
+Sitzung nach `docs/sessions/archiv/` wäre fällig — **nicht** hier nebenbei, das wäre genau
+das falsche Aufräumen, vor dem die Regel warnt.
+
+### Offen / nächster Schritt
+
+1. **Die übrigen Knoten mit großen Postfächern** — SB·KIMTool·Point (573 + 471),
+   Jasons-Tresor (362), BookLedgerPro (630 auf deren Seite). Jeder räumt **nur im eigenen**
+   Depot; das Muster steht jetzt zweimal vor.
+2. **Sages cap/needs-Re-Sign** an Klaus' Tablet — der einzige echte Rückstand, den diese
+   Prüfung zutage gefördert hat.
+3. **PULS-Auslagerung** (siehe Hinweis oben).
+
 ## Stand 2026-08-08 — CLAUDE.md: die Falle im Abzweigen selbst
 
 **Rolle:** Pflege-Sitzung (Klaus' Anweisung: „CLAUDE.md Absatz auch noch machen").
