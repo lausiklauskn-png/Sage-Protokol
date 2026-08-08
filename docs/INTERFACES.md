@@ -6557,3 +6557,54 @@ Konvention), wird an `"*"` gemeldet und von jedem Knoten quittiert.
 „dritter Knoten Jasons-Tresor" in SB·KIMTools Briefkasten). Ab jetzt verbindlich für
 alle Knoten — Sage geht voran (`sbkim/SIGNAL.json` angelegt), Forker ziehen beim
 nächsten Andock nach. Wahrheits-Karte des Gesamtnetzes: `sbkim/NETZ-STAND.md`.
+
+### 11.6.1 Postfach-Verjährung — Quittungen altern, Aufträge nicht (Klaus 2026-08-08)
+
+> **Anlass, ehrlich benannt.** §11.6 sagt, wie ein Briefkasten **gefüllt** wird — nicht, wie er
+> wieder **leer** wird. Ergebnis nach gut zwei Monaten, gemessen 2026-08-08: `AUSTAUSCH.md` in
+> Sage **653 Zeilen**, in SB-KIMTool-Point **573**. Der weitaus größte Teil davon sind
+> Schritt-für-Schritt-Quittungen abgeschlossener Wege („gelesen", „✔ bestätigt", „`ack` auf N
+> gesetzt"). Klaus' Wort: *„Eine Bestätigung muss nicht lange aufgehoben werden. Der Briefkasten
+> soll nicht übervoll werden."*
+>
+> **Spannung zur bestehenden Tafel — bewusst aufgelöst.** Bisher galt in mehreren `CLAUDE.md`:
+> der SBKIM-Briefkasten „bleibt immer, niemals ausmisten". Diese Regel war richtig gegen das
+> falsche Aufräumen (lebende Datenverträge löschen), aber sie hat auch das **richtige**
+> verhindert. §11.6.1 trennt beides sauber (Tafel-Evolutions-Klausel, Klaus' ausdrückliches Wort).
+
+**Was NIE angefasst wird** — das sind Datenverträge, keine Notizen:
+
+- `sbkim/SIGNAL.json`, `sbkim/spore.json`, jede `*_inbox.json` und `*.verify.md`.
+- Der **Status-Kopf** eines Postfachs und jeder **offene** Auftrag / jede offene Bitte.
+- Alles, was die Gegenstelle **noch nicht quittiert** hat (ihr `ack` < die `seq`, unter der es
+  gemeldet wurde). Ungelesene Post verjährt nicht.
+- Alles, worauf **anderswo verwiesen** wird (Baupläne, Vereinbarungen). Vor dem Zusammenfassen
+  `grep` auf den Abschnitts-Namen.
+
+**Was zusammengefasst wird** — wenn **beides** zutrifft: älter als **30 Tage** UND von der
+Gegenstelle quittiert:
+
+- **Verlaufs-Einträge, die reine Quittungen sind** („Postfach angelegt", „seq N gelesen +
+  quittiert", „✅ verified-match bestätigt", eine erfüllte „Bitte um …") → **ein Ergebnis-Block**,
+  der den **Endstand** trägt (nodeId, Match-Werte, `ack`-Stand, was übernommen wurde), plus **eine
+  Sammelzeile**, die sagt, wie viele Einträge darin aufgehen.
+- **Ganze Abschnitte, die reine Bestätigungs-Briefe sind** → eine Zeile im Ergebnis-Block. Die
+  **Abschnitts-Nummer bleibt frei** und trägt eine Marke; Umnummerieren bräche stille Verweise
+  aus anderen Postfächern.
+
+**Drei Bedingungen, ohne die nicht zusammengefasst wird:**
+
+1. **Der Endstand steht danach da.** Wer die Quittungen streicht, muss ihr Ergebnis hinschreiben —
+   sonst weiß die nächste Sitzung nicht mehr, dass der Andock steht.
+2. **Es wird gesagt, dass gekürzt wurde**, mit Datum und Verweis auf diese Regel. Kein stilles
+   Verschwinden.
+3. **Nichts geht verloren:** Zusammenfassen heißt „aus der Arbeitsdatei nehmen" — die
+   **Git-Historie behält jede Zeile** und ist jederzeit abrufbar.
+
+**Wer macht es:** jeder Knoten in **seinem eigenen** Postfach, beim Sitzungsstart mit
+Andock-Bezug (§11.6 Schritt 1). **Nie** im Postfach einer Gegenstelle — das ist deren Depot.
+
+**Beleg (erste Anwendung, Mein-Tresor 2026-08-08):** `AUSTAUSCH.md` 105 → 75 Zeilen,
+`AUSTAUSCH-SBKIMTool.md` 91 → 50, `AUSTAUSCH-JasonsTresor.md` 251 → 179 (inkl. eines reinen
+Bestätigungs-Abschnitts). Kein offener Auftrag angetastet, `npm test` 53/53 unverändert grün.
+
