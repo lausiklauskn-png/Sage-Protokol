@@ -234,15 +234,21 @@
   @keyframes siegel-stufenwechsel-gold { 0% { transform: scale(1.00); box-shadow: 0 0 0 0 var(--siegel-gold-glow); } 40% { transform: scale(1.15); box-shadow: 0 0 24px 4px var(--siegel-gold-glow); filter: drop-shadow(0 0 14px var(--siegel-gold-glow)); } 100% { transform: scale(1.00); box-shadow: 0 0 0 0 var(--siegel-gold-glow); } }
   .screen { display: none; padding-top: 2rem; }
   .screen.active { display: block; animation: fade-in 0.5s var(--ease-out-quart); }
-  /* Der Bildschirm, der beim Laden schon sichtbar ist, blendet NICHT ein.
-     Grund (gemessen 2026-08-07): `fade-in` startet bei `opacity: 0`, und der
-     Hero-Text darin ist das LCP-Element. Der groesste Anstrich wartet also auf
-     das Ende der Einblendung — LCP 7,3-7,6 s statt 4,6-5,0 s, Note 70 statt 77.
-     Der erste Anstrich (FCP, 2,7 s) ist in beiden Faellen gleich; es verschiebt
-     sich nur der groesste. Einblenden ist ein Uebergang IN die Sicht hinein —
-     fuer die Seite, die schon da ist, gibt es nichts, woraus sie kaeme.
-     Bildschirme, die spaeter aktiv werden, blenden unveraendert ein. */
-  .screen.active.erstanzeige { animation: none; }
+  /* Der Start-Bildschirm blendet ein wie jeder andere — Klaus' Entscheidung
+     2026-08-09: "nicht verschlechtern nur zu Testzwecken".
+
+     Vorgeschichte, damit es niemand versehentlich zurueckdreht: am 2026-08-07
+     wurde die Einblendung hier abgeschaltet (`.screen.active.erstanzeige {
+     animation: none }`), weil `fade-in` bei `opacity: 0` startet und der
+     Hero-Text darin das LCP-Element ist — der groesste Anstrich wartete also
+     auf das Ende der Einblendung. Gemessen wurden damals LCP 4,6 statt 7,3 s
+     und Note 77 statt 70. Der erste Anstrich (FCP) war in beiden Faellen gleich.
+
+     Das war ein echter Gewinn auf dem Papier und ein Verlust auf dem Bildschirm.
+     Die Seite hat sich sichtbar geoeffnet; das gehoert zu ihr. Eine Testzahl ist
+     kein Grund, das aufzugeben — die Zahl misst, wie schnell etwas da ist, nicht
+     ob es gut ist. Wer die Einblendung erneut abschalten will, braucht dafuer
+     Klaus' Wort, nicht einen Lighthouse-Bericht. */
   @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   .screen-back { margin-bottom: 1.5rem; background: transparent; border: 1px solid var(--line-strong); }
   .hero { padding: 4rem 0 3rem; position: relative; }
@@ -1183,7 +1189,7 @@
   </nav>
   <div class="wrap">
     <!-- ============= OVERVIEW SCREEN ============= -->
-    <main id="screen-overview" class="screen active erstanzeige">
+    <main id="screen-overview" class="screen active">
       <section class="hero">
         <div class="hero-eyebrow"><span class="dot"></span>Bau-Hub · Spec-Werkstatt · keine Endknoten-PWA</div>
         <h1 class="hero-title">Das <span class="accent">Mycel-Protokoll</span><br>für kleine Apps.</h1>
