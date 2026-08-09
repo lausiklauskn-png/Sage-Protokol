@@ -161,8 +161,73 @@ ist es der Wachstumsweg selbst und gehört hochgestuft.
 | Fall | Stand 2026-08-09 | Wert für das Modell |
 |---|---|---|
 | **Alis Moderaum** | pflegt **selbst** — Warenwirtschaft, Kasse, Produkte | **Der Referenzfall.** Eine Nicht-Programmiererin betreibt ihr eigenes System. Das ist das stärkste Verkaufsargument, das existiert — stärker als jede Marktanalyse. |
-| **Tomys Hub** | vollständiger **zweiter Werkzeugkasten** | **Der Beweis, dass der Bausatz funktioniert.** Eigenes BookLedger, eigenes WorkFloh, eigener Angebots-Katalog, eigener Tresor, eigenes Erscheinungsbild (`tomy-ui`), eigene Tests. Der Kasten wurde schon einmal dupliziert. |
-| **Perfect Skin Beauty** | teils über Klaus; sie arbeitet sich mit ihrem Mann ein; ein weiterer Shop ist geplant | **Der Messfall.** Die Einarbeitung läuft gerade — jede Stelle, an der sie stockt, ist die Spezifikation des Bausatzes. Diese Beobachtung ist nicht wiederholbar. |
+| **Tomys Hub** | die **Software** ist ein vollständiger zweiter Werkzeugkasten; **Tomy selbst arbeitet sich noch ein** | **Der Beweis, dass der Bausatz funktioniert** — eigenes BookLedger, eigenes WorkFloh, eigener Angebots-Katalog, eigener Tresor, eigenes Erscheinungsbild (`tomy-ui`), eigene Tests. Zugleich **zweiter Messfall**: der Kasten ist dupliziert, der Mensch ist es noch nicht. |
+| **Perfect Skin Beauty** | teils über Klaus; sie arbeitet sich mit ihrem Mann ein; ein **Online-Shop** ist geplant | **Erster Messfall** und zugleich der erste Fall, in dem **Geld durch die Software fließt** (§ 4b). |
+
+**Wichtige Unterscheidung (Klaus 2026-08-09):** *„Der Bausatz ist dupliziert"* und
+*„der Partner ist selbstständig"* sind **zwei verschiedene Reifegrade**. Tomys
+Werkzeugkasten steht vollständig, aber Tomy arbeitet sich ein. Von drei Partnern
+ist **einer selbstständig und zwei sind in der Einarbeitung** — das ist der
+aktuelle Engpass des Modells und zugleich die beste Nachricht für den Bausatz:
+**es laufen gerade zwei Beobachtungsfälle gleichzeitig**, nicht einer. Was bei
+Tomy *und* bei Beauty klemmt, ist mit Sicherheit ein Fehler im Bausatz und nicht
+am Menschen.
+
+---
+
+## 4b. Der Online-Shop — der erste Fall, in dem Geld durch die Software fließt
+
+Beauty's geplanter Shop ist ein **Online-Shop**, kein zweiter Laden (Klaus
+2026-08-09). Das ist ein anderer Fall als alles bisher Gebaute, in drei
+Hinsichten.
+
+### Empfehlung: die Kasse **nicht** selbst bauen
+
+Das ist die klarste Bau-Empfehlung dieses Papiers und gehört zur
+Nicht-bauen-Liste (§ 12).
+
+Ein selbstgebauter Bezahlvorgang bedeutet, dauerhaft die Verantwortung für
+Zahlungssicherheit, Steuerlogik und rechtliche Pflichten zu tragen — **für einen
+fremden Betrieb**. Das ist kein Wochenendprojekt, es ist eine Dauerlast, und
+sie widerspricht der Regel „jede Partner-App muss ihren Erbauer überleben
+können" (§ 11).
+
+**Die saubere Teilung:**
+
+| Klaus baut | Ein erprobter Anbieter macht |
+|---|---|
+| Katalog, Bilder, Beschreibungen, Selbstpflege (`texte.json`-Muster) | Warenkorb, Bezahlung, Rechnungen, Steuersätze |
+| semantische Suche, Empfehlung im Kreis | Zahlungssicherheit, Rückabwicklung |
+| Messung, Wächter, Siegel, Ladezeit | die Pflichtangaben-Vorlagen des Checkouts |
+
+Was Klaus besser kann als jede Shop-Software, ist **Auffindbarkeit nach
+Bedeutung und belegtes Vertrauen**. Was er nicht besser kann als ein
+Zahlungsanbieter, ist der Bezahlvorgang.
+
+### Rechtliches — hier wird es dichter als bisher
+
+Ein Online-Shop an Verbraucher trägt Pflichten, die eine App ohne Verkauf nicht
+hat. Dieses Papier zählt sie **nur auf**, damit nichts vergessen wird; die
+Umsetzung gehört zu Steuerberater und, für Texte wie Widerruf und AGB, zu
+jemandem mit Rechtskenntnis:
+
+- **Bestellablauf:** der Bestellknopf muss zahlungspflichtig beschriftet sein
+  (Button-Lösung), Gesamtpreis inklusive Steuer und Versandkosten vor dem Klick.
+- **Widerrufsrecht:** Belehrung plus Muster-Widerrufsformular.
+- **AGB, Impressum, Datenschutzerklärung** — Lieferzeiten, Zahlungsarten.
+- **Kosmetik ist ein besonders geregeltes Produkt.** Wer eigene Ware herstellt
+  oder einführt, hat Pflichten aus der EU-Kosmetikverordnung
+  (verantwortliche Person, Meldung, Kennzeichnung, Inhaltsstoffe). Wer nur
+  weiterverkauft, in der Regel nicht — **das ist vorher zu klären, nicht
+  hinterher.**
+- **Versandverpackungen** sind in Deutschland registrierungspflichtig
+  (Verpackungsregister). Wird häufig übersehen und ist bußgeldbewehrt.
+- **Umsatzsteuer** — auch bei Versand über die Grenze.
+
+**Für das Modell heißt das:** der Shop ist der erste Fall, in dem Klaus'
+Software an einem echten Geldfluss hängt. Damit steigt sowohl der Wert der
+Beteiligung als auch die Sorgfaltspflicht. Beides gehört auf denselben Zettel
+wie § 13 — **und zwar bevor der Shop online geht.**
 
 **Belege im Code** für die Selbstbedienung:
 
@@ -501,6 +566,7 @@ Das ist kein düsterer Gedanke, sondern Teil der Ware.
 | Treuhand/Escrow | löst ein Problem, das erst bei vielen Transaktionen entsteht |
 | Entwickler-Stufen 1–4 aus dem Konzept | setzt hunderte Fremde voraus; im Kreis ersetzt Vertrauen das Stufensystem |
 | Eine Hintertür, die App-Nutzung meldet | bräche den Datenschutz-Kern, der die Apps verkäuflich macht (§ 6) |
+| **Ein eigener Bezahlvorgang / eigene Shop-Kasse** | dauerhafte Verantwortung für Zahlungssicherheit, Steuerlogik und Rechtspflichten — für einen fremden Betrieb. Widerspricht „muss den Erbauer überleben können". Siehe § 4b |
 | Eigenes Embedding-Modell | war schon im Konzept ausgeschlossen — gilt weiter |
 
 ---
@@ -528,9 +594,14 @@ vergessen werden.
 
 ## 14. Erste Schritte, in dieser Reihenfolge
 
-1. **Beauty jetzt mitschreiben** (kostet nichts, ist nicht wiederholbar): wo
-   bleibt sie hängen, was fragt sie. Was dreimal vorkommt, gehört in die
+1. **Beauty UND Tomy jetzt mitschreiben** (kostet nichts, ist nicht
+   wiederholbar): wo bleiben sie hängen, was fragen sie. Zwei Einarbeitungen
+   gleichzeitig sind ein Glücksfall — **was bei beiden klemmt, ist ein Fehler im
+   Bausatz und nicht am Menschen.** Was dreimal vorkommt, gehört in die
    Anleitung; was zweimal vorkommt, gehört in die Software geändert.
+1b. **Vor dem Shop-Start die Pflichten klären** (§ 4b) — Kosmetik-Einstufung,
+   Verpackungsregister, Widerruf, Bestellknopf. Das ist kein Bau, das ist ein
+   Termin.
 2. **Der zweite Knopf am Marktplatz** — „Ich hätte gern so etwas für meinen
    Betrieb". Die Maschinerie steht (`einreichung.php` mit Warteschlange,
    Spam-Falle, Rate-Limit); es fehlt nur ein zweiter Anlass.
@@ -552,6 +623,9 @@ vergessen werden.
 
 ## 15. Offene Entscheidungen — nur Klaus
 
+0. **Wer macht den Bezahlvorgang in Beauty's Shop?** (§ 4b) — die Empfehlung
+   lautet: ein erprobter Anbieter, nicht Eigenbau. Das ist die dringendste
+   Entscheidung, weil der Shop sonst darauf wartet.
 1. **Innerer Kreis ja/nein** (§ 8) und, falls ja, in welcher Form die
    Mitgliedschaft entsteht.
 2. **Everlast GmbH** — das Konzept-Repo ist über weite Strecken ein Angebot an
