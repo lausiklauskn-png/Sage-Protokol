@@ -739,27 +739,12 @@ if (renderer) {
   });
   scene.add(new THREE.Points(galGeo, galMat));
 
-  // Filament-Linien zwischen benachbarten Galaxien-Zentren
-  const linkPairs = [];
-  for (let i = 0; i < centers.length; i++) {
-    let best = -1, bestD = 1e9;
-    for (let j = 0; j < centers.length; j++) {
-      if (i === j) continue;
-      const dd = centers[i].distanceTo(centers[j]);
-      if (dd < bestD) { bestD = dd; best = j; }
-    }
-    if (best >= 0) linkPairs.push([i, best]);
-  }
-  const linkPos = new Float32Array(linkPairs.length * 2 * 3);
-  linkPairs.forEach((pair, i) => {
-    const a = centers[pair[0]], b = centers[pair[1]];
-    linkPos[i*6]   = a.x; linkPos[i*6+1] = a.y; linkPos[i*6+2] = a.z;
-    linkPos[i*6+3] = b.x; linkPos[i*6+4] = b.y; linkPos[i*6+5] = b.z;
-  });
-  const linkGeo = new THREE.BufferGeometry();
-  linkGeo.setAttribute('position', new THREE.BufferAttribute(linkPos, 3));
-  const linkMat = new THREE.LineBasicMaterial({ color: 0xd6b76a, transparent: true, opacity: 0.0, blending: THREE.AdditiveBlending, depthWrite: false });
-  scene.add(new THREE.LineSegments(linkGeo, linkMat));
+  // Die goldenen Filament-Linien zwischen benachbarten Galaxien-Zentren sind
+  // ENTFERNT (Klaus 2026-08-09): „gerade Linien und Striche, die durchs Bild
+  // wandern — in der Natur gibt es keine geraden Linien in dem Sinne."
+  // Es waren `THREE.LineSegments` von Zentrum zu Zentrum; weil die Galaxien
+  // driften, wanderten die Linien mit. Die Galaxien-Zentren (`centers`)
+  // bleiben, sie tragen die Sternpunkte.
 
   // ---------------------------------------------------------------
   // 2) Blauer Planet — texturiert aus Klaus' KI-Bild, im Halbschatten.
@@ -803,7 +788,17 @@ if (renderer) {
         vec3 col = mix(dCol, bCol, uHabitable);
         col *= mix(0.82, 1.0, uHabitable);   // wird Schicht für Schicht heller
         float r = distance(vUv, vec2(0.5));
-        float mask = 1.0 - smoothstep(0.425, 0.445, r);  // enge Maske an der Planeten-Kante (kein schwarzer Halo)
+        // Maske knapp INNERHALB der Scheibenkante (Klaus 2026-08-09).
+        // Nachgemessen an beiden Bildern (1254x1254, radial vom Mittelpunkt):
+        // die Planetenscheibe endet bei r ~ 0.428. Danach folgt bei
+        // erde-blau schwarz (Helligkeit 1), bei erde-dunkel aber ein
+        // Grauwert 12 — die dunkle Platte, auf der die Erde ursprünglich
+        // als Spiegel liegen sollte. Die alte Maske (0.425 -> 0.445) blendete
+        // erst AB der Kante aus und ließ diesen Saum stehen; vor der hellen
+        // Nebelwand sah man ihn als dunklen Rand um den Planeten.
+        // 0.395 -> 0.415 endet VOR der Platte. Das nimmt den äußersten
+        // Scheibenrand mit, was den Abfall zugleich weicher macht.
+        float mask = 1.0 - smoothstep(0.395, 0.415, r);
         float a = mask * uAppear * max(uHasDark, uHasBlue);
         if (a < 0.004) discard;
         gl_FragColor = vec4(col, a);
@@ -1148,7 +1143,7 @@ if (renderer) {
     galMat.uniforms.uProgress.value = p;
     // Sterne funkeln stärker, während der Planet in den Mittelpunkt rückt
     galMat.uniforms.uTwinkle.value = smoothstep01(p, 0.5, 0.72) * (1 - smoothstep01(p, 0.88, 1.0)*0.5);
-    linkMat.opacity = smoothstep01(p, 0.12, 0.4) * (1 - smoothstep01(p, 0.5, 0.85)*0.6) * 0.5;
+    // (hier blendete früher `linkMat.opacity` die Filament-Linien ein — raus)
     // Erde erscheint FRÜH (während der Einschläge) als dunkle Früherde und
     // rückt skalierend in den Mittelpunkt; über Verlauf + Hochscrollen wird
     // sie blau/bewohnlich (Schatten bleibt).
