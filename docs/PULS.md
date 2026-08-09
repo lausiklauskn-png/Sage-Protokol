@@ -31,6 +31,92 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (7) — ✅ Handy 70 → 83 → **97** live · und die letzten 238 KiB Hintergrundbilder
+
+**Rolle:** Bau + Messung. Klaus' Wort: *„CSS-Hintergründe auch noch machen."*
+
+### Zuerst der Beleg: der Tag ist gemessen, nicht behauptet
+
+Klaus' PageSpeed-Läufe an der live-deployten Seite, **Handy**:
+
+| Uhrzeit | Note | was davor gemergt wurde |
+|---|---|---|
+| 09:14:30 | 70 | (Grundlinie) |
+| 09:49:43 | **83** | #796 status.json einmal · #797 toter Code |
+| 10:16 | **97** | #798 Bilder (307 KiB aus dem Dokument, 8 spät ladend) |
+
+```
+FCP 1,3 s · LCP 1,7 s · TBT 0 ms · CLS 0,098
+```
+
+**LCP war der rote Wert und ist jetzt grün.** Damit ist auch die offene Frage von
+09:50 beantwortet: die 83 waren echt, kein Glückslauf.
+
+⚠ **Eine Zahl ist gewandert und wird nicht übergangen: CLS 0 → 0,098.** Grün reicht
+bis 0,1 — das ist knapp, nicht komfortabel. Lokal in drei Läufen **nicht
+reproduzierbar** (CLS 0,0000 jedes Mal), auch nach dem Hintergrund-Bau nicht. Also
+entweder ein einmaliger Ausreißer oder etwas, das nur auf der echten Leitung
+auftritt. **Beim nächsten Live-Lauf gezielt draufschauen.**
+
+### Gebaut — die drei CSS-Hintergrundbilder
+
+Sie luden weiter sofort, obwohl sie ab 9.857 px stehen: `galaxie-hintergrund`
+(103 KiB) · `observatorium-truhe` (99 KiB) · `scene-5-door` (36 KiB) = **238 KiB**.
+Für CSS-Hintergründe gibt es **kein** `loading="lazy"` — also gebaut:
+
+- Die Adresse wanderte aus der Grundregel in eine eigene `.bild-da`-Regel; Position,
+  Zuschnitt, Filter und **alle Hover-Effekte bleiben, wo sie waren**.
+- Ein IntersectionObserver (`rootMargin: 600px`) hängt `.bild-da` an, sobald die
+  Karte in Sichtweite kommt — 600 px Vorlauf, damit nichts aufpoppt.
+- **Fail-soft:** kein IntersectionObserver → sofort anhängen (wie bisher); JS ganz
+  aus → nur die Dekoration fehlt, die Karten bleiben lesbar und anklickbar.
+- **Kein Sprung-Risiko:** alle drei liegen `position:absolute; inset:0` in Behältern
+  mit fester Größe. Ein später ankommender Hintergrund kann dort nichts verschieben.
+
+`.vp-screen-hero` (dasselbe Truhen-Bild auf dem Vorteilspack-Bildschirm) bleibt
+**bewusst unangetastet**: der Bildschirm ist bis zum Öffnen ausgeblendet, ein
+IntersectionObserver feuert dort nie — die Regel würde das Bild dauerhaft
+unterdrücken statt es zu verzögern.
+
+### Gemessen
+
+```
+beim Öffnen geholte Bilder   nur icon.svg + mark.svg (die drei NICHT dabei)
+nach dem Scrollen            alle drei, richtige Adressen, kein 404
+CLS                          0,0000
+Seitenfehler                 keine
+Truhe-Smoke                  22/22
+```
+
+Lighthouse abwechselnd, je 3 Läufe gegen `origin/main`:
+
+| | Leistung | LCP | Gewicht |
+|---|---|---|---|
+| alt | 68 | 10,4 s | 2100 KiB |
+| neu | 72 | 6,2 s | **1866 KiB** |
+
+Belastbar wieder das Gewicht: **−234 KiB**, in allen drei Läufen identisch — genau
+die drei Bilder.
+
+### Ehrlich zur Erwartung
+
+Bei **97** mit LCP 1,7 s und TBT 0 ms ist an der Note fast nichts mehr zu holen; die
+238 KiB lagen unter dem ersten Schirm und kosteten dort keine Punkte mehr. Der Grund,
+es trotzdem zu tun, ist **kein** Punktegewinn, sondern echtes Datenvolumen bei
+jemandem, der die Seite über Mobilfunk öffnet und nie so weit scrollt.
+
+### Was aus dem PageSpeed-Bericht übrig bleibt
+
+| Posten | Stand |
+|---|---|
+| JS komprimieren 183 KiB | **verboten** — 159 KiB davon sind der byte-1:1-Modul-Kanon |
+| Cache-Verweildauer 1.035 KiB | **unmöglich** — GitHub Pages setzt fest 10 Min., keine eigenen Kopfzeilen |
+| Sicherheits-Kopfzeilen | **unmöglich** auf Pages (kopfzeilen-only); auf family-projekt.de machbar |
+| CSS 34 + 12 KiB | **offen** — der letzte Posten, der die erste Anzeige betrifft |
+| Nicht zusammengesetzte Animationen · erzwungener Umbruch · lange Aufgabe | ohne Wirkung (CLS/TBT sind grün) |
+
+---
+
 ## Stand 2026-08-09 (6) — Bilder: 307 KiB steckten IM Dokument, 500 KiB luden zu früh · 64 → 70
 
 **Rolle:** Bau nach Klaus' Bauregeln (`seiten-bauregeln`, Gewerk Bilder). Auslöser: Klaus'
