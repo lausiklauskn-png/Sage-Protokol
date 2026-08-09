@@ -2093,6 +2093,34 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     </div>
   </div>
   <script>
+  // ====== status.json — EINMAL holen, alle teilen (Klaus 2026-08-09) ======
+  // Befund beim Nachmessen: DREI Stellen dieser Seite holten dieselbe Datei
+  // jede für sich — die Haupt-Ladung (loadStatus), die Schichten-Lämpchen an
+  // der Modul-Liste und die Vorteilspack-Truhe. 68 K roh / 22 K komprimiert,
+  // dreimal, für einen Inhalt, der sich zwischen den drei Abrufen nicht
+  // ändern kann. Diese Hülle holt sie einmal und reicht allen dasselbe
+  // Versprechen weiter.
+  //
+  // Schlägt die Holung fehl, wird das Versprechen wieder vergessen — sonst
+  // wäre ein einmaliger Netz-Aussetzer für den Rest der Sitzung eingebrannt.
+  // Jeder Aufrufer behält seine eigene fail-soft-Behandlung.
+  //
+  // `frisch: true` erzwingt eine neue Holung (falls je ein Aktualisieren-
+  // Knopf dazukommt). Die Mycel-Karte im <iframe> ist ein EIGENES Dokument
+  // und kann hier nicht mittrinken — das bleibt bewusst ein vierter Abruf.
+  let __statusVersprechen = null;
+  window.sageStatusJson = function sageStatusJson(opt) {
+    if (!__statusVersprechen || (opt && opt.frisch)) {
+      __statusVersprechen = fetch('status.json', { cache: 'no-cache' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .catch(function (err) { __statusVersprechen = null; throw err; });
+    }
+    return __statusVersprechen;
+  };
+
   // ====== STATE ======
   const STATE = { status: null };
   const SCREENS = ['overview', 'cycle', 'module', 'data', 'warum', 'observatorium', 'sonnen', 'vorteilspack'];
@@ -2181,9 +2209,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       traffic.classList.add('traffic-pulse');
     }
     try {
-      const r = await fetch('status.json', { cache: 'no-cache' });
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      STATE.status = await r.json();
+      STATE.status = await window.sageStatusJson();
     } catch (err) {
       console.warn('status.json konnte nicht geladen werden:', err);
       STATE.status = FALLBACK_STATUS;
@@ -2334,6 +2360,16 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       ringDemo.style.strokeDasharray = demoLen + ' ' + (C - demoLen);
       ringDemo.style.strokeDashoffset = (-realLen).toString();
     });
+    // Steht der Demo-Anteil auf 0, gibt es nichts hochzuzählen: die Zählung
+    // lief 1400 ms lang und schrieb in jedem Bild dieselbe „0 %" hin —
+    // rund 84 Mal umsonst, mitten im Ladefenster (Klaus 2026-08-09).
+    // Die Null ist dann schlicht eine Zahl, keine Messung.
+    //
+    // Das heilt sich von selbst: der Nenner der Formel ist „alles fertig"
+    // (Hub + jedes Modul mit 10 + jeder Endknoten mit 15). Kommt etwas Neues
+    // und noch Unfertiges dazu, wächst der Nenner, der Zähler nicht — der
+    // Wert verlässt die Null wieder und wird wieder hochgezählt.
+    if (demoPct === 0) { num.textContent = '0%'; return; }
     countUp(num, demoPct, '%', 1400);
   }
   function countUp(el, target, suffix, dur) {
@@ -4728,9 +4764,9 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
   async function setupSchichtenLampen() {
     try {
-      const r = await fetch('status.json', { cache: 'no-cache' });
-      if (!r.ok) return;
-      __sageLampsStatus = await r.json();
+      // Teilt sich die Holung mit loadStatus() + der Vorteilspack-Truhe
+      // (siehe window.sageStatusJson oben im Haupt-Block).
+      __sageLampsStatus = await window.sageStatusJson();
     } catch (_e) { return; }
     const list = document.getElementById('module-list');
     if (!list) return;
