@@ -1061,13 +1061,31 @@
     width: 188px; height: 188px; border-radius: 50%; overflow: hidden;
     box-shadow: 0 0 64px rgba(90,140,230,0.28), inset 0 0 30px rgba(0,0,0,0.5);
   }
-  .discovery-earth img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.18); }
-  .discovery-earth .earth-blue { opacity: 0; animation: discoEarth 11s ease-in-out infinite; }
-  @keyframes discoEarth {            /* dunkle Früherde → blau → zurück, immer hin und her */
-    0%, 14% { opacity: 0; }
-    46%, 62% { opacity: 1; }
-    94%, 100% { opacity: 0; }
-  }
+  /* Näher heran und leicht nach rechts gerückt (Klaus 2026-08-09).
+     Grund: die beiden Erd-Bilder liegen auf einer dunklen Platte, die
+     ursprünglich mal ein Spiegel werden sollte (Klaus' Hinweis) — sie ist
+     Teil des Bildes, nicht ein CSS-Schatten, und beide Dateien sind zu
+     100 % undurchsichtig. Bei `scale(1.18)` ragte diese Platte rechts
+     sichtbar über die Erde hinaus und sah aus wie ein zu großer Schatten.
+     1.42 + 7 % schneidet sie weg; die Nachtseite der Erde bleibt erhalten.
+     Wer die Bilder je neu schneidet: dann hier wieder auf ~1.18 zurück. */
+  .discovery-earth img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.42) translateX(7%); }
+  /* Erde: im Ruhezustand die BLAUE Erde, die dunkle Früherde erst bei
+     Berührung (Klaus 2026-08-09).
+     Vorher lief hier eine 11-Sekunden-Dauerschleife, die ohne jedes Zutun
+     zwischen beiden hin und her blendete — „das muss nicht sein". Zweitens
+     stand im Ruhezustand die DUNKLE Erde: ein fast schwarzer Ball, den Klaus
+     als „dunklen Schatten, der vor der Erde hervorragt" gesehen hat. Beides
+     löst dieselbe Umkehrung: ruhig liegt die erkennbare blaue Erde da, und
+     erst wer draufgeht, sieht die Früherde darunter — genau das Muster der
+     Einladungs-Tür darüber (langsam hin, etwas schneller zurück).
+     Das Dunkle ist übrigens KEIN CSS-Schatten: es ist die Nachtseite im Bild
+     selbst, die in den dunklen Bildrand übergeht. Darum wird hier auch nichts
+     „kleiner gemacht", sondern der helle Zustand nach vorne geholt. */
+  .discovery-earth .earth-blue { opacity: 1; transition: opacity 1.8s cubic-bezier(.4,0,.25,1); }
+  .discovery-stage:hover .earth-blue,
+  .discovery-stage:focus-visible .earth-blue { opacity: 0; }
+  .discovery-stage:not(:hover) .earth-blue { transition: opacity .9s ease-out; }
   .discovery-overlay {
     position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
     padding: 1.6rem 1.7rem;
@@ -1080,7 +1098,7 @@
   .discovery-sub { font-size: 0.92rem; line-height: 1.5; color: rgba(243,238,222,0.82); margin: 0; max-width: 52ch; text-shadow: 0 1px 10px rgba(0,0,0,0.7); }
   @media (prefers-reduced-motion: reduce) {
     .discovery-bg { animation: none; }
-    .discovery-earth .earth-blue { animation: none; opacity: 1; }
+    .discovery-earth .earth-blue { transition: none; }
   }
 
   /* ===== Observatoriums-Vorteilspack-Truhe (Schicht 4) ===== */
