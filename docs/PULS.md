@@ -31,6 +31,73 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (9) — ✅ 97 bestätigt (#799 bleibt) · Discovery: gerade Linien raus, Erd-Maske korrigiert
+
+### Zuerst: die 84 war Streuung
+
+| Uhrzeit | Handy |
+|---|---|
+| 10:16 | 97 |
+| 10:29 | 84 |
+| 10:42 | **97** |
+
+Tageswerte 70 · 83 · 97 · 84 · 97. Die Seite steht bei **~97** mit einem Ausreißer nach
+unten. **#799 wird NICHT zurückgenommen** — der in Stand (8) angekündigte Rückbau
+entfällt. Das war der Grund, nicht auf einen einzelnen Lauf hin zu handeln.
+
+### Klaus' Befund an der Discovery-Seite
+
+*„Zu Beginn oben hast Du Designelemente drin, gerade Linien und Striche, die durchs
+Bild wandern. Die kannst Du rausnehmen — in der Natur gibt es keine geraden Linien in
+dem Sinne."* Und: *„auch da hat die Erde diesen schwarzen Hintergrundrand."*
+
+### Gebaut
+
+**1 · Filament-Linien entfernt.** `THREE.LineSegments` mit goldenem
+`LineBasicMaterial`, gezogen von Galaxien-Zentrum zu Galaxien-Zentrum — weil die
+Galaxien driften, wanderten die Linien mit. Erzeugung (~20 Zeilen) und die
+Einblend-Zeile in der Animationsschleife sind raus; `centers` bleibt (trägt die
+Sternpunkte). Im Bild bestätigt: keine goldenen Verbindungslinien mehr.
+
+**2 · Erd-Maske korrigiert — gemessen, nicht geschätzt.** Radial an beiden
+Vollformat-Bildern (1254×1254):
+
+```
+Scheibenkante bei r ≈ 0,428
+danach:  erde-blau   Helligkeit 1   (schwarz)
+         erde-dunkel Helligkeit 12  <- die Spiegelplatte, NICHT schwarz
+alte Maske: smoothstep(0.425, 0.445)  -> blendet erst AB der Kante aus,
+                                         der Plattensaum blieb stehen
+neue Maske: smoothstep(0.395, 0.415)  -> endet VOR der Platte
+```
+
+Vor der hellen Nebelwand war dieser Saum als dunkler Ring sichtbar. Die neue Maske
+nimmt den äußersten Scheibenrand mit, was den Abfall zugleich weicher macht.
+`uDarkZoom` steht unverändert auf 1.0 (wird nirgends gesetzt) — war nicht die Ursache.
+
+### Geprüft
+
+Die Szene wurde **gerendert und angesehen** (WebGL, drei Zeitpunkte + später Stand).
+Keine Seitenfehler, kein 404, drei Skriptblöcke syntaktisch grün, `linkGeo`/`linkPos`/
+`linkPairs`/`LineBasicMaterial` restlos entfernt (die zwei verbliebenen Nennungen
+stehen in Kommentaren).
+
+### Zwei Dinge bewusst NICHT geändert — Klaus entscheidet
+
+1. **Die Kometen-Schweife.** Im gerenderten Bild zieht weiterhin ein langer heller
+   Strich durchs Bild — das sind die Kometen/Meteoriten mit Feenstaub-Schweif, die auf
+   den Planeten zufliegen (Klaus' Hero-Vision 2026-06-23). Sie sind leicht gebogen,
+   aber auffällig. **Falls Klaus DIESE meinte und nicht die Filamente:** sagen, dann
+   kommen sie raus oder werden dezenter.
+2. **Die Früherde ist sehr dunkel.** Nach dem Masken-Fix ist der *Rand* sauber, aber
+   die Scheibe selbst steht als fast schwarzer Ball vor dem hellen Nebel — das Bild
+   `erde-dunkel.webp` hat Helligkeit 10–54, dazu dunkelt der Shader mit Faktor 0.82
+   ab (`col *= mix(0.82, 1.0, uHabitable)`). Das ist die **erzählerische Absicht**
+   („dunkle, unbewohnliche Früherde"), keine Panne. Aufhellen wäre eine
+   Gestaltungsentscheidung — **nicht eigenmächtig**.
+
+---
+
 ## Stand 2026-08-09 (8) — Erde auf der Discovery-Karte: Dauer-Blinken raus, Spiegelplatte weggeschnitten
 
 **Rolle:** Sicht-Befund von Klaus, Bau + Sichtprüfung am gerenderten Bild.
