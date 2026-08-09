@@ -114,9 +114,27 @@ also rund **2 × 22 KiB ≈ 44 KiB**, nicht 129.
 - **Die Erklärung „Was bringt mir das?" bleibt im Dokument.** Klaus vermutete, sie werde
   vorgeladen — sie lädt heute **gar nichts** nach: 4 KiB HTML, versteckt bis zum Klick, keine
   Anfrage. Auslagern spart ~1,5 KiB komprimiert und kostet beim Klick eine Wartezeit.
-- **Der doppelte Block in `vorteilspack.js`** (36 Zeilen toter Code) bleibt vorerst stehen —
-  er verursacht keinen zusätzlichen Abruf, das Entfernen gehört nicht in diesen Auftrag. Als
-  eigener kleiner Schritt vorgemerkt.
+- **Der doppelte Block in `vorteilspack.js`** blieb zunächst stehen — er verursacht keinen
+  zusätzlichen Abruf, das Entfernen gehörte nicht in den Auftrag. **Nachgeholt auf Klaus'
+  Wort („Totencode rauswerfen"), siehe unten.**
+
+### Nachtrag — toter Code in `vorteilspack.js` entfernt
+
+`gatherLiveStatus` + `applyLiveStatus` standen **zweimal** in der Datei, byte-gleich (Zeilen
+189–231 == 232–274, 43 Zeilen). Bei Funktions-Deklarationen gewinnt die **letzte** im gleichen
+Bereich — die erste Fassung war seit jeher wirkungslos. Sie hat aber Schaden angerichtet: sie
+ließ die Abruf-Zählung so aussehen, als käme der vierte `status.json`-Abruf aus dieser Datei,
+und führte zu einer falschen Zuordnung, die erst die Server-Spur korrigierte.
+
+Die **erste** Fassung ist raus (die zweite war die wirksame), 687 → 644 Zeilen. Beide Funktionen
+kommen jetzt genau einmal vor.
+
+Verhalten unverändert nachgewiesen: Truhe-Smoke 22/22, Browser-Lauf identisch zu vorher —
+23 Kacheln, 19 „Fertig" + 4 „Schablone" (deckt sich mit `status.json`), keine Seitenfehler.
+
+**Lehre für die nächste Sitzung:** doppelte Funktions-Deklarationen sind nicht nur unsauber,
+sie **verfälschen die Fehlersuche**. Wer zwei gleich aussehende Stellen findet, prüft zuerst,
+welche überhaupt läuft, bevor er eine Beobachtung zuordnet.
 
 ---
 
