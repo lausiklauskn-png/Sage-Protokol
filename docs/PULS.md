@@ -104,6 +104,30 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 9 — Alis bekommt eine eigene Adresse, und das hat eine Falle.**
+Klaus: `alis-moderaum.de` und `.com` sind **bereits gesichert und bezahlt**; der
+GitHub-Token ist geklärt. **Token-Prüfung netzweit gemacht** (Auslieferungs-
+Brille): kein echter Token in Alis' Dateien, keiner in ihrer Historie, keiner in
+irgendeinem der 31 Repos — der einzige Treffer war der Platzhalter
+`ghp_XXXX…` in `freigabe-config.example.php`, dessen echte Datei gitignored ist
+und nicht im Repo liegt. Ihr Token liegt in **ihrem Browser**
+(`sbbild_gh_token`), wie vorgesehen.
+
+**Die Falle beim Umzug — geprüft, nicht vermutet:** eine neue Adresse ist für
+den Browser eine **neue Welt**. IndexedDB und localStorage hängen am Ursprung;
+nach dem Wechsel stünde Alis vor einer **leeren** Warenwirtschaft. Die
+Komplett-Sicherung trägt `articles`, `movements`, `categories`, `images` und die
+Shop-Inhalte mit — **nicht** aber `alm_pp_clientid`/`alm_pp_mode` (PayPal),
+`alm_gh_repo`/`sbbild_gh_token` (GitHub-Verbindung) und `alm_bon_no`
+(Bon-Nummer). Die drei fest eingetragenen `github.io`-Adressen in ihrem Code
+zeigen auf **fremde** Apps und brechen nicht.
+
+Als **Aufgabe 0** in den Brief aufgenommen, mit der sicheren Reihenfolge:
+Backup ziehen → Bon-Nummer notieren → CNAME + DNS → Backup einspielen → PayPal
+und GitHub neu eintragen → App neu installieren. **Der heute gebaute
+Sicherungs-Hinweis wird damit zum Sicherheitsnetz genau dieses Umzugs.**
+Nebenbei gelöst: auf eigener Adresse entfällt für sie die Geteilte-Origin-Falle.
+
 **Nachtrag 8 — Befund zum Hochladen bei Alis (Klaus' Frage).** Klaus fragte, ob
 Alis' Änderungen automatisch hochgeladen werden. **Nein — teilweise.** Geprüft
 in `warehouse.html`:
