@@ -31,6 +31,86 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (11) — 📄 Pilz-Wirtschaft Fassung 2: die Grundannahme war falsch
+
+**Rolle:** Analyse-/Spec-Sitzung, Fortsetzung von (10). Kein Modul-Code.
+
+Fassung 1 des Papiers rechnete gegen einen **Kaltstart** — null fremde
+Marktplatz-Einträge trotz gratis, also fehle Bekanntheit. **Diese Annahme war
+falsch**, und Klaus hat sie im Gespräch korrigiert: er arbeitet bereits mit
+Kundenkontakt, hat über seine Gemeinschaft Zugang zu Geschäftsleuten, und die
+vierzehn Einträge sind **keine eigenen Beispiel-Apps, sondern Partnerbetriebe**.
+Alis Moderaum, Perfect Skin Beauty, Tomys Hub sind reale Partner. Fassung 1 hat
+sie falsch gezählt.
+
+**Das tatsächliche Modell — drei Säulen:** ① Beteiligung an Partnerbetrieben
+(Software als Einlage) ② persönliche Betreuung, sauber getrennt in
+**Einarbeitung** (endlich) und **Wartung** (laufend) ③ Markt mit Provision und
+Vermittlung — auf Klaus' Entscheid als **eigene Instanz**, „ein
+Family-Projekt-Klon für Fremde", parallel zum Kreis.
+
+**Drei Belege aus dem Code, die das Modell tragen:**
+
+1. **Alis pflegt selbst** — Warenwirtschaft, Kasse, Produkte, eigene
+   `gebrauchsanleitung.html`; 76× Backup, 64× Import, 20× Anlegen. Eine
+   Nicht-Programmiererin betreibt ihr eigenes System. Das ist der Referenzfall.
+2. **Tomys Hub ist ein vollständiger zweiter Werkzeugkasten** — eigenes
+   BookLedger, eigenes WorkFloh, `tomy-data`, `tomy-ui`, `tomy-tresor.js`,
+   eigene Tests. **Der Bausatz ist keine Idee, er wurde schon einmal
+   dupliziert.**
+3. **Beauty arbeitet sich gerade ein** (mit ihrem Mann, ein weiterer Shop
+   geplant). Das ist die nicht wiederholbare Messgelegenheit: wo sie stockt,
+   ist die Spezifikation des Bausatzes.
+
+**Wo Klaus' Zeit wirklich hingeht — geprüft, nicht vermutet:** nicht in die
+Apps (die pflegen sich selbst), sondern in die **Internetseiten**. `texte.json`
+liegt in Beauty praktisch leer (`{"inputLang":"ru","labels":{},"styles":{}}`),
+in Workfloh-Page und Muttis-Seite gar nicht. Das Studio, das wirklich
+funktioniert, steht in family-project und kennt nur den Marktplatz. **Erstes
+Bausatz-Stück ist deshalb eine Zweitverwendung, kein Neubau.**
+
+**Was bei fünf Partnern bricht:** die Regel „die Brücke läuft immer parallel"
+(`Mein-WorkFloh/CLAUDE.md`) funktioniert bei zwei. Gegenmittel existiert
+woanders — der **Drift-Guard**. Neue Regel im Papier: *was geteilt ist, wird
+geteilt gepflegt und per Prüfsumme bewacht; was eigen ist, bleibt eigen.*
+
+**Neu im Papier auf Klaus' Auftrag:** das **Übersichtsblatt** über alle Partner
+(§ 6) — lebt · Leistung · Wächter · zuletzt selbst gepflegt · meine Stunden ·
+Bausatz-Stand · Vereinbarung. Mit der ehrlichen Einschränkung, dass
+„selbst gepflegt" bei **Apps** grundsätzlich nicht messbar ist (die Daten
+bleiben auf dem Gerät — und das bleibt so; eine Hintertür wäre der Bruch des
+Kerns, der die Apps verkäuflich macht).
+
+**Der innere Kreis (Klaus' Frage „family-project + Sage, nur für meinen
+Geschäftskreis"):** das ist keine Einschränkung, sondern die Form, die die
+Vier-Schichten-Lesart ohnehin vorsieht — der Kreis *ist* die Mycel-Schicht, der
+öffentliche Markt *ist* der Fruchtkörper. Der bewiesene Cross-Knoten-Versuch
+vom 11.07. („wo bekomme ich bedruckte Tassen?" → Tomy antwortet aus seinem
+Katalog) ist im offenen Netz eine Spielerei und **im Geschäftskreis ein
+Empfehlungsnetz unter Betrieben, die sich kennen.** Modul 14 (Diffusion) ist der
+passende Aufnahmeweg und gehört hochgestuft. **Die eine Stelle, an der der
+Ist-Stand nicht reicht:** Vertraulichkeit — geschlossen in der Sichtbarkeit ist
+nicht geschlossen in den Daten. Vor dem ersten echten Geschäftsdaten-Austausch
+im Kreis ist **B6 (Grad C)** fällig.
+
+**Messwerkzeuge neu eingeordnet:** Analyse-Rekorder der Mycel-Karte („schick sie
+Claude") wird zum **Übergabe-Werkzeug für die Einarbeitung** — nur auf
+Knopfdruck, nur lokal, keine Inhalte. Forschungsstation trägt künftig die
+**Geschäftszahl** („wie viel Pflege läuft noch über Klaus"). Drift-Guard
+beantwortet die Bausatz-Frage. **Merksatz: automatisiere nicht das Verkaufen,
+sondern das Hinsehen.**
+
+**Rechtliches** in § 13 benannt, nicht entschieden: Form der Beteiligung,
+Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
+in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
+
+**Nächster sinnvoller Schritt:** Beauty jetzt mitschreiben (kostet nichts, ist
+nicht wiederholbar), dann der zweite Knopf am Marktplatz („Ich hätte gern so
+etwas für meinen Betrieb"), dann das Übersichtsblatt mit den Spalten, die schon
+Daten haben.
+
+---
+
 ## Stand 2026-08-09 (10) — 📄 Phase D.2 eröffnet: `docs/PLAN_PILZ_WIRTSCHAFT.md`
 
 **Rolle:** Analyse-/Spec-Sitzung (Planmodus, kein Modul-Code).

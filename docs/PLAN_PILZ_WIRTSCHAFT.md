@@ -1,341 +1,526 @@
 # Pilz-Wirtschaft — wovon das Netz leben soll
 
 **Phase D.2 der Pipeline · Stand 2026-08-09 · lebendes Dokument**
+**Fassung 2** — die erste Fassung stand auf einer falschen Grundannahme; siehe § 1.
 
-> Grundlage: die vollständige Analyse von `lausiklauskn-png/semantic-match-demo`
-> (17 Dateien, Stand `031ab12` vom 2026-07-28), gegengerechnet gegen den Ist-Stand
-> von family-project, Sage und den zwölf weiteren Knoten am 2026-08-09.
->
 > **Was dieses Papier ist:** eine Bestandsaufnahme mit Zahlen und ein Vorschlag,
 > in welcher Reihenfolge Geld entstehen kann. **Was es nicht ist:** ein
-> Geschäftsplan mit belastbarer Umsatzprognose. Wo geschätzt wird, steht
-> „geschätzt". Wo gemessen wurde, steht die Zahl mit Datum.
+> Geschäftsplan mit belastbarer Umsatzprognose, und keine Rechts- oder
+> Steuerberatung. Wo geschätzt wird, steht „geschätzt". Wo gemessen wurde, steht
+> die Zahl mit Datum.
 
 ---
 
 ## 0. Warum dieses Papier jetzt kommt
 
-In `CLAUDE.md` § Pipeline steht Phase **D.2 (Pilz-Wirtschafts-Spec)** seit Mai
-mit einem ausdrücklichen Vorbehalt:
+In `CLAUDE.md` § Pipeline stand Phase **D.2 (Pilz-Wirtschafts-Spec)** seit Mai
+mit einem ausdrücklichen Vorbehalt: *„bleibt bewusst offen, bis reale
+Pilz-Bauten existieren, an denen sich das Modell bewähren kann."* Die Bedingung
+ist eingetreten — vierzehn laufende Apps, ein Marktplatz, nächtliche Messung,
+Wächter, Siegel, bewiesene server-lose Cross-Knoten-Suche.
 
-> „Genossenschaft / Lizenz-Modell / Token / etwas, das wir heute nicht benennen
-> können. **Bleibt bewusst offen**, bis Phase A/B/C technisch fertig ist und
-> reale Pilz-Bauten existieren, an denen sich das Modell bewähren kann."
-
-Diese Bedingung ist eingetreten. Es gibt vierzehn laufende Apps, einen
-Marktplatz mit Einreich-Weg, einen nächtlichen Mess- und Wächter-Lauf, ein
-Siegel und eine bewiesene server-lose Cross-Knoten-Suche. Der Vorbehalt war
-richtig — ein Wirtschaftsmodell ohne reale Bauten wäre geraten gewesen. Jetzt
-gibt es etwas zu rechnen.
-
-Auslöser ist Klaus' Frage vom 2026-08-09, wörtlich: *„Wie können WIR daraus
-eine möglichst mit wenig Aufwand / mehr Automatisierung gewinnbringendes
-Geschäftsmodell umsetzen? Evolution im Pilz-Mycel, um davon leben zu können."*
+Auslöser ist Klaus' Frage vom 2026-08-09: *„Wie können WIR daraus eine möglichst
+mit wenig Aufwand / mehr Automatisierung gewinnbringendes Geschäftsmodell
+umsetzen? Gegebenenfalls die Regeln anpassen. Evolution im Pilz-Mycel, um davon
+leben zu können."*
 
 ---
 
-## 1. Der Kassensturz — was das Konzept kostete, was schon dasteht
+## 1. Die Korrektur — worauf Fassung 1 stand und warum sie falsch war
 
-Die `Kosten_Nutzen_Analyse_PWA_Plattform.pdf` (Mai 2026) beziffert die
-Plattform auf **65.000–116.500 €** in 26–36 Wochen. Posten für Posten gegen den
-Ist-Stand geprüft:
+Fassung 1 rechnete gegen einen **Kaltstart**: null fremde Marktplatz-Einträge
+trotz kostenloser Plätze, also fehle die Bekanntheit, also sei der Marktplatz
+auf Jahre kein Einnahmeweg.
+
+**Diese Annahme war falsch.** Klaus' Auskunft am selben Abend:
+
+> „Ich arbeite jetzt schon mit Kundenkontakt, und ich habe durch meine
+> Gemeinschaft sehr viel Kontakt zu Menschen, die sehr aktiv für sich und ihre
+> Lieben sorgen — auch als Geschäftsleute. Diese werden meine Hauptpartner. Zum
+> Beispiel Alis Moderaum, Beauty. Es ist nicht nur ein Übungsfeld. Ich arbeite
+> bei neuen Firmen auf Anteile hin. Das Ziel ist sowohl eine Plattform, die alle
+> verbindet, als auch persönliche Betreuung und Anteile am Umsatz bei
+> Vertrauenspersonen. Alles nach Recht und Gesetz."
+
+Damit sind zwei Dinge anders:
+
+1. **Die Verteilung existiert bereits** — nicht als Reichweite, sondern als
+   Vertrauen in einer Gemeinschaft. Das ist der Baustein, den die
+   Mai-Kostenanalyse mit „275.000 Abonnenten" oder „10.000–20.000 € Marketing"
+   ersetzen wollte.
+2. **Die vierzehn Marktplatz-Einträge sind kein Eigenlob, sondern das Netz.**
+   Alis Moderaum, Perfect Skin Beauty, Tomys Hub sind Partnerbetriebe, keine
+   Beispiel-Apps. Fassung 1 hat sie als „alle eigene" gezählt. Das war der Fehler.
+
+**Was aus Fassung 1 bleibt:** der Kassensturz (§ 2), die Regeln (§ 11), die
+Nicht-bauen-Liste (§ 12). Was ersetzt wird: die Diagnose und die Reihenfolge.
+
+---
+
+## 2. Kassensturz — was das Konzept kostete, was schon dasteht
+
+Die `Kosten_Nutzen_Analyse_PWA_Plattform.pdf` (Mai 2026, im Repo
+`semantic-match-demo`) beziffert die Plattform auf **65.000–116.500 €** in
+26–36 Wochen. Posten für Posten gegen den Ist-Stand:
 
 | Baustein laut Konzept | Preisschild im Papier | Ist-Stand 2026-08-09 |
 |---|---|---|
-| Semantic Matching Engine (Kerntechnik) | 20.000–37.500 € | **gebaut** — Modul 03 Embedding + Modul 04 Match |
-| Vektordatenbank (Pinecone/Weaviate) | 50–200 €/Monat laufend | **entfällt** — `listings-vec.json`, int8-quantisiert, im Repo. 0 € |
-| Plattform-Grundgerüst (zwei Portale, Backend) | 18.000–34.000 € | **gebaut** — `markt.html`, Studio, `einreichung.php` |
-| Bidirektionale Prompt-Pipeline | 8.000–15.000 € | **zur Hälfte** — `matchDimensions` steht, die Bedarfs-Seite hat keinen Treibstoff (§ 6) |
-| Matching- & Ranking-Engine | 4.000–7.000 € | **gebaut** — inkl. Zwei-Maß-Unterscheidung Rangfolge/Urteil |
-| KI-Sicherheitsscan eingereichter Apps | 2.000–4.000 € | **gebaut** — der Wächter (Sicherheits-Fingerabdruck, seit PR #240) |
-| Zertifizierungssystem, Entwickler-Stufen | 2.000–3.500 € | **gebaut** — SBKIM-Siegel, Bronze/Gold |
+| Semantic Matching Engine | 20.000–37.500 € | **gebaut** — Modul 03 + 04 |
+| Vektordatenbank (Pinecone/Weaviate) | 50–200 €/Monat laufend | **entfällt** — `listings-vec.json`, int8, im Repo |
+| Plattform-Grundgerüst | 18.000–34.000 € | **gebaut** — `markt.html`, Studio, `einreichung.php` |
+| Bidirektionale Pipeline | 8.000–15.000 € | **zur Hälfte** — `matchDimensions` steht, Bedarfs-Seite ohne Treibstoff (§ 10) |
+| Matching- & Ranking-Engine | 4.000–7.000 € | **gebaut**, inkl. Unterscheidung Rangfolge/Urteil |
+| KI-Sicherheitsscan | 2.000–4.000 € | **gebaut** — der Wächter |
+| Zertifizierungssystem | 2.000–3.500 € | **gebaut** — SBKIM-Siegel |
 | Treuhand (PayPal-Escrow) | 2.000–4.000 € | **nicht gebaut** |
-| Gerätegebundener Kopierschutz (DRM) | 4.000–7.000 € | **nicht gebaut — und soll es nicht** (§ 8) |
-| Reichweite des Partners (275.000 Abonnenten) | „ersetzt 100.000–200.000 €" | **nicht vorhanden** |
+| Gerätegebundener Kopierschutz | 4.000–7.000 € | **nicht gebaut — und soll es nicht** (§ 11) |
 
-**Befund:** Die teure technische Hälfte steht — nicht als Konzept, sondern als
-laufender Code auf vierzehn Knoten, in Heimarbeit, ohne Fremdkapital. Nicht
-gebaut ist genau das, was Geld bewegt: **ein Zahlungsweg und eine zahlende
-Gegenseite.** Und der eine Baustein, auf dem die ganze Rechnung ruhte — die
-Reichweite eines Partners — ist nie eingetroffen.
+Die teure technische Hälfte steht, in Heimarbeit, ohne Fremdkapital. Nicht
+gebaut ist, was Geld bewegt: ein Zahlungsweg und klare Bedingungen.
 
 ---
 
-## 2. Der Messwert, der die Richtung entscheidet
+## 3. Das tatsächliche Modell — drei Säulen
 
-Der Marktplatz listet **vierzehn Apps. Alle vierzehn sind Klaus' eigene.**
-Fremde Einträge: **null.**
+### ① Beteiligung an Partnerbetrieben
 
-Das liegt nicht am Preis. Die ersten hundert fremden Plätze sind **kostenlos**
-(Gründer-Angebot, scharf seit 2026-07-12). Vier Wochen gratis, kein einziger
-fremder Eintrag.
+Software als Einlage in Geschäfte, an denen Klaus beteiligt ist. Der Ertrag
+hängt daran, dass es dem Betrieb **besser geht** — nicht daran, dass viel
+geklickt wird. Das passt zum Ehrlichkeits-Apparat: bei einer Beteiligung ist
+saubere Arbeit Eigeninteresse, nicht Ideal.
 
-Das ist keine Enttäuschung, sondern ein Messwert, und er sagt etwas Genaues:
-**Der Engpass ist nicht die Technik und nicht der Preis, sondern dass niemand
-weiß, dass es das gibt.** Die eigene Kosten-Nutzen-Analyse hat das im Mai
-bereits beziffert, im Vergleich „mit/ohne Partner":
+Größenordnung (geschätzt): wenige Prozent am Umsatz eines Betriebs mit
+100.000–200.000 € Jahresumsatz sind vier- bis fünfstellig pro Jahr, pro Partner,
+wiederkehrend. **Zwei bis drei solche Partner sind die Existenzgrundlage.** Zum
+Vergleich: 10 % Provision auf 59 € sind 5,90 €.
 
-> „Erste Entwicklerbasis — ohne Partner: Kaltstart 3–6 Monate Akquise, Kosten
-> 10.000–20.000 € Marketing. Reichweite beim Launch — organisch: 0 am Tag 1."
+### ② Persönliche Betreuung — Einarbeitung und besondere Wartung
 
-Genau dieser Fall ist eingetreten. Er war vorhergesagt.
+Klar getrennt in zwei Dinge, die sich unterschiedlich verhalten:
 
-**Folge für die Automatisierungs-Frage:** Automatisierung spart Arbeit an einem
-Weg, den jemand geht. Wo noch niemand geht, spart sie nichts. Die Break-even-
-Tabelle des Papiers braucht **400 aktive Apps und 350 Käufe im Monat** für
-2.065 € — von vierzehn auf vierhundert kommt man nicht durch Bauen.
+- **Einarbeitung** — endlich, projektartig, findet einmal statt.
+- **Wartung** — laufend: neue Funktionen, Umbauten, Reparaturen, jährliche
+  Durchsicht. Das ist der wiederkehrende Teil.
+
+Nicht enthalten und ausdrücklich **nicht** Klaus' Arbeit: Texte, Preise, Bilder,
+Produkte, Sicherungen. Das macht der Partner selbst (§ 5).
+
+### ③ Markt mit Provision und Vermittlung — als **eigene Instanz**, parallel
+
+**Korrektur gegenüber Fassung 1**, auf Klaus' Einspruch: *„Der Marktplatz auf
+Provision ist definitiv eine weitere Option."* Er hat recht, und der Grund ist
+derselbe wie in § 1 — die Rechnung gegen einen Kaltstart stimmt nicht. Jeder
+Partner bringt eigene Kunden und Bekannte mit; der Laden startet nicht leer.
+
+**Klaus' Form dafür (2026-08-09):** *„Den Markt mit Provision und Vermittlung
+parallel als laufende Einnahme — also ein Family-Projekt-Klon für Fremde."*
+
+Also **nicht** eine Seite mit zwei Betriebsarten, sondern **zwei Instanzen
+derselben Software**:
+
+| | **family-projekt.de** | **Der Klon** |
+|---|---|---|
+| Für wen | den inneren Geschäftskreis | Fremde, offen |
+| Einnahme | Beteiligung + Betreuung (① ②) | **Provision + Vermittlung**, laufend |
+| Vertrauen | vorhanden, persönlich | muss die Software herstellen — Wächter, Siegel, Messung |
+| Rechtslage | schlank | Vermittler-Pflichten (§ 13) |
+| Name/Adresse | bleibt | **eigener Name, eigene Adresse** |
+
+Das ist architektonisch das Sauberste, was heute Abend gesagt wurde, aus drei
+Gründen:
+
+1. **Es trennt die Rechtslast.** Die Vermittler-Pflichten hängen am Klon, nicht
+   am Kreis. Zwei Instanzen sind hier kein Umweg, sondern die Trennung selbst.
+2. **Die Software ist ohnehin zum Kopieren gebaut.** family-project *ist* der
+   Bausatz — der Klon ist sein erstes eigenes Produkt.
+3. **Und damit ist der Klon zugleich der Beweis für ein drittes Produkt:** wenn
+   ein Marktplatz für Fremde läuft, läuft er auch für einen Verein, eine
+   Innung, einen Ort. „Ein Marktplatz für deine Gemeinschaft" ist dann keine
+   Idee mehr, sondern eine Referenz.
+
+**Der Preis dafür steht in § 5:** zwei Instanzen laufen auseinander, wenn das
+Geteilte nicht bewacht wird. Es ist dieselbe Lehre wie bei den zwei WorkFlohs,
+nur eine Ebene höher. Und eine technische Falle aus den eigenen Regeln: laufen
+beide auf derselben Adresse (GitHub Pages), **muss die DB-Kennung sich
+unterscheiden**, sonst kollidieren die Datenbestände.
+
+Die Reihenfolge ① → ② → ③ ist keine Wertung, sondern eine Fütterungskette:
+Beteiligung und Betreuung bringen die ersten Anbieter, die bringen Besucher,
+und ab da trägt Provision — und skaliert dann besser als beide anderen, weil
+sie keine Zeit kostet.
+
+Das Wachstum über Empfehlung ist im eigenen Protokoll schon vorgesehen:
+**Modul 14 (Diffusion) — „konsensuelle Empfehlung im Handshake, Wuchs durch
+Empfehlung".** Bisher ein Backlog-Stub mit niedriger Priorität. In diesem Modell
+ist es der Wachstumsweg selbst und gehört hochgestuft.
 
 ---
 
-## 3. Die Umkehrung: der Marktplatz hat die falsche Aufgabe
+## 4. Der Beweis — drei Fälle, drei Reifegrade
 
-Der Marktplatz ist nicht falsch gebaut. Ihm ist die falsche Rolle zugewiesen.
+| Fall | Stand 2026-08-09 | Wert für das Modell |
+|---|---|---|
+| **Alis Moderaum** | pflegt **selbst** — Warenwirtschaft, Kasse, Produkte | **Der Referenzfall.** Eine Nicht-Programmiererin betreibt ihr eigenes System. Das ist das stärkste Verkaufsargument, das existiert — stärker als jede Marktanalyse. |
+| **Tomys Hub** | vollständiger **zweiter Werkzeugkasten** | **Der Beweis, dass der Bausatz funktioniert.** Eigenes BookLedger, eigenes WorkFloh, eigener Angebots-Katalog, eigener Tresor, eigenes Erscheinungsbild (`tomy-ui`), eigene Tests. Der Kasten wurde schon einmal dupliziert. |
+| **Perfect Skin Beauty** | teils über Klaus; sie arbeitet sich mit ihrem Mann ein; ein weiterer Shop ist geplant | **Der Messfall.** Die Einarbeitung läuft gerade — jede Stelle, an der sie stockt, ist die Spezifikation des Bausatzes. Diese Beobachtung ist nicht wiederholbar. |
 
-- **Als Provisions-Maschine** braucht er eine Menschenmenge auf beiden Seiten.
-  Die gibt es nicht, und sie entsteht nicht von selbst.
-- **Als Beweisstück** braucht er genau das, was vorhanden ist: vierzehn echte,
-  täglich gemessene, offline lauffähige Apps mit sichtbaren Zahlen — auch den
-  schlechten.
+**Belege im Code** für die Selbstbedienung:
 
-Ein Marktplatz ohne Publikum ist ein leerer Laden. Dieselbe Seite als
-**Schaufenster einer Werkstatt** ist etwas anderes: sie muss keine Menge
-anziehen, sondern **einen** Betrieb überzeugen, der ohnehin schon fragt.
-
-Daraus folgt die Reihenfolge in § 4 — sie ist der Reihenfolge des
-Konzeptpapiers **genau entgegengesetzt**. Das Papier durfte anders rechnen,
-weil es einen Partner mit 275.000 Abonnenten voraussetzte.
-
----
-
-## 4. Drei Einnahmewege, sortiert nach dem, was zuerst zahlt
-
-### ① Auftragsarbeit — zahlt zuerst
-
-*„So eine App, aber für meinen Betrieb."* Im Konzeptpapier ist das der
-Customization-Service (§ 7.3), dort mit Berater-Stundensätzen von 85–130 €.
-
-| | |
+| App | Fundstellen |
 |---|---|
-| Braucht | zwei bis drei Kunden — **keine Menge** |
-| Rechnung (geschätzt) | 50 Std./Monat × 50 € = 2.500 €/Monat |
-| Automatisierbar | kaum — es ist Gespräch und Handwerk |
-| Rolle des Marktplatzes | Portfolio, das das Gespräch eröffnet |
+| Alis Moderaum | 76× Backup, 64× Import, 35× Export, 20× Anlegen, 17× Bearbeiten, 12× Wiederherstellen, eigene `gebrauchsanleitung.html` |
+| Tomys Hub | 553× Export, 233× Backup, 172× Import, 48× Anlegen |
+| BookLedgerPro | 289× Export, 188× Import, 118× Backup |
 
-Das ist der einzige Weg auf dieser Liste, der **ohne Publikum** funktioniert.
-
-### ② Eine Fach-App als Produkt — skaliert danach
-
-Der klarste Fall ist **WorkFloh**: ein digitaler Auftragszettel für
-Werbetechnik- und Handwerksbetriebe. Öffentlich zum Verkauf angeboten seit
-Klaus' Wort vom 2026-07-25.
-
-| | |
-|---|---|
-| Form | einmalig 300–600 € + 15–25 €/Monat Wartung (geschätzt) |
-| Rechnung (geschätzt) | 100 laufende Kunden ≈ 2.000 €/Monat **wiederkehrend** |
-| Braucht | ~100 Kunden — erreichbar über Jahre, nicht über Nacht |
-| Automatisierbar | teilweise (Testphase, Schlüssel, Rechnung) |
-
-**Das Wiederkehrende ist der Punkt, nicht der Verkauf.** Von einmaligen
-Verkäufen lebt niemand; von Wartung schon.
-
-### ③ Marktplatz-Provision — zuletzt, wenn überhaupt
-
-Erst wenn über ① und ② genug Betriebe das Netz kennen. Vorher ist jede Arbeit
-daran Arbeit an einem leeren Laden.
+Kein Zufallsmuster, sondern ein durchgehaltenes Bauprinzip: **wer sichern,
+einlesen und selbst anlegen kann, ist nicht abhängig.**
 
 ---
 
-## 5. Was „davon leben" konkret heißt
+## 5. Der Bausatz — vorhanden, aber unbenannt
 
-Damit die Frage nicht im Ungefähren bleibt — bei einem angenommenen Bedarf von
-**2.000–3.000 € im Monat**:
+### Apps: erfüllt
+
+Siehe § 4. Die Selbstbedienung ist real und in drei unabhängigen Apps belegt.
+
+### Internetseiten: hier geht die Zeit hin
+
+Geprüft am 2026-08-09:
+
+| Seite | Selbstpflege-Ansatz |
+|---|---|
+| Alis Moderaum | `texte.json` + `bild-import.js` + `products.json` — mit Substanz |
+| Perfect Skin Beauty | `texte.json` vorhanden, aber praktisch leer (`{"inputLang":"ru","labels":{},"styles":{}}`) — der Weg ist angelegt, aber nicht begehbar |
+| Mein-Workfloh-Page | nichts davon |
+| Muttis-Rezeptbuch-Seite | nichts davon |
+
+Das Studio, das wirklich funktioniert — Texte ändern, Bilder tauschen,
+veröffentlichen, ohne Sitzung und ohne Git — steht in **family-project** und
+kennt nur den Marktplatz.
+
+> **Befund:** Die Apps pflegen sich selbst. Die *Seiten* kosten Klaus Zeit, und
+> zwar bei jedem Partner erneut und dauerhaft.
+
+**Erstes Stück des Bausatzes** ist damit keine Erfindung, sondern eine
+Zweitverwendung: das Studio aus family-project so allgemein machen, dass es die
+Seite eines Partners pflegt. `texte.json` ist bereits die richtige Form und
+liegt in zwei Seiten, nur ungefüllt; `bild-import.js` liegt bereits doppelt
+herum. Der Bausatz bildet sich von selbst — er ist nur nicht benannt.
+
+### Was bei fünf Partnern bricht
+
+In `Mein-WorkFloh/CLAUDE.md` steht die geltende Regel:
+
+> „Die Brücke läuft immer parallel — eine Verbesserung an einem WorkFloh wird am
+> anderen nachgezogen, und umgekehrt."
+
+Richtig **bei zwei**. Bei fünf heißt dieselbe Regel: jede Verbesserung fünfmal
+von Hand, jedes Mal die Gefahr, eine Stelle zu vergessen. Diese Arbeit wächst
+mit jedem Partner — also genau dann, wenn es gut läuft.
+
+Das Gegenmittel existiert, nur woanders: **der Drift-Guard** (Sage,
+Privat-Brain) prüft geteilte Module per SHA-256 auf Byte-Gleichheit.
+
+> **Regel für den Bausatz:** Was geteilt ist, wird geteilt gepflegt und per
+> Prüfsumme bewacht. Was eigen ist — Daten, Farben, Texte, Marke —, bleibt eigen.
+> Verbessert wird an einer Stelle, dann neu kopiert.
+
+Ohne diese Disziplin wird der fünfte Partner teurer als der erste. Mit ihr
+billiger.
+
+---
+
+## 6. Das Übersichtsblatt — alle Partner nebeneinander
+
+**Klaus' Auftrag 2026-08-09.** Ein Blatt, das die Frage beantwortet, von der
+das Modell abhängt: *welcher Partner läuft selbstständig, und welcher kostet
+mich Zeit?*
+
+**Der größere Teil der Werte liegt bereits vor** — mit Datum und Uhrzeit. Sie
+stehen nur in vier verschiedenen Dateien und in keinem Überblick. Das Blatt ist
+darum überwiegend eine **Zusammenstellung, kein Neubau.**
+
+| Spalte | Woher die Daten kommen | Stand |
+|---|---|---|
+| **Partner / App(s)** | `assets/config/listings.js` | ✅ vorhanden |
+| **Lebt** | `assets/config/spore-stand.json` — nächtlicher Lauf mit genauem Zeitstempel (`"geprueft": "2026-08-09T03:15:26.439Z"`), je Eintrag `url`, `lage`, `nodeName`, `nodeId` | ✅ vorhanden |
+| **Leistung** (Messwert + Datum) | `forschung/messreihe.json` — Zeitreihe je Ziel mit Von-Bis-Spannen, dazu `geraet` (welches Gerät gemessen wurde) | ✅ vorhanden |
+| **Wächter** (grün/gelb) | `assets/config/wache-hand.json` + nächtlicher Lauf | ✅ vorhanden |
+| **Zuletzt selbst gepflegt** | `spore-stand.json` → **`sporeHash` + `lage: "abweichend"`**: ändert der Partner die Beschreibung in seinem eigenen Repo, ändert sich der Hash, und der nächtliche Lauf meldet es. Ergänzend die Git-Historie der Partner-Seite (Autor ≠ Klaus). | 🟡 **ableitbar** — die Quelle ist da, sie wird nur nicht als Verlauf geführt |
+| **Meine Stunden im Monat** | von Hand eingetragen | ❌ fehlt |
+| **Bausatz-Stand** (geteilte Teile byte-gleich?) | Drift-Guard über die Partner-Repos | ❌ fehlt |
+| **Vereinbarung** (Form, Datum, Anteil) | von Hand, **ohne Beträge im öffentlichen Repo** | ❌ fehlt |
+
+**Der Fund dabei:** `sporeHash` ist bereits ein brauchbares Maß für „hat der
+Partner selbst etwas geändert". Er deckt nicht jede Änderung ab — nur die
+Beschreibung in der Spore —, aber er kommt ohne jede Hintertür aus und läuft
+schon jede Nacht. Was fehlt, ist nicht die Messung, sondern dass sie als
+**Verlauf** geführt wird statt als Schnappschuss. Genau dafür ist die
+Forschungsstation gebaut.
+
+**Ehrliche Einschränkung:** „Zuletzt selbst gepflegt" ist bei **Seiten**
+messbar (die Änderung steht in Git bzw. im Studio-Protokoll), bei **Apps** aber
+grundsätzlich **nicht** — die Daten bleiben auf dem Gerät des Partners, und das
+ist gewollt. Für Apps braucht die Spalte eine Handeintragung oder eine
+freiwillige Meldung. Sie darf **nicht** durch eine Hintertür in die App gelöst
+werden; das würde den Datenschutz-Kern brechen, der die Apps überhaupt
+verkäuflich macht.
+
+**Bauform:** dieselbe wie die Forschungsstation — eine Reihe mit
+Von-Bis-Spannen, die **nur das Werkzeug** schreibt, und Bewertungen, die **nur
+von Hand** entstehen. Diese Trennung ist der Grund, warum die Forschungsstation
+funktioniert (die nächtliche Maschine kann die Erklärung eines Menschen nicht
+überschreiben), und sie gilt hier genauso.
+
+**Wo es liegt:** in family-project, nicht öffentlich. Es enthält
+Geschäftsinformationen über Dritte — Stundenzahlen und Vereinbarungen gehören
+**nicht** in ein öffentliches Repo (siehe § 13).
+
+---
+
+## 7. Die vorhandenen Messwerkzeuge und wofür sie taugen
+
+Klaus arbeitet gern mit Analysewerkzeugen. Vorhanden sind vier — sie zeigen
+bisher alle auf die Technik, keins auf das Geschäft.
+
+| Werkzeug | Was es heute tut | Wofür es im Modell taugt |
+|---|---|---|
+| **Analyse-Rekorder** der Mycel-Karte (🔬 v1.3) | zeichnet alle Roh-Ereignisse eines Laufs auf, lädt eine JSON-Datei herunter („schick sie Claude") | **Übergabe-Werkzeug für die Einarbeitung**: der Partner drückt Aufnahme, macht seine Runde, schickt die Datei. Dann sieht man, wo es klemmt, statt sich zu erinnern. |
+| **Forschungsstation** `forschung/` | Messreihe über die Zeit, Journal, handgeschriebene Lehren, Gegenproben | **Trägt die Geschäftszahl**: wie viel Pflege läuft noch über Klaus — je Partner, über die Zeit. |
+| **Drift-Guard** (Sage, Privat-Brain) | SHA-256 über geteilte Module | Beantwortet „läuft Tomys WorkFloh noch mit meinem gleich?" in zwei Sekunden statt als Handregel. |
+| **Gegenproben** `gegenprobe_*.sh` | belegen, dass eine Prüfung nötig war | Schutz gegen den grünen Haken, der nichts geprüft hat. |
+
+**Datenschutz beim Rekorder — verbindlich, wenn er auf die Einarbeitung
+gerichtet wird:** nur auf Knopfdruck, nur lokal, **keine Inhalte** — nur welcher
+Knopf, welche Fehlermeldung, wie lange gewartet. Der Partner schickt die Datei
+oder eben nicht.
+
+> **Die präzise Antwort auf die Automatisierungsfrage:** Automatisiere nicht das
+> Verkaufen, sondern das **Hinsehen**. Verkauft wird über Vertrauen, das kann
+> keine Maschine. Zu wissen, welcher Partner selbstständig läuft und welcher
+> Zeit kostet — das kann sie, und das Werkzeug dafür ist dreimal gebaut.
+
+---
+
+## 8. Der innere Kreis — Klaus' Frage vom 2026-08-09
+
+> *„Was wäre, wenn wir Family Projekt als Grundbaustein nehmen in Kombination
+> mit Sage — nur für meinen internen Geschäftskreis, nicht für wildfremde?"*
+
+**Einschätzung: das ist keine Einschränkung, sondern die Form, die die eigene
+Architektur ohnehin vorsieht.** Die Vier-Schichten-Lesart trennt bereits
+**Schicht 1 (Mycel)** — server-los, unter Vertrauten, Empfangsmodus — von
+**Schicht 2 (Pilz)** — sichtbar, oberirdisch, nach außen. Ein geschlossener
+Geschäftskreis *ist* die Mycel-Schicht. Der öffentliche Marktplatz *ist* der
+Fruchtkörper. Der Marktplatz war nie als Mycel gedacht; Fassung 1 hat ihn so
+gelesen und ist deshalb zu einer zu düsteren Diagnose gekommen.
+
+### Was dafür spricht
+
+- **Kein Kaltstart.** Der Kreis beginnt mit den Partnern, die schon da sind.
+- **Vertrauen ist vorhanden**, statt durch Zertifikate ersetzt werden zu müssen.
+  Das ganze Stufen-/Prüfsystem des Konzeptpapiers wird dadurch weitgehend
+  überflüssig; der Wächter bleibt als **Fürsorge**, nicht als Türsteher.
+- **Rechtlich einfacher.** Wer keinen öffentlichen Marktplatz für Verbraucher
+  betreibt, hat deutlich weniger Pflichten als ein Vermittler für jedermann.
+- **Die Cross-Knoten-Suche wird endlich nützlich.** Der bewiesene Versuch vom
+  2026-07-11 — BookLedgerPro fragt „wo bekomme ich bedruckte Tassen?", Tomys Hub
+  antwortet aus seinem Katalog (0.84, 2,9 s) — ist im offenen Netz eine
+  Spielerei. **Im Geschäftskreis ist es ein Empfehlungsnetz unter Betrieben, die
+  sich kennen.** Das war die ganze Zeit die eigentliche Anwendung.
+- **Modul 14 (Diffusion)** ist genau der Aufnahmeweg eines solchen Kreises:
+  Wuchs durch Empfehlung, nicht durch Anmeldung.
+
+### Was es braucht
+
+1. **Eine Mitgliedschaft.** Heute ist der gemeinsame Raum offen — wer die
+   Rendezvous-Kennung kennt, ist drin. Ein Kreis braucht eine Liste zugelassener
+   Knoten oder einen gemeinsamen Kreis-Schlüssel. Die Bausteine liegen als
+   Backlog-Karten bereit: **12 (Blocklist), 10 (Reputation), 14 (Diffusion)**.
+2. **Zwei Instanzen statt zweier Betriebsarten** (Klaus 2026-08-09, siehe § 3 ③).
+   Der Kreis behält family-projekt.de; für Fremde läuft ein eigener Klon unter
+   eigenem Namen. Das ist einfacher zu bauen, einfacher zu erklären und trennt
+   die Rechtslast. Offen bleibt nur, was der Wächter in welcher Instanz meldet.
+3. **Vertraulichkeit, die den Namen verdient.** *Das ist die eine Stelle, an der
+   der Ist-Stand nicht reicht.* Alles auf GitHub Pages ist öffentlich lesbar, und
+   das Relais ist ein geborgtes, öffentliches. **Geschlossen im Sinne von
+   Sichtbarkeit ≠ geschlossen im Sinne von Daten.** Sobald Partner
+   Geschäftsdaten austauschen — Bestände, Preise, Kunden —, braucht es echte
+   Verschlüsselung. Der Weg ist schon beschrieben: `docs/E2E-VERTRAULICHKEIT.md`,
+   Grad B (Pseudonymisierung, **Modul 25 gebaut**) und Grad C (**B6, offen**).
+   **Vor dem ersten echten Geschäftsdaten-Austausch im Kreis ist B6 fällig.**
+4. **Eine Antwort auf „was ist der Kreis rechtlich?"** Sobald mehrere Betriebe
+   gemeinsam auftreten und Umsätze teilen, entsteht schnell mehr als eine lose
+   Runde. Gehört auf denselben Zettel wie § 13.
+
+### Was es nicht löst
+
+Ein geschlossener Kreis macht die Vertraulichkeit **nicht** automatisch besser
+(siehe 3.), und er ersetzt die Bausatz-Disziplin nicht — im Gegenteil, im Kreis
+sind die Apps enger verwandt, also läuft der Drift schneller auseinander.
+
+**Entscheidung offen — Klaus.** Dieses Papier empfiehlt die Richtung, trifft
+aber die Entscheidung nicht.
+
+---
+
+## 9. Was „davon leben" konkret heißt
+
+Bei einem angenommenen Bedarf von **2.000–3.000 € im Monat**:
 
 | Weg | Was dafür nötig wäre | Einschätzung |
 |---|---|---|
-| Marktplatz-Provision, 10 % auf ⌀ 59 € | **400–500 Käufe im Monat** | unrealistisch auf Sicht |
-| Jahresbeitrag fremder Einträge | bei 50 €/Jahr: **500 zahlende Anbieter** | unrealistisch, solange 0 fremde Einträge |
-| Fach-App mit Wartung | **100 laufende Kunden** à ~20 €/Monat | erreichbar, braucht Jahre |
-| Auftragsarbeit | **2–3 Kunden**, ~50 Std./Monat | erreichbar, braucht Gespräche |
+| Beteiligung an Partnerbetrieben | **2–3 Partner** mit laufendem Geschäft | erreichbar — teilweise vorhanden |
+| Wartung / Betreuung | **~100 laufende Kunden** à ~20 €/Monat, oder wenige größere Verträge | erreichbar über Jahre |
+| Marktplatz-Provision | **400–500 Käufe im Monat** | erst nach ① und ② |
+| Jahresbeitrag für Einträge | bei 50 €/Jahr: **500 zahlende Anbieter** | erst nach ③ |
 
-Alle Zahlen außer der ersten Spalte sind Schätzungen. Die Aussage, die trägt,
-ist die **Größenordnung**: die beiden Marktplatz-Wege brauchen Hunderte
-Fremde, die beiden Werkstatt-Wege brauchen wenige Kunden.
+Alle Zahlen außer der ersten Spalte sind Schätzungen. Was trägt, ist die
+**Größenordnung**: die Partner-Wege brauchen wenige Menschen, die
+Marktplatz-Wege brauchen hunderte.
 
 ---
 
-## 6. Die technische Lücke, die zum Geschäft gehört
+## 10. Die technische Lücke, wirtschaftlich gelesen
 
-`matchDimensions` in Modul 04 kann beides:
+`matchDimensions` (Modul 04) kann beide Richtungen — *A bietet → B sucht* und
+*A sucht ← B bietet* — samt drei Schichten und Brücken-Feld. **Aber keine Spore
+trägt Fähigkeit und Bedarf getrennt** (`capVector`/`needsVector`: null Treffer
+über alle Module und `INTERFACES.md`, geprüft 2026-08-09).
 
-```
-Lane 1  queryCap   × passageNeeds     A bietet → B sucht
-Lane 2  queryNeeds × passageCap       A sucht ← B bietet
-→ fachlich / prozess / skalierung + bruecke
-```
+Die vierzehn Knoten sagen, was sie *sind*. Keiner sagt, was er *braucht*. Ein
+Netz, in dem niemand Bedarf äußert, kann nur auflisten, nicht vermitteln — und
+im Geschäftskreis (§ 8) ist genau das Vermitteln der Zweck.
 
-Das ist genau die Symmetrie-Forderung des SBKIM-Papiers, in Code, samt
-LLM-Richter für Stufe B. **Aber keine Spore trägt Fähigkeit und Bedarf
-getrennt** — Suche über alle Module und die ganze `INTERFACES.md` nach
-`capVector`/`needsVector`: null Treffer. Jeder Knoten hat einen `domainVector`
-und fällt damit in den Nur-Anbieter-Modus.
-
-**Wirtschaftlich gelesen:** Die vierzehn Knoten sagen, was sie *sind*. Keiner
-sagt, was er *braucht*. Ein Marktplatz, auf dem niemand seinen Bedarf äußert,
-kann nicht vermitteln — er kann nur auflisten. Das ist dieselbe Lücke wie in
-§ 3, einmal technisch und einmal wirtschaftlich formuliert.
-
-**Nicht sofort bauen.** Erst messen, ob die zweite Spur die Rangfolge
-tatsächlich verbessert (Werkbank + Messung, siehe
+**Nicht sofort bauen.** Erst messen, ob die zweite Spur die Rangfolge wirklich
+verbessert (Werkbank + Messung, siehe
 `family-project/docs/BRIEF_UEBERGABE_2026-08-09_BAUPLATZ.md`). Ein
 nachgewiesenes „bringt nichts" spart den Bau.
 
 ---
 
-## 7. Wo Automatisierung wirklich etwas bringt
+## 11. Regeln
 
-Nur dort, wo ein **wiederkehrender Handgriff** zwischen einem vorhandenen
-Interessenten und dem Geld steht. Vier kleine Dinge, keine großen:
+**Der Empfangsmodus blockiert den Verkauf nicht.** Die Vier-Schichten-Lesart hat
+das versöhnt: *„Akquise gehört in die Pilz-Schicht, nicht ins Mycel."* Der
+Knoten bleibt Empfangsmodus. Keine Änderung nötig.
 
-1. **Ein zweiter Knopf am Marktplatz: „Ich hätte gern so etwas für meinen
-   Betrieb."** Heute gibt es ein Formular zum *Eintragen* einer App und einen
-   Spenden-Knopf. Es gibt keinen Weg für den, der etwas *bestellen* will. Die
-   Maschinerie steht (`einreichung.php` mit Warteschlange, Spam-Falle,
-   Rate-Limit, Mail an `info@`) — sie braucht nur einen zweiten Anlass.
-   **Der billigste denkbare Schritt, an dessen Ende Geld stehen kann.**
-2. **Wartung statt Verkauf.** In `assets/config/spenden.js` steht `yearlyUrl`
-   leer, mit dem Vermerk „noch nicht geklärt". Das ist die wichtigste
-   ungeklärte Zeile im ganzen Netz — aber **nicht** als Marktplatz-Gebühr,
-   sondern als Wartungsbeitrag für Betriebe, die eine App im Alltag benutzen.
-3. **Der Beweis läuft bereits.** Nächtliche Messung, Wächter, Siegel, die
-   Sporen-Auswertung — das ist das Verkaufsargument, und es kostet keine
-   weitere Minute. *„Meine Apps laden in zwei Sekunden. Hier sind die Zahlen,
-   täglich neu gemessen, auch die schlechten."* Schwer nachzumachen, weil man
-   es ehrlich machen müsste.
-4. **Testphase mit Schlüssel, ohne Kopierschutz-Theater.** Eine signierte
-   Lizenzdatei, fail-soft: nach Ablauf sagt die App „Testphase vorbei" und
-   wehrt sich nicht. Wer kopieren will, kopiert ohnehin. Bezahlt wird für
-   Wartung und dafür, dass jemand ans Telefon geht.
+**Die Module sind nicht das Produkt.** Das Protokoll bleibt gemeinfrei, die
+Referenz-Implementierung MIT. Verkäuflich sind die fertigen Apps, die Anpassung
+an einen Betrieb und die laufende Wartung. Wer beides vermischt, verkauft
+entweder nichts oder verliert den Standard.
 
-**Was Automatisierung nicht kann:** Kunden erzeugen. Das bleibt Gespräch.
+**Kein Einnahmeweg, der täuscht oder einsperrt.** Kein DRM-Theater, keine
+künstliche Knappheit, keine geschönten Messwerte. Der ganze Unterschied zu den
+großen Anbietern ist der Ehrlichkeits-Apparat; wer ihn verkauft und dann Nutzer
+austrickst, verbrennt sein einziges Kapital.
+
+**Jede Partner-App muss ihren Erbauer überleben können.** Wenn ein Betrieb, an
+dem Klaus beteiligt ist, auf einer App läuft, die nur er warten kann, hängt
+dessen Geschäft an seiner Zeit und Gesundheit. Die Antwort steht schon in den
+Bauregeln — fail-soft, keine toten Knöpfe, Sicherung und Export in jeder App.
+Das ist kein düsterer Gedanke, sondern Teil der Ware.
+
+**Geteiltes wird bewacht.** Siehe § 5: Drift-Guard statt Handregel.
 
 ---
 
-## 8. Regeln — was gilt, was neu ist
-
-**Der Empfangsmodus blockiert den Verkauf nicht.** Auf den ersten Blick scheint
-„kein Crawler, keine Pulsation, keine Eigenanfragen — Empfangsmodus mit
-Antwortrecht" gegen aktive Akquise zu stehen. Tut es nicht: die
-Vier-Schichten-Lesart hat das bereits versöhnt — *„Akquise gehört in die
-Pilz-Schicht, nicht ins Mycel."* Verkaufen ist oberirdisch, sichtbar, benannt.
-Der Knoten bleibt unverändert Empfangsmodus. **Keine Regeländerung nötig.**
-
-**Die Grenze zwischen Verschenktem und Verkäuflichem muss gezogen werden.** Das
-Protokoll ist gemeinfrei, die Referenz-Implementierung MIT. Das ist richtig und
-die Grundlage der Standard-Strategie („ein Protokoll, das nur einer benutzt,
-ist kein Standard, sondern ein Produkt" — `Everlast_Pitch.html`). Daraus folgt
-verbindlich:
-
-> **Die Module sind nicht das Produkt.** Verkäuflich sind die fertigen Apps,
-> die Anpassung an einen konkreten Betrieb und die laufende Wartung. Wer beides
-> vermischt, verkauft entweder nichts oder verliert den Standard.
-
-**Neue Regel — kein Einnahmeweg, der täuscht oder einsperrt.** Kein
-DRM-Theater, keine künstliche Knappheit, keine geschönten Messwerte, keine
-Dark Patterns. Nicht aus Idealismus: der gesamte Unterschied zu den großen
-Anbietern ist der Ehrlichkeits-Apparat (gemessene Zahlen, Wächter, Siegel,
-„Rangfolge ist kein Urteil"). Wer Ehrlichkeit verkauft und dann Nutzer
-austrickst, verbrennt sein einziges Kapital. Konkrete Anwendung: der
-gerätegebundene Kopierschutz aus dem Konzeptpapier (4.000–7.000 €) wird
-**nicht** gebaut — er widerspräche außerdem der bestehenden Tafel
-*„Obfuskation ist ausdrücklich NICHT der Weg"*.
-
-**Anschluss an bestehende Tafeln:** Fremdnutzer-/Marktplatz-Brille (fail-soft,
-klar benennen, was passiert), Auslieferungs-Brille (was gibt der Server
-wirklich heraus), kein PII. Alle drei gelten unverändert weiter und werden
-durch dieses Papier nicht gelockert.
-
----
-
-## 9. Was ausdrücklich NICHT gebaut wird
+## 12. Was ausdrücklich NICHT gebaut wird
 
 | Nicht bauen | Grund |
 |---|---|
 | Gerätegebundener Kopierschutz / DRM | widerspricht der Obfuskations-Tafel; teuer; hält niemanden auf |
-| Treuhand/Escrow-System | löst ein Problem, das erst ab vielen Transaktionen existiert |
-| Entwickler-Stufen 1–4 aus dem Konzept | setzt Hunderte Entwickler voraus; das Siegel deckt den Zweck heute ab |
-| Marktplatz-Provisionsabrechnung | nichts zu verprovisionieren, solange fremde Einträge = 0 |
-| Eigenes Embedding-Modell | war schon im Papier ausgeschlossen (spart 150.000–300.000 €) — gilt weiter |
-
-Diese Liste ist so wichtig wie die Vorschlagsliste. Jeder dieser Bausteine
-sieht nach Fortschritt aus und wäre Arbeit an einem leeren Laden.
+| Treuhand/Escrow | löst ein Problem, das erst bei vielen Transaktionen entsteht |
+| Entwickler-Stufen 1–4 aus dem Konzept | setzt hunderte Fremde voraus; im Kreis ersetzt Vertrauen das Stufensystem |
+| Eine Hintertür, die App-Nutzung meldet | bräche den Datenschutz-Kern, der die Apps verkäuflich macht (§ 6) |
+| Eigenes Embedding-Modell | war schon im Konzept ausgeschlossen — gilt weiter |
 
 ---
 
-## 10. Erster Schritt
+## 13. Rechtliches — gehört auf einen Zettel, nicht in dieses Papier
 
-**Ein zweiter Knopf am Marktplatz: „Ich hätte gern so etwas für meinen
-Betrieb."** Ein Formular, ein Satz, Landung im vorhandenen Postfach-Weg.
+Klaus' Vorgabe lautet „alles nach Recht und Gesetz". Vier Punkte werden dabei
+konkret, und für alle gilt: **das ist Sache eines Steuerberaters, bei Anteilen
+zusätzlich eines Notars.** Dieses Papier benennt sie nur, damit sie nicht
+vergessen werden.
 
-Warum genau dieser: die halbe Maschine steht, der Bau ist klein, und es ist der
-einzige Punkt auf dieser ganzen Liste, an dessen Ende jemand Geld überweisen
-könnte. Alles andere ist Vorbereitung auf eine Nachfrage, die noch keinen Weg
-hat, sich zu melden.
-
----
-
-## 11. Offene Entscheidungen — nur Klaus
-
-1. **Everlast GmbH.** Das Konzept-Repo ist über weite Strecken ein Angebot an
-   eine namentlich genannte Firma (30 Fundstellen in 7 Dateien, samt
-   3-%-Gebühr im Transaktionsfluss). Solange nicht entschieden ist —
-   *noch aktuell · Historie · soll raus* — wird darauf **nichts** aufgebaut.
-   Offen seit 2026-08-09.
-2. **Der Jahresbeitrag (`yearlyUrl`).** Marktplatz-Gebühr oder
-   Wartungsbeitrag? Dieses Papier empfiehlt: Wartungsbeitrag.
-3. **Preis und Form für WorkFloh.** Einmalpreis, Wartungsbeitrag, oder beides.
-4. **Wie viel Zeit im Monat** für Akquise-Gespräche zur Verfügung steht. Davon
-   hängt ab, ob ① überhaupt der erste Weg sein kann.
+1. **Form der Beteiligung** — GmbH-Anteile, stille Beteiligung, Umsatz- oder
+   Gewinnbeteiligung sind vier verschiedene Dinge mit sehr verschiedenen Folgen
+   für Haftung, Steuer und Trennung. Software als Sacheinlage muss bewertet
+   werden.
+2. **Provision** — wer Provision auf fremde Umsätze nimmt, ist Vermittler, mit
+   eigenen Pflichten (Rechnungen, Umsatzsteuer, Bedingungen, je nach
+   Ausgestaltung Haftungsfragen).
+3. **Der Kreis als solcher** (§ 8) — mehrere Betriebe, die gemeinsam auftreten
+   und Umsätze teilen, sind schnell mehr als eine lose Runde.
+4. **Keine Beträge und keine Vertragsdetails in öffentliche Repos.** Das
+   Übersichtsblatt (§ 6) enthält Geschäftsinformationen über Dritte.
 
 ---
 
-## 12. Belege und Fundstellen
+## 14. Erste Schritte, in dieser Reihenfolge
+
+1. **Beauty jetzt mitschreiben** (kostet nichts, ist nicht wiederholbar): wo
+   bleibt sie hängen, was fragt sie. Was dreimal vorkommt, gehört in die
+   Anleitung; was zweimal vorkommt, gehört in die Software geändert.
+2. **Der zweite Knopf am Marktplatz** — „Ich hätte gern so etwas für meinen
+   Betrieb". Die Maschinerie steht (`einreichung.php` mit Warteschlange,
+   Spam-Falle, Rate-Limit); es fehlt nur ein zweiter Anlass.
+3. **Das Übersichtsblatt** (§ 6) — erst mit den Spalten, die schon Daten haben.
+   Die Handspalten kommen dazu, wenn sie gebraucht werden.
+4. **Das Studio für Partner-Seiten** (§ 5) — Zweitverwendung, kein Neubau. Der
+   Punkt, an dem Klaus' Zeit pro Partner aufhört zu wachsen.
+5. **Drift-Guard über die Partner-Apps** — bevor der vierte Partner dazukommt,
+   nicht danach. Er deckt später auch die zwei Marktplatz-Instanzen ab.
+6. **Der Klon für Fremde** (§ 3 ③) — erst wenn 1–4 stehen. Er braucht eigenen
+   Namen, eigene Adresse, eigene DB-Kennung und die Vermittler-Pflichten aus
+   § 13. Bis dahin ist er eine Entscheidung, kein Bau.
+
+---
+
+## 15. Offene Entscheidungen — nur Klaus
+
+1. **Innerer Kreis ja/nein** (§ 8) und, falls ja, in welcher Form die
+   Mitgliedschaft entsteht.
+2. **Everlast GmbH** — das Konzept-Repo ist über weite Strecken ein Angebot an
+   eine namentlich genannte Firma (30 Fundstellen in 7 Dateien). Klaus
+   2026-08-09: *erst später entscheiden.* Bis dahin wird darauf nichts
+   aufgebaut und nichts entfernt.
+3. **Jahresbeitrag (`yearlyUrl`)** — Marktplatz-Gebühr oder Wartungsbeitrag.
+   Dieses Papier empfiehlt Wartungsbeitrag.
+4. **Preisform für WorkFloh** und für die Betreuung (Einarbeitung ≠ Wartung).
+5. **Verfügbare Zeit im Monat** für Betreuung und Gespräche.
+6. **Name und Adresse des Klons** (§ 3 ③) — er darf nicht „Family Projekt"
+   heißen, sonst vermischen sich Kreis und Öffentlichkeit in der Wahrnehmung.
+7. **Provisionshöhe und Vermittlungs-Bedingungen** im Klon — wer bekommt wie
+   viel, wann, und was gilt, wenn etwas schiefgeht.
+
+---
+
+## 16. Belege und Fundstellen
 
 | Aussage | Quelle |
 |---|---|
-| 65.000–116.500 €, 26–36 Wochen, Break-even ab Monat 8 bei 400 Apps | `semantic-match-demo/Kosten_Nutzen_Analyse_PWA_Plattform.pdf` |
+| 65.000–116.500 €, Break-even ab Monat 8 bei 400 Apps | `semantic-match-demo/Kosten_Nutzen_Analyse_PWA_Plattform.pdf` |
 | Engine 20.000–37.500 €, „einmal gebaut, beliebig integrierbar" | `Kostenanalyse_Everlast_Engine_PWA.pdf` |
-| PWA-Markt +30,2 % CAGR auf 34,6 Mrd. $, 54.000 aktive PWAs | `Marktanalyse_PWA_Plattform.pdf` |
+| „Ohne Partner: Kaltstart 3–6 Monate, 10.000–20.000 € Marketing" | ebenda, § 5 |
 | Bidirektionalität als Alleinstellungsmerkmal | `USP_Bidirektionales_Matching.pdf`, `SBKIM_Paper_DE.html` § 3.1 |
-| „Ohne Partner: Kaltstart 3–6 Monate, 10.000–20.000 € Marketing" | `Kosten_Nutzen_Analyse_PWA_Plattform.pdf` § 5 |
-| 14 Einträge, alle eigene | `family-project/assets/config/listings-vec.json` |
-| Erste 100 fremde Plätze gratis, seit 2026-07-12 | `family-project/markt.html`, interne Politik-Notiz |
-| `yearlyUrl` leer, „noch nicht geklärt" | `family-project/assets/config/spenden.js` |
-| Einreich-Weg mit Warteschlange, Spam-Falle, Rate-Limit | `family-project/server/einreichung.php` |
-| `capVector`/`needsVector` nirgends vorhanden | Suche über `src/modules/*` + `docs/INTERFACES.md`, 2026-08-09 |
-| „Akquise gehört in die Pilz-Schicht" | `CLAUDE.md` § Vier-Schichten-Lesart, Schicht 2 |
+| 14 Marktplatz-Einträge | `family-project/assets/config/listings-vec.json` |
+| Selbstbedienungs-Zählungen (Backup/Import/Export/Anlegen) | Alis-Moderaum, Tomys-Hub, BookLedgerPro, gezählt 2026-08-09 |
+| Tomys zweiter Werkzeugkasten | `Tomys-Hub/` — `bookledger`, `workfloh`, `tomy-data`, `tomy-ui`, `tomy-tresor.js`, eigene `tests` |
+| „Die Brücke läuft immer parallel" | `Mein-WorkFloh/CLAUDE.md` |
+| `texte.json` in Beauty praktisch leer | `Perfect-Skin-Beauty/texte.json`, gelesen 2026-08-09 |
+| Analyse-Rekorder v1.3, „schick sie Claude" | `mycel-karte/index.html` |
+| Forschungsstation, Rollentrennung der drei Dateien | `family-project/forschung/README.md` |
+| Cross-Knoten-Q&A hub-unabhängig bewiesen | `docs/meilenstein/2026-07-11_hub-unabhaengige-cross-knoten-qa.md` |
+| Vier-Schichten-Lesart, „Akquise gehört in die Pilz-Schicht" | `CLAUDE.md` |
 | „Obfuskation ist ausdrücklich NICHT der Weg" | `CLAUDE.md` § Fork ≠ Vorfall |
+| Vertraulichkeits-Grade B und C | `docs/E2E-VERTRAULICHKEIT.md`, `docs/PLAN_SEMANTIK_KRYPTO.md` |
+| `capVector`/`needsVector` nirgends vorhanden | Suche über `src/modules/*` + `docs/INTERFACES.md`, 2026-08-09 |
 
 ---
 
-## 13. Nebenbefunde aus der Analyse (nicht wirtschaftlich, aber fällig)
-
-- **`semantic-match-demo/CLAUDE.md` gehört einem anderen Repo.** Es ist eine
-  Kopie der Regeln von Muttis Rezeptbuch (Build-Skript, Icon-Regeln,
-  `QC_MeinRezb`-Dateien) und behauptet zudem „Das Repo ist privat" — es ist
-  öffentlich. Das Repo hat seit dem 2026-07-28 keine gültige Verfassung.
-- **`hub.html` veröffentlicht Klarnamen und private E-Mail-Adresse.** In
-  `spenden.js` wurde am 2026-08-01 genau das rückgängig gemacht (PayPal-Adresse
-  raus, weil Spam-Sammler sie finden). Als Kontakt für einen Pitch kann es
-  gewollt sein; als Dauerzustand ist es dieselbe Falle.
-- **Die Demo ist technisch überholt:** vier fremde Adressen (Google Fonts,
-  PeerJS, QRCode, jsQR), Modell-Kennung vom Mai 2025, API-Schlüssel im
-  Klartext in `localStorage`. Nach heutigen Bauregeln wäre nichts davon so
-  gebaut. **Ob die Live-Seite noch läuft, ist ungeprüft** — die Sitzungs-
-  Umgebung kommt nicht ins offene Netz.
-
----
-
-**Fortschreiben:** Wer einen Punkt entscheidet oder widerlegt, trägt es hier
-ein (Datum + was gilt jetzt) und vermerkt es in `docs/PULS.md`. Dieses Papier
-bindet, bis eine Messung es widerlegt — Tafel-Evolutions-Klausel.
+**Fortschreiben:** Wer einen Punkt entscheidet oder widerlegt, trägt es hier ein
+(Datum + was jetzt gilt) und vermerkt es in `docs/PULS.md`. Dieses Papier bindet,
+bis eine Messung oder eine Auskunft es widerlegt — genau das ist zwischen
+Fassung 1 und Fassung 2 passiert.
