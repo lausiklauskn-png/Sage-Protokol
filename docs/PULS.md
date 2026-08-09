@@ -104,6 +104,25 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 2 — zwei Auskünfte von Klaus, beide ändern etwas.**
+(a) **Tomy arbeitet sich ein.** Die *Software* ist ein vollständiger zweiter
+Werkzeugkasten, der *Mensch* ist noch in der Einarbeitung. Das sind zwei
+verschiedene Reifegrade, und das Papier hatte sie vermischt. Von drei Partnern
+ist einer selbstständig (Alis) und **zwei sind in der Einarbeitung** — der
+aktuelle Engpass, zugleich die beste Nachricht für den Bausatz: es laufen zwei
+Beobachtungsfälle gleichzeitig. **Was bei Tomy UND bei Beauty klemmt, ist ein
+Fehler im Bausatz, nicht am Menschen.**
+(b) **Beauty's neuer Shop ist ein Online-Shop**, kein zweiter Laden. Damit
+erster Fall, in dem Geld durch Klaus' Software fließt. Neuer § 4b im Papier mit
+der klarsten Bau-Empfehlung des ganzen Textes: **den Bezahlvorgang NICHT selbst
+bauen** — er bedeutet dauerhafte Verantwortung für Zahlungssicherheit,
+Steuerlogik und Rechtspflichten, für einen fremden Betrieb, und widerspricht der
+Regel „muss den Erbauer überleben können". Saubere Teilung: Katalog, Suche,
+Messung, Vertrauen von Klaus — Warenkorb, Bezahlung, Rechnungen vom erprobten
+Anbieter. Dazu die Pflichten-Liste (Bestellknopf, Widerruf, AGB,
+**Kosmetikverordnung**, **Verpackungsregister**, Umsatzsteuer) — aufgezählt,
+nicht entschieden, gehört vor den Shop-Start.
+
 **Nachtrag — Skills und Regeln als geteilte Teile (§ 7b im Papier).** Auf Klaus'
 Frage nach der Erfassung von Fortschritt, Regeln und Dokumentation gemessen:
 dieselben Skills liegen in mehreren Repos, und **zwei von drei sind
