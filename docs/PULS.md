@@ -31,6 +31,87 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (8) — Erde auf der Discovery-Karte: Dauer-Blinken raus, Spiegelplatte weggeschnitten
+
+**Rolle:** Sicht-Befund von Klaus, Bau + Sichtprüfung am gerenderten Bild.
+
+### Klaus' zwei Befunde
+
+1. *„Die Erde wird, ohne dass die Maus sich darüber bewegt, hell und dunkel … die
+   gesamte Zeit. Erst wenn die Maus draufgeht, soll sie das tun — so wie die Tür
+   darüber."*
+2. *„Dahinter ist ein dunkler Schatten … Er ragt vor der Erde hervor. Er muss nicht
+   so groß sein."* Nachgereicht: *„Auf der Discovery-Seite ist die Erde noch einmal,
+   dort wurde sie auf einen dunklen Hintergrund gelegt, der vorher ein Spiegel
+   werden sollte — daher kommt der dunkle Hintergrund."*
+
+### Nachgemessen statt geraten
+
+```
+erde-blau-web.webp    420x420 · durchsichtig 0 % · sehr dunkel 72 %
+erde-dunkel-web.webp  420x420 · durchsichtig 0 % · sehr dunkel 80 %
+```
+
+**Beide Dateien sind zu 100 % undurchsichtig.** Klaus' Vermutung („die ist wohl
+transparent, deswegen sieht man den dunklen Hintergrund") trifft es also nicht ganz
+— und sein Nachtrag erklärt es richtig: die dunkle Fläche ist die **einbelichtete
+Spiegelplatte**, Teil des Bildes. **Kein CSS-Schatten.** Der `inset`-Schatten am
+Kreis wird ohnehin von den beiden `<img>`-Kindern überdeckt und war nie der Grund.
+
+### Gebaut
+
+1. **Dauer-Blinken raus.** `animation: discoEarth 11s infinite` (elf Sekunden hin
+   und her, ohne Zutun) ersetzt durch dasselbe Muster wie die Einladungs-Tür:
+   Übergang nur bei `:hover` / `:focus-visible`, langsam hin (1,8 s), schneller
+   zurück (0,9 s).
+2. **Ruhezustand umgedreht.** Vorher lag im Ruhezustand die **dunkle** Früherde
+   oben — ein fast schwarzer Ball, genau das, was Klaus als „dunklen Schatten"
+   gesehen hat. Jetzt liegt ruhig die **blaue** Erde da; die Früherde kommt erst bei
+   Berührung. Beide Befunde lösen sich damit an derselben Stelle.
+3. **Spiegelplatte weggeschnitten.** `transform: scale(1.18)` →
+   `scale(1.42) translateX(7%)`. Die Platte ragte rechts sichtbar über die Erde
+   hinaus; jetzt füllt die Kugel den Kreis, **die Nachtseite bleibt erhalten**
+   (Klaus: „so weit, dass die Erde noch ihre dunklen Effekte hat").
+
+`prefers-reduced-motion` zieht mit (`transition: none` statt `animation: none`).
+
+### Geprüft
+
+Nicht nur Zahlen: die Karte wurde in **Ruhe und bei Berührung gerendert und
+angesehen** (Bauregel Bilder, „alt und neu nebeneinander"). Ruhe = erkennbare blaue
+Erde ohne überstehende Platte; Berührung = dunkle Früherde, Kontinente noch sichtbar.
+`earth-blue` opacity 1 → 0 im Wechsel bestätigt. Skriptblöcke syntaktisch grün,
+`discoEarth` restlos entfernt.
+
+**Nebenbei:** eine der acht „nicht zusammengesetzten Animationen" aus dem
+PageSpeed-Bericht ist damit weg — sie lief dauerhaft im Hintergrund.
+
+**Wenn die Bilder je neu geschnitten werden** (Spiegelplatte raus, echte
+Transparenz): dann `scale` wieder auf ~1.18 zurück. Steht als Kommentar im Code.
+
+### ⚠ Offen und wichtig: die Note ist von 97 auf 84 gefallen
+
+| Uhrzeit | Handy | davor gemergt |
+|---|---|---|
+| 10:16 | **97** | #798 Bilder |
+| 10:29:47 | **84** | #799 CSS-Hintergründe |
+
+Dazwischen liegt **genau #799**. Zwei Lesarten, und ich kann sie mit je einem Lauf
+**nicht** trennen:
+
+- **Streuung.** Die Tageswerte lagen bei 70 · 83 · 97 · 84. Wenn die Seite real bei
+  ~90 ± 7 steht, sind 97 und 84 beides normale Ziehungen.
+- **#799 kostet wirklich.** Mechanisch wäre das erklärungsbedürftig: die drei Bilder
+  liegen ab 9.857 px, der Beobachter feuert beim Laden für keines davon (gemessen:
+  beim Öffnen wurde keines geholt). Ein Grund ist nicht ersichtlich — aber
+  „nicht ersichtlich" ist kein Beweis.
+
+**Nächster Schritt: ein bis zwei weitere Läufe.** Bleibt es unter dem 97er-Niveau,
+wird **#799 zurückgenommen** — der Posten hatte ohnehin keinen Noten-Nutzen (das
+stand schon in Stand (7)), also ist ein Rückbau billig und richtig.
+
+---
+
 ## Stand 2026-08-09 (7) — ✅ Handy 70 → 83 → **97** live · und die letzten 238 KiB Hintergrundbilder
 
 **Rolle:** Bau + Messung. Klaus' Wort: *„CSS-Hintergründe auch noch machen."*
