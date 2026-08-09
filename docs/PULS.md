@@ -31,6 +31,60 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (2) — Discovery-Expedition: die Erde war nie ein Ei, nur gedehnt
+
+**Rolle:** Fehlersuche + Fix. Klaus' Befund: *„In Discovery Expedition sieht die Erde noch aus
+wie ein Ei. Sie ist nicht rund, wie man's erwartet."*
+
+### Die Ursache — nicht dort, wo man zuerst sucht
+
+Zwei naheliegende Verdächtige geprüft und **beide entlastet**:
+
+- **Die Bilder.** `erde-blau.webp` und `erde-dunkel.webp` sind 1254 × 1254, und die Scheibe
+  darin ist ein sauberer Kreis: gemessen aus drei verlässlichen Rändern (links, oben, unten —
+  der rechte liegt im Schatten und taugt nicht) ergibt sich Mitte 611/621 bei Radius 522 px
+  bzw. 614/620 bei 517 px. Rund, nur rund 14 px nach links und 6 px nach oben versetzt.
+- **Die Maske im Shader.** Sie schneidet bei r = 0,425…0,445 vom **Bild**mittelpunkt. Der
+  Versatz der Scheibe bringt ihren linken Rand auf 0,429 — knapp in die Ausblend-Zone, aber sie
+  wird dort nur leicht gedimmt, nicht abgeschnitten. Die sichtbare Scheibe misst waagerecht wie
+  senkrecht 0,833 UV. **Also rund.** Diese Erklärung trug nicht, und sie wurde verworfen.
+
+**Der Fehler sitzt zwischen Zeichenfläche und Anzeigefläche.** Das Canvas ist per CSS
+`width:100vw; height:100vh` groß. Auf Android-Chrome ist `100vh` die **große** Sicht (so, als
+wäre die Adressleiste weg), während `window.innerHeight` die **aktuell sichtbare** Höhe meldet.
+`renderer.setSize(w, h, false)` schreibt die CSS-Größe bewusst nicht (das dritte Argument heißt
+`updateStyle`). Gezeichnet wurde also in ein Bild von 412 × 730, angezeigt wurde es auf
+412 × 823 — der Browser zieht die Differenz glatt auseinander. **Alles um rund 13 % in die
+Länge gezogen; ein Kreis wird zum Ei.**
+
+### Der Fix
+
+`resize()` misst jetzt an `canvas.clientWidth` / `clientHeight` — genau der Fläche, auf der das
+Bild landet — statt am Fenster. Damit können die beiden per Bauart nicht mehr auseinanderlaufen.
+Dazu lauscht die Seite zusätzlich auf `orientationchange` und `visualViewport.resize`, weil das
+Ein- und Ausfahren der Adressleiste nicht immer ein `resize` am Fenster auslöst.
+
+### Beweis — und was er NICHT zeigt
+
+Der Tablet-Fall im Browser nachgebildet (`100vh` = 823 bei `innerHeight` = 730):
+
+| | Zeichenfläche | Anzeigefläche | Dehnung senkrecht |
+|---|---|---|---|
+| alt | 412 × 730 | 412 × 823 | **1,127** |
+| neu | 412 × 823 | 412 × 823 | **1,000** |
+
+Das ist die Verzerrung selbst, direkt gemessen — nicht erschlossen. Nach einem Größenwechsel
+bleiben beide Flächen gleich (900 × 600 / 900 × 600), keine Seitenfehler.
+
+**Was der Beweis nicht leistet, ehrlich:** ein sauberes Vorher/Nachher-**Bild** der Erde gibt es
+nicht. Headless existiert keine Adressleiste, der Fehler tritt dort also gar nicht auf; und die
+Nachbildung ändert die Canvas-Höhe, was zugleich den Bildausschnitt verschiebt — eine
+Silhouetten-Messung mischt dann zwei Wirkungen. Ein erster Versuch, die Scheibe im
+Bildschirmfoto zu messen, meldete prompt **auch dort „Ei", wo nachweislich keine Dehnung
+vorlag** (Kontrolle 1,094). Der Maßstab war untauglich und wurde verworfen statt hübsch geredet.
+
+**Klaus' Blick aufs Tablet ist hier der Test.**
+
 ## Stand 2026-08-09 — Die Sage-Page blendet wieder ein (Klaus' Entscheidung)
 
 **Rolle:** Pflege-Sitzung. Klaus' Wort: *„Nicht verschlechtern nur zu Testzwecken."* Danach

@@ -585,12 +585,36 @@ if (renderer) {
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 11);
 
+  // Die Zeichenflaeche wird an der ANZEIGEFLAECHE gemessen, nicht am Fenster.
+  //
+  // Warum das kein Detail ist (Klaus' Sichttest 2026-08-09: "die Erde sieht aus
+  // wie ein Ei"): das Canvas ist per CSS `width:100vw; height:100vh` gross.
+  // Auf Android-Chrome ist `100vh` die GROSSE Sicht (so, als waere die
+  // Adressleiste weg), waehrend `window.innerHeight` die AKTUELL sichtbare
+  // Hoehe meldet — mit ausgefahrener Adressleiste also rund 90 px weniger.
+  // `setSize(w, h, false)` schreibt die CSS-Groesse bewusst NICHT (das dritte
+  // Argument heisst updateStyle). Gezeichnet wurde also in ein Bild von
+  // 412x730, angezeigt wurde es auf 412x823 — der Browser zieht die Differenz
+  // glatt auseinander. Alles wird um rund 13 % in die Laenge gezogen; ein
+  // Kreis wird zum Ei. Die Erde war nie unrund, nur senkrecht gedehnt.
+  //
+  // `clientWidth`/`clientHeight` sind genau die Flaeche, auf der das Bild
+  // landet. Wer daran misst, kann per Bauart nicht mehr auseinanderlaufen —
+  // egal was das Fenster meldet und ob die Adressleiste kommt oder geht.
   function resize() {
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
-    camera.aspect = window.innerWidth / window.innerHeight;
+    // Fallback aufs Fenster nur, falls das Canvas (noch) keine Flaeche hat.
+    const w = canvas.clientWidth  || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
-  window.addEventListener('resize', resize); resize();
+  window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', resize);
+  // Auf Android/iOS aendert das Ein- und Ausfahren der Adressleiste die
+  // sichtbare Flaeche, ohne dass immer ein `resize` am Fenster ankommt.
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
+  resize();
 
   // Anker-Punkte der Erzählung
   const EARTH_POS = new THREE.Vector3(0.0, 0.15, -0.5);   // Planet zentral, leicht über Bildmitte
