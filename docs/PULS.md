@@ -31,6 +31,81 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (10) — 📄 Phase D.2 eröffnet: `docs/PLAN_PILZ_WIRTSCHAFT.md`
+
+**Rolle:** Analyse-/Spec-Sitzung (Planmodus, kein Modul-Code).
+**Auftrag (Klaus):** `lausiklauskn-png/semantic-match-demo` vollständig
+analysieren — jede Datei — und daraus beantworten, wie aus family-project & Co.
+mit wenig Aufwand und viel Automatisierung ein tragfähiges Geschäftsmodell
+werden kann. Regeln gegebenenfalls anpassen. „Evolution im Pilz-Mycel, um davon
+leben zu können."
+
+**Was getan:** 17 Dateien gelesen (beide Papiere, alle fünf PDFs entpackt —
+sie sind ASCII85+Flate, ein erster Versuch lieferte nur Zeichensalat —, Pitch,
+Hub, vier Demo-Seiten, `sw.js`, Manifest). Jeden Kostenposten der
+Mai-Analyse gegen den Ist-Stand von Sage + family-project gerechnet. Ergebnis
+als **Phase-D.2-Papier** angelegt: [`docs/PLAN_PILZ_WIRTSCHAFT.md`](PLAN_PILZ_WIRTSCHAFT.md).
+D.2 stand seit Mai bewusst offen („bis reale Pilz-Bauten existieren") — die
+Bedingung ist eingetreten.
+
+**Die drei tragenden Befunde:**
+
+1. **Die teure Hälfte steht schon.** Von den 65.000–116.500 € des Konzepts sind
+   Engine, Grundgerüst, Sicherheitsscan (Wächter) und Zertifizierung (Siegel)
+   gebaut — die Vektordatenbank (50–200 €/Monat) entfällt ganz, weil
+   `listings-vec.json` int8-quantisiert im Repo liegt. Nicht gebaut ist genau
+   das, was Geld bewegt: Zahlungsweg und zahlende Gegenseite.
+2. **Der Messwert, der die Richtung dreht:** 14 Einträge im Marktplatz, **alle
+   eigene, null fremde** — obwohl die ersten hundert Plätze seit dem 12.07.
+   **gratis** sind. Der Engpass ist nicht Technik und nicht Preis, sondern
+   Bekanntheit. Die eigene Mai-Analyse hatte das beziffert („ohne Partner:
+   Kaltstart 3–6 Monate, 10.000–20.000 € Marketing"). Genau das ist eingetreten.
+   **Automatisierung erzeugt keinen Käufer** — sie spart Arbeit an einem Weg,
+   den jemand geht.
+3. **Der Marktplatz hat die falsche Aufgabe.** Als Provisions-Maschine braucht
+   er eine Menge (400 Apps / 350 Käufe im Monat für 2.065 €). Als **Beweisstück**
+   braucht er nur, was da ist. Vorgeschlagene Reihenfolge — dem Konzeptpapier
+   genau entgegengesetzt: ① Auftragsarbeit (2–3 Kunden) · ② Fach-App mit
+   **Wartung** (WorkFloh, ~100 Kunden wiederkehrend) · ③ Provision zuletzt.
+
+**Regel-Arbeit:** Der Empfangsmodus blockiert den Verkauf **nicht** — die
+Vier-Schichten-Lesart hat das versöhnt („Akquise gehört in die Pilz-Schicht").
+Keine Änderung nötig. Neu festgehalten: **die Module sind nicht das Produkt**
+(Protokoll bleibt gemeinfrei, verkäuflich sind Apps/Anpassung/Wartung) und
+**kein Einnahmeweg, der täuscht oder einsperrt** — daraus folgt: der
+gerätegebundene Kopierschutz (4.000–7.000 € im Konzept) wird **nicht** gebaut,
+passend zur bestehenden Obfuskations-Tafel.
+
+**Technische Lücke, wirtschaftlich gelesen:** `matchDimensions` (Modul 04)
+trägt beide Lanes und die drei Schichten — aber keine Spore trägt Fähigkeit und
+Bedarf getrennt (`capVector`/`needsVector`: null Treffer über alle Module +
+`INTERFACES.md`). Die vierzehn Knoten sagen, was sie *sind*; keiner sagt, was er
+*braucht*. Ein Marktplatz, auf dem niemand Bedarf äußert, kann nur auflisten.
+**Nicht sofort bauen** — erst messen, ob die zweite Spur die Rangfolge
+verbessert.
+
+**Was offen ist (nur Klaus):** Everlast GmbH (30 Fundstellen in 7 Dateien,
+öffentlich, samt 3-%-Gebühr) — bis zur Entscheidung wird darauf nichts
+aufgebaut · Jahresbeitrag `yearlyUrl`: Marktplatz-Gebühr oder Wartungsbeitrag ·
+Preisform für WorkFloh · verfügbare Zeit für Akquise-Gespräche.
+
+**Nebenbefunde:** `semantic-match-demo/CLAUDE.md` ist eine Kopie der Regeln von
+Muttis Rezeptbuch (falsches Repo) und behauptet „privat", obwohl öffentlich ·
+`hub.html` veröffentlicht Klarnamen + private E-Mail, während `spenden.js` am
+01.08. genau das entfernt hat · die Demo hängt an vier fremden Adressen und
+legt den API-Schlüssel im Klartext in `localStorage`.
+
+**Nächster sinnvoller Schritt:** der **zweite Knopf am Marktplatz** — „Ich
+hätte gern so etwas für meinen Betrieb". Die Maschinerie steht
+(`einreichung.php` mit Warteschlange, Spam-Falle, Rate-Limit); es fehlt nur ein
+zweiter Anlass. Einziger Punkt der ganzen Liste, an dessen Ende jemand Geld
+überweisen könnte.
+
+**Ungeprüft:** ob die Live-Demo unter `lausiklauskn-png.github.io/semantic-match-demo/`
+noch läuft — die Sitzungs-Umgebung kommt nicht ins offene Netz.
+
+---
+
 ## Stand 2026-08-09 (9) — ✅ 97 bestätigt (#799 bleibt) · Discovery: gerade Linien raus, Erd-Maske korrigiert
 
 ### Zuerst: die 84 war Streuung
