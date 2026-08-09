@@ -31,6 +31,104 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (6) — Bilder: 307 KiB steckten IM Dokument, 500 KiB luden zu früh · 64 → 70
+
+**Rolle:** Bau nach Klaus' Bauregeln (`seiten-bauregeln`, Gewerk Bilder). Auslöser: Klaus'
+PageSpeed-Posten „Bildübermittlung verbessern, 367 KiB".
+
+### Erst gemessen, wie die Bauregel es verlangt
+
+Auf einem Handy-Schirm (412 × 823) nachgesehen, wo die Bilder liegen und was das
+LCP-Element ist:
+
+```
+LCP-Element   <p class="hero-claim">   — TEXT, kein Bild
+Seitenhöhe    18.658 px   (erster Schirm: 823 px)
+
+sun-img (eingebettet)      ab  9.857 px    loading=auto
+erde-dunkel / erde-blau    ab 13.563 px    loading=auto
+meilenstein-1/2/…/07-23    ab 16.487 px    loading=auto
+```
+
+**Kein einziges Bild hatte `loading="lazy"`** (Bauregel Bilder Nr. 3), und alle liegen
+nicht knapp, sondern **um den Faktor 20** unter dem ersten Schirm. Das LCP-Element ist
+Text — Bilder konnten es nie direkt beschleunigen, nur die Leitung freimachen.
+
+### Der eigentliche Fund stand nicht im Bericht
+
+**Zwei Bilder steckten als base64 IM Dokument** (Bauregel Nr. 6, „niemals base64 in die
+HTML"). PageSpeed listet sie unter „Bilder" gar nicht, weil sie Teil der HTML sind:
+
+| | im Dokument | als Datei | Aufschlag |
+|---|---|---|---|
+| Sonnen-Bild (`sun-img`, 480×480) | 113,6 KiB | 85,2 KiB | 33 % |
+| Milchstraßen-Hintergrund (`--milkyway-bg`, 1500×643) | 193,2 KiB | 144,9 KiB | 33 % |
+
+Zusammen **307 KiB**, die bei **jedem** Seitenaufruf geladen und durchgeparst werden
+mussten, bevor ein Pixel erscheinen konnte — für Bilder, die erst nach 12 Bildschirmen
+Scrollen bzw. nach einem Klick auf die Sonnen-Seite sichtbar werden.
+
+### Gebaut
+
+1. **Beide base64-Bilder als Datei ausgelagert** → `assets/sonne-web.webp`,
+   `assets/milchstrasse-web.webp`. `index.html` **651 → 344 KiB**.
+2. **`loading="lazy"` + `decoding="async"`** auf alle 8 `<img>` unterhalb des ersten
+   Schirms (5 Meilenstein + 2 Erd-Bilder + Sonne).
+3. **`width`/`height` mit den ECHTEN Maßen** (Bauregel Nr. 4) — 640×640, **720×576** beim
+   2026-07-23-Bild (nicht blind 640 überall), 420×420, 480×480.
+
+**Bewusst NICHT verkleinert oder nachkomprimiert.** PageSpeed schlägt „responsive Bilder"
+vor (312 px angezeigt gegen 640 px Datei), aber auf Klaus' Tablet mit doppelter
+Pixeldichte wären 624 px genau richtig — 640 ist also praktisch schon die Zielgröße.
+Kleiner rechnen hieße sichtbar unschärfer für ein paar Kilobyte. Nachkomprimieren wurde
+nicht gemacht, weil die Bauregel dafür den Sicht-Vergleich alt/neu verlangt und der
+Gewinn ohne Lazy-Laden ohnehin verpufft.
+
+### Gemessen — und die Regel-7-Falle geprüft, nicht angenommen
+
+```
+Dokument                      651 KiB  →  344 KiB
+beim Öffnen geholte Bilder    alle     →  keins der acht späten
+nach dem Scrollen             —        →  sonne/erde kommen nach
+CLS                           0        →  0        (width/height halten)
+404                           —        →  keine
+```
+
+Die **Milchstraße** war der gefährliche Punkt: sie steckt in einer CSS-Variablen, und eine
+relative `url()` dort löst gegen das *Stylesheet* auf, nicht gegen das Dokument
+(Bauregel Nr. 7 — an SB-KIMTool-Point kostete das drei unsichtbare Kopf-Streifen). Darum
+nicht hingeschaut, sondern gemessen: `getComputedStyle` zeigt
+`url("…/assets/milchstrasse-web.webp")`, Antwort **200**, und sie kommt erst beim Öffnen
+der Sonnen-Seite. Kein Fallback, der einen Fehler verdeckt.
+
+Lighthouse abwechselnd, je 3 Läufe gegen `origin/main`:
+
+| | Leistung | LCP | TBT | Gewicht |
+|---|---|---|---|---|
+| alt | 64 | 10,3 s | 222 ms | 2843 KiB |
+| neu | **70** | 7,6 s | 42 ms | **2100 KiB** |
+
+Belastbar ist wieder vor allem das **Gewicht — in allen drei Läufen exakt gleich**
+(−743 KiB). Die Note streut stark (ein alt-Lauf fiel auf 37), der Median-Gewinn von
+6 Punkten ist ein Hinweis, kein Beweis. **PageSpeed entscheidet** (Bauregel 1b).
+
+### Offen geblieben — der nächste Posten
+
+Drei Bilder liegen als **CSS-Hintergrund**, nicht als `<img>`, und laden deshalb weiter
+sofort, obwohl sie ab 9.857 px stehen:
+
+```
+galaxie-hintergrund-web.webp   103 KiB
+observatorium-truhe-web.webp    99 KiB
+scene-5-door-web.webp           36 KiB
+```
+
+Zusammen **238 KiB**. `loading="lazy"` gibt es für CSS-Hintergründe nicht; es bräuchte
+`content-visibility: auto` an den Karten oder einen Umbau zu `<img>`. Eigener Schritt,
+vorher messen.
+
+---
+
 ## Stand 2026-08-09 (5) — Klaus' Ring-Idee führte zu einem Fund daneben: status.json dreimal geholt
 
 **Rolle:** Prüfung + Bau. Klaus' Idee: *„Die null Prozent … null kann auch eine schlichte Null
