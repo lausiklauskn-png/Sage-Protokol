@@ -31,6 +31,57 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 — Die Sage-Page blendet wieder ein (Klaus' Entscheidung)
+
+**Rolle:** Pflege-Sitzung. Klaus' Wort: *„Nicht verschlechtern nur zu Testzwecken."* Danach
+ausdrücklich: *„Einblendung aus PR #788 wieder herstellen."*
+
+PR #788 hatte am 2026-08-07 die Einblende-Animation des Start-Bildschirms abgeschaltet
+(`.screen.active.erstanzeige { animation: none }`), weil `fade-in` bei `opacity: 0` startet und
+der Hero-Text darin das LCP-Element ist. Rückgängig gemacht sind genau diese zwei Stellen — die
+CSS-Regel und die Klasse am `<main>`.
+
+### Was es kostet — gemessen, abwechselnd, je drei Läufe
+
+| | Leistung | LCP |
+|---|---|---|
+| **alt** (Einblendung aus) | 72 · 73 · 75 | 4,9 · 6,4 · 5,6 s |
+| **neu** (Einblendung an) | 72 · 72 · 72 | 7,3 · 7,6 · 7,5 s |
+
+Barrierefreiheit 100, Gute Praxis 96, SEO 100, CLS 0 — in allen sechs Läufen gleich.
+
+**Die Note kostet es rund einen Punkt** (Median 73 → 72). **Der LCP kostet rund zwei Sekunden**
+(Median 5,6 → 7,5 s). Das ist der Preis, und er steht damit hier.
+
+### Zwei Dinge, die gegen mich selbst sprechen
+
+**1. Meine Vorhersage war falsch.** Ich hatte Klaus „ungefähr sieben Punkte" angekündigt —
+gestützt auf die Zahlen aus PR #788 (dort: 69·71 → 77·77). Gemessen sind es **etwa eins**. Die
+alte Messung und die heutige widersprechen sich also deutlich. Warum, weiß ich nicht sicher:
+die Bau-Maschine hat an verschiedenen Tagen verschiedene Grundwerte, und ob damals wirklich
+abwechselnd gemessen wurde, steht dort nicht. **Wer die Note aus #788 als Argument verwenden
+will, misst sie vorher nach.**
+
+**2. Der erste Mess-Anlauf war falsch aufgesetzt.** Er startete alt und neu **gleichzeitig** —
+beide auf demselben Prozessor, also beide verfälscht. Abgebrochen und sauber wiederholt
+(abwechselnd, immer nur eine Messung zur Zeit). Genau davor warnt Regel 2 der Bauregeln.
+
+### Ein Nebenbefund, der zum Nachdenken taugt
+
+Mit Einblendung ist der LCP **stabil** (7,3 · 7,6 · 7,5), ohne sie **streut** er
+(4,9 · 6,4 · 5,6). Das ist logisch: die Animation gibt dem größten Anstrich einen festen
+Zeitpunkt; ohne sie hängt er davon ab, was gerade sonst fertig wird. Der abgeschaltete Zustand
+war also nicht nur schneller, sondern auch **launischer** — und die 4,9 s aus dem besten Lauf
+waren nie der Normalfall.
+
+### Offen
+
+- **Klaus' Blick auf die Live-Seite** — ob die Einblendung wieder so wirkt, wie sie soll.
+- **Was die Sage-Page am Handy wirklich bremst** (PageSpeed 2026-08-09: **63** am Handy,
+  **97** am Computer — dieselbe Messung, zwei Geräte, kein Vorher/Nachher) ist damit **nicht**
+  beantwortet. Die Einblendung ist ein kleiner Posten. Der Bericht nennt die großen; gelesen
+  hat sie noch niemand.
+
 ## Stand 2026-08-08 (2) — Postfach-Verjährung: Sages zwei größte Briefkästen von 1091 auf 324 Zeilen
 
 **Rolle:** Pflege-Sitzung (Klaus' Freigabe: „Verjährung anwenden — kein Vorzug, Vorschlag
