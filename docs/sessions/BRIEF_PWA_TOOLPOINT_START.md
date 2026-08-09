@@ -139,6 +139,29 @@ weiter. Registrant Klaus Nitzsche, Nameserver bleiben bei INWX.
 Umzug (Aufgabe 0): ein Adresswechsel später ist ein Umzug mit Origin-Problem.
 Jetzt kostet er nichts, weil noch niemand die Seite kennt.
 
+**Stand 2026-08-09, 20:15 — was schon läuft:**
+- ✅ DNS für `pwa-toolpoint.de` bei INWX gesetzt: vier A-Einträge auf die
+  GitHub-Adressen (185.199.108–111.153) plus `www` CNAME auf
+  `lausiklauskn-png.github.io.`; INWX' drei Parkseiten-Einträge
+  (185.181.104.242, inkl. Wildcard `*`) entfernt.
+- ✅ GitHub Pages eingeschaltet (Quelle `main` / root), eigene Adresse
+  eingetragen, **„DNS check successful"**.
+
+**Offen — kein Eile, blockiert nichts:**
+- ⏳ **„Enforce HTTPS"** auf der Pages-Seite anhaken, sobald GitHub das
+  Zertifikat ausgestellt hat (das Kästchen ist bis dahin ausgegraut).
+- ⏳ **Weiterleitung `pwa-toolpoint.com` → `pwa-toolpoint.de`.** Sie zeigt
+  derzeit INWX' Parkseite, und `https://pwa-toolpoint.com` bringt eine
+  Browser-Warnung („unterstützt keine verschlüsselte Verbindung").
+  **Die Weiterleitung steckt NICHT auf der Nameserver-Seite** — dort wurde
+  vergeblich gesucht. Vor dem nächsten Versuch erst herausfinden, wo INWX sie
+  tatsächlich anbietet und **ob sie HTTPS kann**; nur `http://` weiterzuleiten
+  wäre für einen Vertrauens-Marktplatz das falsche Signal.
+  Zwei Auswege, falls INWX kein HTTPS kann: Caddy auf dem Hetzner-Server
+  (holt Zertifikate von allein, Weiterleitung ist eine Zeile) oder ein zweites
+  kleines GitHub-Repo, dessen einzige Aufgabe die Weiterleitung ist.
+  **Der Zweck der `.com` — den Namen sichern — ist ohnehin erfüllt.**
+
 **Einzurichten (Klaus-Schritte, die Sitzung kann dabei anleiten):**
 - bei INWX für `pwa-toolpoint.de` die DNS-Einträge auf GitHub Pages zeigen
   lassen (Apex + `www`)
