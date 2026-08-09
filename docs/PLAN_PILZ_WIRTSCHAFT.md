@@ -702,6 +702,41 @@ ein Marktplatz für einen Verein, eine Innung, einen Ort (§ 3 ③).
 
 ---
 
+## 8b1. Eigenes Repo — Entscheidung 2026-08-09
+
+Zur Debatte stand, **SB-KIMTool-Point umzuwidmen und umzubenennen**. Es war
+ursprünglich für genau diesen Zweck gedacht und trägt bereits eine
+Werkzeugkiste (7 Werkzeuge), ein Knoten-Verzeichnis (`web/data/marktplatz.json`,
+9 Einträge), ein Such-Werkzeug und eine neutrale Identität.
+
+**Gemessen, was ein Umbenennen anfassen würde:**
+
+| Repo | Dateien mit Verweis auf `SB-KIMTool-Point` |
+|---|---|
+| Sage-Protokol | **101** |
+| family-project | **34** |
+| Jasons-Tresor | **30** |
+| Mein-Tresor | **25** |
+| mycel-karte | 1 |
+| **Summe** | **191** |
+
+Dazu: die Spore des Knotens trägt `endpoint:
+https://lausiklauskn-png.github.io/SB-KIMTool-Point/` und ist **signiert** — ein
+Adresswechsel erzwingt eine Neu-Signatur und läuft in genau die Adress-Wand,
+die Modul 23 gelöst hat.
+
+**Klaus' Entscheidung: neues Repo.** Das ist auch inhaltlich sauberer —
+SB-KIMTool-Point bleibt, was es ist (Werkzeug-Hub und Observatorium für Forker,
+ein Knoten im Mycel); der offene Markt bekommt eine **eigene Identität, eigene
+Spore, eigene Adresse**. Was gebraucht wird, wird **kopiert, nicht verschoben**
+(Bausatz-Regel, § 5) — beide Seiten bleiben lauffähig.
+
+Arbeitsname: **PWA Toolpoint**. Er besteht den Vorlese-Test aus § 8b und
+vermeidet „Kim" nach außen. Die Domain muss noch geprüft und entschieden werden
+(§ 15 Punkt 6).
+
+---
+
 ## 8c. Den Kreis schließen — was wirklich schützbar ist und was nicht
 
 **Klaus' Wunsch:** *„family-project soll verschlüsselt werden, damit andere da
@@ -755,6 +790,111 @@ sondern **die Zugehörigkeit**:
 
 Das ist ehrlich, es widerspricht keiner Tafel, und es ist in einem Satz erklärbar
 — was bei einem Kopierschutz nie der Fall wäre.
+
+---
+
+## 8c1. Relais — eigenes oder fremdes, und wie viele
+
+**Klaus' Frage 2026-08-09:** *„Eigenes oder fremdes Relais? Mehrere, um Ausfälle
+zu vermeiden?"*
+
+**Ausgangslage:** Klaus betreibt bereits ein **eigenes** Relais —
+`wss://relay.family-projekt.de`, auf seinem Hetzner-Server hinter Caddy. Alle
+Knoten laufen darüber. Und **Modul 05b kann längst mehrere**: `DEFAULT_RELAYS`
+ist eine Liste, `configure({relays:[…]})` nimmt sie entgegen — heute steht nur
+eine Adresse darin. **Mehrere Relais sind Konfiguration, kein Bau.**
+
+### Die Abwägung
+
+| | Eigenes Relais | Fremde, öffentliche Relais |
+|---|---|---|
+| Kontrolle | vollständig; später auch Beschränkung möglich | keine — können filtern, drosseln, verschwinden |
+| Kosten | läuft auf dem vorhandenen Server mit | 0 € |
+| Wartung | seine | keine |
+| Ausfall | **ein Server, ein Ausfallpunkt** | viele, unabhängig voneinander |
+| Lesbarkeit | öffentlich lesbar, wer die Adresse kennt | ebenso |
+
+**Der wunde Punkt beim eigenen:** Relais und Marktplatz lägen auf **derselben
+Maschine**. Fällt der Server aus, fällt beides gleichzeitig — ein
+zusammenhängender Ausfall, genau die Sorte, gegen die Redundanz eigentlich
+helfen soll.
+
+### Empfehlung: gemischt, aber **unterschiedlich je Seite**
+
+- **Der offene Markt:** eigenes Relais **plus zwei bis drei öffentliche** als
+  Ausweichweg. Mehr Relais heißt hier mehr Reichweite und mehr Verfügbarkeit —
+  beides erwünscht, nichts spricht dagegen.
+- **Der Kreis:** **nur das eigene.** Jedes zusätzliche Relais ist eine weitere
+  Stelle, an der der Verkehr des Kreises öffentlich mitlesbar liegt. Verfügbarkeit
+  ist hier weniger wert als Übersichtlichkeit — man weiß genau, wo die Nachrichten
+  landen.
+
+Das folgt derselben Logik wie die ganze Trennung: außen Reichweite, innen
+Kontrolle.
+
+### Zwei Klarstellungen, damit nichts missverstanden wird
+
+1. **Mehr Relais bringt Verfügbarkeit, nicht Vertraulichkeit.** Im Gegenteil —
+   jede zusätzliche Adresse ist eine weitere öffentliche Kopie. Vertraulichkeit
+   bleibt Grad C (B6), und die ist fällig, sobald im Kreis Geschäftsdaten
+   fließen (§ 8c).
+2. **Ein eigenes Relais ist noch keine Mitgliedschaft.** Wer die Adresse und das
+   Raum-Tag kennt, kann mithören — auch auf dem eigenen Server. Die
+   Mitgliedschaft entsteht über die Zulassungsliste (§ 8c, Module 12/14), nicht
+   über den Betreiber des Relais.
+
+---
+
+## 8d. Der langsame Start — drei Stufen, ein Auslöser
+
+**Klaus' Ausgangslage am 2026-08-09, in seinen Worten:** noch alles im Aufbau ·
+**kein Geld eingenommen**, nur ein Spenden-Hinweis auf der Seite · mit niemandem
+über Beteiligungen gesprochen — *„das kommt alles erst in einer Woche, dann wird
+darüber gesprochen und dann entscheidet sich, wie ich weiter vorgehe"* · bei den
+meisten Projekten noch kein Geld in Aussicht oder geringfügige Beträge · Werbung
+soll über Freunde und das eigene Umfeld laufen, gezielt an Leute mit Interesse ·
+zunächst als **zweite Einnahmequelle**, und *„wenn's mehr wird, übernimmt es den
+Hauptlebensunterhalt"*.
+
+Sein Wunsch: **das geringste Risiko, das überhaupt geht.** Erst bauen, zeigen,
+die Reaktion abwarten — dann handeln. *„Auf die Projektion der anderen kommt
+meine Reaktion."*
+
+### Die drei Stufen
+
+| Stufe | Was passiert | Gewerbe nötig? |
+|---|---|---|
+| **0 · Bauen** | Repo, Seite, Werkzeuge; nichts öffentlich | nein |
+| **1 · Zeigen** | Seite ist online, zeigt Apps und die gemessenen Werte. **Keine Preise, keine Provision, kein „trag dich ein für X €"** | nein — aber Impressum + Datenschutzerklärung gehören trotzdem drauf |
+| **2 · Handeln** | zum ersten Mal ein Preis, eine Provision, eine Vereinbarung | **ja, vor diesem Schritt** |
+
+**Die Formulierung, die das Risiko klein hält:**
+
+> Ich baue und zeige zuerst. Solange ich nur zeige, gibt es keine Preise und
+> keine Provision. Sobald ich zum ersten Mal etwas gegen Bezahlung anbiete,
+> melde ich das Gewerbe an — vorher nicht, aber auch nicht später.
+
+**Warum beide Hälften wichtig sind:** zu früh anmelden kostet Papierkram und
+eine kleine Gebühr. Handeln ohne Anmeldung ist eine Ordnungswidrigkeit. Die
+Fehler sind **nicht gleich teuer**, deshalb wird die Grenze zwischen Stufe 1 und
+2 **scharf** gezogen: sobald irgendwo ein Preis, ein Prozentsatz oder ein „jetzt
+eintragen" steht, ist es Stufe 2. Eine Seite, die *zeigt*, ist eindeutig; eine,
+die *fast schon anbietet*, ist ein Graubereich — und Graubereiche sind das,
+was vermieden werden soll.
+
+*(Keine Rechtsberatung. Die Struktur steht hier, die Entscheidung trifft das
+Gewerbeamt bzw. der Steuerberater — § 13.)*
+
+### Stufe 1 ist zugleich die Messung
+
+In Stufe 1 gibt es keinen Preis, aber sehr wohl ein **Formular**: *„Ich hätte
+Interesse."* Das kostet nichts, verpflichtet zu nichts, und es ist genau die
+Reaktion, die gemessen werden soll. Meldet sich niemand, ist Stufe 2 gespart.
+Melden sich zehn, weiß man auch gleich, was sie wollen.
+
+**Das ist dieselbe Disziplin wie überall sonst im Netz:** keine Ursache ohne
+Beleg, keine Schwankung ohne Zahl — hier: **kein Preismodell ohne Nachfrage.**
+Erst messen, dann verpflichten.
 
 ---
 

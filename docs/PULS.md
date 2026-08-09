@@ -104,6 +104,47 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 6 — Entscheidungen zum offenen Markt (§ 8b1, § 8c1, § 8d) + Brief.**
+
+**(a) Eigenes Repo statt Umbenennung (§ 8b1).** Zur Debatte stand,
+SB-KIMTool-Point umzuwidmen — es war ursprünglich dafür gedacht und trägt
+Werkzeugkiste, Knoten-Verzeichnis und neutrale Identität. **Gemessen**, was ein
+Umbenennen anfassen würde: **191 Dateien** in fünf Repos (Sage 101,
+family-project 34, Jasons-Tresor 30, Mein-Tresor 25, mycel-karte 1), dazu eine
+**auf die alte Adresse signierte Spore** → Neu-Signatur und Adress-Wand.
+**Klaus' Entscheidung: neues Repo.** Inhaltlich sauberer — der Werkzeug-Hub
+bleibt Knoten im Mycel, der Markt bekommt eigene Identität. Gebraucht wird
+**kopiert, nicht verschoben**. Arbeitsname **PWA Toolpoint** (besteht den
+Vorlese-Test, vermeidet „Kim" nach außen — das gehört nach innen).
+
+**(b) Relais (§ 8c1).** Klaus betreibt bereits ein **eigenes**
+(`wss://relay.family-projekt.de`, Hetzner hinter Caddy), und **Modul 05b kann
+längst mehrere** (`DEFAULT_RELAYS` ist eine Liste, `configure({relays})`) —
+mehrere Relais sind **Konfiguration, kein Bau**. Empfehlung, unterschiedlich je
+Seite: **offener Markt** = eigenes + zwei bis drei öffentliche (Reichweite und
+Verfügbarkeit erwünscht); **Kreis** = nur das eigene (jedes weitere Relais ist
+eine weitere öffentlich mitlesbare Stelle). Wunder Punkt notiert: Relais und
+Markt lägen auf derselben Maschine — zusammenhängender Ausfall. Zwei
+Klarstellungen: mehr Relais bringt **Verfügbarkeit, nicht Vertraulichkeit**, und
+ein eigenes Relais ist **noch keine Mitgliedschaft**.
+
+**(c) Der langsame Start (§ 8d).** Klaus' Lage: **kein Geld eingenommen**, nur
+ein Spenden-Hinweis; über Beteiligungen wurde mit niemandem gesprochen — das
+kommt **in einer Woche**; zunächst als **zweite Einnahmequelle** gedacht.
+Wunsch: geringstes Risiko. Drei Stufen mit scharfer Grenze — **0 Bauen** ·
+**1 Zeigen** (online, aber keine Preise, keine Provision; Impressum und
+Datenschutz trotzdem) · **2 Handeln** (erster Preis → Gewerbe **davor**). Die
+Formulierung: *„Solange ich nur zeige, gibt es keine Preise. Sobald ich zum
+ersten Mal etwas gegen Bezahlung anbiete, melde ich das Gewerbe an — vorher
+nicht, aber auch nicht später."* Stufe 1 ist zugleich die **Messung**: ein
+Formular „Ich hätte Interesse", das nichts kostet und nichts verspricht.
+Dieselbe Disziplin wie überall: **kein Preismodell ohne Nachfrage.**
+
+**Brief für die nächste Sitzung:** `docs/sessions/BRIEF_PWA_TOOLPOINT_START.md`
+— Auftrag Stufe 0, Byte-Kopien mit Drift-Guard von Anfang an, eigene DB-Kennung,
+kein Bezahlvorgang, keine Preise, SB-KIMTool-Point bleibt unangetastet.
+**Der Bau hängt an einer einzigen Entscheidung: Name und Domain.**
+
 **Nachtrag 5 — der offene Markt und der geschlossene Kreis (§ 8b, § 8c).**
 Klaus hat den Markt angesehen: es gibt inzwischen etliche PWA-Marktplätze, aber
 sie wirken **unprofessionell und community-artig** („hast du nicht Lust…"). Er
