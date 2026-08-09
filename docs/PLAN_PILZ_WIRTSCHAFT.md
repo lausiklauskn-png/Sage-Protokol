@@ -1059,10 +1059,14 @@ vergessen werden.
    Dieses Papier empfiehlt Wartungsbeitrag.
 4. **Preisform für WorkFloh** und für die Betreuung (Einarbeitung ≠ Wartung).
 5. **Verfügbare Zeit im Monat** für Betreuung und Gespräche.
-6. **Name und Adresse des Klons** (§ 3 ③ / § 8b) — er darf nicht „Family
-   Projekt" heißen, sonst vermischen sich Kreis und Öffentlichkeit in der
-   Wahrnehmung. **Das ist der Punkt, an dem der Bau anfangen kann** — ohne
-   Namen kein Repo, ohne Repo kein Anfang.
+6. ✅ **Entschieden 2026-08-09.** Repo **`lausiklauskn-png/PWA-Toolpoint`**;
+   Adressen **`pwa-toolpoint.de`** (Haupt-Adresse) und **`pwa-toolpoint.com`**
+   (leitet weiter) bei INWX registriert, Registrant Klaus Nitzsche. Bewusst
+   **nicht** genommen: `.com.de` und `.co.de` — keine echten Endungen, sondern
+   Unteradressen einer privaten Firma; sie fangen niemanden ab, der `.com`
+   eintippt, und sehen für Fremde nach Tippfehler aus. Ebenfalls weggelassen:
+   Treuhandservice (INWX wäre dann Inhaber statt Klaus) und Whois-Privacy
+   (die Anschrift steht ohnehin im Impressum, sobald es gewerblich wird).
 7. **Provisionshöhe und Vermittlungs-Bedingungen** im Klon — wer bekommt wie
    viel, wann, und was gilt, wenn etwas schiefgeht.
 
