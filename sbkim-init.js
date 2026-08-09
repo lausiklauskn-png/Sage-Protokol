@@ -41,6 +41,35 @@
     }
   }
 
+  // Ein Skript NACH dem Laden holen, statt es in den kritischen Pfad zu stellen.
+  // Wartet auf eine Ruhepause — oder auf die erste Berührung/Taste/Rollbewegung,
+  // je nachdem, was zuerst kommt. Wer die Seite sofort benutzt, wartet also
+  // nicht auf die Ruhepause; wer nur liest, bekommt den Text früher.
+  // Fail-soft: schlägt der Abruf fehl, geht es ohne das Modul weiter.
+  function ladeSpaeter(pfad, globalName) {
+    if (globalName && window[globalName]) return Promise.resolve(true);
+    return new Promise(function (fertig) {
+      var los = false;
+      function starten() {
+        if (los) return; los = true;
+        ["pointerdown", "keydown", "scroll"].forEach(function (e) {
+          window.removeEventListener(e, starten, true);
+        });
+        var s = document.createElement("script");
+        s.src = pfad;
+        s.async = true;
+        s.onload  = function () { fertig(true); };
+        s.onerror = function () { warn(globalName || pfad, new Error("konnte " + pfad + " nicht nachladen")); fertig(false); };
+        document.head.appendChild(s);
+      }
+      ["pointerdown", "keydown", "scroll"].forEach(function (e) {
+        window.addEventListener(e, starten, { capture: true, once: true, passive: true });
+      });
+      if (window.requestIdleCallback) requestIdleCallback(starten, { timeout: 3000 });
+      else setTimeout(starten, 1200);
+    });
+  }
+
   async function initModule(name, fn) {
     if (typeof fn !== "function") {
       warn(name, new Error(name + " nicht auf window — script-Tag fehlt?"));
@@ -448,6 +477,15 @@
     // Politik "frei" (EU wählbar). KEIN Richter-Schlüssel hier — reiner
     // lokaler Vorfilter (server-los); ein Endknoten mit BYOK-Schlüssel
     // reicht ihn über init({apiKey}) durch.
+    //
+    // NACHGELADEN, nicht mitgeladen (Klaus' Entscheidung 2026-08-09).
+    // `22_such_widget.js` ist mit 62 KiB die größte Einzeldatei der Seite, und
+    // laut PageSpeed sind davon 34 KiB beim Seitenstart ungenutzt. Gebraucht
+    // wird sie erst, wenn jemand sucht. Sie kommt jetzt in einer Ruhepause NACH
+    // dem Laden dazu (oder sofort, wenn vorher jemand die Seite anfasst) — die
+    // 🔍-Blase erscheint dadurch einen Wimpernschlag später, der Text davor
+    // dafür früher. Fail-soft: kommt die Datei nicht, fehlt nur die Suche.
+    await ladeSpaeter("src/modules/22_such_widget.js", "SbkimSearchWidget");
     await initModule("SbkimSearchWidget", function () {
       if (!window.SbkimSearchWidget) return false;
       return window.SbkimSearchWidget.init({

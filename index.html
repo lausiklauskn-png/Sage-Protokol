@@ -248,8 +248,25 @@
      Die Seite hat sich sichtbar geoeffnet; das gehoert zu ihr. Eine Testzahl ist
      kein Grund, das aufzugeben — die Zahl misst, wie schnell etwas da ist, nicht
      ob es gut ist. Wer die Einblendung erneut abschalten will, braucht dafuer
-     Klaus' Wort, nicht einen Lighthouse-Bericht. */
+     Klaus' Wort, nicht einen Lighthouse-Bericht.
+
+     NACHTRAG gleicher Tag: die Klasse `erstanzeige` gibt es wieder — aber mit
+     UMGEKEHRTEM Sinn. Sie schaltet die Einblendung nicht mehr ab, sie laesst sie
+     nur nicht bei voelliger Unsichtbarkeit beginnen (siehe `fade-in-erst` unten).
+     Damit bleibt die Bewegung und der LCP wartet trotzdem nicht. Wer den alten
+     Namen sucht: er meint jetzt das Gegenteil von dem, was er am 2026-08-07 tat. */
   @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  /* Der Start-Bildschirm blendet ein wie die anderen — aber er beginnt NICHT
+     bei voelliger Unsichtbarkeit (Klaus 2026-08-09, Punkt 3).
+     Der groesste Anstrich (LCP) ist der Hero-Text. Ein Element mit `opacity: 0`
+     gilt als noch nicht gemalt; der LCP wartete also das ganze Einblenden ab —
+     gemessen rund zwei Sekunden. Faengt die Bewegung bei 0.35 an, ist der Text
+     vom ersten Bild an da (der LCP zaehlt sofort), und die Aufhellung samt
+     Hochgleiten bleibt sichtbar. Bildschirme, die SPAETER aktiv werden, kommen
+     weiterhin aus dem Nichts (`fade-in`) — dort kostet es nichts. */
+  @keyframes fade-in-erst { from { opacity: 0.35; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .screen.active.erstanzeige { animation-name: fade-in-erst; }
+  @media (prefers-reduced-motion: reduce) { .screen.active { animation: none; } }
   .screen-back { margin-bottom: 1.5rem; background: transparent; border: 1px solid var(--line-strong); }
   .hero { padding: 4rem 0 3rem; position: relative; }
   .hero-eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.36rem 0.85rem; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; font-family: "Geist Mono", monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.6rem; }
@@ -1189,7 +1206,7 @@
   </nav>
   <div class="wrap">
     <!-- ============= OVERVIEW SCREEN ============= -->
-    <main id="screen-overview" class="screen active">
+    <main id="screen-overview" class="screen active erstanzeige">
       <section class="hero">
         <div class="hero-eyebrow"><span class="dot"></span>Bau-Hub · Spec-Werkstatt · keine Endknoten-PWA</div>
         <h1 class="hero-title">Das <span class="accent">Mycel-Protokoll</span><br>für kleine Apps.</h1>
@@ -2172,7 +2189,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       STATE.status = FALLBACK_STATUS;
     }
     renderAll();
-    pingEndknoten();
+    pingEndknotenBeiSicht();   // NICHT sofort — erst wenn die Karten ins Bild kommen
   }
 
   function renderAll() {
@@ -2752,14 +2769,30 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
     });
   }
 
+  // Die Lebendig-Prüfung der Endknoten — NICHT mehr beim Seitenstart.
+  //
+  // Sie holt für jeden Eintrag in status.json dessen `sbkim/spore.json`. Das
+  // waren gemessen **15 Abrufe an fremde Adressen** (github.io + family-projekt.de),
+  // und sie liefen **nacheinander** mit je 4 s Zeitlimit — im schlimmsten Fall
+  // also eine geschlagene Minute, mitten im kritischen Pfad vor dem Text. Ihr
+  // ganzer Zweck ist Kosmetik: aus „Angedockt" wird „Lebendig · Spore antwortet"
+  // auf Karten, die weit unten auf der Seite liegen.
+  //
+  // Zwei Änderungen, Klaus' Entscheidung 2026-08-09 („beim Öffnen spricht die
+  // Seite mit niemandem", wie schon bei Mein-Tresor und Jasons-Tresor):
+  //   1. Sie läuft erst, wenn die Endknoten-Karten wirklich ins Bild kommen —
+  //      wer die Seite nur öffnet und oben bleibt, löst gar nichts aus.
+  //   2. Sie fragt alle Knoten **gleichzeitig** statt nacheinander. Damit dauert
+  //      die ganze Runde so lang wie der langsamste Knoten, nicht wie ihre Summe.
+  // Fail-soft wie zuvor: antwortet ein Knoten nicht, bleibt seine Karte, wie sie ist.
   async function pingEndknoten() {
     const list = (STATE.status.endknoten || []);
-    for (const e of list) {
-      if (!e.url) continue;
+    const timeoutMs = (STATE.status.config && STATE.status.config.QUERY_TIMEOUT_MS) || 4000;
+    await Promise.all(list.map(async (e) => {
+      if (!e.url) return;
       const id = 'end-' + e.name.toLowerCase().replace(/\W+/g, '');
-      const node = document.getElementById(id); if (!node) continue;
+      const node = document.getElementById(id); if (!node) return;
       const ctrl = new AbortController();
-      const timeoutMs = (STATE.status.config && STATE.status.config.QUERY_TIMEOUT_MS) || 4000;
       const t = setTimeout(() => ctrl.abort(), timeoutMs);
       try {
         const r = await fetch(e.url.replace(/\/$/, '') + '/sbkim/spore.json', { signal: ctrl.signal });
@@ -2769,8 +2802,27 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
           const pill = node.querySelector('.pill');
           if (pill) pill.textContent = 'Lebendig · Spore antwortet';
         }
-      } catch (_) { /* stays */ }
+      } catch (_) { clearTimeout(t); /* Karte bleibt, wie sie ist */ }
+    }));
+  }
+
+  // Löst die Prüfung genau einmal aus — sobald die Endknoten-Karten ins Bild
+  // kommen. Ohne IntersectionObserver (sehr alte Browser) läuft sie in einer
+  // Ruhepause nach dem Laden, also immer noch nicht im kritischen Pfad.
+  function pingEndknotenBeiSicht() {
+    const grid = document.getElementById('endknoten-grid');
+    if (!grid) return;
+    if (!('IntersectionObserver' in window)) {
+      if (window.requestIdleCallback) requestIdleCallback(() => pingEndknoten(), { timeout: 5000 });
+      else setTimeout(() => pingEndknoten(), 2000);
+      return;
     }
+    const beobachter = new IntersectionObserver((eintraege) => {
+      if (!eintraege.some(x => x.isIntersecting)) return;
+      beobachter.disconnect();
+      pingEndknoten();
+    }, { rootMargin: '200px' });
+    beobachter.observe(grid);
   }
 
   // ====== ANDOCK-GENERATOR ======
@@ -4725,7 +4777,10 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
   <script src="src/modules/18_tool_pwa.js"></script>
   <script src="src/modules/20_schluessel_safe.js"></script>
   <script src="src/modules/21_spracheingabe.js"></script>
-  <script src="src/modules/22_such_widget.js"></script>
+  <!-- 22 Such-Widget bewusst NICHT hier: mit 62 KiB die groesste Einzeldatei
+       der Seite, davon laut PageSpeed 34 KiB beim Start ungenutzt. `sbkim-init.js`
+       holt sie in einer Ruhepause nach dem Laden nach (oder sofort bei der
+       ersten Beruehrung) -- siehe dort `ladeSpaeter`. Klaus 2026-08-09. -->
   <script src="src/modules/23_rendezvous.js"></script>
   <script src="src/modules/23_rendezvous_ui.js"></script>
   <script src="src/modules/24_ocr_eingabe.js"></script>
@@ -4952,6 +5007,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
       }
 
       setBadge(unread);
+      merken(unread);   // damit der nächste Seitenaufruf das Badge OHNE Netz zeigen kann
 
       if (!silent) {
         var head = '<div class="nm-head"><div class="nm-self">' + esc(SELF) + ' — SBKIM-Endknoten</div>' +
@@ -4959,6 +5015,7 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
         var foot = '<div class="nm-foot"><b class="nm-ok">' + connected + '/' + total + ' verbunden</b> · ' +
           (unread ? '<b class="nm-warn">' + unread + ' ungelesen</b>' : '📭 alles synchron') +
           '<p class="nm-note">Match <b>live im Browser</b> nachgerechnet (Cosinus Sages ⟷ Nachbar-Spore). Quittieren via <code>ack</code> in sbkim/SIGNAL.json.</p>' +
+          '<p class="nm-note">Diesen Stand hat <b>dieser Klick</b> geholt. Die Seite fragt beim bloßen Öffnen <b>niemanden</b> — sie spricht erst mit den Nachbarn, wenn du 📬 drückst.</p>' +
           '<p class="nm-note">' + esc(new Date().toLocaleString()) + '</p></div>';
         body.innerHTML = head + cards.join('') + foot;
       }
@@ -4968,8 +5025,33 @@ curl -s https://lausiklauskn-png.github.io/sage-protokol/status.json | jq .confi
 
     btn.addEventListener('click', function () { check(false); });
     closeBtn.addEventListener('click', function () { pop.classList.remove('show'); });
-    // Beim Laden still prüfen → nur Badge setzen (kein Modal).
-    check(true);
+
+    // KEIN Netz beim Öffnen der Seite (Klaus' Entscheidung 2026-08-09).
+    //
+    // Bis hierher hat `check(true)` beim bloßen Aufruf die Briefkästen ALLER
+    // Nachbarn abgefragt — gemessen im Browser: **15 Abrufe** an fremde Adressen
+    // (github.io + family-projekt.de), alle im kritischen Pfad vor dem Text.
+    // Auf einer gedrosselten Handy-Leitung kostet jeder davon Sekunden.
+    //
+    // Der zweite Grund wiegt schwerer als die Sekunden: wer die Seite nur
+    // öffnet, meldete damit stillschweigend fünfzehn Verbindungen an. Für fremde
+    // Nutzer über den family-projekt.de-Marktplatz ist das keine Kleinigkeit.
+    //
+    // Dieselbe Entscheidung trägt seit 2026-08-08 auch Mein-Tresor und
+    // Jasons-Tresor — dort waren es fünf Abrufe, hier sind es fünfzehn.
+    //
+    // Das Badge geht nicht verloren: es kommt aus dem GEMERKTEN Ergebnis des
+    // letzten Blicks (localStorage, kein Netz). Der Schlüssel trägt einen
+    // App-Zusatz, weil auf der geteilten github.io-Adresse alle Geschwister-Apps
+    // im selben Speicher liegen.
+    var MERKER = 'sbkim_netzstand_sage';
+    function merken(n) { try { localStorage.setItem(MERKER, JSON.stringify({ unread: n, ts: Date.now() })); } catch (e) {} }
+    function ausMerker() {
+      var m = null;
+      try { m = JSON.parse(localStorage.getItem(MERKER) || 'null'); } catch (e) {}
+      if (m && Number(m.unread) > 0) setBadge(Number(m.unread));
+    }
+    ausMerker();
   })();
   </script>
 
