@@ -31,6 +31,75 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (3) — Sage-Page: 15 Fremd-Abrufe beim Öffnen auf null, Note 72 → 77
+
+**Rolle:** Fehlersuche + Bau. Grundlage war Klaus' Handy-Bericht (PageSpeed 63) und seine
+Entscheidung für die Punkte 1–3 der Analyse.
+
+### Die Einordnung, die Arbeit spart
+
+**Jeder Posten aus dem Bericht hat in der Wertung `Gewicht 0`** — Minifizieren (160 KiB),
+ungenutztes CSS/JS, Hauptthread 3,3 s, die acht Animationen. Die Note machen nur FCP, **LCP**,
+TBT, CLS und Speed Index; TBT (10–40 ms) und CLS (0) sind hier schon perfekt. Es ging also
+allein um LCP. Und Minifizieren ist für die SBKIM-Module ohnehin verboten (byte-genaue
+Kanon-Kopien, ein Prüfwert wacht darüber).
+
+### Was gebaut wurde
+
+1. **Beim Öffnen spricht die Seite mit niemandem mehr.** Zwei Quellen, nicht eine:
+   - Die stille Briefkasten-Prüfung beim Laden ist raus; das Badge kommt aus dem gemerkten
+     Ergebnis des letzten Blicks (`localStorage`, app-eigener Schlüssel).
+   - **Der eigentliche Brocken war `pingEndknoten()`** — für jeden Eintrag in `status.json` ein
+     Abruf der fremden `sbkim/spore.json`: **15 Adressen, nacheinander, je 4 s Zeitlimit**, im
+     schlimmsten Fall eine Minute im kritischen Pfad. Zweck: reine Kosmetik auf Karten weit
+     unten („Lebendig" statt „Angedockt"). Läuft jetzt erst, wenn die Karten ins Bild kommen,
+     und fragt alle **gleichzeitig**.
+2. **Das Such-Widget wird nachgeladen** (62 KiB, davon 34 beim Start ungenutzt) — in einer
+   Ruhepause nach dem Laden oder sofort bei der ersten Berührung.
+3. **Die Einblendung bleibt, der LCP kommt trotzdem zurück.** Der Start-Bildschirm beginnt
+   nicht mehr bei völliger Unsichtbarkeit, sondern bei `opacity: 0.35`. Ein Element mit
+   `opacity: 0` gilt als noch nicht gemalt — der LCP wartete das ganze Einblenden ab.
+
+### Gemessen
+
+Fremd-Abrufe im echten Browser (Handy-Fenster):
+
+```
+beim Öffnen, vorher    15        nachher   0
+Badge aus dem Merker   zeigt "4" bei 0 Abrufen
+nach Druck auf 📬      Fenster öffnet, Abrufe starten
+Such-Blase             nachgeladen und im Bild
+```
+
+Note und LCP, abwechselnd, je drei Läufe:
+
+| | Leistung | LCP |
+|---|---|---|
+| **alt** | 72 · 72 · 72 | 6,8 · 7,5 · 7,5 s |
+| **neu** | **77 · 74 · 77** | **5,0 · 5,8 · 5,0 s** |
+
+**Median 72 → 77, LCP 7,5 → 5,0 s.** Bemerkenswert im Vergleich zu den zwei Messungen von
+vorhin: der Stand **mit abgeschalteter Einblendung** lag bei 72 · 73 · 75 und LCP 4,9 · 6,4 ·
+5,6 s. Die Seite ist jetzt also **besser als damals — und die Einblendung ist trotzdem an.**
+Punkt 3 hat den Tausch aufgelöst, statt ihn zu gewinnen.
+
+### Zwei Fehler von mir, festgehalten
+
+1. **Mein erster Fix zielte daneben.** Ich hielt die Briefkasten-Prüfung für die Quelle der
+   15 Abrufe und baute sie um — die Abrufe blieben. Sie holten `spore.json`, der Briefkasten
+   holt `SIGNAL.json`; die Adressen hätten es mir sofort gesagt, wenn ich sie gelesen hätte
+   statt meiner Vermutung zu folgen. Die Messung hat den Irrtum aufgedeckt, nicht das Gefühl.
+2. **Die Klasse `erstanzeige` heißt jetzt das Gegenteil von vorher.** Am 2026-08-07 schaltete
+   sie die Einblendung ab, heute lässt sie sie nur nicht bei Unsichtbarkeit beginnen. Der alte
+   Kommentar ist um einen Nachtrag ergänzt, damit niemand die beiden verwechselt.
+
+### Offen
+
+- **Klaus' PageSpeed-Lauf** — lokal ist ein Hinweis. Sein letzter Handy-Wert war 63.
+- **Die WebSocket-Verbindung zum Relais** (`wss://relay.family-projekt.de`) öffnet weiterhin
+  beim Laden. Sie ist der Empfangsmodus und war nicht Teil der Entscheidung — aber sie liegt
+  ebenfalls im kritischen Pfad und wäre der nächste Kandidat.
+
 ## Stand 2026-08-09 (2) — Discovery-Expedition: die Erde war nie ein Ei, nur gedehnt
 
 **Rolle:** Fehlersuche + Fix. Klaus' Befund: *„In Discovery Expedition sieht die Erde noch aus
