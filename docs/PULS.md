@@ -104,6 +104,21 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag — Skills und Regeln als geteilte Teile (§ 7b im Papier).** Auf Klaus'
+Frage nach der Erfassung von Fortschritt, Regeln und Dokumentation gemessen:
+dieselben Skills liegen in mehreren Repos, und **zwei von drei sind
+auseinandergelaufen** (`status-leiste-siegel`, `saubere-netz-anmeldung` — je
+verschiedene Prüfsummen in Sage und family-project; nur
+`verschluesselter-schluessel-tresor` ist identisch). Dazu liegt
+`menschlich-schreiben` nur in Sage und `seiten-bauregeln` nur in family-project —
+beide würden im jeweils anderen Repo gebraucht. Extremfall: die `CLAUDE.md` von
+`semantic-match-demo` ist die Verfassung von Muttis Rezeptbuch.
+**Dieselbe Krankheit wie bei den Modulen und den zwei WorkFlohs — geteilte Teile
+ohne Wächter, hier aber an den Regeln selbst.** Neue Regel im Papier: *Was in
+mehr als einem Repo gilt, hat eine Quelle und einen Wächter.* Und der wichtigste
+Skill für das Geschäft fehlt noch: **einen neuen Partner aufnehmen** — sein
+Inhalt entsteht gerade von allein bei Beauty's Einarbeitung.
+
 **Nächster sinnvoller Schritt:** Beauty jetzt mitschreiben (kostet nichts, ist
 nicht wiederholbar), dann der zweite Knopf am Marktplatz („Ich hätte gern so
 etwas für meinen Betrieb"), dann das Übersichtsblatt mit den Spalten, die schon

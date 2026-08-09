@@ -302,6 +302,74 @@ oder eben nicht.
 
 ---
 
+## 7b. Wissen, Regeln und Skills — der Bausatz in Schriftform
+
+**Klaus' Frage 2026-08-09:** *„Was ist mit der Erfassung deiner Fortschritte und
+Regeln und Dokumentationen — Skills anzuwenden auf dieses Projekt?"*
+
+Das ist dieselbe Frage wie § 5, eine Etage höher. Der Bausatz besteht nicht nur
+aus Code, sondern auch aus **Wissen**: wie man eine schnelle Seite baut, wie ein
+Knoten sich sauber anmeldet, wie ein Siegel aussieht, wie ein Schlüssel
+verschlüsselt liegt. Genau dafür gibt es die Skills unter `.claude/skills/`, und
+sie sind gut — sie stammen aus echten Messungen an echten Repos, mit Datum und
+Zahl, nicht aus dem Lehrbuch.
+
+### Der Befund — gemessen am 2026-08-09
+
+Dieselben Skills liegen in mehreren Repos. Prüfsummen über `SKILL.md`:
+
+| Skill | Sage-Protokol | family-project | Ergebnis |
+|---|---|---|---|
+| `verschluesselter-schluessel-tresor` | `10561e87…` | `10561e87…` | ✅ **gleich** |
+| `status-leiste-siegel` | `237dcceb…` | `b551bd29…` | ❌ **auseinandergelaufen** |
+| `saubere-netz-anmeldung` | `c3d731f1…` | `cd48ea9c…` | ❌ **auseinandergelaufen** |
+| `menschlich-schreiben` | vorhanden | — | ⚠️ **nur in Sage** |
+| `seiten-bauregeln` | — | vorhanden | ⚠️ **nur in family-project** |
+
+**Zwei von drei geteilten Skills stimmen nicht mehr überein.** Und zwei
+wertvolle Skills liegen jeweils nur in einem Repo — eine Sitzung, die in Sage an
+einer Seite baut, bekommt die **Bauregeln für Seiten** nicht zu sehen; eine
+Sitzung in family-project bekommt die Regeln für **verständliches Schreiben**
+nicht zu sehen. Beide würden dort gebraucht.
+
+Der Extremfall steht in `semantic-match-demo`: dessen `CLAUDE.md` ist die
+Verfassung von **Muttis Rezeptbuch** — Build-Skript, Icon-Regeln, `QC_MeinRezb`-
+Dateien — und behauptet obendrein, das Repo sei privat. Es ist öffentlich.
+
+> **Es ist genau dieselbe Krankheit wie bei den Modulen und den zwei WorkFlohs:
+> geteilte Teile ohne Wächter.** Nur trifft sie hier die Regeln selbst — also
+> das, woran sich alles andere ausrichtet.
+
+### Was daraus folgt
+
+1. **Skills und Verfassungen sind geteilte Teile und gehören unter denselben
+   Drift-Guard** wie die Module. Eine Quelle, byte-genaue Kopien, Prüfsumme.
+   Was repo-eigen ist (Dateinamen, Build-Schritt, Domäne), bleibt getrennt —
+   dieselbe Trennung wie in § 5 zwischen Geteiltem und Eigenem.
+2. **Der wichtigste Skill für dieses Geschäft fehlt noch:** *einen neuen Partner
+   aufnehmen* — von „wir sollten mal" bis „die App läuft und er pflegt sie
+   selbst". Das ist der Schritt, der sich pro Partner wiederholt, also der mit
+   dem größten Hebel. **Sein Inhalt entsteht gerade von allein** — bei Beauty's
+   Einarbeitung (§ 4). Was dort dreimal vorkommt, ist eine Zeile in diesem Skill.
+3. **Zwei Leser, ein Inhalt.** Ein Skill ist für die Sitzung geschrieben, eine
+   **Gebrauchsanleitung** für den Menschen. Alis hat die menschliche Hälfte
+   bereits (`gebrauchsanleitung.html`). Beide aus derselben Quelle zu pflegen
+   spart die Hälfte der Arbeit und verhindert, dass Anleitung und Wirklichkeit
+   auseinanderlaufen.
+4. **Fortschritt wird pro Repo sehr gut erfasst** — `PULS.md`, Brief-Kette,
+   Übergabeprotokolle, `forschung/JOURNAL.md` und `LEHREN.md`, `status.json`.
+   **Über die Repos hinweg gibt es nichts.** Das ist wieder dieselbe Lücke wie
+   beim Übersichtsblatt (§ 6): die Daten sind da, der Überblick fehlt.
+
+### Regel
+
+> **Was in mehr als einem Repo gilt, hat eine Quelle und einen Wächter.** Das
+> gilt für Module, für Skills, für Verfassungen und für die zwei
+> Marktplatz-Instanzen gleichermaßen. Wer eine Kopie ändert, ändert die Quelle
+> und kopiert neu — nie umgekehrt.
+
+---
+
 ## 8. Der innere Kreis — Klaus' Frage vom 2026-08-09
 
 > *„Was wäre, wenn wir Family Projekt als Grundbaustein nehmen in Kombination
@@ -472,7 +540,11 @@ vergessen werden.
    Punkt, an dem Klaus' Zeit pro Partner aufhört zu wachsen.
 5. **Drift-Guard über die Partner-Apps** — bevor der vierte Partner dazukommt,
    nicht danach. Er deckt später auch die zwei Marktplatz-Instanzen ab.
-6. **Der Klon für Fremde** (§ 3 ③) — erst wenn 1–4 stehen. Er braucht eigenen
+6. **Die zwei auseinandergelaufenen Skills zusammenführen** (§ 7b) — klein,
+   heute machbar, und es verhindert, dass zwei Sitzungen nach verschiedenen
+   Regeln bauen. Dabei `menschlich-schreiben` und `seiten-bauregeln` in beide
+   Repos legen; sie werden in beiden gebraucht.
+7. **Der Klon für Fremde** (§ 3 ③) — erst wenn 1–5 stehen. Er braucht eigenen
    Namen, eigene Adresse, eigene DB-Kennung und die Vermittler-Pflichten aus
    § 13. Bis dahin ist er eine Entscheidung, kein Bau.
 
