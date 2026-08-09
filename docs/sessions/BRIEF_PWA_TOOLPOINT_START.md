@@ -130,12 +130,23 @@ Stand beim Anlegen: ein Commit, nur eine `README.md` (15 Bytes), keine
 `CNAME`-Datei. Ob GitHub Pages schon eingeschaltet ist, weiß nur Klaus — diese
 Umgebung kommt nicht ins offene Netz.
 
-**Vor dem ersten Bau klären (§ 8b, und die Lehre aus Alis' Umzug):** die Adresse
-trägt heute Klaus' persönlichen Handle. Für einen Markt, der Fremden Vertrauen
-abverlangt, gehört dort eine **eigene Domain** hin. **Solange niemand die Seite
-kennt, kostet der Wechsel nichts** — später ist es ein Umzug mit demselben
-Origin-Problem wie bei Alis (Aufgabe 0). Also: Domain jetzt entscheiden, nicht
-nach dem ersten Besucher.
+**Die Adressen sind gesichert** (Klaus, 2026-08-09, 19:53 bei INWX):
+**`pwa-toolpoint.de`** = Haupt-Adresse · **`pwa-toolpoint.com`** = leitet dorthin
+weiter. Registrant Klaus Nitzsche, Nameserver bleiben bei INWX.
+
+**Damit gilt für den Bau von Anfang an die eigene Adresse** — nicht
+`lausiklauskn-png.github.io/PWA-Toolpoint/`. Der Grund ist die Lehre aus Alis'
+Umzug (Aufgabe 0): ein Adresswechsel später ist ein Umzug mit Origin-Problem.
+Jetzt kostet er nichts, weil noch niemand die Seite kennt.
+
+**Einzurichten (Klaus-Schritte, die Sitzung kann dabei anleiten):**
+- bei INWX für `pwa-toolpoint.de` die DNS-Einträge auf GitHub Pages zeigen
+  lassen (Apex + `www`)
+- `pwa-toolpoint.com` beim Registrar als **Weiterleitung** auf die `.de` setzen
+- in den Repo-Einstellungen unter Pages die Haupt-Adresse eintragen; GitHub legt
+  die `CNAME`-Datei dann selbst an — **nicht von Hand anlegen**, sonst kollidiert
+  sie mit der Einstellung
+- HTTPS abwarten (Zertifikat wird automatisch ausgestellt)
 
 **Was gebaut wird:**
 

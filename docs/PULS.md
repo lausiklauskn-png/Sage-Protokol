@@ -104,6 +104,26 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 11 — die Adressen sind gesichert, die letzte offene Entscheidung ist
+gefallen.** Klaus hat am 2026-08-09 um 19:53 bei INWX registriert:
+**`pwa-toolpoint.de`** (5,97 € erstes Jahr, 4,65 € Verlängerung) als
+**Haupt-Adresse** und **`pwa-toolpoint.com`** (17,37 €) als **Weiterleitung** —
+zusammen 23,34 €. Registrant Klaus Nitzsche, Nameserver bei INWX.
+
+**Bewusst NICHT genommen und warum** (gehört zur Fremdnutzer-Brille):
+`.com.de` und `.co.de` sind **keine echten Endungen**, sondern Unteradressen
+einer privaten Firma. Sie fangen **niemanden** ab, der `.com` eintippt — genau
+der Denkfehler, wegen dem sie verlockend wirken — und sehen für Fremde nach
+Tippfehler oder Betrugsadresse aus. Ebenfalls weggelassen: **Treuhandservice**
+(INWX wäre dann eingetragener Inhaber statt Klaus, also schwächere
+Rechtsposition an der eigenen Adresse) und **Whois-Privacy** (die ladungsfähige
+Anschrift steht ohnehin im Impressum, sobald es gewerblich wird — 4,99 €/Jahr
+dafür, sie in einer Datenbank zu verbergen, ist Geld für nichts).
+
+**Damit ist § 15 Punkt 6 geschlossen.** Der Bau in PWA-Toolpoint richtet sich
+von Anfang an auf die eigene Adresse — kein späterer Umzug, kein
+Origin-Problem wie bei Alis.
+
 **Nachtrag 10 — das Repo für den offenen Markt steht.** Klaus hat es angelegt:
 **`lausiklauskn-png/PWA-Toolpoint`**, erreichbar unter
 `https://lausiklauskn-png.github.io/PWA-Toolpoint/`. Stand beim Anlegen: ein
