@@ -104,6 +104,40 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 5 — der offene Markt und der geschlossene Kreis (§ 8b, § 8c).**
+Klaus hat den Markt angesehen: es gibt inzwischen etliche PWA-Marktplätze, aber
+sie wirken **unprofessionell und community-artig** („hast du nicht Lust…"). Er
+will das Gegenteil: professionell, ehrlich, offen — und der Grund mitzumachen
+soll **unverblümt sein, dass man Geld verdient**, ohne Diskussion darüber.
+Deshalb strikt getrennt: family-project bleibt **familiär**, der Klon ist
+**offen für den gesamten Markt**, gleiches Prinzip, anderer Ton. Muss
+**nebenbei** laufen.
+
+**§ 8b** buchstabiert den Klon aus: warum die Trennung technisch UND menschlich
+richtig ist (die beiden brauchen einen gegensätzlichen Ton — wer sie mischt,
+macht den Kreis unpersönlich und den Markt unseriös); der Wettbewerbsvorteil ist
+**nicht behauptet, sondern belegbar** (nächtlich gemessene Ladezeiten auch der
+schlechten, Wächter, Siegel an Bedingungen, Herkunft jeder Zahl — kein anderer
+PWA-Marktplatz zeigt das heute); Muss-Liste (Preis und Provision auf die erste
+Seite, Aufnahme in Minuten ohne Gespräch, **null Minuten Klaus-Zeit** je
+Eintrag) und Darf-nicht-Liste (kein Community-Ton, kein Eigenbau-Bezahlvorgang,
+keine Vermischung mit dem Kreis).
+
+**§ 8c** korrigiert einen Wunsch, der so nicht erfüllbar ist: „family-project
+verschlüsseln, damit niemand die Apps klaut" geht nicht — die eigene Tafel sagt
+es bereits (*Obfuskation ist ausdrücklich NICHT der Weg; Kopierbarkeit ist
+gewollt; Schutz ist Copyright + Git-Historie*). **Der eigentliche Wunsch
+betrifft nicht den Code, sondern die Zugehörigkeit** und ist voll erfüllbar:
+Mitgliedschaft (Module 12/14/10 liegen als Karten bereit), **höfliche
+Weiterleitung** Fremder auf den offenen Markt — *Ausschluss und Wachstum sind
+dasselbe Bauteil* —, und Vertraulichkeit im Kreis (Grad C / B6), sobald dort
+Geschäftsdaten fließen. Die Ansage nach außen in einem Satz: *die Apps sind
+offen und dürfen kopiert werden; nicht offen ist der Kreis — wer mitmachen
+will, findet nebenan einen Marktplatz für jedermann.*
+
+**Der Bau ist an genau einer Entscheidung aufgehängt:** Name und Adresse des
+Klons. Ohne Namen kein Repo, ohne Repo kein Anfang.
+
 **Nachtrag 3 — Alis nimmt Fahrt auf: erster Bau dieser Sitzung.** Klaus:
 „erste Einkäufe finden statt, Planung/Preise/Vertriebswege nehmen Fahrt auf."
 Damit wird aus dem Referenzfall ein arbeitender Betrieb. **Geprüft**, wo die

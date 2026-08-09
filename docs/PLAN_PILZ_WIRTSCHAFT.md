@@ -629,6 +629,135 @@ aber die Entscheidung nicht.
 
 ---
 
+## 8b. Der offene Markt — was der Klon konkret ist
+
+**Klaus 2026-08-09, sinngemäß:** *„Es gibt inzwischen etliche, die den Markt
+erkannt haben. Aber es ist noch sehr unprofessionell, eher wie eine Community
+aufgebaut — ‚hast du nicht Lust, das zu machen'. Das will ich nicht. Ich müsste
+es professionell machen, ehrlich und offen. Der Grund, warum man mitmacht, soll
+sein, dass man damit Geld verdienen kann — darüber soll man nicht diskutieren
+müssen. Deshalb getrennt von family-project: das ist familiär. Das andere ist
+offen für den gesamten Markt, auf demselben Prinzip: Ehrlichkeit, technische
+Raffinesse, professionell. Und es muss nebenbei laufen."*
+
+### Warum die Trennung technisch **und** menschlich richtig ist
+
+Die beiden brauchen einen **gegensätzlichen Ton**:
+
+| | **family-projekt.de** — der Kreis | **Der offene Markt** |
+|---|---|---|
+| Wer | Menschen, die sich kennen | Fremde |
+| Woher kommt Vertrauen | von den Personen | **muss die Software herstellen** |
+| Ton | persönlich, offen, man redet über alles | sachlich, knapp, nachprüfbar |
+| Warum macht jemand mit | weil man sich hilft | **weil man damit Geld verdient** — offen so gesagt |
+| Rechtslage | schlank | Vermittler-Pflichten (§ 13) |
+
+Wer beides in eine Seite packt, macht den Kreis unpersönlich und den Markt
+unseriös. Die Trennung ist deshalb kein Umweg, sondern der Kern.
+
+### Der Wettbewerbsvorteil ist nicht behauptet, sondern belegbar
+
+Klaus' Beobachtung — die bestehenden PWA-Marktplätze wirken unprofessionell und
+community-artig — beschreibt eine echte Lücke. Was ihn davon unterscheidet, ist
+bereits **gebaut und läuft jede Nacht**:
+
+- **gemessene Ladezeiten je Eintrag**, täglich neu, auch die schlechten
+  (Forschungsstation + Messreihe)
+- **ein Wächter**, der fremde Herkunft und auffällige Muster meldet
+- **ein Siegel**, das an Bedingungen hängt statt an Selbstauskunft
+- **Suche nach Bedeutung** statt nach Stichwörtern
+- **belegte Herkunft** jeder Zahl („von uns gemessen" ≠ „vom Anbieter gemeldet")
+
+Kein anderer PWA-Marktplatz kann das heute zeigen. **Professionell heißt hier
+nicht „hübscher", sondern „nachprüfbar".** Das ist der Unterschied, und er ist
+schon bezahlt.
+
+### Was der Klon sein muss — und was nicht
+
+**Muss:**
+- **Eigener Name, eigene Adresse, eigene DB-Kennung** (sonst kollidieren die
+  Datenbestände auf geteilter Adresse).
+- **Preis und Provision auf der ersten Seite** — kein Herantasten. Wer nicht
+  weiß, was es kostet, hält es für unseriös.
+- **Aufnahme in Minuten, ohne Gespräch.** Formular → Prüfung → veröffentlicht.
+  Die Maschinerie steht (`einreichung.php` + `freigabe.php` + Studio).
+- **Nebenbei-tauglich:** jeder Schritt, der Klaus' Zeit kostet, ist ein Fehler
+  im Entwurf. Ziel ist, dass ein neuer Eintrag ihn **null Minuten** kostet,
+  solange nichts auffällt.
+- **Impressum, AGB, Widerruf, Preisangaben** — siehe § 13.
+
+**Darf nicht:**
+- kein Community-Ton, keine Mitmach-Appelle, kein „hast du nicht Lust"
+- keine Bewertungen ohne Grundlage, keine geschönten Zahlen
+- **kein Bezahlvorgang in Eigenbau** (§ 4b)
+- keine Vermischung mit dem Kreis — weder in der Marke noch in den Daten
+
+### Was ihn nichts kostet, weil es schon existiert
+
+Marktplatz-Seite · Studio · Einreich-Formular mit Warteschlange und Spam-Falle ·
+nächtliche Messung · Wächter · Siegel · semantische Suche · Vektor-Katalog.
+**Der Klon ist keine Neuentwicklung, sondern eine Kopie mit anderem Gesicht und
+anderen Bedingungen** — und damit zugleich der Beweis für ein drittes Produkt:
+ein Marktplatz für einen Verein, eine Innung, einen Ort (§ 3 ③).
+
+---
+
+## 8c. Den Kreis schließen — was wirklich schützbar ist und was nicht
+
+**Klaus' Wunsch:** *„family-project soll verschlüsselt werden, damit andere da
+nicht reinkapern, im Prinzip die Apps klauen. Sie stehen zwar offen zur
+Verfügung, aber sie sollen in dieses Netzwerk eingebunden sein. Fremde, die
+reinkommen, werden ausgegliedert oder auf das andere Projekt verwiesen."*
+
+Das Ziel ist richtig. Der Weg dorthin führt aber **nicht** über Verschlüsselung
+der Apps — und das ist keine Meinung, sondern steht bereits als Tafel in
+`CLAUDE.md`:
+
+> **Obfuskation ist ausdrücklich NICHT der Weg** — Web-Code ist immer lesbar,
+> und Kopierbarkeit ist bei SBKIM gewollt: das Protokoll und die Werkzeuge
+> SOLLEN nachgebaut werden können. Rechtlicher Schutz ist das **Copyright plus
+> die Git-Historie**, nicht Verschleierung.
+
+Eine öffentlich erreichbare Web-App lässt sich nicht gegen Kopieren sichern.
+Jeder Versuch kostet Ladezeit, bricht die Offline-Fähigkeit und hält niemanden
+auf, der es ernst meint.
+
+**Aber der eigentliche Wunsch ist erfüllbar** — er betrifft nicht den Code,
+sondern **die Zugehörigkeit**:
+
+| Nicht schützbar | Schützbar — und das ist gemeint |
+|---|---|
+| dass jemand den Code liest oder kopiert | **wer im Kreis ist** (Mitgliedschaft, Aufnahme über Empfehlung — Modul 14) |
+| dass jemand eine ähnliche App baut | **was im Kreis ausgetauscht wird** (echte Verschlüsselung, Grad C / B6) |
+| dass jemand die Seite ansieht | **worüber im Kreis gesprochen wird** (nicht öffentlich, nicht auf einem geborgten Relais im Klartext) |
+| — | **die Urheberschaft** (Copyright + Git-Historie mit Datum — bereits vorhanden) |
+
+**Daraus die drei Bauteile, in dieser Reihenfolge:**
+
+1. **Mitgliedschaft.** Heute ist der gemeinsame Raum offen: wer die
+   Rendezvous-Kennung kennt, ist drin. Der Kreis braucht eine Liste zugelassener
+   Knoten. Bausteine liegen als Backlog-Karten bereit: **12 (Blocklist),
+   14 (Diffusion, Aufnahme über Empfehlung), 10 (Reputation)**.
+2. **Höfliche Weiterleitung.** Ein Fremder, der anklopft, wird **nicht
+   abgewiesen, sondern verwiesen** — auf den offenen Markt (§ 8b). Das ist
+   zugleich der Zubringer für ③: jeder abgewiesene Interessent ist ein
+   möglicher Eintrag drüben. *Ausschluss und Wachstum sind hier dasselbe
+   Bauteil.*
+3. **Vertraulichkeit im Kreis.** Erst wenn dort Geschäftsdaten fließen —
+   Bestände, Preise, Kunden — reicht der heutige Stand nicht mehr.
+   **Grad C (B6) ist dann fällig**, nicht vorher, aber auch nicht später.
+
+**Die ehrliche Ansage nach außen**, die beides zusammenhält:
+
+> Die Apps sind offen und dürfen kopiert werden — das ist Absicht. Was nicht
+> offen ist, ist der Kreis: wer drin ist, ist eingeladen worden. Wer mitmachen
+> will, findet nebenan einen Marktplatz, der jedem offensteht.
+
+Das ist ehrlich, es widerspricht keiner Tafel, und es ist in einem Satz erklärbar
+— was bei einem Kopierschutz nie der Fall wäre.
+
+---
+
 ## 9. Was „davon leben" konkret heißt
 
 Bei einem angenommenen Bedarf von **2.000–3.000 € im Monat**:
@@ -754,7 +883,8 @@ vergessen werden.
    heute machbar, und es verhindert, dass zwei Sitzungen nach verschiedenen
    Regeln bauen. Dabei `menschlich-schreiben` und `seiten-bauregeln` in beide
    Repos legen; sie werden in beiden gebraucht.
-7. **Der Klon für Fremde** (§ 3 ③) — erst wenn 1–5 stehen. Er braucht eigenen
+7. **Der Klon für Fremde** (§ 3 ③, ausbuchstabiert in § 8b) — erst wenn 1–5
+   stehen. Er braucht eigenen
    Namen, eigene Adresse, eigene DB-Kennung und die Vermittler-Pflichten aus
    § 13. Bis dahin ist er eine Entscheidung, kein Bau.
 
@@ -777,8 +907,10 @@ vergessen werden.
    Dieses Papier empfiehlt Wartungsbeitrag.
 4. **Preisform für WorkFloh** und für die Betreuung (Einarbeitung ≠ Wartung).
 5. **Verfügbare Zeit im Monat** für Betreuung und Gespräche.
-6. **Name und Adresse des Klons** (§ 3 ③) — er darf nicht „Family Projekt"
-   heißen, sonst vermischen sich Kreis und Öffentlichkeit in der Wahrnehmung.
+6. **Name und Adresse des Klons** (§ 3 ③ / § 8b) — er darf nicht „Family
+   Projekt" heißen, sonst vermischen sich Kreis und Öffentlichkeit in der
+   Wahrnehmung. **Das ist der Punkt, an dem der Bau anfangen kann** — ohne
+   Namen kein Repo, ohne Repo kein Anfang.
 7. **Provisionshöhe und Vermittlungs-Bedingungen** im Klon — wer bekommt wie
    viel, wann, und was gilt, wenn etwas schiefgeht.
 
