@@ -1004,9 +1004,21 @@ vergessen werden.
 1b. **Vor dem Shop-Start die Pflichten klären** (§ 4b) — Kosmetik-Einstufung,
    Verpackungsregister, Widerruf, Bestellknopf. Das ist kein Bau, das ist ein
    Termin.
-2. **Der zweite Knopf am Marktplatz** — „Ich hätte gern so etwas für meinen
-   Betrieb". Die Maschinerie steht (`einreichung.php` mit Warteschlange,
-   Spam-Falle, Rate-Limit); es fehlt nur ein zweiter Anlass.
+2. ✅ **Erledigt 2026-08-09 — und dabei eine eigene Falschaussage berichtigt.**
+   Dieses Papier behauptete an mehreren Stellen, am Marktplatz fehle ein Knopf
+   „Ich hätte gern so etwas für meinen Betrieb". **Das stimmte nicht.** Der
+   Abschnitt *„Eigene App oder Website gewünscht?"* existiert seit dem
+   2026-07-21, mit Formular, Spracheingabe, Spam-Falle und sauberem
+   `zweck:"kontakt"` am Endpunkt.
+   Was wirklich fehlte, war kleiner: die Seite hatte **keine einzige
+   Sprungmarke**, und der Abschnitt steht hinter allen Einträgen — wer etwas in
+   Auftrag geben wollte, musste erst an vierzehn App-Karten vorbeiscrollen.
+   Gebaut (family-project PR #254): Sprungziel `#anfrage` plus eine Zeile unter
+   der Suche, zweisprachig, **ohne Preis und ohne Prozentsatz** (Stufe 1, § 8d).
+   Beweis `tests/smoke_anfrage_weg.mjs` 10/10.
+   **Lehre:** ich habe drei Sitzungsstunden lang eine fehlende Funktion
+   beschrieben, die es gab. Ein `grep` vorher hätte gereicht — dieselbe Regel
+   wie überall: **vor der Diagnose greppen, nicht danach.**
 3. **Das Übersichtsblatt** (§ 6) — erst mit den Spalten, die schon Daten haben.
    Die Handspalten kommen dazu, wenn sie gebraucht werden.
 4. **Das Studio für Partner-Seiten** (§ 5) — Zweitverwendung, kein Neubau. Der

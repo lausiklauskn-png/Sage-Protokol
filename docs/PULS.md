@@ -104,6 +104,35 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 7 — zwei Bauten und eine Berichtigung.**
+**(a) Alis ist offline-fähig (Alis-Moderaum #38).** Befund: die App hatte ein
+Manifest, aber KEINEN Service-Worker — die einzige Erwähnung stand in
+`hardReload`, wo er abgemeldet wird. Die Daten lagen sicher, aber das
+**Programm** kam bei jedem Öffnen aus dem Netz; ohne Internet ging die
+Warenwirtschaft gar nicht auf. Gebaut nach dem Muster aus `family-project/sw.js`
+samt dessen Lehren (`Promise.allSettled`, `cache:"reload"`, frisch-zuerst für
+`products.json`/`texte.json`); die schweren Ordner (6,4 + 4,4 MB) bewusst nicht
+im Vorrat. `tests/smoke_service_worker.mjs` **36/36**, Gegenprobe bestätigt
+(erfundene Vorrats-Datei → 36/37).
+
+**(b) Marktplatz: kurzer Weg zur Anfrage (family-project #254) — und eine
+Berichtigung.** Ich hatte den ganzen Abend behauptet, am Marktplatz fehle ein
+Knopf „Ich hätte gern so etwas für meinen Betrieb", und ihn als billigsten
+Schritt auf Platz eins gesetzt. **Das war falsch.** Der Abschnitt gibt es seit
+dem 21.07., voll verdrahtet. Gefehlt hat nur der **Weg dorthin**: die Seite
+hatte **keine einzige Sprungmarke**, der Abschnitt steht hinter vierzehn
+App-Karten. Gebaut: Sprungziel `#anfrage` + eine Zeile unter der Suche,
+zweisprachig, ohne Preis (Stufe 1). `smoke_anfrage_weg.mjs` **10/10**.
+Cache-Bump v97→v98 mitgezogen — vier Seiten unter `werkzeuge/` waren
+durchgerutscht, bis `smoke_cache_version.mjs` sie meldete.
+**Lehre, dieselbe wie am Nachmittag: vor der Diagnose greppen, nicht danach.**
+
+**Ehrlich zur Umgebung:** `smoke_all.mjs`, elf weitere Tests und
+`gegenprobe_karte_zurueckgehalten.sh` brauchen `playwright-core`, das hier nicht
+installiert ist. Sie scheitern **identisch auf dem unveränderten Stand**
+(per `git stash` geprüft) — nicht durch diese Änderungen verursacht. Beide
+Browser-Sichttests stehen aus.
+
 **Nachtrag 6 — Entscheidungen zum offenen Markt (§ 8b1, § 8c1, § 8d) + Brief.**
 
 **(a) Eigenes Repo statt Umbenennung (§ 8b1).** Zur Debatte stand,
