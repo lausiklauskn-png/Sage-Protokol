@@ -82,19 +82,25 @@ Keine Seitenfehler, kein 404, drei Skriptblöcke syntaktisch grün, `linkGeo`/`l
 `linkPairs`/`LineBasicMaterial` restlos entfernt (die zwei verbliebenen Nennungen
 stehen in Kommentaren).
 
-### Zwei Dinge bewusst NICHT geändert — Klaus entscheidet
+### Zwei Dinge zur Entscheidung vorgelegt — ✅ Klaus hat entschieden: BLEIBEN SO
 
 1. **Die Kometen-Schweife.** Im gerenderten Bild zieht weiterhin ein langer heller
    Strich durchs Bild — das sind die Kometen/Meteoriten mit Feenstaub-Schweif, die auf
    den Planeten zufliegen (Klaus' Hero-Vision 2026-06-23). Sie sind leicht gebogen,
    aber auffällig. **Falls Klaus DIESE meinte und nicht die Filamente:** sagen, dann
    kommen sie raus oder werden dezenter.
+   → **✅ Klaus 2026-08-09: „Kometen sollen bleiben, das ist alles kein Problem."**
+   Damit ist geklärt: gemeint waren die Filament-Linien, und die sind raus. Die
+   Kometen-Schweife sind **gewollt** — eine Folge-Sitzung schlägt sie nicht erneut
+   zum Entfernen vor.
 2. **Die Früherde ist sehr dunkel.** Nach dem Masken-Fix ist der *Rand* sauber, aber
    die Scheibe selbst steht als fast schwarzer Ball vor dem hellen Nebel — das Bild
    `erde-dunkel.webp` hat Helligkeit 10–54, dazu dunkelt der Shader mit Faktor 0.82
    ab (`col *= mix(0.82, 1.0, uHabitable)`). Das ist die **erzählerische Absicht**
    („dunkle, unbewohnliche Früherde"), keine Panne. Aufhellen wäre eine
    Gestaltungsentscheidung — **nicht eigenmächtig**.
+   → **✅ Klaus 2026-08-09: „auch die Erde ist so in Ordnung."** Die Früherde bleibt
+   so dunkel wie sie ist. **Nicht aufhellen**, auch nicht gut gemeint.
 
 ---
 
