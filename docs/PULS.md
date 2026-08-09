@@ -31,6 +31,95 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (5) — Klaus' Ring-Idee führte zu einem Fund daneben: status.json dreimal geholt
+
+**Rolle:** Prüfung + Bau. Klaus' Idee: *„Die null Prozent … null kann auch eine schlichte Null
+sein, muss keine Messung sein. Erst wieder anfangen mit Messen, wenn eine Neuerung dazugekommen
+ist."* Auftrag: **erst nachprüfen, ob das wirklich so ist.**
+
+### Nachgeprüft — die Vermutung stimmt, und der Mechanismus ist schon eingebaut
+
+```
+17 Module    → 170 von 170   (alle "fertig")
+15 Endknoten → 225 von 225   (alle integriert + live)
+Hub          →  10
+             = 405 von 405 → 100 % real → Demo-Anteil 0 %
+```
+
+Exakt aufgegangen. Der **Nenner ist definiert als „alles fertig"** (Hub + je Modul 10 + je
+Endknoten 15). Kommt etwas Neues und noch Unfertiges dazu, wächst der Nenner, der Zähler nicht
+— **der Wert verlässt die Null von selbst wieder**. Genau Klaus' Idee; es brauchte nur die
+Erkenntnis, dass die Rechnung heute nichts anderes als 0 ergeben *kann*.
+
+Im Browser bestätigt: die Anzeige stand beim Laden, nach 3 s und nach Scrollen+12 s **jedes Mal
+auf „0 %"**, nie auf etwas anderem.
+
+### Der eigentliche Fund lag daneben — und wurde erst beim dritten Anlauf richtig zugeordnet
+
+`status.json` (68 K roh / 22 K komprimiert) wurde **viermal pro Seitenaufruf** geholt. Die
+erste Zuordnung war **falsch** — zwei Abrufe wurden `vorteilspack.js` zugeschrieben, weil dort
+`gatherLiveStatus`/`applyLiveStatus` **doppelt definiert** sind (Zeilen 189–224 byte-gleich mit
+225–260, nur eine Aufrufstelle). Erst eine Spur mit Herkunfts-Kopfzeile zeigte die Wahrheit:
+
+| Abruf | Herkunft |
+|---|---|
+| 1 | `index.html` → `loadStatus()` |
+| 2 | `index.html` → `setupSchichtenLampen()` |
+| 3 | `docs/observatorium/vorteilspack.js` → `applyLiveStatus()` |
+| 4 | **`mycel-karte/` im `<iframe>`** — eigenes Dokument, eigener Abruf |
+
+**Lehre:** ein gepatchtes `window.fetch` sieht nur die eigene Seite. Was aus einem `<iframe>`
+kommt, taucht dort nicht auf — nur am Server. Wer nur eine der beiden Zählungen hat, ordnet
+falsch zu.
+
+### Gebaut
+
+1. **`window.sageStatusJson()`** oben im Haupt-Skriptblock: holt `status.json` **einmal** und
+   reicht allen dasselbe Versprechen weiter. Schlägt die Holung fehl, wird das Versprechen
+   vergessen (sonst wäre ein Netz-Aussetzer für die ganze Sitzung eingebrannt); jeder Aufrufer
+   behält seine eigene fail-soft-Behandlung. `{frisch:true}` erzwingt eine neue Holung.
+   `vorteilspack.js` nutzt die Hülle, **fällt aber auf seinen eigenen Abruf zurück**, wenn sie
+   fehlt — die Datei bleibt anderswo einbaubar (Fremdnutzer-Brille).
+   Der `<iframe>` bleibt bewusst ein eigener Abruf: fremdes Dokument, kann nicht mittrinken.
+2. **Die Null wird nicht mehr hochgezählt.** `countUp` lief 1400 ms und schrieb in jedem Bild
+   dieselbe „0 %" hin — rund **84 Mal umsonst**, mitten im Ladefenster, und eine der „8 nicht
+   zusammengesetzten Animationen" aus dem PageSpeed-Bericht. Bei `demoPct === 0` steht die Zahl
+   jetzt einfach da. Wird der Wert wieder > 0, zählt sie von selbst wieder hoch.
+
+### Gemessen
+
+```
+Abrufe von status.json am Server   4  →  2   (der zweite ist der iframe)
+Schreibvorgänge an der Ring-Zahl  ~84 →  1
+```
+
+Nichts fiel aus: Kopfzeile, Fußzeile, 25 Modul-Zeilen mit 25 Lämpchen-Gruppen, Balken
+100/100/100, 23 Vorteilspack-Kacheln mit Live-Status (19 fertig, 4 Schablone — deckt sich mit
+`status.json`), **keine Seitenfehler**. Smoke: Truhe 22/22, Standalone 49/49, Bundle 21/21.
+
+Lighthouse abwechselnd, je 3 Läufe gegen `origin/main`:
+
+| | Leistung | LCP | Gewicht |
+|---|---|---|---|
+| alt | 64 | 10,3 s | 2974 KiB |
+| neu | 65 | 8,5 s | **2845 KiB** |
+
+**Ehrlich eingeordnet:** der eine Punkt ist Rauschen, LCP streut hier zu stark, um etwas zu
+belegen. Belastbar ist allein das **Gewicht — in allen drei Läufen exakt gleich**. Und auch das
+muss man richtig lesen: der Testserver **komprimiert nicht**, GitHub Pages schon. Live sind es
+also rund **2 × 22 KiB ≈ 44 KiB**, nicht 129.
+
+### Nicht gemacht (bewusst)
+
+- **Die Erklärung „Was bringt mir das?" bleibt im Dokument.** Klaus vermutete, sie werde
+  vorgeladen — sie lädt heute **gar nichts** nach: 4 KiB HTML, versteckt bis zum Klick, keine
+  Anfrage. Auslagern spart ~1,5 KiB komprimiert und kostet beim Klick eine Wartezeit.
+- **Der doppelte Block in `vorteilspack.js`** (36 Zeilen toter Code) bleibt vorerst stehen —
+  er verursacht keinen zusätzlichen Abruf, das Entfernen gehört nicht in diesen Auftrag. Als
+  eigener kleiner Schritt vorgemerkt.
+
+---
+
 ## Stand 2026-08-09 (4) — Relais erst auf Knopfdruck: 0 WebSockets beim Öffnen, aber KEIN Notengewinn
 
 **Rolle:** Bau + Messung. Klaus' Entscheidung: *„Websocket auch erst auf Knopfdruck."*

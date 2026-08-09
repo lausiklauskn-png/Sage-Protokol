@@ -203,10 +203,17 @@
   }
   function applyLiveStatus(tiles) {
     if (typeof fetch !== "function") return;
-    fetch("status.json", { cache: "no-store" }).then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.json();
-    }).then(function (data) {
+    // Teilt sich die Holung mit der Seite (window.sageStatusJson, 2026-08-09):
+    // status.json wurde vorher von drei Stellen einzeln geholt. Fehlt die
+    // Hülle — etwa weil diese Datei anderswo eingebaut wird —, holt sie
+    // weiterhin selbst. Fail-soft, kein toter Pfad.
+    var holen = (typeof window !== "undefined" && typeof window.sageStatusJson === "function")
+      ? window.sageStatusJson()
+      : fetch("status.json", { cache: "no-store" }).then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        });
+    holen.then(function (data) {
       var map = gatherLiveStatus(data);
       // 1) Daten patchen, damit auch das Modal den Live-Stand zeigt.
       TOOLS.forEach(function (t) { if (map[t.id]) t.status = map[t.id]; });
@@ -239,10 +246,17 @@
   }
   function applyLiveStatus(tiles) {
     if (typeof fetch !== "function") return;
-    fetch("status.json", { cache: "no-store" }).then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.json();
-    }).then(function (data) {
+    // Teilt sich die Holung mit der Seite (window.sageStatusJson, 2026-08-09):
+    // status.json wurde vorher von drei Stellen einzeln geholt. Fehlt die
+    // Hülle — etwa weil diese Datei anderswo eingebaut wird —, holt sie
+    // weiterhin selbst. Fail-soft, kein toter Pfad.
+    var holen = (typeof window !== "undefined" && typeof window.sageStatusJson === "function")
+      ? window.sageStatusJson()
+      : fetch("status.json", { cache: "no-store" }).then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        });
+    holen.then(function (data) {
       var map = gatherLiveStatus(data);
       // 1) Daten patchen, damit auch das Modal den Live-Stand zeigt.
       TOOLS.forEach(function (t) { if (map[t.id]) t.status = map[t.id]; });
