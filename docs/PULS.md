@@ -31,6 +31,74 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-09 (4) — Relais erst auf Knopfdruck: 0 WebSockets beim Öffnen, aber KEIN Notengewinn
+
+**Rolle:** Bau + Messung. Klaus' Entscheidung: *„Websocket auch erst auf Knopfdruck."*
+
+Damit spricht die Sage-Page beim bloßen Öffnen mit **niemandem** mehr — weder per Abruf noch
+per Dauerverbindung.
+
+### Gebaut
+
+Die WebSocket zu `wss://relay.family-projekt.de` wird nicht mehr beim Laden geöffnet.
+`window.sageLauschenStarten()` liegt bereit und hängt am **vorhandenen** Knopf „🌐 Mycel"
+(Modul 23). Angehängt wird in der Erfassungsphase am Fenster — das **Kanon-Modul 23 UI bleibt
+unangetastet**, hier wird nur mitgehört. Die Lampe „Verkehr" bleibt grau und sagt auch warum
+(„noch nicht am Relais. Sage antwortet erst, wenn du 🌐 Mycel drückst"), statt stumm
+auszusehen wie ein Fehler.
+
+**Was das kostet, ohne Beschönigung:** solange niemand verbunden hat, **beantwortet Sage keine
+Fragen anderer Knoten**. Das Antwortrecht aus „Empfangsmodus mit Antwortrecht" braucht eine
+offene Leitung. Die Verbindung ist kein Beiwerk — sie ist die Teilnahme am Mycel. Neu ist nur,
+dass sie mit einer Entscheidung beginnt.
+
+### Gemessen im Browser — das trägt
+
+```
+beim Öffnen              0 WebSockets (vorher 1), 0 Fremd-Abrufe
+Lampe verkehr            grau, mit ehrlichem Hinweistext
+nach Druck auf 🌐 Mycel  1 WebSocket -> wss://relay.family-projekt.de
+```
+
+### Die Note: KEIN Gewinn — und warum die Messung das gar nicht sehen kann
+
+Abwechselnd, je drei Läufe, gegen den **richtigen** Vergleichsstand (`8c3b5b3`, der den
+15→0-Fix schon enthält und sich nur im Relais unterscheidet):
+
+| | Leistung | LCP |
+|---|---|---|
+| alt (Relais beim Laden) | 78 · 77 · 78 | 5,0 · 5,1 · 4,9 s |
+| neu (Relais auf Knopfdruck) | 74 · 76 · 78 | 6,0 · 5,5 · 4,9 s |
+
+**Median 78 → 76.** Also kein Gewinn, eher ein Punkt Verlust im Rauschen.
+
+**Der Grund ist die Messung selbst, nicht der Umbau:** auf dieser Maschine ist
+`relay.family-projekt.de` **gar nicht erreichbar** (der Proxy blockt die WebSocket). Die
+Verbindung scheitert sofort und kostet hier praktisch nichts — es gibt lokal also nichts zu
+gewinnen. **Die Messung ist für genau diese Änderung blind.** Auf Klaus' Tablet verbindet sie
+sich wirklich (TLS-Handschlag, Leitung offen halten); was das dort kostet, sieht man nur dort.
+
+**Die Änderung wurde ohnehin nicht wegen der Note gemacht.** Der Grund ist: wer die Seite nur
+öffnet, meldet damit keine dauerhafte Verbindung mehr an. Das Argument steht unabhängig von
+jeder Zahl — und es ist dasselbe, das schon bei Mein-Tresor und Jasons-Tresor galt.
+
+### Ein Fehler von mir, der fast durchgegangen wäre
+
+Der erste Anlauf dieser Messung verglich gegen `fab5b87` — den Stand **vor** dem 15→0-Fix. Er
+meldete 72 → 77 und hätte dem Relais-Umbau einen Verdienst zugeschrieben, der ihm nicht
+gehört. Ursache: nach dem Merge von PR #794 hatte ich **kein `git fetch origin main`** gemacht,
+mein Zeiger war alt. Das steht wörtlich im ersten Absatz dieser Verfassung — *ein Klon ohne
+`fetch` ist kein Beweis* — und gilt für einen Mess-Maßstab genauso wie für eine Aussage über
+eine App. Aufgefallen ist es nur, weil die Zahl **zu gut** war und ich nachgesehen habe.
+
+### Offen
+
+- **Klaus' PageSpeed-Lauf.** Nur dort verbindet sich das Relais wirklich. Fällt der Handy-Wert
+  ab, ist das ein Grund, den Umbau noch einmal zu besprechen.
+- **Ob Sage passiv erreichbar bleiben soll.** Wenn im Alltag auffällt, dass ein anderer Knoten
+  Sage nicht mehr fragen kann, während das Tablet die Seite offen hat, braucht es einen
+  Mittelweg (z. B. Verbindung merken und beim nächsten Besuch selbst wieder aufbauen).
+
 ## Stand 2026-08-09 (3) — Sage-Page: 15 Fremd-Abrufe beim Öffnen auf null, Note 72 → 77
 
 **Rolle:** Fehlersuche + Bau. Grundlage war Klaus' Handy-Bericht (PageSpeed 63) und seine
