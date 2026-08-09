@@ -104,6 +104,40 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 3 — Alis nimmt Fahrt auf: erster Bau dieser Sitzung.** Klaus:
+„erste Einkäufe finden statt, Planung/Preise/Vertriebswege nehmen Fahrt auf."
+Damit wird aus dem Referenzfall ein arbeitender Betrieb. **Geprüft**, wo die
+Daten liegen: Lager und Bewegungen in **IndexedDB**, Shop-Inhalte in
+localStorage — `persist()` fehlte, eine **Erinnerung an die Sicherung** fehlte
+ganz. (Berichtigung: eine erste schnellere Durchsicht hatte den Bestand
+komplett in localStorage verortet; das war falsch, der Befund bleibt.) Der
+Backup-Tresor selbst war bereits vollständig und gut gebaut — es fehlte nur:
+*eine Sicherungsfunktion, die niemand drückt, ist keine Sicherung.*
+**Gebaut + gemergt (Alis-Moderaum PR #37):** der Kopf zeigt „Sicherung: heute /
+gestern / vor N Tagen / noch nie", ab 14 Tagen auffällig, Klick führt zum
+Tresor; `exportFullBackup()` setzt den Stempel selbst; `persist()` als Bitte an
+den Browser. Nur ein Datum gespeichert, keine Inhalte, durchgehend fail-soft,
+DE/EN/RU. Beweis `tests/smoke_backup_erinnerung.mjs` **17/17** (eigener
+Rückgabewert, kein Rohr); die zwei bestehenden Smokes weiter grün.
+**Browser-Sichttest wartet auf Klaus.** Netzweite Regel im Papier (§ 4c):
+*sobald bei einem Partner echtes Geld durch die Daten geht, ist die Sicherung
+keine Funktion mehr, sondern eine Zusage.*
+
+**Nachtrag 4 — Provision/Anteil im System (§ 4d, Klaus' Frage).** Zerfällt in
+drei verschieden zu beantwortende Teile. **Rechnen: ja** — `ekcent`/`vkcent`
+sind da, jede Form ist rechenbar; die Wahl der Grundlage ist die eigentliche
+Entscheidung (Umsatz / **Rohertrag, empfohlen** / Gewinn). **Auszahlen: nein** —
+ein selbstgebautes System rechnet und zeigt, es bewegt kein fremdes Geld
+(„liest nur · schlägt vor · bewegt nichts", Privat-Brain). **Weg:**
+Warenwirtschaft rechnet die Zahl → Beleg an BookLedgerPro (Muster
+`?uebernahme=` existiert seit WorkFloh→BLP) → EÜR; Abrechnung und Zahlung sind
+Menschen-Schritte. Starker Nebeneffekt: BLPs GoBD-Festschreibung macht die
+Abrechnung unveränderlich nachvollziehbar — schützt bei einer Beteiligung
+beide Seiten. **Steuerseite:** die Behandlung folgt der **Rechtsform**, nicht
+der Rechenweise (Leistung mit Rechnung + USt ↔ Gewinnanteil ohne). Praktisch:
+die Berechnung kann jetzt gebaut werden, denn die Zahl ist in beiden Fällen
+dieselbe — ihre **Beschriftung** wartet auf den Steuerberater-Termin.
+
 **Nachtrag 2 — zwei Auskünfte von Klaus, beide ändern etwas.**
 (a) **Tomy arbeitet sich ein.** Die *Software* ist ein vollständiger zweiter
 Werkzeugkasten, der *Mensch* ist noch in der Einarbeitung. Das sind zwei
