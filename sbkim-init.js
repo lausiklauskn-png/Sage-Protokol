@@ -336,11 +336,33 @@
       });
     } catch (e) {}
 
-    if (window.SbkimAnastomose && typeof window.SbkimAnastomose.listenNostr === "function" && window.SbkimNostrRelay) {
+    // Das Lauschen am Relais startet ERST AUF KNOPFDRUCK (Klaus 2026-08-09).
+    //
+    // Bis hierher öffnete die Seite beim bloßen Aufruf eine WebSocket-Verbindung
+    // zu `wss://relay.family-projekt.de` — dieselbe Sorte stiller Verbindung wie
+    // die fünfzehn Spore-Abrufe, nur dauerhaft. Wer die Seite nur öffnete, meldete
+    // sich damit am Relais an, ohne das zu wollen.
+    //
+    // WAS DAS KOSTET, ehrlich und ohne Beschönigung: solange niemand verbunden
+    // hat, **beantwortet Sage keine Fragen anderer Knoten**. Das Antwortrecht aus
+    // „Empfangsmodus mit Antwortrecht" braucht eine offene Leitung. Die Verbindung
+    // ist also kein Beiwerk — sie ist die Teilnahme am Mycel. Neu ist nur: sie
+    // beginnt mit einer Entscheidung statt von selbst.
+    //
+    // Der Knopf dafür existiert bereits: „🌐 Mycel" (Modul 23, Mit dem Netz
+    // verbinden). Wer ihn drückt, will genau das. Zusätzlich liegt
+    // `window.sageLauschenStarten()` bereit, falls eine andere Stelle es braucht.
+    var lauschtSchon = false;
+    window.sageLauschenStarten = function sageLauschenStarten() {
+      if (lauschtSchon) return Promise.resolve(true);
+      if (!(window.SbkimAnastomose && typeof window.SbkimAnastomose.listenNostr === "function" && window.SbkimNostrRelay)) {
+        return Promise.resolve(false);
+      }
+      lauschtSchon = true;
       try {
-        window.SbkimAnastomose.listenNostr()
+        return window.SbkimAnastomose.listenNostr()
           .then(function () {
-            info("Auto-Lauschen aktiv (Empfangsmodus mit Antwortrecht).");
+            info("Lauschen aktiv (Empfangsmodus mit Antwortrecht) — auf Knopfdruck gestartet.");
             // Sichtbar machen: kanonisches Event (Modul 17 Floating-Widget) +
             // Sage-Navleisten-Lampe „verkehr" ruhig grün (= am Relais verbunden,
             // lauscht). Beides fail-soft.
@@ -352,10 +374,31 @@
                 lt.title = "Verkehr — grün: am Relais verbunden, lauscht (Empfangsmodus, antwortet nur). Pulst bei echtem Verkehr.";
               }
             } catch (e) {}
+            return true;
           })
-          .catch(function (e) { warn("Auto-Lauschen", e); });
-      } catch (e) { warn("Auto-Lauschen", e); }
-    }
+          .catch(function (e) { lauschtSchon = false; warn("Lauschen", e); return false; });
+      } catch (e) { lauschtSchon = false; warn("Lauschen", e); return Promise.resolve(false); }
+    };
+
+    // Ehrliche Beschriftung, solange nicht verbunden: die Lampe bleibt grau und
+    // sagt auch, warum — statt stumm auszusehen wie ein Fehler.
+    try {
+      var ltAus = document.getElementById("lamp-traffic");
+      if (ltAus && !ltAus.classList.contains("alive")) {
+        ltAus.title = "Verkehr — grau: noch nicht am Relais. Sage antwortet erst, wenn du „🌐 Mycel“ drückst.";
+      }
+    } catch (e) {}
+
+    // An den vorhandenen Knopf hängen (Modul 23 UI mountet ihn selbst, darum
+    // in der Erfassungsphase am Fenster statt direkt am Element — dann greift es
+    // auch, wenn der Knopf erst später im DOM landet). Unangetastet bleibt das
+    // Kanon-Modul selbst; hier wird nur mitgehört.
+    try {
+      window.addEventListener("click", function (ev) {
+        var t = ev.target && ev.target.closest && ev.target.closest("#sbkim-rdv-btn");
+        if (t) { try { window.sageLauschenStarten(); } catch (e) {} }
+      }, true);
+    } catch (e) {}
 
     // 06 Heterokaryose.
     await initModule("SbkimHeterokaryose", function () {
