@@ -39,7 +39,52 @@ Erst dann Code. Nicht lesen, was nicht gebraucht wird.
 
 ---
 
-## Aufgabe 1 — Alis: „Shop ins Repo hochladen" *(zuerst, klein, hoher Nutzen)*
+## Aufgabe 0 — Alis zieht auf ihre eigene Adresse *(zuerst, und mit Sorgfalt)*
+
+**Stand 2026-08-09:** Alis hat **`alis-moderaum.de` und `.com` bereits gesichert
+und bezahlt.** Der Umzug von `lausiklauskn-png.github.io/Alis-Moderaum/` auf die
+eigene Adresse steht damit an. Der GitHub-Token ist geklärt (Klaus).
+
+**Der Umzug ist technisch klein — eine `CNAME`-Datei plus DNS. Die Falle liegt
+woanders, und sie ist ernst:**
+
+> **Eine neue Adresse ist für den Browser eine neue Welt.** IndexedDB und
+> localStorage hängen am Ursprung. Nach dem Wechsel steht Alis vor einer
+> **leeren** Warenwirtschaft — Artikel, Bewegungen, Kategorien, Shop-Inhalte,
+> alles bleibt auf der alten Adresse zurück.
+
+**Geprüft, was genau betroffen ist:**
+
+| | |
+|---|---|
+| **In der Sicherung enthalten** (kommt mit) | `articles`, `movements`, `categories`, `images`, `alm_products`, `alm_labels`, `alm_styles`, `alm_theme`, `alm_lang` |
+| **NICHT enthalten** (muss von Hand neu) | `alm_pp_clientid` + `alm_pp_mode` (**PayPal**), `alm_gh_repo` + `sbbild_gh_token` (**GitHub-Verbindung**), `alm_bon_no` (**Bon-Nummer**) |
+
+**Die sichere Reihenfolge — nicht abkürzen:**
+
+1. **Komplett-Backup ziehen** und die Datei sicher ablegen (nicht nur im
+   Download-Ordner). Der neue Sicherungs-Hinweis im Kopf sagt, wie alt die
+   letzte Sicherung ist.
+2. **Bon-Nummer notieren** (`alm_bon_no`), damit die Zählung nicht bei 1 neu
+   anfängt.
+3. Adresse umstellen: `CNAME`-Datei ins Repo, DNS beim Anbieter, HTTPS abwarten.
+4. **Auf der neuen Adresse: Backup einspielen.**
+5. **PayPal-Kennung und GitHub-Verbindung neu eintragen** — die kommen nicht mit.
+6. Ist die App auf dem Tablet **installiert**, muss sie von der neuen Adresse
+   **neu installiert** werden; die alte zeigt weiter auf die alte Welt.
+7. Erst danach die alte Adresse als erledigt betrachten.
+
+**Nebenbei gelöst:** auf der eigenen Adresse liegt Alis’ GitHub-Token nicht mehr
+auf dem geteilten Ursprung `lausiklauskn-png.github.io` — die
+Geteilte-Origin-Falle aus `CLAUDE.md` entfällt für sie.
+
+**Selbst-Verweise geprüft:** die drei fest eingetragenen `github.io`-Adressen in
+ihrem Code zeigen auf **fremde** Apps (BookLedgerPro, Perfect Skin Beauty) und
+brechen beim Umzug **nicht**.
+
+---
+
+## Aufgabe 1 — Alis: „Shop ins Repo hochladen" *(nach dem Umzug)*
 
 **Befund 2026-08-09.** Alis' Warenwirtschaft kann heute:
 
@@ -69,8 +114,12 @@ derselbe Aufruf wie bei den Bildern, nur anderer Dateiname.
 - Der Download-Knopf **bleibt** — als Weg für den Fall, dass die Verbindung
   fehlt oder klemmt.
 
+**Reihenfolge beachten:** dieser Knopf benutzt dieselbe GitHub-Verbindung, die
+beim Umzug (Aufgabe 0) ohnehin neu eingetragen werden muss. Erst umziehen, dann
+einrichten — sonst macht Alis es zweimal.
+
 **Prüfung:** eigener Smoke-Test in `tests/`, dessen **eigener Rückgabewert**
-über grün entscheidet. Die drei bestehenden Tests müssen grün bleiben.
+über grün entscheidet. Die vier bestehenden Tests müssen grün bleiben.
 
 ---
 
