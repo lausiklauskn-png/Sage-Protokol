@@ -242,6 +242,138 @@ einlesen und selbst anlegen kann, ist nicht abhängig.**
 
 ---
 
+## 4c. Alis nimmt Fahrt auf — und was das für die Daten heißt
+
+**Klaus 2026-08-09:** *„Auch Alis Moderaum nimmt gerade Form an. Erste Einkäufe
+finden statt, und die Planung, Preise, Vertriebswege und vieles mehr nehmen
+Fahrt auf."*
+
+Damit wird aus dem Referenzfall ein **arbeitender Betrieb**. Ab dem ersten
+echten Einkauf stehen in der Warenwirtschaft Daten, deren Verlust Geld kostet:
+Bestand, Einkaufs- und Verkaufspreise (`ekcent`, `vkcent`, `verkaufbuchen` sind
+vorhanden und richtig angelegt).
+
+### Der Befund — geprüft, nicht vermutet
+
+| Frage | Antwort |
+|---|---|
+| Wo liegen Lager und Bewegungen? | **IndexedDB** (`idbAdd('articles')`, `idbPut`, `idbClear`) |
+| Wo liegen die Shop-Inhalte? | **localStorage** (`alm_products`, `alm_labels`, `alm_styles`, …) |
+| `navigator.storage.persist()`? | **fehlte** |
+| Erinnerung an eine Sicherung? | **fehlte** |
+| Backup-Tresor selbst? | **vorhanden und gut gebaut** — Komplett-Backup, Wiederherstellen, CSV, Alt-Format-Erkennung |
+
+*Berichtigung: eine erste, schnellere Durchsicht hatte den Bestand komplett in
+`localStorage` verortet. Das stimmt nicht — der Lager-Kern liegt in IndexedDB.
+Der Befund selbst bleibt: beides ist Browser-Speicher, und ein „Browserdaten
+löschen" nimmt beides mit.*
+
+**Die eigentliche Lücke war nicht der Tresor, sondern die Erinnerung:**
+
+> Eine Sicherungsfunktion, die niemand drückt, ist keine Sicherung.
+
+**Gebaut am 2026-08-09** (Alis-Moderaum PR #37): der Kopf der Warenwirtschaft
+zeigt, wann zuletzt ein Komplett-Backup gezogen wurde (heute / gestern / vor N
+Tagen / noch nie); ab 14 Tagen fällt der Hinweis auf und führt per Klick zum
+Tresor. `exportFullBackup()` setzt den Zeitstempel selbst, kann ihn also nicht
+vergessen. Dazu `navigator.storage.persist()` als Bitte an den Browser.
+Gespeichert wird **nur ein Datum** — keine Inhalte, nichts verlässt das Gerät.
+Beweis: `tests/smoke_backup_erinnerung.mjs`, 17/17. Browser-Sichttest steht aus.
+
+**Regel daraus, netzweit:**
+
+> **Sobald bei einem Partner echtes Geld durch die Daten geht, ist die Sicherung
+> keine Funktion mehr, sondern eine Zusage.** Jede Partner-App braucht dann:
+> einen Export, eine sichtbare Erinnerung daran, und `persist()`. Das ist die
+> App-Seite derselben Verantwortung, die § 11 „muss den Erbauer überleben
+> können" nennt.
+
+Zu prüfen bei den anderen Partner-Apps, bevor auch dort Geld fließt.
+
+---
+
+## 4d. Provision und Anteil im System — was automatisch geht und was nicht
+
+**Klaus' Frage 2026-08-09:** *„Lässt sich automatisch im Warenwirtschaftssystem
+eine Provision / ein Anteil als Auszahlung einbauen, in Kombination mit BLP,
+Steuerproblematik und Einnahmen-Überschuss-Rechnung?"*
+
+Die Antwort zerfällt sauber in drei Teile — und sie sind unterschiedlich zu
+beantworten.
+
+### 1. Rechnen: ja, und die Daten reichen dafür schon
+
+Die Warenwirtschaft kennt Einkaufspreis (`ekcent`), Verkaufspreis (`vkcent`) und
+den gebuchten Verkauf. Damit ist jede Beteiligungsform rechenbar. **Die Rechnung
+ist trivial — die Wahl der Grundlage ist die ganze Entscheidung:**
+
+| Grundlage | Was sie bedeutet | Beurteilung |
+|---|---|---|
+| **Umsatz** | Anteil vom Verkaufspreis | einfach und nachvollziehbar, aber Klaus verdient auch an einem Artikel, an dem der Betrieb verliert |
+| **Rohertrag** (VK − EK) | Anteil an der Spanne | **passt zu einem Handelsbetrieb und zu den vorhandenen Daten.** Empfehlung dieses Papiers |
+| **Gewinn** | nach allen Kosten | braucht vollständige Kostenrechnung, lädt zum Streit über einzelne Posten ein |
+
+Rohertrag ist auch das ehrlichste Maß: Klaus verdient daran, dass **gut
+eingekauft und gut verkauft** wird — genau der Beitrag, den die Software
+leistet.
+
+### 2. Auszahlen: nein — bewusst nicht
+
+Ein selbstgebautes System **berechnet und zeigt**. Es **bewegt kein Geld**. Das
+ist dieselbe Linie wie beim Bezahlvorgang (§ 4b), und sie steht als Prinzip
+bereits im Netz — in Private Brain, als eine der drei Vertrauens-Säulen:
+
+> *liest nur · schlägt vor · bewegt nichts*
+
+Automatische Zahlungen aus einem selbstgebauten System heraus wären ein Fehler,
+für den es keinen Ausgleich gibt: ein Rechenfehler, ein doppelter Lauf, ein
+falscher Zeitraum — und es ist fremdes Geld. Der Mensch drückt den Knopf bei
+der Bank, nicht die Software.
+
+### 3. Der saubere Weg — vier Schritte, drei davon automatisch
+
+```
+Warenwirtschaft          rechnet je Zeitraum den Rohertrag → eine Zahl
+        ↓  (Beleg, wie WorkFloh → BLP heute schon)
+BookLedgerPro            bucht sie als Betriebsausgabe / -einnahme, EÜR
+        ↓
+Klaus                    stellt die Abrechnung, wie vereinbart      ← Mensch
+        ↓
+Bank                     zahlt                                     ← Mensch
+```
+
+Die Brücke dafür ist **kein Neubau**: `WorkFloh → BookLedgerPro` läuft bereits
+über `?uebernahme=<base64url(JSON)>` mit einem festen Datenvertrag. Von der
+Warenwirtschaft aus wäre es das dritte Mal dasselbe Muster.
+
+**Ein starker Nebeneffekt:** BookLedgerPro ist von Anfang an auf GoBD gebaut —
+Festschreibung, Storno statt Löschen, Hash-Kette. Eine automatisch berechnete
+und dort gebuchte Abrechnung ist damit **nachvollziehbar und unveränderlich**.
+Das ist bei einer Beteiligung zwischen Vertrauenspersonen mehr wert als die
+Bequemlichkeit: es schützt beide Seiten, gerade wenn es später einmal Streit
+gäbe.
+
+### 4. Die Steuerseite — hier entscheidet die Form, nicht die Software
+
+**Das ist der Punkt, an dem dieses Papier aufhört und ein Steuerberater
+anfängt.** Der Grund ist präzise benennbar: **die steuerliche Behandlung folgt
+der Rechtsform der Beteiligung, nicht der Berechnungsweise.**
+
+- Ist der Anteil eine **Leistung** (Vermittlung, Lizenz, Wartung), ist er beim
+  Partner Betriebsausgabe und bei Klaus Betriebseinnahme, in der Regel mit
+  Rechnung und Umsatzsteuer — sofern nicht die Kleinunternehmer-Regelung greift.
+- Ist er ein **Gewinnanteil** aus einer Gesellschafterstellung, gelten andere
+  Regeln, und eine Rechnung wäre sogar falsch.
+- Beides gleichzeitig geht nicht, und die Wahl hat Folgen für Haftung, Steuer
+  und den Fall einer Trennung.
+
+**Praktisch heißt das:** die Berechnung kann jetzt gebaut werden, denn sie ist
+in beiden Fällen dieselbe Zahl. Die **Beschriftung** dieser Zahl — Rechnung oder
+Gewinnanteil — wird erst nach dem Steuerberater-Termin festgelegt. Wer es
+umgekehrt macht, baut eine Buchung, die er hinterher zurücknehmen muss.
+
+---
+
 ## 5. Der Bausatz — vorhanden, aber unbenannt
 
 ### Apps: erfüllt
@@ -566,6 +698,7 @@ Das ist kein düsterer Gedanke, sondern Teil der Ware.
 | Treuhand/Escrow | löst ein Problem, das erst bei vielen Transaktionen entsteht |
 | Entwickler-Stufen 1–4 aus dem Konzept | setzt hunderte Fremde voraus; im Kreis ersetzt Vertrauen das Stufensystem |
 | Eine Hintertür, die App-Nutzung meldet | bräche den Datenschutz-Kern, der die Apps verkäuflich macht (§ 6) |
+| **Automatische Auszahlung von Anteilen/Provision** | ein selbstgebautes System rechnet und zeigt, es bewegt kein fremdes Geld. „liest nur · schlägt vor · bewegt nichts". Siehe § 4d |
 | **Ein eigener Bezahlvorgang / eigene Shop-Kasse** | dauerhafte Verantwortung für Zahlungssicherheit, Steuerlogik und Rechtspflichten — für einen fremden Betrieb. Widerspricht „muss den Erbauer überleben können". Siehe § 4b |
 | Eigenes Embedding-Modell | war schon im Konzept ausgeschlossen — gilt weiter |
 
@@ -611,6 +744,12 @@ vergessen werden.
    Punkt, an dem Klaus' Zeit pro Partner aufhört zu wachsen.
 5. **Drift-Guard über die Partner-Apps** — bevor der vierte Partner dazukommt,
    nicht danach. Er deckt später auch die zwei Marktplatz-Instanzen ab.
+5b. **Sicherung prüfen, bevor Geld fließt** (§ 4c) — bei Alis erledigt (PR #37).
+   Bei jeder weiteren Partner-App vor dem ersten echten Geschäftsvorfall: Export
+   vorhanden? Erinnerung sichtbar? `persist()` gesetzt?
+5c. **Die Rohertrags-Zahl je Zeitraum berechnen und als Beleg an BLP geben**
+   (§ 4d) — rechnen und buchen ja, auszahlen nein. Die Beschriftung der Zahl
+   (Rechnung oder Gewinnanteil) wartet auf den Steuerberater-Termin.
 6. **Die zwei auseinandergelaufenen Skills zusammenführen** (§ 7b) — klein,
    heute machbar, und es verhindert, dass zwei Sitzungen nach verschiedenen
    Regeln bauen. Dabei `menschlich-schreiben` und `seiten-bauregeln` in beide
@@ -626,6 +765,8 @@ vergessen werden.
 0. **Wer macht den Bezahlvorgang in Beauty's Shop?** (§ 4b) — die Empfehlung
    lautet: ein erprobter Anbieter, nicht Eigenbau. Das ist die dringendste
    Entscheidung, weil der Shop sonst darauf wartet.
+0b. **Grundlage der Beteiligung: Umsatz, Rohertrag oder Gewinn?** (§ 4d) — die
+   Empfehlung lautet Rohertrag; die Daten dafür liegen bereits vor.
 1. **Innerer Kreis ja/nein** (§ 8) und, falls ja, in welcher Form die
    Mitgliedschaft entsteht.
 2. **Everlast GmbH** — das Konzept-Repo ist über weite Strecken ein Angebot an
@@ -662,6 +803,11 @@ vergessen werden.
 | Vier-Schichten-Lesart, „Akquise gehört in die Pilz-Schicht" | `CLAUDE.md` |
 | „Obfuskation ist ausdrücklich NICHT der Weg" | `CLAUDE.md` § Fork ≠ Vorfall |
 | Vertraulichkeits-Grade B und C | `docs/E2E-VERTRAULICHKEIT.md`, `docs/PLAN_SEMANTIK_KRYPTO.md` |
+| Lager in IndexedDB, Shop-Inhalte in localStorage, `persist()` fehlte | `Alis-Moderaum/warehouse.html`, gelesen 2026-08-09 |
+| Sicherungs-Erinnerung gebaut, 17/17 | `Alis-Moderaum/tests/smoke_backup_erinnerung.mjs`, PR #37 |
+| „liest nur · schlägt vor · bewegt nichts" | `Privat-Brain/CLAUDE.md` |
+| GoBD-Festschreibung, Storno statt Löschen, Hash-Kette | `BookLedgerPro/CLAUDE.md` § Goldene Regeln |
+| Brücke `?uebernahme=<base64url(JSON)>` | `BookLedgerPro/docs/UEBERNAHME_TOMY.md`, `Mein-WorkFloh/CLAUDE.md` |
 | `capVector`/`needsVector` nirgends vorhanden | Suche über `src/modules/*` + `docs/INTERFACES.md`, 2026-08-09 |
 
 ---
