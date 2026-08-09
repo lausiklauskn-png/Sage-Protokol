@@ -104,6 +104,33 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 8 — Befund zum Hochladen bei Alis (Klaus' Frage).** Klaus fragte, ob
+Alis' Änderungen automatisch hochgeladen werden. **Nein — teilweise.** Geprüft
+in `warehouse.html`:
+
+| Knopf | Wirkung |
+|---|---|
+| „Auf diesem Gerät veröffentlichen" | Shop nur auf **ihrem** Tablet (`localStorage`) |
+| „products.json herunterladen" | Datei im Download-Ordner; der Hinweis sagt wörtlich *„ins Repo legen **lassen**"* — also durch Klaus |
+| „Bilder ins Repo" / „Video ins Repo" | lädt **wirklich** hoch, über GitHub-Verbindung (Repo + Token, nur im Browser) |
+
+**Es fehlt der Knopf für den Shop-Inhalt selbst.** Ihre Preisänderung erreicht
+die Besucher erst, wenn sie Klaus die Datei schickt — genau der Handgriff, der
+**Klaus' Zeit pro Partner** kostet (§ 5). Klein zu schließen: die
+Hochlade-Maschinerie steht in derselben Datei, für `products.json` ist es
+derselbe Aufruf mit anderem Dateinamen. **Als Aufgabe 1 in den Brief
+aufgenommen.**
+
+**Zur Cache-Version klargestellt:** die Regel gilt für **Programmdateien**, die
+wir ändern — nicht für Alis' Arbeit. Und `products.json`/`texte.json` sind im
+neuen Service-Worker bewusst **frisch zuerst**, kommen also immer aus dem Netz.
+**Ein Shop-Upload braucht deshalb keinen Versions-Sprung.** Genau dafür war die
+Ausnahme gedacht.
+
+**Klaus legt das Repo für den offenen Markt selbst an** (Arbeitsname PWA
+Toolpoint). Der Brief `docs/sessions/BRIEF_PWA_TOOLPOINT_START.md` ist auf zwei
+Aufgaben umgestellt: (1) Alis' Hochlade-Knopf, (2) Stufe 0 im neuen Repo.
+
 **Nachtrag 7 — zwei Bauten und eine Berichtigung.**
 **(a) Alis ist offline-fähig (Alis-Moderaum #38).** Befund: die App hatte ein
 Manifest, aber KEINEN Service-Worker — die einzige Erwähnung stand in
