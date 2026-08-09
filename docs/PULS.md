@@ -104,6 +104,21 @@ sondern das Hinsehen.**
 Vermittler-Pflichten beim Klon, der Kreis als Rechtsgebilde, und keine Beträge
 in öffentliche Repos. Gehört zum Steuerberater, bei Anteilen zum Notar.
 
+**Nachtrag 10 — das Repo für den offenen Markt steht.** Klaus hat es angelegt:
+**`lausiklauskn-png/PWA-Toolpoint`**, erreichbar unter
+`https://lausiklauskn-png.github.io/PWA-Toolpoint/`. Stand beim Anlegen: ein
+Commit, nur eine `README.md` (15 Bytes), keine `CNAME`-Datei. Ob Pages
+eingeschaltet ist, kann diese Umgebung nicht prüfen (kein offenes Netz). Damit
+ist die Entscheidung gefallen, die alles blockierte — der Brief nennt jetzt den
+echten Namen statt einer Rückfrage.
+
+**Ein zeitkritischer Hinweis dazu (§ 8b + die Lehre aus Alis' Umzug):** die
+Adresse trägt Klaus' persönlichen Handle. Für einen Markt, der Fremden Vertrauen
+abverlangt, gehört dort eine eigene Domain hin — und **solange niemand die Seite
+kennt, kostet der Wechsel nichts.** Später wäre es derselbe Umzug mit demselben
+Origin-Problem wie bei Alis. Also jetzt entscheiden, nicht nach dem ersten
+Besucher.
+
 **Nachtrag 9 — Alis bekommt eine eigene Adresse, und das hat eine Falle.**
 Klaus: `alis-moderaum.de` und `.com` sind **bereits gesichert und bezahlt**; der
 GitHub-Token ist geklärt. **Token-Prüfung netzweit gemacht** (Auslieferungs-

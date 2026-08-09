@@ -33,8 +33,7 @@ Erst dann Code. Nicht lesen, was nicht gebraucht wird.
 - **Drei Bauten sind erledigt:** Alis-Moderaum #37 (Sicherungs-Erinnerung),
   #38 (Service-Worker — App läuft ohne Internet), family-project #254 (kurzer
   Weg zur Anfrage).
-- **Klaus legt das neue Repo für den offenen Markt selbst an.** Arbeitsname
-  **PWA Toolpoint**. SB-KIMTool-Point wird **nicht** umbenannt (191 Verweise in
+- **Klaus legt das neue Repo für den offenen Markt selbst an.** **Angelegt: `PWA-Toolpoint`.** SB-KIMTool-Point wird **nicht** umbenannt (191 Verweise in
   fünf Repos, signierte Spore auf der alten Adresse).
 
 ---
@@ -125,8 +124,18 @@ einrichten — sonst macht Alis es zweimal.
 
 ## Aufgabe 2 — Stufe 0 für den offenen Markt
 
-**Zuerst fragen:** hat Klaus das Repo angelegt, und wie heißt es? Ohne Namen
-kein Anfang. Wenn ja: dort arbeiten.
+**Das Repo steht** (Klaus, 2026-08-09):
+**`lausiklauskn-png/PWA-Toolpoint`** — `https://lausiklauskn-png.github.io/PWA-Toolpoint/`
+Stand beim Anlegen: ein Commit, nur eine `README.md` (15 Bytes), keine
+`CNAME`-Datei. Ob GitHub Pages schon eingeschaltet ist, weiß nur Klaus — diese
+Umgebung kommt nicht ins offene Netz.
+
+**Vor dem ersten Bau klären (§ 8b, und die Lehre aus Alis' Umzug):** die Adresse
+trägt heute Klaus' persönlichen Handle. Für einen Markt, der Fremden Vertrauen
+abverlangt, gehört dort eine **eigene Domain** hin. **Solange niemand die Seite
+kennt, kostet der Wechsel nichts** — später ist es ein Umzug mit demselben
+Origin-Problem wie bei Alis (Aufgabe 0). Also: Domain jetzt entscheiden, nicht
+nach dem ersten Besucher.
 
 **Was gebaut wird:**
 
