@@ -136,6 +136,38 @@ nichts und ist jederzeit zurückdrehbar.
   Repo-Namen abgeleitet und konnte nicht überprüft werden — jede Probe lief
   durch den Proxy und kam mit `000` zurück. Das ist **kein Beweis, dass die
   Adressen stimmen.** Wer es angeht, braucht einen Weg, der wirklich abruft.
+- **Mikrofon mehrsprachig in die übrigen Apps** — neu am 2026-08-11. Klaus'
+  Befund: *„überall wo das Mikrofon ist, ist nur Deutsch vorgesehen … wenn ich
+  in Arabisch etwas hineinspreche, muss auch Arabisch als Text herauskommen."*
+  In **Kimboard erledigt** (PR #87, Klaus wollte es dort zuerst): zehn Sprachen,
+  Vorauswahl aus der Geräte-Sprache, gespeicherte Wahl in der Werkzeugleiste,
+  `dir="auto"` an den Feldern; Wächter `tests/smoke_mikrofon_sprachen.mjs`
+  13/13 samt Sabotage-Probe.
+  - **Zu tun:** dasselbe Muster in die übrigen Apps mit Mikrofon (Rezeptbuch,
+    Mixarium, family-project, Toolpoint, WorkFloh, BLP — erst nachsehen, wo
+    überhaupt eins verbaut ist). Pro App eine knappe Runde, das Muster steht.
+  - **Merksatz für den Bau:** die Browser-Spracherkennung hat **keine**
+    Sprach-Erkennung. Sie hört genau die Sprache, die man ihr sagt. Wer auf
+    „erkennt sich schon selbst" baut, baut nichts.
+  - **Modul 21 kennt nur de/en/ru** und ist byte-1:1 zum Kanon. Arabisch dort
+    zu ergänzen ist ein **netzweiter Rollout** (eigene Runde, alle Repos +
+    Drift-Guards). Bis dahin liegt die Sprachliste im App-Code — bewusst.
+  - **Volles RTL-Layout** (ganze Seite spiegeln) ist ausdrücklich **nicht**
+    gebaut und war Klaus auch „nicht so dramatisch". `dir="auto"` an den
+    Textfeldern deckt den Teil, der wirklich stört.
+- **Offene Messung: findet die Suche über Sprachgrenzen hinweg?** Kimboard (und
+  family) nutzen `Xenova/multilingual-e5-small` — ein mehrsprachiges Modell,
+  gebaut für genau das: arabische Frage, deutscher Text, ein gemeinsamer
+  Bedeutungsraum. **Das ist begründete Erwartung, KEIN Messwert.** Der Versuch,
+  es hier headless zu messen, scheiterte am Netz (HuggingFace ist gesperrt,
+  403; der lokale `models/`-Ordner enthält nur einen Platzhalter).
+  - **Wer es misst, entscheidet die Folgearbeit:** trägt das Modell, braucht es
+    **gar keine** Übersetzung — dann ist Klaus' Frage schon beantwortet. Trägt
+    es nicht, wäre der nächste Schritt eine Übersetzung der Frage vor der Suche
+    (online, BYOK) — deutlich teurer und mit Daten-Abfluss, also erst nach der
+    Messung entscheiden.
+  - Klaus' eigener Weg dahin: in Kimboard auf Arabisch fragen, deutsche Antwort
+    daneben, Bedeutungs-Sortierung an.
 - **Meldungen-Block für family** (das Gegenstück zu Schritt 1+2 auf der
   family-Seite). Klaus' Entscheidung, ob nötig — Toolpoint hat ihn, family
   bisher nicht.
