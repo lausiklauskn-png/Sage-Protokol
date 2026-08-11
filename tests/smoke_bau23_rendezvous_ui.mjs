@@ -45,6 +45,7 @@ function makeEl(tag, doc) {
   e._attrs = {};
   e.setAttribute = (k, v) => { e._attrs[k] = String(v); };
   e.getAttribute = (k) => (k in e._attrs ? e._attrs[k] : null);
+  e.removeAttribute = (k) => { delete e._attrs[k]; };
   return e;
 }
 function find(root, sel) {
@@ -577,6 +578,37 @@ async function run() {
     record("Panel klemmt fuer SEINE Breite, nicht die der Blase", "ja",
       /applyPos\(panelEl, clampInts\(p\.x, p\.y, panelEl\)\)/.test(quelle) ? "ja" : "nein",
       /applyPos\(panelEl, clampInts\(p\.x, p\.y, panelEl\)\)/.test(quelle));
+  }
+
+  /* ── Der lange schmale Kasten (Klaus 2026-08-11, ZWEITER Befund) ──────────
+   * „Das Mizel ist immer noch son langer Container … das Flying Widget in
+   * Kombination mit dem Minimieren." Auf zwei Geraeten fotografiert: ein
+   * fingerbreiter, schirmhoher Kasten statt der Blase.
+   *
+   * Ursache ist eine Kollision in der CSS-Kaskade: die Ausweich-Regel
+   * `#sbkim-rdv-btn[data-ecke-unten="1"]{bottom:78px !important}` hebt einen
+   * ECKEN-verankerten Knopf ueber die Lampen-Leiste — `!important` schlaegt
+   * aber auch das `bottom:auto`, das `applyPos` inline setzt. Dann gelten
+   * `top` UND `bottom`, und ein `position:fixed`-Element zieht sich ueber die
+   * ganze Strecke dazwischen. Im echten Chromium gemessen, 360 px breit,
+   * gemerkte Position oben 60: 88 x 662 px statt 88 x 33 px.
+   *
+   * Diese Probe prueft die TAT, nicht den Wortlaut: nachdem eine freie
+   * Position anliegt, darf das Ecken-Merkmal nicht mehr am Knopf haengen.
+   * (Der DOM-Stub kennt keine Kaskade und koennte die Hoehe nie sehen — der
+   * Hoehen-Beweis lief im echten Browser, siehe Commit-Nachricht.) */
+  {
+    record("vor dem Verschieben: Ecken-Merkmal gesetzt", "1",
+      btn.getAttribute("data-ecke-unten"), btn.getAttribute("data-ecke-unten") === "1");
+    UI.hide();   // Klaus' Weg: minimiert, also traegt die BLASE die Position
+    stub.localStorage.setItem("sbkim_rdv_ui_pos", JSON.stringify({ x: 12, y: 60 }));
+    stub.innerWidth = 360; stub.innerHeight = 800;
+    stub.dispatchEvent({ type: "resize" });
+    record("frei gesetzt: Ecken-Merkmal abgenommen", "weg",
+      btn.getAttribute("data-ecke-unten") === null ? "weg" : "noch da",
+      btn.getAttribute("data-ecke-unten") === null);
+    record("frei gesetzt: kein bottom mehr am Knopf", "auto",
+      btn.style.bottom, btn.style.bottom === "auto");
   }
 
   let pass = 0, fail = 0;
