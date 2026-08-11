@@ -1620,12 +1620,29 @@
           .ms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; align-items: start; }
           @media (max-width: 760px) { .ms-grid { grid-template-columns: 1fr; } }
           /* Jede Kachel quadratisch wie das Quell-Bild — nicht langgezogen */
-          .ms-tile { position: relative; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; border: 1px solid rgba(244,180,53,0.34); background: #05060f; box-shadow: 0 14px 44px rgba(0,0,0,0.42); }
+          /* Der Verlauf liegt am .ms-tile SELBST, nicht erst an .ms-noimg. Er ist
+             der Untergrund, auf dem das Bild landet — sichtbar, solange es lädt,
+             und er bleibt stehen, wenn es nie kommt. Vorher trug ihn nur die
+             Fehler-Variante; dann stand eine Kachel während des Ladens leer. */
+          .ms-tile { position: relative; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden; border: 1px solid rgba(244,180,53,0.34); background: radial-gradient(ellipse at 50% 38%, rgba(244,180,53,0.26) 0%, rgba(139,92,246,0.16) 46%, rgba(10,8,24,0.95) 100%); box-shadow: 0 14px 44px rgba(0,0,0,0.42); }
           .ms-tile.is-star { border-color: rgba(244,180,53,0.6); box-shadow: 0 0 0 1px rgba(244,180,53,0.22), 0 16px 50px rgba(0,0,0,0.5); }
           .ms-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+          /* ⚠ `ms-noimg` ist die FEHLER-Fassung und darf NIEMALS der Startzustand
+             sein (Befund + Messung 2026-08-11). Bis dahin starteten alle fünf
+             Kacheln damit und ein `onload` sollte die Klasse wieder abnehmen —
+             nur kam dieses `onload` nie:
+               display:none  →  keine Anzeige-Fläche
+               loading="lazy" →  ein Bild ohne Fläche wird gar nicht erst geholt
+               kein Abruf     →  kein onload  →  Klasse bleibt  →  für immer versteckt
+             Im echten Chromium gemessen: alle fünf Bilder `complete:false`,
+             `naturalWidth:0`, und in der Netz-Aufzeichnung KEIN EINZIGER Abruf.
+             Nicht fehlgeschlagen — nie gestellt. Deshalb sah niemand einen
+             Fehler, und deshalb fiel es so lange nicht auf.
+             Wer `ms-noimg` wieder in die Start-Klassen schreibt, macht genau
+             diesen Fehler noch einmal; `tests/smoke_meilenstein_bilder.mjs`
+             schlägt dann an. Der Weg zur Fehler-Fassung führt über `onerror`. */
           .ms-tile.ms-noimg .ms-img { display: none; }
           .ms-emoji { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 3rem; z-index: 1; display: none; filter: drop-shadow(0 0 14px rgba(244,180,53,0.6)); }
-          .ms-tile.ms-noimg { background: radial-gradient(ellipse at 50% 38%, rgba(244,180,53,0.26) 0%, rgba(139,92,246,0.16) 46%, rgba(10,8,24,0.95) 100%); }
           .ms-tile.ms-noimg .ms-emoji { display: block; }
           /* Oberer Streifen: Datum (dezent) + Überschrift in Farbe, auf dunklem Verlauf */
           .ms-top { position: relative; z-index: 2; padding: 0.85rem 1rem 1.5rem; background: linear-gradient(180deg, rgba(7,5,18,0.93) 0%, rgba(7,5,18,0.66) 52%, rgba(7,5,18,0) 100%); }
@@ -1657,7 +1674,7 @@
           <p class="ms-series-head">Wendepunkte · Meilensteine im Werdegang</p>
           <div class="ms-grid">
 
-            <article class="ms-tile ms-noimg">
+            <article class="ms-tile">
               <img class="ms-img" loading="lazy" decoding="async" width="640" height="640" src="assets/meilenstein-1-web.webp" alt="Erster Cross-Knoten-Handschlag nach Bedeutung"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
@@ -1674,7 +1691,7 @@
               </div>
             </article>
 
-            <article class="ms-tile ms-noimg">
+            <article class="ms-tile">
               <img class="ms-img" loading="lazy" decoding="async" width="640" height="640" src="assets/meilenstein-2-web.webp" alt="Erster eigenständiger Fremd-Knoten"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
@@ -1691,7 +1708,7 @@
               </div>
             </article>
 
-            <article class="ms-tile ms-noimg" id="meilenstein-suche">
+            <article class="ms-tile" id="meilenstein-suche">
               <img class="ms-img" loading="lazy" decoding="async" width="640" height="640" src="assets/meilenstein-web.webp" alt="Semantische Bedeutungs-Suche"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
@@ -1709,7 +1726,7 @@
               </div>
             </article>
 
-            <article class="ms-tile ms-noimg is-star" id="meilenstein-bidirektional">
+            <article class="ms-tile is-star" id="meilenstein-bidirektional">
               <img class="ms-img" loading="lazy" decoding="async" width="640" height="640" src="assets/meilenstein-2026-07-10-web.webp" alt="Zwei Knoten unterhalten sich nach Bedeutung durchs Mycel"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
@@ -1730,7 +1747,7 @@
               </div>
             </article>
 
-            <article class="ms-tile ms-noimg is-star" id="meilenstein-mesh">
+            <article class="ms-tile is-star" id="meilenstein-mesh">
               <img class="ms-img" loading="lazy" decoding="async" width="720" height="576" src="assets/meilenstein-2026-07-23-web.webp" alt="Fünf SBKIM-Knoten bilden live ein server-loses Mesh durchs Mycel"
                    onload="var t=this.closest('.ms-tile'); if(t){t.classList.remove('ms-noimg');}"
                    onerror="var t=this.closest('.ms-tile'); if(t){t.classList.add('ms-noimg');} this.remove();">
