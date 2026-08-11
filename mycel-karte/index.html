@@ -1,14 +1,52 @@
 <!DOCTYPE html>
-<!-- Sage-Protokol · Mycel-Live-Karte v1.4 · 2026-07-08 (Nach-Fusion: verspätete Namen wandern in die Seed-Pille)
+<!-- Sage-Protokol · Mycel-Live-Karte — UEBERNOMMEN aus dem eigenstaendigen Repo
+     `lausiklauskn-png/mycel-karte` (Stand 2026-08-11).
+
+     ANLASS: Diese Kopie war seit dem 2026-07-08 nicht mehr nachgezogen worden
+     und lief still auf altem Stand — EIN fest verdrahtetes Relais, keine
+     Relais-Wahl, kein Doppeltipp auf die Pillen. Sie sah funktionsfaehig aus,
+     weil nichts fehlschlug; sie zeigte nur weniger. Genau diese Sorte Fehler
+     faellt erst auf, wenn jemand die beiden Fassungen nebeneinanderlegt.
+
+     ABWEICHUNGEN von der Standalone-Fassung — und NUR diese vier:
+       1. Titel + Kopfzeile nennen Sage-Protokol
+       2. Rueck-Link zeigt auf ../index.html (Sage-Page) statt nach aussen
+       3. kein manifest-Verweis   (die Datei liegt hier nicht)
+       4. keine Service-Worker-Anmeldung (diese Fassung ist eingebettet,
+          keine eigene PWA)
+     Wer hier etwas anderes aendert, baut eine zweite Wahrheit auf. Neue
+     Funktionen gehoeren ins Repo `mycel-karte` und kommen von dort herueber;
+     `tests/smoke_mycelkarte_kopie.mjs` schlaegt an, wenn die Kopie zurueckfaellt.
+<!-- FP-COPYRIGHT
+  ╔═══════════════════════════════════════════════════════════════════╗
+  ║  Mycel-Karte  ©  2026  Klaus Nitzsche                             ║
+  ║  info@family-projekt.de                                           ║
+  ║  Alle Rechte vorbehalten. Unautorisierte Vervielfaeltigung,       ║
+  ║  Verbreitung oder Bearbeitung ist untersagt.                      ║
+  ║  All rights reserved. Unauthorized reproduction prohibited.       ║
+  ║  https://github.com/lausiklauskn-png/mycel-karte                  ║
+  ╚═══════════════════════════════════════════════════════════════════╝
+-->
+<!-- © 2026 Klaus Nitzsche — Alle Rechte vorbehalten. Original & Urheber: github.com/lausiklauskn-png/mycel-karte -->
+<!-- Mycel-Karte · eigenständige PWA · v1.4 · 2026-07-08 (Nach-Fusion)
+     Quelle der Karten-Logik: Sage-Protokol/mycel-karte (Kopie + PWA-Schale).
      Lebende Netz-Karte des SBKIM-Mycels: Kräfte-Graph (eigene Physik, keine
      Fremd-Bibliothek), lauscht auf ECHTE SBKIM-Ereignisse (Fenster-Events +
      BroadcastChannel "sbkim"/"sbkim-membrane", gleiche Origin = alle Apps).
      Reine ANZEIGE — gatet nichts, sendet nichts, Empfangsmodus gewahrt. -->
 <html lang="de">
 <head>
+<script>/* FP-COPYRIGHT */window._CR=Object.freeze({c:'\u00a9 2026 Klaus Nitzsche',m:'info@family-projekt.de',r:'All rights reserved',repo:'mycel-karte'});</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mycel-Live-Karte · Sage-Protokol</title>
+<meta name="theme-color" content="#08081a">
+<meta name="description" content="Mycel-Karte — lebende Netz-Karte des SBKIM-Mycels. Reine Anzeige, offline-fähig.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mycel-Karte">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMiIgZmlsbD0iIzA4MDgxYSIgc3Ryb2tlPSIjZjRiNDM1IiBzdHJva2Utd2lkdGg9IjYiLz48Y2lyY2xlIGN4PSIzMCIgY3k9IjM4IiByPSI3IiBmaWxsPSIjOGI1Y2Y2Ii8+PGNpcmNsZSBjeD0iNjgiIGN5PSIzMCIgcj0iNyIgZmlsbD0iIzIyYzU1ZSIvPjxjaXJjbGUgY3g9IjY0IiBjeT0iNjgiIHI9IjciIGZpbGw9IiNmNGI0MzUiLz48cGF0aCBkPSJNMzAgMzggTDY4IDMwIE02OCAzMCBMNjQgNjggTTY0IDY4IEwzMCAzOCIgc3Ryb2tlPSIjNmI3MjgwIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48L3N2Zz4=">
 <style>
   :root {
@@ -52,6 +90,27 @@
   .dot { width: 9px; height: 9px; border-radius: 50%; background: #555; }
   .dot.on { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
   .dot.rec { background: var(--bad); box-shadow: 0 0 8px var(--bad); }
+  /* Relais-Pillen: eine je Poststelle, benannt, klickbar. Abgeschaltete
+     bleiben SICHTBAR (nur blass) — eine Liste, aus der Einträge verschwinden,
+     macht das Wiedereinschalten zum Suchspiel. */
+  /* Knoten-Karte: erscheint auf Doppeltipp ueber einer Pille. Mittig und
+     ueber allem, damit sie auf dem Tablet nicht halb unter dem Regler liegt. */
+  #knotenKarte { position: fixed; inset: 0; z-index: 40; display: none;
+                 align-items: center; justify-content: center; padding: 1rem;
+                 background: rgba(0,0,0,0.55); }
+  #knotenKarte.offen { display: flex; }
+  #knotenKarte .kk { background: var(--card); border: 1px solid var(--line);
+                     border-radius: 14px; padding: 1rem 1.1rem; max-width: 26rem; width: 100%;
+                     box-shadow: 0 18px 50px rgba(0,0,0,0.5); }
+  #knotenKarte h2 { margin: 0 0 0.15rem; font-size: 1.05rem; color: var(--text); }
+  #knotenKarte .kennung { font-size: 0.68rem; color: var(--dim); word-break: break-all; margin-bottom: 0.6rem; }
+  #knotenKarte .was { font-size: 0.82rem; color: var(--text); line-height: 1.45; margin-bottom: 0.8rem; }
+  #knotenKarte .kkbtn { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.7rem; }
+  #knotenKarte .kkhint { font-size: 0.72rem; color: var(--dim); line-height: 1.45; }
+  .pills { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .rpill { font-size: 0.72rem; padding: 0.14rem 0.5rem; cursor: pointer; }
+  .rpill.aus { opacity: 0.45; }
+  .rpill.aus:hover { opacity: 0.8; }
   .spacer { flex: 1; }
   a.back { color: var(--dim); font-size: 0.8rem; text-decoration: none; border: 1px solid var(--line);
            border-radius: 999px; padding: 0.18rem 0.65rem; background: var(--card); }
@@ -142,11 +201,22 @@
   <span class="lamp"><span class="dot" id="chanDot"></span>Kanal <b>sbkim</b></span>
   <span class="lamp">Ereignisse <b id="evCount">0</b></span>
   <span class="lamp btn" id="themeBtn" title="Thema wechseln">◐ <b id="themeName">Dunkel</b></span>
+  <span class="lamp btn" id="reloadBtn" title="Aktualisieren / Cache leeren &amp; neu laden">↻</span>
   <span class="lamp btn" id="relayBtn" title="Raum am Nostr-Relais belauschen (nur lesen, auf deinen Zuruf)"><span class="dot" id="relayDot"></span>📡 <b id="relayLbl">Relais aus</b></span>
   <span class="lamp btn" id="recBtn" title="Analyse-Rekorder: zeichnet alle Roh-Ereignisse auf; Stopp lädt eine JSON-Datei herunter"><span class="dot" id="recDot"></span>🔬 <b id="recLbl">Analyse aus</b></span>
   <span class="spacer"></span>
   <a class="back" href="../index.html">← Sage-Page</a>
 </header>
+
+<div id="knotenKarte" role="dialog" aria-modal="true" aria-labelledby="kkName">
+  <div class="kk">
+    <h2 id="kkName">—</h2>
+    <div class="kennung" id="kkKennung"></div>
+    <div class="was" id="kkWas"></div>
+    <div class="kkbtn" id="kkKnoepfe"></div>
+    <div class="kkhint" id="kkHint"></div>
+  </div>
+</div>
 
 <div id="demoBadge">🎬 PROBELAUF — simulierte Ereignisse, kein echter Verkehr</div>
 <div id="log" aria-live="polite"></div>
@@ -157,6 +227,26 @@
     <span class="chev">▾</span>
   </div>
   <div class="body">
+    <!-- Die Relais-Pillen stehen ABSICHTLICH schon fertig im HTML (Lehre aus
+         Kimboard, Lighthouse 2026-08-02): eine leere Leiste, die erst von
+         relayPills() gefüllt wird, wächst nach dem Laden nachträglich und
+         schiebt alles darunter nach unten. Hier steht der VOREINGESTELLTE
+         Zustand — alle fünf aus RELAY_POOL, alle an. relayPills() baut das
+         gleich darauf nochmal, mit Klick-Verhalten und der gespeicherten
+         Wahl. Wer abweichend gewählt hat, sieht eine kleine Korrektur statt
+         eines Sprungs.
+         WICHTIG: Diese Liste muss zu RELAY_POOL passen — der Wächter
+         tests/relais_vorgezeichnet.mjs vergleicht beides. -->
+    <div class="row">
+      <label class="top">Relais · klicken zum An-/Abschalten</label>
+      <div class="pills" id="relayPills">
+        <span class="lamp rpill"><span class="dot"></span>relay.family-projekt.de</span>
+        <span class="lamp rpill"><span class="dot"></span>relay.pwa-toolpoint.de</span>
+        <span class="lamp rpill"><span class="dot"></span>relay.damus.io</span>
+        <span class="lamp rpill"><span class="dot"></span>nos.lol</span>
+        <span class="lamp rpill"><span class="dot"></span>relay.primal.net</span>
+      </div>
+    </div>
     <div class="row">
       <label class="top">Pillengröße <output id="sizeOut">1.0×</output></label>
       <input type="range" id="sizeSlider" min="0.5" max="3" step="0.05" value="1">
@@ -173,17 +263,18 @@
         <div class="c"><input type="color" id="colBg" value="#08081a"><br>Hintergrund</div>
       </div>
     </div>
+    <!-- Die feste Knopf-Reihe „Mycel-Apps öffnen" stand hier bis 2026-08-11.
+         Sie zeigte SECHS Apps, während auf der Karte fünfzehn Knoten standen —
+         wer eine der anderen neun öffnen wollte, fand keinen Weg. Und sie stand
+         weit weg von dem Ding, um das es ging: der Pille. Jetzt führt der Weg
+         über den Knoten selbst (Doppeltipp), und damit über ALLE, nicht über
+         eine handverlesene Auswahl. -->
     <div class="row">
-      <label class="top">Mycel-Apps öffnen (nebeneinander)</label>
-      <div class="btnrow apps">
-        <a class="b" href="https://lausiklauskn-png.github.io/Mein-Mixarium/" target="_blank" rel="noopener">🍹 Mixarium</a>
-        <a class="b" href="https://lausiklauskn-png.github.io/Mein-Rezeptbuch/" target="_blank" rel="noopener">🍲 Rezeptbuch</a>
-        <a class="b" href="https://lausiklauskn-png.github.io/Sage-Protokol/" target="_blank" rel="noopener">🍄 Sage-Page</a>
-        <a class="b" href="https://family-projekt.de/" target="_blank" rel="noopener">👨‍👩‍👧 family-projekt</a>
-        <a class="b" href="https://lausiklauskn-png.github.io/BookLedgerPro/" target="_blank" rel="noopener">📒 BookLedgerPro</a>
-        <a class="b" href="https://lausiklauskn-png.github.io/SB-KIMTool-Point/" target="_blank" rel="noopener">🧰 KIMTool-Point</a>
-      </div>
-      <div class="hint">Öffnen → dort <b>„🌐 Mit dem Netz verbinden"</b> drücken (das ist das „Hier bin ich"-Signal — bewusst per Hand, kein Auto-Funk). Mit 📡 Relais an siehst du sie hier im Raum erscheinen.</div>
+      <label class="top">Apps öffnen</label>
+      <div class="hint"><b>Doppeltipp auf eine Pille</b> öffnet ihre Karte: App starten,
+      Landingpage lesen, und was du dort tun kannst. Einfach ziehen verschiebt sie wie bisher.<br>
+      In der App dann <b>„🌐 Mit dem Netz verbinden"</b> drücken — das ist das
+      „Hier bin ich"-Signal, bewusst per Hand, kein Auto-Funk.</div>
     </div>
     <div class="row btnrow">
       <button class="b gold" id="btnDemo">🎬 Probelauf</button>
@@ -218,6 +309,19 @@ function saveSettings() {
   try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) {}
 }
 
+// ---------- Hard-Reload (Cache leeren & neu laden, fail-soft) ----------
+function hardReloadApp(){
+  const done=()=>{ try{location.reload(true);}catch(_e){try{location.reload();}catch(__e){}} };
+  let fired=false; const go=()=>{ if(fired)return; fired=true; done(); };
+  try{
+    const to=setTimeout(go,2500);
+    const tasks=[];
+    if('serviceWorker' in navigator){ tasks.push(navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{})); }
+    if(window.caches && caches.keys){ tasks.push(caches.keys().then(ks=>Promise.all(ks.map(k=>caches.delete(k)))).catch(()=>{})); }
+    Promise.all(tasks).then(()=>{ clearTimeout(to); go(); }).catch(()=>{ clearTimeout(to); go(); });
+  }catch(_e){ go(); }
+}
+
 // ---------- Themen (Farbwelten 1:1 aus family-project: Dunkel/Neon/Hell) ----------
 var THEMES = [
   { name: "Dunkel", bg: "#0b0d14", bg2: "#11151f", node: "#a78bfa", edge: "#3a4356",
@@ -247,39 +351,90 @@ function applyTheme(i, resetColors) {
 }
 
 // ---------- Bekannter Netz-Stand (statischer Samen, ehrlich beschriftet) ----------
-// Quelle: docs/PULS.md § Endknoten + sbkim/NETZ-STAND.md (Stand 2026-07-22, 13 Knoten).
+// Quelle: docs/PULS.md § Endknoten + sbkim/NETZ-STAND.md (Stand 2026-07-07).
 // Live-Ereignisse ergänzen/befeuern diese Karte — sie ersetzen sie nicht.
 var SEED_NODES = [
-  { id: "sage",       label: "Sage",             hub: true  },
-  { id: "mixarium",   label: "Mein Mixarium",    hub: false },
-  { id: "rezeptbuch", label: "Mein Rezeptbuch",  hub: false },
-  { id: "family",     label: "family-project",   hub: false },
-  { id: "blp",        label: "BookLedgerPro",    hub: false },
-  { id: "toolpoint",  label: "SB-KIMTool-Point", hub: false },
-  { id: "jtresor",    label: "Jasons-Tresor",    hub: false },
-  { id: "mtresor",    label: "Mein-Tresor",      hub: false },
-  { id: "tomys",      label: "Tomys Hub",        hub: false },
-  { id: "kimbell",    label: "Kim-Bell",         hub: false },
-  { id: "kimseek",    label: "Kimseek",          hub: false },
-  { id: "kimboard",   label: "Kimboard",         hub: false },
-  { id: "privatbrain",label: "Private Brain",    hub: false }
+  { id: "sage",      label: "Sage",             hub: true  },
+  { id: "mixarium",  label: "Mein Mixarium",    hub: false },
+  { id: "rezeptbuch",label: "Mein Rezeptbuch",  hub: false },
+  { id: "family",    label: "family-project",   hub: false },
+  { id: "blp",       label: "BookLedgerPro",    hub: false },
+  { id: "toolpoint", label: "SB-KIMTool-Point", hub: false },
+  { id: "jtresor",   label: "Jasons-Tresor",    hub: false },
+  { id: "mtresor",   label: "Mein-Tresor",      hub: false },
+  { id: "tomyhub",   label: "Tomys Hub",        hub: false },
+  { id: "kimseek",   label: "Kimseek",          hub: false },
+  { id: "kimboard",  label: "Kimboard",         hub: false },
+  { id: "kimbell",   label: "Kim-Bell",         hub: false },
+  { id: "privatbrain",label: "Private Brain",   hub: false }
 ];
 var SEED_EDGES = [ // bekannte etablierte Andocks/Beziehungen (Anzeige, kein Urteil)
   ["sage", "mixarium"], ["sage", "rezeptbuch"], ["sage", "family"],
   ["sage", "blp"], ["sage", "toolpoint"], ["sage", "jtresor"], ["sage", "mtresor"],
-  ["sage", "kimbell"], ["sage", "kimseek"], ["sage", "kimboard"],
+  ["sage", "tomyhub"], ["sage", "kimseek"], ["sage", "kimboard"], ["sage", "kimbell"],
   ["mixarium", "rezeptbuch"], ["mixarium", "family"],
-  ["tomys", "family"], ["tomys", "blp"]
-  // Tomys Hub: kein Sage-Match (0.7977 < 0.80) — verbunden über die fachverwandten
-  //   Werkzeug-/Buchhaltungs-Knoten (Family 0.8073 · BookLedgerPro 0.8064).
-  // Private Brain: verified-spore (2026-07-20), Cross-Knoten-Match noch offen
-  //   → als Knoten sichtbar, aber (noch) ohne etablierte Andock-Kante (CENTER_PULL hält ihn im Bild).
+  // 2026-07-11 live bewiesene Cross-Knoten-Handshakes (Klaus' Browser-Lauf):
+  ["toolpoint", "tomyhub"]
 ];
 
 // ---------- Graph-Zustand ----------
 var nodes = [];   // {id,label,hub,x,y,vx,vy,r,pulse,live}
 var edges = [];   // {a,b,flash,flashColor,seenLive}
 var nodeById = {};
+
+/* ---------- Adressbuch: welcher Knoten ist welche App? -------------------
+ *
+ * Die Karte kennt Knoten nur als Name + Kennung — eine Adresse steht in der
+ * Visitenkarte nicht drin. Damit ein Doppeltipp trotzdem irgendwo hinführt,
+ * liegt hier die Zuordnung.
+ *
+ * ⚠ EHRLICH ZUR HERKUNFT (2026-08-11): Diese Adressen sind aus den Repo-Namen
+ * abgeleitet und konnten in der Bau-Umgebung NICHT geprüft werden — dort ist
+ * jeder ausgehende Abruf gesperrt (alle Proben ergaben `000`, was nichts über
+ * die Adresse aussagt, nur über den Käfig). Eine falsche Adresse zeigt sich
+ * als GitHub-404 im neuen Tab: sichtbar, nicht still. Wer eine findet, trägt
+ * sie hier richtig ein.
+ *
+ * Der Schlüssel ist der Name OHNE Sonderzeichen und klein geschrieben, damit
+ * „SB-KIMTool-Point", „SB KIMTool Point" und „sbkimtoolpoint" alle treffen.
+ * Unbekannte Knoten sind KEIN Fehler: die Karte sagt dann ehrlich, dass keine
+ * Adresse hinterlegt ist, statt einen Knopf ins Leere anzubieten. */
+var GH = "https://lausiklauskn-png.github.io/";
+var ADRESSBUCH = {
+  sage:              { emo: "🍄", app: GH + "Sage-Protokol/", was: "Der Hub des Mycels: Protokoll, Module, Bibliothek. Hier entsteht, was die anderen einbauen." },
+  sageprotokol:      { emo: "🍄", app: GH + "Sage-Protokol/", was: "Der Hub des Mycels: Protokoll, Module, Bibliothek." },
+  meinmixarium:      { emo: "🍹", app: GH + "Mein-Mixarium/",     seite: GH + "Mein-Mixarium-Page/",     was: "Getränke-Labor: Cocktails, Mocktails, Sirupe, Tees — mit eigenem Labor zum Erfinden." },
+  memixarium:        { emo: "🍹", app: GH + "Me-Mixarium/",       was: "Getränke-Labor, zweite Ausfertigung." },
+  meinrezeptbuch:    { emo: "🍲", app: GH + "Mein-Rezeptbuch/",   seite: GH + "Mein-Rezeptbuch-Page/",   was: "Rezeptbuch: Kochen, Wochenplan, Einkaufszettel — offline nutzbar." },
+  muttisrezeptbuch:  { emo: "🍲", app: GH + "Muttis-Rezeptbuch/", seite: GH + "Muttis-Rezeptbuch-Seite/", was: "Das Original-Rezeptbuch, aus dem Mein Rezeptbuch hervorging." },
+  workfloh:          { emo: "🪲", app: GH + "Mein-WorkFloh/",     seite: GH + "Mein-Workfloh-Page/",     was: "Digitaler Auftragszettel für den Werbetechnik-Betrieb: Annahme, Produktion, Übergabe, Zeiten." },
+  meinworkfloh:      { emo: "🪲", app: GH + "Mein-WorkFloh/",     seite: GH + "Mein-Workfloh-Page/",     was: "Digitaler Auftragszettel: Annahme, Produktion, Übergabe, Zeiten." },
+  bookledgerpro:     { emo: "📒", app: GH + "BookLedgerPro/",     was: "Buchhaltung: offline, verschlüsselt, GoBD-fest. Nimmt fertige Aufträge aus WorkFloh an." },
+  sbkimtoolpoint:    { emo: "🧰", app: GH + "SB-KIMTool-Point/",  was: "Werkzeugkiste für Forker: die SBKIM-Module zum Kopieren, mit Erklärung." },
+  familyproject:     { emo: "👨‍👩‍👧", app: "https://family-projekt.de/", was: "Der Marktplatz für Freunde und Bekannte mit eigenem Gewerbe." },
+  familyprojekt:     { emo: "👨‍👩‍👧", app: "https://family-projekt.de/", was: "Der Marktplatz für Freunde und Bekannte mit eigenem Gewerbe." },
+  pwatoolpoint:      { emo: "🛒", app: "https://pwa-toolpoint.de/", was: "Der offene Laden für PWAs — für wildfremde Anbieter, gleiche Technik wie family-projekt.de." },
+  meintresor:        { emo: "🔐", app: GH + "Mein-Tresor/",       was: "Tresor mit Dreh-Safe und 20 Fächern: Dateien verschlüsselt ablegen." },
+  jasonstresor:      { emo: "🗝️", app: GH + "Jasons-Tresor/",     was: "Tresor und Bibliothek für JSON-Dateien und Schlüssel." },
+  kimboard:          { emo: "🌳", app: GH + "Kimboard/",          was: "Fragen aufs geborgte Brett legen und Antworten einsammeln — server-los, geräteübergreifend." },
+  kimseek:           { emo: "🔍", app: GH + "Kimseek/",           was: "Suchen im Mycel." },
+  kimbell:           { emo: "🔔", app: GH + "Kim-Bell/",          was: "Benachrichtigungen im Mycel." },
+  kimsync:           { emo: "🔄", app: GH + "Kim-sync/",          was: "Abgleich zwischen Geräten." },
+  kimhub:            { emo: "🧭", app: GH + "Kimhub/",            was: "Sammelpunkt der Kim-Werkzeuge." },
+  tomyshub:          { emo: "🏪", app: GH + "Tomys-Hub/",         was: "Tomys Katalog und sein eigenes WorkFloh." },
+  privatebrain:      { emo: "🧠", app: GH + "Privat-Brain/",      was: "Das private zweite Gehirn: eigene Dateien einmal einlesen, danach nach Bedeutung durchsuchen." },
+  privatbrain:       { emo: "🧠", app: GH + "Privat-Brain/",      was: "Das private zweite Gehirn: nach Bedeutung suchen statt nach Stichwort." },
+  companybrain:      { emo: "🏢", app: GH + "Company-Brain/",     was: "Dasselbe für den Betrieb." },
+  alismoderaum:      { emo: "👗", app: GH + "Alis-Moderaum/",     was: "Moderaum." },
+  perfectskinbeauty: { emo: "💄", app: GH + "Perfect-Skin-Beauty/", was: "Beauty-Seite." },
+  perfectskinfashion:{ emo: "👠", app: GH + "Perfect-Skin-Fashion/", was: "Fashion-Seite mit Warenwirtschaft." },
+  kuechenzettel:     { emo: "📝", app: GH + "Kuechenzettel/",     was: "Küchenzettel." },
+  mycelkarte:        { emo: "🍄", app: GH + "mycel-karte/",       was: "Diese Karte." }
+};
+function adressSchluessel(name) {
+  return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+function adresseFuer(name) { return ADRESSBUCH[adressSchluessel(name)] || null; }
 
 function addNode(id, label, hub, live) {
   if (nodeById[id]) return nodeById[id];
@@ -305,12 +460,12 @@ function addEdge(aId, bId) {
 SEED_NODES.forEach(function (s) { addNode(s.id, s.label, s.hub, false); });
 SEED_EDGES.forEach(function (p) { addEdge(p[0], p[1]); });
 
-// ---------- Auto-Nachzug der Knoten aus status.json (fail-soft) ----------
+// ---------- Auto-Nachzug der Knoten aus Sages status.json (fail-soft) ----------
 // Haelt die Karte automatisch aktuell: neu verbundene Endknoten (Register in
-// ../status.json) erscheinen beim naechsten Laden von selbst, ohne Code-Aenderung.
-// Rein additiv + Anzeige (kein Urteil). Faellt bei Offline/Fehler still auf den
-// eingebetteten Seed oben zurueck (nie schlechter als vorher).
-var STATUS_URL = "../status.json";
+// Sage-Protokol/status.json) erscheinen beim naechsten Laden von selbst, ohne
+// Code-Aenderung. Rein additiv + Anzeige (kein Urteil). Faellt bei Offline/Fehler
+// still auf den eingebetteten Seed oben zurueck (nie schlechter als vorher).
+var STATUS_URL = "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/status.json";
 function normNodeName(s) {
   var n = String(s || "").toLowerCase().replace(/[\s\-_.·•]/g, "");
   if (n === "familyprojekt") n = "familyproject"; // DE/EN-Schreibweise vereinheitlichen
@@ -345,18 +500,18 @@ function normNodeName(s) {
 // IDs desselben Namens (z.B. Tablet + Handy, oder frische Identität nach
 // Neuanmeldung) werden Aliasse EINER Pille (Anzeige ×N).
 var SEED_ALIASES = {
-  sage:       ["sage", "sage protokoll", "sage protokol"],
-  mixarium:   ["mein mixarium", "mixarium"],
-  rezeptbuch: ["mein rezeptbuch", "rezeptbuch", "muttis rezeptbuch"],
-  family:     ["family project", "family projekt", "familyprojekt", "familyproject"],
-  blp:        ["bookledgerpro", "book ledger pro", "bookledger pro"],
-  toolpoint:  ["sb kimtool point", "kimtool point", "sbkimtool point", "sb kimtoolpoint", "sbkimtoolpoint"],
-  jtresor:    ["jasons tresor", "jason tresor"],
-  mtresor:    ["mein tresor"],
-  tomys:      ["tomys hub", "tomy hub", "tomys", "tomys workfloh"],
-  kimbell:    ["kim bell", "kimbell"],
-  kimseek:    ["kimseek"],
-  kimboard:   ["kimboard"],
+  sage:      ["sage", "sage protokoll", "sage protokol"],
+  mixarium:  ["mein mixarium", "mixarium"],
+  rezeptbuch:["mein rezeptbuch", "rezeptbuch", "muttis rezeptbuch"],
+  family:    ["family project", "family projekt", "familyprojekt", "familyproject"],
+  blp:       ["bookledgerpro", "book ledger pro", "bookledger pro"],
+  toolpoint: ["sb kimtool point", "kimtool point", "sbkimtool point", "sb kimtoolpoint"],
+  jtresor:   ["jasons tresor", "jason tresor"],
+  mtresor:   ["mein tresor"],
+  tomyhub:   ["tomys hub", "tomy hub", "tomys-hub", "tomyhub"],
+  kimseek:   ["kimseek", "kim seek", "kim sieg"],
+  kimboard:  ["kimboard", "kim board"],
+  kimbell:   ["kim bell", "kim-bell", "kimbell"],
   privatbrain:["private brain", "privat brain", "privatbrain"]
 };
 function normName(x) { return String(x || "").toLowerCase().replace(/[^a-z0-9äöüß]+/g, " ").trim(); }
@@ -603,10 +758,130 @@ try {
 
 // ---------- Relais-Lauscher (NUR LESEN, nutzer-ausgelöst — Pilz-Werkzeug) ----------
 // Verträge: Modul 05b DEFAULT_RELAYS + Modul 23 RDV_TAG/Karte + Modul 05 Nostr-Tags.
-var RELAY_URL = "wss://relay.family-projekt.de";
-var relaySock = null;
+/* MEHRERE RELAIS (2026-08-11). Vorher hing die Karte an EINER festen Adresse:
+ * `wss://relay.family-projekt.de`. Das war richtig, solange alle Apps dort
+ * lauschten — seit PWA Toolpoint am 2026-08-09 auf oeffentliche Relais
+ * umgestellt wurde, lief sein Verkehr an dieser Karte VORBEI. Nicht doppelt:
+ * gar nicht. Ein Knoten, der sich meldet, ohne dass die Karte es sieht, ist
+ * schlimmer als gar kein Lauscher — man haelt die Stille fuer Ruhe.
+ *
+ * Jetzt lauscht sie an allen Poststellen, die im Netz tatsaechlich benutzt
+ * werden. Sie laufen PARALLEL: faellt eine aus, tragen die anderen weiter.
+ *
+ * NUR LESEN, wie vorher. Die Karte sendet nie. */
+var RELAY_POOL = [
+  "wss://relay.family-projekt.de",   // Klaus' eigenes — family-projekt.de & Geschwister
+  "wss://relay.pwa-toolpoint.de",    // Klaus' eigenes — live seit 2026-08-11
+  "wss://relay.damus.io",            // oeffentlich — PWA Toolpoint, Kimboard
+  "wss://nos.lol",
+  "wss://relay.primal.net"
+];
+/* WARUM DIE WAHL SICHTBAR SEIN MUSS (Klaus 2026-08-11, nach Kimboard-Vorbild):
+ * Zwei der fuenf gehoeren Klaus, drei fremden Betreibern. Wer eine Verbindung
+ * aufbaut, gibt seine IP an DEREN Betreiber — und der Datenschutztext von PWA
+ * Toolpoint sagt zu, dass man das selbst waehlen kann. Eine feste Liste ohne
+ * Schalter machte diese Zusage unwahr. Jetzt ist sie wahr.
+ *
+ * BEWUSST NICHT UEBERNOMMEN: Kimboards Rotation (`modules/relay_rotation.js`).
+ * Die traegt dort, weil ALLE IM KREIS ein Geheimnis teilen und daraus dieselbe
+ * Auswahl ausrechnen — synchron ohne Absprache. Diese Karte hat keinen Kreis
+ * und kein Geheimnis; sie hoert nur zu. Wuerde sie rotieren, lauschte sie an
+ * weniger Stellen gleichzeitig und SAEHE WENIGER. Fuer einen Beobachter ist
+ * Streuung kein Gewinn, sondern ein Verlust im Kostuem eines Features. */
+var LS_RELAYS = "mycelkarte_relais";
+var aktiveRelais = null;
+try {
+  var gespeichert = JSON.parse(localStorage.getItem(LS_RELAYS) || "null");
+  if (Array.isArray(gespeichert)) {
+    /* Gegen RELAY_POOL filtern: eine gespeicherte Adresse, die es nicht mehr
+       gibt, wuerde sonst als toter Draht mitlaufen. */
+    aktiveRelais = gespeichert.filter(function (u) { return RELAY_POOL.indexOf(u) >= 0; });
+  }
+} catch (e) { aktiveRelais = null; }
+/* Leeres Array ist eine GUELTIGE Wahl (alle aus) — nur `null` heisst
+   „noch nie gewaehlt". Darum hier auf null pruefen, nicht auf Laenge. */
+if (aktiveRelais === null) aktiveRelais = RELAY_POOL.slice();
+function relaisMerken() {
+  try { localStorage.setItem(LS_RELAYS, JSON.stringify(aktiveRelais)); } catch (e) {}
+}
+function istAktiv(url) { return aktiveRelais.indexOf(url) >= 0; }
+/* Ein Draht je Adresse statt einer namenlosen Liste: nur so kann die Pille
+   sagen, ob GENAU DIESE Poststelle traegt. */
+var sockByUrl = Object.create(null);
+var lauscht = false;   // will der Nutzer ueberhaupt lauschen (Kopf-Knopf)
+function offeneSocks() {
+  var n = 0;
+  for (var u in sockByUrl) { if (sockByUrl[u] && sockByUrl[u].readyState === 1) n++; }
+  return n;
+}
+/* DIE EIGENTLICHE FALLE AN MEHREREN RELAIS: dasselbe Ereignis kommt ueber
+ * jede Poststelle einmal an. Ohne diesen Filter stuende jeder Handshake
+ * dreifach im Protokoll — genau das „doppelt", das man befuerchtet, wenn man
+ * ein zweites Relais dazunimmt. Nostr-Ereignisse tragen eine eindeutige `id`;
+ * die zweite Ankunft wird verworfen.
+ *
+ * Der Vorrat ist begrenzt: die Karte laeuft stundenlang offen, und eine Menge,
+ * die nie vergisst, waechst bis der Speicher voll ist. 800 gemerkte Kennungen
+ * reichen weit ueber das Sammelfenster hinaus. */
+var gesehen = [], gesehenSet = Object.create(null);
+function schonGesehen(id) {
+  if (!id) return false;                       // ohne Kennung nicht filtern — lieber doppelt als still weg
+  if (gesehenSet[id]) return true;
+  gesehenSet[id] = 1; gesehen.push(id);
+  if (gesehen.length > 800) { delete gesehenSet[gesehen.shift()]; }
+  return false;
+}
 function relayLog(msg, cls) { logEvent(msg + " <i>(Relais)</i>", cls || ""); }
+/* „Relais an 3/5" statt „Relais an": bei fuenf Poststellen ist die Frage nicht
+   OB eine haengt, sondern WIE VIELE tragen. */
+function relayStand() {
+  var lbl = document.getElementById("relayLbl"), dot = document.getElementById("relayDot");
+  var offen = offeneSocks();
+  relayPills();
+  if (!lauscht) { dot.classList.remove("on"); lbl.textContent = "Relais aus"; return; }
+  /* Alle abgewaehlt ist eine Wahl, kein Fehler — aber sie muss DRANSTEHEN,
+     sonst sucht man den Fehler beim Netz statt bei der eigenen Einstellung. */
+  if (!aktiveRelais.length) { dot.classList.remove("on"); lbl.textContent = "keins gewählt"; return; }
+  if (offen) { dot.classList.add("on"); lbl.textContent = "Relais an " + offen + "/" + aktiveRelais.length; }
+  else { dot.classList.remove("on"); lbl.textContent = "verbinde…"; }
+}
+/* Zeichnet die Leiste neu. Der Punkt zeigt den ECHTEN Zustand dieser einen
+   Poststelle — nicht die Absicht, sondern was der Draht gerade tut. */
+function relayPills() {
+  var box = document.getElementById("relayPills");
+  if (!box) return;
+  var html = "";
+  for (var i = 0; i < RELAY_POOL.length; i++) {
+    var url = RELAY_POOL[i], an = istAktiv(url);
+    var sock = sockByUrl[url];
+    var traegt = an && sock && sock.readyState === 1;
+    var name = url.replace(/^wss:\/\//, "");
+    var titel = an
+      ? (traegt ? "verbunden — klicken zum Abschalten"
+                : (lauscht ? "gewählt, aber nicht erreichbar — klicken zum Abschalten"
+                           : "gewählt — wird beim Lauschen verbunden"))
+      : "abgeschaltet — klicken zum Anschalten";
+    html += '<span class="lamp rpill' + (an ? "" : " aus") + '" data-relais="' + name +
+            '" title="' + titel + '"><span class="dot' + (traegt ? " on" : "") + '"></span>' +
+            name + "</span>";
+  }
+  box.innerHTML = html;
+}
+/* Bringt die offenen Draehte mit der Wahl in Einklang: fehlende aufmachen,
+   ueberzaehlige schliessen. Wird nach jedem Klick und beim Start gerufen. */
+function relaisAbgleichen() {
+  for (var i = 0; i < RELAY_POOL.length; i++) {
+    var url = RELAY_POOL[i], soll = lauscht && istAktiv(url), sock = sockByUrl[url];
+    if (soll && !sock) relaisOeffnen(url);
+    else if (!soll && sock) { try { sock.close(); } catch (e) {} delete sockByUrl[url]; }
+  }
+  relayStand();
+}
 function handleRelayEvent(evt) {
+  /* Zuerst der Doppel-Filter, VOR allem anderen: dasselbe Ereignis kommt ueber
+     jede Poststelle einmal. Ohne diese Zeile stuende jeder Handshake so oft im
+     Protokoll, wie Relais verbunden sind. */
+  if (schonGesehen(evt && evt.id)) return;
   var content = {};
   try { content = JSON.parse(evt.content || "{}"); } catch (e) { return; }
   var tags = evt.tags || [], tt = "", dd = "";
@@ -632,33 +907,71 @@ function handleRelayEvent(evt) {
     SOUND.request();
   }
 }
-function relayStart() {
-  if (relaySock) return;
-  var lbl = document.getElementById("relayLbl"), dot = document.getElementById("relayDot");
-  lbl.textContent = "verbinde…";
-  try {
-    relaySock = new WebSocket(RELAY_URL);
-  } catch (e) { lbl.textContent = "Relais aus"; relaySock = null; return; }
-  relaySock.onopen = function () {
-    dot.classList.add("on"); lbl.textContent = "Relais an";
+var erstesOffen = false;
+function relaisOeffnen(url) {
+  var sock;
+  try { sock = new WebSocket(url); } catch (e) { return; }   // eine kaputte Adresse stoppt die anderen nicht
+  sockByUrl[url] = sock;
+  sock.onopen = function () {
     var since = Math.floor(Date.now() / 1000) - 1800;
-    relaySock.send(JSON.stringify(["REQ", "mycelkarte-raum", {
+    sock.send(JSON.stringify(["REQ", "mycelkarte-raum", {
       kinds: [1],
       "#t": ["sbkim-rdv", "sbkim-anastomosis", "sbkim-anastomosis-reply", "sbkim-query", "sbkim-query-reply"],
       since: since
     }]));
-    relayLog("<b>Lausche</b> · Raum sbkim-rdv + Handshake-Verkehr (nur lesen)", "ok");
+    /* Nur EINMAL melden, dass gelauscht wird — nicht fuenfmal. Welche
+       Poststellen tragen, steht jetzt an den Pillen. */
+    if (!erstesOffen) {
+      erstesOffen = true;
+      relayLog("<b>Lausche</b> · Raum sbkim-rdv + Handshake-Verkehr (nur lesen)", "ok");
+    }
+    relayStand();
   };
-  relaySock.onmessage = function (m) {
+  sock.onmessage = function (m) {
     var arr; try { arr = JSON.parse(m.data); } catch (e) { return; }
     if (Array.isArray(arr) && arr[0] === "EVENT" && arr[2]) handleRelayEvent(arr[2]);
   };
-  relaySock.onerror = function () { relayLog("<b>Relais nicht erreichbar</b> · Karte läuft normal weiter", "bad"); };
-  relaySock.onclose = function () {
-    dot.classList.remove("on"); lbl.textContent = "Relais aus"; relaySock = null;
+  /* Die Adresse NENNEN. „Relais nicht erreichbar" allein laesst offen,
+     welches — und bei fuenf Poststellen ist genau das die Frage. Solange
+     eine andere traegt, ist es kein Fehler, sondern eine Randnotiz. */
+  sock.onerror = function () {
+    relayLog("<b>" + url.replace(/^wss:\/\//, "") + " nicht erreichbar</b> · die übrigen tragen weiter");
+  };
+  sock.onclose = function () {
+    if (sockByUrl[url] === sock) delete sockByUrl[url];
+    relayStand();
   };
 }
-function relayStop() { if (relaySock) { try { relaySock.close(); } catch (e) {} } }
+function relayStart() {
+  if (lauscht) return;
+  lauscht = true;
+  erstesOffen = false;
+  document.getElementById("relayLbl").textContent = "verbinde…";
+  relaisAbgleichen();
+}
+function relayStop() {
+  lauscht = false;
+  relaisAbgleichen();   // schliesst alles, weil `lauscht` jetzt false ist
+}
+/* Klick auf eine Pille. Delegiert am Kasten, weil die Leiste neu gezeichnet
+   wird — ein Zuhoerer je Pille waere nach dem ersten Neuzeichnen tot. */
+(function () {
+  var box = document.getElementById("relayPills");
+  if (!box) return;
+  box.addEventListener("click", function (ev) {
+    var pille = ev.target.closest ? ev.target.closest("[data-relais]") : null;
+    if (!pille) return;
+    var name = pille.getAttribute("data-relais"), url = "wss://" + name;
+    if (RELAY_POOL.indexOf(url) < 0) return;
+    var i = aktiveRelais.indexOf(url);
+    if (i >= 0) aktiveRelais.splice(i, 1); else aktiveRelais.push(url);
+    relaisMerken();
+    /* Sofort wirksam, auch mitten im Lauschen: die abgewaehlte Poststelle
+       wird geschlossen, die neu gewaehlte gleich verbunden. Ein Schalter,
+       der erst nach einem Neuladen greift, ist kein Schalter. */
+    relaisAbgleichen();
+  });
+})();
 
 // ---------- Probelauf (ausdrücklich als Simulation gekennzeichnet) ----------
 var demoTimer = null;
@@ -876,6 +1189,59 @@ function draw() {
 
 function loop() { fitCanvas(); stepPhysics(); draw(); requestAnimationFrame(loop); }
 
+/* ---------- Knoten-Karte (Doppeltipp auf eine Pille) --------------------
+ * Zeigt, was dieser Knoten IST und was man mit ihm tun kann. Bewusst eine
+ * Karte statt eines sofortigen Sprungs in die App: nicht jeder Knoten hat
+ * eine hinterlegte Adresse, und wer nur wissen will, was das Ding tut, will
+ * deswegen nicht gleich einen neuen Tab. */
+function knotenKarteOeffnen(n) {
+  var box = document.getElementById("knotenKarte");
+  var adr = adresseFuer(n.label) || adresseFuer(n.id);
+  document.getElementById("kkName").textContent = (adr && adr.emo ? adr.emo + " " : "") + n.label;
+  /* Die Kennung MIT anzeigen: der Name ist frei gewaehlt und beweist nichts,
+     die Kennung unterscheidet zwei Geraete derselben App. */
+  document.getElementById("kkKennung").textContent = "Kennung: " + n.id;
+  document.getElementById("kkWas").textContent = adr && adr.was
+    ? adr.was
+    : "Für diesen Knoten ist hier keine Beschreibung hinterlegt. Er hat sich im Raum gemeldet — mehr weiß die Karte nicht über ihn.";
+
+  var knoepfe = "";
+  if (adr && adr.app) {
+    knoepfe += '<a class="b" target="_blank" rel="noopener" href="' + adr.app + '">↗ App öffnen</a>';
+  }
+  if (adr && adr.seite) {
+    knoepfe += '<a class="b" target="_blank" rel="noopener" href="' + adr.seite + '">📄 Landingpage</a>';
+  }
+  knoepfe += '<button class="b" id="kkZu">Schließen</button>';
+  document.getElementById("kkKnoepfe").innerHTML = knoepfe;
+
+  document.getElementById("kkHint").innerHTML = adr && adr.app
+    ? 'In der App dann <b>„🌐 Mit dem Netz verbinden"</b> drücken — das ist das ' +
+      '„Hier bin ich"-Signal, bewusst per Hand. Mit <b>📡 Relais an</b> siehst du sie hier im Raum erscheinen.'
+    : 'Keine Adresse hinterlegt. Das ist kein Fehler des Knotens — die Karte kennt ' +
+      'nur Name und Kennung, eine Adresse steht in der Visitenkarte nicht drin.';
+
+  box.classList.add("offen");
+  var zu = document.getElementById("kkZu");
+  if (zu) zu.focus();
+}
+function knotenKarteSchliessen() {
+  document.getElementById("knotenKarte").classList.remove("offen");
+}
+(function () {
+  var box = document.getElementById("knotenKarte");
+  if (!box) return;
+  /* Klick auf den dunklen Rand schliesst — aber nur dort, nicht auf der Karte
+     selbst, sonst geht sie beim Zielen auf einen Knopf zu. */
+  box.addEventListener("click", function (ev) {
+    if (ev.target === box) knotenKarteSchliessen();
+    if (ev.target && ev.target.id === "kkZu") knotenKarteSchliessen();
+  });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") knotenKarteSchliessen();
+  });
+})();
+
 // ---------- Eingabe: Ziehen (Pille/Karte), Zoom (Rad + Pinch) ----------
 var pointer = { down: false, node: null, lastX: 0, lastY: 0 };
 var pinch = { active: false, dist: 0 };
@@ -891,6 +1257,7 @@ function nodeAt(sx, sy) {
 canvas.addEventListener("pointerdown", function (ev) {
   canvas.setPointerCapture(ev.pointerId);
   pointer.down = true; pointer.lastX = ev.clientX; pointer.lastY = ev.clientY;
+  pointer.startX = ev.clientX; pointer.startY = ev.clientY;   // fuer „getippt oder gezogen?"
   pointer.node = nodeAt(ev.clientX, ev.clientY);
   if (pointer.node) pointer.node.dragging = true; else canvas.classList.add("dragging");
 });
@@ -906,7 +1273,30 @@ canvas.addEventListener("pointermove", function (ev) {
     view.x -= dx / view.zoom; view.y -= dy / view.zoom;
   }
 });
+/* Doppeltipp SELBST erkennen statt `dblclick` zu nehmen. Grund: Klaus arbeitet
+   am Tablet, und dort ist ein Doppeltipp zuerst einmal eine Zoom-Geste des
+   Browsers — `dblclick` kommt unzuverlaessig oder gar nicht. Zwei kurze Tipps
+   auf DIESELBE Pille innerhalb von 400 ms sind eindeutig genug, und weil ein
+   Tipp nur zaehlt, wenn der Finger sich kaum bewegt hat, kollidiert er nicht
+   mit dem Ziehen: wer schiebt, oeffnet nichts. */
+var letzterTipp = { node: null, zeit: 0 };
 function endPointer() {
+  var n = pointer.node;
+  if (n && pointer.down) {
+    var dx = pointer.lastX - pointer.startX, dy = pointer.lastY - pointer.startY;
+    var getippt = (dx * dx + dy * dy) < 64;        // < 8 px Weg = Tipp, kein Zug
+    var jetzt = Date.now();
+    if (getippt) {
+      if (letzterTipp.node === n && (jetzt - letzterTipp.zeit) < 400) {
+        letzterTipp.node = null;                   // verbraucht — kein Dreifach-Tipp
+        knotenKarteOeffnen(n);
+      } else {
+        letzterTipp.node = n; letzterTipp.zeit = jetzt;
+      }
+    } else {
+      letzterTipp.node = null;                     // gezogen = kein angefangener Doppeltipp
+    }
+  }
   pointer.down = false;
   if (pointer.node) { pointer.node.dragging = false; pointer.node = null; }
   canvas.classList.remove("dragging");
@@ -978,8 +1368,12 @@ $("themeBtn").addEventListener("click", function () {
   applyTheme(settings.theme + 1, true);
   applySettingsToUI();
 });
+$("reloadBtn").addEventListener("click", hardReloadApp);
 $("relayBtn").addEventListener("click", function () {
-  relaySock ? relayStop() : relayStart();
+  /* Gegen `lauscht` pruefen, nicht gegen offene Draehte: sind alle Relais
+     abgewaehlt oder gerade keins erreichbar, gibt es null offene Sockets —
+     der Knopf wuerde dann beim Druecken erneut STARTEN statt zu stoppen. */
+  lauscht ? relayStop() : relayStart();
 });
 $("recBtn").addEventListener("click", function () {
   rec ? recStop() : recStart();
@@ -996,10 +1390,55 @@ $("panelHead").addEventListener("click", function () {
 // ---------- Start ----------
 applyTheme(settings.theme || 0, false);
 applySettingsToUI();
+/* Die Leiste EINMAL beim Start zeichnen. Ohne das stuende die vorgezeichnete
+   Fassung aus dem HTML da — alle fuenf an — bis der Nutzer das Lauschen
+   einschaltet. Wer beim letzten Mal drei abgewaehlt hat, saehe also seine
+   eigene Wahl nicht und haelt sie fuer verloren. */
+relayPills();
 resize();
 setTimeout(centerView, 600);
 logEvent("<b>Karte bereit</b> · lauscht auf sbkim-Ereignisse dieser Origin", "ok");
 loop();
+
+/* KEIN Service-Worker in dieser Fassung — bewusst.
+   Die eigenstaendige Karte (Repo `mycel-karte`) ist eine installierbare PWA
+   und meldet dort `./sw.js` an. HIER liegt nur die index.html als Unterseite
+   der Sage-Page; ein Anmelde-Versuch liefe auf eine Datei, die es nicht gibt.
+   Aus demselben Grund fehlt oben der manifest-Verweis. */
 </script>
+
+<!-- ── family-projekt.de · dezenter Fuß-Verweis (netzweit identisch) ──────────
+     Zweck: Wer diese App irgendwo findet (GitHub-Download, Fork, geteilter Link),
+     kommt von hier zurück zum Marktplatz. Bewusst KLEIN und ganz unten — nicht
+     dominant auf der ersten Seite (Klaus 2026-07-28). Farbwelt = family-project
+     (--accent #6ee7d3). Selbst-enthalten, kein CDN, keine Abhängigkeit. -->
+<style>
+  .fp-badge-wrap{max-width:960px;margin:30px auto 18px;padding:0 16px;text-align:center;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+  .fp-badge{display:inline-flex;align-items:center;gap:.5em;padding:7px 15px;
+    border-radius:999px;border:1px solid rgba(110,231,211,.38);color:#6ee7d3;
+    background:rgba(110,231,211,.06);font-size:.82rem;text-decoration:none;
+    transition:background .18s ease,border-color .18s ease;}
+  .fp-badge:hover,.fp-badge:focus-visible{background:rgba(110,231,211,.15);
+    border-color:rgba(110,231,211,.72);outline:none;}
+  .fp-badge.fp-strong{background:rgba(110,231,211,.13);
+    border-color:rgba(110,231,211,.55);font-size:.86rem;padding:8px 17px;}
+  .fp-badge .fp-dot{width:7px;height:7px;border-radius:50%;background:#6ee7d3;
+    box-shadow:0 0 7px rgba(110,231,211,.85);flex:none;}
+  .fp-copy{margin-top:9px;font-size:.72rem;line-height:1.5;color:#9aa7b6;opacity:.78;}
+  @media (prefers-color-scheme: light){
+    .fp-badge{color:#0f766e;border-color:rgba(15,118,110,.35);background:rgba(15,118,110,.05);}
+    .fp-badge:hover,.fp-badge:focus-visible{background:rgba(15,118,110,.12);}
+    .fp-badge .fp-dot{background:#0f766e;box-shadow:0 0 7px rgba(15,118,110,.5);}
+    .fp-copy{color:#5b6b7a;}
+  }
+</style>
+<div class="fp-badge-wrap">
+  <a class="fp-badge" href="https://family-projekt.de" target="_blank" rel="noopener"
+     title="Zum Marktplatz family-projekt.de — weitere Werkzeuge und Apps">
+    <span class="fp-dot"></span> Mehr Werkzeuge auf family-projekt.de
+  </a>
+  <div class="fp-copy">&copy; 2026 Klaus Nitzsche &middot; kostenlos, ohne Konto, offline nutzbar</div>
+</div>
 </body>
 </html>
