@@ -173,15 +173,40 @@ nichts und ist jederzeit zurückdrehbar.
   haben eine **App-eigene** Sprachwahl (der Browser hat damit nichts zu tun), die
   fünf ohne sind schlicht **nur auf Deutsch geschrieben**.
 
-  **Drei Wege, Klaus' Entscheidung steht aus** (am 2026-08-11 vorgelegt, keine
-  Antwort abgewartet — nicht eigenmächtig loslegen):
-  1. *klein* — die drei mit Tabelle beim ERSTEN Start die Browsersprache
-     übernehmen lassen, Wahl weiter änderbar. Eine knappe Runde je App.
-  2. *mittel* — Sprachwahl in die fünf ohne Tabelle einbauen. Echte
-     Übersetzungsarbeit, jede Beschriftung einzeln; eine Sitzung oder mehr je App.
-  3. *sehr klein, hilft sofort in allen acht* — `<html lang>` mitziehen, sobald
-     eine Sprache gewählt ist. Dann bietet der **Browser** seine eigene
-     Übersetzung an, und der Fremdnutzer kommt wenigstens durch.
+  **✅ ENTSCHIEDEN UND GEBAUT am 2026-08-11 — dieser Punkt ist erledigt.**
+
+  Klaus wählte zunächst „Weg 3" (`<html lang>` mitziehen). Beim Nachsehen stellte
+  sich heraus: **Weg 3 war längst gebaut.** `applyLang()` setzt
+  `document.documentElement.lang` seit jeher bei jedem Sprachwechsel; WorkFloh
+  setzt zusätzlich `dir="rtl"`. Der Vorschlag beruhte auf einem Suchfehler von
+  mir — gesucht wurde nach `navigator.language`, nicht nach
+  `documentElement.lang`. **Merksatz: eine Fundstelle, die man nicht gesucht hat,
+  ist kein Beweis für Abwesenheit.**
+
+  Die **echte** Lücke war der **erste Aufruf**: die Apps fragten den Browser nie.
+  Nach Rückfrage baute die Sitzung darum Weg 1 — in **vier** Apps gemergt:
+  Mein-Rezeptbuch #370 · Mein-Mixarium #186 · Mein-WorkFloh #166 ·
+  Muttis-Rezeptbuch #182 (Schwester, damit die beiden nicht auseinanderlaufen).
+
+  **Der Riegel, der dabei entstand — beim Bauen ähnlicher Dinge beachten:**
+  übernommen wird **nur eine Sprache, die die App wirklich hat** (`LANGS`).
+  Gemessen: ein erzwungenes `lang="ar"` auf durchgehend deutschem Text bringt
+  Chrome dazu, **seine eigene Übersetzung nicht mehr anzubieten** — es hält die
+  Seite für schon übersetzt. Blind die Browsersprache zu übernehmen wäre also
+  schlechter als nichts zu tun. Eine gespeicherte Wahl gewinnt immer.
+
+  **Was hier offen BLEIBT:**
+  - **WorkFlohs Einrichtungs-Bildschirm ist fest deutsch verdrahtet** —
+    `showSetupScreen()` setzt „Code festlegen (mind. 6 Stellen)" ohne `T()`. Der
+    **allererste Satz**, den ein fremder Nutzer sieht, ist damit immer deutsch,
+    egal welche Sprache gilt. Braucht einen Schlüssel in `TR` + Übersetzungen in
+    allen sieben Sprachen — echte Arbeit, bewusst nicht nebenbei gemacht.
+  - **Die fünf Apps ohne Übersetzungs-Tabelle** (Kimboard, Kimseek,
+    family-project, BookLedgerPro, Tomys-Hub) bleiben deutsch. `lang="de"` ist
+    dort **richtig**, also bietet Chrome seine Übersetzung an — in einem
+    normalen Tab. Ob das in einer **installierten PWA** ebenfalls greift (dort
+    fehlt die Adressleiste und damit der Übersetzen-Knopf), ist **ungeprüft**
+    und wäre vor jeder Arbeit daran zuerst zu messen.
 
   Ordnet sich unter die Fremdnutzer-/Marktplatz-Brille (CLAUDE.md): ein Besucher,
   der die Beschriftungen nicht lesen kann, ist kein Randfall, sondern der
