@@ -31,6 +31,98 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-11 (2) — ⛔ Die Ampel: sperren aus dem Studio, lösen nur in der Datei
+
+**Rolle:** Hauptsitzung. **Schritt 3 der Rauswurf-Regel** (Auftrag:
+`docs/sessions/BRIEF_WAECHTER_TOOLPOINT_UND_SCHALTER.md`). Vier PRs, alle
+gemergt: PWA-Toolpoint #32 · family-project #265 · Kimboard #89 · Kimseek #58.
+
+**Was gebaut wurde.** PWA Toolpoint kann einen Eintrag jetzt **sperren** — dort,
+wo Klaus ihn sieht, nicht über einen Datei-Editor. Handschalter
+`assets/config/wache-hand.json`, Band an der Karte (`assets/karte.js`), zwei
+Knöpfe im Studio („⛔ Sperren", „⚠ Vorbehalt", zweistufig, mit Pflicht-Grund).
+**Rot heißt nicht „weg":** der Eintrag bleibt sichtbar, der Grund steht dabei,
+nur der Link geht aus und er ist nicht mehr Fund der Woche. Ein stilles
+Verschwinden wäre für den Anbieter nicht nachvollziehbar.
+
+**Die Ampel wird eingebacken, nicht nachgeladen.** `tools/statische-listen.mjs`
+schreibt sie in die Karten UND als `window.PT_WACHE` in die Seite; der Bau-Lauf
+hört deshalb auch auf `wache-hand.json`. Ein Band, das erst nach dem Laden
+erscheint, schöbe die ganze Liste — genau der Fehler, der dort schon einmal
+CLS 0,136 gekostet hat.
+
+**Der Riegel im Server, einseitig gelockert.** In
+`family-project/server/marktplatz-api.php` stand: *„Eine Sperre soll niemand aus
+dem Browser setzen oder lösen."* Das war für beide Richtungen gedacht und für
+eine davon zu streng — wer eine gefährliche App vor sich hat, muss sie sperren
+können, wo er sie sieht. Umgekehrt bleibt es beim Alten, aus einem einzigen
+Grund: **ein Fehlgriff beim Setzen sperrt höchstens zu viel und fällt auf. Ein
+Fehlgriff beim Lösen ist still.** Der Kommentar dort ist mitgeändert, nicht nur
+der Code.
+
+**Getragen wird das von einer Rangfolge, nicht von einer Sonderfall-Liste:**
+`gruen 0 < (nichts) 1 < gelb 2 < rot 3`, aus dem Browser nur nach oben. Das
+erschlägt in einem Satz: Herabstufen, Freigeben, „`gruen` setzen" und — der
+stillste Weg — das **Weglassen** eines gesperrten Eintrags. Dazu `grund_fehlt`
+(keine Sperre ohne lesbaren Grund) und `vorlage_nicht_lesbar` (fail-closed
+bleibt fail-closed). Die Tabelle steht an drei Stellen, benannt in
+`pwa-toolpoint/docs/RAUSWURF-REGEL.md`.
+
+**Was die Automatik NIE darf, ist unverändert:** rot setzen · rot lösen · über
+den kriminellen Fall entscheiden · still handeln.
+
+**Beweis.** Toolpoint-Smoke **446/446** (28 neu), Gegenprobe **138 anschlagend,
+0 blind** (13 neu). `smoke_studio_markt` **90/90** (18 neu) — diese Prüfungen
+lesen die PHP-Datei nicht, sie **lassen sie laufen**: der `commit_wache`-Block
+wird klammer-gezählt herausgeschnitten, mit Attrappen umgeben und mit echten
+Nutzlasten gefüttert. Dazu `tests/gegenprobe_wache_riegel.sh` — acht Lücken
+einzeln wieder eingebaut, **alle acht** werfen die Prüfung um.
+**Browser-Sichttest ungeprüft — wartet auf Klaus.**
+
+**Zwei blinde Wächter, gefunden von der Gegenprobe** (die Lehre aus dem Brief
+hat sich sofort ausgezahlt): eine Prüfung fand `wache-hand.json` im **Kommentar**
+der Workflow-Datei statt in der `paths`-Liste — die Zeile fehlte tatsächlich, und
+die Prüfung gab der Sitzung recht. Und eine ältere Probe zielte auf eine
+Code-Zeile, die ich verändert hatte; sie änderte nichts mehr und sah deshalb aus
+wie bestanden.
+
+**Nebenbefund, mit repariert: drei rote Wächter im Netz.** Der Drift-Guard von
+**PWA-Toolpoint, Kimboard und Kimseek** stand seit dem 2026-08-11 auf rot —
+`23_rendezvous_ui.js` wurde mit dem Kanon nachgezogen, der erwartete Hash aber
+nicht. Die Kopien sind nachgeprüft byte-identisch mit
+`src/modules/23_rendezvous_ui.js`; nachgezogen wurde der **Hash**, nicht die
+Datei. Gemessen: Kimboard 5/6 → 6/6, Kimseek 10/11 → 11/11.
+
+**Was offen blieb.**
+
+- **Schritt 4 (der Schalter Hand/Automatik + Schwellen) NICHT gebaut** — bewusst.
+  Beim Bauen kam ein Befund heraus, der die Bauweise festlegt: **das
+  automatische Gelb darf nicht in `wache-hand.json` landen.** Die Regel sagt,
+  die erste gute Messung nimmt es zurück; der Riegel lässt aus dem Browser nur
+  Verschärfen zu — es käme nie wieder heraus und bliebe stehen, während die
+  Seite längst schnell ist. In family fällt das nicht auf, weil das automatische
+  Gelb dort im nächtlichen Bericht steht. Für Toolpoint heißt das: **gerechnet,
+  nicht gespeichert**, aus `messung.unterGrenze`. Und die Grenze **50** ist keine
+  Studio-Zahl — gezählt wird in `tools/messwerte-holen.mjs`; ein Regler, der sie
+  ändert, während der nächtliche Lauf gegen 50 zählt, wäre ein Knopf, der lügt.
+  Änderbar sind **3** (Nächte) und **4** (Meldungen). Alles notiert in
+  `pwa-toolpoint/docs/RAUSWURF-REGEL.md`.
+- **Klaus muss `server/marktplatz-api.php` aufs Webhosting laden** (Apache,
+  konsoleH, neben `einreichung.php`/`freigabe.php`). Bis dahin scheitern die
+  Sperr-Knöpfe mit `field_not_allowed` — sichtbar und in der sicheren Richtung.
+  An `freigabe-config.php` ist **nichts** zu ändern.
+- **`docs/PULS.md` reißt seine eigene Grenze weiter** (3000 im Kopf, rund 9560
+  real). Diese Sitzung hat es **nicht** ausgelagert und sagt es deshalb hier zum
+  zweiten Mal. Eigene Pflege-Runde: Älteres nach `docs/sessions/archiv/`,
+  **nicht** kürzen und die Grenze **nicht** herabsetzen.
+
+**Nächster sinnvoller Schritt:** Klaus lädt die PHP hoch und sperrt einmal
+probeweise etwas Eigenes (danach in der Datei wieder lösen) — das ist der einzige
+Weg, die ganze Kette zu belegen. Dann Schritt 4 nach dem oben festgelegten
+Muster.
+
+---
+
 ## Stand 2026-08-09 (11) — 📄 Pilz-Wirtschaft Fassung 2: die Grundannahme war falsch
 
 **Rolle:** Analyse-/Spec-Sitzung, Fortsetzung von (10). Kein Modul-Code.
