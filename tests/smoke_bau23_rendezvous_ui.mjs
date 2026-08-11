@@ -1,4 +1,5 @@
 // Headless smoke test for Bau 23 UI — Rendezvous-Floating-Knopf. Run with
+import { readFile } from "node:fs/promises";
 //   node tests/smoke_bau23_rendezvous_ui.mjs
 // Minimal-DOM-Stub (analog smoke_bau22) + Mock-SbkimRendezvous. Beweist die
 // UI-Logik: Mount, Toggle, Verdrahtung der drei Gesten an Modul 23, Karten-
@@ -549,6 +550,34 @@ async function run() {
   record("ohne Modul 23: kein Throw", "kein Throw", threw ? "geworfen!" : "kein Throw", threw === false);
   record("_meta.hasRendezvous false ohne Modul 23", "false", String(UI._meta.hasRendezvous), UI._meta.hasRendezvous === false);
   stub.SbkimRendezvous = savedRdv;
+
+  /* ── Die Klemme: was hineinpasst, bleibt ganz drin (Klaus 2026-08-11) ─────
+   * Befund aus Klaus' Browser, im echten Chromium nachgemessen:
+   *   1100 px  Panel @980..1400 (420 breit)  ->  nur 120 px sichtbar
+   *    500 px  Blase @980..1045              ->  sichtbar -480 px (ganz weg)
+   * Ursache: die gemerkte Position wurde beim LADEN ungeklemmt uebernommen
+   * (geklemmt wurde nur bei `resize`, und beim Neuladen kommt keins), und
+   * Blase und Panel teilen sich EINE Position bei sehr verschiedenen Breiten.
+   *
+   * Diese Pruefung liest die Quelle, weil die Klemme im Modul gekapselt ist.
+   * Der Verhaltens-Beweis lief im echten Browser und steht in der
+   * Commit-Nachricht — hier wird nur festgehalten, dass die Ursachen nicht
+   * zurueckkehren. */
+  {
+    const quelle = await readFile(new URL("../src/modules/23_rendezvous_ui.js", import.meta.url), "utf8");
+    record("waagerecht: was hineinpasst, bleibt ganz sichtbar", "ja",
+      /if \(w \+ 8 <= vw\) \{ loX = 4; hiX = Math\.max\(loX, vw - w - 4\); \}/.test(quelle) ? "ja" : "nein",
+      /if \(w \+ 8 <= vw\) \{ loX = 4; hiX = Math\.max\(loX, vw - w - 4\); \}/.test(quelle));
+    record("senkrecht bleibt frei fliegend (Klaus 2026-07-24)", "ja",
+      /var loY = 4, hiY = Math\.max\(loY, vh - KEEP\);/.test(quelle) ? "ja" : "nein",
+      /var loY = 4, hiY = Math\.max\(loY, vh - KEEP\);/.test(quelle));
+    record("gemerkte Position wird beim Laden geklemmt", "ja",
+      /var sicher = clampInts\(savedPos\.x, savedPos\.y, btnEl\);/.test(quelle) ? "ja" : "nein",
+      /var sicher = clampInts\(savedPos\.x, savedPos\.y, btnEl\);/.test(quelle));
+    record("Panel klemmt fuer SEINE Breite, nicht die der Blase", "ja",
+      /applyPos\(panelEl, clampInts\(p\.x, p\.y, panelEl\)\)/.test(quelle) ? "ja" : "nein",
+      /applyPos\(panelEl, clampInts\(p\.x, p\.y, panelEl\)\)/.test(quelle));
+  }
 
   let pass = 0, fail = 0;
   for (const r of results) {
