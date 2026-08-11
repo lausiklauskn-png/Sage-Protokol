@@ -155,6 +155,37 @@ nichts und ist jederzeit zurückdrehbar.
   - **Volles RTL-Layout** (ganze Seite spiegeln) ist ausdrücklich **nicht**
     gebaut und war Klaus auch „nicht so dramatisch". `dir="auto"` an den
     Textfeldern deckt den Teil, der wirklich stört.
+- **Oberflächen-Sprache folgt nirgends dem Browser** — Befund 2026-08-11 auf
+  Klaus' Beobachtung *„nicht jede App übersetzt konsistent alle Texte und
+  Buttons in der Browsersprache."* Nachgesehen, nicht vermutet:
+
+  | App | Übersetzungs-Tabelle | folgt der Browsersprache |
+  |---|---|---|
+  | Mein-Rezeptbuch · Mein-Mixarium · Mein-WorkFloh | ✅ (8 Sprachen) | ❌ |
+  | Kimboard · Kimseek · family-project · BookLedgerPro · Tomys-Hub | ❌ | ❌ |
+
+  **Keine einzige** App liest `navigator.language` — die einzige Fundstelle im
+  ganzen Netz ist die Zeile, die am 2026-08-11 fürs Mikrofon entstand. Alle acht
+  stehen auf `<html lang="de">`, weshalb der Browser auch von sich aus keine
+  Übersetzung anbietet.
+
+  Es sind also **zwei** Ursachen, die sich gleich anfühlen: die drei mit Tabelle
+  haben eine **App-eigene** Sprachwahl (der Browser hat damit nichts zu tun), die
+  fünf ohne sind schlicht **nur auf Deutsch geschrieben**.
+
+  **Drei Wege, Klaus' Entscheidung steht aus** (am 2026-08-11 vorgelegt, keine
+  Antwort abgewartet — nicht eigenmächtig loslegen):
+  1. *klein* — die drei mit Tabelle beim ERSTEN Start die Browsersprache
+     übernehmen lassen, Wahl weiter änderbar. Eine knappe Runde je App.
+  2. *mittel* — Sprachwahl in die fünf ohne Tabelle einbauen. Echte
+     Übersetzungsarbeit, jede Beschriftung einzeln; eine Sitzung oder mehr je App.
+  3. *sehr klein, hilft sofort in allen acht* — `<html lang>` mitziehen, sobald
+     eine Sprache gewählt ist. Dann bietet der **Browser** seine eigene
+     Übersetzung an, und der Fremdnutzer kommt wenigstens durch.
+
+  Ordnet sich unter die Fremdnutzer-/Marktplatz-Brille (CLAUDE.md): ein Besucher,
+  der die Beschriftungen nicht lesen kann, ist kein Randfall, sondern der
+  Normalfall auf einem offenen Marktplatz.
 - **Offene Messung: findet die Suche über Sprachgrenzen hinweg?** Kimboard (und
   family) nutzen `Xenova/multilingual-e5-small` — ein mehrsprachiges Modell,
   gebaut für genau das: arabische Frage, deutscher Text, ein gemeinsamer
