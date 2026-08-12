@@ -31,6 +31,110 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-12 — 🎤 Das Netz-Mikrofon hörte immer Deutsch. Netzweit behoben, 16 Repos
+
+**Rolle:** Hauptsitzung. Auftrag von Klaus: *„Ziehe jetzt die Sprachen, die wir
+jetzt haben, in die Pinnwand mit hinein … Genauso in meinen anderen Apps …
+Vergiss bitte nichts."*
+
+### Der Befund, der die Aufgabe verändert hat
+
+Ich hatte zuvor in `index.html` von Rezeptbuch, Mixarium und Muttis nach
+`SpeechRecognition` gesucht, nichts gefunden und wollte melden: *„diese Apps
+haben gar kein Mikrofon."* **Das war falsch.** Das Mikrofon liegt nicht in der
+App-Datei, sondern im **Modul 23** — im 🎤 des „Mit dem Netz verbinden"-Felds.
+Und dort stand:
+
+```js
+var lang = (langs[0] || ["de-DE"])[0];
+```
+
+Immer der **erste** Eintrag der Liste, also **immer Deutsch**, ohne jede
+Möglichkeit, etwas daran zu ändern. Dieses 🎤 sitzt in **jeder** App mit
+Modul 23 — Rezeptbuch, Mixarium, Muttis, Tomys Hub, BookLedgerPro,
+family-project, Kimboard, Kimseek, Jasons-Tresor, Mein-Tresor. Für alle, die
+kein Deutsch sprechen, war es unbrauchbar.
+
+**Lehre:** eine Suche in der App-Datei sagt nichts darüber, was die App
+**kann**. Die Fähigkeit steckte im Modul; wer nur `index.html` durchsieht,
+übersieht die halbe App und meldet das Gegenteil der Wahrheit.
+
+### Kanon (PR #836)
+
+**Modul 21** — von drei auf **zwölf** Sprachen: Deutsch · English · Русский ·
+العربية · Türkçe · Polski · Українська · Français · Español · Italiano · پښتو ·
+دری/فارسی. Deutsch bleibt der erste Eintrag, damit Aufrufer ohne eigene Wahl
+sich unverändert verhalten. Neu öffentlich: `languageLabel` ·
+`preferredLanguage` · `isRtl` · `scriptMismatchHint`.
+
+> **Mit gefunden, wäre sonst kaputtgegangen:** `alternativeCodes` reichte
+> **alle** übrigen Sprachen an die EU-Engine weiter. Google Cloud
+> Speech-to-Text nimmt in `alternativeLanguageCodes` höchstens **drei**.
+> Solange die Liste drei Sprachen lang war, fiel das nicht auf — mit zwölf
+> hätte **jede** EU-Anfrage abgelehnt werden können, und BookLedgerPro fährt
+> die EU-Engine bindend. Jetzt gedeckelt, mit eigener Probe.
+
+**Modul 23 UI** — Sprachwahl neben dem 🎤, vorbelegt aus der **Geräte-Sprache**
+(wer erst eine Einstellung finden muss, um verstanden zu werden, benutzt das
+Mikrofon nicht); pro App gemerkt (`sbkim_rdv_miclang_<dbSuffix>`, geteilter
+Origin); **ohne Modul 21 keine Wahl** (ein Wähler ohne Spracheingabe wäre ein
+toter Knopf); Erkennung des **stillen Fehlschlags** über die Schrift; `dir=auto`
+am Frage-Feld.
+
+### Rollout — 16 Repos, alle gemergt
+
+Kanon Sage #836 · Rezeptbuch #371 · Mixarium #187 · Muttis #183 · Tomys #151 ·
+BookLedgerPro #300 · Kimboard #93 · Privat-Brain #73 · Kimseek #59 ·
+Kuechenzettel #5 · family-project #266+#268 · Jasons-Tresor #154 ·
+Mein-Tresor #102 · SB-KIMTool-Point #148 · Kim-Bell #39 · Mein-WorkFloh #167 ·
+PWA-Toolpoint #35 · Company-Brain #12 · Mein-Mixarium-Page #16.
+
+**Die Drift-Guard-Prüfwerte sind diesmal mitgezogen** (Kimboard, Kimseek,
+Kuechenzettel, Privat-Brain, Kim-Bell, Mein-WorkFloh) — genau die wurden beim
+letzten Rollout vergessen und ließen drei Repos rot.
+
+### Eine Probe, die nichts bewies
+
+Zwei Haken der Pinnwand-Probe verlangten nur „enthält **nicht** 'lateinischer
+Schrift'". Das ist auf fast jedem Text wahr — sie meldeten grün, während im
+Hinweisfeld „kein Relay verbunden…" stand, also auf einem Lauf, in dem die
+Erkennung das Frage-Feld nie erreicht hatte. Jetzt muss der gesprochene Text
+**wirklich im Feld stehen**. Nachgezogen in Sage, Kimboard, Privat-Brain.
+
+**Merksatz (zum zweiten Mal an einem Tag):** eine Prüfung, die nur eine
+**Abwesenheit** verlangt, ist keine Prüfung.
+
+### Gemessen
+
+`smoke_bau21_spracheingabe` **65/65** (war 45) · neu `smoke_bau23_sprachwahl`
+**22/22** · Suite regressfrei (nur `smoke_resign_spore_v02` rot, braucht
+`SBKIM_NODE_KEY`, war vorher schon rot — mit `git stash` gegengeprüft).
+
+**Fünf Sabotage-Proben** gemacht: Vorauswahl zurück auf Deutsch → 4 rot ·
+EU-Deckel weg → 2 rot · Schriftkontrolle stumm → 2 rot · `langs[0]` zurück →
+6 rot · Speichername ohne App-Namen → 3 rot.
+
+### Was offen bleibt
+
+1. **Vier Modul-23-Kopien sind kein byte-gleicher Abzug** — Kim-Bell,
+   Mein-WorkFloh, SB-KIMTool-Point (alle `f117096e…`, rund **710 Zeilen**
+   hinter dem Kanon) und BookLedgerPro (`c67b2942…`). Sie haben die Sprachwahl
+   im Netz-Panel **nicht** bekommen. Ein blinder Überschreiber brächte
+   ungeprüft eine ganze Reihe anderer Änderungen mit (u.a. die
+   Identitäts-Anzeige aus Stufe 0a/0b) — das gehört in eine eigene, geprüfte
+   Runde pro App.
+2. **Klaus' Browser-Sichttest** der zwölf Sprachen im Netz-Panel — headless
+   ersetzt ihn nicht.
+3. **Dari-Test** (Klaus wollte morgen prüfen) und die **EU-Spracherkennung für
+   Paschtu** (Plan liegt in `BRIEF_WAECHTER_TOOLPOINT_UND_SCHALTER.md`).
+4. **PULS.md liegt bei ~9800 Zeilen** gegen die eigene 3000-Zeilen-Grenze. Die
+   Schutz-Klausel sagt: auslagern, nicht kürzen. Steht weiter aus.
+
+**Nächster sinnvoller Schritt:** Klaus' Sichttest, dann die vier abweichenden
+Modul-23-Kopien einzeln nachziehen.
+
+---
+
 ## Stand 2026-08-12 — 🎚 Schritt 4: der Schalter. Gerechnetes Gelb, öffentlich nur auf Ansage
 
 **Rolle:** Hauptsitzung. **Schritt 4 der Rauswurf-Regel** (Auftrag:
