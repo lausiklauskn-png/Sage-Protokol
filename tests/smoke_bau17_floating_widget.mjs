@@ -342,6 +342,42 @@ async function run() {
     `widget=${!!widgetEl}/style=${!!styleEl}/ready=${W._meta.ready}/mounted=${W._meta.widgetMounted}`,
     !!widgetEl && !!styleEl && W._meta.ready === true && W._meta.widgetMounted === true);
 
+  // Probe 2b: Schmale Geräte — die Pille darf nicht breiter sein als der Schirm.
+  //
+  // Gemessen 2026-08-12 (Chromium, Grundschrift 16 px, alle vier Slots): ohne
+  // diese Regeln ist die Pille 385 px breit und ragt auf einem 360-px-Handy
+  // 41 px nach LINKS aus dem Bild — der lebt-Slot ist dann nicht mehr zu sehen.
+  // Mit ihnen sind es 223 px.
+  //
+  // Geprüft wird das ERZEUGTE CSS, nicht der Quelltext der Modul-Datei: hier
+  // steht nur, was das Modul wirklich in den <style> schreibt — ein Kommentar
+  // daneben kann diese Probe nicht bestehen lassen.
+  const css = String(styleEl.textContent || "");
+  const mq = css.slice(css.indexOf("@media (max-width: 400px)"));
+  const hatMediaQuery = css.indexOf("@media (max-width: 400px)") >= 0;
+  const hatGrenze = /#sbkim-widget \{ max-width: calc\(100vw - 24px\); \}/.test(mq);
+  const hatLabelAus = /\.sbkim-widget-label \{ display: none; \}/.test(mq);
+  record("2b. Schmale Geräte: Breiten-Grenze + Labels aus im erzeugten CSS",
+    "@media 400px mit max-width + label display:none",
+    `mq=${hatMediaQuery}/grenze=${hatGrenze}/labelAus=${hatLabelAus}`,
+    hatMediaQuery && hatGrenze && hatLabelAus);
+
+  // Probe 2c: Die Trefferfläche wird über das INNENMASS zurückgeholt — und der
+  // minimierte Zustand bleibt ausgenommen.
+  //
+  // Ohne Wort schrumpft ein Slot auf 21 px und fällt unter die 24-px-Norm, die
+  // am 2026-08-03 eigens hergestellt wurde. Der naheliegende Griff wäre
+  // `min-width` — und genau der ist hier falsch: auf denselben Slots steht im
+  // minimierten Zustand `max-width: 0`, damit sie hinter SIEGEL zusammen-
+  // schieben. Ein min-width hielte sie auf, die Pille ließe sich nicht mehr
+  // klein machen. Darum padding, und darum die :not()-Klammer.
+  const hatPadding = /:not\(\[data-minimized="true"\]\) \.sbkim-widget-slot \{[^}]*padding-left: 8px;/.test(mq);
+  const keinMinWidth = !/\.sbkim-widget-slot \{[^}]*min-width:/.test(css);
+  record("2c. Trefferfläche über padding (nicht min-width), minimierter Zustand ausgenommen",
+    "padding-Regel mit :not([data-minimized]) vorhanden, KEIN min-width auf .sbkim-widget-slot",
+    `padding=${hatPadding}/keinMinWidth=${keinMinWidth}`,
+    hatPadding && keinMinWidth);
+
   // Probe 3: Vier Slot-Buttons, SIEGEL aber NICHT im DOM (Modul 16 fehlt).
   const lebtSlot = g.document.getElementById("sbkim-widget-slot-lebt");
   const verkehrSlot = g.document.getElementById("sbkim-widget-slot-verkehr");
