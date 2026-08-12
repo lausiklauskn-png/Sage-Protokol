@@ -31,6 +31,65 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-12 (Pflege) — 🔒 Modul-23-Kern netzweit geschlossen
+
+**Rolle:** Pflege-Sitzung, Nachzug offener Punkte aus dem Brief „nach Modul 17".
+Übergabeprotokoll:
+`docs/sessions/archiv/2026-08-12_modul23-kern-netzweit-geschlossen.md`.
+
+**Getan — vier Merges:**
+
+- **Sage #842** — `sbkim-bundle-voll` Modul 15 + 16 byte-1:1 nachgezogen. Die
+  Box stand vor der Pflege vom 2026-08-01 (15: 249 Zeilen fehlten, das
+  Fremdzugriff-Protokoll; 16: der zugehörige Aspekt). **Beide mussten zusammen
+  wandern** — der Siegel-Aspekt behauptet eine Fähigkeit, die als Code in
+  Modul 15 liegt. Der sha-Pin im Smoke stand noch auf dem alten Wert und
+  arbeitete damit **gegen** den byte-1:1-Wächter zwei Zeilen darüber. 46/46.
+- **Kim-Bell #41 + Mein-WorkFloh #169** — Modul-23-**Kern** von `bbdf02a8`
+  (zwei Generationen zurück) auf den Kanon `3caa0bb1`. Ihnen fehlte
+  **Schutz-Plan Stufe 2b**: fremde Karten wurden **gar nicht auf Echtheit
+  geprüft**, kein Mengen-Deckel gegen Flutung. Beim Rollout am 2026-07-30
+  durchgerutscht, weil ihre Kopie `modules/sbkim-rendezvous.js` heißt statt
+  `sbkim/23_rendezvous.js`.
+- **PWA Toolpoint #36** — Modul-23-**UI** von `1f8b6c68` (dem *vorigen* Kanon)
+  auf `4882c3b6`. Datei **und** Pin waren beide alt, der Guard also in sich
+  stimmig und grün — er bewachte nur den falschen Stand. Bringt Klaus'
+  Sprachwahl vom 2026-08-11 ins Netz-Panel.
+
+**Ergebnis:** der **Modul-23-Kern läuft jetzt in allen 33 Repos auf dem
+Kanon** — die Sicherheitslücke ist netzweit zu.
+
+**Bewusst NICHT gemacht:** die **vier zurückliegenden UI-Kopien**
+(Kim-Bell · Mein-WorkFloh · SB-KIMTool-Point je `f117096e` ~780 Zeilen;
+BookLedgerPro `c67b2942` ~152 Zeilen). Die Sitzung vom 2026-08-12 hat sie
+ausdrücklich zurückgestellt („eine eigene, geprüfte Runde pro App") — das
+gilt weiter. **Ehrliche Folge:** in Kim-Bell + WorkFloh **prüft** der Kern
+jetzt, aber `cardsVerified`/`rejected` werden noch nicht **angezeigt**, und
+die Sprachwahl fehlt dort weiter.
+
+**Drei Funde:**
+
+1. Der Brief nannte **2** Repos — ein Scan **nach Inhalt statt Dateiname** fand
+   **5**. Dieselbe Lehre wie im Modul-17-Rollout, sofort wiederholt.
+2. Der neue Kern prüft **nur**, wenn Modul 02 `verifyForeignSpore` mitbringt.
+   Vorher geprüft (beide Apps: ja). Ohne diese Kontrolle wäre ein
+   Sicherheits-PR entstanden, der grün meldet und **nichts** bewirkt.
+3. **Zwei tote Wächter in Sage** (vorbestehend, auf blankem `main`
+   gegengeprüft): `smoke_bau23_0b_identitaet.mjs` +
+   `smoke_bau23c_ki_richter.mjs` haben einen selbstgebauten DOM-Ersatz, den
+   die Modul-23-UI überwachsen hat (`d.getElementById is not a function`).
+
+**Umgebungs-Befund:** Sage hat **keine `package.json`**. Ohne
+`fake-indexeddb` sind **19 Smokes falsch rot** — jede Sitzung im frischen
+Container sieht das neu. Mit dem Paket: 67 von 69 grün.
+
+**Offen:** die vier UI-Runden · die zwei toten Wächter · `package.json` ·
+`PULS.md` bei ~10.000 gegen 3.000 Zeilen (auslagern, nicht kürzen — **fünfte**
+Meldung) · Klaus' Browser-Sichttest (Modul 17 schmal + Sprachwahl Toolpoint) ·
+`marktplatz-api.php` aufs Webhosting.
+
+---
+
 ## Stand 2026-08-12 (Plan) — 🗂 Plan: fremde Apps auf den Marktplatz holen
 
 **Rolle:** Plan-Sitzung, kein Bau. Auftrag:
