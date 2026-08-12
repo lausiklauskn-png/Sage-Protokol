@@ -152,6 +152,34 @@ nichts und ist jederzeit zurückdrehbar.
   Amtssprachen), Vorauswahl aus der Geräte-Sprache, gespeicherte Wahl,
   `dir="auto"` an den Feldern, jede mit **Sabotage-Probe**.
 
+  **NACHTRAG aus Klaus' Sichttest am selben Abend — die wichtigste Lehre:**
+  Russisch kam als „Здравствуйте" zurück, Arabisch als „سلام عليكم" (beides
+  richtig, arabisch sogar rechtsbündig). **Paschtu kam als „Salaam" zurück — in
+  lateinischen Buchstaben, und OHNE Fehler.** Chrome warf kein
+  `language-not-supported`, es hat stillschweigend etwas anderes gehört
+  (vermutlich Rückfall auf die Gerätesprache).
+
+  Das ist der schwerste Fall: **es scheitert, ohne zu scheitern.** Keine
+  Fehlerbehandlung kann greifen, weil es keinen Fehler gibt — der Sprecher
+  bekommt Text und merkt womöglich nicht, dass ihn niemand verstanden hat.
+
+  Gegenmittel, in allen drei Pinnwänden gebaut (#91 · #830 · #71):
+  `schriftPasstNicht()` — wer eine Sprache mit **eigener Schrift** wählt und
+  **lateinischen** Text zurückbekommt, wurde nicht verstanden. Nur `ar fa ps ru
+  uk`, erst ab vier Zeichen, der Text bleibt stehen. Je drei Proben: schlägt an ·
+  schweigt bei passender Schrift · schweigt bei Deutsch.
+
+  **Übertragbar weit über das Mikrofon hinaus:** wo eine Schnittstelle keinen
+  Fehler meldet, ist „kein Fehler" kein Beweis für Erfolg. Wenn sich das
+  Ergebnis auf eine erwartete Form prüfen lässt (Schrift, Länge, Format), dann
+  prüfe die Form — sonst ist der Fehlschlag unsichtbar.
+
+  **Ehrliche Grenze:** Chrome kann Paschtu offenbar nicht. Der Hinweis ändert
+  daran nichts, er macht es nur sichtbar. Echtes Paschtu bräuchte den
+  EU-Cloud-Dienst mit eigenem Schlüssel (Modul 21 kann es, ist nicht verdrahtet).
+  **Dari (`fa-IR`) ist ungetestet** — Persisch ist bei Google besser abgedeckt,
+  das könnte durchgehen.
+
   **Alle Repos wurden auf `SpeechRecognition` durchsucht** — die übrigen Treffer
   sind **Modul 21** (die Sprach-Schicht, byte-1:1 zum Kanon, kein App-Code) oder
   Seiten ohne festes `de-DE`. **Kein weiterer Fall dieser Art.**
