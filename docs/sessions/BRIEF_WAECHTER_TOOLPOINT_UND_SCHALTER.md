@@ -139,13 +139,36 @@ nichts und ist jederzeit zurückdrehbar.
 - **Mikrofon mehrsprachig in die übrigen Apps** — neu am 2026-08-11. Klaus'
   Befund: *„überall wo das Mikrofon ist, ist nur Deutsch vorgesehen … wenn ich
   in Arabisch etwas hineinspreche, muss auch Arabisch als Text herauskommen."*
-  In **Kimboard erledigt** (PR #87, Klaus wollte es dort zuerst): zehn Sprachen,
-  Vorauswahl aus der Geräte-Sprache, gespeicherte Wahl in der Werkzeugleiste,
-  `dir="auto"` an den Feldern; Wächter `tests/smoke_mikrofon_sprachen.mjs`
-  13/13 samt Sabotage-Probe.
-  - **Zu tun:** dasselbe Muster in die übrigen Apps mit Mikrofon (Rezeptbuch,
-    Mixarium, family-project, Toolpoint, WorkFloh, BLP — erst nachsehen, wo
-    überhaupt eins verbaut ist). Pro App eine knappe Runde, das Muster steht.
+  **✅ ABGESCHLOSSEN am 2026-08-11 — die Suche ist gelaufen, es gibt nichts mehr
+  zu jagen.** Betroffen waren genau **drei baugleiche Pinnwände**, alle erledigt:
+
+  | App | PR | Prüfung |
+  |---|---|---|
+  | Kimboard | #87 · #88 | `tests/smoke_mikrofon_sprachen.mjs` 21/21 |
+  | Sage `pinnwand/` | #825 | `pinnwand/_smoke_mikrofon.mjs` 21/21 |
+  | Privat-Brain `modules/pinnwand-widget.js` | #70 | `tools/e2e-pinnwand-mikrofon.mjs` 12/12, in `npm test` |
+
+  Je zwölf Sprachen (inkl. **Paschtu und Dari** — Afghanistan hat zwei
+  Amtssprachen), Vorauswahl aus der Geräte-Sprache, gespeicherte Wahl,
+  `dir="auto"` an den Feldern, jede mit **Sabotage-Probe**.
+
+  **Alle Repos wurden auf `SpeechRecognition` durchsucht** — die übrigen Treffer
+  sind **Modul 21** (die Sprach-Schicht, byte-1:1 zum Kanon, kein App-Code) oder
+  Seiten ohne festes `de-DE`. **Kein weiterer Fall dieser Art.**
+
+  **Der zweite, schwerere Befund dabei:** in allen drei Pinnwänden war eine
+  Spracheingabe-Fehlermeldung **noch nie zu sehen** — `updateSendState()`
+  überschrieb sie im selben Wimpernschlag mit dem Verbindungs-Status. In
+  Privat-Brain war `rec.onerror` sogar **ganz leer**: die App tat nichts und
+  sagte nicht warum. Überall behoben (Mikrofon-Meldung hat Vorrang, bleibt
+  stehen, ist ein Satz statt eines Fachworts).
+
+  **Lehre, dreimal an einem Tag bezahlt:** *eine Suche, die nichts findet, ist
+  kein Beweis für Abwesenheit.* Die dritte Pinnwand wurde übersehen, weil nach
+  einem **Ordner** `pinnwand/` gesucht wurde statt nach dem Mikrofon-Code; und
+  sie galt danach fälschlich als „nirgends eingebunden", weil `index.html`
+  Binärdaten enthält und `grep` nur „binary file matches" meldete — mit `-a`
+  steht `src="modules/pinnwand-widget.js"` sauber da.
   - **Merksatz für den Bau:** die Browser-Spracherkennung hat **keine**
     Sprach-Erkennung. Sie hört genau die Sprache, die man ihr sagt. Wer auf
     „erkennt sich schon selbst" baut, baut nichts.
