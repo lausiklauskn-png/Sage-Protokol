@@ -86,12 +86,19 @@ die Prüfung gab der Sitzung recht. Und eine ältere Probe zielte auf eine
 Code-Zeile, die ich verändert hatte; sie änderte nichts mehr und sah deshalb aus
 wie bestanden.
 
-**Nebenbefund, mit repariert: drei rote Wächter im Netz.** Der Drift-Guard von
-**PWA-Toolpoint, Kimboard und Kimseek** stand seit dem 2026-08-11 auf rot —
-`23_rendezvous_ui.js` wurde mit dem Kanon nachgezogen, der erwartete Hash aber
-nicht. Die Kopien sind nachgeprüft byte-identisch mit
-`src/modules/23_rendezvous_ui.js`; nachgezogen wurde der **Hash**, nicht die
-Datei. Gemessen: Kimboard 5/6 → 6/6, Kimseek 10/11 → 11/11.
+**Nebenbefund — und die Berichtigung dazu.** Der Drift-Guard von
+**PWA-Toolpoint, Kimboard und Kimseek** stand auf rot: `23_rendezvous_ui.js`
+wurde mit dem Kanon nachgezogen, der erwartete Hash aber nicht. Gemessen:
+Kimboard 5/6, Kimseek 10/11. Die Kopien sind byte-identisch mit
+`src/modules/23_rendezvous_ui.js`, nachzuziehen war also der **Hash**.
+
+**Repariert hat es eine parallele Sitzung, nicht diese** (#31 um 21:14, Kimseek
+#57, Kimboards eigener Lauf). Mein Merge kam um 21:35; meine drei Commits waren
+Doppelarbeit, zwei landeten als **leerer Diff**. Beim Messen war der Befund
+richtig, beim Melden überholt. **Merksatz: zwischen Messen und Melden liegt
+Zeit — ein `fetch` beim Sitzungsstart deckt zwei Stunden später nichts.**
+Gefunden hat es Klaus, indem er den Brief gegenlesen ließ; berichtigt in
+Toolpoint #33.
 
 **Was offen blieb.**
 

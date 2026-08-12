@@ -10,8 +10,9 @@
 |---|---|---|
 | PWA-Toolpoint | [#32](https://github.com/lausiklauskn-png/PWA-Toolpoint/pull/32) | Handschalter, Band an der Karte, Studio-Knöpfe, Bau-Lauf |
 | family-project | [#265](https://github.com/lausiklauskn-png/family-project/pull/265) | der Riegel in `marktplatz-api.php`, einseitig gelockert |
-| Kimboard | [#89](https://github.com/lausiklauskn-png/Kimboard/pull/89) | roter Drift-Guard geheilt |
-| Kimseek | [#58](https://github.com/lausiklauskn-png/Kimseek/pull/58) | roter Drift-Guard geheilt |
+| Kimboard | [#89](https://github.com/lausiklauskn-png/Kimboard/pull/89) | Drift-Guard — **leerer Diff**, eine parallele Sitzung war schneller |
+| Kimseek | [#58](https://github.com/lausiklauskn-png/Kimseek/pull/58) | Drift-Guard — **leerer Diff**, dito |
+| PWA-Toolpoint | [#33](https://github.com/lausiklauskn-png/PWA-Toolpoint/pull/33) | Berichtigung des falschen Satzes darüber |
 
 Alle vier gemergt (Selbst-Merge-Freibrief, `CLAUDE.md` § Freibrief).
 
@@ -97,8 +98,19 @@ drei betroffene Repos (PWA-Toolpoint, Kimboard, Kimseek); die übrigen acht
 tragen die Datei ohne eigenen Pin.
 
 Die Kopien sind nachgeprüft **byte-identisch** mit
-`Sage-Protokol/src/modules/23_rendezvous_ui.js` — nachgezogen wurde deshalb der
-Hash, nicht die Datei. Gemessen: Kimboard 5/6 → 6/6, Kimseek 10/11 → 11/11.
+`Sage-Protokol/src/modules/23_rendezvous_ui.js` — nachzuziehen war deshalb der
+Hash, nicht die Datei. Gemessen: Kimboard 5/6, Kimseek 10/11.
+
+**BERICHTIGUNG (Klaus' Gegenlesen, derselbe Abend):** repariert hat es eine
+**parallel laufende Sitzung**, nicht diese — Toolpoint #31 (21:14), Kimseek #57,
+Kimboards eigener Lauf. Mein Merge kam um 21:35; meine drei Commits waren
+Doppelarbeit, zwei landeten als **leerer Diff**. Beim Messen war der Befund
+richtig, beim Melden überholt.
+
+**Merksatz: zwischen Messen und Melden liegt Zeit.** Ein `fetch` beim
+Sitzungsstart deckt zwei Stunden später nichts; wer einen netzweiten Befund
+meldet, holt den Stand unmittelbar davor noch einmal. Berichtigt in Toolpoint
+#33 (auch im Kommentar von `tools/drift-guard.mjs`, wo der falsche Satz stand).
 
 ## Was offen blieb
 
