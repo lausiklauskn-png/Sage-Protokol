@@ -31,6 +31,50 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-12 (Abschluss) — 📋 Briefe geschrieben, Plan-Sitzung vorbereitet
+
+**Rolle:** Hauptsitzung, Abschluss. Übergabeprotokoll:
+`docs/sessions/archiv/2026-08-12_netz-mikrofon-sprachen.md`.
+
+**Neuer Auftrag von Klaus für die Folge-Sitzung — PLAN-MODUS, KEIN BAU:**
+`docs/sessions/BRIEF_PLAN_FREMDE_APPS_AUFNEHMEN.md`. Es geht um die Frage, ob
+fremde PWAs vom Markt aktiv auf den Toolpoint-Marktplatz geholt werden können —
+eintragen, dann die Besitzer ansprechen („willst du drin bleiben?"). Klaus'
+Motiv ausdrücklich: **Reichweite, nicht Provision.**
+
+**Warum die Idee einen richtigen Kern hat:** sie ist die logische Antwort auf
+den gemessenen Befund aus `PLAN_PILZ_WIRTSCHAFT.md` §1 — **0 fremde Einträge
+trotz gratis.** Warten hat nachweislich nicht funktioniert.
+
+**Vier Stellen, an denen die Plan-Sitzung genau hinsehen muss** (im Brief
+ausgeführt):
+
+1. **Verlinken ≠ Hosten.** Ein öffentliches GitHub-Repo **ohne Lizenzdatei** ist
+   nicht frei — „alle Rechte vorbehalten". Ein Fork auf GitHub deckt die
+   GitHub-ToS; ein Weiterveröffentlichen auf `family-projekt.de` nicht.
+2. **Das Pflichtfeld `img:`** in `listings.js` kollidiert mit Fremd-Einträgen —
+   ein Bildschirmfoto fremder Apps ist deren Material.
+3. **Impressum-Anschreiben ist der heikelste Punkt** (§7 UWG; ein kostenloses
+   Angebot bleibt geschäftlich, wenn es dem eigenen Zweck dient). Sauberere
+   Wege: GitHub-Issue im Repo des Anbieters, ihr eigenes Kontaktformular.
+4. **„Die ersten hundert kosten nichts" läuft gegen Klaus' eigene Tafel.** §8d
+   zieht die Grenze scharf: sobald ein Preis angekündigt wird, ist es **Stufe 2
+   mit Gewerbeanmeldung davor**. „Der Eintrag kostet nichts" bleibt Stufe 1.
+   **Wird Klaus vorgelegt, nicht stillschweigend korrigiert.**
+
+**Nebengedanke (Klaus' Zusatzfrage: wie weit vom bezahlbaren Modell?).** Nach
+`PLAN_PILZ_WIRTSCHAFT.md` §9 wachsen Marktplatz-Provision und Jahresbeitrag auf
+den **langsamsten** Wegen (400–500 Käufe/Monat bzw. 500 zahlende Anbieter),
+während ① Beteiligung **2–3 Partner** und ② Wartung **~100 Kunden** braucht.
+Fünfzig Einträge sind ein Zehntel dessen, was ④ allein tragen würde — und ④
+kommt laut Papier erst nach ① und ②. **Die Idee zahlt auf Reichweite ein, nicht
+auf Einkommen.** Kein Abweichen vom Ziel, aber auch kein Schritt darauf zu.
+
+**Nächster sinnvoller Schritt:** Klaus' Browser-Sichttest der zwölf Sprachen,
+dann die Plan-Sitzung nach dem neuen Brief.
+
+---
+
 ## Stand 2026-08-12 — 🎤 Das Netz-Mikrofon hörte immer Deutsch. Netzweit behoben, 16 Repos
 
 **Rolle:** Hauptsitzung. Auftrag von Klaus: *„Ziehe jetzt die Sprachen, die wir
