@@ -31,6 +31,64 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-12 (Plan) — 🗂 Plan: fremde Apps auf den Marktplatz holen
+
+**Rolle:** Plan-Sitzung, kein Bau. Auftrag:
+`docs/sessions/BRIEF_PLAN_FREMDE_APPS_AUFNEHMEN.md`. Ergebnis:
+**[`docs/PLAN_FREMDE_APPS.md`](PLAN_FREMDE_APPS.md)**. Übergabeprotokoll:
+`docs/sessions/archiv/2026-08-12_plan-fremde-apps.md`.
+
+**Der Befund, der den Plan verkürzt hat.** Der Auftrag ging davon aus, der
+„sichtbare Weg raus" müsse erst gebaut werden. **Er steht bereits:** jede
+Marktplatz-Karte trägt einen **„⚑ Melden"**-Knopf (`PWA-Toolpoint/assets/app.js`
+Z. 851 ff.) — nativer Dialog, ohne Konto, ohne E-Mail, mit `eintrag_id` und
+Bot-Falle. Ebenso steht `own:false` ⇒ `rel="nofollow ugc"` (`karte.js` Z. 299).
+Es fehlt nur **ein fünfter Meldegrund**: „Das ist meine App."
+
+**Der `img:`-Konflikt ist kleiner als gedacht.** Die Pflicht sitzt **allein im
+Studio** (`studio.js` Z. 345 · 1005). Der Renderer kann es längst: ohne Bild
+zeichnet `karte.js` Z. 308–311 ein **leeres Feld fester Größe** — kein kaputtes
+Bild, kein Layout-Sprung — und `fundKandidaten()` schließt bildlose Einträge vom
+„Fund der Woche" aus. Vorschlag: `img` **optional für `own:false`**, Pflicht für
+eigene. **Kein neutraler Platzhalter** (wäre eine Behauptung über eine ungeprüfte
+App); leer ist ehrlicher und ist zugleich der Anreiz, sich zu melden.
+
+**Die vier Antworten:** **A** nur verlinken, nie hosten (kein Fall gefunden, in
+dem Hosten mehr bringt; ohne Lizenzdatei gilt „alle Rechte vorbehalten", und
+gehostete Messwerte wären Klaus' Hosting-Leistung, als fremde ausgewiesen) ·
+**B** ja, nach B1/B2 · **C** GitHub-Issue statt Impressum-Mail (§7 UWG; ein
+kostenloses Angebot bleibt geschäftlich; 50 Anschreiben sind 50 Gelegenheiten
+für **eine** Abmahnung) — wortwörtlicher Text liegt im Papier · **D** siehe unten.
+
+**✅ Klaus' Entscheidungen 2026-08-12** (AskUserQuestion, weil Frage D gegen
+seine eigene Tafel §8d lief und **nicht** stillschweigend korrigiert wird):
+
+1. **„Der Eintrag kostet nichts."** — nicht „die ersten hundert". Damit bleibt
+   alles Stufe 1: keine Preisankündigung, kein Gewerbe nötig, kein Graubereich.
+   Die Zahl hundert lebt weiter als **innere Messmarke**, steht aber nirgends.
+2. **Erster Schub: fünf Apps, nicht fünfzig.** Danach werden vier Zahlen gezählt
+   (antworten · bleiben · wollen raus · beschweren sich), **dann** erst wird über
+   den großen Schub entschieden. Abbruch-Regel vorher festgelegt.
+
+**Klaus' Nebenfrage — wie weit vom bezahlbaren Modell?** Mit den Zahlen aus §9
+(Bedarf 2.000–3.000 €/Monat): ① **2–3 Partner** · ② **~100 Kunden** à 20 € ·
+③ **400–500 Käufe/Monat** · ④ bei 50 €/Jahr **500 Anbieter**. Fünfzig Einträge
+sind **ein Zehntel** von ④ — und ④ kommt laut Papier erst nach ③, das erst nach
+① und ②. **Die Idee zahlt auf Reichweite ein, nicht auf Einkommen** — genau das
+hat Klaus selbst als Ziel benannt. Heute steht **null Einnahme** irgendwo. Von
+§15 blockieren **0b** (Rohertrag als Grundlage) und **5** (verfügbare Zeit) die
+*schnellen* Wege ① und ② und kosten je einen Satz — sie liegen seit 2026-08-09.
+
+**Ehrlich vermerkt:** §14 Punkt 7 sagt, der offene Markt komme „erst wenn 1–5
+stehen". Toolpoint ist vorgezogen worden. Vertretbar (der Bau war eine Kopie,
+§8b), aber es ist eine bewusste Abweichung und steht so im Papier statt still
+zu bleiben. An §9 ändert sie nichts.
+
+**Nicht getan (Tabu eingehalten):** kein Eintrag, keine E-Mail, kein Code.
+B1/B2/B3 sind Vorschläge und brauchen einen eigenen Bau-Brief in `PWA-Toolpoint`.
+
+---
+
 ## Stand 2026-08-12 — 📱 Modul 17: die Blase hing halb aus dem Bild. Netzweit behoben, 15 Repos
 
 **Rolle:** Hauptsitzung. Auftrag: Klaus, „Modul siebzehn starten" — der Punkt aus
