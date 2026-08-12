@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-08-12",
-  "seq": 58,
-  "headline": "Modul 17 (Floating-Widget) sha dd3e0d7fb596 netzweit ausgerollt: 15 Repos byte-1:1 gemergt. Die Pille war 385 px breit und hing rechts in der Ecke — auf 360 px waren 41 px links abgeschnitten, auf 320 px 81. Jetzt 227 px: unter 400 px tragen die Lampen keine Woerter mehr, ab 400 px bleibt alles wie bisher. REINE Anzeige — kein Protokoll-Bump, 0.80-Riegel unberuehrt. Wer eine Kopie traegt, hat sie mit dem Merge bekommen; sechs Service-Worker-Caches wurden mitgehoben, sonst liefert der Offline-Vorrat weiter die alte Fassung.",
+  "seq": 59,
+  "headline": "Modul-23-KERN jetzt netzweit auf dem Kanon 3caa0bb1 — die Luecke ist zu. Kim-Bell + Mein-WorkFloh trugen bbdf02a8 (zwei Generationen zurueck): fremde Karten im Rendezvous-Raum wurden GAR NICHT auf Echtheit geprueft, kein Mengen-Deckel gegen Flutung (Schutz-Plan Stufe 2b). Beim Rollout am 2026-07-30 durchgerutscht, weil ihre Kopie modules/sbkim-rendezvous.js heisst statt sbkim/23_rendezvous.js — gefunden per Scan nach INHALT statt Dateiname. Vorher geprueft, dass Modul 02 verifyForeignSpore mitbringt, sonst haette der Fix still nichts getan. PWA Toolpoint: Modul-23-UI von 1f8b6c68 (voriger Kanon) auf 4882c3b6 — Datei UND Pin waren alt, der Guard also gruen auf dem falschen Stand; bringt die Sprachwahl vom 2026-08-11 ins Netz-Panel. sbkim-bundle-voll: Modul 15+16 byte-1:1 nachgezogen (der Siegel-Aspekt behauptete eine Faehigkeit, die als Code in 15 liegt — beide zusammen oder keins). NICHT gemacht: die vier zurueckliegenden UI-Kopien (Kim-Bell, Mein-WorkFloh, SB-KIMTool-Point f117096e; BookLedgerPro c67b2942) — am 2026-08-12 bewusst auf je eine eigene, gepruefte Runde pro App verschoben. Folge: dort prueft der Kern, aber cardsVerified/rejected werden noch nicht angezeigt. REINE Kopier-Richtung Kanon->App, kein Protokoll-Bump, 0.80-Riegel unberuehrt.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 59,
+      "date": "2026-08-12",
+      "headline": "Modul-23-KERN netzweit auf Kanon 3caa0bb1 — Schutz-Plan Stufe 2b jetzt ueberall aktiv (Kim-Bell #41 · Mein-WorkFloh #169). Beide trugen bbdf02a8: fremde Karten ungeprueft, kein Flut-Deckel; beim 2026-07-30-Rollout durchgerutscht wegen abweichendem Dateinamen. PWA Toolpoint #36: Modul-23-UI 1f8b6c68 -> 4882c3b6 (Sprachwahl im Netz-Panel). Sage #842: sbkim-bundle-voll Modul 15+16 byte-1:1. Offen und bewusst: vier UI-Kopien (Kim-Bell, Mein-WorkFloh, SB-KIMTool-Point, BookLedgerPro) — je eigene gepruefte Runde pro App."
+    },
     {
       "seq": 58,
       "date": "2026-08-12",
