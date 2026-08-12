@@ -108,9 +108,18 @@ Regel aufgeschrieben wurde: sie trifft gerade niemanden.
 - **Falsche App-Adressen auf der Mycel-Karte** — aus Repo-Namen abgeleitet und
   nie wirklich abgerufen (jede Probe kam durch den Proxy mit `000` zurück).
 
-- **Mikrofon mehrsprachig in die übrigen Apps.** In **Kimboard erledigt**
-  (PR #87). Zu tun: dasselbe Muster in den übrigen Apps mit Mikrofon — **erst
-  nachsehen, wo überhaupt eins verbaut ist.**
+- **Mikrofon mehrsprachig in die übrigen Apps.** Erledigt in **Kimboard**
+  (PR #87) und, seit dem 2026-08-12, in **PWA Toolpoint** (PR #35, zwölf
+  Sprachen, Vorauswahl aus der Geräte-Sprache, `dir="auto"`). Zu tun: dasselbe
+  Muster in den übrigen Apps mit Mikrofon — **erst nachsehen, wo überhaupt eins
+  verbaut ist.**
+  - **Berichtigung am selben Tag, und sie gehört hierher.** Dieser Punkt stand
+    in der ersten Fassung dieses Briefes noch als „nur Kimboard erledigt" da.
+    Toolpoint #35 wurde gemergt, **während** ich den Brief schrieb — dieselbe
+    Lehre 6 des Vorgängers („zwischen Messen und Melden liegt Zeit"), diesmal
+    beim Schreiben statt beim Pushen. Gefunden habe ich es beim letzten
+    `git log origin/main`, nicht beim Nachsehen der Offen-Liste. **Ein Punkt,
+    den man am Anfang der Sitzung geprüft hat, ist am Ende wieder ungeprüft.**
   - **Merksatz:** die Browser-Spracherkennung hat **keine** Sprach-Erkennung.
     Sie hört genau die Sprache, die man ihr sagt.
   - **Modul 21 kennt nur de/en/ru** und ist byte-1:1 zum Kanon. Weitere Sprachen
