@@ -31,6 +31,87 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-12 — 📱 Modul 17: die Blase hing halb aus dem Bild. Netzweit behoben, 15 Repos
+
+**Rolle:** Hauptsitzung. Auftrag: Klaus, „Modul siebzehn starten" — der Punkt aus
+`BRIEF_NACH_SCHALTER.md` § Offen-Liste. PRs: Sage #839 · BookLedgerPro #301 ·
+Jasons-Tresor #155 · Kimboard #94 · Kimseek #60 · Mein-Mixarium #188 ·
+Mein-Rezeptbuch #372 · Mein-Tresor #103 · Muttis-Rezeptbuch #184 ·
+Privat-Brain #74 · Tomys-Hub #152 · family-project #269 · Kim-Bell #40 ·
+Mein-WorkFloh #168 · SB-KIMTool-Point #149. **Alle 15 gemergt.**
+
+**Der Befund, selbst nachgemessen.** Die Pille hat keine Breiten-Grenze — sie ist
+so breit wie ihr Inhalt. Weil sie rechts in der Ecke hängt, wächst sie nach
+**links** aus dem Bild:
+
+| Fenster | vorher | nachher |
+|---|---|---|
+| 320 px | 385 px — **81 px links abgeschnitten** | 227 px |
+| 360 px | 385 px — **41 px links abgeschnitten** | 227 px |
+| 412 px | 385 px, passt | 385 px, unverändert **mit** Wörtern |
+
+**Klaus' Entscheid (AskUserQuestion, gegen zwei gemessene Alternativen).** Unter
+400 px tragen die Lampen keine Wörter mehr; ab 400 px bleibt alles wie bisher
+(Klaus' Wunsch 2026-05-25 „1:1 Sage-Page-Stil" gilt dort weiter). Verworfen:
+zweizeilig umbrechen (66 statt 34 px hoch) und alles enger stellen (reicht für
+360 px, bei 320 px ragt sie weiter 7 px hinaus).
+
+**Zwei Fallen im Fix selbst.** `max-width` allein hilft nicht — die Slots sind
+Flex-Kinder mit `min-width: auto` und schrumpfen nicht unter ihre Wortbreite; der
+Inhalt quölle dann aus der Pille statt aus dem Bild. Und die Trefferfläche kommt
+über das **Innenmaß** zurück, nicht über `min-width`: auf denselben Slots steht
+im minimierten Zustand `max-width: 0`, damit sie hinter SIEGEL zusammenschieben —
+ein `min-width` hielte sie auf. Darum `padding` und die `:not([data-minimized])`-
+Klammer. Das Modul warnt an der Stelle selbst davor; der Kommentar war zu lesen.
+
+**Die Lehre dieser Sitzung: die Messung gab zu früh Entwarnung.** Der erste
+Messaufbau meldete **274 px** und damit „alles in Ordnung". Zwei Fehler steckten
+darin, beide in der Messung, nicht im Modul: (1) der SIEGEL-Slot mountet nur,
+wenn `SbkimSiegel.isCertified()` wirklich `true` liefert (Anti-Greenwashing,
+Modul 17 prüft doppelt) — ohne Stub fehlten 111 px; (2) die Messseite setzte eine
+eigene Grundschrift (14 px), während alle Maße im Modul `rem` sind — der Aufbau
+maß sich selbst. Erst korrigiert kam Klaus' 385 px heraus. **Eine Prüfung, die
+dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst** — hier war
+es kein falsches Ergebnis, sondern ein falscher Aufbau.
+
+**Verifikation.** `smoke_bau17_floating_widget.mjs` **40/40** (zwei neue Wächter
+auf dem **erzeugten** CSS, nicht dem Quelltext). Vier Gegenproben, alle schlagen
+an, keine blind: Grenze entfernt (38/40) · `padding`→`min-width` (39/40) ·
+`:not([data-minimized])` entfernt (39/40) · Wörter bleiben (39/40). Neu:
+`tools/widget-breite-messen.mjs` misst ein Modul in Reinform, ohne dass eine App
+drumherum stehen muss — gegen die alte Fassung schlägt es an (Exit 1). Je Repo
+die echte Suite gelaufen, alle grün.
+
+**Sechs Service-Worker-Cache-Bumps mit dabei** (BookLedgerPro v218 · Kim-Bell v26
+· Kimboard v52 · Kimseek v33 · Mein-WorkFloh v120 · Privat-Brain v49). Ohne sie
+lieferte der Offline-Vorrat die alte Fassung weiter, und der Fix wäre am Tablet
+unsichtbar geblieben — der Rollout hätte grün gemeldet und nichts bewirkt.
+
+**Netzweite Verifikation: 15/15 tragen den Kanon `dd3e0d7fb596`, 0 Abweichung**,
+keine alte sha mehr im Netz. Fünf sha-Pins nachgezogen (vier `test/smoke.test.js`,
+ein `tools/drift-guard.mjs`) — der Brief nannte drei betroffene Apps, es waren
+fünfzehn.
+
+**Was offen bleibt.**
+- **Klaus' Browser-Sichttest** der schmalen Ansicht — headless ersetzt ihn nicht.
+- **Vorbestehender Befund, nicht von dieser Sitzung:**
+  `sbkim-bundle-voll/modules/15_membran.js` + `16_siegel.js` sind vom Kanon
+  abgedriftet (Pflege 2026-08-01 fehlt, 261 bzw. 6 Zeilen). Gegenprobe auf blankem
+  `origin/main`: dieselben zwei Fehler, 44 ok / 2 fail vorher wie nachher. Eigene
+  Runde.
+- **`docs/PULS.md` bei 9879 Zeilen** gegen 3000. Vierte Sitzung, die es meldet —
+  und diese legt schon wieder einen Eintrag dazu.
+- Der **Handgriff auf dem Webhosting** (`marktplatz-api.php`) ist weiter offen:
+  Klaus hat beim Hochladen versehentlich den Brieftext in die Datei gelegt, die
+  richtige Fassung wurde ihm als Datei **und** als Copy-Paste-Block geschickt.
+  Rückmeldung steht aus.
+
+**Nächster sinnvoller Schritt:** Klaus' Sichttest am Handy (Pille passt, Lampen
+ohne Wörter, Antippen öffnet weiter die Fenster) — er ist der einzige Beweis, den
+diese Sitzung nicht führen konnte.
+
+---
+
 ## Stand 2026-08-12 (Abschluss) — 📋 Briefe geschrieben, Plan-Sitzung vorbereitet
 
 **Rolle:** Hauptsitzung, Abschluss. Übergabeprotokoll:
