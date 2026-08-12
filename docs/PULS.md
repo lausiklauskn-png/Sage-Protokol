@@ -31,6 +31,72 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-12 — 🎚 Schritt 4: der Schalter. Gerechnetes Gelb, öffentlich nur auf Ansage
+
+**Rolle:** Hauptsitzung. **Schritt 4 der Rauswurf-Regel** (Auftrag:
+`docs/sessions/BRIEF_SCHALTER_UND_WAS_OFFEN_LIEGT.md`). Zwei PRs, beide gemergt:
+PWA-Toolpoint #34 · family-project #267. Damit ist die Bau-Reihenfolge der
+Rauswurf-Regel **abgeschlossen** (Schritte 1–4).
+
+**Was gebaut wurde.** Klaus kann jetzt entscheiden, ob der Wächter von allein
+arbeitet oder ob er selbst drückt. Der Schalter heißt `_automatik` und steht in
+`pwa-toolpoint/assets/config/wache-hand.json`:
+
+| Stellung | Befund im Studio | Gelb öffentlich | Rot |
+|---|---|---|---|
+| **Von Hand** (Start) | steht da | nein | nur von Hand |
+| **Automatik** | steht da | **ja, gerechnet** | nur von Hand |
+
+Der Befund ist in beiden Stellungen derselbe. Es geht allein darum, wer ihn zu
+sehen bekommt.
+
+**Der Befund aus Schritt 3 ist eingehalten: gerechnet, nicht gespeichert.**
+`assets/karte.js` rechnet das gelbe Band bei jedem Zeichnen aus
+`messung.unterGrenze`. Stünde es in `wache-hand.json`, käme es nie wieder heraus
+— der Riegel lässt aus dem Browser nur Verschärfen zu — und bliebe stehen,
+während die Seite längst schnell ist. So verschwindet es von allein, sobald
+wieder gut gemessen wird.
+
+**Die offene Frage des Briefs, entschieden und begründet.** Der Schalter musste
+committet sein, weil das gerechnete Band öffentlich steht: der Browser eines
+fremden Besuchers muss wissen, ob die Automatik an ist, und der weiß nichts vom
+`localStorage` des Studios. Gewählt wurde `_automatik` in derselben Datei wie die
+Ampel — damit steht alles, was der Wächter tut, an einer Stelle, und es gibt
+genau einen Commit-Weg dorthin, der schon gebaut und gegengeprüft ist.
+
+Der Preis dafür steht offen im Papier: der Prüfer in `commit_wache`
+(`family-project/server/marktplatz-api.php`) ließ neben `_hinweis` nur Schlüssel
+zu, die wie eine `anchorId` aussehen. Er ist **erweitert** worden, um genau
+diesen einen Namen. `wache_automatik_pruefen()` lässt vier Werte mit Typ und
+Bereich durch und weist alles andere ab. **Eine Ampel kann darin nicht stehen** —
+der Schalter ist damit kein zweiter Weg zur Sperre.
+
+**Ein stiller Fehler, der dabei auffiel.** `tools/statische-listen.mjs` filterte
+alles außer rot und gelb heraus, mit der Begründung „nur was etwas bewirkt". Das
+stimmte, solange nichts gerechnet wurde. Seit es ein automatisches Gelb gibt,
+**bewirkt grün etwas**: es ist die Hand-Freigabe, die genau dieses Gelb
+überstimmt. Wäre grün weiter herausgefallen, käme das gerechnete Band trotz
+Freigabe zurück — und zwar lautlos. Jetzt reicht das Werkzeug grün durch.
+
+**Geprüft.** `npm test` **476/476** (30 neue Wächter, die die echte `karteHtml`
+laufen lassen und den Schalter wirklich rechnen) · `bash tests/gegenprobe.sh`
+**147 schlagen an, 0 blind** (9 neue Sabotagen) · `smoke_studio_markt` **102/102**
+(12 neue Proben an der echten PHP) · `gegenprobe_wache_riegel` **11/11
+anschlagend, 0 blind** (3 neue Sabotagen) · `php -l` grün · family `smoke_all`
+110/110, `smoke_studio_vectors` 41/41. Cache-Version auf `v21`.
+
+**Was offen bleibt.** Klaus' Browser-Sichttest steht aus. Und: der Schalter
+braucht auf dem Hetzner-**Webhosting** die neuere `marktplatz-api.php`. Liegt
+dort noch die alte, antwortet sie `bad_key` — das Studio nennt diesen Fall dann
+beim Namen, statt still zu scheitern, und die Ampel selbst geht unverändert
+weiter.
+
+**Nächster sinnvoller Schritt:** die `marktplatz-api.php` hochladen (ein
+WebFTP-Schritt), danach der Sichttest des Schalters. Parallel und unabhängig
+davon: Modul 17 zu breit fürs Handy, `docs/PULS.md` über der Grenze, family ohne
+Sperr-Knöpfe — alle drei in `docs/sessions/BRIEF_NACH_SCHALTER.md` mit dem am
+2026-08-12 **neu nachgesehenen** Stand.
+
 ## Stand 2026-08-11 (2) — ⛔ Die Ampel: sperren aus dem Studio, lösen nur in der Datei
 
 **Rolle:** Hauptsitzung. **Schritt 3 der Rauswurf-Regel** (Auftrag:
