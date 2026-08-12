@@ -1,7 +1,12 @@
 # Fremde Apps auf den Marktplatz holen — Plan
 
-**Angelegt:** 2026-08-12 · **Art:** Plan, kein Bau · **Auftrag:**
+**Angelegt:** 2026-08-12 · **Art:** Plan · **Auftrag:**
 [`docs/sessions/BRIEF_PLAN_FREMDE_APPS_AUFNEHMEN.md`](sessions/BRIEF_PLAN_FREMDE_APPS_AUFNEHMEN.md)
+
+> **Stand 2026-08-12: Schritt 1 (B1 · B2 · B3) ist gebaut** — PWA-Toolpoint
+> PR #37. Damit ist die Voraussetzung erfüllt, unter der §3 ein Eintragen ohne
+> Nachfrage überhaupt für vertretbar hält. Was noch fehlt, ist der Versuch
+> selbst: **fünf Apps** (§7 Schritt 2). Details unten bei Schritt 1.
 
 Grundlage: [`docs/PLAN_PILZ_WIRTSCHAFT.md`](PLAN_PILZ_WIRTSCHAFT.md) §1 · §8b ·
 §8d · §9 · §11 · §12 · §15. Zielort: `PWA-Toolpoint`, nicht family-project.
@@ -358,16 +363,27 @@ Aus §8d abgeleitet: *„kein Preismodell ohne Nachfrage. Erst messen, dann
 verpflichten."* Hier heißt das: **keine fünfzig ohne gemessene Reaktion auf
 fünf.** Klaus hat den ersten Schub auf **fünf Apps** festgelegt.
 
-### Schritt 1 — zwei kleine Bauten (eigener Brief, eigener PR)
+### Schritt 1 — zwei kleine Bauten ✅ **erledigt 2026-08-12** (PWA-Toolpoint PR #37)
 
 | Bau | Was | Umfang |
 |---|---|---|
-| **B1** | fünfter Meldegrund `eigen`: „Das ist meine App — bitte ändern oder entfernen", ganz oben, mit der Zusage „ohne Rückfrage, ohne Frist" | `assets/app.js`, dazu Smoke + Gegenprobe |
-| **B2** | `img` optional für `own: false` — im **Studio**, nicht im Renderer (der kann es längst) | `assets/studio.js`, Kopf von `listings.js`, Smoke + Gegenprobe |
-| **B3** | Satz an der Fremd-Karte: „eingetragen, nicht abgestimmt" | Textarbeit in `karte.js` |
+| **B1** ✅ | fünfter Meldegrund `eigen`: „Das ist meine App — bitte ändern oder entfernen", ganz oben, mit der Zusage „ohne Rückfrage, ohne Frist" | `assets/app.js`, dazu Smoke + Gegenprobe |
+| **B2** ✅ | `img` optional für `own: false` — im **Studio**, nicht im Renderer (der kann es längst) | `assets/studio.js`, Kopf von `listings.js`, Smoke + Gegenprobe |
+| **B3** ✅ | Satz an der Fremd-Karte: „eingetragen, nicht abgestimmt" | Textarbeit in `karte.js` |
 
 Vor B1/B2 ist ein Eintragen **nicht** vertretbar: der Weg raus wäre unvollständig
-und die Bild-Frage ungelöst.
+und die Bild-Frage ungelöst. **Diese Bedingung ist jetzt erfüllt.**
+
+**Ein Befund aus dem Bau, der im Plan noch nicht stand:** „ganz oben" und
+„vorausgewählt" waren dasselbe. Der Melde-Dialog gab schlicht dem *ersten* Grund
+den Haken. Mit „Das ist meine App" an erster Stelle wäre jede Meldung, bei der
+niemand etwas anklickt, zu einer **behaupteten Eigentümerschaft** geworden — und
+genau die wird laut §3 ohne Rückfrage ausgeführt. Der Haken hängt seitdem an
+einem eigenen Wert (`MELDE_STANDARD`), nicht mehr an der Position.
+
+Geprüft: Smoke **495/495**, Gegenprobe **167 Wächter, 0 blind**. Klaus' Blick am
+Tablet steht aus. **Es ist kein fremder Eintrag entstanden** — der Bau macht es
+möglich, mehr nicht.
 
 ### Schritt 2 — fünf Apps aussuchen
 
@@ -413,8 +429,10 @@ Mit den vier Zahlen auf dem Tisch. Nicht vorher, und nicht auf Gefühl.
 
 - **Kein Eintrag ist entstanden**, auch nicht probeweise.
 - **Keine E-Mail ist geschrieben worden**, an niemanden.
-- **Kein Code wurde geändert** — B1/B2/B3 sind Vorschläge und brauchen einen
-  eigenen Bau-Brief.
+- **Kein Code wurde geändert** — B1/B2/B3 waren Vorschläge und brauchten einen
+  eigenen Bau-Brief. *(Nachtrag 2026-08-12: dieser Bau ist inzwischen gelaufen,
+  siehe §7 Schritt 1. Der Satz beschreibt den Stand der Planungs-Sitzung, nicht
+  den von heute.)*
 - **Die Rechtsfrage bleibt offen.** §4 nennt das Risiko und den sichereren Weg.
   Ob Klaus E-Mails schreibt, entscheidet er, bei Zweifel mit einem Anwalt.
 - **§15 Punkt 7** (Provisionshöhe im Klon) bleibt unberührt — er gehört zu
