@@ -132,6 +132,15 @@ wird automatisch zur Prüfung gegeben."**
 
 ### Neu aus dieser Sitzung
 
+- **Modul 17: das Mycel-Blasen-Panel ist zu breit fürs Handy.** Gemessen
+  2026-08-12: `#sbkim-widget` ist **385 px** breit — breiter als ein
+  360-px-Bildschirm. Es ist `position: fixed`, reißt die Seite also nicht
+  auseinander, wird aber **links angeschnitten**. Sichtbar in **Mein-WorkFloh,
+  Tomys-Hub und Kimboard**. Die Kopien sind byte-geschützt: der Fix gehört in
+  `src/modules/17_floating_widget.js` (etwa `width: min(385px, calc(100vw - 24px))`)
+  und muss dann **netzweit neu kopiert** werden, samt Drift-Guards. Nachmessen
+  mit `tools/breite-messen.mjs`.
+
 - **family hat noch keine Sperr-Knöpfe.** Der Server erlaubt sie jetzt für
   beide Marktplätze; das Studio dort (`assets/studio-markt.js`) schickt weiter
   nur Quittungen. Kurze Runde, wenn Klaus es dort auch will — das Muster steht
@@ -195,6 +204,24 @@ wird automatisch zur Prüfung gegeben."**
   Jahresbeitrag · WorkFloh-Preisform), `docs/PLAN_PILZ_WIRTSCHAFT.md`.
 
 ---
+
+## Ein Werkzeug, das diese Sitzung hinterlässt
+
+`tools/breite-messen.mjs` — stellt eine Seite in ein schmales Fenster und sagt,
+**welches Element** hinausragt und um wie viel. Es misst die Rechnung des
+Browsers, nicht den Quelltext.
+
+    PW_CORE=<pfad>/playwright-core/index.js BREITEN=320,360,412 \
+      node tools/breite-messen.mjs <ordner> [datei]
+
+Damit gefunden: ein einziges `<select>` (407 px, weil ein Auswahlfeld sich nach
+seinem längsten Eintrag richtet und als Flex-Kind nicht schrumpfen darf) hielt
+Pinnwand und Kimboard auf 442 bzw. 524 px. **Eine Seite, die breiter ist als das
+Fenster, bricht beim Schmalerziehen nicht sauber um** — das sah aus wie „reagiert
+verzögert" und war eine Platz-Rechnung.
+
+Netzweit nachgemessen: alle übrigen Apps passen bei 360 px. Klaus' Eindruck
+„fast alle Apps" waren gemessen **zwei**.
 
 ## Drei Lehren, die nicht verloren gehen dürfen
 
