@@ -72,7 +72,17 @@ klammer-gezählt aus der echten Datei, umgeben ihn mit Attrappen für Netz und
 Ausgabe und füttern ihn mit echten Nutzlasten. Keine zweite Fassung der Regel
 irgendwo — die wäre auseinandergelaufen.
 
-**Browser-Sichttest ungeprüft — wartet auf Klaus.**
+**Browser-Sichttest, Stand 2026-08-12 — halb belegt, und der Rest bewusst offen:**
+
+- ✅ Klaus hat `marktplatz-api.php` per WebFTP hochgeladen (Zeilen 415/418/428/440
+  gegen die Datei geprüft, 440 Zeilen, kein `?>`).
+- ✅ Die Knöpfe **⛔ Sperren** und **⚠ Vorbehalt** stehen an allen 14 Einträgen im
+  Studio — von Klaus' Bildschirmfoto bestätigt.
+- ⏳ Der **Sperr-Vorgang selbst** ist ungetestet. Klaus' Wort: *„vermutlich
+  funktioniert das auch. Ich muss das jetzt nicht testen."* Das ist seine
+  Entscheidung, kein Versäumnis — und es steht hier, damit niemand „funktioniert"
+  daraus liest. Belegt ist die Logik headless (90/90 + 8/8 Gegenproben an der
+  echten PHP), belegt ist die Sichtbarkeit der Knöpfe. Der Rundlauf nicht.
 
 ## Was die Gegenprobe gefunden hat
 
@@ -116,10 +126,9 @@ meldet, holt den Stand unmittelbar davor noch einmal. Berichtigt in Toolpoint
 
 - **Schritt 4 (der Schalter) bewusst nicht gebaut** — mit einem Befund, der
   seine Bauweise festlegt (siehe unten und `RAUSWURF-REGEL.md`).
-- **Klaus muss `server/marktplatz-api.php` hochladen** (Webhosting/Apache,
-  konsoleH, neben `einreichung.php`). Bis dahin scheitern die Sperr-Knöpfe mit
-  `field_not_allowed` — sichtbar, und in der sicheren Richtung. An
-  `freigabe-config.php` ist **nichts** zu ändern.
+- ~~**Klaus muss `server/marktplatz-api.php` hochladen**~~ — **erledigt
+  2026-08-12.** Der Sperr-Test bleibt auf Klaus' Entscheid zurückgestellt und ist
+  **kein Riegel** für die Folge-Arbeit.
 - **family hat noch keine Sperr-Knöpfe.** Der Server erlaubt sie jetzt für beide
   Marktplätze; das Studio dort schickt weiterhin nur Quittungen. Eigene kurze
   Runde, wenn Klaus es dort auch will.

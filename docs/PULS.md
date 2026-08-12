@@ -123,10 +123,18 @@ Toolpoint #33.
   zweiten Mal. Eigene Pflege-Runde: Älteres nach `docs/sessions/archiv/`,
   **nicht** kürzen und die Grenze **nicht** herabsetzen.
 
-**Nächster sinnvoller Schritt:** Klaus lädt die PHP hoch und sperrt einmal
-probeweise etwas Eigenes (danach in der Datei wieder lösen) — das ist der einzige
-Weg, die ganze Kette zu belegen. Dann Schritt 4 nach dem oben festgelegten
-Muster.
+**Nachtrag 2026-08-12 — die halbe Kette ist belegt, der Rest zurückgestellt.**
+Klaus hat `marktplatz-api.php` per WebFTP hochgeladen (Zeilen 415/418/428/440
+gegen die Datei geprüft, 440 Zeilen, kein `?>`), und die Knöpfe **⛔ Sperren** /
+**⚠ Vorbehalt** stehen an allen 14 Einträgen im Studio — beides von seinem
+Bildschirmfoto bestätigt. Den **Sperr-Vorgang selbst** hat er bewusst nicht
+getestet: *„vermutlich funktioniert das auch. Ich muss das jetzt nicht testen."*
+Das ist seine Entscheidung und **kein Riegel** für Schritt 4. Ehrlich benannt:
+belegt ist die Sichtbarkeit der Knöpfe und die Logik headless (90/90 + 8/8
+Gegenproben an der echten PHP) — der Rundlauf Knopf→Server→Band nicht.
+
+**Nächster sinnvoller Schritt:** Schritt 4 (der Schalter) nach dem oben
+festgelegten Muster — das automatische Gelb **gerechnet, nicht gespeichert**.
 
 ---
 

@@ -43,30 +43,30 @@ Satz. Dazu `grund_fehlt` und `vorlage_nicht_lesbar` (fail-closed).
 
 ---
 
-## ZUERST: die Kette einmal ganz belegen (Klaus-Schritt)
+## Der Stand der Kette — was belegt ist und was nicht (2026-08-12)
 
-Bevor irgendetwas Neues gebaut wird, muss **ein Mensch einmal drücken**. Bisher
-ist die Kette nur headless bewiesen.
+**Kein Riegel für die nächste Sitzung.** Klaus hat den Sperr-Test ausdrücklich
+verschoben: *„Sperren ist im Studio aufgetaucht und vermutlich funktioniert das
+auch. Ich muss das jetzt nicht testen."* Also **nicht** danach fragen und **nicht**
+darauf warten — Schritt 4 darf ohne diesen Beleg beginnen.
 
-1. **`server/marktplatz-api.php` aufs Webhosting laden** (Hetzner Webhosting S,
-   konsoleH, **Apache** — dort, wo `einreichung.php` und `freigabe.php` schon
-   liegen). Die Datei liegt in `family-project/server/`.
-   - **Nicht mit `einreichung.php` verwechseln.** Am 2026-08-11 ist genau das
-     einmal passiert und das Einreichformular war kaputt. Die dritte Zeile von
-     `marktplatz-api.php` lautet:
-     `* marktplatz-api.php — JSON-API fürs Marktplatz-Studio (Warteschlange im Studio).`
-   - An `freigabe-config.php` ist **nichts** zu ändern.
-2. **Im Toolpoint-Studio einmal sperren** (langer Druck auf die Fußzeile →
-   Einträge → „⛔ Sperren" → Grund eintragen → „Veröffentlichen").
-   **Erfolgsmerkmal:** eine Minute später steht auf `pwa-toolpoint.de` ein
-   rotes Band an der Karte, der Eintrag ist noch da, „Zur Seite ↗" ist weg.
-3. **Danach in der Datei wieder lösen** —
-   `pwa-toolpoint/assets/config/wache-hand.json`, den Eintrag herausnehmen. Das
-   ist der einzige Weg zurück, und das ist Absicht.
+| Glied der Kette | Stand |
+|---|---|
+| `marktplatz-api.php` auf dem Webhosting | ✅ **hochgeladen** — Klaus hat sie am 2026-08-12 per WebFTP gespeichert, Zeilennummern 415/418/428/440 gegen die Datei geprüft, 440 Zeilen, kein `?>` |
+| Sperr- und Vorbehalt-Knöpfe im Studio | ✅ **sichtbar bestätigt** (Klaus' Bildschirmfoto: an allen 14 Einträgen „Bearbeiten · Löschen · ⛔ Sperren · ⚠ Vorbehalt") |
+| Der Sperr-Vorgang selbst (Knopf → Server → Band an der Karte) | ⏳ **ungetestet**, bewusst zurückgestellt |
 
-**Solange Schritt 1 nicht passiert ist,** scheitern die Sperr-Knöpfe mit
-`field_not_allowed`. Das ist kein Fehler im Studio, sondern die alte PHP auf dem
-Server — sichtbar und in der sicheren Richtung.
+**Was das genau heißt, ohne Beschönigung:** dass die Knöpfe **da** sind, ist
+belegt. Dass ein Druck darauf durchläuft, ist **nicht** belegt — nur headless
+(`smoke_studio_markt` 90/90, Gegenprobe 8/8 an der echten PHP). Wer später etwas
+darauf aufbaut, weiß damit, wo die Grenze liegt.
+
+**Wenn Klaus es doch einmal prüfen will**, sind es drei Schritte: Studio öffnen
+(langer Druck auf die Fußzeile) → Einträge → „⛔ Sperren", Grund eintragen,
+„Veröffentlichen". Eine Minute später steht ein rotes Band an der Karte, der
+Eintrag bleibt sichtbar, „Zur Seite ↗" ist weg. Zurücknehmen **nur** in
+`pwa-toolpoint/assets/config/wache-hand.json` — den Eintrag herausnehmen. Das ist
+der einzige Weg zurück, und das ist Absicht.
 
 ---
 
