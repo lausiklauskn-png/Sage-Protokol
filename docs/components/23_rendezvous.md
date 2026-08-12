@@ -143,6 +143,54 @@ Hat die App schon eine lebende Identität (bereits angedockt), genügt `announce
 ohne `createIdentity`. Vorlage für den family-Pfad: `__fpErzeugeSpore` (mit
 Modell-Download-Fortschritt) in `family-project/sbkim/sbkim-init.js`.
 
+## Lage und Größe auf schmalen Schirmen — verbindlich (Stand 2026-08-11)
+
+**Warum das hier steht und nicht nur im Code:** die drei Regeln unten sind
+jede aus einem echten Befund an Klaus' Geräten entstanden, und jeder Befund
+hat eine eigene Sitzung gekostet. Sie lebten bisher **nur** als Kommentar in
+`23_rendezvous_ui.js` und als Zeile in `docs/PULS.md`. Wer die Karte hier als
+Bauplan liest — und genau dafür ist sie da —, sah davon nichts und konnte sie
+beim nächsten Umbau ahnungslos wieder abräumen.
+
+| Regel | Woher sie kommt | Wo sie im Code sitzt |
+|---|---|---|
+| Unter **560 px** rückt der 🌐-Knopf um **78 px** hoch, wenn er in einer **unteren** Ecke verankert ist | die Lampen-Leiste lag darüber; mit dem Finger war die Lampe nicht mehr zu treffen (Klaus 2026-08-03). 78 px = 16 Rand + ~56 Leiste + 6 Luft | `stilEinhaengen()`, als eingehängte Medien-Abfrage mit `!important` |
+| **Waagerecht** darf nichts über den Rand hinaus geklemmt werden | gemessen: ein 420 px breites Panel bei 1100 px zeigte **nur noch 120 px**; die Blase bei 500 px war mit **−480 px ganz weg** (Klaus 2026-08-11, „auch auf den iOS-Handys") | `clampInts()` |
+| **Senkrecht** darf es über den Rand ragen, solange ein greifbarer Streifen bleibt | die alte Klemme verlangte, dass das GANZE Panel auf den Schirm passt — ein hohes Panel klemmte dann senkrecht fest (Klaus 2026-07-24) | `clampInts()`, `KEEP` |
+
+### ⚠ Die Falle, die daraus entstanden ist — und die wiederkommen kann
+
+Am 2026-08-11 stand auf zwei Handys statt der Blase ein **fingerbreiter,
+schirmhoher Kasten** mit der Schrift in der Mitte. Es sah nach kaputtem Layout
+aus; es war eine **Kaskaden-Kollision** zwischen genau zwei der obigen Regeln:
+
+`#sbkim-rdv-btn[data-ecke-unten="1"]{bottom:78px !important}` schlägt auch das
+`bottom:auto`, das `applyPos` eine Zeile vorher **inline** setzt. Damit galten
+`top` **und** `bottom` gleichzeitig — und ein `position:fixed`-Element mit
+beidem zieht sich über die ganze Höhe dazwischen.
+
+Nur unter 560 px, und **nur nachdem eine Position gesetzt war** (Ziehen,
+Minimieren, gemerkte Position beim Laden). Darum sah der erste Aufruf richtig
+aus, und darum fand es keine Prüfung.
+
+**Die Regel, die daraus folgt:** wer frei positioniert ist, steht nicht mehr in
+der Ecke — also nimmt `applyPos` das Merkmal `data-ecke-unten` **ab**. Beim
+nächsten Laden ohne gemerkte Position kommt es von selbst zurück.
+
+> **Nicht wieder anfassen:** das `removeAttribute("data-ecke-unten")` in
+> `applyPos` sieht wie eine überflüssige Zeile aus. Sie ist die ganze Miete
+> gegen den langen Kasten. Wer die Ecken-Ausnahme umbaut, misst vorher an einem
+> schmalen Schirm **mit gemerkter Position** nach — ohne die tritt der Fehler
+> gar nicht auf.
+
+Gemessen im echten Chromium (360×800, gemerkte Position oben 60):
+**88 × 662 px vorher, 88 × 33 px nachher**; Gegenprobe ohne gemerkte Position
+hält weiter 78 px Abstand vom Rand. **Klaus' Sichttest 2026-08-11 positiv.**
+
+**Ein Wächter, der nur die Breite misst, ist blind.** Die erste Runde dieses
+Fixes prüfte genau das — obwohl Klaus von Anfang an von einem *langen*
+Container sprach. Die Höhe gehört in jede Prüfung, die diese Stelle betrifft.
+
 ## Verwandtschafts-Score der Raum-Karten (REINE ANZEIGE, 2026-06-28)
 
 Folge zur „Wählen"-UI (Bau 04.E / Modul 22): der Rendezvous-Raum zeigt pro
