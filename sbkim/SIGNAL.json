@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-08-04",
-  "seq": 57,
-  "headline": "SAGE-PAGE CLS 0,328 -> 0, Leistung 45 -> 67 (Bau-Maschine, je 3 Laeufe). BEFUND, der jeden Knoten mit Lampen-Leiste betrifft: der Sprung kam NICHT von der Schrift, sondern vom EIGENEN SIEGEL. Modul 16 haengt sein 40-px-Badge erst nach dem ganzen Modul-Stapel in .lamps (gemessen: 17,4 s; fonts.ready lag bei 15,5 s, also davor). Die Topbar waechst dadurch um eine Zeile - der Frisch-laden-Knopf rutscht 72 px nach unten in eine neue Reihe - und schiebt div.wrap um 32 px. Ein einziger Sprung, ein Viertel der Leistungsnote. LOESUNG steht schon im Modul: Option beta, vor-injizierter Anker. index.html legt <span id=\"sbkim-siegel-badge\"></span> LEER in .lamps, sbkim-init.js zeigt mit badgeSelector darauf statt auf den Container. Platz steht ab der ersten Zeichnung. Modul 16 UNANGETASTET, Anti-Greenwashing gilt weiter (ohne Zertifizierung bleibt der Anker leer). BITTE an alle Knoten mit Siegel in einer umbrechenden Leiste (Empfangsmodus, KEIN Zwang): pruefen, ob euer Badge ebenfalls spaet einhaengt - der Fix ist zwei Zeilen und kostet nichts. Dazu: Schriften selbst gehostet (vier woff2 in assets/fonts, variable Schriften, nur die zwei latin vorabgeholt = 52 KiB). Der <link> auf fonts.googleapis.com blockierte das erste Zeichnen ~750 ms; Klaus' Server nannte 1.950 ms Rendering-Verzoegerung am Textelement p.hero-claim. Nebenbefund: die Bau-Maschine erreicht Google Fonts gar nicht - vorher war KEINE Schrift geladen, jetzt beide nach 789 ms. VERWORFEN weil gemessen schlechter: den Modul-Stapel ans load-Ereignis haengen (BLP-Muster) - kostet 0,8 s LCP und bringt keinen Punkt; die Skripte stehen schon am Body-Ende, der Hebel ist die Menge, nicht der Zeitpunkt. Beweise: CLS-Gegenprobe 0,0000 aus 0 Spruengen; Siegel funktional gegengeprueft (gefuellt, Gold, Modal oeffnet, keine Seitenfehler); Tests 64/66, die zwei roten auch auf origin/main rot. HINWEIS fuer Test-Laeufe in Sage: ohne 'npm install fake-indexeddb --no-save' sind 21 Tests rot, die gesund sind. OFFEN: Klaus' Browser-Sichttest + Server-Nachmessung (Proxy hier verweigert github.io). Rueck-Quittung erbeten.",
+  "lastBuild": "2026-08-12",
+  "seq": 58,
+  "headline": "Modul 17 (Floating-Widget) sha dd3e0d7fb596 netzweit ausgerollt: 15 Repos byte-1:1 gemergt. Die Pille war 385 px breit und hing rechts in der Ecke — auf 360 px waren 41 px links abgeschnitten, auf 320 px 81. Jetzt 227 px: unter 400 px tragen die Lampen keine Woerter mehr, ab 400 px bleibt alles wie bisher. REINE Anzeige — kein Protokoll-Bump, 0.80-Riegel unberuehrt. Wer eine Kopie traegt, hat sie mit dem Merge bekommen; sechs Service-Worker-Caches wurden mitgehoben, sonst liefert der Offline-Vorrat weiter die alte Fassung.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 58,
+      "date": "2026-08-12",
+      "headline": "Modul 17 sha dd3e0d7fb596 netzweit: 15 Repos byte-1:1 (Sage #839 · BLP #301 · Jasons #155 · Kimboard #94 · Kimseek #60 · Mixarium #188 · Rezeptbuch #372 · Mein-Tresor #103 · Muttis #184 · Privat-Brain #74 · Tomys #152 · family #269 · Kim-Bell #40 · WorkFloh #168 · Point #149). Blase passt jetzt auf schmale Handys; 5 sha-Pins + 6 SW-Cache-Bumps mitgezogen. Klaus Browser-Sichttest steht aus."
+    },
     {
       "seq": 54,
       "date": "2026-07-30",
