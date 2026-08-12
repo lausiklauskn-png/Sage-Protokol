@@ -265,6 +265,14 @@
       <button id="tb-zoom" class="tbtn" title="Text vergrößern / verkleinern">🔍</button>
       <button id="tb-full" class="tbtn" title="Vollbild / Vollansicht">⛶</button>
       <button id="tb-reload" class="tbtn" title="Neu laden (Cache leeren)">🔄</button>
+      <!-- Sprache fürs Mikrofon (Klaus 2026-08-11, aus Kimboard übernommen).
+           Die Browser-Spracherkennung kann die Sprache NICHT selbst erraten —
+           sie muss ihr gesagt werden. Vorher stand hier fest `de-DE`, wer
+           Arabisch oder Paschtu sprach bekam deutschen Buchstabensalat.
+           Vorauswahl aus der Geräte-Sprache; die Wahl bleibt gespeichert und
+           gilt für BEIDE Mikrofone (Frage wie Antwort). -->
+      <select id="tb-miclang" class="tbtn" aria-label="Sprache fürs Mikrofon"
+              title="Sprache fürs Mikrofon — in welcher Sprache du sprichst"></select>
     </div>
   </div>
   <p class="sub">Eine <b>Frage</b> aufs geborgte, dumme Brett (Nostr) legen und
@@ -1347,12 +1355,28 @@ document.addEventListener('visibilitychange', () => {
 });
 
 const liveSockets = () => Object.values(conns).filter((w) => w.readyState === WebSocket.OPEN);
+// Eine stehende Meldung des Mikrofons (z. B. dass dem Browser Paschtu fehlt).
+//
+// BEFUND 2026-08-11 (an der Schwester Kimboard gefunden, hier baugleich):
+// `updateSendState()` schrieb den Hinweis IMMER neu — und wird direkt nach
+// jedem Spracheingabe-Fehler aufgerufen. Eine Fehlermeldung des Mikrofons war
+// damit NIE zu sehen; sie wurde im selben Wimpernschlag vom Verbindungs-Status
+// überschrieben. Auch die frühere Prüfung, ob im Hinweis das Wort „Fehler"
+// vorkommt, lief ins Leere: danach wurde ohnehin überschrieben.
+//
+// Jetzt hat die Mikrofon-Meldung Vorrang: sie steht, bis der nächste Versuch
+// beginnt. Der Verbindungs-Status ist wichtig, aber nicht so dringend wie
+// „deine Sprache geht hier nicht".
+let micHinweis = null;
+function setMicHinweis(text) { micHinweis = text || null; updateSendState(); }
+
 function updateSendState() {
   const n = liveSockets().length;
   $('ask').disabled = n === 0;
-  $('sendhint').textContent = n > 0
+  // Eine stehende Mikrofon-Meldung hat Vorrang (siehe `micHinweis` oben).
+  $('sendhint').textContent = micHinweis ? micHinweis : (n > 0
     ? `${n} Relay${n > 1 ? 's' : ''} verbunden`
-    : 'kein Relay verbunden…';
+    : 'kein Relay verbunden…');
 }
 
 // Ansicht zurücksetzen + erneut abonnieren (z. B. nach Passwort-Wechsel, damit
@@ -1430,6 +1454,124 @@ $('board-clear').addEventListener('click', clearBoard);
 
 // Mikrofon: Frage einsprechen (Browser-Spracherkennung, gratis, server-los,
 // kein Schlüssel). Fail-soft, wenn der Browser es nicht kann.
+// ---- Sprache fürs Mikrofon (Klaus 2026-08-11) --------------------------------
+//
+// Vorher stand an beiden Mikrofonen fest `rec.lang = 'de-DE'`. Wer Arabisch,
+// Russisch, Paschtu oder Englisch sprach, bekam den Versuch, das als Deutsch zu
+// hören — also Buchstabensalat. Für jeden, der kein Deutsch spricht, war das
+// Mikrofon damit schlicht kaputt.
+//
+// WARUM KEINE AUTOMATISCHE ERKENNUNG. Die Browser-Spracherkennung (Web Speech)
+// hat KEINE Sprach-Erkennung. Sie bekommt eine Sprache gesagt und hört genau
+// diese. In der Schnittstelle gibt es kein „finde selbst heraus, was gesprochen
+// wird" — das können nur Cloud-Dienste (Modul 21 `recognizeEU` über
+// `alternativeLanguageCodes`), und die brauchen Schlüssel und Konto. Nichts für
+// den ersten Aufruf eines Fremden.
+//
+// Also zwei Stufen, beide ohne Schlüssel:
+//   1. VORAUSWAHL aus der Geräte-Sprache — ein arabisch eingerichtetes Handy
+//      spricht ab dem ersten Antippen Arabisch, ohne dass jemand etwas einstellt.
+//   2. WAHL in der Werkzeugleiste, gespeichert — für den Fall, dass Gerät und
+//      Sprecher nicht dieselbe Sprache haben (deutsches Handy, arabischer Gast).
+//
+// Der Speicher-Schlüssel trägt den App-Namen: die Pinnwand teilt sich die
+// Adresse mit der Sage-Page und dem Such-Tool (Regel „geteilte-Origin-Fallen
+// vermeiden" in CLAUDE.md).
+const MIC_LANGS = [
+  ['de-DE', 'Deutsch'],
+  ['en-US', 'English'],
+  ['ru-RU', 'Русский'],
+  ['ar-SA', 'العربية'],
+  ['tr-TR', 'Türkçe'],
+  ['pl-PL', 'Polski'],
+  ['uk-UA', 'Українська'],
+  ['fr-FR', 'Français'],
+  ['es-ES', 'Español'],
+  ['it-IT', 'Italiano'],
+  // Afghanistan hat ZWEI Amtssprachen — Paschtu und Dari (afghanisches
+  // Persisch); „afghanisch" allein gibt es nicht.
+  ['ps-AF', 'پښتو'],
+  ['fa-IR', 'فارسی / دری'],
+];
+const RTL_LANGS = ['ar', 'he', 'fa', 'ur', 'ps'];
+const LS_MICLANG = 'pinnwand_miclang';
+
+function micLangVorauswahl() {
+  const roh = String((navigator.languages && navigator.languages[0]) || navigator.language || '');
+  if (!roh) return 'de-DE';
+  const genau = MIC_LANGS.find(([c]) => c.toLowerCase() === roh.toLowerCase());
+  if (genau) return genau[0];
+  const kurz = roh.split('-')[0].toLowerCase();
+  const teil = MIC_LANGS.find(([c]) => c.split('-')[0].toLowerCase() === kurz);
+  return teil ? teil[0] : 'de-DE';
+}
+let micLang = (() => {
+  try {
+    const g = localStorage.getItem(LS_MICLANG);
+    if (g && MIC_LANGS.some(([c]) => c === g)) return g;   // nur bekannte Werte
+  } catch { /* */ }
+  return micLangVorauswahl();
+})();
+
+// Ein Textfeld auf die gesprochene Sprache einstellen. Bewusst `dir="auto"`:
+// dann entscheidet der Browser am INHALT und mischt sauber, wenn jemand
+// deutsche Wörter einstreut. Die ganze Seite zu spiegeln wäre ein eigener,
+// viel größerer Umbau — hier geht es um das Feld, in das gesprochen wird.
+function feldRichtung(feld) {
+  if (!feld) return;
+  try { feld.setAttribute('dir', 'auto'); feld.setAttribute('lang', micLang); } catch { /* */ }
+}
+
+// Fehler des Mikrofons in Sätze übersetzen, die man verstehen kann.
+//
+// Vorher stand hier der rohe Code: „Spracheingabe-Fehler: language-not-supported".
+// Das bekam ausgerechnet der Mensch zu sehen, der mit einem englischen Fachwort
+// am wenigsten anfangen kann. Wer das liest, hält die App für kaputt und geht.
+//
+// `language-not-supported` ist zugleich der ehrliche Ausweg aus einem Problem,
+// das sich nicht anders lösen lässt: welche Sprachen der Browser wirklich kann,
+// verrät er NICHT vorher. Man kann eine Sprache nur anbieten und dann sauber
+// sagen, wenn es nicht ging.
+function micFehlerText(code) {
+  const name = (MIC_LANGS.find(([c]) => c === micLang) || [null, micLang])[1];
+  switch (code) {
+    case 'language-not-supported':
+      return 'Dieser Browser versteht ' + name + ' nicht. Wähle oben eine andere Sprache — oder tippe deine Frage.';
+    case 'not-allowed':
+    case 'service-not-allowed':
+      return 'Das Mikrofon ist nicht freigegeben. Erlaube es in den Browser-Einstellungen für diese Seite.';
+    case 'no-speech':
+      return 'Nichts gehört. Sprich etwas näher am Gerät und versuche es noch einmal.';
+    case 'audio-capture':
+      return 'Kein Mikrofon gefunden.';
+    case 'network':
+      return 'Die Spracherkennung braucht kurz Internet und kam nicht durch.';
+    case 'aborted':
+      return ' ';                       // vom Nutzer gestoppt — kein Fehler
+    default:
+      return 'Spracheingabe hat nicht geklappt (' + (code || 'unbekannt') + '). Du kannst deine Frage auch tippen.';
+  }
+}
+
+(function setupMicLangWahl() {
+  const sel = $('tb-miclang');
+  if (!sel) return;
+  MIC_LANGS.forEach(([code, name]) => {
+    const o = document.createElement('option');
+    o.value = code; o.textContent = name;
+    sel.appendChild(o);
+  });
+  sel.value = micLang;
+  sel.addEventListener('change', () => {
+    micLang = sel.value;
+    try { localStorage.setItem(LS_MICLANG, micLang); } catch { /* */ }
+    feldRichtung($('qmsg'));
+    // Laufende Aufnahmen behalten ihre Sprache — die neue gilt ab dem nächsten
+    // Antippen. Alles andere wäre mitten im Satz ein Sprachwechsel.
+  });
+  feldRichtung($('qmsg'));
+})();
+
 (function setupMic() {
   const mic = $('mic');
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1439,13 +1581,16 @@ $('board-clear').addEventListener('click', clearBoard);
     mic.style.opacity = '0.5';
     return;
   }
-  let rec = null, listening = false, base = '';
+  let rec = null, listening = false, base = '', fehlerStand = false;
   mic.addEventListener('click', () => {
     if (listening) { try { rec.stop(); } catch { /* */ } return; }
     rec = new SR();
-    rec.lang = 'de-DE';
+    rec.lang = micLang;              // vorher fest 'de-DE' — siehe MIC_LANGS oben
     rec.interimResults = true;
     rec.continuous = false;
+    fehlerStand = false;               // jeder neue Versuch beginnt ohne Fehler
+    setMicHinweis(null);               // alte Meldung raeumen, sonst klebt sie
+    feldRichtung($('qmsg'));
     base = $('qmsg').value ? $('qmsg').value.replace(/\s*$/, '') + ' ' : '';
     rec.onstart = () => { listening = true; mic.classList.add('mic-on'); mic.textContent = '⏹'; $('sendhint').textContent = 'höre zu… sprich deine Frage'; };
     rec.onresult = (e) => {
@@ -1453,8 +1598,13 @@ $('board-clear').addEventListener('click', clearBoard);
       for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript;
       $('qmsg').value = (base + txt).slice(0, 280);
     };
-    rec.onerror = (e) => { $('sendhint').textContent = 'Spracheingabe-Fehler: ' + (e.error || 'unbekannt'); };
-    rec.onend = () => { listening = false; mic.classList.remove('mic-on'); mic.textContent = '🎤'; if (!/Fehler/.test($('sendhint').textContent)) $('sendhint').textContent = ' '; updateSendState(); };
+    rec.onerror = (e) => { fehlerStand = true; setMicHinweis(micFehlerText(e.error)); };
+    rec.onend = () => { listening = false; mic.classList.remove('mic-on'); mic.textContent = '🎤';
+      // Eine Fehlermeldung bleibt stehen — sonst sieht sie niemand. Vorher
+      // wurde geprueft, ob im Hinweis das WORT „Fehler“ vorkommt; das ging nur
+      // so lange gut, wie jede Meldung dieses Wort trug. Ein Wort ist kein Merkmal.
+      if (!fehlerStand) setMicHinweis(null);
+      updateSendState(); };
     try { rec.start(); } catch (err) { $('sendhint').textContent = 'Mikrofon nicht verfügbar (' + (err.message || err) + ')'; }
   });
 })();
@@ -1517,7 +1667,9 @@ function attachMic(mic, target, hint) {
     e.preventDefault();
     if (listening) { try { rec.stop(); } catch { /* */ } return; }
     rec = new SR();
-    rec.lang = 'de-DE'; rec.interimResults = true; rec.continuous = false;
+    rec.lang = micLang;              // vorher fest 'de-DE' — siehe MIC_LANGS oben
+    rec.interimResults = true; rec.continuous = false;
+    feldRichtung(target);            // Antwort-Feld ebenso rechts-nach-links-tauglich
     base = target.value ? target.value.replace(/\s*$/, '') + ' ' : '';
     rec.onstart = () => { listening = true; mic.classList.add('mic-on'); mic.textContent = '⏹'; setHint('höre zu… sprich jetzt'); };
     rec.onresult = (ev2) => {
@@ -1525,7 +1677,7 @@ function attachMic(mic, target, hint) {
       for (let i = 0; i < ev2.results.length; i++) txt += ev2.results[i][0].transcript;
       target.value = (base + txt).slice(0, max);
     };
-    rec.onerror = (ev2) => { setHint('Spracheingabe-Fehler: ' + (ev2.error || 'unbekannt')); };
+    rec.onerror = (ev2) => { setHint(micFehlerText(ev2.error)); };
     rec.onend = () => { listening = false; mic.classList.remove('mic-on'); mic.textContent = '🎤'; };
     try { rec.start(); } catch (err) { setHint('Mikrofon nicht verfügbar'); }
   });
