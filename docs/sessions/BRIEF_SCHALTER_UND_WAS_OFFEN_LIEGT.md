@@ -1,8 +1,22 @@
 # Brief — Schritt 4 (der Schalter), die Kette einmal ganz belegen, und was sonst offen liegt
 
-**Geschrieben 2026-08-11** am Ende der Sitzung „Wächter-Ampel für Toolpoint".
+**Geschrieben 2026-08-11** am Ende der Sitzung „Wächter-Ampel für Toolpoint",
+**berichtigt am selben Abend** (siehe unten).
 Adressat: die nächste Sitzung. Klaus liest zuerst den Chat — dieser Brief steht
 deshalb auch dort als Codeblock.
+
+> **Dieser Brief löst `BRIEF_WAECHTER_TOOLPOINT_UND_SCHALTER.md` ab.** Der alte
+> bleibt als Historie liegen und ist an einer Stelle weiterhin die ausführlichere
+> Quelle: seinem Abschnitt zur Oberflächen-Sprache. Der **Stand** von dort ist
+> hier übernommen.
+>
+> **Warum diese Zeile hier steht:** zwei Sitzungen liefen an diesem Abend
+> nebeneinander. Während diese hier den Wächter baute, entschied und baute die
+> andere die Sprachfrage — und berichtigte den alten Brief (#823), nachdem
+> dieser hier ihn bereits als „offen" abgeschrieben hatte. Klaus hat es beim
+> Gegenlesen gefunden. **Merksatz: ein Brief, der einen offenen Punkt
+> weiterreicht, muss den Stand dieses Punktes NEU nachsehen — nicht aus dem
+> Vorgänger abschreiben.**
 
 ---
 
@@ -12,7 +26,7 @@ deshalb auch dort als Codeblock.
 |---|---|
 | **Schritt 3: die Ampel** — Handschalter, Band an der Karte, Studio-Knöpfe | ✅ gebaut, gemergt (Toolpoint #32) |
 | **Der Riegel im Server**, einseitig gelockert: setzen ja, lösen nein | ✅ gebaut, gemergt (family #265) |
-| **Drei rote Drift-Guards im Netz** (Toolpoint · Kimboard · Kimseek) | ✅ geheilt (#32 · #89 · #58) |
+| **Drei rote Drift-Guards im Netz** (Toolpoint · Kimboard · Kimseek) | ✅ geheilt — **von einer parallelen Sitzung** (#31, #57, Kimboards eigener Lauf). Meine drei Commits kamen 20 Minuten zu spät und waren Doppelarbeit, zwei mit leerem Diff. |
 | **Schritt 4: der Schalter** | ⏳ offen — die Bauweise steht aber fest, siehe unten |
 
 **Die Regel als Rangfolge**, an drei Stellen dieselbe (Papier · `wache_rang()`
@@ -138,11 +152,45 @@ wird automatisch zur Prüfung gegeben."**
   künftige Fix geht an beiden vorbei.
 - **Falsche App-Adressen auf der Mycel-Karte** — aus Repo-Namen abgeleitet und
   nie wirklich abgerufen (jede Probe kam durch den Proxy mit `000` zurück).
-- **Mikrofon mehrsprachig in die übrigen Apps** (in Kimboard erledigt, PR #87).
-  Merksatz: die Browser-Spracherkennung hat **keine** Sprach-Erkennung — sie
-  hört genau die Sprache, die man ihr sagt.
-- **Oberflächen-Sprache folgt nirgends dem Browser.** Drei Wege liegen Klaus
-  vor, seine Entscheidung steht aus — **nicht eigenmächtig loslegen.**
+- **Mikrofon mehrsprachig in die übrigen Apps** — **weiterhin offen.** In
+  **Kimboard erledigt** (PR #87): zehn Sprachen, Vorauswahl aus der
+  Geräte-Sprache, `dir="auto"` an den Feldern, Wächter 13/13 samt
+  Sabotage-Probe. Zu tun: dasselbe Muster in den übrigen Apps mit Mikrofon —
+  **erst nachsehen, wo überhaupt eins verbaut ist.**
+  - **Merksatz:** die Browser-Spracherkennung hat **keine** Sprach-Erkennung.
+    Sie hört genau die Sprache, die man ihr sagt. Wer auf „erkennt sich schon
+    selbst" baut, baut nichts.
+  - **Modul 21 kennt nur de/en/ru** und ist byte-1:1 zum Kanon. Weitere Sprachen
+    dort sind ein **netzweiter Rollout** (eigene Runde, alle Repos +
+    Drift-Guards). Bis dahin liegt die Liste bewusst im App-Code.
+- **Oberflächen-Sprache: ✅ ENTSCHIEDEN UND GEBAUT am 2026-08-11.** Hier stand
+  bis zur Berichtigung „Klaus' Entscheidung steht aus" — **das war schon beim
+  Schreiben überholt.** Der wirkliche Stand, aus dem alten Brief übernommen:
+  - **„Weg 3" (`<html lang>` mitziehen) war längst gebaut.** `applyLang()` setzt
+    `document.documentElement.lang` seit jeher bei jedem Sprachwechsel. Der
+    Vorschlag beruhte auf einem Suchfehler — gesucht wurde nach
+    `navigator.language` statt nach `documentElement.lang`. **Merksatz: eine
+    Fundstelle, die man nicht gesucht hat, ist kein Beweis für Abwesenheit.**
+  - **Die echte Lücke war der erste Aufruf**, und die ist geschlossen: Weg 1 ist
+    in **vier** Apps gemergt — Mein-Rezeptbuch #370 · Mein-Mixarium #186 ·
+    Mein-WorkFloh #166 · Muttis-Rezeptbuch #182 (die Schwester mit, damit die
+    beiden nicht auseinanderlaufen).
+  - **Der Riegel, der dabei entstand — bei ähnlichen Bauten beachten:**
+    übernommen wird **nur eine Sprache, die die App wirklich hat** (`LANGS`).
+    Gemessen: ein erzwungenes `lang="ar"` auf durchgehend deutschem Text bringt
+    Chrome dazu, **seine eigene Übersetzung nicht mehr anzubieten** — es hält die
+    Seite für schon übersetzt. Blind übernehmen wäre schlechter als nichts tun.
+    Eine gespeicherte Wahl gewinnt immer.
+  - **Was davon offen BLEIBT:**
+    - **WorkFlohs Einrichtungs-Bildschirm ist fest deutsch verdrahtet** —
+      `showSetupScreen()` ohne `T()`. Der **allererste Satz**, den ein Fremder
+      sieht, ist damit immer deutsch. Braucht einen Schlüssel in `TR` +
+      Übersetzungen in allen sieben Sprachen; bewusst nicht nebenbei gemacht.
+    - **Ob Chromes Übersetzungs-Angebot in einer INSTALLIERTEN PWA greift**
+      (dort fehlt die Adressleiste und damit der Knopf) — **ungeprüft.** Vor
+      jeder Arbeit daran zuerst messen. Betrifft die fünf Apps ohne eigene
+      Übersetzungs-Tabelle (Kimboard, Kimseek, family-project, BookLedgerPro,
+      Tomys-Hub), die zu Recht auf `lang="de"` stehen.
 - **Phase D.2 — Pilz-Wirtschaft:** drei Entscheidungen offen (Everlast ·
   Jahresbeitrag · WorkFloh-Preisform), `docs/PLAN_PILZ_WIRTSCHAFT.md`.
 
@@ -165,6 +213,31 @@ Dieselbe Falle wie die `?v=2`/`?v=3`-Proben vom 2026-08-09. **Wer eine Zeile
 **3. Eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten
 hinsehen musst.** Der rote Drift-Guard in drei Repos stand seit dem 2026-08-11
 still auf rot — er hatte recht, nur hörte ihm niemand zu.
+
+**4. Ein weitergereichter „offener Punkt" ist ein Stand, kein Zitat.** Dieser
+Brief hat die Sprachfrage aus dem Vorgänger als „Entscheidung steht aus"
+übernommen — sie war zu dem Zeitpunkt längst entschieden und in vier Apps
+gebaut. Zwei Sitzungen liefen nebeneinander, und abgeschrieben statt nachgesehen
+war schneller. Gefunden hat es Klaus beim Gegenlesen, nicht ich. **Wer eine
+Offen-Liste weitergibt, sieht jeden Punkt darauf neu nach** — mindestens
+`git log origin/main` der betroffenen Repos.
+
+**5. Eine Fundstelle, die man nicht gesucht hat, ist kein Beweis für
+Abwesenheit.** Aus derselben Sprach-Runde: „keine App folgt dem Browser" beruhte
+darauf, dass nach `navigator.language` gesucht wurde und nicht nach
+`documentElement.lang`. Die Hälfte war längst gebaut.
+
+**6. Zwischen Messen und Melden liegt Zeit.** Dieselbe Sitzung fand drei rote
+Drift-Guards, maß sie (Kimboard 5/6, Kimseek 10/11), reparierte sie und meldete
+das als eigenen Fund. Zum Zeitpunkt der Messung stimmte alles. Zwanzig Minuten
+später, beim Pushen, hatte eine parallele Sitzung längst dieselben drei Pins
+geheilt — zwei meiner Commits landeten als **leerer Diff**. Ein `fetch` beim
+Sitzungsstart deckt zwei Stunden später nichts. **Wer einen netzweiten Befund
+meldet, holt den Stand unmittelbar davor noch einmal.**
+
+Lehre 4, 5 und 6 sind dieselbe Familie: **abgeschrieben statt nachgesehen,
+gesucht am falschen Ort, gemessen zur falschen Zeit.** Alle drei gaben der
+Sitzung recht. Alle drei hat Klaus gefunden, nicht sie selbst.
 
 ---
 
