@@ -79,7 +79,7 @@ abgewandelt.
 | `modules/17_floating_widget.js` | Status-Lampen LEBT/VERKEHR/FREMD/SIEGEL | (Kanon prüfen) |
 | `modules/19_andock_wizard.js` | Andock-Assistent (Identität/Spore/Backup) | `976c4ba35…` |
 | `modules/20_schluessel_safe.js` | verschlüsselter Schlüssel-Safe (BYOK) | `e7e25c907…` |
-| `modules/21_spracheingabe.js` | Spracheingabe (Mikro → Text, EU-Politik) | `6be3902c6…` |
+| `modules/21_spracheingabe.js` | Spracheingabe (Mikro → Text, EU-Politik, 12 Sprachen) | `020ca26ff…` |
 | `modules/22_such_widget.js` | frei bewegliches Such-Widget (optional) | `45f42a54e…` |
 | `modules/24_ocr_eingabe.js` | Bild/Handschrift → Text (optional) | `c0d616ff7…` |
 | `sbkim-sw.js` + `manifest.json` | PWA-Schale (installierbar, offline) | — |
