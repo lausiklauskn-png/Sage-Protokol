@@ -262,6 +262,53 @@ nichts und ist jederzeit zurückdrehbar.
   Ordnet sich unter die Fremdnutzer-/Marktplatz-Brille (CLAUDE.md): ein Besucher,
   der die Beschriftungen nicht lesen kann, ist kein Randfall, sondern der
   Normalfall auf einem offenen Marktplatz.
+- **🔜 NÄCHSTER BAU — EU-Spracherkennung für Paschtu, mit gemerktem Schlüssel**
+  (Klaus' Auftrag + Entscheidung 2026-08-11 Abend). Auslöser: Klaus' Sichttest
+  zeigte, dass Chrome **Paschtu nicht kann** (siehe stiller Fehlschlag oben).
+  Der EU-Cloud-Dienst kann es — Modul 21 `recognizeEU` ist gebaut und liegt
+  bereit, wird aber **in keiner Pinnwand benutzt**.
+
+  **Klaus' Entscheidung zur Schlüssel-Frage** (er fragte: „können wir den fest
+  installieren, sodass nicht jedes Mal der EU-Schlüssel eingegeben werden
+  muss?"): **verschlüsselt im App-Tresor**, NICHT fest im Code.
+  Begründung, die ihm genannt wurde und die im Bau gilt: **ein Schlüssel im
+  Quelltext ist veröffentlicht, nicht versteckt** — die Apps sind offene
+  Webseiten, und Google rechnet jede fremde Nutzung Klaus ab.
+
+  **Rezept steht:** `.claude/skills/verschluesselter-schluessel-tresor` —
+  `SbkimSafe.putSecret/getSecret` (PBKDF2 600k + AES-GCM-256), Knöpfe
+  „🔒 im Tresor merken" / „🔓 Tresor entsperren", Vergessen-Schutz über
+  `FORGOT_HINT` + optionale Merkhilfe. **Nicht neu erfinden.**
+
+  **Bestandsaufnahme (geprüft, nicht vermutet) am Beispiel Kimboard:**
+  - `modules/20_schluessel_safe.js` ist **da**, wird von `index.html` aber
+    **NICHT geladen** — das ist der erste Handgriff. `01_storage.js` +
+    `02_spore.js` werden bereits geladen (Voraussetzung erfüllt).
+  - `modules/21_spracheingabe.js` **wird geladen**, aber `SbkimSpeech` kommt in
+    `index.html` **kein einziges Mal** vor: die EU-Engine ist bislang totes
+    Gewicht.
+
+  **Zu bauen (ehrliche Größe: eine eigene Sitzung, nicht ein Handgriff):**
+  1. Modul 20 in `index.html` laden (alle drei Pinnwände).
+  2. **Umschalter Browser ↔ EU-Dienst** neben der Sprachwahl. Browser bleibt
+     Vorgabe (gratis, kein Schlüssel) — der EU-Weg ist opt-in und kostet.
+  3. Der EU-Weg ist ein **anderer Mechanismus**, nicht nur ein anderer Aufruf:
+     Ton mit `MediaRecorder` aufnehmen (WEBM_OPUS) → base64 → `recognizeEU`.
+     Web Speech liefert Text live, der EU-Weg erst am Ende — die Oberfläche
+     muss das aushalten („… wird erkannt").
+  4. Schlüssel-Knöpfe nach dem Rezept, Ablage-Name z. B. `eu_speech_key`.
+  5. **Klar benennen** (Fremdnutzer-Brille): dass es Geld kostet, dass der Ton
+     an Google-EU geht, dass der Schlüssel nur im Browser bleibt.
+  6. Proben: Krypto-Round-trip + Bedienung + fail-soft ohne Modul 20 / ohne
+     Schlüssel. Sabotage-Probe Pflicht.
+  7. Byte-gleich in alle **drei** Pinnwände (Kimboard · Sage `pinnwand/` ·
+     Privat-Brain `modules/pinnwand-widget.js`) — sie sind baugleich, und eine
+     auszulassen ist die Drift, die diese Sitzung dreimal eingeholt hat.
+
+  **Vorher klären:** ob der EU-Dienst Paschtu (`ps-AF`) überhaupt kann. Sonst
+  baut man den ganzen Weg für nichts. Das ist eine Frage an Googles
+  Sprachliste, kein Code.
+
 - **Offene Messung: findet die Suche über Sprachgrenzen hinweg?** Kimboard (und
   family) nutzen `Xenova/multilingual-e5-small` — ein mehrsprachiges Modell,
   gebaut für genau das: arabische Frage, deutscher Text, ein gemeinsamer
