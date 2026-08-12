@@ -2,25 +2,33 @@
 /*
  * Smoke — Mikrofon hört die Sprache, die gesprochen wird (echter Browser).
  *
- * Klaus 2026-08-11: „In der Suche, überall wo das Mikrofon ist, ist nur Deutsch
- * vorgesehen … wenn ich in Arabisch etwas hineinspreche, muss auch Arabisch als
- * Text herauskommen." Und die Nachfrage: „wird auch in Paschtu/Afghanisch …?"
+ * Diese Prüfung liegt NEBEN `_smoke.mjs` (das prüft Struktur, so hält es dieses
+ * Repo) und braucht einmalig `npm install --no-save playwright-core`.
+ * Aufruf: node pinnwand/_smoke_mikrofon.mjs
  *
- * Vorher stand an BEIDEN Mikrofonen fest `rec.lang = 'de-DE'`. Für jeden, der
+ * Klaus' Befund 2026-08-11: „In der Suche, überall wo das Mikrofon ist, ist nur
+ * Deutsch vorgesehen. Deutsch ist aber nicht jedermanns gängige Sprache … wenn
+ * ich in Arabisch etwas hineinspreche, muss auch Arabisch als Text herauskommen."
+ *
+ * Vorher stand an beiden Mikrofonen fest `rec.lang = 'de-DE'`. Für jeden, der
  * kein Deutsch spricht, war das Mikrofon damit schlicht kaputt — es lieferte
  * den Versuch, Arabisch als Deutsch zu hören, also Buchstabensalat.
  *
  * GEPRÜFT WIRD DIE TAT, NICHT DER WORTLAUT. Eine eigene SpeechRecognition wird
- * eingehängt, die mitschreibt, welches `lang` die App WIRKLICH gesetzt hat. Ein
- * Blick in den Quelltext („steht da `micLang`?") würde auch dann grün melden,
- * wenn die Zuweisung nie ausgeführt wird.
+ * eingehängt, die nur mitschreibt, welches `lang` die App wirklich gesetzt hat.
+ * Ein Blick in den Quelltext („steht da `micLang`?") würde auch dann grün
+ * melden, wenn die Zuweisung nie ausgeführt wird.
  *
- * Sabotage-Probe gemacht: `rec.lang` wieder fest auf 'de-DE' → 6 Proben rot.
+ * Sabotage-Probe gemacht: `rec.lang` wieder fest auf 'de-DE' → vier Proben rot.
  *
- * Diese Prüfung braucht einen echten Browser und liegt darum NEBEN `_smoke.mjs`
- * (das prüft Struktur). Voraussetzung einmalig:
- *     npm install --no-save playwright-core
- * Aufruf:  node pinnwand/_smoke_mikrofon.mjs   ·   Exit 0 = grün.
+ * WICHTIG ZUR EINORDNUNG: die Browser-Spracherkennung hat KEINE Sprach-
+ * Erkennung. Sie hört genau die Sprache, die man ihr sagt. Darum zwei Stufen,
+ * beide ohne Schlüssel: Vorauswahl aus der Geräte-Sprache (arabisches Handy →
+ * sofort Arabisch, ohne Einstellung) und eine gespeicherte Wahl für den Fall,
+ * dass Gerät und Sprecher verschiedene Sprachen haben.
+ *
+ * Voraussetzung: npm install --no-save playwright-core
+ * Exit 0 = grün.
  */
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
@@ -29,7 +37,7 @@ import { dirname, join } from 'node:path';
 
 const ROOT = '/home/user/Sage-Protokol/pinnwand';
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
-const PORT = 8497;
+const PORT = 8498;
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) pass++; else { fail++; console.log('  FAIL ' + m); } };
 
@@ -41,13 +49,19 @@ const ORT = `http://127.0.0.1:${PORT}/`;
 const SPION = `
   window.__gehoert = [];
   window.__fehlerAls = null;      // Testschalter: diesen Fehler beim Start werfen
+  window.__ergebnis = null;       // Testschalter: dieses Ergebnis liefern
   window.SpeechRecognition = function () {
     this.start = function () {
       window.__gehoert.push(this.lang);
       if (this.onstart) this.onstart();
+      if (window.__ergebnis !== null && this.onresult) {
+        this.onresult({ results: [[{ transcript: window.__ergebnis }]] });
+      }
       if (window.__fehlerAls) {
         if (this.onerror) this.onerror({ error: window.__fehlerAls });
-        if (this.onend) this.onend();     // der Browser beendet nach einem Fehler
+      }
+      if (window.__ergebnis !== null || window.__fehlerAls) {
+        if (this.onend) this.onend();     // der Browser beendet danach
       }
     };
     this.stop = function () { if (this.onend) this.onend(); };
@@ -180,6 +194,60 @@ try {
     ok(sauber.length > 0, 'nach dem Räumen steht gar nichts mehr da — der Verbindungs-Status fehlt');
     await ctx.close();
   }
+  /* ── Der STILLE Fehlschlag (Klaus' Sichttest 2026-08-11) ──────────────────
+   *
+   * Gemessen an Klaus' Geraet: Russisch kam als „Здравствуйте" zurueck,
+   * Arabisch als „سلام عليكم" — beides richtig. Paschtu kam als „Salaam"
+   * zurueck, in LATEINISCHEN Buchstaben, und OHNE Fehler. Chrome hat
+   * stillschweigend etwas anderes gehoert.
+   *
+   * Das ist der schwerste Fall: es scheitert, ohne zu scheitern. Die
+   * Fehlermeldung kann nicht greifen, weil es keinen Fehler gibt. Geprueft wird
+   * darum, dass die Schrift-Kontrolle anschlaegt — und dass sie NICHT anschlaegt,
+   * wenn die Schrift stimmt (sonst waere sie nur laestig). */
+  {
+    const { ctx, page } = await seite('de-DE');
+
+    // (a) Paschtu gewaehlt, lateinischer Text zurueck → Hinweis
+    const schief = await page.evaluate(async () => {
+      const s = document.getElementById('tb-miclang');
+      s.value = 'ps-AF'; s.dispatchEvent(new Event('change'));
+      window.__ergebnis = 'Salaam';
+      document.getElementById('mic').click();
+      await new Promise((r) => setTimeout(r, 250));
+      return document.getElementById('sendhint').textContent.trim();
+    });
+    ok(/پښتو/.test(schief) && /lateinischer Schrift/.test(schief),
+       'kein Hinweis beim stillen Fehlschlag (Paschtu → lateinischer Text): "' + schief + '"');
+
+    // (b) Arabisch gewaehlt, arabischer Text zurueck → KEIN Hinweis
+    const passt = await page.evaluate(async () => {
+      const s = document.getElementById('tb-miclang');
+      s.value = 'ar-SA'; s.dispatchEvent(new Event('change'));
+      document.getElementById('qmsg').value = '';
+      window.__ergebnis = 'سلام عليكم';
+      document.getElementById('mic').click();
+      await new Promise((r) => setTimeout(r, 250));
+      return document.getElementById('sendhint').textContent.trim();
+    });
+    ok(!/lateinischer Schrift/.test(passt),
+       'falscher Alarm, obwohl die Schrift stimmt: "' + passt + '"');
+
+    // (c) Deutsch gewaehlt, deutscher Text → KEIN Hinweis (Latein ist richtig)
+    const deutsch = await page.evaluate(async () => {
+      const s = document.getElementById('tb-miclang');
+      s.value = 'de-DE'; s.dispatchEvent(new Event('change'));
+      document.getElementById('qmsg').value = '';
+      window.__ergebnis = 'Guten Tag';
+      document.getElementById('mic').click();
+      await new Promise((r) => setTimeout(r, 250));
+      return document.getElementById('sendhint').textContent.trim();
+    });
+    ok(!/lateinischer Schrift/.test(deutsch),
+       'falscher Alarm bei Deutsch: "' + deutsch + '"');
+    await ctx.close();
+  }
+
 } finally {
   if (browser) await browser.close();
   srv.kill();

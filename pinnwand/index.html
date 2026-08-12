@@ -1559,6 +1559,37 @@ function feldRichtung(feld) {
 // das sich nicht anders lösen lässt: welche Sprachen der Browser wirklich kann,
 // verrät er NICHT vorher. Man kann eine Sprache nur anbieten und dann sauber
 // sagen, wenn es nicht ging.
+// Hat der Browser ueberhaupt in der gewaehlten Sprache gehoert?
+//
+// KLAUS' SICHTTEST 2026-08-11 an der Schwester Kimboard: Russisch kam als
+// „Здравствуйте" zurueck, Arabisch als „سلام عليكم" — beides richtig. Paschtu
+// kam als „Salaam" zurueck, in LATEINISCHEN Buchstaben, und OHNE Fehler.
+// Chrome hat stillschweigend etwas anderes gehoert (vermutlich Rueckfall auf
+// die Geraetesprache; ein deutscher Erkenner schreibt den Laut genau so hin).
+//
+// Das ist der schwerste Fall: es scheitert, OHNE zu scheitern — die
+// Fehlermeldung kann nicht greifen, weil es keinen Fehler gibt. Merken laesst
+// es sich trotzdem: wer eine Sprache mit eigener Schrift waehlt und
+// lateinischen Text zurueckbekommt, wurde nicht verstanden.
+//
+// Bewusst vorsichtig: nur bei Sprachen mit EIGENER Schrift, erst ab ein paar
+// Zeichen, und der Text bleibt stehen — ein Hinweis, keine Bevormundung.
+const SCHRIFT_ERWARTET = {
+  ar: [/[\u0600-\u06FF]/, 'arabischer'],
+  fa: [/[\u0600-\u06FF]/, 'arabischer'],
+  ps: [/[\u0600-\u06FF]/, 'arabischer'],
+  ru: [/[\u0400-\u04FF]/, 'kyrillischer'],
+  uk: [/[\u0400-\u04FF]/, 'kyrillischer'],
+};
+function schriftPasstNicht(text, lang) {
+  const kurz = String(lang || '').split('-')[0].toLowerCase();
+  const e = SCHRIFT_ERWARTET[kurz];
+  if (!e || !text || text.trim().length < 4) return null;
+  if (e[0].test(text)) return null;                  // passt — alles gut
+  const name = (MIC_LANGS.find((pl) => pl[0] === lang) || [null, lang])[1];
+  return 'Der Browser hat vermutlich nicht in ' + name + ' gehört — der Text steht in lateinischer Schrift, nicht in ' + e[1] + '. Du kannst ihn stehen lassen oder tippen.';
+}
+
 function micFehlerText(code) {
   const name = (MIC_LANGS.find(([c]) => c === micLang) || [null, micLang])[1];
   switch (code) {
@@ -1630,7 +1661,8 @@ function micFehlerText(code) {
       // Eine Fehlermeldung bleibt stehen — sonst sieht sie niemand. Vorher
       // wurde geprueft, ob im Hinweis das WORT „Fehler“ vorkommt; das ging nur
       // so lange gut, wie jede Meldung dieses Wort trug. Ein Wort ist kein Merkmal.
-      if (!fehlerStand) setMicHinweis(null);
+      // Kein Fehler — aber kam auch die richtige Schrift zurueck?
+      if (!fehlerStand) setMicHinweis(schriftPasstNicht($('qmsg').value, micLang));
       updateSendState(); };
     try { rec.start(); } catch (err) { $('sendhint').textContent = 'Mikrofon nicht verfügbar (' + (err.message || err) + ')'; }
   });
@@ -1705,7 +1737,11 @@ function attachMic(mic, target, hint) {
       target.value = (base + txt).slice(0, max);
     };
     rec.onerror = (ev2) => { setHint(micFehlerText(ev2.error)); };
-    rec.onend = () => { listening = false; mic.classList.remove('mic-on'); mic.textContent = '🎤'; };
+    rec.onend = () => { listening = false; mic.classList.remove('mic-on'); mic.textContent = '🎤';
+      // Auch hier: kein Fehler heisst nicht, dass die richtige Sprache ankam.
+      const schief = schriftPasstNicht(target.value, micLang);
+      if (schief) setHint(schief);
+    };
     try { rec.start(); } catch (err) { setHint('Mikrofon nicht verfügbar'); }
   });
 }
