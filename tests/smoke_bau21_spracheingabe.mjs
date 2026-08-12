@@ -51,18 +51,33 @@ async function run() {
     "recognizeEU", "speechErrorHint", "InvalidEuPolicyError"]) {
     record("Probe 1: " + fn + " exportiert", "function", typeof S[fn], typeof S[fn] === "function");
   }
-  record("Probe 1: _meta.languages (3)", "3", String(S._meta.languages.length), S._meta.languages.length === 3);
+  // Zwoelf seit 2026-08-12 (Klaus: „wenn ich in Arabisch etwas hineinspreche,
+  // muss auch Arabisch als Text herauskommen"). Geprueft wird die ZAHL und die
+  // REIHENFOLGE des ersten Eintrags: Aufrufer, die ohne eigene Wahl einfach
+  // getLanguages()[0] nehmen, muessen sich unveraendert verhalten.
+  record("Probe 1: _meta.languages (12)", "12", String(S._meta.languages.length), S._meta.languages.length === 12);
+  record("Probe 1: Deutsch bleibt der erste Eintrag", "de-DE", S._meta.languages[0][0], S._meta.languages[0][0] === "de-DE");
+  record("Probe 1: Paschtu ist dabei", "true",
+    String(S._meta.languages.some((p) => p[0] === "ps-AF")), S._meta.languages.some((p) => p[0] === "ps-AF"));
+  record("Probe 1: Dari ist dabei", "true",
+    String(S._meta.languages.some((p) => p[0] === "fa-IR")), S._meta.languages.some((p) => p[0] === "fa-IR"));
   record("Probe 1: _meta.euPolicyDefault", "frei", S._meta.euPolicyDefault, S._meta.euPolicyDefault === "frei");
   record("Probe 1: _meta.engines (2)", "2", String(S._meta.engines.length), S._meta.engines.length === 2);
 
   // ---- Probe 2: getLanguages liefert Kopie (keine Mutation nach innen) ----
   const langs = S.getLanguages();
   langs.push(["xx-XX", "Hack"]);
-  record("Probe 2: getLanguages ist Kopie", "3", String(S.getLanguages().length), S.getLanguages().length === 3);
+  record("Probe 2: getLanguages ist Kopie", "12", String(S.getLanguages().length), S.getLanguages().length === 12);
 
   // ---- Probe 3: alternativeCodes ----
-  record("Probe 3: alternativeCodes(de-DE)", "en-US,ru-RU",
-    S.alternativeCodes("de-DE").join(","), arrEq(S.alternativeCodes("de-DE"), ["en-US", "ru-RU"]));
+  // GEDECKELT AUF DREI: Google Cloud Speech-to-Text nimmt in
+  // alternativeLanguageCodes hoechstens drei Eintraege. Solange die Liste drei
+  // Sprachen lang war, fiel das nicht auf — mit zwoelf haette jede EU-Anfrage
+  // abgelehnt werden koennen. Die Probe haelt den Deckel fest.
+  record("Probe 3: alternativeCodes(de-DE) — hoechstens drei", "en-US,ru-RU,ar-SA",
+    S.alternativeCodes("de-DE").join(","), arrEq(S.alternativeCodes("de-DE"), ["en-US", "ru-RU", "ar-SA"]));
+  record("Probe 3: der gewaehlte Code ist nie dabei", "true",
+    String(S.alternativeCodes("ar-SA").indexOf("ar-SA") === -1), S.alternativeCodes("ar-SA").indexOf("ar-SA") === -1);
 
   // ---- Probe 4: EU-Politik → Engines ----
   record("Probe 4: availableEngines(frei)", "browser,eu",
@@ -110,9 +125,9 @@ async function run() {
   record("Probe 10: transcript", "hallo welt", okEU.transcript, okEU.transcript === "hallo welt");
   record("Probe 10: Request languageCode", "de-DE",
     lastReq.body.config.languageCode, lastReq.body.config.languageCode === "de-DE");
-  record("Probe 10: Request alternativeLanguageCodes", "en-US,ru-RU",
+  record("Probe 10: Request alternativeLanguageCodes (hoechstens drei)", "en-US,ru-RU,ar-SA",
     (lastReq.body.config.alternativeLanguageCodes || []).join(","),
-    arrEq(lastReq.body.config.alternativeLanguageCodes, ["en-US", "ru-RU"]));
+    arrEq(lastReq.body.config.alternativeLanguageCodes, ["en-US", "ru-RU", "ar-SA"]));
   record("Probe 10: Request audio.content", "base64audio",
     lastReq.body.audio.content, lastReq.body.audio.content === "base64audio");
   record("Probe 10: URL trägt key", "true",
@@ -154,6 +169,61 @@ async function run() {
   let initThrew = false;
   try { S.init({ euPolicy: "halbeu" }); } catch (e) { initThrew = e.name === "InvalidEuPolicyError"; }
   record("Probe 16: init('halbeu') wirft InvalidEuPolicyError", "true", String(initThrew), initThrew === true);
+
+  // ---- Probe 17: languageLabel / isRtl ----
+  record("Probe 17: languageLabel(ar-SA)", "العربية", S.languageLabel("ar-SA"), S.languageLabel("ar-SA") === "العربية");
+  record("Probe 17: languageLabel(unbekannt) → der Code selbst", "zz-ZZ",
+    S.languageLabel("zz-ZZ"), S.languageLabel("zz-ZZ") === "zz-ZZ");
+  record("Probe 17: isRtl(ps-AF)", "true", String(S.isRtl("ps-AF")), S.isRtl("ps-AF") === true);
+  record("Probe 17: isRtl(de-DE)", "false", String(S.isRtl("de-DE")), S.isRtl("de-DE") === false);
+
+  // ---- Probe 18: der STILLE Fehlschlag (Klaus' Sichttest 2026-08-11) ----
+  // Paschtu kam als „Salaam" in LATEINISCHEN Buchstaben zurück, ganz OHNE
+  // Fehler. speechErrorHint kann da nicht greifen, weil es keinen Fehler gibt.
+  // Geprüft wird beides: dass die Kontrolle anschlägt UND dass sie schweigt,
+  // wenn die Schrift stimmt — sonst wäre sie nur lästig.
+  const schief = S.scriptMismatchHint("Salaam", "ps-AF");
+  record("Probe 18: Paschtu + lateinischer Text → Hinweis", "true",
+    String(!!schief && /پښتو/.test(schief) && /lateinischer Schrift/.test(schief)),
+    !!schief && /پښتو/.test(schief) && /lateinischer Schrift/.test(schief));
+  record("Probe 18: Arabisch + arabischer Text → still", "null",
+    String(S.scriptMismatchHint("سلام عليكم", "ar-SA")), S.scriptMismatchHint("سلام عليكم", "ar-SA") === null);
+  record("Probe 18: Russisch + kyrillischer Text → still", "null",
+    String(S.scriptMismatchHint("Здравствуйте", "ru-RU")), S.scriptMismatchHint("Здравствуйте", "ru-RU") === null);
+  record("Probe 18: Russisch + lateinischer Text → Hinweis", "true",
+    String(!!S.scriptMismatchHint("Zdravstvuyte", "ru-RU")), !!S.scriptMismatchHint("Zdravstvuyte", "ru-RU"));
+  record("Probe 18: Deutsch → nie ein Vorwurf", "null",
+    String(S.scriptMismatchHint("Guten Tag zusammen", "de-DE")), S.scriptMismatchHint("Guten Tag zusammen", "de-DE") === null);
+  record("Probe 18: zu kurz für ein Urteil (< 4 Zeichen)", "null",
+    String(S.scriptMismatchHint("ok", "ps-AF")), S.scriptMismatchHint("ok", "ps-AF") === null);
+
+  // ---- Probe 19: die Geräte-Sprache entscheidet vor ----
+  // Das ist der Fall, der zählt: wer erst eine Einstellung finden muss, um
+  // verstanden zu werden, benutzt das Mikrofon nicht. Das Modul wird dafür mit
+  // einem eigenen `navigator` neu geladen — in Node ist globalThis.navigator
+  // eingebaut und lässt sich nicht einfach überschreiben.
+  const mitGeraet = (languages) => {
+    const fake = { navigator: { languages }, console };
+    new Function("global", "window", "globalThis", "console", src)(fake, fake, fake, console);
+    return fake.SbkimSpeech;
+  };
+  record("Probe 19: Gerät arabisch → ar-SA", "ar-SA",
+    mitGeraet(["ar-EG", "de-DE"]).preferredLanguage(null), mitGeraet(["ar-EG", "de-DE"]).preferredLanguage(null) === "ar-SA");
+  record("Probe 19: Gerät Paschtu → ps-AF", "ps-AF",
+    mitGeraet(["ps-AF"]).preferredLanguage(null), mitGeraet(["ps-AF"]).preferredLanguage(null) === "ps-AF");
+  // Sprache nicht in der Liste → ehrliche Vorgabe statt Raten.
+  record("Probe 19: Gerät japanisch → bleibt bei Deutsch", "de-DE",
+    mitGeraet(["ja-JP"]).preferredLanguage(null), mitGeraet(["ja-JP"]).preferredLanguage(null) === "de-DE");
+  // Eine getroffene Wahl schlägt die Geräte-Sprache — sonst wäre sie wertlos.
+  record("Probe 19: getroffene Wahl schlägt das Gerät", "ru-RU",
+    mitGeraet(["ar-EG"]).preferredLanguage("ru-RU"), mitGeraet(["ar-EG"]).preferredLanguage("ru-RU") === "ru-RU");
+  // Müll im Speicher darf nicht durchschlagen.
+  record("Probe 19: unbekannte gemerkte Wahl wird verworfen", "ar-SA",
+    mitGeraet(["ar-EG"]).preferredLanguage("xx-XX"), mitGeraet(["ar-EG"]).preferredLanguage("xx-XX") === "ar-SA");
+  // Kein navigator (alter Browser, Node) → kein Absturz.
+  const ohne = (() => { const f = { console }; new Function("global","window","globalThis","console",src)(f,f,f,console); return f.SbkimSpeech; })();
+  record("Probe 19: ohne navigator → fail-soft Deutsch", "de-DE",
+    ohne.preferredLanguage(null), ohne.preferredLanguage(null) === "de-DE");
 }
 
 const finalize = () => {
