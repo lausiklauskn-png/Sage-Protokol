@@ -65,8 +65,8 @@ check(
   sha(join(BOX, "modules", "23_rendezvous.js")).startsWith("3caa0bb1"),
 );
 check(
-  "Modul 16 trägt den 2026-07-29-Aspekt (sha 4e11ef0d)",
-  sha(join(BOX, "modules", "16_siegel.js")).startsWith("4e11ef0d"),
+  "Modul 16 trägt den 2026-08-01-Aspekt (sha e67b7266)",
+  sha(join(BOX, "modules", "16_siegel.js")).startsWith("e67b7266"),
 );
 
 // README nennt alle Dateien + die kritische Ladereihenfolge.
