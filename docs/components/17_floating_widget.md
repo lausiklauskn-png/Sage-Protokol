@@ -670,3 +670,61 @@ anderen Module (00/01/02/04/05/06/07/08/15/16).
   [Modul 00](00_doku_fenster.md) (optionale Wiederherstellungs-Geste) ·
   [Modul 09](09_einbau_pwa.md) (Endknoten-Einbau in Folge-Pflege drei
   Zeilen statt 30)
+
+---
+
+## Schmale Geräte — die Pille war breiter als der Bildschirm (2026-08-12)
+
+**Klaus' Befund, nachgemessen.** Die Pille hat keine Breiten-Grenze: sie ist so
+breit wie ihr Inhalt. Weil sie rechts in der Ecke hängt, wächst sie nach **links**
+aus dem Bild — der `lebt`-Slot war auf einem 360-px-Handy nicht mehr zu sehen.
+
+Gemessen mit [`tools/widget-breite-messen.mjs`](../../tools/widget-breite-messen.mjs)
+(Chromium, Grundschrift 16 px, alle vier Slots inkl. SIEGEL):
+
+| Fenster | vorher | nachher |
+|---|---|---|
+| 320 px | 385 px — **81 px links abgeschnitten** | 227 px, passt |
+| 360 px | 385 px — **41 px links abgeschnitten** | 227 px, passt |
+| 412 px | 385 px, passt | 385 px, unverändert **mit** Wörtern |
+
+**Der Weg (Klaus' Wahl 2026-08-12 gegen zwei gemessene Alternativen).** Unter
+400 px tragen die Lampen keine Wörter mehr. Ab 400 px bleibt alles wie bisher —
+Klaus' Wunsch vom 2026-05-25 („1:1 Sage-Page-Stil") gilt dort unverändert. Die
+Bedeutung geht nicht verloren: jeder Slot behält `aria-label`, Farbe und Modal.
+
+Verworfen wurden, beide gemessen: **zweizeilig umbrechen** (passt, macht die
+Pille aber 66 statt 34 px hoch und aus der Pille eine Kachel) und **alles enger
+stellen** (reicht für 360 px, bei 320 px ragt sie weiter 7 px hinaus).
+
+### Zwei Fallen, die dabei sichtbar wurden
+
+- **`max-width` allein hilft nicht.** Die Slots sind Flex-Kinder mit
+  `min-width: auto` und schrumpfen nicht unter ihre Wortbreite. Der Inhalt
+  quölle dann aus der Pille statt aus dem Bild — dasselbe Problem, eine Ebene
+  tiefer.
+- **Die Trefferfläche kommt über das Innenmaß zurück, nicht über `min-width`.**
+  Ohne Wort schrumpft ein Slot auf 21 px und fällt unter die 24-px-Norm, die am
+  2026-08-03 eigens hergestellt wurde. Ein `min-width` wäre der naheliegende
+  Griff und genau der falsche: auf denselben Slots steht im minimierten Zustand
+  `max-width: 0`, damit sie hinter SIEGEL zusammenschieben — ein `min-width`
+  hielte sie auf. Darum `padding` und darum die `:not([data-minimized])`-Klammer.
+
+### Was das Messen selbst gelehrt hat
+
+Der erste Messaufbau meldete **274 px** und damit „alles in Ordnung". Zwei
+Fehler steckten darin, beide in der Messung, nicht im Modul:
+
+1. Der **SIEGEL-Slot** mountet nur, wenn `SbkimSiegel.isCertified()` wirklich
+   `true` liefert (Anti-Greenwashing, Modul 17 prüft doppelt). Ohne diesen Stub
+   fehlte der breiteste Slot — 111 px zu wenig.
+2. Die Messseite setzte eine **eigene Grundschrift** (14 px). Alle Maße im Modul
+   sind `rem`; damit maß der Aufbau sich selbst statt das Modul.
+
+Beide Fehler zeigten dieselbe Handschrift: **die Messung gab zu früh Entwarnung.**
+Erst der korrigierte Aufbau reproduzierte die 385 px aus Klaus' Befund.
+
+**Wächter:** `tests/smoke_bau17_floating_widget.mjs` Proben 2b + 2c prüfen das
+**erzeugte** CSS (nicht den Quelltext — ein Kommentar kann sie nicht bestehen
+lassen). Vier Sabotagen wurden gegengeprüft, alle schlagen an: Grenze entfernt ·
+`padding` → `min-width` · `:not([data-minimized])` entfernt · Wörter bleiben.
