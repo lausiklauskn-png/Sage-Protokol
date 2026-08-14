@@ -81,8 +81,24 @@ schreiben), und eine Toolpoint-Gegenprobe, die eine abgeschaffte Regel bewachte.
 Wächter 0 blind · Sage `run_alle` 50 grün / **0 rot** / 19 nicht lauffähig, mit
 `fake-indexeddb` gegengeprüft **69/69**.
 
-**Offen:** `package.json` für Sage (macht 50/69 → **69/69**, gemessen — Klaus
-gefragt) · die vier Modul-23-UI-Kopien · `PULS.md` bei ~10.100 gegen 3.000
+**✅ Nachtrag am selben Tag — `package.json` gebaut (PR #849).** Klaus hat
+zugestimmt; der Punkt stand oben noch als „Klaus gefragt, Antwort steht aus"
+und wäre für die nächste Sitzung eine falsche Fährte gewesen. Ergebnis:
+**70/70 grün** (die neue Wächter-Probe kommt dazu). Damit laufen die 19
+Speicher-/Krypto-Härtungen wieder — Modul 01 („Löschen nur bei zweifelsfreier
+Leere", Identitäts-Isolierung), 02 (Spore v0.2, Multi-Identität), 20 (Safe),
+05 (Nostr).
+
+Zwei Entscheidungen darin: **kein `"type": "module"`** — gemessen, mit dem Feld
+fallen zwei Proben um, weil Node dann jede `.js` als ES-Modul liest; ein neuer
+Wächter `tests/smoke_package_json.mjs` hält es fest (samt exakter Fassungs-
+Nagelung, kein `^`). Und **`package-lock.json` bleibt in `.gitignore`** — eine
+bestehende Entscheidung wird nicht still umgedreht; die exakte Nagelung liefert
+die Reproduzierbarkeit ohnehin. `CLAUDE.md` § „Die Proben laufen lassen"
+erklärt jetzt `npm install`/`npm test` und warum 19 Proben ohne das Paket
+**ungeprüft** und nicht **rot** heißen.
+
+**Offen:** die vier Modul-23-UI-Kopien · `PULS.md` bei ~10.100 gegen 3.000
 Zeilen (**sechste** Meldung) · Klaus' Browser-Sichttests.
 
 ---
