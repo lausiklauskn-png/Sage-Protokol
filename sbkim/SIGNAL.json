@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-08-14",
-  "seq": 61,
-  "headline": "NACHTRAG zu seq 60: die package.json ist gebaut (PR #849) - aus 50/69 wurden 70/70 gruen, die 19 Speicher-/Krypto-Haertungen laufen wieder (Modul 01 Loeschen-nur-bei-zweifelsfreier-Leere, 02 Spore v0.2, 20 Safe, 05 Nostr). Bewusst OHNE \"type\":\"module\" - gemessen: mit dem Feld fallen zwei Proben um, weil Node dann JEDE .js als ES-Modul liest und die SBKIM-Module klassische Browser-Skripte sind; tests/smoke_package_json.mjs haelt das fest, samt exakter Fassungs-Nagelung (kein ^). package-lock.json bleibt in .gitignore - bestehende Entscheidung, benannt statt still umgedreht. In seq 60 stand der Punkt noch als offen mit \"Klaus gefragt\" - das war ab dem Merge falsch, daher diese eigene Meldung statt einer stillen Korrektur. Offen: vier Modul-23-UI-Kopien, PULS bei ~10.100 Zeilen.",
+  "seq": 62,
+  "headline": "PULS.md ausgelagert: 10.150 -> 2.627 Zeilen (Schutz-Klausel nennt 3000; sechs Sitzungen hatten es gemeldet, ohne dass es jemand tat). Verfahren nicht neu erfunden, sondern die Fortsetzung der Mai-Auslagerung vom 2026-07-24 (Klaus' Option A), die den naechsten Schritt schon vorzeichnete. Drei Archiv-Dateien: 2026-08 (Sitzungen 03.-09.08., 2290 Zeilen), 2026-07 (alle Juli-Sitzungen, 2731), 2026-06 (alle Juni-Sitzungen, 2608). In PULS bleiben die acht juengsten Sitzungen und ALLE Struktur-Sektionen; an jeder Schnittstelle ein Zeiger, drei Sammel-Zeilen im Archiv-Index. AUSGELAGERT, NICHT GEKUERZT - nachgerechnet: von 360 Ueberschriften fehlt keine, keine ist erfunden, von 8472 nicht-leeren Zeilen wird keine vermisst; alle 124 Archiv-Verweise zeigen auf existierende Dateien. Pie-Block unberuehrt, 3000er-Grenze ausdruecklich NICHT herabgesetzt. Noch offen: die vier Modul-23-UI-Kopien.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 62,
+      "date": "2026-08-14",
+      "headline": "PULS.md ausgelagert 10.150 -> 2.627 Zeilen (drei Archiv-Dateien Juni/Juli/August). Nachgerechnet: 0 Ueberschriften fehlen, 0 Zeilen verloren, 0 tote Verweise. Grenze unveraendert."
+    },
     {
       "seq": 61,
       "date": "2026-08-14",
