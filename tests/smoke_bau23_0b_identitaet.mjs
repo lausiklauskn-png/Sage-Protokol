@@ -59,6 +59,32 @@ function makeEl(tag) {
     e.children.push(c); c.parentNode = e; return c;
   };
   e.removeChild = (c) => { const i = e.children.indexOf(c); if (i >= 0) { e.children.splice(i, 1); c.parentNode = null; } return c; };
+  /* ── Die Attribut-Fläche (nachgezogen 2026-08-14) ──────────────────────────
+   * Diese Probe war ZWEI MONATE tot: die Modul-23-UI hat `setAttribute`
+   * dazugelernt (aria-*, role, title), der Nachbau hier nicht — und der Lauf
+   * starb mit `btnEl.setAttribute is not a function`, noch bevor die erste
+   * Prüfung dran war. Ein Wächter, der gar nicht erst anläuft, meldet nichts;
+   * er sieht nur aus wie eine Absicherung.
+   *
+   * Attribute liegen bewusst in einem EIGENEN Fach (`_attrs`) statt direkt am
+   * Objekt. Der alte Kurzschluss `e[k] = v` überschriebe sonst echte
+   * Eigenschaften: ein `setAttribute("type", …)` träfe dasselbe Feld wie
+   * `e.type`, und `setAttribute("style", …)` zerstörte das Style-Objekt.
+   * `id` und `class` spiegeln zurück, weil `find()` unten danach sucht. */
+  e._attrs = {};
+  e.setAttribute = (k, v) => {
+    e._attrs[String(k)] = String(v);
+    if (k === "id") e.id = String(v);
+    if (k === "class") e.className = String(v);
+  };
+  e.getAttribute = (k) => (Object.prototype.hasOwnProperty.call(e._attrs, String(k)) ? e._attrs[String(k)] : null);
+  e.removeAttribute = (k) => { delete e._attrs[String(k)]; if (k === "id") e.id = ""; };
+  e.hasAttribute = (k) => Object.prototype.hasOwnProperty.call(e._attrs, String(k));
+  // Fokus gibt es headless nicht — aber die UI ruft es, und ein fehlender
+  // Aufruf darf den Lauf nicht abbrechen.
+  e.focus = () => {};
+  e.blur = () => {};
+  e.querySelectorAll = (sel) => findAll(e, sel);
   Object.defineProperty(e, "firstChild", { get: () => e.children[0] || null });
   e.addEventListener = (t, cb) => { (e._listeners[t] = e._listeners[t] || []).push(cb); };
   e.click = () => (e._listeners.click || []).slice().forEach((cb) => cb({ type: "click" }));
@@ -84,6 +110,11 @@ function makeEl(tag) {
 function find(root, sel) {
   let out = null;
   (function walk(n) { if (out) return; for (const c of n.children) { if (matches(c, sel)) { out = c; return; } walk(c); } })(root);
+  return out;
+}
+function findAll(root, sel) {
+  const out = [];
+  (function walk(n) { for (const c of n.children) { if (matches(c, sel)) out.push(c); walk(c); } })(root);
   return out;
 }
 function matches(el, sel) {

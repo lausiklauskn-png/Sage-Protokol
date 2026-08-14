@@ -25,13 +25,33 @@ function makeEl(tag) {
   const _style = {};
   Object.defineProperty(_style, "cssText", { get() { return _style._raw || ""; }, set(v) { _style._raw = String(v); } });
   e.style = _style;
-  e.setAttribute = (k, v) => { e[k] = v; };
+  /* ── Die Attribut-Fläche (nachgezogen 2026-08-14) ──────────────────────────
+   * Attribute in ein EIGENES Fach, nicht direkt aufs Objekt. Der alte
+   * Kurzschluss `e[k] = v` überschrieb echte Eigenschaften: ein
+   * `setAttribute("style", …)` zerstörte das Style-Objekt darüber, und
+   * `setAttribute("type", …)` traf dasselbe Feld wie `e.type`. */
+  e._attrs = {};
+  e.setAttribute = (k, v) => {
+    e._attrs[String(k)] = String(v);
+    if (k === "id") e.id = String(v);
+    if (k === "class") e.className = String(v);
+  };
+  e.getAttribute = (k) => (Object.prototype.hasOwnProperty.call(e._attrs, String(k)) ? e._attrs[String(k)] : null);
+  e.removeAttribute = (k) => { delete e._attrs[String(k)]; if (k === "id") e.id = ""; };
+  e.hasAttribute = (k) => Object.prototype.hasOwnProperty.call(e._attrs, String(k));
+  e.focus = () => {};
+  e.blur = () => {};
   e.appendChild = (c) => { e.children.push(c); c.parentNode = e; return c; };
   e.removeChild = (c) => { const i = e.children.indexOf(c); if (i >= 0) e.children.splice(i, 1); return c; };
   Object.defineProperty(e, "firstChild", { get: () => e.children[0] || null });
   e.addEventListener = (t, cb) => { (e._listeners[t] = e._listeners[t] || []).push(cb); };
   e.click = () => (e._listeners.click || []).slice().forEach((cb) => cb({ type: "click" }));
+  /* Diese Probe braucht keine echte Suche im Baum — sie prüft den KI-Richter,
+     nicht die Baum-Struktur. Sie muss aber ANTWORTEN statt zu fehlen: eine
+     leere Liste ist ein gültiges Ergebnis, ein fehlender Aufruf ist ein
+     Abbruch. */
   e.querySelector = () => null;
+  e.querySelectorAll = () => [];
   return e;
 }
 function makeDoc() {
@@ -39,6 +59,12 @@ function makeDoc() {
   doc.createElement = (t) => makeEl(t);
   doc.body = makeEl("body"); doc.head = makeEl("head");
   doc.addEventListener = () => {}; doc.querySelector = () => null;
+  doc.querySelectorAll = () => [];
+  /* Ohne das hier starb der Lauf mit `d.getElementById is not a function`,
+     noch bevor die erste Prüfung dran war — die Modul-23-UI hängt ihr
+     Stylesheet über `getElementById` ein und prüft dabei, ob es schon da ist.
+     `null` heißt „noch nicht da", und genau das ist im Test die Wahrheit. */
+  doc.getElementById = () => null;
   return doc;
 }
 
