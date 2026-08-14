@@ -82,6 +82,34 @@ async function run() {
   // ---- A) JWK + Schnipsel → v0.2 ----
   const outA = join(dir, "outA.json");
   const rA = await runScript({ SBKIM_NODE_KEY: keyEnv }, ["--in", basePath, "--snippets", snipPath, "--out", outA]);
+
+  /* ── EHRLICH SEIN, WENN GAR NICHT GEPRÜFT WERDEN KANN (2026-08-14) ─────────
+   * Diese Probe startet `tools/resign_spore_v02.mjs` als Kind-Prozess und sah
+   * bisher nur dessen Exit-Code. Fehlt dort ein Paket (`fake-indexeddb`, das
+   * Sage mangels package.json nicht mitbringt), stirbt das Skript beim Import
+   * — und die Probe meldete daraufhin SIEBEN gefundene Fehler, obwohl sie in
+   * Wahrheit nichts prüfen konnte.
+   *
+   * Das ist schlimmer als ein ehrliches „geht hier nicht": es schickt jede
+   * Sitzung auf die Suche nach einem Fehler in der Re-Sign-Welle, den es nicht
+   * gibt. Ein Wächter, der nicht messen kann, muss das SAGEN — nicht raten und
+   * nicht anklagen.
+   *
+   * Der Grund steht in der stderr des Kindes; erkannt wird er am Node-Fehler-
+   * code, nicht am Wortlaut. `tests/run_alle.mjs` liest denselben Marker aus
+   * unserer Ausgabe und zählt die Probe dann als „nicht lauffähig". */
+  if (/ERR_MODULE_NOT_FOUND|Cannot find package/.test(rA.err || "")) {
+    const paket = (/Cannot find package '([^']+)'/.exec(rA.err) || [, "?"])[1];
+    console.log("\nNICHT LAUFFÄHIG — ungeprüft, nicht kaputt.");
+    /* Die Meldung trägt den WORTLAUT von Node mit („Cannot find package '…'"),
+       nicht nur eine eigene Umschreibung: `tests/run_alle.mjs` liest den
+       Paketnamen genau daraus. Eine schönere eigene Formulierung liesse dort
+       ein „?" stehen — und der Läufer könnte nicht sagen, WAS fehlt. */
+    console.log("  tools/resign_spore_v02.mjs kann nicht starten — Cannot find package '" + paket + "'.");
+    console.log("  ERR_MODULE_NOT_FOUND — Sage hat keine package.json, die es mitbrächte.");
+    console.log("  Die Re-Sign-Welle ist damit hier WEDER bestätigt NOCH widerlegt.");
+    process.exit(1);
+  }
   record("A — Exit 0", "0", String(rA.code), rA.code === 0);
   record("A — ✔ VALID gemeldet", "true", String(rA.out.includes("✔ VALID")), rA.out.includes("✔ VALID"));
   let sporeA = null;
