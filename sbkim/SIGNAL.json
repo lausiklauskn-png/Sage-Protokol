@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
   "lastBuild": "2026-08-14",
-  "seq": 60,
-  "headline": "Klaus hat die neue marktplatz-api.php aufs Webhosting geladen und den Automatik-Schalter eingeschaltet - der Server nahm an:true an und committete (Toolpoint 0adfb69). Danach fuenf Merges: Toolpoint #62 (die Probe verlangte _automatik.an===false und machte main rot, sobald der Schalter BENUTZT wurde - und weil der Nachzieh-Lauf vor dem Committen prueft, kam der Schalter nie auf die Seite; jetzt wird die FORM geprueft, nicht der Anfangswert). family #271 Sperr-Knoepfe im Studio (Server und Datei konnten es laengst, es fehlte die Bedienung; vierter Ort der Rangfolge gruen 0 < nichts 1 < gelb 2 < rot 3). family #272 Automatik-Schalter mit DREI Stuecken - family hatte weder unterGrenze noch Leistungs-Grenze, nur das Haekchen waere der tote Knopf gewesen; gezaehlt wird der ANGEZEIGTE Wert, das gerechnete Gelb wird nie gespeichert. family #273 Fehler in der eigenen Arbeit: eine fehlgeschlagene Messung traegt die alten Zahlen weiter und zaehlte jede Nacht erneut hoch - nach drei Ausfaellen der Leitung haette ein Band an einer ungemessenen Seite gehangen. Sage #847 drei tote Waechter (zwei starben beim Start, einer klagte sieben Fehler an, ohne pruefen zu koennen) + tests/run_alle.mjs mit DREI Ergebnissen: gruen, ROT, nicht lauffaehig. Dreimal fand die Gegenprobe eine blinde Stelle in der EIGENEN Probe. Offen: package.json fuer Sage (50/69 -> 69/69, gemessen), vier Modul-23-UI-Kopien, PULS bei ~10.100 Zeilen.",
+  "seq": 61,
+  "headline": "NACHTRAG zu seq 60: die package.json ist gebaut (PR #849) - aus 50/69 wurden 70/70 gruen, die 19 Speicher-/Krypto-Haertungen laufen wieder (Modul 01 Loeschen-nur-bei-zweifelsfreier-Leere, 02 Spore v0.2, 20 Safe, 05 Nostr). Bewusst OHNE \"type\":\"module\" - gemessen: mit dem Feld fallen zwei Proben um, weil Node dann JEDE .js als ES-Modul liest und die SBKIM-Module klassische Browser-Skripte sind; tests/smoke_package_json.mjs haelt das fest, samt exakter Fassungs-Nagelung (kein ^). package-lock.json bleibt in .gitignore - bestehende Entscheidung, benannt statt still umgedreht. In seq 60 stand der Punkt noch als offen mit \"Klaus gefragt\" - das war ab dem Merge falsch, daher diese eigene Meldung statt einer stillen Korrektur. Offen: vier Modul-23-UI-Kopien, PULS bei ~10.100 Zeilen.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 61,
+      "date": "2026-08-14",
+      "headline": "package.json gebaut (#849): 70/70 gruen, die 19 Speicher-/Krypto-Proben laufen wieder. Kein \"type\":\"module\" (gemessen), Waechter dafuer angelegt. Korrigiert den in seq 60 noch als offen gemeldeten Punkt."
+    },
     {
       "seq": 60,
       "date": "2026-08-14",
