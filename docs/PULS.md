@@ -31,6 +31,62 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-14 (Pflege) — 🔓 Sperr-Knöpfe · Automatik-Schalter · drei tote Wächter
+
+**Rolle:** Pflege-Sitzung, Fortsetzung nach PR #843. Übergabeprotokoll:
+`docs/sessions/archiv/2026-08-14_sperr-knoepfe-automatik-tote-waechter.md`.
+
+**✅ Klaus' Handgriff ist erledigt:** die neue `marktplatz-api.php` liegt auf
+dem Hetzner-Webhosting. Belegt durch die Tat — Klaus schaltete den
+Automatik-Schalter ein, der Server nahm `"an": true` an und committete
+(Toolpoint `0adfb69`). Kein `bad_key`. Der Punkt stand seit dem 2026-08-12 offen.
+
+**Fünf Merges:**
+
+- **Toolpoint #62** — der Automatik-Schalter darf **benutzt** werden.
+  `tests/smoke.mjs` verlangte `_automatik.an === false`; als Auslieferungs-Zustand
+  richtig gedacht, aber die Probe läuft bei jedem Push. Beim ersten echten
+  Gebrauch wurde `main` rot — und weil `statische-liste.yml` **vor** dem
+  Committen prüft, kam der Schalter **nie auf der Seite an**. Ein Wächter, der
+  sein eigenes Feature verhindert. Geprüft wird jetzt die **Form**, nicht der
+  Anfangswert.
+- **family #271** — **Sperr-Knöpfe** im Studio. Server und Datei konnten es
+  längst; es fehlte allein die Bedienung. Übernommen, nicht abgeschrieben
+  (family: `renderSporen`, `toast()`, `createElement`, de/en). **Vierter Ort**
+  der Rangfolge `gruen 0 < nichts 1 < gelb 2 < rot 3`.
+- **family #272** — der **Automatik-Schalter**, und zwar mit **drei** Stücken:
+  family hatte weder `unterGrenze` noch eine Leistungs-Grenze. Nur das Häkchen
+  wäre der tote Knopf gewesen. Gezählt wird der **angezeigte** Wert (sonst
+  widerspräche das Band der Zahl daneben); das gerechnete Gelb wird **nie**
+  gespeichert.
+- **family #273** — **Fehler in der eigenen Arbeit**, gefunden beim Nachprüfen
+  des nächtlichen Pfades: eine **fehlgeschlagene** Messung trägt die alten
+  Zahlen weiter und zählte den Zähler jede Nacht erneut hoch. Nach drei
+  Ausfällen der Leitung hätte ein Band an einer ungemessenen Seite gehangen.
+  Der eigene Kommentar hatte davor gewarnt — der Text stimmte, der Code nicht.
+- **Sage #847** — **drei** tote Wächter, nicht zwei. `bau23_0b` und
+  `bau23c` starben beim Start (DOM-Ersatz überwachsen, und zwar
+  **unterschiedlich** verrottet); `resign_spore_v02` meldete **sieben
+  gefundene Fehler**, obwohl sie nichts prüfen konnte. **Ursache:** Sage hat 69
+  Smokes und nichts, was sie zusammen laufen lässt → neu `tests/run_alle.mjs`
+  mit **drei** Ergebnissen (grün · ROT · **nicht lauffähig**).
+
+**Dreimal an einem Tag fand die Gegenprobe eine blinde Stelle in der EIGENEN
+Probe** — jedes Mal echt: die Untergrenze des Riegels (greift nur gegen einen
+Müll-Wert), die Objekt-Prüfung des Schalters (mein Test las nur, statt zu
+schreiben), und eine Toolpoint-Gegenprobe, die eine abgeschaffte Regel bewachte.
+
+**Zahlen:** Toolpoint 593/593 · 253 Wächter 0 blind · family
+`smoke_studio_markt` 102 → **182** · neue `gegenprobe_studio_riegel.sh` 19
+Wächter 0 blind · Sage `run_alle` 50 grün / **0 rot** / 19 nicht lauffähig, mit
+`fake-indexeddb` gegengeprüft **69/69**.
+
+**Offen:** `package.json` für Sage (macht 50/69 → **69/69**, gemessen — Klaus
+gefragt) · die vier Modul-23-UI-Kopien · `PULS.md` bei ~10.100 gegen 3.000
+Zeilen (**sechste** Meldung) · Klaus' Browser-Sichttests.
+
+---
+
 ## Stand 2026-08-12 (Pflege) — 🔒 Modul-23-Kern netzweit geschlossen
 
 **Rolle:** Pflege-Sitzung, Nachzug offener Punkte aus dem Brief „nach Modul 17".
