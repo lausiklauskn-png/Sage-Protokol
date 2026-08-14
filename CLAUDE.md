@@ -839,6 +839,42 @@ PULS, schreibe das Hindernis als offene Frage in `docs/PULS.md` ans Ende.
 Eine andere Sitzung, frischer Kontext, löst es schneller, als wenn du dich
 festbeißt und Tokens verbrennst.
 
+## Die Proben laufen lassen (Pflege 2026-08-14)
+
+```bash
+npm install     # EINMALIG je Container — holt fake-indexeddb (708 KB, keine Folge-Pakete)
+npm test        # = node tests/run_alle.mjs — lässt ALLE 69 Proben laufen
+```
+
+**Warum das wichtig ist.** Ohne `npm install` sind **19 Proben nicht lauffähig**
+— die zu Modul 01 (Speicher), 02 (Spore) und 20 (Safe), also genau die
+Speicher- und Krypto-Härtungen. Sie sind dann **nicht rot, sondern ungeprüft**.
+Der Läufer sagt das ausdrücklich; wer stattdessen einzelne Dateien aufruft,
+sieht nur einen Stapel Fehlermeldungen und sucht am falschen Ende.
+
+`tests/run_alle.mjs` kennt deshalb **drei** Ergebnisse statt zwei:
+
+| | |
+|---|---|
+| ✓ grün | die Probe lief und war zufrieden |
+| ✗ **ROT** | die Probe lief und hat etwas gefunden — **nur das zählt** |
+| ⊘ nicht lauffähig | ein Paket fehlt (`ERR_MODULE_NOT_FOUND`) |
+
+Nur ROT setzt den Rückgabewert. Filter geht: `node tests/run_alle.mjs bau23`.
+
+**Anlass (2026-08-14):** zwei Proben waren rund **zwei Monate tot** — sie
+starben beim Start, weil die Modul-23-UI ihren selbstgebauten DOM-Ersatz
+überwachsen hatte, und **niemand rief sie auf**. Eine dritte klagte sieben
+Fehler an, obwohl sie gar nichts prüfen konnte. Wer nur die eine Probe aufruft,
+die er kennt, merkt so etwas nie.
+
+**Die `package.json` trägt bewusst KEIN `"type": "module"`.** Gemessen: mit dem
+Feld fallen zwei Proben um, weil Node dann jede `.js`-Datei als ES-Modul liest —
+und die SBKIM-Module sind klassische Browser-Skripte. `tests/smoke_package_json.mjs`
+bewacht das, samt der exakten Fassungs-Nagelung (kein `^`, sonst prüft nicht
+jeder dasselbe). Die Module selbst bleiben **build-frei**; die Datei ist nur für
+die Tests da.
+
 ## Konventionen
 
 - Sprache: Deutsch in Doku, Englisch in Code (Variablen, Kommentare).
