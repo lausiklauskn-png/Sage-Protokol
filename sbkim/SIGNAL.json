@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-08-12",
-  "seq": 59,
-  "headline": "Modul-23-KERN jetzt netzweit auf dem Kanon 3caa0bb1 — die Luecke ist zu. Kim-Bell + Mein-WorkFloh trugen bbdf02a8 (zwei Generationen zurueck): fremde Karten im Rendezvous-Raum wurden GAR NICHT auf Echtheit geprueft, kein Mengen-Deckel gegen Flutung (Schutz-Plan Stufe 2b). Beim Rollout am 2026-07-30 durchgerutscht, weil ihre Kopie modules/sbkim-rendezvous.js heisst statt sbkim/23_rendezvous.js — gefunden per Scan nach INHALT statt Dateiname. Vorher geprueft, dass Modul 02 verifyForeignSpore mitbringt, sonst haette der Fix still nichts getan. PWA Toolpoint: Modul-23-UI von 1f8b6c68 (voriger Kanon) auf 4882c3b6 — Datei UND Pin waren alt, der Guard also gruen auf dem falschen Stand; bringt die Sprachwahl vom 2026-08-11 ins Netz-Panel. sbkim-bundle-voll: Modul 15+16 byte-1:1 nachgezogen (der Siegel-Aspekt behauptete eine Faehigkeit, die als Code in 15 liegt — beide zusammen oder keins). NICHT gemacht: die vier zurueckliegenden UI-Kopien (Kim-Bell, Mein-WorkFloh, SB-KIMTool-Point f117096e; BookLedgerPro c67b2942) — am 2026-08-12 bewusst auf je eine eigene, gepruefte Runde pro App verschoben. Folge: dort prueft der Kern, aber cardsVerified/rejected werden noch nicht angezeigt. REINE Kopier-Richtung Kanon->App, kein Protokoll-Bump, 0.80-Riegel unberuehrt.",
+  "lastBuild": "2026-08-14",
+  "seq": 60,
+  "headline": "Klaus hat die neue marktplatz-api.php aufs Webhosting geladen und den Automatik-Schalter eingeschaltet - der Server nahm an:true an und committete (Toolpoint 0adfb69). Danach fuenf Merges: Toolpoint #62 (die Probe verlangte _automatik.an===false und machte main rot, sobald der Schalter BENUTZT wurde - und weil der Nachzieh-Lauf vor dem Committen prueft, kam der Schalter nie auf die Seite; jetzt wird die FORM geprueft, nicht der Anfangswert). family #271 Sperr-Knoepfe im Studio (Server und Datei konnten es laengst, es fehlte die Bedienung; vierter Ort der Rangfolge gruen 0 < nichts 1 < gelb 2 < rot 3). family #272 Automatik-Schalter mit DREI Stuecken - family hatte weder unterGrenze noch Leistungs-Grenze, nur das Haekchen waere der tote Knopf gewesen; gezaehlt wird der ANGEZEIGTE Wert, das gerechnete Gelb wird nie gespeichert. family #273 Fehler in der eigenen Arbeit: eine fehlgeschlagene Messung traegt die alten Zahlen weiter und zaehlte jede Nacht erneut hoch - nach drei Ausfaellen der Leitung haette ein Band an einer ungemessenen Seite gehangen. Sage #847 drei tote Waechter (zwei starben beim Start, einer klagte sieben Fehler an, ohne pruefen zu koennen) + tests/run_alle.mjs mit DREI Ergebnissen: gruen, ROT, nicht lauffaehig. Dreimal fand die Gegenprobe eine blinde Stelle in der EIGENEN Probe. Offen: package.json fuer Sage (50/69 -> 69/69, gemessen), vier Modul-23-UI-Kopien, PULS bei ~10.100 Zeilen.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 60,
+      "date": "2026-08-14",
+      "headline": "marktplatz-api.php liegt oben (Klaus' Tat belegt es). Toolpoint #62 · family #271 Sperr-Knoepfe · #272 Automatik-Schalter samt Zaehler · #273 fehlgeschlagene Nacht zaehlt nicht mit · Sage #847 drei tote Waechter + run_alle.mjs (gruen/ROT/nicht lauffaehig)."
+    },
     {
       "seq": 59,
       "date": "2026-08-12",
