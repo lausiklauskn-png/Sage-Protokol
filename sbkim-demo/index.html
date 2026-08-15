@@ -1,89 +1,200 @@
 <!doctype html>
-<html lang="de" data-theme="dark">
-<!-- © 2026 Klaus Nitzsche — Alle Rechte vorbehalten.
-     SBKIM-Demo · die erste lauffähige Fassung des Protokolls, März 2026.
-     Diese Seite ist die Einordnung davor: was es ist, was es braucht,
-     und was daran heute überholt ist. Ehrlichkeit vor Hochglanz. -->
+<!--
+  ╔═════════════════════════════════════════════════════════════════╗
+  ║  SBKIM-Demo  ·  ©  2026  Klaus Nitzsche                         ║
+  ║  info@family-projekt.de                                         ║
+  ║  Alle Rechte vorbehalten.                                       ║
+  ║  https://github.com/lausiklauskn-png/Sage-Protokol              ║
+  ╚═════════════════════════════════════════════════════════════════╝
+
+  Diese Seite ist der Eingang VOR der Demo: was es ist, was es braucht,
+  was daran heute überholt ist — und wo das Ganze inzwischen läuft.
+
+  Gestalt und Ton sind aus der Sage-Seite übernommen (Klaus 2026-08-15:
+  „vergleiche die Demo mit Sage und aktualisiere die Demo gemäß der
+  Vorlage"): dieselben Farben, dieselben Mono-Abschnittsmarken, dieselbe
+  nüchterne Sprache. Es ist dieselbe Familie, und das soll man sehen.
+
+  Der wichtigste Griff steht ganz oben: die ECHTE Mycel-Karte, live
+  eingebettet — genauso wie Sage es macht. Sie braucht keinen Schlüssel
+  und kein zweites Gerät und zeigt trotzdem echten Verkehr. Die Demo
+  darunter braucht beides. Wer nur zusehen will, ist oben fertig.
+-->
+<html lang="de">
+<head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SBKIM-Demo · Wie zwei Apps sich nach Bedeutung fragen</title>
-<meta name="description" content="Die erste lauffähige Fassung des SBKIM-Protokolls vom März 2026: zwei Geräte finden sich über einen QR-Code und tauschen Anfragen nach Bedeutung aus. Mit Papieren, ehrlichen Grenzen und dem, was daraus wurde.">
-<meta name="theme-color" content="#0b1116">
+<title>SBKIM-Demo — zwei Apps, die sich nach Bedeutung fragen</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Die erste lauffähige Fassung des SBKIM-Protokolls vom März 2026 — mit ihren Grenzen benannt, der lebenden Mycel-Karte daneben und dem Weg zu allem, was daraus wurde.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#08081A">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="canonical" href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="SBKIM-Demo · Wie zwei Apps sich nach Bedeutung fragen">
-<meta property="og:description" content="Die erste lauffähige Fassung des SBKIM-Protokolls vom März 2026 — mit ihren Grenzen benannt.">
+<meta property="og:title" content="SBKIM-Demo — zwei Apps, die sich nach Bedeutung fragen">
+<meta property="og:description" content="Der erste lauffähige Stand des Protokolls, März 2026. Mit der lebenden Mycel-Karte und allen Werkzeugen, die daraus geworden sind.">
+<meta property="og:image" content="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/icon-512.png">
 <style>
   :root{
-    --bg:#0b1116; --panel:#141c26; --panel2:#1c2734; --ink:#e8eef4; --dim:#93a3b5;
-    --line:#243141; --gold:#f2b544; --gruen:#4ade80; --rot:#ff8b83;
-    --radius:14px;
+    --bg:#08081A; --card:#0E0E24; --card-2:#12122C;
+    --text:#F5F5FF; --muted:rgba(245,245,255,.62); --dim:rgba(245,245,255,.50);
+    --accent:#6EE7D3; --accent-2:#8B5CF6; --gold:#F4B435;
+    --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.18);
+    --r:14px;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{
-    margin:0; background:var(--bg); color:var(--ink);
+    margin:0; background:var(--bg); color:var(--text);
     font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    padding:0 16px 64px;
+    padding:0 18px 72px;
+    background-image:
+      radial-gradient(900px 420px at 12% -8%, rgba(139,92,246,.16), transparent 60%),
+      radial-gradient(700px 380px at 92% 4%, rgba(110,231,211,.10), transparent 62%);
+    background-repeat:no-repeat;
   }
-  .wrap{max-width:760px; margin:0 auto}
-  header{padding:44px 0 8px}
-  h1{font-size:1.75rem; line-height:1.25; margin:0 0 10px}
-  .unterzeile{color:var(--dim); font-size:1.02rem; margin:0 0 6px}
+  .wrap{max-width:820px;margin:0 auto}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:ui-monospace,"Space Mono",monospace;font-size:.9em;color:var(--gold)}
+
+  header{padding:52px 0 6px}
+  h1{font-size:clamp(1.6rem,4.6vw,2.2rem);line-height:1.2;margin:0 0 12px;letter-spacing:-.4px}
+  .unter{color:var(--muted);font-size:1.04rem;margin:0}
   .stempel{
-    display:inline-block; margin-top:14px; padding:4px 11px; border-radius:999px;
-    border:1px solid var(--line); background:var(--panel);
-    font-size:.76rem; color:var(--dim); font-family:ui-monospace,monospace;
+    display:inline-block;margin-top:16px;padding:5px 12px;border-radius:999px;
+    border:1px solid var(--line-strong);background:var(--card);
+    font-family:ui-monospace,monospace;font-size:.74rem;color:var(--dim);letter-spacing:.5px;
   }
-  h2{font-size:1.16rem; margin:38px 0 10px; padding-top:20px; border-top:1px solid var(--line)}
-  p{margin:0 0 14px}
-  a{color:var(--gold)}
-  .knopfreihe{display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 6px}
+
+  /* Mono-Abschnittsmarken — aus der Sage-Seite übernommen */
+  .marke{
+    font-family:ui-monospace,"Space Mono",monospace;font-size:.7rem;letter-spacing:3.5px;
+    text-transform:uppercase;color:var(--accent);margin:52px 0 10px;
+    padding-top:26px;border-top:1px solid var(--line);
+  }
+  h2{font-size:1.24rem;margin:0 0 12px;letter-spacing:-.2px}
+  h3{font-size:1rem;margin:0 0 8px}
+  p{margin:0 0 15px}
+
+  .karte{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:16px 0}
+  .karte p:last-child{margin-bottom:0}
+  .karte.warn{border-left:3px solid var(--gold)}
+  .karte.gut{border-left:3px solid var(--accent)}
+
+  .knopfreihe{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 4px}
   .knopf{
-    display:inline-flex; align-items:center; gap:8px; text-decoration:none;
-    padding:12px 18px; border-radius:var(--radius); border:1px solid var(--line);
-    background:var(--panel); color:var(--ink); font-weight:600;
+    display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:var(--r);
+    border:1px solid var(--line-strong);background:var(--card);color:var(--text);font-weight:600;
   }
-  .knopf.haupt{background:var(--gold); color:#241c06; border-color:var(--gold)}
-  .kasten{
-    background:var(--panel); border:1px solid var(--line);
-    border-radius:var(--radius); padding:16px 18px; margin:16px 0;
+  .knopf:hover{border-color:var(--accent);background:rgba(110,231,211,.08);text-decoration:none}
+  .knopf.haupt{
+    background:linear-gradient(135deg,var(--accent) 0%,var(--accent-2) 100%);
+    color:#08081A;border-color:transparent;
   }
-  .kasten.warn{border-left:3px solid var(--gold)}
-  .kasten h3{margin:0 0 8px; font-size:1rem}
-  .kasten p:last-child{margin-bottom:0}
-  ul{margin:0 0 14px; padding-left:20px}
+  .knopf.haupt:hover{filter:brightness(1.08)}
+
+  /* Die lebende Karte — feste Höhe, damit beim Laden nichts springt */
+  .buehne{
+    border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+    background:#0a0d16;margin:16px 0 10px;
+  }
+  /* Feste Hoehe je Bildschirmbreite — NICHT prozentual: eine Buehne, die
+     ihre Hoehe erst nach dem Laden findet, schoebe die halbe Seite. Auf
+     breitem Schirm etwas mehr Platz, sonst draengt der Regler-Kasten der
+     Karte ueber das Netz. */
+  .buehne iframe{width:100%;height:440px;border:0;display:block;background:#0a0d16}
+  @media(min-width:760px){ .buehne iframe{height:560px} }
+  .hinweis{font-size:.88rem;color:var(--muted);margin:0 0 14px}
+
+  ul{margin:0 0 15px;padding-left:20px}
   li{margin:0 0 8px}
-  .gegen{display:grid; gap:12px; grid-template-columns:1fr; margin:16px 0}
-  @media(min-width:620px){ .gegen{grid-template-columns:1fr 1fr} }
-  .spalte{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:15px 17px}
-  .spalte .kopf{font-family:ui-monospace,monospace; font-size:.74rem; letter-spacing:.5px; color:var(--dim); margin-bottom:8px}
-  .spalte.heute{border-color:#2e4a3a}
-  .spalte.heute .kopf{color:var(--gruen)}
-  .papiere{list-style:none; padding:0; margin:14px 0 0}
+
+  .gegen{display:grid;gap:12px;grid-template-columns:1fr;margin:16px 0}
+  @media(min-width:640px){.gegen{grid-template-columns:1fr 1fr}}
+  .spalte{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+  .spalte .kopf{font-family:ui-monospace,monospace;font-size:.7rem;letter-spacing:2px;color:var(--dim);margin-bottom:9px}
+  .spalte.heute{border-color:rgba(110,231,211,.30)}
+  .spalte.heute .kopf{color:var(--accent)}
+  .spalte ul{margin:0;padding-left:18px}
+
+  /* Werkzeug-Gitter */
+  .gitter{display:grid;gap:11px;grid-template-columns:1fr;margin:14px 0 0}
+  @media(min-width:620px){.gitter{grid-template-columns:1fr 1fr}}
+  .werkzeug{
+    display:block;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);padding:15px 17px;color:var(--text);
+  }
+  .werkzeug:hover{border-color:var(--accent);background:var(--card-2);text-decoration:none}
+  .werkzeug b{display:block;font-size:.99rem;margin-bottom:3px}
+  .werkzeug span{display:block;color:var(--muted);font-size:.87rem;line-height:1.5}
+  .werkzeug .ort{
+    display:inline-block;margin-top:8px;font-family:ui-monospace,monospace;
+    font-size:.68rem;letter-spacing:1px;color:var(--dim);text-transform:uppercase;
+  }
+
+  .papiere{list-style:none;padding:0;margin:14px 0 0}
   .papiere li{margin:0 0 9px}
   .papiere a{
-    display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--ink);
-    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:12px 15px;
+    display:flex;align-items:center;gap:12px;color:var(--text);
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 16px;
   }
-  .papiere .was{color:var(--dim); font-size:.86rem; display:block}
-  footer{margin-top:44px; padding-top:18px; border-top:1px solid var(--line); color:var(--dim); font-size:.86rem}
-  @media(prefers-reduced-motion:no-preference){ .knopf{transition:transform .15s} .knopf:hover{transform:translateY(-1px)} }
-</style>
+  .papiere a:hover{border-color:var(--accent);text-decoration:none}
+  .papiere .was{display:block;color:var(--muted);font-size:.85rem}
 
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:.87rem}
+  @media(prefers-reduced-motion:no-preference){
+    .knopf,.werkzeug{transition:border-color .18s,background .18s,transform .15s}
+    .knopf:hover,.werkzeug:hover{transform:translateY(-1px)}
+  }
+</style>
+</head>
+<body>
 <div class="wrap">
+
 <header>
   <h1>Zwei Apps, die sich nach Bedeutung fragen</h1>
-  <p class="unterzeile">Die erste lauffähige Fassung des SBKIM-Protokolls. Gebaut im März 2026.</p>
+  <p class="unter">Der erste lauffähige Stand des SBKIM-Protokolls. Gebaut im März 2026.</p>
   <span class="stempel">Ausstellungsstück · nicht der heutige Stand</span>
 </header>
 
-<p>
+<p style="margin-top:22px">
   Eine App fragt <em>„wo bekomme ich bedruckte Tassen her"</em>. Eine andere versteht,
-  was gemeint ist, prüft selbst, ob sie dazu etwas hat, und antwortet aus ihrem eigenen
-  Bestand. Beide Seiten urteilen mit — deshalb <strong>bidirektional</strong>. Und wer
-  nichts Passendes hat, sagt das, statt irgendetwas zurückzugeben.
+  was gemeint ist, prüft <strong>selbst</strong>, ob sie dazu etwas hat, und antwortet aus
+  ihrem eigenen Bestand. Beide Seiten urteilen mit — deshalb <strong>bidirektional</strong>.
+  Und wer nichts Passendes hat, sagt das, statt irgendetwas zurückzugeben.
+</p>
+
+<!-- ── DIE LEBENDE KARTE ZUERST ────────────────────────────────────────────
+     Sie ist der stärkste Beleg auf dieser Seite und kostet den Besucher
+     nichts: kein Schlüssel, kein zweites Gerät, kein Konto. Die Demo weiter
+     unten braucht beides — deshalb steht sie NICHT oben. Wer nur sehen will,
+     ob das Ding lebt, ist hier fertig. 1:1 dieselbe Einbettung wie auf der
+     Sage-Seite. -->
+<div class="marke">Läuft gerade</div>
+<h2>Das Mycel, live — ohne Schlüssel, ohne Anmeldung</h2>
+<p>
+  Keine Zeichnung und kein Schaubild: das ist die <strong>echte Mycel-Karte</strong> am
+  laufenden Relais. Sie hört nur zu und zeigt, was wirklich passiert — Knoten,
+  die „hier bin ich" sagen, Anfragen von Knoten zu Knoten, Handschläge.
+</p>
+
+<div class="buehne">
+  <iframe src="../mycel-karte/" title="Mycel-Live-Karte — echter Verkehr im Mycel, nur lesend"
+          loading="lazy" referrerpolicy="no-referrer"></iframe>
+</div>
+<p class="hinweis">
+  Ist es gerade still, ist gerade nichts los — die Karte erfindet keinen Verkehr.
+  <a href="../mycel-karte/" target="_blank" rel="noopener">↗ in Vollbild öffnen</a>
+</p>
+
+<!-- ── DIE DEMO ───────────────────────────────────────────────────────── -->
+<div class="marke">Das Ausstellungsstück</div>
+<h2>Die Demo von März 2026</h2>
+<p>
+  Zwei Geräte finden sich über einen QR-Code und reden danach direkt miteinander.
+  Sie ist absichtlich so stehen geblieben, wie sie war — als Startpunkt, nicht als Produkt.
 </p>
 
 <div class="knopfreihe">
@@ -92,14 +203,15 @@
   <a class="knopf" href="hub.html">Alle Papiere</a>
 </div>
 
-<h2>Bevor du klickst: drei ehrliche Hinweise</h2>
+<div class="marke">Vor dem Klick</div>
+<h2>Drei ehrliche Hinweise</h2>
 
-<div class="kasten warn">
+<div class="karte warn">
   <h3>1 · Du brauchst einen eigenen KI-Schlüssel</h3>
   <p>
     Die Demo spricht direkt mit <code>api.anthropic.com</code>. Ohne eigenen Schlüssel
-    läuft die Bedeutungs-Prüfung nicht — die Seite erklärt sich dann trotzdem, sie
-    tut nur nichts. Der Schlüssel bleibt <strong>in deinem Browser</strong> und geht an
+    läuft die Bedeutungs-Prüfung nicht — die Seite erklärt sich dann trotzdem, sie tut
+    nur nichts. Der Schlüssel bleibt <strong>in deinem Browser</strong> und geht an
     <strong>niemanden außer Anthropic selbst</strong>: nicht an uns, nicht an einen
     Server dazwischen. Jede Frage kostet dort ein paar Cent.
   </p>
@@ -109,45 +221,45 @@
   </p>
 </div>
 
-<div class="kasten" style="border-left:3px solid var(--gruen)">
-  <h3>Und damit keine Verwechslung entsteht: es ist kein Film</h3>
-  <p>
-    Was du hier siehst, ist <strong>keine nachgespielte Vorführung</strong>. Es gibt
-    keine hinterlegten Beispiel-Antworten und keinen Schaumodus. Der Text, den du
-    eintippst, geht wirklich an ein Sprachmodell, das Urteil kommt wirklich zurück,
-    und die beiden Geräte reden wirklich miteinander. Deshalb braucht es einen
-    eigenen Schlüssel — mit einem vorgetäuschten Ablauf bräuchte es keinen.
-  </p>
-</div>
-
-<div class="kasten warn">
+<div class="karte warn">
   <h3>2 · Das Finden läuft über einen fremden Vermittler</h3>
   <p>
     Zwei Geräte finden sich hier über einen QR-Code und reden danach per WebRTC
     <strong>direkt</strong> miteinander. Der Handschlag davor läuft allerdings über den
-    öffentlichen PeerJS-Vermittler; dazu kommen zwei Hilfsdateien von einem CDN
-    (<code>cdnjs.cloudflare.com</code>) und die Schriften von Google. Das sind vier
-    fremde Adressen, die eine Seite anfassen kann, ohne dass du es siehst. Für ein
-    Ausstellungsstück ist das in Ordnung — für die Apps, die heute laufen, wäre es das
-    nicht. Die kommen ohne all das aus.
+    öffentlichen PeerJS-Vermittler; dazu kommen zwei Hilfsdateien von einem CDN und die
+    Schriften von Google. Das sind fremde Adressen, die eine Seite anfasst, ohne dass
+    du es siehst. Für ein Ausstellungsstück in Ordnung — für die Apps, die heute laufen,
+    wäre es das nicht. Die kommen ohne all das aus.
   </p>
 </div>
 
-<div class="kasten warn">
+<div class="karte warn">
   <h3>3 · Das hier ist ein Zwischenstand, kein Produkt</h3>
   <p>
-    Gebaut im März 2026, an einem Tablet, von jemandem ohne Programmier-Ausbildung.
-    Es ist absichtlich so stehen geblieben, wie es war. Wer sehen will, was daraus
-    geworden ist, findet unten die Fortsetzung.
+    Gebaut im März 2026, an einem Android-Tablet, von jemandem ohne Programmier-Ausbildung.
+    Was daraus geworden ist, steht weiter unten — und läuft.
   </p>
 </div>
 
+<div class="karte gut">
+  <h3>Damit keine Verwechslung entsteht: es ist kein Film</h3>
+  <p>
+    Was du in der Demo siehst, ist <strong>keine nachgespielte Vorführung</strong>. Es gibt
+    keine hinterlegten Beispiel-Antworten und keinen Schaumodus. Der Text, den du eintippst,
+    geht wirklich an ein Sprachmodell, das Urteil kommt wirklich zurück, und die beiden
+    Geräte reden wirklich miteinander. Deshalb braucht es einen eigenen Schlüssel — mit
+    einem vorgetäuschten Ablauf bräuchte es keinen.
+  </p>
+</div>
+
+<!-- ── WAS DARAUS WURDE ───────────────────────────────────────────────── -->
+<div class="marke">Fünf Monate später</div>
 <h2>Was daraus wurde</h2>
 
 <div class="gegen">
   <div class="spalte">
     <div class="kopf">MÄRZ 2026 · DIESE DEMO</div>
-    <ul style="margin:0; padding-left:18px">
+    <ul>
       <li>Finden über QR-Code und fremden Vermittler</li>
       <li>Schriften und Hilfsdateien von fremden Adressen</li>
       <li>zwei Geräte, von Hand zusammengeführt</li>
@@ -156,23 +268,75 @@
   </div>
   <div class="spalte heute">
     <div class="kopf">HEUTE · DAS LAUFENDE NETZ</div>
-    <ul style="margin:0; padding-left:18px">
+    <ul>
       <li>Finden über ein geborgtes schwarzes Brett, austauschbar</li>
       <li>keine fremden Dateien, offline-fähig</li>
       <li>mehrere Apps, die sich gegenseitig fragen</li>
-      <li>rund zwei Dutzend Apps im Betrieb</li>
+      <li>gut zwei Dutzend Apps im Betrieb</li>
     </ul>
   </div>
 </div>
 
 <p>
-  Am 11. Juli 2026 fragten sich zum ersten Mal zwei Endknoten <strong>gegenseitig, ohne
-  Vermittler dazwischen</strong>: eine Buchhaltungs-App fragte nach bedruckten Tassen,
-  ein Werkzeug-Katalog antwortete aus seinem eigenen Bestand. Das steht als
+  Am <strong>11. Juli 2026</strong> fragten sich zum ersten Mal zwei Endknoten
+  <strong>gegenseitig, ohne Vermittler dazwischen</strong>: eine Buchhaltungs-App fragte
+  nach bedruckten Tassen, ein Werkzeug-Katalog antwortete aus seinem eigenen Bestand.
+  Keine der beiden wusste vorher von der anderen. Das steht als
   <a href="../docs/meilenstein/2026-07-11_hub-unabhaengige-cross-knoten-qa.md">Meilenstein-Protokoll</a>
   mit Datum und Messwerten im Sage-Repo.
 </p>
 
+<!-- ── WOHIN VON HIER ─────────────────────────────────────────────────── -->
+<div class="marke">Wohin von hier</div>
+<h2>Was daraus geworden ist — alles offen zum Ansehen</h2>
+<p>
+  Die Demo ist der Anfang. Das hier läuft heute, und man kann es anklicken, ohne sich
+  irgendwo anzumelden.
+</p>
+
+<div class="gitter">
+  <a class="werkzeug" href="https://lausiklauskn-png.github.io/Sage-Protokol/" target="_blank" rel="noopener">
+    <b>Sage·Protokol</b>
+    <span>Der Bauplan und die Werkzeugkiste: alle Module zum Lesen und Kopieren.</span>
+    <span class="ort">Der Hub</span>
+  </a>
+  <a class="werkzeug" href="https://lausiklauskn-png.github.io/mycel-karte/" target="_blank" rel="noopener">
+    <b>Mycel-Karte</b>
+    <span>Die Karte von oben — dieselbe, die weiter oben in dieser Seite läuft.</span>
+    <span class="ort">Zusehen</span>
+  </a>
+  <a class="werkzeug" href="https://lausiklauskn-png.github.io/Sage-Protokol/such-tool/" target="_blank" rel="noopener">
+    <b>Such-Werkzeug</b>
+    <span>Suchen nach Bedeutung statt nach Stichwörtern — im eigenen Bestand, bei den
+      verbundenen Knoten, wahlweise im Netz. Installierbar.</span>
+    <span class="ort">Werkzeug</span>
+  </a>
+  <a class="werkzeug" href="https://lausiklauskn-png.github.io/Sage-Protokol/pinnwand/" target="_blank" rel="noopener">
+    <b>Pinnwand</b>
+    <span>Fragen und Antworten, nach Bedeutung sortiert — ohne Konto, ohne Server.</span>
+    <span class="ort">Werkzeug</span>
+  </a>
+  <a class="werkzeug" href="https://lausiklauskn-png.github.io/SB-KIMTool-Point/" target="_blank" rel="noopener">
+    <b>SB·KIMTool·Point</b>
+    <span>Für alle, die es nachbauen wollen: die Werkzeugkiste, jedes Stück erklärt —
+      was es tut, wofür es gut ist, wie man es einbaut.</span>
+    <span class="ort">Zum Nachbauen</span>
+  </a>
+  <a class="werkzeug" href="https://pwa-toolpoint.de/" target="_blank" rel="noopener">
+    <b>PWA Toolpoint</b>
+    <span>Der offene Marktplatz. Jede App mit gemessenen Werten und dem Datum der
+      Messung daneben — auch die schlechten.</span>
+    <span class="ort">Marktplatz</span>
+  </a>
+  <a class="werkzeug" href="https://family-projekt.de/" target="_blank" rel="noopener">
+    <b>Family Projekt</b>
+    <span>Der zweite Marktplatz, für den engeren Kreis — dieselbe Software, anderer Ton.</span>
+    <span class="ort">Marktplatz</span>
+  </a>
+</div>
+
+<!-- ── PAPIERE ────────────────────────────────────────────────────────── -->
+<div class="marke">Zum Nachlesen</div>
 <h2>Die Papiere</h2>
 <p>
   Entstanden 2026 rund um die Frage, was so ein Protokoll taugt und was es kostet, es
@@ -182,29 +346,32 @@
 
 <ul class="papiere">
   <li><a href="papiere/Marktanalyse_PWA_Plattform.pdf" target="_blank" rel="noopener">
-    📊 Marktanalyse <span class="was">Wofür so eine Plattform gebraucht würde</span></a></li>
+    📊 <span><b>Marktanalyse</b><span class="was">Wofür so eine Plattform gebraucht würde</span></span></a></li>
   <li><a href="papiere/Konzept_PWA_Marktplatz.pdf" target="_blank" rel="noopener">
-    📐 Konzept <span class="was">Wie ein Marktplatz darauf aufsetzt</span></a></li>
+    📐 <span><b>Konzept</b><span class="was">Wie ein Marktplatz darauf aufsetzt</span></span></a></li>
   <li><a href="papiere/USP_Bidirektionales_Matching.pdf" target="_blank" rel="noopener">
-    🎯 Bidirektionales Matching <span class="was">Warum beide Seiten urteilen und nicht nur eine</span></a></li>
+    🎯 <span><b>Bidirektionales Matching</b><span class="was">Warum beide Seiten urteilen und nicht nur eine</span></span></a></li>
   <li><a href="SBKIM_Paper_DE.html">
-    📄 SBKIM-Papier, deutsch <span class="was">Das Protokoll selbst</span></a></li>
+    📄 <span><b>SBKIM-Papier, deutsch</b><span class="was">Das Protokoll selbst</span></span></a></li>
   <li><a href="SBKIM_Paper.html">
-    📄 SBKIM Paper, English <span class="was">The protocol itself</span></a></li>
+    📄 <span><b>SBKIM Paper, English</b><span class="was">The protocol itself</span></span></a></li>
 </ul>
 
+<div class="marke">Zum Schluss</div>
 <h2>Erfunden ist daran nichts</h2>
 <p>
-  Die Bausteine gibt es alle: Vektoren für Bedeutung, WebRTC für die Verbindung,
-  ein Sprachmodell fürs Urteilen. Bemerkenswert ist die Zusammensetzung — und dass
-  sie hält. Wer es nachbauen will, findet Protokoll und Module offen im
+  Die Bausteine gibt es alle: Vektoren für Bedeutung, WebRTC für die Verbindung, ein
+  Sprachmodell fürs Urteilen. Bemerkenswert ist die Zusammensetzung — und dass sie hält.
+  Wer es nachbauen will, findet Protokoll und Module offen im
   <a href="../">Sage-Protokol</a>; kopieren ist ausdrücklich erwünscht.
 </p>
 
 <footer>
   © 2026 Klaus Nitzsche · Kontakt über
   <a href="https://family-projekt.de/">family-projekt.de</a><br>
-  Teil von <a href="../">Sage-Protokol</a> · <a href="../impressum.html">Impressum</a>
+  Teil von <a href="../">Sage·Protokol</a> · <a href="../impressum.html">Impressum</a>
 </footer>
+
 </div>
+</body>
 </html>
