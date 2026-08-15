@@ -126,6 +126,35 @@
   // Richter seinen eigenen Schlüssel für eingehende Fremd-Anfragen ausgibt.
   var queryJudge = null;
 
+  // Inklusions-Konfig für den `op:"query"`-Antwort-Pfad (2026-08-14, aus
+  // BookLedgerPro in den Kanon gehoben).
+  //
+  // WOHER DAS KOMMT. BookLedgerPro hatte diesen Pfad seit dem 2026-07-11 in
+  // seiner EIGENEN Kopie von Modul 15 stehen — mit einer fest eingebauten
+  // Buchhaltungs-Synonym-Karte (rechnung↔faktura, beleg↔quittung, ust↔
+  // umsatzsteuer). Das war echte, nützliche Funktion an der falschen Stelle:
+  // „kopieren, nicht klonen" verbietet, die Kopie zu ändern, und ein späteres
+  // byte-1:1-Nachziehen hätte sie lautlos gelöscht. Also wandert die Mechanik
+  // hierher — und die FACHWORTE bleiben bei der App, die sie kennt.
+  //
+  // Default `null` = aus. Dann ruft der Empfänger wie bisher
+  // `SbkimMatch.queryLocal(text, k)` — byte-gleiches Verhalten für jeden, der
+  // nichts konfiguriert. Setzt der Betreiber
+  // `init({queryInclusion:{synonyms?,hybrid?}})` ODER `setQueryInclusion(cfg)`,
+  // läuft die Kaskade aus Bau 22f:
+  //   A4  Frage über die Synonym-Karte auffächern (expandQuerySimple)
+  //       → queryLocalMulti mit RRF-Fusion
+  //   A1  Hybrid-queryLocal (BM25 + Vektor)
+  //   Boden: der bewährte reine Cosinus-Pfad (Bau 04.C)
+  // Jede Stufe fail-soft; die Funktion wirft NICHT (der äußere try/catch im
+  // Empfänger schickt sonst die fail-soft-Fehlerantwort statt Treffern).
+  //
+  // REINE INKLUSION: cross-formulierte Wort-Treffer unter dem Cosinus-Boden
+  // werden über BM25 AUFGENOMMEN. Der 0.80-Andock-Riegel (Modul 05
+  // `PROVIDER_MIN_MATCH`) bleibt unberührt — hier wird geantwortet, nicht
+  // angedockt.
+  var queryInclusion = null;
+
   // ---- Hilfsfunktionen ----
 
   function nowIso() { return new Date().toISOString(); }
@@ -579,6 +608,45 @@
     return true;
   }
 
+  // queryWithInclusion(match, text, k) -> Promise<Array>
+  //
+  // Die Kaskade A4 → A1 → einfacher Cosinus, jede Stufe fail-soft. Wird NUR
+  // aufgerufen, wenn der Betreiber `queryInclusion` gesetzt hat (siehe die
+  // Erklärung oben bei der Variable). Wirft NICHT — schlägt eine Stufe fehl,
+  // fällt sie auf die nächste durch, und die letzte ist der Pfad, der ohne
+  // diese Funktion gelaufen wäre. Schlimmstenfalls also: wie vorher.
+  async function queryWithInclusion(match, text, k) {
+    var cfg = queryInclusion || {};
+    var synonyms = (cfg.synonyms && typeof cfg.synonyms === "object") ? cfg.synonyms : null;
+    // `hybrid` ist Teil dieser Betriebsart: BM25 neben dem Vektor ist genau
+    // der Weg, auf dem ein anders formulierter Wort-Treffer hereinkommt.
+    // Wer ihn nicht will, setzt `hybrid: false` — dann bleibt die
+    // Varianten-Auffächerung, aber der Vorfilter bleibt rein semantisch.
+    var hybrid = (cfg.hybrid === false) ? false : true;
+
+    // A4 + A1: Varianten auffächern, dann Multi-Suche mit RRF-Fusion.
+    if (synonyms &&
+        typeof match.queryLocalMulti === "function" &&
+        typeof match.expandQuerySimple === "function") {
+      try {
+        var variants = match.expandQuerySimple(text, { synonyms: synonyms });
+        return await match.queryLocalMulti(variants, k, { hybrid: hybrid });
+      } catch (e1) {
+        warn("A4/A1-Multi-Pfad fehlgeschlagen — Rückfall auf Hybrid-queryLocal.", e1);
+      }
+    }
+    // A1 allein: Hybrid-queryLocal (BM25 + Vektor), ohne Varianten.
+    if (hybrid) {
+      try {
+        return await match.queryLocal(text, k, { hybrid: true });
+      } catch (e2) {
+        warn("A1-Hybrid-Pfad fehlgeschlagen — Rückfall auf einfachen Cosinus.", e2);
+      }
+    }
+    // Letzter Boden: der bewährte reine Cosinus-Pfad (Bau 04.C).
+    return await match.queryLocal(text, k);
+  }
+
   function cacheSporeRef(origin, payload) {
     // FIFO-Eviction: Map iteriert in Insertion-Order. Bei Re-Insertion
     // (gleicher Origin) erst löschen, damit der neue Eintrag ans Ende kommt.
@@ -668,6 +736,8 @@
       }
       var k = (typeof payload.k === "number" && payload.k > 0) ? payload.k : 5;
       var match = global.SbkimMatch;
+      var useInclusion = !!queryInclusion &&
+        match && typeof match.queryLocal === "function";
       // Richter-Pfad (Strang A2) nur, wenn der Betreiber ihn opt-in konfiguriert
       // hat UND queryLocalJudged vorhanden ist. Sonst der bisherige rohe
       // Vorfilter-Pfad (byte-gleiches Verhalten wie vor dieser Änderung).
@@ -691,7 +761,9 @@
       }
       if (match && typeof match.queryLocal === "function") {
         try {
-          var results = await match.queryLocal(payload.text, k);
+          var results = useInclusion
+            ? await queryWithInclusion(match, payload.text, k)
+            : await match.queryLocal(payload.text, k);
           sendQueryResultReply(event, nonce, Array.isArray(results) ? results : [], null);
           recordPostMessageEntry(event, op, nonce, "accepted");
         } catch (err) {
@@ -1403,6 +1475,11 @@
     if (Object.prototype.hasOwnProperty.call(opts, "queryJudge")) {
       queryJudge = (opts.queryJudge && typeof opts.queryJudge === "object") ? opts.queryJudge : null;
     }
+    // Optionale Inklusions-Konfig (2026-08-14). null/false löscht sie wieder.
+    if (Object.prototype.hasOwnProperty.call(opts, "queryInclusion")) {
+      queryInclusion = (opts.queryInclusion && typeof opts.queryInclusion === "object")
+        ? opts.queryInclusion : null;
+    }
     var mountModal = opts.mountModal !== false; // default true
 
     if (ready) {
@@ -1478,10 +1555,19 @@
     queryJudge = (cfg && typeof cfg === "object") ? cfg : null;
   }
 
+  // setQueryInclusion(cfg) — Laufzeit-Setter für die Inklusions-Konfig des
+  // op:"query"-Antwort-Pfads. cfg = {synonyms?, hybrid?} (opt-in, RAM-only)
+  // oder null/false (löscht → zurück zum rohen Vorfilter). Die Synonym-Karte
+  // gehört der App: sie kennt ihre Fachworte, der Kanon kennt sie nicht.
+  function setQueryInclusion(cfg) {
+    queryInclusion = (cfg && typeof cfg === "object") ? cfg : null;
+  }
+
   var SbkimMembrane = {
     init: init,
     read: readSnapshot,
     setQueryJudge: setQueryJudge,
+    setQueryInclusion: setQueryInclusion,
     fremdzugriff: {
       list: listFremdzugriff,
       subscribe: subscribeFremdzugriff,
@@ -1508,6 +1594,16 @@
       // Schlüssel selbst (RAM-only, kein Leak über die Read-Fläche).
       get queryJudgeConfigured() {
         return !!(queryJudge && typeof queryJudge.apiKey === "string" && queryJudge.apiKey.length > 0);
+      },
+      // Ist der Inklusions-Pfad an? Und mit wie vielen Fachworten? Die Karte
+      // selbst wird NICHT herausgegeben — nur ihre Größe, damit eine Probe
+      // (und Klaus' Sichttest) sehen kann, ob die App sie gesetzt hat.
+      get queryInclusionConfigured() {
+        return !!queryInclusion;
+      },
+      get queryInclusionSynonymCount() {
+        var s = queryInclusion && queryInclusion.synonyms;
+        return (s && typeof s === "object") ? Object.keys(s).length : 0;
       },
       // Sub (b) Read-Anker — Größen-Getter, keine direkten Map-Referenzen
       // (Snapshot-Pattern; interne Maps bleiben modul-lokal).
@@ -1560,7 +1656,7 @@
   // Self-check (synchron, beim Skript-Laden — vor jedem Aufruf).
   if (typeof console !== "undefined" && console.info) {
     console.info(
-      "MODUL 15 MEMBRAN bereit, Funktionen: init/read/setQueryJudge/fremdzugriff.{list,subscribe,clear,_recordForTest}",
+      "MODUL 15 MEMBRAN bereit, Funktionen: init/read/setQueryJudge/setQueryInclusion/fremdzugriff.{list,subscribe,clear,_recordForTest}",
     );
   }
 })(typeof window !== "undefined" ? window : globalThis);
