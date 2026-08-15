@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="de" data-theme="dark">
+<!-- © 2026 Klaus Nitzsche — Alle Rechte vorbehalten.
+     SBKIM-Demo · die erste lauffähige Fassung des Protokolls, März 2026.
+     Diese Seite ist die Einordnung davor: was es ist, was es braucht,
+     und was daran heute überholt ist. Ehrlichkeit vor Hochglanz. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SBKIM-Demo · Wie zwei Apps sich nach Bedeutung fragen</title>
+<meta name="description" content="Die erste lauffähige Fassung des SBKIM-Protokolls vom März 2026: zwei Geräte finden sich über einen QR-Code und tauschen Anfragen nach Bedeutung aus. Mit Papieren, ehrlichen Grenzen und dem, was daraus wurde.">
+<meta name="theme-color" content="#0b1116">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="canonical" href="https://lausiklauskn-png.github.io/Sage-Protokol/sbkim-demo/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SBKIM-Demo · Wie zwei Apps sich nach Bedeutung fragen">
+<meta property="og:description" content="Die erste lauffähige Fassung des SBKIM-Protokolls vom März 2026 — mit ihren Grenzen benannt.">
+<style>
+  :root{
+    --bg:#0b1116; --panel:#141c26; --panel2:#1c2734; --ink:#e8eef4; --dim:#93a3b5;
+    --line:#243141; --gold:#f2b544; --gruen:#4ade80; --rot:#ff8b83;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:0 16px 64px;
+  }
+  .wrap{max-width:760px; margin:0 auto}
+  header{padding:44px 0 8px}
+  h1{font-size:1.75rem; line-height:1.25; margin:0 0 10px}
+  .unterzeile{color:var(--dim); font-size:1.02rem; margin:0 0 6px}
+  .stempel{
+    display:inline-block; margin-top:14px; padding:4px 11px; border-radius:999px;
+    border:1px solid var(--line); background:var(--panel);
+    font-size:.76rem; color:var(--dim); font-family:ui-monospace,monospace;
+  }
+  h2{font-size:1.16rem; margin:38px 0 10px; padding-top:20px; border-top:1px solid var(--line)}
+  p{margin:0 0 14px}
+  a{color:var(--gold)}
+  .knopfreihe{display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 6px}
+  .knopf{
+    display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+    padding:12px 18px; border-radius:var(--radius); border:1px solid var(--line);
+    background:var(--panel); color:var(--ink); font-weight:600;
+  }
+  .knopf.haupt{background:var(--gold); color:#241c06; border-color:var(--gold)}
+  .kasten{
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px 18px; margin:16px 0;
+  }
+  .kasten.warn{border-left:3px solid var(--gold)}
+  .kasten h3{margin:0 0 8px; font-size:1rem}
+  .kasten p:last-child{margin-bottom:0}
+  ul{margin:0 0 14px; padding-left:20px}
+  li{margin:0 0 8px}
+  .gegen{display:grid; gap:12px; grid-template-columns:1fr; margin:16px 0}
+  @media(min-width:620px){ .gegen{grid-template-columns:1fr 1fr} }
+  .spalte{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:15px 17px}
+  .spalte .kopf{font-family:ui-monospace,monospace; font-size:.74rem; letter-spacing:.5px; color:var(--dim); margin-bottom:8px}
+  .spalte.heute{border-color:#2e4a3a}
+  .spalte.heute .kopf{color:var(--gruen)}
+  .papiere{list-style:none; padding:0; margin:14px 0 0}
+  .papiere li{margin:0 0 9px}
+  .papiere a{
+    display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--ink);
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:12px 15px;
+  }
+  .papiere .was{color:var(--dim); font-size:.86rem; display:block}
+  footer{margin-top:44px; padding-top:18px; border-top:1px solid var(--line); color:var(--dim); font-size:.86rem}
+  @media(prefers-reduced-motion:no-preference){ .knopf{transition:transform .15s} .knopf:hover{transform:translateY(-1px)} }
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Zwei Apps, die sich nach Bedeutung fragen</h1>
+  <p class="unterzeile">Die erste lauffähige Fassung des SBKIM-Protokolls. Gebaut im März 2026.</p>
+  <span class="stempel">Ausstellungsstück · nicht der heutige Stand</span>
+</header>
+
+<p>
+  Eine App fragt <em>„wo bekomme ich bedruckte Tassen her"</em>. Eine andere versteht,
+  was gemeint ist, prüft selbst, ob sie dazu etwas hat, und antwortet aus ihrem eigenen
+  Bestand. Beide Seiten urteilen mit — deshalb <strong>bidirektional</strong>. Und wer
+  nichts Passendes hat, sagt das, statt irgendetwas zurückzugeben.
+</p>
+
+<div class="knopfreihe">
+  <a class="knopf haupt" href="demo.html">▶ Demo starten</a>
+  <a class="knopf" href="protocol/sbkim-node.html">Zwei Geräte verbinden</a>
+  <a class="knopf" href="hub.html">Alle Papiere</a>
+</div>
+
+<h2>Bevor du klickst: drei ehrliche Hinweise</h2>
+
+<div class="kasten warn">
+  <h3>1 · Du brauchst einen eigenen KI-Schlüssel</h3>
+  <p>
+    Die Demo spricht direkt mit <code>api.anthropic.com</code>. Ohne eigenen Schlüssel
+    läuft die Bedeutungs-Prüfung nicht — die Seite erklärt sich dann trotzdem, sie
+    tut nur nichts. Der Schlüssel bleibt <strong>in deinem Browser</strong> und wird
+    nirgendwohin geschickt außer an den KI-Anbieter selbst. Anfragen dorthin
+    <strong>kosten Geld</strong>, wenige Cent, aber gesagt sei es.
+  </p>
+</div>
+
+<div class="kasten warn">
+  <h3>2 · Das Finden läuft über einen fremden Vermittler</h3>
+  <p>
+    Zwei Geräte finden sich hier über einen QR-Code und reden danach per WebRTC
+    <strong>direkt</strong> miteinander. Der Handschlag davor läuft allerdings über den
+    öffentlichen PeerJS-Vermittler; dazu kommen zwei Hilfsdateien von einem CDN
+    (<code>cdnjs.cloudflare.com</code>) und die Schriften von Google. Das sind vier
+    fremde Adressen, die eine Seite anfassen kann, ohne dass du es siehst. Für ein
+    Ausstellungsstück ist das in Ordnung — für die Apps, die heute laufen, wäre es das
+    nicht. Die kommen ohne all das aus.
+  </p>
+</div>
+
+<div class="kasten warn">
+  <h3>3 · Das hier ist ein Zwischenstand, kein Produkt</h3>
+  <p>
+    Gebaut im März 2026, an einem Tablet, von jemandem ohne Programmier-Ausbildung.
+    Es ist absichtlich so stehen geblieben, wie es war. Wer sehen will, was daraus
+    geworden ist, findet unten die Fortsetzung.
+  </p>
+</div>
+
+<h2>Was daraus wurde</h2>
+
+<div class="gegen">
+  <div class="spalte">
+    <div class="kopf">MÄRZ 2026 · DIESE DEMO</div>
+    <ul style="margin:0; padding-left:18px">
+      <li>Finden über QR-Code und fremden Vermittler</li>
+      <li>Schriften und Hilfsdateien von fremden Adressen</li>
+      <li>zwei Geräte, von Hand zusammengeführt</li>
+      <li>eine Seite, ein Zweck</li>
+    </ul>
+  </div>
+  <div class="spalte heute">
+    <div class="kopf">HEUTE · DAS LAUFENDE NETZ</div>
+    <ul style="margin:0; padding-left:18px">
+      <li>Finden über ein geborgtes schwarzes Brett, austauschbar</li>
+      <li>keine fremden Dateien, offline-fähig</li>
+      <li>mehrere Apps, die sich gegenseitig fragen</li>
+      <li>rund zwei Dutzend Apps im Betrieb</li>
+    </ul>
+  </div>
+</div>
+
+<p>
+  Am 11. Juli 2026 fragten sich zum ersten Mal zwei Endknoten <strong>gegenseitig, ohne
+  Vermittler dazwischen</strong>: eine Buchhaltungs-App fragte nach bedruckten Tassen,
+  ein Werkzeug-Katalog antwortete aus seinem eigenen Bestand. Das steht als
+  <a href="../docs/meilenstein/2026-07-11_hub-unabhaengige-cross-knoten-qa.md">Meilenstein-Protokoll</a>
+  mit Datum und Messwerten im Sage-Repo.
+</p>
+
+<h2>Die Papiere</h2>
+<p>
+  Entstanden 2026 rund um die Frage, was so ein Protokoll taugt und was es kostet, es
+  ernst zu nehmen. Sie sind älter als das Netz, das heute läuft — als Einordnung
+  trotzdem brauchbar.
+</p>
+
+<ul class="papiere">
+  <li><a href="papiere/Marktanalyse_PWA_Plattform.pdf" target="_blank" rel="noopener">
+    📊 Marktanalyse <span class="was">Wofür so eine Plattform gebraucht würde</span></a></li>
+  <li><a href="papiere/Konzept_PWA_Marktplatz.pdf" target="_blank" rel="noopener">
+    📐 Konzept <span class="was">Wie ein Marktplatz darauf aufsetzt</span></a></li>
+  <li><a href="papiere/USP_Bidirektionales_Matching.pdf" target="_blank" rel="noopener">
+    🎯 Bidirektionales Matching <span class="was">Warum beide Seiten urteilen und nicht nur eine</span></a></li>
+  <li><a href="SBKIM_Paper_DE.html">
+    📄 SBKIM-Papier, deutsch <span class="was">Das Protokoll selbst</span></a></li>
+  <li><a href="SBKIM_Paper.html">
+    📄 SBKIM Paper, English <span class="was">The protocol itself</span></a></li>
+</ul>
+
+<h2>Erfunden ist daran nichts</h2>
+<p>
+  Die Bausteine gibt es alle: Vektoren für Bedeutung, WebRTC für die Verbindung,
+  ein Sprachmodell fürs Urteilen. Bemerkenswert ist die Zusammensetzung — und dass
+  sie hält. Wer es nachbauen will, findet Protokoll und Module offen im
+  <a href="../">Sage-Protokol</a>; kopieren ist ausdrücklich erwünscht.
+</p>
+
+<footer>
+  © 2026 Klaus Nitzsche · Kontakt über
+  <a href="https://family-projekt.de/">family-projekt.de</a><br>
+  Teil von <a href="../">Sage-Protokol</a> · <a href="../impressum.html">Impressum</a>
+</footer>
+</div>
+</html>

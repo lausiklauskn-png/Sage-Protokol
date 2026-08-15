@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#05050F">
+<title>SBKIM · Knoten</title>
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --bg:#05050F;--s1:#0C0C20;--s2:#12122A;
+  --accent:#6366F1;--accent-l:#818CF8;--violet:#8B5CF6;
+  --gold:#F59E0B;--gold-l:#FCD34D;--teal:#14B8A6;--teal-l:#2DD4BF;
+  --text:#EEEEFF;--t2:rgba(238,238,255,.55);--t3:rgba(238,238,255,.28);
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --r:18px;--r-sm:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:radial-gradient(ellipse at 70% 5%,rgba(99,102,241,.09) 0%,transparent 55%),
+             radial-gradient(ellipse at 15% 85%,rgba(139,92,246,.07) 0%,transparent 50%);}
+.bg-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:48px 48px;}
+.wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:24px 18px 48px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--t3);text-decoration:none;margin-bottom:20px;}
+.back-link:hover{color:var(--t2);}
+.header{text-align:center;padding:16px 0 20px;}
+.wm{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--accent-l);text-transform:uppercase;opacity:.85;margin-bottom:8px;}
+.wm em{font-style:normal;color:var(--gold);}
+.page-title{font-size:clamp(24px,5vw,34px);font-weight:700;line-height:1.1;margin-bottom:8px;
+  background:linear-gradient(135deg,#fff 0%,#c7d2fe 45%,var(--teal-l) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-sub{font-size:13px;color:var(--t2);line-height:1.6;}
+
+/* API KEY */
+.key-box{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:var(--r-sm);padding:16px;margin-bottom:16px;}
+.key-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.key-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:8px;padding:11px 14px;color:var(--text);font-size:13px;font-family:'Space Mono',monospace;outline:none;}
+.key-input:focus{border-color:rgba(99,102,241,.5);}
+
+/* STATUS PILL */
+.pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-size:12px;color:var(--t2);margin-bottom:16px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-wait{background:#F59E0B;box-shadow:0 0 6px #F59E0B;}
+.dot-ok{background:#14B8A6;box-shadow:0 0 6px #14B8A6;animation:pulse-ok 2s infinite;}
+.dot-off{background:rgba(255,255,255,.2);}
+@keyframes pulse-ok{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* SESSION BOX */
+.session-box{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:16px;}
+.session-code{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;letter-spacing:10px;color:var(--accent-l);margin:8px 0 14px;}
+#qr-wrap{margin:0 auto 8px;width:160px;height:160px;border-radius:10px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;}
+.qr-hint{font-size:11px;color:var(--t3);}
+
+/* PARTICIPANTS */
+.sec-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3.5px;text-transform:uppercase;color:var(--t3);margin:20px 0 10px;}
+.participant-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.participant{display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px 14px;}
+.p-role{font-size:18px;flex-shrink:0;}
+.p-info{flex:1;min-width:0;}
+.p-name{font-size:13px;font-weight:600;margin-bottom:2px;}
+.p-desc{font-size:11px;color:var(--t3);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.p-badge{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:100px;flex-shrink:0;margin-top:2px;}
+.badge-buyer{background:rgba(99,102,241,.15);color:var(--accent-l);}
+.badge-seller{background:rgba(20,184,166,.12);color:var(--teal-l);}
+
+/* RESULTS */
+.result-card{background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:var(--r);padding:16px;margin-bottom:10px;}
+.result-pair{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:14px;font-weight:600;}
+.result-arrow{color:var(--teal-l);font-size:18px;}
+.score-bar-wrap{background:rgba(255,255,255,.07);border-radius:100px;height:6px;margin-bottom:8px;}
+.score-bar{height:6px;border-radius:100px;background:linear-gradient(90deg,var(--teal),var(--accent-l));transition:width .8s ease;}
+.result-reason{font-size:12px;color:var(--t2);line-height:1.5;}
+
+/* BUTTONS */
+.btn{width:100%;padding:14px;border:none;border-radius:var(--r-sm);font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--violet));color:#fff;margin-bottom:10px;}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+.btn-primary:active{transform:scale(.97);}
+.btn-secondary{background:rgba(255,255,255,.06);color:var(--t2);border:1px solid var(--border2);}
+.btn:disabled{opacity:.3;pointer-events:none;}
+
+.empty{text-align:center;padding:24px;color:var(--t3);font-size:13px;}
+
+/* LOG */
+.log{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;font-family:'Space Mono',monospace;font-size:10px;color:var(--t3);max-height:120px;overflow-y:auto;margin-top:12px;}
+.log-line{padding:1px 0;}
+.log-line.ok{color:var(--teal-l);}
+.log-line.info{color:var(--accent-l);}
+.log-line.err{color:#f87171;}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><div class="bg-grid"></div></div>
+<div class="wrap">
+  <a href="../hub.html" class="back-link">← Hub</a>
+
+  <div class="header">
+    <div class="wm">SBKIM · <em>Protokoll</em></div>
+    <h1 class="page-title">SBKIM Knoten</h1>
+    <p class="page-sub">Dieses Gerät ist der Matching-Server. Teilnehmer scannen den QR-Code.</p>
+  </div>
+
+  <!-- API KEY -->
+  <div class="key-box">
+    <div class="key-lbl">Anthropic API-Key</div>
+    <input type="password" class="key-input" id="api-key" placeholder="sk-ant-api03-…" autocomplete="off">
+  </div>
+
+  <!-- STATUS -->
+  <div style="text-align:center;">
+    <div class="pill"><span class="dot dot-off" id="status-dot"></span><span id="status-text">Nicht gestartet</span></div>
+  </div>
+
+  <!-- START / SESSION -->
+  <div id="setup-area">
+    <button class="btn btn-primary" onclick="startNode()">SBKIM-Knoten starten →</button>
+  </div>
+
+  <div id="session-area" style="display:none;">
+    <div class="session-box">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:4px;">Teilnehmer scannen diesen QR-Code:</div>
+      <div class="session-code" id="session-code">------</div>
+      <div id="qr-wrap"></div>
+      <div class="qr-hint">oder URL manuell öffnen → <strong>sbkim-register.html?node=CODE</strong></div>
+    </div>
+
+    <div class="sec-lbl">Verbundene Teilnehmer (<span id="p-count">0</span>)</div>
+    <div class="participant-list" id="p-list">
+      <div class="empty">Noch niemand verbunden — QR scannen lassen</div>
+    </div>
+
+    <button class="btn btn-primary" id="match-btn" onclick="runMatching()" disabled>
+      SBKIM-Matching starten →
+    </button>
+    <button class="btn btn-secondary" onclick="resetNode()" style="margin-top:8px;">↺ Neue Session</button>
+
+    <div class="sec-lbl" id="results-lbl" style="display:none;">Match-Ergebnisse</div>
+    <div id="results-list"></div>
+
+    <div class="log" id="log"></div>
+  </div>
+</div>
+
+<script>
+let peer = null;
+let sessionCode = '';
+let participants = {}; // peerId → { role, name, description, needs, conn }
+let matching = false;
+
+function genCode() {
+  return Math.random().toString(36).substring(2,8).toUpperCase();
+}
+
+function log(msg, type='info') {
+  const el = document.getElementById('log');
+  const line = document.createElement('div');
+  line.className = 'log-line ' + type;
+  line.textContent = new Date().toLocaleTimeString('de') + ' ' + msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function setStatus(text, dotClass) {
+  document.getElementById('status-text').textContent = text;
+  document.getElementById('status-dot').className = 'dot ' + dotClass;
+}
+
+function startNode() {
+  const key = document.getElementById('api-key').value.trim();
+  if (!key.startsWith('sk-ant-')) {
+    alert('Bitte gültigen Anthropic API-Key eingeben (sk-ant-…)');
+    return;
+  }
+  localStorage.setItem('sbkim_node_key', key);
+
+  sessionCode = genCode();
+  const peerId = 'sbkim-node-' + sessionCode.toLowerCase();
+
+  setStatus('Verbinde…', 'dot-wait');
+  peer = new Peer(peerId);
+
+  peer.on('open', () => {
+    setStatus('Knoten aktiv · Warte auf Teilnehmer', 'dot-ok');
+    log('Knoten gestartet: ' + peerId, 'ok');
+    document.getElementById('setup-area').style.display = 'none';
+    document.getElementById('session-area').style.display = 'block';
+    document.getElementById('session-code').textContent = sessionCode;
+
+    // QR Code
+    const baseUrl = location.href.replace('sbkim-node.html', 'sbkim-register.html');
+    const joinUrl = baseUrl.split('?')[0] + '?node=' + sessionCode;
+    document.getElementById('qr-wrap').innerHTML = '';
+    new QRCode(document.getElementById('qr-wrap'), {
+      text: joinUrl, width: 160, height: 160,
+      colorDark: '#05050F', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  });
+
+  peer.on('connection', conn => {
+    conn.on('open', () => {
+      log('Neues Gerät verbunden: ' + conn.peer);
+      conn.send({ type: 'CONNECTED', message: 'Verbunden mit SBKIM-Knoten' });
+    });
+    conn.on('data', d => handleData(conn, d));
+    conn.on('close', () => {
+      if (participants[conn.peer]) {
+        log(participants[conn.peer].name + ' getrennt', 'err');
+        delete participants[conn.peer];
+        renderParticipants();
+      }
+    });
+  });
+
+  peer.on('error', e => {
+    setStatus('Fehler: ' + e.type, 'dot-off');
+    log('Fehler: ' + e.type, 'err');
+  });
+}
+
+function handleData(conn, data) {
+  if (data.type === 'REGISTER') {
+    participants[conn.peer] = {
+      peerId: conn.peer,
+      conn,
+      role: data.role,
+      name: data.name,
+      description: data.description,
+      needs: data.needs || ''
+    };
+    log((data.role === 'buyer' ? '👤 Käufer' : '🏪 Verkäufer') + ': ' + data.name, 'ok');
+    conn.send({ type: 'WAITING', count: Object.keys(participants).length });
+    renderParticipants();
+  }
+}
+
+function renderParticipants() {
+  const list = Object.values(participants);
+  document.getElementById('p-count').textContent = list.length;
+
+  const el = document.getElementById('p-list');
+  if (!list.length) {
+    el.innerHTML = '<div class="empty">Noch niemand verbunden — QR scannen lassen</div>';
+    document.getElementById('match-btn').disabled = true;
+    return;
+  }
+
+  const buyers  = list.filter(p => p.role === 'buyer');
+  const sellers = list.filter(p => p.role === 'seller');
+  const canMatch = buyers.length >= 1 && sellers.length >= 1;
+  document.getElementById('match-btn').disabled = !canMatch || matching;
+
+  el.innerHTML = list.map(p => `
+    <div class="participant">
+      <div class="p-role">${p.role === 'buyer' ? '👤' : '🏪'}</div>
+      <div class="p-info">
+        <div class="p-name">${p.name}</div>
+        <div class="p-desc">${p.description}${p.needs ? ' · sucht: ' + p.needs : ''}</div>
+      </div>
+      <div class="p-badge ${p.role === 'buyer' ? 'badge-buyer' : 'badge-seller'}">${p.role === 'buyer' ? 'Käufer' : 'Verkäufer'}</div>
+    </div>`).join('');
+}
+
+async function runMatching() {
+  const key = localStorage.getItem('sbkim_node_key');
+  if (!key) { alert('Kein API-Key'); return; }
+
+  const list = Object.values(participants);
+  const buyers  = list.filter(p => p.role === 'buyer');
+  const sellers = list.filter(p => p.role === 'seller');
+
+  if (!buyers.length || !sellers.length) {
+    alert('Mindestens 1 Käufer und 1 Verkäufer benötigt');
+    return;
+  }
+
+  matching = true;
+  document.getElementById('match-btn').disabled = true;
+  document.getElementById('match-btn').textContent = 'SBKIM analysiert…';
+  setStatus('Matching läuft…', 'dot-wait');
+  log('Matching gestartet für ' + list.length + ' Teilnehmer', 'info');
+
+  // Alle benachrichtigen
+  list.forEach(p => p.conn.send({ type: 'MATCHING', message: 'SBKIM analysiert alle Profile…' }));
+
+  const prompt = `Du bist SBKIM – Semantisches Bidirektionales KI-Matching.
+
+Analysiere diese Teilnehmer und bewerte ALLE möglichen Kombinationen:
+
+KÄUFER (Nachfrager):
+${buyers.map(b => `- Name: "${b.name}" | Beschreibung: "${b.description}" | Bedarf: "${b.needs}"`).join('\n')}
+
+VERKÄUFER (Anbieter):
+${sellers.map(s => `- Name: "${s.name}" | Angebot: "${s.description}"`).join('\n')}
+
+Bewerte JEDE mögliche Käufer-Verkäufer-Kombination nach drei SBKIM-Dimensionen (je 0-100):
+- inhalt: Wie gut passen Angebot und Bedarf inhaltlich zusammen?
+- prozess: Wie kompatibel sind Abwicklung, Timing und Bedingungen?
+- skala: Passen Größe, Menge und Budget zusammen?
+- score: Gewichteter Gesamtwert (inhalt 50%, prozess 30%, skala 20%)
+
+Sortiere nach score absteigend (beste zuerst).
+Antworte NUR als JSON-Array, alle Kombinationen:
+[{"buyer":"Name","seller":"Name","score":85,"inhalt":92,"prozess":78,"skala":80,"reason":"Kurze Begründung auf Deutsch (1-2 Sätze)"}]
+
+Nur JSON, kein Text davor oder danach.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const text = data.content[0].text.trim();
+    const matches = JSON.parse(text);
+
+    log('Matching abgeschlossen: ' + matches.length + ' Paar(e) gefunden', 'ok');
+    setStatus('Match gefunden — Ergebnisse werden gesendet', 'dot-ok');
+
+    // Ergebnisse anzeigen
+    showResults(matches, buyers, sellers);
+
+    // Alle Alternativen pro Teilnehmer sammeln und senden
+    buyers.forEach(buyer => {
+      const alts = matches
+        .filter(m => m.buyer === buyer.name)
+        .sort((a,b) => b.score - a.score)
+        .map(m => {
+          const s = sellers.find(s => s.name === m.seller);
+          return s ? { name: s.name, role: 'seller', description: s.description, score: m.score, reason: m.reason } : null;
+        }).filter(Boolean);
+      if (alts.length) {
+        buyer.conn.send({ type: 'MATCH_RESULTS', matches: alts });
+        log('Alternativen → ' + buyer.name + ': ' + alts.length + ' Treffer', 'ok');
+      } else {
+        buyer.conn.send({ type: 'NO_MATCH', message: 'Kein passender Verkäufer gefunden.' });
+      }
+    });
+
+    sellers.forEach(seller => {
+      const alts = matches
+        .filter(m => m.seller === seller.name)
+        .sort((a,b) => b.score - a.score)
+        .map(m => {
+          const b = buyers.find(b => b.name === m.buyer);
+          return b ? { name: b.name, role: 'buyer', description: b.description, score: m.score, reason: m.reason } : null;
+        }).filter(Boolean);
+      if (alts.length) {
+        seller.conn.send({ type: 'MATCH_RESULTS', matches: alts });
+        log('Alternativen → ' + seller.name + ': ' + alts.length + ' Treffer', 'ok');
+      } else {
+        seller.conn.send({ type: 'NO_MATCH', message: 'Kein passender Käufer gefunden.' });
+      }
+    });
+
+  } catch(e) {
+    log('Fehler beim Matching: ' + e.message, 'err');
+    setStatus('Fehler – API-Key prüfen', 'dot-off');
+    list.forEach(p => p.conn.send({ type: 'ERROR', message: 'Matching fehlgeschlagen. Bitte erneut versuchen.' }));
+  }
+
+  matching = false;
+  document.getElementById('match-btn').textContent = 'SBKIM-Matching starten →';
+  renderParticipants();
+}
+
+function showResults(matches, buyers, sellers) {
+  document.getElementById('results-lbl').style.display = 'block';
+  const el = document.getElementById('results-list');
+  el.innerHTML = matches.map(m => `
+    <div class="result-card">
+      <div class="result-pair">
+        <span>👤 ${m.buyer}</span>
+        <span class="result-arrow">↔</span>
+        <span>🏪 ${m.seller}</span>
+      </div>
+      <div class="score-bar-wrap">
+        <div class="score-bar" style="width:${m.score}%"></div>
+      </div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:6px;">${m.score}% Übereinstimmung</div>
+      <div class="result-reason">${m.reason}</div>
+    </div>`).join('');
+}
+
+function resetNode() {
+  if (peer) { peer.destroy(); peer = null; }
+  participants = {};
+  matching = false;
+  document.getElementById('setup-area').style.display = 'block';
+  document.getElementById('session-area').style.display = 'none';
+  document.getElementById('results-lbl').style.display = 'none';
+  document.getElementById('results-list').innerHTML = '';
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('p-list').innerHTML = '<div class="empty">Noch niemand verbunden</div>';
+  setStatus('Nicht gestartet', 'dot-off');
+}
+
+// API-Key aus localStorage vorausfüllen
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('sbkim_node_key');
+  if (saved) document.getElementById('api-key').value = saved;
+});
+</script>
+</body>
+</html>

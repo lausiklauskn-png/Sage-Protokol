@@ -1,0 +1,14 @@
+{
+  "name": "SBKIM-Demo · Bedeutungs-Austausch zwischen zwei Apps",
+  "short_name": "SBKIM-Demo",
+  "description": "Die erste lauffähige Fassung des SBKIM-Protokolls (März 2026): zwei Geräte finden sich über einen QR-Code und tauschen Anfragen nach Bedeutung aus.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1116",
+  "theme_color": "#0b1116",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
