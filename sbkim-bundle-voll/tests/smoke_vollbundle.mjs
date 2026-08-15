@@ -64,10 +64,23 @@ check(
   "Modul 23 trägt die Kartenechtheit (Stufe 2b, sha 3caa0bb1)",
   sha(join(BOX, "modules", "23_rendezvous.js")).startsWith("3caa0bb1"),
 );
-check(
-  "Modul 16 trägt den 2026-08-01-Aspekt (sha e67b7266)",
-  sha(join(BOX, "modules", "16_siegel.js")).startsWith("e67b7266"),
-);
+// Modul 16: geprüft wird der INHALT, nicht mehr eine sha.
+//
+// Vorher stand hier `sha(…).startsWith("e67b7266")` unter dem Namen „trägt den
+// 2026-08-01-Aspekt". Der Name hat etwas anderes behauptet als die Prüfung tat:
+// eine sha sagt nur „genau diese Fassung", nicht „dieser Aspekt ist drin". Der
+// Unterschied kostete am 2026-08-14 zum zweiten Mal Zeit — jede neue Aspekt-
+// Zeile ändert die sha, die Probe fiel, und zwei Zeilen weiter oben prüft der
+// byte-1:1-Guard ohnehin schon gegen den Kanon. Der Pin war also doppelt und
+// brüchig zugleich.
+//
+// Jetzt wird gefragt, was gemeint war: stehen die Schutz-Aspekte drin? Das
+// überlebt jede byte-1:1-Kopie und fällt trotzdem, wenn jemand einen Aspekt
+// herausnimmt.
+const siegel = readFileSync(join(BOX, "modules", "16_siegel.js"), "utf8");
+for (const datum of ["2026-08-01", "2026-08-14"]) {
+  check("Modul 16 führt den Schutz-Aspekt vom " + datum, siegel.includes(datum));
+}
 
 // README nennt alle Dateien + die kritische Ladereihenfolge.
 const readme = readFileSync(join(BOX, "README.md"), "utf8");

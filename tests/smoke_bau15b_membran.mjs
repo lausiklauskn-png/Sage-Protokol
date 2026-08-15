@@ -360,6 +360,95 @@ async function run() {
     lastReply.msg.payload.error === null);
   g.SbkimMatch = undefined;
 
+  // -------- Sub (b) query mit Inklusions-Pfad (2026-08-14) --------
+  // Aus BookLedgerPro in den Kanon gehoben: eine App kann ihre eigenen
+  // Fachworte mitgeben, damit eine anders formulierte Frage trotzdem trifft.
+  // Der Kanon kennt die Worte nicht — die App gibt sie.
+  //
+  // Die WICHTIGSTE Probe hier ist die erste: OHNE Konfig darf sich nichts
+  // ändern. Alle anderen Knoten im Netz setzen nichts, und für sie muss der
+  // Pfad exakt der alte bleiben.
+  let gerufen = null;
+  g.SbkimMatch = {
+    queryLocal: async (text, k, opts) => {
+      gerufen = { fn: "queryLocal", text, k, opts };
+      return [{ label: "EINFACH", score: 0.9 }];
+    },
+    queryLocalMulti: async (variants, k, opts) => {
+      gerufen = { fn: "queryLocalMulti", variants, k, opts };
+      return [{ label: "MULTI", score: 0.8 }];
+    },
+    expandQuerySimple: (text, o) => [text, text + "+variante:" + Object.keys(o.synonyms).length],
+  };
+
+  async function frageStellen(nonce, text) {
+    lastReply = null; gerufen = null;
+    g.__dispatchMessageEvent(new g.MessageEvent("message", {
+      origin: "https://peer-a.example",
+      data: { type: "sbkim/membrane/v1", op: "query", fromOrigin: "https://peer-a.example",
+              nonce: nonce, payload: { text: text, k: 3 } },
+      source: source,
+    }));
+    await new Promise(r => setImmediate(r));
+    await new Promise(r => setTimeout(r, 5));
+  }
+
+  record("Inklusion: Flag ist anfangs AUS",
+    false, SbkimMembrane._meta.queryInclusionConfigured,
+    SbkimMembrane._meta.queryInclusionConfigured === false);
+
+  await frageStellen("n-qi-0", "ohne konfig");
+  record("Inklusion AUS → unveränderter Pfad: queryLocal(text, k) OHNE Optionen",
+    "queryLocal + opts=undefined",
+    gerufen && gerufen.fn + " + opts=" + String(gerufen.opts),
+    gerufen && gerufen.fn === "queryLocal" && gerufen.opts === undefined &&
+    lastReply.msg.payload.results[0].label === "EINFACH");
+
+  SbkimMembrane.setQueryInclusion({ synonyms: { rechnung: ["faktura"], beleg: ["quittung"] } });
+  record("Inklusion: Flag an + Fachwort-Zahl sichtbar (Karte selbst bleibt drin)",
+    "true/2",
+    SbkimMembrane._meta.queryInclusionConfigured + "/" + SbkimMembrane._meta.queryInclusionSynonymCount,
+    SbkimMembrane._meta.queryInclusionConfigured === true &&
+    SbkimMembrane._meta.queryInclusionSynonymCount === 2);
+
+  await frageStellen("n-qi-1", "faktura");
+  record("Inklusion AN → A4+A1: queryLocalMulti mit Varianten + hybrid",
+    "queryLocalMulti, 2 Varianten, hybrid=true",
+    gerufen && gerufen.fn + ", " + (gerufen.variants || []).length + " Varianten, hybrid=" + (gerufen.opts && gerufen.opts.hybrid),
+    gerufen && gerufen.fn === "queryLocalMulti" && gerufen.variants.length === 2 &&
+    gerufen.opts.hybrid === true && lastReply.msg.payload.results[0].label === "MULTI");
+
+  // Ohne Synonym-Karte, aber hybrid: A4 entfällt, A1 greift.
+  SbkimMembrane.setQueryInclusion({ hybrid: true });
+  await frageStellen("n-qi-2", "nur hybrid");
+  record("Inklusion ohne Fachworte → A1 allein: queryLocal(text, k, {hybrid:true})",
+    "queryLocal + hybrid=true",
+    gerufen && gerufen.fn + " + hybrid=" + (gerufen.opts && gerufen.opts.hybrid),
+    gerufen && gerufen.fn === "queryLocal" && gerufen.opts && gerufen.opts.hybrid === true);
+
+  // Fail-soft: wirft der Multi-Pfad, fällt es auf den Hybrid-Pfad durch —
+  // NICHT auf eine Fehlerantwort. Das ist der Grund, warum die Kaskade
+  // überhaupt eine Kaskade ist.
+  g.SbkimMatch.queryLocalMulti = async () => { throw new Error("kaputt"); };
+  SbkimMembrane.setQueryInclusion({ synonyms: { a: ["b"] } });
+  await frageStellen("n-qi-3", "multi kaputt");
+  record("Inklusion fail-soft: Multi wirft → Rückfall auf Hybrid, KEINE Fehlerantwort",
+    "queryLocal + error=null",
+    gerufen && gerufen.fn + " + error=" + lastReply.msg.payload.error,
+    gerufen && gerufen.fn === "queryLocal" && lastReply.msg.payload.error === null &&
+    lastReply.msg.payload.results[0].label === "EINFACH");
+
+  SbkimMembrane.setQueryInclusion(null);
+  record("Inklusion: setQueryInclusion(null) → Flag wieder aus",
+    false, SbkimMembrane._meta.queryInclusionConfigured,
+    SbkimMembrane._meta.queryInclusionConfigured === false);
+  await frageStellen("n-qi-4", "wieder aus");
+  record("Inklusion aus → wieder der unveränderte Pfad",
+    "queryLocal + opts=undefined",
+    gerufen && gerufen.fn + " + opts=" + String(gerufen.opts),
+    gerufen && gerufen.fn === "queryLocal" && gerufen.opts === undefined);
+  g.SbkimMatch = undefined;
+
   // -------- Sub (b) hint Schema-Fehler + OK ohne Modul 14 --------
   // Schema-Fehler: vector falsche Länge.
   g.__dispatchMessageEvent(new g.MessageEvent("message", {
