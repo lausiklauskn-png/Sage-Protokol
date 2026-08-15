@@ -57,6 +57,34 @@ git -C <repo> rev-list --count origin/<branch>..HEAD   # 0 = wirklich alles oben
 git -C <repo> status --porcelain                       # leer = nichts liegen geblieben
 ```
 
+### ⚠ Die zweite Falle: `git push -u origin <branch>` schiebt NICHT deinen Stand
+
+**Befund 2026-08-15.** `git push --force-with-lease -u origin <branch>` **ohne
+Refspec** pusht nicht `HEAD`, sondern den **gleichnamigen lokalen Branch**.
+Steht man gerade woanders — auf `main`, weil eine frühere Zeile ein
+`git checkout main` enthielt —, dann geht der **alte** Branch hoch und die
+eigene Arbeit bleibt liegen. Real passiert: ein PR wurde angelegt, als „merged"
+gemeldet und geschlossen, **ohne eine einzige Zeile zu enthalten**. Die Meldung
+war echt, der Inhalt war es nicht.
+
+Und die Prüfung danach half nicht, sondern deckte es zu: `git diff
+origin/<branch> origin/main` war **leer** — natürlich, beide Seiten waren gleich
+**alt**. Kein Rechenfehler, wieder der falsche Maßstab.
+
+**Deshalb, wenn es darauf ankommt:**
+
+```bash
+git push --force-with-lease origin refs/heads/<branch>:refs/heads/<branch>   # unmissverständlich
+git diff origin/main origin/<branch> --stat    # bringt der Branch überhaupt etwas? Leer = der PR wäre leer
+```
+
+Ein PR, der nichts enthält, lässt sich mergen und meldet Erfolg. **Vor dem
+Mergen einmal ansehen, ob der Branch gegenüber `main` überhaupt etwas trägt** —
+danach sieht es aus wie erledigte Arbeit.
+
+Gefunden hat das nicht die Sitzung, sondern der **Stop-Hook**. Das ist der
+eigentliche Grund, warum er existiert.
+
 **Und nach einem Squash-Merge:** der Remote-Branch zeigt weiter auf die
 Commits **vor** dem Squash. Ihn auf den gemergten Stand zu heben ist ein
 `--force-with-lease`-Push — erlaubt und richtig, **weil der Branch dann nur
