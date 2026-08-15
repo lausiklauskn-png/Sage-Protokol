@@ -31,6 +31,55 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-15 (Pflege) — 🧬 Modul-23-UI netzweit · Modul 15 aus BLP in den Kanon
+
+Übergabeprotokoll:
+`docs/sessions/archiv/2026-08-15_modul23-ui-netzweit-modul15-kanon.md`.
+
+**Sieben Merges, vier Repos.** Die Modul-23-Oberfläche stand netzweit still: vier
+Kopien hingen 150–780 Zeilen hinter dem Kanon. BookLedgerPro (`#302`), Kim-Bell
+(`#42`), Mein-WorkFloh (`#170`), SB-KIMTool-Point (`#150`) — alle jetzt byte-1:1
+auf `4882c3b6`. **Nachgezählt: es sind 16 Kopien im Netz, nicht vier**; die
+anderen zwölf standen schon richtig, geprüft gegen `origin/main`, nicht gegen den
+lokalen Klon.
+
+### Der Fund, der die Sitzung gedreht hat
+
+Beim Abgleich *aller* Kopien in BookLedgerPro trug **Modul 15 eine BLP-eigene
+Buchhaltungs-Synonym-Karte** (`BLP_QUERY_SYNONYMS` + `queryWithInclusion`, seit
+2026-07-11). Echte, nützliche Funktion — an der einen Stelle, die niemand ändern
+darf. **Ein blindes byte-1:1-Nachziehen hätte sie gelöscht**, und niemand hätte es
+gemerkt: die Cross-Knoten-Suche hätte einfach etwas weniger gefunden.
+
+Statt sie zu überschreiben, ist sie **in den Kanon gewandert** (PR #852): neue
+Option `queryInclusion` / `setQueryInclusion`, **Default aus** — wer nichts
+einstellt, bekommt exakt den bisherigen Pfad. Die **Worte** stehen jetzt in BLPs
+eigenem Klebstoff (`sbkim/sbkim-init.js`), wo die Domäne bekannt ist. Wer dort ein
+Fachwort ergänzt, ändert kein Modul mehr.
+
+Modul 16 trägt den Pflicht-Aspekt dazu — und der sagt ausdrücklich, dass dies
+**keine** Schutz-Verbesserung ist. Ein Aspekt, der mehr behauptet als er leistet,
+wäre genau das Greenwashing, das Karte 16 verbietet.
+
+### Drei Repos hatten gar keinen Wächter für ihre Kopien
+
+„Kopieren, nicht klonen" stand dort nur als Versprechen. Deshalb neu:
+BookLedgerPro (15 Module genagelt) und SB-KIMTool-Point (18) haben jetzt einen
+Drift-Guard mit Vollzähligkeits-Prüfung. Bei Point wiegt das am schwersten —
+**Kim-Bell und Mein-WorkFloh nennen `SB-KIMTool-Point/web/tools/*` als Quelle
+ihrer eigenen Kopien**, ein Drift dort wandert also weiter. Seine sechs offenen
+Abweichungen sind im selben Zug zu (`#151`); keine trug Point-eigene Logik.
+
+### Was offen bleibt
+
+- **Modul 15 steht netzweit in fünf Generationen** — und das war schon vor dieser
+  Sitzung so (`fbf9f42d` in acht Repos, dazu `33d6fe0c`, `0f8a3f69`, `92948a91`,
+  `8a07567f`). Der Kanon-Sprung hat eine sechste obendrauf gesetzt, die
+  Zersplitterung aber nicht verursacht. Ein eigener Rollout, kein Nebenbei.
+- **Klaus' Browser-Sichttest** für alles aus dieser Sitzung.
+
+---
+
 ## Stand 2026-08-14 (Pflege) — 🗂 PULS ausgelagert: 10.150 → 2.592 Zeilen
 
 **Rolle:** Pflege-Sitzung auf Klaus' Zuruf „PULS.md auslagern". Die Schutz-Klausel

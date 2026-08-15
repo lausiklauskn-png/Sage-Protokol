@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-08-14",
-  "seq": 62,
-  "headline": "PULS.md ausgelagert: 10.150 -> 2.627 Zeilen (Schutz-Klausel nennt 3000; sechs Sitzungen hatten es gemeldet, ohne dass es jemand tat). Verfahren nicht neu erfunden, sondern die Fortsetzung der Mai-Auslagerung vom 2026-07-24 (Klaus' Option A), die den naechsten Schritt schon vorzeichnete. Drei Archiv-Dateien: 2026-08 (Sitzungen 03.-09.08., 2290 Zeilen), 2026-07 (alle Juli-Sitzungen, 2731), 2026-06 (alle Juni-Sitzungen, 2608). In PULS bleiben die acht juengsten Sitzungen und ALLE Struktur-Sektionen; an jeder Schnittstelle ein Zeiger, drei Sammel-Zeilen im Archiv-Index. AUSGELAGERT, NICHT GEKUERZT - nachgerechnet: von 360 Ueberschriften fehlt keine, keine ist erfunden, von 8472 nicht-leeren Zeilen wird keine vermisst; alle 124 Archiv-Verweise zeigen auf existierende Dateien. Pie-Block unberuehrt, 3000er-Grenze ausdruecklich NICHT herabgesetzt. Noch offen: die vier Modul-23-UI-Kopien.",
+  "lastBuild": "2026-08-15",
+  "seq": 63,
+  "headline": "Modul-23-Oberflaeche netzweit geschlossen (16/16 auf 4882c3b6, gegen origin/main geprueft - es waren 16 Kopien, nicht die vier aus dem Brief). Der Fund, der die Sitzung drehte: BookLedgerPro trug in SEINER Kopie von Modul 15 eine eigene Buchhaltungs-Synonym-Karte (seit 2026-07-11). Ein blindes byte-1:1-Nachziehen haette sie geloescht - unsichtbar, die Suche haette nur etwas weniger gefunden. Statt zu ueberschreiben ist die MECHANIK in den Kanon gewandert (queryInclusion/setQueryInclusion, Default AUS - wer nichts einstellt, bekommt exakt den bisherigen Pfad), die WORTE stehen jetzt im app-eigenen Klebstoff. Modul 16 traegt den Pflicht-Aspekt und sagt ausdruecklich dazu, dass dies KEINE Schutz-Verbesserung ist. Drei Repos hatten gar keinen Waechter fuer ihre Kopien - BookLedgerPro (15 Module) und SB-KIMTool-Point (18 Dateien) haben jetzt einen; bei Point wiegt es am schwersten, weil Kim-Bell und Mein-WorkFloh SEINE web/tools als Quelle ihrer eigenen Kopien nennen. Points sechs offene Abweichungen sind zu. OFFEN: Modul 15 steht netzweit in fuenf Generationen - schon VOR dieser Sitzung; der Kanon-Sprung hat eine sechste obendrauf gesetzt, die Zersplitterung aber nicht verursacht. Eigener Rollout noetig.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -35,6 +35,11 @@
   },
   "_doc": "Maschinenlesbarer Briefkasten-Aushang (INTERFACES §11.6). seq steigt +1 pro gemeldetem Bau; Gegenseite liest bei Sitzungsstart, vergleicht mit ihrem ack und quittiert. Server-los: das Pushen dieser Datei IST das Signal. Netz-Übersicht: sbkim/NETZ-STAND.md.",
   "history": [
+    {
+      "seq": 63,
+      "date": "2026-08-15",
+      "headline": "Modul-23-Oberflaeche netzweit geschlossen (16/16). Modul 15: BLPs eigene Synonym-Karte in den Kanon gehoben statt sie beim Kopieren zu loeschen - queryInclusion, Default AUS; die Fachworte stehen jetzt im app-eigenen Klebstoff. Zwei neue Drift-Guards (BLP 15 Module, Point 18 Dateien). Points sechs Abweichungen zu. OFFEN: Modul 15 in fuenf Generationen netzweit, schon vorher."
+    },
     {
       "seq": 62,
       "date": "2026-08-14",
