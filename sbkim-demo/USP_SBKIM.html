@@ -522,6 +522,37 @@ function mdToggle(){
   b.style.display=open?'block':'none';
   t.textContent=open?'Schließen ↑':'Öffnen ↓';
 }
+/* ── WELCHES MODELL? (Klaus 2026-08-15) ───────────────────────────────────
+ * Hier stand eine feste Modell-Nummer. Modelle werden abgekuendigt; ab dem
+ * Tag antwortet die API auf JEDE Anfrage mit 404, und was der Nutzer sieht,
+ * ist kein Fehler, sondern ein falsches Ergebnis. Genau so ist es in der
+ * Netzwerk-Ansicht aufgefallen ("es kommt jedes Mal null null null raus").
+ *
+ * Also nicht raten, sondern das Konto fragen, welche Modelle es hat —
+ * dasselbe Muster wie beim Gemini-Anbieter in Modul 04 ("404-fest"). Geht
+ * das nicht, greift der Ersatz. Bevorzugt wird ein kleines Modell: die
+ * Anfragen zahlt der Besucher selbst. */
+const MODELL_ERSATZ = 'claude-haiku-4-5-20251001';
+let MODELL_GEMERKT = null;
+
+async function waehleModell(apiKey) {
+  if (MODELL_GEMERKT) return MODELL_GEMERKT;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/models?limit=100', {
+      headers: { 'x-api-key':apiKey, 'anthropic-version':'2023-06-01',
+                 'anthropic-dangerous-direct-browser-access':'true' }
+    });
+    if (r.ok) {
+      const liste = (await r.json()).data || [];
+      const neuste = liste.slice().sort((a,b) =>
+        String(b.created_at||'').localeCompare(String(a.created_at||'')));
+      const gewaehlt = neuste.find(m => /haiku/i.test(m.id)) || neuste[0];
+      if (gewaehlt && gewaehlt.id) MODELL_GEMERKT = gewaehlt.id;
+    }
+  } catch (e) { /* fail-soft: unten steht der Ersatz */ }
+  return MODELL_GEMERKT || MODELL_ERSATZ;
+}
+
 async function mdMatch(){
   const key=(document.getElementById('md-key').value.trim()||localStorage.getItem('sbkim_node_key')||'');
   if(!key.startsWith('sk-ant-')){alert('Bitte Anthropic API-Key eingeben (sk-ant-…)');return;}
@@ -540,7 +571,7 @@ score = gewichteter Gesamtwert
 Antworte NUR als JSON (ein Objekt):
 {"score":85,"inhalt":92,"prozess":78,"skala":80,"reason":"Begründung auf Deutsch (1-2 Sätze)"}`;
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:256,messages:[{role:'user',content:prompt}]})});
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:await waehleModell(key),max_tokens:256,messages:[{role:'user',content:prompt}]})});
     const d=await r.json();
     const m=JSON.parse(d.content[0].text.trim());
     document.getElementById('md-tscore').textContent=m.score+'%';
