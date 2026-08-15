@@ -37,7 +37,21 @@ html,body{height:100%;font-family:'Space Grotesk',sans-serif;background:var(--bg
 @keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(18px,-24px) scale(1.05);}66%{transform:translate(-14px,18px) scale(.95);}}
 
 /* SCREENS */
-.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;transition:opacity .3s,transform .3s;}
+/* Jeder Bildschirm ist ein festes Fenster ueber der ganzen Seite, und der
+   Rumpf scrollt nicht (overflow:hidden oben). Das geht gut, solange der
+   Inhalt hineinpasst — im geteilten Bildschirm passt er NICHT, und dann war
+   der untere Teil schlicht unerreichbar (Klaus 2026-08-15: "diese Seite
+   laesst sich nicht Scrollen"). Vorher hatten nur einzelne Bildschirme ein
+   overflow-y bekommen; das half genau denen, die zufaellig lang waren.
+
+   Zwei Zeilen, die zusammengehoeren:
+     overflow-y:auto        macht den Bildschirm scrollbar
+     justify-content:safe   sonst frisst die Zentrierung den Anfang. Ein
+                            zentrierter Flex-Inhalt, der zu hoch ist, ragt
+                            OBEN heraus, und dorthin kann man nicht
+                            scrollen — der Kopf waere weg statt der Fuss.
+   `center` steht zuerst als Rueckfall fuer Browser ohne `safe`. */
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;justify-content:safe center;padding:18px;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:opacity .3s,transform .3s;}
 .screen.hidden{opacity:0;pointer-events:none;transform:translateY(12px);}
 #screen-lobby,#screen-wait,#screen-results{justify-content:flex-start;padding-top:14px;overflow-y:auto;}
 
@@ -120,6 +134,11 @@ textarea{resize:none;min-height:80px;line-height:1.6;}
 .ms-md{background:rgba(245,158,11,.14);color:var(--gold-l);}
 .ms-lo{background:rgba(239,68,68,.12);color:#FCA5A5;}
 .ms-self{background:transparent;color:var(--t3);font-size:10px;cursor:default;}
+/* Eine FEHLGESCHLAGENE Messung sieht anders aus als ein schlechtes Ergebnis —
+   sonst liest man einen Ausfall als Urteil. Grau, nicht rot. */
+.ms-err{background:rgba(148,163,184,.10);color:var(--t3);cursor:help;}
+.rec-err{background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.22);color:var(--t3);}
+.pc-err{font-size:11px;color:var(--t3);line-height:1.55;margin-top:2px;}
 
 /* PAIR CARDS */
 .pair-cards{display:flex;flex-direction:column;gap:10px;}
@@ -652,7 +671,11 @@ async function runAllPairs(agents) {
       const r = await callSBKIM(agents[i], agents[j]);
       matrix[i][j] = matrix[j][i] = r;
     } catch(e) {
-      matrix[i][j] = matrix[j][i] = { overall:0, dimensions:{fachlich:0,prozess:0,skalierung:0}, empfehlung:'Nicht geeignet', summary:'Analyse fehlgeschlagen', matching:[], differences:[], bruecke:'' };
+      /* KEIN 0-%-Urteil mehr. Ein Ausfall traegt seinen Grund und sagt, dass
+         er einer ist — sonst steht 'nicht geeignet' an einem Paar, das nie
+         geprueft wurde. Das ist keine schoenere Fehlermeldung, das ist der
+         Unterschied zwischen einer Aussage und einer Behauptung. */
+      matrix[i][j] = matrix[j][i] = { fehler: (e && e.message) || 'unbekannter Fehler' };
     }
     done++;
   }
@@ -679,6 +702,38 @@ function setLoadingProgress(done, total, nameA, nameB) {
       sub.style.opacity = '1'; lbl.style.opacity = '1';
     }, 180);
   }
+}
+
+/* ── WELCHES MODELL? (Klaus 2026-08-15) ───────────────────────────────────
+ * Hier stand eine feste Modell-Nummer aus Mai 2025. Modelle werden
+ * abgekuendigt; ab diesem Tag antwortet die API auf JEDE Anfrage mit 404 —
+ * der Fang in runAllPairs machte daraus "0 % · nicht geeignet", und die
+ * Demo behauptete ein URTEIL, wo sie nur einen Ausfall hatte. Genau so ist
+ * es aufgefallen: "es kommt jedes Mal null null null raus".
+ *
+ * Also nicht mehr raten, sondern das Konto fragen, welche Modelle es hat —
+ * dasselbe Muster wie beim Gemini-Anbieter in Modul 04 ("404-fest").
+ * Geht das nicht (alter Schluessel, kein Durchlass), greift der Ersatz.
+ * Bevorzugt wird ein kleines Modell: die Demo zahlt der Besucher selbst. */
+const MODELL_ERSATZ = 'claude-haiku-4-5-20251001';
+let MODELL_GEMERKT = null;
+
+async function waehleModell(apiKey) {
+  if (MODELL_GEMERKT) return MODELL_GEMERKT;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/models?limit=100', {
+      headers: { 'x-api-key':apiKey, 'anthropic-version':'2023-06-01',
+                 'anthropic-dangerous-direct-browser-access':'true' }
+    });
+    if (r.ok) {
+      const liste = (await r.json()).data || [];
+      const neuste = liste.slice().sort((a,b) =>
+        String(b.created_at||'').localeCompare(String(a.created_at||'')));
+      const gewaehlt = neuste.find(m => /haiku/i.test(m.id)) || neuste[0];
+      if (gewaehlt && gewaehlt.id) MODELL_GEMERKT = gewaehlt.id;
+    }
+  } catch (e) { /* fail-soft: unten steht der Ersatz */ }
+  return MODELL_GEMERKT || MODELL_ERSATZ;
 }
 
 // ── SBKIM CALL ──
@@ -717,7 +772,7 @@ Antworte AUSSCHLIESSLICH mit diesem JSON (kein Markdown):
       'anthropic-version':'2023-06-01',
       'anthropic-dangerous-direct-browser-access':'true'
     },
-    body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1024, messages:[{role:'user',content:prompt}] })
+    body:JSON.stringify({ model:await waehleModell(apiKey), max_tokens:1024, messages:[{role:'user',content:prompt}] })
   });
   if (!resp.ok) {
     const err = await resp.json();
@@ -857,7 +912,12 @@ function buildMatrix(agents, matrix) {
     h += `<tr><th style="color:${COLORS[i%COLORS.length]}">${agents[i].name.substring(0,5)}</th>`;
     for (let j=0;j<N;j++) {
       if (i===j) { h += '<td><span class="ms ms-self">—</span></td>'; continue; }
-      const s = matrix[i][j]?.overall || 0;
+      const zelle = matrix[i][j];
+      if (zelle && zelle.fehler) {
+        h += `<td><span class="ms ms-err" title="nicht analysiert: ${esc(zelle.fehler)}">?</span></td>`;
+        continue;
+      }
+      const s = zelle?.overall || 0;
       const cls = s>=70?'ms-hi':s>=40?'ms-md':'ms-lo';
       h += `<td><span class="ms ${cls}" onclick="scrollToPair(${Math.min(i,j)},${Math.max(i,j)})">${s}%</span></td>`;
     }
@@ -877,6 +937,17 @@ function buildPairCards(agents, matrix) {
   pairs.sort((a,b) => (b.r.overall||0)-(a.r.overall||0));
 
   const h = pairs.map(({i,j,r}) => {
+    const ci0 = COLORS[i%COLORS.length], cj0 = COLORS[j%COLORS.length];
+    if (r.fehler) return `<div class="pair-card glass" id="pc-${i}-${j}">
+      <div class="pc-hdr">
+        <span style="width:9px;height:9px;border-radius:50%;background:${ci0};display:inline-block;flex-shrink:0"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:${cj0};display:inline-block;flex-shrink:0"></span>
+        <div class="pc-names">${esc(agents[i].name)} <span style="color:var(--t3)">↔</span> ${esc(agents[j].name)}</div>
+        <div class="pc-score" style="color:var(--t3)">?</div>
+      </div>
+      <div class="pc-err">Dieses Paar wurde <strong>nicht analysiert</strong> — die Anfrage an das Sprachmodell kam nicht durch.<br>Grund: ${esc(r.fehler)}</div>
+      <span class="pc-rec rec-err">nicht analysiert</span>
+    </div>`;
     const s = r.overall||0;
     const col = s>=70?'var(--teal)':s>=40?'var(--gold)':'var(--red)';
     const ci = COLORS[i%COLORS.length], cj = COLORS[j%COLORS.length];

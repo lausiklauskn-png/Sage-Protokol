@@ -270,6 +270,37 @@ function renderParticipants() {
     </div>`).join('');
 }
 
+/* ── WELCHES MODELL? (Klaus 2026-08-15) ───────────────────────────────────
+ * Hier stand eine feste Modell-Nummer. Modelle werden abgekuendigt; ab dem
+ * Tag antwortet die API auf JEDE Anfrage mit 404, und was der Nutzer sieht,
+ * ist kein Fehler, sondern ein falsches Ergebnis. Genau so ist es in der
+ * Netzwerk-Ansicht aufgefallen ("es kommt jedes Mal null null null raus").
+ *
+ * Also nicht raten, sondern das Konto fragen, welche Modelle es hat —
+ * dasselbe Muster wie beim Gemini-Anbieter in Modul 04 ("404-fest"). Geht
+ * das nicht, greift der Ersatz. Bevorzugt wird ein kleines Modell: die
+ * Anfragen zahlt der Besucher selbst. */
+const MODELL_ERSATZ = 'claude-haiku-4-5-20251001';
+let MODELL_GEMERKT = null;
+
+async function waehleModell(apiKey) {
+  if (MODELL_GEMERKT) return MODELL_GEMERKT;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/models?limit=100', {
+      headers: { 'x-api-key':apiKey, 'anthropic-version':'2023-06-01',
+                 'anthropic-dangerous-direct-browser-access':'true' }
+    });
+    if (r.ok) {
+      const liste = (await r.json()).data || [];
+      const neuste = liste.slice().sort((a,b) =>
+        String(b.created_at||'').localeCompare(String(a.created_at||'')));
+      const gewaehlt = neuste.find(m => /haiku/i.test(m.id)) || neuste[0];
+      if (gewaehlt && gewaehlt.id) MODELL_GEMERKT = gewaehlt.id;
+    }
+  } catch (e) { /* fail-soft: unten steht der Ersatz */ }
+  return MODELL_GEMERKT || MODELL_ERSATZ;
+}
+
 async function runMatching() {
   const key = localStorage.getItem('sbkim_node_key');
   if (!key) { alert('Kein API-Key'); return; }
@@ -324,7 +355,7 @@ Nur JSON, kein Text davor oder danach.`;
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: await waehleModell(key),
         max_tokens: 1024,
         messages: [{ role: 'user', content: prompt }]
       })
