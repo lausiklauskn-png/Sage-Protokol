@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#05050F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>SBKIM · Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05050F; --s1:#0C0C20; --s2:#12122A;
+  --accent:#6366F1; --accent-l:#818CF8; --violet:#8B5CF6;
+  --gold:#F59E0B; --gold-l:#FCD34D; --teal:#14B8A6; --teal-l:#2DD4BF;
+  --text:#EEEEFF; --t2:rgba(238,238,255,.55); --t3:rgba(238,238,255,.28);
+  --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.13);
+  --r:18px; --r-sm:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* BG */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:radial-gradient(ellipse at 70% 5%,rgba(99,102,241,.09) 0%,transparent 55%),
+             radial-gradient(ellipse at 15% 85%,rgba(139,92,246,.07) 0%,transparent 50%);}
+.bg-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:48px 48px;}
+
+/* LAYOUT */
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:28px 18px 48px;}
+
+/* HEADER */
+.hub-header{text-align:center;padding:32px 0 28px;}
+.wm{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;
+  color:var(--accent-l);text-transform:uppercase;opacity:.85;margin-bottom:8px;}
+.wm em{font-style:normal;color:var(--gold);}
+.hub-title{font-size:clamp(26px,6vw,38px);font-weight:700;line-height:1.1;margin-bottom:10px;
+  background:linear-gradient(135deg,#fff 0%,#c7d2fe 45%,var(--teal-l) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hub-sub{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:320px;margin:0 auto;}
+
+/* SECTION LABELS */
+.sec-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3.5px;
+  text-transform:uppercase;color:var(--t3);margin:28px 0 12px;padding-left:2px;}
+
+/* CARDS */
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.card-grid.single{grid-template-columns:1fr;}
+.card-grid.thirds{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:360px){.card-grid.thirds{grid-template-columns:1fr 1fr;}}
+
+.card{
+  display:flex;flex-direction:column;gap:6px;
+  background:rgba(255,255,255,.034);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px 14px;
+  text-decoration:none;color:var(--text);
+  transition:all .22s;cursor:pointer;position:relative;overflow:hidden;
+}
+.card::before{content:'';position:absolute;inset:0;border-radius:var(--r);
+  opacity:0;transition:opacity .22s;z-index:0;}
+.card:hover,.card:active{transform:translateY(-2px);border-color:var(--border2);}
+.card:active{transform:scale(.97);}
+
+.card.c-accent::before{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.08));}
+.card.c-teal::before{background:linear-gradient(135deg,rgba(20,184,166,.1),rgba(45,212,191,.06));}
+.card.c-gold::before{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(252,211,77,.06));}
+.card.c-violet::before{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(196,132,252,.07));}
+.card.c-red::before{background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(248,113,113,.05));}
+.card:hover::before,.card:active::before{opacity:1;}
+
+.card-icon{font-size:22px;position:relative;z-index:1;}
+.card-title{font-size:13px;font-weight:700;line-height:1.25;position:relative;z-index:1;}
+.card-desc{font-size:11px;color:var(--t2);line-height:1.5;position:relative;z-index:1;}
+.card-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:8.5px;
+  letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:100px;
+  margin-top:2px;position:relative;z-index:1;}
+.tag-accent{background:rgba(99,102,241,.15);color:var(--accent-l);}
+.tag-teal{background:rgba(20,184,166,.12);color:var(--teal-l);}
+.tag-gold{background:rgba(245,158,11,.12);color:var(--gold-l);}
+.tag-violet{background:rgba(139,92,246,.15);color:#c4b5fd;}
+
+/* PDF CARDS – full width mit Öffnen-Button */
+.pdf-card{
+  display:flex;align-items:center;gap:14px;
+  background:rgba(255,255,255,.028);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:14px 16px;
+  text-decoration:none;color:var(--text);transition:all .22s;
+}
+.pdf-card:hover,.pdf-card:active{background:rgba(255,255,255,.05);border-color:var(--border2);}
+.pdf-card:active{transform:scale(.98);}
+.pdf-icon{font-size:24px;flex-shrink:0;}
+.pdf-info{flex:1;min-width:0;}
+.pdf-title{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:2px;}
+.pdf-sub{font-size:11px;color:var(--t3);}
+.pdf-arrow{font-size:14px;color:var(--t3);flex-shrink:0;}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:8px 0;}
+
+/* INSTALL BANNER */
+.install-banner{
+  display:none;align-items:center;gap:12px;
+  background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);
+  border-radius:var(--r-sm);padding:12px 16px;margin-bottom:20px;
+}
+.install-banner.show{display:flex;}
+.ib-text{flex:1;font-size:12.5px;color:var(--t2);line-height:1.4;}
+.ib-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;
+  font-family:'Space Grotesk',sans-serif;}
+
+/* FOOTER */
+.hub-footer{text-align:center;padding-top:32px;border-top:1px solid var(--border);margin-top:20px;}
+.hub-footer p{font-size:11px;color:var(--t3);line-height:1.8;}
+
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"><div class="bg-grid"></div></div>
+
+<div class="wrap">
+
+  <!-- INSTALL BANNER -->
+  <div class="install-banner" id="install-banner">
+    <div class="ib-text">📲 App installieren – dann alles offline verfügbar</div>
+    <button class="ib-btn" onclick="installPWA()">Installieren</button>
+  </div>
+
+  <!-- HEADER -->
+  <div class="hub-header">
+    <div class="wm">SBKIM · <em>Klaus Nitzsche</em></div>
+    <h1 class="hub-title">Das Protokoll<br>das verbindet.</h1>
+    <p class="hub-sub">Semantisches Bidirektionales KI-Matching — Konzept, Demos und Dokumente.</p>
+  </div>
+
+  <!-- DEMOS -->
+  <div class="sec-lbl">Demos</div>
+  <div class="card-grid">
+    <a href="demo.html" class="card c-accent">
+      <span class="card-icon">👤</span>
+      <div class="card-title">Layer 1<br>Mensch-Matching</div>
+      <div class="card-desc">Anbieter trifft Käufer — semantisch, P2P</div>
+      <span class="card-tag tag-accent">Live Demo</span>
+    </a>
+    <a href="sbkim-network.html" class="card c-teal">
+      <span class="card-icon">🤖</span>
+      <div class="card-title">Layer 2<br>Agent-Netzwerk</div>
+      <div class="card-desc">KI-Systeme verstehen sich gegenseitig</div>
+      <span class="card-tag tag-teal">Live Demo</span>
+    </a>
+  </div>
+  <div class="card-grid single" style="margin-top:10px;">
+    <a href="sbkim-flow.html" class="card c-gold">
+      <span class="card-icon">⟷</span>
+      <div class="card-title">Layer 3 · Transaktionsfluss</div>
+      <div class="card-desc">Alle Akteure animiert: Matching → Treuhand → Auszahlung</div>
+      <span class="card-tag tag-gold">Live Demo</span>
+    </a>
+  </div>
+
+  <!-- PROTOKOLL -->
+  <div class="sec-lbl">Protokoll · Echtes Matching</div>
+  <div class="card-grid">
+    <a href="protocol/sbkim-node.html" class="card c-accent">
+      <span class="card-icon">✦</span>
+      <div class="card-title">SBKIM Knoten</div>
+      <div class="card-desc">Tablet/PC — empfängt Teilnehmer, führt KI-Matching durch</div>
+      <span class="card-tag tag-accent">Knoten</span>
+    </a>
+    <a href="protocol/sbkim-register.html" class="card c-teal">
+      <span class="card-icon">📲</span>
+      <div class="card-title">Registrieren</div>
+      <div class="card-desc">Handy — als Käufer oder Verkäufer anmelden, Match empfangen</div>
+      <span class="card-tag tag-teal">Teilnehmer</span>
+    </a>
+  </div>
+
+  <!-- PRÄSENTATION -->
+  <div class="sec-lbl">Präsentation</div>
+  <div class="card-grid">
+    <a href="USP_SBKIM.html" class="card c-violet">
+      <span class="card-icon">✦</span>
+      <div class="card-title">Vision &amp; Pitch</div>
+      <div class="card-desc">Was SBKIM ist und warum es besonders ist</div>
+      <span class="card-tag tag-violet">Pitch</span>
+    </a>
+  </div>
+
+  <!-- PROTOKOLL-PAPER -->
+  <div class="sec-lbl">Protokoll-Paper</div>
+  <div class="card-grid">
+    <a href="SBKIM_Paper_DE.html" class="card c-accent">
+      <span class="card-icon">📄</span>
+      <div class="card-title">Paper<br>Deutsch</div>
+      <div class="card-desc">Formale Protokoll-Spezifikation</div>
+      <span class="card-tag tag-accent">v0.1</span>
+    </a>
+    <a href="SBKIM_Paper.html" class="card c-accent">
+      <span class="card-icon">📄</span>
+      <div class="card-title">Paper<br>English</div>
+      <div class="card-desc">Protocol specification for arXiv</div>
+      <span class="card-tag tag-accent">v0.1</span>
+    </a>
+  </div>
+
+  <!-- DOKUMENTE -->
+  <div class="sec-lbl">Konzept-Dokumente</div>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <a href="papiere/USP_Bidirektionales_Matching.pdf" target="_blank" class="pdf-card">
+      <span class="pdf-icon">📕</span>
+      <div class="pdf-info">
+        <div class="pdf-title">USP Bidirektionales Matching</div>
+        <div class="pdf-sub">Alleinstellungsmerkmal · Kernkonzept</div>
+      </div>
+      <span class="pdf-arrow">→</span>
+    </a>
+    <a href="papiere/Konzept_PWA_Marktplatz.pdf" target="_blank" class="pdf-card">
+      <span class="pdf-icon">📗</span>
+      <div class="pdf-info">
+        <div class="pdf-title">Konzept PWA Marktplatz</div>
+        <div class="pdf-sub">Technisches Konzept · Plattform-Architektur</div>
+      </div>
+      <span class="pdf-arrow">→</span>
+    </a>
+    <a href="papiere/Marktanalyse_PWA_Plattform.pdf" target="_blank" class="pdf-card">
+      <span class="pdf-icon">📘</span>
+      <div class="pdf-info">
+        <div class="pdf-title">Marktanalyse PWA Plattform</div>
+        <div class="pdf-sub">Markt · Wettbewerb · Potenzial</div>
+      </div>
+      <span class="pdf-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="hub-footer">
+    <p>
+      SBKIM · Semantisches Bidirektionales KI-Matching<br>
+      Klaus Nitzsche · info@family-projekt.de<br>
+      Protokoll-Spezifikation: Public Domain · Mai 2026
+    </p>
+  </div>
+
+</div><!-- /.wrap -->
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
+  document.getElementById('install-banner').classList.add('show');
+});
+function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    document.getElementById('install-banner').classList.remove('show');
+  });
+}
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').classList.remove('show');
+});
+</script>
+</body>
+</html>

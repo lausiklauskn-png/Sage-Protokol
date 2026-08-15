@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#05050F">
+<title>SBKIM · Transaktionsfluss</title>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05050F;--s1:#0C0C20;
+  --accent:#6366F1;--accent-l:#818CF8;--violet:#8B5CF6;
+  --gold:#F59E0B;--gold-l:#FCD34D;--teal:#14B8A6;--teal-l:#2DD4BF;
+  --text:#EEEEFF;--t2:rgba(238,238,255,.55);--t3:rgba(238,238,255,.28);
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --r:18px;--r-sm:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:radial-gradient(ellipse at 70% 5%,rgba(99,102,241,.09) 0%,transparent 55%),
+             radial-gradient(ellipse at 15% 85%,rgba(139,92,246,.07) 0%,transparent 50%);}
+.bg-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:48px 48px;}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:20px 16px 48px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--t3);text-decoration:none;margin-bottom:18px;}
+.back-link:hover{color:var(--t2);}
+.header{text-align:center;padding:16px 0 16px;}
+.wm{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--accent-l);text-transform:uppercase;opacity:.85;margin-bottom:8px;}
+.wm em{font-style:normal;color:var(--gold);}
+.page-title{font-size:clamp(22px,5vw,30px);font-weight:700;line-height:1.1;margin-bottom:8px;
+  background:linear-gradient(135deg,#fff 0%,#c7d2fe 45%,var(--teal-l) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-sub{font-size:12.5px;color:var(--t2);line-height:1.6;max-width:300px;margin:0 auto;}
+.canvas-wrap{background:rgba(255,255,255,.022);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+canvas{display:block;width:100%;}
+.step-info{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:var(--r-sm);padding:13px 15px;margin-bottom:11px;min-height:68px;}
+.slbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent-l);margin-bottom:6px;}
+.stxt{font-size:12.5px;color:var(--t2);line-height:1.55;}
+.stxt strong{color:var(--text);}
+.btn-row{display:flex;gap:10px;margin-bottom:14px;}
+.btn{flex:1;padding:13px 10px;border:none;border-radius:var(--r-sm);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--violet));color:#fff;}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+.btn-primary:active{transform:scale(.97);}
+.btn-secondary{background:rgba(255,255,255,.06);color:var(--t2);border:1px solid var(--border2);flex:0 0 48px;}
+.btn-secondary:active{transform:scale(.97);}
+.btn:disabled{opacity:.3;pointer-events:none;}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;}
+.leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3);}
+.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 4px currentColor;}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><div class="bg-grid"></div></div>
+<div class="wrap">
+  <a href="hub.html" class="back-link">← Hub</a>
+  <div class="header">
+    <div class="wm">SBKIM · <em>Flow Demo</em></div>
+    <h1 class="page-title">Transaktionsfluss</h1>
+    <p class="page-sub">Alle Akteure, Matching, Treuhand und Gebührenverteilung live.</p>
+  </div>
+
+  <div class="canvas-wrap"><canvas id="fc"></canvas></div>
+
+  <div class="step-info">
+    <div class="slbl" id="slbl">Bereit</div>
+    <div class="stxt" id="stxt">Drücke <strong>Demo starten</strong> um den vollständigen Transaktionsablauf zu sehen.</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="resetDemo()">↺</button>
+    <button class="btn btn-primary" id="bnxt" onclick="nextStep()">Demo starten →</button>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><div class="ldot" style="background:#818CF8;color:#818CF8"></div>SBKIM-Protokoll</div>
+    <div class="leg"><div class="ldot" style="background:#2DD4BF;color:#2DD4BF"></div>Match-Bestätigung</div>
+    <div class="leg"><div class="ldot" style="background:#F59E0B;color:#F59E0B"></div>Zahlung</div>
+    <div class="leg"><div class="ldot" style="background:#C084FC;color:#C084FC"></div>Protokollgebühr (3%)</div>
+  </div>
+</div>
+
+<script>
+const cv = document.getElementById('fc');
+const cx = cv.getContext('2d');
+let W, H, dpr;
+
+const ND = [
+  {id:'buyer',    label:'Käufer',    sub:'Nachfrager', icon:'👤', fx:.16, fy:.11, col:'#818CF8'},
+  {id:'seller',   label:'Verkäufer', sub:'Anbieter',   icon:'🏪', fx:.84, fy:.11, col:'#2DD4BF'},
+  {id:'sbkim',    label:'SBKIM',     sub:'Protokoll',  icon:'✦',  fx:.50, fy:.44, col:'#6366F1'},
+  {id:'paypal',   label:'PayPal',    sub:'Treuhand',   icon:'🔒', fx:.16, fy:.83, col:'#F59E0B'},
+  {id:'protokoll', label:'Protokoll', sub:'Betreiber',  icon:'🤝', fx:.84, fy:.83, col:'#C084FC'},
+];
+
+const EDGES = [
+  ['buyer','sbkim'],['seller','sbkim'],
+  ['buyer','paypal'],['paypal','seller'],['paypal','protokoll'],
+];
+
+let nodes = {}, parts = [], rings = [];
+let T = 0, step = 0, busy = false;
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W = cv.parentElement.getBoundingClientRect().width;
+  H = W * 1.14;
+  cv.width = Math.round(W * dpr);
+  cv.height = Math.round(H * dpr);
+  cv.style.height = H + 'px';
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ND.forEach(n => { nodes[n.id] = {...n, x: n.fx * W, y: n.fy * H}; });
+}
+
+// bezier helpers
+function ctrlPt(a, b) {
+  const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+  const dx = b.x-a.x, dy = b.y-a.y, L = Math.hypot(dx,dy);
+  return { x: mx + (-dy/L)*L*.09, y: my + (dx/L)*L*.09 };
+}
+function bzPt(p0, cp, p1, t) {
+  const m = 1-t;
+  return { x: m*m*p0.x + 2*m*t*cp.x + t*t*p1.x,
+           y: m*m*p0.y + 2*m*t*cp.y + t*t*p1.y };
+}
+
+function addParticles(fid, tid, col, n, delay, onDone) {
+  const f = nodes[fid], t = nodes[tid], c = ctrlPt(f, t);
+  for (let i = 0; i < n; i++) {
+    parts.push({
+      f, t, c, col,
+      prog: 0,
+      spd: .007 + Math.random()*.004,
+      delay: delay + i * .055,
+      done: false,
+      onDone: i === n-1 ? (onDone||null) : null
+    });
+  }
+}
+
+function addRing(id, col) {
+  rings.push({ n: nodes[id], r: 0, col, op: 1 });
+}
+
+// Steps
+const STEPS = [
+  {
+    lbl: 'Schritt 1 · Matching',
+    txt: '<strong>Käufer</strong> und <strong>Verkäufer</strong> senden ihre Profile ans SBKIM-Protokoll. Die KI analysiert Kompatibilität und sendet die Bestätigung zurück.',
+    btn: 'Zahlung → Treuhand →',
+    run(done) {
+      addRing('buyer','#818CF8'); addRing('seller','#818CF8');
+      addParticles('buyer','sbkim','#818CF8', 4, 0);
+      addParticles('seller','sbkim','#818CF8', 4, .22, () => {
+        setTimeout(() => {
+          addRing('sbkim','#6366F1');
+          addParticles('sbkim','buyer','#2DD4BF', 3, 0);
+          addParticles('sbkim','seller','#2DD4BF', 3, .14, () => {
+            addRing('buyer','#2DD4BF'); addRing('seller','#2DD4BF');
+            done();
+          });
+        }, 480);
+      });
+    }
+  },
+  {
+    lbl: 'Schritt 2 · Treuhand',
+    txt: '<strong>Käufer</strong> überweist den Betrag. <strong>PayPal Treuhand</strong> hält das Geld sicher verwahrt, bis der Käufer die Lieferung bestätigt.',
+    btn: 'Transaktion freigeben →',
+    run(done) {
+      addRing('buyer','#F59E0B');
+      addParticles('buyer','paypal','#F59E0B', 10, 0, () => {
+        addRing('paypal','#F59E0B'); done();
+      });
+    }
+  },
+  {
+    lbl: 'Schritt 3 · Auszahlung',
+    txt: 'Käufer bestätigt Erhalt. PayPal gibt frei: <strong>97%</strong> gehen an den <strong>Verkäufer</strong>, <strong>3% Protokollgebühr</strong> an <strong>den Protokoll-Betreiber</strong>.',
+    btn: '↺ Nochmal',
+    run(done) {
+      addRing('paypal','#F59E0B');
+      addParticles('paypal','protokoll','#C084FC', 3, .08);
+      addParticles('paypal','seller','#F59E0B', 12, .28, () => {
+        addRing('seller','#F59E0B'); addRing('protokoll','#C084FC');
+        done();
+      });
+    }
+  }
+];
+
+function nextStep() {
+  if (busy) return;
+  if (step >= STEPS.length) { resetDemo(); return; }
+  const s = STEPS[step];
+  busy = true;
+  document.getElementById('slbl').textContent = s.lbl;
+  document.getElementById('stxt').innerHTML = s.txt;
+  document.getElementById('bnxt').disabled = true;
+  s.run(() => {
+    busy = false;
+    step++;
+    const btn = document.getElementById('bnxt');
+    btn.disabled = false;
+    if (step >= STEPS.length) {
+      document.getElementById('slbl').textContent = 'Abgeschlossen ✓';
+      document.getElementById('stxt').innerHTML = 'Transaktion vollständig. <strong>Verkäufer</strong> hat 97% erhalten. <strong>den Protokoll-Betreiber</strong> hat die 3% Protokollgebühr erhalten.';
+      btn.textContent = '↺ Nochmal';
+    } else {
+      btn.textContent = STEPS[step-1].btn;
+    }
+  });
+}
+
+function resetDemo() {
+  step = 0; busy = false; parts = []; rings = [];
+  document.getElementById('slbl').textContent = 'Bereit';
+  document.getElementById('stxt').innerHTML = 'Drücke <strong>Demo starten</strong> um den vollständigen Transaktionsablauf zu sehen.';
+  const btn = document.getElementById('bnxt');
+  btn.textContent = 'Demo starten →'; btn.disabled = false;
+}
+
+const NR = 23; // node radius
+
+function loop() {
+  requestAnimationFrame(loop);
+  cx.clearRect(0, 0, W, H);
+  T += .016;
+
+  // edges (static dim lines)
+  cx.lineWidth = 1;
+  EDGES.forEach(([a,b]) => {
+    const na = nodes[a], nb = nodes[b];
+    cx.beginPath(); cx.moveTo(na.x, na.y); cx.lineTo(nb.x, nb.y);
+    cx.strokeStyle = 'rgba(255,255,255,.05)'; cx.stroke();
+  });
+
+  // expanding rings
+  rings = rings.filter(r => r.op > 0);
+  rings.forEach(r => {
+    cx.beginPath(); cx.arc(r.n.x, r.n.y, r.r, 0, Math.PI*2);
+    cx.strokeStyle = r.col + Math.floor(r.op*255).toString(16).padStart(2,'0');
+    cx.lineWidth = 1.5; cx.stroke();
+    r.r += 1.6; r.op -= .027;
+  });
+
+  // particles
+  parts.forEach(p => {
+    if (p.done) return;
+    if (p.delay > 0) { p.delay -= .016; return; }
+    p.prog = Math.min(1, p.prog + p.spd);
+    const pos = bzPt(p.f, p.c, p.t, p.prog);
+    const pulse = 1 + Math.sin(T*9 + p.prog*14) * .24;
+    cx.shadowBlur = 11; cx.shadowColor = p.col;
+    cx.beginPath(); cx.arc(pos.x, pos.y, 4.8*pulse, 0, Math.PI*2);
+    cx.fillStyle = p.col; cx.fill();
+    cx.shadowBlur = 0;
+    if (p.prog >= 1) { p.done = true; if (p.onDone) p.onDone(); }
+  });
+  parts = parts.filter(p => !p.done);
+
+  // nodes
+  ND.forEach(nd => {
+    const n = nodes[nd.id];
+    const breathe = 1 + Math.sin(T*2.2 + nd.fx*6) * .028;
+    const r = NR * breathe;
+
+    // outer soft glow
+    cx.shadowBlur = 18; cx.shadowColor = nd.col + '44';
+    cx.beginPath(); cx.arc(n.x, n.y, r, 0, Math.PI*2);
+    cx.fillStyle = '#0A0A1E'; cx.fill();
+    cx.shadowBlur = 0;
+
+    // border ring
+    cx.beginPath(); cx.arc(n.x, n.y, r, 0, Math.PI*2);
+    cx.strokeStyle = nd.col + 'AA'; cx.lineWidth = 1.5; cx.stroke();
+
+    // inner radial fill
+    const grd = cx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r);
+    grd.addColorStop(0, nd.col + '28'); grd.addColorStop(1, 'transparent');
+    cx.beginPath(); cx.arc(n.x, n.y, r, 0, Math.PI*2);
+    cx.fillStyle = grd; cx.fill();
+
+    // icon
+    cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    if (nd.icon === '✦') {
+      cx.font = 'bold 13px "Space Mono", monospace';
+      cx.fillStyle = nd.col;
+    } else {
+      cx.font = '14px serif';
+      cx.fillStyle = 'rgba(238,238,255,.95)';
+    }
+    cx.fillText(nd.icon, n.x, n.y - 1);
+
+    // label
+    cx.font = '600 10px "Space Grotesk", sans-serif';
+    cx.fillStyle = 'rgba(238,238,255,.9)';
+    cx.fillText(nd.label, n.x, n.y + r + 11);
+    cx.font = '9px "Space Grotesk", sans-serif';
+    cx.fillStyle = 'rgba(238,238,255,.38)';
+    cx.fillText(nd.sub, n.x, n.y + r + 22);
+  });
+}
+
+window.addEventListener('resize', () => {
+  const old = W; resize();
+  if (Math.abs(W - old) > 4) { parts = []; rings = []; }
+});
+
+document.fonts.ready.then(() => { resize(); loop(); });
+</script>
+</body>
+</html>
