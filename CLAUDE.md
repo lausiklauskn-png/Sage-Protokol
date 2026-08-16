@@ -447,13 +447,24 @@ Wer eine App zum SBKIM-Knoten macht — oder eine Bauvorlage anfasst — arbeite
 sie ab. Sie ist kurz und sie ist aus Schaden entstanden.
 
 **Die zwei Listen sind NICHT dieselbe.** Modul 16 prüft für sein Siegel
-**sieben** Module (01 · 02 · 03 · 04 · **05** · 07 · 15). Ein arbeitender
-Knoten braucht **dreizehn**: dazu **05b** (Relais-Client), 16, 17, 23, 23-UI
-und `noble-secp256k1`. Weil 05b **nicht** in der Siegel-Liste steht, kann ein
-Siegel golden leuchten, während der Raum unlesbar ist — genau das ist am
-2026-08-16 passiert („✗ Raum-Lesen fehlgeschlagen: Kein Nostr-Relais-Client
-(Modul 05b) verfügbar"). **Modul 05 und 05b sind Pflicht, nicht Zubehör:**
-ohne 05 kein Handshake, ohne 05b kein Raum.
+**acht** Module (01 · 02 · 03 · 04 · **05** · **05b** · 07 · 15). Ein
+arbeitender Knoten braucht **dreizehn**: dazu 16, 17, 23, 23-UI und
+`noble-secp256k1`. **Modul 05 und 05b sind Pflicht, nicht Zubehör:** ohne 05
+kein Handshake, ohne 05b kein Raum.
+
+**05b kam am 2026-08-16 in die Siegel-Liste — und das ist der Grund, warum es
+diese Tafel gibt.** An dem Tag meldete Klaus' Tablet „✗ Raum-Lesen
+fehlgeschlagen: Kein Nostr-Relais-Client (Modul 05b) verfügbar", **und das
+Siegel leuchtete trotzdem**. Es prüfte sieben Module, der Raum war keines
+davon. Ein Siegel, das goldenes Vertrauen zeigt, während der Knoten den
+gemeinsamen Raum gar nicht lesen kann, sagt die Unwahrheit — genau davor soll
+die Anti-Greenwashing-Klausel (Karte 16) schützen; sie griff nicht, weil die
+**Liste** unvollständig war, nicht weil die Prüfung schwach war.
+
+Die Sorge dagegen war, die Aufnahme lasse das Siegel dort erlöschen, wo 05b
+fehlt. Nachgemessen (alle 22 Knoten-Repos) trug sie nicht: **jeder lädt 05b.**
+Bewacht von `tests/smoke_bau16_pflicht_05b.mjs` — mit eingebauter Gegenprobe,
+denn ohne die liefe sie genauso grün, wenn 05b gar nicht in der Liste stünde.
 
 Die vier Fallen, jede einmal teuer bezahlt und heute bewacht:
 
@@ -472,7 +483,7 @@ Die vier Fallen, jede einmal teuer bezahlt und heute bewacht:
 absichtlich verschieden große Kisten** (`docs/MYCEL-GESCHENKBOX.md`): Stufe 1
 `sbkim-bundle/` verbindet nur (9 Module, **kein** Siegel — gewollt), Stufe 2
 `sbkim-bundle-voll/` ist der volle Knoten. Am 2026-08-16 fehlte **Stufe 2 das
-Modul 07** — eines der sieben Siegel-Pflicht-Module —, und es stand in **keiner
+Modul 07** — eines der Siegel-Pflicht-Module —, und es stand in **keiner
 der beiden Tabellen des Rezepts**. Ein Forker hätte alles richtig gemacht und
 kein Abzeichen bekommen, **stumm**. `tests/smoke_bauvorlagen.mjs` (+ Gegenprobe)
 prüft seitdem Rezept und Kiste gegeneinander — und dass Stufe 1 **klein

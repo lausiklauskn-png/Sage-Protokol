@@ -288,6 +288,8 @@ function makeStubGlobal() {
   // SbkimEmbedding bewusst weggelassen (lazy:true → "deferred").
   stub.SbkimMatch      = { match: function () { return 1; } };
   stub.SbkimAnastomose = { handshake: function () {} };
+  // 05b seit 2026-08-16 achtes Pflicht-Modul: ohne Relais-Client kein Raum.
+  stub.SbkimNostrRelay = { subscribe: function () { return function () {}; } };
   stub.SbkimApoptose   = { prepareSelfApoptose: function () {} };
   stub.SbkimMembrane   = { init: function () {} };
 

@@ -57,6 +57,9 @@ globalThis.SbkimSpore      = { getOwnSpore() { return {}; } };
 globalThis.SbkimEmbedding  = { embedPassage() {} };
 globalThis.SbkimMatch      = { match() {} };
 globalThis.SbkimAnastomose = { handshake() {} };
+// 05b seit 2026-08-16 achtes Pflicht-Modul (Kanon 16_siegel.js): ohne
+// Relais-Client kein Raum — geprueft wird die Flaeche subscribe.
+globalThis.SbkimNostrRelay = { subscribe() { return function () {}; } };
 globalThis.SbkimApoptose   = { prepareSelfApoptose() {} };
 globalThis.SbkimMembrane   = { init() {} };
 

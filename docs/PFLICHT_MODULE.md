@@ -15,7 +15,7 @@ Pflichtmodule. Die müssen mit ergänzt werden in allen Repos."*
 
 Das ist der Kern des Missverständnisses, das den Fehler möglich gemacht hat.
 
-### A · Die sieben, die das Siegel prüft
+### A · Die acht, die das Siegel prüft
 
 `src/modules/16_siegel.js` → `PFLICHT_MODULE`:
 
@@ -26,20 +26,21 @@ Das ist der Kern des Missverständnisses, das den Fehler möglich gemacht hat.
 | 03 | Embedding | `SbkimEmbedding` | kein Vektor, keine Bedeutung |
 | 04 | Match | `SbkimMatch` | kein Vergleich |
 | 05 | Anastomose | `SbkimAnastomose` | **kein Handshake** |
+| **05b** | **Relais-Client** | `SbkimNostrRelay` | **kein Raum** — geprüft wird `subscribe` |
 | 07 | Apoptose | `SbkimApoptose` | kein sauberer Rückzug |
 | 15 | Membran | `SbkimMembrane` | kein Wächter |
 
-Sind diese sieben da, stellt sich das Siegel selbst aus (Bronze; Gold nach dem
+Sind diese acht da, stellt sich das Siegel selbst aus (Bronze; Gold nach dem
 ersten „established"-Handshake).
 
 ### B · Was ein KNOTEN darüber hinaus braucht
 
-**Das Siegel prüft sie NICHT** — und genau deshalb kann ein Siegel golden
-leuchten, während der Raum unlesbar ist:
+**Das Siegel prüft sie NICHT.** Bis zum 2026-08-16 gehörte **05b** in diese
+Gruppe — und genau deshalb konnte ein Siegel golden leuchten, während der Raum
+unlesbar war. Es steht jetzt in Liste A; hier bleibt der Rest:
 
 | # | Modul | Global | ohne es |
 |---|---|---|---|
-| **05b** | **Relais-Client** | `SbkimNostrRelay` | **kein Raum** — „Raum-Lesen fehlgeschlagen" |
 | 16 | Siegel | `SbkimSiegel` | kein Abzeichen, kein Andock-Wizard |
 | 17 | Widget | `SbkimWidget` | keine Lampen — und **keine Anker** für 15/16 |
 | 23 | Rendezvous | `SbkimRendezvous` | keine lebende Visitenkarte |
@@ -49,11 +50,13 @@ leuchten, während der Raum unlesbar ist:
 **Zusammen: 13 Dateien.** Weniger ist kein Knoten, sondern eine App mit
 Modulen darin.
 
-> **Sollte 05b in die Siegel-Liste?** Wahrscheinlich ja — dann wäre der Befund
-> vom 2026-08-16 gar nicht erst möglich gewesen. Aber es ist ein Eingriff in
-> `PFLICHT_MODULE`, der **in elf Repos** wirkt und dort, wo 05b fehlt, das
-> Siegel **erlöschen** lässt. Das ist Klaus' Entscheidung, nicht die einer
-> Sitzung. **Bis dahin ersetzt die Bau-Probe unten die fehlende Prüfung.**
+> **05b ist am 2026-08-16 in Liste A gewandert** — Klaus' Entscheidung, am Tag
+> des Befundes. Die Sorge davor war, das würde in den Repos, denen 05b fehlt,
+> das Siegel **erlöschen** lassen. Nachgemessen wurde sie nicht bestätigt:
+> **alle 22 Knoten-Repos laden 05b**. Die Aufnahme löscht also nirgends ein
+> Siegel — sie verhindert nur, dass eines leuchtet, wo der Raum tot ist.
+> Bewacht von `tests/smoke_bau16_pflicht_05b.mjs`, mit eingebauter Gegenprobe:
+> **ohne** Relais-Client MUSS das Siegel ausbleiben, sonst ist die Probe wertlos.
 
 ---
 

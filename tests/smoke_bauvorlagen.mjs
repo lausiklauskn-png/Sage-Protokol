@@ -51,10 +51,12 @@ const STUFE_2 = [...STUFE_1, "07_apoptose", "15_membran", "16_siegel",
                  "17_floating_widget", "19_andock_wizard", "20_schluessel_safe",
                  "21_spracheingabe", "22_such_widget", "24_ocr_eingabe"];
 
-// Die sieben, die Modul 16 fürs Siegel prüft. Fehlt eine, bleibt das Abzeichen
+// Die acht, die Modul 16 fürs Siegel prüft. Fehlt eine, bleibt das Abzeichen
 // STUMM aus — kein Fehler, keine Meldung, nur kein Siegel.
+// 05b kam am 2026-08-16 dazu (Klaus' Wort): vorher konnte ein Siegel golden
+// leuchten, während der Knoten den gemeinsamen Raum gar nicht lesen konnte.
 const SIEGEL_PFLICHT = ["01_storage", "02_spore", "03_embedding", "04_match",
-                        "05_anastomose", "07_apoptose", "15_membran"];
+                        "05_anastomose", "05b_nostr_relay", "07_apoptose", "15_membran"];
 
 const KISTEN = [
   { ordner: "sbkim-bundle",      soll: STUFE_1, name: "Stufe 1 · Verbinden",   siegelfaehig: false },
@@ -86,7 +88,7 @@ for (const k of KISTEN) {
   if (k.siegelfaehig) {
     const fehlend = SIEGEL_PFLICHT.filter((m) => !existsSync(join(ordner, `${m}.js`)));
     sage(fehlend.length === 0,
-         `alle sieben Siegel-Pflicht-Module da${fehlend.length ? " — fehlt: " + fehlend.join(", ") : ""}`);
+         `alle acht Siegel-Pflicht-Module da${fehlend.length ? " — fehlt: " + fehlend.join(", ") : ""}`);
   } else {
     // Umgekehrt: Stufe 1 darf NICHT heimlich zur Stufe 2 anwachsen. Sonst
     // verschwindet die kleine Kiste, und ein Forker, der nur verbinden will,

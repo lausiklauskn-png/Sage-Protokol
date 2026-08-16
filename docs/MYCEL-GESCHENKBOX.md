@@ -88,7 +88,9 @@ abgewandelt.
 
 > **⚠ Modul 07 stand hier bis zum 2026-08-16 NICHT — und fehlte deshalb auch
 > in der Kiste.** Das ist keine Kleinigkeit: Modul 16 prüft für sein Siegel
-> **sieben** Module (01 · 02 · 03 · 04 · 05 · **07** · 15). Fehlt eines, stellt
+> **acht** Module (01 · 02 · 03 · 04 · 05 · **05b** · **07** · 15 — 05b seit
+> dem 2026-08-16, weil ein Siegel sonst leuchten konnte, während der
+> gemeinsame Raum unlesbar war). Fehlt eines, stellt
 > sich die App **kein Siegel aus — und zwar stumm**: keine Meldung, kein Fehler,
 > das Abzeichen bleibt einfach weg. Ein Forker hätte die Stufe-2-Kiste
 > ausgepackt, alles richtig gemacht und sich gefragt, warum nichts kommt.

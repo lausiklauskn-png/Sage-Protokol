@@ -3211,19 +3211,35 @@ Bietet (öffentlich):
     }
 
   PFLICHT_MODULE (modul-interne Konstante, Karte 16 § Sub (a)):
-    Sieben Einträge — Stand Spec-Sitzung 16 vom 2026-05-24:
+    Acht Einträge — Stand 2026-08-16 (05b ergänzt, siehe unten):
     [
-      { id:"01", name:"Storage",     globalName:"SbkimStorage",     surfaceFn:"init",                lazy:false },
-      { id:"02", name:"Spore",       globalName:"SbkimSpore",       surfaceFn:"getOwnSpore",         lazy:false },
-      { id:"03", name:"Embedding",   globalName:"SbkimEmbedding",   surfaceFn:"embedPassage",        lazy:true  },
-      { id:"04", name:"Match",       globalName:"SbkimMatch",       surfaceFn:"match",               lazy:false },
-      { id:"05", name:"Anastomose",  globalName:"SbkimAnastomose",  surfaceFn:"handshake",           lazy:false },
-      { id:"07", name:"Apoptose",    globalName:"SbkimApoptose",    surfaceFn:"prepareSelfApoptose", lazy:false },
-      { id:"15", name:"Membran",     globalName:"SbkimMembrane",    surfaceFn:"init",                lazy:false },
+      { id:"01",  name:"Storage",       globalName:"SbkimStorage",     surfaceFn:"init",                lazy:false },
+      { id:"02",  name:"Spore",         globalName:"SbkimSpore",       surfaceFn:"getOwnSpore",         lazy:false },
+      { id:"03",  name:"Embedding",     globalName:"SbkimEmbedding",   surfaceFn:"embedPassage",        lazy:true  },
+      { id:"04",  name:"Match",         globalName:"SbkimMatch",       surfaceFn:"match",               lazy:false },
+      { id:"05",  name:"Anastomose",    globalName:"SbkimAnastomose",  surfaceFn:"handshake",           lazy:false },
+      { id:"05b", name:"Relais-Client", globalName:"SbkimNostrRelay",  surfaceFn:"subscribe",           lazy:false },
+      { id:"07",  name:"Apoptose",      globalName:"SbkimApoptose",    surfaceFn:"prepareSelfApoptose", lazy:false },
+      { id:"15",  name:"Membran",       globalName:"SbkimMembrane",    surfaceFn:"init",                lazy:false },
     ]
     Diese Liste ist code-versioniert. Aktualisierung NUR über eine
     Pflege-PR mit Karten- und Brief-Update; KEINE Runtime-API zum
     Setzen.
+
+    Änderung 2026-08-16 — 05b aufgenommen (Klaus' Wort, am Tag des
+    Befundes). Anlass: das Netz-Fenster meldete „✗ Raum-Lesen
+    fehlgeschlagen: Kein Nostr-Relais-Client (Modul 05b) verfügbar",
+    UND DAS SIEGEL LEUCHTETE TROTZDEM — es prüfte die sieben oben, der
+    Raum war keines davon. Ein Siegel, das goldenes Vertrauen zeigt,
+    während der Knoten den gemeinsamen Raum gar nicht lesen kann, sagt
+    die Unwahrheit; die Anti-Greenwashing-Klausel griff nicht, weil die
+    LISTE unvollständig war, nicht weil die Prüfung schwach war.
+    surfaceFn ist „subscribe" und nicht „publish": daran entscheidet
+    sich das LESEN des Raums — wer nur senden kann, nimmt nicht teil.
+    Vor der Aufnahme gemessen (alle 22 Knoten-Repos): jeder lädt 05b,
+    die Aufnahme löscht also nirgends ein Siegel.
+    Bewacht von tests/smoke_bau16_pflicht_05b.mjs (mit Gegenprobe:
+    ohne Relais-Client MUSS das Siegel ausbleiben).
 
   ZERTIFIKAT_ASPEKTE (modul-interne Konstante, Karte 16 § Sub (d)):
     Start-Eintrag verbindlich für Bau-Sitzung 16:
