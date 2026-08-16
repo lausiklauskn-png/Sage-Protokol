@@ -78,7 +78,7 @@ pro PWA-Lauf aktualisiert sich das Siegel selbst.
 
 #### Finale Pflicht-Modul-Liste
 
-Für das **Grund-Siegel** gelten genau **sieben** Module als Pflicht:
+Für das **Grund-Siegel** gelten genau **acht** Module als Pflicht:
 
 | Modul | Global | Pflicht-Funktion (Surface-Anker) | Lazy? | Begründung |
 |---|---|---|---|---|
@@ -87,6 +87,7 @@ Für das **Grund-Siegel** gelten genau **sieben** Module als Pflicht:
 | **03** Embedding   | `SbkimEmbedding`   | `embedPassage`       | **ja** | Vektor-Schicht. Sage-Page lädt 03 lazy (asset-schwer, ~30 MB Modell). Surface-Check toleriert „deferred". |
 | **04** Match       | `SbkimMatch`       | `match`              | nein | Schwellen-Vergleich, Anastomose-Voraussetzung. |
 | **05** Anastomose  | `SbkimAnastomose`  | `handshake`          | nein | Netz-Teilnahme — ohne Handshake kein Geschwister-Pfad. |
+| **05b** Relais-Client | `SbkimNostrRelay` | `subscribe`       | nein | **Ergänzt 2026-08-16** (Klaus' Wort, am Tag des Befundes): ohne Relais-Client bleibt der gemeinsame Raum unlesbar — und das Siegel leuchtete trotzdem, weil 05b nicht auf dieser Liste stand. `subscribe` und nicht `publish`: daran hängt das **Lesen**; wer nur senden kann, nimmt nicht teil. Vor der Aufnahme gemessen: alle 22 Knoten-Repos laden 05b, es erlischt also nirgends ein Siegel. |
 | **07** Apoptose    | `SbkimApoptose`    | `prepareSelfApoptose` | nein | Lebenszyklus — ohne Apoptose keine Selbstlöschung, Mycel-Grundsatz verletzt. |
 | **15** Membran     | `SbkimMembrane`    | `init`               | nein | Außen-Schicht — Fremdzugriff-Sichtbarmachung Pflicht, weil seit Gemini 3.5 Flash relevant. |
 
