@@ -214,9 +214,38 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
   </div>
 
   <!-- DOKUMENTE -->
-  <div class="sec-lbl">Konzept-Dokumente</div>
+  <div class="sec-lbl">Konzept-Dokumente · März 2026, bereinigt</div>
   <div style="display:flex;flex-direction:column;gap:8px;">
+    <a href="papiere/USP_Bidirektionales_Matching.pdf" class="pdf-card">
+      <span class="pdf-icon">📐</span>
+      <div class="pdf-info">
+        <div class="pdf-title">USP · Bidirektionales semantisches Matching</div>
+        <div class="pdf-sub">Das eingelöste Papier — läuft heute wirklich</div>
+      </div>
+      <span class="pdf-arrow">↗</span>
+    </a>
+    <a href="papiere/Konzept_PWA_Marktplatz.pdf" class="pdf-card">
+      <span class="pdf-icon">🧩</span>
+      <div class="pdf-info">
+        <div class="pdf-title">Konzept · KI-gestützte PWA-Vermittlung</div>
+        <div class="pdf-sub">Plattform-Entwurf; ein Schritt von fünf ist gegangen worden</div>
+      </div>
+      <span class="pdf-arrow">↗</span>
+    </a>
+    <a href="papiere/Marktanalyse_PWA_Plattform.pdf" class="pdf-card">
+      <span class="pdf-icon">📊</span>
+      <div class="pdf-info">
+        <div class="pdf-title">Marktanalyse &amp; Wettbewerbsbewertung</div>
+        <div class="pdf-sub">Zahlen, SWOT — und was bewusst nicht gebaut wurde</div>
+      </div>
+      <span class="pdf-arrow">↗</span>
+    </a>
   </div>
+  <p style="font-size:11px;color:var(--t3);line-height:1.6;margin:10px 2px 0;">
+    Zeitdokumente aus dem März 2026. Wo im Original der Name des damals
+    angesprochenen Hauses stand, steht heute „…“; der Vermerk „vertraulich“ ist
+    entfallen.
+  </p>
 
   <!-- FOOTER -->
   <div class="hub-footer">
@@ -230,9 +259,11 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 </div><!-- /.wrap -->
 
 <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
-}
+// Kein Service-Worker. Die Zeile stand hier und rief `./sw.js` — eine Datei,
+// die es in diesem Ordner nie gab: bei jedem Aufruf ein 404, und stumm
+// weggefangen, also unsichtbar. Ein Vorrat wäre hier auch das Falsche: diese
+// Seiten sollen sich beim Aufruf frisch holen, dafür sitzt der ⟳-Knopf da
+// (aktualisieren.js). Ein Vorrat arbeitete genau dagegen.
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault(); deferredPrompt = e;
@@ -250,5 +281,6 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('install-banner').classList.remove('show');
 });
 </script>
+<script src="aktualisieren.js" defer></script>
 </body>
 </html>

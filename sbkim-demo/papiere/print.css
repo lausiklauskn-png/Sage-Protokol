@@ -1,0 +1,92 @@
+/* === Druck-Stylesheet für die drei Konzept-Papiere ===
+ *
+ * Wird vom Erzeuger (`_pdf.mjs`) per Headless-Chromium auf die HTML-Fassung
+ * angewendet — dasselbe Verfahren wie bei der Einladung
+ * (`docs/einladung/print.css` + `_pdf.mjs`), nur schlichter: das hier sind
+ * Sach-Papiere, keine Magazin-Seiten.
+ *
+ * Bewusst NICHT die Einladungs-Optik: die ist ein Werbe-Artefakt mit
+ * Marginalien und Serifen-Satz. Ein Konzept- und Marktpapier soll aussehen
+ * wie ein Bericht, den man liest und ablegt.
+ *
+ * Erzeugung (aus dem Repo-Root):
+ *   PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers node sbkim-demo/papiere/_pdf.mjs
+ *
+ * Ränder kommen aus dem Erzeuger (page.pdf), nicht aus @page — sonst zählt
+ * Chromium doppelt.
+ */
+
+@page { size: A4 portrait; margin: 0; }
+
+html, body {
+  margin: 0;
+  background: #fff;
+  color: #16202b;
+  font: 10.5pt/1.55 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.blatt { max-width: 165mm; margin: 0 auto; }
+
+/* ── Titelkopf ─────────────────────────────────────────────────────────── */
+.kopf { border-bottom: 2.5pt solid #16202b; padding-bottom: 9pt; margin-bottom: 16pt; }
+.marke {
+  font-size: 7.5pt; letter-spacing: 2.6pt; text-transform: uppercase;
+  color: #6b7887; margin: 0 0 7pt;
+}
+h1 { font-size: 21pt; line-height: 1.15; margin: 0 0 6pt; letter-spacing: -.3pt; }
+.unterzeile { font-size: 10.5pt; color: #4a5666; margin: 0; }
+
+/* Der Hinweis-Kasten oben — er ersetzt den früheren „Vertraulich"-Vermerk.
+   Er steht bewusst VOR dem Text und nicht im Kleingedruckten. */
+.einordnung {
+  border-left: 2.5pt solid #b8853a; background: #fbf6ee;
+  padding: 8pt 11pt; margin: 0 0 16pt; font-size: 9pt; line-height: 1.5;
+  color: #4a4034;
+}
+.einordnung b { color: #16202b; }
+
+/* ── Fließtext ─────────────────────────────────────────────────────────── */
+h2 {
+  font-size: 12.5pt; margin: 17pt 0 6pt; padding-top: 7pt;
+  border-top: .6pt solid #ccd4dd; break-after: avoid;
+}
+h3 { font-size: 10.5pt; margin: 12pt 0 4pt; break-after: avoid; }
+p  { margin: 0 0 7pt; }
+ul { margin: 0 0 8pt; padding-left: 15pt; }
+li { margin: 0 0 3pt; }
+strong { color: #0f1720; }
+.lead { font-size: 11pt; color: #35414f; }
+
+/* ── Tabellen — das Rückgrat dieser Papiere ────────────────────────────── */
+table {
+  width: 100%; border-collapse: collapse; margin: 8pt 0 12pt;
+  font-size: 9pt; break-inside: avoid;
+}
+th, td {
+  border: .6pt solid #ccd4dd; padding: 5pt 7pt;
+  text-align: left; vertical-align: top;
+}
+th { background: #eef2f6; font-weight: 700; }
+tbody tr:nth-child(even) td { background: #f8fafb; }
+td.zahl { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Merksatz-Kasten */
+.merksatz {
+  border: .8pt solid #16202b; padding: 10pt 12pt; margin: 12pt 0;
+  break-inside: avoid;
+}
+.merksatz p:last-child { margin-bottom: 0; }
+.merksatz .gross { font-size: 12pt; font-weight: 700; }
+
+.fuss {
+  margin-top: 18pt; padding-top: 7pt; border-top: .6pt solid #ccd4dd;
+  font-size: 8pt; color: #6b7887;
+}
+
+/* Am Bildschirm ein Blatt-Eindruck; im Druck nimmt @page das Format vor. */
+@media screen {
+  body { background: #e9edf1; padding: 24px 12px; }
+  .blatt { background: #fff; padding: 26mm 20mm; box-shadow: 0 2px 18px rgba(0,0,0,.14); }
+}

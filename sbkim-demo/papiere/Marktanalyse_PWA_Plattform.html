@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Marktanalyse &amp; Wettbewerbsbewertung</title>
+<link rel="stylesheet" href="print.css">
+</head>
+<body>
+<div class="blatt">
+
+<div class="kopf">
+  <p class="marke">Marktanalyse · März 2026</p>
+  <h1>Marktanalyse &amp; Wettbewerbsbewertung</h1>
+  <p class="unterzeile">KI-gestützte PWA-Vermittlungsplattform · Marktpotenzial · Wettbewerb · USP · Bedarfsanalyse</p>
+</div>
+
+<div class="einordnung">
+  <b>Zur Einordnung.</b> Diese Analyse stammt aus dem <b>März 2026</b>. Sie ist ein
+  <b>Zeitdokument</b>: die Zahlen sind Fremdprognosen von damals, die
+  Handlungsempfehlungen richteten sich an ein bestimmtes Haus, das heute durch
+  „<b>…</b>“ ersetzt ist. <b>Wichtig für den heutigen Leser:</b> die Kapitel 9 und 10
+  argumentieren für Lizenzierung, Zertifizierungsstelle und einen Burggraben aus
+  proprietären Daten. Genau davon ist nichts gebaut worden — und das aus Überzeugung.
+  Was stattdessen entstand, ist offen, kopierbar und ohne Server. Warum, steht in
+  <i>docs/PLAN_PILZ_WIRTSCHAFT.md</i>.
+</div>
+
+<table>
+  <thead><tr><th>Kennzahl (Stand der Analyse)</th><th>Wert</th></tr></thead>
+  <tbody>
+    <tr><td>CAGR PWA-Markt 2025–2035</td><td class="zahl">30,2 %</td></tr>
+    <tr><td>Marktvolumen 2035 (Prognose)</td><td class="zahl">34,6 Mrd. $</td></tr>
+    <tr><td>Aktive PWAs weltweit (2025)</td><td class="zahl">54.000</td></tr>
+    <tr><td>Nutzer, die PWAs gegenüber nativen Apps bevorzugen</td><td class="zahl">70 %</td></tr>
+  </tbody>
+</table>
+
+<h2>1 · Executive Summary</h2>
+
+<p class="lead">Die vorliegende Analyse bewertet das Marktpotenzial einer KI-gestützten
+Vermittlungsplattform für private Progressive Web Apps (PWAs).</p>
+
+<p>Sie zeigt, dass ein strukturelles Marktversagen existiert: Tausende leistungsfähige
+PWA-Lösungen von Einzel- und Freizeitentwicklern erreichen ihre Zielgruppe nicht — weil
+geeignete Vertriebswege fehlen und bestehende Plattformen algorithmisch und werbegesteuert
+arbeiten statt bedarfsorientiert. Die geplante Plattform adressiert genau diese Lücke mit
+einem KI-Prompt-Matching-System, das Angebot und Nachfrage semantisch verbindet.</p>
+
+<p>Der globale PWA-Markt wächst mit einem CAGR von über 30 % und wird bis 2035 ein Volumen
+von rund 34,6 Milliarden USD erreichen. Gleichzeitig nutzen weltweit erst 54.000 Websites
+PWA-Technologie — ein deutliches Zeichen für ein weitgehend unerschlossenes Potenzial. Die
+geplante Plattform positioniert sich als erste spezialisierte, KI-gestützte
+Vermittlungsinfrastruktur in diesem Segment.</p>
+
+<h2>2 · Marktgröße &amp; Wachstum</h2>
+
+<p>Alle führenden Marktforschungsinstitute verzeichnen für den globalen PWA-Markt ein
+außergewöhnlich starkes Wachstum. Die Spannbreite der Prognosen reflektiert unterschiedliche
+Definitionen und Erhebungsmethoden, zeigt aber einheitlich eine Wachstumsrate von rund
+20–31 % pro Jahr.</p>
+
+<table>
+  <thead><tr><th>Quelle / Institut</th><th>Marktwert 2024/25</th><th>Prognose 2033–2035</th><th>CAGR</th></tr></thead>
+  <tbody>
+    <tr><td>Grand View Research</td><td class="zahl">2,08 Mrd. USD (2024)</td><td class="zahl">21,24 Mrd. USD (2033)</td><td class="zahl">29,9 %</td></tr>
+    <tr><td>Straits Research</td><td class="zahl">3,53 Mrd. USD (2024)</td><td class="zahl">21,44 Mrd. USD (2033)</td><td class="zahl">19,0 %</td></tr>
+    <tr><td>Market.us</td><td class="zahl">2,60 Mrd. USD (2023)</td><td class="zahl">40,30 Mrd. USD (2033)</td><td class="zahl">31,4 %</td></tr>
+    <tr><td>Research Nester</td><td class="zahl">2,47 Mrd. USD (2025)</td><td class="zahl">34,58 Mrd. USD (2035)</td><td class="zahl">30,2 %</td></tr>
+  </tbody>
+</table>
+
+<p>Relevante Markt-Kennzahlen im Überblick:</p>
+
+<table>
+  <thead><tr><th>Kennzahl</th><th>Wert</th><th>Bedeutung für die Plattform</th></tr></thead>
+  <tbody>
+    <tr><td>Aktive PWA-Websites weltweit</td><td class="zahl">54.000</td><td>Enormes Wachstumspotenzial — Markt kaum erschlossen</td></tr>
+    <tr><td>Nutzer bevorzugen PWAs</td><td class="zahl">70 %</td><td>Starke Nachfrageseite vorhanden</td></tr>
+    <tr><td>Nutzer installieren PWAs</td><td class="zahl">80 %</td><td>Hohe Bereitschaft zur App-Nutzung ohne Store</td></tr>
+    <tr><td>Höhere Conversion vs. native Apps</td><td class="zahl">+ 36 %</td><td>PWAs überzeugen Käufer schneller</td></tr>
+    <tr><td>Höhere Nutzerbindung vs. Web</td><td class="zahl">+ 180 %</td><td>PWAs erzeugen signifikant mehr Engagement</td></tr>
+    <tr><td>Weniger Sicherheitslücken</td><td class="zahl">60 % weniger</td><td>PWAs sind vertrauenswürdiger als native Apps</td></tr>
+  </tbody>
+</table>
+
+<div class="merksatz">
+  <p><b>Zentrale Erkenntnis:</b> Der PWA-Markt wächst schneller als der klassische
+  App-Markt — aber es fehlt eine dedizierte Infrastruktur für die Vermittlung privater und
+  unabhängiger PWA-Lösungen. Diese Lücke ist der Ausgangspunkt der geplanten Plattform.</p>
+</div>
+
+<h2>3 · Wettbewerbsanalyse</h2>
+
+<p>Kein bestehendes System kombiniert alle drei Kernelemente der geplanten Plattform:
+semantische KI-Suche, gerätegebundenen Kopierschutz und ein strukturiertes
+Entwickler-Zertifizierungssystem.</p>
+
+<table>
+  <thead><tr><th>Plattform</th><th>Typ</th><th>Stärken</th><th>Schwächen / Lücken</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Apple App Store / Google Play</td><td>Native App Marktplatz</td>
+      <td>Große Reichweite, bekannte Marke, Bewertungssystem</td>
+      <td>Kein PWA-Fokus, hohe Einstiegshürden, 30 % Provision, zentrale Zensur möglich</td>
+    </tr>
+    <tr>
+      <td>GitHub Pages / Netlify</td><td>Hosting-Plattform</td>
+      <td>Kostenlos, technisch flexibel, offen</td>
+      <td>Keine Vermittlung, kein Käufermarkt, kein Kopierschutz</td>
+    </tr>
+    <tr>
+      <td>Shopify App Store</td><td>B2B App Marktplatz</td>
+      <td>Fokussiert, Zielgruppe klar, Zahlungsintegration</td>
+      <td>Nur Shopify-Ökosystem, kein semantisches Matching, nicht für private Entwickler</td>
+    </tr>
+    <tr>
+      <td>ProductHunt</td><td>Produktentdeckung</td>
+      <td>Community-getrieben, gute Sichtbarkeit für Neulancierungen</td>
+      <td>Kein Kaufprozess, kein Lizenzschutz, algorithmisch werbefinanziert</td>
+    </tr>
+    <tr>
+      <td>Gumroad</td><td>Digitaler Verkauf</td>
+      <td>Einfacher Checkout, global nutzbar, niedrige Hürden</td>
+      <td>Keine KI-Suche, kein gerätegebundener Schutz, keine PWA-Spezifik</td>
+    </tr>
+    <tr>
+      <td>itch.io</td><td>Indie-Game / Software</td>
+      <td>Fair gegenüber Entwicklern, flexible Preisgestaltung</td>
+      <td>Gaming-fokussiert, kein semantisches Matching, kein B2B-Modell</td>
+    </tr>
+    <tr>
+      <td><b>Geplante Plattform</b></td><td><b>KI-PWA-Marktplatz</b></td>
+      <td><b>KI-Prompt-Matching, gerätegebundene Lizenz, Treuhand, Zertifizierung, Entwickler-Stufen</b></td>
+      <td><b>Neu am Markt, Aufbau einer kritischen Masse nötig</b></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>4 · Das Discovery-Problem: Warum Social Media versagt</h2>
+
+<p>Millionen Nutzer suchen täglich auf Instagram, Facebook, YouTube und TikTok nach
+digitalen Werkzeugen und Softwarelösungen — und scheitern strukturell. Der Grund liegt nicht
+im fehlenden Angebot, sondern in der fundamentalen Logik dieser Plattformen: Sie sind nicht
+auf Bedarfserfüllung ausgerichtet, sondern auf maximale Verweildauer und Werbeeinnahmen.</p>
+
+<table>
+  <thead><tr><th>Plattform</th><th>Suchmechanismus</th><th>Kernproblem für Nutzer</th><th>Kernproblem für Entwickler</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Instagram</td><td>Keyword-SEO, Algorithmus seit Dez. 2024 neu</td>
+      <td>Ergebnisse werden nach Engagement, nicht nach Bedarf gefiltert</td>
+      <td>Reichweite abhängig von Werbebudget und Follower-Zahl, nicht von App-Qualität</td>
+    </tr>
+    <tr>
+      <td>Facebook</td><td>KI-kuratierter Feed + Ads</td>
+      <td>Software-Angebote werden von Werbeanzeigen verdrängt oder gar nicht angezeigt</td>
+      <td>Organische Reichweite für nicht-virale Inhalte &lt; 2 %; Pay-to-reach Pflicht</td>
+    </tr>
+    <tr>
+      <td>YouTube</td><td>Engagement-Algorithmus</td>
+      <td>Tutorial-Videos zur App zufällig auffindbar, kein direkter Kaufprozess</td>
+      <td>Produktionsaufwand hoch, kein Conversion-Pfad vom Video zur App</td>
+    </tr>
+    <tr>
+      <td>Google Play / App Store</td><td>Keyword-Suche + Paid UA</td>
+      <td>PWAs sind gar nicht gelistet; Lücke im App-Ökosystem</td>
+      <td>Einstiegshürden hoch, 30 % Store-Provision, Genehmigungsprozesse</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>4.1 Der Algorithmus-Filter</h3>
+<p>Seit Dezember 2024 hat Instagram das Follower-basierte Hashtag-System abgeschafft. Die
+Plattform funktioniert nun nach Keyword-SEO — was bedeutet: Wer kein Werbebudget hat, ist
+praktisch unsichtbar. Facebook zeigt organischen Business-Content nur noch weniger als 2 %
+der Follower. YouTube empfiehlt nach Engagement-Metriken, nicht nach Nutzerbedürfnis. Keiner
+dieser Mechanismen ist auf Bedarfserfüllung ausgelegt — alle optimieren auf Verweildauer und
+Klickrate.</p>
+
+<h3>4.2 Fehlende Kaufstruktur</h3>
+<p>Selbst wenn ein Nutzer auf Social Media eine passende App entdeckt, fehlt der nächste
+Schritt: Es gibt keinen sicheren Kaufprozess, keinen Kopierschutz, kein Bewertungssystem,
+das Seriosität signalisiert. Der Nutzer muss dem Anbieter blind vertrauen oder verzichtet auf
+die App. Für Entwickler bedeutet das: Reichweite ohne Monetarisierungspfad.</p>
+
+<h3>4.3 Die PWA-Lücke im App-Store-System</h3>
+<p>Apple App Store und Google Play Store listen keine PWAs. Obwohl Apple mit iOS 18 erstmals
+Third-Party-PWA-Stores erlaubt hat, existiert noch keine strukturierte, vertrauenswürdige
+Infrastruktur für diesen Kanal. Die geplante Plattform kann diese Lücke als erste
+schließen.</p>
+
+<h2>5 · KI-Prompt-Matching: Der technologische Unterschied</h2>
+
+<p>Das Herzstück der geplanten Plattform ist ein bidirektionales semantisches
+Matching-System. Während klassische App-Stores und Social-Media-Plattformen auf
+Keyword-Übereinstimmung setzen, übersetzt die KI sowohl die App-Beschreibung des Entwicklers
+als auch die Suchanfrage des Käufers in semantische Vektoren und gleicht diese inhaltlich ab
+— unabhängig von exakter Formulierung.</p>
+
+<table>
+  <thead><tr><th>Kriterium</th><th>Keyword-Suche (klassisch)</th><th>KI-Prompt-Matching (geplant)</th></tr></thead>
+  <tbody>
+    <tr><td>Sucheingabe</td><td>Exakte Begriffe nötig</td><td>Natürliche Sprache, freier Satz</td></tr>
+    <tr><td>Trefferrelevanz</td><td>Syntaktisch — Wort muss passen</td><td>Semantisch — Bedeutung muss passen</td></tr>
+    <tr><td>Fehltoleranz</td><td>Tippfehler = kein Ergebnis</td><td>Kontext überbrückt Abweichungen</td></tr>
+    <tr><td>Mehrsprachigkeit</td><td>Sprache muss übereinstimmen</td><td>Semantische Brücke über Sprachen</td></tr>
+    <tr><td>Nutzererfahrung</td><td>Iteratives Nachschärfen nötig</td><td>Einmalige Eingabe reicht</td></tr>
+    <tr><td>Manipulierbarkeit</td><td>Keyword-Stuffing möglich</td><td>Inhalt entscheidet, nicht Tags</td></tr>
+    <tr><td>Werberelevanz</td><td>Paid Keywords verdrängen Treffer</td><td>Kein Werbeeinfluss auf Ranking</td></tr>
+  </tbody>
+</table>
+
+<div class="merksatz">
+  <p><b>Praxisbeispiel:</b> Ein Unternehmen sucht nach einer „digitalen Checkliste für den
+  Maschinenservice“. Klassische Suche findet nur Apps, die exakt diese Begriffe enthalten.
+  Das KI-Prompt-Matching erkennt, dass auch eine „PWA für Wartungsprotokolle mit
+  Offline-Funktion“ den Bedarf erfüllt — und empfiehlt sie als Top-Treffer.</p>
+</div>
+
+<h2>6 · Alleinstellungsmerkmale (USP)</h2>
+
+<p>Die Plattform kombiniert sechs Merkmale, von denen kein einzelner Wettbewerber auch nur
+zwei gleichzeitig bietet. Das Zusammenspiel dieser Elemente schafft eine Marktposition, die
+strukturell schwer zu kopieren ist.</p>
+
+<table>
+  <thead><tr><th>USP-Merkmal</th><th>Kein Wettbewerber bietet dies</th><th>Strategischer Vorteil</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Semantisches KI-Matching (bidirektional)</td>
+      <td>Alle bestehenden Plattformen arbeiten keyword-basiert</td>
+      <td>Erste und einzige Plattform, die Bedarf und Angebot intelligent verbindet</td>
+    </tr>
+    <tr>
+      <td>Gerätegebundener Kopierschutz für PWAs</td>
+      <td>PWAs haben systemisch keinen Kopierschutz — nirgendwo</td>
+      <td>Entwickler können erstmals PWAs sicher monetarisieren</td>
+    </tr>
+    <tr>
+      <td>Integriertes Treuhand-/Escrow-Verfahren</td>
+      <td>Weder App Store noch Gumroad bieten synchrone Zahlung/Key</td>
+      <td>Null Vorleistungsrisiko für beide Seiten</td>
+    </tr>
+    <tr>
+      <td>Entwickler-Stufensystem mit Zertifizierung</td>
+      <td>Kein Marktplatz unterscheidet Qualität strukturiert</td>
+      <td>Vertrauen durch Nachweis, nicht durch Werbung</td>
+    </tr>
+    <tr>
+      <td>B2B-Customization über zert. Partner</td>
+      <td>Kein Marktplatz bietet Anpassungsservice</td>
+      <td>Upsell-Modell und Enterprise-Einbindung möglich</td>
+    </tr>
+    <tr>
+      <td>Automatischer Qualitäts-Gate (KI-Scan)</td>
+      <td>App Stores prüfen manuell und nur auf Store-Regeln</td>
+      <td>Sicherheit ohne Bürokratie, automatischer Schutz</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>7 · Bedarfsanalyse: Wer braucht diese Plattform?</h2>
+
+<table>
+  <thead><tr><th>Zielgruppe</th><th>Konkreter Bedarf</th><th>Heute nicht erfüllt durch</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>KMU &amp; Unternehmen</td>
+      <td>Maßgeschneiderte digitale Tools ohne Enterprise-Lizenzkosten</td>
+      <td>App Stores (zu groß/generisch), Softwarehäuser (zu teuer)</td>
+    </tr>
+    <tr>
+      <td>Privatnutzer</td>
+      <td>Nischen-Apps für spezifische Alltagsprobleme</td>
+      <td>Social Media (nicht auffindbar), App Stores (nicht gelistet)</td>
+    </tr>
+    <tr>
+      <td>Freelance-Entwickler</td>
+      <td>Vertriebskanal ohne eigene Marketinginfrastruktur</td>
+      <td>GitHub (kein Markt), Gumroad (kein Matching)</td>
+    </tr>
+    <tr>
+      <td>Profi-Entwickler (Freizeit)</td>
+      <td>Monetarisierung von Nebenprojekten mit Qualitätsnachweis</td>
+      <td>Nirgendwo — strukturelle Lücke im Markt</td>
+    </tr>
+    <tr>
+      <td>KI-Berater &amp; Agenturen (z. B. …)</td>
+      <td>Vermittlung passender Kundenlösungen aus einem Pool geprüfter Apps</td>
+      <td>Kein kuratierter PWA-Pool verfügbar</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>7.1 Quantitativer Bedarf</h3>
+<p>Weltweit gibt es schätzungsweise 26 Millionen aktive Softwareentwickler (SlashData, 2024),
+davon ein signifikanter Anteil als Freizeitentwickler. Gleichzeitig haben über 5,45
+Milliarden Menschen weltweit Internetzugang und damit potenzielle PWA-Nutzungsfähigkeit —
+ohne App-Store-Konto oder Geräteabhängigkeit. Der adressierbare Markt ist damit einer der
+größten im gesamten Software-Vertriebsbereich.</p>
+
+<h3>7.2 Qualitativer Bedarf</h3>
+<p>Die Qualität privat entwickelter Apps ist oft hoch — besonders bei Nischenlösungen, die
+von Entwicklern aus eigener Betroffenheit entstehen. Diese Apps erreichen ihren Markt nicht,
+weil Sichtbarkeit heute Werbebudget erfordert. Die Plattform ersetzt Werbebudget durch
+KI-Matching: Qualität entscheidet, nicht Reichweite.</p>
+
+<h2>8 · SWOT-Analyse</h2>
+
+<table>
+  <thead><tr><th>Stärken</th><th>Schwächen</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>
+        <ul>
+          <li>Einzigartiges KI-Matching-System</li>
+          <li>Kein direkter Wettbewerber mit diesem Profil</li>
+          <li>Niedrige Einstiegshürden für Entwickler</li>
+          <li>… als strategischer Partner mit Reichweite</li>
+          <li>Automatischer Qualitätsschutz durch KI-Scan</li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>Neue Plattform ohne initiale Nutzerbasis</li>
+          <li>Kritische Masse an Apps nötig für Attraktivität</li>
+          <li>Technischer Aufwand für Lizenz- &amp; Treuhandsystem</li>
+          <li>Vertrauen muss erst aufgebaut werden</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead><tr><th>Chancen</th><th>Risiken</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>
+        <ul>
+          <li>PWA-Markt wächst mit 30 % p. a.</li>
+          <li>iOS 18 öffnet Third-Party-PWA-Stores erstmals</li>
+          <li>KI-Suche als Trend in allen Discovery-Plattformen</li>
+          <li>Bestehende Partner-Community als sofortige Startbasis</li>
+          <li>Globaler Markt ohne geographische Grenzen</li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>Big Tech könnte ähnliches Produkt lancieren</li>
+          <li>Regulatorische Änderungen im App-Store-Recht</li>
+          <li>Qualitätssicherung bei schnell wachsendem Angebot</li>
+          <li>Missbrauch durch gefälschte Zertifikate möglich</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>9 · Die Semantic Matching Engine als eigenständiger Markt</h2>
+
+<p>Die Semantic Matching Engine ist nicht nur das technische Herzstück des PWA-Marktplatzes
+— sie ist ein eigenständig vermarktbares Produkt. Kein anderes System verbindet Angebots- und
+Nachfrageseite bidirektional semantisch. Diese Technologie ist einmal gebaut und unbegrenzt
+integrierbar — in bestehende Partner-Systeme und als SaaS für Drittanbieter.</p>
+
+<table>
+  <thead><tr><th>Anwendungsfall</th><th>Angebotsseite</th><th>Nachfrageseite</th><th>Potenzial</th></tr></thead>
+  <tbody>
+    <tr><td>PWA-Marktplatz (Kernanwendung)</td><td>Entwickler beschreibt App</td><td>Käufer beschreibt Bedarf</td><td>groß</td></tr>
+    <tr><td>B2B-Dienstleister-Vermittlung</td><td>Agentur beschreibt Leistungen</td><td>Unternehmen beschreibt Problem</td><td>sehr groß</td></tr>
+    <tr><td>Talent &amp; Job Matching</td><td>Kandidat beschreibt Fähigkeiten</td><td>Arbeitgeber beschreibt Anforderungen</td><td>sehr groß</td></tr>
+    <tr><td>KI-Tool-Empfehlung</td><td>Tool beschreibt Funktionen</td><td>Nutzer beschreibt Workflow-Problem</td><td>groß</td></tr>
+    <tr><td>Multi-KI-Orchestrierung</td><td>KI-Modell A beschreibt Fähigkeiten</td><td>KI-Modell B sucht Ergänzung</td><td>Zukunftsmarkt</td></tr>
+  </tbody>
+</table>
+
+<h3>9.1 Technologischer Vorsprung: Marktvergleich</h3>
+
+<table>
+  <thead><tr><th>Kriterium</th><th>Bestehende Plattformen</th><th>Semantic Matching Engine</th></tr></thead>
+  <tbody>
+    <tr><td>Käuferseite</td><td>Teilweise semantisch</td><td>Vollständig semantisch</td></tr>
+    <tr><td>Anbieterseite</td><td>Keyword-strukturiert — SEO nötig</td><td>Vollständig semantisch — kein SEO</td></tr>
+    <tr><td>Matching-Logik</td><td>Wort-zu-Wort-Übereinstimmung</td><td>Bedeutung-zu-Bedeutung</td></tr>
+    <tr><td>Integrierbar in andere Systeme</td><td>Nein — produktgebunden</td><td>Ja — API-basiert, universell</td></tr>
+    <tr><td>Wettbewerber</td><td>Viele</td><td>Keiner (Stand Mai 2026)</td></tr>
+  </tbody>
+</table>
+
+<p><b>Strategische Bedeutung für …:</b> Die Engine ist nicht nur ein Feature des
+PWA-Marktplatzes. Sie ist eine Infrastruktur-Investition, die bestehende Beratungs-,
+Schulungs- und Community-Angebote semantisch suchfähig macht. Einmalige Entwicklungskosten
+von 20.000–37.500 EUR stehen einem Integrationspotenzial in fünf bestehende Systeme gegenüber
+— ohne weitere Grundkosten. Darüber hinaus ist die Engine als eigenständiges SaaS-Produkt
+lizenzierbar, sobald sie produktiv läuft.</p>
+
+<h2>10 · Wettbewerbsrealität: Was die Großen tun — und wo der echte Burggraben liegt</h2>
+
+<table>
+  <thead><tr><th>Anbieter</th><th>Produkt</th><th>Was es kann</th><th>Was es nicht kann</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Google</td><td>Agent2Agent (A2A), April 2025, Open Source</td>
+      <td>Agenten finden sich über „Agent Cards“. Standardisierte KI-zu-KI-Kommunikation. In Produktion bei Microsoft.</td>
+      <td>Strukturiert, nicht semantisch-sprachlich. Kein Marktplatz. Kein Geschäftsmodell. Kein Vertrauenssystem für KMU.</td>
+    </tr>
+    <tr>
+      <td>Anthropic</td><td>Model Context Protocol (MCP), Ende 2024</td>
+      <td>KI-Agent zu Tool-Verbindung. Standardisiert, Open Source.</td>
+      <td>Kein Discovery. Kein Matching. Kein Zertifizierungssystem.</td>
+    </tr>
+    <tr>
+      <td>Microsoft</td><td>Semantic Kernel + A2A</td>
+      <td>Fortschrittlichste Enterprise-Implementierung von A2A.</td>
+      <td>Geschlossenes Ökosystem. Nicht für DACH-KMU zugänglich.</td>
+    </tr>
+    <tr>
+      <td>Alle Großen</td><td>Protokolle &amp; Enterprise-Plattformen</td>
+      <td>Technische Infrastruktur für Agenten-Kommunikation.</td>
+      <td>Kein zertifizierter, EU-konformer Marktplatz für KMU und Entwickler.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="merksatz">
+  <p class="gross">Die ehrliche Wahrheit: Technologisch gibt es keinen Vorsprung gegenüber
+  Google oder Anthropic. Wer das behauptet, verliert sofort die Glaubwürdigkeit.</p>
+  <p>A2A ist ein Protokoll. MCP ist ein Protokoll. Protokolle lösen, wie Systeme miteinander
+  reden. Sie lösen nicht, warum ein Mittelständler aus München einer unbekannten KI-App
+  vertrauen soll. Sie lösen nicht, ob eine App EU-AI-Act-konform ist. Sie lösen nicht, wie
+  ein Entwickler ohne Marketingbudget seine Lösung zu den richtigen Käufern bringt.</p>
+  <p>Das ist kein Technologiemarkt. Das ist ein Vertrauensmarkt. Und Vertrauen kauft man
+  nicht mit Open-Source-Protokollen.</p>
+</div>
+
+<h3>10.1 Die vier echten Burggräben — schwer einzuholen, weil strukturell</h3>
+
+<table>
+  <thead><tr><th>Burggraben</th><th>Wie er entsteht</th><th>Warum kein Großer ihn kopieren kann</th><th>Zeitrahmen</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><b>1 · Netzwerkeffekt</b></td>
+      <td>Mehr Apps, besseres Matching. Besseres Matching, mehr Käufer. Mehr Käufer, mehr Entwickler. Der Kreislauf verstärkt sich selbst.</td>
+      <td>Google kann A2A bauen — aber nicht den Netzwerkeffekt eines bestehenden Marktplatzes kaufen. Der entsteht nur durch echte Transaktionen über Zeit.</td>
+      <td>Ab Monat 6, stark ab Jahr 2</td>
+    </tr>
+    <tr>
+      <td><b>2 · Proprietäre Match-Daten</b></td>
+      <td>Jede Transaktion erzeugt Daten: welcher Prompt zu welcher App führte, was gekauft und bewertet wurde.</td>
+      <td>Nach 50.000 Transaktionen weiß die Engine, was im DACH-KMU-Markt funktioniert. Das weiß kein generisches KI-Modell der Welt.</td>
+      <td>Signifikant ab 50.000 Transaktionen</td>
+    </tr>
+    <tr>
+      <td><b>3 · EU-AI-Act-Zertifizierung</b></td>
+      <td>Der EU AI Act 2025 verlangt Vertrauensnachweise für KI-Systeme. … könnte als erste lokale Zertifizierungsstelle auftreten.</td>
+      <td>Google und Microsoft bauen für Enterprise. Den DACH-KMU-Markt adressiert kein Großer mit echter lokaler EU-Compliance-Zertifizierung.</td>
+      <td>Sofort aufbaubar, 5+ Jahre Vorsprung</td>
+    </tr>
+    <tr>
+      <td><b>4 · Produktionsbrücke KMU</b></td>
+      <td>79 % KI-Adoption, 11 % Produktion: Die meisten KMU kommen nicht vom Experiment zur echten Nutzung.</td>
+      <td>… überbrückt genau das. Beratungskompetenz + Marktplatz + Zertifizierung in einer Hand. Diese Kombination hat weltweit kein anderer Anbieter.</td>
+      <td>Sofort, wächst mit Community</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>10.2 Ist die semantische Entdeckungsschicht als globale Strategie sinnvoll?</h3>
+
+<p>Als eigenständiges Technologieprodukt im Wettbewerb mit Google: <b>Nein.</b> Als Fundament
+eines zertifizierten Vertrauensmarkts mit Netzwerkeffekt: <b>Ja.</b> Die Schicht selbst ist
+keine Ware — sie ist die Infrastruktur, auf der ein Markt gebaut wird, der sich durch
+Vertrauen, Daten und Community-Effekte selbst verstärkt.</p>
+
+<p>Der globale KI-Agenten-Markt wächst mit einem CAGR von fast 50 % auf 182 Mrd. USD bis
+2033. Dieser Markt braucht keine weiteren Protokolle. Er braucht Vertrauen, Zertifizierung
+und funktionierende Vermittlung. … könnte das liefern — mit einem Vorsprung von 18–24
+Monaten vor dem nächsten ernstzunehmenden Wettbewerber in diesem Segment.</p>
+
+<p><b>Fazit der Analyse (März 2026):</b> … konkurriert nicht mit Google um Protokolle. …
+baut den ersten zertifizierten, EU-konformen KI-Marktplatz für den deutschsprachigen
+Mittelstand — mit semantischem Matching als technischem Kern, EU-AI-Act-Compliance als
+Vertrauensanker und Netzwerkeffekten als langfristigem Burggraben. Das ist ein Markt, den
+kein Großer bedient. Und er entsteht gerade.</p>
+
+<h2>11 · Fazit &amp; strategische Empfehlung</h2>
+
+<p>Der Markt für PWA-Vermittlung existiert — er ist nur noch nicht organisiert. Social Media
+kann diesen Bedarf strukturell nicht erfüllen, weil seine Logik auf Engagement, nicht auf
+Bedarfserfüllung ausgerichtet ist. Klassische App Stores schließen PWAs aus. Es gibt keinen
+einzigen Akteur, der semantische KI-Suche, Kopierschutz, Treuhandprozess und
+Entwicklerzertifizierung kombiniert anbietet.</p>
+
+<p>Die geplante Plattform besetzt damit eine klar definierte, strukturell unbesetzte
+Marktposition. Das Wachstum des PWA-Marktes, die Öffnung von iOS 18 für Third-Party-Stores
+und der globale Trend zur KI-gestützten Suche schaffen ein Zeitfenster, das jetzt genutzt
+werden sollte — bevor etablierte Akteure diese Lücke erkennen.</p>
+
+<table>
+  <thead><tr><th>Handlungsempfehlung</th><th>Begründung</th><th>Priorität</th></tr></thead>
+  <tbody>
+    <tr><td>Rahmen für den Umgang mit dem Konzept klären</td><td>Marktlage und Konzept sind präsentationsreif; Schutz vor Imitation erforderlich</td><td>Sofort</td></tr>
+    <tr><td>… als strategischen Partner sichern</td><td>Reichweite, Zertifizierungskompetenz und Community bereits vorhanden</td><td>Hoch</td></tr>
+    <tr><td>MVP definieren: KI-Suche + Treuhand</td><td>Kernunterschied zum Wettbewerb; alles andere ist skalierbar</td><td>Hoch</td></tr>
+    <tr><td>Pilotentwickler aus der Partner-Community rekrutieren</td><td>Schnelle kritische Masse ohne Marketing-Aufwand</td><td>Mittel</td></tr>
+    <tr><td>Zertifizierungssystem aufbauen</td><td>Vertrauen ist der langfristige Wettbewerbsvorteil dieser Plattform</td><td>Mittel</td></tr>
+  </tbody>
+</table>
+
+<div class="merksatz">
+  <p class="gross">Was daraus wurde — und was bewusst nicht.</p>
+  <p>Von diesen fünf Empfehlungen ist eine umgesetzt worden: das semantische Matching. Es
+  läuft, server-los, im Browser, quelloffen. <b>Nicht</b> umgesetzt wurden Treuhand,
+  Lizenzserver, Zertifizierungsstelle und der Burggraben aus proprietären Transaktionsdaten
+  — nicht aus Zeitmangel, sondern weil sie dem widersprechen, wofür die Sache am Ende gut
+  sein sollte. Ein Markt, dessen Vorsprung darauf beruht, dass niemand sonst an die Daten
+  kommt, ist genau das, was die Analyse an den Großen kritisiert.</p>
+</div>
+
+<p class="fuss">Analyse erstellt auf Basis öffentlicher Marktdaten (Grand View Research,
+Straits Research, Market.us, Research Nester, Polaris Market Research, 2024–2026) sowie
+eigener strategischer Bewertung. Alle Marktprognosen sind Schätzungen externer Institute. ·
+Fassung März 2026; Namen des ursprünglich angesprochenen Hauses wurden durch „…“ ersetzt.
+© Klaus Nitzsche. Alle Rechte vorbehalten.</p>
+
+</div>
+</body>
+</html>

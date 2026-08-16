@@ -100,6 +100,41 @@ git -C <repo> push --force-with-lease -u origin <branch>
 genauesten hinsehen musst. Der Fehler steckte nicht im Ergebnis, sondern im
 Maßstab.
 
+### ⚠ Die dritte Falle: „nicht gefunden" ist erst dann eine Aussage, wenn man hineingesehen hat
+
+**Befund 2026-08-15/16.** Es sollte belegt werden, dass ein bestimmter Name aus
+drei PDFs verschwunden ist. Gemeldet wurde **„0 Treffer"** — und das war keine
+Zahl, sondern eine **Blindstelle in Gestalt einer Zahl**. Gesucht worden war in
+der **Datei**; PDF-Text liegt aber gepackt vor, dort findet ein `grep`
+grundsätzlich nichts. Klaus hat nachgefragt. Beim richtigen Hinsehen: **35
+Treffer**, darunter „Vertraulich · Präsentiert an ‹Name›".
+
+Derselbe Fehler kam beim Reparieren gleich **noch einmal**, nur anders
+verkleidet: der neue Leser konnte die alten PDFs öffnen, die **neuen** nicht —
+Chromium legt Text als Glyph-Nummern eines eingebetteten Schrift-Ausschnitts ab,
+nicht als Buchstaben. Wieder „nichts gefunden", wieder aus dem falschen Grund.
+
+**Daraus die Regel:** wer belegen will, dass etwas **nicht** da ist, belegt
+zuerst, **dass er überall hineingesehen hat**. Konkret prüft
+`tests/smoke_papiere_bereinigt.mjs` in dieser Reihenfolge:
+
+1. blieb ein Datenstrom verschlossen? (muss 0 sein)
+2. blieb ein Zeichen unzuordenbar? (muss 0 sein)
+3. kam überhaupt genug Text heraus? (Mindestlänge)
+4. **erst dann** die Suche nach der Fundstelle
+
+Fällt einer der ersten drei Punkte, ist das Ergebnis des vierten wertlos — und
+die Probe wird rot, statt grün zu beruhigen. Zwei weitere Lesarten desselben
+Textes fangen die Verstecke: **glatt** (Umbrüche zu Leerzeichen — gegen über
+zwei Zeilen gebrochene Wortgruppen) und **flach** (jeder Zwischenraum weg —
+gegen gesperrt gesetzte Überschriften, bei denen jeder Buchstabe einzeln steht).
+
+Belegt ist das durch `tests/gegenprobe_papiere.mjs`: sieben eingebaute Fehler,
+davon zwei **wirklich in ein neu gebautes PDF** geschrieben. Jeder muss die
+Probe umwerfen. **Ein Wächter ohne Gegenprobe ist nur ein grüner Haken** — und
+dieser hier bewacht ausgerechnet eine Aussage, die schon zweimal falsch grün
+war.
+
 ---
 
 ## ⭐ Meilenstein — Semantische, bidirektionale, server-lose Bedeutungs-Suche (2026-06-21)
@@ -872,7 +907,7 @@ festbeißt und Tokens verbrennst.
 
 ```bash
 npm install     # EINMALIG je Container — holt fake-indexeddb (708 KB, keine Folge-Pakete)
-npm test        # = node tests/run_alle.mjs — lässt ALLE 69 Proben laufen
+npm test        # = node tests/run_alle.mjs — lässt ALLE 72 Proben laufen
 ```
 
 **Warum das wichtig ist.** Ohne `npm install` sind **19 Proben nicht lauffähig**
