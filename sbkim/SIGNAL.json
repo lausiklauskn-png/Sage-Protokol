@@ -1,8 +1,8 @@
 {
   "node": "Sage-Protokol",
-  "lastBuild": "2026-08-15",
-  "seq": 63,
-  "headline": "Modul-23-Oberflaeche netzweit geschlossen (16/16 auf 4882c3b6, gegen origin/main geprueft - es waren 16 Kopien, nicht die vier aus dem Brief). Der Fund, der die Sitzung drehte: BookLedgerPro trug in SEINER Kopie von Modul 15 eine eigene Buchhaltungs-Synonym-Karte (seit 2026-07-11). Ein blindes byte-1:1-Nachziehen haette sie geloescht - unsichtbar, die Suche haette nur etwas weniger gefunden. Statt zu ueberschreiben ist die MECHANIK in den Kanon gewandert (queryInclusion/setQueryInclusion, Default AUS - wer nichts einstellt, bekommt exakt den bisherigen Pfad), die WORTE stehen jetzt im app-eigenen Klebstoff. Modul 16 traegt den Pflicht-Aspekt und sagt ausdruecklich dazu, dass dies KEINE Schutz-Verbesserung ist. Drei Repos hatten gar keinen Waechter fuer ihre Kopien - BookLedgerPro (15 Module) und SB-KIMTool-Point (18 Dateien) haben jetzt einen; bei Point wiegt es am schwersten, weil Kim-Bell und Mein-WorkFloh SEINE web/tools als Quelle ihrer eigenen Kopien nennen. Points sechs offene Abweichungen sind zu. OFFEN: Modul 15 steht netzweit in fuenf Generationen - schon VOR dieser Sitzung; der Kanon-Sprung hat eine sechste obendrauf gesetzt, die Zersplitterung aber nicht verursacht. Eigener Rollout noetig.",
+  "lastBuild": "2026-08-16",
+  "seq": 64,
+  "headline": "Das Siegel prueft jetzt auch den gemeinsamen Raum: Modul 05b (Relais-Client) ist achtes Pflicht-Modul in PFLICHT_MODULE, Kanon-sha 3e17f6474fc7, netzweit 21/21 Kopien gegen origin/main geprueft. Anlass war ein Widerspruch, kein Codefehler: Alis Moderaum meldete auf Klaus' Tablet 'Raum-Lesen fehlgeschlagen - kein Nostr-Relais-Client', UND DAS SIEGEL LEUCHTETE TROTZDEM. Es prueft sieben Module, der Raum war keines davon - die Anti-Greenwashing-Klausel griff nicht, weil die LISTE unvollstaendig war, nicht weil die Pruefung schwach war. Geprueft wird die Flaeche subscribe, nicht publish: wer nur senden kann, nimmt nicht teil. Die Warnung dieser Sitzung, die Aufnahme lasse anderswo Siegel erloeschen, hat Klaus hinterfragt und die Messung widerlegt: alle 22 Knoten-Repos laden 05b. Dazu 13 sha-Pins nachgezogen und in ZEHN Repos die CACHE_VERSION erhoeht - ohne das liefert der Service-Worker die alte Fassung weiter. Neuer Waechter smoke_bau16_pflicht_05b.mjs mit eingebauter Gegenprobe (ohne Relais-Client MUSS das Siegel ausbleiben); er fing einen Fehler dieser Sitzung, der node --check ueberstanden haette: der neue Aspekt trug die Feldnamen moduleId/title statt module/aspect und waere im Modal LEER erschienen. OFFEN: Klaus' Browser-Sichttest - headless beweist die Logik, nicht das Abzeichen auf der Seite.",
   "sporeUrl": "https://raw.githubusercontent.com/lausiklauskn-png/Sage-Protokol/main/sbkim/spore.json",
   "nodeId": "nysOZE3VuKqZA23i5G2XL67s41JIIykI58zXMtJkYfA",
   "mailboxes": {
@@ -304,6 +304,11 @@
       "seq": 56,
       "date": "2026-08-03",
       "headline": "LAMPEN-LEISTE BARRIEREFREI, netzweit (Modul 17 sha a1c0b399, Modul 23 UI sha c67b2942 - 29/29 Dateien in 15 Repos auf Kanon, 0 Abweichungen). Drei Maengel, jeder gemessen: (1) Beruehrungsziele 54,5x18,6 px statt 24x24, kleine Knoepfe 18x18 -> min-height 24px an den Slots (NUR Hoehe, min-width braech"
+    },
+    {
+      "seq": 64,
+      "date": "2026-08-16",
+      "note": "Modul 16: 05b als achtes Pflicht-Modul, netzweit 21/21 (Kanon 3e17f6474fc7)"
     }
   ]
 }

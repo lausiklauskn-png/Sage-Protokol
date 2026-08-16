@@ -31,6 +31,62 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-16 (Bau) — 🔒 Das Siegel prüft jetzt auch den Raum (Modul 05b)
+
+**Klaus' Wort:** *„ja, 05b ins Siegel aufnehmen"*.
+
+**Der Anlass war ein Widerspruch, kein Fehler im Code.** Das Netz-Fenster von
+Alis Moderaum meldete auf Klaus' Tablet „✗ Raum-Lesen fehlgeschlagen: Kein
+Nostr-Relais-Client (Modul 05b) verfügbar" — **und das Siegel leuchtete
+trotzdem**. Es prüfte sieben Module; der gemeinsame Raum war keines davon. Ein
+Siegel, das goldenes Vertrauen zeigt, während der Knoten den Raum gar nicht
+lesen kann, sagt die Unwahrheit. Genau davor soll die Anti-Greenwashing-Klausel
+(Karte 16) schützen — sie griff nicht, weil die **Liste** unvollständig war,
+nicht weil die Prüfung schwach war.
+
+**Der Einwand dagegen — und warum er nicht trug.** Diese Sitzung hatte Klaus
+zuerst gewarnt, die Aufnahme lasse anderswo Siegel *erlöschen*. Klaus fragte
+nach („Wie soll denn das gehen?"). Nachgemessen über **alle 22 Knoten-Repos**:
+jeder lädt 05b. Die Warnung war eine Vermutung, keine Messung. Die Aufnahme
+löscht nirgends ein Siegel — sie verhindert nur, dass eines leuchtet, wo der
+Raum tot ist.
+
+**Getan:**
+- `src/modules/16_siegel.js` — `PFLICHT_MODULE` hat **acht** Einträge. Geprüft
+  wird `subscribe`, nicht `publish`: daran hängt das **Lesen** des Raums; wer
+  nur senden kann, nimmt nicht teil. Kanon-sha `3e17f6474fc7`.
+- Ein `ZERTIFIKAT_ASPEKTE`-Eintrag dokumentiert es im Modal
+  (Ehrlichkeits-Kopplung: Code und Aspekt zusammen, nie einzeln).
+- Vertrag zuerst: `INTERFACES.md` §1 Modul 16, dann Karte 16, `CLAUDE.md`,
+  `docs/PFLICHT_MODULE.md`, `docs/MYCEL-GESCHENKBOX.md`,
+  `tests/smoke_bauvorlagen.mjs` (acht statt sieben) und die Stufe-2-Bauvorlage.
+- **Netzweiter Rollout: 21/21 Kopien tragen den Kanon** (gegen `origin/main`
+  geprüft, nicht gegen den lokalen Klon). Dazu 13 sha-Pins nachgezogen und in
+  **zehn** Repos die `CACHE_VERSION` erhöht — ohne die liefert der
+  Service-Worker die alte Fassung weiter, und die Änderung erreicht das Tablet
+  nie.
+
+**Neu: `tests/smoke_bau16_pflicht_05b.mjs`.** Die zweite Hälfte ist der Punkt —
+sie baut die Umgebung **ohne** Relais-Client und verlangt, dass das Siegel dann
+ausbleibt. Ohne sie liefe die Probe genauso grün, wenn 05b gar nicht in der
+Liste stünde.
+
+**Ein Fehler dieser Sitzung, den er gefangen hat:** der neue Aspekt trug zuerst
+die Feldnamen `moduleId`/`title` statt `module`/`aspect`. Gültiges JavaScript,
+`node --check` zufrieden — und das Modal hätte einen **leeren** Eintrag gezeigt:
+eine Sicherheits-Änderung, die sich selbst dokumentiert, mit unsichtbarer
+Dokumentation. Gefunden hat das nicht eine Probe, sondern das **Lesen des
+Diffs** (Rollout-Rezept Schritt 2). Ab jetzt eine Probe; beide Fehler wurden
+gegengeprobt und werfen sie um.
+
+**Proben:** `node tests/run_alle.mjs` → **74 grün, 0 rot, 0 nicht lauffähig**;
+Gegenprobe Bauvorlagen 7/7. Zwei Repos melden rot aus vorbestehenden Gründen
+(Privat-Brain: `playwright-core` fehlt; SB-KIMTool-Point: `fake-indexeddb`
+fehlt) — beides auf blankem `origin/main` gegengeprüft, identische Zahlen.
+
+**Offen:** Klaus' Browser-Sichttest. Headless beweist die Logik, nicht das
+Abzeichen auf der Seite — und genau dieses Abzeichen war das Problem.
+
 ## Stand 2026-08-16 (Pflege) — ⚖️ Urheberschaft und Rechte, netzweit geklärt
 
 **Klaus' Frage:** in den USA habe ein „Vibecoder" einen Prozess verloren und alle
