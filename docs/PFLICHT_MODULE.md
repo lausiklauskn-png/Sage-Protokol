@@ -129,19 +129,32 @@ darf die Kette nicht anhalten (`s.onload = s.onerror = …`).
 
 ## Die Bauvorlagen
 
-| Vorlage | wofür |
-|---|---|
-| `sbkim-bundle/modules/` | die 13 Kanon-Module — das, was ein Forker kopiert |
-| `sbkim-bundle-voll/modules/` | dazu 19/20/21/22/24 und `siegel-inhalt.js` |
+Das Rezept steht in [`docs/MYCEL-GESCHENKBOX.md`](MYCEL-GESCHENKBOX.md).
+`family-project/werkzeuge/geschenkbox.html` **verlinkt direkt auf diese
+Ordner** — sie kopiert sie nicht. Was hier besser wird, ist dort sofort drin.
 
-**Beide waren am 2026-08-16 unvollständig:** `sbkim-bundle` fehlten 07, 15, 16
-und 17 — vier der sieben Siegel-Pflicht-Module. `sbkim-bundle-voll` fehlte 07,
-und sein `23_rendezvous_ui` hing eine Generation zurück. Wer sie kopiert hätte,
-hätte eine App gebaut, die sich kein Siegel ausstellen kann.
+**Die zwei Kisten sind absichtlich verschieden groß:**
 
-`tests/smoke_bauvorlagen.mjs` wacht seitdem darüber: **jedes Kanon-Modul ist da
-und byte-1:1**. Reift ein Modul in `src/modules/`, wird es in **beide** Vorlagen
-neu kopiert — nie am Ort abgewandelt.
+| Vorlage | Umfang | kann ein Siegel? |
+|---|---|---|
+| `sbkim-bundle/` · **Stufe 1 „Verbinden"** | 9 Module | **nein — und das ist gewollt** |
+| `sbkim-bundle-voll/` · **Stufe 2 „Voll-Knoten"** | 18 Module + `siegel-inhalt.js` | ja |
+
+Wer nur mitreden will, soll nicht das ganze Vertrauens-Gesicht mitschleppen
+müssen. **Stufe 1 darf deshalb nicht heimlich anwachsen** — am 2026-08-16 hat
+eine Sitzung ihr 07/15/16/17 hinzugefügt, gut gemeint, und damit war die
+Minimal-Kiste weg. Die Probe verhindert das jetzt in **beide** Richtungen.
+
+**Der echte Fehler lag in Stufe 2:** ihr fehlte **Modul 07** — eines der sieben,
+die Modul 16 fürs Siegel verlangt. Es stand in **keiner der beiden Tabellen des
+Rezepts**; die Lücke war also nicht nur im Ordner, sondern schon in der
+Anleitung. Ein Forker hätte die Kiste ausgepackt, alles richtig gemacht und
+sich gefragt, warum kein Abzeichen kommt — **stumm, ohne Fehlermeldung**.
+Dazu hing ihr `23_rendezvous_ui` eine Generation zurück.
+
+`tests/smoke_bauvorlagen.mjs` prüft seitdem **Rezept und Kiste gegeneinander**:
+jedes Modul ist da, byte-1:1, und das Rezept nennt es auch. Reift ein Modul in
+`src/modules/`, wird es neu kopiert — nie am Ort abgewandelt.
 
 ---
 

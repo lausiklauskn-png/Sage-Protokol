@@ -467,11 +467,16 @@ Die vier Fallen, jede einmal teuer bezahlt und heute bewacht:
 4. **Alles gehört in den Offline-Vorrat**, und wer eine `CORE`-Datei ändert,
    **erhöht die `CACHE_VERSION`**.
 
-**Auch die Bauvorlagen sind davon betroffen.** `sbkim-bundle/` und
-`sbkim-bundle-voll/` sind das, was ein Forker kopiert — am 2026-08-16 fehlten
-dem ersten **vier** der sieben Siegel-Pflicht-Module, dem zweiten eines, und
-eine Kopie hing eine Generation zurück. Sage verteilte seinen eigenen
-Rückstand. `tests/smoke_bauvorlagen.mjs` (+ Gegenprobe) wacht seitdem darüber.
+**Auch die Bauvorlagen sind davon betroffen** — die „Geschenkbox", auf die
+`family-project/werkzeuge/geschenkbox.html` direkt verlinkt. Sie hat **zwei
+absichtlich verschieden große Kisten** (`docs/MYCEL-GESCHENKBOX.md`): Stufe 1
+`sbkim-bundle/` verbindet nur (9 Module, **kein** Siegel — gewollt), Stufe 2
+`sbkim-bundle-voll/` ist der volle Knoten. Am 2026-08-16 fehlte **Stufe 2 das
+Modul 07** — eines der sieben Siegel-Pflicht-Module —, und es stand in **keiner
+der beiden Tabellen des Rezepts**. Ein Forker hätte alles richtig gemacht und
+kein Abzeichen bekommen, **stumm**. `tests/smoke_bauvorlagen.mjs` (+ Gegenprobe)
+prüft seitdem Rezept und Kiste gegeneinander — und dass Stufe 1 **klein
+bleibt**.
 
 ## Heilige Tafeln
 
