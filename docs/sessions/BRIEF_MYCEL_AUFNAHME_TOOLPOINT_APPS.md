@@ -58,14 +58,14 @@ davon zwei Seiten und drei Apps, und eines der App-Repos trägt zwei Einträge.
 
 ### B · Halb drin — je ein Teil fehlt (billig zu schließen, gehört dazu)
 
-| Repo | Spore | Modul 23 | Karten-Link | was fehlt |
-|---|---|---|---|---|
-| `Company-Brain` | **—** | ja | **—** | **Ausweis**: ist im Raum, hat aber keine Identität auf der Karte |
-| `Privat-Brain` | ja | ja | **—** | nur der Karten-Link |
-| `Mein-Rezeptbuch` | ja | ja | **—** | nur der Karten-Link |
-| `Mein-Mixarium` | ja | ja | **—** | nur der Karten-Link |
-| `SP-FP-md-Speicher` | **—** | ja | ja | Spore — **und steht gar nicht im Marktplatz** |
-| `PWA-Toolpoint` | **—** | ja | ja | **eigene committete Spore** — der Marktplatz, der „das eigene Mycel" trägt, ist selbst kein Knoten auf der Karte |
+| Repo | Spore | Modul 23 Kern | Netz-Oberfläche | Karten-Link | was fehlt |
+|---|---|---|---|---|---|
+| `Company-Brain` | **—** | ja | **—** | **—** | fast alles außer dem Kern: **kein** Modul 15/16/17, **keine** Netz-Oberfläche, **keine** Spore. Nur sechs Kern-Module + `rendezvous-init.js` |
+| `Privat-Brain` | ja | ja | **eigenes** `net-widget.js` | **—** | Karten-Link · und das **Siegel ohne Identitäts-Wechsler** (siehe D) |
+| `Mein-Rezeptbuch` | ja | ja | ja (**alte** UI) | **—** | Karten-Link · UI eine Generation zurück |
+| `Mein-Mixarium` | ja | ja | ja (**alte** UI) | **—** | Karten-Link · UI eine Generation zurück |
+| `SP-FP-md-Speicher` | **—** | ja | ja | ja | Spore — **und steht gar nicht im Marktplatz** |
+| `PWA-Toolpoint` | **—** | ja | ja (**alte** UI) | ja | **eigene committete Spore** — der Marktplatz, der „das eigene Mycel" trägt, ist selbst kein Knoten auf der Karte. Dazu die UI eine Generation zurück |
 
 ### C · Vollständig drin (nichts zu tun — nicht anfassen)
 
@@ -74,6 +74,95 @@ davon zwei Seiten und drei Apps, und eines der App-Repos trägt zwei Einträge.
 `Mein-WorkFloh` · `SB-KIMTool-Point` · `family-project`
 
 `mycel-karte` ist **Betrachter, kein Knoten** — das ist Absicht und bleibt so.
+
+### D · Die zwei Werkzeuge, die eingebaut werden sollen (Klaus 2026-08-16)
+
+> *„Dazu soll nach dem Bauplan aus Sage sowohl das Mycel-/‚Mit dem Knotennetz
+> verbinden'-Flying-Widget (die in der Höhe, im Handymodus, aktualisierte
+> Version) als auch das selbstausfüllende Siegel aus Sage genutzt werden. Dabei
+> soll immer nach der aktuellsten Version beider Tools gesucht werden,
+> gegebenenfalls in Sage angepasst werden, wenn diese schlechter und nicht
+> aktuell ist."*
+
+**Das ist eine stehende Regel, kein einmaliger Auftrag:** vor dem Einbau wird
+**gemessen**, wo die neueste Fassung liegt — und wenn sie nicht in Sage liegt,
+wird **zuerst Sage nachgezogen**, dann von dort verteilt. Nie andersherum, und
+**nie** die Kopie im Endknoten anpassen (das erzeugt eine weitere Generation,
+und der Drift-Guard schlägt zu Recht an).
+
+**Der Abgleich am 2026-08-16 (Ausgangspunkt — beim Bauen NEU messen, nicht
+abschreiben):**
+
+```bash
+# Für jede Datei über alle Repos: Zeilen, Inhalts-Fingerabdruck, Datum
+for d in */; do r="${d%/}"; [ -d "$r/.git" ] || continue
+  for p in $(git -C "$r" ls-tree -r origin/main --name-only 2>/dev/null | grep -i "<datei>"); do
+    b=$(git -C "$r" show origin/main:"$p"); echo "$r $(echo "$b"|wc -l) $(echo "$b"|sha256sum|cut -c1-12) $p"
+  done
+done | sort -k3
+```
+
+**① Flying Widget** = das Netz-Panel, `src/modules/23_rendezvous_ui.js`
+(Kern dazu: `23_rendezvous.js`; das freie Schweben kommt aus Modul 17).
+
+| Fingerabdruck | Zeilen | wer trägt sie |
+|---|---|---|
+| **`b496bc86b5b2`** | **2279** | **KANON — der neueste Stand.** Sage `src/modules/` + `sbkim-bundle/` · Kimboard · Kimseek · BookLedgerPro · Jasons-Tresor · Mein-Tresor · Muttis-Rezeptbuch · Tomys-Hub · Kim-Bell · Mein-WorkFloh · SB-KIMTool-Point |
+| `4882c3b68203` | 2249 | **zurück:** Mein-Mixarium · Mein-Rezeptbuch · **PWA-Toolpoint** · family-project · Sages eigenes `sbkim-bundle-voll/` |
+
+**Ergebnis: Sage ist aktuell, es geht bergab statt bergauf.** Fünf Kopien
+nachziehen — darunter der Marktplatz selbst und **ein Bündel in Sage**.
+
+⚠️ **Drei Repos tragen dieselbe Datei unter anderem Namen**
+(`modules/sbkim-rendezvous-ui.js`, `web/tools/sbkim-rendezvous-ui.js`) und sind
+**byte-gleich zum Kanon**. Wer nach dem Dateinamen `23_rendezvous_ui` sucht,
+hält sie für unversorgt und baut sie ein zweites Mal. **Nach Inhalt suchen.**
+
+**② Selbstausfüllendes Siegel** — zwei Teile, die nicht verwechselt werden dürfen:
+
+- **`16_siegel.js` — Kanon-Modul, byte-1:1, wird NIE angepasst.**
+
+  | Fingerabdruck | Zeilen | Datum | wer |
+  |---|---|---|---|
+  | **`95003d208892`** | **1449** | **2026-08-15** | **KANON.** Sage `src/modules/` · BookLedgerPro · SB-KIMTool-Point |
+  | `e67b72662bbc` | 1443 | 2026-08-11 | PWA-Toolpoint · family-project |
+  | `4e11ef0d0390` | 1437 | 2026-07-30 | Kimboard · Kimseek · Privat-Brain · Jasons-Tresor · Mein-Mixarium · Mein-Rezeptbuch · Mein-Tresor · Muttis-Rezeptbuch · Tomys-Hub |
+  | `a581461a0797` | 1431 | 2026-07-11 | Kim-Bell · Mein-WorkFloh |
+
+  Auch hier: **Sage ist der neueste Stand**, elf Kopien hängen zurück.
+
+- **`siegel-inhalt.js` — das ist KEIN Kanon-Modul, sondern die App-Konfiguration.**
+  Sie **darf und muss** pro Knoten verschieden sein (`WIZ`-Block: App-Name,
+  `ribbonText`, Adressen, Bedeutungstext, ID-Präfixe). Der Drift-Guard gilt für
+  sie **nicht**. Was aber überall gleich sein muss, sind die **fünf Bausteine**
+  des Wizards — und der **Identitäts-Wechsler** ist der, der in frühen Kopien
+  am häufigsten fehlt.
+
+  Gemessen (Treffer auf „Wechsler/switchIdentity"):
+
+  | Repo | Zeilen | Wechsler |
+  |---|---|---|
+  | Sage-Protokol | 470 | ✅ |
+  | Kimboard · PWA-Toolpoint · Kim-Bell · Mein-Tresor · Mein-WorkFloh · Jasons-Tresor | 475–483 | ✅ |
+  | **Kimseek** | 399 | ❌ **fehlt** |
+  | **Privat-Brain** | 391 | ❌ **fehlt** |
+
+  Die längeren Fassungen sind **nicht** neuer — der Unterschied zu Sage ist im
+  Wesentlichen das ID-Präfix (`kbdwiz-` bei Kimboard). **Länger ≠ besser**; erst
+  hinsehen, dann urteilen.
+
+**Ergebnis des Abgleichs: Sage muss für beide Werkzeuge NICHT angepasst werden.**
+Klaus' Bedingung („gegebenenfalls in Sage anpassen, wenn schlechter") ist geprüft
+und trifft **hier und heute nicht zu**. Beim nächsten Mal wieder messen — dieser
+Satz ist ein Messergebnis, keine Eigenschaft von Sage.
+
+**Zwei Funde, die Arbeit sind, auch wenn sie nicht im Auftrag standen:**
+1. `Sage-Protokol/sbkim-bundle-voll/modules/` hängt bei **beiden** Werkzeugen
+   zurück — Sage trägt eine veraltete Kopie im eigenen Haus. Das ist das
+   Starter-Bündel für Forker: wer es heute nimmt, bekommt den alten Stand.
+2. **Kimseek** und **Privat-Brain** haben ein Siegel **ohne Identitäts-Wechsler**.
+   Beides sind laufende Knoten. Ohne den Wechsler kann Klaus dort keine zweite
+   Identität wählen — ein stiller Mangel, kein sichtbarer Fehler.
 
 ---
 
@@ -136,11 +225,25 @@ zwölf Repos und ist ein eigener PR mit eigener Gegenprobe.
 **Ein Repo nach dem anderen, ein PR pro Repo.** Nicht fünf Repos in einem Rutsch
 anfassen: geht einer schief, weiß hinterher niemand welcher.
 
-### Schritt 0 — Vorlage wählen (einmalig, vor dem ersten Repo)
+### Schritt 0 — Kanon-Abgleich (einmalig, VOR dem ersten Repo) · Klaus-Pflicht
 
-Nimm ein **fertiges** Repo als Muster und lies, wie es dort zusammengesetzt ist:
-`Kimseek` oder `Kim-Bell` sind die saubersten. Kopiere die Bauart, nicht nur die
-Dateien.
+**Erst messen, wo die neueste Fassung liegt** (Abschnitt D oben, samt Befehl).
+Nicht den Stand vom 2026-08-16 abschreiben — er ist der Ausgangspunkt, nicht die
+Wahrheit von morgen.
+
+- Liegt die neueste Fassung **in Sage** → von dort verteilen.
+- Liegt sie **anderswo** → **zuerst Sage nachziehen** (eigener PR, eigene
+  Gegenprobe, Drift-Guards aller Kopien neu genagelt), **dann** verteilen.
+- **Nie** die Kopie im Endknoten anpassen. Das erzeugt eine weitere Generation,
+  und der Drift-Guard schlägt zu Recht an.
+
+Dann die **Vorlage** wählen: nimm ein Repo, das **beide** Werkzeuge im aktuellen
+Stand trägt, und lies, wie es zusammengesetzt ist — **`Kimboard`** oder
+**`Kim-Bell`** sind die saubersten. **`Kimseek` NICHT als Muster nehmen**: sein
+Siegel hat keinen Identitäts-Wechsler, der Mangel würde sich fünfmal
+weitervererben.
+
+Kopiere die **Bauart**, nicht nur die Dateien.
 
 ### Schritt 1–5 — je Repo (A-Liste, in dieser Reihenfolge)
 
@@ -164,18 +267,49 @@ Pro Repo:
 - **App-eigener Klebstoff** (frei): `rendezvous-init.js` nach Kimseek-Muster,
   eigener `dbSuffix` (**app-spezifisch, nie ändern** — geteilte Adresse auf
   GitHub Pages, sonst kollidieren die Datenbestände), `allowedOrigins`.
-- **Netz-Panel** „🌐 Mit dem Netz verbinden / 👥 Wer ist im Raum?"
-- **Siegel-Leiste** (17/15/16) mit **Andock-Wizard** — ohne den kann Klaus die
-  Identität nicht erzeugen, und der fehlt in frühen Kopien am häufigsten.
+- **Flying Widget** „🌐 Mit dem Netz verbinden / 👥 Wer ist im Raum?" — das
+  freie, verschiebbare Panel aus `23_rendezvous_ui.js` in der Fassung aus
+  Schritt 0. Die Handy-Behandlung steckt **im Modul** (`width:min(420px,92vw)`,
+  `max-height:80vh`, `clampInts()` hält es beim Drehen im Bild) — **nicht**
+  app-seitig nachbauen und **nicht** per eigenem CSS überschreiben.
+- **Siegel-Leiste** (17/15/16) mit **selbstausfüllendem Andock-Wizard** — ohne
+  ihn kann Klaus die Identität nicht erzeugen. Alle **fünf Bausteine** müssen
+  drin sein, **einschließlich des Identitäts-Wechslers** (der fehlt in frühen
+  Kopien am häufigsten — siehe Abschnitt D, Kimseek und Privat-Brain).
+  `ribbonText` setzen, sonst bleibt das Band leer; ein geratener Name gehört
+  nicht auf eine Auszeichnung.
 - **Karten-Link** auf `https://lausiklauskn-png.github.io/mycel-karte/`
 - **Drift-Guard im Smoke** — und zwar **beide Formen prüfen**: manche Repos
   nageln nur die **ersten 16 Zeichen** des SHA fest (`SB-KIMTool-Point`,
   `BookLedgerPro`). Wer nur die 64er-Form ersetzt, hinterlässt einen roten Guard.
 
+### Schritt 5b — die zurückhängenden Kopien nachziehen (aus Schritt 0)
+
+Fünf Kopien der Netz-Oberfläche und elf des Siegel-Moduls hängen zurück
+(Abschnitt D). Das ist **kein Extra-Auftrag**, sondern die Voraussetzung dafür,
+dass „nach dem Bauplan aus Sage" überhaupt stimmt — sonst stehen nach dieser
+Sitzung fünf neue Knoten auf dem aktuellen Stand neben elf alten.
+
+- **Zuerst** `Sage-Protokol/sbkim-bundle-voll/modules/` — das ist das Bündel,
+  aus dem Forker kopieren. Solange es alt ist, verteilt Sage seinen eigenen
+  Rückstand weiter.
+- Dann `PWA-Toolpoint`, `family-project`, `Mein-Rezeptbuch`, `Mein-Mixarium`.
+- Beim Siegel-Modul die elf Kopien — **ein PR pro Repo**, Drift-Guard neu
+  genagelt. **Beide SHA-Formen prüfen** (64 und 16 Zeichen).
+- `Kimseek` und `Privat-Brain`: Identitäts-Wechsler im `siegel-inhalt.js`
+  ergänzen. Das ist **kein** Drift-Guard-Fall (App-Konfiguration), sondern
+  Handarbeit nach dem Muster von Kimboard — mit dem **eigenen** ID-Präfix.
+
 ### Schritt 6 — die B-Liste schließen (billig, gehört dazu)
 
-- `Company-Brain`: Spore ergänzen
-- `Privat-Brain`, `Mein-Rezeptbuch`, `Mein-Mixarium`: nur der **Karten-Link**
+- `Company-Brain`: hat nur die sechs Kern-Module. Es fehlt praktisch alles
+  Sichtbare — Modul 15/16/17, die Netz-Oberfläche, die Spore. Behandle es wie
+  ein A-Repo, nicht wie einen Nachzügler.
+- `Privat-Brain`: benutzt ein **eigenes** `net-widget.js` statt der
+  Kanon-Oberfläche. Erst nachsehen, **warum** — wenn es nur älter ist, auf den
+  Kanon umstellen; wenn es etwas kann, das der Kanon nicht kann, gehört das
+  **nach Sage** (Klaus' Regel aus Schritt 0). Nicht ungeprüft überschreiben.
+- `Mein-Rezeptbuch`, `Mein-Mixarium`: **Karten-Link**
 - `PWA-Toolpoint`: eigene Spore — **oder** begründet festhalten, warum der
   Marktplatz bewusst kein Knoten ist. Beides ist vertretbar; **stillschweigend
   offen lassen ist es nicht.**
@@ -275,6 +409,16 @@ genauesten hinsehen musst.
    Absicht?
 4. **`PWA-Toolpoint` selbst**: eigener Knoten mit Spore, oder bewusst nur
    Marktplatz?
+5. **„Die in der Höhe, im Handymodus, aktualisierte Version"** des Flying
+   Widgets — hier ist eine ehrliche Unschärfe: gemessen gibt es **nur zwei**
+   Fassungen der Datei, und sie unterscheiden sich ausschließlich um den
+   Mycel-Karten-Link (30 Zeilen, 2026-08-16). Eine dritte, „in der Höhe
+   überarbeitete" Fassung existiert im Netz **nicht** — die Handy-Behandlung
+   (`max-height:80vh`, `min(420px,92vw)`, Rückklemmen beim Drehen) steckt in
+   **beiden**. Zwei Möglichkeiten: Klaus meint genau diese, dann ist alles gut;
+   oder er meint eine Verbesserung, die er am Tablet gesehen hat und die noch
+   **nirgends committet** ist. **Fragen, bevor gebaut wird** — nicht raten. Was
+   auch immer herauskommt: es gehört **in den Kanon**, nicht in fünf Kopien.
 
 ---
 
