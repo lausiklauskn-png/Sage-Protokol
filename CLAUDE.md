@@ -440,6 +440,39 @@ Alles andere liest du **nicht**. Token-Budget.
 > zuerst [`docs/PLAN_SEMANTIK_KRYPTO.md`](docs/PLAN_SEMANTIK_KRYPTO.md) — die
 > Arbeitsliste „was als Nächstes kommt" (siehe § Aktuelle Arbeitsliste oben).
 
+## Pflicht-Module — bevor eine App zum Knoten wird
+
+**Verbindliche Liste: [`docs/PFLICHT_MODULE.md`](docs/PFLICHT_MODULE.md).**
+Wer eine App zum SBKIM-Knoten macht — oder eine Bauvorlage anfasst — arbeitet
+sie ab. Sie ist kurz und sie ist aus Schaden entstanden.
+
+**Die zwei Listen sind NICHT dieselbe.** Modul 16 prüft für sein Siegel
+**sieben** Module (01 · 02 · 03 · 04 · **05** · 07 · 15). Ein arbeitender
+Knoten braucht **dreizehn**: dazu **05b** (Relais-Client), 16, 17, 23, 23-UI
+und `noble-secp256k1`. Weil 05b **nicht** in der Siegel-Liste steht, kann ein
+Siegel golden leuchten, während der Raum unlesbar ist — genau das ist am
+2026-08-16 passiert („✗ Raum-Lesen fehlgeschlagen: Kein Nostr-Relais-Client
+(Modul 05b) verfügbar"). **Modul 05 und 05b sind Pflicht, nicht Zubehör:**
+ohne 05 kein Handshake, ohne 05b kein Raum.
+
+Die vier Fallen, jede einmal teuer bezahlt und heute bewacht:
+
+1. **`window.SBKIM_DB_SUFFIX` gehört in den `<head>`** — Modul 01 liest es beim
+   Laden. Fehlt es, greift die App in die **geteilte** Schublade `sbkim`, und
+   der Andock-Wizard zeigt die Beschreibung einer anderen App.
+2. **Modul 05b geht NICHT über die Nachlade-Kette** — es ist ein ES-Modul mit
+   relativem Import und braucht eine eigene `<script type="module">`-Zeile.
+3. **Modul 17 steht VOR 15 und 16** — es legt die Anker an; dahinter hängen
+   Lampe und Siegel **lautlos** ins Leere.
+4. **Alles gehört in den Offline-Vorrat**, und wer eine `CORE`-Datei ändert,
+   **erhöht die `CACHE_VERSION`**.
+
+**Auch die Bauvorlagen sind davon betroffen.** `sbkim-bundle/` und
+`sbkim-bundle-voll/` sind das, was ein Forker kopiert — am 2026-08-16 fehlten
+dem ersten **vier** der sieben Siegel-Pflicht-Module, dem zweiten eines, und
+eine Kopie hing eine Generation zurück. Sage verteilte seinen eigenen
+Rückstand. `tests/smoke_bauvorlagen.mjs` (+ Gegenprobe) wacht seitdem darüber.
+
 ## Heilige Tafeln
 
 `docs/INTERFACES.md` ist **verbindlich**. Wenn du eine Schnittstelle änderst,
@@ -914,7 +947,7 @@ festbeißt und Tokens verbrennst.
 
 ```bash
 npm install     # EINMALIG je Container — holt fake-indexeddb (708 KB, keine Folge-Pakete)
-npm test        # = node tests/run_alle.mjs — lässt ALLE 72 Proben laufen
+npm test        # = node tests/run_alle.mjs — lässt ALLE 73 Proben laufen
 ```
 
 **Warum das wichtig ist.** Ohne `npm install` sind **19 Proben nicht lauffähig**

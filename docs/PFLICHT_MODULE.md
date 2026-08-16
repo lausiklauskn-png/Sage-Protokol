@@ -1,0 +1,159 @@
+# Pflicht-Module — was ein SBKIM-Knoten braucht
+
+**Verbindliche Liste. Wer eine App zum Knoten macht, arbeitet sie ab.**
+
+Anlass: am **2026-08-16** meldete das Netz-Fenster von Alis Moderaum
+„✗ Raum-Lesen fehlgeschlagen: Kein Nostr-Relais-Client (Modul 05b) verfügbar".
+Alle Dateien lagen im Repo. Trotzdem war der Raum unlesbar — weil nirgends
+stand, welche Module **geladen** sein müssen, und weil zwei Bauvorlagen
+unvollständig waren. Klaus: *„Modul 5 und Modul 5b sind dann wohl auch
+Pflichtmodule. Die müssen mit ergänzt werden in allen Repos."*
+
+---
+
+## Die zwei Listen — sie sind NICHT dieselbe
+
+Das ist der Kern des Missverständnisses, das den Fehler möglich gemacht hat.
+
+### A · Die sieben, die das Siegel prüft
+
+`src/modules/16_siegel.js` → `PFLICHT_MODULE`:
+
+| # | Modul | Global | ohne es |
+|---|---|---|---|
+| 01 | Storage | `SbkimStorage` | keine Schublade, keine Identität |
+| 02 | Spore | `SbkimSpore` | kein Ausweis |
+| 03 | Embedding | `SbkimEmbedding` | kein Vektor, keine Bedeutung |
+| 04 | Match | `SbkimMatch` | kein Vergleich |
+| 05 | Anastomose | `SbkimAnastomose` | **kein Handshake** |
+| 07 | Apoptose | `SbkimApoptose` | kein sauberer Rückzug |
+| 15 | Membran | `SbkimMembrane` | kein Wächter |
+
+Sind diese sieben da, stellt sich das Siegel selbst aus (Bronze; Gold nach dem
+ersten „established"-Handshake).
+
+### B · Was ein KNOTEN darüber hinaus braucht
+
+**Das Siegel prüft sie NICHT** — und genau deshalb kann ein Siegel golden
+leuchten, während der Raum unlesbar ist:
+
+| # | Modul | Global | ohne es |
+|---|---|---|---|
+| **05b** | **Relais-Client** | `SbkimNostrRelay` | **kein Raum** — „Raum-Lesen fehlgeschlagen" |
+| 16 | Siegel | `SbkimSiegel` | kein Abzeichen, kein Andock-Wizard |
+| 17 | Widget | `SbkimWidget` | keine Lampen — und **keine Anker** für 15/16 |
+| 23 | Rendezvous | `SbkimRendezvous` | keine lebende Visitenkarte |
+| 23-UI | Netz-Fenster | `SbkimRendezvousUI` | kein „Mit dem Netz verbinden" |
+| — | `noble-secp256k1` | (ES-Modul) | 05b kann nicht signieren |
+
+**Zusammen: 13 Dateien.** Weniger ist kein Knoten, sondern eine App mit
+Modulen darin.
+
+> **Sollte 05b in die Siegel-Liste?** Wahrscheinlich ja — dann wäre der Befund
+> vom 2026-08-16 gar nicht erst möglich gewesen. Aber es ist ein Eingriff in
+> `PFLICHT_MODULE`, der **in elf Repos** wirkt und dort, wo 05b fehlt, das
+> Siegel **erlöschen** lässt. Das ist Klaus' Entscheidung, nicht die einer
+> Sitzung. **Bis dahin ersetzt die Bau-Probe unten die fehlende Prüfung.**
+
+---
+
+## Der Klebstoff — fünf Dateien, app-eigen
+
+Kein Kanon, kein Drift-Guard: sie **müssen** pro App verschieden sein.
+
+| Datei | trägt |
+|---|---|
+| `storage-init.js` | den eigenen `DB_SUFFIX` |
+| `rendezvous-init.js` | Knoten-Name, Bedeutungs-Beschreibung, Stichworte |
+| `schutz-init.js` | `allowedOrigins`, `repoUrl`, `ribbonText` |
+| `nostr-listen-init.js` | Empfangsmodus (lauschen, nie initiieren) |
+| `siegel-inhalt.js` | den **Andock-Wizard** samt Identitäts-Wechsler |
+
+---
+
+## Die vier Fallen beim Einbau
+
+Jede hat einmal Zeit gekostet. Alle vier sind heute in den Bau-Proben bewacht.
+
+**1 · `window.SBKIM_DB_SUFFIX` muss im KOPF stehen.**
+Modul 01 liest es **beim Laden**. Fehlt es, ist der Vorgabe-Name die geteilte
+Schublade `sbkim` — und alle Apps liegen unter *einer* Adresse.
+`storage-init.js` setzt den Wert zwar, aber **asynchron**: greift ein Modul
+vorher zu, ist der geteilte Topf längst offen. Modul 01 nennt das in seinem
+Kopf **Fall (B)**.
+*Gesehen als: der Wizard zeigte die Beschreibung einer anderen App.*
+
+```html
+<script>window.SBKIM_DB_SUFFIX="<eigener-wert>";</script>   <!-- vor </head> -->
+```
+
+**2 · Modul 05b geht NICHT über die Nachlade-Kette.**
+Es ist ein ES-Modul mit relativem Import auf `noble`. In der Kette (die
+Skripte per `document.createElement` nachhängt) läuft es **nie**. Es braucht
+eine eigene Zeile:
+
+```html
+<script type="module" src="./modules/05b_nostr_relay.js"></script>
+```
+
+**3 · Modul 17 steht VOR 15 und 16.**
+Das Widget legt die Anker `#lamp-fremd` und `#sbkim-siegel-badge` an. Steht es
+dahinter, hängen Lampe und Siegel **lautlos** ins Leere: die Seite sieht normal
+aus, nur beides fehlt.
+
+**4 · Alles gehört in den Offline-Vorrat.**
+Der Service-Worker antwortet **zuerst aus dem Speicher**. Ein Modul, das nie im
+Vorrat war, muss jedes Mal übers Netz — und offline gar nicht. Und: **wer eine
+Datei aus `CORE` ändert, erhöht die `CACHE_VERSION`**, sonst liefert der
+Service-Worker die alte Fassung weiter.
+
+---
+
+## Die Ladereihenfolge
+
+```
+03_embedding · 01_storage · storage-init · 04_match · 02_spore · noble
+05_anastomose · 23_rendezvous · 23_rendezvous_ui · 17_floating_widget
+07_apoptose · 15_membran · 16_siegel
+nostr-listen-init · rendezvous-init · schutz-init · siegel-inhalt
+```
+
+Dazu **getrennt**, als ES-Modul: `05b_nostr_relay`.
+
+Die Kette wird **nach** dem Seitenaufbau in der Leerlaufpause geholt
+(`requestIdleCallback`), nicht als `<script src>` im Dokument — sonst drückt
+sie die Messwerte, die öffentlich im Marktplatz stehen. Eine fehlende Datei
+darf die Kette nicht anhalten (`s.onload = s.onerror = …`).
+
+---
+
+## Die Bauvorlagen
+
+| Vorlage | wofür |
+|---|---|
+| `sbkim-bundle/modules/` | die 13 Kanon-Module — das, was ein Forker kopiert |
+| `sbkim-bundle-voll/modules/` | dazu 19/20/21/22/24 und `siegel-inhalt.js` |
+
+**Beide waren am 2026-08-16 unvollständig:** `sbkim-bundle` fehlten 07, 15, 16
+und 17 — vier der sieben Siegel-Pflicht-Module. `sbkim-bundle-voll` fehlte 07,
+und sein `23_rendezvous_ui` hing eine Generation zurück. Wer sie kopiert hätte,
+hätte eine App gebaut, die sich kein Siegel ausstellen kann.
+
+`tests/smoke_bauvorlagen.mjs` wacht seitdem darüber: **jedes Kanon-Modul ist da
+und byte-1:1**. Reift ein Modul in `src/modules/`, wird es in **beide** Vorlagen
+neu kopiert — nie am Ort abgewandelt.
+
+---
+
+## Beim Bauen abzuhaken
+
+- [ ] 13 Kanon-Module byte-1:1 aus `src/modules/`, Drift-Guard nagelt jeden Fingerabdruck
+- [ ] `window.SBKIM_DB_SUFFIX` im Kopf, eigener Wert, netzweit eindeutig
+- [ ] 05b als **ES-Modul** mit eigener Zeile, nicht in der Kette
+- [ ] Reihenfolge: 01 vor storage-init · **17 vor 15/16** · 16 vor siegel-inhalt
+- [ ] Kette in der Leerlaufpause, fail-soft
+- [ ] fünf Klebstoff-Dateien mit **eigenen** Werten (kein Vorlagen-Rest)
+- [ ] Andock-Wizard vollständig, **mit Identitäts-Wechsler**
+- [ ] `ribbonText` gesetzt — sonst bleibt das Wappen-Band leer
+- [ ] alles im Offline-Vorrat, `CACHE_VERSION` erhöht
+- [ ] Probe **und Gegenprobe** — ein Wächter ohne Gegenprobe ist nur ein grüner Haken
