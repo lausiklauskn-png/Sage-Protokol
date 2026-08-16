@@ -1424,8 +1424,16 @@ document.getElementById('join-code').addEventListener('input', function() {
 // ══════════════════════════════════════════
 // PWA
 // ══════════════════════════════════════════
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
+/* Die Anmeldung eines Service-Workers stand hier — auf './sw.js', eine Datei,
+   die es in diesem Ordner NICHT gibt. Ergebnis: bei jedem Aufruf ein 404. Er
+   war abgefangen und brach nichts, aber er war Ballast, und im Konsolen-Lärm
+   der gesperrten fremden Adressen fiel er nicht auf (gefunden 2026-08-15, als
+   die Prüfung endlich nach Host statt nach Fehlertext unterschied).
+
+   Nicht ersetzt, sondern entfernt — mit Grund: ein Service-Worker macht das
+   Zwischenlagern HARTNÄCKIGER. Genau dagegen ist einen Absatz weiter der
+   Aktualisieren-Knopf gebaut worden. Ein Ausstellungsstück, das man ansehen
+   und wieder verlassen soll, braucht keinen Offline-Vorrat. */);
 }
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
@@ -1449,5 +1457,6 @@ window.addEventListener('appinstalled', () => {
 if (getApiKey()) showScreen('screen-setup');
 else             showScreen('screen-apikey');
 </script>
+<script src="aktualisieren.js" defer></script>
 </body>
 </html>

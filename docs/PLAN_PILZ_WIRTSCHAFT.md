@@ -589,7 +589,8 @@ gelesen und ist deshalb zu einer zu düsteren Diagnose gekommen.
 - **Rechtlich einfacher.** Wer keinen öffentlichen Marktplatz für Verbraucher
   betreibt, hat deutlich weniger Pflichten als ein Vermittler für jedermann.
 - **Die Cross-Knoten-Suche wird endlich nützlich.** Der bewiesene Versuch vom
-  2026-07-11 — BookLedgerPro fragt „wo bekomme ich bedruckte Tassen?", Tomys Hub
+  2026-07-11 — BookLedgerPro sucht Werbeartikel für den eigenen Betrieb und fragt
+  „wo bekomme ich bedruckte Tassen?", Tomys Hub
   antwortet aus seinem Katalog (0.84, 2,9 s) — ist im offenen Netz eine
   Spielerei. **Im Geschäftskreis ist es ein Empfehlungsnetz unter Betrieben, die
   sich kennen.** Das war die ganze Zeit die eigentliche Anwendung.
