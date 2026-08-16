@@ -67,7 +67,7 @@ auf 72° pro Station.
 
 ## Privatheits-Klausel
 
-Pre-Commit-Grep `grep -i everlast` auf:
+Pre-Commit-Grep `grep -i EVL.` auf:
 - `index.html`
 - `docs/papers/sbkim-paper-de.html`
 - `docs/PULS.md`

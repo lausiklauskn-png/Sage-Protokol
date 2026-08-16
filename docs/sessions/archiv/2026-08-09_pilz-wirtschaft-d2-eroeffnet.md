@@ -62,7 +62,7 @@ statt zu einem Bau. Aus dem Gespräch kam dieser Auftrag.
 
 ## Was offen blieb (nur Klaus)
 
-1. **Everlast GmbH** — 30 Fundstellen in 7 Dateien, öffentlich, samt 3-%-Gebühr
+1. **EVL.** — 30 Fundstellen in 7 Dateien, öffentlich, samt 3-%-Gebühr
    im Transaktionsfluss. Klaus am 2026-08-09: *erst später entscheiden.* Bis
    dahin wird darauf nichts aufgebaut und nichts entfernt.
 2. **Die vier „Vertraulich"-PDFs** — Klaus am 2026-08-09: *bleiben, war so

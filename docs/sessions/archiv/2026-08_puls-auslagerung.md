@@ -403,7 +403,7 @@ Bedarf getrennt (`capVector`/`needsVector`: null Treffer über alle Module +
 **Nicht sofort bauen** — erst messen, ob die zweite Spur die Rangfolge
 verbessert.
 
-**Was offen ist (nur Klaus):** Everlast GmbH (30 Fundstellen in 7 Dateien,
+**Was offen ist (nur Klaus):** EVL. (30 Fundstellen in 7 Dateien,
 öffentlich, samt 3-%-Gebühr) — bis zur Entscheidung wird darauf nichts
 aufgebaut · Jahresbeitrag `yearlyUrl`: Marktplatz-Gebühr oder Wartungsbeitrag ·
 Preisform für WorkFloh · verfügbare Zeit für Akquise-Gespräche.

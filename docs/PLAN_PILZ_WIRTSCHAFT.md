@@ -1052,7 +1052,7 @@ vergessen werden.
    Empfehlung lautet Rohertrag; die Daten dafür liegen bereits vor.
 1. **Innerer Kreis ja/nein** (§ 8) und, falls ja, in welcher Form die
    Mitgliedschaft entsteht.
-2. **Everlast GmbH** — das Konzept-Repo ist über weite Strecken ein Angebot an
+2. **EVL.** — das Konzept-Repo ist über weite Strecken ein Angebot an
    eine namentlich genannte Firma (30 Fundstellen in 7 Dateien). Klaus
    2026-08-09: *erst später entscheiden.* Bis dahin wird darauf nichts
    aufgebaut und nichts entfernt.
@@ -1078,7 +1078,7 @@ vergessen werden.
 | Aussage | Quelle |
 |---|---|
 | 65.000–116.500 €, Break-even ab Monat 8 bei 400 Apps | `semantic-match-demo/Kosten_Nutzen_Analyse_PWA_Plattform.pdf` |
-| Engine 20.000–37.500 €, „einmal gebaut, beliebig integrierbar" | `Kostenanalyse_Everlast_Engine_PWA.pdf` |
+| Engine 20.000–37.500 €, „einmal gebaut, beliebig integrierbar" | `Kostenanalyse_EVL_Engine_PWA.pdf` |
 | „Ohne Partner: Kaltstart 3–6 Monate, 10.000–20.000 € Marketing" | ebenda, § 5 |
 | Bidirektionalität als Alleinstellungsmerkmal | `USP_Bidirektionales_Matching.pdf`, `SBKIM_Paper_DE.html` § 3.1 |
 | 14 Marktplatz-Einträge | `family-project/assets/config/listings-vec.json` |

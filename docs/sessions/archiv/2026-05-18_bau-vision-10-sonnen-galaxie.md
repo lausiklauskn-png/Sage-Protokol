@@ -104,7 +104,7 @@ und kein bestehender Screen wurden angefasst):
   jederzeit nachziehen).
 - **`docs/INTERFACES.md`, Komponenten-Karten** — keine
   Schnittstellen-Änderung.
-- **Privatheits-Klausel** — der Name „Everlast GmbH" taucht
+- **Privatheits-Klausel** — der Name „EVL." taucht
   weder in Code, noch in Kommentaren, noch in Modal-Texten,
   noch in Commit-Messages oder PR-Beschreibung auf. Geprüft
   vor Commit per Grep.

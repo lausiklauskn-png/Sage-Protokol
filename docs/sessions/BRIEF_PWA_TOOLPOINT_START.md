@@ -212,7 +212,7 @@ Jetzt kostet er nichts, weil noch niemand die Seite kennt.
 ## Offene Entscheidungen (§ 15 des Papiers)
 
 Bezahlvorgang für Beauty's Online-Shop · Grundlage der Beteiligung (Empfehlung:
-**Rohertrag**) · innerer Kreis ja/nein · Everlast · Jahresbeitrag · **Name und
+**Rohertrag**) · innerer Kreis ja/nein · EVL. · Jahresbeitrag · **Name und
 Domain des Marktes** · Provisionshöhe · verfügbare Zeit im Monat.
 
 ---

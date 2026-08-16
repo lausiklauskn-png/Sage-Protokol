@@ -5,8 +5,7 @@
 „Geschichts-Galerie"). Dieser Brief geht in den **ersten Prompt**
 der nächsten Bau-Sitzung als Codeblock.
 
-**Heilige Tafel — Privatheit:** Die Sonnen-Galaxie darf **Everlast
-GmbH NICHT erwähnen**. Gilt für Code-Kommentare, Modal-Texte,
+**Heilige Tafel — Privatheit:** Die Sonnen-Galaxie darf **EVL. NICHT erwähnen**. Gilt für Code-Kommentare, Modal-Texte,
 Platzhalter, Commit-Messages, PR-Beschreibungen.
 
 ---
@@ -35,7 +34,7 @@ Pflichtleseliste (in dieser Reihenfolge):
 Was du NICHT liest: docs/INTERFACES.md, andere Komponenten-Karten,
 Modul-Code in src/. Reiner Sage-Page-Bau.
 
-Heilige Tafel: Die Sonnen-Galaxie darf Everlast GmbH NICHT erwähnen.
+Heilige Tafel: Die Sonnen-Galaxie darf EVL. NICHT erwähnen.
 Gilt für Code-Kommentare, Modal-Texte, Platzhalter, Commits, PR-Beschreibung.
 
 Deine Aufgabe heute:
@@ -179,7 +178,7 @@ Konkret:
 Was du NICHT tust:
 
 - Kein Modul-Code in src/modules/.
-- Keine Erwähnung von Everlast GmbH in Code, Kommentaren, Texten.
+- Keine Erwähnung von EVL. in Code, Kommentaren, Texten.
 - Kein Eingriff in status.json. (Optional, nur wenn Zeit übrig:
   status.json um Feld historie[] erweitern. Nicht Pflicht.)
 - Keine eigenständigen Erzähl-Texte für Stationen 1–3 schreiben —
@@ -234,7 +233,7 @@ Sitzungen, falls die erste zu lang wird:
   der feste Spec-Anker.
 
 - **Privatheits-Klausel ist heilig.** Klaus' Wunsch: keine Erwähnung
-  von Everlast GmbH in der Sonnen-Galaxie. Bau-Sitzung muss vor
+  von EVL. in der Sonnen-Galaxie. Bau-Sitzung muss vor
   jedem Commit prüfen, dass weder Code-Kommentare noch Modal-Texte
   noch PR-Beschreibung diesen Namen tragen.
 

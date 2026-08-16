@@ -345,7 +345,7 @@ nichts und ist jederzeit zurückdrehbar.
 - **B4 · B6** — Widget-Tresor (sicherheits-sensibel, eigene Sitzung) · E2E Grad C
   „versiegelter Umschlag" (Pseudonymisierung, Modul 25, ist Grad B und liegt).
 - **Phase D.2 — Pilz-Wirtschaft.** Papier liegt
-  (`docs/PLAN_PILZ_WIRTSCHAFT.md`), drei Entscheidungen offen: **Everlast** ·
+  (`docs/PLAN_PILZ_WIRTSCHAFT.md`), drei Entscheidungen offen: **EVL.** ·
   **Jahresbeitrag** · **WorkFloh-Preisform**. Der Messwert dort: **0 fremde
   Marktplatz-Einträge trotz gratis** — daraus die Umkehrung, dass der Marktplatz
   Beweisstück ist, nicht Provisions-Maschine.

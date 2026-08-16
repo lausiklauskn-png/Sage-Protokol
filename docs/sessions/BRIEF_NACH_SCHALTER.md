@@ -135,7 +135,7 @@ Regel aufgeschrieben wurde: sie trifft gerade niemanden.
   daran zuerst messen. Betrifft Kimboard, Kimseek, family-project,
   BookLedgerPro, Tomys-Hub.
 
-- **Phase D.2 — Pilz-Wirtschaft:** drei Entscheidungen offen (Everlast ·
+- **Phase D.2 — Pilz-Wirtschaft:** drei Entscheidungen offen (EVL. ·
   Jahresbeitrag · WorkFloh-Preisform), `docs/PLAN_PILZ_WIRTSCHAFT.md`.
 
 ---
