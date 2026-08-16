@@ -69,7 +69,7 @@ Quellen pro Station:
 
 ## Privatheits-Klausel
 
-Pre-Commit-Grep `grep -i everlast` auf `index.html`, `docs/PULS.md`,
+Pre-Commit-Grep `grep -i EVL.` auf `index.html`, `docs/PULS.md`,
 `docs/papers/`, neuem Session-Protokoll und Commit-Message: clean.
 Die drei Erzähl-Texte bleiben konzeptuell-biographisch ohne
 kommerziellen Kontext. Wirtschaftliche Hintergründe von Klaus'

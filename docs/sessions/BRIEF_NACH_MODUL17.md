@@ -102,7 +102,7 @@ veröffentlicht" statt „bad_key".
 - **Ob Chromes Übersetzungs-Angebot in einer INSTALLIERTEN PWA greift** — dort
   fehlt die Adressleiste. **Ungeprüft.** Erst messen, dann bauen.
 
-- **Phase D.2 — Pilz-Wirtschaft:** drei Entscheidungen offen (Everlast ·
+- **Phase D.2 — Pilz-Wirtschaft:** drei Entscheidungen offen (EVL. ·
   Jahresbeitrag · WorkFloh-Preisform), `docs/PLAN_PILZ_WIRTSCHAFT.md`.
 
 ---

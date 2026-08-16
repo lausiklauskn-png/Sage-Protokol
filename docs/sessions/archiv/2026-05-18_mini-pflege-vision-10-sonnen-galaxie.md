@@ -32,8 +32,7 @@ herum — nicht durcheinander, sondern schön im Kreis. Eher in die
 Richtung was macht man, wenn man auf eine Antwort wartet? Man macht
 sich selber an die Arbeit."
 
-**Heilige Tafel — Privatheit:** Die Sonnen-Galaxie erwähnt Everlast
-GmbH NICHT. Klaus' Wunsch ausdrücklich. Gilt für Code-Kommentare,
+**Heilige Tafel — Privatheit:** Die Sonnen-Galaxie erwähnt EVL. NICHT. Klaus' Wunsch ausdrücklich. Gilt für Code-Kommentare,
 Modal-Texte, Platzhalter, Commits, PR-Beschreibungen — und für alle
 Folge-Mini-Pflegen, die Stations-Inhalte nachziehen.
 
@@ -41,7 +40,7 @@ Der Anker enthält:
 
 - **Konzept** (Sonnen-Karte + Geschichts-Galerie-Screen, präzise
   visuell)
-- **Heilige Privatheits-Tafel** (kein Everlast-GmbH-Bezug)
+- **Heilige Privatheits-Tafel** (kein EVL.-Bezug)
 - **Stationen-Inventar** (4 Galaxien beim Start, 3 text-only mit
   Platzhalter-Inhalt + 1 dokumentengestützt mit EN-Paper-href)
 - **Architektur-Skizze** (sieben Eingriffe in `index.html`: CSS-Block
@@ -81,7 +80,7 @@ Galerie umgeschrieben. Enthält:
 
 - Pflichtleseliste (CLAUDE.md, PULS § Anker 10, Brief, gezielte
   `index.html`-Stellen als Bau-Referenz)
-- Heilige Privatheits-Tafel (Everlast GmbH NICHT erwähnen) im Brief-
+- Heilige Privatheits-Tafel (EVL. NICHT erwähnen) im Brief-
   Kopf sichtbar gemacht
 - Sieben konkrete Eingriffspunkte mit HTML/CSS/JS-Skelett
 - STATIONS_DATA-Array startfertig formuliert (4 Einträge — 3 text-
@@ -91,7 +90,7 @@ Galerie umgeschrieben. Enthält:
   über 4 Stationen)
 - Modal-Body-Varianten (`text-only` zeigt nur Summary, `live` zeigt
   Summary + Datei-Link)
-- „Was du NICHT tust"-Block (kein Modul-Code, kein Everlast-GmbH-
+- „Was du NICHT tust"-Block (kein Modul-Code, kein EVL.-
   Bezug, keine eigenständigen Erzähl-Texte für Stationen 1–3,
   keine Änderung an Observatorium)
 - „Pflicht am Ende"-Block (Sichttest, PULS-Eintrag, Übergabe,
@@ -147,7 +146,7 @@ Code-Verlust.
 - **Erzähl-Texte für Stationen 1–3** (SBKIM-Namensgebung, Zwei
   Seiten einer Medaille, Sage-Protokol-Geburt) — Klaus liefert per
   einzelner Folge-Mini-Pflegen, jede Mini-Pflege schreibt einen
-  `summary` aus, prüft vor Commit dass Everlast GmbH nicht erwähnt
+  `summary` aus, prüft vor Commit dass EVL. nicht erwähnt
   wird, und switcht den Status der jeweiligen Station von
   `text-only` auf `live`.
 - **Weitere Stationen** kommen mit der Zeit — die Bahn-Ellipse

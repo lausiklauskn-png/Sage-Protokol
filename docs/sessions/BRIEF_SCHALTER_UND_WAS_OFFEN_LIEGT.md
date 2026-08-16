@@ -200,7 +200,7 @@ wird automatisch zur Prüfung gegeben."**
       jeder Arbeit daran zuerst messen. Betrifft die fünf Apps ohne eigene
       Übersetzungs-Tabelle (Kimboard, Kimseek, family-project, BookLedgerPro,
       Tomys-Hub), die zu Recht auf `lang="de"` stehen.
-- **Phase D.2 — Pilz-Wirtschaft:** drei Entscheidungen offen (Everlast ·
+- **Phase D.2 — Pilz-Wirtschaft:** drei Entscheidungen offen (EVL. ·
   Jahresbeitrag · WorkFloh-Preisform), `docs/PLAN_PILZ_WIRTSCHAFT.md`.
 
 ---
