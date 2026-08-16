@@ -31,6 +31,51 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-16 (Pflege) — ⚖️ Urheberschaft und Rechte, netzweit geklärt
+
+**Klaus' Frage:** in den USA habe ein „Vibecoder" einen Prozess verloren und alle
+Rechte an seinen Apps eingebüßt, weil Anthropic per Wasserzeichen die Urheberschaft
+nachgewiesen habe. Sorge dahinter: dass eines Tages Ansprüche oder Geldforderungen an
+seinen 33 Repos hängen.
+
+**Befund (Web-Recherche 2026-08-16).** Den Prozess gibt es nicht. Drei echte
+Nachrichten sind zu einer falschen Geschichte verschmolzen: (1) Claude setzt seit dem
+2026-08-02 wirklich Wasserzeichen — als **Transparenz-Pflicht** nach Art. 50 EU-KI-VO,
+die *Verarbeitung* belegt, nicht Urheberschaft, und bei Code bewusst schwächer ist.
+(2) Der 1,5-Mrd.-Vergleich hatte Anthropic als **Beklagte** wegen Trainingsdaten.
+(3) Rein maschinell erzeugtes Material ist nicht schutzfähig (§ 2 Abs. 2 / § 69a UrhG;
+Thaler v. Perlmutter) — wer damit klagt, kann verlieren, aber weil **niemand** Rechte
+hat, nicht weil ein Anbieter sie hätte. Anthropics Bedingungen treten die Rechte an den
+Ausgaben ausdrücklich an den Kunden ab; es gibt keine Beteiligungs-Klausel.
+
+**Die echte Lücke war eine andere:** von 33 Repos hatte **eines** eine Lizenzdatei
+(Mein-WorkFloh). Die menschliche Prägung — Architektur, Verträge, Auswahl der Module,
+Kalibrier-Messreihen, Brief-Kette, Git-Historie — war überall vorhanden, aber nirgends
+als Rechte-Aussage formuliert.
+
+**Getan:**
+- **`docs/URHEBERSCHAFT_UND_RECHTE.md`** angelegt — kanonische Fassung für alle Repos:
+  Faktencheck mit Quellen, Einordnung der Wasserzeichen, Anbieter-Bedingungen, deutsche
+  Rechtslage, was trägt und was ehrlicherweise nicht, Marken-Zeiger, Geld-Frage,
+  Beweissicherung. Ehrlich vermerkt: `anthropic.com` war aus dieser Umgebung nicht
+  abrufbar, geprüft wurde über Fachberichterstattung.
+- **Zwei Lizenzen** eingeführt (Klaus' Entscheid): **A · Protokoll-Lizenz** offen mit
+  Namensnennung für Sage-Protokol, SB-KIMTool-Point, mycel-karte — das Protokoll *soll*
+  nachgebaut werden können; **B · App-Lizenz** nach dem Muster der bestehenden
+  `Mein-WorkFloh/LICENSE` für die übrigen Repos.
+- **`LICENSE` + `RECHTE.md` in alle Repos** ausgerollt; die kurze `RECHTE.md` verweist
+  auf die kanonische Fassung hier, damit nicht 33 Kopien gepflegt werden müssen.
+- **Mit-Bauer-Klarstellung** in `docs/einladung/einladung.md` (alle vier Sprachen),
+  `docs/einladung/index.html`, `CLAUDE.md` § Schicht 3 und
+  `docs/components/_vision_einladung.md`: der Begriff bleibt inhaltlich unangetastet,
+  ein Satz stellt klar, dass er eine Würdigung ist und keine Aussage über Urheberschaft.
+
+**Offen / nächster sinnvoller Schritt:** Klaus sollte einmal selbst in die
+Anbieter-Bedingungen sehen und eine datierte Kopie ablegen (Abschnitt 9, letzter Punkt).
+Markenanmeldung erst bei Stufe 2 des Marktplatzes zu entscheiden.
+
+---
+
 ## Stand 2026-08-16 (Bau) — 🍄 Vier Marktplatz-Apps werden Endknoten
 
 **Klaus' Auftrag:** die im PWA-Toolpoint eingetragenen Apps ins eigene Mycel
