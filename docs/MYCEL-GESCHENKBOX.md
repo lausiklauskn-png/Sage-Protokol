@@ -73,6 +73,7 @@ abgewandelt.
 
 | Datei | Rolle | Kanon-sha (12) |
 |---|---|---|
+| `modules/07_apoptose.js` | **sauberer Rückzug — und Siegel-Pflicht** (siehe Kasten unten) |
 | `modules/15_membran.js` | Außenhülle: Fremdzugriff-Detektor | `fbf9f42d8a27` |
 | `modules/16_siegel.js` | SBKIM-Siegel (Bronze→Gold), Aspekte-Liste | `4e11ef0d0390` |
 | `modules/siegel-inhalt.js` | Inhalt des Siegel-Modals (Andock-Werkzeug) | (Kanon prüfen) |
@@ -85,9 +86,17 @@ abgewandelt.
 | `sbkim-sw.js` + `manifest.json` | PWA-Schale (installierbar, offline) | — |
 | App-Kleber (frei) | `rendezvous-init.js` + Panel „🌐 Mit dem Netz verbinden" | app-eigen |
 
+> **⚠ Modul 07 stand hier bis zum 2026-08-16 NICHT — und fehlte deshalb auch
+> in der Kiste.** Das ist keine Kleinigkeit: Modul 16 prüft für sein Siegel
+> **sieben** Module (01 · 02 · 03 · 04 · 05 · **07** · 15). Fehlt eines, stellt
+> sich die App **kein Siegel aus — und zwar stumm**: keine Meldung, kein Fehler,
+> das Abzeichen bleibt einfach weg. Ein Forker hätte die Stufe-2-Kiste
+> ausgepackt, alles richtig gemacht und sich gefragt, warum nichts kommt.
+> `tests/smoke_bauvorlagen.mjs` prüft seitdem **Rezept und Kiste gegeneinander**.
+
 **Reihenfolge beim Einbau (wichtig):**
 `01 → 02 → 03 → 04 → 05 → 05b → 23/23_ui` (Verbinden), dann
-`17 (Widget) VOR 15 (Membran) VOR 16 (Siegel)` — das Widget legt die Lampen an,
+`07 (Apoptose)`, dann `17 (Widget) VOR 15 (Membran) VOR 16 (Siegel)` — das Widget legt die Lampen an,
 bevor Membran/Siegel sie bedienen. `19/20/21/22/24` sind additiv, fail-soft
 (fehlt eins, läuft die App weiter).
 

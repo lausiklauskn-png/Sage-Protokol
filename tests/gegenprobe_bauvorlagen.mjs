@@ -25,16 +25,27 @@ function probeLaeuftDurch() {
 
 const FAELLE = [
   {
-    was: "sbkim-bundle fehlt Modul 07 (Siegel-Pflicht)",
-    datei: "sbkim-bundle/modules/07_apoptose.js",
+    // DER Fall vom 2026-08-16: 07 fehlte, und das Siegel blieb stumm aus.
+    was: "sbkim-bundle-voll fehlt Modul 07 (Siegel-Pflicht — stummer Ausfall)",
+    datei: "sbkim-bundle-voll/modules/07_apoptose.js",
     bauen: (p) => renameSync(p, p + ".weg"),
     zurueck: (p) => { if (existsSync(p + ".weg")) renameSync(p + ".weg", p); },
   },
   {
-    was: "sbkim-bundle fehlt Modul 15 (Siegel-Pflicht)",
-    datei: "sbkim-bundle/modules/15_membran.js",
+    was: "sbkim-bundle-voll fehlt Modul 15 (Siegel-Pflicht)",
+    datei: "sbkim-bundle-voll/modules/15_membran.js",
     bauen: (p) => renameSync(p, p + ".weg"),
     zurueck: (p) => { if (existsSync(p + ".weg")) renameSync(p + ".weg", p); },
+  },
+  {
+    // Die andere Richtung, und sie ist genauso wichtig: die kleine Kiste darf
+    // nicht heimlich zur grossen anwachsen. Am 2026-08-16 hat eine Sitzung ihr
+    // 07/15/16/17 hinzugefuegt — gut gemeint, aber damit war die Minimal-Kiste
+    // weg, die Klaus bewusst angelegt hat.
+    was: "Stufe 1 waechst heimlich zur Stufe 2 an",
+    datei: "sbkim-bundle/modules/16_siegel.js",
+    bauen: (p) => writeFileSync(p, "// hier hat es jemand gut gemeint\n", "utf-8"),
+    zurueck: (p) => { if (existsSync(p)) unlinkSync(p); },
   },
   {
     was: "sbkim-bundle-voll fehlt Modul 05b (kein Raum)",
