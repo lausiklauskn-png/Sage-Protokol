@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Konzept · KI-gestützte PWA-Vermittlung</title>
+<link rel="stylesheet" href="print.css">
+</head>
+<body>
+<div class="blatt">
+
+<div class="kopf">
+  <p class="marke">Konzeptpapier · März 2026</p>
+  <h1>KI-gestützte PWA-Vermittlung</h1>
+  <p class="unterzeile">Plattformkonzept · Version 1.0</p>
+</div>
+
+<div class="einordnung">
+  <b>Zur Einordnung.</b> Dieses Papier stammt aus dem <b>März 2026</b> und war ein
+  Gesprächs-Entwurf für ein mögliches Gemeinschaftsprojekt. Es beschreibt einen Plan,
+  keinen gebauten Stand. Wo im Original ein bestimmtes Haus stand, an das sich der
+  Entwurf richtete, steht heute „<b>…</b>“ — die Papiere werden nur noch als
+  <b>Zeitdokument</b> gezeigt, nicht als Angebot an jemanden. Was aus dem Plan
+  tatsächlich geworden ist, steht in der Demo daneben: die semantische Suche und die
+  Knoten-zu-Knoten-Vermittlung laufen, der Lizenz- und Treuhand-Teil wurde
+  <b>bewusst nicht</b> gebaut.
+</div>
+
+<p class="lead">Dieses Dokument beschreibt eine KI-gestützte Vermittlungsplattform für
+private Progressive Web Apps (PWAs). Die Plattform verbindet Entwickler privater
+Softwarelösungen mit Unternehmen und Einzelpersonen, die passgenaue digitale Tools
+suchen — ohne den Umweg über öffentliche App-Stores und ohne technische Hürden auf
+Käuferseite.</p>
+
+<p>Der zentrale Differenziator ist ein KI-gesteuertes Prompt-Matching-System, das Angebot
+und Nachfrage semantisch abgleicht. Ergänzt durch ein gerätegebundenes Lizenzmodell, ein
+integriertes Treuhandverfahren und eine partnerbasierte Reichweitenstrategie entsteht ein
+geschlossenes, skalierbares Ökosystem.</p>
+
+<h2>1 · Problemstellung</h2>
+
+<p>Private Softwareentwickler — insbesondere Solo-Entwickler und kleine Teams — haben keine
+strukturierte Möglichkeit, ihre maßgeschneiderten PWA-Lösungen einem zahlungsbereiten Markt
+zugänglich zu machen. Gleichzeitig scheitern viele Unternehmen daran, passende
+Nischenlösungen zu finden, weil klassische Suchmaschinen und App-Stores keine semantische
+Bedarfsanalyse bieten.</p>
+
+<table>
+  <thead><tr><th>Problem</th><th>Auswirkung</th></tr></thead>
+  <tbody>
+    <tr><td>Kein Marktplatz für private PWAs</td><td>Entwickler haben keine Vertriebsstruktur</td></tr>
+    <tr><td>Klassische Suche ist keyword-basiert</td><td>Käufer finden keine Nischenlösung</td></tr>
+    <tr><td>Kein Kopierschutz für Web-Apps</td><td>Entwickler scheuen Veröffentlichung</td></tr>
+    <tr><td>Hohe Einstiegshürden für Entwickler</td><td>Geringe Plattformvielfalt</td></tr>
+  </tbody>
+</table>
+
+<h2>2 · Die Lösung — Plattformarchitektur</h2>
+
+<h3>2.1 KI-Prompt-Matching</h3>
+<p>Entwickler beschreiben ihre App in natürlicher Sprache. Käufer formulieren ihren Bedarf
+ebenso als Freitext-Prompt. Die KI übersetzt beide Eingaben in semantische Vektoren und
+ermittelt die optimale Übereinstimmung — unabhängig von Formulierung oder Fachbegriff. Das
+Ergebnis ist eine Trefferliste, die Relevanz vor Werbebuchung stellt.</p>
+
+<h3>2.2 Gerätegebundenes Lizenzmodell</h3>
+<p>Jede App-Lizenz ist an ein spezifisches Endgerät gebunden. Nach Ablauf einer kostenlosen
+Testphase wird der Zugang automatisch gesperrt. Die Freischaltung erfolgt ausschließlich
+nach erfolgreicher Zahlung über das integrierte Treuhandverfahren — Geld und Schlüssel
+fließen synchron, kein Vorleistungsrisiko für beide Seiten.</p>
+
+<h3>2.3 Treuhand (Escrow-Modell)</h3>
+<p>Der Zahlungsfluss ist zweistufig abgesichert: (1) Der Käufer überweist an die Plattform,
+(2) die Plattform gibt Lizenzschlüssel und Zahlung gleichzeitig frei. Die Plattform behält
+eine transparente Provision. Dieses Modell schützt Entwickler vor Zahlungsausfall und Käufer
+vor nicht funktionierender Software.</p>
+
+<h3>2.4 Bewertungs- und Ranking-System</h3>
+<p>Apps werden nach drei Dimensionen gelistet: Nutzerbewertung, Anzahl abgeschlossener
+Testphasen und semantische Relevanz zur Suchanfrage. Keine bezahlte Platzierung. Neue Apps
+starten sichtbar — ein faires System, das Qualität belohnt.</p>
+
+<h2>3 · Monetarisierung</h2>
+
+<p>Das Erlösmodell ist klar und dreischichtig:</p>
+
+<table>
+  <thead><tr><th>Einnahmequelle</th><th>Mechanismus</th><th>Vorteil</th></tr></thead>
+  <tbody>
+    <tr><td>Provision</td><td>% je Transaktion (Entwickler setzt Preis)</td><td>Skaliert mit Plattformwachstum</td></tr>
+    <tr><td>Reichweiten-Paket</td><td>Optionales Boosting für Entwickler</td><td>Freiwillig, kein Pay-to-Win</td></tr>
+    <tr><td>B2B-Lizenzen</td><td>Volumenverträge für Unternehmen</td><td>Stabile wiederkehrende Einnahmen</td></tr>
+  </tbody>
+</table>
+
+<p>Die Umgehung der Plattform lohnt sich strukturell nicht: Der Kopierschutz, das
+Treuhandsystem und die Reichweitenstrategie schaffen einen klaren Mehrwert, der den
+Provisionsbetrag übersteigt.</p>
+
+<h2>4 · Reichweitenstrategie &amp; Partnermodell</h2>
+
+<p>Die Plattform setzt auf ein partnerbasiertes Distributionsnetzwerk statt auf klassische
+Werbung. Partner — darunter KI-Beratungsunternehmen, YouTube-Kanäle und Fach-Communities —
+erhalten eine Umsatzbeteiligung für vermittelte Käufe.</p>
+
+<p>… verfügt bereits über alle Bausteine dieses Netzwerks: KI-Beratungskompetenz, eine
+aktive Fach-Community, Video-Reichweite und ein Schulungsangebot. Die Plattform würde sich
+nahtlos in das bestehende Portfolio einfügen und dieses um eine Transaktionsebene
+erweitern.</p>
+
+<h2>5 · Strategische Passung mit …</h2>
+
+<table>
+  <thead><tr><th>Vorhandene Kompetenz</th><th>Beitrag zur Plattform</th></tr></thead>
+  <tbody>
+    <tr><td>KI-Beratung &amp; Automationen</td><td>Technische Umsetzung des Prompt-Matchings</td></tr>
+    <tr><td>Fach-Community</td><td>Erste Entwickler- und Nutzerbasis</td></tr>
+    <tr><td>Video- und Social-Reichweite</td><td>Organischer Traffic ohne Werbebudget</td></tr>
+    <tr><td>Schulungsangebot</td><td>Onboarding-Pipeline für neue Entwickler</td></tr>
+    <tr><td>KI-Telefonassistenz</td><td>Erweiterung: Support-Integration</td></tr>
+  </tbody>
+</table>
+
+<h2>6 · Entwickler-Ökosystem &amp; Stufensystem</h2>
+
+<p>Die Plattform ist offen für alle Entwickler — vom Hobbyprogrammierer bis zum
+professionellen Softwareentwickler, der Apps in seiner Freizeit erstellt. Entscheidend ist
+nicht der berufliche Titel, sondern die nachgewiesene Qualität und der Erfolg der
+veröffentlichten Apps. Ein klares Stufensystem schafft Transparenz für Käufer und gibt
+Entwicklern einen konkreten Wachstumspfad.</p>
+
+<table>
+  <thead><tr><th>Stufe</th><th>Voraussetzungen</th><th>Vorteile auf der Plattform</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><b>1 · Starter-Entwickler</b></td>
+      <td>Registrierung abgeschlossen; KI-Sicherheitsscan bestanden</td>
+      <td>App-Listing aktiv, Testphase freischaltbar, Grundbewertung sichtbar</td>
+    </tr>
+    <tr>
+      <td><b>2 · Privat-Entwickler</b></td>
+      <td>≥ 3 abgeschlossene Testkäufe; Ø-Bewertung ≥ 3,5 / 5</td>
+      <td>Höheres Ranking, erweitertes Profil, Community-Feedback</td>
+    </tr>
+    <tr>
+      <td><b>3 · Zertifizierter Entwickler</b></td>
+      <td>Mind. 1 verifizierte Integration in Firmen- oder Privatstruktur; Partner-Review bestanden</td>
+      <td>Zertifikat-Badge im Listing, höhere Sichtbarkeit, Customization-Anfragen möglich</td>
+    </tr>
+    <tr>
+      <td><b>4 · Pro-Entwickler</b></td>
+      <td>≥ 3 verifizierte Firmenprojekte ODER nachweisbarer Profi-Hintergrund + Ø ≥ 4,5 / 5</td>
+      <td>Pro-Badge, Priorität im Ranking, direkter Partnerkanal, höhere Provisionsschwelle</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="merksatz">
+  <p class="gross">Aufstieg erfolgt automatisch.</p>
+  <p>Die Plattform wertet kontinuierlich Bewertungen, abgeschlossene Käufe und verifizierte
+  Integrationen aus. Sind die Kriterien einer höheren Stufe erfüllt, wird der Entwickler
+  automatisch hochgestuft — ein manueller Antrag ist nicht erforderlich. Professionelle
+  Entwickler können ihren beruflichen Hintergrund über eine Partner-Verifizierung oder
+  Referenzprojekte nachweisen und direkt auf Stufe 3 einsteigen.</p>
+</div>
+
+<h2>7 · Zugangsstufen, Zertifizierung &amp; Qualitätssicherung</h2>
+
+<p>Die Plattform unterscheidet zwei Zugangswege mit klar definierten Sicherheitsgarantien.
+Beide Wege führen über einen verpflichtenden KI-Sicherheitsscan — keine App ist ohne Prüfung
+für Endnutzer sichtbar.</p>
+
+<table>
+  <thead><tr><th>Zugangsstufe</th><th>Zielgruppe</th><th>Sicherheitslevel</th><th>Besonderheit</th></tr></thead>
+  <tbody>
+    <tr><td>Privat-Zugang</td><td>Einzelpersonen</td><td>Automatischer KI-Scan</td><td>Sofortzugang nach bestandenem Scan</td></tr>
+    <tr><td>Business-Zugang</td><td>Unternehmen</td><td>Scan + Berater-Review</td><td>Pilottestphase, Customization möglich</td></tr>
+    <tr><td>Zertifiziert</td><td>Beide</td><td>Nachweis verifizierter Integration</td><td>Partner-Zertifikat sichtbar im Listing</td></tr>
+  </tbody>
+</table>
+
+<h3>7.1 Zertifizierungsprozess</h3>
+<p>Das Partner-Zertifikat ist der höchste Vertrauensnachweis auf der Plattform. Es wird
+vergeben, wenn ein Entwickler nachweislich mit einem zertifizierten Partner zusammengearbeitet
+hat und die App erfolgreich in eine reale Struktur integriert wurde. Auch Privatnutzer können
+dieses Zertifikat erhalten.</p>
+
+<table>
+  <thead><tr><th>Phase</th><th>Voraussetzung</th><th>Ergebnis</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>1 · KI-Sicherheitsscan</td>
+      <td>App wird vollautomatisch auf Sicherheitslücken, unsichere API-Aufrufe und Code-Integrität geprüft</td>
+      <td>Basis-Freigabe oder automatische Sperrung</td>
+    </tr>
+    <tr>
+      <td>2 · Berater-Review (Business)</td>
+      <td>Ein zertifizierter Partner prüft Systemkompatibilität, Datenschutz, Prozesslogik</td>
+      <td>Empfehlung für Pilotinstallation</td>
+    </tr>
+    <tr>
+      <td>3 · Pilottestphase (Business)</td>
+      <td>App läuft kontrolliert in der Unternehmensumgebung; Fehlerprotokolle werden ausgewertet</td>
+      <td>Freigabe für Produktivbetrieb</td>
+    </tr>
+    <tr>
+      <td>4 · Partner-Zertifikat</td>
+      <td>Nachweislich erfolgreiche Integration in mindestens einer Firmenstruktur oder verifizierten Umgebung</td>
+      <td>Zertifikat-Badge im Plattform-Listing</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>7.2 Automatische Qualitätskontrolle &amp; Schutzprinzip</h3>
+<div class="merksatz">
+  <p class="gross">Automatische Entfernung nicht konformer Apps.</p>
+  <p>Besteht eine App den KI-Sicherheitsscan nicht, wird sie ohne manuelle Intervention
+  vollständig und rückstandsfrei aus dem System entfernt — ohne Schaden an anderen
+  Plattformkomponenten oder Endgeräten. Der Entwickler erhält einen detaillierten
+  Fehlerbericht und kann die App nach Korrektur erneut einreichen. Dieses Prinzip garantiert,
+  dass ausschließlich geprüfte Apps für Endnutzer sichtbar sind.</p>
+</div>
+
+<h3>7.3 Customization-Service für Unternehmen (Business-Zugang)</h3>
+<p>Stellt ein Unternehmen fest, dass eine App grundsätzlich geeignet ist, kann es diese in
+Zusammenarbeit mit einem zertifizierten Berater vollständig an interne Systeme und Prozesse
+anpassen lassen. Rechte und Vergütung werden vertraglich geregelt.</p>
+
+<table>
+  <thead><tr><th>Leistung</th><th>Anbieter</th><th>Kostenbasis</th></tr></thead>
+  <tbody>
+    <tr><td>App-Anpassung an interne Prozesse</td><td>Zertifizierter Berater</td><td>Projektbasiert</td></tr>
+    <tr><td>API-Integration &amp; Datenanbindung</td><td>Zertifizierter Berater</td><td>Stunden- o. Pauschalpreis</td></tr>
+    <tr><td>Schulung &amp; Onboarding</td><td>Berater oder Entwickler</td><td>Pauschal</td></tr>
+    <tr><td>Laufende Wartung &amp; Updates</td><td>Entwickler (optional Berater)</td><td>Wartungsvertrag</td></tr>
+    <tr><td>Betrieb in eigener Infrastruktur</td><td>Unternehmen selbst</td><td>Nach Freigabe</td></tr>
+  </tbody>
+</table>
+
+<h2>8 · Nächste Schritte</h2>
+
+<p>Zur Weiterentwicklung des Konzepts wurden im März 2026 folgende Schritte vorgeschlagen:</p>
+
+<table>
+  <thead><tr><th>#</th><th>Schritt</th><th>Zweck</th></tr></thead>
+  <tbody>
+    <tr><td class="zahl">1</td><td>Rahmen für den Umgang mit dem Konzept klären</td><td>Sicherung des geistigen Eigentums vor vertiefter Diskussion</td></tr>
+    <tr><td class="zahl">2</td><td>Technisches Scoping</td><td>Definition des MVP: Prompt-Engine, Lizenzserver, Treuhand-Integration</td></tr>
+    <tr><td class="zahl">3</td><td>Pilotphase planen</td><td>5–10 Entwickler, geschlossene Beta, bestehende Community als erste Nutzerbasis</td></tr>
+    <tr><td class="zahl">4</td><td>Partnermodell definieren</td><td>Provisionsstruktur, Vertragsrahmen, Onboarding-Prozess</td></tr>
+    <tr><td class="zahl">5</td><td>Go-to-Market</td><td>Launch über Partner-Kanäle, Video-Inhalte, Berater-Netzwerk</td></tr>
+  </tbody>
+</table>
+
+<div class="merksatz">
+  <p class="gross">Was daraus wurde.</p>
+  <p>Von diesen fünf Schritten ist einer gegangen worden — und zwar allein: Das
+  Matching wurde gebaut und läuft server-los im Browser. Der Lizenzserver, die
+  Treuhand und das Provisionsmodell wurden <b>nicht</b> gebaut, weil sich unterwegs
+  gezeigt hat, dass sie dem Zweck widersprechen. Was stattdessen entstanden ist,
+  zeigt die Demo.</p>
+</div>
+
+<p class="fuss">Konzeptpapier, Fassung März 2026 · Namen des ursprünglich angesprochenen
+Hauses wurden durch „…“ ersetzt. © Klaus Nitzsche. Die Weitergabe ohne ausdrückliche
+schriftliche Genehmigung des Verfassers ist untersagt. Alle Rechte vorbehalten.</p>
+
+</div>
+</body>
+</html>
