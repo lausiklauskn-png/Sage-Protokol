@@ -409,7 +409,14 @@ genauesten hinsehen musst.
    Absicht?
 4. **`PWA-Toolpoint` selbst**: eigener Knoten mit Spore, oder bewusst nur
    Marktplatz?
-5. **„Die in der Höhe, im Handymodus, aktualisierte Version"** des Flying
+5. ~~**„Die in der Höhe, im Handymodus, aktualisierte Version"** des Flying~~
+   **✅ BEANTWORTET (Klaus, 2026-08-16): „die vorhandene ist gemeint, bau damit."**
+   Also die Kanon-Fassung `b496bc86b5b2` — nichts zu suchen, nichts nachzubauen.
+   Die Handy-Behandlung steckt im Modul und wird **nicht** app-seitig
+   überschrieben. Die ursprüngliche Frage bleibt darunter stehen, damit
+   nachvollziehbar ist, warum sie gestellt wurde:
+
+   ~~**Die in der Höhe, im Handymodus, aktualisierte Version** des Flying
    Widgets — hier ist eine ehrliche Unschärfe: gemessen gibt es **nur zwei**
    Fassungen der Datei, und sie unterscheiden sich ausschließlich um den
    Mycel-Karten-Link (30 Zeilen, 2026-08-16). Eine dritte, „in der Höhe
@@ -418,7 +425,7 @@ genauesten hinsehen musst.
    **beiden**. Zwei Möglichkeiten: Klaus meint genau diese, dann ist alles gut;
    oder er meint eine Verbesserung, die er am Tablet gesehen hat und die noch
    **nirgends committet** ist. **Fragen, bevor gebaut wird** — nicht raten. Was
-   auch immer herauskommt: es gehört **in den Kanon**, nicht in fünf Kopien.
+   auch immer herauskommt: es gehört **in den Kanon**, nicht in fünf Kopien.~~
 
 ---
 
