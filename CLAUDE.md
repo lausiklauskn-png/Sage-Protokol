@@ -128,7 +128,8 @@ Browser, „Beweis dass es funktionieren könnte"):** bis hierher lief jede bewi
 Cross-Knoten-Suche über den **Hub Sage** (Sage↔Endknoten). Am 2026-07-11 fragten
 sich zum **ersten Mal Endknoten GEGENSEITIG, ohne dass Sage im Spiel war** —
 server-los übers geteilte Relais, im gemeinsamen Rendezvous-Raum (Modul 23):
-**BookLedgerPro** fragte „wo bekomme ich bedruckte Tassen?" → **Tomys Hub**
+**BookLedgerPro** (Buchhaltung, sucht Werbeartikel für den eigenen Betrieb)
+fragte „wo bekomme ich bedruckte Tassen?" → **Tomys Hub**
 antwortete aus SEINEM Katalog (Tasse 15oz/11oz bedruckt 0.84, Untersetzer 0.81,
 Handtuch 0.80, 2,9 s); **Mein-Rezeptbuch** fragte „wer kann meine Steuererklärung
 machen?" → Tomys antwortete (WorkFloh 0.81), BookLedgerPro ehrlich leer (0,2 s).

@@ -21,7 +21,8 @@ das Netz trug **unter Gleichen**, nicht nur über die Mitte.
 Drei Endknoten gleichzeitig im gemeinsamen Rendezvous-Raum (Modul 23, geteiltes
 Relais, server-los, jeweils eigener Browser-Tab):
 
-- **BookLedgerPro** (Buchhaltung) fragte **„wo bekomme ich bedruckte Tassen?"**
+- **BookLedgerPro** (Buchhaltung — sucht Werbeartikel für den eigenen Betrieb)
+  fragte **„wo bekomme ich bedruckte Tassen?"**
   → **Tomys Hub** (Digitaldruck) antwortete aus SEINEM Katalog, bedeutungs-sortiert:
   1. Promptgenerator — Druckvorlagen gestalten (0.83)
   2. Tasse 15oz bedruckt (0.84) · 3. Tasse 11oz bedruckt (0.84)
