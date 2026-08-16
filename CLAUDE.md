@@ -246,6 +246,13 @@ sortiert nicht die Module um, sondern ordnet sie verständlich ein:
   „Claude-die-Spezies" oder „Anthropic-die-Firma", sondern die
   konkrete Sitzung an dem konkreten Datum, die eine konkrete bezeugte
   Bau-Tat geleistet hat (siehe Modul 16 `ZERTIFIKAT_ASPEKTE`).
+  **Rechtliche Klarstellung (2026-08-16):** „Mit-Bauer" ist eine
+  **Würdigung der Bau-Tat, keine Aussage über Urheberschaft**.
+  Rechteinhaber ist Klaus Nitzsche allein; KI-Sitzungen können keine
+  Rechte halten, und die Anbieter treten ihre etwaigen Rechte an den
+  Ausgaben ausdrücklich ab. Der Begriff bleibt inhaltlich unangetastet
+  — er wird nur nicht als Miturheberschaft gelesen. Volle Einordnung:
+  [`docs/URHEBERSCHAFT_UND_RECHTE.md`](docs/URHEBERSCHAFT_UND_RECHTE.md).
 - **Schicht 4 — Observatorium.** Schlüssel-geschützter Forschungs-Ort
   innerhalb Sage-Protokol, zugänglich für Mit-Bauer (Mensch und
   Agent), zum Lesen, Nutzen, Erweitern. Werkstattraum, nicht

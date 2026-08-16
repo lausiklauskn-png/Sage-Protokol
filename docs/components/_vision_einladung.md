@@ -54,6 +54,15 @@ Klaus' Vision-Erweiterung 2026-05-27 in mehreren Etappen:
    Eigeninteresse-Refinanzierungs-Pfad).
 3. **Multi-KI-Modell-Klarstellung** — Mycel ist nicht Anthropic-
    zentriert.
+3a. **Rechtliche Klarstellung zum Mit-Bauer-Begriff** (Pflege
+   2026-08-16, Abschnitt `s4.h3`/`s4.body4` in der HTML-Fassung, in
+   allen vier Sprachen). „Mit-Bauer" ist eine **Würdigung der Bau-Tat,
+   keine Aussage über Urheberschaft** — Rechteinhaber ist Klaus
+   Nitzsche allein, KI-Sitzungen können keine Rechte halten, die
+   Anbieter treten ihre etwaigen Rechte an den Ausgaben ab. Der
+   Begriff bleibt inhaltlich unangetastet; er soll nur nicht als
+   Miturheberschaft gelesen werden. Volle Einordnung:
+   [`docs/URHEBERSCHAFT_UND_RECHTE.md`](../URHEBERSCHAFT_UND_RECHTE.md).
 4. **Menschen-Begeisterungs-Schicht-Pflicht** — mehrsprachig + optisch
    lesbar + Erzählung statt Spec.
 5. **Mut-Klausel zur Gestaltung** — preisgekröntes Internet-Niveau,

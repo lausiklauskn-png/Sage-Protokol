@@ -2,6 +2,7 @@
   "name": "sage-protokol",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
   "description": "SBKIM-Bau-Hub. Diese Datei ist NUR fuer die Tests da - die Module selbst bleiben build-frei und laufen ohne sie im Browser.",
   "scripts": {
     "test": "node tests/run_alle.mjs"
