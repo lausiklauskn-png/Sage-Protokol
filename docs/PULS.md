@@ -31,6 +31,55 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-16 (Pflege) — 📄 Papiere bereinigt zurück · ein Wächter, der wirklich hineinsieht
+
+**Was Klaus wollte** (2026-08-15/16): der Name des Hauses, dem die alten
+Konzeptpapiere einmal vorgelegt wurden, soll **überall** verschwinden — „auch aus
+den PDFs", damit kein Eindruck einer Zusammenarbeit entsteht und keine Abmahnung
+droht. Danach: „ja, hol die Papiere bereinigt zurück." Die Form hat Klaus selbst
+vereinfacht: an der Stelle des Namens **drei Punkte**.
+
+**Gemacht (PR `#863` entfernt, PR `#864` zurückgeholt).** Die drei Papiere sind
+**neu gesetzt**, nicht geschwärzt — eine Schwärzung im alten PDF ließe den Text
+darunter stehen. HTML von Hand (Tabellen aus dem alten PDF rekonstruiert) +
+`sbkim-demo/papiere/print.css` (nüchterner Bericht, **nicht** die Magazin-Optik
+der Einladung) + `_pdf.mjs` nach dem Hausmuster aus `docs/einladung/_pdf.mjs`.
+Über den Namen hinaus sind auch **Firmen-Domänen, Produkt- und Community-Namen**
+heraus — mit „…" davor wären sie weiter identifizierbar gewesen, und Klaus' Ziel
+war ausdrücklich „dass keine Rückschlüsse gezogen werden können". Jedes Papier
+trägt oben einen **Einordnungs-Kasten**: Zeitdokument von damals, was eingelöst
+wurde (das Matching läuft) und was **bewusst nicht** gebaut wurde (Lizenzserver,
+Treuhand, Zertifizierungsstelle, Datenburggraben — siehe
+[`PLAN_PILZ_WIRTSCHAFT.md`](PLAN_PILZ_WIRTSCHAFT.md)).
+
+**Die eigentliche Lehre steckt im Wächter** (CLAUDE.md § „Die dritte Falle").
+Zweimal war „im PDF steht nichts mehr" grün, ohne dass jemand hineingesehen
+hatte: erst wurde die **Datei** statt des Inhalts durchsucht (PDF-Text ist
+gepackt — `grep` findet dort grundsätzlich nichts; Klaus hat nachgefragt, dann
+kamen **35 Treffer**), dann konnte der neue Leser die **Chromium**-PDFs nicht
+lesen (Text als Glyph-Nummern eines Schrift-Ausschnitts). Deshalb prüft
+`tests/smoke_papiere_bereinigt.mjs` **erst**, ob überall hineingesehen wurde
+(kein Strom verschlossen, kein Zeichen unzuordenbar, genug Text), und **erst
+dann** auf Fundstellen — zwei Lesarten *glatt*/*flach* gegen gebrochene und
+gesperrt gesetzte Schreibweisen. `sbkim-demo/papiere/_pdf_text.mjs` geht den
+vollen Weg Seite → Schrift → ToUnicode → Buchstaben. `tests/gegenprobe_papiere.mjs`
+baut sieben Fehler ein, **zwei davon wirklich in ein neu gebautes PDF** — alle
+sieben werden bemerkt.
+
+**Nebenbei:** `hub.html` registrierte ein `./sw.js`, das es nie gab (404 bei
+jedem Aufruf, stumm weggefangen). Entfernt, `aktualisieren.js` dort ergänzt.
+
+**Proben:** 72 grün, 0 rot, 0 nicht lauffähig · Gegenprobe 7/7 · keine toten
+Verweise · kein waagerechter Lauf (412 px / 1350 px) · 0 von 24 Tabellen laufen
+im Druck über.
+
+**Offen / nächster Schritt:**
+- **Klaus' Browser-Lauf** an der Demo: öffnen sich die drei PDFs am Tablet, und
+  treffen die Einordnungs-Kästen den richtigen Ton? (Nicht headless prüfbar.)
+- `hub.html` lädt Schriften von **`fonts.googleapis.com`** — ein CDN, entgegen
+  der Offline-Regel. Vorbestehend, hier bewusst **nicht** angefasst: ein
+  Schriftwechsel ändert das Aussehen und gehört in eine eigene Entscheidung.
+
 ## Stand 2026-08-15 (Pflege) — 🧬 Modul-23-UI netzweit · Modul 15 aus BLP in den Kanon
 
 Übergabeprotokoll:
