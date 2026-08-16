@@ -290,6 +290,25 @@ async function run() {
   await sleep(5);
   record("Filter wieder aus → _meta.relatedOnly false", "false", String(UI._meta.relatedOnly), UI._meta.relatedOnly === false);
 
+  // ── Weg zur Mycel-Karte (Klaus 2026-08-16) ──
+  // Er steht IM Fenster, nicht als schwebende Pille am Bildschirmrand: der
+  // erste Versuch lag auf Kimboards Lampen-Leiste, nach dem Ausweichen auf dem
+  // nächsten Knopf. Im Fluss dieses Fensters kollidiert nichts.
+  // Geprüft wird, was leise kaputtgehen kann: der Link selbst, sein Ziel, und
+  // dass er in einem NEUEN Tab öffnet (sonst verliert man das offene Fenster
+  // samt allem, was man gerade angemeldet hat).
+  const alleLinks = [];
+  (function sammle(n) { for (const c of n.children) { if (c.tagName === "A") alleLinks.push(c); sammle(c); } })(panel);
+  const karte = alleLinks.find((a) => (a.textContent || "").includes("Mycel-Karte"));
+  record("Weg zur Mycel-Karte im Fenster", "ja", karte ? "ja" : "nein", !!karte);
+  record("… zeigt auf die echte Karte", "mycel-karte",
+         karte ? String(karte.href).replace(/^https:\/\/[^/]+\//, "") : "—",
+         !!karte && String(karte.href) === "https://lausiklauskn-png.github.io/mycel-karte/");
+  record("… öffnet in neuem Tab", "_blank", karte ? String(karte.target) : "—",
+         !!karte && karte.target === "_blank");
+  record("… ohne Rückkanal zur Herkunft", "noopener",
+         karte ? String(karte.rel) : "—", !!karte && /noopener/.test(String(karte.rel)));
+
   // ── Empfänger-Hinweis: eingehender Handshake (Klaus 2026-07-11) ──
   // Wenn ein FREMDER Knoten sich verbindet, meldet Modul 05 sbkim:handshake
   // mit direction:"incoming". Das UI soll das sichtbar machen (Klaus' Befund:
