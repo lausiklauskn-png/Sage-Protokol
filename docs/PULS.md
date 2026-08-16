@@ -31,6 +31,62 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-16 (Bau) — 🍄 Vier Marktplatz-Apps werden Endknoten
+
+**Klaus' Auftrag:** die im PWA-Toolpoint eingetragenen Apps ins eigene Mycel
+aufnehmen, „nach dem Bauplan aus Sage" — mit dem **Flying Widget** und dem
+**selbstausfüllenden Siegel**, und dabei *immer erst die aktuellste Fassung
+suchen, notfalls Sage nachziehen*. Auf Rückfrage: „die vorhandene ist gemeint,
+bau damit."
+
+**Der Abgleich zuerst** (alle 33 Repos, nach Inhalt, mit Fingerabdruck +
+Datum): Sage trägt bei **beiden** Werkzeugen den neuesten Stand
+(`23_rendezvous_ui.js` `b496bc86…`, `16_siegel.js` `95003d20…` vom 15.08.).
+Klaus' Bedingung trifft also nicht zu — Sage musste nicht nachgezogen werden.
+Das ist ein **Messergebnis, keine Eigenschaft von Sage**; beim nächsten Mal
+wieder messen.
+
+**Gebaut und gemergt (4 Repos, 6 PRs):** Alis Moderaum (`#39`+`#40`, trägt
+zwei Marktplatz-Einträge) · Perfect Skin Fashion (`#15`+`#16`) · Perfect Skin
+Beauty (`#43`, eigene Domain) · Muster Werbetechnik (`#7`, die „Internetseite").
+Je 13 Kanon-Module byte-1:1, App-eigener Klebstoff (eigene Schublade, eigenes
+Wizard-Präfix, graviertes Wappen-Band), Kette in der **Leerlaufpause** statt im
+kritischen Pfad (die Messwerte dieser Seiten stehen öffentlich im Marktplatz),
+Reihenfolge verdrahtet **und bewacht** (17 vor 15/16 — sonst hängen Lampe und
+Siegel lautlos ins Leere).
+
+**Was die Wächter gefangen haben** — und ohne die durchgerutscht wäre:
+1. Die Sicherungsdatei hätte in allen vier weiter `kimboard-backup-….json`
+   geheißen (sichtbar erst, wenn man sie ein halbes Jahr später sucht).
+2. Bei Perfect Skin Beauty war die Prüfung „läuft die Seite noch?" **blind**:
+   sie suchte das *Wort* `script.js`, das dort fünfmal in Kommentaren steht.
+   Geschärft, und in den zwei früher gebauten Repos nachgezogen — **eine
+   Prüfung, die zufällig recht hat, ist keine Prüfung.**
+3. Ein doppelt maskierter Punkt im Generator (`effects\\.js` statt
+   `effects\.js`) machte eine Prüfung dauerhaft rot.
+4. Perfect Skin Beauty läuft unter eigener Domain — ohne Eintrag hätte der
+   Wächter **die eigene Seite** abgewiesen. Jetzt drin, mit und ohne `www.`
+
+**🚫 Küchenzettel wurde bewusst NICHT gebaut.** Es sieht aus wie eine
+Rezept-App, ist im Code aber eine **Tarn-Hülle** („App-Hopping schlägt
+App-Verbote", „Tarnung gegen ein echtes Regime"). Ein sichtbares Netz-Fenster
+plus Siegel plus Karten-Link wäre das Gegenteil dessen, wofür sie gebaut wurde.
+Klaus überließ die Entscheidung der Sitzung; entschieden wurde: nichts
+anfassen. Volle Begründung + der schonende Weg, falls es doch soll:
+[`BRIEF_MYCEL_AUFNAHME_TOOLPOINT_APPS.md`](sessions/BRIEF_MYCEL_AUFNAHME_TOOLPOINT_APPS.md)
+§ A.1.
+
+**Ehrlich zum Stand:** die vier sind **andock-bereit, noch nicht im Mycel**.
+Die lebende Identität entsteht im Browser pro Adresse — eine Sitzung kann sie
+nicht erzeugen. Sie entsteht, wenn Klaus in jeder App einmal den Wizard im
+Siegel drückt. Erst danach gibt es eine echte `nodeId` für `status.json` und
+die Mycel-Karte.
+
+**Offen:** Klaus' Andock-Lauf (4×) · die B-Liste des Briefes (11 zurückhängende
+Siegel-Kopien, 5 zurückhängende Widget-Kopien, darunter **Sages eigenes
+`sbkim-bundle-voll/`** und PWA-Toolpoint) · `Kimseek` und `Privat-Brain` haben
+ein Siegel **ohne Identitäts-Wechsler**.
+
 ## Stand 2026-08-16 (Pflege) — 📄 Papiere bereinigt zurück · ein Wächter, der wirklich hineinsieht
 
 **Was Klaus wollte** (2026-08-15/16): der Name des Hauses, dem die alten

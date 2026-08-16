@@ -30,6 +30,15 @@ einem ungefetchten Klon ist **kein Beweis**.
 
 ---
 
+## ✅ Stand der Umsetzung (2026-08-16, abends)
+
+**Vier Repos sind gebaut und gemergt** — Alis Moderaum (`#39`+`#40`), Perfect
+Skin Fashion (`#15`+`#16`), Perfect Skin Beauty (`#43`), Muster Werbetechnik
+(`#7`). Jedes mit 13 Kanon-Modulen byte-1:1, Flying Widget, selbstausfüllendem
+Siegel, Drift-Guard, Probe und Gegenprobe. **Küchenzettel bleibt bewusst
+draußen — siehe § A.1.** Offen bleibt die B-Liste (die zurückhängenden Kopien)
+und der Register-Eintrag, der erst nach Klaus' Andock möglich ist.
+
 ## Stand — was gemessen wurde (2026-08-16, alle 33 Repos, `origin/main`)
 
 Geprüft wurde **nach Inhalt, nicht nach Dateinamen**. Das ist kein Detail: der
@@ -47,7 +56,7 @@ git -C <repo> ls-tree -r origin/main --name-only | grep sbkim/spore.json
 | # | Repo | Marktplatz-Eintrag | Art |
 |---|---|---|---|
 | 1 | `Alis-Moderaum` | `eigen-alis-moderaum` **+** `eigen-alis-warenwirtschaft` | App (**zwei** Einträge, ein Repo) |
-| 2 | `Kuechenzettel` | `eigen-kuechenzettel` | App |
+| 2 | ~~`Kuechenzettel`~~ | `eigen-kuechenzettel` | **NICHT ANFASSEN — siehe unten** |
 | 3 | `Perfect-Skin-Fashion` | `markt-perfect-skin-fashion` | App |
 | 4 | `Perfect-Skin-Beauty` | `markt-perfect-skin-beauty` | Seite mit eigener Domain (`perfectskinbeauty.de`) |
 | 5 | `Mein-Workfloh-Page` | `eigen-workfloh-page` („Muster Werbetechnik") | **Schaufenster-Seite**, keine App |
@@ -55,6 +64,48 @@ git -C <repo> ls-tree -r origin/main --name-only | grep sbkim/spore.json
 Das sind Klaus' „fünf Apps und eine Internetseite" — genauer: **fünf Repos**,
 davon zwei Seiten und drei Apps, und eines der App-Repos trägt zwei Einträge.
 **Sag es in der Abschluss-Meldung so genau, nicht gerundet.**
+
+### A.1 · Küchenzettel wird bewusst NICHT eingebaut (Entscheid 2026-08-16)
+
+**Wer diesen Brief liest und die Liste oben abarbeitet, hört hier auf.**
+
+Küchenzettel sieht aus wie eine Rezept-App und ist im Marktplatz auch so
+beschrieben. Im Repo steht etwas anderes. Der Kopf von
+`comm-core/comm-core.js` sagt wörtlich: **„Tarn-Hülle"**, „App-Hopping schlägt
+App-Verbote, NICHT Netz-Fingerprinting", „der Simulator beweist die MECHANIK,
+NICHT die Tarnung gegen ein echtes Regime". Die Relais-Liste ist bewusst
+**ohne** family-projekt, der Speicher-Schlüssel bewusst unauffällig, und die
+Krypto (ECDH + TOFU-Sicherheitsnummer, AES-GCM, Shamir) ist echt.
+
+Die App ist also die **Hülle**, nicht der Inhalt. Ihr Zweck ist, dass man ihr
+den Inhalt nicht ansieht.
+
+**Was ein Einbau nach diesem Brief bewirken würde:** ein schwebendes Fenster
+„🌐 Mit dem Netz verbinden", ein Siegel und ein Verweis auf eine öffentliche
+Knoten-Karte. Die App würde an der Oberfläche ankündigen, dass sie ein
+Kommunikationswerkzeug ist, und ihre Kennung auf eine Karte hängen, die jeder
+lesen kann. Das ist nicht ein bisschen weniger getarnt — das ist das Gegenteil
+dessen, wofür sie gebaut wurde.
+
+**Klaus wurde gefragt und hat es der Sitzung überlassen** („keine Vorgabe").
+Entschieden wurde: **nichts anfassen.** Begründung, damit sie nachprüfbar ist:
+
+| | |
+|---|---|
+| Kosten, es zu lassen | gering — vier von fünf Apps sind drin, die Marktplatz-Karte steht trotzdem |
+| Kosten, es falsch zu tun | hoch und nicht rückholbar für jemanden, der sich darauf verlassen hat |
+| Wer kann es besser entscheiden | Klaus, mit dem vollen Bild der ursprünglichen Absicht |
+
+**Wer das ändern will, braucht Klaus' ausdrückliches Wort** — nicht diesen
+Brief, nicht die Marktplatz-Liste, nicht die Vollständigkeit einer Tabelle.
+Eine Tabelle, in der eine Zeile fehlt, ist kein Grund.
+
+**Falls es doch gebaut werden soll,** ist der schonende Weg nicht der volle
+Einbau, sondern das Gegenteil der Sichtbarkeit: Knoten ohne Panel, ohne Siegel,
+ohne Karten-Link, Anmeldung nur über denselben versteckten Weg, über den die
+Hülle ihren Inhalt öffnet. Das ist eine eigene Bau-Sitzung mit eigenem Brief —
+und die erste Frage darin lautet, ob ein Knoten, der nicht gefunden werden
+soll, überhaupt einer sein will.
 
 ### B · Halb drin — je ein Teil fehlt (billig zu schließen, gehört dazu)
 
