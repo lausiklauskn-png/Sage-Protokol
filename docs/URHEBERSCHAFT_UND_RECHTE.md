@@ -220,7 +220,13 @@ In der Reihenfolge ihrer Wirkung:
    seit langem eingebaut — die Ironie der ganzen Sorge.
 7. **Eine gespeicherte Kopie der heute geltenden Anbieter-Bedingungen**, mit Datum. Wer
    sich später auf eine Rechte-Abtretung berufen will, sollte den Wortlaut haben, der zum
-   Zeitpunkt der Erstellung galt. Ein PDF im Ordner genügt.
+   Zeitpunkt der Erstellung galt. Ein PDF genügt.
+   → Anleitung, Datei-Namen und Liste des Gesicherten:
+   [`rechte-belege/README.md`](rechte-belege/README.md). Die PDFs gehören in den Tresor,
+   **nicht** ins Repo (fremder Text); hier steht nur, was wann gesichert wurde.
+   **Stand 2026-08-16: noch offen** — die Sitzung kam an die Seiten nicht heran
+   (`anthropic.com` → 403 am Netz-Übergang dieser Umgebung), und ein PDF aus einer
+   Zusammenfassung wäre kein Beleg gewesen, sondern etwas, das wie einer aussieht.
 
 ## 10 · Was nicht schützt
 
