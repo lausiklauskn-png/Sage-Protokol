@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.2",
   "schemaVersion": "1",
-  "lastUpdated": "2026-07-29",
+  "lastUpdated": "2026-08-16",
   "branch": "main",
   "identityNote": "COMMITTETE vs. LEBENDE Identität (Stufe 0e, 2026-07-29): Die `nodeId` je Endknoten hier ist die COMMITTETE Identität — die in der `spore.json` des jeweiligen Repos signierte, gegen `main` verifizierte Wahrheitsquelle des Registers. Sie ist NICHT zwingend die LEBENDE Identität, die ein Knoten im Rendezvous-Raum (Modul 23) trägt: der Browser-Speicher einer bloß im Tab geöffneten github.io-Seite ist 'best effort' und kann zwischen Sitzungen geräumt werden, dann trägt der Knoten beim nächsten Öffnen eine neue lebende `nodeId` (Stufe 0 im Bau — Identität haltbar machen). Modul 23 findet Knoten im Raum über den `nodeName` und handshaket die LEBENDE `nodeId` — das Register muss dafür nicht stimmen. `matchScore`/`pingStatus` beziehen sich auf die committete Spore. Belege: docs/sessions/archiv/2026-07-29_mycel-analyse-identitaetsverlust.md.",
   "endknoten": [
@@ -382,7 +382,7 @@
       "domain": "Werbetechnik-Auftragsabwicklung",
       "integrated": true,
       "integratedAt": "2026-07-25",
-      "nodeId": "6YOPHbnKWreoF5og4PGc3fre7du1FhVc7dY1d5jZyHs",
+      "nodeId": "foFm64sA1SZkw9kz-Uy6u-MKi8XlxTdTrDyTU9_gLoo",
       "sporeUrl": "https://lausiklauskn-png.github.io/Mein-WorkFloh/sbkim/spore.json",
       "stammCategories": [
         "Auftragsabwicklung",
@@ -398,8 +398,80 @@
       ],
       "pingStatus": "verified-match",
       "matchScore": 0.906269,
-      "note": "15. Endknoten (Klaus 2026-07-25, 'ich binde alle meine Repos ein'): Mein-WorkFloh (digitaler Werbetechnik-Auftragszettel; seit 2026-07-25 oeffentlich angeboten) als SBKIM-Endknoten. SBKIM-Kern-Module byte-1:1 aus Kim-Bell/Sage-Kanon (Drift-Guard-Smoke gruen, 15/15), Glue nach Kim-Bell-Muster, DB-Suffix 'workfloh'. Netz-Panel (Modul 23 Rendezvous + UI) + Siegel-Leiste (17/15/16) + Andock-Wizard eingebaut. Klaus' Browser-Andock 2026-07-25: echte Identitaet ueber den Andock-Wizard im Siegel, nodeId 6YOPHbnK... (ersetzt die fruehere Platzhalter-nodeId PuOH7u8K...). RE-SIGNATUR (gleicher Tag, 19:36): der domainDescription wurde nach dem erprobten Rezeptbuch-Muster umgestaltet (WorkFloh als 'Endknoten im SBKIM-Mycel auf Grundlage des Sage-Protokolls', semantisch verbunden mit Tomys/BLP/Kimseek/Point, wandelbares Branchen-Tool) und die Spore neu signiert -> nodeId UNVERAENDERT, neuer domainVector + 6 Satz-Schnipsel, reziprok VALID (id==base64url(SHA256(rawPub))==6YOPHbnK, Ed25519-Signatur gueltig, kein _demo). WIRKUNG (echte Vektoren, Modul-04-Cosinus): Sage<->WorkFloh von 0.7824 auf 0.906269 gehoben -> DIREKTER Hub-Match; 12 Knoten >= 0.80 (Sage 0.906, SB-KIMTool-Point 0.897, Muttis 0.878, Rezeptbuch 0.876, Tomys 0.860, Kimseek 0.860, Kim-Bell 0.849, Jasons 0.849, Family 0.846, Mein-Tresor 0.845, Mixarium 0.826, Kimboard 0.817; nur Private Brain 0.771 drunter). LIVE-HANDSHAKE bewiesen (Mycel-Karte-Analyse-Rekord 2026-07-25 19:37 + 19:43): WorkFloh <-> Sage BEIDSEITIG 'established' uebers echte Relais (WorkFloh initiiert -> Sage established; Sage initiiert -> WorkFloh established) + Tablet<->Handy established. WorkFloh wird seit 2026-07-25 von Klaus oeffentlich angeboten (zum Verkauf; frueher privat); netzweit als funktionierende PWA mit Siegel + Link gelistet: SB-KIMTool-Point (marktplatz.json) + family-projekt.de-Marktplatz (listings.js).",
-      "url": "https://lausiklauskn-png.github.io/Mein-WorkFloh/"
+      "note": "15. Endknoten (Klaus 2026-07-25, 'ich binde alle meine Repos ein'): Mein-WorkFloh (digitaler Werbetechnik-Auftragszettel; seit 2026-07-25 oeffentlich angeboten) als SBKIM-Endknoten. SBKIM-Kern-Module byte-1:1 aus Kim-Bell/Sage-Kanon (Drift-Guard-Smoke gruen, 15/15), Glue nach Kim-Bell-Muster, DB-Suffix 'workfloh'. Netz-Panel (Modul 23 Rendezvous + UI) + Siegel-Leiste (17/15/16) + Andock-Wizard eingebaut. Klaus' Browser-Andock 2026-07-25: echte Identitaet ueber den Andock-Wizard im Siegel, nodeId 6YOPHbnK... (ersetzt die fruehere Platzhalter-nodeId PuOH7u8K...). RE-SIGNATUR (gleicher Tag, 19:36): der domainDescription wurde nach dem erprobten Rezeptbuch-Muster umgestaltet (WorkFloh als 'Endknoten im SBKIM-Mycel auf Grundlage des Sage-Protokolls', semantisch verbunden mit Tomys/BLP/Kimseek/Point, wandelbares Branchen-Tool) und die Spore neu signiert -> nodeId UNVERAENDERT, neuer domainVector + 6 Satz-Schnipsel, reziprok VALID (id==base64url(SHA256(rawPub))==6YOPHbnK, Ed25519-Signatur gueltig, kein _demo). WIRKUNG (echte Vektoren, Modul-04-Cosinus): Sage<->WorkFloh von 0.7824 auf 0.906269 gehoben -> DIREKTER Hub-Match; 12 Knoten >= 0.80 (Sage 0.906, SB-KIMTool-Point 0.897, Muttis 0.878, Rezeptbuch 0.876, Tomys 0.860, Kimseek 0.860, Kim-Bell 0.849, Jasons 0.849, Family 0.846, Mein-Tresor 0.845, Mixarium 0.826, Kimboard 0.817; nur Private Brain 0.771 drunter). LIVE-HANDSHAKE bewiesen (Mycel-Karte-Analyse-Rekord 2026-07-25 19:37 + 19:43): WorkFloh <-> Sage BEIDSEITIG 'established' uebers echte Relais (WorkFloh initiiert -> Sage established; Sage initiiert -> WorkFloh established) + Tablet<->Handy established. WorkFloh wird seit 2026-07-25 von Klaus oeffentlich angeboten (zum Verkauf; frueher privat); netzweit als funktionierende PWA mit Siegel + Link gelistet: SB-KIMTool-Point (marktplatz.json) + family-projekt.de-Marktplatz (listings.js). Neue Identität am 2026-08-16 (Spore 0.2, reziprok verifiziert); die vorige Kennung steht in previousNodeIds. IDENTITAETS-WECHSEL 2026-08-16: neue Spore aus der App (foFm64sA…), die vorige Kennung steht in previousNodeIds. Nachgemessen: domainVector und domainDescription sind UNVERAENDERT, nur das Schluesselpaar ist neu — der matchScore 0.906269 gilt daher weiter und wurde nicht neu behauptet, sondern nachgerechnet.",
+      "url": "https://lausiklauskn-png.github.io/Mein-WorkFloh/",
+      "previousNodeIds": [
+        "6YOPHbnKWreoF5og4PGc3fre7du1FhVc7dY1d5jZyHs"
+      ],
+      "reIntegratedAt": "2026-08-16"
+    },
+    {
+      "name": "Alis Moderaum",
+      "domain": "Damenboutique / Warenwirtschaft",
+      "integrated": true,
+      "integratedAt": "2026-08-16",
+      "nodeId": "AxaeIRHJYT9gGOPRW9_M3O_jtz6T1rCidETkkf26xgw",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Alis-Moderaum/sbkim/spore.json",
+      "stammCategories": [
+        "Damenmode",
+        "Dessous & Accessoires",
+        "Warenwirtschaft/Lager",
+        "Kasse"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-spore",
+      "note": "Spore 0.2 aus der App erzeugt, reziprok verifiziert (tools/verify_remote_spore.mjs → ✔ VALID). matchScore ist der gemessene Cosinus GEGEN SAGE und liegt mit 0.7927 UNTER dem 0.80-Andock-Riegel — Sage und dieser Knoten wuerden sich nicht die Hand geben, und das ist richtig so: eine Boutique und eine Protokoll-Bibliothek haben fachlich nichts miteinander zu tun. Der Knoten hat trotzdem Partner im Netz: Perfect Skin Fashion mit 0.8527 (ueber dem Riegel). Darum verified-spore statt verified-match: die Identitaet ist bewiesen, ein Cross-Knoten-Handshake im Raum noch nicht bezeugt.",
+      "url": "https://lausiklauskn-png.github.io/Alis-Moderaum/",
+      "matchScore": 0.792746
+    },
+    {
+      "name": "Perfect Skin Fashion",
+      "domain": "Modeshop / Warenwirtschaft",
+      "integrated": true,
+      "integratedAt": "2026-08-16",
+      "nodeId": "zFGvsVsvtERBtaMjLcpaiPdrvoLjycRqF6tFMBcnWmc",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Perfect-Skin-Fashion/sbkim/spore.json",
+      "stammCategories": [
+        "Modeshop",
+        "Design-Studio",
+        "Warenwirtschaft/Lager",
+        "Kasse"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-spore",
+      "note": "Spore 0.2 aus der App erzeugt, reziprok verifiziert (tools/verify_remote_spore.mjs → ✔ VALID). matchScore ist der gemessene Cosinus GEGEN SAGE und liegt mit 0.7807 UNTER dem 0.80-Andock-Riegel — Sage und dieser Knoten wuerden sich nicht die Hand geben, und das ist richtig so: eine Boutique und eine Protokoll-Bibliothek haben fachlich nichts miteinander zu tun. Der Knoten hat trotzdem Partner im Netz: Alis Moderaum mit 0.8527 (ueber dem Riegel). Darum verified-spore statt verified-match: die Identitaet ist bewiesen, ein Cross-Knoten-Handshake im Raum noch nicht bezeugt.",
+      "url": "https://lausiklauskn-png.github.io/Perfect-Skin-Fashion/",
+      "matchScore": 0.780652
+    },
+    {
+      "name": "Muster Werbetechnik",
+      "domain": "Website-Vorlage Werbetechnik",
+      "integrated": true,
+      "integratedAt": "2026-08-16",
+      "nodeId": "_Psq_ZtO9m9ngN-X7rgCRXNdGTvfFQ4geeYEVS2FvoQ",
+      "sporeUrl": "https://lausiklauskn-png.github.io/Mein-Workfloh-Page/sbkim/spore.json",
+      "stammCategories": [
+        "Website-Vorlage",
+        "Werbetechnik-Leistungen",
+        "PWA-Gestaltung"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-spore",
+      "note": "Spore 0.2 aus der App erzeugt, reziprok verifiziert (tools/verify_remote_spore.mjs → ✔ VALID). matchScore ist der gemessene Cosinus GEGEN SAGE und liegt mit 0.7825 UNTER dem 0.80-Andock-Riegel — Sage und dieser Knoten wuerden sich nicht die Hand geben, und das ist richtig so: eine Boutique und eine Protokoll-Bibliothek haben fachlich nichts miteinander zu tun. Der Knoten hat trotzdem Partner im Netz: WorkFloh mit 0.8417 (ueber dem Riegel). Darum verified-spore statt verified-match: die Identitaet ist bewiesen, ein Cross-Knoten-Handshake im Raum noch nicht bezeugt.",
+      "url": "https://lausiklauskn-png.github.io/Mein-Workfloh-Page/",
+      "matchScore": 0.782495
     }
   ],
   "modules": [
