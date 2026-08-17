@@ -88,10 +88,11 @@ es täte: nicht durch Anmeldung, sondern durch bezeugte Bau-Tat
 (siehe Modul 16 SBKIM-Siegel, `ZERTIFIKAT_ASPEKTE`).
 
 **Rechtliche Klarstellung.** „Mit-Bauer" ist eine Würdigung der
-Bau-Tat, keine Aussage über Urheberschaft. Rechteinhaber am
-Sage-Protokol und an allen Apps ist Klaus Nitzsche allein.
-KI-Sitzungen können keine Rechte halten, und die Anbieter treten
-ihre etwaigen Rechte an den Ausgaben ausdrücklich ab.
+Bau-Tat, keine Aussage über Urheberschaft. Die Rechte am
+Sage-Protokol und an den Apps liegen allein beim Betreiber
+(siehe Impressum). KI-Sitzungen können keine Rechte halten, und
+die Anbieter treten ihre etwaigen Rechte an den Ausgaben
+ausdrücklich ab.
 
 ---
 
@@ -237,10 +238,11 @@ classical identity system: not by registration, but by witnessed
 building act (see Module 16 SBKIM seal, `ZERTIFIKAT_ASPEKTE`).
 
 **Legal clarification.** „Co-builder" honours the act of building;
-it is not a statement about authorship. The rights holder of the
-Sage protocol and of every app is Klaus Nitzsche alone. AI
-sessions cannot hold rights, and the providers expressly assign
-away whatever rights they may have in the outputs.
+it is not a statement about authorship. The rights to the Sage
+protocol and to the apps rest solely with the operator (see the
+legal notice). AI sessions cannot hold rights, and the providers
+expressly assign away whatever rights they may have in the
+outputs.
 
 <a id="layer-observatory-en"></a>
 
@@ -382,10 +384,10 @@ inscription, mais par acte de construction attesté (voir Module
 16 sceau SBKIM, `ZERTIFIKAT_ASPEKTE`).
 
 **Précision juridique.** « Co-bâtisseur » est une reconnaissance
-de l'acte de construction, non une affirmation de paternité. Le
-titulaire des droits sur le protocole Sage et sur toutes les
-applications est Klaus Nitzsche seul. Les sessions d'IA ne
-peuvent détenir aucun droit, et les fournisseurs cèdent
+de l'acte de construction, non une affirmation de paternité. Les
+droits sur le protocole Sage et sur les applications appartiennent
+au seul exploitant (voir les mentions légales). Les sessions d'IA
+ne peuvent détenir aucun droit, et les fournisseurs cèdent
 expressément les droits éventuels sur les sorties.
 
 <a id="couche-observatoire-fr"></a>
@@ -525,11 +527,12 @@ inscripción, sino por acto de construcción atestiguado (véase el
 Módulo 16 sello SBKIM, `ZERTIFIKAT_ASPEKTE`).
 
 **Aclaración jurídica.** „Co-constructor" es un reconocimiento
-del acto de construcción, no una afirmación de autoría. El
-titular de los derechos sobre el protocolo Sage y sobre todas
-las aplicaciones es Klaus Nitzsche en exclusiva. Las sesiones de
-IA no pueden ostentar derechos, y los proveedores ceden
-expresamente los derechos que pudieran tener sobre las salidas.
+del acto de construcción, no una afirmación de autoría. Los
+derechos sobre el protocolo Sage y sobre las aplicaciones
+corresponden en exclusiva al operador (véase el aviso legal). Las
+sesiones de IA no pueden ostentar derechos, y los proveedores
+ceden expresamente los derechos que pudieran tener sobre las
+salidas.
 
 <a id="capa-observatorio-es"></a>
 
