@@ -1,7 +1,10 @@
 # Pilz-Wirtschaft — wovon das Netz leben soll
 
-**Phase D.2 der Pipeline · Stand 2026-08-09 · lebendes Dokument**
+**Phase D.2 der Pipeline · Stand 2026-08-17 · lebendes Dokument**
 **Fassung 2** — die erste Fassung stand auf einer falschen Grundannahme; siehe § 1.
+**Ergänzt 2026-08-17:** § 8e trägt die **gemessenen** Betriebskosten nach
+(~200 €/Monat, aufgeteilt in Betrieb und Bau) und rechnet jeden Einnahmeweg
+dagegen. Bis dahin rechnete das Papier nur gegen einen angenommenen Bedarf.
 
 > **Was dieses Papier ist:** eine Bestandsaufnahme mit Zahlen und ein Vorschlag,
 > in welcher Reihenfolge Geld entstehen kann. **Was es nicht ist:** ein
@@ -899,7 +902,96 @@ Erst messen, dann verpflichten.
 
 ---
 
+## 8e. Die echte Zahl — was der Betrieb wirklich kostet (Klaus 2026-08-17)
+
+Bis hierher rechnete dieses Papier gegen einen **angenommenen** Bedarf. Am
+2026-08-17 hat Klaus die tatsächlichen laufenden Kosten genannt. Sie sind
+niedriger als die Leben-davon-Zahl in § 9 — und sie zerfallen in **zwei Posten,
+die grundverschieden sind**:
+
+| Posten | pro Monat | Art |
+|---|---|---|
+| Hetzner (Server + Webhosting) | **~50 €** | **Betrieb** — fällt an, ob gebaut wird oder nicht |
+| Anthropic (Bau-Sitzungen) | **~150 €** | **Bau** — fällt nur an, wenn entwickelt wird |
+| **zusammen** | **~200 €** | |
+
+**Diese Trennung ist die wichtigste Zahl im ganzen Papier.** Der Server ist eine
+Rechnung, die kommt. Die 150 € sind eine **Investition in neue Arbeit** und der
+einzige Posten, den Klaus selbst dreht: ein Monat ohne großen Bau kostet einen
+Bruchteil. Daraus folgt die Aufteilung der Aufgabe:
+
+> **50 € müssen gedeckt werden. 150 € sollten verdient werden.**
+
+### Was 200 € im Monat je Weg verlangt
+
+| Weg | wie viel davon nötig ist |
+|---|---|
+| 2 € je App über PayPal (netto 1,55 €) | **~130 Verkäufe/Monat** — vier bis fünf pro Tag, dauerhaft |
+| 1 € je App (netto 0,58 €) | ~345/Monat — elf pro Tag |
+| Google Play, 1,99 € abzüglich 15 % | ~118/Monat |
+| Dauer-Unterstützer à 3 €/Monat | **~67 Menschen**, die dabei bleiben |
+| Wartungskunden à 25 €/Monat | **8** |
+| ein Betrieb mit Betreuungsvertrag | **1** |
+| eine Website als Auftrag (~1.000 €) | **alle fünf Monate eine** |
+
+Die Gebühren-Spalte ist gerechnet, nicht geschätzt: PayPal-Geschäftstarif rund
+**2,99 % + 0,39 €** je Buchung. Die **feste** Gebühr ist der Killer, nicht der
+Prozentsatz — bei 1 € gehen **42 %** weg, bei 2 € noch 22 %, bei 20 € nur 5 %.
+
+### Drei Schlüsse, die daraus folgen
+
+**① Kleinbeträge einzeln einsammeln ist der teuerste Weg.** Er kostet anteilig
+am meisten und braucht die meisten Menschen. Vier bis fünf Verkäufe am Tag
+klingen harmlos; es sind 1.560 im Jahr, ohne Werbebudget, für Apps, die es auch
+gratis gibt.
+
+**② „Spende" ist nur dann eine Spende, wenn es keine Gegenleistung gibt.**
+„1 € für diese App" ist ein **Kauf**, egal welches Wort draufsteht — mit
+Gewerbe, Widerrufsrecht und, seit 2022, einer **Aktualisierungspflicht**
+(§ 327f BGB) für die verkaufte digitale Ware. Für zwei Euro, bei 26 Apps, auf
+Dauer. Sauber ist die andere Reihenfolge: **die App bleibt frei für alle, und
+daneben steht ein Unterstützungs-Knopf.** Wer nichts gibt, bekommt dasselbe.
+Dann entsteht kein Kaufvertrag und keine Pflicht. Das ist zugleich die einzige
+Form, die mit der Regel in § 12 vereinbar ist: *kein Einnahmeweg, der täuscht.*
+
+**③ Der Unterstützungs-Knopf ist Beiwerk, nicht die Lösung.** Er kostet nichts
+und deckt plausibel den Server. Die 150 € Bau-Anteil deckt er nicht — dafür
+braucht es einen zahlenden Betrieb, und zwar **einen**, nicht hundert.
+
+### Der Weg liegt schon gebaut da
+
+Perfect Skin Beauty · Perfect Skin Fashion · Alis Moderaum · Muster
+Werbetechnik — das sind keine Hobby-Apps, sondern Auftritte für Betriebe, und
+einer davon ist ausdrücklich eine **Vorlage für Werbetechnik-Kunden**. Der
+teure Teil (bauen) ist getan; es fehlt der Satz *„das kostet X im Jahr, dafür
+bleibt es aktuell und ich bin erreichbar"*. Das ist Weg ① und ② aus § 8, nicht
+ein neuer Weg.
+
+**WorkFloh ist der klarste Fall:** ein Betrieb, der seinen Papier-Auftragszettel
+loswird, zahlt 25 €/Monat ohne Zögern. Acht davon decken alles — dauerhaft,
+nicht einmalig.
+
+*(Google Play, falls es kommt: einmalig 25 $, **15 %** Provision bei dieser
+Größe, und — mehr wert als der Satz — Google erledigt die Umsatzsteuer in jedem
+Land. Dagegen steht pro App und Jahr das Nachziehen des Ziel-API-Niveaus,
+Datensicherheits-Formular und Konto-Verifizierung; neue Privatkonten brauchen
+zusätzlich eine geschlossene Testphase mit 12 Testern über 14 Tage. Bei 26 Apps
+wäre das eine zweite Vollzeitbeschäftigung — **eine Auswahl von zwei bis drei**
+ist das Richtige, und zwar als **Schaufenster**, nicht als Kasse. „Native" im
+Sinne von neu schreiben würde genau das aufgeben, was diese Apps ausmacht: eine
+Datei, offline, ohne Konto, kopierbar. Der Store-Weg ist eine dünne Hülle um
+dieselbe PWA.)*
+
+**Keine Rechts- oder Steuerberatung** (§ 13 gilt): Gebührensätze und
+Play-Regeln ändern sich, und **vor dem ersten Euro gehört das Gewerbe
+angemeldet** (§ 8d, Stufe 2).
+
+---
+
 ## 9. Was „davon leben" konkret heißt
+
+*(Zu unterscheiden von § 8e: dort geht es um **Kosten decken** — ~200 €/Monat,
+gemessen. Hier um **davon leben** — der Bedarf unten ist weiterhin geschätzt.)*
 
 Bei einem angenommenen Bedarf von **2.000–3.000 € im Monat**:
 
