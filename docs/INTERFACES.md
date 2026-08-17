@@ -6686,4 +6686,21 @@ Zusatz von allein, sobald die App ihn mitsendet.
 oder ihrer Seite führen. Ein Wächter dafür gehört in die Probe des jeweiligen Repos —
 **mit Gegenprobe**, sonst ist er nur ein grüner Haken.
 
+**✅ Live belegt (Klaus' Browser, 2026-08-17, Mycel-Analyse-Rekord 16:44–16:51):** zwei
+Kimboard-Instanzen meldeten sich im Raum als **„Kimboard · Klaus Handy"** und
+**„Kimboard · Klaus Tablet"** (getrennte Kennungen `Xz0CxdkwqN…` / `vSqUoJ6gcJ…`,
+getrennte Schlüssel), die Karte führte beide unter derselben Pille zusammen
+(„Kimboard ×2"), und der Handschlag lief **beidseitig** `outcome: "established"`
+(16:50:08 Tablet→Handy, 16:50:28 Handy→Tablet).
+
+Der eigentliche Beleg steckt aber in den Feldern: `content.nodeName` trug den Zusatz,
+**`spore.nodeName` blieb bei beiden `"Kimboard"`** und der `domainVector` war identisch.
+Genau so muss es sein — hätte der Name die signierte Identität verändert, wäre der
+Vektor mitgewandert und der 0.80-Riegel hätte die beiden womöglich nicht mehr
+zueinander gelassen. **Punkt 5 (kein Spore-Re-Sign) ist damit nicht nur Vorschrift,
+sondern gemessen.**
+
+Noch **nicht** belegt: dass zwei Felder derselben App (Panel + app-eigenes) beim Tippen
+gleichziehen — dafür muss das Panel beim Sichttest offen sein.
+
 **Rezept mit Code:** Skill `geraetename` (`.claude/skills/geraetename/SKILL.md`).

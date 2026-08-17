@@ -72,11 +72,25 @@ und hält es für erledigt.
    Mein-Rezeptbuchs Zwei-Felder-Helfer hinweggegangen. Beides fiel nur auf, weil der
    Diff gelesen wurde statt nur der Erfolgsmeldung.
 
-**Offen:** zehn Repos haben gar keine `CLAUDE.md` (Alis-Moderaum, Company-Brain,
-Kim-Bell, Kimboard, Kimseek, Mein-Workfloh-Page, Perfect-Skin-Beauty/-Fashion,
-Tomys-Hub, family-project) — dort steht die Regel nur in Tafel und Rezept. **Klaus'
-Browser-Sichttest** des Feldes und des Abgleichs (am besten Kimboard, das zwei Felder
-hat) steht aus.
+**✅ Browser-Sichttest GRÜN (Klaus, 2026-08-17, Mycel-Analyse-Rekord 16:44–16:51):**
+zwei Kimboard-Instanzen im Raum als **„Kimboard · Klaus Handy"** und **„Kimboard ·
+Klaus Tablet"** (getrennte Kennungen + Schlüssel), Karte führt sie als „Kimboard ×2"
+zusammen, Handschlag **beidseitig** `established` (16:50:08 Tablet→Handy, 16:50:28
+zurück).
+
+**Der eigentliche Befund steckt in den Feldern:** `content.nodeName` trug den Zusatz,
+`spore.nodeName` blieb bei beiden `"Kimboard"`, `domainVector` identisch. Damit ist
+„kein Spore-Re-Sign" nicht mehr nur Vorschrift, sondern **gemessen** — wäre der Name in
+die signierte Identität gewandert, hätte sich der Vektor verschoben und der
+0.80-Riegel die beiden womöglich getrennt.
+
+**Offen:**
+- Der **Abgleich zweier Felder** in derselben App ist noch nicht gesehen — auf dem
+  Bildschirmfoto war Kimboards eigenes Feld sichtbar, das Panel zugeklappt. Dafür muss
+  beim nächsten Blick die Mycel-Blase offen sein.
+- Zehn Repos haben gar keine `CLAUDE.md` (Alis-Moderaum, Company-Brain, Kim-Bell,
+  Kimboard, Kimseek, Mein-Workfloh-Page, Perfect-Skin-Beauty/-Fashion, Tomys-Hub,
+  family-project) — dort steht die Regel nur in Tafel und Rezept.
 
 ---
 

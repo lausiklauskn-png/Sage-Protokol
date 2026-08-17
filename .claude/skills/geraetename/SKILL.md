@@ -242,6 +242,11 @@ Service-Worker-`CACHE_VERSION` erhöhen (App-Schale geändert).
   „App · Name1" vs „App · Name2"; wo es zwei Felder gibt, beim Tippen zusehen, ob das
   zweite mitzieht; auf dem Brett „~Name · Kennung" (fremd) bzw. „DeinKontaktName ·
   Kennung" (gemerkt). Nicht ersetzbar.
+- **Der Mycel-Analyse-Rekorder ist hier das beste Werkzeug** — er schreibt die rohen
+  Anmelde-Karten mit, und daran sieht man, was ein Bildschirmfoto nicht zeigt: ob
+  `content.nodeName` den Zusatz trägt, während `spore.nodeName` und `domainVector`
+  **unverändert** bleiben. Genau das ist der Beweis für „kein Spore-Re-Sign".
+  Belegt am 2026-08-17 (zwei Kimboard-Instanzen, Handschlag beidseitig `established`).
 
 ---
 
