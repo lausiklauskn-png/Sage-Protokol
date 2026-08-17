@@ -84,13 +84,24 @@ zurück).
 die signierte Identität gewandert, hätte sich der Vektor verschoben und der
 0.80-Riegel die beiden womöglich getrennt.
 
-**Offen:**
-- Der **Abgleich zweier Felder** in derselben App ist noch nicht gesehen — auf dem
-  Bildschirmfoto war Kimboards eigenes Feld sichtbar, das Panel zugeklappt. Dafür muss
-  beim nächsten Blick die Mycel-Blase offen sein.
-- Zehn Repos haben gar keine `CLAUDE.md` (Alis-Moderaum, Company-Brain, Kim-Bell,
-  Kimboard, Kimseek, Mein-Workfloh-Page, Perfect-Skin-Beauty/-Fashion, Tomys-Hub,
-  family-project) — dort steht die Regel nur in Tafel und Rezept.
+**✅ Panel-Feld belegt (Klaus, 2026-08-17 ~19:10):** Panel aufgeklappt, das Feld sitzt
+als erste Zeile im Fenster „Mit dem Knotennetz verbinden". Panel-Feld und Kimboards
+eigenes Feld trugen denselben, frisch geänderten Wert (`Klaus Tablet` →
+`Klaus Tablettesst`). Belegt ist damit, dass die Felder **nicht auseinanderlaufen** —
+ein Standbild unterscheidet nicht zwischen live gleichgezogen und nach einem Neuladen
+beide aus demselben Speicher gefüllt. Für den Zweck der Regel genügt das; mehr wird
+nicht behauptet.
+
+**Zwischenspiel, das ins Protokoll gehört:** Klaus' erster Reflex auf die zwei Felder
+war **„keine 2 Etiketten / Gerätenamen"**. Auf die Rückfrage, *welches* verschwinden
+soll — das app-eigene oder das im Panel —, entschied er **„so lassen"**. Kein Umbau,
+Punkt 3 der Tafel bleibt. Die Rückfrage war trotzdem richtig: die andere Antwort hätte
+einen Eingriff in Kimboards Seite und Private Brains Pinnwand-Fenster bedeutet.
+
+**Offen:** zehn Repos haben gar keine `CLAUDE.md` (Alis-Moderaum, Company-Brain,
+Kim-Bell, Kimboard, Kimseek, Mein-Workfloh-Page, Perfect-Skin-Beauty/-Fashion,
+Tomys-Hub, family-project) — dort steht die Regel nur in Tafel und Rezept. Klaus hat
+dazu noch nicht entschieden.
 
 ---
 

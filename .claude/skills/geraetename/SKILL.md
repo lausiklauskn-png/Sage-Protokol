@@ -242,6 +242,10 @@ Service-Worker-`CACHE_VERSION` erhöhen (App-Schale geändert).
   „App · Name1" vs „App · Name2"; wo es zwei Felder gibt, beim Tippen zusehen, ob das
   zweite mitzieht; auf dem Brett „~Name · Kennung" (fremd) bzw. „DeinKontaktName ·
   Kennung" (gemerkt). Nicht ersetzbar.
+- **Ein Standbild belegt Gleichheit, nicht den Abgleich.** Zwei Felder mit demselben
+  Wert können live gleichgezogen ODER nach einem Neuladen beide aus demselben Speicher
+  gefüllt worden sein — das Foto sieht in beiden Fällen gleich aus. Wer den Weg prüfen
+  will, tippt in eines und schaut dem anderen zu, **ohne** neu zu laden.
 - **Der Mycel-Analyse-Rekorder ist hier das beste Werkzeug** — er schreibt die rohen
   Anmelde-Karten mit, und daran sieht man, was ein Bildschirmfoto nicht zeigt: ob
   `content.nodeName` den Zusatz trägt, während `spore.nodeName` und `domainVector`
