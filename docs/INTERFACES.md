@@ -6700,7 +6700,20 @@ Vektor mitgewandert und der 0.80-Riegel hätte die beiden womöglich nicht mehr
 zueinander gelassen. **Punkt 5 (kein Spore-Re-Sign) ist damit nicht nur Vorschrift,
 sondern gemessen.**
 
-Noch **nicht** belegt: dass zwei Felder derselben App (Panel + app-eigenes) beim Tippen
-gleichziehen — dafür muss das Panel beim Sichttest offen sein.
+**✅ Panel-Feld belegt (Klaus' Browser, 2026-08-17 ~19:10, Kimboard).** Das Feld sitzt
+als **erste Zeile** im Fenster „Mit dem Knotennetz verbinden", über dem Verbindungs-Text
+— genau dort, wohin `panel.insertBefore(wrap, panel.children[1])` es hängt. Panel-Feld
+und Kimboards eigenes Feld unter „Meine Spore" trugen denselben, **frisch geänderten**
+Wert (`Klaus Tablet` → `Klaus Tablettesst`).
+
+**Was das belegt und was nicht:** dass die Felder **nicht auseinanderlaufen** — mehr
+braucht die Regel nicht. Ein Standbild kann aber *live gleichgezogen* nicht von *nach
+einem Neuladen beide aus demselben Speicher gefüllt* unterscheiden; beide Wege ergeben
+dasselbe Bild. Wer den Weg selbst sehen will, tippt und schaut zu, **ohne** neu zu laden.
+
+**Zwei Felder in einer App sind gewollt (Klaus, 2026-08-17, nachdem er sie gesehen
+hat).** Sein erster Reflex war „keine zwei Etiketten"; auf die Rückfrage, welches
+verschwinden solle, entschied er **„so lassen"**. Punkt 3 bleibt damit wie er ist: das
+Panel-Feld kommt überall, ein app-eigenes Feld daneben bleibt bestehen und zieht mit.
 
 **Rezept mit Code:** Skill `geraetename` (`.claude/skills/geraetename/SKILL.md`).
