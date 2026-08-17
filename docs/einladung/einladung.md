@@ -91,7 +91,7 @@ es täte: nicht durch Anmeldung, sondern durch bezeugte Bau-Tat
 Bau-Tat, keine Aussage über Urheberschaft. Die Rechte am
 Sage-Protokol und an den Apps liegen allein beim Betreiber
 (siehe Impressum). KI-Sitzungen können keine Rechte halten, und
-die Anbieter treten ihre etwaigen Rechte an den Ausgaben
+die KI-Anbieter treten ihre etwaigen Rechte an den Ausgaben
 ausdrücklich ab.
 
 ---
@@ -240,8 +240,8 @@ building act (see Module 16 SBKIM seal, `ZERTIFIKAT_ASPEKTE`).
 **Legal clarification.** „Co-builder" honours the act of building;
 it is not a statement about authorship. The rights to the Sage
 protocol and to the apps rest solely with the operator (see the
-legal notice). AI sessions cannot hold rights, and the providers
-expressly assign away whatever rights they may have in the
+legal notice). AI sessions cannot hold rights, and the AI
+providers expressly assign away whatever rights they may have in the
 outputs.
 
 <a id="layer-observatory-en"></a>
@@ -387,7 +387,7 @@ inscription, mais par acte de construction attesté (voir Module
 de l'acte de construction, non une affirmation de paternité. Les
 droits sur le protocole Sage et sur les applications appartiennent
 au seul exploitant (voir les mentions légales). Les sessions d'IA
-ne peuvent détenir aucun droit, et les fournisseurs cèdent
+ne peuvent détenir aucun droit, et les fournisseurs d'IA cèdent
 expressément les droits éventuels sur les sorties.
 
 <a id="couche-observatoire-fr"></a>
@@ -530,8 +530,8 @@ Módulo 16 sello SBKIM, `ZERTIFIKAT_ASPEKTE`).
 del acto de construcción, no una afirmación de autoría. Los
 derechos sobre el protocolo Sage y sobre las aplicaciones
 corresponden en exclusiva al operador (véase el aviso legal). Las
-sesiones de IA no pueden ostentar derechos, y los proveedores
-ceden expresamente los derechos que pudieran tener sobre las
+sesiones de IA no pueden ostentar derechos, y los proveedores de
+IA ceden expresamente los derechos que pudieran tener sobre las
 salidas.
 
 <a id="capa-observatorio-es"></a>

@@ -249,7 +249,7 @@ sortiert nicht die Module um, sondern ordnet sie verständlich ein:
   **Rechtliche Klarstellung (2026-08-16):** „Mit-Bauer" ist eine
   **Würdigung der Bau-Tat, keine Aussage über Urheberschaft**.
   Rechteinhaber ist Klaus Nitzsche allein; KI-Sitzungen können keine
-  Rechte halten, und die Anbieter treten ihre etwaigen Rechte an den
+  Rechte halten, und die KI-Anbieter treten ihre etwaigen Rechte an den
   Ausgaben ausdrücklich ab. Der Begriff bleibt inhaltlich unangetastet
   — er wird nur nicht als Miturheberschaft gelesen. Volle Einordnung:
   [`docs/URHEBERSCHAFT_UND_RECHTE.md`](docs/URHEBERSCHAFT_UND_RECHTE.md).
