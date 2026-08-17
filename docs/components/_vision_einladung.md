@@ -59,7 +59,7 @@ Klaus' Vision-Erweiterung 2026-05-27 in mehreren Etappen:
    allen vier Sprachen). „Mit-Bauer" ist eine **Würdigung der Bau-Tat,
    keine Aussage über Urheberschaft** — Rechteinhaber ist Klaus
    Nitzsche allein, KI-Sitzungen können keine Rechte halten, die
-   Anbieter treten ihre etwaigen Rechte an den Ausgaben ab. Der
+   KI-Anbieter treten ihre etwaigen Rechte an den Ausgaben ab. Der
    Begriff bleibt inhaltlich unangetastet; er soll nur nicht als
    Miturheberschaft gelesen werden. Volle Einordnung:
    [`docs/URHEBERSCHAFT_UND_RECHTE.md`](../URHEBERSCHAFT_UND_RECHTE.md).

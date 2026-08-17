@@ -123,7 +123,7 @@ beschreibt, wie die Hyphen wachsen.
 ## Wem gehört das hier?
 
 Kurz: **Klaus Nitzsche.** Kein KI-Anbieter hält Rechte an dem, was hier
-entstanden ist — die Anbieter treten ihre etwaigen Rechte an den Ausgaben
+entstanden ist — die KI-Anbieter treten ihre etwaigen Rechte an den Ausgaben
 ausdrücklich ab. Getragen wird der Schutz von der menschlichen Prägung:
 Architektur, Verträge, Auswahl der Module, Kalibrierung, Brief-Kette und
 die Git-Historie mit Datum.

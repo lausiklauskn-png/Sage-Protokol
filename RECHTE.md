@@ -11,7 +11,7 @@ können.**
 **Rolle der KI-Werkzeuge.** An diesem Repo wurde mit KI-Werkzeugen gearbeitet.
 Sie sind Werkzeug, wie ein Compiler oder ein Zeichenprogramm — sie führen aus,
 was in den Spezifikationen, Karten und Briefen festgelegt wurde. **Kein
-KI-Anbieter hält Rechte an dem, was hier entstanden ist**; die Anbieter treten
+KI-Anbieter hält Rechte an dem, was hier entstanden ist**; die KI-Anbieter treten
 ihre etwaigen Rechte an den Ausgaben ausdrücklich an den Nutzer ab. Getragen
 wird der Schutz von der menschlichen Prägung: Architektur, Verträge, Auswahl
 und Anordnung, Kalibrierung, Dokumentation und die Git-Historie mit Datum.
