@@ -31,6 +31,55 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-17 (Pflege) — 🏷️ Gerätename netzweit ins Verbinden-Panel
+
+**Klaus' Befund:** im Sage-Panel steht oben ein Feld für den Gerätenamen, bei den
+anderen Mycel-Knoten nicht. Auftrag: als **festgeschriebene Bauregel** netzweit
+nachziehen.
+
+**Der Befund war schlimmer als „fehlt".** In zehn Apps war der Name **halb** eingebaut:
+der Glue **las** ihn (`geraetename()` / `displayNodeName()`) und hängte ihn an die
+Anmeldung — aber es gab **kein Feld, um ihn einzutragen**. Ein totes Feature, das im
+Code aussieht wie ein vorhandenes. Wer nach `sbkim_geraetename` greppt, findet Treffer
+und hält es für erledigt.
+
+**Getan:**
+- **`docs/INTERFACES.md` §11.7** als netzweite Tafel: Feld im Panel · Einbau nur im
+  app-eigenen Glue, **nie** in die byte-kopierte Panel-Datei (Drift-Guard) · Marke
+  `data-sbkim-geraetename` mit **panel-scoped** Doppel-Prüfung · Abgleich aller Felder
+  beim Namenswechsel · kein Spore-Re-Sign · die drei Sicherheits-Regeln (Name immer mit
+  Kennung, eigener Kontakt-Name gewinnt, selbst gewählte markiert).
+- **Rollout in 20 Repos.** Zehn bekamen das Feld überhaupt erst (Alis-Moderaum,
+  BookLedgerPro, Kim-Bell, Kimseek, Mein-WorkFloh, Mein-Workfloh-Page,
+  Perfect-Skin-Fashion, SB-KIMTool-Point, Kimboard, Private Brain); neun wurden auf die
+  neue Fassung gehoben; Company Brain (kein geteiltes Panel) und PWA Toolpoint (eigene
+  Benennung) von Hand.
+- **Vier Sonderfälle von Hand** statt schematisch: Mein-Rezeptbuch baut Buch-Name und
+  Gerätename aus **einem** Helfer — die Marke wird dort **bedingt** gesetzt, sonst
+  überschriebe der Abgleich den Buch-Namen. Kimboard und Private Brain behalten ihr
+  eigenes Feld und bekommen die Marke. PWA Toolpoint heißt seine Funktion anders.
+- **Skill `geraetename`** auf den Panel-Einbau umgestellt (vorher: vier Stellen in der
+  `index.html`) und um Marke, Abgleich und die Fetch-Lehre erweitert.
+- **CLAUDE.md** in Sage und in den zehn Repos, die eine haben.
+
+**Zwei Lehren, beide teuer bezahlt:**
+1. **Eine Bestandsaufnahme auf ungefetchten Klonen ist keine.** Meine erste Übersicht
+   meldete drei Apps falsch — zwei hatten das Feld längst, bei einer hatte eine
+   Parallel-Sitzung am selben Tag nachgezogen. Erst der Vergleich gegen `origin/main`
+   (`git grep … origin/main`) war belastbar.
+2. **Ein Schema-Skript über 20 Repos braucht eine Ausnahme-Erkennung.** Der erste Lauf
+   setzte die Einrückung falsch (Anker war die falsche Zeile) und wäre über
+   Mein-Rezeptbuchs Zwei-Felder-Helfer hinweggegangen. Beides fiel nur auf, weil der
+   Diff gelesen wurde statt nur der Erfolgsmeldung.
+
+**Offen:** zehn Repos haben gar keine `CLAUDE.md` (Alis-Moderaum, Company-Brain,
+Kim-Bell, Kimboard, Kimseek, Mein-Workfloh-Page, Perfect-Skin-Beauty/-Fashion,
+Tomys-Hub, family-project) — dort steht die Regel nur in Tafel und Rezept. **Klaus'
+Browser-Sichttest** des Feldes und des Abgleichs (am besten Kimboard, das zwei Felder
+hat) steht aus.
+
+---
+
 ## Stand 2026-08-16 (Bau) — 🔒 Das Siegel prüft jetzt auch den Raum (Modul 05b)
 
 **Klaus' Wort:** *„ja, 05b ins Siegel aufnehmen"*.

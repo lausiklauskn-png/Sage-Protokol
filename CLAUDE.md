@@ -663,6 +663,19 @@ ungemergten Branches lebten.
     app-spezifisch (Suffix), damit Geschwister-/Fremd-Apps auf derselben Adresse
     sich nicht gegenseitig stören (siehe Widget-Sichtbarkeits-Kollision 2026-07-11).
 
+- **Gerätename gehört ins Verbinden-Panel (netzweite Bauregel, Klaus 2026-08-16).**
+  Wer ein Panel „Mit dem Netz verbinden" hat, hat auch das **Gerätenamen-Feld darin** —
+  an derselben Stelle wie in jeder anderen App. Verbindlich in
+  [`docs/INTERFACES.md` §11.7](docs/INTERFACES.md), Rezept mit Code: Skill
+  `geraetename`. Der Anlass war ein Feature, das **halb** dastand: elf Apps **lasen**
+  den Namen und hängten ihn an die Anmeldung, aber niemand hatte das Feld gebaut, in
+  das man ihn einträgt. Wer nur nach `sbkim_geraetename` greppt, findet Treffer und
+  hält es für erledigt. Drei Punkte, an denen es schiefging: das Feld hängt der
+  **app-eigene Glue** ins Panel (**nie** in die byte-kopierte Panel-Datei — Drift-Guard)
+  · jedes Feld trägt `data-sbkim-geraetename`, die Doppel-Prüfung sucht **nur im Panel**,
+  und beim Namenswechsel gleichen sich **alle** markierten Felder ab · der Name geht
+  **nur** an Anzeige und Anmeldung, **nie** an `generateOwnSpore`.
+
 - **Briefkasten pflegen — sitzungsübergreifend, fürs ganze Netz.** Du denkst
   ab jetzt nicht nur an dieses Repo, sondern an **alle angeschlossenen Knoten
   von Klaus**. Verbindlich in INTERFACES §11.6 (netzweite Tafel):
