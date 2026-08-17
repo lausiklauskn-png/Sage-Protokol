@@ -5,7 +5,7 @@
   "purpose": "Spezifikations- und Bau-Hub für SBKIM-Module. Mit Spec-Sitzung V1 Sage-Hybrid (Brief 01 der V1-Sammelspec-Kaskade, 2026-05-18) zugleich dritter Endknoten neben Mein-Rezeptbuch und Mein-Mixarium.",
   "protocolVersion": "0.2",
   "schemaVersion": "1",
-  "lastUpdated": "2026-08-16",
+  "lastUpdated": "2026-08-17",
   "branch": "main",
   "identityNote": "COMMITTETE vs. LEBENDE Identität (Stufe 0e, 2026-07-29): Die `nodeId` je Endknoten hier ist die COMMITTETE Identität — die in der `spore.json` des jeweiligen Repos signierte, gegen `main` verifizierte Wahrheitsquelle des Registers. Sie ist NICHT zwingend die LEBENDE Identität, die ein Knoten im Rendezvous-Raum (Modul 23) trägt: der Browser-Speicher einer bloß im Tab geöffneten github.io-Seite ist 'best effort' und kann zwischen Sitzungen geräumt werden, dann trägt der Knoten beim nächsten Öffnen eine neue lebende `nodeId` (Stufe 0 im Bau — Identität haltbar machen). Modul 23 findet Knoten im Raum über den `nodeName` und handshaket die LEBENDE `nodeId` — das Register muss dafür nicht stimmen. `matchScore`/`pingStatus` beziehen sich auf die committete Spore. Belege: docs/sessions/archiv/2026-07-29_mycel-analyse-identitaetsverlust.md.",
   "endknoten": [
@@ -472,6 +472,31 @@
       "note": "Spore 0.2 aus der App erzeugt, reziprok verifiziert (tools/verify_remote_spore.mjs → ✔ VALID). matchScore ist der gemessene Cosinus GEGEN SAGE und liegt mit 0.7825 UNTER dem 0.80-Andock-Riegel — Sage und dieser Knoten wuerden sich nicht die Hand geben, und das ist richtig so: eine Boutique und eine Protokoll-Bibliothek haben fachlich nichts miteinander zu tun. Der Knoten hat trotzdem Partner im Netz: WorkFloh mit 0.8417 (ueber dem Riegel). Darum verified-spore statt verified-match: die Identitaet ist bewiesen, ein Cross-Knoten-Handshake im Raum noch nicht bezeugt.",
       "url": "https://lausiklauskn-png.github.io/Mein-Workfloh-Page/",
       "matchScore": 0.782495
+    },
+    {
+      "name": "Perfect Skin Beauty",
+      "domain": "Kosmetik/Sugaring/Hautpflege",
+      "integrated": true,
+      "integratedAt": "2026-08-17",
+      "nodeId": "q-sWDmlRgaBoi3V4Ozhz2DX5mbtuuI_jASk1AI3VRSo",
+      "previousNodeIds": [
+        "jtpnxZSxv1c-vVIM4UweHoOQfedDmFVjhFrx8DGDSjU"
+      ],
+      "sporeUrl": "https://perfectskinbeauty.de/sbkim/spore.json",
+      "stammCategories": [
+        "Sugaring & Waxing",
+        "Gesichtsbehandlung",
+        "Hautpflege-Beratung"
+      ],
+      "guestCategories": [
+        "Spore-Erzeugung",
+        "Backup",
+        "Handshake"
+      ],
+      "pingStatus": "verified-spore",
+      "note": "Spore 0.2 aus der App erzeugt, reziprok verifiziert (tools/verify_remote_spore.mjs \u2192 \u2714 VALID, 9/9 Pflichtfelder, domainVector 384 Floats). matchScore ist der gemessene Cosinus GEGEN SAGE und liegt mit 0.7824 UNTER dem 0.80-Andock-Riegel \u2014 Sage und dieser Knoten wuerden sich nicht die Hand geben, und das ist richtig so: ein Kosmetikstudio und eine Protokoll-Bibliothek haben fachlich nichts miteinander zu tun. Der Knoten hat trotzdem einen Partner im Netz: Perfect Skin Fashion mit 0.8612 (ueber dem Riegel). Darum verified-spore statt verified-match: die Identitaet ist bewiesen, ein Cross-Knoten-Handshake im Raum noch nicht bezeugt. Die sporeUrl zeigt auf die EIGENE Adresse (perfectskinbeauty.de), nicht auf github.io \u2014 die Seite liegt unter eigener Domain, Pages laedt den ganzen Ordner (path: .). previousNodeIds haelt eine aeltere Identitaet fest, die am 2026-08-17 im Andock-Wizard zu sehen war (jtpnxZSxv1c\u2026): nach PR #45 (eigene Schublade statt geteiltem Topf) suchte die App in ihrem eigenen Fach, fand dort nichts und legte eine frische Identitaet an. Die alte ist verwaist, nicht kompromittiert \u2014 sie steht hier, damit ein spaeterer Fund im Raum zuzuordnen ist.",
+      "url": "https://perfectskinbeauty.de/",
+      "matchScore": 0.782387
     }
   ],
   "modules": [
