@@ -6624,3 +6624,66 @@ Andock-Bezug (§11.6 Schritt 1). **Nie** im Postfach einer Gegenstelle — das i
 `AUSTAUSCH-SBKIMTool.md` 91 → 50, `AUSTAUSCH-JasonsTresor.md` 251 → 179 (inkl. eines reinen
 Bestätigungs-Abschnitts). Kein offener Auftrag angetastet, `npm test` 53/53 unverändert grün.
 
+
+---
+
+### 11.7 Gerätename im Verbinden-Panel (netzweite Pflicht-Regel, Klaus 2026-08-16)
+
+> **Heilige Tafel, netzweit.** Wer ein Panel „Mit dem Netz verbinden" hat, hat auch
+> das Gerätenamen-Feld **darin** — an derselben Stelle, in jeder App.
+
+**Der Anlass.** Klaus sah das Feld oben im Sage-Panel und stellte fest, dass es bei den
+anderen Knoten fehlt. Der Befund war schlimmer als „fehlt": in elf Apps war der Name
+halb eingebaut — der Glue **las** ihn (`geraetename()` / `displayNodeName()`) und hängte
+ihn an die Anmeldung, aber **es gab kein Feld, um ihn einzutragen**. Ein totes Feature,
+das im Code aussah wie ein vorhandenes. Wer nur nach `sbkim_geraetename` greppt, findet
+Treffer und hält es für erledigt.
+
+**Was der Name ist.** Ein frei gewählter Anzeige-Name für **diese** Instanz
+(„Klaus-Handy", „Werkstatt-Tablet"). Er macht zwei Instanzen derselben App im Raum und
+auf der Mycel-Karte unterscheidbar. Speicher: `localStorage["sbkim_geraetename"]`,
+Freitext, auf 40 Zeichen gekürzt, **bewusst geteilt** über alle Apps derselben Adresse
+(der Nutzer benennt das Gerät einmal, nicht je App neu).
+
+**Pflicht (fünf Punkte):**
+
+1. **Das Feld steht im Panel** `#sbkim-rdv-panel`, eingehängt vom **app-eigenen Glue**
+   (`assets/rendezvous-init.js`, `modules/rendezvous-init.js`, `sbkim/sbkim-init.js`
+   o. Ä.). Das Panel entsteht erst beim Öffnen — darum ein `MutationObserver` als
+   Rückfall. Keine `index.html` muss dafür angefasst werden.
+2. **NIEMALS in die byte-kopierte Panel-Datei schreiben** (`23_rendezvous_ui.js`,
+   `sbkim-rendezvous-ui.js`). Das sind Kanon-Kopien mit Drift-Guard; ein Eingriff dort
+   wirft die Wächter zu Recht um.
+3. **Erkennungs-Marke `data-sbkim-geraetename`** an jedem Namensfeld — und die
+   Doppel-Prüfung sucht **nur im Panel** (`panel.querySelector(...)`). Damit bekommt
+   jede App das Feld an derselben Stelle, und eine App mit einem **eigenen** Feld
+   anderswo (Kimboard in den Einstellungen, Private Brain im Pinnwand-Fenster) behält
+   es zusätzlich, ohne dass im Panel ein zweites entsteht.
+4. **Abgleich beim Tippen.** Jede Änderung feuert `sbkim:geraetename-changed`; der
+   Empfänger gleicht **alle** markierten Felder ab und setzt den Anzeige-Namen neu
+   (`SbkimRendezvous.configure({ nodeName: displayNodeName(…) })`). Zwei Felder in
+   derselben App dürfen nie auseinanderlaufen. Programmatisches Setzen von `.value`
+   löst kein `input` aus — deshalb keine Schleife.
+5. **Kein Spore-Re-Sign.** Der Name geht **nur** an Anzeige und Anmeldung, **nie** an
+   `generateOwnSpore`. Die signierte Identität behält ihren kanonischen App-Namen;
+   `PROTOCOL_VERSION`, `DB_VERSION` und `PROVIDER_MIN_MATCH` bleiben unberührt.
+
+**Sicherheit — der Name ist ein Hinweis, nie ein Beweis.** Er ist selbst-behauptet und
+nicht authentifiziert; jeder Fremde auf dem Marktplatz kann sich jeden Namen geben.
+Darum verbindlich: **immer zusammen mit der Kennung anzeigen** (`Klaus N. · 6f902d9b…`)
+· **eigener Kontakt-Name gewinnt** über den fremd behaupteten · **selbst gewählte Namen
+markieren** (`~Name`). Namens-Kollisionen sind damit ungefährlich by design — die
+Kennung unterscheidet immer, Vertrauens-Entscheidungen laufen über Schlüssel und
+Sicherheitsnummer.
+
+**Ausnahme mit Grund:** eine App **ohne** geteiltes Panel (Company Brain) trägt ihr Feld
+in der eigenen Seite. Marke, Abgleich und Sicherheits-Regeln gelten dort unverändert.
+
+**Die Mycel-Karte braucht nichts.** Sie liest `nodeName` aus der Anmeldung und zeigt den
+Zusatz von allein, sobald die App ihn mitsendet.
+
+**Prüfung:** jede App mit `#sbkim-rdv-panel` muss `data-sbkim-geraetename` in ihrem Glue
+oder ihrer Seite führen. Ein Wächter dafür gehört in die Probe des jeweiligen Repos —
+**mit Gegenprobe**, sonst ist er nur ein grüner Haken.
+
+**Rezept mit Code:** Skill `geraetename` (`.claude/skills/geraetename/SKILL.md`).

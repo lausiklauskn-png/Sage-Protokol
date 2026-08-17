@@ -81,37 +81,76 @@ Sicherheitsnummer, nie über den frei wählbaren Namen.
 
 ## Einbau — die vier Stellen (überall gleich)
 
-### 1) Kleine Helfer + Namensfeld (App-Hauptskript, z. B. `index.html`)
+> **Verbindlich seit 2026-08-16: das Feld gehört ins Panel, nicht in die `index.html`**
+> (netzweite Tafel `docs/INTERFACES.md` §11.7). Die frühere Fassung dieses Rezepts
+> beschrieb den Weg über vier Stellen im App-Hauptskript. Der ist nicht falsch, aber
+> unnötig: jede App mit Netz-Anschluss hat dasselbe Panel `#sbkim-rdv-panel`, und der
+> Glue kann sein Feld dort selbst einhängen. **Kein `index.html`-Eingriff, kein
+> `build.py`-Lauf, keine QC-Datei** — das war der Grund, warum der Einbau in elf Apps
+> jahrelang halb blieb: der Glue las den Namen, aber niemand hatte das Feld gebaut.
+
+### 1) Helfer + Feld ins Panel — im **app-eigenen Glue**
+
+Gehört in `assets/rendezvous-init.js` / `modules/rendezvous-init.js` /
+`sbkim/sbkim-init.js`. **NIEMALS** in `23_rendezvous_ui.js` oder
+`sbkim-rendezvous-ui.js` — das sind byte-1:1-Kopien mit Drift-Guard.
 
 ```js
-// Gerätename (lokal, kein PII): frei wählbarer Anzeige-Name, reist als Hinweis mit.
-// SICHERHEIT: nur Anzeige, nie Vertrauen — immer zusammen mit der Kennung zeigen.
-const LS_GERAETENAME = 'sbkim_geraetename';
-function getGeraetename() { try { return (localStorage.getItem(LS_GERAETENAME) || '').trim().slice(0, 40); } catch { return ''; } }
-function setGeraetename(v) { try { localStorage.setItem(LS_GERAETENAME, String(v || '').trim().slice(0, 40)); } catch { /* */ } }
-```
+// Gerätename (frei wählbarer Anzeige-Name, lokal, kein PII): NUR an die Anzeige/
+// Anmeldung hängen — NICHT an generateOwnSpore (kein Spore-Re-Sign).
+function geraetename() { try { return (localStorage.getItem("sbkim_geraetename") || "").trim().slice(0, 40); } catch (_e) { return ""; } }
+function displayNodeName(base) { var g = geraetename(); return g ? (base + " · " + g) : base; }
 
-Ein Textfeld nahe der Identitäts-/Spore-Anzeige, das beim Tippen speichert + das
-Kopplungs-Event feuert:
+// Alle Namensfelder der Seite gleichziehen. Eine App darf mehrere haben (Panel +
+// eigenes Feld in den Einstellungen); sie schreiben denselben Speicher und dürfen
+// beim Tippen nicht auseinanderlaufen. Programmatisches Setzen von .value löst
+// kein "input" aus — deshalb keine Schleife.
+function syncGeraetenameFields() {
+  try {
+    var v = geraetename();
+    var list = document.querySelectorAll("[data-sbkim-geraetename]");
+    for (var i = 0; i < list.length; i++) { if (list[i].value !== v) list[i].value = v; }
+  } catch (_e) {}
+}
 
-```js
-const gnEl = document.getElementById('geraetename');
-if (gnEl) {
-  gnEl.value = getGeraetename();
-  gnEl.addEventListener('input', () => {
-    setGeraetename(gnEl.value);
-    try { window.dispatchEvent(new CustomEvent('sbkim:geraetename-changed')); } catch (_e) {}
-  });
+function injectGeraetenameField() {
+  function tryInject() {
+    var panel = document.getElementById("sbkim-rdv-panel");
+    if (!panel) return false;
+    // Erkennungs-Marke statt fester id, und bewusst NUR im Panel gesucht: ein
+    // app-eigenes Feld an anderer Stelle bleibt erlaubt (es zieht per
+    // syncGeraetenameFields mit), aber im Panel steht nie ein zweites.
+    if (panel.querySelector("[data-sbkim-geraetename]")) return true;
+    var wrap = document.createElement("div");
+    wrap.style.cssText = "margin:8px 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap";
+    var lab = document.createElement("span"); lab.textContent = "🏷️ Gerätename:"; lab.style.cssText = "color:#9aa7b6;font-size:.85rem";
+    var inp = document.createElement("input"); inp.id = "sbkim-geraetename"; inp.type = "text"; inp.maxLength = 40;
+    inp.setAttribute("data-sbkim-geraetename", "1");
+    inp.placeholder = "z. B. Klaus-Handy (frei wählbar)"; inp.value = geraetename();
+    inp.style.cssText = "flex:1;min-width:120px;padding:4px 6px;border-radius:6px;border:1px solid #33414f;background:#0d1520;color:#dfeaf2;font:inherit";
+    inp.title = "Nur ein Anzeige-Hinweis, kein Vertrauens-Beweis — die Kennung bleibt daneben.";
+    inp.addEventListener("input", function () {
+      try { localStorage.setItem("sbkim_geraetename", String(inp.value || "").trim().slice(0, 40)); } catch (_e) {}
+      try { window.dispatchEvent(new CustomEvent("sbkim:geraetename-changed")); } catch (_e) {}
+    });
+    wrap.appendChild(lab); wrap.appendChild(inp);
+    panel.insertBefore(wrap, panel.children[1] || null);
+    return true;
+  }
+  if (tryInject()) return;
+  // Das Panel entsteht erst beim Öffnen — darum der Beobachter als Rückfall.
+  try { var mo = new MutationObserver(function () { if (tryInject()) mo.disconnect(); }); mo.observe(document.body, { childList: true, subtree: true }); } catch (_e) {}
 }
 ```
 
-HTML (Beispiel-Pille, Platzhalter macht die Freiwilligkeit klar):
+**Hat die App schon ein eigenes Feld** (Kimboard in den Einstellungen, Private Brain im
+Pinnwand-Fenster), bekommt es nur `data-sbkim-geraetename="1"` dazu — dann zieht es beim
+Abgleich mit, und das Panel-Feld entsteht trotzdem. **Baut ein Helfer mehrere Felder**
+(Mein-Rezeptbuch: Buch-Name *und* Gerätename aus derselben Funktion), wird die Marke
+**bedingt** gesetzt — sonst überschreibt der Abgleich den Buch-Namen:
 
-```html
-<span class="pill">🏷️ Gerätename:
-  <input id="geraetename" type="text" maxlength="40" placeholder="z. B. Klaus-Handy (frei wählbar)"
-         style="border:none;background:transparent;color:inherit;font:inherit;min-width:120px;">
-</span>
+```js
+if (speichern === "sbkim_geraetename") inp.setAttribute("data-sbkim-geraetename", "1");
 ```
 
 ### 2) `nick`-Tag beim Senden (in `buildEvent`, direkt bei den Tags)
@@ -167,11 +206,14 @@ window.SbkimRendezvous.init({ nodeName: displayNodeName(), /* … */ });
 window.SbkimRendezvousUI.init({ nodeName: displayNodeName(), /* … */ });
 ```
 
-Kopplung — beim Namenswechsel neu konfigurieren (fail-soft):
+Kopplung — beim Namenswechsel **erst die Felder abgleichen**, dann neu konfigurieren
+(fail-soft). Ohne den Abgleich stehen zwei Felder derselben App auseinander:
 
 ```js
+injectGeraetenameField();
 try {
   window.addEventListener('sbkim:geraetename-changed', function () {
+    syncGeraetenameFields();
     try { if (window.SbkimRendezvous && window.SbkimRendezvous.configure) window.SbkimRendezvous.configure({ nodeName: displayNodeName() }); } catch (_e) {}
   });
 } catch (_e) {}
@@ -185,21 +227,33 @@ Service-Worker-`CACHE_VERSION` erhöhen (App-Schale geändert).
 
 ## Verifikation
 
-- **Headless:** ein kleiner Smoke/`node --test`, der prüft: Namensfeld + `nick`-Tag +
-  `authorLabel` + `displayNodeName` sind verdrahtet (grep im `index.html`), plus
-  `node --check` auf den Skript-Block. Kern-Modul 23 Drift-Guard bleibt grün
-  (unangetastet).
+- **Headless:** `node --check` auf die Glue-Datei, plus eine Probe, die die Marke
+  `data-sbkim-geraetename` und den Abgleich im Glue nachweist. Der Drift-Guard der
+  Panel-Kopie muss **unverändert grün** bleiben — ist er rot, wurde in die Kopie
+  geschrieben statt in den Glue.
+- **Die Prüfung braucht eine Gegenprobe.** Ein `grep`, der nur bestätigt, ist der Ort,
+  an dem man sich am leichtesten selbst recht gibt: die Marke aus einer Wegwerf-Kopie
+  entfernen und nachsehen, ob die Probe wirklich umfällt.
+- **Der Bestandsaufnahme nicht trauen, ohne zu fetchen** (Befund 2026-08-16): eine
+  Übersicht „wer hat es schon" auf ungefetchten Klonen meldete drei Apps falsch — zwei
+  hatten es längst, eine parallele Sitzung hatte am selben Tag nachgezogen. Immer gegen
+  `origin/main` prüfen (`git grep … origin/main`), nie gegen das Arbeitsverzeichnis.
 - **Browser (Klaus):** auf zwei Instanzen verschiedene Namen setzen → im Raum
-  „App · Name1" vs „App · Name2"; auf dem Brett „~Name · Kennung" (fremd) bzw.
-  „DeinKontaktName · Kennung" (gemerkt). Nicht ersetzbar.
+  „App · Name1" vs „App · Name2"; wo es zwei Felder gibt, beim Tippen zusehen, ob das
+  zweite mitzieht; auf dem Brett „~Name · Kennung" (fremd) bzw. „DeinKontaktName ·
+  Kennung" (gemerkt). Nicht ersetzbar.
 
 ---
 
 ## Rollout-Reihenfolge (netzweit)
 
-1. **Erst EINE App** voll bauen (Referenz, z. B. Kimboard) + Klaus' Browser-Test.
-2. **Dann** byte-ähnlich in die übrigen Netz-Apps (jede hat einen `rendezvous-init`-
-   Glue mit `CFG.nodeName` → Teil 4). Der **Brett-Teil** (2+3) gilt nur für Apps mit
-   dem Frage-Antwort-Brett (Kimboard, Pinnwand); reine Karten-Apps bekommen nur
-   Teil 1 + 4.
+1. **Erst EINE App** voll bauen (Referenz) + Klaus' Browser-Test.
+2. **Dann** in die übrigen Netz-Apps. Jede hat genau **eine** app-eigene Glue-Datei —
+   dort hinein, nie in die byte-kopierte Panel-Datei. Der **Brett-Teil** (`nick`-Tag +
+   `authorLabel`, Abschnitte 2 und 3) gilt nur für Apps mit dem Frage-Antwort-Brett
+   (Kimboard, Pinnwand); reine Karten-Apps bekommen nur Teil 1 + 4.
 3. Nie eine ungetestete Optik in 20 Repos propagieren — erst validieren, dann fächern.
+4. **Hat eine App eine eigene Fassung** (anderer Funktionsname, zwei Felder, Feld in der
+   eigenen Seite statt im Panel), wird sie **von Hand** angepasst statt schematisch
+   überschrieben. Vier der zwanzig waren 2026-08-16 solche Fälle — ein Skript, das sie
+   überfährt, macht aus einer Verbesserung einen Fehler.
