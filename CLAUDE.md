@@ -995,6 +995,26 @@ sieht nur einen Stapel Fehlermeldungen und sucht am falschen Ende.
 
 Nur ROT setzt den Rückgabewert. Filter geht: `node tests/run_alle.mjs bau23`.
 
+### ⚠ Zwei Wege, wie eine Probe stumm wird (Befund 2026-08-17, Kimboard)
+
+**Eine Uhr misst nicht, ob etwas fertig ist.** In Kimboard war `smoke_hilfe.mjs`
+rot — aber nicht, weil die App etwas falsch machte, sondern weil die Probe beim
+Start starb: sie wartete stur `waitForTimeout(1800)` und griff dann auf
+`window.__hilfe.texte` zu. Die Datei, die das anlegt, ist der **letzte** von 14
+Einträgen einer Nachlade-Kette, jedes Glied an `requestIdleCallback` mit bis zu
+500 ms Frist. Die Probe verlor das Rennen und prüfte dadurch **gar nichts**.
+Umgestellt auf `p.waitForFunction(() => window.__hilfe && window.__hilfe.texte)`:
+**22 Prüfungen grün statt keiner.**
+
+Jedes `waitForTimeout` mit einer runden Zahl ist ein Rennen, das irgendwann
+verloren geht — und verloren heißt nicht „falsch", sondern **stumm**. Wer auf eine
+nachgeladene Datei zugreift, wartet auf die **Bedingung**.
+
+**`| tail` ist zum Lesen da, nicht zum Urteilen.** Derselbe Lauf meldete beim
+ersten Aufruf „exit 0", weil `node tests/alle.mjs | tail -40` den Rückgabewert von
+`tail` liefert. Der Läufer selbst gab korrekt `exit=1`. Über grün entscheidet nur
+der **eigene** Rückgabewert der Prüfung.
+
 **Anlass (2026-08-14):** zwei Proben waren rund **zwei Monate tot** — sie
 starben beim Start, weil die Modul-23-UI ihren selbstgebauten DOM-Ersatz
 überwachsen hatte, und **niemand rief sie auf**. Eine dritte klagte sieben
