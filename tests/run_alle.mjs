@@ -29,6 +29,15 @@
  * Umgebung dauerhaft rot und damit wertlos. Ehrlich heißt hier: sagen, was
  * ungeprüft blieb, statt es als geprüft zu verbuchen ODER als kaputt.
  *
+ * ── AUCH DIE PROBEN AUSSERHALB VON tests/ (Befund 2026-08-18) ──────────────
+ *
+ * Derselbe Fehler noch einmal, nur eine Ebene höher: `pinnwand/_smoke.mjs` und
+ * `pinnwand/_smoke_mikrofon.mjs` liegen NICHT in `tests/` und liefen deshalb
+ * hier nie mit. Sie tragen in ihrem eigenen Kopf „Run mit node
+ * pinnwand/_smoke.mjs" — was genau bedeutet: es ruft sie nur, wer sie kennt.
+ * Der Läufer sammelt sie jetzt mit ein. Wer eine weitere Probe außerhalb von
+ * `tests/` anlegt, trägt ihren Ordner unten in AUSSEN nach.
+ *
  * Aufruf:
  *   node tests/run_alle.mjs           alle
  *   node tests/run_alle.mjs bau23     nur Dateien, deren Name das enthält
@@ -42,8 +51,21 @@ const HIER = dirname(fileURLToPath(import.meta.url));
 const filter = process.argv[2] || "";
 const FRIST = 120000;   // eine Probe, die zwei Minuten braucht, hängt
 
-const dateien = readdirSync(HIER)
-  .filter((f) => f.startsWith("smoke_") && f.endsWith(".mjs"))
+/* Ordner außerhalb von `tests/`, die eigene Proben tragen. Sie werden mit
+   ihrem Pfad geführt, damit man in der Ausgabe sieht, woher sie kommen. */
+const AUSSEN = ["pinnwand"];
+
+const dateien = [
+  ...readdirSync(HIER)
+    .filter((f) => f.startsWith("smoke_") && f.endsWith(".mjs")),
+  ...AUSSEN.flatMap((ordner) => {
+    let liste = [];
+    try { liste = readdirSync(join(HIER, "..", ordner)); } catch { return []; }
+    return liste
+      .filter((f) => f.startsWith("_smoke") && f.endsWith(".mjs"))
+      .map((f) => join("..", ordner, f));
+  })
+]
   .filter((f) => !filter || f.includes(filter))
   .sort();
 

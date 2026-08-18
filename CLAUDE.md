@@ -1037,12 +1037,51 @@ starben beim Start, weil die Modul-23-UI ihren selbstgebauten DOM-Ersatz
 Fehler an, obwohl sie gar nichts prüfen konnte. Wer nur die eine Probe aufruft,
 die er kennt, merkt so etwas nie.
 
+### ⚠ Und die dritte: eine Probe, die gar nicht im Läufer stand (Befund 2026-08-18)
+
+Derselbe Fehler eine Ebene höher. `pinnwand/_smoke.mjs` und
+`pinnwand/_smoke_mikrofon.mjs` liegen **nicht** in `tests/` und liefen deshalb
+bei `npm test` nie mit — sie tragen in ihrem eigenen Kopf „Run mit `node
+pinnwand/_smoke.mjs`", was genau heißt: **es ruft sie nur, wer sie kennt.**
+Der Läufer sammelt sie jetzt über die Liste `AUSSEN` mit ein (78 statt 76
+Proben). Wer eine weitere Probe außerhalb von `tests/` anlegt, trägt ihren
+Ordner dort nach.
+
 **Die `package.json` trägt bewusst KEIN `"type": "module"`.** Gemessen: mit dem
 Feld fallen zwei Proben um, weil Node dann jede `.js`-Datei als ES-Modul liest —
 und die SBKIM-Module sind klassische Browser-Skripte. `tests/smoke_package_json.mjs`
 bewacht das, samt der exakten Fassungs-Nagelung (kein `^`, sonst prüft nicht
 jeder dasselbe). Die Module selbst bleiben **build-frei**; die Datei ist nur für
 die Tests da.
+
+## Die Pinnwand hängt am selben Brett wie Kimboard (Pflege 2026-08-18)
+
+`pinnwand/index.html` schreibt auf **denselben** Nostr-Tag
+(`sbkim-frage-antwort-test`) und dasselbe Relais (`relay.family-projekt.de`,
+Klaus' eigener Server) wie die Kimboard-App. Bis zum 2026-08-18 filterte nur
+Kimboard: ein dort gesperrter Zettel war hier weiter **voll sichtbar**.
+Dieselbe Wand, zwei Regeln — und die Melde- und Abhilfepflicht (Art. 16 DSA)
+trifft Klaus für beide gleichermaßen.
+
+Seitdem liest die Pinnwand **dieselbe signierte Liste**
+(`Kimboard/sbkim/sperrliste.json`) — ein Ort der Wahrheit statt zweier, die
+auseinanderlaufen. Drei Dinge daran sind Absicht:
+
+- **Der Filter sitzt ganz oben in `dispatch()`**, vor dem Entschlüsseln. Weiter
+  unten hätte die App den Inhalt schon in der Hand.
+- **Angenommen wird nur, was signiert ist** und vom eingetragenen Schlüssel
+  stammt. Einer unsignierten Liste zu folgen hieße, jedem zu glauben, der die
+  Datei austauschen kann.
+- **Das Brett wartet nicht darauf.** Die Liste kommt nebenher; was inzwischen
+  gezeichnet wurde, nimmt `wischeGesperrte()` wieder weg. Ohne Liste läuft
+  alles unverändert weiter (fail-soft).
+
+**Ehrliche Grenze:** das nimmt den Zettel aus der **Anzeige**. Er liegt weiter
+auf dem Relais. Wirklich weg ist er nur dort, wo der Betreiber ihn aus dem
+Speicher nimmt — dafür gibt es `Kimboard/tools/relais-wache.sh`, und die liest
+dieselbe Liste. Bewacht von `tests/smoke_pinnwand_sperrliste.mjs`, die den
+Sperr-Block **aus der Seite herausschneidet und wirklich laufen lässt** statt
+ihn nachzubauen.
 
 ## Konventionen
 
