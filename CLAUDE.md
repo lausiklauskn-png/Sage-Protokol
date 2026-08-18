@@ -100,6 +100,22 @@ git -C <repo> push --force-with-lease -u origin <branch>
 genauesten hinsehen musst. Der Fehler steckte nicht im Ergebnis, sondern im
 Maßstab.
 
+### 🧰 Ein Hilfsmittel dazu — kein Muss (Klaus 2026-08-17)
+
+Die drei Fallen oben haben eines gemeinsam: **`git` meldet einen Unterschied,
+sagt aber nicht, in welche Richtung er zeigt.** Dafür gibt es jetzt ein
+Werkzeug und ein Rezept — als **Schritt zur Verbesserung, nicht als starre
+Regel** (Klaus' Wort). Wer es nicht braucht, lässt es.
+
+```bash
+node tools/zweig-pruefen.mjs <zweig>     # ist meine Arbeit oben UND in main?
+```
+
+Das Warum, die Kommandos von Hand und die **wachsende Fall-Liste** stehen im
+Skill [`veroeffentlichung-pruefen`](.claude/skills/veroeffentlichung-pruefen/SKILL.md)
+— dort wird ergänzt, nicht gelöscht. Spiegel im Obsidian-Speicher unter
+`Skills/veroeffentlichung-pruefen.md`.
+
 ### ⚠ Die dritte Falle: „nicht gefunden" ist erst dann eine Aussage, wenn man hineingesehen hat
 
 **Befund 2026-08-15/16.** Es sollte belegt werden, dass ein bestimmter Name aus
