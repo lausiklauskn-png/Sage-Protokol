@@ -114,6 +114,20 @@ gerechnet, aber wertlos: `main` bewegt sich ständig. Eine Dauerwarnung lernt ma
 zu übersehen.
 → Nur melden, was zu tun ist. Der Rückstand steht einmal am Ende als Hinweis.
 
+### 7 · Das Werkzeug übersah eine Datei — und meldete trotzdem grün (2026-08-17)
+Beim **ersten Selbst-Lauf**: `git diff --name-only` liefert Dateinamen mit
+Umlaut **maskiert** zurück (`"Skills/00 Skills-\303\234bersicht.md"`).
+`git rev-parse <ref>:<datei>` findet sie damit nicht — auf **beiden** Seiten.
+Der Vergleich verglich `null` mit `null`, fand sie gleich, und die Datei galt
+**stillschweigend als geprüft**. Das Urteil war zufällig richtig, die Prüfung
+war es nicht.
+→ `git -c core.quotepath=false` **und**: wenn eine Datei auf beiden Seiten
+unlesbar ist, heißt das **nicht „gleich", sondern „nicht geprüft"** — und wird
+seitdem als `⊘` gemeldet.
+
+*Dass ausgerechnet dieses Werkzeug in die eigene Falle lief, ist der beste
+Beleg dafür, dass die Falle echt ist.*
+
 ---
 
 ## Was das hier NICHT ist

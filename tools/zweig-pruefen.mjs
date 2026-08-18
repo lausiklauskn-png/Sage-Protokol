@@ -113,12 +113,24 @@ for (const repo of repos) {
    * Gleich = die Arbeit ist drin (auch nach einem Squash-Merge, der die
    * Commit-Kennung unbrauchbar macht). Ungleich = hinsehen. */
   const basis = git(repo, ["merge-base", `origin/${haupt}`, `origin/${zweig}`]);
-  const angefasst = git(repo, ["diff", "--name-only", basis, `origin/${zweig}`])
+  /* `-c core.quotepath=false`: ohne das liefert git Dateinamen mit Umlaut
+   * MASKIERT zurueck ("Skills/00 Skills-\303\234bersicht.md"), rev-parse
+   * findet sie dann nicht — und weil der Fehler auf beiden Seiten auftrat,
+   * verglich sich null mit null und die Datei galt STILLSCHWEIGEND als
+   * geprueft. Beim ersten Selbst-Lauf aufgefallen (Fall 7 im Skill). */
+  const angefasst = git(repo, ["-c", "core.quotepath=false", "diff", "--name-only", basis, `origin/${zweig}`])
     .split("\n").filter(Boolean);
   const blob = (ref, datei) => {
-    try { return git(repo, ["rev-parse", `${ref}:${datei}`]); } catch { return null; }
+    try { return { ok: true, id: git(repo, ["rev-parse", `${ref}:${datei}`]) }; }
+    catch { return { ok: false, id: null }; }   // fehlt = geloescht ODER unlesbar
   };
-  const offen = angefasst.filter((d) => blob(`origin/${zweig}`, d) !== blob(`origin/${haupt}`, d));
+  const offen = [], unlesbar = [];
+  for (const d of angefasst) {
+    const a = blob(`origin/${zweig}`, d), b = blob(`origin/${haupt}`, d);
+    // Beide Seiten unlesbar heisst NICHT „gleich" — es heisst „nicht geprueft".
+    if (!a.ok && !b.ok) { unlesbar.push(d); continue; }
+    if (a.id !== b.id) offen.push(d);
+  }
   const voraus = git(repo, ["rev-list", "--count", `origin/${zweig}..origin/${haupt}`]);
 
   /* Zwei Urteile, nicht drei.
@@ -138,6 +150,9 @@ for (const repo of repos) {
     if (unveroeffentlicht !== "0") gruende.push(`${unveroeffentlicht} Commit(s) nicht gepusht`);
     if (offen.length) gruende.push(`nicht in ${haupt}: ${offen.slice(0, 4).join(", ")}${offen.length > 4 ? ` (+${offen.length - 4})` : ""}`);
     zeile("✗", name, gruende.join(" · "));
+  } else if (unlesbar.length) {
+    blind++;
+    zeile("⊘", name, `${unlesbar.length} Datei(en) NICHT lesbar, also ungeprüft: ${unlesbar.slice(0, 3).join(", ")}`);
   } else {
     gruen++;
     if (Number(voraus) > 0) { gelb++; zeile("✓", name, `erledigt (${angefasst.length} Datei(en) geprüft) · Zweig zeigt noch ${voraus} Commit(s) hinter ${haupt}`); }
