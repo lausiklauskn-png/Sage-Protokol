@@ -445,6 +445,104 @@ const fromHex = (h) => {
 };
 const short = (hex) => hex.slice(0, 8) + '…' + hex.slice(-4);
 
+// ---- Sperr-Liste (Moderation) ------------------------------------------------
+// WOZU: Die Pinnwand schreibt auf DASSELBE Brett wie Kimboard — gleicher Tag
+// (`sbkim-frage-antwort-test`), gleiches Relais (relay.family-projekt.de, Klaus'
+// eigener Server). Bis zum 2026-08-18 filterte nur Kimboard: ein dort gesperrter
+// Zettel war hier weiter voll sichtbar. Dieselbe Wand, zwei Regeln — das ist
+// keine Lücke im Kleingedruckten, sondern eine im Melde- und Abhilfeverfahren
+// (Art. 16 DSA), für das Klaus als Betreiber einsteht.
+//
+// Gelesen wird DIESELBE signierte Liste, die auch Kimboard liest — ein Ort der
+// Wahrheit statt zweier, die auseinanderlaufen. Sie ist ein echtes,
+// signiertes Nostr-Ereignis; angenommen wird sie NUR, wenn die Signatur zum
+// Schlüssel unten passt. Einer unsignierten Liste zu folgen hieße, jedem zu
+// glauben, der die Datei austauschen kann.
+//
+// EHRLICHE GRENZE: Das nimmt den Zettel aus DIESER Anzeige. Er liegt weiter auf
+// dem Relais, und jeder andere Nostr-Client zeigt ihn. Wirklich weg ist er nur
+// dort, wo der Betreiber ihn aus dem Speicher nimmt — dafür gibt es
+// `Kimboard/tools/relais-wache.sh`, und die liest dieselbe Liste.
+//
+// FAIL-SOFT: Ist die Liste nicht erreichbar oder stimmt die Signatur nicht,
+// läuft das Brett unverändert weiter und zeigt eben alles. Ein Forker trägt
+// unten seine eigene Adresse und seinen eigenen Schlüssel ein — oder setzt
+// beides auf null, dann wird gar nichts geladen.
+const SPERR_QUELLE = 'https://lausiklauskn-png.github.io/Kimboard/sbkim/sperrliste.json';
+const SPERR_SCHLUESSEL = '7dee8dd9088022e0a9be3667ad6ed3551a68c263ce557f34907485075d2fd6a0';
+const gesperrteZettel = new Set();
+const gesperrteAbsender = new Set();
+
+function istGesperrt(ev) {
+  if (!ev) return false;
+  return gesperrteZettel.has(String(ev.id || '').toLowerCase())
+      || gesperrteAbsender.has(String(ev.pubkey || '').toLowerCase());
+}
+
+// Kennung nach NIP-01 — exakt die Form, die auch beim Senden verwendet wird.
+async function sperrEventId(ev) {
+  const roh = JSON.stringify([0, ev.pubkey, ev.created_at, ev.kind, ev.tags || [], ev.content]);
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(roh));
+  return toHex(new Uint8Array(buf));
+}
+
+// Beides muss stimmen: die neu berechnete Kennung UND die Signatur darüber.
+async function sperrIstEcht(ev) {
+  try {
+    if (!ev || typeof ev.id !== 'string' || typeof ev.sig !== 'string'
+        || typeof ev.pubkey !== 'string' || typeof ev.content !== 'string'
+        || typeof ev.created_at !== 'number' || typeof ev.kind !== 'number') return false;
+    if (await sperrEventId(ev) !== ev.id) return false;
+    return await schnorr.verify(fromHex(ev.sig), fromHex(ev.id), fromHex(ev.pubkey));
+  } catch { return false; }
+}
+
+async function ladeSperrliste() {
+  const schluessel = String(SPERR_SCHLUESSEL || '').trim().toLowerCase();
+  if (!SPERR_QUELLE || !/^[0-9a-f]{64}$/.test(schluessel)) return 0;
+  let roh;
+  try {
+    const a = await fetch(SPERR_QUELLE, { cache: 'no-store' });
+    if (!a.ok) return 0;
+    roh = await a.json();
+  } catch { return 0; }
+  if (!roh || typeof roh !== 'object' || typeof roh.content !== 'string') return 0;
+  if (String(roh.pubkey || '').toLowerCase() !== schluessel) return 0;   // fremder Absender
+  if (!(await sperrIstEcht(roh))) return 0;                              // Signatur stimmt nicht
+  let liste;
+  try { liste = JSON.parse(roh.content); } catch { return 0; }
+  let n = 0;
+  const nimm = (obj, ziel) => {
+    for (const k of Object.keys(obj || {})) {
+      if (!/^[0-9a-fA-F]{64}$/.test(k)) continue;   // Unsinn nicht leise aufnehmen
+      ziel.add(k.toLowerCase()); n++;
+    }
+  };
+  nimm(liste.ereignisse, gesperrteZettel);
+  nimm(liste.absender, gesperrteAbsender);
+  return n;
+}
+
+// Was inzwischen gesperrt ist, kann längst am Brett hängen — die Liste kommt
+// übers Netz und damit später als die ersten Zettel. Ohne dieses Nachwischen
+// wirkte sie erst nach einem Neuladen.
+function wischeGesperrte() {
+  for (const [id, view] of [...qViews]) {
+    if (view.qEv && istGesperrt(view.qEv)) {
+      if (view.li && view.li.parentNode) view.li.parentNode.removeChild(view.li);
+      qViews.delete(id);
+      continue;
+    }
+    for (const eintrag of [...(view.answers || [])]) {
+      if (!eintrag || !eintrag.ev || !istGesperrt(eintrag.ev)) continue;
+      const i = view.answers.indexOf(eintrag);
+      if (i >= 0) view.answers.splice(i, 1);
+      view.answerIds.delete(eintrag.ev.id);
+      if (eintrag.li && eintrag.li.parentNode) eintrag.li.parentNode.removeChild(eintrag.li);
+    }
+  }
+}
+
 // ---- Gerätename (frei wählbarer Anzeige-Name, lokal, kein PII) ----
 // SICHERHEIT: nur Anzeige/Hinweis, NIE Vertrauen — immer zusammen mit der Kennung.
 const LS_GERAETENAME = 'sbkim_geraetename';
@@ -752,7 +850,7 @@ function renderQuestion(ev, relay) {
   li.appendChild(card);
   threads.insertBefore(li, threads.firstChild); // neueste Frage oben
 
-  const view = { answersUl, answerIds: new Set(), qEv: ev, qVec: null, answers: [] };
+  const view = { answersUl, answerIds: new Set(), qEv: ev, qVec: null, answers: [], li };
   qViews.set(ev.id, view);
   // gepufferte Antworten nachreichen
   const pend = pendingAnswers.get(ev.id);
@@ -1279,6 +1377,9 @@ $('judgerun').addEventListener('click', async () => {
 
 async function dispatch(ev, relay) {
   if (seen.has(ev.id)) return;
+  // Gesperrtes wird gar nicht erst entschlüsselt oder gezeichnet — vor allem
+  // anderen. Ein Filter weiter unten hätte den Inhalt schon in der Hand.
+  if (istGesperrt(ev)) return;
   // Verschlüsselte Notiz: nur zeigen, wenn wir sie mit dem Brett-Passwort lesen
   // können. Sonst (kein/falsches Passwort) überspringen — kein Geheimtext-Müll.
   if (isEnc(ev.content)) {
@@ -1794,6 +1895,11 @@ $('tb-reload').addEventListener('click', async () => {
 relayPills();
 activeRelays.forEach(connect);
 updateSendState();
+// Die Sperr-Liste holen — nebenher. Das Brett wartet NICHT darauf: es soll auch
+// dann sofort laufen, wenn die Liste gerade nicht erreichbar ist. Was in der
+// Zwischenzeit schon gezeichnet wurde, nimmt `wischeGesperrte()` gleich wieder
+// weg.
+ladeSperrliste().then((n) => { if (n) wischeGesperrte(); }).catch(() => { /* fail-soft */ });
 </script>
 
 <script>
