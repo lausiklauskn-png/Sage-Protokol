@@ -196,6 +196,30 @@ gg. committeter — Adress-Wand, Modul 23).
 
 ---
 
+## ⏰ Kleinigkeiten mit Stichtag — ab **2026-09-02** von selbst ansprechen
+
+Klaus hat am 2026-08-19 darum gebeten, ihn „nach zwei oder drei Sitzungen" an
+ein paar Reste zu erinnern. **Sitzungen lassen sich nicht zählen** — das Datum
+schon. Deshalb ein Stichtag.
+
+Die Liste selbst steht in
+**[`Kimboard/docs/BRIEF_NAECHSTE_SITZUNG.md`](https://github.com/lausiklauskn-png/Kimboard/blob/main/docs/BRIEF_NAECHSTE_SITZUNG.md)**
+§ „Kleinigkeiten mit Stichtag" — dort wird auch abgehakt. Zwei der fünf Punkte
+betreffen **dieses** Netz, deshalb der Zeiger hier:
+
+- **`family-project/impressum.html`, Punkt 5** — „Netz-Inhalte sind
+  Ende-zu-Ende verschlüsselt" trifft auf Direktnachrichten und Gruppen zu, aber
+  **nicht** auf das offene Brett und die Mycel-Fragen; die laufen im Klartext
+  über dasselbe Relais. Erst belegen, dann formulieren, eigener PR.
+- **Anzeige-Filter in Modul 23** für die 20 Apps, die Relais-Inhalte ungefiltert
+  zeigen. Bewusst vertagt: heute gäbe es nichts zu filtern (nur Klaus' eigene
+  Testfragen liegen dort). Wieder aufnehmen, sobald jemand Fremdes schreibt —
+  und vorher die nützlichere Frage klären, ob das Relais Fremde überhaupt
+  annimmt.
+
+Ist heute der Stichtag oder später und steht dort noch etwas: Klaus **von
+selbst** darauf ansprechen, kurz, ohne Drängen. Nichts davon eilt.
+
 ## ▶ Aktuelle Arbeitsliste — was als Nächstes kommt (Pflege 2026-07-10)
 
 Vor dem Bauen an **Semantik/Matching** oder **Verschlüsselung**: zuerst
