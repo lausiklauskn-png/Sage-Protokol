@@ -1116,6 +1116,58 @@ bewacht das, samt der exakten Fassungs-Nagelung (kein `^`, sonst prüft nicht
 jeder dasselbe). Die Module selbst bleiben **build-frei**; die Datei ist nur für
 die Tests da.
 
+## Aufräumen, ohne Arbeit zu verlieren (Pflege 2026-08-19)
+
+Klaus' Tablet-Speicher lief voll. Dagegen gibt es jetzt zwei Werkzeuge — und
+seine Bedingung dazu war die eigentliche Bauvorschrift: *„wo ich aber auch sehe,
+dass ich Dinge lösche, die ich nicht löschen möchte."*
+
+```bash
+bash tools/aufraeumen.sh              # nur nachsehen  (Vorgabe)
+GC=ja bash tools/aufraeumen.sh        # Historien zusammenpacken — löscht NICHTS
+SCHARF=ja bash tools/aufraeumen.sh    # die unbedenklichen Klone entfernen
+```
+
+Läuft auf dem **Tablet in Termux**, nicht auf dem Server. `tools/speicher.html`
+ist das Gegenstück im Browser: es zeigt die Vorräte aller Apps auf derselben
+Adresse und räumt die alten Fassungen weg.
+
+**Vier Riegel, jeder mit Gegenprobe belegt** (`tests/gegenprobe_aufraeumen.sh`,
+14 eingebaute Fehler, alle gefangen):
+
+1. **Ein Klon mit ungepushter Arbeit wird nie zum Löschen vorgeschlagen** —
+   geprüft über `git log --branches --not --remotes`, **nicht** über
+   `@{upstream}`. Bei einem Zweig ohne Upstream bricht `@{upstream}` ab; wer den
+   Fehler wegwirft, liest „0 Commits" und übersieht einen ganzen Zweig. Das ist
+   dieselbe Tafel wie oben, nur an einer neuen Stelle.
+2. **Vor dem Löschen kommt das Schrumpfen.** `git gc` holt oft genug zurück,
+   ohne dass ein Klon verschwindet.
+3. **Das Skript sägt nicht den Ast ab, auf dem es sitzt** — das eigene Repo
+   bleibt. Bewiesen mit einer Kopie *innerhalb* eines Klons; von außen aufgerufen
+   würde der Riegel nie berührt.
+4. **`speicher.html` fasst IndexedDB nicht an.** Vorräte sind Kopien aus dem
+   Netz, Daten sind Rezepte, Aufträge, Tresore. Belegt wird das im **echten
+   Browser**, nicht per Textsuche: die Gegenprobe schmuggelt ein
+   `indexedDB["delete"+"Data"+"base"]` ein — daran scheitert jede Textsuche, der
+   Browser-Lauf fängt es.
+
+**Zwei Lehren aus dem Bau, beide teuer bezahlt:**
+
+**Das Wartewort stand im Fortschrittstext.** Die Seite meldete „Wird gelöscht …",
+die Probe wartete auf „gelöscht" — und feuerte sofort, mitten im Löschen. Sie
+sah einen halb aufgeräumten Stand und meldete ihn als Endstand. Genau diese
+Falle hat die Gegenprobe in Kimboard schon einmal gefangen; sie ist wieder da,
+sobald ein Fortschrittstext dasselbe Wort trägt wie die Endmeldung.
+
+**Eine Probe, die immer alles anhakt, misst die Auswahl nicht.** Der sabotierte
+Löschen-Knopf räumte alles weg statt nur das Angehakte — und rutschte durch,
+weil die Probe vorher „alles auswählen" gedrückt hatte. Erst ein Lauf mit
+**Teil-Auswahl** fing ihn. Das ist der Fall, den Klaus wirklich benutzt.
+
+**`playwright-core` steht jetzt in `package.json`** (exakt genagelt). Nebenbefund:
+davon hängen auch `pinnwand/_smoke_melden.mjs` und `_smoke_mikrofon.mjs` ab — auf
+einem frischen Container waren die drei bisher **nicht lauffähig**, also stumm.
+
 ## Die Pinnwand hängt am selben Brett wie Kimboard (Pflege 2026-08-18)
 
 `pinnwand/index.html` schreibt auf **denselben** Nostr-Tag

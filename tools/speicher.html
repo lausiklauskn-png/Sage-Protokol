@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Speicher aufräumen</title>
+<!--
+  Speicher aufräumen — die Vorräte der PWAs auf DIESER Adresse.
+
+  WOFÜR. Jede von Klaus' Apps legt einen Offline-Vorrat an, und bei jedem
+  Versionswechsel bleibt der alte liegen. Nach dreißig Versionen sind das
+  dreißig Kopien derselben App. Diese Seite zeigt sie und räumt sie weg.
+
+  DIE TRENNLINIE, die alles trägt: Vorräte (Caches) sind Kopien aus dem Netz —
+  weg ist nicht weg, sie kommen beim nächsten Öffnen wieder. Daten (IndexedDB)
+  sind Klaus' Rezepte, Aufträge, Identitäten und Tresore. DIESE SEITE FASST
+  IndexedDB NICHT AN. Sie listet die Datenbanken nur auf, damit man sieht, was
+  verschont bleibt. Es gibt hier keinen Pfad, der `indexedDB.deleteDatabase`
+  aufruft — das ist bewusst so und wird von tests/smoke_speicher_seite.mjs
+  bewacht.
+
+  WARUM DIESE ADRESSE. Alle github.io-Apps von Klaus teilen sich einen Ursprung
+  (`lausiklauskn-png.github.io`). Deshalb sieht eine Seite hier die Vorräte
+  ALLER dieser Apps. Für family-projekt.de und pwa-toolpoint.de braucht es
+  dieselbe Seite noch einmal — anderer Ursprung, andere Vorräte.
+
+  Selbstgenügsam: keine fremden Adressen, keine Schriften von außen.
+-->
+<style>
+:root{
+  --grund:#0d1520; --karte:#141d2b; --rand:#33414f;
+  --text:#dfeaf2; --leise:#9aa7b6; --gut:#5ad19a; --warn:#ffb454; --rot:#ff7b72;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:var(--grund);color:var(--text);
+  font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1{font-size:1.35rem;margin:0 0 4px}
+h2{font-size:1rem;margin:26px 0 8px;color:var(--leise);font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em}
+p{margin:8px 0}
+.leise{color:var(--leise);font-size:.9rem}
+.karte{background:var(--karte);border:1px solid var(--rand);border-radius:10px;
+  padding:12px 14px;margin:10px 0}
+.trennlinie{border-left:4px solid var(--gut)}
+.trennlinie b{color:var(--gut)}
+.trennlinie .rot{color:var(--rot)}
+button{font:inherit;padding:9px 14px;border-radius:8px;border:1px solid var(--rand);
+  background:#1d2a3a;color:var(--text);cursor:pointer;margin:4px 6px 4px 0}
+button:hover{background:#25364a}
+button.tun{background:#7a2b2b;border-color:#a03c3c}
+button.tun:hover{background:#8f3232}
+button:disabled{opacity:.45;cursor:not-allowed}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;gap:10px;align-items:baseline;padding:7px 0;
+  border-bottom:1px solid rgba(255,255,255,.06)}
+li:last-child{border-bottom:0}
+li input{margin:0;flex:0 0 auto;transform:translateY(2px)}
+.name{flex:1;min-width:0;word-break:break-all;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9rem}
+.groesse{flex:0 0 auto;color:var(--leise);font-variant-numeric:tabular-nums}
+.marke{flex:0 0 auto;font-size:.78rem;padding:2px 7px;border-radius:99px}
+.alt{background:rgba(255,180,84,.16);color:var(--warn)}
+.aktuell{background:rgba(90,209,154,.14);color:var(--gut)}
+.summe{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<h1>Speicher aufräumen</h1>
+<p class="leise">Die Vorräte der Apps auf <b id="ursprung">dieser Adresse</b>.</p>
+
+<div class="karte trennlinie">
+  <p><b>Vorräte löschen ist harmlos.</b> Es sind Kopien aus dem Netz — beim nächsten
+  Öffnen der App sind sie wieder da. Nur der erste Start dauert dann etwas länger.</p>
+  <p><span class="rot"><b>Daten sind etwas anderes:</b></span> Rezepte, Aufträge,
+  Identitäten, Tresore. <b>Diese Seite fasst sie nicht an</b> — sie zeigt weiter unten
+  nur, welche es gibt.</p>
+</div>
+
+<div class="karte">
+  <div>Belegt insgesamt: <b class="summe" id="belegt">wird gemessen …</b></div>
+  <div class="leise" id="kontingent"></div>
+</div>
+
+<h2>Vorräte</h2>
+<div id="lage" class="leise">Wird gelesen …</div>
+<ul id="liste"></ul>
+
+<div id="knoepfe" hidden>
+  <button id="alteWaehlen">Alte Fassungen auswählen</button>
+  <button id="allesWaehlen">Alles auswählen</button>
+  <button id="nichtsWaehlen">Auswahl aufheben</button>
+  <button id="loeschen" class="tun" disabled>Ausgewählte Vorräte löschen</button>
+  <div class="leise" id="ergebnis"></div>
+</div>
+
+<h2>Daten — bleiben unangetastet</h2>
+<div id="daten" class="leise">Wird gelesen …</div>
+
+<script>
+"use strict";
+
+const $ = (id) => document.getElementById(id);
+const mb = (b) => (b / 1048576).toFixed(1).replace(".", ",") + " MB";
+
+document.getElementById("ursprung").textContent = location.origin;
+
+/* Wie groß ein Vorrat ist, sagt keine Schnittstelle. Es bleibt, jeden Eintrag
+   anzusehen: Content-Length, wenn der Server sie mitgeschickt hat, sonst den
+   Inhalt wirklich lesen. Das dauert bei großen Vorräten spürbar — deshalb die
+   Zwischenmeldung, statt die Seite stumm stehen zu lassen. */
+async function vorratGroesse(name) {
+  const vorrat = await caches.open(name);
+  const eintraege = await vorrat.keys();
+  let summe = 0;
+  for (const anfrage of eintraege) {
+    try {
+      const antwort = await vorrat.match(anfrage);
+      if (!antwort) continue;
+      const laenge = antwort.headers.get("content-length");
+      if (laenge) { summe += Number(laenge) || 0; continue; }
+      summe += (await antwort.clone().blob()).size;
+    } catch (_e) { /* ein unlesbarer Eintrag zählt als 0 — er verfälscht nur die Anzeige */ }
+  }
+  return { name, groesse: summe, anzahl: eintraege.length };
+}
+
+/* Alte Fassungen erkennen: `kimboard-v27` und `kimboard-v28` gehören zusammen,
+   und alles außer der höchsten Nummer ist Ballast. Trägt ein Name keine Nummer,
+   gilt er als aktuell — lieber einen Vorrat zu viel behalten als einen zu wenig. */
+function alteMarkieren(vorraete) {
+  const gruppen = new Map();
+  for (const v of vorraete) {
+    const t = /^(.*?)[-_]?v?(\d+)$/.exec(v.name);
+    v.stamm = t ? t[1] : v.name;
+    v.nummer = t ? Number(t[2]) : null;
+    if (!gruppen.has(v.stamm)) gruppen.set(v.stamm, []);
+    gruppen.get(v.stamm).push(v);
+  }
+  for (const [, gruppe] of gruppen) {
+    const mitNummer = gruppe.filter((v) => v.nummer !== null);
+    if (mitNummer.length < 2) { gruppe.forEach((v) => (v.alt = false)); continue; }
+    const hoechste = Math.max(...mitNummer.map((v) => v.nummer));
+    gruppe.forEach((v) => (v.alt = v.nummer !== null && v.nummer < hoechste));
+  }
+  return vorraete;
+}
+
+let vorraete = [];
+
+function zeichnen() {
+  const liste = $("liste");
+  liste.textContent = "";
+  for (const v of vorraete) {
+    const li = document.createElement("li");
+
+    const haken = document.createElement("input");
+    haken.type = "checkbox";
+    haken.dataset.name = v.name;
+    haken.checked = false;
+    haken.addEventListener("change", knopfLage);
+
+    const name = document.createElement("span");
+    name.className = "name";
+    name.textContent = v.name;
+
+    const marke = document.createElement("span");
+    marke.className = "marke " + (v.alt ? "alt" : "aktuell");
+    marke.textContent = v.alt ? "alte Fassung" : "in Gebrauch";
+
+    const groesse = document.createElement("span");
+    groesse.className = "groesse";
+    groesse.textContent = mb(v.groesse) + " · " + v.anzahl;
+
+    li.append(haken, name, marke, groesse);
+    liste.append(li);
+  }
+  $("knoepfe").hidden = vorraete.length === 0;
+  knopfLage();
+}
+
+function haken() { return [...document.querySelectorAll("#liste input")]; }
+
+function knopfLage() {
+  const gewaehlt = haken().filter((h) => h.checked);
+  const summe = gewaehlt.reduce((s, h) => {
+    const v = vorraete.find((x) => x.name === h.dataset.name);
+    return s + (v ? v.groesse : 0);
+  }, 0);
+  const knopf = $("loeschen");
+  knopf.disabled = gewaehlt.length === 0;
+  knopf.textContent = gewaehlt.length === 0
+    ? "Ausgewählte Vorräte löschen"
+    : `${gewaehlt.length} Vorrat/Vorräte löschen (${mb(summe)})`;
+}
+
+$("alteWaehlen").addEventListener("click", () => {
+  haken().forEach((h) => {
+    const v = vorraete.find((x) => x.name === h.dataset.name);
+    h.checked = !!(v && v.alt);
+  });
+  knopfLage();
+});
+$("allesWaehlen").addEventListener("click", () => {
+  haken().forEach((h) => (h.checked = true)); knopfLage();
+});
+$("nichtsWaehlen").addEventListener("click", () => {
+  haken().forEach((h) => (h.checked = false)); knopfLage();
+});
+
+$("loeschen").addEventListener("click", async () => {
+  const namen = haken().filter((h) => h.checked).map((h) => h.dataset.name);
+  if (!namen.length) return;
+  $("loeschen").disabled = true;
+  /* Der Fortschrittstext darf NICHT das Wort des Endzustands enthalten.
+     Stand hier zuerst „Wird gelöscht …", und eine Probe, die auf „gelöscht"
+     wartete, feuerte sofort — mitten im Löschen. Dieselbe Falle hat die
+     Gegenprobe in Kimboard schon einmal gefangen. */
+  $("ergebnis").textContent = "Räume auf …";
+  let weg = 0;
+  for (const n of namen) { if (await caches.delete(n)) weg++; }
+  $("ergebnis").textContent = `Fertig: ${weg} Vorrat/Vorräte gelöscht.`;
+  await lesen();
+});
+
+async function lesen() {
+  if (!("caches" in window)) {
+    $("lage").textContent = "Dieser Browser kennt keine Vorräte (Cache Storage).";
+    return;
+  }
+  $("lage").textContent = "Wird gelesen — das kann bei großen Vorräten einen Moment dauern …";
+
+  try {
+    const schaetzung = await navigator.storage.estimate();
+    $("belegt").textContent = mb(schaetzung.usage || 0);
+    if (schaetzung.quota) {
+      const anteil = Math.round(((schaetzung.usage || 0) / schaetzung.quota) * 100);
+      $("kontingent").textContent =
+        `von ${mb(schaetzung.quota)}, die dieser Browser der Adresse zugesteht — ${anteil} %`;
+    }
+  } catch (_e) { $("belegt").textContent = "nicht messbar"; }
+
+  const namen = await caches.keys();
+  vorraete = alteMarkieren(await Promise.all(namen.map(vorratGroesse)))
+    .sort((a, b) => b.groesse - a.groesse);
+
+  const alte = vorraete.filter((v) => v.alt);
+  const alteSumme = alte.reduce((s, v) => s + v.groesse, 0);
+  $("lage").textContent = vorraete.length === 0
+    ? "Keine Vorräte auf dieser Adresse."
+    : `${vorraete.length} Vorräte, davon ${alte.length} alte Fassungen (${mb(alteSumme)}).`;
+
+  zeichnen();
+}
+
+async function datenZeigen() {
+  const ziel = $("daten");
+  try {
+    if (!indexedDB.databases) {
+      ziel.textContent = "Dieser Browser nennt die Datenbanken nicht — sie bleiben trotzdem unangetastet.";
+      return;
+    }
+    const dbs = await indexedDB.databases();
+    ziel.textContent = dbs.length === 0
+      ? "Keine Datenbanken auf dieser Adresse."
+      : dbs.map((d) => d.name).filter(Boolean).join(" · ")
+        + "  — diese Seite löscht davon nichts.";
+  } catch (_e) {
+    ziel.textContent = "Die Datenbanken lassen sich hier nicht auflisten — sie bleiben unangetastet.";
+  }
+}
+
+lesen();
+datenZeigen();
+</script>
+</body>
+</html>
