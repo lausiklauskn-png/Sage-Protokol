@@ -31,6 +31,45 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-19 (Bau) — 🧹 Aufräumen, ohne Arbeit zu verlieren
+
+**Rolle:** Bau-Sitzung. Zweig `claude/firma-demo-knotennetzwerk-4hkxun`.
+
+**Anlass:** Klaus' Tablet-Speicher läuft voll und macht Probleme. Seine Bedingung
+war die eigentliche Bauvorschrift — *„wo ich aber auch sehe, dass ich Dinge
+lösche, die ich nicht löschen möchte."*
+
+**Gebaut:** `tools/aufraeumen.sh` (drei Gänge: nachsehen · GC · scharf) für die
+Repo-Klone in Termux, und `tools/speicher.html` für die Browser-Vorräte aller
+Apps auf derselben Adresse. Dazu `tests/smoke_aufraeumen.mjs` (22 Prüfungen an
+echten Git-Repos), `tests/smoke_speicher_seite.mjs` (14 Prüfungen im echten
+Chromium) und `tests/gegenprobe_aufraeumen.sh` (14 eingebaute Fehler, **alle
+gefangen**). Suite: **82 grün, 0 rot, 0 nicht lauffähig.**
+
+**Drei Befunde, die die eigenen Proben gefunden haben:**
+
+1. **Das Wartewort stand im Fortschrittstext.** Die Seite meldete „Wird
+   gelöscht …", die Probe wartete auf „gelöscht" — und feuerte mitten im
+   Löschen. Dieselbe Falle wie in Kimboard. Behoben auf beiden Seiten: die Seite
+   sagt jetzt „Räume auf …" / „Fertig: …", die Probe wartet auf die Bedingung.
+2. **Eine Probe, die immer alles anhakt, misst die Auswahl nicht.** Der
+   sabotierte Löschen-Knopf rutschte durch, bis ein Lauf mit **Teil-Auswahl**
+   dazukam — der Fall, den Klaus wirklich benutzt.
+3. **Eine Textsuche findet ihre eigene Doku.** Die Quelltext-Prüfung schlug auf
+   den Kommentar an, der erklärt, dass `deleteDatabase` NICHT aufgerufen wird.
+   Kommentare werden jetzt abgezogen, bevor gesucht wird.
+
+**Nebenbefund:** `playwright-core` fehlte in `package.json`. Damit waren
+`pinnwand/_smoke_melden.mjs` und `_smoke_mikrofon.mjs` auf einem frischen
+Container **nicht lauffähig** — also stumm. Jetzt exakt genagelt (1.62.1).
+
+**Offen:** Klaus' Lauf auf dem Tablet. Erst `bash tools/aufraeumen.sh` (ändert
+nichts), Zahlen ansehen, dann entscheiden. `tools/speicher.html` erst nach dem
+Merge über GitHub Pages erreichbar.
+
+**Nächster Schritt:** Teil A des Plans — die Werkstatt in Kimhub (Schicht,
+Rollen, Deckel). Siehe die Chat-Antwort dieser Sitzung.
+
 ## Stand 2026-08-19 (Pflege) — ⏱ Eine feste Wartezeit, die in beide Richtungen log
 
 **Rolle:** Pflege-Sitzung (Status-Prüfung Kimboard + Sage). Zweig
