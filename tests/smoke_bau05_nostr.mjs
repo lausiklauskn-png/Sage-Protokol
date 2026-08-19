@@ -157,6 +157,45 @@ async function bakeSender(domain, domainVec) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+/* WARTEN AUF DIE BEDINGUNG, NICHT AUF DIE UHR (Befund 2026-08-19).
+ *
+ * Hier standen fünf feste `sleep(50)`. Am 2026-08-19 fiel diese Probe in
+ * einem vollen `run_alle.mjs`-Lauf mit GENAU 5 roten Prüfungen um — das ist
+ * Probe 2 vollstaendig, jede ihrer fünf Prüfungen hängt an `replyP2`.
+ * Einzeln aufgerufen war sie 25 von 25 Mal grün, auch unter CPU- und
+ * Browser-Last; reproduzieren ließ es sich nicht.
+ *
+ * Der Grund ist trotzdem klar und strukturell: das Mock-Relais stellt im
+ * Microtask zu, aber der Empfänger rechnet danach ECHTE Ed25519-Krypto
+ * (Signatur pruefen, Antwort signieren). Unter Last dauert das länger als
+ * 50 ms. Die Probe meldete dann „kein reply" — ein Modul-Fehler, wo keiner
+ * war. Falsches Rot ist so schädlich wie falsches Gruen: wer sich angewöhnt,
+ * rote Läufe als „Flake" abzutun, hat den Wächter verloren.
+ *
+ * ZWEI SORTEN WARTEN, und sie brauchen Gegenteiliges:
+ *
+ *   A) Warten, dass etwas KOMMT  -> `warteBis`. Kehrt sofort zurück, sobald
+ *      es da ist, und gibt der Krypto eine großzügige Frist. Schneller UND
+ *      sicherer als eine feste Zahl.
+ *
+ *   B) Warten, dass etwas AUSBLEIBT -> hier hilft keine Bedingung, es muss
+ *      eine Frist verstreichen. Die 50 ms waren hier die GEFÄHRLICHERE
+ *      Hälfte: käme die verbotene zweite Antwort nach 60 ms, sähe die
+ *      Probe sie nicht und meldete grün — der Replay-Schutz waere kaputt und
+ *      niemand wüsste es. Deshalb steht dort jetzt RUHE_MS, deutlich hoeher.
+ */
+const WARTE_FRIST_MS = 5000;   // Obergrenze für A — nur im Fehlerfall erreicht
+const RUHE_MS = 400;           // B: so lange muss es still bleiben
+
+async function warteBis(bedingung, frist = WARTE_FRIST_MS) {
+  const ende = Date.now() + frist;
+  while (Date.now() < ende) {
+    if (bedingung()) return true;
+    await sleep(2);
+  }
+  return bedingung();
+}
+
 async function run() {
   // ── Probe 1: Vorbedingung ──
   record("Probe 1 — 'nostr' in allowedTransports",
@@ -233,7 +272,8 @@ async function run() {
     tags: [["t", "sbkim-anastomosis"], ["d", mainNodeId], ["x", reqP2.nonce]],
     content: JSON.stringify(reqP2),
   });
-  await sleep(50);   // Mock-Relais stellt asynchron zu; Empfänger antwortet
+  // A: warten, BIS die Antwort da ist (Krypto braucht unter Last > 50 ms).
+  await warteBis(() => replyP2 !== null);
   unsubP2();
 
   record("Probe 2 — Empfänger hat über Relais geantwortet",
@@ -288,7 +328,8 @@ async function run() {
     tags: [["t", "sbkim-anastomosis"], ["d", mainNodeId], ["x", reqP3.nonce]],
     content: JSON.stringify(tampered),
   });
-  await sleep(50);
+  // A: der Empfänger antwortet auch hier — nur mit rejected.
+  await warteBis(() => replyP3 !== null);
   unsubP3();
   // Der Empfänger antwortet (receiveHandshake wirft nie), aber mit rejected
   // (Signatur ungültig) — NICHT established.
@@ -320,9 +361,13 @@ async function run() {
     content: JSON.stringify(reqP4),
   };
   await relay.publish(evP4);       // erste Anfrage
-  await sleep(50);
+  // A: erst sicherstellen, dass die ERSTE Antwort wirklich da ist —
+  // sonst prüfte der Replay gegen einen Zustand, der noch gar nicht steht.
+  await warteBis(() => replyCountP4 >= 1);
   await relay.publish(evP4);       // identischer Replay (gleiche nonce)
-  await sleep(50);
+  // B: jetzt muss es STILL bleiben. Hier hilft keine Bedingung — es muss
+  // eine Frist verstreichen. Mit 50 ms war die Probe zu nachsichtig.
+  await sleep(RUHE_MS);
   unsubP4();
   record("Probe 4 — Replay erzeugt genau EINE Antwort",
          "1",
@@ -347,7 +392,9 @@ async function run() {
     tags: [["t", "sbkim-anastomosis"], ["d", fremdeZielId], ["x", reqP5.nonce]],
     content: JSON.stringify(reqP5),
   });
-  await sleep(50);
+  // B: Ausbleiben lässt sich nur über eine Frist zeigen, nicht über eine
+  // Bedingung. Zu kurz = falsch grün.
+  await sleep(RUHE_MS);
   unsubP5();
   record("Probe 5 — Event an fremde nodeId → keine Antwort",
          "keine Antwort",
