@@ -1071,6 +1071,44 @@ Der Läufer sammelt sie jetzt über die Liste `AUSSEN` mit ein (80 Proben, Stand
 2026-08-19). Wer eine weitere Probe außerhalb von `tests/` anlegt, trägt ihren
 Ordner dort nach.
 
+### ⚠ Und die vierte: eine feste Wartezeit, die in BEIDE Richtungen lügt (Befund 2026-08-19)
+
+`smoke_bau05_nostr.mjs` fiel in einem vollen `run_alle.mjs`-Lauf mit **genau 5
+roten Prüfungen** um — das ist Probe 2 vollständig, jede ihrer fünf Prüfungen
+hängt an derselben Antwort. Einzeln aufgerufen war sie **25 von 25 Mal grün**,
+auch unter CPU-Last und neben einem laufenden Chromium; reproduzieren ließ es
+sich nicht.
+
+**Nicht reproduzierbar ist kein Freispruch.** Die Ursache ist strukturell und
+ohne Reproduktion zu sehen: das Mock-Relais stellt im Microtask zu, aber der
+Empfänger rechnet danach **echte Ed25519-Krypto**. Darauf standen fünf feste
+`sleep(50)`. Wer so etwas als „Flake" abtut, verliert den Wächter — nicht weil
+die Probe falsch liegt, sondern weil man sich abgewöhnt, ihr zu glauben.
+
+**Der eigentliche Fund lag aber auf der anderen Seite.** Die fünf Wartestellen
+sind **zwei verschiedene Dinge**, die Gegenteiliges brauchen:
+
+| Sorte | Wartet darauf, dass … | Zu kurze Frist ergibt |
+|---|---|---|
+| **A** | etwas **kommt** (die Antwort) | falsches **ROT** — laut, aber irreführend |
+| **B** | etwas **ausbleibt** (keine zweite Antwort) | falsches **GRÜN** — still |
+
+Sorte A gehört auf die **Bedingung** (`warteBis`, kehrt sofort zurück, Frist nur
+als Obergrenze). Sorte B **braucht** eine verstreichende Frist — dort war die
+Probe mit 50 ms zu **nachsichtig**: käme die verbotene zweite Antwort nach
+60 ms, sähe sie sie nicht und meldete „genau EINE Antwort". **Der Replay-Schutz
+wäre kaputt und niemand wüsste es.** Das ist keine Theorie, sondern gemessen:
+`tests/gegenprobe_bau05_warten.mjs` bricht ihn absichtlich und zeigt beide
+Fassungen gegeneinander.
+
+Dieselbe Bauart stand in der Schwester-Probe `smoke_query_ueber_relais.mjs`
+(80/60 ms) — dort war es bisher nur Glück. **Den Befund halb zu beheben hieße,
+die Hälfte für erledigt zu erklären**; beide sind umgestellt, beide belegt.
+
+**Nicht angefasst:** `smoke_bau23_rendezvous_ui.mjs` wartet mit 5–20 ms auf
+DOM-Rendering im selben Prozess — keine Krypto, keine Antwortkette, anderer
+Fall. Wer dort einmal ein Rennen sieht, weiß jetzt, wonach er greift.
+
 **Die `package.json` trägt bewusst KEIN `"type": "module"`.** Gemessen: mit dem
 Feld fallen zwei Proben um, weil Node dann jede `.js`-Datei als ES-Modul liest —
 und die SBKIM-Module sind klassische Browser-Skripte. `tests/smoke_package_json.mjs`
