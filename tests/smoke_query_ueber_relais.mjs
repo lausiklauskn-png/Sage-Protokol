@@ -143,6 +143,34 @@ function makeMockRelay() {
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* WARTEN AUF DIE BEDINGUNG, NICHT AUF DIE UHR (Befund 2026-08-19).
+ *
+ * Gleiche Kur wie in `smoke_bau05_nostr.mjs` — diese Probe ist deren
+ * Schwester und stand auf denselben festen Fristen (80/60 ms), während die
+ * Antwortkette über das Mock-Relais läuft. Dort fiel die Probe in einem
+ * vollen Lauf einmal mit 5 roten Prüfungen um; hier war es Glück, dass es
+ * noch nicht passiert ist.
+ *
+ * Zwei Sorten Warten, die Gegenteiliges brauchen:
+ *   A) etwas soll KOMMEN    -> `warteBis`, kehrt sofort zurück. Zu kurze
+ *      Frist = falsches ROT (Modul-Fehler gemeldet, wo keiner ist).
+ *   B) etwas soll AUSBLEIBEN -> Frist muss verstreichen. Zu kurze Frist =
+ *      falsches GRÜN, und das ist die gefährlichere Hälfte: eine
+ *      verspätete zweite Antwort hätte den kaputten Replay-Schutz
+ *      verborgen. Belegt in `tests/gegenprobe_bau05_warten.mjs`.
+ */
+const WARTE_FRIST_MS = 5000;   // Obergrenze für A — nur im Fehlerfall erreicht
+const RUHE_MS = 400;           // B: so lange muss es still bleiben
+
+async function warteBis(bedingung, frist = WARTE_FRIST_MS) {
+  const ende = Date.now() + frist;
+  while (Date.now() < ende) {
+    if (bedingung()) return true;
+    await sleep(2);
+  }
+  return bedingung();
+}
 const FAKE_ASKER = "FRAGER-NODE-ID-AAAA0000000000000000000000000";
 
 async function run() {
@@ -194,7 +222,8 @@ async function run() {
       protocolVersion: "0.1", timestamp: new Date().toISOString(),
     }),
   });
-  await sleep(80);
+  // A: warten, BIS die Antwort da ist.
+  await warteBis(() => reply2 !== null);
   unsub2();
 
   record("Probe 2 — Antwort über Relais erhalten", "vorhanden",
@@ -265,9 +294,12 @@ async function run() {
     }),
   };
   await relay.publish(ev4);
-  await sleep(60);
+  // A: erst die ERSTE Antwort abwarten — sonst prüft der Replay gegen
+  // einen Zustand, der noch gar nicht steht.
+  await warteBis(() => count4 >= 1);
   await relay.publish(ev4);   // identischer Replay
-  await sleep(60);
+  // B: jetzt muss es STILL bleiben. Mit 60 ms war die Probe zu nachsichtig.
+  await sleep(RUHE_MS);
   unsub4();
   record("Probe 4 — Replay erzeugt genau EINE Antwort", "1", String(count4), count4 === 1);
 
@@ -287,7 +319,8 @@ async function run() {
       protocolVersion: "0.1", timestamp: new Date().toISOString(),
     }),
   });
-  await sleep(60);
+  // B: Ausbleiben zeigt sich nur über eine Frist. Zu kurz = falsch grün.
+  await sleep(RUHE_MS);
   unsub5();
   record("Probe 5 — Frage an fremde nodeId → keine Antwort", "keine",
          replied5 ? "geantwortet!" : "keine", replied5 === false);
