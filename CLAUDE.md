@@ -1067,8 +1067,8 @@ Derselbe Fehler eine Ebene höher. `pinnwand/_smoke.mjs` und
 `pinnwand/_smoke_mikrofon.mjs` liegen **nicht** in `tests/` und liefen deshalb
 bei `npm test` nie mit — sie tragen in ihrem eigenen Kopf „Run mit `node
 pinnwand/_smoke.mjs`", was genau heißt: **es ruft sie nur, wer sie kennt.**
-Der Läufer sammelt sie jetzt über die Liste `AUSSEN` mit ein (78 statt 76
-Proben). Wer eine weitere Probe außerhalb von `tests/` anlegt, trägt ihren
+Der Läufer sammelt sie jetzt über die Liste `AUSSEN` mit ein (80 Proben, Stand
+2026-08-19). Wer eine weitere Probe außerhalb von `tests/` anlegt, trägt ihren
 Ordner dort nach.
 
 **Die `package.json` trägt bewusst KEIN `"type": "module"`.** Gemessen: mit dem
@@ -1099,6 +1099,42 @@ auseinanderlaufen. Drei Dinge daran sind Absicht:
 - **Das Brett wartet nicht darauf.** Die Liste kommt nebenher; was inzwischen
   gezeichnet wurde, nimmt `wischeGesperrte()` wieder weg. Ohne Liste läuft
   alles unverändert weiter (fail-soft).
+
+**Seit dem 2026-08-19 hat sie auch den Melde-Weg** (⚑ an jeder Frage und jeder
+Antwort, Art. 16 DSA). Er fehlte, obwohl der Kommentar in ihrem eigenen
+Quelltext genau dieses Verfahren als Grund für den Sperr-Filter nannte — gegen
+FREMDE Inhalte gab es hier bis dahin gar nichts: das ✕ blendet nur beim Melder
+aus, und das Zurückziehen (NIP-09) kann nur der Verfasser für seinen eigenen
+Zettel.
+
+Vier Dinge daran sind Absicht:
+
+- **Gesperrt wird weiter in Kimboard.** Der Betreiber-Bereich im Melde-Fenster
+  reicht nur die Kennungen heraus. Ein zweiter Sperr-Weg wäre der Anfang zweier
+  Listen, die auseinanderlaufen — und die Probe besteht darauf, dass der Block
+  nichts selbst sperrt.
+- **Der beanstandete Text wird NICHT mitgeschickt.** Nur Kennungen; den Inhalt
+  holt sich der Betreiber über die Kennung von seinem eigenen Relais. Ihn
+  mitzusenden hieße, ihn ein weiteres Mal zu verbreiten.
+- **Die gemeldete Ausfüllzeit ist die gemessene.** In Kimboard stand hier
+  zuerst `Math.max(1700, …)`, was den Bot-Riegel des Dienstes von unserer Seite
+  ausgehebelt hätte. Und die Gegenprobe zeigte, dass sich das **nicht messen
+  lässt**, solange die Wartezeit dasteht: beide Zahlen sind dann gleich.
+  Gefährlich ist die **Kombination** — nimmt später jemand die Wartezeit
+  heraus, meldet die App eine Zahl, die sie nie gemessen hat. **Was man nicht
+  messen kann, schreibt man fest:** dagegen steht ein Quelltext-Wächter.
+- **Eine ausgeblendete Antwort bleibt ausgeblendet.** `renderAnswer` prüft
+  `hidden` — ohne diese Zeile käme sie beim nächsten Laden zurück, und der
+  Haken „bei mir gleich ausblenden" hätte gelogen.
+
+**Und der Grund, warum es dazu eine Browser-Probe gibt** (`pinnwand/_smoke_melden.mjs`,
+20 Prüfungen): die Lage der beiden Knöpfe war **falsch gerechnet**. `.q-del`
+sagt kein `box-sizing`, eine allgemeine `button`-Regel legt Innenabstand dazu —
+beide werden **32 px** breit gezeichnet, nicht 24. Mit dem gerechneten
+`right: 40px` überlappten sie sich um 2 px, und ein Teil des Löschen-Kreuzes
+war nicht mehr zu treffen. Kein Nachrechnen hat das gefunden; erst das
+Ausmessen der Kästen im echten Chromium. Die Maße stehen jetzt als Variablen an
+einer Stelle, und die Probe misst nach.
 
 **Ehrliche Grenze:** das nimmt den Zettel aus der **Anzeige**. Er liegt weiter
 auf dem Relais. Wirklich weg ist er nur dort, wo der Betreiber ihn aus dem

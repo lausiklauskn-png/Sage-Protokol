@@ -246,13 +246,48 @@
   #board-clear { font-size: 0.78rem; padding: 5px 9px; }
   /* Löschen-Kreuz pro Frage. */
   .q-del {
-    position: absolute; right: 10px; top: 10px; width: 24px; height: 24px;
+    position: absolute; right: var(--x-rand, 10px); top: 10px; width: 24px; height: 24px;
     border-radius: 8px; border: 1px solid var(--line); background: var(--panel2);
     color: var(--dim); font-size: 0.85rem; line-height: 1; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: color .15s ease, border-color .15s ease;
   }
   .q-del:hover { color: var(--bad); border-color: var(--bad); }
+  /* Melde-Fähnchen — links neben dem Kreuz (Art. 16 DSA). Gleiche Maße, damit
+     die beiden Knöpfe eine Reihe bilden statt zweier Einzelstücke.
+
+     DIE ZWEI ZAHLEN SIND GEMESSEN, NICHT GERATEN. Zuerst stand hier
+     `right: 40px` — gerechnet aus „Kreuz sitzt bei 10, ist 24 breit". Im
+     Browser waren beide Knöpfe aber 32 px breit: eine allgemeine
+     `button`-Regel legt Innenabstand dazu, und `.q-del` sagt kein
+     `box-sizing`. Ergebnis: die beiden überlappten sich um 2 px, und ein Teil
+     des Kreuzes war nicht mehr zu treffen. Aufgefallen ist das NICHT beim
+     Nachrechnen, sondern erst, als die Browser-Probe die Kästen wirklich
+     ausgemessen hat.
+
+     Deshalb stehen die Maße jetzt als Variablen an EINER Stelle: wer den Rand
+     oder die Größe ändert, verschiebt beide Knöpfe zugleich. Und
+     `_smoke_melden.mjs` misst nach jeder Änderung nach, dass sie sich nicht
+     berühren — die Regel hier ist die Absicht, die Probe ist der Beweis. */
+  .q-card { --x-rand: 10px; --x-groesse: 32px; --x-luft: 6px; }
+  .q-melden {
+    position: absolute; top: 10px; height: 24px;
+    right: calc(var(--x-rand) + var(--x-groesse) + var(--x-luft));
+    box-sizing: border-box; width: var(--x-groesse); padding: 0;
+    border-radius: 8px; border: 1px solid var(--line); background: var(--panel2);
+    color: var(--dim); font-size: 0.85rem; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .q-melden:hover { color: var(--warn, #e8b13a); border-color: var(--warn, #e8b13a); }
+  /* An einer Antwort ist kein Platz für einen Kasten — dort steht das Fähnchen
+     schlicht in der Kopfzeile mit. */
+  .a-melden {
+    background: none; border: 0; padding: 0 0 0 6px; cursor: pointer;
+    color: var(--dim); font-size: 0.82rem; line-height: 1; opacity: .55;
+    transition: opacity .15s ease, color .15s ease;
+  }
+  .a-melden:hover { opacity: 1; color: var(--warn, #e8b13a); }
   /* Text-Vergrößerung (per data-scale am <html>). */
   html[data-scale="1"] body { font-size: 16px; }
   html[data-scale="2"] body { font-size: 18px; }
@@ -809,6 +844,7 @@ function renderQuestion(ev, relay) {
   del.title = 'Diese Suche ausblenden (bleibt nach Neuladen weg)';
   del.addEventListener('click', () => { hideQuestion(ev.id, li); });
   card.appendChild(del);
+  card.appendChild(meldeKnopf(ev, 'q-melden'));
   const head = document.createElement('div');
   head.className = 'q-head';
   const who = document.createElement('span');
@@ -868,6 +904,10 @@ function renderAnswer(ev, relay) {
     return;
   }
   if (view.answerIds.has(ev.id)) return;
+  // Wer eine Antwort gemeldet und ausgeblendet hat, will sie nach dem Neuladen
+  // nicht wiedersehen. Ohne diese Zeile wäre der Haken im Melde-Fenster eine
+  // Behauptung: weg bis zum nächsten Laden.
+  if (hidden.has(ev.id)) return;
   view.answerIds.add(ev.id);
   const li = document.createElement('li');
   if (ev.pubkey === pubHex) li.className = 'mine';
@@ -885,6 +925,7 @@ function renderAnswer(ev, relay) {
   const judgeBadge = document.createElement('span');
   judgeBadge.className = 'a-judge'; judgeBadge.style.display = 'none'; // erst mit KI-Richter
   head.appendChild(judgeBadge);
+  head.appendChild(meldeKnopf(ev, 'a-melden'));
   const text = document.createElement('div');
   text.className = 'a-text'; text.textContent = ev.content;
   const grund = document.createElement('div');
@@ -895,6 +936,316 @@ function renderAnswer(ev, relay) {
   view.answersUl.appendChild(li);           // Antworten älteste oben (Lesefluss)
   // Bedeutungs-Sortierung: neue Antwort einbetten + neu sortieren, falls an.
   if (semanticOn && view.qVec) embedAnswer(entry).then(() => resort(view));
+}
+
+// ---- Melde-Weg (Art. 16 DSA) -------------------------------------------------
+// WOZU: Bis zum 2026-08-19 gab es an der Pinnwand gegen FREMDE Inhalte gar
+// nichts. Das ✕ blendet nur bei einem selbst aus, und das Zurückziehen (NIP-09)
+// kann nur der Verfasser für seinen eigenen Zettel. Wer hier auf Hassrede stieß,
+// hatte keinen Weg zum Betreiber — obwohl es DASSELBE Brett ist wie Kimboard,
+// wo der Knopf seit dem 2026-08-17 hängt. Dieselbe Wand, zwei Regeln.
+//
+// Was das Gesetz verlangt (Art. 16 DSA): einen erreichbaren Weg, den Eingang
+// bestätigen, zeitnah und begründet entscheiden, das Ergebnis mitteilen und auf
+// Rechtsbehelfe hinweisen. Die ersten beiden Punkte macht dieses Fenster, die
+// anderen der Betreiber — deshalb steht hier, wer das ist.
+//
+// KEIN AUTOMATISMUS. Eine Meldung sperrt nichts von allein. Sie ist eine
+// Behauptung, kein Urteil; ein automatischer Rauswurf wäre die einfachste
+// Angriffsfläche des ganzen Bretts (drei Meldungen, und jeder Zettel ist weg).
+// Sie landet bei einem Menschen, der entscheidet.
+//
+// Ausgeblendet wird trotzdem SOFORT — aber nur lokal, nur bei dem, der meldet.
+// Wer etwas als Hassrede meldet, will es nicht noch zehn Minuten ansehen.
+//
+// GESPERRT WIRD IN KIMBOARD, NICHT HIER. Beide Apps lesen dieselbe signierte
+// Liste; sie hat genau einen Ort der Wahrheit. Der Betreiber-Bereich unten
+// reicht deshalb nur die Kennungen heraus, statt einen zweiten Sperr-Weg
+// aufzumachen, der irgendwann auseinanderläuft.
+//
+// FAIL-SOFT: Ist keine Adresse hinterlegt, sagt der Knopf das ehrlich, statt
+// still ins Nichts zu senden. Ein Forker trägt seine eigene ein — oder setzt
+// beides auf '', dann bleibt nur das lokale Ausblenden.
+
+// Derselbe erprobte Dienst, den der family-projekt.de-Marktplatz und Kimboard
+// benutzen (`zweck: "meldung"`). Die Pinnwand liegt auf DERSELBEN Herkunft wie
+// Kimboard (lausiklauskn-png.github.io) — sie steht dort also bereits in den
+// erlaubten Herkünften, es war keine Server-Änderung nötig.
+const MELDE_ENDPUNKT = 'https://www.family-projekt.de/formular/einreichung.php';
+const MELDE_MAIL = 'info@family-projekt.de';
+const MELDE_BETREIBER = 'Klaus Nitzsche';
+const MELDE_BESCHWERDEWEG = 'impressum.html';
+
+const MELDE_GRUENDE = [
+  ['hass',     'Hassrede oder Volksverhetzung'],
+  ['strafbar', 'Anderes Strafbares (Bedrohung, Beleidigung, verbotene Kennzeichen)'],
+  ['jugend',   'Für Kinder und Jugendliche ungeeignet'],
+  ['spam',     'Spam oder Betrug'],
+  ['sonst',    'Etwas anderes']
+];
+
+function meldeKonfig() {
+  const s = (v) => (typeof v === 'string' ? v.trim() : '');
+  return {
+    endpunkt: s(MELDE_ENDPUNKT),
+    mail: s(MELDE_MAIL),
+    betreiber: s(MELDE_BETREIBER) || 'der Betreiber dieser App',
+    beschwerdeWeg: s(MELDE_BESCHWERDEWEG) || 'impressum.html'
+  };
+}
+
+function meldeKnopf(ev, klasse) {
+  const b = document.createElement('button');
+  b.className = klasse;
+  b.textContent = '⚑';
+  b.title = 'Melden — rechtswidrigen Inhalt an den Betreiber melden';
+  b.setAttribute('aria-label', 'Diesen Zettel melden');
+  b.addEventListener('click', (e) => { e.stopPropagation(); openMeldeDialog(ev); });
+  return b;
+}
+
+// Blendet lokal aus — egal ob Frage oder Antwort. Die Kennung wandert in
+// dieselbe `hidden`-Liste, aus der auch `renderQuestion`/`renderAnswer` lesen;
+// ohne das käme der gemeldete Zettel beim nächsten Laden zurück, und der Haken
+// „bei mir gleich ausblenden" hätte gelogen.
+function meldeAusblenden(ev) {
+  if (qViews.has(ev.id)) { hideQuestion(ev.id, (qViews.get(ev.id) || {}).li); return; }
+  hidden.add(ev.id); saveHidden();
+  for (const view of qViews.values()) {
+    const eintrag = (view.answers || []).find((a) => a && a.ev && a.ev.id === ev.id);
+    if (!eintrag) continue;
+    const i = view.answers.indexOf(eintrag);
+    if (i >= 0) view.answers.splice(i, 1);
+    view.answerIds.delete(ev.id);
+    if (eintrag.li && eintrag.li.parentNode) eintrag.li.parentNode.removeChild(eintrag.li);
+    return;
+  }
+}
+
+/* Schickt die Meldung. Zwei Wege, in dieser Reihenfolge:
+ *   1. der Formular-Dienst oben (`zweck: "meldung"`);
+ *   2. ohne Dienst ein Mail-Vordruck.
+ * Gibt zurück, was WIRKLICH passiert ist — nicht, was gedacht war. */
+async function sendeMeldung(ev, grundKey, freitext, offenSeit) {
+  const k = meldeKonfig();
+  const bez = MELDE_GRUENDE.find((g) => g[0] === grundKey);
+  const grundText = bez ? bez[1] : grundKey;
+  if (!k.endpunkt && !k.mail) return { weg: 'keiner' };
+  if (k.endpunkt) {
+    /* Der Dienst wirft alles weg, was schneller als 1,5 s ausgefüllt wurde
+       (Bot-Schutz) — und antwortet dabei freundlich mit „ok". Wer das nicht
+       weiß, meldet Erfolg, während nichts ankam. Also lieber kurz warten, als
+       eine Bestätigung zu zeigen, die nicht stimmt. */
+    const offen = Date.now() - offenSeit;
+    if (offen < 1700) await new Promise((r) => setTimeout(r, 1700 - offen));
+    try {
+      const antwort = await fetch(k.endpunkt, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          zweck: 'meldung',
+          eintrag: 'Pinnwand — Zettel am Brett',
+          eintrag_id: ev.id,
+          grund: grundKey,
+          grund_text: grundText,
+          // Der beanstandete TEXT wird NICHT mitgeschickt. Der Betreiber holt
+          // ihn sich über die Kennung von seinem eigenen Relais; ihn hier
+          // mitzusenden hieße, ihn ein weiteres Mal zu verbreiten. Bei einem
+          // privaten Brett käme ohnehin nur der Geheimtext an.
+          nachricht: 'Absender-Kennung: ' + (ev.pubkey || 'unbekannt') + '\n\n'
+            + (freitext || '(kein Freitext)'),
+          fp_hp_url: '',
+          /* Die ECHTE Ausfüllzeit, nicht eine behauptete. In Kimboard stand
+             hier zuerst `Math.max(1700, …)` — das hätte dem Dienst 1700 ms
+             gemeldet, auch wenn nur 200 vergangen waren, und damit seinen
+             Bot-Riegel von unserer Seite ausgehebelt. */
+          fp_elapsed: Date.now() - offenSeit
+        })
+      });
+      const j = await antwort.json().catch(() => null);
+      if (antwort.ok && j && j.ok) return { weg: 'dienst' };
+      return { weg: 'fehler', grund: (j && j.error) || ('HTTP ' + antwort.status) };
+    } catch (e) {
+      return { weg: 'fehler', grund: String(e && e.message ? e.message : e) };
+    }
+  }
+  return { weg: 'mail', mailto: 'mailto:' + k.mail
+    + '?subject=' + encodeURIComponent('Pinnwand-Meldung: ' + grundText)
+    + '&body=' + encodeURIComponent('Gemeldeter Zettel: ' + ev.id
+      + '\nAbsender-Kennung: ' + (ev.pubkey || 'unbekannt')
+      + '\nGrund: ' + grundText + '\n\n' + (freitext || '')) };
+}
+
+function openMeldeDialog(ev) {
+  const k = meldeKonfig();
+  const offenSeit = Date.now();
+  const bg = document.createElement('div');
+  bg.style.cssText = 'position:fixed;inset:0;background:rgba(20,18,16,.6);display:flex;'
+    + 'align-items:center;justify-content:center;z-index:140;padding:16px;';
+  const box = document.createElement('div');
+  // Kennung am INNEREN Kasten: ein `position:fixed`-Element hat immer
+  // `offsetParent === null`, an ihm ist Sichtbarkeit nicht messbar.
+  box.id = 'melde-dialog';
+  box.style.cssText = 'background:var(--panel,#1c1a17);color:var(--fg,#eee);'
+    + 'border:1px solid var(--acc,#c9a961);border-radius:14px;max-width:460px;width:100%;'
+    + 'max-height:86vh;overflow:auto;padding:16px 18px;font-size:.92rem;';
+  const zu = () => { if (bg.parentNode) document.body.removeChild(bg); };
+
+  const h = document.createElement('h3');
+  h.style.cssText = 'margin:.1em 0 .5em'; h.textContent = '⚑ Zettel melden';
+  box.appendChild(h);
+
+  const intro = document.createElement('div');
+  intro.style.cssText = 'font-size:.84rem;opacity:.8;margin:0 0 12px;line-height:1.5';
+  intro.textContent = 'Die Meldung geht an ' + k.betreiber + '. Ein Mensch sieht sie an und '
+    + 'entscheidet — es wird nichts automatisch entfernt. Du musst deinen Namen nicht angeben.';
+  box.appendChild(intro);
+
+  const wahl = document.createElement('div');
+  wahl.style.cssText = 'margin:0 0 12px';
+  for (const [key, text] of MELDE_GRUENDE) {
+    const lab = document.createElement('label');
+    lab.style.cssText = 'display:flex;gap:8px;align-items:flex-start;padding:5px 0;cursor:pointer;line-height:1.4';
+    const r = document.createElement('input');
+    r.type = 'radio'; r.name = 'pw-melde-grund'; r.value = key;
+    r.className = 'pw-melde-grund';
+    if (key === MELDE_GRUENDE[0][0]) r.checked = true;
+    const s = document.createElement('span'); s.textContent = text;
+    lab.appendChild(r); lab.appendChild(s); wahl.appendChild(lab);
+  }
+  box.appendChild(wahl);
+
+  const ta = document.createElement('textarea');
+  ta.className = 'pw-melde-text';
+  ta.rows = 3; ta.maxLength = 600;
+  ta.placeholder = 'Was genau ist das Problem? (freiwillig)';
+  ta.style.cssText = 'width:100%;box-sizing:border-box;margin:0 0 6px';
+  box.appendChild(ta);
+
+  const hinweis = document.createElement('div');
+  hinweis.style.cssText = 'font-size:.78rem;opacity:.7;margin:0 0 12px;line-height:1.45';
+  hinweis.textContent = 'Mitgeschickt werden nur die Kennung des Zettels, die Kennung des '
+    + 'Absenders und dein Text — nicht der beanstandete Inhalt selbst. Den holt sich der '
+    + 'Betreiber über die Kennung; ihn hier mitzusenden hieße, ihn noch einmal zu verbreiten.';
+  box.appendChild(hinweis);
+
+  const ausblenden = document.createElement('label');
+  ausblenden.style.cssText = 'display:flex;gap:8px;align-items:flex-start;margin:0 0 14px;cursor:pointer;font-size:.86rem;line-height:1.4';
+  const cb = document.createElement('input');
+  cb.type = 'checkbox'; cb.className = 'pw-melde-weg'; cb.checked = true;
+  const cbs = document.createElement('span');
+  cbs.textContent = 'Bei mir gleich ausblenden (nur auf diesem Gerät)';
+  ausblenden.appendChild(cb); ausblenden.appendChild(cbs);
+  box.appendChild(ausblenden);
+
+  const out = document.createElement('div');
+  out.className = 'pw-melde-out';
+  out.style.cssText = 'display:none;margin:0 0 12px;font-size:.86rem;line-height:1.5';
+  box.appendChild(out);
+
+  /* Für den, der dieses Brett BETREIBT. Zugeklappt, damit es niemanden stört,
+     der nur melden will — und trotzdem da, weil hier die einzige Stelle ist, an
+     der die Kennungen greifbar sind. Ohne das müsste Klaus sie aus der
+     Entwickler-Konsole abschreiben, und „keine Terminal-Kommandos" gilt auch
+     dafür. Bewusst ein <details>: der Browser bringt Tastatur, Vorlese-Ansage
+     und Enter mit, und es funktioniert ohne JavaScript. */
+  const admin = document.createElement('details');
+  admin.className = 'pw-melde-admin';
+  admin.style.cssText = 'margin:0 0 12px;border-top:1px solid rgba(255,255,255,.12);padding-top:10px';
+  const sum = document.createElement('summary');
+  sum.style.cssText = 'cursor:pointer;opacity:.7;font-size:.82rem';
+  sum.textContent = 'Für Betreiber dieses Bretts';
+  admin.appendChild(sum);
+  const adminTxt = document.createElement('div');
+  adminTxt.style.cssText = 'font-size:.8rem;opacity:.78;margin:.6em 0;line-height:1.5';
+  adminTxt.textContent = 'Gesperrt wird in Kimboard — dort im Studio oder in '
+    + 'assets/config/sperrliste.js. Beide Apps lesen DIESELBE signierte Liste, damit es '
+    + 'einen Ort der Wahrheit gibt statt zweier, die auseinanderlaufen. Ein zweiter '
+    + 'Sperr-Weg von hier aus wäre genau der Anfang davon.';
+  admin.appendChild(adminTxt);
+  for (const [was, kennung, feld] of [['Zettel', ev.id, 'ereignisse'], ['Absender', ev.pubkey, 'absender']]) {
+    if (!kennung) continue;
+    const b = document.createElement('button');
+    b.className = 'tbtn pw-sperrzeile pw-sperrzeile-' + feld;
+    b.style.cssText = 'display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;font-size:.82rem';
+    b.textContent = '📋 Zeile für „' + feld + '" kopieren (' + was + ')';
+    b.dataset.zeile = "  '" + kennung + "': { grund: '', seit: '"
+      + new Date().toISOString().slice(0, 10) + "' },";
+    b.addEventListener('click', async () => {
+      const zeile = b.dataset.zeile;
+      let ging = false;
+      try { await navigator.clipboard.writeText(zeile); ging = true; } catch (_e) { /* fail-soft */ }
+      // Ohne Zwischenablage (unsicherer Kontext, altes Android) nicht einfach
+      // scheitern: dann steht die Zeile zum Markieren da. Ein Knopf, der nichts
+      // tut und nichts sagt, wäre schlimmer als gar keiner.
+      if (!ging) {
+        const pre = document.createElement('textarea');
+        pre.readOnly = true; pre.rows = 2; pre.value = zeile;
+        pre.className = 'pw-sperrzeile-text';
+        pre.style.cssText = 'width:100%;box-sizing:border-box;margin:0 0 8px;font-family:monospace;font-size:.76rem';
+        b.after(pre); pre.select();
+      } else { toast('📋 Zeile kopiert — sie gehört in Kimboards assets/config/sperrliste.js.'); }
+    });
+    admin.appendChild(b);
+  }
+  box.appendChild(admin);
+
+  const senden = document.createElement('button');
+  senden.className = 'tbtn pw-melde-send';
+  senden.textContent = '⚑ Melden';
+  senden.style.cssText = 'margin-right:8px';
+  const close = document.createElement('button');
+  close.className = 'ghost pw-melde-close'; close.textContent = 'Abbrechen';
+  close.addEventListener('click', zu);
+
+  senden.addEventListener('click', async () => {
+    const sel = box.querySelector('.pw-melde-grund:checked');
+    const grundKey = sel ? sel.value : 'sonst';
+    senden.disabled = true; senden.textContent = '⚑ wird gesendet …';
+    out.style.display = 'block';
+    out.textContent = 'Wird gesendet …';
+    const erg = await sendeMeldung(ev, grundKey, ta.value.trim(), offenSeit);
+    if (cb.checked) meldeAusblenden(ev);
+    senden.disabled = false; senden.textContent = '⚑ Melden';
+    /* Art. 16 Abs. 4/5 DSA: Eingang bestätigen, sagen wie es weitergeht, und
+       auf den Beschwerdeweg hinweisen. Und zwar nur, wenn es WIRKLICH raus ist.
+       Gebaut aus DOM-Knoten, nicht aus `innerHTML`: `erg.grund` kommt vom
+       Server, also von außen. */
+    out.textContent = '';
+    const stark = (t) => { const b = document.createElement('b'); b.textContent = t; return b; };
+    const link = (ziel, t, klasse) => {
+      const a = document.createElement('a');
+      a.setAttribute('href', ziel); a.textContent = t;
+      if (klasse) a.className = klasse;
+      return a;
+    };
+    if (erg.weg === 'dienst') {
+      out.append(stark('✓ Eingegangen.'),
+        ' Deine Meldung liegt bei ' + k.betreiber + '. Sie wird zeitnah geprüft und '
+        + 'begründet entschieden. Bist du mit der Entscheidung nicht einverstanden, '
+        + 'findest du den Beschwerdeweg im ',
+        link(k.beschwerdeWeg, 'Impressum'),
+        '. Ohne E-Mail-Adresse können wir dir das Ergebnis nicht zuschicken — schreib '
+        + 'sie in den Text, wenn du eine Antwort möchtest.');
+    } else if (erg.weg === 'mail') {
+      out.append('Für dieses Brett ist kein Melde-Dienst eingerichtet. ',
+        link(erg.mailto, 'Meldung als E-Mail öffnen', 'pw-melde-mailto'),
+        ' — erst mit dem Absenden dieser Mail ist sie gemeldet.');
+    } else if (erg.weg === 'keiner') {
+      out.append(stark('Nicht gesendet.'),
+        ' Diese Pinnwand-Fassung hat weder einen Melde-Dienst noch eine Adresse '
+        + 'hinterlegt. Bei mir ausgeblendet ist der Zettel trotzdem.');
+    } else {
+      out.append(stark('Nicht durchgekommen.'),
+        ' (' + (erg.grund || 'unbekannt') + ') Bei mir ausgeblendet ist der Zettel '
+        + 'trotzdem.' + (k.mail ? ' Du kannst ihn auch direkt an ' + k.mail + ' melden.' : ''));
+    }
+  });
+
+  box.appendChild(senden); box.appendChild(close);
+  bg.appendChild(box);
+  bg.addEventListener('click', (e) => { if (e.target === bg) zu(); });
+  document.body.appendChild(bg);
 }
 
 // ---- Bedeutungs-Sortierung (Modul 03 Embedding; WHITENED Cosinus) ----
@@ -1900,6 +2251,26 @@ updateSendState();
 // Zwischenzeit schon gezeichnet wurde, nimmt `wischeGesperrte()` gleich wieder
 // weg.
 ladeSperrliste().then((n) => { if (n) wischeGesperrte(); }).catch(() => { /* fail-soft */ });
+
+/* ---- Brücke aus dem Modul-Scope (nur zum Prüfen) --------------------------
+ * Alles oben liegt in einem <script type="module"> und ist damit von außen
+ * unerreichbar — auch für eine Probe im Browser. Deshalb dieselbe Brücke, die
+ * die Schwester Kimboard als `__kb` hat.
+ *
+ * Sie eröffnet KEINE neue Möglichkeit: wer die Entwickler-Konsole offen hat,
+ * kann in seiner eigenen Seite ohnehin alles tun. Sie macht nur prüfbar, was
+ * sonst nur behauptet wäre — dass ein gezeichneter Zettel wirklich ein
+ * Melde-Fähnchen trägt und dass es wirklich ein Fenster öffnet.
+ *
+ * Nichts Privates geht hier heraus: kein privater Schlüssel, kein Brett-
+ * Passwort, keine entschlüsselten Inhalte. */
+window.__pw = {
+  zeichneFrage: renderQuestion,
+  zeichneAntwort: renderAnswer,
+  meldeFenster: openMeldeDialog,
+  meldeKonfig,
+  fragen: () => [...qViews.keys()]
+};
 </script>
 
 <script>

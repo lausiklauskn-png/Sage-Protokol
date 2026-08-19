@@ -42,7 +42,7 @@
  */
 "use strict";
 
-var CACHE_VERSION = "sbkim-pinnwand-v20";
+var CACHE_VERSION = "sbkim-pinnwand-v21";
 
 // Absichtlich NICHT enthalten: "./" und "./index.html" (dieselbe Datei wie die
 // Navigation, nur unter anderer Adresse) sowie icon-192/icon-512 (holt das
