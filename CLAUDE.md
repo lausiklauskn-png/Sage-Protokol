@@ -1132,6 +1132,25 @@ Läuft auf dem **Tablet in Termux**, nicht auf dem Server. `tools/speicher.html`
 ist das Gegenstück im Browser: es zeigt die Vorräte aller Apps auf derselben
 Adresse und räumt die alten Fassungen weg.
 
+### ⚠ Der erste Lauf hat die Annahme umgeworfen (2026-08-20)
+
+Beim Bau stand hier „reichlich dreißig Klone, schnell mehrere Gigabyte". Das war
+von den **33 Repos auf GitHub** abgeleitet, nicht vom Gerät — und es stimmte
+nicht: auf Klaus' Tablet liegen **fünf** Klone mit **199 MB** zusammen, davon
+50 MB unbedenklich und 17 MB lose Objekte. Um mehr als eine Größenordnung
+daneben.
+
+**Das ist keine Kleinigkeit in der Zahl, sondern ein Zeigefehler.** Wer die
+Behauptung glaubt, räumt in Termux auf und wundert sich, dass der Speicher voll
+bleibt. Der Platz liegt im **Browser**: 21 Apps auf `lausiklauskn-png.github.io`,
+jede mit den liegen gebliebenen Fassungen ihrer Vorräte. Deshalb ist
+`speicher.html` nicht das Gegenstück, sondern der eigentliche Hebel.
+
+Die allgemeinere Lehre steht schon zweimal in dieser Datei, jetzt zum dritten
+Mal an einer neuen Stelle: **eine Zahl über Klaus' Gerät kommt vom Gerät.** Was
+sich aus dem Repo-Bestand ableiten lässt, ist eine Vermutung — und sie klingt
+genau wie eine Messung, solange niemand nachsieht.
+
 **Vier Riegel, jeder mit Gegenprobe belegt** (`tests/gegenprobe_aufraeumen.sh`,
 14 eingebaute Fehler, alle gefangen):
 

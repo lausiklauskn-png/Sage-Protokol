@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 # aufraeumen.sh — Platz auf dem Tablet schaffen, ohne Arbeit zu verlieren.
 #
-# WOFÜR. In Termux liegen die Klone von reichlich dreißig Repos. Jeder trägt
-# seine ganze Git-Historie mit; zusammen sind das schnell mehrere Gigabyte. Das
-# meiste davon lässt sich zurückholen, und ein Teil der Klone wird gar nicht
-# mehr gebraucht — was auf GitHub liegt, ist nicht verloren, ein Klon ist
-# jederzeit wiederholbar.
+# WOFÜR. Jeder Klon trägt seine ganze Git-Historie mit. Was auf GitHub liegt,
+# ist dabei nicht verloren — ein Klon ist jederzeit wiederholbar, also darf er
+# weg, sobald nichts Eigenes mehr drinsteckt.
+#
+# WIE GROSS DER GEWINN IST, sagt der erste Gang — und man sollte ihn nicht
+# vorher raten. Gemessen auf Klaus' Tablet am 2026-08-20: **fünf** Klone,
+# **199 MB** zusammen, davon 50 MB unbedenklich und 17 MB lose Objekte. Vorher
+# stand hier "reichlich dreißig Repos, schnell mehrere Gigabyte" — von den 33
+# Repos auf GitHub abgeleitet, nicht vom Gerät. Das war um mehr als eine
+# Größenordnung daneben und hätte an der falschen Stelle aufräumen lassen: der
+# Platz liegt im Browser (alte PWA-Vorräte), nicht in Termux. Deshalb sagt
+# dieses Werkzeug Zahlen, bevor es etwas anbietet.
 #
 # KLAUS' REGEL, die dieses Werkzeug baut (2026-08-19):
 #   „wo ich aber auch sehe, dass ich Dinge lösche, die ich nicht löschen möchte."
