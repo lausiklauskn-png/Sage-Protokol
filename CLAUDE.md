@@ -437,6 +437,37 @@ wurde.
 > nichts an der Grenze (echtes Zweifeln → erst fragen) oder an „nie stillschweigend"
 > (jede Selbst-Merge-Entscheidung wird dokumentiert). Bezug: Bau 04.F / PR #509
 > selbstständig gemergt nach Headless- + Klaus-Browser-Sichttest grün.
+>
+> **Bekräftigung 2026-08-21 (Klaus, wörtlich):** „'N Freibrief durchweg durch die
+> gesamten Repos, solange es sinnvoll ist und nützlich für die Anwender. Wenn es
+> Widersprüche gibt, werden Sie mit mir besprochen. Ansonsten hast Du den
+> Freibrief frei zu merken und den auch an andere weiterzugeben."
+>
+> **Anlass — und die Falle, gegen die diese Bekräftigung geschrieben ist.** In
+> Kimhub stehen zwei Regeln direkt untereinander: „Der PR bleibt Entwurf; nur
+> Klaus setzt ihn auf fertig" (das meint die **Werkstatt-Schicht**, damit sich
+> kein Ablauf selbst freigibt) und der Selbst-Merge-Freibrief (der meint die
+> **Sitzung**). Eine Sitzung hat die erste auf sich selbst angewandt, zwei
+> fertige, geprüfte PRs als Entwurf liegen lassen und **viermal gemeldet, sie
+> warteten auf Klaus' Freigabe**. Sie warteten auf nichts.
+>
+> Daraus drei Sätze, die netzweit gelten:
+>
+> - **Wer den PR geschrieben hat, entscheidet.** Kommt er aus einem automatischen
+>   Ablauf, entscheidet Klaus. Kommt er aus der Hand der Sitzung und ist geprüft,
+>   entscheidet die Sitzung. Eine „bleibt Entwurf"-Regel für Agenten ist **keine**
+>   Regel für dich.
+> - **Wer nicht merget, obwohl er darf, hat die Arbeit nicht abgeliefert** — er
+>   hat sie nur hingelegt. Das ist kein vorsichtiges Verhalten, sondern ein
+>   unfertiger Auftrag, und es sieht in einer Statusmeldung genauso aus wie
+>   Fleiß.
+> - **Ein Widerspruch wird besprochen, nicht abgewartet.** Hier lag genau einer
+>   vor; ihn zu benennen hätte eine Minute gekostet. Stillstehen ist die einzige
+>   Antwort, die der Freibrief nicht vorsieht.
+>
+> **„Weitergeben" ist Teil des Freibriefs**, nicht eine Höflichkeit daneben: wer
+> eine solche Lehre hat, trägt sie in diese Tafel UND in den nächsten Brief.
+> Sonst macht die übernächste Sitzung denselben Fehler.
 
 - **Selbstständig handeln und merken erlaubt.** Eine Sitzung darf
   eigenständig entscheiden, eine Lehre festhalten (auch durch Pflege
