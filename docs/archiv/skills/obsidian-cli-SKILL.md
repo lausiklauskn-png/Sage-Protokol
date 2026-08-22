@@ -1,3 +1,16 @@
+<!-- ARCHIV — dieser Skill ist am 2026-08-22 stillgelegt worden.
+
+Grund: er setzt ein LAUFENDES Obsidian voraus ("Requires Obsidian to be open").
+In der Umgebung, in der die Sitzungen laufen, gibt es kein Obsidian — der Skill
+konnte nie greifen. Er stand trotzdem in jeder Sitzung im Kontext.
+
+Nicht gelöscht: wenn Klaus einmal aus einer Umgebung MIT laufendem Obsidian
+arbeitet, gehört diese Datei zurück nach .claude/skills/obsidian-cli/SKILL.md.
+
+Die übrigen Obsidian-Rezepte (obsidian-markdown, obsidian-bases, json-canvas)
+bleiben aktiv — sie schreiben Dateien und brauchen kein laufendes Programm.
+-->
+
 ---
 name: obsidian-cli
 description: Interact with Obsidian vaults using the Obsidian CLI to read, create, search, and manage notes, tasks, properties, and more. Also supports plugin and theme development with commands to reload plugins, run JavaScript, capture errors, take screenshots, and inspect the DOM. Use when the user asks to interact with their Obsidian vault, manage notes, search vault content, perform vault operations from the command line, or develop and debug Obsidian plugins and themes.

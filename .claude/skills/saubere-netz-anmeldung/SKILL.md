@@ -10,6 +10,17 @@ Identität** kommt und sich **sauber** im gemeinsamen Raum anmeldet. Diese
 Reihenfolge ist verbindlich für **jedes** Werkzeug, das ans Netz andockt — sie
 wird eingebaut, nicht jedes Mal neu erfunden.
 
+> **Quelle der Wahrheit = Sage-Protokol (Klaus 2026-07-14).** Die kanonische
+> „Mit dem Knotennetz verbinden"-Umsetzung (Rendezvous + Identität) lebt in Sage:
+> `src/modules/23_rendezvous.js` + `src/modules/23_rendezvous_ui.js` (Knopf „Mit dem
+> Knotennetz verbinden" / „Wer ist im Raum?", `announce`/`discover`/`handshakeCard`,
+> lebende Identität, `dbSuffix`-Isolierung) — headless getestet
+> (`smoke_bau23_rendezvous_ui.mjs`, `smoke_bundle_connect.mjs`). **Erst in Sage richtig
+> bauen + dokumentieren, dann byte-genau in die Klone** (SB-KIMTool-Point als 2. Hub,
+> dann die Apps). Klone (Kim-Bell, Mixarium, …) sind Vergleich, **nie** Quelle — bei
+> Abweichung aus Sage neu bespielen. Der Identitäts-Wechsler + die eine saubere
+> Identität sind die Wurzel: ohne sie meldet sich der falsche Schlüssel im Raum an.
+
 ## Warum es das Problem gibt (der Browser als schwarzes Loch)
 
 Alle Endknoten-PWAs liegen unter **einer** Adresse: `lausiklauskn-png.github.io`.
@@ -275,3 +286,17 @@ Volle Fassung + Nicht-Programmierer-Erklärung (Ausweis/Namensschild/Schaufenste
 Der Nutzer-Knopf reinigt den geteilten Topf → neue Identität → Spore → anmelden →
 hart neu laden. Reinigen ist zerstörend und bleibt beim Menschen; der Start ist
 sanft und automatisch.
+
+---
+
+## Herkunft dieser Fassung (2026-08-22)
+
+Dieses Rezept lag bis zum 2026-08-22 **zweimal** vor — in Sage (277 Z.) und in
+family-project (217 Z.). Der family-Fassung fehlten die **60 Zeilen Härtung vom
+2026-07-11** (`window.SBKIM_DB_SUFFIX` vor dem ersten Script + Idempotenz-Guard),
+also genau der Teil, der Identitäts-Kollisionen verhindert. Der Sage-Fassung fehlte
+dafür Klaus' Festlegung vom 2026-07-14, dass Sage die Quelle der Wahrheit ist.
+
+Zusammengeführt zu **einer** Fassung, hier in Sage — beide Teile sind drin.
+`family-project/.claude/skills/saubere-netz-anmeldung/` trägt seitdem nur noch einen
+Zeiger hierher. **Wer dieses Rezept ändert, ändert es hier.**
