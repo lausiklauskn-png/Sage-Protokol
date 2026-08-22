@@ -240,6 +240,57 @@ genauesten hinsehen musst.
 
 ---
 
+## 6b · Was eine Webseite NICHT kann — nachschlagen statt neu herausfinden
+
+**Anlass (Klaus, 2026-08-22, nach einer verlorenen Stunde):** *„Wir hatten das
+schon ein paarmal besprochen … ich hatte schon ein paarmal gefragt, ob wir
+Programme öffnen können. Das hast du dir also nicht gemerkt."*
+
+Er hat recht, und der Schaden ist immer derselbe: eine Sitzung findet eine
+Grenze neu heraus, baut daran vorbei, es geht nicht, sie baut anders daran
+vorbei — und die nächste fängt von vorn an. **Eine Grenze, die man kennt, kostet
+eine Zeile. Eine, die man jedes Mal neu entdeckt, kostet eine Stunde.**
+
+Deshalb stehen sie hier. Wer etwas davon versucht, hat es vorher gelesen.
+
+| Was nicht geht | Warum | Was stattdessen |
+|---|---|---|
+| **Ein Programm auf dem Gerät starten** (Termux, ein Skript, eine App) | Die Sandbox des Browsers. Das ist kein Mangel, das ist ihr Sinn | Den vollständigen Befehl in die **Zwischenablage** legen und sichtbar hinschreiben. Der Nutzer fügt ihn ein |
+| **In eine Datei im Depot schreiben** | Eine Seite hat keinen Schreibzugriff auf die Platte | **Herausgeben** — Download oder Zwischenablage. Hineinlegen muss jemand anderes (Node, eine Sitzung, der Nutzer) |
+| **Einen laufenden Vorgang im Terminal anhalten** | Eingefügter Text stellt sich hinten an; Strg+C ist ein Tastendruck, kein Text | Als **ersten Schritt** hinschreiben, nicht ins Kleingedruckte |
+| **`charset=utf-8` mit einer heruntergeladenen Datei mitgeben** | Die Angabe steht im MIME-Typ; auf der Platte liegen nur Bytes | **BOM** (U+FEFF) vor den Text — nur in die Datei, nie in die Zwischenablage |
+
+### Und der eine Fall, der auf Android FAST geht
+
+**Eine andere App nach vorn holen** ist unter Android über eine Absicht
+(`intent:`) möglich — aber nur unter drei Bedingungen, und jede davon hat einmal
+eine Sitzung gekostet:
+
+1. **Top-Level-Navigation, kein `iframe`.** Chrome blockiert `intent:` aus einem
+   Rahmen; das ist eine Missbrauchssperre. Ein Riegel, der das Richtige
+   verhindert, ist kein Schutz.
+2. **In der Fingerberührung.** Liegt zwischen Klick und Sprung ein Dialog, eine
+   Netz-Anfrage oder ein `await`, ist die Geste verbraucht und Chrome verweigert.
+3. **Mit `S.browser_fallback_url`.** Ohne sie navigiert der Browser bei einem
+   unbekannten Schema dorthin — und die Seite ist tot. Mit ihr kommt er auf die
+   Ersatz-Adresse zurück.
+
+**Und selbst dann ist es ein Versuch, kein Ergebnis.** Ob die App aufgeht, kann
+die Seite nicht messen: gelingt es, wird sie nie wieder aufgerufen. Also wird
+`versucht` gemeldet, nicht `geöffnet` — und der Grund steht erst da, wenn der
+Browser über die Ersatz-Adresse zurückkommt.
+
+> **Gemessen am 2026-08-22 an Klaus' Tablet:** auch mit allen drei Bedingungen
+> ging es bei ihm **nicht**. Sein Schluss, und er ist die Regel: *„vom Webbrowser
+> aus kann man nicht ein Programm öffnen. Muss man selber vorher öffnen."*
+> Der Block in der Zwischenablage ist der Weg, der trägt — der Sprung ist die
+> Zugabe, auf die sich niemand verlässt.
+
+**Wer eine dieser Grenzen umbauen will, schreibt vorher hin, warum sie diesmal
+nicht gilt.** Nicht ausprobieren und dann feststellen.
+
+---
+
 ## 7 · Wo die verbindlichen Verträge stehen
 
 | Wofür | Wo |
