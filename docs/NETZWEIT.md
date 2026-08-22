@@ -291,6 +291,50 @@ nicht gilt.** Nicht ausprobieren und dann feststellen.
 
 ---
 
+## 6c · Ein privates Depot mit laufenden Pages ist NICHT privat
+
+**Gemessen am 2026-08-22 an Kimhub, und es hat Klaus' Rechnungsdaten gekostet.**
+
+Er hatte das Depot auf **privat** gestellt — richtig, gemessen, `github.com/…`
+antwortete ohne Anmeldung mit 404. Und trotzdem konnte er in einem gewöhnlichen
+Browser diese Adresse öffnen und seine 75 Anthropic-Belege lesen, mit
+Rechnungsnummern und Beträgen:
+
+```
+https://<konto>.github.io/<repo>/werkstatt/buchhaltung/anthropic-belege.json
+```
+
+**Das sind zwei Schalter, nicht einer.** Die Sichtbarkeit des Depots und die
+Auslieferung durch Pages hängen nicht zusammen: eine Seite, die gebaut wurde,
+solange das Depot offen war, läuft weiter. Und **Pages liefert JEDE Datei aus
+dem gebauten Zweig aus** — nicht nur die, die eine Seite verlinkt. Wer die
+Adresse rät (und sie ist ratbar: Kontoname plus Reponame), holt sie direkt.
+
+### Was daraus folgt
+
+| | |
+|---|---|
+| **Privat stellen ist ein halber Schritt.** | Danach in **Settings → Pages → Source: None** nachsehen. Erst das nimmt die Seite vom Netz |
+| **Prüfen statt annehmen** | In einem **privaten Fenster** eine Datei direkt abrufen, die nicht verlinkt ist. Antwortet sie, liegt alles offen |
+| **Was nicht öffentlich sein darf, gehört nicht ins Depot** | `.gitignore`, wie Laufzeit-Dateien. Das wirkt unabhängig von beiden Schaltern |
+| **Ein Wächter, der echte Daten liest, zwingt sie ins Depot** | Genau so ist es passiert: Proben lasen die echte Beleg-Datei, also musste sie dort liegen. Prüfungen speisen ihre Daten selbst ein |
+
+### Und der Satz, der die Verwechslung erzeugt hat
+
+In Kimhubs Verfassung stand: *„Ein privates Depot liefert auf einem Gratis-Konto
+keine Seite aus."* Das ist die **Regel**, nach der GitHub es abschaltet — es ist
+keine Zusicherung, dass es schon geschehen ist, und es sagt nichts über eine
+Seite, die vorher gebaut wurde. **Eine Regel über den Normalfall ist kein Befund
+über den eigenen.**
+
+> ⚠ **Die Git-Historie ist davon nicht betroffen** — Pages liefert nur den
+> gebauten Zweig aus, nicht die Historie, und ein privates Depot lässt sich
+> nicht klonen. Wer ein Depot aber **wieder öffentlich stellt**, gibt damit
+> alles frei, was je darin lag. Eine Datei zu entfernen, macht die Historie
+> nicht leer.
+
+---
+
 ## 7 · Wo die verbindlichen Verträge stehen
 
 | Wofür | Wo |
