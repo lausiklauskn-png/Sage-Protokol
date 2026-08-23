@@ -73,6 +73,13 @@ Das Papier legt seine Grenzen offen: keine Kontrollgruppe, kein Maß, Fallzahl
 eins, nicht verblindet. Es ist eine **Feldbeobachtung mit Protokoll**, keine
 Studie.
 
+Abschnitt 7.9 beantwortet zudem, was das System **selbst** beweisen kann: die
+Buchführung über die Bedingungen, die entscheidbaren Fehlerarten — darunter die
+behauptete Ausführung, denn die Maschine weiß, welche Werkzeuge sie ausgegeben
+hat —, die Wiederholbarkeit, und die **Einhaltung der Verblindung**, festgenagelt
+durch im Voraus veröffentlichte Prüfsummen statt durch Beteuerung. Was es
+strukturell **nicht** kann, ist beurteilen, welche Ausgabe besser ist.
+
 Abschnitt 7 beschreibt den Versuch, der daraus eine machen soll: **drei Arme** —
 nur Regeln, nur Grundsätze, beides — mit vorab festgelegten Fehlerkategorien und
 einem Auswertungswerkzeug, das dem Bewertenden **verbirgt, aus welchem Arm ein
@@ -926,7 +933,8 @@ einer getrennten Datei, die erst **nach** der Bewertung geöffnet wird.
 
 Das ist billig zu bauen und macht den Unterschied zwischen einer Auswertung und
 einer Bestätigung. Es ist dieselbe Disziplin wie Grundsatz 3: *eine Prüfung, die
-dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst.*
+dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst.* **Und sie
+lässt sich beweisen statt beteuern** — wie, steht in 7.9.
 
 Was das Werkzeug sonst leisten sollte: je Lauf die sechs Kategorien zählen,
 Verteilungen je Arm ausgeben, und **die Rohdaten mitliefern** — eine Auswertung,
@@ -978,6 +986,105 @@ Was fehlt, ist die **statistische Auswertung**: wie viele Läufe je Arm nötig
 sind, damit ein Unterschied etwas bedeutet, und wie man ihn prüft. Das ist
 Handwerk, das an Hochschulen gelehrt wird und das der Verfasser nicht hat. Für
 diesen Teil wird ausdrücklich eine Zusammenarbeit gesucht.
+
+### 7.9 Was die Maschine selbst beweisen kann — und was nicht
+
+Eine naheliegende Frage: kann das System den Versuch **selbst** führen und
+auswerten? Die Antwort zerfällt in zwei Hälften, und die Trennlinie zwischen
+ihnen ist scharf.
+
+#### Was es strukturell NICHT kann
+
+**Es kann nicht beurteilen, welche Ausgabe besser ist.** Das verlangt ein Urteil
+über den Zweck, und ein solches Urteil wäre eine Prüfung, die sich selbst recht
+gibt — genau der Fall, vor dem Grundsatz 3 warnt. Erschwerend: die Bewertung
+liefe über dieselbe Modellfamilie, die die Ausgabe erzeugt hat. Abschnitt 5.1
+zeigt, was dabei herauskommt — ein System, das ohne Werkzeuge behauptet, etwas
+geprüft zu haben.
+
+Ebenso wenig kann es beweisen, dass die **Fehlerkategorien die richtigen** sind
+(sie sind gesetzt) oder dass ein Ergebnis **über dieses Feld hinaus** gilt
+(Fallzahl eins).
+
+#### Was es beweisen kann — und zwar ohne jedes Urteil
+
+Fünf Dinge, alle **entscheidbar** statt beurteilbar:
+
+**1 · Dass die Bedingungen wirklich verschieden waren.** Welcher Arm, welche
+Aufgabenart, welcher Modellstand, welcher Wortlaut beider Kanäle — je mit
+Prüfsumme. Das ist Buchführung, und darin ist eine Maschine besser als jeder
+Mensch. **Ohne diesen Nachweis zählt nichts anderes**, weil sonst unklar bleibt,
+was verglichen wurde.
+
+**2 · Die erfundene Tätigkeit — vollständig maschinell entscheidbar.** Und das
+ist der wichtigste Punkt dieses Abschnitts. **Die Maschine weiß, welche Werkzeuge
+sie ausgegeben hat.** Hat sie keine ausgegeben, ist jeder Satz, der eine
+Ausführung behauptet, **nachweislich falsch** — kein Urteil, eine Tatsache.
+
+Damit kann Kimhub ausgerechnet den Fehler selbst nachweisen, an dem in Abschnitt
+5 **beide Kanäle** gescheitert sind. Der zentrale Befund dieses Papiers ist
+maschinell prüfbar.
+
+**3 · Die übrigen entscheidbaren Kategorien.** Formverstoß (Schlüssel, fremde
+Adresse, Schemabruch) wird bereits heute maschinell geprüft. Leere Weitergabe
+ist eine Frage von Inhalt und Länge. Wiederholung ist bei Aufgabenart B prüfbar,
+weil der Bestand als Eingabe vorlag — es gibt etwas, wogegen man vergleichen
+kann. **Unbelegte Zahl** ist teilweise entscheidbar: ob eine Fundstelle genannt
+wurde, steht fest; ob sie trägt, nicht.
+
+**4 · Wiederholbarkeit.** Dieselbe Eingabe, derselbe Arm, vielfach gefahren: wie
+stabil ist der Unterschied überhaupt? Das ist die Frage, an der die meisten
+kleinen Auswertungen scheitern, und eine Maschine kann sie sich leisten. **Ein
+Unterschied, der zwischen zwei Läufen derselben Bedingung ebenso groß ist wie
+zwischen den Armen, ist kein Unterschied.** Diese Gegenprobe kostet nichts als
+Rechenzeit — und sie wird zuerst gefahren, nicht zuletzt.
+
+**5 · Dass die Verblindung eingehalten wurde — beweisbar, nicht beteuert.** Der
+Punkt, der Selbstmessung erst glaubwürdig macht.
+
+Statt zu versichern, man habe beim Bewerten nicht gewusst, aus welchem Arm ein
+Lauf stammte, lässt sich das **festnageln**:
+
+1. Die Zuordnung Lauf → Arm wird in eine Datei geschrieben, die **verschlossen**
+   bleibt. Von ihr wird eine Prüfsumme gebildet und **veröffentlicht**.
+2. Erst danach werden die Läufe bewertet. Die Bewertungen werden ebenfalls
+   abgelegt und mit Prüfsumme veröffentlicht.
+3. **Dann** wird die Zuordnung geöffnet.
+
+Wer die Reihenfolge nachrechnet, sieht: die Bewertung kann die Zuordnung nicht
+gekannt haben, sonst passte eine der beiden Prüfsummen nicht. Das ist kein
+Vertrauensvorschuss, sondern eine **Festlegung im Voraus** — dasselbe Verfahren,
+mit dem das Netz ohnehin arbeitet, wenn es Kopien gegen Drift sichert.
+
+#### Die Arbeitsteilung, die daraus folgt
+
+| Frage | Wer beantwortet sie |
+|---|---|
+| Welcher Arm, welches Modell, welcher Wortlaut? | **Maschine** — Buchführung mit Prüfsumme |
+| Wurde eine Ausführung behauptet, die es nicht gab? | **Maschine** — sie weiß, was sie ausgegeben hat |
+| Formverstoß, leere Weitergabe, Wiederholung (Art B)? | **Maschine** — entscheidbar |
+| Ist der Unterschied größer als das Rauschen? | **Maschine** — Wiederholung |
+| War die Bewertung wirklich verblindet? | **Maschine** — Prüfsummen im Voraus |
+| **Welche Ausgabe ist besser?** | **Mensch**, und möglichst nicht der Verfasser der Grundsätze |
+| Sind die Kategorien die richtigen? | **Mensch** |
+| Gilt das über dieses Feld hinaus? | **niemand hier** — dafür braucht es eine zweite Fallzahl |
+
+#### Warum diese Trennung mehr ist als eine Notlösung
+
+Der Versuch wird dadurch **billig und selbstdokumentierend**. Alles, was die
+Maschine übernimmt, kostet Rechenzeit und keine Aufmerksamkeit — und es sind
+gerade die Teile, an denen menschliche Auswertungen scheitern: Buchführung,
+Wiederholung, Verblindung.
+
+Was übrig bleibt, ist ein knappes, teures Gut: **fremdes Urteil über wenige,
+gut vorbereitete Fälle.** Genau dafür lohnt sich ein Partner — und genau darauf
+läuft die Bitte in 7.8 hinaus.
+
+Und es gibt eine Kehrseite, die zur These dieses Papiers gehört: **die Maschine
+kann alles Prüfbare prüfen und genau das Entscheidende nicht.** Das ist keine
+Schwäche des Aufbaus, sondern dieselbe Grenze, um die es die ganze Zeit geht —
+sie taucht hier nur eine Ebene höher wieder auf, bei der Bewertung statt bei der
+Lenkung.
 
 ---
 
