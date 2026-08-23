@@ -8,6 +8,35 @@ Drift gegenüber dem Browser-Pfad. Node ≥ 18 (getestet v22, WebCrypto Ed25519)
 Empfangsmodus-konform: jede Netzanfrage ist **eine bewusste Eigenanfrage** auf eine
 genannte URL — kein Crawler, kein Dauerlauf, keine Wiederholung.
 
+## `antragsmappe-bauen.mjs`
+
+Baut **[`docs/antragsmappe.html`](../docs/antragsmappe.html)** aus neun
+Markdown-Quellen — eine Datei, zwei Abteilungen: der Fahrplan
+Forschungsgelder (privat, Arbeitspapier) und die Forschungsunterlagen
+(einreichbar). Jede Abteilung hat einen eigenen Download- und Druck-Knopf und
+nimmt beim Herausnehmen **nur sich selbst** mit.
+
+```bash
+node tools/antragsmappe-bauen.mjs            # Stand = heute
+node tools/antragsmappe-bauen.mjs --datum=2026-08-23   # fester Stand
+```
+
+**Die Mappe wird erzeugt, nicht gepflegt.** Wer den Inhalt ändert, ändert die
+`.md` und baut neu — sonst stünden dieselben Sätze zweimal im Depot und liefen
+auseinander. `tests/smoke_antragsmappe.mjs` schlägt an, wenn die abgelegte
+Datei nicht der aktuelle Bau ist.
+
+Der Markdown-Leser dazu ist `markdown-mini.mjs` — bewusst klein, ohne
+Laufzeit-Abhängigkeit. Bewacht wird an ihm **nicht** die Optik, sondern dass er
+nichts **verschluckt**: jede der 2.799 Quellzeilen muss mit ihrem Klartext in
+der Ausgabe wiederauftauchen. Dazu zwei Proben und eine Gegenprobe:
+
+```bash
+node tests/smoke_antragsmappe.mjs           # liest die Datei
+node tests/smoke_antragsmappe_browser.mjs   # öffnet sie wirklich (playwright-core)
+node tests/gegenprobe_antragsmappe.mjs      # 17 eingebaute Fehler, jeder MUSS auffallen
+```
+
 ## `verify_remote_spore.mjs`
 
 Holt eine fremde (oder eigene) `spore.json` per URL **oder** Datei und prüft Identität
