@@ -27,7 +27,7 @@ Gesteuert werden sie über **zwei getrennte Kanäle**:
 | prüfbar | ja | nein |
 | Wirkung | erzwungen, jede Rolle, jeder Lauf | lenken die Aufmerksamkeit |
 | änderbar von | wer Code anfasst | jedem, ohne Programmierer |
-| Anzahl | acht | höchstens sieben, derzeit fünf |
+| Anzahl | sechs | höchstens sieben, derzeit fünf |
 
 Die Trennung ist **absichtlich** und war die Ausgangsfrage: *Was lässt sich
 erzwingen, was muss man stattdessen fragen?*

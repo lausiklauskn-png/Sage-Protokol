@@ -160,3 +160,93 @@ die niemand einlöst.
 
 **Ungeprüft, weil nicht nötig:** nur Doku und Lizenzdateien angefasst, kein
 App-Code. In den drei umlizenzierten Repos liefen die vollen Proben grün.
+
+---
+
+# Fortsetzung · 2026-08-23 · Paper A
+
+**Auftrag:** „Fang mit Paper A an."
+
+## Gebaut
+
+`docs/papers/PAPER_A_regeln-und-grundsaetze.md`, Fassung 1, 553 Zeilen.
+*Regeln und Grundsätze: zwei Arten, ein KI-System zu lenken — und warum keine
+allein genügt.*
+
+## Der Beitrag, abgegrenzt statt behauptet
+
+Vier Quellen recherchiert, keine aus dem Gedächtnis zitiert:
+
+| Quelle | Was sie besetzt |
+|---|---|
+| Kaplow 1992, *Rules versus Standards* | die Unterscheidung in der Rechtsökonomie |
+| Schuett et al. 2024, *From Principles to Rules* | dieselbe Abwägung für die KI-**Regulierung** |
+| Bai et al. 2022, *Constitutional AI* | Grundsätze zur **Trainingszeit**, vom Modellanbieter |
+| Rebedea et al. 2023, *NeMo Guardrails* | Regeln zur **Ausführungszeit**, vom Einsetzenden |
+
+**Dünn besetzt bleibt die vierte Zelle:** Grundsätze zur Ausführungszeit, gesetzt
+vom **Betreiber**, in einer Textdatei ohne Programmierkenntnisse änderbar. Die
+Literatur kennt die Stelle, behandelt sie aber als **Risiko** („der Betreiber kann
+den Systemprompt ändern") statt als Instrument. Dort sitzt die Werkstatt.
+
+## Zwei eigene Beiträge
+
+1. **Sättigungsgrenze.** Regeln addieren sich, Grundsätze verdünnen sich. Die
+   Sieben-Grenze in `grundsaetze.md` ist damit keine Marotte, sondern eine
+   Eigenschaft des Kanals — und in der zitierten Literatur nicht behandelt, weil
+   auf deren Ebene kein Aufmerksamkeitsbudget im Spiel ist.
+2. **Dreiarmiger Versuch** (Klaus, 2026-08-23): R · G · R+G. Macht die These
+   widerlegbar. Drei Ergebnisse würden sie umwerfen, alle drei stehen im Paper —
+   das schwerste: wenn R und G **dieselben** Fehler machen, nur verschieden
+   viele, ist die Trennung Beschreibung und keine Erklärung.
+   Dazu die Anforderung, die über allem steht: **das Analysewerkzeug darf dem
+   Bewertenden nicht zeigen, aus welchem Arm ein Lauf stammt.**
+
+## Ein Fehler von mir, von der eigenen Gegenprobe gefunden
+
+Ich schrieb „die acht Regeln", an vier Stellen. **Es sind sechs** — nachgezählt an
+`WERKSTATTREGELN.md`. Die Zahl war gesetzt, nicht gezählt: genau die Falle, gegen
+die Grundsatz 4 geschrieben wurde. Richtiggestellt in `PAPER_A`, `BEFUND.md` und
+`werkstatt/README.md`; die Gegenprobe darauf läuft jetzt gegen den Wortlaut der
+Regelliste, nicht gegen eine Erinnerung.
+
+**Merksatz, netzweit anschlussfähig:** wer eine Zahl über das eigene Material
+schreibt, zählt sie ab. Auch — und gerade — wenn er das Material selbst angelegt hat.
+
+## Geprüft
+
+- Alle Zitate gegen die Quelldateien geprüft: „verschieben einen Schnitt",
+  „Sten hat den Code durchlaufen lassen", die −1,15, „Höchstens sieben".
+- Zahl der Regeln (6) und der Grundsätze (5) **gezählt**, nicht geschätzt.
+- Alle Markdown-Verweise in `docs/papers/` gegen das Dateisystem geprüft.
+
+## Manual-Check
+
+**Ungeprüft, weil nicht nötig:** nur Doku angefasst, kein App-Code.
+
+### Nachtrag am selben Tag: die zweite Achse
+
+Klaus' zweiter Vorschlag — **drei Aufgabenarten** neben den drei Armen: eigene
+Idee (E) · Vorlage vom Vorgänger (V) · Bestehendes verbessern (B).
+
+**Das ist die wichtigere der beiden Ergänzungen.** Eine Rangfolge („R+G gewinnt")
+lässt sich aus fast jedem Ergebnis herauslesen; ein **Verlauf über drei Stufen**
+nicht. Und der Verlauf folgt zwingend aus Kaplows Punkt: wenn eine Regel genau den
+Fall abdeckt, für den sie geschrieben wurde, muss ihr Vorteil mit der
+Vorhersehbarkeit des Falls **steigen** — und der Vorteil der Grundsätze fallen.
+Läuft es flach oder gegenläufig, ist die These widerlegt, egal wer insgesamt vorn
+liegt.
+
+Zweiter Gewinn: Aufgabenart B legt der Truppe den Bestand **vor**. Damit trennt
+sich, was in der Feldbeobachtung vermischt war — schlägt sie Vorhandenes vor,
+weil sie unaufmerksam ist (dort greifen Grundsätze), oder weil sie den Bestand
+nicht sieht (dann war es nie ein Lenkungsproblem, sondern eines des Zugangs)?
+
+Daraus folgte eine Korrektur an den Fehlerkategorien: **„Wiederholung" ist nur
+bei Art B aussagekräftig.** Wer sie über alle Arten zusammenzählt, mischt
+fehlenden Zugang mit fehlender Aufmerksamkeit zu einer Zahl.
+
+Der Preis ist benannt: neun Bedingungen statt zwei, jede mehrfach. Zwei Auswege
+stehen im Paper, beide **vorher** zu entscheiden — stufenweise fahren, oder die
+Wiederholungszahl senken und hinschreiben, dass die Aussage schwächer wird. Was
+nicht geht: unterwegs kürzen und das Ergebnis vollständig aussehen lassen.
