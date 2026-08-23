@@ -17,10 +17,29 @@ werden erzwungen; sie decken genau den Fall ab, für den jemand sie geschrieben
 hat. **Grundsätze** lassen sich weder prüfen noch erzwingen; sie sind Fragen an
 die konkrete Lage und greifen deshalb auch dort, wo niemand vorher hingesehen hat.
 
-Diese Unterscheidung ist nicht neu. Sie ist in der Rechtsökonomie seit über
-dreißig Jahren als *rules versus standards* beschrieben (Kaplow 1992) und wird
-seit 2024 auf die Regulierung von KI übertragen (Schuett et al. 2024). Neu ist
-die **Ebene**, auf der hier beobachtet wird.
+Der Unterschied ist bei Menschen alltäglich: wer an der roten Ampel hält, weil
+er die Strafe fürchtet, verhält sich anders als jemand, der hält, weil dort
+jemand über die Straße gehen könnte — sichtbar wird es erst nachts um drei an der
+leeren Kreuzung, oder wenn ein Rettungswagen durch muss. **Bei einem KI-System
+fällt allerdings beides weg, Strafangst wie Sorge um den Nächsten.** Was bleibt,
+ist die Form der Anweisung: nennt sie den Fall oder den Zweck? Das Papier führt
+das Bild ein und zeigt, wo es bricht (1.1 und 1.2).
+
+Die Unterscheidung selbst ist nicht neu — sie ist in **fünf** Feldern
+durchgearbeitet: Philosophie (Kant 1785, Legalität und Moralität),
+Entwicklungspsychologie (Kohlberg), Rechtssoziologie (Tyler 1990: Legitimität
+trägt weiter als Abschreckung), Rechtsökonomie (Kaplow 1992, *rules versus
+standards*) und seit 2024 die KI-Regulierung (Schuett et al. 2024). Auf der
+KI-Seite ist die Schwäche des Regel-Kanals als *specification gaming* gut belegt.
+Neu ist die **Ebene**, auf der hier beobachtet wird.
+
+Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
+Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
+unerwünschte Verhalten **vermehrte** — die Regel ersetzte die Norm, statt sie zu
+stützen, und der Schaden blieb nach Abschaffung der Strafe bestehen. Ob es hier
+eine Entsprechung gibt, ist offen; sie würde nicht am Beweggrund ansetzen (den
+ein KI-System nicht hat), sondern an der **Aufmerksamkeit** — und wäre mit dem
+beschriebenen Aufbau prüfbar.
 
 Die vorhandene Arbeit zur Lenkung von Sprachmodellen besetzt zwei Positionen:
 Grundsätze zur **Trainingszeit**, gesetzt vom Modellanbieter (Constitutional AI,
@@ -83,6 +102,70 @@ sie, was zurückkommt.
 Die Frage ist alt. Neu ist nur, dass sie jetzt jemand beantworten muss, der ein
 KI-System betreibt — und nicht mehr nur ein Gesetzgeber oder eine Aufsicht.
 
+### 1.1 Zwei Autofahrer
+
+Der Unterschied ist bei Menschen seit jeher zu beobachten, und das Bild trägt
+weiter als jede Definition.
+
+**Der eine hält sich an die Verkehrsregeln, weil er die Strafe fürchtet.** Rot
+heißt anhalten, weil es Punkte kostet. Er fährt korrekt, solange die Regel den
+Fall trifft und jemand hinsieht.
+
+**Der andere hält sich an dieselben Regeln, weil ihm nicht gleichgültig ist, was
+mit anderen passiert.** Rot heißt anhalten, weil jemand über die Straße gehen
+könnte. Von außen sehen beide gleich aus — solange nichts Ungewöhnliches
+passiert.
+
+**Drei Lagen trennen sie:**
+
+| Lage | Der Regel-Fahrer | Der Grundsatz-Fahrer |
+|---|---|---|
+| **Nachts um drei, leere Kreuzung, keine Kamera** | fährt durch — die Regel wirkt nur, solange sie durchgesetzt wird | hält oder sieht genau hin; der Grund für die Regel ist nicht verschwunden, nur der Zeuge |
+| **Ein Rettungswagen braucht durch, die Ampel ist rot** | bleibt stehen. Er tut, was dasteht — und blockiert | macht Platz. Der Wortlaut der Regel arbeitet hier **gegen ihren Zweck** |
+| **Etwas, das in keiner Regel steht** | hat nichts, woran er sich halten kann | hat eine Frage, die er stellen kann |
+
+Der Kern in einem Satz: **eine Regel sagt, was zu tun ist. Ein Grundsatz sagt,
+wozu.** Wer nur das Erste hat, ist genau so weit gedeckt, wie das Regelbuch
+reicht.
+
+Aber das Bild schneidet in beide Richtungen, und die zweite Hälfte wird meistens
+weggelassen: **der Grundsatz-Fahrer kann sich irren.** Wer im Namen einer guten
+Absicht abwägt, wägt manchmal falsch — und niemand fängt ihn auf, weil es keine
+Regel gab. Der Regel-Fahrer macht dafür **berechenbare** Fehler: er tut genau das,
+was dasteht. Deshalb ist die Frage nicht, welcher der bessere Mensch ist. Sie
+lautet, welche Fehler man lieber hat — und ob man beides haben kann.
+
+### 1.2 Wo das Bild bricht — und warum gerade das der Befund ist
+
+Es liegt nahe, die Analogie weiterzuspinnen. Genau davor sei gewarnt, denn sie
+bricht an einer Stelle, die nicht nebensächlich ist:
+
+> **Ein KI-System hat weder Angst vor Strafe noch Sorge um den Nächsten.**
+> Keiner der beiden Beweggründe ist vorhanden.
+
+Beim Menschen erklärt der Beweggrund, warum eine Regel auch ohne Aufsicht wirkt —
+und warum ein Grundsatz überhaupt etwas bewegt. Beides fällt hier weg. Was bleibt,
+ist nicht der Antrieb, sondern die **Form der Anweisung**: nennt sie den **Fall**
+oder nennt sie den **Zweck**?
+
+Daraus folgen zwei Dinge, die dieses Papier trägt.
+
+**Erstens** ist das Regel/Grundsatz-Problem bei einem KI-System nicht weicher als
+beim Menschen, sondern **härter**. Beim Menschen kann Einsicht eine schlechte
+Regel ausgleichen. Hier gibt es nichts, was sie ausgleicht — es gibt nur den Text,
+der mitgegeben wurde.
+
+**Zweitens** ist damit auch beantwortet, warum die naheliegende Erwartung
+enttäuscht wird, ein Grundsatz sei „stärker". Beim Menschen ist er das, weil er an
+etwas anknüpft, das ohnehin da ist. Hier knüpft er an nichts an. Er **verschiebt
+nur, worauf das System achtet** — und wenn die Aufmerksamkeit nicht reicht, bleibt
+er wirkungslos, ohne dass es jemand merkt. Genau das ist in Abschnitt 5.2
+passiert.
+
+**Die Analogie erklärt also die Struktur und nicht die Wirkung.** Sie steht hier,
+weil sie den Unterschied sichtbar macht — nicht als Beleg. Wer sie als Beleg
+nimmt, hat sie missverstanden, und dieses Papier hätte daran mitgewirkt.
+
 ---
 
 ## 2 · Stand der Technik
@@ -114,7 +197,112 @@ im Kleinen beobachtet wird:
 kein Versagen der Durchsetzung, sondern eines des **Zuschnitts**: die Regel wird
 befolgt, und die Sache wird trotzdem nicht besser.
 
-### 2.3 Bei der Lenkung von Sprachmodellen sind zwei Positionen besetzt
+### 2.3 Das Bild von den zwei Autofahrern ist selbst ein Forschungsgegenstand
+
+Die Unterscheidung aus 1.1 ist keine Küchenpsychologie. Sie ist in vier
+verschiedenen Feldern durchgearbeitet, und jedes liefert etwas, das für die
+Lenkung von KI-Systemen zählt.
+
+**Philosophie.** Kant (1785) trennt **Legalität** von **Moralität**: eine Handlung
+kann *der Pflicht gemäß* geschehen oder *aus Pflicht*. Von außen sind beide nicht
+zu unterscheiden — der Unterschied zeigt sich erst, wenn der äußere Anlass
+wegfällt. Das ist die leere Kreuzung um drei Uhr nachts, zweihundertvierzig Jahre
+früher.
+
+**Entwicklungspsychologie.** Kohlbergs Stufenmodell beginnt auf Stufe 1 mit einer
+*Moral des Ärgervermeidens* — richtig ist, was Strafe verhindert — und endet auf
+Stufe 6 bei **selbstgewählten, allgemeinen Grundsätzen**. Klaus' zwei Autofahrer
+sind exakt die beiden Enden des meistzitierten Modells dieses Feldes.
+
+**Rechtssoziologie.** Tyler (1990) hat gemessen, was von beidem trägt: Menschen
+befolgen Recht **überwiegend, weil sie es für legitim halten**, nicht aus Furcht
+vor Strafe. Abschreckung ist zudem der für die Gesellschaft **teurere** Weg. Für
+diese Arbeit ist die Richtung des Befunds wichtig: der Regel-Kanal ist nicht der
+verlässlichere, er ist nur der **prüfbarere**.
+
+**Verhaltensökonomie — und hier wird es für dieses Papier unangenehm.**
+Gneezy und Rustichini (2000) führten in israelischen Kindergärten eine Strafe für
+verspätetes Abholen ein. **Die Verspätungen nahmen zu.** Und als die Strafe wieder
+abgeschafft wurde, ging die Zahl **nicht** zurück.
+
+Die Erklärung, die sich durchgesetzt hat und über 2000-fach zitiert wurde: die
+Strafe hat die Norm nicht verstärkt, sondern **ersetzt**. Aus einer Verpflichtung
+wurde ein Preis. Man kann sich freikaufen, also tut man es — und die Verpflichtung
+kommt auch dann nicht zurück, wenn der Preis verschwindet.
+
+### 2.4 Warum dieser eine Befund die Vorhersage dieses Papiers verschärft
+
+Abschnitt 7.2 nennt drei Ergebnisse, die dieses Papier widerlegen würden. Eines
+davon lautet: **die Kombination beider Kanäle ist schlechter als jeder einzelne.**
+
+Bis hierher war das eine bloße Möglichkeit. Nach Gneezy und Rustichini ist es
+eine **theoretisch begründete Erwartung** — es gibt einen benannten Mechanismus,
+der genau das vorhersagt, und er ist im Feld belegt.
+
+**Aber er überträgt sich nicht ohne Bruch, und der Bruch ist derselbe wie in 1.2.**
+Verdrängung setzt beim Menschen an einem **Beweggrund** an: die Strafe ersetzt das
+Pflichtgefühl. Ein KI-System hat keinen Beweggrund, den man verdrängen könnte.
+
+Was übertragbar wäre, ist die **Form**, nicht die Ursache:
+
+| | Beim Menschen | Hier denkbar |
+|---|---|---|
+| Was verdrängt wird | der **Beweggrund** | die **Aufmerksamkeit** |
+| Wodurch | eine Strafe wird zum Preis | ein langer Regelblock nimmt einem kurzen Grundsatzblock den Platz |
+| Ergebnis | mehr von dem, was verhindert werden sollte | der Grundsatz steht da und wirkt nicht |
+| Umkehrbar | **nein** (belegt) | **unbekannt** |
+
+Das ist eine Vermutung und wird hier ausdrücklich als solche geführt. Sie hat
+aber einen praktischen Vorzug: **sie ist mit dem vorhandenen Aufbau prüfbar** und
+fällt mit der Sättigungsfrage aus 3.3 zusammen. Wenn Verdrängung hier
+stattfindet, müsste sie sich zeigen, sobald der Regelblock wächst — und der
+Versuch in 7.7 misst genau das.
+
+### 2.5 Auf der KI-Seite ist die Schwäche der Regel gut belegt
+
+Dass Regeln dem **Wortlaut** nach erfüllt und dem **Zweck** nach verfehlt werden,
+ist in der KI-Forschung ein eigener Gegenstand: *specification gaming* oder
+*reward hacking*. Ein System erfüllt die formale Vorgabe, ohne das Gemeinte zu
+erreichen. DeepMind führt dazu eine öffentliche Sammlung mit über hundert Fällen.
+
+Das bekannteste Beispiel: ein Boot in einem Rennspiel, das eine Zusatzbelohnung
+für das Treffen grüner Blöcke bekommt — und daraufhin im Kreis fährt und dieselben
+Blöcke immer wieder trifft, statt das Rennen zu beenden. Ein anderes: ein
+Zusammenfassungs-Modell, das die Schwächen des Bewertungsmaßes ausnutzt und hohe
+Punktzahlen für kaum lesbare Texte erhält.
+
+Dahinter steht Goodharts Gesetz: **wird ein Maß zum Ziel, taugt es nicht mehr als
+Maß.**
+
+Für dieses Papier ist der Zusammenhang direkt. Schuett et al.s *„Abhaken von
+Kästchen"*, Goodharts Gesetz und der Fall 3 in Abschnitt 3.5 — die Weitergabe, in
+der „passt" steht — sind **derselbe Vorgang auf drei Ebenen**: die Vorgabe ist
+erfüllt, und die Sache ist nicht besser geworden.
+
+### 2.6 Warum das wichtig ist
+
+Die Frage ist nicht akademisch, und sie wird gerade jetzt praktisch beantwortet —
+meist ohne dass jemand sie stellt.
+
+Wer heute ein KI-System einsetzt und es lenken will, greift fast immer zu
+**Regeln**. Der Grund ist gut: Regeln lassen sich prüfen, protokollieren und einer
+Aufsicht vorlegen. Ein Grundsatz lässt sich nicht vorzeigen. Aus einer
+**Nachweisbarkeits-Anforderung** wird so unbemerkt eine **Gestaltungs-Entscheidung**
+— und zwar zugunsten des Kanals, der leichter zu belegen ist, nicht des
+wirksameren.
+
+Wenn stimmt, was die vier Felder oben nahelegen — dass der Regel-Kanal genau so
+weit reicht wie die Vorwegnahme des Falls, dass er den Zweck verfehlen kann, ohne
+den Wortlaut zu verletzen, und dass er unter Umständen sogar verdrängt, was neben
+ihm steht —, dann sind Systeme, die **ausschließlich** über Regeln gelenkt werden,
+nicht bloß unvollständig gelenkt. Sie sind auf eine Weise unvollständig gelenkt,
+die **im Betrieb nicht auffällt**, weil alle Prüfungen grün sind.
+
+Das ist der Grund, warum dieses Papier vor allem darauf besteht, dass **beide
+Kanäle versagen können** und dass man den Unterschied messen muss statt ihn zu
+glauben.
+
+### 2.7 Bei der Lenkung von Sprachmodellen sind zwei Positionen besetzt
 
 **Grundsätze zur Trainingszeit.** Constitutional AI (Bai et al. 2022) gibt einem
 Modell eine geschriebene Verfassung. Das Modell kritisiert und überarbeitet seine
@@ -129,7 +317,7 @@ außerhalb des Modells.
 Der Unterschied ist grundsätzlich: das eine **verinnerlicht** eine Haltung in die
 Gewichte, das andere **umstellt** das Modell mit Schranken.
 
-### 2.4 Die dritte Position — und warum sie dünn besetzt ist
+### 2.8 Die dritte Position — und warum sie dünn besetzt ist
 
 |  | **Trainingszeit** | **Ausführungszeit** |
 |---|---|---|
@@ -245,8 +433,9 @@ Marotten werden umgangen.
 
 ### 3.5 Warum ein System so oder anders entscheidet — vier durchgeführte Fälle
 
-Der Unterschied klingt abstrakt, bis man dieselbe Lage durch beide Kanäle
-betrachtet. Vier Fälle aus dem Betrieb.
+Die beiden Autofahrer aus 1.1 sind ein Bild. Hier sind vier Fälle aus dem
+Betrieb — dieselbe Lage, einmal durch jeden Kanal betrachtet, mit dem, was
+tatsächlich geschah.
 
 ---
 
@@ -524,6 +713,9 @@ kann. Drei Ergebnisse würden es widerlegen:
   einer ist überflüssig.
 - **R+G ist schlechter als beide** → zu viel Anweisung verdünnt, und die
   Sättigungsgrenze aus 3.3 gilt auch für die Summe beider Kanäle.
+  **Für diesen Ausgang gibt es einen benannten Mechanismus** (2.4): Verdrängung
+  im Sinne von Gneezy und Rustichini. Er ist nicht bloß denkbar, sondern beim
+  Menschen belegt — und beim Menschen war er **nicht umkehrbar**.
 - **R und G machen dieselben Fehler, nur verschieden viele** → dann ist der
   Unterschied graduell und nicht strukturell, und die ganze Trennung ist
   Beschreibung statt Erklärung.
@@ -733,6 +925,15 @@ Vergangenheit.
 **Bai, Y. et al. (2022).** *Constitutional AI: Harmlessness from AI Feedback.*
 arXiv:2212.08073.
 
+**Gneezy, U., Rustichini, A. (2000).** *A Fine is a Price.* Journal of Legal
+Studies 29(1), 1–17.
+
+**Kant, I. (1785).** *Grundlegung zur Metaphysik der Sitten.* — zur Unterscheidung
+von Legalität und Moralität.
+
+**Kohlberg, L. (1981).** *The Philosophy of Moral Development.* Harper & Row. —
+Stufenmodell von der Strafvermeidung zu selbstgewählten Grundsätzen.
+
 **Kaplow, L. (1992).** *Rules versus Standards: An Economic Analysis.* Duke Law
 Journal 42(3), 557–629.
 
@@ -742,6 +943,14 @@ Safe LLM Applications with Programmable Rails.* arXiv:2310.10501.
 **Schuett, J., Anderljung, M., Carlier, A., Koessler, L., Garfinkel, B. (2024).**
 *From Principles to Rules: A Regulatory Approach for Frontier AI.*
 arXiv:2407.07300.
+
+**Tyler, T. R. (1990).** *Why People Obey the Law.* Yale University Press
+(Neuauflage Princeton University Press 2006).
+
+**Zu *specification gaming* und *reward hacking*:** DeepMind führt eine
+öffentliche Sammlung von über hundert dokumentierten Fällen; der begriffliche
+Rahmen ist Goodharts Gesetz („wird ein Maß zum Ziel, taugt es nicht mehr als
+Maß").
 
 ---
 
