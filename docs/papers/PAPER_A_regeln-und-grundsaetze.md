@@ -73,6 +73,12 @@ Das Papier legt seine Grenzen offen: keine Kontrollgruppe, kein Maß, Fallzahl
 eins, nicht verblindet. Es ist eine **Feldbeobachtung mit Protokoll**, keine
 Studie.
 
+Abschnitt 7.10 behandelt die Rückkopplung — ob ein System aus den eigenen
+Ergebnissen neue Grundsätze ableiten kann. Erkennen ja, formulieren nein: **ein
+aus beobachteten Vorfällen abgeleiteter Grundsatz ist eine Regel im Gewand eines
+Grundsatzes**, weil er nur abdecken kann, was schon eingetreten ist. Nützlich ist
+die Rückkopplung trotzdem — nicht zum Schreiben, sondern zum **Pflegen**.
+
 Abschnitt 7.9 beantwortet zudem, was das System **selbst** beweisen kann: die
 Buchführung über die Bedingungen, die entscheidbaren Fehlerarten — darunter die
 behauptete Ausführung, denn die Maschine weiß, welche Werkzeuge sie ausgegeben
@@ -1085,6 +1091,99 @@ kann alles Prüfbare prüfen und genau das Entscheidende nicht.** Das ist keine
 Schwäche des Aufbaus, sondern dieselbe Grenze, um die es die ganze Zeit geht —
 sie taucht hier nur eine Ebene höher wieder auf, bei der Bewertung statt bei der
 Lenkung.
+
+### 7.10 Die Rückkopplung — und warum ein selbst abgeleiteter Grundsatz keiner ist
+
+Abschnitt 3.4 beschreibt eine Stufenfolge: **Vorfall → Regel → Grundsatz.** Bisher
+geht ein Mensch sie ab, nach einem Missgeschick. Naheliegende Frage: kann das
+System sie selbst gehen — aus den eigenen Ergebnissen lernen und daraus neue
+Grundsätze ableiten?
+
+#### Zwei Schritte, und nur einer davon geht
+
+**Das Erkennen geht.** Nach 7.9 kann die Maschine Fehlerarten je Lauf zählen. Also
+kann sie auch ein **Muster** feststellen: dieselbe Kategorie fünfmal in zehn
+Läufen, oder eine Kategorie, die erst auftrat, seit der Wortlaut geändert wurde.
+Das ist Zählen, kein Urteilen, und es ist genau das Signal, nach dem die
+Grundsatz-Datei ohnehin verlangt — *„ein Grundsatz, der über viele Läufe in
+keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssig oder
+unverständlich formuliert."*
+
+**Das Formulieren geht nicht.** Und der Grund ist nicht Vorsicht, sondern
+Struktur.
+
+#### Der Denkfehler steckt schon im Namen
+
+Ein Grundsatz, den ein System aus seinen **beobachteten Fehlern** ableitet, kann
+nur Fälle abdecken, die **schon eingetreten sind**. Der Zweck eines Grundsatzes
+ist aber genau der umgekehrte: die **Familie** abzudecken, auch die Glieder, die
+noch niemand gesehen hat (3.4, Kaplow).
+
+> **Ein aus Vorfällen abgeleiteter „Grundsatz" ist eine Regel im Gewand eines
+> Grundsatzes.** Er trägt die Allgemeinheit im Wortlaut und die Enge in der
+> Herkunft.
+
+Klaus' eigene Formulierung — *„regelbasierte Grundsätze"* — benennt das
+Spannungsverhältnis unfreiwillig genau. Und das ist keine Wortklauberei: ein
+solcher Satz sieht aus wie ein Grundsatz, wird wie einer eingeordnet, und lässt
+die Lücke offen, die ein echter Grundsatz geschlossen hätte. **Er ist schlechter
+als beides** — er hat weder die Prüfbarkeit der Regel noch die Reichweite des
+Grundsatzes.
+
+Der Sprung vom Einzelfall zur Familie ist eine **Abstraktionsleistung**, kein
+Zählergebnis. Aus „am 20. August wurde eine geschätzte Zahl als Messung
+ausgegeben" folgt nicht mechanisch „eine geratene Zahl klingt genau wie eine
+gemessene". Dazwischen liegt jemand, der erkennt, wovon der Fall ein Fall ist.
+
+#### Was die Rückkopplung trotzdem taugt
+
+Nicht zum Schreiben — zum **Pflegen**. Und dafür ist sie viel wert, weil genau
+diese Pflege sonst niemand leistet (3.7):
+
+| Was die Maschine melden kann | Was daraus folgt |
+|---|---|
+| Kategorie X häuft sich | irgendetwas fehlt — **ob Regel oder Grundsatz, entscheidet der Mensch** |
+| Grundsatz Y taucht in keiner Weitergabe auf | überflüssig oder unverständlich — ansehen |
+| Seit dem 8. Grundsatz steigen die Fehler | **Sättigung** (3.3), gemessen statt vermutet |
+| Regel Z wird nie ausgelöst | veraltet — die Umgebung hat sich bewegt (3.7) |
+| Kategorie X tritt in Arm G auf, in R nicht | ein Kandidat für eine **Regel**, nicht für einen Grundsatz |
+
+Die letzte Zeile ist die nützlichste: **die Rückkopplung kann vorschlagen, in
+welchen Kanal etwas gehört** — indem sie nachsieht, welcher Arm den Fehler nicht
+hatte. Das ist eine Entscheidungshilfe, die aus Daten kommt und nicht aus einem
+Gefühl.
+
+#### Der Riegel, der dabei stehen bleibt
+
+Ein System, das seine eigene Lenkung umschreibt, ist genau das, wovor dieses
+Papier warnt: eine Prüfung, die sich selbst recht gibt, eine Ebene höher. Es
+bleibt deshalb bei der Regel, die im Netz ohnehin gilt:
+
+> **Nach außen nur als Vorschlag.** Was die Rückkopplung findet, wird
+> **vorgelegt**, nicht eingebaut. Der Mensch entscheidet, ob es eine Regel oder
+> ein Grundsatz wird, wie er lautet, und ob dafür ein anderer weichen muss.
+
+Das ist keine Bremse aus Misstrauen. Es ist die Stelle, an der die
+Abstraktionsleistung stattfindet — und die kann nur dort stattfinden, wo jemand
+weiß, wovon der Fall ein Fall ist.
+
+#### Ein vierter Arm, der die These noch einmal prüft
+
+Die Rückkopplung lässt sich messen statt glauben. Sie ergibt einen weiteren Arm:
+
+**R+G+Rück** — wie R+G, aber nach jeweils zehn Läufen legt das System seine Funde
+vor, und ein Mensch entscheidet über eine Ergänzung.
+
+Die Vorhersage, die daraus folgt und die falsch sein kann:
+
+> **Der vierte Arm verbessert sich bei Aufgabenart B** (Bestehendes verbessern,
+> wiederkehrende Fälle) **und nicht bei Art E** (eigene Idee, neue Fälle).
+
+Trifft das zu, ist die These aus 3.4 bestätigt: was man aus Vorfällen ableitet,
+wirkt wie eine Regel — es hilft dort, wo der Fall wiederkehrt, und nicht dort, wo
+er neu ist. Verbessert sich auch Art E, war die Unterscheidung zwischen
+abgeleiteten und gesetzten Grundsätzen zu scharf gezogen, und dieser Abschnitt
+ist zu verwerfen.
 
 ---
 
