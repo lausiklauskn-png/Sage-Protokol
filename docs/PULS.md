@@ -31,6 +31,62 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-23 (Bau) — 🔓 Der Forschungskorpus steht
+
+**Rolle:** Fortsetzung derselben Sitzung. Zweig
+`claude/research-funding-next-steps-ib58w2`.
+
+**Auftrag von Klaus:** die Repos suchen, die sich als offen lizenzierter Beleg
+der Forschung eignen — und die drei öffentlichen zuerst umlizenzieren.
+
+**Getan.** Drei Repos auf **MIT** gehoben, je vier Stellen (LICENSE,
+`package.json`, der `FP-COPYRIGHT`-Kopf in `index.html`, `RECHTE.md`):
+
+| Repo | PR | Proben |
+|---|---|---|
+| Kim-Bell | #52 | 4/4 grün |
+| Kimseek | #70 | 11/11 grün |
+| Kimboard | #128 | **31/31 grün** — `node tests/alle.mjs`, nicht `npm test` |
+
+**Der Korpus steht damit auf sechs Repos:** Sage-Protokol · SB·KIMTool·Point ·
+mycel-karte · Kim-Bell · Kimseek · Kimboard. Benannt in
+[`docs/FORSCHUNGSKORPUS.md`](FORSCHUNGSKORPUS.md).
+
+**Dazu neu: [`docs/werkstatt/`](werkstatt/)** — der Forschungsteil aus Kimhub als
+Momentaufnahme (Weg C, Klaus' Entscheidung). `grundsaetze.md` byte-gleich,
+`WERKSTATTREGELN.md` als Auszug, beide mit der SHA-256 der Quelle festgehalten;
+`BEFUND.md` sagt, was sich beobachten ließ **und was daraus nicht folgt** (keine
+Kontrollgruppe, kein Maß, Fallzahl eins, nicht verblindet, Modellwechsel nicht
+getrennt).
+
+**Vier Befunde, die niemand gesucht hatte:**
+
+1. **Kim-Bell stand im Widerspruch zu sich selbst.** README und CLAUDE.md nennen
+   es eine „1:1-kopierbare Vorlage" — Ziffer 4 der alten Lizenz verbot
+   Weitergabe, Veränderung und Verbreitung veränderter Fassungen. Eine Vorlage,
+   die man nicht kopieren darf, ist keine. Seit Bestehen des Repos so drin.
+2. **Ziffer 5 macht die frühere Zählung genauer.** Alle 28 eigenen
+   Nutzungslizenzen stellen die SBKIM-Module unter MIT. Das Protokoll war also
+   längst überall offen; zu war nur die App-Hülle. „Nur 3 von 33 sind Open
+   Source" war zu grob.
+3. **Die SBKIM-Demo musste gar nicht angefasst werden** — sie liegt unter
+   `sbkim-demo/` in diesem Repo und ist damit seit jeher MIT.
+4. **Kimhubs Historie trägt die Rechnungsdaten weiter.** `git rm` am 2026-08-22
+   nahm sie aus dem Arbeitsbaum, nicht aus der Vergangenheit: 859 Zeilen, 75
+   Belege, über den Commit davor abrufbar. Deshalb bleibt Kimhub privat.
+
+**Vor jedem Push geprüft:** die Historien aller drei Repos vollständig entflacht
+(54 · 72 · 128 Commits) und auf Schlüssel, Tokens, private Schlüssel und
+Belegdateien durchsucht — **nichts gefunden**; die `sk-ant-api`-Treffer sind die
+Testdaten des eigenen Wächters. Die Kastenbreite im `FP-COPYRIGHT`-Kopf wurde aus
+der Datei gemessen (65), nicht geraten; `package.json` nach dem Schreiben mit
+`json.loads` gegengelesen.
+
+**Nächster sinnvoller Schritt:** Stufe A/B des Fahrplans — Steuerberater-Termin,
+ORCID, Zenodo-DOI. Der Korpus steht, die Papers sind noch nicht zitierfähig.
+
+---
+
 ## Stand 2026-08-23 (Recherche) — 💶 Forschungsgelder: der Fahrplan
 
 **Rolle:** Recherche-Sitzung, kein Modul-Code. Zweig
