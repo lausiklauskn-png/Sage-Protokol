@@ -31,6 +31,70 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-23 (Recherche) — 💶 Forschungsgelder: der Fahrplan
+
+**Rolle:** Recherche-Sitzung, kein Modul-Code. Zweig
+`claude/research-funding-next-steps-ib58w2`.
+
+**Anlass:** Klaus finanziert die Arbeit seit März 2026 selbst und kommt an seine
+Grenzen. Frage: *„Lassen sich dafür Forschungsgelder beantragen? Muss ich einen
+Verein gründen?"* Im Gespräch nachgetragen: Sachmittel und Angestellte, ein
+**Institut für KI-Kompetenz im täglichen Gebrauch**, **Suchtpotenzial** und
+**psychische Komponenten der KI-Nutzung**, Kooperationen mit Wissenschaftlern.
+
+**Gebaut:** `docs/FORSCHUNGSFOERDERUNG.md` — abhakbarer Fahrplan in fünf Stufen,
+mit Adressen, Fristen und ehrlicher Prüftiefe.
+
+**Der Befund in drei Sätzen.** Ja, es geht — und ein Verein bringt für die drei
+schnellen Wege nichts. Der **Prototype Fund** ist der beste Treffer (bis 47.500 €,
+Bewerbung 01.10.–30.11.2026, Schwerpunkt Datensicherheit und
+Software-Infrastruktur). Die **Forschungszulage** ist der übersehene Weg: kein
+Wettbewerb, sondern Anspruch, und sie greift **rückwirkend** — das ist der
+einzige Topf, der auch auf schon geleistete Arbeit schaut.
+
+**Zwei Funde, die niemand gesucht hatte:**
+
+1. **Die Lizenzlage kann jeden Antrag kippen.** Über alle 33 Klone gemessen:
+   nur **3 Repos** tragen eine anerkannte Open-Source-Lizenz (MIT — dieses Repo,
+   `SB-KIMTool-Point`, `mycel-karte`), **28** tragen die eigene Nutzungslizenz
+   mit Bezahl-Vorbehalt, **2** gar keine (`BookLedgerPro`,
+   `Meine-In-and-Out-Book`). Prototype Fund, NLnet und OTF verlangen alle eine
+   freie Lizenz für das geförderte Ergebnis. **Daraus folgt: Sage-Protokol ist
+   das Antrags-Repo.** Die Geschäfts-Apps müssen nichts ändern.
+2. **Die Bidirektionalität ist die These, nicht das Feature.** Die Suche ist
+   bidirektional — beide Seiten fragen, beide antworten. Und die Beobachtung
+   über Mensch und KI hat dieselbe Figur: der Mensch prägt die KI über
+   Grundsätze, die KI prägt den Menschen über Gewöhnung. Das verbindet die drei
+   Forschungsstränge zu einem Vorhaben statt zu einer Liste.
+
+3. **Eine Annahme richtiggestellt.** Klaus: *„In Deutschland darf man sich
+   Psychologe nennen, auch wenn man kein Studierter ist."* Nachgesehen: **stimmt
+   nicht.** Der Titel ist über § 5 UWG geschützt (gerichtlich bestätigt), der BDP
+   hält § 132a StGB für einschlägig, akademische Grade fallen eindeutig darunter.
+   Frei sind „psychologische Beratung", „Coach", „Berater" — die Tätigkeit, nicht
+   der Titel. **Für die Förderung ist das gleichgültig:** verlangt wird eine
+   Methode, kein Titel. Kasten dazu in Abschnitt 2.3.
+
+**Was offen ist — vier Fragen an Klaus,** an denen hängt, welche Wege überhaupt
+offenstehen: Steuernummer für eine selbstständige Tätigkeit? Hochschulabschluss
+(entscheidet allein über EXIST)? Bundesland (ohne das sind die Landesprogramme
+nicht auffindbar)? Wochenstunden seit wann (Grundzahl der Forschungszulage)? Dazu
+die fünfte, die eigentliche Weiche: **soll das Institut gemeinnützig sein oder
+Geld verdienen dürfen?**
+
+**Nicht geprüft, ehrlich benannt:** `nlnet.nl` und `martinmeng.de` waren aus
+dieser Umgebung nicht abrufbar (Egress-Sperre) — was zu NLnet und zu den
+Stundendeckeln der Forschungszulage im Dokument steht, stammt aus
+Suchergebnis-Zusammenfassungen, nicht aus den Originalseiten. **Jede Frist im
+Dokument ist eine Fundstelle vom 2026-08-23, kein Versprechen.** Kein Modul-Code
+angefasst, keine Probe berührt.
+
+**Nächster sinnvoller Schritt:** Stufe A des Fahrplans (ORCID, Steuerberater-
+Termin, Fristen selbst nachsehen) — dann Stufe B, die Vorleistungs-Mappe, mit dem
+Zenodo-DOI als erstem Schritt.
+
+---
+
 ## Stand 2026-08-19 (Bau) — 🧹 Aufräumen, ohne Arbeit zu verlieren
 
 **Rolle:** Bau-Sitzung. Zweig `claude/firma-demo-knotennetzwerk-4hkxun`.
