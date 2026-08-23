@@ -43,6 +43,14 @@ nicht. Kurz: **eine Regel kann erfüllt werden, ohne getroffen zu sein; ein
 Grundsatz kann übergangen werden, ohne verletzt zu sein** — und **Haltbarkeit und
 Nachweisbarkeit lassen sich nicht im selben Kanal haben** (3.7).
 
+Aus derselben Richtung folgt ein praktischer Nebenbefund: **mehrere Regeln, die
+denselben Zweck zuspitzen, lassen sich durch den einen Grundsatz ersetzen, aus dem
+sie stammen.** Weil der Anweisungsblock bei **jedem** Aufruf mitgeschickt wird,
+ist das keine Stilfrage, sondern eine Kostenrechnung — und sie trifft gerade die
+kleinen Betreiber. Verdichtung ist allerdings verlustbehaftet und dort unzulässig,
+wo ein **einzelner** Verstoß schadet (3.8). Das eigentliche Maß ist deshalb nicht
+der Preis je Aufruf, sondern **je brauchbarem Ergebnis**.
+
 Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
 Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
 unerwünschte Verhalten **vermehrte** — die Regel ersetzte die Norm, statt sie zu
@@ -743,6 +751,91 @@ die Grundsätze nicht.
 wäre ein Ersatz: **dieselben Läufe mit einem absichtlich veralteten Regelsatz**
 — einem, der auf eine frühere Fassung des Systems passte. Ob das mehr misst als
 den Umgang mit einem Fehler, ist offen und wird hier nicht behauptet.
+
+### 3.8 Verdichtung: ein Grundsatz ersetzt mehrere Regeln — und was das kostet
+
+Aus der Richtung in 3.4 folgt etwas Praktisches, das bisher fehlte. Wenn eine
+Regel die Zuspitzung eines Zwecks ist, dann können **mehrere Regeln denselben
+Zweck zuspitzen** — jede auf einen anderen Fall. Und dann lassen sie sich durch
+**den einen Grundsatz** ersetzen, aus dem sie alle stammen.
+
+An den sechs Regeln aus 3.1 ist das ablesbar. „Nichts erfinden", „nicht behaupten,
+etwas ausgeführt zu haben" und die Ehrlichkeitsregel über den eigenen Stand sind
+drei Zuspitzungen **eines** Zwecks: *wer sich auf eine Ausgabe verlässt, muss sich
+verlassen können.* Drei Zeilen, ein Grund.
+
+#### Warum das im Betrieb wirklich Geld ist
+
+Beim Menschen wäre die Verdichtung eine Frage der Übersichtlichkeit. Hier ist sie
+eine Kostenfrage, und zwar eine unmittelbare:
+
+**Der Anweisungsblock wird bei jedem Aufruf mitgeschickt.** Fünf Rollen je Schicht,
+jede bekommt beide Kanäle, jede Schicht mehrfach. Was im Block steht, wird
+**hundertfach bezahlt** — nicht einmal.
+
+Damit wird aus einer Stilfrage eine Rechnung. Ein Betreiber ohne Budget zahlt
+jede überflüssige Zeile bei jedem Lauf noch einmal. **Und es trifft genau die
+Kleinen**: wer viele Läufe fährt, zahlt viel; wer die Aufsicht fürchtet, schreibt
+lieber eine Regel mehr als eine weniger — und bezahlt beides zusammen.
+
+#### Und die Sättigungsgrenze zeigt in dieselbe Richtung
+
+Nach 3.3 wirken zwanzig Grundsätze schlechter als fünf, weil Aufmerksamkeit
+begrenzt ist. Falls das auch für den Regelblock gilt — und Abschnitt 2.4 legt
+nahe, dass die beiden Kanäle um dasselbe Budget konkurrieren —, dann wäre
+Verdichtung **doppelt** richtig: sie spart Geld **und** wirkt besser.
+
+Das wäre der angenehme Fall. Er ist auch der, bei dem man am genauesten hinsehen
+muss (Grundsatz 3), weil er zu gut klingt.
+
+#### Drei Gegengewichte, ohne die der Satz falsch wird
+
+**1 · Die Verdichtung ist verlustbehaftet.** Ein Grundsatz, der fünf Regeln
+ersetzt, **erzwingt** diese fünf Fälle nicht mehr — er zeigt nur auf sie. Man
+tauscht **Durchsetzung gegen Reichweite**. Das ist genau das Tauschgeschäft aus
+3.7, hier von der Kostenseite betrachtet.
+
+**2 · Manche Regeln dürfen nicht wegfallen.** Die Faustregel aus 3.6 sagt, welche:
+wo **ein einzelner Verstoß** schadet. Ein Schlüssel im Klartext ist einmal zu
+viel. Für „kein Geheimnis", „keine fremden Adressen" und den Schemabruch bleibt
+die Regel — der Grundsatz daneben ersetzt sie nicht, sondern begründet sie.
+
+**Die Verdichtung ist also nicht gleichmäßig anwendbar.** Sie greift dort, wo der
+Schaden aus der **Summe** entsteht (leere Weitergaben, unbelegte Zahlen,
+Wiederholungen), und nicht dort, wo er aus dem **Einzelfall** entsteht.
+
+**3 · Ein kürzerer Block ist nicht automatisch billiger.** Er ist billiger **je
+Aufruf**. Wenn dadurch mehr Läufe misslingen und wiederholt werden müssen, kann
+die Rechnung sich umdrehen. **Die richtige Größe ist nicht der Preis je Aufruf,
+sondern der Preis je brauchbarem Ergebnis** — und der ist eine Messung, keine
+Ableitung.
+
+#### Was daraus für den Versuch folgt
+
+Damit bekommt der Versuch eine **wirtschaftliche Zielgröße** neben der Qualität,
+und sie ist mit dem vorhandenen Aufbau messbar: Kimhub führt Kosten und Dauer je
+Lauf ohnehin mit.
+
+| Größe | Woher |
+|---|---|
+| Länge des Anweisungsblocks je Arm | zählbar, vor dem Lauf |
+| Kosten je Lauf | wird bereits geführt |
+| Anteil brauchbarer Ergebnisse | aus den Fehlerkategorien (7.4) |
+| **Kosten je brauchbarem Ergebnis** | **das eigentliche Maß** |
+
+Und die Vorhersage, die daraus folgt und falsch sein kann:
+
+> **Arm G hat den kürzesten Anweisungsblock und die niedrigsten Kosten je Lauf.**
+> Ob er auch die niedrigsten Kosten **je brauchbarem Ergebnis** hat, entscheidet
+> sich daran, ob die Qualität hält. Hält sie nicht, gewinnt R+G trotz des
+> längsten Blocks — und dann ist Verdichtung eine Ersparnis, die man teuer
+> bezahlt.
+
+**Warum diese Zahl über das Papier hinaus zählt:** sie beantwortet eine Frage, die
+für jeden kleinen Betreiber praktisch ist und für keinen großen — *lässt sich ein
+KI-System so lenken, dass es sich ohne Budget betreiben lässt?* Wer viele Läufe
+fährt und keine Rechtsabteilung hat, wird nicht durch bessere Regeln gerettet,
+sondern durch weniger davon. Ob das stimmt, ist bisher niemand nachgegangen.
 
 ---
 
