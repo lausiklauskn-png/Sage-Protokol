@@ -753,6 +753,59 @@ InnoFounder gebaut.
 
 ---
 
+### Zwei Dinge, die daneben noch zu klären sind
+
+**1 · Das echte Risiko ist nicht „Einnahmen", sondern dieselbe Stunde zweimal.**
+
+Klaus' Sorge war, ein Unkostenbeitrag könne die Förderung gefährden. Sie zielt
+in die falsche Richtung: der Prototype Fund verlangt ausdrücklich
+**„selbstständig oder freiberuflich"** (§ 5 Weg 1), die Forschungszulage verlangt
+eine **steuerpflichtige Tätigkeit** (§ 5 Weg 2). Wer gar nichts verdient, hat es
+bei beiden Wegen schwerer, nicht leichter.
+
+Das wirkliche Risiko liegt woanders: wenn der Prototype Fund sechs Monate Arbeit
+an einem Vorhaben bezahlt, ist dieselbe Stunde für die Forschungszulage in aller
+Regel verbraucht.
+
+⚠ **Wie genau sich die beiden Wege vertragen, ist HIER NICHT GEPRÜFT** — weder
+im Gesetzestext noch bei der Fördergeberin. Das ist die **erste Frage an den
+Steuerberater**, zusammen mit der aus § 5 Weg 2 (welcher Tätigkeit die
+Softwareforschung zuzurechnen ist). Wer hier ein „geht schon" hinschreibt, rät.
+
+**Und die Lizenz-Frage ist bereits gelöst, ohne dass es jemand geplant hat:**
+`Sage-Protokol` trägt MIT (das Antrags-Repo), `Kimhub` eine eigene
+Nutzungslizenz (die Werkbank). Zwei Gefäße, zwei Lizenzen — ein Unkostenbeitrag
+für Kimhub rührt an Sages MIT-Zusage nicht.
+
+**2 · Die Zahl, mit der nicht gerechnet werden darf.**
+
+Klaus rechnete am 2026-08-23 mit *„zehn Euro für neunzehn Fragen"* und fand das
+teuer. **Diese Zahl ist nirgends gemessen.** Gemessen sind bisher nur:
+
+| | |
+|---|---|
+| ein echter Aufruf, Haiku, klein | **0,033 Cent** |
+| derselbe mit Werkzeugen (zwei Runden) | **0,36 Cent** |
+| der Werkzeug-Aufschlag über 19 Aufrufe | **4,2 Cent** — 0,84 % des Deckels |
+| **eine ganze echte Schicht** | **nie gemessen** |
+
+Die 5,00 € sind ein **Deckel, kein Preis** — dieselbe Verwechslung wie „ein
+Deckel ist keine Dauer" in Kimhubs Verfassung. In Kimhubs Fahrtenbuch stehen 11
+Fahrten, **alle trocken**.
+
+**Eine Entscheidung über Geld auf einer ungemessenen Zahl ist der teuerste Weg,
+den es hier gibt.** Der billige: eine echte Schicht mit niedrigem Deckel.
+
+```bash
+node schicht/lauf.mjs --echt --deckel 1 --auftrag auftraege/beispiel.json
+```
+
+⚠ **Und eine Differenz aus zwei ungleichen Läufen ist keine Messung.** Am
+2026-08-23 lagen 254 Eingabe-Token ohne Werkzeuge und 3 118 mit vor; die
+Differenz sah wie der Aufschlag aus und war keiner — verschiedene Fragen, das
+Gelesene kam mit in die Unterhaltung, und über zwei Runden wird der Anfang
+doppelt gezählt.
+
 ## 6 · Der Hochschul-Partner — der größte Hebel, den du hast
 
 ### 6.1 Warum, und wen man anspricht
