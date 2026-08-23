@@ -63,7 +63,17 @@ fünf Monate Betrieb. Vier Fälle werden **durchgeführt** statt beschrieben: di
 Lage, einmal durch den Regel-Kanal und einmal durch den Grundsatz-Kanal betrachtet,
 mit dem, was tatsächlich geschah. Einer der vier zeigt zwei Anweisungen mit
 **denselben Wörtern**, die verschieden entscheiden — nicht der Wortlaut trennt die
-Kanäle, sondern was sie binden: die **Ausgabe** oder die **Aufmerksamkeit**. **Es behauptet nicht, dass Grundsätze besser wären.** Der
+Kanäle, sondern was sie binden: die **Ausgabe** oder die **Aufmerksamkeit**. **Die beiden sind dabei nicht gleichrangig.** Der Grundsatz ist die Grundlage,
+die Regel seine **Zuspitzung auf einen Fall** — man kann jede vernünftige Regel
+nach ihrem Wozu fragen, und die Antwort ist ein Grundsatz. Daraus erklärt sich,
+warum eine Regel erfüllt sein kann, ohne getroffen zu sein, und warum sie altert:
+sie ist ein **Stellvertreter**, und der Stellvertreter ist nicht die Sache (3.4).
+Daraus folgt ein Begriffspaar, das die Richtung im Namen trägt: eine
+**grundsatzbasierte Regel** ist die tragfähige Bauform — ein **regelbasierter
+Grundsatz** ist der Fehler, der dabei entsteht, wenn man die Entstehungsrichtung
+für die Begründungsrichtung hält.
+
+**Es behauptet nicht, dass Grundsätze besser wären.** Der
 Aufbau zeigt im Gegenteil, dass **beide Wege versagen** — an verschiedenen
 Stellen, aus verschiedenen Gründen, jeweils mit Datum belegt. Die tragende
 Beobachtung ist eine andere: sie leisten **Verschiedenes**, ihre Grenzen liegen
@@ -99,8 +109,9 @@ groß bei der offenen Aufgabe, klein oder umgekehrt bei der umrissenen. Ein
 flacher oder gegenläufiger Verlauf widerlegt die These, unabhängig davon, welcher
 Arm insgesamt vorn liegt.
 
-**Schlagwörter:** Lenkung von KI-Systemen · Regeln und Standards · Mehr-Agenten-Systeme ·
-Ausführungszeit-Alignment · Betreiber-Steuerung · Feldbeobachtung
+**Schlagwörter:** Lenkung von KI-Systemen · Regeln und Standards · grundsatzbasierte
+Regel · Mehr-Agenten-Systeme · Ausführungszeit-Alignment · Betreiber-Steuerung ·
+Feldbeobachtung
 
 ---
 
@@ -432,27 +443,109 @@ Läufe in keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssi
 oder unverständlich formuliert — beides ein Grund, ihn anzusehen, nicht ihn
 stehen zu lassen.
 
-### 3.4 Woher beide kommen: Vorfall → Regel → Grundsatz
+### 3.4 Der Grundsatz ist die Grundlage der Regel — und die Reihenfolge täuscht
 
-Regeln und Grundsätze stehen hier nicht nebeneinander, weil jemand zwei Sorten
-haben wollte. Sie sind **Stufen derselben Erfahrung**, und die Reihenfolge ist
-immer dieselbe:
+Hier steht die Beziehung zwischen den beiden Kanälen, und sie ist **nicht
+symmetrisch**. Es sind nicht zwei gleichrangige Werkzeuge, aus denen man wählt.
 
-| Stufe | Was es ist | Beispiel |
+> **Der Grundsatz ist die Grundlage. Die Regel ist seine Zuspitzung auf einen
+> Fall.**
+
+Jede Regel dient einem Zweck, sonst wäre sie Willkür. „Kein Schlüssel im
+Klartext" dient dem Schutz dessen, der die Anwendung nutzt. „Nichts erfinden"
+dient dem, der sich auf die Ausgabe verlässt. **Man kann jede vernünftige Regel
+nach ihrem Wozu fragen — und die Antwort ist immer ein Grundsatz.** Umgekehrt
+geht es nicht: aus einem Grundsatz folgt keine bestimmte Regel, sondern viele
+mögliche.
+
+#### Zwei Richtungen, die man nicht verwechseln darf
+
+Das Verwirrende ist, dass die beiden Richtungen **gegenläufig** sind.
+
+| | **Begründung** — was rechtfertigt was | **Entstehung** — was kam zuerst |
 |---|---|---|
-| **1 · Der Vorfall** | etwas ging schief, ein einziges Mal, mit Datum | 2026-08-20: eine geschätzte Zahl wurde als Messung ausgegeben |
-| **2 · Die Regel** | die Narbe — deckt **genau diesen** Fall ab, prüfbar | „Kennst du eine Zahl nicht, sag das." |
-| **3 · Der Grundsatz** | was man daraus **gelernt** hat — deckt die **Familie** ab | „Eine geratene Zahl klingt genau wie eine gemessene." |
+| Reihenfolge | **Grundsatz → Regel** | **Vorfall → Regel → Grundsatz** |
+| Beispiel | „Wer sich verlässt, darf sich verlassen können" rechtfertigt „nichts erfinden" | 2026-08-20 fliegt eine geschätzte Zahl auf → Regel → erst danach der Satz über geratene Zahlen |
+| Wer sie kennt | wer den Zweck durchdacht hat | jeder, der die Historie liest |
 
-**Die Regel schützt vor der Wiederholung. Der Grundsatz schützt vor der
-Verwandtschaft.** Deshalb sind sie keine Alternativen: wer nur Stufe 2 hat, ist
-gegen den Vorfall gewappnet, der schon passiert ist. Wer nur Stufe 3 hat, hat
-eine Haltung ohne Durchsetzung.
+In der Praxis geht man die **untere** Zeile. Etwas geht schief, man schreibt eine
+Regel dagegen, und erst später — manchmal nie — spricht jemand aus, wovon der Fall
+ein Fall war. Deshalb sieht es von innen so aus, als sei die Regel das Ursprüngliche
+und der Grundsatz die nachträgliche Verallgemeinerung.
 
-Das erklärt auch, warum drei der sechs Regeln ihren Vorfall im Wortlaut
-mitschleppen. Das ist keine Sentimentalität, sondern die einzige Möglichkeit, dem
-Leser Stufe 1 mitzugeben — ohne sie liest sich eine Regel wie eine Marotte, und
-Marotten werden umgangen.
+**Das täuscht.** Der Zweck war die ganze Zeit da; er war nur unausgesprochen. Die
+Regel wäre gar nicht als richtig erkannt worden, wenn nicht jemand still gewusst
+hätte, wozu sie gut ist.
+
+#### Was sich daraus erklärt — und zwar vieles auf einmal
+
+Sobald man die Begründungsrichtung ernst nimmt, fallen mehrere Beobachtungen
+dieses Papiers zusammen:
+
+**Eine Regel ist immer ein Stellvertreter.** Sie greift einen Zweck heraus und
+macht ihn prüfbar, indem sie ihn auf eine Bedingung verengt. Genau deshalb kann
+sie **erfüllt sein, ohne getroffen zu sein** (3.7) — der Stellvertreter ist nicht
+die Sache. Und genau deshalb greift Goodharts Gesetz (2.5): *wird ein Maß zum
+Ziel, taugt es nicht mehr als Maß*. Der Satz ergibt nur Sinn, wenn hinter dem Maß
+etwas anderes steht, dem es dienen soll.
+
+**Eine Regel altert, ein Grundsatz nicht** (3.7). Der Zweck bleibt, die Umgebung
+ändert sich, und die Verengung passt nicht mehr. Altern kann nur, was zeitgebunden
+zugeschnitten wurde.
+
+**Regel und Grundsatz können denselben Wortlaut haben** (Fall 1 in 3.5) und
+verschieden wirken. Kein Rätsel mehr: es ist derselbe Zweck, einmal als Grund
+ausgesprochen, einmal als Bedingung zugespitzt.
+
+**Und der Fehler aus 7.10 bekommt einen Namen.** Wer aus Vorfällen unmittelbar
+„Grundsätze" ableitet, geht die Entstehungsrichtung entlang und hält das Ergebnis
+für die Begründungsrichtung. Er überspringt die Frage nach dem Wozu — und bekommt
+einen Satz, der allgemein klingt und eng gedacht ist.
+
+#### Warum dann überhaupt zwei Kanäle?
+
+Wenn der Grundsatz die Grundlage ist: warum nicht nur Grundsätze?
+
+Weil ein Zweck **nicht nachprüfbar** ist und ein System nichts hat, das ihn von
+sich aus verfolgt (1.2). Die Regel ist der Teil des Zwecks, den man **festhalten,
+prüfen und einfordern** kann. Sie ist der Preis dafür, dass man den Zweck nicht
+direkt greifen kann.
+
+Damit steht die These dieses Papiers genauer da, als sie in der Zusammenfassung
+steht:
+
+> **Regeln und Grundsätze sind nicht zwei Werkzeuge zur Wahl, sondern ein Zweck
+> und seine Zuspitzung.** Wer nur Regeln nimmt, hat Zuspitzungen ohne den Grund,
+> aus dem sie richtig waren — und kann sie deshalb nicht nachziehen, wenn sie
+> nicht mehr passen. Wer nur Grundsätze nimmt, hat den Grund ohne alles, woran
+> man ihn festmachen könnte.
+
+#### Zwei Begriffe, und die Richtung steckt im Namen
+
+Damit lässt sich benennen, was gebaut werden soll und was nicht:
+
+| Begriff | Richtung | Urteil |
+|---|---|---|
+| **Grundsatzbasierte Regel** | Grundsatz → Regel | ✅ **die richtige Bauform.** Der Zweck steht fest, die Regel spitzt ihn auf einen Fall zu — und lässt sich nachziehen, wenn der Fall sich ändert, weil der Zweck bekannt ist. |
+| **Regelbasierter Grundsatz** | Vorfall → Regel → „Grundsatz" | ❌ **der Fehler.** Klingt allgemein, ist eng gedacht: er kann nur abdecken, was schon eingetreten ist (7.10). |
+
+**Jede der sechs Regeln in 3.1 sollte eine grundsatzbasierte Regel sein.** Das ist
+keine Stilfrage, sondern die Bedingung dafür, dass sie gepflegt werden kann: eine
+Regel, deren Zweck niemand benennen kann, lässt sich weder anpassen noch
+begründet streichen. Man kann sie nur befolgen oder vergessen.
+
+#### Eine Pflegeregel, die daraus unmittelbar folgt
+
+Sie ist die praktischste Folgerung des ganzen Abschnitts:
+
+> **Zu jeder Regel muss sich der Grundsatz benennen lassen, dem sie dient.**
+
+Findet sich keiner, ist eines von beidem der Fall: die Regel ist überflüssig — oder
+der Grundsatz dahinter wurde nie ausgesprochen und fehlt im anderen Kanal. **Beides
+ist ein Befund, und beides ist maschinell auffindbar**, sobald die Zuordnung
+mitgeführt wird (7.10).
+
+---
 
 ### 3.5 Warum ein System so oder anders entscheidet — vier durchgeführte Fälle
 
@@ -1110,7 +1203,7 @@ keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssig oder
 unverständlich formuliert."*
 
 **Das Formulieren geht nicht.** Und der Grund ist nicht Vorsicht, sondern
-Struktur.
+Struktur — er folgt unmittelbar aus der Richtung in 3.4.
 
 #### Der Denkfehler steckt schon im Namen
 
@@ -1123,8 +1216,13 @@ noch niemand gesehen hat (3.4, Kaplow).
 > Grundsatzes.** Er trägt die Allgemeinheit im Wortlaut und die Enge in der
 > Herkunft.
 
-Klaus' eigene Formulierung — *„regelbasierte Grundsätze"* — benennt das
-Spannungsverhältnis unfreiwillig genau. Und das ist keine Wortklauberei: ein
+Mit den Begriffen aus 3.4: Was hier entstünde, wäre ein **regelbasierter
+Grundsatz** — und die richtige Bauform ist die umgekehrte, die
+**grundsatzbasierte Regel**.
+
+Der Fehler hat einen Namen, und er steht in 3.4: **die Entstehungsrichtung wird
+für die Begründungsrichtung gehalten.** Wer aus Vorfällen unmittelbar Grundsätze
+ableitet, überspringt die Frage nach dem Wozu. Und das ist keine Wortklauberei: ein
 solcher Satz sieht aus wie ein Grundsatz, wird wie einer eingeordnet, und lässt
 die Lücke offen, die ein echter Grundsatz geschlossen hätte. **Er ist schlechter
 als beides** — er hat weder die Prüfbarkeit der Regel noch die Reichweite des
