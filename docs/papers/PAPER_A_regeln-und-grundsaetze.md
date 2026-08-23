@@ -993,6 +993,9 @@ Es ordnet die ganze Frage neu, und zwar zugunsten der Genauigkeit statt der Kür
 begründet sie mit dem kleinsten Posten der Rechnung. Der Abschnitt oben widerlegt
 das mit eigenen Zahlen, und es bleibt widerlegt.
 
+**Und wodurch die Treffsicherheit entstünde, ist eine eigene Frage** — drei
+mögliche Ursachen und die zwei Kontrollen, die sie trennen, stehen in 3.9.
+
 **Zweitens: Treffsicherheit ist das einzige Argument, das trägt** — für welchen
 Kanal auch immer. Ob Regeln, Grundsätze oder beides den kürzeren Weg zum
 brauchbaren Ergebnis bahnen, ist die Frage, an der alles hängt. **Und sie ist
@@ -1121,6 +1124,79 @@ für jeden kleinen Betreiber praktisch ist und für keinen großen — *lässt s
 KI-System so lenken, dass es sich ohne Budget betreiben lässt?* Wer viele Läufe
 fährt und keine Rechtsabteilung hat, wird nicht durch bessere Regeln gerettet,
 sondern durch weniger davon. Ob das stimmt, ist bisher niemand nachgegangen.
+
+---
+
+### 3.9 Warum eigentlich? Drei Ursachen, die sich trennen lassen
+
+Angenommen, die Grundsätze verringern die Fehler wirklich — **woran liegt es
+dann?** Bisher beschreibt dieses Papier, **dass** die Kanäle sich unterscheiden,
+nicht **wodurch**. Drei Erklärungen liegen nahe, und der Unterschied zwischen ihnen
+ist nicht akademisch: sie sagen **Verschiedenes voraus**, und daran lassen sie sich
+auseinanderhalten.
+
+**H1 · Es denkt anders — Zweck statt Bedingung.**
+Ein Grundsatz nennt das Wozu. Das Modell prüft dann nicht, ob eine Bedingung
+zutrifft, sondern arbeitet auf ein Ziel hin. *Vorhersage:* der Vorteil ist am
+größten bei **neuen** Fällen (Aufgabenart E) und am kleinsten bei umrissenen (Art
+B) — genau der Verlauf aus 7.3.1.
+
+**H2 · Es muss weniger Ballast lesen.**
+Ein kürzerer Block lässt mehr Aufmerksamkeit für die eigentliche Arbeit. Das ist
+die Sättigungsvermutung aus 3.3, von der Wirkungsseite betrachtet. *Vorhersage:*
+der Vorteil hängt an der **Länge** des Blocks, nicht an seinem **Inhalt**.
+
+**H3 · Ein Grundsatz deckt Fälle ab, für die keine Regel geschrieben wurde.**
+Das ist Kaplows Punkt, unverändert. *Vorhersage:* der Vorteil zeigt sich
+ausschließlich bei Fehlern **außerhalb** dessen, was die Regeln abdecken — innerhalb
+müsste der Regel-Arm gleichauf oder besser sein.
+
+#### Die Kontrolle, die H2 von H1 und H3 trennt
+
+Sie ist billig und entscheidet mehr als jede andere Messung in diesem Papier:
+
+> **Ein vierter Arm mit längengleicher Füllung.** Der Grundsatz-Block wird mit
+> belanglosem, aber harmlosem Text auf dieselbe Länge gebracht wie der Regel-Block.
+>
+> - **Verschwindet der Vorteil**, lag es an der Länge — **H2**.
+> - **Bleibt er**, lag es am Inhalt — **H1 oder H3**.
+
+Ohne diese Kontrolle sind Länge und Inhalt in jedem Ergebnis vermengt, und man
+kann sagen, was man will.
+
+#### Und die Klassifikation, die H1 von H3 trennt
+
+Jeder gefundene Fehler wird zusätzlich danach eingeteilt, ob er **innerhalb** oder
+**außerhalb** des Bereichs liegt, den die sechs Regeln abdecken. Das ist
+entscheidbar, weil die Regeln endlich und aufgeschrieben sind.
+
+- Zeigt sich der Vorteil **nur außerhalb** → **H3**, Abdeckung.
+- Zeigt er sich **auch innerhalb** → dort greift eine Regel und tut es trotzdem
+  nicht so gut wie ein Grundsatz. Das wäre **H1**, und es wäre der interessanteste
+  Befund dieses Papiers: dann läge es nicht an der Reichweite, sondern daran, wie
+  ein Zweck anders wirkt als eine Bedingung.
+
+#### Was ich hier schon vermute — und warum es benannt gehört
+
+Klaus' Formulierung war *„nicht erst tausende von Regeln lesen"*. **In diesem
+Aufbau sind es keine tausend, sondern sechs — 1.510 Zeichen.** Bei dieser Größe ist
+**H2 unplausibel**: ein Block von anderthalbtausend Zeichen bindet keine nennenswerte
+Aufmerksamkeit.
+
+Das heißt nicht, dass H2 falsch ist. Es heißt, dass sie **hier nicht greifen kann**
+und erst in einem System mit einem wirklich großen Regelwerk messbar würde — dort
+allerdings vermutlich stark. **Wer diese Arbeit auf eine große Installation
+überträgt, sollte mit H2 rechnen; wer sie hier misst, wird sie nicht finden.**
+
+Diese Vermutung steht hier ausdrücklich **vor** der Messung, damit sie sich
+blamieren kann.
+
+#### Sie schließen einander nicht aus
+
+Der wahrscheinlichste Ausgang ist, dass alle drei etwas beitragen. **Das ist kein
+Mangel des Aufbaus, sondern der Grund, ihn so zu bauen:** die beiden Kontrollen
+oben teilen den Beitrag auf, statt einen Sieger zu küren. Ein Papier, das nach
+*der* Ursache sucht, findet meistens die, die es erwartet hat.
 
 ---
 
