@@ -33,6 +33,16 @@ standards*) und seit 2024 die KI-Regulierung (Schuett et al. 2024). Auf der
 KI-Seite ist die Schwäche des Regel-Kanals als *specification gaming* gut belegt.
 Neu ist die **Ebene**, auf der hier beobachtet wird.
 
+Eine zweite Eigenschaft wiegt im Betrieb schwerer als die Reichweite und kommt in
+der Literatur nur am Rand vor: **Haltbarkeit**. Eine Regel im Text wird von
+demselben System **gelesen**, das sie binden soll, und ist damit zugleich eine
+Angriffsfläche — sie ist eine Bedingung, und jede Bedingung hat einen Rand, an
+dem man knapp innen stehen kann. Ein Grundsatz hat diesen Rand nicht. Zugleich
+altert ein Regelwerk mit der Umgebung und muss gepflegt werden, ein Grundsatz
+nicht. Kurz: **eine Regel kann erfüllt werden, ohne getroffen zu sein; ein
+Grundsatz kann übergangen werden, ohne verletzt zu sein** — und **Haltbarkeit und
+Nachweisbarkeit lassen sich nicht im selben Kanal haben** (3.7).
+
 Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
 Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
 unerwünschte Verhalten **vermehrte** — die Regel ersetzte die Norm, statt sie zu
@@ -530,9 +540,103 @@ soll:
 | die Einhaltung **prüfbar** ist | die Einhaltung nur am Ergebnis über viele Fälle sichtbar wird |
 | ein einzelner Verstoß schadet | die Summe vieler kleiner Nachlässigkeiten schadet |
 | es um **Form** geht (Geheimnisse, Adressen, Schema) | es um **Zuschnitt** geht (wann ist etwas fertig, was ist genug) |
+| jemand da ist, der das Regelwerk **pflegt** | niemand da ist, der es pflegt (3.7) |
 
 **Und der Fall, in dem beides nichts hilft:** wenn die Aussage nicht überprüfbar
 ist. Dann ist es kein Lenkungsproblem, sondern eines des Aufbaus.
+
+### 3.7 Haltbarkeit: die Eigenschaft, die am schwersten wiegt
+
+Bis hierher ging es um **Reichweite** — welcher Kanal welchen Fall erreicht. Es
+gibt eine zweite Eigenschaft, die im Betrieb schwerer wiegt und in der zitierten
+Literatur nur am Rand vorkommt: **wie gut hält das, was man hingeschrieben hat?**
+
+#### Eine Regel wird gelesen von dem, was sie binden soll
+
+Das ist die Asymmetrie, um die es geht, und sie unterscheidet den Regel-Kanal
+eines Sprachmodells von jedem Regelwerk davor.
+
+Eine Regel in einer Programmschranke wird **ausgeführt**. Sie prüft eine
+Bedingung, und die Bedingung ist wahr oder falsch. Eine Regel im Text, den ein
+Sprachmodell bekommt, wird **gelesen** — und zwar von demselben System, das sie
+einschränken soll. Bei jedem Lauf neu.
+
+Damit ist jede Regel zugleich eine **Angriffsfläche**: sie ist eine Bedingung, und
+jede Bedingung hat einen Rand. Ein Rand ist eine Stelle, an der man knapp
+innerhalb stehen kann. Genau davon handelt das *specification gaming* aus
+Abschnitt 2.5 — das Boot, das im Kreis fährt, hat keine Regel gebrochen.
+
+**Ein Grundsatz hat diesen Rand nicht.** „Was hat der Nächste davon?" lässt sich
+nicht auf eine Formalie hin erfüllen, weil es keine Formalie gibt. Man kann die
+Frage übergehen, aber man kann sie nicht **technisch bestehen**.
+
+Daraus folgt die genauere Fassung von Klaus' Einwand:
+
+> **Eine Regel kann erfüllt werden, ohne getroffen zu sein.
+> Ein Grundsatz kann übergangen werden, ohne verletzt zu sein.**
+
+Beides ist ein Versagen. Aber es sind **verschiedene** Versagen, und das
+Regel-Versagen ist das gefährlichere: es ist **systematisch**. Wer den Rand einer
+Bedingung findet, findet ihn zuverlässig wieder. Ein übergangener Grundsatz ist
+dagegen Nachlässigkeit — sie wiederholt sich, aber sie verstärkt sich nicht.
+
+#### Ein Regelwerk altert, ein Grundsatz nicht
+
+Schuett et al. (2024) nennen es beiläufig, und es ist der praktisch wichtigste
+Satz ihrer Abwägung: spezifische Regeln **veralten schnell**.
+
+Der Grund ist derselbe wie bei Kaplow: eine Regel enthält die Welt, wie sie zum
+Zeitpunkt des Aufschreibens war. Ändert sich die Umgebung, zeigt die Regel ins
+Leere oder auf das Falsche — und niemand merkt es, weil sie weiter erfüllt wird.
+
+Ein Grundsatz enthält keinen Zustand, sondern einen Zweck. „Eine geratene Zahl
+klingt genau wie eine gemessene" war im März richtig und ist es heute; es gibt
+nichts daran, das veralten könnte.
+
+|  | **Regel** | **Grundsatz** |
+|---|---|---|
+| Bindet | eine Bedingung | einen Zweck |
+| Hat einen Rand, an dem man knapp innen stehen kann | **ja** | nein |
+| Veraltet, wenn sich die Umgebung ändert | **ja** | nein |
+| Muss bei jedem neuen Fall ergänzt werden | **ja** | nein |
+| Verliert an Wirkung, wenn zu viele danebenstehen | nein | **ja** (3.3) |
+| Nachprüfbar | **ja** | nein |
+
+#### Der Satz, auf den es für einen kleinen Betreiber hinausläuft
+
+> **Ein Regelwerk ist eine Pflegeverpflichtung. Ein Grundsatz ist keine.**
+
+Für eine Organisation mit einer Rechtsabteilung ist das eine Kostenfrage. Für
+einen einzelnen Betreiber ist es die Frage, ob die Lenkung **überhaupt am Leben
+bleibt**. Ein Regelsatz, der nicht gepflegt wird, wird nicht neutral — er wird
+schleichend falsch, und zwar unauffällig, weil alle Prüfungen weiter grün sind.
+
+Genau das ist der Grund, warum der Grundsatz-Kanal hier existiert. Er war nicht
+als das Elegantere gedacht, sondern als das, was ohne Pflege noch trägt.
+
+#### Und der Preis, der dafür bezahlt wird
+
+Diese Haltbarkeit ist **erkauft**, nicht geschenkt. Was keinen Rand hat, hat auch
+keine Kante, an der man messen könnte. Ein Grundsatz hält länger, **weil** er
+nichts festlegt — und ist aus demselben Grund nicht nachprüfbar.
+
+**Man kann Haltbarkeit und Nachweisbarkeit nicht im selben Kanal haben.** Das ist
+die Fassung der These dieses Papiers, die am wenigsten nach Kompromiss klingt und
+am meisten erklärt: die beiden Kanäle sind nicht zwei Geschmacksrichtungen,
+sondern zwei Enden eines Tauschgeschäfts, bei dem man sich nicht für eine Seite
+entscheiden kann, ohne die andere zu verlieren.
+
+#### Was das für den Versuch bedeutet — und was er nicht prüfen kann
+
+Die Haltbarkeits-These ist **längsschnittlich**: sie sagt voraus, dass der
+Abstand zwischen R und G **mit der Zeit wächst**, weil das Regelwerk altert und
+die Grundsätze nicht.
+
+**Der Versuch in Abschnitt 7 kann das nicht messen.** Er läuft über Wochen, nicht
+über Jahre, und in dieser Zeit veraltet kein Regelwerk. Was er messen könnte,
+wäre ein Ersatz: **dieselben Läufe mit einem absichtlich veralteten Regelsatz**
+— einem, der auf eine frühere Fassung des Systems passte. Ob das mehr misst als
+den Umgang mit einem Fehler, ist offen und wird hier nicht behauptet.
 
 ---
 
