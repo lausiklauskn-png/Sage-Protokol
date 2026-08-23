@@ -21,7 +21,7 @@ beiden sind das Material.
 
 ---
 
-## Die Quelle der Wahrheit liegt woanders
+## Die Quelle liegt woanders
 
 **Der lebende Stand steht in Kimhub.** Was hier liegt, ist eine Momentaufnahme.
 Wer etwas ändern will, ändert es **dort** und zieht es hierher nach — nie
