@@ -31,6 +31,48 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-23 (Bau) — 🇩🇪 Hamburg nachgezogen, Paper-Plan angelegt
+
+**Rolle:** Fortsetzung derselben Sitzung. Zweig
+`claude/research-funding-next-steps-ib58w2`.
+
+**Anlass:** Klaus hat das Bundesland genannt (**Hamburg**), nach dem Weg zur
+Anmeldung gefragt (Gewerbe oder freiberuflich, online?) und drei Paper-Themen
+umrissen.
+
+**Gebaut:**
+
+- **`docs/FORSCHUNGSFOERDERUNG.md` § 5b — Hamburg.** Drei Programme, die in
+  keiner Bundesübersicht stehen. Der stärkste: **InnoFounder (IFB Hamburg)** —
+  2.500 €/Monat, bis 18 Monate, bis 45.000 € für Einzelgründungen, **ohne
+  Hochschulabschluss als harte Bedingung und ohne Hochschule dazwischen**. Damit
+  der zugänglichere Zwilling von EXIST. Dazu der **Projektfonds Medien und
+  Bildung** (400.000 €/Jahr, Frist war 08.03., nächste Runde vormerken) und die
+  drei kostenlosen Beratungstüren.
+- **§ 5c — der Anmeldeweg.** Der gemeinsame Schritt für beide Wege ist der
+  **Fragebogen zur steuerlichen Erfassung über ELSTER**. Gewerbe in Hamburg
+  vollständig online über das Serviceportal, 20 €, 3–7 Werktage; freiberuflich
+  ohne Gewerbeanmeldung. **Man muss sich nicht vorher festlegen** — das Finanzamt
+  ordnet anhand des Fragebogens ein. Neu im Fahrplan: **A2b, ELSTER-Zertifikat**,
+  weil es ein paar Tage braucht und sonst der Engpass wird.
+- **`docs/papers/PLAN_PAPERS.md`** — Gerüst für die drei geplanten Papers:
+  regelbasiertes und grundsatzbasiertes Lenken · wie KI auf den Menschen wirkt ·
+  KI-Kompetenz im täglichen Gebrauch. Mit Gliederung, Reihenfolge und je einem
+  Abschnitt „wo dieses Paper kippen kann".
+
+**Ein Widerspruch, der besprochen statt umfahren wurde.** Klaus' Formulierung war
+*„warum Grundsätze tatsächlich besser sind als Regeln"*. So trägt der Titel
+nicht: der Grundsatz-Weg **hat auch versagt** (2026-08-20, „Sten hat den Code
+durchlaufen lassen" — es gab dazu eine ausdrückliche Regel, und sie war nur ein
+Dämpfer). „Besser" bräuchte eine Messung, die es nicht gibt. Tragfähig ist Klaus'
+eigener dritter Punkt: **beides leistet Verschiedenes und keins genügt allein.**
+Steht so im Plan.
+
+**Nächster sinnvoller Schritt:** Steuerberater-Termin (Mitte der Woche) plus
+ELSTER-Zertifikat parallel; danach Zenodo-DOI für die beiden vorhandenen Papers.
+
+---
+
 ## Stand 2026-08-23 (Bau) — 🔓 Der Forschungskorpus steht
 
 **Rolle:** Fortsetzung derselben Sitzung. Zweig

@@ -9,6 +9,11 @@ Sonnen-Galaxie (Sage-Geschichts-Galerie, Vision-Anker 10 in
 | `sbkim-paper-en.html` | Station 4 · Wissenschaftlicher Niederschlag — SBKIM-Paper (EN) | `STATIONS_DATA[3]` (status `live`, `href` zeigt auf diese Datei) |
 | `sbkim-paper-de.html` | Station 5 · Wissenschaftlicher Niederschlag — SBKIM-Paper (DE) | `STATIONS_DATA[4]` (status `live`, `href` zeigt auf diese Datei) |
 
+> **Kommende Papers:** drei weitere sind geplant — regelbasiertes und
+> grundsatzbasiertes Lenken · wie KI auf den Menschen wirkt · KI-Kompetenz im
+> täglichen Gebrauch. Gerüst, Gliederungen und die Stellen, an denen jedes
+> einzelne kippen kann: **[`PLAN_PAPERS.md`](PLAN_PAPERS.md)**.
+
 ## Zweck
 
 Die Geschichts-Galerie zeigt **vier** Stationen der Sage-
