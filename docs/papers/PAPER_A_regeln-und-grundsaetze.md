@@ -43,23 +43,22 @@ nicht. Kurz: **eine Regel kann erfüllt werden, ohne getroffen zu sein; ein
 Grundsatz kann übergangen werden, ohne verletzt zu sein** — und **Haltbarkeit und
 Nachweisbarkeit lassen sich nicht im selben Kanal haben** (3.7).
 
+Beobachtet wird an einem **laufenden Aufbau**, und der gehört benannt, bevor
+Zahlen fallen. Das Depot *Sage-Protokol* läuft seit dem 10. März 2026 und ist
+seither durchgehend protokolliert; daraus ist die Frage überhaupt entstanden. Auf
+dieser Grundlage entstand die **Werkstatt**: fünf Rollen mit Namen arbeiten
+nacheinander an einem Auftrag, ein Durchgang heißt **Schicht**, er hat einen
+Kosten-Deckel von fünf Euro und wird mitgeschrieben — Aufrufe, Token, Kosten,
+Dauer. Beide Kanäle, Regeln wie Grundsätze, gehen bei jedem Aufruf als Text mit
+(Abschnitt 3). **Zwei Zeiträume gehören dabei auseinandergehalten:** die
+Dokumentation reicht über fünf Monate, die Messung über Tage. Wo im Papier eine
+gemessene Zahl steht, stammt sie aus dem zweiten.
+
 Aus derselben Richtung folgt ein praktischer Nebenbefund: **mehrere Regeln, die
 denselben Zweck zuspitzen, lassen sich durch den einen Grundsatz ersetzen, aus dem
-sie stammen.** An den sechs Regeln durchgerechnet, schrumpft der Block dadurch um **47 %**.
-**Die dabei eingesparten Token sind allerdings wertlos** — rund eineinhalb Cent je
-Schicht, gegen einen Deckel von fünf Euro; eine einzige vermiedene Fehlschicht
-wiegt so viel wie über dreihundert Schichten Verdichtung. Schlimmer noch: weil ein
-Grundsatz **gedeutet** werden muss und Ausgabe-Token das Fünffache kosten, kippt
-die Rechnung schon bei **41 zusätzlichen Denk-Token je Aufruf** ins Negative — das
-ist **Kaplows Anwendungskostensatz, in Token gemessen.** Die naheliegende
-Sparsamkeits-These ist damit **durch die eigene Rechnung widerlegt** (3.8).
-**Die Rechnung gehört von der anderen Seite geführt:** nicht die Anweisung kostet,
-sondern die **Arbeit**. Die gesamte Blockverdichtung entspricht einer
-Trefferquoten-Verbesserung von **0,31 %**; zehn Prozent weniger Ausgabe-Token sind
-das Dreiunddreißigfache davon. Daraus folgt der Satz, der den Abschnitt trägt:
-**kürze die Anweisung nie, um zu sparen — nur, wenn sie dadurch klarer wird.** Bei
-diesem Verhältnis gewinnt immer die Genauigkeit, und die Zielgröße ist *Ausgabe-Token
-je brauchbarem Ergebnis*.
+sie stammen.** Die naheliegende Sparsamkeits-These ist dabei durch die eigene
+Rechnung widerlegt — es ist nicht die Anweisung, die kostet, sondern die **Arbeit**
+(3.8).
 
 Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
 Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
@@ -76,8 +75,8 @@ Bai et al. 2022), und Regeln zur **Ausführungszeit**, gesetzt vom Einsetzenden
 **Grundsätze zur Ausführungszeit, gesetzt vom Betreiber**, in einer gewöhnlichen
 Textdatei, die auch jemand ändern kann, der nicht programmieren kann.
 
-Dieses Papier beschreibt einen Aufbau, der genau dort sitzt, und berichtet über
-fünf Monate Betrieb. Vier Fälle werden **durchgeführt** statt beschrieben: dieselbe
+Der oben beschriebene Aufbau sitzt genau dort, und dieses Papier berichtet aus
+seinem Betrieb. Vier Fälle werden **durchgeführt** statt beschrieben: dieselbe
 Lage, einmal durch den Regel-Kanal und einmal durch den Grundsatz-Kanal betrachtet,
 mit dem, was tatsächlich geschah. Einer der vier zeigt zwei Anweisungen mit
 **denselben Wörtern**, die verschieden entscheiden — nicht der Wortlaut trennt die
