@@ -31,6 +31,68 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-23 (Bau) — 📦 Antragsmappe: eine Datei, zwei Abteilungen
+
+**Rolle:** Bausitzung. Zweig `claude/research-funding-paper-delivery-vuppnj`,
+frisch von `origin/main`. Auftrag: Punkt 2 und 3 des Briefes vom 2026-08-23.
+
+**Gebaut:** `docs/antragsmappe.html` (242 KB) aus neun Markdown-Quellen —
+**Abteilung 1 privat** (Fahrplan Forschungsgelder), **Abteilung 2 einreichbar**
+(Entstehung · Paper A · Forschungskorpus · Paper-Plan · die vier
+Werkstatt-Unterlagen). Jede Abteilung hat einen eigenen Download- und
+Druck-Knopf, einen eigenen Kopf mit Datum und Herkunft, und nimmt beim
+Herausnehmen **nur sich selbst** mit.
+
+Dazu `tools/antragsmappe-bauen.mjs` + `tools/markdown-mini.mjs`. **Die Mappe
+wird erzeugt, nicht gepflegt** — sonst stünden dieselben Sätze zweimal im Depot
+und liefen auseinander. Wer eine `.md` ändert, ruft
+`node tools/antragsmappe-bauen.mjs`; die Probe schlägt sonst an.
+
+**Paper A · die 47-%-Stelle aus der Zusammenfassung heraus** (Klaus' Befund).
+Sie rechnete mit vier Begriffen, die bis dahin nirgends erklärt waren —
+nachgezählt: **„Schicht" kam dort zum ersten Mal im ganzen Papier vor**, Zeile
+50 von 1.833. Zahlen raus, der Rechenweg steht vollständig in § 3.8 (nachgesehen,
+nicht angenommen). **Davor** steht jetzt ein Absatz, der das Werkzeug einführt —
+samt der Unterscheidung *Dokumentation fünf Monate, Messung Tage*.
+
+**Drei echte Fehler im Markdown-Leser**, alle von der Nachzählung gefunden
+(jede der 2.799 Quellzeilen muss in der Ansicht wiederauftauchen): Kursiv brach
+am Zeilenumbruch ab · Fett vertrug kein Kursiv darin · und der Code-Platzhalter
+war „Leerzeichen + Zahl + Leerzeichen" — **jede nackte Zahl im Text** wäre
+ersetzt oder gelöscht worden. Der dritte stand nur im eigenen Nachlesen.
+
+**Und drei Fehler in den Wächtern selbst:** jedes Tag durch ein Leerzeichen zu
+ersetzen meldete **320 Zeilen** als fehlend, die alle dastanden · der
+Unterstrich als Auszeichnung zerlegte Dateinamen (70 weitere Fehlalarme) · und
+„der Download enthält die andere Abteilung nicht" am **Wortlaut** geprüft wurde
+rot, sobald der Fahrplan die Mappe selbst beschreibt. *Ein Wächter nagelt eine
+Aussage fest, keine Wörter* — jetzt strukturell.
+
+**Richtiggestellt:** `FORSCHUNGSFOERDERUNG.md` sagte, Kimhub führe „bereits" ein
+Fahrtenbuch. Stimmt — **seit dem 22.08.2026**. Neben der Aussage „fünf Monate
+Vorleistung" las sich das, als sei die ganze Zeit gestundet worden. § Weg 2, B3
+und D2 nachgezogen: **dokumentierte Zeit und gemessene Zeit sind zwei Dinge**,
+Älteres wird **rekonstruiert** und als solches gekennzeichnet.
+
+**Gemessen:** 84 von 84 Proben grün, 0 rot, 0 nicht lauffähig · Gegenprobe
+**17 von 17 gefangen**. Die Mappe im Browser: headless geöffnet, Drucken und
+Herunterladen wirklich ausgelöst. **Klaus' Sichttest am Tablet steht aus** —
+besonders der Download dort ist von hier aus ungeprüft.
+
+**Offen, und es gehört besprochen:** Paper A sagt an vier Stellen, die Rollen
+hätten **keine Werkzeuge**. Kimhubs Verfassung sagt seit dem 2026-08-23 das
+Gegenteil, auf Klaus' Wort — und die Momentaufnahme in `docs/werkstatt/` ist
+damit am Tag ihrer Anlage überholt. Für den beobachteten Zeitraum stimmt der
+Satz, aber er steht im **Präsens**, und das Papier verlinkt das Depot. Drei
+Wege stehen im Übergabeprotokoll; **Klaus entscheidet.**
+
+**Nächster sinnvoller Schritt:** Sichttest der Mappe; dann den
+Werkzeug-Widerspruch entscheiden, bevor das Papier eingereicht wird.
+
+Protokoll: [`docs/sessions/archiv/2026-08-23_antragsmappe-und-paper-a-zusammenfassung.md`](sessions/archiv/2026-08-23_antragsmappe-und-paper-a-zusammenfassung.md)
+
+---
+
 ## Stand 2026-08-23 (Bau) — 📄 Paper A geschrieben
 
 **Rolle:** Fortsetzung derselben Sitzung. Zweig
@@ -894,125 +956,12 @@ Abweichungen sind im selben Zug zu (`#151`); keine trug Point-eigene Logik.
 
 ---
 
-## Stand 2026-08-14 (Pflege) — 🗂 PULS ausgelagert: 10.150 → 2.592 Zeilen
-
-**Rolle:** Pflege-Sitzung auf Klaus' Zuruf „PULS.md auslagern". Die Schutz-Klausel
-nennt 3000 Zeilen; die Datei stand bei **10.150** — sechs Sitzungen in Folge hatten
-das gemeldet, ohne dass es jemand tat.
-
-**Verfahren wie beim letzten Mal, nicht neu erfunden.** Die Mai-Auslagerung vom
-2026-07-24 (Klaus' „Option A") hatte den nächsten Schritt sogar vorgezeichnet:
-*„Juni könnte in einer Folge-Sitzung ebenso ausgelagert werden (wäre Option B)."*
-Genau das ist hier passiert, nur zusätzlich für Juli und den älteren August.
-
-| Archiv-Datei | Inhalt | Zeilen |
-|---|---|---|
-| `2026-08_puls-auslagerung.md` | Sitzungen 03.–09.08. | 2.290 |
-| `2026-07_puls-auslagerung.md` | alle Juli-Sitzungen | 2.731 |
-| `2026-06_puls-auslagerung.md` | alle Juni-Sitzungen | 2.608 |
-
-**In PULS bleiben:** die acht jüngsten Sitzungen (14.08. bis 11.08.) und **alle**
-Struktur-Sektionen — „Als nächstes", Schnellüberblick, Endknoten, Offene
-Querschnitts-Fragen, Schutz-Backlog, Vision-Anker, Archiv-Index. An jeder der drei
-Schnittstellen steht ein Zeiger, im Archiv-Index drei Sammel-Zeilen.
-
-**Ausgelagert, NICHT gekürzt** — und das ist nachgerechnet, nicht behauptet:
-von **360** Überschriften fehlt **keine**, keine ist erfunden, und von **8.472**
-nicht-leeren Zeilen wird **keine einzige** vermisst. Alle **124** Archiv-Verweise
-in PULS zeigen auf existierende Dateien. Der Mermaid-Pie-Block ist unberührt (er
-wird aus `status.json` erzeugt und nie von Hand angefasst), die **3000er-Grenze
-steht unverändert** — sie wurde ausdrücklich nicht herabgesetzt.
-
-**Luft für die Zukunft:** 2.592 von 3.000 Zeilen, also gut 400 frei. Wer die
-nächste Auslagerung braucht, nimmt wieder den ältesten Monat.
-
-**Offen:** die vier Modul-23-UI-Kopien (je eine geprüfte Runde pro App) ·
-Klaus' Browser-Sichttests.
-
-
-## Stand 2026-08-14 (Pflege) — 🔓 Sperr-Knöpfe · Automatik-Schalter · drei tote Wächter
-
-**Rolle:** Pflege-Sitzung, Fortsetzung nach PR #843. Übergabeprotokoll:
-`docs/sessions/archiv/2026-08-14_sperr-knoepfe-automatik-tote-waechter.md`.
-
-**✅ Klaus' Handgriff ist erledigt:** die neue `marktplatz-api.php` liegt auf
-dem Hetzner-Webhosting. Belegt durch die Tat — Klaus schaltete den
-Automatik-Schalter ein, der Server nahm `"an": true` an und committete
-(Toolpoint `0adfb69`). Kein `bad_key`. Der Punkt stand seit dem 2026-08-12 offen.
-
-**Fünf Merges:**
-
-- **Toolpoint #62** — der Automatik-Schalter darf **benutzt** werden.
-  `tests/smoke.mjs` verlangte `_automatik.an === false`; als Auslieferungs-Zustand
-  richtig gedacht, aber die Probe läuft bei jedem Push. Beim ersten echten
-  Gebrauch wurde `main` rot — und weil `statische-liste.yml` **vor** dem
-  Committen prüft, kam der Schalter **nie auf der Seite an**. Ein Wächter, der
-  sein eigenes Feature verhindert. Geprüft wird jetzt die **Form**, nicht der
-  Anfangswert.
-- **family #271** — **Sperr-Knöpfe** im Studio. Server und Datei konnten es
-  längst; es fehlte allein die Bedienung. Übernommen, nicht abgeschrieben
-  (family: `renderSporen`, `toast()`, `createElement`, de/en). **Vierter Ort**
-  der Rangfolge `gruen 0 < nichts 1 < gelb 2 < rot 3`.
-- **family #272** — der **Automatik-Schalter**, und zwar mit **drei** Stücken:
-  family hatte weder `unterGrenze` noch eine Leistungs-Grenze. Nur das Häkchen
-  wäre der tote Knopf gewesen. Gezählt wird der **angezeigte** Wert (sonst
-  widerspräche das Band der Zahl daneben); das gerechnete Gelb wird **nie**
-  gespeichert.
-- **family #273** — **Fehler in der eigenen Arbeit**, gefunden beim Nachprüfen
-  des nächtlichen Pfades: eine **fehlgeschlagene** Messung trägt die alten
-  Zahlen weiter und zählte den Zähler jede Nacht erneut hoch. Nach drei
-  Ausfällen der Leitung hätte ein Band an einer ungemessenen Seite gehangen.
-  Der eigene Kommentar hatte davor gewarnt — der Text stimmte, der Code nicht.
-- **Sage #847** — **drei** tote Wächter, nicht zwei. `bau23_0b` und
-  `bau23c` starben beim Start (DOM-Ersatz überwachsen, und zwar
-  **unterschiedlich** verrottet); `resign_spore_v02` meldete **sieben
-  gefundene Fehler**, obwohl sie nichts prüfen konnte. **Ursache:** Sage hat 69
-  Smokes und nichts, was sie zusammen laufen lässt → neu `tests/run_alle.mjs`
-  mit **drei** Ergebnissen (grün · ROT · **nicht lauffähig**).
-
-**Dreimal an einem Tag fand die Gegenprobe eine blinde Stelle in der EIGENEN
-Probe** — jedes Mal echt: die Untergrenze des Riegels (greift nur gegen einen
-Müll-Wert), die Objekt-Prüfung des Schalters (mein Test las nur, statt zu
-schreiben), und eine Toolpoint-Gegenprobe, die eine abgeschaffte Regel bewachte.
-
-**Zahlen:** Toolpoint 593/593 · 253 Wächter 0 blind · family
-`smoke_studio_markt` 102 → **182** · neue `gegenprobe_studio_riegel.sh` 19
-Wächter 0 blind · Sage `run_alle` 50 grün / **0 rot** / 19 nicht lauffähig, mit
-`fake-indexeddb` gegengeprüft **69/69**.
-
-**✅ Nachtrag am selben Tag — `package.json` gebaut (PR #849).** Klaus hat
-zugestimmt; der Punkt stand oben noch als „Klaus gefragt, Antwort steht aus"
-und wäre für die nächste Sitzung eine falsche Fährte gewesen. Ergebnis:
-**70/70 grün** (die neue Wächter-Probe kommt dazu). Damit laufen die 19
-Speicher-/Krypto-Härtungen wieder — Modul 01 („Löschen nur bei zweifelsfreier
-Leere", Identitäts-Isolierung), 02 (Spore v0.2, Multi-Identität), 20 (Safe),
-05 (Nostr).
-
-Zwei Entscheidungen darin: **kein `"type": "module"`** — gemessen, mit dem Feld
-fallen zwei Proben um, weil Node dann jede `.js` als ES-Modul liest; ein neuer
-Wächter `tests/smoke_package_json.mjs` hält es fest (samt exakter Fassungs-
-Nagelung, kein `^`). Und **`package-lock.json` bleibt in `.gitignore`** — eine
-bestehende Entscheidung wird nicht still umgedreht; die exakte Nagelung liefert
-die Reproduzierbarkeit ohnehin. `CLAUDE.md` § „Die Proben laufen lassen"
-erklärt jetzt `npm install`/`npm test` und warum 19 Proben ohne das Paket
-**ungeprüft** und nicht **rot** heißen.
-
-**Offen:** die vier Modul-23-UI-Kopien · `PULS.md` bei ~10.100 gegen 3.000
-Zeilen (**sechste** Meldung) · Klaus' Browser-Sichttests.
-
----
-
-> **↓ Ausgelagert am 2026-08-17 — die Sitzungen vom 11. und 12.08.**
->
-> Die Einträge stehen **wortwörtlich** in
-> [`docs/sessions/archiv/2026-08_puls-auslagerung-2.md`](sessions/archiv/2026-08_puls-auslagerung-2.md).
-> Nichts gekürzt, nichts zusammengefasst — die Schutz-Klausel oben verlangt
-> **auslagern statt kürzen**, und die Git-Historie trägt es ohnehin.
->
-> Ältere Sitzungen: [August 03.–09.](sessions/archiv/2026-08_puls-auslagerung.md)
-> · [Juli](sessions/archiv/2026-07_puls-auslagerung.md)
-> · [Mai](sessions/archiv/2026-05_puls-auslagerung.md)
-
+> **Ausgelagert am 2026-08-23.** Die beiden Sitzungs-Einträge vom **14.08.**
+> („PULS ausgelagert: 10.150 → 2.592 Zeilen" und „Sperr-Knöpfe · Automatik-Schalter
+> · drei tote Wächter") stehen wortwörtlich in
+> [`docs/sessions/archiv/2026-08_puls-auslagerung-3.md`](sessions/archiv/2026-08_puls-auslagerung-3.md).
+> Nichts gekürzt, nichts zusammengefasst — die Datei stand bei 3.038 Zeilen, und
+> die Schutz-Klausel sagt: auslagern statt kürzen.
 
 
 ## Als nächstes ✨
@@ -2846,6 +2795,8 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-08-14 | **PULS-Auslagerung 23.08.** · die beiden Sitzungen vom 14.08. (PULS ausgelagert 10.150 → 2.592 Zeilen; Sperr-Knöpfe · Automatik-Schalter · drei tote Wächter) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-3.md) |
+| 2026-08-11 … 08-12 | **PULS-Auslagerung 17.08.** · die Sitzungen vom 11. und 12.08. | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-2.md) |
 | 2026-08-03 … 08-09 | **PULS-Auslagerung 14.08.** · alle August-Sitzungen bis einschließlich 09.08. (Pilz-Wirtschaft Fassung 2, Discovery-Karte, die Bilder-/Ladezeit-Reihe 64→97, Sage-Page-Einblenden, Postfach-Verjährung, Kontrast-Reihe) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung.md) |
 | 2026-07-01 … 07-29 | **PULS-Auslagerung 14.08.** · alle Juli-Sitzungen (Stufe 2b Kartenechtheit, Identität-überlebt-die-Sitzung, Demo-Anteil 8 %→0 %, A11/A12/A15/A18-Strang, RELATEDNESS_CENTER v2, B1–B7-Krypto-Strang, Bau 04.F/04.G) | [→ Archiv](sessions/archiv/2026-07_puls-auslagerung.md) |
 | 2026-06-21 … 06-29 | **PULS-Auslagerung 14.08.** · alle Juni-Sitzungen (Modul 23 Rendezvous, Modul 05 Nostr-Transport, Such-Widget-Increments, „verwandt · KI“, Pinnwand-Beschriftung, Sichttest-Belege) | [→ Archiv](sessions/archiv/2026-06_puls-auslagerung.md) |
