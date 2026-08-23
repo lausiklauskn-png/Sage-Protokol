@@ -1,12 +1,15 @@
 # Forschungsgelder — was geht, was nicht, und in welcher Reihenfolge
 
-**Stand: 2026-08-23.** Klaus' Frage: *„Lassen sich für diese Arbeit Forschungsgelder
-beantragen? Was muss ich tun — einen Verein gründen oder etwas anderes? Was können
-andere tun, was kann die Sitzung tun?"*
+**Stand: 2026-08-23.** Die Frage, um die es geht: **Lässt sich für die Arbeit an
+diesem Netz Forschungsförderung beantragen — und was ist dafür nötig?**
 
-Diese Datei ist die Antwort als **abhakbarer Fahrplan**. Sie ersetzt keine Steuer-
-oder Rechtsberatung. Wo eine Frage Geld bedeutet, steht ausdrücklich dabei, wen man
-fragt.
+Diese Datei ist die Antwort als **abhakbarer Fahrplan**: welche Wege es gibt, was
+sie voraussetzen, in welcher Reihenfolge man sie geht, und an welchen Adressen man
+anklopft. Sie ist auf die Lage dieses Projekts zugeschnitten — ein offen
+lizenziertes, server-loses Software-Netz, gebaut außerhalb einer Hochschule.
+
+**Sie ersetzt keine Steuer- oder Rechtsberatung.** Wo eine Frage Geld bedeutet,
+steht ausdrücklich dabei, wen man fragt.
 
 ---
 
@@ -22,23 +25,23 @@ Drei Wege sind für dich realistisch, und sie schließen einander nicht aus:
 | **2** | **Forschungszulage** (BSFZ + Finanzamt) | Erstattung auf **eigene Arbeitsstunden**, **rückwirkend bis 4 Jahre** | **nein — Rechtsanspruch** | jederzeit |
 | **3** | **Open Technology Fund**, Internet Freedom Fund | 10.000–900.000 USD | ja, aber laufend | jederzeit (Concept Note) |
 
-Dazu kommt ein **vierter Bereich**, den Klaus im Gespräch nachgetragen hat und
-der in keiner Software-Förderübersicht steht: **Suchtpotenzial und psychische
+Dazu kommt ein **vierter Bereich**, der in keiner Software-Förderübersicht
+steht: **Suchtpotenzial und psychische
 Wirkungen der KI-Nutzung.** Dort liegen die Präventionsmittel der Krankenkassen
 und die Medienkompetenz-Töpfe der Länder — **weniger Geld pro Antrag, aber
 deutlich weniger Konkurrenz.** Siehe Abschnitt 2.3.
 
 Der **zweite** Weg ist der wichtigste und der am wenigsten bekannte: die
 Forschungszulage ist **kein Wettbewerb**. Wer die Kriterien erfüllt, bekommt sie —
-und sie greift **rückwirkend** auf Arbeit, die schon getan ist. Für jemanden, der
-seit März 2026 alles selbst bezahlt, ist das der einzige Weg, der auch nach hinten
-schaut statt nur nach vorn.
+und sie greift **rückwirkend** auf Arbeit, die schon getan ist. Sie ist damit der
+einzige der fünf Wege, der nicht nur nach vorn schaut, sondern auch auf das, was
+bereits gebaut wurde.
 
-**Zur Vereinsfrage, kurz:** für diese drei Wege brauchst du **keinen** Verein —
-sie verlangen sogar ausdrücklich eine Person oder ein Unternehmen. Für das
-**Institut für KI-Kompetenz**, das Klaus nachgetragen hat, sieht es anders aus;
-das ist ein eigenes Kapitel (Abschnitt 3b) mit einer klaren Empfehlung: **zwei
-Gefäße, und in dieser Reihenfolge — erst der Antrag, dann der Verein.**
+**Zur Vereinsfrage, kurz:** für diese drei Wege braucht es **keinen** Verein —
+sie verlangen sogar ausdrücklich eine Person oder ein Unternehmen. Für ein
+**Institut für KI-Kompetenz** sieht es anders aus; das ist ein eigenes Kapitel
+(Abschnitt 3b) mit einer klaren Empfehlung: **zwei Gefäße, und in dieser
+Reihenfolge — erst der Antrag, dann der Verein.**
 
 ---
 
@@ -56,9 +59,10 @@ Recherchiert am 2026-08-23 aus dieser Sitzung heraus, über Websuche.
 - **Die Zahlen zur Forschungszulage sind besonders vorsichtig zu behandeln.** Der
   Stundensatz für Eigenleistung und der Jahresdeckel haben sich zum 01.01.2026
   geändert; die genaue Rechnung macht ein Steuerberater, nicht diese Datei.
-- Nicht geprüft, weil es niemand aus einer Sitzung prüfen kann: deine
-  **steuerliche Situation**, deine **Schulabschlüsse**, dein **Wohn-Bundesland**.
-  Daran hängen zwei der Wege. Siehe Abschnitt 9, „Offene Fragen".
+- **Nicht geprüft, weil es aus einer Sitzung niemand prüfen kann:** die
+  persönlichen Voraussetzungen des Antragstellers. An zweien davon hängt, welche
+  Wege offenstehen. Was gebraucht wird und wofür, steht in Abschnitt 9 — die
+  Angaben selbst gehören ins Gespräch, nicht ins Depot.
 
 ---
 
@@ -115,9 +119,9 @@ als Ausblick.** Sonst zieht der schwächere Teil den starken mit runter.
 
 ### 2.3 Der dritte Strang: was KI mit Menschen macht
 
-**Klaus' Nachträge vom 2026-08-23: „Suchtpotenzial" und „psychische Komponenten in
-der Verwendung von KI".** Das ist kein Nebengedanke — es ist der Strang mit dem
-**größten Fördertopf und der geringsten Konkurrenz**, und er gehört
+**Suchtpotenzial und psychische Wirkungen der KI-Nutzung.** Das ist kein
+Nebengedanke — es ist der Strang mit dem **größten Fördertopf und der geringsten
+Konkurrenz**, und er gehört
 ausdrücklich unter das Dach „KI-Kompetenz im täglichen Gebrauch".
 
 **Warum das eine ernste Forschungsfrage ist.** KI-Assistenten haben Eigenschaften,
@@ -168,9 +172,9 @@ diesem Feld: sie fragen Leute hinterher, wie viel sie genutzt haben.
 
 #### Zur Bezeichnung „Psychologe" — nachgeprüft, weil die Annahme nicht stimmt
 
-**Klaus am 2026-08-23:** *„In Deutschland darf man sich Psychologe nennen, auch
-wenn man kein Arzt oder Studierter ist."* **Das ist so nicht richtig, und der
-Irrtum ist der teure Sorte.** Nachgesehen am 2026-08-23:
+Es hält sich hartnäckig die Annahme, „Psychologe" dürfe sich in Deutschland auch
+nennen, wer kein Studium hat. **Das ist nicht richtig, und der Irrtum ist von der
+teuren Sorte.** Nachgesehen am 2026-08-23:
 
 - **„Psychologe" ist geschützt** — nicht durch ein eigenes Berufsgesetz wie bei
   Ärzten, sondern über das **Wettbewerbsrecht**: wer die Bezeichnung ohne
@@ -233,9 +237,9 @@ deutlich weniger umkämpft als die Software-Programme, weil dort weniger Leute
 suchen.
 
 
-### 2.4 Was du an Vorleistung vorzeigen kannst
+### 2.4 Was an Vorleistung vorzuweisen ist
 
-Das ist mehr, als du vermutlich selbst glaubst. In Anträgen zählt genau das:
+Das ist mehr, als es von innen aussieht. In Anträgen zählt genau das:
 
 - **~33 Repositories**, seit März 2026 gewachsen, mit vollständiger Git-Historie
   und Datum an jedem Schritt.
@@ -250,18 +254,19 @@ Das ist mehr, als du vermutlich selbst glaubst. In Anträgen zählt genau das:
   ohne Titel.
 - **Zwei laufende öffentliche Instanzen** (`family-projekt.de`, `pwa-toolpoint.de`)
   mit gemessenen, datierten Werten statt behaupteter.
-- **Eine geführte Kostenrechnung** — Fahrtenbuch und Belege in Kimhub. Für die
-  Forschungszulage ist das kein Nebenprodukt, sondern **das zentrale Beweismittel**.
+- **Eine geführte Aufwandsrechnung** — Fahrtenbuch und Belege in Kimhub, mit
+  Zeiten je Vorhaben. Für die Forschungszulage ist das kein Nebenprodukt, sondern
+  **das zentrale Beweismittel**.
 
 ---
 
 ## 3 · Verein, GmbH oder gar nichts?
 
-Klaus' direkte Frage. Die Antwort ist: **jetzt gar nichts.**
+Die kurze Antwort: **für den Einstieg gar nichts.**
 
 | Form | Kostet | Bringt bei den drei Wegen oben | Empfehlung |
 |---|---|---|---|
-| **Selbstständig / freiberuflich** (was du vermutlich schon bist) | nichts Zusätzliches | **Voraussetzung für Weg 1 und Weg 2** | ✅ **das ist die richtige Form** |
+| **Selbstständig / freiberuflich** | nichts Zusätzliches | **Voraussetzung für Weg 1 und Weg 2** | ✅ **das ist die richtige Form** |
 | **e. V. (Verein)** | 7 Gründungsmitglieder, Satzung, Registergericht, Vorstand, Mitgliederversammlungen | für Weg 1–3 **nichts**. Erst nötig, wenn **Stiftungsgeld oder Spenden** dazukommen | ⏸ später, wenn überhaupt |
 | **gGmbH** | **25.000 € Stammkapital**, Notar, Amtsgericht | dasselbe wie Verein, nur teurer | ❌ nein |
 
@@ -286,8 +291,9 @@ nebenbei trifft.
 
 ## 3b · Das „Institut für KI-Kompetenz im täglichen Gebrauch"
 
-**Klaus' Nachtrag vom 2026-08-23.** Damit ändert sich die Antwort aus Abschnitt 3
-zum Teil — deshalb steht sie hier, statt oben still korrigiert zu werden.
+Sobald neben der Software auch **Bildungsarbeit** dazukommen soll, ändert sich die
+Antwort aus Abschnitt 3 zum Teil. Deshalb steht die Ergänzung hier, statt oben
+still eingearbeitet zu werden.
 
 ### Was daran gut ist
 
@@ -483,10 +489,10 @@ begonnene Vorhaben.
 > rechnet das — es ist die eine Frage, für die sich ein Termin lohnt.
 
 **Rückwirkend:** Anträge sind für zurückliegende Zeiträume möglich (nach den
-gefundenen Quellen bis zu vier Jahre). Das heißt: **die Arbeit seit März 2026
-könnte anrechenbar sein**, wenn du sie belegen kannst.
+gefundenen Quellen bis zu vier Jahre). Das heißt: **auch bereits geleistete Arbeit
+kann anrechenbar sein** — vorausgesetzt, sie ist belegbar.
 
-**Und genau da bist du gut aufgestellt.** Was hier gebraucht wird, ist eine
+**Und dafür ist die Ausgangslage hier gut.** Was gebraucht wird, ist eine
 **Stundenaufzeichnung je Projekt** — und Kimhub führt bereits ein Fahrtenbuch mit
 Zeiten, dazu die Belege. Was fehlt, ist die Zuordnung dieser Stunden zu einem
 klar abgegrenzten Forschungsvorhaben. Das ist Fleißarbeit, keine Kunst.
@@ -501,11 +507,12 @@ klar abgegrenzten Forschungsvorhaben. Das ist Fleißarbeit, keine Kunst.
 2. **Finanzamt** — mit der Bescheinigung dann der eigentliche Antrag auf
    Forschungszulage, zusammen mit der Steuererklärung.
 
-**Die Hürde, ehrlich benannt:** Deine bisherige Selbstständigkeit ist ein
-Werbetechnik-Betrieb. Ob die SBKIM-Forschung diesem Betrieb zugerechnet werden
-kann oder ob dafür eine eigene Tätigkeit angemeldet gehört, ist eine
-Steuerberater-Frage — **und sie ist die erste, die du stellen solltest**, weil an
-der Antwort hängt, ob und ab wann Stunden zählen.
+**Die Hürde, ehrlich benannt:** Die Forschung muss einer **steuerpflichtigen
+Tätigkeit** zugeordnet sein. Besteht bereits eine Selbstständigkeit in einem
+anderen Fach, ist die Frage, ob sich die Softwareforschung ihr zurechnen lässt
+oder ob dafür eine eigene Tätigkeit anzumelden ist. Das ist eine
+**Steuerberater-Frage — und die erste, die gestellt gehört**, weil an der Antwort
+hängt, ob und ab wann Stunden zählen.
 
 ---
 
@@ -546,12 +553,13 @@ oder Forschungseinrichtung** mit EXIST-Gründungsnetzwerk — du kannst ihn nich
 selbst stellen. Und im Team muss **mindestens eine Person einen Hochschulabschluss
 der letzten fünf Jahre oder eine Promotion** haben.
 
-**Zwei Punkte, die du klären musst, bevor du hier Zeit investierst:**
-- Erfüllst du (oder jemand, mit dem du dich zusammentust) die Abschluss-Bedingung?
+**Zwei Punkte, die vorher zu klären sind, bevor hier Zeit hineingeht:**
+- Ist die Abschluss-Bedingung erfüllbar — durch den Antragsteller selbst oder
+  durch einen Mitstreiter?
 - EXIST ist **strikt ein Vorgründungs-Stipendium** — das Unternehmen darf noch
-  nicht gegründet sein. Ob dein bestehender Betrieb dem im Weg steht, klärt der
-  Gründungsservice der Hochschule in einem Vorgespräch. Das Gespräch ist
-  kostenlos.
+  nicht gegründet sein. Ob eine bereits bestehende Selbstständigkeit in einem
+  anderen Fach dem im Weg steht, klärt der Gründungsservice der Hochschule in
+  einem Vorgespräch. Das Gespräch ist kostenlos.
 
 **Adresse:** <https://exist.de/programm/exist-gruendungsstipendium/foerderantrag-stellen/>
 
@@ -605,8 +613,8 @@ Seite, eine klare Bitte um ein Gespräch. Der Entwurf steht in Abschnitt 8.
 
 ### 6.2 Kooperationen mit Wissenschaftlern — der konkrete Weg
 
-**Klaus' Nachtrag vom 2026-08-23.** Die richtige Absicht — aber der Weg dorthin
-ist ein anderer, als die meisten vermuten. Nicht „ich schreibe zwanzig Professoren
+Wissenschaftliche Kooperationen zu suchen ist die richtige Absicht — aber der Weg
+dorthin ist ein anderer, als die meisten vermuten. Nicht „ich schreibe zwanzig Professoren
 an". Sondern: **erst zitierfähig werden, dann sichtbar werden, dann ansprechen.**
 
 **Schritt 1 · Zitierfähig werden.** ORCID (A1) und ein DOI auf Zenodo (B1). Ohne
@@ -689,8 +697,8 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 - [ ] **A1 · ORCID anlegen.** Eine dauerhafte Forscher-Kennung, kostenlos, ohne
       Institution, in fünf Minuten. Ab da bist du in der Wissenschaftswelt
       identifizierbar. → <https://orcid.org/register>
-- [ ] **A2 · Steuerberater-Termin ausmachen.** Eine Frage: *„Kann ich für meine
-      Softwareforschung die Forschungszulage in Anspruch nehmen, und wenn ja, ab
+- [ ] **A2 · Steuerberater-Termin ausmachen.** Eine Frage: *„Lässt sich für die
+      Softwareforschung die Forschungszulage in Anspruch nehmen — und wenn ja, ab
       wann und unter welcher Tätigkeit?"* Das ist der teuerste Punkt auf der
       ganzen Liste, wenn man ihn zu spät stellt.
 - [ ] **A3 · Fristen selbst nachsehen.** Prototype-Fund-Seite aufrufen und
@@ -699,10 +707,10 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 - [ ] **A4 · Entscheiden, mit welchem Repo du dich bewirbst.** Empfehlung:
       **Sage-Protokol** (trägt MIT, enthält die Papers, die Meilensteine und die
       Spezifikation).
-- [ ] **A5 · Die Institutsfrage vertagen — bewusst, nicht aus Versehen.** Das
+- [ ] **A5 · Die Institutsfrage bewusst vertagen, nicht aus Versehen.** Das
       Institut ist eine gute Idee (Abschnitt 3b), aber es darf den Antrag nicht
-      aufhalten. Notiere die Entscheidung mit Datum und nimm sie im **Dezember**
-      wieder auf, wenn der Antrag draußen ist.
+      aufhalten. Entscheidung mit Datum notieren und im **Dezember** wieder
+      aufnehmen, wenn der Antrag draußen ist.
 
 ### Stufe B · September (die Vorleistungs-Mappe)
 
@@ -718,8 +726,8 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       Fördergeberin liest dieses Blatt zuerst.** Ohne es wirkt der Antrag naiv,
       mit ihm belesen.
 - [ ] **B3 · Die Vorleistung in Zahlen fassen.** Zeitraum, Repos, Zeilen,
-      Prüfungen, Meilensteine mit Datum, laufende Instanzen, bisherige eigene
-      Kosten. Vieles davon steht schon in Kimhubs Buchhaltung.
+      Prüfungen, Meilensteine mit Datum, laufende Instanzen, bisheriger
+      Sachaufwand. Die Grundlagen dafür führt Kimhubs Buchhaltung bereits.
 - [ ] **B4 · Lizenz-Lücken schließen.** `BookLedgerPro` und
       `Meine-In-and-Out-Book` bekommen eine Lizenz-Datei.
 - [ ] **B5 · Eine englische Projektseite.** Eine Seite, kein Prospekt. Was es
@@ -779,12 +787,12 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 ### Was **du** tun musst (das kann niemand für dich)
 
 1. **Die Steuerfrage stellen** (A2). Sie ist die Weiche für den zweiten Weg.
-2. **Deine Voraussetzungen offenlegen** — siehe die offenen Fragen unten. An
-   zweien davon hängt, welche Wege überhaupt offenstehen.
+2. **Die fünf Angaben aus Abschnitt 9 klären** — an zweien davon hängt, welche
+   Wege überhaupt offenstehen. Sie gehören ins Gespräch, nicht ins Depot.
 3. **Absenden.** Anträge schreiben kann eine Sitzung; unterschreiben und
-   abschicken kannst nur du.
-4. **Eine Hochschule ansprechen.** Eine E-Mail von dir wiegt mehr als jeder Text,
-   den ich formuliere — weil du derjenige bist, der das gebaut hat.
+   abschicken kann nur der Antragsteller.
+4. **Eine Hochschule ansprechen.** Eine E-Mail von der Person, die das gebaut
+   hat, wiegt mehr als jeder Text, den eine Sitzung formuliert.
 
 ### Was **andere** tun können
 
@@ -794,7 +802,7 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 - **Eine Hochschul-Transferstelle** — kostenlos, dafür da, und kennt die
   regionalen Töpfe, die in keiner bundesweiten Übersicht stehen.
 - **Ein Mitstreiter mit Hochschulabschluss** — öffnet EXIST, das sonst zu bleibt.
-- **Die Gründungsberatung deiner IHK** — meist kostenlos, kennt Landesprogramme.
+- **Die Gründungsberatung der IHK** — meist kostenlos, kennt die Landesprogramme.
 - **Ein Mensch, der schon einmal einen Prototype-Fund-Antrag geschrieben hat.**
   Die Alumni sind auf der Programm-Seite gelistet und in aller Regel
   ansprechbar. Eine halbe Stunde von jemandem, der die Auswahl kennt, ist mehr
@@ -826,26 +834,24 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 
 ---
 
-## 9 · Offene Fragen an Klaus
+## 9 · Die fünf Angaben, ohne die der Fahrplan auf Vermutungen läuft
 
-Diese vier entscheiden, welche Wege offenstehen. Ohne Antwort läuft der Fahrplan
-auf Vermutungen — und Vermutungen sehen in einem Antrag genauso aus wie Wissen,
-bis sie auffliegen.
+Diese fünf Punkte entscheiden, **welche Wege überhaupt offenstehen**. Sie sind
+persönlich und stehen deshalb **absichtlich nicht in dieser Datei** — sie werden
+im Gespräch geklärt, nicht im Depot abgelegt. Hier steht nur, **warum** jeder
+davon zählt, damit eine Folge-Sitzung weiß, wonach sie fragen muss.
 
-1. **Bist du als Selbstständiger oder Freiberufler beim Finanzamt geführt, und
-   hast du eine Steuernummer für diese Tätigkeit?**
-   → Voraussetzung für Weg 1 und Weg 2.
-2. **Gibt es einen Hochschulabschluss — bei dir oder bei jemandem, mit dem du
-   dich zusammentun würdest?** Und wenn ja, wie lange ist er her?
-   → Entscheidet allein über EXIST.
-3. **In welchem Bundesland wohnst du?**
-   → Jedes Land hat eigene Digitalisierungs- und Innovationsprogramme, die in
-   keiner Bundesübersicht stehen. Ohne diese Angabe kann ich sie nicht suchen.
-4. **Wie viel Zeit steckst du wöchentlich in diese Arbeit — und seit wann?**
-   → Die Grundzahl für die Forschungszulage und für jeden Arbeitsplan.
-5. **Soll das Institut gemeinnützig sein — oder soll es Geld verdienen dürfen?**
-   → Das ist die eigentliche Weichenstellung hinter der Rechtsform, und sie
-   entscheidet mit darüber, wem die Ergebnisse am Ende gehören (Abschnitt 3b).
+| Angabe | Wofür sie gebraucht wird |
+|---|---|
+| **Steuerlicher Status** — selbstständig oder freiberuflich geführt, mit Steuernummer für diese Tätigkeit? | Voraussetzung für Weg 1 **und** Weg 2. Ohne sie sind beide zu. |
+| **Hochschulabschluss** — vorhanden, im Team vorhanden, und wie lange her? | Entscheidet **allein** über EXIST (Weg 4). |
+| **Bundesland** | Jedes Land hat eigene Digitalisierungs-, Innovations- und Medienkompetenz-Programme, die in keiner Bundesübersicht stehen. Ohne diese Angabe sind sie nicht auffindbar. |
+| **Arbeitsumfang** — Stunden je Woche, seit wann | Die Grundzahl für die Forschungszulage und für jeden Arbeitsplan im Antrag. |
+| **Institut gemeinnützig oder erwerbswirtschaftlich?** | Die eigentliche Weiche hinter der Rechtsform — sie entscheidet mit darüber, wem die Ergebnisse am Ende gehören (Abschnitt 3b). |
+
+**Warum das hier so ausdrücklich steht:** Vermutungen sehen in einem Antrag genauso
+aus wie Wissen, bis sie auffliegen. Wer eine dieser fünf Angaben rät, statt sie zu
+erfragen, baut den Antrag auf Sand — und merkt es erst beim Bescheid.
 
 ---
 

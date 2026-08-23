@@ -5,14 +5,14 @@
 
 ## Auftrag
 
-Klaus finanziert die Arbeit am SBKIM-Netz seit März 2026 selbst und kommt an seine
-Grenzen. Gefragt war ein **abhakbarer Fahrplan**: Lassen sich Forschungsgelder
-beantragen? Was sind die Voraussetzungen? Verein oder nicht? Wer kann was tun?
+Gefragt war ein **abhakbarer Fahrplan**: Lassen sich für die Arbeit an diesem Netz
+Forschungsgelder beantragen? Was sind die Voraussetzungen? Verein oder nicht? Wer
+kann was tun?
 
-Im Verlauf nachgetragen (jeweils eingearbeitet):
-Sachmittel und Angestellte · ein **Institut für KI-Kompetenz im täglichen
-Gebrauch** · **Suchtpotenzial** · **psychische Komponenten der KI-Nutzung** ·
-Kooperationen mit Wissenschaftlern · die Frage zur Bezeichnung „Psychologe".
+Im Verlauf dazugekommen (jeweils eingearbeitet): Sachmittel und Personal · ein
+**Institut für KI-Kompetenz im täglichen Gebrauch** · **Suchtpotenzial** ·
+**psychische Wirkungen der KI-Nutzung** · Kooperationen mit Wissenschaftlern ·
+die Frage zur Bezeichnung „Psychologe".
 
 ## Ergebnis
 
@@ -36,15 +36,15 @@ Seiten fragen, beide antworten. Die Beobachtung über Mensch und KI hat dieselbe
 Figur: der Mensch prägt die KI über Grundsätze, die KI prägt den Menschen über
 Gewöhnung. Das bindet die drei Stränge zu **einem** Vorhaben statt zu einer Liste.
 
-## Eine Annahme richtiggestellt
+## Eine verbreitete Annahme richtiggestellt
 
-Klaus: *„In Deutschland darf man sich Psychologe nennen, auch wenn man kein
-Studierter ist."* **Nachgesehen: stimmt nicht.** Geschützt über § 5 Abs. 2 Nr. 3
-UWG, gerichtlich bestätigt; der BDP hält zusätzlich § 132a Abs. 2 StGB für
-einschlägig, akademische Grade fallen eindeutig darunter. Frei sind
-„psychologische Beratung", „Coach", „Berater" — das ist vermutlich die Wahrheit
-hinter dem Irrtum, sie gilt aber der Tätigkeit, nicht dem Titel. **Folgenlos für
-die Förderung:** verlangt wird eine Methode, kein Titel.
+Die Annahme, „Psychologe" dürfe sich auch ohne Studium nennen, wer will:
+**nachgesehen, stimmt nicht.** Geschützt über § 5 Abs. 2 Nr. 3 UWG, gerichtlich
+bestätigt; der BDP hält zusätzlich § 132a Abs. 2 StGB für einschlägig, akademische
+Grade fallen eindeutig darunter. Frei sind „psychologische Beratung", „Coach",
+„Berater" — vermutlich die Wahrheit hinter dem Irrtum, sie gilt aber der
+Tätigkeit, nicht dem Titel. **Folgenlos für die Förderung:** verlangt wird eine
+Methode, kein Titel.
 
 ## Prüftiefe — ehrlich
 
@@ -57,14 +57,34 @@ die Förderung:** verlangt wird eine Methode, kein Titel.
 - Alle Pfadangaben in Backticks wurden gegen das Dateisystem geprüft. Ein
   Fremd-Repo-Pfad (Kimhubs `schicht/grundsaetze.md`) wurde daraufhin aus den
   Backticks genommen, statt eine Datei zu behaupten, die es hier nicht gibt.
-- **Nicht prüfbar aus einer Sitzung** und deshalb als offene Fragen formuliert:
-  Klaus' Steuerstatus, Hochschulabschluss, Bundesland, Wochenstunden — und die
-  Weichenfrage, ob das Institut gemeinnützig sein soll.
+- **Nicht prüfbar aus einer Sitzung:** die persönlichen Voraussetzungen
+  (steuerlicher Status, Hochschulabschluss, Bundesland, Arbeitsumfang) und die
+  Weichenfrage, ob das Institut gemeinnützig sein soll. Abschnitt 9 des Dokuments
+  nennt **nur, wofür jede Angabe gebraucht wird** — die Angaben selbst gehören
+  ins Gespräch, nicht ins öffentliche Depot.
 
 ## Manual-Check
 
 **Ungeprüft, weil nicht nötig:** diese Sitzung hat keinen Code angefasst.
 `tests/manual_check.html` ist unverändert.
+
+## Entscheidung zur Veröffentlichung
+
+Sage-Protokol ist **öffentlich** (gemessen: `github.com/…` antwortet ohne
+Anmeldung mit 200). Der erste Entwurf dieses Dokuments nannte die finanzielle
+Lage, den steuerlichen Status und die Abschlussfrage des Antragstellers — auf
+einer öffentlich lesbaren Seite. Auf Nachfrage entschieden: **neutral fassen,
+dann mergen.**
+
+Geblieben ist alles Sachliche — Förderwege, Fristen, Adressen, Rechtsformen, der
+Lizenz-Befund, die Bidirektionalitäts-These. Herausgenommen sind die
+persönlichen Verhältnisse; Abschnitt 9 nennt nur noch, **wofür** jede Angabe
+gebraucht wird.
+
+**Die Lehre daraus, netzweit anschlussfähig:** ein Rechercheergebnis über eine
+Person gehört nicht automatisch dorthin, wo das Rechercheergebnis über eine
+Software hingehört. Bei einem öffentlichen Depot ist „nützlich" nicht dasselbe
+wie „veröffentlichbar" — dieselbe Familie wie NETZWEIT § 6c.
 
 ## Nächste Schritte
 

@@ -36,11 +36,11 @@ auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 **Rolle:** Recherche-Sitzung, kein Modul-Code. Zweig
 `claude/research-funding-next-steps-ib58w2`.
 
-**Anlass:** Klaus finanziert die Arbeit seit März 2026 selbst und kommt an seine
-Grenzen. Frage: *„Lassen sich dafür Forschungsgelder beantragen? Muss ich einen
-Verein gründen?"* Im Gespräch nachgetragen: Sachmittel und Angestellte, ein
-**Institut für KI-Kompetenz im täglichen Gebrauch**, **Suchtpotenzial** und
-**psychische Komponenten der KI-Nutzung**, Kooperationen mit Wissenschaftlern.
+**Anlass:** Die Frage, ob sich für die Arbeit an diesem Netz Forschungsförderung
+beantragen lässt — und was dafür nötig ist. Im Gespräch dazugekommen: Sachmittel
+und Personal, ein **Institut für KI-Kompetenz im täglichen Gebrauch**,
+**Suchtpotenzial** und **psychische Wirkungen der KI-Nutzung**, Kooperationen mit
+Wissenschaftlern.
 
 **Gebaut:** `docs/FORSCHUNGSFOERDERUNG.md` — abhakbarer Fahrplan in fünf Stufen,
 mit Adressen, Fristen und ehrlicher Prüftiefe.
@@ -67,20 +67,20 @@ einzige Topf, der auch auf schon geleistete Arbeit schaut.
    Grundsätze, die KI prägt den Menschen über Gewöhnung. Das verbindet die drei
    Forschungsstränge zu einem Vorhaben statt zu einer Liste.
 
-3. **Eine Annahme richtiggestellt.** Klaus: *„In Deutschland darf man sich
-   Psychologe nennen, auch wenn man kein Studierter ist."* Nachgesehen: **stimmt
-   nicht.** Der Titel ist über § 5 UWG geschützt (gerichtlich bestätigt), der BDP
-   hält § 132a StGB für einschlägig, akademische Grade fallen eindeutig darunter.
-   Frei sind „psychologische Beratung", „Coach", „Berater" — die Tätigkeit, nicht
-   der Titel. **Für die Förderung ist das gleichgültig:** verlangt wird eine
-   Methode, kein Titel. Kasten dazu in Abschnitt 2.3.
+3. **Eine verbreitete Annahme richtiggestellt.** „Psychologe" darf sich in
+   Deutschland **nicht** nennen, wer kein Psychologie-Studium hat — der Titel ist
+   über § 5 UWG geschützt (gerichtlich bestätigt), der BDP hält § 132a StGB für
+   einschlägig, akademische Grade fallen eindeutig darunter. Frei sind
+   „psychologische Beratung", „Coach", „Berater" — die Tätigkeit, nicht der Titel.
+   **Für die Förderung gleichgültig:** verlangt wird eine Methode, kein Titel.
+   Kasten dazu in Abschnitt 2.3.
 
-**Was offen ist — vier Fragen an Klaus,** an denen hängt, welche Wege überhaupt
-offenstehen: Steuernummer für eine selbstständige Tätigkeit? Hochschulabschluss
-(entscheidet allein über EXIST)? Bundesland (ohne das sind die Landesprogramme
-nicht auffindbar)? Wochenstunden seit wann (Grundzahl der Forschungszulage)? Dazu
-die fünfte, die eigentliche Weiche: **soll das Institut gemeinnützig sein oder
-Geld verdienen dürfen?**
+**Was offen ist:** fünf persönliche Angaben, an denen hängt, welche Wege
+überhaupt offenstehen — steuerlicher Status, Hochschulabschluss, Bundesland,
+Arbeitsumfang, und die eigentliche Weiche: Institut gemeinnützig oder
+erwerbswirtschaftlich? **Sie stehen absichtlich nicht im Depot** (Abschnitt 9
+nennt nur, wofür jede gebraucht wird) — geklärt wird im Gespräch. Das Repo ist
+öffentlich; persönliche Verhältnisse gehören dort nicht hinein.
 
 **Nicht geprüft, ehrlich benannt:** `nlnet.nl` und `martinmeng.de` waren aus
 dieser Umgebung nicht abrufbar (Egress-Sperre) — was zu NLnet und zu den
