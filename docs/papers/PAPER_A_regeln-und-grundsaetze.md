@@ -48,7 +48,10 @@ denselben Zweck zuspitzen, lassen sich durch den einen Grundsatz ersetzen, aus d
 sie stammen.** An den sechs Regeln durchgerechnet, schrumpft der Block dadurch um **47 %**.
 **Die dabei eingesparten Token sind allerdings wertlos** — rund eineinhalb Cent je
 Schicht, gegen einen Deckel von fünf Euro; eine einzige vermiedene Fehlschicht
-wiegt so viel wie über dreihundert Schichten Verdichtung. Die naheliegende
+wiegt so viel wie über dreihundert Schichten Verdichtung. Schlimmer noch: weil ein
+Grundsatz **gedeutet** werden muss und Ausgabe-Token das Fünffache kosten, kippt
+die Rechnung schon bei **41 zusätzlichen Denk-Token je Aufruf** ins Negative — das
+ist **Kaplows Anwendungskostensatz, in Token gemessen.** Die naheliegende
 Sparsamkeits-These ist damit **durch die eigene Rechnung widerlegt** (3.8).
 Verdichtung wirkt, wenn überhaupt, über die **Qualität** — und genau deshalb ist
 die Zielgröße *Kosten je brauchbarem Ergebnis* und nicht *je Aufruf*.
@@ -846,11 +849,69 @@ Eingabe-Token:**
 | Wert je Schicht | **0,015 USD** |
 | … wenn der Block zwischengespeichert wird (rund ein Zehntel) | **0,0015 USD** |
 
+#### Der Einwand, der die Rechnung endgültig kippt: das Modell muss deuten
+
+Bis hierher wurde nur die **Eingabe** gezählt. Es gibt aber eine Gegenrichtung, und
+sie ist die stärkere.
+
+**Eine Regel sagt, was zu tun ist. Ein Grundsatz sagt wozu — und lässt offen, was
+das im vorliegenden Fall heißt.** Also muss das Modell diesen Schritt selbst gehen:
+es muss deuten, worauf der Zweck hier hinausläuft. Deuten heißt denken, und Denken
+sind **Ausgabe-Token**.
+
+Und die kosten das Fünffache: bei Claude Opus 5 stehen **5 USD** je Million
+Eingabe-Token gegen **25 USD** je Million Ausgabe-Token.
+
+Damit lässt sich der Umschlagpunkt ausrechnen:
+
+| | |
+|---|---|
+| Ersparnis je Aufruf (204 Eingabe-Token) | **0,00102 USD** |
+| Preis eines Ausgabe-Tokens | **0,000025 USD** |
+| **Umschlagpunkt** | **41 zusätzliche Ausgabe-Token je Aufruf** |
+
+**Einundvierzig Token sind etwa siebenundzwanzig deutsche Wörter — ein bis zwei
+Sätze Nachdenken.** Denkt das Modell wegen des Grundsatzes auch nur so viel länger,
+ist die gesamte Ersparnis aufgezehrt.
+
+**Und mit zwischengespeichertem Block wird es vernichtend:** dort kostet die
+Eingabe rund ein Zehntel, der Umschlagpunkt sinkt auf **vier Ausgabe-Token** —
+weniger als ein halber Satz.
+
+#### Das ist Kaplows Anwendungskosten, in Token gemessen
+
+Dieser Befund ist nicht neu, er ist nur nie so gemessen worden. Kaplow (1992) sagt
+es seit über dreißig Jahren:
+
+> **Regeln sind teuer im Aufstellen und billig im Anwenden.
+> Standards sind billig im Aufstellen und teuer im Anwenden.**
+
+Beim Menschen ist die Anwendungskosten eines Standards die Zeit, die eine Richterin
+zum Abwägen braucht. Hier ist es **dieselbe Größe in einer anderen Währung**: die
+Token, die das Modell für die Deutung aufwendet.
+
+**Die Rechnung oben hat nur die eine Hälfte gezählt** — das Aufstellen, also die
+Bytes im Block. Die andere Hälfte, das Anwenden, steht auf der Ausgabeseite und
+kostet fünfmal so viel je Token. Wer nur die Eingabe misst, misst die Hälfte, die
+ihm recht gibt.
+
+**Damit ist die Verdichtungs-These nicht nur klein, sondern möglicherweise
+negativ** — und ob sie es ist, ist eine Messung und keine Ableitung. Der Versuch in
+Abschnitt 7 kann sie führen: Ein- und Ausgabe-Token werden ohnehin je Lauf
+mitgeschrieben, die Arme unterscheiden sich genau in der Blocklänge, und der
+Vergleich ist eine Subtraktion.
+
+> **Vorhersage, die falsch sein kann:** Arm G hat die niedrigeren Eingabe-Kosten
+> und die **höheren** Ausgabe-Kosten. Ob die Summe unter oder über der von R+G
+> liegt, entscheidet sich an einem Wert, der bei einundvierzig Token umschlägt —
+> also an einer sehr kleinen Zahl.
+
 #### Das Ergebnis widerlegt die naheliegende Erwartung
 
-**Die Ersparnis ist winzig.** Eineinhalb Cent je Schicht, und mit
-Zwischenspeicherung ein Siebtel davon. Gegen einen Schicht-Deckel von fünf Euro ist
-das nichts.
+**Die Ersparnis ist winzig** — und nach dem Abschnitt oben womöglich gar keine.
+Eineinhalb Cent je Schicht auf der Eingabeseite, mit Zwischenspeicherung ein
+Zehntel davon, und auf der Ausgabeseite ein Umschlagpunkt bei einundvierzig Token.
+Gegen einen Schicht-Deckel von fünf Euro ist das nichts.
 
 Der Vergleich, der es einordnet:
 
