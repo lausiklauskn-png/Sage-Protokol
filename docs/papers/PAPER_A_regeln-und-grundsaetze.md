@@ -53,8 +53,13 @@ Grundsatz **gedeutet** werden muss und Ausgabe-Token das Fünffache kosten, kipp
 die Rechnung schon bei **41 zusätzlichen Denk-Token je Aufruf** ins Negative — das
 ist **Kaplows Anwendungskostensatz, in Token gemessen.** Die naheliegende
 Sparsamkeits-These ist damit **durch die eigene Rechnung widerlegt** (3.8).
-Verdichtung wirkt, wenn überhaupt, über die **Qualität** — und genau deshalb ist
-die Zielgröße *Kosten je brauchbarem Ergebnis* und nicht *je Aufruf*.
+**Die Rechnung gehört von der anderen Seite geführt:** nicht die Anweisung kostet,
+sondern die **Arbeit**. Die gesamte Blockverdichtung entspricht einer
+Trefferquoten-Verbesserung von **0,31 %**; zehn Prozent weniger Ausgabe-Token sind
+das Dreiunddreißigfache davon. Daraus folgt der Satz, der den Abschnitt trägt:
+**kürze die Anweisung nie, um zu sparen — nur, wenn sie dadurch klarer wird.** Bei
+diesem Verhältnis gewinnt immer die Genauigkeit, und die Zielgröße ist *Ausgabe-Token
+je brauchbarem Ergebnis*.
 
 Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
 Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
@@ -933,7 +938,10 @@ die eingesparten Token. **Genau deshalb ist die Zielgröße „Kosten je brauchb
 Ergebnis" und nicht „Kosten je Aufruf"** (7.4). Diese Rechnung ist der Beleg, dass
 die Wahl der Zielgröße richtig war, und nicht bloß vorsichtig.
 
-**2 · Die Größenordnung kippt mit dem Maßstab.** Bei fünfzehn Aufrufen je Schicht
+**2 · Und die Rechnung gehört ohnehin von der anderen Seite geführt** — siehe
+unten: nicht die Anweisung kostet, sondern die Arbeit.
+
+**3 · Die Größenordnung kippt mit dem Maßstab.** Bei fünfzehn Aufrufen je Schicht
 ist es nichts. Bei einem Dienst mit vielen Nutzern und Millionen Aufrufen ist
 dieselbe Ersparnis echtes Geld. **Für den kleinen Betreiber, um den es hier geht,
 gilt sie nicht** — und das ist genau die Art Unterscheidung, die verlorengeht, wenn
@@ -943,6 +951,68 @@ man eine Zahl aus einem anderen Maßstab übernimmt, ohne sie nachzurechnen.
 > Sparsamkeits-These klang zwingend, hielt aber der ersten Rechnung nicht stand.
 > Sie steht hier vollständig samt Widerlegung, weil ein Papier, das nur die
 > bestätigten Vermutungen zeigt, seine Auswahl beschreibt und nicht die Sache.
+
+#### Die Rechnung von der richtigen Seite: es geht um die Ausgabe, nicht um die Eingabe
+
+Alles bisher in diesem Abschnitt betrachtet die **Eingabe** — wie lang der
+Anweisungsblock ist. Das war die falsche Seite, und die eigene Rechnung zeigt es:
+die Ersparnis dort ist eineinhalb Cent, der Umschlagpunkt liegt bei einundvierzig
+Token.
+
+**Das Geld liegt auf der Ausgabeseite.** Nicht die Anweisung kostet, sondern die
+**Arbeit** — jeder Umweg, jeder Fehlversuch, jede Runde, die wiederholt werden
+muss, weil das Ergebnis nicht brauchbar war. Und Ausgabe-Token kosten das
+Fünffache.
+
+Damit lautet die eigentliche Frage nicht *„wie kürze ich die Anweisung?"*, sondern:
+
+> **Führt die Lenkung schneller ans Ziel?** Weniger Umwege, weniger Nacharbeit,
+> weniger verworfene Läufe — also **weniger Ausgabe-Token für dasselbe brauchbare
+> Ergebnis**.
+
+Der Vergleich in Zahlen, gegen einen Schicht-Deckel von fünf Euro:
+
+| Wodurch | Wirkung je Schicht | im Verhältnis zur Verdichtung |
+|---|---|---|
+| Anweisungsblock um 47 % kürzen | 0,015 USD | **1×** |
+| **1 %** weniger Ausgabe-Token | 0,05 € | **3×** |
+| **5 %** weniger Ausgabe-Token | 0,25 € | **16×** |
+| **10 %** weniger Ausgabe-Token | 0,50 € | **33×** |
+| **20 %** weniger Ausgabe-Token | 1,00 € | **65×** |
+
+**Die gesamte Blockverdichtung entspricht einer Trefferquoten-Verbesserung von
+0,31 Prozent.** Ein Drittel eines Prozentpunkts. Wer die Anweisung kürzt und dabei
+auch nur ein halbes Prozent Treffsicherheit verliert, hat verloren — und wer sie
+verlängert und dabei ein Prozent gewinnt, hat gewonnen.
+
+#### Was das für die These dieses Papiers heißt
+
+Es ordnet die ganze Frage neu, und zwar zugunsten der Genauigkeit statt der Kürze:
+
+**Erstens: Sparsamkeit ist kein Argument für Grundsätze.** Wer sie so begründet,
+begründet sie mit dem kleinsten Posten der Rechnung. Der Abschnitt oben widerlegt
+das mit eigenen Zahlen, und es bleibt widerlegt.
+
+**Zweitens: Treffsicherheit ist das einzige Argument, das trägt** — für welchen
+Kanal auch immer. Ob Regeln, Grundsätze oder beides den kürzeren Weg zum
+brauchbaren Ergebnis bahnen, ist die Frage, an der alles hängt. **Und sie ist
+offen.** Ein Grundsatz kann Umwege sparen, weil er den Zweck nennt und das Modell
+nicht auf einen Fall festnagelt, der nicht vorliegt. Er kann Umwege auch
+**erzeugen**, weil er gedeutet werden muss (Kaplows Anwendungskosten oben).
+
+**Drittens ist damit der Streit über die Blocklänge beendet, bevor er anfängt.**
+Man muss nicht abwägen zwischen „kurz genug" und „genau genug" — bei diesem
+Verhältnis gewinnt **immer** die Genauigkeit. Eine Anweisung, die drei Zeilen
+länger ist und den Weg um ein Prozent verkürzt, ist die bessere Anweisung, auch
+wenn sie sich verschwenderisch liest.
+
+> **Der Satz, der aus diesem ganzen Abschnitt übrig bleibt:**
+> **Kürze die Anweisung nie, um zu sparen. Kürze sie nur, wenn sie dadurch klarer
+> wird — und miss, ob der Weg zum Ziel kürzer geworden ist.**
+
+Deshalb misst der Versuch in Abschnitt 7 **Ausgabe-Token je brauchbarem Ergebnis**
+und nicht die Blocklänge. Die Blocklänge wird trotzdem mitgeschrieben — aber als
+Nebengröße, nicht als Ziel.
 
 #### Was daraus für den Versuch folgt
 
