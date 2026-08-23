@@ -45,11 +45,16 @@ Nachweisbarkeit lassen sich nicht im selben Kanal haben** (3.7).
 
 Aus derselben Richtung folgt ein praktischer Nebenbefund: **mehrere Regeln, die
 denselben Zweck zuspitzen, lassen sich durch den einen Grundsatz ersetzen, aus dem
-sie stammen.** Weil der Anweisungsblock bei **jedem** Aufruf mitgeschickt wird,
-ist das keine Stilfrage, sondern eine Kostenrechnung — und sie trifft gerade die
-kleinen Betreiber. Verdichtung ist allerdings verlustbehaftet und dort unzulässig,
-wo ein **einzelner** Verstoß schadet (3.8). Das eigentliche Maß ist deshalb nicht
-der Preis je Aufruf, sondern **je brauchbarem Ergebnis**.
+sie stammen.** An den sechs Regeln durchgerechnet, schrumpft der Block dadurch um **47 %**.
+**Die dabei eingesparten Token sind allerdings wertlos** — rund eineinhalb Cent je
+Schicht, gegen einen Deckel von fünf Euro; eine einzige vermiedene Fehlschicht
+wiegt so viel wie über dreihundert Schichten Verdichtung. Schlimmer noch: weil ein
+Grundsatz **gedeutet** werden muss und Ausgabe-Token das Fünffache kosten, kippt
+die Rechnung schon bei **41 zusätzlichen Denk-Token je Aufruf** ins Negative — das
+ist **Kaplows Anwendungskostensatz, in Token gemessen.** Die naheliegende
+Sparsamkeits-These ist damit **durch die eigene Rechnung widerlegt** (3.8).
+Verdichtung wirkt, wenn überhaupt, über die **Qualität** — und genau deshalb ist
+die Zielgröße *Kosten je brauchbarem Ergebnis* und nicht *je Aufruf*.
 
 Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
 Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
@@ -809,6 +814,135 @@ Aufruf**. Wenn dadurch mehr Läufe misslingen und wiederholt werden müssen, kan
 die Rechnung sich umdrehen. **Die richtige Größe ist nicht der Preis je Aufruf,
 sondern der Preis je brauchbarem Ergebnis** — und der ist eine Messung, keine
 Ableitung.
+
+#### Ein durchgerechnetes Beispiel — und es geht anders aus als erwartet
+
+Der Grundsatz, der mehrere Regeln trägt, lässt sich benennen. Drei der sechs Regeln
+— *Ehrlichkeit zuerst*, *nichts erfinden*, *du hast keine Werkzeuge* — dienen
+demselben Zweck:
+
+> **Wer sich auf deine Ausgabe verlässt, muss sich verlassen können.**
+> Schreib nur hin, was du wirklich weißt. Was du nicht prüfen konntest, benennst du
+> als ungeprüft. Eine geratene Zahl klingt genau wie eine gemessene.
+
+**Gemessen, nicht geschätzt** (Zeichenzahl am Wortlaut in `WERKSTATTREGELN.md`):
+
+| | Zeichen |
+|---|---|
+| Die drei Regeln zusammen | **938** |
+| Der eine Grundsatz, der sie trägt | **224** |
+| **Ersparnis je Aufruf** | **714** — der Regelblock schrumpft von 1.510 auf 796 Zeichen, also um **47 %** |
+
+Die Umrechnung in Token ist eine **Schätzung** und als solche gekennzeichnet: bei
+deutscher Prosa etwa 3 bis 4 Zeichen je Token, also **rund 180 bis 240 Token** je
+Aufruf. *Die genaue Zahl liefert die `count_tokens`-Schnittstelle; sie ist zu
+messen, bevor irgendwo eine Zahl behauptet wird.*
+
+**Und jetzt die Rechnung, mit rund 200 Token je Aufruf und 5 USD je Million
+Eingabe-Token:**
+
+| | |
+|---|---|
+| Aufrufe, um **1 Mio. Token** zu sparen | rund **4.900** |
+| Wert dieser Million | **5,00 USD** |
+| Eine Schicht (5 Rollen, je 3 Aufrufe = 15) | **3.060 Token** gespart |
+| Wert je Schicht | **0,015 USD** |
+| … wenn der Block zwischengespeichert wird (rund ein Zehntel) | **0,0015 USD** |
+
+#### Der Einwand, der die Rechnung endgültig kippt: das Modell muss deuten
+
+Bis hierher wurde nur die **Eingabe** gezählt. Es gibt aber eine Gegenrichtung, und
+sie ist die stärkere.
+
+**Eine Regel sagt, was zu tun ist. Ein Grundsatz sagt wozu — und lässt offen, was
+das im vorliegenden Fall heißt.** Also muss das Modell diesen Schritt selbst gehen:
+es muss deuten, worauf der Zweck hier hinausläuft. Deuten heißt denken, und Denken
+sind **Ausgabe-Token**.
+
+Und die kosten das Fünffache: bei Claude Opus 5 stehen **5 USD** je Million
+Eingabe-Token gegen **25 USD** je Million Ausgabe-Token.
+
+Damit lässt sich der Umschlagpunkt ausrechnen:
+
+| | |
+|---|---|
+| Ersparnis je Aufruf (204 Eingabe-Token) | **0,00102 USD** |
+| Preis eines Ausgabe-Tokens | **0,000025 USD** |
+| **Umschlagpunkt** | **41 zusätzliche Ausgabe-Token je Aufruf** |
+
+**Einundvierzig Token sind etwa siebenundzwanzig deutsche Wörter — ein bis zwei
+Sätze Nachdenken.** Denkt das Modell wegen des Grundsatzes auch nur so viel länger,
+ist die gesamte Ersparnis aufgezehrt.
+
+**Und mit zwischengespeichertem Block wird es vernichtend:** dort kostet die
+Eingabe rund ein Zehntel, der Umschlagpunkt sinkt auf **vier Ausgabe-Token** —
+weniger als ein halber Satz.
+
+#### Das ist Kaplows Anwendungskosten, in Token gemessen
+
+Dieser Befund ist nicht neu, er ist nur nie so gemessen worden. Kaplow (1992) sagt
+es seit über dreißig Jahren:
+
+> **Regeln sind teuer im Aufstellen und billig im Anwenden.
+> Standards sind billig im Aufstellen und teuer im Anwenden.**
+
+Beim Menschen ist die Anwendungskosten eines Standards die Zeit, die eine Richterin
+zum Abwägen braucht. Hier ist es **dieselbe Größe in einer anderen Währung**: die
+Token, die das Modell für die Deutung aufwendet.
+
+**Die Rechnung oben hat nur die eine Hälfte gezählt** — das Aufstellen, also die
+Bytes im Block. Die andere Hälfte, das Anwenden, steht auf der Ausgabeseite und
+kostet fünfmal so viel je Token. Wer nur die Eingabe misst, misst die Hälfte, die
+ihm recht gibt.
+
+**Damit ist die Verdichtungs-These nicht nur klein, sondern möglicherweise
+negativ** — und ob sie es ist, ist eine Messung und keine Ableitung. Der Versuch in
+Abschnitt 7 kann sie führen: Ein- und Ausgabe-Token werden ohnehin je Lauf
+mitgeschrieben, die Arme unterscheiden sich genau in der Blocklänge, und der
+Vergleich ist eine Subtraktion.
+
+> **Vorhersage, die falsch sein kann:** Arm G hat die niedrigeren Eingabe-Kosten
+> und die **höheren** Ausgabe-Kosten. Ob die Summe unter oder über der von R+G
+> liegt, entscheidet sich an einem Wert, der bei einundvierzig Token umschlägt —
+> also an einer sehr kleinen Zahl.
+
+#### Das Ergebnis widerlegt die naheliegende Erwartung
+
+**Die Ersparnis ist winzig** — und nach dem Abschnitt oben womöglich gar keine.
+Eineinhalb Cent je Schicht auf der Eingabeseite, mit Zwischenspeicherung ein
+Zehntel davon, und auf der Ausgabeseite ein Umschlagpunkt bei einundvierzig Token.
+Gegen einen Schicht-Deckel von fünf Euro ist das nichts.
+
+Der Vergleich, der es einordnet:
+
+> **Eine einzige vermiedene Fehlschicht entspricht rund 327 Schichten
+> Block-Verdichtung** — bei zwischengespeichertem Block rund **3.268**.
+
+**Damit ist die Sparsamkeits-These in ihrer einfachen Form widerlegt**, und zwar
+durch die eigene Rechnung. Wer Verdichtung mit „das spart Rechenleistung"
+begründet, begründet sie falsch: die Blockgröße ist bei dieser Betriebsgröße
+schlicht nicht der Posten, auf den es ankommt.
+
+**Zwei Dinge bleiben trotzdem stehen**, und beide sind wichtiger als das, was
+widerlegt wurde:
+
+**1 · Verdichtung wirkt über die Qualität, nicht über die Bytes.** Wenn ein
+kürzerer, klarerer Block auch nur **eine von dreihundert** Schichten davor bewahrt
+zu misslingen, hat er sich bezahlt gemacht — und zwar hundertfach mehr als durch
+die eingesparten Token. **Genau deshalb ist die Zielgröße „Kosten je brauchbarem
+Ergebnis" und nicht „Kosten je Aufruf"** (7.4). Diese Rechnung ist der Beleg, dass
+die Wahl der Zielgröße richtig war, und nicht bloß vorsichtig.
+
+**2 · Die Größenordnung kippt mit dem Maßstab.** Bei fünfzehn Aufrufen je Schicht
+ist es nichts. Bei einem Dienst mit vielen Nutzern und Millionen Aufrufen ist
+dieselbe Ersparnis echtes Geld. **Für den kleinen Betreiber, um den es hier geht,
+gilt sie nicht** — und das ist genau die Art Unterscheidung, die verlorengeht, wenn
+man eine Zahl aus einem anderen Maßstab übernimmt, ohne sie nachzurechnen.
+
+> **Die Lehre aus diesem Abschnitt ist methodisch, nicht inhaltlich:** die
+> Sparsamkeits-These klang zwingend, hielt aber der ersten Rechnung nicht stand.
+> Sie steht hier vollständig samt Widerlegung, weil ein Papier, das nur die
+> bestätigten Vermutungen zeigt, seine Auswahl beschreibt und nicht die Sache.
 
 #### Was daraus für den Versuch folgt
 
