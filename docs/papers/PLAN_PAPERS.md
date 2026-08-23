@@ -37,6 +37,18 @@ hingeschrieben.
 
 ## Paper A · Regelbasiertes und grundsatzbasiertes Lenken
 
+> **✅ Fassung 1 geschrieben am 2026-08-23:**
+> [`PAPER_A_regeln-und-grundsaetze.md`](PAPER_A_regeln-und-grundsaetze.md).
+> Was unten steht, ist das Gerüst, nach dem es gebaut wurde — es bleibt stehen,
+> damit die Folge-Papers dieselbe Disziplin bekommen.
+>
+> **Über das Gerüst hinaus dazugekommen:** ein Abschnitt zum Stand der Technik
+> mit vier belegten Quellen (Kaplow 1992 · Schuett et al. 2024 · Bai et al. 2022 ·
+> Rebedea et al. 2023), die Verortung in der Lücke zwischen ihnen — Grundsätze
+> zur **Ausführungszeit**, gesetzt vom **Betreiber** —, die **Sättigungsgrenze**
+> als Eigenschaft, die Regeln nicht haben, und der **dreiarmige Versuch** samt
+> widerlegbarer Vorhersage (Klaus' Vorschlag vom selben Tag).
+
 **Arbeitstitel:** *Regeln und Grundsätze: zwei Arten, ein KI-System zu lenken —
 und warum keine allein genügt*
 

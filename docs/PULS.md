@@ -31,6 +31,50 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-23 (Bau) — 📄 Paper A geschrieben
+
+**Rolle:** Fortsetzung derselben Sitzung. Zweig
+`claude/research-funding-next-steps-ib58w2`.
+
+**Gebaut:** `docs/papers/PAPER_A_regeln-und-grundsaetze.md` (553 Zeilen, Fassung 1)
+— *„Regeln und Grundsätze: zwei Arten, ein KI-System zu lenken — und warum keine
+allein genügt."*
+
+**Der Beitrag, sauber abgegrenzt.** Die Literatur besetzt zwei Positionen:
+Grundsätze zur **Trainingszeit** vom Modellanbieter (Constitutional AI, Bai et al.
+2022) und Regeln zur **Ausführungszeit** vom Einsetzenden (NeMo Guardrails,
+Rebedea et al. 2023). Dazu die Rechtsökonomie (Kaplow 1992, *rules versus
+standards*) und deren Übertragung auf die KI-Regulierung (Schuett et al. 2024).
+**Dünn besetzt ist die vierte Zelle: Grundsätze zur Ausführungszeit, gesetzt vom
+Betreiber**, in einer Textdatei, die auch ein Nicht-Programmierer ändern kann.
+Genau dort sitzt die Werkstatt. Alle vier Quellen recherchiert, nicht aus dem
+Gedächtnis zitiert.
+
+**Zwei eigene Beiträge über das Gerüst hinaus:**
+
+1. **Die Sättigungsgrenze.** Regeln addieren sich, Grundsätze verdünnen sich —
+   zwanzig wirken schlechter als fünf, weil Aufmerksamkeit begrenzt ist. Kaplow
+   und Schuett et al. behandeln das nicht, weil auf ihrer Ebene kein
+   Aufmerksamkeitsbudget im Spiel ist.
+2. **Der dreiarmige Versuch** (Klaus' Vorschlag vom selben Tag): nur Regeln · nur
+   Grundsätze · beides. Er macht die These zum ersten Mal **widerlegbar** — mit
+   vorab festgelegten Fehlerkategorien und einem Auswertungswerkzeug, das dem
+   Bewertenden **verbirgt, aus welchem Arm ein Lauf stammt**. Ohne diese
+   Verblindung misst die Auswertung die Erwartung des Auswertenden, zumal er die
+   Grundsätze selbst geschrieben hat.
+
+**Ein Fehler von mir, von der eigenen Gegenprobe gefunden.** Ich hatte „die acht
+Regeln" geschrieben, an vier Stellen. **Es sind sechs.** Die Zahl war gesetzt,
+nicht gezählt — genau die Falle, gegen die Grundsatz 4 geschrieben wurde („eine
+geratene Zahl klingt genau wie eine gemessene"). Richtiggestellt im Paper, in
+`werkstatt/BEFUND.md` und in `werkstatt/README.md`. **Wer eine Zahl über das
+eigene Material schreibt, zählt sie ab.**
+
+**Nächster sinnvoller Schritt:** Zenodo-DOI für die beiden vorhandenen Papers und
+für dieses; parallel der Steuerberater-Termin.
+
+---
+
 ## Stand 2026-08-23 (Bau) — 🇩🇪 Hamburg nachgezogen, Paper-Plan angelegt
 
 **Rolle:** Fortsetzung derselben Sitzung. Zweig

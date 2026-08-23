@@ -12,7 +12,7 @@ was muss man ihr stattdessen als Grundsatz mitgeben?**
 
 | Datei | Was drin steht |
 |---|---|
-| **[`WERKSTATTREGELN.md`](WERKSTATTREGELN.md)** | die acht **erzwungenen** Regeln — prüfbar, im Code, jede Rolle bekommt sie |
+| **[`WERKSTATTREGELN.md`](WERKSTATTREGELN.md)** | die sechs **erzwungenen** Regeln — prüfbar, im Code, jede Rolle bekommt sie |
 | **[`grundsaetze.md`](grundsaetze.md)** | die fünf **Grundsätze** — nicht prüfbar, in Markdown, ohne Programmierer änderbar |
 | **[`BEFUND.md`](BEFUND.md)** | was sich daran beobachten ließ — **und was daraus nicht folgt** |
 
