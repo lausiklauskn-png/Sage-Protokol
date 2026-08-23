@@ -4,10 +4,10 @@
 [Kimhub](https://github.com/lausiklauskn-png/Kimhub), Stand **2026-08-23**
 (Quelldatei SHA-256 `6b151749ed4525b1…`, Depot-Stand `1f226d3`).
 
-> **Das ist kein Byte-Kopie, sondern ein Auszug.** Im Original stehen die Regeln
-> als Zeichenkette in einer Quelldatei; hier stehen sie als Text zum Lesen. Wer
-> prüfen will, ob sie noch stimmen, sieht im Original nach — **das ist die Quelle
-> der Wahrheit, diese Datei ist eine Momentaufnahme.**
+> **Das ist keine Byte-Kopie, sondern ein Auszug.** Im Original stehen die Regeln
+> als Zeichenkette in einer Quelldatei, hier stehen sie als Text zum Lesen. Wer
+> prüfen will, ob sie noch stimmen, sieht im Original nach: **dort ist die Quelle,
+> diese Datei ist eine Momentaufnahme.**
 
 ---
 
