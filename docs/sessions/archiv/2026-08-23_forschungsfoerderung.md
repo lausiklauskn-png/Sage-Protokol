@@ -95,3 +95,68 @@ wie „veröffentlichbar" — dieselbe Familie wie NETZWEIT § 6c.
 3. Stufe B, die Vorleistungs-Mappe — **Zenodo-DOI zuerst**, bestes Verhältnis von
    Aufwand zu Wirkung auf der ganzen Liste.
 4. Stichtag: Prototype-Fund-Bewerbung **01.10.–30.11.2026**.
+
+---
+
+# Fortsetzung · 2026-08-23 · Der Forschungskorpus
+
+**Auftrag von Klaus:** die Repos finden, die sich als offen lizenzierter Beleg
+der Forschung eignen — und die drei öffentlichen zuerst umlizenzieren.
+
+## Umlizenziert auf MIT
+
+| Repo | PR | Proben | Historie geprüft |
+|---|---|---|---|
+| Kim-Bell | #52 | `npm test` 4/4 | 54 Commits, sauber |
+| Kimseek | #70 | `npm test` 11/11 | 72 Commits, sauber |
+| Kimboard | #128 | `node tests/alle.mjs` **31/31** | 128 Commits, sauber |
+
+Je vier Stellen: `LICENSE`, `package.json`, `FP-COPYRIGHT`-Kopf in `index.html`,
+`RECHTE.md`.
+
+## Neu in diesem Repo
+
+- `docs/FORSCHUNGSKORPUS.md` — die benannte Kette aus sechs Repos
+- `docs/werkstatt/` — Weg C für Kimhub: README (mit Prüfsummen),
+  `grundsaetze.md` (byte-gleich), `WERKSTATTREGELN.md` (Auszug), `BEFUND.md`
+
+## Vier Befunde, die nicht gesucht waren
+
+1. **Kim-Bell stand im Widerspruch zu sich selbst** — „1:1-kopierbare Vorlage"
+   im README, Kopierverbot in Ziffer 4 der Lizenz. Seit Bestehen des Repos.
+2. **Ziffer 5 aller 28 Nutzungslizenzen stellt die SBKIM-Module unter MIT.** Die
+   frühere Zählung „nur 3 von 33 sind Open Source" war zu grob: das Protokoll war
+   überall offen, zu war nur die App-Hülle. Im Chat richtiggestellt.
+3. **Die SBKIM-Demo liegt unter `sbkim-demo/` in diesem Repo** und war damit
+   immer schon MIT — Klaus hatte sie für ein eigenes Repo gehalten.
+4. **Kimhubs Historie trägt die Rechnungsdaten weiter.** `git rm` am 2026-08-22
+   nahm sie aus dem Arbeitsbaum, nicht aus der Vergangenheit: 859 Zeilen, 75
+   Belege, über `0ee4640` abrufbar. Das ist der Grund für Weg C.
+
+## Sorgfalt, die getan wurde
+
+- Alle drei Historien **vollständig entflacht** (`git fetch --unshallow`) und auf
+  API-Schlüssel, Tokens, private Schlüssel und Belegdateien durchsucht. Nichts
+  gefunden. Die `sk-ant-api`-Treffer sind Testdaten des eigenen Wächters
+  (`const SCHEIN = "sk-ant-api0…" + "x".repeat(90)`).
+- **Ein Befund, kein Riegel:** in Kimseeks und Kimboards Historie steht an alten
+  Stellen eine private E-Mail-Adresse; im aktuellen Stand ist sie ersetzt. Beide
+  Repos sind ohnehin öffentlich, MIT ändert daran nichts. In den PRs genannt.
+- Die **Kastenbreite** im `FP-COPYRIGHT`-Kopf wurde aus der Datei gemessen (65),
+  nicht geraten. `package.json` nach dem Schreiben mit `json.loads` gegengelesen.
+- Bei Kimboard **`node tests/alle.mjs`** statt `npm test` — genau die
+  Unterscheidung, vor der die dortige Verfassung warnt. `npm test` hätte 6
+  Prüfungen gemeldet und wie eine vollständige Auskunft ausgesehen.
+- Alle Markdown-Verweise der neuen Dateien gegen das Dateisystem geprüft.
+
+## Was NICHT im Korpus liegt — und warum
+
+Die Geschäfts-Apps behalten ihre Nutzungslizenz. Kimhub bleibt privat. Kein
+lauffähiger Code aus Kimhub wurde nach Sage kopiert: **eine Probe, die in keinem
+Läufer steht, ist stumm** — sie hier abzulegen hieße, grüne Haken vorzutäuschen,
+die niemand einlöst.
+
+## Manual-Check
+
+**Ungeprüft, weil nicht nötig:** nur Doku und Lizenzdateien angefasst, kein
+App-Code. In den drei umlizenzierten Repos liefen die vollen Proben grün.

@@ -893,6 +893,11 @@ erfragen, baut den Antrag auf Sand — und merkt es erst beim Bescheid.
 
 ## 11 · Was in diesem Repo dazugehört
 
+- **[`docs/FORSCHUNGSKORPUS.md`](FORSCHUNGSKORPUS.md) — die benannte Kette, auf
+  die der Antrag zeigt.** Sechs Repos unter MIT, dazu die Werkstatt-Unterlagen.
+  Seit dem 2026-08-23 sind Kim-Bell, Kimseek und Kimboard darin geöffnet.
+- **[`docs/werkstatt/`](werkstatt/)** — Regeln, Grundsätze und der ehrliche
+  Befund zum Lern-Strang, samt dem, was daran **nicht** bewiesen ist
 - `docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md` — der Beleg, auf den sich jeder Antrag
   stützt
 - `docs/meilenstein/` — die datierten Einzelbelege samt Bildern
