@@ -24,6 +24,7 @@ Drei Wege sind für dich realistisch, und sie schließen einander nicht aus:
 | **1** | **Prototype Fund** (BMFTR/OKF) | bis **47.500 €** für 6 Monate | ja, Auswahl | Bewerbung **01.10.–30.11.2026** |
 | **2** | **Forschungszulage** (BSFZ + Finanzamt) | Erstattung auf **eigene Arbeitsstunden**, **rückwirkend bis 4 Jahre** | **nein — Rechtsanspruch** | jederzeit |
 | **3** | **Open Technology Fund**, Internet Freedom Fund | 10.000–900.000 USD | ja, aber laufend | jederzeit (Concept Note) |
+| **4** | **InnoFounder** (IFB Hamburg) — nur mit Wohnsitz Hamburg | **2.500 €/Monat**, bis 18 Monate, bis 45.000 € | ja | laufend |
 
 Dazu kommt ein **vierter Bereich**, der in keiner Software-Förderübersicht
 steht: **Suchtpotenzial und psychische
@@ -580,6 +581,92 @@ Der Vollständigkeit halber, damit niemand dort Zeit verliert:
 
 ---
 
+## 5b · Hamburg — was es hier zusätzlich gibt
+
+**Ergänzt am 2026-08-23**, nachdem das Bundesland feststand. Diese drei stehen in
+keiner Bundesübersicht.
+
+### InnoFounder (IFB Hamburg) — der stärkste Landes-Treffer
+
+**Was:** **2.500 € je Monat** bei Vollzeit, bis zu **18 Monate**, für
+Einzelgründungen bis **45.000 €** (im Team bis 75.000 €, höchstens drei
+Personen). Dazu Begleitung.
+
+**Warum das wichtig ist:** InnoFounder verlangt — anders als EXIST — **keinen
+Hochschulabschluss als harte Bedingung** und läuft **nicht über eine Hochschule**.
+Damit ist es für die hiesige Lage der zugänglichere der beiden.
+
+**Bedingungen:** Wohn- oder Unternehmenssitz überwiegend in **Hamburg**. Die
+Geschäftstätigkeit darf **noch nicht aufgenommen** sein oder **weniger als ein
+Jahr** bestehen. Alle Branchen, ausdrücklich auch digitale Vorhaben.
+
+> ⚠ **Die eine Frage, die vorher zu klären ist** — dieselbe wie bei EXIST: Steht
+> eine **bereits bestehende Selbstständigkeit in einem anderen Fach** dem im Weg,
+> oder zählt das neue Vorhaben für sich? Das entscheidet nicht diese Datei,
+> sondern ein Vorgespräch. Es ist kostenlos.
+
+**Adresse:** <https://www.ifbhh.de/foerderprogramm/innofounder> ·
+<https://innovationsstarter.com/innofounder/>
+
+### Projektfonds Medien und Bildung — für den Kompetenz-Strang
+
+**400.000 €** im Jahr, verteilt von der Behörde für Schule, Familie und
+Berufsbildung über das Zentrum für Schul- und Jugendinformation. Einzelförderung
+in der Regel **1.000 bis 50.000 €**, bei drei Jahren Laufzeit bis 150.000 €.
+
+Im Mittelpunkt stehen Projekte, die **Kreativität, Kollaboration, Kritikfähigkeit
+und Kommunikation** stärken. „KI-Kompetenz im täglichen Gebrauch" liegt genau
+dort.
+
+**Frist:** die Bewerbungsphase für 2026/27 lief vom **01.01. bis 08.03.2026** —
+für dieses Jahr vorbei. **Für die nächste Runde vormerken**, das ist der Topf mit
+der geringsten Konkurrenz auf dieser ganzen Liste.
+
+**Adressen:** <https://zsj.hamburg.de/> · <https://mediennetz-hamburg.de/medienkompetenzfonds>
+
+### Kostenlose Beratung vor Ort
+
+- **Handelskammer Hamburg** — Gründungsberatung, kostenlos
+  <https://www.handelskammer-hamburg.de/>
+- **hei. Hamburger ExistenzgründungsInitiative** — kostenlose Erstberatung
+- **Hamburg Kreativ Gesellschaft** — für alles, was zwischen Technik und
+  Gestaltung liegt <https://kreativgesellschaft.org/>
+
+**Diese drei Türen kosten nichts und kennen die Landestöpfe.** Ein Gespräch dort
+ersetzt Stunden Suchen.
+
+---
+
+## 5c · Anmelden: Gewerbe oder freiberuflich — und wie es in Hamburg läuft
+
+**Der gemeinsame Schritt für beide Wege** ist der **Fragebogen zur steuerlichen
+Erfassung**, elektronisch über **ELSTER** ans Finanzamt. Daraus kommt die
+Steuernummer. Ein ELSTER-Zertifikat wird gebraucht; es ist kostenlos und dauert
+ein paar Tage, weil ein Brief kommt.
+
+| | **Freiberuflich** | **Gewerbe** |
+|---|---|---|
+| Gewerbeanmeldung | **entfällt** | nötig |
+| Kosten | keine | **20 €** (in Hamburg, je Bezirk 15–25 €) |
+| Online möglich | ja, über ELSTER | **ja**, vollständig über das Serviceportal Hamburg |
+| Dauer | — | 3–7 Werktage |
+| Gewerbesteuer | **nein** | ja, mit Freibetrag |
+| IHK-Beitrag | **nein** | ja |
+| danach | Fragebogen über ELSTER | Gewerbeamt meldet ans Finanzamt; Fragebogen trotzdem **innerhalb eines Monats** über ELSTER |
+
+**Adressen:** Gewerbeanzeige online —
+<https://serviceportal.hamburg.de/HamburgGateway/Service/Entry/GWR> ·
+ELSTER — <https://www.elster.de>
+
+**Kann man erst einmal einen Antrag stellen?** Ja. **Der Fragebogen ist der
+Antrag** — man trägt die Tätigkeit ein, und **das Finanzamt entscheidet**, ob es
+sie als freiberuflich oder gewerblich einordnet. Man muss sich also nicht vorher
+festlegen; man muss die Tätigkeit nur richtig beschreiben. **Genau dabei hilft der
+Steuerberater**, und genau deshalb ist der Termin vor dem Ausfüllen richtig
+gesetzt und nicht danach.
+
+---
+
 ## 6 · Der Hochschul-Partner — der größte Hebel, den du hast
 
 ### 6.1 Warum, und wen man anspricht
@@ -701,6 +788,11 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       Softwareforschung die Forschungszulage in Anspruch nehmen — und wenn ja, ab
       wann und unter welcher Tätigkeit?"* Das ist der teuerste Punkt auf der
       ganzen Liste, wenn man ihn zu spät stellt.
+- [ ] **A2b · ELSTER-Zertifikat beantragen** — <https://www.elster.de>. Es wird
+      für den Fragebogen zur steuerlichen Erfassung gebraucht, ist kostenlos, und
+      es dauert ein paar Tage, weil ein Brief kommt. **Das ist der Schritt, der
+      am ehesten Zeit frisst, wenn man ihn zu spät anstößt** — er lässt sich
+      parallel zum Steuerberater-Termin erledigen.
 - [ ] **A3 · Fristen selbst nachsehen.** Prototype-Fund-Seite aufrufen und
       prüfen, ob 01.10.–30.11.2026 noch gilt. **Nicht** dieser Datei glauben —
       sie ist vom 23.08.2026.
@@ -719,7 +811,11 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       zitierfähige Nummer und einen **beweisbaren Zeitstempel** auf deine Arbeit.
       → <https://zenodo.org/>
       *Das ist der Punkt mit dem besten Verhältnis von Aufwand zu Wirkung auf der
-      ganzen Liste.*
+      ganzen Liste.* Und er ist **ohne Risiko**: eine Zenodo-Fassung bleibt
+      unverändert stehen, spätere Fassungen bekommen einen eigenen DOI und werden
+      mit der alten verknüpft. Man legt sich also nichts fest, was man später
+      bereut. Für die drei geplanten Papers:
+      [`papers/PLAN_PAPERS.md`](papers/PLAN_PAPERS.md).
 - [ ] **B2 · Ein Blatt „Stand der Technik und Abgrenzung".** Eine Seite: was es
       schon gibt (IPFS, ActivityPub, Matrix, Solid, libp2p, Nostr, zentrale
       Vektor-Suchen), und in welchem Punkt SBKIM etwas anderes tut. **Jede
@@ -740,10 +836,17 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       in die Wissenschaft, die es für deine Lage gibt — mit ISBN, ohne
       Hochschulzugehörigkeit. → <https://gi.de/> und
       <https://fb-mci.gi.de/fachbereich/fachgruppen>
-- [ ] **B8 · Die Landesmedienanstalt deines Bundeslands anschreiben.** Ein Absatz
-      zum Thema „KI-Kompetenz und Suchtpotenzial im Alltag" und die Frage nach
-      der Projektförderung. Diese Stellen antworten in aller Regel, und sie
-      antworten schnell.
+- [ ] **B8 · Hamburg: die drei kostenlosen Türen abklappern** — Handelskammer,
+      hei., Kreativ Gesellschaft. Eine Frage überall dieselbe: *„Welche
+      Landesprogramme kommen für ein Software-Forschungsvorhaben in Frage, und
+      steht eine bestehende Selbstständigkeit in einem anderen Fach dem im Weg?"*
+- [ ] **B9 · InnoFounder-Vorgespräch** (Abschnitt 5b). Der zugänglichste Weg mit
+      Geld für den Lebensunterhalt — 2.500 €/Monat, kein Hochschulabschluss
+      verlangt, keine Hochschule dazwischen. Zu klären ist nur die Frage der
+      bestehenden Selbstständigkeit.
+- [ ] **B10 · Projektfonds Medien und Bildung vormerken** — Frist für 2026/27 war
+      der 08.03.2026, die nächste Runde kommt im Januar. Der Topf mit der
+      geringsten Konkurrenz.
 
 ### Stufe C · Oktober/November (der Antrag)
 
@@ -902,6 +1005,8 @@ erfragen, baut den Antrag auf Sand — und merkt es erst beim Bescheid.
   stützt
 - `docs/meilenstein/` — die datierten Einzelbelege samt Bildern
 - `docs/papers/` — die beiden Papers (DE/EN), Rohstoff für Zenodo
+- **[`docs/papers/PLAN_PAPERS.md`](papers/PLAN_PAPERS.md)** — das Gerüst der drei
+  kommenden Papers, samt der Stellen, an denen jedes kippen kann
 - `docs/GUTACHTEN/` — das Gutachten
 - `docs/WARUM_SBKIM_STATT_KI.md` — die ehrliche Abgrenzung; halbfertige Vorlage
   für das Blatt „Stand der Technik"
