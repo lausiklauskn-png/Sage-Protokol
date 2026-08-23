@@ -223,3 +223,30 @@ schreibt, zählt sie ab. Auch — und gerade — wenn er das Material selbst ang
 ## Manual-Check
 
 **Ungeprüft, weil nicht nötig:** nur Doku angefasst, kein App-Code.
+
+### Nachtrag am selben Tag: die zweite Achse
+
+Klaus' zweiter Vorschlag — **drei Aufgabenarten** neben den drei Armen: eigene
+Idee (E) · Vorlage vom Vorgänger (V) · Bestehendes verbessern (B).
+
+**Das ist die wichtigere der beiden Ergänzungen.** Eine Rangfolge („R+G gewinnt")
+lässt sich aus fast jedem Ergebnis herauslesen; ein **Verlauf über drei Stufen**
+nicht. Und der Verlauf folgt zwingend aus Kaplows Punkt: wenn eine Regel genau den
+Fall abdeckt, für den sie geschrieben wurde, muss ihr Vorteil mit der
+Vorhersehbarkeit des Falls **steigen** — und der Vorteil der Grundsätze fallen.
+Läuft es flach oder gegenläufig, ist die These widerlegt, egal wer insgesamt vorn
+liegt.
+
+Zweiter Gewinn: Aufgabenart B legt der Truppe den Bestand **vor**. Damit trennt
+sich, was in der Feldbeobachtung vermischt war — schlägt sie Vorhandenes vor,
+weil sie unaufmerksam ist (dort greifen Grundsätze), oder weil sie den Bestand
+nicht sieht (dann war es nie ein Lenkungsproblem, sondern eines des Zugangs)?
+
+Daraus folgte eine Korrektur an den Fehlerkategorien: **„Wiederholung" ist nur
+bei Art B aussagekräftig.** Wer sie über alle Arten zusammenzählt, mischt
+fehlenden Zugang mit fehlender Aufmerksamkeit zu einer Zahl.
+
+Der Preis ist benannt: neun Bedingungen statt zwei, jede mehrfach. Zwei Auswege
+stehen im Paper, beide **vorher** zu entscheiden — stufenweise fahren, oder die
+Wiederholungszahl senken und hinschreiben, dass die Aussage schwächer wird. Was
+nicht geht: unterwegs kürzen und das Ergebnis vollständig aussehen lassen.

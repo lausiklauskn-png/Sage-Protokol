@@ -46,8 +46,11 @@ hingeschrieben.
 > mit vier belegten Quellen (Kaplow 1992 · Schuett et al. 2024 · Bai et al. 2022 ·
 > Rebedea et al. 2023), die Verortung in der Lücke zwischen ihnen — Grundsätze
 > zur **Ausführungszeit**, gesetzt vom **Betreiber** —, die **Sättigungsgrenze**
-> als Eigenschaft, die Regeln nicht haben, und der **dreiarmige Versuch** samt
-> widerlegbarer Vorhersage (Klaus' Vorschlag vom selben Tag).
+> als Eigenschaft, die Regeln nicht haben, und der Versuchsaufbau: **drei Arme**
+> (nur Regeln · nur Grundsätze · beides) mal **drei Aufgabenarten** (eigene Idee ·
+> Vorlage · Bestehendes verbessern), beides Klaus' Vorschläge vom selben Tag.
+> Erst die zweite Achse macht die Vorhersage scharf: der Vorteil der Grundsätze
+> müsste mit der Vorhersehbarkeit des Falls **fallen**.
 
 **Arbeitstitel:** *Regeln und Grundsätze: zwei Arten, ein KI-System zu lenken —
 und warum keine allein genügt*

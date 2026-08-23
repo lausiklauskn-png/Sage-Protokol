@@ -56,12 +56,23 @@ Gedächtnis zitiert.
    zwanzig wirken schlechter als fünf, weil Aufmerksamkeit begrenzt ist. Kaplow
    und Schuett et al. behandeln das nicht, weil auf ihrer Ebene kein
    Aufmerksamkeitsbudget im Spiel ist.
-2. **Der dreiarmige Versuch** (Klaus' Vorschlag vom selben Tag): nur Regeln · nur
-   Grundsätze · beides. Er macht die These zum ersten Mal **widerlegbar** — mit
-   vorab festgelegten Fehlerkategorien und einem Auswertungswerkzeug, das dem
-   Bewertenden **verbirgt, aus welchem Arm ein Lauf stammt**. Ohne diese
+2. **Der Versuchsaufbau** — beides Klaus' Vorschläge vom selben Tag, und der
+   zweite ist der wichtigere. **Drei Arme** (nur Regeln · nur Grundsätze ·
+   beides) mal **drei Aufgabenarten** (eigene Idee · Vorlage · Bestehendes
+   verbessern). Vorab festgelegte Fehlerkategorien, und ein Auswertungswerkzeug,
+   das dem Bewertenden **verbirgt, aus welchem Arm ein Lauf stammt** — ohne diese
    Verblindung misst die Auswertung die Erwartung des Auswertenden, zumal er die
    Grundsätze selbst geschrieben hat.
+
+   **Warum die zweite Achse den Unterschied macht:** eine bloße Rangfolge („R+G
+   gewinnt") lässt sich aus fast jedem Ergebnis herauslesen. Ein **Verlauf über
+   drei Stufen** nicht. Aus Kaplows Punkt folgt zwingend, dass der Vorteil der
+   Grundsätze mit der Vorhersehbarkeit des Falls fallen muss — bei der offenen
+   Aufgabe groß, bei der umrissenen klein oder umgekehrt. Läuft der Verlauf flach
+   oder gegenläufig, ist die These widerlegt, unabhängig vom Gesamtsieger.
+   Zusätzlich trennt Aufgabenart B endlich, was bisher vermischt war: ob die
+   Truppe Vorhandenes vorschlägt, weil sie unaufmerksam ist oder weil sie den
+   Bestand gar nicht sieht.
 
 **Ein Fehler von mir, von der eigenen Gegenprobe gefunden.** Ich hatte „die acht
 Regeln" geschrieben, an vier Stellen. **Es sind sechs.** Die Zahl war gesetzt,

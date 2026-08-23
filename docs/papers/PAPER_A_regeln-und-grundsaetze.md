@@ -43,10 +43,15 @@ Studie.
 Abschnitt 7 beschreibt den Versuch, der daraus eine machen soll: **drei Arme** —
 nur Regeln, nur Grundsätze, beides — mit vorab festgelegten Fehlerkategorien und
 einem Auswertungswerkzeug, das dem Bewertenden **verbirgt, aus welchem Arm ein
-Lauf stammt**. Daraus folgt eine Vorhersage, die falsch sein kann: die Kombination
-schlägt beide Einzelarme, und die beiden Einzelarme machen **verschiedene**
-Fehler, nicht dieselben in anderer Zahl. Trifft das Letzte nicht zu, ist die hier
-vorgeschlagene Trennung Beschreibung und keine Erklärung.
+Lauf stammt**. Eine zweite Achse variiert die **Art der Aufgabe** — von der
+völlig offenen eigenen Idee bis zur eng umrissenen Verbesserung von
+Bestehendem.
+
+Daraus folgt eine Vorhersage, die falsch sein kann, und sie hat eine Richtung:
+**der Vorteil der Grundsätze müsste mit der Vorhersehbarkeit des Falls fallen** —
+groß bei der offenen Aufgabe, klein oder umgekehrt bei der umrissenen. Ein
+flacher oder gegenläufiger Verlauf widerlegt die These, unabhängig davon, welcher
+Arm insgesamt vorn liegt.
 
 **Schlagwörter:** Lenkung von KI-Systemen · Regeln und Standards · Mehr-Agenten-Systeme ·
 Ausführungszeit-Alignment · Betreiber-Steuerung · Feldbeobachtung
@@ -375,6 +380,9 @@ Ein Zweiarm-Vergleich (mit/ohne Grundsätze) könnte nur zeigen, **dass** die
 Grundsätze etwas ändern. Der dritte Arm ist der entscheidende: er prüft, ob die
 Kombination mehr leistet als der bessere ihrer Teile.
 
+Dazu kommt eine zweite Achse — die **Art der Aufgabe** (7.3). Erst beide
+zusammen ergeben eine Vorhersage, die sich nicht schönreden lässt.
+
 ### 7.2 Die Vorhersage — und was sie widerlegen würde
 
 Aus der These dieses Papiers („beide leisten Verschiedenes, keins genügt allein")
@@ -397,7 +405,66 @@ kann. Drei Ergebnisse würden es widerlegen:
 **Das dritte wäre der schwerste Schlag** und ist zugleich das plausibelste
 Gegenergebnis. Es gehört ausdrücklich hingeschrieben, bevor gemessen wird.
 
-### 7.3 Was gemessen wird — vorher festgelegt, nicht nachher
+### 7.3 Drei Aufgabenarten — und warum das die Vorhersage erst scharf macht
+
+Der zweite Vorschlag des Betreibers (2026-08-23): nicht nur die Lenkung
+verändern, sondern auch die **Art der Aufgabe**.
+
+| Art | Was die Truppe bekommt | Wie offen ist der Fall? |
+|---|---|---|
+| **E · Eigene Idee** | ein Ziel, sonst nichts | **völlig offen** — niemand hat vorher hingesehen |
+| **V · Vorlage** | die Arbeit eines Vorgängers als Ausgangspunkt | teilweise vorgezeichnet |
+| **B · Bestehendes verbessern** | etwas bereits Gebautes, mit der Frage, ob es besser geht | **eng umrissen** — der Fall liegt vor |
+
+**Das ist keine Erweiterung, sondern der eigentliche Prüfstein.** Der Kern dieses
+Papiers ist Kaplows Punkt: **eine Regel deckt genau den Fall ab, für den jemand
+sie geschrieben hat.** Daraus folgt unmittelbar, dass ihr Vorteil davon abhängen
+muss, **wie vorhersehbar der Fall war**. Und das lässt sich einstellen.
+
+### 7.3.1 Die Vorhersage bekommt damit eine Richtung
+
+Aus 3 Armen × 3 Aufgabenarten wird nicht nur eine feinere Tabelle, sondern eine
+Aussage, die deutlich leichter zu widerlegen ist als „R+G gewinnt":
+
+> **Der Abstand zwischen G und R ist bei Art E am größten und bei Art B am
+> kleinsten** — er müsste über E → V → B **monoton fallen**.
+>
+> Bei Art **B** könnte R sogar vor G liegen: der Fall ist umrissen, die Regeln
+> greifen, und Grundsätze bringen wenig, wo nichts mehr zu erraten ist.
+
+Eine Rangfolge (R+G vorn) ließe sich mit viel gutem Willen aus fast jedem
+Ergebnis herauslesen. **Ein Verlauf über drei Stufen nicht.** Läuft er flach oder
+in die falsche Richtung, ist die These über die Vorhersehbarkeit widerlegt — und
+zwar unabhängig davon, welcher Arm insgesamt vorn liegt.
+
+### 7.3.2 Art B misst zusätzlich etwas, das kein anderer Arm messen kann
+
+Der stärkste Einzelbefund aus Abschnitt 4.4 war unfreiwillig: die Rollen sehen
+den Bestand nicht und schlagen deshalb Vorhandenes vor. **Aufgabenart B legt
+ihnen den Bestand ausdrücklich vor.** Damit trennt sich, was bisher vermischt war:
+
+- Schlägt eine Rolle **auch dann** etwas Vorhandenes vor, wenn es ihr vorliegt,
+  ist es ein Aufmerksamkeitsproblem — dort greifen Grundsätze.
+- Schlägt sie es **nur** vor, wenn sie den Bestand nicht sieht, war es nie ein
+  Lenkungsproblem, sondern eines des **Zugangs** — und weder Regel noch Grundsatz
+  hätte je etwas ausgerichtet.
+
+Das ist der Punkt, an dem der Versuch etwas beantwortet, was die Feldbeobachtung
+nur benennen konnte.
+
+### 7.3.3 Der Preis
+
+Drei Arme mal drei Aufgabenarten sind **neun Bedingungen**, jede mehrfach zu
+wiederholen. Das ist ein Vielfaches des zweiarmigen Vergleichs, und es kostet
+echtes Geld je Lauf.
+
+Zwei Auswege stehen offen, und beide gehören vorher entschieden, nicht unterwegs:
+den Versuch **stufenweise** fahren (zuerst E gegen B als die beiden Extreme, V
+erst danach), oder die Wiederholungszahl je Bedingung senken und **ausdrücklich
+hinschreiben**, dass die Aussage dadurch schwächer wird. **Was nicht geht:
+unterwegs kürzen und das Ergebnis vollständig aussehen lassen.**
+
+### 7.4 Was gemessen wird — vorher festgelegt, nicht nachher
 
 Ein Fehlerbegriff, der nach den Läufen entsteht, misst die Erwartung des
 Auswertenden. Deshalb: **Kategorien vor dem ersten Lauf festlegen, danach nicht
@@ -417,7 +484,12 @@ sollte im Arm G häufiger sein (keine erzwungenen Regeln), **leere Weitergabe** 
 Arm R (keine Haltung, die zum Konkretwerden drängt). Trifft das nicht zu, ist das
 bereits ein Befund.
 
-### 7.4 Das Analysewerkzeug — und die eine Eigenschaft, die es haben muss
+**Und die Kategorie „Wiederholung" ist nur bei Aufgabenart B aussagekräftig.**
+Bei E und V sieht die Truppe den Bestand nicht — dort misst sie fehlenden Zugang,
+nicht fehlende Aufmerksamkeit (7.3.2). Wer sie über alle Arten hinweg
+zusammenzählt, mischt zwei verschiedene Dinge zu einer Zahl.
+
+### 7.5 Das Analysewerkzeug — und die eine Eigenschaft, die es haben muss
 
 Der Betreiber schlägt ein Auswertungswerkzeug in der Maschine vor. Das ist
 richtig, und es hat eine Anforderung, die über allem anderen steht:
@@ -439,7 +511,7 @@ Verteilungen je Arm ausgeben, und **die Rohdaten mitliefern** — eine Auswertun
 deren Zwischenschritte niemand nachrechnen kann, ist eine Behauptung mit
 Balkendiagramm.
 
-### 7.5 Feste Kriterien für den Bau
+### 7.6 Feste Kriterien für den Bau
 
 Der zweite Vorschlag des Betreibers: Einstellungen, in denen die Regeln für den
 Bau nach festen Kriterien festgelegt werden. Für den Versuch ist das
@@ -448,8 +520,9 @@ benannt sein, sonst vergleicht man zwei verschiedene Dinge.
 
 Festzuhalten je Lauf, maschinell und nicht von Hand:
 
-Modellkennung und Fassung · Arm (R / G / R+G) · Wortlaut beider Kanäle (oder
-deren Prüfsumme) · Auftrag · Zeitpunkt · Kosten und Dauer.
+Modellkennung und Fassung · **Arm** (R / G / R+G) · **Aufgabenart** (E / V / B) ·
+Wortlaut beider Kanäle (oder deren Prüfsumme) · Auftrag · bei Art V und B: was
+genau vorlag · Zeitpunkt · Kosten und Dauer.
 
 **Die Modellkennung ist dabei die wichtigste Angabe.** Der Vorbehalt aus
 Abschnitt 6 — Modellwechsel nicht von der Grundsatz-Wirkung getrennt — fällt nur
@@ -457,7 +530,7 @@ weg, wenn alle drei Arme auf **derselben** Modellfassung laufen, und zwar
 nachweisbar. Läuft der Versuch über mehrere Wochen, ist das keine
 Selbstverständlichkeit.
 
-### 7.6 Was der Versuch auch dann noch nicht kann
+### 7.7 Was der Versuch auch dann noch nicht kann
 
 Drei Vorbehalte bleiben, und sie bleiben ausdrücklich:
 
@@ -473,7 +546,7 @@ Drei Vorbehalte bleiben, und sie bleiben ausdrücklich:
    behandeln Sättigung nicht, weil auf ihrer Ebene kein Aufmerksamkeitsbudget im
    Spiel ist.
 
-### 7.7 Was daran fehlt und gesucht wird
+### 7.8 Was daran fehlt und gesucht wird
 
 Die Punkte 7.1 bis 7.5 sind baubar; das System bringt die Voraussetzungen mit
 (die Grundsätze liegen in einer eigenen Datei, die sich wegnehmen lässt, und das
