@@ -667,6 +667,51 @@ gesetzt und nicht danach.
 
 ---
 
+## 5d · Wie sich der Betrieb trägt — BYOK (Klaus 2026-08-23)
+
+**Jeder Fördergeber stellt diese Frage**, meist unter der Überschrift
+*„Nachhaltigkeit"* oder *„und danach?"*. Bei einem Vorhaben, dessen Werkzeuge bei
+jeder Nutzung fremde Rechenzeit kosten, ist sie die naheliegendste — und ohne
+Antwort fällt der Antrag durch.
+
+**Die Antwort ist entschieden und heißt BYOK:** *bring your own key*. Wer eines
+der Werkzeuge nutzt, bringt seinen **eigenen** KI-Schlüssel mit und zahlt seine
+eigenen Aufrufe.
+
+**Der Satz, um den es geht:**
+
+> **Open Source regelt das Kopieren, nicht das Betreiben.** Die MIT-Lizenz
+> verpflichtet dazu, den Quelltext herauszugeben. Sie verpflichtet zu nichts,
+> was Rechenzeit kostet.
+
+Was das löst — und was es nicht kostet:
+
+| | |
+|---|---|
+| Laufende Kosten für den Betreiber | **keine** |
+| Der Code bleibt offen | **ja**, vollständig |
+| Abrechnung, Umsatzsteuer, Wiederverkäufer-Rolle | **entfällt** |
+| Wo der Schlüssel liegt | **im Browser des Nutzers**, verschlüsselt, nie auf einem Server |
+
+**Das ist kein neues Muster, sondern das Muster dieses Netzes.** Kimseek und
+BookLedgerPro arbeiten bereits so; das Rezept dafür liegt fertig als Skill
+`verschluesselter-schluessel-tresor` (Modul 20 Safe, kein Klartext in
+localStorage oder IndexedDB, Vergessen-Schutz, headless bewiesen).
+
+**Warum das im Antrag ein Vorteil ist, kein Eingeständnis.** Ein Vorhaben, dessen
+Betrieb laufende Zuschüsse braucht, ist für eine Fördergeberin ein Risiko — sie
+finanziert dann etwas, das ohne sie stehenbleibt. BYOK dreht das um: **gefördert
+wird die Entwicklung, nicht der Betrieb.** Genau darauf sind Prototype Fund und
+InnoFounder gebaut.
+
+> **Der Weg, der ausdrücklich nicht gegangen wird:** selbst betreiben und
+> abrechnen. Das machte aus dem Betreiber einen Wiederverkäufer fremder
+> Rechenzeit — mit Steuerpflichten, mit einem eigenen Bezahlvorgang (in
+> PWA Toolpoints Verfassung ausdrücklich auf der „wird nicht gebaut"-Liste) und
+> mit einer Gewerbeanmeldung, die vorher dasein müsste.
+
+---
+
 ## 6 · Der Hochschul-Partner — der größte Hebel, den du hast
 
 ### 6.1 Warum, und wen man anspricht
