@@ -693,10 +693,41 @@ Was das löst — und was es nicht kostet:
 | Abrechnung, Umsatzsteuer, Wiederverkäufer-Rolle | **entfällt** |
 | Wo der Schlüssel liegt | **im Browser des Nutzers**, verschlüsselt, nie auf einem Server |
 
-**Das ist kein neues Muster, sondern das Muster dieses Netzes.** Kimseek und
-BookLedgerPro arbeiten bereits so; das Rezept dafür liegt fertig als Skill
+### Der eigentliche Grund: es geht nicht um einen Nutzer, sondern um viele
+
+Für **einen** Betreiber allein wäre die Frage klein — eine Schicht kostet, was sie
+kostet. Sie wird erst groß, sobald **mehrere** dieselben Werkzeuge benutzen, und
+genau darum geht es ja.
+
+| | **ohne BYOK** | **mit BYOK** |
+|---|---|---|
+| 1 Nutzer | eigene Kosten | eigene Kosten |
+| 10 Nutzer | **zehnfache** Kosten für den Betreiber | unverändert **null** |
+| 1.000 Nutzer | nicht tragbar | unverändert **null** |
+
+**Das ist kein Preisunterschied, sondern ein Unterschied in der Bauart.** Ohne
+BYOK wächst die Rechnung mit jedem Nutzer mit, und zwar unbegrenzt — Erfolg wird
+dann zur Bedrohung. Mit BYOK bleibt sie flach: **das System skaliert, ohne dass
+die Kosten mitskalieren.**
+
+Für einen Antrag ist das ein starker Satz, und er ist keine Behauptung, sondern
+folgt aus der Bauart. Eine Fördergeberin fragt nach der Tragfähigkeit; hier ist
+sie eine Eigenschaft der Konstruktion und keine Hoffnung.
+
+**Das ist kein neues Muster, sondern das erprobte Muster dieses Netzes.**
+Nachgesehen am 2026-08-23, in vier Apps im Einsatz:
+
+| App | Beleg |
+|---|---|
+| **Mein Rezeptbuch** | 26 Fundstellen zum API-Schlüssel, Nutzer trägt „deinen Schlüssel" selbst ein |
+| **Mein Mixarium** | Schlüssel in `localStorage` unter `mxkey9m` |
+| **Kimseek** | „KI-Schlüssel sind BYOK und bleiben im Browser" |
+| **BookLedgerPro** | „EU-KI, BYOK, opt-in" |
+
+Das Rezept für die verschlüsselte Ablage liegt fertig als Skill
 `verschluesselter-schluessel-tresor` (Modul 20 Safe, kein Klartext in
-localStorage oder IndexedDB, Vergessen-Schutz, headless bewiesen).
+localStorage oder IndexedDB, Vergessen-Schutz, headless bewiesen). **Nichts neu zu
+bauen, nur anzuwenden.**
 
 **Warum das im Antrag ein Vorteil ist, kein Eingeständnis.** Ein Vorhaben, dessen
 Betrieb laufende Zuschüsse braucht, ist für eine Fördergeberin ein Risiko — sie
