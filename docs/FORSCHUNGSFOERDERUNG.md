@@ -503,10 +503,28 @@ begonnene Vorhaben.
 gefundenen Quellen bis zu vier Jahre). Das heißt: **auch bereits geleistete Arbeit
 kann anrechenbar sein** — vorausgesetzt, sie ist belegbar.
 
-**Und dafür ist die Ausgangslage hier gut.** Was gebraucht wird, ist eine
-**Stundenaufzeichnung je Projekt** — und Kimhub führt bereits ein Fahrtenbuch mit
-Zeiten, dazu die Belege. Was fehlt, ist die Zuordnung dieser Stunden zu einem
-klar abgegrenzten Forschungsvorhaben. Das ist Fleißarbeit, keine Kunst.
+**Und dafür ist die Ausgangslage hier gut** — aber nicht so gut, wie es auf den
+ersten Blick aussieht. Was gebraucht wird, ist eine **Stundenaufzeichnung je
+Vorhaben**: Datum, Vorhaben, Stunden, Tätigkeit.
+
+**Zwei Sorten Beleg liegen vor, und sie decken verschieden weit:**
+
+| Was | Seit wann | Was es belegt |
+|---|---|---|
+| Sage-Protokol: `PULS.md`, Übergabeprotokolle, Commit-Historie über 33 Depots | **10.03.2026** | dass durchgehend gearbeitet wurde, mit Datum |
+| Kimhub: Fahrtenbuch, Stechuhr, Belege | **22.08.2026** | Stunden und Kosten, auf die Minute |
+
+**Der Unterschied ist der Punkt.** Über fünf Monate liegt eine lückenlose
+**Dokumentation** vor, aber keine **Stundenaufzeichnung** — das Fahrtenbuch ist
+erst wenige Tage alt. Wer beides in einem Satz zusammenzieht, meldet
+Aufzeichnungen, die es nicht gibt, und merkt es erst bei der Nachfrage.
+**Dokumentierte Zeit und gemessene Zeit sind zwei Dinge.**
+
+Was daraus folgt, ist trotzdem gutartig: die Stunden für die zurückliegenden
+Monate lassen sich aus den datierten Spuren **rekonstruieren** und einem klar
+abgegrenzten Vorhaben zuordnen. Das ist Fleißarbeit, keine Kunst — aber sie ist
+zu tun, und sie gehört ehrlich als Rekonstruktion gekennzeichnet, nicht als
+mitlaufende Aufzeichnung ausgegeben.
 
 **Ablauf — zwei Schritte, in dieser Reihenfolge:**
 
@@ -962,7 +980,10 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       mit ihm belesen.
 - [ ] **B3 · Die Vorleistung in Zahlen fassen.** Zeitraum, Repos, Zeilen,
       Prüfungen, Meilensteine mit Datum, laufende Instanzen, bisheriger
-      Sachaufwand. Die Grundlagen dafür führt Kimhubs Buchhaltung bereits.
+      Sachaufwand. Zwei Quellen, und sie decken verschieden weit: die datierten
+      Spuren in Sage-Protokol reichen bis zum 10.03.2026 zurück, Kimhubs
+      Fahrtenbuch erst bis zum 22.08.2026. Was älter ist, wird
+      **rekonstruiert** — und als Rekonstruktion gekennzeichnet.
 - [ ] **B4 · Lizenz-Lücken schließen.** `BookLedgerPro` und
       `Meine-In-and-Out-Book` bekommen eine Lizenz-Datei.
 - [ ] **B5 · Eine englische Projektseite.** Eine Seite, kein Prospekt. Was es
@@ -1005,7 +1026,9 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       Licht gibt. Dieser Weg **hängt an keiner Ausschreibung**.
 - [ ] **D2 · Stundenaufzeichnung ab sofort sauber führen.** Datum, Vorhaben,
       Stunden, Tätigkeit. Wenn A2 positiv ausgeht, ist jede nicht aufgezeichnete
-      Stunde verlorenes Geld.
+      Stunde verlorenes Geld. **Dieser Punkt hat als einziger keine Vorlaufzeit**
+      — er kostet nichts, hängt an keiner Antwort und verliert mit jedem Tag,
+      an dem er nicht läuft.
 - [ ] **D3 · EXIST prüfen** — nur wenn die Abschluss-Bedingung erfüllbar ist.
       Erster Schritt ist ein kostenloses Gespräch beim Gründungsservice.
 - [ ] **D4 · Eine Krankenkasse auf § 20k SGB V ansprechen.** Nicht die Hotline —
@@ -1135,6 +1158,14 @@ erfragen, baut den Antrag auf Sand — und merkt es erst beim Bescheid.
 
 ## 11 · Was in diesem Repo dazugehört
 
+- **[`docs/antragsmappe.html`](antragsmappe.html) — alles zum Lesen in EINER
+  Datei, mit zwei Abteilungen.** Abteilung 1 ist dieser Fahrplan (privat,
+  Arbeitspapier), Abteilung 2 sind die Forschungsunterlagen (einreichbar). Jede
+  Abteilung hat ihren eigenen Download- und Druck-Knopf und nimmt beim
+  Herausnehmen **nur sich selbst** mit — die Einreich-Fassung trägt ihren
+  eigenen Kopf mit Datum und Herkunft und ist allein vollständig.
+  **Sie wird erzeugt, nicht gepflegt:** wer den Inhalt ändert, ändert die
+  `.md`-Datei und ruft `node tools/antragsmappe-bauen.mjs`.
 - **[`docs/FORSCHUNGSKORPUS.md`](FORSCHUNGSKORPUS.md) — die benannte Kette, auf
   die der Antrag zeigt.** Sechs Repos unter MIT, dazu die Werkstatt-Unterlagen.
   Seit dem 2026-08-23 sind Kim-Bell, Kimseek und Kimboard darin geöffnet.
