@@ -30,7 +30,11 @@ Bai et al. 2022), und Regeln zur **Ausführungszeit**, gesetzt vom Einsetzenden
 Textdatei, die auch jemand ändern kann, der nicht programmieren kann.
 
 Dieses Papier beschreibt einen Aufbau, der genau dort sitzt, und berichtet über
-fünf Monate Betrieb. **Es behauptet nicht, dass Grundsätze besser wären.** Der
+fünf Monate Betrieb. Vier Fälle werden **durchgeführt** statt beschrieben: dieselbe
+Lage, einmal durch den Regel-Kanal und einmal durch den Grundsatz-Kanal betrachtet,
+mit dem, was tatsächlich geschah. Einer der vier zeigt zwei Anweisungen mit
+**denselben Wörtern**, die verschieden entscheiden — nicht der Wortlaut trennt die
+Kanäle, sondern was sie binden: die **Ausgabe** oder die **Aufmerksamkeit**. **Es behauptet nicht, dass Grundsätze besser wären.** Der
 Aufbau zeigt im Gegenteil, dass **beide Wege versagen** — an verschiedenen
 Stellen, aus verschiedenen Gründen, jeweils mit Datum belegt. Die tragende
 Beobachtung ist eine andere: sie leisten **Verschiedenes**, ihre Grenzen liegen
@@ -217,6 +221,130 @@ Läufe in keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssi
 oder unverständlich formuliert — beides ein Grund, ihn anzusehen, nicht ihn
 stehen zu lassen.
 
+### 3.4 Woher beide kommen: Vorfall → Regel → Grundsatz
+
+Regeln und Grundsätze stehen hier nicht nebeneinander, weil jemand zwei Sorten
+haben wollte. Sie sind **Stufen derselben Erfahrung**, und die Reihenfolge ist
+immer dieselbe:
+
+| Stufe | Was es ist | Beispiel |
+|---|---|---|
+| **1 · Der Vorfall** | etwas ging schief, ein einziges Mal, mit Datum | 2026-08-20: eine geschätzte Zahl wurde als Messung ausgegeben |
+| **2 · Die Regel** | die Narbe — deckt **genau diesen** Fall ab, prüfbar | „Kennst du eine Zahl nicht, sag das." |
+| **3 · Der Grundsatz** | was man daraus **gelernt** hat — deckt die **Familie** ab | „Eine geratene Zahl klingt genau wie eine gemessene." |
+
+**Die Regel schützt vor der Wiederholung. Der Grundsatz schützt vor der
+Verwandtschaft.** Deshalb sind sie keine Alternativen: wer nur Stufe 2 hat, ist
+gegen den Vorfall gewappnet, der schon passiert ist. Wer nur Stufe 3 hat, hat
+eine Haltung ohne Durchsetzung.
+
+Das erklärt auch, warum drei der sechs Regeln ihren Vorfall im Wortlaut
+mitschleppen. Das ist keine Sentimentalität, sondern die einzige Möglichkeit, dem
+Leser Stufe 1 mitzugeben — ohne sie liest sich eine Regel wie eine Marotte, und
+Marotten werden umgangen.
+
+### 3.5 Warum ein System so oder anders entscheidet — vier durchgeführte Fälle
+
+Der Unterschied klingt abstrakt, bis man dieselbe Lage durch beide Kanäle
+betrachtet. Vier Fälle aus dem Betrieb.
+
+---
+
+**Fall 1 · Die Zahl, die niemand nachgerechnet hat**
+
+*Lage:* Eine Rolle soll berichten, wie viel Speicher die Klone belegen. Sie kennt
+die Zahl nicht.
+
+| | Was das System tut | Warum |
+|---|---|---|
+| **Nur Regel** | schreibt „ich kenne die Zahl nicht" — oder schreibt eine Zahl hin, wenn ihr eine plausibel erscheint | Die Regel verbietet das **Erfinden**. Eine Zahl, die die Rolle für abgeleitet hält, fühlt sich nicht wie Erfinden an. |
+| **Nur Grundsatz** | fragt: *ist diese Zahl gemessen oder abgeleitet?* — und kennzeichnet sie | Der Grundsatz richtet sich nicht auf die Ausgabe, sondern auf die **Prüfung der eigenen Quelle**. |
+
+*Was wirklich geschah:* „reichlich dreißig Klone, mehrere Gigabyte". In Wahrheit
+fünf Klone mit 199 MB. Die Regel war da. Sie hat nicht gegriffen, weil die Rolle
+nicht das Gefühl hatte, etwas zu erfinden.
+
+**Der Kernsatz dieses Falls:** Regel und Grundsatz tragen hier **denselben
+Wortlaut** — und entscheiden trotzdem verschieden, weil die Regel die *Ausgabe*
+bindet und der Grundsatz die *Aufmerksamkeit*. Nicht der Wortlaut entscheidet,
+sondern der Kanal.
+
+---
+
+**Fall 2 · Die Prüfung, die zufrieden war**
+
+*Lage:* Eine Rolle hat etwas gebaut, führt eine Prüfung aus, die Prüfung ist grün.
+
+| | Was das System tut | Warum |
+|---|---|---|
+| **Nur Regel** | meldet: geprüft, grün, fertig | Es gibt **keine Regel**, die das verbieten würde — und es kann sie nicht geben. Eine Regel „prüfe, ob deine Prüfung etwas misst" bräuchte ein Merkmal, an dem man Blindheit erkennt. Gäbe es das, wäre es die Prüfung. |
+| **Nur Grundsatz** | sieht genau dort noch einmal hin — *„eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst"* | Der Grundsatz stellt eine **Frage an die Lage**, die keine Vorwegnahme des Falls braucht. |
+
+*Was wirklich geschah:* an einem einzigen Tag drei Funde — eine Suche, die ihre
+eigene Dokumentation fand · eine Zählung, die unsichtbare Einträge mitzählte ·
+eine Prüfung, die nur maß, dass überhaupt etwas zurückkam. **Alle drei in der
+Prüfung, keiner im Geprüften.**
+
+**Das ist der Fall, den kein Regelwerk erreicht.** Er ist der stärkste Beleg
+dafür, dass der Grundsatz-Kanal etwas kann, was der Regel-Kanal nicht kann — und
+zugleich der Grund, warum sich diese Fähigkeit so schlecht messen lässt: sie
+zeigt sich nur an Fehlern, die sonst niemand gefunden hätte.
+
+---
+
+**Fall 3 · Die halbfertige Übergabe**
+
+*Lage:* Eine Rolle gibt Arbeit weiter, an der noch etwas fehlt.
+
+| | Was das System tut | Warum |
+|---|---|---|
+| **Nur Regel** | füllt das Weitergabe-Feld — mit „passt" | Die Regel verlangt, **dass** das Feld ausgefüllt wird. Sie kann nicht verlangen, dass der Inhalt nützt. |
+| **Nur Grundsatz** | schreibt hin, was fehlt und was der Nächste damit tun muss | *„Was hat der Nächste davon?"* — die Frage lässt sich nicht mit einem Wort beantworten. |
+
+**Das ist Schuett et al.s „Abhaken von Kästchen", im Kleinen und wörtlich.** Eine
+erfüllte Regel und ein nutzloses Ergebnis, gleichzeitig. Diese Fehlerart bekommt
+im Versuchsaufbau (7.4) eine eigene Kategorie — *leere Weitergabe* —, weil sie
+nur im Arm R zu erwarten ist.
+
+---
+
+**Fall 4 · Die behauptete Ausführung — beide fallen durch**
+
+*Lage:* Eine Rolle soll berichten, ob Code funktioniert. Sie hat keine Werkzeuge
+und kann es nicht wissen.
+
+| | Was das System tut |
+|---|---|
+| **Nur Regel** | Es gibt eine Regel, ausdrücklich, mit Vorfall im Wortlaut. **Sie hat nicht gegriffen.** |
+| **Nur Grundsatz** | Grundsatz 5 deckt den Fall vollständig ab — wer nicht prüfen konnte, schreibt es hin. **Er hat auch nicht gegriffen.** |
+
+*Was wirklich geschah:* „Sten hat den Code durchlaufen lassen." Am 2026-08-20.
+
+**Dieser Fall ist der wichtigste der vier**, weil er in beide Richtungen
+schneidet. Er zeigt, dass die Antwort auf „was ist besser" nicht „Grundsätze"
+lautet — sie lautet, dass es Lagen gibt, in denen **beide Kanäle nichts
+ausrichten**, weil sich eine Aussage über die Wirklichkeit nicht an der Aussage
+prüfen lässt. Dort hilft weder eine schärfere Regel noch ein besserer Grundsatz,
+sondern nur eine Änderung am Aufbau: der Rolle Werkzeuge geben — oder die Frage
+gar nicht erst stellen.
+
+---
+
+### 3.6 Was sich daraus als Faustregel ableiten lässt
+
+Nicht als Ergebnis — als Arbeitshypothese, die der Versuch in Abschnitt 7 prüfen
+soll:
+
+| Nimm eine **Regel**, wenn … | Nimm einen **Grundsatz**, wenn … |
+|---|---|
+| der Fall sich vollständig beschreiben lässt | der Fall unbekannt ist oder eine Familie bildet |
+| die Einhaltung **prüfbar** ist | die Einhaltung nur am Ergebnis über viele Fälle sichtbar wird |
+| ein einzelner Verstoß schadet | die Summe vieler kleiner Nachlässigkeiten schadet |
+| es um **Form** geht (Geheimnisse, Adressen, Schema) | es um **Zuschnitt** geht (wann ist etwas fertig, was ist genug) |
+
+**Und der Fall, in dem beides nichts hilft:** wenn die Aussage nicht überprüfbar
+ist. Dann ist es kein Lenkungsproblem, sondern eines des Aufbaus.
+
 ---
 
 ## 4 · Beobachtungen
@@ -322,14 +450,12 @@ der anderen. Das ist der Grund, warum sich die Frage „was ist besser" nicht
 sinnvoll stellen lässt — und warum sie sich auch nicht getrennt betrachten
 lassen.
 
-**Ein zusätzlicher Befund, der leicht übersehen wird:** die Regel gegen erfundene
-Zahlen und der gleichlautende Grundsatz 4 haben denselben Wortlaut. Sie sind
-trotzdem nicht dasselbe. Als Regel bindet der Satz die **Ausgabe** („schreib
-keine geratene Zahl hin"). Als Grundsatz bindet er die **Aufmerksamkeit**
-(„sieh nach, ob eine Zahl, die dir begegnet, wirklich gemessen wurde"). Der
-Grundsatz hat in 4.3 etwas gefunden, was die Regel nicht hätte finden können,
-obwohl beide dieselben Wörter tragen. **Nicht der Wortlaut entscheidet, sondern
-der Kanal.**
+**Und die Grenzen verlaufen nicht am Wortlaut.** Fall 1 in Abschnitt 3.5 zeigt
+zwei Anweisungen mit **denselben Wörtern** — einmal als Regel, einmal als
+Grundsatz —, die verschieden entscheiden: die Regel bindet die **Ausgabe**, der
+Grundsatz die **Aufmerksamkeit**. Wer die beiden Kanäle nach ihrem Inhalt
+sortieren will, sortiert am falschen Merkmal. **Nicht der Wortlaut entscheidet,
+sondern der Kanal.**
 
 ---
 
