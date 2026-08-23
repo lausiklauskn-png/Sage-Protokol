@@ -38,7 +38,9 @@ Dazu, in diesem Repo:
 
 ## Die drei Stränge — und was sie verbindet
 
-**1 · Semantische, bidirektionale, server-lose Suche.** Zwei Knoten ohne
+**1 · Semantische, bidirektionale Suche ohne zentralen Index.** („Server-los"
+heißt hier: kein Server beim Einzelnen, kein zentraler Index. Ein Relais gibt es.)
+Zwei Knoten ohne
 gemeinsamen Hub beantworten einander nach Bedeutung. Belegt und datiert:
 Zwei-Knoten-Suche (2026-07-10), hub-unabhängige Cross-Knoten-Fragen (2026-07-11),
 Mesh-Handshake über mehrere Knoten (2026-07-23) — siehe

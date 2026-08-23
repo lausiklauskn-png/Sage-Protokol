@@ -10,6 +10,11 @@ SBKIM-Protokoll. Die drei hier kommen daneben, nicht darüber.
 
 ---
 
+> **Zuerst lesen: [`ENTSTEHUNG.md`](ENTSTEHUNG.md).** Dort steht Klaus' eigene
+> Darstellung, woher das Vorhaben kommt, warum das Werkzeug gebaut wurde und was
+> offen ist. Sie ist der Rohstoff für den Anfang von Paper A und für die
+> Vorhabensbeschreibung im Antrag.
+
 ## Der gemeinsame Rahmen
 
 Alle drei gehören zu **einer** Beobachtung, und die sollte in jedem Paper im

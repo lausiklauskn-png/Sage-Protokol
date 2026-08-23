@@ -3,6 +3,16 @@
 **Stand: 2026-08-23.** Die Frage, um die es geht: **Lässt sich für die Arbeit an
 diesem Netz Forschungsförderung beantragen — und was ist dafür nötig?**
 
+> **Ein Wort, das genau genommen werden muss: „server-los".** Es gibt sehr wohl
+> ein **Relais** — der Betreiber führt sogar selbst eines. Was fehlt, ist ein
+> Server **beim Einzelnen** und ein zentraler Index. Wer die Technik kennt, hakt
+> an einem ungenauen „server-los" sofort ein. Gemeint ist im Folgenden immer:
+> **kein zentraler Index, kein Konto, keine eigene Infrastruktur beim Nutzer.**
+>
+> Und die Knoten sind **keine KIs**. Es sind Anwendungen und Internetseiten, die
+> einander an Bedeutungsvektoren erkennen. Die KI steckt im Einbetten und im
+> Sortieren.
+
 Diese Datei ist die Antwort als **abhakbarer Fahrplan**: welche Wege es gibt, was
 sie voraussetzen, in welcher Reihenfolge man sie geht, und an welchen Adressen man
 anklopft. Sie ist auf die Lage dieses Projekts zugeschnitten — ein offen

@@ -1820,7 +1820,9 @@ Maß").
 
 Kein Informatiker, kein Wissenschaftler. Handwerksbetrieb, seit März 2026
 nebenher an einem Netz aus offen lizenzierten Web-Anwendungen und einem Protokoll
-für server-lose, bedeutungsbasierte Suche. Der hier beschriebene Aufbau ist ein
+für bedeutungsbasierte Suche zwischen unabhängigen Web-Anwendungen — **ohne
+zentralen Index und ohne eigene Infrastruktur beim Nutzer**, der Verkehr läuft
+über ein geliehenes Relais. Der hier beschriebene Aufbau ist ein
 Werkzeug dieser Arbeit, kein Versuchsaufbau — er ist entstanden, weil er
 gebraucht wurde, und erst danach zum Gegenstand geworden.
 
