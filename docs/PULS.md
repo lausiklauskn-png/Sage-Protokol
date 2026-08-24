@@ -31,6 +31,221 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-24 (Bau) · 📜 Die Historie ausgelesen, Gedankenstriche raus
+
+**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
+Drei Aufträge von Klaus an einem Tag.
+
+**1 · Gedankenstriche.** *„Nimm bitte alle Gedankenstriche von dir heraus. Es
+gibt Sätze."* 613 Striche aufgelöst, in elf Dateien, mit
+`tools/gedankenstriche-aufloesen.mjs`. Entschieden wird an dem, was rechts
+steht: Konjunktion wird Komma, Hauptsatz-Anfang wird Punkt, Aufzählung wird
+Doppelpunkt. **Geprüft wird nicht „es steht kein Strich mehr da"**, sondern die
+**Wortfolge** vorher und nachher, samt der Auflage, dass jede geänderte
+Großschreibung eine bewusste ist.
+
+**Drei eigene Fehler dabei, jeder von einer Prüfung gefunden:** die erste
+Fassung verdoppelte ein Wort · die Aufräum-Regel fraß die **Einrückung** von
+Fortsetzungszeilen, wodurch vier Zeilen aus der Antragsmappe fielen · und das
+Werkzeug lief über die **Byte-Kopien** aus Kimhub mit, deren Prüfsummen in
+`werkstatt/README.md` stehen. Zurückgenommen. Dort bleiben die Striche, bis sie
+in Kimhub geändert und neu kopiert werden.
+
+**2 · Klaus' Markierungen.** 100 Stück, ausgelesen aus der Mappe. **Alle
+sechzehn roten erledigt**; elf davon waren in Paper A die Gedankenstriche
+selbst. Die **vierzig gelben stehen offen**, Klaus: *„die roten schon mal raus,
+über gelb reden wir später."* Vollständig mit seinen Notizen in
+[`docs/sessions/2026-08-24_markierungen-klaus.md`](sessions/2026-08-24_markierungen-klaus.md).
+
+**3 · Die Historie.** *„Nimm bitte eine vollständige Dokumentation der gesamten
+History vor."* **Achtzehn der dreiunddreißig Klone waren flach** und trugen nur
+die letzten fünfzig Commits. Erst nachgeholt, dann gemessen:
+
+| | |
+|---|---|
+| Commits | **5.823** |
+| Depots · Zweige | 33 · 1.388 |
+| Tage mit Arbeit | **128**, vom 10.03. bis 24.08.2026 |
+| Zeilen dazu · entfernt | 1.852.315 · 292.930 |
+| Commits nie auf `main` | **1.662** (die Sackgassen) |
+
+Daraus `docs/historie/historie.html` (7,9 MB): jeder Commit, Tag für Tag, mit
+Uhrzeit, filterbar nach sieben Marken. Vier Rollen mit Aufgabe, Erfüllung,
+gemessener Zahl **und der Grenze dieser Zahl**.
+
+**Die Daten liegen als `docs/historie/historie.json` im Depot**, weil der
+nächste Container wieder flach anfängt. Wer sie neu holen will, braucht erst
+`git fetch --unshallow` über alle Depots.
+
+**Ein blinder Wächter, von der Gegenprobe entlarvt:** „Commits ohne main sind
+gekennzeichnet" fand `data-main="nein"` in der **CSS-Regel** und war deshalb
+wahr, als kein einziger Commit mehr so gekennzeichnet war.
+
+**Gemessen:** 86 von 86 Proben grün · Gegenprobe Antragsmappe 32 von 32 ·
+Gegenprobe Historie 9 von 9.
+
+**Offen:** die vierzig gelben Markierungen · der Werkzeug-Widerspruch in
+Paper A · die Chat-Archive, die Klaus hat und die nicht in Git stehen · die
+Striche in den zwei Byte-Kopien.
+
+**Nächster sinnvoller Schritt:** Klaus sieht die Historie an; dann die gelbe
+Runde, unter der Regel „im Zweifel bleiben".
+
+---
+
+## Stand 2026-08-24 (Bau) — ✎ Markieren in der Antragsmappe (Kürzen)
+
+**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
+**Klaus' Bitte:** in der Mappe mit der Maus etwas markieren können, grün oder
+rot, und die Markierungen später auslesen, um zu sehen, wo etwas zu verbessern
+ist.
+
+**Gebaut:** `tools/antragsmappe-markieren.mjs`. Text ziehen → Farbleiste →
+🟩 *gut so* · 🟨 *unklar* · 🟥 *ändern*, dazu eine Notiz. Der Knopf in der
+Kopfleiste öffnet die Tafel; von dort geht die Liste als `.md`-Datei oder in
+die Zwischenablage — eine Auslese nach Quelldatei und Farbe, mit dem markierten
+Satz, dem Abschnitt und der Notiz.
+
+**Der wichtigste Riegel ist nicht die Farbe, sondern was sie NICHT tut:**
+Markierungen werden **nie gedruckt und nie mitgeladen**. Die Einreich-Abteilung
+geht zur Behörde; ein „muss geändert werden"-Streifen darin wäre das Gegenteil
+dessen, wofür sie da sind — und der Fehler fiele niemandem auf, bis er draußen
+ist. Gemessen wird an den **Bytes der heruntergeladenen Datei** und an der
+**Hintergrundfarbe im Druck-Medium**, nicht an einer CSS-Regel im Quelltext.
+
+**Geankert wird am Text, nicht an der Stelle.** Die Mappe wird neu gebaut,
+sobald sich eine `.md` ändert — eine Markierung an „Absatz 412" säße danach
+lautlos woanders. Gespeichert werden Quelldatei, markierter Text und das
+wievielte Vorkommen. Findet sich das nicht mehr, heißt die Markierung
+**verwaist** und wird gemeldet, statt zu verschwinden. Ebenso beim Speicher:
+wirft `localStorage`, sagt die Tafel es — wer fünfzig Stellen markiert und es
+erst beim nächsten Öffnen merkt, hat umsonst gearbeitet.
+
+**Zwei Fehler in meinen eigenen Wächtern, beide von der Sache selbst
+aufgedeckt:**
+
+1. Die Probe markierte die Zeile „Quelle: …" statt echten Text — 33 Zeichen.
+   Aufgefallen erst, als der Längen-Vergleich am Ende darüber stolperte. *Eine
+   Probe, die die falsche Stelle nimmt, misst nicht, was sie zu messen glaubt.*
+2. „Schrift und Grund sind verschieden" lief **nur im hellen Thema** und war
+   dort immer grün — im dunklen hätte fast weiße Schrift auf hellgrünem Grund
+   gestanden. **Die Gegenprobe hat es gefangen.** Gemessen wird jetzt der
+   Kontrast nach WCAG, in hell **und** dunkel: 🟩 10,3 · 🟨 12,0 · 🟥 8,6 zu 1.
+
+Dazu ein dritter, im Wächter der Mappe selbst: er las `data-quelle` auch aus
+den Wähler-Zeichenketten des neuen Skripts und suchte danach eine Datei, deren
+Name aus einem Stück JavaScript bestand. Jetzt strukturell auf `<article>`.
+
+**Gemessen:** 85 von 85 Proben grün, 0 rot, 0 nicht lauffähig · Gegenprobe
+**25 von 25 gefangen** (acht davon neu, alle zur Markier-Schicht).
+**Klaus' Sichttest am Tablet steht aus** — besonders, ob sich mit dem Finger
+bequem ziehen lässt und ob Androids eigene Kopieren-Leiste der Farbleiste in
+die Quere kommt.
+
+**Nachtrag desselben Tages — Klaus hat es ausprobiert, und zweimal lag ich
+falsch:**
+
+1. **Die Farben bedeuten etwas anderes, als ich angenommen hatte.** Es geht
+   nicht ums Verbessern, sondern ums **Kürzen**: *„Rot kann komplett weg, Gelb
+   kann bleiben oder auch weg — entscheidest du mit, Grün soll bleiben. Lieber
+   bleiben als weg."* Beschriftung, Legende und Auslese sind nachgezogen; die
+   Schlüssel heißen weiter `gruen/gelb/rot`, vorhandene Markierungen behalten
+   also ihre Farbe. **Gelb bleibt** (meine Entscheidung, wie erbeten): ohne
+   Gelb landet jede unsichere Stelle bei Rot, und Rot heißt „weg" — das kippt
+   gegen Klaus' eigene Regel. Der Grundsatz *im Zweifel bleiben* reist jetzt in
+   der ausgelesenen Liste mit, weil die ohne diesen Chat gelesen wird.
+
+2. **Man konnte nicht erkennen, was die Knöpfe bedeuten.** Klaus: *„Du hast da
+   stehen nur Zahlen, deswegen konnte ich nicht erkennen, was du damit
+   meinst."* Zwei eigene Fehler steckten darin: die Bedeutung stand nur im
+   `title` — **auf einem Tablet gibt es kein Hover**, dort ist ein Tooltip
+   unerreichbar. Und die Farben waren **Emoji**; fehlt die Schrift des Geräts,
+   wird aus „🟩 1 · 🟨 1 · 🟥 1" schlicht „1 · 1 · 1". Seitdem trägt jeder
+   Knopf ein **Wort**, der Farbtupfen ist eine **gezeichnete CSS-Fläche**, und
+   die Tafel hat eine sichtbare **Legende**. Gemessen wird die Erkennbarkeit,
+   nicht die Regel: Wort vorhanden, Tupfen mit Größe und Grundfarbe, Knopf
+   mindestens 44 px hoch.
+
+Die Auslese nennt jetzt zusätzlich, **wie viel** je Farbe betroffen ist —
+„zwölf Stellen" sagt beim Kürzen nichts, „zwölf Stellen, zusammen 4.800
+Zeichen" schon.
+
+**Und ein schlechter Gegenprobe-Fall, benannt statt versteckt:** „Die Auslese
+sagt nicht mehr, was die Farben bedeuten" rutschte zuerst durch — zu Recht, er
+hatte nur eine von zwei Stellen angefasst und die Zusicherung stand weiter.
+Sabotiert wird die **Zusicherung**, nicht eine Zeile.
+
+**Gemessen nach dem Nachtrag:** 85 von 85 Proben grün · Gegenprobe **31 von 31
+gefangen**.
+
+**Nächster sinnvoller Schritt:** Klaus markiert; dann die ausgelesene Liste in
+den Chat geben, damit eine Sitzung die roten Stellen abarbeitet — unter der
+Regel „im Zweifel bleiben".
+
+---
+
+## Stand 2026-08-23 (Bau) — 📦 Antragsmappe: eine Datei, zwei Abteilungen
+
+**Rolle:** Bausitzung. Zweig `claude/research-funding-paper-delivery-vuppnj`,
+frisch von `origin/main`. Auftrag: Punkt 2 und 3 des Briefes vom 2026-08-23.
+
+**Gebaut:** `docs/antragsmappe.html` (242 KB) aus neun Markdown-Quellen —
+**Abteilung 1 privat** (Fahrplan Forschungsgelder), **Abteilung 2 einreichbar**
+(Entstehung · Paper A · Forschungskorpus · Paper-Plan · die vier
+Werkstatt-Unterlagen). Jede Abteilung hat einen eigenen Download- und
+Druck-Knopf, einen eigenen Kopf mit Datum und Herkunft, und nimmt beim
+Herausnehmen **nur sich selbst** mit.
+
+Dazu `tools/antragsmappe-bauen.mjs` + `tools/markdown-mini.mjs`. **Die Mappe
+wird erzeugt, nicht gepflegt** — sonst stünden dieselben Sätze zweimal im Depot
+und liefen auseinander. Wer eine `.md` ändert, ruft
+`node tools/antragsmappe-bauen.mjs`; die Probe schlägt sonst an.
+
+**Paper A · die 47-%-Stelle aus der Zusammenfassung heraus** (Klaus' Befund).
+Sie rechnete mit vier Begriffen, die bis dahin nirgends erklärt waren —
+nachgezählt: **„Schicht" kam dort zum ersten Mal im ganzen Papier vor**, Zeile
+50 von 1.833. Zahlen raus, der Rechenweg steht vollständig in § 3.8 (nachgesehen,
+nicht angenommen). **Davor** steht jetzt ein Absatz, der das Werkzeug einführt —
+samt der Unterscheidung *Dokumentation fünf Monate, Messung Tage*.
+
+**Drei echte Fehler im Markdown-Leser**, alle von der Nachzählung gefunden
+(jede der 2.799 Quellzeilen muss in der Ansicht wiederauftauchen): Kursiv brach
+am Zeilenumbruch ab · Fett vertrug kein Kursiv darin · und der Code-Platzhalter
+war „Leerzeichen + Zahl + Leerzeichen" — **jede nackte Zahl im Text** wäre
+ersetzt oder gelöscht worden. Der dritte stand nur im eigenen Nachlesen.
+
+**Und drei Fehler in den Wächtern selbst:** jedes Tag durch ein Leerzeichen zu
+ersetzen meldete **320 Zeilen** als fehlend, die alle dastanden · der
+Unterstrich als Auszeichnung zerlegte Dateinamen (70 weitere Fehlalarme) · und
+„der Download enthält die andere Abteilung nicht" am **Wortlaut** geprüft wurde
+rot, sobald der Fahrplan die Mappe selbst beschreibt. *Ein Wächter nagelt eine
+Aussage fest, keine Wörter* — jetzt strukturell.
+
+**Richtiggestellt:** `FORSCHUNGSFOERDERUNG.md` sagte, Kimhub führe „bereits" ein
+Fahrtenbuch. Stimmt — **seit dem 22.08.2026**. Neben der Aussage „fünf Monate
+Vorleistung" las sich das, als sei die ganze Zeit gestundet worden. § Weg 2, B3
+und D2 nachgezogen: **dokumentierte Zeit und gemessene Zeit sind zwei Dinge**,
+Älteres wird **rekonstruiert** und als solches gekennzeichnet.
+
+**Gemessen:** 84 von 84 Proben grün, 0 rot, 0 nicht lauffähig · Gegenprobe
+**17 von 17 gefangen**. Die Mappe im Browser: headless geöffnet, Drucken und
+Herunterladen wirklich ausgelöst. **Klaus' Sichttest am Tablet steht aus** —
+besonders der Download dort ist von hier aus ungeprüft.
+
+**Offen, und es gehört besprochen:** Paper A sagt an vier Stellen, die Rollen
+hätten **keine Werkzeuge**. Kimhubs Verfassung sagt seit dem 2026-08-23 das
+Gegenteil, auf Klaus' Wort — und die Momentaufnahme in `docs/werkstatt/` ist
+damit am Tag ihrer Anlage überholt. Für den beobachteten Zeitraum stimmt der
+Satz, aber er steht im **Präsens**, und das Papier verlinkt das Depot. Drei
+Wege stehen im Übergabeprotokoll; **Klaus entscheidet.**
+
+**Nächster sinnvoller Schritt:** Sichttest der Mappe; dann den
+Werkzeug-Widerspruch entscheiden, bevor das Papier eingereicht wird.
+
+Protokoll: [`docs/sessions/archiv/2026-08-23_antragsmappe-und-paper-a-zusammenfassung.md`](sessions/archiv/2026-08-23_antragsmappe-und-paper-a-zusammenfassung.md)
+
+---
+
 ## Stand 2026-08-23 (Bau) — 📄 Paper A geschrieben
 
 **Rolle:** Fortsetzung derselben Sitzung. Zweig
@@ -347,222 +562,16 @@ gar nicht gemessen wurde.
 
 ---
 
-## Stand 2026-08-17 (Pflege) — 📕 Zehn Sitzungs-Anker · Abschluss · Brief „Hassrede vom Brett"
+> **Ausgelagert am 2026-08-24.** Der Eintrag vom **17.08.** („Zehn Sitzungs-Anker
+> · Abschluss · Brief Hassrede vom Brett") steht wortwörtlich in
+> [`docs/sessions/archiv/2026-08_puls-auslagerung-4.md`](sessions/archiv/2026-08_puls-auslagerung-4.md).
+> Die Datei stand bei 3.019 Zeilen; die Schutz-Klausel sagt: auslagern statt kürzen.
 
-**Rolle:** Hauptsitzung. Schließt den Tag mit drei Aufträgen ab (Urheberrecht ·
-Gerätename · Anker) und legt den Auftrag für die nächste Sitzung.
 
-**Zehn Anker angelegt und gemergt.** Jedes Repo, das bisher keine `CLAUDE.md`
-hatte, hat jetzt eine: Alis-Moderaum #48 · Company-Brain #16 · Kim-Bell #48 ·
-Kimboard #101 · Kimseek #66 · Mein-Workfloh-Page #15 · Perfect-Skin-Beauty #52 ·
-Perfect-Skin-Fashion #24 · Tomys-Hub #159 · family-project #282. Vorher geprüft
-gegen `origin/main`, Proben je Repo grün.
+> **Ausgelagert am 2026-08-24.** Der Eintrag vom **17.08.** („Ein Wizard, der sich
+> selbst widersprach · 18 Repos · Karte auf 19 Knoten") steht wortwörtlich in
+> [`docs/sessions/archiv/2026-08_puls-auslagerung-5.md`](sessions/archiv/2026-08_puls-auslagerung-5.md).
 
-**Ehrlich zur Länge:** angekündigt waren ~25 Zeilen, geworden sind 78–97. Grund
-ist eine Entscheidung, keine Nachlässigkeit — Freibrief, Gerätenamen-Regel und Ton
-stehen **wörtlich** drin statt als Verweis. Eine Sitzung, die den Anker liest, aber
-dem Verweis nicht folgt, ist genau die, für die er gedacht ist.
-
-### Der Fehler dieser Sitzung, im eigenen Werk gefunden
-
-Der frisch angelegte Kimboard-Anker nannte als Prüfung nur `npm test` samt der Zahl
-„6 bestanden". Kimboards eigene `README.md` sagt dagegen: *„Alles prüfen mit
-`node tests/alle.mjs` (nicht nur `npm test`)"* — `npm test` läuft `node --test` und
-fasst die **26 Proben unter `tests/`** nicht an, darunter ausgerechnet
-`smoke_loeschen.mjs`.
-
-Das ist wörtlich die Falle aus der eigenen Tafel: *„wer nur die eine Probe aufruft,
-die er kennt, merkt so etwas nie."* Der Anker sah dabei aus wie eine vollständige
-Auskunft — das ist das Gefährliche daran, nicht die falsche Zahl. Berichtigt am
-selben Tag, mitsamt der Begründung im Anker selbst.
-
-**Und der richtige Läufer förderte prompt einen toten Wächter zutage:**
-`hilfe … ROT (0 Proben)`, per `git stash` als vorbestehend belegt. Nicht die App
-war kaputt, die **Probe** war es — `assets/hilfe.js` ist der letzte von 14
-Einträgen der Nachlade-Kette, jedes Glied an `requestIdleCallback`; die Probe
-wartete stur 1800 ms und starb beim Zugriff. **Rot, aber stumm.** An zwei Stellen
-auf `waitForFunction` umgestellt → **22 Prüfungen grün statt keiner**, Gegenprobe
-gefahren (Erklärtext raus ⇒ rot, zurück ⇒ grün).
-
-Das wiegt, weil dieser Wächter erzwingt, dass **jeder sichtbare Knopf eine
-Erklär-Blase hat** — und der neue Kimboard-Brief verlässt sich für den Melde-Knopf
-darauf. Zwei Lehren, in Kimboards Anker festgehalten: **eine Uhr misst nicht, ob
-etwas fertig ist** (auf die Bedingung warten, nie auf eine Dauer), und **`| tail`
-ist zum Lesen da, nicht zum Urteilen** (der erste Aufruf meldete „exit 0" — das
-war `tail`).
-
-### Neuer Auftrag: Hassrede vom Brett nehmen (Kimboard)
-
-Klaus' Frage: *„Sie müssen endgültig vom Board genommen werden können, nicht vom
-Rechner — das geht glaube ich nicht. oder?"* Seine Vermutung stimmt zur Hälfte.
-
-| Ort | Was möglich ist |
-|---|---|
-| Klaus' **eigenes** Relais (`relay.family-projekt.de`) | wirklich entfernen |
-| jedes **Kimboard** | aus der Anzeige nehmen |
-| **fremde** Relais | nur bitten, [NIP-09](https://github.com/nostr-protocol/nips/blob/master/09.md) verpflichtet niemanden |
-
-Das halbe Fundament liegt: „Bei allen löschen" ist gebaut (kind 5), und seit dem
-2026-08-01 wird **nur nach Hause gesendet**. Was fehlt, ist der Melde-Weg —
-Kimboard hat keinen, obwohl [Art. 16 DSA](https://gesetz-digitale-dienste.de/dsa/artikel-16/)
-ihn für Hosting-Anbieter verlangt und Klaus für sein Relais einer ist.
-
-Klaus entschied (AskUserQuestion): **alle drei Stränge** — eigenes Relais,
-signierte Sperr-Liste, Melde-Weg. Voller Auftrag mit Grenzen, Reihenfolge und
-Wächtern in [`Kimboard/docs/BRIEF_MODERATION_UND_RECHT.md`](https://github.com/lausiklauskn-png/Kimboard/blob/main/docs/BRIEF_MODERATION_UND_RECHT.md).
-
-**Offen und ausdrücklich nicht erledigt:**
-- Was auf dem Hetzner-Server wirklich läuft, ist **ungeprüft** — der Egress-Proxy
-  blockt beide Relais (`CONNECT tunnel failed, 403`). Erster Schritt der neuen
-  Sitzung, ein `ssh`-Einzeiler für Klaus.
-- `family-project/impressum.html` Punkt 5 sagt *„Netz-Inhalte sind Ende-zu-Ende
-  verschlüsselt"*. Für Direktnachrichten und Gruppen stimmt das; das **offene
-  Brett** läuft im Klartext. Erst belegen, dann formulieren — eigener PR.
-- Zwei vorbestehend rote Proben in SB-KIMTool-Point (Probe 27), per `git stash`
-  als nicht von dieser Sitzung verursacht belegt.
-
----
-
-## Stand 2026-08-17 (Pflege/Bau) — 🧭 Ein Wizard, der sich selbst widersprach · 18 Repos · Karte auf 19 Knoten
-
-**Rolle:** Hauptsitzung, Fortsetzung des Gerätenamen-Tages. Zwanzig PRs, alle
-gemergt.
-
-### Der Auslöser: ein Bildschirmfoto mit zwei Wahrheiten
-
-Klaus' Andock-Fenster in Perfect Skin Beauty zeigte **gleichzeitig**: oben
-„nodeId: jtpnxZSxv1c…" (Schritt 1), in der Mitte „Fehler: Keine Identitäten in
-sbkim_keys" (Schritt 3), unten „Noch keine Identität — oben zuerst eine
-anlegen" (Schritt 5). Wer das liest, glaubt eher der Fehlermeldung.
-
-**Die Modul-Logik war die ganze Zeit im Recht.** Headless nachgestellt mit den
-App-eigenen Kopien und `fake-indexeddb`: `getOrCreateIdentity` → `listIdentities`
-liefert `["main"]`, `exportBackup` scheitert nur mit `SporeMissingError`. Der
-Fehler saß in der **Anzeige**: `refreshWizardIdentities()` lief nur beim Öffnen
-des Fensters und nach einem Identitäts-Wechsel — nie nach Schritt 1 oder 2. Die
-Liste stand also auf dem Stand von **vor** dem Klick, und die rote Zeile war die
-Quittung eines Klicks, der gemacht wurde, **bevor** es eine Identität gab.
-Beide Meldungen waren echt, nur veraltet.
-
-### Netzweiter Nachzug — 18 Repos, nicht von Hand
-
-Ein Patcher mit harten Ankern (schreibt gar nichts, wenn ein Anker nicht genau
-einmal passt) hat es gesetzt. **Die Gegenprobe ist der eigentliche Beweis:** aus
-dem Vorher-Stand von Perfect Skin Beauty erzeugt er **byte-exakt** dessen
-gemergte Fassung — also genau das, was Klaus im Browser bestätigt hat.
-
-Der erste Wächter im Patcher war **blind**: er sah direkt hinter dem Anker nach
-`refreshWizardIdentities`, wo nach dem Patch sechs Kommentarzeilen stehen, und
-hätte doppelt eingefügt. Aufgefallen beim Idempotenz-Test, nicht beim Lesen.
-
-| Gruppe | Repos | was fehlte |
-|---|---|---|
-| alte Fassung | PSB · PS-Fashion · Alis · Kimboard · WorkFloh-Page | Auffrischung nach Schritt **1 und 2** |
-| neuere Fassung | 11 Repos + Sage-Kanon | Auffrischung nach Schritt **2** |
-| ohne Wechsler | Kimseek · Privat-Brain | nur die alte Fehlerzeile geheilt |
-
-**Sage hat ZWEI Dateien:** `assets/siegel-inhalt.js` ist Kanon,
-`sbkim-bundle-voll/modules/siegel-inhalt.js` muss byte-gleich sein — der
-Drift-Guard zeigt auf `ASSETS`, nicht auf `CANON`. Wer nur den Kanon anfasst,
-lässt die Geschenkbox mit dem Fehler zurück. Beide auf `c0a275d75071`.
-
-**Acht Cache-Bumps**, jeder nachgemessen. Tomys-Hub aus einem anderen Grund als
-die übrigen: die Datei steht dort **nicht** im Vorrat, aber der Service-Worker
-bedient statische Dateien **cache-first** — einmal geholt, bliebe sie ohne Bump
-dauerhaft alt.
-
-⚠ **Zwei Fallen, in die diese Sitzung fast gelaufen wäre:** (1) eine
-Parallel-Sitzung mergte PSB #50 mitten hinein; mein erster Zweig saß auf dem
-Stand davor und hätte sie zurückgedreht — aufgefallen beim Vergleich
-`origin/main` gegen den Zweig, nicht beim Committen. (2) Ein Vorrats-Check lief
-im falschen Verzeichnis und meldete „kein Service-Worker" für vier Repos, die
-alle einen haben.
-
-### Perfect Skin Beauty ist der 19. Knoten
-
-Spore von Klaus geschickt, reziprok geprüft (`✔ VALID`, 9/9 Pflichtfelder,
-384 Floats). `matchScore` **0.7824 gegen Sage — unter dem Riegel**, und das ist
-richtig: Kosmetikstudio und Protokoll-Bibliothek haben fachlich nichts
-miteinander. Partner ist **Perfect Skin Fashion mit 0.8612**. Darum
-`verified-spore`, nicht `verified-match`.
-
-Zwei Besonderheiten: `sporeUrl` zeigt auf die **eigene** Adresse
-(perfectskinbeauty.de) — das Repo ist als einziges der jungen fünf mit `CNAME`.
-Und `previousNodeIds` hält `jtpnxZSxv1c…` fest.
-
-**Klaus' Frage dazu, hier festgehalten:** eine neue Spore ändert die Kennung
-**nicht** — sie wird mit dem vorhandenen Schlüssel signiert, die `nodeId` kommt
-aus dem öffentlichen Schlüssel. „Identität erzeugen" legt nur an, **wenn das
-Fach leer ist**. Die Kennung wechselte, weil PR #45 der App ihre **eigene
-Schublade** gab; die alte lag im geteilten Topf.
-
-### Mycel-Karte: 13 → 19 Knoten
-
-In der Aufzeichnung erschien PSB als **loser** Knoten `live_q-sW…` neben den
-Pillen — die Karte hatte keinen Samen für ihn. Folge: sechs Knoten waren nur
-sichtbar, **solange ihre App lief**.
-
-Nachgezogen mit Alias und Adresse (Muster Werbetechnik hatte gar keine).
-**Muttis Rezeptbuch bekam eine eigene Pille** — es lag als Alias auf „Mein
-Rezeptbuch", und zwei Betreiber sahen wie einer aus.
-
-**Die Fäden hängen nicht alle an Sage.** Nur Muttis (0.8766) und WorkFloh
-(0.9063) liegen darüber; die vier anderen (0.78–0.79) bekommen den Faden zu dem
-Knoten, mit dem sie **wirklich** über dem Riegel liegen. Vier ehrliche statt
-sechs bequeme. Zwei neue Wächter auf die **Kopplung** (jeder Samen braucht Alias
-+ Adresse; kein Faden unter dem Riegel), vier neue Gegenproben — **8 von 8
-bemerkt**.
-
-**Nebenbefund aus der Aufzeichnung:** der Gerätename läuft live — „Kimboard ·
-Klaus Tablet" und „Sage-Protokoll · Klaus Tablet" standen im Raum, Kimboard mit
-zwei Kennungen unter einer Pille, einzeln aufgeschlüsselt.
-
-### Einladung: die Rolle statt des Klarnamens
-
-Klaus' Entscheidung. Statt „… ist Klaus Nitzsche allein" jetzt „… liegen allein
-beim Betreiber (siehe Impressum)" — in allen vier Sprachen, HTML + Markdown +
-PDF. **Rechtlich ändert sich nichts:** Urhebervermutung und CC-BY-Nennung
-hängen an `impressum.html` (ohnehin Pflicht), `RECHTE.md`, `LICENSE` und der
-Git-Historie.
-
-### ⚠ Befund: der PDF-Leser hat eine Blindstelle — und sie ist begrenzt
-
-Beim Belegen meldete `sbkim-demo/papiere/_pdf_text.mjs` **0 Treffer** für den
-Namen. Die Null war wertlos: er holt aus 34 Seiten **1819 Zeichen** (nur die
-Kopfzeile) und meldet einen ungeöffneten Strom. Aufgefallen an der Gegenfrage —
-**er fand auch den neuen Satz nicht**, den ich gerade hineingeschrieben hatte.
-
-Beweis kam von einem zweiten, unabhängigen Leser (pdf.js): 26.456 Zeichen,
-Kontrollwörter alle gefunden, „Nitzsche" 0 in beiden Lesarten, Stelle im
-Klartext nachgelesen.
-
-**Nachgemessen (2026-08-17), und das ist die Entwarnung:**
-
-| PDF | Haus-Leser | pdf.js | verschlossene Ströme |
-|---|---|---|---|
-| Konzept PWA Marktplatz | 9.036 | 9.036 | 0 |
-| Marktanalyse PWA Plattform | 17.525 | 17.525 | 0 |
-| USP Bidirektionales Matching | 6.759 | 6.759 | 0 |
-| **Einladung** | **1.819** | **20.314** | **1** |
-
-`tests/smoke_papiere_bereinigt.mjs` bewacht also **zuverlässig**, was es
-bewachen soll — die Blindstelle betrifft nur die Einladungs-PDF (eigene
-mitgelieferte Schriften). **Klaus-Entscheid: kein Wächter dafür.** Begründung:
-die PDF wird erzeugt, nicht bearbeitet; der eigene Name auf der eigenen Seite
-wäre kein Vorfall, sondern eine Geschmacksfrage; und ein Wächter über etwas, das
-nicht wehtut, ist nur ein weiterer grüner Haken.
-
-### Offen / als Nächstes
-
-- **Klaus' Browser-Sichttest** — Wizard (18 Repos), Karte mit 19 Pillen
-  (v17, Hard-Reload), Einladung. Nichts davon ist headless prüfbar.
-- **Company Brain** fehlt noch in `status.json` (keine Spore geschickt).
-- **Preis-Frage, Klaus' Auftrag für die nächste Sitzung:** wie kommen die
-  Unkosten wieder herein — 1–2 € je App, Spenden-Link, Auswahl bei Google Play?
-  Vorarbeit steht in [`PLAN_PILZ_WIRTSCHAFT.md`](PLAN_PILZ_WIRTSCHAFT.md)
-  (① Auftragsarbeit ② Fach-App mit Wartung ③ Provision zuletzt). **Zu
-  bedenken:** bei 1–2 € frisst die feste Gebühr je Buchung den Ertrag, und
-  „Spende" heißt nur dann Spende, wenn es **keine Gegenleistung** gibt.
 
 ## Stand 2026-08-17 (Pflege) — 🏷️ Gerätename netzweit ins Verbinden-Panel
 
@@ -894,125 +903,12 @@ Abweichungen sind im selben Zug zu (`#151`); keine trug Point-eigene Logik.
 
 ---
 
-## Stand 2026-08-14 (Pflege) — 🗂 PULS ausgelagert: 10.150 → 2.592 Zeilen
-
-**Rolle:** Pflege-Sitzung auf Klaus' Zuruf „PULS.md auslagern". Die Schutz-Klausel
-nennt 3000 Zeilen; die Datei stand bei **10.150** — sechs Sitzungen in Folge hatten
-das gemeldet, ohne dass es jemand tat.
-
-**Verfahren wie beim letzten Mal, nicht neu erfunden.** Die Mai-Auslagerung vom
-2026-07-24 (Klaus' „Option A") hatte den nächsten Schritt sogar vorgezeichnet:
-*„Juni könnte in einer Folge-Sitzung ebenso ausgelagert werden (wäre Option B)."*
-Genau das ist hier passiert, nur zusätzlich für Juli und den älteren August.
-
-| Archiv-Datei | Inhalt | Zeilen |
-|---|---|---|
-| `2026-08_puls-auslagerung.md` | Sitzungen 03.–09.08. | 2.290 |
-| `2026-07_puls-auslagerung.md` | alle Juli-Sitzungen | 2.731 |
-| `2026-06_puls-auslagerung.md` | alle Juni-Sitzungen | 2.608 |
-
-**In PULS bleiben:** die acht jüngsten Sitzungen (14.08. bis 11.08.) und **alle**
-Struktur-Sektionen — „Als nächstes", Schnellüberblick, Endknoten, Offene
-Querschnitts-Fragen, Schutz-Backlog, Vision-Anker, Archiv-Index. An jeder der drei
-Schnittstellen steht ein Zeiger, im Archiv-Index drei Sammel-Zeilen.
-
-**Ausgelagert, NICHT gekürzt** — und das ist nachgerechnet, nicht behauptet:
-von **360** Überschriften fehlt **keine**, keine ist erfunden, und von **8.472**
-nicht-leeren Zeilen wird **keine einzige** vermisst. Alle **124** Archiv-Verweise
-in PULS zeigen auf existierende Dateien. Der Mermaid-Pie-Block ist unberührt (er
-wird aus `status.json` erzeugt und nie von Hand angefasst), die **3000er-Grenze
-steht unverändert** — sie wurde ausdrücklich nicht herabgesetzt.
-
-**Luft für die Zukunft:** 2.592 von 3.000 Zeilen, also gut 400 frei. Wer die
-nächste Auslagerung braucht, nimmt wieder den ältesten Monat.
-
-**Offen:** die vier Modul-23-UI-Kopien (je eine geprüfte Runde pro App) ·
-Klaus' Browser-Sichttests.
-
-
-## Stand 2026-08-14 (Pflege) — 🔓 Sperr-Knöpfe · Automatik-Schalter · drei tote Wächter
-
-**Rolle:** Pflege-Sitzung, Fortsetzung nach PR #843. Übergabeprotokoll:
-`docs/sessions/archiv/2026-08-14_sperr-knoepfe-automatik-tote-waechter.md`.
-
-**✅ Klaus' Handgriff ist erledigt:** die neue `marktplatz-api.php` liegt auf
-dem Hetzner-Webhosting. Belegt durch die Tat — Klaus schaltete den
-Automatik-Schalter ein, der Server nahm `"an": true` an und committete
-(Toolpoint `0adfb69`). Kein `bad_key`. Der Punkt stand seit dem 2026-08-12 offen.
-
-**Fünf Merges:**
-
-- **Toolpoint #62** — der Automatik-Schalter darf **benutzt** werden.
-  `tests/smoke.mjs` verlangte `_automatik.an === false`; als Auslieferungs-Zustand
-  richtig gedacht, aber die Probe läuft bei jedem Push. Beim ersten echten
-  Gebrauch wurde `main` rot — und weil `statische-liste.yml` **vor** dem
-  Committen prüft, kam der Schalter **nie auf der Seite an**. Ein Wächter, der
-  sein eigenes Feature verhindert. Geprüft wird jetzt die **Form**, nicht der
-  Anfangswert.
-- **family #271** — **Sperr-Knöpfe** im Studio. Server und Datei konnten es
-  längst; es fehlte allein die Bedienung. Übernommen, nicht abgeschrieben
-  (family: `renderSporen`, `toast()`, `createElement`, de/en). **Vierter Ort**
-  der Rangfolge `gruen 0 < nichts 1 < gelb 2 < rot 3`.
-- **family #272** — der **Automatik-Schalter**, und zwar mit **drei** Stücken:
-  family hatte weder `unterGrenze` noch eine Leistungs-Grenze. Nur das Häkchen
-  wäre der tote Knopf gewesen. Gezählt wird der **angezeigte** Wert (sonst
-  widerspräche das Band der Zahl daneben); das gerechnete Gelb wird **nie**
-  gespeichert.
-- **family #273** — **Fehler in der eigenen Arbeit**, gefunden beim Nachprüfen
-  des nächtlichen Pfades: eine **fehlgeschlagene** Messung trägt die alten
-  Zahlen weiter und zählte den Zähler jede Nacht erneut hoch. Nach drei
-  Ausfällen der Leitung hätte ein Band an einer ungemessenen Seite gehangen.
-  Der eigene Kommentar hatte davor gewarnt — der Text stimmte, der Code nicht.
-- **Sage #847** — **drei** tote Wächter, nicht zwei. `bau23_0b` und
-  `bau23c` starben beim Start (DOM-Ersatz überwachsen, und zwar
-  **unterschiedlich** verrottet); `resign_spore_v02` meldete **sieben
-  gefundene Fehler**, obwohl sie nichts prüfen konnte. **Ursache:** Sage hat 69
-  Smokes und nichts, was sie zusammen laufen lässt → neu `tests/run_alle.mjs`
-  mit **drei** Ergebnissen (grün · ROT · **nicht lauffähig**).
-
-**Dreimal an einem Tag fand die Gegenprobe eine blinde Stelle in der EIGENEN
-Probe** — jedes Mal echt: die Untergrenze des Riegels (greift nur gegen einen
-Müll-Wert), die Objekt-Prüfung des Schalters (mein Test las nur, statt zu
-schreiben), und eine Toolpoint-Gegenprobe, die eine abgeschaffte Regel bewachte.
-
-**Zahlen:** Toolpoint 593/593 · 253 Wächter 0 blind · family
-`smoke_studio_markt` 102 → **182** · neue `gegenprobe_studio_riegel.sh` 19
-Wächter 0 blind · Sage `run_alle` 50 grün / **0 rot** / 19 nicht lauffähig, mit
-`fake-indexeddb` gegengeprüft **69/69**.
-
-**✅ Nachtrag am selben Tag — `package.json` gebaut (PR #849).** Klaus hat
-zugestimmt; der Punkt stand oben noch als „Klaus gefragt, Antwort steht aus"
-und wäre für die nächste Sitzung eine falsche Fährte gewesen. Ergebnis:
-**70/70 grün** (die neue Wächter-Probe kommt dazu). Damit laufen die 19
-Speicher-/Krypto-Härtungen wieder — Modul 01 („Löschen nur bei zweifelsfreier
-Leere", Identitäts-Isolierung), 02 (Spore v0.2, Multi-Identität), 20 (Safe),
-05 (Nostr).
-
-Zwei Entscheidungen darin: **kein `"type": "module"`** — gemessen, mit dem Feld
-fallen zwei Proben um, weil Node dann jede `.js` als ES-Modul liest; ein neuer
-Wächter `tests/smoke_package_json.mjs` hält es fest (samt exakter Fassungs-
-Nagelung, kein `^`). Und **`package-lock.json` bleibt in `.gitignore`** — eine
-bestehende Entscheidung wird nicht still umgedreht; die exakte Nagelung liefert
-die Reproduzierbarkeit ohnehin. `CLAUDE.md` § „Die Proben laufen lassen"
-erklärt jetzt `npm install`/`npm test` und warum 19 Proben ohne das Paket
-**ungeprüft** und nicht **rot** heißen.
-
-**Offen:** die vier Modul-23-UI-Kopien · `PULS.md` bei ~10.100 gegen 3.000
-Zeilen (**sechste** Meldung) · Klaus' Browser-Sichttests.
-
----
-
-> **↓ Ausgelagert am 2026-08-17 — die Sitzungen vom 11. und 12.08.**
->
-> Die Einträge stehen **wortwörtlich** in
-> [`docs/sessions/archiv/2026-08_puls-auslagerung-2.md`](sessions/archiv/2026-08_puls-auslagerung-2.md).
-> Nichts gekürzt, nichts zusammengefasst — die Schutz-Klausel oben verlangt
-> **auslagern statt kürzen**, und die Git-Historie trägt es ohnehin.
->
-> Ältere Sitzungen: [August 03.–09.](sessions/archiv/2026-08_puls-auslagerung.md)
-> · [Juli](sessions/archiv/2026-07_puls-auslagerung.md)
-> · [Mai](sessions/archiv/2026-05_puls-auslagerung.md)
-
+> **Ausgelagert am 2026-08-23.** Die beiden Sitzungs-Einträge vom **14.08.**
+> („PULS ausgelagert: 10.150 → 2.592 Zeilen" und „Sperr-Knöpfe · Automatik-Schalter
+> · drei tote Wächter") stehen wortwörtlich in
+> [`docs/sessions/archiv/2026-08_puls-auslagerung-3.md`](sessions/archiv/2026-08_puls-auslagerung-3.md).
+> Nichts gekürzt, nichts zusammengefasst — die Datei stand bei 3.038 Zeilen, und
+> die Schutz-Klausel sagt: auslagern statt kürzen.
 
 
 ## Als nächstes ✨
@@ -2846,6 +2742,10 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-08-17 | **PULS-Auslagerung 24.08. (2)** · der Wizard-Umbau vom 17.08. | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-5.md) |
+| 2026-08-17 | **PULS-Auslagerung 24.08.** · die Anker-Sitzung vom 17.08. (zehn Sitzungs-Anker, Brief zur Hassrede vom Brett) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-4.md) |
+| 2026-08-14 | **PULS-Auslagerung 23.08.** · die beiden Sitzungen vom 14.08. (PULS ausgelagert 10.150 → 2.592 Zeilen; Sperr-Knöpfe · Automatik-Schalter · drei tote Wächter) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-3.md) |
+| 2026-08-11 … 08-12 | **PULS-Auslagerung 17.08.** · die Sitzungen vom 11. und 12.08. | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-2.md) |
 | 2026-08-03 … 08-09 | **PULS-Auslagerung 14.08.** · alle August-Sitzungen bis einschließlich 09.08. (Pilz-Wirtschaft Fassung 2, Discovery-Karte, die Bilder-/Ladezeit-Reihe 64→97, Sage-Page-Einblenden, Postfach-Verjährung, Kontrast-Reihe) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung.md) |
 | 2026-07-01 … 07-29 | **PULS-Auslagerung 14.08.** · alle Juli-Sitzungen (Stufe 2b Kartenechtheit, Identität-überlebt-die-Sitzung, Demo-Anteil 8 %→0 %, A11/A12/A15/A18-Strang, RELATEDNESS_CENTER v2, B1–B7-Krypto-Strang, Bau 04.F/04.G) | [→ Archiv](sessions/archiv/2026-07_puls-auslagerung.md) |
 | 2026-06-21 … 06-29 | **PULS-Auslagerung 14.08.** · alle Juni-Sitzungen (Modul 23 Rendezvous, Modul 05 Nostr-Transport, Such-Widget-Increments, „verwandt · KI“, Pinnwand-Beschriftung, Sichttest-Belege) | [→ Archiv](sessions/archiv/2026-06_puls-auslagerung.md) |
