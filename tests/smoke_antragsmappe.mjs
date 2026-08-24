@@ -113,7 +113,13 @@ function klartext(zeile) {
   return norm(s);
 }
 
-const QUELLEN = [...html.matchAll(/data-quelle="([^"]+)"/g)].map((m) => m[1]);
+/* NUR echte Artikel zaehlen. Ein blosses Muster auf data-quelle fing auch
+   die Waehler-Zeichenketten im Markier-Skript mit — die Probe suchte
+   danach eine Datei, deren Name aus einem Stueck JavaScript bestand. Ein
+   Waechter, der den Quelltext seines eigenen Werkzeugs fuer Daten haelt,
+   misst irgendwann etwas anderes als das, was er zu messen glaubt. */
+const QUELLEN = [...html.matchAll(/<article[^>]*\sdata-quelle="([^"]+)"/g)]
+  .map((m) => m[1]);
 gut(QUELLEN.length === 9, 'neun Quelldateien in der Mappe',
   'gefunden: ' + QUELLEN.length);
 

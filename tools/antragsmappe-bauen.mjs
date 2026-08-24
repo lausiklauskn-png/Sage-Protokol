@@ -40,6 +40,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { markdown, escape } from './markdown-mini.mjs';
+import { MK_STIL, MK_DRUCK, MK_HTML, MK_SKRIPT } from './antragsmappe-markieren.mjs';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ZIEL = resolve(WURZEL, 'docs/antragsmappe.html');
@@ -255,6 +256,7 @@ hr{border:0;border-top:1px solid var(--kante);margin:2rem 0}
 font-family:system-ui,sans-serif;font-size:.8rem;color:var(--matt);
 border-top:1px solid var(--kante)}
 
+${MK_STIL}
 /* ── Druck ────────────────────────────────────────────────────────────────
    EINE Fassung, zwei Sichten. Die Klasse am <html> blendet aus, was gerade
    nicht gedruckt werden soll. */
@@ -270,6 +272,7 @@ html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
   .abt-kopf+.quelle,.abteilung>.quelle:first-of-type{page-break-before:auto}
   h1,h2,h3{page-break-after:avoid}
   table,pre,blockquote{page-break-inside:avoid}
+${MK_DRUCK}
 }
 `;
 
@@ -302,6 +305,18 @@ const SKRIPT = `
        eine Abteilung. */
     var weg = abt.querySelectorAll(".knoepfe, .lage");
     for (var k = 0; k < weg.length; k++) weg[k].remove();
+
+    /* UND DIE MARKIERUNGEN GEHEN NICHT MIT. Das ist der eigentliche Riegel,
+       nicht der Feinschliff: die Einreich-Abteilung geht zur Behoerde, und
+       ein "das muss geaendert werden"-Streifen darin waere das Gegenteil
+       dessen, wofuer die Markierungen da sind. Der Text bleibt, nur die
+       Huelle faellt weg. */
+    var mks = abt.querySelectorAll("mark.mk");
+    for (var q = 0; q < mks.length; q++) {
+      var mk = mks[q], el = mk.parentNode;
+      while (mk.firstChild) el.insertBefore(mk.firstChild, mk);
+      el.removeChild(mk);
+    }
     return "<!doctype html>\\n<html lang=\\"de\\">\\n<head>\\n"
       + "<meta charset=\\"utf-8\\">\\n"
       + "<meta name=\\"viewport\\" content=\\"width=device-width,initial-scale=1\\">\\n"
@@ -385,10 +400,12 @@ const seite = `<!doctype html>
     <span>Stand ${escape(DATUM)}</span>
     <a href="#privat">1 &middot; Fahrplan (privat)</a>
     <a href="#einreichbar">2 &middot; Forschungsunterlagen (einreichbar)</a>
+    <button type="button" data-mk-knopf>&#9998; 0 Markierungen</button>
   </nav>
 </div>
 
 ${ABTEILUNGEN.map(abteilungBauen).join('\n\n')}
+${MK_HTML}
 
 <p class="fuss">
   Eine Datei, zwei Abteilungen. Erzeugt aus den Markdown-Quellen des Depots
@@ -398,6 +415,7 @@ ${ABTEILUNGEN.map(abteilungBauen).join('\n\n')}
 </p>
 
 <script>${SKRIPT}</script>
+<script>${MK_SKRIPT}</script>
 </body>
 </html>
 `;

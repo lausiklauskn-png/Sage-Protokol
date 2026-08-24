@@ -1166,6 +1166,13 @@ erfragen, baut den Antrag auf Sand — und merkt es erst beim Bescheid.
   eigenen Kopf mit Datum und Herkunft und ist allein vollständig.
   **Sie wird erzeugt, nicht gepflegt:** wer den Inhalt ändert, ändert die
   `.md`-Datei und ruft `node tools/antragsmappe-bauen.mjs`.
+  **Markieren und auslesen:** Text mit Maus oder Finger ziehen, Farbe wählen
+  (🟩 gut so · 🟨 unklar · 🟥 ändern), auf Wunsch eine Notiz dazu. Der Knopf
+  oben rechts öffnet die Tafel; von dort geht die Liste als Datei oder in die
+  Zwischenablage — damit weiß eine Folge-Sitzung, **wo** etwas zu verbessern
+  ist. Markierungen werden **nie gedruckt und nie mitgeladen**: die
+  Einreich-Abteilung geht zur Behörde, und dorthin gehören keine eigenen
+  Zweifel.
 - **[`docs/FORSCHUNGSKORPUS.md`](FORSCHUNGSKORPUS.md) — die benannte Kette, auf
   die der Antrag zeigt.** Sechs Repos unter MIT, dazu die Werkstatt-Unterlagen.
   Seit dem 2026-08-23 sind Kim-Bell, Kimseek und Kimboard darin geöffnet.

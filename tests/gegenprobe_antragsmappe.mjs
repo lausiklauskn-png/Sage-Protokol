@@ -2,7 +2,7 @@
  *
  * Lauf:  node tests/gegenprobe_antragsmappe.mjs
  *
- * Baut nacheinander siebzehn Fehler ein. **Jeder einzelne MUSS die Probe
+ * Baut nacheinander fünfundzwanzig Fehler ein. **Jeder einzelne MUSS die Probe
  * umwerfen.** Wirft er sie nicht um, ist der Wächter an dieser Stelle blind —
  * und ein blinder Wächter ist schlimmer als keiner, weil sein Grün beruhigt.
  *
@@ -28,6 +28,7 @@ const P = (r) => resolve(WURZEL, r);
 const ANGEFASST = [
   'tools/markdown-mini.mjs',
   'tools/antragsmappe-bauen.mjs',
+  'tools/antragsmappe-markieren.mjs',
   'docs/antragsmappe.html',
   'docs/FORSCHUNGSKORPUS.md',
 ];
@@ -210,6 +211,85 @@ const FAELLE = [
       ersetze('tools/antragsmappe-bauen.mjs',
         '    wurzel.classList.add(klasse);',
         '    void klasse;');
+      bauen();
+    },
+  },
+  {
+    was: 'Markierungen landen im Ausdruck — und damit bei der Behörde',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '  mark.mk{background:none !important;color:inherit !important;',
+        '  mark.mk{color:inherit !important;');
+      bauen();
+    },
+  },
+  {
+    was: 'Die Tafel wird mitgedruckt',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '  .mk-leiste,.mk-tafel{display:none !important}', '');
+      bauen();
+    },
+  },
+  {
+    was: 'Der Download nimmt die Markierungen mit',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-bauen.mjs',
+        'var mks = abt.querySelectorAll("mark.mk");',
+        'var mks = [];');
+      bauen();
+    },
+  },
+  {
+    was: 'Die Farbe setzt keine Schriftfarbe — im dunklen Thema unlesbar',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        'mark.mk{background:#b7f0c2;color:#10331a;',
+        'mark.mk{background:#b7f0c2;color:inherit;');
+      ersetze('tools/antragsmappe-markieren.mjs',
+        'mark.mk[data-farbe="rot"]{background:#ffc4bd;color:#45120c}',
+        'mark.mk[data-farbe="rot"]{background:#ffc4bd}');
+      bauen();
+    },
+  },
+  {
+    was: 'Eine Markierung überlebt den Neubau nicht (Anker fällt weg)',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '    if(!anwenden(marken[i])) verwaist.push(marken[i].id);',
+        '    void i;');
+      bauen();
+    },
+  },
+  {
+    was: 'Verwaiste Markierungen verschwinden stillschweigend',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        'warnN.hidden = w.length === 0;', 'warnN.hidden = true;');
+      bauen();
+    },
+  },
+  {
+    was: 'Die Auslese nennt die Quelldatei nicht mehr',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '      out.push("## " + q);', '      out.push("## (Quelle)");');
+      bauen();
+    },
+  },
+  {
+    was: 'Entfernen putzt den Text gleich mit weg',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '      while(mk.firstChild) el.insertBefore(mk.firstChild, mk);', '');
       bauen();
     },
   },

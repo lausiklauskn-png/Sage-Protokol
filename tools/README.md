@@ -26,15 +26,37 @@ node tools/antragsmappe-bauen.mjs --datum=2026-08-23   # fester Stand
 auseinander. `tests/smoke_antragsmappe.mjs` schlägt an, wenn die abgelegte
 Datei nicht der aktuelle Bau ist.
 
+**Markieren und auslesen.** In der Mappe lässt sich Text mit Maus oder Finger
+ziehen und in drei Farben markieren — 🟩 *gut so* · 🟨 *unklar* · 🟥 *ändern* —
+mit optionaler Notiz. Der Knopf oben rechts öffnet die Tafel; von dort geht die
+Liste als `.md`-Datei oder in die Zwischenablage. Die Schicht liegt in
+`antragsmappe-markieren.mjs`.
+
+Drei Dinge daran sind Absicht:
+
+- **Markierungen werden nie gedruckt und nie mitgeladen.** Die
+  Einreich-Abteilung geht zur Behörde; ein „muss geändert werden"-Streifen
+  darin wäre das Gegenteil dessen, wofür die Markierungen da sind. Wer sie auf
+  Papier braucht, druckt die ausgelesene Liste.
+- **Geankert wird am TEXT, nicht an der Stelle im Dokument.** Die Mappe wird
+  neu gebaut, sobald sich eine `.md` ändert — eine Markierung an „Absatz 412"
+  säße danach lautlos woanders. Gespeichert werden Quelldatei, markierter Text
+  und das wievielte Vorkommen. Findet sich das nicht mehr, heißt die Markierung
+  **verwaist** und wird gemeldet, statt zu verschwinden.
+- **Der Speicher kann versagen, und dann wird es gesagt.** `localStorage` wirft
+  im privaten Fenster. Wer fünfzig Stellen markiert und es erst beim nächsten
+  Öffnen merkt, hat umsonst gearbeitet.
+
 Der Markdown-Leser dazu ist `markdown-mini.mjs` — bewusst klein, ohne
 Laufzeit-Abhängigkeit. Bewacht wird an ihm **nicht** die Optik, sondern dass er
 nichts **verschluckt**: jede der 2.799 Quellzeilen muss mit ihrem Klartext in
 der Ausgabe wiederauftauchen. Dazu zwei Proben und eine Gegenprobe:
 
 ```bash
-node tests/smoke_antragsmappe.mjs           # liest die Datei
-node tests/smoke_antragsmappe_browser.mjs   # öffnet sie wirklich (playwright-core)
-node tests/gegenprobe_antragsmappe.mjs      # 17 eingebaute Fehler, jeder MUSS auffallen
+node tests/smoke_antragsmappe.mjs            # liest die Datei
+node tests/smoke_antragsmappe_browser.mjs    # öffnet sie wirklich (playwright-core)
+node tests/smoke_antragsmappe_markieren.mjs  # markiert, druckt, lädt, liest aus
+node tests/gegenprobe_antragsmappe.mjs       # 25 eingebaute Fehler, jeder MUSS auffallen
 ```
 
 ## `verify_remote_spore.mjs`

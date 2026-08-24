@@ -31,6 +31,60 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-24 (Bau) — ✎ Markieren in der Antragsmappe
+
+**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
+**Klaus' Bitte:** in der Mappe mit der Maus etwas markieren können, grün oder
+rot, und die Markierungen später auslesen, um zu sehen, wo etwas zu verbessern
+ist.
+
+**Gebaut:** `tools/antragsmappe-markieren.mjs`. Text ziehen → Farbleiste →
+🟩 *gut so* · 🟨 *unklar* · 🟥 *ändern*, dazu eine Notiz. Der Knopf in der
+Kopfleiste öffnet die Tafel; von dort geht die Liste als `.md`-Datei oder in
+die Zwischenablage — eine Auslese nach Quelldatei und Farbe, mit dem markierten
+Satz, dem Abschnitt und der Notiz.
+
+**Der wichtigste Riegel ist nicht die Farbe, sondern was sie NICHT tut:**
+Markierungen werden **nie gedruckt und nie mitgeladen**. Die Einreich-Abteilung
+geht zur Behörde; ein „muss geändert werden"-Streifen darin wäre das Gegenteil
+dessen, wofür sie da sind — und der Fehler fiele niemandem auf, bis er draußen
+ist. Gemessen wird an den **Bytes der heruntergeladenen Datei** und an der
+**Hintergrundfarbe im Druck-Medium**, nicht an einer CSS-Regel im Quelltext.
+
+**Geankert wird am Text, nicht an der Stelle.** Die Mappe wird neu gebaut,
+sobald sich eine `.md` ändert — eine Markierung an „Absatz 412" säße danach
+lautlos woanders. Gespeichert werden Quelldatei, markierter Text und das
+wievielte Vorkommen. Findet sich das nicht mehr, heißt die Markierung
+**verwaist** und wird gemeldet, statt zu verschwinden. Ebenso beim Speicher:
+wirft `localStorage`, sagt die Tafel es — wer fünfzig Stellen markiert und es
+erst beim nächsten Öffnen merkt, hat umsonst gearbeitet.
+
+**Zwei Fehler in meinen eigenen Wächtern, beide von der Sache selbst
+aufgedeckt:**
+
+1. Die Probe markierte die Zeile „Quelle: …" statt echten Text — 33 Zeichen.
+   Aufgefallen erst, als der Längen-Vergleich am Ende darüber stolperte. *Eine
+   Probe, die die falsche Stelle nimmt, misst nicht, was sie zu messen glaubt.*
+2. „Schrift und Grund sind verschieden" lief **nur im hellen Thema** und war
+   dort immer grün — im dunklen hätte fast weiße Schrift auf hellgrünem Grund
+   gestanden. **Die Gegenprobe hat es gefangen.** Gemessen wird jetzt der
+   Kontrast nach WCAG, in hell **und** dunkel: 🟩 10,3 · 🟨 12,0 · 🟥 8,6 zu 1.
+
+Dazu ein dritter, im Wächter der Mappe selbst: er las `data-quelle` auch aus
+den Wähler-Zeichenketten des neuen Skripts und suchte danach eine Datei, deren
+Name aus einem Stück JavaScript bestand. Jetzt strukturell auf `<article>`.
+
+**Gemessen:** 85 von 85 Proben grün, 0 rot, 0 nicht lauffähig · Gegenprobe
+**25 von 25 gefangen** (acht davon neu, alle zur Markier-Schicht).
+**Klaus' Sichttest am Tablet steht aus** — besonders, ob sich mit dem Finger
+bequem ziehen lässt und ob Androids eigene Kopieren-Leiste der Farbleiste in
+die Quere kommt.
+
+**Nächster sinnvoller Schritt:** Sichttest; dann die ausgelesene Liste in den
+Chat geben, damit eine Sitzung die roten Stellen abarbeiten kann.
+
+---
+
 ## Stand 2026-08-23 (Bau) — 📦 Antragsmappe: eine Datei, zwei Abteilungen
 
 **Rolle:** Bausitzung. Zweig `claude/research-funding-paper-delivery-vuppnj`,
