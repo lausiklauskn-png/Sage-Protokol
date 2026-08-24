@@ -146,6 +146,57 @@ gut(fehlend.length === 0,
   fehlend.slice(0, 6).join('\n       ')
   + (fehlend.length > 6 ? '\n       … und ' + (fehlend.length - 6) + ' weitere' : ''));
 
+/* ── 1b · Keine Gedankenstriche in MEINEN Texten ──────────────────────────
+   Klaus am 2026-08-24: „Nimm bitte alle Gedankenstriche von dir heraus. […]
+   Es gibt Saetze." Der Skill `menschlich-schreiben` sagt seit laengerem
+   dasselbe: die Gedankenstrich-Flut ist einer der typischen Verraeter dafuer,
+   dass ein Text von einer Maschine stammt.
+
+   ZWEI AUSNAHMEN, und beide sind keine Nachsicht, sondern eine andere Regel,
+   die staerker wiegt:
+
+     · `werkstatt/WERKSTATTREGELN.md` und `werkstatt/grundsaetze.md` sind
+       BYTE-KOPIEN aus Kimhub, deren Quell-Pruefsummen in
+       `werkstatt/README.md` stehen. Wer sie hier anfasst, laesst die
+       Momentaufnahme still vom Original weglaufen und macht die
+       Pruefsummen falsch. Geaendert wird dort, dann neu kopiert.
+     · Ein WOERTLICHES ZITAT folgt seiner Quelle. Wer die Zeichensetzung
+       eines Zitats anpasst, faelscht es.
+
+   Genau daran bin ich beim ersten Durchgang gescheitert: das Werkzeug lief
+   ueber die Byte-Kopien mit, ehe mir die Pruefsummen wieder einfielen.
+   Zurueckgenommen und hier festgenagelt. */
+
+const NUR_DORT = [
+  'docs/werkstatt/WERKSTATTREGELN.md',
+  'docs/werkstatt/grundsaetze.md',
+];
+
+const striche = [];
+for (const pfad of QUELLEN) {
+  if (NUR_DORT.includes(pfad)) continue;
+  const zeilen = readFileSync(resolve(WURZEL, pfad), 'utf-8').split('\n');
+  let imCode2 = false;
+  for (let n = 0; n < zeilen.length; n++) {
+    if (/^\s*```/.test(zeilen[n])) { imCode2 = !imCode2; continue; }
+    if (imCode2 || !zeilen[n].includes('\u2014')) continue;
+    /* In einem Zitat darf er stehen. Gepruft wird, ob der Strich zwischen
+       einem oeffnenden und einem schliessenden Anfuehrungszeichen liegt. */
+    const z = zeilen[n];
+    for (let k = 0; k < z.length; k++) {
+      if (z[k] !== '\u2014') continue;
+      const davor = z.slice(0, k);
+      const auf = (davor.match(/\u201E/g) || []).length;
+      const zu = (davor.match(/[\u201C"]/g) || []).length;
+      if (auf > zu) continue;          // steht im Zitat
+      striche.push(pfad + ':' + (n + 1) + '  ' + z.trim().slice(0, 70));
+    }
+  }
+}
+gut(striche.length === 0,
+  'kein Gedankenstrich in den selbst geschriebenen Quellen',
+  striche.slice(0, 5).join('\n       '));
+
 /* ── 2 · Keine Auszeichnung sichtbar ──────────────────────────────────── */
 
 const rohMarken = [

@@ -1,10 +1,10 @@
-# Forschungsgelder — was geht, was nicht, und in welcher Reihenfolge
+# Forschungsgelder: was geht, was nicht, und in welcher Reihenfolge
 
 **Stand: 2026-08-23.** Die Frage, um die es geht: **Lässt sich für die Arbeit an
-diesem Netz Forschungsförderung beantragen — und was ist dafür nötig?**
+diesem Netz Forschungsförderung beantragen, und was ist dafür nötig?**
 
 > **Ein Wort, das genau genommen werden muss: „server-los".** Es gibt sehr wohl
-> ein **Relais** — der Betreiber führt sogar selbst eines. Was fehlt, ist ein
+> ein **Relais**, der Betreiber führt sogar selbst eines. Was fehlt, ist ein
 > Server **beim Einzelnen** und ein zentraler Index. Wer die Technik kennt, hakt
 > an einem ungenauen „server-los" sofort ein. Gemeint ist im Folgenden immer:
 > **kein zentraler Index, kein Konto, keine eigene Infrastruktur beim Nutzer.**
@@ -15,7 +15,7 @@ diesem Netz Forschungsförderung beantragen — und was ist dafür nötig?**
 
 Diese Datei ist die Antwort als **abhakbarer Fahrplan**: welche Wege es gibt, was
 sie voraussetzen, in welcher Reihenfolge man sie geht, und an welchen Adressen man
-anklopft. Sie ist auf die Lage dieses Projekts zugeschnitten — ein offen
+anklopft. Sie ist auf die Lage dieses Projekts zugeschnitten, ein offen
 lizenziertes, server-loses Software-Netz, gebaut außerhalb einer Hochschule.
 
 **Sie ersetzt keine Steuer- oder Rechtsberatung.** Wo eine Frage Geld bedeutet,
@@ -25,38 +25,38 @@ steht ausdrücklich dabei, wen man fragt.
 
 ## 0 · Die kurze Antwort
 
-**Ja, es geht — und du brauchst dafür jetzt keinen Verein.**
+**Ja, es geht, und du brauchst dafür jetzt keinen Verein.**
 
 Drei Wege sind für dich realistisch, und sie schließen einander nicht aus:
 
 | | Weg | Was es bringt | Wettbewerb? | Nächster Termin |
 |---|---|---|---|---|
 | **1** | **Prototype Fund** (BMFTR/OKF) | bis **47.500 €** für 6 Monate | ja, Auswahl | Bewerbung **01.10.–30.11.2026** |
-| **2** | **Forschungszulage** (BSFZ + Finanzamt) | Erstattung auf **eigene Arbeitsstunden**, **rückwirkend bis 4 Jahre** | **nein — Rechtsanspruch** | jederzeit |
+| **2** | **Forschungszulage** (BSFZ + Finanzamt) | Erstattung auf **eigene Arbeitsstunden**, **rückwirkend bis 4 Jahre** | **nein, Rechtsanspruch** | jederzeit |
 | **3** | **Open Technology Fund**, Internet Freedom Fund | 10.000–900.000 USD | ja, aber laufend | jederzeit (Concept Note) |
-| **4** | **InnoFounder** (IFB Hamburg) — nur mit Wohnsitz Hamburg | **2.500 €/Monat**, bis 18 Monate, bis 45.000 € | ja | laufend |
+| **4** | **InnoFounder** (IFB Hamburg), nur mit Wohnsitz Hamburg | **2.500 €/Monat**, bis 18 Monate, bis 45.000 € | ja | laufend |
 
 Dazu kommt ein **vierter Bereich**, der in keiner Software-Förderübersicht
 steht: **Suchtpotenzial und psychische
 Wirkungen der KI-Nutzung.** Dort liegen die Präventionsmittel der Krankenkassen
-und die Medienkompetenz-Töpfe der Länder — **weniger Geld pro Antrag, aber
+und die Medienkompetenz-Töpfe der Länder, **weniger Geld pro Antrag, aber
 deutlich weniger Konkurrenz.** Siehe Abschnitt 2.3.
 
 Der **zweite** Weg ist der wichtigste und der am wenigsten bekannte: die
-Forschungszulage ist **kein Wettbewerb**. Wer die Kriterien erfüllt, bekommt sie —
+Forschungszulage ist **kein Wettbewerb**. Wer die Kriterien erfüllt, bekommt sie,
 und sie greift **rückwirkend** auf Arbeit, die schon getan ist. Sie ist damit der
 einzige der fünf Wege, der nicht nur nach vorn schaut, sondern auch auf das, was
 bereits gebaut wurde.
 
-**Zur Vereinsfrage, kurz:** für diese drei Wege braucht es **keinen** Verein —
+**Zur Vereinsfrage, kurz:** für diese drei Wege braucht es **keinen** Verein.
 sie verlangen sogar ausdrücklich eine Person oder ein Unternehmen. Für ein
 **Institut für KI-Kompetenz** sieht es anders aus; das ist ein eigenes Kapitel
 (Abschnitt 3b) mit einer klaren Empfehlung: **zwei Gefäße, und in dieser
-Reihenfolge — erst der Antrag, dann der Verein.**
+Reihenfolge: erst der Antrag, dann der Verein.**
 
 ---
 
-## 1 · Prüftiefe — ehrlich gesagt
+## 1 · Prüftiefe: ehrlich gesagt
 
 Recherchiert am 2026-08-23 aus dieser Sitzung heraus, über Websuche.
 
@@ -72,7 +72,7 @@ Recherchiert am 2026-08-23 aus dieser Sitzung heraus, über Websuche.
   geändert; die genaue Rechnung macht ein Steuerberater, nicht diese Datei.
 - **Nicht geprüft, weil es aus einer Sitzung niemand prüfen kann:** die
   persönlichen Voraussetzungen des Antragstellers. An zweien davon hängt, welche
-  Wege offenstehen. Was gebraucht wird und wofür, steht in Abschnitt 9 — die
+  Wege offenstehen. Was gebraucht wird und wofür, steht in Abschnitt 9, die
   Angaben selbst gehören ins Gespräch, nicht ins Depot.
 
 ---
@@ -90,25 +90,25 @@ alles gibt es, und jede Fördergeberin sieht das auf den ersten Blick.
 **Förderprogramme finanzieren aber selten Erfindungen.** Sie finanzieren
 *Integration*, *Erprobung* und *nutzbar machen*. Genau das steht hier: ein
 funktionierender Verbund aus rund zwei Dutzend Apps, in dem sich Knoten
-**server-los nach Bedeutung** finden — und zwar belegt, nicht behauptet
+**server-los nach Bedeutung** finden, und zwar belegt, nicht behauptet
 (`docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md`, `docs/meilenstein/`).
 
 Die drei Sätze, die in einen Antrag gehören:
 
-1. **Semantische Suche gibt es — aber sie gehört immer jemandem.** Sie läuft auf
+1. **Semantische Suche gibt es, aber sie gehört immer jemandem.** Sie läuft auf
    einem Server, hinter einem Konto, mit einem Türsteher, der eigene Interessen
    hat. Hier läuft sie im Browser, ohne Konto, ohne zentralen Index.
-2. **Peer-to-peer gibt es — aber ohne Bedeutungs-Verständnis.** Die üblichen
+2. **Peer-to-peer gibt es, aber ohne Bedeutungs-Verständnis.** Die üblichen
    Systeme (IPFS, ActivityPub, Matrix, libp2p, Solid) transportieren Inhalte.
    Sie sortieren sie nicht nach Sinn. SBKIM setzt beides zusammen.
 3. **Die Kombination ist das Ergebnis, und sie ist nachprüfbar.** Zwei Knoten
-   ohne gemeinsamen Hub, die einander nach Bedeutung beantworten — das steht
+   ohne gemeinsamen Hub, die einander nach Bedeutung beantworten. Das steht
    dokumentiert und wiederholbar da.
 
 ### 2.2 Der zweite Strang ist der wissenschaftlich heiklere
 
-Die Frage nach **grundsatzbasiertem gegenüber regelbasiertem Lernen** — und danach,
-wie sich ein KI-Werkzeug lenken lässt, wenn man ihm Grundsätze statt Regeln gibt —
+Die Frage nach **grundsatzbasiertem gegenüber regelbasiertem Lernen**, und danach,
+wie sich ein KI-Werkzeug lenken lässt, wenn man ihm Grundsätze statt Regeln gibt,
 ist die interessantere Hälfte deiner Arbeit. Sie ist aber auch die, an der ein
 Antrag scheitert, wenn er unvorsichtig formuliert wird.
 
@@ -120,7 +120,7 @@ lenken die Aufmerksamkeit" sind über Monate mit Datum gewachsen. Das ist ein
 
 **Was dir fehlt:** eine Methode. Ein Feldtagebuch wird erst dann eine Studie, wenn
 jemand sagt, *woran* man den Unterschied messen will und *wogegen* man vergleicht.
-Das ist exakt die Stelle, an der ein Hochschul-Partner den Unterschied macht — und
+Das ist exakt die Stelle, an der ein Hochschul-Partner den Unterschied macht, und
 der Grund, warum Abschnitt 6 dazu rät.
 
 **Der Fehler, den du vermeiden musst:** einen Antrag zu schreiben, der beides in
@@ -131,81 +131,81 @@ als Ausblick.** Sonst zieht der schwächere Teil den starken mit runter.
 ### 2.3 Der dritte Strang: was KI mit Menschen macht
 
 **Suchtpotenzial und psychische Wirkungen der KI-Nutzung.** Das ist kein
-Nebengedanke — es ist der Strang mit dem **größten Fördertopf und der geringsten
+Nebengedanke. Es ist der Strang mit dem **größten Fördertopf und der geringsten
 Konkurrenz**, und er gehört
 ausdrücklich unter das Dach „KI-Kompetenz im täglichen Gebrauch".
 
 **Warum das eine ernste Forschungsfrage ist.** KI-Assistenten haben Eigenschaften,
 die aus der Suchtforschung bekannt sind: sofortige Belohnung, unbegrenzte
 Verfügbarkeit, variable Antwortqualität (das ist psychologisch ein
-Glücksspiel-Muster), soziale Wärme ohne soziales Risiko, und — der Punkt, den kaum
-jemand ausspricht — ein Werkzeug, das nie „nein" sagt und nie müde wird. Für
-Bildschirmzeit, Spiele und soziale Netze gibt es dazu Forschung. **Für
+Glücksspiel-Muster), soziale Wärme ohne soziales Risiko, und: der Punkt, den kaum
+jemand ausspricht, ein Werkzeug, das nie „nein" sagt und nie müde wird. Für
+Bildschirmzeit, Spiele und soziale Netze gibt es Forschung. **Für
 KI-Assistenten im Alltag gibt es fast nichts.** Das ist eine echte Lücke, kein
 gefundenes Thema.
 
-**Und die psychische Seite ist die größere Frage, nicht die kleinere.** Sucht ist
+**Und die psychische Seite ist die größere Frage.** Sucht ist
 nur eine von mehreren Wirkungen, und nicht einmal die häufigste. Die anderen sind
 weniger auffällig und deshalb schlechter untersucht:
 
-- **Vermenschlichung** — man behandelt das Werkzeug wie ein Gegenüber, weil es
+- **Vermenschlichung**. Man behandelt das Werkzeug wie ein Gegenüber, weil es
   antwortet wie eines. Das passiert unwillkürlich, auch bei Leuten, die genau
   wissen, was da rechnet.
-- **Übervertrauen** — eine flüssig formulierte Antwort wirkt richtiger als eine
-  zögernde, unabhängig davon, ob sie es ist. Deine eigenen Verfassungen kämpfen
+- **Übervertrauen**, eine flüssig formulierte Antwort wirkt richtiger als eine
+  zögernde, unabhängig davon, ob sie es ist. Meine eigenen Verfassungen kämpfen
   seit Monaten gegen genau das an: *„eine geratene Zahl klingt genau wie eine
   gemessene."*
-- **Verlernen** — was man abgibt, kann man nach einer Weile nicht mehr selbst.
-- **Emotionale Entlastung** — ein Gegenüber, das nie müde wird, nie widerspricht,
+- **Verlernen**. Was man abgibt, kann man nach einer Weile nicht mehr selbst.
+- **Emotionale Entlastung**, ein Gegenüber, das nie müde wird, nie widerspricht,
   nie etwas zurückfordert. Das ist bequem, und Bequemlichkeit ist der Anfang von
   Gewöhnung.
-- **Und die Richtung, nach der du ursprünglich gefragt hast** — was eine
+- **Und die Richtung, nach der du ursprünglich gefragt hast**. Was eine
   Kombination von Werkzeugen bei einer KI an „Motivation" hervorruft, in
   Anführungszeichen, und wie ein Mensch das lenken kann.
 
 **Hier steckt der Satz, der deinen ganzen Antrag zusammenhält, und ich glaube nicht,
 dass du ihn selbst schon so ausgesprochen hast:** Deine Suche ist
-**bidirektional** — beide Seiten fragen und beide antworten. Und deine
+**bidirektional**. Beide Seiten fragen und beide antworten. Und deine
 Beobachtung über Mensch und KI ist **dieselbe Figur**: der Mensch prägt die KI
 durch Grundsätze, und die KI prägt den Menschen durch Gewöhnung. **Beides in eine
 Richtung zu denken ist der Fehler; beides zusammen ist deine These.**
 
 Das ist kein rhetorischer Bogen. Es ist der Grund, warum die drei Stränge in
-einen Antrag gehören statt in drei — und es ist genau die Art von Leitgedanke,
+einen Antrag gehören statt in drei, und es ist genau die Art von Leitgedanke,
 nach der eine Gutachterin sucht, wenn sie entscheidet, ob ein Vorhaben eine Idee
 hat oder nur eine Liste.
 
 **Und du hast dafür etwas Ungewöhnliches:** ein über Monate geführtes Protokoll der
-eigenen Nutzung — Fahrtenbuch, Stechuhr, Kostenrechnung, Sitzungsprotokolle,
+eigenen Nutzung: Fahrtenbuch, Stechuhr, Kostenrechnung, Sitzungsprotokolle,
 `docs/LEHREN.md`. Das ist eine **Einzelfall-Längsschnittbeobachtung** mit Daten,
 und sie ist echt statt erinnert. Genau daran scheitern die meisten Studien in
 diesem Feld: sie fragen Leute hinterher, wie viel sie genutzt haben.
 
-#### Zur Bezeichnung „Psychologe" — nachgeprüft, weil die Annahme nicht stimmt
+#### Zur Bezeichnung „Psychologe": nachgeprüft, weil die Annahme nicht stimmt
 
 Es hält sich hartnäckig die Annahme, „Psychologe" dürfe sich in Deutschland auch
 nennen, wer kein Studium hat. **Das ist nicht richtig, und der Irrtum ist von der
 teuren Sorte.** Nachgesehen am 2026-08-23:
 
-- **„Psychologe" ist geschützt** — nicht durch ein eigenes Berufsgesetz wie bei
+- **„Psychologe" ist geschützt**, nicht durch ein eigenes Berufsgesetz wie bei
   Ärzten, sondern über das **Wettbewerbsrecht**: wer die Bezeichnung ohne
   Psychologie-Studium (Bachelor **und** Master im Hauptfach) führt, täuscht über
   seine Qualifikation (§ 5 Abs. 2 Nr. 3 UWG). Ein Gericht hat das ausdrücklich
   bestätigt; der Berufsverband BDP hält darüber hinaus **§ 132a Abs. 2 StGB** für
   einschlägig.
 - **Akademische Grade sind eindeutig strafbewehrt.** „Diplom-Psychologe",
-  „M. Sc. Psychologie" und dergleichen fallen unter **§ 132a StGB** — das ist
+  „M. Sc. Psychologie" und dergleichen fallen unter **§ 132a StGB**. Das ist
   kein Abmahn-Risiko, das ist eine Straftat.
-- **„Psychotherapeut" ist am strengsten geschützt** — dafür braucht es eine
+- **„Psychotherapeut" ist am strengsten geschützt**. Dafür braucht es eine
   Approbation. Und Menschen mit seelischen Beschwerden zu behandeln, ist ohne
   Approbation oder Heilpraktiker-Erlaubnis nach dem Heilpraktikergesetz
   ebenfalls verboten.
 - Woher der Irrtum kommt: **„Psychologische Beratung", „Coach", „Berater"** sind
-  wirklich frei. Das ist vermutlich die Wahrheit, an die du dich erinnerst — sie
+  wirklich frei. Das ist vermutlich die Wahrheit, an die du dich erinnerst. Sie
   gilt aber für die Tätigkeit, nicht für den Titel.
 
 **Die gute Nachricht: du brauchst die Bezeichnung überhaupt nicht.** Kein
-Fördergeber verlangt sie. Was verlangt wird, ist eine **saubere Methode** — und
+Fördergeber verlangt sie. Was verlangt wird, ist eine **saubere Methode**, und
 die kommt vom Hochschul-Partner, nicht von einem Titel auf deiner Visitenkarte.
 
 **Was du gefahrlos sagen und schreiben kannst:**
@@ -218,7 +218,7 @@ die kommt vom Hochschul-Partner, nicht von einem Titel auf deiner Visitenkarte.
 | „gemeinsam mit Prof. … von der Hochschule …" | eine Fachlichkeit andeuten, die nicht da ist |
 
 **Und der Punkt, der in einem Antrag wirklich zählt:** deine Glaubwürdigkeit kommt
-aus dem, was nachweislich läuft und über Monate belegt ist — nicht aus einem Titel.
+aus dem, was nachweislich läuft und über Monate belegt ist, nicht aus einem Titel.
 Ein geliehener Titel würde sie zerstören, und zwar genau bei den Leuten, die
 nachsehen.
 
@@ -227,23 +227,23 @@ nachsehen.
 **Die Warnung dazu, weil sie sonst teuer wird.** Sobald du an Gesundheit rührst,
 gelten andere Regeln als bei Software: **Ethikvotum**, **Datenschutz nach DSGVO für
 Gesundheitsdaten**, und wenn Menschen befragt werden, eine geprüfte Methodik. Das
-kannst du nicht allein — und du sollst es auch nicht. **Dieser Strang ist der,
+kannst du nicht allein, und du sollst es auch nicht. **Dieser Strang ist der,
 für den sich ein Hochschul-Partner am ehesten gewinnen lässt**, weil er für eine
 Psychologie- oder Medienwissenschafts-Professur direkt anschlussfähig ist.
 
-**Was er an Töpfen öffnet — und es sind andere als oben:**
+**Was er an Töpfen öffnet, und es sind andere als oben:**
 
 | Geldgeber | Warum es passt | Adresse |
 |---|---|---|
 | **Krankenkassen, § 20 SGB V (Prävention)** | Kassen **müssen** jährlich Präventionsmittel ausgeben. Mediensucht ist ein gesetztes Thema. Der Weg führt über eine Kasse direkt, nicht über eine Ausschreibung | die großen Kassen haben eigene Präventions-Referate |
-| **§ 20k SGB V — digitale Gesundheitskompetenz** | seit 2019 gesetzlicher Auftrag der Kassen, „selbstbestimmte, gesundheitsorientierte Nutzung digitaler Anwendungen" zu fördern. Das ist fast wörtlich dein Institutszweck | <https://www.gesetze-im-internet.de/sgb_5/__20k.html> |
-| **Landesmedienanstalten — Medienkompetenz-Projektförderung** | jedes Bundesland hat eine, jede fördert Projekte, meist unbürokratisch und in erreichbarer Größe | z. B. <https://medienanstalt-nrw.de/> — deine findest du über dein Bundesland |
+| **§ 20k SGB V, digitale Gesundheitskompetenz** | seit 2019 gesetzlicher Auftrag der Kassen, „selbstbestimmte, gesundheitsorientierte Nutzung digitaler Anwendungen" zu fördern. Das ist fast wörtlich dein Institutszweck | <https://www.gesetze-im-internet.de/sgb_5/__20k.html> |
+| **Landesmedienanstalten, Medienkompetenz-Projektförderung** | jedes Bundesland hat eine, jede fördert Projekte, meist unbürokratisch und in erreichbarer Größe | z. B. <https://medienanstalt-nrw.de/>, deine findest du über dein Bundesland |
 | **Landesprogramme Medien und Bildung** | z. B. Hamburgs „Projektfonds Medien und Bildung", Brandenburgs Medienkompetenz-Förderung | <https://www.foerderdatenbank.de/> nach „Medienkompetenz" + Bundesland |
-| **Dieter-Baacke-Preis** | Bundespreis für medienpädagogische Projekte — Geld ist wenig, **Sichtbarkeit ist viel** | jährlich, über die GMK |
+| **Dieter-Baacke-Preis** | Bundespreis für medienpädagogische Projekte, Geld ist wenig, **Sichtbarkeit ist viel** | jährlich, über die GMK |
 | **Stiftungen im Gesundheits- und Bildungsbereich** | brauchen einen gemeinnützigen Träger → siehe Abschnitt 3b | |
 
 **Der Unterschied zu allem oben:** diese Töpfe fördern **Projekte**, nicht
-Software. Sie zahlen Honorare, Material, Veranstaltungen, Räume — und sie sind
+Software. Sie zahlen Honorare, Material, Veranstaltungen, Räume, und sie sind
 deutlich weniger umkämpft als die Software-Programme, weil dort weniger Leute
 suchen.
 
@@ -259,13 +259,13 @@ Das ist mehr, als es von innen aussieht. In Anträgen zählt genau das:
 - **Belegte Meilensteine** mit Datum und Bild: Zwei-Knoten-Suche nach Bedeutung
   (2026-07-10), hub-unabhängige Cross-Knoten-Fragen (2026-07-11), Mesh-Handshake
   über mehrere Knoten (2026-07-23).
-- **Automatische Prüfungen mit Gegenproben** — das ist selten und macht Eindruck:
+- **Automatische Prüfungen mit Gegenproben**. Das ist selten und macht Eindruck:
   in Kimhub 771 Prüfungen mit einer Gegenprobe, die absichtlich Fehler einbaut und
   verlangt, dass sie auffallen. Wer so etwas baut, arbeitet wissenschaftlich, auch
   ohne Titel.
 - **Zwei laufende öffentliche Instanzen** (`family-projekt.de`, `pwa-toolpoint.de`)
   mit gemessenen, datierten Werten statt behaupteter.
-- **Eine geführte Aufwandsrechnung** — Fahrtenbuch und Belege in Kimhub, mit
+- **Eine geführte Aufwandsrechnung**. Fahrtenbuch und Belege in Kimhub, mit
   Zeiten je Vorhaben. Für die Forschungszulage ist das kein Nebenprodukt, sondern
   **das zentrale Beweismittel**.
 
@@ -283,17 +283,17 @@ Die kurze Antwort: **für den Einstieg gar nichts.**
 
 **Warum kein Verein:** Der Prototype Fund verlangt ausdrücklich eine **Person**
 mit Wohnsitz in Deutschland, selbstständig oder freiberuflich, mit Steuernummer.
-Die Forschungszulage verlangt ein **Unternehmen** — ein Einzelunternehmen reicht,
+Die Forschungszulage verlangt ein **Unternehmen**: ein Einzelunternehmen reicht,
 Soloselbständige sind seit 2020 ausdrücklich anspruchsberechtigt. Der OTF nimmt
 Einzelpersonen. In keinem der drei Fälle hilft ein Verein.
 
 **Wann ein Verein doch Sinn ergibt:** wenn Stiftungsgeld, Spenden mit
-Bescheinigung oder Bildungsarbeit dazukommen — also genau dann, wenn das
+Bescheinigung oder Bildungsarbeit dazukommen, also genau dann, wenn das
 **Institut** aus Abschnitt 3b Wirklichkeit wird. Dann ist ein **e. V.** die
 richtige Form, nicht die gGmbH: gleicher Nutzen, kein Stammkapital.
 
 **Ein Verein hat auch einen Preis, der selten genannt wird:** ab dem Tag der
-Eintragung gehört das, was der Verein tut, dem Verein — nicht dir. Bei einem
+Eintragung gehört das, was der Verein tut, dem Verein, nicht dir. Bei einem
 Projekt, dessen Urheberschaft du gerade erst sauber dokumentiert hast
 (`docs/URHEBERSCHAFT_UND_RECHTE.md`), ist das eine Entscheidung, die man nicht
 nebenbei trifft.
@@ -313,14 +313,14 @@ fehlende Dach darüber.** Deine Arbeit besteht ohnehin schon zur Hälfte daraus:
 `docs/LEHREN.md`, die Verfassungen, die Grundsätze in Kimhub, die Frage nach
 grundsatz- gegenüber regelbasiertem Lernen. Das ist **angewandte KI-Kompetenz**,
 aufgeschrieben von jemandem, der kein Informatiker ist und es trotzdem zum Laufen
-gebracht hat. Genau diese Perspektive fehlt im Feld — es schreiben fast nur
+gebracht hat. Genau diese Perspektive fehlt im Feld. Es schreiben fast nur
 Fachleute für Fachleute.
 
 Und es löst ein Problem, das die drei schnellen Wege nicht lösen: **sie bezahlen
 Software, nicht Bildung.** Ein Bildungs-/Forschungsträger öffnet Töpfe, die einer
 Einzelperson verschlossen bleiben.
 
-### „Institut" ist keine Rechtsform — das ist der wichtigste Satz hier
+### „Institut" ist keine Rechtsform: das ist der wichtigste Satz hier
 
 Man „gründet" kein Institut. Man gründet einen **Verein**, eine **gGmbH** oder ein
 **Einzelunternehmen** und **nennt** es Institut. Der Name wird geprüft, die
@@ -329,17 +329,17 @@ Rechtsform ist die eigentliche Entscheidung.
 **Beim Namen gilt:** „Institut" darf nicht **irreführend** sein. Es darf nicht der
 Eindruck entstehen, dahinter stünde ein **öffentlicher Träger** oder eine
 staatlich anerkannte wissenschaftliche Einrichtung. Die Rechtsprechung ist hier
-seit einem Urteil des OLG Düsseldorf vom 15.08.2023 **entspannter** als früher —
+seit einem Urteil des OLG Düsseldorf vom 15.08.2023 **entspannter** als früher.
 „Institut" ist nicht mehr von vornherein unzulässig. Bedingung bleibt: aus dem
 Namen muss die **Tätigkeit** und der **private Charakter** erkennbar sein. Ein
 bloßes „GmbH" am Ende genügt dafür nicht.
 
 Praktisch heißt das: **vor der Anmeldung einmal bei der IHK und beim Registergericht
 nachfragen.** Beides ist kostenlos und dauert eine Woche. Ein Name, der später
-beanstandet wird, kostet eine Umfirmierung — und die zieht sich durch jede Domain,
+beanstandet wird, kostet eine Umfirmierung, und die zieht sich durch jede Domain,
 jedes Impressum und jede Fördermittel-Bewilligung.
 
-### Welche Rechtsform — und die eine Frage, an der es hängt
+### Welche Rechtsform, und die eine Frage, an der es hängt
 
 | | **e. V. gemeinnützig** | **gGmbH** | **Einzelunternehmen** |
 |---|---|---|---|
@@ -354,12 +354,12 @@ jedes Impressum und jede Fördermittel-Bewilligung.
 | laufender Aufwand | Mitgliederversammlung, Protokolle, jährlicher Nachweis beim Finanzamt | Bilanz, Jahresabschluss | gering |
 
 **Die Frage, an der alles hängt:** Willst du mit dieser Arbeit **Geld verdienen**
-(Pilz-Wirtschaft, Marktplatz, Beteiligungen — `docs/PLAN_PILZ_WIRTSCHAFT.md`),
+(Pilz-Wirtschaft, Marktplatz, Beteiligungen, `docs/PLAN_PILZ_WIRTSCHAFT.md`),
 oder soll sie **gemeinnützig** sein?
 
 **Beides zugleich geht nicht in einem Gefäß.** Gemeinnützigkeit heißt: die Mittel
 dürfen nur für den Satzungszweck verwendet werden, es gibt keine Gewinnausschüttung,
-und was der Verein hervorbringt, gehört dem Verein — **nicht dir**. Bei einem
+und was der Verein hervorbringt, gehört dem Verein, **nicht dir**. Bei einem
 Projekt, dessen Urheberschaft du gerade erst sauber dokumentiert hast, ist das
 eine Entscheidung mit langem Schatten.
 
@@ -367,14 +367,14 @@ eine Entscheidung mit langem Schatten.
 
 Der übliche und saubere Weg für genau diese Lage:
 
-- **Du bleibst selbstständig** — mit den Apps, dem Marktplatz, dem Code, den
+- **Du bleibst selbstständig**: mit den Apps, dem Marktplatz, dem Code, den
   Rechten. Das ist der Träger für Prototype Fund und Forschungszulage.
-- **Der Verein kommt daneben** — für Bildung, Veröffentlichungen, Vorträge,
+- **Der Verein kommt daneben**: für Bildung, Veröffentlichungen, Vorträge,
   Material, Spenden, Stiftungsgeld. Er bekommt von dir eine **Lizenz** zur
   Nutzung, nicht die Rechte.
 
 **Und in dieser Reihenfolge, nicht gleichzeitig.** Ein Verein, den man im Oktober
-gründet, kostet genau die Wochen, die der Prototype-Fund-Antrag braucht — und der
+gründet, kostet genau die Wochen, die der Prototype-Fund-Antrag braucht, und der
 Verein darf ihn nicht einmal stellen. **Erst der Antrag, dann der Verein.**
 
 ### Was der Verein dann öffnet
@@ -382,22 +382,22 @@ Verein darf ihn nicht einmal stellen. **Erst der Antrag, dann der Verein.**
 Als **gemeinnütziger Träger** mit dem Zweck *Förderung von Wissenschaft und
 Forschung* und/oder *Volksbildung* (beides sind anerkannte Zwecke nach § 52 AO):
 
-- **Spenden mit Spendenbescheinigung** — auch von Firmen, für die das ein
+- **Spenden mit Spendenbescheinigung**, auch von Firmen, für die das ein
   Betriebsausgabe-Thema ist.
-- **Stiftungen** — die meisten setzen einen gemeinnützigen Träger voraus. Das ist
+- **Stiftungen**, die meisten setzen einen gemeinnützigen Träger voraus. Das ist
   der Grund, warum Abschnitt 5 sie bisher aussortiert hat.
-- **Deutsche Stiftung für Engagement und Ehrenamt (DSEE)** — fördert
+- **Deutsche Stiftung für Engagement und Ehrenamt (DSEE)**, fördert
   ausdrücklich kleine Organisationen, unbürokratisch, oft für **Ausstattung**.
   <https://foerderdatenbank.d-s-e-e.de/>
-- **Erwachsenen- und Weiterbildungsförderung der Länder** — „KI-Kompetenz im
+- **Erwachsenen- und Weiterbildungsförderung der Länder**. „KI-Kompetenz im
   täglichen Gebrauch" ist genau der Wortlaut, unter dem gerade Landesmittel
   ausgeschrieben werden.
-- **Kooperationen mit Volkshochschulen und Bibliotheken** — die suchen händeringend
+- **Kooperationen mit Volkshochschulen und Bibliotheken**, die suchen händeringend
   Leute, die KI erklären können, ohne zu verkaufen oder zu warnen.
 
 **Der ehrliche Preis:** sieben Gründungsmitglieder, eine Satzung, die das Finanzamt
 vorab prüfen sollte, eine Mitgliederversammlung im Jahr, Protokolle, und ein
-jährlicher Nachweis. Das ist nicht viel, aber es ist nie null — und es fällt jedes
+jährlicher Nachweis. Das ist nicht viel, aber es ist nie null, und es fällt jedes
 Jahr wieder an.
 
 ### Ein Zwischenschritt, den kaum jemand kennt
@@ -406,7 +406,7 @@ Wenn dir sieben Mitglieder gerade zu viel sind: eine **Treuhandstiftung** oder e
 **Fördertopf unter dem Dach eines bestehenden gemeinnützigen Vereins**. Du bringst
 das Vorhaben ein, der bestehende Verein trägt es rechtlich, du behältst die
 Arbeit. Das geht in Wochen statt Monaten und lässt sich später in einen eigenen
-Verein überführen. Die richtige Frage dafür geht an einen Verein aus dem Umfeld —
+Verein überführen. Die richtige Frage dafür geht an einen Verein aus dem Umfeld.
 Open Knowledge Foundation Deutschland, ein lokaler Digitalverein, ein
 Bildungsträger.
 
@@ -418,22 +418,22 @@ Bildungsträger.
 
 | Lizenz | Repos |
 |---|---|
-| **MIT** (anerkannt Open Source) | **3** — `Sage-Protokol`, `SB-KIMTool-Point`, `mycel-karte` |
+| **MIT** (anerkannt Open Source) | **3**, `Sage-Protokol`, `SB-KIMTool-Point`, `mycel-karte` |
 | eigene „Nutzungslizenz" (*Alle Rechte vorbehalten, soweit nicht eingeräumt*) | **28** |
-| gar keine Lizenz-Datei | **2** — `BookLedgerPro`, `Meine-In-and-Out-Book` |
+| gar keine Lizenz-Datei | **2**, `BookLedgerPro`, `Meine-In-and-Out-Book` |
 
 **Das ist wichtig, und zwar sofort.** Prototype Fund, NLnet und OTF verlangen alle,
 dass das **geförderte Ergebnis** unter einer anerkannten freien Lizenz steht. Die
-eigene Nutzungslizenz mit Bezahl-Vorbehalt (Ziffer 3) ist **keine** — sie ist
+eigene Nutzungslizenz mit Bezahl-Vorbehalt (Ziffer 3) ist **keine**. Sie ist
 *quelloffen einsehbar*, aber nicht *Open Source* im Sinne der OSI-Definition.
 
-**Was daraus folgt — und was ausdrücklich nicht:**
+**Was daraus folgt, und was ausdrücklich nicht:**
 
 - Du musst **nicht** alles umlizenzieren. Deine Geschäfts-Apps dürfen bleiben, wie
   sie sind. Die Pilz-Wirtschaft (`docs/PLAN_PILZ_WIRTSCHAFT.md`) hängt daran.
 - Du musst nur sicherstellen, dass **das Repo, für das du Geld beantragst**, MIT
   trägt. `Sage-Protokol` tut das bereits. **Damit ist Sage-Protokol das Repo, mit
-  dem du dich bewirbst** — nicht der Marktplatz, nicht die Fach-Apps.
+  dem du dich bewirbst**, nicht der Marktplatz, nicht die Fach-Apps.
 - Die zwei Repos ohne Lizenz-Datei sollten trotzdem eine bekommen. Ein Repo ohne
   Lizenz ist rechtlich das *engste* von allen: ohne ausdrückliche Einräumung darf
   niemand etwas.
@@ -442,7 +442,7 @@ eigene Nutzungslizenz mit Bezahl-Vorbehalt (Ziffer 3) ist **keine** — sie ist
 
 ## 5 · Die Wege im Einzelnen
 
-### Weg 1 · Prototype Fund — der beste Treffer
+### Weg 1 · Prototype Fund: der beste Treffer
 
 **Was:** Förderung für Open-Source-Software im öffentlichen Interesse, aus Mitteln
 des Bundesforschungsministeriums, umgesetzt von der Open Knowledge Foundation
@@ -454,12 +454,12 @@ Deutschland.
 **Wer darf:** Einzelpersonen oder Teams bis vier Personen. **Wohnsitz in
 Deutschland**, **selbstständig oder freiberuflich**, Steuern in Deutschland.
 Bei der Antragstellung wird eine **Steuernummer für die selbstständige
-Tätigkeit** verlangt — oder ersatzweise die Eingangsbestätigung des Finanzamts.
+Tätigkeit** verlangt, oder ersatzweise die Eingangsbestätigung des Finanzamts.
 Teilzeit-Anstellung nebenher ist erlaubt, wenn du anteilig freigestellt bist.
 
 **Warum es passt:** Der Schwerpunkt liegt seit 2025 auf **Datensicherheit und
 Software-Infrastruktur**. Server-lose, verschlüsselte Peer-to-peer-Suche ohne
-zentralen Index trifft das mittig. Das ist kein Hineindeuten — das ist genau die
+zentralen Index trifft das mittig. Das ist kein Hineindeuten. Das ist genau die
 Beschreibung des Programms.
 
 **Termin:** Bewerbung für die nächste Runde **01.10.2026 bis 30.11.2026**.
@@ -478,16 +478,16 @@ Rückmeldung etwa acht Wochen nach Ende der Frist.
 
 ---
 
-### Weg 2 · Forschungszulage — kein Wettbewerb, und sie schaut zurück
+### Weg 2 · Forschungszulage: kein Wettbewerb, und sie schaut zurück
 
 **Was:** eine steuerliche Förderung nach dem Forschungszulagengesetz. **Kein
-Auswahlverfahren** — wer die Kriterien erfüllt, hat einen Anspruch. Sie wird auf
+Auswahlverfahren**. Wer die Kriterien erfüllt, hat einen Anspruch. Sie wird auf
 die Steuer angerechnet und, wenn keine Steuer anfällt, **ausgezahlt**.
 
-**Für wen:** alle steuerpflichtigen Unternehmen — ausdrücklich auch
+**Für wen:** alle steuerpflichtigen Unternehmen, ausdrücklich auch
 **Einzelunternehmer und Soloselbständige**, seit 2020.
 
-**Der springende Punkt für dich — die Eigenleistung.** Ein Soloselbständiger kann
+**Der springende Punkt für dich, die Eigenleistung.** Ein Soloselbständiger kann
 seine **eigene Forschungsarbeit** ansetzen. Der Stundensatz wurde zum 01.01.2026
 angehoben (nach den gefundenen Quellen von 70 € auf **100 €** je Stunde, höchstens
 40 Wochenstunden). Die Zulage beträgt 35 % für kleine und mittlere Unternehmen.
@@ -497,13 +497,13 @@ begonnene Vorhaben.
 > **Diese Zahlen bitte nicht selbst weiterrechnen.** Sie stammen aus
 > Beratungs-Websites, nicht aus dem Gesetzestext, und die Deckelung ist die
 > Stelle, an der solche Quellen am häufigsten danebenliegen. Der Steuerberater
-> rechnet das — es ist die eine Frage, für die sich ein Termin lohnt.
+> rechnet das. Es ist die eine Frage, für die sich ein Termin lohnt.
 
 **Rückwirkend:** Anträge sind für zurückliegende Zeiträume möglich (nach den
 gefundenen Quellen bis zu vier Jahre). Das heißt: **auch bereits geleistete Arbeit
-kann anrechenbar sein** — vorausgesetzt, sie ist belegbar.
+kann anrechenbar sein**: vorausgesetzt, sie ist belegbar.
 
-**Und dafür ist die Ausgangslage hier gut** — aber nicht so gut, wie es auf den
+**Und dafür ist die Ausgangslage hier gut**, aber nicht so gut, wie es auf den
 ersten Blick aussieht. Was gebraucht wird, ist eine **Stundenaufzeichnung je
 Vorhaben**: Datum, Vorhaben, Stunden, Tätigkeit.
 
@@ -515,37 +515,37 @@ Vorhaben**: Datum, Vorhaben, Stunden, Tätigkeit.
 | Kimhub: Fahrtenbuch, Stechuhr, Belege | **22.08.2026** | Stunden und Kosten, auf die Minute |
 
 **Der Unterschied ist der Punkt.** Über fünf Monate liegt eine lückenlose
-**Dokumentation** vor, aber keine **Stundenaufzeichnung** — das Fahrtenbuch ist
+**Dokumentation** vor, aber keine **Stundenaufzeichnung**. Das Fahrtenbuch ist
 erst wenige Tage alt. Wer beides in einem Satz zusammenzieht, meldet
 Aufzeichnungen, die es nicht gibt, und merkt es erst bei der Nachfrage.
 **Dokumentierte Zeit und gemessene Zeit sind zwei Dinge.**
 
 Was daraus folgt, ist trotzdem gutartig: die Stunden für die zurückliegenden
 Monate lassen sich aus den datierten Spuren **rekonstruieren** und einem klar
-abgegrenzten Vorhaben zuordnen. Das ist Fleißarbeit, keine Kunst — aber sie ist
+abgegrenzten Vorhaben zuordnen. Das ist Fleißarbeit, keine Kunst, aber sie ist
 zu tun, und sie gehört ehrlich als Rekonstruktion gekennzeichnet, nicht als
 mitlaufende Aufzeichnung ausgegeben.
 
-**Ablauf — zwei Schritte, in dieser Reihenfolge:**
+**Ablauf: zwei Schritte, in dieser Reihenfolge:**
 
-1. **BSFZ** (Bescheinigungsstelle Forschungszulage) — Antrag auf Anerkennung des
+1. **BSFZ** (Bescheinigungsstelle Forschungszulage). Antrag auf Anerkennung des
    Vorhabens. Kostenlos. Geprüft wird nach den international üblichen
    Frascati-Kriterien: Ist es neuartig? Ist der Ausgang ungewiss? Ist es planvoll
    und systematisch? Ist es übertragbar?
    <https://www.bescheinigung-forschungszulage.de/>
-2. **Finanzamt** — mit der Bescheinigung dann der eigentliche Antrag auf
+2. **Finanzamt**, mit der Bescheinigung dann der eigentliche Antrag auf
    Forschungszulage, zusammen mit der Steuererklärung.
 
 **Die Hürde, ehrlich benannt:** Die Forschung muss einer **steuerpflichtigen
 Tätigkeit** zugeordnet sein. Besteht bereits eine Selbstständigkeit in einem
 anderen Fach, ist die Frage, ob sich die Softwareforschung ihr zurechnen lässt
 oder ob dafür eine eigene Tätigkeit anzumelden ist. Das ist eine
-**Steuerberater-Frage — und die erste, die gestellt gehört**, weil an der Antwort
+**Steuerberater-Frage, und die erste, die gestellt gehört**, weil an der Antwort
 hängt, ob und ab wann Stunden zählen.
 
 ---
 
-### Weg 3 · Open Technology Fund — Internet Freedom Fund
+### Weg 3 · Open Technology Fund: Internet Freedom Fund
 
 **Was:** US-Fonds für Technik, die freie und sichere Kommunikation ermöglicht.
 Zweistufig: erst eine kurze **Concept Note**, bei positiver Rückmeldung ein
@@ -558,8 +558,8 @@ aus sanktionierten Ländern).
 liegt bei 50.000–200.000 USD für 6–12 Monate.
 
 **Warum es passt:** Privatsphäre-Werkzeuge und dezentrale Infrastruktur sind
-Kernthemen. Server-los, kein zentraler Index, kein Konto, Schlüssel bleibt lokal
-— das ist die Sprache dieses Fonds.
+Kernthemen. Server-los, kein zentraler Index, kein Konto, Schlüssel bleibt lokal.
+Das ist die Sprache dieses Fonds.
 
 **Was du dafür brauchst:** **Englisch.** Der ganze Antrag läuft auf Englisch.
 Dein englisches Paper ist der Anfang.
@@ -571,21 +571,21 @@ Dein englisches Paper ist der Anfang.
 
 ---
 
-### Weg 4 · EXIST-Gründungsstipendium — nur unter einer Bedingung
+### Weg 4 · EXIST-Gründungsstipendium: nur unter einer Bedingung
 
 **Was:** Stipendium für den Lebensunterhalt vor der Gründung. **2.500 €/Monat**
 für Hochschulabsolventen, **3.000 €** für Promovierte, 12 Monate, dazu bis
 **30.000 € Sachmittel** für eine Einzelperson. **Keine festen Fristen.**
 
 **Die Bedingung, an der es hängt:** Der Antrag läuft **immer über eine Hochschule
-oder Forschungseinrichtung** mit EXIST-Gründungsnetzwerk — du kannst ihn nicht
+oder Forschungseinrichtung** mit EXIST-Gründungsnetzwerk. Du kannst ihn nicht
 selbst stellen. Und im Team muss **mindestens eine Person einen Hochschulabschluss
 der letzten fünf Jahre oder eine Promotion** haben.
 
 **Zwei Punkte, die vorher zu klären sind, bevor hier Zeit hineingeht:**
-- Ist die Abschluss-Bedingung erfüllbar — durch den Antragsteller selbst oder
+- Ist die Abschluss-Bedingung erfüllbar, durch den Antragsteller selbst oder
   durch einen Mitstreiter?
-- EXIST ist **strikt ein Vorgründungs-Stipendium** — das Unternehmen darf noch
+- EXIST ist **strikt ein Vorgründungs-Stipendium**. Das Unternehmen darf noch
   nicht gegründet sein. Ob eine bereits bestehende Selbstständigkeit in einem
   anderen Fach dem im Weg steht, klärt der Gründungsservice der Hochschule in
   einem Vorgespräch. Das Gespräch ist kostenlos.
@@ -594,7 +594,7 @@ der letzten fünf Jahre oder eine Promotion** haben.
 
 ---
 
-### Weg 5 · Was gerade *nicht* geht — und wann es wieder geht
+### Weg 5 · Was gerade *nicht* geht, und wann es wieder geht
 
 Der Vollständigkeit halber, damit niemand dort Zeit verliert:
 
@@ -609,18 +609,18 @@ Der Vollständigkeit halber, damit niemand dort Zeit verliert:
 
 ---
 
-## 5b · Hamburg — was es hier zusätzlich gibt
+## 5b · Hamburg: was es hier zusätzlich gibt
 
 **Ergänzt am 2026-08-23**, nachdem das Bundesland feststand. Diese drei stehen in
 keiner Bundesübersicht.
 
-### InnoFounder (IFB Hamburg) — der stärkste Landes-Treffer
+### InnoFounder (IFB Hamburg): der stärkste Landes-Treffer
 
 **Was:** **2.500 € je Monat** bei Vollzeit, bis zu **18 Monate**, für
 Einzelgründungen bis **45.000 €** (im Team bis 75.000 €, höchstens drei
 Personen). Dazu Begleitung.
 
-**Warum das wichtig ist:** InnoFounder verlangt — anders als EXIST — **keinen
+**Warum das wichtig ist:** InnoFounder verlangt, anders als EXIST, **keinen
 Hochschulabschluss als harte Bedingung** und läuft **nicht über eine Hochschule**.
 Damit ist es für die hiesige Lage der zugänglichere der beiden.
 
@@ -628,7 +628,7 @@ Damit ist es für die hiesige Lage der zugänglichere der beiden.
 Geschäftstätigkeit darf **noch nicht aufgenommen** sein oder **weniger als ein
 Jahr** bestehen. Alle Branchen, ausdrücklich auch digitale Vorhaben.
 
-> ⚠ **Die eine Frage, die vorher zu klären ist** — dieselbe wie bei EXIST: Steht
+> ⚠ **Die eine Frage, die vorher zu klären ist**, dieselbe wie bei EXIST: Steht
 > eine **bereits bestehende Selbstständigkeit in einem anderen Fach** dem im Weg,
 > oder zählt das neue Vorhaben für sich? Das entscheidet nicht diese Datei,
 > sondern ein Vorgespräch. Es ist kostenlos.
@@ -636,7 +636,7 @@ Jahr** bestehen. Alle Branchen, ausdrücklich auch digitale Vorhaben.
 **Adresse:** <https://www.ifbhh.de/foerderprogramm/innofounder> ·
 <https://innovationsstarter.com/innofounder/>
 
-### Projektfonds Medien und Bildung — für den Kompetenz-Strang
+### Projektfonds Medien und Bildung: für den Kompetenz-Strang
 
 **400.000 €** im Jahr, verteilt von der Behörde für Schule, Familie und
 Berufsbildung über das Zentrum für Schul- und Jugendinformation. Einzelförderung
@@ -646,7 +646,7 @@ Im Mittelpunkt stehen Projekte, die **Kreativität, Kollaboration, Kritikfähigk
 und Kommunikation** stärken. „KI-Kompetenz im täglichen Gebrauch" liegt genau
 dort.
 
-**Frist:** die Bewerbungsphase für 2026/27 lief vom **01.01. bis 08.03.2026** —
+**Frist:** die Bewerbungsphase für 2026/27 lief vom **01.01. bis 08.03.2026**,
 für dieses Jahr vorbei. **Für die nächste Runde vormerken**, das ist der Topf mit
 der geringsten Konkurrenz auf dieser ganzen Liste.
 
@@ -654,10 +654,10 @@ der geringsten Konkurrenz auf dieser ganzen Liste.
 
 ### Kostenlose Beratung vor Ort
 
-- **Handelskammer Hamburg** — Gründungsberatung, kostenlos
+- **Handelskammer Hamburg**: Gründungsberatung, kostenlos
   <https://www.handelskammer-hamburg.de/>
-- **hei. Hamburger ExistenzgründungsInitiative** — kostenlose Erstberatung
-- **Hamburg Kreativ Gesellschaft** — für alles, was zwischen Technik und
+- **hei. Hamburger ExistenzgründungsInitiative**, kostenlose Erstberatung
+- **Hamburg Kreativ Gesellschaft**, für alles, was zwischen Technik und
   Gestaltung liegt <https://kreativgesellschaft.org/>
 
 **Diese drei Türen kosten nichts und kennen die Landestöpfe.** Ein Gespräch dort
@@ -665,7 +665,7 @@ ersetzt Stunden Suchen.
 
 ---
 
-## 5c · Anmelden: Gewerbe oder freiberuflich — und wie es in Hamburg läuft
+## 5c · Anmelden: Gewerbe oder freiberuflich, und wie es in Hamburg läuft
 
 **Der gemeinsame Schritt für beide Wege** ist der **Fragebogen zur steuerlichen
 Erfassung**, elektronisch über **ELSTER** ans Finanzamt. Daraus kommt die
@@ -677,17 +677,17 @@ ein paar Tage, weil ein Brief kommt.
 | Gewerbeanmeldung | **entfällt** | nötig |
 | Kosten | keine | **20 €** (in Hamburg, je Bezirk 15–25 €) |
 | Online möglich | ja, über ELSTER | **ja**, vollständig über das Serviceportal Hamburg |
-| Dauer | — | 3–7 Werktage |
+| Dauer |, | 3–7 Werktage |
 | Gewerbesteuer | **nein** | ja, mit Freibetrag |
 | IHK-Beitrag | **nein** | ja |
 | danach | Fragebogen über ELSTER | Gewerbeamt meldet ans Finanzamt; Fragebogen trotzdem **innerhalb eines Monats** über ELSTER |
 
-**Adressen:** Gewerbeanzeige online —
+**Adressen:** Gewerbeanzeige online.
 <https://serviceportal.hamburg.de/HamburgGateway/Service/Entry/GWR> ·
-ELSTER — <https://www.elster.de>
+ELSTER. <https://www.elster.de>
 
 **Kann man erst einmal einen Antrag stellen?** Ja. **Der Fragebogen ist der
-Antrag** — man trägt die Tätigkeit ein, und **das Finanzamt entscheidet**, ob es
+Antrag**. Man trägt die Tätigkeit ein, und **das Finanzamt entscheidet**, ob es
 sie als freiberuflich oder gewerblich einordnet. Man muss sich also nicht vorher
 festlegen; man muss die Tätigkeit nur richtig beschreiben. **Genau dabei hilft der
 Steuerberater**, und genau deshalb ist der Termin vor dem Ausfüllen richtig
@@ -695,11 +695,11 @@ gesetzt und nicht danach.
 
 ---
 
-## 5d · Wie sich der Betrieb trägt — BYOK (Klaus 2026-08-23)
+## 5d · Wie sich der Betrieb trägt: BYOK (Klaus 2026-08-23)
 
 **Jeder Fördergeber stellt diese Frage**, meist unter der Überschrift
 *„Nachhaltigkeit"* oder *„und danach?"*. Bei einem Vorhaben, dessen Werkzeuge bei
-jeder Nutzung fremde Rechenzeit kosten, ist sie die naheliegendste — und ohne
+jeder Nutzung fremde Rechenzeit kosten, ist sie die naheliegendste, und ohne
 Antwort fällt der Antrag durch.
 
 **Die Antwort ist entschieden und heißt BYOK:** *bring your own key*. Wer eines
@@ -712,7 +712,7 @@ eigenen Aufrufe.
 > verpflichtet dazu, den Quelltext herauszugeben. Sie verpflichtet zu nichts,
 > was Rechenzeit kostet.
 
-Was das löst — und was es nicht kostet:
+Was das löst, und was es nicht kostet:
 
 | | |
 |---|---|
@@ -723,7 +723,7 @@ Was das löst — und was es nicht kostet:
 
 ### Der eigentliche Grund: es geht nicht um einen Nutzer, sondern um viele
 
-Für **einen** Betreiber allein wäre die Frage klein — eine Schicht kostet, was sie
+Für **einen** Betreiber allein wäre die Frage klein: eine Schicht kostet, was sie
 kostet. Sie wird erst groß, sobald **mehrere** dieselben Werkzeuge benutzen, und
 genau darum geht es ja.
 
@@ -734,15 +734,15 @@ genau darum geht es ja.
 | 1.000 Nutzer | nicht tragbar | unverändert **null** |
 
 **Das ist kein Preisunterschied, sondern ein Unterschied in der Bauart.** Ohne
-BYOK wächst die Rechnung mit jedem Nutzer mit, und zwar unbegrenzt — Erfolg wird
+BYOK wächst die Rechnung mit jedem Nutzer mit, und zwar unbegrenzt. Erfolg wird
 dann zur Bedrohung. Mit BYOK bleibt sie flach: **das System skaliert, ohne dass
 die Kosten mitskalieren.**
 
 Für einen Antrag ist das ein starker Satz, und er ist keine Behauptung, sondern
 folgt aus der Bauart. Eine Fördergeberin fragt nach der Tragfähigkeit; hier ist
-sie eine Eigenschaft der Konstruktion und keine Hoffnung.
+sie eine Eigenschaft der Konstruktion.
 
-**Das ist kein neues Muster, sondern das erprobte Muster dieses Netzes.**
+**Das ist das erprobte Muster dieses Netzes.**
 Nachgesehen am 2026-08-23, in vier Apps im Einsatz:
 
 | App | Beleg |
@@ -758,14 +758,14 @@ localStorage oder IndexedDB, Vergessen-Schutz, headless bewiesen). **Nichts neu 
 bauen, nur anzuwenden.**
 
 **Warum das im Antrag ein Vorteil ist, kein Eingeständnis.** Ein Vorhaben, dessen
-Betrieb laufende Zuschüsse braucht, ist für eine Fördergeberin ein Risiko — sie
+Betrieb laufende Zuschüsse braucht, ist für eine Fördergeberin ein Risiko. Sie
 finanziert dann etwas, das ohne sie stehenbleibt. BYOK dreht das um: **gefördert
 wird die Entwicklung, nicht der Betrieb.** Genau darauf sind Prototype Fund und
 InnoFounder gebaut.
 
 > **Der Weg, der ausdrücklich nicht gegangen wird:** selbst betreiben und
 > abrechnen. Das machte aus dem Betreiber einen Wiederverkäufer fremder
-> Rechenzeit — mit Steuerpflichten, mit einem eigenen Bezahlvorgang (in
+> Rechenzeit, mit Steuerpflichten, mit einem eigenen Bezahlvorgang (in
 > PWA Toolpoints Verfassung ausdrücklich auf der „wird nicht gebaut"-Liste) und
 > mit einer Gewerbeanmeldung, die vorher dasein müsste.
 
@@ -785,14 +785,14 @@ Das wirkliche Risiko liegt woanders: wenn der Prototype Fund sechs Monate Arbeit
 an einem Vorhaben bezahlt, ist dieselbe Stunde für die Forschungszulage in aller
 Regel verbraucht.
 
-⚠ **Wie genau sich die beiden Wege vertragen, ist HIER NICHT GEPRÜFT** — weder
+⚠ **Wie genau sich die beiden Wege vertragen, ist HIER NICHT GEPRÜFT**, weder
 im Gesetzestext noch bei der Fördergeberin. Das ist die **erste Frage an den
 Steuerberater**, zusammen mit der aus § 5 Weg 2 (welcher Tätigkeit die
 Softwareforschung zuzurechnen ist). Wer hier ein „geht schon" hinschreibt, rät.
 
 **Und die Lizenz-Frage ist bereits gelöst, ohne dass es jemand geplant hat:**
 `Sage-Protokol` trägt MIT (das Antrags-Repo), `Kimhub` eine eigene
-Nutzungslizenz (die Werkbank). Zwei Gefäße, zwei Lizenzen — ein Unkostenbeitrag
+Nutzungslizenz (die Werkbank). Zwei Gefäße, zwei Lizenzen, ein Unkostenbeitrag
 für Kimhub rührt an Sages MIT-Zusage nicht.
 
 **2 · Die Zahl, mit der nicht gerechnet werden darf.**
@@ -804,10 +804,10 @@ teuer. **Diese Zahl ist nirgends gemessen.** Gemessen sind bisher nur:
 |---|---|
 | ein echter Aufruf, Haiku, klein | **0,033 Cent** |
 | derselbe mit Werkzeugen (zwei Runden) | **0,36 Cent** |
-| der Werkzeug-Aufschlag über 19 Aufrufe | **4,2 Cent** — 0,84 % des Deckels |
+| der Werkzeug-Aufschlag über 19 Aufrufe | **4,2 Cent**, 0,84 % des Deckels |
 | **eine ganze echte Schicht** | **nie gemessen** |
 
-Die 5,00 € sind ein **Deckel, kein Preis** — dieselbe Verwechslung wie „ein
+Die 5,00 € sind ein **Deckel, kein Preis**, dieselbe Verwechslung wie „ein
 Deckel ist keine Dauer" in Kimhubs Verfassung. In Kimhubs Fahrtenbuch stehen 11
 Fahrten, **alle trocken**.
 
@@ -820,11 +820,11 @@ node schicht/lauf.mjs --echt --deckel 1 --auftrag auftraege/beispiel.json
 
 ⚠ **Und eine Differenz aus zwei ungleichen Läufen ist keine Messung.** Am
 2026-08-23 lagen 254 Eingabe-Token ohne Werkzeuge und 3 118 mit vor; die
-Differenz sah wie der Aufschlag aus und war keiner — verschiedene Fragen, das
+Differenz sah wie der Aufschlag aus und war keiner: verschiedene Fragen, das
 Gelesene kam mit in die Unterhaltung, und über zwei Runden wird der Anfang
 doppelt gezählt.
 
-## 6 · Der Hochschul-Partner — der größte Hebel, den du hast
+## 6 · Der Hochschul-Partner: der größte Hebel, den du hast
 
 ### 6.1 Warum, und wen man anspricht
 
@@ -834,11 +834,11 @@ Methode.
 
 **Was viele nicht wissen: das ist keine hohe Hürde.** Professuren suchen aktiv
 nach Anwendungsfällen aus der Praxis, und du bringst etwas mit, das an
-Hochschulen selten ist — ein **laufendes System mit echten Nutzern und Messdaten
+Hochschulen selten ist, ein **laufendes System mit echten Nutzern und Messdaten
 über Monate**. Das ist für eine Abschlussarbeit oder eine Doktorarbeit ein
 Geschenk.
 
-**Wen ansprechen — Lehrstühle und Institute mit passendem Thema:**
+**Wen ansprechen. Lehrstühle und Institute mit passendem Thema:**
 
 | Thema | Wo man sucht |
 |---|---|
@@ -846,7 +846,7 @@ Geschenk.
 | Privatsphäre-Technik, angewandte Kryptographie | **CISPA** (Saarbrücken), **ATHENE / Fraunhofer SIT** (Darmstadt), **KASTEL** (Karlsruhe) |
 | Dezentrale Netze, Digitale Souveränität | **Weizenbaum-Institut** (Berlin), **HIIG** (Berlin), **Fraunhofer FOKUS** |
 | Mensch-KI-Interaktion, Steuerung von Agenten | Lehrstühle „Human-Computer Interaction", „Kognitive Systeme" |
-| Nächste Hochschule bei dir | jede Hochschule hat einen **Gründungsservice** oder eine **Transferstelle** — das ist die richtige erste Tür, nicht ein Professor direkt |
+| Nächste Hochschule bei dir | jede Hochschule hat einen **Gründungsservice** oder eine **Transferstelle**, das ist die richtige erste Tür, nicht ein Professor direkt |
 
 **Der Weg, der erfahrungsgemäß trägt:** eine kurze, konkrete E-Mail an die
 Transferstelle oder den Gründungsservice der nächstgelegenen Hochschule. Nicht an
@@ -855,9 +855,9 @@ Seite, eine klare Bitte um ein Gespräch. Der Entwurf steht in Abschnitt 8.
 
 ---
 
-### 6.2 Kooperationen mit Wissenschaftlern — der konkrete Weg
+### 6.2 Kooperationen mit Wissenschaftlern: der konkrete Weg
 
-Wissenschaftliche Kooperationen zu suchen ist die richtige Absicht — aber der Weg
+Wissenschaftliche Kooperationen zu suchen ist die richtige Absicht, aber der Weg
 dorthin ist ein anderer, als die meisten vermuten. Nicht „ich schreibe zwanzig Professoren
 an". Sondern: **erst zitierfähig werden, dann sichtbar werden, dann ansprechen.**
 
@@ -866,7 +866,7 @@ das bist du für einen Wissenschaftler eine E-Mail; mit dem bist du eine Fundste
 auf die er verweisen kann, ohne sich zu erklären. Das ist der ganze Unterschied,
 und er kostet zwei Stunden.
 
-**Schritt 2 · Der niedrigste echte Einstieg in die Wissenschaft — ein Workshop-Beitrag.**
+**Schritt 2 · Der niedrigste echte Einstieg in die Wissenschaft, ein Workshop-Beitrag.**
 Das ist der Punkt, den fast niemand kennt: Die **Gesellschaft für Informatik (GI)**
 richtet jährlich die Konferenz **„Mensch und Computer"** aus, und deren Workshops
 **laden Nicht-Mitglieder und Nicht-Akademiker ausdrücklich zum Einreichen ein**.
@@ -876,41 +876,41 @@ für mindestens einen Konferenztag an.
 
 Das ist der beste Einstieg, den es für deine Lage gibt:
 
-- Es ist **kein begutachteter Fachartikel** — die Hürde ist niedrig.
+- Es ist **kein begutachteter Fachartikel**, die Hürde ist niedrig.
 - Es ist trotzdem eine **echte Veröffentlichung** mit ISBN, zitierbar, in einem
   Antrag nennbar.
 - Und es setzt dich für einen Tag **in denselben Raum** wie die Leute, mit denen
   du kooperieren willst. Ein Gespräch am Kaffeetisch schlägt fünfzig E-Mails.
 
 Passende Fachgruppen: **Mensch-Computer-Interaktion**, **Partizipation** (partizipative
-und sozialverantwortliche Technikentwicklung — das ist fast dein Thema),
+und sozialverantwortliche Technikentwicklung. Das ist fast dein Thema),
 **Usable Security and Privacy**. → <https://fb-mci.gi.de/fachbereich/fachgruppen>
 und <https://gi.de/>
 
 **Schritt 3 · Gezielt suchen statt streuen.** Wer zu deinen Themen arbeitet, findest
 du nicht über Google, sondern über die Literatur:
 
-- **OpenAlex** — <https://openalex.org> — frei, keine Anmeldung. Nach
+- **OpenAlex**. <https://openalex.org>: frei, keine Anmeldung. Nach
   „decentralized semantic search", „peer-to-peer discovery", „AI companion
   dependency" suchen und schauen, **wer in Deutschland** dazu veröffentlicht.
-- **Google Scholar** — dieselbe Suche, nach Jahr sortieren. Wer 2025/2026
+- **Google Scholar**, dieselbe Suche, nach Jahr sortieren. Wer 2025/2026
   veröffentlicht hat, arbeitet noch daran.
-- **ResearchGate / ORCID** — die Person direkt.
+- **ResearchGate / ORCID**, die Person direkt.
 
-**Was du dann schreibst — und was nicht.** Kurz, konkret, mit einer klaren Bitte.
+**Was du dann schreibst, und was nicht.** Kurz, konkret, mit einer klaren Bitte.
 Kein Anhang, kein Pitch, keine Vision.
 
-> *Betreff: Laufendes dezentrales Suchsystem — Frage nach einer Kooperation*
+> *Betreff: Laufendes dezentrales Suchsystem. Frage nach einer Kooperation*
 >
 > Sehr geehrte …,
 >
 > ich habe Ihre Arbeit zu … gelesen. Ich baue seit März 2026 ein server-loses
-> System, in dem unabhängige Web-Apps einander nach Bedeutung finden — ohne
+> System, in dem unabhängige Web-Apps einander nach Bedeutung finden, ohne
 > zentralen Index, mit lokalen Vektoren im Browser. Es läuft öffentlich unter
 > …, der Code ist offen (MIT), die Meilensteine sind mit Datum dokumentiert.
 >
 > Ich bin kein Wissenschaftler, sondern Handwerker. Was mir fehlt, ist die
-> Methode — die Frage, wogegen man so etwas eigentlich misst.
+> Methode, die Frage, wogegen man so etwas eigentlich misst.
 >
 > Hätten Sie zwanzig Minuten für ein Gespräch? Ich würde Ihnen gern zeigen, was
 > läuft, und hören, ob das für Sie oder eine Ihrer Abschlussarbeiten interessant
@@ -919,7 +919,7 @@ Kein Anhang, kein Pitch, keine Vision.
 > Mit freundlichen Grüßen …
 
 **Warum dieser Brief funktioniert:** er behauptet nichts, er zeigt etwas. Er
-verlangt kein Geld. Er bietet an, was an Hochschulen wirklich knapp ist —
+verlangt kein Geld. Er bietet an, was an Hochschulen wirklich knapp ist,
 ein laufendes System mit echten Daten für eine Abschlussarbeit. Und der Satz
 *„ich bin kein Wissenschaftler, was mir fehlt, ist die Methode"* nimmt die
 Rangfrage vorweg, statt sie im Raum stehen zu lassen.
@@ -929,12 +929,12 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
   (EXIST, DFG, Horizon, Stiftungen).
 - Er bringt das **Ethikvotum** und die Methodik für den Sucht-Strang mit.
 - Eine gemeinsame Veröffentlichung macht aus deinem Feldtagebuch **Literatur**.
-- Und er wird **eine Menge von deiner Arbeit lernen** — das ist keine Höflichkeit.
+- Und er wird **eine Menge von deiner Arbeit lernen**. Das ist keine Höflichkeit.
   Ein über Monate belegtes, laufendes System mit Nutzern ist an Hochschulen die
   Ausnahme, nicht die Regel.
 
 
-## 7 · Der Fahrplan — abhakbar
+## 7 · Der Fahrplan: abhakbar
 
 ### Stufe A · Diese Woche (kostet nichts, macht alles Weitere möglich)
 
@@ -942,16 +942,16 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       Institution, in fünf Minuten. Ab da bist du in der Wissenschaftswelt
       identifizierbar. → <https://orcid.org/register>
 - [ ] **A2 · Steuerberater-Termin ausmachen.** Eine Frage: *„Lässt sich für die
-      Softwareforschung die Forschungszulage in Anspruch nehmen — und wenn ja, ab
+      Softwareforschung die Forschungszulage in Anspruch nehmen, und wenn ja, ab
       wann und unter welcher Tätigkeit?"* Das ist der teuerste Punkt auf der
       ganzen Liste, wenn man ihn zu spät stellt.
-- [ ] **A2b · ELSTER-Zertifikat beantragen** — <https://www.elster.de>. Es wird
+- [ ] **A2b · ELSTER-Zertifikat beantragen**. <https://www.elster.de>. Es wird
       für den Fragebogen zur steuerlichen Erfassung gebraucht, ist kostenlos, und
       es dauert ein paar Tage, weil ein Brief kommt. **Das ist der Schritt, der
-      am ehesten Zeit frisst, wenn man ihn zu spät anstößt** — er lässt sich
+      am ehesten Zeit frisst, wenn man ihn zu spät anstößt**. Er lässt sich
       parallel zum Steuerberater-Termin erledigen.
 - [ ] **A3 · Fristen selbst nachsehen.** Prototype-Fund-Seite aufrufen und
-      prüfen, ob 01.10.–30.11.2026 noch gilt. **Nicht** dieser Datei glauben —
+      prüfen, ob 01.10.–30.11.2026 noch gilt. **Nicht** dieser Datei glauben.
       sie ist vom 23.08.2026.
 - [ ] **A4 · Entscheiden, mit welchem Repo du dich bewirbst.** Empfehlung:
       **Sage-Protokol** (trägt MIT, enthält die Papers, die Meilensteine und die
@@ -983,7 +983,7 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       Sachaufwand. Zwei Quellen, und sie decken verschieden weit: die datierten
       Spuren in Sage-Protokol reichen bis zum 10.03.2026 zurück, Kimhubs
       Fahrtenbuch erst bis zum 22.08.2026. Was älter ist, wird
-      **rekonstruiert** — und als Rekonstruktion gekennzeichnet.
+      **rekonstruiert**, und als Rekonstruktion gekennzeichnet.
 - [ ] **B4 · Lizenz-Lücken schließen.** `BookLedgerPro` und
       `Meine-In-and-Out-Book` bekommen eine Lizenz-Datei.
 - [ ] **B5 · Eine englische Projektseite.** Eine Seite, kein Prospekt. Was es
@@ -993,30 +993,30 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       Hochschule, nicht zwanzig.
 - [ ] **B7 · Nach dem nächsten „Mensch und Computer"-Call sehen.** Ein
       Positionspapier im Workshop-Tagungsband ist die niedrigste echte Schwelle
-      in die Wissenschaft, die es für deine Lage gibt — mit ISBN, ohne
+      in die Wissenschaft, die es für deine Lage gibt: mit ISBN, ohne
       Hochschulzugehörigkeit. → <https://gi.de/> und
       <https://fb-mci.gi.de/fachbereich/fachgruppen>
-- [ ] **B8 · Hamburg: die drei kostenlosen Türen abklappern** — Handelskammer,
+- [ ] **B8 · Hamburg: die drei kostenlosen Türen abklappern**: Handelskammer,
       hei., Kreativ Gesellschaft. Eine Frage überall dieselbe: *„Welche
       Landesprogramme kommen für ein Software-Forschungsvorhaben in Frage, und
       steht eine bestehende Selbstständigkeit in einem anderen Fach dem im Weg?"*
 - [ ] **B9 · InnoFounder-Vorgespräch** (Abschnitt 5b). Der zugänglichste Weg mit
-      Geld für den Lebensunterhalt — 2.500 €/Monat, kein Hochschulabschluss
+      Geld für den Lebensunterhalt: 2.500 €/Monat, kein Hochschulabschluss
       verlangt, keine Hochschule dazwischen. Zu klären ist nur die Frage der
       bestehenden Selbstständigkeit.
-- [ ] **B10 · Projektfonds Medien und Bildung vormerken** — Frist für 2026/27 war
+- [ ] **B10 · Projektfonds Medien und Bildung vormerken**. Frist für 2026/27 war
       der 08.03.2026, die nächste Runde kommt im Januar. Der Topf mit der
       geringsten Konkurrenz.
 
 ### Stufe C · Oktober/November (der Antrag)
 
-- [ ] **C1 · Prototype-Fund-Antrag schreiben.** Das Formular ist kurz — genau
+- [ ] **C1 · Prototype-Fund-Antrag schreiben.** Das Formular ist kurz, genau
       deshalb ist jeder Satz wichtig. Textentwurf: siehe Abschnitt 8.
 - [ ] **C2 · Vorhaben scharf abgrenzen.** Sechs Monate, ein Ziel, nachprüfbar.
       **Nicht** „das Mycel weiterbauen". Sondern zum Beispiel: *„server-lose
       Bedeutungssuche zwischen unabhängigen Web-Apps als nachnutzbarer Baukasten,
       mit Sicherheitsprüfung und Dokumentation."*
-- [ ] **C3 · Abschicken — spätestens Mitte November**, nicht am letzten Tag.
+- [ ] **C3 · Abschicken, spätestens Mitte November**, nicht am letzten Tag.
 - [ ] **C4 · Parallel die OTF-Concept-Note.** Der OTF hat keine Frist; sie kostet
       dich nichts außer der Übersetzung dessen, was für C1 ohnehin entsteht.
 
@@ -1026,23 +1026,23 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       Licht gibt. Dieser Weg **hängt an keiner Ausschreibung**.
 - [ ] **D2 · Stundenaufzeichnung ab sofort sauber führen.** Datum, Vorhaben,
       Stunden, Tätigkeit. Wenn A2 positiv ausgeht, ist jede nicht aufgezeichnete
-      Stunde verlorenes Geld. **Dieser Punkt hat als einziger keine Vorlaufzeit**
-      — er kostet nichts, hängt an keiner Antwort und verliert mit jedem Tag,
+      Stunde verlorenes Geld. **Dieser Punkt hat als einziger keine Vorlaufzeit**.
+      Er kostet nichts, hängt an keiner Antwort und verliert mit jedem Tag,
       an dem er nicht läuft.
-- [ ] **D3 · EXIST prüfen** — nur wenn die Abschluss-Bedingung erfüllbar ist.
+- [ ] **D3 · EXIST prüfen**, nur wenn die Abschluss-Bedingung erfüllbar ist.
       Erster Schritt ist ein kostenloses Gespräch beim Gründungsservice.
-- [ ] **D4 · Eine Krankenkasse auf § 20k SGB V ansprechen.** Nicht die Hotline —
+- [ ] **D4 · Eine Krankenkasse auf § 20k SGB V ansprechen.** Nicht die Hotline.
       das Präventions-Referat. Frage: *„Fördern Sie Projekte zur
       selbstbestimmten Nutzung von KI-Anwendungen?"* Kostet einen Anruf.
 
-### Stufe E · Dezember und danach — nur wenn Stufe C steht
+### Stufe E · Dezember und danach: nur wenn Stufe C steht
 
 - [ ] **E1 · Über das Institut entscheiden** (Abschnitt 3b). Gemeinnützig oder
-      nicht — das ist die Weichenstellung, nicht die Rechtsform.
+      nicht. Das ist die Weichenstellung, nicht die Rechtsform.
 - [ ] **E2 · Namen vorab prüfen lassen** bei IHK und Registergericht, bevor
-      irgendwo „Institut" auf einer Seite steht. **Und kein „Psychologie" im Namen** —
+      irgendwo „Institut" auf einer Seite steht. **Und kein „Psychologie" im Namen**,
       siehe den Kasten in Abschnitt 2.3.
-- [ ] **E3 · Sieben Mitglieder finden** — oder den Zwischenschritt über einen
+- [ ] **E3 · Sieben Mitglieder finden**, oder den Zwischenschritt über einen
       bestehenden gemeinnützigen Träger gehen (Ende Abschnitt 3b).
 
 ---
@@ -1052,7 +1052,7 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 ### Was **du** tun musst (das kann niemand für dich)
 
 1. **Die Steuerfrage stellen** (A2). Sie ist die Weiche für den zweiten Weg.
-2. **Die fünf Angaben aus Abschnitt 9 klären** — an zweien davon hängt, welche
+2. **Die fünf Angaben aus Abschnitt 9 klären**, an zweien davon hängt, welche
    Wege überhaupt offenstehen. Sie gehören ins Gespräch, nicht ins Depot.
 3. **Absenden.** Anträge schreiben kann eine Sitzung; unterschreiben und
    abschicken kann nur der Antragsteller.
@@ -1061,34 +1061,34 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 
 ### Was **andere** tun können
 
-- **Ein Steuerberater** — die Forschungszulage rechnen und den Weg über die
+- **Ein Steuerberater**, die Forschungszulage rechnen und den Weg über die
   Tätigkeit klären. Das ist bezahlte Arbeit, aber gemessen an einer möglichen
   rückwirkenden Erstattung die günstigste Rechnung auf dieser Liste.
-- **Eine Hochschul-Transferstelle** — kostenlos, dafür da, und kennt die
+- **Eine Hochschul-Transferstelle**: kostenlos, dafür da, und kennt die
   regionalen Töpfe, die in keiner bundesweiten Übersicht stehen.
-- **Ein Mitstreiter mit Hochschulabschluss** — öffnet EXIST, das sonst zu bleibt.
-- **Die Gründungsberatung der IHK** — meist kostenlos, kennt die Landesprogramme.
+- **Ein Mitstreiter mit Hochschulabschluss**, öffnet EXIST, das sonst zu bleibt.
+- **Die Gründungsberatung der IHK**: meist kostenlos, kennt die Landesprogramme.
 - **Ein Mensch, der schon einmal einen Prototype-Fund-Antrag geschrieben hat.**
   Die Alumni sind auf der Programm-Seite gelistet und in aller Regel
   ansprechbar. Eine halbe Stunde von jemandem, der die Auswahl kennt, ist mehr
   wert als drei Tage Formulieren.
 
-### Was **die Sitzung** tun kann — und was nicht
+### Was **die Sitzung** tun kann, und was nicht
 
 **Kann:**
-- Den Prototype-Fund-Antrag im Entwurf schreiben — Vorhabensbeschreibung,
+- Den Prototype-Fund-Antrag im Entwurf schreiben: Vorhabensbeschreibung,
   Abgrenzung, Arbeitsplan, Meilensteine, Kostenaufstellung. Auf Deutsch.
 - Die OTF-Concept-Note auf Englisch.
 - Das Blatt „Stand der Technik und Abgrenzung" (B2) aus dem belegen, was in den
   Repos steht.
-- Die Vorleistung in Zahlen fassen (B3) — messen statt schätzen.
+- Die Vorleistung in Zahlen fassen (B3), messen statt schätzen.
 - Die Zenodo-Einreichung vorbereiten: Metadaten, Zusammenfassung, Schlagwörter,
   Lizenzangabe.
 - Die englische Projektseite bauen (B5).
 - Die Papers für eine wissenschaftliche Leserschaft überarbeiten.
 - Die Lizenz-Lücken schließen (B4).
 - Die Hochschul-Mail entwerfen.
-- Bei jedem Punkt **sagen, was nicht geprüft ist** — das ist die Hälfte des Werts.
+- Bei jedem Punkt **sagen, was nicht geprüft ist**. Das ist die Hälfte des Werts.
 
 **Kann nicht:**
 - Anträge einreichen, Formulare absenden, Konten anlegen.
@@ -1102,94 +1102,94 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 ## 9 · Die fünf Angaben, ohne die der Fahrplan auf Vermutungen läuft
 
 Diese fünf Punkte entscheiden, **welche Wege überhaupt offenstehen**. Sie sind
-persönlich und stehen deshalb **absichtlich nicht in dieser Datei** — sie werden
+persönlich und stehen deshalb **absichtlich nicht in dieser Datei**. Sie werden
 im Gespräch geklärt, nicht im Depot abgelegt. Hier steht nur, **warum** jeder
 davon zählt, damit eine Folge-Sitzung weiß, wonach sie fragen muss.
 
 | Angabe | Wofür sie gebraucht wird |
 |---|---|
-| **Steuerlicher Status** — selbstständig oder freiberuflich geführt, mit Steuernummer für diese Tätigkeit? | Voraussetzung für Weg 1 **und** Weg 2. Ohne sie sind beide zu. |
-| **Hochschulabschluss** — vorhanden, im Team vorhanden, und wie lange her? | Entscheidet **allein** über EXIST (Weg 4). |
+| **Steuerlicher Status**, selbstständig oder freiberuflich geführt, mit Steuernummer für diese Tätigkeit? | Voraussetzung für Weg 1 **und** Weg 2. Ohne sie sind beide zu. |
+| **Hochschulabschluss**, vorhanden, im Team vorhanden, und wie lange her? | Entscheidet **allein** über EXIST (Weg 4). |
 | **Bundesland** | Jedes Land hat eigene Digitalisierungs-, Innovations- und Medienkompetenz-Programme, die in keiner Bundesübersicht stehen. Ohne diese Angabe sind sie nicht auffindbar. |
-| **Arbeitsumfang** — Stunden je Woche, seit wann | Die Grundzahl für die Forschungszulage und für jeden Arbeitsplan im Antrag. |
-| **Institut gemeinnützig oder erwerbswirtschaftlich?** | Die eigentliche Weiche hinter der Rechtsform — sie entscheidet mit darüber, wem die Ergebnisse am Ende gehören (Abschnitt 3b). |
+| **Arbeitsumfang**, Stunden je Woche, seit wann | Die Grundzahl für die Forschungszulage und für jeden Arbeitsplan im Antrag. |
+| **Institut gemeinnützig oder erwerbswirtschaftlich?** | Die eigentliche Weiche hinter der Rechtsform, sie entscheidet mit darüber, wem die Ergebnisse am Ende gehören (Abschnitt 3b). |
 
 **Warum das hier so ausdrücklich steht:** Vermutungen sehen in einem Antrag genauso
 aus wie Wissen, bis sie auffliegen. Wer eine dieser fünf Angaben rät, statt sie zu
-erfragen, baut den Antrag auf Sand — und merkt es erst beim Bescheid.
+erfragen, baut den Antrag auf Sand, und merkt es erst beim Bescheid.
 
 ---
 
 ## 10 · Alle Adressen auf einen Blick
 
 **Anträge**
-- Prototype Fund · Bewerbung — <https://bewerben.prototypefund.de/>
-- Prototype Fund · Programm — <https://prototypefund.de/>
-- Prototype Fund · Wiki zur Antragstellung — <https://wiki.prototypefund.de/>
-- BSFZ · Bescheinigungsstelle Forschungszulage — <https://www.bescheinigung-forschungszulage.de/>
-- Open Technology Fund · Internet Freedom Fund — <https://www.opentech.fund/funds/internet-freedom-fund/>
-- OTF · Concept Note — <https://apply.opentech.fund/internet-freedom-fund-concept-note/>
-- EXIST · Förderantrag — <https://exist.de/programm/exist-gruendungsstipendium/foerderantrag-stellen/>
+- Prototype Fund · Bewerbung. <https://bewerben.prototypefund.de/>
+- Prototype Fund · Programm. <https://prototypefund.de/>
+- Prototype Fund · Wiki zur Antragstellung. <https://wiki.prototypefund.de/>
+- BSFZ · Bescheinigungsstelle Forschungszulage. <https://www.bescheinigung-forschungszulage.de/>
+- Open Technology Fund · Internet Freedom Fund. <https://www.opentech.fund/funds/internet-freedom-fund/>
+- OTF · Concept Note. <https://apply.opentech.fund/internet-freedom-fund-concept-note/>
+- EXIST · Förderantrag. <https://exist.de/programm/exist-gruendungsstipendium/foerderantrag-stellen/>
 
 **Beobachten (derzeit geschlossen)**
-- NLnet · Förderprogramme — <https://nlnet.nl/funding.html>
-- NGI · offene Calls — <https://ngi.eu/opencalls/>
-- Sovereign Tech Agency · Programme — <https://www.sovereign.tech/programs>
+- NLnet · Förderprogramme. <https://nlnet.nl/funding.html>
+- NGI · offene Calls. <https://ngi.eu/opencalls/>
+- Sovereign Tech Agency · Programme. <https://www.sovereign.tech/programs>
 
 **Suchen und Nachschlagen**
-- Förderdatenbank des Bundes — <https://www.foerderdatenbank.de/>
-- Förderdatenbank der DSEE — <https://foerderdatenbank.d-s-e-e.de/>
+- Förderdatenbank des Bundes. <https://www.foerderdatenbank.de/>
+- Förderdatenbank der DSEE. <https://foerderdatenbank.d-s-e-e.de/>
 
 **Psyche, Sucht, Medienkompetenz**
-- § 20k SGB V · digitale Gesundheitskompetenz — <https://www.gesetze-im-internet.de/sgb_5/__20k.html>
-- Landesanstalt für Medien NRW (Muster; deine findest du über dein Bundesland) — <https://medienanstalt-nrw.de/>
-- Förderdatenbank · Stichwort „Medienkompetenz" + Bundesland — <https://www.foerderdatenbank.de/>
+- § 20k SGB V · digitale Gesundheitskompetenz. <https://www.gesetze-im-internet.de/sgb_5/__20k.html>
+- Landesanstalt für Medien NRW (Muster; deine findest du über dein Bundesland). <https://medienanstalt-nrw.de/>
+- Förderdatenbank · Stichwort „Medienkompetenz" + Bundesland. <https://www.foerderdatenbank.de/>
 
 **In die Wissenschaft hinein**
-- Gesellschaft für Informatik — <https://gi.de/>
-- GI · Fachbereich Mensch-Computer-Interaktion, Fachgruppen — <https://fb-mci.gi.de/fachbereich/fachgruppen>
-- OpenAlex · wer forscht wozu, frei durchsuchbar — <https://openalex.org>
+- Gesellschaft für Informatik. <https://gi.de/>
+- GI · Fachbereich Mensch-Computer-Interaktion, Fachgruppen. <https://fb-mci.gi.de/fachbereich/fachgruppen>
+- OpenAlex · wer forscht wozu, frei durchsuchbar. <https://openalex.org>
 
 **Sichtbar und zitierfähig werden**
-- ORCID · Forscher-Kennung — <https://orcid.org/register>
-- Zenodo · DOI für die Papers — <https://zenodo.org/>
+- ORCID · Forscher-Kennung. <https://orcid.org/register>
+- Zenodo · DOI für die Papers. <https://zenodo.org/>
 
 ---
 
 ## 11 · Was in diesem Repo dazugehört
 
-- **[`docs/antragsmappe.html`](antragsmappe.html) — alles zum Lesen in EINER
+- **[`docs/antragsmappe.html`](antragsmappe.html). Alles zum Lesen in EINER
   Datei, mit zwei Abteilungen.** Abteilung 1 ist dieser Fahrplan (privat,
   Arbeitspapier), Abteilung 2 sind die Forschungsunterlagen (einreichbar). Jede
   Abteilung hat ihren eigenen Download- und Druck-Knopf und nimmt beim
-  Herausnehmen **nur sich selbst** mit — die Einreich-Fassung trägt ihren
+  Herausnehmen **nur sich selbst** mit, die Einreich-Fassung trägt ihren
   eigenen Kopf mit Datum und Herkunft und ist allein vollständig.
   **Sie wird erzeugt, nicht gepflegt:** wer den Inhalt ändert, ändert die
   `.md`-Datei und ruft `node tools/antragsmappe-bauen.mjs`.
-  **Markieren und auslesen:** Text mit Maus oder Finger ziehen, Farbe wählen —
+  **Markieren und auslesen:** Text mit Maus oder Finger ziehen, Farbe wählen,
   **grün** = soll bleiben · **gelb** = kann bleiben oder weg, Claude wägt ab ·
   **rot** = kann komplett weg. Im Zweifel bleiben. Auf Wunsch eine Notiz dazu. Der Knopf
   oben rechts öffnet die Tafel; von dort geht die Liste als Datei oder in die
-  Zwischenablage — damit weiß eine Folge-Sitzung, **wo** etwas zu verbessern
+  Zwischenablage. Damit weiß eine Folge-Sitzung, **wo** etwas zu verbessern
   ist. Markierungen werden **nie gedruckt und nie mitgeladen**: die
   Einreich-Abteilung geht zur Behörde, und dorthin gehören keine eigenen
   Zweifel.
-- **[`docs/FORSCHUNGSKORPUS.md`](FORSCHUNGSKORPUS.md) — die benannte Kette, auf
+- **[`docs/FORSCHUNGSKORPUS.md`](FORSCHUNGSKORPUS.md): die benannte Kette, auf
   die der Antrag zeigt.** Sechs Repos unter MIT, dazu die Werkstatt-Unterlagen.
   Seit dem 2026-08-23 sind Kim-Bell, Kimseek und Kimboard darin geöffnet.
-- **[`docs/werkstatt/`](werkstatt/)** — Regeln, Grundsätze und der ehrliche
+- **[`docs/werkstatt/`](werkstatt/)**. Regeln, Grundsätze und der ehrliche
   Befund zum Lern-Strang, samt dem, was daran **nicht** bewiesen ist
-- `docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md` — der Beleg, auf den sich jeder Antrag
+- `docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md`, der Beleg, auf den sich jeder Antrag
   stützt
-- `docs/meilenstein/` — die datierten Einzelbelege samt Bildern
-- `docs/papers/` — die beiden Papers (DE/EN), Rohstoff für Zenodo
-- **[`docs/papers/PLAN_PAPERS.md`](papers/PLAN_PAPERS.md)** — das Gerüst der drei
+- `docs/meilenstein/`, die datierten Einzelbelege samt Bildern
+- `docs/papers/`, die beiden Papers (DE/EN), Rohstoff für Zenodo
+- **[`docs/papers/PLAN_PAPERS.md`](papers/PLAN_PAPERS.md)**. Das Gerüst der drei
   kommenden Papers, samt der Stellen, an denen jedes kippen kann
-- `docs/GUTACHTEN/` — das Gutachten
-- `docs/WARUM_SBKIM_STATT_KI.md` — die ehrliche Abgrenzung; halbfertige Vorlage
+- `docs/GUTACHTEN/`. Das Gutachten
+- `docs/WARUM_SBKIM_STATT_KI.md`, die ehrliche Abgrenzung; halbfertige Vorlage
   für das Blatt „Stand der Technik"
-- `docs/URHEBERSCHAFT_UND_RECHTE.md` — die Rechtelage, die jeder Fördergeber
+- `docs/URHEBERSCHAFT_UND_RECHTE.md`: die Rechtelage, die jeder Fördergeber
   wissen will
-- `docs/PLAN_PILZ_WIRTSCHAFT.md` — wovon das Netz leben soll; die Antwort auf
+- `docs/PLAN_PILZ_WIRTSCHAFT.md`, wovon das Netz leben soll; die Antwort auf
   „und danach?", die in jedem Antrag gefragt wird
-- `LICENSE` — MIT. Der Grund, warum dieses Repo das Antrags-Repo ist.
+- `LICENSE`. MIT. Der Grund, warum dieses Repo das Antrags-Repo ist.

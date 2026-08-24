@@ -31,7 +31,7 @@ verlangen für das geförderte Ergebnis eine anerkannte freie Lizenz. **Daraus
 folgt, ohne dass irgendetwas umlizenziert werden müsste: Sage-Protokol ist das
 Antrags-Repo.**
 
-**2 · Die Bidirektionalität ist die These.** Die Suche ist bidirektional — beide
+**2 · Die Bidirektionalität ist die These.** Die Suche ist bidirektional. Beide
 Seiten fragen, beide antworten. Die Beobachtung über Mensch und KI hat dieselbe
 Figur: der Mensch prägt die KI über Grundsätze, die KI prägt den Menschen über
 Gewöhnung. Das bindet die drei Stränge zu **einem** Vorhaben statt zu einer Liste.
@@ -42,11 +42,11 @@ Die Annahme, „Psychologe" dürfe sich auch ohne Studium nennen, wer will:
 **nachgesehen, stimmt nicht.** Geschützt über § 5 Abs. 2 Nr. 3 UWG, gerichtlich
 bestätigt; der BDP hält zusätzlich § 132a Abs. 2 StGB für einschlägig, akademische
 Grade fallen eindeutig darunter. Frei sind „psychologische Beratung", „Coach",
-„Berater" — vermutlich die Wahrheit hinter dem Irrtum, sie gilt aber der
+„Berater", vermutlich die Wahrheit hinter dem Irrtum, sie gilt aber der
 Tätigkeit, nicht dem Titel. **Folgenlos für die Förderung:** verlangt wird eine
 Methode, kein Titel.
 
-## Prüftiefe — ehrlich
+## Prüftiefe: ehrlich
 
 - `nlnet.nl` und `martinmeng.de` waren aus dieser Umgebung **nicht abrufbar**
   (Egress-Sperre). Was zu NLnet und zu den Stundendeckeln der Forschungszulage im
@@ -60,7 +60,7 @@ Methode, kein Titel.
 - **Nicht prüfbar aus einer Sitzung:** die persönlichen Voraussetzungen
   (steuerlicher Status, Hochschulabschluss, Bundesland, Arbeitsumfang) und die
   Weichenfrage, ob das Institut gemeinnützig sein soll. Abschnitt 9 des Dokuments
-  nennt **nur, wofür jede Angabe gebraucht wird** — die Angaben selbst gehören
+  nennt **nur, wofür jede Angabe gebraucht wird**, die Angaben selbst gehören
   ins Gespräch, nicht ins öffentliche Depot.
 
 ## Manual-Check
@@ -72,11 +72,11 @@ Methode, kein Titel.
 
 Sage-Protokol ist **öffentlich** (gemessen: `github.com/…` antwortet ohne
 Anmeldung mit 200). Der erste Entwurf dieses Dokuments nannte die finanzielle
-Lage, den steuerlichen Status und die Abschlussfrage des Antragstellers — auf
+Lage, den steuerlichen Status und die Abschlussfrage des Antragstellers, auf
 einer öffentlich lesbaren Seite. Auf Nachfrage entschieden: **neutral fassen,
 dann mergen.**
 
-Geblieben ist alles Sachliche — Förderwege, Fristen, Adressen, Rechtsformen, der
+Geblieben ist alles Sachliche: Förderwege, Fristen, Adressen, Rechtsformen, der
 Lizenz-Befund, die Bidirektionalitäts-These. Herausgenommen sind die
 persönlichen Verhältnisse; Abschnitt 9 nennt nur noch, **wofür** jede Angabe
 gebraucht wird.
@@ -84,15 +84,15 @@ gebraucht wird.
 **Die Lehre daraus, netzweit anschlussfähig:** ein Rechercheergebnis über eine
 Person gehört nicht automatisch dorthin, wo das Rechercheergebnis über eine
 Software hingehört. Bei einem öffentlichen Depot ist „nützlich" nicht dasselbe
-wie „veröffentlichbar" — dieselbe Familie wie NETZWEIT § 6c.
+wie „veröffentlichbar", dieselbe Familie wie NETZWEIT § 6c.
 
 ## Nächste Schritte
 
 1. Stufe A des Fahrplans (ORCID, Steuerberater-Termin, Fristen nachsehen,
-   Antrags-Repo festlegen) — kostet nichts und macht alles Weitere möglich.
+   Antrags-Repo festlegen), kostet nichts und macht alles Weitere möglich.
 2. Die vier bis fünf offenen Fragen beantworten; ohne sie bleiben EXIST, die
    Landesprogramme und die Forschungszulage Vermutung.
-3. Stufe B, die Vorleistungs-Mappe — **Zenodo-DOI zuerst**, bestes Verhältnis von
+3. Stufe B, die Vorleistungs-Mappe: **Zenodo-DOI zuerst**, bestes Verhältnis von
    Aufwand zu Wirkung auf der ganzen Liste.
 4. Stichtag: Prototype-Fund-Bewerbung **01.10.–30.11.2026**.
 
@@ -101,7 +101,7 @@ wie „veröffentlichbar" — dieselbe Familie wie NETZWEIT § 6c.
 # Fortsetzung · 2026-08-23 · Der Forschungskorpus
 
 **Auftrag von Klaus:** die Repos finden, die sich als offen lizenzierter Beleg
-der Forschung eignen — und die drei öffentlichen zuerst umlizenzieren.
+der Forschung eignen, und die drei öffentlichen zuerst umlizenzieren.
 
 ## Umlizenziert auf MIT
 
@@ -116,19 +116,19 @@ Je vier Stellen: `LICENSE`, `package.json`, `FP-COPYRIGHT`-Kopf in `index.html`,
 
 ## Neu in diesem Repo
 
-- `docs/FORSCHUNGSKORPUS.md` — die benannte Kette aus sechs Repos
-- `docs/werkstatt/` — Weg C für Kimhub: README (mit Prüfsummen),
+- `docs/FORSCHUNGSKORPUS.md`, die benannte Kette aus sechs Repos
+- `docs/werkstatt/`. Weg C für Kimhub: README (mit Prüfsummen),
   `grundsaetze.md` (byte-gleich), `WERKSTATTREGELN.md` (Auszug), `BEFUND.md`
 
 ## Vier Befunde, die nicht gesucht waren
 
-1. **Kim-Bell stand im Widerspruch zu sich selbst** — „1:1-kopierbare Vorlage"
+1. **Kim-Bell stand im Widerspruch zu sich selbst**. „1:1-kopierbare Vorlage"
    im README, Kopierverbot in Ziffer 4 der Lizenz. Seit Bestehen des Repos.
 2. **Ziffer 5 aller 28 Nutzungslizenzen stellt die SBKIM-Module unter MIT.** Die
    frühere Zählung „nur 3 von 33 sind Open Source" war zu grob: das Protokoll war
    überall offen, zu war nur die App-Hülle. Im Chat richtiggestellt.
 3. **Die SBKIM-Demo liegt unter `sbkim-demo/` in diesem Repo** und war damit
-   immer schon MIT — Klaus hatte sie für ein eigenes Repo gehalten.
+   immer schon MIT. Klaus hatte sie für ein eigenes Repo gehalten.
 4. **Kimhubs Historie trägt die Rechnungsdaten weiter.** `git rm` am 2026-08-22
    nahm sie aus dem Arbeitsbaum, nicht aus der Vergangenheit: 859 Zeilen, 75
    Belege, über `0ee4640` abrufbar. Das ist der Grund für Weg C.
@@ -144,16 +144,16 @@ Je vier Stellen: `LICENSE`, `package.json`, `FP-COPYRIGHT`-Kopf in `index.html`,
   Repos sind ohnehin öffentlich, MIT ändert daran nichts. In den PRs genannt.
 - Die **Kastenbreite** im `FP-COPYRIGHT`-Kopf wurde aus der Datei gemessen (65),
   nicht geraten. `package.json` nach dem Schreiben mit `json.loads` gegengelesen.
-- Bei Kimboard **`node tests/alle.mjs`** statt `npm test` — genau die
+- Bei Kimboard **`node tests/alle.mjs`** statt `npm test`, genau die
   Unterscheidung, vor der die dortige Verfassung warnt. `npm test` hätte 6
   Prüfungen gemeldet und wie eine vollständige Auskunft ausgesehen.
 - Alle Markdown-Verweise der neuen Dateien gegen das Dateisystem geprüft.
 
-## Was NICHT im Korpus liegt — und warum
+## Was NICHT im Korpus liegt, und warum
 
 Die Geschäfts-Apps behalten ihre Nutzungslizenz. Kimhub bleibt privat. Kein
 lauffähiger Code aus Kimhub wurde nach Sage kopiert: **eine Probe, die in keinem
-Läufer steht, ist stumm** — sie hier abzulegen hieße, grüne Haken vorzutäuschen,
+Läufer steht, ist stumm**. Sie hier abzulegen hieße, grüne Haken vorzutäuschen,
 die niemand einlöst.
 
 ## Manual-Check
@@ -170,7 +170,7 @@ App-Code. In den drei umlizenzierten Repos liefen die vollen Proben grün.
 ## Gebaut
 
 `docs/papers/PAPER_A_regeln-und-grundsaetze.md`, Fassung 1, 553 Zeilen.
-*Regeln und Grundsätze: zwei Arten, ein KI-System zu lenken — und warum keine
+*Regeln und Grundsätze: zwei Arten, ein KI-System zu lenken, und warum keine
 allein genügt.*
 
 ## Der Beitrag, abgegrenzt statt behauptet
@@ -193,10 +193,10 @@ den Systemprompt ändern") statt als Instrument. Dort sitzt die Werkstatt.
 
 1. **Sättigungsgrenze.** Regeln addieren sich, Grundsätze verdünnen sich. Die
    Sieben-Grenze in `grundsaetze.md` ist damit keine Marotte, sondern eine
-   Eigenschaft des Kanals — und in der zitierten Literatur nicht behandelt, weil
+   Eigenschaft des Kanals, und in der zitierten Literatur nicht behandelt, weil
    auf deren Ebene kein Aufmerksamkeitsbudget im Spiel ist.
 2. **Dreiarmiger Versuch** (Klaus, 2026-08-23): R · G · R+G. Macht die These
-   widerlegbar. Drei Ergebnisse würden sie umwerfen, alle drei stehen im Paper —
+   widerlegbar. Drei Ergebnisse würden sie umwerfen, alle drei stehen im Paper.
    das schwerste: wenn R und G **dieselben** Fehler machen, nur verschieden
    viele, ist die Trennung Beschreibung und keine Erklärung.
    Dazu die Anforderung, die über allem steht: **das Analysewerkzeug darf dem
@@ -204,14 +204,14 @@ den Systemprompt ändern") statt als Instrument. Dort sitzt die Werkstatt.
 
 ## Ein Fehler von mir, von der eigenen Gegenprobe gefunden
 
-Ich schrieb „die acht Regeln", an vier Stellen. **Es sind sechs** — nachgezählt an
+Ich schrieb „die acht Regeln", an vier Stellen. **Es sind sechs**, nachgezählt an
 `WERKSTATTREGELN.md`. Die Zahl war gesetzt, nicht gezählt: genau die Falle, gegen
 die Grundsatz 4 geschrieben wurde. Richtiggestellt in `PAPER_A`, `BEFUND.md` und
 `werkstatt/README.md`; die Gegenprobe darauf läuft jetzt gegen den Wortlaut der
 Regelliste, nicht gegen eine Erinnerung.
 
 **Merksatz, netzweit anschlussfähig:** wer eine Zahl über das eigene Material
-schreibt, zählt sie ab. Auch — und gerade — wenn er das Material selbst angelegt hat.
+schreibt, zählt sie ab. Auch, und gerade, wenn er das Material selbst angelegt hat.
 
 ## Geprüft
 
@@ -226,19 +226,19 @@ schreibt, zählt sie ab. Auch — und gerade — wenn er das Material selbst ang
 
 ### Nachtrag am selben Tag: die zweite Achse
 
-Klaus' zweiter Vorschlag — **drei Aufgabenarten** neben den drei Armen: eigene
+Klaus' zweiter Vorschlag, **drei Aufgabenarten** neben den drei Armen: eigene
 Idee (E) · Vorlage vom Vorgänger (V) · Bestehendes verbessern (B).
 
 **Das ist die wichtigere der beiden Ergänzungen.** Eine Rangfolge („R+G gewinnt")
 lässt sich aus fast jedem Ergebnis herauslesen; ein **Verlauf über drei Stufen**
 nicht. Und der Verlauf folgt zwingend aus Kaplows Punkt: wenn eine Regel genau den
 Fall abdeckt, für den sie geschrieben wurde, muss ihr Vorteil mit der
-Vorhersehbarkeit des Falls **steigen** — und der Vorteil der Grundsätze fallen.
+Vorhersehbarkeit des Falls **steigen**, und der Vorteil der Grundsätze fallen.
 Läuft es flach oder gegenläufig, ist die These widerlegt, egal wer insgesamt vorn
 liegt.
 
 Zweiter Gewinn: Aufgabenart B legt der Truppe den Bestand **vor**. Damit trennt
-sich, was in der Feldbeobachtung vermischt war — schlägt sie Vorhandenes vor,
+sich, was in der Feldbeobachtung vermischt war, schlägt sie Vorhandenes vor,
 weil sie unaufmerksam ist (dort greifen Grundsätze), oder weil sie den Bestand
 nicht sieht (dann war es nie ein Lenkungsproblem, sondern eines des Zugangs)?
 
@@ -247,6 +247,6 @@ bei Art B aussagekräftig.** Wer sie über alle Arten zusammenzählt, mischt
 fehlenden Zugang mit fehlender Aufmerksamkeit zu einer Zahl.
 
 Der Preis ist benannt: neun Bedingungen statt zwei, jede mehrfach. Zwei Auswege
-stehen im Paper, beide **vorher** zu entscheiden — stufenweise fahren, oder die
+stehen im Paper, beide **vorher** zu entscheiden: stufenweise fahren, oder die
 Wiederholungszahl senken und hinschreiben, dass die Aussage schwächer wird. Was
 nicht geht: unterwegs kürzen und das Ergebnis vollständig aussehen lassen.

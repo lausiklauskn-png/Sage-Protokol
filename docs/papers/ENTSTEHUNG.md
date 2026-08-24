@@ -1,4 +1,4 @@
-# Woher das kommt — Klaus' Darstellung
+# Woher das kommt: Klaus' Darstellung
 
 **Aufgezeichnet am 2026-08-23.** Das ist **Klaus' eigene Schilderung**, wie das
 Vorhaben entstanden ist, festgehalten bevor sie verlorengeht. Sie ist **Rohstoff**
@@ -17,7 +17,7 @@ eingearbeitet.
 
 Am Anfang stand **Sage-Protokol** und das semantische, bidirektionale KI-Matching.
 
-Über das Mycel wurde gebaut, dass **PWAs und Internetseiten einander erkennen** —
+Über das Mycel wurde gebaut, dass **PWAs und Internetseiten einander erkennen**,
 anhand von Bedeutungsvektoren, nicht anhand von Stichwörtern. Das Ziel war, die
 **inhaltliche Bedeutung** zu erfassen und damit etwas zu erreichen: Dinge schneller
 zu finden, die jemand sucht.
@@ -35,7 +35,7 @@ Unterlagen bisher fehlten:
 ## 2 · Der Anlass: einer allein, und die Dokumentation frisst die Zeit
 
 Klaus hat allein gearbeitet und nach einer Möglichkeit gesucht, das zu
-automatisieren — **die Dokumentation eingeschlossen**.
+automatisieren, **die Dokumentation eingeschlossen**.
 
 Dabei kam der Befund, um den sich alles Weitere dreht:
 
@@ -47,7 +47,7 @@ Code, doppelt gebaute Dinge, wiederholte Wege. Seine Beobachtung zur Ursache:
 
 > ⚠ **Das ist eine Beobachtung, kein erwiesener Befund.** Sie ist in `LEHREN.md`
 > und in den Verfassungen dutzendfach mit Datum belegt, aber sie ist nicht gemessen.
-> Im Paper gehört sie als Beobachtung hinein — sonst ist die Forschungsfrage
+> Im Paper gehört sie als Beobachtung hinein, sonst ist die Forschungsfrage
 > beantwortet, bevor sie gestellt wurde.
 
 ## 3 · Die Überlegung: mehrere Agenten, und Grundsätze statt vieler Regeln
@@ -60,7 +60,7 @@ sie ein Ziel schneller und besser erreichen. Nicht über viele Regeln, sondern �
 läuft eine Rollen-Kette, aber sie spielt einen **aufgezeichneten** Lauf ab. Das
 steht in dessen Verfassung ausdrücklich so.
 
-**In Kimhub ist dasselbe lebendig geworden** — echte Aufträge, echte Modelle, echte
+**In Kimhub ist dasselbe lebendig geworden**: echte Aufträge, echte Modelle, echte
 Kosten. Auch das steht dort so geschrieben. Der Bogen ist damit in beiden Depots
 nachprüfbar und keine nachträgliche Erzählung.
 
@@ -80,7 +80,7 @@ sich auf die Rollen verteilt.
 Das ist der Kern der Haltung und gehört so ins Paper. Der Ärger war das **Signal**,
 nicht das Urteil.
 
-## 5 · Was offen ist — und offen bleiben soll
+## 5 · Was offen ist, und offen bleiben soll
 
 Warum kam nichts heraus? Die Möglichkeiten stehen nebeneinander, **keine ist
 ausgeschlossen**:
@@ -101,7 +101,7 @@ vor dem Grundsatz 3 warnt.
 > es sinnvoll und einfach bleibt, zielführend ist und Ressourcen spart?**
 
 Und das Ziel dahinter: Menschen sollen KI nicht nur **benutzen** können, sondern
-wissen, **wie sie sich eigene Werkzeuge bauen** — mit möglichst wenig Zeiteinsatz.
+wissen, **wie sie sich eigene Werkzeuge bauen**, mit möglichst wenig Zeiteinsatz.
 
 **Das Paper stellt heute nur die Unterfrage** (Regeln gegen Grundsätze) und nennt
 diese Hauptfrage nicht. In der Sprache der Fördergeber heißt sie *digitale
@@ -123,8 +123,8 @@ Es geht nicht um Token und nicht um Euro. Beide sind kleine Posten. **Zeit ist d
 Preis**, in Geld wie in Gewöhnung.
 
 **Und die Kehrseite steht im selben Satz.** Dieselbe Intensität, die in fünf
-Monaten dieses Netz hervorgebracht hat — nach Klaus' eigener Schätzung **mehr als
-doppelte Arbeitszeit** —, ist die, vor der der Sucht-Strang warnt. Er sagt dazu:
+Monaten dieses Netz hervorgebracht hat, nach Klaus' eigener Schätzung **mehr als
+doppelte Arbeitszeit**, ist die, vor der der Sucht-Strang warnt. Er sagt dazu:
 
 > *„Ich bin nicht süchtig. Aber ich bin das lebendige Beispiel dafür. Das schafft
 > man nicht, wenn man die Sachen nebenbei macht."*
@@ -147,10 +147,10 @@ Sie ist der Rohstoff für drei Dinge, die noch zu tun sind:
 
 1. **Ein neuer Abschnitt 1 in Paper A**, der die Herkunft erzählt, bevor Begriffe
    wie „Schicht" gebraucht werden.
-2. **Die Vorhabensbeschreibung** im Förderantrag — Abschnitt 6 ist deren Kern.
+2. **Die Vorhabensbeschreibung** im Förderantrag. Abschnitt 6 ist deren Kern.
 3. **Ein Abschnitt zur Entstehung des Papers selbst**: welche Wendepunkte von Klaus
    kamen und welche von der Sitzung. Bei einem Papier über die Lenkung von KI ist
    das kein Anhang, sondern Material.
 
 **Klaus liest gegen und korrigiert.** Was hier steht, ist seine Darstellung, von
-einer Sitzung aufgeschrieben — nicht umgekehrt.
+einer Sitzung aufgeschrieben, nicht umgekehrt.

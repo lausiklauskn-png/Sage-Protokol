@@ -2,7 +2,7 @@
  *
  * Lauf:  node tests/gegenprobe_antragsmappe.mjs
  *
- * Baut nacheinander einunddreissig Fehler ein. **Jeder einzelne MUSS die Probe
+ * Baut nacheinander zweiunddreissig Fehler ein. **Jeder einzelne MUSS die Probe
  * umwerfen.** Wirft er sie nicht um, ist der Wächter an dieser Stelle blind —
  * und ein blinder Wächter ist schlimmer als keiner, weil sein Grün beruhigt.
  *
@@ -31,6 +31,7 @@ const ANGEFASST = [
   'tools/antragsmappe-markieren.mjs',
   'docs/antragsmappe.html',
   'docs/FORSCHUNGSKORPUS.md',
+  'docs/papers/ENTSTEHUNG.md',
 ];
 const SICHER = new Map(ANGEFASST.map((r) => [r, readFileSync(P(r), 'utf-8')]));
 
@@ -355,6 +356,13 @@ const FAELLE = [
       ersetze('tools/antragsmappe-markieren.mjs',
         '    out.push("| gruen | " + FARBEN.gruen.sinn + " | " + z.gruen + " | " + zeichen.gruen + " |");',
         '    out.push("| gruen | " + FARBEN.gruen.sinn + " | " + z.gruen + " |");');
+      bauen();
+    },
+  },
+  {
+    was: 'Ein Gedankenstrich schleicht sich in einen eigenen Text zurück',
+    bauen: () => {
+      ersetze('docs/papers/ENTSTEHUNG.md', '. ', ' \u2014 ');
       bauen();
     },
   },
