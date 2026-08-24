@@ -133,10 +133,41 @@ Warnung**:
 
 | Was zunimmt | Was abnimmt oder kippt |
 |---|---|
-| Reichweite: Dinge werden möglich, die allein nicht möglich waren | **Gewöhnung**, die Verfügbarkeit rund um die Uhr, ohne Ermüden, ohne Nein |
+| Reichweite: Dinge werden möglich, die allein nicht möglich waren | **Gewöhnung**, die Verfügbarkeit rund um die Uhr, ohne Ermüden und ohne Aufgeben |
 | Tempo: aus Wochen werden Tage | **Übervertrauen**, eine flüssige Antwort wirkt richtiger als eine zögernde |
 | Mut: man traut sich an Größeres | **Verlernen**, was man abgibt, kann man nach einer Weile nicht mehr selbst |
 | Gesellschaft: ein Gegenüber, das zuhört | **Vermenschlichung**, man behandelt es wie ein Gegenüber, weil es antwortet wie eines |
+
+### Der schärfste Einzelbefund: es ist nicht die Willfährigkeit, es ist die Ausdauer
+
+**Klaus am 2026-08-24**, beim Durchsehen der Antragsmappe: *„Claude sagt ab und
+zu nein, aber KI ermuntert immer weiterzumachen und sucht sehr lange einen
+Ausweg, bis es wirklich keinen mehr gibt. Der Mensch hätte längst aufgegeben."*
+
+**Damit ist der bequeme Satz vom Tisch.** In der Tabelle oben stand „ohne Nein",
+und in [`../FORSCHUNGSFOERDERUNG.md` § 2.3](../FORSCHUNGSFOERDERUNG.md) stand
+*„ein Werkzeug, das nie ‚nein' sagt"*. Beides ist falsch, und beides ist
+berichtigt. Es sagt nein. Was es nicht tut, ist **aufhören**.
+
+**Warum die Verschiebung dem Paper nützt statt zu schaden:**
+
+| | |
+|---|---|
+| „sagt zu oft ja" | eine Behauptung über Haltung, schwer zu messen, leicht zu bestreiten |
+| **„hört nicht auf"** | ein **Verhalten über die Zeit**, zählbar an Runden, Dauer und Kosten |
+
+Ein Mensch, der dreimal keinen Weg findet, hört auf. Dieses Aufhören ist eine
+**natürliche Bremse**, und niemand hat sie je einbauen müssen, weil sie von
+selbst da war. Ein Werkzeug, das beim vierten Mal einen vierten Vorschlag macht,
+nimmt sie weg, ohne dass es je „ja" zu etwas Falschem gesagt hätte.
+
+**Die Daten dafür liegen vor**, und das ist selten: Fahrtenbuch mit Runden,
+Dauer und Kosten je Schicht, dazu die Sitzungsprotokolle. Was zu bilden wäre,
+ist ein Maß für „wie lange wurde weitergesucht, nachdem ein Mensch aufgehört
+hätte" **und** der Vergleichspunkt dazu, und der ist der schwierige Teil: er
+verlangt eine Aussage darüber, wann ein Mensch aufgegeben hätte. **Ohne
+methodischen Partner ist das nicht zu beziffern**, und bis dahin ist es eine
+benannte Beobachtung, keine Zahl.
 
 ### Was dieses Paper von der übrigen Literatur unterscheidet
 
@@ -187,6 +218,15 @@ Was hineingehört, jeweils mit einem Beispiel aus der eigenen Arbeit:
    hinsehen musst.*
 2. **Mit Misserfolg umgehen.** Was tun, wenn dieselbe Sache dreimal nicht geht?
    Wann ist es der eigene Denkfehler, wann eine Grenze des Werkzeugs?
+   **Und die Kompetenz, die es vorher nicht brauchte: selbst zu entscheiden,
+   wann Schluss ist.** Klaus' Beobachtung dazu steht bei Paper B, sie hat hier
+   ihr praktisches Gegenstück: das Werkzeug hört nicht von sich aus auf, also
+   muss der Mensch es tun. Wer früher an einer Aufgabe scheiterte, merkte es an
+   der eigenen Erschöpfung. Diese Rückmeldung fällt weg, und der Ersatz dafür
+   ist nichts Feinsinniges, sondern eine **vorher gesetzte Grenze**: eine Zahl
+   von Versuchen, ein Betrag, eine Uhrzeit. Genau das tut der Fünf-Euro-Deckel
+   einer Schicht, und er ist damit ein Beispiel aus der eigenen Arbeit und nicht
+   nur ein Kostenriegel.
 3. **Grenzen kennen statt neu entdecken.** Aus der Praxis teuer bezahlt: *eine
    Grenze, die man kennt, kostet eine Zeile; eine, die man jedes Mal neu
    entdeckt, kostet eine Stunde.*

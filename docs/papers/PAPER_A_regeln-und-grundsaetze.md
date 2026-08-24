@@ -54,6 +54,16 @@ Dauer. Beide Kanäle, Regeln wie Grundsätze, gehen bei jedem Aufruf als Text mi
 Dokumentation reicht über fünf Monate, die Messung über Tage. Wo im Papier eine
 gemessene Zahl steht, stammt sie aus dem zweiten.
 
+**Der erste ist seit dem 2026-08-24 kein ungefährer mehr.** Die Git-Historie
+aller 33 Depots wurde ausgelesen und ausgezählt: **5.823 Commits an 128
+Arbeitstagen, vom 10.03. bis zum 24.08.2026**, über 1.388 Zweige, davon 1.662
+Commits, die nie auf einem Hauptzweig ankamen. Damit ist „fünf Monate" nicht
+länger eine Erinnerung, sondern eine Zahl mit Quelle
+([`../historie/`](../historie/)). **An der Trennung ändert das nichts, und das
+ist der Punkt:** die Historie belegt, *dass* und *wann* gearbeitet wurde, nicht
+*wie lange* an einem Tag. Sie ist ein Nachweis über die Dokumentation, keine
+nachträgliche Messung, und wird hier auch nicht als solche verwendet.
+
 Aus derselben Richtung folgt ein praktischer Nebenbefund: **mehrere Regeln, die
 denselben Zweck zuspitzen, lassen sich durch den einen Grundsatz ersetzen, aus dem
 sie stammen.** Die naheliegende Sparsamkeits-These ist dabei durch die eigene
