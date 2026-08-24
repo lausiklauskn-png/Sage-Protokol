@@ -658,15 +658,26 @@ kann anrechenbar sein**: vorausgesetzt, sie ist belegbar.
 ersten Blick aussieht. Was gebraucht wird, ist eine **Stundenaufzeichnung je
 Vorhaben**: Datum, Vorhaben, Stunden, Tätigkeit.
 
+> ⚠ **„Seit dem 10.03.2026" ist der bequeme Satz, und er hält nicht ganz.**
+> Ausgezählt am 2026-08-24: am **10.03.** wurde das erste Depot angelegt, **zwei
+> Einträge**, danach **27 Tage nichts**. Die durchgehende Arbeit beginnt am
+> **06.04.2026**, und ab da sind es **127 Arbeitstage in 140 Kalendertagen** mit
+> genau **einer** Lücke von vier Tagen.
+>
+> **Für den Antrag ist die zweite Zahl die stärkere**, nicht die frühere: ein
+> Datum, hinter dem eine Lücke von vier Wochen steht, lädt zur Nachfrage ein;
+> 127 von 140 Tagen tun das nicht. Welches Datum als **Betriebseröffnung**
+> trägt, entscheidet der Steuerberater.
+
 **Zwei Sorten Beleg liegen vor, und sie decken verschieden weit:**
 
 | Was | Seit wann | Was es belegt |
 |---|---|---|
-| Sage-Protokol: `PULS.md`, Übergabeprotokolle, Commit-Historie über 33 Depots | **10.03.2026** | dass durchgehend gearbeitet wurde, mit Datum |
+| Sage-Protokol: `PULS.md`, Übergabeprotokolle, Commit-Historie über 33 Depots | **06.04.2026** (Anstoß am 10.03.) | dass durchgehend gearbeitet wurde, mit Datum |
 | Kimhub: Fahrtenbuch, Stechuhr, Belege | **22.08.2026** | Stunden und Kosten, auf die Minute |
 
-**Der Unterschied ist der Punkt.** Über fünf Monate liegt eine lückenlose
-**Dokumentation** vor, aber keine **Stundenaufzeichnung**. Das Fahrtenbuch ist
+**Der Unterschied ist der Punkt.** Über fünf Monate liegt eine nahezu
+lückenlose **Dokumentation** vor, aber keine **Stundenaufzeichnung**. Das Fahrtenbuch ist
 erst wenige Tage alt. Wer beides in einem Satz zusammenzieht, meldet
 Aufzeichnungen, die es nicht gibt, und merkt es erst bei der Nachfrage.
 **Dokumentierte Zeit und gemessene Zeit sind zwei Dinge.**
@@ -700,7 +711,7 @@ Werbetechnik-Betrieb und führt kein eigenes Gewerbe.
 > mit Arbeitslohn. Wer nur angestellt ist, ist es nicht.
 >
 > **Woran das hängt, ist die Rückwirkung**, und die ist der ganze Reiz dieses
-> Weges. Die fünf Monate Arbeit seit dem 10.03.2026 sind in einer Zeit
+> Weges. Die fünf Monate Arbeit seit dem Frühjahr 2026 sind in einer Zeit
 > entstanden, in der es **keine steuerpflichtige Tätigkeit gab**, der sie sich
 > zuordnen ließen. Ob sie sich nach einer Anmeldung noch rückwirkend zuordnen
 > lassen oder ob erst ab Anmeldung gezählt wird, **entscheidet diese Datei
@@ -1139,6 +1150,10 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       gewerblich?"* Das ist der teuerste Punkt auf der ganzen Liste, wenn man ihn
       zu spät stellt, **und seit dieser Antwort auch der eiligste**: solange
       nichts angemeldet ist, laufen die Stunden möglicherweise ins Leere.
+      **Das Frageblatt für den Termin liegt fertig vor**, mit Sachverhalt, sieben
+      Fragen, Rechtsgrundlagen und der Beleglage:
+      [`STEUERBERATER_FRAGEN.md`](STEUERBERATER_FRAGEN.md). Ausdrucken oder am
+      Tablet zeigen, nichts davon muss im Termin erst erzählt werden.
 - [ ] **A2c · In den eigenen Arbeitsvertrag sehen.** Nebentätigkeit
       anzeigepflichtig? Genehmigungspflichtig? Steht eine Wettbewerbsklausel
       darin? Kostet zehn Minuten, betrifft **alle vier Wege**, und stand bis zum
