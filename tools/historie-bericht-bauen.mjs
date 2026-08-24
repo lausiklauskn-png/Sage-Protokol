@@ -37,6 +37,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MARKEN, markenFuer } from './historie-marken.mjs';
+import { LUECKE_MIN, VORLAUF_MIN, rechneTage } from './arbeitstage-rechnen.mjs';
 
 const SAGE = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const QUELLE = resolve(SAGE, 'docs/historie/historie.json');
@@ -349,7 +350,7 @@ const skript = `
 })();
 `;
 
-let html = '';
+let html = '\ufeff';   /* BOM: überstimmt jedes Raten der Zeichenkodierung */
 html += '<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n';
 html += '<meta name="viewport" content="width=device-width,initial-scale=1">\n';
 html += '<title>Die Historie einer Zusammenarbeit, 10.03. bis 24.08.2026</title>\n';
@@ -359,7 +360,8 @@ html += '<!-- ERZEUGT von tools/historie-bericht-bauen.mjs aus '
 html += '<style>' + stil + '</style>\n</head>\n<body>\n';
 
 html += '<div class="hut"><div class="innen"><strong>Historie</strong>'
-  + '<a href="#zahlen">Zahlen</a><a href="#rollen">Rollen</a>'
+  + '<a href="#zahlen">Zahlen</a><a href="#arbeitszeit">Arbeitszeit</a>'
+  + '<a href="#rollen">Rollen</a>'
   + '<a href="#wachstum">Wachstum</a><a href="#monate">Monate</a>'
   + '<a href="#sackgassen">Sackgassen</a><a href="#verlauf">Voller Verlauf</a>'
   + '</div></div>\n';
@@ -411,6 +413,47 @@ html += '<p><strong>Was die Zahl der Arbeitstage nicht sagt.</strong> Ein Tag '
   + 'Zahl, gegen die in diesem Netz seit Monaten angeschrieben wird.</p>\n';
 
 /* ── Marken ── */
+/* ── Die Arbeitszeit ────────────────────────────────────────────────────────
+   Gerechnet mit DERSELBEN Quelle wie das Blatt `arbeitstage.html`
+   (`tools/arbeitstage-rechnen.mjs`). Zwei Fassungen der Rechnung würden
+   irgendwann verschiedene Zahlen zeigen, und beide wären grün. */
+{
+  const az = rechneTage(d.commits).summe;
+  const mit = rechneTage(d.commits, { automatikZaehlt: true }).summe;
+  const st = (n) => n.toFixed(1).replace('.', ',');
+
+  html += '<h2 id="arbeitszeit">Die Arbeitszeit</h2>\n';
+  html += '<p>Aus den Zeitstempeln lässt sich mehr ablesen als die Zahl der '
+    + 'Tage. Ein Eintrag trägt die Uhrzeit, die das System beim Speichern '
+    + 'selbst vergibt; daraus ergibt sich, wann an einem Tag zuerst und '
+    + 'zuletzt etwas abgelegt wurde.</p>\n';
+  html += '<div class="zahlen">'
+    + '<div><b>' + zahl(az.arbeitstage) + '</b><span>Tage mit Arbeit</span></div>'
+    + '<div><b>' + st(az.spanne) + ' h</b><span>Spanne, aufsummiert</span></div>'
+    + '<div><b>' + st(az.aktiv) + ' h</b><span>aktive Zeit, ohne Pausen</span></div>'
+    + '<div><b>' + st(az.spanne / az.arbeitstage) + ' h</b><span>Spanne je Tag</span></div>'
+    + '</div>\n';
+  html += '<p><strong>Spanne</strong> ist der Abstand vom ersten bis zum letzten '
+    + 'Eintrag desselben Tages, Pausen eingeschlossen. <strong>Aktive Zeit</strong> '
+    + 'rechnet sie heraus: Abstände bis ' + LUECKE_MIN + ' Minuten zählen mit, '
+    + 'längere gelten als Unterbrechung, und jeder Abschnitt bekommt '
+    + VORLAUF_MIN + ' Minuten Vorlauf.</p>\n';
+  html += '<p data-az-automatik>' + zahl(az.automatik) + ' Einträge stammen von '
+    + 'einem zeitgesteuerten Dienst und sind herausgerechnet. Ohne diese '
+    + 'Bereinigung stünden hier ' + st(mit.spanne - az.spanne)
+    + ' Stunden zu viel.</p>\n';
+  html += '<p data-az-untergrenze>Beide Werte sind eher zu niedrig als zu hoch. '
+    + 'Lesen, Prüfen, Besprechen und jeder verworfene Versuch hinterlassen '
+    + 'keinen Eintrag, und vor dem ersten wie nach dem letzten Eintrag eines '
+    + 'Tages ist gearbeitet worden.</p>\n';
+  html += '<p data-az-blatt>Jeder Tag einzeln, mit allen Tätigkeiten, steht in '
+    + '<a href="arbeitstage.html">arbeitstage.html</a>. Daneben liegen '
+    + '<a href="arbeitstage.pdf">arbeitstage.pdf</a> zum Ausdrucken sowie '
+    + '<a href="arbeitstage-tage.csv">arbeitstage-tage.csv</a> und '
+    + '<a href="arbeitstage-taetigkeiten.csv">arbeitstage-taetigkeiten.csv</a> '
+    + 'für die Tabellenkalkulation.</p>\n';
+}
+
 html += '<h2 id="marken">Woran etwas erkannt wird</h2>\n';
 html += '<p>Sieben Marken. Jede hat Wörter, an denen sie erkannt wird, und die '
   + 'stehen hier, damit ein Leser die Einordnung nachprüfen und ihr '

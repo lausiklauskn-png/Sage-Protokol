@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
@@ -91,7 +91,7 @@ details{display:none}}
 </style>
 </head>
 <body>
-<div class="hut"><div class="innen"><strong>Historie</strong><a href="#zahlen">Zahlen</a><a href="#rollen">Rollen</a><a href="#wachstum">Wachstum</a><a href="#monate">Monate</a><a href="#sackgassen">Sackgassen</a><a href="#verlauf">Voller Verlauf</a></div></div>
+<div class="hut"><div class="innen"><strong>Historie</strong><a href="#zahlen">Zahlen</a><a href="#arbeitszeit">Arbeitszeit</a><a href="#rollen">Rollen</a><a href="#wachstum">Wachstum</a><a href="#monate">Monate</a><a href="#sackgassen">Sackgassen</a><a href="#verlauf">Voller Verlauf</a></div></div>
 <div class="wrap">
 <h1>Die Historie einer Zusammenarbeit</h1>
 <p class="unter">Klaus Nitzsche und eine KI-Sitzung, 2026-03-10 bis 2026-08-24. Erzeugt am 2026-08-24 aus den Git-Historien von 33 Depots.</p>
@@ -109,6 +109,13 @@ details{display:none}}
 </div>
 <p>Der Zeitraum umfasst 167 Kalendertage. An 128 davon fiel mindestens ein Commit, das sind 77 Prozent aller Tage.</p>
 <p><strong>Was die Zahl der Arbeitstage nicht sagt.</strong> Ein Tag zählt, sobald ein Commit darauf fällt. Wie lange gearbeitet wurde, steht darin nicht. Die Spanne zwischen dem ersten und dem letzten Commit eines Tages steht weiter unten bei jedem Tag, aber sie ist eine Spanne und keine Arbeitszeit. Eine Spanne als Arbeitszeit auszugeben wäre genau die geratene Zahl, gegen die in diesem Netz seit Monaten angeschrieben wird.</p>
+<h2 id="arbeitszeit">Die Arbeitszeit</h2>
+<p>Aus den Zeitstempeln lässt sich mehr ablesen als die Zahl der Tage. Ein Eintrag trägt die Uhrzeit, die das System beim Speichern selbst vergibt; daraus ergibt sich, wann an einem Tag zuerst und zuletzt etwas abgelegt wurde.</p>
+<div class="zahlen"><div><b>128</b><span>Tage mit Arbeit</span></div><div><b>1935,9 h</b><span>Spanne, aufsummiert</span></div><div><b>1186,6 h</b><span>aktive Zeit, ohne Pausen</span></div><div><b>15,1 h</b><span>Spanne je Tag</span></div></div>
+<p><strong>Spanne</strong> ist der Abstand vom ersten bis zum letzten Eintrag desselben Tages, Pausen eingeschlossen. <strong>Aktive Zeit</strong> rechnet sie heraus: Abstände bis 120 Minuten zählen mit, längere gelten als Unterbrechung, und jeder Abschnitt bekommt 30 Minuten Vorlauf.</p>
+<p data-az-automatik>48 Einträge stammen von einem zeitgesteuerten Dienst und sind herausgerechnet. Ohne diese Bereinigung stünden hier 64,9 Stunden zu viel.</p>
+<p data-az-untergrenze>Beide Werte sind eher zu niedrig als zu hoch. Lesen, Prüfen, Besprechen und jeder verworfene Versuch hinterlassen keinen Eintrag, und vor dem ersten wie nach dem letzten Eintrag eines Tages ist gearbeitet worden.</p>
+<p data-az-blatt>Jeder Tag einzeln, mit allen Tätigkeiten, steht in <a href="arbeitstage.html">arbeitstage.html</a>. Daneben liegen <a href="arbeitstage.pdf">arbeitstage.pdf</a> zum Ausdrucken sowie <a href="arbeitstage-tage.csv">arbeitstage-tage.csv</a> und <a href="arbeitstage-taetigkeiten.csv">arbeitstage-taetigkeiten.csv</a> für die Tabellenkalkulation.</p>
 <h2 id="marken">Woran etwas erkannt wird</h2>
 <p>Sieben Marken. Jede hat Wörter, an denen sie erkannt wird, und die stehen hier, damit ein Leser die Einordnung nachprüfen und ihr widersprechen kann.</p>
 <div class="tabelle"><table>
