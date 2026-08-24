@@ -2816,6 +2816,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-08-17 | **PULS-Auslagerung 24.08.** · die Anker-Sitzung vom 17.08. (zehn Sitzungs-Anker, Brief zur Hassrede vom Brett) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-4.md) |
 | 2026-08-14 | **PULS-Auslagerung 23.08.** · die beiden Sitzungen vom 14.08. (PULS ausgelagert 10.150 → 2.592 Zeilen; Sperr-Knöpfe · Automatik-Schalter · drei tote Wächter) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-3.md) |
 | 2026-08-11 … 08-12 | **PULS-Auslagerung 17.08.** · die Sitzungen vom 11. und 12.08. | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-2.md) |
 | 2026-08-03 … 08-09 | **PULS-Auslagerung 14.08.** · alle August-Sitzungen bis einschließlich 09.08. (Pilz-Wirtschaft Fassung 2, Discovery-Karte, die Bilder-/Ladezeit-Reihe 64→97, Sage-Page-Einblenden, Postfach-Verjährung, Kontrast-Reihe) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung.md) |
