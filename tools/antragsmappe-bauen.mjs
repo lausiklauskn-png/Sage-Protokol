@@ -381,7 +381,11 @@ const SKRIPT = `
 
 /* ── Zusammensetzen ────────────────────────────────────────────────────── */
 
-const seite = `<!doctype html>
+/* Der BOM überstimmt jedes Raten der Zeichenkodierung. Ohne ihn rät Androids
+   Betrachter bei einer heruntergeladenen Datei Latin-1, und aus jedem Umlaut
+   werden zwei Zeichen. Die Downloads der Abteilungen tragen ihn seit jeher,
+   die Mappe selbst hatte ihn nicht. */
+const seite = `\ufeff<!doctype html>
 <html lang="de" data-stand="${escape(DATUM)}">
 <head>
 <meta charset="utf-8">
