@@ -1166,8 +1166,9 @@ erfragen, baut den Antrag auf Sand — und merkt es erst beim Bescheid.
   eigenen Kopf mit Datum und Herkunft und ist allein vollständig.
   **Sie wird erzeugt, nicht gepflegt:** wer den Inhalt ändert, ändert die
   `.md`-Datei und ruft `node tools/antragsmappe-bauen.mjs`.
-  **Markieren und auslesen:** Text mit Maus oder Finger ziehen, Farbe wählen
-  (🟩 gut so · 🟨 unklar · 🟥 ändern), auf Wunsch eine Notiz dazu. Der Knopf
+  **Markieren und auslesen:** Text mit Maus oder Finger ziehen, Farbe wählen —
+  **grün** = soll bleiben · **gelb** = kann bleiben oder weg, Claude wägt ab ·
+  **rot** = kann komplett weg. Im Zweifel bleiben. Auf Wunsch eine Notiz dazu. Der Knopf
   oben rechts öffnet die Tafel; von dort geht die Liste als Datei oder in die
   Zwischenablage — damit weiß eine Folge-Sitzung, **wo** etwas zu verbessern
   ist. Markierungen werden **nie gedruckt und nie mitgeladen**: die

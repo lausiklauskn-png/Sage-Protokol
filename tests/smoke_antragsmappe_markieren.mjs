@@ -49,6 +49,69 @@ await p.goto(pathToFileURL(MAPPE).href);
 await p.waitForFunction(() => !!window.__mk);
 gut(fehler.length === 0, 'die Markier-Schicht lädt ohne Skriptfehler', fehler.join(' · '));
 
+/* ── 0 · Man muss ERKENNEN, was ein Knopf bedeutet ────────────────────────
+   Klaus am 2026-08-24, beim ersten Ausprobieren: „Du hast da stehen nur
+   Zahlen, deswegen konnte ich nicht erkennen, was du damit meinst."
+   Zwei eigene Fehler steckten darin:
+     · die Bedeutung stand nur im `title` — auf einem Tablet gibt es KEIN
+       Hover, dort ist ein Tooltip unerreichbar;
+     · die Farbe wurde als EMOJI geschrieben. Ein Emoji haengt an der
+       Schrift des Geraets; fehlt sie, bleibt ein Kaestchen oder nichts
+       uebrig, und aus „🟩 1 · 🟨 1 · 🟥 1" wird „1 · 1 · 1".
+   Gemessen wird deshalb beides: jeder Farbknopf traegt ein WORT, und der
+   Farbtupfen ist eine gezeichnete Flaeche mit Groesse und Grundfarbe —
+   kein Zeichen aus einer Schriftart. */
+
+const erkennbar = await p.evaluate(() => {
+  const raus = { knoepfe: [], tupfen: [], legende: 0 };
+  /* Erst aufklappen, dann messen. Eine zugeklappte Leiste ist 0 px hoch —
+     und ein Waechter, der das fuer „zu klein" haelt, misst den falschen
+     Zustand. Gemessen werden soll, was Klaus SIEHT, wenn sie offen ist. */
+  document.querySelector('[data-mk-leiste]').setAttribute('data-offen', 'ja');
+  for (const f of ['gruen', 'gelb', 'rot']) {
+    const k = document.querySelector('[data-mk-leiste] [data-mk-tun="' + f + '"]');
+    raus.knoepfe.push({
+      farbe: f,
+      wort: (k.textContent || '').replace(/\s+/g, ' ').trim(),
+      hoehe: Math.round(k.getBoundingClientRect().height),
+    });
+    const t = k.querySelector('.mk-tupf');
+    const st = t ? getComputedStyle(t) : null;
+    raus.tupfen.push({
+      farbe: f,
+      breite: t ? Math.round(t.getBoundingClientRect().width) : 0,
+      grund: st ? st.backgroundColor : '',
+    });
+  }
+  const leg = document.querySelector('[data-mk-legende]');
+  document.querySelector('[data-mk-tafel]').setAttribute('data-offen', 'ja');
+  raus.legende = leg ? Math.round(leg.getBoundingClientRect().height) : 0;
+  raus.legendeText = leg ? leg.textContent.replace(/\s+/g, ' ').trim() : '';
+  document.querySelector('[data-mk-tafel]').setAttribute('data-offen', 'nein');
+  document.querySelector('[data-mk-leiste]').setAttribute('data-offen', 'nein');
+  return raus;
+});
+
+for (const k of erkennbar.knoepfe) {
+  gut(/[a-zä-ü]{4,}/i.test(k.wort),
+    'der Knopf „' + k.farbe + '" sagt mit einem WORT, was er tut: „' + k.wort + '"');
+}
+/* Die Leiste wird mit dem Finger bedient — 44 px ist die Untergrenze, unter
+   der man daneben trifft. */
+gut(erkennbar.knoepfe.every((k) => k.hoehe >= 44),
+  'die Farbknöpfe sind fingerbreit (mindestens 44 px hoch)',
+  erkennbar.knoepfe.map((k) => k.farbe + ' ' + k.hoehe).join(' · '));
+for (const t of erkennbar.tupfen) {
+  gut(t.breite > 0 && t.grund !== 'rgba(0, 0, 0, 0)',
+    'der Farbtupfen „' + t.farbe + '" ist gezeichnet, nicht geschrieben '
+    + '(' + t.breite + ' px, ' + t.grund + ')');
+}
+gut(erkennbar.legende > 0,
+  'die Tafel trägt eine sichtbare Legende — nicht nur einen Tooltip',
+  'Höhe: ' + erkennbar.legende + ' px');
+gut(/bleibt/.test(erkennbar.legendeText) && /weg/.test(erkennbar.legendeText),
+  'und die Legende nennt beide Richtungen: bleiben und weg');
+
 /* ── 1 · Mit der Maus ziehen, dann eine Farbe wählen ──────────────────── */
 
 const gezogen = await p.evaluate(async () => {
@@ -217,6 +280,12 @@ const bericht1 = await p.evaluate(() => window.__mk.bericht());
 gut(/3 Markierungen/.test(bericht1), 'die Auslese nennt die Anzahl');
 gut(/hier fehlt eine Zahl/.test(bericht1), 'die Auslese trägt die Notiz mit');
 gut(/ROT|GELB|GRUEN/.test(bericht1), 'die Auslese trennt nach Farben');
+gut(/kann komplett weg/.test(bericht1) && /soll bleiben/.test(bericht1),
+  'die Auslese sagt, was die Farben BEDEUTEN — sie reist ohne diesen Chat');
+gut(/lieber bleiben als weg/i.test(bericht1),
+  'und trägt den Grundsatz mit: im Zweifel bleiben');
+gut(/Zeichen/.test(bericht1),
+  'sie nennt, wie VIEL je Farbe betroffen ist — nicht nur wie viele Stellen');
 gut(/docs\/papers\/ENTSTEHUNG\.md/.test(bericht1),
   'die Auslese nennt die Quelldatei — sonst weiß niemand, wo die Stelle steht');
 

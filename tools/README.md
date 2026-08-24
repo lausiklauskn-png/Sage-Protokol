@@ -27,8 +27,18 @@ auseinander. `tests/smoke_antragsmappe.mjs` schlägt an, wenn die abgelegte
 Datei nicht der aktuelle Bau ist.
 
 **Markieren und auslesen.** In der Mappe lässt sich Text mit Maus oder Finger
-ziehen und in drei Farben markieren — 🟩 *gut so* · 🟨 *unklar* · 🟥 *ändern* —
-mit optionaler Notiz. Der Knopf oben rechts öffnet die Tafel; von dort geht die
+ziehen und in drei Farben markieren, mit optionaler Notiz. Es geht dabei ums
+**Kürzen** (Klaus 2026-08-24):
+
+| | heißt |
+|---|---|
+| **grün** | soll bleiben |
+| **gelb** | kann bleiben oder weg — Claude wägt ab |
+| **rot** | kann komplett weg |
+
+**Im Zweifel bleiben** — „lieber bleiben als weg". Der Satz steht in der Tafel
+und reist in der ausgelesenen Liste mit, weil die Liste ohne diesen Chat
+gelesen wird. Der Knopf oben rechts öffnet die Tafel; von dort geht die
 Liste als `.md`-Datei oder in die Zwischenablage. Die Schicht liegt in
 `antragsmappe-markieren.mjs`.
 
@@ -46,6 +56,13 @@ Drei Dinge daran sind Absicht:
 - **Der Speicher kann versagen, und dann wird es gesagt.** `localStorage` wirft
   im privaten Fenster. Wer fünfzig Stellen markiert und es erst beim nächsten
   Öffnen merkt, hat umsonst gearbeitet.
+- **Die Bedeutung steht als WORT auf dem Knopf, die Farbe wird GEZEICHNET.**
+  Beides kam aus einem echten Befund: die Erklärung stand zuerst nur im
+  `title` — auf einem Tablet gibt es kein Hover, dort ist ein Tooltip
+  unerreichbar. Und die Farben waren Emoji; fehlt die Schrift des Geräts,
+  wird aus „🟩 1 · 🟨 1 · 🟥 1" schlicht „1 · 1 · 1". Klaus am 2026-08-24:
+  *„Du hast da stehen nur Zahlen, deswegen konnte ich nicht erkennen, was du
+  damit meinst."* Der Farbtupfen ist seitdem eine CSS-Fläche.
 
 Der Markdown-Leser dazu ist `markdown-mini.mjs` — bewusst klein, ohne
 Laufzeit-Abhängigkeit. Bewacht wird an ihm **nicht** die Optik, sondern dass er
@@ -56,7 +73,7 @@ der Ausgabe wiederauftauchen. Dazu zwei Proben und eine Gegenprobe:
 node tests/smoke_antragsmappe.mjs            # liest die Datei
 node tests/smoke_antragsmappe_browser.mjs    # öffnet sie wirklich (playwright-core)
 node tests/smoke_antragsmappe_markieren.mjs  # markiert, druckt, lädt, liest aus
-node tests/gegenprobe_antragsmappe.mjs       # 25 eingebaute Fehler, jeder MUSS auffallen
+node tests/gegenprobe_antragsmappe.mjs       # 31 eingebaute Fehler, jeder MUSS auffallen
 ```
 
 ## `verify_remote_spore.mjs`

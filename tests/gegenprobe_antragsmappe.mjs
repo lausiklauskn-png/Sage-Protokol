@@ -2,7 +2,7 @@
  *
  * Lauf:  node tests/gegenprobe_antragsmappe.mjs
  *
- * Baut nacheinander fünfundzwanzig Fehler ein. **Jeder einzelne MUSS die Probe
+ * Baut nacheinander einunddreissig Fehler ein. **Jeder einzelne MUSS die Probe
  * umwerfen.** Wirft er sie nicht um, ist der Wächter an dieser Stelle blind —
  * und ein blinder Wächter ist schlimmer als keiner, weil sein Grün beruhigt.
  *
@@ -290,6 +290,71 @@ const FAELLE = [
     bauen: () => {
       ersetze('tools/antragsmappe-markieren.mjs',
         '      while(mk.firstChild) el.insertBefore(mk.firstChild, mk);', '');
+      bauen();
+    },
+  },
+  {
+    was: 'Die Knöpfe tragen wieder nur ein Symbol, kein Wort',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '<span class="mk-tupf" data-f="gruen"></span> bleibt', '&#129001;');
+      bauen();
+    },
+  },
+  {
+    was: 'Der Farbtupfen wird als Emoji geschrieben statt gezeichnet',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '.mk-tupf{display:inline-block;', '.mk-tupf{display:none;');
+      bauen();
+    },
+  },
+  {
+    was: 'Die Legende in der Tafel fehlt — Bedeutung nur noch im Tooltip',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '    <ul class="mk-legende" data-mk-legende>', '    <ul hidden>');
+      bauen();
+    },
+  },
+  {
+    was: 'Die Auslese sagt nicht mehr, was die Farben bedeuten',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    /* Die Bedeutung steht an ZWEI Stellen im Bericht: in der Tabelle oben
+       und in den Abschnitts-Ueberschriften. Ein Eingriff in nur eine liess
+       die Zusicherung unangetastet -- der Fall rutschte durch, und zwar
+       zu Recht: er hatte nichts kaputtgemacht. Sabotiert wird die
+       ZUSICHERUNG, nicht eine Zeile. */
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs', 'FARBEN[farbe].sinn', 'farbe');
+      ersetze('tools/antragsmappe-markieren.mjs', 'FARBEN.gruen.sinn', '"?"');
+      ersetze('tools/antragsmappe-markieren.mjs', 'FARBEN.gelb.sinn', '"?"');
+      ersetze('tools/antragsmappe-markieren.mjs', 'FARBEN.rot.sinn', '"?"');
+      bauen();
+    },
+  },
+  {
+    was: 'Der Grundsatz „im Zweifel bleiben" faellt aus der Auslese',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        'out.push("**" + GRUNDSATZ + "**");', '');
+      bauen();
+    },
+  },
+  {
+    was: 'Die Auslese nennt nur die Anzahl, nicht wie viel Text betroffen ist',
+    probe: 'tests/smoke_antragsmappe_markieren.mjs',
+    bauen: () => {
+      ersetze('tools/antragsmappe-markieren.mjs',
+        'out.push("| Farbe | heisst | Stellen | Zeichen |");',
+        'out.push("| Farbe | heisst | Stellen |");');
+      ersetze('tools/antragsmappe-markieren.mjs',
+        '    out.push("| gruen | " + FARBEN.gruen.sinn + " | " + z.gruen + " | " + zeichen.gruen + " |");',
+        '    out.push("| gruen | " + FARBEN.gruen.sinn + " | " + z.gruen + " |");');
       bauen();
     },
   },

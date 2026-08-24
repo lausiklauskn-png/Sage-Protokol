@@ -98,6 +98,16 @@ mark.mk[data-notiz]{box-shadow:inset 0 -2px 0 rgba(0,0,0,.45)}
 background:var(--karte);border:1px solid var(--kante);border-radius:12px;
 box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .mk-leiste[data-offen="ja"]{display:flex}
+.mk-leiste{flex-wrap:wrap;max-width:min(94vw,30rem)}
+/* Der Farbtupfen ist eine CSS-Flaeche, KEIN Emoji. Ein Emoji haengt an der
+   Schrift des Geraets -- fehlt sie, steht dort ein Kaestchen oder nichts,
+   und die Leiste zeigt nur noch Zahlen. Genau das ist Klaus am 2026-08-24
+   passiert. Eine Farbe, die die Bedeutung traegt, wird gezeichnet, nicht
+   geschrieben -- und daneben steht das Wort. */
+.mk-tupf{display:inline-block;width:.85em;height:.85em;border-radius:3px;
+vertical-align:-.08em;background:#b7f0c2;border:1px solid rgba(0,0,0,.3)}
+.mk-tupf[data-f="gelb"]{background:#fdedb0}
+.mk-tupf[data-f="rot"]{background:#ffc4bd}
 .mk-leiste button{min-width:46px;min-height:46px;padding:.3rem;font-size:1.15rem;
 line-height:1;border-radius:9px}
 .mk-leiste button[data-mk-tun="weg"]{font-size:.95rem}
@@ -123,6 +133,10 @@ font:inherit;text-align:left;padding:0;min-height:0}
 background:color-mix(in srgb,var(--warn) 10%,transparent);
 padding:.5rem .8rem;margin:0 0 .8rem}
 .mk-leer{color:var(--matt)}
+.mk-legende{list-style:none;padding:0;margin:0 0 .5rem}
+.mk-legende li{border:0;padding:.15rem 0}
+.mk-grundsatz{border-left:3px solid var(--akzent);padding:.35rem .7rem;
+background:color-mix(in srgb,var(--akzent) 8%,transparent);margin:0 0 .8rem}
 .hut button{font:inherit;font-family:system-ui,sans-serif;font-size:.85rem;
 padding:.35rem .6rem;min-height:34px;border:1px solid var(--kante);
 border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
@@ -912,8 +926,9 @@ Herausnehmen <strong>nur sich selbst</strong> mit — die Einreich-Fassung träg
 eigenen Kopf mit Datum und Herkunft und ist allein vollständig.
 <strong>Sie wird erzeugt, nicht gepflegt:</strong> wer den Inhalt ändert, ändert die
 <code>.md</code>-Datei und ruft <code>node tools/antragsmappe-bauen.mjs</code>.
-<strong>Markieren und auslesen:</strong> Text mit Maus oder Finger ziehen, Farbe wählen
-(🟩 gut so · 🟨 unklar · 🟥 ändern), auf Wunsch eine Notiz dazu. Der Knopf
+<strong>Markieren und auslesen:</strong> Text mit Maus oder Finger ziehen, Farbe wählen —
+<strong>grün</strong> = soll bleiben · <strong>gelb</strong> = kann bleiben oder weg, Claude wägt ab ·
+<strong>rot</strong> = kann komplett weg. Im Zweifel bleiben. Auf Wunsch eine Notiz dazu. Der Knopf
 oben rechts öffnet die Tafel; von dort geht die Liste als Datei oder in die
 Zwischenablage — damit weiß eine Folge-Sitzung, <strong>wo</strong> etwas zu verbessern
 ist. Markierungen werden <strong>nie gedruckt und nie mitgeladen</strong>: die
@@ -2772,17 +2787,23 @@ still vom Original weg.</p>
 </section>
 
 <div class="mk-leiste" data-mk-leiste role="toolbar" aria-label="Markieren">
-  <button type="button" data-mk-tun="gruen" title="gut so — bleibt">&#129001;</button>
-  <button type="button" data-mk-tun="gelb"  title="unklar — nachfragen">&#129000;</button>
-  <button type="button" data-mk-tun="rot"   title="ändern — muss überarbeitet werden">&#128997;</button>
-  <button type="button" data-mk-tun="notiz" title="Notiz dazuschreiben">&#9998;</button>
-  <button type="button" data-mk-tun="weg"   title="Markierung entfernen">&#10005;</button>
+  <button type="button" data-mk-tun="gruen"><span class="mk-tupf" data-f="gruen"></span> bleibt</button>
+  <button type="button" data-mk-tun="gelb"><span class="mk-tupf" data-f="gelb"></span> du entscheidest</button>
+  <button type="button" data-mk-tun="rot"><span class="mk-tupf" data-f="rot"></span> kann weg</button>
+  <button type="button" data-mk-tun="notiz">&#9998; Notiz</button>
+  <button type="button" data-mk-tun="weg">&#10005; zur&uuml;ck</button>
 </div>
 
 <div class="mk-tafel" data-mk-tafel aria-label="Markierungen">
   <div class="innen">
     <h2>Markierungen</h2>
     <p class="zaehler" data-mk-zaehler>noch keine</p>
+    <ul class="mk-legende" data-mk-legende>
+      <li><span class="mk-tupf" data-f="gruen"></span> <strong>bleibt</strong> — soll bleiben</li>
+      <li><span class="mk-tupf" data-f="gelb"></span> <strong>du entscheidest</strong> — kann bleiben oder weg, Claude wägt ab</li>
+      <li><span class="mk-tupf" data-f="rot"></span> <strong>kann weg</strong> — kann komplett gestrichen werden</li>
+    </ul>
+    <p class="mk-grundsatz">Im Zweifel <strong>bleiben</strong>. Lieber bleiben als weg.</p>
     <div data-mk-warnung hidden></div>
     <p>
       <button type="button" data-mk-tun="datei">&#11015; Als Datei sichern</button>
@@ -2915,11 +2936,17 @@ still vom Original weg.</p>
   "use strict";
 
   var SCHLUESSEL = "sage-antragsmappe-markierungen-v1";
+  /* KLAUS 2026-08-24: es geht ums KUERZEN, nicht ums Verbessern.
+     "Rot kann komplett weg, Gelb kann bleiben oder auch weg -- entscheidest
+     du mit, Gruen soll bleiben. Lieber bleiben als weg."
+     Die Schluessel heissen weiter gruen/gelb/rot -- vorhandene Markierungen
+     behalten damit ihre Farbe, nur die Beschriftung wechselt. */
   var FARBEN = {
-    gruen: { zeichen: "\u{1F7E9}", wort: "gut so",  sinn: "bleibt, wie es ist" },
-    gelb:  { zeichen: "\u{1F7E8}", wort: "unklar",  sinn: "nachfragen oder pruefen" },
-    rot:   { zeichen: "\u{1F7E5}", wort: "aendern", sinn: "muss ueberarbeitet werden" }
+    gruen: { wort: "bleibt",         sinn: "soll bleiben" },
+    gelb:  { wort: "du entscheidest", sinn: "kann bleiben oder weg -- abwaegen" },
+    rot:   { wort: "kann weg",       sinn: "kann komplett weg" }
   };
+  var GRUNDSATZ = "Im Zweifel BLEIBEN. Klaus: „lieber bleiben als weg.\u201C";
 
   var leiste  = document.querySelector("[data-mk-leiste]");
   var tafel   = document.querySelector("[data-mk-tafel]");
@@ -3122,10 +3149,21 @@ still vom Original weg.</p>
     out.push("Stand der Mappe: " + (document.documentElement.getAttribute("data-stand") || "?")
       + " · ausgelesen am " + new Date().toISOString().slice(0, 10));
     out.push("");
-    out.push(marken.length + " Markierungen: "
-      + z.gruen + " gruen (gut so) · "
-      + z.gelb + " gelb (unklar) · "
-      + z.rot + " rot (aendern)");
+    /* Wie VIEL wegkaeme, ist die Zahl, die man beim Kuerzen braucht --
+       "zwoelf Stellen" sagt nichts, "zwoelf Stellen, zusammen 4.800
+       Zeichen" schon. Gezaehlt wird der markierte Text selbst. */
+    var zeichen = { gruen: 0, gelb: 0, rot: 0 };
+    for(var zi = 0; zi < marken.length; zi++)
+      zeichen[marken[zi].farbe] += marken[zi].text.length;
+    out.push(marken.length + " Markierungen:");
+    out.push("");
+    out.push("| Farbe | heisst | Stellen | Zeichen |");
+    out.push("|---|---|---|---|");
+    out.push("| gruen | " + FARBEN.gruen.sinn + " | " + z.gruen + " | " + zeichen.gruen + " |");
+    out.push("| gelb | " + FARBEN.gelb.sinn + " | " + z.gelb + " | " + zeichen.gelb + " |");
+    out.push("| rot | " + FARBEN.rot.sinn + " | " + z.rot + " | " + zeichen.rot + " |");
+    out.push("");
+    out.push("**" + GRUNDSATZ + "**");
     if(verwaist.length){
       out.push("");
       out.push("**" + verwaist.length + " verwaist** — der markierte Text steht so nicht");
@@ -3150,8 +3188,8 @@ still vom Original weg.</p>
         var farbe = reihe[f];
         var stueck = nachQuelle[q].filter(function(x){ return x.farbe === farbe; });
         if(!stueck.length) continue;
-        out.push("### " + FARBEN[farbe].zeichen + " " + farbe.toUpperCase()
-          + " — " + FARBEN[farbe].sinn + " (" + stueck.length + ")");
+        out.push("### " + farbe.toUpperCase() + " — " + FARBEN[farbe].sinn
+          + " (" + stueck.length + ")");
         out.push("");
         for(var s = 0; s < stueck.length; s++){
           var e = stueck[s];
@@ -3237,10 +3275,8 @@ still vom Original weg.</p>
     for(var i = 0; i < marken.length; i++) z[marken[i].farbe]++;
     if(zaehler){
       zaehler.textContent = marken.length === 0 ? "noch keine"
-        : (marken.length + " insgesamt · "
-           + FARBEN.gruen.zeichen + " " + z.gruen + " · "
-           + FARBEN.gelb.zeichen + " " + z.gelb + " · "
-           + FARBEN.rot.zeichen + " " + z.rot);
+        : (marken.length + " insgesamt · " + z.gruen + " bleibt · "
+           + z.gelb + " du entscheidest · " + z.rot + " kann weg");
       zaehler.setAttribute("data-anzahl", String(marken.length));
     }
     if(knopfN){
@@ -3280,7 +3316,8 @@ still vom Original weg.</p>
         var da = !!document.querySelector('mark.mk[data-mk="' + m.id + '"]');
         var kurz = m.text.length > 160 ? m.text.slice(0, 160) + "…" : m.text;
         teile.push('<li data-mk-eintrag="' + m.id + '">'
-          + FARBEN[m.farbe].zeichen + " "
+          + '<span class="mk-tupf" data-f="' + m.farbe + '"></span> '
+          + "<strong>" + FARBEN[m.farbe].wort + "</strong> — "
           + '<button type="button" class="stelle" data-mk-hin="' + m.id + '">'
           + kurz.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</button>"
           + '<p class="woher">' + m.quelle + (da ? "" : " · <strong>verwaist</strong>") + "</p>"

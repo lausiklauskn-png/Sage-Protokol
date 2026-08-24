@@ -31,7 +31,7 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
-## Stand 2026-08-24 (Bau) — ✎ Markieren in der Antragsmappe
+## Stand 2026-08-24 (Bau) — ✎ Markieren in der Antragsmappe (Kürzen)
 
 **Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
 **Klaus' Bitte:** in der Mappe mit der Maus etwas markieren können, grün oder
@@ -80,8 +80,45 @@ Name aus einem Stück JavaScript bestand. Jetzt strukturell auf `<article>`.
 bequem ziehen lässt und ob Androids eigene Kopieren-Leiste der Farbleiste in
 die Quere kommt.
 
-**Nächster sinnvoller Schritt:** Sichttest; dann die ausgelesene Liste in den
-Chat geben, damit eine Sitzung die roten Stellen abarbeiten kann.
+**Nachtrag desselben Tages — Klaus hat es ausprobiert, und zweimal lag ich
+falsch:**
+
+1. **Die Farben bedeuten etwas anderes, als ich angenommen hatte.** Es geht
+   nicht ums Verbessern, sondern ums **Kürzen**: *„Rot kann komplett weg, Gelb
+   kann bleiben oder auch weg — entscheidest du mit, Grün soll bleiben. Lieber
+   bleiben als weg."* Beschriftung, Legende und Auslese sind nachgezogen; die
+   Schlüssel heißen weiter `gruen/gelb/rot`, vorhandene Markierungen behalten
+   also ihre Farbe. **Gelb bleibt** (meine Entscheidung, wie erbeten): ohne
+   Gelb landet jede unsichere Stelle bei Rot, und Rot heißt „weg" — das kippt
+   gegen Klaus' eigene Regel. Der Grundsatz *im Zweifel bleiben* reist jetzt in
+   der ausgelesenen Liste mit, weil die ohne diesen Chat gelesen wird.
+
+2. **Man konnte nicht erkennen, was die Knöpfe bedeuten.** Klaus: *„Du hast da
+   stehen nur Zahlen, deswegen konnte ich nicht erkennen, was du damit
+   meinst."* Zwei eigene Fehler steckten darin: die Bedeutung stand nur im
+   `title` — **auf einem Tablet gibt es kein Hover**, dort ist ein Tooltip
+   unerreichbar. Und die Farben waren **Emoji**; fehlt die Schrift des Geräts,
+   wird aus „🟩 1 · 🟨 1 · 🟥 1" schlicht „1 · 1 · 1". Seitdem trägt jeder
+   Knopf ein **Wort**, der Farbtupfen ist eine **gezeichnete CSS-Fläche**, und
+   die Tafel hat eine sichtbare **Legende**. Gemessen wird die Erkennbarkeit,
+   nicht die Regel: Wort vorhanden, Tupfen mit Größe und Grundfarbe, Knopf
+   mindestens 44 px hoch.
+
+Die Auslese nennt jetzt zusätzlich, **wie viel** je Farbe betroffen ist —
+„zwölf Stellen" sagt beim Kürzen nichts, „zwölf Stellen, zusammen 4.800
+Zeichen" schon.
+
+**Und ein schlechter Gegenprobe-Fall, benannt statt versteckt:** „Die Auslese
+sagt nicht mehr, was die Farben bedeuten" rutschte zuerst durch — zu Recht, er
+hatte nur eine von zwei Stellen angefasst und die Zusicherung stand weiter.
+Sabotiert wird die **Zusicherung**, nicht eine Zeile.
+
+**Gemessen nach dem Nachtrag:** 85 von 85 Proben grün · Gegenprobe **31 von 31
+gefangen**.
+
+**Nächster sinnvoller Schritt:** Klaus markiert; dann die ausgelesene Liste in
+den Chat geben, damit eine Sitzung die roten Stellen abarbeitet — unter der
+Regel „im Zweifel bleiben".
 
 ---
 
