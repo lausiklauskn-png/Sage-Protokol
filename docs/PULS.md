@@ -31,6 +31,115 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-24 (Bau, 2.) · 🟡 Die gelbe Runde, und zwei Funde daneben
+
+**Rolle:** Fortsetzung. Zweig `claude/yellow-markings-funding-application-h9n5sr`.
+Auftrag: Klaus' **vierzig gelbe Markierungen** in der Antragsmappe. Gelb heißt
+„kann bleiben oder weg, Claude wägt ab", darüber steht „im Zweifel bleiben".
+**Nichts wurde gestrichen.**
+
+**Zuerst PR #913 gemergt.** Er lag als Entwurf und trug die Markierungs-Akte, die
+Mappe und die Historie, also die ganze Grundlage dieser Runde. Ein Auftrag, der
+einen ungemergten PR voraussetzt, stößt den Merge an, statt gegen eine Basis zu
+arbeiten, die es auf `main` nicht gibt (Anker, § „Vor dem nächsten Sitzungs-Brief").
+
+**1 · Die acht mit Notiz.** Alle erledigt. Der schwerste war Klaus' Berichtigung
+zu *„ein Werkzeug, das nie ‚nein' sagt"*: **es sagt nein, es hört nur nicht auf.**
+Nicht die Willfährigkeit ist das Suchtmerkmal, sondern die **Ausdauer**, und das
+ist zugleich die messbarere Frage. „Sagt zu oft ja" ist eine Behauptung über
+Haltung; „hört nicht auf, nachdem ein Mensch aufgehört hätte" ist an Runden,
+Dauer und Kosten zählbar, und die Daten liegen im Fahrtenbuch. Weitergetragen
+nach **Paper B** (dort fiel die Zeile „ohne Nein") und **Paper C** (das
+Gegenstück: selbst zu entscheiden, wann Schluss ist, ist eine Kompetenz, die es
+vorher nicht brauchte, weil die eigene Erschöpfung sie erledigte).
+
+**2 · Die zweiunddreißig ohne Notiz.** Sie liegen auf Zahlen und Fristen.
+Gestrichen wäre der falsche Griff gewesen, ein Fahrplan ohne Zahlen ist nicht
+besser, nur nicht mehr nachprüfbar. Stattdessen **nachgeprüft und mit Herkunft
+versehen**: Prototype Fund, Forschungszulage, OTF und InnoFounder bestätigt, der
+**Stundendeckel neu beziffert (2.080 Stunden im Jahr)**, und „rückwirkend bis
+vier Jahre" sowie NLnet stehen ausdrücklich weiter als **ungeprüft** da.
+`nlnet.nl` und `prototypefund.de` sind aus dieser Umgebung gesperrt; bestätigt
+wurde über Websuche, nicht an der Originalseite. Das steht dran.
+
+> ⚠ **Der Brief an diese Sitzung stimmte an einer Stelle nicht.** Er sagte, die
+> vierzig gelben stünden vollständig in der Markierungs-Akte. Das gilt nur für
+> die acht mit Notiz; der Wortlaut der übrigen liegt in Klaus' Browser und im
+> Chat. Gearbeitet wurde deshalb an den **benannten Themen**, und das ist
+> hingeschrieben statt stillschweigend gleichgesetzt.
+
+**3 · Die Lizenz-Tafel war in beide Richtungen falsch.** Klaus' Notiz *„andere
+Repos wurden auch zu Open Source erklärt"* stimmte. Gemessen gegen `origin/main`
+aller 33 Depots: **6 MIT · 26 eigene · 1 ohne** statt 3 · 28 · 2. Zwei
+verschiedene Ursachen, und beide sind eine Lehre wert:
+
+| | |
+|---|---|
+| **zu wenig MIT** | `Kim-Bell`, `Kimseek`, `Kimboard` bekamen MIT am **2026-08-23**, am Tag der Zählung. Gezählt vorher, geändert danach, **nachgezählt nie** |
+| **zu viel „ohne"** | `BookLedgerPro` trägt seit dem 2026-08-16 eine Lizenz. Im Container lag ein alter Klon. Die Falle aus dem Anker: eine Aussage ohne `fetch` ist kein Befund |
+
+Und die eine verbliebene Null ist keine Nachlässigkeit: `Meine-In-and-Out-Book`
+hat **überhaupt keinen Commit**. Ein leeres Depot ohne Lizenz ist ein anderer
+Sachverhalt als Quelltext ohne Lizenz.
+
+**4 · Klaus' Zuruf mitten in der Sitzung:** *„die ganze mögliche KIM-Familie
+sollte mitwirken."* Drei sind drin. **Zwei können nicht**, beide Gründe gemessen:
+Kimhub trägt Rechnungsdaten in der Historie (`werkstatt/buchhaltung/*.json`,
+eingecheckt 20.08., entfernt 22.08.; **ein Fork nimmt die Historie mit**), und in
+Kim-sync liegt `Company-Brain/VISION.md`, das selbst **„Sichtbarkeit: privat"**
+trägt. **Eine MIT-Lizenz hätte es mit freigegeben.** Der Handgriff hätte fünf
+Minuten gedauert und wäre still gewesen. Klaus hat entschieden: Kimhub bleibt zu.
+
+**5 · Die Rückfrage, die mehr beantwortet hat als die Markierung.** Bei „Steht
+eine bestehende Selbstständigkeit im Weg?" stand nur „nein", und das ließ zwei
+Lesarten zu. Nachgefragt statt geraten. Klaus: **angestellt, kein Gewerbe.**
+
+| | vorher | jetzt |
+|---|---|---|
+| Weg 2 Forschungszulage | „der wichtigste Weg", greift rückwirkend | setzt **Gewinneinkünfte** voraus. Ob die fünf Monate rückwirkend zählen, ist **offen** und die erste Steuerberater-Frage |
+| Weg 1 Prototype Fund | passt mittig | verlangt eine **Steuernummer**, die es nicht gibt. Frist **30.11.2026** |
+| Abschnitt 5c Anmelden | Vorsichtsmaßnahme | das **Nadelöhr**, das Weg 1 und Weg 2 zugleich aufschließt |
+| EXIST · InnoFounder | „zu klären" | **erledigt**, Bedingung erfüllt. Neu bei InnoFounder: Vollzeit neben Anstellung |
+| Arbeitsvertrag | stand nirgends | **neu**: Nebentätigkeit meist anzeigepflichtig. Alle vier Wege, zehn Minuten |
+
+**Der teuerste Satz:** solange nichts angemeldet ist, laufen die Stunden
+möglicherweise ins Leere. Jeder Monat Warten kostet unmittelbar Geld.
+
+**6 · Ein neuer Wächter samt Gegenprobe.** `tests/smoke_lizenz_konsistenz.mjs`
+bewacht **nicht** die Lizenzen im Netz (das kann eine Probe hier nicht, und eine
+Probe, die still ins Netz greift, misst irgendwann etwas anderes als das, was sie
+zu messen glaubt). Bewacht wird **die Sorte Fehler, die wirklich passiert ist**:
+eine Tafel, die nur zur Hälfte nachgezogen wird, und ein Urteil, das in zwei
+Dateien auseinanderläuft. `gegenprobe_lizenz_konsistenz.mjs` fährt **beide
+Richtungen** (zu viel MIT und zu wenig), weil eine Prüfung mit nur einer Richtung
+gegen den Fehler von 2026-08-24 blind gewesen wäre.
+
+**Gemessen (echter Rückgabewert, nicht hinter `| tail`):**
+
+| | |
+|---|---|
+| `node tests/run_alle.mjs` | **87 grün, 0 rot, 0 nicht lauffähig** |
+| `gegenprobe_antragsmappe` | 32 von 32 gefangen |
+| `gegenprobe_historie` | 9 von 9 gefangen |
+| `gegenprobe_lizenz_konsistenz` | 8 von 8 gefangen |
+
+**Kein Gedankenstrich im neuen Text**, gegen den eigenen Diff nachgezählt: 0.
+
+**Offen:**
+- **Klaus' Sichttest** der Mappe am Tablet, besonders Ziehen mit dem Finger und
+  Androids Kopieren-Leiste. Von hier aus ungeprüft, nicht grün.
+- **Der Werkzeug-Widerspruch in Paper A** (vier Stellen sagen, die Rollen hätten
+  keine Werkzeuge; Kimhubs Verfassung sagt seit 2026-08-23 das Gegenteil).
+  Unverändert Klaus' Entscheidung, drei Wege im Protokoll vom 2026-08-23.
+- **Steuerberater, ELSTER-Zertifikat, Arbeitsvertrag, ORCID, Zenodo.** Nur Klaus,
+  und der erste Punkt ist seit heute der eiligste.
+- **Nebenbefund, nicht angefasst:** `Kim-sync/CLAUDE.md` beschreibt den eigenen
+  Inhalt falsch („enthält nur README, LICENSE, RECHTE.md").
+
+**Nächster Schritt:** Anmeldung nach § 5c rückwärts vom 30.11.2026 planen.
+
+---
+
 ## Stand 2026-08-24 (Bau) · 📜 Die Historie ausgelesen, Gedankenstriche raus
 
 **Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.

@@ -42,11 +42,23 @@ Wirkungen der KI-Nutzung.** Dort liegen die Präventionsmittel der Krankenkassen
 und die Medienkompetenz-Töpfe der Länder, **weniger Geld pro Antrag, aber
 deutlich weniger Konkurrenz.** Siehe Abschnitt 2.3.
 
-Der **zweite** Weg ist der wichtigste und der am wenigsten bekannte: die
-Forschungszulage ist **kein Wettbewerb**. Wer die Kriterien erfüllt, bekommt sie,
-und sie greift **rückwirkend** auf Arbeit, die schon getan ist. Sie ist damit der
-einzige der fünf Wege, der nicht nur nach vorn schaut, sondern auch auf das, was
-bereits gebaut wurde.
+Der **zweite** Weg ist der am wenigsten bekannte: die Forschungszulage ist **kein
+Wettbewerb**. Wer die Kriterien erfüllt, bekommt sie, und sie greift
+**rückwirkend** auf Arbeit, die schon getan ist. Sie ist damit der einzige der
+Wege, der nicht nur nach vorn schaut, sondern auch auf das, was bereits gebaut
+wurde.
+
+> ⚠ **Hier stand „der wichtigste", und das ist seit dem 2026-08-24 nicht mehr
+> zu halten.** Klaus ist **angestellt und hat kein Gewerbe** (Abschnitt 9). Die
+> Forschungszulage setzt aber jemanden mit Gewinneinkünften voraus. Ob die fünf
+> Monate rückwirkend noch zählen, wenn die Tätigkeit erst jetzt angemeldet wird,
+> ist **offen und die erste Frage an den Steuerberater** (Weg 2). Bis dahin
+> steht der Rückwärts-Hebel unter Vorbehalt, und **der vorwärts gerichtete Weg 1
+> mit seiner harten Frist am 30.11.2026 ist der, der den Takt vorgibt.**
+>
+> **Was aus beidem dasselbe folgt:** die Anmeldung nach **Abschnitt 5c** ist der
+> eine Schritt, der Weg 1 und Weg 2 zugleich aufschließt. Er kostet 20 € oder
+> gar nichts und hat eine Lieferzeit von Tagen. Er gehört an den Anfang.
 
 **Zur Vereinsfrage, kurz:** für diese drei Wege braucht es **keinen** Verein.
 sie verlangen sogar ausdrücklich eine Person oder ein Unternehmen. Für ein
@@ -73,7 +85,34 @@ Recherchiert am 2026-08-23 aus dieser Sitzung heraus, über Websuche.
 - **Nicht geprüft, weil es aus einer Sitzung niemand prüfen kann:** die
   persönlichen Voraussetzungen des Antragstellers. An zweien davon hängt, welche
   Wege offenstehen. Was gebraucht wird und wofür, steht in Abschnitt 9, die
-  Angaben selbst gehören ins Gespräch, nicht ins Depot.
+  Angaben selbst gehören ins Gespräch, nicht ins Depot. **Zwei davon hat Klaus
+  am 2026-08-24 beantwortet**, siehe dort.
+
+### Nachgeprüft am 2026-08-24, Zahl für Zahl
+
+Klaus hatte in der Antragsmappe zweiunddreißig Stellen gelb angestrichen, ohne
+Notiz. Sie liegen fast durchweg auf **Zahlen, Fristen und Zusagen**, also genau
+dort, wo ein Antrag kippt, wenn eine Angabe nicht stimmt. Gelb heißt „kann
+bleiben oder weg". **Weg wäre hier der falsche Griff gewesen:** ohne Zahlen ist
+der Fahrplan nicht mehr nachvollziehbar, nur noch unangreifbar. Also nicht
+gestrichen, sondern **nachgeprüft und mit Herkunft versehen.**
+
+| Angabe | Stand nach der Prüfung |
+|---|---|
+| Prototype Fund: 47.500 € · 6 Monate · zweite Stufe 31.667 € · Bewerbung 01.10.–30.11.2026 · bis vier Personen | ✅ **bestätigt**, mehrere unabhängige Quellen |
+| Forschungszulage: **100 €/h** ab 01.01.2026 (vorher 70 €), 35 % für KMU, **+20 %** Gemeinkosten nur für **neu begonnene** Vorhaben | ✅ **bestätigt** |
+| Forschungszulage: der Stundendeckel | ✅ **bestätigt und beziffert: höchstens 2.080 Stunden im Jahr**, also 40 Wochenstunden. Die Zahl fehlte bisher |
+| OTF: 10.000–900.000 USD · bis 24 Monate · typisch 50.000–200.000 für 6–12 Monate · Concept Note · laufend | ✅ **bestätigt** |
+| InnoFounder: 2.500 €/Monat · bis 18 Monate · 45.000 € einzeln, 75.000 € im Team bis drei Personen · Hamburg · Geschäftstätigkeit höchstens ein Jahr alt | ✅ **bestätigt**, dazu neu: **100 % Förderquote** |
+| Forschungszulage: **rückwirkend bis vier Jahre** | ⚠ **nicht nachgeprüft.** Sie steht weiter als „nach den gefundenen Quellen". Und sie ist seit dem 2026-08-24 auch nicht mehr die entscheidende Frage, siehe Weg 2 |
+| NLnet | ⚠ **weiter ungeprüft**, `nlnet.nl` ist aus dieser Umgebung gesperrt |
+
+> **Was diese Prüfung NICHT ist.** `prototypefund.de`, `nlnet.nl` und
+> `martinmeng.de` sind aus dieser Umgebung weiterhin gesperrt; bestätigt wurde
+> über **Websuche und Zweitquellen**, nicht an der Originalseite. Das ist eine
+> Stufe besser als vorher und eine Stufe schlechter als ein Blick ins Gesetz.
+> **Vor dem Absenden bleibt jede Frist nachzusehen**, und der Steuerberater
+> rechnet die Forschungszulage, nicht diese Datei.
 
 ---
 
@@ -92,6 +131,20 @@ alles gibt es, und jede Fördergeberin sieht das auf den ersten Blick.
 funktionierender Verbund aus rund zwei Dutzend Apps, in dem sich Knoten
 **server-los nach Bedeutung** finden, und zwar belegt, nicht behauptet
 (`docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md`, `docs/meilenstein/`).
+
+**Und wer darin vorkommen soll, gehört in denselben Satz** (Klaus 2026-08-24).
+Ein Knoten ist hier nicht gleichbedeutend mit einer Firma. Gedacht ist das Netz
+**standortübergreifend** für **Privatpersonen, Vereine, Organisationen, Behörden
+und Institute** genauso wie für Betriebe. Das ist kein Zusatz, sondern der
+Unterschied zu den bestehenden Systemen: eine Suche, die einem Anbieter gehört,
+muss zahlende Kundschaft haben und richtet sich danach aus. Eine Suche ohne
+zentralen Index muss das nicht, und deshalb kann in ihr ein Sportverein neben
+einer Behörde und einer Einzelperson stehen, ohne dass einer von ihnen
+interessant genug sein muss.
+
+**Für einen Antrag zählt genau das.** „Verbund aus Apps" beschreibt Technik.
+Wer daran teilnehmen kann, beschreibt den **gesellschaftlichen Nutzen**, und
+danach wird in jedem der Wege unter Abschnitt 5 gefragt.
 
 Die drei Sätze, die in einen Antrag gehören:
 
@@ -139,10 +192,32 @@ ausdrücklich unter das Dach „KI-Kompetenz im täglichen Gebrauch".
 die aus der Suchtforschung bekannt sind: sofortige Belohnung, unbegrenzte
 Verfügbarkeit, variable Antwortqualität (das ist psychologisch ein
 Glücksspiel-Muster), soziale Wärme ohne soziales Risiko, und: der Punkt, den kaum
-jemand ausspricht, ein Werkzeug, das nie „nein" sagt und nie müde wird. Für
-Bildschirmzeit, Spiele und soziale Netze gibt es Forschung. **Für
+jemand ausspricht, ein Werkzeug, das nicht müde wird und nicht aufgibt. Für
+Bildschirmzeit, Spiele und soziale Netze gibt es Forschungen. **Für
 KI-Assistenten im Alltag gibt es fast nichts.** Das ist eine echte Lücke, kein
 gefundenes Thema.
+
+> **Ein Befund aus der eigenen Nutzung, und er berichtigt den naheliegenden
+> Satz** (Klaus 2026-08-24): *„Claude sagt ab und zu nein, aber KI ermuntert
+> immer weiterzumachen und sucht sehr lange einen Ausweg, bis es wirklich keinen
+> mehr gibt. Der Mensch hätte längst aufgegeben."*
+>
+> **Hier stand vorher „ein Werkzeug, das nie ‚nein' sagt".** Das ist bequem
+> gesagt und falsch. Es sagt nein. Was es nicht tut, ist **aufhören**. Der
+> Unterschied ist nicht klein, er verschiebt die ganze Frage: nicht die
+> **Willfährigkeit** ist das Suchtmerkmal, sondern die **Ausdauer**. Ein Mensch,
+> der dreimal keinen Weg findet, hört auf, und dieses Aufhören ist eine
+> natürliche Bremse. Ein Werkzeug, das beim vierten Mal einen vierten Vorschlag
+> macht, nimmt sie weg.
+>
+> **Damit ist es zugleich die überprüfbarere Frage.** „Sagt es zu oft ja" lässt
+> sich schlecht messen. „Wie lange wird weitergesucht, nachdem ein Mensch
+> aufgehört hätte" lässt sich zählen: an Runden, an Zeit, an Kosten, und die
+> Daten dafür liegen im Fahrtenbuch. Gehört nach **Paper B** (dort berichtigt
+> die Beobachtung die Zeile *„ohne Ermüden, ohne Nein"*) und nach **Paper C**,
+> wo das Gegenstück steht: zu erkennen, wann man selbst aufhören sollte, ist
+> eine Kompetenz, und sie wird erst gebraucht, seit das Werkzeug es nicht mehr
+> vormacht. Siehe [`papers/PLAN_PAPERS.md`](papers/PLAN_PAPERS.md).
 
 **Und die psychische Seite ist die größere Frage.** Sucht ist
 nur eine von mehreren Wirkungen, und nicht einmal die häufigste. Die anderen sind
@@ -152,13 +227,15 @@ weniger auffällig und deshalb schlechter untersucht:
   antwortet wie eines. Das passiert unwillkürlich, auch bei Leuten, die genau
   wissen, was da rechnet.
 - **Übervertrauen**, eine flüssig formulierte Antwort wirkt richtiger als eine
-  zögernde, unabhängig davon, ob sie es ist. Meine eigenen Verfassungen kämpfen
+  zögernde, unabhängig davon, ob sie es ist. Die Verfassung dieses Netzes kämpft
   seit Monaten gegen genau das an: *„eine geratene Zahl klingt genau wie eine
   gemessene."*
 - **Verlernen**. Was man abgibt, kann man nach einer Weile nicht mehr selbst.
-- **Emotionale Entlastung**, ein Gegenüber, das nie müde wird, nie widerspricht,
-  nie etwas zurückfordert. Das ist bequem, und Bequemlichkeit ist der Anfang von
-  Gewöhnung.
+- **Emotionale Entlastung**, ein Gegenüber, das nicht müde wird, selten
+  widerspricht und selten etwas zurückfordert. Das ist bequem, und Bequemlichkeit
+  ist der Anfang von Gewöhnung. **„Selten" statt „nie" ist Absicht** (Klaus
+  2026-08-24): es widerspricht, nur eben seltener als ein Mensch, und ein
+  überzeichnetes „nie" macht aus einer prüfbaren Beobachtung eine Behauptung.
 - **Und die Richtung, nach der du ursprünglich gefragt hast**. Was eine
   Kombination von Werkzeugen bei einer KI an „Motivation" hervorruft, in
   Anführungszeichen, und wie ein Mensch das lenken kann.
@@ -414,13 +491,36 @@ Bildungsträger.
 
 ## 4 · Der eine Punkt, der jeden Antrag sofort kippen kann: die Lizenz
 
-**Geprüft am 2026-08-23 über alle 33 Klone im Container.** Befund:
+**Nachgemessen am 2026-08-24, gegen `origin/main` aller 33 Depots** (nicht gegen
+den ausgecheckten Stand, siehe den Kasten darunter). Befund:
 
 | Lizenz | Repos |
 |---|---|
-| **MIT** (anerkannt Open Source) | **3**, `Sage-Protokol`, `SB-KIMTool-Point`, `mycel-karte` |
-| eigene „Nutzungslizenz" (*Alle Rechte vorbehalten, soweit nicht eingeräumt*) | **28** |
-| gar keine Lizenz-Datei | **2**, `BookLedgerPro`, `Meine-In-and-Out-Book` |
+| **MIT** (anerkannt Open Source) | **6**, `Sage-Protokol`, `SB-KIMTool-Point`, `mycel-karte`, `Kim-Bell`, `Kimseek`, `Kimboard` |
+| eigene „Nutzungslizenz" (*Alle Rechte vorbehalten, soweit nicht eingeräumt*) | **26** |
+| gar keine Lizenz-Datei | **1**, `Meine-In-and-Out-Book` |
+
+> ⚠ **Hier stand bis zum 2026-08-24 „3 · 28 · 2", und beide Randzahlen waren
+> falsch** (Klaus hatte die Zeile angestrichen: *„andere Repos wurden auch zu
+> Open Source erklärt"*). Er hatte recht, und die Ursachen sind zwei
+> verschiedene, die es beide wert sind, hier stehen zu bleiben:
+>
+> **Zu wenig MIT, weil im selben Zug gemessen und geändert wurde.**
+> `Kim-Bell`, `Kimseek` und `Kimboard` haben MIT am **2026-08-23** bekommen,
+> mit der Commit-Nachricht *„dieses Repo gehört zum Forschungskorpus"*, also am
+> Tag der Zählung. Gezählt wurde vorher, geändert danach, **nachgezählt nie**.
+>
+> **Zu viel „ohne Lizenz", weil der Klon veraltet war.** `BookLedgerPro` trägt
+> seit dem **2026-08-16** eine Nutzungslizenz. Im Container lag ein älterer
+> Stand ohne die Datei. Das ist genau die Falle aus
+> [`../CLAUDE.md` § Sitzungsstart-Pflicht](../CLAUDE.md): eine Aussage über den
+> Stand eines Depots ohne vorheriges `fetch` ist kein Befund.
+>
+> **Und die eine verbliebene Null ist keine Nachlässigkeit.**
+> `Meine-In-and-Out-Book` hat keine Lizenz-Datei, weil es **überhaupt keinen
+> Commit hat**: ein angelegtes, nie befülltes Depot (`git ls-remote --heads`
+> liefert nichts). Ein leeres Depot ohne Lizenz ist ein anderer Sachverhalt als
+> Quelltext ohne Lizenz, und nur der zweite wäre ein Problem.
 
 **Das ist wichtig, und zwar sofort.** Prototype Fund, NLnet und OTF verlangen alle,
 dass das **geförderte Ergebnis** unter einer anerkannten freien Lizenz steht. Die
@@ -434,9 +534,47 @@ eigene Nutzungslizenz mit Bezahl-Vorbehalt (Ziffer 3) ist **keine**. Sie ist
 - Du musst nur sicherstellen, dass **das Repo, für das du Geld beantragst**, MIT
   trägt. `Sage-Protokol` tut das bereits. **Damit ist Sage-Protokol das Repo, mit
   dem du dich bewirbst**, nicht der Marktplatz, nicht die Fach-Apps.
-- Die zwei Repos ohne Lizenz-Datei sollten trotzdem eine bekommen. Ein Repo ohne
-  Lizenz ist rechtlich das *engste* von allen: ohne ausdrückliche Einräumung darf
-  niemand etwas.
+- Das eine Depot ohne Lizenz-Datei braucht erst dann eine, wenn etwas darin
+  liegt. Ein Repo mit Quelltext und ohne Lizenz wäre rechtlich das *engste* von
+  allen, ohne ausdrückliche Einräumung darf niemand etwas; ein **leeres** Depot
+  ist schlicht leer.
+
+### Die KIM-Familie: wer mitwirkt, und wer nicht kann (Klaus 2026-08-24)
+
+Klaus' Wort: *„die ganze mögliche KIM-Familie sollte mitwirken."* Das Wort
+**mögliche** trägt hier die Arbeit. Nachgemessen, nicht angenommen:
+
+| Depot | Im Korpus | Befund vom 2026-08-24 |
+|---|---|---|
+| **Kim-Bell** | ✅ ja | MIT seit 2026-08-23, die kanonische Netz-Anmeldung |
+| **Kimseek** | ✅ ja | MIT seit 2026-08-23, die Suche |
+| **Kimboard** | ✅ ja | MIT seit 2026-08-23, die Pinnwand samt Moderations-Werkzeugen |
+| **Kimhub** | ❌ nein | in der Git-Historie liegen Rechnungsdaten |
+| **Kim-sync** | ❌ nein | darin liegt ein fremdes, ausdrücklich privates Dokument |
+
+**Bei Kimhub ist der Hinderungsgrund gemessen, nicht vermutet.**
+`werkstatt/buchhaltung/anthropic-belege.json` und `zeiten.json` wurden am
+**2026-08-20** eingecheckt und am **2026-08-22** wieder entfernt. Aus dem
+aktuellen Stand sind sie weg, **aus der Historie nicht**, und ein Fork nimmt die
+Historie mit. Eine freie Lizenz wäre damit die Einladung, Klaus' Rechnungen
+mitzunehmen. Der Weg dahin führte über ein Umschreiben der Historie, und das ist
+kein Handgriff, sondern eine eigene Entscheidung mit eigenem Auftrag. Der
+Forschungsanteil liegt deshalb als Momentaufnahme in
+[`werkstatt/`](werkstatt/), wo er nichts davon mitträgt.
+
+**Bei Kim-sync ist der Grund ein anderer und wäre beinahe übersehen worden.**
+Das Depot gilt als leer, und seine eigene `CLAUDE.md` sagt das auch. Es ist aber
+nicht leer: darin liegt `Company-Brain/VISION.md`, ein Papier zur Geschäfts-App
+Company Brain, das in seinem eigenen Kopf **„Sichtbarkeit: privat"** trägt. Eine
+MIT-Lizenz über das Depot legte dieses Papier mit frei. Der Handgriff hätte fünf
+Minuten gedauert und wäre still gewesen, und dagegen hilft nur, vorher
+hineinzusehen.
+
+> **Für den Antrag ist das kein Verlust, sondern der bessere Befund.**
+> Der Korpus ist nicht deshalb bei sechs Depots, weil es nicht mehr gäbe,
+> sondern weil zwei aus benennbaren Gründen nicht hineingehören. Ein Gutachter,
+> der fragt *„warum ist das eine offen und das andere nicht"*, bekommt hier
+> zwei Sätze mit Datum statt eines Achselzuckens.
 
 ---
 
@@ -456,6 +594,17 @@ Deutschland**, **selbstständig oder freiberuflich**, Steuern in Deutschland.
 Bei der Antragstellung wird eine **Steuernummer für die selbstständige
 Tätigkeit** verlangt, oder ersatzweise die Eingangsbestätigung des Finanzamts.
 Teilzeit-Anstellung nebenher ist erlaubt, wenn du anteilig freigestellt bist.
+
+> ⚠ **Genau hier hängt es seit dem 2026-08-24.** Klaus ist **angestellt und hat
+> kein Gewerbe** (Abschnitt 9). Die verlangte **Steuernummer für die
+> selbstständige Tätigkeit** gibt es also noch nicht, und ohne sie ist die
+> Bewerbung nicht vollständig. Die Eingangsbestätigung des Finanzamts genügt
+> ersatzweise, aber auch die setzt den Fragebogen aus **Abschnitt 5c** voraus.
+> **Rechne rückwärts vom 30.11.2026**: der Fragebogen läuft über ELSTER, das
+> ELSTER-Zertifikat kommt per Brief und braucht einige Tage. Das ist kein
+> großer Schritt, aber er hat eine Lieferzeit, und er steht vor allem anderen.
+> Der zweite Satz derselben Zeile ist die gute Nachricht: eine Anstellung
+> **neben** dem Vorhaben schließt den Prototype Fund nicht aus.
 
 **Warum es passt:** Der Schwerpunkt liegt seit 2025 auf **Datensicherheit und
 Software-Infrastruktur**. Server-lose, verschlüsselte Peer-to-peer-Suche ohne
@@ -489,8 +638,10 @@ die Steuer angerechnet und, wenn keine Steuer anfällt, **ausgezahlt**.
 
 **Der springende Punkt für dich, die Eigenleistung.** Ein Soloselbständiger kann
 seine **eigene Forschungsarbeit** ansetzen. Der Stundensatz wurde zum 01.01.2026
-angehoben (nach den gefundenen Quellen von 70 € auf **100 €** je Stunde, höchstens
-40 Wochenstunden). Die Zulage beträgt 35 % für kleine und mittlere Unternehmen.
+angehoben, von 70 € auf **100 €** je Stunde, höchstens **40 Wochenstunden**, und
+im Jahr höchstens **2.080 Stunden** (nachgeprüft am 2026-08-24, mehrere Quellen;
+die Jahres-Zahl stand vorher nicht da). Die Zulage beträgt 35 % für kleine und
+mittlere Unternehmen.
 Ab 2026 gibt es zusätzlich eine Gemeinkosten-Pauschale von 20 % für neu
 begonnene Vorhaben.
 
@@ -536,12 +687,38 @@ mitlaufende Aufzeichnung ausgegeben.
 2. **Finanzamt**, mit der Bescheinigung dann der eigentliche Antrag auf
    Forschungszulage, zusammen mit der Steuererklärung.
 
-**Die Hürde, ehrlich benannt:** Die Forschung muss einer **steuerpflichtigen
-Tätigkeit** zugeordnet sein. Besteht bereits eine Selbstständigkeit in einem
-anderen Fach, ist die Frage, ob sich die Softwareforschung ihr zurechnen lässt
-oder ob dafür eine eigene Tätigkeit anzumelden ist. Das ist eine
-**Steuerberater-Frage, und die erste, die gestellt gehört**, weil an der Antwort
-hängt, ob und ab wann Stunden zählen.
+**Die Hürde, ehrlich benannt, und sie ist seit dem 2026-08-24 keine offene Frage
+mehr, sondern eine bekannte Größe.** Die Forschung muss einer
+**steuerpflichtigen Tätigkeit** zugeordnet sein. Auf die Frage, ob eine bereits
+bestehende Selbstständigkeit in einem anderen Fach im Weg steht, lautet Klaus'
+Antwort: **es besteht keine.** Er arbeitet **angestellt** im
+Werbetechnik-Betrieb und führt kein eigenes Gewerbe.
+
+> ⚠ **Das räumt eine Sorge aus und legt eine größere frei, und die zweite wiegt
+> mehr.** Nichts steht im Weg, richtig. Aber die Forschungszulage setzt einen
+> **Anspruchsberechtigten** voraus, also jemanden mit Gewinneinkünften, nicht
+> mit Arbeitslohn. Wer nur angestellt ist, ist es nicht.
+>
+> **Woran das hängt, ist die Rückwirkung**, und die ist der ganze Reiz dieses
+> Weges. Die fünf Monate Arbeit seit dem 10.03.2026 sind in einer Zeit
+> entstanden, in der es **keine steuerpflichtige Tätigkeit gab**, der sie sich
+> zuordnen ließen. Ob sie sich nach einer Anmeldung noch rückwirkend zuordnen
+> lassen oder ob erst ab Anmeldung gezählt wird, **entscheidet diese Datei
+> nicht.** Die Vermutung geht dahin, dass erst ab der Anmeldung gezählt wird.
+>
+> **Was daraus folgt, ist eine Reihenfolge, keine Absage:** die Anmeldung
+> (Abschnitt 5c) rückt damit **vor** alles andere in Weg 2, und je früher sie
+> steht, desto mehr Stunden zählen überhaupt. Jeder Monat Warten kostet hier
+> unmittelbar Geld. Das ist die **erste Frage an den Steuerberater**, noch vor
+> Stundensatz und Deckel, weil an ihr hängt, ob Weg 2 rückwärts oder nur
+> vorwärts wirkt.
+>
+> **Und eine Frage, die bisher gar nicht im Papier stand:** wer angestellt ist
+> und daneben eine selbstständige Tätigkeit anmeldet, hat in aller Regel eine
+> **Anzeige- oder Genehmigungspflicht gegenüber dem Arbeitgeber**, und im
+> Arbeitsvertrag kann eine Wettbewerbsklausel stehen. Das betrifft **alle vier
+> Wege**, nicht nur diesen, und es ist der billigste Punkt von allen: einmal in
+> den eigenen Arbeitsvertrag sehen.
 
 ---
 
@@ -586,9 +763,9 @@ der letzten fünf Jahre oder eine Promotion** haben.
 - Ist die Abschluss-Bedingung erfüllbar, durch den Antragsteller selbst oder
   durch einen Mitstreiter?
 - EXIST ist **strikt ein Vorgründungs-Stipendium**. Das Unternehmen darf noch
-  nicht gegründet sein. Ob eine bereits bestehende Selbstständigkeit in einem
-  anderen Fach dem im Weg steht, klärt der Gründungsservice der Hochschule in
-  einem Vorgespräch. Das Gespräch ist kostenlos.
+  nicht gegründet sein. **Diese Bedingung ist erfüllt** (Klaus 2026-08-24: keine
+  bestehende Selbstständigkeit, angestellt). Damit hängt EXIST hier allein an der
+  Abschluss-Bedingung darüber, nicht mehr an zweien.
 
 **Adresse:** <https://exist.de/programm/exist-gruendungsstipendium/foerderantrag-stellen/>
 
@@ -628,10 +805,15 @@ Damit ist es für die hiesige Lage der zugänglichere der beiden.
 Geschäftstätigkeit darf **noch nicht aufgenommen** sein oder **weniger als ein
 Jahr** bestehen. Alle Branchen, ausdrücklich auch digitale Vorhaben.
 
-> ⚠ **Die eine Frage, die vorher zu klären ist**, dieselbe wie bei EXIST: Steht
-> eine **bereits bestehende Selbstständigkeit in einem anderen Fach** dem im Weg,
-> oder zählt das neue Vorhaben für sich? Das entscheidet nicht diese Datei,
-> sondern ein Vorgespräch. Es ist kostenlos.
+> ✅ **Die Frage, die hier stand, ist beantwortet** (Klaus 2026-08-24): es
+> besteht **keine** Selbstständigkeit in einem anderen Fach, er arbeitet
+> angestellt. Damit ist die Bedingung *„die Geschäftstätigkeit darf noch nicht
+> aufgenommen sein"* nicht nur erfüllt, sondern **im günstigsten Fall**: die Uhr
+> von einem Jahr läuft noch gar nicht.
+>
+> ⚠ **Was an ihre Stelle tritt:** InnoFounder zahlt den **Lebensunterhalt** und
+> setzt Vollzeit an der Gründung voraus. Neben einer Anstellung geht das nicht
+> ohne Weiteres. Das ist die Frage fürs Vorgespräch, und es ist kostenlos.
 
 **Adresse:** <https://www.ifbhh.de/foerderprogramm/innofounder> ·
 <https://innovationsstarter.com/innofounder/>
@@ -667,6 +849,13 @@ ersetzt Stunden Suchen.
 
 ## 5c · Anmelden: Gewerbe oder freiberuflich, und wie es in Hamburg läuft
 
+> 🔴 **Dieser Abschnitt war eine Vorsichtsmaßnahme und ist seit dem 2026-08-24
+> der erste echte Schritt.** Klaus ist angestellt und hat keine eigene
+> Steuernummer für diese Tätigkeit (Abschnitt 9). Damit ist die Anmeldung
+> **nicht** eine Formalie irgendwann, sondern das **Nadelöhr vor Weg 1 und
+> Weg 2** zugleich, und in Weg 2 verfällt mit jedem Monat Warten ein Stück
+> Rückwirkung. Was hier steht, ist ab sofort Stufe A des Fahrplans, nicht Stufe C.
+
 **Der gemeinsame Schritt für beide Wege** ist der **Fragebogen zur steuerlichen
 Erfassung**, elektronisch über **ELSTER** ans Finanzamt. Daraus kommt die
 Steuernummer. Ein ELSTER-Zertifikat wird gebraucht; es ist kostenlos und dauert
@@ -677,7 +866,7 @@ ein paar Tage, weil ein Brief kommt.
 | Gewerbeanmeldung | **entfällt** | nötig |
 | Kosten | keine | **20 €** (in Hamburg, je Bezirk 15–25 €) |
 | Online möglich | ja, über ELSTER | **ja**, vollständig über das Serviceportal Hamburg |
-| Dauer |, | 3–7 Werktage |
+| Dauer | keine Wartezeit | 3–7 Werktage |
 | Gewerbesteuer | **nein** | ja, mit Freibetrag |
 | IHK-Beitrag | **nein** | ja |
 | danach | Fragebogen über ELSTER | Gewerbeamt meldet ans Finanzamt; Fragebogen trotzdem **innerhalb eines Monats** über ELSTER |
@@ -941,10 +1130,19 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
 - [ ] **A1 · ORCID anlegen.** Eine dauerhafte Forscher-Kennung, kostenlos, ohne
       Institution, in fünf Minuten. Ab da bist du in der Wissenschaftswelt
       identifizierbar. → <https://orcid.org/register>
-- [ ] **A2 · Steuerberater-Termin ausmachen.** Eine Frage: *„Lässt sich für die
-      Softwareforschung die Forschungszulage in Anspruch nehmen, und wenn ja, ab
-      wann und unter welcher Tätigkeit?"* Das ist der teuerste Punkt auf der
-      ganzen Liste, wenn man ihn zu spät stellt.
+- [ ] **A2 · Steuerberater-Termin ausmachen.** Die Frage ist seit dem
+      2026-08-24 **schärfer geworden**, weil feststeht, dass keine
+      Selbstständigkeit besteht: *„Ich bin angestellt und habe kein Gewerbe. Ich
+      forsche seit dem 10.03.2026 an einer Software. Wenn ich die Tätigkeit
+      jetzt anmelde, zählen die zurückliegenden Monate für die Forschungszulage
+      noch mit, oder erst ab Anmeldung? Und ist das freiberuflich oder
+      gewerblich?"* Das ist der teuerste Punkt auf der ganzen Liste, wenn man ihn
+      zu spät stellt, **und seit dieser Antwort auch der eiligste**: solange
+      nichts angemeldet ist, laufen die Stunden möglicherweise ins Leere.
+- [ ] **A2c · In den eigenen Arbeitsvertrag sehen.** Nebentätigkeit
+      anzeigepflichtig? Genehmigungspflichtig? Steht eine Wettbewerbsklausel
+      darin? Kostet zehn Minuten, betrifft **alle vier Wege**, und stand bis zum
+      2026-08-24 in dieser Datei überhaupt nicht.
 - [ ] **A2b · ELSTER-Zertifikat beantragen**. <https://www.elster.de>. Es wird
       für den Fragebogen zur steuerlichen Erfassung gebraucht, ist kostenlos, und
       es dauert ein paar Tage, weil ein Brief kommt. **Das ist der Schritt, der
@@ -998,12 +1196,16 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       <https://fb-mci.gi.de/fachbereich/fachgruppen>
 - [ ] **B8 · Hamburg: die drei kostenlosen Türen abklappern**: Handelskammer,
       hei., Kreativ Gesellschaft. Eine Frage überall dieselbe: *„Welche
-      Landesprogramme kommen für ein Software-Forschungsvorhaben in Frage, und
-      steht eine bestehende Selbstständigkeit in einem anderen Fach dem im Weg?"*
+      Landesprogramme kommen für ein Software-Forschungsvorhaben in Frage?"*
+      *(Der zweite Halbsatz zur bestehenden Selbstständigkeit ist am 2026-08-24
+      entfallen, sie besteht nicht. An seine Stelle tritt: „ich bin angestellt
+      und will die Tätigkeit nebenher anmelden, was ist zu beachten?")*
 - [ ] **B9 · InnoFounder-Vorgespräch** (Abschnitt 5b). Der zugänglichste Weg mit
       Geld für den Lebensunterhalt: 2.500 €/Monat, kein Hochschulabschluss
-      verlangt, keine Hochschule dazwischen. Zu klären ist nur die Frage der
-      bestehenden Selbstständigkeit.
+      verlangt, keine Hochschule dazwischen. Die Frage der bestehenden
+      Selbstständigkeit ist erledigt (es besteht keine). Zu klären ist
+      stattdessen, wie sich die verlangte Vollzeit-Gründung mit einer laufenden
+      Anstellung verträgt.
 - [ ] **B10 · Projektfonds Medien und Bildung vormerken**. Frist für 2026/27 war
       der 08.03.2026, die nächste Runde kommt im Januar. Der Topf mit der
       geringsten Konkurrenz.
@@ -1106,13 +1308,19 @@ persönlich und stehen deshalb **absichtlich nicht in dieser Datei**. Sie werden
 im Gespräch geklärt, nicht im Depot abgelegt. Hier steht nur, **warum** jeder
 davon zählt, damit eine Folge-Sitzung weiß, wonach sie fragen muss.
 
-| Angabe | Wofür sie gebraucht wird |
-|---|---|
-| **Steuerlicher Status**, selbstständig oder freiberuflich geführt, mit Steuernummer für diese Tätigkeit? | Voraussetzung für Weg 1 **und** Weg 2. Ohne sie sind beide zu. |
-| **Hochschulabschluss**, vorhanden, im Team vorhanden, und wie lange her? | Entscheidet **allein** über EXIST (Weg 4). |
-| **Bundesland** | Jedes Land hat eigene Digitalisierungs-, Innovations- und Medienkompetenz-Programme, die in keiner Bundesübersicht stehen. Ohne diese Angabe sind sie nicht auffindbar. |
-| **Arbeitsumfang**, Stunden je Woche, seit wann | Die Grundzahl für die Forschungszulage und für jeden Arbeitsplan im Antrag. |
-| **Institut gemeinnützig oder erwerbswirtschaftlich?** | Die eigentliche Weiche hinter der Rechtsform, sie entscheidet mit darüber, wem die Ergebnisse am Ende gehören (Abschnitt 3b). |
+| Angabe | Stand | Wofür sie gebraucht wird |
+|---|---|---|
+| **Steuerlicher Status**, selbstständig oder freiberuflich geführt, mit Steuernummer für diese Tätigkeit? | ✅ **beantwortet 2026-08-24: angestellt, kein Gewerbe, keine eigene Steuernummer für diese Tätigkeit** | Voraussetzung für Weg 1 **und** Weg 2. Beide sind damit **noch zu**, und die Anmeldung (Abschnitt 5c) ist der Schlüssel, der beide zugleich aufschließt. |
+| **Hochschulabschluss**, vorhanden, im Team vorhanden, und wie lange her? | offen | Entscheidet **allein** über EXIST (Weg 4). |
+| **Bundesland** | ✅ **Hamburg** (daher Abschnitt 5b) | Jedes Land hat eigene Digitalisierungs-, Innovations- und Medienkompetenz-Programme, die in keiner Bundesübersicht stehen. |
+| **Arbeitsumfang**, Stunden je Woche, seit wann | teilweise: **128 Arbeitstage vom 10.03. bis 24.08.2026** sind aus der Git-Historie belegt (`historie/`), Stunden je Woche nicht | Die Grundzahl für die Forschungszulage und für jeden Arbeitsplan im Antrag. |
+| **Institut gemeinnützig oder erwerbswirtschaftlich?** | offen | Die eigentliche Weiche hinter der Rechtsform, sie entscheidet mit darüber, wem die Ergebnisse am Ende gehören (Abschnitt 3b). |
+
+> **Zwei der fünf sind seit dem 2026-08-24 beantwortet, und die erste Antwort
+> hat den Fahrplan verschoben.** „Angestellt, kein Gewerbe" heißt: die Anmeldung
+> ist nicht ein Schritt unter vielen, sondern **der Flaschenhals**. Solange sie
+> nicht steht, ist Weg 1 zu, Weg 2 zu, und in Weg 2 verfällt zusätzlich mit
+> jedem Monat ein Stück der Rückwirkung. Siehe Weg 2 und Abschnitt 5c.
 
 **Warum das hier so ausdrücklich steht:** Vermutungen sehen in einem Antrag genauso
 aus wie Wissen, bis sie auffliegen. Wer eine dieser fünf Angaben rät, statt sie zu

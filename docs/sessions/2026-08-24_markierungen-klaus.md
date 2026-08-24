@@ -33,11 +33,16 @@ verschwunden.
 
 ---
 
-## Gelb: offen, wird besprochen
+## Gelb: erledigt am 2026-08-24, zweite Runde
 
 Vierzig Stück. Klaus am 2026-08-24: *„die roten schon mal raus, über gelb reden
-wir später."* Sie stehen deshalb hier vollständig, unbearbeitet, mit seinen
-Notizen. **Nichts davon ist entschieden.**
+wir später."* Das Später war derselbe Tag.
+
+**Gelb heißt „kann bleiben oder weg, Claude wägt ab", und darüber steht „im
+Zweifel bleiben".** Abgewogen wurde deshalb einzeln, und **nichts ist
+gestrichen worden.** Bei den zweiunddreißig ohne Notiz wäre Streichen ohnehin
+der falsche Griff gewesen: sie liegen auf Zahlen und Fristen, und ein Fahrplan
+ohne Zahlen ist nicht besser, sondern nur nicht mehr nachprüfbar.
 
 **Acht tragen eine Notiz mit einer konkreten Änderung.** Die sind die
 greifbarsten:
@@ -53,16 +58,90 @@ greifbarsten:
 | FÖRDERUNG 5b | „Steht eine bereits bestehende Selbstständigkeit … im Weg" | nein |
 | PAPER A, Zusammenfassung | „die Dokumentation reicht über fünf Monate, die Messung über Tage" | da wollen wir noch die Historie aus GitHub rekonstruieren und die bestehenden Zahlen |
 
-**Die übrigen zweiunddreißig** stehen ohne Notiz. Sie betreffen fast
-durchgehend Zahlen, Fristen und Zusagen, also genau die Stellen, an denen ein
-Antrag kippt, wenn eine Angabe nicht stimmt: Prüftiefe, Stundendeckel,
-Förderbeträge, ELSTER-Weg, Gewerbe oder freiberuflich, Concept Note, GI-Workshop,
-Vorleistungs-Mappe. Die vollständige Liste steht in der ausgelesenen Fassung,
-die Klaus am 2026-08-24 in den Chat gegeben hat.
+### Was aus den acht wurde
 
-**Der eine gelbe Punkt, der die meiste Arbeit nach sich zieht**, ist der letzte
-in der Tabelle oben: die Historie aus GitHub rekonstruieren. Daraus wurde ein
-eigener Auftrag, siehe den Sitzungsbrief.
+| Wo | Klaus' Notiz | Was daraus wurde |
+|---|---|---|
+| FÖRDERUNG 2.1 | nicht nur Firmen, auch Privatpersonen, Vereine, Behörden, Institute | zwei Absätze ergänzt. Wer teilnehmen kann, ist der **gesellschaftliche** Nutzen, und danach fragt jeder der Wege |
+| FÖRDERUNG 2.3 | Claude sagt ab und zu nein, sucht aber sehr lange einen Ausweg | **der schwerste Punkt der Runde.** Der Satz „ein Werkzeug, das nie ‚nein' sagt" ist berichtigt. Nicht die Willfährigkeit ist das Suchtmerkmal, sondern die **Ausdauer**, und das ist zugleich die messbarere Frage. Weitergetragen nach Paper B und Paper C |
+| FÖRDERUNG 2.3 | „Forschung" → „Forschungen" | geändert |
+| FÖRDERUNG 2.3 | „kämpfen" → „kämpft" | geändert. Damit der Satz dabei richtig bleibt, wurde das Subjekt mit einzahlig: „Die Verfassung dieses Netzes kämpft" |
+| FÖRDERUNG 2.3 | „nie widerspricht" → „selten widerspricht und zurückfordert" | geändert, mit dem Grund dabei: ein überzeichnetes „nie" macht aus einer prüfbaren Beobachtung eine Behauptung |
+| FÖRDERUNG 4 | andere Repos sind auch Open Source | **gemessen: es sind sechs, nicht drei.** Und die zweite Zahl stimmte auch nicht. Siehe unten |
+| FÖRDERUNG 5b | „nein" | **nachgefragt statt geraten**, weil „nein" zwei Lesarten hatte. Klaus' Antwort: **angestellt, kein Gewerbe.** Das hat den Fahrplan verschoben, siehe unten |
+| PAPER A | Historie aus GitHub rekonstruieren | war schon erledigt: 5.823 Commits, 128 Arbeitstage. Der Satz in der Zusammenfassung nennt sie jetzt, **ohne** sie zu einer Messung zu erklären |
+
+### Was aus den zweiunddreißig ohne Notiz wurde
+
+Sie betreffen fast durchgehend Zahlen, Fristen und Zusagen: Prüftiefe,
+Stundendeckel, Förderbeträge, ELSTER-Weg, Gewerbe oder freiberuflich, Concept
+Note, GI-Workshop, Vorleistungs-Mappe.
+
+> ⚠ **Ihr Wortlaut steht nicht im Depot.** Der Brief an diese Sitzung
+> behauptete, die vierzig stünden hier vollständig; das stimmt nur für die acht
+> mit Notiz. Die übrigen liegen in der Auslese, die Klaus in den Chat gegeben
+> hat, und in seinem Browser. **Gearbeitet wurde deshalb an den benannten
+> Themen**, nicht an einzelnen Stellen, und das ist hier hingeschrieben statt
+> stillschweigend gleichgesetzt.
+
+**Behandelt wurden sie nach einer Regel:** nicht streichen, sondern **belegen**.
+Jede tragende Zahl ist am 2026-08-24 nachgeprüft worden, und das Ergebnis steht
+als Tabelle in `FORSCHUNGSFOERDERUNG.md` § 1.
+
+| | |
+|---|---|
+| bestätigt | Prototype Fund (Beträge, Frist, zweite Stufe) · Forschungszulage (100 €/h, 35 %, +20 %) · OTF (Spanne, Concept Note) · InnoFounder (Rate, Dauer, Bedingungen) |
+| **neu beziffert** | der Stundendeckel der Forschungszulage: **höchstens 2.080 Stunden im Jahr**. Die Zahl fehlte |
+| **weiter ungeprüft, und es steht dran** | „rückwirkend bis vier Jahre" · NLnet (`nlnet.nl` ist aus dieser Umgebung gesperrt) |
+
+**Die Prüfung ist eine Stufe besser als vorher und eine schlechter als ein Blick
+ins Gesetz:** `prototypefund.de` und `nlnet.nl` sind weiter gesperrt, bestätigt
+wurde über Websuche und Zweitquellen.
+
+---
+
+## Die zwei Funde, die aus der gelben Runde herausfielen
+
+Beide waren nicht bestellt, und beide sind mehr wert als die Textänderungen.
+
+### 1 · Die Lizenz-Tafel war in beide Richtungen falsch
+
+Klaus' Notiz *„andere Repos wurden auch zu Open Source erklärt"* stimmte, und
+die Ursachen sind zwei verschiedene:
+
+- **Zu wenig MIT.** `Kim-Bell`, `Kimseek`, `Kimboard` bekamen MIT am
+  **2026-08-23**, am Tag der Zählung. Gezählt wurde vorher, geändert danach,
+  **nachgezählt nie.**
+- **Zu viel „ohne Lizenz".** `BookLedgerPro` trägt seit dem **2026-08-16** eine
+  Lizenz. Im Container lag ein älterer Klon. Genau die Falle aus dem
+  Sitzungs-Anker: eine Aussage über den Stand eines Depots ohne `fetch` ist kein
+  Befund.
+
+Gemessen gegen `origin/main` aller 33 Depots: **6 MIT · 26 eigene Nutzungslizenz
+· 1 ohne**, und die eine ist ein Depot **ohne jeden Commit**.
+
+**Dazu Klaus' Zuruf mitten in der Sitzung:** *„die ganze mögliche KIM-Familie
+sollte mitwirken."* Drei sind drin. **Zwei können nicht**, und beide Gründe sind
+gemessen: Kimhub trägt Rechnungsdaten in der Historie (eingecheckt 20.08.,
+entfernt 22.08., ein Fork nähme sie mit), und in Kim-sync liegt ein
+Company-Brain-Papier, das selbst **„Sichtbarkeit: privat"** trägt. Eine
+MIT-Lizenz hätte es mit freigegeben. Klaus hat am 2026-08-24 entschieden:
+Kimhub bleibt zu.
+
+### 2 · „Angestellt, kein Gewerbe" verschiebt den Fahrplan
+
+Die Rückfrage zu 5b hat mehr beantwortet als die Markierung.
+
+| | vorher | jetzt |
+|---|---|---|
+| Weg 2 (Forschungszulage) | „der wichtigste Weg", greift rückwirkend | setzt **Gewinneinkünfte** voraus. Ob die fünf Monate rückwirkend zählen, ist **offen** und die erste Frage an den Steuerberater |
+| Weg 1 (Prototype Fund) | passt mittig | passt weiter, verlangt aber eine **Steuernummer für die selbstständige Tätigkeit**, die es noch nicht gibt. Frist 30.11.2026 |
+| Abschnitt 5c (Anmelden) | Vorsichtsmaßnahme | das **Nadelöhr**, das Weg 1 und Weg 2 zugleich aufschließt |
+| EXIST · InnoFounder | „zu klären: bestehende Selbstständigkeit" | **erledigt**, die Bedingung ist erfüllt. Bei InnoFounder tritt eine neue an ihre Stelle: Vollzeit-Gründung neben einer Anstellung |
+| Arbeitsvertrag | stand nirgends | **neu**: Nebentätigkeit ist meist anzeige- oder genehmigungspflichtig. Betrifft alle vier Wege, kostet zehn Minuten |
+
+**Der teuerste Satz daran:** solange nichts angemeldet ist, laufen die Stunden
+möglicherweise ins Leere. Jeder Monat Warten kostet hier unmittelbar Geld.
 
 ---
 

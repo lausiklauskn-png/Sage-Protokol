@@ -1,6 +1,6 @@
 # Forschungskorpus: die Kette, auf die ein Antrag zeigt
 
-**Stand: 2026-08-23.** Wer Förderung für offene Software beantragt, muss zeigen
+**Stand: 2026-08-24.** Wer Förderung für offene Software beantragt, muss zeigen
 können, **woran** geforscht wurde, nachprüfbar, nicht behauptet. Diese Datei
 benennt die Kette. Sie gehört zu
 [`FORSCHUNGSFOERDERUNG.md`](FORSCHUNGSFOERDERUNG.md), wo steht, wofür.
@@ -77,10 +77,44 @@ Damit niemand danach sucht und damit die Grenze klar ist:
   beiden Marktplätze family-project und PWA Toolpoint.
   **Sie tragen das Protokoll trotzdem offen:** Ziffer 5 jeder Nutzungslizenz
   stellt die SBKIM-Module unter MIT. Zu ist nur die App-Hülle.
-- **Kimhub** bleibt privat. Seine Git-Historie trägt Rechnungsdaten aus der Zeit
-  vor dem 2026-08-22; eine offene Lizenz wäre eine Einladung zum Forken, und ein
-  Fork nimmt die Historie mit. Der Forschungsteil liegt stattdessen als
-  Momentaufnahme in [`werkstatt/`](werkstatt/). Begründung dort.
+- **Kimhub** bleibt geschlossen. **Entschieden von Klaus am 2026-08-24**, nachdem
+  der Grund nachgemessen wurde statt vermutet:
+  `werkstatt/buchhaltung/anthropic-belege.json` und `zeiten.json` wurden am
+  **2026-08-20 eingecheckt und am 2026-08-22 wieder entfernt**. Aus dem aktuellen
+  Stand sind sie weg, aus der Historie nicht, und **ein Fork nimmt die Historie
+  mit**. Der einzige Weg zu MIT führte über ein Umschreiben der Historie; das
+  entwertet jeden vorhandenen Klon und jeden Verweis auf einen alten Commit und
+  ist deshalb ein eigener Auftrag, keine Nebensache. Der Forschungsteil liegt
+  stattdessen als Momentaufnahme in [`werkstatt/`](werkstatt/), wo er nichts
+  davon mitträgt.
+- **Kim-sync** bleibt draußen, und der Grund ist ein anderer als erwartet. Das
+  Depot gilt als leer, seine eigene `CLAUDE.md` sagt das auch. Es ist aber nicht
+  leer: darin liegt `Company-Brain/VISION.md`, ein Papier zur Geschäfts-App
+  Company Brain, das in seinem eigenen Kopf **„Sichtbarkeit: privat"** trägt.
+  Eine MIT-Lizenz über das Depot legte dieses Papier mit frei. **Der Handgriff
+  hätte fünf Minuten gedauert und wäre still gewesen.** Dagegen hilft nur,
+  vorher hineinzusehen. *(Nebenbefund, nicht angefasst: `CLAUDE.md` in Kim-sync
+  beschreibt den eigenen Inhalt falsch.)*
+
+### Die KIM-Familie: warum drei drin sind und zwei nicht
+
+Klaus am 2026-08-24: *„die ganze mögliche KIM-Familie sollte mitwirken."*
+Nachgemessen gegen `origin/main`, nicht gegen den ausgecheckten Stand:
+
+| Depot | Im Korpus | Warum |
+|---|---|---|
+| **Kim-Bell** | ✅ | MIT seit 2026-08-23, Glied 4 |
+| **Kimseek** | ✅ | MIT seit 2026-08-23, Glied 5 |
+| **Kimboard** | ✅ | MIT seit 2026-08-23, Glied 6 |
+| **Kimhub** | ❌ | Rechnungsdaten in der Historie, siehe oben |
+| **Kim-sync** | ❌ | fremdes, ausdrücklich privates Dokument darin, siehe oben |
+
+> **Das ist kein Fehlbetrag, sondern der bessere Befund.** Der Korpus steht bei
+> sechs Depots nicht, weil es nicht mehr gäbe, sondern weil zwei aus benennbaren
+> Gründen nicht hineingehören. Und es passt zu dem Satz ganz oben: nicht die
+> Menge zählt, sondern die Geschlossenheit. Ein Gutachter, der fragt *„warum ist
+> das eine offen und das andere nicht"*, bekommt hier zwei Sätze mit Datum statt
+> eines Achselzuckens.
 
 ## Ehrlichkeit über den Stand
 
