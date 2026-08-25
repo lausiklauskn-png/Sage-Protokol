@@ -192,6 +192,22 @@ const FAELLE = [
     },
   },
   {
+    /* DER FEHLER VOM 2026-08-25: im PDF fehlten rechts zwei Spalten. Nicht
+       die Breite wird sabotiert, sondern die ZUSICHERUNG „sie passt aufs
+       Papier" — hier über die Schriftgröße im Druck. */
+    was: 'Die Tabelle wird im Druck wieder zu breit für A4 hoch',
+    /* bauBlatt() NICHT VERGESSEN: ohne den Neubau ist das Werkzeug zwar
+       sabotiert, das Blatt aber unverändert, und der Fall misst nichts.
+       Genau so sind diese beiden beim ersten Lauf durchgerutscht. */
+    bauen: () => { ersetze(B, 'table{font-size:.66rem}', 'table{font-size:.95rem}'); bauBlatt(); },
+  },
+  {
+    /* Der zweite Riegel, und er ist der wichtigere: passt sie, würde ein
+       künftiger Überhang ohne ihn STILL abgeschnitten. */
+    was: 'Ein Überhang wird im Druck wieder lautlos abgeschnitten',
+    bauen: () => { ersetze(B, '.rahmen{overflow:visible}', '.rahmen{overflow-x:auto}'); bauBlatt(); },
+  },
+  {
     was: 'Die Tagesblöcke verlieren ihren Anker, der Sprung geht ins Leere',
     bauen: () => {
       ersetze(B, '<div class="tag" id="t\' + esc(t.datum) + \'"',

@@ -272,10 +272,59 @@ if (!chromium) {
 
   /* Die Tabelle bricht nicht seitlich aus. */
   const quer = await p.evaluate(() => {
+    /* AUFRAEUMEN NICHT VERGESSEN. Diese Zeile setzt eine Inline-Breite am
+       Wurzelelement, und die bleibt stehen. Der Druck-Wächter darunter hat
+       dadurch beim ersten Lauf 599 statt 703 px gemessen: er maß ein
+       Dokument, das diese Prüfung schmal gemacht hatte. Eine Probe, die der
+       nächsten die Ausgangslage umlegt, ist ein Fehler, auch wenn sie selbst
+       grün bleibt. */
     document.documentElement.style.width = '380px';
-    return document.body.scrollWidth <= document.documentElement.clientWidth + 2;
+    const passt = document.body.scrollWidth <= document.documentElement.clientWidth + 2;
+    document.documentElement.style.width = '';
+    return passt;
   });
   gut(quer, 'bei 380 px Breite läuft die Seite nicht seitlich über');
+
+  /* ── DIE TABELLE MUSS AUFS PAPIER PASSEN ────────────────────────────────
+     Befund vom 2026-08-25 an Klaus' Gerät: im PDF fehlten die zwei rechten
+     Spalten. Gemessen 802 px Tabelle auf 703 px Papier.
+
+     DER PRÜFPUNKT DARÜBER HAT DAS NICHT GEFANGEN, und das ist die Lehre:
+     er misst den SCHIRM bei 380 px, wo `overflow-x:auto` zum Scrollen
+     einlädt und alles in Ordnung aussieht. Auf Papier kann man nicht
+     scrollen, dort schneidet dieselbe Regel ab, und zwar STILL.
+
+     Gemessen wird deshalb im Druck-Medium und gegen die echte Seitenbreite:
+     A4 hoch (210 mm) minus 2 × 12 mm Rand aus `arbeitstage-pdf.mjs`, also
+     186 mm = 703 px bei 96 dpi. Wer den Rand dort ändert, ändert ihn hier. */
+  const A4_INNEN_PX = 703;
+  await p.emulateMedia({ media: 'print' });
+  await p.setViewportSize({ width: A4_INNEN_PX, height: 1000 });
+  /* Frisch laden, statt auf das Aufräumen darüber zu vertrauen. Zwei Riegel,
+     die einander decken: fasst jemand die Zeile oben wieder an, misst dieser
+     Wächter trotzdem das Richtige. */
+  await p.reload({ waitUntil: 'load' });
+  const druck = await p.evaluate(() => {
+    const t = document.querySelector('.rahmen table');
+    const r = t.closest('.rahmen');
+    return {
+      breite: Math.round(t.getBoundingClientRect().width),
+      scroll: t.scrollWidth,
+      overflow: getComputedStyle(r).overflowX,
+    };
+  });
+  gut(Math.max(druck.breite, druck.scroll) <= A4_INNEN_PX,
+    'die Tabelle passt im Druck auf A4 hoch (' + druck.breite + ' von '
+    + A4_INNEN_PX + ' px)',
+    'zu breit um ' + (Math.max(druck.breite, druck.scroll) - A4_INNEN_PX)
+    + ' px. Im PDF fehlen dann rechts Spalten, ohne dass es auffällt.');
+
+  /* Zweiter Riegel, und er deckt den ersten: passte die Tabelle, aber der
+     Überhang würde weggeschnitten, wäre ein künftiger Zuwachs wieder still.
+     Auf Papier gibt es kein Scrollen, also darf dort nichts clippen. */
+  gut(druck.overflow === 'visible',
+    'im Druck wird ein Überhang sichtbar statt abgeschnitten',
+    'overflow-x ist "' + druck.overflow + '" — das clippt auf Papier lautlos');
 
   await browser.close();
 }

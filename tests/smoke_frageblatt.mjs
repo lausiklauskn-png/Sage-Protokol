@@ -155,6 +155,17 @@ gut(relativ.length === 0,
 const druckBlock = /@media\s+print\s*\{/.test(stil);
 gut(druckBlock, 'ein Druck-Stylesheet gilt unbedingt beim Drucken',
   'gefunden wurde hoechstens ein bedingter @media-print-Block');
+
+/* Klaus 2026-08-25: die Datei liess sich nur ueber den Link oeffnen. Beim
+   HERUNTERLADEN geht `charset=utf-8` verloren, denn die Angabe steht im
+   MIME-Typ und auf der Platte liegen nur Bytes. Androids Betrachter raet dann
+   Latin-1. Der BOM ueberstimmt jedes Raten.
+   Gemessen werden die ERSTEN BYTES, nicht ein `<meta>`-Tag: das Tag stand die
+   ganze Zeit da und hat nichts genuetzt. */
+const bytes = readFileSync(BLATT);
+gut(bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF,
+  'die Datei beginnt mit einem BOM, damit sie heruntergeladen lesbar bleibt',
+  'erste Bytes: ' + [...bytes.slice(0, 3)].map((b) => b.toString(16)).join(' '));
 gut(/display\s*:\s*table-header-group/.test(stil),
   'Tabellenköpfe wiederholen sich im Druck auf jeder Seite');
 

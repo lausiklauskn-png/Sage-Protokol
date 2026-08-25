@@ -70,6 +70,28 @@ margin:2rem 0 0}
   h2{break-after:avoid;break-before:page}
   .kopf div{border:1px solid #999}
   a{color:#000;text-decoration:none}
+  /* ── DIE TABELLE MUSS AUFS PAPIER PASSEN ─────────────────────────────
+     Befund vom 2026-08-25 an Klaus' Gerät: die zwei rechten Spalten
+     ("Einträge", "Depots") fehlten im PDF. Gemessen waren es 802 px
+     Tabelle auf 703 px Papier (A4 hoch, 12 mm Rand).
+
+     ZWEI FEHLER LAGEN ÜBEREINANDER, und der zweite ist der schlimmere:
+     die Tabelle war zu breit, UND overflow-x:auto hat den Überhang
+     im Druck STILL abgeschnitten. Auf dem Schirm kann man scrollen, auf
+     Papier nicht. Eine Aufstellung für eine Behörde, der zwei Spalten
+     fehlen, sieht vollständig aus.
+
+     Deshalb beides: enger setzen, damit sie passt, UND overflow:visible,
+     damit ein künftiger Überhang auffällt statt zu verschwinden.
+     Die Probe misst die Breite jetzt nach.
+
+     ⚠ KEINE BACKTICKS in diesem Kommentar: der ganze Stil steht in einem
+     Template-Literal, und ein Backtick beendet es. Genau daran ist der
+     erste Versuch gescheitert. */
+  .rahmen{overflow:visible}
+  table{font-size:.66rem}
+  th,td{padding:.26rem .3rem}
+  th small{font-size:.62rem}
 }
 </style>
 </head>
