@@ -44,7 +44,16 @@ const verweis = (u) => (/^(https?:|mailto:|#)/.test(u) ? u : ROH + u.replace(/^\
 
 const rumpf = markdown(readFileSync(QUELLE, 'utf-8'), verweis);
 
-const html = `<!DOCTYPE html>
+/* BOM VORWEG. Beim Herunterladen geht `charset=utf-8` verloren: die Angabe
+   steht im MIME-Typ, auf der Platte liegen nur Bytes. Androids Betrachter rät
+   dann Latin-1, und aus jedem Umlaut werden zwei Zeichen ("AushÃ¤ngen").
+   Netzweite Regel, siehe NETZWEIT § 6b, und `arbeitstage-bauen.mjs` macht es
+   seit dem 2026-08-24 genauso.
+
+   NUR HIER, nicht in der Zwischenablage und nicht in einem JSON-Paket: dort
+   wäre er ein unsichtbares Zeichen bzw. ein Grund, an dem `JSON.parse`
+   abbricht. */
+const html = `\uFEFF<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="utf-8">

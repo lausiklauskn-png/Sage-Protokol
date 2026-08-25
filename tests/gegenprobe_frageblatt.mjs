@@ -2,7 +2,7 @@
  *
  * Lauf:  node tests/gegenprobe_frageblatt.mjs
  *
- * Baut acht Fehler ein. **Jeder einzelne MUSS die Probe umwerfen.** Wirft er
+ * Baut neun Fehler ein. **Jeder einzelne MUSS die Probe umwerfen.** Wirft er
  * sie nicht um, ist der Waechter an dieser Stelle blind, und ein blinder
  * Waechter ist schlimmer als keiner, weil sein Gruen beruhigt.
  *
@@ -69,6 +69,10 @@ const FAELLE = [
     was: 'Der Leser verschluckt jede Zeile mit einem Doppelpunkt am Ende',
     bauen: () => { ersetze(BAUER, 'const rumpf = markdown(',
       'const rumpf = ((t) => markdown(t.split("\\n").filter((z) => !/:$/.test(z)).join("\\n"))) ('); bauen(); },
+  },
+  {
+    was: 'Der BOM faellt weg (heruntergeladen wird daraus Buchstabensalat)',
+    bauen: () => { ersetze(BAUER, '`\\uFEFF<!DOCTYPE html>', '`<!DOCTYPE html>'); bauen(); },
   },
   {
     /* Nicht loeschen, sondern WIRKUNGSLOS machen. Das Wort steht dann noch da,
