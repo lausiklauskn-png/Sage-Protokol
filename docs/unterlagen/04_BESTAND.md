@@ -59,6 +59,12 @@ In dieser Reihenfolge nimmt man sie in die Hand.
 Nach dem Tag, an dem der erste Stand davon abgelegt wurde. Dieselbe Liste,
 andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.
 
+> **Die Spalte „Stände" zählt die eigene Historie mit.** Jede Sitzung legt ein
+> Protokoll ab, und damit steigt die Zahl in der ersten Zeile. Das Blatt ist
+> danach veraltet, bis es neu gebaut wird, und `smoke_unterlagen.mjs` sagt das
+> auch. Das ist gewollt: es erzwingt den Neubau, statt eine alte Zahl
+> stehenzulassen, die wie eine aktuelle aussieht.
+
 | Nr. | Was | erster Stand | letzter Stand | Stände |
 |---|---|---|---|---|
 | 1 | **Sitzungsprotokolle** | 2026-05-10 | 2026-08-26 | 239 |
