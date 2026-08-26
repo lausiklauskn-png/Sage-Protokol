@@ -247,17 +247,22 @@ ${tabelle(nachSchritt)}
 Nach dem Tag, an dem der erste Stand davon abgelegt wurde. Dieselbe Liste,
 andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.
 
-> **Die Spalte „Stände" zählt die eigene Historie mit.** Jede Sitzung legt ein
-> Protokoll ab, und damit steigt die Zahl in der ersten Zeile. Das Blatt ist
-> danach veraltet, bis es neu gebaut wird, und \`smoke_unterlagen.mjs\` sagt das
-> auch. Das ist gewollt: es erzwingt den Neubau, statt eine alte Zahl
-> stehenzulassen, die wie eine aktuelle aussieht.
+> **Hier stand bis zum 2026-08-26 eine Spalte „Stände".** Sie zählte, wie oft
+> ein Posten geändert wurde, und für das Protokoll-Archiv war das die Zahl der
+> Sitzungen: sie stieg mit **jedem** Commit, der dort etwas ablegte, also am
+> Ende jeder Sitzung. Das Blatt war damit nach jedem Abschluss veraltet, und
+> der Wächter meldete das zu Recht.
+>
+> **Eine Kennzahl, die sich bei jedem Abschluss selbst ungültig macht, ist
+> keine.** Sie erzwang einen zusätzlichen Commit nach dem letzten, und wer ihn
+> vergaß, hinterließ der nächsten Sitzung eine rote Probe ohne Fehler dahinter.
+> Die Spalte ist heraus. Die Ordnung dieser Tabelle steht in den **Daten**, und
+> die ändern sich nicht mehr.
 
-| Nr. | Was | erster Stand | letzter Stand | Stände |
-|---|---|---|---|---|
+| Nr. | Was | erster Stand | letzter Stand |
+|---|---|---|---|
 ${nachZeit.map((b, i) => '| ' + (i + 1) + ' | **' + b.name + '** | '
-  + (b.z ? b.z.von : 'unbekannt') + ' | ' + (b.z ? b.z.bis : 'unbekannt') + ' | '
-  + (b.z ? b.z.staende : 0) + ' |').join('\n')}
+  + (b.z ? b.z.von : 'unbekannt') + ' | ' + (b.z ? b.z.bis : 'unbekannt') + ' |').join('\n')}
 
 ## 4 · Was außerhalb der Depots liegt
 
