@@ -31,6 +31,79 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-26 (Bau, 3.) · 🔬 Forschungsaufgaben, und jede Sitzung wird eine Messung
+
+**Rolle:** Fortsetzung derselben Sitzung, nach Klaus' Rückfragen. PR #923
+(Sage) und PR #67 (Kimhub).
+
+### Klaus hatte recht zu fragen
+
+Er las im heruntergeladenen PDF, dass vier Dinge fehlen, und bat um eine
+Nachprüfung. **Sein PDF war älter als das Depot**: es führte das Blatt zum
+Stand der Technik als fehlend, während es am selben Tag entstanden war.
+Nachgesehen über den ganzen Baum:
+
+| | Stand |
+|---|---|
+| Blatt „Stand der Technik" | **existiert**, `docs/ABGRENZUNG.md` |
+| Englische Projektseite | **existiert nicht**, kein Entwurf |
+| Paper C · KI-Kompetenz | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
+| Paper B · Wirkung | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
+
+Einen DOI gibt es auch nicht.
+
+### Abteilung 7: die Forschungsaufgaben
+
+`docs/unterlagen/06_FORSCHUNGSAUFGABEN.md`, erzeugt aus
+`tools/forschungsaufgaben-bauen.mjs`. Sieben Aufgaben mit Frage, Beleg,
+Abhängigkeit und Reihenfolge, dazu die drei Stränge.
+
+**Zwei Dinge werden darin getrennt gehalten**, weil ihre Vermischung das Blatt
+wertlos machte: ob ein **Beleg im Depot liegt** (messbar) und ob die **Aufgabe
+erledigt** ist (nicht messbar). **Keine der sieben ist erledigt.** Der
+Zenodo-Upload ist der deutlichste Fall: die Papers liegen seit Mai vor,
+hochgeladen ist nichts, und eine Nummer wäre ohnehin keine Datei.
+
+### Eine Zahl, die ihre eigene Historie mitzählt
+
+Nach dem Merge stand `docs/unterlagen.html` als geändert da: 238 auf 239
+Stände. Der Merge hatte ein Sitzungsprotokoll abgelegt, und die
+Bestandsaufnahme zählt genau das mit. **Kein Fehler, eine Eigenschaft**, und
+sie steht jetzt im Blatt: das Blatt ist nach jedem Commit veraltet, bis es neu
+gebaut wird, und der Wächter sagt das auch.
+
+⚠ **Beim Aufschreiben dieser Erklärung ein Beinahe-Fehler**, und er ist der
+lehrreichere: die Backticks um einen Dateinamen standen in einem
+Template-Literal und haben es geschlossen. Der Bau brach mit einem
+Syntaxfehler ab, **und die Proben blieben grün**. Sie messen das Erzeugnis,
+und das Erzeugnis war noch das alte, in sich stimmige. **Ein Werkzeug, das gar
+nicht läuft, hinterlässt keine Spur in einer Probe, die nur sein Erzeugnis
+ansieht.** Gesehen nur, weil die Fehlermeldung zufällig über der grünen Zeile
+stand.
+
+### Und Kimhub zeichnet ab heute jede Sitzung auf
+
+Klaus: *„handhabe ab dem heutigen Zeitpunkt jede Sitzung so wie ein
+Forschungsprojekt, mit dokumentierten Messungen."* Gebaut in Kimhub
+(`forschung/`), PR #67. Gemessen wird, **woher jeder Befund kam**: `regel` ·
+`gegenprobe` · `hinsehen` · `klaus`.
+
+Auf seine Frage *„Ist da schon Forschung, wenn dokumentiert?"* war die Antwort
+**nein**. Was fehlte, war eine Vorhersage, die scheitern kann und **vor** den
+Daten dasteht. Sie steht seitdem fest, mit Wortlaut-Riegel.
+
+> **Für die nächste Sitzung, netzweit:** wer hier arbeitet, trägt sich am Ende
+> in `Kimhub/forschung/sitzungen.json` ein. Sonst stirbt der Datensatz nach
+> einem Eintrag, und die Vorhersage wird nie auswertbar.
+
+**Gemessen:** 93 Proben grün, 0 rot · fünf Gegenproben einzeln nacheinander,
+alle vollständig (11 · 35 · 14 · 17 · 13).
+
+**Offen:** Klaus' Sichttest · Paper C, englische Seite, Paper B · die
+Entscheidungen aus `BRIEF_nach_bestandsaufnahme.md` § 1.
+
+---
+
 ## Stand 2026-08-26 (Bau, 2.) · 📚 Die lückenlose Dokumentation
 
 **Rolle:** Fortsetzung. Zweig `claude/dokumentation-bestandsaufnahme-ph81s1`,

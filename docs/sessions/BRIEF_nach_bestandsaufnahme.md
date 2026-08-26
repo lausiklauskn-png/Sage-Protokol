@@ -194,6 +194,33 @@ und eine abgebrochene lässt ihre Sabotage stehen.
 4. Diesen Brief
 5. **Nur** die Doku und den Code der zugewiesenen Scheibe
 
+## 5b · NEU seit dem 2026-08-26: jede Sitzung trägt sich ein
+
+Klaus: *„handhabe ab dem heutigen Zeitpunkt jede Sitzung so wie ein
+Forschungsprojekt, mit dokumentierten Messungen … alles so, dass jeder sagen
+kann, der unsere Arbeit studiert: hier geht es wirklich um Forschung."*
+
+**Das gilt netzweit, auch für eine Sitzung, die nur in Sage arbeitet.** Der
+Datensatz liegt in Kimhub:
+
+```bash
+cd ~/Kimhub
+node tools/sitzung-eintragen.mjs <eintrag.json>   # prüft und hängt an
+node tools/forschung-bauen.mjs                    # baut forschung/index.html
+```
+
+Aufgezeichnet wird, **woher jeder Befund kam**: `regel` (eine Probe fiel um) ·
+`gegenprobe` (ein eingebauter Fehler wurde gefangen) · `hinsehen` (niemand war
+verpflichtet, es zu bemerken) · `klaus`. Dazu, ob dabei ein **Wächter blind**
+war: eine Regel, die dastand, mitlief und nichts maß.
+
+Die Methode und die fünf Grenzen stehen in `Kimhub/forschung/METHODE.md`.
+**Wer eine Zahl ändern will, ändert sie dort, nicht im Blatt.**
+
+> **Ohne diesen Schritt stirbt der Datensatz nach einem Eintrag**, und die
+> Vorhersage in § 6 der Methode wird nie auswertbar. Sie braucht zwanzig
+> Sitzungen.
+
 ## 6 · Pflicht am Ende
 
 1. `docs/PULS.md` fortschreiben, **vorher** auslagern, wenn es eng wird.
@@ -202,3 +229,5 @@ und eine abgebrochene lässt ihre Sabotage stehen.
    mit echtem Rückgabewert.
 4. Vorgeschlagene nächste Schritte direkt in die Chat-Antwort, 2 bis 4 Punkte.
 5. Diesen Brief fortschreiben, damit die Kette nicht abreißt.
+6. **Sich in `Kimhub/forschung/sitzungen.json` eintragen** (§ 5b). Ohne das
+   stirbt der Forschungsdatensatz nach einem Eintrag.

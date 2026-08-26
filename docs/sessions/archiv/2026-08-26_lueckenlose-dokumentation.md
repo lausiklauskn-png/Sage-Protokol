@@ -146,3 +146,73 @@ Die vier Gegenproben liefen **einzeln nacheinander**, nie zwei nebeneinander.
 | **Die englische Projektseite** | existiert nicht, Grundlage für den OTF-Antrag |
 | **Die Kleinunternehmerregelung** | steht im Frageblatt nur als Aufzählungspunkt, der Fragebogen verlangt ein Kreuz |
 | **ELSTER-Zertifikat** | der einzige Schritt mit Vorlaufzeit |
+
+---
+
+# Nachtrag · derselbe Tag, nach Klaus' Rückfragen
+
+## 10 · Die vier Punkte, nachgeprüft
+
+Klaus las im heruntergeladenen PDF, dass vier Dinge fehlen, und bat um eine
+Nachprüfung. **Sein PDF war älter als das Depot.** Nachgesehen über den ganzen
+Baum, nicht nur in `docs/papers/`:
+
+| | Stand |
+|---|---|
+| Blatt „Stand der Technik und Abgrenzung" | **existiert**, `docs/ABGRENZUNG.md` |
+| Englische Projektseite | **existiert nicht**, kein Entwurf |
+| Paper C · KI-Kompetenz | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
+| Paper B · Wirkung auf den Menschen | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
+
+## 11 · Abteilung 7, und die Trennung, auf die es ankommt
+
+`docs/unterlagen/06_FORSCHUNGSAUFGABEN.md`, erzeugt. Sieben Aufgaben mit Frage,
+Beleg, Abhängigkeit und Reihenfolge, dazu die drei Stränge.
+
+**Zwei Dinge werden getrennt gehalten**, weil ihre Vermischung das Blatt
+wertlos machte: ob ein **Beleg im Depot liegt** und ob die **Aufgabe erledigt**
+ist. Keine der sieben ist erledigt. Der Zenodo-Upload wird deshalb als „nicht
+als Datei sichtbar" geführt, nicht als vorhanden: die Papers liegen seit Mai
+vor, hochgeladen ist nichts, und eine Nummer wäre ohnehin keine Datei.
+
+## 12 · Ein Beinahe-Fehler, und er ist der lehrreichste des Tages
+
+Nach dem Merge stand `docs/unterlagen.html` als geändert da: 238 auf 239
+Stände. Die Bestandsaufnahme zählt die eigene Historie mit, und der Merge hatte
+ein Protokoll abgelegt. Kein Fehler, eine Eigenschaft, und sie steht jetzt im
+Blatt.
+
+**Beim Aufschreiben genau dieser Erklärung** standen die Backticks um einen
+Dateinamen in einem Template-Literal und haben es geschlossen. Der Bau brach
+mit einem Syntaxfehler ab.
+
+```
+SyntaxError: Unexpected identifier 'smoke_unterlagen'
+...
+93 Proben — 93 grün, 0 rot, 0 nicht lauffähig
+```
+
+**Der Bau ist gescheitert, und die Proben blieben grün.** Sie messen das
+Erzeugnis, und das Erzeugnis war noch das alte, in sich stimmige.
+
+> **Ein Werkzeug, das gar nicht läuft, hinterlässt keine Spur in einer Probe,
+> die nur sein Erzeugnis ansieht.** Gesehen habe ich es nur, weil die
+> Fehlermeldung zufällig über der grünen Zeile stand.
+
+Das ist derselbe Bau wie der Kimhub-Befund vom selben Tag, nur andersherum:
+dort baute die Probe ihr eigenes Prüfobjekt neu, hier baute es niemand. Beide
+Male sah es aus wie Erfolg.
+
+## 13 · Und ab heute trägt sich jede Sitzung ein
+
+Klaus' Auftrag, netzweit: jede Sitzung wie ein Forschungsprojekt, mit
+dokumentierten Messungen. Gebaut in **Kimhub** (`forschung/`, PR #67).
+
+Auf seine Frage *„Ist da schon Forschung, wenn dokumentiert?"* war die Antwort
+**nein**. Es fehlte eine Vorhersage, die scheitern kann und **vor** den Daten
+dasteht. Sie steht seitdem in `METHODE.md` § 6, mit einem Riegel auf den
+Wortlaut.
+
+**Das steht als Pflicht in `BRIEF_nach_bestandsaufnahme.md` § 5b.** Ohne sie
+stirbt der Datensatz nach einem Eintrag, und die Vorhersage wird nie
+auswertbar: sie braucht zwanzig Sitzungen.
