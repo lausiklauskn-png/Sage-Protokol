@@ -659,14 +659,22 @@ ersten Blick aussieht. Was gebraucht wird, ist eine **Stundenaufzeichnung je
 Vorhaben**: Datum, Vorhaben, Stunden, Tätigkeit.
 
 > ⚠ **„Seit dem 10.03.2026" ist der bequeme Satz, und er hält nicht ganz.**
-> Ausgezählt am 2026-08-24: am **10.03.** wurde das erste Depot angelegt, **zwei
-> Einträge**, danach **27 Tage nichts**. Die durchgehende Arbeit beginnt am
-> **06.04.2026**, und ab da sind es **127 Arbeitstage in 140 Kalendertagen** mit
-> genau **einer** Lücke von vier Tagen.
+> Ausgezählt am 2026-08-24, nachgerechnet am 2026-08-26: am **10.03.** wurde das
+> erste Depot angelegt, **zwei Einträge**, danach **26 Tage ohne einen einzigen**.
+> Die durchgehende Arbeit beginnt am **06.04.2026**, und ab da sind es
+> **127 Arbeitstage in 141 Kalendertagen** (06.04. bis 24.08., beide mitgezählt).
+> Unterbrochen wird sie **neunmal**, die längste Unterbrechung dauert **drei Tage**
+> (03. bis 05.05.), keine andere länger als zwei.
 >
-> **Für den Antrag ist die zweite Zahl die stärkere**, nicht die frühere: ein
-> Datum, hinter dem eine Lücke von vier Wochen steht, lädt zur Nachfrage ein;
-> 127 von 140 Tagen tun das nicht. Welches Datum als **Betriebseröffnung**
+> ⚠ **Bis zum 2026-08-26 stand hier „140 Kalendertage" und „genau eine Lücke von
+> vier Tagen".** Beides war falsch, und die zweite Angabe war die gefährlichere:
+> neben diesem Text liegt die Tages-Tabelle, in der jeder die Unterbrechungen
+> nachzählen kann. Eine Zahl, die man selbst berichtigt, trägt weiter als eine,
+> die jemand anders berichtigt.
+>
+> **Für den Antrag ist das zweite Datum das stärkere**, nicht das frühere: ein
+> Datum, hinter dem eine Lücke von fast vier Wochen steht, lädt zur Nachfrage ein;
+> 127 von 141 Tagen tun das nicht. Welches Datum als **Betriebseröffnung**
 > trägt, entscheidet der Steuerberater.
 
 **Zwei Sorten Beleg liegen vor, und sie decken verschieden weit:**
@@ -1186,11 +1194,15 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       mit der alten verknüpft. Man legt sich also nichts fest, was man später
       bereut. Für die drei geplanten Papers:
       [`papers/PLAN_PAPERS.md`](papers/PLAN_PAPERS.md).
-- [ ] **B2 · Ein Blatt „Stand der Technik und Abgrenzung".** Eine Seite: was es
-      schon gibt (IPFS, ActivityPub, Matrix, Solid, libp2p, Nostr, zentrale
-      Vektor-Suchen), und in welchem Punkt SBKIM etwas anderes tut. **Jede
-      Fördergeberin liest dieses Blatt zuerst.** Ohne es wirkt der Antrag naiv,
-      mit ihm belesen.
+- [x] **B2 · Ein Blatt „Stand der Technik und Abgrenzung".** **Erledigt am
+      2026-08-26**, [`ABGRENZUNG.md`](ABGRENZUNG.md), Abteilung 2 der
+      Antragsmappe. Eine Seite gegen IPFS, ActivityPub, Matrix, Solid, libp2p,
+      Nostr, zentrale Vektor-Suchen und MCP, mit einem eigenen Abschnitt dazu,
+      **wo SBKIM nichts Neues beansprucht**: der Transport ist geliehen, die
+      Einbettung ist Stand der Technik, die Kryptographie ist Standard.
+      **Offen bleibt die Literatursuche.** Das Blatt ist eine Abgrenzung, keine
+      Literaturübersicht; für den Antrag reicht das, für eine Veröffentlichung
+      nicht. Es sagt das selbst in § 6.
 - [ ] **B3 · Die Vorleistung in Zahlen fassen.** Zeitraum, Repos, Zeilen,
       Prüfungen, Meilensteine mit Datum, laufende Instanzen, bisheriger
       Sachaufwand. Zwei Quellen, und sie decken verschieden weit: die datierten

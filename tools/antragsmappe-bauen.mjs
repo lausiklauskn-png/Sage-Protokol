@@ -75,7 +75,7 @@ const MAPPEN = [
     id: 'privat',
     marke: 'Abteilung 1',
     titel: 'Fahrplan Forschungsgelder',
-    unter: 'Arbeitspapier — nicht zum Einreichen',
+    unter: 'Arbeitspapier, nicht zum Einreichen',
     art: 'privat',
     warnung: 'Diese Abteilung ist das <strong>Arbeitspapier</strong>: Wege, '
       + 'Fristen, Anmeldeschritte und pers&ouml;nliche Abw&auml;gungen. Sie '
@@ -99,6 +99,11 @@ const MAPPEN = [
       + 'Herkunftsangabe. Wer nur sie in der Hand h&auml;lt, vermisst nichts.',
     dateien: [
       'docs/papers/ENTSTEHUNG.md',
+      /* DAS BLATT, DAS EINE GUTACHTERIN ZUERST LIEST. Es stand seit dem
+         2026-08-23 als fehlend im Fahrplan und in der Übersicht. Es steht
+         VOR Paper A, weil die Frage „gibt es das nicht schon" beantwortet
+         sein muss, bevor jemand die Untersuchung liest. */
+      'docs/ABGRENZUNG.md',
       'docs/papers/PAPER_A_regeln-und-grundsaetze.md',
       'docs/FORSCHUNGSKORPUS.md',
       'docs/papers/PLAN_PAPERS.md',
@@ -119,7 +124,7 @@ const MAPPEN = [
   datei: 'docs/unterlagen.html',
   name: 'Unterlagen',
   titel: 'Unterlagen: systematisch vorgehen',
-  fuss: 'Eine Datei, vier Abteilungen. Jede einzeln zum Mitnehmen.',
+  fuss: 'Eine Datei, sechs Abteilungen. Jede einzeln zum Mitnehmen.',
   markieren: true,
   abteilungen: [
   {
@@ -173,6 +178,33 @@ const MAPPEN = [
       + '&auml;ndern sich; wer sich auf eine Abschrift verl&auml;sst, f&uuml;llt '
       + 'irgendwann etwas aus, das so nicht mehr gefragt wird.',
     dateien: ['docs/unterlagen/03_FINANZAMT.md'],
+  },
+  {
+    id: 'bestand',
+    marke: 'Abteilung 5',
+    titel: 'Bestandsaufnahme',
+    unter: 'Was es gibt, seit wann, und wo es aufh&ouml;rt',
+    art: 'privat',
+    warnung: 'Dieses Blatt wird <strong>erzeugt</strong>, aus <code>git log</code> '
+      + 'und aus den Dateien selbst. Es zeigt dieselbe Liste zweimal: nach '
+      + 'Vorgehen und nach Entstehung. Jede Zeile nennt ihre L&uuml;cke, und die '
+      + 'vier Posten au&szlig;erhalb der Depots stehen ausdr&uuml;cklich als '
+      + '<em>von Hand gef&uuml;hrt</em> dabei.',
+    dateien: ['docs/unterlagen/04_BESTAND.md'],
+  },
+  {
+    id: 'april',
+    marke: 'Abteilung 6',
+    titel: 'April 2026, rekonstruiert',
+    unter: 'Der Monat ohne Protokoll, aus den Eintr&auml;gen',
+    art: 'privat',
+    warnung: 'Eine <strong>Rekonstruktion</strong>, kein Protokoll. Sie sagt, '
+      + '<em>was</em> geschah, mit Datum und Uhrzeit. Was besprochen und '
+      + 'verworfen wurde, steht nirgends und l&auml;sst sich daraus nicht '
+      + 'gewinnen. Eine Rekonstruktion, die als solche gekennzeichnet ist, '
+      + 'tr&auml;gt in einem Antrag; eine, die wie ein Protokoll aussieht, '
+      + 'kostet die Glaubw&uuml;rdigkeit aller echten.',
+    dateien: ['docs/unterlagen/05_APRIL.md'],
   },
   ]},
 ];
@@ -443,7 +475,7 @@ const SKRIPT = `
       /* Ein toter Knopf mit Erklärung ist die schlimmste Sorte — er sieht aus
          wie Hilfe. Also den Weg nennen, der bleibt. */
       sagen(id, "Der Download ist hier gesperrt (" + (e && e.name || "Fehler")
-        + "). Nimm den Druck-Knopf daneben und sichere als PDF — der geht immer.",
+        + "). Nimm den Druck-Knopf daneben und sichere als PDF, der geht immer.",
         "fehler");
     }
   }

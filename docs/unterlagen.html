@@ -1,9 +1,9 @@
 ﻿<!doctype html>
-<html lang="de" data-stand="2026-08-26">
+<html lang="de" data-stand="2026-08-23">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Unterlagen: systematisch vorgehen, Sage-Protokol, Stand 2026-08-26</title>
+<title>Unterlagen: systematisch vorgehen, Sage-Protokol, Stand 2026-08-23</title>
 <meta name="robots" content="noindex">
 <!-- ERZEUGT von tools/antragsmappe-bauen.mjs. NICHT von Hand bearbeiten.
      Die Quelle sind die .md-Dateien, hier steht nur ihre Ansicht.
@@ -151,6 +151,8 @@ html.nur-uebersicht .abteilung:not(#uebersicht){display:none}
 html.nur-schritte .abteilung:not(#schritte){display:none}
 html.nur-steuerberater .abteilung:not(#steuerberater){display:none}
 html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
+html.nur-bestand .abteilung:not(#bestand){display:none}
+html.nur-april .abteilung:not(#april){display:none}
 @media print{
   .hut,.knoepfe,.lage{display:none}
   body{background:#fff;color:#000;font-size:11pt}
@@ -173,11 +175,13 @@ html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
 <div class="hut">
   <nav>
     <strong>Unterlagen</strong>
-    <span>Stand 2026-08-26</span>
+    <span>Stand 2026-08-23</span>
     <a href="#uebersicht">1 &middot; &Uuml;bersicht und Reihenfolge (privat)</a>
     <a href="#schritte">2 &middot; Die Schritte, abhakbar (privat)</a>
     <a href="#steuerberater">3 &middot; Fragen an den Steuerberater (mitnehmen)</a>
     <a href="#finanzamt">4 &middot; Vorbereitung Finanzamt (mitnehmen)</a>
+    <a href="#bestand">5 &middot; Bestandsaufnahme (privat)</a>
+    <a href="#april">6 &middot; April 2026, rekonstruiert (privat)</a>
     <button type="button" data-mk-knopf>&#9998; 0 Markierungen</button>
   </nav>
 </div>
@@ -187,7 +191,7 @@ html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
 <p class="marke">Abteilung 1 &middot; PRIVAT</p>
 <h1>&Uuml;bersicht und Reihenfolge</h1>
 <p class="unter">Was es gibt, was fehlt, was zuerst dran ist</p>
-<p class="stempel" data-stempel="uebersicht">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="stempel" data-stempel="uebersicht">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
 <p class="hinweis">Diese Abteilung ordnet die f&uuml;nf Unterlagen und sagt <strong>ehrlich, was noch fehlt</strong>. Sie ist f&uuml;r dich, nicht zum Weitergeben.</p>
 <div class="knoepfe" data-knoepfe="uebersicht">
 <button type="button" data-tun="laden" data-fuer="uebersicht">&#11015; Diese Abteilung als HTML herunterladen</button>
@@ -214,7 +218,7 @@ Blätter zur selben Auskunft wären zwei Quellen der Wahrheit gewesen.</p></bloc
 allen Wegen, Begründungen und Fristen. Unterlage 1 ist sein Auszug.</p>
 <hr>
 <h2>Wo die vorhandenen liegen</h2>
-<div class="tabelle"><table><thead><tr><th>Unterlage</th><th>Datei</th></tr></thead><tbody><tr><td><strong>2 · Frageblatt Steuerberater</strong></td><td><code>docs/frageblatt.html</code> und <code>docs/frageblatt.pdf</code>, Quelle <code>docs/STEUERBERATER_FRAGEN.md</code>. Steht zusätzlich als Abteilung 3 in dieser Mappe</td></tr><tr><td><strong>4 · Arbeitszeitnachweis</strong></td><td><code>docs/historie/arbeitstage.pdf</code> (301 Seiten) · <code>arbeitstage-tage.csv</code> · <code>arbeitstage-taetigkeiten.csv</code> · <code>arbeitstage.html</code></td></tr><tr><td><strong>5 · Forschungsunterlagen</strong></td><td><code>docs/antragsmappe.html</code>, Abteilung 2. Sie ist so gebaut, dass sie <strong>allein vollständig</strong> ist: eigener Kopf, eigenes Datum, eigene Herkunftsangabe</td></tr><tr><td>Gesamtdokumentation der Arbeit</td><td><code>docs/historie/historie.html</code>, 5.823 Einträge über 128 Tage, mit Rollen und Verlauf</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th>Unterlage</th><th>Datei</th></tr></thead><tbody><tr><td><strong>2 · Frageblatt Steuerberater</strong></td><td><code>docs/frageblatt.html</code> und <code>docs/frageblatt.pdf</code>, Quelle <code>docs/STEUERBERATER_FRAGEN.md</code>. Steht zusätzlich als Abteilung 3 in dieser Mappe</td></tr><tr><td><strong>4 · Arbeitszeitnachweis</strong></td><td><code>docs/historie/arbeitstage.pdf</code> (301 Seiten) · <code>arbeitstage-tage.csv</code> · <code>arbeitstage-taetigkeiten.csv</code> · <code>arbeitstage.html</code></td></tr><tr><td><strong>5 · Forschungsunterlagen</strong></td><td><code>docs/antragsmappe.html</code>, Abteilung 2. Sie ist so gebaut, dass sie <strong>allein vollständig</strong> ist: eigener Kopf, eigenes Datum, eigene Herkunftsangabe</td></tr><tr><td>Gesamtdokumentation der Arbeit</td><td><code>docs/historie/historie.html</code>, 5.823 Einträge insgesamt über 128 Tage, mit Rollen und Verlauf</td></tr></tbody></table></div>
 <blockquote><p><strong>Abteilung 1 der Antragsmappe geht nicht mit.</strong> Sie trägt Wege, Fristen und
 persönliche Abwägungen. Für die Behörde ist Abteilung 2 gedacht, und sie
 lässt sich dort einzeln herunterladen.</p></blockquote>
@@ -234,10 +238,11 @@ nehmen, sondern nur eine zweite Fassung danebenlegen. Deshalb: <strong>erst
 entscheiden, dann Zenodo.</strong> Drei Wege stehen im Übergabeprotokoll vom
 2026-08-23.</p></blockquote>
 <h3>Was noch geschrieben werden muss</h3>
-<div class="tabelle"><table><thead><tr><th></th><th>warum es zählt</th><th>Stand</th></tr></thead><tbody><tr><td><strong>Blatt „Stand der Technik und Abgrenzung&quot;</strong>, eine Seite</td><td><strong>jede Fördergeberin liest dieses Blatt zuerst.</strong> Ohne es wirkt der Antrag naiv, mit ihm belesen</td><td><strong>existiert nicht</strong></td></tr><tr><td><strong>Englische Projektseite</strong>, eine Seite</td><td>Grundlage für den OTF-Antrag</td><td><strong>existiert nicht</strong></td></tr><tr><td><strong>Paper C</strong> · KI-Kompetenz im täglichen Gebrauch</td><td>anwendbar, gut für Vorträge und Medienkompetenz-Töpfe</td><td>geplant, nicht geschrieben</td></tr><tr><td><strong>Paper B</strong> · Wie KI auf den Menschen wirkt</td><td>am heikelsten, hängt am meisten von einem methodischen Partner ab</td><td>geplant, nicht geschrieben</td></tr><tr><td><strong>Vorleistung in Zahlen</strong>, als eigenes Blatt</td><td>für den Antrag</td><td>Rohstoff liegt vor: 128 Tage, 5.775 Einträge, 33 Depots</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th></th><th>warum es zählt</th><th>Stand</th></tr></thead><tbody><tr><td><strong>Blatt „Stand der Technik und Abgrenzung&quot;</strong>, eine Seite</td><td><strong>jede Fördergeberin liest dieses Blatt zuerst.</strong> Ohne es wirkt der Antrag naiv, mit ihm belesen</td><td><strong>liegt vor</strong> seit 2026-08-26, <code>docs/ABGRENZUNG.md</code>. Offen bleibt die Literatursuche</td></tr><tr><td><strong>Englische Projektseite</strong>, eine Seite</td><td>Grundlage für den OTF-Antrag</td><td><strong>existiert nicht</strong></td></tr><tr><td><strong>Paper C</strong> · KI-Kompetenz im täglichen Gebrauch</td><td>anwendbar, gut für Vorträge und Medienkompetenz-Töpfe</td><td>geplant, nicht geschrieben</td></tr><tr><td><strong>Paper B</strong> · Wie KI auf den Menschen wirkt</td><td>am heikelsten, hängt am meisten von einem methodischen Partner ab</td><td>geplant, nicht geschrieben</td></tr><tr><td><strong>Vorleistung in Zahlen</strong>, als eigenes Blatt</td><td>für den Antrag</td><td>Rohstoff liegt vor: 128 Tage, 5.775 Einträge von Hand, 33 Depots</td></tr></tbody></table></div>
 <p><strong>Für den Antrag reicht Paper A.</strong> B und C sind kein Hindernis, sie sind
-Nachschub. Das fehlende <strong>Blatt zum Stand der Technik</strong> ist das mit der größten
-Wirkung je Seite, und es fehlt vollständig.</p>
+Nachschub. Das <strong>Blatt zum Stand der Technik</strong> war das mit der größten Wirkung
+je Seite und fehlte vollständig; seit dem 2026-08-26 liegt es vor. Was daran
+offen bleibt, ist die Literatursuche, und sie steht im Blatt selbst benannt.</p>
 <h3>Eine Lücke im Frageblatt, benannt statt umfahren</h3>
 <p>Die <strong>Kleinunternehmerregelung</strong> (§ 19 UStG) steht dort nur als
 Aufzählungspunkt unter Frage 7, nicht als eigene Frage. Der Fragebogen zur
@@ -266,7 +271,7 @@ elster.de</strong>, und er dauert zehn Minuten.</p>
 <p class="marke">Abteilung 2 &middot; PRIVAT</p>
 <h1>Die Schritte, abhakbar</h1>
 <p class="unter">In der Reihenfolge ihrer Abh&auml;ngigkeiten</p>
-<p class="stempel" data-stempel="schritte">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="stempel" data-stempel="schritte">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
 <p class="hinweis">Der Auszug aus dem Fahrplan, sortiert danach, <strong>was worauf wartet</strong>. Der lange Text erkl&auml;rt das Warum; hier steht die Reihenfolge.</p>
 <div class="knoepfe" data-knoepfe="schritte">
 <button type="button" data-tun="laden" data-fuer="schritte">&#11015; Diese Abteilung als HTML herunterladen</button>
@@ -321,7 +326,7 @@ zwar ans Finanzamt, der Fragebogen ist trotzdem <strong>innerhalb eines Monats</
 <hr>
 <h2>September, die Vorleistungs-Mappe</h2>
 <p>Diese hängen an keiner Behörde. Sie können parallel zum Warten laufen.</p>
-<div class="tabelle"><table><thead><tr><th></th><th>Schritt</th><th>Wirkung</th></tr></thead><tbody><tr><td><strong>7</strong></td><td><strong>Papers auf Zenodo</strong> → DOI</td><td>bestes Verhältnis von Aufwand zu Wirkung auf der ganzen Liste: zitierfähige Nummer und beweisbarer Zeitstempel</td></tr><tr><td><strong>8</strong></td><td><strong>Blatt „Stand der Technik und Abgrenzung&quot;</strong>, eine Seite</td><td><strong>jede Fördergeberin liest dieses Blatt zuerst</strong></td></tr><tr><td><strong>9</strong></td><td><strong>Vorleistung in Zahlen</strong></td><td>liegt zum Teil vor: 128 Tage, 5.775 Einträge, 33 Depots</td></tr><tr><td><strong>10</strong></td><td>~~Lizenz-Lücken schließen~~ <strong>erledigt</strong>, siehe Kasten unten</td><td>das Depot, mit dem beantragt wird, trägt MIT</td></tr><tr><td><strong>11</strong></td><td><strong>Englische Projektseite</strong>, eine Seite</td><td>Grundlage für den OTF-Antrag</td></tr><tr><td><strong>12</strong></td><td><strong>Erste Hochschul-Mail</strong>, <strong>eine</strong> Hochschule, nicht zwanzig</td><td>Briefentwurf im Fahrplan § 6.2</td></tr><tr><td><strong>13</strong></td><td><strong>Hamburg: drei kostenlose Türen</strong> (Handelskammer, hei., Kreativ Gesellschaft)</td><td>Landesprogramme stehen in keiner Bundesübersicht</td></tr><tr><td><strong>14</strong></td><td><strong>InnoFounder-Vorgespräch</strong></td><td>2.500 €/Monat, kein Abschluss verlangt, keine Hochschule dazwischen</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th></th><th>Schritt</th><th>Wirkung</th></tr></thead><tbody><tr><td><strong>7</strong></td><td><strong>Papers auf Zenodo</strong> → DOI</td><td>bestes Verhältnis von Aufwand zu Wirkung auf der ganzen Liste: zitierfähige Nummer und beweisbarer Zeitstempel</td></tr><tr><td><strong>8</strong></td><td>~~Blatt „Stand der Technik und Abgrenzung&quot;~~ <strong>erledigt am 2026-08-26</strong>, <code>docs/ABGRENZUNG.md</code>, Abteilung 2 der Antragsmappe</td><td>offen bleibt die Literatursuche, siehe § 6 darin</td></tr><tr><td><strong>9</strong></td><td><strong>Vorleistung in Zahlen</strong></td><td>liegt zum Teil vor: 128 Tage, 5.775 Einträge von Hand, 33 Depots</td></tr><tr><td><strong>10</strong></td><td>~~Lizenz-Lücken schließen~~ <strong>erledigt</strong>, siehe Kasten unten</td><td>das Depot, mit dem beantragt wird, trägt MIT</td></tr><tr><td><strong>11</strong></td><td><strong>Englische Projektseite</strong>, eine Seite</td><td>Grundlage für den OTF-Antrag</td></tr><tr><td><strong>12</strong></td><td><strong>Erste Hochschul-Mail</strong>, <strong>eine</strong> Hochschule, nicht zwanzig</td><td>Briefentwurf im Fahrplan § 6.2</td></tr><tr><td><strong>13</strong></td><td><strong>Hamburg: drei kostenlose Türen</strong> (Handelskammer, hei., Kreativ Gesellschaft)</td><td>Landesprogramme stehen in keiner Bundesübersicht</td></tr><tr><td><strong>14</strong></td><td><strong>InnoFounder-Vorgespräch</strong></td><td>2.500 €/Monat, kein Abschluss verlangt, keine Hochschule dazwischen</td></tr></tbody></table></div>
 <blockquote><p><strong>Punkt 10 ist erledigt, und der Fahrplan sagte bis zum 2026-08-24 etwas
 anderes.</strong> Er verlangte Lizenz-Dateien für <code>BookLedgerPro</code> und
 <code>Meine-In-and-Out-Book</code>. Nachgemessen: <code>BookLedgerPro</code> trägt seit dem
@@ -360,7 +365,7 @@ steht.</p>
 <p class="marke">Abteilung 3 &middot; MITNEHMEN</p>
 <h1>Fragen an den Steuerberater</h1>
 <p class="unter">Blatt zum Mitnehmen in den Termin</p>
-<p class="stempel" data-stempel="steuerberater">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="stempel" data-stempel="steuerberater">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
 <p class="hinweis">Diese Abteilung ist so gebaut, dass sie <strong>allein vollst&auml;ndig</strong> ist: Sachverhalt, Fragen, Anlagen. Einzeln herunterladen und mitnehmen. Dasselbe Blatt liegt als eigene Datei <code>docs/frageblatt.html</code> samt PDF daneben.</p>
 <div class="knoepfe" data-knoepfe="steuerberater">
 <button type="button" data-tun="laden" data-fuer="steuerberater">&#11015; Diese Abteilung als HTML herunterladen</button>
@@ -439,7 +444,7 @@ zurückdatieren lässt, einschließlich Vorbereitungshandlungen (Stichwort
 <strong>vorweggenommene Betriebsausgaben</strong>).</li><li>Ob § 3 Abs. 3 FZulG (Eigenleistung) daran anknüpft, <strong>dass</strong> der Betrieb im
 Wirtschaftsjahr bestand, oder daran, <strong>wann</strong> er angemeldet wurde.</li><li><p><strong>Welches Datum trägt.</strong> Hier ist ein Detail wichtig, das ich nicht verschweige,
 weil es die Antwort ändern kann:</p>
-<div class="tabelle"><table><thead><tr><th>Datum</th><th>Was an dem Tag geschah</th><th>Belastbarkeit</th></tr></thead><tbody><tr><td><strong>10.03.2026</strong></td><td>das erste Depot wurde angelegt: <strong>zwei</strong> Einträge, dann <strong>27 Tage nichts</strong></td><td>eher der Anstoß als der Beginn</td></tr><tr><td><strong>06.04.2026</strong></td><td>ab hier <strong>durchgehende</strong> Arbeit: <strong>127 Arbeitstage in 140 Kalendertagen</strong>, mit genau <strong>einer</strong> Lücke von vier Tagen</td><td>das belastbarere Datum</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th>Datum</th><th>Was an dem Tag geschah</th><th>Belastbarkeit</th></tr></thead><tbody><tr><td><strong>10.03.2026</strong></td><td>das erste Depot wurde angelegt: <strong>zwei</strong> Einträge, dann <strong>26 Tage ohne einen einzigen</strong></td><td>eher der Anstoß als der Beginn</td></tr><tr><td><strong>06.04.2026</strong></td><td>ab hier <strong>durchgehende</strong> Arbeit: <strong>127 Arbeitstage in 141 Kalendertagen</strong> (06.04. bis 24.08.), neunmal unterbrochen, die längste Unterbrechung <strong>drei Tage</strong></td><td>das belastbarere Datum</td></tr></tbody></table></div>
 <p>Ich neige zum <strong>06.04.2026</strong>, weil es sich lückenlos belegen lässt. <strong>Sie
 entscheiden, welches Datum vertretbar ist.</strong></p></li></ul>
 <p><strong>Mein eigenes Argument, und Sie sagen mir bitte, ob es trägt.</strong> Die Arbeit hat
@@ -453,7 +458,7 @@ und nicht mit der Anzeige beim Amt. Wenn das richtig ist, ist die späte Anmeldu
 kein Mangel, sondern der normale Ablauf.</p>
 <p><strong>Und dafür gibt es einen datierten Beleg</strong>, den ich nicht behaupten muss,
 sondern zeigen kann:</p>
-<div class="tabelle"><table><thead><tr><th>Datum</th><th>Was belegt ist</th></tr></thead><tbody><tr><td><strong>06.04.2026</strong></td><td>die durchgehende Arbeit beginnt</td></tr><tr><td><strong>11.04.2026</strong></td><td>die erste dokumentierte <strong>Verkaufsabsicht</strong>: „USP-Dokumente, Alleinstellungsmerkmale als druckbare Seiten&quot; und ein Spenden-Bereich in der App</td></tr><tr><td>dazwischen</td><td><strong>fünf Tage</strong></td></tr><tr><td>über den ganzen Zeitraum</td><td><strong>762</strong> der 5.823 Einträge haben Bezug auf Verkauf, Markt, Preis, Lizenz oder Kunden</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th>Datum</th><th>Was belegt ist</th></tr></thead><tbody><tr><td><strong>06.04.2026</strong></td><td>die durchgehende Arbeit beginnt</td></tr><tr><td><strong>11.04.2026</strong></td><td>die erste dokumentierte <strong>Verkaufsabsicht</strong>: „USP-Dokumente, Alleinstellungsmerkmale als druckbare Seiten&quot; und ein Spenden-Bereich in der App</td></tr><tr><td>dazwischen</td><td><strong>fünf Tage</strong></td></tr><tr><td>über den ganzen Zeitraum</td><td><strong>762</strong> der 5.823 Einträge insgesamt haben Bezug auf Verkauf, Markt, Preis, Lizenz oder Kunden</td></tr></tbody></table></div>
 <p>Ein Papier über Alleinstellungsmerkmale ist ein <strong>Verkaufsargument</strong>, kein
 Hobby-Artefakt. Dass es fünf Tage nach dem Beginn entstand, ist der Grund, warum
 ich „von Anfang an dasselbe Ziel&quot; nicht nur behaupte.</p>
@@ -624,7 +629,7 @@ teuer</strong>. Wenn ich mich verrechnet habe, ist das die nützlichste Auskunft
 Termins.</p>
 <hr>
 <h2>4 · Was ich mitbringe</h2>
-<div class="tabelle"><table><thead><tr><th>Beleg</th><th>Umfang</th></tr></thead><tbody><tr><td>Quellcode-Historie, ausgelesen und tabellarisch aufbereitet</td><td>5.823 Einträge, 128 Arbeitstage, 33 Depots, je mit Datum und Uhrzeit</td></tr><tr><td><strong>Tägliche Dokumentation der Arbeitstage</strong> als <strong>PDF</strong> und als <strong>CSV-Tabelle</strong> (<code>;</code>-getrennt, für Excel)</td><td>128 Zeilen, je Tag: Datum, Wochentag, erster und letzter Eintrag, Spanne, aktive Zeit, Abschnitte, Einträge, Depots. <strong>Summe 1.187 h</strong></td></tr><tr><td>Arbeitsprotokolle, fortlaufend</td><td>seit April 2026</td></tr><tr><td>Rechnungen KI-Werkzeuge</td><td>75 Stück, 13.03. bis 04.08.2026</td></tr><tr><td>Automatisches Zeit- und Kostenbuch</td><td>seit 22.08.2026, minutengenau</td></tr><tr><td>Beschreibung des Vorhabens, technisch und für Laien</td><td>zwei Fachaufsätze, eine Spezifikation</td></tr><tr><td>Nachweis, dass etwas davon <strong>funktioniert</strong></td><td>dokumentierte und wiederholbare Belege mit Datum</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th>Beleg</th><th>Umfang</th></tr></thead><tbody><tr><td>Quellcode-Historie, ausgelesen und tabellarisch aufbereitet</td><td>5.823 Einträge insgesamt, 128 Arbeitstage, 33 Depots, je mit Datum und Uhrzeit</td></tr><tr><td><strong>Tägliche Dokumentation der Arbeitstage</strong> als <strong>PDF</strong> und als <strong>CSV-Tabelle</strong> (<code>;</code>-getrennt, für Excel)</td><td>128 Zeilen, je Tag: Datum, Wochentag, erster und letzter Eintrag, Spanne, aktive Zeit, Abschnitte, Einträge, Depots. <strong>Summe 1.187 h</strong></td></tr><tr><td>Arbeitsprotokolle, fortlaufend</td><td>seit April 2026</td></tr><tr><td>Rechnungen KI-Werkzeuge</td><td>75 Stück, 13.03. bis 04.08.2026</td></tr><tr><td>Automatisches Zeit- und Kostenbuch</td><td>seit 22.08.2026, minutengenau</td></tr><tr><td>Beschreibung des Vorhabens, technisch und für Laien</td><td>zwei Fachaufsätze, eine Spezifikation</td></tr><tr><td>Nachweis, dass etwas davon <strong>funktioniert</strong></td><td>dokumentierte und wiederholbare Belege mit Datum</td></tr></tbody></table></div>
 <p><strong>In welcher Form Sie es haben möchten</strong>, sagen Sie mir bitte. Alles lässt sich
 als Tabelle, als PDF oder als Aufstellung je Monat liefern.</p>
 <hr>
@@ -647,7 +652,7 @@ Anmeldung möglicherweise Anspruch kostet.</p>
 <p class="marke">Abteilung 4 &middot; MITNEHMEN</p>
 <h1>Vorbereitung Finanzamt</h1>
 <p class="unter">Blatt zum Danebenlegen beim Ausf&uuml;llen</p>
-<p class="stempel" data-stempel="finanzamt">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="stempel" data-stempel="finanzamt">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
 <p class="hinweis">Eine <strong>Vorbereitung</strong>, keine Abschrift des Formulars. Die verbindlichen Felder stehen im Formular selbst und &auml;ndern sich; wer sich auf eine Abschrift verl&auml;sst, f&uuml;llt irgendwann etwas aus, das so nicht mehr gefragt wird.</p>
 <div class="knoepfe" data-knoepfe="finanzamt">
 <button type="button" data-tun="laden" data-fuer="finanzamt">&#11015; Diese Abteilung als HTML herunterladen</button>
@@ -729,6 +734,127 @@ steuerliche Beratung. Die verbindlichen Felder stehen im Formular selbst.</em></
 </article>
 </section>
 
+<section class="abteilung" id="bestand" data-abteilung="privat">
+<header class="abt-kopf">
+<p class="marke">Abteilung 5 &middot; PRIVAT</p>
+<h1>Bestandsaufnahme</h1>
+<p class="unter">Was es gibt, seit wann, und wo es aufh&ouml;rt</p>
+<p class="stempel" data-stempel="bestand">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="hinweis">Dieses Blatt wird <strong>erzeugt</strong>, aus <code>git log</code> und aus den Dateien selbst. Es zeigt dieselbe Liste zweimal: nach Vorgehen und nach Entstehung. Jede Zeile nennt ihre L&uuml;cke, und die vier Posten au&szlig;erhalb der Depots stehen ausdr&uuml;cklich als <em>von Hand gef&uuml;hrt</em> dabei.</p>
+<div class="knoepfe" data-knoepfe="bestand">
+<button type="button" data-tun="laden" data-fuer="bestand">&#11015; Diese Abteilung als HTML herunterladen</button>
+<button type="button" data-tun="drucken" data-fuer="bestand">&#128424; Nur diese Abteilung drucken / als PDF sichern</button>
+</div>
+<p class="lage" data-lage="bestand" role="status"></p>
+<nav class="verzeichnis"><p>In dieser Abteilung:</p><ul><li><a href="#q-docs-unterlagen-04-bestand-md">unterlagen/04_BESTAND.md</a></li></ul></nav>
+</header>
+<article class="quelle" id="q-docs-unterlagen-04-bestand-md" data-quelle="docs/unterlagen/04_BESTAND.md">
+<p class="herkunft">Quelle: <code>docs/unterlagen/04_BESTAND.md</code></p>
+<h1>Bestandsaufnahme: was dokumentiert ist, und wo es aufhört</h1>
+<p><strong>Erzeugt am 2026-08-26</strong> von <code>tools/bestand-bauen.mjs</code>. Zeitraum und Umfang
+kommen aus <code>git log</code> und aus den Dateien selbst. Wer diese Datei von Hand
+ändert, verliert die Änderung beim nächsten Lauf.</p>
+<blockquote><p><strong>Warum sie erzeugt wird.</strong> Der Bestand ändert sich. Eine Liste von Hand ist
+am Tag nach dem Schreiben falsch und sieht dabei genauso aus wie eine richtige.</p></blockquote>
+<hr>
+<h2>1 · Die Kennzahlen, jede mit ihrer Definition</h2>
+<p>Zwei Zahlen für dieselbe Sache sind ein Widerspruch, sobald jemand sie
+nebeneinander liest. Am 2026-08-26 standen 5.823 und
+5.775 in derselben Mappe, beide „Einträge&quot;
+genannt. Beide waren richtig. Deshalb trägt hier jede Zahl, was sie zählt.</p>
+<div class="tabelle"><table><thead><tr><th>Kennzahl</th><th>Wert</th><th>Was genau gezählt wird</th></tr></thead><tbody><tr><td><strong>Einträge insgesamt</strong></td><td>5.823</td><td>jeder gespeicherte Stand, auch die zeitgesteuerten Läufe</td></tr><tr><td><strong>Einträge von Hand</strong></td><td>5.775</td><td>ohne die zeitgesteuerten Läufe; das ist die Zahl für die Arbeitszeit</td></tr><tr><td><strong>davon zeitgesteuert</strong></td><td>48</td><td>Läufe des Dienstes, meist nachts; keine Arbeitszeit</td></tr><tr><td><strong>Arbeitstage</strong></td><td>128</td><td>Tage mit mindestens einem Eintrag von Hand</td></tr><tr><td><strong>Depots</strong></td><td>33</td><td>ausgelesene Git-Depots, leere eingeschlossen</td></tr><tr><td><strong>Zweige</strong></td><td>1.388</td><td>alle Zweige aller Depots, die Hauptzweige mitgezählt</td></tr></tbody></table></div>
+<p>Die Differenz zwischen den ersten beiden Zeilen sind genau die
+48 zeitgesteuerten Läufe. Wer die Arbeitszeit rechnet, nimmt die
+zweite Zahl; wer den Umfang der Historie angibt, die erste.</p>
+<h2>2 · Die Unterlagen, nach Vorgehen geordnet</h2>
+<p>In dieser Reihenfolge nimmt man sie in die Hand.</p>
+<blockquote><p><strong>Die Spalte misst die Datei, nicht den Inhalt.</strong> Wer eine Datei aus einer
+anderen herauslöst, bekommt ein junges Datum für einen alten Text. Wo das
+vorkommt, steht es in der Zelle dabei.</p></blockquote>
+<div class="tabelle"><table><thead><tr><th>Was</th><th>Wo</th><th>Stände dieser Datei</th><th>Umfang</th><th>Lücke</th></tr></thead><tbody><tr><td><strong>Fahrplan Forschungsgelder</strong></td><td><code>docs/FORSCHUNGSFOERDERUNG.md</code></td><td>2026-08-23 bis 2026-08-26</td><td>79 KB, 1.442 Zeilen</td><td>keine benannt</td></tr><tr><td><strong>Die Schritte, abhakbar</strong></td><td><code>docs/unterlagen/01_SCHRITTE.md</code></td><td>2026-08-26 bis 2026-08-26</td><td>7 KB, 141 Zeilen</td><td>keine benannt</td></tr><tr><td><strong>Frageblatt Steuerberater</strong></td><td><code>docs/STEUERBERATER_FRAGEN.md</code> · <code>docs/frageblatt.html</code> · <code>docs/frageblatt.pdf</code></td><td>2026-08-24 bis 2026-08-26</td><td>200 KB, 817 Zeilen</td><td>Die Kleinunternehmerregelung steht nur als Aufzählungspunkt unter Frage 7. Der Fragebogen zur steuerlichen Erfassung verlangt dafür ein Kreuz.</td></tr><tr><td><strong>Vorbereitung Finanzamt</strong></td><td><code>docs/unterlagen/03_FINANZAMT.md</code></td><td>2026-08-26 bis 2026-08-26</td><td>5 KB, 122 Zeilen</td><td>Ohne ELSTER-Zertifikat geht der Fragebogen nicht ab. Das Zertifikat kommt per Brief und hat als einziger Schritt eine Vorlaufzeit.</td></tr><tr><td><strong>Sitzungsprotokolle</strong></td><td><code>docs/sessions/archiv</code></td><td>2026-05-10 bis 2026-08-26</td><td>20 KB</td><td>keine benannt</td></tr><tr><td><strong>Arbeitszeitnachweis, Tag für Tag</strong></td><td><code>docs/historie/arbeitstage.html</code> · <code>docs/historie/arbeitstage-tage.csv</code> · <code>docs/historie/arbeitstage-taetigkeiten.csv</code> · <code>docs/historie/arbeitstage.pdf</code></td><td>2026-08-24 bis 2026-08-26</td><td>7.5 MB, 12.711 Zeilen</td><td>Gemessen wird die Spanne zwischen dem ersten und dem letzten Eintrag eines Tages, nicht die geleistete Arbeit. Was vor dem ersten Eintrag geschah, ist nicht erfasst.</td></tr><tr><td><strong>Historie der Zusammenarbeit</strong></td><td><code>docs/historie/historie.html</code> · <code>docs/historie/historie.json</code></td><td>2026-08-24 bis 2026-08-24</td><td>14.1 MB, 87.781 Zeilen</td><td>Die Einordnung eines Eintrags geschieht an seinen Wörtern. Alle Zahlen zu den Marken sind deshalb Untergrenzen, keine Vollerhebung.</td></tr><tr><td><strong>Entstehung, Klaus’ Darstellung</strong></td><td><code>docs/papers/ENTSTEHUNG.md</code></td><td>2026-08-23 bis 2026-08-26</td><td>8 KB, 167 Zeilen</td><td>Eine Schilderung aus dem Gedächtnis, aufgezeichnet am 2026-08-23. Wo sie gegen die Einträge prüfbar ist, hält sie; der Rest ist Darstellung.</td></tr><tr><td><strong>Paper A, Regeln und Grundsätze</strong></td><td><code>docs/papers/PAPER_A_regeln-und-grundsaetze.md</code></td><td>2026-08-23 bis 2026-08-24</td><td>91 KB, 1.843 Zeilen</td><td>Der Werkzeug-Widerspruch ist offen und gehört vor die Zenodo-Nummer.</td></tr><tr><td><strong>Forschungskorpus</strong></td><td><code>docs/FORSCHUNGSKORPUS.md</code></td><td>2026-08-23 bis 2026-08-26</td><td>8 KB, 133 Zeilen</td><td>keine benannt</td></tr><tr><td><strong>Werkstatt-Material aus Kimhub</strong></td><td><code>docs/werkstatt</code></td><td>2026-08-23 bis 2026-08-26</td><td>4 KB</td><td>Byte-Kopien mit Prüfsummen. Sie laufen still vom Original weg, sobald dort etwas geändert und hier nicht neu kopiert wird.</td></tr><tr><td><strong>Die beiden SBKIM-Papers, DE und EN</strong></td><td><code>docs/papers/sbkim-paper-de.html</code> · <code>docs/papers/sbkim-paper-en.html</code></td><td>2026-05-18 bis 2026-05-18</td><td>46 KB, 1.130 Zeilen</td><td>Datiert auf Mai 2026 und in <code>INTERFACES.md</code> mit Paragraphennummern zitiert. Eine Änderung daran braucht eine v0.2, keine stille Nachbesserung.</td></tr><tr><td><strong>Meilensteine mit Bild</strong></td><td><code>docs/meilenstein</code> · <code>docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md</code> · <code>docs/MEILENSTEIN_VON_DER_HUELLE_ZUM_INHALT.md</code></td><td>2026-06-21 bis 2026-08-16</td><td>20 KB, 300 Zeilen</td><td>keine benannt</td></tr><tr><td><strong>Die Lehren</strong></td><td><code>docs/LEHREN.md</code></td><td>2026-08-22 bis 2026-08-22&lt;br&gt;am 2026-08-22 aus <code>CLAUDE.md</code> herausgelöst; der Inhalt reicht bis 2026-05 zurück</td><td>35 KB, 673 Zeilen</td><td>keine benannt</td></tr></tbody></table></div>
+<h2>3 · Dieselben Unterlagen, chronologisch</h2>
+<p>Nach dem Tag, an dem der erste Stand davon abgelegt wurde. Dieselbe Liste,
+andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.</p>
+<div class="tabelle"><table><thead><tr><th>Nr.</th><th>Was</th><th>erster Stand</th><th>letzter Stand</th><th>Stände</th></tr></thead><tbody><tr><td>1</td><td><strong>Sitzungsprotokolle</strong></td><td>2026-05-10</td><td>2026-08-26</td><td>238</td></tr><tr><td>2</td><td><strong>Die beiden SBKIM-Papers, DE und EN</strong></td><td>2026-05-18</td><td>2026-05-18</td><td>2</td></tr><tr><td>3</td><td><strong>Meilensteine mit Bild</strong></td><td>2026-06-21</td><td>2026-08-16</td><td>12</td></tr><tr><td>4</td><td><strong>Die Lehren</strong></td><td>2026-08-22</td><td>2026-08-22</td><td>1</td></tr><tr><td>5</td><td><strong>Entstehung, Klaus’ Darstellung</strong></td><td>2026-08-23</td><td>2026-08-26</td><td>3</td></tr><tr><td>6</td><td><strong>Fahrplan Forschungsgelder</strong></td><td>2026-08-23</td><td>2026-08-26</td><td>12</td></tr><tr><td>7</td><td><strong>Forschungskorpus</strong></td><td>2026-08-23</td><td>2026-08-26</td><td>5</td></tr><tr><td>8</td><td><strong>Paper A, Regeln und Grundsätze</strong></td><td>2026-08-23</td><td>2026-08-24</td><td>8</td></tr><tr><td>9</td><td><strong>Werkstatt-Material aus Kimhub</strong></td><td>2026-08-23</td><td>2026-08-26</td><td>5</td></tr><tr><td>10</td><td><strong>Arbeitszeitnachweis, Tag für Tag</strong></td><td>2026-08-24</td><td>2026-08-26</td><td>3</td></tr><tr><td>11</td><td><strong>Frageblatt Steuerberater</strong></td><td>2026-08-24</td><td>2026-08-26</td><td>4</td></tr><tr><td>12</td><td><strong>Historie der Zusammenarbeit</strong></td><td>2026-08-24</td><td>2026-08-24</td><td>2</td></tr><tr><td>13</td><td><strong>Die Schritte, abhakbar</strong></td><td>2026-08-26</td><td>2026-08-26</td><td>2</td></tr><tr><td>14</td><td><strong>Vorbereitung Finanzamt</strong></td><td>2026-08-26</td><td>2026-08-26</td><td>1</td></tr></tbody></table></div>
+<h2>4 · Was außerhalb der Depots liegt</h2>
+<p>Ein Werkzeug findet nur, was in einem Depot steht. Diese vier Posten stehen
+deshalb <strong>von Hand</strong> hier, und ihre Zeiträume sind nicht gerechnet, sondern
+angegeben.</p>
+<div class="tabelle"><table><thead><tr><th>Was</th><th>Wo</th><th>Zeitraum</th><th>Was daran fehlt</th></tr></thead><tbody><tr><td><strong>Belege, 75 Rechnungen</strong></td><td>Kimhub, <code>.gitignore</code>, nur auf Klaus’ Gerät</td><td>2026-03-13 bis 2026-08-04</td><td>Zwei Währungen, Euro und Dollar, getrennt gerechnet. Neun Rechnungsnummern fehlen.</td></tr><tr><td><strong>Fahrtenbuch der Werkstatt</strong></td><td>Kimhub, <code>.gitignore</code>, nur auf Klaus’ Gerät</td><td>ab 2026-08-22</td><td>Beginnt erst am 22.08. Für die Zeit davor gibt es keine Kostenaufzeichnung je Fahrt.</td></tr><tr><td><strong>Stechuhr der Werkstatt</strong></td><td>Kimhub, Browser-Speicher</td><td>2026-08-22</td><td>Zweimal gedrückt, zusammen 16 Sekunden. Als Zeitquelle unbrauchbar, und das ist der Grund, aus dem der Nachweis aus den Einträgen gerechnet wird.</td></tr><tr><td><strong>Chat-Verläufe</strong></td><td>außerhalb von Git</td><td>unbekannt</td><td>Umfang und Form sind nicht erhoben. Sie sind die einzige Quelle für das, was besprochen und verworfen wurde, und der einzige Posten dieser Liste, den keine Sitzung allein klären kann.</td></tr></tbody></table></div>
+<h2>5 · Die Protokoll-Deckung, Monat für Monat</h2>
+<p>Die Frage lautete: fällt die Dokumentation ab, oder wurden die Sitzungen nur
+länger? Beides ergibt dieselbe fallende Kurve, wenn man Einträge je Protokoll
+zählt. <strong>Tage lassen sich dagegen zählen</strong>, und das ist die Antwort.</p>
+<div class="tabelle"><table><thead><tr><th>Monat</th><th>Arbeitstage</th><th>mit Protokoll</th><th>ohne</th><th>Deckung</th></tr></thead><tbody><tr><td>2026-03</td><td>1</td><td>0</td><td>1</td><td>0 %</td></tr><tr><td>2026-04</td><td>20</td><td>0</td><td>20</td><td>0 %</td></tr><tr><td>2026-05</td><td>25</td><td>17</td><td>8</td><td>68 %</td></tr><tr><td>2026-06</td><td>27</td><td>11</td><td>16</td><td>41 %</td></tr><tr><td>2026-07</td><td>31</td><td>8</td><td>23</td><td>26 %</td></tr><tr><td>2026-08</td><td>24</td><td>12</td><td>12</td><td>50 %</td></tr><tr><td><strong>zusammen</strong></td><td><strong>128</strong></td><td><strong>48</strong></td><td><strong>80</strong></td><td><strong>38 %</strong></td></tr></tbody></table></div>
+<p>Das erste Protokoll überhaupt stammt vom <strong>2026-05-10</strong>. Vorher gab es die
+Praxis nicht, in keinem Depot. Was davor liegt, ist deshalb keine Lücke in der
+Ablage, sondern eine Zeit ohne diese Ablage. Der Unterschied ist wichtig: das
+eine wäre ein Versäumnis, das andere ist ein Datum.</p>
+<h2>6 · Was dieses Blatt nicht kann</h2>
+<p>Es zählt Dateien und Einträge. Es weiß nicht, ob ein Protokoll gut ist, ob es
+den Tag trifft, den es überschreibt, oder ob an einem gedeckten Tag noch drei
+andere Dinge geschahen. <strong>Deckung ist eine Untergrenze für Dokumentation, kein
+Maß für ihre Güte.</strong></p>
+</article>
+</section>
+
+<section class="abteilung" id="april" data-abteilung="privat">
+<header class="abt-kopf">
+<p class="marke">Abteilung 6 &middot; PRIVAT</p>
+<h1>April 2026, rekonstruiert</h1>
+<p class="unter">Der Monat ohne Protokoll, aus den Eintr&auml;gen</p>
+<p class="stempel" data-stempel="april">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="hinweis">Eine <strong>Rekonstruktion</strong>, kein Protokoll. Sie sagt, <em>was</em> geschah, mit Datum und Uhrzeit. Was besprochen und verworfen wurde, steht nirgends und l&auml;sst sich daraus nicht gewinnen. Eine Rekonstruktion, die als solche gekennzeichnet ist, tr&auml;gt in einem Antrag; eine, die wie ein Protokoll aussieht, kostet die Glaubw&uuml;rdigkeit aller echten.</p>
+<div class="knoepfe" data-knoepfe="april">
+<button type="button" data-tun="laden" data-fuer="april">&#11015; Diese Abteilung als HTML herunterladen</button>
+<button type="button" data-tun="drucken" data-fuer="april">&#128424; Nur diese Abteilung drucken / als PDF sichern</button>
+</div>
+<p class="lage" data-lage="april" role="status"></p>
+<nav class="verzeichnis"><p>In dieser Abteilung:</p><ul><li><a href="#q-docs-unterlagen-05-april-md">unterlagen/05_APRIL.md</a></li></ul></nav>
+</header>
+<article class="quelle" id="q-docs-unterlagen-05-april-md" data-quelle="docs/unterlagen/05_APRIL.md">
+<p class="herkunft">Quelle: <code>docs/unterlagen/05_APRIL.md</code></p>
+<h1>April 2026, aus den Einträgen rekonstruiert</h1>
+<blockquote><p><strong>Das ist eine Rekonstruktion, kein Protokoll.</strong> Sie ist aus den
+551 Einträgen des Monats gemacht und sagt, <strong>was</strong> geschah, mit Datum
+und Uhrzeit. Was besprochen, verworfen und warum entschieden wurde, steht
+nirgends und lässt sich daraus nicht gewinnen. Eine Rekonstruktion, die als
+solche gekennzeichnet ist, trägt in einem Antrag. Eine, die wie ein Protokoll
+aussieht, kostet die Glaubwürdigkeit aller echten.</p></blockquote>
+<p><strong>Erzeugt am 2026-08-26</strong> von <code>tools/bestand-bauen.mjs</code>.</p>
+<hr>
+<h2>1 · Warum für diesen Monat kein Protokoll vorliegt</h2>
+<p>Der April hat 551 Einträge und kein einziges Sitzungsprotokoll. Das sah
+nach der größten Lücke der ganzen Ablage aus. Die Zahl daneben löst es auf:</p>
+<div class="tabelle"><table><thead><tr><th>Depot</th><th>Einträge im April</th></tr></thead><tbody><tr><td>Mein-Rezeptbuch</td><td>288</td></tr><tr><td>Muttis-Rezeptbuch</td><td>206</td></tr><tr><td>Mein-Mixarium</td><td>55</td></tr><tr><td>Me-Mixarium</td><td>1</td></tr><tr><td><strong>Sage-Protokol</strong></td><td>1</td></tr></tbody></table></div>
+<p><strong>Die Arbeit lag im April nicht dort, wo die Protokollpflicht gilt.</strong> Sie ist
+eine Regel von Sage-Protokol, und Sage hatte in diesem Monat
+1 Eintrag. Gearbeitet
+wurde an den Apps, und deren Verfassungen verlangen eine Bau-Prüfliste, kein
+Sitzungsprotokoll.</p>
+<p>Das erste Protokoll überhaupt stammt vom <strong>2026-05-10</strong>, und in den App-Depots
+beginnt die Praxis Ende Mai. <strong>Im April gab es sie nirgends.</strong></p>
+<blockquote><p>Der Befund davor verglich netzweite Einträge gegen Protokolle eines einzigen
+Depots. Beide Zahlen waren richtig, ihr Verhältnis war es nicht.
+<strong>Eine Differenz aus zwei ungleichen Messungen ist keine Messung.</strong></p></blockquote>
+<h2>2 · Was der Monat enthält</h2>
+<div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Zeitraum</td><td>2026-04-06 bis 2026-04-30</td></tr><tr><td>Arbeitstage</td><td>20</td></tr><tr><td>Einträge</td><td>551</td></tr><tr><td>Depots</td><td>5</td></tr></tbody></table></div>
+<h2>3 · Tag für Tag</h2>
+<p>Je Tag der Zeitraum vom ersten bis zum letzten Eintrag, die Zahl der Einträge
+und die berührten Depots. Die Betreffzeilen stehen vollständig im
+Arbeitszeitnachweis; hier steht der Überblick.</p>
+<div class="tabelle"><table><thead><tr><th>Tag</th><th>erster</th><th>letzter</th><th>Einträge</th><th>Depots</th></tr></thead><tbody><tr><td>2026-04-06</td><td>14:38</td><td>23:26</td><td>24</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-07</td><td>00:20</td><td>20:10</td><td>9</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-08</td><td>18:12</td><td>22:53</td><td>8</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-09</td><td>15:02</td><td>23:55</td><td>25</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-10</td><td>00:02</td><td>09:39</td><td>14</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-11</td><td>09:56</td><td>23:32</td><td>27</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-12</td><td>10:09</td><td>19:15</td><td>32</td><td>Muttis-Rezeptbuch, Mein-Rezeptbuch, Sage-Protokol</td></tr><tr><td>2026-04-13</td><td>06:54</td><td>22:07</td><td>24</td><td>Muttis-Rezeptbuch, Mein-Rezeptbuch</td></tr><tr><td>2026-04-14</td><td>06:24</td><td>17:35</td><td>48</td><td>Muttis-Rezeptbuch, Mein-Rezeptbuch</td></tr><tr><td>2026-04-15</td><td>08:23</td><td>21:52</td><td>62</td><td>Mein-Rezeptbuch, Muttis-Rezeptbuch</td></tr><tr><td>2026-04-16</td><td>09:16</td><td>18:09</td><td>26</td><td>Muttis-Rezeptbuch, Mein-Rezeptbuch</td></tr><tr><td>2026-04-19</td><td>08:46</td><td>22:03</td><td>34</td><td>Mein-Rezeptbuch, Muttis-Rezeptbuch, Mein-Mixarium</td></tr><tr><td>2026-04-20</td><td>03:35</td><td>20:15</td><td>36</td><td>Mein-Mixarium, Mein-Rezeptbuch, Muttis-Rezeptbuch</td></tr><tr><td>2026-04-21</td><td>17:29</td><td>23:46</td><td>22</td><td>Mein-Mixarium, Muttis-Rezeptbuch, Mein-Rezeptbuch</td></tr><tr><td>2026-04-23</td><td>10:01</td><td>23:44</td><td>37</td><td>Mein-Rezeptbuch</td></tr><tr><td>2026-04-24</td><td>00:03</td><td>22:30</td><td>47</td><td>Mein-Rezeptbuch</td></tr><tr><td>2026-04-25</td><td>00:26</td><td>23:57</td><td>39</td><td>Mein-Rezeptbuch</td></tr><tr><td>2026-04-26</td><td>00:12</td><td>21:15</td><td>33</td><td>Mein-Rezeptbuch</td></tr><tr><td>2026-04-29</td><td>21:23</td><td>22:25</td><td>2</td><td>Mein-Mixarium, Me-Mixarium</td></tr><tr><td>2026-04-30</td><td>02:03</td><td>02:29</td><td>2</td><td>Mein-Mixarium</td></tr></tbody></table></div>
+<h2>4 · Was hier fehlt und nicht zu beschaffen ist</h2>
+<p>Die Einträge sagen, welche Datei wann wie geändert wurde. Sie sagen nicht,
+welche Wege verworfen wurden, woran eine Sitzung scheiterte und warum ein
+Ansatz aufgegeben wurde. Diese Auskunft steckt in den Chat-Verläufen außerhalb
+von Git, deren Umfang nicht erhoben ist.</p>
+<p><strong>Das ist die eigentliche Lücke des Monats.</strong> Sie ist nicht die fehlende Datei,
+sondern die fehlende Begründung, und sie ist auch mit einer perfekten Ablage
+nicht rückwirkend zu füllen.</p>
+</article>
+</section>
+
 <div class="mk-leiste" data-mk-leiste role="toolbar" aria-label="Markieren">
   <button type="button" data-mk-tun="gruen"><span class="mk-tupf" data-f="gruen"></span> bleibt</button>
   <button type="button" data-mk-tun="gelb"><span class="mk-tupf" data-f="gelb"></span> du entscheidest</button>
@@ -768,8 +894,8 @@ steuerliche Beratung. Die verbindlichen Felder stehen im Formular selbst.</em></
 
 
 <p class="fuss">
-  Eine Datei, vier Abteilungen. Jede einzeln zum Mitnehmen. Erzeugt aus den Markdown-Quellen des Depots
-  <em>Sage-Protokol</em> am 2026-08-26 durch
+  Eine Datei, sechs Abteilungen. Jede einzeln zum Mitnehmen. Erzeugt aus den Markdown-Quellen des Depots
+  <em>Sage-Protokol</em> am 2026-08-23 durch
   <code>tools/antragsmappe-bauen.mjs</code>. Wer den Inhalt &auml;ndern will,
   &auml;ndert die <code>.md</code>-Datei und baut neu, nicht diese Datei.
 </p>
@@ -845,7 +971,7 @@ steuerliche Beratung. Die verbindlichen Felder stehen im Formular selbst.</em></
       /* Ein toter Knopf mit Erklärung ist die schlimmste Sorte — er sieht aus
          wie Hilfe. Also den Weg nennen, der bleibt. */
       sagen(id, "Der Download ist hier gesperrt (" + (e && e.name || "Fehler")
-        + "). Nimm den Druck-Knopf daneben und sichere als PDF — der geht immer.",
+        + "). Nimm den Druck-Knopf daneben und sichere als PDF, der geht immer.",
         "fehler");
     }
   }

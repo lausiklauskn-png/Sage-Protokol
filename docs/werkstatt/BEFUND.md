@@ -49,9 +49,9 @@ je einen Schlüssel oder eine fremde Adresse ausgegeben. Das sind Fälle, die si
 formulieren lassen.
 
 **b · Regeln versagen dort, wo die Prüfung selbst unmöglich ist.** Die Regel
-*„Du hast keine Werkzeuge — schreib nie, du habest etwas ausgeführt"* wurde
-trotzdem verletzt: am 2026-08-20 stand im Bericht *„Sten hat den Code durchlaufen
-lassen."* Das konnte nicht geschehen sein. Die Regel steht seitdem samt Vorfall
+*„Du hast keine Werkzeuge"* verbietet der Truppe, eine ausgeführte Handlung zu
+behaupten. Sie wurde trotzdem verletzt: am 2026-08-20 stand im Bericht *„Sten hat
+den Code durchlaufen lassen."* Das konnte nicht geschehen sein. Die Regel steht seitdem samt Vorfall
 im Wortlaut da, und ist trotzdem ein **Dämpfer, kein Riegel**. Text lässt sich
 nicht gegen die Wirklichkeit prüfen.
 

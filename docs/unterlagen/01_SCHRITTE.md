@@ -81,8 +81,8 @@ Diese hängen an keiner Behörde. Sie können parallel zum Warten laufen.
 | | Schritt | Wirkung |
 |---|---|---|
 | **7** | **Papers auf Zenodo** → DOI | bestes Verhältnis von Aufwand zu Wirkung auf der ganzen Liste: zitierfähige Nummer und beweisbarer Zeitstempel |
-| **8** | **Blatt „Stand der Technik und Abgrenzung"**, eine Seite | **jede Fördergeberin liest dieses Blatt zuerst** |
-| **9** | **Vorleistung in Zahlen** | liegt zum Teil vor: 128 Tage, 5.775 Einträge, 33 Depots |
+| **8** | ~~Blatt „Stand der Technik und Abgrenzung"~~ **erledigt am 2026-08-26**, `docs/ABGRENZUNG.md`, Abteilung 2 der Antragsmappe | offen bleibt die Literatursuche, siehe § 6 darin |
+| **9** | **Vorleistung in Zahlen** | liegt zum Teil vor: 128 Tage, 5.775 Einträge von Hand, 33 Depots |
 | **10** | ~~Lizenz-Lücken schließen~~ **erledigt**, siehe Kasten unten | das Depot, mit dem beantragt wird, trägt MIT |
 | **11** | **Englische Projektseite**, eine Seite | Grundlage für den OTF-Antrag |
 | **12** | **Erste Hochschul-Mail**, **eine** Hochschule, nicht zwanzig | Briefentwurf im Fahrplan § 6.2 |

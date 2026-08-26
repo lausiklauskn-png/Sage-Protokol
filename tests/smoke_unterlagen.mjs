@@ -57,8 +57,13 @@ const bytes = readFileSync(MAPPE);
 const SICHT = norm(entziffern(ohneTags(html)));
 const FLIESS = norm(entziffern(ohneTags(html, false)));
 
-/* Vier Abteilungen, und die Reihenfolge ist die Reihenfolge des Vorgehens. */
-const ABTEILUNGEN = ['uebersicht', 'schritte', 'steuerberater', 'finanzamt'];
+/* Die Abteilungen, und die Reihenfolge ist die Reihenfolge des Vorgehens.
+   Wer eine ergänzt, trägt sie hier nach; die Zahl darunter wird DARAUS
+   gerechnet. Bis zum 2026-08-26 stand sie zweimal da, einmal als Liste und
+   einmal als Zahl `4`, und die Zahl wurde beim Ergänzen der Abteilungen 5
+   und 6 zu Recht rot. Zwei Stellen für dieselbe Angabe sind eine zu viel. */
+const ABTEILUNGEN = ['uebersicht', 'schritte', 'steuerberater', 'finanzamt',
+  'bestand', 'april'];
 
 /* ── 1 · Der BOM ──────────────────────────────────────────────────────── */
 
@@ -68,7 +73,8 @@ gut(bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF,
 /* ── 2 · Nichts verschluckt ───────────────────────────────────────────── */
 
 const { quellen, geprueft, fehlend } = vollstaendigkeit(html, WURZEL);
-gut(quellen.length === 4, 'vier Quelldateien in der Mappe',
+gut(quellen.length === ABTEILUNGEN.length,
+  ABTEILUNGEN.length + ' Quelldateien in der Mappe, eine je Abteilung',
   'gefunden: ' + quellen.length);
 gut(fehlend.length === 0,
   'jede der ' + geprueft + ' Quellzeilen steht in der Ansicht',
@@ -152,6 +158,15 @@ const abschnitt = (id) => {
     html.slice(i, naechste.length ? Math.min(...naechste) : html.length))));
 };
 
+/* Dieselbe Auswahl, aber MIT den Tags. Wer eine Tabellenzeile messen will,
+   braucht die Zeilen, und `abschnitt()` nimmt sie heraus. */
+const rohAbschnitt = (id) => {
+  const i = html.indexOf('id="' + id + '"');
+  const naechste = ABTEILUNGEN.map((x) => html.indexOf('id="' + x + '"'))
+    .filter((j) => j > i);
+  return html.slice(i, naechste.length ? Math.min(...naechste) : html.length);
+};
+
 const FINANZAMT = abschnitt('finanzamt');
 const UEBERSICHT = abschnitt('uebersicht');
 const STEUERBERATER = abschnitt('steuerberater');
@@ -173,9 +188,49 @@ gut(!html.includes('docs/unterlagen/02_STEUERBERATER.md'),
    weg war: die Einleitung derselben Abteilung sagt „und was noch fehlt" klein
    geschrieben. Ein Wächter, der ein Wort festnagelt, findet es irgendwann an
    der falschen Stelle wieder und verbietet nebenbei jedes Umformulieren. */
-gut((UEBERSICHT.match(/existiert nicht/g) || []).length >= 2,
-  'die Übersicht benennt mindestens zwei Dinge, die es noch gar nicht gibt',
-  'gezählt: ' + (UEBERSICHT.match(/existiert nicht/g) || []).length);
+/* UND ER NAGELT DIE AUSSAGE FEST, NICHT DIE FORMULIERUNG. Die Fassung davor
+   zählte nur „existiert nicht". Am 2026-08-26 wurde eine der Lücken
+   geschlossen, die Zeile las danach „liegt vor, offen bleibt die
+   Literatursuche", und der Wächter wurde rot, obwohl die Übersicht ehrlicher
+   war als vorher. Ein Wächter, der ein Wort festnagelt, verbietet nebenbei
+   jedes Richtigstellen. Gezählt werden deshalb die Sorten, in denen eine
+   Lücke benannt sein kann. */
+/* GEMESSEN WIRD JEDE ZEILE DER TABELLE, NICHT DIE ZAHL DER LÜCKEN-WÖRTER.
+
+   Die Fassung davor zählte nur „existiert nicht" und verlangte zwei davon.
+   Am 2026-08-26 wurde eine der Lücken geschlossen, die Zeile las danach
+   „liegt vor, offen bleibt die Literatursuche", und der Wächter wurde rot,
+   obwohl die Übersicht ehrlicher war als vorher.
+
+   Die Fassung danach zählte mehr Wörter und war zu nachsichtig: die
+   Gegenprobe ersetzte EINE Zeile durch „in Arbeit", und die anderen trugen
+   die Zahl allein. Eine Zeile, die „in Arbeit" sagt, wo nichts in Arbeit
+   ist, hat keine falsche Zahl darin und ist trotzdem eine Unwahrheit.
+
+   Jetzt braucht JEDE Zeile einen Stand aus der anerkannten Liste. */
+const STAND_WORTE = /existiert nicht|nicht geschrieben|liegt vor|steht aus|fehlt noch|Rohstoff liegt vor/;
+const luecktabelle = (() => {
+  const roh = rohAbschnitt('uebersicht');
+  const i = roh.indexOf('Was noch geschrieben werden muss');
+  if (i < 0) return [];
+  const ab = roh.slice(i);
+  const t = ab.slice(ab.indexOf('<table'), ab.indexOf('</table>'));
+  const koerper = t.slice(t.indexOf('<tbody'));
+  return [...koerper.matchAll(/<tr>(.*?)<\/tr>/gs)].map((m) => m[1]);
+})();
+
+gut(luecktabelle.length >= 3,
+  'die Übersicht führt mindestens drei Dinge, die noch anstehen',
+  'gezählt: ' + luecktabelle.length);
+
+const ohneStand = luecktabelle.filter((z) => {
+  const zellen = [...z.matchAll(/<td>(.*?)<\/td>/gs)].map((m) => m[1]);
+  return !STAND_WORTE.test(zellen[zellen.length - 1] || '');
+});
+gut(ohneStand.length === 0,
+  'jede dieser Zeilen nennt in der Stand-Spalte einen nachprüfbaren Stand',
+  'ohne Stand: ' + ohneStand.map((z) => z.replace(/<[^>]+>/g, ' ').slice(0, 70)).join('\n       '));
+
 gut(/Werkzeug-Widerspruch/.test(UEBERSICHT),
   'und die eilige offene Entscheidung, die vor die Zenodo-Nummer gehört');
 gut(/Zenodo-Fassung bleibt/.test(UEBERSICHT),

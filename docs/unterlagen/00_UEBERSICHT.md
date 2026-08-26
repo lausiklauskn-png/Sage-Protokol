@@ -34,7 +34,7 @@ allen Wegen, Begründungen und Fristen. Unterlage 1 ist sein Auszug.
 | **2 · Frageblatt Steuerberater** | `docs/frageblatt.html` und `docs/frageblatt.pdf`, Quelle `docs/STEUERBERATER_FRAGEN.md`. Steht zusätzlich als Abteilung 3 in dieser Mappe |
 | **4 · Arbeitszeitnachweis** | `docs/historie/arbeitstage.pdf` (301 Seiten) · `arbeitstage-tage.csv` · `arbeitstage-taetigkeiten.csv` · `arbeitstage.html` |
 | **5 · Forschungsunterlagen** | `docs/antragsmappe.html`, Abteilung 2. Sie ist so gebaut, dass sie **allein vollständig** ist: eigener Kopf, eigenes Datum, eigene Herkunftsangabe |
-| Gesamtdokumentation der Arbeit | `docs/historie/historie.html`, 5.823 Einträge über 128 Tage, mit Rollen und Verlauf |
+| Gesamtdokumentation der Arbeit | `docs/historie/historie.html`, 5.823 Einträge insgesamt über 128 Tage, mit Rollen und Verlauf |
 
 > **Abteilung 1 der Antragsmappe geht nicht mit.** Sie trägt Wege, Fristen und
 > persönliche Abwägungen. Für die Behörde ist Abteilung 2 gedacht, und sie
@@ -71,15 +71,16 @@ Nach dem, was der Fahrplan verlangt, und nachgesehen statt angenommen.
 
 | | warum es zählt | Stand |
 |---|---|---|
-| **Blatt „Stand der Technik und Abgrenzung"**, eine Seite | **jede Fördergeberin liest dieses Blatt zuerst.** Ohne es wirkt der Antrag naiv, mit ihm belesen | **existiert nicht** |
+| **Blatt „Stand der Technik und Abgrenzung"**, eine Seite | **jede Fördergeberin liest dieses Blatt zuerst.** Ohne es wirkt der Antrag naiv, mit ihm belesen | **liegt vor** seit 2026-08-26, `docs/ABGRENZUNG.md`. Offen bleibt die Literatursuche |
 | **Englische Projektseite**, eine Seite | Grundlage für den OTF-Antrag | **existiert nicht** |
 | **Paper C** · KI-Kompetenz im täglichen Gebrauch | anwendbar, gut für Vorträge und Medienkompetenz-Töpfe | geplant, nicht geschrieben |
 | **Paper B** · Wie KI auf den Menschen wirkt | am heikelsten, hängt am meisten von einem methodischen Partner ab | geplant, nicht geschrieben |
-| **Vorleistung in Zahlen**, als eigenes Blatt | für den Antrag | Rohstoff liegt vor: 128 Tage, 5.775 Einträge, 33 Depots |
+| **Vorleistung in Zahlen**, als eigenes Blatt | für den Antrag | Rohstoff liegt vor: 128 Tage, 5.775 Einträge von Hand, 33 Depots |
 
 **Für den Antrag reicht Paper A.** B und C sind kein Hindernis, sie sind
-Nachschub. Das fehlende **Blatt zum Stand der Technik** ist das mit der größten
-Wirkung je Seite, und es fehlt vollständig.
+Nachschub. Das **Blatt zum Stand der Technik** war das mit der größten Wirkung
+je Seite und fehlte vollständig; seit dem 2026-08-26 liegt es vor. Was daran
+offen bleibt, ist die Literatursuche, und sie steht im Blatt selbst benannt.
 
 ### Eine Lücke im Frageblatt, benannt statt umfahren
 
