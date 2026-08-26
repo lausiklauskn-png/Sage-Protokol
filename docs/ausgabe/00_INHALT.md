@@ -28,4 +28,15 @@ Die **chronologische** Ordnung der Unterlagen steht in Blatt 50.
 | `95_Antragsmappe-einreichbar.html` | Abteilung 2, das was zur Fördergeberin geht | 181 KB |
 | `95_Antragsmappe-einreichbar.pdf` | Abteilung 2, das was zur Fördergeberin geht | 582 KB |
 
+
+## Zum Lesen am Bildschirm
+
+Unter `lesefassung/` liegen dieselben Texte noch einmal, ruhiger gesetzt und
+mit einem Markier-Werkzeug für Tablet und Schreibtisch. Einstieg:
+`lesefassung/00_index.html`.
+
+**Der Markier-Modus schaltet das Auswählen ab, solange er an ist.** Damit
+öffnet auf dem Tablet kein Kopier-Menü mehr, während man über den Text zieht.
+Ist er aus, geht Auswählen und Kopieren wie auf jeder Seite.
+
 > Jede Datei ist eine Kopie. Geändert wird an der Quelle, dann neu erzeugt.

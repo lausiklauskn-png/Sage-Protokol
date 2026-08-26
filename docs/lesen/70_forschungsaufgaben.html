@@ -1,0 +1,663 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forschungsaufgaben</title>
+<meta name="robots" content="noindex">
+<style>
+:root{
+  --papier:#fbf9f4; --tinte:#22242a; --leise:#5d6470; --linie:#e3ded2;
+  --akzent:#8a5a12; --kasten:#f4f0e6;
+  --gelb:#ffe9a3; --gruen:#c9ecc4; --rosa:#ffd0d8; --blau:#cfe3ff;
+  --mass:68ch;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --papier:#14161b; --tinte:#e8e6e1; --leise:#9aa1ad; --linie:#2b3038;
+    --akzent:#e0b25e; --kasten:#1b1f26;
+    --gelb:#6b5a12; --gruen:#2d5230; --rosa:#5e2b34; --blau:#22406b;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--papier); color:var(--tinte);
+  font:1.06rem/1.72 Charter, "Iowan Old Style", Georgia, "Times New Roman", serif;
+  text-rendering:optimizeLegibility;
+}
+main{max-width:var(--mass); margin:0 auto; padding:2.2rem 1.15rem 6rem}
+
+h1,h2,h3,h4{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  line-height:1.25; overflow-wrap:anywhere; hyphens:auto;
+}
+h1{font-size:1.85rem; margin:0 0 .2rem; letter-spacing:-.01em}
+h2{font-size:1.28rem; margin:2.6rem 0 .5rem; color:var(--akzent)}
+h3{font-size:1.06rem; margin:1.9rem 0 .35rem}
+h4{font-size:.98rem; margin:1.4rem 0 .3rem; color:var(--leise)}
+h2+h3{margin-top:1rem}
+
+p{margin:0 0 1.05rem}
+/* Kein Erstzeilen-Einzug nach einer Ueberschrift: dort faengt der Gedanke an. */
+h1+p,h2+p,h3+p,h4+p,blockquote p:first-child,li p:first-child{margin-top:0}
+
+strong{font-weight:650}
+em{font-style:italic}
+a{color:var(--akzent); text-underline-offset:.18em}
+
+ul,ol{margin:0 0 1.05rem; padding-left:1.35rem}
+li{margin:.28rem 0}
+
+blockquote{
+  margin:1.3rem 0; padding:.85rem 1.05rem;
+  background:var(--kasten); border-left:3px solid var(--akzent);
+  border-radius:0 7px 7px 0;
+}
+blockquote p:last-child{margin-bottom:0}
+
+code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.86em; background:var(--kasten); padding:.12em .35em;
+  border-radius:4px; overflow-wrap:anywhere;
+}
+pre{
+  background:var(--kasten); border:1px solid var(--linie); border-radius:8px;
+  padding:.85rem 1rem; overflow-x:auto; font-size:.86rem; line-height:1.55;
+}
+pre code{background:none; padding:0; font-size:1em}
+
+/* Breiter Inhalt scrollt in SEINEM Kasten, nie die Seite. */
+.tabelle{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:1.2rem 0}
+table{border-collapse:collapse; width:100%;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      font-size:.92rem}
+th,td{text-align:left; padding:.5rem .6rem; border-bottom:1px solid var(--linie);
+      vertical-align:top; overflow-wrap:anywhere}
+th{color:var(--leise); font-weight:600; white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+
+hr{border:0; border-top:1px solid var(--linie); margin:2.4rem 0}
+
+.kopf{border-bottom:1px solid var(--linie); padding-bottom:1rem; margin-bottom:1.6rem}
+.kopf .unter{color:var(--leise); font-size:.9rem;
+             font-family:system-ui,-apple-system,sans-serif; margin:.35rem 0 0}
+.fuss{margin-top:3.5rem; padding-top:1rem; border-top:1px solid var(--linie);
+      color:var(--leise); font-size:.85rem;
+      font-family:system-ui,-apple-system,sans-serif}
+
+/* ── Die Markierungen selbst ─────────────────────────────────────────────
+   Farbe UND Unterstrich sind zwei Werkzeuge, nicht eines: eine Farbe hebt
+   eine Stelle heraus, ein Strich betont im Fluss. Wer nur Farben hat, malt
+   irgendwann alles an. */
+mark.lm{background:var(--gelb); color:inherit; padding:.06em 0; border-radius:2px}
+mark.lm[data-farbe="gruen"]{background:var(--gruen)}
+mark.lm[data-farbe="rosa"]{background:var(--rosa)}
+mark.lm[data-farbe="blau"]{background:var(--blau)}
+mark.lm[data-art="strich"]{
+  background:none; text-decoration:underline;
+  text-decoration-color:var(--akzent); text-decoration-thickness:.14em;
+  text-underline-offset:.16em;
+}
+mark.lm[data-gewaehlt]{outline:2px solid var(--akzent); outline-offset:1px}
+
+/* ── Im Markier-Modus entsteht KEINE Auswahl ──────────────────────────────
+   Das ist der ganze Riegel gegen das Kopier-Menü. touch-action:none hält
+   zusätzlich das Scrollen an, solange der Finger malt: sonst wandert die
+   Seite unter der Markierung weg. */
+body[data-modus="malen"] main{
+  -webkit-user-select:none; user-select:none;
+  -webkit-touch-callout:none; touch-action:none; cursor:crosshair;
+}
+body[data-modus="malen"] main *{cursor:crosshair}
+
+/* ── Die Leiste ──────────────────────────────────────────────────────────
+   Unten, weil dort der Daumen ist. Sie bleibt stehen, damit man beim Lesen
+   nicht nach ihr suchen muss. */
+.lm-leiste{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:.7rem;
+  z-index:50; display:flex; gap:.3rem; align-items:center;
+  padding:.4rem; border-radius:12px;
+  background:var(--kasten); border:1px solid var(--linie);
+  box-shadow:0 6px 22px rgba(0,0,0,.18);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  max-width:calc(100vw - 1.4rem); flex-wrap:wrap; justify-content:center;
+}
+.lm-leiste button{
+  /* 44px ist die kleinste Flaeche, die ein Finger zuverlaessig trifft. */
+  min-width:44px; min-height:44px; padding:.4rem .55rem;
+  border:1px solid transparent; border-radius:9px; background:none;
+  color:var(--tinte); font:inherit; font-size:.95rem; cursor:pointer;
+  display:inline-flex; align-items:center; gap:.3rem;
+}
+.lm-leiste button:hover{background:var(--papier)}
+.lm-leiste button[aria-pressed="true"]{
+  background:var(--papier); border-color:var(--akzent); font-weight:600;
+}
+.lm-leiste .farbe{width:26px; min-width:26px; height:26px; min-height:26px;
+  border-radius:50%; padding:0; border:2px solid transparent}
+.lm-leiste .farbe[data-f="gelb"]{background:var(--gelb)}
+.lm-leiste .farbe[data-f="gruen"]{background:var(--gruen)}
+.lm-leiste .farbe[data-f="rosa"]{background:var(--rosa)}
+.lm-leiste .farbe[data-f="blau"]{background:var(--blau)}
+.lm-leiste .farbe[aria-pressed="true"]{border-color:var(--tinte)}
+.lm-trenner{width:1px; height:26px; background:var(--linie); margin:0 .15rem}
+.lm-zahl{color:var(--leise); font-size:.82rem; padding:0 .4rem}
+
+.lm-hinweis{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:4.6rem;
+  z-index:51; background:var(--tinte); color:var(--papier);
+  padding:.45rem .8rem; border-radius:8px; font-size:.85rem;
+  font-family:system-ui,-apple-system,sans-serif; pointer-events:none;
+  opacity:0; transition:opacity .18s;
+}
+.lm-hinweis[data-an="ja"]{opacity:1}
+
+/* ── GEDRUCKT WIRD OHNE ALLES ────────────────────────────────────────────
+   Die Leiste ist ein Werkzeug, kein Inhalt. Und eine Markierung auf Papier
+   waere ein "das muss geaendert werden"-Streifen in einer Unterlage, die
+   jemand anders liest. */
+@media print{
+  .lm-leiste,.lm-hinweis{display:none !important}
+  mark.lm{background:none !important; color:inherit !important;
+          text-decoration:none !important; outline:0 !important}
+}
+</style>
+</head>
+<body data-blatt="forschungsaufgaben" data-modus="lesen">
+<main>
+<header class="kopf">
+<h1>Forschungsaufgaben</h1>
+<p class="unter">Was ansteht, in welcher Reihenfolge &middot; Lesefassung vom 2026-08-26</p>
+</header>
+<p><strong>Erzeugt am 2026-08-26</strong> von <code>tools/forschungsaufgaben-bauen.mjs</code>. Der Stand
+jeder Aufgabe wird <strong>an ihren Belegen gemessen</strong>, nicht hingeschrieben. Wer
+diese Datei von Hand ändert, verliert die Änderung beim nächsten Lauf.</p>
+<blockquote><p><strong>Warum sie erzeugt wird.</strong> Ob ein Beleg im Depot liegt, sieht das Blatt bei
+jedem Lauf selbst nach. Eine von Hand geführte Liste könnte hinterherhinken,
+ohne dass man es ihr ansieht.</p></blockquote>
+<hr>
+<h2>1 · Die Lage in einem Satz</h2>
+<p><strong>Von 7 Aufgaben ist keine einzige erledigt.</strong> 4 haben einen Beleg im
+Depot, 3 noch nicht, und 2 könnten ihr Ergebnis dort gar nicht zeigen.</p>
+<p>Ein Beleg sagt, dass eine Datei da ist. Er sagt nicht, dass die Aufgabe fertig
+ist. <strong>Aufgabe 3 ist der deutlichste Fall:</strong> die beiden Papers liegen seit Mai
+vor, hochgeladen ist nichts, und eine Zenodo-Nummer wäre ohnehin keine Datei.
+Was jeder Aufgabe noch fehlt, steht bei ihr einzeln.</p>
+<h2>2 · Die drei Stränge, und woran sie hängen</h2>
+<p>Sie stehen so im <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/FORSCHUNGSKORPUS.md">Forschungskorpus</a>. Was sie
+zusammenhält, ist die <strong>Bidirektionalität</strong>: die Suche fragt und antwortet, und
+die Beobachtung über Mensch und KI hat dieselbe Figur. Der Mensch prägt die KI
+über Grundsätze, die KI prägt den Menschen über Gewöhnung.</p>
+<h3>Strang 1 · Semantische, bidirektionale Suche ohne zentralen Index</h3>
+<p><strong>Die Frage:</strong> Können zwei Knoten ohne gemeinsamen Hub einander nach Bedeutung beantworten?</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Stand</td><td>belegt und datiert</td></tr><tr><td>Belege im Depot</td><td><code>docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md</code> · <code>docs/meilenstein</code> (vorhanden, seit 2026-06-21)</td></tr><tr><td>Was noch fehlt</td><td>Eine Messung gegen ein Vergleichsverfahren. Belegt ist, DASS es geht, nicht wie gut im Vergleich zu einer zentralen Vektor-Suche.</td></tr></tbody></table></div></div>
+<h3>Strang 2 · Grundsatzbasiertes gegenüber regelbasiertem Lenken</h3>
+<p><strong>Die Frage:</strong> Was lässt sich erzwingen, was muss man fragen, und wo versagt beides?</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Stand</td><td>Material und Paper A liegen vor</td></tr><tr><td>Belege im Depot</td><td><code>docs/papers/PAPER_A_regeln-und-grundsaetze.md</code> · <code>docs/werkstatt</code> (vorhanden, seit 2026-08-23)</td></tr><tr><td>Was noch fehlt</td><td>Der Versuchsaufbau ist entworfen (drei Arme mal drei Aufgabenarten), aber nicht gefahren. Fallzahl bisher eins, keine Kontrollgruppe, kein Maß.</td></tr></tbody></table></div></div>
+<h3>Strang 3 · Was die Nutzung mit Menschen macht</h3>
+<p><strong>Die Frage:</strong> Gewöhnung, Übervertrauen, Verlernen, Vermenschlichung. Und die andere Richtung: Reichweite, Tempo, Mut.</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Stand</td><td>Rohdaten liegen vor, ausgewertet ist nichts</td></tr><tr><td>Belege im Depot</td><td><code>docs/historie/arbeitstage.html</code> · <code>docs/LEHREN.md</code> (vorhanden, seit 2026-08-22)</td></tr><tr><td>Was noch fehlt</td><td>Der schärfste Einzelbefund (das Werkzeug hört nicht auf, der Mensch hätte längst aufgegeben) braucht einen Vergleichspunkt, und der verlangt eine Aussage darüber, wann ein Mensch aufgegeben hätte. Ohne methodischen Partner nicht zu beziffern.</td></tr></tbody></table></div></div>
+<h2>3 · Die Aufgaben, in der Reihenfolge des Vorgehens</h2>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th>Nr.</th><th>Aufgabe</th><th>Strang</th><th>Ergebnis im Depot</th><th>Beleg</th><th>seit</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>Blatt „Stand der Technik und Abgrenzung&quot;</td><td>alle drei</td><td><strong>Ergebnis liegt vor</strong></td><td><code>docs/ABGRENZUNG.md</code>, 95 Zeilen</td><td>2026-08-26</td></tr><tr><td><strong>2</strong></td><td>Paper A · Regeln und Grundsätze</td><td>2</td><td><strong>Ergebnis liegt vor</strong></td><td><code>docs/papers/PAPER_A_regeln-und-grundsaetze.md</code>, 1.843 Zeilen</td><td>2026-08-23</td></tr><tr><td><strong>3</strong></td><td>Die zwei vorhandenen Papers auf Zenodo</td><td>alle drei</td><td>nicht als Datei sichtbar</td><td><code>docs/papers/sbkim-paper-de.html</code> · <code>docs/papers/sbkim-paper-en.html</code>, 1.130 Zeilen</td><td>2026-05-18</td></tr><tr><td><strong>4</strong></td><td>Englische Projektseite, eine Seite</td><td>alle drei</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>5</strong></td><td>Paper C · KI-Kompetenz im täglichen Gebrauch</td><td>3</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>6</strong></td><td>Paper B · Wie KI auf den Menschen wirkt</td><td>3</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>7</strong></td><td>Vorleistung in Zahlen, als eigenes Blatt</td><td>alle drei</td><td>nicht als Datei sichtbar</td><td><code>docs/unterlagen/04_BESTAND.md</code>, 120 Zeilen</td><td>2026-08-26</td></tr></tbody></table></div></div>
+<h2>4 · Jede Aufgabe einzeln</h2>
+<h3>1 · Blatt „Stand der Technik und Abgrenzung&quot;</h3>
+<p><strong>Wozu:</strong> Jede Fördergeberin liest es zuerst. Ohne es wirkt der Antrag naiv.</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ergebnis im Depot</td><td><strong>Ergebnis liegt vor</strong>, erster Stand 2026-08-26</td></tr><tr><td>Beleg</td><td><code>docs/ABGRENZUNG.md</code></td></tr><tr><td>Was noch fehlt</td><td>Die Literatursuche. Das Blatt stützt sich auf die veröffentlichten Zwecke der genannten Verfahren, nicht auf eine systematische Recherche mit Zitaten. Es sagt das selbst in § 6.</td></tr><tr><td>Hängt ab von</td><td>nichts, kann sofort beginnen</td></tr></tbody></table></div></div>
+<h3>2 · Paper A · Regeln und Grundsätze</h3>
+<p><strong>Wozu:</strong> Der schreibbarste der drei Texte, das Material liegt fertig vor.</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ergebnis im Depot</td><td><strong>Ergebnis liegt vor</strong>, erster Stand 2026-08-23</td></tr><tr><td>Beleg</td><td><code>docs/papers/PAPER_A_regeln-und-grundsaetze.md</code></td></tr><tr><td>Was noch fehlt</td><td>Der Werkzeug-Widerspruch: vier Stellen sagen im Präsens, die Rollen hätten keine Werkzeuge. Kimhubs Verfassung sagt seit dem 2026-08-23 das Gegenteil. Gehört VOR die Zenodo-Nummer, weil eine Zenodo-Fassung stehen bleibt.</td></tr><tr><td>Hängt ab von</td><td>nichts, kann sofort beginnen</td></tr></tbody></table></div></div>
+<h3>3 · Die zwei vorhandenen Papers auf Zenodo</h3>
+<p><strong>Wozu:</strong> Zitierfähig werden geht allem voran und kostet zwei Stunden. Ohne DOI sind es Dateien in einem Depot, keine Quellen.</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ergebnis im Depot</td><td>nicht als Datei sichtbar</td></tr><tr><td>Beleg</td><td><code>docs/papers/sbkim-paper-de.html</code> · <code>docs/papers/sbkim-paper-en.html</code></td></tr><tr><td>Was noch fehlt</td><td>Die Entscheidung über die Gedankenstriche darin. Es ist eine datierte v0.1 von Mai 2026, in <code>INTERFACES.md</code> mit Paragraphennummern zitiert. Ein stilles Umschreiben erzeugte zwei Fassungen mit derselben Nummer.</td></tr><tr><td>Hängt ab von</td><td>Aufgabe 2, wenn Paper A mit hochgeladen werden soll</td></tr></tbody></table></div></div>
+<h3>4 · Englische Projektseite, eine Seite</h3>
+<p><strong>Wozu:</strong> Grundlage für den OTF-Antrag. Ohne sie ist dieser Weg zu.</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ergebnis im Depot</td><td><strong>Ergebnis fehlt</strong></td></tr><tr><td>Beleg</td><td><code>docs/PROJEKT_EN.md</code> (fehlt) · <code>docs/projekt-en.html</code> (fehlt)</td></tr><tr><td>Was noch fehlt</td><td>Alles. Und sie ist KEINE Übersetzung der deutschen Seite: der OTF fragt nach anderen Dingen. Zum Übersetzen liegt vor: <code>ABGRENZUNG.md</code>, das englische SBKIM-Paper, die Zahlen aus <code>04_BESTAND.md</code>.</td></tr><tr><td>Hängt ab von</td><td>Aufgabe 1, denn die Abgrenzung ist ihr Kern</td></tr></tbody></table></div></div>
+<h3>5 · Paper C · KI-Kompetenz im täglichen Gebrauch</h3>
+<p><strong>Wozu:</strong> Der anwendbare der drei. Passt zu Vorträgen und Medienkompetenz-Töpfen.</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ergebnis im Depot</td><td><strong>Ergebnis fehlt</strong></td></tr><tr><td>Beleg</td><td><code>docs/papers/PAPER_C_ki-kompetenz.md</code> (fehlt)</td></tr><tr><td>Was noch fehlt</td><td>Alles. Das Gerüst steht in <code>PLAN_PAPERS.md</code> mit fünf Punkten, je einer mit Beispiel aus der eigenen Arbeit. Die Beispiele liegen in <code>LEHREN.md</code> und in den Sitzungsprotokollen.</td></tr><tr><td>Hängt ab von</td><td>nichts, kann sofort beginnen</td></tr></tbody></table></div></div>
+<h3>6 · Paper B · Wie KI auf den Menschen wirkt</h3>
+<p><strong>Wozu:</strong> Der Strang mit der größten Eigenständigkeit. Zu KI-Assistenten im Alltag gibt es fast nichts, und was es gibt, fragt Menschen hinterher.</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ergebnis im Depot</td><td><strong>Ergebnis fehlt</strong></td></tr><tr><td>Beleg</td><td><code>docs/papers/PAPER_B_wirkung.md</code> (fehlt)</td></tr><tr><td>Was noch fehlt</td><td>Alles, und es ist der heikelste. Vier Stellen, an denen es kippt: die geschützte Berufsbezeichnung, keine Diagnosen, keine Zahl ohne Messung, kein PII. Hängt am meisten von einem methodischen Partner ab.</td></tr><tr><td>Hängt ab von</td><td>Aufgabe 5, weil Paper C den praktischen Teil derselben Beobachtung trägt</td></tr></tbody></table></div></div>
+<h3>7 · Vorleistung in Zahlen, als eigenes Blatt</h3>
+<p><strong>Wozu:</strong> Der Antrag verlangt eine Angabe zur Vorleistung.</p>
+<div class="tabelle"><div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ergebnis im Depot</td><td>nicht als Datei sichtbar</td></tr><tr><td>Beleg</td><td><code>docs/unterlagen/04_BESTAND.md</code></td></tr><tr><td>Was noch fehlt</td><td>Der Rohstoff liegt vor und ist gemessen. Was fehlt, ist die Auswahl: welche Zahlen in den Antrag gehören und welche nicht.</td></tr><tr><td>Hängt ab von</td><td>nichts, kann sofort beginnen</td></tr></tbody></table></div></div>
+<h2>5 · Was zuerst dran ist, und warum</h2>
+<p><strong>Die drei ohne Abhängigkeit können sofort beginnen:</strong> Aufgabe 2 (der
+Werkzeug-Widerspruch, eine Entscheidung von Klaus), Aufgabe 5 (Paper C, das
+Gerüst steht) und Aufgabe 7 (die Auswahl der Zahlen).</p>
+<p><strong>Aufgabe 3 ist die billigste mit der größten Wirkung.</strong> Zwei Stunden, und die
+Papers werden zitierfähig. Sie wartet auf eine Entscheidung, nicht auf Arbeit.</p>
+<p><strong>Aufgabe 6 kommt zuletzt.</strong> Nicht weil sie unwichtig wäre, sondern weil sie am
+meisten von einem methodischen Partner abhängt und die meisten Stellen hat, an
+denen sie kippen kann.</p>
+<h2>6 · Was dieses Blatt nicht kann</h2>
+<p>Es misst, <strong>ob</strong> eine Datei da ist, nicht ob sie taugt. „Liegt vor&quot; heißt nicht
+„erledigt&quot;. Bei jeder Aufgabe steht deshalb getrennt, was noch fehlt, und diese
+Spalte wird von Hand geführt.</p>
+<p><strong>Und es kennt keine Arbeit, die außerhalb des Depots geschieht.</strong> Ein Gespräch
+mit einem Steuerberater, eine Mail an eine Hochschule, ein Zenodo-Upload
+hinterlassen hier keine Spur, bis jemand sie einträgt.</p>
+<footer class="fuss">
+<p><strong>Lesefassung.</strong> Derselbe Text wie in der Mappe, nur ruhiger gesetzt. Ge&auml;ndert wird an der Quelle <code>docs/unterlagen/06_FORSCHUNGSAUFGABEN.md</code>, dann ziehen beide Fassungen nach.</p>
+<p>&larr; <a href="60_april.html">April 2026, rekonstruiert</a> &nbsp;&middot;&nbsp; <a href="75_abgrenzung.html">Stand der Technik und Abgrenzung</a> &rarr;</p>
+<p>Markierungen liegen nur in <strong>diesem</strong> Browser und werden nicht gedruckt.</p>
+</footer>
+</main>
+
+<div class="lm-leiste" role="toolbar" aria-label="Markieren">
+  <button type="button" data-lm="modus" aria-pressed="false"
+          title="Markier-Modus an oder aus">&#9998; Markieren</button>
+  <span class="lm-trenner"></span>
+  <button type="button" class="farbe" data-lm="farbe" data-f="gelb"
+          aria-pressed="true" aria-label="Gelb" title="Gelb"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="gruen"
+          aria-pressed="false" aria-label="Gr&uuml;n" title="Gr&uuml;n"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="rosa"
+          aria-pressed="false" aria-label="Rosa" title="Rosa"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="blau"
+          aria-pressed="false" aria-label="Blau" title="Blau"></button>
+  <button type="button" data-lm="strich" aria-pressed="false"
+          title="Unterstreichen statt f&auml;rben">&#12316;</button>
+  <span class="lm-trenner"></span>
+  <button type="button" data-lm="weg" title="Markierung entfernen: antippen">&#10005;</button>
+  <button type="button" data-lm="alles" title="Alle entfernen">&#128465;</button>
+  <span class="lm-zahl" data-lm-zahl>0</span>
+</div>
+<div class="lm-hinweis" data-lm-hinweis></div>
+<script>
+(function(){
+  "use strict";
+  var WURZEL = document.querySelector("main");
+  if(!WURZEL) return;
+
+  var SCHLUESSEL = "lese_marken_" + (document.body.getAttribute("data-blatt") || "x");
+  var leiste  = document.querySelector(".lm-leiste");
+  var hinweis = document.querySelector("[data-lm-hinweis]");
+  var zahlEl  = document.querySelector("[data-lm-zahl]");
+
+  var modus   = false;      /* malen an oder aus */
+  var farbe   = "gelb";
+  var strich  = false;      /* unterstreichen statt faerben */
+  var marken  = [];
+  var gewaehlt = null;
+  var speicherHinBekommen = false;
+
+  /* ── Speicher ────────────────────────────────────────────────────────────
+     Er kann versagen: im privaten Fenster und bei gesperrten Seitendaten
+     wirft localStorage. Wer fuenfzig Stellen markiert und es erst beim
+     naechsten Oeffnen merkt, hat die Arbeit umsonst gemacht. */
+  function lesen(){
+    try{ var r = localStorage.getItem(SCHLUESSEL); return r ? JSON.parse(r) : []; }
+    catch(e){ return []; }
+  }
+  function schreiben(){
+    try{ localStorage.setItem(SCHLUESSEL, JSON.stringify(marken)); }
+    catch(e){
+      if(!speicherHinBekommen){
+        speicherHinBekommen = true;
+        sagen("Dieser Browser speichert nichts. Die Markierungen sind beim Schliessen weg.", 6000);
+      }
+    }
+  }
+
+  function sagen(text, dauer){
+    if(!hinweis) return;
+    hinweis.textContent = text;
+    hinweis.setAttribute("data-an","ja");
+    clearTimeout(sagen._t);
+    sagen._t = setTimeout(function(){ hinweis.setAttribute("data-an","nein"); },
+      dauer || 2200);
+  }
+
+  /* ── Wo ist das Wort unter dem Finger ───────────────────────────────────
+     Zwei Namen fuer dieselbe Sache: Chrome und Safari koennen
+     caretRangeFromPoint, Firefox caretPositionFromPoint. Wer nur den einen
+     kennt, hat ein Werkzeug, das in einem von drei Browsern nichts tut. */
+  function punktZuStelle(x, y){
+    var el = document.elementFromPoint(x, y);
+    if(!el || !WURZEL.contains(el)) return null;
+    if(document.caretRangeFromPoint){
+      var r = document.caretRangeFromPoint(x, y);
+      return r ? { knoten:r.startContainer, pos:r.startOffset } : null;
+    }
+    if(document.caretPositionFromPoint){
+      var p = document.caretPositionFromPoint(x, y);
+      return p ? { knoten:p.offsetNode, pos:p.offset } : null;
+    }
+    return null;
+  }
+
+  var WORT = /[\wÀ-ſ0-9]/;
+
+  /* AUF GANZE WOERTER RUNDEN. Ein Finger ist breiter als ein Buchstabe;
+     ohne das Runden endet jede Markierung mitten im Wort, jedes Mal
+     woanders, und das sieht nach einem Fehler aus. */
+  function wortAnfang(t, i){
+    while(i > 0 && WORT.test(t.charAt(i-1))) i--;
+    return i;
+  }
+  function wortEnde(t, i){
+    while(i < t.length && WORT.test(t.charAt(i))) i++;
+    return i;
+  }
+
+  /* Alle Textknoten zwischen zwei Punkten, in Dokument-Reihenfolge. */
+  function textKnotenIn(bereich){
+    var raus = [];
+    var geher = document.createTreeWalker(WURZEL, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(n){
+        if(!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        if(n.parentNode.closest && n.parentNode.closest(".lm-leiste,.lm-hinweis"))
+          return NodeFilter.FILTER_REJECT;
+        return bereich.intersectsNode(n)
+          ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var n; while((n = geher.nextNode())) raus.push(n);
+    return raus;
+  }
+
+  var id = 0;
+  function neueId(){ return "m" + (Date.now().toString(36)) + (id++); }
+
+  /* Eine Huelle je Textknoten. UEBER ABSATZGRENZEN HINWEG GEHT KEINE
+     EINZELNE HUELLE: <mark> darf keine Bloecke umschliessen, das waere
+     ungueltiges HTML und der Browser flickt es unvorhersehbar. */
+  function huellen(bereich, mid){
+    var knoten = textKnotenIn(bereich);
+    var gemacht = [];
+    for(var i=0;i<knoten.length;i++){
+      var t = knoten[i];
+      var von = (t === bereich.startContainer) ? bereich.startOffset : 0;
+      var bis = (t === bereich.endContainer) ? bereich.endOffset : t.nodeValue.length;
+      if(bis <= von) continue;
+      var r = document.createRange();
+      r.setStart(t, von); r.setEnd(t, bis);
+      var m = document.createElement("mark");
+      m.className = "lm";
+      m.setAttribute("data-lm-id", mid);
+      m.setAttribute("data-farbe", farbe);
+      if(strich) m.setAttribute("data-art","strich");
+      try{ r.surroundContents(m); gemacht.push(m); }
+      catch(e){ /* ueberlappt eine bestehende Huelle: dieser Knoten faellt aus */ }
+    }
+    return gemacht;
+  }
+
+  function textVon(mid){
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    var s = "";
+    for(var i=0;i<teile.length;i++) s += teile[i].textContent;
+    return s.replace(/\s+/g," ").trim();
+  }
+
+  /* Das wievielte Vorkommen dieses Textes im Blatt. Damit findet er sich
+     nach einem Neubau wieder, auch wenn er mehrfach vorkommt. */
+  function vorkommen(text){
+    if(!text) return 1;
+    var ganz = WURZEL.textContent.replace(/\s+/g," ");
+    var bis  = ganz.indexOf(text);
+    if(bis < 0) return 1;
+    var n = 1, p = 0;
+    while((p = ganz.indexOf(text, p)) >= 0 && p < bis){ n++; p += text.length; }
+    return n;
+  }
+
+  function zaehlen(){
+    if(zahlEl) zahlEl.textContent = String(marken.length);
+  }
+
+  /* ── Malen ─────────────────────────────────────────────────────────────── */
+
+  var start = null;
+
+  function anfangen(x, y){
+    start = punktZuStelle(x, y);
+    return !!start;
+  }
+
+  function fertig(x, y){
+    if(!start) return;
+    var ende = punktZuStelle(x, y);
+    start = null;
+    if(!ende) return;
+
+    var a = start0, b = ende;
+    var r = document.createRange();
+    try{
+      r.setStart(a.knoten, a.pos);
+      r.setEnd(b.knoten, b.pos);
+      if(r.collapsed){ r.setStart(b.knoten, b.pos); r.setEnd(a.knoten, a.pos); }
+    }catch(e){
+      /* Rueckwaerts gezogen: Anfang und Ende tauschen. */
+      try{ r.setStart(b.knoten, b.pos); r.setEnd(a.knoten, a.pos); }
+      catch(e2){ return; }
+    }
+    if(r.collapsed) return;
+
+    /* Auf ganze Woerter runden. */
+    if(r.startContainer.nodeType === 3)
+      r.setStart(r.startContainer, wortAnfang(r.startContainer.nodeValue, r.startOffset));
+    if(r.endContainer.nodeType === 3)
+      r.setEnd(r.endContainer, wortEnde(r.endContainer.nodeValue, r.endOffset));
+    if(r.collapsed || !r.toString().trim()) return;
+
+    var mid = neueId();
+    var gemacht = huellen(r, mid);
+    if(!gemacht.length) return;
+
+    var text = textVon(mid);
+    marken.push({ id:mid, text:text, nr:vorkommen(text),
+                  farbe:farbe, art: strich ? "strich" : "flaeche" });
+    schreiben(); zaehlen();
+  }
+
+  var start0 = null;
+
+  WURZEL.addEventListener("pointerdown", function(ev){
+    if(!modus) return;
+    ev.preventDefault();          /* KEINE Auswahl, also auch kein Menue */
+    start0 = punktZuStelle(ev.clientX, ev.clientY);
+    start  = start0;
+  });
+  WURZEL.addEventListener("pointerup", function(ev){
+    if(!modus) return;
+    ev.preventDefault();
+    var mk = ev.target.closest ? ev.target.closest("mark.lm") : null;
+    if(mk && start0 && punktZuStelle(ev.clientX, ev.clientY)
+       && mk === (ev.target.closest ? ev.target.closest("mark.lm") : null)){
+      /* Ein Tipp AUF eine Markierung waehlt sie aus, statt eine neue zu malen. */
+      var d = Math.abs(ev.clientX - (start0.x||ev.clientX));
+      if(!d){ waehlen(mk.getAttribute("data-lm-id")); start0=null; start=null; return; }
+    }
+    fertig(ev.clientX, ev.clientY);
+    start0 = null;
+  });
+
+  function waehlen(mid){
+    entwaehlen();
+    gewaehlt = mid;
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    for(var i=0;i<teile.length;i++) teile[i].setAttribute("data-gewaehlt","ja");
+    sagen("Markierung gewaehlt. Mit \u2715 entfernen.");
+  }
+  function entwaehlen(){
+    var alle = WURZEL.querySelectorAll("mark.lm[data-gewaehlt]");
+    for(var i=0;i<alle.length;i++) alle[i].removeAttribute("data-gewaehlt");
+    gewaehlt = null;
+  }
+
+  function abnehmen(mid){
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    for(var i=0;i<teile.length;i++){
+      var m = teile[i], p = m.parentNode;
+      while(m.firstChild) p.insertBefore(m.firstChild, m);
+      p.removeChild(m);
+      p.normalize();
+    }
+    marken = marken.filter(function(x){ return x.id !== mid; });
+    schreiben(); zaehlen();
+  }
+
+  /* ── Die Leiste ────────────────────────────────────────────────────────── */
+
+  function modusSetzen(an){
+    modus = an;
+    document.body.setAttribute("data-modus", an ? "malen" : "lesen");
+    var k = leiste.querySelector('[data-lm="modus"]');
+    if(k) k.setAttribute("aria-pressed", an ? "true" : "false");
+    entwaehlen();
+    sagen(an
+      ? "Markieren an. Ueber den Text ziehen. Auswaehlen und Kopieren ist solange aus."
+      : "Markieren aus. Auswaehlen und Kopieren geht wieder.");
+  }
+
+  leiste.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-lm]") : null;
+    if(!k) return;
+    var tun = k.getAttribute("data-lm");
+
+    if(tun === "modus"){ modusSetzen(!modus); return; }
+
+    if(tun === "farbe"){
+      farbe = k.getAttribute("data-f");
+      strich = false;
+      var fs = leiste.querySelectorAll('[data-lm="farbe"]');
+      for(var i=0;i<fs.length;i++)
+        fs[i].setAttribute("aria-pressed", fs[i]===k ? "true" : "false");
+      leiste.querySelector('[data-lm="strich"]').setAttribute("aria-pressed","false");
+      if(gewaehlt){
+        var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+gewaehlt+'"]');
+        for(var j=0;j<teile.length;j++){
+          teile[j].setAttribute("data-farbe", farbe);
+          teile[j].removeAttribute("data-art");
+        }
+        marken.forEach(function(m){
+          if(m.id===gewaehlt){ m.farbe=farbe; m.art="flaeche"; }
+        });
+        schreiben();
+      }
+      if(!modus) modusSetzen(true);
+      return;
+    }
+
+    if(tun === "strich"){
+      strich = !strich;
+      k.setAttribute("aria-pressed", strich ? "true" : "false");
+      if(gewaehlt){
+        var t2 = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+gewaehlt+'"]');
+        for(var q=0;q<t2.length;q++){
+          if(strich) t2[q].setAttribute("data-art","strich");
+          else t2[q].removeAttribute("data-art");
+        }
+        marken.forEach(function(m){
+          if(m.id===gewaehlt) m.art = strich ? "strich" : "flaeche";
+        });
+        schreiben();
+      }
+      if(!modus) modusSetzen(true);
+      return;
+    }
+
+    if(tun === "weg"){
+      if(gewaehlt){ abnehmen(gewaehlt); entwaehlen(); sagen("Entfernt."); }
+      else sagen("Erst eine Markierung antippen.");
+      return;
+    }
+
+    if(tun === "alles"){
+      if(!marken.length){ sagen("Es gibt keine."); return; }
+      /* ⚠ EINE RUECKFRAGE, UND SIE NENNT DIE ZAHL. Alles zu loeschen ist der
+         einzige Schritt hier, der Arbeit vernichtet, und er laesst sich nicht
+         zuruecknehmen. */
+      if(!confirm("Alle " + marken.length + " Markierungen dieses Blattes entfernen?")) return;
+      marken.slice().forEach(function(m){ abnehmen(m.id); });
+      entwaehlen(); sagen("Alle entfernt.");
+      return;
+    }
+  });
+
+  /* ── Wiederherstellen ──────────────────────────────────────────────────
+     Nach dem Text gesucht, nicht nach der Stelle. Was sich nicht mehr
+     findet, heisst VERWAIST und wird gemeldet, statt lautlos zu fehlen. */
+  function wieder(){
+    var alt = lesen();
+    if(!alt.length) return;
+    var verwaist = 0;
+    alt.forEach(function(m){
+      var r = suchen(m.text, m.nr);
+      if(!r){ verwaist++; return; }
+      var vorherFarbe = farbe, vorherStrich = strich;
+      farbe = m.farbe || "gelb"; strich = (m.art === "strich");
+      var gemacht = huellen(r, m.id);
+      farbe = vorherFarbe; strich = vorherStrich;
+      if(gemacht.length) marken.push(m); else verwaist++;
+    });
+    schreiben(); zaehlen();
+    if(verwaist) sagen(verwaist + " Markierung(en) finden ihre Stelle nicht mehr.", 5000);
+  }
+
+  /* Den n-ten Treffer eines Textes als Bereich. */
+  function suchen(text, nr){
+    if(!text) return null;
+    var geher = document.createTreeWalker(WURZEL, NodeFilter.SHOW_TEXT, {
+      acceptNode:function(n){
+        return (n.nodeValue && n.nodeValue.trim())
+          ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var knoten = [], ganz = "", n;
+    while((n = geher.nextNode())){ knoten.push({ n:n, von:ganz.length }); ganz += n.nodeValue; }
+    var flach = ganz.replace(/\s+/g," ");
+    var ziel = text.replace(/\s+/g," ");
+    var p = -1, k = 0;
+    do{ p = flach.indexOf(ziel, p+1); k++; }while(p >= 0 && k < (nr||1));
+    if(p < 0) return null;
+
+    /* Die flache Stelle zurueck in den Knoten rechnen. */
+    var roh = 0, gesehen = 0;
+    for(var i=0;i<ganz.length && gesehen < p;i++){
+      if(/\s/.test(ganz.charAt(i))){
+        if(i>0 && /\s/.test(ganz.charAt(i-1))) continue;
+      }
+      gesehen++; roh = i+1;
+    }
+    var a = stelleZuKnoten(knoten, roh);
+    var b = stelleZuKnoten(knoten, roh + ziel.length);
+    if(!a || !b) return null;
+    var r = document.createRange();
+    try{ r.setStart(a.n, a.pos); r.setEnd(b.n, b.pos); }catch(e){ return null; }
+    return r.collapsed ? null : r;
+  }
+  function stelleZuKnoten(knoten, pos){
+    for(var i=0;i<knoten.length;i++){
+      var k = knoten[i], laenge = k.n.nodeValue.length;
+      if(pos <= k.von + laenge) return { n:k.n, pos: Math.max(0, pos - k.von) };
+    }
+    var l = knoten[knoten.length-1];
+    return l ? { n:l.n, pos:l.n.nodeValue.length } : null;
+  }
+
+  wieder();
+  document.body.setAttribute("data-modus","lesen");
+
+  /* Fuer die Probe. Gibt nur heraus, was ohnehin auf dem Schirm steht. */
+  window.__lese = {
+    modus: function(){ return modus; },
+    marken: function(){ return marken.slice(); },
+    setzeModus: modusSetzen,
+    farbeWaehlen: function(f){ farbe = f; },
+    strichWaehlen: function(b){ strich = !!b; },
+    malen: function(x1,y1,x2,y2){
+      start0 = punktZuStelle(x1,y1); start = start0;
+      fertig(x2,y2); start0 = null;
+    },
+    waehlen: waehlen,
+    abnehmen: abnehmen,
+    bereit: true
+  };
+})();
+</script>
+</body>
+</html>
