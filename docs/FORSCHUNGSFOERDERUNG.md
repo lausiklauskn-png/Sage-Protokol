@@ -48,8 +48,8 @@ Wettbewerb**. Wer die Kriterien erfüllt, bekommt sie, und sie greift
 Wege, der nicht nur nach vorn schaut, sondern auch auf das, was bereits gebaut
 wurde.
 
-> ⚠ **Hier stand „der wichtigste", und das ist seit dem 2026-08-24 nicht mehr
-> zu halten.** Klaus ist **angestellt und hat kein Gewerbe** (Abschnitt 9). Die
+> ⚠ **Dieser Weg steht unter Vorbehalt.** Klaus ist **angestellt und hat kein
+> Gewerbe** (Abschnitt 9). Die
 > Forschungszulage setzt aber jemanden mit Gewinneinkünften voraus. Ob die fünf
 > Monate rückwirkend noch zählen, wenn die Tätigkeit erst jetzt angemeldet wird,
 > ist **offen und die erste Frage an den Steuerberater** (Weg 2). Bis dahin
@@ -197,14 +197,13 @@ Bildschirmzeit, Spiele und soziale Netze gibt es Forschungen. **Für
 KI-Assistenten im Alltag gibt es fast nichts.** Das ist eine echte Lücke, kein
 gefundenes Thema.
 
-> **Ein Befund aus der eigenen Nutzung, und er berichtigt den naheliegenden
-> Satz** (Klaus 2026-08-24): *„Claude sagt ab und zu nein, aber KI ermuntert
-> immer weiterzumachen und sucht sehr lange einen Ausweg, bis es wirklich keinen
-> mehr gibt. Der Mensch hätte längst aufgegeben."*
+> **Ein Befund aus der eigenen Nutzung** (Klaus 2026-08-24): *„Claude sagt ab
+> und zu nein, aber KI ermuntert immer weiterzumachen und sucht sehr lange einen
+> Ausweg, bis es wirklich keinen mehr gibt. Der Mensch hätte längst
+> aufgegeben."*
 >
-> **Hier stand vorher „ein Werkzeug, das nie ‚nein' sagt".** Das ist bequem
-> gesagt und falsch. Es sagt nein. Was es nicht tut, ist **aufhören**. Der
-> Unterschied ist nicht klein, er verschiebt die ganze Frage: nicht die
+> **Es sagt nein. Was es nicht tut, ist aufhören.** Der Unterschied ist nicht
+> klein, er verschiebt die ganze Frage: nicht die
 > **Willfährigkeit** ist das Suchtmerkmal, sondern die **Ausdauer**. Ein Mensch,
 > der dreimal keinen Weg findet, hört auf, und dieses Aufhören ist eine
 > natürliche Bremse. Ein Werkzeug, das beim vierten Mal einen vierten Vorschlag
@@ -213,8 +212,8 @@ gefundenes Thema.
 > **Damit ist es zugleich die überprüfbarere Frage.** „Sagt es zu oft ja" lässt
 > sich schlecht messen. „Wie lange wird weitergesucht, nachdem ein Mensch
 > aufgehört hätte" lässt sich zählen: an Runden, an Zeit, an Kosten, und die
-> Daten dafür liegen im Fahrtenbuch. Gehört nach **Paper B** (dort berichtigt
-> die Beobachtung die Zeile *„ohne Ermüden, ohne Nein"*) und nach **Paper C**,
+> Daten dafür liegen im Fahrtenbuch. Gehört nach **Paper B** und nach
+> **Paper C**,
 > wo das Gegenstück steht: zu erkennen, wann man selbst aufhören sollte, ist
 > eine Kompetenz, und sie wird erst gebraucht, seit das Werkzeug es nicht mehr
 > vormacht. Siehe [`papers/PLAN_PAPERS.md`](papers/PLAN_PAPERS.md).
@@ -500,23 +499,20 @@ den ausgecheckten Stand, siehe den Kasten darunter). Befund:
 | eigene „Nutzungslizenz" (*Alle Rechte vorbehalten, soweit nicht eingeräumt*) | **26** |
 | gar keine Lizenz-Datei | **1**, `Meine-In-and-Out-Book` |
 
-> ⚠ **Hier stand bis zum 2026-08-24 „3 · 28 · 2", und beide Randzahlen waren
-> falsch** (Klaus hatte die Zeile angestrichen: *„andere Repos wurden auch zu
-> Open Source erklärt"*). Er hatte recht, und die Ursachen sind zwei
-> verschiedene, die es beide wert sind, hier stehen zu bleiben:
+> ⚠ **Drei Angaben zur Zählung, damit sie nachprüfbar ist.**
 >
-> **Zu wenig MIT, weil im selben Zug gemessen und geändert wurde.**
-> `Kim-Bell`, `Kimseek` und `Kimboard` haben MIT am **2026-08-23** bekommen,
-> mit der Commit-Nachricht *„dieses Repo gehört zum Forschungskorpus"*, also am
-> Tag der Zählung. Gezählt wurde vorher, geändert danach, **nachgezählt nie**.
+> **Drei der sechs MIT-Depots wurden am Tag der Zählung umgestellt.**
+> `Kim-Bell`, `Kimseek` und `Kimboard` tragen MIT seit dem **2026-08-23**, mit
+> der Commit-Nachricht *„dieses Repo gehört zum Forschungskorpus"*. Wer die
+> Zahl gegen einen älteren Stand prüft, findet dort drei.
 >
-> **Zu viel „ohne Lizenz", weil der Klon veraltet war.** `BookLedgerPro` trägt
-> seit dem **2026-08-16** eine Nutzungslizenz. Im Container lag ein älterer
-> Stand ohne die Datei. Das ist genau die Falle aus
-> [`../CLAUDE.md` § Sitzungsstart-Pflicht](../CLAUDE.md): eine Aussage über den
-> Stand eines Depots ohne vorheriges `fetch` ist kein Befund.
+> **Der Stand ist der von `origin/main`, nicht der eines Klons.**
+> `BookLedgerPro` trägt seit dem **2026-08-16** eine Nutzungslizenz; ein
+> älterer Klon zeigt sie nicht. Eine Aussage über den Stand eines Depots ohne
+> vorheriges `fetch` ist kein Befund
+> ([`../CLAUDE.md` § Sitzungsstart-Pflicht](../CLAUDE.md)).
 >
-> **Und die eine verbliebene Null ist keine Nachlässigkeit.**
+> **Und die eine Null ist keine Nachlässigkeit.**
 > `Meine-In-and-Out-Book` hat keine Lizenz-Datei, weil es **überhaupt keinen
 > Commit hat**: ein angelegtes, nie befülltes Depot (`git ls-remote --heads`
 > liefert nichts). Ein leeres Depot ohne Lizenz ist ein anderer Sachverhalt als
@@ -659,18 +655,12 @@ ersten Blick aussieht. Was gebraucht wird, ist eine **Stundenaufzeichnung je
 Vorhaben**: Datum, Vorhaben, Stunden, Tätigkeit.
 
 > ⚠ **„Seit dem 10.03.2026" ist der bequeme Satz, und er hält nicht ganz.**
-> Ausgezählt am 2026-08-24, nachgerechnet am 2026-08-26: am **10.03.** wurde das
-> erste Depot angelegt, **zwei Einträge**, danach **26 Tage ohne einen einzigen**.
+> Ausgezählt am 2026-08-26: am **10.03.** wurde das erste Depot angelegt,
+> **zwei Einträge**, danach **26 Tage ohne einen einzigen**.
 > Die durchgehende Arbeit beginnt am **06.04.2026**, und ab da sind es
 > **127 Arbeitstage in 141 Kalendertagen** (06.04. bis 24.08., beide mitgezählt).
 > Unterbrochen wird sie **neunmal**, die längste Unterbrechung dauert **drei Tage**
 > (03. bis 05.05.), keine andere länger als zwei.
->
-> ⚠ **Bis zum 2026-08-26 stand hier „140 Kalendertage" und „genau eine Lücke von
-> vier Tagen".** Beides war falsch, und die zweite Angabe war die gefährlichere:
-> neben diesem Text liegt die Tages-Tabelle, in der jeder die Unterbrechungen
-> nachzählen kann. Eine Zahl, die man selbst berichtigt, trägt weiter als eine,
-> die jemand anders berichtigt.
 >
 > **Für den Antrag ist das zweite Datum das stärkere**, nicht das frühere: ein
 > Datum, hinter dem eine Lücke von fast vier Wochen steht, lädt zur Nachfrage ein;

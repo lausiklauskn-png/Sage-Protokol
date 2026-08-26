@@ -4,17 +4,17 @@
 kommen aus `git log` und aus den Dateien selbst. Wer diese Datei von Hand
 ändert, verliert die Änderung beim nächsten Lauf.
 
-> **Warum sie erzeugt wird.** Der Bestand ändert sich. Eine Liste von Hand ist
-> am Tag nach dem Schreiben falsch und sieht dabei genauso aus wie eine richtige.
+> **Warum sie erzeugt wird.** Der Bestand ändert sich. Zeitraum und Umfang
+> kommen deshalb bei jedem Lauf frisch aus `git log` und aus den Dateien
+> selbst, nicht aus einer gepflegten Liste.
 
 ---
 
 ## 1 · Die Kennzahlen, jede mit ihrer Definition
 
-Zwei Zahlen für dieselbe Sache sind ein Widerspruch, sobald jemand sie
-nebeneinander liest. Am 2026-08-26 standen 5.823 und
-5.775 in derselben Mappe, beide „Einträge"
-genannt. Beide waren richtig. Deshalb trägt hier jede Zahl, was sie zählt.
+**Jede Zahl trägt, was sie zählt.** Zwei Angaben für dieselbe Sache sind für
+jeden, der sie nebeneinander liest, ein Widerspruch, auch wenn beide stimmen.
+Die Definition steht deshalb in derselben Zeile wie der Wert.
 
 | Kennzahl | Wert | Was genau gezählt wird |
 |---|---|---|
@@ -39,7 +39,7 @@ In dieser Reihenfolge nimmt man sie in die Hand.
 
 | Was | Wo | Stände dieser Datei | Umfang | Lücke |
 |---|---|---|---|---|
-| **Fahrplan Forschungsgelder** | `docs/FORSCHUNGSFOERDERUNG.md` | 2026-08-23 bis 2026-08-26 | 79 KB, 1.442 Zeilen | keine benannt |
+| **Fahrplan Forschungsgelder** | `docs/FORSCHUNGSFOERDERUNG.md` | 2026-08-23 bis 2026-08-26 | 78 KB, 1.432 Zeilen | keine benannt |
 | **Die Schritte, abhakbar** | `docs/unterlagen/01_SCHRITTE.md` | 2026-08-26 bis 2026-08-26 | 7 KB, 141 Zeilen | keine benannt |
 | **Frageblatt Steuerberater** | `docs/STEUERBERATER_FRAGEN.md` · `docs/frageblatt.html` · `docs/frageblatt.pdf` | 2026-08-24 bis 2026-08-26 | 200 KB, 817 Zeilen | Die Kleinunternehmerregelung steht nur als Aufzählungspunkt unter Frage 7. Der Fragebogen zur steuerlichen Erfassung verlangt dafür ein Kreuz. |
 | **Vorbereitung Finanzamt** | `docs/unterlagen/03_FINANZAMT.md` | 2026-08-26 bis 2026-08-26 | 5 KB, 122 Zeilen | Ohne ELSTER-Zertifikat geht der Fragebogen nicht ab. Das Zertifikat kommt per Brief und hat als einziger Schritt eine Vorlaufzeit. |
@@ -59,17 +59,6 @@ In dieser Reihenfolge nimmt man sie in die Hand.
 Nach dem Tag, an dem der erste Stand davon abgelegt wurde. Dieselbe Liste,
 andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.
 
-> **Hier stand bis zum 2026-08-26 eine Spalte „Stände".** Sie zählte, wie oft
-> ein Posten geändert wurde, und für das Protokoll-Archiv war das die Zahl der
-> Sitzungen: sie stieg mit **jedem** Commit, der dort etwas ablegte, also am
-> Ende jeder Sitzung. Das Blatt war damit nach jedem Abschluss veraltet, und
-> der Wächter meldete das zu Recht.
->
-> **Eine Kennzahl, die sich bei jedem Abschluss selbst ungültig macht, ist
-> keine.** Sie erzwang einen zusätzlichen Commit nach dem letzten, und wer ihn
-> vergaß, hinterließ der nächsten Sitzung eine rote Probe ohne Fehler dahinter.
-> Die Spalte ist heraus. Die Ordnung dieser Tabelle steht in den **Daten**, und
-> die ändern sich nicht mehr.
 
 | Nr. | Was | erster Stand | letzter Stand |
 |---|---|---|---|

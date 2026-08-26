@@ -4,11 +4,9 @@
 jeder Aufgabe wird **an ihren Belegen gemessen**, nicht hingeschrieben. Wer
 diese Datei von Hand ändert, verliert die Änderung beim nächsten Lauf.
 
-> **Warum sie erzeugt wird.** Am 2026-08-26 führte ein Blatt eine Sache als
-> „existiert nicht", die es seit demselben Tag gab. Klaus las eine
-> heruntergeladene Fassung und fragte nach. Er hatte recht zu fragen: **eine
-> Liste von Hand ist am Tag nach dem Schreiben falsch und sieht dabei genauso
-> aus wie eine richtige.**
+> **Warum sie erzeugt wird.** Ob ein Beleg im Depot liegt, sieht das Blatt bei
+> jedem Lauf selbst nach. Eine von Hand geführte Liste könnte hinterherhinken,
+> ohne dass man es ihr ansieht.
 
 ---
 
@@ -70,7 +68,7 @@ die Beobachtung über Mensch und KI hat dieselbe Figur. Der Mensch prägt die KI
 | **4** | Englische Projektseite, eine Seite | alle drei | **Ergebnis fehlt** | noch keiner | ohne |
 | **5** | Paper C · KI-Kompetenz im täglichen Gebrauch | 3 | **Ergebnis fehlt** | noch keiner | ohne |
 | **6** | Paper B · Wie KI auf den Menschen wirkt | 3 | **Ergebnis fehlt** | noch keiner | ohne |
-| **7** | Vorleistung in Zahlen, als eigenes Blatt | alle drei | nicht als Datei sichtbar | `docs/unterlagen/04_BESTAND.md`, 119 Zeilen | 2026-08-26 |
+| **7** | Vorleistung in Zahlen, als eigenes Blatt | alle drei | nicht als Datei sichtbar | `docs/unterlagen/04_BESTAND.md`, 120 Zeilen | 2026-08-26 |
 
 ## 4 · Jede Aufgabe einzeln
 
