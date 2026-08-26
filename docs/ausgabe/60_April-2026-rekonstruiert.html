@@ -1,0 +1,224 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>April 2026, rekonstruiert</title>
+<!-- Klaus Nitzsche · Hamburg · Stand 2026-08-26Herkunft: Depot Sage-Protokol, github.com/lausiklauskn-png/Sage-ProtokolTexte CC BY 4.0 · Code und Material MIT -->
+<style>
+:root{color-scheme:light dark;--grund:#f7f6f3;--tinte:#1b1b1b;--matt:#5a5a5a;
+--kante:#d8d5cf;--karte:#fff;--akzent:#7a4b1e;--warn:#8a1c1c;--gruen:#1f5c34}
+@media (prefers-color-scheme:dark){:root{--grund:#14161a;--tinte:#e8e6e1;
+--matt:#a4a09a;--kante:#2e3238;--karte:#1b1e23;--akzent:#e0a253;--warn:#ff8a80;
+--gruen:#7fd6a0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--grund);color:var(--tinte);
+font:16px/1.65 Georgia,"Times New Roman",serif;padding:0 0 4rem}
+.hut{position:sticky;top:0;z-index:5;background:var(--karte);
+border-bottom:1px solid var(--kante);padding:.7rem 1rem}
+.hut nav{max-width:52rem;margin:0 auto;display:flex;gap:1rem;flex-wrap:wrap;
+align-items:baseline;font-family:system-ui,sans-serif;font-size:.85rem}
+.hut strong{font-size:.95rem}
+.hut a{color:var(--akzent)}
+.abteilung{max-width:52rem;margin:0 auto;padding:2rem 1rem 0}
+.abt-kopf{border:1px solid var(--kante);background:var(--karte);
+border-radius:10px;padding:1.2rem 1.3rem;margin:1.5rem 0 2.5rem}
+.marke{font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.14em;
+color:var(--matt);margin:0 0 .3rem}
+.abt-kopf h1{margin:.1rem 0 .2rem;font-size:1.6rem;line-height:1.25}
+.unter{margin:0 0 .9rem;color:var(--matt);font-style:italic}
+.stempel{font-family:system-ui,sans-serif;font-size:.82rem;line-height:1.6;
+color:var(--matt);margin:0 0 .9rem}
+.hinweis{font-family:system-ui,sans-serif;font-size:.88rem;
+border-left:3px solid var(--akzent);padding:.5rem .8rem;margin:0 0 1rem;
+background:color-mix(in srgb,var(--akzent) 8%,transparent)}
+[data-abteilung="privat"] .hinweis{border-left-color:var(--warn);
+background:color-mix(in srgb,var(--warn) 9%,transparent)}
+.knoepfe{display:flex;gap:.6rem;flex-wrap:wrap;margin:0 0 .6rem}
+button{font:inherit;font-family:system-ui,sans-serif;font-size:.9rem;
+padding:.6rem .9rem;min-height:44px;border:1px solid var(--kante);
+border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
+button:hover{border-color:var(--akzent)}
+.lage{font-family:system-ui,sans-serif;font-size:.85rem;margin:.2rem 0 .8rem;
+min-height:1.2em;color:var(--matt)}
+.lage[data-art="fehler"]{color:var(--warn)}
+.lage[data-art="gut"]{color:var(--gruen)}
+.verzeichnis{font-family:system-ui,sans-serif;font-size:.85rem;
+border-top:1px solid var(--kante);padding-top:.7rem;margin-top:.3rem}
+.verzeichnis p{margin:0 0 .35rem;color:var(--matt)}
+.verzeichnis ul{margin:0;padding-left:1.1rem}
+.quelle{margin:0 0 2rem}
+.herkunft{font-family:system-ui,sans-serif;font-size:.75rem;color:var(--matt);
+margin:0 0 1rem;letter-spacing:.02em}
+.quellgrenze{border:0;border-top:2px solid var(--kante);margin:3rem 0}
+h1,h2,h3,h4,h5,h6{line-height:1.3;margin:1.9rem 0 .6rem}
+.quelle h1{font-size:1.5rem;border-bottom:1px solid var(--kante);
+padding-bottom:.3rem}
+.quelle h2{font-size:1.25rem}
+.quelle h3{font-size:1.08rem}
+.quelle h4,.quelle h5,.quelle h6{font-size:1rem}
+p{margin:0 0 1rem}
+a{color:var(--akzent)}
+code{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:.88em;
+background:color-mix(in srgb,var(--tinte) 8%,transparent);
+padding:.1em .3em;border-radius:4px}
+pre{background:var(--karte);border:1px solid var(--kante);border-radius:8px;
+padding:.9rem;overflow-x:auto}
+pre code{background:none;padding:0;font-size:.85rem}
+blockquote{margin:1rem 0;padding:.2rem 0 .2rem 1rem;
+border-left:3px solid var(--kante);color:var(--matt)}
+blockquote strong{color:var(--tinte)}
+ul,ol{margin:0 0 1rem;padding-left:1.4rem}
+li{margin:.3rem 0}
+.haken{font-family:system-ui,sans-serif}
+.tabelle{overflow-x:auto;margin:0 0 1.2rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--kante);padding:.45rem .6rem;
+text-align:left;vertical-align:top}
+th{background:var(--karte);font-family:system-ui,sans-serif;font-size:.85rem}
+hr{border:0;border-top:1px solid var(--kante);margin:2rem 0}
+.fuss{max-width:52rem;margin:3rem auto 0;padding:1rem;
+font-family:system-ui,sans-serif;font-size:.8rem;color:var(--matt);
+border-top:1px solid var(--kante)}
+
+
+/* Die drei Farben setzen Grund UND Schrift. Damit lesen sie sich in hell
+   und dunkel gleich — eine helle Fläche ohne gesetzte Schriftfarbe wäre im
+   dunklen Thema weiße Schrift auf hellem Grund. */
+mark.mk{background:#b7f0c2;color:#10331a;border-radius:3px;
+padding:.06em .05em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+mark.mk[data-farbe="gelb"]{background:#fdedb0;color:#3a2f05}
+mark.mk[data-farbe="rot"]{background:#ffc4bd;color:#45120c}
+mark.mk[data-notiz]{box-shadow:inset 0 -2px 0 rgba(0,0,0,.45)}
+
+.mk-leiste{position:fixed;z-index:30;display:none;gap:.3rem;padding:.35rem;
+background:var(--karte);border:1px solid var(--kante);border-radius:12px;
+box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.mk-leiste[data-offen="ja"]{display:flex}
+.mk-leiste{flex-wrap:wrap;max-width:min(94vw,30rem)}
+/* Der Farbtupfen ist eine CSS-Flaeche, KEIN Emoji. Ein Emoji haengt an der
+   Schrift des Geraets -- fehlt sie, steht dort ein Kaestchen oder nichts,
+   und die Leiste zeigt nur noch Zahlen. Genau das ist Klaus am 2026-08-24
+   passiert. Eine Farbe, die die Bedeutung traegt, wird gezeichnet, nicht
+   geschrieben -- und daneben steht das Wort. */
+.mk-tupf{display:inline-block;width:.85em;height:.85em;border-radius:3px;
+vertical-align:-.08em;background:#b7f0c2;border:1px solid rgba(0,0,0,.3)}
+.mk-tupf[data-f="gelb"]{background:#fdedb0}
+.mk-tupf[data-f="rot"]{background:#ffc4bd}
+.mk-leiste button{min-width:46px;min-height:46px;padding:.3rem;font-size:1.15rem;
+line-height:1;border-radius:9px}
+.mk-leiste button[data-mk-tun="weg"]{font-size:.95rem}
+
+.mk-tafel{position:fixed;left:0;right:0;bottom:0;z-index:31;display:none;
+max-height:min(82vh,700px);overflow:auto;background:var(--karte);
+border-top:2px solid var(--akzent);padding:1rem 1rem 2rem;
+font-family:system-ui,sans-serif;font-size:.9rem;
+box-shadow:0 -8px 28px rgba(0,0,0,.3)}
+.mk-tafel[data-offen="ja"]{display:block}
+.mk-tafel .innen{max-width:52rem;margin:0 auto}
+.mk-tafel h2{margin:0 0 .2rem;font-size:1.15rem;font-family:inherit}
+.mk-tafel p{margin:0 0 .7rem}
+.mk-tafel .zaehler{font-size:1rem;margin:0 0 .8rem}
+.mk-tafel ul{list-style:none;padding:0;margin:0 0 1rem}
+.mk-tafel li{border-top:1px solid var(--kante);padding:.5rem 0}
+.mk-tafel .stelle{cursor:pointer;background:none;border:0;color:inherit;
+font:inherit;text-align:left;padding:0;min-height:0}
+.mk-tafel .stelle:hover{color:var(--akzent)}
+.mk-tafel .woher{color:var(--matt);font-size:.78rem;margin:.15rem 0 0}
+.mk-tafel .notiz{color:var(--matt);font-style:italic;margin:.15rem 0 0}
+.mk-warn{border-left:3px solid var(--warn);
+background:color-mix(in srgb,var(--warn) 10%,transparent);
+padding:.5rem .8rem;margin:0 0 .8rem}
+.mk-leer{color:var(--matt)}
+.mk-legende{list-style:none;padding:0;margin:0 0 .5rem}
+.mk-legende li{border:0;padding:.15rem 0}
+.mk-grundsatz{border-left:3px solid var(--akzent);padding:.35rem .7rem;
+background:color-mix(in srgb,var(--akzent) 8%,transparent);margin:0 0 .8rem}
+.hut button{font:inherit;font-family:system-ui,sans-serif;font-size:.85rem;
+padding:.35rem .6rem;min-height:34px;border:1px solid var(--kante);
+border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
+.hut button:hover{border-color:var(--akzent)}
+
+/* ── Druck ────────────────────────────────────────────────────────────────
+   EINE Fassung, zwei Sichten. Die Klasse am <html> blendet aus, was gerade
+   nicht gedruckt werden soll. */
+html.nur-privat .abteilung:not(#privat){display:none}
+html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
+html.nur-uebersicht .abteilung:not(#uebersicht){display:none}
+html.nur-schritte .abteilung:not(#schritte){display:none}
+html.nur-steuerberater .abteilung:not(#steuerberater){display:none}
+html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
+html.nur-bestand .abteilung:not(#bestand){display:none}
+html.nur-april .abteilung:not(#april){display:none}
+html.nur-forschungsaufgaben .abteilung:not(#forschungsaufgaben){display:none}
+@media print{
+  .hut,.knoepfe,.lage{display:none}
+  body{background:#fff;color:#000;font-size:11pt}
+  .abteilung{max-width:none;padding:0}
+  .abt-kopf{border:0;padding:0;background:none}
+  a{color:#000;text-decoration:underline}
+  .quelle{page-break-before:always}
+  .abt-kopf+.quelle,.abteilung>.quelle:first-of-type{page-break-before:auto}
+  h1,h2,h3{page-break-after:avoid}
+  table,pre,blockquote{page-break-inside:avoid}
+
+  .mk-leiste,.mk-tafel{display:none !important}
+  mark.mk{background:none !important;color:inherit !important;
+    box-shadow:none !important;padding:0 !important}
+
+}
+</style>
+</head>
+<body>
+<section class="abteilung" id="april" data-abteilung="privat">
+<header class="abt-kopf">
+<p class="marke">Abteilung 6 · PRIVAT</p>
+<h1>April 2026, rekonstruiert</h1>
+<p class="unter">Der Monat ohne Protokoll, aus den Einträgen</p>
+<p class="stempel" data-stempel="april">Klaus Nitzsche · Hamburg · Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 · Code und Material MIT</p>
+<p class="hinweis">Eine <strong>Rekonstruktion</strong>, kein Protokoll. Sie sagt, <em>was</em> geschah, mit Datum und Uhrzeit. Was besprochen und verworfen wurde, steht nirgends und lässt sich daraus nicht gewinnen. Eine Rekonstruktion, die als solche gekennzeichnet ist, trägt in einem Antrag; eine, die wie ein Protokoll aussieht, kostet die Glaubwürdigkeit aller echten.</p>
+
+
+<nav class="verzeichnis"><p>In dieser Abteilung:</p><ul><li><a href="#q-docs-unterlagen-05-april-md">unterlagen/05_APRIL.md</a></li></ul></nav>
+</header>
+<article class="quelle" id="q-docs-unterlagen-05-april-md" data-quelle="docs/unterlagen/05_APRIL.md">
+<p class="herkunft">Quelle: <code>docs/unterlagen/05_APRIL.md</code></p>
+<h1>April 2026, aus den Einträgen rekonstruiert</h1>
+<blockquote><p><strong>Das ist eine Rekonstruktion, kein Protokoll.</strong> Sie ist aus den
+551 Einträgen des Monats gemacht und sagt, <strong>was</strong> geschah, mit Datum
+und Uhrzeit. Was besprochen, verworfen und warum entschieden wurde, steht
+nirgends und lässt sich daraus nicht gewinnen. Eine Rekonstruktion, die als
+solche gekennzeichnet ist, trägt in einem Antrag. Eine, die wie ein Protokoll
+aussieht, kostet die Glaubwürdigkeit aller echten.</p></blockquote>
+<p><strong>Erzeugt am 2026-08-26</strong> von <code>tools/bestand-bauen.mjs</code>.</p>
+<hr>
+<h2>1 · Warum für diesen Monat kein Protokoll vorliegt</h2>
+<p>Der April hat 551 Einträge und kein einziges Sitzungsprotokoll. Das sah
+nach der größten Lücke der ganzen Ablage aus. Die Zahl daneben löst es auf:</p>
+<div class="tabelle"><table><thead><tr><th>Depot</th><th>Einträge im April</th></tr></thead><tbody><tr><td>Mein-Rezeptbuch</td><td>288</td></tr><tr><td>Muttis-Rezeptbuch</td><td>206</td></tr><tr><td>Mein-Mixarium</td><td>55</td></tr><tr><td>Me-Mixarium</td><td>1</td></tr><tr><td><strong>Sage-Protokol</strong></td><td>1</td></tr></tbody></table></div>
+<p><strong>Die Arbeit lag im April nicht dort, wo die Protokollpflicht gilt.</strong> Sie ist
+eine Regel von Sage-Protokol, und Sage hatte in diesem Monat
+1 Eintrag. Gearbeitet
+wurde an den Apps, und deren Verfassungen verlangen eine Bau-Prüfliste, kein
+Sitzungsprotokoll.</p>
+<p>Das erste Protokoll überhaupt stammt vom <strong>2026-05-10</strong>, und in den App-Depots
+beginnt die Praxis Ende Mai. <strong>Im April gab es sie nirgends.</strong></p>
+<h2>2 · Was der Monat enthält</h2>
+<div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Zeitraum</td><td>2026-04-06 bis 2026-04-30</td></tr><tr><td>Arbeitstage</td><td>20</td></tr><tr><td>Einträge</td><td>551</td></tr><tr><td>Depots</td><td>5</td></tr></tbody></table></div>
+<h2>3 · Tag für Tag</h2>
+<p>Je Tag der Zeitraum vom ersten bis zum letzten Eintrag, die Zahl der Einträge
+und die berührten Depots. Die Betreffzeilen stehen vollständig im
+Arbeitszeitnachweis; hier steht der Überblick.</p>
+<div class="tabelle"><table><thead><tr><th>Tag</th><th>erster</th><th>letzter</th><th>Einträge</th><th>Depots</th></tr></thead><tbody><tr><td>2026-04-06</td><td>14:38</td><td>23:26</td><td>24</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-07</td><td>00:20</td><td>20:10</td><td>9</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-08</td><td>18:12</td><td>22:53</td><td>8</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-09</td><td>15:02</td><td>23:55</td><td>25</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-10</td><td>00:02</td><td>09:39</td><td>14</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-11</td><td>09:56</td><td>23:32</td><td>27</td><td>Muttis-Rezeptbuch</td></tr><tr><td>2026-04-12</td><td>10:09</td><td>19:15</td><td>32</td><td>Muttis-Rezeptbuch, Mein-Rezeptbuch, Sage-Protokol</td></tr><tr><td>2026-04-13</td><td>06:54</td><td>22:07</td><td>24</td><td>Muttis-Rezeptbuch, Mein-Rezeptbuch</td></tr><tr><td>2026-04-14</td><td>06:24</td><td>17:35</td><td>48</td><td>Muttis-Rezeptbuch, Mein-Rezeptbuch</td></tr><tr><td>2026-04-15</td><td>08:23</td><td>21:52</td><td>62</td><td>Mein-Rezeptbuch, Muttis-Rezeptbuch</td></tr><tr><td>2026-04-16</td><td>09:16</td><td>18:09</td><td>26</td><td>Muttis-Rezeptbuch, Mein-Rezeptbuch</td></tr><tr><td>2026-04-19</td><td>08:46</td><td>22:03</td><td>34</td><td>Mein-Rezeptbuch, Muttis-Rezeptbuch, Mein-Mixarium</td></tr><tr><td>2026-04-20</td><td>03:35</td><td>20:15</td><td>36</td><td>Mein-Mixarium, Mein-Rezeptbuch, Muttis-Rezeptbuch</td></tr><tr><td>2026-04-21</td><td>17:29</td><td>23:46</td><td>22</td><td>Mein-Mixarium, Muttis-Rezeptbuch, Mein-Rezeptbuch</td></tr><tr><td>2026-04-23</td><td>10:01</td><td>23:44</td><td>37</td><td>Mein-Rezeptbuch</td></tr><tr><td>2026-04-24</td><td>00:03</td><td>22:30</td><td>47</td><td>Mein-Rezeptbuch</td></tr><tr><td>2026-04-25</td><td>00:26</td><td>23:57</td><td>39</td><td>Mein-Rezeptbuch</td></tr><tr><td>2026-04-26</td><td>00:12</td><td>21:15</td><td>33</td><td>Mein-Rezeptbuch</td></tr><tr><td>2026-04-29</td><td>21:23</td><td>22:25</td><td>2</td><td>Mein-Mixarium, Me-Mixarium</td></tr><tr><td>2026-04-30</td><td>02:03</td><td>02:29</td><td>2</td><td>Mein-Mixarium</td></tr></tbody></table></div>
+<h2>4 · Was hier fehlt und nicht zu beschaffen ist</h2>
+<p>Die Einträge sagen, welche Datei wann wie geändert wurde. Sie sagen nicht,
+welche Wege verworfen wurden, woran eine Sitzung scheiterte und warum ein
+Ansatz aufgegeben wurde. Diese Auskunft steckt in den Chat-Verläufen außerhalb
+von Git, deren Umfang nicht erhoben ist.</p>
+<p><strong>Das ist die eigentliche Lücke des Monats.</strong> Sie ist nicht die fehlende Datei,
+sondern die fehlende Begründung, und sie ist auch mit einer perfekten Ablage
+nicht rückwirkend zu füllen.</p>
+</article>
+</section>
+</body>
+</html>

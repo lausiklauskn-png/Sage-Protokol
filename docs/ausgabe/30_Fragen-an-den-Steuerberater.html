@@ -1,0 +1,376 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frageblatt Steuerberater</title>
+<style>
+:root{
+  --papier:#F4F5F1; --blatt:#FFFFFF; --tinte:#1B2027; --gedaempft:#5C6672;
+  --linie:#D9DCD4; --linie-stark:#BFC4BA; --akzent:#2F5D50; --akzent-weich:#EAF0EC;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papier:#131619; --blatt:#1C2024; --tinte:#E7E9E4; --gedaempft:#9AA3A9;
+    --linie:#2B3136; --linie-stark:#3C444A; --akzent:#7FAE9C; --akzent-weich:#1E2A27;
+  }
+}
+:root[data-theme="dark"]{
+  --papier:#131619; --blatt:#1C2024; --tinte:#E7E9E4; --gedaempft:#9AA3A9;
+  --linie:#2B3136; --linie-stark:#3C444A; --akzent:#7FAE9C; --akzent-weich:#1E2A27;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--papier);color:var(--tinte);
+  font:400 16.5px/1.62 "IBM Plex Sans",-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;
+}
+.bogen{max-width:47rem;margin:0 auto;padding:clamp(1rem,4vw,3rem) clamp(.7rem,4vw,2rem) 5rem}
+.blatt{background:var(--blatt);border:1px solid var(--linie);border-radius:2px;
+  box-shadow:0 1px 2px rgba(27,32,39,.06),0 8px 24px -12px rgba(27,32,39,.16);
+  padding:clamp(1.1rem,5vw,3.5rem)}
+
+.kopf{padding-bottom:1.2rem;border-bottom:2px solid var(--linie-stark);margin-bottom:.5rem}
+.marke{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--akzent);font-weight:600}
+.kopf .datum{font-size:.85rem;color:var(--gedaempft);margin-top:.5rem;font-variant-numeric:tabular-nums}
+
+/* ── Fließtext ──────────────────────────────────────────────────────────
+   KEIN Grid und KEIN Flex auf etwas, das Satz-Inhalt trägt. Siehe Kopf. */
+h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif;line-height:1.25;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.6rem,5vw,2.2rem);font-weight:600;letter-spacing:-.01em;margin:.2rem 0 .8rem}
+h2{font-size:clamp(1.2rem,3.6vw,1.5rem);font-weight:600;margin:2.4rem 0 .5rem;
+   padding-top:1.1rem;border-top:1px solid var(--linie)}
+h3{font-size:1.12rem;font-weight:600;margin:1.9rem 0 .4rem;color:var(--akzent)}
+h4{font-size:1rem;font-weight:600;margin:1.3rem 0 .3rem}
+p{margin:.75rem 0}
+strong{font-weight:600}
+em{font-style:italic}
+hr{border:none;border-top:1px solid var(--linie);margin:2rem 0}
+a{color:var(--akzent);text-underline-offset:2px}
+code{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:.85em;
+  background:var(--akzent-weich);padding:.1em .35em;border-radius:2px;word-break:break-word}
+
+ol,ul{margin:.75rem 0;padding-left:1.6rem}
+li{margin:.42rem 0}
+li::marker{color:var(--akzent);font-weight:600}
+li>ul,li>ol{margin:.3rem 0}
+
+blockquote{margin:1.1rem 0;padding:.7rem 0 .7rem 1.1rem;
+  border-left:3px solid var(--akzent);background:var(--akzent-weich);
+  border-radius:0 2px 2px 0;padding-right:1rem}
+blockquote>p:first-child{margin-top:0}
+blockquote>p:last-child{margin-bottom:0}
+
+.tabelle{overflow-x:auto;margin:1rem 0;border:1px solid var(--linie);border-radius:2px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:20rem}
+th,td{text-align:left;padding:.5rem .7rem;border-bottom:1px solid var(--linie);vertical-align:top}
+thead th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gedaempft);
+  font-weight:600;background:var(--akzent-weich)}
+tbody tr:last-child td{border-bottom:none}
+td{font-variant-numeric:tabular-nums}
+
+pre{overflow-x:auto;background:var(--akzent-weich);padding:.8rem 1rem;border-radius:2px;
+  border:1px solid var(--linie);font-size:.85rem}
+pre code{background:none;padding:0}
+
+.fuss{margin-top:2.5rem;padding-top:1rem;border-top:1px solid var(--linie);
+  font-size:.8rem;color:var(--gedaempft);text-align:center}
+
+@media print{
+  body{background:#fff;color:#000;font-size:10.5pt;line-height:1.45}
+  .bogen{max-width:none;padding:0}
+  .blatt{box-shadow:none;border:none;padding:0}
+  .fuss{display:none}
+  h2{break-after:avoid;page-break-after:avoid;border-top-color:#999}
+  h3,h4{break-after:avoid;page-break-after:avoid}
+  tr,li,blockquote{break-inside:avoid;page-break-inside:avoid}
+  thead{display:table-header-group}
+  .tabelle{overflow:visible;border-color:#999}
+  th,td{border-bottom-color:#bbb}
+  thead th{background:#f0f0f0 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  blockquote{background:none;border-left-color:#666}
+  a{color:#000;text-decoration:none}
+  code,pre{background:#f4f4f4 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="bogen">
+<div class="blatt">
+<header class="kopf">
+  <div class="marke">Vorbereitung eines Beratungstermins</div>
+  <div class="datum" data-stand="2026-08-26">Stand 2026-08-26 &middot; erzeugt aus <code>docs/STEUERBERATER_FRAGEN.md</code></div>
+</header>
+<h1>Für den Steuerberater: Sachverhalt und Fragen</h1>
+<p><strong>Stand: 2026-08-24.</strong> Mandant: Klaus Nitzsche, Hamburg.</p>
+<p>Dieses Blatt ist <strong>eine Vorbereitung für ein Gespräch, keine steuerliche
+Beratung.</strong> Es soll dem Steuerberater die Arbeit abnehmen, den Sachverhalt erst
+zu erfragen, und ihm sagen, <strong>welche Antwort gebraucht wird</strong>. Alle Zahlen darin
+sind aus vorhandenen Unterlagen ausgezählt, nicht geschätzt; wo etwas unsicher
+ist, steht es dabei.</p>
+<hr>
+<h2>1 · Der Sachverhalt in sieben Sätzen</h2>
+<ol><li>Ich bin <strong>angestellt</strong> in einem Werbetechnik-Betrieb und habe <strong>kein eigenes
+ Gewerbe</strong>, keine freiberufliche Anmeldung und <strong>keine Steuernummer für eine
+ eigene Tätigkeit</strong>.</li><li>Seit <strong>April 2026</strong> entwickle ich in meiner Freizeit eine eigene Software: ein
+ Protokoll für <strong>semantische, server-lose Suche</strong> zwischen Anwendungen (das
+ Vorhaben heißt SBKIM), dazu rund zwei Dutzend darauf aufbauende Anwendungen.</li><li>Die Arbeit ist <strong>vollständig dokumentiert</strong>: 33 Quellcode-Depots,
+ <strong>5.823 Einzelstände (Commits) an 128 Arbeitstagen</strong>, jeder mit Datum und
+ Uhrzeit, dazu fortlaufende Arbeitsprotokolle.</li><li>Es sind <strong>echte Ausgaben</strong> angefallen, im Wesentlichen Gebühren für
+ KI-Werkzeuge. Dafür liegen <strong>75 Rechnungen</strong> vor, aus dem Zeitraum
+ <strong>13.03. bis 04.08.2026</strong>.</li><li><strong>Einnahmen habe ich bisher keine.</strong> Die Software soll verkauft
+ beziehungsweise über einen Marktplatz angeboten werden; zwei Anwendungen sind
+ dafür bereits öffentlich gestellt.</li><li>Ich möchte für dieselbe Arbeit <strong>öffentliche Förderung</strong> beantragen: die
+ <strong>Forschungszulage</strong> nach dem FZulG und den <strong>Prototype Fund</strong> (Bewerbung
+ 01.10. bis 30.11.2026). <strong>Beide setzen voraus, dass ich steuerlich als
+ Unternehmer oder Freiberufler geführt werde.</strong> Das bin ich heute nicht.</li><li><strong>Deshalb dieser Termin.</strong> Ich will nicht wissen, ob sich das lohnt. Ich will
+ wissen, <strong>was ich in welcher Reihenfolge anmelden muss und ab wann meine
+ Stunden zählen</strong>, damit ich nicht durch Warten Anspruch verliere.</li></ol>
+<hr>
+<h2>2 · Mein Ziel, in einem Satz</h2>
+<blockquote><p><strong>Ich möchte die Arbeit, die seit April 2026 geleistet ist, steuerlich nicht
+verlieren.</strong> Alles andere ist nachgeordnet.</p></blockquote>
+<hr>
+<h2>3 · Die Fragen</h2>
+<p>Sieben Fragen. Jede hat ein Ziel, eine Rechtsgrundlage und eine Angabe, was
+dafür anzusehen ist. <strong>Frage 2 ist die, an der alles hängt.</strong></p>
+<hr>
+<h3>Frage 1 · Kann ich überhaupt anspruchsberechtigt werden?</h3>
+<p><strong>Ziel:</strong> ein klares Ja oder Nein, bevor ich Zeit in alles Weitere stecke.</p>
+<p><strong>Worum es geht.</strong> § 1 FZulG nennt als anspruchsberechtigt Steuerpflichtige mit
+Einkünften nach <strong>§ 2 Abs. 1 Satz 1 Nr. 1 bis 3 EStG</strong>, also Land- und
+Forstwirtschaft, Gewerbebetrieb oder selbständige Arbeit. <strong>Arbeitslohn (Nr. 4)
+ist nicht dabei.</strong> Als reiner Arbeitnehmer bin ich also nicht
+anspruchsberechtigt. Die Frage ist, ob eine <strong>nebenberuflich</strong> angemeldete
+selbständige Tätigkeit diese Voraussetzung erfüllt.</p>
+<p><strong>Was Sie dafür ansehen müssten:</strong> § 1 FZulG in Verbindung mit § 2 Abs. 1 EStG.
+Ob es Einschränkungen für nebenberufliche Tätigkeiten gibt, habe ich nicht
+gefunden; ich weiß aber nicht, ob ich an der richtigen Stelle gesucht habe.</p>
+<p><strong>Die Antwort, die mir hilft:</strong> <em>„Ja, sobald Sie X angemeldet haben&quot;</em> oder
+<em>„Nein, weil …&quot;</em>. Bei Ja bitte mit dem <strong>X</strong>, also welche Anmeldung genau.</p>
+<hr>
+<h3>Frage 2 · Ab wann zählen meine Stunden? (die entscheidende Frage)</h3>
+<p><strong>Ziel:</strong> ein Datum. Ab welchem Tag kann ich Arbeitsstunden als Eigenleistung
+ansetzen.</p>
+<p><strong>Worum es geht, und warum die übliche Auskunft hier nicht passt.</strong> Überall steht
+<em>„die Forschungszulage kann bis zu vier Jahre rückwirkend beantragt werden&quot;</em>.
+Das betrifft aber die <strong>Antragsfrist</strong> (Festsetzungsfrist, § 169 Abs. 2 Satz 1
+Nr. 2 AO) und beantwortet meine Frage nicht. <strong>Bei mir gibt es keine alten
+Jahre zu holen</strong>: ich habe im Frühjahr 2026 angefangen. Es geht um <strong>ein
+einziges Wirtschaftsjahr, nämlich 2026.</strong></p>
+<p>Meine eigentliche Frage ist deshalb:</p>
+<blockquote><p><strong>Wenn ich die Tätigkeit im Herbst 2026 anmelde und als Beginn den Frühjahrs-
+Termin angebe: zählen die Stunden ab diesem Beginn, oder erst ab dem Tag der
+Anmeldung?</strong></p></blockquote>
+<p><strong>Was Sie dafür ansehen oder abwägen müssten:</strong></p>
+<ul><li>Ob sich die <strong>Betriebseröffnung</strong> im Fragebogen zur steuerlichen Erfassung auf
+den tatsächlichen Beginn der auf Gewinnerzielung gerichteten Tätigkeit
+zurückdatieren lässt, einschließlich Vorbereitungshandlungen (Stichwort
+<strong>vorweggenommene Betriebsausgaben</strong>).</li><li>Ob § 3 Abs. 3 FZulG (Eigenleistung) daran anknüpft, <strong>dass</strong> der Betrieb im
+Wirtschaftsjahr bestand, oder daran, <strong>wann</strong> er angemeldet wurde.</li><li><p><strong>Welches Datum trägt.</strong> Hier ist ein Detail wichtig, das ich nicht verschweige,
+weil es die Antwort ändern kann:</p>
+<div class="tabelle"><table><thead><tr><th>Datum</th><th>Was an dem Tag geschah</th><th>Belastbarkeit</th></tr></thead><tbody><tr><td><strong>10.03.2026</strong></td><td>das erste Depot wurde angelegt: <strong>zwei</strong> Einträge, dann <strong>26 Tage ohne einen einzigen</strong></td><td>eher der Anstoß als der Beginn</td></tr><tr><td><strong>06.04.2026</strong></td><td>ab hier <strong>durchgehende</strong> Arbeit: <strong>127 Arbeitstage in 141 Kalendertagen</strong> (06.04. bis 24.08.), neunmal unterbrochen, die längste Unterbrechung <strong>drei Tage</strong></td><td>das belastbarere Datum</td></tr></tbody></table></div>
+<p>Ich neige zum <strong>06.04.2026</strong>, weil es sich lückenlos belegen lässt. <strong>Sie
+entscheiden, welches Datum vertretbar ist.</strong></p></li></ul>
+<p><strong>Mein eigenes Argument, und Sie sagen mir bitte, ob es trägt.</strong> Die Arbeit hat
+vor jeder Anmeldung begonnen, <strong>aber sie hatte von Anfang an dasselbe Ziel</strong>.
+Eine Anmeldung zu einem früheren Zeitpunkt wäre nicht nur unterblieben, sie wäre
+<strong>gegenstandslos</strong> gewesen: es gab nichts zu bewerten, kein Produkt, keine
+Einnahme, nichts, wovon ein Finanzamt hätte ausgehen können. So wie ich es
+verstanden habe, beginnt ein Betrieb steuerlich mit der <strong>ersten auf
+Gewinnerzielung gerichteten Handlung einschließlich der Vorbereitungshandlungen</strong>
+und nicht mit der Anzeige beim Amt. Wenn das richtig ist, ist die späte Anmeldung
+kein Mangel, sondern der normale Ablauf.</p>
+<p><strong>Und dafür gibt es einen datierten Beleg</strong>, den ich nicht behaupten muss,
+sondern zeigen kann:</p>
+<div class="tabelle"><table><thead><tr><th>Datum</th><th>Was belegt ist</th></tr></thead><tbody><tr><td><strong>06.04.2026</strong></td><td>die durchgehende Arbeit beginnt</td></tr><tr><td><strong>11.04.2026</strong></td><td>die erste dokumentierte <strong>Verkaufsabsicht</strong>: „USP-Dokumente, Alleinstellungsmerkmale als druckbare Seiten&quot; und ein Spenden-Bereich in der App</td></tr><tr><td>dazwischen</td><td><strong>fünf Tage</strong></td></tr><tr><td>über den ganzen Zeitraum</td><td><strong>762</strong> der 5.823 Einträge insgesamt haben Bezug auf Verkauf, Markt, Preis, Lizenz oder Kunden</td></tr></tbody></table></div>
+<p>Ein Papier über Alleinstellungsmerkmale ist ein <strong>Verkaufsargument</strong>, kein
+Hobby-Artefakt. Dass es fünf Tage nach dem Beginn entstand, ist der Grund, warum
+ich „von Anfang an dasselbe Ziel&quot; nicht nur behaupte.</p>
+<p><strong>Die Antwort, die mir hilft:</strong> ein Datum, und der Satz dazu, warum es dieses ist.
+Falls die Antwort <em>„erst ab Anmeldung&quot;</em> lautet, brauche ich nur noch eines:
+<strong>wie schnell muss die Anmeldung raus.</strong></p>
+<hr>
+<h3>Frage 3 · Gewerbeanmeldung oder Freiberufler?</h3>
+<p><strong>Ziel:</strong> zu wissen, was ich in den Fragebogen eintrage, ob eine
+Gewerbeanmeldung nötig ist, und <strong>ob diese Frage den Rest aufhält.</strong></p>
+<p><strong>Worum es geht.</strong> Softwareentwicklung wird mal als <strong>freiberuflich</strong>
+(§ 18 EStG, ingenieurähnlicher Beruf), mal als <strong>gewerblich</strong> (§ 15 EStG)
+eingeordnet. Nach meinem Verstehen hängt das bei mir an <strong>drei</strong> Dingen, und ich
+schreibe sie alle drei hin, damit Sie nicht danach fragen müssen:</p>
+<p><strong>a) Ich bin Autodidakt, ohne einschlägiges Studium.</strong> Nach der Rechtsprechung
+kann auch ein Autodidakt freiberuflich sein, muss dafür aber Kenntnisse <strong>„in
+ganzer Tiefe und Bandbreite&quot;</strong> eines Diplom-Informatikers nachweisen,
+ausdrücklich einschließlich <strong>Mathematik, Statistik und Operations Research</strong>.
+Als Nachweismittel werden Fortbildungen, Selbststudium, praktische Arbeiten und
+die <strong>Wissensprüfung</strong> genannt.</p>
+<p><strong>b) Ich will die Software verkaufen.</strong> Geplant ist der Vertrieb über einen
+eigenen Marktplatz. Der <strong>Verkauf von Lizenzen</strong> ist, soweit ich verstanden habe,
+für sich genommen gewerblich, und nach § 15 Abs. 3 Nr. 1 EStG <strong>färbt eine
+gewerbliche Tätigkeit auf alles andere ab</strong>, wenn nicht sauber getrennt wird.
+Das könnte die Frage unter a) schon erledigen, bevor sie gestellt ist.</p>
+<p><strong>c) Und deshalb die eigentliche Frage:</strong> ich vermute, dass die Einordnung für
+die <strong>Forschungszulage gar keine Rolle spielt</strong>, weil § 1 FZulG Einkünfte aus
+<strong>Gewerbebetrieb (Nr. 2)</strong> und aus <strong>selbständiger Arbeit (Nr. 3)</strong>
+gleichrangig nennt. Wenn das stimmt, entscheidet diese Frage nur über
+<strong>Gewerbesteuer, IHK-Beitrag und Papierkram</strong>, nicht über den Anspruch, und
+dann darf sie die Anmeldung <strong>nicht aufhalten</strong>.</p>
+<p><strong>Was Sie dafür ansehen oder abwägen müssten:</strong></p>
+<ul><li>Ob meine Vermutung unter c) stimmt. <strong>Das ist mir die wichtigste Hälfte dieser
+Frage</strong>, weil davon abhängt, ob ich hier gründlich sein muss oder schnell.</li><li>Ob der Lizenzverkauf unter b) die Einordnung ohnehin festlegt, und ob eine
+<strong>saubere Trennung</strong> (getrennte Aufzeichnung von Entwicklung und Vertrieb)
+überhaupt lohnt oder nur Aufwand ist.</li><li>Nur falls a) noch zählt: ob der Dokumentationsumfang, den ich vorweisen kann,
+als praktischer Nachweis taugt. Er ist ungewöhnlich groß, und ich kann ihn
+zeigen. Ob eine <strong>Wissensprüfung</strong> in meinem Fall sinnvoll wäre, wüsste ich
+gern mit Aufwand und Kosten dazu.</li></ul>
+<p><strong>Was mir an Folgen bewusst ist</strong> (bitte berichtigen Sie mich, wenn falsch):</p>
+<div class="tabelle"><table><thead><tr><th></th><th>freiberuflich</th><th>gewerblich</th></tr></thead><tbody><tr><td>Gewerbeanmeldung</td><td>entfällt</td><td>nötig, in Hamburg rund 20 €</td></tr><tr><td>Gewerbesteuer</td><td>nein</td><td>ja, <strong>mit Freibetrag von 24.500 €</strong>, den ich absehbar nicht erreiche</td></tr><tr><td>IHK-Beitrag</td><td>nein</td><td>ja, mit Befreiungen bei kleinem Ertrag</td></tr><tr><td>Buchführung</td><td>EÜR genügt</td><td>EÜR genügt bis zu den Grenzen des § 141 AO</td></tr><tr><td><strong>Forschungszulage</strong></td><td><strong>vermutlich gleich</strong></td><td><strong>vermutlich gleich</strong></td></tr></tbody></table></div>
+<p><strong>Die Antwort, die mir hilft:</strong> in dieser Reihenfolge.</p>
+<ol><li><em>„Für die Forschungszulage macht es keinen Unterschied&quot;</em> oder <em>„doch, und
+ zwar diesen&quot;</em>. <strong>Diesen Satz brauche ich zuerst.</strong></li><li><em>„Tragen Sie X ein.&quot;</em></li><li><em>„Gewerbeanmeldung ja / nein.&quot;</em></li></ol>
+<p>Wenn Punkt 2 unklar ist, genügt mir auch: <em>„Tragen Sie X ein, das Finanzamt
+entscheidet, und wenn es anders entscheidet, ist die Folge Y.&quot;</em> Ich möchte an
+dieser Frage <strong>nicht hängenbleiben</strong>, solange Punkt 1 sie entschärft.</p>
+<hr>
+<h3>Frage 4 · Gewinnerzielungsabsicht: ist das für das Finanzamt Liebhaberei?</h3>
+<p><strong>Ziel:</strong> wissen, ob mir das den ganzen Weg zerlegen kann, und was ich dagegen
+tun soll.</p>
+<p><strong>Worum es geht, offen gesagt.</strong> Ich habe seit fünf Monaten <strong>Ausgaben und keine
+Einnahmen</strong>, arbeite abends und am Wochenende, und das Thema sieht von außen wie
+ein Hobby aus. Wenn das Finanzamt <strong>Liebhaberei</strong> annimmt, sind Betriebsausgaben
+und Forschungszulage weg. <strong>Das ist mein größtes Risiko, und ich möchte es lieber
+vorher hören als hinterher.</strong></p>
+<p><strong>Was Sie dafür ansehen oder abwägen müssten:</strong> die üblichen Merkmale der
+Gewinnerzielungsabsicht, und ob das, was ich vorweisen kann, dafür trägt:
+zwei öffentlich angebotene Anwendungen, ein aufgebauter Marktplatz mit eigener
+Domain, ein Betriebskonzept, und die Förderanträge selbst.</p>
+<p><strong>Der Beleg dafür ist derselbe wie bei Frage 2</strong>, und deshalb steht er hier noch
+einmal: die Verkaufsabsicht ist ab dem <strong>11.04.2026</strong> datiert dokumentiert, fünf
+Tage nach dem Beginn der Arbeit, und zieht sich über <strong>762 Einträge</strong> durch den
+ganzen Zeitraum. Das ist kein nachträglich behaupteter Vorsatz, sondern eine
+Spur, die mitgelaufen ist. <strong>Ob das für die Gewinnerzielungsabsicht genügt, weiß
+ich nicht.</strong> Ich weiß nur, dass ich es habe, mit Datum.</p>
+<p><strong>Die Antwort, die mir hilft:</strong> eine Einschätzung des Risikos, und <strong>eine
+Handlungsanweisung</strong>: was ich jetzt tun oder aufschreiben soll, damit die Absicht
+belegt ist. Am liebsten in der Form <em>„machen Sie X, bevor Sie anmelden&quot;</em>.</p>
+<hr>
+<h3>Frage 5 · Wie viele Stunden darf ich neben einer Vollzeit-Anstellung ansetzen?</h3>
+<p><strong>Ziel:</strong> eine Zahl oder eine Regel, nach der ich meine Stunden aufschreibe.</p>
+<p><strong>Worum es geht.</strong> § 3 Abs. 3 FZulG setzt für die Eigenleistung eines
+Einzelunternehmers seit dem 01.01.2026 <strong>100 € je nachgewiesener Arbeitsstunde</strong>
+an, <strong>höchstens 40 Stunden je Woche</strong>. Diese 40 Stunden kann ich neben meiner
+Anstellung offensichtlich nicht ausschöpfen, und ich will auch keine Zahl
+angeben, die niemand glaubt.</p>
+<p><strong>Es gibt dazu eine ausgerechnete Aufstellung</strong>, und sie liegt als Blatt, als
+PDF und als Tabelle vor: <code>docs/historie/arbeitstage.*</code>, <strong>Tag für Tag</strong> mit
+Datum, Wochentag, erstem und letztem Eintrag, Spanne, aktiver Zeit, Zahl der
+Abschnitte und der berührten Depots.</p>
+<div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Arbeitstage</td><td><strong>128</strong>, vom 10.03. bis 24.08.2026</td></tr><tr><td>Spanne, erster bis letzter Eintrag je Tag, aufaddiert</td><td>1.936 h</td></tr><tr><td><strong>aktive Zeit nach der Rechnung unten</strong></td><td><strong>1.187 h</strong></td></tr><tr><td>ausgeschlossene automatische Läufe</td><td>48</td></tr></tbody></table></div>
+<p><strong>Wie gerechnet wird, an einer Stelle festgelegt</strong> (<code>arbeitstage-rechnen.mjs</code>):
+ein Abstand <strong>bis 120 Minuten</strong> zählt als Arbeit, ein längerer als Pause; je
+Abschnitt kommen <strong>30 Minuten Vorlauf</strong> dazu, weil vor dem ersten gespeicherten
+Stand schon gearbeitet wurde; <strong>zeitgesteuerte Läufe eines Dienstes zählen
+nicht</strong> als Arbeitszeit.</p>
+<p><strong>Was diese Zahl nicht ist, sage ich dazu:</strong> sie ist eine <strong>Rekonstruktion aus
+Zeitstempeln</strong>, keine mitlaufende Aufzeichnung. Die 30 Minuten Vorlauf sind eine
+gesetzte Annahme, keine Messung. Und sie misst, wann die Maschine etwas
+gespeichert hat, nicht, wann ich am Schreibtisch saß.</p>
+<blockquote><p>⚠ <strong>Wichtiger als die Zahl ist, woran sie stößt.</strong> Von 06.04. bis 24.08. sind
+es rund <strong>20 Wochen</strong>. Bei 40 Wochenstunden liegt die gesetzliche Obergrenze
+bei etwa <strong>800 Stunden</strong>. Die gerechneten 1.187 h liegen <strong>darüber</strong>. Der
+Deckel greift also, <strong>bevor</strong> die Belege ausgehen. Und da ich <strong>Vollzeit
+angestellt</strong> bin, halte ich 40 Wochenstunden ohnehin nicht für vertretbar.</p></blockquote>
+<p><strong>Was Sie dafür abwägen müssten:</strong> welche Wochenstundenzahl neben einer
+Vollzeit-Anstellung <strong>plausibel und belegbar</strong> ist. Ich möchte lieber eine Zahl
+ansetzen, die hält, als eine, die hoch aussieht. Wenn Sie sagen „höchstens N&quot;,
+nehme ich N.</p>
+<p><strong>Die Antwort, die mir hilft:</strong> eine Größenordnung (<em>„mehr als N Stunden je Woche
+werden Ihnen nicht abgenommen&quot;</em>) und der Hinweis, <strong>wie ich die Stunden führen
+soll</strong>, damit sie anerkannt werden.</p>
+<hr>
+<h3>Frage 6 · Reichen meine Belege als „nachgewiesene Arbeitsstunden&quot;?</h3>
+<p><strong>Ziel:</strong> wissen, ob ich rückwirkend eine Aufzeichnung erstellen darf und in
+welcher Form.</p>
+<p><strong>Worum es geht, und hier bin ich ehrlich unsicher.</strong> Ich habe <strong>zweierlei</strong>, und
+es ist nicht dasselbe:</p>
+<div class="tabelle"><table><thead><tr><th>Was ich habe</th><th>Seit wann</th><th>Was es belegt</th></tr></thead><tbody><tr><td>Quellcode-Historie über 33 Depots, jeder Eintrag mit Datum <strong>und Uhrzeit</strong>; dazu fortlaufende Arbeitsprotokolle</td><td><strong>06.04.2026</strong></td><td><strong>dass</strong> und <strong>wann</strong> gearbeitet wurde, tagesgenau</td></tr><tr><td>daraus die <strong>tägliche Aufstellung</strong> (Blatt, PDF, Tabelle): je Tag Spanne, aktive Zeit, Abschnitte</td><td><strong>rekonstruiert</strong></td><td><strong>wie lange</strong>, als nachvollziehbare Rechnung</td></tr><tr><td>ein automatisches Fahrtenbuch mit Zeiten und Kosten, minutengenau</td><td><strong>22.08.2026</strong></td><td><strong>wie lange</strong>, gemessen statt gerechnet</td></tr><tr><td>75 Rechnungen für KI-Werkzeuge</td><td>13.03. bis 04.08.2026</td><td>die Ausgaben</td></tr></tbody></table></div>
+<p><strong>Der Unterschied ist der Punkt:</strong> über fünf Monate liegt eine <strong>Dokumentation</strong>
+vor, aber <strong>keine Stundenaufzeichnung</strong>. Die ist erst wenige Tage alt. Die Stunden
+für die zurückliegenden Monate müsste ich aus den datierten Spuren
+<strong>rekonstruieren</strong>, und ich würde das ausdrücklich als Rekonstruktion
+kennzeichnen und nicht als mitlaufende Aufzeichnung ausgeben.</p>
+<p><strong>Was Sie dafür abwägen müssten:</strong> ob eine solche Rekonstruktion als
+„nachgewiesene Arbeitsstunde&quot; im Sinne des § 3 Abs. 3 FZulG genügt, und welche
+Form sie haben muss (Datum, Vorhaben, Stunden, Tätigkeit).</p>
+<p><strong>Die Antwort, die mir hilft:</strong> <em>„ja, in der Form X&quot;</em> oder <em>„nein, ab jetzt so
+und so führen&quot;</em>. Wenn eine Vorlage üblich ist, hätte ich sie gern.</p>
+<hr>
+<h3>Frage 7 · Was löst die Anmeldung selbst aus, und in welcher Reihenfolge?</h3>
+<p><strong>Ziel:</strong> eine Reihenfolge mit Terminen, die ich abarbeiten kann.</p>
+<p><strong>Worum es geht.</strong> Ich habe eine harte Frist: der <strong>Prototype Fund</strong> verlangt bei
+der Bewerbung eine <strong>Steuernummer für die selbständige Tätigkeit</strong> oder
+ersatzweise die Eingangsbestätigung des Finanzamts. Bewerbungsschluss ist der
+<strong>30.11.2026</strong>. Das ELSTER-Zertifikat kommt per Brief, hat also eine Lieferzeit.</p>
+<p><strong>Was ich zusätzlich wissen muss, weil es mich unvorbereitet treffen könnte:</strong></p>
+<ul><li><strong>Kleinunternehmerregelung</strong> (§ 19 UStG) ja oder nein, und was das für spätere
+Fördergelder bedeutet.</li><li>Ob die Anmeldung <strong>Vorauszahlungen</strong> auslöst, obwohl ich noch keine Einnahmen
+habe.</li><li>Ob die <strong>75 Rechnungen</strong> für die KI-Werkzeuge als Betriebsausgaben absetzbar
+sind, auch die aus der Zeit <strong>vor</strong> der Anmeldung. <em>(Sie sind in zwei Währungen
+ausgestellt, Euro und Dollar; neun Rechnungsnummern in der Folge fehlen.)</em></li><li>Ob die Bescheinigung der <strong>BSFZ</strong> (Bescheinigungsstelle Forschungszulage,
+kostenlos, prüft nur das Vorhaben) <strong>vor</strong> der Anmeldung beantragt werden kann
+oder erst danach.</li></ul>
+<p><strong>Was ich einzureichen glaube, und wo ich es geprüft haben möchte.</strong> Nach meinem
+Verstehen sind es <strong>drei Stellen und zwei Behörden</strong>:</p>
+<div class="tabelle"><table><thead><tr><th>Wann</th><th>Wo</th><th>Was</th></tr></thead><tbody><tr><td><strong>zuerst</strong></td><td>Finanzamt, über ELSTER</td><td><strong>Fragebogen zur steuerlichen Erfassung</strong>. Braucht das ELSTER-Zertifikat. Daraus kommt die Steuernummer</td></tr><tr><td><strong>parallel möglich?</strong></td><td><strong>BSFZ</strong>, nicht das Finanzamt</td><td><strong>Antrag auf Bescheinigung</strong> des Vorhabens. Kostenlos. Geprüft wird nur, <strong>ob es Forschung ist</strong>: neuartig, Ausgang ungewiss, planvoll, übertragbar. Kein Geld, nur die Bescheinigung</td></tr><tr><td><strong>nach Ablauf des Jahres</strong></td><td>Finanzamt, über ELSTER</td><td><strong>Antrag auf Forschungszulage</strong> für das Wirtschaftsjahr 2026, zusammen mit der <strong>BSFZ-Bescheinigung</strong>, der <strong>Stundenaufzeichnung</strong> und der Steuererklärung</td></tr></tbody></table></div>
+<p><strong>Genau hier ist meine Frage am konkretesten:</strong> kann ich den BSFZ-Antrag
+<strong>schon stellen, bevor</strong> die steuerliche Anmeldung durch ist? Wenn ja, spare ich
+Wochen, weil beide Verfahren nebeneinander laufen. Wenn nein, weiß ich, dass die
+Anmeldung wirklich alles blockiert.</p>
+<p><strong>Die Antwort, die mir hilft:</strong> eine nummerierte Reihenfolge. <em>„Erst A, dann B,
+und C kann parallel laufen.&quot;</em> Und dazu: <strong>welche Unterlage in welchem Format</strong>
+Sie von mir brauchen, damit Sie den Antrag stellen können.</p>
+<hr>
+<h2>3b · Die Größenordnung, um die es geht</h2>
+<p><strong>Ich rechne das hier selbst vor, damit Sie sehen, wo ich falsch liege.</strong> Es ist
+eine Überschlagsrechnung mit ausdrücklich benannten Annahmen, <strong>keine
+Erwartung</strong>.</p>
+<p><strong>Je nachgewiesener Arbeitsstunde:</strong></p>
+<div class="tabelle"><table><thead><tr><th>Schritt</th><th>Betrag</th><th>Grundlage</th></tr></thead><tbody><tr><td>Eigenleistung Einzelunternehmer</td><td><strong>100 €</strong></td><td>§ 3 Abs. 3 FZulG, seit 01.01.2026 (vorher 70 €)</td></tr><tr><td>Gemeinkosten-Pauschale +20 %</td><td><strong>120 €</strong></td><td>seit 2026, <strong>nur für neu begonnene Vorhaben</strong>. Gilt meines für die Pauschale?</td></tr><tr><td>Forschungszulage 35 % davon</td><td><strong>42 €</strong></td><td>25 % Grundsatz plus 10 Prozentpunkte für kleine Unternehmen</td></tr></tbody></table></div>
+<p><strong>Ohne</strong> die Pauschale wären es 35 € je Stunde.</p>
+<p><strong>Hochgerechnet auf das Wirtschaftsjahr 2026</strong>, mit dem gesetzlichen Deckel von
+40 Wochenstunden und rund 20 Wochen im Zeitraum:</p>
+<div class="tabelle"><table><thead><tr><th>Angesetzte Wochenstunden</th><th>Stunden 2026</th><th>Forschungszulage</th></tr></thead><tbody><tr><td>10 h</td><td>200 h</td><td>rund <strong>8.400 €</strong></td></tr><tr><td>20 h</td><td>400 h</td><td>rund <strong>16.800 €</strong></td></tr><tr><td>30 h</td><td>600 h</td><td>rund <strong>25.200 €</strong></td></tr><tr><td><strong>40 h (gesetzliches Maximum)</strong></td><td>800 h</td><td>rund <strong>33.600 €</strong></td></tr></tbody></table></div>
+<p><strong>Vier Vorbehalte, und jeder kann die Zahl auf null setzen:</strong></p>
+<ol><li><strong>Sie gilt nur, wenn die Stunden vor der Anmeldung zählen</strong> (Frage 2).
+ Andernfalls bleibt vom Jahr 2026 nur der Rest ab Anmeldung.</li><li><strong>Sie gilt nur, wenn die BSFZ das Vorhaben als Forschung bescheinigt.</strong> Das
+ ist ein eigenes Verfahren mit eigenem Maßstab.</li><li><strong>Sie gilt nur für Stunden, die neben einer Vollzeit-Anstellung glaubhaft
+ sind</strong> (Frage 5). Ich halte die untere Hälfte der Tabelle für die ehrliche.</li><li><strong>Sie ist keine Aufwandsentschädigung.</strong> Es ist eine Zulage auf
+ nachgewiesene Forschungsarbeit, kein Zuschuss für Mühe, und sie wird auf die
+ Steuer angerechnet beziehungsweise ausgezahlt, wenn keine anfällt.</li></ol>
+<p><strong>Warum ich das trotzdem vorrechne:</strong> wenn schon die vorsichtigste Zeile im
+fünfstelligen Bereich liegt, ist der Aufwand für Anmeldung und Aufzeichnung
+offensichtlich gerechtfertigt, und <strong>jeder Monat Verzögerung ist bezifferbar
+teuer</strong>. Wenn ich mich verrechnet habe, ist das die nützlichste Auskunft des
+Termins.</p>
+<hr>
+<h2>4 · Was ich mitbringe</h2>
+<div class="tabelle"><table><thead><tr><th>Beleg</th><th>Umfang</th></tr></thead><tbody><tr><td>Quellcode-Historie, ausgelesen und tabellarisch aufbereitet</td><td>5.823 Einträge insgesamt, 128 Arbeitstage, 33 Depots, je mit Datum und Uhrzeit</td></tr><tr><td><strong>Tägliche Dokumentation der Arbeitstage</strong> als <strong>PDF</strong> und als <strong>CSV-Tabelle</strong> (<code>;</code>-getrennt, für Excel)</td><td>128 Zeilen, je Tag: Datum, Wochentag, erster und letzter Eintrag, Spanne, aktive Zeit, Abschnitte, Einträge, Depots. <strong>Summe 1.187 h</strong></td></tr><tr><td>Arbeitsprotokolle, fortlaufend</td><td>seit April 2026</td></tr><tr><td>Rechnungen KI-Werkzeuge</td><td>75 Stück, 13.03. bis 04.08.2026</td></tr><tr><td>Automatisches Zeit- und Kostenbuch</td><td>seit 22.08.2026, minutengenau</td></tr><tr><td>Beschreibung des Vorhabens, technisch und für Laien</td><td>zwei Fachaufsätze, eine Spezifikation</td></tr><tr><td>Nachweis, dass etwas davon <strong>funktioniert</strong></td><td>dokumentierte und wiederholbare Belege mit Datum</td></tr></tbody></table></div>
+<p><strong>In welcher Form Sie es haben möchten</strong>, sagen Sie mir bitte. Alles lässt sich
+als Tabelle, als PDF oder als Aufstellung je Monat liefern.</p>
+<hr>
+<h2>5 · Was ich ausdrücklich <strong>nicht</strong> frage</h2>
+<p>Damit im Termin keine Zeit dafür draufgeht:</p>
+<ul><li><strong>Ob sich das lohnt.</strong> Das ist meine Entscheidung, nicht Ihre.</li><li><strong>Ob ich einen Verein oder eine GmbH gründen soll.</strong> Später, eigenes Thema.</li><li><strong>Was im Antrag stehen soll.</strong> Den schreibe ich selbst.</li><li><strong>Arbeitsrechtliches.</strong> Ob meine Anstellung eine Nebentätigkeit erlaubt, kläre
+ich mit meinem Arbeitgeber und, falls nötig, mit einem Anwalt.</li></ul>
+<hr>
+<h2>6 · Die eine Antwort, mit der ich rausgehen möchte</h2>
+<blockquote><p><strong>„Melden Sie bis zum &lt;Datum&gt; als &lt;freiberuflich / gewerblich&gt; an, mit
+Betriebseröffnung zum &lt;Datum&gt;. Dann zählen Ihre Stunden ab &lt;Datum&gt;. Führen Sie
+sie ab sofort so: &lt;Form&gt;.&quot;</strong></p></blockquote>
+<p>Alles andere kann nachgereicht werden. <strong>Das hier nicht</strong>, weil jede Woche ohne
+Anmeldung möglicherweise Anspruch kostet.</p>
+<p class="fuss">Vorbereitung, keine steuerliche Beratung &middot; Stand 2026-08-26</p>
+</div>
+</div>
+</body>
+</html>
