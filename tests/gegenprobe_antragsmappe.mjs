@@ -32,6 +32,7 @@ const ANGEFASST = [
   'docs/antragsmappe.html',
   'docs/FORSCHUNGSKORPUS.md',
   'docs/papers/ENTSTEHUNG.md',
+  'docs/ABGRENZUNG.md',
 ];
 const SICHER = new Map(ANGEFASST.map((r) => [r, readFileSync(P(r), 'utf-8')]));
 
@@ -129,6 +130,39 @@ const FAELLE = [
     bauen: () => {
       ersetze('tools/antragsmappe-bauen.mjs',
         "      'docs/werkstatt/BEFUND.md',\n", '');
+      bauen();
+    },
+  },
+  {
+    /* Das Blatt, das eine Gutachterin zuerst liest. Es stand seit dem
+       2026-08-23 als fehlend in drei Unterlagen und kam am 2026-08-26 dazu.
+       Fiele es wieder heraus, wäre die Mappe genau so naiv wie vorher, und
+       keine einzige Zahl darin wäre falsch. */
+    was: 'Das Abgrenzungs-Blatt fällt aus der Einreich-Abteilung heraus',
+    bauen: () => {
+      ersetze('tools/antragsmappe-bauen.mjs', "      'docs/ABGRENZUNG.md',\n", '');
+      bauen();
+    },
+  },
+  {
+    /* Ein Abgrenzungs-Blatt, das nur sagt, was die anderen NICHT können, ist
+       eine Werbeschrift. Was es trägt, ist der Abschnitt, in dem es die
+       eigenen geliehenen Teile benennt. */
+    was: 'Das Abgrenzungs-Blatt verschweigt, was daran nicht neu ist',
+    bauen: () => {
+      ersetze('docs/ABGRENZUNG.md', '## 3 · Wo SBKIM nichts Neues beansprucht',
+        '## 3 · Weitere Vorteile');
+      ersetze('docs/ABGRENZUNG.md', '- **Der Transport ist geliehen.**',
+        '- **Der Transport ist eigens gebaut.**');
+      bauen();
+    },
+  },
+  {
+    was: 'Das Abgrenzungs-Blatt gibt sich als Literaturübersicht aus',
+    bauen: () => {
+      ersetze('docs/ABGRENZUNG.md',
+        '**Diese Seite ist eine Abgrenzung, keine Literaturübersicht.**',
+        'Diese Seite fasst den Stand der Forschung vollständig zusammen.');
       bauen();
     },
   },

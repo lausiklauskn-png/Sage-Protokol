@@ -1194,11 +1194,15 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       mit der alten verknüpft. Man legt sich also nichts fest, was man später
       bereut. Für die drei geplanten Papers:
       [`papers/PLAN_PAPERS.md`](papers/PLAN_PAPERS.md).
-- [ ] **B2 · Ein Blatt „Stand der Technik und Abgrenzung".** Eine Seite: was es
-      schon gibt (IPFS, ActivityPub, Matrix, Solid, libp2p, Nostr, zentrale
-      Vektor-Suchen), und in welchem Punkt SBKIM etwas anderes tut. **Jede
-      Fördergeberin liest dieses Blatt zuerst.** Ohne es wirkt der Antrag naiv,
-      mit ihm belesen.
+- [x] **B2 · Ein Blatt „Stand der Technik und Abgrenzung".** **Erledigt am
+      2026-08-26**, [`ABGRENZUNG.md`](ABGRENZUNG.md), Abteilung 2 der
+      Antragsmappe. Eine Seite gegen IPFS, ActivityPub, Matrix, Solid, libp2p,
+      Nostr, zentrale Vektor-Suchen und MCP, mit einem eigenen Abschnitt dazu,
+      **wo SBKIM nichts Neues beansprucht**: der Transport ist geliehen, die
+      Einbettung ist Stand der Technik, die Kryptographie ist Standard.
+      **Offen bleibt die Literatursuche.** Das Blatt ist eine Abgrenzung, keine
+      Literaturübersicht; für den Antrag reicht das, für eine Veröffentlichung
+      nicht. Es sagt das selbst in § 6.
 - [ ] **B3 · Die Vorleistung in Zahlen fassen.** Zeitraum, Repos, Zeilen,
       Prüfungen, Meilensteine mit Datum, laufende Instanzen, bisheriger
       Sachaufwand. Zwei Quellen, und sie decken verschieden weit: die datierten

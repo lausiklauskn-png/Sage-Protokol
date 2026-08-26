@@ -99,6 +99,11 @@ const MAPPEN = [
       + 'Herkunftsangabe. Wer nur sie in der Hand h&auml;lt, vermisst nichts.',
     dateien: [
       'docs/papers/ENTSTEHUNG.md',
+      /* DAS BLATT, DAS EINE GUTACHTERIN ZUERST LIEST. Es stand seit dem
+         2026-08-23 als fehlend im Fahrplan und in der Übersicht. Es steht
+         VOR Paper A, weil die Frage „gibt es das nicht schon" beantwortet
+         sein muss, bevor jemand die Untersuchung liest. */
+      'docs/ABGRENZUNG.md',
       'docs/papers/PAPER_A_regeln-und-grundsaetze.md',
       'docs/FORSCHUNGSKORPUS.md',
       'docs/papers/PLAN_PAPERS.md',

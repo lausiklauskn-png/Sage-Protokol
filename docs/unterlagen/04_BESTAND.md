@@ -39,17 +39,17 @@ In dieser Reihenfolge nimmt man sie in die Hand.
 
 | Was | Wo | Stände dieser Datei | Umfang | Lücke |
 |---|---|---|---|---|
-| **Fahrplan Forschungsgelder** | `docs/FORSCHUNGSFOERDERUNG.md` | 2026-08-23 bis 2026-08-26 | 78 KB, 1.430 Zeilen | keine benannt |
+| **Fahrplan Forschungsgelder** | `docs/FORSCHUNGSFOERDERUNG.md` | 2026-08-23 bis 2026-08-26 | 79 KB, 1.442 Zeilen | keine benannt |
 | **Die Schritte, abhakbar** | `docs/unterlagen/01_SCHRITTE.md` | 2026-08-26 bis 2026-08-26 | 7 KB, 141 Zeilen | keine benannt |
-| **Frageblatt Steuerberater** | `docs/STEUERBERATER_FRAGEN.md` · `docs/frageblatt.html` · `docs/frageblatt.pdf` | 2026-08-24 bis 2026-08-25 | 202 KB, 817 Zeilen | Die Kleinunternehmerregelung steht nur als Aufzählungspunkt unter Frage 7. Der Fragebogen zur steuerlichen Erfassung verlangt dafür ein Kreuz. |
+| **Frageblatt Steuerberater** | `docs/STEUERBERATER_FRAGEN.md` · `docs/frageblatt.html` · `docs/frageblatt.pdf` | 2026-08-24 bis 2026-08-26 | 200 KB, 817 Zeilen | Die Kleinunternehmerregelung steht nur als Aufzählungspunkt unter Frage 7. Der Fragebogen zur steuerlichen Erfassung verlangt dafür ein Kreuz. |
 | **Vorbereitung Finanzamt** | `docs/unterlagen/03_FINANZAMT.md` | 2026-08-26 bis 2026-08-26 | 5 KB, 122 Zeilen | Ohne ELSTER-Zertifikat geht der Fragebogen nicht ab. Das Zertifikat kommt per Brief und hat als einziger Schritt eine Vorlaufzeit. |
 | **Sitzungsprotokolle** | `docs/sessions/archiv` | 2026-05-10 bis 2026-08-26 | 20 KB | keine benannt |
 | **Arbeitszeitnachweis, Tag für Tag** | `docs/historie/arbeitstage.html` · `docs/historie/arbeitstage-tage.csv` · `docs/historie/arbeitstage-taetigkeiten.csv` · `docs/historie/arbeitstage.pdf` | 2026-08-24 bis 2026-08-26 | 7.5 MB, 12.711 Zeilen | Gemessen wird die Spanne zwischen dem ersten und dem letzten Eintrag eines Tages, nicht die geleistete Arbeit. Was vor dem ersten Eintrag geschah, ist nicht erfasst. |
 | **Historie der Zusammenarbeit** | `docs/historie/historie.html` · `docs/historie/historie.json` | 2026-08-24 bis 2026-08-24 | 14.1 MB, 87.781 Zeilen | Die Einordnung eines Eintrags geschieht an seinen Wörtern. Alle Zahlen zu den Marken sind deshalb Untergrenzen, keine Vollerhebung. |
-| **Entstehung, Klaus’ Darstellung** | `docs/papers/ENTSTEHUNG.md` | 2026-08-23 bis 2026-08-24 | 7 KB, 157 Zeilen | Eine Schilderung aus dem Gedächtnis, aufgezeichnet am 2026-08-23. Wo sie gegen die Einträge prüfbar ist, hält sie; der Rest ist Darstellung. |
+| **Entstehung, Klaus’ Darstellung** | `docs/papers/ENTSTEHUNG.md` | 2026-08-23 bis 2026-08-26 | 8 KB, 167 Zeilen | Eine Schilderung aus dem Gedächtnis, aufgezeichnet am 2026-08-23. Wo sie gegen die Einträge prüfbar ist, hält sie; der Rest ist Darstellung. |
 | **Paper A, Regeln und Grundsätze** | `docs/papers/PAPER_A_regeln-und-grundsaetze.md` | 2026-08-23 bis 2026-08-24 | 91 KB, 1.843 Zeilen | Der Werkzeug-Widerspruch ist offen und gehört vor die Zenodo-Nummer. |
-| **Forschungskorpus** | `docs/FORSCHUNGSKORPUS.md` | 2026-08-23 bis 2026-08-24 | 7 KB, 131 Zeilen | keine benannt |
-| **Werkstatt-Material aus Kimhub** | `docs/werkstatt` | 2026-08-23 bis 2026-08-24 | 4 KB | Byte-Kopien mit Prüfsummen. Sie laufen still vom Original weg, sobald dort etwas geändert und hier nicht neu kopiert wird. |
+| **Forschungskorpus** | `docs/FORSCHUNGSKORPUS.md` | 2026-08-23 bis 2026-08-26 | 8 KB, 133 Zeilen | keine benannt |
+| **Werkstatt-Material aus Kimhub** | `docs/werkstatt` | 2026-08-23 bis 2026-08-26 | 4 KB | Byte-Kopien mit Prüfsummen. Sie laufen still vom Original weg, sobald dort etwas geändert und hier nicht neu kopiert wird. |
 | **Die beiden SBKIM-Papers, DE und EN** | `docs/papers/sbkim-paper-de.html` · `docs/papers/sbkim-paper-en.html` | 2026-05-18 bis 2026-05-18 | 46 KB, 1.130 Zeilen | Datiert auf Mai 2026 und in `INTERFACES.md` mit Paragraphennummern zitiert. Eine Änderung daran braucht eine v0.2, keine stille Nachbesserung. |
 | **Meilensteine mit Bild** | `docs/meilenstein` · `docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md` · `docs/MEILENSTEIN_VON_DER_HUELLE_ZUM_INHALT.md` | 2026-06-21 bis 2026-08-16 | 20 KB, 300 Zeilen | keine benannt |
 | **Die Lehren** | `docs/LEHREN.md` | 2026-08-22 bis 2026-08-22<br>am 2026-08-22 aus `CLAUDE.md` herausgelöst; der Inhalt reicht bis 2026-05 zurück | 35 KB, 673 Zeilen | keine benannt |
@@ -65,15 +65,15 @@ andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.
 | 2 | **Die beiden SBKIM-Papers, DE und EN** | 2026-05-18 | 2026-05-18 | 2 |
 | 3 | **Meilensteine mit Bild** | 2026-06-21 | 2026-08-16 | 12 |
 | 4 | **Die Lehren** | 2026-08-22 | 2026-08-22 | 1 |
-| 5 | **Entstehung, Klaus’ Darstellung** | 2026-08-23 | 2026-08-24 | 2 |
-| 6 | **Fahrplan Forschungsgelder** | 2026-08-23 | 2026-08-26 | 11 |
-| 7 | **Forschungskorpus** | 2026-08-23 | 2026-08-24 | 4 |
+| 5 | **Entstehung, Klaus’ Darstellung** | 2026-08-23 | 2026-08-26 | 3 |
+| 6 | **Fahrplan Forschungsgelder** | 2026-08-23 | 2026-08-26 | 12 |
+| 7 | **Forschungskorpus** | 2026-08-23 | 2026-08-26 | 5 |
 | 8 | **Paper A, Regeln und Grundsätze** | 2026-08-23 | 2026-08-24 | 8 |
-| 9 | **Werkstatt-Material aus Kimhub** | 2026-08-23 | 2026-08-24 | 4 |
+| 9 | **Werkstatt-Material aus Kimhub** | 2026-08-23 | 2026-08-26 | 5 |
 | 10 | **Arbeitszeitnachweis, Tag für Tag** | 2026-08-24 | 2026-08-26 | 3 |
-| 11 | **Frageblatt Steuerberater** | 2026-08-24 | 2026-08-25 | 3 |
+| 11 | **Frageblatt Steuerberater** | 2026-08-24 | 2026-08-26 | 4 |
 | 12 | **Historie der Zusammenarbeit** | 2026-08-24 | 2026-08-24 | 2 |
-| 13 | **Die Schritte, abhakbar** | 2026-08-26 | 2026-08-26 | 1 |
+| 13 | **Die Schritte, abhakbar** | 2026-08-26 | 2026-08-26 | 2 |
 | 14 | **Vorbereitung Finanzamt** | 2026-08-26 | 2026-08-26 | 1 |
 
 ## 4 · Was außerhalb der Depots liegt

@@ -71,15 +71,16 @@ Nach dem, was der Fahrplan verlangt, und nachgesehen statt angenommen.
 
 | | warum es zählt | Stand |
 |---|---|---|
-| **Blatt „Stand der Technik und Abgrenzung"**, eine Seite | **jede Fördergeberin liest dieses Blatt zuerst.** Ohne es wirkt der Antrag naiv, mit ihm belesen | **existiert nicht** |
+| **Blatt „Stand der Technik und Abgrenzung"**, eine Seite | **jede Fördergeberin liest dieses Blatt zuerst.** Ohne es wirkt der Antrag naiv, mit ihm belesen | **liegt vor** seit 2026-08-26, `docs/ABGRENZUNG.md`. Offen bleibt die Literatursuche |
 | **Englische Projektseite**, eine Seite | Grundlage für den OTF-Antrag | **existiert nicht** |
 | **Paper C** · KI-Kompetenz im täglichen Gebrauch | anwendbar, gut für Vorträge und Medienkompetenz-Töpfe | geplant, nicht geschrieben |
 | **Paper B** · Wie KI auf den Menschen wirkt | am heikelsten, hängt am meisten von einem methodischen Partner ab | geplant, nicht geschrieben |
 | **Vorleistung in Zahlen**, als eigenes Blatt | für den Antrag | Rohstoff liegt vor: 128 Tage, 5.775 Einträge von Hand, 33 Depots |
 
 **Für den Antrag reicht Paper A.** B und C sind kein Hindernis, sie sind
-Nachschub. Das fehlende **Blatt zum Stand der Technik** ist das mit der größten
-Wirkung je Seite, und es fehlt vollständig.
+Nachschub. Das **Blatt zum Stand der Technik** war das mit der größten Wirkung
+je Seite und fehlte vollständig; seit dem 2026-08-26 liegt es vor. Was daran
+offen bleibt, ist die Literatursuche, und sie steht im Blatt selbst benannt.
 
 ### Eine Lücke im Frageblatt, benannt statt umfahren
 

@@ -32,7 +32,7 @@
  *       weil sie richtig aussieht.
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -72,8 +72,49 @@ const FLIESS = norm(entziffern(ohneTags(html, false)));
    Waechter, der den Quelltext seines eigenen Werkzeugs fuer Daten haelt,
    misst irgendwann etwas anderes als das, was er zu messen glaubt. */
 const { quellen: QUELLEN, geprueft, fehlend } = vollstaendigkeit(html, WURZEL);
-gut(QUELLEN.length === 9, 'neun Quelldateien in der Mappe',
-  'gefunden: ' + QUELLEN.length);
+/* DIE ZAHL WIRD AUS DER MAPPE GELESEN, NICHT DANEBENGESCHRIEBEN. Bis zum
+   2026-08-26 stand hier eine 9. Als das Abgrenzungs-Blatt in Abteilung 2 kam,
+   wurde sie zu Recht rot, aber sie prüfte damit nur sich selbst: eine feste
+   Zahl neben einer wachsenden Liste sagt nichts über die Mappe, nur darüber,
+   wann jemand zuletzt beide angefasst hat. Geprüft wird jetzt, dass die Mappe
+   überhaupt Quellen führt und dass JEDE davon eine Datei ist, die es gibt. */
+const ERWARTET = [
+  'docs/FORSCHUNGSFOERDERUNG.md',
+  'docs/papers/ENTSTEHUNG.md',
+  'docs/ABGRENZUNG.md',
+  'docs/papers/PAPER_A_regeln-und-grundsaetze.md',
+  'docs/FORSCHUNGSKORPUS.md',
+  'docs/papers/PLAN_PAPERS.md',
+  'docs/werkstatt/README.md',
+  'docs/werkstatt/WERKSTATTREGELN.md',
+  'docs/werkstatt/grundsaetze.md',
+  'docs/werkstatt/BEFUND.md',
+];
+const fehltQuelle = ERWARTET.filter((q) => !QUELLEN.includes(q));
+const zuvielQuelle = QUELLEN.filter((q) => !ERWARTET.includes(q));
+gut(fehltQuelle.length === 0 && zuvielQuelle.length === 0,
+  'die Mappe führt genau die ' + ERWARTET.length + ' erwarteten Quelldateien',
+  'fehlt: ' + (fehltQuelle.join(' · ') || 'nichts')
+    + ' · unerwartet: ' + (zuvielQuelle.join(' · ') || 'nichts'));
+const ohneDatei = QUELLEN.filter((q) => !existsSync(resolve(WURZEL, q)));
+gut(ohneDatei.length === 0,
+  'jede der ' + QUELLEN.length + ' Quellen der Mappe ist eine Datei, die es gibt',
+  'ohne Datei: ' + ohneDatei.join(' · '));
+/* ── 1c · Das Abgrenzungs-Blatt, und was es über sich selbst sagt ─────────
+   Es beantwortet die Frage, die eine Gutachterin zuerst stellt. Zwei Sätze
+   darin tragen die Glaubwürdigkeit des Ganzen: der Abschnitt, in dem das
+   Vorhaben die eigenen geliehenen Teile benennt, und der, der sagt, dass die
+   Seite keine Literaturübersicht ist. Ein Vergleich, der die eigene Sache
+   gewinnen lässt, ist zuerst verdächtig. */
+{
+  const abgrenzung = readFileSync(resolve(WURZEL, 'docs/ABGRENZUNG.md'), 'utf-8');
+  gut(/nichts Neues beansprucht/.test(abgrenzung)
+    && /Der Transport ist geliehen/.test(abgrenzung),
+    'das Abgrenzungs-Blatt benennt, was daran NICHT neu ist');
+  gut(/keine Literaturübersicht/.test(abgrenzung),
+    'und sagt, dass es eine Abgrenzung ist und keine Literaturübersicht');
+}
+
 gut(fehlend.length === 0,
   'jede der ' + geprueft + ' Quellzeilen steht in der Ansicht',
   fehlend.slice(0, 6).join('\n       ')

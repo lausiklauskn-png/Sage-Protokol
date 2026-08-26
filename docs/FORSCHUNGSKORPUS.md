@@ -121,9 +121,11 @@ Nachgemessen gegen `origin/main`, nicht gegen den ausgecheckten Stand:
 - **Die Papers tragen noch keinen DOI.** Der Zenodo-Schritt steht aus
   ([`FORSCHUNGSFOERDERUNG.md`](FORSCHUNGSFOERDERUNG.md), Stufe B1). Bis dahin
   sind sie Dateien in einem Depot, keine zitierfähigen Quellen.
-- **Ein Blatt „Stand der Technik und Abgrenzung" fehlt**: gegen IPFS,
-  ActivityPub, Matrix, Solid, libp2p, Nostr und zentrale Vektor-Suchen. Ohne es
-  wirkt der Korpus naiv, mit ihm belesen. Stufe B2.
+- **Das Blatt „Stand der Technik und Abgrenzung" liegt seit dem 2026-08-26 vor**
+  ([`ABGRENZUNG.md`](ABGRENZUNG.md), Abteilung 2 der Antragsmappe): gegen IPFS,
+  ActivityPub, Matrix, Solid, libp2p, Nostr, zentrale Vektor-Suchen und MCP.
+  **Es ist eine Abgrenzung, keine Literaturübersicht.** Für den Antrag reicht
+  das, für eine Veröffentlichung nicht; was dafür fehlt, steht in § 6 darin.
 - **Klaus' Browser-Sichttest ist nicht ersetzbar.** Headless beweist die Logik,
   nicht wie es sich am Tablet anfühlt.
 - **Was in `werkstatt/BEFUND.md` als nicht bewiesen steht, ist nicht bewiesen**.
