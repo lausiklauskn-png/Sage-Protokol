@@ -133,18 +133,28 @@ const FAELLE = [
     },
   },
   {
-    was: 'Der Druck-Riegel für den Fahrplan fehlt',
+    /* Bis zum 2026-08-26 stand hier die fertige CSS-Zeile als Anker. Seit die
+       Druck-Riegel AUS der Abteilungs-Liste erzeugt werden, gibt es sie im
+       Quelltext nicht mehr, und der Fall meldete korrekt „Anker greift nicht"
+       statt „gefangen". Sabotiert wird jetzt die Erzeugung. */
+    was: 'Es wird gar kein Druck-Riegel mehr erzeugt',
     bauen: () => {
       ersetze('tools/antragsmappe-bauen.mjs',
-        'html.nur-privat .abteilung:not(#privat){display:none}\n', '');
+        ".map((id) => 'html.nur-' + id + ' .abteilung:not(#' + id + '){display:none}')",
+        ".map(() => '')");
       bauen();
     },
   },
   {
-    was: 'Der Druck-Riegel für die Unterlagen fehlt',
+    /* Der gefährlichere der beiden: NUR die erste Abteilung bekommt ihren
+       Riegel. Der Knopf der zweiten arbeitet weiter, das Blatt zeigt beim
+       Drucken aber alles. Genau der stumme Fehler, den eine erzeugte Regel
+       möglich macht und eine hingeschriebene nicht hatte. */
+    was: 'Nur die erste Abteilung bekommt einen Druck-Riegel',
     bauen: () => {
       ersetze('tools/antragsmappe-bauen.mjs',
-        'html.nur-einreichbar .abteilung:not(#einreichbar){display:none}\n', '');
+        'const DRUCK_REGELN = [...new Set(MAPPEN.flatMap((m) => m.abteilungen.map((a) => a.id)))]',
+        'const DRUCK_REGELN = [...new Set(MAPPEN.flatMap((m) => m.abteilungen.map((a) => a.id)))].slice(0, 1)');
       bauen();
     },
   },

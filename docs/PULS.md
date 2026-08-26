@@ -31,6 +31,102 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-26 (Bau) · 📁 Die Unterlagen der Reihe nach
+
+**Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
+Klaus: *„Gib mir bitte aus allen Sitzungen der Reihe nach die Download-Dokumente:
+Fahrplan, Steuerberater-Fragebogen, Finanzamt-Einreichung, Arbeitszeitnachweis,
+Forschungsunterlagen inkl. Papers, und was noch fehlt für die Erreichung bei den
+entsprechenden Stellen. Schaue gründlich nach, gegebenenfalls passe an."*
+
+### ⚠ Zum zweiten Mal an drei Tagen: eine Sitzung lief parallel
+
+Während dieser Bau lief, hat eine **zweite Sitzung dasselbe gebaut** (PR #917
+bis #919): ein Frageblatt für den Steuerberater, mit eigener Probe und
+Gegenprobe. Gemerkt beim Push, nicht davor.
+
+**Ihres gewinnt, und das ist keine Höflichkeit.** Es ist gründlicher:
+Sachverhalt in sieben Sätzen, sieben nummerierte Fragen, 75 Rechnungen, echte
+Zahlen. Meines ist **gelöscht**; Abteilung 3 der neuen Mappe zeigt jetzt auf
+`docs/STEUERBERATER_FRAGEN.md`. Zwei Blätter zur selben Auskunft wären zwei
+Quellen der Wahrheit gewesen, und die eine wüsste nichts von der anderen.
+
+**Beim Zusammenführen fiel eine Lücke in ihrem Blatt auf:** die
+**Kleinunternehmerregelung** steht dort nur als Aufzählungspunkt unter Frage 7,
+nicht als eigene Frage. Der Fragebogen zur steuerlichen Erfassung verlangt aber
+ein Kreuz. Benannt, nicht umfahren.
+
+**Und ihr Text hat einen Messfehler in meinem Wächter aufgedeckt:**
+`klartext()` entfernte Sternchen **auch innerhalb eines Code-Abschnitts**. An
+`docs/historie/arbeitstage.*` meldete er eine Zeile als fehlend, die
+vollständig dastand. Dieselbe Sorte wie beim Unterstrich in Dateinamen, nur ein
+Zeichen weiter. Behoben, und beide Mappen-Proben sind dadurch genauer.
+
+### Der Bestand, nachgesehen statt angenommen
+
+**Drei der fünf gab es, zwei nicht** (das Frageblatt kam parallel dazu). Fahrplan (`FORSCHUNGSFOERDERUNG.md`),
+Arbeitszeitnachweis (`historie/arbeitstage.*`) und Forschungsunterlagen
+(Antragsmappe, Abteilung 2) lagen vor. **Steuerberater-Fragebogen und
+Finanzamt-Einreichung existierten überhaupt nicht.**
+
+Neu, unter `docs/unterlagen/`: Übersicht mit „Was noch fehlt" · die Schritte in
+der Reihenfolge ihrer Abhängigkeiten · Vorbereitung Finanzamt. Zusammengebaut zu `docs/unterlagen.html`, vier Abteilungen, **jede
+einzeln herunterzuladen und einzeln zu drucken**.
+
+### Der Widerspruch, den das gründliche Nachsehen gefunden hat
+
+**Schritt B4 des Fahrplans stand gegen § 4 derselben Datei.** B4 verlangte
+Lizenz-Dateien für `BookLedgerPro` und `Meine-In-and-Out-Book`; § 4 hatte am
+2026-08-24 nachgemessen, dass `BookLedgerPro` seit dem 16.08. eine trägt (im
+Container lag ein veralteter Klon) und `Meine-In-and-Out-Book` ein leeres Depot
+ohne einen einzigen Commit ist. **§ 4 war gemessen, B4 abgeschrieben.**
+Nachgezogen, mit dem Grund daneben.
+
+### Ein Werkzeug für zwei Mappen, nicht zwei Werkzeuge
+
+`antragsmappe-bauen.mjs` kannte eine Mappe, und **zwei Druckregeln nannten deren
+Abteilungen mit Namen**. Sie werden jetzt aus der Liste erzeugt. Eine dritte
+Abteilung wäre sonst stumm nicht druckbar gewesen: der Knopf hätte gearbeitet,
+das Blatt hätte alles gezeigt.
+
+**Und dabei ist ein echter Fehler entstanden, den die Gegenprobe gefunden hat:**
+die Anker-Karte galt zuerst über **beide** Mappen. Ein Verweis aus der
+Unterlagen-Mappe auf `FORSCHUNGSFOERDERUNG.md` wurde damit zu `#q-docs-...`,
+dessen Ziel nur in der **anderen** Datei steht. Ein Sprung ins Leere, der
+aussieht wie ein Verweis. Anker jetzt je Mappe.
+
+### Fünf blinde Wächter, alle von der Gegenprobe entlarvt
+
+| | |
+|---|---|
+| Der Download-Wächter **klonte die Abteilung selbst** statt den Knopf zu drücken | er maß seine eigene Funktion |
+| „keine Abschrift des Formulars" | fand den Satz im **Warnkasten des Generators** |
+| „keine steuerliche Beratung" | fand ihn im **anderen** Blatt |
+| „Was noch fehlt" mit `/i` | fand „was noch fehlt" klein in der Einleitung derselben Abteilung |
+| der Anker-Fall | sabotierte nichts, weil es gar keinen relativen Verweis mehr gab |
+
+Die drei mittleren sind dieselbe Sorte: **die Prüfung findet ihren Satz
+woanders.** Gemessen wird jetzt im Abschnitt, zu dem die Aussage gehört, und
+beim letzten am **Inhalt** statt an der Überschrift.
+
+**Nebenbefund:** vier Gedankenstriche in der Markier-Legende. Der bestehende
+Wächter misst die **Quellen**, der neue die **Ansicht** und ist damit strenger.
+Aufgelöst.
+
+**Gemessen:** 90 von 90 Proben grün · Gegenprobe Unterlagen 14 von 14 ·
+Antragsmappe 32 von 32 · Historie 9 von 9 · Arbeitstage 16 von 16 ·
+Frageblatt der Nachbarsitzung unberührt grün.
+
+**PDFs:** `unterlagen.pdf` (15 Seiten) und je Abteilung eines, über
+`tools/html-zu-pdf.mjs --nur <id>`. Das setzt **dieselbe** Klasse wie der Knopf
+in der Seite, statt eine zweite Auswahl-Logik zu bauen.
+
+**Offen:** Klaus' Sichttest · der Werkzeug-Widerspruch in Paper A (**vor**
+Zenodo) · das Blatt „Stand der Technik und Abgrenzung", das es noch gar nicht
+gibt und das jede Fördergeberin zuerst liest · die Anmeldung nach § 5c.
+
+---
+
 ## Stand 2026-08-24 (Bau, 3.) · ⏱ Die Arbeitstage einzeln, für das Finanzamt
 
 **Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.

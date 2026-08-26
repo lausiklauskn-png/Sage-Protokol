@@ -50,41 +50,13 @@ const gut = (bedingung, was, dazu) => {
 
 const html = readFileSync(MAPPE, 'utf-8');
 
-/* ── Klartext der Ansicht ──────────────────────────────────────────────────
-   Skript und Stil fliegen raus — sie sind kein Text, den jemand liest, und
-   ihre Zeichen würden die Nachzählung verwässern. */
-const ENTITAET = {
-  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
-  middot: '·', mdash: '—', ndash: '–', auml: 'ä',
-  ouml: 'ö', uuml: 'ü', Auml: 'Ä', Ouml: 'Ö',
-  Uuml: 'Ü', szlig: 'ß',
-};
-const entziffern = (s) => s
-  .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n))
-  .replace(/&([a-zA-Z]+);/g, (_, n) => (n in ENTITAET ? ENTITAET[n] : '&' + n + ';'));
+import { entziffern, ohneTags, norm, klartext, vollstaendigkeit }
+  from './_mappen-teile.mjs';
 
-/* EIN UNTERSCHIED, DER HIER ENTSCHEIDET: Auszeichnungs-Tags mitten im Wort
-   (fett, kursiv, Verweis, Code) werden ERSATZLOS entfernt, alles andere durch
-   ein Leerzeichen. Die erste Fassung machte aus jedem Tag ein Leerzeichen —
-   aus "keine KIs<\/strong>." wurde "keine KIs ." mit Lücke, und die
-   Nachzählung meldete 320 Zeilen als fehlend, die alle dastanden. Ein
-   Wächter, der aus dem eigenen Messfehler heraus rot wird, ist genauso
-   wertlos wie einer, der blind grün ist. */
-const INLINE = /<\/?(a|strong|em|code|span|sup|sub)\b[^>]*>/gi;
-
-const ohneTags = (s, mitCode = true) => {
-  let t = s
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<!--[\s\S]*?-->/g, ' ');
-  if (!mitCode) t = t.replace(/<pre[\s\S]*?<\/pre>/gi, ' ');
-  return t
-    .replace(/<br\s*\/?>/gi, ' ')
-    .replace(INLINE, '')
-    .replace(/<[^>]+>/g, ' ');
-};
-
-const norm = (s) => s.replace(/\s+/g, ' ').trim();
+/* Die Messwerkzeuge stehen in `_mappen-teile.mjs`, weil seit dem
+   2026-08-26 ZWEI Mappen geprueft werden. Eine zweite Fassung dieser
+   Nachzaehlung wuerde irgendwann etwas anderes messen als die erste,
+   und beide Proben waeren gruen. */
 
 const SICHT = norm(entziffern(ohneTags(html)));
 /* Für die Frage „steht rohes Markdown auf dem Schirm?" müssen die
@@ -94,53 +66,14 @@ const FLIESS = norm(entziffern(ohneTags(html, false)));
 
 /* ── 1 · Nichts verschluckt ───────────────────────────────────────────── */
 
-/* Eine Quellzeile auf das reduzieren, was ein Leser davon sieht. Alles,
-   was hier abgeschnitten wird, ist Auszeichnung — nie Inhalt. */
-function klartext(zeile) {
-  let s = zeile;
-  s = s.replace(/^\s{0,8}>\s?/, '');                     // Zitatzeichen
-  s = s.replace(/^\s*(#{1,6})\s+/, '');                  // Überschrift
-  s = s.replace(/^(\s*)([-*+]|\d+\.)\s+/, '');           // Listenpunkt
-  s = s.replace(/^\[( |x|X)\]\s+/, '');                  // Häkchen
-  s = s.replace(/\[([^\]]*)\]\([^)\s]+(?:\s+"[^)]*")?\)/g, '$1');  // Verweis
-  s = s.replace(/<(https?:\/\/[^>\s]+)>/g, '$1');        // nackte Adresse
-  s = s.replace(/\|/g, ' ');                             // Tabellen-Striche
-  // NUR Sternchen und Backtick. Der Unterstrich sieht wie eine Auszeichnung
-  // aus, ist in diesen Quellen aber Teil von Dateinamen
-  // (MEILENSTEIN_SEMANTISCHE_SUCHE.md, __20k.html). Ihn mitzuentfernen
-  // liess 70 Zeilen als fehlend erscheinen, die alle dastanden.
-  s = s.replace(/[*`]/g, '');                            // fett/kursiv/Code
-  return norm(s);
-}
-
 /* NUR echte Artikel zaehlen. Ein blosses Muster auf data-quelle fing auch
    die Waehler-Zeichenketten im Markier-Skript mit — die Probe suchte
    danach eine Datei, deren Name aus einem Stueck JavaScript bestand. Ein
    Waechter, der den Quelltext seines eigenen Werkzeugs fuer Daten haelt,
    misst irgendwann etwas anderes als das, was er zu messen glaubt. */
-const QUELLEN = [...html.matchAll(/<article[^>]*\sdata-quelle="([^"]+)"/g)]
-  .map((m) => m[1]);
+const { quellen: QUELLEN, geprueft, fehlend } = vollstaendigkeit(html, WURZEL);
 gut(QUELLEN.length === 9, 'neun Quelldateien in der Mappe',
   'gefunden: ' + QUELLEN.length);
-
-let geprueft = 0;
-const fehlend = [];
-for (const pfad of QUELLEN) {
-  const zeilen = readFileSync(resolve(WURZEL, pfad), 'utf-8').split('\n');
-  let imCode = false;
-  for (let n = 0; n < zeilen.length; n++) {
-    const roh = zeilen[n];
-    if (/^\s*```/.test(roh)) { imCode = !imCode; continue; }
-    if (imCode) continue;                                  // Codeblöcke: 1:1 übernommen
-    if (!roh.trim()) continue;
-    if (/^\s*(---+|\*\*\*+|___+)\s*$/.test(roh)) continue;  // Trennlinie
-    if (/^\s*\|[\s:|-]+\|?\s*$/.test(roh)) continue;        // Tabellen-Trennzeile
-    const soll = entziffern(klartext(roh));
-    if (!soll) continue;
-    geprueft++;
-    if (!SICHT.includes(soll)) fehlend.push(pfad + ':' + (n + 1) + '  ' + soll.slice(0, 90));
-  }
-}
 gut(fehlend.length === 0,
   'jede der ' + geprueft + ' Quellzeilen steht in der Ansicht',
   fehlend.slice(0, 6).join('\n       ')

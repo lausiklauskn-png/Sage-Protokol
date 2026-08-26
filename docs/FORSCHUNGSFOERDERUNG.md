@@ -1197,8 +1197,19 @@ Rangfrage vorweg, statt sie im Raum stehen zu lassen.
       Spuren in Sage-Protokol reichen bis zum 10.03.2026 zurück, Kimhubs
       Fahrtenbuch erst bis zum 22.08.2026. Was älter ist, wird
       **rekonstruiert**, und als Rekonstruktion gekennzeichnet.
-- [ ] **B4 · Lizenz-Lücken schließen.** `BookLedgerPro` und
-      `Meine-In-and-Out-Book` bekommen eine Lizenz-Datei.
+- [x] **B4 · Lizenz-Lücken: erledigt, und der Punkt war zuletzt falsch
+      formuliert.** Er verlangte Lizenz-Dateien für `BookLedgerPro` und
+      `Meine-In-and-Out-Book`. Die Nachmessung in Abschnitt 4 vom **2026-08-24**
+      sagt etwas anderes: `BookLedgerPro` trägt **seit dem 2026-08-16** eine
+      Nutzungslizenz (im Container lag ein veralteter Klon), und
+      `Meine-In-and-Out-Book` ist ein **leeres Depot ohne einen einzigen
+      Commit**. Ein leeres Depot ohne Lizenz ist ein anderer Sachverhalt als
+      Quelltext ohne Lizenz, und nur der zweite wäre ein Problem.
+      **Was wirklich zählt, steht in Abschnitt 4:** das Depot, mit dem beantragt
+      wird, muss eine anerkannte freie Lizenz tragen. `Sage-Protokol` trägt MIT.
+      Damit ist dieser Punkt erledigt.
+      *(Zwei Abschnitte derselben Datei sagten bis zum 2026-08-24 Verschiedenes
+      über dieselbe Sache. Abschnitt 4 war gemessen, dieser hier abgeschrieben.)*
 - [ ] **B5 · Eine englische Projektseite.** Eine Seite, kein Prospekt. Was es
       ist, warum es wichtig ist, was schon läuft, wer dahintersteht. Grundlage
       für den OTF-Antrag.

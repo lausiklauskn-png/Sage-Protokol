@@ -124,9 +124,9 @@ export const MK_HTML = `
     <h2>Markierungen</h2>
     <p class="zaehler" data-mk-zaehler>noch keine</p>
     <ul class="mk-legende" data-mk-legende>
-      <li><span class="mk-tupf" data-f="gruen"></span> <strong>bleibt</strong> — soll bleiben</li>
-      <li><span class="mk-tupf" data-f="gelb"></span> <strong>du entscheidest</strong> — kann bleiben oder weg, Claude wägt ab</li>
-      <li><span class="mk-tupf" data-f="rot"></span> <strong>kann weg</strong> — kann komplett gestrichen werden</li>
+      <li><span class="mk-tupf" data-f="gruen"></span> <strong>bleibt</strong>, soll bleiben</li>
+      <li><span class="mk-tupf" data-f="gelb"></span> <strong>du entscheidest</strong>, kann bleiben oder weg, Claude wägt ab</li>
+      <li><span class="mk-tupf" data-f="rot"></span> <strong>kann weg</strong>, kann komplett gestrichen werden</li>
     </ul>
     <p class="mk-grundsatz">Im Zweifel <strong>bleiben</strong>. Lieber bleiben als weg.</p>
     <div data-mk-warnung hidden></div>
@@ -139,8 +139,8 @@ export const MK_HTML = `
     <p class="lage" data-mk-lage role="status"></p>
     <div data-mk-liste></div>
     <p class="woher">
-      Markierungen werden <strong>nie gedruckt und nie mitgeladen</strong> —
-      die Einreich-Abteilung geht zur Behörde, und dorthin gehören keine
+      Markierungen werden <strong>nie gedruckt und nie mitgeladen</strong>.
+      Die Einreich-Abteilung geht zur Behörde, und dorthin gehören keine
       eigenen Zweifel. Wer sie auf Papier braucht, druckt die ausgelesene
       Liste. Sie liegen im Speicher <em>dieses</em> Browsers: was auf dem
       Tablet markiert wurde, steht in DeX nicht.
