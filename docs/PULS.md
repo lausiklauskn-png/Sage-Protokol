@@ -31,6 +31,146 @@ pie showData
 Farb-Mapping verbindlich in [INTERFACES.md §5](INTERFACES.md). Live-Bau-Puls
 auf der [Sage-Page](../index.html) (Karte "Bau-Puls").
 
+## Stand 2026-08-26 (Bau, 2.) · 📚 Die lückenlose Dokumentation
+
+**Rolle:** Fortsetzung. Zweig `claude/dokumentation-bestandsaufnahme-ph81s1`,
+PR #922. Auftrag aus `BRIEF_lueckenlose_dokumentation.md`, dazu drei
+Nachforderungen von Klaus im Lauf der Sitzung.
+
+**Zuerst ausgelagert, dann geschrieben.** Die Datei stand bei 2.833 Zeilen. Die
+siebte Auslagerung nimmt beide Einträge vom 19.08. wortwörtlich heraus, jetzt
+2.709.
+
+### Die Frage des Briefes, beantwortet, und sie war falsch gestellt
+
+Fällt die Protokoll-Dichte, weil die Dokumentation nachlässt, oder weil die
+Sitzungen länger wurden? Beides ergibt dieselbe Kurve, wenn man Einträge je
+Protokoll zählt. **Tage lassen sich dagegen zählen:** von 128 Arbeitstagen
+tragen **48** ein Protokoll, das sind 38 Prozent.
+
+Der April löst sich dabei auf. Seine 551 Einträge liegen in **Mein-Rezeptbuch
+(288), Muttis-Rezeptbuch (206) und Mein-Mixarium (55)**; Sage-Protokol hatte in
+diesem Monat **einen**. Die Protokollpflicht ist eine Sage-Regel. Das erste
+Protokoll überhaupt stammt vom **10.05.**, in den App-Depots beginnt die Praxis
+Ende Mai. **Im April gab es sie nirgends.**
+
+> Der Befund davor verglich netzweite Einträge gegen Protokolle eines einzigen
+> Depots. Beide Zahlen waren richtig, ihr Verhältnis war es nicht. **Eine
+> Differenz aus zwei ungleichen Messungen ist keine Messung**, und diesmal
+> stand sie im eigenen Brief.
+
+### Was gebaut wurde
+
+| | |
+|---|---|
+| `tools/bestand-rechnen.mjs` | die **eine** Quelle der Rechnung |
+| `tools/bestand-bauen.mjs` | schreibt beide Blätter, Zeitraum und Umfang aus `git log` |
+| `docs/unterlagen/04_BESTAND.md` | Abteilung 5: was es gibt, wo, seit wann, welche Lücke |
+| `docs/unterlagen/05_APRIL.md` | Abteilung 6: der April, als Rekonstruktion gekennzeichnet |
+| `docs/ABGRENZUNG.md` | Abteilung 2 der Antragsmappe, vor Paper A |
+| `tests/smoke_bestand.mjs` · `smoke_zahlen.mjs` | zwei neue Wächter, beide mit Gegenprobe |
+
+Die Bestandsaufnahme zeigt **dieselbe Liste zweimal**: nach Vorgehen und
+chronologisch. Zwei Listen wären eine Drift-Quelle mit Ansage.
+
+### Vier Widersprüche, alle in Unterlagen, die aus dem Haus gehen
+
+| stand da | gemessen |
+|---|---|
+| „27 Tage nichts" | **26** |
+| „140 Kalendertage" | **141** |
+| „genau **eine** Lücke von vier Tagen" | **neun** Unterbrechungen, die längste **drei** Tage |
+| 5.823 und 5.775, beide „Einträge" | beide richtig, die Differenz sind die 48 zeitgesteuerten Läufe |
+
+**Die dritte war die gefährlichste.** Neben dem Text liegt die Tages-Tabelle,
+in der jeder die Unterbrechungen nachzählen kann. Eine Zahl, die man selbst
+berichtigt, trägt weiter als eine, die jemand anders berichtigt.
+
+Dazu eine Angabe, die **wahr ist und beim Nachprüfen falsch aussieht**: der
+Forschungskorpus nennt die Demo „erster lauffähiger Stand vom 10. März 2026".
+Der Inhalt stimmt, der Ordner kam am **2026-08-15** ins Depot (#855), weil er
+bis dahin an eine konkrete Anfrage gebunden war. Beides steht jetzt da.
+
+Und in `ENTSTEHUNG.md` war „mehr als doppelte Arbeitszeit" seit dem 24.08.
+nachrechenbar: die **Spanne** ergibt 81,1 Stunden je Woche (2,03-fach), die
+**aktive Zeit** 49,7 (1,24-fach). Klaus' Schätzung trifft die erste. Wer sie im
+Antrag verwendet, schreibt dazu, welche gemeint ist.
+
+### Fünf eigene Fehler, jeder von einer Gegenprobe gefunden
+
+- **Ein flacher Klon liefert Zeiträume, die wie Messungen aussehen.** Der erste
+  Lauf gab für `LEHREN.md` „2026-08-22 bis 2026-08-22" aus. Der Container-Klon
+  trug nur die letzten fünfzig Einträge. **Nichts daran sah falsch aus.** Das
+  Werkzeug bricht jetzt ab, statt zu stempeln. Dieselbe Falle steht seit dem
+  24.08. in der Historie, wo achtzehn Klone vor dem Auslesen vervollständigt
+  wurden. Hier hatte niemand daran gedacht.
+- **Der Wächter dazu fand sein Datum woanders** im Blatt, in einem Abschnitt
+  aus einer anderen Rechnung, und blieb grün, während jede Zeitraum-Angabe
+  gestempelt war.
+- **Zwei Kennzahlen mit demselben Namen** fing keine Prüfung. Genau der Fehler,
+  gegen den das Blatt gebaut ist.
+- **Die Zahl der Unterbrechungen** wurde nie gegen den Text geprüft. Ein
+  Wächter, der nur das Falsche verbietet, misst nicht, ob das Richtige dasteht.
+- **Ein erfundenes Zitat** in `werkstatt/BEFUND.md`: die Regel heißt „Du hast
+  keine Werkzeuge", der längere Satz in Anführungszeichen stand so in keiner
+  Quelle. Der Gedankenstrich-Wächter ließ ihn durch, **weil** er in
+  Anführungszeichen stand.
+
+### Zwei Wächter, die zu eng gemessen haben
+
+Die Zahl der Quelldateien stand als `9` daneben und wurde beim Einbau des
+Abgrenzungs-Blattes rot. Sie prüfte damit nur sich selbst. Jetzt steht dort
+eine **Namensliste**, und ein Ausfall sagt, welche Datei fehlt.
+
+Der Lücken-Wächter zählte das Wort „existiert nicht" und wurde rot, **weil eine
+Lücke geschlossen wurde**. Die zweite Fassung zählte mehr Wörter und war zu
+nachsichtig: die Gegenprobe ersetzte eine Zeile durch „in Arbeit", und die
+anderen trugen die Zahl allein. Jetzt braucht **jede Zeile** der Tabelle einen
+Stand aus einer anerkannten Liste.
+
+### Gedankenstriche, netzweit gemessen (Klaus' Frage)
+
+| was aus dem Haus geht | sichtbar | wovon |
+|---|---|---|
+| Unterlagen-Mappe, sechs Abteilungen | **0** | |
+| Frageblatt Steuerberater | **0** | |
+| Antragsmappe | 18 | **alle** aus den zwei Byte-Kopien aus Kimhub, Prüfsummen in `werkstatt/README.md` |
+| Historie | 5.349 | **alle** aus zitierten Commit-Betreffen, eigener Rahmen **0** |
+| Arbeitszeitnachweis | 847 | dasselbe, eigener Rahmen **0** |
+| SBKIM-Papers DE/EN | 20 / 17 | **v0.1-Vorabveröffentlichung, Mai 2026**, in `INTERFACES.md` mit Paragraphennummern zitiert |
+
+Im Depot insgesamt: **13.131**, davon 7.238 in lebenden Arbeitstexten (Doku
+4.943, Briefe 1.674, Wurzel 316, Skills 305). Das sind keine Unterlagen.
+
+**Die Papers sind die eine offene Entscheidung.** Eine datierte v0.1 still
+umzuschreiben, während `INTERFACES.md` sie mit Paragraphennummern zitiert,
+erzeugte zwei Fassungen mit derselben Nummer. Das braucht eine v0.2 und Klaus'
+Wort.
+
+### Klaus' Downloads, geprüft
+
+Elf Dateien von seinem Gerät, byte-weise gegen das Depot gehalten: **neun
+identisch**, BOM vorhanden, PDFs vollständig. Zwei sind **ältere Downloads**:
+`antragsmappe.html` steht auf Stand 23.08., `historie.html` stammt von vor der
+BOM-Reparatur am 24.08. Kein Fehler, aber der Beleg dafür, dass eine
+heruntergeladene Datei keinen Rückweg hat. Beide tragen ihr Erzeugungsdatum im
+Dokument, deshalb war es überhaupt zu sehen.
+
+Dazu `klauszeit.txt`, der Export von Kimhubs Stechuhr: **zweimal gedrückt, 16
+Sekunden**. Als Zeitquelle unbrauchbar, und genau deshalb wird der Nachweis aus
+den Einträgen gerechnet. Steht so in der Bestandsaufnahme.
+
+**Gemessen:** 92 Proben grün, 0 rot, 0 nicht lauffähig · Gegenproben einzeln
+nacheinander: Antragsmappe 35 von 35, Unterlagen 14 von 14, Bestand 17 von 17,
+Zahlen 13 von 13 · neun PDFs neu gebaut, vier davon neu.
+
+**Offen:** Klaus' Sichttest · die Gedankenstriche in den beiden Papers
+(braucht v0.2 und sein Wort) · der Werkzeug-Widerspruch in Paper A · die
+Literatursuche zum Abgrenzungs-Blatt · die englische Projektseite · die
+Anmeldung nach § 5c.
+
+---
+
 ## Stand 2026-08-26 (Bau) · 📁 Die Unterlagen der Reihe nach
 
 **Rolle:** Fortsetzung. Zweig `claude/research-funding-paper-delivery-vuppnj`.
@@ -741,131 +881,6 @@ Termin, Fristen selbst nachsehen) — dann Stufe B, die Vorleistungs-Mappe, mit 
 Zenodo-DOI als erstem Schritt.
 
 ---
-
-## Stand 2026-08-19 (Bau) — 🧹 Aufräumen, ohne Arbeit zu verlieren
-
-**Rolle:** Bau-Sitzung. Zweig `claude/firma-demo-knotennetzwerk-4hkxun`.
-
-**Anlass:** Klaus' Tablet-Speicher läuft voll und macht Probleme. Seine Bedingung
-war die eigentliche Bauvorschrift — *„wo ich aber auch sehe, dass ich Dinge
-lösche, die ich nicht löschen möchte."*
-
-**Gebaut:** `tools/aufraeumen.sh` (drei Gänge: nachsehen · GC · scharf) für die
-Repo-Klone in Termux, und `tools/speicher.html` für die Browser-Vorräte aller
-Apps auf derselben Adresse. Dazu `tests/smoke_aufraeumen.mjs` (22 Prüfungen an
-echten Git-Repos), `tests/smoke_speicher_seite.mjs` (14 Prüfungen im echten
-Chromium) und `tests/gegenprobe_aufraeumen.sh` (14 eingebaute Fehler, **alle
-gefangen**). Suite: **82 grün, 0 rot, 0 nicht lauffähig.**
-
-**Drei Befunde, die die eigenen Proben gefunden haben:**
-
-1. **Das Wartewort stand im Fortschrittstext.** Die Seite meldete „Wird
-   gelöscht …", die Probe wartete auf „gelöscht" — und feuerte mitten im
-   Löschen. Dieselbe Falle wie in Kimboard. Behoben auf beiden Seiten: die Seite
-   sagt jetzt „Räume auf …" / „Fertig: …", die Probe wartet auf die Bedingung.
-2. **Eine Probe, die immer alles anhakt, misst die Auswahl nicht.** Der
-   sabotierte Löschen-Knopf rutschte durch, bis ein Lauf mit **Teil-Auswahl**
-   dazukam — der Fall, den Klaus wirklich benutzt.
-3. **Eine Textsuche findet ihre eigene Doku.** Die Quelltext-Prüfung schlug auf
-   den Kommentar an, der erklärt, dass `deleteDatabase` NICHT aufgerufen wird.
-   Kommentare werden jetzt abgezogen, bevor gesucht wird.
-
-**Nebenbefund:** `playwright-core` fehlte in `package.json`. Damit waren
-`pinnwand/_smoke_melden.mjs` und `_smoke_mikrofon.mjs` auf einem frischen
-Container **nicht lauffähig** — also stumm. Jetzt exakt genagelt (1.62.1).
-
-**Offen:** Klaus' Lauf auf dem Tablet. Erst `bash tools/aufraeumen.sh` (ändert
-nichts), Zahlen ansehen, dann entscheiden. `tools/speicher.html` erst nach dem
-Merge über GitHub Pages erreichbar.
-
-**Nächster Schritt:** Teil A des Plans — die Werkstatt in Kimhub (Schicht,
-Rollen, Deckel). Siehe die Chat-Antwort dieser Sitzung.
-
-## Stand 2026-08-19 (Pflege) — ⏱ Eine feste Wartezeit, die in beide Richtungen log
-
-**Rolle:** Pflege-Sitzung (Status-Prüfung Kimboard + Sage). Zweig
-`claude/kimboard-relais-status-x77me9`.
-
-**Anlass war kein Auftrag, sondern ein Messwert.** Der Brief sagte „es drängt
-nichts", und das stimmte. Beim Nachprüfen — Beweis statt Annahme — meldete
-`run_alle.mjs` erst **78 grün, 0 rot, 2 nicht lauffähig**: `pinnwand/_smoke_melden`
-und `_smoke_mikrofon` liefen mangels `playwright-core` gar nicht. Ausgerechnet
-der Melde-Weg der Pinnwand vom Vortag war damit **ungeprüft, nicht grün**.
-
-**Was getan:**
-
-- `npm install --no-save playwright-core` in Sage (bewusst `--no-save` — die
-  `package.json` ist gepinnt und bewacht). Danach **alle 80 Proben lauffähig**.
-- Im selben Lauf fiel `smoke_bau05_nostr.mjs` mit **genau 5 roten Prüfungen**
-  um. Einzeln: **25 von 25 grün**, auch unter CPU- und Browser-Last. Drei weitere
-  volle Läufe: grün. **Nicht reproduzierbar — und trotzdem echt.**
-- Ursache strukturell belegt: fünf feste `sleep(50)`, während der Empfänger
-  echte Ed25519-Krypto rechnet. Die 5 roten Prüfungen sind exakt Probe 2, die
-  vollständig an einer Antwort hängt.
-- **Der größere Fund lag auf der Gegenseite.** Die Wartestellen sind zwei
-  Sorten: „etwas kommt" (zu kurz ⇒ falsches ROT) und „etwas bleibt aus" (zu
-  kurz ⇒ **falsches GRÜN**). Bei Sorte B war die Probe **zu nachsichtig**: eine
-  verspätete zweite Antwort hätte einen gebrochenen Replay-Schutz verborgen.
-- Beide umgestellt — Sorte A auf `warteBis` (Bedingung, Frist nur Obergrenze),
-  Sorte B auf `RUHE_MS = 400`. Dieselbe Kur in der Schwester-Probe
-  `smoke_query_ueber_relais.mjs` (80/60 ms), wo es bisher nur Glück war.
-- **Gegenprobe gebaut:** `tests/gegenprobe_bau05_warten.mjs` — 8 Fälle, beide
-  Dateien, arbeitet an einer **Wegwerf-Kopie** (die echte Probe wird nie
-  angefasst, also greift die Falle „während einer Gegenprobe wird nicht
-  committet" hier gar nicht erst). Sie bricht den Replay-Schutz absichtlich und
-  zeigt: heute gefangen, mit der alten Frist blind.
-- `CLAUDE.md` § „Die Proben laufen lassen" um die **vierte** Art, wie eine Probe
-  stumm wird, ergänzt.
-
-**Kimboard:** `node tests/alle.mjs` → **alle 31 Prüfungen grün**, nichts zu tun.
-
-**Was offen bleibt (unverändert, nichts eilt):**
-
-1. `grub-pc-bin` + `grub2-common` auf dem Server — von Ubuntu wegen „phasing"
-   zurückgehalten, kommt von allein. Bootloader, nichts erzwingen.
-2. Anzeige-Filter für die anderen 20 Apps (Modul 23 `discover()`) —
-   Richtungsentscheid für Klaus, bewusst vertagt. Heute gäbe es nichts zu
-   filtern. Wieder aufnehmen, sobald jemand Fremdes aufs Relais schreibt.
-
-**Bewusst NICHT angefasst:** `smoke_bau23_rendezvous_ui.mjs` wartet mit 5–20 ms
-auf DOM-Rendering im selben Prozess — keine Krypto, keine Antwortkette, anderer
-Fall. Benannt statt stillschweigend umgangen.
-
-**Stichtag:** die Liste im Kimboard-Brief greift ab **2026-09-02**. Heute ist der
-2026-08-19 — noch nicht fällig, deshalb nicht angesprochen.
-
-**Nächster sinnvoller Schritt:** nichts Dringendes. Wer als Nächstes hier
-arbeitet, ruft **einmal** `node tests/run_alle.mjs` auf und achtet auf die Zeile
-„nicht lauffähig" — sie ist kein Nebensatz, sondern die Auskunft darüber, was
-gar nicht gemessen wurde.
-
----
-
-> **Ausgelagert am 2026-08-24.** Der Eintrag vom **17.08.** („Zehn Sitzungs-Anker
-> · Abschluss · Brief Hassrede vom Brett") steht wortwörtlich in
-> [`docs/sessions/archiv/2026-08_puls-auslagerung-4.md`](sessions/archiv/2026-08_puls-auslagerung-4.md).
-> Die Datei stand bei 3.019 Zeilen; die Schutz-Klausel sagt: auslagern statt kürzen.
-
-
-> **Ausgelagert am 2026-08-24.** Der Eintrag vom **17.08.** („Ein Wizard, der sich
-> selbst widersprach · 18 Repos · Karte auf 19 Knoten") steht wortwörtlich in
-> [`docs/sessions/archiv/2026-08_puls-auslagerung-5.md`](sessions/archiv/2026-08_puls-auslagerung-5.md).
-
-
-> **Ausgelagert am 2026-08-24.** Die Sitzungs-Einträge vom **15.08. bis 17.08.**
-> (Gerätename netzweit · Modul 05b prüft den Raum · Urheberschaft und Rechte ·
-> vier Marktplatz-Apps werden Endknoten · Papiere bereinigt zurück · Modul-23-UI
-> netzweit) stehen wortwörtlich in
-> [`docs/sessions/archiv/2026-08_puls-auslagerung-6.md`](sessions/archiv/2026-08_puls-auslagerung-6.md).
-> Die Datei stand bei 2.985 Zeilen; die Schutz-Klausel sagt: auslagern statt kürzen.
-
-> **Ausgelagert am 2026-08-23.** Die beiden Sitzungs-Einträge vom **14.08.**
-> („PULS ausgelagert: 10.150 → 2.592 Zeilen" und „Sperr-Knöpfe · Automatik-Schalter
-> · drei tote Wächter") stehen wortwörtlich in
-> [`docs/sessions/archiv/2026-08_puls-auslagerung-3.md`](sessions/archiv/2026-08_puls-auslagerung-3.md).
-> Nichts gekürzt, nichts zusammengefasst — die Datei stand bei 3.038 Zeilen, und
-> die Schutz-Klausel sagt: auslagern statt kürzen.
-
 
 ## Als nächstes ✨
 
@@ -2698,6 +2713,7 @@ Alle Sitzungen bis einschließlich Pflege PULS-Archivierung
 
 | Datum | Sitzung | Übergabeprotokoll |
 |---|---|---|
+| 2026-08-19 | **PULS-Auslagerung 26.08.** · die beiden Sitzungen vom 19.08. (Aufräum-Werkzeug mit vier Riegeln; die feste Wartezeit, die in beide Richtungen log) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-7.md) |
 | 2026-08-15 … 08-17 | **PULS-Auslagerung 24.08. (3)** · die Sitzungen vom 15. bis 17.08. (Gerätename netzweit · Modul 05b prüft den Raum · Urheberschaft und Rechte · vier Marktplatz-Apps werden Endknoten · Papiere bereinigt zurück · Modul-23-UI netzweit) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-6.md) |
 | 2026-08-17 | **PULS-Auslagerung 24.08. (2)** · der Wizard-Umbau vom 17.08. | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-5.md) |
 | 2026-08-17 | **PULS-Auslagerung 24.08.** · die Anker-Sitzung vom 17.08. (zehn Sitzungs-Anker, Brief zur Hassrede vom Brett) | [→ Archiv](sessions/archiv/2026-08_puls-auslagerung-4.md) |
