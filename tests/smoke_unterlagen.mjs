@@ -57,8 +57,13 @@ const bytes = readFileSync(MAPPE);
 const SICHT = norm(entziffern(ohneTags(html)));
 const FLIESS = norm(entziffern(ohneTags(html, false)));
 
-/* Vier Abteilungen, und die Reihenfolge ist die Reihenfolge des Vorgehens. */
-const ABTEILUNGEN = ['uebersicht', 'schritte', 'steuerberater', 'finanzamt'];
+/* Die Abteilungen, und die Reihenfolge ist die Reihenfolge des Vorgehens.
+   Wer eine ergänzt, trägt sie hier nach; die Zahl darunter wird DARAUS
+   gerechnet. Bis zum 2026-08-26 stand sie zweimal da, einmal als Liste und
+   einmal als Zahl `4`, und die Zahl wurde beim Ergänzen der Abteilungen 5
+   und 6 zu Recht rot. Zwei Stellen für dieselbe Angabe sind eine zu viel. */
+const ABTEILUNGEN = ['uebersicht', 'schritte', 'steuerberater', 'finanzamt',
+  'bestand', 'april'];
 
 /* ── 1 · Der BOM ──────────────────────────────────────────────────────── */
 
@@ -68,7 +73,8 @@ gut(bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF,
 /* ── 2 · Nichts verschluckt ───────────────────────────────────────────── */
 
 const { quellen, geprueft, fehlend } = vollstaendigkeit(html, WURZEL);
-gut(quellen.length === 4, 'vier Quelldateien in der Mappe',
+gut(quellen.length === ABTEILUNGEN.length,
+  ABTEILUNGEN.length + ' Quelldateien in der Mappe, eine je Abteilung',
   'gefunden: ' + quellen.length);
 gut(fehlend.length === 0,
   'jede der ' + geprueft + ' Quellzeilen steht in der Ansicht',

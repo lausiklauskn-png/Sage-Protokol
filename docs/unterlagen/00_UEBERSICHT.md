@@ -34,7 +34,7 @@ allen Wegen, Begründungen und Fristen. Unterlage 1 ist sein Auszug.
 | **2 · Frageblatt Steuerberater** | `docs/frageblatt.html` und `docs/frageblatt.pdf`, Quelle `docs/STEUERBERATER_FRAGEN.md`. Steht zusätzlich als Abteilung 3 in dieser Mappe |
 | **4 · Arbeitszeitnachweis** | `docs/historie/arbeitstage.pdf` (301 Seiten) · `arbeitstage-tage.csv` · `arbeitstage-taetigkeiten.csv` · `arbeitstage.html` |
 | **5 · Forschungsunterlagen** | `docs/antragsmappe.html`, Abteilung 2. Sie ist so gebaut, dass sie **allein vollständig** ist: eigener Kopf, eigenes Datum, eigene Herkunftsangabe |
-| Gesamtdokumentation der Arbeit | `docs/historie/historie.html`, 5.823 Einträge über 128 Tage, mit Rollen und Verlauf |
+| Gesamtdokumentation der Arbeit | `docs/historie/historie.html`, 5.823 Einträge insgesamt über 128 Tage, mit Rollen und Verlauf |
 
 > **Abteilung 1 der Antragsmappe geht nicht mit.** Sie trägt Wege, Fristen und
 > persönliche Abwägungen. Für die Behörde ist Abteilung 2 gedacht, und sie
@@ -75,7 +75,7 @@ Nach dem, was der Fahrplan verlangt, und nachgesehen statt angenommen.
 | **Englische Projektseite**, eine Seite | Grundlage für den OTF-Antrag | **existiert nicht** |
 | **Paper C** · KI-Kompetenz im täglichen Gebrauch | anwendbar, gut für Vorträge und Medienkompetenz-Töpfe | geplant, nicht geschrieben |
 | **Paper B** · Wie KI auf den Menschen wirkt | am heikelsten, hängt am meisten von einem methodischen Partner ab | geplant, nicht geschrieben |
-| **Vorleistung in Zahlen**, als eigenes Blatt | für den Antrag | Rohstoff liegt vor: 128 Tage, 5.775 Einträge, 33 Depots |
+| **Vorleistung in Zahlen**, als eigenes Blatt | für den Antrag | Rohstoff liegt vor: 128 Tage, 5.775 Einträge von Hand, 33 Depots |
 
 **Für den Antrag reicht Paper A.** B und C sind kein Hindernis, sie sind
 Nachschub. Das fehlende **Blatt zum Stand der Technik** ist das mit der größten

@@ -151,6 +151,8 @@ html.nur-uebersicht .abteilung:not(#uebersicht){display:none}
 html.nur-schritte .abteilung:not(#schritte){display:none}
 html.nur-steuerberater .abteilung:not(#steuerberater){display:none}
 html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
+html.nur-bestand .abteilung:not(#bestand){display:none}
+html.nur-april .abteilung:not(#april){display:none}
 @media print{
   .hut,.knoepfe,.lage{display:none}
   body{background:#fff;color:#000;font-size:11pt}
@@ -184,7 +186,7 @@ html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
 <header class="abt-kopf">
 <p class="marke">Abteilung 1 &middot; PRIVAT</p>
 <h1>Fahrplan Forschungsgelder</h1>
-<p class="unter">Arbeitspapier — nicht zum Einreichen</p>
+<p class="unter">Arbeitspapier, nicht zum Einreichen</p>
 <p class="stempel" data-stempel="privat">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
 <p class="hinweis">Diese Abteilung ist das <strong>Arbeitspapier</strong>: Wege, Fristen, Anmeldeschritte und pers&ouml;nliche Abw&auml;gungen. Sie geht niemanden etwas an und steht in <strong>keinem Antrag</strong>. &mdash; <strong>&bdquo;Privat&ldquo; hei&szlig;t hier: geh&ouml;rt nicht in die Mappe, die zur Beh&ouml;rde geht.</strong> Es hei&szlig;t <em>nicht</em> geheim: der Text liegt als <code>docs/FORSCHUNGSFOERDERUNG.md</code> in einem &ouml;ffentlichen Depot, und diese Datei liegt daneben. Die f&uuml;nf pers&ouml;nlichen Angaben (Abschnitt&nbsp;9) stehen absichtlich in keiner von beiden.</p>
 <div class="knoepfe" data-knoepfe="privat">
@@ -2985,9 +2987,9 @@ Regel. Der Zweite beantwortet eine Frage.</em></p>
 je einen Schlüssel oder eine fremde Adresse ausgegeben. Das sind Fälle, die sich
 formulieren lassen.</p>
 <p><strong>b · Regeln versagen dort, wo die Prüfung selbst unmöglich ist.</strong> Die Regel
-<em>„Du hast keine Werkzeuge — schreib nie, du habest etwas ausgeführt&quot;</em> wurde
-trotzdem verletzt: am 2026-08-20 stand im Bericht <em>„Sten hat den Code durchlaufen
-lassen.&quot;</em> Das konnte nicht geschehen sein. Die Regel steht seitdem samt Vorfall
+<em>„Du hast keine Werkzeuge&quot;</em> verbietet der Truppe, eine ausgeführte Handlung zu
+behaupten. Sie wurde trotzdem verletzt: am 2026-08-20 stand im Bericht <em>„Sten hat
+den Code durchlaufen lassen.&quot;</em> Das konnte nicht geschehen sein. Die Regel steht seitdem samt Vorfall
 im Wortlaut da, und ist trotzdem ein <strong>Dämpfer, kein Riegel</strong>. Text lässt sich
 nicht gegen die Wirklichkeit prüfen.</p>
 <p><strong>c · Die härteste Grenze liegt woanders, und sie war nicht geplant.</strong> Die Rollen
@@ -3156,7 +3158,7 @@ still vom Original weg.</p>
       /* Ein toter Knopf mit Erklärung ist die schlimmste Sorte — er sieht aus
          wie Hilfe. Also den Weg nennen, der bleibt. */
       sagen(id, "Der Download ist hier gesperrt (" + (e && e.name || "Fehler")
-        + "). Nimm den Druck-Knopf daneben und sichere als PDF — der geht immer.",
+        + "). Nimm den Druck-Knopf daneben und sichere als PDF, der geht immer.",
         "fehler");
     }
   }
