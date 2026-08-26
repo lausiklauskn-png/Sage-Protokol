@@ -124,7 +124,7 @@ const MAPPEN = [
   datei: 'docs/unterlagen.html',
   name: 'Unterlagen',
   titel: 'Unterlagen: systematisch vorgehen',
-  fuss: 'Eine Datei, sechs Abteilungen. Jede einzeln zum Mitnehmen.',
+  fuss: 'Eine Datei, sieben Abteilungen. Jede einzeln zum Mitnehmen.',
   markieren: true,
   abteilungen: [
   {
@@ -205,6 +205,19 @@ const MAPPEN = [
       + 'tr&auml;gt in einem Antrag; eine, die wie ein Protokoll aussieht, '
       + 'kostet die Glaubw&uuml;rdigkeit aller echten.',
     dateien: ['docs/unterlagen/05_APRIL.md'],
+  },
+  {
+    id: 'forschungsaufgaben',
+    marke: 'Abteilung 7',
+    titel: 'Forschungsaufgaben',
+    unter: 'Was ansteht, in welcher Reihenfolge',
+    art: 'privat',
+    warnung: 'Dieses Blatt wird <strong>erzeugt</strong>. Der Stand jeder '
+      + 'Aufgabe wird an ihren Belegen im Depot gemessen, nicht '
+      + 'hingeschrieben. <strong>Ein Beleg hei&szlig;t nicht erledigt:</strong> '
+      + 'was noch fehlt, steht bei jeder Aufgabe einzeln, und zwei Aufgaben '
+      + 'k&ouml;nnten ihr Ergebnis im Depot gar nicht zeigen.',
+    dateien: ['docs/unterlagen/06_FORSCHUNGSAUFGABEN.md'],
   },
   ]},
 ];

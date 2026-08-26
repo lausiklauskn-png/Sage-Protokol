@@ -68,21 +68,81 @@ Steuerberater ist und keine an eine Sitzung.
 Kalendertagen, neunmal unterbrochen, längste Unterbrechung drei Tage). Der
 Fahrplan neigt zum 06.04. **Der Steuerberater entscheidet.**
 
-## 2 · Die eine Lücke, die eine Sitzung schließen kann
+## 2 · Die drei Lücken, die eine Sitzung schließen kann
 
-### Die englische Projektseite
+**Sie stehen mit Frage, Beleg und Abhängigkeit in Abteilung 7 der
+Unterlagen-Mappe**, [`docs/unterlagen/06_FORSCHUNGSAUFGABEN.md`](../unterlagen/06_FORSCHUNGSAUFGABEN.md).
+Das Blatt wird erzeugt, sein Stand wird an den Belegen gemessen. Wer eine
+Aufgabe erledigt, hakt nichts ab; das Blatt sieht es beim nächsten Lauf.
 
-Eine Seite. **Grundlage für den OTF-Antrag**, und sie existiert nicht. Von
-allem Offenen ist es das Einzige, was ohne Klaus' Entscheidung gebaut werden
+> **Nachgesehen am 2026-08-26, weil Klaus danach gefragt hat.** Von den vier
+> Punkten, die er nannte, fehlen drei wirklich. Der vierte, das Blatt zum Stand
+> der Technik, existiert seit demselben Tag; seine heruntergeladene Fassung war
+> älter als das Depot. **Eine Liste von Hand ist am Tag nach dem Schreiben
+> falsch und sieht dabei genauso aus wie eine richtige.**
+
+### A · Paper C · KI-Kompetenz im täglichen Gebrauch
+
+**Der schreibbarste der drei.** Das Gerüst steht fertig in
+[`docs/papers/PLAN_PAPERS.md`](../papers/PLAN_PAPERS.md): fünf Punkte, jeder mit
+einem Beispiel aus der eigenen Arbeit, dazu ein Abschnitt, wo das Paper kippen
 kann.
 
-Was schon da ist und übersetzt werden will: `docs/ABGRENZUNG.md` (die Frage,
-die eine Gutachterin zuerst stellt), das englische SBKIM-Paper, die Zahlen der
-Vorleistung aus `docs/unterlagen/04_BESTAND.md`.
+Die Beispiele liegen alle im Depot und müssen nicht erfunden werden:
+`docs/LEHREN.md`, die Sitzungsprotokolle, der Fünf-Euro-Deckel einer Schicht als
+Beispiel für eine vorher gesetzte Grenze.
+
+**Wo es kippt:** es darf kein Ratgeber mit Versprechen werden. Der Wert liegt
+darin, dass hier jemand schreibt, der kein Programmierer ist und es trotzdem zum
+Laufen gebracht hat, und der die Fehlschläge mit Datum nennt. Ohne die
+Fehlschläge ist es Werbung.
+
+### B · Englische Projektseite, eine Seite
+
+**Grundlage für den OTF-Antrag.** Hängt an Aufgabe 1, denn die Abgrenzung ist
+ihr Kern. Zum Übersetzen liegt vor: `docs/ABGRENZUNG.md`, das englische
+SBKIM-Paper, die Zahlen aus `docs/unterlagen/04_BESTAND.md`.
 
 **Was daran nicht zu unterschätzen ist:** eine englische Seite ist keine
 Übersetzung der deutschen. Der OTF fragt nach anderen Dingen als eine deutsche
 Fördergeberin, und die Fremdnutzer-Brille gilt hier doppelt.
+
+### C · Paper B · Wie KI auf den Menschen wirkt
+
+**Zuletzt, und nicht weil es unwichtig wäre.** Es hat vier Stellen, an denen es
+kippt, und hängt am meisten von einem methodischen Partner ab: die geschützte
+Berufsbezeichnung, keine Diagnosen, keine Zahl ohne Messung, kein PII. Alle vier
+stehen ausgeschrieben in `PLAN_PAPERS.md`.
+
+**Der schärfste Einzelbefund liegt vor** und ist Klaus' eigener: das Werkzeug
+hört nicht auf, ein Mensch hätte längst aufgegeben. Was fehlt, ist der
+Vergleichspunkt, und der verlangt eine Aussage darüber, wann ein Mensch
+aufgegeben hätte. **Bis dahin ist es eine benannte Beobachtung, keine Zahl.**
+
+### Die Reihenfolge, und warum
+
+| | Was | Warum hier |
+|---|---|---|
+| **1** | Paper C | das Gerüst steht, die Beispiele liegen im Depot, hängt an nichts |
+| **2** | Englische Seite | hängt an der Abgrenzung, und die liegt seit dem 26.08. vor |
+| **3** | Paper B | am heikelsten, braucht einen methodischen Partner |
+
+**Eines nach dem anderen, nicht drei nebeneinander.** Jedes einzeln auf Zenodo,
+mit eigenem DOI: drei zitierbare Arbeiten wiegen mehr als eine lange.
+
+## 2b · Was von Klaus' vier Punkten wirklich fehlt
+
+Er hat am 2026-08-26 gebeten, das nachzuprüfen. Gemessen gegen `origin/main`:
+
+| | Stand |
+|---|---|
+| Blatt „Stand der Technik und Abgrenzung" | **existiert**, `docs/ABGRENZUNG.md`, seit 2026-08-26 |
+| Englische Projektseite | **existiert nicht**, kein Entwurf irgendwo |
+| Paper C · KI-Kompetenz | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
+| Paper B · Wirkung auf den Menschen | **existiert nicht**, Gerüst in `PLAN_PAPERS.md` |
+
+Gesucht wurde über den ganzen Baum, nicht nur in `docs/papers/`. Auch ein DOI
+gibt es nicht.
 
 ## 3 · Was NICHT ansteht
 

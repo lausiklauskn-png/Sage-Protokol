@@ -61,7 +61,7 @@ andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.
 
 | Nr. | Was | erster Stand | letzter Stand | Stände |
 |---|---|---|---|---|
-| 1 | **Sitzungsprotokolle** | 2026-05-10 | 2026-08-26 | 238 |
+| 1 | **Sitzungsprotokolle** | 2026-05-10 | 2026-08-26 | 239 |
 | 2 | **Die beiden SBKIM-Papers, DE und EN** | 2026-05-18 | 2026-05-18 | 2 |
 | 3 | **Meilensteine mit Bild** | 2026-06-21 | 2026-08-16 | 12 |
 | 4 | **Die Lehren** | 2026-08-22 | 2026-08-22 | 1 |

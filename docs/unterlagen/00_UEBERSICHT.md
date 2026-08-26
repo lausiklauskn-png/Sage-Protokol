@@ -72,10 +72,22 @@ Nach dem, was der Fahrplan verlangt, und nachgesehen statt angenommen.
 | | warum es zählt | Stand |
 |---|---|---|
 | **Blatt „Stand der Technik und Abgrenzung"**, eine Seite | **jede Fördergeberin liest dieses Blatt zuerst.** Ohne es wirkt der Antrag naiv, mit ihm belesen | **liegt vor** seit 2026-08-26, `docs/ABGRENZUNG.md`. Offen bleibt die Literatursuche |
-| **Englische Projektseite**, eine Seite | Grundlage für den OTF-Antrag | **existiert nicht** |
-| **Paper C** · KI-Kompetenz im täglichen Gebrauch | anwendbar, gut für Vorträge und Medienkompetenz-Töpfe | geplant, nicht geschrieben |
-| **Paper B** · Wie KI auf den Menschen wirkt | am heikelsten, hängt am meisten von einem methodischen Partner ab | geplant, nicht geschrieben |
+| **Englische Projektseite**, eine Seite | Grundlage für den OTF-Antrag | **existiert nicht**, nachgesehen am 2026-08-26 |
+| **Paper C** · KI-Kompetenz im täglichen Gebrauch | anwendbar, gut für Vorträge und Medienkompetenz-Töpfe | **existiert nicht**, das Gerüst steht in `papers/PLAN_PAPERS.md` |
+| **Paper B** · Wie KI auf den Menschen wirkt | am heikelsten, hängt am meisten von einem methodischen Partner ab | **existiert nicht**, das Gerüst steht in `papers/PLAN_PAPERS.md` |
+| **Die zwei vorhandenen Papers auf Zenodo** | ohne DOI sind es Dateien in einem Depot, keine zitierfähigen Quellen | **steht aus**, wartet auf eine Entscheidung, nicht auf Arbeit |
 | **Vorleistung in Zahlen**, als eigenes Blatt | für den Antrag | Rohstoff liegt vor: 128 Tage, 5.775 Einträge von Hand, 33 Depots |
+
+> **Diese Liste hat jetzt ein eigenes Blatt.** Abteilung 7 dieser Mappe,
+> [`06_FORSCHUNGSAUFGABEN.md`](06_FORSCHUNGSAUFGABEN.md), führt alle sieben
+> Aufgaben mit Frage, Beleg, Abhängigkeit und Reihenfolge. Der Stand darin wird
+> **gemessen**, nicht hingeschrieben.
+>
+> Der Anlass war ein Fehler in genau dieser Tabelle: sie führte das Blatt zum
+> Stand der Technik als „existiert nicht", während es am selben Tag entstanden
+> war. Klaus las eine heruntergeladene Fassung und fragte nach. **Eine Liste von
+> Hand ist am Tag nach dem Schreiben falsch und sieht dabei genauso aus wie eine
+> richtige.**
 
 **Für den Antrag reicht Paper A.** B und C sind kein Hindernis, sie sind
 Nachschub. Das **Blatt zum Stand der Technik** war das mit der größten Wirkung

@@ -63,7 +63,7 @@ const FLIESS = norm(entziffern(ohneTags(html, false)));
    einmal als Zahl `4`, und die Zahl wurde beim Ergänzen der Abteilungen 5
    und 6 zu Recht rot. Zwei Stellen für dieselbe Angabe sind eine zu viel. */
 const ABTEILUNGEN = ['uebersicht', 'schritte', 'steuerberater', 'finanzamt',
-  'bestand', 'april'];
+  'bestand', 'april', 'forschungsaufgaben'];
 
 /* ── 1 · Der BOM ──────────────────────────────────────────────────────── */
 
