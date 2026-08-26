@@ -32,7 +32,7 @@ Dazu, in diesem Repo:
 | **[`docs/werkstatt/`](werkstatt/)** | die **Regel-/Grundsatz-Trennung**, Momentaufnahme aus Kimhub, samt dem, was daran *nicht* bewiesen ist |
 | **[`docs/meilenstein/`](meilenstein/)** | die **datierten Belege** mit Bild |
 | **[`docs/papers/`](papers/)** | die beiden Papers (DE/EN) |
-| **[`sbkim-demo/`](../sbkim-demo/)** | der **erste lauffähige Stand vom 10. März 2026**, absichtlich so stehen geblieben |
+| **[`sbkim-demo/`](../sbkim-demo/)** | der **erste lauffähige Stand vom März 2026**, absichtlich so stehen geblieben. Er kam am **2026-08-15** in dieses Depot (#855): bis dahin war er unveröffentlicht, weil er an eine konkrete Anfrage gebunden war. Wer die Git-Historie prüft, findet deshalb das August-Datum, und das ist kein Widerspruch |
 
 ---
 

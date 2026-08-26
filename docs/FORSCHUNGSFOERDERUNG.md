@@ -659,14 +659,22 @@ ersten Blick aussieht. Was gebraucht wird, ist eine **Stundenaufzeichnung je
 Vorhaben**: Datum, Vorhaben, Stunden, Tätigkeit.
 
 > ⚠ **„Seit dem 10.03.2026" ist der bequeme Satz, und er hält nicht ganz.**
-> Ausgezählt am 2026-08-24: am **10.03.** wurde das erste Depot angelegt, **zwei
-> Einträge**, danach **27 Tage nichts**. Die durchgehende Arbeit beginnt am
-> **06.04.2026**, und ab da sind es **127 Arbeitstage in 140 Kalendertagen** mit
-> genau **einer** Lücke von vier Tagen.
+> Ausgezählt am 2026-08-24, nachgerechnet am 2026-08-26: am **10.03.** wurde das
+> erste Depot angelegt, **zwei Einträge**, danach **26 Tage ohne einen einzigen**.
+> Die durchgehende Arbeit beginnt am **06.04.2026**, und ab da sind es
+> **127 Arbeitstage in 141 Kalendertagen** (06.04. bis 24.08., beide mitgezählt).
+> Unterbrochen wird sie **neunmal**, die längste Unterbrechung dauert **drei Tage**
+> (03. bis 05.05.), keine andere länger als zwei.
 >
-> **Für den Antrag ist die zweite Zahl die stärkere**, nicht die frühere: ein
-> Datum, hinter dem eine Lücke von vier Wochen steht, lädt zur Nachfrage ein;
-> 127 von 140 Tagen tun das nicht. Welches Datum als **Betriebseröffnung**
+> ⚠ **Bis zum 2026-08-26 stand hier „140 Kalendertage" und „genau eine Lücke von
+> vier Tagen".** Beides war falsch, und die zweite Angabe war die gefährlichere:
+> neben diesem Text liegt die Tages-Tabelle, in der jeder die Unterbrechungen
+> nachzählen kann. Eine Zahl, die man selbst berichtigt, trägt weiter als eine,
+> die jemand anders berichtigt.
+>
+> **Für den Antrag ist das zweite Datum das stärkere**, nicht das frühere: ein
+> Datum, hinter dem eine Lücke von fast vier Wochen steht, lädt zur Nachfrage ein;
+> 127 von 141 Tagen tun das nicht. Welches Datum als **Betriebseröffnung**
 > trägt, entscheidet der Steuerberater.
 
 **Zwei Sorten Beleg liegen vor, und sie decken verschieden weit:**

@@ -126,6 +126,16 @@ Preis**, in Geld wie in Gewöhnung.
 Monaten dieses Netz hervorgebracht hat, nach Klaus' eigener Schätzung **mehr als
 doppelte Arbeitszeit**, ist die, vor der der Sucht-Strang warnt. Er sagt dazu:
 
+> ⚠ **Die Schätzung ist seit dem 2026-08-24 nachrechenbar, und die Antwort hängt
+> daran, welche der beiden gemessenen Zahlen man nimmt.** Über 23,9 Wochen vom
+> 10.03. bis 24.08. ergibt die **Spanne** vom ersten bis zum letzten Eintrag eines
+> Tages 81,1 Stunden je Woche, also **das Doppelte einer 40-Stunden-Woche**. Die
+> **aktive Zeit** ohne die Pausen ergibt 49,7 Stunden, also das 1,24-fache.
+> Klaus' Schätzung trifft die erste Zahl. Wer sie im Antrag verwendet, schreibt
+> dazu, welche gemeint ist; sonst steht dort eine Verdopplung, die ein Prüfer an
+> der anderen Zahl nicht wiederfindet. Beide stehen in
+> [`historie/arbeitstage.html`](../historie/arbeitstage.html).
+
 > *„Ich bin nicht süchtig. Aber ich bin das lebendige Beispiel dafür. Das schafft
 > man nicht, wenn man die Sachen nebenbei macht."*
 

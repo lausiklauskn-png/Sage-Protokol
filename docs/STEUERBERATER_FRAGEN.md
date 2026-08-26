@@ -102,8 +102,8 @@ Meine eigentliche Frage ist deshalb:
 
   | Datum | Was an dem Tag geschah | Belastbarkeit |
   |---|---|---|
-  | **10.03.2026** | das erste Depot wurde angelegt: **zwei** Einträge, dann **27 Tage nichts** | eher der Anstoß als der Beginn |
-  | **06.04.2026** | ab hier **durchgehende** Arbeit: **127 Arbeitstage in 140 Kalendertagen**, mit genau **einer** Lücke von vier Tagen | das belastbarere Datum |
+  | **10.03.2026** | das erste Depot wurde angelegt: **zwei** Einträge, dann **26 Tage ohne einen einzigen** | eher der Anstoß als der Beginn |
+  | **06.04.2026** | ab hier **durchgehende** Arbeit: **127 Arbeitstage in 141 Kalendertagen** (06.04. bis 24.08.), neunmal unterbrochen, die längste Unterbrechung **drei Tage** | das belastbarere Datum |
 
   Ich neige zum **06.04.2026**, weil es sich lückenlos belegen lässt. **Sie
   entscheiden, welches Datum vertretbar ist.**
@@ -126,7 +126,7 @@ sondern zeigen kann:
 | **06.04.2026** | die durchgehende Arbeit beginnt |
 | **11.04.2026** | die erste dokumentierte **Verkaufsabsicht**: „USP-Dokumente, Alleinstellungsmerkmale als druckbare Seiten" und ein Spenden-Bereich in der App |
 | dazwischen | **fünf Tage** |
-| über den ganzen Zeitraum | **762** der 5.823 Einträge haben Bezug auf Verkauf, Markt, Preis, Lizenz oder Kunden |
+| über den ganzen Zeitraum | **762** der 5.823 Einträge insgesamt haben Bezug auf Verkauf, Markt, Preis, Lizenz oder Kunden |
 
 Ein Papier über Alleinstellungsmerkmale ist ein **Verkaufsargument**, kein
 Hobby-Artefakt. Dass es fünf Tage nach dem Beginn entstand, ist der Grund, warum
@@ -404,7 +404,7 @@ Termins.
 
 | Beleg | Umfang |
 |---|---|
-| Quellcode-Historie, ausgelesen und tabellarisch aufbereitet | 5.823 Einträge, 128 Arbeitstage, 33 Depots, je mit Datum und Uhrzeit |
+| Quellcode-Historie, ausgelesen und tabellarisch aufbereitet | 5.823 Einträge insgesamt, 128 Arbeitstage, 33 Depots, je mit Datum und Uhrzeit |
 | **Tägliche Dokumentation der Arbeitstage** als **PDF** und als **CSV-Tabelle** (`;`-getrennt, für Excel) | 128 Zeilen, je Tag: Datum, Wochentag, erster und letzter Eintrag, Spanne, aktive Zeit, Abschnitte, Einträge, Depots. **Summe 1.187 h** |
 | Arbeitsprotokolle, fortlaufend | seit April 2026 |
 | Rechnungen KI-Werkzeuge | 75 Stück, 13.03. bis 04.08.2026 |

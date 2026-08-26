@@ -122,3 +122,40 @@ export function kennzahlen(historie) {
       was: 'alle Zweige aller Depots, die Hauptzweige mitgezählt' },
   ];
 }
+
+/** Die durchgehende Arbeit ab einem Stichtag: Arbeitstage, Kalendertage und
+ *  jede Unterbrechung einzeln.
+ *
+ *  Diese Zahlen stehen als PROSA in `FORSCHUNGSFOERDERUNG.md` und im
+ *  Frageblatt für den Steuerberater. Am 2026-08-26 waren dort drei davon
+ *  falsch: 27 statt 26 Tage Anlaufpause, 140 statt 141 Kalendertage und
+ *  „genau eine Lücke von vier Tagen" statt neun Unterbrechungen mit höchstens
+ *  drei Tagen. Die dritte war die gefährlichste: neben dem Text liegt die
+ *  Tages-Tabelle, in der jeder nachzählen kann.
+ *
+ *  Prosa lässt sich nicht erzeugen. Sie lässt sich aber nachrechnen, und
+ *  genau das tut `smoke_zahlen.mjs` damit. */
+export function durchgehendAb(commits, stichtag) {
+  const tage = arbeitsTage(commits).filter((t) => t >= stichtag);
+  if (!tage.length) return null;
+  const letzter = tage[tage.length - 1];
+  const tag = 86400000;
+  const kalender = Math.round(
+    (Date.parse(letzter) - Date.parse(stichtag)) / tag) + 1;   // beide mitgezählt
+  const luecken = [];
+  for (let i = 1; i < tage.length; i++) {
+    const ohne = Math.round((Date.parse(tage[i]) - Date.parse(tage[i - 1])) / tag) - 1;
+    if (ohne > 0) luecken.push({ ohne, von: tage[i - 1], bis: tage[i] });
+  }
+  return {
+    arbeitstage: tage.length, kalendertage: kalender, erster: tage[0], letzter,
+    luecken, laengste: luecken.reduce((a, l) => Math.max(a, l.ohne), 0),
+  };
+}
+
+/** Die Tage ohne einen einzigen Eintrag zwischen zwei Arbeitstagen. */
+export function pauseZwischen(commits, von, bis) {
+  const tage = arbeitsTage(commits).filter((t) => t > von && t < bis);
+  if (tage.length) return null;                    // keine Pause, es wurde gearbeitet
+  return Math.round((Date.parse(bis) - Date.parse(von)) / 86400000) - 1;
+}
