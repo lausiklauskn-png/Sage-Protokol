@@ -1,12 +1,12 @@
 ﻿<!doctype html>
-<html lang="de" data-stand="2026-08-23">
+<html lang="de" data-stand="2026-08-26">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Antragsmappe — Sage-Protokol, Stand 2026-08-23</title>
+<title>Antragsmappe, Sage-Protokol, Stand 2026-08-26</title>
 <meta name="robots" content="noindex">
-<!-- ERZEUGT von tools/antragsmappe-bauen.mjs. NICHT von Hand bearbeiten —
-     die Quelle sind die .md-Dateien, hier steht nur ihre Ansicht.
+<!-- ERZEUGT von tools/antragsmappe-bauen.mjs. NICHT von Hand bearbeiten.
+     Die Quelle sind die .md-Dateien, hier steht nur ihre Ansicht.
      Neu bauen:  node tools/antragsmappe-bauen.mjs -->
 <style id="stil">
 :root{color-scheme:light dark;--grund:#f7f6f3;--tinte:#1b1b1b;--matt:#5a5a5a;
@@ -147,6 +147,10 @@ border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
    nicht gedruckt werden soll. */
 html.nur-privat .abteilung:not(#privat){display:none}
 html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
+html.nur-uebersicht .abteilung:not(#uebersicht){display:none}
+html.nur-schritte .abteilung:not(#schritte){display:none}
+html.nur-steuerberater .abteilung:not(#steuerberater){display:none}
+html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
 @media print{
   .hut,.knoepfe,.lage{display:none}
   body{background:#fff;color:#000;font-size:11pt}
@@ -169,8 +173,8 @@ html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
 <div class="hut">
   <nav>
     <strong>Antragsmappe</strong>
-    <span>Stand 2026-08-23</span>
-    <a href="#privat">1 &middot; Fahrplan (privat)</a>
+    <span>Stand 2026-08-26</span>
+    <a href="#privat">1 &middot; Fahrplan Forschungsgelder (privat)</a>
     <a href="#einreichbar">2 &middot; Forschungsunterlagen (einreichbar)</a>
     <button type="button" data-mk-knopf>&#9998; 0 Markierungen</button>
   </nav>
@@ -181,7 +185,7 @@ html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
 <p class="marke">Abteilung 1 &middot; PRIVAT</p>
 <h1>Fahrplan Forschungsgelder</h1>
 <p class="unter">Arbeitspapier — nicht zum Einreichen</p>
-<p class="stempel" data-stempel="privat">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="stempel" data-stempel="privat">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
 <p class="hinweis">Diese Abteilung ist das <strong>Arbeitspapier</strong>: Wege, Fristen, Anmeldeschritte und pers&ouml;nliche Abw&auml;gungen. Sie geht niemanden etwas an und steht in <strong>keinem Antrag</strong>. &mdash; <strong>&bdquo;Privat&ldquo; hei&szlig;t hier: geh&ouml;rt nicht in die Mappe, die zur Beh&ouml;rde geht.</strong> Es hei&szlig;t <em>nicht</em> geheim: der Text liegt als <code>docs/FORSCHUNGSFOERDERUNG.md</code> in einem &ouml;ffentlichen Depot, und diese Datei liegt daneben. Die f&uuml;nf pers&ouml;nlichen Angaben (Abschnitt&nbsp;9) stehen absichtlich in keiner von beiden.</p>
 <div class="knoepfe" data-knoepfe="privat">
 <button type="button" data-tun="laden" data-fuer="privat">&#11015; Diese Abteilung als HTML herunterladen</button>
@@ -996,8 +1000,19 @@ Ausnahme, nicht die Regel.</li></ul>
     Sachaufwand. Zwei Quellen, und sie decken verschieden weit: die datierten
     Spuren in Sage-Protokol reichen bis zum 10.03.2026 zurück, Kimhubs
     Fahrtenbuch erst bis zum 22.08.2026. Was älter ist, wird
-    <strong>rekonstruiert</strong>, und als Rekonstruktion gekennzeichnet.</li><li><span class="haken">&#9744;</span> <strong>B4 · Lizenz-Lücken schließen.</strong> <code>BookLedgerPro</code> und
-    <code>Meine-In-and-Out-Book</code> bekommen eine Lizenz-Datei.</li><li><span class="haken">&#9744;</span> <strong>B5 · Eine englische Projektseite.</strong> Eine Seite, kein Prospekt. Was es
+    <strong>rekonstruiert</strong>, und als Rekonstruktion gekennzeichnet.</li><li><span class="haken">&#9745;</span> <strong>B4 · Lizenz-Lücken: erledigt, und der Punkt war zuletzt falsch
+    formuliert.</strong> Er verlangte Lizenz-Dateien für <code>BookLedgerPro</code> und
+    <code>Meine-In-and-Out-Book</code>. Die Nachmessung in Abschnitt 4 vom <strong>2026-08-24</strong>
+    sagt etwas anderes: <code>BookLedgerPro</code> trägt <strong>seit dem 2026-08-16</strong> eine
+    Nutzungslizenz (im Container lag ein veralteter Klon), und
+    <code>Meine-In-and-Out-Book</code> ist ein <strong>leeres Depot ohne einen einzigen
+    Commit</strong>. Ein leeres Depot ohne Lizenz ist ein anderer Sachverhalt als
+    Quelltext ohne Lizenz, und nur der zweite wäre ein Problem.
+    <strong>Was wirklich zählt, steht in Abschnitt 4:</strong> das Depot, mit dem beantragt
+    wird, muss eine anerkannte freie Lizenz tragen. <code>Sage-Protokol</code> trägt MIT.
+    Damit ist dieser Punkt erledigt.
+    <em>(Zwei Abschnitte derselben Datei sagten bis zum 2026-08-24 Verschiedenes
+    über dieselbe Sache. Abschnitt 4 war gemessen, dieser hier abgeschrieben.)</em></li><li><span class="haken">&#9744;</span> <strong>B5 · Eine englische Projektseite.</strong> Eine Seite, kein Prospekt. Was es
     ist, warum es wichtig ist, was schon läuft, wer dahintersteht. Grundlage
     für den OTF-Antrag.</li><li><span class="haken">&#9744;</span> <strong>B6 · Erste Hochschul-Mail</strong> (Briefentwurf in Abschnitt 6.2). <strong>Eine</strong>
     Hochschule, nicht zwanzig.</li><li><span class="haken">&#9744;</span> <strong>B7 · Nach dem nächsten „Mensch und Computer&quot;-Call sehen.</strong> Ein
@@ -1127,7 +1142,7 @@ wissen will</li><li><code>docs/PLAN_PILZ_WIRTSCHAFT.md</code>, wovon das Netz le
 <p class="marke">Abteilung 2 &middot; EINREICHBAR</p>
 <h1>Forschungsunterlagen</h1>
 <p class="unter">Zum Einreichen bei Beh&ouml;rde und Gutachter</p>
-<p class="stempel" data-stempel="einreichbar">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="stempel" data-stempel="einreichbar">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
 <p class="hinweis">Diese Abteilung ist so gebaut, dass sie <strong>allein vollst&auml;ndig</strong> ist: eigener Kopf, eigenes Datum, eigene Herkunftsangabe. Wer nur sie in der Hand h&auml;lt, vermisst nichts.</p>
 <div class="knoepfe" data-knoepfe="einreichbar">
 <button type="button" data-tun="laden" data-fuer="einreichbar">&#11015; Diese Abteilung als HTML herunterladen</button>
@@ -3038,9 +3053,9 @@ still vom Original weg.</p>
     <h2>Markierungen</h2>
     <p class="zaehler" data-mk-zaehler>noch keine</p>
     <ul class="mk-legende" data-mk-legende>
-      <li><span class="mk-tupf" data-f="gruen"></span> <strong>bleibt</strong> — soll bleiben</li>
-      <li><span class="mk-tupf" data-f="gelb"></span> <strong>du entscheidest</strong> — kann bleiben oder weg, Claude wägt ab</li>
-      <li><span class="mk-tupf" data-f="rot"></span> <strong>kann weg</strong> — kann komplett gestrichen werden</li>
+      <li><span class="mk-tupf" data-f="gruen"></span> <strong>bleibt</strong>, soll bleiben</li>
+      <li><span class="mk-tupf" data-f="gelb"></span> <strong>du entscheidest</strong>, kann bleiben oder weg, Claude wägt ab</li>
+      <li><span class="mk-tupf" data-f="rot"></span> <strong>kann weg</strong>, kann komplett gestrichen werden</li>
     </ul>
     <p class="mk-grundsatz">Im Zweifel <strong>bleiben</strong>. Lieber bleiben als weg.</p>
     <div data-mk-warnung hidden></div>
@@ -3053,8 +3068,8 @@ still vom Original weg.</p>
     <p class="lage" data-mk-lage role="status"></p>
     <div data-mk-liste></div>
     <p class="woher">
-      Markierungen werden <strong>nie gedruckt und nie mitgeladen</strong> —
-      die Einreich-Abteilung geht zur Behörde, und dorthin gehören keine
+      Markierungen werden <strong>nie gedruckt und nie mitgeladen</strong>.
+      Die Einreich-Abteilung geht zur Behörde, und dorthin gehören keine
       eigenen Zweifel. Wer sie auf Papier braucht, druckt die ausgelesene
       Liste. Sie liegen im Speicher <em>dieses</em> Browsers: was auf dem
       Tablet markiert wurde, steht in DeX nicht.
@@ -3065,9 +3080,9 @@ still vom Original weg.</p>
 
 <p class="fuss">
   Eine Datei, zwei Abteilungen. Erzeugt aus den Markdown-Quellen des Depots
-  <em>Sage-Protokol</em> am 2026-08-23 durch
+  <em>Sage-Protokol</em> am 2026-08-26 durch
   <code>tools/antragsmappe-bauen.mjs</code>. Wer den Inhalt &auml;ndern will,
-  &auml;ndert die <code>.md</code>-Datei und baut neu &mdash; nicht diese Datei.
+  &auml;ndert die <code>.md</code>-Datei und baut neu, nicht diese Datei.
 </p>
 
 <script>

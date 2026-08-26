@@ -43,7 +43,6 @@ import { markdown, escape } from './markdown-mini.mjs';
 import { MK_STIL, MK_DRUCK, MK_HTML, MK_SKRIPT } from './antragsmappe-markieren.mjs';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const ZIEL = resolve(WURZEL, 'docs/antragsmappe.html');
 const ROH = 'https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/';
 
 /* Das Datum wird beim Bauen gestempelt und steht dann IN der Datei. Eine
@@ -53,9 +52,25 @@ const ROH = 'https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/';
 const argDatum = process.argv.find((a) => a.startsWith('--datum='));
 const DATUM = argDatum ? argDatum.slice(8) : new Date().toISOString().slice(0, 10);
 
-/* ── Was in welche Abteilung gehört ────────────────────────────────────── */
+/* ── Was in welche Mappe und welche Abteilung gehört ───────────────────────
+ *
+ * ZWEI MAPPEN, EIN WERKZEUG. Bis zum 2026-08-24 kannte diese Datei genau eine
+ * Mappe, und zwei Druckregeln nannten deren Abteilungs-Kennungen mit Namen.
+ * Als die zweite Mappe dazukam, standen zwei Wege offen: ein zweites Werkzeug
+ * mit eigenem Stil, oder die zwei fest verdrahteten Zeilen aus der Liste
+ * erzeugen. Der zweite Weg ist der billigere und der ehrlichere: zwei Stile
+ * für dieselbe Sorte Dokument liefen auseinander, und man sähe es erst, wenn
+ * eine der beiden Mappen beim Drucken anders aussieht als die andere.
+ */
 
-const ABTEILUNGEN = [
+const MAPPEN = [
+  {
+  datei: 'docs/antragsmappe.html',
+  name: 'Antragsmappe',
+  titel: 'Antragsmappe',
+  fuss: 'Eine Datei, zwei Abteilungen.',
+  markieren: true,
+  abteilungen: [
   {
     id: 'privat',
     marke: 'Abteilung 1',
@@ -93,16 +108,88 @@ const ABTEILUNGEN = [
       'docs/werkstatt/BEFUND.md',
     ],
   },
+  ]},
+
+  /* ── Die zweite Mappe: wie vorzugehen ist ───────────────────────────────
+   * Klaus am 2026-08-24: die Unterlagen der Reihe nach, um systematisch
+   * vorzugehen. Sie gehört NICHT in die Antragsmappe: die geht zur Behörde,
+   * und Steuerfragen haben dort nichts zu suchen. Jede Abteilung lässt sich
+   * einzeln herunterladen, damit das Steuerberater-Blatt allein mitgeht. */
+  {
+  datei: 'docs/unterlagen.html',
+  name: 'Unterlagen',
+  titel: 'Unterlagen: systematisch vorgehen',
+  fuss: 'Eine Datei, vier Abteilungen. Jede einzeln zum Mitnehmen.',
+  markieren: true,
+  abteilungen: [
+  {
+    id: 'uebersicht',
+    marke: 'Abteilung 1',
+    titel: '&Uuml;bersicht und Reihenfolge',
+    unter: 'Was es gibt, was fehlt, was zuerst dran ist',
+    art: 'privat',
+    warnung: 'Diese Abteilung ordnet die f&uuml;nf Unterlagen und sagt '
+      + '<strong>ehrlich, was noch fehlt</strong>. Sie ist f&uuml;r dich, '
+      + 'nicht zum Weitergeben.',
+    dateien: ['docs/unterlagen/00_UEBERSICHT.md'],
+  },
+  {
+    id: 'schritte',
+    marke: 'Abteilung 2',
+    titel: 'Die Schritte, abhakbar',
+    unter: 'In der Reihenfolge ihrer Abh&auml;ngigkeiten',
+    art: 'privat',
+    warnung: 'Der Auszug aus dem Fahrplan, sortiert danach, <strong>was worauf '
+      + 'wartet</strong>. Der lange Text erkl&auml;rt das Warum; hier steht die '
+      + 'Reihenfolge.',
+    dateien: ['docs/unterlagen/01_SCHRITTE.md'],
+  },
+  {
+    id: 'steuerberater',
+    marke: 'Abteilung 3',
+    titel: 'Fragen an den Steuerberater',
+    unter: 'Blatt zum Mitnehmen in den Termin',
+    art: 'mitnehmen',
+    warnung: 'Diese Abteilung ist so gebaut, dass sie <strong>allein '
+      + 'vollst&auml;ndig</strong> ist: Sachverhalt, Fragen, Anlagen. Einzeln '
+      + 'herunterladen und mitnehmen. Dasselbe Blatt liegt als eigene Datei '
+      + '<code>docs/frageblatt.html</code> samt PDF daneben.',
+    /* DAS BLATT DER NACHBARSITZUNG, nicht ein eigenes. Am 2026-08-26 lief
+       eine zweite Sitzung parallel und hat dasselbe gebaut (PR #917 bis #919),
+       gründlicher: Sachverhalt in sieben Sätzen, 75 Rechnungen, echte Zahlen,
+       mit eigener Probe und Gegenprobe. Zwei Steuerberater-Blätter wären zwei
+       Quellen der Wahrheit für dieselbe Auskunft, und die eine wüsste nichts
+       von der anderen. Meines ist deshalb gelöscht, ihres steht hier. */
+    dateien: ['docs/STEUERBERATER_FRAGEN.md'],
+  },
+  {
+    id: 'finanzamt',
+    marke: 'Abteilung 4',
+    titel: 'Vorbereitung Finanzamt',
+    unter: 'Blatt zum Danebenlegen beim Ausf&uuml;llen',
+    art: 'mitnehmen',
+    warnung: 'Eine <strong>Vorbereitung</strong>, keine Abschrift des '
+      + 'Formulars. Die verbindlichen Felder stehen im Formular selbst und '
+      + '&auml;ndern sich; wer sich auf eine Abschrift verl&auml;sst, f&uuml;llt '
+      + 'irgendwann etwas aus, das so nicht mehr gefragt wird.',
+    dateien: ['docs/unterlagen/03_FINANZAMT.md'],
+  },
+  ]},
 ];
 
 /* Jede Datei bekommt einen Anker. Nur was hier drinsteht, kann ein Verweis
    intern auflösen — alles andere geht auf die volle GitHub-Adresse. */
-const ANKER = new Map();
-for (const abt of ABTEILUNGEN) {
-  for (const pfad of abt.dateien) {
-    ANKER.set(pfad, 'q-' + pfad.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase());
-  }
-}
+/* JE MAPPE, NICHT ÜBER BEIDE. Am 2026-08-26 stand hier eine gemeinsame Karte,
+   und das war ein stiller Fehler: `docs/FORSCHUNGSFOERDERUNG.md` liegt in der
+   Antragsmappe, wird aber aus der Unterlagen-Mappe heraus verwiesen. Mit einer
+   gemeinsamen Karte wurde daraus dort ein Sprung auf `#q-docs-...`, dessen Ziel
+   in der ANDEREN Datei steht. Ein Verweis, der aussieht wie einer und ins Leere
+   führt. Gefunden hat es die Gegenprobe, nicht das Nachdenken.
+   Wer in einer Mappe nicht liegt, bekommt die volle Adresse. */
+let ANKER = new Map();
+const ankerFuer = (mappe) => new Map(mappe.abteilungen.flatMap((abt) =>
+  abt.dateien.map((pfad) =>
+    [pfad, 'q-' + pfad.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase()])));
 
 /* ── Verweise umschreiben ──────────────────────────────────────────────── */
 
@@ -177,6 +264,14 @@ function abteilungBauen(abt) {
     '</section>',
   ].join('\n');
 }
+
+/* Die Ausblend-Regeln fürs Einzel-Drucken, ERZEUGT statt hingeschrieben.
+   Vorher standen hier zwei Zeilen mit den Kennungen der beiden Abteilungen im
+   Klartext. Eine dritte Abteilung wäre stumm nicht druckbar gewesen: der Knopf
+   hätte gearbeitet, das Blatt hätte alles gezeigt. */
+const DRUCK_REGELN = [...new Set(MAPPEN.flatMap((m) => m.abteilungen.map((a) => a.id)))]
+  .map((id) => 'html.nur-' + id + ' .abteilung:not(#' + id + '){display:none}')
+  .join('\n');
 
 /* ── Stil ──────────────────────────────────────────────────────────────── */
 
@@ -260,8 +355,7 @@ ${MK_STIL}
 /* ── Druck ────────────────────────────────────────────────────────────────
    EINE Fassung, zwei Sichten. Die Klasse am <html> blendet aus, was gerade
    nicht gedruckt werden soll. */
-html.nur-privat .abteilung:not(#privat){display:none}
-html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
+${DRUCK_REGELN}
 @media print{
   .hut,.knoepfe,.lage{display:none}
   body{background:#fff;color:#000;font-size:11pt}
@@ -385,37 +479,38 @@ const SKRIPT = `
    Betrachter bei einer heruntergeladenen Datei Latin-1, und aus jedem Umlaut
    werden zwei Zeichen. Die Downloads der Abteilungen tragen ihn seit jeher,
    die Mappe selbst hatte ihn nicht. */
-const seite = `\ufeff<!doctype html>
+const seiteBauen = (mappe) => `\ufeff<!doctype html>
 <html lang="de" data-stand="${escape(DATUM)}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Antragsmappe — Sage-Protokol, Stand ${escape(DATUM)}</title>
+<title>${escape(mappe.titel)}, Sage-Protokol, Stand ${escape(DATUM)}</title>
 <meta name="robots" content="noindex">
-<!-- ERZEUGT von tools/antragsmappe-bauen.mjs. NICHT von Hand bearbeiten —
-     die Quelle sind die .md-Dateien, hier steht nur ihre Ansicht.
+<!-- ERZEUGT von tools/antragsmappe-bauen.mjs. NICHT von Hand bearbeiten.
+     Die Quelle sind die .md-Dateien, hier steht nur ihre Ansicht.
      Neu bauen:  node tools/antragsmappe-bauen.mjs -->
 <style id="stil">${STIL}</style>
 </head>
 <body>
 <div class="hut">
   <nav>
-    <strong>Antragsmappe</strong>
+    <strong>${escape(mappe.name)}</strong>
     <span>Stand ${escape(DATUM)}</span>
-    <a href="#privat">1 &middot; Fahrplan (privat)</a>
-    <a href="#einreichbar">2 &middot; Forschungsunterlagen (einreichbar)</a>
+    ${mappe.abteilungen.map((a, i) =>
+      '<a href="#' + a.id + '">' + (i + 1) + ' &middot; '
+      + a.titel + ' (' + a.art + ')</a>').join('\n    ')}
     <button type="button" data-mk-knopf>&#9998; 0 Markierungen</button>
   </nav>
 </div>
 
-${ABTEILUNGEN.map(abteilungBauen).join('\n\n')}
+${mappe.abteilungen.map(abteilungBauen).join('\n\n')}
 ${MK_HTML}
 
 <p class="fuss">
-  Eine Datei, zwei Abteilungen. Erzeugt aus den Markdown-Quellen des Depots
+  ${escape(mappe.fuss)} Erzeugt aus den Markdown-Quellen des Depots
   <em>Sage-Protokol</em> am ${escape(DATUM)} durch
   <code>tools/antragsmappe-bauen.mjs</code>. Wer den Inhalt &auml;ndern will,
-  &auml;ndert die <code>.md</code>-Datei und baut neu &mdash; nicht diese Datei.
+  &auml;ndert die <code>.md</code>-Datei und baut neu, nicht diese Datei.
 </p>
 
 <script>${SKRIPT}</script>
@@ -424,9 +519,14 @@ ${MK_HTML}
 </html>
 `;
 
-writeFileSync(ZIEL, seite, 'utf-8');
-
-const zeilen = ABTEILUNGEN.reduce((n, a) => n + a.dateien.length, 0);
-console.log('geschrieben: docs/antragsmappe.html');
-console.log('  Abteilungen: ' + ABTEILUNGEN.length + ' · Quelldateien: ' + zeilen);
-console.log('  Stand: ' + DATUM + ' · Größe: ' + Math.round(seite.length / 1024) + ' KB');
+for (const mappe of MAPPEN) {
+  ANKER = ankerFuer(mappe);
+  const seite = seiteBauen(mappe);
+  writeFileSync(resolve(WURZEL, mappe.datei), seite, 'utf-8');
+  const zeilen = mappe.abteilungen.reduce((n, a) => n + a.dateien.length, 0);
+  console.log('geschrieben: ' + mappe.datei);
+  console.log('  Abteilungen: ' + mappe.abteilungen.length
+    + ' · Quelldateien: ' + zeilen
+    + ' · ' + Math.round(seite.length / 1024) + ' KB');
+}
+console.log('  Stand: ' + DATUM);
