@@ -96,7 +96,7 @@ function seite(b, html, nachbarn) {
     '<meta name="robots" content="noindex">',
     '<style>' + LESE_STIL + MARKER_STIL + '</style>',
     '</head>',
-    '<body data-blatt="' + b.kennung + '" data-modus="lesen">',
+    '<body data-blatt="' + b.kennung + '" data-modus="lesen" data-lm-wurzel="main">',
     '<main>',
     '<header class="kopf">',
     '<h1>' + escape(b.titel) + '</h1>',

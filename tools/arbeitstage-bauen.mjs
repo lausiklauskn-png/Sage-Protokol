@@ -62,6 +62,9 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LUECKE_MIN, VORLAUF_MIN, rechneTage } from './arbeitstage-rechnen.mjs';
+/* Dasselbe Markier-Werkzeug wie in der Lesefassung, an DIESER Datei, nicht in
+   einer zweiten Fassung des Nachweises. */
+import { MARKER_STIL, MARKER_HTML, MARKER_SKRIPT } from './lesefassung-marker.mjs';
 
 const SAGE = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const QUELLE = resolve(SAGE, 'docs/historie/historie.json');
@@ -243,7 +246,9 @@ h += '<title>Tägliche Dokumentation, ' + esc(deutsch(d.summe.erster)) + ' bis '
 h += '<meta name="robots" content="noindex">\n';
 h += '<!-- ERZEUGT von tools/arbeitstage-bauen.mjs aus docs/historie/historie.json.'
   + ' Nicht von Hand bearbeiten. -->\n';
-h += '<style>' + stil + '</style>\n</head>\n<body>\n<div class="wrap">\n';
+h += '<style>' + stil + MARKER_STIL + '</style>\n</head>\n'
+  + '<body data-blatt="arbeitstage" data-modus="lesen" data-lm-wurzel=".wrap">\n'
+  + '<div class="wrap">\n';
 
 h += '<h1>Tägliche Dokumentation der Arbeitstage</h1>\n';
 h += '<p class="unter">' + zahl(arbeitstage) + ' Tage, '
@@ -366,7 +371,8 @@ h += '<p class="q">Erzeugt von <code>tools/arbeitstage-bauen.mjs</code> aus '
   + 'Als Tabellenblatt liegen <code>arbeitstage-tage.csv</code> und '
   + '<code>arbeitstage-taetigkeiten.csv</code> daneben.</p>\n';
 
-h += '</div>\n</body>\n</html>\n';
+h += '</div>\n' + MARKER_HTML + '\n<script>' + MARKER_SKRIPT + '</script>\n'
+  + '</body>\n</html>\n';
 
 writeFileSync(ZIEL_HTML, h, 'utf-8');
 

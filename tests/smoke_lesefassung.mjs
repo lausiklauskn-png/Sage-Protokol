@@ -205,6 +205,50 @@ r = await p.evaluate(() => ({ marken: window.__lese.marken().length,
 zeig("nach dem Neuladen sind sie wieder da (" + r.marken + ")", r.marken >= 1 && r.huellen >= 1);
 
 zeig("kein Skript-Fehler" + (fehler.length ? ": " + fehler[0] : ""), fehler.length === 0);
+
+/* ── DAS WERKZEUG HAENGT AUCH AN DEN SEITEN, DIE ES NICHT GEBAUT HAT ──────
+   Historie und Arbeitsnachweis bringen ihr eigenes Aussehen und ihre eigenen
+   Farbnamen mit, und sie haben kein <main>, sondern .wrap. Ein fest
+   verdrahtetes "main" haette dort schlicht nichts getan, und eine Farbe ohne
+   Rueckfallwert waere unsichtbar gewesen: die Markierung laege da, und man
+   saehe nichts. Beides wird deshalb an den echten Seiten gemessen. */
+for (const [name, weg] of [
+  ["Historie", join(WURZEL, "docs", "historie", "historie.html")],
+  ["Arbeitsnachweis", join(WURZEL, "docs", "historie", "arbeitstage.html")],
+]) {
+  if (!existsSync(weg)) { zeig(name + ": die Datei liegt vor", false); continue; }
+  const s = await b.newPage();
+  await s.setViewportSize({ width: 380, height: 900 });
+  await s.goto(pathToFileURL(weg).href);
+  await s.waitForFunction(() => window.__lese && window.__lese.bereit, { timeout: 20000 })
+    .catch(() => {});
+  const q = await s.evaluate(() => {
+    if (!window.__lese) return { da: false };
+    const w = document.querySelector(".lm-wurzel");
+    if (!w) return { da: true, wurzel: false };
+    window.__lese.setzeModus(true);
+    const el = w.querySelector("p") || w.querySelector("li") || w.querySelector("td");
+    if (!el) return { da: true, wurzel: true, kein: true };
+    const c = el.getBoundingClientRect();
+    window.__lese.malen(c.left + 6, c.top + 6, c.left + 130, c.top + 6);
+    const m = document.querySelector("mark.lm");
+    return {
+      da: true, wurzel: true,
+      aus: getComputedStyle(w).userSelect,
+      marken: window.__lese.marken().length,
+      farbe: m ? getComputedStyle(m).backgroundColor : "",
+    };
+  });
+  zeig(name + ": das Werkzeug ist da und findet seine Wurzel", !!(q.da && q.wurzel));
+  zeig(name + ": im Modus ist die Auswahl aus (" + (q.aus || "?") + ")", q.aus === "none");
+  zeig(name + ": eine Markierung entsteht", q.marken >= 1);
+  /* SICHTBAR, nicht nur gesetzt. Ohne Rueckfallwert waere die Farbe
+     durchsichtig, und die Markierung waere da, ohne dass man sie saehe. */
+  zeig(name + ": und ihre Farbe ist sichtbar (" + (q.farbe || "?") + ")",
+    !!q.farbe && q.farbe !== "rgba(0, 0, 0, 0)" && q.farbe !== "transparent");
+  await s.close();
+}
+
 await b.close();
 console.log("\nsmoke_lesefassung: " + (rot === 0 ? "alles grün" : rot + " ROT"));
 process.exit(rot === 0 ? 0 : 1);
