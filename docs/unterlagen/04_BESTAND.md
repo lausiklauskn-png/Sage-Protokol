@@ -41,11 +41,11 @@ In dieser Reihenfolge nimmt man sie in die Hand.
 |---|---|---|---|---|
 | **Fahrplan Forschungsgelder** | `docs/FORSCHUNGSFOERDERUNG.md` | 2026-08-23 bis 2026-08-26 | 78 KB, 1.432 Zeilen | keine benannt |
 | **Die Schritte, abhakbar** | `docs/unterlagen/01_SCHRITTE.md` | 2026-08-26 bis 2026-08-26 | 7 KB, 141 Zeilen | keine benannt |
-| **Frageblatt Steuerberater** | `docs/STEUERBERATER_FRAGEN.md` · `docs/frageblatt.html` · `docs/frageblatt.pdf` | 2026-08-24 bis 2026-08-26 | 200 KB, 817 Zeilen | Die Kleinunternehmerregelung steht nur als Aufzählungspunkt unter Frage 7. Der Fragebogen zur steuerlichen Erfassung verlangt dafür ein Kreuz. |
+| **Frageblatt Steuerberater** | `docs/STEUERBERATER_FRAGEN.md` · `docs/frageblatt.html` · `docs/frageblatt.pdf` | 2026-08-24 bis 2026-08-26 | 202 KB, 817 Zeilen | Die Kleinunternehmerregelung steht nur als Aufzählungspunkt unter Frage 7. Der Fragebogen zur steuerlichen Erfassung verlangt dafür ein Kreuz. |
 | **Vorbereitung Finanzamt** | `docs/unterlagen/03_FINANZAMT.md` | 2026-08-26 bis 2026-08-26 | 5 KB, 122 Zeilen | Ohne ELSTER-Zertifikat geht der Fragebogen nicht ab. Das Zertifikat kommt per Brief und hat als einziger Schritt eine Vorlaufzeit. |
 | **Sitzungsprotokolle** | `docs/sessions/archiv` | 2026-05-10 bis 2026-08-26 | 20 KB | keine benannt |
-| **Arbeitszeitnachweis, Tag für Tag** | `docs/historie/arbeitstage.html` · `docs/historie/arbeitstage-tage.csv` · `docs/historie/arbeitstage-taetigkeiten.csv` · `docs/historie/arbeitstage.pdf` | 2026-08-24 bis 2026-08-26 | 7.5 MB, 12.711 Zeilen | Gemessen wird die Spanne zwischen dem ersten und dem letzten Eintrag eines Tages, nicht die geleistete Arbeit. Was vor dem ersten Eintrag geschah, ist nicht erfasst. |
-| **Historie der Zusammenarbeit** | `docs/historie/historie.html` · `docs/historie/historie.json` | 2026-08-24 bis 2026-08-24 | 14.1 MB, 87.781 Zeilen | Die Einordnung eines Eintrags geschieht an seinen Wörtern. Alle Zahlen zu den Marken sind deshalb Untergrenzen, keine Vollerhebung. |
+| **Arbeitszeitnachweis, Tag für Tag** | `docs/historie/arbeitstage.html` · `docs/historie/arbeitstage-tage.csv` · `docs/historie/arbeitstage-taetigkeiten.csv` · `docs/historie/arbeitstage.pdf` | 2026-08-24 bis 2026-08-26 | 7.5 MB, 13.212 Zeilen | Gemessen wird die Spanne zwischen dem ersten und dem letzten Eintrag eines Tages, nicht die geleistete Arbeit. Was vor dem ersten Eintrag geschah, ist nicht erfasst. |
+| **Historie der Zusammenarbeit** | `docs/historie/historie.html` · `docs/historie/historie.json` | 2026-08-24 bis 2026-08-26 | 14.1 MB, 88.282 Zeilen | Die Einordnung eines Eintrags geschieht an seinen Wörtern. Alle Zahlen zu den Marken sind deshalb Untergrenzen, keine Vollerhebung. |
 | **Entstehung, Klaus’ Darstellung** | `docs/papers/ENTSTEHUNG.md` | 2026-08-23 bis 2026-08-26 | 8 KB, 167 Zeilen | Eine Schilderung aus dem Gedächtnis, aufgezeichnet am 2026-08-23. Wo sie gegen die Einträge prüfbar ist, hält sie; der Rest ist Darstellung. |
 | **Paper A, Regeln und Grundsätze** | `docs/papers/PAPER_A_regeln-und-grundsaetze.md` | 2026-08-23 bis 2026-08-24 | 91 KB, 1.843 Zeilen | Der Werkzeug-Widerspruch ist offen und gehört vor die Zenodo-Nummer. |
 | **Forschungskorpus** | `docs/FORSCHUNGSKORPUS.md` | 2026-08-23 bis 2026-08-26 | 8 KB, 133 Zeilen | keine benannt |
@@ -73,7 +73,7 @@ andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.
 | 9 | **Werkstatt-Material aus Kimhub** | 2026-08-23 | 2026-08-26 |
 | 10 | **Arbeitszeitnachweis, Tag für Tag** | 2026-08-24 | 2026-08-26 |
 | 11 | **Frageblatt Steuerberater** | 2026-08-24 | 2026-08-26 |
-| 12 | **Historie der Zusammenarbeit** | 2026-08-24 | 2026-08-24 |
+| 12 | **Historie der Zusammenarbeit** | 2026-08-24 | 2026-08-26 |
 | 13 | **Die Schritte, abhakbar** | 2026-08-26 | 2026-08-26 |
 | 14 | **Vorbereitung Finanzamt** | 2026-08-26 | 2026-08-26 |
 
