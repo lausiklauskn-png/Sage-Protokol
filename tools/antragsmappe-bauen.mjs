@@ -515,6 +515,13 @@ const SKRIPT = `
     if(k.getAttribute("data-tun") === "laden") laden(k.getAttribute("data-fuer"));
     else drucken(k.getAttribute("data-fuer"));
   });
+
+  /* EIN HAKEN NACH AUSSEN, damit tools/abteilung-html.mjs dieselbe Funktion
+     ruft wie der Knopf. Ein zweiter Bauer daneben waere eine zweite Fassung
+     derselben Auswahl; sie liefen auseinander, und dann staende in der
+     herausgenommenen Datei etwas anderes als im Knopf.
+     Er gibt NUR heraus, was der Knopf ohnehin erzeugt. */
+  window.__mappe = { alleinBauen: alleinBauen };
 })();
 `;
 

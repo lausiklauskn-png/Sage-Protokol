@@ -212,17 +212,17 @@ const bestandMd = `# Bestandsaufnahme: was dokumentiert ist, und wo es aufhört
 kommen aus \`git log\` und aus den Dateien selbst. Wer diese Datei von Hand
 ändert, verliert die Änderung beim nächsten Lauf.
 
-> **Warum sie erzeugt wird.** Der Bestand ändert sich. Eine Liste von Hand ist
-> am Tag nach dem Schreiben falsch und sieht dabei genauso aus wie eine richtige.
+> **Warum sie erzeugt wird.** Der Bestand ändert sich. Zeitraum und Umfang
+> kommen deshalb bei jedem Lauf frisch aus \`git log\` und aus den Dateien
+> selbst, nicht aus einer gepflegten Liste.
 
 ---
 
 ## 1 · Die Kennzahlen, jede mit ihrer Definition
 
-Zwei Zahlen für dieselbe Sache sind ein Widerspruch, sobald jemand sie
-nebeneinander liest. Am ${heute} standen ${zahlen[0].wert.toLocaleString('de-DE')} und
-${zahlen[1].wert.toLocaleString('de-DE')} in derselben Mappe, beide „Einträge"
-genannt. Beide waren richtig. Deshalb trägt hier jede Zahl, was sie zählt.
+**Jede Zahl trägt, was sie zählt.** Zwei Angaben für dieselbe Sache sind für
+jeden, der sie nebeneinander liest, ein Widerspruch, auch wenn beide stimmen.
+Die Definition steht deshalb in derselben Zeile wie der Wert.
 
 | Kennzahl | Wert | Was genau gezählt wird |
 |---|---|---|
@@ -247,11 +247,11 @@ ${tabelle(nachSchritt)}
 Nach dem Tag, an dem der erste Stand davon abgelegt wurde. Dieselbe Liste,
 andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.
 
-| Nr. | Was | erster Stand | letzter Stand | Stände |
-|---|---|---|---|---|
+
+| Nr. | Was | erster Stand | letzter Stand |
+|---|---|---|---|
 ${nachZeit.map((b, i) => '| ' + (i + 1) + ' | **' + b.name + '** | '
-  + (b.z ? b.z.von : 'unbekannt') + ' | ' + (b.z ? b.z.bis : 'unbekannt') + ' | '
-  + (b.z ? b.z.staende : 0) + ' |').join('\n')}
+  + (b.z ? b.z.von : 'unbekannt') + ' | ' + (b.z ? b.z.bis : 'unbekannt') + ' |').join('\n')}
 
 ## 4 · Was außerhalb der Depots liegt
 
@@ -339,9 +339,6 @@ Sitzungsprotokoll.
 Das erste Protokoll überhaupt stammt vom **${beginn}**, und in den App-Depots
 beginnt die Praxis Ende Mai. **Im April gab es sie nirgends.**
 
-> Der Befund davor verglich netzweite Einträge gegen Protokolle eines einzigen
-> Depots. Beide Zahlen waren richtig, ihr Verhältnis war es nicht.
-> **Eine Differenz aus zwei ungleichen Messungen ist keine Messung.**
 
 ## 2 · Was der Monat enthält
 

@@ -33,9 +33,6 @@ Sitzungsprotokoll.
 Das erste Protokoll überhaupt stammt vom **2026-05-10**, und in den App-Depots
 beginnt die Praxis Ende Mai. **Im April gab es sie nirgends.**
 
-> Der Befund davor verglich netzweite Einträge gegen Protokolle eines einzigen
-> Depots. Beide Zahlen waren richtig, ihr Verhältnis war es nicht.
-> **Eine Differenz aus zwei ungleichen Messungen ist keine Messung.**
 
 ## 2 · Was der Monat enthält
 

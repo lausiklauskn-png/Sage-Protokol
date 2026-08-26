@@ -81,18 +81,13 @@ Nach dem, was der Fahrplan verlangt, und nachgesehen statt angenommen.
 > **Diese Liste hat jetzt ein eigenes Blatt.** Abteilung 7 dieser Mappe,
 > [`06_FORSCHUNGSAUFGABEN.md`](06_FORSCHUNGSAUFGABEN.md), führt alle sieben
 > Aufgaben mit Frage, Beleg, Abhängigkeit und Reihenfolge. Der Stand darin wird
-> **gemessen**, nicht hingeschrieben.
->
-> Der Anlass war ein Fehler in genau dieser Tabelle: sie führte das Blatt zum
-> Stand der Technik als „existiert nicht", während es am selben Tag entstanden
-> war. Klaus las eine heruntergeladene Fassung und fragte nach. **Eine Liste von
-> Hand ist am Tag nach dem Schreiben falsch und sieht dabei genauso aus wie eine
-> richtige.**
+> **gemessen**, nicht hingeschrieben: das Blatt sieht selbst nach, ob ein Beleg
+> im Depot liegt. Diese Tabelle hier ist von Hand geführt und kann deshalb
+> hinterherhinken. **Im Zweifel gilt Abteilung 7.**
 
 **Für den Antrag reicht Paper A.** B und C sind kein Hindernis, sie sind
-Nachschub. Das **Blatt zum Stand der Technik** war das mit der größten Wirkung
-je Seite und fehlte vollständig; seit dem 2026-08-26 liegt es vor. Was daran
-offen bleibt, ist die Literatursuche, und sie steht im Blatt selbst benannt.
+Nachschub. Das **Blatt zum Stand der Technik** liegt seit dem 2026-08-26 vor;
+offen bleibt daran die Literatursuche, und sie steht im Blatt selbst benannt.
 
 ### Eine Lücke im Frageblatt, benannt statt umfahren
 

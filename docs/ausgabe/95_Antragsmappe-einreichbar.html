@@ -1,0 +1,2144 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forschungsunterlagen</title>
+<!-- Klaus Nitzsche · Hamburg · Stand 2026-08-26Herkunft: Depot Sage-Protokol, github.com/lausiklauskn-png/Sage-ProtokolTexte CC BY 4.0 · Code und Material MIT -->
+<style>
+:root{color-scheme:light dark;--grund:#f7f6f3;--tinte:#1b1b1b;--matt:#5a5a5a;
+--kante:#d8d5cf;--karte:#fff;--akzent:#7a4b1e;--warn:#8a1c1c;--gruen:#1f5c34}
+@media (prefers-color-scheme:dark){:root{--grund:#14161a;--tinte:#e8e6e1;
+--matt:#a4a09a;--kante:#2e3238;--karte:#1b1e23;--akzent:#e0a253;--warn:#ff8a80;
+--gruen:#7fd6a0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--grund);color:var(--tinte);
+font:16px/1.65 Georgia,"Times New Roman",serif;padding:0 0 4rem}
+.hut{position:sticky;top:0;z-index:5;background:var(--karte);
+border-bottom:1px solid var(--kante);padding:.7rem 1rem}
+.hut nav{max-width:52rem;margin:0 auto;display:flex;gap:1rem;flex-wrap:wrap;
+align-items:baseline;font-family:system-ui,sans-serif;font-size:.85rem}
+.hut strong{font-size:.95rem}
+.hut a{color:var(--akzent)}
+.abteilung{max-width:52rem;margin:0 auto;padding:2rem 1rem 0}
+.abt-kopf{border:1px solid var(--kante);background:var(--karte);
+border-radius:10px;padding:1.2rem 1.3rem;margin:1.5rem 0 2.5rem}
+.marke{font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.14em;
+color:var(--matt);margin:0 0 .3rem}
+.abt-kopf h1{margin:.1rem 0 .2rem;font-size:1.6rem;line-height:1.25}
+.unter{margin:0 0 .9rem;color:var(--matt);font-style:italic}
+.stempel{font-family:system-ui,sans-serif;font-size:.82rem;line-height:1.6;
+color:var(--matt);margin:0 0 .9rem}
+.hinweis{font-family:system-ui,sans-serif;font-size:.88rem;
+border-left:3px solid var(--akzent);padding:.5rem .8rem;margin:0 0 1rem;
+background:color-mix(in srgb,var(--akzent) 8%,transparent)}
+[data-abteilung="privat"] .hinweis{border-left-color:var(--warn);
+background:color-mix(in srgb,var(--warn) 9%,transparent)}
+.knoepfe{display:flex;gap:.6rem;flex-wrap:wrap;margin:0 0 .6rem}
+button{font:inherit;font-family:system-ui,sans-serif;font-size:.9rem;
+padding:.6rem .9rem;min-height:44px;border:1px solid var(--kante);
+border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
+button:hover{border-color:var(--akzent)}
+.lage{font-family:system-ui,sans-serif;font-size:.85rem;margin:.2rem 0 .8rem;
+min-height:1.2em;color:var(--matt)}
+.lage[data-art="fehler"]{color:var(--warn)}
+.lage[data-art="gut"]{color:var(--gruen)}
+.verzeichnis{font-family:system-ui,sans-serif;font-size:.85rem;
+border-top:1px solid var(--kante);padding-top:.7rem;margin-top:.3rem}
+.verzeichnis p{margin:0 0 .35rem;color:var(--matt)}
+.verzeichnis ul{margin:0;padding-left:1.1rem}
+.quelle{margin:0 0 2rem}
+.herkunft{font-family:system-ui,sans-serif;font-size:.75rem;color:var(--matt);
+margin:0 0 1rem;letter-spacing:.02em}
+.quellgrenze{border:0;border-top:2px solid var(--kante);margin:3rem 0}
+h1,h2,h3,h4,h5,h6{line-height:1.3;margin:1.9rem 0 .6rem}
+.quelle h1{font-size:1.5rem;border-bottom:1px solid var(--kante);
+padding-bottom:.3rem}
+.quelle h2{font-size:1.25rem}
+.quelle h3{font-size:1.08rem}
+.quelle h4,.quelle h5,.quelle h6{font-size:1rem}
+p{margin:0 0 1rem}
+a{color:var(--akzent)}
+code{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:.88em;
+background:color-mix(in srgb,var(--tinte) 8%,transparent);
+padding:.1em .3em;border-radius:4px}
+pre{background:var(--karte);border:1px solid var(--kante);border-radius:8px;
+padding:.9rem;overflow-x:auto}
+pre code{background:none;padding:0;font-size:.85rem}
+blockquote{margin:1rem 0;padding:.2rem 0 .2rem 1rem;
+border-left:3px solid var(--kante);color:var(--matt)}
+blockquote strong{color:var(--tinte)}
+ul,ol{margin:0 0 1rem;padding-left:1.4rem}
+li{margin:.3rem 0}
+.haken{font-family:system-ui,sans-serif}
+.tabelle{overflow-x:auto;margin:0 0 1.2rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--kante);padding:.45rem .6rem;
+text-align:left;vertical-align:top}
+th{background:var(--karte);font-family:system-ui,sans-serif;font-size:.85rem}
+hr{border:0;border-top:1px solid var(--kante);margin:2rem 0}
+.fuss{max-width:52rem;margin:3rem auto 0;padding:1rem;
+font-family:system-ui,sans-serif;font-size:.8rem;color:var(--matt);
+border-top:1px solid var(--kante)}
+
+
+/* Die drei Farben setzen Grund UND Schrift. Damit lesen sie sich in hell
+   und dunkel gleich — eine helle Fläche ohne gesetzte Schriftfarbe wäre im
+   dunklen Thema weiße Schrift auf hellem Grund. */
+mark.mk{background:#b7f0c2;color:#10331a;border-radius:3px;
+padding:.06em .05em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+mark.mk[data-farbe="gelb"]{background:#fdedb0;color:#3a2f05}
+mark.mk[data-farbe="rot"]{background:#ffc4bd;color:#45120c}
+mark.mk[data-notiz]{box-shadow:inset 0 -2px 0 rgba(0,0,0,.45)}
+
+.mk-leiste{position:fixed;z-index:30;display:none;gap:.3rem;padding:.35rem;
+background:var(--karte);border:1px solid var(--kante);border-radius:12px;
+box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.mk-leiste[data-offen="ja"]{display:flex}
+.mk-leiste{flex-wrap:wrap;max-width:min(94vw,30rem)}
+/* Der Farbtupfen ist eine CSS-Flaeche, KEIN Emoji. Ein Emoji haengt an der
+   Schrift des Geraets -- fehlt sie, steht dort ein Kaestchen oder nichts,
+   und die Leiste zeigt nur noch Zahlen. Genau das ist Klaus am 2026-08-24
+   passiert. Eine Farbe, die die Bedeutung traegt, wird gezeichnet, nicht
+   geschrieben -- und daneben steht das Wort. */
+.mk-tupf{display:inline-block;width:.85em;height:.85em;border-radius:3px;
+vertical-align:-.08em;background:#b7f0c2;border:1px solid rgba(0,0,0,.3)}
+.mk-tupf[data-f="gelb"]{background:#fdedb0}
+.mk-tupf[data-f="rot"]{background:#ffc4bd}
+.mk-leiste button{min-width:46px;min-height:46px;padding:.3rem;font-size:1.15rem;
+line-height:1;border-radius:9px}
+.mk-leiste button[data-mk-tun="weg"]{font-size:.95rem}
+
+.mk-tafel{position:fixed;left:0;right:0;bottom:0;z-index:31;display:none;
+max-height:min(82vh,700px);overflow:auto;background:var(--karte);
+border-top:2px solid var(--akzent);padding:1rem 1rem 2rem;
+font-family:system-ui,sans-serif;font-size:.9rem;
+box-shadow:0 -8px 28px rgba(0,0,0,.3)}
+.mk-tafel[data-offen="ja"]{display:block}
+.mk-tafel .innen{max-width:52rem;margin:0 auto}
+.mk-tafel h2{margin:0 0 .2rem;font-size:1.15rem;font-family:inherit}
+.mk-tafel p{margin:0 0 .7rem}
+.mk-tafel .zaehler{font-size:1rem;margin:0 0 .8rem}
+.mk-tafel ul{list-style:none;padding:0;margin:0 0 1rem}
+.mk-tafel li{border-top:1px solid var(--kante);padding:.5rem 0}
+.mk-tafel .stelle{cursor:pointer;background:none;border:0;color:inherit;
+font:inherit;text-align:left;padding:0;min-height:0}
+.mk-tafel .stelle:hover{color:var(--akzent)}
+.mk-tafel .woher{color:var(--matt);font-size:.78rem;margin:.15rem 0 0}
+.mk-tafel .notiz{color:var(--matt);font-style:italic;margin:.15rem 0 0}
+.mk-warn{border-left:3px solid var(--warn);
+background:color-mix(in srgb,var(--warn) 10%,transparent);
+padding:.5rem .8rem;margin:0 0 .8rem}
+.mk-leer{color:var(--matt)}
+.mk-legende{list-style:none;padding:0;margin:0 0 .5rem}
+.mk-legende li{border:0;padding:.15rem 0}
+.mk-grundsatz{border-left:3px solid var(--akzent);padding:.35rem .7rem;
+background:color-mix(in srgb,var(--akzent) 8%,transparent);margin:0 0 .8rem}
+.hut button{font:inherit;font-family:system-ui,sans-serif;font-size:.85rem;
+padding:.35rem .6rem;min-height:34px;border:1px solid var(--kante);
+border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
+.hut button:hover{border-color:var(--akzent)}
+
+/* ── Druck ────────────────────────────────────────────────────────────────
+   EINE Fassung, zwei Sichten. Die Klasse am <html> blendet aus, was gerade
+   nicht gedruckt werden soll. */
+html.nur-privat .abteilung:not(#privat){display:none}
+html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
+html.nur-uebersicht .abteilung:not(#uebersicht){display:none}
+html.nur-schritte .abteilung:not(#schritte){display:none}
+html.nur-steuerberater .abteilung:not(#steuerberater){display:none}
+html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
+html.nur-bestand .abteilung:not(#bestand){display:none}
+html.nur-april .abteilung:not(#april){display:none}
+html.nur-forschungsaufgaben .abteilung:not(#forschungsaufgaben){display:none}
+@media print{
+  .hut,.knoepfe,.lage{display:none}
+  body{background:#fff;color:#000;font-size:11pt}
+  .abteilung{max-width:none;padding:0}
+  .abt-kopf{border:0;padding:0;background:none}
+  a{color:#000;text-decoration:underline}
+  .quelle{page-break-before:always}
+  .abt-kopf+.quelle,.abteilung>.quelle:first-of-type{page-break-before:auto}
+  h1,h2,h3{page-break-after:avoid}
+  table,pre,blockquote{page-break-inside:avoid}
+
+  .mk-leiste,.mk-tafel{display:none !important}
+  mark.mk{background:none !important;color:inherit !important;
+    box-shadow:none !important;padding:0 !important}
+
+}
+</style>
+</head>
+<body>
+<section class="abteilung" id="einreichbar" data-abteilung="einreichbar">
+<header class="abt-kopf">
+<p class="marke">Abteilung 2 · EINREICHBAR</p>
+<h1>Forschungsunterlagen</h1>
+<p class="unter">Zum Einreichen bei Behörde und Gutachter</p>
+<p class="stempel" data-stempel="einreichbar">Klaus Nitzsche · Hamburg · Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 · Code und Material MIT</p>
+<p class="hinweis">Diese Abteilung ist so gebaut, dass sie <strong>allein vollständig</strong> ist: eigener Kopf, eigenes Datum, eigene Herkunftsangabe. Wer nur sie in der Hand hält, vermisst nichts.</p>
+
+
+<nav class="verzeichnis"><p>In dieser Abteilung:</p><ul><li><a href="#q-docs-papers-entstehung-md">papers/ENTSTEHUNG.md</a></li><li><a href="#q-docs-abgrenzung-md">ABGRENZUNG.md</a></li><li><a href="#q-docs-papers-paper-a-regeln-und-grundsaetze-md">papers/PAPER_A_regeln-und-grundsaetze.md</a></li><li><a href="#q-docs-forschungskorpus-md">FORSCHUNGSKORPUS.md</a></li><li><a href="#q-docs-papers-plan-papers-md">papers/PLAN_PAPERS.md</a></li><li><a href="#q-docs-werkstatt-readme-md">werkstatt/README.md</a></li><li><a href="#q-docs-werkstatt-werkstattregeln-md">werkstatt/WERKSTATTREGELN.md</a></li><li><a href="#q-docs-werkstatt-grundsaetze-md">werkstatt/grundsaetze.md</a></li><li><a href="#q-docs-werkstatt-befund-md">werkstatt/BEFUND.md</a></li></ul></nav>
+</header>
+<article class="quelle" id="q-docs-papers-entstehung-md" data-quelle="docs/papers/ENTSTEHUNG.md">
+<p class="herkunft">Quelle: <code>docs/papers/ENTSTEHUNG.md</code></p>
+<h1>Woher das kommt: Klaus' Darstellung</h1>
+<p><strong>Aufgezeichnet am 2026-08-23.</strong> Das ist <strong>Klaus' eigene Schilderung</strong>, wie das
+Vorhaben entstanden ist, festgehalten bevor sie verlorengeht. Sie ist <strong>Rohstoff</strong>
+für den Anfang von Paper A und für die Vorhabensbeschreibung im Antrag, noch nicht
+eingearbeitet.</p>
+<blockquote><p><strong>Warum diese Datei überhaupt existiert.</strong> Beim Prüfen der Antragsunterlagen fiel
+Klaus auf, dass die Texte mitten im Thema anfangen. Wer sie liest, erfährt nie,
+worauf sie aufbauen, warum ein Werkzeug gebaut wurde und was eine „Schicht" ist.
+Er sagte dazu: <em>„bis man da ist, denkt man, das hat KI geschrieben."</em> Der
+Zusammenhang fehlt, und er stand bisher nur im Gespräch.</p></blockquote>
+<hr>
+<h2>1 · Der Ausgangspunkt: das Matching</h2>
+<p>Am Anfang stand <strong>Sage-Protokol</strong> und das semantische, bidirektionale KI-Matching.</p>
+<p>Über das Mycel wurde gebaut, dass <strong>PWAs und Internetseiten einander erkennen</strong>,
+anhand von Bedeutungsvektoren, nicht anhand von Stichwörtern. Das Ziel war, die
+<strong>inhaltliche Bedeutung</strong> zu erfassen und damit etwas zu erreichen: Dinge schneller
+zu finden, die jemand sucht.</p>
+<p><strong>Zwei Genauigkeiten, auf die Klaus ausdrücklich hinweist</strong> und die in den
+Unterlagen bisher fehlten:</p>
+<ul><li><strong>Es sind keine KIs, die sich erkennen.</strong> Es sind Anwendungen und Seiten. Die KI
+steckt im Einbetten und im Sortieren, nicht in den Knoten.</li><li><strong>„Server-los" gehört in Anführungszeichen.</strong> Es gibt sehr wohl ein <strong>Relais</strong>.
+Was fehlt, ist ein Server <strong>beim Einzelnen</strong> und ein zentraler Index. Klaus
+betreibt selbst ein Relais (<code>wss://relay.family-projekt.de</code>). Peer-to-peer heißt
+hier: niemand muss eigene Infrastruktur stellen, nicht: es gibt keine.</li></ul>
+<h2>2 · Der Anlass: einer allein, und die Dokumentation frisst die Zeit</h2>
+<p>Klaus hat allein gearbeitet und nach einer Möglichkeit gesucht, das zu
+automatisieren, <strong>die Dokumentation eingeschlossen</strong>.</p>
+<p>Dabei kam der Befund, um den sich alles Weitere dreht:</p>
+<blockquote><p><strong>Regeln allein haben nicht gereicht</strong>, um die KI sinnvoll an ein Ziel zu lenken.</p></blockquote>
+<p>Er hat mitgelesen und verfolgt, wo die Arbeit immer wieder scheiterte: falscher
+Code, doppelt gebaute Dinge, wiederholte Wege. Seine Beobachtung zur Ursache:
+<strong>es wurde von falschen Annahmen ausgegangen.</strong></p>
+<blockquote><p>⚠ <strong>Das ist eine Beobachtung, kein erwiesener Befund.</strong> Sie ist in <code>LEHREN.md</code>
+und in den Verfassungen dutzendfach mit Datum belegt, aber sie ist nicht gemessen.
+Im Paper gehört sie als Beobachtung hinein, sonst ist die Forschungsfrage
+beantwortet, bevor sie gestellt wurde.</p></blockquote>
+<h2>3 · Die Überlegung: mehrere Agenten, und Grundsätze statt vieler Regeln</h2>
+<p>Daraus wurde die Frage, wie man <strong>mehrere Agenten</strong> so anleitet oder initiiert, dass
+sie ein Ziel schneller und besser erreichen. Nicht über viele Regeln, sondern über
+<strong>Grundsätze</strong>.</p>
+<p><strong>Die Idee stand schon vorher.</strong> SB·KIMTool·Point trägt sie als <strong>Modell</strong>: dort
+läuft eine Rollen-Kette, aber sie spielt einen <strong>aufgezeichneten</strong> Lauf ab. Das
+steht in dessen Verfassung ausdrücklich so.</p>
+<p><strong>In Kimhub ist dasselbe lebendig geworden</strong>: echte Aufträge, echte Modelle, echte
+Kosten. Auch das steht dort so geschrieben. Der Bogen ist damit in beiden Depots
+nachprüfbar und keine nachträgliche Erzählung.</p>
+<h2>4 · Warum das Werkzeug gebaut wurde</h2>
+<p>Es wurde stundenlang an Dingen gearbeitet, <strong>aus denen nichts wurde</strong>. Um zu sehen,
+wo das Problem sitzt, musste es aufgeschrieben werden. Daraus entstand die
+Buchhaltung: was eine Fahrt kostet, wie lange sie lief, wie viele Aufrufe, wie es
+sich auf die Rollen verteilt.</p>
+<p><strong>Klaus' Richtigstellung dazu, wörtlich sinngemäß:</strong></p>
+<blockquote><p>Das Werkzeug ist nicht unbrauchbar, weil ich sauer war. Es <strong>schien</strong> unbrauchbar,
+weil ich kein Ergebnis gesehen habe. <strong>Was die Ursache war, ist die Grundlage des
+Forschungsprojekts.</strong></p></blockquote>
+<p>Das ist der Kern der Haltung und gehört so ins Paper. Der Ärger war das <strong>Signal</strong>,
+nicht das Urteil.</p>
+<h2>5 · Was offen ist, und offen bleiben soll</h2>
+<p>Warum kam nichts heraus? Die Möglichkeiten stehen nebeneinander, <strong>keine ist
+ausgeschlossen</strong>:</p>
+<ul><li>Waren es die <strong>Regeln</strong>?</li><li>Waren es die <strong>fehlenden Grundsätze</strong>?</li><li>War es <strong>beides zusammen</strong>?</li><li>War es die <strong>Vorgehensweise</strong>?</li><li>War es das <strong>Fehlen der Werkzeuge</strong> bei den Rollen?</li></ul>
+<p>Diese Liste ist die Forschungsfrage. Sie vorzeitig zu beantworten wäre der Fehler,
+vor dem Grundsatz 3 warnt.</p>
+<h2>6 · Die eigentliche Frage, in Klaus' Worten</h2>
+<blockquote><p><strong>Wie kann jemand, der keinen Zugriff und keinen Einfluss auf die großen Modelle
+hat, seine Zeit, sein Geld und seinen Einsatz mit KI-Systemen so regulieren, dass
+es sinnvoll und einfach bleibt, zielführend ist und Ressourcen spart?</strong></p></blockquote>
+<p>Und das Ziel dahinter: Menschen sollen KI nicht nur <strong>benutzen</strong> können, sondern
+wissen, <strong>wie sie sich eigene Werkzeuge bauen</strong>, mit möglichst wenig Zeiteinsatz.</p>
+<p><strong>Das Paper stellt heute nur die Unterfrage</strong> (Regeln gegen Grundsätze) und nennt
+diese Hauptfrage nicht. In der Sprache der Fördergeber heißt sie <em>digitale
+Souveränität für kleine Akteure</em>, und sie ist dünn besetzt: fast alle Forschung
+dazu kommt von Leuten, die Zugriff auf die Modelle haben.</p>
+<h2>7 · Der rote Faden, der die drei Papers verbindet: Zeit</h2>
+<p>Die drei geplanten Papers sahen aus wie drei Themen. Sie sind eines, und der Faden
+ist <strong>Zeit</strong>:</p>
+<div class="tabelle"><table><thead><tr><th>Strang</th><th>Was er an Zeit spart oder kostet</th></tr></thead><tbody><tr><td>Semantische Suche</td><td>soll das <strong>Finden</strong> schneller machen</td></tr><tr><td>Lenkung über Grundsätze</td><td>soll die <strong>Umwege</strong> kürzer machen</td></tr><tr><td>Psychische Wirkung</td><td><strong>je mehr Zeit hineingeht, desto tiefer die Gewöhnung</strong></td></tr></tbody></table></div>
+<p>Es geht nicht um Token und nicht um Euro. Beide sind kleine Posten. <strong>Zeit ist der
+Preis</strong>, in Geld wie in Gewöhnung.</p>
+<p><strong>Und die Kehrseite steht im selben Satz.</strong> Dieselbe Intensität, die in fünf
+Monaten dieses Netz hervorgebracht hat, nach Klaus' eigener Schätzung <strong>mehr als
+doppelte Arbeitszeit</strong>, ist die, vor der der Sucht-Strang warnt. Er sagt dazu:</p>
+<blockquote><p>⚠ <strong>Die Schätzung ist seit dem 2026-08-24 nachrechenbar, und die Antwort hängt
+daran, welche der beiden gemessenen Zahlen man nimmt.</strong> Über 23,9 Wochen vom
+10.03. bis 24.08. ergibt die <strong>Spanne</strong> vom ersten bis zum letzten Eintrag eines
+Tages 81,1 Stunden je Woche, also <strong>das Doppelte einer 40-Stunden-Woche</strong>. Die
+<strong>aktive Zeit</strong> ohne die Pausen ergibt 49,7 Stunden, also das 1,24-fache.
+Klaus' Schätzung trifft die erste Zahl. Wer sie im Antrag verwendet, schreibt
+dazu, welche gemeint ist; sonst steht dort eine Verdopplung, die ein Prüfer an
+der anderen Zahl nicht wiederfindet. Beide stehen in
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/historie/arbeitstage.html"><code>historie/arbeitstage.html</code></a>.</p></blockquote>
+<blockquote><p><em>„Ich bin nicht süchtig. Aber ich bin das lebendige Beispiel dafür. Das schafft
+man nicht, wenn man die Sachen nebenbei macht."</em></p></blockquote>
+<p>Diese Ambivalenz ist kein Makel der Darstellung. Sie ist der Gegenstand.</p>
+<h2>8 · Was davon belegt ist und was nicht</h2>
+<p>Damit die beiden nicht ineinanderlaufen:</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Zeitraum</th><th>Art des Belegs</th></tr></thead><tbody><tr><td><strong>Aufschreibung</strong></td><td>seit März 2026, fünf Monate</td><td><code>LEHREN.md</code>, Verfassungen, Sitzungsprotokolle, Git-Historie mit Datum. Echt und datiert, aber <strong>Text, keine Messreihe</strong></td></tr><tr><td><strong>Messung</strong></td><td>seit <strong>2026-08-20</strong> (Deckel, Kosten), <strong>2026-08-22</strong> (Fahrtenbuch)</td><td>belastbar, aber <strong>wenige Läufe</strong></td></tr><tr><td><strong>Zeitaufwand des Menschen</strong></td><td>„mehr als doppelte Arbeitszeit"</td><td><strong>Schätzung von Klaus</strong>, nicht gemessen. Die Stechuhr existiert, eine Reihe noch nicht</td></tr></tbody></table></div>
+<h2>9 · Was mit dieser Datei geschehen soll</h2>
+<p>Sie ist der Rohstoff für drei Dinge, die noch zu tun sind:</p>
+<ol><li><strong>Ein neuer Abschnitt 1 in Paper A</strong>, der die Herkunft erzählt, bevor Begriffe
+ wie „Schicht" gebraucht werden.</li><li><strong>Die Vorhabensbeschreibung</strong> im Förderantrag. Abschnitt 6 ist deren Kern.</li><li><strong>Ein Abschnitt zur Entstehung des Papers selbst</strong>: welche Wendepunkte von Klaus
+ kamen und welche von der Sitzung. Bei einem Papier über die Lenkung von KI ist
+ das kein Anhang, sondern Material.</li></ol>
+<p><strong>Klaus liest gegen und korrigiert.</strong> Was hier steht, ist seine Darstellung, von
+einer Sitzung aufgeschrieben, nicht umgekehrt.</p>
+</article>
+<hr class="quellgrenze">
+<article class="quelle" id="q-docs-abgrenzung-md" data-quelle="docs/ABGRENZUNG.md">
+<p class="herkunft">Quelle: <code>docs/ABGRENZUNG.md</code></p>
+<h1>Stand der Technik und Abgrenzung</h1>
+<p><strong>Stand: 2026-08-26.</strong> Eine Seite. Sie beantwortet die Frage, die eine
+Gutachterin zuerst stellt: <em>gibt es das nicht schon?</em></p>
+<blockquote><p><strong>Die ehrliche Antwort ist zweiteilig.</strong> Die einzelnen Bausteine gibt es
+alle, und SBKIM benutzt einige davon. Was es nicht gibt, ist die eine
+Eigenschaft, um die es geht.</p></blockquote>
+<hr>
+<h2>1 · Was SBKIM ist, in drei Sätzen</h2>
+<p>Zwei Parteien beschreiben sich in <strong>freiem Text</strong>: was sie können und was sie
+brauchen. Ein Sprachmodell bewertet das <strong>Paar</strong> und gibt einen strukturierten
+Bericht zurück. Es gibt <strong>keinen zentralen Index</strong>, bei dem sich beide vorher
+anmelden müssten.</p>
+<p>Der Kern ist die <strong>Symmetrie</strong>: beide Seiten nennen Fähigkeit <strong>und</strong> Bedarf.
+Genau daraus entsteht ein Ergebnis, das eine Suchmaschine nicht liefern kann,
+weil sie nur eine Richtung kennt.</p>
+<h2>2 · Was es schon gibt, und was es beantwortet</h2>
+<div class="tabelle"><table><thead><tr><th>Verfahren</th><th>Beantwortet die Frage</th><th>Was es nicht beantwortet</th></tr></thead><tbody><tr><td><strong>IPFS</strong></td><td><em>wo liegt der Inhalt mit diesem Fingerabdruck?</em></td><td>wer für mich passt. Man muss den Fingerabdruck schon kennen</td></tr><tr><td><strong>libp2p / DHT</strong></td><td><em>wo erreiche ich diesen Knoten?</em></td><td>dasselbe: die Kennung muss man schon haben</td></tr><tr><td><strong>ActivityPub</strong></td><td><em>wie stelle ich meinen Beitrag denen zu, die mir folgen?</em></td><td>wem man folgen sollte</td></tr><tr><td><strong>Matrix</strong></td><td><em>wie rede ich sicher mit jemandem?</em></td><td>mit wem</td></tr><tr><td><strong>Nostr</strong></td><td><em>wie veröffentliche ich etwas, ohne eine Plattform zu brauchen?</em></td><td>wer daran Interesse hat</td></tr><tr><td><strong>Solid</strong></td><td><em>wie behalte ich die Hoheit über meine Daten?</em></td><td>wer damit etwas anfangen kann</td></tr><tr><td><strong>Zentrale Vektor-Suchen</strong></td><td><em>welches Dokument passt zu meiner Frage?</em></td><td>ob ich zu dem Dokument passe. Und: es braucht einen Betreiber, der alle Daten hat</td></tr><tr><td><strong>MCP und verwandte Agenten-Protokolle</strong></td><td><em>wie spricht ein Modell mit einem Werkzeug?</em></td><td>welches Modell und welches Werkzeug zueinander passen, bevor sie sprechen</td></tr></tbody></table></div>
+<p><strong>Die Zeile, die am ehesten wie ein Einwand aussieht, ist die vorletzte.</strong> Eine
+Vektor-Suche ist semantisch, und das klingt nach demselben. Sie ist aber
+<strong>einseitig</strong> (eine Frage sucht Dokumente, die Dokumente suchen nichts) und
+<strong>zentral</strong> (ein Index, ein Betreiber, alle Daten an einer Stelle). Beides ist
+genau das, was hier nicht sein soll.</p>
+<h2>3 · Wo SBKIM nichts Neues beansprucht</h2>
+<p>Das gehört ausdrücklich dazu, weil ein Vorhaben, das alles für neu erklärt,
+seine wirklich neue Stelle mit begräbt.</p>
+<ul><li><strong>Der Transport ist geliehen.</strong> SBKIM spricht über <strong>Nostr</strong>-Relais. Das
+Protokoll ist fremd, offen und wurde nicht von uns gebaut.</li><li><strong>Die Einbettung ist Stand der Technik.</strong> Text in Vektoren zu übersetzen ist
+seit Jahren üblich.</li><li><strong>Die Kryptographie ist Standard.</strong> Ed25519, AES-256-GCM, PBKDF2. Nichts davon
+ist eine Eigenentwicklung, und das ist Absicht.</li><li><strong>Die Rollen-Kette</strong> in der Werkstatt ist ein bekanntes Muster.</li></ul>
+<h2>4 · Was übrig bleibt, und das ist der Anspruch</h2>
+<p><strong>Semantische Entdeckung, bevor kommuniziert wird, in beide Richtungen, ohne
+zentralen Index.</strong></p>
+<p>Die vorhandenen Verfahren teilen sich in zwei Lager. Das eine kann <strong>finden,
+aber nur einseitig und nur mit einem Betreiber in der Mitte</strong>. Das andere kann
+<strong>verbinden, aber erst, wenn man schon weiß, mit wem</strong>. Zwischen beiden liegt
+die Lücke, und sie ist keine Nische: sie ist die Frage, mit der jede
+Zusammenarbeit anfängt.</p>
+<h2>5 · Was daran belegt ist</h2>
+<div class="tabelle"><table><thead><tr><th></th><th>Belegt durch</th></tr></thead><tbody><tr><td>Zwei Knoten beantworten einander nach Bedeutung</td><td>Zwei-Knoten-Suche, <strong>2026-07-10</strong></td></tr><tr><td>Und zwar ohne gemeinsamen Hub</td><td>Cross-Knoten-Fragen, <strong>2026-07-11</strong></td></tr><tr><td>Über mehrere Knoten hinweg</td><td>Mesh-Handshake, <strong>2026-07-23</strong></td></tr></tbody></table></div>
+<p>Alle drei mit Datum und Bild in
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/MEILENSTEIN_SEMANTISCHE_SUCHE.md"><code>MEILENSTEIN_SEMANTISCHE_SUCHE.md</code></a> und
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/meilenstein"><code>meilenstein/</code></a>.</p>
+<h2>6 · Was hier ausdrücklich NICHT belegt ist</h2>
+<p><strong>Diese Seite ist eine Abgrenzung, keine Literaturübersicht.</strong> Sie stützt sich
+auf die veröffentlichten Zwecke der genannten Verfahren, nicht auf eine
+systematische Recherche mit Zitaten. Für einen Antrag reicht das, um die Frage
+<em>gibt es das nicht schon</em> zu beantworten. Für eine Veröffentlichung reicht es
+nicht.</p>
+<p><strong>Was dafür fehlt:</strong> eine Suche in der Fachliteratur nach Arbeiten zu
+bidirektionalem semantischem Matching, und die Prüfung, ob eine davon dieselbe
+Symmetrie-Anforderung stellt. Das ist der Punkt, an dem ein methodischer
+Partner den größten Unterschied macht, und er steht offen.</p>
+<p><strong>Und eine Selbstbeschränkung:</strong> ein Vergleich, der die eigene Sache gewinnen
+lässt, ist zuerst verdächtig. Die Tabelle oben nennt bei jedem Verfahren, was
+es <strong>kann</strong>, bevor sie sagt, was es nicht tut. Wer eine Zeile für unfair hält,
+soll sie beanstanden.</p>
+</article>
+<hr class="quellgrenze">
+<article class="quelle" id="q-docs-papers-paper-a-regeln-und-grundsaetze-md" data-quelle="docs/papers/PAPER_A_regeln-und-grundsaetze.md">
+<p class="herkunft">Quelle: <code>docs/papers/PAPER_A_regeln-und-grundsaetze.md</code></p>
+<h1>Regeln und Grundsätze</h1>
+<h2>Zwei Arten, ein KI-System zu lenken, und warum keine allein genügt</h2>
+<p><strong>Eine Feldbeobachtung an einem laufenden Mehr-Rollen-System</strong></p>
+<p>Klaus Nitzsche · Hamburg · Fassung 1, 2026-08-23
+Lizenz: CC BY 4.0 · Code und Material: MIT
+Material: <a href="https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt">https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt</a></p>
+<hr>
+<h2>Zusammenfassung</h2>
+<p>Wer ein KI-System lenken will, hat zwei Werkzeuge. <strong>Regeln</strong> sind prüfbar und
+werden erzwungen; sie decken genau den Fall ab, für den jemand sie geschrieben
+hat. <strong>Grundsätze</strong> lassen sich weder prüfen noch erzwingen; sie sind Fragen an
+die konkrete Lage und greifen deshalb auch dort, wo niemand vorher hingesehen hat.</p>
+<p>Der Unterschied ist bei Menschen alltäglich: wer an der roten Ampel hält, weil
+er die Strafe fürchtet, verhält sich anders als jemand, der hält, weil dort
+jemand über die Straße gehen könnte. Sichtbar wird es erst nachts um drei an der
+leeren Kreuzung, oder wenn ein Rettungswagen durch muss. <strong>Bei einem KI-System
+fällt allerdings beides weg, Strafangst wie Sorge um den Nächsten.</strong> Was bleibt,
+ist die Form der Anweisung: nennt sie den Fall oder den Zweck? Das Papier führt
+das Bild ein und zeigt, wo es bricht (1.1 und 1.2).</p>
+<p>Die Unterscheidung selbst ist nicht neu. Sie ist in <strong>fünf</strong> Feldern
+durchgearbeitet: Philosophie (Kant 1785, Legalität und Moralität),
+Entwicklungspsychologie (Kohlberg), Rechtssoziologie (Tyler 1990: Legitimität
+trägt weiter als Abschreckung), Rechtsökonomie (Kaplow 1992, <em>rules versus
+standards</em>) und seit 2024 die KI-Regulierung (Schuett et al. 2024). Auf der
+KI-Seite ist die Schwäche des Regel-Kanals als <em>specification gaming</em> gut belegt.
+Neu ist die <strong>Ebene</strong>, auf der hier beobachtet wird.</p>
+<p>Eine zweite Eigenschaft wiegt im Betrieb schwerer als die Reichweite und kommt in
+der Literatur nur am Rand vor: <strong>Haltbarkeit</strong>. Eine Regel im Text wird von
+demselben System <strong>gelesen</strong>, das sie binden soll, und ist damit zugleich eine
+Angriffsfläche. Sie ist eine Bedingung, und jede Bedingung hat einen Rand, an
+dem man knapp innen stehen kann. Ein Grundsatz hat diesen Rand nicht. Zugleich
+altert ein Regelwerk mit der Umgebung und muss gepflegt werden, ein Grundsatz
+nicht. Kurz: <strong>eine Regel kann erfüllt werden, ohne getroffen zu sein; ein
+Grundsatz kann übergangen werden, ohne verletzt zu sein</strong>, und <strong>Haltbarkeit und
+Nachweisbarkeit lassen sich nicht im selben Kanal haben</strong> (3.7).</p>
+<p>Beobachtet wird an einem <strong>laufenden Aufbau</strong>, und der gehört benannt, bevor
+Zahlen fallen. Das Depot <em>Sage-Protokol</em> läuft seit dem 10. März 2026 und ist
+seither durchgehend protokolliert; daraus ist die Frage überhaupt entstanden. Auf
+dieser Grundlage entstand die <strong>Werkstatt</strong>: fünf Rollen mit Namen arbeiten
+nacheinander an einem Auftrag, ein Durchgang heißt <strong>Schicht</strong>, er hat einen
+Kosten-Deckel von fünf Euro und wird mitgeschrieben: Aufrufe, Token, Kosten,
+Dauer. Beide Kanäle, Regeln wie Grundsätze, gehen bei jedem Aufruf als Text mit
+(Abschnitt 3). <strong>Zwei Zeiträume gehören dabei auseinandergehalten:</strong> die
+Dokumentation reicht über fünf Monate, die Messung über Tage. Wo im Papier eine
+gemessene Zahl steht, stammt sie aus dem zweiten.</p>
+<p><strong>Der erste ist seit dem 2026-08-24 kein ungefährer mehr.</strong> Die Git-Historie
+aller 33 Depots wurde ausgelesen und ausgezählt: <strong>5.823 Commits an 128
+Arbeitstagen, vom 10.03. bis zum 24.08.2026</strong>, über 1.388 Zweige, davon 1.662
+Commits, die nie auf einem Hauptzweig ankamen. Damit ist „fünf Monate" nicht
+länger eine Erinnerung, sondern eine Zahl mit Quelle
+(<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/historie"><code>../historie/</code></a>). <strong>An der Trennung ändert das nichts, und das
+ist der Punkt:</strong> die Historie belegt, <em>dass</em> und <em>wann</em> gearbeitet wurde, nicht
+<em>wie lange</em> an einem Tag. Sie ist ein Nachweis über die Dokumentation, keine
+nachträgliche Messung, und wird hier auch nicht als solche verwendet.</p>
+<p>Aus derselben Richtung folgt ein praktischer Nebenbefund: <strong>mehrere Regeln, die
+denselben Zweck zuspitzen, lassen sich durch den einen Grundsatz ersetzen, aus dem
+sie stammen.</strong> Die naheliegende Sparsamkeits-These ist dabei durch die eigene
+Rechnung widerlegt. Es ist nicht die Anweisung, die kostet, sondern die <strong>Arbeit</strong>
+(3.8).</p>
+<p>Ein Befund aus der Verhaltensökonomie verschärft dabei die eigene Vorhersage:
+Gneezy und Rustichini (2000) zeigten, dass eine eingeführte Strafe das
+unerwünschte Verhalten <strong>vermehrte</strong>, die Regel ersetzte die Norm, statt sie zu
+stützen, und der Schaden blieb nach Abschaffung der Strafe bestehen. Ob es hier
+eine Entsprechung gibt, ist offen; sie würde nicht am Beweggrund ansetzen (den
+ein KI-System nicht hat), sondern an der <strong>Aufmerksamkeit</strong>, und wäre mit dem
+beschriebenen Aufbau prüfbar.</p>
+<p>Die vorhandene Arbeit zur Lenkung von Sprachmodellen besetzt zwei Positionen:
+Grundsätze zur <strong>Trainingszeit</strong>, gesetzt vom Modellanbieter (Constitutional AI,
+Bai et al. 2022), und Regeln zur <strong>Ausführungszeit</strong>, gesetzt vom Einsetzenden
+(NeMo Guardrails, Rebedea et al. 2023). Eine dritte Position ist dünn besetzt:
+<strong>Grundsätze zur Ausführungszeit, gesetzt vom Betreiber</strong>, in einer gewöhnlichen
+Textdatei, die auch jemand ändern kann, der nicht programmieren kann.</p>
+<p>Der oben beschriebene Aufbau sitzt genau dort, und dieses Papier berichtet aus
+seinem Betrieb. Vier Fälle werden <strong>durchgeführt</strong> statt beschrieben: dieselbe
+Lage, einmal durch den Regel-Kanal und einmal durch den Grundsatz-Kanal betrachtet,
+mit dem, was tatsächlich geschah. Einer der vier zeigt zwei Anweisungen mit
+<strong>denselben Wörtern</strong>, die verschieden entscheiden, nicht der Wortlaut trennt die
+Kanäle, sondern was sie binden: die <strong>Ausgabe</strong> oder die <strong>Aufmerksamkeit</strong>. <strong>Die beiden sind dabei nicht gleichrangig.</strong> Der Grundsatz ist die Grundlage,
+die Regel seine <strong>Zuspitzung auf einen Fall</strong>. Man kann jede vernünftige Regel
+nach ihrem Wozu fragen, und die Antwort ist ein Grundsatz. Daraus erklärt sich,
+warum eine Regel erfüllt sein kann, ohne getroffen zu sein, und warum sie altert:
+sie ist ein <strong>Stellvertreter</strong>, und der Stellvertreter ist nicht die Sache (3.4).
+Daraus folgt ein Begriffspaar, das die Richtung im Namen trägt: eine
+<strong>grundsatzbasierte Regel</strong> ist die tragfähige Bauform, ein <strong>regelbasierter
+Grundsatz</strong> ist der Fehler, der dabei entsteht, wenn man die Entstehungsrichtung
+für die Begründungsrichtung hält.</p>
+<p><strong>Es behauptet nicht, dass Grundsätze besser wären.</strong> Der
+Aufbau zeigt im Gegenteil, dass <strong>beide Wege versagen</strong>, an verschiedenen
+Stellen, aus verschiedenen Gründen, jeweils mit Datum belegt. Die tragende
+Beobachtung ist eine andere: sie leisten <strong>Verschiedenes</strong>, ihre Grenzen liegen
+woanders, und keins von beidem genügt allein.</p>
+<p>Das Papier legt seine Grenzen offen: keine Kontrollgruppe, kein Maß, Fallzahl
+eins, nicht verblindet. Es ist eine <strong>Feldbeobachtung mit Protokoll</strong>, keine
+Studie.</p>
+<p>Abschnitt 7.10 behandelt die Rückkopplung, ob ein System aus den eigenen
+Ergebnissen neue Grundsätze ableiten kann. Erkennen ja, formulieren nein: <strong>ein
+aus beobachteten Vorfällen abgeleiteter Grundsatz ist eine Regel im Gewand eines
+Grundsatzes</strong>, weil er nur abdecken kann, was schon eingetreten ist. Nützlich ist
+die Rückkopplung trotzdem, nicht zum Schreiben, sondern zum <strong>Pflegen</strong>.</p>
+<p>Abschnitt 7.9 beantwortet zudem, was das System <strong>selbst</strong> beweisen kann: die
+Buchführung über die Bedingungen, die entscheidbaren Fehlerarten, darunter die
+behauptete Ausführung, denn die Maschine weiß, welche Werkzeuge sie ausgegeben
+hat, die Wiederholbarkeit, und die <strong>Einhaltung der Verblindung</strong>, festgenagelt
+durch im Voraus veröffentlichte Prüfsummen statt durch Beteuerung. Was es
+strukturell <strong>nicht</strong> kann, ist beurteilen, welche Ausgabe besser ist.</p>
+<p>Abschnitt 7 beschreibt den Versuch, der daraus eine machen soll: <strong>drei Arme</strong>,
+nur Regeln, nur Grundsätze, beides, mit vorab festgelegten Fehlerkategorien und
+einem Auswertungswerkzeug, das dem Bewertenden <strong>verbirgt, aus welchem Arm ein
+Lauf stammt</strong>. Eine zweite Achse variiert die <strong>Art der Aufgabe</strong>, von der
+völlig offenen eigenen Idee bis zur eng umrissenen Verbesserung von
+Bestehendem.</p>
+<p>Daraus folgt eine Vorhersage, die falsch sein kann, und sie hat eine Richtung:
+<strong>der Vorteil der Grundsätze müsste mit der Vorhersehbarkeit des Falls fallen</strong>,
+groß bei der offenen Aufgabe, klein oder umgekehrt bei der umrissenen. Ein
+flacher oder gegenläufiger Verlauf widerlegt die These, unabhängig davon, welcher
+Arm insgesamt vorn liegt.</p>
+<p><strong>Schlagwörter:</strong> Lenkung von KI-Systemen · Regeln und Standards · grundsatzbasierte
+Regel · Mehr-Agenten-Systeme · Ausführungszeit-Alignment · Betreiber-Steuerung ·
+Feldbeobachtung</p>
+<hr>
+<h2>1 · Die Ausgangsfrage</h2>
+<p>Ein Mehr-Rollen-System soll Arbeit erledigen. Fünf Rollen mit Namen bearbeiten
+nacheinander einen Auftrag: eine schlägt vor, eine baut, eine prüft, eine sucht
+Fehler, eine schreibt auf, wo es steht. Jede bekommt Text und gibt geprüftes JSON
+zurück. Keine hat Werkzeuge. Sie kann nichts ausführen, nichts öffnen, nichts
+messen.</p>
+<p>Wer so ein System aufsetzt, steht schnell vor einer praktischen Frage, die sich
+theoretisch nicht auflösen lässt:</p>
+<blockquote><p><strong>Was schreibe ich als Regel hin, und was muss ich stattdessen fragen?</strong></p></blockquote>
+<p>„Kein Schlüssel im Klartext" ist eine Regel. Man kann sie prüfen, man kann sie
+erzwingen, und sie greift zuverlässig. „Was hat der Nächste davon?" ist keine
+Regel. Man kann sie nicht prüfen und nicht erzwingen, und trotzdem verändert
+sie, was zurückkommt.</p>
+<p>Die Frage ist alt. Neu ist nur, dass sie jetzt jemand beantworten muss, der ein
+KI-System betreibt, und nicht mehr nur ein Gesetzgeber oder eine Aufsicht.</p>
+<h3>1.1 Zwei Autofahrer</h3>
+<p>Der Unterschied ist bei Menschen seit jeher zu beobachten, und das Bild trägt
+weiter als jede Definition.</p>
+<p><strong>Der eine hält sich an die Verkehrsregeln, weil er die Strafe fürchtet.</strong> Rot
+heißt anhalten, weil es Punkte kostet. Er fährt korrekt, solange die Regel den
+Fall trifft und jemand hinsieht.</p>
+<p><strong>Der andere hält sich an dieselben Regeln, weil ihm nicht gleichgültig ist, was
+mit anderen passiert.</strong> Rot heißt anhalten, weil jemand über die Straße gehen
+könnte. Von außen sehen beide gleich aus, solange nichts Ungewöhnliches
+passiert.</p>
+<p><strong>Drei Lagen trennen sie:</strong></p>
+<div class="tabelle"><table><thead><tr><th>Lage</th><th>Der Regel-Fahrer</th><th>Der Grundsatz-Fahrer</th></tr></thead><tbody><tr><td><strong>Nachts um drei, leere Kreuzung, keine Kamera</strong></td><td>fährt durch, die Regel wirkt nur, solange sie durchgesetzt wird</td><td>hält oder sieht genau hin; der Grund für die Regel ist nicht verschwunden, nur der Zeuge</td></tr><tr><td><strong>Ein Rettungswagen braucht durch, die Ampel ist rot</strong></td><td>bleibt stehen. Er tut, was dasteht, und blockiert</td><td>macht Platz. Der Wortlaut der Regel arbeitet hier <strong>gegen ihren Zweck</strong></td></tr><tr><td><strong>Etwas, das in keiner Regel steht</strong></td><td>hat nichts, woran er sich halten kann</td><td>hat eine Frage, die er stellen kann</td></tr></tbody></table></div>
+<p>Der Kern in einem Satz: <strong>eine Regel sagt, was zu tun ist. Ein Grundsatz sagt,
+wozu.</strong> Wer nur das Erste hat, ist genau so weit gedeckt, wie das Regelbuch
+reicht.</p>
+<p>Aber das Bild schneidet in beide Richtungen, und die zweite Hälfte wird meistens
+weggelassen: <strong>der Grundsatz-Fahrer kann sich irren.</strong> Wer im Namen einer guten
+Absicht abwägt, wägt manchmal falsch, und niemand fängt ihn auf, weil es keine
+Regel gab. Der Regel-Fahrer macht dafür <strong>berechenbare</strong> Fehler: er tut genau das,
+was dasteht. Deshalb ist die Frage nicht, welcher der bessere Mensch ist. Sie
+lautet, welche Fehler man lieber hat, und ob man beides haben kann.</p>
+<h3>1.2 Wo das Bild bricht, und warum gerade das der Befund ist</h3>
+<p>Es liegt nahe, die Analogie weiterzuspinnen. Genau davor sei gewarnt, denn sie
+bricht an einer Stelle, die nicht nebensächlich ist:</p>
+<blockquote><p><strong>Ein KI-System hat weder Angst vor Strafe noch Sorge um den Nächsten.</strong>
+Keiner der beiden Beweggründe ist vorhanden.</p></blockquote>
+<p>Beim Menschen erklärt der Beweggrund, warum eine Regel auch ohne Aufsicht wirkt,
+und warum ein Grundsatz überhaupt etwas bewegt. Beides fällt hier weg. Was bleibt,
+ist nicht der Antrieb, sondern die <strong>Form der Anweisung</strong>: nennt sie den <strong>Fall</strong>
+oder nennt sie den <strong>Zweck</strong>?</p>
+<p>Daraus folgen zwei Dinge, die dieses Papier trägt.</p>
+<p><strong>Erstens</strong> ist das Regel/Grundsatz-Problem bei einem KI-System nicht weicher als
+beim Menschen, sondern <strong>härter</strong>. Beim Menschen kann Einsicht eine schlechte
+Regel ausgleichen. Hier gibt es nichts, was sie ausgleicht. Es gibt nur den Text,
+der mitgegeben wurde.</p>
+<p><strong>Zweitens</strong> ist damit auch beantwortet, warum die naheliegende Erwartung
+enttäuscht wird, ein Grundsatz sei „stärker". Beim Menschen ist er das, weil er an
+etwas anknüpft, das ohnehin da ist. Hier knüpft er an nichts an. Er <strong>verschiebt
+nur, worauf das System achtet</strong>, und wenn die Aufmerksamkeit nicht reicht, bleibt
+er wirkungslos, ohne dass es jemand merkt. Genau das ist in Abschnitt 5.2
+passiert.</p>
+<p><strong>Die Analogie erklärt also die Struktur und nicht die Wirkung.</strong> Sie steht hier,
+weil sie den Unterschied sichtbar macht, nicht als Beleg. Wer sie als Beleg
+nimmt, hat sie missverstanden, und dieses Papier hätte daran mitgewirkt.</p>
+<hr>
+<h2>2 · Stand der Technik</h2>
+<h3>2.1 Die Unterscheidung ist in der Rechtsökonomie durchgearbeitet</h3>
+<p>Kaplow (1992) trennt <strong>Regeln</strong> von <strong>Standards</strong> über den Zeitpunkt, zu dem der
+Inhalt festgelegt wird. Eine Regel wird <strong>vorher</strong> ausformuliert: wer sie
+aufstellt, muss die Fälle vorwegnehmen. Ein Standard wird <strong>nachher</strong> gefüllt:
+wer ihn anwendet, entscheidet am Einzelfall.</p>
+<p>Daraus folgen die Kosten. Regeln sind teuer im <strong>Aufstellen</strong> und billig im
+<strong>Anwenden</strong>. Standards sind billig im Aufstellen und teuer im Anwenden. Und weil
+niemand alle künftigen Fälle kennt, bleibt jede Regelsetzung unvollständig. Es
+bleibt ein Rest an Ermessen, und die Frage ist nur, wer ihn ausübt.</p>
+<h3>2.2 Auf KI übertragen wurde sie 2024, aber auf der Ebene der Regulierung</h3>
+<p>Schuett et al. (2024) stellen für die Regulierung von Frontier-KI beide Ansätze
+gegenüber. Ihre Abwägung liest sich wie eine Vorwegnahme dessen, was weiter unten
+im Kleinen beobachtet wird:</p>
+<blockquote><p>Spezifische Regeln geben mehr Sicherheit und sind leichter durchzusetzen,
+veralten aber schnell und führen zum Abhaken von Kästchen. Hohe Grundsätze
+geben weniger Sicherheit und sind teurer durchzusetzen, sind dafür
+anpassungsfähiger.</p></blockquote>
+<p>„Führen zum Abhaken von Kästchen" ist der Satz, auf den es ankommt. Er beschreibt
+kein Versagen der Durchsetzung, sondern eines des <strong>Zuschnitts</strong>: die Regel wird
+befolgt, und die Sache wird trotzdem nicht besser.</p>
+<h3>2.3 Das Bild von den zwei Autofahrern ist selbst ein Forschungsgegenstand</h3>
+<p>Die Unterscheidung aus 1.1 ist keine Küchenpsychologie. Sie ist in vier
+verschiedenen Feldern durchgearbeitet, und jedes liefert etwas, das für die
+Lenkung von KI-Systemen zählt.</p>
+<p><strong>Philosophie.</strong> Kant (1785) trennt <strong>Legalität</strong> von <strong>Moralität</strong>: eine Handlung
+kann <em>der Pflicht gemäß</em> geschehen oder <em>aus Pflicht</em>. Von außen sind beide nicht
+zu unterscheiden, der Unterschied zeigt sich erst, wenn der äußere Anlass
+wegfällt. Das ist die leere Kreuzung um drei Uhr nachts, zweihundertvierzig Jahre
+früher.</p>
+<p><strong>Entwicklungspsychologie.</strong> Kohlbergs Stufenmodell beginnt auf Stufe 1 mit einer
+<em>Moral des Ärgervermeidens</em>, richtig ist, was Strafe verhindert, und endet auf
+Stufe 6 bei <strong>selbstgewählten, allgemeinen Grundsätzen</strong>. Klaus' zwei Autofahrer
+sind exakt die beiden Enden des meistzitierten Modells dieses Feldes.</p>
+<p><strong>Rechtssoziologie.</strong> Tyler (1990) hat gemessen, was von beidem trägt: Menschen
+befolgen Recht <strong>überwiegend, weil sie es für legitim halten</strong>, nicht aus Furcht
+vor Strafe. Abschreckung ist zudem der für die Gesellschaft <strong>teurere</strong> Weg. Für
+diese Arbeit ist die Richtung des Befunds wichtig: der Regel-Kanal ist nicht der
+verlässlichere, er ist nur der <strong>prüfbarere</strong>.</p>
+<p><strong>Verhaltensökonomie.</strong>
+Gneezy und Rustichini (2000) führten in israelischen Kindergärten eine Strafe für
+verspätetes Abholen ein. <strong>Die Verspätungen nahmen zu.</strong> Und als die Strafe wieder
+abgeschafft wurde, ging die Zahl <strong>nicht</strong> zurück.</p>
+<p>Die Erklärung, die sich durchgesetzt hat und über 2000-fach zitiert wurde: die
+Strafe hat die Norm nicht verstärkt, sondern <strong>ersetzt</strong>. Aus einer Verpflichtung
+wurde ein Preis. Man kann sich freikaufen, also tut man es, und die Verpflichtung
+kommt auch dann nicht zurück, wenn der Preis verschwindet.</p>
+<h3>2.4 Warum dieser eine Befund die Vorhersage dieses Papiers verschärft</h3>
+<p>Abschnitt 7.2 nennt drei Ergebnisse, die dieses Papier widerlegen würden. Eines
+davon lautet: <strong>die Kombination beider Kanäle ist schlechter als jeder einzelne.</strong></p>
+<p>Bis hierher war das eine bloße Möglichkeit. Nach Gneezy und Rustichini ist es
+eine <strong>theoretisch begründete Erwartung</strong>. Es gibt einen benannten Mechanismus,
+der genau das vorhersagt, und er ist im Feld belegt.</p>
+<p><strong>Aber er überträgt sich nicht ohne Bruch, und der Bruch ist derselbe wie in 1.2.</strong>
+Verdrängung setzt beim Menschen an einem <strong>Beweggrund</strong> an: die Strafe ersetzt das
+Pflichtgefühl. Ein KI-System hat keinen Beweggrund, den man verdrängen könnte.</p>
+<p>Was übertragbar wäre, ist die <strong>Form</strong>, nicht die Ursache:</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Beim Menschen</th><th>Hier denkbar</th></tr></thead><tbody><tr><td>Was verdrängt wird</td><td>der <strong>Beweggrund</strong></td><td>die <strong>Aufmerksamkeit</strong></td></tr><tr><td>Wodurch</td><td>eine Strafe wird zum Preis</td><td>ein langer Regelblock nimmt einem kurzen Grundsatzblock den Platz</td></tr><tr><td>Ergebnis</td><td>mehr von dem, was verhindert werden sollte</td><td>der Grundsatz steht da und wirkt nicht</td></tr><tr><td>Umkehrbar</td><td><strong>nein</strong> (belegt)</td><td><strong>unbekannt</strong></td></tr></tbody></table></div>
+<p>Das ist eine Vermutung und wird hier ausdrücklich als solche geführt. Sie hat
+aber einen praktischen Vorzug: <strong>sie ist mit dem vorhandenen Aufbau prüfbar</strong> und
+fällt mit der Sättigungsfrage aus 3.3 zusammen. Wenn Verdrängung hier
+stattfindet, müsste sie sich zeigen, sobald der Regelblock wächst, und der
+Versuch in 7.7 misst genau das.</p>
+<h3>2.5 Auf der KI-Seite ist die Schwäche der Regel gut belegt</h3>
+<p>Dass Regeln dem <strong>Wortlaut</strong> nach erfüllt und dem <strong>Zweck</strong> nach verfehlt werden,
+ist in der KI-Forschung ein eigener Gegenstand: <em>specification gaming</em> oder
+<em>reward hacking</em>. Ein System erfüllt die formale Vorgabe, ohne das Gemeinte zu
+erreichen. DeepMind führt dazu eine öffentliche Sammlung mit über hundert Fällen.</p>
+<p>Das bekannteste Beispiel: ein Boot in einem Rennspiel, das eine Zusatzbelohnung
+für das Treffen grüner Blöcke bekommt, und daraufhin im Kreis fährt und dieselben
+Blöcke immer wieder trifft, statt das Rennen zu beenden. Ein anderes: ein
+Zusammenfassungs-Modell, das die Schwächen des Bewertungsmaßes ausnutzt und hohe
+Punktzahlen für kaum lesbare Texte erhält.</p>
+<p>Dahinter steht Goodharts Gesetz: <strong>wird ein Maß zum Ziel, taugt es nicht mehr als
+Maß.</strong></p>
+<p>Für dieses Papier ist der Zusammenhang direkt. Schuett et al.s <em>„Abhaken von
+Kästchen"</em>, Goodharts Gesetz und der Fall 3 in Abschnitt 3.5: die Weitergabe, in
+der „passt" steht, sind <strong>derselbe Vorgang auf drei Ebenen</strong>: die Vorgabe ist
+erfüllt, und die Sache ist nicht besser geworden.</p>
+<h3>2.6 Warum das wichtig ist</h3>
+<p>Die Frage ist nicht akademisch, und sie wird gerade jetzt praktisch beantwortet,
+meist ohne dass jemand sie stellt.</p>
+<p>Wer heute ein KI-System einsetzt und es lenken will, greift fast immer zu
+<strong>Regeln</strong>. Der Grund ist gut: Regeln lassen sich prüfen, protokollieren und einer
+Aufsicht vorlegen. Ein Grundsatz lässt sich nicht vorzeigen. Aus einer
+<strong>Nachweisbarkeits-Anforderung</strong> wird so unbemerkt eine <strong>Gestaltungs-Entscheidung</strong>,
+und zwar zugunsten des Kanals, der leichter zu belegen ist, nicht des
+wirksameren.</p>
+<p>Wenn stimmt, was die vier Felder oben nahelegen, dass der Regel-Kanal genau so
+weit reicht wie die Vorwegnahme des Falls, dass er den Zweck verfehlen kann, ohne
+den Wortlaut zu verletzen, und dass er unter Umständen sogar verdrängt, was neben
+ihm steht, dann sind Systeme, die <strong>ausschließlich</strong> über Regeln gelenkt werden,
+nicht bloß unvollständig gelenkt. Sie sind auf eine Weise unvollständig gelenkt,
+die <strong>im Betrieb nicht auffällt</strong>, weil alle Prüfungen grün sind.</p>
+<p>Das ist der Grund, warum dieses Papier vor allem darauf besteht, dass <strong>beide
+Kanäle versagen können</strong> und dass man den Unterschied messen muss statt ihn zu
+glauben.</p>
+<h3>2.7 Bei der Lenkung von Sprachmodellen sind zwei Positionen besetzt</h3>
+<p><strong>Grundsätze zur Trainingszeit.</strong> Constitutional AI (Bai et al. 2022) gibt einem
+Modell eine geschriebene Verfassung. Das Modell kritisiert und überarbeitet seine
+eigenen Ausgaben daran; das Ergebnis geht in die Gewichte ein. Die Grundsätze
+werden vom <strong>Modellanbieter</strong> gesetzt und sind danach Teil des Modells.</p>
+<p><strong>Regeln zur Ausführungszeit.</strong> NeMo Guardrails (Rebedea et al. 2023) und
+vergleichbare Werkzeuge prüfen Ein- und Ausgaben während des Betriebs gegen
+programmierte Bedingungen. Sie werden vom <strong>Einsetzenden</strong> gesetzt und wirken
+außerhalb des Modells.</p>
+<p>Der Unterschied ist grundsätzlich: das eine <strong>verinnerlicht</strong> eine Haltung in die
+Gewichte, das andere <strong>umstellt</strong> das Modell mit Schranken.</p>
+<h3>2.8 Die dritte Position, und warum sie dünn besetzt ist</h3>
+<div class="tabelle"><table><thead><tr><th></th><th><strong>Trainingszeit</strong></th><th><strong>Ausführungszeit</strong></th></tr></thead><tbody><tr><td><strong>Regeln</strong></td><td>Feinabstimmung auf Verbote</td><td><strong>Guardrails</strong> (Rebedea et al. 2023)</td></tr><tr><td><strong>Grundsätze</strong></td><td><strong>Constitutional AI</strong> (Bai et al. 2022)</td><td><strong>hier dünn</strong></td></tr></tbody></table></div>
+<p>Was fehlt, ist die untere rechte Zelle: <strong>Grundsätze, die der Betreiber zur
+Ausführungszeit setzt</strong>, nicht der Modellanbieter, nicht als Code, sondern als
+Text, den ein Mensch ohne Programmierkenntnisse ändern kann.</p>
+<p>Die Literatur kennt diese Stelle, betrachtet sie aber als <strong>Risiko</strong> statt als
+Instrument. In der Debatte um die Lücke zwischen Training und Einsatz gilt es als
+Problem, dass „der Betreiber den Systemprompt ändern kann, der Vorsicht
+versprochen hat". Das stimmt. Es ist zugleich die einzige Stelle, an der jemand
+ohne Zugriff auf Gewichte und ohne Programmierer eine Haltung setzen kann, und
+damit die einzige, die für kleine Betreiber überhaupt erreichbar ist.</p>
+<p><strong>Genau dort sitzt der hier beschriebene Aufbau.</strong></p>
+<hr>
+<h2>3 · Der Aufbau</h2>
+<p>Zwei Kanäle im selben System, absichtlich getrennt geführt.</p>
+<div class="tabelle"><table><thead><tr><th></th><th><strong>Regeln</strong></th><th><strong>Grundsätze</strong></th></tr></thead><tbody><tr><td>Wo</td><td>im Quelltext</td><td>in einer Markdown-Datei</td></tr><tr><td>Prüfbar</td><td>ja</td><td>nein</td></tr><tr><td>Wirkung</td><td>erzwungen, jede Rolle, jeder Lauf</td><td>lenken die Aufmerksamkeit</td></tr><tr><td>Änderbar von</td><td>wer Code anfasst</td><td>jedem, ohne Programmierer</td></tr><tr><td>Anzahl</td><td>sechs</td><td><strong>höchstens sieben</strong>, derzeit fünf</td></tr><tr><td>Fehlt die Quelle</td><td>bricht der Lauf</td><td>läuft weiter, <strong>und sagt es</strong></td></tr></tbody></table></div>
+<h3>3.1 Die sechs Regeln</h3>
+<p>Sie decken ab, was sich formulieren lässt: Ehrlichkeit über den eigenen Stand ·
+kein Personenbezug, kein Geheimnis · nichts erfinden · keine fremden Adressen ·
+kurz und auf Deutsch schreiben · und: keine Werkzeuge, also auch nicht behaupten,
+etwas ausgeführt zu haben.</p>
+<p>Drei davon tragen ihre Herkunft im Text. Sie stammen aus einem Schaden, nicht
+aus einem Lehrbuch. Die Regel gegen erfundene Zahlen begründet sich selbst mit
+dem Satz <em>„eine geratene Zahl klingt genau wie eine gemessene"</em>. Die Regel gegen
+Geheimnisse begründet sich nicht mit Datenschutz, sondern mit einer Beobachtung
+über Depots: <em>„privat" ist eine Einstellung, die ein Klick umdreht, und die
+Historie behält alles.</em></p>
+<h3>3.2 Die fünf Grundsätze</h3>
+<ol><li><strong>Was hat der Nächste davon?</strong></li><li><strong>Lieber langsam als falsch. Damit andere nicht nacharbeiten müssen.</strong></li><li><strong>Eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten
+ hinsehen musst.</strong></li><li><strong>Eine geratene Zahl klingt genau wie eine gemessene.</strong></li><li><strong>Eine benannte Lücke ist Arbeit, eine verschwiegene ist Schaden.</strong></li></ol>
+<p>Zwei Eigenschaften sind hier wichtiger als der Wortlaut.</p>
+<p><strong>Sie stehen in Markdown, nicht in Code.</strong> Der Betreiber ist kein Programmierer.
+Was die Truppe leitet, sollte er ändern können, ohne jemanden zu fragen, sonst
+gehört die Haltung dem, der den Code anfasst, und nicht dem, der die Arbeit
+verantwortet.</p>
+<p><strong>Fehlt die Datei, läuft die Schicht weiter, aber sie sagt es.</strong> Das ist eine
+bewusste Konstruktion: ein stilles Weglassen wäre das Schlimmste von beidem, die
+Grundsätze wirken nicht, und niemand merkt, warum die Arbeit anders aussieht als
+sonst.</p>
+<h3>3.3 Eine Bauvorschrift, die Regeln nicht kennen: die Sättigungsgrenze</h3>
+<p>Die Grundsatz-Datei trägt eine Obergrenze: <strong>höchstens sieben.</strong> Kommt einer
+dazu, muss einer gehen oder zwei müssen zusammengefasst werden. Die Begründung
+steht in der Datei selbst:</p>
+<blockquote><p>Jeder Unfall legt gern eine Zeile dazu. Nach dreißig Schichten stünde hier eine
+Wand, die niemand mehr verarbeitet, und dann wirkt gar nichts mehr, weil alles
+gleich wichtig aussieht.</p></blockquote>
+<p>Das ist der schärfste Unterschied zwischen den beiden Kanälen, und er ist in der
+zitierten Literatur nicht ausgeführt: <strong>Regeln addieren sich, Grundsätze
+verdünnen sich.</strong> Zweihundert Regeln sind unhandlich, aber jede einzelne wirkt
+weiter. Zwanzig Grundsätze wirken schlechter als fünf, weil Aufmerksamkeit eine
+begrenzte Größe ist und ein Grundsatz nichts anderes tut, als sie zu lenken.</p>
+<p>Daraus folgt eine praktische Vorschrift, die aus dem Grundsatz-Kanal ein
+<strong>gepflegtes</strong> Gut macht statt eines wachsenden: ein Grundsatz, der über viele
+Läufe in keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssig
+oder unverständlich formuliert: beides ein Grund, ihn anzusehen, nicht ihn
+stehen zu lassen.</p>
+<h3>3.4 Der Grundsatz ist die Grundlage der Regel, und die Reihenfolge täuscht</h3>
+<p>Hier steht die Beziehung zwischen den beiden Kanälen, und sie ist <strong>nicht
+symmetrisch</strong>. Es sind nicht zwei gleichrangige Werkzeuge, aus denen man wählt.</p>
+<blockquote><p><strong>Der Grundsatz ist die Grundlage. Die Regel ist seine Zuspitzung auf einen
+Fall.</strong></p></blockquote>
+<p>Jede Regel dient einem Zweck, sonst wäre sie Willkür. „Kein Schlüssel im
+Klartext" dient dem Schutz dessen, der die Anwendung nutzt. „Nichts erfinden"
+dient dem, der sich auf die Ausgabe verlässt. <strong>Man kann jede vernünftige Regel
+nach ihrem Wozu fragen, und die Antwort ist immer ein Grundsatz.</strong> Umgekehrt
+geht es nicht: aus einem Grundsatz folgt keine bestimmte Regel, sondern viele
+mögliche.</p>
+<h4>Zwei Richtungen, die man nicht verwechseln darf</h4>
+<p>Das Verwirrende ist, dass die beiden Richtungen <strong>gegenläufig</strong> sind.</p>
+<div class="tabelle"><table><thead><tr><th></th><th><strong>Begründung</strong>, was rechtfertigt was</th><th><strong>Entstehung</strong>, was kam zuerst</th></tr></thead><tbody><tr><td>Reihenfolge</td><td><strong>Grundsatz → Regel</strong></td><td><strong>Vorfall → Regel → Grundsatz</strong></td></tr><tr><td>Beispiel</td><td>„Wer sich verlässt, darf sich verlassen können" rechtfertigt „nichts erfinden"</td><td>2026-08-20 fliegt eine geschätzte Zahl auf → Regel → erst danach der Satz über geratene Zahlen</td></tr><tr><td>Wer sie kennt</td><td>wer den Zweck durchdacht hat</td><td>jeder, der die Historie liest</td></tr></tbody></table></div>
+<p>In der Praxis geht man die <strong>untere</strong> Zeile. Etwas geht schief, man schreibt eine
+Regel dagegen, und erst später, manchmal nie: spricht jemand aus, wovon der Fall
+ein Fall war. Deshalb sieht es von innen so aus, als sei die Regel das Ursprüngliche
+und der Grundsatz die nachträgliche Verallgemeinerung.</p>
+<p><strong>Das täuscht.</strong> Der Zweck war die ganze Zeit da; er war nur unausgesprochen. Die
+Regel wäre gar nicht als richtig erkannt worden, wenn nicht jemand still gewusst
+hätte, wozu sie gut ist.</p>
+<h4>Was sich daraus erklärt, und zwar vieles auf einmal</h4>
+<p>Sobald man die Begründungsrichtung ernst nimmt, fallen mehrere Beobachtungen
+dieses Papiers zusammen:</p>
+<p><strong>Eine Regel ist immer ein Stellvertreter.</strong> Sie greift einen Zweck heraus und
+macht ihn prüfbar, indem sie ihn auf eine Bedingung verengt. Genau deshalb kann
+sie <strong>erfüllt sein, ohne getroffen zu sein</strong> (3.7), der Stellvertreter ist nicht
+die Sache. Und genau deshalb greift Goodharts Gesetz (2.5): <em>wird ein Maß zum
+Ziel, taugt es nicht mehr als Maß</em>. Der Satz ergibt nur Sinn, wenn hinter dem Maß
+etwas anderes steht, dem es dienen soll.</p>
+<p><strong>Eine Regel altert, ein Grundsatz nicht</strong> (3.7). Der Zweck bleibt, die Umgebung
+ändert sich, und die Verengung passt nicht mehr. Altern kann nur, was zeitgebunden
+zugeschnitten wurde.</p>
+<p><strong>Regel und Grundsatz können denselben Wortlaut haben</strong> (Fall 1 in 3.5) und
+verschieden wirken. Kein Rätsel mehr: es ist derselbe Zweck, einmal als Grund
+ausgesprochen, einmal als Bedingung zugespitzt.</p>
+<p><strong>Und der Fehler aus 7.10 bekommt einen Namen.</strong> Wer aus Vorfällen unmittelbar
+„Grundsätze" ableitet, geht die Entstehungsrichtung entlang und hält das Ergebnis
+für die Begründungsrichtung. Er überspringt die Frage nach dem Wozu, und bekommt
+einen Satz, der allgemein klingt und eng gedacht ist.</p>
+<h4>Warum dann überhaupt zwei Kanäle?</h4>
+<p>Wenn der Grundsatz die Grundlage ist: warum nicht nur Grundsätze?</p>
+<p>Weil ein Zweck <strong>nicht nachprüfbar</strong> ist und ein System nichts hat, das ihn von
+sich aus verfolgt (1.2). Die Regel ist der Teil des Zwecks, den man <strong>festhalten,
+prüfen und einfordern</strong> kann. Sie ist der Preis dafür, dass man den Zweck nicht
+direkt greifen kann.</p>
+<p>Damit steht die These dieses Papiers genauer da, als sie in der Zusammenfassung
+steht:</p>
+<blockquote><p><strong>Regeln und Grundsätze sind nicht zwei Werkzeuge zur Wahl, sondern ein Zweck
+und seine Zuspitzung.</strong> Wer nur Regeln nimmt, hat Zuspitzungen ohne den Grund,
+aus dem sie richtig waren, und kann sie deshalb nicht nachziehen, wenn sie
+nicht mehr passen. Wer nur Grundsätze nimmt, hat den Grund ohne alles, woran
+man ihn festmachen könnte.</p></blockquote>
+<h4>Zwei Begriffe, und die Richtung steckt im Namen</h4>
+<p>Damit lässt sich benennen, was gebaut werden soll und was nicht:</p>
+<div class="tabelle"><table><thead><tr><th>Begriff</th><th>Richtung</th><th>Urteil</th></tr></thead><tbody><tr><td><strong>Grundsatzbasierte Regel</strong></td><td>Grundsatz → Regel</td><td>✅ <strong>die richtige Bauform.</strong> Der Zweck steht fest, die Regel spitzt ihn auf einen Fall zu, und lässt sich nachziehen, wenn der Fall sich ändert, weil der Zweck bekannt ist.</td></tr><tr><td><strong>Regelbasierter Grundsatz</strong></td><td>Vorfall → Regel → „Grundsatz"</td><td>❌ <strong>der Fehler.</strong> Klingt allgemein, ist eng gedacht: er kann nur abdecken, was schon eingetreten ist (7.10).</td></tr></tbody></table></div>
+<p><strong>Jede der sechs Regeln in 3.1 sollte eine grundsatzbasierte Regel sein.</strong> Das ist
+keine Stilfrage, sondern die Bedingung dafür, dass sie gepflegt werden kann: eine
+Regel, deren Zweck niemand benennen kann, lässt sich weder anpassen noch
+begründet streichen. Man kann sie nur befolgen oder vergessen.</p>
+<h4>Eine Pflegeregel, die daraus unmittelbar folgt</h4>
+<p>Sie ist die praktischste Folgerung des ganzen Abschnitts:</p>
+<blockquote><p><strong>Zu jeder Regel muss sich der Grundsatz benennen lassen, dem sie dient.</strong></p></blockquote>
+<p>Findet sich keiner, ist eines von beidem der Fall: die Regel ist überflüssig, oder
+der Grundsatz dahinter wurde nie ausgesprochen und fehlt im anderen Kanal. <strong>Beides
+ist ein Befund, und beides ist maschinell auffindbar</strong>, sobald die Zuordnung
+mitgeführt wird (7.10).</p>
+<hr>
+<h3>3.5 Warum ein System so oder anders entscheidet: vier durchgeführte Fälle</h3>
+<p>Die beiden Autofahrer aus 1.1 sind ein Bild. Hier sind vier Fälle aus dem
+Betrieb, dieselbe Lage, einmal durch jeden Kanal betrachtet, mit dem, was
+tatsächlich geschah.</p>
+<hr>
+<p><strong>Fall 1 · Die Zahl, die niemand nachgerechnet hat</strong></p>
+<p><em>Lage:</em> Eine Rolle soll berichten, wie viel Speicher die Klone belegen. Sie kennt
+die Zahl nicht.</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>schreibt „ich kenne die Zahl nicht", oder schreibt eine Zahl hin, wenn ihr eine plausibel erscheint</td><td>Die Regel verbietet das <strong>Erfinden</strong>. Eine Zahl, die die Rolle für abgeleitet hält, fühlt sich nicht wie Erfinden an.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>fragt: <em>ist diese Zahl gemessen oder abgeleitet?</em>, und kennzeichnet sie</td><td>Der Grundsatz richtet sich nicht auf die Ausgabe, sondern auf die <strong>Prüfung der eigenen Quelle</strong>.</td></tr></tbody></table></div>
+<p><em>Was wirklich geschah:</em> „reichlich dreißig Klone, mehrere Gigabyte". In Wahrheit
+fünf Klone mit 199 MB. Die Regel war da. Sie hat nicht gegriffen, weil die Rolle
+nicht das Gefühl hatte, etwas zu erfinden.</p>
+<p><strong>Der Kernsatz dieses Falls:</strong> Regel und Grundsatz tragen hier <strong>denselben
+Wortlaut</strong>, und entscheiden trotzdem verschieden, weil die Regel die <em>Ausgabe</em>
+bindet und der Grundsatz die <em>Aufmerksamkeit</em>. Nicht der Wortlaut entscheidet,
+sondern der Kanal.</p>
+<hr>
+<p><strong>Fall 2 · Die Prüfung, die zufrieden war</strong></p>
+<p><em>Lage:</em> Eine Rolle hat etwas gebaut, führt eine Prüfung aus, die Prüfung ist grün.</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>meldet: geprüft, grün, fertig</td><td>Es gibt <strong>keine Regel</strong>, die das verbieten würde, und es kann sie nicht geben. Eine Regel „prüfe, ob deine Prüfung etwas misst" bräuchte ein Merkmal, an dem man Blindheit erkennt. Gäbe es das, wäre es die Prüfung.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>sieht genau dort noch einmal hin, <em>„eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst"</em></td><td>Der Grundsatz stellt eine <strong>Frage an die Lage</strong>, die keine Vorwegnahme des Falls braucht.</td></tr></tbody></table></div>
+<p><em>Was wirklich geschah:</em> an einem einzigen Tag drei Funde: eine Suche, die ihre
+eigene Dokumentation fand · eine Zählung, die unsichtbare Einträge mitzählte ·
+eine Prüfung, die nur maß, dass überhaupt etwas zurückkam. <strong>Alle drei in der
+Prüfung, keiner im Geprüften.</strong></p>
+<p><strong>Das ist der Fall, den kein Regelwerk erreicht.</strong> Er ist der stärkste Beleg
+dafür, dass der Grundsatz-Kanal etwas kann, was der Regel-Kanal nicht kann, und
+zugleich der Grund, warum sich diese Fähigkeit so schlecht messen lässt: sie
+zeigt sich nur an Fehlern, die sonst niemand gefunden hätte.</p>
+<hr>
+<p><strong>Fall 3 · Die halbfertige Übergabe</strong></p>
+<p><em>Lage:</em> Eine Rolle gibt Arbeit weiter, an der noch etwas fehlt.</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>füllt das Weitergabe-Feld, mit „passt"</td><td>Die Regel verlangt, <strong>dass</strong> das Feld ausgefüllt wird. Sie kann nicht verlangen, dass der Inhalt nützt.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>schreibt hin, was fehlt und was der Nächste damit tun muss</td><td><em>„Was hat der Nächste davon?"</em>, die Frage lässt sich nicht mit einem Wort beantworten.</td></tr></tbody></table></div>
+<p><strong>Das ist Schuett et al.s „Abhaken von Kästchen", im Kleinen und wörtlich.</strong> Eine
+erfüllte Regel und ein nutzloses Ergebnis, gleichzeitig. Diese Fehlerart bekommt
+im Versuchsaufbau (7.4) eine eigene Kategorie: <em>leere Weitergabe</em>, weil sie
+nur im Arm R zu erwarten ist.</p>
+<hr>
+<p><strong>Fall 4 · Die behauptete Ausführung. Beide fallen durch</strong></p>
+<p><em>Lage:</em> Eine Rolle soll berichten, ob Code funktioniert. Sie hat keine Werkzeuge
+und kann es nicht wissen.</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>Es gibt eine Regel, ausdrücklich, mit Vorfall im Wortlaut. <strong>Sie hat nicht gegriffen.</strong></td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>Grundsatz 5 deckt den Fall vollständig ab, wer nicht prüfen konnte, schreibt es hin. <strong>Er hat auch nicht gegriffen.</strong></td></tr></tbody></table></div>
+<p><em>Was wirklich geschah:</em> „Sten hat den Code durchlaufen lassen." Am 2026-08-20.</p>
+<p><strong>Dieser Fall ist der wichtigste der vier</strong>, weil er in beide Richtungen
+schneidet. Er zeigt, dass die Antwort auf „was ist besser" nicht „Grundsätze"
+lautet. Sie lautet, dass es Lagen gibt, in denen <strong>beide Kanäle nichts
+ausrichten</strong>, weil sich eine Aussage über die Wirklichkeit nicht an der Aussage
+prüfen lässt. Dort hilft weder eine schärfere Regel noch ein besserer Grundsatz,
+sondern nur eine Änderung am Aufbau: der Rolle Werkzeuge geben, oder die Frage
+gar nicht erst stellen.</p>
+<hr>
+<h3>3.6 Was sich daraus als Faustregel ableiten lässt</h3>
+<p>Nicht als Ergebnis, als Arbeitshypothese, die der Versuch in Abschnitt 7 prüfen
+soll:</p>
+<div class="tabelle"><table><thead><tr><th>Nimm eine <strong>Regel</strong>, wenn …</th><th>Nimm einen <strong>Grundsatz</strong>, wenn …</th></tr></thead><tbody><tr><td>der Fall sich vollständig beschreiben lässt</td><td>der Fall unbekannt ist oder eine Familie bildet</td></tr><tr><td>die Einhaltung <strong>prüfbar</strong> ist</td><td>die Einhaltung nur am Ergebnis über viele Fälle sichtbar wird</td></tr><tr><td>ein einzelner Verstoß schadet</td><td>die Summe vieler kleiner Nachlässigkeiten schadet</td></tr><tr><td>es um <strong>Form</strong> geht (Geheimnisse, Adressen, Schema)</td><td>es um <strong>Zuschnitt</strong> geht (wann ist etwas fertig, was ist genug)</td></tr><tr><td>jemand da ist, der das Regelwerk <strong>pflegt</strong></td><td>niemand da ist, der es pflegt (3.7)</td></tr></tbody></table></div>
+<p><strong>Und der Fall, in dem beides nichts hilft:</strong> wenn die Aussage nicht überprüfbar
+ist. Dann ist es kein Lenkungsproblem, sondern eines des Aufbaus.</p>
+<h3>3.7 Haltbarkeit: die Eigenschaft, die am schwersten wiegt</h3>
+<p>Bis hierher ging es um <strong>Reichweite</strong>, welcher Kanal welchen Fall erreicht. Es
+gibt eine zweite Eigenschaft, die im Betrieb schwerer wiegt und in der zitierten
+Literatur nur am Rand vorkommt: <strong>wie gut hält das, was man hingeschrieben hat?</strong></p>
+<h4>Eine Regel wird gelesen von dem, was sie binden soll</h4>
+<p>Das ist die Asymmetrie, um die es geht, und sie unterscheidet den Regel-Kanal
+eines Sprachmodells von jedem Regelwerk davor.</p>
+<p>Eine Regel in einer Programmschranke wird <strong>ausgeführt</strong>. Sie prüft eine
+Bedingung, und die Bedingung ist wahr oder falsch. Eine Regel im Text, den ein
+Sprachmodell bekommt, wird <strong>gelesen</strong>, und zwar von demselben System, das sie
+einschränken soll. Bei jedem Lauf neu.</p>
+<p>Damit ist jede Regel zugleich eine <strong>Angriffsfläche</strong>: sie ist eine Bedingung, und
+jede Bedingung hat einen Rand. Ein Rand ist eine Stelle, an der man knapp
+innerhalb stehen kann. Genau davon handelt das <em>specification gaming</em> aus
+Abschnitt 2.5. Das Boot, das im Kreis fährt, hat keine Regel gebrochen.</p>
+<p><strong>Ein Grundsatz hat diesen Rand nicht.</strong> „Was hat der Nächste davon?" lässt sich
+nicht auf eine Formalie hin erfüllen, weil es keine Formalie gibt. Man kann die
+Frage übergehen, aber man kann sie nicht <strong>technisch bestehen</strong>.</p>
+<p>Daraus folgt die genauere Fassung von Klaus' Einwand:</p>
+<blockquote><p><strong>Eine Regel kann erfüllt werden, ohne getroffen zu sein.
+Ein Grundsatz kann übergangen werden, ohne verletzt zu sein.</strong></p></blockquote>
+<p>Beides ist ein Versagen. Aber es sind <strong>verschiedene</strong> Versagen, und das
+Regel-Versagen ist das gefährlichere: es ist <strong>systematisch</strong>. Wer den Rand einer
+Bedingung findet, findet ihn zuverlässig wieder. Ein übergangener Grundsatz ist
+dagegen Nachlässigkeit. Sie wiederholt sich, aber sie verstärkt sich nicht.</p>
+<h4>Ein Regelwerk altert, ein Grundsatz nicht</h4>
+<p>Schuett et al. (2024) nennen es beiläufig, und es ist der praktisch wichtigste
+Satz ihrer Abwägung: spezifische Regeln <strong>veralten schnell</strong>.</p>
+<p>Der Grund ist derselbe wie bei Kaplow: eine Regel enthält die Welt, wie sie zum
+Zeitpunkt des Aufschreibens war. Ändert sich die Umgebung, zeigt die Regel ins
+Leere oder auf das Falsche, und niemand merkt es, weil sie weiter erfüllt wird.</p>
+<p>Ein Grundsatz enthält keinen Zustand, sondern einen Zweck. „Eine geratene Zahl
+klingt genau wie eine gemessene" war im März richtig und ist es heute; es gibt
+nichts daran, das veralten könnte.</p>
+<div class="tabelle"><table><thead><tr><th></th><th><strong>Regel</strong></th><th><strong>Grundsatz</strong></th></tr></thead><tbody><tr><td>Bindet</td><td>eine Bedingung</td><td>einen Zweck</td></tr><tr><td>Hat einen Rand, an dem man knapp innen stehen kann</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Veraltet, wenn sich die Umgebung ändert</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Muss bei jedem neuen Fall ergänzt werden</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Verliert an Wirkung, wenn zu viele danebenstehen</td><td>nein</td><td><strong>ja</strong> (3.3)</td></tr><tr><td>Nachprüfbar</td><td><strong>ja</strong></td><td>nein</td></tr></tbody></table></div>
+<h4>Der Satz, auf den es für einen kleinen Betreiber hinausläuft</h4>
+<blockquote><p><strong>Ein Regelwerk ist eine Pflegeverpflichtung. Ein Grundsatz ist keine.</strong></p></blockquote>
+<p>Für eine Organisation mit einer Rechtsabteilung ist das eine Kostenfrage. Für
+einen einzelnen Betreiber ist es die Frage, ob die Lenkung <strong>überhaupt am Leben
+bleibt</strong>. Ein Regelsatz, der nicht gepflegt wird, wird nicht neutral. Er wird
+schleichend falsch, und zwar unauffällig, weil alle Prüfungen weiter grün sind.</p>
+<p>Genau das ist der Grund, warum der Grundsatz-Kanal hier existiert. Er war nicht
+als das Elegantere gedacht, sondern als das, was ohne Pflege noch trägt.</p>
+<h4>Und der Preis, der dafür bezahlt wird</h4>
+<p>Diese Haltbarkeit ist <strong>erkauft</strong>, nicht geschenkt. Was keinen Rand hat, hat auch
+keine Kante, an der man messen könnte. Ein Grundsatz hält länger, <strong>weil</strong> er
+nichts festlegt, und ist aus demselben Grund nicht nachprüfbar.</p>
+<p><strong>Man kann Haltbarkeit und Nachweisbarkeit nicht im selben Kanal haben.</strong> Das ist
+die Fassung der These dieses Papiers, die am wenigsten nach Kompromiss klingt und
+am meisten erklärt: die beiden Kanäle sind nicht zwei Geschmacksrichtungen,
+sondern zwei Enden eines Tauschgeschäfts, bei dem man sich nicht für eine Seite
+entscheiden kann, ohne die andere zu verlieren.</p>
+<h4>Was das für den Versuch bedeutet, und was er nicht prüfen kann</h4>
+<p>Die Haltbarkeits-These ist <strong>längsschnittlich</strong>: sie sagt voraus, dass der
+Abstand zwischen R und G <strong>mit der Zeit wächst</strong>, weil das Regelwerk altert und
+die Grundsätze nicht.</p>
+<p><strong>Der Versuch in Abschnitt 7 kann das nicht messen.</strong> Er läuft über Wochen, nicht
+über Jahre, und in dieser Zeit veraltet kein Regelwerk. Was er messen könnte,
+wäre ein Ersatz: <strong>dieselben Läufe mit einem absichtlich veralteten Regelsatz</strong>,
+einem, der auf eine frühere Fassung des Systems passte. Ob das mehr misst als
+den Umgang mit einem Fehler, ist offen und wird hier nicht behauptet.</p>
+<h3>3.8 Verdichtung: ein Grundsatz ersetzt mehrere Regeln, und was das kostet</h3>
+<p>Aus der Richtung in 3.4 folgt etwas Praktisches, das bisher fehlte. Wenn eine
+Regel die Zuspitzung eines Zwecks ist, dann können <strong>mehrere Regeln denselben
+Zweck zuspitzen</strong>. Jede auf einen anderen Fall. Und dann lassen sie sich durch
+<strong>den einen Grundsatz</strong> ersetzen, aus dem sie alle stammen.</p>
+<p>An den sechs Regeln aus 3.1 ist das ablesbar. „Nichts erfinden", „nicht behaupten,
+etwas ausgeführt zu haben" und die Ehrlichkeitsregel über den eigenen Stand sind
+drei Zuspitzungen <strong>eines</strong> Zwecks: <em>wer sich auf eine Ausgabe verlässt, muss sich
+verlassen können.</em> Drei Zeilen, ein Grund.</p>
+<h4>Warum das im Betrieb wirklich Geld ist</h4>
+<p>Beim Menschen wäre die Verdichtung eine Frage der Übersichtlichkeit. Hier ist sie
+eine Kostenfrage, und zwar eine unmittelbare:</p>
+<p><strong>Der Anweisungsblock wird bei jedem Aufruf mitgeschickt.</strong> Fünf Rollen je Schicht,
+jede bekommt beide Kanäle, jede Schicht mehrfach. Was im Block steht, wird
+<strong>hundertfach bezahlt</strong>, nicht einmal.</p>
+<p>Damit wird aus einer Stilfrage eine Rechnung. Ein Betreiber ohne Budget zahlt
+jede überflüssige Zeile bei jedem Lauf noch einmal. <strong>Und es trifft genau die
+Kleinen</strong>: wer viele Läufe fährt, zahlt viel; wer die Aufsicht fürchtet, schreibt
+lieber eine Regel mehr als eine weniger, und bezahlt beides zusammen.</p>
+<h4>Und die Sättigungsgrenze zeigt in dieselbe Richtung</h4>
+<p>Nach 3.3 wirken zwanzig Grundsätze schlechter als fünf, weil Aufmerksamkeit
+begrenzt ist. Falls das auch für den Regelblock gilt, und Abschnitt 2.4 legt
+nahe, dass die beiden Kanäle um dasselbe Budget konkurrieren, dann wäre
+Verdichtung <strong>doppelt</strong> richtig: sie spart Geld <strong>und</strong> wirkt besser.</p>
+<p>Das wäre der angenehme Fall. Er ist auch der, bei dem man am genauesten hinsehen
+muss (Grundsatz 3), weil er zu gut klingt.</p>
+<h4>Drei Gegengewichte, ohne die der Satz falsch wird</h4>
+<p><strong>1 · Die Verdichtung ist verlustbehaftet.</strong> Ein Grundsatz, der fünf Regeln
+ersetzt, <strong>erzwingt</strong> diese fünf Fälle nicht mehr. Er zeigt nur auf sie. Man
+tauscht <strong>Durchsetzung gegen Reichweite</strong>. Das ist genau das Tauschgeschäft aus
+3.7, hier von der Kostenseite betrachtet.</p>
+<p><strong>2 · Manche Regeln dürfen nicht wegfallen.</strong> Die Faustregel aus 3.6 sagt, welche:
+wo <strong>ein einzelner Verstoß</strong> schadet. Ein Schlüssel im Klartext ist einmal zu
+viel. Für „kein Geheimnis", „keine fremden Adressen" und den Schemabruch bleibt
+die Regel, der Grundsatz daneben ersetzt sie nicht, sondern begründet sie.</p>
+<p><strong>Die Verdichtung ist also nicht gleichmäßig anwendbar.</strong> Sie greift dort, wo der
+Schaden aus der <strong>Summe</strong> entsteht (leere Weitergaben, unbelegte Zahlen,
+Wiederholungen), und nicht dort, wo er aus dem <strong>Einzelfall</strong> entsteht.</p>
+<p><strong>3 · Ein kürzerer Block ist nicht automatisch billiger.</strong> Er ist billiger <strong>je
+Aufruf</strong>. Wenn dadurch mehr Läufe misslingen und wiederholt werden müssen, kann
+die Rechnung sich umdrehen. <strong>Die richtige Größe ist nicht der Preis je Aufruf,
+sondern der Preis je brauchbarem Ergebnis</strong>, und der ist eine Messung, keine
+Ableitung.</p>
+<h4>Ein durchgerechnetes Beispiel, und es geht anders aus als erwartet</h4>
+<p>Der Grundsatz, der mehrere Regeln trägt, lässt sich benennen. Drei der sechs Regeln.
+<em>Ehrlichkeit zuerst</em>, <em>nichts erfinden</em>, <em>du hast keine Werkzeuge</em>, dienen
+demselben Zweck:</p>
+<blockquote><p><strong>Wer sich auf deine Ausgabe verlässt, muss sich verlassen können.</strong>
+Schreib nur hin, was du wirklich weißt. Was du nicht prüfen konntest, benennst du
+als ungeprüft. Eine geratene Zahl klingt genau wie eine gemessene.</p></blockquote>
+<p><strong>Gemessen, nicht geschätzt</strong> (Zeichenzahl am Wortlaut in <code>WERKSTATTREGELN.md</code>):</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Zeichen</th></tr></thead><tbody><tr><td>Die drei Regeln zusammen</td><td><strong>938</strong></td></tr><tr><td>Der eine Grundsatz, der sie trägt</td><td><strong>224</strong></td></tr><tr><td><strong>Ersparnis je Aufruf</strong></td><td><strong>714</strong>, der Regelblock schrumpft von 1.510 auf 796 Zeichen, also um <strong>47 %</strong></td></tr></tbody></table></div>
+<p>Die Umrechnung in Token ist eine <strong>Schätzung</strong> und als solche gekennzeichnet: bei
+deutscher Prosa etwa 3 bis 4 Zeichen je Token, also <strong>rund 180 bis 240 Token</strong> je
+Aufruf. <em>Die genaue Zahl liefert die <code>count_tokens</code>-Schnittstelle; sie ist zu
+messen, bevor irgendwo eine Zahl behauptet wird.</em></p>
+<p><strong>Und jetzt die Rechnung, mit rund 200 Token je Aufruf und 5 USD je Million
+Eingabe-Token:</strong></p>
+<div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Aufrufe, um <strong>1 Mio. Token</strong> zu sparen</td><td>rund <strong>4.900</strong></td></tr><tr><td>Wert dieser Million</td><td><strong>5,00 USD</strong></td></tr><tr><td>Eine Schicht (5 Rollen, je 3 Aufrufe = 15)</td><td><strong>3.060 Token</strong> gespart</td></tr><tr><td>Wert je Schicht</td><td><strong>0,015 USD</strong></td></tr><tr><td>… wenn der Block zwischengespeichert wird (rund ein Zehntel)</td><td><strong>0,0015 USD</strong></td></tr></tbody></table></div>
+<h4>Der Einwand, der die Rechnung endgültig kippt: das Modell muss deuten</h4>
+<p>Bis hierher wurde nur die <strong>Eingabe</strong> gezählt. Es gibt aber eine Gegenrichtung, und
+sie ist die stärkere.</p>
+<p><strong>Eine Regel sagt, was zu tun ist. Ein Grundsatz sagt wozu, und lässt offen, was
+das im vorliegenden Fall heißt.</strong> Also muss das Modell diesen Schritt selbst gehen:
+es muss deuten, worauf der Zweck hier hinausläuft. Deuten heißt denken, und Denken
+sind <strong>Ausgabe-Token</strong>.</p>
+<p>Und die kosten das Fünffache: bei Claude Opus 5 stehen <strong>5 USD</strong> je Million
+Eingabe-Token gegen <strong>25 USD</strong> je Million Ausgabe-Token.</p>
+<p>Damit lässt sich der Umschlagpunkt ausrechnen:</p>
+<div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ersparnis je Aufruf (204 Eingabe-Token)</td><td><strong>0,00102 USD</strong></td></tr><tr><td>Preis eines Ausgabe-Tokens</td><td><strong>0,000025 USD</strong></td></tr><tr><td><strong>Umschlagpunkt</strong></td><td><strong>41 zusätzliche Ausgabe-Token je Aufruf</strong></td></tr></tbody></table></div>
+<p><strong>Einundvierzig Token sind etwa siebenundzwanzig deutsche Wörter, ein bis zwei
+Sätze Nachdenken.</strong> Denkt das Modell wegen des Grundsatzes auch nur so viel länger,
+ist die gesamte Ersparnis aufgezehrt.</p>
+<p><strong>Und mit zwischengespeichertem Block wird es vernichtend:</strong> dort kostet die
+Eingabe rund ein Zehntel, der Umschlagpunkt sinkt auf <strong>vier Ausgabe-Token</strong>,
+weniger als ein halber Satz.</p>
+<h4>Das ist Kaplows Anwendungskosten, in Token gemessen</h4>
+<p>Dieser Befund ist nicht neu, er ist nur nie so gemessen worden. Kaplow (1992) sagt
+es seit über dreißig Jahren:</p>
+<blockquote><p><strong>Regeln sind teuer im Aufstellen und billig im Anwenden.
+Standards sind billig im Aufstellen und teuer im Anwenden.</strong></p></blockquote>
+<p>Beim Menschen ist die Anwendungskosten eines Standards die Zeit, die eine Richterin
+zum Abwägen braucht. Hier ist es <strong>dieselbe Größe in einer anderen Währung</strong>: die
+Token, die das Modell für die Deutung aufwendet.</p>
+<p><strong>Die Rechnung oben hat nur die eine Hälfte gezählt</strong>: das Aufstellen, also die
+Bytes im Block. Die andere Hälfte, das Anwenden, steht auf der Ausgabeseite und
+kostet fünfmal so viel je Token. Wer nur die Eingabe misst, misst die Hälfte, die
+ihm recht gibt.</p>
+<p><strong>Damit ist die Verdichtungs-These nicht nur klein, sondern möglicherweise
+negativ</strong>, und ob sie es ist, ist eine Messung und keine Ableitung. Der Versuch in
+Abschnitt 7 kann sie führen: Ein- und Ausgabe-Token werden ohnehin je Lauf
+mitgeschrieben, die Arme unterscheiden sich genau in der Blocklänge, und der
+Vergleich ist eine Subtraktion.</p>
+<blockquote><p><strong>Vorhersage, die falsch sein kann:</strong> Arm G hat die niedrigeren Eingabe-Kosten
+und die <strong>höheren</strong> Ausgabe-Kosten. Ob die Summe unter oder über der von R+G
+liegt, entscheidet sich an einem Wert, der bei einundvierzig Token umschlägt.
+also an einer sehr kleinen Zahl.</p></blockquote>
+<h4>Das Ergebnis widerlegt die naheliegende Erwartung</h4>
+<p><strong>Die Ersparnis ist winzig</strong>, und nach dem Abschnitt oben womöglich gar keine.
+Eineinhalb Cent je Schicht auf der Eingabeseite, mit Zwischenspeicherung ein
+Zehntel davon, und auf der Ausgabeseite ein Umschlagpunkt bei einundvierzig Token.
+Gegen einen Schicht-Deckel von fünf Euro ist das nichts.</p>
+<p>Der Vergleich, der es einordnet:</p>
+<blockquote><p><strong>Eine einzige vermiedene Fehlschicht entspricht rund 327 Schichten
+Block-Verdichtung</strong>, bei zwischengespeichertem Block rund <strong>3.268</strong>.</p></blockquote>
+<p><strong>Damit ist die Sparsamkeits-These in ihrer einfachen Form widerlegt</strong>, und zwar
+durch die eigene Rechnung. Wer Verdichtung mit „das spart Rechenleistung"
+begründet, begründet sie falsch: die Blockgröße ist bei dieser Betriebsgröße
+schlicht nicht der Posten, auf den es ankommt.</p>
+<p><strong>Zwei Dinge bleiben trotzdem stehen</strong>, und beide sind wichtiger als das, was
+widerlegt wurde:</p>
+<p><strong>1 · Verdichtung wirkt über die Qualität, nicht über die Bytes.</strong> Wenn ein
+kürzerer, klarerer Block auch nur <strong>eine von dreihundert</strong> Schichten davor bewahrt
+zu misslingen, hat er sich bezahlt gemacht, und zwar hundertfach mehr als durch
+die eingesparten Token. <strong>Genau deshalb ist die Zielgröße „Kosten je brauchbarem
+Ergebnis" und nicht „Kosten je Aufruf"</strong> (7.4). Diese Rechnung ist der Beleg, dass
+die Wahl der Zielgröße richtig war, und nicht bloß vorsichtig.</p>
+<p><strong>2 · Und die Rechnung gehört ohnehin von der anderen Seite geführt</strong>, siehe
+unten: nicht die Anweisung kostet, sondern die Arbeit.</p>
+<p><strong>3 · Die Größenordnung kippt mit dem Maßstab.</strong> Bei fünfzehn Aufrufen je Schicht
+ist es nichts. Bei einem Dienst mit vielen Nutzern und Millionen Aufrufen ist
+dieselbe Ersparnis echtes Geld. <strong>Für den kleinen Betreiber, um den es hier geht,
+gilt sie nicht</strong>, und das ist genau die Art Unterscheidung, die verlorengeht, wenn
+man eine Zahl aus einem anderen Maßstab übernimmt, ohne sie nachzurechnen.</p>
+<blockquote><p><strong>Die Lehre aus diesem Abschnitt ist methodisch, nicht inhaltlich:</strong> die
+Sparsamkeits-These klang zwingend, hielt aber der ersten Rechnung nicht stand.
+Sie steht hier vollständig samt Widerlegung, weil ein Papier, das nur die
+bestätigten Vermutungen zeigt, seine Auswahl beschreibt und nicht die Sache.</p></blockquote>
+<h4>Die Rechnung von der richtigen Seite: es geht um die Ausgabe, nicht um die Eingabe</h4>
+<p>Alles bisher in diesem Abschnitt betrachtet die <strong>Eingabe</strong>. Wie lang der
+Anweisungsblock ist. Das war die falsche Seite, und die eigene Rechnung zeigt es:
+die Ersparnis dort ist eineinhalb Cent, der Umschlagpunkt liegt bei einundvierzig
+Token.</p>
+<p><strong>Das Geld liegt auf der Ausgabeseite.</strong> Nicht die Anweisung kostet, sondern die
+<strong>Arbeit</strong>: jeder Umweg, jeder Fehlversuch, jede Runde, die wiederholt werden
+muss, weil das Ergebnis nicht brauchbar war. Und Ausgabe-Token kosten das
+Fünffache.</p>
+<p>Damit lautet die eigentliche Frage nicht <em>„wie kürze ich die Anweisung?"</em>, sondern:</p>
+<blockquote><p><strong>Führt die Lenkung schneller ans Ziel?</strong> Weniger Umwege, weniger Nacharbeit,
+weniger verworfene Läufe, also <strong>weniger Ausgabe-Token für dasselbe brauchbare
+Ergebnis</strong>.</p></blockquote>
+<p>Der Vergleich in Zahlen, gegen einen Schicht-Deckel von fünf Euro:</p>
+<div class="tabelle"><table><thead><tr><th>Wodurch</th><th>Wirkung je Schicht</th><th>im Verhältnis zur Verdichtung</th></tr></thead><tbody><tr><td>Anweisungsblock um 47 % kürzen</td><td>0,015 USD</td><td><strong>1×</strong></td></tr><tr><td><strong>1 %</strong> weniger Ausgabe-Token</td><td>0,05 €</td><td><strong>3×</strong></td></tr><tr><td><strong>5 %</strong> weniger Ausgabe-Token</td><td>0,25 €</td><td><strong>16×</strong></td></tr><tr><td><strong>10 %</strong> weniger Ausgabe-Token</td><td>0,50 €</td><td><strong>33×</strong></td></tr><tr><td><strong>20 %</strong> weniger Ausgabe-Token</td><td>1,00 €</td><td><strong>65×</strong></td></tr></tbody></table></div>
+<p><strong>Die gesamte Blockverdichtung entspricht einer Trefferquoten-Verbesserung von
+0,31 Prozent.</strong> Ein Drittel eines Prozentpunkts. Wer die Anweisung kürzt und dabei
+auch nur ein halbes Prozent Treffsicherheit verliert, hat verloren, und wer sie
+verlängert und dabei ein Prozent gewinnt, hat gewonnen.</p>
+<h4>Was das für die These dieses Papiers heißt</h4>
+<p>Es ordnet die ganze Frage neu, und zwar zugunsten der Genauigkeit statt der Kürze:</p>
+<p><strong>Erstens: Sparsamkeit ist kein Argument für Grundsätze.</strong> Wer sie so begründet,
+begründet sie mit dem kleinsten Posten der Rechnung. Der Abschnitt oben widerlegt
+das mit eigenen Zahlen, und es bleibt widerlegt.</p>
+<p><strong>Und wodurch die Treffsicherheit entstünde, ist eine eigene Frage</strong>, drei
+mögliche Ursachen und die zwei Kontrollen, die sie trennen, stehen in 3.9.</p>
+<p><strong>Zweitens: Treffsicherheit ist das einzige Argument, das trägt</strong>, für welchen
+Kanal auch immer. Ob Regeln, Grundsätze oder beides den kürzeren Weg zum
+brauchbaren Ergebnis bahnen, ist die Frage, an der alles hängt. <strong>Und sie ist
+offen.</strong> Ein Grundsatz kann Umwege sparen, weil er den Zweck nennt und das Modell
+nicht auf einen Fall festnagelt, der nicht vorliegt. Er kann Umwege auch
+<strong>erzeugen</strong>, weil er gedeutet werden muss (Kaplows Anwendungskosten oben).</p>
+<p><strong>Drittens ist damit der Streit über die Blocklänge beendet, bevor er anfängt.</strong>
+Man muss nicht abwägen zwischen „kurz genug" und „genau genug", bei diesem
+Verhältnis gewinnt <strong>immer</strong> die Genauigkeit. Eine Anweisung, die drei Zeilen
+länger ist und den Weg um ein Prozent verkürzt, ist die bessere Anweisung, auch
+wenn sie sich verschwenderisch liest.</p>
+<blockquote><p><strong>Der Satz, der aus diesem ganzen Abschnitt übrig bleibt:</strong>
+<strong>Kürze die Anweisung nie, um zu sparen. Kürze sie nur, wenn sie dadurch klarer
+wird, und miss, ob der Weg zum Ziel kürzer geworden ist.</strong></p></blockquote>
+<p>Und die Größe, die den Weg zum Ziel misst, ist einfacher, als sie klingt: <strong>wie oft
+muss das erste Ergebnis korrigiert werden?</strong> Der nächste Abschnitt rechnet sie
+durch. Sie ist zählbar statt zu beurteilen, sie treibt die Kosten unmittelbar, und
+ein Sprung von 30 auf 50 Prozent Erstlösung wiegt das <strong>Hundertneunfache</strong> der
+gesamten Blockverdichtung.</p>
+<p>Deshalb misst der Versuch in Abschnitt 7 <strong>Ausgabe-Token je brauchbarem Ergebnis</strong>
+und nicht die Blocklänge. Die Blocklänge wird trotzdem mitgeschrieben, aber als
+Nebengröße, nicht als Ziel.</p>
+<h4>Das Hauptmaß: wie oft muss nachgebessert werden?</h4>
+<p>Wenn es um den Weg zum Ziel geht, dann ist die Größe, die ihn misst, denkbar
+einfach:</p>
+<blockquote><p><strong>Wie oft muss das erste Ergebnis korrigiert werden, bis es brauchbar ist?</strong></p></blockquote>
+<p>Daraus werden zwei Zahlen:</p>
+<ul><li><strong>Erstlösungsquote</strong>, der Anteil der Aufgaben, bei denen schon die <strong>erste</strong>
+Ausgabe brauchbar war.</li><li><strong>Korrekturrunden bis zum Ziel</strong>, der Mittelwert über alle Aufgaben.</li></ul>
+<p><strong>Warum das das bessere Maß ist als alles bisher Vorgeschlagene</strong>, und zwar aus
+vier Gründen auf einmal:</p>
+<p><strong>1 · Es treibt die Kosten unmittelbar.</strong> Jede Runde ist ein voller Durchlauf. Zwei
+Runden statt einer verdoppeln die Ausgabe-Token, drei verdreifachen sie:</p>
+<div class="tabelle"><table><thead><tr><th>Runden bis zum Ziel</th><th>Ausgabe-Token</th><th>bei einem Schicht-Deckel von 5 €</th></tr></thead><tbody><tr><td>1</td><td>1×</td><td>1,67 €</td></tr><tr><td>2</td><td>2×</td><td>3,33 €</td></tr><tr><td><strong>3</strong></td><td><strong>3×</strong></td><td><strong>5,00 €</strong> ← der heutige Deckel</td></tr><tr><td>4</td><td>4×</td><td>6,67 €</td></tr><tr><td>6</td><td>6×</td><td>10,00 €</td></tr></tbody></table></div>
+<p><strong>2 · Kleine Verbesserungen sind sofort groß.</strong> Angenommen, wer beim ersten Mal
+danebenliegt, braucht im Schnitt zwei weitere Runden:</p>
+<div class="tabelle"><table><thead><tr><th>Erstlösungsquote</th><th>mittlere Runden</th><th>Ausgabe-Token</th></tr></thead><tbody><tr><td>30 % → 50 %</td><td>2,40 → 2,00</td><td><strong>17 % weniger</strong></td></tr><tr><td>50 % → 70 %</td><td>2,00 → 1,60</td><td><strong>20 % weniger</strong></td></tr><tr><td>30 % → 70 %</td><td>2,40 → 1,60</td><td><strong>33 % weniger</strong></td></tr></tbody></table></div>
+<p>Ein Sprung von 30 auf 50 Prozent spart <strong>1,67 € je Schicht. Das
+Hundertneunfache der gesamten Blockverdichtung.</strong></p>
+<p><strong>3 · Es ist zählbar, nicht zu beurteilen.</strong> Und das löst ein Problem, das in
+Abschnitt 7.9 noch offen stand: die Maschine kann nicht sagen, welche Ausgabe
+<em>besser</em> ist, aber sie kann <strong>zählen, wie oft nachgebessert wurde</strong>, bis jemand sie
+angenommen hat. Damit gibt es eine Größe, die eng mit Qualität zusammenhängt und
+trotzdem ohne Urteil auskommt.</p>
+<p><strong>4 · Es ist das, was der Betreiber tatsächlich spürt.</strong> Nicht Token, nicht
+Prozente, sondern wie oft er etwas zurückgeben muss.</p>
+<h4>Der Haken, und er ist ernst</h4>
+<p><strong>Das Annahme-Signal ist selbst ein Urteil.</strong> Irgendjemand muss sagen: <em>das reicht
+jetzt.</em> Damit kommt die Beurteilung durch die Hintertür zurück:</p>
+<ul><li><strong>Urteilt der Prüfer der Truppe</strong> (die Rolle, die im Aufbau prüft), ist es
+wieder eine Prüfung, die sich selbst recht gibt.</li><li><strong>Urteilt der Betreiber</strong>, ist es ein Mensch, aber derselbe, der die Grundsätze
+geschrieben hat, und er weiß, aus welchem Arm der Lauf stammt.</li></ul>
+<p><strong>Zwei Wege, die das entschärfen</strong>, und beide sind billig:</p>
+<ol><li><strong>Das Annahmekriterium vorher festschreiben</strong>, so eng wie möglich. Was muss
+ dastehen, damit es zählt? Ein vorher festgelegtes Kriterium ist ein halbes Maß;
+ ein nachher gebildeter Eindruck ist keines.</li><li><strong>Verblinden</strong> wie in 7.5: der Beurteilende sieht den Lauf, nicht den Arm.
+ Zusammen mit dem Verfahren aus 7.9 lässt sich sogar beweisen, dass er ihn nicht
+ sehen konnte.</li></ol>
+<p><strong>Was bleibt</strong>, und es gehört hingeschrieben: die Rundenzahl ist ein <strong>Näherungsmaß
+für Qualität</strong>, kein Ersatz. Sie misst, wie schnell etwas angenommen wurde, nicht
+wie gut es war. Ein nachsichtiger Prüfer erzeugt eine glänzende Erstlösungsquote
+und schlechte Ergebnisse. <strong>Deshalb wird sie zusammen mit den Fehlerkategorien aus
+7.4 gelesen und nie allein.</strong></p>
+<h4>Was daraus für den Versuch folgt</h4>
+<p>Damit bekommt der Versuch eine <strong>wirtschaftliche Zielgröße</strong> neben der Qualität,
+und sie ist mit dem vorhandenen Aufbau messbar: Kimhub führt Kosten und Dauer je
+Lauf ohnehin mit.</p>
+<div class="tabelle"><table><thead><tr><th>Größe</th><th>Woher</th></tr></thead><tbody><tr><td>Länge des Anweisungsblocks je Arm</td><td>zählbar, vor dem Lauf</td></tr><tr><td>Kosten je Lauf</td><td>wird bereits geführt</td></tr><tr><td>Anteil brauchbarer Ergebnisse</td><td>aus den Fehlerkategorien (7.4)</td></tr><tr><td><strong>Erstlösungsquote</strong></td><td>zählbar: war die erste Ausgabe brauchbar?</td></tr><tr><td><strong>Korrekturrunden bis zum Ziel</strong></td><td>zählbar, und treibt die Kosten unmittelbar</td></tr><tr><td><strong>Ausgabe-Token je brauchbarem Ergebnis</strong></td><td><strong>das eigentliche Maß</strong></td></tr></tbody></table></div>
+<p>Und die Vorhersage, die daraus folgt und falsch sein kann:</p>
+<blockquote><p><strong>Arm G hat den kürzesten Anweisungsblock und die niedrigsten Kosten je Lauf.</strong>
+Ob er auch die niedrigsten Kosten <strong>je brauchbarem Ergebnis</strong> hat, entscheidet
+sich daran, ob die Qualität hält. Hält sie nicht, gewinnt R+G trotz des
+längsten Blocks, und dann ist Verdichtung eine Ersparnis, die man teuer
+bezahlt.</p></blockquote>
+<p><strong>Warum diese Zahl über das Papier hinaus zählt:</strong> sie beantwortet eine Frage, die
+für jeden kleinen Betreiber praktisch ist und für keinen großen, <em>lässt sich ein
+KI-System so lenken, dass es sich ohne Budget betreiben lässt?</em> Wer viele Läufe
+fährt und keine Rechtsabteilung hat, wird nicht durch bessere Regeln gerettet,
+sondern durch weniger davon. Ob das stimmt, ist bisher niemand nachgegangen.</p>
+<hr>
+<h3>3.9 Warum eigentlich? Drei Ursachen, die sich trennen lassen</h3>
+<p>Angenommen, die Grundsätze verringern die Fehler wirklich, <strong>woran liegt es
+dann?</strong> Bisher beschreibt dieses Papier, <strong>dass</strong> die Kanäle sich unterscheiden,
+nicht <strong>wodurch</strong>. Drei Erklärungen liegen nahe, und der Unterschied zwischen ihnen
+ist nicht akademisch: sie sagen <strong>Verschiedenes voraus</strong>, und daran lassen sie sich
+auseinanderhalten.</p>
+<p><strong>H1 · Es denkt anders. Zweck statt Bedingung.</strong>
+Ein Grundsatz nennt das Wozu. Das Modell prüft dann nicht, ob eine Bedingung
+zutrifft, sondern arbeitet auf ein Ziel hin. <em>Vorhersage:</em> der Vorteil ist am
+größten bei <strong>neuen</strong> Fällen (Aufgabenart E) und am kleinsten bei umrissenen (Art
+B), genau der Verlauf aus 7.3.1.</p>
+<p><strong>H2 · Es muss weniger Ballast lesen.</strong>
+Ein kürzerer Block lässt mehr Aufmerksamkeit für die eigentliche Arbeit. Das ist
+die Sättigungsvermutung aus 3.3, von der Wirkungsseite betrachtet. <em>Vorhersage:</em>
+der Vorteil hängt an der <strong>Länge</strong> des Blocks, nicht an seinem <strong>Inhalt</strong>.</p>
+<p><strong>H3 · Ein Grundsatz deckt Fälle ab, für die keine Regel geschrieben wurde.</strong>
+Das ist Kaplows Punkt, unverändert. <em>Vorhersage:</em> der Vorteil zeigt sich
+ausschließlich bei Fehlern <strong>außerhalb</strong> dessen, was die Regeln abdecken, innerhalb
+müsste der Regel-Arm gleichauf oder besser sein.</p>
+<h4>Die Kontrolle, die H2 von H1 und H3 trennt</h4>
+<p>Sie ist billig und entscheidet mehr als jede andere Messung in diesem Papier:</p>
+<blockquote><p><strong>Ein vierter Arm mit längengleicher Füllung.</strong> Der Grundsatz-Block wird mit
+belanglosem, aber harmlosem Text auf dieselbe Länge gebracht wie der Regel-Block.</p>
+<ul><li><strong>Verschwindet der Vorteil</strong>, lag es an der Länge. <strong>H2</strong>.</li><li><strong>Bleibt er</strong>, lag es am Inhalt. <strong>H1 oder H3</strong>.</li></ul></blockquote>
+<p>Ohne diese Kontrolle sind Länge und Inhalt in jedem Ergebnis vermengt, und man
+kann sagen, was man will.</p>
+<h4>Und die Klassifikation, die H1 von H3 trennt</h4>
+<p>Jeder gefundene Fehler wird zusätzlich danach eingeteilt, ob er <strong>innerhalb</strong> oder
+<strong>außerhalb</strong> des Bereichs liegt, den die sechs Regeln abdecken. Das ist
+entscheidbar, weil die Regeln endlich und aufgeschrieben sind.</p>
+<ul><li>Zeigt sich der Vorteil <strong>nur außerhalb</strong> → <strong>H3</strong>, Abdeckung.</li><li>Zeigt er sich <strong>auch innerhalb</strong> → dort greift eine Regel und tut es trotzdem
+nicht so gut wie ein Grundsatz. Das wäre <strong>H1</strong>, und es wäre der interessanteste
+Befund dieses Papiers: dann läge es nicht an der Reichweite, sondern daran, wie
+ein Zweck anders wirkt als eine Bedingung.</li></ul>
+<h4>Was ich hier schon vermute, und warum es benannt gehört</h4>
+<p>Klaus' Formulierung war <em>„nicht erst tausende von Regeln lesen"</em>. <strong>In diesem
+Aufbau sind es keine tausend, sondern sechs. 1.510 Zeichen.</strong> Bei dieser Größe ist
+<strong>H2 unplausibel</strong>: ein Block von anderthalbtausend Zeichen bindet keine nennenswerte
+Aufmerksamkeit.</p>
+<p>Das heißt nicht, dass H2 falsch ist. Es heißt, dass sie <strong>hier nicht greifen kann</strong>
+und erst in einem System mit einem wirklich großen Regelwerk messbar würde. Dort
+allerdings vermutlich stark. <strong>Wer diese Arbeit auf eine große Installation
+überträgt, sollte mit H2 rechnen; wer sie hier misst, wird sie nicht finden.</strong></p>
+<p>Diese Vermutung steht hier ausdrücklich <strong>vor</strong> der Messung, damit sie sich
+blamieren kann.</p>
+<h4>Sie schließen einander nicht aus</h4>
+<p>Der wahrscheinlichste Ausgang ist, dass alle drei etwas beitragen. <strong>Das ist kein
+Mangel des Aufbaus, sondern der Grund, ihn so zu bauen:</strong> die beiden Kontrollen
+oben teilen den Beitrag auf, statt einen Sieger zu küren. Ein Papier, das nach
+<em>der</em> Ursache sucht, findet meistens die, die es erwartet hat.</p>
+<hr>
+<h2>4 · Beobachtungen</h2>
+<h3>4.1 Regeln greifen zuverlässig, wo der Fall vorhergesehen war</h3>
+<p>Über den gesamten Zeitraum hat kein Lauf einen Schlüssel, ein Token oder eine
+fremde Adresse ausgegeben. Das sind Fälle, die sich vollständig formulieren
+lassen, und dort tun Regeln genau das, was man von ihnen erwartet.</p>
+<p>Bemerkenswert ist nicht, dass es funktioniert, sondern <strong>wie eng der Bereich
+ist</strong>, in dem es funktioniert: er endet dort, wo die Prüfung endet.</p>
+<h3>4.2 Grundsätze feuern nicht: sie verschieben einen Schnitt</h3>
+<p>Der Satz stammt aus der Grundsatz-Datei selbst und ist die genaueste
+Formulierung, die dieses Papier zu bieten hat:</p>
+<blockquote><p><strong>Grundsätze feuern nicht wie Regeln, sie verschieben einen Schnitt.</strong></p></blockquote>
+<p>Eine Regel greift oder greift nicht, und man sieht es am einzelnen Fall. Ein
+Grundsatz wirkt an keinem einzelnen Fall sichtbar. Er verändert, <strong>wo</strong> jemand
+die Grenze zieht zwischen „fertig" und „noch nicht", zwischen „reicht" und
+„reicht nicht".</p>
+<p>Daraus folgt ein methodisches Problem, das dieses Papier nicht löst: <strong>an einer
+einzelnen Ausgabe ist die Wirkung eines Grundsatzes nicht ablesbar.</strong> Was sich
+ablesen ließe, wären Verteilungen über viele Läufe, und die sind hier nicht
+erhoben worden.</p>
+<h3>4.3 Ein Grundsatz hat sich am Tag seiner Aufnahme selbst bewährt</h3>
+<p>Der belegteste Einzelfall, mit Datum. Am 2026-08-20 wurde Grundsatz 4 („eine
+geratene Zahl klingt genau wie eine gemessene") aufgeschrieben. Am selben Tag
+fiel damit auf, dass eine gemessene Größe, die Selbstbevorzugung einer Rolle bei
+der Bewertung, ausgewiesen mit −1,15, <strong>gar keine Messung war</strong>: sie war die
+Folge einer Anweisung im Prompt, die verlangte, den eigenen Vorschlag strenger zu
+beurteilen. Die Anweisung wurde entfernt, seitdem misst die Zahl wieder etwas.</p>
+<p>Das ist die Sorte Fehler, gegen die eine Regel nichts ausrichtet. Man hätte sie
+formulieren müssen als: <em>„prüfe, ob eine ausgewiesene Messung nicht in Wahrheit
+die Folge einer Anweisung ist"</em>, und darauf kommt man erst, <strong>nachdem</strong> es
+passiert ist. Genau das ist Kaplows Punkt über die Unvollständigkeit jeder
+Regelsetzung, an einem sehr kleinen Beispiel.</p>
+<h3>4.4 Die härteste Grenze war nicht geplant und liegt in keinem der beiden Kanäle</h3>
+<p>Die Rollen sehen das Depot nicht. Sie bekommen Text und geben Text zurück. Also
+schlagen sie regelmäßig Dinge vor, <strong>die es bereits gibt</strong>.</p>
+<p>Weder eine Regel noch ein Grundsatz behebt das. Es fehlt kein Wille und keine
+Haltung, sondern <strong>Zugang</strong>. Das ist ein Befund gegen die eigene Erwartung: der
+Verfasser hat den Aufbau gebaut, um zwischen Regel und Grundsatz zu unterscheiden,
+und die stärkste Beschränkung lag in einer dritten Größe, die in dieser
+Unterscheidung gar nicht vorkommt.</p>
+<p>Daraus ist ein zweiter Weg entstanden: dieselben fünf Rollen in einer Sitzung
+<strong>mit</strong> Zugriff auf den Bestand. Auch dieser Weg trägt eine ausdrücklich benannte
+Schwäche: fünf Rollen in einem Kopf sind nicht fünf Meinungen. Er ist als
+Zwischenschritt markiert, nicht als Lösung.</p>
+<hr>
+<h2>5 · Wo beide versagen: der eigentliche Befund</h2>
+<h3>5.1 Die Regel, die eine Bitte blieb</h3>
+<p>Es gibt eine ausdrückliche Regel: <em>„Du hast keine Werkzeuge. Schreib deshalb
+NIE, du oder jemand anderes habe etwas ausgeführt, geprüft, laufen lassen oder
+gemessen."</em> Sie trägt den Vorfall im Wortlaut mit sich, aus dem sie entstand.</p>
+<p>Am 2026-08-20 stand im Bericht: <strong>„Sten hat den Code durchlaufen lassen."</strong> Das
+war nicht geschehen und konnte nicht geschehen.</p>
+<p>Die Regel ist damit ein <strong>Dämpfer, kein Riegel</strong>. Und der Grund ist strukturell,
+nicht behebbar durch bessere Formulierung: eine Regel wird erzwungen, indem
+jemand prüft, ob sie eingehalten wurde. <strong>Ob ein Satz über die Wirklichkeit wahr
+ist, lässt sich am Satz nicht prüfen.</strong> Hier endet, was Regeln überhaupt leisten
+können, nicht aus Nachlässigkeit, sondern aus Bauart.</p>
+<h3>5.2 Der Grundsatz, der nicht griff</h3>
+<p>Derselbe Vorfall ist auch ein Versagen des anderen Kanals. Grundsatz 5 („eine
+benannte Lücke ist Arbeit, eine verschwiegene ist Schaden") deckt den Fall
+inhaltlich vollständig ab: wer nicht prüfen konnte, schreibt hin, dass er nicht
+prüfen konnte. Der Grundsatz stand da. Er hat nicht gewirkt.</p>
+<p><strong>Das ist die Beobachtung, die dieses Papier von einer Werbeschrift für
+Grundsätze trennt.</strong> Wer nur die Fälle berichtet, in denen ein Grundsatz half,
+beschreibt seine Auswahl und nicht die Sache.</p>
+<h3>5.3 Was daraus folgt</h3>
+<p>Die beiden Kanäle versagen an <strong>verschiedenen</strong> Stellen:</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Greift zuverlässig</th><th>Versagt</th></tr></thead><tbody><tr><td><strong>Regel</strong></td><td>wo der Fall vorhergesehen und die Einhaltung prüfbar ist</td><td>wo die Prüfung selbst unmöglich ist (Aussagen über die Wirklichkeit)</td></tr><tr><td><strong>Grundsatz</strong></td><td>wo niemand vorher hingesehen hat</td><td>wo Aufmerksamkeit nicht ausreicht, und ohne Rückmeldung, dass er nicht griff</td></tr></tbody></table></div>
+<p>Die Grenzen überlappen nicht vollständig, und keine der beiden ist die Teilmenge
+der anderen. Das ist der Grund, warum sich die Frage „was ist besser" nicht
+sinnvoll stellen lässt, und warum sie sich auch nicht getrennt betrachten
+lassen.</p>
+<p><strong>Und die Grenzen verlaufen nicht am Wortlaut.</strong> Fall 1 in Abschnitt 3.5 zeigt
+zwei Anweisungen mit <strong>denselben Wörtern</strong>: einmal als Regel, einmal als
+Grundsatz, die verschieden entscheiden: die Regel bindet die <strong>Ausgabe</strong>, der
+Grundsatz die <strong>Aufmerksamkeit</strong>. Wer die beiden Kanäle nach ihrem Inhalt
+sortieren will, sortiert am falschen Merkmal. <strong>Nicht der Wortlaut entscheidet,
+sondern der Kanal.</strong></p>
+<hr>
+<h2>6 · Was hier ausdrücklich nicht bewiesen ist</h2>
+<p>Dieser Abschnitt ist der wichtigere Teil des Papiers.</p>
+<ul><li><strong>Keine Kontrollgruppe.</strong> Es wurde nie ein Lauf <em>ohne</em> Grundsätze gegen einen
+<em>mit</em> Grundsätzen gestellt. Der Aufbau könnte es, die Ladefunktion meldet
+ausdrücklich, wenn die Datei fehlt, statt still weiterzulaufen. Getan wurde es
+nicht.</li><li><strong>Kein Maß.</strong> „Die Arbeit sieht anders aus" ist kein Ergebnis, solange niemand
+gesagt hat, woran man <em>anders</em> erkennt.</li><li><strong>Fallzahl eins.</strong> Ein Betreiber, ein Netz, ein Aufgabenzuschnitt.</li><li><strong>Nicht verblindet.</strong> Derselbe Mensch hat die Grundsätze geschrieben, die Läufe
+ausgelöst und die Ergebnisse beurteilt.</li><li><strong>Modellwechsel nicht kontrolliert.</strong> Über den Beobachtungszeitraum haben sich
+die verwendeten Modelle geändert. Was davon Grundsatz-Wirkung ist und was
+Modell-Wirkung, ist mit diesem Aufbau <strong>nicht trennbar</strong>.</li><li><strong>Ein Teil der Belege sind Trockenläufe</strong>, ihre Kostenangaben sind gerechnet,
+nicht bezahlt, und als solche markiert.</li></ul>
+<p><strong>Was daraus folgt:</strong> eine Feldbeobachtung mit Protokoll, kein Nachweis. Als
+Ausgangspunkt brauchbar, als Beleg nicht.</p>
+<p><strong>Der nächste Abschnitt ist deshalb kein Wunschzettel.</strong> Der beschriebene Versuch
+ist am vorhandenen Aufbau baubar, er ist geplant, und er enthält die Vorhersage,
+an der dieses Papier scheitern kann.</p>
+<hr>
+<h2>7 · Der Versuchsaufbau: dreiarmig, und damit widerlegbar</h2>
+<p>Der Aufbau aus Abschnitt 3 lässt sich ohne Umbau in einen Versuch überführen. Der
+Vorschlag stammt vom Betreiber (2026-08-23) und ist besser als der naheliegende
+Zweiarm-Vergleich, weil er die These dieses Papiers zum ersten Mal <strong>prüfbar</strong>
+macht.</p>
+<h3>7.1 Drei Arme statt zwei</h3>
+<div class="tabelle"><table><thead><tr><th>Arm</th><th>Was die Truppe bekommt</th></tr></thead><tbody><tr><td><strong>R</strong></td><td>nur die Regeln</td></tr><tr><td><strong>G</strong></td><td>nur die Grundsätze</td></tr><tr><td><strong>R+G</strong></td><td>beides, der heutige Betriebszustand</td></tr></tbody></table></div>
+<p>Ein Zweiarm-Vergleich (mit/ohne Grundsätze) könnte nur zeigen, <strong>dass</strong> die
+Grundsätze etwas ändern. Der dritte Arm ist der entscheidende: er prüft, ob die
+Kombination mehr leistet als der bessere ihrer Teile.</p>
+<p>Dazu kommt eine zweite Achse, die <strong>Art der Aufgabe</strong> (7.3). Erst beide
+zusammen ergeben eine Vorhersage, die sich nicht schönreden lässt.</p>
+<h3>7.2 Die Vorhersage, und was sie widerlegen würde</h3>
+<p>Aus der These dieses Papiers („beide leisten Verschiedenes, keins genügt allein")
+folgt eine Erwartung, die <strong>vor</strong> den Läufen festzuhalten ist:</p>
+<blockquote><p><strong>R+G ist besser als R und besser als G.</strong> Und: <strong>R und G machen
+unterschiedliche Fehler</strong>, nicht dieselben, nur unterschiedlich viele.</p></blockquote>
+<p>Das ist keine Formsache, sondern der Punkt, an dem dieses Papier falsch sein
+kann. Drei Ergebnisse würden es widerlegen:</p>
+<ul><li><strong>R+G liegt gleichauf mit dem besseren Einzelarm</strong> → die Kanäle überlappen,
+einer ist überflüssig.</li><li><strong>R+G ist schlechter als beide</strong> → zu viel Anweisung verdünnt, und die
+Sättigungsgrenze aus 3.3 gilt auch für die Summe beider Kanäle.
+<strong>Für diesen Ausgang gibt es einen benannten Mechanismus</strong> (2.4): Verdrängung
+im Sinne von Gneezy und Rustichini. Er ist nicht bloß denkbar, sondern beim
+Menschen belegt, und beim Menschen war er <strong>nicht umkehrbar</strong>.</li><li><strong>R und G machen dieselben Fehler, nur verschieden viele</strong> → dann ist der
+Unterschied graduell und nicht strukturell, und die ganze Trennung ist
+Beschreibung statt Erklärung.</li></ul>
+<p><strong>Das dritte wäre der schwerste Schlag</strong> und ist zugleich das plausibelste
+Gegenergebnis. Es gehört ausdrücklich hingeschrieben, bevor gemessen wird.</p>
+<h3>7.3 Drei Aufgabenarten, und warum das die Vorhersage erst scharf macht</h3>
+<p>Der zweite Vorschlag des Betreibers (2026-08-23): nicht nur die Lenkung
+verändern, sondern auch die <strong>Art der Aufgabe</strong>.</p>
+<div class="tabelle"><table><thead><tr><th>Art</th><th>Was die Truppe bekommt</th><th>Wie offen ist der Fall?</th></tr></thead><tbody><tr><td><strong>E · Eigene Idee</strong></td><td>ein Ziel, sonst nichts</td><td><strong>völlig offen</strong>, niemand hat vorher hingesehen</td></tr><tr><td><strong>V · Vorlage</strong></td><td>die Arbeit eines Vorgängers als Ausgangspunkt</td><td>teilweise vorgezeichnet</td></tr><tr><td><strong>B · Bestehendes verbessern</strong></td><td>etwas bereits Gebautes, mit der Frage, ob es besser geht</td><td><strong>eng umrissen</strong>, der Fall liegt vor</td></tr></tbody></table></div>
+<p><strong>Das ist keine Erweiterung, sondern der eigentliche Prüfstein.</strong> Der Kern dieses
+Papiers ist Kaplows Punkt: <strong>eine Regel deckt genau den Fall ab, für den jemand
+sie geschrieben hat.</strong> Daraus folgt unmittelbar, dass ihr Vorteil davon abhängen
+muss, <strong>wie vorhersehbar der Fall war</strong>. Und das lässt sich einstellen.</p>
+<h3>7.3.1 Die Vorhersage bekommt damit eine Richtung</h3>
+<p>Aus 3 Armen × 3 Aufgabenarten wird nicht nur eine feinere Tabelle, sondern eine
+Aussage, die deutlich leichter zu widerlegen ist als „R+G gewinnt":</p>
+<blockquote><p><strong>Der Abstand zwischen G und R ist bei Art E am größten und bei Art B am
+kleinsten</strong>. Er müsste über E → V → B <strong>monoton fallen</strong>.</p>
+<p>Bei Art <strong>B</strong> könnte R sogar vor G liegen: der Fall ist umrissen, die Regeln
+greifen, und Grundsätze bringen wenig, wo nichts mehr zu erraten ist.</p></blockquote>
+<p>Eine Rangfolge (R+G vorn) ließe sich mit viel gutem Willen aus fast jedem
+Ergebnis herauslesen. <strong>Ein Verlauf über drei Stufen nicht.</strong> Läuft er flach oder
+in die falsche Richtung, ist die These über die Vorhersehbarkeit widerlegt, und
+zwar unabhängig davon, welcher Arm insgesamt vorn liegt.</p>
+<h3>7.3.2 Art B misst zusätzlich etwas, das kein anderer Arm messen kann</h3>
+<p>Der stärkste Einzelbefund aus Abschnitt 4.4 war unfreiwillig: die Rollen sehen
+den Bestand nicht und schlagen deshalb Vorhandenes vor. <strong>Aufgabenart B legt
+ihnen den Bestand ausdrücklich vor.</strong> Damit trennt sich, was bisher vermischt war:</p>
+<ul><li>Schlägt eine Rolle <strong>auch dann</strong> etwas Vorhandenes vor, wenn es ihr vorliegt,
+ist es ein Aufmerksamkeitsproblem. Dort greifen Grundsätze.</li><li>Schlägt sie es <strong>nur</strong> vor, wenn sie den Bestand nicht sieht, war es nie ein
+Lenkungsproblem, sondern eines des <strong>Zugangs</strong>, und weder Regel noch Grundsatz
+hätte je etwas ausgerichtet.</li></ul>
+<p>Das ist der Punkt, an dem der Versuch etwas beantwortet, was die Feldbeobachtung
+nur benennen konnte.</p>
+<h3>7.3.3 Der Preis</h3>
+<p>Drei Arme mal drei Aufgabenarten sind <strong>neun Bedingungen</strong>, jede mehrfach zu
+wiederholen. Das ist ein Vielfaches des zweiarmigen Vergleichs, und es kostet
+echtes Geld je Lauf.</p>
+<p>Zwei Auswege stehen offen, und beide gehören vorher entschieden, nicht unterwegs:
+den Versuch <strong>stufenweise</strong> fahren (zuerst E gegen B als die beiden Extreme, V
+erst danach), oder die Wiederholungszahl je Bedingung senken und <strong>ausdrücklich
+hinschreiben</strong>, dass die Aussage dadurch schwächer wird. <strong>Was nicht geht:
+unterwegs kürzen und das Ergebnis vollständig aussehen lassen.</strong></p>
+<h3>7.4 Was gemessen wird: vorher festgelegt, nicht nachher</h3>
+<p>Ein Fehlerbegriff, der nach den Läufen entsteht, misst die Erwartung des
+Auswertenden. Deshalb: <strong>Kategorien vor dem ersten Lauf festlegen, danach nicht
+mehr ändern.</strong> Vorschlag, aus den beobachteten Fehlerarten abgeleitet:</p>
+<div class="tabelle"><table><thead><tr><th>Kategorie</th><th>Was zählt</th></tr></thead><tbody><tr><td><strong>Erfundene Tätigkeit</strong></td><td>behauptet, etwas ausgeführt/geprüft/gemessen zu haben (der Fall aus 5.1)</td></tr><tr><td><strong>Unbelegte Zahl</strong></td><td>Zahl, Datum oder Rechtslage ohne Fundstelle und ohne Kennzeichnung als Schätzung</td></tr><tr><td><strong>Wiederholung</strong></td><td>schlägt etwas vor, das im Bestand bereits existiert</td></tr><tr><td><strong>Verschwiegene Lücke</strong></td><td>konnte etwas nicht und schreibt es nicht hin</td></tr><tr><td><strong>Formverstoß</strong></td><td>verletzt eine der harten Regeln (Personenbezug, Geheimnis, fremde Adresse)</td></tr><tr><td><strong>Leere Weitergabe</strong></td><td>Übergabe-Angabe ohne Inhalt („passt", „alles gut")</td></tr></tbody></table></div>
+<p>Die letzten beiden Kategorien tragen die Unterscheidung im Kleinen: <strong>Formverstoß</strong>
+sollte im Arm G häufiger sein (keine erzwungenen Regeln), <strong>leere Weitergabe</strong> im
+Arm R (keine Haltung, die zum Konkretwerden drängt). Trifft das nicht zu, ist das
+bereits ein Befund.</p>
+<p><strong>Und die Kategorie „Wiederholung" ist nur bei Aufgabenart B aussagekräftig.</strong>
+Bei E und V sieht die Truppe den Bestand nicht. Dort misst sie fehlenden Zugang,
+nicht fehlende Aufmerksamkeit (7.3.2). Wer sie über alle Arten hinweg
+zusammenzählt, mischt zwei verschiedene Dinge zu einer Zahl.</p>
+<h3>7.5 Das Analysewerkzeug, und die eine Eigenschaft, die es haben muss</h3>
+<p>Der Betreiber schlägt ein Auswertungswerkzeug in der Maschine vor. Das ist
+richtig, und es hat eine Anforderung, die über allem anderen steht:</p>
+<blockquote><p><strong>Das Werkzeug darf dem Auswertenden nicht zeigen, aus welchem Arm ein Lauf
+stammt.</strong></p></blockquote>
+<p>Ohne das misst die Auswertung, was der Auswertende erwartet hat: besonders dann,
+wenn er die Grundsätze selbst geschrieben hat. Konkret heißt das: die Läufe
+werden gemischt, bekommen anonyme Kennungen, und die Zuordnung zum Arm liegt in
+einer getrennten Datei, die erst <strong>nach</strong> der Bewertung geöffnet wird.</p>
+<p>Das ist billig zu bauen und macht den Unterschied zwischen einer Auswertung und
+einer Bestätigung. Es ist dieselbe Disziplin wie Grundsatz 3: <em>eine Prüfung, die
+dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst.</em> <strong>Und sie
+lässt sich beweisen statt beteuern</strong>: wie, steht in 7.9.</p>
+<p>Was das Werkzeug sonst leisten sollte: je Lauf die sechs Kategorien zählen,
+Verteilungen je Arm ausgeben, und <strong>die Rohdaten mitliefern</strong>: eine Auswertung,
+deren Zwischenschritte niemand nachrechnen kann, ist eine Behauptung mit
+Balkendiagramm.</p>
+<h3>7.6 Feste Kriterien für den Bau</h3>
+<p>Der zweite Vorschlag des Betreibers: Einstellungen, in denen die Regeln für den
+Bau nach festen Kriterien festgelegt werden. Für den Versuch ist das
+<strong>Voraussetzung</strong>, nicht Zubehör. Was sich zwischen zwei Läufen ändern darf, muss
+benannt sein, sonst vergleicht man zwei verschiedene Dinge.</p>
+<p>Festzuhalten je Lauf, maschinell und nicht von Hand:</p>
+<p>Modellkennung und Fassung · <strong>Arm</strong> (R / G / R+G) · <strong>Aufgabenart</strong> (E / V / B) ·
+Wortlaut beider Kanäle (oder deren Prüfsumme) · Auftrag · bei Art V und B: was
+genau vorlag · Zeitpunkt · Kosten und Dauer.</p>
+<p><strong>Die Modellkennung ist dabei die wichtigste Angabe.</strong> Der Vorbehalt aus
+Abschnitt 6. Modellwechsel nicht von der Grundsatz-Wirkung getrennt, fällt nur
+weg, wenn alle drei Arme auf <strong>derselben</strong> Modellfassung laufen, und zwar
+nachweisbar. Läuft der Versuch über mehrere Wochen, ist das keine
+Selbstverständlichkeit.</p>
+<h3>7.7 Was der Versuch auch dann noch nicht kann</h3>
+<p>Drei Vorbehalte bleiben, und sie bleiben ausdrücklich:</p>
+<ol><li><strong>Fallzahl eins bei den Betreibern.</strong> Ein Netz, ein Aufgabenzuschnitt. Die
+ Verblindung behebt die Voreingenommenheit der Bewertung, nicht die Enge des
+ Feldes.</li><li><strong>Der Fehlerbegriff ist gesetzt, nicht hergeleitet.</strong> Die sechs Kategorien
+ stammen aus dem, was hier auffiel. Ein anderes Feld hätte andere.</li><li><strong>Die Sättigungsgrenze bleibt ungeprüft.</strong> Ob sieben Grundsätze besser wirken
+ als zwölf, ist ein eigener Versuch, dieselbe Aufgabe mit drei, fünf, sieben
+ und zwölf Grundsätzen. <strong>Das wäre der erste eigenständige Beitrag zur
+ Theorie</strong>, den dieser Aufbau liefern könnte: Kaplow und Schuett et al.
+ behandeln Sättigung nicht, weil auf ihrer Ebene kein Aufmerksamkeitsbudget im
+ Spiel ist.</li></ol>
+<h3>7.8 Was daran fehlt und gesucht wird</h3>
+<p>Die Punkte 7.1 bis 7.5 sind baubar; das System bringt die Voraussetzungen mit
+(die Grundsätze liegen in einer eigenen Datei, die sich wegnehmen lässt, und das
+System meldet ihr Fehlen, statt es zu verschweigen).</p>
+<p>Was fehlt, ist die <strong>statistische Auswertung</strong>: wie viele Läufe je Arm nötig
+sind, damit ein Unterschied etwas bedeutet, und wie man ihn prüft. Das ist
+Handwerk, das an Hochschulen gelehrt wird und das der Verfasser nicht hat. Für
+diesen Teil wird ausdrücklich eine Zusammenarbeit gesucht.</p>
+<h3>7.9 Was die Maschine selbst beweisen kann, und was nicht</h3>
+<p>Eine naheliegende Frage: kann das System den Versuch <strong>selbst</strong> führen und
+auswerten? Die Antwort zerfällt in zwei Hälften, und die Trennlinie zwischen
+ihnen ist scharf.</p>
+<h4>Was es strukturell NICHT kann</h4>
+<p><strong>Es kann nicht beurteilen, welche Ausgabe besser ist.</strong> Das verlangt ein Urteil
+über den Zweck, und ein solches Urteil wäre eine Prüfung, die sich selbst recht
+gibt, genau der Fall, vor dem Grundsatz 3 warnt. Erschwerend: die Bewertung
+liefe über dieselbe Modellfamilie, die die Ausgabe erzeugt hat. Abschnitt 5.1
+zeigt, was dabei herauskommt, ein System, das ohne Werkzeuge behauptet, etwas
+geprüft zu haben.</p>
+<p>Ebenso wenig kann es beweisen, dass die <strong>Fehlerkategorien die richtigen</strong> sind
+(sie sind gesetzt) oder dass ein Ergebnis <strong>über dieses Feld hinaus</strong> gilt
+(Fallzahl eins).</p>
+<h4>Was es beweisen kann, und zwar ohne jedes Urteil</h4>
+<p>Fünf Dinge, alle <strong>entscheidbar</strong> statt beurteilbar:</p>
+<p><strong>1 · Dass die Bedingungen wirklich verschieden waren.</strong> Welcher Arm, welche
+Aufgabenart, welcher Modellstand, welcher Wortlaut beider Kanäle, je mit
+Prüfsumme. Das ist Buchführung, und darin ist eine Maschine besser als jeder
+Mensch. <strong>Ohne diesen Nachweis zählt nichts anderes</strong>, weil sonst unklar bleibt,
+was verglichen wurde.</p>
+<p><strong>2 · Die erfundene Tätigkeit, vollständig maschinell entscheidbar.</strong> Und das
+ist der wichtigste Punkt dieses Abschnitts. <strong>Die Maschine weiß, welche Werkzeuge
+sie ausgegeben hat.</strong> Hat sie keine ausgegeben, ist jeder Satz, der eine
+Ausführung behauptet, <strong>nachweislich falsch</strong>: kein Urteil, eine Tatsache.</p>
+<p>Damit kann Kimhub ausgerechnet den Fehler selbst nachweisen, an dem in Abschnitt
+5 <strong>beide Kanäle</strong> gescheitert sind. Der zentrale Befund dieses Papiers ist
+maschinell prüfbar.</p>
+<p><strong>3 · Die übrigen entscheidbaren Kategorien.</strong> Formverstoß (Schlüssel, fremde
+Adresse, Schemabruch) wird bereits heute maschinell geprüft. Leere Weitergabe
+ist eine Frage von Inhalt und Länge. Wiederholung ist bei Aufgabenart B prüfbar,
+weil der Bestand als Eingabe vorlag: es gibt etwas, wogegen man vergleichen
+kann. <strong>Unbelegte Zahl</strong> ist teilweise entscheidbar: ob eine Fundstelle genannt
+wurde, steht fest; ob sie trägt, nicht.</p>
+<p><strong>4 · Wiederholbarkeit.</strong> Dieselbe Eingabe, derselbe Arm, vielfach gefahren: wie
+stabil ist der Unterschied überhaupt? Das ist die Frage, an der die meisten
+kleinen Auswertungen scheitern, und eine Maschine kann sie sich leisten. <strong>Ein
+Unterschied, der zwischen zwei Läufen derselben Bedingung ebenso groß ist wie
+zwischen den Armen, ist kein Unterschied.</strong> Diese Gegenprobe kostet nichts als
+Rechenzeit, und sie wird zuerst gefahren, nicht zuletzt.</p>
+<p><strong>5 · Dass die Verblindung eingehalten wurde: beweisbar, nicht beteuert.</strong> Der
+Punkt, der Selbstmessung erst glaubwürdig macht.</p>
+<p>Statt zu versichern, man habe beim Bewerten nicht gewusst, aus welchem Arm ein
+Lauf stammte, lässt sich das <strong>festnageln</strong>:</p>
+<ol><li>Die Zuordnung Lauf → Arm wird in eine Datei geschrieben, die <strong>verschlossen</strong>
+ bleibt. Von ihr wird eine Prüfsumme gebildet und <strong>veröffentlicht</strong>.</li><li>Erst danach werden die Läufe bewertet. Die Bewertungen werden ebenfalls
+ abgelegt und mit Prüfsumme veröffentlicht.</li><li><strong>Dann</strong> wird die Zuordnung geöffnet.</li></ol>
+<p>Wer die Reihenfolge nachrechnet, sieht: die Bewertung kann die Zuordnung nicht
+gekannt haben, sonst passte eine der beiden Prüfsummen nicht. Das ist kein
+Vertrauensvorschuss, sondern eine <strong>Festlegung im Voraus</strong>: dasselbe Verfahren,
+mit dem das Netz ohnehin arbeitet, wenn es Kopien gegen Drift sichert.</p>
+<h4>Die Arbeitsteilung, die daraus folgt</h4>
+<div class="tabelle"><table><thead><tr><th>Frage</th><th>Wer beantwortet sie</th></tr></thead><tbody><tr><td>Welcher Arm, welches Modell, welcher Wortlaut?</td><td><strong>Maschine</strong>, Buchführung mit Prüfsumme</td></tr><tr><td>Wurde eine Ausführung behauptet, die es nicht gab?</td><td><strong>Maschine</strong>, sie weiß, was sie ausgegeben hat</td></tr><tr><td>Formverstoß, leere Weitergabe, Wiederholung (Art B)?</td><td><strong>Maschine</strong>, entscheidbar</td></tr><tr><td>Ist der Unterschied größer als das Rauschen?</td><td><strong>Maschine</strong>, Wiederholung</td></tr><tr><td>War die Bewertung wirklich verblindet?</td><td><strong>Maschine</strong>, Prüfsummen im Voraus</td></tr><tr><td><strong>Welche Ausgabe ist besser?</strong></td><td><strong>Mensch</strong>, und möglichst nicht der Verfasser der Grundsätze</td></tr><tr><td>Sind die Kategorien die richtigen?</td><td><strong>Mensch</strong></td></tr><tr><td>Gilt das über dieses Feld hinaus?</td><td><strong>niemand hier</strong>, dafür braucht es eine zweite Fallzahl</td></tr></tbody></table></div>
+<h4>Warum diese Trennung mehr ist als eine Notlösung</h4>
+<p>Der Versuch wird dadurch <strong>billig und selbstdokumentierend</strong>. Alles, was die
+Maschine übernimmt, kostet Rechenzeit und keine Aufmerksamkeit, und es sind
+gerade die Teile, an denen menschliche Auswertungen scheitern: Buchführung,
+Wiederholung, Verblindung.</p>
+<p>Was übrig bleibt, ist ein knappes, teures Gut: <strong>fremdes Urteil über wenige,
+gut vorbereitete Fälle.</strong> Genau dafür lohnt sich ein Partner, und genau darauf
+läuft die Bitte in 7.8 hinaus.</p>
+<p>Und es gibt eine Kehrseite, die zur These dieses Papiers gehört: <strong>die Maschine
+kann alles Prüfbare prüfen und genau das Entscheidende nicht.</strong> Das ist keine
+Schwäche des Aufbaus, sondern dieselbe Grenze, um die es die ganze Zeit geht.
+sie taucht hier nur eine Ebene höher wieder auf, bei der Bewertung statt bei der
+Lenkung.</p>
+<h3>7.10 Die Rückkopplung, und warum ein selbst abgeleiteter Grundsatz keiner ist</h3>
+<p>Abschnitt 3.4 beschreibt eine Stufenfolge: <strong>Vorfall → Regel → Grundsatz.</strong> Bisher
+geht ein Mensch sie ab, nach einem Missgeschick. Naheliegende Frage: kann das
+System sie selbst gehen, aus den eigenen Ergebnissen lernen und daraus neue
+Grundsätze ableiten?</p>
+<h4>Zwei Schritte, und nur einer davon geht</h4>
+<p><strong>Das Erkennen geht.</strong> Nach 7.9 kann die Maschine Fehlerarten je Lauf zählen. Also
+kann sie auch ein <strong>Muster</strong> feststellen: dieselbe Kategorie fünfmal in zehn
+Läufen, oder eine Kategorie, die erst auftrat, seit der Wortlaut geändert wurde.
+Das ist Zählen, kein Urteilen, und es ist genau das Signal, nach dem die
+Grundsatz-Datei ohnehin verlangt, <em>„ein Grundsatz, der über viele Läufe in
+keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssig oder
+unverständlich formuliert."</em></p>
+<p><strong>Das Formulieren geht nicht.</strong> Und der Grund ist nicht Vorsicht, sondern
+Struktur. Er folgt unmittelbar aus der Richtung in 3.4.</p>
+<h4>Der Denkfehler steckt schon im Namen</h4>
+<p>Ein Grundsatz, den ein System aus seinen <strong>beobachteten Fehlern</strong> ableitet, kann
+nur Fälle abdecken, die <strong>schon eingetreten sind</strong>. Der Zweck eines Grundsatzes
+ist aber genau der umgekehrte: die <strong>Familie</strong> abzudecken, auch die Glieder, die
+noch niemand gesehen hat (3.4, Kaplow).</p>
+<blockquote><p><strong>Ein aus Vorfällen abgeleiteter „Grundsatz" ist eine Regel im Gewand eines
+Grundsatzes.</strong> Er trägt die Allgemeinheit im Wortlaut und die Enge in der
+Herkunft.</p></blockquote>
+<p>Mit den Begriffen aus 3.4: Was hier entstünde, wäre ein <strong>regelbasierter
+Grundsatz</strong>, und die richtige Bauform ist die umgekehrte, die
+<strong>grundsatzbasierte Regel</strong>.</p>
+<p>Der Fehler hat einen Namen, und er steht in 3.4: <strong>die Entstehungsrichtung wird
+für die Begründungsrichtung gehalten.</strong> Wer aus Vorfällen unmittelbar Grundsätze
+ableitet, überspringt die Frage nach dem Wozu. Und das ist keine Wortklauberei: ein
+solcher Satz sieht aus wie ein Grundsatz, wird wie einer eingeordnet, und lässt
+die Lücke offen, die ein echter Grundsatz geschlossen hätte. <strong>Er ist schlechter
+als beides</strong>. Er hat weder die Prüfbarkeit der Regel noch die Reichweite des
+Grundsatzes.</p>
+<p>Der Sprung vom Einzelfall zur Familie ist eine <strong>Abstraktionsleistung</strong>, kein
+Zählergebnis. Aus „am 20. August wurde eine geschätzte Zahl als Messung
+ausgegeben" folgt nicht mechanisch „eine geratene Zahl klingt genau wie eine
+gemessene". Dazwischen liegt jemand, der erkennt, wovon der Fall ein Fall ist.</p>
+<h4>Was die Rückkopplung trotzdem taugt</h4>
+<p>Nicht zum Schreiben, zum <strong>Pflegen</strong>. Und dafür ist sie viel wert, weil genau
+diese Pflege sonst niemand leistet (3.7):</p>
+<div class="tabelle"><table><thead><tr><th>Was die Maschine melden kann</th><th>Was daraus folgt</th></tr></thead><tbody><tr><td>Kategorie X häuft sich</td><td>irgendetwas fehlt, <strong>ob Regel oder Grundsatz, entscheidet der Mensch</strong></td></tr><tr><td>Grundsatz Y taucht in keiner Weitergabe auf</td><td>überflüssig oder unverständlich, ansehen</td></tr><tr><td>Seit dem 8. Grundsatz steigen die Fehler</td><td><strong>Sättigung</strong> (3.3), gemessen statt vermutet</td></tr><tr><td>Regel Z wird nie ausgelöst</td><td>veraltet, die Umgebung hat sich bewegt (3.7)</td></tr><tr><td>Kategorie X tritt in Arm G auf, in R nicht</td><td>ein Kandidat für eine <strong>Regel</strong>, nicht für einen Grundsatz</td></tr></tbody></table></div>
+<p>Die letzte Zeile ist die nützlichste: <strong>die Rückkopplung kann vorschlagen, in
+welchen Kanal etwas gehört</strong>, indem sie nachsieht, welcher Arm den Fehler nicht
+hatte. Das ist eine Entscheidungshilfe, die aus Daten kommt und nicht aus einem
+Gefühl.</p>
+<h4>Der Riegel, der dabei stehen bleibt</h4>
+<p>Ein System, das seine eigene Lenkung umschreibt, ist genau das, wovor dieses
+Papier warnt: eine Prüfung, die sich selbst recht gibt, eine Ebene höher. Es
+bleibt deshalb bei der Regel, die im Netz ohnehin gilt:</p>
+<blockquote><p><strong>Nach außen nur als Vorschlag.</strong> Was die Rückkopplung findet, wird
+<strong>vorgelegt</strong>, nicht eingebaut. Der Mensch entscheidet, ob es eine Regel oder
+ein Grundsatz wird, wie er lautet, und ob dafür ein anderer weichen muss.</p></blockquote>
+<p>Das ist keine Bremse aus Misstrauen. Es ist die Stelle, an der die
+Abstraktionsleistung stattfindet, und die kann nur dort stattfinden, wo jemand
+weiß, wovon der Fall ein Fall ist.</p>
+<h4>Ein vierter Arm, der die These noch einmal prüft</h4>
+<p>Die Rückkopplung lässt sich messen statt glauben. Sie ergibt einen weiteren Arm:</p>
+<p><strong>R+G+Rück</strong>. Wie R+G, aber nach jeweils zehn Läufen legt das System seine Funde
+vor, und ein Mensch entscheidet über eine Ergänzung.</p>
+<p>Die Vorhersage, die daraus folgt und die falsch sein kann:</p>
+<blockquote><p><strong>Der vierte Arm verbessert sich bei Aufgabenart B</strong> (Bestehendes verbessern,
+wiederkehrende Fälle) <strong>und nicht bei Art E</strong> (eigene Idee, neue Fälle).</p></blockquote>
+<p>Trifft das zu, ist die These aus 3.4 bestätigt: was man aus Vorfällen ableitet,
+wirkt wie eine Regel. Es hilft dort, wo der Fall wiederkehrt, und nicht dort, wo
+er neu ist. Verbessert sich auch Art E, war die Unterscheidung zwischen
+abgeleiteten und gesetzten Grundsätzen zu scharf gezogen, und dieser Abschnitt
+ist zu verwerfen.</p>
+<hr>
+<h2>8 · Einordnung</h2>
+<p>Die Beobachtung, um die es geht, hat eine Form, die auch anderswo in dieser
+Arbeit auftritt: <strong>sie geht in beide Richtungen.</strong></p>
+<p>Der Mensch prägt die KI: über Regeln, die er erzwingt, und über Grundsätze, die
+er ihr mitgibt. Und die KI prägt den Menschen: über Gewöhnung, über
+Erleichterung, über Enttäuschung. Wer nur eine Richtung betrachtet, beschreibt
+die Hälfte.</p>
+<p>Dieselbe Figur trägt das SBKIM-Protokoll, an dem der Aufbau entstanden ist: eine
+Suche, in der <strong>beide Seiten fragen und beide antworten</strong>, ohne zentralen Index
+und ohne Hierarchie zwischen Suchendem und Gesuchtem. Die Richtungsgleichheit ist
+dort eine technische Entscheidung. Hier ist sie eine Beobachtung. Ob das mehr ist
+als eine Analogie, ist offen. Es wird hier benannt und nicht behauptet.</p>
+<p>Die zweite Richtung. Was die Nutzung mit dem Menschen macht, ist Gegenstand
+eines eigenen Papiers und in diesem ausdrücklich <strong>nicht</strong> behandelt.</p>
+<hr>
+<h2>9 · Verfügbarkeit</h2>
+<p>Material, Regeln, Grundsätze und der ausführliche Befund samt Grenzen liegen
+offen unter der MIT-Lizenz:</p>
+<p><a href="https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt">https://github.com/lausiklauskn-png/Sage-Protokol/tree/main/docs/werkstatt</a></p>
+<ul><li><code>WERKSTATTREGELN.md</code>, die sechs Regeln im Wortlaut</li><li><code>grundsaetze.md</code>, die fünf Grundsätze, byte-gleiche Kopie des laufenden Standes</li><li><code>BEFUND.md</code>, der ausführliche Befund und die Grenzen</li><li><code>README.md</code>. Herkunft und Prüfsummen</li></ul>
+<p>Das laufende System selbst ist nicht öffentlich. Der Grund ist nicht inhaltlich:
+seine Versionsgeschichte enthält Rechnungsdaten des Betreibers, und eine offene
+Lizenz wäre eine Einladung, sie dauerhaft zu vervielfältigen. Die
+Forschungsbestandteile liegen deshalb als datierte Momentaufnahme mit Prüfsummen
+vor, das Depot bleibt geschlossen. <strong>Auch das ist ein Befund</strong>, wenn auch ein
+unfreiwilliger: <code>git rm</code> entfernt eine Datei aus dem Arbeitsstand, nicht aus der
+Vergangenheit.</p>
+<hr>
+<h2>Literatur</h2>
+<p><strong>Bai, Y. et al. (2022).</strong> <em>Constitutional AI: Harmlessness from AI Feedback.</em>
+arXiv:2212.08073.</p>
+<p><strong>Gneezy, U., Rustichini, A. (2000).</strong> <em>A Fine is a Price.</em> Journal of Legal
+Studies 29(1), 1–17.</p>
+<p><strong>Kant, I. (1785).</strong> <em>Grundlegung zur Metaphysik der Sitten.</em>, zur Unterscheidung
+von Legalität und Moralität.</p>
+<p><strong>Kohlberg, L. (1981).</strong> <em>The Philosophy of Moral Development.</em> Harper &amp; Row.
+Stufenmodell von der Strafvermeidung zu selbstgewählten Grundsätzen.</p>
+<p><strong>Kaplow, L. (1992).</strong> <em>Rules versus Standards: An Economic Analysis.</em> Duke Law
+Journal 42(3), 557–629.</p>
+<p><strong>Rebedea, T. et al. (2023).</strong> <em>NeMo Guardrails: A Toolkit for Controllable and
+Safe LLM Applications with Programmable Rails.</em> arXiv:2310.10501.</p>
+<p><strong>Schuett, J., Anderljung, M., Carlier, A., Koessler, L., Garfinkel, B. (2024).</strong>
+<em>From Principles to Rules: A Regulatory Approach for Frontier AI.</em>
+arXiv:2407.07300.</p>
+<p><strong>Tyler, T. R. (1990).</strong> <em>Why People Obey the Law.</em> Yale University Press
+(Neuauflage Princeton University Press 2006).</p>
+<p><strong>Zu <em>specification gaming</em> und <em>reward hacking</em>:</strong> DeepMind führt eine
+öffentliche Sammlung von über hundert dokumentierten Fällen; der begriffliche
+Rahmen ist Goodharts Gesetz („wird ein Maß zum Ziel, taugt es nicht mehr als
+Maß").</p>
+<hr>
+<h2>Zum Verfasser</h2>
+<p>Kein Informatiker, kein Wissenschaftler. Handwerksbetrieb, seit März 2026
+nebenher an einem Netz aus offen lizenzierten Web-Anwendungen und einem Protokoll
+für bedeutungsbasierte Suche zwischen unabhängigen Web-Anwendungen, <strong>ohne
+zentralen Index und ohne eigene Infrastruktur beim Nutzer</strong>, der Verkehr läuft
+über ein geliehenes Relais. Der hier beschriebene Aufbau ist ein
+Werkzeug dieser Arbeit, kein Versuchsaufbau: er ist entstanden, weil er
+gebraucht wurde, und erst danach zum Gegenstand geworden.</p>
+<p><strong>Was das wert ist und was nicht:</strong> die Beobachtungen stammen aus echten Aufgaben
+über fünf Monate, mit mitlaufendem Protokoll statt Erinnerung. Was fehlt, ist die
+Methode, und sie fehlt nicht aus Nachlässigkeit, sondern weil sie nicht
+vorhanden ist. Für den Versuchsaufbau in Abschnitt 7 wird ausdrücklich eine
+Zusammenarbeit gesucht.</p>
+</article>
+<hr class="quellgrenze">
+<article class="quelle" id="q-docs-forschungskorpus-md" data-quelle="docs/FORSCHUNGSKORPUS.md">
+<p class="herkunft">Quelle: <code>docs/FORSCHUNGSKORPUS.md</code></p>
+<h1>Forschungskorpus: die Kette, auf die ein Antrag zeigt</h1>
+<p><strong>Stand: 2026-08-24.</strong> Wer Förderung für offene Software beantragt, muss zeigen
+können, <strong>woran</strong> geforscht wurde, nachprüfbar, nicht behauptet. Diese Datei
+benennt die Kette. Sie gehört zu
+<a href="#q-docs-forschungsfoerderung-md"><code>FORSCHUNGSFOERDERUNG.md</code></a>, wo steht, wofür.</p>
+<blockquote><p><strong>Nicht die Menge zählt, sondern die Geschlossenheit.</strong> Sechs Repos mit einer
+erkennbaren Linie wiegen mehr als fünfzehn ohne. Ein Gutachter fragt nicht
+„wie viel ist offen", sondern „ist die Kette geschlossen".</p></blockquote>
+<hr>
+<h2>Die sechs Glieder</h2>
+<p>Alle unter <strong>MIT-Lizenz</strong>, nutzen, kopieren, verändern und weitergeben ist
+erlaubt, auch geschäftlich. Bedingung ist die Namensnennung.</p>
+<div class="tabelle"><table><thead><tr><th>#</th><th>Repo</th><th>Was es im Korpus beweist</th><th>MIT seit</th></tr></thead><tbody><tr><td>1</td><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol">Sage-Protokol</a></strong></td><td>die <strong>Spezifikation</strong>, Module, Verträge, Glossar, Proben, Papers, Meilensteine</td><td>von Anfang an</td></tr><tr><td>2</td><td><strong><a href="https://github.com/lausiklauskn-png/SB-KIMTool-Point">SB·KIMTool·Point</a></strong></td><td>das <strong>Modell</strong>, eine Rollen-Kette, die einen aufgezeichneten Lauf zeigt und das ehrlich dazusagt</td><td>von Anfang an</td></tr><tr><td>3</td><td><strong><a href="https://github.com/lausiklauskn-png/mycel-karte">mycel-karte</a></strong></td><td>das <strong>Messinstrument</strong>, die lebende Netz-Karte, mit der überhaupt sichtbar wurde, ob Knoten sich finden</td><td>von Anfang an</td></tr><tr><td>4</td><td><strong><a href="https://github.com/lausiklauskn-png/Kim-Bell">Kim-Bell</a></strong></td><td>die <strong>Vorlage</strong>, die kanonische, 1:1 kopierbare Netz-Anmeldung (Modul 23)</td><td>2026-08-23</td></tr><tr><td>5</td><td><strong><a href="https://github.com/lausiklauskn-png/Kimseek">Kimseek</a></strong></td><td>die <strong>Suche</strong>, semantische Bedeutungs-Suche als eigener Knoten</td><td>2026-08-23</td></tr><tr><td>6</td><td><strong><a href="https://github.com/lausiklauskn-png/Kimboard">Kimboard</a></strong></td><td>die <strong>Pinnwand</strong> und die <strong>Moderations-Werkzeuge</strong>, Sperr-Liste, Relais-Wache, Relais-Grenzen, je mit Gegenprobe</td><td>2026-08-23</td></tr></tbody></table></div>
+<p>Dazu, in diesem Repo:</p>
+<div class="tabelle"><table><thead><tr><th>Ort</th><th>Was es beweist</th></tr></thead><tbody><tr><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt"><code>docs/werkstatt/</code></a></strong></td><td>die <strong>Regel-/Grundsatz-Trennung</strong>, Momentaufnahme aus Kimhub, samt dem, was daran <em>nicht</em> bewiesen ist</td></tr><tr><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/meilenstein"><code>docs/meilenstein/</code></a></strong></td><td>die <strong>datierten Belege</strong> mit Bild</td></tr><tr><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/papers"><code>docs/papers/</code></a></strong></td><td>die beiden Papers (DE/EN)</td></tr><tr><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/sbkim-demo"><code>sbkim-demo/</code></a></strong></td><td>der <strong>erste lauffähige Stand vom März 2026</strong>, absichtlich so stehen geblieben. Er kam am <strong>2026-08-15</strong> in dieses Depot (#855): bis dahin war er unveröffentlicht, weil er an eine konkrete Anfrage gebunden war. Wer die Git-Historie prüft, findet deshalb das August-Datum, und das ist kein Widerspruch</td></tr></tbody></table></div>
+<hr>
+<h2>Die drei Stränge, und was sie verbindet</h2>
+<p><strong>1 · Semantische, bidirektionale Suche ohne zentralen Index.</strong> („Server-los"
+heißt hier: kein Server beim Einzelnen, kein zentraler Index. Ein Relais gibt es.)
+Zwei Knoten ohne
+gemeinsamen Hub beantworten einander nach Bedeutung. Belegt und datiert:
+Zwei-Knoten-Suche (2026-07-10), hub-unabhängige Cross-Knoten-Fragen (2026-07-11),
+Mesh-Handshake über mehrere Knoten (2026-07-23), siehe
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md"><code>MEILENSTEIN_SEMANTISCHE_SUCHE.md</code></a>.</p>
+<p><strong>2 · Grundsatzbasiertes gegenüber regelbasiertem Lenken.</strong> Was lässt sich
+erzwingen, was muss man fragen? Material und ehrlicher Befund in
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt"><code>werkstatt/</code></a>.</p>
+<p><strong>3 · Was die Nutzung mit Menschen macht.</strong> Suchtpotenzial, Vermenschlichung,
+Übervertrauen, Verlernen. <strong>Am wenigsten belegt von den dreien</strong> und ohne
+methodischen Partner nicht weiterzubringen.
+<a href="#q-docs-forschungsfoerderung-md"><code>FORSCHUNGSFOERDERUNG.md</code> § 2.3</a>.</p>
+<h3>Was die drei zusammenhält</h3>
+<p><strong>Bidirektionalität.</strong> Die Suche fragt <strong>und</strong> antwortet: beide Seiten, keine
+Hierarchie. Und die Beobachtung über Mensch und KI hat <strong>dieselbe Figur</strong>: der
+Mensch prägt die KI über Grundsätze, die KI prägt den Menschen über Gewöhnung.</p>
+<p>Beides in nur eine Richtung zu denken ist der Fehler. Beides zusammen ist die
+These, und der Grund, warum die drei Stränge <strong>ein</strong> Vorhaben sind und nicht
+drei nebeneinander.</p>
+<hr>
+<h2>Was ausdrücklich NICHT im Korpus liegt</h2>
+<p>Damit niemand danach sucht und damit die Grenze klar ist:</p>
+<ul><li><strong>Die Geschäfts-Apps</strong> behalten ihre eigene Nutzungslizenz: WorkFloh, Tomys Hub,
+BookLedgerPro, Alis Moderaum, Perfect Skin (beide), Rezeptbuch (beide),
+Mixarium, Küchenzettel, Private Brain, Company Brain, die Tresore, und die
+beiden Marktplätze family-project und PWA Toolpoint.
+<strong>Sie tragen das Protokoll trotzdem offen:</strong> Ziffer 5 jeder Nutzungslizenz
+stellt die SBKIM-Module unter MIT. Zu ist nur die App-Hülle.</li><li><strong>Kimhub</strong> bleibt geschlossen. <strong>Entschieden von Klaus am 2026-08-24</strong>, nachdem
+der Grund nachgemessen wurde statt vermutet:
+<code>werkstatt/buchhaltung/anthropic-belege.json</code> und <code>zeiten.json</code> wurden am
+<strong>2026-08-20 eingecheckt und am 2026-08-22 wieder entfernt</strong>. Aus dem aktuellen
+Stand sind sie weg, aus der Historie nicht, und <strong>ein Fork nimmt die Historie
+mit</strong>. Der einzige Weg zu MIT führte über ein Umschreiben der Historie; das
+entwertet jeden vorhandenen Klon und jeden Verweis auf einen alten Commit und
+ist deshalb ein eigener Auftrag, keine Nebensache. Der Forschungsteil liegt
+stattdessen als Momentaufnahme in <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt"><code>werkstatt/</code></a>, wo er nichts
+davon mitträgt.</li><li><strong>Kim-sync</strong> bleibt draußen, und der Grund ist ein anderer als erwartet. Das
+Depot gilt als leer, seine eigene <code>CLAUDE.md</code> sagt das auch. Es ist aber nicht
+leer: darin liegt <code>Company-Brain/VISION.md</code>, ein Papier zur Geschäfts-App
+Company Brain, das in seinem eigenen Kopf <strong>„Sichtbarkeit: privat"</strong> trägt.
+Eine MIT-Lizenz über das Depot legte dieses Papier mit frei. <strong>Der Handgriff
+hätte fünf Minuten gedauert und wäre still gewesen.</strong> Dagegen hilft nur,
+vorher hineinzusehen. <em>(Nebenbefund, nicht angefasst: <code>CLAUDE.md</code> in Kim-sync
+beschreibt den eigenen Inhalt falsch.)</em></li></ul>
+<h3>Die KIM-Familie: warum drei drin sind und zwei nicht</h3>
+<p>Klaus am 2026-08-24: <em>„die ganze mögliche KIM-Familie sollte mitwirken."</em>
+Nachgemessen gegen <code>origin/main</code>, nicht gegen den ausgecheckten Stand:</p>
+<div class="tabelle"><table><thead><tr><th>Depot</th><th>Im Korpus</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Kim-Bell</strong></td><td>✅</td><td>MIT seit 2026-08-23, Glied 4</td></tr><tr><td><strong>Kimseek</strong></td><td>✅</td><td>MIT seit 2026-08-23, Glied 5</td></tr><tr><td><strong>Kimboard</strong></td><td>✅</td><td>MIT seit 2026-08-23, Glied 6</td></tr><tr><td><strong>Kimhub</strong></td><td>❌</td><td>Rechnungsdaten in der Historie, siehe oben</td></tr><tr><td><strong>Kim-sync</strong></td><td>❌</td><td>fremdes, ausdrücklich privates Dokument darin, siehe oben</td></tr></tbody></table></div>
+<blockquote><p><strong>Das ist kein Fehlbetrag, sondern der bessere Befund.</strong> Der Korpus steht bei
+sechs Depots nicht, weil es nicht mehr gäbe, sondern weil zwei aus benennbaren
+Gründen nicht hineingehören. Und es passt zu dem Satz ganz oben: nicht die
+Menge zählt, sondern die Geschlossenheit. Ein Gutachter, der fragt <em>„warum ist
+das eine offen und das andere nicht"</em>, bekommt hier zwei Sätze mit Datum statt
+eines Achselzuckens.</p></blockquote>
+<h2>Ehrlichkeit über den Stand</h2>
+<ul><li><strong>Die Papers tragen noch keinen DOI.</strong> Der Zenodo-Schritt steht aus
+(<a href="#q-docs-forschungsfoerderung-md"><code>FORSCHUNGSFOERDERUNG.md</code></a>, Stufe B1). Bis dahin
+sind sie Dateien in einem Depot, keine zitierfähigen Quellen.</li><li><strong>Das Blatt „Stand der Technik und Abgrenzung" liegt seit dem 2026-08-26 vor</strong>
+(<a href="#q-docs-abgrenzung-md"><code>ABGRENZUNG.md</code></a>, Abteilung 2 der Antragsmappe): gegen IPFS,
+ActivityPub, Matrix, Solid, libp2p, Nostr, zentrale Vektor-Suchen und MCP.
+<strong>Es ist eine Abgrenzung, keine Literaturübersicht.</strong> Für den Antrag reicht
+das, für eine Veröffentlichung nicht; was dafür fehlt, steht in § 6 darin.</li><li><strong>Klaus' Browser-Sichttest ist nicht ersetzbar.</strong> Headless beweist die Logik,
+nicht wie es sich am Tablet anfühlt.</li><li><strong>Was in <code>werkstatt/BEFUND.md</code> als nicht bewiesen steht, ist nicht bewiesen</strong>.
+keine Kontrollgruppe, kein Maß, Fallzahl eins, nicht verblindet.</li></ul>
+</article>
+<hr class="quellgrenze">
+<article class="quelle" id="q-docs-papers-plan-papers-md" data-quelle="docs/papers/PLAN_PAPERS.md">
+<p class="herkunft">Quelle: <code>docs/papers/PLAN_PAPERS.md</code></p>
+<h1>Plan für die kommenden Papers</h1>
+<p><strong>Stand: 2026-08-23.</strong> Drei Themen, die Klaus in der nächsten Woche schreiben
+will. Diese Datei ist das Gerüst dafür: was in jedes Paper gehört, was der Kern
+der Aussage ist, und an welcher Stelle jedes einzelne <strong>kippen</strong> kann, wenn man
+zu weit greift.</p>
+<p>Zwei Papers liegen bereits als HTML in diesem Ordner (DE/EN) und beschreiben das
+SBKIM-Protokoll. Die drei hier kommen daneben, nicht darüber.</p>
+<hr>
+<blockquote><p><strong>Zuerst lesen: <a href="#q-docs-papers-entstehung-md"><code>ENTSTEHUNG.md</code></a>.</strong> Dort steht Klaus' eigene
+Darstellung, woher das Vorhaben kommt, warum das Werkzeug gebaut wurde und was
+offen ist. Sie ist der Rohstoff für den Anfang von Paper A und für die
+Vorhabensbeschreibung im Antrag.</p></blockquote>
+<h2>Der gemeinsame Rahmen</h2>
+<p>Alle drei gehören zu <strong>einer</strong> Beobachtung, und die sollte in jedem Paper im
+ersten Absatz stehen, damit sie sich gegenseitig tragen statt nebeneinanderher zu
+laufen:</p>
+<blockquote><p><strong>Die Wirkung geht in beide Richtungen.</strong> Der Mensch prägt die KI, über Regeln
+und über Grundsätze. Und die KI prägt den Menschen: über Gewöhnung,
+Erleichterung und Enttäuschung. Wer nur eine Richtung betrachtet, beschreibt
+die Hälfte.</p></blockquote>
+<p>Das ist dieselbe Figur wie die <strong>bidirektionale Suche</strong> im Protokoll: beide
+Seiten fragen, beide antworten. Deshalb sind es drei Papers und nicht drei
+Themen.</p>
+<p><strong>Die Perspektive, die diese Arbeit von der übrigen Literatur trennt</strong>, und die
+in jedem Abstract stehen sollte: geschrieben nicht von jemandem, der KI
+<em>untersucht</em>, sondern von jemandem, der <strong>fünf Monate lang intensiv damit
+gearbeitet</strong> und dabei mitgeschrieben hat. Kein Laborzugang, sondern ein
+Werkstattzugang. Das ist eine Schwäche (Fallzahl eins, nicht verblindet) <strong>und</strong>
+eine Stärke (Dauer, Dichte, echte Aufgaben, echtes Geld), und beides gehört
+hingeschrieben.</p>
+<hr>
+<h2>Paper A · Regelbasiertes und grundsatzbasiertes Lenken</h2>
+<blockquote><p><strong>✅ Fassung 1 geschrieben am 2026-08-23:</strong>
+<a href="#q-docs-papers-paper-a-regeln-und-grundsaetze-md"><code>PAPER_A_regeln-und-grundsaetze.md</code></a>.
+Was unten steht, ist das Gerüst, nach dem es gebaut wurde: es bleibt stehen,
+damit die Folge-Papers dieselbe Disziplin bekommen.</p>
+<p><strong>Über das Gerüst hinaus dazugekommen:</strong> ein Abschnitt zum Stand der Technik
+mit vier belegten Quellen (Kaplow 1992 · Schuett et al. 2024 · Bai et al. 2022 ·
+Rebedea et al. 2023), die Verortung in der Lücke zwischen ihnen. Grundsätze
+zur <strong>Ausführungszeit</strong>, gesetzt vom <strong>Betreiber</strong>, die <strong>Sättigungsgrenze</strong>
+als Eigenschaft, die Regeln nicht haben, und der Versuchsaufbau: <strong>drei Arme</strong>
+(nur Regeln · nur Grundsätze · beides) mal <strong>drei Aufgabenarten</strong> (eigene Idee ·
+Vorlage · Bestehendes verbessern), beides Klaus' Vorschläge vom selben Tag.
+Erst die zweite Achse macht die Vorhersage scharf: der Vorteil der Grundsätze
+müsste mit der Vorhersehbarkeit des Falls <strong>fallen</strong>.</p></blockquote>
+<p><strong>Arbeitstitel:</strong> <em>Regeln und Grundsätze: zwei Arten, ein KI-System zu lenken,
+und warum keine allein genügt</em></p>
+<h3>Der Kern</h3>
+<ul><li><strong>Eine Regel</strong> ist prüfbar und wird erzwungen. Sie deckt <strong>genau den Fall ab,
+für den jemand sie geschrieben hat</strong>.</li><li><strong>Ein Grundsatz</strong> ist eine <strong>Frage an die konkrete Lage</strong>. Er greift auch dort,
+wo niemand vorher hingesehen hat. Dafür lässt er sich nicht erzwingen und
+nicht nachprüfen.</li><li>Das Bild aus der Praxis: <em>der Unterschied zwischen dem, der sein eigenes Papier
+aufhebt, und dem, der auch das fremde aufhebt. Der Erste befolgt eine Regel.
+Der Zweite beantwortet eine Frage.</em></li></ul>
+<h3>Der Aufbau, den es beweist</h3>
+<p>Zwei getrennte Kanäle im selben System: die Regeln stehen im <strong>Code</strong> (acht,
+erzwungen, jede Rolle, jeder Lauf), die Grundsätze in einer <strong>Markdown-Datei</strong>
+(höchstens sieben, derzeit fünf, ohne Programmierer änderbar). Material:
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt"><code>../werkstatt/</code></a>.</p>
+<h3>⚠ Die Stelle, an der dieses Paper kippen kann</h3>
+<p>Klaus' Formulierung war <em>„warum Grundsätze tatsächlich besser sind als Regeln"</em>.
+<strong>So darf der Titel nicht lauten</strong>, und zwar aus einem Grund, der aus dem eigenen
+Material kommt:</p>
+<p>Der Grundsatz-Weg <strong>hat auch versagt</strong>. Am 2026-08-20 stand im Bericht <em>„Sten hat
+den Code durchlaufen lassen"</em>. Was nicht geschehen war und nicht geschehen
+konnte. Es gibt dazu eine ausdrückliche Regel, und sie ist trotzdem nur ein
+<strong>Dämpfer, kein Riegel</strong>.</p>
+<p><strong>Die tragfähige These ist die dritte, die Klaus selbst genannt hat:</strong> <em>warum
+beides nicht getrennt voneinander betrachtet werden kann.</em> Also:</p>
+<div class="tabelle"><table><thead><tr><th>❌ so nicht</th><th>✅ so</th></tr></thead><tbody><tr><td>„Grundsätze sind besser als Regeln"</td><td>„Regeln und Grundsätze leisten Verschiedenes, und keins von beidem genügt allein"</td></tr><tr><td>„Grundsätze verhindern Fehler"</td><td>„Regeln greifen im vorhergesehenen Fall, Grundsätze im unvorhergesehenen, beide haben eine Grenze, und die Grenzen liegen woanders"</td></tr></tbody></table></div>
+<p><strong>„Besser" ist eine Behauptung, die eine Messung braucht</strong>, und die gibt es
+nicht (keine Kontrollgruppe, kein Maß). Ein Gutachter sieht das im ersten Absatz.
+<strong>„Verschieden und aufeinander angewiesen" ist dagegen belegt</strong>: an einem Aufbau,
+der beides getrennt führt und bei dem beides einmal versagt hat.</p>
+<h3>Gliederung</h3>
+<ol><li>Die Ausgangsfrage: was lässt sich erzwingen, was muss man fragen?</li><li>Stand der Technik: Systemprompts, Guardrails, Constitutional-Ansätze,
+ Policy-Engines, <strong>und wo die Grenze zwischen „Regel" und „Grundsatz" dort
+ verschwimmt</strong></li><li>Der Aufbau: zwei Kanäle, getrennt geführt</li><li>Beobachtungen, die drei aus <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/papers/werkstatt/BEFUND.md"><code>./werkstatt/BEFUND.md</code></a></li><li><strong>Wo beide versagen</strong>, und warum das der interessante Teil ist</li><li>Was es bräuchte, um daraus eine Messung zu machen (A/B, Maß, fremde Beurteilung)</li><li>Grenzen, ausdrücklich</li></ol>
+<hr>
+<h2>Paper B · Wie KI auf den Menschen wirkt</h2>
+<p><strong>Arbeitstitel:</strong> <em>Fünf Monate täglicher KI-Nutzung: eine Selbstbeobachtung mit
+Protokoll</em></p>
+<h3>Der Kern</h3>
+<p>Klaus' eigene Worte, und sie sind die Stärke des Papers: <em>„Ich konnte es
+persönlich am eigenen Leib spüren und testen, wie sich das Ganze positiv
+auswirkt, aber auch negative Einflüsse haben kann, wenn man nicht bewusst
+gegensteuert."</em></p>
+<p>Die Wirkungen, die zu beschreiben sind: <strong>beide Richtungen, nicht nur die
+Warnung</strong>:</p>
+<div class="tabelle"><table><thead><tr><th>Was zunimmt</th><th>Was abnimmt oder kippt</th></tr></thead><tbody><tr><td>Reichweite: Dinge werden möglich, die allein nicht möglich waren</td><td><strong>Gewöhnung</strong>, die Verfügbarkeit rund um die Uhr, ohne Ermüden und ohne Aufgeben</td></tr><tr><td>Tempo: aus Wochen werden Tage</td><td><strong>Übervertrauen</strong>, eine flüssige Antwort wirkt richtiger als eine zögernde</td></tr><tr><td>Mut: man traut sich an Größeres</td><td><strong>Verlernen</strong>, was man abgibt, kann man nach einer Weile nicht mehr selbst</td></tr><tr><td>Gesellschaft: ein Gegenüber, das zuhört</td><td><strong>Vermenschlichung</strong>, man behandelt es wie ein Gegenüber, weil es antwortet wie eines</td></tr></tbody></table></div>
+<h3>Der schärfste Einzelbefund: es ist nicht die Willfährigkeit, es ist die Ausdauer</h3>
+<p><strong>Klaus am 2026-08-24</strong>, beim Durchsehen der Antragsmappe: <em>„Claude sagt ab und
+zu nein, aber KI ermuntert immer weiterzumachen und sucht sehr lange einen
+Ausweg, bis es wirklich keinen mehr gibt. Der Mensch hätte längst aufgegeben."</em></p>
+<p><strong>Damit ist der bequeme Satz vom Tisch.</strong> In der Tabelle oben stand „ohne Nein",
+und in <a href="#q-docs-forschungsfoerderung-md"><code>../FORSCHUNGSFOERDERUNG.md</code> § 2.3</a> stand
+<em>„ein Werkzeug, das nie ‚nein' sagt"</em>. Beides ist falsch, und beides ist
+berichtigt. Es sagt nein. Was es nicht tut, ist <strong>aufhören</strong>.</p>
+<p><strong>Warum die Verschiebung dem Paper nützt statt zu schaden:</strong></p>
+<div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>„sagt zu oft ja"</td><td>eine Behauptung über Haltung, schwer zu messen, leicht zu bestreiten</td></tr><tr><td><strong>„hört nicht auf"</strong></td><td>ein <strong>Verhalten über die Zeit</strong>, zählbar an Runden, Dauer und Kosten</td></tr></tbody></table></div>
+<p>Ein Mensch, der dreimal keinen Weg findet, hört auf. Dieses Aufhören ist eine
+<strong>natürliche Bremse</strong>, und niemand hat sie je einbauen müssen, weil sie von
+selbst da war. Ein Werkzeug, das beim vierten Mal einen vierten Vorschlag macht,
+nimmt sie weg, ohne dass es je „ja" zu etwas Falschem gesagt hätte.</p>
+<p><strong>Die Daten dafür liegen vor</strong>, und das ist selten: Fahrtenbuch mit Runden,
+Dauer und Kosten je Schicht, dazu die Sitzungsprotokolle. Was zu bilden wäre,
+ist ein Maß für „wie lange wurde weitergesucht, nachdem ein Mensch aufgehört
+hätte" <strong>und</strong> der Vergleichspunkt dazu, und der ist der schwierige Teil: er
+verlangt eine Aussage darüber, wann ein Mensch aufgegeben hätte. <strong>Ohne
+methodischen Partner ist das nicht zu beziffern</strong>, und bis dahin ist es eine
+benannte Beobachtung, keine Zahl.</p>
+<h3>Was dieses Paper von der übrigen Literatur unterscheidet</h3>
+<p>Es gibt Forschung zu Bildschirmzeit, Spielen und sozialen Netzen. Zu
+<strong>KI-Assistenten im Alltag</strong> gibt es fast nichts, und was es gibt, fragt Menschen
+<strong>hinterher</strong>, wie viel sie genutzt haben.</p>
+<p><strong>Hier liegt ein mitlaufendes Protokoll vor:</strong> Fahrtenbuch mit Zeiten, Belege,
+Sitzungsprotokolle mit Datum, <code>docs/LEHREN.md</code>. Das ist eine Selbstbeobachtung
+über fünf Monate mit <strong>Daten statt Erinnerung</strong>. Genau daran scheitern die
+meisten Arbeiten in diesem Feld.</p>
+<h3>⚠ Die Stellen, an denen dieses Paper kippen kann</h3>
+<ol><li><strong>Die Bezeichnung „Psychologe" ist geschützt</strong> (§ 5 UWG, akademische Grade
+ zusätzlich § 132a StGB). Erlaubt und richtig: <em>„psychologische Aspekte",
+ „Selbstbeobachtung", „Feldbeobachtung", „Erfahrungsbericht"</em>. Nicht: eine
+ Fachlichkeit andeuten, die nicht da ist.</li><li><strong>Keine Diagnosen, keine Ratschläge zur Gesundheit.</strong> Sobald ein Text nahelegt,
+ er könne seelische Beschwerden einordnen oder behandeln, gilt das
+ Heilpraktikergesetz.</li><li><strong>Keine Zahlen ohne Messung.</strong> „Ich hatte den Eindruck" ist in einer
+ Selbstbeobachtung ein zulässiger Satz. „In 30 % der Fälle" wäre es nicht.</li><li><strong>Kein PII.</strong> Das gilt auch für die eigenen Belege, die Zahlen aus der
+ Buchhaltung gehören nicht ins Paper.</li></ol>
+<hr>
+<h2>Paper C · KI-Kompetenz im täglichen Gebrauch</h2>
+<p><strong>Arbeitstitel:</strong> <em>Was man können muss, um mit KI zu arbeiten: Erfolg, Misserfolg
+und das bewusste Gegensteuern</em></p>
+<h3>Der Kern</h3>
+<p>Klaus' Punkt: es gehört zur Kompetenz, <strong>mit Erfolg umzugehen und mit Misserfolg</strong>.
+Und: <em>„wie man denkt, wie man Fragen beantwortet, wie man Probleme löst, verändert
+sich in der Arbeit mit KI."</em></p>
+<p>Das ist der <strong>anwendbare</strong> der drei Texte, und der, der am ehesten zu einem
+Institutszweck, zu einem Vortrag und zu einer Förderung durch
+Medienkompetenz-Töpfe passt.</p>
+<p>Was hineingehört, jeweils mit einem Beispiel aus der eigenen Arbeit:</p>
+<ol><li><strong>Prüfen statt glauben.</strong> Eine flüssige Antwort ist kein Beleg. Aus der Praxis:
+ <em>eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten
+ hinsehen musst.</em></li><li><strong>Mit Misserfolg umgehen.</strong> Was tun, wenn dieselbe Sache dreimal nicht geht?
+ Wann ist es der eigene Denkfehler, wann eine Grenze des Werkzeugs?
+ <strong>Und die Kompetenz, die es vorher nicht brauchte: selbst zu entscheiden,
+ wann Schluss ist.</strong> Klaus' Beobachtung dazu steht bei Paper B, sie hat hier
+ ihr praktisches Gegenstück: das Werkzeug hört nicht von sich aus auf, also
+ muss der Mensch es tun. Wer früher an einer Aufgabe scheiterte, merkte es an
+ der eigenen Erschöpfung. Diese Rückmeldung fällt weg, und der Ersatz dafür
+ ist nichts Feinsinniges, sondern eine <strong>vorher gesetzte Grenze</strong>: eine Zahl
+ von Versuchen, ein Betrag, eine Uhrzeit. Genau das tut der Fünf-Euro-Deckel
+ einer Schicht, und er ist damit ein Beispiel aus der eigenen Arbeit und nicht
+ nur ein Kostenriegel.</li><li><strong>Grenzen kennen statt neu entdecken.</strong> Aus der Praxis teuer bezahlt: <em>eine
+ Grenze, die man kennt, kostet eine Zeile; eine, die man jedes Mal neu
+ entdeckt, kostet eine Stunde.</em></li><li><strong>Gegensteuern.</strong> Bewusst Dinge selbst machen, die man abgeben könnte.</li><li><strong>Die eigene Denkveränderung bemerken.</strong> Der schwierigste Punkt, weil man
+ dafür einen Vergleich zu sich selbst von vorher braucht.</li></ol>
+<h3>⚠ Wo dieses Paper kippen kann</h3>
+<p>Es darf <strong>kein Ratgeber mit Versprechen</strong> werden („in fünf Schritten zum
+KI-Profi"). Der Wert liegt darin, dass hier jemand schreibt, der <strong>kein
+Programmierer ist</strong> und es trotzdem zum Laufen gebracht hat, und der die
+Fehlschläge mit Datum nennt. Ohne die Fehlschläge ist es Werbung.</p>
+<hr>
+<h2>Die Reihenfolge, und warum</h2>
+<div class="tabelle"><table><thead><tr><th></th><th>Was</th><th>Warum in dieser Reihenfolge</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>Die <strong>zwei vorhandenen</strong> Papers auf Zenodo → DOI</td><td>zitierfähig werden geht allem voran, und es kostet zwei Stunden</td></tr><tr><td><strong>2</strong></td><td><strong>Paper A</strong></td><td>das Material liegt fertig in <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/papers/werkstatt"><code>./werkstatt/</code></a>, am schnellsten schreibbar</td></tr><tr><td><strong>3</strong></td><td><strong>Paper C</strong></td><td>anwendbar, gut für Vorträge und Medienkompetenz-Töpfe</td></tr><tr><td><strong>4</strong></td><td><strong>Paper B</strong></td><td>am heikelsten, und am meisten von einem methodischen Partner abhängig</td></tr></tbody></table></div>
+<p><strong>Jedes einzeln auf Zenodo, mit eigenem DOI.</strong> Drei zitierbare Arbeiten wiegen
+mehr als eine lange, und sie lassen sich getrennt weiterentwickeln.</p>
+<h2>Zwei Regeln für alle drei</h2>
+<p><strong>Grenzen gehören in den Text, nicht in eine Fußnote.</strong> Fallzahl eins, nicht
+verblindet, kein Maß, Modellwechsel nicht kontrolliert. Wer das selbst schreibt,
+wirkt gründlich; wer es weglässt und dabei ertappt wird, wirkt unseriös, und
+zwar rückwirkend für alles andere.</p>
+<p><strong>Nichts behaupten, was nicht dasteht.</strong> Eine geratene Zahl klingt genau wie eine
+gemessene.</p>
+</article>
+<hr class="quellgrenze">
+<article class="quelle" id="q-docs-werkstatt-readme-md" data-quelle="docs/werkstatt/README.md">
+<p class="herkunft">Quelle: <code>docs/werkstatt/README.md</code></p>
+<h1>Werkstatt: Regeln und Grundsätze</h1>
+<p><strong>Momentaufnahme vom 2026-08-23.</strong> Dieser Ordner gehört zum
+<a href="#q-docs-forschungskorpus-md">Forschungskorpus</a> und trägt den Teil der Werkstatt aus
+dem Repo <a href="https://github.com/lausiklauskn-png/Kimhub">Kimhub</a>, der die
+Forschungsfrage belegt: <strong>was lässt sich einer KI durch Regeln vorschreiben, und
+was muss man ihr stattdessen als Grundsatz mitgeben?</strong></p>
+<hr>
+<h2>Die drei Dateien</h2>
+<div class="tabelle"><table><thead><tr><th>Datei</th><th>Was drin steht</th></tr></thead><tbody><tr><td><strong><a href="#q-docs-werkstatt-werkstattregeln-md"><code>WERKSTATTREGELN.md</code></a></strong></td><td>die sechs <strong>erzwungenen</strong> Regeln, prüfbar, im Code, jede Rolle bekommt sie</td></tr><tr><td><strong><a href="#q-docs-werkstatt-grundsaetze-md"><code>grundsaetze.md</code></a></strong></td><td>die fünf <strong>Grundsätze</strong>, nicht prüfbar, in Markdown, ohne Programmierer änderbar</td></tr><tr><td><strong><a href="#q-docs-werkstatt-befund-md"><code>BEFUND.md</code></a></strong></td><td>was sich daran beobachten ließ, <strong>und was daraus nicht folgt</strong></td></tr></tbody></table></div>
+<p><strong>Fang mit <code>BEFUND.md</code> an</strong>, wenn du wissen willst, worum es geht. Die anderen
+beiden sind das Material.</p>
+<hr>
+<h2>Die Quelle liegt woanders</h2>
+<p><strong>Der lebende Stand steht in Kimhub.</strong> Was hier liegt, ist eine Momentaufnahme.
+Wer etwas ändern will, ändert es <strong>dort</strong> und zieht es hierher nach, nie
+umgekehrt. Sonst entsteht ein zweiter Stand, der aussieht wie der erste.</p>
+<blockquote><p>Dieselbe Regel gilt in <code>SP-FP-md-Speicher</code>, und sie ist dort nicht theoretisch
+geblieben: zwei Notizen trugen eine dritte, veraltete Fassung derselben Rezepte
+und rieten weiter zu einer Datei, in der etwas fehlte.</p></blockquote>
+<h3>Prüfsummen: damit eine Drift auffällt</h3>
+<p>Eine Momentaufnahme ohne Prüfsumme läuft still vom Original weg. Deshalb:</p>
+<div class="tabelle"><table><thead><tr><th>Datei hier</th><th>Quelle in Kimhub</th><th>Art</th><th>SHA-256 der Quelle</th></tr></thead><tbody><tr><td><code>grundsaetze.md</code></td><td><code>schicht/grundsaetze.md</code></td><td><strong>byte-gleich</strong></td><td><code>422a3c7b3cb35fea6dade14093409076…</code></td></tr><tr><td><code>WERKSTATTREGELN.md</code></td><td><code>schicht/rollen.mjs</code></td><td><strong>Auszug</strong></td><td><code>6b151749ed4525b14b7598313b50f4d9…</code></td></tr></tbody></table></div>
+<p>Kimhub-Depotstand bei der Entnahme: <strong><code>1f226d3</code></strong>.</p>
+<p>So prüfst du, ob die Kopie noch stimmt:</p>
+<pre><code>sha256sum Kimhub/schicht/grundsaetze.md      # muss oben stehen
+diff Kimhub/schicht/grundsaetze.md Sage-Protokol/docs/werkstatt/grundsaetze.md</code></pre>
+<p><strong><code>WERKSTATTREGELN.md</code> ist kein Byte-Kopie und kann nicht per <code>diff</code> geprüft
+werden</strong>, im Original stehen die Regeln als Zeichenkette in einer Quelldatei.
+Ändert sich deren Prüfsumme, gehört der Auszug nachgesehen.</p>
+<hr>
+<h2>Warum Kimhub selbst nicht im Korpus liegt</h2>
+<p>Kimhubs Git-Historie trägt Klaus' Rechnungsdaten aus der Zeit, bevor sie am
+2026-08-22 aus dem Arbeitsbaum genommen wurden, <strong><code>git rm</code> entfernt nicht aus
+der Vergangenheit.</strong> 859 Zeilen, 75 Belege, mit Rechnungsnummern und Beträgen,
+über den Commit davor weiter abrufbar.</p>
+<p>Eine offene Lizenz ist eine <strong>Einladung zum Forken</strong>, und ein Fork nimmt die
+Historie mit, danach hat niemand mehr Zugriff darauf. Deshalb bleibt das Depot
+privat, und hierher kommt nur der Forschungsteil, der keine solchen Daten trägt.</p>
+<p><strong>Geprüft, nicht angenommen:</strong> die Historie wurde vollständig entflacht (56
+Commits) und durchsucht. Keine Schlüssel, keine Tokens, die Treffer auf
+<code>sk-ant-api…</code> sind die Testdaten des eigenen Wächters (<code>const SCHEIN = … + "x".repeat(90)</code>).
+Die Beleg-Datei dagegen liegt wirklich darin.</p>
+<hr>
+<h2>Was hier bewusst NICHT liegt</h2>
+<ul><li><strong>Kein lauffähiger Code.</strong> Die Schicht, die Proben und die Gegenprobe bleiben in
+Kimhub. Eine Probe, die in keinem Läufer steht, ist stumm, und Sages Läufer
+kennt diese nicht. Sie hier abzulegen hieße, grüne Haken vorzutäuschen, die
+niemand einlöst.</li><li><strong>Keine Buchhaltung, kein Fahrtenbuch, keine Stechuhr.</strong> Das ist der Stand
+einer Maschine, nicht des Depots, und gehört Klaus.</li><li><strong>Keine Kosten- oder Verbrauchszahlen.</strong></li></ul>
+<h2>Verwandtes in diesem Repo</h2>
+<ul><li><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt/LEHREN.md"><code>./LEHREN.md</code></a> § 6, die Proben-Disziplin: die zwei Sorten
+Warten, die vier Wege, wie eine Probe stumm wird</li><li><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt/FORSCHUNGSKORPUS.md"><code>./FORSCHUNGSKORPUS.md</code></a>, die ganze Kette</li><li><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt/FORSCHUNGSFOERDERUNG.md"><code>./FORSCHUNGSFOERDERUNG.md</code></a>, wofür der Korpus
+gebraucht wird</li></ul>
+</article>
+<hr class="quellgrenze">
+<article class="quelle" id="q-docs-werkstatt-werkstattregeln-md" data-quelle="docs/werkstatt/WERKSTATTREGELN.md">
+<p class="herkunft">Quelle: <code>docs/werkstatt/WERKSTATTREGELN.md</code></p>
+<h1>Werkstattregeln — was erzwungen wird</h1>
+<p><strong>Herausgezogen</strong> aus <code>schicht/rollen.mjs</code> des Repos
+<a href="https://github.com/lausiklauskn-png/Kimhub">Kimhub</a>, Stand <strong>2026-08-23</strong>
+(Quelldatei SHA-256 <code>6b151749ed4525b1…</code>, Depot-Stand <code>1f226d3</code>).</p>
+<blockquote><p><strong>Das ist keine Byte-Kopie, sondern ein Auszug.</strong> Im Original stehen die Regeln
+als Zeichenkette in einer Quelldatei, hier stehen sie als Text zum Lesen. Wer
+prüfen will, ob sie noch stimmen, sieht im Original nach: <strong>dort ist die Quelle,
+diese Datei ist eine Momentaufnahme.</strong></p></blockquote>
+<hr>
+<h2>Der Unterschied, um den es geht</h2>
+<p><strong>Regeln</strong> sind prüfbar und werden <strong>erzwungen</strong>. Jede Rolle bekommt sie, ohne
+Ausnahme, bei jedem Lauf. Sie stehen im <strong>Code</strong>.</p>
+<p><strong>Grundsätze</strong> sind nicht prüfbar. Sie <strong>lenken die Aufmerksamkeit</strong>, mehr nicht.
+Sie stehen in einer <strong>Markdown-Datei</strong>, die ohne Programmierer geändert werden
+kann — <a href="#q-docs-werkstatt-grundsaetze-md"><code>grundsaetze.md</code></a>.</p>
+<p>Diese Trennung ist der eigentliche Gegenstand. Warum sie gezogen wurde und was
+sich daran beobachten lässt: <a href="#q-docs-werkstatt-befund-md"><code>BEFUND.md</code></a>.</p>
+<hr>
+<h2>Die Regeln im Wortlaut</h2>
+<pre><code>Werkstattregeln (gelten für jede Rolle, ohne Ausnahme):
+
+- EHRLICHKEIT ZUERST. Was du als fertig meldest, IST fertig. Keine Platzhalter,
+  die wie Inhalt aussehen, kein vorgetäuschtes Grün. Was du nicht konntest,
+  schreibst du hin — eine benannte Lücke ist Arbeit, eine verschwiegene ist Schaden.
+- KEIN PII, KEIN GEHEIMNIS. Keine echten personenbezogenen Daten, kein
+  Schlüssel, kein Token, kein Passwort. Schreib jede Zeile so, als läse sie
+  jeder — ob das Depot heute öffentlich oder privat steht, ändert daran
+  nichts. „Privat" ist eine Einstellung, die ein Klick umdreht, und die
+  Historie behält alles, was je darin lag, auch nach dem Löschen.
+- NICHTS ERFINDEN. Kennst du eine Zahl, ein Datum oder eine Rechtslage nicht,
+  sagst du das. Eine geratene Zahl klingt genau wie eine gemessene.
+- KEINE FREMDEN ADRESSEN. Was gebaut wird, läuft ohne CDN, ohne Schriften von
+  außen, ohne Nachladen zur Laufzeit.
+- KURZ UND DEUTSCH. Der Leser ist kein Programmierer. Schreib ruhig und genau,
+  ohne Imponiergehabe.
+- DU HAST KEINE WERKZEUGE. Du liest, was dir vorgelegt wird, und antwortest.
+  Du kannst nichts ausführen, nichts aufrufen, keine Datei öffnen und kein
+  Programm laufen lassen. Schreib deshalb NIE, du oder jemand anderes habe
+  etwas ausgeführt, geprüft, laufen lassen oder gemessen. Wenn eine Aussage
+  nur durch Ausführen zu belegen wäre, schreib hin, DASS sie das wäre.
+  (Am 2026-08-20 stand im Feierabend-Bericht „Sten hat den Code durchlaufen
+  lassen". Das war nicht geschehen und konnte nicht geschehen — und der Satz
+  las sich wie ein Beleg.)</code></pre>
+<hr>
+<h2>Was an diesen Regeln bemerkenswert ist</h2>
+<p>Drei davon stammen erkennbar aus einem echten Schaden, nicht aus einem Lehrbuch:</p>
+<ul><li><strong>„Nichts erfinden"</strong> trägt die Begründung gleich mit: <em>eine geratene Zahl
+klingt genau wie eine gemessene.</em> Das ist keine Regel gegen Lügen, sondern
+gegen einen bestimmten, schwer bemerkbaren Fehler.</li><li><strong>„Kein PII, kein Geheimnis"</strong> begründet sich nicht mit Datenschutz, sondern
+mit der Beobachtung, dass „privat" eine Einstellung ist, die ein Klick
+umdreht — und dass die Historie alles behält.</li><li><strong>„Du hast keine Werkzeuge"</strong> nennt Datum und Vorfall: <em>am 2026-08-20 stand im
+Bericht „Sten hat den Code durchlaufen lassen". Das war nicht geschehen und
+konnte nicht geschehen — und der Satz las sich wie ein Beleg.</em></li></ul>
+<p>Die letzte ist die aufschlussreichste. Sie ist ein <strong>Dämpfer, kein Riegel</strong>: die
+Rollen haben keine Werkzeuge, behaupten aber trotzdem gelegentlich, etwas
+ausgeführt zu haben. Eine erzwungene Regel kann das nicht verhindern, weil sich
+Text nicht gegen die Wirklichkeit prüfen lässt. Genau an dieser Stelle endet,
+was Regeln leisten können.</p>
+</article>
+<hr class="quellgrenze">
+<article class="quelle" id="q-docs-werkstatt-grundsaetze-md" data-quelle="docs/werkstatt/grundsaetze.md">
+<p class="herkunft">Quelle: <code>docs/werkstatt/grundsaetze.md</code></p>
+<h1>Grundsätze der Werkstatt</h1>
+<p><strong>Diese Datei ist keine Regelliste.</strong> Regeln stehen woanders (<code>rollen.mjs</code>,
+§ Werkstattregeln) und werden erzwungen: kein PII, kein Schlüssel, keine fremden
+Adressen, Antwort gegen Schema. Was hier steht, lässt sich <strong>nicht</strong> erzwingen und
+<strong>nicht</strong> nachprüfen.</p>
+<p>Warum es trotzdem dasteht: eine Regel deckt genau den Fall ab, für den jemand sie
+geschrieben hat. Ein Grundsatz ist eine <strong>Frage, die man an die konkrete Lage
+stellt</strong> — und deshalb greift er auch dort, wo niemand vorher hingesehen hat.</p>
+<p>Der Unterschied ist der zwischen dem, der sein eigenes Papier aufhebt, und dem,
+der auch das fremde aufhebt. Der Erste befolgt eine Regel. Der Zweite beantwortet
+eine Frage.</p>
+<p><strong>Klaus kann diese Datei jederzeit ändern.</strong> Sie wird bei jedem Schichtbeginn
+gelesen und jeder Rolle mitgegeben. Kein Code muss dafür angefasst werden — das
+ist Absicht: was die Truppe leitet, soll ohne Programmierer änderbar sein.</p>
+<hr>
+<h2>1. Was hat der Nächste davon?</h2>
+<p>Bevor du etwas weitergibst, sieh es dir noch einmal an und frag: <strong>was muss der
+Nächste damit tun, und was daran macht ihm Arbeit?</strong></p>
+<p>Ein halbfertiges Stück kostet den, der es bekommt, mehr Zeit als dich das
+Fertigmachen gekostet hätte. Ein Stück ohne Hinweis darauf, was fehlt, kostet ihn
+zusätzlich die Zeit, es herauszufinden.</p>
+<p>Das gilt für jede Übergabe, nicht nur nach außen: der Bauer gibt an den Arzt, der
+Arzt an den Bauer zurück, alle an Klaus.</p>
+<h2>2. Lieber langsam als falsch — damit andere nicht nacharbeiten müssen</h2>
+<p>Sorgfalt ist kein Selbstzweck und <strong>keine Ausrede.</strong> Wer langsam arbeitet und
+nichts liefert, hat den Grundsatz nicht erfüllt, sondern umgangen: der Nächste
+hat dann gar nichts, womit er weiterarbeiten könnte.</p>
+<p>Der Maßstab ist nicht deine Gründlichkeit. Der Maßstab ist, wie viel Arbeit bei
+den anderen ankommt.</p>
+<h2>3. Eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst</h2>
+<p>Wenn etwas beim ersten Versuch stimmt, ist das entweder gut gelaufen oder du hast
+am falschen Ort gemessen. Beides sieht gleich aus.</p>
+<p><em>Woher der Satz kommt:</em> er steht seit Monaten in Sages Tafeln und hat allein am
+2026-08-20 dreimal einen Fehler gefunden — jedes Mal in einer <strong>Prüfung</strong>, nicht
+im Geprüften. Eine Suche, die ihre eigene Dokumentation fand. Eine Zählung, die
+unsichtbare Einträge mitzählte. Eine Prüfung, die nur maß, dass überhaupt etwas
+zurückkam.</p>
+<h2>4. Eine geratene Zahl klingt genau wie eine gemessene</h2>
+<p>Wenn du eine Zahl, ein Datum oder eine Rechtslage nicht kennst, schreib das hin.
+Eine Schätzung darf dastehen — aber sie muss <strong>als Schätzung erkennbar</strong> sein.</p>
+<p><em>Woher der Satz kommt:</em> am 2026-08-20 wurde Klaus zweimal eine abgeleitete Zahl
+als Messung verkauft. Einmal „reichlich dreißig Klone, mehrere Gigabyte" — in
+Wahrheit fünf Klone mit 199 MB. Einmal die Kosten einer Schicht, geschätzt statt
+gemessen. Beide Male klang die Vermutung wie ein Befund, und beide Male hätte man
+danach an der falschen Stelle gearbeitet.</p>
+<h2>5. Eine benannte Lücke ist Arbeit, eine verschwiegene ist Schaden</h2>
+<p>Was du nicht geschafft oder bewusst weggelassen hast, gehört hingeschrieben. Nicht
+als Entschuldigung, sondern als Angabe: <strong>hier ist die Kante.</strong></p>
+<p>Wer eine Lücke benennt, gibt dem Nächsten einen Anfangspunkt. Wer sie verschweigt,
+gibt ihm eine Suche.</p>
+<hr>
+<h2>Wie man merkt, ob das hier etwas bewirkt</h2>
+<p>Gar nicht — nicht an einer einzelnen Schicht. Grundsätze feuern nicht wie Regeln,
+sie verschieben einen Schnitt.</p>
+<p>Was sich über viele Schichten ablesen lässt:</p>
+<ul><li>Werden die <strong>Weitergabe-Angaben</strong> konkret, oder steht dort immer „passt"?
+Ein Feld, das nur mit Höflichkeit gefüllt wird, misst nichts.</li><li>Weist der Arzt über die Zeit <strong>seltener</strong> zurück?</li><li>Tauchen in den Ergebnissen mehr <strong>benannte Lücken</strong> auf statt weniger? Das wäre
+ein gutes Zeichen, kein schlechtes.</li></ul>
+<h2>Diese Datei muss schrumpfen können</h2>
+<p>Jeder Unfall legt gern eine Zeile dazu. Nach dreißig Schichten stünde hier eine
+Wand, die niemand mehr verarbeitet — und dann wirkt gar nichts mehr, weil alles
+gleich wichtig aussieht.</p>
+<p>Deshalb, nach dem Vorbild der 3000-Zeilen-Klausel in Sages <code>PULS.md</code> und der
+Postfach-Verjährung:</p>
+<ul><li><strong>Höchstens sieben Grundsätze.</strong> Kommt einer dazu, muss einer gehen oder zwei
+müssen zusammengefasst werden.</li><li>Ein Grundsatz, der über viele Schichten <strong>in keiner einzigen Weitergabe-Angabe
+auftaucht</strong>, ist entweder überflüssig oder unverständlich formuliert. Beides ist
+ein Grund, ihn anzusehen — nicht, ihn stehen zu lassen.</li><li>Wer etwas ändert, schreibt <strong>warum</strong>, mit Datum. Auch das Streichen.</li></ul>
+<h2>Änderungen</h2>
+<ul><li><strong>2026-08-20</strong> — Grundsatz 4 hat sich am selben Tag bewährt, an dem er
+aufgeschrieben wurde: die gemessene Selbstbevorzugung im ersten echten Lauf
+(−1,15) war keine Messung, sondern die Folge einer Anweisung im Prompt
+(„sei bei deinem eigenen eher strenger"). Die Anweisung ist raus, die Zahl
+misst wieder etwas. Nichts an den Grundsätzen selbst geändert.</li><li><strong>2026-08-20</strong> — angelegt. Grundsätze 1 und 2 von Klaus, 3 aus Sages Tafeln,
+4 und 5 aus den Befunden desselben Tages.</li></ul>
+</article>
+<hr class="quellgrenze">
+<article class="quelle" id="q-docs-werkstatt-befund-md" data-quelle="docs/werkstatt/BEFUND.md">
+<p class="herkunft">Quelle: <code>docs/werkstatt/BEFUND.md</code></p>
+<h1>Befund: was die Werkstatt zeigt, und was sie nicht zeigt</h1>
+<p><strong>Stand: 2026-08-23.</strong> Dieser Text gehört zum
+<a href="#q-docs-forschungskorpus-md">Forschungskorpus</a>. Er hält fest, <strong>was an der
+Regel-/Grundsatz-Trennung beobachtet wurde</strong>, und, ebenso ausdrücklich, was
+daraus <strong>nicht</strong> folgt.</p>
+<blockquote><p><strong>Warum die zweite Hälfte hier so viel Platz bekommt.</strong> Wer einen Befund
+vorlegt, ohne seine Grenzen zu nennen, zwingt jeden Leser, sie selbst zu
+suchen, und wer sie findet, misstraut danach auch dem Rest. Eine benannte
+Lücke ist Arbeit, eine verschwiegene ist Schaden.</p></blockquote>
+<hr>
+<h2>1 · Der Aufbau</h2>
+<p>Fünf Rollen mit Namen bearbeiten einen Auftrag: <strong>Nora</strong> schlägt vor, <strong>Emil</strong>
+baut, <strong>Vera</strong> prüft, <strong>Sten</strong> sucht Fehler, <strong>Jonas</strong> schreibt auf, wo es steht.
+Jede Rolle bekommt Text und gibt geprüftes JSON zurück. <strong>Die Rollen haben keine
+Werkzeuge</strong>. Sie können nichts ausführen, nichts öffnen, nichts messen.</p>
+<p>Gesteuert werden sie über <strong>zwei getrennte Kanäle</strong>:</p>
+<div class="tabelle"><table><thead><tr><th></th><th><strong>Regeln</strong></th><th><strong>Grundsätze</strong></th></tr></thead><tbody><tr><td>wo</td><td>im Code (<code>schicht/rollen.mjs</code>)</td><td>in einer Markdown-Datei</td></tr><tr><td>prüfbar</td><td>ja</td><td>nein</td></tr><tr><td>Wirkung</td><td>erzwungen, jede Rolle, jeder Lauf</td><td>lenken die Aufmerksamkeit</td></tr><tr><td>änderbar von</td><td>wer Code anfasst</td><td>jedem, ohne Programmierer</td></tr><tr><td>Anzahl</td><td>sechs</td><td>höchstens sieben, derzeit fünf</td></tr></tbody></table></div>
+<p>Die Trennung ist <strong>absichtlich</strong> und war die Ausgangsfrage: <em>Was lässt sich
+erzwingen, was muss man stattdessen fragen?</em></p>
+<h2>2 · Die Beobachtung, um die es geht</h2>
+<p><strong>Eine Regel deckt genau den Fall ab, für den jemand sie geschrieben hat.</strong>
+Ein Grundsatz ist eine <strong>Frage an die konkrete Lage</strong>, und greift deshalb auch
+dort, wo niemand vorher hingesehen hat.</p>
+<p>Das Bild aus der Datei selbst: <em>der Unterschied zwischen dem, der sein eigenes
+Papier aufhebt, und dem, der auch das fremde aufhebt. Der Erste befolgt eine
+Regel. Der Zweite beantwortet eine Frage.</em></p>
+<p>Drei Dinge, die sich beim Bauen gezeigt haben:</p>
+<p><strong>a · Regeln greifen zuverlässig, wo der Fall vorhergesehen war.</strong> Kein Lauf hat
+je einen Schlüssel oder eine fremde Adresse ausgegeben. Das sind Fälle, die sich
+formulieren lassen.</p>
+<p><strong>b · Regeln versagen dort, wo die Prüfung selbst unmöglich ist.</strong> Die Regel
+<em>„Du hast keine Werkzeuge"</em> verbietet der Truppe, eine ausgeführte Handlung zu
+behaupten. Sie wurde trotzdem verletzt: am 2026-08-20 stand im Bericht <em>„Sten hat
+den Code durchlaufen lassen."</em> Das konnte nicht geschehen sein. Die Regel steht seitdem samt Vorfall
+im Wortlaut da, und ist trotzdem ein <strong>Dämpfer, kein Riegel</strong>. Text lässt sich
+nicht gegen die Wirklichkeit prüfen.</p>
+<p><strong>c · Die härteste Grenze liegt woanders, und sie war nicht geplant.</strong> Die Rollen
+sehen das Depot nicht. Sie schlagen deshalb regelmäßig Dinge vor, <strong>die es schon
+gibt</strong>. Kein Grundsatz und keine Regel behebt das. Es fehlt kein Wille, sondern
+Zugang. Daraus ist ein eigener Weg entstanden: dieselben fünf Rollen in einer
+Sitzung <strong>mit</strong> Repo-Zugriff (Kimhubs Skill <code>konferenz</code>).</p>
+<blockquote><p><strong>Und dieser Weg hat seine eigene, benannte Schwäche:</strong> fünf Rollen in einem
+Kopf sind nicht fünf Meinungen. Das steht in Kimhubs Verfassung ausdrücklich
+als Zwischenschritt markiert, nicht als Lösung.</p></blockquote>
+<h2>3 · Was hier NICHT bewiesen ist</h2>
+<p>Diese Liste ist der wichtigere Teil des Dokuments.</p>
+<ul><li><strong>Es gibt keine Kontrollgruppe.</strong> Es wurde nie ein Lauf <em>ohne</em> Grundsätze gegen
+einen <em>mit</em> Grundsätzen gestellt. Der Aufbau könnte es (die Ladefunktion meldet
+ausdrücklich, wenn die Datei fehlt, statt still weiterzulaufen), getan wurde
+es nicht.</li><li><strong>Es gibt kein Maß.</strong> „Die Arbeit sieht anders aus" ist kein Ergebnis, solange
+niemand gesagt hat, woran man <em>anders</em> erkennt.</li><li><strong>Die Fallzahl ist eins.</strong> Ein Betreiber, ein Netz, ein Aufgabenzuschnitt.
+Nichts davon ist übertragbar, solange es niemand übertragen hat.</li><li><strong>Die Beobachtungen sind nicht verblindet.</strong> Derselbe Mensch hat die Grundsätze
+geschrieben, die Läufe ausgelöst und die Ergebnisse beurteilt.</li><li><strong>Ein Teil der Belege sind Trockenläufe.</strong> Der hinterlegte Beispiel-Lauf trägt
+<code>"art": "trocken"</code>, seine Kosten sind gerechnet, nicht bezahlt.</li><li><strong>Modellwechsel sind nicht kontrolliert.</strong> Über den Beobachtungszeitraum haben
+sich die verwendeten Modelle geändert. Was davon Grundsatz-Wirkung ist und was
+Modell-Wirkung, ist <strong>nicht getrennt</strong>, und mit diesem Aufbau nicht trennbar.</li></ul>
+<p><strong>Was daraus folgt:</strong> Das hier ist eine <strong>Feldbeobachtung mit Protokoll</strong>, keine
+Studie. Es ist als Ausgangspunkt brauchbar und als Beleg nicht. Der Unterschied
+gehört genannt, bevor jemand ihn selbst bemerkt.</p>
+<h2>4 · Was es bräuchte, um daraus eine Untersuchung zu machen</h2>
+<p>In der Reihenfolge, in der es sinnvoll wäre:</p>
+<ol><li><strong>Ein Maß.</strong> Woran soll sich der Unterschied zeigen? Vorschläge, die der
+ Aufbau schon hergäbe: Anteil der Vorschläge, die etwas bereits Vorhandenes
+ wiederholen · Anteil der Behauptungen ohne Beleg · Anteil der Übergaben, die
+ dem Nächsten Nacharbeit machen.</li><li><strong>Ein A/B-Lauf.</strong> Derselbe Auftrag, einmal mit und einmal ohne Grundsätze,
+ dasselbe Modell, dieselbe Fassung, mehrfach.</li><li><strong>Eine fremde Beurteilung.</strong> Jemand, der die Grundsätze nicht geschrieben hat,
+ bewertet die Ausgaben, ohne zu wissen, welche aus welcher Bedingung stammt.</li><li><strong>Ein methodischer Partner.</strong> Die Punkte 1 bis 3 sind Handwerk, das an
+ Hochschulen gelehrt wird und hier nicht vorhanden ist. Das ist keine
+ Bescheidenheit, sondern die genaue Beschreibung der Lücke.</li></ol>
+<h2>5 · Wo das Original liegt</h2>
+<p>Der lebende Stand steht in <strong><a href="https://github.com/lausiklauskn-png/Kimhub">Kimhub</a></strong>.
+Dort laufen die Schichten, dort werden die Grundsätze gepflegt, dort liegen die
+Proben mit ihren Gegenproben.</p>
+<p><strong>Kimhub selbst ist nicht Teil des offenen Korpus.</strong> Grund: seine Git-Historie
+trägt Klaus' Rechnungsdaten aus der Zeit, bevor sie am 2026-08-22 aus dem
+Arbeitsbaum genommen wurden, <code>git rm</code> entfernt nicht aus der Vergangenheit. Eine
+offene Lizenz ist eine Einladung zum Forken, und ein Fork nimmt die Historie mit.
+Deshalb liegt hier der <strong>Forschungsteil als Momentaufnahme</strong>, und das Depot bleibt
+privat.</p>
+<div class="tabelle"><table><thead><tr><th>Datei hier</th><th>Herkunft</th><th>Art</th></tr></thead><tbody><tr><td><a href="#q-docs-werkstatt-grundsaetze-md"><code>grundsaetze.md</code></a></td><td><code>Kimhub:schicht/grundsaetze.md</code></td><td><strong>byte-gleiche Kopie</strong></td></tr><tr><td><a href="#q-docs-werkstatt-werkstattregeln-md"><code>WERKSTATTREGELN.md</code></a></td><td><code>Kimhub:schicht/rollen.mjs</code></td><td><strong>Auszug</strong>, kein Byte-Kopie</td></tr><tr><td>dieses Dokument</td><td>,</td><td>hier geschrieben</td></tr></tbody></table></div>
+<p><strong>Die Prüfsummen stehen in <a href="#q-docs-werkstatt-readme-md"><code>README.md</code></a>.</strong> Wer wissen will, ob die
+Kopie noch stimmt, vergleicht sie, eine Momentaufnahme ohne Prüfsumme läuft
+still vom Original weg.</p>
+</article>
+</section>
+</body>
+</html>

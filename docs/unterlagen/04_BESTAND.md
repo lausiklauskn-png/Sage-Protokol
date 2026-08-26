@@ -4,17 +4,17 @@
 kommen aus `git log` und aus den Dateien selbst. Wer diese Datei von Hand
 ändert, verliert die Änderung beim nächsten Lauf.
 
-> **Warum sie erzeugt wird.** Der Bestand ändert sich. Eine Liste von Hand ist
-> am Tag nach dem Schreiben falsch und sieht dabei genauso aus wie eine richtige.
+> **Warum sie erzeugt wird.** Der Bestand ändert sich. Zeitraum und Umfang
+> kommen deshalb bei jedem Lauf frisch aus `git log` und aus den Dateien
+> selbst, nicht aus einer gepflegten Liste.
 
 ---
 
 ## 1 · Die Kennzahlen, jede mit ihrer Definition
 
-Zwei Zahlen für dieselbe Sache sind ein Widerspruch, sobald jemand sie
-nebeneinander liest. Am 2026-08-26 standen 5.823 und
-5.775 in derselben Mappe, beide „Einträge"
-genannt. Beide waren richtig. Deshalb trägt hier jede Zahl, was sie zählt.
+**Jede Zahl trägt, was sie zählt.** Zwei Angaben für dieselbe Sache sind für
+jeden, der sie nebeneinander liest, ein Widerspruch, auch wenn beide stimmen.
+Die Definition steht deshalb in derselben Zeile wie der Wert.
 
 | Kennzahl | Wert | Was genau gezählt wird |
 |---|---|---|
@@ -39,7 +39,7 @@ In dieser Reihenfolge nimmt man sie in die Hand.
 
 | Was | Wo | Stände dieser Datei | Umfang | Lücke |
 |---|---|---|---|---|
-| **Fahrplan Forschungsgelder** | `docs/FORSCHUNGSFOERDERUNG.md` | 2026-08-23 bis 2026-08-26 | 79 KB, 1.442 Zeilen | keine benannt |
+| **Fahrplan Forschungsgelder** | `docs/FORSCHUNGSFOERDERUNG.md` | 2026-08-23 bis 2026-08-26 | 78 KB, 1.432 Zeilen | keine benannt |
 | **Die Schritte, abhakbar** | `docs/unterlagen/01_SCHRITTE.md` | 2026-08-26 bis 2026-08-26 | 7 KB, 141 Zeilen | keine benannt |
 | **Frageblatt Steuerberater** | `docs/STEUERBERATER_FRAGEN.md` · `docs/frageblatt.html` · `docs/frageblatt.pdf` | 2026-08-24 bis 2026-08-26 | 200 KB, 817 Zeilen | Die Kleinunternehmerregelung steht nur als Aufzählungspunkt unter Frage 7. Der Fragebogen zur steuerlichen Erfassung verlangt dafür ein Kreuz. |
 | **Vorbereitung Finanzamt** | `docs/unterlagen/03_FINANZAMT.md` | 2026-08-26 bis 2026-08-26 | 5 KB, 122 Zeilen | Ohne ELSTER-Zertifikat geht der Fragebogen nicht ab. Das Zertifikat kommt per Brief und hat als einziger Schritt eine Vorlaufzeit. |
@@ -59,22 +59,23 @@ In dieser Reihenfolge nimmt man sie in die Hand.
 Nach dem Tag, an dem der erste Stand davon abgelegt wurde. Dieselbe Liste,
 andere Ordnung, und sie zeigt etwas anderes: woran zuerst gearbeitet wurde.
 
-| Nr. | Was | erster Stand | letzter Stand | Stände |
-|---|---|---|---|---|
-| 1 | **Sitzungsprotokolle** | 2026-05-10 | 2026-08-26 | 239 |
-| 2 | **Die beiden SBKIM-Papers, DE und EN** | 2026-05-18 | 2026-05-18 | 2 |
-| 3 | **Meilensteine mit Bild** | 2026-06-21 | 2026-08-16 | 12 |
-| 4 | **Die Lehren** | 2026-08-22 | 2026-08-22 | 1 |
-| 5 | **Entstehung, Klaus’ Darstellung** | 2026-08-23 | 2026-08-26 | 3 |
-| 6 | **Fahrplan Forschungsgelder** | 2026-08-23 | 2026-08-26 | 12 |
-| 7 | **Forschungskorpus** | 2026-08-23 | 2026-08-26 | 5 |
-| 8 | **Paper A, Regeln und Grundsätze** | 2026-08-23 | 2026-08-24 | 8 |
-| 9 | **Werkstatt-Material aus Kimhub** | 2026-08-23 | 2026-08-26 | 5 |
-| 10 | **Arbeitszeitnachweis, Tag für Tag** | 2026-08-24 | 2026-08-26 | 3 |
-| 11 | **Frageblatt Steuerberater** | 2026-08-24 | 2026-08-26 | 4 |
-| 12 | **Historie der Zusammenarbeit** | 2026-08-24 | 2026-08-24 | 2 |
-| 13 | **Die Schritte, abhakbar** | 2026-08-26 | 2026-08-26 | 2 |
-| 14 | **Vorbereitung Finanzamt** | 2026-08-26 | 2026-08-26 | 1 |
+
+| Nr. | Was | erster Stand | letzter Stand |
+|---|---|---|---|
+| 1 | **Sitzungsprotokolle** | 2026-05-10 | 2026-08-26 |
+| 2 | **Die beiden SBKIM-Papers, DE und EN** | 2026-05-18 | 2026-05-18 |
+| 3 | **Meilensteine mit Bild** | 2026-06-21 | 2026-08-16 |
+| 4 | **Die Lehren** | 2026-08-22 | 2026-08-22 |
+| 5 | **Entstehung, Klaus’ Darstellung** | 2026-08-23 | 2026-08-26 |
+| 6 | **Fahrplan Forschungsgelder** | 2026-08-23 | 2026-08-26 |
+| 7 | **Forschungskorpus** | 2026-08-23 | 2026-08-26 |
+| 8 | **Paper A, Regeln und Grundsätze** | 2026-08-23 | 2026-08-24 |
+| 9 | **Werkstatt-Material aus Kimhub** | 2026-08-23 | 2026-08-26 |
+| 10 | **Arbeitszeitnachweis, Tag für Tag** | 2026-08-24 | 2026-08-26 |
+| 11 | **Frageblatt Steuerberater** | 2026-08-24 | 2026-08-26 |
+| 12 | **Historie der Zusammenarbeit** | 2026-08-24 | 2026-08-24 |
+| 13 | **Die Schritte, abhakbar** | 2026-08-26 | 2026-08-26 |
+| 14 | **Vorbereitung Finanzamt** | 2026-08-26 | 2026-08-26 |
 
 ## 4 · Was außerhalb der Depots liegt
 

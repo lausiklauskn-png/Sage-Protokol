@@ -1,0 +1,101 @@
+/* lesefassung-stil.mjs, das Aussehen der Lesefassung.
+ *
+ * Klaus 2026-08-26: „einfach nur, damit das Lesen mehr Spass macht."
+ *
+ * ── DREI ENTSCHEIDUNGEN, JEDE MIT GRUND ───────────────────────────────────
+ *
+ * 1 · EINE ZEILE HAT HOECHSTENS ETWA 68 ZEICHEN. Laenger, und das Auge
+ *     verliert beim Ruecksprung die naechste Zeile. Das ist der groesste
+ *     einzelne Unterschied zwischen einer Seite, die man liest, und einer,
+ *     die man ueberfliegt.
+ *
+ * 2 · DER FLIESSTEXT STEHT IN EINER SERIFEN-SCHRIFT, die Ueberschriften und
+ *     alles Technische serifenlos. Lange Texte lesen sich mit Serifen
+ *     ruhiger; Tabellen, Code und Marken brauchen die klarere Form.
+ *
+ * 3 · HELL UND DUNKEL FOLGEN DEM GERAET. Kein Umschalter: einer waere ein
+ *     Knopf mehr auf einer Seite, die zum Lesen da ist, und das Geraet weiss
+ *     es ohnehin besser.
+ */
+
+export const LESE_STIL = `
+:root{
+  --papier:#fbf9f4; --tinte:#22242a; --leise:#5d6470; --linie:#e3ded2;
+  --akzent:#8a5a12; --kasten:#f4f0e6;
+  --gelb:#ffe9a3; --gruen:#c9ecc4; --rosa:#ffd0d8; --blau:#cfe3ff;
+  --mass:68ch;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --papier:#14161b; --tinte:#e8e6e1; --leise:#9aa1ad; --linie:#2b3038;
+    --akzent:#e0b25e; --kasten:#1b1f26;
+    --gelb:#6b5a12; --gruen:#2d5230; --rosa:#5e2b34; --blau:#22406b;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--papier); color:var(--tinte);
+  font:1.06rem/1.72 Charter, "Iowan Old Style", Georgia, "Times New Roman", serif;
+  text-rendering:optimizeLegibility;
+}
+main{max-width:var(--mass); margin:0 auto; padding:2.2rem 1.15rem 6rem}
+
+h1,h2,h3,h4{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  line-height:1.25; overflow-wrap:anywhere; hyphens:auto;
+}
+h1{font-size:1.85rem; margin:0 0 .2rem; letter-spacing:-.01em}
+h2{font-size:1.28rem; margin:2.6rem 0 .5rem; color:var(--akzent)}
+h3{font-size:1.06rem; margin:1.9rem 0 .35rem}
+h4{font-size:.98rem; margin:1.4rem 0 .3rem; color:var(--leise)}
+h2+h3{margin-top:1rem}
+
+p{margin:0 0 1.05rem}
+/* Kein Erstzeilen-Einzug nach einer Ueberschrift: dort faengt der Gedanke an. */
+h1+p,h2+p,h3+p,h4+p,blockquote p:first-child,li p:first-child{margin-top:0}
+
+strong{font-weight:650}
+em{font-style:italic}
+a{color:var(--akzent); text-underline-offset:.18em}
+
+ul,ol{margin:0 0 1.05rem; padding-left:1.35rem}
+li{margin:.28rem 0}
+
+blockquote{
+  margin:1.3rem 0; padding:.85rem 1.05rem;
+  background:var(--kasten); border-left:3px solid var(--akzent);
+  border-radius:0 7px 7px 0;
+}
+blockquote p:last-child{margin-bottom:0}
+
+code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.86em; background:var(--kasten); padding:.12em .35em;
+  border-radius:4px; overflow-wrap:anywhere;
+}
+pre{
+  background:var(--kasten); border:1px solid var(--linie); border-radius:8px;
+  padding:.85rem 1rem; overflow-x:auto; font-size:.86rem; line-height:1.55;
+}
+pre code{background:none; padding:0; font-size:1em}
+
+/* Breiter Inhalt scrollt in SEINEM Kasten, nie die Seite. */
+.tabelle{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:1.2rem 0}
+table{border-collapse:collapse; width:100%;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      font-size:.92rem}
+th,td{text-align:left; padding:.5rem .6rem; border-bottom:1px solid var(--linie);
+      vertical-align:top; overflow-wrap:anywhere}
+th{color:var(--leise); font-weight:600; white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+
+hr{border:0; border-top:1px solid var(--linie); margin:2.4rem 0}
+
+.kopf{border-bottom:1px solid var(--linie); padding-bottom:1rem; margin-bottom:1.6rem}
+.kopf .unter{color:var(--leise); font-size:.9rem;
+             font-family:system-ui,-apple-system,sans-serif; margin:.35rem 0 0}
+.fuss{margin-top:3.5rem; padding-top:1rem; border-top:1px solid var(--linie);
+      color:var(--leise); font-size:.85rem;
+      font-family:system-ui,-apple-system,sans-serif}
+`;

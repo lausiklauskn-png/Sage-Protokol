@@ -1,0 +1,264 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Die Schritte, abhakbar</title>
+<!-- Klaus Nitzsche · Hamburg · Stand 2026-08-26Herkunft: Depot Sage-Protokol, github.com/lausiklauskn-png/Sage-ProtokolTexte CC BY 4.0 · Code und Material MIT -->
+<style>
+:root{color-scheme:light dark;--grund:#f7f6f3;--tinte:#1b1b1b;--matt:#5a5a5a;
+--kante:#d8d5cf;--karte:#fff;--akzent:#7a4b1e;--warn:#8a1c1c;--gruen:#1f5c34}
+@media (prefers-color-scheme:dark){:root{--grund:#14161a;--tinte:#e8e6e1;
+--matt:#a4a09a;--kante:#2e3238;--karte:#1b1e23;--akzent:#e0a253;--warn:#ff8a80;
+--gruen:#7fd6a0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--grund);color:var(--tinte);
+font:16px/1.65 Georgia,"Times New Roman",serif;padding:0 0 4rem}
+.hut{position:sticky;top:0;z-index:5;background:var(--karte);
+border-bottom:1px solid var(--kante);padding:.7rem 1rem}
+.hut nav{max-width:52rem;margin:0 auto;display:flex;gap:1rem;flex-wrap:wrap;
+align-items:baseline;font-family:system-ui,sans-serif;font-size:.85rem}
+.hut strong{font-size:.95rem}
+.hut a{color:var(--akzent)}
+.abteilung{max-width:52rem;margin:0 auto;padding:2rem 1rem 0}
+.abt-kopf{border:1px solid var(--kante);background:var(--karte);
+border-radius:10px;padding:1.2rem 1.3rem;margin:1.5rem 0 2.5rem}
+.marke{font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.14em;
+color:var(--matt);margin:0 0 .3rem}
+.abt-kopf h1{margin:.1rem 0 .2rem;font-size:1.6rem;line-height:1.25}
+.unter{margin:0 0 .9rem;color:var(--matt);font-style:italic}
+.stempel{font-family:system-ui,sans-serif;font-size:.82rem;line-height:1.6;
+color:var(--matt);margin:0 0 .9rem}
+.hinweis{font-family:system-ui,sans-serif;font-size:.88rem;
+border-left:3px solid var(--akzent);padding:.5rem .8rem;margin:0 0 1rem;
+background:color-mix(in srgb,var(--akzent) 8%,transparent)}
+[data-abteilung="privat"] .hinweis{border-left-color:var(--warn);
+background:color-mix(in srgb,var(--warn) 9%,transparent)}
+.knoepfe{display:flex;gap:.6rem;flex-wrap:wrap;margin:0 0 .6rem}
+button{font:inherit;font-family:system-ui,sans-serif;font-size:.9rem;
+padding:.6rem .9rem;min-height:44px;border:1px solid var(--kante);
+border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
+button:hover{border-color:var(--akzent)}
+.lage{font-family:system-ui,sans-serif;font-size:.85rem;margin:.2rem 0 .8rem;
+min-height:1.2em;color:var(--matt)}
+.lage[data-art="fehler"]{color:var(--warn)}
+.lage[data-art="gut"]{color:var(--gruen)}
+.verzeichnis{font-family:system-ui,sans-serif;font-size:.85rem;
+border-top:1px solid var(--kante);padding-top:.7rem;margin-top:.3rem}
+.verzeichnis p{margin:0 0 .35rem;color:var(--matt)}
+.verzeichnis ul{margin:0;padding-left:1.1rem}
+.quelle{margin:0 0 2rem}
+.herkunft{font-family:system-ui,sans-serif;font-size:.75rem;color:var(--matt);
+margin:0 0 1rem;letter-spacing:.02em}
+.quellgrenze{border:0;border-top:2px solid var(--kante);margin:3rem 0}
+h1,h2,h3,h4,h5,h6{line-height:1.3;margin:1.9rem 0 .6rem}
+.quelle h1{font-size:1.5rem;border-bottom:1px solid var(--kante);
+padding-bottom:.3rem}
+.quelle h2{font-size:1.25rem}
+.quelle h3{font-size:1.08rem}
+.quelle h4,.quelle h5,.quelle h6{font-size:1rem}
+p{margin:0 0 1rem}
+a{color:var(--akzent)}
+code{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:.88em;
+background:color-mix(in srgb,var(--tinte) 8%,transparent);
+padding:.1em .3em;border-radius:4px}
+pre{background:var(--karte);border:1px solid var(--kante);border-radius:8px;
+padding:.9rem;overflow-x:auto}
+pre code{background:none;padding:0;font-size:.85rem}
+blockquote{margin:1rem 0;padding:.2rem 0 .2rem 1rem;
+border-left:3px solid var(--kante);color:var(--matt)}
+blockquote strong{color:var(--tinte)}
+ul,ol{margin:0 0 1rem;padding-left:1.4rem}
+li{margin:.3rem 0}
+.haken{font-family:system-ui,sans-serif}
+.tabelle{overflow-x:auto;margin:0 0 1.2rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--kante);padding:.45rem .6rem;
+text-align:left;vertical-align:top}
+th{background:var(--karte);font-family:system-ui,sans-serif;font-size:.85rem}
+hr{border:0;border-top:1px solid var(--kante);margin:2rem 0}
+.fuss{max-width:52rem;margin:3rem auto 0;padding:1rem;
+font-family:system-ui,sans-serif;font-size:.8rem;color:var(--matt);
+border-top:1px solid var(--kante)}
+
+
+/* Die drei Farben setzen Grund UND Schrift. Damit lesen sie sich in hell
+   und dunkel gleich — eine helle Fläche ohne gesetzte Schriftfarbe wäre im
+   dunklen Thema weiße Schrift auf hellem Grund. */
+mark.mk{background:#b7f0c2;color:#10331a;border-radius:3px;
+padding:.06em .05em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+mark.mk[data-farbe="gelb"]{background:#fdedb0;color:#3a2f05}
+mark.mk[data-farbe="rot"]{background:#ffc4bd;color:#45120c}
+mark.mk[data-notiz]{box-shadow:inset 0 -2px 0 rgba(0,0,0,.45)}
+
+.mk-leiste{position:fixed;z-index:30;display:none;gap:.3rem;padding:.35rem;
+background:var(--karte);border:1px solid var(--kante);border-radius:12px;
+box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.mk-leiste[data-offen="ja"]{display:flex}
+.mk-leiste{flex-wrap:wrap;max-width:min(94vw,30rem)}
+/* Der Farbtupfen ist eine CSS-Flaeche, KEIN Emoji. Ein Emoji haengt an der
+   Schrift des Geraets -- fehlt sie, steht dort ein Kaestchen oder nichts,
+   und die Leiste zeigt nur noch Zahlen. Genau das ist Klaus am 2026-08-24
+   passiert. Eine Farbe, die die Bedeutung traegt, wird gezeichnet, nicht
+   geschrieben -- und daneben steht das Wort. */
+.mk-tupf{display:inline-block;width:.85em;height:.85em;border-radius:3px;
+vertical-align:-.08em;background:#b7f0c2;border:1px solid rgba(0,0,0,.3)}
+.mk-tupf[data-f="gelb"]{background:#fdedb0}
+.mk-tupf[data-f="rot"]{background:#ffc4bd}
+.mk-leiste button{min-width:46px;min-height:46px;padding:.3rem;font-size:1.15rem;
+line-height:1;border-radius:9px}
+.mk-leiste button[data-mk-tun="weg"]{font-size:.95rem}
+
+.mk-tafel{position:fixed;left:0;right:0;bottom:0;z-index:31;display:none;
+max-height:min(82vh,700px);overflow:auto;background:var(--karte);
+border-top:2px solid var(--akzent);padding:1rem 1rem 2rem;
+font-family:system-ui,sans-serif;font-size:.9rem;
+box-shadow:0 -8px 28px rgba(0,0,0,.3)}
+.mk-tafel[data-offen="ja"]{display:block}
+.mk-tafel .innen{max-width:52rem;margin:0 auto}
+.mk-tafel h2{margin:0 0 .2rem;font-size:1.15rem;font-family:inherit}
+.mk-tafel p{margin:0 0 .7rem}
+.mk-tafel .zaehler{font-size:1rem;margin:0 0 .8rem}
+.mk-tafel ul{list-style:none;padding:0;margin:0 0 1rem}
+.mk-tafel li{border-top:1px solid var(--kante);padding:.5rem 0}
+.mk-tafel .stelle{cursor:pointer;background:none;border:0;color:inherit;
+font:inherit;text-align:left;padding:0;min-height:0}
+.mk-tafel .stelle:hover{color:var(--akzent)}
+.mk-tafel .woher{color:var(--matt);font-size:.78rem;margin:.15rem 0 0}
+.mk-tafel .notiz{color:var(--matt);font-style:italic;margin:.15rem 0 0}
+.mk-warn{border-left:3px solid var(--warn);
+background:color-mix(in srgb,var(--warn) 10%,transparent);
+padding:.5rem .8rem;margin:0 0 .8rem}
+.mk-leer{color:var(--matt)}
+.mk-legende{list-style:none;padding:0;margin:0 0 .5rem}
+.mk-legende li{border:0;padding:.15rem 0}
+.mk-grundsatz{border-left:3px solid var(--akzent);padding:.35rem .7rem;
+background:color-mix(in srgb,var(--akzent) 8%,transparent);margin:0 0 .8rem}
+.hut button{font:inherit;font-family:system-ui,sans-serif;font-size:.85rem;
+padding:.35rem .6rem;min-height:34px;border:1px solid var(--kante);
+border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
+.hut button:hover{border-color:var(--akzent)}
+
+/* ── Druck ────────────────────────────────────────────────────────────────
+   EINE Fassung, zwei Sichten. Die Klasse am <html> blendet aus, was gerade
+   nicht gedruckt werden soll. */
+html.nur-privat .abteilung:not(#privat){display:none}
+html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
+html.nur-uebersicht .abteilung:not(#uebersicht){display:none}
+html.nur-schritte .abteilung:not(#schritte){display:none}
+html.nur-steuerberater .abteilung:not(#steuerberater){display:none}
+html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
+html.nur-bestand .abteilung:not(#bestand){display:none}
+html.nur-april .abteilung:not(#april){display:none}
+html.nur-forschungsaufgaben .abteilung:not(#forschungsaufgaben){display:none}
+@media print{
+  .hut,.knoepfe,.lage{display:none}
+  body{background:#fff;color:#000;font-size:11pt}
+  .abteilung{max-width:none;padding:0}
+  .abt-kopf{border:0;padding:0;background:none}
+  a{color:#000;text-decoration:underline}
+  .quelle{page-break-before:always}
+  .abt-kopf+.quelle,.abteilung>.quelle:first-of-type{page-break-before:auto}
+  h1,h2,h3{page-break-after:avoid}
+  table,pre,blockquote{page-break-inside:avoid}
+
+  .mk-leiste,.mk-tafel{display:none !important}
+  mark.mk{background:none !important;color:inherit !important;
+    box-shadow:none !important;padding:0 !important}
+
+}
+</style>
+</head>
+<body>
+<section class="abteilung" id="schritte" data-abteilung="privat">
+<header class="abt-kopf">
+<p class="marke">Abteilung 2 · PRIVAT</p>
+<h1>Die Schritte, abhakbar</h1>
+<p class="unter">In der Reihenfolge ihrer Abhängigkeiten</p>
+<p class="stempel" data-stempel="schritte">Klaus Nitzsche · Hamburg · Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 · Code und Material MIT</p>
+<p class="hinweis">Der Auszug aus dem Fahrplan, sortiert danach, <strong>was worauf wartet</strong>. Der lange Text erklärt das Warum; hier steht die Reihenfolge.</p>
+
+
+<nav class="verzeichnis"><p>In dieser Abteilung:</p><ul><li><a href="#q-docs-unterlagen-01-schritte-md">unterlagen/01_SCHRITTE.md</a></li></ul></nav>
+</header>
+<article class="quelle" id="q-docs-unterlagen-01-schritte-md" data-quelle="docs/unterlagen/01_SCHRITTE.md">
+<p class="herkunft">Quelle: <code>docs/unterlagen/01_SCHRITTE.md</code></p>
+<h1>Die Schritte, in der Reihenfolge, in der sie zu tun sind</h1>
+<p><strong>Stand 2026-08-26.</strong> Diese Liste ist der Auszug aus
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/FORSCHUNGSFOERDERUNG.md"><code>docs/FORSCHUNGSFOERDERUNG.md</code></a> § 7, sortiert
+danach, <strong>was worauf wartet</strong>. Der lange Text erklärt das Warum; hier steht die
+Reihenfolge.</p>
+<blockquote><p><strong>Warum überhaupt eine zweite Liste.</strong> Der Fahrplan hat 1.403 Zeilen. Wer
+darin nach dem nächsten Handgriff sucht, findet eine Begründung. Diese Liste
+hat den umgekehrten Zweck: sie sagt, was jetzt dran ist, und verweist für das
+Warum zurück.</p></blockquote>
+<hr>
+<h2>Die Kette, an der alles hängt</h2>
+<p>Drei Schritte sperren einander, und zwar in dieser Richtung:</p>
+<pre><code>ELSTER-Zertifikat  ──►  Fragebogen zur steuerlichen Erfassung  ──►  Steuernummer
+   (Brief, Tage)              (nach dem Steuerberater)              (öffnet Weg 1 und Weg 2)</code></pre>
+<p><strong>Das Zertifikat ist der Engpass, nicht der Fragebogen.</strong> Es kommt per Brief,
+also dauert es Tage, in denen nichts geht. Wer es zuletzt beantragt, wartet
+zuletzt.</p>
+<p><strong>Der Steuerberater gehört davor, nicht danach.</strong> Im Fragebogen beschreibt man
+die Tätigkeit, und <strong>das Finanzamt entscheidet daraufhin</strong>, ob es sie als
+freiberuflich oder gewerblich einordnet. Diese Beschreibung will man nicht raten.</p>
+<hr>
+<h2>Jetzt, diese Woche</h2>
+<p>Diese vier kosten zusammen keine zwei Stunden und machen alles Weitere möglich.</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Schritt</th><th>warum jetzt</th><th>Dauer</th></tr></thead><tbody><tr><td><strong>1</strong></td><td><strong>ELSTER-Zertifikat beantragen</strong> · <a href="https://www.elster.de">https://www.elster.de</a></td><td>der Brief ist der Engpass, alles Weitere wartet darauf</td><td>10 Min beantragen, dann Tage warten</td></tr><tr><td><strong>2</strong></td><td><strong>Steuerberater-Termin ausmachen</strong></td><td>er muss <strong>vor</strong> dem Fragebogen stattfinden; die Fragen liegen als eigenes Blatt bereit</td><td>5 Min anrufen</td></tr><tr><td><strong>3</strong></td><td><strong>In den eigenen Arbeitsvertrag sehen</strong></td><td>Nebentätigkeit anzeigepflichtig? genehmigungspflichtig? Wettbewerbsklausel? Betrifft <strong>alle vier Wege</strong></td><td>10 Min</td></tr><tr><td><strong>4</strong></td><td><strong>Stundenaufzeichnung beginnen</strong></td><td>der einzige Punkt <strong>ohne Vorlaufzeit</strong>, und er verliert mit jedem Tag, an dem er nicht läuft</td><td>ab sofort, täglich 2 Min</td></tr></tbody></table></div>
+<blockquote><p><strong>Punkt 4 ist der, der still Geld kostet.</strong> Wenn der Steuerberater grünes
+Licht für die Forschungszulage gibt, ist jede nicht aufgezeichnete Stunde
+verlorenes Geld. Er hängt an keiner Antwort und an keiner Frist.</p>
+<p>Für die <strong>zurückliegenden</strong> 128 Tage liegt der Nachweis vor, aus den
+Zeitstempeln der Quelltext-Verwaltung: <code>historie/arbeitstage.pdf</code>. Für alles
+ab heute braucht es die Aufzeichnung von Hand.</p></blockquote>
+<p><strong>Dazu, ohne Abhängigkeit von irgendetwas:</strong></p>
+<ul><li><strong>ORCID anlegen</strong> · <a href="https://orcid.org/register">https://orcid.org/register</a>. Fünf Minuten, kostenlos,
+ohne Institution. Ab da bist du in der Wissenschaftswelt identifizierbar.</li><li><strong>Fristen selbst nachsehen.</strong> Prototype Fund, 01.10. bis 30.11.2026. <strong>Nicht
+dem Fahrplan glauben</strong>, er ist vom 23.08.2026.</li></ul>
+<hr>
+<h2>Sobald das Zertifikat da ist</h2>
+<div class="tabelle"><table><thead><tr><th></th><th>Schritt</th><th>hängt an</th></tr></thead><tbody><tr><td><strong>5</strong></td><td><strong>Fragebogen zur steuerlichen Erfassung</strong> über ELSTER</td><td>Zertifikat <strong>und</strong> Steuerberater-Gespräch</td></tr><tr><td><strong>6</strong></td><td>Falls das Gespräch „gewerblich" ergibt: <strong>Gewerbeanzeige</strong> · <a href="https://serviceportal.hamburg.de/HamburgGateway/Service/Entry/GWR">https://serviceportal.hamburg.de/HamburgGateway/Service/Entry/GWR</a></td><td>Ergebnis aus 5</td></tr></tbody></table></div>
+<p>Vorbereitung dazu: das Blatt <strong>„Vorbereitung Finanzamt"</strong> in dieser Mappe.</p>
+<p><strong>Bei „gewerblich" ändert sich die Reihenfolge nicht.</strong> Das Gewerbeamt meldet
+zwar ans Finanzamt, der Fragebogen ist trotzdem <strong>innerhalb eines Monats</strong>
+über ELSTER fällig. Kosten in Hamburg: 20 €.</p>
+<hr>
+<h2>September, die Vorleistungs-Mappe</h2>
+<p>Diese hängen an keiner Behörde. Sie können parallel zum Warten laufen.</p>
+<div class="tabelle"><table><thead><tr><th></th><th>Schritt</th><th>Wirkung</th></tr></thead><tbody><tr><td><strong>7</strong></td><td><strong>Papers auf Zenodo</strong> → DOI</td><td>bestes Verhältnis von Aufwand zu Wirkung auf der ganzen Liste: zitierfähige Nummer und beweisbarer Zeitstempel</td></tr><tr><td><strong>8</strong></td><td>~~Blatt „Stand der Technik und Abgrenzung"~~ <strong>erledigt am 2026-08-26</strong>, <code>docs/ABGRENZUNG.md</code>, Abteilung 2 der Antragsmappe</td><td>offen bleibt die Literatursuche, siehe § 6 darin</td></tr><tr><td><strong>9</strong></td><td><strong>Vorleistung in Zahlen</strong></td><td>liegt zum Teil vor: 128 Tage, 5.775 Einträge von Hand, 33 Depots</td></tr><tr><td><strong>10</strong></td><td>~~Lizenz-Lücken schließen~~ <strong>erledigt</strong>, siehe Kasten unten</td><td>das Depot, mit dem beantragt wird, trägt MIT</td></tr><tr><td><strong>11</strong></td><td><strong>Englische Projektseite</strong>, eine Seite</td><td>Grundlage für den OTF-Antrag</td></tr><tr><td><strong>12</strong></td><td><strong>Erste Hochschul-Mail</strong>, <strong>eine</strong> Hochschule, nicht zwanzig</td><td>Briefentwurf im Fahrplan § 6.2</td></tr><tr><td><strong>13</strong></td><td><strong>Hamburg: drei kostenlose Türen</strong> (Handelskammer, hei., Kreativ Gesellschaft)</td><td>Landesprogramme stehen in keiner Bundesübersicht</td></tr><tr><td><strong>14</strong></td><td><strong>InnoFounder-Vorgespräch</strong></td><td>2.500 €/Monat, kein Abschluss verlangt, keine Hochschule dazwischen</td></tr></tbody></table></div>
+<blockquote><p><strong>Punkt 10 ist erledigt, und der Fahrplan sagte bis zum 2026-08-24 etwas
+anderes.</strong> Er verlangte Lizenz-Dateien für <code>BookLedgerPro</code> und
+<code>Meine-In-and-Out-Book</code>. Nachgemessen: <code>BookLedgerPro</code> trägt seit dem
+2026-08-16 eine Lizenz, im Container lag nur ein veralteter Klon.
+<code>Meine-In-and-Out-Book</code> ist ein leeres Depot ohne einen einzigen Commit.
+<strong>Entscheidend ist ohnehin nur, dass das Depot, mit dem beantragt wird, eine
+anerkannte freie Lizenz trägt.</strong> <code>Sage-Protokol</code> trägt MIT.</p></blockquote>
+<blockquote><p><strong>Punkt 7 hat kein Risiko.</strong> Eine Zenodo-Fassung bleibt unverändert stehen,
+spätere bekommen einen eigenen DOI und werden mit der alten verknüpft. Man
+legt sich nichts fest, was man später bereut.</p>
+<p><strong>Aber eine Sache gehört davor geklärt</strong> (siehe „Was noch fehlt" in der
+Übersicht): der Werkzeug-Widerspruch in Paper A. Eine Zenodo-Fassung bleibt
+stehen, auch die mit dem Widerspruch darin.</p></blockquote>
+<hr>
+<h2>Oktober und November, der Antrag</h2>
+<div class="tabelle"><table><thead><tr><th></th><th>Schritt</th><th></th></tr></thead><tbody><tr><td><strong>15</strong></td><td><strong>Vorhaben scharf abgrenzen</strong></td><td>sechs Monate, <strong>ein</strong> Ziel, nachprüfbar. Nicht „das Mycel weiterbauen"</td></tr><tr><td><strong>16</strong></td><td><strong>Prototype-Fund-Antrag schreiben</strong></td><td>das Formular ist kurz, genau deshalb ist jeder Satz wichtig</td></tr><tr><td><strong>17</strong></td><td><strong>Abschicken, spätestens Mitte November</strong></td><td>nicht am letzten Tag</td></tr><tr><td><strong>18</strong></td><td><strong>OTF-Concept-Note</strong> parallel</td><td>der OTF hat keine Frist; kostet nur die Übersetzung dessen, was für 16 ohnehin entsteht</td></tr></tbody></table></div>
+<hr>
+<h2>Läuft nebenher, an keiner Frist</h2>
+<ul><li><strong>BSFZ-Antrag für die Forschungszulage</strong>, sobald der Steuerberater grünes
+Licht gibt. Dieser Weg hängt an <strong>keiner</strong> Ausschreibung.</li><li><strong>EXIST prüfen</strong>, nur wenn die Abschluss-Bedingung erfüllbar ist. Erster
+Schritt ist ein kostenloses Gespräch beim Gründungsservice.</li><li><strong>Eine Krankenkasse auf § 20k SGB V ansprechen.</strong> Nicht die Hotline, das
+Präventions-Referat. Kostet einen Anruf.</li></ul>
+<hr>
+<h2>Im Dezember, und nur dann</h2>
+<p>Die Institutsfrage. <strong>Bewusst vertagt, nicht aus Versehen.</strong> Das Institut ist
+eine gute Idee, aber es darf den Antrag nicht aufhalten. Wieder aufnehmen, wenn
+der Antrag draußen ist.</p>
+<p>Und wenn es soweit ist: <strong>kein „Psychologie" im Namen</strong>, und den Namen vorab bei
+IHK und Registergericht prüfen lassen, bevor irgendwo „Institut" auf einer Seite
+steht.</p>
+</article>
+</section>
+</body>
+</html>

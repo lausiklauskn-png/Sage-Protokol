@@ -1,0 +1,560 @@
+/* lesefassung-marker.mjs, das Markier-Werkzeug der Lesefassung.
+ *
+ * Klaus 2026-08-26: „die Möglichkeit, sowohl im Desktop als auch im Tablet zu
+ * unterstreichen und Wichtiges hervorzuheben. Dabei bitte beachten, dass
+ * andere Sachen nicht ausgelöst werden zu früh, und zwar das Kopieren,
+ * Einfügen und solche Sachen."
+ *
+ * ══ DAS EIGENTLICHE PROBLEM, UND WARUM EIN MODUS DIE ANTWORT IST ═══════════
+ *
+ * Auf einem Tablet öffnet ein langer Druck das Auswahl- und Kopier-Menü des
+ * Betriebssystems. Es ist schneller als jedes Skript, und es lässt sich aus
+ * der Seite heraus nicht überholen. Ein Werkzeug, das auf die native Auswahl
+ * wartet, kämpft also immer gegen dieses Menü.
+ *
+ * ⚠ Die Markier-Schicht der Antragsmappe macht genau das (`pointerup` plus
+ *   `window.getSelection()`). Am Schreibtisch geht das gut. Auf dem Tablet
+ *   ist es ein Wettlauf, und man verliert ihn.
+ *
+ * DESHALB HIER EIN MODUS, KEIN WETTLAUF:
+ *
+ *   Modus AUS   die Seite ist eine gewöhnliche Seite. Auswählen, Kopieren,
+ *               Nachschlagen, alles wie immer. Das Werkzeug ist nicht da.
+ *   Modus AN    `user-select:none` und `touch-action:none` auf dem Text.
+ *               Es entsteht KEINE Auswahl, also erscheint auch kein Menü.
+ *               Der Finger malt stattdessen direkt über die Wörter.
+ *
+ * Damit ist die Frage „was löst zuerst aus" gar nicht mehr zu stellen. Es
+ * gibt in jedem Zustand nur eine Sache, die auslösen kann.
+ *
+ * ══ WIE GEMALT WIRD ═══════════════════════════════════════════════════════
+ *
+ * Beim Ziehen wird an jedem Punkt gefragt, welches Wort dort steht
+ * (`caretRangeFromPoint`, in Firefox `caretPositionFromPoint`). Anfang und
+ * Ende spannen einen Bereich auf, und der wird auf ganze Wörter gerundet.
+ *
+ * ⚠ AUF GANZE WÖRTER, UND DAS IST KEIN SCHÖNHEITSSCHRITT. Ein Finger ist
+ *   breiter als ein Buchstabe. Ohne das Runden endet jede Markierung mitten
+ *   im Wort, und zwar jedes Mal woanders. Das sieht nach einem Fehler aus,
+ *   obwohl der Finger genau dort war.
+ *
+ * Über mehrere Absätze hinweg geht das ebenso: der Bereich umfasst dann
+ * mehrere Textknoten, und jeder bekommt seine eigene Hülle. Eine einzige
+ * Hülle über Absatzgrenzen wäre ungültiges HTML.
+ *
+ * ══ WAS GESPEICHERT WIRD ══════════════════════════════════════════════════
+ *
+ * Nicht die Stelle im Dokument, sondern der TEXT und das wievielte Vorkommen.
+ * Dieselbe Entscheidung wie in der Antragsmappe, aus demselben Grund: die
+ * Seite wird neu gebaut, sobald sich eine Quelle ändert. Eine Markierung an
+ * „Absatz 412" säße danach lautlos woanders.
+ *
+ * Findet sich der Text nach einem Neubau nicht mehr, heißt die Markierung
+ * **verwaist** und wird als solche gezählt. Eine, die stillschweigend
+ * verschwindet, ist schlimmer als eine, die fehlt.
+ */
+
+export const MARKER_STIL = `
+/* ── Die Markierungen selbst ─────────────────────────────────────────────
+   Farbe UND Unterstrich sind zwei Werkzeuge, nicht eines: eine Farbe hebt
+   eine Stelle heraus, ein Strich betont im Fluss. Wer nur Farben hat, malt
+   irgendwann alles an. */
+/* ── DIE FARBEN TRAGEN RUECKFALLWERTE ────────────────────────────────────
+   Das Werkzeug haengt sich auch an Seiten, die eigene Farbnamen haben (die
+   Historie kennt --karte und --kante, nicht --gelb). Ohne Rueckfall waere die
+   Markierung dort unsichtbar: sie laege da, und man saehe nichts. */
+mark.lm{background:var(--gelb,#ffe9a3); color:#1b1b1b; padding:.06em 0; border-radius:2px}
+mark.lm[data-farbe="gruen"]{background:var(--gruen,#c9ecc4)}
+mark.lm[data-farbe="rosa"]{background:var(--rosa,#ffd0d8)}
+mark.lm[data-farbe="blau"]{background:var(--blau,#cfe3ff)}
+mark.lm[data-art="strich"]{
+  background:none; color:inherit; text-decoration:underline;
+  text-decoration-color:var(--akzent,#8a5a12); text-decoration-thickness:.14em;
+  text-underline-offset:.16em;
+}
+mark.lm[data-gewaehlt]{outline:2px solid var(--akzent,#8a5a12); outline-offset:1px}
+
+/* ── Im Markier-Modus entsteht KEINE Auswahl ──────────────────────────────
+   Das ist der ganze Riegel gegen das Kopier-Menü. touch-action:none hält
+   zusätzlich das Scrollen an, solange der Finger malt: sonst wandert die
+   Seite unter der Markierung weg. */
+body[data-modus="malen"] .lm-wurzel{
+  -webkit-user-select:none; user-select:none;
+  -webkit-touch-callout:none; touch-action:none; cursor:crosshair;
+}
+body[data-modus="malen"] .lm-wurzel *{cursor:crosshair}
+
+/* ── Die Leiste ──────────────────────────────────────────────────────────
+   Unten, weil dort der Daumen ist. Sie bleibt stehen, damit man beim Lesen
+   nicht nach ihr suchen muss. */
+.lm-leiste{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:.7rem;
+  z-index:50; display:flex; gap:.3rem; align-items:center;
+  padding:.4rem; border-radius:12px;
+  background:var(--kasten,var(--karte,#f4f0e6)); border:1px solid var(--linie,var(--kante,#e3ded2));
+  box-shadow:0 6px 22px rgba(0,0,0,.18);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  max-width:calc(100vw - 1.4rem); flex-wrap:wrap; justify-content:center;
+}
+.lm-leiste button{
+  /* 44px ist die kleinste Flaeche, die ein Finger zuverlaessig trifft. */
+  min-width:44px; min-height:44px; padding:.4rem .55rem;
+  border:1px solid transparent; border-radius:9px; background:none;
+  color:var(--tinte,#22242a); font:inherit; font-size:.95rem; cursor:pointer;
+  display:inline-flex; align-items:center; gap:.3rem;
+}
+.lm-leiste button:hover{background:var(--papier,var(--grund,#fbf9f4))}
+.lm-leiste button[aria-pressed="true"]{
+  background:var(--papier,var(--grund,#fbf9f4)); border-color:var(--akzent,#8a5a12); font-weight:600;
+}
+.lm-leiste .farbe{width:26px; min-width:26px; height:26px; min-height:26px;
+  border-radius:50%; padding:0; border:2px solid transparent}
+.lm-leiste .farbe[data-f="gelb"]{background:var(--gelb,#ffe9a3)}
+.lm-leiste .farbe[data-f="gruen"]{background:var(--gruen,#c9ecc4)}
+.lm-leiste .farbe[data-f="rosa"]{background:var(--rosa,#ffd0d8)}
+.lm-leiste .farbe[data-f="blau"]{background:var(--blau,#cfe3ff)}
+.lm-leiste .farbe[aria-pressed="true"]{border-color:var(--tinte,#22242a)}
+.lm-trenner{width:1px; height:26px; background:var(--linie,var(--kante,#e3ded2)); margin:0 .15rem}
+.lm-zahl{color:var(--leise,var(--matt,#5d6470)); font-size:.82rem; padding:0 .4rem}
+
+.lm-hinweis{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:4.6rem;
+  z-index:51; background:var(--tinte,#22242a); color:var(--papier,#fbf9f4);
+  padding:.45rem .8rem; border-radius:8px; font-size:.85rem;
+  font-family:system-ui,-apple-system,sans-serif; pointer-events:none;
+  opacity:0; transition:opacity .18s;
+}
+.lm-hinweis[data-an="ja"]{opacity:1}
+
+/* ── GEDRUCKT WIRD OHNE ALLES ────────────────────────────────────────────
+   Die Leiste ist ein Werkzeug, kein Inhalt. Und eine Markierung auf Papier
+   waere ein "das muss geaendert werden"-Streifen in einer Unterlage, die
+   jemand anders liest. */
+@media print{
+  .lm-leiste,.lm-hinweis{display:none !important}
+  mark.lm{background:none !important; color:inherit !important;
+          text-decoration:none !important; outline:0 !important}
+}
+`;
+
+export const MARKER_HTML = `
+<div class="lm-leiste" role="toolbar" aria-label="Markieren">
+  <button type="button" data-lm="modus" aria-pressed="false"
+          title="Markier-Modus an oder aus">&#9998; Markieren</button>
+  <span class="lm-trenner"></span>
+  <button type="button" class="farbe" data-lm="farbe" data-f="gelb"
+          aria-pressed="true" aria-label="Gelb" title="Gelb"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="gruen"
+          aria-pressed="false" aria-label="Gr&uuml;n" title="Gr&uuml;n"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="rosa"
+          aria-pressed="false" aria-label="Rosa" title="Rosa"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="blau"
+          aria-pressed="false" aria-label="Blau" title="Blau"></button>
+  <button type="button" data-lm="strich" aria-pressed="false"
+          title="Unterstreichen statt f&auml;rben">&#12316;</button>
+  <span class="lm-trenner"></span>
+  <button type="button" data-lm="weg" title="Markierung entfernen: antippen">&#10005;</button>
+  <button type="button" data-lm="alles" title="Alle entfernen">&#128465;</button>
+  <span class="lm-zahl" data-lm-zahl>0</span>
+</div>
+<div class="lm-hinweis" data-lm-hinweis></div>`;
+
+export const MARKER_SKRIPT = `
+(function(){
+  "use strict";
+  /* Welcher Teil der Seite markierbar ist, sagt die Seite selbst. Ohne
+     Angabe ist es <main>. Die Historie hat kein <main>, sondern .wrap, und
+     ein fest verdrahtetes "main" haette dort schlicht nichts getan. */
+  var wahl = document.body.getAttribute("data-lm-wurzel") || "main";
+  var WURZEL = document.querySelector(wahl);
+  if(!WURZEL) return;
+  WURZEL.classList.add("lm-wurzel");
+
+  var SCHLUESSEL = "lese_marken_" + (document.body.getAttribute("data-blatt") || "x");
+  var leiste  = document.querySelector(".lm-leiste");
+  var hinweis = document.querySelector("[data-lm-hinweis]");
+  var zahlEl  = document.querySelector("[data-lm-zahl]");
+
+  var modus   = false;      /* malen an oder aus */
+  var farbe   = "gelb";
+  var strich  = false;      /* unterstreichen statt faerben */
+  var marken  = [];
+  var gewaehlt = null;
+  var speicherHinBekommen = false;
+
+  /* ── Speicher ────────────────────────────────────────────────────────────
+     Er kann versagen: im privaten Fenster und bei gesperrten Seitendaten
+     wirft localStorage. Wer fuenfzig Stellen markiert und es erst beim
+     naechsten Oeffnen merkt, hat die Arbeit umsonst gemacht. */
+  function lesen(){
+    try{ var r = localStorage.getItem(SCHLUESSEL); return r ? JSON.parse(r) : []; }
+    catch(e){ return []; }
+  }
+  function schreiben(){
+    try{ localStorage.setItem(SCHLUESSEL, JSON.stringify(marken)); }
+    catch(e){
+      if(!speicherHinBekommen){
+        speicherHinBekommen = true;
+        sagen("Dieser Browser speichert nichts. Die Markierungen sind beim Schliessen weg.", 6000);
+      }
+    }
+  }
+
+  function sagen(text, dauer){
+    if(!hinweis) return;
+    hinweis.textContent = text;
+    hinweis.setAttribute("data-an","ja");
+    clearTimeout(sagen._t);
+    sagen._t = setTimeout(function(){ hinweis.setAttribute("data-an","nein"); },
+      dauer || 2200);
+  }
+
+  /* ── Wo ist das Wort unter dem Finger ───────────────────────────────────
+     Zwei Namen fuer dieselbe Sache: Chrome und Safari koennen
+     caretRangeFromPoint, Firefox caretPositionFromPoint. Wer nur den einen
+     kennt, hat ein Werkzeug, das in einem von drei Browsern nichts tut. */
+  function punktZuStelle(x, y){
+    var el = document.elementFromPoint(x, y);
+    if(!el || !WURZEL.contains(el)) return null;
+    if(document.caretRangeFromPoint){
+      var r = document.caretRangeFromPoint(x, y);
+      return r ? { knoten:r.startContainer, pos:r.startOffset } : null;
+    }
+    if(document.caretPositionFromPoint){
+      var p = document.caretPositionFromPoint(x, y);
+      return p ? { knoten:p.offsetNode, pos:p.offset } : null;
+    }
+    return null;
+  }
+
+  var WORT = /[\\wÀ-ſ0-9]/;
+
+  /* AUF GANZE WOERTER RUNDEN. Ein Finger ist breiter als ein Buchstabe;
+     ohne das Runden endet jede Markierung mitten im Wort, jedes Mal
+     woanders, und das sieht nach einem Fehler aus. */
+  function wortAnfang(t, i){
+    while(i > 0 && WORT.test(t.charAt(i-1))) i--;
+    return i;
+  }
+  function wortEnde(t, i){
+    while(i < t.length && WORT.test(t.charAt(i))) i++;
+    return i;
+  }
+
+  /* Alle Textknoten zwischen zwei Punkten, in Dokument-Reihenfolge. */
+  function textKnotenIn(bereich){
+    var raus = [];
+    var geher = document.createTreeWalker(WURZEL, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(n){
+        if(!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        if(n.parentNode.closest && n.parentNode.closest(".lm-leiste,.lm-hinweis"))
+          return NodeFilter.FILTER_REJECT;
+        return bereich.intersectsNode(n)
+          ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var n; while((n = geher.nextNode())) raus.push(n);
+    return raus;
+  }
+
+  var id = 0;
+  function neueId(){ return "m" + (Date.now().toString(36)) + (id++); }
+
+  /* Eine Huelle je Textknoten. UEBER ABSATZGRENZEN HINWEG GEHT KEINE
+     EINZELNE HUELLE: <mark> darf keine Bloecke umschliessen, das waere
+     ungueltiges HTML und der Browser flickt es unvorhersehbar. */
+  function huellen(bereich, mid){
+    var knoten = textKnotenIn(bereich);
+    var gemacht = [];
+    for(var i=0;i<knoten.length;i++){
+      var t = knoten[i];
+      var von = (t === bereich.startContainer) ? bereich.startOffset : 0;
+      var bis = (t === bereich.endContainer) ? bereich.endOffset : t.nodeValue.length;
+      if(bis <= von) continue;
+      var r = document.createRange();
+      r.setStart(t, von); r.setEnd(t, bis);
+      var m = document.createElement("mark");
+      m.className = "lm";
+      m.setAttribute("data-lm-id", mid);
+      m.setAttribute("data-farbe", farbe);
+      if(strich) m.setAttribute("data-art","strich");
+      try{ r.surroundContents(m); gemacht.push(m); }
+      catch(e){ /* ueberlappt eine bestehende Huelle: dieser Knoten faellt aus */ }
+    }
+    return gemacht;
+  }
+
+  function textVon(mid){
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    var s = "";
+    for(var i=0;i<teile.length;i++) s += teile[i].textContent;
+    return s.replace(/\\s+/g," ").trim();
+  }
+
+  /* Das wievielte Vorkommen dieses Textes im Blatt. Damit findet er sich
+     nach einem Neubau wieder, auch wenn er mehrfach vorkommt. */
+  function vorkommen(text){
+    if(!text) return 1;
+    var ganz = WURZEL.textContent.replace(/\\s+/g," ");
+    var bis  = ganz.indexOf(text);
+    if(bis < 0) return 1;
+    var n = 1, p = 0;
+    while((p = ganz.indexOf(text, p)) >= 0 && p < bis){ n++; p += text.length; }
+    return n;
+  }
+
+  function zaehlen(){
+    if(zahlEl) zahlEl.textContent = String(marken.length);
+  }
+
+  /* ── Malen ─────────────────────────────────────────────────────────────── */
+
+  var start = null;
+
+  function anfangen(x, y){
+    start = punktZuStelle(x, y);
+    return !!start;
+  }
+
+  function fertig(x, y){
+    if(!start) return;
+    var ende = punktZuStelle(x, y);
+    start = null;
+    if(!ende) return;
+
+    var a = start0, b = ende;
+    var r = document.createRange();
+    try{
+      r.setStart(a.knoten, a.pos);
+      r.setEnd(b.knoten, b.pos);
+      if(r.collapsed){ r.setStart(b.knoten, b.pos); r.setEnd(a.knoten, a.pos); }
+    }catch(e){
+      /* Rueckwaerts gezogen: Anfang und Ende tauschen. */
+      try{ r.setStart(b.knoten, b.pos); r.setEnd(a.knoten, a.pos); }
+      catch(e2){ return; }
+    }
+    if(r.collapsed) return;
+
+    /* Auf ganze Woerter runden. */
+    if(r.startContainer.nodeType === 3)
+      r.setStart(r.startContainer, wortAnfang(r.startContainer.nodeValue, r.startOffset));
+    if(r.endContainer.nodeType === 3)
+      r.setEnd(r.endContainer, wortEnde(r.endContainer.nodeValue, r.endOffset));
+    if(r.collapsed || !r.toString().trim()) return;
+
+    var mid = neueId();
+    var gemacht = huellen(r, mid);
+    if(!gemacht.length) return;
+
+    var text = textVon(mid);
+    marken.push({ id:mid, text:text, nr:vorkommen(text),
+                  farbe:farbe, art: strich ? "strich" : "flaeche" });
+    schreiben(); zaehlen();
+  }
+
+  var start0 = null;
+
+  WURZEL.addEventListener("pointerdown", function(ev){
+    if(!modus) return;
+    ev.preventDefault();          /* KEINE Auswahl, also auch kein Menue */
+    start0 = punktZuStelle(ev.clientX, ev.clientY);
+    start  = start0;
+  });
+  WURZEL.addEventListener("pointerup", function(ev){
+    if(!modus) return;
+    ev.preventDefault();
+    var mk = ev.target.closest ? ev.target.closest("mark.lm") : null;
+    if(mk && start0 && punktZuStelle(ev.clientX, ev.clientY)
+       && mk === (ev.target.closest ? ev.target.closest("mark.lm") : null)){
+      /* Ein Tipp AUF eine Markierung waehlt sie aus, statt eine neue zu malen. */
+      var d = Math.abs(ev.clientX - (start0.x||ev.clientX));
+      if(!d){ waehlen(mk.getAttribute("data-lm-id")); start0=null; start=null; return; }
+    }
+    fertig(ev.clientX, ev.clientY);
+    start0 = null;
+  });
+
+  function waehlen(mid){
+    entwaehlen();
+    gewaehlt = mid;
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    for(var i=0;i<teile.length;i++) teile[i].setAttribute("data-gewaehlt","ja");
+    sagen("Markierung gewaehlt. Mit \\u2715 entfernen.");
+  }
+  function entwaehlen(){
+    var alle = WURZEL.querySelectorAll("mark.lm[data-gewaehlt]");
+    for(var i=0;i<alle.length;i++) alle[i].removeAttribute("data-gewaehlt");
+    gewaehlt = null;
+  }
+
+  function abnehmen(mid){
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    for(var i=0;i<teile.length;i++){
+      var m = teile[i], p = m.parentNode;
+      while(m.firstChild) p.insertBefore(m.firstChild, m);
+      p.removeChild(m);
+      p.normalize();
+    }
+    marken = marken.filter(function(x){ return x.id !== mid; });
+    schreiben(); zaehlen();
+  }
+
+  /* ── Die Leiste ────────────────────────────────────────────────────────── */
+
+  function modusSetzen(an){
+    modus = an;
+    document.body.setAttribute("data-modus", an ? "malen" : "lesen");
+    var k = leiste.querySelector('[data-lm="modus"]');
+    if(k) k.setAttribute("aria-pressed", an ? "true" : "false");
+    entwaehlen();
+    sagen(an
+      ? "Markieren an. Ueber den Text ziehen. Auswaehlen und Kopieren ist solange aus."
+      : "Markieren aus. Auswaehlen und Kopieren geht wieder.");
+  }
+
+  leiste.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-lm]") : null;
+    if(!k) return;
+    var tun = k.getAttribute("data-lm");
+
+    if(tun === "modus"){ modusSetzen(!modus); return; }
+
+    if(tun === "farbe"){
+      farbe = k.getAttribute("data-f");
+      strich = false;
+      var fs = leiste.querySelectorAll('[data-lm="farbe"]');
+      for(var i=0;i<fs.length;i++)
+        fs[i].setAttribute("aria-pressed", fs[i]===k ? "true" : "false");
+      leiste.querySelector('[data-lm="strich"]').setAttribute("aria-pressed","false");
+      if(gewaehlt){
+        var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+gewaehlt+'"]');
+        for(var j=0;j<teile.length;j++){
+          teile[j].setAttribute("data-farbe", farbe);
+          teile[j].removeAttribute("data-art");
+        }
+        marken.forEach(function(m){
+          if(m.id===gewaehlt){ m.farbe=farbe; m.art="flaeche"; }
+        });
+        schreiben();
+      }
+      if(!modus) modusSetzen(true);
+      return;
+    }
+
+    if(tun === "strich"){
+      strich = !strich;
+      k.setAttribute("aria-pressed", strich ? "true" : "false");
+      if(gewaehlt){
+        var t2 = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+gewaehlt+'"]');
+        for(var q=0;q<t2.length;q++){
+          if(strich) t2[q].setAttribute("data-art","strich");
+          else t2[q].removeAttribute("data-art");
+        }
+        marken.forEach(function(m){
+          if(m.id===gewaehlt) m.art = strich ? "strich" : "flaeche";
+        });
+        schreiben();
+      }
+      if(!modus) modusSetzen(true);
+      return;
+    }
+
+    if(tun === "weg"){
+      if(gewaehlt){ abnehmen(gewaehlt); entwaehlen(); sagen("Entfernt."); }
+      else sagen("Erst eine Markierung antippen.");
+      return;
+    }
+
+    if(tun === "alles"){
+      if(!marken.length){ sagen("Es gibt keine."); return; }
+      /* ⚠ EINE RUECKFRAGE, UND SIE NENNT DIE ZAHL. Alles zu loeschen ist der
+         einzige Schritt hier, der Arbeit vernichtet, und er laesst sich nicht
+         zuruecknehmen. */
+      if(!confirm("Alle " + marken.length + " Markierungen dieses Blattes entfernen?")) return;
+      marken.slice().forEach(function(m){ abnehmen(m.id); });
+      entwaehlen(); sagen("Alle entfernt.");
+      return;
+    }
+  });
+
+  /* ── Wiederherstellen ──────────────────────────────────────────────────
+     Nach dem Text gesucht, nicht nach der Stelle. Was sich nicht mehr
+     findet, heisst VERWAIST und wird gemeldet, statt lautlos zu fehlen. */
+  function wieder(){
+    var alt = lesen();
+    if(!alt.length) return;
+    var verwaist = 0;
+    alt.forEach(function(m){
+      var r = suchen(m.text, m.nr);
+      if(!r){ verwaist++; return; }
+      var vorherFarbe = farbe, vorherStrich = strich;
+      farbe = m.farbe || "gelb"; strich = (m.art === "strich");
+      var gemacht = huellen(r, m.id);
+      farbe = vorherFarbe; strich = vorherStrich;
+      if(gemacht.length) marken.push(m); else verwaist++;
+    });
+    schreiben(); zaehlen();
+    if(verwaist) sagen(verwaist + " Markierung(en) finden ihre Stelle nicht mehr.", 5000);
+  }
+
+  /* Den n-ten Treffer eines Textes als Bereich. */
+  function suchen(text, nr){
+    if(!text) return null;
+    var geher = document.createTreeWalker(WURZEL, NodeFilter.SHOW_TEXT, {
+      acceptNode:function(n){
+        return (n.nodeValue && n.nodeValue.trim())
+          ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var knoten = [], ganz = "", n;
+    while((n = geher.nextNode())){ knoten.push({ n:n, von:ganz.length }); ganz += n.nodeValue; }
+    var flach = ganz.replace(/\\s+/g," ");
+    var ziel = text.replace(/\\s+/g," ");
+    var p = -1, k = 0;
+    do{ p = flach.indexOf(ziel, p+1); k++; }while(p >= 0 && k < (nr||1));
+    if(p < 0) return null;
+
+    /* Die flache Stelle zurueck in den Knoten rechnen. */
+    var roh = 0, gesehen = 0;
+    for(var i=0;i<ganz.length && gesehen < p;i++){
+      if(/\\s/.test(ganz.charAt(i))){
+        if(i>0 && /\\s/.test(ganz.charAt(i-1))) continue;
+      }
+      gesehen++; roh = i+1;
+    }
+    var a = stelleZuKnoten(knoten, roh);
+    var b = stelleZuKnoten(knoten, roh + ziel.length);
+    if(!a || !b) return null;
+    var r = document.createRange();
+    try{ r.setStart(a.n, a.pos); r.setEnd(b.n, b.pos); }catch(e){ return null; }
+    return r.collapsed ? null : r;
+  }
+  function stelleZuKnoten(knoten, pos){
+    for(var i=0;i<knoten.length;i++){
+      var k = knoten[i], laenge = k.n.nodeValue.length;
+      if(pos <= k.von + laenge) return { n:k.n, pos: Math.max(0, pos - k.von) };
+    }
+    var l = knoten[knoten.length-1];
+    return l ? { n:l.n, pos:l.n.nodeValue.length } : null;
+  }
+
+  wieder();
+  document.body.setAttribute("data-modus","lesen");
+
+  /* Fuer die Probe. Gibt nur heraus, was ohnehin auf dem Schirm steht. */
+  window.__lese = {
+    modus: function(){ return modus; },
+    marken: function(){ return marken.slice(); },
+    setzeModus: modusSetzen,
+    farbeWaehlen: function(f){ farbe = f; },
+    strichWaehlen: function(b){ strich = !!b; },
+    malen: function(x1,y1,x2,y2){
+      start0 = punktZuStelle(x1,y1); start = start0;
+      fertig(x2,y2); start0 = null;
+    },
+    waehlen: waehlen,
+    abnehmen: abnehmen,
+    bereit: true
+  };
+})();
+`;

@@ -190,11 +190,9 @@ const md = `# Forschungsaufgaben: was ansteht, in welcher Reihenfolge
 jeder Aufgabe wird **an ihren Belegen gemessen**, nicht hingeschrieben. Wer
 diese Datei von Hand ändert, verliert die Änderung beim nächsten Lauf.
 
-> **Warum sie erzeugt wird.** Am 2026-08-26 führte ein Blatt eine Sache als
-> „existiert nicht", die es seit demselben Tag gab. Klaus las eine
-> heruntergeladene Fassung und fragte nach. Er hatte recht zu fragen: **eine
-> Liste von Hand ist am Tag nach dem Schreiben falsch und sieht dabei genauso
-> aus wie eine richtige.**
+> **Warum sie erzeugt wird.** Ob ein Beleg im Depot liegt, sieht das Blatt bei
+> jedem Lauf selbst nach. Eine von Hand geführte Liste könnte hinterherhinken,
+> ohne dass man es ihr ansieht.
 
 ---
 

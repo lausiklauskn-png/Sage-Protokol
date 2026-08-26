@@ -38,6 +38,10 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MARKEN, markenFuer } from './historie-marken.mjs';
 import { LUECKE_MIN, VORLAUF_MIN, rechneTage } from './arbeitstage-rechnen.mjs';
+/* Das Markier-Werkzeug der Lesefassung. Es haengt sich an DIESELBE Datei, die
+   Klaus ohnehin liest, statt eine zweite Fassung der Historie zu erzeugen.
+   Zwei Fassungen desselben Textes waeren eine Drift-Quelle mit Ansage. */
+import { MARKER_STIL, MARKER_HTML, MARKER_SKRIPT } from './lesefassung-marker.mjs';
 
 const SAGE = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const QUELLE = resolve(SAGE, 'docs/historie/historie.json');
@@ -357,7 +361,8 @@ html += '<title>Die Historie einer Zusammenarbeit, 10.03. bis 24.08.2026</title>
 html += '<meta name="robots" content="noindex">\n';
 html += '<!-- ERZEUGT von tools/historie-bericht-bauen.mjs aus '
   + 'docs/historie/historie.json. Nicht von Hand bearbeiten. -->\n';
-html += '<style>' + stil + '</style>\n</head>\n<body>\n';
+html += '<style>' + stil + MARKER_STIL + '</style>\n</head>\n'
+  + '<body data-blatt="historie" data-modus="lesen" data-lm-wurzel=".wrap">\n';
 
 html += '<div class="hut"><div class="innen"><strong>Historie</strong>'
   + '<a href="#zahlen">Zahlen</a><a href="#arbeitszeit">Arbeitszeit</a>'
@@ -580,7 +585,8 @@ html += '<p>Erzeugt am ' + esc(d.erzeugt) + ' von <code>tools/historie-bericht-b
   + 'Nur gelesen: kein Commit, kein Zweig, kein Push in einem fremden Depot. '
   + 'Wer den Bericht ändern will, ändert das Werkzeug und baut neu.</p>\n';
 
-html += '</div>\n<script>' + skript + '</script>\n</body>\n</html>\n';
+html += '</div>\n' + MARKER_HTML + '\n<script>' + skript + '</script>\n'
+  + '<script>' + MARKER_SKRIPT + '</script>\n</body>\n</html>\n';
 
 writeFileSync(ZIEL, html, 'utf-8');
 console.log('geschrieben: docs/historie/historie.html ('
