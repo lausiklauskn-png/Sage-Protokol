@@ -57,7 +57,7 @@ seine wirklich neue Stelle mit begräbt.
   ist eine Eigenentwicklung, und das ist Absicht.
 - **Die Rollen-Kette** in der Werkstatt ist ein bekanntes Muster.
 
-## 4 · Was übrig bleibt, und das ist der Anspruch
+## 4 · Was übrig bleibt
 
 **Semantische Entdeckung, bevor kommuniziert wird, in beide Richtungen, ohne
 zentralen Index.**
@@ -79,8 +79,11 @@ zentralen Index.**
 Die vorhandenen Verfahren teilen sich in zwei Lager. Das eine kann **finden,
 aber nur einseitig und nur mit einem Betreiber in der Mitte**. Das andere kann
 **verbinden, aber erst, wenn man schon weiß, mit wem**. Zwischen beiden liegt
-die Lücke, und sie ist keine Nische: sie ist die Frage, mit der jede
+eine Lücke, und sie ist keine Nische: sie ist die Frage, mit der jede
 Zusammenarbeit anfängt.
+
+Dass die Lücke besteht, ist eine Aussage über die **gefundenen** Arbeiten,
+nicht über alle. § 6 nennt, wie weit gesucht wurde und wo die Suche endet.
 
 ## 5 · Was daran belegt ist
 
