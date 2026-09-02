@@ -39,9 +39,15 @@ Grundlage war der genehmigte Plan in [`papers/REVISION_2026-09-02.md`](papers/RE
 
 ### Was getan
 
-Beide veröffentlichten SBKIM-Papers tragen jetzt die Fassung **v0.2** und sind
-von Vorschlag auf **Feldbericht** umgestellt. Neun Abschnitte statt sieben, DE
-und EN parallel.
+Beide SBKIM-Papers sind von Vorschlag auf **Feldbericht** umgestellt. Neun
+Abschnitte statt sieben, DE und EN parallel.
+
+⚠ **Nachtrag am selben Tag, auf Klaus'"'"' Einwand:** das Paper vom Mai ist **nie
+veröffentlicht** worden, es lag als Entwurf im Depot. Alle Berichtigungs-Vermerke
+(„Berichtigt am", „Zurückgenommen am") sind deshalb wieder aus den Papers heraus.
+Sie hätten einem Leser eine frühere öffentliche Ausgabe suggeriert, die es nie
+gab. Die Geschichte steht jetzt in **Station 8 der Geschichts-Galerie**; die
+Papers tragen „September 2026 · Erstveröffentlichung".
 
 | Abschnitt | Was |
 |---|---|
@@ -49,7 +55,7 @@ und EN parallel.
 | § 5 **neu** | wie das entstanden ist, aus der Geschichts-Galerie und dem Meilenstein § 2 |
 | § 6 **überarbeitet** | 33 Depots statt zwei HTML-Dateien, mit der Messung vom 10.07.2026 |
 | § 7.1 **aufgeteilt** | zwei Teilprobleme belegt, zwei offen, dazu die Wach-Tab-Grenze |
-| § 8 **zurückgenommen** | der Neuheits-Anspruch fällt und steht als gestrichen da |
+| § 8 **zurückgenommen** | der Neuheits-Anspruch fällt |
 | § 9 **neu** | zur Entstehung des Textes |
 
 Dazu: **eine Quelle statt zwei** (`docs/papers/` gilt, `sbkim-demo/` zeigt

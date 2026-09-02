@@ -265,7 +265,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     Matching in Human and Agent Networks
   </h1>
   <p class="paper-authors">Independent Research · Open Protocol Proposal</p>
-  <p class="paper-date">May 2026 · Revised September 2026 · v0.2 (field report)</p>
+  <p class="paper-date">September 2026 · First publication</p>
   <div class="paper-links">
     <a href="https://github.com/lausiklauskn-png/Sage-Protokol" target="_blank">Reference Implementation →</a>
     <a href="../../sbkim-demo/demo.html">Live Demo Layer 1 →</a>
@@ -291,14 +291,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
       before communication — and propose it as a candidate open standard.
       A working reference implementation is publicly available.
     </p>
-    <p style="margin-top:1em">
-      <strong>September 2026 revision.</strong> The May 2026 version was a proposal;
-      since then the protocol has been running. This version names the prior work the
-      building blocks come from, replaces the description of the implementation with
-      the current state and its measurements, and withdraws the novelty claim.
-      <em class="key">The building blocks are known; the operation is the
-      contribution.</em> Sections 2, 6, 7 and 8 are revised; 5 and 9 are new.
-    </p>
+    
   </div>
 
   <!-- 1. INTRODUCTION -->
@@ -368,10 +361,9 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
 
   <h3>2.1 The prior work the building blocks come from</h3>
 
-  <p style="border-left:3px solid #c93;padding-left:.8em">
-    <strong>Added on 2 September 2026.</strong> The May version compared SBKIM
-    against vector databases, agent frameworks and MCP and held every component to
-    be new. A literature search in September 2026 refuted that.
+  <p>
+  Three research fields have long worked on parts of what this protocol combines.
+  They belong in this text before it names a contribution.
   </p>
 
   <p>
@@ -684,12 +676,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     into the applications that use them; a check in the repository guards against
     the copies drifting apart.
   </p>
-  <p style="border-left:3px solid #c93;padding-left:.8em">
-    <strong>Corrected on 2 September 2026.</strong> This paragraph previously gave
-    the address of an early two-file demonstration. That repository no longer
-    exists and the reference led nowhere. The link now points to the protocol
-    repository where the modules are maintained.
-  </p>
+  
 
   <h3>6.1 What it has grown into</h3>
 
@@ -753,10 +740,9 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
 
   <h3>7.1 Semantic Discovery Without Session Codes</h3>
 
-  <p style="border-left:3px solid #c93;padding-left:.8em">
-    <strong>Revised on 2 September 2026.</strong> This said: "It is an unsolved
-    problem." The paragraph threw four sub-problems into one sentence. Two of them
-    have since been settled, two have not.
+  <p>
+  Passive semantic discovery consists of four sub-problems. Two of them are
+  settled, two are not.
   </p>
 
   <table>
@@ -809,14 +795,9 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     assessment between two parties describing themselves in natural language. It
     requires both sides to state capabilities and needs.
   </p>
-  <p style="border-left:3px solid #c93;padding-left:.8em">
-    <strong>Withdrawn on 2 September 2026.</strong> This said that the symmetry
-    constraint was the central contribution and was not offered by existing
-    protocols. Reciprocal recommender systems have required the same
-    symmetry for years; the evidence is in section 2.1.
-  </p>
+  
   <p>
-    <strong>What remains is a field report.</strong> The
+    <strong>The contribution of this work is a field report.</strong> The
     building blocks are known: the transport is borrowed, the embedding is state
     of the art, the cryptography is standard, and the symmetry is a research field
     of its own. What is new is that they run together, have done for months, in
@@ -854,27 +835,26 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
   <p>
     <strong>Editorial responsibility rests with one person</strong>, the operator of
     the network described. He set the question, supplied the evidence and read
-    every version against it. The turning points of this text came from him: the
-    instruction to test the novelty claim against the literature rather than let it
-    stand; the instruction to check the dead link in section 6 in a browser rather
-    than assume it; and the decision to appear as a field report rather than with a
-    claim that collapses at the first question.
+    every version against it. The turning points came from him: the instruction to test every component of
+    the claim against the literature; the instruction to check every statement at
+    its source rather than assume it; and the decision to appear as a field report
+    rather than with a claim that collapses at the first question.
   </p>
 
   <p>
     <strong>What the checking consisted of.</strong> The figures in section 6.1 come
     from the timestamps of the version control system and can be recomputed there.
     The measurements in section 6.2 come from a run on real devices, with a date.
-    The prior work in section 2.1 was searched for after the first draft had claimed
-    there was none; the claim fell in the process. Where a statement could not be
-    verified, it stands as an observation or not at all.
+    The prior work in section 2.1 was searched for and checked before this text
+    names a contribution. Where a statement could not be verified, it stands as an
+    observation or not at all.
   </p>
 
   <p>
     <strong>What this explicitly was not.</strong> Not a spell check and not the
-    rewording of a finished text. The content emerged in alternation: proposal,
-    objection, measurement, correction. Several statements from the May version fell in the process and stand in the
-    text as withdrawn.
+    rewording of a finished text. The content emerged in alternation: proposal, objection,
+    measurement, correction. Several statements fell in the process, before this
+    text was published for the first time.
   </p>
 
   <p>
@@ -901,7 +881,7 @@ em.key { font-style:normal; font-weight:600; color:var(--text); }
     <br>
     <p><strong>Correspondence</strong><br>
     Reference implementation: github.com/lausiklauskn-png/Sage-Protokol<br>
-    Protocol version: SBKIM-0.1 · Text revision v0.2, revised 2 September 2026 · Public Domain</p>
+    Protocol version: SBKIM-0.1 · September 2026 · Public Domain</p>
   </div>
 
 </div>
