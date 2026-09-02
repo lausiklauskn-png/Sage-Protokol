@@ -180,3 +180,95 @@ und nicht als Anspruch, und der Feldbericht hängt nicht daran. Der Auftrag
 erlaubte, den Anspruch stärker ausfallen zu lassen, falls dort eine Lücke
 bleibt. Er ist bewusst **nicht** stärker ausgefallen: eine Beobachtung aus drei
 Suchen trägt keinen Anspruch, und der Feldbericht steht auch ohne sie.
+
+---
+
+## Nachtrag: drei weitere Runden aus Klaus' Sichttest
+
+Das Protokoll oben endete beim ersten Sichttest. Danach kamen drei Runden, und
+jede hat etwas gefunden, das ohne ein echtes Gerät nicht zu finden war.
+
+### 1 · Es gab nie eine erste Ausgabe
+
+Klaus: *„Ich habe noch nichts veröffentlicht. Das ist das erste Mal, dass ich
+etwas veröffentliche."*
+
+Das Mai-Paper lag als Entwurf im Depot. Damit waren alle Berichtigungs-Kästen
+eine Irreführung: „Berichtigt am 2. September" sagt einem Leser, es habe eine
+frühere öffentliche Aussage gegeben, die falsch war. Es gab keine.
+
+Vier Kästen je Sprache heraus, dazu die Fassungs-Notiz und in § 9 die Sätze
+über gefallene Aussagen. Das Datum heißt jetzt **September 2026 ·
+Erstveröffentlichung**. Kein Mai-Datum, keine Fassungsnummer.
+
+**Die Geschichte ist nicht verloren, sie steht am richtigen Ort:** Station 8
+„Die revidierte Ausgabe" in der Geschichts-Galerie.
+
+> **Die Lehre:** eine Berichtigung setzt einen Leser voraus, der die alte
+> Fassung kennt. Ohne den ist sie kein Beleg für Sorgfalt, sondern eine falsche
+> Fährte.
+
+### 2 · Derselbe Verweis war dreimal kaputt, jedes Mal anders
+
+| Runde | Fehler | Warum er durchkam |
+|---|---|---|
+| vormittags | das Ziel gibt es im Ordner nicht | in der Demo-Fassung derselben Datei lief dieselbe Zeile |
+| abends | Ziel richtig, aber **relativ** | im Depot richtig, als Einzeldatei tot (`FORBIDDEN` auf dem Tablet) |
+| danach | Adresse richtig, aber `target="_blank"` | ein eingebetteter Betrachter verschluckt den Klick lautlos |
+
+Der dritte war der stillste: kein Fehler, keine Meldung, gar nichts. Gefunden
+nur, weil Klaus schrieb, dass dieselben Adressen **getippt** funktionieren.
+
+> **Ein Verweis ist keine Eigenschaft des Textes. Er ist eine Eigenschaft des
+> Textes an seinem Ort.** Ein veröffentlichtes Papier hat keinen festen Ort: es
+> wird heruntergeladen, gedruckt, weitergeschickt.
+
+Neu: `tests/smoke_papers_verweise.mjs`. Sie prüft **nicht**, ob am Zielpfad eine
+Datei liegt, denn das sagt nur etwas über dieses Depot aus. Sie prüft drei
+Zusicherungen: der Verweis ist absolut · er braucht keine Popup-Erlaubnis · und
+die Adresse steht auch als **lesbarer Text** da, weil auf Papier niemand klicken
+kann. Vier Gegenproben von Hand gefahren, alle vier fallen um und nennen die
+richtige Zusicherung; die Datei ist danach per `md5sum` byte-gleich.
+
+### 3 · Die Netz-Karte ist ein Beleg, keine Demo
+
+Klaus' Einwand, und beim Nachprüfen im Quelltext wurde er stärker, als er
+gestellt war:
+
+| Geprüft | Befund |
+|---|---|
+| Relais | fünf, davon **drei fremde** (`damus.io`, `nos.lol`, `primal.net`) |
+| Senden | **kann sie nicht.** Einziger Aufruf ist `["REQ"`, null `["EVENT"` |
+| Probelauf | vorhanden, im Quelltext als Simulation gekennzeichnet |
+
+**Ein Instrument, das nur lauschen kann, kann den Verkehr nicht hergestellt
+haben, den es anzeigt.** Das kann eine Demo von sich nicht sagen. Der
+Probelauf-Knopf steht mit im Papier, weil ein Prüfer ihn sonst selbst findet und
+dann die ganze Auskunft für gestellt hält.
+
+⚠ **Und der Befund gegen die naheliegende Annahme.** Klaus schlug vor, beides
+zusammen anzuführen: das Tablet als Hub, zwei weitere Geräte als Verkäufer und
+Käufer. Der Aufbau stimmt. **Der Transport ist ein anderer.**
+
+| | Vorführungen | laufendes Netz |
+|---|---|---|
+| Transport | WebRTC, Vorgabe-Vermittler von PeerJS | Nostr-Relais |
+| Braucht | drei CDN-Bibliotheken, bezahlter Anthropic-Schlüssel | nichts davon |
+
+Beides in einen Topf zu werfen hätte zwei verschiedene Systeme als eines
+ausgegeben. § 6.3 stellt sie gegenüber, mit Spezifikationen.
+
+Daraus ein Satz, den die Artefakte selbst belegen und der vorher nirgends
+stand: **das Verfahren ist an keinen Transport gebunden, zwei haben es
+getragen.**
+
+Nebenbei berichtigt: an den Vorführungen stand „ohne Anmeldung und ohne
+Installation". Ohne Anmeldung stimmt, ohne Schlüssel nicht.
+
+### Gemessen nach allen Runden
+
+`node tests/run_alle.mjs` → **90 Proben, 90 grün, 0 rot, 0 nicht lauffähig.**
+
+**Nicht gemessen:** ob die Pages-Adressen ausliefern. `github.io` ist aus dieser
+Umgebung gesperrt. Klaus hat für die zwei Demo-Adressen bestätigt, dass sie
+getippt funktionieren; die Karten-Adresse ist ungeprüft.

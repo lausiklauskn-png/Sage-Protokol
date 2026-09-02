@@ -123,6 +123,58 @@ erzeugten Blätter der Antragsmappe neu gebaut.
   Suchen, an Titeln und Zusammenfassungen geprüft, nicht an den Volltexten;
   `arxiv.org` und die Verlagsseiten sind aus dieser Umgebung gesperrt.
 
+### Drei weitere Runden am selben Abend, alle aus Klaus' Sichttest
+
+**1 · Die Berichtigungs-Vermerke mussten wieder raus.** Klaus: *„Ich habe noch
+nichts veröffentlicht. Das ist das erste Mal."* Das Mai-Paper lag als Entwurf im
+Depot. Ein Kasten „Berichtigt am 2. September" behauptet damit eine frühere
+öffentliche Aussage, die es nie gab. Vier Kästen je Sprache heraus, dazu die
+Fassungs-Notiz. Das Datum heißt jetzt **September 2026 · Erstveröffentlichung**.
+Die Geschichte steht in **Station 8** der Geschichts-Galerie.
+
+**2 · Die Verweise waren dreimal kaputt, jedes Mal anders.**
+
+| Runde | Fehler | Warum er durchkam |
+|---|---|---|
+| vormittags | Ziel gibt es im Ordner nicht | in der Demo-Fassung derselben Datei lief es |
+| abends | Ziel richtig, aber **relativ** | im Depot richtig, als Einzeldatei tot (`FORBIDDEN`) |
+| danach | Adresse richtig, aber `target="_blank"` | eingebetteter Betrachter verschluckt den Klick lautlos |
+
+> **Ein Verweis ist keine Eigenschaft des Textes. Er ist eine Eigenschaft des
+> Textes an seinem Ort.** Ein veröffentlichtes Papier hat keinen festen Ort.
+
+Neu: **`tests/smoke_papers_verweise.mjs`**. Prüft nicht, ob am Zielpfad eine
+Datei liegt (das sagt nur etwas über dieses Depot), sondern ob der Verweis von
+überall trägt: absolut · kein `target="_blank"` · und die Adresse steht auch als
+**lesbarer Text** da, weil auf Papier niemand klicken kann. Vier Gegenproben von
+Hand gefahren, alle vier fallen um, Datei danach per `md5sum` byte-gleich.
+
+**3 · Die Netz-Karte ist ein Beleg, keine Demo** (Klaus' Einwand). Beim
+Nachprüfen im Quelltext wurde der Punkt stärker als gestellt:
+
+| | |
+|---|---|
+| Relais | **fünf**, davon **drei fremde** (`damus.io`, `nos.lol`, `primal.net`) |
+| Senden | **kann sie nicht.** Einziger Aufruf ist `["REQ"`, null `["EVENT"` |
+| Probelauf | vorhanden, im Quelltext als Simulation gekennzeichnet |
+
+**Ein Instrument, das nur lauschen kann, kann den Verkehr nicht hergestellt
+haben, den es anzeigt.** Steht als § 6.3 im Papier, samt Probelauf-Knopf. Ein
+Prüfer findet den sonst selbst und hält die Auskunft für gestellt.
+
+⚠ **Und ein Befund gegen die naheliegende Annahme.** Klaus schlug vor, beides
+zusammen anzuführen (Tablet als Hub, zwei Geräte als Verkäufer und Käufer). Der
+Aufbau stimmt, **der Transport ist ein anderer**: die Vorführungen laufen über
+**WebRTC** mit dem Vorgabe-Vermittler von PeerJS, drei CDN-Bibliotheken und einem
+**bezahlten Anthropic-Schlüssel**. Das laufende Netz läuft über **Nostr-Relais**,
+ohne beides. Beides in einen Topf zu werfen hätte zwei Systeme als eines
+ausgegeben. § 6.3 stellt sie gegenüber.
+
+Daraus ein Satz, der vorher nirgends stand: **das Verfahren ist an keinen
+Transport gebunden, zwei haben es getragen.**
+
+Gemessen nach allen Runden: **90 Proben, 90 grün, 0 rot.**
+
 ### Nächster sinnvoller Schritt
 
 Klaus sieht die zwei Papers im Browser an. Danach der DOI, nicht davor.
