@@ -12,16 +12,23 @@ genehmigten Plan in [`../../papers/REVISION_2026-09-02.md`](../../papers/REVISIO
 
 | | |
 |---|---|
-| Erster Commit | `ef81cd6`, 2026-09-02 |
-| Letzter Commit | dieser |
-| Spanne | siehe `git log --format='%aI' claude/sbkim-papers-update-swrhy6` |
+| Erster Commit | `ef81cd6` · 2026-09-02 15:30 UTC |
+| Letzter Commit | `98ce1b2` · 2026-09-02 15:37 UTC |
+| **Spanne** | **6 Minuten**, 2 Commits |
 
-⚠ **Was diese Zahl NICHT enthält, und das ist der größere Teil.** Die Arbeit
-vor dem ersten Commit hinterlässt keine Spur in der Quelltext-Verwaltung: die
-Pflichtlektüre, die drei Literatursuchen, das Vergleichen der vier
-Paper-Dateien und das Schreiben der neuen Abschnitte. **Diese Sitzung hat
-genau einen Arbeits-Commit und einen Nachtrags-Commit; ihre Commit-Spanne ist
-deshalb als Maß für den Aufwand wertlos.** Wer mehr behauptet, schätzt.
+⚠ **Diese 6 Minuten sind NICHT der Aufwand, und die Zahl steht nur hier, damit
+niemand sie für einen hält.** Die Arbeit vor dem ersten Commit hinterlässt
+keine Spur in der Quelltext-Verwaltung: die Pflichtlektüre, die drei
+Literatursuchen, das Vergleichen der vier Paper-Dateien, das Schreiben von
+zwei neuen Abschnitten in zwei Sprachen. Alles davon liegt **vor** 15:30.
+
+**Eine Sitzung, die ihre Arbeit in einem Commit ablegt, misst mit der
+Commit-Spanne ihren Ablage-Vorgang, nicht ihre Arbeit.** Die Methode taugt für
+Tage mit vielen Commits; für diese Sitzung ist sie blind. Nachrechenbar wäre
+sie erst mit einer Uhr, die niemand gedrückt hat.
+
+> Die ehrliche Auskunft ist deshalb: **nicht gemessen.** Nicht „6 Minuten",
+> und auch keine Schätzung, die sich daneben besser läse.
 
 ⚠ **Und die Spanne ist ohnehin nicht Klaus' Arbeitszeit.** Beide überschneiden
 sich, sind aber nicht dasselbe.
