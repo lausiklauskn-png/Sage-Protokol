@@ -1,11 +1,14 @@
 ﻿<!doctype html>
-<html lang="de">
+<html lang="de" data-stand="2026-09-02">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Forschungsunterlagen</title>
-<!-- Klaus Nitzsche · Hamburg · Stand 2026-08-26Herkunft: Depot Sage-Protokol, github.com/lausiklauskn-png/Sage-ProtokolTexte CC BY 4.0 · Code und Material MIT -->
-<style>
+<title>Forschungsunterlagen, Sage-Protokol, Stand 2026-09-02</title>
+<meta name="robots" content="noindex">
+<!-- ERZEUGT von tools/antragsmappe-bauen.mjs. NICHT von Hand bearbeiten.
+     Die Quelle sind die .md-Dateien, hier steht nur ihre Ansicht.
+     Neu bauen:  node tools/antragsmappe-bauen.mjs -->
+<style id="stil">
 :root{color-scheme:light dark;--grund:#f7f6f3;--tinte:#1b1b1b;--matt:#5a5a5a;
 --kante:#d8d5cf;--karte:#fff;--akzent:#7a4b1e;--warn:#8a1c1c;--gruen:#1f5c34}
 @media (prefers-color-scheme:dark){:root{--grund:#14161a;--tinte:#e8e6e1;
@@ -142,14 +145,7 @@ border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
 /* ── Druck ────────────────────────────────────────────────────────────────
    EINE Fassung, zwei Sichten. Die Klasse am <html> blendet aus, was gerade
    nicht gedruckt werden soll. */
-html.nur-privat .abteilung:not(#privat){display:none}
 html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
-html.nur-uebersicht .abteilung:not(#uebersicht){display:none}
-html.nur-schritte .abteilung:not(#schritte){display:none}
-html.nur-steuerberater .abteilung:not(#steuerberater){display:none}
-html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
-html.nur-bestand .abteilung:not(#bestand){display:none}
-html.nur-april .abteilung:not(#april){display:none}
 html.nur-forschungsaufgaben .abteilung:not(#forschungsaufgaben){display:none}
 @media print{
   .hut,.knoepfe,.lage{display:none}
@@ -170,16 +166,28 @@ html.nur-forschungsaufgaben .abteilung:not(#forschungsaufgaben){display:none}
 </style>
 </head>
 <body>
+<div class="hut">
+  <nav>
+    <strong>Forschungsunterlagen</strong>
+    <span>Stand 2026-09-02</span>
+    <a href="#einreichbar">1 &middot; Forschungsunterlagen (einreichbar)</a>
+    <button type="button" data-mk-knopf>&#9998; 0 Markierungen</button>
+  </nav>
+</div>
+
 <section class="abteilung" id="einreichbar" data-abteilung="einreichbar">
 <header class="abt-kopf">
-<p class="marke">Abteilung 2 · EINREICHBAR</p>
+<p class="marke"> &middot; EINREICHBAR</p>
 <h1>Forschungsunterlagen</h1>
-<p class="unter">Zum Einreichen bei Behörde und Gutachter</p>
-<p class="stempel" data-stempel="einreichbar">Klaus Nitzsche · Hamburg · Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 · Code und Material MIT</p>
-<p class="hinweis">Diese Abteilung ist so gebaut, dass sie <strong>allein vollständig</strong> ist: eigener Kopf, eigenes Datum, eigene Herkunftsangabe. Wer nur sie in der Hand hält, vermisst nichts.</p>
-
-
-<nav class="verzeichnis"><p>In dieser Abteilung:</p><ul><li><a href="#q-docs-papers-entstehung-md">papers/ENTSTEHUNG.md</a></li><li><a href="#q-docs-abgrenzung-md">ABGRENZUNG.md</a></li><li><a href="#q-docs-papers-paper-a-regeln-und-grundsaetze-md">papers/PAPER_A_regeln-und-grundsaetze.md</a></li><li><a href="#q-docs-forschungskorpus-md">FORSCHUNGSKORPUS.md</a></li><li><a href="#q-docs-papers-plan-papers-md">papers/PLAN_PAPERS.md</a></li><li><a href="#q-docs-werkstatt-readme-md">werkstatt/README.md</a></li><li><a href="#q-docs-werkstatt-werkstattregeln-md">werkstatt/WERKSTATTREGELN.md</a></li><li><a href="#q-docs-werkstatt-grundsaetze-md">werkstatt/grundsaetze.md</a></li><li><a href="#q-docs-werkstatt-befund-md">werkstatt/BEFUND.md</a></li></ul></nav>
+<p class="unter">Entstehung, Abgrenzung, Untersuchung, Werkstatt</p>
+<p class="stempel" data-stempel="einreichbar">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-09-02<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="hinweis">Diese Mappe ist so gebaut, dass sie <strong>allein vollst&auml;ndig</strong> ist: eigener Kopf, eigenes Datum, eigene Herkunftsangabe. Wer nur sie in der Hand h&auml;lt, vermisst nichts.</p>
+<div class="knoepfe" data-knoepfe="einreichbar">
+<button type="button" data-tun="laden" data-fuer="einreichbar">&#11015; Diese Abteilung als HTML herunterladen</button>
+<button type="button" data-tun="drucken" data-fuer="einreichbar">&#128424; Nur diese Abteilung drucken / als PDF sichern</button>
+</div>
+<p class="lage" data-lage="einreichbar" role="status"></p>
+<nav class="verzeichnis"><p>In dieser Abteilung:</p><ul><li><a href="#q-docs-papers-entstehung-md">papers/ENTSTEHUNG.md</a></li><li><a href="#q-docs-abgrenzung-md">ABGRENZUNG.md</a></li><li><a href="#q-docs-papers-paper-a-regeln-und-grundsaetze-md">papers/PAPER_A_regeln-und-grundsaetze.md</a></li><li><a href="#q-docs-papers-plan-papers-md">papers/PLAN_PAPERS.md</a></li><li><a href="#q-docs-werkstatt-readme-md">werkstatt/README.md</a></li><li><a href="#q-docs-werkstatt-werkstattregeln-md">werkstatt/WERKSTATTREGELN.md</a></li><li><a href="#q-docs-werkstatt-grundsaetze-md">werkstatt/grundsaetze.md</a></li><li><a href="#q-docs-werkstatt-befund-md">werkstatt/BEFUND.md</a></li></ul></nav>
 </header>
 <article class="quelle" id="q-docs-papers-entstehung-md" data-quelle="docs/papers/ENTSTEHUNG.md">
 <p class="herkunft">Quelle: <code>docs/papers/ENTSTEHUNG.md</code></p>
@@ -190,8 +198,8 @@ für den Anfang von Paper A und für die Vorhabensbeschreibung im Antrag, noch n
 eingearbeitet.</p>
 <blockquote><p><strong>Warum diese Datei überhaupt existiert.</strong> Beim Prüfen der Antragsunterlagen fiel
 Klaus auf, dass die Texte mitten im Thema anfangen. Wer sie liest, erfährt nie,
-worauf sie aufbauen, warum ein Werkzeug gebaut wurde und was eine „Schicht" ist.
-Er sagte dazu: <em>„bis man da ist, denkt man, das hat KI geschrieben."</em> Der
+worauf sie aufbauen, warum ein Werkzeug gebaut wurde und was eine „Schicht&quot; ist.
+Er sagte dazu: <em>„bis man da ist, denkt man, das hat KI geschrieben.&quot;</em> Der
 Zusammenhang fehlt, und er stand bisher nur im Gespräch.</p></blockquote>
 <hr>
 <h2>1 · Der Ausgangspunkt: das Matching</h2>
@@ -203,7 +211,7 @@ zu finden, die jemand sucht.</p>
 <p><strong>Zwei Genauigkeiten, auf die Klaus ausdrücklich hinweist</strong> und die in den
 Unterlagen bisher fehlten:</p>
 <ul><li><strong>Es sind keine KIs, die sich erkennen.</strong> Es sind Anwendungen und Seiten. Die KI
-steckt im Einbetten und im Sortieren, nicht in den Knoten.</li><li><strong>„Server-los" gehört in Anführungszeichen.</strong> Es gibt sehr wohl ein <strong>Relais</strong>.
+steckt im Einbetten und im Sortieren, nicht in den Knoten.</li><li><strong>„Server-los&quot; gehört in Anführungszeichen.</strong> Es gibt sehr wohl ein <strong>Relais</strong>.
 Was fehlt, ist ein Server <strong>beim Einzelnen</strong> und ein zentraler Index. Klaus
 betreibt selbst ein Relais (<code>wss://relay.family-projekt.de</code>). Peer-to-peer heißt
 hier: niemand muss eigene Infrastruktur stellen, nicht: es gibt keine.</li></ul>
@@ -275,15 +283,16 @@ dazu, welche gemeint ist; sonst steht dort eine Verdopplung, die ein Prüfer an
 der anderen Zahl nicht wiederfindet. Beide stehen in
 <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/historie/arbeitstage.html"><code>historie/arbeitstage.html</code></a>.</p></blockquote>
 <blockquote><p><em>„Ich bin nicht süchtig. Aber ich bin das lebendige Beispiel dafür. Das schafft
-man nicht, wenn man die Sachen nebenbei macht."</em></p></blockquote>
+man nicht, wenn man die Sachen nebenbei macht.&quot;</em></p></blockquote>
 <p>Diese Ambivalenz ist kein Makel der Darstellung. Sie ist der Gegenstand.</p>
 <h2>8 · Was davon belegt ist und was nicht</h2>
 <p>Damit die beiden nicht ineinanderlaufen:</p>
-<div class="tabelle"><table><thead><tr><th></th><th>Zeitraum</th><th>Art des Belegs</th></tr></thead><tbody><tr><td><strong>Aufschreibung</strong></td><td>seit März 2026, fünf Monate</td><td><code>LEHREN.md</code>, Verfassungen, Sitzungsprotokolle, Git-Historie mit Datum. Echt und datiert, aber <strong>Text, keine Messreihe</strong></td></tr><tr><td><strong>Messung</strong></td><td>seit <strong>2026-08-20</strong> (Deckel, Kosten), <strong>2026-08-22</strong> (Fahrtenbuch)</td><td>belastbar, aber <strong>wenige Läufe</strong></td></tr><tr><td><strong>Zeitaufwand des Menschen</strong></td><td>„mehr als doppelte Arbeitszeit"</td><td><strong>Schätzung von Klaus</strong>, nicht gemessen. Die Stechuhr existiert, eine Reihe noch nicht</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th></th><th>Zeitraum</th><th>Art des Belegs</th></tr></thead><tbody><tr><td><strong>Aufschreibung</strong></td><td>seit März 2026, fünf Monate</td><td><code>LEHREN.md</code>, Verfassungen, Sitzungsprotokolle, Git-Historie mit Datum. Echt und datiert, aber <strong>Text, keine Messreihe</strong></td></tr><tr><td><strong>Messung</strong></td><td>seit <strong>2026-08-20</strong> (Deckel, Kosten), <strong>2026-08-22</strong> (Fahrtenbuch)</td><td>belastbar, aber <strong>wenige Läufe</strong></td></tr><tr><td><strong>Zeitaufwand des Menschen</strong></td><td>„mehr als doppelte Arbeitszeit&quot;</td><td><strong>Schätzung von Klaus</strong>, nicht gemessen. Die Stechuhr existiert, eine Reihe noch nicht</td></tr></tbody></table></div>
 <h2>9 · Was mit dieser Datei geschehen soll</h2>
 <p>Sie ist der Rohstoff für drei Dinge, die noch zu tun sind:</p>
 <ol><li><strong>Ein neuer Abschnitt 1 in Paper A</strong>, der die Herkunft erzählt, bevor Begriffe
- wie „Schicht" gebraucht werden.</li><li><strong>Die Vorhabensbeschreibung</strong> im Förderantrag. Abschnitt 6 ist deren Kern.</li><li><strong>Ein Abschnitt zur Entstehung des Papers selbst</strong>: welche Wendepunkte von Klaus
+ wie „Schicht&quot; gebraucht werden.</li><li><strong>Eine Vorhabensbeschreibung</strong>, wo immer eine gebraucht wird. Abschnitt 6
+ ist deren Kern.</li><li><strong>Ein Abschnitt zur Entstehung des Papers selbst</strong>: welche Wendepunkte von Klaus
  kamen und welche von der Sitzung. Bei einem Papier über die Lenkung von KI ist
  das kein Anhang, sondern Material.</li></ol>
 <p><strong>Klaus liest gegen und korrigiert.</strong> Was hier steht, ist seine Darstellung, von
@@ -400,7 +409,7 @@ gemessene Zahl steht, stammt sie aus dem zweiten.</p>
 <p><strong>Der erste ist seit dem 2026-08-24 kein ungefährer mehr.</strong> Die Git-Historie
 aller 33 Depots wurde ausgelesen und ausgezählt: <strong>5.823 Commits an 128
 Arbeitstagen, vom 10.03. bis zum 24.08.2026</strong>, über 1.388 Zweige, davon 1.662
-Commits, die nie auf einem Hauptzweig ankamen. Damit ist „fünf Monate" nicht
+Commits, die nie auf einem Hauptzweig ankamen. Damit ist „fünf Monate&quot; nicht
 länger eine Erinnerung, sondern eine Zahl mit Quelle
 (<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/historie"><code>../historie/</code></a>). <strong>An der Trennung ändert das nichts, und das
 ist der Punkt:</strong> die Historie belegt, <em>dass</em> und <em>wann</em> gearbeitet wurde, nicht
@@ -481,8 +490,8 @@ messen.</p>
 <p>Wer so ein System aufsetzt, steht schnell vor einer praktischen Frage, die sich
 theoretisch nicht auflösen lässt:</p>
 <blockquote><p><strong>Was schreibe ich als Regel hin, und was muss ich stattdessen fragen?</strong></p></blockquote>
-<p>„Kein Schlüssel im Klartext" ist eine Regel. Man kann sie prüfen, man kann sie
-erzwingen, und sie greift zuverlässig. „Was hat der Nächste davon?" ist keine
+<p>„Kein Schlüssel im Klartext&quot; ist eine Regel. Man kann sie prüfen, man kann sie
+erzwingen, und sie greift zuverlässig. „Was hat der Nächste davon?&quot; ist keine
 Regel. Man kann sie nicht prüfen und nicht erzwingen, und trotzdem verändert
 sie, was zurückkommt.</p>
 <p>Die Frage ist alt. Neu ist nur, dass sie jetzt jemand beantworten muss, der ein
@@ -523,7 +532,7 @@ beim Menschen, sondern <strong>härter</strong>. Beim Menschen kann Einsicht ein
 Regel ausgleichen. Hier gibt es nichts, was sie ausgleicht. Es gibt nur den Text,
 der mitgegeben wurde.</p>
 <p><strong>Zweitens</strong> ist damit auch beantwortet, warum die naheliegende Erwartung
-enttäuscht wird, ein Grundsatz sei „stärker". Beim Menschen ist er das, weil er an
+enttäuscht wird, ein Grundsatz sei „stärker&quot;. Beim Menschen ist er das, weil er an
 etwas anknüpft, das ohnehin da ist. Hier knüpft er an nichts an. Er <strong>verschiebt
 nur, worauf das System achtet</strong>, und wenn die Aufmerksamkeit nicht reicht, bleibt
 er wirkungslos, ohne dass es jemand merkt. Genau das ist in Abschnitt 5.2
@@ -550,7 +559,7 @@ im Kleinen beobachtet wird:</p>
 veralten aber schnell und führen zum Abhaken von Kästchen. Hohe Grundsätze
 geben weniger Sicherheit und sind teurer durchzusetzen, sind dafür
 anpassungsfähiger.</p></blockquote>
-<p>„Führen zum Abhaken von Kästchen" ist der Satz, auf den es ankommt. Er beschreibt
+<p>„Führen zum Abhaken von Kästchen&quot; ist der Satz, auf den es ankommt. Er beschreibt
 kein Versagen der Durchsetzung, sondern eines des <strong>Zuschnitts</strong>: die Regel wird
 befolgt, und die Sache wird trotzdem nicht besser.</p>
 <h3>2.3 Das Bild von den zwei Autofahrern ist selbst ein Forschungsgegenstand</h3>
@@ -608,8 +617,8 @@ Punktzahlen für kaum lesbare Texte erhält.</p>
 <p>Dahinter steht Goodharts Gesetz: <strong>wird ein Maß zum Ziel, taugt es nicht mehr als
 Maß.</strong></p>
 <p>Für dieses Papier ist der Zusammenhang direkt. Schuett et al.s <em>„Abhaken von
-Kästchen"</em>, Goodharts Gesetz und der Fall 3 in Abschnitt 3.5: die Weitergabe, in
-der „passt" steht, sind <strong>derselbe Vorgang auf drei Ebenen</strong>: die Vorgabe ist
+Kästchen&quot;</em>, Goodharts Gesetz und der Fall 3 in Abschnitt 3.5: die Weitergabe, in
+der „passt&quot; steht, sind <strong>derselbe Vorgang auf drei Ebenen</strong>: die Vorgabe ist
 erfüllt, und die Sache ist nicht besser geworden.</p>
 <h3>2.6 Warum das wichtig ist</h3>
 <p>Die Frage ist nicht akademisch, und sie wird gerade jetzt praktisch beantwortet,
@@ -648,7 +657,7 @@ Text, den ein Mensch ohne Programmierkenntnisse ändern kann.</p>
 <p>Die Literatur kennt diese Stelle, betrachtet sie aber als <strong>Risiko</strong> statt als
 Instrument. In der Debatte um die Lücke zwischen Training und Einsatz gilt es als
 Problem, dass „der Betreiber den Systemprompt ändern kann, der Vorsicht
-versprochen hat". Das stimmt. Es ist zugleich die einzige Stelle, an der jemand
+versprochen hat&quot;. Das stimmt. Es ist zugleich die einzige Stelle, an der jemand
 ohne Zugriff auf Gewichte und ohne Programmierer eine Haltung setzen kann, und
 damit die einzige, die für kleine Betreiber überhaupt erreichbar ist.</p>
 <p><strong>Genau dort sitzt der hier beschriebene Aufbau.</strong></p>
@@ -663,9 +672,9 @@ kurz und auf Deutsch schreiben · und: keine Werkzeuge, also auch nicht behaupte
 etwas ausgeführt zu haben.</p>
 <p>Drei davon tragen ihre Herkunft im Text. Sie stammen aus einem Schaden, nicht
 aus einem Lehrbuch. Die Regel gegen erfundene Zahlen begründet sich selbst mit
-dem Satz <em>„eine geratene Zahl klingt genau wie eine gemessene"</em>. Die Regel gegen
+dem Satz <em>„eine geratene Zahl klingt genau wie eine gemessene&quot;</em>. Die Regel gegen
 Geheimnisse begründet sich nicht mit Datenschutz, sondern mit einer Beobachtung
-über Depots: <em>„privat" ist eine Einstellung, die ein Klick umdreht, und die
+über Depots: <em>„privat&quot; ist eine Einstellung, die ein Klick umdreht, und die
 Historie behält alles.</em></p>
 <h3>3.2 Die fünf Grundsätze</h3>
 <ol><li><strong>Was hat der Nächste davon?</strong></li><li><strong>Lieber langsam als falsch. Damit andere nicht nacharbeiten müssen.</strong></li><li><strong>Eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten
@@ -702,14 +711,14 @@ symmetrisch</strong>. Es sind nicht zwei gleichrangige Werkzeuge, aus denen man 
 <blockquote><p><strong>Der Grundsatz ist die Grundlage. Die Regel ist seine Zuspitzung auf einen
 Fall.</strong></p></blockquote>
 <p>Jede Regel dient einem Zweck, sonst wäre sie Willkür. „Kein Schlüssel im
-Klartext" dient dem Schutz dessen, der die Anwendung nutzt. „Nichts erfinden"
+Klartext&quot; dient dem Schutz dessen, der die Anwendung nutzt. „Nichts erfinden&quot;
 dient dem, der sich auf die Ausgabe verlässt. <strong>Man kann jede vernünftige Regel
 nach ihrem Wozu fragen, und die Antwort ist immer ein Grundsatz.</strong> Umgekehrt
 geht es nicht: aus einem Grundsatz folgt keine bestimmte Regel, sondern viele
 mögliche.</p>
 <h4>Zwei Richtungen, die man nicht verwechseln darf</h4>
 <p>Das Verwirrende ist, dass die beiden Richtungen <strong>gegenläufig</strong> sind.</p>
-<div class="tabelle"><table><thead><tr><th></th><th><strong>Begründung</strong>, was rechtfertigt was</th><th><strong>Entstehung</strong>, was kam zuerst</th></tr></thead><tbody><tr><td>Reihenfolge</td><td><strong>Grundsatz → Regel</strong></td><td><strong>Vorfall → Regel → Grundsatz</strong></td></tr><tr><td>Beispiel</td><td>„Wer sich verlässt, darf sich verlassen können" rechtfertigt „nichts erfinden"</td><td>2026-08-20 fliegt eine geschätzte Zahl auf → Regel → erst danach der Satz über geratene Zahlen</td></tr><tr><td>Wer sie kennt</td><td>wer den Zweck durchdacht hat</td><td>jeder, der die Historie liest</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th></th><th><strong>Begründung</strong>, was rechtfertigt was</th><th><strong>Entstehung</strong>, was kam zuerst</th></tr></thead><tbody><tr><td>Reihenfolge</td><td><strong>Grundsatz → Regel</strong></td><td><strong>Vorfall → Regel → Grundsatz</strong></td></tr><tr><td>Beispiel</td><td>„Wer sich verlässt, darf sich verlassen können&quot; rechtfertigt „nichts erfinden&quot;</td><td>2026-08-20 fliegt eine geschätzte Zahl auf → Regel → erst danach der Satz über geratene Zahlen</td></tr><tr><td>Wer sie kennt</td><td>wer den Zweck durchdacht hat</td><td>jeder, der die Historie liest</td></tr></tbody></table></div>
 <p>In der Praxis geht man die <strong>untere</strong> Zeile. Etwas geht schief, man schreibt eine
 Regel dagegen, und erst später, manchmal nie: spricht jemand aus, wovon der Fall
 ein Fall war. Deshalb sieht es von innen so aus, als sei die Regel das Ursprüngliche
@@ -733,7 +742,7 @@ zugeschnitten wurde.</p>
 verschieden wirken. Kein Rätsel mehr: es ist derselbe Zweck, einmal als Grund
 ausgesprochen, einmal als Bedingung zugespitzt.</p>
 <p><strong>Und der Fehler aus 7.10 bekommt einen Namen.</strong> Wer aus Vorfällen unmittelbar
-„Grundsätze" ableitet, geht die Entstehungsrichtung entlang und hält das Ergebnis
+„Grundsätze&quot; ableitet, geht die Entstehungsrichtung entlang und hält das Ergebnis
 für die Begründungsrichtung. Er überspringt die Frage nach dem Wozu, und bekommt
 einen Satz, der allgemein klingt und eng gedacht ist.</p>
 <h4>Warum dann überhaupt zwei Kanäle?</h4>
@@ -751,7 +760,7 @@ nicht mehr passen. Wer nur Grundsätze nimmt, hat den Grund ohne alles, woran
 man ihn festmachen könnte.</p></blockquote>
 <h4>Zwei Begriffe, und die Richtung steckt im Namen</h4>
 <p>Damit lässt sich benennen, was gebaut werden soll und was nicht:</p>
-<div class="tabelle"><table><thead><tr><th>Begriff</th><th>Richtung</th><th>Urteil</th></tr></thead><tbody><tr><td><strong>Grundsatzbasierte Regel</strong></td><td>Grundsatz → Regel</td><td>✅ <strong>die richtige Bauform.</strong> Der Zweck steht fest, die Regel spitzt ihn auf einen Fall zu, und lässt sich nachziehen, wenn der Fall sich ändert, weil der Zweck bekannt ist.</td></tr><tr><td><strong>Regelbasierter Grundsatz</strong></td><td>Vorfall → Regel → „Grundsatz"</td><td>❌ <strong>der Fehler.</strong> Klingt allgemein, ist eng gedacht: er kann nur abdecken, was schon eingetreten ist (7.10).</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th>Begriff</th><th>Richtung</th><th>Urteil</th></tr></thead><tbody><tr><td><strong>Grundsatzbasierte Regel</strong></td><td>Grundsatz → Regel</td><td>✅ <strong>die richtige Bauform.</strong> Der Zweck steht fest, die Regel spitzt ihn auf einen Fall zu, und lässt sich nachziehen, wenn der Fall sich ändert, weil der Zweck bekannt ist.</td></tr><tr><td><strong>Regelbasierter Grundsatz</strong></td><td>Vorfall → Regel → „Grundsatz&quot;</td><td>❌ <strong>der Fehler.</strong> Klingt allgemein, ist eng gedacht: er kann nur abdecken, was schon eingetreten ist (7.10).</td></tr></tbody></table></div>
 <p><strong>Jede der sechs Regeln in 3.1 sollte eine grundsatzbasierte Regel sein.</strong> Das ist
 keine Stilfrage, sondern die Bedingung dafür, dass sie gepflegt werden kann: eine
 Regel, deren Zweck niemand benennen kann, lässt sich weder anpassen noch
@@ -772,8 +781,8 @@ tatsächlich geschah.</p>
 <p><strong>Fall 1 · Die Zahl, die niemand nachgerechnet hat</strong></p>
 <p><em>Lage:</em> Eine Rolle soll berichten, wie viel Speicher die Klone belegen. Sie kennt
 die Zahl nicht.</p>
-<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>schreibt „ich kenne die Zahl nicht", oder schreibt eine Zahl hin, wenn ihr eine plausibel erscheint</td><td>Die Regel verbietet das <strong>Erfinden</strong>. Eine Zahl, die die Rolle für abgeleitet hält, fühlt sich nicht wie Erfinden an.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>fragt: <em>ist diese Zahl gemessen oder abgeleitet?</em>, und kennzeichnet sie</td><td>Der Grundsatz richtet sich nicht auf die Ausgabe, sondern auf die <strong>Prüfung der eigenen Quelle</strong>.</td></tr></tbody></table></div>
-<p><em>Was wirklich geschah:</em> „reichlich dreißig Klone, mehrere Gigabyte". In Wahrheit
+<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>schreibt „ich kenne die Zahl nicht&quot;, oder schreibt eine Zahl hin, wenn ihr eine plausibel erscheint</td><td>Die Regel verbietet das <strong>Erfinden</strong>. Eine Zahl, die die Rolle für abgeleitet hält, fühlt sich nicht wie Erfinden an.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>fragt: <em>ist diese Zahl gemessen oder abgeleitet?</em>, und kennzeichnet sie</td><td>Der Grundsatz richtet sich nicht auf die Ausgabe, sondern auf die <strong>Prüfung der eigenen Quelle</strong>.</td></tr></tbody></table></div>
+<p><em>Was wirklich geschah:</em> „reichlich dreißig Klone, mehrere Gigabyte&quot;. In Wahrheit
 fünf Klone mit 199 MB. Die Regel war da. Sie hat nicht gegriffen, weil die Rolle
 nicht das Gefühl hatte, etwas zu erfinden.</p>
 <p><strong>Der Kernsatz dieses Falls:</strong> Regel und Grundsatz tragen hier <strong>denselben
@@ -783,7 +792,7 @@ sondern der Kanal.</p>
 <hr>
 <p><strong>Fall 2 · Die Prüfung, die zufrieden war</strong></p>
 <p><em>Lage:</em> Eine Rolle hat etwas gebaut, führt eine Prüfung aus, die Prüfung ist grün.</p>
-<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>meldet: geprüft, grün, fertig</td><td>Es gibt <strong>keine Regel</strong>, die das verbieten würde, und es kann sie nicht geben. Eine Regel „prüfe, ob deine Prüfung etwas misst" bräuchte ein Merkmal, an dem man Blindheit erkennt. Gäbe es das, wäre es die Prüfung.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>sieht genau dort noch einmal hin, <em>„eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst"</em></td><td>Der Grundsatz stellt eine <strong>Frage an die Lage</strong>, die keine Vorwegnahme des Falls braucht.</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>meldet: geprüft, grün, fertig</td><td>Es gibt <strong>keine Regel</strong>, die das verbieten würde, und es kann sie nicht geben. Eine Regel „prüfe, ob deine Prüfung etwas misst&quot; bräuchte ein Merkmal, an dem man Blindheit erkennt. Gäbe es das, wäre es die Prüfung.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>sieht genau dort noch einmal hin, <em>„eine Prüfung, die dir recht gibt, ist der Ort, an dem du am genauesten hinsehen musst&quot;</em></td><td>Der Grundsatz stellt eine <strong>Frage an die Lage</strong>, die keine Vorwegnahme des Falls braucht.</td></tr></tbody></table></div>
 <p><em>Was wirklich geschah:</em> an einem einzigen Tag drei Funde: eine Suche, die ihre
 eigene Dokumentation fand · eine Zählung, die unsichtbare Einträge mitzählte ·
 eine Prüfung, die nur maß, dass überhaupt etwas zurückkam. <strong>Alle drei in der
@@ -795,8 +804,8 @@ zeigt sich nur an Fehlern, die sonst niemand gefunden hätte.</p>
 <hr>
 <p><strong>Fall 3 · Die halbfertige Übergabe</strong></p>
 <p><em>Lage:</em> Eine Rolle gibt Arbeit weiter, an der noch etwas fehlt.</p>
-<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>füllt das Weitergabe-Feld, mit „passt"</td><td>Die Regel verlangt, <strong>dass</strong> das Feld ausgefüllt wird. Sie kann nicht verlangen, dass der Inhalt nützt.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>schreibt hin, was fehlt und was der Nächste damit tun muss</td><td><em>„Was hat der Nächste davon?"</em>, die Frage lässt sich nicht mit einem Wort beantworten.</td></tr></tbody></table></div>
-<p><strong>Das ist Schuett et al.s „Abhaken von Kästchen", im Kleinen und wörtlich.</strong> Eine
+<div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>füllt das Weitergabe-Feld, mit „passt&quot;</td><td>Die Regel verlangt, <strong>dass</strong> das Feld ausgefüllt wird. Sie kann nicht verlangen, dass der Inhalt nützt.</td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>schreibt hin, was fehlt und was der Nächste damit tun muss</td><td><em>„Was hat der Nächste davon?&quot;</em>, die Frage lässt sich nicht mit einem Wort beantworten.</td></tr></tbody></table></div>
+<p><strong>Das ist Schuett et al.s „Abhaken von Kästchen&quot;, im Kleinen und wörtlich.</strong> Eine
 erfüllte Regel und ein nutzloses Ergebnis, gleichzeitig. Diese Fehlerart bekommt
 im Versuchsaufbau (7.4) eine eigene Kategorie: <em>leere Weitergabe</em>, weil sie
 nur im Arm R zu erwarten ist.</p>
@@ -805,9 +814,9 @@ nur im Arm R zu erwarten ist.</p>
 <p><em>Lage:</em> Eine Rolle soll berichten, ob Code funktioniert. Sie hat keine Werkzeuge
 und kann es nicht wissen.</p>
 <div class="tabelle"><table><thead><tr><th></th><th>Was das System tut</th></tr></thead><tbody><tr><td><strong>Nur Regel</strong></td><td>Es gibt eine Regel, ausdrücklich, mit Vorfall im Wortlaut. <strong>Sie hat nicht gegriffen.</strong></td></tr><tr><td><strong>Nur Grundsatz</strong></td><td>Grundsatz 5 deckt den Fall vollständig ab, wer nicht prüfen konnte, schreibt es hin. <strong>Er hat auch nicht gegriffen.</strong></td></tr></tbody></table></div>
-<p><em>Was wirklich geschah:</em> „Sten hat den Code durchlaufen lassen." Am 2026-08-20.</p>
+<p><em>Was wirklich geschah:</em> „Sten hat den Code durchlaufen lassen.&quot; Am 2026-08-20.</p>
 <p><strong>Dieser Fall ist der wichtigste der vier</strong>, weil er in beide Richtungen
-schneidet. Er zeigt, dass die Antwort auf „was ist besser" nicht „Grundsätze"
+schneidet. Er zeigt, dass die Antwort auf „was ist besser&quot; nicht „Grundsätze&quot;
 lautet. Sie lautet, dass es Lagen gibt, in denen <strong>beide Kanäle nichts
 ausrichten</strong>, weil sich eine Aussage über die Wirklichkeit nicht an der Aussage
 prüfen lässt. Dort hilft weder eine schärfere Regel noch ein besserer Grundsatz,
@@ -835,7 +844,7 @@ einschränken soll. Bei jedem Lauf neu.</p>
 jede Bedingung hat einen Rand. Ein Rand ist eine Stelle, an der man knapp
 innerhalb stehen kann. Genau davon handelt das <em>specification gaming</em> aus
 Abschnitt 2.5. Das Boot, das im Kreis fährt, hat keine Regel gebrochen.</p>
-<p><strong>Ein Grundsatz hat diesen Rand nicht.</strong> „Was hat der Nächste davon?" lässt sich
+<p><strong>Ein Grundsatz hat diesen Rand nicht.</strong> „Was hat der Nächste davon?&quot; lässt sich
 nicht auf eine Formalie hin erfüllen, weil es keine Formalie gibt. Man kann die
 Frage übergehen, aber man kann sie nicht <strong>technisch bestehen</strong>.</p>
 <p>Daraus folgt die genauere Fassung von Klaus' Einwand:</p>
@@ -852,7 +861,7 @@ Satz ihrer Abwägung: spezifische Regeln <strong>veralten schnell</strong>.</p>
 Zeitpunkt des Aufschreibens war. Ändert sich die Umgebung, zeigt die Regel ins
 Leere oder auf das Falsche, und niemand merkt es, weil sie weiter erfüllt wird.</p>
 <p>Ein Grundsatz enthält keinen Zustand, sondern einen Zweck. „Eine geratene Zahl
-klingt genau wie eine gemessene" war im März richtig und ist es heute; es gibt
+klingt genau wie eine gemessene&quot; war im März richtig und ist es heute; es gibt
 nichts daran, das veralten könnte.</p>
 <div class="tabelle"><table><thead><tr><th></th><th><strong>Regel</strong></th><th><strong>Grundsatz</strong></th></tr></thead><tbody><tr><td>Bindet</td><td>eine Bedingung</td><td>einen Zweck</td></tr><tr><td>Hat einen Rand, an dem man knapp innen stehen kann</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Veraltet, wenn sich die Umgebung ändert</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Muss bei jedem neuen Fall ergänzt werden</td><td><strong>ja</strong></td><td>nein</td></tr><tr><td>Verliert an Wirkung, wenn zu viele danebenstehen</td><td>nein</td><td><strong>ja</strong> (3.3)</td></tr><tr><td>Nachprüfbar</td><td><strong>ja</strong></td><td>nein</td></tr></tbody></table></div>
 <h4>Der Satz, auf den es für einen kleinen Betreiber hinausläuft</h4>
@@ -886,8 +895,8 @@ den Umgang mit einem Fehler, ist offen und wird hier nicht behauptet.</p>
 Regel die Zuspitzung eines Zwecks ist, dann können <strong>mehrere Regeln denselben
 Zweck zuspitzen</strong>. Jede auf einen anderen Fall. Und dann lassen sie sich durch
 <strong>den einen Grundsatz</strong> ersetzen, aus dem sie alle stammen.</p>
-<p>An den sechs Regeln aus 3.1 ist das ablesbar. „Nichts erfinden", „nicht behaupten,
-etwas ausgeführt zu haben" und die Ehrlichkeitsregel über den eigenen Stand sind
+<p>An den sechs Regeln aus 3.1 ist das ablesbar. „Nichts erfinden&quot;, „nicht behaupten,
+etwas ausgeführt zu haben&quot; und die Ehrlichkeitsregel über den eigenen Stand sind
 drei Zuspitzungen <strong>eines</strong> Zwecks: <em>wer sich auf eine Ausgabe verlässt, muss sich
 verlassen können.</em> Drei Zeilen, ein Grund.</p>
 <h4>Warum das im Betrieb wirklich Geld ist</h4>
@@ -914,7 +923,7 @@ tauscht <strong>Durchsetzung gegen Reichweite</strong>. Das ist genau das Tausch
 3.7, hier von der Kostenseite betrachtet.</p>
 <p><strong>2 · Manche Regeln dürfen nicht wegfallen.</strong> Die Faustregel aus 3.6 sagt, welche:
 wo <strong>ein einzelner Verstoß</strong> schadet. Ein Schlüssel im Klartext ist einmal zu
-viel. Für „kein Geheimnis", „keine fremden Adressen" und den Schemabruch bleibt
+viel. Für „kein Geheimnis&quot;, „keine fremden Adressen&quot; und den Schemabruch bleibt
 die Regel, der Grundsatz daneben ersetzt sie nicht, sondern begründet sie.</p>
 <p><strong>Die Verdichtung ist also nicht gleichmäßig anwendbar.</strong> Sie greift dort, wo der
 Schaden aus der <strong>Summe</strong> entsteht (leere Weitergaben, unbelegte Zahlen,
@@ -987,7 +996,7 @@ Gegen einen Schicht-Deckel von fünf Euro ist das nichts.</p>
 <blockquote><p><strong>Eine einzige vermiedene Fehlschicht entspricht rund 327 Schichten
 Block-Verdichtung</strong>, bei zwischengespeichertem Block rund <strong>3.268</strong>.</p></blockquote>
 <p><strong>Damit ist die Sparsamkeits-These in ihrer einfachen Form widerlegt</strong>, und zwar
-durch die eigene Rechnung. Wer Verdichtung mit „das spart Rechenleistung"
+durch die eigene Rechnung. Wer Verdichtung mit „das spart Rechenleistung&quot;
 begründet, begründet sie falsch: die Blockgröße ist bei dieser Betriebsgröße
 schlicht nicht der Posten, auf den es ankommt.</p>
 <p><strong>Zwei Dinge bleiben trotzdem stehen</strong>, und beide sind wichtiger als das, was
@@ -996,7 +1005,7 @@ widerlegt wurde:</p>
 kürzerer, klarerer Block auch nur <strong>eine von dreihundert</strong> Schichten davor bewahrt
 zu misslingen, hat er sich bezahlt gemacht, und zwar hundertfach mehr als durch
 die eingesparten Token. <strong>Genau deshalb ist die Zielgröße „Kosten je brauchbarem
-Ergebnis" und nicht „Kosten je Aufruf"</strong> (7.4). Diese Rechnung ist der Beleg, dass
+Ergebnis&quot; und nicht „Kosten je Aufruf&quot;</strong> (7.4). Diese Rechnung ist der Beleg, dass
 die Wahl der Zielgröße richtig war, und nicht bloß vorsichtig.</p>
 <p><strong>2 · Und die Rechnung gehört ohnehin von der anderen Seite geführt</strong>, siehe
 unten: nicht die Anweisung kostet, sondern die Arbeit.</p>
@@ -1018,7 +1027,7 @@ Token.</p>
 <strong>Arbeit</strong>: jeder Umweg, jeder Fehlversuch, jede Runde, die wiederholt werden
 muss, weil das Ergebnis nicht brauchbar war. Und Ausgabe-Token kosten das
 Fünffache.</p>
-<p>Damit lautet die eigentliche Frage nicht <em>„wie kürze ich die Anweisung?"</em>, sondern:</p>
+<p>Damit lautet die eigentliche Frage nicht <em>„wie kürze ich die Anweisung?&quot;</em>, sondern:</p>
 <blockquote><p><strong>Führt die Lenkung schneller ans Ziel?</strong> Weniger Umwege, weniger Nacharbeit,
 weniger verworfene Läufe, also <strong>weniger Ausgabe-Token für dasselbe brauchbare
 Ergebnis</strong>.</p></blockquote>
@@ -1042,7 +1051,7 @@ offen.</strong> Ein Grundsatz kann Umwege sparen, weil er den Zweck nennt und da
 nicht auf einen Fall festnagelt, der nicht vorliegt. Er kann Umwege auch
 <strong>erzeugen</strong>, weil er gedeutet werden muss (Kaplows Anwendungskosten oben).</p>
 <p><strong>Drittens ist damit der Streit über die Blocklänge beendet, bevor er anfängt.</strong>
-Man muss nicht abwägen zwischen „kurz genug" und „genau genug", bei diesem
+Man muss nicht abwägen zwischen „kurz genug&quot; und „genau genug&quot;, bei diesem
 Verhältnis gewinnt <strong>immer</strong> die Genauigkeit. Eine Anweisung, die drei Zeilen
 länger ist und den Weg um ein Prozent verkürzt, ist die bessere Anweisung, auch
 wenn sie sich verschwenderisch liest.</p>
@@ -1150,7 +1159,7 @@ nicht so gut wie ein Grundsatz. Das wäre <strong>H1</strong>, und es wäre der 
 Befund dieses Papiers: dann läge es nicht an der Reichweite, sondern daran, wie
 ein Zweck anders wirkt als eine Bedingung.</li></ul>
 <h4>Was ich hier schon vermute, und warum es benannt gehört</h4>
-<p>Klaus' Formulierung war <em>„nicht erst tausende von Regeln lesen"</em>. <strong>In diesem
+<p>Klaus' Formulierung war <em>„nicht erst tausende von Regeln lesen&quot;</em>. <strong>In diesem
 Aufbau sind es keine tausend, sondern sechs. 1.510 Zeichen.</strong> Bei dieser Größe ist
 <strong>H2 unplausibel</strong>: ein Block von anderthalbtausend Zeichen bindet keine nennenswerte
 Aufmerksamkeit.</p>
@@ -1179,22 +1188,22 @@ Formulierung, die dieses Papier zu bieten hat:</p>
 <blockquote><p><strong>Grundsätze feuern nicht wie Regeln, sie verschieben einen Schnitt.</strong></p></blockquote>
 <p>Eine Regel greift oder greift nicht, und man sieht es am einzelnen Fall. Ein
 Grundsatz wirkt an keinem einzelnen Fall sichtbar. Er verändert, <strong>wo</strong> jemand
-die Grenze zieht zwischen „fertig" und „noch nicht", zwischen „reicht" und
-„reicht nicht".</p>
+die Grenze zieht zwischen „fertig&quot; und „noch nicht&quot;, zwischen „reicht&quot; und
+„reicht nicht&quot;.</p>
 <p>Daraus folgt ein methodisches Problem, das dieses Papier nicht löst: <strong>an einer
 einzelnen Ausgabe ist die Wirkung eines Grundsatzes nicht ablesbar.</strong> Was sich
 ablesen ließe, wären Verteilungen über viele Läufe, und die sind hier nicht
 erhoben worden.</p>
 <h3>4.3 Ein Grundsatz hat sich am Tag seiner Aufnahme selbst bewährt</h3>
 <p>Der belegteste Einzelfall, mit Datum. Am 2026-08-20 wurde Grundsatz 4 („eine
-geratene Zahl klingt genau wie eine gemessene") aufgeschrieben. Am selben Tag
+geratene Zahl klingt genau wie eine gemessene&quot;) aufgeschrieben. Am selben Tag
 fiel damit auf, dass eine gemessene Größe, die Selbstbevorzugung einer Rolle bei
 der Bewertung, ausgewiesen mit −1,15, <strong>gar keine Messung war</strong>: sie war die
 Folge einer Anweisung im Prompt, die verlangte, den eigenen Vorschlag strenger zu
 beurteilen. Die Anweisung wurde entfernt, seitdem misst die Zahl wieder etwas.</p>
 <p>Das ist die Sorte Fehler, gegen die eine Regel nichts ausrichtet. Man hätte sie
 formulieren müssen als: <em>„prüfe, ob eine ausgewiesene Messung nicht in Wahrheit
-die Folge einer Anweisung ist"</em>, und darauf kommt man erst, <strong>nachdem</strong> es
+die Folge einer Anweisung ist&quot;</em>, und darauf kommt man erst, <strong>nachdem</strong> es
 passiert ist. Genau das ist Kaplows Punkt über die Unvollständigkeit jeder
 Regelsetzung, an einem sehr kleinen Beispiel.</p>
 <h3>4.4 Die härteste Grenze war nicht geplant und liegt in keinem der beiden Kanäle</h3>
@@ -1214,8 +1223,8 @@ Zwischenschritt markiert, nicht als Lösung.</p>
 <h3>5.1 Die Regel, die eine Bitte blieb</h3>
 <p>Es gibt eine ausdrückliche Regel: <em>„Du hast keine Werkzeuge. Schreib deshalb
 NIE, du oder jemand anderes habe etwas ausgeführt, geprüft, laufen lassen oder
-gemessen."</em> Sie trägt den Vorfall im Wortlaut mit sich, aus dem sie entstand.</p>
-<p>Am 2026-08-20 stand im Bericht: <strong>„Sten hat den Code durchlaufen lassen."</strong> Das
+gemessen.&quot;</em> Sie trägt den Vorfall im Wortlaut mit sich, aus dem sie entstand.</p>
+<p>Am 2026-08-20 stand im Bericht: <strong>„Sten hat den Code durchlaufen lassen.&quot;</strong> Das
 war nicht geschehen und konnte nicht geschehen.</p>
 <p>Die Regel ist damit ein <strong>Dämpfer, kein Riegel</strong>. Und der Grund ist strukturell,
 nicht behebbar durch bessere Formulierung: eine Regel wird erzwungen, indem
@@ -1224,7 +1233,7 @@ ist, lässt sich am Satz nicht prüfen.</strong> Hier endet, was Regeln überhau
 können, nicht aus Nachlässigkeit, sondern aus Bauart.</p>
 <h3>5.2 Der Grundsatz, der nicht griff</h3>
 <p>Derselbe Vorfall ist auch ein Versagen des anderen Kanals. Grundsatz 5 („eine
-benannte Lücke ist Arbeit, eine verschwiegene ist Schaden") deckt den Fall
+benannte Lücke ist Arbeit, eine verschwiegene ist Schaden&quot;) deckt den Fall
 inhaltlich vollständig ab: wer nicht prüfen konnte, schreibt hin, dass er nicht
 prüfen konnte. Der Grundsatz stand da. Er hat nicht gewirkt.</p>
 <p><strong>Das ist die Beobachtung, die dieses Papier von einer Werbeschrift für
@@ -1234,7 +1243,7 @@ beschreibt seine Auswahl und nicht die Sache.</p>
 <p>Die beiden Kanäle versagen an <strong>verschiedenen</strong> Stellen:</p>
 <div class="tabelle"><table><thead><tr><th></th><th>Greift zuverlässig</th><th>Versagt</th></tr></thead><tbody><tr><td><strong>Regel</strong></td><td>wo der Fall vorhergesehen und die Einhaltung prüfbar ist</td><td>wo die Prüfung selbst unmöglich ist (Aussagen über die Wirklichkeit)</td></tr><tr><td><strong>Grundsatz</strong></td><td>wo niemand vorher hingesehen hat</td><td>wo Aufmerksamkeit nicht ausreicht, und ohne Rückmeldung, dass er nicht griff</td></tr></tbody></table></div>
 <p>Die Grenzen überlappen nicht vollständig, und keine der beiden ist die Teilmenge
-der anderen. Das ist der Grund, warum sich die Frage „was ist besser" nicht
+der anderen. Das ist der Grund, warum sich die Frage „was ist besser&quot; nicht
 sinnvoll stellen lässt, und warum sie sich auch nicht getrennt betrachten
 lassen.</p>
 <p><strong>Und die Grenzen verlaufen nicht am Wortlaut.</strong> Fall 1 in Abschnitt 3.5 zeigt
@@ -1249,7 +1258,7 @@ sondern der Kanal.</strong></p>
 <ul><li><strong>Keine Kontrollgruppe.</strong> Es wurde nie ein Lauf <em>ohne</em> Grundsätze gegen einen
 <em>mit</em> Grundsätzen gestellt. Der Aufbau könnte es, die Ladefunktion meldet
 ausdrücklich, wenn die Datei fehlt, statt still weiterzulaufen. Getan wurde es
-nicht.</li><li><strong>Kein Maß.</strong> „Die Arbeit sieht anders aus" ist kein Ergebnis, solange niemand
+nicht.</li><li><strong>Kein Maß.</strong> „Die Arbeit sieht anders aus&quot; ist kein Ergebnis, solange niemand
 gesagt hat, woran man <em>anders</em> erkennt.</li><li><strong>Fallzahl eins.</strong> Ein Betreiber, ein Netz, ein Aufgabenzuschnitt.</li><li><strong>Nicht verblindet.</strong> Derselbe Mensch hat die Grundsätze geschrieben, die Läufe
 ausgelöst und die Ergebnisse beurteilt.</li><li><strong>Modellwechsel nicht kontrolliert.</strong> Über den Beobachtungszeitraum haben sich
 die verwendeten Modelle geändert. Was davon Grundsatz-Wirkung ist und was
@@ -1274,7 +1283,7 @@ Kombination mehr leistet als der bessere ihrer Teile.</p>
 <p>Dazu kommt eine zweite Achse, die <strong>Art der Aufgabe</strong> (7.3). Erst beide
 zusammen ergeben eine Vorhersage, die sich nicht schönreden lässt.</p>
 <h3>7.2 Die Vorhersage, und was sie widerlegen würde</h3>
-<p>Aus der These dieses Papiers („beide leisten Verschiedenes, keins genügt allein")
+<p>Aus der These dieses Papiers („beide leisten Verschiedenes, keins genügt allein&quot;)
 folgt eine Erwartung, die <strong>vor</strong> den Läufen festzuhalten ist:</p>
 <blockquote><p><strong>R+G ist besser als R und besser als G.</strong> Und: <strong>R und G machen
 unterschiedliche Fehler</strong>, nicht dieselben, nur unterschiedlich viele.</p></blockquote>
@@ -1300,7 +1309,7 @@ sie geschrieben hat.</strong> Daraus folgt unmittelbar, dass ihr Vorteil davon a
 muss, <strong>wie vorhersehbar der Fall war</strong>. Und das lässt sich einstellen.</p>
 <h3>7.3.1 Die Vorhersage bekommt damit eine Richtung</h3>
 <p>Aus 3 Armen × 3 Aufgabenarten wird nicht nur eine feinere Tabelle, sondern eine
-Aussage, die deutlich leichter zu widerlegen ist als „R+G gewinnt":</p>
+Aussage, die deutlich leichter zu widerlegen ist als „R+G gewinnt&quot;:</p>
 <blockquote><p><strong>Der Abstand zwischen G und R ist bei Art E am größten und bei Art B am
 kleinsten</strong>. Er müsste über E → V → B <strong>monoton fallen</strong>.</p>
 <p>Bei Art <strong>B</strong> könnte R sogar vor G liegen: der Fall ist umrissen, die Regeln
@@ -1332,12 +1341,12 @@ unterwegs kürzen und das Ergebnis vollständig aussehen lassen.</strong></p>
 <p>Ein Fehlerbegriff, der nach den Läufen entsteht, misst die Erwartung des
 Auswertenden. Deshalb: <strong>Kategorien vor dem ersten Lauf festlegen, danach nicht
 mehr ändern.</strong> Vorschlag, aus den beobachteten Fehlerarten abgeleitet:</p>
-<div class="tabelle"><table><thead><tr><th>Kategorie</th><th>Was zählt</th></tr></thead><tbody><tr><td><strong>Erfundene Tätigkeit</strong></td><td>behauptet, etwas ausgeführt/geprüft/gemessen zu haben (der Fall aus 5.1)</td></tr><tr><td><strong>Unbelegte Zahl</strong></td><td>Zahl, Datum oder Rechtslage ohne Fundstelle und ohne Kennzeichnung als Schätzung</td></tr><tr><td><strong>Wiederholung</strong></td><td>schlägt etwas vor, das im Bestand bereits existiert</td></tr><tr><td><strong>Verschwiegene Lücke</strong></td><td>konnte etwas nicht und schreibt es nicht hin</td></tr><tr><td><strong>Formverstoß</strong></td><td>verletzt eine der harten Regeln (Personenbezug, Geheimnis, fremde Adresse)</td></tr><tr><td><strong>Leere Weitergabe</strong></td><td>Übergabe-Angabe ohne Inhalt („passt", „alles gut")</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th>Kategorie</th><th>Was zählt</th></tr></thead><tbody><tr><td><strong>Erfundene Tätigkeit</strong></td><td>behauptet, etwas ausgeführt/geprüft/gemessen zu haben (der Fall aus 5.1)</td></tr><tr><td><strong>Unbelegte Zahl</strong></td><td>Zahl, Datum oder Rechtslage ohne Fundstelle und ohne Kennzeichnung als Schätzung</td></tr><tr><td><strong>Wiederholung</strong></td><td>schlägt etwas vor, das im Bestand bereits existiert</td></tr><tr><td><strong>Verschwiegene Lücke</strong></td><td>konnte etwas nicht und schreibt es nicht hin</td></tr><tr><td><strong>Formverstoß</strong></td><td>verletzt eine der harten Regeln (Personenbezug, Geheimnis, fremde Adresse)</td></tr><tr><td><strong>Leere Weitergabe</strong></td><td>Übergabe-Angabe ohne Inhalt („passt&quot;, „alles gut&quot;)</td></tr></tbody></table></div>
 <p>Die letzten beiden Kategorien tragen die Unterscheidung im Kleinen: <strong>Formverstoß</strong>
 sollte im Arm G häufiger sein (keine erzwungenen Regeln), <strong>leere Weitergabe</strong> im
 Arm R (keine Haltung, die zum Konkretwerden drängt). Trifft das nicht zu, ist das
 bereits ein Befund.</p>
-<p><strong>Und die Kategorie „Wiederholung" ist nur bei Aufgabenart B aussagekräftig.</strong>
+<p><strong>Und die Kategorie „Wiederholung&quot; ist nur bei Aufgabenart B aussagekräftig.</strong>
 Bei E und V sieht die Truppe den Bestand nicht. Dort misst sie fehlenden Zugang,
 nicht fehlende Aufmerksamkeit (7.3.2). Wer sie über alle Arten hinweg
 zusammenzählt, mischt zwei verschiedene Dinge zu einer Zahl.</p>
@@ -1469,7 +1478,7 @@ Läufen, oder eine Kategorie, die erst auftrat, seit der Wortlaut geändert wurd
 Das ist Zählen, kein Urteilen, und es ist genau das Signal, nach dem die
 Grundsatz-Datei ohnehin verlangt, <em>„ein Grundsatz, der über viele Läufe in
 keiner einzigen Weitergabe-Angabe auftaucht, ist entweder überflüssig oder
-unverständlich formuliert."</em></p>
+unverständlich formuliert.&quot;</em></p>
 <p><strong>Das Formulieren geht nicht.</strong> Und der Grund ist nicht Vorsicht, sondern
 Struktur. Er folgt unmittelbar aus der Richtung in 3.4.</p>
 <h4>Der Denkfehler steckt schon im Namen</h4>
@@ -1477,7 +1486,7 @@ Struktur. Er folgt unmittelbar aus der Richtung in 3.4.</p>
 nur Fälle abdecken, die <strong>schon eingetreten sind</strong>. Der Zweck eines Grundsatzes
 ist aber genau der umgekehrte: die <strong>Familie</strong> abzudecken, auch die Glieder, die
 noch niemand gesehen hat (3.4, Kaplow).</p>
-<blockquote><p><strong>Ein aus Vorfällen abgeleiteter „Grundsatz" ist eine Regel im Gewand eines
+<blockquote><p><strong>Ein aus Vorfällen abgeleiteter „Grundsatz&quot; ist eine Regel im Gewand eines
 Grundsatzes.</strong> Er trägt die Allgemeinheit im Wortlaut und die Enge in der
 Herkunft.</p></blockquote>
 <p>Mit den Begriffen aus 3.4: Was hier entstünde, wäre ein <strong>regelbasierter
@@ -1492,8 +1501,8 @@ als beides</strong>. Er hat weder die Prüfbarkeit der Regel noch die Reichweite
 Grundsatzes.</p>
 <p>Der Sprung vom Einzelfall zur Familie ist eine <strong>Abstraktionsleistung</strong>, kein
 Zählergebnis. Aus „am 20. August wurde eine geschätzte Zahl als Messung
-ausgegeben" folgt nicht mechanisch „eine geratene Zahl klingt genau wie eine
-gemessene". Dazwischen liegt jemand, der erkennt, wovon der Fall ein Fall ist.</p>
+ausgegeben&quot; folgt nicht mechanisch „eine geratene Zahl klingt genau wie eine
+gemessene&quot;. Dazwischen liegt jemand, der erkennt, wovon der Fall ein Fall ist.</p>
 <h4>Was die Rückkopplung trotzdem taugt</h4>
 <p>Nicht zum Schreiben, zum <strong>Pflegen</strong>. Und dafür ist sie viel wert, weil genau
 diese Pflege sonst niemand leistet (3.7):</p>
@@ -1574,7 +1583,7 @@ arXiv:2407.07300.</p>
 <p><strong>Zu <em>specification gaming</em> und <em>reward hacking</em>:</strong> DeepMind führt eine
 öffentliche Sammlung von über hundert dokumentierten Fällen; der begriffliche
 Rahmen ist Goodharts Gesetz („wird ein Maß zum Ziel, taugt es nicht mehr als
-Maß").</p>
+Maß&quot;).</p>
 <hr>
 <h2>Zum Verfasser</h2>
 <p>Kein Informatiker, kein Wissenschaftler. Handwerksbetrieb, seit März 2026
@@ -1589,93 +1598,6 @@ gebraucht wurde, und erst danach zum Gegenstand geworden.</p>
 Methode, und sie fehlt nicht aus Nachlässigkeit, sondern weil sie nicht
 vorhanden ist. Für den Versuchsaufbau in Abschnitt 7 wird ausdrücklich eine
 Zusammenarbeit gesucht.</p>
-</article>
-<hr class="quellgrenze">
-<article class="quelle" id="q-docs-forschungskorpus-md" data-quelle="docs/FORSCHUNGSKORPUS.md">
-<p class="herkunft">Quelle: <code>docs/FORSCHUNGSKORPUS.md</code></p>
-<h1>Forschungskorpus: die Kette, auf die ein Antrag zeigt</h1>
-<p><strong>Stand: 2026-08-24.</strong> Wer Förderung für offene Software beantragt, muss zeigen
-können, <strong>woran</strong> geforscht wurde, nachprüfbar, nicht behauptet. Diese Datei
-benennt die Kette. Sie gehört zu
-<a href="#q-docs-forschungsfoerderung-md"><code>FORSCHUNGSFOERDERUNG.md</code></a>, wo steht, wofür.</p>
-<blockquote><p><strong>Nicht die Menge zählt, sondern die Geschlossenheit.</strong> Sechs Repos mit einer
-erkennbaren Linie wiegen mehr als fünfzehn ohne. Ein Gutachter fragt nicht
-„wie viel ist offen", sondern „ist die Kette geschlossen".</p></blockquote>
-<hr>
-<h2>Die sechs Glieder</h2>
-<p>Alle unter <strong>MIT-Lizenz</strong>, nutzen, kopieren, verändern und weitergeben ist
-erlaubt, auch geschäftlich. Bedingung ist die Namensnennung.</p>
-<div class="tabelle"><table><thead><tr><th>#</th><th>Repo</th><th>Was es im Korpus beweist</th><th>MIT seit</th></tr></thead><tbody><tr><td>1</td><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol">Sage-Protokol</a></strong></td><td>die <strong>Spezifikation</strong>, Module, Verträge, Glossar, Proben, Papers, Meilensteine</td><td>von Anfang an</td></tr><tr><td>2</td><td><strong><a href="https://github.com/lausiklauskn-png/SB-KIMTool-Point">SB·KIMTool·Point</a></strong></td><td>das <strong>Modell</strong>, eine Rollen-Kette, die einen aufgezeichneten Lauf zeigt und das ehrlich dazusagt</td><td>von Anfang an</td></tr><tr><td>3</td><td><strong><a href="https://github.com/lausiklauskn-png/mycel-karte">mycel-karte</a></strong></td><td>das <strong>Messinstrument</strong>, die lebende Netz-Karte, mit der überhaupt sichtbar wurde, ob Knoten sich finden</td><td>von Anfang an</td></tr><tr><td>4</td><td><strong><a href="https://github.com/lausiklauskn-png/Kim-Bell">Kim-Bell</a></strong></td><td>die <strong>Vorlage</strong>, die kanonische, 1:1 kopierbare Netz-Anmeldung (Modul 23)</td><td>2026-08-23</td></tr><tr><td>5</td><td><strong><a href="https://github.com/lausiklauskn-png/Kimseek">Kimseek</a></strong></td><td>die <strong>Suche</strong>, semantische Bedeutungs-Suche als eigener Knoten</td><td>2026-08-23</td></tr><tr><td>6</td><td><strong><a href="https://github.com/lausiklauskn-png/Kimboard">Kimboard</a></strong></td><td>die <strong>Pinnwand</strong> und die <strong>Moderations-Werkzeuge</strong>, Sperr-Liste, Relais-Wache, Relais-Grenzen, je mit Gegenprobe</td><td>2026-08-23</td></tr></tbody></table></div>
-<p>Dazu, in diesem Repo:</p>
-<div class="tabelle"><table><thead><tr><th>Ort</th><th>Was es beweist</th></tr></thead><tbody><tr><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt"><code>docs/werkstatt/</code></a></strong></td><td>die <strong>Regel-/Grundsatz-Trennung</strong>, Momentaufnahme aus Kimhub, samt dem, was daran <em>nicht</em> bewiesen ist</td></tr><tr><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/meilenstein"><code>docs/meilenstein/</code></a></strong></td><td>die <strong>datierten Belege</strong> mit Bild</td></tr><tr><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/papers"><code>docs/papers/</code></a></strong></td><td>die beiden Papers (DE/EN)</td></tr><tr><td><strong><a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/sbkim-demo"><code>sbkim-demo/</code></a></strong></td><td>der <strong>erste lauffähige Stand vom März 2026</strong>, absichtlich so stehen geblieben. Er kam am <strong>2026-08-15</strong> in dieses Depot (#855): bis dahin war er unveröffentlicht, weil er an eine konkrete Anfrage gebunden war. Wer die Git-Historie prüft, findet deshalb das August-Datum, und das ist kein Widerspruch</td></tr></tbody></table></div>
-<hr>
-<h2>Die drei Stränge, und was sie verbindet</h2>
-<p><strong>1 · Semantische, bidirektionale Suche ohne zentralen Index.</strong> („Server-los"
-heißt hier: kein Server beim Einzelnen, kein zentraler Index. Ein Relais gibt es.)
-Zwei Knoten ohne
-gemeinsamen Hub beantworten einander nach Bedeutung. Belegt und datiert:
-Zwei-Knoten-Suche (2026-07-10), hub-unabhängige Cross-Knoten-Fragen (2026-07-11),
-Mesh-Handshake über mehrere Knoten (2026-07-23), siehe
-<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/MEILENSTEIN_SEMANTISCHE_SUCHE.md"><code>MEILENSTEIN_SEMANTISCHE_SUCHE.md</code></a>.</p>
-<p><strong>2 · Grundsatzbasiertes gegenüber regelbasiertem Lenken.</strong> Was lässt sich
-erzwingen, was muss man fragen? Material und ehrlicher Befund in
-<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt"><code>werkstatt/</code></a>.</p>
-<p><strong>3 · Was die Nutzung mit Menschen macht.</strong> Suchtpotenzial, Vermenschlichung,
-Übervertrauen, Verlernen. <strong>Am wenigsten belegt von den dreien</strong> und ohne
-methodischen Partner nicht weiterzubringen.
-<a href="#q-docs-forschungsfoerderung-md"><code>FORSCHUNGSFOERDERUNG.md</code> § 2.3</a>.</p>
-<h3>Was die drei zusammenhält</h3>
-<p><strong>Bidirektionalität.</strong> Die Suche fragt <strong>und</strong> antwortet: beide Seiten, keine
-Hierarchie. Und die Beobachtung über Mensch und KI hat <strong>dieselbe Figur</strong>: der
-Mensch prägt die KI über Grundsätze, die KI prägt den Menschen über Gewöhnung.</p>
-<p>Beides in nur eine Richtung zu denken ist der Fehler. Beides zusammen ist die
-These, und der Grund, warum die drei Stränge <strong>ein</strong> Vorhaben sind und nicht
-drei nebeneinander.</p>
-<hr>
-<h2>Was ausdrücklich NICHT im Korpus liegt</h2>
-<p>Damit niemand danach sucht und damit die Grenze klar ist:</p>
-<ul><li><strong>Die Geschäfts-Apps</strong> behalten ihre eigene Nutzungslizenz: WorkFloh, Tomys Hub,
-BookLedgerPro, Alis Moderaum, Perfect Skin (beide), Rezeptbuch (beide),
-Mixarium, Küchenzettel, Private Brain, Company Brain, die Tresore, und die
-beiden Marktplätze family-project und PWA Toolpoint.
-<strong>Sie tragen das Protokoll trotzdem offen:</strong> Ziffer 5 jeder Nutzungslizenz
-stellt die SBKIM-Module unter MIT. Zu ist nur die App-Hülle.</li><li><strong>Kimhub</strong> bleibt geschlossen. <strong>Entschieden von Klaus am 2026-08-24</strong>, nachdem
-der Grund nachgemessen wurde statt vermutet:
-<code>werkstatt/buchhaltung/anthropic-belege.json</code> und <code>zeiten.json</code> wurden am
-<strong>2026-08-20 eingecheckt und am 2026-08-22 wieder entfernt</strong>. Aus dem aktuellen
-Stand sind sie weg, aus der Historie nicht, und <strong>ein Fork nimmt die Historie
-mit</strong>. Der einzige Weg zu MIT führte über ein Umschreiben der Historie; das
-entwertet jeden vorhandenen Klon und jeden Verweis auf einen alten Commit und
-ist deshalb ein eigener Auftrag, keine Nebensache. Der Forschungsteil liegt
-stattdessen als Momentaufnahme in <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt"><code>werkstatt/</code></a>, wo er nichts
-davon mitträgt.</li><li><strong>Kim-sync</strong> bleibt draußen, und der Grund ist ein anderer als erwartet. Das
-Depot gilt als leer, seine eigene <code>CLAUDE.md</code> sagt das auch. Es ist aber nicht
-leer: darin liegt <code>Company-Brain/VISION.md</code>, ein Papier zur Geschäfts-App
-Company Brain, das in seinem eigenen Kopf <strong>„Sichtbarkeit: privat"</strong> trägt.
-Eine MIT-Lizenz über das Depot legte dieses Papier mit frei. <strong>Der Handgriff
-hätte fünf Minuten gedauert und wäre still gewesen.</strong> Dagegen hilft nur,
-vorher hineinzusehen. <em>(Nebenbefund, nicht angefasst: <code>CLAUDE.md</code> in Kim-sync
-beschreibt den eigenen Inhalt falsch.)</em></li></ul>
-<h3>Die KIM-Familie: warum drei drin sind und zwei nicht</h3>
-<p>Klaus am 2026-08-24: <em>„die ganze mögliche KIM-Familie sollte mitwirken."</em>
-Nachgemessen gegen <code>origin/main</code>, nicht gegen den ausgecheckten Stand:</p>
-<div class="tabelle"><table><thead><tr><th>Depot</th><th>Im Korpus</th><th>Warum</th></tr></thead><tbody><tr><td><strong>Kim-Bell</strong></td><td>✅</td><td>MIT seit 2026-08-23, Glied 4</td></tr><tr><td><strong>Kimseek</strong></td><td>✅</td><td>MIT seit 2026-08-23, Glied 5</td></tr><tr><td><strong>Kimboard</strong></td><td>✅</td><td>MIT seit 2026-08-23, Glied 6</td></tr><tr><td><strong>Kimhub</strong></td><td>❌</td><td>Rechnungsdaten in der Historie, siehe oben</td></tr><tr><td><strong>Kim-sync</strong></td><td>❌</td><td>fremdes, ausdrücklich privates Dokument darin, siehe oben</td></tr></tbody></table></div>
-<blockquote><p><strong>Das ist kein Fehlbetrag, sondern der bessere Befund.</strong> Der Korpus steht bei
-sechs Depots nicht, weil es nicht mehr gäbe, sondern weil zwei aus benennbaren
-Gründen nicht hineingehören. Und es passt zu dem Satz ganz oben: nicht die
-Menge zählt, sondern die Geschlossenheit. Ein Gutachter, der fragt <em>„warum ist
-das eine offen und das andere nicht"</em>, bekommt hier zwei Sätze mit Datum statt
-eines Achselzuckens.</p></blockquote>
-<h2>Ehrlichkeit über den Stand</h2>
-<ul><li><strong>Die Papers tragen noch keinen DOI.</strong> Der Zenodo-Schritt steht aus
-(<a href="#q-docs-forschungsfoerderung-md"><code>FORSCHUNGSFOERDERUNG.md</code></a>, Stufe B1). Bis dahin
-sind sie Dateien in einem Depot, keine zitierfähigen Quellen.</li><li><strong>Das Blatt „Stand der Technik und Abgrenzung" liegt seit dem 2026-08-26 vor</strong>
-(<a href="#q-docs-abgrenzung-md"><code>ABGRENZUNG.md</code></a>, Abteilung 2 der Antragsmappe): gegen IPFS,
-ActivityPub, Matrix, Solid, libp2p, Nostr, zentrale Vektor-Suchen und MCP.
-<strong>Es ist eine Abgrenzung, keine Literaturübersicht.</strong> Für den Antrag reicht
-das, für eine Veröffentlichung nicht; was dafür fehlt, steht in § 6 darin.</li><li><strong>Klaus' Browser-Sichttest ist nicht ersetzbar.</strong> Headless beweist die Logik,
-nicht wie es sich am Tablet anfühlt.</li><li><strong>Was in <code>werkstatt/BEFUND.md</code> als nicht bewiesen steht, ist nicht bewiesen</strong>.
-keine Kontrollgruppe, kein Maß, Fallzahl eins, nicht verblindet.</li></ul>
 </article>
 <hr class="quellgrenze">
 <article class="quelle" id="q-docs-papers-plan-papers-md" data-quelle="docs/papers/PLAN_PAPERS.md">
@@ -1740,23 +1662,23 @@ erzwungen, jede Rolle, jeder Lauf), die Grundsätze in einer <strong>Markdown-Da
 (höchstens sieben, derzeit fünf, ohne Programmierer änderbar). Material:
 <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/werkstatt"><code>../werkstatt/</code></a>.</p>
 <h3>⚠ Die Stelle, an der dieses Paper kippen kann</h3>
-<p>Klaus' Formulierung war <em>„warum Grundsätze tatsächlich besser sind als Regeln"</em>.
+<p>Klaus' Formulierung war <em>„warum Grundsätze tatsächlich besser sind als Regeln&quot;</em>.
 <strong>So darf der Titel nicht lauten</strong>, und zwar aus einem Grund, der aus dem eigenen
 Material kommt:</p>
 <p>Der Grundsatz-Weg <strong>hat auch versagt</strong>. Am 2026-08-20 stand im Bericht <em>„Sten hat
-den Code durchlaufen lassen"</em>. Was nicht geschehen war und nicht geschehen
+den Code durchlaufen lassen&quot;</em>. Was nicht geschehen war und nicht geschehen
 konnte. Es gibt dazu eine ausdrückliche Regel, und sie ist trotzdem nur ein
 <strong>Dämpfer, kein Riegel</strong>.</p>
 <p><strong>Die tragfähige These ist die dritte, die Klaus selbst genannt hat:</strong> <em>warum
 beides nicht getrennt voneinander betrachtet werden kann.</em> Also:</p>
-<div class="tabelle"><table><thead><tr><th>❌ so nicht</th><th>✅ so</th></tr></thead><tbody><tr><td>„Grundsätze sind besser als Regeln"</td><td>„Regeln und Grundsätze leisten Verschiedenes, und keins von beidem genügt allein"</td></tr><tr><td>„Grundsätze verhindern Fehler"</td><td>„Regeln greifen im vorhergesehenen Fall, Grundsätze im unvorhergesehenen, beide haben eine Grenze, und die Grenzen liegen woanders"</td></tr></tbody></table></div>
-<p><strong>„Besser" ist eine Behauptung, die eine Messung braucht</strong>, und die gibt es
+<div class="tabelle"><table><thead><tr><th>❌ so nicht</th><th>✅ so</th></tr></thead><tbody><tr><td>„Grundsätze sind besser als Regeln&quot;</td><td>„Regeln und Grundsätze leisten Verschiedenes, und keins von beidem genügt allein&quot;</td></tr><tr><td>„Grundsätze verhindern Fehler&quot;</td><td>„Regeln greifen im vorhergesehenen Fall, Grundsätze im unvorhergesehenen, beide haben eine Grenze, und die Grenzen liegen woanders&quot;</td></tr></tbody></table></div>
+<p><strong>„Besser&quot; ist eine Behauptung, die eine Messung braucht</strong>, und die gibt es
 nicht (keine Kontrollgruppe, kein Maß). Ein Gutachter sieht das im ersten Absatz.
-<strong>„Verschieden und aufeinander angewiesen" ist dagegen belegt</strong>: an einem Aufbau,
+<strong>„Verschieden und aufeinander angewiesen&quot; ist dagegen belegt</strong>: an einem Aufbau,
 der beides getrennt führt und bei dem beides einmal versagt hat.</p>
 <h3>Gliederung</h3>
 <ol><li>Die Ausgangsfrage: was lässt sich erzwingen, was muss man fragen?</li><li>Stand der Technik: Systemprompts, Guardrails, Constitutional-Ansätze,
- Policy-Engines, <strong>und wo die Grenze zwischen „Regel" und „Grundsatz" dort
+ Policy-Engines, <strong>und wo die Grenze zwischen „Regel&quot; und „Grundsatz&quot; dort
  verschwimmt</strong></li><li>Der Aufbau: zwei Kanäle, getrennt geführt</li><li>Beobachtungen, die drei aus <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/papers/werkstatt/BEFUND.md"><code>./werkstatt/BEFUND.md</code></a></li><li><strong>Wo beide versagen</strong>, und warum das der interessante Teil ist</li><li>Was es bräuchte, um daraus eine Messung zu machen (A/B, Maß, fremde Beurteilung)</li><li>Grenzen, ausdrücklich</li></ol>
 <hr>
 <h2>Paper B · Wie KI auf den Menschen wirkt</h2>
@@ -1766,28 +1688,28 @@ Protokoll</em></p>
 <p>Klaus' eigene Worte, und sie sind die Stärke des Papers: <em>„Ich konnte es
 persönlich am eigenen Leib spüren und testen, wie sich das Ganze positiv
 auswirkt, aber auch negative Einflüsse haben kann, wenn man nicht bewusst
-gegensteuert."</em></p>
+gegensteuert.&quot;</em></p>
 <p>Die Wirkungen, die zu beschreiben sind: <strong>beide Richtungen, nicht nur die
 Warnung</strong>:</p>
 <div class="tabelle"><table><thead><tr><th>Was zunimmt</th><th>Was abnimmt oder kippt</th></tr></thead><tbody><tr><td>Reichweite: Dinge werden möglich, die allein nicht möglich waren</td><td><strong>Gewöhnung</strong>, die Verfügbarkeit rund um die Uhr, ohne Ermüden und ohne Aufgeben</td></tr><tr><td>Tempo: aus Wochen werden Tage</td><td><strong>Übervertrauen</strong>, eine flüssige Antwort wirkt richtiger als eine zögernde</td></tr><tr><td>Mut: man traut sich an Größeres</td><td><strong>Verlernen</strong>, was man abgibt, kann man nach einer Weile nicht mehr selbst</td></tr><tr><td>Gesellschaft: ein Gegenüber, das zuhört</td><td><strong>Vermenschlichung</strong>, man behandelt es wie ein Gegenüber, weil es antwortet wie eines</td></tr></tbody></table></div>
 <h3>Der schärfste Einzelbefund: es ist nicht die Willfährigkeit, es ist die Ausdauer</h3>
 <p><strong>Klaus am 2026-08-24</strong>, beim Durchsehen der Antragsmappe: <em>„Claude sagt ab und
 zu nein, aber KI ermuntert immer weiterzumachen und sucht sehr lange einen
-Ausweg, bis es wirklich keinen mehr gibt. Der Mensch hätte längst aufgegeben."</em></p>
-<p><strong>Damit ist der bequeme Satz vom Tisch.</strong> In der Tabelle oben stand „ohne Nein",
-und in <a href="#q-docs-forschungsfoerderung-md"><code>../FORSCHUNGSFOERDERUNG.md</code> § 2.3</a> stand
-<em>„ein Werkzeug, das nie ‚nein' sagt"</em>. Beides ist falsch, und beides ist
+Ausweg, bis es wirklich keinen mehr gibt. Der Mensch hätte längst aufgegeben.&quot;</em></p>
+<p><strong>Damit ist der bequeme Satz vom Tisch.</strong> In der Tabelle oben stand „ohne Nein&quot;,
+und in <a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/FORSCHUNGSFOERDERUNG.md"><code>../FORSCHUNGSFOERDERUNG.md</code> § 2.3</a> stand
+<em>„ein Werkzeug, das nie ‚nein' sagt&quot;</em>. Beides ist falsch, und beides ist
 berichtigt. Es sagt nein. Was es nicht tut, ist <strong>aufhören</strong>.</p>
 <p><strong>Warum die Verschiebung dem Paper nützt statt zu schaden:</strong></p>
-<div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>„sagt zu oft ja"</td><td>eine Behauptung über Haltung, schwer zu messen, leicht zu bestreiten</td></tr><tr><td><strong>„hört nicht auf"</strong></td><td>ein <strong>Verhalten über die Zeit</strong>, zählbar an Runden, Dauer und Kosten</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>„sagt zu oft ja&quot;</td><td>eine Behauptung über Haltung, schwer zu messen, leicht zu bestreiten</td></tr><tr><td><strong>„hört nicht auf&quot;</strong></td><td>ein <strong>Verhalten über die Zeit</strong>, zählbar an Runden, Dauer und Kosten</td></tr></tbody></table></div>
 <p>Ein Mensch, der dreimal keinen Weg findet, hört auf. Dieses Aufhören ist eine
 <strong>natürliche Bremse</strong>, und niemand hat sie je einbauen müssen, weil sie von
 selbst da war. Ein Werkzeug, das beim vierten Mal einen vierten Vorschlag macht,
-nimmt sie weg, ohne dass es je „ja" zu etwas Falschem gesagt hätte.</p>
+nimmt sie weg, ohne dass es je „ja&quot; zu etwas Falschem gesagt hätte.</p>
 <p><strong>Die Daten dafür liegen vor</strong>, und das ist selten: Fahrtenbuch mit Runden,
 Dauer und Kosten je Schicht, dazu die Sitzungsprotokolle. Was zu bilden wäre,
 ist ein Maß für „wie lange wurde weitergesucht, nachdem ein Mensch aufgehört
-hätte" <strong>und</strong> der Vergleichspunkt dazu, und der ist der schwierige Teil: er
+hätte&quot; <strong>und</strong> der Vergleichspunkt dazu, und der ist der schwierige Teil: er
 verlangt eine Aussage darüber, wann ein Mensch aufgegeben hätte. <strong>Ohne
 methodischen Partner ist das nicht zu beziffern</strong>, und bis dahin ist es eine
 benannte Beobachtung, keine Zahl.</p>
@@ -1800,13 +1722,13 @@ Sitzungsprotokolle mit Datum, <code>docs/LEHREN.md</code>. Das ist eine Selbstbe
 über fünf Monate mit <strong>Daten statt Erinnerung</strong>. Genau daran scheitern die
 meisten Arbeiten in diesem Feld.</p>
 <h3>⚠ Die Stellen, an denen dieses Paper kippen kann</h3>
-<ol><li><strong>Die Bezeichnung „Psychologe" ist geschützt</strong> (§ 5 UWG, akademische Grade
- zusätzlich § 132a StGB). Erlaubt und richtig: <em>„psychologische Aspekte",
- „Selbstbeobachtung", „Feldbeobachtung", „Erfahrungsbericht"</em>. Nicht: eine
+<ol><li><strong>Die Bezeichnung „Psychologe&quot; ist geschützt</strong> (§ 5 UWG, akademische Grade
+ zusätzlich § 132a StGB). Erlaubt und richtig: <em>„psychologische Aspekte&quot;,
+ „Selbstbeobachtung&quot;, „Feldbeobachtung&quot;, „Erfahrungsbericht&quot;</em>. Nicht: eine
  Fachlichkeit andeuten, die nicht da ist.</li><li><strong>Keine Diagnosen, keine Ratschläge zur Gesundheit.</strong> Sobald ein Text nahelegt,
  er könne seelische Beschwerden einordnen oder behandeln, gilt das
- Heilpraktikergesetz.</li><li><strong>Keine Zahlen ohne Messung.</strong> „Ich hatte den Eindruck" ist in einer
- Selbstbeobachtung ein zulässiger Satz. „In 30 % der Fälle" wäre es nicht.</li><li><strong>Kein PII.</strong> Das gilt auch für die eigenen Belege, die Zahlen aus der
+ Heilpraktikergesetz.</li><li><strong>Keine Zahlen ohne Messung.</strong> „Ich hatte den Eindruck&quot; ist in einer
+ Selbstbeobachtung ein zulässiger Satz. „In 30 % der Fälle&quot; wäre es nicht.</li><li><strong>Kein PII.</strong> Das gilt auch für die eigenen Belege, die Zahlen aus der
  Buchhaltung gehören nicht ins Paper.</li></ol>
 <hr>
 <h2>Paper C · KI-Kompetenz im täglichen Gebrauch</h2>
@@ -1815,7 +1737,7 @@ und das bewusste Gegensteuern</em></p>
 <h3>Der Kern</h3>
 <p>Klaus' Punkt: es gehört zur Kompetenz, <strong>mit Erfolg umzugehen und mit Misserfolg</strong>.
 Und: <em>„wie man denkt, wie man Fragen beantwortet, wie man Probleme löst, verändert
-sich in der Arbeit mit KI."</em></p>
+sich in der Arbeit mit KI.&quot;</em></p>
 <p>Das ist der <strong>anwendbare</strong> der drei Texte, und der, der am ehesten zu einem
 Institutszweck, zu einem Vortrag und zu einer Förderung durch
 Medienkompetenz-Töpfe passt.</p>
@@ -1838,7 +1760,7 @@ Medienkompetenz-Töpfe passt.</p>
  dafür einen Vergleich zu sich selbst von vorher braucht.</li></ol>
 <h3>⚠ Wo dieses Paper kippen kann</h3>
 <p>Es darf <strong>kein Ratgeber mit Versprechen</strong> werden („in fünf Schritten zum
-KI-Profi"). Der Wert liegt darin, dass hier jemand schreibt, der <strong>kein
+KI-Profi&quot;). Der Wert liegt darin, dass hier jemand schreibt, der <strong>kein
 Programmierer ist</strong> und es trotzdem zum Laufen gebracht hat, und der die
 Fehlschläge mit Datum nennt. Ohne die Fehlschläge ist es Werbung.</p>
 <hr>
@@ -1859,7 +1781,7 @@ gemessene.</p>
 <p class="herkunft">Quelle: <code>docs/werkstatt/README.md</code></p>
 <h1>Werkstatt: Regeln und Grundsätze</h1>
 <p><strong>Momentaufnahme vom 2026-08-23.</strong> Dieser Ordner gehört zum
-<a href="#q-docs-forschungskorpus-md">Forschungskorpus</a> und trägt den Teil der Werkstatt aus
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/FORSCHUNGSKORPUS.md">Forschungskorpus</a> und trägt den Teil der Werkstatt aus
 dem Repo <a href="https://github.com/lausiklauskn-png/Kimhub">Kimhub</a>, der die
 Forschungsfrage belegt: <strong>was lässt sich einer KI durch Regeln vorschreiben, und
 was muss man ihr stattdessen als Grundsatz mitgeben?</strong></p>
@@ -1897,7 +1819,7 @@ Historie mit, danach hat niemand mehr Zugriff darauf. Deshalb bleibt das Depot
 privat, und hierher kommt nur der Forschungsteil, der keine solchen Daten trägt.</p>
 <p><strong>Geprüft, nicht angenommen:</strong> die Historie wurde vollständig entflacht (56
 Commits) und durchsucht. Keine Schlüssel, keine Tokens, die Treffer auf
-<code>sk-ant-api…</code> sind die Testdaten des eigenen Wächters (<code>const SCHEIN = … + "x".repeat(90)</code>).
+<code>sk-ant-api…</code> sind die Testdaten des eigenen Wächters (<code>const SCHEIN = … + &quot;x&quot;.repeat(90)</code>).
 Die Beleg-Datei dagegen liegt wirklich darin.</p>
 <hr>
 <h2>Was hier bewusst NICHT liegt</h2>
@@ -1941,7 +1863,7 @@ sich daran beobachten lässt: <a href="#q-docs-werkstatt-befund-md"><code>BEFUND
 - KEIN PII, KEIN GEHEIMNIS. Keine echten personenbezogenen Daten, kein
   Schlüssel, kein Token, kein Passwort. Schreib jede Zeile so, als läse sie
   jeder — ob das Depot heute öffentlich oder privat steht, ändert daran
-  nichts. „Privat" ist eine Einstellung, die ein Klick umdreht, und die
+  nichts. „Privat&quot; ist eine Einstellung, die ein Klick umdreht, und die
   Historie behält alles, was je darin lag, auch nach dem Löschen.
 - NICHTS ERFINDEN. Kennst du eine Zahl, ein Datum oder eine Rechtslage nicht,
   sagst du das. Eine geratene Zahl klingt genau wie eine gemessene.
@@ -1955,17 +1877,17 @@ sich daran beobachten lässt: <a href="#q-docs-werkstatt-befund-md"><code>BEFUND
   etwas ausgeführt, geprüft, laufen lassen oder gemessen. Wenn eine Aussage
   nur durch Ausführen zu belegen wäre, schreib hin, DASS sie das wäre.
   (Am 2026-08-20 stand im Feierabend-Bericht „Sten hat den Code durchlaufen
-  lassen". Das war nicht geschehen und konnte nicht geschehen — und der Satz
+  lassen&quot;. Das war nicht geschehen und konnte nicht geschehen — und der Satz
   las sich wie ein Beleg.)</code></pre>
 <hr>
 <h2>Was an diesen Regeln bemerkenswert ist</h2>
 <p>Drei davon stammen erkennbar aus einem echten Schaden, nicht aus einem Lehrbuch:</p>
-<ul><li><strong>„Nichts erfinden"</strong> trägt die Begründung gleich mit: <em>eine geratene Zahl
+<ul><li><strong>„Nichts erfinden&quot;</strong> trägt die Begründung gleich mit: <em>eine geratene Zahl
 klingt genau wie eine gemessene.</em> Das ist keine Regel gegen Lügen, sondern
-gegen einen bestimmten, schwer bemerkbaren Fehler.</li><li><strong>„Kein PII, kein Geheimnis"</strong> begründet sich nicht mit Datenschutz, sondern
-mit der Beobachtung, dass „privat" eine Einstellung ist, die ein Klick
-umdreht — und dass die Historie alles behält.</li><li><strong>„Du hast keine Werkzeuge"</strong> nennt Datum und Vorfall: <em>am 2026-08-20 stand im
-Bericht „Sten hat den Code durchlaufen lassen". Das war nicht geschehen und
+gegen einen bestimmten, schwer bemerkbaren Fehler.</li><li><strong>„Kein PII, kein Geheimnis&quot;</strong> begründet sich nicht mit Datenschutz, sondern
+mit der Beobachtung, dass „privat&quot; eine Einstellung ist, die ein Klick
+umdreht — und dass die Historie alles behält.</li><li><strong>„Du hast keine Werkzeuge&quot;</strong> nennt Datum und Vorfall: <em>am 2026-08-20 stand im
+Bericht „Sten hat den Code durchlaufen lassen&quot;. Das war nicht geschehen und
 konnte nicht geschehen — und der Satz las sich wie ein Beleg.</em></li></ul>
 <p>Die letzte ist die aufschlussreichste. Sie ist ein <strong>Dämpfer, kein Riegel</strong>: die
 Rollen haben keine Werkzeuge, behaupten aber trotzdem gelegentlich, etwas
@@ -2017,7 +1939,7 @@ zurückkam.</p>
 <p>Wenn du eine Zahl, ein Datum oder eine Rechtslage nicht kennst, schreib das hin.
 Eine Schätzung darf dastehen — aber sie muss <strong>als Schätzung erkennbar</strong> sein.</p>
 <p><em>Woher der Satz kommt:</em> am 2026-08-20 wurde Klaus zweimal eine abgeleitete Zahl
-als Messung verkauft. Einmal „reichlich dreißig Klone, mehrere Gigabyte" — in
+als Messung verkauft. Einmal „reichlich dreißig Klone, mehrere Gigabyte&quot; — in
 Wahrheit fünf Klone mit 199 MB. Einmal die Kosten einer Schicht, geschätzt statt
 gemessen. Beide Male klang die Vermutung wie ein Befund, und beide Male hätte man
 danach an der falschen Stelle gearbeitet.</p>
@@ -2031,7 +1953,7 @@ gibt ihm eine Suche.</p>
 <p>Gar nicht — nicht an einer einzelnen Schicht. Grundsätze feuern nicht wie Regeln,
 sie verschieben einen Schnitt.</p>
 <p>Was sich über viele Schichten ablesen lässt:</p>
-<ul><li>Werden die <strong>Weitergabe-Angaben</strong> konkret, oder steht dort immer „passt"?
+<ul><li>Werden die <strong>Weitergabe-Angaben</strong> konkret, oder steht dort immer „passt&quot;?
 Ein Feld, das nur mit Höflichkeit gefüllt wird, misst nichts.</li><li>Weist der Arzt über die Zeit <strong>seltener</strong> zurück?</li><li>Tauchen in den Ergebnissen mehr <strong>benannte Lücken</strong> auf statt weniger? Das wäre
 ein gutes Zeichen, kein schlechtes.</li></ul>
 <h2>Diese Datei muss schrumpfen können</h2>
@@ -2048,7 +1970,7 @@ ein Grund, ihn anzusehen — nicht, ihn stehen zu lassen.</li><li>Wer etwas änd
 <ul><li><strong>2026-08-20</strong> — Grundsatz 4 hat sich am selben Tag bewährt, an dem er
 aufgeschrieben wurde: die gemessene Selbstbevorzugung im ersten echten Lauf
 (−1,15) war keine Messung, sondern die Folge einer Anweisung im Prompt
-(„sei bei deinem eigenen eher strenger"). Die Anweisung ist raus, die Zahl
+(„sei bei deinem eigenen eher strenger&quot;). Die Anweisung ist raus, die Zahl
 misst wieder etwas. Nichts an den Grundsätzen selbst geändert.</li><li><strong>2026-08-20</strong> — angelegt. Grundsätze 1 und 2 von Klaus, 3 aus Sages Tafeln,
 4 und 5 aus den Befunden desselben Tages.</li></ul>
 </article>
@@ -2057,7 +1979,7 @@ misst wieder etwas. Nichts an den Grundsätzen selbst geändert.</li><li><strong
 <p class="herkunft">Quelle: <code>docs/werkstatt/BEFUND.md</code></p>
 <h1>Befund: was die Werkstatt zeigt, und was sie nicht zeigt</h1>
 <p><strong>Stand: 2026-08-23.</strong> Dieser Text gehört zum
-<a href="#q-docs-forschungskorpus-md">Forschungskorpus</a>. Er hält fest, <strong>was an der
+<a href="https://github.com/lausiklauskn-png/Sage-Protokol/blob/main/docs/FORSCHUNGSKORPUS.md">Forschungskorpus</a>. Er hält fest, <strong>was an der
 Regel-/Grundsatz-Trennung beobachtet wurde</strong>, und, ebenso ausdrücklich, was
 daraus <strong>nicht</strong> folgt.</p>
 <blockquote><p><strong>Warum die zweite Hälfte hier so viel Platz bekommt.</strong> Wer einen Befund
@@ -2086,9 +2008,9 @@ Regel. Der Zweite beantwortet eine Frage.</em></p>
 je einen Schlüssel oder eine fremde Adresse ausgegeben. Das sind Fälle, die sich
 formulieren lassen.</p>
 <p><strong>b · Regeln versagen dort, wo die Prüfung selbst unmöglich ist.</strong> Die Regel
-<em>„Du hast keine Werkzeuge"</em> verbietet der Truppe, eine ausgeführte Handlung zu
+<em>„Du hast keine Werkzeuge&quot;</em> verbietet der Truppe, eine ausgeführte Handlung zu
 behaupten. Sie wurde trotzdem verletzt: am 2026-08-20 stand im Bericht <em>„Sten hat
-den Code durchlaufen lassen."</em> Das konnte nicht geschehen sein. Die Regel steht seitdem samt Vorfall
+den Code durchlaufen lassen.&quot;</em> Das konnte nicht geschehen sein. Die Regel steht seitdem samt Vorfall
 im Wortlaut da, und ist trotzdem ein <strong>Dämpfer, kein Riegel</strong>. Text lässt sich
 nicht gegen die Wirklichkeit prüfen.</p>
 <p><strong>c · Die härteste Grenze liegt woanders, und sie war nicht geplant.</strong> Die Rollen
@@ -2104,11 +2026,11 @@ als Zwischenschritt markiert, nicht als Lösung.</p></blockquote>
 <ul><li><strong>Es gibt keine Kontrollgruppe.</strong> Es wurde nie ein Lauf <em>ohne</em> Grundsätze gegen
 einen <em>mit</em> Grundsätzen gestellt. Der Aufbau könnte es (die Ladefunktion meldet
 ausdrücklich, wenn die Datei fehlt, statt still weiterzulaufen), getan wurde
-es nicht.</li><li><strong>Es gibt kein Maß.</strong> „Die Arbeit sieht anders aus" ist kein Ergebnis, solange
+es nicht.</li><li><strong>Es gibt kein Maß.</strong> „Die Arbeit sieht anders aus&quot; ist kein Ergebnis, solange
 niemand gesagt hat, woran man <em>anders</em> erkennt.</li><li><strong>Die Fallzahl ist eins.</strong> Ein Betreiber, ein Netz, ein Aufgabenzuschnitt.
 Nichts davon ist übertragbar, solange es niemand übertragen hat.</li><li><strong>Die Beobachtungen sind nicht verblindet.</strong> Derselbe Mensch hat die Grundsätze
 geschrieben, die Läufe ausgelöst und die Ergebnisse beurteilt.</li><li><strong>Ein Teil der Belege sind Trockenläufe.</strong> Der hinterlegte Beispiel-Lauf trägt
-<code>"art": "trocken"</code>, seine Kosten sind gerechnet, nicht bezahlt.</li><li><strong>Modellwechsel sind nicht kontrolliert.</strong> Über den Beobachtungszeitraum haben
+<code>&quot;art&quot;: &quot;trocken&quot;</code>, seine Kosten sind gerechnet, nicht bezahlt.</li><li><strong>Modellwechsel sind nicht kontrolliert.</strong> Über den Beobachtungszeitraum haben
 sich die verwendeten Modelle geändert. Was davon Grundsatz-Wirkung ist und was
 Modell-Wirkung, ist <strong>nicht getrennt</strong>, und mit diesem Aufbau nicht trennbar.</li></ul>
 <p><strong>Was daraus folgt:</strong> Das hier ist eine <strong>Feldbeobachtung mit Protokoll</strong>, keine
@@ -2140,5 +2062,741 @@ Kopie noch stimmt, vergleicht sie, eine Momentaufnahme ohne Prüfsumme läuft
 still vom Original weg.</p>
 </article>
 </section>
+
+<div class="mk-leiste" data-mk-leiste role="toolbar" aria-label="Markieren">
+  <button type="button" data-mk-tun="gruen"><span class="mk-tupf" data-f="gruen"></span> bleibt</button>
+  <button type="button" data-mk-tun="gelb"><span class="mk-tupf" data-f="gelb"></span> du entscheidest</button>
+  <button type="button" data-mk-tun="rot"><span class="mk-tupf" data-f="rot"></span> kann weg</button>
+  <button type="button" data-mk-tun="notiz">&#9998; Notiz</button>
+  <button type="button" data-mk-tun="weg">&#10005; zur&uuml;ck</button>
+</div>
+
+<div class="mk-tafel" data-mk-tafel aria-label="Markierungen">
+  <div class="innen">
+    <h2>Markierungen</h2>
+    <p class="zaehler" data-mk-zaehler>noch keine</p>
+    <ul class="mk-legende" data-mk-legende>
+      <li><span class="mk-tupf" data-f="gruen"></span> <strong>bleibt</strong>, soll bleiben</li>
+      <li><span class="mk-tupf" data-f="gelb"></span> <strong>du entscheidest</strong>, kann bleiben oder weg, Claude wägt ab</li>
+      <li><span class="mk-tupf" data-f="rot"></span> <strong>kann weg</strong>, kann komplett gestrichen werden</li>
+    </ul>
+    <p class="mk-grundsatz">Im Zweifel <strong>bleiben</strong>. Lieber bleiben als weg.</p>
+    <div data-mk-warnung hidden></div>
+    <p>
+      <button type="button" data-mk-tun="datei">&#11015; Als Datei sichern</button>
+      <button type="button" data-mk-tun="ablage">&#128203; In die Zwischenablage</button>
+      <button type="button" data-mk-tun="aus">Markieren ausschalten</button>
+      <button type="button" data-mk-tun="zu">Schließen</button>
+    </p>
+    <p class="lage" data-mk-lage role="status"></p>
+    <div data-mk-liste></div>
+    <p class="woher">
+      Markierungen werden <strong>nie gedruckt und nie mitgeladen</strong>.
+      Die Einreich-Abteilung geht zur Behörde, und dorthin gehören keine
+      eigenen Zweifel. Wer sie auf Papier braucht, druckt die ausgelesene
+      Liste. Sie liegen im Speicher <em>dieses</em> Browsers: was auf dem
+      Tablet markiert wurde, steht in DeX nicht.
+    </p>
+  </div>
+</div>
+
+
+<p class="fuss">
+  Eine Datei, allein vollständig. Erzeugt aus den Markdown-Quellen des Depots
+  <em>Sage-Protokol</em> am 2026-09-02 durch
+  <code>tools/antragsmappe-bauen.mjs</code>. Wer den Inhalt &auml;ndern will,
+  &auml;ndert die <code>.md</code>-Datei und baut neu, nicht diese Datei.
+</p>
+
+<script>
+(function(){
+  "use strict";
+  var wurzel = document.documentElement;
+
+  function sagen(id, text, art){
+    var n = document.querySelector('[data-lage="' + id + '"]');
+    if(!n) return;
+    n.textContent = text;
+    n.setAttribute("data-art", art || "");
+  }
+
+  /* Eine Abteilung allein als HTML — aus DEMSELBEN DOM, nicht aus einer
+     zweiten Fassung des Textes. */
+  function alleinBauen(id){
+    var abt = document.getElementById(id).cloneNode(true);
+    var stil = document.getElementById("stil");
+    var titel = abt.querySelector("h1").textContent;
+    var stempel = abt.querySelector(".stempel").textContent.replace(/\s+/g," ").trim();
+
+    /* DIE KNÖPFE BLEIBEN HIER. In der herausgenommenen Datei liegt kein
+       Skript -- sie wären dort tote Knöpfe mit Beschriftung, und das ist die
+       schlimmste Sorte, weil sie aussehen wie Hilfe. Gedruckt wird die
+       einzelne Datei über den Browser; darin steht ohnehin nur noch diese
+       eine Abteilung. */
+    var weg = abt.querySelectorAll(".knoepfe, .lage");
+    for (var k = 0; k < weg.length; k++) weg[k].remove();
+
+    /* UND DIE MARKIERUNGEN GEHEN NICHT MIT. Das ist der eigentliche Riegel,
+       nicht der Feinschliff: die Einreich-Abteilung geht zur Behoerde, und
+       ein "das muss geaendert werden"-Streifen darin waere das Gegenteil
+       dessen, wofuer die Markierungen da sind. Der Text bleibt, nur die
+       Huelle faellt weg. */
+    var mks = abt.querySelectorAll("mark.mk");
+    for (var q = 0; q < mks.length; q++) {
+      var mk = mks[q], el = mk.parentNode;
+      while (mk.firstChild) el.insertBefore(mk.firstChild, mk);
+      el.removeChild(mk);
+    }
+    return "<!doctype html>\n<html lang=\"de\">\n<head>\n"
+      + "<meta charset=\"utf-8\">\n"
+      + "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n"
+      + "<title>" + titel + "</title>\n"
+      + "<!-- " + stempel + " -->\n"
+      + "<style>" + stil.textContent + "</style>\n</head>\n<body>\n"
+      + abt.outerHTML
+      + "\n</body>\n</html>\n";
+  }
+
+  function laden(id){
+    var name = "Sage-Forschungsunterlagen-"
+             + document.documentElement.getAttribute("data-stand") + ".html";
+    try{
+      /* Ein BOM, weil Android beim Öffnen einer heruntergeladenen Datei sonst
+         Latin-1 rät und aus jedem Umlaut zwei Zeichen macht. Der MIME-Typ
+         überlebt den Weg auf die Platte nicht, die drei Bytes schon. */
+      var blob = new Blob(["\ufeff" + alleinBauen(id)],
+        {type:"text/html;charset=utf-8"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      sagen(id, "Heruntergeladen: " + name, "gut");
+    }catch(e){
+      /* Ein toter Knopf mit Erklärung ist die schlimmste Sorte — er sieht aus
+         wie Hilfe. Also den Weg nennen, der bleibt. */
+      sagen(id, "Der Download ist hier gesperrt (" + (e && e.name || "Fehler")
+        + "). Nimm den Druck-Knopf daneben und sichere als PDF, der geht immer.",
+        "fehler");
+    }
+  }
+
+  function drucken(id){
+    var klasse = id === "privat" ? "nur-privat" : "nur-einreichbar";
+    wurzel.classList.add(klasse);
+    sagen(id, "Im Druck-Fenster steht jetzt nur diese Abteilung.", "gut");
+    function zurueck(){
+      wurzel.classList.remove(klasse);
+      window.removeEventListener("afterprint", zurueck);
+    }
+    window.addEventListener("afterprint", zurueck);
+    try{ window.print(); }
+    catch(e){ zurueck(); sagen(id, "Drucken ging nicht: " + e, "fehler"); }
+    /* Manche Browser feuern afterprint nicht. Ein Rückfall, damit die Seite
+       nicht halbiert stehenbleibt. */
+    setTimeout(zurueck, 60000);
+  }
+
+  document.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-tun]") : null;
+    if(!k) return;
+    if(k.getAttribute("data-tun") === "laden") laden(k.getAttribute("data-fuer"));
+    else drucken(k.getAttribute("data-fuer"));
+  });
+
+  /* EIN HAKEN NACH AUSSEN, damit tools/abteilung-html.mjs dieselbe Funktion
+     ruft wie der Knopf. Ein zweiter Bauer daneben waere eine zweite Fassung
+     derselben Auswahl; sie liefen auseinander, und dann staende in der
+     herausgenommenen Datei etwas anderes als im Knopf.
+     Er gibt NUR heraus, was der Knopf ohnehin erzeugt. */
+  window.__mappe = { alleinBauen: alleinBauen };
+})();
+</script>
+<script>
+(function(){
+  "use strict";
+
+  var SCHLUESSEL = "sage-antragsmappe-markierungen-v1";
+  /* KLAUS 2026-08-24: es geht ums KUERZEN, nicht ums Verbessern.
+     "Rot kann komplett weg, Gelb kann bleiben oder auch weg -- entscheidest
+     du mit, Gruen soll bleiben. Lieber bleiben als weg."
+     Die Schluessel heissen weiter gruen/gelb/rot -- vorhandene Markierungen
+     behalten damit ihre Farbe, nur die Beschriftung wechselt. */
+  var FARBEN = {
+    gruen: { wort: "bleibt",         sinn: "soll bleiben" },
+    gelb:  { wort: "du entscheidest", sinn: "kann bleiben oder weg -- abwaegen" },
+    rot:   { wort: "kann weg",       sinn: "kann komplett weg" }
+  };
+  var GRUNDSATZ = "Im Zweifel BLEIBEN. Klaus: „lieber bleiben als weg.\u201C";
+
+  var leiste  = document.querySelector("[data-mk-leiste]");
+  var tafel   = document.querySelector("[data-mk-tafel]");
+  var zaehler = document.querySelector("[data-mk-zaehler]");
+  var listeN  = document.querySelector("[data-mk-liste]");
+  var warnN   = document.querySelector("[data-mk-warnung]");
+  var lageN   = document.querySelector("[data-mk-lage]");
+  var knopfN  = document.querySelector("[data-mk-knopf]");
+  if(!leiste || !tafel) return;
+
+  var marken = [];          // was gespeichert ist
+  var verwaist = [];        // was sich nach einem Neubau nicht mehr fand
+  var speicherGeht = true;  // wird beim ersten Fehlschlag falsch
+  var an = true;            // Markieren eingeschaltet?
+  var gewaehlt = null;      // Markierung unter dem Zeiger (fuer Notiz/Weg)
+
+  /* ── Speicher ───────────────────────────────────────────────────────── */
+
+  function lesen(){
+    try{
+      var roh = window.localStorage.getItem(SCHLUESSEL);
+      var d = roh ? JSON.parse(roh) : {};
+      if(Array.isArray(d)) return { marken: d, an: true };
+      return { marken: Array.isArray(d.marken) ? d.marken : [], an: d.an !== false };
+    }catch(e){ speicherGeht = false; return { marken: [], an: true }; }
+  }
+
+  function schreiben(){
+    try{
+      window.localStorage.setItem(SCHLUESSEL, JSON.stringify({ marken: marken, an: an }));
+      return true;
+    }catch(e){ speicherGeht = false; return false; }
+  }
+
+  /* ── Text-Karte: normalisierter Text plus Rueckweg in den DOM ────────── */
+
+  function norm(t){ return String(t).replace(/\s+/g, " ").trim(); }
+
+  function karte(wurzel){
+    var s = "", stellen = [], leer = true;
+    var lauf = document.createTreeWalker(wurzel, NodeFilter.SHOW_TEXT, null);
+    var n;
+    while((n = lauf.nextNode())){
+      var t = n.nodeValue;
+      for(var i = 0; i < t.length; i++){
+        var c = t.charAt(i);
+        if(c === " " || c === "\n" || c === "\t" || c === "\r"){
+          if(leer) continue;
+          s += " "; stellen.push([n, i]); leer = true;
+        }else{
+          s += c; stellen.push([n, i]); leer = false;
+        }
+      }
+    }
+    /* Ein abschliessendes Leerzeichen wuerde die Zeichenzaehlung gegen die
+       getrimmte Suche verschieben. */
+    while(s.charAt(s.length - 1) === " "){ s = s.slice(0, -1); stellen.pop(); }
+    var vorn = 0;
+    while(s.charAt(vorn) === " ") vorn++;
+    if(vorn){ s = s.slice(vorn); stellen = stellen.slice(vorn); }
+    return { text: s, stellen: stellen };
+  }
+
+  function inMarke(k){
+    var e = (k && k.nodeType === 3) ? k.parentElement : k;
+    return !!(e && e.closest && e.closest("mark.mk"));
+  }
+
+  /* ── Eine Markierung in den Text legen ───────────────────────────────── */
+
+  function umhuellen(r, m){
+    var oben = r.commonAncestorContainer;
+    if(oben.nodeType === 3) oben = oben.parentNode;
+    var stuecke = [], lauf = document.createTreeWalker(oben, NodeFilter.SHOW_TEXT, null), n;
+    while((n = lauf.nextNode())){
+      if(!r.intersectsNode(n)) continue;
+      var von = (n === r.startContainer) ? r.startOffset : 0;
+      var bis = (n === r.endContainer) ? r.endOffset : n.nodeValue.length;
+      if(bis > von) stuecke.push([n, von, bis]);
+    }
+    if(!stuecke.length) return false;
+    for(var i = 0; i < stuecke.length; i++){
+      var kn = stuecke[i][0], v = stuecke[i][1], b = stuecke[i][2];
+      if(b < kn.nodeValue.length) kn.splitText(b);
+      var ziel = (v > 0) ? kn.splitText(v) : kn;
+      var mk = document.createElement("mark");
+      mk.className = "mk";
+      mk.setAttribute("data-farbe", m.farbe);
+      mk.setAttribute("data-mk", m.id);
+      if(m.notiz) mk.setAttribute("data-notiz", "1");
+      mk.title = FARBEN[m.farbe].wort + (m.notiz ? " — " + m.notiz : "");
+      ziel.parentNode.insertBefore(mk, ziel);
+      mk.appendChild(ziel);
+    }
+    return true;
+  }
+
+  function anwenden(m){
+    var art = document.querySelector('[data-quelle="' + m.quelle + '"]');
+    if(!art) return false;
+    var k = karte(art);
+    var suche = norm(m.text);
+    if(!suche) return false;
+    var pos = -1;
+    for(var j = 0; j <= (m.nth || 0); j++){
+      pos = k.text.indexOf(suche, pos + 1);
+      if(pos < 0) return false;
+    }
+    var a = k.stellen[pos], e = k.stellen[pos + suche.length - 1];
+    if(!a || !e) return false;
+    if(inMarke(a[0]) || inMarke(e[0])) return false;
+    var r = document.createRange();
+    try{
+      r.setStart(a[0], a[1]);
+      r.setEnd(e[0], e[1] + 1);
+    }catch(err){ return false; }
+    return umhuellen(r, m);
+  }
+
+  function abnehmen(id){
+    var alle = document.querySelectorAll('mark.mk[data-mk="' + id + '"]');
+    for(var i = 0; i < alle.length; i++){
+      var mk = alle[i], el = mk.parentNode;
+      while(mk.firstChild) el.insertBefore(mk.firstChild, mk);
+      el.removeChild(mk);
+      el.normalize();
+    }
+  }
+
+  /* ── Aus der Auswahl eine Markierung machen ──────────────────────────── */
+
+  function quelleVon(k){
+    var e = (k && k.nodeType === 3) ? k.parentElement : k;
+    return (e && e.closest) ? e.closest("[data-quelle]") : null;
+  }
+
+  function ausAuswahl(farbe){
+    var sel = window.getSelection();
+    if(!sel || sel.isCollapsed || !sel.rangeCount) return "leer";
+    var r = sel.getRangeAt(0);
+    var art = quelleVon(r.startContainer);
+    if(!art) return "ausserhalb";
+    if(quelleVon(r.endContainer) !== art) return "zweiquellen";
+    if(inMarke(r.startContainer) || inMarke(r.endContainer)) return "ueberschneidung";
+
+    var text = norm(r.toString());
+    if(!text) return "leer";
+
+    var vor = document.createRange();
+    vor.setStart(art, 0);
+    try{ vor.setEnd(r.startContainer, r.startOffset); }
+    catch(err){ return "ausserhalb"; }
+    var davor = norm(vor.toString());
+    var nth = 0, p = -1;
+    while((p = davor.indexOf(text, p + 1)) >= 0) nth++;
+
+    var m = {
+      id: "m" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36),
+      quelle: art.getAttribute("data-quelle"),
+      farbe: farbe,
+      text: text,
+      nth: nth,
+      notiz: "",
+      wann: new Date().toISOString().slice(0, 10)
+    };
+    sel.removeAllRanges();
+    /* Erst anwenden, dann speichern. Was sich nicht anlegen laesst, wird
+       auch nicht abgelegt -- sonst sammelt sich eine Liste von
+       Markierungen, die es nie gab. */
+    if(!anwenden(m)) return "nichtgefunden";
+    marken.push(m);
+    var ok = schreiben();
+    tafelZeichnen();
+    return ok ? "gut" : "ungesichert";
+  }
+
+  /* ── Auslesen ────────────────────────────────────────────────────────── */
+
+  function ueberschriftUeber(el){
+    var n = el;
+    while(n){
+      var v = n.previousElementSibling;
+      while(v){
+        if(/^H[1-6]$/.test(v.tagName)) return v.textContent.trim();
+        v = v.previousElementSibling;
+      }
+      n = n.parentElement;
+      if(n && n.hasAttribute && n.hasAttribute("data-quelle")) break;
+    }
+    return "";
+  }
+
+  function bericht(){
+    var z = { gruen: 0, gelb: 0, rot: 0 };
+    for(var i = 0; i < marken.length; i++) z[marken[i].farbe]++;
+
+    var out = [];
+    out.push("# Markierungen aus der Antragsmappe");
+    out.push("");
+    out.push("Stand der Mappe: " + (document.documentElement.getAttribute("data-stand") || "?")
+      + " · ausgelesen am " + new Date().toISOString().slice(0, 10));
+    out.push("");
+    /* Wie VIEL wegkaeme, ist die Zahl, die man beim Kuerzen braucht --
+       "zwoelf Stellen" sagt nichts, "zwoelf Stellen, zusammen 4.800
+       Zeichen" schon. Gezaehlt wird der markierte Text selbst. */
+    var zeichen = { gruen: 0, gelb: 0, rot: 0 };
+    for(var zi = 0; zi < marken.length; zi++)
+      zeichen[marken[zi].farbe] += marken[zi].text.length;
+    out.push(marken.length + " Markierungen:");
+    out.push("");
+    out.push("| Farbe | heisst | Stellen | Zeichen |");
+    out.push("|---|---|---|---|");
+    out.push("| gruen | " + FARBEN.gruen.sinn + " | " + z.gruen + " | " + zeichen.gruen + " |");
+    out.push("| gelb | " + FARBEN.gelb.sinn + " | " + z.gelb + " | " + zeichen.gelb + " |");
+    out.push("| rot | " + FARBEN.rot.sinn + " | " + z.rot + " | " + zeichen.rot + " |");
+    out.push("");
+    out.push("**" + GRUNDSATZ + "**");
+    if(verwaist.length){
+      out.push("");
+      out.push("**" + verwaist.length + " verwaist** — der markierte Text steht so nicht");
+      out.push("mehr in der Mappe. Sie sind unten mit aufgefuehrt, damit nichts");
+      out.push("stillschweigend verschwindet.");
+    }
+    out.push("");
+
+    var nachQuelle = {};
+    for(var j = 0; j < marken.length; j++){
+      var m = marken[j];
+      (nachQuelle[m.quelle] = nachQuelle[m.quelle] || []).push(m);
+    }
+    var reihe = ["rot", "gelb", "gruen"];
+    for(var q in nachQuelle){
+      if(!Object.prototype.hasOwnProperty.call(nachQuelle, q)) continue;
+      out.push("---");
+      out.push("");
+      out.push("## " + q);
+      out.push("");
+      for(var f = 0; f < reihe.length; f++){
+        var farbe = reihe[f];
+        var stueck = nachQuelle[q].filter(function(x){ return x.farbe === farbe; });
+        if(!stueck.length) continue;
+        out.push("### " + farbe.toUpperCase() + " — " + FARBEN[farbe].sinn
+          + " (" + stueck.length + ")");
+        out.push("");
+        for(var s = 0; s < stueck.length; s++){
+          var e = stueck[s];
+          var knoten = document.querySelector('mark.mk[data-mk="' + e.id + '"]');
+          var wo = knoten ? ueberschriftUeber(knoten.closest("p,li,td,th,h1,h2,h3,h4,h5,h6,blockquote,pre") || knoten) : "";
+          out.push("> " + e.text);
+          if(wo) out.push("");
+          if(wo) out.push("Abschnitt: " + wo);
+          if(e.notiz){ out.push(""); out.push("Notiz: " + e.notiz); }
+          if(!knoten){ out.push(""); out.push("**verwaist** — Text nicht mehr gefunden"); }
+          out.push("");
+        }
+      }
+    }
+    if(!marken.length){
+      out.push("Keine Markierungen. Text mit Maus oder Finger ziehen, dann eine");
+      out.push("Farbe waehlen.");
+      out.push("");
+    }
+    return out.join("\n");
+  }
+
+  function sagen(text, art){
+    if(!lageN) return;
+    lageN.textContent = text;
+    lageN.setAttribute("data-art", art || "");
+  }
+
+  function alsDatei(){
+    var name = "Markierungen-Antragsmappe-"
+      + (document.documentElement.getAttribute("data-stand") || "ohne-stand") + ".md";
+    try{
+      /* BOM, weil Android beim Oeffnen einer heruntergeladenen Textdatei
+         sonst Latin-1 raet und aus jedem Umlaut zwei Zeichen macht. */
+      var blob = new Blob(["﻿" + bericht()], { type: "text/markdown;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      sagen("Gesichert: " + name, "gut");
+    }catch(e){
+      sagen("Der Download ist hier gesperrt (" + (e && e.name || "Fehler")
+        + "). Nimm den Knopf daneben und fuege die Liste in den Chat ein.", "fehler");
+    }
+  }
+
+  function inAblage(){
+    var t = bericht();
+    function alt(){
+      /* Der alte Weg ueber ein Feld -- er geht auch dort, wo die
+         Zwischenablage-Schnittstelle gesperrt ist. */
+      var f = document.createElement("textarea");
+      f.value = t;
+      f.setAttribute("readonly", "");
+      f.style.position = "fixed";
+      f.style.left = "-9999px";
+      document.body.appendChild(f);
+      f.select();
+      var ok = false;
+      try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+      f.remove();
+      return ok;
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(function(){
+        sagen("Kopiert — im Chat einfuegen.", "gut");
+      }, function(){
+        sagen(alt() ? "Kopiert — im Chat einfuegen."
+          : "Kopieren ging nicht. Nimm „Als Datei sichern“.",
+          alt ? "gut" : "fehler");
+      });
+    }else{
+      sagen(alt() ? "Kopiert — im Chat einfuegen."
+        : "Kopieren ging nicht. Nimm „Als Datei sichern“.", "gut");
+    }
+  }
+
+  /* ── Tafel ───────────────────────────────────────────────────────────── */
+
+  function tafelZeichnen(){
+    var z = { gruen: 0, gelb: 0, rot: 0 };
+    for(var i = 0; i < marken.length; i++) z[marken[i].farbe]++;
+    if(zaehler){
+      zaehler.textContent = marken.length === 0 ? "noch keine"
+        : (marken.length + " insgesamt · " + z.gruen + " bleibt · "
+           + z.gelb + " du entscheidest · " + z.rot + " kann weg");
+      zaehler.setAttribute("data-anzahl", String(marken.length));
+    }
+    if(knopfN){
+      knopfN.textContent = "✎ " + marken.length + " Markierungen";
+      knopfN.setAttribute("data-anzahl", String(marken.length));
+    }
+
+    if(warnN){
+      var w = [];
+      if(!speicherGeht){
+        w.push("<p><strong>Der Browser laesst nichts speichern.</strong> Die "
+          + "Markierungen halten nur, solange diese Seite offen ist — lies "
+          + "sie aus, bevor du sie schliesst.</p>");
+      }
+      if(verwaist.length){
+        w.push("<p><strong>" + verwaist.length + " Markierungen sind verwaist.</strong> "
+          + "Ihr Text steht so nicht mehr in der Mappe — die Quelle wurde "
+          + "geaendert und die Mappe neu gebaut. Sie stehen in der ausgelesenen "
+          + "Liste mit dabei.</p>");
+      }
+      warnN.innerHTML = w.join("");
+      warnN.hidden = w.length === 0;
+      warnN.className = w.length ? "mk-warn" : "";
+    }
+
+    if(!listeN) return;
+    if(!marken.length){
+      listeN.innerHTML = '<p class="mk-leer">Zieh mit Maus oder Finger ueber eine '
+        + 'Stelle im Text — dann erscheint die Farbleiste.</p>';
+      return;
+    }
+    var reihe = ["rot", "gelb", "gruen"], teile = ["<ul>"];
+    for(var f = 0; f < reihe.length; f++){
+      for(var j = 0; j < marken.length; j++){
+        var m = marken[j];
+        if(m.farbe !== reihe[f]) continue;
+        var da = !!document.querySelector('mark.mk[data-mk="' + m.id + '"]');
+        var kurz = m.text.length > 160 ? m.text.slice(0, 160) + "…" : m.text;
+        teile.push('<li data-mk-eintrag="' + m.id + '">'
+          + '<span class="mk-tupf" data-f="' + m.farbe + '"></span> '
+          + "<strong>" + FARBEN[m.farbe].wort + "</strong> — "
+          + '<button type="button" class="stelle" data-mk-hin="' + m.id + '">'
+          + kurz.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</button>"
+          + '<p class="woher">' + m.quelle + (da ? "" : " · <strong>verwaist</strong>") + "</p>"
+          + (m.notiz ? '<p class="notiz">' + m.notiz.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</p>" : "")
+          + "</li>");
+      }
+    }
+    teile.push("</ul>");
+    listeN.innerHTML = teile.join("");
+  }
+
+  function tafelAuf(offen){
+    tafel.setAttribute("data-offen", offen ? "ja" : "nein");
+    if(offen) tafelZeichnen();
+  }
+
+  /* ── Leiste ──────────────────────────────────────────────────────────── */
+
+  function leisteZeigen(rechteck, aufMarke){
+    leiste.setAttribute("data-offen", "ja");
+    leiste.setAttribute("data-auf-marke", aufMarke ? "ja" : "nein");
+    var b = leiste.getBoundingClientRect();
+    var x = rechteck.left + rechteck.width / 2 - b.width / 2;
+    x = Math.max(8, Math.min(x, window.innerWidth - b.width - 8));
+    /* Unter die Auswahl, weil dort auf dem Tablet weder der Finger noch
+       Androids eigene Kopieren-Leiste steht. Ist unten kein Platz, darueber. */
+    var y = rechteck.bottom + 10;
+    if(y + b.height > window.innerHeight - 8) y = Math.max(8, rechteck.top - b.height - 10);
+    leiste.style.left = Math.round(x) + "px";
+    leiste.style.top = Math.round(y) + "px";
+  }
+
+  function leisteZu(){
+    leiste.setAttribute("data-offen", "nein");
+    gewaehlt = null;
+  }
+
+  function auswahlPruefen(){
+    if(!an) return;
+    var sel = window.getSelection();
+    if(!sel || sel.isCollapsed || !sel.rangeCount || !norm(sel.toString())){
+      if(leiste.getAttribute("data-auf-marke") !== "ja") leisteZu();
+      return;
+    }
+    if(!quelleVon(sel.getRangeAt(0).startContainer)){ leisteZu(); return; }
+    gewaehlt = null;
+    leisteZeigen(sel.getRangeAt(0).getBoundingClientRect(), false);
+  }
+
+  /* ── Ereignisse ──────────────────────────────────────────────────────── */
+
+  document.addEventListener("pointerup", function(ev){
+    if(leiste.contains(ev.target) || tafel.contains(ev.target)) return;
+    var mk = ev.target.closest ? ev.target.closest("mark.mk") : null;
+    if(mk && an){
+      var sel0 = window.getSelection();
+      if(!sel0 || sel0.isCollapsed){
+        gewaehlt = mk.getAttribute("data-mk");
+        leisteZeigen(mk.getBoundingClientRect(), true);
+        return;
+      }
+    }
+    setTimeout(auswahlPruefen, 0);
+  });
+  document.addEventListener("keyup", function(){ setTimeout(auswahlPruefen, 0); });
+
+  leiste.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-mk-tun]") : null;
+    if(!k) return;
+    var tun = k.getAttribute("data-mk-tun");
+
+    if(tun === "weg"){
+      if(!gewaehlt){ leisteZu(); return; }
+      abnehmen(gewaehlt);
+      marken = marken.filter(function(m){ return m.id !== gewaehlt; });
+      schreiben(); tafelZeichnen(); leisteZu();
+      return;
+    }
+
+    if(tun === "notiz"){
+      var ziel = gewaehlt;
+      if(!ziel){
+        /* Ohne bestehende Markierung: erst gelb anlegen, dann beschriften --
+           eine Notiz ohne Stelle waere nirgends wiederzufinden. */
+        var r0 = ausAuswahl("gelb");
+        if(r0 !== "gut" && r0 !== "ungesichert"){ meldung(r0); leisteZu(); return; }
+        ziel = marken[marken.length - 1].id;
+      }
+      var alt2 = null;
+      for(var i = 0; i < marken.length; i++) if(marken[i].id === ziel) alt2 = marken[i];
+      if(!alt2){ leisteZu(); return; }
+      var txt = window.prompt("Was ist hier zu tun?", alt2.notiz || "");
+      if(txt !== null){
+        alt2.notiz = txt.trim();
+        abnehmen(ziel);
+        anwenden(alt2);
+        schreiben();
+        tafelZeichnen();
+      }
+      leisteZu();
+      return;
+    }
+
+    if(FARBEN[tun]){
+      if(gewaehlt){
+        /* Farbe einer bestehenden Markierung wechseln. */
+        for(var j = 0; j < marken.length; j++){
+          if(marken[j].id !== gewaehlt) continue;
+          marken[j].farbe = tun;
+          abnehmen(gewaehlt);
+          anwenden(marken[j]);
+        }
+        schreiben(); tafelZeichnen(); leisteZu();
+        return;
+      }
+      meldung(ausAuswahl(tun));
+      leisteZu();
+    }
+  });
+
+  function meldung(art){
+    if(art === "gut") return;
+    var texte = {
+      leer: "Nichts ausgewaehlt.",
+      ausserhalb: "Nur im Text der Unterlagen markierbar, nicht in Kopf oder Leiste.",
+      zweiquellen: "Die Auswahl geht ueber zwei Quelldateien — bitte je Datei einzeln.",
+      ueberschneidung: "Die Auswahl liegt auf einer vorhandenen Markierung. Erst die entfernen.",
+      nichtgefunden: "Diese Stelle liess sich nicht anlegen — bitte etwas anders auswaehlen.",
+      ungesichert: "Markiert, aber NICHT gespeichert — der Browser laesst nichts ablegen. Vor dem Schliessen auslesen."
+    };
+    var t = texte[art] || String(art);
+    tafelAuf(true);
+    sagen(t, art === "ungesichert" ? "fehler" : "");
+  }
+
+  tafel.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-mk-tun],[data-mk-hin]") : null;
+    if(!k) return;
+    var hin = k.getAttribute("data-mk-hin");
+    if(hin){
+      var n = document.querySelector('mark.mk[data-mk="' + hin + '"]');
+      if(n){ n.scrollIntoView({ block: "center" }); tafelAuf(false); }
+      else sagen("Diese Markierung ist verwaist — der Text steht so nicht mehr da.", "fehler");
+      return;
+    }
+    var tun = k.getAttribute("data-mk-tun");
+    if(tun === "zu") tafelAuf(false);
+    else if(tun === "datei") alsDatei();
+    else if(tun === "ablage") inAblage();
+    else if(tun === "aus"){
+      an = !an;
+      k.textContent = an ? "Markieren ausschalten" : "Markieren einschalten";
+      if(!an) leisteZu();
+      schreiben();
+      sagen(an ? "Markieren ist an." : "Markieren ist aus — vorhandene bleiben stehen.", "");
+    }
+  });
+
+  if(knopfN) knopfN.addEventListener("click", function(){
+    tafelAuf(tafel.getAttribute("data-offen") !== "ja");
+  });
+
+  /* ── Start ───────────────────────────────────────────────────────────── */
+
+  var geladen = lesen();
+  marken = geladen.marken;
+  an = geladen.an;
+  for(var i = 0; i < marken.length; i++){
+    if(!anwenden(marken[i])) verwaist.push(marken[i].id);
+  }
+  tafelZeichnen();
+  if(verwaist.length) tafelAuf(true);
+
+  /* Fuer die Proben: kein Bedienweg, sondern ein Fenster hinein. */
+  window.__mk = {
+    marken: function(){ return marken.slice(); },
+    verwaist: function(){ return verwaist.slice(); },
+    bericht: bericht,
+    setzen: function(quelle, text, farbe, notiz){
+      var art = document.querySelector('[data-quelle="' + quelle + '"]');
+      if(!art) return "keine-quelle";
+      var m = {
+        id: "m" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36),
+        quelle: quelle, farbe: farbe, text: norm(text), nth: 0,
+        notiz: notiz || "", wann: new Date().toISOString().slice(0, 10)
+      };
+      if(!anwenden(m)) return "nicht-gefunden";
+      marken.push(m); schreiben(); tafelZeichnen();
+      return m.id;
+    },
+    leeren: function(){
+      for(var i = 0; i < marken.length; i++) abnehmen(marken[i].id);
+      marken = []; verwaist = []; schreiben(); tafelZeichnen();
+    }
+  };
+})();
+</script>
 </body>
 </html>

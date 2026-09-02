@@ -1,0 +1,1272 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tägliche Dokumentation, 10.03.2026 bis 24.08.2026</title>
+<meta name="robots" content="noindex">
+<!-- ERZEUGT von tools/arbeitstage-bauen.mjs aus docs/historie/historie.json. Nicht von Hand bearbeiten. -->
+<style>
+:root{color-scheme:light dark;--grund:#f7f6f3;--tinte:#1b1b1b;--matt:#5a5a5a;
+--kante:#d8d5cf;--karte:#fff;--akzent:#7a4b1e;--zeile:#efece6}
+@media (prefers-color-scheme:dark){:root{--grund:#14161a;--tinte:#e8e6e1;
+--matt:#a4a09a;--kante:#2e3238;--karte:#1b1e23;--akzent:#e0a253;--zeile:#191c21}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--grund);color:var(--tinte);
+font:16px/1.6 Georgia,"Times New Roman",serif;padding:0 0 4rem}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1rem}
+h1{font-size:1.8rem;line-height:1.25;margin:2rem 0 .3rem}
+h2{font-size:1.25rem;margin:2.6rem 0 .6rem;border-bottom:1px solid var(--kante);
+padding-bottom:.3rem}
+p{margin:0 0 1rem}
+.unter{color:var(--matt);font-style:italic;margin:0 0 1.6rem}
+.kasten{background:var(--karte);border:1px solid var(--kante);border-radius:6px;
+padding:1rem 1.2rem;margin:0 0 1.6rem}
+.kasten p:last-child{margin-bottom:0}
+.kopf{display:flex;flex-wrap:wrap;gap:1rem;margin:0 0 1.8rem}
+.kopf div{background:var(--karte);border:1px solid var(--kante);border-radius:6px;
+padding:.7rem 1rem;min-width:9rem}
+.kopf b{display:block;font-size:1.45rem;font-family:system-ui,sans-serif;
+line-height:1.1}
+.kopf span{display:block;color:var(--matt);font-size:.78rem;
+font-family:system-ui,sans-serif}
+.rahmen{overflow-x:auto;margin:0 0 1.4rem}
+table{border-collapse:collapse;width:100%;font-family:system-ui,sans-serif;
+font-size:.85rem}
+th,td{padding:.4rem .55rem;text-align:right;border-bottom:1px solid var(--kante);
+white-space:nowrap}
+th{font-weight:600;vertical-align:bottom;line-height:1.25;
+border-bottom:2px solid var(--kante)}
+th small{display:block;font-weight:400;color:var(--matt);font-size:.72rem}
+td.l,th.l{text-align:left}
+tbody tr:nth-child(even){background:var(--zeile)}
+tfoot td{font-weight:700;border-top:2px solid var(--kante);border-bottom:none;
+padding-top:.6rem}
+.mon td{background:var(--karte);font-weight:600;border-top:1px solid var(--kante)}
+.tag{margin:0 0 1.6rem;break-inside:avoid}
+.tag h3{font-size:1.02rem;margin:1.5rem 0 .1rem;font-family:system-ui,sans-serif}
+.tag .zeiten{font-family:system-ui,sans-serif;font-size:.83rem;color:var(--matt);
+margin:0 0 .45rem}
+.tag ol{margin:0;padding:0;list-style:none;font-family:system-ui,sans-serif;
+font-size:.83rem}
+.tag li{display:flex;gap:.6rem;padding:.16rem 0;border-bottom:1px dotted var(--kante);
+align-items:baseline}
+.tag li:last-child{border-bottom:none}
+.uhr{flex:0 0 3.1rem;color:var(--matt);font-variant-numeric:tabular-nums}
+.dep{flex:0 0 11rem;color:var(--akzent);overflow:hidden;text-overflow:ellipsis;
+white-space:nowrap}
+.was{flex:1 1 auto}
+.q{color:var(--matt);font-size:.8rem;font-family:system-ui,sans-serif;
+margin:2rem 0 0}
+@media (max-width:40rem){
+  .tag li{flex-wrap:wrap}
+  .dep{flex:0 0 auto}
+}
+@media print{
+  body{background:#fff;color:#000;font-size:10pt}
+  .wrap{max-width:none;padding:0}
+  thead{display:table-header-group}
+  tr,.tag{break-inside:avoid}
+  h2{break-after:avoid;break-before:page}
+  .kopf div{border:1px solid #999}
+  a{color:#000;text-decoration:none}
+  /* ── DIE TABELLE MUSS AUFS PAPIER PASSEN ─────────────────────────────
+     Befund vom 2026-08-25 an Klaus' Gerät: die zwei rechten Spalten
+     ("Einträge", "Depots") fehlten im PDF. Gemessen waren es 802 px
+     Tabelle auf 703 px Papier (A4 hoch, 12 mm Rand).
+
+     ZWEI FEHLER LAGEN ÜBEREINANDER, und der zweite ist der schlimmere:
+     die Tabelle war zu breit, UND overflow-x:auto hat den Überhang
+     im Druck STILL abgeschnitten. Auf dem Schirm kann man scrollen, auf
+     Papier nicht. Eine Aufstellung für eine Behörde, der zwei Spalten
+     fehlen, sieht vollständig aus.
+
+     Deshalb beides: enger setzen, damit sie passt, UND overflow:visible,
+     damit ein künftiger Überhang auffällt statt zu verschwinden.
+     Die Probe misst die Breite jetzt nach.
+
+     ⚠ KEINE BACKTICKS in diesem Kommentar: der ganze Stil steht in einem
+     Template-Literal, und ein Backtick beendet es. Genau daran ist der
+     erste Versuch gescheitert. */
+  .rahmen{overflow:visible}
+  table{font-size:.66rem}
+  th,td{padding:.26rem .3rem}
+  th small{font-size:.62rem}
+}
+
+/* ── Die Markierungen selbst ─────────────────────────────────────────────
+   Farbe UND Unterstrich sind zwei Werkzeuge, nicht eines: eine Farbe hebt
+   eine Stelle heraus, ein Strich betont im Fluss. Wer nur Farben hat, malt
+   irgendwann alles an. */
+/* ── DIE FARBEN TRAGEN RUECKFALLWERTE ────────────────────────────────────
+   Das Werkzeug haengt sich auch an Seiten, die eigene Farbnamen haben (die
+   Historie kennt --karte und --kante, nicht --gelb). Ohne Rueckfall waere die
+   Markierung dort unsichtbar: sie laege da, und man saehe nichts. */
+mark.lm{background:var(--gelb,#ffe9a3); color:#1b1b1b; padding:.06em 0; border-radius:2px}
+mark.lm[data-farbe="gruen"]{background:var(--gruen,#c9ecc4)}
+mark.lm[data-farbe="rosa"]{background:var(--rosa,#ffd0d8)}
+mark.lm[data-farbe="blau"]{background:var(--blau,#cfe3ff)}
+mark.lm[data-art="strich"]{
+  background:none; color:inherit; text-decoration:underline;
+  text-decoration-color:var(--akzent,#8a5a12); text-decoration-thickness:.14em;
+  text-underline-offset:.16em;
+}
+mark.lm[data-gewaehlt]{outline:2px solid var(--akzent,#8a5a12); outline-offset:1px}
+
+/* ── Im Markier-Modus entsteht KEINE Auswahl ──────────────────────────────
+   Das ist der ganze Riegel gegen das Kopier-Menü. touch-action:none hält
+   zusätzlich das Scrollen an, solange der Finger malt: sonst wandert die
+   Seite unter der Markierung weg. */
+body[data-modus="malen"] .lm-wurzel{
+  -webkit-user-select:none; user-select:none;
+  -webkit-touch-callout:none; touch-action:none; cursor:crosshair;
+}
+body[data-modus="malen"] .lm-wurzel *{cursor:crosshair}
+
+/* ── Die Leiste ──────────────────────────────────────────────────────────
+   Unten, weil dort der Daumen ist. Sie bleibt stehen, damit man beim Lesen
+   nicht nach ihr suchen muss. */
+.lm-leiste{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:.7rem;
+  z-index:50; display:flex; gap:.3rem; align-items:center;
+  padding:.4rem; border-radius:12px;
+  background:var(--kasten,var(--karte,#f4f0e6)); border:1px solid var(--linie,var(--kante,#e3ded2));
+  box-shadow:0 6px 22px rgba(0,0,0,.18);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  max-width:calc(100vw - 1.4rem); flex-wrap:wrap; justify-content:center;
+}
+.lm-leiste button{
+  /* 44px ist die kleinste Flaeche, die ein Finger zuverlaessig trifft. */
+  min-width:44px; min-height:44px; padding:.4rem .55rem;
+  border:1px solid transparent; border-radius:9px; background:none;
+  color:var(--tinte,#22242a); font:inherit; font-size:.95rem; cursor:pointer;
+  display:inline-flex; align-items:center; gap:.3rem;
+}
+.lm-leiste button:hover{background:var(--papier,var(--grund,#fbf9f4))}
+.lm-leiste button[aria-pressed="true"]{
+  background:var(--papier,var(--grund,#fbf9f4)); border-color:var(--akzent,#8a5a12); font-weight:600;
+}
+.lm-leiste .farbe{width:26px; min-width:26px; height:26px; min-height:26px;
+  border-radius:50%; padding:0; border:2px solid transparent}
+.lm-leiste .farbe[data-f="gelb"]{background:var(--gelb,#ffe9a3)}
+.lm-leiste .farbe[data-f="gruen"]{background:var(--gruen,#c9ecc4)}
+.lm-leiste .farbe[data-f="rosa"]{background:var(--rosa,#ffd0d8)}
+.lm-leiste .farbe[data-f="blau"]{background:var(--blau,#cfe3ff)}
+.lm-leiste .farbe[aria-pressed="true"]{border-color:var(--tinte,#22242a)}
+.lm-trenner{width:1px; height:26px; background:var(--linie,var(--kante,#e3ded2)); margin:0 .15rem}
+.lm-zahl{color:var(--leise,var(--matt,#5d6470)); font-size:.82rem; padding:0 .4rem}
+
+.lm-hinweis{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:4.6rem;
+  z-index:51; background:var(--tinte,#22242a); color:var(--papier,#fbf9f4);
+  padding:.45rem .8rem; border-radius:8px; font-size:.85rem;
+  font-family:system-ui,-apple-system,sans-serif; pointer-events:none;
+  opacity:0; transition:opacity .18s;
+}
+.lm-hinweis[data-an="ja"]{opacity:1}
+
+/* ── GEDRUCKT WIRD OHNE ALLES ────────────────────────────────────────────
+   Die Leiste ist ein Werkzeug, kein Inhalt. Und eine Markierung auf Papier
+   waere ein "das muss geaendert werden"-Streifen in einer Unterlage, die
+   jemand anders liest. */
+@media print{
+  .lm-leiste,.lm-hinweis{display:none !important}
+  mark.lm{background:none !important; color:inherit !important;
+          text-decoration:none !important; outline:0 !important}
+}
+</style>
+</head>
+<body data-blatt="arbeitstage" data-modus="lesen" data-lm-wurzel=".wrap">
+<div class="wrap">
+<h1>Tägliche Dokumentation der Arbeitstage</h1>
+<p class="unter">128 Tage, 10.03.2026 bis 24.08.2026. Erzeugt aus den Zeitstempeln von 5.775 gespeicherten Arbeitsständen in 33 Quelltext-Depots.</p>
+<div class="kopf"><div><b>128</b><span>Tage mit Arbeit</span></div><div><b>1935,9 h</b><span>Spanne, aufsummiert</span></div><div><b>1186,6 h</b><span>aktive Zeit, aufsummiert</span></div><div><b>5.775</b><span>Einträge insgesamt</span></div></div>
+<h2>Was in den Spalten steht</h2>
+<div class="kasten" data-erklaerung>
+<p><strong>Ein Eintrag</strong> ist ein gespeicherter Arbeitsstand im Versionsverwaltungssystem Git. Seine <strong>Uhrzeit vergibt das System beim Speichern selbst</strong>; sie ist nicht von Hand eingetragen und nicht nachträglich gesetzt worden. Alle Einträge stehen unten einzeln, mit Uhrzeit und Bezeichnung.</p>
+<p><strong>Spanne</strong> ist der Abstand vom ersten bis zum letzten Eintrag desselben Tages. Pausen dazwischen sind darin enthalten.</p>
+<p><strong>Aktive Zeit</strong> rechnet die Pausen heraus: Abstände bis 120 Minuten zählen mit, längere gelten als Unterbrechung und beginnen einen neuen Abschnitt. Für jeden Abschnitt kommen 30 Minuten Vorlauf dazu, weil vor dem ersten gespeicherten Stand bereits gearbeitet wurde.</p>
+<p data-automatik><strong>Zeitgesteuerte Läufe sind herausgerechnet.</strong> 48 der Einträge stammen von einem automatischen Dienst (<code>github-actions[bot]</code>), die meisten davon nachts. Sie sind keine Arbeitszeit und zählen weder in der Spanne noch in der aktiven Zeit mit. Ohne diese Bereinigung wiese das Blatt 64,9 Stunden zu viel aus.</p>
+<p data-untergrenze><strong>Beide Werte sind eher zu niedrig als zu hoch.</strong> Lesen, Prüfen, Besprechen und jeder verworfene Versuch hinterlassen keinen Eintrag. Auch vor dem ersten und nach dem letzten Eintrag eines Tages ist gearbeitet worden. Gemessen wird nur, was gespeichert wurde.</p>
+</div>
+<h2>Übersicht: alle Tage</h2>
+<div class="rahmen">
+<table>
+<thead><tr><th class="l">Datum</th><th class="l">Wochentag</th><th data-spalte="erster">erster<small>Eintrag</small></th><th data-spalte="letzter">letzter<small>Eintrag</small></th><th data-spalte="spanne">Spanne<small>erster bis letzter</small></th><th data-spalte="aktiv">aktive Zeit<small>ohne Pausen</small></th><th data-spalte="abschnitte">Abschnitte<small>je Tag</small></th><th data-spalte="eintraege">Einträge<small>gespeichert</small></th><th data-spalte="depots">Depots<small>berührt</small></th></tr></thead>
+<tbody>
+<tr class="mon"><td class="l" colspan="4">März 2026</td><td>0,2 h</td><td>0,7 h</td><td></td><td>2</td><td></td></tr>
+<tr data-tag="2026-03-10"><td class="l"><a href="#t2026-03-10">10.03.2026</a></td><td class="l">Dienstag</td><td>20:58</td><td>21:11</td><td>0,2</td><td>0,7</td><td>1</td><td>2</td><td>1</td></tr>
+<tr class="mon"><td class="l" colspan="4">April 2026</td><td>241,7 h</td><td>164,6 h</td><td></td><td>551</td><td></td></tr>
+<tr data-tag="2026-04-06"><td class="l"><a href="#t2026-04-06">06.04.2026</a></td><td class="l">Montag</td><td>14:38</td><td>23:26</td><td>8,8</td><td>7,3</td><td>2</td><td>24</td><td>1</td></tr>
+<tr data-tag="2026-04-07"><td class="l"><a href="#t2026-04-07">07.04.2026</a></td><td class="l">Dienstag</td><td>00:20</td><td>20:10</td><td>19,8</td><td>5,3</td><td>2</td><td>9</td><td>1</td></tr>
+<tr data-tag="2026-04-08"><td class="l"><a href="#t2026-04-08">08.04.2026</a></td><td class="l">Mittwoch</td><td>18:12</td><td>22:53</td><td>4,7</td><td>3,0</td><td>2</td><td>8</td><td>1</td></tr>
+<tr data-tag="2026-04-09"><td class="l"><a href="#t2026-04-09">09.04.2026</a></td><td class="l">Donnerstag</td><td>15:02</td><td>23:55</td><td>8,9</td><td>9,4</td><td>1</td><td>25</td><td>1</td></tr>
+<tr data-tag="2026-04-10"><td class="l"><a href="#t2026-04-10">10.04.2026</a></td><td class="l">Freitag</td><td>00:02</td><td>09:39</td><td>9,6</td><td>4,5</td><td>2</td><td>14</td><td>1</td></tr>
+<tr data-tag="2026-04-11"><td class="l"><a href="#t2026-04-11">11.04.2026</a></td><td class="l">Samstag</td><td>09:56</td><td>23:32</td><td>13,6</td><td>10,8</td><td>2</td><td>27</td><td>1</td></tr>
+<tr data-tag="2026-04-12"><td class="l"><a href="#t2026-04-12">12.04.2026</a></td><td class="l">Sonntag</td><td>10:09</td><td>19:15</td><td>9,1</td><td>7,4</td><td>2</td><td>32</td><td>3</td></tr>
+<tr data-tag="2026-04-13"><td class="l"><a href="#t2026-04-13">13.04.2026</a></td><td class="l">Montag</td><td>06:54</td><td>22:07</td><td>15,2</td><td>13,1</td><td>2</td><td>24</td><td>2</td></tr>
+<tr data-tag="2026-04-14"><td class="l"><a href="#t2026-04-14">14.04.2026</a></td><td class="l">Dienstag</td><td>06:24</td><td>17:35</td><td>11,2</td><td>11,7</td><td>1</td><td>48</td><td>2</td></tr>
+<tr data-tag="2026-04-15"><td class="l"><a href="#t2026-04-15">15.04.2026</a></td><td class="l">Mittwoch</td><td>08:23</td><td>21:52</td><td>13,5</td><td>14,0</td><td>1</td><td>62</td><td>2</td></tr>
+<tr data-tag="2026-04-16"><td class="l"><a href="#t2026-04-16">16.04.2026</a></td><td class="l">Donnerstag</td><td>09:16</td><td>18:09</td><td>8,9</td><td>6,9</td><td>2</td><td>26</td><td>2</td></tr>
+<tr data-tag="2026-04-19"><td class="l"><a href="#t2026-04-19">19.04.2026</a></td><td class="l">Sonntag</td><td>08:46</td><td>22:03</td><td>13,3</td><td>8,4</td><td>4</td><td>34</td><td>3</td></tr>
+<tr data-tag="2026-04-20"><td class="l"><a href="#t2026-04-20">20.04.2026</a></td><td class="l">Montag</td><td>03:35</td><td>20:15</td><td>16,7</td><td>6,7</td><td>2</td><td>36</td><td>3</td></tr>
+<tr data-tag="2026-04-21"><td class="l"><a href="#t2026-04-21">21.04.2026</a></td><td class="l">Dienstag</td><td>17:29</td><td>23:46</td><td>6,3</td><td>6,8</td><td>1</td><td>22</td><td>3</td></tr>
+<tr data-tag="2026-04-23"><td class="l"><a href="#t2026-04-23">23.04.2026</a></td><td class="l">Donnerstag</td><td>10:01</td><td>23:44</td><td>13,7</td><td>7,5</td><td>2</td><td>37</td><td>1</td></tr>
+<tr data-tag="2026-04-24"><td class="l"><a href="#t2026-04-24">24.04.2026</a></td><td class="l">Freitag</td><td>00:03</td><td>22:30</td><td>22,4</td><td>15,1</td><td>3</td><td>47</td><td>1</td></tr>
+<tr data-tag="2026-04-25"><td class="l"><a href="#t2026-04-25">25.04.2026</a></td><td class="l">Samstag</td><td>00:26</td><td>23:57</td><td>23,5</td><td>11,6</td><td>3</td><td>39</td><td>1</td></tr>
+<tr data-tag="2026-04-26"><td class="l"><a href="#t2026-04-26">26.04.2026</a></td><td class="l">Sonntag</td><td>00:12</td><td>21:15</td><td>21,1</td><td>12,8</td><td>3</td><td>33</td><td>1</td></tr>
+<tr data-tag="2026-04-29"><td class="l"><a href="#t2026-04-29">29.04.2026</a></td><td class="l">Mittwoch</td><td>21:23</td><td>22:25</td><td>1,0</td><td>1,5</td><td>1</td><td>2</td><td>2</td></tr>
+<tr data-tag="2026-04-30"><td class="l"><a href="#t2026-04-30">30.04.2026</a></td><td class="l">Donnerstag</td><td>02:03</td><td>02:29</td><td>0,4</td><td>0,9</td><td>1</td><td>2</td><td>1</td></tr>
+<tr class="mon"><td class="l" colspan="4">Mai 2026</td><td>364,0 h</td><td>237,1 h</td><td></td><td>747</td><td></td></tr>
+<tr data-tag="2026-05-01"><td class="l"><a href="#t2026-05-01">01.05.2026</a></td><td class="l">Freitag</td><td>19:02</td><td>23:44</td><td>4,7</td><td>1,9</td><td>2</td><td>4</td><td>1</td></tr>
+<tr data-tag="2026-05-02"><td class="l"><a href="#t2026-05-02">02.05.2026</a></td><td class="l">Samstag</td><td>00:04</td><td>18:43</td><td>18,6</td><td>8,4</td><td>3</td><td>16</td><td>1</td></tr>
+<tr data-tag="2026-05-06"><td class="l"><a href="#t2026-05-06">06.05.2026</a></td><td class="l">Mittwoch</td><td>17:50</td><td>22:01</td><td>4,2</td><td>4,7</td><td>1</td><td>6</td><td>1</td></tr>
+<tr data-tag="2026-05-07"><td class="l"><a href="#t2026-05-07">07.05.2026</a></td><td class="l">Donnerstag</td><td>05:06</td><td>22:51</td><td>17,8</td><td>11,2</td><td>2</td><td>46</td><td>1</td></tr>
+<tr data-tag="2026-05-08"><td class="l"><a href="#t2026-05-08">08.05.2026</a></td><td class="l">Freitag</td><td>00:08</td><td>06:59</td><td>6,8</td><td>7,3</td><td>1</td><td>17</td><td>2</td></tr>
+<tr data-tag="2026-05-10"><td class="l"><a href="#t2026-05-10">10.05.2026</a></td><td class="l">Sonntag</td><td>08:34</td><td>22:28</td><td>13,9</td><td>3,8</td><td>4</td><td>9</td><td>1</td></tr>
+<tr data-tag="2026-05-12"><td class="l"><a href="#t2026-05-12">12.05.2026</a></td><td class="l">Dienstag</td><td>21:39</td><td>23:42</td><td>2,0</td><td>2,5</td><td>1</td><td>3</td><td>1</td></tr>
+<tr data-tag="2026-05-13"><td class="l"><a href="#t2026-05-13">13.05.2026</a></td><td class="l">Mittwoch</td><td>00:28</td><td>00:34</td><td>0,1</td><td>0,6</td><td>1</td><td>2</td><td>2</td></tr>
+<tr data-tag="2026-05-14"><td class="l"><a href="#t2026-05-14">14.05.2026</a></td><td class="l">Donnerstag</td><td>14:26</td><td>23:49</td><td>9,4</td><td>9,9</td><td>1</td><td>26</td><td>1</td></tr>
+<tr data-tag="2026-05-15"><td class="l"><a href="#t2026-05-15">15.05.2026</a></td><td class="l">Freitag</td><td>00:04</td><td>22:52</td><td>22,8</td><td>14,1</td><td>3</td><td>32</td><td>1</td></tr>
+<tr data-tag="2026-05-16"><td class="l"><a href="#t2026-05-16">16.05.2026</a></td><td class="l">Samstag</td><td>00:30</td><td>23:57</td><td>23,4</td><td>17,3</td><td>2</td><td>58</td><td>3</td></tr>
+<tr data-tag="2026-05-17"><td class="l"><a href="#t2026-05-17">17.05.2026</a></td><td class="l">Sonntag</td><td>00:23</td><td>23:48</td><td>23,4</td><td>14,4</td><td>4</td><td>43</td><td>3</td></tr>
+<tr data-tag="2026-05-18"><td class="l"><a href="#t2026-05-18">18.05.2026</a></td><td class="l">Montag</td><td>17:04</td><td>23:59</td><td>6,9</td><td>7,4</td><td>1</td><td>29</td><td>1</td></tr>
+<tr data-tag="2026-05-19"><td class="l"><a href="#t2026-05-19">19.05.2026</a></td><td class="l">Dienstag</td><td>00:18</td><td>22:15</td><td>21,9</td><td>12,4</td><td>4</td><td>46</td><td>1</td></tr>
+<tr data-tag="2026-05-20"><td class="l"><a href="#t2026-05-20">20.05.2026</a></td><td class="l">Mittwoch</td><td>15:46</td><td>22:03</td><td>6,3</td><td>6,8</td><td>1</td><td>16</td><td>1</td></tr>
+<tr data-tag="2026-05-21"><td class="l"><a href="#t2026-05-21">21.05.2026</a></td><td class="l">Donnerstag</td><td>18:05</td><td>21:11</td><td>3,1</td><td>3,6</td><td>1</td><td>10</td><td>1</td></tr>
+<tr data-tag="2026-05-22"><td class="l"><a href="#t2026-05-22">22.05.2026</a></td><td class="l">Freitag</td><td>06:51</td><td>18:06</td><td>11,3</td><td>3,6</td><td>2</td><td>8</td><td>2</td></tr>
+<tr data-tag="2026-05-24"><td class="l"><a href="#t2026-05-24">24.05.2026</a></td><td class="l">Sonntag</td><td>06:07</td><td>21:37</td><td>15,5</td><td>16,0</td><td>1</td><td>37</td><td>3</td></tr>
+<tr data-tag="2026-05-25"><td class="l"><a href="#t2026-05-25">25.05.2026</a></td><td class="l">Montag</td><td>06:45</td><td>23:52</td><td>17,1</td><td>14,8</td><td>2</td><td>34</td><td>3</td></tr>
+<tr data-tag="2026-05-26"><td class="l"><a href="#t2026-05-26">26.05.2026</a></td><td class="l">Dienstag</td><td>00:01</td><td>23:51</td><td>23,8</td><td>16,7</td><td>3</td><td>45</td><td>3</td></tr>
+<tr data-tag="2026-05-27"><td class="l"><a href="#t2026-05-27">27.05.2026</a></td><td class="l">Mittwoch</td><td>00:03</td><td>23:49</td><td>23,8</td><td>6,6</td><td>2</td><td>17</td><td>2</td></tr>
+<tr data-tag="2026-05-28"><td class="l"><a href="#t2026-05-28">28.05.2026</a></td><td class="l">Donnerstag</td><td>00:14</td><td>23:45</td><td>23,5</td><td>16,9</td><td>3</td><td>61</td><td>3</td></tr>
+<tr data-tag="2026-05-29"><td class="l"><a href="#t2026-05-29">29.05.2026</a></td><td class="l">Freitag</td><td>00:18</td><td>22:37</td><td>22,3</td><td>10,4</td><td>2</td><td>44</td><td>2</td></tr>
+<tr data-tag="2026-05-30"><td class="l"><a href="#t2026-05-30">30.05.2026</a></td><td class="l">Samstag</td><td>06:35</td><td>23:56</td><td>17,4</td><td>17,9</td><td>1</td><td>97</td><td>2</td></tr>
+<tr data-tag="2026-05-31"><td class="l"><a href="#t2026-05-31">31.05.2026</a></td><td class="l">Sonntag</td><td>00:04</td><td>23:54</td><td>23,8</td><td>7,9</td><td>2</td><td>41</td><td>3</td></tr>
+<tr class="mon"><td class="l" colspan="4">Juni 2026</td><td>401,7 h</td><td>270,6 h</td><td></td><td>1.437</td><td></td></tr>
+<tr data-tag="2026-06-01"><td class="l"><a href="#t2026-06-01">01.06.2026</a></td><td class="l">Montag</td><td>00:01</td><td>23:57</td><td>23,9</td><td>9,2</td><td>3</td><td>56</td><td>3</td></tr>
+<tr data-tag="2026-06-02"><td class="l"><a href="#t2026-06-02">02.06.2026</a></td><td class="l">Dienstag</td><td>00:33</td><td>19:14</td><td>18,7</td><td>8,4</td><td>3</td><td>29</td><td>1</td></tr>
+<tr data-tag="2026-06-03"><td class="l"><a href="#t2026-06-03">03.06.2026</a></td><td class="l">Mittwoch</td><td>07:07</td><td>23:10</td><td>16,1</td><td>8,7</td><td>2</td><td>32</td><td>1</td></tr>
+<tr data-tag="2026-06-04"><td class="l"><a href="#t2026-06-04">04.06.2026</a></td><td class="l">Donnerstag</td><td>05:13</td><td>20:07</td><td>14,9</td><td>5,3</td><td>2</td><td>24</td><td>1</td></tr>
+<tr data-tag="2026-06-05"><td class="l"><a href="#t2026-06-05">05.06.2026</a></td><td class="l">Freitag</td><td>13:39</td><td>23:45</td><td>10,1</td><td>10,6</td><td>1</td><td>63</td><td>3</td></tr>
+<tr data-tag="2026-06-06"><td class="l"><a href="#t2026-06-06">06.06.2026</a></td><td class="l">Samstag</td><td>00:31</td><td>23:55</td><td>23,4</td><td>19,4</td><td>2</td><td>122</td><td>4</td></tr>
+<tr data-tag="2026-06-07"><td class="l"><a href="#t2026-06-07">07.06.2026</a></td><td class="l">Sonntag</td><td>00:01</td><td>23:48</td><td>23,8</td><td>20,2</td><td>2</td><td>119</td><td>6</td></tr>
+<tr data-tag="2026-06-08"><td class="l"><a href="#t2026-06-08">08.06.2026</a></td><td class="l">Montag</td><td>15:52</td><td>23:54</td><td>8,0</td><td>8,5</td><td>1</td><td>28</td><td>1</td></tr>
+<tr data-tag="2026-06-09"><td class="l"><a href="#t2026-06-09">09.06.2026</a></td><td class="l">Dienstag</td><td>00:16</td><td>23:34</td><td>23,3</td><td>13,2</td><td>3</td><td>71</td><td>1</td></tr>
+<tr data-tag="2026-06-10"><td class="l"><a href="#t2026-06-10">10.06.2026</a></td><td class="l">Mittwoch</td><td>05:08</td><td>23:03</td><td>17,9</td><td>10,4</td><td>2</td><td>62</td><td>2</td></tr>
+<tr data-tag="2026-06-11"><td class="l"><a href="#t2026-06-11">11.06.2026</a></td><td class="l">Donnerstag</td><td>04:59</td><td>20:55</td><td>15,9</td><td>9,3</td><td>2</td><td>25</td><td>1</td></tr>
+<tr data-tag="2026-06-12"><td class="l"><a href="#t2026-06-12">12.06.2026</a></td><td class="l">Freitag</td><td>04:38</td><td>22:54</td><td>18,3</td><td>12,6</td><td>2</td><td>103</td><td>1</td></tr>
+<tr data-tag="2026-06-13"><td class="l"><a href="#t2026-06-13">13.06.2026</a></td><td class="l">Samstag</td><td>12:04</td><td>19:50</td><td>7,8</td><td>8,3</td><td>1</td><td>59</td><td>1</td></tr>
+<tr data-tag="2026-06-14"><td class="l"><a href="#t2026-06-14">14.06.2026</a></td><td class="l">Sonntag</td><td>08:17</td><td>14:49</td><td>6,5</td><td>7,0</td><td>1</td><td>49</td><td>2</td></tr>
+<tr data-tag="2026-06-16"><td class="l"><a href="#t2026-06-16">16.06.2026</a></td><td class="l">Dienstag</td><td>17:16</td><td>20:23</td><td>3,1</td><td>3,6</td><td>1</td><td>7</td><td>2</td></tr>
+<tr data-tag="2026-06-19"><td class="l"><a href="#t2026-06-19">19.06.2026</a></td><td class="l">Freitag</td><td>12:55</td><td>22:43</td><td>9,8</td><td>5,4</td><td>3</td><td>13</td><td>2</td></tr>
+<tr data-tag="2026-06-20"><td class="l"><a href="#t2026-06-20">20.06.2026</a></td><td class="l">Samstag</td><td>12:24</td><td>23:44</td><td>11,3</td><td>11,8</td><td>1</td><td>60</td><td>4</td></tr>
+<tr data-tag="2026-06-21"><td class="l"><a href="#t2026-06-21">21.06.2026</a></td><td class="l">Sonntag</td><td>00:00</td><td>15:43</td><td>15,7</td><td>16,2</td><td>1</td><td>114</td><td>3</td></tr>
+<tr data-tag="2026-06-22"><td class="l"><a href="#t2026-06-22">22.06.2026</a></td><td class="l">Montag</td><td>15:47</td><td>23:18</td><td>7,5</td><td>8,0</td><td>1</td><td>12</td><td>2</td></tr>
+<tr data-tag="2026-06-23"><td class="l"><a href="#t2026-06-23">23.06.2026</a></td><td class="l">Dienstag</td><td>00:03</td><td>23:48</td><td>23,8</td><td>8,2</td><td>3</td><td>57</td><td>1</td></tr>
+<tr data-tag="2026-06-24"><td class="l"><a href="#t2026-06-24">24.06.2026</a></td><td class="l">Mittwoch</td><td>05:10</td><td>23:52</td><td>18,7</td><td>15,4</td><td>2</td><td>57</td><td>1</td></tr>
+<tr data-tag="2026-06-25"><td class="l"><a href="#t2026-06-25">25.06.2026</a></td><td class="l">Donnerstag</td><td>00:02</td><td>22:47</td><td>22,8</td><td>7,4</td><td>4</td><td>20</td><td>1</td></tr>
+<tr data-tag="2026-06-26"><td class="l"><a href="#t2026-06-26">26.06.2026</a></td><td class="l">Freitag</td><td>07:16</td><td>23:20</td><td>16,1</td><td>6,3</td><td>3</td><td>17</td><td>4</td></tr>
+<tr data-tag="2026-06-27"><td class="l"><a href="#t2026-06-27">27.06.2026</a></td><td class="l">Samstag</td><td>09:36</td><td>23:56</td><td>14,3</td><td>14,8</td><td>1</td><td>95</td><td>7</td></tr>
+<tr data-tag="2026-06-28"><td class="l"><a href="#t2026-06-28">28.06.2026</a></td><td class="l">Sonntag</td><td>00:07</td><td>23:58</td><td>23,9</td><td>18,5</td><td>2</td><td>126</td><td>7</td></tr>
+<tr data-tag="2026-06-29"><td class="l"><a href="#t2026-06-29">29.06.2026</a></td><td class="l">Montag</td><td>00:13</td><td>06:22</td><td>6,2</td><td>3,2</td><td>3</td><td>16</td><td>5</td></tr>
+<tr data-tag="2026-06-30"><td class="l"><a href="#t2026-06-30">30.06.2026</a></td><td class="l">Dienstag</td><td>23:14</td><td>23:14</td><td>0,0</td><td>0,5</td><td>1</td><td>1</td><td>1</td></tr>
+<tr class="mon"><td class="l" colspan="4">Juli 2026</td><td>509,7 h</td><td>300,4 h</td><td></td><td>1.808</td><td></td></tr>
+<tr data-tag="2026-07-01"><td class="l"><a href="#t2026-07-01">01.07.2026</a></td><td class="l">Mittwoch</td><td>15:36</td><td>23:57</td><td>8,3</td><td>8,8</td><td>1</td><td>47</td><td>5</td></tr>
+<tr data-tag="2026-07-02"><td class="l"><a href="#t2026-07-02">02.07.2026</a></td><td class="l">Donnerstag</td><td>00:02</td><td>21:49</td><td>21,8</td><td>6,5</td><td>2</td><td>36</td><td>11</td></tr>
+<tr data-tag="2026-07-03"><td class="l"><a href="#t2026-07-03">03.07.2026</a></td><td class="l">Freitag</td><td>05:16</td><td>07:17</td><td>2,0</td><td>2,5</td><td>1</td><td>6</td><td>1</td></tr>
+<tr data-tag="2026-07-04"><td class="l"><a href="#t2026-07-04">04.07.2026</a></td><td class="l">Samstag</td><td>08:24</td><td>22:24</td><td>14,0</td><td>11,2</td><td>3</td><td>28</td><td>1</td></tr>
+<tr data-tag="2026-07-05"><td class="l"><a href="#t2026-07-05">05.07.2026</a></td><td class="l">Sonntag</td><td>00:24</td><td>23:42</td><td>23,3</td><td>18,9</td><td>2</td><td>101</td><td>7</td></tr>
+<tr data-tag="2026-07-06"><td class="l"><a href="#t2026-07-06">06.07.2026</a></td><td class="l">Montag</td><td>07:26</td><td>22:52</td><td>15,4</td><td>7,6</td><td>2</td><td>33</td><td>8</td></tr>
+<tr data-tag="2026-07-07"><td class="l"><a href="#t2026-07-07">07.07.2026</a></td><td class="l">Dienstag</td><td>05:04</td><td>23:29</td><td>18,4</td><td>7,8</td><td>4</td><td>28</td><td>7</td></tr>
+<tr data-tag="2026-07-08"><td class="l"><a href="#t2026-07-08">08.07.2026</a></td><td class="l">Mittwoch</td><td>00:31</td><td>23:01</td><td>22,5</td><td>13,3</td><td>3</td><td>57</td><td>6</td></tr>
+<tr data-tag="2026-07-09"><td class="l"><a href="#t2026-07-09">09.07.2026</a></td><td class="l">Donnerstag</td><td>03:17</td><td>22:07</td><td>18,8</td><td>9,8</td><td>3</td><td>22</td><td>8</td></tr>
+<tr data-tag="2026-07-10"><td class="l"><a href="#t2026-07-10">10.07.2026</a></td><td class="l">Freitag</td><td>12:34</td><td>23:17</td><td>10,7</td><td>11,2</td><td>1</td><td>108</td><td>10</td></tr>
+<tr data-tag="2026-07-11"><td class="l"><a href="#t2026-07-11">11.07.2026</a></td><td class="l">Samstag</td><td>03:59</td><td>20:45</td><td>16,8</td><td>17,3</td><td>1</td><td>222</td><td>13</td></tr>
+<tr data-tag="2026-07-12"><td class="l"><a href="#t2026-07-12">12.07.2026</a></td><td class="l">Sonntag</td><td>06:09</td><td>23:09</td><td>17,0</td><td>15,8</td><td>2</td><td>197</td><td>14</td></tr>
+<tr data-tag="2026-07-13"><td class="l"><a href="#t2026-07-13">13.07.2026</a></td><td class="l">Montag</td><td>06:58</td><td>21:32</td><td>14,6</td><td>5,7</td><td>2</td><td>16</td><td>2</td></tr>
+<tr data-tag="2026-07-14"><td class="l"><a href="#t2026-07-14">14.07.2026</a></td><td class="l">Dienstag</td><td>05:02</td><td>23:48</td><td>18,8</td><td>12,4</td><td>2</td><td>58</td><td>11</td></tr>
+<tr data-tag="2026-07-15"><td class="l"><a href="#t2026-07-15">15.07.2026</a></td><td class="l">Mittwoch</td><td>00:46</td><td>22:24</td><td>21,6</td><td>9,7</td><td>3</td><td>26</td><td>5</td></tr>
+<tr data-tag="2026-07-16"><td class="l"><a href="#t2026-07-16">16.07.2026</a></td><td class="l">Donnerstag</td><td>04:40</td><td>23:44</td><td>19,1</td><td>11,8</td><td>2</td><td>34</td><td>8</td></tr>
+<tr data-tag="2026-07-17"><td class="l"><a href="#t2026-07-17">17.07.2026</a></td><td class="l">Freitag</td><td>00:51</td><td>21:43</td><td>20,9</td><td>9,7</td><td>3</td><td>47</td><td>11</td></tr>
+<tr data-tag="2026-07-18"><td class="l"><a href="#t2026-07-18">18.07.2026</a></td><td class="l">Samstag</td><td>08:26</td><td>23:17</td><td>14,8</td><td>11,1</td><td>2</td><td>52</td><td>12</td></tr>
+<tr data-tag="2026-07-19"><td class="l"><a href="#t2026-07-19">19.07.2026</a></td><td class="l">Sonntag</td><td>00:04</td><td>23:26</td><td>23,4</td><td>14,6</td><td>2</td><td>64</td><td>12</td></tr>
+<tr data-tag="2026-07-20"><td class="l"><a href="#t2026-07-20">20.07.2026</a></td><td class="l">Montag</td><td>05:24</td><td>20:25</td><td>15,0</td><td>6,2</td><td>3</td><td>9</td><td>4</td></tr>
+<tr data-tag="2026-07-21"><td class="l"><a href="#t2026-07-21">21.07.2026</a></td><td class="l">Dienstag</td><td>15:26</td><td>23:57</td><td>8,5</td><td>5,6</td><td>3</td><td>32</td><td>13</td></tr>
+<tr data-tag="2026-07-22"><td class="l"><a href="#t2026-07-22">22.07.2026</a></td><td class="l">Mittwoch</td><td>00:16</td><td>23:57</td><td>23,7</td><td>10,3</td><td>2</td><td>63</td><td>15</td></tr>
+<tr data-tag="2026-07-23"><td class="l"><a href="#t2026-07-23">23.07.2026</a></td><td class="l">Donnerstag</td><td>00:09</td><td>23:07</td><td>23,0</td><td>9,4</td><td>3</td><td>79</td><td>14</td></tr>
+<tr data-tag="2026-07-24"><td class="l"><a href="#t2026-07-24">24.07.2026</a></td><td class="l">Freitag</td><td>07:18</td><td>23:47</td><td>16,5</td><td>11,5</td><td>2</td><td>70</td><td>9</td></tr>
+<tr data-tag="2026-07-25"><td class="l"><a href="#t2026-07-25">25.07.2026</a></td><td class="l">Samstag</td><td>00:18</td><td>22:25</td><td>22,1</td><td>5,7</td><td>4</td><td>49</td><td>14</td></tr>
+<tr data-tag="2026-07-26"><td class="l"><a href="#t2026-07-26">26.07.2026</a></td><td class="l">Sonntag</td><td>06:42</td><td>23:02</td><td>16,3</td><td>15,2</td><td>2</td><td>58</td><td>5</td></tr>
+<tr data-tag="2026-07-27"><td class="l"><a href="#t2026-07-27">27.07.2026</a></td><td class="l">Montag</td><td>00:35</td><td>00:47</td><td>0,2</td><td>0,7</td><td>1</td><td>3</td><td>1</td></tr>
+<tr data-tag="2026-07-28"><td class="l"><a href="#t2026-07-28">28.07.2026</a></td><td class="l">Dienstag</td><td>06:32</td><td>21:42</td><td>15,2</td><td>8,1</td><td>2</td><td>52</td><td>18</td></tr>
+<tr data-tag="2026-07-29"><td class="l"><a href="#t2026-07-29">29.07.2026</a></td><td class="l">Mittwoch</td><td>07:12</td><td>21:43</td><td>14,5</td><td>5,7</td><td>2</td><td>25</td><td>10</td></tr>
+<tr data-tag="2026-07-30"><td class="l"><a href="#t2026-07-30">30.07.2026</a></td><td class="l">Donnerstag</td><td>05:11</td><td>20:20</td><td>15,2</td><td>8,2</td><td>2</td><td>159</td><td>13</td></tr>
+<tr data-tag="2026-07-31"><td class="l"><a href="#t2026-07-31">31.07.2026</a></td><td class="l">Freitag</td><td>06:36</td><td>23:55</td><td>17,3</td><td>8,2</td><td>3</td><td>27</td><td>3</td></tr>
+<tr class="mon"><td class="l" colspan="4">August 2026</td><td>418,6 h</td><td>213,2 h</td><td></td><td>1.230</td><td></td></tr>
+<tr data-tag="2026-08-01"><td class="l"><a href="#t2026-08-01">01.08.2026</a></td><td class="l">Samstag</td><td>00:19</td><td>18:44</td><td>18,4</td><td>13,0</td><td>2</td><td>168</td><td>24</td></tr>
+<tr data-tag="2026-08-02"><td class="l"><a href="#t2026-08-02">02.08.2026</a></td><td class="l">Sonntag</td><td>02:10</td><td>23:27</td><td>21,3</td><td>15,9</td><td>3</td><td>67</td><td>8</td></tr>
+<tr data-tag="2026-08-03"><td class="l"><a href="#t2026-08-03">03.08.2026</a></td><td class="l">Montag</td><td>00:14</td><td>23:52</td><td>23,6</td><td>8,1</td><td>3</td><td>54</td><td>14</td></tr>
+<tr data-tag="2026-08-04"><td class="l"><a href="#t2026-08-04">04.08.2026</a></td><td class="l">Dienstag</td><td>07:10</td><td>22:16</td><td>15,1</td><td>5,3</td><td>2</td><td>12</td><td>3</td></tr>
+<tr data-tag="2026-08-05"><td class="l"><a href="#t2026-08-05">05.08.2026</a></td><td class="l">Mittwoch</td><td>05:20</td><td>21:00</td><td>15,7</td><td>8,0</td><td>2</td><td>16</td><td>3</td></tr>
+<tr data-tag="2026-08-06"><td class="l"><a href="#t2026-08-06">06.08.2026</a></td><td class="l">Donnerstag</td><td>07:37</td><td>19:54</td><td>12,3</td><td>3,3</td><td>2</td><td>8</td><td>3</td></tr>
+<tr data-tag="2026-08-07"><td class="l"><a href="#t2026-08-07">07.08.2026</a></td><td class="l">Freitag</td><td>07:28</td><td>22:15</td><td>14,8</td><td>5,5</td><td>2</td><td>19</td><td>5</td></tr>
+<tr data-tag="2026-08-08"><td class="l"><a href="#t2026-08-08">08.08.2026</a></td><td class="l">Samstag</td><td>00:00</td><td>23:49</td><td>23,8</td><td>11,4</td><td>3</td><td>49</td><td>10</td></tr>
+<tr data-tag="2026-08-09"><td class="l"><a href="#t2026-08-09">09.08.2026</a></td><td class="l">Sonntag</td><td>00:09</td><td>23:54</td><td>23,8</td><td>18,8</td><td>3</td><td>118</td><td>9</td></tr>
+<tr data-tag="2026-08-10"><td class="l"><a href="#t2026-08-10">10.08.2026</a></td><td class="l">Montag</td><td>05:04</td><td>23:52</td><td>18,8</td><td>7,3</td><td>3</td><td>16</td><td>3</td></tr>
+<tr data-tag="2026-08-11"><td class="l"><a href="#t2026-08-11">11.08.2026</a></td><td class="l">Dienstag</td><td>00:09</td><td>21:42</td><td>21,6</td><td>6,5</td><td>3</td><td>57</td><td>13</td></tr>
+<tr data-tag="2026-08-12"><td class="l"><a href="#t2026-08-12">12.08.2026</a></td><td class="l">Mittwoch</td><td>06:52</td><td>23:22</td><td>16,5</td><td>8,8</td><td>2</td><td>106</td><td>19</td></tr>
+<tr data-tag="2026-08-13"><td class="l"><a href="#t2026-08-13">13.08.2026</a></td><td class="l">Donnerstag</td><td>07:24</td><td>21:40</td><td>14,3</td><td>5,7</td><td>2</td><td>19</td><td>4</td></tr>
+<tr data-tag="2026-08-14"><td class="l"><a href="#t2026-08-14">14.08.2026</a></td><td class="l">Freitag</td><td>17:18</td><td>22:16</td><td>5,0</td><td>5,5</td><td>1</td><td>23</td><td>8</td></tr>
+<tr data-tag="2026-08-15"><td class="l"><a href="#t2026-08-15">15.08.2026</a></td><td class="l">Samstag</td><td>07:24</td><td>23:42</td><td>16,3</td><td>7,9</td><td>3</td><td>31</td><td>7</td></tr>
+<tr data-tag="2026-08-16"><td class="l"><a href="#t2026-08-16">16.08.2026</a></td><td class="l">Sonntag</td><td>00:11</td><td>23:37</td><td>23,4</td><td>9,0</td><td>4</td><td>120</td><td>31</td></tr>
+<tr data-tag="2026-08-17"><td class="l"><a href="#t2026-08-17">17.08.2026</a></td><td class="l">Montag</td><td>15:47</td><td>21:59</td><td>6,2</td><td>6,7</td><td>1</td><td>126</td><td>21</td></tr>
+<tr data-tag="2026-08-18"><td class="l"><a href="#t2026-08-18">18.08.2026</a></td><td class="l">Dienstag</td><td>05:20</td><td>23:55</td><td>18,6</td><td>9,9</td><td>2</td><td>19</td><td>3</td></tr>
+<tr data-tag="2026-08-19"><td class="l"><a href="#t2026-08-19">19.08.2026</a></td><td class="l">Mittwoch</td><td>06:33</td><td>23:10</td><td>16,6</td><td>8,1</td><td>3</td><td>19</td><td>4</td></tr>
+<tr data-tag="2026-08-20"><td class="l"><a href="#t2026-08-20">20.08.2026</a></td><td class="l">Donnerstag</td><td>04:52</td><td>22:28</td><td>17,6</td><td>9,2</td><td>2</td><td>24</td><td>3</td></tr>
+<tr data-tag="2026-08-21"><td class="l"><a href="#t2026-08-21">21.08.2026</a></td><td class="l">Freitag</td><td>06:07</td><td>22:29</td><td>16,4</td><td>8,6</td><td>2</td><td>20</td><td>5</td></tr>
+<tr data-tag="2026-08-22"><td class="l"><a href="#t2026-08-22">22.08.2026</a></td><td class="l">Samstag</td><td>06:12</td><td>22:59</td><td>16,8</td><td>10,8</td><td>4</td><td>71</td><td>31</td></tr>
+<tr data-tag="2026-08-23"><td class="l"><a href="#t2026-08-23">23.08.2026</a></td><td class="l">Sonntag</td><td>00:14</td><td>23:23</td><td>23,1</td><td>16,7</td><td>4</td><td>61</td><td>17</td></tr>
+<tr data-tag="2026-08-24"><td class="l"><a href="#t2026-08-24">24.08.2026</a></td><td class="l">Montag</td><td>00:52</td><td>19:37</td><td>18,8</td><td>3,1</td><td>3</td><td>7</td><td>2</td></tr>
+</tbody>
+<tfoot><tr><td class="l" colspan="4">Summe über 128 Tage</td><td data-summe="spanne">1935,9</td><td data-summe="aktiv">1186,6</td><td></td><td data-summe="eintraege">5.775</td><td></td></tr></tfoot>
+</table>
+</div>
+<h2>Tag für Tag</h2>
+<p>Jeder Eintrag mit Uhrzeit, Depot und Bezeichnung, in der Reihenfolge des Tages. Nichts ist gekürzt.</p>
+<div class="tag" id="t2026-03-10" data-block="2026-03-10">
+<h3>Dienstag, 10.03.2026</h3>
+<p class="zeiten">20:58 bis 21:11 &middot; Spanne 0,2 h &middot; aktive Zeit 0,7 h &middot; 1 Abschnitt &middot; 2 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-06" data-block="2026-04-06">
+<h3>Montag, 06.04.2026</h3>
+<p class="zeiten">14:38 bis 23:26 &middot; Spanne 8,8 h &middot; aktive Zeit 7,3 h &middot; 2 Abschnitte &middot; 24 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-07" data-block="2026-04-07">
+<h3>Dienstag, 07.04.2026</h3>
+<p class="zeiten">00:20 bis 20:10 &middot; Spanne 19,8 h &middot; aktive Zeit 5,3 h &middot; 2 Abschnitte &middot; 9 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-08" data-block="2026-04-08">
+<h3>Mittwoch, 08.04.2026</h3>
+<p class="zeiten">18:12 bis 22:53 &middot; Spanne 4,7 h &middot; aktive Zeit 3,0 h &middot; 2 Abschnitte &middot; 8 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-09" data-block="2026-04-09">
+<h3>Donnerstag, 09.04.2026</h3>
+<p class="zeiten">15:02 bis 23:55 &middot; Spanne 8,9 h &middot; aktive Zeit 9,4 h &middot; 1 Abschnitt &middot; 25 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-10" data-block="2026-04-10">
+<h3>Freitag, 10.04.2026</h3>
+<p class="zeiten">00:02 bis 09:39 &middot; Spanne 9,6 h &middot; aktive Zeit 4,5 h &middot; 2 Abschnitte &middot; 14 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-11" data-block="2026-04-11">
+<h3>Samstag, 11.04.2026</h3>
+<p class="zeiten">09:56 bis 23:32 &middot; Spanne 13,6 h &middot; aktive Zeit 10,8 h &middot; 2 Abschnitte &middot; 27 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-12" data-block="2026-04-12">
+<h3>Sonntag, 12.04.2026</h3>
+<p class="zeiten">10:09 bis 19:15 &middot; Spanne 9,1 h &middot; aktive Zeit 7,4 h &middot; 2 Abschnitte &middot; 32 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-04-13" data-block="2026-04-13">
+<h3>Montag, 13.04.2026</h3>
+<p class="zeiten">06:54 bis 22:07 &middot; Spanne 15,2 h &middot; aktive Zeit 13,1 h &middot; 2 Abschnitte &middot; 24 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-04-14" data-block="2026-04-14">
+<h3>Dienstag, 14.04.2026</h3>
+<p class="zeiten">06:24 bis 17:35 &middot; Spanne 11,2 h &middot; aktive Zeit 11,7 h &middot; 1 Abschnitt &middot; 48 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-04-15" data-block="2026-04-15">
+<h3>Mittwoch, 15.04.2026</h3>
+<p class="zeiten">08:23 bis 21:52 &middot; Spanne 13,5 h &middot; aktive Zeit 14,0 h &middot; 1 Abschnitt &middot; 62 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-04-16" data-block="2026-04-16">
+<h3>Donnerstag, 16.04.2026</h3>
+<p class="zeiten">09:16 bis 18:09 &middot; Spanne 8,9 h &middot; aktive Zeit 6,9 h &middot; 2 Abschnitte &middot; 26 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-04-19" data-block="2026-04-19">
+<h3>Sonntag, 19.04.2026</h3>
+<p class="zeiten">08:46 bis 22:03 &middot; Spanne 13,3 h &middot; aktive Zeit 8,4 h &middot; 4 Abschnitte &middot; 34 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-04-20" data-block="2026-04-20">
+<h3>Montag, 20.04.2026</h3>
+<p class="zeiten">03:35 bis 20:15 &middot; Spanne 16,7 h &middot; aktive Zeit 6,7 h &middot; 2 Abschnitte &middot; 36 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-04-21" data-block="2026-04-21">
+<h3>Dienstag, 21.04.2026</h3>
+<p class="zeiten">17:29 bis 23:46 &middot; Spanne 6,3 h &middot; aktive Zeit 6,8 h &middot; 1 Abschnitt &middot; 22 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-04-23" data-block="2026-04-23">
+<h3>Donnerstag, 23.04.2026</h3>
+<p class="zeiten">10:01 bis 23:44 &middot; Spanne 13,7 h &middot; aktive Zeit 7,5 h &middot; 2 Abschnitte &middot; 37 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-24" data-block="2026-04-24">
+<h3>Freitag, 24.04.2026</h3>
+<p class="zeiten">00:03 bis 22:30 &middot; Spanne 22,4 h &middot; aktive Zeit 15,1 h &middot; 3 Abschnitte &middot; 47 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-25" data-block="2026-04-25">
+<h3>Samstag, 25.04.2026</h3>
+<p class="zeiten">00:26 bis 23:57 &middot; Spanne 23,5 h &middot; aktive Zeit 11,6 h &middot; 3 Abschnitte &middot; 39 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-26" data-block="2026-04-26">
+<h3>Sonntag, 26.04.2026</h3>
+<p class="zeiten">00:12 bis 21:15 &middot; Spanne 21,1 h &middot; aktive Zeit 12,8 h &middot; 3 Abschnitte &middot; 33 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-04-29" data-block="2026-04-29">
+<h3>Mittwoch, 29.04.2026</h3>
+<p class="zeiten">21:23 bis 22:25 &middot; Spanne 1,0 h &middot; aktive Zeit 1,5 h &middot; 1 Abschnitt &middot; 2 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-04-30" data-block="2026-04-30">
+<h3>Donnerstag, 30.04.2026</h3>
+<p class="zeiten">02:03 bis 02:29 &middot; Spanne 0,4 h &middot; aktive Zeit 0,9 h &middot; 1 Abschnitt &middot; 2 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-01" data-block="2026-05-01">
+<h3>Freitag, 01.05.2026</h3>
+<p class="zeiten">19:02 bis 23:44 &middot; Spanne 4,7 h &middot; aktive Zeit 1,9 h &middot; 2 Abschnitte &middot; 4 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-02" data-block="2026-05-02">
+<h3>Samstag, 02.05.2026</h3>
+<p class="zeiten">00:04 bis 18:43 &middot; Spanne 18,6 h &middot; aktive Zeit 8,4 h &middot; 3 Abschnitte &middot; 16 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-06" data-block="2026-05-06">
+<h3>Mittwoch, 06.05.2026</h3>
+<p class="zeiten">17:50 bis 22:01 &middot; Spanne 4,2 h &middot; aktive Zeit 4,7 h &middot; 1 Abschnitt &middot; 6 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-07" data-block="2026-05-07">
+<h3>Donnerstag, 07.05.2026</h3>
+<p class="zeiten">05:06 bis 22:51 &middot; Spanne 17,8 h &middot; aktive Zeit 11,2 h &middot; 2 Abschnitte &middot; 46 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-08" data-block="2026-05-08">
+<h3>Freitag, 08.05.2026</h3>
+<p class="zeiten">00:08 bis 06:59 &middot; Spanne 6,8 h &middot; aktive Zeit 7,3 h &middot; 1 Abschnitt &middot; 17 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-05-10" data-block="2026-05-10">
+<h3>Sonntag, 10.05.2026</h3>
+<p class="zeiten">08:34 bis 22:28 &middot; Spanne 13,9 h &middot; aktive Zeit 3,8 h &middot; 4 Abschnitte &middot; 9 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-12" data-block="2026-05-12">
+<h3>Dienstag, 12.05.2026</h3>
+<p class="zeiten">21:39 bis 23:42 &middot; Spanne 2,0 h &middot; aktive Zeit 2,5 h &middot; 1 Abschnitt &middot; 3 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-13" data-block="2026-05-13">
+<h3>Mittwoch, 13.05.2026</h3>
+<p class="zeiten">00:28 bis 00:34 &middot; Spanne 0,1 h &middot; aktive Zeit 0,6 h &middot; 1 Abschnitt &middot; 2 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-05-14" data-block="2026-05-14">
+<h3>Donnerstag, 14.05.2026</h3>
+<p class="zeiten">14:26 bis 23:49 &middot; Spanne 9,4 h &middot; aktive Zeit 9,9 h &middot; 1 Abschnitt &middot; 26 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-15" data-block="2026-05-15">
+<h3>Freitag, 15.05.2026</h3>
+<p class="zeiten">00:04 bis 22:52 &middot; Spanne 22,8 h &middot; aktive Zeit 14,1 h &middot; 3 Abschnitte &middot; 32 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-16" data-block="2026-05-16">
+<h3>Samstag, 16.05.2026</h3>
+<p class="zeiten">00:30 bis 23:57 &middot; Spanne 23,4 h &middot; aktive Zeit 17,3 h &middot; 2 Abschnitte &middot; 58 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-05-17" data-block="2026-05-17">
+<h3>Sonntag, 17.05.2026</h3>
+<p class="zeiten">00:23 bis 23:48 &middot; Spanne 23,4 h &middot; aktive Zeit 14,4 h &middot; 4 Abschnitte &middot; 43 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-05-18" data-block="2026-05-18">
+<h3>Montag, 18.05.2026</h3>
+<p class="zeiten">17:04 bis 23:59 &middot; Spanne 6,9 h &middot; aktive Zeit 7,4 h &middot; 1 Abschnitt &middot; 29 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-19" data-block="2026-05-19">
+<h3>Dienstag, 19.05.2026</h3>
+<p class="zeiten">00:18 bis 22:15 &middot; Spanne 21,9 h &middot; aktive Zeit 12,4 h &middot; 4 Abschnitte &middot; 46 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-20" data-block="2026-05-20">
+<h3>Mittwoch, 20.05.2026</h3>
+<p class="zeiten">15:46 bis 22:03 &middot; Spanne 6,3 h &middot; aktive Zeit 6,8 h &middot; 1 Abschnitt &middot; 16 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-21" data-block="2026-05-21">
+<h3>Donnerstag, 21.05.2026</h3>
+<p class="zeiten">18:05 bis 21:11 &middot; Spanne 3,1 h &middot; aktive Zeit 3,6 h &middot; 1 Abschnitt &middot; 10 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-05-22" data-block="2026-05-22">
+<h3>Freitag, 22.05.2026</h3>
+<p class="zeiten">06:51 bis 18:06 &middot; Spanne 11,3 h &middot; aktive Zeit 3,6 h &middot; 2 Abschnitte &middot; 8 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-05-24" data-block="2026-05-24">
+<h3>Sonntag, 24.05.2026</h3>
+<p class="zeiten">06:07 bis 21:37 &middot; Spanne 15,5 h &middot; aktive Zeit 16,0 h &middot; 1 Abschnitt &middot; 37 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-05-25" data-block="2026-05-25">
+<h3>Montag, 25.05.2026</h3>
+<p class="zeiten">06:45 bis 23:52 &middot; Spanne 17,1 h &middot; aktive Zeit 14,8 h &middot; 2 Abschnitte &middot; 34 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-05-26" data-block="2026-05-26">
+<h3>Dienstag, 26.05.2026</h3>
+<p class="zeiten">00:01 bis 23:51 &middot; Spanne 23,8 h &middot; aktive Zeit 16,7 h &middot; 3 Abschnitte &middot; 45 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-05-27" data-block="2026-05-27">
+<h3>Mittwoch, 27.05.2026</h3>
+<p class="zeiten">00:03 bis 23:49 &middot; Spanne 23,8 h &middot; aktive Zeit 6,6 h &middot; 2 Abschnitte &middot; 17 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-05-28" data-block="2026-05-28">
+<h3>Donnerstag, 28.05.2026</h3>
+<p class="zeiten">00:14 bis 23:45 &middot; Spanne 23,5 h &middot; aktive Zeit 16,9 h &middot; 3 Abschnitte &middot; 61 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-05-29" data-block="2026-05-29">
+<h3>Freitag, 29.05.2026</h3>
+<p class="zeiten">00:18 bis 22:37 &middot; Spanne 22,3 h &middot; aktive Zeit 10,4 h &middot; 2 Abschnitte &middot; 44 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-05-30" data-block="2026-05-30">
+<h3>Samstag, 30.05.2026</h3>
+<p class="zeiten">06:35 bis 23:56 &middot; Spanne 17,4 h &middot; aktive Zeit 17,9 h &middot; 1 Abschnitt &middot; 97 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-05-31" data-block="2026-05-31">
+<h3>Sonntag, 31.05.2026</h3>
+<p class="zeiten">00:04 bis 23:54 &middot; Spanne 23,8 h &middot; aktive Zeit 7,9 h &middot; 2 Abschnitte &middot; 41 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-06-01" data-block="2026-06-01">
+<h3>Montag, 01.06.2026</h3>
+<p class="zeiten">00:01 bis 23:57 &middot; Spanne 23,9 h &middot; aktive Zeit 9,2 h &middot; 3 Abschnitte &middot; 56 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-06-02" data-block="2026-06-02">
+<h3>Dienstag, 02.06.2026</h3>
+<p class="zeiten">00:33 bis 19:14 &middot; Spanne 18,7 h &middot; aktive Zeit 8,4 h &middot; 3 Abschnitte &middot; 29 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-03" data-block="2026-06-03">
+<h3>Mittwoch, 03.06.2026</h3>
+<p class="zeiten">07:07 bis 23:10 &middot; Spanne 16,1 h &middot; aktive Zeit 8,7 h &middot; 2 Abschnitte &middot; 32 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-04" data-block="2026-06-04">
+<h3>Donnerstag, 04.06.2026</h3>
+<p class="zeiten">05:13 bis 20:07 &middot; Spanne 14,9 h &middot; aktive Zeit 5,3 h &middot; 2 Abschnitte &middot; 24 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-05" data-block="2026-06-05">
+<h3>Freitag, 05.06.2026</h3>
+<p class="zeiten">13:39 bis 23:45 &middot; Spanne 10,1 h &middot; aktive Zeit 10,6 h &middot; 1 Abschnitt &middot; 63 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-06-06" data-block="2026-06-06">
+<h3>Samstag, 06.06.2026</h3>
+<p class="zeiten">00:31 bis 23:55 &middot; Spanne 23,4 h &middot; aktive Zeit 19,4 h &middot; 2 Abschnitte &middot; 122 Einträge &middot; 4 Depots</p>
+</div>
+<div class="tag" id="t2026-06-07" data-block="2026-06-07">
+<h3>Sonntag, 07.06.2026</h3>
+<p class="zeiten">00:01 bis 23:48 &middot; Spanne 23,8 h &middot; aktive Zeit 20,2 h &middot; 2 Abschnitte &middot; 119 Einträge &middot; 6 Depots</p>
+</div>
+<div class="tag" id="t2026-06-08" data-block="2026-06-08">
+<h3>Montag, 08.06.2026</h3>
+<p class="zeiten">15:52 bis 23:54 &middot; Spanne 8,0 h &middot; aktive Zeit 8,5 h &middot; 1 Abschnitt &middot; 28 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-09" data-block="2026-06-09">
+<h3>Dienstag, 09.06.2026</h3>
+<p class="zeiten">00:16 bis 23:34 &middot; Spanne 23,3 h &middot; aktive Zeit 13,2 h &middot; 3 Abschnitte &middot; 71 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-10" data-block="2026-06-10">
+<h3>Mittwoch, 10.06.2026</h3>
+<p class="zeiten">05:08 bis 23:03 &middot; Spanne 17,9 h &middot; aktive Zeit 10,4 h &middot; 2 Abschnitte &middot; 62 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-06-11" data-block="2026-06-11">
+<h3>Donnerstag, 11.06.2026</h3>
+<p class="zeiten">04:59 bis 20:55 &middot; Spanne 15,9 h &middot; aktive Zeit 9,3 h &middot; 2 Abschnitte &middot; 25 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-12" data-block="2026-06-12">
+<h3>Freitag, 12.06.2026</h3>
+<p class="zeiten">04:38 bis 22:54 &middot; Spanne 18,3 h &middot; aktive Zeit 12,6 h &middot; 2 Abschnitte &middot; 103 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-13" data-block="2026-06-13">
+<h3>Samstag, 13.06.2026</h3>
+<p class="zeiten">12:04 bis 19:50 &middot; Spanne 7,8 h &middot; aktive Zeit 8,3 h &middot; 1 Abschnitt &middot; 59 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-14" data-block="2026-06-14">
+<h3>Sonntag, 14.06.2026</h3>
+<p class="zeiten">08:17 bis 14:49 &middot; Spanne 6,5 h &middot; aktive Zeit 7,0 h &middot; 1 Abschnitt &middot; 49 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-06-16" data-block="2026-06-16">
+<h3>Dienstag, 16.06.2026</h3>
+<p class="zeiten">17:16 bis 20:23 &middot; Spanne 3,1 h &middot; aktive Zeit 3,6 h &middot; 1 Abschnitt &middot; 7 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-06-19" data-block="2026-06-19">
+<h3>Freitag, 19.06.2026</h3>
+<p class="zeiten">12:55 bis 22:43 &middot; Spanne 9,8 h &middot; aktive Zeit 5,4 h &middot; 3 Abschnitte &middot; 13 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-06-20" data-block="2026-06-20">
+<h3>Samstag, 20.06.2026</h3>
+<p class="zeiten">12:24 bis 23:44 &middot; Spanne 11,3 h &middot; aktive Zeit 11,8 h &middot; 1 Abschnitt &middot; 60 Einträge &middot; 4 Depots</p>
+</div>
+<div class="tag" id="t2026-06-21" data-block="2026-06-21">
+<h3>Sonntag, 21.06.2026</h3>
+<p class="zeiten">00:00 bis 15:43 &middot; Spanne 15,7 h &middot; aktive Zeit 16,2 h &middot; 1 Abschnitt &middot; 114 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-06-22" data-block="2026-06-22">
+<h3>Montag, 22.06.2026</h3>
+<p class="zeiten">15:47 bis 23:18 &middot; Spanne 7,5 h &middot; aktive Zeit 8,0 h &middot; 1 Abschnitt &middot; 12 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-06-23" data-block="2026-06-23">
+<h3>Dienstag, 23.06.2026</h3>
+<p class="zeiten">00:03 bis 23:48 &middot; Spanne 23,8 h &middot; aktive Zeit 8,2 h &middot; 3 Abschnitte &middot; 57 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-24" data-block="2026-06-24">
+<h3>Mittwoch, 24.06.2026</h3>
+<p class="zeiten">05:10 bis 23:52 &middot; Spanne 18,7 h &middot; aktive Zeit 15,4 h &middot; 2 Abschnitte &middot; 57 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-25" data-block="2026-06-25">
+<h3>Donnerstag, 25.06.2026</h3>
+<p class="zeiten">00:02 bis 22:47 &middot; Spanne 22,8 h &middot; aktive Zeit 7,4 h &middot; 4 Abschnitte &middot; 20 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-06-26" data-block="2026-06-26">
+<h3>Freitag, 26.06.2026</h3>
+<p class="zeiten">07:16 bis 23:20 &middot; Spanne 16,1 h &middot; aktive Zeit 6,3 h &middot; 3 Abschnitte &middot; 17 Einträge &middot; 4 Depots</p>
+</div>
+<div class="tag" id="t2026-06-27" data-block="2026-06-27">
+<h3>Samstag, 27.06.2026</h3>
+<p class="zeiten">09:36 bis 23:56 &middot; Spanne 14,3 h &middot; aktive Zeit 14,8 h &middot; 1 Abschnitt &middot; 95 Einträge &middot; 7 Depots</p>
+</div>
+<div class="tag" id="t2026-06-28" data-block="2026-06-28">
+<h3>Sonntag, 28.06.2026</h3>
+<p class="zeiten">00:07 bis 23:58 &middot; Spanne 23,9 h &middot; aktive Zeit 18,5 h &middot; 2 Abschnitte &middot; 126 Einträge &middot; 7 Depots</p>
+</div>
+<div class="tag" id="t2026-06-29" data-block="2026-06-29">
+<h3>Montag, 29.06.2026</h3>
+<p class="zeiten">00:13 bis 06:22 &middot; Spanne 6,2 h &middot; aktive Zeit 3,2 h &middot; 3 Abschnitte &middot; 16 Einträge &middot; 5 Depots</p>
+</div>
+<div class="tag" id="t2026-06-30" data-block="2026-06-30">
+<h3>Dienstag, 30.06.2026</h3>
+<p class="zeiten">23:14 bis 23:14 &middot; Spanne 0,0 h &middot; aktive Zeit 0,5 h &middot; 1 Abschnitt &middot; 1 Eintrag &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-07-01" data-block="2026-07-01">
+<h3>Mittwoch, 01.07.2026</h3>
+<p class="zeiten">15:36 bis 23:57 &middot; Spanne 8,3 h &middot; aktive Zeit 8,8 h &middot; 1 Abschnitt &middot; 47 Einträge &middot; 5 Depots</p>
+</div>
+<div class="tag" id="t2026-07-02" data-block="2026-07-02">
+<h3>Donnerstag, 02.07.2026</h3>
+<p class="zeiten">00:02 bis 21:49 &middot; Spanne 21,8 h &middot; aktive Zeit 6,5 h &middot; 2 Abschnitte &middot; 36 Einträge &middot; 11 Depots</p>
+</div>
+<div class="tag" id="t2026-07-03" data-block="2026-07-03">
+<h3>Freitag, 03.07.2026</h3>
+<p class="zeiten">05:16 bis 07:17 &middot; Spanne 2,0 h &middot; aktive Zeit 2,5 h &middot; 1 Abschnitt &middot; 6 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-07-04" data-block="2026-07-04">
+<h3>Samstag, 04.07.2026</h3>
+<p class="zeiten">08:24 bis 22:24 &middot; Spanne 14,0 h &middot; aktive Zeit 11,2 h &middot; 3 Abschnitte &middot; 28 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-07-05" data-block="2026-07-05">
+<h3>Sonntag, 05.07.2026</h3>
+<p class="zeiten">00:24 bis 23:42 &middot; Spanne 23,3 h &middot; aktive Zeit 18,9 h &middot; 2 Abschnitte &middot; 101 Einträge &middot; 7 Depots</p>
+</div>
+<div class="tag" id="t2026-07-06" data-block="2026-07-06">
+<h3>Montag, 06.07.2026</h3>
+<p class="zeiten">07:26 bis 22:52 &middot; Spanne 15,4 h &middot; aktive Zeit 7,6 h &middot; 2 Abschnitte &middot; 33 Einträge &middot; 8 Depots</p>
+</div>
+<div class="tag" id="t2026-07-07" data-block="2026-07-07">
+<h3>Dienstag, 07.07.2026</h3>
+<p class="zeiten">05:04 bis 23:29 &middot; Spanne 18,4 h &middot; aktive Zeit 7,8 h &middot; 4 Abschnitte &middot; 28 Einträge &middot; 7 Depots</p>
+</div>
+<div class="tag" id="t2026-07-08" data-block="2026-07-08">
+<h3>Mittwoch, 08.07.2026</h3>
+<p class="zeiten">00:31 bis 23:01 &middot; Spanne 22,5 h &middot; aktive Zeit 13,3 h &middot; 3 Abschnitte &middot; 57 Einträge &middot; 6 Depots</p>
+</div>
+<div class="tag" id="t2026-07-09" data-block="2026-07-09">
+<h3>Donnerstag, 09.07.2026</h3>
+<p class="zeiten">03:17 bis 22:07 &middot; Spanne 18,8 h &middot; aktive Zeit 9,8 h &middot; 3 Abschnitte &middot; 22 Einträge &middot; 8 Depots</p>
+</div>
+<div class="tag" id="t2026-07-10" data-block="2026-07-10">
+<h3>Freitag, 10.07.2026</h3>
+<p class="zeiten">12:34 bis 23:17 &middot; Spanne 10,7 h &middot; aktive Zeit 11,2 h &middot; 1 Abschnitt &middot; 108 Einträge &middot; 10 Depots</p>
+</div>
+<div class="tag" id="t2026-07-11" data-block="2026-07-11">
+<h3>Samstag, 11.07.2026</h3>
+<p class="zeiten">03:59 bis 20:45 &middot; Spanne 16,8 h &middot; aktive Zeit 17,3 h &middot; 1 Abschnitt &middot; 222 Einträge &middot; 13 Depots</p>
+</div>
+<div class="tag" id="t2026-07-12" data-block="2026-07-12">
+<h3>Sonntag, 12.07.2026</h3>
+<p class="zeiten">06:09 bis 23:09 &middot; Spanne 17,0 h &middot; aktive Zeit 15,8 h &middot; 2 Abschnitte &middot; 197 Einträge &middot; 14 Depots &middot; dazu 3 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-07-13" data-block="2026-07-13">
+<h3>Montag, 13.07.2026</h3>
+<p class="zeiten">06:58 bis 21:32 &middot; Spanne 14,6 h &middot; aktive Zeit 5,7 h &middot; 2 Abschnitte &middot; 16 Einträge &middot; 2 Depots</p>
+</div>
+<div class="tag" id="t2026-07-14" data-block="2026-07-14">
+<h3>Dienstag, 14.07.2026</h3>
+<p class="zeiten">05:02 bis 23:48 &middot; Spanne 18,8 h &middot; aktive Zeit 12,4 h &middot; 2 Abschnitte &middot; 58 Einträge &middot; 11 Depots</p>
+</div>
+<div class="tag" id="t2026-07-15" data-block="2026-07-15">
+<h3>Mittwoch, 15.07.2026</h3>
+<p class="zeiten">00:46 bis 22:24 &middot; Spanne 21,6 h &middot; aktive Zeit 9,7 h &middot; 3 Abschnitte &middot; 26 Einträge &middot; 5 Depots</p>
+</div>
+<div class="tag" id="t2026-07-16" data-block="2026-07-16">
+<h3>Donnerstag, 16.07.2026</h3>
+<p class="zeiten">04:40 bis 23:44 &middot; Spanne 19,1 h &middot; aktive Zeit 11,8 h &middot; 2 Abschnitte &middot; 34 Einträge &middot; 8 Depots</p>
+</div>
+<div class="tag" id="t2026-07-17" data-block="2026-07-17">
+<h3>Freitag, 17.07.2026</h3>
+<p class="zeiten">00:51 bis 21:43 &middot; Spanne 20,9 h &middot; aktive Zeit 9,7 h &middot; 3 Abschnitte &middot; 47 Einträge &middot; 11 Depots</p>
+</div>
+<div class="tag" id="t2026-07-18" data-block="2026-07-18">
+<h3>Samstag, 18.07.2026</h3>
+<p class="zeiten">08:26 bis 23:17 &middot; Spanne 14,8 h &middot; aktive Zeit 11,1 h &middot; 2 Abschnitte &middot; 52 Einträge &middot; 12 Depots</p>
+</div>
+<div class="tag" id="t2026-07-19" data-block="2026-07-19">
+<h3>Sonntag, 19.07.2026</h3>
+<p class="zeiten">00:04 bis 23:26 &middot; Spanne 23,4 h &middot; aktive Zeit 14,6 h &middot; 2 Abschnitte &middot; 64 Einträge &middot; 12 Depots</p>
+</div>
+<div class="tag" id="t2026-07-20" data-block="2026-07-20">
+<h3>Montag, 20.07.2026</h3>
+<p class="zeiten">05:24 bis 20:25 &middot; Spanne 15,0 h &middot; aktive Zeit 6,2 h &middot; 3 Abschnitte &middot; 9 Einträge &middot; 4 Depots</p>
+</div>
+<div class="tag" id="t2026-07-21" data-block="2026-07-21">
+<h3>Dienstag, 21.07.2026</h3>
+<p class="zeiten">15:26 bis 23:57 &middot; Spanne 8,5 h &middot; aktive Zeit 5,6 h &middot; 3 Abschnitte &middot; 32 Einträge &middot; 13 Depots</p>
+</div>
+<div class="tag" id="t2026-07-22" data-block="2026-07-22">
+<h3>Mittwoch, 22.07.2026</h3>
+<p class="zeiten">00:16 bis 23:57 &middot; Spanne 23,7 h &middot; aktive Zeit 10,3 h &middot; 2 Abschnitte &middot; 63 Einträge &middot; 15 Depots</p>
+</div>
+<div class="tag" id="t2026-07-23" data-block="2026-07-23">
+<h3>Donnerstag, 23.07.2026</h3>
+<p class="zeiten">00:09 bis 23:07 &middot; Spanne 23,0 h &middot; aktive Zeit 9,4 h &middot; 3 Abschnitte &middot; 79 Einträge &middot; 14 Depots</p>
+</div>
+<div class="tag" id="t2026-07-24" data-block="2026-07-24">
+<h3>Freitag, 24.07.2026</h3>
+<p class="zeiten">07:18 bis 23:47 &middot; Spanne 16,5 h &middot; aktive Zeit 11,5 h &middot; 2 Abschnitte &middot; 70 Einträge &middot; 9 Depots</p>
+</div>
+<div class="tag" id="t2026-07-25" data-block="2026-07-25">
+<h3>Samstag, 25.07.2026</h3>
+<p class="zeiten">00:18 bis 22:25 &middot; Spanne 22,1 h &middot; aktive Zeit 5,7 h &middot; 4 Abschnitte &middot; 49 Einträge &middot; 14 Depots</p>
+</div>
+<div class="tag" id="t2026-07-26" data-block="2026-07-26">
+<h3>Sonntag, 26.07.2026</h3>
+<p class="zeiten">06:42 bis 23:02 &middot; Spanne 16,3 h &middot; aktive Zeit 15,2 h &middot; 2 Abschnitte &middot; 58 Einträge &middot; 5 Depots</p>
+</div>
+<div class="tag" id="t2026-07-27" data-block="2026-07-27">
+<h3>Montag, 27.07.2026</h3>
+<p class="zeiten">00:35 bis 00:47 &middot; Spanne 0,2 h &middot; aktive Zeit 0,7 h &middot; 1 Abschnitt &middot; 3 Einträge &middot; 1 Depot</p>
+</div>
+<div class="tag" id="t2026-07-28" data-block="2026-07-28">
+<h3>Dienstag, 28.07.2026</h3>
+<p class="zeiten">06:32 bis 21:42 &middot; Spanne 15,2 h &middot; aktive Zeit 8,1 h &middot; 2 Abschnitte &middot; 52 Einträge &middot; 18 Depots</p>
+</div>
+<div class="tag" id="t2026-07-29" data-block="2026-07-29">
+<h3>Mittwoch, 29.07.2026</h3>
+<p class="zeiten">07:12 bis 21:43 &middot; Spanne 14,5 h &middot; aktive Zeit 5,7 h &middot; 2 Abschnitte &middot; 25 Einträge &middot; 10 Depots</p>
+</div>
+<div class="tag" id="t2026-07-30" data-block="2026-07-30">
+<h3>Donnerstag, 30.07.2026</h3>
+<p class="zeiten">05:11 bis 20:20 &middot; Spanne 15,2 h &middot; aktive Zeit 8,2 h &middot; 2 Abschnitte &middot; 159 Einträge &middot; 13 Depots</p>
+</div>
+<div class="tag" id="t2026-07-31" data-block="2026-07-31">
+<h3>Freitag, 31.07.2026</h3>
+<p class="zeiten">06:36 bis 23:55 &middot; Spanne 17,3 h &middot; aktive Zeit 8,2 h &middot; 3 Abschnitte &middot; 27 Einträge &middot; 3 Depots</p>
+</div>
+<div class="tag" id="t2026-08-01" data-block="2026-08-01">
+<h3>Samstag, 01.08.2026</h3>
+<p class="zeiten">00:19 bis 18:44 &middot; Spanne 18,4 h &middot; aktive Zeit 13,0 h &middot; 2 Abschnitte &middot; 168 Einträge &middot; 24 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-02" data-block="2026-08-02">
+<h3>Sonntag, 02.08.2026</h3>
+<p class="zeiten">02:10 bis 23:27 &middot; Spanne 21,3 h &middot; aktive Zeit 15,9 h &middot; 3 Abschnitte &middot; 67 Einträge &middot; 8 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-03" data-block="2026-08-03">
+<h3>Montag, 03.08.2026</h3>
+<p class="zeiten">00:14 bis 23:52 &middot; Spanne 23,6 h &middot; aktive Zeit 8,1 h &middot; 3 Abschnitte &middot; 54 Einträge &middot; 14 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-04" data-block="2026-08-04">
+<h3>Dienstag, 04.08.2026</h3>
+<p class="zeiten">07:10 bis 22:16 &middot; Spanne 15,1 h &middot; aktive Zeit 5,3 h &middot; 2 Abschnitte &middot; 12 Einträge &middot; 3 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-05" data-block="2026-08-05">
+<h3>Mittwoch, 05.08.2026</h3>
+<p class="zeiten">05:20 bis 21:00 &middot; Spanne 15,7 h &middot; aktive Zeit 8,0 h &middot; 2 Abschnitte &middot; 16 Einträge &middot; 3 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-06" data-block="2026-08-06">
+<h3>Donnerstag, 06.08.2026</h3>
+<p class="zeiten">07:37 bis 19:54 &middot; Spanne 12,3 h &middot; aktive Zeit 3,3 h &middot; 2 Abschnitte &middot; 8 Einträge &middot; 3 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-07" data-block="2026-08-07">
+<h3>Freitag, 07.08.2026</h3>
+<p class="zeiten">07:28 bis 22:15 &middot; Spanne 14,8 h &middot; aktive Zeit 5,5 h &middot; 2 Abschnitte &middot; 19 Einträge &middot; 5 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-08" data-block="2026-08-08">
+<h3>Samstag, 08.08.2026</h3>
+<p class="zeiten">00:00 bis 23:49 &middot; Spanne 23,8 h &middot; aktive Zeit 11,4 h &middot; 3 Abschnitte &middot; 49 Einträge &middot; 10 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-09" data-block="2026-08-09">
+<h3>Sonntag, 09.08.2026</h3>
+<p class="zeiten">00:09 bis 23:54 &middot; Spanne 23,8 h &middot; aktive Zeit 18,8 h &middot; 3 Abschnitte &middot; 118 Einträge &middot; 9 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-10" data-block="2026-08-10">
+<h3>Montag, 10.08.2026</h3>
+<p class="zeiten">05:04 bis 23:52 &middot; Spanne 18,8 h &middot; aktive Zeit 7,3 h &middot; 3 Abschnitte &middot; 16 Einträge &middot; 3 Depots &middot; dazu 4 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-11" data-block="2026-08-11">
+<h3>Dienstag, 11.08.2026</h3>
+<p class="zeiten">00:09 bis 21:42 &middot; Spanne 21,6 h &middot; aktive Zeit 6,5 h &middot; 3 Abschnitte &middot; 57 Einträge &middot; 13 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-12" data-block="2026-08-12">
+<h3>Mittwoch, 12.08.2026</h3>
+<p class="zeiten">06:52 bis 23:22 &middot; Spanne 16,5 h &middot; aktive Zeit 8,8 h &middot; 2 Abschnitte &middot; 106 Einträge &middot; 19 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-13" data-block="2026-08-13">
+<h3>Donnerstag, 13.08.2026</h3>
+<p class="zeiten">07:24 bis 21:40 &middot; Spanne 14,3 h &middot; aktive Zeit 5,7 h &middot; 2 Abschnitte &middot; 19 Einträge &middot; 4 Depots &middot; dazu 3 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-14" data-block="2026-08-14">
+<h3>Freitag, 14.08.2026</h3>
+<p class="zeiten">17:18 bis 22:16 &middot; Spanne 5,0 h &middot; aktive Zeit 5,5 h &middot; 1 Abschnitt &middot; 23 Einträge &middot; 8 Depots &middot; dazu 3 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-15" data-block="2026-08-15">
+<h3>Samstag, 15.08.2026</h3>
+<p class="zeiten">07:24 bis 23:42 &middot; Spanne 16,3 h &middot; aktive Zeit 7,9 h &middot; 3 Abschnitte &middot; 31 Einträge &middot; 7 Depots &middot; dazu 1 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-16" data-block="2026-08-16">
+<h3>Sonntag, 16.08.2026</h3>
+<p class="zeiten">00:11 bis 23:37 &middot; Spanne 23,4 h &middot; aktive Zeit 9,0 h &middot; 4 Abschnitte &middot; 120 Einträge &middot; 31 Depots &middot; dazu 3 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-17" data-block="2026-08-17">
+<h3>Montag, 17.08.2026</h3>
+<p class="zeiten">15:47 bis 21:59 &middot; Spanne 6,2 h &middot; aktive Zeit 6,7 h &middot; 1 Abschnitt &middot; 126 Einträge &middot; 21 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-18" data-block="2026-08-18">
+<h3>Dienstag, 18.08.2026</h3>
+<p class="zeiten">05:20 bis 23:55 &middot; Spanne 18,6 h &middot; aktive Zeit 9,9 h &middot; 2 Abschnitte &middot; 19 Einträge &middot; 3 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-19" data-block="2026-08-19">
+<h3>Mittwoch, 19.08.2026</h3>
+<p class="zeiten">06:33 bis 23:10 &middot; Spanne 16,6 h &middot; aktive Zeit 8,1 h &middot; 3 Abschnitte &middot; 19 Einträge &middot; 4 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-20" data-block="2026-08-20">
+<h3>Donnerstag, 20.08.2026</h3>
+<p class="zeiten">04:52 bis 22:28 &middot; Spanne 17,6 h &middot; aktive Zeit 9,2 h &middot; 2 Abschnitte &middot; 24 Einträge &middot; 3 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-21" data-block="2026-08-21">
+<h3>Freitag, 21.08.2026</h3>
+<p class="zeiten">06:07 bis 22:29 &middot; Spanne 16,4 h &middot; aktive Zeit 8,6 h &middot; 2 Abschnitte &middot; 20 Einträge &middot; 5 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-22" data-block="2026-08-22">
+<h3>Samstag, 22.08.2026</h3>
+<p class="zeiten">06:12 bis 22:59 &middot; Spanne 16,8 h &middot; aktive Zeit 10,8 h &middot; 4 Abschnitte &middot; 71 Einträge &middot; 31 Depots &middot; dazu 3 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-23" data-block="2026-08-23">
+<h3>Sonntag, 23.08.2026</h3>
+<p class="zeiten">00:14 bis 23:23 &middot; Spanne 23,1 h &middot; aktive Zeit 16,7 h &middot; 4 Abschnitte &middot; 61 Einträge &middot; 17 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<div class="tag" id="t2026-08-24" data-block="2026-08-24">
+<h3>Montag, 24.08.2026</h3>
+<p class="zeiten">00:52 bis 19:37 &middot; Spanne 18,8 h &middot; aktive Zeit 3,1 h &middot; 3 Abschnitte &middot; 7 Einträge &middot; 2 Depots &middot; dazu 2 zeitgesteuerte, nicht gezählt</p>
+</div>
+<p class="q">Erzeugt von <code>tools/arbeitstage-bauen.mjs</code> aus <code>docs/historie/historie.json</code>. Die Zeiten stammen aus den Zeitstempeln der Quelltext-Verwaltung und lassen sich dort nachprüfen. Als Tabellenblatt liegen <code>arbeitstage-tage.csv</code> und <code>arbeitstage-taetigkeiten.csv</code> daneben.</p>
+</div>
+
+<div class="lm-leiste" role="toolbar" aria-label="Markieren">
+  <button type="button" data-lm="modus" aria-pressed="false"
+          title="Markier-Modus an oder aus">&#9998; Markieren</button>
+  <span class="lm-trenner"></span>
+  <button type="button" class="farbe" data-lm="farbe" data-f="gelb"
+          aria-pressed="true" aria-label="Gelb" title="Gelb"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="gruen"
+          aria-pressed="false" aria-label="Gr&uuml;n" title="Gr&uuml;n"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="rosa"
+          aria-pressed="false" aria-label="Rosa" title="Rosa"></button>
+  <button type="button" class="farbe" data-lm="farbe" data-f="blau"
+          aria-pressed="false" aria-label="Blau" title="Blau"></button>
+  <button type="button" data-lm="strich" aria-pressed="false"
+          title="Unterstreichen statt f&auml;rben">&#12316;</button>
+  <span class="lm-trenner"></span>
+  <button type="button" data-lm="weg" title="Markierung entfernen: antippen">&#10005;</button>
+  <button type="button" data-lm="alles" title="Alle entfernen">&#128465;</button>
+  <span class="lm-zahl" data-lm-zahl>0</span>
+</div>
+<div class="lm-hinweis" data-lm-hinweis></div>
+<script>
+(function(){
+  "use strict";
+  /* Welcher Teil der Seite markierbar ist, sagt die Seite selbst. Ohne
+     Angabe ist es <main>. Die Historie hat kein <main>, sondern .wrap, und
+     ein fest verdrahtetes "main" haette dort schlicht nichts getan. */
+  var wahl = document.body.getAttribute("data-lm-wurzel") || "main";
+  var WURZEL = document.querySelector(wahl);
+  if(!WURZEL) return;
+  WURZEL.classList.add("lm-wurzel");
+
+  var SCHLUESSEL = "lese_marken_" + (document.body.getAttribute("data-blatt") || "x");
+  var leiste  = document.querySelector(".lm-leiste");
+  var hinweis = document.querySelector("[data-lm-hinweis]");
+  var zahlEl  = document.querySelector("[data-lm-zahl]");
+
+  var modus   = false;      /* malen an oder aus */
+  var farbe   = "gelb";
+  var strich  = false;      /* unterstreichen statt faerben */
+  var marken  = [];
+  var gewaehlt = null;
+  var speicherHinBekommen = false;
+
+  /* ── Speicher ────────────────────────────────────────────────────────────
+     Er kann versagen: im privaten Fenster und bei gesperrten Seitendaten
+     wirft localStorage. Wer fuenfzig Stellen markiert und es erst beim
+     naechsten Oeffnen merkt, hat die Arbeit umsonst gemacht. */
+  function lesen(){
+    try{ var r = localStorage.getItem(SCHLUESSEL); return r ? JSON.parse(r) : []; }
+    catch(e){ return []; }
+  }
+  function schreiben(){
+    try{ localStorage.setItem(SCHLUESSEL, JSON.stringify(marken)); }
+    catch(e){
+      if(!speicherHinBekommen){
+        speicherHinBekommen = true;
+        sagen("Dieser Browser speichert nichts. Die Markierungen sind beim Schliessen weg.", 6000);
+      }
+    }
+  }
+
+  function sagen(text, dauer){
+    if(!hinweis) return;
+    hinweis.textContent = text;
+    hinweis.setAttribute("data-an","ja");
+    clearTimeout(sagen._t);
+    sagen._t = setTimeout(function(){ hinweis.setAttribute("data-an","nein"); },
+      dauer || 2200);
+  }
+
+  /* ── Wo ist das Wort unter dem Finger ───────────────────────────────────
+     Zwei Namen fuer dieselbe Sache: Chrome und Safari koennen
+     caretRangeFromPoint, Firefox caretPositionFromPoint. Wer nur den einen
+     kennt, hat ein Werkzeug, das in einem von drei Browsern nichts tut. */
+  function punktZuStelle(x, y){
+    var el = document.elementFromPoint(x, y);
+    if(!el || !WURZEL.contains(el)) return null;
+    if(document.caretRangeFromPoint){
+      var r = document.caretRangeFromPoint(x, y);
+      return r ? { knoten:r.startContainer, pos:r.startOffset } : null;
+    }
+    if(document.caretPositionFromPoint){
+      var p = document.caretPositionFromPoint(x, y);
+      return p ? { knoten:p.offsetNode, pos:p.offset } : null;
+    }
+    return null;
+  }
+
+  var WORT = /[\wÀ-ſ0-9]/;
+
+  /* AUF GANZE WOERTER RUNDEN. Ein Finger ist breiter als ein Buchstabe;
+     ohne das Runden endet jede Markierung mitten im Wort, jedes Mal
+     woanders, und das sieht nach einem Fehler aus. */
+  function wortAnfang(t, i){
+    while(i > 0 && WORT.test(t.charAt(i-1))) i--;
+    return i;
+  }
+  function wortEnde(t, i){
+    while(i < t.length && WORT.test(t.charAt(i))) i++;
+    return i;
+  }
+
+  /* Alle Textknoten zwischen zwei Punkten, in Dokument-Reihenfolge. */
+  function textKnotenIn(bereich){
+    var raus = [];
+    var geher = document.createTreeWalker(WURZEL, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(n){
+        if(!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        if(n.parentNode.closest && n.parentNode.closest(".lm-leiste,.lm-hinweis"))
+          return NodeFilter.FILTER_REJECT;
+        return bereich.intersectsNode(n)
+          ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var n; while((n = geher.nextNode())) raus.push(n);
+    return raus;
+  }
+
+  var id = 0;
+  function neueId(){ return "m" + (Date.now().toString(36)) + (id++); }
+
+  /* Eine Huelle je Textknoten. UEBER ABSATZGRENZEN HINWEG GEHT KEINE
+     EINZELNE HUELLE: <mark> darf keine Bloecke umschliessen, das waere
+     ungueltiges HTML und der Browser flickt es unvorhersehbar. */
+  function huellen(bereich, mid){
+    var knoten = textKnotenIn(bereich);
+    var gemacht = [];
+    for(var i=0;i<knoten.length;i++){
+      var t = knoten[i];
+      var von = (t === bereich.startContainer) ? bereich.startOffset : 0;
+      var bis = (t === bereich.endContainer) ? bereich.endOffset : t.nodeValue.length;
+      if(bis <= von) continue;
+      var r = document.createRange();
+      r.setStart(t, von); r.setEnd(t, bis);
+      var m = document.createElement("mark");
+      m.className = "lm";
+      m.setAttribute("data-lm-id", mid);
+      m.setAttribute("data-farbe", farbe);
+      if(strich) m.setAttribute("data-art","strich");
+      try{ r.surroundContents(m); gemacht.push(m); }
+      catch(e){ /* ueberlappt eine bestehende Huelle: dieser Knoten faellt aus */ }
+    }
+    return gemacht;
+  }
+
+  function textVon(mid){
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    var s = "";
+    for(var i=0;i<teile.length;i++) s += teile[i].textContent;
+    return s.replace(/\s+/g," ").trim();
+  }
+
+  /* Das wievielte Vorkommen dieses Textes im Blatt. Damit findet er sich
+     nach einem Neubau wieder, auch wenn er mehrfach vorkommt. */
+  function vorkommen(text){
+    if(!text) return 1;
+    var ganz = WURZEL.textContent.replace(/\s+/g," ");
+    var bis  = ganz.indexOf(text);
+    if(bis < 0) return 1;
+    var n = 1, p = 0;
+    while((p = ganz.indexOf(text, p)) >= 0 && p < bis){ n++; p += text.length; }
+    return n;
+  }
+
+  function zaehlen(){
+    if(zahlEl) zahlEl.textContent = String(marken.length);
+  }
+
+  /* ── Malen ─────────────────────────────────────────────────────────────── */
+
+  var start = null;
+
+  function anfangen(x, y){
+    start = punktZuStelle(x, y);
+    return !!start;
+  }
+
+  function fertig(x, y){
+    if(!start) return;
+    var ende = punktZuStelle(x, y);
+    start = null;
+    if(!ende) return;
+
+    var a = start0, b = ende;
+    var r = document.createRange();
+    try{
+      r.setStart(a.knoten, a.pos);
+      r.setEnd(b.knoten, b.pos);
+      if(r.collapsed){ r.setStart(b.knoten, b.pos); r.setEnd(a.knoten, a.pos); }
+    }catch(e){
+      /* Rueckwaerts gezogen: Anfang und Ende tauschen. */
+      try{ r.setStart(b.knoten, b.pos); r.setEnd(a.knoten, a.pos); }
+      catch(e2){ return; }
+    }
+    if(r.collapsed) return;
+
+    /* Auf ganze Woerter runden. */
+    if(r.startContainer.nodeType === 3)
+      r.setStart(r.startContainer, wortAnfang(r.startContainer.nodeValue, r.startOffset));
+    if(r.endContainer.nodeType === 3)
+      r.setEnd(r.endContainer, wortEnde(r.endContainer.nodeValue, r.endOffset));
+    if(r.collapsed || !r.toString().trim()) return;
+
+    var mid = neueId();
+    var gemacht = huellen(r, mid);
+    if(!gemacht.length) return;
+
+    var text = textVon(mid);
+    marken.push({ id:mid, text:text, nr:vorkommen(text),
+                  farbe:farbe, art: strich ? "strich" : "flaeche" });
+    schreiben(); zaehlen();
+  }
+
+  var start0 = null;
+
+  WURZEL.addEventListener("pointerdown", function(ev){
+    if(!modus) return;
+    ev.preventDefault();          /* KEINE Auswahl, also auch kein Menue */
+    start0 = punktZuStelle(ev.clientX, ev.clientY);
+    start  = start0;
+  });
+  WURZEL.addEventListener("pointerup", function(ev){
+    if(!modus) return;
+    ev.preventDefault();
+    var mk = ev.target.closest ? ev.target.closest("mark.lm") : null;
+    if(mk && start0 && punktZuStelle(ev.clientX, ev.clientY)
+       && mk === (ev.target.closest ? ev.target.closest("mark.lm") : null)){
+      /* Ein Tipp AUF eine Markierung waehlt sie aus, statt eine neue zu malen. */
+      var d = Math.abs(ev.clientX - (start0.x||ev.clientX));
+      if(!d){ waehlen(mk.getAttribute("data-lm-id")); start0=null; start=null; return; }
+    }
+    fertig(ev.clientX, ev.clientY);
+    start0 = null;
+  });
+
+  function waehlen(mid){
+    entwaehlen();
+    gewaehlt = mid;
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    for(var i=0;i<teile.length;i++) teile[i].setAttribute("data-gewaehlt","ja");
+    sagen("Markierung gewaehlt. Mit \u2715 entfernen.");
+  }
+  function entwaehlen(){
+    var alle = WURZEL.querySelectorAll("mark.lm[data-gewaehlt]");
+    for(var i=0;i<alle.length;i++) alle[i].removeAttribute("data-gewaehlt");
+    gewaehlt = null;
+  }
+
+  function abnehmen(mid){
+    var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+mid+'"]');
+    for(var i=0;i<teile.length;i++){
+      var m = teile[i], p = m.parentNode;
+      while(m.firstChild) p.insertBefore(m.firstChild, m);
+      p.removeChild(m);
+      p.normalize();
+    }
+    marken = marken.filter(function(x){ return x.id !== mid; });
+    schreiben(); zaehlen();
+  }
+
+  /* ── Die Leiste ────────────────────────────────────────────────────────── */
+
+  function modusSetzen(an){
+    modus = an;
+    document.body.setAttribute("data-modus", an ? "malen" : "lesen");
+    var k = leiste.querySelector('[data-lm="modus"]');
+    if(k) k.setAttribute("aria-pressed", an ? "true" : "false");
+    entwaehlen();
+    sagen(an
+      ? "Markieren an. Ueber den Text ziehen. Auswaehlen und Kopieren ist solange aus."
+      : "Markieren aus. Auswaehlen und Kopieren geht wieder.");
+  }
+
+  leiste.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-lm]") : null;
+    if(!k) return;
+    var tun = k.getAttribute("data-lm");
+
+    if(tun === "modus"){ modusSetzen(!modus); return; }
+
+    if(tun === "farbe"){
+      farbe = k.getAttribute("data-f");
+      strich = false;
+      var fs = leiste.querySelectorAll('[data-lm="farbe"]');
+      for(var i=0;i<fs.length;i++)
+        fs[i].setAttribute("aria-pressed", fs[i]===k ? "true" : "false");
+      leiste.querySelector('[data-lm="strich"]').setAttribute("aria-pressed","false");
+      if(gewaehlt){
+        var teile = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+gewaehlt+'"]');
+        for(var j=0;j<teile.length;j++){
+          teile[j].setAttribute("data-farbe", farbe);
+          teile[j].removeAttribute("data-art");
+        }
+        marken.forEach(function(m){
+          if(m.id===gewaehlt){ m.farbe=farbe; m.art="flaeche"; }
+        });
+        schreiben();
+      }
+      if(!modus) modusSetzen(true);
+      return;
+    }
+
+    if(tun === "strich"){
+      strich = !strich;
+      k.setAttribute("aria-pressed", strich ? "true" : "false");
+      if(gewaehlt){
+        var t2 = WURZEL.querySelectorAll('mark.lm[data-lm-id="'+gewaehlt+'"]');
+        for(var q=0;q<t2.length;q++){
+          if(strich) t2[q].setAttribute("data-art","strich");
+          else t2[q].removeAttribute("data-art");
+        }
+        marken.forEach(function(m){
+          if(m.id===gewaehlt) m.art = strich ? "strich" : "flaeche";
+        });
+        schreiben();
+      }
+      if(!modus) modusSetzen(true);
+      return;
+    }
+
+    if(tun === "weg"){
+      if(gewaehlt){ abnehmen(gewaehlt); entwaehlen(); sagen("Entfernt."); }
+      else sagen("Erst eine Markierung antippen.");
+      return;
+    }
+
+    if(tun === "alles"){
+      if(!marken.length){ sagen("Es gibt keine."); return; }
+      /* ⚠ EINE RUECKFRAGE, UND SIE NENNT DIE ZAHL. Alles zu loeschen ist der
+         einzige Schritt hier, der Arbeit vernichtet, und er laesst sich nicht
+         zuruecknehmen. */
+      if(!confirm("Alle " + marken.length + " Markierungen dieses Blattes entfernen?")) return;
+      marken.slice().forEach(function(m){ abnehmen(m.id); });
+      entwaehlen(); sagen("Alle entfernt.");
+      return;
+    }
+  });
+
+  /* ── Wiederherstellen ──────────────────────────────────────────────────
+     Nach dem Text gesucht, nicht nach der Stelle. Was sich nicht mehr
+     findet, heisst VERWAIST und wird gemeldet, statt lautlos zu fehlen. */
+  function wieder(){
+    var alt = lesen();
+    if(!alt.length) return;
+    var verwaist = 0;
+    alt.forEach(function(m){
+      var r = suchen(m.text, m.nr);
+      if(!r){ verwaist++; return; }
+      var vorherFarbe = farbe, vorherStrich = strich;
+      farbe = m.farbe || "gelb"; strich = (m.art === "strich");
+      var gemacht = huellen(r, m.id);
+      farbe = vorherFarbe; strich = vorherStrich;
+      if(gemacht.length) marken.push(m); else verwaist++;
+    });
+    schreiben(); zaehlen();
+    if(verwaist) sagen(verwaist + " Markierung(en) finden ihre Stelle nicht mehr.", 5000);
+  }
+
+  /* Den n-ten Treffer eines Textes als Bereich. */
+  function suchen(text, nr){
+    if(!text) return null;
+    var geher = document.createTreeWalker(WURZEL, NodeFilter.SHOW_TEXT, {
+      acceptNode:function(n){
+        return (n.nodeValue && n.nodeValue.trim())
+          ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var knoten = [], ganz = "", n;
+    while((n = geher.nextNode())){ knoten.push({ n:n, von:ganz.length }); ganz += n.nodeValue; }
+    var flach = ganz.replace(/\s+/g," ");
+    var ziel = text.replace(/\s+/g," ");
+    var p = -1, k = 0;
+    do{ p = flach.indexOf(ziel, p+1); k++; }while(p >= 0 && k < (nr||1));
+    if(p < 0) return null;
+
+    /* Die flache Stelle zurueck in den Knoten rechnen. */
+    var roh = 0, gesehen = 0;
+    for(var i=0;i<ganz.length && gesehen < p;i++){
+      if(/\s/.test(ganz.charAt(i))){
+        if(i>0 && /\s/.test(ganz.charAt(i-1))) continue;
+      }
+      gesehen++; roh = i+1;
+    }
+    var a = stelleZuKnoten(knoten, roh);
+    var b = stelleZuKnoten(knoten, roh + ziel.length);
+    if(!a || !b) return null;
+    var r = document.createRange();
+    try{ r.setStart(a.n, a.pos); r.setEnd(b.n, b.pos); }catch(e){ return null; }
+    return r.collapsed ? null : r;
+  }
+  function stelleZuKnoten(knoten, pos){
+    for(var i=0;i<knoten.length;i++){
+      var k = knoten[i], laenge = k.n.nodeValue.length;
+      if(pos <= k.von + laenge) return { n:k.n, pos: Math.max(0, pos - k.von) };
+    }
+    var l = knoten[knoten.length-1];
+    return l ? { n:l.n, pos:l.n.nodeValue.length } : null;
+  }
+
+  wieder();
+  document.body.setAttribute("data-modus","lesen");
+
+  /* Fuer die Probe. Gibt nur heraus, was ohnehin auf dem Schirm steht. */
+  window.__lese = {
+    modus: function(){ return modus; },
+    marken: function(){ return marken.slice(); },
+    setzeModus: modusSetzen,
+    farbeWaehlen: function(f){ farbe = f; },
+    strichWaehlen: function(b){ strich = !!b; },
+    malen: function(x1,y1,x2,y2){
+      start0 = punktZuStelle(x1,y1); start = start0;
+      fertig(x2,y2); start0 = null;
+    },
+    waehlen: waehlen,
+    abnehmen: abnehmen,
+    bereit: true
+  };
+})();
+</script>
+</body>
+</html>

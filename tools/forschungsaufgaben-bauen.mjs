@@ -114,7 +114,8 @@ const AUFGABEN = [
   { nr: 1, titel: 'Blatt „Stand der Technik und Abgrenzung"', strang: 'alle drei',
     sichtbar: true,
     belege: ['docs/ABGRENZUNG.md'],
-    wozu: 'Jede Fördergeberin liest es zuerst. Ohne es wirkt der Antrag naiv.',
+    wozu: 'Wer die Untersuchung liest, braucht zuerst die Antwort auf „gibt es '
+      + 'das nicht schon\u201c.',
     fehlt: 'Die Literatursuche. Das Blatt stützt sich auf die veröffentlichten '
       + 'Zwecke der genannten Verfahren, nicht auf eine systematische Recherche '
       + 'mit Zitaten. Es sagt das selbst in § 6.',
@@ -269,8 +270,8 @@ Es misst, **ob** eine Datei da ist, nicht ob sie taugt. „Liegt vor" heißt nic
 „erledigt". Bei jeder Aufgabe steht deshalb getrennt, was noch fehlt, und diese
 Spalte wird von Hand geführt.
 
-**Und es kennt keine Arbeit, die außerhalb des Depots geschieht.** Ein Gespräch
-mit einem Steuerberater, eine Mail an eine Hochschule, ein Zenodo-Upload
+**Und es kennt keine Arbeit, die außerhalb des Depots geschieht.** Ein Gespräch,
+eine Mail an eine Hochschule, ein Zenodo-Upload
 hinterlassen hier keine Spur, bis jemand sie einträgt.
 `;
 

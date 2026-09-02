@@ -31,7 +31,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium } from 'playwright-core';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const MAPPE = resolve(WURZEL, 'docs/antragsmappe.html');
+const MAPPE = resolve(WURZEL, 'docs/antragsmappe-einreichbar.html');
 
 let rot = 0;
 const gut = (b, was, dazu) => {
@@ -74,13 +74,15 @@ async function druckLage(id) {
   }, id);
 }
 
-for (const [ich, andere] of [['einreichbar', 'privat'], ['privat', 'einreichbar']]) {
+/* Seit dem 2026-09-02 hat die Mappe EINE Abteilung. Der Druck-Mechanismus für
+   mehrere steht weiter im Werkzeug und wird hier an der vorhandenen gemessen. */
+for (const [ich, andere] of [['einreichbar', null]]) {
   const { gemessen, klasseDanach } = await druckLage(ich);
   gut(gemessen !== null, 'Druck-Knopf „' + ich + '" löst wirklich einen Druck aus');
   if (gemessen) {
     gut(gemessen[ich] > 0,
       'beim Drucken von „' + ich + '" steht diese Abteilung da (' + Math.round(gemessen[ich]) + ' px)');
-    gut(gemessen[andere] === 0,
+    if (andere) gut(gemessen[andere] === 0,
       'beim Drucken von „' + ich + '" ist „' + andere + '" WEG',
       'gemessene Höhe: ' + gemessen[andere] + ' px');
   }
@@ -93,10 +95,9 @@ for (const [ich, andere] of [['einreichbar', 'privat'], ['privat', 'einreichbar'
 
 const KOPF = {
   einreichbar: 'Forschungsunterlagen',
-  privat: 'Fahrplan Forschungsgelder',
 };
 
-for (const [ich, andere] of [['einreichbar', 'privat'], ['privat', 'einreichbar']]) {
+for (const [ich, andere] of [['einreichbar', null]]) {
   let datei = null;
   try {
     const [dl] = await Promise.all([
