@@ -114,6 +114,39 @@ for (const rel of PAPIERE) {
        ? "nur anklickbar: " + unsichtbar.join(" · ") +
          "\n       Auf Papier kann niemand klicken."
        : "");
+  /* Der Titel muss das Kürzel AUFLÖSEN, und Kopf und Überschrift müssen
+     dasselbe sagen (Befund 2026-09-02, kurz vor dem DOI).
+
+     Die <h1> im Text war richtig — "Semantisches Bidirektionales KI-Matching".
+     Der <title>-Tag war es nicht: dort fehlte "KI-", weil die Berichtigung des
+     Namens an der <h1> ansetzte und der Zeilenumbruch <br> die Stelle im Kopf
+     verdeckte. Im englischen Papier fehlte "AI" in BEIDEN.
+
+     Warum das teurer ist, als es aussieht: der <title> ist das, was der
+     Browser-Reiter zeigt, was eine Suchmaschine übernimmt und was jeder in ein
+     Formular kopiert. Wäre er so in den DOI gegangen, stünde eine Auflösung des
+     Kürzels dauerhaft und unveränderlich da, die das Kürzel nicht ergibt.
+
+     Bewacht wird die AUSSAGE (der Titel löst das Kürzel auf), nicht der
+     Wortlaut — sonst verbietet der Wächter die nächste Titel-Änderung. */
+  const istEn = /-en\.html$/.test(rel);
+  const kuerzelWort = istEn ? "AI Matching" : "KI-Matching";
+  const titelTag = (roh.match(/<title>([\s\S]*?)<\/title>/i) || [, ""])[1];
+  const h1 = (roh.match(/<h1[^>]*class="paper-title"[^>]*>([\s\S]*?)<\/h1>/i) || [, ""])[1]
+    .replace(/<[^>]+>/g, " ");
+  const glatt = (t) => t.replace(/\s+/g, " ").trim();
+
+  ok(glatt(titelTag).includes(kuerzelWort),
+     rel + `: der <title> löst das Kürzel auf ("${kuerzelWort}")`,
+     glatt(titelTag).includes(kuerzelWort) ? "" : "steht da: " + glatt(titelTag));
+  ok(glatt(h1).includes(kuerzelWort),
+     rel + `: die Überschrift löst das Kürzel auf ("${kuerzelWort}")`,
+     glatt(h1).includes(kuerzelWort) ? "" : "steht da: " + glatt(h1));
+  ok(glatt(titelTag) === glatt(h1),
+     rel + ": <title> und Überschrift sagen dasselbe",
+     glatt(titelTag) === glatt(h1)
+       ? ""
+       : "Kopf:        " + glatt(titelTag) + "\n       Überschrift: " + glatt(h1));
 }
 
 console.log(`\nPapier-Verweise: ${pass} bestanden, ${fail} fehlgeschlagen.`);
