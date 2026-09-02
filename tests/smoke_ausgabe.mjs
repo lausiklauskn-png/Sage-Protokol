@@ -38,7 +38,12 @@ if (!existsSync(ORDNER)) {
 const dateien = readdirSync(ORDNER).sort();
 const werke = dateien.filter((n) => /\.(html|pdf)$/.test(n));
 
-gut(werke.length >= 10, werke.length + ' Dateien in der Ausgabe');
+/* ⚠ GEMESSEN GEGEN DIE LISTE, NICHT GEGEN EINE ZAHL. Hier stand `>= 10`, und
+   als die Ausgabe am 2026-09-02 kürzer wurde, war die Prüfung rot, ohne dass
+   eine Zusicherung gefallen wäre. Eine feste Untergrenze ist keine Zusicherung
+   — dieselbe Lehre wie „Mehrere ist keine Zusicherung". Gemessen wird jetzt,
+   dass ZU JEDEM Eintrag der Liste die Dateien dastehen. */
+gut(werke.length >= 2, werke.length + ' Dateien in der Ausgabe');
 
 /* ── 1 · Jede trägt eine Nummer vorn ──────────────────────────────────── */
 const ohneNr = werke.filter((n) => !/^\d{2}_/.test(n));

@@ -1,3 +1,10 @@
+/*
+ * ⚠ GEKÜRZT AM 2026-09-02. Dieses Werkzeug legte einmal zehn Blätter ab; sieben
+ * davon gehören nicht in ein öffentliches Depot und liegen seitdem woanders.
+ * Was hier bleibt, ist das Fachliche.
+ *
+ * Wer ein Blatt vermisst: es fehlt nicht, es ist nicht hier.
+ */
 /* ausgabe-bauen.mjs, legt alle Unterlagen nummeriert in `docs/ausgabe/` ab.
  *
  * Klaus 2026-08-26: „die Dateiausgabe als HTML und PDF namentlich so sortiert,
@@ -33,36 +40,12 @@ const ZIEL = P('docs', 'ausgabe');
 /* `nr` ist die Vorgehens-Reihenfolge, `name` der sprechende Teil dahinter.
    Wer etwas ergänzt, sucht sich eine freie Zehnerstelle. */
 const AUSGABE = [
-  { nr: 10, name: 'Uebersicht-und-Reihenfolge',
-    html: 'docs/unterlagen.html', pdf: 'docs/unterlagen.pdf',
-    was: 'die ganze Mappe, sieben Abteilungen' },
-  { nr: 20, name: 'Schritte-abhakbar',
-    html: 'docs/unterlagen-schritte.html', pdf: 'docs/unterlagen-schritte.pdf',
-    was: 'was worauf wartet' },
-  { nr: 30, name: 'Fragen-an-den-Steuerberater',
-    html: 'docs/frageblatt.html', pdf: 'docs/frageblatt.pdf',
-    was: 'Blatt zum Mitnehmen in den Termin' },
-  { nr: 40, name: 'Vorbereitung-Finanzamt',
-    html: 'docs/unterlagen-finanzamt.html', pdf: 'docs/unterlagen-finanzamt.pdf',
-    was: 'zum Danebenlegen beim Ausfüllen' },
-  { nr: 50, name: 'Bestandsaufnahme',
-    html: 'docs/unterlagen-bestand.html', pdf: 'docs/unterlagen-bestand.pdf',
-    was: 'was es gibt, seit wann, welche Lücke. Beide Ordnungen' },
-  { nr: 60, name: 'April-2026-rekonstruiert',
-    html: 'docs/unterlagen-april.html', pdf: 'docs/unterlagen-april.pdf',
-    was: 'der Monat ohne Protokoll, aus den Einträgen' },
   { nr: 70, name: 'Forschungsaufgaben',
     html: 'docs/unterlagen-forschungsaufgaben.html', pdf: 'docs/unterlagen-forschungsaufgaben.pdf',
     was: 'was ansteht, in welcher Reihenfolge' },
-  { nr: 80, name: 'Arbeitszeitnachweis-128-Tage',
-    html: 'docs/historie/arbeitstage.html', pdf: 'docs/historie/arbeitstage.pdf',
-    was: 'Tag für Tag, für das Finanzamt' },
-  { nr: 90, name: 'Historie-der-Zusammenarbeit',
-    html: 'docs/historie/historie.html', pdf: null,
-    was: '5.823 Einträge, Rollen und Verlauf' },
   { nr: 95, name: 'Antragsmappe-einreichbar',
     html: 'docs/antragsmappe-einreichbar.html', pdf: 'docs/antragsmappe-einreichbar.pdf',
-    was: 'Abteilung 2, das was zur Fördergeberin geht' },
+    was: 'Entstehung, Abgrenzung, Untersuchung, Werkstatt' },
 ];
 
 /* Die Lesefassung wandert mit: dieselben Nummern, eigener Ordner. Wer den

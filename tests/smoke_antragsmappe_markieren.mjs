@@ -29,7 +29,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium } from 'playwright-core';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const MAPPE = resolve(WURZEL, 'docs/antragsmappe.html');
+const MAPPE = resolve(WURZEL, 'docs/antragsmappe-einreichbar.html');
 
 let rot = 0;
 const gut = (b, was, dazu) => {
@@ -195,8 +195,8 @@ gut((kHell.rot || 0) >= 4.5,
 /* ── 2 · Drei Farben, und eine Notiz dazu ─────────────────────────────── */
 
 const drei = await p.evaluate(() => {
-  window.__mk.setzen('docs/FORSCHUNGSKORPUS.md',
-    document.querySelector('[data-quelle="docs/FORSCHUNGSKORPUS.md"] p:not(.herkunft)').textContent,
+  window.__mk.setzen('docs/ABGRENZUNG.md',
+    document.querySelector('[data-quelle="docs/ABGRENZUNG.md"] p:not(.herkunft)').textContent,
     'gruen');
   const id = window.__mk.setzen('docs/werkstatt/grundsaetze.md',
     document.querySelector('[data-quelle="docs/werkstatt/grundsaetze.md"] p:not(.herkunft)').textContent,
@@ -258,7 +258,7 @@ gut(imDruck.tafel === 0, 'die Tafel wird nicht mitgedruckt — auch offen nicht'
 
 /* ── 4 · Der Riegel: nicht im Download ────────────────────────────────── */
 
-for (const abt of ['einreichbar', 'privat']) {
+for (const abt of ['einreichbar']) {
   const [dl] = await Promise.all([
     p.waitForEvent('download', { timeout: 15000 }),
     p.click('[data-tun="laden"][data-fuer="' + abt + '"]'),
@@ -309,7 +309,7 @@ gut(nachNeuladen.verwaist === 0, 'keine ist dabei verwaist',
 const verwaist = await p.evaluate(async () => {
   const roh = JSON.parse(localStorage.getItem('sage-antragsmappe-markierungen-v1'));
   roh.marken.push({
-    id: 'mtot', quelle: 'docs/FORSCHUNGSKORPUS.md', farbe: 'rot',
+    id: 'mtot', quelle: 'docs/ABGRENZUNG.md', farbe: 'rot',
     text: 'diesen Satz gibt es in der Mappe nicht', nth: 0, notiz: '', wann: '2026-08-24',
   });
   localStorage.setItem('sage-antragsmappe-markierungen-v1', JSON.stringify(roh));

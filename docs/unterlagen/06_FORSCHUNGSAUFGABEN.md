@@ -74,7 +74,8 @@ die Beobachtung über Mensch und KI hat dieselbe Figur. Der Mensch prägt die KI
 
 ### 1 · Blatt „Stand der Technik und Abgrenzung"
 
-**Wozu:** Jede Fördergeberin liest es zuerst. Ohne es wirkt der Antrag naiv.
+**Wozu:** Wer die Untersuchung liest, braucht zuerst die Antwort auf „gibt es
+das nicht schon".
 
 | | |
 |---|---|
@@ -169,6 +170,6 @@ Es misst, **ob** eine Datei da ist, nicht ob sie taugt. „Liegt vor" heißt nic
 „erledigt". Bei jeder Aufgabe steht deshalb getrennt, was noch fehlt, und diese
 Spalte wird von Hand geführt.
 
-**Und es kennt keine Arbeit, die außerhalb des Depots geschieht.** Ein Gespräch
-mit einem Steuerberater, eine Mail an eine Hochschule, ein Zenodo-Upload
+**Und es kennt keine Arbeit, die außerhalb des Depots geschieht.** Ein Gespräch,
+eine Mail an eine Hochschule, ein Zenodo-Upload
 hinterlassen hier keine Spur, bis jemand sie einträgt.

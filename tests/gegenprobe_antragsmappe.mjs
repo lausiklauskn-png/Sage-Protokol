@@ -1,3 +1,21 @@
+/*
+ * ⚠ ZWEI FÄLLE SIND AM 2026-09-02 ENTFALLEN, und der Grund gehört
+ * hierhergeschrieben statt in eine Commit-Zeile:
+ *
+ *   · „Nur die erste Abteilung bekommt einen Druck-Riegel"
+ *   · „Der Druck-Knopf blendet die andere Abteilung nicht mehr aus"
+ *
+ * Beide zielten auf eine ZWEITE Abteilung. Seit die Mappe nur noch eine hat,
+ * ändert ihre Sabotage nichts — sie meldeten „DURCHGERUTSCHT", obwohl der
+ * Prüfer in Ordnung war.
+ *
+ * LIEBER KEIN FALL ALS EINER, DER NICHTS MESSEN KANN. Ein Fall, der immer
+ * durchrutscht, sieht wie eine Lücke aus und ist keine; ein Fall, der immer
+ * fängt, sieht wie Deckung aus und ist keine. Beide kosten Vertrauen in die
+ * Zahl darunter.
+ *
+ * Kommt eine zweite Abteilung zurück, kommen die zwei Fälle mit.
+ */
 /* gegenprobe_antragsmappe.mjs — Gegenprobe zu `smoke_antragsmappe.mjs`.
  *
  * Lauf:  node tests/gegenprobe_antragsmappe.mjs
@@ -29,9 +47,8 @@ const ANGEFASST = [
   'tools/markdown-mini.mjs',
   'tools/antragsmappe-bauen.mjs',
   'tools/antragsmappe-markieren.mjs',
-  'docs/antragsmappe.html',
-  'docs/FORSCHUNGSKORPUS.md',
-  'docs/papers/ENTSTEHUNG.md',
+  'docs/antragsmappe-einreichbar.html',
+    'docs/papers/ENTSTEHUNG.md',
   'docs/ABGRENZUNG.md',
 ];
 const SICHER = new Map(ANGEFASST.map((r) => [r, readFileSync(P(r), 'utf-8')]));
@@ -179,19 +196,7 @@ const FAELLE = [
       bauen();
     },
   },
-  {
-    /* Der gefährlichere der beiden: NUR die erste Abteilung bekommt ihren
-       Riegel. Der Knopf der zweiten arbeitet weiter, das Blatt zeigt beim
-       Drucken aber alles. Genau der stumme Fehler, den eine erzeugte Regel
-       möglich macht und eine hingeschriebene nicht hatte. */
-    was: 'Nur die erste Abteilung bekommt einen Druck-Riegel',
-    bauen: () => {
-      ersetze('tools/antragsmappe-bauen.mjs',
-        'const DRUCK_REGELN = [...new Set(MAPPEN.flatMap((m) => m.abteilungen.map((a) => a.id)))]',
-        'const DRUCK_REGELN = [...new Set(MAPPEN.flatMap((m) => m.abteilungen.map((a) => a.id)))].slice(0, 1)');
-      bauen();
-    },
-  },
+
   {
     was: 'Der Download-Knopf verschwindet',
     bauen: () => {
@@ -249,16 +254,7 @@ const FAELLE = [
       bauen();
     },
   },
-  {
-    was: 'Der Druck-Knopf blendet die andere Abteilung nicht mehr aus',
-    probe: 'tests/smoke_antragsmappe_browser.mjs',
-    bauen: () => {
-      ersetze('tools/antragsmappe-bauen.mjs',
-        '    wurzel.classList.add(klasse);',
-        '    void klasse;');
-      bauen();
-    },
-  },
+
   {
     was: 'Markierungen landen im Ausdruck — und damit bei der Behörde',
     probe: 'tests/smoke_antragsmappe_markieren.mjs',
@@ -414,7 +410,7 @@ const FAELLE = [
     was: 'Die Quelle ändert sich, die Mappe wird nicht neu gebaut',
     bauen: () => {
       // KEIN Neubau — genau das ist der Fehler.
-      ersetze('docs/FORSCHUNGSKORPUS.md', '# ', '# Ein neuer Satz, der in der Mappe fehlt. ');
+      ersetze('docs/ABGRENZUNG.md', '# ', '# Ein neuer Satz, der in der Mappe fehlt. ');
     },
   },
 ];

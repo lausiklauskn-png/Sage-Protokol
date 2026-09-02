@@ -38,7 +38,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const WURZEL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const MAPPE = resolve(WURZEL, 'docs/antragsmappe.html');
+const MAPPE = resolve(WURZEL, 'docs/antragsmappe-einreichbar.html');
 
 let rot = 0;
 const gut = (bedingung, was, dazu) => {
@@ -79,11 +79,9 @@ const { quellen: QUELLEN, geprueft, fehlend } = vollstaendigkeit(html, WURZEL);
    wann jemand zuletzt beide angefasst hat. Geprüft wird jetzt, dass die Mappe
    überhaupt Quellen führt und dass JEDE davon eine Datei ist, die es gibt. */
 const ERWARTET = [
-  'docs/FORSCHUNGSFOERDERUNG.md',
   'docs/papers/ENTSTEHUNG.md',
   'docs/ABGRENZUNG.md',
   'docs/papers/PAPER_A_regeln-und-grundsaetze.md',
-  'docs/FORSCHUNGSKORPUS.md',
   'docs/papers/PLAN_PAPERS.md',
   'docs/werkstatt/README.md',
   'docs/werkstatt/WERKSTATTREGELN.md',
@@ -194,7 +192,7 @@ gut(bloeckeMitRaute.length === 0,
 
 /* ── 3 · Zwei Abteilungen, jede für sich zu haben ─────────────────────── */
 
-for (const [id, art] of [['privat', 'privat'], ['einreichbar', 'einreichbar']]) {
+for (const [id, art] of [['einreichbar', 'einreichbar']]) {
   gut(html.includes('id="' + id + '" data-abteilung="' + art + '"'),
     'Abteilung „' + id + '" ist als solche ausgezeichnet');
   gut(html.includes('data-tun="laden" data-fuer="' + id + '"'),
@@ -208,8 +206,9 @@ for (const [id, art] of [['privat', 'privat'], ['einreichbar', 'einreichbar']]) 
 /* Der Druck-Riegel. Bewacht wird die ZUSICHERUNG „nur diese Abteilung",
    nicht der Wortlaut der Regel: beide Richtungen müssen dastehen, sonst
    druckt ein Knopf das Private mit. */
-gut(/html\.nur-privat\s+\.abteilung:not\(#privat\)\s*\{\s*display:\s*none/.test(html),
-  'Druck-Klasse blendet beim Fahrplan alles andere aus');
+/* ⚠ Die Prüfung auf eine zweite Abteilung ist am 2026-09-02 entfallen: die
+   Mappe hat nur noch eine. Der Druck-Mechanismus für mehrere steht im Werkzeug
+   weiter da und wird unten an der vorhandenen Abteilung gemessen. */
 gut(/html\.nur-einreichbar\s+\.abteilung:not\(#einreichbar\)\s*\{\s*display:\s*none/.test(html),
   'Druck-Klasse blendet bei den Unterlagen alles andere aus');
 
@@ -223,11 +222,11 @@ for (const stueck of ['Klaus Nitzsche', 'Hamburg', 'Stand 2026-',
     'Einreich-Abteilung trägt „' + stueck + '" in sich selbst');
 }
 
-/* Und das Gegenstück: der Fahrplan sagt von sich, dass er nicht eingereicht
-   wird. Ein Arbeitspapier ohne diesen Satz landet irgendwann in einer Mappe. */
-const privat = html.slice(html.indexOf('id="privat"'), html.indexOf('id="einreichbar"'));
-gut(/nicht zum Einreichen/i.test(privat),
-  'Fahrplan sagt selbst, dass er nicht eingereicht wird');
+/* Und das Gegenstück: die Abteilung sagt von sich, dass sie allein vollständig
+   ist — sonst wäre die Zusicherung nur eine Absicht im Werkzeug. */
+const abt = html.slice(html.indexOf('id="einreichbar"'));
+gut(/allein\s*<\/?strong>?\s*voll|allein vollst/i.test(abt),
+  'die Abteilung sagt selbst, dass sie allein vollständig ist');
 
 /* ── 4 · Kein relativer Verweis (die Tablet-Falle) ────────────────────── */
 

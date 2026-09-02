@@ -1,11 +1,14 @@
 ﻿<!doctype html>
-<html lang="de">
+<html lang="de" data-stand="2026-08-23">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Forschungsaufgaben</title>
-<!-- Klaus Nitzsche · Hamburg · Stand 2026-08-26Herkunft: Depot Sage-Protokol, github.com/lausiklauskn-png/Sage-ProtokolTexte CC BY 4.0 · Code und Material MIT -->
-<style>
+<title>Forschungsaufgaben, Sage-Protokol, Stand 2026-08-23</title>
+<meta name="robots" content="noindex">
+<!-- ERZEUGT von tools/antragsmappe-bauen.mjs. NICHT von Hand bearbeiten.
+     Die Quelle sind die .md-Dateien, hier steht nur ihre Ansicht.
+     Neu bauen:  node tools/antragsmappe-bauen.mjs -->
+<style id="stil">
 :root{color-scheme:light dark;--grund:#f7f6f3;--tinte:#1b1b1b;--matt:#5a5a5a;
 --kante:#d8d5cf;--karte:#fff;--akzent:#7a4b1e;--warn:#8a1c1c;--gruen:#1f5c34}
 @media (prefers-color-scheme:dark){:root{--grund:#14161a;--tinte:#e8e6e1;
@@ -142,14 +145,7 @@ border-radius:8px;background:var(--grund);color:var(--tinte);cursor:pointer}
 /* ── Druck ────────────────────────────────────────────────────────────────
    EINE Fassung, zwei Sichten. Die Klasse am <html> blendet aus, was gerade
    nicht gedruckt werden soll. */
-html.nur-privat .abteilung:not(#privat){display:none}
 html.nur-einreichbar .abteilung:not(#einreichbar){display:none}
-html.nur-uebersicht .abteilung:not(#uebersicht){display:none}
-html.nur-schritte .abteilung:not(#schritte){display:none}
-html.nur-steuerberater .abteilung:not(#steuerberater){display:none}
-html.nur-finanzamt .abteilung:not(#finanzamt){display:none}
-html.nur-bestand .abteilung:not(#bestand){display:none}
-html.nur-april .abteilung:not(#april){display:none}
 html.nur-forschungsaufgaben .abteilung:not(#forschungsaufgaben){display:none}
 @media print{
   .hut,.knoepfe,.lage{display:none}
@@ -170,15 +166,27 @@ html.nur-forschungsaufgaben .abteilung:not(#forschungsaufgaben){display:none}
 </style>
 </head>
 <body>
-<section class="abteilung" id="forschungsaufgaben" data-abteilung="privat">
+<div class="hut">
+  <nav>
+    <strong>Forschungsaufgaben</strong>
+    <span>Stand 2026-08-23</span>
+    <a href="#forschungsaufgaben">1 &middot; Forschungsaufgaben (einreichbar)</a>
+    <button type="button" data-mk-knopf>&#9998; 0 Markierungen</button>
+  </nav>
+</div>
+
+<section class="abteilung" id="forschungsaufgaben" data-abteilung="einreichbar">
 <header class="abt-kopf">
-<p class="marke">Abteilung 7 · PRIVAT</p>
+<p class="marke"> &middot; EINREICHBAR</p>
 <h1>Forschungsaufgaben</h1>
 <p class="unter">Was ansteht, in welcher Reihenfolge</p>
-<p class="stempel" data-stempel="forschungsaufgaben">Klaus Nitzsche · Hamburg · Stand 2026-08-26<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 · Code und Material MIT</p>
-<p class="hinweis">Dieses Blatt wird <strong>erzeugt</strong>. Der Stand jeder Aufgabe wird an ihren Belegen im Depot gemessen, nicht hingeschrieben. <strong>Ein Beleg heißt nicht erledigt:</strong> was noch fehlt, steht bei jeder Aufgabe einzeln, und zwei Aufgaben könnten ihr Ergebnis im Depot gar nicht zeigen.</p>
-
-
+<p class="stempel" data-stempel="forschungsaufgaben">Klaus Nitzsche &middot; Hamburg &middot; Stand 2026-08-23<br>Herkunft: Depot <em>Sage-Protokol</em>, <a href="https://github.com/lausiklauskn-png/Sage-Protokol">github.com/lausiklauskn-png/Sage-Protokol</a><br>Texte CC BY 4.0 &middot; Code und Material MIT</p>
+<p class="hinweis">Der Stand jeder Aufgabe wird <strong>an ihren Belegen gemessen</strong>, nicht hingeschrieben.</p>
+<div class="knoepfe" data-knoepfe="forschungsaufgaben">
+<button type="button" data-tun="laden" data-fuer="forschungsaufgaben">&#11015; Diese Abteilung als HTML herunterladen</button>
+<button type="button" data-tun="drucken" data-fuer="forschungsaufgaben">&#128424; Nur diese Abteilung drucken / als PDF sichern</button>
+</div>
+<p class="lage" data-lage="forschungsaufgaben" role="status"></p>
 <nav class="verzeichnis"><p>In dieser Abteilung:</p><ul><li><a href="#q-docs-unterlagen-06-forschungsaufgaben-md">unterlagen/06_FORSCHUNGSAUFGABEN.md</a></li></ul></nav>
 </header>
 <article class="quelle" id="q-docs-unterlagen-06-forschungsaufgaben-md" data-quelle="docs/unterlagen/06_FORSCHUNGSAUFGABEN.md">
@@ -213,10 +221,11 @@ die Beobachtung über Mensch und KI hat dieselbe Figur. Der Mensch prägt die KI
 <p><strong>Die Frage:</strong> Gewöhnung, Übervertrauen, Verlernen, Vermenschlichung. Und die andere Richtung: Reichweite, Tempo, Mut.</p>
 <div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Stand</td><td>Rohdaten liegen vor, ausgewertet ist nichts</td></tr><tr><td>Belege im Depot</td><td><code>docs/historie/arbeitstage.html</code> · <code>docs/LEHREN.md</code> (vorhanden, seit 2026-08-22)</td></tr><tr><td>Was noch fehlt</td><td>Der schärfste Einzelbefund (das Werkzeug hört nicht auf, der Mensch hätte längst aufgegeben) braucht einen Vergleichspunkt, und der verlangt eine Aussage darüber, wann ein Mensch aufgegeben hätte. Ohne methodischen Partner nicht zu beziffern.</td></tr></tbody></table></div>
 <h2>3 · Die Aufgaben, in der Reihenfolge des Vorgehens</h2>
-<div class="tabelle"><table><thead><tr><th>Nr.</th><th>Aufgabe</th><th>Strang</th><th>Ergebnis im Depot</th><th>Beleg</th><th>seit</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>Blatt „Stand der Technik und Abgrenzung"</td><td>alle drei</td><td><strong>Ergebnis liegt vor</strong></td><td><code>docs/ABGRENZUNG.md</code>, 95 Zeilen</td><td>2026-08-26</td></tr><tr><td><strong>2</strong></td><td>Paper A · Regeln und Grundsätze</td><td>2</td><td><strong>Ergebnis liegt vor</strong></td><td><code>docs/papers/PAPER_A_regeln-und-grundsaetze.md</code>, 1.843 Zeilen</td><td>2026-08-23</td></tr><tr><td><strong>3</strong></td><td>Die zwei vorhandenen Papers auf Zenodo</td><td>alle drei</td><td>nicht als Datei sichtbar</td><td><code>docs/papers/sbkim-paper-de.html</code> · <code>docs/papers/sbkim-paper-en.html</code>, 1.130 Zeilen</td><td>2026-05-18</td></tr><tr><td><strong>4</strong></td><td>Englische Projektseite, eine Seite</td><td>alle drei</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>5</strong></td><td>Paper C · KI-Kompetenz im täglichen Gebrauch</td><td>3</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>6</strong></td><td>Paper B · Wie KI auf den Menschen wirkt</td><td>3</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>7</strong></td><td>Vorleistung in Zahlen, als eigenes Blatt</td><td>alle drei</td><td>nicht als Datei sichtbar</td><td><code>docs/unterlagen/04_BESTAND.md</code>, 120 Zeilen</td><td>2026-08-26</td></tr></tbody></table></div>
+<div class="tabelle"><table><thead><tr><th>Nr.</th><th>Aufgabe</th><th>Strang</th><th>Ergebnis im Depot</th><th>Beleg</th><th>seit</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>Blatt „Stand der Technik und Abgrenzung&quot;</td><td>alle drei</td><td><strong>Ergebnis liegt vor</strong></td><td><code>docs/ABGRENZUNG.md</code>, 95 Zeilen</td><td>2026-08-26</td></tr><tr><td><strong>2</strong></td><td>Paper A · Regeln und Grundsätze</td><td>2</td><td><strong>Ergebnis liegt vor</strong></td><td><code>docs/papers/PAPER_A_regeln-und-grundsaetze.md</code>, 1.843 Zeilen</td><td>2026-08-23</td></tr><tr><td><strong>3</strong></td><td>Die zwei vorhandenen Papers auf Zenodo</td><td>alle drei</td><td>nicht als Datei sichtbar</td><td><code>docs/papers/sbkim-paper-de.html</code> · <code>docs/papers/sbkim-paper-en.html</code>, 1.130 Zeilen</td><td>2026-05-18</td></tr><tr><td><strong>4</strong></td><td>Englische Projektseite, eine Seite</td><td>alle drei</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>5</strong></td><td>Paper C · KI-Kompetenz im täglichen Gebrauch</td><td>3</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>6</strong></td><td>Paper B · Wie KI auf den Menschen wirkt</td><td>3</td><td><strong>Ergebnis fehlt</strong></td><td>noch keiner</td><td>ohne</td></tr><tr><td><strong>7</strong></td><td>Vorleistung in Zahlen, als eigenes Blatt</td><td>alle drei</td><td>nicht als Datei sichtbar</td><td><code>docs/unterlagen/04_BESTAND.md</code>, 120 Zeilen</td><td>2026-08-26</td></tr></tbody></table></div>
 <h2>4 · Jede Aufgabe einzeln</h2>
-<h3>1 · Blatt „Stand der Technik und Abgrenzung"</h3>
-<p><strong>Wozu:</strong> Jede Fördergeberin liest es zuerst. Ohne es wirkt der Antrag naiv.</p>
+<h3>1 · Blatt „Stand der Technik und Abgrenzung&quot;</h3>
+<p><strong>Wozu:</strong> Wer die Untersuchung liest, braucht zuerst die Antwort auf „gibt es
+das nicht schon&quot;.</p>
 <div class="tabelle"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>Ergebnis im Depot</td><td><strong>Ergebnis liegt vor</strong>, erster Stand 2026-08-26</td></tr><tr><td>Beleg</td><td><code>docs/ABGRENZUNG.md</code></td></tr><tr><td>Was noch fehlt</td><td>Die Literatursuche. Das Blatt stützt sich auf die veröffentlichten Zwecke der genannten Verfahren, nicht auf eine systematische Recherche mit Zitaten. Es sagt das selbst in § 6.</td></tr><tr><td>Hängt ab von</td><td>nichts, kann sofort beginnen</td></tr></tbody></table></div>
 <h3>2 · Paper A · Regeln und Grundsätze</h3>
 <p><strong>Wozu:</strong> Der schreibbarste der drei Texte, das Material liegt fertig vor.</p>
@@ -246,13 +255,749 @@ Papers werden zitierfähig. Sie wartet auf eine Entscheidung, nicht auf Arbeit.<
 meisten von einem methodischen Partner abhängt und die meisten Stellen hat, an
 denen sie kippen kann.</p>
 <h2>6 · Was dieses Blatt nicht kann</h2>
-<p>Es misst, <strong>ob</strong> eine Datei da ist, nicht ob sie taugt. „Liegt vor" heißt nicht
-„erledigt". Bei jeder Aufgabe steht deshalb getrennt, was noch fehlt, und diese
+<p>Es misst, <strong>ob</strong> eine Datei da ist, nicht ob sie taugt. „Liegt vor&quot; heißt nicht
+„erledigt&quot;. Bei jeder Aufgabe steht deshalb getrennt, was noch fehlt, und diese
 Spalte wird von Hand geführt.</p>
-<p><strong>Und es kennt keine Arbeit, die außerhalb des Depots geschieht.</strong> Ein Gespräch
-mit einem Steuerberater, eine Mail an eine Hochschule, ein Zenodo-Upload
+<p><strong>Und es kennt keine Arbeit, die außerhalb des Depots geschieht.</strong> Ein Gespräch,
+eine Mail an eine Hochschule, ein Zenodo-Upload
 hinterlassen hier keine Spur, bis jemand sie einträgt.</p>
 </article>
 </section>
+
+<div class="mk-leiste" data-mk-leiste role="toolbar" aria-label="Markieren">
+  <button type="button" data-mk-tun="gruen"><span class="mk-tupf" data-f="gruen"></span> bleibt</button>
+  <button type="button" data-mk-tun="gelb"><span class="mk-tupf" data-f="gelb"></span> du entscheidest</button>
+  <button type="button" data-mk-tun="rot"><span class="mk-tupf" data-f="rot"></span> kann weg</button>
+  <button type="button" data-mk-tun="notiz">&#9998; Notiz</button>
+  <button type="button" data-mk-tun="weg">&#10005; zur&uuml;ck</button>
+</div>
+
+<div class="mk-tafel" data-mk-tafel aria-label="Markierungen">
+  <div class="innen">
+    <h2>Markierungen</h2>
+    <p class="zaehler" data-mk-zaehler>noch keine</p>
+    <ul class="mk-legende" data-mk-legende>
+      <li><span class="mk-tupf" data-f="gruen"></span> <strong>bleibt</strong>, soll bleiben</li>
+      <li><span class="mk-tupf" data-f="gelb"></span> <strong>du entscheidest</strong>, kann bleiben oder weg, Claude wägt ab</li>
+      <li><span class="mk-tupf" data-f="rot"></span> <strong>kann weg</strong>, kann komplett gestrichen werden</li>
+    </ul>
+    <p class="mk-grundsatz">Im Zweifel <strong>bleiben</strong>. Lieber bleiben als weg.</p>
+    <div data-mk-warnung hidden></div>
+    <p>
+      <button type="button" data-mk-tun="datei">&#11015; Als Datei sichern</button>
+      <button type="button" data-mk-tun="ablage">&#128203; In die Zwischenablage</button>
+      <button type="button" data-mk-tun="aus">Markieren ausschalten</button>
+      <button type="button" data-mk-tun="zu">Schließen</button>
+    </p>
+    <p class="lage" data-mk-lage role="status"></p>
+    <div data-mk-liste></div>
+    <p class="woher">
+      Markierungen werden <strong>nie gedruckt und nie mitgeladen</strong>.
+      Die Einreich-Abteilung geht zur Behörde, und dorthin gehören keine
+      eigenen Zweifel. Wer sie auf Papier braucht, druckt die ausgelesene
+      Liste. Sie liegen im Speicher <em>dieses</em> Browsers: was auf dem
+      Tablet markiert wurde, steht in DeX nicht.
+    </p>
+  </div>
+</div>
+
+
+<p class="fuss">
+  Was ansteht, in welcher Reihenfolge. Erzeugt aus den Markdown-Quellen des Depots
+  <em>Sage-Protokol</em> am 2026-08-23 durch
+  <code>tools/antragsmappe-bauen.mjs</code>. Wer den Inhalt &auml;ndern will,
+  &auml;ndert die <code>.md</code>-Datei und baut neu, nicht diese Datei.
+</p>
+
+<script>
+(function(){
+  "use strict";
+  var wurzel = document.documentElement;
+
+  function sagen(id, text, art){
+    var n = document.querySelector('[data-lage="' + id + '"]');
+    if(!n) return;
+    n.textContent = text;
+    n.setAttribute("data-art", art || "");
+  }
+
+  /* Eine Abteilung allein als HTML — aus DEMSELBEN DOM, nicht aus einer
+     zweiten Fassung des Textes. */
+  function alleinBauen(id){
+    var abt = document.getElementById(id).cloneNode(true);
+    var stil = document.getElementById("stil");
+    var titel = abt.querySelector("h1").textContent;
+    var stempel = abt.querySelector(".stempel").textContent.replace(/\s+/g," ").trim();
+
+    /* DIE KNÖPFE BLEIBEN HIER. In der herausgenommenen Datei liegt kein
+       Skript -- sie wären dort tote Knöpfe mit Beschriftung, und das ist die
+       schlimmste Sorte, weil sie aussehen wie Hilfe. Gedruckt wird die
+       einzelne Datei über den Browser; darin steht ohnehin nur noch diese
+       eine Abteilung. */
+    var weg = abt.querySelectorAll(".knoepfe, .lage");
+    for (var k = 0; k < weg.length; k++) weg[k].remove();
+
+    /* UND DIE MARKIERUNGEN GEHEN NICHT MIT. Das ist der eigentliche Riegel,
+       nicht der Feinschliff: die Einreich-Abteilung geht zur Behoerde, und
+       ein "das muss geaendert werden"-Streifen darin waere das Gegenteil
+       dessen, wofuer die Markierungen da sind. Der Text bleibt, nur die
+       Huelle faellt weg. */
+    var mks = abt.querySelectorAll("mark.mk");
+    for (var q = 0; q < mks.length; q++) {
+      var mk = mks[q], el = mk.parentNode;
+      while (mk.firstChild) el.insertBefore(mk.firstChild, mk);
+      el.removeChild(mk);
+    }
+    return "<!doctype html>\n<html lang=\"de\">\n<head>\n"
+      + "<meta charset=\"utf-8\">\n"
+      + "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n"
+      + "<title>" + titel + "</title>\n"
+      + "<!-- " + stempel + " -->\n"
+      + "<style>" + stil.textContent + "</style>\n</head>\n<body>\n"
+      + abt.outerHTML
+      + "\n</body>\n</html>\n";
+  }
+
+  function laden(id){
+    var name = "Sage-Forschungsunterlagen-"
+             + document.documentElement.getAttribute("data-stand") + ".html";
+    try{
+      /* Ein BOM, weil Android beim Öffnen einer heruntergeladenen Datei sonst
+         Latin-1 rät und aus jedem Umlaut zwei Zeichen macht. Der MIME-Typ
+         überlebt den Weg auf die Platte nicht, die drei Bytes schon. */
+      var blob = new Blob(["\ufeff" + alleinBauen(id)],
+        {type:"text/html;charset=utf-8"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      sagen(id, "Heruntergeladen: " + name, "gut");
+    }catch(e){
+      /* Ein toter Knopf mit Erklärung ist die schlimmste Sorte — er sieht aus
+         wie Hilfe. Also den Weg nennen, der bleibt. */
+      sagen(id, "Der Download ist hier gesperrt (" + (e && e.name || "Fehler")
+        + "). Nimm den Druck-Knopf daneben und sichere als PDF, der geht immer.",
+        "fehler");
+    }
+  }
+
+  function drucken(id){
+    var klasse = id === "privat" ? "nur-privat" : "nur-einreichbar";
+    wurzel.classList.add(klasse);
+    sagen(id, "Im Druck-Fenster steht jetzt nur diese Abteilung.", "gut");
+    function zurueck(){
+      wurzel.classList.remove(klasse);
+      window.removeEventListener("afterprint", zurueck);
+    }
+    window.addEventListener("afterprint", zurueck);
+    try{ window.print(); }
+    catch(e){ zurueck(); sagen(id, "Drucken ging nicht: " + e, "fehler"); }
+    /* Manche Browser feuern afterprint nicht. Ein Rückfall, damit die Seite
+       nicht halbiert stehenbleibt. */
+    setTimeout(zurueck, 60000);
+  }
+
+  document.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-tun]") : null;
+    if(!k) return;
+    if(k.getAttribute("data-tun") === "laden") laden(k.getAttribute("data-fuer"));
+    else drucken(k.getAttribute("data-fuer"));
+  });
+
+  /* EIN HAKEN NACH AUSSEN, damit tools/abteilung-html.mjs dieselbe Funktion
+     ruft wie der Knopf. Ein zweiter Bauer daneben waere eine zweite Fassung
+     derselben Auswahl; sie liefen auseinander, und dann staende in der
+     herausgenommenen Datei etwas anderes als im Knopf.
+     Er gibt NUR heraus, was der Knopf ohnehin erzeugt. */
+  window.__mappe = { alleinBauen: alleinBauen };
+})();
+</script>
+<script>
+(function(){
+  "use strict";
+
+  var SCHLUESSEL = "sage-antragsmappe-markierungen-v1";
+  /* KLAUS 2026-08-24: es geht ums KUERZEN, nicht ums Verbessern.
+     "Rot kann komplett weg, Gelb kann bleiben oder auch weg -- entscheidest
+     du mit, Gruen soll bleiben. Lieber bleiben als weg."
+     Die Schluessel heissen weiter gruen/gelb/rot -- vorhandene Markierungen
+     behalten damit ihre Farbe, nur die Beschriftung wechselt. */
+  var FARBEN = {
+    gruen: { wort: "bleibt",         sinn: "soll bleiben" },
+    gelb:  { wort: "du entscheidest", sinn: "kann bleiben oder weg -- abwaegen" },
+    rot:   { wort: "kann weg",       sinn: "kann komplett weg" }
+  };
+  var GRUNDSATZ = "Im Zweifel BLEIBEN. Klaus: „lieber bleiben als weg.\u201C";
+
+  var leiste  = document.querySelector("[data-mk-leiste]");
+  var tafel   = document.querySelector("[data-mk-tafel]");
+  var zaehler = document.querySelector("[data-mk-zaehler]");
+  var listeN  = document.querySelector("[data-mk-liste]");
+  var warnN   = document.querySelector("[data-mk-warnung]");
+  var lageN   = document.querySelector("[data-mk-lage]");
+  var knopfN  = document.querySelector("[data-mk-knopf]");
+  if(!leiste || !tafel) return;
+
+  var marken = [];          // was gespeichert ist
+  var verwaist = [];        // was sich nach einem Neubau nicht mehr fand
+  var speicherGeht = true;  // wird beim ersten Fehlschlag falsch
+  var an = true;            // Markieren eingeschaltet?
+  var gewaehlt = null;      // Markierung unter dem Zeiger (fuer Notiz/Weg)
+
+  /* ── Speicher ───────────────────────────────────────────────────────── */
+
+  function lesen(){
+    try{
+      var roh = window.localStorage.getItem(SCHLUESSEL);
+      var d = roh ? JSON.parse(roh) : {};
+      if(Array.isArray(d)) return { marken: d, an: true };
+      return { marken: Array.isArray(d.marken) ? d.marken : [], an: d.an !== false };
+    }catch(e){ speicherGeht = false; return { marken: [], an: true }; }
+  }
+
+  function schreiben(){
+    try{
+      window.localStorage.setItem(SCHLUESSEL, JSON.stringify({ marken: marken, an: an }));
+      return true;
+    }catch(e){ speicherGeht = false; return false; }
+  }
+
+  /* ── Text-Karte: normalisierter Text plus Rueckweg in den DOM ────────── */
+
+  function norm(t){ return String(t).replace(/\s+/g, " ").trim(); }
+
+  function karte(wurzel){
+    var s = "", stellen = [], leer = true;
+    var lauf = document.createTreeWalker(wurzel, NodeFilter.SHOW_TEXT, null);
+    var n;
+    while((n = lauf.nextNode())){
+      var t = n.nodeValue;
+      for(var i = 0; i < t.length; i++){
+        var c = t.charAt(i);
+        if(c === " " || c === "\n" || c === "\t" || c === "\r"){
+          if(leer) continue;
+          s += " "; stellen.push([n, i]); leer = true;
+        }else{
+          s += c; stellen.push([n, i]); leer = false;
+        }
+      }
+    }
+    /* Ein abschliessendes Leerzeichen wuerde die Zeichenzaehlung gegen die
+       getrimmte Suche verschieben. */
+    while(s.charAt(s.length - 1) === " "){ s = s.slice(0, -1); stellen.pop(); }
+    var vorn = 0;
+    while(s.charAt(vorn) === " ") vorn++;
+    if(vorn){ s = s.slice(vorn); stellen = stellen.slice(vorn); }
+    return { text: s, stellen: stellen };
+  }
+
+  function inMarke(k){
+    var e = (k && k.nodeType === 3) ? k.parentElement : k;
+    return !!(e && e.closest && e.closest("mark.mk"));
+  }
+
+  /* ── Eine Markierung in den Text legen ───────────────────────────────── */
+
+  function umhuellen(r, m){
+    var oben = r.commonAncestorContainer;
+    if(oben.nodeType === 3) oben = oben.parentNode;
+    var stuecke = [], lauf = document.createTreeWalker(oben, NodeFilter.SHOW_TEXT, null), n;
+    while((n = lauf.nextNode())){
+      if(!r.intersectsNode(n)) continue;
+      var von = (n === r.startContainer) ? r.startOffset : 0;
+      var bis = (n === r.endContainer) ? r.endOffset : n.nodeValue.length;
+      if(bis > von) stuecke.push([n, von, bis]);
+    }
+    if(!stuecke.length) return false;
+    for(var i = 0; i < stuecke.length; i++){
+      var kn = stuecke[i][0], v = stuecke[i][1], b = stuecke[i][2];
+      if(b < kn.nodeValue.length) kn.splitText(b);
+      var ziel = (v > 0) ? kn.splitText(v) : kn;
+      var mk = document.createElement("mark");
+      mk.className = "mk";
+      mk.setAttribute("data-farbe", m.farbe);
+      mk.setAttribute("data-mk", m.id);
+      if(m.notiz) mk.setAttribute("data-notiz", "1");
+      mk.title = FARBEN[m.farbe].wort + (m.notiz ? " — " + m.notiz : "");
+      ziel.parentNode.insertBefore(mk, ziel);
+      mk.appendChild(ziel);
+    }
+    return true;
+  }
+
+  function anwenden(m){
+    var art = document.querySelector('[data-quelle="' + m.quelle + '"]');
+    if(!art) return false;
+    var k = karte(art);
+    var suche = norm(m.text);
+    if(!suche) return false;
+    var pos = -1;
+    for(var j = 0; j <= (m.nth || 0); j++){
+      pos = k.text.indexOf(suche, pos + 1);
+      if(pos < 0) return false;
+    }
+    var a = k.stellen[pos], e = k.stellen[pos + suche.length - 1];
+    if(!a || !e) return false;
+    if(inMarke(a[0]) || inMarke(e[0])) return false;
+    var r = document.createRange();
+    try{
+      r.setStart(a[0], a[1]);
+      r.setEnd(e[0], e[1] + 1);
+    }catch(err){ return false; }
+    return umhuellen(r, m);
+  }
+
+  function abnehmen(id){
+    var alle = document.querySelectorAll('mark.mk[data-mk="' + id + '"]');
+    for(var i = 0; i < alle.length; i++){
+      var mk = alle[i], el = mk.parentNode;
+      while(mk.firstChild) el.insertBefore(mk.firstChild, mk);
+      el.removeChild(mk);
+      el.normalize();
+    }
+  }
+
+  /* ── Aus der Auswahl eine Markierung machen ──────────────────────────── */
+
+  function quelleVon(k){
+    var e = (k && k.nodeType === 3) ? k.parentElement : k;
+    return (e && e.closest) ? e.closest("[data-quelle]") : null;
+  }
+
+  function ausAuswahl(farbe){
+    var sel = window.getSelection();
+    if(!sel || sel.isCollapsed || !sel.rangeCount) return "leer";
+    var r = sel.getRangeAt(0);
+    var art = quelleVon(r.startContainer);
+    if(!art) return "ausserhalb";
+    if(quelleVon(r.endContainer) !== art) return "zweiquellen";
+    if(inMarke(r.startContainer) || inMarke(r.endContainer)) return "ueberschneidung";
+
+    var text = norm(r.toString());
+    if(!text) return "leer";
+
+    var vor = document.createRange();
+    vor.setStart(art, 0);
+    try{ vor.setEnd(r.startContainer, r.startOffset); }
+    catch(err){ return "ausserhalb"; }
+    var davor = norm(vor.toString());
+    var nth = 0, p = -1;
+    while((p = davor.indexOf(text, p + 1)) >= 0) nth++;
+
+    var m = {
+      id: "m" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36),
+      quelle: art.getAttribute("data-quelle"),
+      farbe: farbe,
+      text: text,
+      nth: nth,
+      notiz: "",
+      wann: new Date().toISOString().slice(0, 10)
+    };
+    sel.removeAllRanges();
+    /* Erst anwenden, dann speichern. Was sich nicht anlegen laesst, wird
+       auch nicht abgelegt -- sonst sammelt sich eine Liste von
+       Markierungen, die es nie gab. */
+    if(!anwenden(m)) return "nichtgefunden";
+    marken.push(m);
+    var ok = schreiben();
+    tafelZeichnen();
+    return ok ? "gut" : "ungesichert";
+  }
+
+  /* ── Auslesen ────────────────────────────────────────────────────────── */
+
+  function ueberschriftUeber(el){
+    var n = el;
+    while(n){
+      var v = n.previousElementSibling;
+      while(v){
+        if(/^H[1-6]$/.test(v.tagName)) return v.textContent.trim();
+        v = v.previousElementSibling;
+      }
+      n = n.parentElement;
+      if(n && n.hasAttribute && n.hasAttribute("data-quelle")) break;
+    }
+    return "";
+  }
+
+  function bericht(){
+    var z = { gruen: 0, gelb: 0, rot: 0 };
+    for(var i = 0; i < marken.length; i++) z[marken[i].farbe]++;
+
+    var out = [];
+    out.push("# Markierungen aus der Antragsmappe");
+    out.push("");
+    out.push("Stand der Mappe: " + (document.documentElement.getAttribute("data-stand") || "?")
+      + " · ausgelesen am " + new Date().toISOString().slice(0, 10));
+    out.push("");
+    /* Wie VIEL wegkaeme, ist die Zahl, die man beim Kuerzen braucht --
+       "zwoelf Stellen" sagt nichts, "zwoelf Stellen, zusammen 4.800
+       Zeichen" schon. Gezaehlt wird der markierte Text selbst. */
+    var zeichen = { gruen: 0, gelb: 0, rot: 0 };
+    for(var zi = 0; zi < marken.length; zi++)
+      zeichen[marken[zi].farbe] += marken[zi].text.length;
+    out.push(marken.length + " Markierungen:");
+    out.push("");
+    out.push("| Farbe | heisst | Stellen | Zeichen |");
+    out.push("|---|---|---|---|");
+    out.push("| gruen | " + FARBEN.gruen.sinn + " | " + z.gruen + " | " + zeichen.gruen + " |");
+    out.push("| gelb | " + FARBEN.gelb.sinn + " | " + z.gelb + " | " + zeichen.gelb + " |");
+    out.push("| rot | " + FARBEN.rot.sinn + " | " + z.rot + " | " + zeichen.rot + " |");
+    out.push("");
+    out.push("**" + GRUNDSATZ + "**");
+    if(verwaist.length){
+      out.push("");
+      out.push("**" + verwaist.length + " verwaist** — der markierte Text steht so nicht");
+      out.push("mehr in der Mappe. Sie sind unten mit aufgefuehrt, damit nichts");
+      out.push("stillschweigend verschwindet.");
+    }
+    out.push("");
+
+    var nachQuelle = {};
+    for(var j = 0; j < marken.length; j++){
+      var m = marken[j];
+      (nachQuelle[m.quelle] = nachQuelle[m.quelle] || []).push(m);
+    }
+    var reihe = ["rot", "gelb", "gruen"];
+    for(var q in nachQuelle){
+      if(!Object.prototype.hasOwnProperty.call(nachQuelle, q)) continue;
+      out.push("---");
+      out.push("");
+      out.push("## " + q);
+      out.push("");
+      for(var f = 0; f < reihe.length; f++){
+        var farbe = reihe[f];
+        var stueck = nachQuelle[q].filter(function(x){ return x.farbe === farbe; });
+        if(!stueck.length) continue;
+        out.push("### " + farbe.toUpperCase() + " — " + FARBEN[farbe].sinn
+          + " (" + stueck.length + ")");
+        out.push("");
+        for(var s = 0; s < stueck.length; s++){
+          var e = stueck[s];
+          var knoten = document.querySelector('mark.mk[data-mk="' + e.id + '"]');
+          var wo = knoten ? ueberschriftUeber(knoten.closest("p,li,td,th,h1,h2,h3,h4,h5,h6,blockquote,pre") || knoten) : "";
+          out.push("> " + e.text);
+          if(wo) out.push("");
+          if(wo) out.push("Abschnitt: " + wo);
+          if(e.notiz){ out.push(""); out.push("Notiz: " + e.notiz); }
+          if(!knoten){ out.push(""); out.push("**verwaist** — Text nicht mehr gefunden"); }
+          out.push("");
+        }
+      }
+    }
+    if(!marken.length){
+      out.push("Keine Markierungen. Text mit Maus oder Finger ziehen, dann eine");
+      out.push("Farbe waehlen.");
+      out.push("");
+    }
+    return out.join("\n");
+  }
+
+  function sagen(text, art){
+    if(!lageN) return;
+    lageN.textContent = text;
+    lageN.setAttribute("data-art", art || "");
+  }
+
+  function alsDatei(){
+    var name = "Markierungen-Antragsmappe-"
+      + (document.documentElement.getAttribute("data-stand") || "ohne-stand") + ".md";
+    try{
+      /* BOM, weil Android beim Oeffnen einer heruntergeladenen Textdatei
+         sonst Latin-1 raet und aus jedem Umlaut zwei Zeichen macht. */
+      var blob = new Blob(["﻿" + bericht()], { type: "text/markdown;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      sagen("Gesichert: " + name, "gut");
+    }catch(e){
+      sagen("Der Download ist hier gesperrt (" + (e && e.name || "Fehler")
+        + "). Nimm den Knopf daneben und fuege die Liste in den Chat ein.", "fehler");
+    }
+  }
+
+  function inAblage(){
+    var t = bericht();
+    function alt(){
+      /* Der alte Weg ueber ein Feld -- er geht auch dort, wo die
+         Zwischenablage-Schnittstelle gesperrt ist. */
+      var f = document.createElement("textarea");
+      f.value = t;
+      f.setAttribute("readonly", "");
+      f.style.position = "fixed";
+      f.style.left = "-9999px";
+      document.body.appendChild(f);
+      f.select();
+      var ok = false;
+      try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+      f.remove();
+      return ok;
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(function(){
+        sagen("Kopiert — im Chat einfuegen.", "gut");
+      }, function(){
+        sagen(alt() ? "Kopiert — im Chat einfuegen."
+          : "Kopieren ging nicht. Nimm „Als Datei sichern“.",
+          alt ? "gut" : "fehler");
+      });
+    }else{
+      sagen(alt() ? "Kopiert — im Chat einfuegen."
+        : "Kopieren ging nicht. Nimm „Als Datei sichern“.", "gut");
+    }
+  }
+
+  /* ── Tafel ───────────────────────────────────────────────────────────── */
+
+  function tafelZeichnen(){
+    var z = { gruen: 0, gelb: 0, rot: 0 };
+    for(var i = 0; i < marken.length; i++) z[marken[i].farbe]++;
+    if(zaehler){
+      zaehler.textContent = marken.length === 0 ? "noch keine"
+        : (marken.length + " insgesamt · " + z.gruen + " bleibt · "
+           + z.gelb + " du entscheidest · " + z.rot + " kann weg");
+      zaehler.setAttribute("data-anzahl", String(marken.length));
+    }
+    if(knopfN){
+      knopfN.textContent = "✎ " + marken.length + " Markierungen";
+      knopfN.setAttribute("data-anzahl", String(marken.length));
+    }
+
+    if(warnN){
+      var w = [];
+      if(!speicherGeht){
+        w.push("<p><strong>Der Browser laesst nichts speichern.</strong> Die "
+          + "Markierungen halten nur, solange diese Seite offen ist — lies "
+          + "sie aus, bevor du sie schliesst.</p>");
+      }
+      if(verwaist.length){
+        w.push("<p><strong>" + verwaist.length + " Markierungen sind verwaist.</strong> "
+          + "Ihr Text steht so nicht mehr in der Mappe — die Quelle wurde "
+          + "geaendert und die Mappe neu gebaut. Sie stehen in der ausgelesenen "
+          + "Liste mit dabei.</p>");
+      }
+      warnN.innerHTML = w.join("");
+      warnN.hidden = w.length === 0;
+      warnN.className = w.length ? "mk-warn" : "";
+    }
+
+    if(!listeN) return;
+    if(!marken.length){
+      listeN.innerHTML = '<p class="mk-leer">Zieh mit Maus oder Finger ueber eine '
+        + 'Stelle im Text — dann erscheint die Farbleiste.</p>';
+      return;
+    }
+    var reihe = ["rot", "gelb", "gruen"], teile = ["<ul>"];
+    for(var f = 0; f < reihe.length; f++){
+      for(var j = 0; j < marken.length; j++){
+        var m = marken[j];
+        if(m.farbe !== reihe[f]) continue;
+        var da = !!document.querySelector('mark.mk[data-mk="' + m.id + '"]');
+        var kurz = m.text.length > 160 ? m.text.slice(0, 160) + "…" : m.text;
+        teile.push('<li data-mk-eintrag="' + m.id + '">'
+          + '<span class="mk-tupf" data-f="' + m.farbe + '"></span> '
+          + "<strong>" + FARBEN[m.farbe].wort + "</strong> — "
+          + '<button type="button" class="stelle" data-mk-hin="' + m.id + '">'
+          + kurz.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</button>"
+          + '<p class="woher">' + m.quelle + (da ? "" : " · <strong>verwaist</strong>") + "</p>"
+          + (m.notiz ? '<p class="notiz">' + m.notiz.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</p>" : "")
+          + "</li>");
+      }
+    }
+    teile.push("</ul>");
+    listeN.innerHTML = teile.join("");
+  }
+
+  function tafelAuf(offen){
+    tafel.setAttribute("data-offen", offen ? "ja" : "nein");
+    if(offen) tafelZeichnen();
+  }
+
+  /* ── Leiste ──────────────────────────────────────────────────────────── */
+
+  function leisteZeigen(rechteck, aufMarke){
+    leiste.setAttribute("data-offen", "ja");
+    leiste.setAttribute("data-auf-marke", aufMarke ? "ja" : "nein");
+    var b = leiste.getBoundingClientRect();
+    var x = rechteck.left + rechteck.width / 2 - b.width / 2;
+    x = Math.max(8, Math.min(x, window.innerWidth - b.width - 8));
+    /* Unter die Auswahl, weil dort auf dem Tablet weder der Finger noch
+       Androids eigene Kopieren-Leiste steht. Ist unten kein Platz, darueber. */
+    var y = rechteck.bottom + 10;
+    if(y + b.height > window.innerHeight - 8) y = Math.max(8, rechteck.top - b.height - 10);
+    leiste.style.left = Math.round(x) + "px";
+    leiste.style.top = Math.round(y) + "px";
+  }
+
+  function leisteZu(){
+    leiste.setAttribute("data-offen", "nein");
+    gewaehlt = null;
+  }
+
+  function auswahlPruefen(){
+    if(!an) return;
+    var sel = window.getSelection();
+    if(!sel || sel.isCollapsed || !sel.rangeCount || !norm(sel.toString())){
+      if(leiste.getAttribute("data-auf-marke") !== "ja") leisteZu();
+      return;
+    }
+    if(!quelleVon(sel.getRangeAt(0).startContainer)){ leisteZu(); return; }
+    gewaehlt = null;
+    leisteZeigen(sel.getRangeAt(0).getBoundingClientRect(), false);
+  }
+
+  /* ── Ereignisse ──────────────────────────────────────────────────────── */
+
+  document.addEventListener("pointerup", function(ev){
+    if(leiste.contains(ev.target) || tafel.contains(ev.target)) return;
+    var mk = ev.target.closest ? ev.target.closest("mark.mk") : null;
+    if(mk && an){
+      var sel0 = window.getSelection();
+      if(!sel0 || sel0.isCollapsed){
+        gewaehlt = mk.getAttribute("data-mk");
+        leisteZeigen(mk.getBoundingClientRect(), true);
+        return;
+      }
+    }
+    setTimeout(auswahlPruefen, 0);
+  });
+  document.addEventListener("keyup", function(){ setTimeout(auswahlPruefen, 0); });
+
+  leiste.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-mk-tun]") : null;
+    if(!k) return;
+    var tun = k.getAttribute("data-mk-tun");
+
+    if(tun === "weg"){
+      if(!gewaehlt){ leisteZu(); return; }
+      abnehmen(gewaehlt);
+      marken = marken.filter(function(m){ return m.id !== gewaehlt; });
+      schreiben(); tafelZeichnen(); leisteZu();
+      return;
+    }
+
+    if(tun === "notiz"){
+      var ziel = gewaehlt;
+      if(!ziel){
+        /* Ohne bestehende Markierung: erst gelb anlegen, dann beschriften --
+           eine Notiz ohne Stelle waere nirgends wiederzufinden. */
+        var r0 = ausAuswahl("gelb");
+        if(r0 !== "gut" && r0 !== "ungesichert"){ meldung(r0); leisteZu(); return; }
+        ziel = marken[marken.length - 1].id;
+      }
+      var alt2 = null;
+      for(var i = 0; i < marken.length; i++) if(marken[i].id === ziel) alt2 = marken[i];
+      if(!alt2){ leisteZu(); return; }
+      var txt = window.prompt("Was ist hier zu tun?", alt2.notiz || "");
+      if(txt !== null){
+        alt2.notiz = txt.trim();
+        abnehmen(ziel);
+        anwenden(alt2);
+        schreiben();
+        tafelZeichnen();
+      }
+      leisteZu();
+      return;
+    }
+
+    if(FARBEN[tun]){
+      if(gewaehlt){
+        /* Farbe einer bestehenden Markierung wechseln. */
+        for(var j = 0; j < marken.length; j++){
+          if(marken[j].id !== gewaehlt) continue;
+          marken[j].farbe = tun;
+          abnehmen(gewaehlt);
+          anwenden(marken[j]);
+        }
+        schreiben(); tafelZeichnen(); leisteZu();
+        return;
+      }
+      meldung(ausAuswahl(tun));
+      leisteZu();
+    }
+  });
+
+  function meldung(art){
+    if(art === "gut") return;
+    var texte = {
+      leer: "Nichts ausgewaehlt.",
+      ausserhalb: "Nur im Text der Unterlagen markierbar, nicht in Kopf oder Leiste.",
+      zweiquellen: "Die Auswahl geht ueber zwei Quelldateien — bitte je Datei einzeln.",
+      ueberschneidung: "Die Auswahl liegt auf einer vorhandenen Markierung. Erst die entfernen.",
+      nichtgefunden: "Diese Stelle liess sich nicht anlegen — bitte etwas anders auswaehlen.",
+      ungesichert: "Markiert, aber NICHT gespeichert — der Browser laesst nichts ablegen. Vor dem Schliessen auslesen."
+    };
+    var t = texte[art] || String(art);
+    tafelAuf(true);
+    sagen(t, art === "ungesichert" ? "fehler" : "");
+  }
+
+  tafel.addEventListener("click", function(ev){
+    var k = ev.target.closest ? ev.target.closest("[data-mk-tun],[data-mk-hin]") : null;
+    if(!k) return;
+    var hin = k.getAttribute("data-mk-hin");
+    if(hin){
+      var n = document.querySelector('mark.mk[data-mk="' + hin + '"]');
+      if(n){ n.scrollIntoView({ block: "center" }); tafelAuf(false); }
+      else sagen("Diese Markierung ist verwaist — der Text steht so nicht mehr da.", "fehler");
+      return;
+    }
+    var tun = k.getAttribute("data-mk-tun");
+    if(tun === "zu") tafelAuf(false);
+    else if(tun === "datei") alsDatei();
+    else if(tun === "ablage") inAblage();
+    else if(tun === "aus"){
+      an = !an;
+      k.textContent = an ? "Markieren ausschalten" : "Markieren einschalten";
+      if(!an) leisteZu();
+      schreiben();
+      sagen(an ? "Markieren ist an." : "Markieren ist aus — vorhandene bleiben stehen.", "");
+    }
+  });
+
+  if(knopfN) knopfN.addEventListener("click", function(){
+    tafelAuf(tafel.getAttribute("data-offen") !== "ja");
+  });
+
+  /* ── Start ───────────────────────────────────────────────────────────── */
+
+  var geladen = lesen();
+  marken = geladen.marken;
+  an = geladen.an;
+  for(var i = 0; i < marken.length; i++){
+    if(!anwenden(marken[i])) verwaist.push(marken[i].id);
+  }
+  tafelZeichnen();
+  if(verwaist.length) tafelAuf(true);
+
+  /* Fuer die Proben: kein Bedienweg, sondern ein Fenster hinein. */
+  window.__mk = {
+    marken: function(){ return marken.slice(); },
+    verwaist: function(){ return verwaist.slice(); },
+    bericht: bericht,
+    setzen: function(quelle, text, farbe, notiz){
+      var art = document.querySelector('[data-quelle="' + quelle + '"]');
+      if(!art) return "keine-quelle";
+      var m = {
+        id: "m" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36),
+        quelle: quelle, farbe: farbe, text: norm(text), nth: 0,
+        notiz: notiz || "", wann: new Date().toISOString().slice(0, 10)
+      };
+      if(!anwenden(m)) return "nicht-gefunden";
+      marken.push(m); schreiben(); tafelZeichnen();
+      return m.id;
+    },
+    leeren: function(){
+      for(var i = 0; i < marken.length; i++) abnehmen(marken[i].id);
+      marken = []; verwaist = []; schreiben(); tafelZeichnen();
+    }
+  };
+})();
+</script>
 </body>
 </html>

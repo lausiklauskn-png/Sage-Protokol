@@ -10,11 +10,10 @@ genannte URL: kein Crawler, kein Dauerlauf, keine Wiederholung.
 
 ## `antragsmappe-bauen.mjs`
 
-Baut **[`docs/antragsmappe.html`](../docs/antragsmappe.html)** aus neun
-Markdown-Quellen, eine Datei, zwei Abteilungen: der Fahrplan
-Forschungsgelder (privat, Arbeitspapier) und die Forschungsunterlagen
-(einreichbar). Jede Abteilung hat einen eigenen Download- und Druck-Knopf und
-nimmt beim Herausnehmen **nur sich selbst** mit.
+Baut **[`docs/antragsmappe-einreichbar.html`](../docs/antragsmappe-einreichbar.html)**
+aus acht Markdown-Quellen zu einer Datei, die allein vollständig ist:
+Entstehung, Abgrenzung, die Untersuchung und die Werkstatt-Unterlagen. Sie hat
+einen eigenen Download- und Druck-Knopf.
 
 ```bash
 node tools/antragsmappe-bauen.mjs            # Stand = heute

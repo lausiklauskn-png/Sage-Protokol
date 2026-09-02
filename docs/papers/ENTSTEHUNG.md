@@ -157,7 +157,8 @@ Sie ist der Rohstoff für drei Dinge, die noch zu tun sind:
 
 1. **Ein neuer Abschnitt 1 in Paper A**, der die Herkunft erzählt, bevor Begriffe
    wie „Schicht" gebraucht werden.
-2. **Die Vorhabensbeschreibung** im Förderantrag. Abschnitt 6 ist deren Kern.
+2. **Eine Vorhabensbeschreibung**, wo immer eine gebraucht wird. Abschnitt 6
+   ist deren Kern.
 3. **Ein Abschnitt zur Entstehung des Papers selbst**: welche Wendepunkte von Klaus
    kamen und welche von der Sitzung. Bei einem Papier über die Lenkung von KI ist
    das kein Anhang, sondern Material.

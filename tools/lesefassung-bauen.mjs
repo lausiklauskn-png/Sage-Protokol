@@ -1,3 +1,10 @@
+/*
+ * ⚠ GEKÜRZT AM 2026-09-02. Dieses Werkzeug legte einmal zehn Blätter ab; sieben
+ * davon gehören nicht in ein öffentliches Depot und liegen seitdem woanders.
+ * Was hier bleibt, ist das Fachliche.
+ *
+ * Wer ein Blatt vermisst: es fehlt nicht, es ist nicht hier.
+ */
 /* lesefassung-bauen.mjs, dieselben Unterlagen zum Lesen.
  *
  * Aufruf:  node tools/lesefassung-bauen.mjs
@@ -34,24 +41,6 @@ const heute = new Date().toISOString().slice(0, 10);
 /* Dieselben Nummern wie in `docs/ausgabe/`: nach Namen sortiert stehen die
    Blaetter von selbst in der Reihenfolge des Vorgehens. */
 const BLAETTER = [
-  { nr: 10, kennung: 'uebersicht', titel: 'Übersicht und Reihenfolge',
-    unter: 'Was es gibt, was fehlt, was zuerst dran ist',
-    quelle: 'docs/unterlagen/00_UEBERSICHT.md' },
-  { nr: 20, kennung: 'schritte', titel: 'Die Schritte, abhakbar',
-    unter: 'In der Reihenfolge ihrer Abhängigkeiten',
-    quelle: 'docs/unterlagen/01_SCHRITTE.md' },
-  { nr: 30, kennung: 'steuerberater', titel: 'Fragen an den Steuerberater',
-    unter: 'Blatt zum Mitnehmen in den Termin',
-    quelle: 'docs/STEUERBERATER_FRAGEN.md' },
-  { nr: 40, kennung: 'finanzamt', titel: 'Vorbereitung Finanzamt',
-    unter: 'Blatt zum Danebenlegen beim Ausfüllen',
-    quelle: 'docs/unterlagen/03_FINANZAMT.md' },
-  { nr: 50, kennung: 'bestand', titel: 'Bestandsaufnahme',
-    unter: 'Was es gibt, seit wann, und wo es aufhört',
-    quelle: 'docs/unterlagen/04_BESTAND.md' },
-  { nr: 60, kennung: 'april', titel: 'April 2026, rekonstruiert',
-    unter: 'Der Monat ohne Protokoll, aus den Einträgen',
-    quelle: 'docs/unterlagen/05_APRIL.md' },
   { nr: 70, kennung: 'forschungsaufgaben', titel: 'Forschungsaufgaben',
     unter: 'Was ansteht, in welcher Reihenfolge',
     quelle: 'docs/unterlagen/06_FORSCHUNGSAUFGABEN.md' },
@@ -61,9 +50,6 @@ const BLAETTER = [
   { nr: 80, kennung: 'entstehung', titel: 'Woher das kommt',
     unter: 'Klaus’ eigene Darstellung',
     quelle: 'docs/papers/ENTSTEHUNG.md' },
-  { nr: 85, kennung: 'korpus', titel: 'Forschungskorpus',
-    unter: 'Die Kette, auf die ein Antrag zeigt',
-    quelle: 'docs/FORSCHUNGSKORPUS.md' },
 ];
 
 /* Verweise auf andere `.md`-Dateien zeigen in der Lesefassung auf das

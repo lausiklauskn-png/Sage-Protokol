@@ -1,23 +1,25 @@
-/* antragsmappe-bauen.mjs — baut `docs/antragsmappe.html` aus den Markdown-Quellen.
+/* antragsmappe-bauen.mjs — baut `docs/antragsmappe-einreichbar.html` aus den
+ * Markdown-Quellen.
  *
  * Aufruf:  node tools/antragsmappe-bauen.mjs
  *
  * ── WOZU ───────────────────────────────────────────────────────────────────
  *
- * Klaus bekommt EINE Datei. Sie ist sein Zugang, nichts wird auf mehrere
- * Downloads verteilt. Aber sie hat ZWEI Abteilungen, und die müssen sich
- * getrennt herausnehmen lassen:
+ * Eine Datei, die allein vollständig ist: Entstehung, Abgrenzung, die
+ * Untersuchung und die Werkstatt-Unterlagen. Wer nur sie in der Hand hält,
+ * vermisst nichts.
  *
- *   1 · PRIVAT      — der Fahrplan Forschungsgelder. Klaus' Arbeitspapier.
- *                     Geht niemanden etwas an, steht in keinem Antrag.
- *   2 · EINREICHBAR — Entstehung, Paper A, Forschungskorpus, Paper-Plan und
- *                     die Werkstatt-Unterlagen. Für Behörde und Gutachter.
+ * ⚠ GEKÜRZT AM 2026-09-02. Dieses Werkzeug baute einmal zwei Mappen mit
+ * insgesamt neun Abteilungen. Was hier bleibt, ist das Fachliche; der Rest
+ * gehört nicht in ein öffentliches Depot und liegt seitdem woanders. Der
+ * Druck-Mechanismus für mehrere Abteilungen steht weiter da — er kostet
+ * nichts und wäre bei der nächsten Erweiterung sonst neu zu bauen.
  *
  * ── DREI ENTSCHEIDUNGEN, JEDE MIT GRUND ────────────────────────────────────
  *
  * 1 · EINE QUELLE. Die Mappe wird ERZEUGT, nie von Hand gepflegt. Sonst
  *     stünden dieselben Sätze zweimal im Depot und liefen auseinander — und
- *     der Antrag zitierte irgendwann eine Fassung, die es nicht mehr gibt.
+ *     ein Verweis zeigte irgendwann auf eine Fassung, die es nicht mehr gibt.
  *     Wer den Inhalt ändert, ändert die `.md` und baut neu.
  *
  * 2 · KEIN RELATIVER VERWEIS. Auf Klaus' Tablet liegt die heruntergeladene
@@ -65,47 +67,28 @@ const DATUM = argDatum ? argDatum.slice(8) : new Date().toISOString().slice(0, 1
 
 const MAPPEN = [
   {
-  datei: 'docs/antragsmappe.html',
-  name: 'Antragsmappe',
-  titel: 'Antragsmappe',
-  fuss: 'Eine Datei, zwei Abteilungen.',
+  datei: 'docs/antragsmappe-einreichbar.html',
+  name: 'Forschungsunterlagen',
+  titel: 'Forschungsunterlagen',
+  fuss: 'Eine Datei, allein vollst\u00e4ndig.',
   markieren: true,
   abteilungen: [
   {
-    id: 'privat',
-    marke: 'Abteilung 1',
-    titel: 'Fahrplan Forschungsgelder',
-    unter: 'Arbeitspapier, nicht zum Einreichen',
-    art: 'privat',
-    warnung: 'Diese Abteilung ist das <strong>Arbeitspapier</strong>: Wege, '
-      + 'Fristen, Anmeldeschritte und pers&ouml;nliche Abw&auml;gungen. Sie '
-      + 'geht niemanden etwas an und steht in <strong>keinem Antrag</strong>. '
-      + '&mdash; <strong>&bdquo;Privat&ldquo; hei&szlig;t hier: geh&ouml;rt '
-      + 'nicht in die Mappe, die zur Beh&ouml;rde geht.</strong> Es hei&szlig;t '
-      + '<em>nicht</em> geheim: der Text liegt als '
-      + '<code>docs/FORSCHUNGSFOERDERUNG.md</code> in einem &ouml;ffentlichen '
-      + 'Depot, und diese Datei liegt daneben. Die f&uuml;nf pers&ouml;nlichen '
-      + 'Angaben (Abschnitt&nbsp;9) stehen absichtlich in keiner von beiden.',
-    dateien: ['docs/FORSCHUNGSFOERDERUNG.md'],
-  },
-  {
     id: 'einreichbar',
-    marke: 'Abteilung 2',
+    marke: '',
     titel: 'Forschungsunterlagen',
-    unter: 'Zum Einreichen bei Beh&ouml;rde und Gutachter',
+    unter: 'Entstehung, Abgrenzung, Untersuchung, Werkstatt',
     art: 'einreichbar',
-    warnung: 'Diese Abteilung ist so gebaut, dass sie <strong>allein '
+    warnung: 'Diese Mappe ist so gebaut, dass sie <strong>allein '
       + 'vollst&auml;ndig</strong> ist: eigener Kopf, eigenes Datum, eigene '
       + 'Herkunftsangabe. Wer nur sie in der Hand h&auml;lt, vermisst nichts.',
     dateien: [
       'docs/papers/ENTSTEHUNG.md',
-      /* DAS BLATT, DAS EINE GUTACHTERIN ZUERST LIEST. Es stand seit dem
-         2026-08-23 als fehlend im Fahrplan und in der Übersicht. Es steht
-         VOR Paper A, weil die Frage „gibt es das nicht schon" beantwortet
-         sein muss, bevor jemand die Untersuchung liest. */
+      /* DAS BLATT, DAS EINE LESERIN ZUERST BRAUCHT. Es steht VOR Paper A, weil
+         die Frage \u201egibt es das nicht schon\u201c beantwortet sein muss,
+         bevor jemand die Untersuchung liest. */
       'docs/ABGRENZUNG.md',
       'docs/papers/PAPER_A_regeln-und-grundsaetze.md',
-      'docs/FORSCHUNGSKORPUS.md',
       'docs/papers/PLAN_PAPERS.md',
       'docs/werkstatt/README.md',
       'docs/werkstatt/WERKSTATTREGELN.md',
@@ -115,108 +98,24 @@ const MAPPEN = [
   },
   ]},
 
-  /* ── Die zweite Mappe: wie vorzugehen ist ───────────────────────────────
-   * Klaus am 2026-08-24: die Unterlagen der Reihe nach, um systematisch
-   * vorzugehen. Sie gehört NICHT in die Antragsmappe: die geht zur Behörde,
-   * und Steuerfragen haben dort nichts zu suchen. Jede Abteilung lässt sich
-   * einzeln herunterladen, damit das Steuerberater-Blatt allein mitgeht. */
+  /* Die Forschungsaufgaben als eigenes Blatt. Sie werden von
+     `tools/forschungsaufgaben-bauen.mjs` an ihren Belegen gemessen und hier nur
+     in Form gebracht — deshalb ein eigenes Blatt und keine Abteilung. */
   {
-  datei: 'docs/unterlagen.html',
-  name: 'Unterlagen',
-  titel: 'Unterlagen: systematisch vorgehen',
-  fuss: 'Eine Datei, sieben Abteilungen. Jede einzeln zum Mitnehmen.',
+  datei: 'docs/unterlagen-forschungsaufgaben.html',
+  name: 'Forschungsaufgaben',
+  titel: 'Forschungsaufgaben',
+  fuss: 'Was ansteht, in welcher Reihenfolge.',
   markieren: true,
   abteilungen: [
   {
-    id: 'uebersicht',
-    marke: 'Abteilung 1',
-    titel: '&Uuml;bersicht und Reihenfolge',
-    unter: 'Was es gibt, was fehlt, was zuerst dran ist',
-    art: 'privat',
-    warnung: 'Diese Abteilung ordnet die f&uuml;nf Unterlagen und sagt '
-      + '<strong>ehrlich, was noch fehlt</strong>. Sie ist f&uuml;r dich, '
-      + 'nicht zum Weitergeben.',
-    dateien: ['docs/unterlagen/00_UEBERSICHT.md'],
-  },
-  {
-    id: 'schritte',
-    marke: 'Abteilung 2',
-    titel: 'Die Schritte, abhakbar',
-    unter: 'In der Reihenfolge ihrer Abh&auml;ngigkeiten',
-    art: 'privat',
-    warnung: 'Der Auszug aus dem Fahrplan, sortiert danach, <strong>was worauf '
-      + 'wartet</strong>. Der lange Text erkl&auml;rt das Warum; hier steht die '
-      + 'Reihenfolge.',
-    dateien: ['docs/unterlagen/01_SCHRITTE.md'],
-  },
-  {
-    id: 'steuerberater',
-    marke: 'Abteilung 3',
-    titel: 'Fragen an den Steuerberater',
-    unter: 'Blatt zum Mitnehmen in den Termin',
-    art: 'mitnehmen',
-    warnung: 'Diese Abteilung ist so gebaut, dass sie <strong>allein '
-      + 'vollst&auml;ndig</strong> ist: Sachverhalt, Fragen, Anlagen. Einzeln '
-      + 'herunterladen und mitnehmen. Dasselbe Blatt liegt als eigene Datei '
-      + '<code>docs/frageblatt.html</code> samt PDF daneben.',
-    /* DAS BLATT DER NACHBARSITZUNG, nicht ein eigenes. Am 2026-08-26 lief
-       eine zweite Sitzung parallel und hat dasselbe gebaut (PR #917 bis #919),
-       gründlicher: Sachverhalt in sieben Sätzen, 75 Rechnungen, echte Zahlen,
-       mit eigener Probe und Gegenprobe. Zwei Steuerberater-Blätter wären zwei
-       Quellen der Wahrheit für dieselbe Auskunft, und die eine wüsste nichts
-       von der anderen. Meines ist deshalb gelöscht, ihres steht hier. */
-    dateien: ['docs/STEUERBERATER_FRAGEN.md'],
-  },
-  {
-    id: 'finanzamt',
-    marke: 'Abteilung 4',
-    titel: 'Vorbereitung Finanzamt',
-    unter: 'Blatt zum Danebenlegen beim Ausf&uuml;llen',
-    art: 'mitnehmen',
-    warnung: 'Eine <strong>Vorbereitung</strong>, keine Abschrift des '
-      + 'Formulars. Die verbindlichen Felder stehen im Formular selbst und '
-      + '&auml;ndern sich; wer sich auf eine Abschrift verl&auml;sst, f&uuml;llt '
-      + 'irgendwann etwas aus, das so nicht mehr gefragt wird.',
-    dateien: ['docs/unterlagen/03_FINANZAMT.md'],
-  },
-  {
-    id: 'bestand',
-    marke: 'Abteilung 5',
-    titel: 'Bestandsaufnahme',
-    unter: 'Was es gibt, seit wann, und wo es aufh&ouml;rt',
-    art: 'privat',
-    warnung: 'Dieses Blatt wird <strong>erzeugt</strong>, aus <code>git log</code> '
-      + 'und aus den Dateien selbst. Es zeigt dieselbe Liste zweimal: nach '
-      + 'Vorgehen und nach Entstehung. Jede Zeile nennt ihre L&uuml;cke, und die '
-      + 'vier Posten au&szlig;erhalb der Depots stehen ausdr&uuml;cklich als '
-      + '<em>von Hand gef&uuml;hrt</em> dabei.',
-    dateien: ['docs/unterlagen/04_BESTAND.md'],
-  },
-  {
-    id: 'april',
-    marke: 'Abteilung 6',
-    titel: 'April 2026, rekonstruiert',
-    unter: 'Der Monat ohne Protokoll, aus den Eintr&auml;gen',
-    art: 'privat',
-    warnung: 'Eine <strong>Rekonstruktion</strong>, kein Protokoll. Sie sagt, '
-      + '<em>was</em> geschah, mit Datum und Uhrzeit. Was besprochen und '
-      + 'verworfen wurde, steht nirgends und l&auml;sst sich daraus nicht '
-      + 'gewinnen. Eine Rekonstruktion, die als solche gekennzeichnet ist, '
-      + 'tr&auml;gt in einem Antrag; eine, die wie ein Protokoll aussieht, '
-      + 'kostet die Glaubw&uuml;rdigkeit aller echten.',
-    dateien: ['docs/unterlagen/05_APRIL.md'],
-  },
-  {
     id: 'forschungsaufgaben',
-    marke: 'Abteilung 7',
+    marke: '',
     titel: 'Forschungsaufgaben',
     unter: 'Was ansteht, in welcher Reihenfolge',
-    art: 'privat',
-    warnung: 'Dieses Blatt wird <strong>erzeugt</strong>. Der Stand jeder '
-      + 'Aufgabe wird an ihren Belegen im Depot gemessen, nicht '
-      + 'hingeschrieben. <strong>Ein Beleg hei&szlig;t nicht erledigt:</strong> '
-      + 'was noch fehlt, steht bei jeder Aufgabe einzeln, und zwei Aufgaben '
-      + 'k&ouml;nnten ihr Ergebnis im Depot gar nicht zeigen.',
+    art: 'einreichbar',
+    warnung: 'Der Stand jeder Aufgabe wird <strong>an ihren Belegen '
+      + 'gemessen</strong>, nicht hingeschrieben.',
     dateien: ['docs/unterlagen/06_FORSCHUNGSAUFGABEN.md'],
   },
   ]},
@@ -225,8 +124,8 @@ const MAPPEN = [
 /* Jede Datei bekommt einen Anker. Nur was hier drinsteht, kann ein Verweis
    intern auflösen — alles andere geht auf die volle GitHub-Adresse. */
 /* JE MAPPE, NICHT ÜBER BEIDE. Am 2026-08-26 stand hier eine gemeinsame Karte,
-   und das war ein stiller Fehler: `docs/FORSCHUNGSFOERDERUNG.md` liegt in der
-   Antragsmappe, wird aber aus der Unterlagen-Mappe heraus verwiesen. Mit einer
+   und das war ein stiller Fehler: eine Datei lag in der einen Mappe, wurde aber
+   aus der anderen heraus verwiesen. Mit einer
    gemeinsamen Karte wurde daraus dort ein Sprung auf `#q-docs-...`, dessen Ziel
    in der ANDEREN Datei steht. Ein Verweis, der aussieht wie einer und ins Leere
    führt. Gefunden hat es die Gegenprobe, nicht das Nachdenken.
@@ -467,9 +366,8 @@ const SKRIPT = `
   }
 
   function laden(id){
-    var name = "Sage-" + (id === "privat" ? "Fahrplan-Forschungsgelder"
-                                          : "Forschungsunterlagen")
-             + "-" + document.documentElement.getAttribute("data-stand") + ".html";
+    var name = "Sage-Forschungsunterlagen-"
+             + document.documentElement.getAttribute("data-stand") + ".html";
     try{
       /* Ein BOM, weil Android beim Öffnen einer heruntergeladenen Datei sonst
          Latin-1 rät und aus jedem Umlaut zwei Zeichen macht. Der MIME-Typ
